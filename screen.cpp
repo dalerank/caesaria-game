@@ -82,6 +82,11 @@ WidgetEvent Screen::run()
          // std::cout << "frame takes too much time! " << currentclock - lastclock << std::endl;
          delay = 0;
       }
+      // FIX: game spontanous hangs
+      else if (delay > ref_delay)
+      {
+        delay = ref_delay;
+      }
       lastclock = currentclock;
       SDL_Delay(delay);
    }
