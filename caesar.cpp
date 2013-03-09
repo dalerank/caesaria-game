@@ -1,0 +1,249 @@
+// This file is part of openCaesar3.
+//
+// openCaesar3 is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// openCaesar3 is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+
+
+#include <caesar.hpp>
+#include <cstdlib>
+#include <string>
+#include <sstream>
+#include <iostream>
+#include <vector>
+#include <list>
+#include <SDL.h>
+#include <SDL_image.h>
+#include <libintl.h>
+#include <locale.h>
+
+#include <exception.hpp>
+#include <pic_loader.hpp>
+#include <scenario_loader.hpp>
+#include <scenario.hpp>
+#include <city.hpp>
+#include <picture.hpp>
+#include <gfx_sdl_engine.hpp>
+#include <gfx_gl_engine.hpp>
+#include <sound_engine.hpp>
+#include <gui_menu.hpp>
+#include <walker.hpp>
+#include <gui_info_box.hpp>
+#include <model_loader.hpp>
+
+#include <screen_wait.hpp>
+#include <screen_menu.hpp>
+#include <screen_game.hpp>
+
+
+void CaesarApp::initLocale()
+{
+   // init the internationalization library (gettext)
+   setlocale(LC_ALL, "");
+   bindtextdomain( "caesar", "." );
+   textdomain("caesar");
+}
+
+void CaesarApp::initVideo()
+{
+   std::cout << "init graphic engine" << std::endl;
+   new GfxSdlEngine();
+   GfxEngine::instance().setScreenSize(800, 500);
+   GfxEngine::instance().init();
+}
+
+
+void CaesarApp::initSound()
+{
+   std::cout << "init sound engine" << std::endl;
+   new SoundEngine();
+   SoundEngine::instance().init();
+}
+
+void CaesarApp::initWaitPictures()
+{
+   std::cout << "load wait images begin" << std::endl;
+   PicLoader &pic_loader = PicLoader::instance();
+   pic_loader.load_wait();
+   std::cout << "load wait images end" << std::endl;
+
+   std::cout << "convert images begin" << std::endl;
+   GfxEngine::instance().load_pictures(pic_loader.get_pictures());
+   std::cout << "convert images end" << std::endl;
+}
+
+void CaesarApp::initPictures()
+{
+   std::cout << "load images begin" << std::endl;
+   PicLoader &pic_loader = PicLoader::instance();
+   pic_loader.load_all();
+   std::cout << "load images end" << std::endl;
+
+   std::cout << "load walking begin" << std::endl;
+   WalkerLoader &walker_loader = WalkerLoader::instance();
+   walker_loader.loadAll();
+   std::cout << "load walking end" << std::endl;
+
+   std::cout << "load fonts begin" << std::endl;
+   FontLoader font_loader;
+   font_loader.load_all();
+   std::cout << "load fonts end" << std::endl;
+
+   std::cout << "convert images begin" << std::endl;
+   GfxEngine::instance().load_pictures(pic_loader.get_pictures());
+   std::cout << "convert images end" << std::endl;
+}
+
+void CaesarApp::loadScenario(const std::string &scenarioFile)
+{
+   std::cout << "load scenario begin" << std::endl;
+   _scenario = new Scenario();
+   ScenarioLoader scenario_loader;
+   scenario_loader.load(scenarioFile, *_scenario);
+
+   City &city = _scenario->getCity();
+
+   std::list<LandOverlay*> llo = city.getOverlayList();
+   for (std::list<LandOverlay*>::iterator itLLO = llo.begin(); itLLO!=llo.end(); ++itLLO)
+   {
+      LandOverlay &overlay = **itLLO;
+      Construction* construction = dynamic_cast<Construction*>(&overlay);
+      if (construction != NULL)
+      {
+         // this is a construction
+         construction->computeAccessRoads();
+      }
+   }
+
+   std::cout << "load scenario end" << std::endl;
+}
+
+
+void CaesarApp::loadGame(const std::string &gameFile)
+{
+   std::cout << "load game begin" << std::endl;
+
+   std::fstream f(gameFile.c_str(), std::ios::in | std::ios::binary);
+   InputSerialStream stream;
+   stream.init(f, -1);
+
+   _scenario = new Scenario();
+   _scenario->unserialize(stream);
+   f.close();
+   stream.finalize_read();
+
+   std::cout << "load game end" << std::endl;
+}
+
+
+void CaesarApp::setScreenWait()
+{
+   ScreenWait screen;
+   screen.init();
+   screen.drawFrame();
+}
+
+void CaesarApp::setScreenMenu()
+{
+   WidgetEvent wevent;
+   ScreenMenu screen;
+   screen.init();
+   wevent = screen.run();
+
+   switch (wevent._eventType)
+   {
+   case WE_NewGame:
+      loadScenario("resources/maps/cyrene.map");
+      _nextScreen = SCREEN_GAME;
+      break;
+   case WE_LoadGame:
+      loadGame("oc3.sav");
+      _nextScreen = SCREEN_GAME;
+      break;
+   case WE_QuitGame:
+      _nextScreen = SCREEN_QUIT;
+      break;
+   default:
+      THROW("Unexpected widget event: " << wevent._eventType);
+   }
+}
+
+void CaesarApp::setScreenGame()
+{
+   ScreenGame screen;
+   screen.setScenario(*_scenario);
+   screen.init();
+   screen.run();
+   _nextScreen = SCREEN_QUIT;
+}
+
+
+CaesarApp::CaesarApp()
+{
+   _scenario = NULL;
+   _nextScreen = SCREEN_NONE;
+}
+
+void CaesarApp::start()
+{
+   initLocale();
+   initVideo();
+   initSound();
+   // SoundEngine::instance().play_music("resources/sound/drums.wav");
+   initWaitPictures();  // init some quick pictures for screenWait
+   setScreenWait();
+
+   initPictures();
+   ModelLoader().loadHouseModel("house_model.csv");
+   HouseLevelSpec::init();
+
+   WidgetEvent wevent;
+
+   _nextScreen = SCREEN_MENU;
+
+   while (_nextScreen != SCREEN_QUIT)
+   {
+      switch (_nextScreen)
+      {
+      case SCREEN_MENU:
+         setScreenMenu();
+         break;
+      case SCREEN_GAME:
+         setScreenGame();
+         break;
+      default:
+         THROW("Unexpected screen type: " << _nextScreen);
+      }
+   }
+
+   //setScreenWait();
+   //SDL_Delay(1500);
+}
+
+
+int main(int argc, char *argv[])
+{
+   try
+   {
+      CaesarApp app;
+      app.start();
+   }
+   catch (Exception e)
+   {
+      std::cout << "FATAL ERROR: " << e.getDescription() << std::endl;
+   }
+
+   return 0;
+}
+

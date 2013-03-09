@@ -1,0 +1,91 @@
+// This file is part of openCaesar3.
+//
+// openCaesar3 is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// openCaesar3 is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+
+
+                     Installation of openCaesar3 on Linux
+
+
+The opencaesar3 software uses the original (c) Caesar3 art for graphics, sounds and animations.
+For copyright reasons, I do not upload Caesar3 material.
+Therefore you need to install Caesar3 to install opencaesar3.
+
+1. Extract the picture files
+
+1.a Install Caesar3
+
+* You only need the Caesar3 CD.
+insert your CaesarCD (mounted in /media/CAESAR3 for example)
+cd ~
+mkdir caesar3_orig
+cd caesar3_orig
+unshield x /media/CAESAR3/data1.CAB
+
+=> this will extract all files from the data1.CAB archive to your local directory
+=> you need to install the "unshield" package if you don't have it already.
+
+
+1.b Install dependencies
+
+sudo apt-get install libarchive-dev zlib1g-dev zlib1g unshield libsdl1.2-dev libsdl1.2debian qt4-dev-tools
+
+
+1.c Install and launch SGReader
+
+* Download the SGReader tool "sgreader-src.tar.gz"
+cd ~
+tar xvzf sgreader-src.tar.gz
+cd sgreader-src
+qmake
+make
+
+=> this extracts and compiles the source code.
+
+
+1.d Run the SGReader tool
+
+cd ~/sgreader-src
+./sgreader
+in File/Batch_Extract...
+Select the input folder:
+  Select the directory where you installed Caesar3 (eg: ~/caesar3)
+Choose files to extract:
+  Select C3.sg2, C3_North.sg2 and C3_south.sg2
+Set the output folder:
+  Use a temporary directory of your choice (eg: ~/caesar3_extract)
+Run the extraction...
+Images extracted:
+  you should get approx 26314 extracted images, and 124 skipped images.
+
+
+2. Install opencaesar3
+
+2.a Download opencaesar3 archive, for example: caesar_2012_05_21.20_55_51.tgz
+
+cd ~
+tar xvzf caesar_2012_05_21.20_55_51.tgz
+cd opencaesar3
+make
+
+2.b Install
+
+./install.sh --pic-dir ~/caesar3_extract --data-dir ~/caesar3_orig
+ln -s /usr/share/fonts/truetype/freefont/FreeSerif.ttf .
+
+2.c Run!
+
+./run.sh
+

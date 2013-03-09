@@ -1,0 +1,48 @@
+// This file is part of openCaesar3.
+//
+// openCaesar3 is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// openCaesar3 is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+
+
+                     Installation of openCaesar3 on Microsoft Windows
+
+
+1. Install the original Caesar3 game. Pictures and maps are needed for openCaesar3
+
+2. Download and extract openCaesar3
+
+3. Launch the sgreader.exe
+      select "File", "Batch extract"
+      set the "Input Folder" as instructed
+      choose C3.exe, C3_North.sg2, C3_south.sg2
+      wait until done
+      you will have 3 folders created: C3, C3_North and C3_South
+
+4. Rename all *.png files to lowercase in all 3 folders (C3, C3_North and C3_South)
+      Several tools are available on the internet for this, for example:
+      * BulkReaderUtility, http://www.bulkrenameutility.co.uk/
+      * TotalCommander, http://www.ghisler.com/
+
+5. Pack all files from C3 folder into pics.zip, from C3_North to pics_north.zip, from C3_South to pics_south.zip
+      move these 3 zip files to openCaesar3/pics
+      Several tools are available on the internet for this, for example:
+      * 7zip, http://www.7-zip.org/. You may need to use the ".bzip2" compression.
+
+6. From your Caesar3 install dir, copy *.map to resources/maps/
+
+7. Run caesar.exe
+      in case of error, check the stdout.txt file in the openCaesar3 directory for clues.
+
+
