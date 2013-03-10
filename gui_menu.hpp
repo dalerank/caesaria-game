@@ -214,6 +214,11 @@ public:
    void addButtons();
 };
 
+class BuildMenu_religion: public BuildMenu
+{
+public:
+   void addButtons();
+};
 
 class BuildMenu_temple : public BuildMenu
 {

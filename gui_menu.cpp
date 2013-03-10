@@ -162,7 +162,7 @@ Menu::Menu()
    // second row
    set4Button(_waterButton, WidgetEvent::BuildMenuEvent(BM_WATER), 127);
    set4Button(_healthButton, WidgetEvent::BuildMenuEvent(BM_HEALTH), 163);
-   set4Button(_templeButton, WidgetEvent::BuildMenuEvent(BM_TEMPLE), 151);
+   set4Button(_templeButton, WidgetEvent::BuildMenuEvent(BM_RELIGION), 151);
    // third row
    set4Button(_educationButton, WidgetEvent::BuildMenuEvent(BM_EDUCATION), 147);
    set4Button(_entertainmentButton, WidgetEvent::BuildMenuEvent(BM_ENTERTAINMENT), 143);
@@ -518,6 +518,10 @@ BuildMenu *BuildMenu::getMenuInstance(const BuildMenuType menuType)
    {
       res = new BuildMenu_factory();
    }
+   else if (menuType == BM_RELIGION)
+   {
+      res = new BuildMenu_religion();
+   }
    else if (menuType == BM_TEMPLE)
    {
       res = new BuildMenu_temple();
@@ -627,17 +631,21 @@ void BuildMenu_factory::addButtons()
    addBuildButton(B_POTTERY);
 }
 
+void BuildMenu_religion::addButtons()
+{
+   addSubmenuButton(BM_TEMPLE ,_("Small temples"));   
+   addSubmenuButton(BM_BIGTEMPLE ,_("Large temples"));
+   addBuildButton(B_TEMPLE_ORACLE);   
+}
 
 void BuildMenu_temple::addButtons()
 {
-   addSubmenuButton(BM_BIGTEMPLE ,_("Large temples"));
+
    addBuildButton(B_TEMPLE_CERES);
    addBuildButton(B_TEMPLE_NEPTUNE);
    addBuildButton(B_TEMPLE_MARS);
    addBuildButton(B_TEMPLE_VENUS);
    addBuildButton(B_TEMPLE_MERCURE);
-   
-   addBuildButton(B_TEMPLE_ORACLE);
 }
 
 void BuildMenu_bigtemple::addButtons()
