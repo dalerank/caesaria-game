@@ -369,6 +369,18 @@ TempleMercure* TempleMercure::clone() const
    return new TempleMercure(*this);
 }
 
+TempleOracle::TempleOracle() : ServiceBuilding(S_TEMPLE_ORACLE)
+{
+   setType(B_TEMPLE_ORACLE);
+   _size = 2;
+   setPicture(PicLoader::instance().get_picture("security", 55));
+}
+
+TempleOracle* TempleOracle::clone() const
+{
+   return new TempleOracle(*this);
+}
+
 
 School::School() : ServiceBuilding(S_SCHOOL)
 {

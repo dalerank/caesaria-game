@@ -179,61 +179,62 @@ LandOverlay* LandOverlay::getInstance(const BuildingType buildingType)
       // first call to this method
 
       // entertainment
-      _mapBuildingByID[B_THEATER] = new BuildingTheater();
+      _mapBuildingByID[B_THEATER]      = new BuildingTheater();
       _mapBuildingByID[B_AMPHITHEATER] = new BuildingAmphiTheater();
-      _mapBuildingByID[B_COLLOSSEUM] = new BuildingCollosseum();
-      _mapBuildingByID[B_ACTOR] = new BuildingActor();
-      _mapBuildingByID[B_GLADIATOR] = new BuildingGladiator();
-      _mapBuildingByID[B_LION] = new BuildingLion();
-      _mapBuildingByID[B_CHARIOT] = new BuildingChariot();
+      _mapBuildingByID[B_COLLOSSEUM]   = new BuildingCollosseum();
+      _mapBuildingByID[B_ACTOR]        = new BuildingActor();
+      _mapBuildingByID[B_GLADIATOR]    = new BuildingGladiator();
+      _mapBuildingByID[B_LION]         = new BuildingLion();
+      _mapBuildingByID[B_CHARIOT]      = new BuildingChariot();
       // road&house
       _mapBuildingByID[B_HOUSE] = new House(1);
-      _mapBuildingByID[B_ROAD] = new Road();
+      _mapBuildingByID[B_ROAD]  = new Road();
       // administration
-      _mapBuildingByID[B_FORUM] = new Forum();
+      _mapBuildingByID[B_FORUM]  = new Forum();
       _mapBuildingByID[B_SENATE] = new Senate();
       // water
-      _mapBuildingByID[B_WELL] = new BuildingWell();
-      _mapBuildingByID[B_FOUNTAIN] = new BuildingFountain();
+      _mapBuildingByID[B_WELL]      = new BuildingWell();
+      _mapBuildingByID[B_FOUNTAIN]  = new BuildingFountain();
       // security
-      _mapBuildingByID[B_PREFECT] = new BuildingPrefect();
+      _mapBuildingByID[B_PREFECT]   = new BuildingPrefect();
       // commerce
-      _mapBuildingByID[B_MARKET] = new Market();
+      _mapBuildingByID[B_MARKET]    = new Market();
       _mapBuildingByID[B_WAREHOUSE] = new Warehouse();
-      _mapBuildingByID[B_GRANARY] = new Granary();
+      _mapBuildingByID[B_GRANARY]   = new Granary();
       // farms
-      _mapBuildingByID[B_WHEAT] = new FarmWheat();
-      _mapBuildingByID[B_OLIVE] = new FarmOlive();
-      _mapBuildingByID[B_GRAPE] = new FarmGrape();
-      _mapBuildingByID[B_MEAT] = new FarmMeat();
-      _mapBuildingByID[B_FRUIT] = new FarmFruit();
+      _mapBuildingByID[B_WHEAT]     = new FarmWheat();
+      _mapBuildingByID[B_OLIVE]     = new FarmOlive();
+      _mapBuildingByID[B_GRAPE]     = new FarmGrape();
+      _mapBuildingByID[B_MEAT]      = new FarmMeat();
+      _mapBuildingByID[B_FRUIT]     = new FarmFruit();
       _mapBuildingByID[B_VEGETABLE] = new FarmVegetable();
       // raw materials
-      _mapBuildingByID[B_IRON] = new FactoryIron();
+      _mapBuildingByID[B_IRON]   = new FactoryIron();
       _mapBuildingByID[B_TIMBER] = new FactoryTimber();
-      _mapBuildingByID[B_CLAY] = new FactoryClay();
+      _mapBuildingByID[B_CLAY]   = new FactoryClay();
       _mapBuildingByID[B_MARBLE] = new FactoryMarble();
       // factories
-      _mapBuildingByID[B_WEAPON] = new FactoryWeapon();
+      _mapBuildingByID[B_WEAPON]    = new FactoryWeapon();
       _mapBuildingByID[B_FURNITURE] = new FactoryFurniture();
-      _mapBuildingByID[B_WINE] = new FactoryWine();
-      _mapBuildingByID[B_OIL] = new FactoryOil();
-      _mapBuildingByID[B_POTTERY] = new FactoryPottery();
+      _mapBuildingByID[B_WINE]      = new FactoryWine();
+      _mapBuildingByID[B_OIL]       = new FactoryOil();
+      _mapBuildingByID[B_POTTERY]   = new FactoryPottery();
       // utility
       _mapBuildingByID[B_ENGINEER] = new BuildingEngineer();
       // religion
-      _mapBuildingByID[B_TEMPLE_CERES] = new TempleCeres();
+      _mapBuildingByID[B_TEMPLE_CERES]   = new TempleCeres();
       _mapBuildingByID[B_TEMPLE_NEPTUNE] = new TempleNeptune();
-      _mapBuildingByID[B_TEMPLE_MARS] = new TempleMars();
-      _mapBuildingByID[B_TEMPLE_VENUS] = new TempleVenus();
+      _mapBuildingByID[B_TEMPLE_MARS]    = new TempleMars();
+      _mapBuildingByID[B_TEMPLE_VENUS]   = new TempleVenus();
       _mapBuildingByID[B_TEMPLE_MERCURE] = new TempleMercure();
+      _mapBuildingByID[B_TEMPLE_ORACLE]  = new TempleOracle();
       // health
-      _mapBuildingByID[B_BATHS] = new Baths();
-      _mapBuildingByID[B_BARBER] = new Barber();
-      _mapBuildingByID[B_DOCTOR] = new Doctor();
+      _mapBuildingByID[B_BATHS]    = new Baths();
+      _mapBuildingByID[B_BARBER]   = new Barber();
+      _mapBuildingByID[B_DOCTOR]   = new Doctor();
       _mapBuildingByID[B_HOSPITAL] = new Hospital();
       // education
-      _mapBuildingByID[B_SCHOOL] = new School();
+      _mapBuildingByID[B_SCHOOL]  = new School();
       _mapBuildingByID[B_LIBRARY] = new Library();
       _mapBuildingByID[B_COLLEGE] = new College();
    }

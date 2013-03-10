@@ -153,6 +153,13 @@ public:
    TempleMercure* clone() const;
 };
 
+class TempleOracle : public ServiceBuilding
+{
+public:
+   TempleOracle();
+   TempleOracle* clone() const;
+};
+
 class School : public ServiceBuilding
 {
 public:

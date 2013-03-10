@@ -601,6 +601,7 @@ void BuildMenu_farm::addButtons()
    addBuildButton(B_OLIVE);
    addBuildButton(B_GRAPE);
    addBuildButton(B_MEAT);
+   addBuildButton(B_VEGETABLE);
 }
 
 
@@ -630,6 +631,7 @@ void BuildMenu_temple::addButtons()
    addBuildButton(B_TEMPLE_MARS);
    addBuildButton(B_TEMPLE_VENUS);
    addBuildButton(B_TEMPLE_MERCURE);
+   addBuildButton(B_TEMPLE_ORACLE);
 }
 
 
