@@ -478,6 +478,18 @@ Forum* Forum::clone() const
    return new Forum(*this);
 }
 
+Senate::Senate() : ServiceBuilding(S_SENATE)
+{
+   setType(B_SENATE);
+   _size = 5;
+   setPicture(PicLoader::instance().get_picture("govt", 4));
+   std::cout << "Senate::Senate()" << std::endl;
+}
+
+Senate* Senate::clone() const
+{
+   return new Senate(*this);
+}
 
 Market::Market() : ServiceBuilding(S_MARKET)
 {

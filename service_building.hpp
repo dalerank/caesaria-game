@@ -209,6 +209,14 @@ public:
    Forum* clone() const;
 };
 
+class Senate : public ServiceBuilding
+{
+public:
+   Senate();
+   Senate* clone() const;
+};
+
+
 class MarketBuyer;
 class Market: public ServiceBuilding
 {

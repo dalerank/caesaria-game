@@ -473,6 +473,7 @@ void ServiceWalker::init(const ServiceType service)
    {
    case S_WELL:
    case S_FOUNTAIN:
+   case S_SENATE:
       _walkerGraphic = WG_NONE;
       break;
    case S_ENGINEER:

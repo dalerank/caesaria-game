@@ -191,6 +191,7 @@ LandOverlay* LandOverlay::getInstance(const BuildingType buildingType)
       _mapBuildingByID[B_ROAD] = new Road();
       // administration
       _mapBuildingByID[B_FORUM] = new Forum();
+      _mapBuildingByID[B_SENATE] = new Senate();
       // water
       _mapBuildingByID[B_WELL] = new BuildingWell();
       _mapBuildingByID[B_FOUNTAIN] = new BuildingFountain();
