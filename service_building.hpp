@@ -153,6 +153,41 @@ public:
    TempleMercure* clone() const;
 };
 
+class BigTempleCeres : public ServiceBuilding
+{
+public:
+   BigTempleCeres();
+   BigTempleCeres* clone() const;
+};
+
+class BigTempleNeptune : public ServiceBuilding
+{
+public:
+   BigTempleNeptune();
+   BigTempleNeptune* clone() const;
+};
+
+class BigTempleMars : public ServiceBuilding
+{
+public:
+   BigTempleMars();
+   BigTempleMars* clone() const;
+};
+
+class BigTempleVenus : public ServiceBuilding
+{
+public:
+   BigTempleVenus();
+   BigTempleVenus* clone() const;
+};
+
+class BigTempleMercure : public ServiceBuilding
+{
+public:
+   BigTempleMercure();
+   BigTempleMercure* clone() const;
+};
+
 class TempleOracle : public ServiceBuilding
 {
 public:

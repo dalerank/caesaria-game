@@ -304,7 +304,6 @@ BuildingCollosseum* BuildingCollosseum::clone() const
    return new BuildingCollosseum(*this);
 }
 
-
 TempleCeres::TempleCeres() : ServiceBuilding(S_TEMPLE_CERES)
 {
    setType(B_TEMPLE_CERES);
@@ -317,6 +316,17 @@ TempleCeres* TempleCeres::clone() const
    return new TempleCeres(*this);
 }
 
+BigTempleCeres::BigTempleCeres() : ServiceBuilding(S_TEMPLE_CERES)
+{
+   setType(B_BIG_TEMPLE_CERES);
+   _size = 3;
+   setPicture(PicLoader::instance().get_picture("security", 46));
+}
+
+BigTempleCeres* BigTempleCeres::clone() const
+{
+   return new BigTempleCeres(*this);
+}
 
 TempleNeptune::TempleNeptune() : ServiceBuilding(S_TEMPLE_NEPTUNE)
 {
@@ -330,6 +340,17 @@ TempleNeptune* TempleNeptune::clone() const
    return new TempleNeptune(*this);
 }
 
+BigTempleNeptune::BigTempleNeptune() : ServiceBuilding(S_TEMPLE_NEPTUNE)
+{
+   setType(B_BIG_TEMPLE_NEPTUNE);
+   _size = 3;
+   setPicture(PicLoader::instance().get_picture("security", 48));
+}
+
+BigTempleNeptune* BigTempleNeptune::clone() const
+{
+   return new BigTempleNeptune(*this);
+}
 
 TempleMars::TempleMars() : ServiceBuilding(S_TEMPLE_MARS)
 {
@@ -343,6 +364,17 @@ TempleMars* TempleMars::clone() const
    return new TempleMars(*this);
 }
 
+BigTempleMars::BigTempleMars() : ServiceBuilding(S_TEMPLE_MARS)
+{
+   setType(B_BIG_TEMPLE_MARS);
+   _size = 3;
+   setPicture(PicLoader::instance().get_picture("security", 52));
+}
+
+BigTempleMars* BigTempleMars::clone() const
+{
+   return new BigTempleMars(*this);
+}
 
 TempleVenus::TempleVenus() : ServiceBuilding(S_TEMPLE_VENUS)
 {
@@ -356,6 +388,17 @@ TempleVenus* TempleVenus::clone() const
    return new TempleVenus(*this);
 }
 
+BigTempleVenus::BigTempleVenus() : ServiceBuilding(S_TEMPLE_VENUS)
+{
+   setType(B_BIG_TEMPLE_VENUS);
+   _size = 3;
+   setPicture(PicLoader::instance().get_picture("security", 54));
+}
+
+BigTempleVenus* BigTempleVenus::clone() const
+{
+   return new BigTempleVenus(*this);
+}
 
 TempleMercure::TempleMercure() : ServiceBuilding(S_TEMPLE_MERCURE)
 {
@@ -367,6 +410,18 @@ TempleMercure::TempleMercure() : ServiceBuilding(S_TEMPLE_MERCURE)
 TempleMercure* TempleMercure::clone() const
 {
    return new TempleMercure(*this);
+}
+
+BigTempleMercure::BigTempleMercure() : ServiceBuilding(S_TEMPLE_MERCURE)
+{
+   setType(B_BIG_TEMPLE_MERCURE);
+   _size = 3;
+   setPicture(PicLoader::instance().get_picture("security", 50));
+}
+
+BigTempleMercure* BigTempleMercure::clone() const
+{
+   return new BigTempleMercure(*this);
 }
 
 TempleOracle::TempleOracle() : ServiceBuilding(S_TEMPLE_ORACLE)

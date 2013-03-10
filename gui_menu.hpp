@@ -221,6 +221,12 @@ public:
    void addButtons();
 };
 
+class BuildMenu_bigtemple : public BuildMenu
+{
+public:
+   void addButtons();
+};
+
 
 // this is the menu with newGame/loadGame/quit choice
 class StartMenu : public WidgetGroup

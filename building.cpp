@@ -227,6 +227,11 @@ LandOverlay* LandOverlay::getInstance(const BuildingType buildingType)
       _mapBuildingByID[B_TEMPLE_MARS]    = new TempleMars();
       _mapBuildingByID[B_TEMPLE_VENUS]   = new TempleVenus();
       _mapBuildingByID[B_TEMPLE_MERCURE] = new TempleMercure();
+      _mapBuildingByID[B_BIG_TEMPLE_CERES]   = new BigTempleCeres();
+      _mapBuildingByID[B_BIG_TEMPLE_NEPTUNE] = new BigTempleNeptune();
+      _mapBuildingByID[B_BIG_TEMPLE_MARS]    = new BigTempleMars();
+      _mapBuildingByID[B_BIG_TEMPLE_VENUS]   = new BigTempleVenus();
+      _mapBuildingByID[B_BIG_TEMPLE_MERCURE] = new BigTempleMercure();
       _mapBuildingByID[B_TEMPLE_ORACLE]  = new TempleOracle();
       // health
       _mapBuildingByID[B_BATHS]    = new Baths();

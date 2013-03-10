@@ -522,6 +522,10 @@ BuildMenu *BuildMenu::getMenuInstance(const BuildMenuType menuType)
    {
       res = new BuildMenu_temple();
    }
+   else if (menuType == BM_BIGTEMPLE)
+   {
+      res = new BuildMenu_bigtemple();
+   }
    return res;
 }
 
@@ -626,15 +630,24 @@ void BuildMenu_factory::addButtons()
 
 void BuildMenu_temple::addButtons()
 {
+   addSubmenuButton(BM_BIGTEMPLE ,_("Large temples"));
    addBuildButton(B_TEMPLE_CERES);
    addBuildButton(B_TEMPLE_NEPTUNE);
    addBuildButton(B_TEMPLE_MARS);
    addBuildButton(B_TEMPLE_VENUS);
    addBuildButton(B_TEMPLE_MERCURE);
+   
    addBuildButton(B_TEMPLE_ORACLE);
 }
 
-
+void BuildMenu_bigtemple::addButtons()
+{
+   addBuildButton(B_BIG_TEMPLE_CERES);
+   addBuildButton(B_BIG_TEMPLE_NEPTUNE);
+   addBuildButton(B_BIG_TEMPLE_MARS);
+   addBuildButton(B_BIG_TEMPLE_VENUS);
+   addBuildButton(B_BIG_TEMPLE_MERCURE);
+}
 
 StartMenu::StartMenu()
 {
