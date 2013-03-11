@@ -530,6 +530,27 @@ BuildMenu *BuildMenu::getMenuInstance(const BuildMenuType menuType)
    {
       res = new BuildMenu_bigtemple();
    }
+
+/*
+   switch (menuType)
+   {
+   case BM_WATER:          res = new BuildMenu_water(); break;
+   case BM_HEALTH:         res = new BuildMenu_health(); break;
+   case BM_SECURITY:       res = new BuildMenu_security(); break;
+   case BM_EDUCATION:      res = new BuildMenu_education(); break;
+   case BM_ENGINEERING     res = new BuildMenu_engineering(); break;
+   case BM_ADMINISTRATION: res = new BuildMenu_administration(); break;
+   case BM_ENTERTAINMENT:  res = new BuildMenu_entertainment(); break;
+   case BM_COMMERCE:       res = new BuildMenu_commerce(); break;
+   case BM_FARM:           res = new BuildMenu_farm(); break;
+   case BM_RAW_MATERIAL:   res = new BuildMenu_raw_factory(); break;
+   case BM_FACTORY:        res = new BuildMenu_factory(); break;
+   case BM_RELIGION:       res = new BuildMenu_religion(); break;
+   case BM_TEMPLE:         res = new BuildMenu_temple(); break;
+   case BM_BIGTEMPLE:      res = new BuildMenu_bigtemple(); break;
+   default:       break; // DO NOTHING 
+   };
+*/
    return res;
 }
 
