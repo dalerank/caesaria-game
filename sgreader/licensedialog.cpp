@@ -57,9 +57,15 @@ LicenseDialog::LicenseDialog(QWidget *parent, const QString &appname)
 	setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 }
 
+// Please note, that Qt thinks that 
+// source code is in Latin-1 codepage
+// If not - please use setCodecForCStrings 
+// function with UTF-8 codepage
+
 QString LicenseDialog::getLicenseText() {
 	QString text = tr(
 "Copyright (c) 2007, 2008 Bianca van Schaik <pecuniam@gmail.com>\n"
+"(c) 2013 portions by George Ga\xe1l <gb12335@gmail.com>\n"
 "{MYAPPNAME} is released under the GNU General Public Licence, see below\n"
 "for the licence text.\n\n"
 "The source code of this program can be downloaded at:\n"
