@@ -1,5 +1,7 @@
 TEMPLATE = app
 TARGET = 
+CONFIG += qxt
+QXT += core gui
 DEPENDPATH += . gui
 INCLUDEPATH += . gui
 OBJECTS_DIR = build/obj
