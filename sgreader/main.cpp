@@ -22,21 +22,25 @@ public slots:
     void progressChanged(int);
 signals:
     void finished();
+public:
+    void SetInputPath(QString ip)  {InputPath = ip;}
+    void SetOutputPath(QString op) {OutputPath = op;}
+private:
+    QString InputPath;
+    QString OutputPath;
 };
 
 void ConsoleWorker::run()
 {
-    std::cout << "Hello" << std::endl;
-    
     // here goes the work
     
     QStringList files;
-    QString outputDir ("outputdir");
+    
     bool system = false;
     
-    files << "sg2/C3.sg2";
+    files << InputPath;
     
-    ExtractThread *thread = new ExtractThread(files, outputDir, system);
+    ExtractThread *thread = new ExtractThread(files, OutputPath, system);
 
     connect(thread, SIGNAL(finished()), this, SLOT(threadFinished()));
     connect(thread, SIGNAL(fileChanged(const QString&, int)), this, SLOT(fileChanged(const QString&, int)));
@@ -104,12 +108,15 @@ int main(int argc, char **argv) {
 	{
 	    QCoreApplication app(argc, argv);
 	    ConsoleWorker *cw = new ConsoleWorker(&app);
-
+	    
 	    QString InputPath = options.value("input").toString();
 	    QString OutputPath = ".";
 	    
 	    if (isoutput) {OutputPath = options.value("output").toString();}
 	    std::cout << "Input Path is " << InputPath.toStdString() << std::endl << "Output Path is " << OutputPath.toStdString() << std::endl;
+	    
+	    cw->SetInputPath(InputPath);
+	    cw->SetOutputPath(OutputPath);
 	    
 	    QObject::connect(cw, SIGNAL(finished()), &app, SLOT(quit()));
 	    QTimer::singleShot(0, cw, SLOT(run()));

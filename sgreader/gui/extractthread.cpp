@@ -53,7 +53,14 @@ void ExtractThread::extractFile(const QString &filename) {
 	
 	qDebug() << "Extracting file" << filename;
 	
-	sg.load();
+	bool load = sg.load();
+	
+	if (!load)
+	{
+	    qDebug("Error when loading file... exiting.");
+	    return;
+	}
+	
 	QString basename = sg.basename();
 	outputDir.mkdir(basename);
 	outputDir.cd(basename);
