@@ -104,6 +104,12 @@ int main(int argc, char **argv) {
 	{
 	    QCoreApplication app(argc, argv);
 	    ConsoleWorker *cw = new ConsoleWorker(&app);
+
+	    QString InputPath = options.value("input").toString();
+	    QString OutputPath = ".";
+	    
+	    if (isoutput) {OutputPath = options.value("output").toString();}
+	    std::cout << "Input Path is " << InputPath.toStdString() << std::endl << "Output Path is " << OutputPath.toStdString() << std::endl;
 	    
 	    QObject::connect(cw, SIGNAL(finished()), &app, SLOT(quit()));
 	    QTimer::singleShot(0, cw, SLOT(run()));
