@@ -1,1 +1,5 @@
 Use command-line switches for running programm in batch mode
+
+Dependencies:
+- Qt http://qt.digia.com/
+- libqxt http://dev.libqxt.org/libqxt/wiki/Home
