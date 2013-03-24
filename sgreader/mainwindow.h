@@ -23,7 +23,7 @@ class MainWindow : public QMainWindow {
 		void extractAll();
 		void treeSelectionChanged();
 		//void help();
-		void licence();
+		void license();
 		void about();
 		
 	private:
@@ -48,7 +48,7 @@ class MainWindow : public QMainWindow {
 		QAction *exitAction;
 		
 		QAction *helpAction;
-		QAction *licenceAction;
+		QAction *licenseAction;
 		QAction *aboutAction;
 };
 

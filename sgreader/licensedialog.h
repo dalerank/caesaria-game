@@ -16,13 +16,13 @@
  *   with this program; if not, write to the Free Software Foundation, Inc.,
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-#ifndef LICENCEDIALOG_H
-#define LICENCEDIALOG_H
+#ifndef LICENSEDIALOG_H
+#define LICENSEDIALOG_H
 
 #include <QDialog>
 #include <QString>
 
-class LicenceDialog : public QDialog {
+class LicenseDialog : public QDialog {
 	public:
 		/**
 		* Constructor, constructs a new licence dialog
@@ -31,13 +31,13 @@ class LicenceDialog : public QDialog {
 		* @param showPkwareLicence Determines whether to show the licence
 		*           for the pkware decompression class
 		*/
-		LicenceDialog(QWidget *parent, const QString & appname);
+		LicenseDialog(QWidget *parent, const QString & appname);
 	
 	private:
-		QString getLicenceText();
+		QString getLicenseText();
 		
 		QString appname;
-		bool showPkwareLicence;
+		bool showPkwareLicense;
 };
 
-#endif /* LICENCEDIALOG_H */
+#endif /* LICENSEDIALOG_H */

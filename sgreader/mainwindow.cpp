@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "imagetreeitem.h"
 #include "aboutdialog.h"
-#include "licencedialog.h"
+#include "licensedialog.h"
 #include "gui/extractwizard.h"
 
 MainWindow::MainWindow()
@@ -54,8 +54,8 @@ void MainWindow::extractAll() {
 	wizard.exec();
 }
 
-void MainWindow::licence() {
-	LicenceDialog dialog(this, appname);
+void MainWindow::license() {
+	LicenseDialog dialog(this, appname);
 	dialog.exec();
 }
 
@@ -66,7 +66,7 @@ void MainWindow::about() {
 		"This program is distributed in the hope that it will be useful,\n"
 		"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
 		"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
-		"See the GNU General Public License or Help->Licence for more details.\n"));
+		"See the GNU General Public License or Help->License for more details.\n"));
 	dialog.exec();
 }
 
@@ -197,8 +197,8 @@ void MainWindow::createActions() {
 	helpAction->setShortcut(tr("F1"));
 	connect(helpAction, SIGNAL(triggered()), this, SLOT(help()));
 	
-	licenceAction = new QAction(tr("&Licence"), this);
-	connect(licenceAction, SIGNAL(triggered()), this, SLOT(licence()));
+	licenseAction = new QAction(tr("&License"), this);
+	connect(licenseAction, SIGNAL(triggered()), this, SLOT(license()));
 	
 	aboutAction = new QAction(tr("&About %0").arg(appname), this);
 	connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
@@ -218,6 +218,6 @@ void MainWindow::createMenu() {
 	menu = menuBar()->addMenu("&Help");
 	menu->addAction(helpAction);
 	menu->addSeparator();
-	menu->addAction(licenceAction);
+	menu->addAction(licenseAction);
 	menu->addAction(aboutAction);
 }

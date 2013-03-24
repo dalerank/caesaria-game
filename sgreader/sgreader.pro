@@ -11,7 +11,7 @@ RCC_DIR = build/rcc
 # Input
 HEADERS += aboutdialog.h \
            imagetreeitem.h \
-           licencedialog.h \
+           licensedialog.h \
            mainwindow.h \
            sgbitmap.h \
            sgfile.h \
@@ -24,7 +24,7 @@ HEADERS += aboutdialog.h \
            gui/extractwizard.h
 SOURCES += aboutdialog.cpp \
            imagetreeitem.cpp \
-           licencedialog.cpp \
+           licensedialog.cpp \
            main.cpp \
            mainwindow.cpp \
            sgbitmap.cpp \

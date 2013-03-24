@@ -16,7 +16,7 @@
  *   with this program; if not, write to the Free Software Foundation, Inc.,
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-#include "licencedialog.h"
+#include "licensedialog.h"
 
 #include <QTextEdit>
 #include <QPushButton>
@@ -24,7 +24,7 @@
 #include <QHBoxLayout>
 #include <QFont>
 
-LicenceDialog::LicenceDialog(QWidget *parent, const QString &appname)
+LicenseDialog::LicenseDialog(QWidget *parent, const QString &appname)
 	: QDialog(parent) {
 	
 	this->appname = appname;
@@ -35,7 +35,7 @@ LicenceDialog::LicenceDialog(QWidget *parent, const QString &appname)
 	QTextEdit *textEdit = new QTextEdit();
 	textEdit->setReadOnly(true);
 	textEdit->setWordWrapMode(QTextOption::NoWrap);
-	textEdit->setPlainText(getLicenceText());
+	textEdit->setPlainText(getLicenseText());
 	textEdit->setMinimumSize(480, 300);
 	
 	// Create ok button
@@ -57,7 +57,7 @@ LicenceDialog::LicenceDialog(QWidget *parent, const QString &appname)
 	setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 }
 
-QString LicenceDialog::getLicenceText() {
+QString LicenseDialog::getLicenseText() {
 	QString text = tr(
 "Copyright (c) 2007, 2008 Bianca van Schaik <pecuniam@gmail.com>\n"
 "{MYAPPNAME} is released under the GNU General Public Licence, see below\n"
