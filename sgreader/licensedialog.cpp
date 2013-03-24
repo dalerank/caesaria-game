@@ -29,7 +29,7 @@ LicenseDialog::LicenseDialog(QWidget *parent, const QString &appname)
 	
 	this->appname = appname;
 	
-	setWindowTitle(appname + tr(" Licence"));
+	setWindowTitle(appname + tr(" License"));
 	
 	// Create textedit
 	QTextEdit *textEdit = new QTextEdit();
@@ -66,10 +66,11 @@ QString LicenseDialog::getLicenseText() {
 	QString text = tr(
 "Copyright (c) 2007, 2008 Bianca van Schaik <pecuniam@gmail.com>\n"
 "(c) 2013 portions by George Ga\xe1l <gb12335@gmail.com>\n"
-"{MYAPPNAME} is released under the GNU General Public Licence, see below\n"
-"for the licence text.\n\n"
+"{MYAPPNAME} is released under the GNU General Public License, see below\n"
+"for the license text.\n\n"
 "The source code of this program can be downloaded at:\n"
-"http://pecunia.nerdcamp.net/projects/citybuilding\n").replace("{MYAPPNAME}", appname);
+"http://pecunia.nerdcamp.net/projects/citybuilding\n"
+"or https://github.com/gecube/opencaesar3/\n").replace("{MYAPPNAME}", appname);
 	
 	text += tr(
 "-----------------------------------\n"
