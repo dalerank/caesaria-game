@@ -8,18 +8,71 @@
 
 #include <QxtCommandOptions>
 
+#include "gui/extractthread.h"
+
 class ConsoleWorker : public QObject 
 {
     Q_OBJECT
 public:
     explicit ConsoleWorker(QObject *parent = 0) : QObject(parent) {}
 public slots:
-    void run() {std::cout << "Hello" << std::endl; emit finished();}
+    void run();
+    void threadFinished();
+    void fileChanged(const QString&, int);
+    void progressChanged(int);
 signals:
     void finished();
 };
 
+void ConsoleWorker::run()
+{
+    std::cout << "Hello" << std::endl;
+    
+    // here goes the work
+    
+    QStringList files;
+    QString outputDir ("outputdir");
+    bool system = false;
+    
+    files << "sg2/C3.sg2";
+    
+    ExtractThread *thread = new ExtractThread(files, outputDir, system);
+
+    connect(thread, SIGNAL(finished()), this, SLOT(threadFinished()));
+    connect(thread, SIGNAL(fileChanged(const QString&, int)), this, SLOT(fileChanged(const QString&, int)));
+    connect(thread, SIGNAL(progressChanged(int)), this, SLOT(progressChanged(int)));
+    
+    thread->start();    
+}
+
+void ConsoleWorker::threadFinished()
+{
+    emit finished();
+}
+
+void ConsoleWorker::fileChanged(const QString &filename, int numFiles)
+{
+    std::cout << "Processing " << filename.toStdString() << " from " << numFiles << std::endl;
+}
+
+void ConsoleWorker::progressChanged(int image)
+{
+    std::cout << "Processing " << image << std::endl;
+}
+
 #include "main.moc"
+
+int startGUIApp(int argc, char **argv)
+{
+    QApplication app(argc, argv);
+    MainWindow window;
+    QMessageBox::warning(NULL, "Pre-release software", QString("The program "
+	"you are running is PRE-RELEASE software. Be aware that there might "
+	"be bugs in this program which may cause your computer to crash. "
+	"You are running the program at your own risk."));
+    window.show();
+    return app.exec();
+}
 
 int main(int argc, char **argv) {
   
@@ -45,14 +98,7 @@ int main(int argc, char **argv) {
 
 	if (!isinput && !isoutput)
 	{	
-	    QApplication app(argc, argv);
-	    MainWindow window;
-	    QMessageBox::warning(NULL, "Pre-release software", QString("The program "
-		"you are running is PRE-RELEASE software. Be aware that there might "
-		"be bugs in this program which may cause your computer to crash. "
-		"You are running the program at your own risk."));
-	    window.show();
-	    return app.exec();
+	    return startGUIApp(argc, argv);
 	}
 	else
 	{
