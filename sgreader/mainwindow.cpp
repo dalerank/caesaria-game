@@ -193,9 +193,9 @@ void MainWindow::createActions() {
 	exitAction = new QAction(tr("E&xit"), this);
 	connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
 	
-	helpAction = new QAction(tr("&Help"), this);
+/*	helpAction = new QAction(tr("&Help"), this);
 	helpAction->setShortcut(tr("F1"));
-	connect(helpAction, SIGNAL(triggered()), this, SLOT(help()));
+	connect(helpAction, SIGNAL(triggered()), this, SLOT(help()));*/
 	
 	licenseAction = new QAction(tr("&License"), this);
 	connect(licenseAction, SIGNAL(triggered()), this, SLOT(license()));
@@ -216,8 +216,8 @@ void MainWindow::createMenu() {
 	menu->addAction(exitAction);
 	
 	menu = menuBar()->addMenu("&Help");
-	menu->addAction(helpAction);
-	menu->addSeparator();
+//	menu->addAction(helpAction);
+//	menu->addSeparator();
 	menu->addAction(licenseAction);
 	menu->addAction(aboutAction);
 }
