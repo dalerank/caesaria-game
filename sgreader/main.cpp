@@ -1,8 +1,25 @@
 #include "sgfile.h"
 #include "mainwindow.h"
+
+#include <iostream>
+
 #include <QApplication>
+#include <QCoreApplication>
 
 #include <QxtCommandOptions>
+
+class ConsoleWorker : public QObject 
+{
+    Q_OBJECT
+public:
+    explicit ConsoleWorker(QObject *parent = 0) : QObject(parent) {}
+public slots:
+    void run() {std::cout << "Hello" << std::endl; emit finished();}
+signals:
+    void finished();
+};
+
+#include "main.moc"
 
 int main(int argc, char **argv) {
   
@@ -36,6 +53,16 @@ int main(int argc, char **argv) {
 		"You are running the program at your own risk."));
 	    window.show();
 	    return app.exec();
+	}
+	else
+	{
+	    QCoreApplication app(argc, argv);
+	    ConsoleWorker *cw = new ConsoleWorker(&app);
+	    
+	    QObject::connect(cw, SIGNAL(finished()), &app, SLOT(quit()));
+	    QTimer::singleShot(0, cw, SLOT(run()));
+	    
+	    return app.exec();	
 	}
 	return 0;
 }
