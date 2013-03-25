@@ -4,6 +4,7 @@
 #include <QDataStream>
 #include <QFile>
 #include <QFileInfo>
+#include <QtDebug>
 
 enum {
 	SG_HEADER_SIZE = 680
@@ -144,8 +145,9 @@ QString SgFile::errorMessage(int imageId) const {
 
 bool SgFile::load() {
 	QFile file(filename);
+	
 	if (!file.open(QIODevice::ReadOnly)) {
-		qDebug("unable to open file");
+		qDebug() << "unable to open file " << filename;
 		return false;
 	}
 	

@@ -35,7 +35,7 @@ void ExtractThread::run() {
 	extracted = 0;
 	errorImages = 0;
 	
-	outputDir.mkpath(outputDir.path());
+	outputDir.mkpath(outputDir.absolutePath()/*"."*/); // there was glitch with relative paths
 	
 	for (int i = 0; i < numfiles; i++) {
 		extractFile(files[i]);
@@ -61,7 +61,8 @@ void ExtractThread::extractFile(const QString &filename) {
 	    return;
 	}
 	
-	QString basename = sg.basename();
+	QString basename = sg.basename().toLower();
+	// all directories will be lowercase
 	outputDir.mkdir(basename);
 	outputDir.cd(basename);
 	
@@ -91,7 +92,8 @@ void ExtractThread::extractFile(const QString &filename) {
 			if (!img.isNull()) {
 				QString pngfile = QString("%0_%1.png")
 					.arg(bmpName)
-					.arg(n + 1, 5, 10, QChar('0'));
+					.arg(n + 1, 5, 10, QChar('0')).toLower();
+				// all filenames will be lowercase
 				
 				img.save(outputDir.filePath(pngfile));
 				extracted++;

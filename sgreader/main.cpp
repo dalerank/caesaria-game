@@ -46,7 +46,7 @@ void ConsoleWorker::run()
     connect(thread, SIGNAL(fileChanged(const QString&, int)), this, SLOT(fileChanged(const QString&, int)));
     connect(thread, SIGNAL(progressChanged(int)), this, SLOT(progressChanged(int)));
     
-    thread->start();    
+    thread->start();
 }
 
 void ConsoleWorker::threadFinished()
