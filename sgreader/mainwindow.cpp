@@ -13,10 +13,11 @@ MainWindow::MainWindow()
 	createChildren();
 	createActions();
 	createMenu();
-	
-	if (QCoreApplication::arguments().size() > 1) {
-		loadFile(QCoreApplication::arguments().at(1));
-	}
+
+//	kills compatibility and isn't necessary	
+//	if (QCoreApplication::arguments().size() > 1) {
+//		loadFile(QCoreApplication::arguments().at(1));
+//	}
 	
 	resize(600, 400);
 }

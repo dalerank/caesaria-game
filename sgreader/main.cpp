@@ -25,9 +25,11 @@ signals:
 public:
     void SetInputPath(QString ip)  {InputPath = ip;}
     void SetOutputPath(QString op) {OutputPath = op;}
+    void SetSystem(bool sys) {system = sys;}
 private:
     QString InputPath;
     QString OutputPath;
+    bool system;
 };
 
 void ConsoleWorker::run()
@@ -35,8 +37,6 @@ void ConsoleWorker::run()
     // here goes the work
     
     QStringList files;
-    
-    bool system = false;
     
     files << InputPath;
     
@@ -79,26 +79,32 @@ int startGUIApp(int argc, char **argv)
 }
 
 int main(int argc, char **argv) {
-  
 	QxtCommandOptions options;
 	
-	options.add("no-gui", "runs program in console mode");
-	options.add("input", "sets directory where input files are located", QxtCommandOptions::ValueRequired);
+//	options.add("no-gui", "Runs program in console mode");
+	options.add("input", "Sets input filename", QxtCommandOptions::ValueRequired);
 	options.alias("input", "i");
-	options.add("output", "sets directory for output files", QxtCommandOptions::ValueRequired);
+	options.add("output", "Sets directory for output files. Default directory is current", QxtCommandOptions::ValueRequired);
 	options.alias("output","o");
-	options.add("help", "show this help text");
+	options.add("system", "Extracts system images from SG2/SG3", QxtCommandOptions::NoValue);
+	options.alias("system","s");
+	options.add("help", "Show this help text");
 	options.alias("help","h");
 	options.parse(argc, argv);
 
 	if (options.count("help") || options.showUnrecognizedWarning())
 	{
+	    std::cout << "SGReader v.1.1 (2013-03-25)" << std:: endl <<
+ 	      "Read graphics files (*.sg2 and *.sg3) from Impressions citybuilding games" << std::endl <<
+ 	      "Usage: "<< argv[0] << " KEYS" << std::endl << std::endl <<
+ 	      "Available keys:" << std::endl;
 	    options.showUsage();
 	    return -1;
 	}
 	
-	bool isinput = options.count("input");
+	bool isinput  = options.count("input");
 	bool isoutput = options.count("output");  
+	bool issystem = options.count("system");  
 
 	if (!isinput && !isoutput)
 	{	
@@ -113,10 +119,10 @@ int main(int argc, char **argv) {
 	    QString OutputPath = ".";
 	    
 	    if (isoutput) {OutputPath = options.value("output").toString();}
-	    std::cout << "Input Path is " << InputPath.toStdString() << std::endl << "Output Path is " << OutputPath.toStdString() << std::endl;
 	    
 	    cw->SetInputPath(InputPath);
 	    cw->SetOutputPath(OutputPath);
+	    cw->SetSystem(issystem);
 	    
 	    QObject::connect(cw, SIGNAL(finished()), &app, SLOT(quit()));
 	    QTimer::singleShot(0, cw, SLOT(run()));

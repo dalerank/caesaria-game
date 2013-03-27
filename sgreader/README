@@ -8,3 +8,5 @@ How to compile:
 1. qmake
 2. make
 3. run "./sgreader"
+
+In command line mode program takes one SG2/SG3-file and extracts its content to new directory. All generated filenames are lowercase.
