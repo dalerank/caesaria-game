@@ -16,35 +16,35 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#include <caesar.hpp>
+#include "caesar.hpp"
+
 #include <cstdlib>
 #include <string>
 #include <sstream>
 #include <iostream>
-#include <vector>
 #include <list>
 #include <SDL.h>
 #include <SDL_image.h>
 #include <libintl.h>
 #include <locale.h>
 
-#include <exception.hpp>
-#include <pic_loader.hpp>
-#include <scenario_loader.hpp>
-#include <scenario.hpp>
-#include <city.hpp>
-#include <picture.hpp>
-#include <gfx_sdl_engine.hpp>
-#include <gfx_gl_engine.hpp>
-#include <sound_engine.hpp>
-#include <gui_menu.hpp>
-#include <walker.hpp>
-#include <gui_info_box.hpp>
-#include <model_loader.hpp>
+#include "exception.hpp"
+#include "pic_loader.hpp"
+#include "scenario_loader.hpp"
+#include "scenario.hpp"
+#include "city.hpp"
+#include "picture.hpp"
+#include "gfx_sdl_engine.hpp"
+#include "gfx_gl_engine.hpp"
+#include "sound_engine.hpp"
+#include "gui_menu.hpp"
+#include "walker.hpp"
+#include "gui_info_box.hpp"
+#include "model_loader.hpp"
 
-#include <screen_wait.hpp>
-#include <screen_menu.hpp>
-#include <screen_game.hpp>
+#include "screen_wait.hpp"
+#include "screen_menu.hpp"
+#include "screen_game.hpp"
 
 
 void CaesarApp::initLocale()
@@ -59,7 +59,7 @@ void CaesarApp::initVideo()
 {
    std::cout << "init graphic engine" << std::endl;
    new GfxSdlEngine();
-   GfxEngine::instance().setScreenSize(800, 500);
+   GfxEngine::instance().setScreenSize(800, 600);
    GfxEngine::instance().init();
 }
 
@@ -200,7 +200,7 @@ void CaesarApp::start()
    initLocale();
    initVideo();
    initSound();
-   // SoundEngine::instance().play_music("resources/sound/drums.wav");
+   //SoundEngine::instance().play_music("resources/sound/drums.wav");
    initWaitPictures();  // init some quick pictures for screenWait
    setScreenWait();
 

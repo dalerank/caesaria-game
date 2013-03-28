@@ -19,12 +19,12 @@
 #ifndef CAESAR_HPP
 #define CAESAR_HPP
 
-#include <gui_widget.hpp>
-#include <enums.hpp>
 #include <string>
 #include <vector>
 #include <map>
 
+#include "gui_widget.hpp"
+#include "enums.hpp"
 
 
 class Menu;

@@ -22,14 +22,10 @@
 #include <string>
 #include <sstream>
 #include <iostream>
-#include <vector>
-#include <SDL.h>
-#include <SDL_image.h>
 
-#include <exception.hpp>
-#include <pic_loader.hpp>
-#include <picture.hpp>
-#include <sdl_facade.hpp>
+#include "exception.hpp"
+#include "pic_loader.hpp"
+#include "sdl_facade.hpp"
 
 
 GfxSdlEngine::GfxSdlEngine() : GfxEngine()

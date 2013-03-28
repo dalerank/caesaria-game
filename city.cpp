@@ -17,13 +17,14 @@
 
 
 
-#include <city.hpp>
+#include "city.hpp"
 
-#include <building_data.hpp>
-#include <path_finding.hpp>
-#include <exception.hpp>
 #include <iostream>
 #include <set>
+
+#include "building_data.hpp"
+#include "path_finding.hpp"
+#include "exception.hpp"
 
 
 City::City()
@@ -97,6 +98,7 @@ void City::timeStep()
 void City::monthStep()
 {
    collectTaxes();
+   calculatePopulation();
 }
 
 
@@ -229,6 +231,8 @@ void City::setFunds(const long funds)
 
 long City::getPopulation() const
 {
+   /* here we need to calculate population ??? */
+   
    return _population;
 }
 
@@ -236,7 +240,6 @@ void City::setPopulation(const long population)
 {
    _population = population;
 }
-
 
 void City::build(Construction &buildInstance, const int i, const int j)
 {
@@ -290,15 +293,15 @@ void City::clearLand(const int i, const int j)
          // choose a random background image, green_something 62-119 or green_flat 232-240
          std::string res_pfx = "land1a";
          int res_id = 0;
-         if (rand()%10 > 6)
+         if (rand() % 10 > 6)
          {
             // 30% => choose green_sth 62-119
-            res_id = 62+rand()%(119-62+1);
+            res_id = 62 + rand() % (119 - 62 + 1);
          }
          else
          {
             // 70% => choose green_flat 232-289
-            res_id = 232+rand()%(289-232+1);
+            res_id = 232 + rand() % (289 - 232 + 1);
          }
          tile.set_picture(&PicLoader::instance().get_picture(res_pfx, res_id));
       }
@@ -322,6 +325,19 @@ void City::collectTaxes()
    std::cout << "Monthly Taxes=" << taxes << std::endl;
 }
 
+void City::calculatePopulation()
+{
+  long pop = 0; /* population can't be negative - should be unsigned long long*/
+  
+  std::list<LandOverlay*> houseList = getBuildingList(B_HOUSE);
+  for (std::list<LandOverlay*>::iterator itHouse = houseList.begin(); itHouse != houseList.end(); ++itHouse)
+  {
+    House &house = dynamic_cast<House&>(**itHouse);
+    pop += house.getNbHabitants();
+  }
+  
+  setPopulation(pop);
+}
 
 void City::serialize(OutputSerialStream &stream)
 {

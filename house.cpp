@@ -70,7 +70,7 @@ House* House::clone() const
 void House::timeStep(const unsigned long time)
 {
    // _goodStockList[G_WHEAT]._currentQty -= _currentHabitants;  // to do once every month!
-   if (time%16 == 0)
+   if (time % 16 == 0)
    {
       // consume services
       for (int i = 0; i < S_MAX; ++i)
@@ -88,7 +88,7 @@ void House::timeStep(const unsigned long time)
       }
    }
 
-   if (time%64 == 0)
+   if (time % 64 == 0)
    {
       bool validate = _houseLevelSpec->checkHouse(*this);
       if (! validate)

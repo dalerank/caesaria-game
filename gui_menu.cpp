@@ -16,19 +16,20 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
+#include "gui_menu.hpp"
 
-#include <SDL.h>
-#include <gui_menu.hpp>
-#include <exception.hpp>
-#include <pic_loader.hpp>
-#include <sdl_facade.hpp>
-#include <gui_paneling.hpp>
 #include <iostream>
-#include <gettext.hpp>
-#include <building.hpp>
-#include <building_data.hpp>
-#include <city.hpp>
-#include <scenario.hpp>
+#include <SDL.h>
+
+#include "exception.hpp"
+#include "pic_loader.hpp"
+#include "sdl_facade.hpp"
+#include "gui_paneling.hpp"
+#include "gettext.hpp"
+#include "building.hpp"
+#include "building_data.hpp"
+#include "city.hpp"
+#include "scenario.hpp"
 
 
 MenuBar::MenuBar()
@@ -69,7 +70,8 @@ void MenuBar::init()
    setSize(420, 23);
 
    std::vector<Picture> p_marble;
-   for (int i=1; i<=12; ++i)
+   
+   for (int i = 1; i<=12; ++i)
    {
       p_marble.push_back(PicLoader::instance().get_picture("paneling", i));
    }
@@ -128,14 +130,14 @@ Menu::Menu()
    setSize(_bgPicture->get_surface()->w, _bgPicture->get_surface()->h);
 
    // // top of menu
-   // _menuButton.setText("Menu");
-   // _menuButton.setEvent(WidgetEvent::InGameMenuEvent());
-   // _menuButton.setNormalPicture(PicLoader::instance().get_picture("paneling", 234));
-   // _menuButton.setHoverPicture(PicLoader::instance().get_picture("paneling", 234+1));
-   // _menuButton.setSelectedPicture(PicLoader::instance().get_picture("paneling", 234+2));
-   // _menuButton.setUnavailablePicture(PicLoader::instance().get_picture("paneling", 234+3));
-   // _menuButton.init_pictures();
-   // add_widget(_menuButton);
+   //_menuButton.setText("Menu");
+   //_menuButton.setEvent(WidgetEvent::InGameMenuEvent());
+   //_menuButton.setNormalPicture(PicLoader::instance().get_picture("paneling", 234));
+   //_menuButton.setHoverPicture(PicLoader::instance().get_picture("paneling", 234+1));
+   //_menuButton.setSelectedPicture(PicLoader::instance().get_picture("paneling", 234+2));
+   //_menuButton.setUnavailablePicture(PicLoader::instance().get_picture("paneling", 234+3));
+   //_menuButton.init_pictures();
+   //add_widget(_menuButton);
 
    // set4Button(_minimizeButton, WidgetEvent(), 97);
 
@@ -190,21 +192,21 @@ Menu::Menu()
    int x0 = 1;
    int y0 = 32;
    int dy = 35;
-   _houseButton.setPosition(x0, y0+dy*0);
-   _clearButton.setPosition(x0, y0+dy*1);
-   _roadButton.setPosition(x0, y0+dy*2);
+   _houseButton.setPosition(x0, y0 + dy * 0);
+   _clearButton.setPosition(x0, y0 + dy * 1);
+   _roadButton.setPosition(x0, y0 + dy * 2);
    // second row
-   _waterButton.setPosition(x0, y0+dy*3);
-   _healthButton.setPosition(x0, y0+dy*4);
-   _templeButton.setPosition(x0, y0+dy*5);
+   _waterButton.setPosition(x0, y0 + dy * 3);
+   _healthButton.setPosition(x0, y0 + dy * 4);
+   _templeButton.setPosition(x0, y0 + dy * 5);
    // third row
-   _educationButton.setPosition(x0, y0+dy*6);
-   _entertainmentButton.setPosition(x0, y0+dy*7);
-   _administrationButton.setPosition(x0, y0+dy*8);
+   _educationButton.setPosition(x0, y0 + dy * 6);
+   _entertainmentButton.setPosition(x0, y0 + dy * 7);
+   _administrationButton.setPosition(x0, y0 + dy * 8);
    // 4th row
-   _engineerButton.setPosition(x0, y0+dy*9);
-   _securityButton.setPosition(x0, y0+dy*10);
-   _commerceButton.setPosition(x0, y0+dy*11);
+   _engineerButton.setPosition(x0, y0 + dy * 9);
+   _securityButton.setPosition(x0, y0 + dy * 10);
+   _commerceButton.setPosition(x0, y0 + dy * 11);
 //   // 5th row
 //   _cancelButton.setPosition(x0, y0+dy*12);
 //   _messageButton.setPosition(x0, y0+dy*13);

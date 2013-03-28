@@ -98,6 +98,8 @@ private:
    long _funds;  // amount of money
    long _population;  // number of inhabitants
    int _taxRate;
+   
+   void calculatePopulation();
 };
 
 

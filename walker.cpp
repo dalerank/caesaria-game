@@ -583,10 +583,10 @@ std::set<Building*> ServiceWalker::getReachedBuildings(const int i, const int j)
    std::set<Building*> res;
 
    int reachDistance = 2;
-   int i1 = i-reachDistance;
-   int j1 = j-reachDistance;
-   int i2 = i+reachDistance;
-   int j2 = j+reachDistance;
+   int i1 = i - reachDistance;
+   int j1 = j - reachDistance;
+   int i2 = i + reachDistance;
+   int j2 = j + reachDistance;
    std::list<Tile*> reachedTiles = Scenario::instance().getCity().getTilemap().getFilledRectangle(i1, j1, i2, j2);
    for (std::list<Tile*>::iterator itTile = reachedTiles.begin(); itTile != reachedTiles.end(); ++itTile)
    {

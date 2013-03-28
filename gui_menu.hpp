@@ -19,10 +19,12 @@
 #ifndef GUI_MENU_HPP
 #define GUI_MENU_HPP
 
-#include <gui_widget.hpp>
-#include <picture.hpp>
+#include "gui_widget.hpp"
+
 #include <string>
-#include <enums.hpp>
+
+#include "picture.hpp"
+#include "enums.hpp"
 
 
 class City;

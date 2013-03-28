@@ -19,9 +19,9 @@
 #ifndef GFX_ENGINE_HPP
 #define GFX_ENGINE_HPP
 
-
 #include <list>
-#include <picture.hpp>
+
+#include "picture.hpp"
 
 
 class GfxEngine

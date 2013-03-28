@@ -16,13 +16,13 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#include <screen_menu.hpp>
+#include "screen_menu.hpp"
 
-#include <gfx_engine.hpp>
-#include <exception.hpp>
-#include <pic_loader.hpp>
 #include <iostream>
 
+#include "gfx_engine.hpp"
+#include "exception.hpp"
+#include "pic_loader.hpp"
 
 
 ScreenMenu::ScreenMenu()

@@ -22,13 +22,13 @@
 #include <list>
 #include <vector>
 
-#include <picture.hpp>
-#include <scenario.hpp>
-#include <gui_menu.hpp>
-#include <gui_tilemap.hpp>
-#include <gui_info_box.hpp>
+#include "picture.hpp"
+#include "scenario.hpp"
+#include "gui_menu.hpp"
+#include "gui_tilemap.hpp"
+#include "gui_info_box.hpp"
 
-#include <screen.hpp>
+#include "screen.hpp"
 
 
 class ScreenGame: public Screen

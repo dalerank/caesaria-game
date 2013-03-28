@@ -18,13 +18,14 @@
 
 #include <screen_game.hpp>
 
-#include <gfx_engine.hpp>
-#include <exception.hpp>
-#include <warehouse.hpp>
 #include <algorithm>
 #include <iostream>
-#include <scenario_saver.hpp>
 
+#include "gfx_engine.hpp"
+#include "gfx_sdl_engine.hpp"
+#include "exception.hpp"
+#include "warehouse.hpp"
+#include "scenario_saver.hpp"
 
 
 ScreenGame::ScreenGame()
@@ -235,24 +236,30 @@ void ScreenGame::handleEvent(SDL_Event &event)
    case SDL_KEYDOWN:
       if (event.key.keysym.sym == SDLK_UP)
       {
+	 std::cout << "SDLK_UP was pressed" << std::endl;
          getMapArea().moveUp(1 + 4*isModShift());
       }
       else if (event.key.keysym.sym == SDLK_DOWN)
       {
+	 std::cout << "SDLK_DOWN was pressed" << std::endl;
          getMapArea().moveDown(1 + 4*isModShift());
       }
       else if (event.key.keysym.sym == SDLK_RIGHT)
       {
+	 std::cout << "SDLK_RIGHT was pressed" << std::endl;
          getMapArea().moveRight(1 + 4*isModShift());
       }
       else if (event.key.keysym.sym == SDLK_LEFT)
       {
+	 std::cout << "SDLK_LEFT was pressed" << std::endl;
          getMapArea().moveLeft(1 + 4*isModShift());
       }
       else if (event.key.keysym.sym == SDLK_ESCAPE)
       {
+	 std::cout << "SDLK_ESCAPE was pressed" << std::endl;
          stop();
       }
+      
       break;
    }
 

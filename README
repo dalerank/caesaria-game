@@ -36,5 +36,8 @@ Releases:
 
 20apr2012: first public release.
 
+DEPENDENCIES:
 
-
+1. libarchive
+2. SDL (SDL_image, SDL_ttf, SDL_mixer)
+3. OpenGL	
