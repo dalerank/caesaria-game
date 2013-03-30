@@ -163,15 +163,21 @@ void scanForMaps()
   // scan for map-files and make their list
     
   fs::path path ("./resources/maps/");
-  std::vector <std::string> filelist;
+  std::vector <fs::path> filelist;
   
   fs::recursive_directory_iterator it (path);
   fs::recursive_directory_iterator end;
   
   for (; it!=end; ++it)
   {
-    std::cout << *it << std::endl;
+    if (!fs::is_directory(*it))
+      filelist.push_back(*it);
   }
+  
+  std::sort(filelist.begin(), filelist.end());
+  
+  std::copy(filelist.begin(), filelist.end(), std::ostream_iterator<fs::path>(std::cout, "\n"));
+  
 }
 
 void CaesarApp::setScreenMenu()
