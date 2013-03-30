@@ -27,6 +27,9 @@
 #include <SDL_image.h>
 #include <libintl.h>
 #include <locale.h>
+#include <algorithm>
+
+#include <boost/filesystem.hpp>
 
 #include "exception.hpp"
 #include "pic_loader.hpp"
@@ -46,6 +49,7 @@
 #include "screen_menu.hpp"
 #include "screen_game.hpp"
 
+namespace fs = boost::filesystem;
 
 void CaesarApp::initLocale()
 {
@@ -154,6 +158,40 @@ void CaesarApp::setScreenWait()
    screen.drawFrame();
 }
 
+void scanForMaps()
+{
+  // scan for map-files and make their list
+  fs::path p ("./resources/maps/");
+  
+  try
+  {
+    if (fs::exists(p))    // does p actually exist?
+    {
+      if (fs::is_regular_file(p))        // is p a regular file?
+	std::cout << p << " size is " << fs::file_size(p) << '\n';
+      
+      else if (fs::is_directory(p))      // is p a directory?
+      {
+	std::cout << p << " is a directory containing:\n";
+	
+	std::copy(fs::directory_iterator(p), fs::directory_iterator(),  // directory_iterator::value_type
+		  std::ostream_iterator<fs::directory_entry>(std::cout, "\n"));  // is directory_entry, which is
+	// converted to a path by the
+	// path stream inserter
+      }
+      else
+	std::cout << p << " exists, but is neither a regular file nor a directory\n";
+    }
+    else
+      std::cout << p << " does not exist\n";
+  }
+
+  catch (const fs::filesystem_error& ex)
+  {
+    std::cout << ex.what() << '\n';
+  }      
+}
+
 void CaesarApp::setScreenMenu()
 {
    WidgetEvent wevent;
@@ -164,6 +202,11 @@ void CaesarApp::setScreenMenu()
    switch (wevent._eventType)
    {
    case WE_NewGame:
+      /* temporary*/
+      
+      scanForMaps();
+      
+      /* end of temporary */
       loadScenario("resources/maps/cyrene.map");
       _nextScreen = SCREEN_GAME;
       break;
