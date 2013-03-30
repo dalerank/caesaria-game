@@ -29,8 +29,6 @@
 #include <locale.h>
 #include <algorithm>
 
-#include <boost/filesystem.hpp>
-
 #include "exception.hpp"
 #include "pic_loader.hpp"
 #include "scenario_loader.hpp"
@@ -48,8 +46,6 @@
 #include "screen_wait.hpp"
 #include "screen_menu.hpp"
 #include "screen_game.hpp"
-
-namespace fs = boost::filesystem;
 
 void CaesarApp::initLocale()
 {
@@ -158,7 +154,7 @@ void CaesarApp::setScreenWait()
    screen.drawFrame();
 }
 
-void scanForMaps()
+std::vector <fs::path> CaesarApp::scanForMaps() const
 {
   // scan for map-files and make their list
     
@@ -178,6 +174,7 @@ void scanForMaps()
   
   std::copy(filelist.begin(), filelist.end(), std::ostream_iterator<fs::path>(std::cout, "\n"));
   
+  return filelist;
 }
 
 void CaesarApp::setScreenMenu()
@@ -190,13 +187,16 @@ void CaesarApp::setScreenMenu()
    switch (wevent._eventType)
    {
    case WE_NewGame:
-      /* temporary*/
-      
-      scanForMaps();
-      
-      /* end of temporary */
-      loadScenario("resources/maps/cyrene.map");
-      _nextScreen = SCREEN_GAME;
+      {
+        /* temporary*/
+        std::vector <fs::path> filelist = scanForMaps();
+	std::srand(std::time(0));
+	std::string file = filelist.at(std::rand()%filelist.size()).string();
+	std::cout<<"Loading map:" << file << std::endl;
+        loadScenario(file);
+        /* end of temporary */
+        _nextScreen = SCREEN_GAME;
+      }
       break;
    case WE_LoadGame:
       loadGame("oc3.sav");
