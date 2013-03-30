@@ -161,35 +161,17 @@ void CaesarApp::setScreenWait()
 void scanForMaps()
 {
   // scan for map-files and make their list
-  fs::path p ("./resources/maps/");
+    
+  fs::path path ("./resources/maps/");
+  std::vector <std::string> filelist;
   
-  try
+  fs::recursive_directory_iterator it (path);
+  fs::recursive_directory_iterator end;
+  
+  for (; it!=end; ++it)
   {
-    if (fs::exists(p))    // does p actually exist?
-    {
-      if (fs::is_regular_file(p))        // is p a regular file?
-	std::cout << p << " size is " << fs::file_size(p) << '\n';
-      
-      else if (fs::is_directory(p))      // is p a directory?
-      {
-	std::cout << p << " is a directory containing:\n";
-	
-	std::copy(fs::directory_iterator(p), fs::directory_iterator(),  // directory_iterator::value_type
-		  std::ostream_iterator<fs::directory_entry>(std::cout, "\n"));  // is directory_entry, which is
-	// converted to a path by the
-	// path stream inserter
-      }
-      else
-	std::cout << p << " exists, but is neither a regular file nor a directory\n";
-    }
-    else
-      std::cout << p << " does not exist\n";
+    std::cout << *it << std::endl;
   }
-
-  catch (const fs::filesystem_error& ex)
-  {
-    std::cout << ex.what() << '\n';
-  }      
 }
 
 void CaesarApp::setScreenMenu()
