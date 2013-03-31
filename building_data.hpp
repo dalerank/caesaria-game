@@ -19,10 +19,10 @@
 #ifndef BUILDING_DATA_HPP
 #define BUILDING_DATA_HPP
 
-#include <enums.hpp>
 #include <string>
 #include <map>
 
+#include "enums.hpp"
 
 // contains some metaData for a building type
 class BuildingData

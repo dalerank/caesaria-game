@@ -17,17 +17,16 @@
 
 
 
-#include <service_building.hpp>
-
-#include <scenario.hpp>
-#include <walker.hpp>
-#include <walker_market_buyer.hpp>
-#include <exception.hpp>
-#include <gui_info_box.hpp>
-#include <gettext.hpp>
+#include "service_building.hpp"
 
 #include <iostream>
 
+#include "scenario.hpp"
+#include "walker.hpp"
+#include "walker_market_buyer.hpp"
+#include "exception.hpp"
+#include "gui_info_box.hpp"
+#include "gettext.hpp"
 
 
 ServiceBuilding::ServiceBuilding(const ServiceType &service)

@@ -19,10 +19,11 @@
 #ifndef TILEMAP_HPP
 #define TILEMAP_HPP
 
-#include <serializer.hpp>
-#include <picture.hpp>
 #include <vector>
 #include <list>
+
+#include "serializer.hpp"
+#include "picture.hpp"
 
 
 class LandOverlay;
@@ -93,6 +94,7 @@ public:
    // non-constructible tiles have no foreground => master used for background
    Tile* get_master_tile() const;
    void set_master_tile(Tile* master);
+   bool is_master_tile() const {return (_master_tile == this);};
 
    const TerrainTile& get_terrain() const;
    TerrainTile& get_terrain();

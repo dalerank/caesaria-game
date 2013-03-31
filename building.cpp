@@ -17,21 +17,21 @@
 
 
 
-#include <building.hpp>
+#include "building.hpp"
 
-#include <scenario.hpp>
-#include <walker.hpp>
-#include <exception.hpp>
-#include <gui_info_box.hpp>
-#include <building_data.hpp>
-#include <factory_building.hpp>
-#include <service_building.hpp>
-#include <training_building.hpp>
-#include <warehouse.hpp>
-
-#include <gettext.hpp>
 #include <iostream>
 #include <algorithm>
+
+#include "scenario.hpp"
+#include "walker.hpp"
+#include "exception.hpp"
+#include "gui_info_box.hpp"
+#include "building_data.hpp"
+#include "factory_building.hpp"
+#include "service_building.hpp"
+#include "training_building.hpp"
+#include "warehouse.hpp"
+#include "gettext.hpp"
 
 
 std::map<BuildingType, LandOverlay*> LandOverlay::_mapBuildingByID;  // key=buildingType, value=instance
@@ -242,6 +242,10 @@ LandOverlay* LandOverlay::getInstance(const BuildingType buildingType)
       _mapBuildingByID[B_SCHOOL]  = new School();
       _mapBuildingByID[B_LIBRARY] = new Library();
       _mapBuildingByID[B_COLLEGE] = new College();
+      // natives
+      _mapBuildingByID[B_NATIVE_HUT]    = new NativeHut();
+      _mapBuildingByID[B_NATIVE_CENTER] = new NativeCenter();
+      _mapBuildingByID[B_NATIVE_FIELD]  = new NativeField();
    }
 
    std::map<BuildingType, LandOverlay*>::iterator mapIt;
@@ -680,8 +684,6 @@ void WorkingBuilding::unserialize(InputSerialStream &stream)
 }
 
 
-
-
 Granary::Granary()
 {
    setType(B_GRANARY);
@@ -717,8 +719,7 @@ Granary::Granary()
 
 Granary* Granary::clone() const
 {
-   Granary *res = new Granary(*this);
-   return res;
+   return new Granary(*this);
 }
 
 
@@ -782,3 +783,56 @@ void Granary::unserialize(InputSerialStream &stream)
    _goodStore.unserialize(stream);
 }
 
+NativeBuilding::NativeBuilding() {}
+void NativeBuilding::serialize(OutputSerialStream &stream) {Building::serialize(stream);}
+void NativeBuilding::unserialize(InputSerialStream &stream) {Building::unserialize(stream);}
+
+NativeHut* NativeHut::clone() const
+{
+  return new NativeHut(*this);
+}
+
+NativeHut::NativeHut()
+{
+  setType(B_NATIVE_HUT);
+  _size = 1;
+  setPicture(PicLoader::instance().get_picture("housng1a", 49));
+  //setPicture(PicLoader::instance().get_picture("housng1a", 50));
+}
+
+void NativeHut::serialize(OutputSerialStream &stream) {Building::serialize(stream);}
+
+void NativeHut::unserialize(InputSerialStream &stream) {Building::unserialize(stream);}
+
+
+NativeCenter::NativeCenter()
+{
+  setType(B_NATIVE_CENTER);
+  _size = 2;
+  setPicture(PicLoader::instance().get_picture("housng1a", 51));
+}
+
+void NativeCenter::serialize(OutputSerialStream &stream)  {Building::serialize(stream);}
+
+void NativeCenter::unserialize(InputSerialStream &stream) {Building::unserialize(stream);}
+
+NativeCenter* NativeCenter::clone() const
+{
+  return new NativeCenter(*this);
+}
+
+NativeField::NativeField()
+{
+  setType(B_NATIVE_FIELD);
+  _size = 1;
+  setPicture(PicLoader::instance().get_picture("commerce", 13));  
+}
+
+void NativeField::serialize(OutputSerialStream &stream) {Building::serialize(stream);}
+
+void NativeField::unserialize(InputSerialStream &stream) {Building::unserialize(stream);}
+
+NativeField* NativeField::clone() const
+{
+  return new NativeField(*this);
+}
