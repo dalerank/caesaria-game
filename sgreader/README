@@ -10,3 +10,102 @@ How to compile:
 3. run "./sgreader"
 
 In command line mode program takes one SG2/SG3-file and extracts its content to new directory. All generated filenames are lowercase.
+
+
+===== ORIGINAL README below =====
+
+SGReader by Pecunia
+
+"The program you are running is PRE-RELEASE. Be aware that there might be bugs in this program which may cause your computer to crash. You are running the program at your own risk."
+
+
+
+=Description=
+
+The SGReader is an intuitive tool created by Pecunia. The tool allows for the viewing and extraction of files from any of the games .sg2 or .sg3 files, which contain all the graphics in the game. This is a read-only program; no editing can or will be done to your .sg2 or .sg3 files.
+
+
+
+=Compatibility=
+
+Caesar 3
+Pharaoh
+Zeus
+Emperor
+
+
+
+=How to Use=
+
+
+
+Upon opening the program, you will be presented with the same message that is at the top of this document. Once you've read it, click to continue. You are presented with a blank screen. There is a file menu, help menu, one empty white pane and one empty gray pane.
+
+  -File Menu-
+
+    -Open - allows you to choose what .sg2 or .sg3 you want to open. These located in the game folder. In the case of Caesar 3- assuming you use the default install location- these files can be found at C:/Impression Games/Caesar3/
+
+    -Save - Saves the currently highlighted image. Only available with a .sg2 or .sg3 open and a single image is selected.
+
+    -Batch Extract - Perhaps the most powerful part of this tool. Clicking this will open up the Extract Files Wizard. On the first screen, it asks you to navigate to the folder where your .sg2/.sg3 files are located. Again, these can be found at C:/Impressions Games/Caesar3/ for Caesar 3. For other games, it will be in the Data folder in the install directory. Once you have selected the correct folder, click Next. 
+
+On the next screen, you are prompted to pick which files you'd like to extract from. You may select all by clicking "select all," or you may pick and choose by ctrl+clicking on an item in the list. Once you have selected all the files you wish to extract from, click next to choose the output folder. This is where the images extracted will be stored. You can also choose whether or not to extract the redundant system files located in most .sg2/.sg3 files. These are not necessary, so you may exclude them. 
+
+Finally, click extract and wait for the magic to happen! If at any time you wish to stop the extracting process, click the big "cancel extracting" button. The progress bar will let you know how far along the process is. Once completed, a results window will appear, telling you how many files were extracted and any errors that may have occurred. At this point you may close the wizard.
+
+  -Help Menu-
+    -Help - does nothing currently
+    -License - displays GNU license information
+    -About SGReader - general information about the program
+
+
+
+
+=The Main Window=
+
+Before opening a file, you will see an empty white pane on the left side of the window, and an empty gray pane on the right side. At this point, you can either open a .sg2/.sg3 to view its contents piece-by-piece or choose to batch extract (which is covered in the previous section).
+
+When a file is opened, the white pane fills itself with the content of that file. It is represented as a hierarchical tree. The first level of this tree contains the categories. These are not actual pictures, but are much like "folders" that store the pictures. Beside the name of the folder ("xxxx.bmp") you will see a number in parenthesis. This number is the number of files stored in that particular category ("folder").
+
+To view the contents of each category, click on the small triangle beside it's name and you will see all the files contained within. The files are listed by their size, so no unique name is given; you may see a whole list of "58x30" images. This means that the image is 58 pixels by 30 pixels.
+
+Hovering the mouse over an individual image reveals the technical information about the file. For example, you might see something like this:
+
+ID 244: offset 153095, length 1800, width 58, height 30, type 30, internal
+
+ ID = the ID the game uses to recognize this image.
+ offset = the offset in the .555 this image is stored at.
+ length = how long the file is in the .555 (in this example, the length is 1800 bytes).
+ width = the width of the image.
+ height = the height of the image.
+ type = what type of image this is.
+ internal/external = internal means the image is stored within this .555. External means this image is stored in another .555.
+
+This information is necessary for use with the C3Modder, also available from the site. The only piece you need is the offset of the image you are trying to replace.
+
+
+
+=Credits=
+
+Pecunia - for making the program, of course!
+Impressions Games/Sierra - for making Caesar 3, of course!
+Crazy Caesar - for coming up with the idea of modding C3 in the first place.
+
+
+
+=Important Links=
+
+c3modsquad.web.officelive.com
+ The Caesar 3 Mod Squad Website.
+
+c3modsquad.freeforums.org
+ The Caesar 3 Mod Squad forum. Come here for all updates regarding progress on SGReader, C3Modder, or any other bit of modding information regarding Caesar 3.
+
+pecunia.nerdcamp.net/projects/citybuilding
+ Pecunia's site regarding just about anything you need to know about C3 file formats.
+
+caesar3.heavengames.com
+ Where the whole Caesar 3 Mod Squad came from! Any information about C3 that you need.
+
+citybuildingcontests.net
+ Many of our members are members here as well.

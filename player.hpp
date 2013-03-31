@@ -20,8 +20,8 @@
 #define PLAYER_HPP
 
 
-#include <enums.hpp>
-#include <serializer.hpp>
+#include "enums.hpp"
+#include "serializer.hpp"
 #include <list>
 
 
