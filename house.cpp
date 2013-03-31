@@ -236,40 +236,42 @@ void House::buyMarket(ServiceWalker &walker)
 
 void House::applyService(ServiceWalker &walker)
 {
-   Building::applyService(walker);  // handles basic services, and remove service reservation
+  Building::applyService(walker);  // handles basic services, and remove service reservation
 
-   ServiceType service = walker.getService();
-   switch (service)
-   {
-   case S_WELL:
-   case S_FOUNTAIN:
-   case S_TEMPLE_NEPTUNE:
-   case S_TEMPLE_CERES:
-   case S_TEMPLE_VENUS:
-   case S_TEMPLE_MARS:
-   case S_TEMPLE_MERCURE:
-   case S_DOCTOR:
-   case S_BARBER:
-   case S_BATHS:
-   case S_HOSPITAL:
-   case S_SCHOOL:
-   case S_LIBRARY:
-   case S_COLLEGE:
-   case S_THEATER:
-   case S_AMPHITHEATER:
-   case S_COLLOSSEUM:
-   case S_HIPPODROME:
-   case S_FORUM:
-      setServiceAccess(service, 100);
-      break;
-   case S_MARKET:
-      buyMarket(walker);
-      break;
-   case S_ENGINEER:
-   case S_PREFECT:
-   case S_MAX:
-      break;
-   }
+  ServiceType service = walker.getService();
+  switch (service)
+  {
+  case S_WELL:
+  case S_FOUNTAIN:
+  case S_TEMPLE_NEPTUNE:
+  case S_TEMPLE_CERES:
+  case S_TEMPLE_VENUS:
+  case S_TEMPLE_MARS:
+  case S_TEMPLE_MERCURE:
+  case S_DOCTOR:
+  case S_BARBER:
+  case S_BATHS:
+  case S_HOSPITAL:
+  case S_SCHOOL:
+  case S_LIBRARY:
+  case S_COLLEGE:
+  case S_THEATER:
+  case S_AMPHITHEATER:
+  case S_COLLOSSEUM:
+  case S_HIPPODROME:
+  case S_FORUM:
+    setServiceAccess(service, 100);
+    break;
+  case S_MARKET:
+    buyMarket(walker);
+    break;
+  case S_SENATE:
+  case S_TEMPLE_ORACLE:  
+  case S_ENGINEER:
+  case S_PREFECT:
+  case S_MAX:
+    break;
+  }
 }
 
 float House::evaluateService(ServiceWalker &walker)

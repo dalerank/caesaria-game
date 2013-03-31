@@ -473,60 +473,61 @@ ServiceWalker::ServiceWalker(const ServiceType service)
 
 void ServiceWalker::init(const ServiceType service)
 {
-   _service = service;
+  _service = service;
 
-   switch (_service)
-   {
-   case S_WELL:
-   case S_FOUNTAIN:
-   case S_SENATE:
-      _walkerGraphic = WG_NONE;
-      break;
-   case S_ENGINEER:
-      _walkerGraphic = WG_ENGINEER;
-      break;
-   case S_PREFECT:
-      _walkerGraphic = WG_PREFECT;
-      break;
-   case S_TEMPLE_NEPTUNE:
-   case S_TEMPLE_CERES:
-   case S_TEMPLE_VENUS:
-   case S_TEMPLE_MARS:
-   case S_TEMPLE_MERCURE:
-      _walkerGraphic = WG_PRIEST;
-      break;
-   case S_DOCTOR:
-   case S_HOSPITAL:
-      _walkerGraphic = WG_DOCTOR;
-      break;
-   case S_BARBER:
-      _walkerGraphic = WG_BARBER;
-      break;
-   case S_BATHS:
-      _walkerGraphic = WG_BATH;
-      break;
-   case S_SCHOOL:
-      _walkerGraphic = WG_CHILD;
-      break;
-   case S_LIBRARY:
-   case S_COLLEGE:
-      _walkerGraphic = WG_LIBRARIAN;
-      break;
-   case S_THEATER:
-   case S_AMPHITHEATER:
-   case S_HIPPODROME:
-   case S_COLLOSSEUM:
-      _walkerGraphic = WG_ACTOR;
-      break;
-   case S_MARKET:
-      _walkerGraphic = WG_CHILD;
-      break;
-   case S_FORUM:
-      _walkerGraphic = WG_TAX;
-      break;
-   case S_MAX:
-      break;
-   }
+  switch (_service)
+  {
+  case S_WELL:
+  case S_FOUNTAIN:
+  case S_SENATE:
+  case S_TEMPLE_ORACLE:
+    _walkerGraphic = WG_NONE;
+    break;
+  case S_ENGINEER:
+    _walkerGraphic = WG_ENGINEER;
+    break;
+  case S_PREFECT:
+    _walkerGraphic = WG_PREFECT;
+    break;
+  case S_TEMPLE_NEPTUNE:
+  case S_TEMPLE_CERES:
+  case S_TEMPLE_VENUS:
+  case S_TEMPLE_MARS:
+  case S_TEMPLE_MERCURE:
+    _walkerGraphic = WG_PRIEST;
+    break;
+  case S_DOCTOR:
+  case S_HOSPITAL:
+    _walkerGraphic = WG_DOCTOR;
+    break;
+  case S_BARBER:
+    _walkerGraphic = WG_BARBER;
+    break;
+  case S_BATHS:
+    _walkerGraphic = WG_BATH;
+    break;
+  case S_SCHOOL:
+    _walkerGraphic = WG_CHILD;
+    break;
+  case S_LIBRARY:
+  case S_COLLEGE:
+    _walkerGraphic = WG_LIBRARIAN;
+    break;
+  case S_THEATER:
+  case S_AMPHITHEATER:
+  case S_HIPPODROME:
+  case S_COLLOSSEUM:
+    _walkerGraphic = WG_ACTOR;
+    break;
+  case S_MARKET:
+    _walkerGraphic = WG_CHILD;
+    break;
+  case S_FORUM:
+    _walkerGraphic = WG_TAX;
+    break;
+  case S_MAX:
+    break;
+  }
 }
 
 ServiceWalker* ServiceWalker::clone() const
