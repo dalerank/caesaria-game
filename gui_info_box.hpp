@@ -19,14 +19,14 @@
 #ifndef GUI_INFO_BOX_HPP
 #define GUI_INFO_BOX_HPP
 
-#include <gui_menu.hpp>
-#include <picture.hpp>
-#include <house.hpp>
-#include <factory_building.hpp>
-#include <service_building.hpp>
 #include <string>
 #include <list>
 
+#include "gui_menu.hpp"
+#include "picture.hpp"
+#include "house.hpp"
+#include "factory_building.hpp"
+#include "service_building.hpp"
 
 // base class for info boxes
 class GuiInfoBox : public WidgetGroup
@@ -134,6 +134,17 @@ public:
 private:
 
    House *_house;
+};
+
+class GuiBuilding : public GuiInfoBox
+{
+public:
+   GuiBuilding(Building &building);
+   virtual void paint();
+
+private:
+
+   Building *_building;
 };
 
 #endif

@@ -215,9 +215,9 @@ BuildingDataHolder::BuildingDataHolder()
    addData(BuildingData(B_FOUNTAIN, "fountain", 15));
    
    // natives
-   addData(BuildingData(B_NATIVE_HUT, "well", 0));
-   addData(BuildingData(B_NATIVE_CENTER, "well", 0));   
-   addData(BuildingData(B_NATIVE_FIELD, "well", 0));   
+   addData(BuildingData(B_NATIVE_HUT, "native hut", 0));
+   addData(BuildingData(B_NATIVE_CENTER, "native center", 0));   
+   addData(BuildingData(B_NATIVE_FIELD, "native field", 0));   
    
 
    // populate _mapBuildingByService

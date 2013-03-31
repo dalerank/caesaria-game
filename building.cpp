@@ -138,7 +138,8 @@ std::vector<Picture*>& LandOverlay::getForegroundPictures()
 
 GuiInfoBox* LandOverlay::makeInfoBox()
 {
-   return NULL;
+  std::cout << "LandOverlay::makeInfoBox()" << std::endl;
+  return NULL;
 }
 
 std::string LandOverlay::getName()
@@ -784,8 +785,15 @@ void Granary::unserialize(InputSerialStream &stream)
 }
 
 NativeBuilding::NativeBuilding() {}
+
 void NativeBuilding::serialize(OutputSerialStream &stream) {Building::serialize(stream);}
+
 void NativeBuilding::unserialize(InputSerialStream &stream) {Building::unserialize(stream);}
+
+GuiInfoBox* NativeBuilding::makeInfoBox()
+{
+    return new GuiBuilding(*this);
+}
 
 NativeHut* NativeHut::clone() const
 {
@@ -800,9 +808,10 @@ NativeHut::NativeHut()
   //setPicture(PicLoader::instance().get_picture("housng1a", 50));
 }
 
-void NativeHut::serialize(OutputSerialStream &stream) {Building::serialize(stream);}
+void NativeHut::serialize(OutputSerialStream &stream)  {Building::serialize(stream);}
 
 void NativeHut::unserialize(InputSerialStream &stream) {Building::unserialize(stream);}
+
 
 
 NativeCenter::NativeCenter()

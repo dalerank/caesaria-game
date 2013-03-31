@@ -17,13 +17,13 @@
 
 
 
-#include <house.hpp>
+#include "house.hpp"
 
-#include <gui_info_box.hpp>
-#include <scenario.hpp>
-#include <exception.hpp>
 #include <iostream>
 
+#include "gui_info_box.hpp"
+#include "scenario.hpp"
+#include "exception.hpp"
 
 
 House::House(const int houseId) : Building()
@@ -110,8 +110,7 @@ void House::timeStep(const unsigned long time)
 
 GuiInfoBox* House::makeInfoBox()
 {
-   GuiInfoHouse* box = new GuiInfoHouse(*this);
-   return box;
+  return new GuiInfoHouse(*this);
 }
 
 

@@ -194,7 +194,8 @@ class NativeBuilding : public Building
 public:
     NativeBuilding();
     void serialize(OutputSerialStream &stream);
-    void unserialize(InputSerialStream &stream); 
+    void unserialize(InputSerialStream &stream);
+    virtual GuiInfoBox* makeInfoBox();
 };
 
 class NativeHut    : public NativeBuilding
@@ -203,7 +204,8 @@ public:
   NativeHut();
   NativeHut* clone() const;
   void serialize(OutputSerialStream &stream);
-  void unserialize(InputSerialStream &stream); 
+  void unserialize(InputSerialStream &stream);
+  //virtual GuiInfoBox* makeInfoBox();  
 };
 
 class NativeField  : public NativeBuilding
@@ -212,7 +214,8 @@ public:
   NativeField();
   NativeField* clone() const;  
   void serialize(OutputSerialStream &stream);
-  void unserialize(InputSerialStream &stream); 
+  void unserialize(InputSerialStream &stream);
+  //virtual GuiInfoBox* makeInfoBox();
 };
 
 class NativeCenter : public NativeBuilding
@@ -221,7 +224,8 @@ public:
   NativeCenter();
   NativeCenter* clone() const;  
   void serialize(OutputSerialStream &stream);
-  void unserialize(InputSerialStream &stream); 
+  void unserialize(InputSerialStream &stream);
+  //virtual GuiInfoBox* makeInfoBox();
 };
 
 

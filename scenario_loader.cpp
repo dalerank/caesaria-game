@@ -294,20 +294,20 @@ void ScenarioLoader::init_climate(std::fstream &f, City &ioCity)
       
    std::cout << "Climate type is " << climate << std::endl;
 
-   // // reload all pics for the given climate
-   // PicLoader &pic_loader = PicLoader::instance();
-   // if (climate == C_CENTRAL)
-   // {
-   //    pic_loader.load_archive("resources/pics/pics.zip");
-   // }
-   // else if (climate == C_NORTHERN)
-   // {
-   //    pic_loader.load_archive("resources/pics/pics_north.zip");
-   // }
-   // else if (climate == C_DESERT)
-   // {
-   //    pic_loader.load_archive("resources/pics/pics_south.zip");
-   // }
+   // reload all pics for the given climate
+//   PicLoader &pic_loader = PicLoader::instance();
+//   if (climate == C_CENTRAL)
+//   {
+//      pic_loader.load_archive("resources/pics/pics.zip");
+//   }
+//   else if (climate == C_NORTHERN)
+//   {
+//      pic_loader.load_archive("resources/pics/pics_north.zip");
+//   }
+//   else if (climate == C_DESERT)
+//   {
+//      pic_loader.load_archive("resources/pics/pics_south.zip");
+//   }
 }
 
 

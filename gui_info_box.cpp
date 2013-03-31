@@ -17,16 +17,17 @@
 
 
 
-#include <gui_info_box.hpp>
-#include <SDL.h>
-#include <exception.hpp>
-#include <pic_loader.hpp>
-#include <sdl_facade.hpp>
-#include <gettext.hpp>
-#include <gui_paneling.hpp>
-#include <building_data.hpp>
+#include "gui_info_box.hpp"
 
+#include <SDL.h>
 #include <iostream>
+
+#include "exception.hpp"
+#include "pic_loader.hpp"
+#include "sdl_facade.hpp"
+#include "gettext.hpp"
+#include "gui_paneling.hpp"
+#include "building_data.hpp"
 
 
 std::vector<Picture*> GuiInfoBox::_mapPictureGood;
@@ -631,4 +632,16 @@ void GuiInfoMarket::drawGood(const GoodType &goodType)
    _paintY += 22;
 }
 
+GuiBuilding::GuiBuilding(Building &building)
+{
+  _building = &building;
+  _title = BuildingDataHolder::instance().getData(building.getType()).getPrettyName();
+  init(450, 220);
+}
 
+void GuiBuilding::paint()
+{
+//   _paintY+=10;
+//   GuiPaneling::instance().draw_black_frame(*_bgPicture, 16, _paintY, _width-32, _height-_paintY-16);
+//   _paintY+=10;  
+}
