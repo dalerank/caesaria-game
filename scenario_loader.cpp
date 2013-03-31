@@ -40,24 +40,125 @@ void ScenarioLoader::load(const std::string& filename, Scenario &oScenario)
    f.close();
 }
 
+namespace {
+
+  // offsets in map-file
+
+  const int kGraphicGrid = 0x0;
+  const int kEdgeGrid    = 0xcd08;
+  const int kTerrainGrid = 0x1338c;
+  const int kRandomGrid  = 0x26718;
+  const int kZeroGrid    = 0x2cd9c;
+  const int kCamera      = 0x33428;
+  const int kStartDate   = 0x33430;
+  const int kLocation    = 0x33434;
+  const int kRequests    = 0x3343e;
+  const int kInvasions   = 0x334de;
+  const int kFunds       = 0x335a8;
+  const int kEnemyNation = 0x335ac;
+  const int kSize        = 0x335b4;
+  const int kDescription = 0x335c4;
+  const int kImageID     = 0x33822;
+  const int kRank        = 0x33826;
+  const int kHerds       = 0x33828;
+  const int kPriceChange = 0x338b0;
+  const int kEvents      = 0x33928;
+  const int kFishing     = 0x33954;
+  const int kReqFavour   = 0x33974;
+  const int kWheatSupply = 0x339ec;
+  const int kBuildings   = 0x339f2;
+  const int kRatings     = 0x33a54;
+  const int kRatingFlags = 0x33a64;
+  const int kTimeLimit   = 0x33a68;
+  const int kWinningTime = 0x33a70;
+  const int kEarthquakes = 0x33a78;
+  const int kPopulation  = 0x33a80;
+  const int kIJEarthq    = 0x33a88;
+  const int kRoadEntry   = 0x33a8c;
+  const int kEnemyEntry  = 0x33a94;
+  const int kBoatEntry   = 0x33ab4;
+  const int kRescueLoan  = 0x33abc;
+  const int kMilestone   = 0x33ac0;
+  const int kClimate     = 0x33ad8;
+  const int kFlotsam     = 0x33ad9;
+
+}
 
 void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
 {
    City& oCity = oScenario.getCity();
    Tilemap& oTilemap = oCity.getTilemap();
 
-   f.seekg(0x335b4, std::ios::beg);
+   /* get number of city */
+   
+   f.seekg(kLocation, std::ios::beg);
+   Uint8 location;
+   f.read((char*)&location, 1);
+   std::cout << "Location of city is " << (int)(location+1) << std::endl;
+  
+   /* 1 - Lugdunum
+      2 - Corinthus
+      3 - Londinium
+      4 - Mediolanum
+      5 - Lindum
+      6 - Toletum
+      7 - Valentia
+      8 - Caesarea
+      9 - Carthago
+     10 - Cyrene
+     11 - Tarraco
+     12 - Hierosolyma
+     13 - Mediolanum II
+     14 - Syracusae
+     15 - Tarraco II
+     16 - Tarsus
+     17 - Tingis
+     18 - Augusta Trevorum
+     19 - Carthago Nova
+     20 - Leptis Magna
+     21 - Athenae
+     22 - Brundisium
+     23 - Capua
+     24 - Tarentum
+     25 - Tarraco II
+     26 - Syracusae II
+     27 - Miletus
+     28 - Mediolanum III
+     29 - Lugdunum II
+     30 - Carthago II
+     31 - Tarsus II
+     32 - Tingis II
+     33 - Valentia II
+     34 - Lutetia
+     35 - Caesarea II
+     36 - Sarmizegetusa
+     37 - Londinium II
+     38 - Damascus
+     39 - Massilia
+     40 - Lindum II
+   */
+   
+   f.seekg(kSize, std::ios::beg);
 
    int size;  // 32bits
-   f.read((char*)&size, 4);
+   int size_2;
+   f.read((char*)&size,   4);
+   f.read((char*)&size_2, 4);
    std::cout << "map size = " << size << std::endl;
+
+   if (size != size_2)
+   {
+     THROW("Horisontal and vertical map sizes are different!");
+   }
+
    oTilemap.init(size);
 
    // loads the graphics map
-   int border_size = (162-size)/2;
-   for (int itA=0; itA<size; ++itA)
+   int border_size = (162 - size) / 2;
+   
+   for (int itA = 0; itA < size; ++itA)
    {
-      f.seekg(162*2*(border_size+itA)+2*border_size, std::ios::beg);  // skip empty rows and empty cols
+      f.seekg(kGraphicGrid + 162 * 2 * (border_size + itA) + 2 * border_size, std::ios::beg);  // skip empty rows and empty cols
 
       for (int itB=0; itB<size; ++itB)
       {
@@ -74,7 +175,7 @@ void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
    for (int itA=0; itA<size; ++itA)
    {
       // for each row
-      f.seekg(0xcd08 + 162*(border_size+itA)+border_size, std::ios::beg);  // skip empty rows and empty cols
+      f.seekg(kEdgeGrid + 162 * (border_size + itA) + border_size, std::ios::beg);  // skip empty rows and empty cols
 
       for (int itB = 0; itB < size; ++itB)
       {
@@ -112,10 +213,10 @@ void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
 
 
    // loads the terrain map (to know about terrain tiles: tree/rock/water...)
-   for (int itA=0; itA<size; ++itA)
+   for (int itA = 0; itA < size; ++itA)
    {
       // for each row
-      f.seekg(0x1338C + 162*2*(border_size+itA)+2*border_size, std::ios::beg);  // skip empty rows and empty cols
+      f.seekg(kTerrainGrid + 162 * 2 * (border_size + itA) + 2 * border_size, std::ios::beg);  // skip empty rows and empty cols
 
       for (int itB=0; itB<size; ++itB)
       {
@@ -136,7 +237,7 @@ void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
 	 {
 	     std::cout << "Building at (" << tile.getI() << "," << tile.getJ() << ")" << " with type ";
  	     std::streampos old = f.tellg();
-	     f.seekg(162 * 2 * (border_size + itA) + 2 * border_size + 2 * itB, std::ios::beg);
+	     f.seekg(kGraphicGrid + 162 * 2 * (border_size + itA) + 2 * border_size + 2 * itB, std::ios::beg);
 	     short int tmp;
 	     f.read((char*)&tmp, 2);
 	     std::cout.setf(std::ios::hex, std::ios::basefield);
@@ -281,12 +382,11 @@ void ScenarioLoader::decode_terrain(const int terrainBitset, Tile &oTile)
    terrain.setOverlay(overlay);
 }
 
-
 void ScenarioLoader::init_climate(std::fstream &f, City &ioCity)
 {
    // read climate
    unsigned int i = 0;
-   f.seekg(0x33ad8, std::ios::beg);
+   f.seekg(kClimate, std::ios::beg);
    f.read((char*)&i, 1);
 
    ClimateType climate = (ClimateType) i;
@@ -310,7 +410,6 @@ void ScenarioLoader::init_climate(std::fstream &f, City &ioCity)
 //   }
 }
 
-
 void ScenarioLoader::init_entry_exit(std::fstream &f, City &ioCity)
 {
    int size = ioCity.getTilemap().getSize();
@@ -318,7 +417,7 @@ void ScenarioLoader::init_entry_exit(std::fstream &f, City &ioCity)
    // init road entry/exit point
    int i = 0;
    int j = 0;
-   f.seekg(0x33a8c, std::ios::beg);
+   f.seekg(kRoadEntry, std::ios::beg);
    f.read((char*)&i, 2);
    f.read((char*)&j, 2);
    ioCity.setRoadEntryIJ(i, size-j-1);
@@ -332,7 +431,7 @@ void ScenarioLoader::init_entry_exit(std::fstream &f, City &ioCity)
    // init boat entry/exit point
    i = 0;
    j = 0;
-   f.seekg(0x33ab4, std::ios::beg);
+   f.seekg(kBoatEntry, std::ios::beg);
    f.read((char*)&i, 2);
    f.read((char*)&j, 2);
    ioCity.setBoatEntryIJ(i, size-j-1);
