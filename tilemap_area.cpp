@@ -128,7 +128,7 @@ const std::vector<std::pair<int, int> >& TilemapArea::getTiles()
             int j = (x + z-zm)/2;
             int i = x-j;
 
-            if (i>=0 and j>=0 and i<_map_size and j<_map_size)
+            if (i>=0 && j>=0 && i<_map_size && j<_map_size)
             {
                _coordinates.push_back(std::make_pair(i, j));
             }

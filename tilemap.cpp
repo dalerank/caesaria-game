@@ -43,12 +43,12 @@ void TerrainTile::reset()
 
 bool TerrainTile::isConstructible() const
 {
-   return not (_isWater or _isRock or _isTree or _isBuilding or _isRoad);
+   return !(_isWater || _isRock || _isTree || _isBuilding || _isRoad);
 }
 
 bool TerrainTile::isDestructible() const
 {
-   return (_isTree or _isBuilding or _isRoad);
+   return (_isTree || _isBuilding || _isRoad);
 }
 
 bool TerrainTile::isWater() const
@@ -395,7 +395,7 @@ void Tilemap::serialize(OutputSerialStream &stream)
          if (&tile == tile.get_master_tile() || tile.get_master_tile() == NULL)
          {
             // this is a master tile
-            if (not terrain.isBuilding())
+            if ( !terrain.isBuilding() )
             {
                // this is not a building
                pic_name = tile.get_picture().get_name();
@@ -430,7 +430,7 @@ void Tilemap::unserialize(InputSerialStream &stream)
          terrain.unserialize(stream);
          // cannot access the overlay at this stage (it has not be unserialized yet)
 
-         if (imgId != 0 && not terrain.isBuilding())
+         if (imgId != 0 && !terrain.isBuilding())
          {
             // master landscape tile!
             Picture& pic = picLoader.get_pic_by_id(imgId);

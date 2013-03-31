@@ -125,7 +125,7 @@ void GuiTilemap::drawTilemap()
             // for each walker
             Walker &anim = **itWalker;
             int zAnim = anim.getJ() - anim.getI();
-            if (zAnim > z and zAnim <= z+1)
+            if (zAnim > z && zAnim <= z+1)
             {
                pictureList.clear();
                anim.getPictureList(pictureList);
@@ -215,7 +215,7 @@ Tile* GuiTilemap::getTileXY(const int x, const int y)
    // std::cout << "ij ("<<i<<","<<j<<")"<<std::endl;
 
    Tilemap &tilemap = *_tilemap;
-   if (i>=0 and j>=0 and i<tilemap.getSize() and j<tilemap.getSize())
+   if (i>=0 && j>=0 && i<tilemap.getSize() && j<tilemap.getSize())
    {
       // valid coordinate
       return &getTileIJ(i, j);
