@@ -46,6 +46,9 @@
 #include "screen_menu.hpp"
 #include "screen_game.hpp"
 
+#if defined(_MSC_VER)
+	#undef main
+#endif
 
 void CaesarApp::initLocale()
 {
@@ -231,8 +234,7 @@ void CaesarApp::start()
    //SDL_Delay(1500);
 }
 
-
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
    try
    {

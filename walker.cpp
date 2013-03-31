@@ -297,7 +297,7 @@ void Walker::onNewTile()
    // std::cout << "Walker is on a new tile! coord=" << _i << "," << _j << std::endl;
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
    Tile& currentTile = tilemap.at(_i, _j);
-   if (not currentTile.get_terrain().isRoad())
+   if( !currentTile.get_terrain().isRoad() )
    {
       std::cout << "Walker at " << _i << "," << _j << " is not on a road!!!" << std::endl;
    }

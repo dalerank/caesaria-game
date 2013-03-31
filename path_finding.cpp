@@ -148,7 +148,12 @@ bool PathWay::isDestination() const
    bool res;
    if (_isReverse)
    {
+#if defined(_WIN32)
+	  std::vector<DirectionType>::const_reverse_iterator convItReverse = _directionIt_reverse;
+	  res = (convItReverse == _directionList.rend());
+#else
       res = (_directionIt_reverse == _directionList.rend());
+#endif
    }
    else
    {
