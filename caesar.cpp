@@ -27,6 +27,7 @@
 #include <SDL_image.h>
 #include <libintl.h>
 #include <locale.h>
+#include <algorithm>
 
 #include "exception.hpp"
 #include "pic_loader.hpp"
@@ -157,6 +158,29 @@ void CaesarApp::setScreenWait()
    screen.drawFrame();
 }
 
+std::vector <fs::path> CaesarApp::scanForMaps() const
+{
+  // scan for map-files and make their list
+    
+  fs::path path ("./resources/maps/");
+  std::vector <fs::path> filelist;
+  
+  fs::recursive_directory_iterator it (path);
+  fs::recursive_directory_iterator end;
+  
+  for (; it!=end; ++it)
+  {
+    if (!fs::is_directory(*it))
+      filelist.push_back(*it);
+  }
+  
+  std::sort(filelist.begin(), filelist.end());
+  
+  std::copy(filelist.begin(), filelist.end(), std::ostream_iterator<fs::path>(std::cout, "\n"));
+  
+  return filelist;
+}
+
 void CaesarApp::setScreenMenu()
 {
    WidgetEvent wevent;
@@ -167,8 +191,16 @@ void CaesarApp::setScreenMenu()
    switch (wevent._eventType)
    {
    case WE_NewGame:
-      loadScenario("resources/maps/cyrene.map");
-      _nextScreen = SCREEN_GAME;
+      {
+        /* temporary*/
+        std::vector <fs::path> filelist = scanForMaps();
+	std::srand(std::time(0));
+	std::string file = filelist.at(std::rand()%filelist.size()).string();
+	std::cout<<"Loading map:" << file << std::endl;
+        loadScenario(file);
+        /* end of temporary */
+        _nextScreen = SCREEN_GAME;
+      }
       break;
    case WE_LoadGame:
       loadGame("oc3.sav");

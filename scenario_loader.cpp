@@ -17,11 +17,12 @@
 
 
 
-#include <scenario_loader.hpp>
+#include "scenario_loader.hpp"
 
 #include <iostream>
-#include <exception.hpp>
-#include <pic_loader.hpp>
+
+#include "exception.hpp"
+#include "pic_loader.hpp"
 
 
 ScenarioLoader::ScenarioLoader()
@@ -144,25 +145,25 @@ Picture& ScenarioLoader::get_pic_by_id(const int imgId)
    std::string res_pfx;  // resource name prefix
    int res_id = imgId;   // id of resource
 
-   if (201<=imgId && imgId <245)
+   if (201<=imgId && imgId < 245)
    {
       res_pfx = "plateau";
-      res_id = imgId-200;
+      res_id = imgId - 200;
    }
-   else if (245<=imgId && imgId <548)
+   else if (245<=imgId && imgId < 548)
    {
       res_pfx = "land1a";
-      res_id = imgId-244;
+      res_id = imgId - 244;
    }
-   else if (548<=imgId && imgId <779)
+   else if (548<=imgId && imgId < 779)
    {
       res_pfx = "land2a";
-      res_id = imgId-547;
+      res_id = imgId - 547;
    }
-   else if (779<=imgId && imgId <871)
+   else if (779<=imgId && imgId < 871)
    {
       res_pfx = "land3a";
-      res_id = imgId-778;
+      res_id = imgId - 778;
    }
    else
    {
@@ -209,6 +210,8 @@ void ScenarioLoader::init_climate(std::fstream &f, City &ioCity)
 
    ClimateType climate = (ClimateType) i;
    ioCity.setClimate(climate);
+      
+   std::cout << "Climate type is " << climate << std::endl;
 
    // // reload all pics for the given climate
    // PicLoader &pic_loader = PicLoader::instance();
@@ -260,9 +263,9 @@ void ScenarioLoader::init_entry_exit(std::fstream &f, City &ioCity)
    ioCity.setBoatExitIJ(i, size-j-1);
 
    std::cout << "road entry at:" << ioCity.getRoadEntryI() << "," << ioCity.getRoadEntryJ() << std::endl;
-   std::cout << "road exit at:" << ioCity.getRoadExitI() << "," << ioCity.getRoadExitJ() << std::endl;
+   std::cout << "road exit at:"  << ioCity.getRoadExitI()  << "," << ioCity.getRoadExitJ()  << std::endl;
    std::cout << "boat entry at:" << ioCity.getBoatEntryI() << "," << ioCity.getBoatEntryJ() << std::endl;
-   std::cout << "boat exit at:" << ioCity.getBoatExitI() << "," << ioCity.getBoatExitJ() << std::endl;
+   std::cout << "boat exit at:"  << ioCity.getBoatExitI()  << "," << ioCity.getBoatExitJ()  << std::endl;
 }
 
 

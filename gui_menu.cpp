@@ -20,6 +20,8 @@
 
 #include <iostream>
 #include <SDL.h>
+#include <cmath>
+#include <iterator>
 
 #include "exception.hpp"
 #include "pic_loader.hpp"
@@ -63,6 +65,18 @@ void MenuBar::updateLabels(const bool forceUpdate)
       _fundsLabel.setText(std::string(buffer));
    }
 
+   if (forceUpdate || _city->getMonth() != _month)
+   {
+      _month = _city->getMonth();
+      
+      const char *args[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+      const char *age[] = {"BC", "AD"};
+      
+      sprintf(buffer, "%.3s %d %.2s", args[_month % 12], (int)std::abs(((int)_month/12-39)), age[((int)_month/12-39)>0]);
+      
+      //_dateLabel.setText("Feb 39 BC");
+      _dateLabel.setText(std::string(buffer));
+   }   
 }
 
 void MenuBar::init()

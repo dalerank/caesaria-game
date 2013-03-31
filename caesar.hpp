@@ -23,9 +23,12 @@
 #include <vector>
 #include <map>
 
+#include <boost/filesystem.hpp>
+
 #include "gui_widget.hpp"
 #include "enums.hpp"
 
+namespace fs = boost::filesystem;
 
 class Menu;
 class MenuBar;
@@ -48,6 +51,7 @@ public:
    void setScreenWait();
    void setScreenMenu();
    void setScreenGame();
+   std::vector <fs::path> scanForMaps() const;
 
    void initGuiMain();
 

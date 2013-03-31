@@ -17,10 +17,11 @@
 
 
 
-#include <scenario.hpp>
+#include "scenario.hpp"
 
-#include <exception.hpp>
 #include <iostream>
+
+#include "exception.hpp"
 
 Scenario* Scenario::_instance = NULL;
 
@@ -45,7 +46,7 @@ City& Scenario::getCity()
    return _city;
 }
 
-std::string Scenario::getDescription()
+std::string Scenario::getDescription() const
 {
    return _description;
 }

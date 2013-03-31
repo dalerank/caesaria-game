@@ -19,10 +19,10 @@
 #ifndef SCENARIO_HPP
 #define SCENARIO_HPP
 
-#include <city.hpp>
-
 #include <string>
-#include <serializer.hpp>
+
+#include "city.hpp"
+#include "serializer.hpp"
 
 
 class Scenario : public Serializable
@@ -35,7 +35,7 @@ public:
    void unserialize(InputSerialStream &stream);
 
    City& getCity();
-   std::string getDescription();
+   std::string getDescription() const;
 
 private:
 

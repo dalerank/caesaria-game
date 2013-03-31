@@ -31,7 +31,7 @@ ifeq ("$(OS)", "linux")
    ARCHIVE_LFLAGS=-L/usr/lib -larchive
    GL_LFLAGS=-lGL -lGLU
    CFLAGS=-I. $(SDL_CFLAGS) -c -Wall -g
-   LFLAGS=$(SDL_LFLAGS) $(ARCHIVE_LFLAGS) $(GL_LFLAGS)
+   LFLAGS=$(SDL_LFLAGS) $(ARCHIVE_LFLAGS) $(GL_LFLAGS) -lboost_system -lboost_filesystem
 endif
 ifeq ("$(OS)", "win32")
    # WINDOWS

@@ -45,7 +45,8 @@ public:
 private:
    City *_city;
    int _population;  // cached value
-   int _funds;  // cached value
+   int _funds;       // cached value
+   unsigned int _month;       // cached value
 
    TextIcon _populationLabel;
    TextIcon _fundsLabel;

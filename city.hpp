@@ -68,6 +68,7 @@ public:
    void setFunds(const long funds);
    long getPopulation() const;
    void setPopulation(const long population);
+   unsigned long getMonth() const {return _month;}
 
    Tilemap& getTilemap();
 
@@ -94,7 +95,7 @@ private:
    std::list<Walker*> _walkerList;
    std::list<LandOverlay*> _overlayList;
    unsigned long _time;  // number of timesteps since start
-   unsigned int _month;  // number of months since start
+   unsigned long _month; // number of months since start
    long _funds;  // amount of money
    long _population;  // number of inhabitants
    int _taxRate;
