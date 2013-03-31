@@ -19,8 +19,8 @@
 #ifndef WALKER_MARKET_BUYER_HPP
 #define WALKER_MARKET_BUYER_HPP
 
-#include <walker.hpp>
-#include <warehouse.hpp>
+#include "walker.hpp"
+#include "warehouse.hpp"
 
 
 /** This is the market lady buying goods at granaries and warehouses */
@@ -28,6 +28,8 @@ class MarketBuyer : public Walker
 {
 public:
    MarketBuyer();
+   virtual ~MarketBuyer();
+   
    MarketBuyer *clone() const;
 
    void setMarket(Market &_market);

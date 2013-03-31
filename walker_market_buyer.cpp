@@ -43,6 +43,11 @@ MarketBuyer::MarketBuyer()
    _basket.setMaxQty(G_WINE, 100);
 }
 
+MarketBuyer::~MarketBuyer()
+{
+  
+}
+
 MarketBuyer* MarketBuyer::clone() const
 {
    return new MarketBuyer(*this);

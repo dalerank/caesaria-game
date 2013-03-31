@@ -44,6 +44,11 @@ GuiInfoBox::GuiInfoBox()
    }
 }
 
+GuiInfoBox::~GuiInfoBox()
+{
+  
+}
+
 
 void GuiInfoBox::initStatic()
 {

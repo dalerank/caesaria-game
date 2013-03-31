@@ -19,11 +19,11 @@
 #ifndef GUI_WIDGET_HPP
 #define GUI_WIDGET_HPP
 
-#include <picture.hpp>
 #include <string>
 #include <list>
-#include <enums.hpp>
 
+#include "enums.hpp"
+#include "picture.hpp"
 
 struct WidgetEvent
 {
@@ -59,6 +59,7 @@ class Widget
 {
 public:
    Widget();
+   virtual ~Widget();
 
    // draw on screen
    virtual void draw(const int dx, const int dy) = 0;

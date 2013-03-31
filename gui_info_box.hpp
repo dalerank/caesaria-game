@@ -33,6 +33,7 @@ class GuiInfoBox : public WidgetGroup
 {
 public:
    GuiInfoBox();
+   virtual ~GuiInfoBox();
    void init(const int width, const int height);
    void initStatic();
    virtual void draw(const int dx, const int dy);  // draw on screen

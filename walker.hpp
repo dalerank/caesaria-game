@@ -19,23 +19,23 @@
 #ifndef WALKER_HPP
 #define WALKER_HPP
 
-#include <building.hpp>
-//#include <warehouse.hpp>
-#include <service_building.hpp>
-//#include <factory_building.hpp>
-#include <tilemap.hpp>
-#include <picture.hpp>
-#include <enums.hpp>
-#include <pic_loader.hpp>
-#include <path_finding.hpp>
 #include <string>
-#include <serializer.hpp>
+
+#include "building.hpp"
+#include "service_building.hpp"
+#include "tilemap.hpp"
+#include "picture.hpp"
+#include "enums.hpp"
+#include "pic_loader.hpp"
+#include "path_finding.hpp"
+#include "serializer.hpp"
 
 
 class Walker : public Serializable
 {
 public:
    Walker();
+   virtual ~Walker();
 
    virtual void timeStep(const unsigned long time);  // performs one simulation step
    WalkerType getType() const;

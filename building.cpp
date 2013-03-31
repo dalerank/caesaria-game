@@ -45,6 +45,12 @@ LandOverlay::LandOverlay()
    _picture = NULL;
 }
 
+LandOverlay::~LandOverlay()
+{
+  // what we shall to do here?
+}
+
+
 BuildingType LandOverlay::getType() const
 {
    return _buildingType;

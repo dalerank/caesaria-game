@@ -16,15 +16,17 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-
-#include <SDL.h>
-#include <gui_widget.hpp>
-#include <exception.hpp>
-#include <pic_loader.hpp>
-#include <sdl_facade.hpp>
-#include <gui_paneling.hpp>
+#include "gui_widget.hpp"
 
 #include <iostream>
+#include <SDL.h>
+
+#include "exception.hpp"
+#include "pic_loader.hpp"
+#include "sdl_facade.hpp"
+#include "gui_paneling.hpp"
+
+
 
 
 WidgetEvent::WidgetEvent()
@@ -107,6 +109,11 @@ Widget::Widget()
    _listener = NULL;
    _parent = NULL;
    _underMouse = false;
+}
+
+Widget::~Widget()
+{
+  
 }
 
 void Widget::drawPicture(Picture &picture, const int dx, const int dy)

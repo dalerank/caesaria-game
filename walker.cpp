@@ -17,13 +17,15 @@
 
 
 
-#include <walker.hpp>
-#include <building_data.hpp>
-#include <exception.hpp>
-#include <scenario.hpp>
+#include "walker.hpp"
+
 #include <iostream>
-#include <walker_market_buyer.hpp>
-#include <walker_cart_pusher.hpp>
+
+#include "building_data.hpp"
+#include "exception.hpp"
+#include "scenario.hpp"
+#include "walker_market_buyer.hpp"
+#include "walker_cart_pusher.hpp"
 
 
 std::map<WalkerType, Walker*> Walker::_mapWalkerByID;  // key=walkerType, value=instance
@@ -44,6 +46,10 @@ Walker::Walker()
    _midTileJ = 7;
 };
 
+Walker::~Walker()
+{
+  
+}
 
 WalkerType Walker::getType() const
 {

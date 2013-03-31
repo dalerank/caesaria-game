@@ -35,6 +35,7 @@ class LandOverlay : public Serializable
 {
 public:
    LandOverlay();
+   virtual ~LandOverlay();
 
    virtual void timeStep(const unsigned long time);  // perform one simulation step
 
