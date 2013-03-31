@@ -112,13 +112,17 @@ void CaesarApp::initPictures()
 void CaesarApp::loadScenario(const std::string &scenarioFile)
 {
    std::cout << "load scenario begin" << std::endl;
+   
    _scenario = new Scenario();
+   
    ScenarioLoader scenario_loader;
+   
    scenario_loader.load(scenarioFile, *_scenario);
 
    City &city = _scenario->getCity();
 
    std::list<LandOverlay*> llo = city.getOverlayList();
+   
    for (std::list<LandOverlay*>::iterator itLLO = llo.begin(); itLLO!=llo.end(); ++itLLO)
    {
       LandOverlay &overlay = **itLLO;

@@ -76,30 +76,31 @@ void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
       // for each row
       f.seekg(0xcd08 + 162*(border_size+itA)+border_size, std::ios::beg);  // skip empty rows and empty cols
 
-      for (int itB=0; itB<size; ++itB)
+      for (int itB = 0; itB < size; ++itB)
       {
          // for each col
          unsigned char edge;  // 8bits
          f.read((char*)&edge, 1);
 
          int i = itB;
-         int j = size-itA-1;
+         int j = size - itA - 1;
 
          if (edge==0x00)
          {
             // this is the top of a multi-tile
             Picture& pic = oTilemap.at(i, j).get_picture();
-            int tile_size = (pic.get_width()+2)/60;  // size of the multi-tile. the multi-tile is a square.
-            // std::cout << "multi-tile x" << tile_size << " at " << i << "," << j << std::endl;
+            int tile_size = (pic.get_width() + 2) / 60;  // size of the multi-tile. the multi-tile is a square.
+            // DEBUG
+            std::cout << "multi-tile x" << tile_size << " at " << i << "," << j << std::endl;
 
             // master is the left-most subtile
             int mi = i;
             int mj = j - tile_size+1;
             Tile& master = oTilemap.at(mi, mj);
-            for (int di=0; di<tile_size; ++di)
+            for (int di = 0; di < tile_size; ++di)
             {
                // for each subrow of the multi-tile
-               for (int dj=0; dj<tile_size; ++dj)
+               for (int dj = 0; dj < tile_size; ++dj)
                {
                   // for each subcol of the multi-tile
                   oTilemap.at(mi+di, mj+dj).set_master_tile(&master);
@@ -120,14 +121,81 @@ void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
       {
          // for each col
          int i = itB;
-         int j = size-itA-1;
+         int j = size - itA - 1;
 
          short int terrainBitset;  // 16bits
          f.read((char*)&terrainBitset, 2);
          Tile &tile = oTilemap.at(i, j);
          decode_terrain(terrainBitset, tile);
 
+ 
          LandOverlay *overlay = tile.get_terrain().getOverlay();
+	 
+	 // Check if it is building and type of building
+	 if (overlay == NULL && (terrainBitset & 0x8))
+	 {
+	     std::cout << "Building at (" << tile.getI() << "," << tile.getJ() << ")" << " with type ";
+ 	     std::streampos old = f.tellg();
+	     f.seekg(162 * 2 * (border_size + itA) + 2 * border_size + 2 * itB, std::ios::beg);
+	     short int tmp;
+	     f.read((char*)&tmp, 2);
+	     std::cout.setf(std::ios::hex, std::ios::basefield);
+	     std::cout << tmp << std::endl;
+	     std::cout.unsetf(std::ios::hex);
+	     f.seekg(old);
+	     // 0xb0e, 0xb0f - Native Hut
+	     // 0xb10 - Native Center
+	     // 0xb11 - Native Field
+	     
+	     // NOTHERN:
+	     // 0xb0b, 0xb0c - Native Hut
+	     // 0xb0d - Native Center
+	     // 0xb44 - Native Field
+	     switch (tmp)
+	     {	
+	      case 0xb0e:
+	      case 0xb0f:
+	      case 0xb0b:
+	      case 0xb0c:
+	      {
+		  NativeHut* build = new NativeHut();
+		  tile.get_terrain().setOverlay((LandOverlay*)build);
+		  overlay = tile.get_terrain().getOverlay();
+		  overlay->build(i, j);
+		  oCity.getOverlayList().push_back(overlay);
+	      }
+	      break;
+	      case 0xb10:
+	      case 0xb0d:
+	      {
+		  // we need to find master tile
+		  if (tile.is_master_tile())
+		  {
+		    std::cout << "Tile is master" << std::endl;
+		    NativeCenter* build = new NativeCenter();
+		    tile.get_terrain().setOverlay((LandOverlay*)build);
+		    overlay = tile.get_terrain().getOverlay();
+		    if (overlay != NULL)
+		    {
+		      overlay->build(i, j);
+		      oCity.getOverlayList().push_back(overlay);
+		    }
+		  }
+	      }
+	      break;
+	      case 0xb11:
+	      case 0xb44:
+	      {
+		  NativeField* build = new NativeField();
+		  tile.get_terrain().setOverlay((LandOverlay*)build);
+		  overlay = tile.get_terrain().getOverlay();
+		  overlay->build(i, j);
+		  oCity.getOverlayList().push_back(overlay);
+	      }
+	      break;
+	     }
+	 }
+	 
          if (overlay != NULL)
          {
             overlay->build(i, j);
@@ -169,6 +237,13 @@ Picture& ScenarioLoader::get_pic_by_id(const int imgId)
    {
       res_pfx = "land1a";
       res_id = 1;
+      
+      // std::cout.setf(std::ios::hex, std::ios::basefield);
+      // std::cout << "Unknown image Id " << imgId << std::endl;
+      // std::cout.unsetf(std::ios::hex);
+      
+      if (imgId == 0xb10 || imgId == 0xb0d) {res_pfx = "housng1a", res_id = 51;} // TERRIBLE HACK!
+
       // THROW("Unknown image Id " << imgId);
    }
 
@@ -196,6 +271,12 @@ void ScenarioLoader::decode_terrain(const int terrainBitset, Tile &oTile)
       Road *road = new Road();
       overlay = road;
    }
+//   else if (terrain.isBuilding())
+//   {
+//      std::cout << "Building at (" << oTile.getI() << "," << oTile.getJ() << ")" << std::endl;
+      
+      // How to read building type???
+//   }
 
    terrain.setOverlay(overlay);
 }

@@ -19,13 +19,14 @@
 #ifndef BUILDING_HPP
 #define BUILDING_HPP
 
-#include <tilemap.hpp>
-#include <enums.hpp>
-#include <good.hpp>
 #include <string>
 #include <map>
 #include <list>
 #include <set>
+
+#include "tilemap.hpp"
+#include "enums.hpp"
+#include "good.hpp"
 
 
 class GuiInfoBox;
@@ -186,6 +187,41 @@ public:
 
 private:
    SimpleGoodStore _goodStore;
+};
+
+class NativeBuilding : public Building
+{
+public:
+    NativeBuilding();
+    void serialize(OutputSerialStream &stream);
+    void unserialize(InputSerialStream &stream); 
+};
+
+class NativeHut    : public NativeBuilding
+{
+public:
+  NativeHut();
+  NativeHut* clone() const;
+  void serialize(OutputSerialStream &stream);
+  void unserialize(InputSerialStream &stream); 
+};
+
+class NativeField  : public NativeBuilding
+{
+public:
+  NativeField();
+  NativeField* clone() const;  
+  void serialize(OutputSerialStream &stream);
+  void unserialize(InputSerialStream &stream); 
+};
+
+class NativeCenter : public NativeBuilding
+{
+public:
+  NativeCenter();
+  NativeCenter* clone() const;  
+  void serialize(OutputSerialStream &stream);
+  void unserialize(InputSerialStream &stream); 
 };
 
 

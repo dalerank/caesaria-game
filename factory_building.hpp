@@ -19,7 +19,7 @@
 #ifndef FACTORY_BUILDING_HPP
 #define FACTORY_BUILDING_HPP
 
-#include <building.hpp>
+#include "building.hpp"
 
 
 class Factory: public WorkingBuilding

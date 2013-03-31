@@ -19,7 +19,7 @@
 #ifndef SERVICE_BUILDING_HPP
 #define SERVICE_BUILDING_HPP
 
-#include <building.hpp>
+#include "building.hpp"
 
 
 class Walker;

@@ -17,11 +17,12 @@
 
 
 
-#include <building_data.hpp>
+#include "building_data.hpp"
 
-#include <exception.hpp>
-#include <gettext.hpp>
 #include <iostream>
+
+#include "exception.hpp"
+#include "gettext.hpp"
 
 
 BuildingData::BuildingData(const BuildingType buildingType, const std::string &name, const int cost)
@@ -212,6 +213,12 @@ BuildingDataHolder::BuildingDataHolder()
    // water
    addData(BuildingData(B_WELL, "well", 5));
    addData(BuildingData(B_FOUNTAIN, "fountain", 15));
+   
+   // natives
+   addData(BuildingData(B_NATIVE_HUT, "well", 0));
+   addData(BuildingData(B_NATIVE_CENTER, "well", 0));   
+   addData(BuildingData(B_NATIVE_FIELD, "well", 0));   
+   
 
    // populate _mapBuildingByService
    _mapBuildingByService[S_ENGINEER] = B_ENGINEER;
