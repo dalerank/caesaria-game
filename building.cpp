@@ -333,6 +333,7 @@ Aqueduct::Aqueduct()
 {
   setType(B_AQUEDUCT);
   setPicture(PicLoader::instance().get_picture("land2a", 133));
+  _size = 1;
   // land2a 119 120         - aqueduct over road
   // land2a 121 122         - aqueduct over plain ground
   // land2a 123 124 125 126 - aqueduct corner
@@ -367,6 +368,12 @@ Reservoir::Reservoir()
   
   // utilitya 34      - emptry reservoir
   // utilitya 35 ~ 42 - full reservoir animation
+ 
+  AnimLoader animLoader(PicLoader::instance());
+  animLoader.fill_animation(_animation, "utilitya", 35, 8);
+  animLoader.change_offset(_animation, 47, 63);
+  _fgPictures.resize(1);
+  //_fgPictures[0]=;
 }
 
 Reservoir* Reservoir::clone() const
@@ -386,6 +393,11 @@ void Reservoir::setTerrain(TerrainTile &terrain)
   terrain.setBuilding(true);
 }
 
+void Reservoir::timeStep(const unsigned long time)
+{
+  _animation.nextFrame();
+  _fgPictures.at(0) = _animation.get_current_picture();
+}
 
 Road::Road()
 {

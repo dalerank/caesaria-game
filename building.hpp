@@ -114,6 +114,7 @@ public:
   virtual void build(const int i, const int j);
   Picture& computePicture();
   virtual void setTerrain(TerrainTile &terrain);
+  void timeStep(const unsigned long time);
 };
 
 class Road : public Construction
