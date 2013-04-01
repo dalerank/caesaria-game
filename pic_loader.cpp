@@ -791,6 +791,7 @@ void FontLoader::load_all()
    SDL_Color black = {0, 0, 0, 0};
    SDL_Color red = {160, 0, 0, 0};  // dim red
    SDL_Color white = {215, 215, 215, 0};  // dim white
+   SDL_Color yellow = {160, 160, 0, 0}; 
 
    ttf = TTF_OpenFont(full_font_path.c_str(), 12);
    if (ttf == NULL) THROW("Cannot load font file:" << full_font_path << ", error:" << TTF_GetError());
@@ -811,6 +812,11 @@ void FontLoader::load_all()
    if (ttf == NULL) THROW("Cannot load font file:" << full_font_path << ", error:" << TTF_GetError());
    Font font2white(*ttf, white);
    FontCollection::instance().setFont(FONT_2_WHITE, font2white);
+
+   ttf = TTF_OpenFont(full_font_path.c_str(), 18);
+   if (ttf == NULL) THROW("Cannot load font file:" << full_font_path << ", error:" << TTF_GetError());
+   Font font2yellow(*ttf, yellow);
+   FontCollection::instance().setFont(FONT_2_YELLOW, font2yellow);
 
    ttf = TTF_OpenFont(full_font_path.c_str(), 28);
    if (ttf == NULL) THROW("Cannot load font file:" << full_font_path << ", error:" << TTF_GetError());

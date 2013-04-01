@@ -33,6 +33,11 @@
 #include "city.hpp"
 #include "scenario.hpp"
 
+static const std::string panelBgName = "paneling";
+static const unsigned int panelBgStatus = 15;
+static const unsigned int dateLabelOffset = 155;
+static const unsigned int populationLabelOffset = 345;
+static const unsigned int fundLabelOffset = 465;
 
 MenuBar::MenuBar()
 {
@@ -54,14 +59,14 @@ void MenuBar::updateLabels(const bool forceUpdate)
    if (forceUpdate || _city->getPopulation() != _population)
    {
       _population = _city->getPopulation();
-      sprintf(buffer, "Pop: %'d", _population);  // "'" is the thousands separator
+      sprintf(buffer, "Pop %d", _population);  // "'" is the thousands separator
       _populationLabel.setText(std::string(buffer));
    }
 
    if (forceUpdate || _city->getFunds() != _funds)
    {
       _funds = _city->getFunds();
-      sprintf(buffer, "%'d Dn", _funds);  // "'" is the thousands separator
+      sprintf(buffer, "Dn %d", _funds);  // "'" is the thousands separator
       _fundsLabel.setText(std::string(buffer));
    }
 
@@ -79,15 +84,18 @@ void MenuBar::updateLabels(const bool forceUpdate)
    }   
 }
 
-void MenuBar::init()
+void MenuBar::init( const unsigned int width, const unsigned int heigth  )
 {
-   setSize(420, 23);
+    setSize( width, heigth );
+
+   PicLoader& loader = PicLoader::instance();
+   FontCollection& fonts = FontCollection::instance();
 
    std::vector<Picture> p_marble;
    
    for (int i = 1; i<=12; ++i)
    {
-      p_marble.push_back(PicLoader::instance().get_picture("paneling", i));
+      p_marble.push_back(loader.get_picture( panelBgName, i));
    }
 
    SdlFacade &sdlFacade = SdlFacade::instance();
@@ -98,30 +106,33 @@ void MenuBar::init()
    int x = 0;
    while (x < _width)
    {
-      Picture &pic = p_marble[i%10];
+      const Picture& pic = p_marble[i%10];
       sdlFacade.drawPicture(pic, *_bgPicture, x, 0);
       x += pic.get_width();
       i++;
    }
 
-   _populationLabel.setSize(120, 21);
-   _populationLabel.setFont(FontCollection::instance().getFont(FONT_2_WHITE));
-   _populationLabel.setText("Pop: 34,124");
-   _populationLabel.setPosition(10, 1);
+   _populationLabel.setSize(120, 23);
+   _populationLabel.setBgPicture( &loader.get_picture( panelBgName, panelBgStatus ) );
+   _populationLabel.setFont( fonts.getFont(FONT_2_WHITE));
+   _populationLabel.setText("Pop 34,124");
+   _populationLabel.setPosition( _width - populationLabelOffset, 1);
    _populationLabel.setTextPosition(20, 0);
    add_widget(_populationLabel);
 
-   _fundsLabel.setSize(120, 21);
-   _fundsLabel.setFont(FontCollection::instance().getFont(FONT_2_WHITE));
-   _fundsLabel.setText("10,000 Dn");
-   _fundsLabel.setPosition(10+120+20, 1);
+   _fundsLabel.setSize(120, 23);
+   _fundsLabel.setFont( fonts.getFont(FONT_2_WHITE));
+   _fundsLabel.setBgPicture( &loader.get_picture( panelBgName, panelBgStatus ) );
+   _fundsLabel.setText("Dn 10,000");
+   _fundsLabel.setPosition( _width - fundLabelOffset, 1);
    _fundsLabel.setTextPosition(20, 0);
    add_widget(_fundsLabel);
 
-   _dateLabel.setSize(120, 21);
-   _dateLabel.setFont(FontCollection::instance().getFont(FONT_2_WHITE));
+   _dateLabel.setSize(120, 23);
+   _dateLabel.setFont( fonts.getFont(FONT_2_YELLOW));
+   _dateLabel.setBgPicture( &loader.get_picture( panelBgName, panelBgStatus ) );
    _dateLabel.setText("Feb 39 BC");
-   _dateLabel.setPosition(10+120+20+120+20, 1);
+   _dateLabel.setPosition( _width - dateLabelOffset, 1);
    _dateLabel.setTextPosition(20, 0);
    add_widget(_dateLabel);
 
@@ -140,7 +151,7 @@ Picture& MenuBar::getBgPicture()
 
 Menu::Menu()
 {
-   _bgPicture = &PicLoader::instance().get_picture("paneling", 16);
+   _bgPicture = &PicLoader::instance().get_picture( panelBgName, 16 );
    setSize(_bgPicture->get_surface()->w, _bgPicture->get_surface()->h);
 
    // // top of menu
@@ -326,21 +337,23 @@ Picture& Menu::getBgPicture()
 
 void Menu::set3Button(ImageButton &oButton, const WidgetEvent &event, const int pic_index)
 {
+   PicLoader& loader = PicLoader::instance();
    oButton.setEvent(event);
-   oButton.setNormalPicture(PicLoader::instance().get_picture("paneling", pic_index));
-   oButton.setHoverPicture(PicLoader::instance().get_picture("paneling", pic_index+1));
-   oButton.setSelectedPicture(PicLoader::instance().get_picture("paneling", pic_index+2));
+   oButton.setNormalPicture( loader.get_picture( panelBgName, pic_index));
+   oButton.setHoverPicture( loader.get_picture( panelBgName, pic_index+1));
+   oButton.setSelectedPicture( loader.get_picture( panelBgName, pic_index+2));
    oButton.setExclusiveButtonGroup(&_exclusiveButtonGroup);
    add_widget(oButton);
 }
 
 void Menu::set4Button(ImageButton &oButton, const WidgetEvent &event, const int pic_index)
 {
+    PicLoader& loader = PicLoader::instance();
    oButton.setEvent(event);
-   oButton.setNormalPicture(PicLoader::instance().get_picture("paneling", pic_index));
-   oButton.setHoverPicture(PicLoader::instance().get_picture("paneling", pic_index+1));
-   oButton.setSelectedPicture(PicLoader::instance().get_picture("paneling", pic_index+2));
-   oButton.setUnavailablePicture(PicLoader::instance().get_picture("paneling", pic_index+3));
+   oButton.setNormalPicture( loader.get_picture(panelBgName, pic_index));
+   oButton.setHoverPicture( loader.get_picture(panelBgName, pic_index+1));
+   oButton.setSelectedPicture( loader.get_picture(panelBgName, pic_index+2));
+   oButton.setUnavailablePicture( loader.get_picture(panelBgName, pic_index+3));
    oButton.setExclusiveButtonGroup(&_exclusiveButtonGroup);
    add_widget(oButton);
 }

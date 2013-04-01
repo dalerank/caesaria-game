@@ -48,11 +48,11 @@ void ScreenGame::init()
    GfxEngine &engine = GfxEngine::instance();
 
    _menuBar = new MenuBar();
-   _menuBar->init();
-   _menuBar->setPosition(engine.getScreenWidth()-_menuBar->getWidth(), 0);
+   _menuBar->setPosition(0, 0);
+   _menuBar->init( engine.getScreenWidth(), 23 );
 
    _menu = new Menu();
-   _menu->setPosition(engine.getScreenWidth() - _menu->getWidth(), _menuBar->getHeight());
+   _menu->setPosition( engine.getScreenWidth() - _menu->getWidth(), _menuBar->getHeight() );
    _menu->setListener(this);
 
    getMapArea().setViewSize(engine.getScreenWidth(), engine.getScreenHeight()+8*30);  // 8*30: used for high buildings (granary...), visible even when not in tilemap_area.
