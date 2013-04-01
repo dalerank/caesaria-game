@@ -585,14 +585,15 @@ BuildMenu *BuildMenu::getMenuInstance(const BuildMenuType menuType)
 
 void BuildMenu_water::addButtons()
 {
-   addBuildButton(B_FOUNTAIN);
-   addBuildButton(B_WELL);
+  addBuildButton(B_FOUNTAIN);
+  addBuildButton(B_WELL);
+  addBuildButton(B_AQUEDUCT);
 }
 
 
 void BuildMenu_security::addButtons()
 {
-   addBuildButton(B_PREFECT);
+  addBuildButton(B_PREFECT);
 }
 
 

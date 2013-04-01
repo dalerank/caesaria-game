@@ -202,6 +202,7 @@ LandOverlay* LandOverlay::getInstance(const BuildingType buildingType)
       // water
       _mapBuildingByID[B_WELL]      = new BuildingWell();
       _mapBuildingByID[B_FOUNTAIN]  = new BuildingFountain();
+      _mapBuildingByID[B_AQUEDUCT]  = new Aqueduct();
       // security
       _mapBuildingByID[B_PREFECT]   = new BuildingPrefect();
       // commerce
@@ -324,17 +325,45 @@ void Construction::computeAccessRoads()
    }
 }
 
+Aqueduct::Aqueduct()
+{
+  setType(B_AQUEDUCT);
+  setPicture(PicLoader::instance().get_picture("land2a", 133));
+  // land2a 119 120         - aqueduct over road
+  // land2a 121 122         - aqueduct over plain ground
+  // land2a 123 124 125 126 - aqueduct corner
+  // land2a 127 128         - aqueduct over dirty roads
+  // land2a 129 130 131 132 - aqueduct T-shape crossing
+  // land2a 133             - aqueduct crossing
+  // land2a 134 - 148       - aqueduct without water
+}
 
+Aqueduct* Aqueduct::clone() const
+{
+  return new Aqueduct(*this);
+}
+
+void Aqueduct::build(const int i, const int j)
+{
+   Construction::build(i, j);  
+}
+
+void Aqueduct::setTerrain(TerrainTile &terrain)
+{
+   terrain.reset();
+   terrain.setOverlay(this);
+   terrain.setBuilding(true);
+}
 
 Road::Road()
 {
-   setType(B_ROAD);
-   setPicture(PicLoader::instance().get_picture("land2a", 44));  // default picture for build tool
+  setType(B_ROAD);
+  setPicture(PicLoader::instance().get_picture("land2a", 44));  // default picture for build tool
 }
 
 Road* Road::clone() const
 {
-   return new Road(*this);
+  return new Road(*this);
 }
 
 void Road::build(const int i, const int j)
