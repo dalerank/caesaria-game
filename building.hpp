@@ -211,13 +211,43 @@ private:
    SimpleGoodStore _goodStore;
 };
 
+class GovernorsHouse  : public Building
+{
+public:
+  GovernorsHouse();
+  GovernorsHouse* clone() const;
+  
+//  void serialize(OutputSerialStream &stream);
+//  void unserialize(InputSerialStream &stream);
+};
+
+class GovernorsVilla  : public Building
+{
+public:
+  GovernorsVilla();
+  GovernorsVilla* clone() const;
+  
+//  void serialize(OutputSerialStream &stream);
+//  void unserialize(InputSerialStream &stream);
+};
+
+class GovernorsPalace : public Building
+{
+public:
+  GovernorsPalace();
+  GovernorsPalace* clone() const;
+  
+//  void serialize(OutputSerialStream &stream);
+//  void unserialize(InputSerialStream &stream);
+};
+
 class NativeBuilding : public Building
 {
 public:
-    NativeBuilding();
-    void serialize(OutputSerialStream &stream);
-    void unserialize(InputSerialStream &stream);
-    virtual GuiInfoBox* makeInfoBox();
+  NativeBuilding();
+  void serialize(OutputSerialStream &stream);
+  void unserialize(InputSerialStream &stream);
+  virtual GuiInfoBox* makeInfoBox();
 };
 
 class NativeHut    : public NativeBuilding

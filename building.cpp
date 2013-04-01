@@ -199,6 +199,9 @@ LandOverlay* LandOverlay::getInstance(const BuildingType buildingType)
       // administration
       _mapBuildingByID[B_FORUM]  = new Forum();
       _mapBuildingByID[B_SENATE] = new Senate();
+      _mapBuildingByID[B_GOVERNOR_HOUSE]  = new GovernorsHouse();
+      _mapBuildingByID[B_GOVERNOR_VILLA]  = new GovernorsVilla();
+      _mapBuildingByID[B_GOVERNOR_PALACE] = new GovernorsPalace();      
       // water
       _mapBuildingByID[B_WELL]      = new BuildingWell();
       _mapBuildingByID[B_FOUNTAIN]  = new BuildingFountain();
@@ -364,10 +367,6 @@ Reservoir::Reservoir()
   
   // utilitya 34      - emptry reservoir
   // utilitya 35 ~ 42 - full reservoir animation
-  
-  // housng1a 46 - governor's house
-  // housng1a 47 - governor's villa
-  // housng1a 48 - governor's palace
 }
 
 Reservoir* Reservoir::clone() const
@@ -852,6 +851,36 @@ void Granary::unserialize(InputSerialStream &stream)
    _goodStore.unserialize(stream);
 }
 
+// housng1a 46 - governor's house
+// housng1a 47 - governor's villa
+// housng1a 48 - governor's palace
+
+GovernorsHouse::GovernorsHouse()
+{
+  setType(B_GOVERNOR_HOUSE);
+  _size = 3;
+  setPicture(PicLoader::instance().get_picture("housng1a", 46));
+}
+
+GovernorsVilla::GovernorsVilla()
+{
+  setType(B_GOVERNOR_VILLA);
+  _size = 4;
+  setPicture(PicLoader::instance().get_picture("housng1a", 47));
+}
+
+GovernorsPalace::GovernorsPalace()
+{
+  setType(B_GOVERNOR_PALACE);
+  _size = 5;
+  setPicture(PicLoader::instance().get_picture("housng1a", 48));
+}
+
+GovernorsHouse* GovernorsHouse::clone() const {return new GovernorsHouse(*this);}
+GovernorsVilla* GovernorsVilla::clone() const {return new GovernorsVilla(*this);}
+GovernorsPalace* GovernorsPalace::clone() const {return new GovernorsPalace(*this);}
+
+
 NativeBuilding::NativeBuilding() {}
 
 void NativeBuilding::serialize(OutputSerialStream &stream) {Building::serialize(stream);}
@@ -860,7 +889,7 @@ void NativeBuilding::unserialize(InputSerialStream &stream) {Building::unseriali
 
 GuiInfoBox* NativeBuilding::makeInfoBox()
 {
-    return new GuiBuilding(*this);
+  return new GuiBuilding(*this);
 }
 
 NativeHut* NativeHut::clone() const

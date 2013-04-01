@@ -147,7 +147,10 @@ BuildingDataHolder::BuildingDataHolder()
    // administration
    addData(BuildingData(B_SENATE, "senate", 250));
    addData(BuildingData(B_FORUM, "forum", 75));
-
+   addData(BuildingData(B_GOVERNOR_HOUSE, "governor's_house", 500));
+   addData(BuildingData(B_GOVERNOR_VILLA, "governor's_villa", 500));
+   addData(BuildingData(B_GOVERNOR_PALACE, "governor's_palace", 500));
+   
    // security
    //addData(BuildingData(B_LEGIONARIES, "fort_legionaries", 1000));
    //addData(BuildingData(B_"fort_javelin", 1000));
