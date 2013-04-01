@@ -34,7 +34,7 @@ class MenuBar : public WidgetGroup
 {
 public:
    MenuBar();
-   void init();
+   void init( const unsigned int width, const unsigned int heigth );
 
    // draw on screen
    virtual void draw(const int dx, const int dy);

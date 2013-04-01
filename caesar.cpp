@@ -63,7 +63,7 @@ void CaesarApp::initVideo()
 {
    std::cout << "init graphic engine" << std::endl;
    new GfxSdlEngine();
-   GfxEngine::instance().setScreenSize(800, 600);
+   GfxEngine::instance().setScreenSize(1024, 768);
    GfxEngine::instance().init();
 }
 

@@ -107,7 +107,7 @@ private:
 };
 
 
-enum FontType { FONT_0, FONT_1, FONT_2, FONT_2_RED, FONT_2_WHITE, FONT_3, FONT_4, FONT_5, FONT_6, FONT_7 };
+enum FontType { FONT_0, FONT_1, FONT_2, FONT_2_RED, FONT_2_WHITE, FONT_2_YELLOW, FONT_3, FONT_4, FONT_5, FONT_6, FONT_7 };
 class FontCollection
 {
 public:
