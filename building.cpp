@@ -203,6 +203,7 @@ LandOverlay* LandOverlay::getInstance(const BuildingType buildingType)
       _mapBuildingByID[B_WELL]      = new BuildingWell();
       _mapBuildingByID[B_FOUNTAIN]  = new BuildingFountain();
       _mapBuildingByID[B_AQUEDUCT]  = new Aqueduct();
+      _mapBuildingByID[B_RESERVOIR] = new Reservoir();
       // security
       _mapBuildingByID[B_PREFECT]   = new BuildingPrefect();
       // commerce
@@ -345,15 +346,47 @@ Aqueduct* Aqueduct::clone() const
 
 void Aqueduct::build(const int i, const int j)
 {
-   Construction::build(i, j);  
+  Construction::build(i, j);  
 }
 
 void Aqueduct::setTerrain(TerrainTile &terrain)
 {
-   terrain.reset();
-   terrain.setOverlay(this);
-   terrain.setBuilding(true);
+  terrain.reset();
+  terrain.setOverlay(this);
+  terrain.setBuilding(true);
 }
+
+Reservoir::Reservoir()
+{
+  setType(B_RESERVOIR);
+  setPicture(PicLoader::instance().get_picture("utilitya", 34));
+  _size = 3;
+  
+  // utilitya 34      - emptry reservoir
+  // utilitya 35 ~ 42 - full reservoir animation
+  
+  // housng1a 46 - governor's house
+  // housng1a 47 - governor's villa
+  // housng1a 48 - governor's palace
+}
+
+Reservoir* Reservoir::clone() const
+{
+  return new Reservoir(*this);
+}
+
+void Reservoir::build(const int i, const int j)
+{
+  Construction::build(i, j);  
+}
+
+void Reservoir::setTerrain(TerrainTile &terrain)
+{
+  terrain.reset();
+  terrain.setOverlay(this);
+  terrain.setBuilding(true);
+}
+
 
 Road::Road()
 {

@@ -214,6 +214,7 @@ BuildingDataHolder::BuildingDataHolder()
    addData(BuildingData(B_WELL, "well", 5));
    addData(BuildingData(B_FOUNTAIN, "fountain", 15));
    addData(BuildingData(B_AQUEDUCT, "aqueduct", 0));
+   addData(BuildingData(B_RESERVOIR, "reservoir", 0));
    
    // natives
    addData(BuildingData(B_NATIVE_HUT, "native hut", 0));

@@ -97,23 +97,34 @@ protected:
 class Aqueduct : public Construction
 {
 public:
-   Aqueduct();
-   virtual Aqueduct* clone() const;
+  Aqueduct();
+  virtual Aqueduct* clone() const;
 
-   virtual void build(const int i, const int j);
-   Picture& computePicture();
-   virtual void setTerrain(TerrainTile &terrain);
+  virtual void build(const int i, const int j);
+  Picture& computePicture();
+  virtual void setTerrain(TerrainTile &terrain);
+};
+
+class Reservoir : public Construction
+{
+public:
+  Reservoir();
+  virtual Reservoir* clone() const;
+
+  virtual void build(const int i, const int j);
+  Picture& computePicture();
+  virtual void setTerrain(TerrainTile &terrain);
 };
 
 class Road : public Construction
 {
 public:
-   Road();
-   virtual Road* clone() const;
+  Road();
+  virtual Road* clone() const;
 
-   virtual void build(const int i, const int j);
-   Picture& computePicture();
-   virtual void setTerrain(TerrainTile &terrain);
+  virtual void build(const int i, const int j);
+  Picture& computePicture();
+  virtual void setTerrain(TerrainTile &terrain);
 };
 
 
