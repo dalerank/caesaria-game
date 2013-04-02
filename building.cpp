@@ -396,7 +396,9 @@ void Reservoir::setTerrain(TerrainTile &terrain)
 void Reservoir::timeStep(const unsigned long time)
 {
   _animation.nextFrame();
-  _fgPictures.at(0) = _animation.get_current_picture();
+  
+  // takes current animation frame and put it into foreground
+  _fgPictures.at(0) = _animation.get_current_picture(); 
 }
 
 Road::Road()
@@ -464,7 +466,7 @@ Picture& Road::computePicture()
       }
    }
 
-   // std::cout << "direction flags=" << directionFlags << std::endl;
+   std::cout << "direction flags=" << directionFlags << std::endl;
 
    int index;
    switch (directionFlags)
@@ -863,9 +865,19 @@ void Granary::unserialize(InputSerialStream &stream)
    _goodStore.unserialize(stream);
 }
 
-// housng1a 46 - governor's house
-// housng1a 47 - governor's villa
-// housng1a 48 - governor's palace
+// housng1a 46 - governor's house    3 x 3
+// housng1a 47 - governor's villa    4 x 4
+// housng1a 48 - governor's palace   5 x 5
+
+// govt     1  - small statue        1 x 1
+// govt     2  - medium statue       2 x 2
+// govt     3  - big statue          3 x 3
+
+// land3a 43 44 - triumphal arch
+// land3a 45 46 - triumphal arch
+
+// transport 93 - missionaire post   2 x 2
+// circus    1 ~ 18 hippodrome    5x(5 x 5)
 
 GovernorsHouse::GovernorsHouse()
 {

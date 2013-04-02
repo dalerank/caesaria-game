@@ -544,6 +544,10 @@ Forum* Forum::clone() const
    return new Forum(*this);
 }
 
+// govt 4  - senate
+// govt 9  - advanced senate
+// govt 5 ~ 8 - senate flags
+
 Senate::Senate() : ServiceBuilding(S_SENATE)
 {
    setType(B_SENATE);
