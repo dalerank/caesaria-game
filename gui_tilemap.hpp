@@ -44,8 +44,7 @@ public:
 
    // draws the tilemap on the screen, using a dumb back to front drawing of all pictures.
    void drawTilemap();
-   void drawTile(Tile &tile);
-
+   
    // returns the tile at the cursor position.
    Tile* getTileXY(const int x, const int y);
 
@@ -64,12 +63,19 @@ protected:
    void discardPreview();
 
    // used to display the future building at mouse location
-   void previewBuild(const int i, const int j);
+   void checkPreviewBuild(const int i, const int j);
    // used to display the future removed building at mouse location
-   void previewRemove(const int i, const int j);
+   void checkPreviewRemove(const int i, const int j);
 
    // returns the tile at the grid position (handles priority tiles)
    Tile& getTileIJ(const int i, const int j);
+   
+   // update preview tiles
+   void updatePreviewTiles();
+
+   void drawTile( const Tile &tile);
+
+   void drawTileEx( const Tile& tile, const int depth );
 
 private:
    City* _city;     // city to display
@@ -81,11 +87,15 @@ private:
    int _tilemap_yoffset;
 
    std::vector<Tile*> _multiTiles;  // used to avoid redisplay of a multi-tile.
-   std::list<Tile*> _priorityTiles;  // these tiles have priority over "normal" tilemap tiles!
+   //std::list<Tile*> _priorityTiles;  // these tiles have priority over "normal" tilemap tiles!
+
    bool _isPreview;
    bool _removeTool;  // true when using "clear land" tool
    Construction *_buildInstance;
    ScreenGame *_screenGame;
+
+   class Impl;
+   std::auto_ptr< Impl > _d;
 };
 
 

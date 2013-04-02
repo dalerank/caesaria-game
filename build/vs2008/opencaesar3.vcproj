@@ -187,165 +187,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\building_data.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\caesar.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\city.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\factory_building.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\gfx_engine.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\gfx_gl_engine.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\gfx_sdl_engine.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\good.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\gui_info_box.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\gui_menu.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\gui_paneling.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\gui_tilemap.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\gui_widget.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\house.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\house_level.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\model_loader.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\path_finding.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\pic_loader.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\picture.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\player.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\scenario.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\scenario_loader.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\scenario_saver.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\screen.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\screen_game.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\screen_menu.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\screen_wait.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\sdl_facade.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\serializer.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\service_building.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\sound_engine.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tilemap.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tilemap_area.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\training_building.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\walker.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\walker_cart_pusher.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\walker_market_buyer.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\warehouse.cpp"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
-			>
-			<File
 				RelativePath="..\..\building.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\building_data.cpp"
 				>
 			</File>
 			<File
@@ -353,7 +199,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\caesar.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\caesar.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\city.cpp"
 				>
 			</File>
 			<File
@@ -369,6 +223,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\factory_building.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\factory_building.hpp"
 				>
 			</File>
@@ -377,7 +235,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\gfx_engine.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\gfx_engine.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\gfx_gl_engine.cpp"
 				>
 			</File>
 			<File
@@ -385,7 +251,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\gfx_sdl_engine.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\gfx_sdl_engine.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\good.cpp"
 				>
 			</File>
 			<File
@@ -393,7 +267,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\gui_info_box.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\gui_info_box.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\gui_menu.cpp"
 				>
 			</File>
 			<File
@@ -401,7 +283,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\gui_paneling.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\gui_paneling.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\gui_tilemap.cpp"
 				>
 			</File>
 			<File
@@ -409,7 +299,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\gui_widget.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\gui_widget.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\house.cpp"
 				>
 			</File>
 			<File
@@ -417,7 +315,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\house_level.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\house_level.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\model_loader.cpp"
 				>
 			</File>
 			<File
@@ -425,7 +331,35 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_math.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_pictureconverter.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_pictureconverter.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_positioni.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_vector2.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\path_finding.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\path_finding.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pic_loader.cpp"
 				>
 			</File>
 			<File
@@ -433,7 +367,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\picture.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\picture.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\player.cpp"
 				>
 			</File>
 			<File
@@ -441,7 +383,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\scenario.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\scenario.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\scenario_loader.cpp"
 				>
 			</File>
 			<File
@@ -449,7 +399,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\scenario_saver.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\scenario_saver.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\screen.cpp"
 				>
 			</File>
 			<File
@@ -457,7 +415,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\screen_game.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\screen_game.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\screen_menu.cpp"
 				>
 			</File>
 			<File
@@ -465,7 +431,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\screen_wait.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\screen_wait.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\sdl_facade.cpp"
 				>
 			</File>
 			<File
@@ -473,7 +447,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\serializer.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\serializer.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\service_building.cpp"
 				>
 			</File>
 			<File
@@ -481,7 +463,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\sound_engine.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\sound_engine.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tilemap.cpp"
 				>
 			</File>
 			<File
@@ -489,7 +479,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tilemap_area.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tilemap_area.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\training_building.cpp"
 				>
 			</File>
 			<File
@@ -497,7 +495,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\walker.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\walker.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\walker_cart_pusher.cpp"
 				>
 			</File>
 			<File
@@ -505,7 +511,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\walker_market_buyer.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\walker_market_buyer.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\warehouse.cpp"
 				>
 			</File>
 			<File

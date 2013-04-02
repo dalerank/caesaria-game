@@ -89,7 +89,6 @@ void GfxSdlEngine::exit_frame()
    SDL_Flip(_screen); //Refresh the screen
 }
 
-
 void GfxSdlEngine::drawPicture(const Picture &picture, const int dx, const int dy)
 {
    SdlFacade::instance().drawPicture(picture, _screen, dx, dy);
