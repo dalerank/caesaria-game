@@ -199,9 +199,14 @@ LandOverlay* LandOverlay::getInstance(const BuildingType buildingType)
       // administration
       _mapBuildingByID[B_FORUM]  = new Forum();
       _mapBuildingByID[B_SENATE] = new Senate();
+      _mapBuildingByID[B_GOVERNOR_HOUSE]  = new GovernorsHouse();
+      _mapBuildingByID[B_GOVERNOR_VILLA]  = new GovernorsVilla();
+      _mapBuildingByID[B_GOVERNOR_PALACE] = new GovernorsPalace();      
       // water
       _mapBuildingByID[B_WELL]      = new BuildingWell();
       _mapBuildingByID[B_FOUNTAIN]  = new BuildingFountain();
+      _mapBuildingByID[B_AQUEDUCT]  = new Aqueduct();
+      _mapBuildingByID[B_RESERVOIR] = new Reservoir();
       // security
       _mapBuildingByID[B_PREFECT]   = new BuildingPrefect();
       // commerce
@@ -324,17 +329,85 @@ void Construction::computeAccessRoads()
    }
 }
 
+Aqueduct::Aqueduct()
+{
+  setType(B_AQUEDUCT);
+  setPicture(PicLoader::instance().get_picture("land2a", 133));
+  _size = 1;
+  // land2a 119 120         - aqueduct over road
+  // land2a 121 122         - aqueduct over plain ground
+  // land2a 123 124 125 126 - aqueduct corner
+  // land2a 127 128         - aqueduct over dirty roads
+  // land2a 129 130 131 132 - aqueduct T-shape crossing
+  // land2a 133             - aqueduct crossing
+  // land2a 134 - 148       - aqueduct without water
+}
 
+Aqueduct* Aqueduct::clone() const
+{
+  return new Aqueduct(*this);
+}
+
+void Aqueduct::build(const int i, const int j)
+{
+  Construction::build(i, j);  
+}
+
+void Aqueduct::setTerrain(TerrainTile &terrain)
+{
+  terrain.reset();
+  terrain.setOverlay(this);
+  terrain.setBuilding(true);
+}
+
+Reservoir::Reservoir()
+{
+  setType(B_RESERVOIR);
+  setPicture(PicLoader::instance().get_picture("utilitya", 34));
+  _size = 3;
+  
+  // utilitya 34      - emptry reservoir
+  // utilitya 35 ~ 42 - full reservoir animation
+ 
+  AnimLoader animLoader(PicLoader::instance());
+  animLoader.fill_animation(_animation, "utilitya", 35, 8);
+  animLoader.change_offset(_animation, 47, 63);
+  _fgPictures.resize(1);
+  //_fgPictures[0]=;
+}
+
+Reservoir* Reservoir::clone() const
+{
+  return new Reservoir(*this);
+}
+
+void Reservoir::build(const int i, const int j)
+{
+  Construction::build(i, j);  
+}
+
+void Reservoir::setTerrain(TerrainTile &terrain)
+{
+  terrain.reset();
+  terrain.setOverlay(this);
+  terrain.setBuilding(true);
+}
+
+void Reservoir::timeStep(const unsigned long time)
+{
+  _animation.nextFrame();
+  _fgPictures.at(0) = _animation.get_current_picture();
+}
 
 Road::Road()
 {
-   setType(B_ROAD);
-   setPicture(PicLoader::instance().get_picture("land2a", 44));  // default picture for build tool
+  setType(B_ROAD);
+  setPicture(PicLoader::instance().get_picture("land2a", 44));  // default picture for build tool
 }
 
 Road* Road::clone() const
 {
-   return new Road(*this);
+  return new Road(*this);
 }
 
 void Road::build(const int i, const int j)
@@ -790,6 +863,36 @@ void Granary::unserialize(InputSerialStream &stream)
    _goodStore.unserialize(stream);
 }
 
+// housng1a 46 - governor's house
+// housng1a 47 - governor's villa
+// housng1a 48 - governor's palace
+
+GovernorsHouse::GovernorsHouse()
+{
+  setType(B_GOVERNOR_HOUSE);
+  _size = 3;
+  setPicture(PicLoader::instance().get_picture("housng1a", 46));
+}
+
+GovernorsVilla::GovernorsVilla()
+{
+  setType(B_GOVERNOR_VILLA);
+  _size = 4;
+  setPicture(PicLoader::instance().get_picture("housng1a", 47));
+}
+
+GovernorsPalace::GovernorsPalace()
+{
+  setType(B_GOVERNOR_PALACE);
+  _size = 5;
+  setPicture(PicLoader::instance().get_picture("housng1a", 48));
+}
+
+GovernorsHouse* GovernorsHouse::clone() const {return new GovernorsHouse(*this);}
+GovernorsVilla* GovernorsVilla::clone() const {return new GovernorsVilla(*this);}
+GovernorsPalace* GovernorsPalace::clone() const {return new GovernorsPalace(*this);}
+
+
 NativeBuilding::NativeBuilding() {}
 
 void NativeBuilding::serialize(OutputSerialStream &stream) {Building::serialize(stream);}
@@ -798,7 +901,7 @@ void NativeBuilding::unserialize(InputSerialStream &stream) {Building::unseriali
 
 GuiInfoBox* NativeBuilding::makeInfoBox()
 {
-    return new GuiBuilding(*this);
+  return new GuiBuilding(*this);
 }
 
 NativeHut* NativeHut::clone() const

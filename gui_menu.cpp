@@ -585,46 +585,52 @@ BuildMenu *BuildMenu::getMenuInstance(const BuildMenuType menuType)
 
 void BuildMenu_water::addButtons()
 {
-   addBuildButton(B_FOUNTAIN);
-   addBuildButton(B_WELL);
+  addBuildButton(B_FOUNTAIN);
+  addBuildButton(B_WELL);
+  addBuildButton(B_AQUEDUCT);
+  addBuildButton(B_RESERVOIR);
 }
 
 
 void BuildMenu_security::addButtons()
 {
-   addBuildButton(B_PREFECT);
+  addBuildButton(B_PREFECT);
 }
 
 
 void BuildMenu_education::addButtons()
 {
-   addBuildButton(B_SCHOOL);
-   addBuildButton(B_LIBRARY);
-   addBuildButton(B_COLLEGE);
+  addBuildButton(B_SCHOOL);
+  addBuildButton(B_LIBRARY);
+  addBuildButton(B_COLLEGE);
 }
 
 
 void BuildMenu_health::addButtons()
 {
-   addBuildButton(B_DOCTOR);
-   addBuildButton(B_BARBER);
-   addBuildButton(B_BATHS);
-   addBuildButton(B_HOSPITAL);
+  addBuildButton(B_DOCTOR);
+  addBuildButton(B_BARBER);
+  addBuildButton(B_BATHS);
+  addBuildButton(B_HOSPITAL);
 }
 
 
 void BuildMenu_engineering::addButtons()
 {
-   addBuildButton(B_ENGINEER);
-   addBuildButton(B_LOW_BRIDGE);
-   addBuildButton(B_HIGH_BRIDGE);
+  addBuildButton(B_ENGINEER);
+  addBuildButton(B_LOW_BRIDGE);
+  addBuildButton(B_HIGH_BRIDGE);
 }
 
 
 void BuildMenu_administration::addButtons()
 {
-   addBuildButton(B_FORUM);
-   addBuildButton(B_SENATE);
+  addBuildButton(B_FORUM);
+  addBuildButton(B_SENATE);
+  
+  addBuildButton(B_GOVERNOR_HOUSE);
+  addBuildButton(B_GOVERNOR_VILLA);
+  addBuildButton(B_GOVERNOR_PALACE);
 }
 
 

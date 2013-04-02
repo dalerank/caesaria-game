@@ -147,7 +147,10 @@ BuildingDataHolder::BuildingDataHolder()
    // administration
    addData(BuildingData(B_SENATE, "senate", 250));
    addData(BuildingData(B_FORUM, "forum", 75));
-
+   addData(BuildingData(B_GOVERNOR_HOUSE, "governor's_house", 500));
+   addData(BuildingData(B_GOVERNOR_VILLA, "governor's_villa", 500));
+   addData(BuildingData(B_GOVERNOR_PALACE, "governor's_palace", 500));
+   
    // security
    //addData(BuildingData(B_LEGIONARIES, "fort_legionaries", 1000));
    //addData(BuildingData(B_"fort_javelin", 1000));
@@ -213,6 +216,8 @@ BuildingDataHolder::BuildingDataHolder()
    // water
    addData(BuildingData(B_WELL, "well", 5));
    addData(BuildingData(B_FOUNTAIN, "fountain", 15));
+   addData(BuildingData(B_AQUEDUCT, "aqueduct", 0));
+   addData(BuildingData(B_RESERVOIR, "reservoir", 0));
    
    // natives
    addData(BuildingData(B_NATIVE_HUT, "native hut", 0));

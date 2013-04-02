@@ -94,16 +94,38 @@ protected:
    std::list<Tile*> _accessRoads;
 };
 
+class Aqueduct : public Construction
+{
+public:
+  Aqueduct();
+  virtual Aqueduct* clone() const;
+
+  virtual void build(const int i, const int j);
+  Picture& computePicture();
+  virtual void setTerrain(TerrainTile &terrain);
+};
+
+class Reservoir : public Construction
+{
+public:
+  Reservoir();
+  virtual Reservoir* clone() const;
+
+  virtual void build(const int i, const int j);
+  Picture& computePicture();
+  virtual void setTerrain(TerrainTile &terrain);
+  void timeStep(const unsigned long time);
+};
 
 class Road : public Construction
 {
 public:
-   Road();
-   virtual Road* clone() const;
+  Road();
+  virtual Road* clone() const;
 
-   virtual void build(const int i, const int j);
-   Picture& computePicture();
-   virtual void setTerrain(TerrainTile &terrain);
+  virtual void build(const int i, const int j);
+  Picture& computePicture();
+  virtual void setTerrain(TerrainTile &terrain);
 };
 
 
@@ -190,13 +212,43 @@ private:
    SimpleGoodStore _goodStore;
 };
 
+class GovernorsHouse  : public Building
+{
+public:
+  GovernorsHouse();
+  GovernorsHouse* clone() const;
+  
+//  void serialize(OutputSerialStream &stream);
+//  void unserialize(InputSerialStream &stream);
+};
+
+class GovernorsVilla  : public Building
+{
+public:
+  GovernorsVilla();
+  GovernorsVilla* clone() const;
+  
+//  void serialize(OutputSerialStream &stream);
+//  void unserialize(InputSerialStream &stream);
+};
+
+class GovernorsPalace : public Building
+{
+public:
+  GovernorsPalace();
+  GovernorsPalace* clone() const;
+  
+//  void serialize(OutputSerialStream &stream);
+//  void unserialize(InputSerialStream &stream);
+};
+
 class NativeBuilding : public Building
 {
 public:
-    NativeBuilding();
-    void serialize(OutputSerialStream &stream);
-    void unserialize(InputSerialStream &stream);
-    virtual GuiInfoBox* makeInfoBox();
+  NativeBuilding();
+  void serialize(OutputSerialStream &stream);
+  void unserialize(InputSerialStream &stream);
+  virtual GuiInfoBox* makeInfoBox();
 };
 
 class NativeHut    : public NativeBuilding
