@@ -18,13 +18,11 @@
 
 #include <pic_loader.hpp>
 
-#include <exception.hpp>
-#include <sdl_facade.hpp>
-
 #include <cstdlib>
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <memory>
 #include <iomanip>
 #include <archive.h>
 #include <archive_entry.h>
@@ -33,6 +31,8 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
+#include <exception.hpp>
+#include <sdl_facade.hpp>
 
 
 PicMetaData* PicMetaData::_instance = NULL;
@@ -57,6 +57,7 @@ PicMetaData::PicMetaData()
    info.xoffset = -1;
    info.yoffset = -1;
    setRange("land1a", 1, 303, info);
+   setRange("oc3_land", 1, 2, info);
    setRange("land2a", 1, 151, info);
    setRange("land3a", 47, 92, info);
    setRange("plateau", 1, 44, info);
@@ -319,7 +320,7 @@ void PicLoader::load_all()
 {
    std::string aPath = "resources/pics/";
    load_archive(aPath+"pics.zip");
-
+   load_archive(aPath+"pics_oc3.zip");	
    std::cout << "number of images loaded: " << _resources.size() << std::endl;
 }
 
@@ -338,11 +339,12 @@ void PicLoader::load_archive(const std::string &filename)
 
    SDL_Surface *surface;
    SDL_RWops *rw;
-   Uint8 *buffer;  // buffer used for file decompression
-   int buffersize = 10000000;  // allocated buffer
-   int size = 0;   // data size in buffer
-   buffer = (Uint8*)malloc(buffersize);
-   if (buffer == NULL) THROW("Memory error, cannot allocate buffer size " << buffersize);
+
+   const Uint32 bufferSize = 10000000;  // allocated buffer
+   std::auto_ptr< Uint8 > buffer( new Uint8[ bufferSize ] );
+   
+   if( buffer.get() == 0 ) 
+       THROW("Memory error, cannot allocate buffer size " << bufferSize);
 
    std::string entryname;
    while (archive_read_next_header(a, &entry) == ARCHIVE_OK)
@@ -354,14 +356,15 @@ void PicLoader::load_archive(const std::string &filename)
          // not a regular file (maybe a directory). skip it.
          continue;
       }
-      if (archive_entry_stat(entry)->st_size >= buffersize) THROW("Cannot load archive: file is too big " << entryname << " in archive " << filename);
-      size = archive_read_data(a, buffer, buffersize);  // read data into buffer
-      rw = SDL_RWFromMem(buffer, size);
+      if (archive_entry_stat(entry)->st_size >= bufferSize) 
+          THROW("Cannot load archive: file is too big " << entryname << " in archive " << filename);
+      
+      int size = archive_read_data(a, buffer.get(), bufferSize);  // read data into buffer
+      rw = SDL_RWFromMem(buffer.get(), size);
       surface = IMG_Load_RW(rw, 0);
       set_picture(entryname, *surface);
       SDL_FreeRW(rw);
    }
-   free(buffer);
 
    rc = archive_read_finish(a);
    if (rc != ARCHIVE_OK) THROW("Error while reading archive " << filename);
@@ -401,6 +404,7 @@ Picture PicLoader::make_picture(SDL_Surface *surface, const std::string& resourc
    Picture pic;
    pic.init(surface, xoffset, yoffset);
    pic.set_name(filename);
+
    return pic;
 }
 
