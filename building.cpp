@@ -295,6 +295,7 @@ bool Construction::canBuild(const int i, const int j) const
 
       is_constructible &= tile.get_terrain().isConstructible();
    }
+
    return is_constructible;
 }
 

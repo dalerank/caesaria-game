@@ -413,6 +413,7 @@ void GuiTilemap::checkPreviewBuild(const int i, const int j)
       }
       else
       {
+          Picture& grnPicture = PicLoader::instance().get_picture( "oc3_land", 1 );
           Picture& redPicture = PicLoader::instance().get_picture( "oc3_land", 2 );
           
           for (int dj = 0; dj<size; ++dj)
@@ -421,7 +422,8 @@ void GuiTilemap::checkPreviewBuild(const int i, const int j)
               {
                   Tile* tile = new Tile(_tilemap->at(i+di, j+dj));  // make a copy of tile
 
-                  tile->set_picture(&redPicture);
+                  bool isConstructible = tile->get_terrain().isConstructible();
+                  tile->set_picture( isConstructible ? &grnPicture : &redPicture );
                   tile->set_master_tile(0);
 				  tile->get_terrain().reset();
                   _d->postTiles.push_back( tile );
