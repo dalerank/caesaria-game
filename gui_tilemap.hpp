@@ -22,6 +22,7 @@
 
 #include <list>
 #include <vector>
+#include <memory>
 
 #include <picture.hpp>
 #include <city.hpp>
@@ -73,7 +74,7 @@ protected:
    // update preview tiles
    void updatePreviewTiles();
 
-   void drawTile( const Tile &tile);
+   void drawTile( const Tile &tile );
 
    void drawTileEx( const Tile& tile, const int depth );
 

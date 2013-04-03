@@ -76,7 +76,7 @@ void GuiTilemap::drawTileEx( const Tile& tile, const int depth )
     if( master==NULL )
     {
         // single-tile
-        drawTile( tile );
+		drawTile( tile );
     }
     else
     {
@@ -89,11 +89,43 @@ void GuiTilemap::drawTileEx( const Tile& tile, const int depth )
             {
                 // master has not been drawn yet
                 _multiTiles.push_back(master);  // don't draw that multi-tile again
-                drawTile(*master);
+				drawTile( *master );
             }
         }
     }
 }
+
+void GuiTilemap::drawTile( const Tile& tile )
+{
+	int i = tile.getI();
+	int j = tile.getJ();
+
+	int dx = _tilemap_xoffset;
+	int dy = _tilemap_yoffset;
+
+	Picture& pic = tile.get_picture();
+	GfxEngine &engine = GfxEngine::instance();
+	engine.drawPicture(pic, 30*(i+j)+dx, 15*(i-j)+dy);
+
+	// building foregrounds and animations
+	LandOverlay *overlay = tile.get_terrain().getOverlay();
+	if( overlay != NULL )
+	{
+		std::vector<Picture*>& fgPictures = overlay->getForegroundPictures();
+		for (std::vector<Picture*>::iterator itPic = fgPictures.begin(); itPic != fgPictures.end(); ++itPic)
+		{
+			// for each foreground picture
+			if (*itPic == NULL)
+			{
+				// skip void picture
+				continue;
+			}
+			Picture &fgpic = **itPic;
+			engine.drawPicture(fgpic, 30*(i+j)+dx, 15*(i-j)+dy);
+		}
+	}
+}
+
 
 void GuiTilemap::drawTilemap()
 {
@@ -128,7 +160,7 @@ void GuiTilemap::drawTilemap()
          if( master==NULL )
          {
             // single-tile
-            drawTile(tile);
+			 drawTile( tile );
          }
          else
          {
@@ -137,7 +169,7 @@ void GuiTilemap::drawTilemap()
             {
                // master has not been drawn yet
                _multiTiles.push_back(master);
-               drawTile(*master);
+			   drawTile( *master );
             }
          }
       }
@@ -182,7 +214,7 @@ void GuiTilemap::drawTilemap()
       }
 
       Tile& tile = getTileIJ(i, j);
-      drawTileEx( tile, z );
+	  drawTileEx( tile, z );
    }
 
    //Third part: drawing build/remove tools
@@ -190,42 +222,10 @@ void GuiTilemap::drawTilemap()
         for( Tiles::iterator itPostTile = _d->postTiles.begin(); itPostTile != _d->postTiles.end(); ++itPostTile )
         {
             int z = (*itPostTile)->getJ() - (*itPostTile)->getI();
-            drawTileEx( **itPostTile, z );
+			drawTileEx( **itPostTile, z );
         }       
     }
 }
-
-void GuiTilemap::drawTile( const Tile& tile)
-{
-   int i = tile.getI();
-   int j = tile.getJ();
-
-   int dx = _tilemap_xoffset;
-   int dy = _tilemap_yoffset;
-
-   Picture& pic = tile.get_picture();
-   GfxEngine &engine = GfxEngine::instance();
-   engine.drawPicture(pic, 30*(i+j)+dx, 15*(i-j)+dy);
-
-   // building foregrounds and animations
-   LandOverlay *overlay = tile.get_terrain().getOverlay();
-   if (overlay != NULL)
-   {
-      std::vector<Picture*>& fgPictures = overlay->getForegroundPictures();
-      for (std::vector<Picture*>::iterator itPic = fgPictures.begin(); itPic != fgPictures.end(); ++itPic)
-      {
-         // for each foreground picture
-         if (*itPic == NULL)
-         {
-            // skip void picture
-            continue;
-         }
-         Picture &fgpic = **itPic;
-         engine.drawPicture(fgpic, 30*(i+j)+dx, 15*(i-j)+dy);
-      }
-   }
-}
-
 
 Tile* GuiTilemap::getTileXY(const int x, const int y)
 {
@@ -413,7 +413,7 @@ void GuiTilemap::checkPreviewBuild(const int i, const int j)
       }
       else
       {
-          Picture& redPicture = PicLoader::instance().get_picture("land1a", 305 );
+          Picture& redPicture = PicLoader::instance().get_picture( "oc3_land", 2 );
           
           for (int dj = 0; dj<size; ++dj)
           {
@@ -423,8 +423,7 @@ void GuiTilemap::checkPreviewBuild(const int i, const int j)
 
                   tile->set_picture(&redPicture);
                   tile->set_master_tile(0);
-                  //TerrainTile &terrain = tile->get_terrain();
-                  //terrain.setOverlay(0);
+				  tile->get_terrain().reset();
                   _d->postTiles.push_back( tile );
               }
           }
@@ -432,16 +431,15 @@ void GuiTilemap::checkPreviewBuild(const int i, const int j)
    }
 }
 
-
 void GuiTilemap::checkPreviewRemove(const int i, const int j)
 {
    if (_removeTool)
    {
       Tile& cursorTile = _tilemap->at(i, j);
       TerrainTile& terrain = cursorTile.get_terrain();
-      if (terrain.isDestructible())
+      if( terrain.isDestructible() )
       {
-         Picture &pic_clear = PicLoader::instance().get_picture("land1a", 1);
+         Picture &pic_clear = PicLoader::instance().get_picture( "oc3_land", 2 );
 
          LandOverlay* overlay = terrain.getOverlay();
          if (overlay == NULL)

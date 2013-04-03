@@ -18,13 +18,11 @@
 
 #include <pic_loader.hpp>
 
-#include <exception.hpp>
-#include <sdl_facade.hpp>
-
 #include <cstdlib>
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <memory>
 #include <iomanip>
 #include <archive.h>
 #include <archive_entry.h>
@@ -33,6 +31,8 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
+#include <exception.hpp>
+#include <sdl_facade.hpp>
 
 
 PicMetaData* PicMetaData::_instance = NULL;
@@ -56,7 +56,8 @@ PicMetaData::PicMetaData()
    PicInfo info;
    info.xoffset = -1;
    info.yoffset = -1;
-   setRange("land1a", 1, 305, info);
+   setRange("land1a", 1, 303, info);
+   setRange("oc3_land", 1, 2, info);
    setRange("land2a", 1, 151, info);
    setRange("land3a", 47, 92, info);
    setRange("plateau", 1, 44, info);
@@ -319,7 +320,7 @@ void PicLoader::load_all()
 {
    std::string aPath = "resources/pics/";
    load_archive(aPath+"pics.zip");
-
+   load_archive(aPath+"pics_oc3.zip");	
    std::cout << "number of images loaded: " << _resources.size() << std::endl;
 }
 

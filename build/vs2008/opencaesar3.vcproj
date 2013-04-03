@@ -144,7 +144,7 @@
 				AdditionalDependencies="libintl.lib opengl32.lib SDL_image.lib SDL.lib SDL_ttf.lib libarchive.lib SDL_mixer.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;libs\libarchive-2.8.5\lib&quot;;&quot;libs\SDL_ttf-2.0.11\lib\x86&quot;;&quot;libs\SDL_mixer-1.2.12\lib\x86&quot;;&quot;libs\SDL-1.2.15\lib\x86&quot;;&quot;libs\SDL_image-1.2.12\lib\x86&quot;;libs/libintl/lib"
+				AdditionalLibraryDirectories="libs\boost\lib;&quot;libs\libarchive-2.8.5\lib&quot;;&quot;libs\SDL_ttf-2.0.11\lib\x86&quot;;&quot;libs\SDL_mixer-1.2.12\lib\x86&quot;;&quot;libs\SDL-1.2.15\lib\x86&quot;;&quot;libs\SDL_image-1.2.12\lib\x86&quot;;libs/libintl/lib"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				EntryPointSymbol=""
