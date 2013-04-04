@@ -579,3 +579,15 @@ FarmVegetable* FarmVegetable::clone() const
    return res;
 }
 
+Wharf::Wharf() : Factory(G_NONE, G_FISH)
+{
+  setType(B_WHARF);
+  _size = 2;
+  // transport 52 53 54 55
+  setPicture(PicLoader::instance().get_picture("transport", 52));
+}
+
+Wharf* Wharf::clone() const
+{
+   return new Wharf(*this);
+}

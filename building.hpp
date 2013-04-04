@@ -242,13 +242,6 @@ public:
 //  void unserialize(InputSerialStream &stream);
 };
 
-class Wharf : public Building
-{
-public:
-  Wharf();
-  Wharf* clone() const;
-};
-
 class Shipyard : public Building
 {
 public:

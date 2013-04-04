@@ -194,4 +194,11 @@ public:
    virtual FarmVegetable* clone() const;
 };
 
+class Wharf : public Factory
+{
+public:
+  Wharf();
+  Wharf* clone() const;
+};
+
 #endif

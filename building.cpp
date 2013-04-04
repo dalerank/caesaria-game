@@ -968,19 +968,6 @@ NativeField* NativeField::clone() const
   return new NativeField(*this);
 }
 
-Wharf::Wharf()
-{
-  setType(B_WHARF);
-  _size = 2;
-  setPicture(PicLoader::instance().get_picture("transport", 1));
-  // also transport 2 3 4 check position of river on map
-}
-
-Wharf* Wharf::clone() const
-{
-   return new Wharf(*this);
-}
-
 // transport 52 53 54 55
 
 Shipyard::Shipyard()
@@ -1030,12 +1017,14 @@ Dock* Dock::clone() const
    return new Dock(*this);
 }
 
+// second arch pictures is land3a 45 + 46	
+
 TriumphalArch::TriumphalArch()
 {
   setType(B_TRIUMPHAL_ARCH);
   _size = 3;
   setPicture(PicLoader::instance().get_picture("land3a", 43));
-  std::cout << getPicture().get_xoffset() << " " << getPicture().get_yoffset() << " " << getPicture().get_width() << " " << getPicture().get_height() << std::endl;
+  // std::cout << getPicture().get_xoffset() << " " << getPicture().get_yoffset() << " " << getPicture().get_width() << " " << getPicture().get_height() << std::endl;
   getPicture().set_offset(0,116);
   AnimLoader animLoader(PicLoader::instance());
   animLoader.fill_animation(_animation, "land3a", 44, 1);
