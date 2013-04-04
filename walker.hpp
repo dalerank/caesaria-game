@@ -111,13 +111,32 @@ class Immigrant : public Walker
 public:
     virtual Immigrant* clone() const;
 
-    static Immigrant* create( const Road& startPoint );
+    static Immigrant* create( const Building& startPoint );
     
     void onDestination();
     ~Immigrant();
 private:
     Immigrant();
  
+    void assignPath( const Building& home );
+
+    class Impl;
+    std::auto_ptr< Impl > _d;
+};
+
+/** This is an immigrant coming with his stuff */
+class Emigrant : public Walker
+{
+public:
+    virtual Emigrant* clone() const;
+
+    static Emigrant* create( const Road& startPoint );
+
+    void onDestination();
+    ~Emigrant();
+private:
+    Emigrant();
+
     void assignPath( const Road& startPoint );
 
     class Impl;

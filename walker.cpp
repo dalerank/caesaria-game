@@ -460,10 +460,69 @@ Immigrant* Immigrant::clone() const
    return ret;
 }
 
-void Immigrant::assignPath( const Road& startPoint )
+void Immigrant::assignPath( const Building& home )
+{
+    City& city = Scenario::instance().getCity();
+    Tile& exitTile = city.getTilemap().at( city.getRoadExitI(), city.getRoadExitJ() );
+
+    Road* exitRoad = dynamic_cast< Road* >( exitTile.get_terrain().getOverlay() );
+    if( exitRoad )
+    {
+        Propagator pathfinder;
+	    PathWay pathWay;
+        pathfinder.init( const_cast< Building& >( home ) );
+        bool findPath = pathfinder.getPath( *exitRoad, pathWay );
+	    if( findPath )
+	    {
+		    setPathWay( pathWay );
+		    setIJ(_pathWay.getOrigin().getI(), _pathWay.getOrigin().getJ());   
+	    }
+    }
+    else
+        _isDeleted = true;
+}
+
+void Immigrant::onDestination()
+{  
+    _isDeleted = true;
+}
+
+Immigrant* Immigrant::create( const Building& startPoint )
+{
+    Immigrant* newImmigrant = new Immigrant();
+    newImmigrant->assignPath( startPoint );
+    return newImmigrant;
+}
+
+Immigrant::~Immigrant()
+{
+
+}
+
+
+class Emigrant::Impl
+{
+public:
+    Point destination;
+};
+
+Emigrant::Emigrant() : _d( new Impl )
+{
+    _walkerType = WT_EMIGRANT;
+    _walkerGraphic = WG_PUSHER;
+}
+
+Emigrant* Emigrant::clone() const
+{
+    Emigrant* ret = new Emigrant();
+    ret->_d->destination = _d->destination;
+    return ret;
+}
+
+void Emigrant::assignPath( const Road& startPoint )
 {
     std::list<PathWay> pathWayList;
-   
+
     std::list<LandOverlay*> houses = Scenario::instance().getCity().getBuildingList(B_HOUSE);
     House* blankHouse = 0;
     for( std::list<LandOverlay*>::iterator itHouse = houses.begin(); itHouse != houses.end(); ++itHouse )
@@ -480,17 +539,17 @@ void Immigrant::assignPath( const Road& startPoint )
     }
 
     Propagator pathfinder;
-	PathWay pathWay;
+    PathWay pathWay;
     pathfinder.init( const_cast< Road& >( startPoint ) );
     bool findPath = pathfinder.getPath( *blankHouse, pathWay );
-	if( findPath )
-	{
-		setPathWay( pathWay );
-		setIJ(_pathWay.getOrigin().getI(), _pathWay.getOrigin().getJ());   
-	}
+    if( findPath )
+    {
+        setPathWay( pathWay );
+        setIJ(_pathWay.getOrigin().getI(), _pathWay.getOrigin().getJ());   
+    }
 }
 
-void Immigrant::onDestination()
+void Emigrant::onDestination()
 {
     const Tile& tile = Scenario::instance().getCity().getTilemap().at( _d->destination.x, _d->destination.y );
 
@@ -502,21 +561,22 @@ void Immigrant::onDestination()
             house->addHabitants( 1 );
         }
     }
-    
+
     _isDeleted = true;
 }
 
-Immigrant* Immigrant::create( const Road& startPoint )
+Emigrant* Emigrant::create( const Road& startPoint )
 {
-    Immigrant* newImmigrant = new Immigrant();
-    newImmigrant->assignPath( startPoint );
-    return newImmigrant;
+    Emigrant* newEmigrant = new Emigrant();
+    newEmigrant->assignPath( startPoint );
+    return newEmigrant;
 }
 
-Immigrant::~Immigrant()
+Emigrant::~Emigrant()
 {
 
 }
+
 Soldier::Soldier()
 {
    _walkerType = WT_SOLDIER;

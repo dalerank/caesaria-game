@@ -122,7 +122,7 @@ void City::_createImigrants()
 		return;
 	}
 
-	std::list<Walker*> walkers = getWalkerList( WT_IMMIGRANT );
+	std::list<Walker*> walkers = getWalkerList( WT_EMIGRANT );
 
 	if( vacantPop <= walkers.size() )
 	{
@@ -135,7 +135,7 @@ void City::_createImigrants()
     if( roadEntry )
     {
 		vacantPop = std::max<Uint32>( 1, rand() % std::max<Uint32>( 1, vacantPop / 2 ) );
-        Immigrant* ni = Immigrant::create( *roadEntry );
+        Emigrant* ni = Emigrant::create( *roadEntry );
         _walkerList.push_back( ni );
     }    
 }
