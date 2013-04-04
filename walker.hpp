@@ -20,6 +20,7 @@
 #define WALKER_HPP
 
 #include <string>
+#include <memory>
 
 #include "building.hpp"
 #include "service_building.hpp"

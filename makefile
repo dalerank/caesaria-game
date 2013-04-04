@@ -42,7 +42,10 @@ ifeq ("$(OS)", "win32")
    LFLAGS=-mwindows -lmingw32 -static-libgcc -static-libstdc++ -L$(WIN_PREFIX)/lib -lintl -lopengl32 -lSDLmain -lSDL -lSDL_mixer -lSDL_ttf -lSDL_image -larchive
 endif
 
-OBJECTS=caesar.o pic_loader.o tilemap.o tilemap_area.o city.o path_finding.o scenario.o serializer.o scenario_saver.o scenario_loader.o model_loader.o picture.o sdl_facade.o gui_paneling.o sound_engine.o gfx_engine.o gfx_sdl_engine.o gfx_gl_engine.o screen.o screen_wait.o screen_menu.o screen_game.o gui_tilemap.o gui_widget.o house_level.o house.o building_data.o factory_building.o service_building.o training_building.o good.o building.o warehouse.o walker.o walker_market_buyer.o walker_cart_pusher.o gui_menu.o gui_info_box.o oc3_pictureconverter.o
+OBJECTS=caesar.o pic_loader.o tilemap.o tilemap_area.o city.o path_finding.o scenario.o serializer.o scenario_saver.o scenario_loader.o model_loader.o \
+	picture.o sdl_facade.o gui_paneling.o sound_engine.o gfx_engine.o gfx_sdl_engine.o gfx_gl_engine.o screen.o screen_wait.o screen_menu.o screen_game.o \
+	gui_tilemap.o gui_widget.o house_level.o house.o building_data.o factory_building.o service_building.o training_building.o good.o building.o warehouse.o \
+	walker.o walker_market_buyer.o walker_cart_pusher.o gui_menu.o gui_info_box.o oc3_pictureconverter.o oc3_emigrant.o
 
 
 all: $(CAESAR_EXE) tags chmod

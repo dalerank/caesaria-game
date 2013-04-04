@@ -14,7 +14,7 @@ public:
 	//! Constructor with the same value for both members
 	explicit Vector2(T n) : x(n), y(n) {}
 	//! Copy constructor
-	Vector2(const Vector2<T>& other) : x(other.X), y(other.Y) {}
+	Vector2(const Vector2<T>& other) : x(other.x), y(other.y) {}
 
 	// operators
 	Vector2<T> operator-() const { return Vector2<T>(-x, -y); }
