@@ -1035,9 +1035,11 @@ TriumphalArch::TriumphalArch()
   setType(B_TRIUMPHAL_ARCH);
   _size = 3;
   setPicture(PicLoader::instance().get_picture("land3a", 43));
+  std::cout << getPicture().get_xoffset() << " " << getPicture().get_yoffset() << " " << getPicture().get_width() << " " << getPicture().get_height() << std::endl;
+  getPicture().set_offset(0,116);
   AnimLoader animLoader(PicLoader::instance());
   animLoader.fill_animation(_animation, "land3a", 44, 1);
-  animLoader.change_offset(_animation, 100, 100);
+  animLoader.change_offset(_animation, 63, 97);
   _fgPictures.resize(1);
   _fgPictures.at(0) = _animation.get_current_picture(); 
 }
