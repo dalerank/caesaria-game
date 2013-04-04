@@ -28,6 +28,9 @@
 #include "gettext.hpp"
 #include "gui_paneling.hpp"
 #include "building_data.hpp"
+#include <house_level.hpp>
+
+static const char* rcPaneling = "paneling";
 
 
 std::vector<Picture*> GuiInfoBox::_mapPictureGood;
@@ -53,22 +56,23 @@ GuiInfoBox::~GuiInfoBox()
 void GuiInfoBox::initStatic()
 {
    _mapPictureGood.resize(G_MAX);
-   _mapPictureGood[int(G_WHEAT)]     = &PicLoader::instance().get_picture("paneling", 317);
-   _mapPictureGood[int(G_VEGETABLE)] = &PicLoader::instance().get_picture("paneling", 318);
-   _mapPictureGood[int(G_FRUIT)]     = &PicLoader::instance().get_picture("paneling", 319);
-   _mapPictureGood[int(G_OLIVE)]     = &PicLoader::instance().get_picture("paneling", 320);
-   _mapPictureGood[int(G_GRAPE)]     = &PicLoader::instance().get_picture("paneling", 321);
-   _mapPictureGood[int(G_MEAT)]      = &PicLoader::instance().get_picture("paneling", 322);
-   _mapPictureGood[int(G_WINE)]      = &PicLoader::instance().get_picture("paneling", 323);
-   _mapPictureGood[int(G_OIL)]       = &PicLoader::instance().get_picture("paneling", 324);
-   _mapPictureGood[int(G_IRON)]      = &PicLoader::instance().get_picture("paneling", 325);
-   _mapPictureGood[int(G_TIMBER)]    = &PicLoader::instance().get_picture("paneling", 326);
-   _mapPictureGood[int(G_CLAY)]      = &PicLoader::instance().get_picture("paneling", 327);
-   _mapPictureGood[int(G_MARBLE)]    = &PicLoader::instance().get_picture("paneling", 328);
-   _mapPictureGood[int(G_WEAPON)]    = &PicLoader::instance().get_picture("paneling", 329);
-   _mapPictureGood[int(G_FURNITURE)] = &PicLoader::instance().get_picture("paneling", 330);
-   _mapPictureGood[int(G_POTTERY)]   = &PicLoader::instance().get_picture("paneling", 331);
-   _mapPictureGood[int(G_FISH)]      = &PicLoader::instance().get_picture("paneling", 333);
+   PicLoader& ldr = PicLoader::instance();
+   _mapPictureGood[int(G_WHEAT)    ] = &ldr.get_picture( rcPaneling, 317);
+   _mapPictureGood[int(G_VEGETABLE)] = &ldr.get_picture( rcPaneling, 318);
+   _mapPictureGood[int(G_FRUIT)    ] = &ldr.get_picture( rcPaneling, 319);
+   _mapPictureGood[int(G_OLIVE)    ] = &ldr.get_picture( rcPaneling, 320);
+   _mapPictureGood[int(G_GRAPE)    ] = &ldr.get_picture( rcPaneling, 321);
+   _mapPictureGood[int(G_MEAT)     ] = &ldr.get_picture( rcPaneling, 322);
+   _mapPictureGood[int(G_WINE)     ] = &ldr.get_picture( rcPaneling, 323);
+   _mapPictureGood[int(G_OIL)      ] = &ldr.get_picture( rcPaneling, 324);
+   _mapPictureGood[int(G_IRON)     ] = &ldr.get_picture( rcPaneling, 325);
+   _mapPictureGood[int(G_TIMBER)   ] = &ldr.get_picture( rcPaneling, 326);
+   _mapPictureGood[int(G_CLAY)     ] = &ldr.get_picture( rcPaneling, 327);
+   _mapPictureGood[int(G_MARBLE)   ] = &ldr.get_picture( rcPaneling, 328);
+   _mapPictureGood[int(G_WEAPON)   ] = &ldr.get_picture( rcPaneling, 329);
+   _mapPictureGood[int(G_FURNITURE)] = &ldr.get_picture( rcPaneling, 330);
+   _mapPictureGood[int(G_POTTERY)  ] = &ldr.get_picture( rcPaneling, 331);
+   _mapPictureGood[int(G_FISH)     ] = &ldr.get_picture( rcPaneling, 333);
 }
 
 void GuiInfoBox::init(const int width, const int height)
@@ -258,15 +262,10 @@ void GuiInfoHouse::drawHabitants()
    SdlFacade &sdlFacade = SdlFacade::instance();
 
    // citizen or patrician picture
-   Picture *patrician = &PicLoader::instance().get_picture("paneling", 541);
-   Picture *citizen = &PicLoader::instance().get_picture("paneling", 542);
-   Picture *pic = citizen;
-   if (_house->getLevelSpec().isPatrician())
-   {
-      // oops it was a patrician, sorry sir!
-      pic = patrician;
-   }
-   sdlFacade.drawPicture(*pic, *_bgPicture, 16+15, _paintY);
+   Uint32 picId = _house->getLevelSpec().isPatrician() ? 541 : 542; 
+   Picture* pic = &PicLoader::instance().get_picture( rcPaneling, picId);
+   
+   sdlFacade.drawPicture( *pic, *_bgPicture, 16+15, _paintY);
 
    // number of habitants
    char buffer[1000];

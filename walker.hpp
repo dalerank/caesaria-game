@@ -109,10 +109,19 @@ private:
 class Immigrant : public Walker
 {
 public:
-   Immigrant();
-   virtual Immigrant* clone() const;
-private:
+    virtual Immigrant* clone() const;
 
+    static Immigrant* create( const Road& startPoint );
+    
+    void onDestination();
+    ~Immigrant();
+private:
+    Immigrant();
+ 
+    void assignPath( const Road& startPoint );
+
+    class Impl;
+    std::auto_ptr< Impl > _d;
 };
 
 

@@ -21,20 +21,22 @@
 
 #include <iostream>
 
+#include <house_level.hpp>
 #include "gui_info_box.hpp"
 #include "scenario.hpp"
 #include "exception.hpp"
 
+static const char* rcGrourName = "housng1a";
 
 House::House(const int houseId) : Building()
 {
    setType(B_HOUSE);
    _houseId = houseId;
-   _houseLevel = HouseLevelSpec::getHouseLevel(houseId);
+   _houseLevel = HouseLevelSpec::getHouseLevel( houseId );
    _houseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel);
    _nextHouseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel+1);
    _name = _houseLevelSpec->getLevelName();
-   _currentHabitants = 20;
+   _currentHabitants = 0;
 
    _goodStore.setMaxQty(10000);  // no limit
    _goodStore.setMaxQty(G_WHEAT, 100);
@@ -55,9 +57,7 @@ House::House(const int houseId) : Building()
       _serviceAccessMap[service] = 0;
    }
 
-   _picture = &PicLoader::instance().get_picture("housng1a", _houseId);
-   _size = (_picture->get_surface()->w+2)/60;
-   _maxHabitants = _houseLevelSpec->getMaxHabitantsByTile() * _size * _size;
+   _update();
 }
 
 House* House::clone() const
@@ -128,7 +128,7 @@ HouseLevelSpec& House::getLevelSpec()
 
 void House::levelUp()
 {
-   _houseLevel ++;
+   _houseLevel++;
    _houseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel);
    _nextHouseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel+1);
 
@@ -165,13 +165,13 @@ void House::levelUp()
       _houseId = 27;
       break;
    }
-   setPicture(PicLoader::instance().get_picture("housng1a", _houseId));
+   _update();
 }
 
 
 void House::levelDown()
 {
-   _houseLevel --;
+   _houseLevel--;
    _houseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel);
    _houseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel+1);
 
@@ -208,7 +208,7 @@ void House::levelDown()
       _houseId = 27;
       break;
    }
-   setPicture(PicLoader::instance().get_picture("housng1a", _houseId));
+   _update();
 }
 
 void House::buyMarket(ServiceWalker &walker)
@@ -358,3 +358,21 @@ int House::collectTaxes()
    return res;
 }
 
+void House::_update()
+{
+    Uint8 picId = ( _houseId == smallHovel && _currentHabitants == 0 ) ? 45 : _houseId; 
+    setPicture( PicLoader::instance().get_picture( rcGrourName, picId ) );
+    _size = (_picture->get_surface()->w+2)/60;
+    _maxHabitants = _houseLevelSpec->getMaxHabitantsByTile() * _size * _size;
+}
+
+Uint8 House::getMaxDistance2Road() const
+{
+	return 2;
+}
+
+void House::addHabitants( const Uint8 newHabitCount )
+{
+    _currentHabitants = (std::min)( _currentHabitants + newHabitCount, _maxHabitants );
+    _update();
+}

@@ -34,9 +34,10 @@ void ScenarioLoader::load(const std::string& filename, Scenario &oScenario)
 {
    std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
    init_climate(f, oScenario.getCity());
-   // init_entry_exit(f, oScenario.getCity());
-
+  
    load_map(f, oScenario);
+
+   init_entry_exit(f, oScenario.getCity());
    f.close();
 }
 

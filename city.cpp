@@ -45,13 +45,17 @@ City::City()
    _climate = C_CENTRAL;
 }
 
-
 void City::timeStep()
 {
    // CALLED 11 time/second
    _time += 1;
 
-   if (_time % 110 == 1)
+   if( _time % 22 == 1 )
+   {
+	   _createImigrants();
+   }
+
+   if( _time % 110 == 1 )
    {
       // every X seconds
       _month++;
@@ -91,9 +95,7 @@ void City::timeStep()
          ++overlayIt;
       }
    }
-
 }
-
 
 void City::monthStep()
 {
@@ -101,10 +103,64 @@ void City::monthStep()
    calculatePopulation();
 }
 
+void City::_createImigrants()
+{
+	Uint32 vacantPop=0;
+
+	std::list<LandOverlay*> houses = getBuildingList(B_HOUSE);
+    for( std::list<LandOverlay*>::iterator itHouse = houses.begin(); itHouse != houses.end(); ++itHouse )
+    {
+		House* house = dynamic_cast<House*>(*itHouse);
+        if( house && house->getAccessRoads().size() > 0 )
+        {
+            vacantPop += house->getMaxHabitants() - house->getNbHabitants();
+        }
+    }
+
+	if( vacantPop == 0 )
+	{
+		return;
+	}
+
+	std::list<Walker*> walkers = getWalkerList( WT_IMMIGRANT );
+
+	if( vacantPop <= walkers.size() )
+	{
+		return;
+	}
+
+    Tile& roadTile = _tilemap.at( _roadEntryI, _roadEntryJ );
+    Road* roadEntry = dynamic_cast< Road* >( roadTile.get_terrain().getOverlay() );
+
+    if( roadEntry )
+    {
+		vacantPop = std::max<Uint32>( 1, rand() % std::max<Uint32>( 1, vacantPop / 2 ) );
+        Immigrant* ni = Immigrant::create( *roadEntry );
+        _walkerList.push_back( ni );
+    }    
+}
 
 std::list<Walker*>& City::getWalkerList()
 {
    return _walkerList;
+}
+
+std::list<Walker*> City::getWalkerList( const WalkerType type )
+{
+	std::list<Walker*> res;
+
+	Walker* walker = 0;
+	for (std::list<Walker*>::iterator itWalker = _walkerList.begin(); itWalker != _walkerList.end(); ++itWalker )
+	{
+		// for each walker
+		walker = *itWalker;
+		if( walker != NULL && walker->getType() == type )
+		{
+			res.push_back(walker);
+		}
+	}
+
+	return res;
 }
 
 std::list<LandOverlay*>& City::getOverlayList()
@@ -332,8 +388,11 @@ void City::calculatePopulation()
   std::list<LandOverlay*> houseList = getBuildingList(B_HOUSE);
   for (std::list<LandOverlay*>::iterator itHouse = houseList.begin(); itHouse != houseList.end(); ++itHouse)
   {
-    House &house = dynamic_cast<House&>(**itHouse);
-    pop += house.getNbHabitants();
+    //check for error on dyncast
+    if( House* house = dynamic_cast<House*>(*itHouse) )
+    {
+        pop += house->getNbHabitants();
+    }
   }
   
   setPopulation(pop);
@@ -426,6 +485,5 @@ void City::unserialize(InputSerialStream &stream)
 
       overlay.build(i, j);
    }
-
 }
 

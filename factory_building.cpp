@@ -33,8 +33,8 @@ Factory::Factory(const GoodType inType, const GoodType outType)
    setMaxWorkers(10);
    setWorkers(8);
 
-   _productionRate = 4.8;
-   _progress = 0.0;
+   _productionRate = 4.8f;
+   _progress = 0.0f;
    _inGoodType = inType;
    _outGoodType = outType;
    _goodStore.setMaxQty(1000);  // quite unlimited
@@ -92,7 +92,7 @@ void Factory::timeStep(const unsigned long time)
 
    float workersRatio = float(getWorkers()) / float(getMaxWorkers());  // work drops if not enough workers
    // 1080: number of seconds in a year, 0.67: number of timeSteps per second
-   float work = 100./1080./0.67*_productionRate*workersRatio*workersRatio;  // work is proportionnal to time and factory speed
+   float work = 100.f/1080.f/0.67f*_productionRate*workersRatio*workersRatio;  // work is proportionnal to time and factory speed
    if (inStock._goodType != G_NONE && inStock._currentQty == 0)
    {
       // cannot work, no input material!
@@ -168,7 +168,7 @@ void Factory::unserialize(InputSerialStream &stream)
 {
    WorkingBuilding::unserialize(stream);
    _goodStore.unserialize(stream);
-   _progress = stream.read_int(1, 0, 100); // approximation
+   _progress = (float)stream.read_int(1, 0, 100); // approximation
 }
 
 
@@ -176,7 +176,7 @@ FactoryMarble::FactoryMarble() : Factory(G_NONE, G_MARBLE)
 {
    setType(B_MARBLE);
    _size = 2;
-   _productionRate = 9.6;
+   _productionRate = 9.6f;
    _picture = &PicLoader::instance().get_picture("commerce", 43);
 
    AnimLoader animLoader(PicLoader::instance());
@@ -210,7 +210,7 @@ FactoryTimber::FactoryTimber() : Factory(G_NONE, G_TIMBER)
 {
    setType(B_TIMBER);
    _size = 2;
-   _productionRate = 9.6;
+   _productionRate = 9.6f;
    _picture = &PicLoader::instance().get_picture("commerce", 72);
 
    AnimLoader animLoader(PicLoader::instance());
@@ -244,7 +244,7 @@ FactoryIron::FactoryIron() : Factory(G_NONE, G_IRON)
 {
    setType(B_IRON);
    _size = 2;
-   _productionRate = 9.6;
+   _productionRate = 9.6f;
    _picture = &PicLoader::instance().get_picture("commerce", 54);
 
    AnimLoader animLoader(PicLoader::instance());
@@ -278,7 +278,7 @@ FactoryClay::FactoryClay() : Factory(G_NONE, G_CLAY)
 {
    setType(B_CLAY);
    _size = 2;
-   _productionRate = 9.6;
+   _productionRate = 9.6f;
    _picture = &PicLoader::instance().get_picture("commerce", 61);
 
    AnimLoader animLoader(PicLoader::instance());

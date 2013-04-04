@@ -424,7 +424,7 @@ void Tilemap::unserialize(InputSerialStream &stream)
          Tile &tile = at(i, j);
          TerrainTile &terrain = tile.get_terrain();
 
-         imgId = stream.read_int(2, 0, 65535);
+         imgId = (short)stream.read_int(2, 0, 65535);
 
          // terrain
          terrain.unserialize(stream);

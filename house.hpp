@@ -20,15 +20,15 @@
 #define HOUSE_HPP
 
 #include <building.hpp>
-#include <house_level.hpp>
 
-
+class HouseLevelSpec;
 
 class House : public Building
 {
 public:
-   // houseId is the picture Id.
-   House(const int houseId);
+   enum { smallHovel=1 } Level;
+
+   House( const int houseId );
    House* clone() const;
 
    void timeStep(const unsigned long time);
@@ -52,7 +52,10 @@ public:
 
    int getNbHabitants();
    int getMaxHabitants();
+   void addHabitants( const Uint8 newHabitCount );
    int collectTaxes();  // compute the tax level for this house, called once per month
+
+   Uint8 getMaxDistance2Road() const; 
 
 private:
    SimpleGoodStore _goodStore;
@@ -61,8 +64,10 @@ private:
    int _maxHabitants;
    int _houseId;  // pictureId
    int _houseLevel;
-   HouseLevelSpec *_houseLevelSpec;  // characteristics of the current house level
-   HouseLevelSpec *_nextHouseLevelSpec;  // characteristics of the house level+1
+   HouseLevelSpec* _houseLevelSpec;  // characteristics of the current house level
+   HouseLevelSpec* _nextHouseLevelSpec;  // characteristics of the house level+1
+
+   void _update();
 };
 
 

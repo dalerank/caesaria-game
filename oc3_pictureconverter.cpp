@@ -80,9 +80,9 @@ void PictureConverter::convToGrayscale( Picture& dst, const Picture& src )
         for (int j=0; j<source->w; j++) 
         {
             Uint32 pixel = imgpixels[ i * source->w + j ];
-            Uint8 gr = ( (((pixel >> 16) & 0xff) * 0.32)
-                         + (((pixel >> 8 ) & 0xff) * 0.55) 
-                         + (((pixel & 0xff) * 0.071)) );
+            Uint8 gr = (Uint8)( (((pixel >> 16) & 0xff) * 0.32)
+                                 + (((pixel >> 8 ) & 0xff) * 0.55) 
+                                 + (((pixel & 0xff) * 0.071)) );
             
             r = gr;//gr * ((( clr >> 24 ) & 0xff ) / 255.f );
             g = gr;//* ((( clr >> 16 ) & 0xff ) / 255.f );
