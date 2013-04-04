@@ -968,13 +968,12 @@ NativeField* NativeField::clone() const
   return new NativeField(*this);
 }
 
-// transport 52 53 54 55
-
 Shipyard::Shipyard()
 {
   setType(B_SHIPYARD);
   _size = 2;
-  setPicture(PicLoader::instance().get_picture("transport", 52));
+  setPicture(PicLoader::instance().get_picture("transport", 1));
+  // also transport 2 3 4 check position of river on map
 }
 
 Shipyard* Shipyard::clone() const
