@@ -19,9 +19,9 @@
 #ifndef SCREEN_MENU_HPP
 #define SCREEN_MENU_HPP
 
-#include <picture.hpp>
-#include <screen.hpp>
-#include <gui_menu.hpp>
+#include "picture.hpp"
+#include "screen.hpp"
+#include "gui_menu.hpp"
 
 
 // displays the newGame/loadGame/quitGame menu

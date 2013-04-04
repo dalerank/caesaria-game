@@ -19,7 +19,7 @@
 #ifndef HOUSE_HPP
 #define HOUSE_HPP
 
-#include <building.hpp>
+#include "building.hpp"
 
 class HouseLevelSpec;
 

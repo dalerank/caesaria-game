@@ -19,7 +19,7 @@
 #ifndef SCREEN_HPP
 #define SCREEN_HPP
 
-#include <gui_widget.hpp>
+#include "gui_widget.hpp"
 
 class Screen: public WidgetListener
 {
