@@ -16,7 +16,7 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#include <pic_loader.hpp>
+#include "pic_loader.hpp"
 
 #include <cstdlib>
 #include <string>
@@ -31,8 +31,8 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
-#include <exception.hpp>
-#include <sdl_facade.hpp>
+#include "exception.hpp"
+#include "sdl_facade.hpp"
 
 
 PicMetaData* PicMetaData::_instance = NULL;
@@ -491,7 +491,7 @@ AnimLoader::AnimLoader(PicLoader &loader)
 void AnimLoader::fill_animation(Animation &oAnim, const std::string &prefix, const int start, const int number, const int step)
 {
    std::vector<Picture*> pictures;
-   for (int i=0; i<number; ++i)
+   for (int i = 0; i < number; ++i)
    {
       Picture &pic = _loader->get_picture(prefix, start+i*step);
       pictures.push_back(&pic);
@@ -499,6 +499,16 @@ void AnimLoader::fill_animation(Animation &oAnim, const std::string &prefix, con
    oAnim.init(pictures);
 }
 
+void AnimLoader::fill_animation_reverse(Animation &oAnim, const std::string &prefix, const int start, const int number, const int step)
+{
+   std::vector<Picture*> pictures;
+   for (int i = 0; i < number; ++i)
+   {
+      Picture &pic = _loader->get_picture(prefix, start - i * step);
+      pictures.push_back(&pic);
+   }
+   oAnim.init(pictures);
+}
 
 void AnimLoader::change_offset(Animation &ioAnim, const int xoffset, const int yoffset)
 {

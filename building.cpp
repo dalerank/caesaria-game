@@ -233,6 +233,9 @@ LandOverlay* LandOverlay::getInstance(const BuildingType buildingType)
       _mapBuildingByID[B_POTTERY]   = new FactoryPottery();
       // utility
       _mapBuildingByID[B_ENGINEER] = new BuildingEngineer();
+      _mapBuildingByID[B_DOCK]     = new Dock();
+      _mapBuildingByID[B_SHIPYARD] = new Shipyard();
+      _mapBuildingByID[B_WHARF]    = new Wharf();
       // religion
       _mapBuildingByID[B_TEMPLE_CERES]   = new TempleCeres();
       _mapBuildingByID[B_TEMPLE_NEPTUNE] = new TempleNeptune();
@@ -789,11 +792,7 @@ Granary::Granary()
    AnimLoader animLoader(PicLoader::instance());
    animLoader.fill_animation(_animation, "commerce", 146, 7);
    // do the animation in reverse
-   _animation.get_pictures().push_back(&PicLoader::instance().get_picture("commerce", 151));
-   _animation.get_pictures().push_back(&PicLoader::instance().get_picture("commerce", 150));
-   _animation.get_pictures().push_back(&PicLoader::instance().get_picture("commerce", 149));
-   _animation.get_pictures().push_back(&PicLoader::instance().get_picture("commerce", 148));
-   _animation.get_pictures().push_back(&PicLoader::instance().get_picture("commerce", 147));
+   animLoader.fill_animation_reverse(_animation, "commerce", 151, 6);
 
    _fgPictures[0] = &PicLoader::instance().get_picture("commerce", 141);
    _fgPictures[5] = _animation.get_current_picture();
@@ -966,4 +965,66 @@ void NativeField::unserialize(InputSerialStream &stream) {Building::unserialize(
 NativeField* NativeField::clone() const
 {
   return new NativeField(*this);
+}
+
+Wharf::Wharf()
+{
+  setType(B_WHARF);
+  _size = 2;
+  setPicture(PicLoader::instance().get_picture("transport", 1));
+  // also transport 2 3 4 check position of river on map
+}
+
+Wharf* Wharf::clone() const
+{
+   return new Wharf(*this);
+}
+
+// transport 52 53 54 55
+
+Shipyard::Shipyard()
+{
+  setType(B_SHIPYARD);
+  _size = 2;
+  setPicture(PicLoader::instance().get_picture("transport", 52));
+}
+
+Shipyard* Shipyard::clone() const
+{
+   return new Shipyard(*this);
+}
+
+// dock pictures
+// transport 5        animation = 6~16
+// transport 17       animation = 18~28
+// transport 29       animation = 30~40
+// transport 41       animation = 42~51
+
+Dock::Dock()
+{
+  setType(B_DOCK);
+  _size = 2;
+  setPicture(PicLoader::instance().get_picture("transport", 5));  
+
+  AnimLoader animLoader(PicLoader::instance());
+  animLoader.fill_animation(_animation, "transport", 6, 11);
+  // now fill in reverse order
+  animLoader.fill_animation_reverse(_animation, "transport", 15, 10);
+  
+  animLoader.change_offset(_animation, 107, 61);
+  _fgPictures.resize(1);  
+}
+
+void Dock::timeStep(const unsigned long time)
+{
+  _animation.nextFrame();
+  
+  // takes current animation frame and put it into foreground
+  _fgPictures.at(0) = _animation.get_current_picture(); 
+}
+
+
+Dock* Dock::clone() const
+{
+   return new Dock(*this);
 }

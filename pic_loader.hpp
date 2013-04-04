@@ -23,10 +23,10 @@
 #include <map>
 #include <vector>
 
-#include <picture.hpp>
-#include <gfx_engine.hpp>
-#include <enums.hpp>
-#include <good.hpp>
+#include "picture.hpp"
+#include "gfx_engine.hpp"
+#include "enums.hpp"
+#include "good.hpp"
 
 
 class PicInfo
@@ -111,7 +111,7 @@ public:
    // it will return 5 Pictures (18, 19, 20, 21, 22)
    void fill_animation(Animation& oAnim, const std::string &prefix, const int start, const int number, const int step = 1);
    void change_offset(Animation& ioAnim, const int xoffset, const int yoffset);
-
+   void fill_animation_reverse(Animation&, const std::string&, const int, const int, const int step = 1);
 private:
    PicLoader* _loader;
 };

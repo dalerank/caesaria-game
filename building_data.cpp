@@ -206,12 +206,15 @@ BuildingDataHolder::BuildingDataHolder()
    addData(BuildingData(B_POTTERY, "pottery", 40));
 
    // utility
-   addData(BuildingData(B_ENGINEER, "engineer", 30));
-   addData(BuildingData(B_STATUE1, "statue1", 12));
-   addData(BuildingData(B_STATUE2, "statue2", 60));
-   addData(BuildingData(B_STATUE3, "statue3", 150));
-   addData(BuildingData(B_LOW_BRIDGE, "low_bridge", 40));
+   addData(BuildingData(B_ENGINEER,    "engineer",     30));
+   addData(BuildingData(B_STATUE1,     "statue1",      12));
+   addData(BuildingData(B_STATUE2,     "statue2",      60));
+   addData(BuildingData(B_STATUE3,     "statue3",     150));
+   addData(BuildingData(B_LOW_BRIDGE,  "low_bridge",   40));
    addData(BuildingData(B_HIGH_BRIDGE, "high_bridge", 100));
+   addData(BuildingData(B_DOCK,        "dock",        100));
+   addData(BuildingData(B_SHIPYARD,    "shipyard",    100));
+   addData(BuildingData(B_WHARF,       "wharf",       100));
 
    // water
    addData(BuildingData(B_WELL, "well", 5));

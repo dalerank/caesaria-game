@@ -555,10 +555,9 @@ Forum* Forum::clone() const
 
 Senate::Senate() : ServiceBuilding(S_SENATE)
 {
-   setType(B_SENATE);
-   _size = 5;
-   setPicture(PicLoader::instance().get_picture("govt", 4));
-   std::cout << "Senate::Senate()" << std::endl;
+  setType(B_SENATE);
+  _size = 5;
+  setPicture(PicLoader::instance().get_picture("govt", 4));
 }
 
 Senate* Senate::clone() const

@@ -242,6 +242,28 @@ public:
 //  void unserialize(InputSerialStream &stream);
 };
 
+class Wharf : public Building
+{
+public:
+  Wharf();
+  Wharf* clone() const;
+};
+
+class Shipyard : public Building
+{
+public:
+  Shipyard();
+  Shipyard* clone() const;
+};
+
+class Dock : public Building
+{
+public:
+  Dock();
+  Dock* clone() const;
+  void timeStep(const unsigned long time);
+};
+
 class NativeBuilding : public Building
 {
 public:

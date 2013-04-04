@@ -620,6 +620,9 @@ void BuildMenu_engineering::addButtons()
   addBuildButton(B_ENGINEER);
   addBuildButton(B_LOW_BRIDGE);
   addBuildButton(B_HIGH_BRIDGE);
+  addBuildButton(B_DOCK);
+  addBuildButton(B_SHIPYARD);
+  addBuildButton(B_WHARF);
 }
 
 
