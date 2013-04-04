@@ -33,10 +33,13 @@
 #include "warehouse.hpp"
 #include "gettext.hpp"
 
+namespace {
 static const char* rcUtilityGroup = "utilitya";
 static const char* rcAqueductGroup = "land2a";
 static const char* rcRoadGroup = "land2a";
 static const char* rcCommerceGroup = "commerce";
+static const char* rcHousingGroup = "housng1a";
+}
 
 std::map<BuildingType, LandOverlay*> LandOverlay::_mapBuildingByID;  // key=buildingType, value=instance
 
@@ -897,21 +900,21 @@ GovernorsHouse::GovernorsHouse()
 {
   setType(B_GOVERNOR_HOUSE);
   _size = 3;
-  setPicture(PicLoader::instance().get_picture("housng1a", 46));
+  setPicture(PicLoader::instance().get_picture(rcHousingGroup, 46));
 }
 
 GovernorsVilla::GovernorsVilla()
 {
   setType(B_GOVERNOR_VILLA);
   _size = 4;
-  setPicture(PicLoader::instance().get_picture("housng1a", 47));
+  setPicture(PicLoader::instance().get_picture(rcHousingGroup, 47));
 }
 
 GovernorsPalace::GovernorsPalace()
 {
   setType(B_GOVERNOR_PALACE);
   _size = 5;
-  setPicture(PicLoader::instance().get_picture("housng1a", 48));
+  setPicture(PicLoader::instance().get_picture(rcHousingGroup, 48));
 }
 
 GovernorsHouse* GovernorsHouse::clone() const {return new GovernorsHouse(*this);}
@@ -939,7 +942,7 @@ NativeHut::NativeHut()
 {
   setType(B_NATIVE_HUT);
   _size = 1;
-  setPicture(PicLoader::instance().get_picture("housng1a", 49));
+  setPicture(PicLoader::instance().get_picture(rcHousingGroup, 49));
   //setPicture(PicLoader::instance().get_picture("housng1a", 50));
 }
 
@@ -953,7 +956,7 @@ NativeCenter::NativeCenter()
 {
   setType(B_NATIVE_CENTER);
   _size = 2;
-  setPicture(PicLoader::instance().get_picture("housng1a", 51));
+  setPicture(PicLoader::instance().get_picture(rcHousingGroup, 51));
 }
 
 void NativeCenter::serialize(OutputSerialStream &stream)  {Building::serialize(stream);}
@@ -969,7 +972,7 @@ NativeField::NativeField()
 {
   setType(B_NATIVE_FIELD);
   _size = 1;
-  setPicture(PicLoader::instance().get_picture("commerce", 13));  
+  setPicture(PicLoader::instance().get_picture(rcCommerceGroup, 13));  
 }
 
 void NativeField::serialize(OutputSerialStream &stream) {Building::serialize(stream);}
