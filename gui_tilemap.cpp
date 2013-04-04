@@ -439,7 +439,7 @@ void GuiTilemap::checkPreviewRemove(const int i, const int j)
    {
       Tile& cursorTile = _tilemap->at(i, j);
       TerrainTile& terrain = cursorTile.get_terrain();
-      if( terrain.isDestructible() )
+//      if( terrain.isDestructible() )
       {
          Picture &pic_clear = PicLoader::instance().get_picture( "oc3_land", 2 );
 
@@ -470,7 +470,7 @@ void GuiTilemap::checkPreviewRemove(const int i, const int j)
                   tile->set_master_tile(NULL);  // single tile
                   TerrainTile &terrain = tile->get_terrain();
                   terrain.setOverlay(NULL);
-                  //_priorityTiles.push_back(&tile);
+                  _d->postTiles.push_back( tile );
                }
             }
          }
