@@ -159,9 +159,10 @@ public:
    // fills the cart pictures
    // prefix: image prefix
    // start: index of the first frame
-   void fillCart(std::vector<Picture*> &ioCart, const std::string &prefix, const int start);
+   void fillCart(std::vector<Picture*> &ioCart, const std::string &prefix, const int start, bool back );
 
    Picture& getCart(const GoodStock &stock, const DirectionType &direction);
+   Picture& getCart(GoodType cart, const DirectionType &direction );
 
 private:
    CartLoader();

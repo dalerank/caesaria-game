@@ -124,26 +124,6 @@ private:
     std::auto_ptr< Impl > _d;
 };
 
-/** This is an immigrant coming with his stuff */
-class Emigrant : public Walker
-{
-public:
-    virtual Emigrant* clone() const;
-
-    static Emigrant* create( const Road& startPoint );
-
-    void onDestination();
-    ~Emigrant();
-private:
-    Emigrant();
-
-    void assignPath( const Road& startPoint );
-
-    class Impl;
-    std::auto_ptr< Impl > _d;
-};
-
-
 /** Soldier, friend or foo */
 class Soldier : public Walker
 {

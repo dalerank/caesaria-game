@@ -22,7 +22,7 @@
 #include <exception.hpp>
 #include <iostream>
 #include <sstream>
-
+#include <oc3_positioni.h>
 
 
 Picture::Picture()
@@ -50,6 +50,12 @@ void Picture::set_offset(const int xoffset, const int yoffset)
 {
    _xoffset = xoffset;
    _yoffset = yoffset;
+}
+
+void Picture::set_offset( const Point& offset )
+{
+	_xoffset = offset.x;
+	_yoffset = offset.y;
 }
 
 void Picture::add_offset(const int dx, const int dy)

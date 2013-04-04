@@ -30,6 +30,7 @@
 #include <map>
 #include <SDL.h>
 #include <SDL_image.h>
+#include <oc3_positioni.h>
 
 #include <exception.hpp>
 #include <sdl_facade.hpp>
@@ -709,44 +710,59 @@ void CartLoader::loadAll()
    _carts.resize(G_MAX);
 
    std::vector<Picture*> cart;  // key=direction
+   bool frontCart = false;
 
-   fillCart(cart, "carts", 1);
+   fillCart(cart, "carts", 1, frontCart);
    _carts[G_NONE] = cart;
-   fillCart(cart, "carts", 9);
+   fillCart(cart, "carts", 9, frontCart);
    _carts[G_WHEAT] = cart;
-   fillCart(cart, "carts", 17);
+   fillCart(cart, "carts", 17, frontCart);
    _carts[G_VEGETABLE] = cart;
-   fillCart(cart, "carts", 25);
+   fillCart(cart, "carts", 25, frontCart);
    _carts[G_FRUIT] = cart;
-   fillCart(cart, "carts", 33);
+   fillCart(cart, "carts", 33, frontCart);
    _carts[G_OLIVE] = cart;
-   fillCart(cart, "carts", 41);
+   fillCart(cart, "carts", 41, frontCart);
    _carts[G_GRAPE] = cart;
-   fillCart(cart, "carts", 49);
+   fillCart(cart, "carts", 49, frontCart);
    _carts[G_MEAT] = cart;
-   fillCart(cart, "carts", 57);
+   fillCart(cart, "carts", 57, frontCart);
    _carts[G_WINE] = cart;
-   fillCart(cart, "carts", 65);
+   fillCart(cart, "carts", 65, frontCart);
    _carts[G_OIL] = cart;
-   fillCart(cart, "carts", 73);
+   fillCart(cart, "carts", 73, frontCart);
    _carts[G_IRON] = cart;
-   fillCart(cart, "carts", 81);
+   fillCart(cart, "carts", 81, frontCart);
    _carts[G_TIMBER] = cart;
-   fillCart(cart, "carts", 89);
+   fillCart(cart, "carts", 89, frontCart);
    _carts[G_CLAY] = cart;
-   fillCart(cart, "carts", 97);
+   fillCart(cart, "carts", 97, frontCart);
    _carts[G_MARBLE] = cart;
-   fillCart(cart, "carts", 105);
+   fillCart(cart, "carts", 105, frontCart);
    _carts[G_WEAPON] = cart;
-   fillCart(cart, "carts", 113);
+   fillCart(cart, "carts", 113, frontCart);
    _carts[G_FURNITURE] = cart;
-   fillCart(cart, "carts", 121);
+   fillCart(cart, "carts", 121, frontCart);
    _carts[G_POTTERY] = cart;
-   fillCart(cart, "carts", 697);
+   fillCart(cart, "carts", 129, !frontCart);
+   _carts[G_SCARB1] = cart;
+   fillCart(cart, "carts", 137, !frontCart);
+   _carts[G_SCARB2] = cart;
+   fillCart(cart, "carts", 697, frontCart);
    _carts[G_FISH] = cart;
 }
 
-void CartLoader::fillCart(std::vector<Picture*> &ioCart, const std::string &prefix, const int start)
+static const Point frontCartOffsetSouth = Point( -33, 35 );
+static const Point frontCartOffsetWest = Point( -31, 35 );
+static const Point frontCartOffsetNorth = Point( -5, 37 );
+static const Point frontCartOffsetEast = Point( -5, 22 );
+
+static const Point backCartOffsetSouth = Point( -5, 40 );
+static const Point backCartOffsetWest = Point( -5, 22 );
+static const Point backCartOffsetNorth = Point( -33, 22 );
+static const Point backCartOffsetEast = Point( -31, 35 );
+
+void CartLoader::fillCart(std::vector<Picture*> &ioCart, const std::string &prefix, const int start, bool back )
 {
    PicLoader &picLoader = PicLoader::instance();
 
@@ -761,10 +777,10 @@ void CartLoader::fillCart(std::vector<Picture*> &ioCart, const std::string &pref
    ioCart[D_WEST] = &picLoader.get_picture("carts", start+6);
    ioCart[D_NORTH_WEST] = &picLoader.get_picture("carts", start+7);
 
-   ioCart[D_SOUTH]->set_offset(-33, 22);
-   ioCart[D_WEST]->set_offset(-31, 35);
-   ioCart[D_NORTH]->set_offset(-5, 37);
-   ioCart[D_EAST]->set_offset(-5, 22);
+   ioCart[D_SOUTH]->set_offset( back ? backCartOffsetSouth : frontCartOffsetSouth);
+   ioCart[D_WEST]->set_offset( back ? backCartOffsetWest : frontCartOffsetWest );
+   ioCart[D_NORTH]->set_offset( back ? backCartOffsetNorth : frontCartOffsetNorth  );
+   ioCart[D_EAST]->set_offset( back ? backCartOffsetEast : frontCartOffsetEast );
 }
 
 Picture& CartLoader::getCart(const GoodStock &stock, const DirectionType &direction)
@@ -772,7 +788,7 @@ Picture& CartLoader::getCart(const GoodStock &stock, const DirectionType &direct
    Picture *res = NULL;
    if (stock._currentQty == 0)
    {
-      res = _carts.at(G_NONE).at(direction);
+      res = _carts.at( G_NONE ).at(direction);
    }
    else
    {
@@ -780,6 +796,16 @@ Picture& CartLoader::getCart(const GoodStock &stock, const DirectionType &direct
    }
 
    return *res;
+}
+
+Picture& CartLoader::getCart(GoodType cart, const DirectionType &direction)
+{
+    Picture *res = NULL;
+    {
+        res = _carts.at( cart ).at( direction );
+    }
+
+    return *res;
 }
 
 

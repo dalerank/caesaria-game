@@ -331,6 +331,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_emigrant.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_emigrant.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_math.h"
 				>
 			</File>

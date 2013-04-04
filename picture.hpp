@@ -30,6 +30,7 @@
 
 #include <SDL_ttf.h>
 
+class Point;
 
 // an image with offset, this is the basic rendered object
 class Picture
@@ -43,6 +44,7 @@ public:
 
    void init(SDL_Surface* surface, const int xoffset, const int yoffset);
    void set_offset(const int xoffset, const int yoffset);
+   void set_offset( const Point& xoffset );
    void add_offset(const int dx, const int dy);
    void set_name(std::string &name);  // for save game
    std::string get_name();
