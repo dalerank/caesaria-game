@@ -17,16 +17,19 @@
 
 
 
-#include <gui_tilemap.hpp>
+#include "gui_tilemap.hpp"
 
-#include <gfx_engine.hpp>
-#include <exception.hpp>
+
 #include <algorithm>
 #include <iostream>
-#include <gui_info_box.hpp>
-#include <screen_game.hpp>
-#include <oc3_positioni.h>
-#include <oc3_pictureconverter.h>
+
+#include "gui_info_box.hpp"
+#include "screen_game.hpp"
+#include "gfx_engine.hpp"
+#include "exception.hpp"
+
+#include "oc3_positioni.h"
+#include "oc3_pictureconverter.h"
 
 typedef std::list<Tile*> Tiles;
 
