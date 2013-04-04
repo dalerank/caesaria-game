@@ -318,23 +318,18 @@ void GuiTilemap::handleEvent(SDL_Event &event)
          else if (button == 3)
          {
             if (_removeTool)
-            {
+            { 
+				// discard removeTool
                _removeTool = false;
                discardPreview();
             }
             else if (_buildInstance != NULL)
             {
+				// discard buildTool
                _buildInstance = NULL;
                discardPreview();
             }
-            // std::cout << "request info for tile" << std::endl;
-            if (tile->get_terrain().getOverlay() == NULL)
-            {
-               // tile has no overlay
-               // tile_type = typeid(*tile->get_terrain());
-               // std::cout << "no overlay!" << std::endl;
-            }
-            else
+            else if (tile->get_terrain().getOverlay() != NULL)
             {
                // tile has an overlay
                LandOverlay &overlay = *tile->get_terrain().getOverlay();
@@ -346,7 +341,6 @@ void GuiTilemap::handleEvent(SDL_Event &event)
                   _screenGame->setInfoBox(infoBox);
                }
             }
-
          }
       }
 
