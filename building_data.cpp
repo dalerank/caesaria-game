@@ -215,6 +215,7 @@ BuildingDataHolder::BuildingDataHolder()
    addData(BuildingData(B_DOCK,        "dock",        100));
    addData(BuildingData(B_SHIPYARD,    "shipyard",    100));
    addData(BuildingData(B_WHARF,       "wharf",       100));
+   addData(BuildingData(B_TRIUMPHAL_ARCH, "arch",     100));
 
    // water
    addData(BuildingData(B_WELL, "well", 5));

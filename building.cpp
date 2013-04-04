@@ -236,6 +236,7 @@ LandOverlay* LandOverlay::getInstance(const BuildingType buildingType)
       _mapBuildingByID[B_DOCK]     = new Dock();
       _mapBuildingByID[B_SHIPYARD] = new Shipyard();
       _mapBuildingByID[B_WHARF]    = new Wharf();
+      _mapBuildingByID[B_TRIUMPHAL_ARCH]  = new TriumphalArch();
       // religion
       _mapBuildingByID[B_TEMPLE_CERES]   = new TempleCeres();
       _mapBuildingByID[B_TEMPLE_NEPTUNE] = new TempleNeptune();
@@ -1027,4 +1028,21 @@ void Dock::timeStep(const unsigned long time)
 Dock* Dock::clone() const
 {
    return new Dock(*this);
+}
+
+TriumphalArch::TriumphalArch()
+{
+  setType(B_TRIUMPHAL_ARCH);
+  _size = 3;
+  setPicture(PicLoader::instance().get_picture("land3a", 43));
+  AnimLoader animLoader(PicLoader::instance());
+  animLoader.fill_animation(_animation, "land3a", 44, 1);
+  animLoader.change_offset(_animation, 100, 100);
+  _fgPictures.resize(1);
+  _fgPictures.at(0) = _animation.get_current_picture(); 
+}
+
+TriumphalArch* TriumphalArch::clone() const
+{
+   return new TriumphalArch(*this);
 }

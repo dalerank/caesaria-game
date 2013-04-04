@@ -65,6 +65,7 @@ enum BuildingType
    B_BIG_TEMPLE_CERES, B_BIG_TEMPLE_MARS, B_BIG_TEMPLE_NEPTUNE, B_BIG_TEMPLE_MERCURE, B_BIG_TEMPLE_VENUS, // religion: big temples
    B_TEMPLE_ORACLE, // religion: others
    B_NATIVE_HUT, B_NATIVE_CENTER, B_NATIVE_FIELD, // building of natives
+   B_TRIUMPHAL_ARCH,
    B_MAX
 };
 

@@ -256,6 +256,13 @@ public:
   Shipyard* clone() const;
 };
 
+class TriumphalArch : public Building
+{
+public:
+  TriumphalArch();
+  TriumphalArch* clone() const;
+};
+
 class Dock : public Building
 {
 public:
