@@ -69,6 +69,7 @@ public:
 
    const Picture& getBgPicture() const;
    const Picture& getBottomPicture() const; 
+   const Picture& getRigthPicture() const;
 
 private:
 
@@ -80,6 +81,7 @@ private:
 
    Picture* _bgPicture;
    Picture* _btPicture;
+   Picture* _rigthPicture; 
 
    ImageIcon _midIcon;
    //ImageIcon _bottomIcon;

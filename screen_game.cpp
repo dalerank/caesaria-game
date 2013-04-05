@@ -123,11 +123,8 @@ void ScreenGame::drawTilemap()
 
 void ScreenGame::drawInterface()
 {
-   MenuBar* menuBar = _menuBar;
-   menuBar->draw( 0, 0 );
-   
-   Menu* menu = _menu;
-   menu->draw( 0, 0 );
+   _menuBar->draw( 0, 0 );
+   _menu->draw( 0, 0 );
 
    if (_infoBox != NULL)
    {

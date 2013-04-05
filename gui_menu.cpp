@@ -35,10 +35,11 @@
 #include "oc3_positioni.h"
 
 static const char* panelBgName = "paneling";
-static const unsigned int panelBgStatus = 15;
-static const unsigned int dateLabelOffset = 155;
-static const unsigned int populationLabelOffset = 345;
-static const unsigned int fundLabelOffset = 465;
+static const Uint32 panelBgStatus = 15;
+static const Uint32 dateLabelOffset = 155;
+static const Uint32 populationLabelOffset = 345;
+static const Uint32 fundLabelOffset = 465;
+static const Uint32 maximazeBtnPicId = 101;
 
 MenuBar::MenuBar()
 {
@@ -154,7 +155,20 @@ Menu::Menu()
 {
    _bgPicture = &PicLoader::instance().get_picture( panelBgName, 16 );
    _btPicture = &PicLoader::instance().get_picture( panelBgName, 21 );
-   setSize(_bgPicture->get_width(), _bgPicture->get_height() + _btPicture->get_height() );
+
+   const Picture& rigthImageTile = PicLoader::instance().get_picture( panelBgName, 14 );
+
+   setSize(_bgPicture->get_width() + rigthImageTile.get_width(), _bgPicture->get_height() + _btPicture->get_height() );
+   SdlFacade &sdlFacade = SdlFacade::instance();
+   _rigthPicture = &sdlFacade.createPicture( rigthImageTile.get_width(), getHeight());
+   SDL_SetAlpha(_bgPicture->get_surface(), 0, 0);  // remove surface alpha
+
+   int y = 0;
+   while( y < getHeight() )
+   {
+       sdlFacade.drawPicture(rigthImageTile, *_rigthPicture, 0, y);
+       y += rigthImageTile.get_height();
+   }
 
    // // top of menu
    //_menuButton.setText("Menu");
@@ -168,8 +182,8 @@ Menu::Menu()
 
    Point offset( 1, 32 );
    int dy = 35;
-   set4Button(_minimizeButton, WidgetEvent(), 97);
-   _minimizeButton.setPosition( offset + Point( 0, dy * 0 ));
+   set4Button( _minimizeButton, WidgetEvent(), maximazeBtnPicId );
+   _minimizeButton.setPosition( Point( 6, 4 ));
 
    // //
    // _midIcon.setPicture(PicLoader::instance().get_picture("panelwindows", 1));
@@ -347,6 +361,7 @@ void Menu::draw(const int dx, const int dy)
 {
    drawPicture( getBgPicture(), dx, dy );
    drawPicture( getBottomPicture(), dx, dy + _bgPicture->get_height() );
+   drawPicture( getRigthPicture(), dx + getBgPicture().get_width(), dy );
    drawChildren( dx, dy );
 }
 
@@ -391,6 +406,11 @@ void Menu::unselect()
 const Picture& Menu::getBottomPicture() const
 {
     return *_btPicture;
+}
+
+const Picture& Menu::getRigthPicture() const
+{
+    return *_rigthPicture;
 }
 
 BuildMenu::BuildMenu()
