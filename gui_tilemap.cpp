@@ -28,7 +28,7 @@
 #include "screen_game.hpp"
 #include "oc3_positioni.h"
 #include "oc3_pictureconverter.h"
-
+#include "oc3_pictureconverter.h"
 typedef std::list<Tile*> Tiles;
 
 class GuiTilemap::Impl
@@ -257,7 +257,7 @@ TilemapArea &GuiTilemap::getMapArea()
 
 void GuiTilemap::updatePreviewTiles()
 {
-    Tile* tile = getTileXY( _d->lastCursorPos.x, _d->lastCursorPos.y );  // tile under the cursor (or NULL)
+    Tile* tile = getTileXY( _d->lastCursorPos.getX(), _d->lastCursorPos.getY() );  // tile under the cursor (or NULL)
     discardPreview();
 
     if( tile )
@@ -348,7 +348,6 @@ void GuiTilemap::handleEvent(SDL_Event &event)
    }
 }
 
-
 void GuiTilemap::setBuildInstance(Construction *buildInstance)
 {
    // std::cout << "set build instance!" << std::endl;
@@ -430,47 +429,56 @@ void GuiTilemap::checkPreviewBuild(const int i, const int j)
 
 void GuiTilemap::checkPreviewRemove(const int i, const int j)
 {
-   if (_removeTool)
-   {
-      Tile& cursorTile = _tilemap->at(i, j);
-      TerrainTile& terrain = cursorTile.get_terrain();
-//      if( terrain.isDestructible() )
-      {
-         Picture &pic_clear = PicLoader::instance().get_picture( "oc3_land", 2 );
+    if (_removeTool)
+    {
+        Tile& cursorTile = _tilemap->at(i, j);
+        TerrainTile& terrain = cursorTile.get_terrain();
+        //if( terrain.isDestructible() )
+        {           
+            Picture& pic_clear = PicLoader::instance().get_picture( "oc3_land", 2 );
 
-         LandOverlay* overlay = terrain.getOverlay();
-         if (overlay == NULL)
-         {
-            // this is maybe a lonely tree
-            Tile* tile = new Tile(_tilemap->at(i, j));  // make a copy of tile
-            tile->set_picture(&pic_clear);
-            tile->set_master_tile(NULL);  // single tile
-            _d->postTiles.push_back( tile );
-            //_priorityTiles.push_back(&tile);
-         }
-         else
-         {
-            // remove the overlay, and make single tile of cleared land
-            int size = overlay->getSize();
-            int mi = overlay->getTile().getI(); // master I
-            int mj = overlay->getTile().getJ(); // master J
-
-            for (int dj = 0; dj<size; ++dj)
+            LandOverlay* overlay = terrain.getOverlay();
+            if (overlay == NULL)
             {
-               for (int di = 0; di<size; ++di)
-               {
-                  Tile* tile = new Tile(_tilemap->at(mi+di, mj+dj));  // make a copy of tile
-
-                  tile->set_picture(&pic_clear);
-                  tile->set_master_tile(NULL);  // single tile
-                  TerrainTile &terrain = tile->get_terrain();
-                  terrain.setOverlay(NULL);
-                  _d->postTiles.push_back( tile );
-               }
+                // this is maybe a lonely tree
+                Tile* tile = new Tile(_tilemap->at(i, j));  // make a copy of tile
+                tile->set_picture(&pic_clear);
+                tile->set_master_tile(NULL);  // single tile
+                _d->postTiles.push_back( tile );
+                //_priorityTiles.push_back(&tile);
             }
-         }
-      }
-   }
+            else
+            {
+                PictureConverterPtr converter = PictureConverter::create();
+                converter->rgbBalance( _d->buildInstncePicture, overlay->getPicture(), +0, -255, -255 );
+
+                // remove the overlay, and make single tile of cleared land
+                int size = overlay->getSize();
+                TilePos tilePos = overlay->getTile().getIJ(); // master I
+
+                Tile* masterTile = 0;
+                for (int dj = 0; dj<size; ++dj)
+                {
+                    for (int di = 0; di<size; ++di)
+                    {
+                        Tile* tile = new Tile(_tilemap->at( tilePos + TilePos( di, dj ) ) );  // make a copy of tile
+
+                        if (di==0 && dj==0)
+                        {
+                            // this is the masterTile
+                            masterTile = tile;
+                        }                        
+
+                        tile->set_picture( &_d->buildInstncePicture );
+                        tile->set_master_tile( masterTile );  // single tile
+                        TerrainTile &terrain = tile->get_terrain();
+                        terrain.setOverlay( overlay );
+                        _d->postTiles.push_back( tile );
+                    }
+                }
+            }
+        }
+    }
 }
 
 

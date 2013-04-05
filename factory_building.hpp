@@ -190,8 +190,16 @@ public:
 class FarmVegetable : public Farm
 {
 public:
-   FarmVegetable();
-   virtual FarmVegetable* clone() const;
+  FarmVegetable();
+  virtual FarmVegetable* clone() const;
+};
+
+class Wharf : public Factory
+{
+public:
+  Wharf();
+  Wharf* clone() const;
+  virtual bool canBuild(const int i, const int j) const;  // returns true if it can be built there
 };
 
 #endif

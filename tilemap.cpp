@@ -24,7 +24,7 @@
 #include "pic_loader.hpp"
 #include "building.hpp"
 #include "exception.hpp"
-
+#include <oc3_positioni.h>
 
 TerrainTile::TerrainTile()
 {
@@ -273,6 +273,10 @@ bool Tile::is_flat() const
    return get_terrain().isRoad();
 }
 
+TilePos Tile::getIJ() const
+{
+    return TilePos( _i, _j );
+}
 
 Tilemap::Tilemap()
 {
@@ -309,6 +313,11 @@ Tile& Tilemap::at(const int i, const int j)
 const Tile& Tilemap::at(const int i, const int j) const
 {
    return _tile_array[i][j];
+}
+
+Tile& Tilemap::at( const TilePos& ij )
+{
+    return _tile_array[ ij.getI() ][ ij.getJ() ];
 }
 
 int Tilemap::getSize() const

@@ -26,6 +26,7 @@
 #include "path_finding.hpp"
 #include "exception.hpp"
 #include "oc3_emigrant.h"
+#include <oc3_positioni.h>
 
 City::City()
 {
@@ -487,3 +488,12 @@ void City::unserialize(InputSerialStream &stream)
    }
 }
 
+TilePos City::getRoadEntryIJ() const
+{
+    return TilePos( _roadEntryI, _roadEntryJ );
+}
+
+TilePos City::getRoadExitIJ() const
+{
+    return TilePos( _roadExitI, _roadExitJ );
+}

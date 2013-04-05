@@ -22,51 +22,51 @@ public:
 	Vector2<T>& operator=(const Vector2<T>& other) { x = other.x; y = other.y; return *this; }
 
 	Vector2<T> operator+(const Vector2<T>& other) const { return Vector2<T>(x + other.x, y + other.y); }
-	Vector2<T>& operator+=(const Vector2<T>& other) { x+=other.X; y+=other.Y; return *this; }
+	Vector2<T>& operator+=(const Vector2<T>& other) { x+=other.x; y+=other.y; return *this; }
 	Vector2<T> operator+(const T v) const { return Vector2<T>(x + v, y + v); }
 	Vector2<T>& operator+=(const T v) { x+=v; y+=v; return *this; }
 
-	Vector2<T> operator-(const Vector2<T>& other) const { return Vector2<T>(x - other.X, y - other.Y); }
-	Vector2<T>& operator-=(const Vector2<T>& other) { x-=other.X; y-=other.Y; return *this; }
+	Vector2<T> operator-(const Vector2<T>& other) const { return Vector2<T>(x - other.x, y - other.y); }
+	Vector2<T>& operator-=(const Vector2<T>& other) { x-=other.x; y-=other.y; return *this; }
 	Vector2<T> operator-(const T v) const { return Vector2<T>(x - v, y - v); }
 	Vector2<T>& operator-=(const T v) { x-=v; y-=v; return *this; }
 
-	Vector2<T> operator*(const Vector2<T>& other) const { return Vector2<T>(x * other.X, y * other.Y); }
-	Vector2<T>& operator*=(const Vector2<T>& other) { x*=other.X; y*=other.Y; return *this; }
+	Vector2<T> operator*(const Vector2<T>& other) const { return Vector2<T>(x * other.x, y * other.y); }
+	Vector2<T>& operator*=(const Vector2<T>& other) { x*=other.x; y*=other.y; return *this; }
 	Vector2<T> operator*(const T v) const { return Vector2<T>(x * v, y * v); }
 	Vector2<T>& operator*=(const T v) { x*=v; y*=v; return *this; }
 
-	Vector2<T> operator/(const Vector2<T>& other) const { return Vector2<T>(x / other.X, y / other.Y); }
-	Vector2<T>& operator/=(const Vector2<T>& other) { x/=other.X; y/=other.Y; return *this; }
+	Vector2<T> operator/(const Vector2<T>& other) const { return Vector2<T>(x / other.x, y / other.y); }
+	Vector2<T>& operator/=(const Vector2<T>& other) { x/=other.x; y/=other.y; return *this; }
 	Vector2<T> operator/(const T v) const { return Vector2<T>(x / v, y / v); }
 	Vector2<T>& operator/=(const T v) { x/=v; y/=v; return *this; }
 
 	//! sort in order X, Y. Equality with rounding tolerance.
     bool operator<=(const Vector2<T>& other) const
 	{
-        return 	(x<other.X || math::isEqual(x, other.X)) ||
-                (math::isEqual(x, other.X) && (y<other.Y || math::isEqual(y, other.Y)));
+        return 	(x<other.x || math::isEqual(x, other.x)) ||
+                (math::isEqual(x, other.x) && (y<other.y || math::isEqual(y, other.y)));
 	}
 
 	//! sort in order X, Y. Equality with rounding tolerance.
 	bool operator>=(const Vector2<T>&other) const
 	{
-                return 	(x>other.X || math::isEqual(x, other.X)) ||
-                                (math::isEqual(x, other.X) && (y>other.Y || math::isEqual(y, other.Y)));
+                return 	(x>other.x || math::isEqual(x, other.x)) ||
+                                (math::isEqual(x, other.x) && (y>other.Y || math::isEqual(y, other.y)));
 	}
 
 	//! sort in order X, Y. Difference must be above rounding tolerance.
 	bool operator<(const Vector2<T>&other) const
 	{
-                return 	(x<other.X && !math::isEqual(x, other.X)) ||
-                                (math::isEqual(x, other.X) && y<other.Y && !math::isEqual(y, other.Y));
+                return 	(x<other.x && !math::isEqual(x, other.x)) ||
+                                (math::isEqual(x, other.X) && y<other.Y && !math::isEqual(y, other.y));
 	}
 
 	//! sort in order X, Y. Difference must be above rounding tolerance.
 	bool operator>(const Vector2<T>&other) const
 	{
-        return 	(x>other.X && !math::isEqual(x, other.X)) ||
-                                (math::isEqual(x, other.X) && y>other.Y && !math::isEqual(y, other.Y));
+        return 	(x>other.x && !math::isEqual(x, other.x)) ||
+                                (math::isEqual(x, other.x) && y>other.y && !math::isEqual(y, other.y));
 	}
 
         bool operator==(const Vector2<T>& other) const { return isEqual(other, math::ROUNDING_ERROR_f32); }
@@ -80,11 +80,11 @@ public:
 	\return True if the two vector are (almost) equal, else false. */
     bool IsEqual(const Vector2<T>& other, float tolerance) const
 	{
-        return math::isEqual(x, other.X, tolerance) && math::isEqual(y, other.Y, tolerance);
+        return math::isEqual(x, other.x, tolerance) && math::isEqual(y, other.y, tolerance);
 	}
 
 	Vector2<T>& set(T nx, T ny) {x=nx; y=ny; return *this; }
-	Vector2<T>& set(const Vector2<T>& p) { x=p.X; y=p.Y; return *this; }
+	Vector2<T>& set(const Vector2<T>& p) { x=p.x; y=p.y; return *this; }
 
 	//! Gets the length of the vector.
 	/** \return The length of the vector. */
@@ -100,7 +100,7 @@ public:
 	\return The dot product of the two vectors. */
 	T dotProduct(const Vector2<T>& other) const
 	{
-		return x*other.X + y*other.Y;
+		return x*other.x + y*other.y;
 	}
 
     template< class A >
@@ -121,7 +121,7 @@ public:
 	\return Distance from other point. */
 	T getDistanceFrom(const Vector2<T>& other) const
 	{
-		return Vector2<T>(x - other.X, y - other.Y).getLength();
+		return Vector2<T>(x - other.x, y - other.y).getLength();
 	}
 
 	//! Returns squared distance from another point.
@@ -130,7 +130,7 @@ public:
 	\return Squared distance from other point. */
 	T getDistanceFromSQ(const Vector2<T>& other) const
 	{
-		return Vector2<T>(x - other.X, y - other.Y).getLengthSQ();
+		return Vector2<T>(x - other.x, y - other.y).getLengthSQ();
 	}
 
 	//! rotates the point anticlockwise around a center by an amount of degrees.
@@ -226,12 +226,12 @@ public:
 	\return Returns a value between 0 and 90. */
 	inline float getAngleWith(const Vector2<T>& b) const
 	{
-		double tmp = x*b.X + y*b.Y;
+		double tmp = x*b.x + y*b.y;
 
 		if (tmp == 0.0)
 			return 90.0;
 
-                tmp = tmp / sqrtf((float)((x*x + y*y) * (b.X*b.X + b.Y*b.Y)));
+                tmp = tmp / sqrtf((float)((x*x + y*y) * (b.x*b.x + b.y*b.y)));
 		if (tmp < 0.0)
 			tmp = -tmp;
 
@@ -245,15 +245,15 @@ public:
 	\return True if this vector is between begin and end, false if not. */
 	bool isBetweenPoints(const Vector2<T>& begin, const Vector2<T>& end) const
 	{
-		if (begin.X != end.X)
+		if (begin.x != end.x)
 		{
-			return ((begin.X <= x && x <= end.X) ||
-				(begin.X >= x && x >= end.X));
+			return ((begin.x <= x && x <= end.x) ||
+				(begin.x >= x && x >= end.x));
 		}
 		else
 		{
-			return ((begin.Y <= y && y <= end.Y) ||
-				(begin.Y >= y && y >= end.Y));
+			return ((begin.y <= y && y <= end.y) ||
+				(begin.y >= y && y >= end.y));
 		}
 	}
 
@@ -265,7 +265,7 @@ public:
 	Vector2<T> getInterpolated(const Vector2<T>& other, T d) const
 	{
 		float inv = 1.0f - (float)d;
-		return Vector2<T>((T)(other.X*inv + x*d), (T)(other.Y*inv + y*d));
+		return Vector2<T>((T)(other.x*inv + x*d), (T)(other.y*inv + y*d));
 	}
 
 	//! Creates a quadratically interpolated vector between this and two other vectors.
@@ -294,11 +294,15 @@ public:
 	*/
 	Vector2<T>& interpolate(const Vector2<T>& a, const Vector2<T>& b, const T d)
 	{
-		x = (T)((float)b.X + ( ( a.X - b.X ) * d ));
-		y = (T)((float)b.Y + ( ( a.Y - b.Y ) * d ));
+		x = (T)((float)b.x + ( ( a.x - b.x ) * d ));
+		y = (T)((float)b.y + ( ( a.y - b.y ) * d ));
 		return *this;
 	}
 
+    T getX() const { return x; }
+    T getY() const { return y; }
+
+protected:
 	//! X coordinate of vector.
 	T x;
 

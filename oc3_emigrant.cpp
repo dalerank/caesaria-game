@@ -5,7 +5,7 @@
 class Emigrant::Impl
 {
 public:
-	Point destination;
+	TilePos destination;
 	Picture* cartPicture;
 };
 
@@ -74,7 +74,7 @@ void Emigrant::assignPath( const Road& startPoint )
 			if( house->getNbHabitants() < house->getMaxHabitants() )
 			{
 				blankHouse = house;
-				_d->destination = Point( house->getTile().getI(), house->getTile().getJ() );
+				_d->destination = house->getTile().getIJ();
 				break;
 			}
 		}
@@ -93,7 +93,7 @@ void Emigrant::assignPath( const Road& startPoint )
 
 void Emigrant::onDestination()
 {
-	const Tile& tile = Scenario::instance().getCity().getTilemap().at( _d->destination.x, _d->destination.y );
+	const Tile& tile = Scenario::instance().getCity().getTilemap().at( _d->destination );
 
 	LandOverlay* overlay = tile.get_terrain().getOverlay();
 	if( House* house = dynamic_cast<House*>( overlay ) )

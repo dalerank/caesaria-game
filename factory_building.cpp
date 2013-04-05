@@ -69,15 +69,17 @@ std::map<GoodType, Factory*>& Factory::getSpecimen()
 {
    if (_specimen.empty())
    {
-      _specimen[G_TIMBER] = new FactoryTimber();
+      _specimen[G_TIMBER]    = new FactoryTimber();
       _specimen[G_FURNITURE] = new FactoryFurniture();
-      _specimen[G_IRON] = new FactoryIron();
-      _specimen[G_WEAPON] = new FactoryWeapon();
-      _specimen[G_WINE] = new FactoryWine();
-      _specimen[G_OIL] = new FactoryOil();
-      _specimen[G_CLAY] = new FactoryClay();
-      _specimen[G_POTTERY] = new FactoryPottery();
-      _specimen[G_MARBLE] = new FactoryMarble();
+      _specimen[G_IRON]      = new FactoryIron();
+      _specimen[G_WEAPON]    = new FactoryWeapon();
+      _specimen[G_WINE]      = new FactoryWine();
+      _specimen[G_OIL]       = new FactoryOil();
+      _specimen[G_CLAY]      = new FactoryClay();
+      _specimen[G_POTTERY]   = new FactoryPottery();
+      _specimen[G_MARBLE]    = new FactoryMarble();
+      // ????
+      _specimen[G_FISH]      = new Wharf();
    }
 
    return _specimen;
@@ -92,7 +94,7 @@ void Factory::timeStep(const unsigned long time)
 
    float workersRatio = float(getWorkers()) / float(getMaxWorkers());  // work drops if not enough workers
    // 1080: number of seconds in a year, 0.67: number of timeSteps per second
-   float work = 100.f/1080.f/0.67f*_productionRate*workersRatio*workersRatio;  // work is proportionnal to time and factory speed
+   float work = 100.f / 1080.f / 0.67f * _productionRate * workersRatio * workersRatio;  // work is proportionnal to time and factory speed
    if (inStock._goodType != G_NONE && inStock._currentQty == 0)
    {
       // cannot work, no input material!
@@ -579,3 +581,73 @@ FarmVegetable* FarmVegetable::clone() const
    return res;
 }
 
+Wharf::Wharf() : Factory(G_NONE, G_FISH)
+{
+  setType(B_WHARF);
+  _size = 2;
+  // transport 52 53 54 55
+  setPicture(PicLoader::instance().get_picture("transport", 52));
+}
+
+Wharf* Wharf::clone() const
+{
+   return new Wharf(*this);
+}
+
+/* INCORRECT! */
+bool Wharf::canBuild(const int i, const int j) const
+{
+  bool is_constructible = Construction::canBuild(i, j);
+
+  // We can build wharf only on straight border of water and land
+  //
+  //   ?WW? ???? ???? ????
+  //   ?XX? WXX? ?XXW ?XX?
+  //   ?XX? WXX? ?XXW ?XX?
+  //   ???? ???? ???? ?WW?
+  //
+
+  bool bNorth = true;
+  bool bSouth = true;
+  bool bWest  = true;
+  bool bEast  = true;
+   
+  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+   
+  std::list<Tile*> rect = tilemap.getRectangle(i - 1, j - 1, i + _size, j + _size, false);
+  for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+  {
+    Tile &tile = **itTiles;
+    std::cout << tile.getI() << " " << tile.getJ() << "  " << i << " " << j << std::endl;
+      
+     // if (tiles.get_terrain().isWater())
+      
+      if (tile.getJ() > (j + _size -1) && !tile.get_terrain().isWater()) {  bNorth = false; }
+      if (tile.getJ() < j && !tile.get_terrain().isWater())              {  bSouth = false; }
+      if (tile.getI() > (i + _size -1) && !tile.get_terrain().isWater()) {  bEast = false;  }
+      if (tile.getI() < i && !tile.get_terrain().isWater())              {  bWest = false;  }      
+   }
+
+   return (is_constructible && (bNorth || bSouth || bEast || bWest));
+}
+
+/*
+bool Wharf::canBuild(const int i, const int j) const
+{
+  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  
+  int sum = 0;
+  
+  // 2 x 2 so sum will be max 1 + 2 + 4 + 8
+  for (int k = 0; k < _size; k++)
+    for (int l = 0; l < _size; l++)
+      sum += tilemap.at(i + k, j + l).get_terrain().isWater() << (k * _size + l);
+  
+  std::cout << sum << std::endl;
+    
+  if (sum==3 or sum==5 or 
+    //sum==9 or sum==6 or
+    sum==10 or sum==12) return true;
+  
+  return false;
+}*/

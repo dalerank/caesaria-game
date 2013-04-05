@@ -25,9 +25,8 @@
 #include "pic_loader.hpp"
 #include "sdl_facade.hpp"
 #include "gui_paneling.hpp"
-
-
-
+#include "oc3_positioni.h"
+#include "picture.hpp"
 
 WidgetEvent::WidgetEvent()
 {
@@ -116,7 +115,7 @@ Widget::~Widget()
   
 }
 
-void Widget::drawPicture(Picture &picture, const int dx, const int dy)
+void Widget::drawPicture( const Picture &picture, const int dx, const int dy)
 {
    GfxEngine &engine = GfxEngine::instance();
    engine.drawPicture(picture, dx+_x, dy+_y);
@@ -126,6 +125,12 @@ void Widget::setPosition(const int x, const int y)
 {
    _x = x;
    _y = y;
+}
+
+void Widget::setPosition( const Point& pos )
+{
+    _x = pos.getX();
+    _y = pos.getY();
 }
 
 int Widget::getX() const
@@ -402,9 +407,9 @@ void TextIcon::fitSize()
    setSize(_bgPicture->get_surface()->w, _bgPicture->get_surface()->h);
 }
 
-void TextIcon::setFont(Font &font)
+void TextIcon::setFont( const Font& font )
 {
-   _font = &font;
+   _font = const_cast< Font* >( &font );
 }
 
 void TextIcon::setText(const std::string &text)

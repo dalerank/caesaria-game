@@ -25,8 +25,8 @@
 #include "serializer.hpp"
 #include "picture.hpp"
 
-
 class LandOverlay;
+class TilePos;
 
 class TerrainTile : public Serializable
 {
@@ -84,6 +84,7 @@ public:
    // tile coordinates
    int getI() const;
    int getJ() const;
+   TilePos getIJ() const;
 
    // displayed picture
    void set_picture(Picture *picture);
@@ -119,6 +120,7 @@ public:
 
    bool is_inside(const int i, const int j) const;
    Tile& at(const int i, const int j);
+   Tile& at( const TilePos& ij );
    const Tile& at(const int i, const int j) const;
 
    // returns all tiles on a rectangular perimeter
