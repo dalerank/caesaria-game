@@ -1,5 +1,5 @@
-#ifndef _OPENCAESAR3_MATH_INCLUDE_
-#define _OPENCAESAR3_MATH_INCLUDE_
+#ifndef __OPENCAESAR3_MATH_INCLUDE_
+#define __OPENCAESAR3_MATH_INCLUDE_
 
 #include <math.h>
 #include <limits.h>
