@@ -67,7 +67,8 @@ public:
    // unselect button, if any
    void unselect();
 
-   Picture& getBgPicture();
+   const Picture& getBgPicture() const;
+   const Picture& getBottomPicture() const; 
 
 private:
 
@@ -77,7 +78,8 @@ private:
    // init the given button with data. this button has 4 states
    void set4Button(ImageButton &oButton, const WidgetEvent &event, const int pic_index);
 
-   Picture *_bgPicture;
+   Picture* _bgPicture;
+   Picture* _btPicture;
 
    ImageIcon _midIcon;
    //ImageIcon _bottomIcon;

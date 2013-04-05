@@ -32,8 +32,9 @@
 #include "building_data.hpp"
 #include "city.hpp"
 #include "scenario.hpp"
+#include "oc3_positioni.h"
 
-static const std::string panelBgName = "paneling";
+static const char* panelBgName = "paneling";
 static const unsigned int panelBgStatus = 15;
 static const unsigned int dateLabelOffset = 155;
 static const unsigned int populationLabelOffset = 345;
@@ -152,7 +153,8 @@ Picture& MenuBar::getBgPicture()
 Menu::Menu()
 {
    _bgPicture = &PicLoader::instance().get_picture( panelBgName, 16 );
-   setSize(_bgPicture->get_surface()->w, _bgPicture->get_surface()->h);
+   _btPicture = &PicLoader::instance().get_picture( panelBgName, 21 );
+   setSize(_bgPicture->get_width(), _bgPicture->get_height() + _btPicture->get_height() );
 
    // // top of menu
    //_menuButton.setText("Menu");
@@ -164,7 +166,10 @@ Menu::Menu()
    //_menuButton.init_pictures();
    //add_widget(_menuButton);
 
-   // set4Button(_minimizeButton, WidgetEvent(), 97);
+   Point offset( 1, 32 );
+   int dy = 35;
+   set4Button(_minimizeButton, WidgetEvent(), 97);
+   _minimizeButton.setPosition( offset + Point( 0, dy * 0 ));
 
    // //
    // _midIcon.setPicture(PicLoader::instance().get_picture("panelwindows", 1));
@@ -184,20 +189,40 @@ Menu::Menu()
    // set3Button(_rotateRightButton, WidgetEvent(), 94);
 
    set4Button(_houseButton, WidgetEvent::BuildingEvent(B_HOUSE), 123);
+   _houseButton.setPosition( offset + Point( 0, dy * 0 ) );
+
    set4Button(_clearButton, WidgetEvent::ClearLandEvent(), 131);
+   _clearButton.setPosition( offset + Point( 0, dy * 1 ) );
+
    set4Button(_roadButton, WidgetEvent::BuildingEvent(B_ROAD), 135);
+   _roadButton.setPosition( offset + Point( 0, dy * 2 ) );
    // second row
    set4Button(_waterButton, WidgetEvent::BuildMenuEvent(BM_WATER), 127);
+   _waterButton.setPosition( offset + Point( 0, dy * 3 ));
+
    set4Button(_healthButton, WidgetEvent::BuildMenuEvent(BM_HEALTH), 163);
+   _healthButton.setPosition( offset + Point( 0, dy * 4 ) );
+
    set4Button(_templeButton, WidgetEvent::BuildMenuEvent(BM_RELIGION), 151);
+   _templeButton.setPosition( offset + Point( 0, dy * 5 ) );
    // third row
    set4Button(_educationButton, WidgetEvent::BuildMenuEvent(BM_EDUCATION), 147);
+   _educationButton.setPosition( offset + Point( 0, dy * 6 ) );
+
    set4Button(_entertainmentButton, WidgetEvent::BuildMenuEvent(BM_ENTERTAINMENT), 143);
+   _entertainmentButton.setPosition( offset + Point( 0, dy * 7 ) );
+
    set4Button(_administrationButton, WidgetEvent::BuildMenuEvent(BM_ADMINISTRATION), 139);
+   _administrationButton.setPosition( offset + Point( 0, dy * 8 ) );
    // 4th row
    set4Button(_engineerButton, WidgetEvent::BuildMenuEvent(BM_ENGINEERING), 167);
+   _engineerButton.setPosition( offset + Point( 0, dy * 9 ) );
+
    set4Button(_securityButton, WidgetEvent::BuildMenuEvent(BM_SECURITY), 159);
+   _securityButton.setPosition( offset + Point( 0, dy * 10 ) );
+
    set4Button(_commerceButton, WidgetEvent::BuildMenuEvent(BM_COMMERCE), 155);
+   _commerceButton.setPosition( offset + Point( 0, dy * 11 ) );
 //   // 5th row
 //   set4Button(_cancelButton, WidgetEvent(), 171);
 //   set4Button(_messageButton, WidgetEvent(), 115);
@@ -214,30 +239,25 @@ Menu::Menu()
    // _rotateLeftButton.setPosition(84, 184);
    // _rotateRightButton.setPosition(123, 184);
    // first row
-   int x0 = 1;
-   int y0 = 32;
-   int dy = 35;
-   _houseButton.setPosition(x0, y0 + dy * 0);
-   _clearButton.setPosition(x0, y0 + dy * 1);
-   _roadButton.setPosition(x0, y0 + dy * 2);
+
+   
+   
    // second row
-   _waterButton.setPosition(x0, y0 + dy * 3);
-   _healthButton.setPosition(x0, y0 + dy * 4);
-   _templeButton.setPosition(x0, y0 + dy * 5);
+   
+   
+   
    // third row
-   _educationButton.setPosition(x0, y0 + dy * 6);
-   _entertainmentButton.setPosition(x0, y0 + dy * 7);
-   _administrationButton.setPosition(x0, y0 + dy * 8);
+   
+   
+   
    // 4th row
-   _engineerButton.setPosition(x0, y0 + dy * 9);
-   _securityButton.setPosition(x0, y0 + dy * 10);
-   _commerceButton.setPosition(x0, y0 + dy * 11);
+   
+   
+   
 //   // 5th row
 //   _cancelButton.setPosition(x0, y0+dy*12);
 //   _messageButton.setPosition(x0, y0+dy*13);
 //   _disasterButton.setPosition(x0, y0+dy*14);
-
-
 
 //   _bgPicture = &PicLoader::instance().get_picture("paneling", 17);
 //   setSize(_bgPicture->get_surface()->w, _bgPicture->get_surface()->h);
@@ -325,12 +345,13 @@ Menu::Menu()
 
 void Menu::draw(const int dx, const int dy)
 {
-   drawPicture(getBgPicture(), dx, dy);
-   drawChildren(dx, dy);
+   drawPicture( getBgPicture(), dx, dy );
+   drawPicture( getBottomPicture(), dx, dy + _bgPicture->get_height() );
+   drawChildren( dx, dy );
 }
 
 
-Picture& Menu::getBgPicture()
+const Picture& Menu::getBgPicture() const
 {
    return *_bgPicture;
 }
@@ -367,6 +388,10 @@ void Menu::unselect()
    }
 }
 
+const Picture& Menu::getBottomPicture() const
+{
+    return *_btPicture;
+}
 
 BuildMenu::BuildMenu()
 {

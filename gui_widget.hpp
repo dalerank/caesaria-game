@@ -21,9 +21,12 @@
 
 #include <string>
 #include <list>
+#include <SDL_events.h>
 
 #include "enums.hpp"
-#include "picture.hpp"
+class Picture;
+class Point;
+class Font;
 
 struct WidgetEvent
 {
@@ -63,7 +66,7 @@ public:
 
    // draw on screen
    virtual void draw(const int dx, const int dy) = 0;
-   void drawPicture(Picture &picture, const int dx, const int dy);
+   void drawPicture( const Picture &picture, const int dx, const int dy);
 
    // listener=NULL => no listener
    virtual void setListener(WidgetListener *listener);
@@ -73,6 +76,8 @@ public:
    Widget* getParent() const;
 
    void setPosition(const int x, const int y);
+   void setPosition( const Point& pos );
+
    void setSize(const int width, const int height);
    int getX() const;
    int getY() const;
@@ -154,7 +159,7 @@ public:
 
    Picture &getPicture();
    void setBgPicture(Picture *pic);
-   void setFont(Font &font);
+   void setFont(const Font& font);
    void setText(const std::string &text);
    void fitSize();  // set size according to bgPicture
    void invalidatePicture();
