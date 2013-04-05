@@ -53,8 +53,12 @@ public:
 
    int getRoadEntryI() const;
    int getRoadEntryJ() const;
+   TilePos getRoadEntryIJ() const;
+   
    int getRoadExitI() const;
    int getRoadExitJ() const;
+   TilePos getRoadExitIJ() const;
+   
    int getBoatEntryI() const;
    int getBoatEntryJ() const;
    int getBoatExitI() const;

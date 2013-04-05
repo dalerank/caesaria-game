@@ -23,6 +23,7 @@
 
 #include "exception.hpp"
 #include "pic_loader.hpp"
+#include <oc3_positioni.h>
 
 
 ScenarioLoader::ScenarioLoader()
@@ -38,6 +39,7 @@ void ScenarioLoader::load(const std::string& filename, Scenario &oScenario)
    load_map(f, oScenario);
 
    init_entry_exit(f, oScenario.getCity());
+   _initEntryExitPicture( oScenario.getCity() );
    f.close();
 }
 
@@ -449,4 +451,36 @@ void ScenarioLoader::init_entry_exit(std::fstream &f, City &ioCity)
    std::cout << "boat exit at:"  << ioCity.getBoatExitI()  << "," << ioCity.getBoatExitJ()  << std::endl;
 }
 
+static void initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap, const Uint32 picIdStart, bool exit )
+{
+    Uint32 idOffset=0;
+    TilePos tlOffset;
+    if( tlPos.getI() == 0 || tlPos.getI() == tileMap.getSize()-1 )
+    {
+        tlOffset = TilePos( 0, 1 );
+        idOffset = exit 
+                    ? ( tlPos.getI() == 0 ? 1 : 3 )
+                    : ( tlPos.getI() == 0 ? 3 : 1 );
+
+    }
+    else if( tlPos.getJ() == 0 || tlPos.getJ() == tileMap.getSize()-1 )
+    {
+        tlOffset = TilePos( 1, 0 );
+        idOffset = exit 
+                    ? ( tlPos.getJ() == 0 ? 2 : 0 )
+                    : ( tlPos.getJ() == 0 ? 0 : 2 );
+    }
+
+    Tile& signTile = tileMap.at( tlPos + tlOffset );
+    signTile.set_picture( &PicLoader::instance().get_picture( "land3a", picIdStart + idOffset ) );
+    signTile.get_terrain().setRock( true );
+};
+
+void ScenarioLoader::_initEntryExitPicture( City &ioCity )
+{
+    Tilemap& tileMap = ioCity.getTilemap();
+
+    initEntryExitTile( ioCity.getRoadEntryIJ(), tileMap, 89, false );
+    initEntryExitTile( ioCity.getRoadExitIJ(), tileMap, 85, true );    
+}
 
