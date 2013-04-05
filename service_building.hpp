@@ -258,7 +258,6 @@ public:
    Senate* clone() const;
 };
 
-
 class MarketBuyer;
 class Market: public ServiceBuilding
 {

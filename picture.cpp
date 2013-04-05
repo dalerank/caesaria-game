@@ -18,12 +18,14 @@
 
 #include "picture.hpp"
 
+#include <sdl_facade.hpp>
 #include <iostream>
 #include <sstream>
 #include <sdl_facade.hpp>
 
 #include "exception.hpp"
 #include "oc3_positioni.h"
+
 
 
 Picture::Picture()

@@ -206,12 +206,16 @@ BuildingDataHolder::BuildingDataHolder()
    addData(BuildingData(B_POTTERY, "pottery", 40));
 
    // utility
-   addData(BuildingData(B_ENGINEER, "engineer", 30));
-   addData(BuildingData(B_STATUE1, "statue1", 12));
-   addData(BuildingData(B_STATUE2, "statue2", 60));
-   addData(BuildingData(B_STATUE3, "statue3", 150));
-   addData(BuildingData(B_LOW_BRIDGE, "low_bridge", 40));
+   addData(BuildingData(B_ENGINEER,    "engineer",     30));
+   addData(BuildingData(B_STATUE1,     "statue1",      12));
+   addData(BuildingData(B_STATUE2,     "statue2",      60));
+   addData(BuildingData(B_STATUE3,     "statue3",     150));
+   addData(BuildingData(B_LOW_BRIDGE,  "low_bridge",   40));
    addData(BuildingData(B_HIGH_BRIDGE, "high_bridge", 100));
+   addData(BuildingData(B_DOCK,        "dock",        100));
+   addData(BuildingData(B_SHIPYARD,    "shipyard",    100));
+   addData(BuildingData(B_WHARF,       "wharf",       100));
+   addData(BuildingData(B_TRIUMPHAL_ARCH, "arch",     100));
 
    // water
    addData(BuildingData(B_WELL, "well", 5));
@@ -248,29 +252,30 @@ BuildingDataHolder::BuildingDataHolder()
    _mapBuildingByService[S_HIPPODROME] = B_HIPPODROME;
 
    // populate _mapBuildingByInGood
-   _mapBuildingByInGood[G_IRON] = B_WEAPON;
+   _mapBuildingByInGood[G_IRON]   = B_WEAPON;
    _mapBuildingByInGood[G_TIMBER] = B_FURNITURE;
-   _mapBuildingByInGood[G_CLAY] = B_POTTERY;
-   _mapBuildingByInGood[G_OLIVE] = B_OIL;
-   _mapBuildingByInGood[G_GRAPE] = B_WINE;
+   _mapBuildingByInGood[G_CLAY]   = B_POTTERY;
+   _mapBuildingByInGood[G_OLIVE]  = B_OIL;
+   _mapBuildingByInGood[G_GRAPE]  = B_WINE;
 
    // populate _mapBuildingByOutGood
-   _mapBuildingByOutGood[G_WHEAT] = B_WHEAT;
-   _mapBuildingByOutGood[G_FRUIT] = B_FRUIT;
+   _mapBuildingByOutGood[G_WHEAT]     = B_WHEAT;
+   _mapBuildingByOutGood[G_FRUIT]     = B_FRUIT;
    _mapBuildingByOutGood[G_VEGETABLE] = B_VEGETABLE;
-   _mapBuildingByOutGood[G_OLIVE] = B_OLIVE;
-   _mapBuildingByOutGood[G_GRAPE] = B_GRAPE;
-   _mapBuildingByOutGood[G_MEAT] = B_MEAT;
-   _mapBuildingByOutGood[G_MARBLE] = B_MARBLE;
-   _mapBuildingByOutGood[G_IRON] = B_IRON;
-   _mapBuildingByOutGood[G_TIMBER] = B_TIMBER;
-   _mapBuildingByOutGood[G_CLAY] = B_CLAY;
-   _mapBuildingByOutGood[G_OLIVE] = B_OLIVE;
-   _mapBuildingByOutGood[G_GRAPE] = B_GRAPE;
-   _mapBuildingByOutGood[G_WINE] = B_WINE;
-   _mapBuildingByOutGood[G_OIL] = B_OIL;
-   _mapBuildingByOutGood[G_WEAPON] = B_WEAPON;
+   _mapBuildingByOutGood[G_OLIVE]     = B_OLIVE;
+   _mapBuildingByOutGood[G_GRAPE]     = B_GRAPE;
+   _mapBuildingByOutGood[G_MEAT]      = B_MEAT;
+   _mapBuildingByOutGood[G_MARBLE]    = B_MARBLE;
+   _mapBuildingByOutGood[G_IRON]      = B_IRON;
+   _mapBuildingByOutGood[G_TIMBER]    = B_TIMBER;
+   _mapBuildingByOutGood[G_CLAY]      = B_CLAY;
+   _mapBuildingByOutGood[G_OLIVE]     = B_OLIVE;
+   _mapBuildingByOutGood[G_GRAPE]     = B_GRAPE;
+   _mapBuildingByOutGood[G_WINE]      = B_WINE;
+   _mapBuildingByOutGood[G_OIL]       = B_OIL;
+   _mapBuildingByOutGood[G_WEAPON]    = B_WEAPON;
    _mapBuildingByOutGood[G_FURNITURE] = B_FURNITURE;
-   _mapBuildingByOutGood[G_POTTERY] = B_POTTERY;
+   _mapBuildingByOutGood[G_POTTERY]   = B_POTTERY;
+   _mapBuildingByOutGood[G_FISH]      = B_WHARF;
 }
 

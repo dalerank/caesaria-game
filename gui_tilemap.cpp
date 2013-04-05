@@ -28,7 +28,7 @@
 #include "screen_game.hpp"
 #include "oc3_positioni.h"
 #include "oc3_pictureconverter.h"
-
+#include "oc3_pictureconverter.h"
 typedef std::list<Tile*> Tiles;
 
 class GuiTilemap::Impl
