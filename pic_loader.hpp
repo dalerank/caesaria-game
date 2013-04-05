@@ -163,6 +163,8 @@ public:
 
    Picture& getCart(const GoodStock &stock, const DirectionType &direction);
    Picture& getCart(GoodType cart, const DirectionType &direction );
+   // for emmigration & immigration
+   Picture& getCart(CartTypes cart, const DirectionType &direction);
 
 private:
    CartLoader();

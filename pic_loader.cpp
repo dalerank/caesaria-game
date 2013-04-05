@@ -30,11 +30,17 @@
 #include <map>
 #include <SDL.h>
 #include <SDL_image.h>
-#include <oc3_positioni.h>
 
+#include "oc3_positioni.h"
 #include "exception.hpp"
 #include "sdl_facade.hpp"
 
+namespace {
+static const char* rcCartsGroup    = "carts";
+static const char* rcCommerceGroup = "commerce";
+static const char* rcEntertaimentGroup  = "entertainment";
+static const char* rcWarehouseGroup  = "warehouse";
+}
 
 PicMetaData* PicMetaData::_instance = NULL;
 
@@ -62,84 +68,84 @@ PicMetaData::PicMetaData()
    setRange("land2a", 1, 151, info);
    setRange("land3a", 47, 92, info);
    setRange("plateau", 1, 44, info);
-   setRange("commerce", 1, 167, info);
+   setRange(rcCommerceGroup, 1, 167, info);
    setRange("transport", 1, 93, info);
    setRange("security", 1, 61, info);
-   setRange("entertainment", 1, 116, info);
+   setRange(rcEntertaimentGroup, 1, 116, info);
    setRange("housng1a", 1, 51, info);
-   setRange("warehouse", 19, 83, info);
+   setRange(rcWarehouseGroup, 19, 83, info);
    setRange("utilitya", 1, 42, info);
    setRange("govt", 1, 10, info);
 
-   setOne("entertainment", 12, 37, 62); // amphitheater
-   setOne("entertainment", 35, 34, 37); // theater
-   setOne("entertainment", 50, 70, 105);  // collosseum
+   setOne(rcEntertaimentGroup, 12, 37, 62); // amphitheater
+   setOne(rcEntertaimentGroup, 35, 34, 37); // theater
+   setOne(rcEntertaimentGroup, 50, 70, 105);  // collosseum
 
    // animations
    info.xoffset = 42;
    info.yoffset = 34;
-   setRange("commerce", 2, 11, info);  // market poor
+   setRange(rcCommerceGroup, 2, 11, info);  // market poor
    info.xoffset = 66;
    info.yoffset = 44;
-   setRange("commerce", 44, 53, info);  // marble
+   setRange(rcCommerceGroup, 44, 53, info);  // marble
    info.xoffset = 45;
    info.yoffset = 18;
-   setRange("commerce", 55, 60, info);  // iron
+   setRange(rcCommerceGroup, 55, 60, info);  // iron
    info.xoffset = 15;
    info.yoffset = 32;
-   setRange("commerce", 62, 71, info);  // clay
+   setRange(rcCommerceGroup, 62, 71, info);  // clay
    info.xoffset = 35;
    info.yoffset = 6;
-   setRange("commerce", 73, 82, info);  // timber
+   setRange(rcCommerceGroup, 73, 82, info);  // timber
    info.xoffset = 14;
    info.yoffset = 36;
-   setRange("commerce", 87, 98, info);  // wine
+   setRange(rcCommerceGroup, 87, 98, info);  // wine
    info.xoffset = 0;
    info.yoffset = 45;
-   setRange("commerce", 100, 107, info);  // oil
+   setRange(rcCommerceGroup, 100, 107, info);  // oil
    info.xoffset = 42;
    info.yoffset = 36;
-   setRange("commerce", 109, 116, info);  // weapons
+   setRange(rcCommerceGroup, 109, 116, info);  // weapons
    info.xoffset = 38;
    info.yoffset = 39;
-   setRange("commerce", 118, 131, info);  // furniture
+   setRange(rcCommerceGroup, 118, 131, info);  // furniture
    info.xoffset = 65;
    info.yoffset = 42;
-   setRange("commerce", 133, 139, info);  // pottery
+   setRange(rcCommerceGroup, 133, 139, info);  // pottery
    info.xoffset = 65;
    info.yoffset = 42;
-   setRange("commerce", 159, 167, info);  // market rich
+   setRange(rcCommerceGroup, 159, 167, info);  // market rich
 
    // stock of input good
-   setOne("commerce", 153, 45, -8);  // grapes
-   setOne("commerce", 154, 37, -2);  // olive
-   setOne("commerce", 155, 48, -4);  // timber
-   setOne("commerce", 156, 47, -11);  // iron
-   setOne("commerce", 157, 47, -9);  // clay
+   setOne(rcCommerceGroup, 153, 45, -8);  // grapes
+   setOne(rcCommerceGroup, 154, 37, -2);  // olive
+   setOne(rcCommerceGroup, 155, 48, -4);  // timber
+   setOne(rcCommerceGroup, 156, 47, -11);  // iron
+   setOne(rcCommerceGroup, 157, 47, -9);  // clay
 
    // warehouse
-   setOne("warehouse", 1, 60, 56);
-   setOne("warehouse", 18, 56, 93);
+   setOne(rcWarehouseGroup, 1, 60, 56);
+   setOne(rcWarehouseGroup, 18, 56, 93);
    info.xoffset = 55;
    info.yoffset = 75;
-   setRange("warehouse", 2, 17, info);
+   setRange(rcWarehouseGroup, 2, 17, info);
    info.xoffset = 79;
    info.yoffset = 108;
-   setRange("warehouse", 84, 91, info);
+   setRange(rcWarehouseGroup, 84, 91, info);
 
    // granary
-   setOne("commerce", 141, 28, 109);
-   setOne("commerce", 142, 33, 75);
-   setOne("commerce", 143, 56, 65);
-   setOne("commerce", 144, 92, 65);
-   setOne("commerce", 145, 118, 76);
-   setOne("commerce", 146, 78, 69);
-   setOne("commerce", 147, 78, 69);
-   setOne("commerce", 148, 78, 69);
-   setOne("commerce", 149, 78, 69);
-   setOne("commerce", 150, 78, 69);
-   setOne("commerce", 151, 78, 69);
-   setOne("commerce", 152, 78, 69);
+   setOne(rcCommerceGroup, 141, 28, 109);
+   setOne(rcCommerceGroup, 142, 33, 75);
+   setOne(rcCommerceGroup, 143, 56, 65);
+   setOne(rcCommerceGroup, 144, 92, 65);
+   setOne(rcCommerceGroup, 145, 118, 76);
+   setOne(rcCommerceGroup, 146, 78, 69);
+   setOne(rcCommerceGroup, 147, 78, 69);
+   setOne(rcCommerceGroup, 148, 78, 69);
+   setOne(rcCommerceGroup, 149, 78, 69);
+   setOne(rcCommerceGroup, 150, 78, 69);
+   setOne(rcCommerceGroup, 151, 78, 69);
+   setOne(rcCommerceGroup, 152, 78, 69);
 
    // walkers
    info.xoffset = -2;
@@ -652,15 +658,15 @@ void WalkerLoader::loadAll()
    _animations[WG_HORSEMAN] = map;
 
    map.clear();
-   fillWalk(map, "carts", 145, 12);
+   fillWalk(map, rcCartsGroup, 145, 12);
    _animations[WG_HORSE_CARAVAN] = map;
 
    map.clear();
-   fillWalk(map, "carts", 273, 12);
+   fillWalk(map, rcCartsGroup, 273, 12);
    _animations[WG_CAMEL_CARAVAN] = map;
 
    map.clear();
-   fillWalk(map, "carts", 369, 12);
+   fillWalk(map, rcCartsGroup, 369, 12);
    _animations[WG_LITTLE_HELPER] = map;
 
 }
@@ -696,8 +702,8 @@ const std::map<WalkerAction, Animation>& WalkerLoader::getAnimationMap(const Wal
 }
 
 
-
 CartLoader* CartLoader::_instance = NULL;
+
 CartLoader& CartLoader::instance()
 {
    if (_instance == NULL)
@@ -722,55 +728,55 @@ void CartLoader::loadAll()
    std::vector<Picture*> cart;  // key=direction
    bool frontCart = false;
 
-   fillCart(cart, "carts", 1, frontCart);
+   fillCart(cart, rcCartsGroup, 1, frontCart);
    _carts[G_NONE] = cart;
-   fillCart(cart, "carts", 9, frontCart);
+   fillCart(cart, rcCartsGroup, 9, frontCart);
    _carts[G_WHEAT] = cart;
-   fillCart(cart, "carts", 17, frontCart);
+   fillCart(cart, rcCartsGroup, 17, frontCart);
    _carts[G_VEGETABLE] = cart;
-   fillCart(cart, "carts", 25, frontCart);
+   fillCart(cart, rcCartsGroup, 25, frontCart);
    _carts[G_FRUIT] = cart;
-   fillCart(cart, "carts", 33, frontCart);
+   fillCart(cart, rcCartsGroup, 33, frontCart);
    _carts[G_OLIVE] = cart;
-   fillCart(cart, "carts", 41, frontCart);
+   fillCart(cart, rcCartsGroup, 41, frontCart);
    _carts[G_GRAPE] = cart;
-   fillCart(cart, "carts", 49, frontCart);
+   fillCart(cart, rcCartsGroup, 49, frontCart);
    _carts[G_MEAT] = cart;
-   fillCart(cart, "carts", 57, frontCart);
+   fillCart(cart, rcCartsGroup, 57, frontCart);
    _carts[G_WINE] = cart;
-   fillCart(cart, "carts", 65, frontCart);
+   fillCart(cart, rcCartsGroup, 65, frontCart);
    _carts[G_OIL] = cart;
-   fillCart(cart, "carts", 73, frontCart);
+   fillCart(cart, rcCartsGroup, 73, frontCart);
    _carts[G_IRON] = cart;
-   fillCart(cart, "carts", 81, frontCart);
+   fillCart(cart, rcCartsGroup, 81, frontCart);
    _carts[G_TIMBER] = cart;
-   fillCart(cart, "carts", 89, frontCart);
+   fillCart(cart, rcCartsGroup, 89, frontCart);
    _carts[G_CLAY] = cart;
-   fillCart(cart, "carts", 97, frontCart);
+   fillCart(cart, rcCartsGroup, 97, frontCart);
    _carts[G_MARBLE] = cart;
-   fillCart(cart, "carts", 105, frontCart);
+   fillCart(cart, rcCartsGroup, 105, frontCart);
    _carts[G_WEAPON] = cart;
-   fillCart(cart, "carts", 113, frontCart);
+   fillCart(cart, rcCartsGroup, 113, frontCart);
    _carts[G_FURNITURE] = cart;
-   fillCart(cart, "carts", 121, frontCart);
+   fillCart(cart, rcCartsGroup, 121, frontCart);
    _carts[G_POTTERY] = cart;
-   fillCart(cart, "carts", 129, !frontCart);
+   fillCart(cart, rcCartsGroup, 129, !frontCart);
    _carts[G_SCARB1] = cart;
-   fillCart(cart, "carts", 137, !frontCart);
+   fillCart(cart, rcCartsGroup, 137, !frontCart);
    _carts[G_SCARB2] = cart;
-   fillCart(cart, "carts", 697, frontCart);
+   fillCart(cart, rcCartsGroup, 697, frontCart);
    _carts[G_FISH] = cart;
 }
 
 static const Point frontCartOffsetSouth = Point( -33, 35 );
-static const Point frontCartOffsetWest = Point( -31, 35 );
+static const Point frontCartOffsetWest  = Point( -31, 35 );
 static const Point frontCartOffsetNorth = Point( -5, 37 );
-static const Point frontCartOffsetEast = Point( -5, 22 );
+static const Point frontCartOffsetEast  = Point( -5, 22 );
 
 static const Point backCartOffsetSouth = Point( -5, 40 );
-static const Point backCartOffsetWest = Point( -5, 22 );
+static const Point backCartOffsetWest  = Point( -5, 22 );
 static const Point backCartOffsetNorth = Point( -33, 22 );
-static const Point backCartOffsetEast = Point( -31, 35 );
+static const Point backCartOffsetEast  = Point( -31, 35 );
 
 void CartLoader::fillCart(std::vector<Picture*> &ioCart, const std::string &prefix, const int start, bool back )
 {
@@ -778,14 +784,14 @@ void CartLoader::fillCart(std::vector<Picture*> &ioCart, const std::string &pref
 
    ioCart.clear();
    ioCart.resize(D_MAX);
-   ioCart[D_NORTH] = &picLoader.get_picture("carts", start);
-   ioCart[D_NORTH_EAST] = &picLoader.get_picture("carts", start+1);
-   ioCart[D_EAST] = &picLoader.get_picture("carts", start+2);
-   ioCart[D_SOUTH_EAST] = &picLoader.get_picture("carts", start+3);
-   ioCart[D_SOUTH] = &picLoader.get_picture("carts", start+4);
-   ioCart[D_SOUTH_WEST] = &picLoader.get_picture("carts", start+5);
-   ioCart[D_WEST] = &picLoader.get_picture("carts", start+6);
-   ioCart[D_NORTH_WEST] = &picLoader.get_picture("carts", start+7);
+   ioCart[D_NORTH] = &picLoader.get_picture(rcCartsGroup, start);
+   ioCart[D_NORTH_EAST] = &picLoader.get_picture(rcCartsGroup, start+1);
+   ioCart[D_EAST] = &picLoader.get_picture(rcCartsGroup, start+2);
+   ioCart[D_SOUTH_EAST] = &picLoader.get_picture(rcCartsGroup, start+3);
+   ioCart[D_SOUTH] = &picLoader.get_picture(rcCartsGroup, start+4);
+   ioCart[D_SOUTH_WEST] = &picLoader.get_picture(rcCartsGroup, start+5);
+   ioCart[D_WEST] = &picLoader.get_picture(rcCartsGroup, start+6);
+   ioCart[D_NORTH_WEST] = &picLoader.get_picture(rcCartsGroup, start+7);
 
    ioCart[D_SOUTH]->set_offset( back ? backCartOffsetSouth : frontCartOffsetSouth);
    ioCart[D_WEST]->set_offset( back ? backCartOffsetWest : frontCartOffsetWest );
@@ -810,14 +816,17 @@ Picture& CartLoader::getCart(const GoodStock &stock, const DirectionType &direct
 
 Picture& CartLoader::getCart(GoodType cart, const DirectionType &direction)
 {
-    Picture *res = NULL;
-    {
-        res = _carts.at( cart ).at( direction );
-    }
-
-    return *res;
+  Picture *res = NULL;
+  res = _carts.at( cart ).at( direction );
+  return *res;
 }
 
+Picture& CartLoader::getCart(CartTypes cart, const DirectionType &direction)
+{
+  Picture *res = NULL;
+  res = _carts.at( cart ).at( direction );
+  return *res;
+}
 
 FontLoader::FontLoader()
 { }

@@ -296,15 +296,15 @@ FactoryClay* FactoryClay::clone() const
 bool FactoryClay::canBuild(const int i, const int j) const
 {
    bool is_constructible = Construction::canBuild(i, j);
-   bool near_water = true;
+   bool near_water = false;
 
-   // Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   // std::list<Tile*> rect = tilemap.getRectangle(i-1, j-1, i+_size, j+_size, false);
-   // for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
-   // {
-   //    Tile &tile = **itTiles;
-   //    near_mountain |= tile.get_terrain().isRock();
-   // }
+   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+   std::list<Tile*> rect = tilemap.getRectangle(i-1, j-1, i+_size, j+_size, false);
+   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+   {
+     Tile &tile = **itTiles;
+     near_water |= tile.get_terrain().isWater();
+   }
 
    return (is_constructible && near_water);
 }

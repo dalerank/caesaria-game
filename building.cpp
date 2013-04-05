@@ -34,11 +34,11 @@
 #include "gettext.hpp"
 
 namespace {
-static const char* rcUtilityGroup = "utilitya";
+static const char* rcUtilityGroup  = "utilitya";
 static const char* rcAqueductGroup = "land2a";
-static const char* rcRoadGroup = "land2a";
+static const char* rcRoadGroup     = "land2a";
 static const char* rcCommerceGroup = "commerce";
-static const char* rcHousingGroup = "housng1a";
+static const char* rcHousingGroup  = "housng1a";
 }
 
 std::map<BuildingType, LandOverlay*> LandOverlay::_mapBuildingByID;  // key=buildingType, value=instance
