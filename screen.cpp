@@ -16,12 +16,12 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#include <screen.hpp>
+#include "screen.hpp"
 
-#include <gfx_engine.hpp>
-#include <exception.hpp>
 #include <iostream>
 
+#include "gfx_engine.hpp"
+#include "exception.hpp"
 
 
 Screen::Screen() {}

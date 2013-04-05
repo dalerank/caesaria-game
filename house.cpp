@@ -21,7 +21,7 @@
 
 #include <iostream>
 
-#include <house_level.hpp>
+#include "house_level.hpp"
 #include "gui_info_box.hpp"
 #include "scenario.hpp"
 #include "exception.hpp"

@@ -17,16 +17,17 @@
 
 
 
-#include <gui_tilemap.hpp>
+#include "gui_tilemap.hpp"
 
-#include <gfx_engine.hpp>
-#include <exception.hpp>
 #include <algorithm>
 #include <iostream>
-#include <gui_info_box.hpp>
-#include <screen_game.hpp>
-#include <oc3_positioni.h>
-#include <oc3_pictureconverter.h>
+
+#include "gfx_engine.hpp"
+#include "exception.hpp"
+#include "gui_info_box.hpp"
+#include "screen_game.hpp"
+#include "oc3_positioni.h"
+#include "oc3_pictureconverter.h"
 
 typedef std::list<Tile*> Tiles;
 
@@ -256,7 +257,7 @@ TilemapArea &GuiTilemap::getMapArea()
 
 void GuiTilemap::updatePreviewTiles()
 {
-    Tile* tile = getTileXY( _d->lastCursorPos.x, _d->lastCursorPos.y );  // tile under the cursor (or NULL)
+    Tile* tile = getTileXY( _d->lastCursorPos.getX(), _d->lastCursorPos.getY() );  // tile under the cursor (or NULL)
     discardPreview();
 
     if( tile )

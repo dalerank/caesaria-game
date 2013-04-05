@@ -16,13 +16,14 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#include <picture.hpp>
+#include "picture.hpp"
 
-#include <sdl_facade.hpp>
-#include <exception.hpp>
 #include <iostream>
 #include <sstream>
-#include <oc3_positioni.h>
+#include <sdl_facade.hpp>
+
+#include "exception.hpp"
+#include "oc3_positioni.h"
 
 
 Picture::Picture()
@@ -54,8 +55,8 @@ void Picture::set_offset(const int xoffset, const int yoffset)
 
 void Picture::set_offset( const Point& offset )
 {
-	_xoffset = offset.x;
-	_yoffset = offset.y;
+	_xoffset = offset.getX();
+	_yoffset = offset.getY();
 }
 
 void Picture::add_offset(const int dx, const int dy)

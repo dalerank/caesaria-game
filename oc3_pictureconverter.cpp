@@ -1,4 +1,5 @@
-#include <oc3_pictureconverter.h>
+#include "oc3_pictureconverter.h"
+
 #include <SDL_image.h>
 
 #include "picture.hpp"

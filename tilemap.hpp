@@ -84,6 +84,7 @@ public:
    // tile coordinates
    int getI() const;
    int getJ() const;
+   TilePos getIJ() const;
 
    // displayed picture
    void set_picture(Picture *picture);

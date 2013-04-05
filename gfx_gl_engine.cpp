@@ -16,7 +16,7 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#include <gfx_gl_engine.hpp>
+#include "gfx_gl_engine.hpp"
 
 #include <cstdlib>
 #include <string>
@@ -26,10 +26,10 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
-#include <exception.hpp>
-#include <pic_loader.hpp>
-#include <picture.hpp>
-#include <sdl_facade.hpp>
+#include "exception.hpp"
+#include "pic_loader.hpp"
+#include "picture.hpp"
+#include "sdl_facade.hpp"
 
 
 GfxGlEngine::GfxGlEngine() : GfxEngine()

@@ -25,7 +25,7 @@
 #include "building_data.hpp"
 #include "path_finding.hpp"
 #include "exception.hpp"
-#include <oc3_emigrant.h>
+#include "oc3_emigrant.h"
 #include <oc3_positioni.h>
 
 City::City()

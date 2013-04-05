@@ -1,7 +1,7 @@
 #ifndef _OPENCAESAR3_EMIGRANT_H_INCLUDE_
 #define _OPENCAESAR3_EMIGRANT_H_INCLUDE_
 
-#include <walker.hpp>
+#include "walker.hpp"
 
 /** This is an immigrant coming with his stuff */
 class Emigrant : public Walker

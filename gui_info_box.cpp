@@ -28,7 +28,7 @@
 #include "gettext.hpp"
 #include "gui_paneling.hpp"
 #include "building_data.hpp"
-#include <house_level.hpp>
+#include "house_level.hpp"
 
 static const char* rcPaneling = "paneling";
 

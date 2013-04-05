@@ -273,6 +273,10 @@ bool Tile::is_flat() const
    return get_terrain().isRoad();
 }
 
+TilePos Tile::getIJ() const
+{
+    return TilePos( _i, _j );
+}
 
 Tilemap::Tilemap()
 {
