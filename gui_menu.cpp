@@ -548,63 +548,6 @@ void BuildMenu::addBuildButton(const BuildingType buildingType)
 BuildMenu *BuildMenu::getMenuInstance(const BuildMenuType menuType)
 {
    BuildMenu *res = NULL;
-/*   if (menuType == BM_WATER)
-   {
-      res = new BuildMenu_water();
-   }
-   else if (menuType == BM_HEALTH)
-   {
-      res = new BuildMenu_health();
-   }
-   else if (menuType == BM_SECURITY)
-   {
-      res = new BuildMenu_security();
-   }
-   else if (menuType == BM_EDUCATION)
-   {
-      res = new BuildMenu_education();
-   }
-   else if (menuType == BM_ENGINEERING)
-   {
-      res = new BuildMenu_engineering();
-   }
-   else if (menuType == BM_ADMINISTRATION)
-   {
-      res = new BuildMenu_administration();
-   }
-   else if (menuType == BM_ENTERTAINMENT)
-   {
-      res = new BuildMenu_entertainment();
-   }
-   else if (menuType == BM_COMMERCE)
-   {
-      res = new BuildMenu_commerce();
-   }
-   else if (menuType == BM_FARM)
-   {
-      res = new BuildMenu_farm();
-   }
-   else if (menuType == BM_RAW_MATERIAL)
-   {
-      res = new BuildMenu_raw_factory();
-   }
-   else if (menuType == BM_FACTORY)
-   {
-      res = new BuildMenu_factory();
-   }
-   else if (menuType == BM_RELIGION)
-   {
-      res = new BuildMenu_religion();
-   }
-   else if (menuType == BM_TEMPLE)
-   {
-      res = new BuildMenu_temple();
-   }
-   else if (menuType == BM_BIGTEMPLE)
-   {
-      res = new BuildMenu_bigtemple();
-   }*/
-
 
    switch (menuType)
    {
