@@ -586,6 +586,8 @@ void BuildMenu_security::addButtons()
   addBuildButton(B_FORT_LEGIONNAIRE);
   addBuildButton(B_FORT_JAVELIN);
   addBuildButton(B_FORT_MOUNTED);
+  addBuildButton(B_MILITARY_ACADEMY);
+  addBuildButton(B_BARRACKS);
 }
 
 

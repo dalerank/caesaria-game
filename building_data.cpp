@@ -156,8 +156,8 @@ BuildingDataHolder::BuildingDataHolder()
    addData(BuildingData(B_FORT_JAVELIN, "fort_javelin", 1000));
    addData(BuildingData(B_FORT_MOUNTED, "fort_horse", 1000));
    addData(BuildingData(B_PREFECT, "prefect", 30));
-   //addData(BuildingData(B_"barracks", 150));
-   //addData(BuildingData(B_"academy", 1000));
+   addData(BuildingData(B_BARRACKS, "barracks", 150));
+   addData(BuildingData(B_MILITARY_ACADEMY, "academy", 1000));
 
    // health
    addData(BuildingData(B_DOCTOR, "doctor", 30));

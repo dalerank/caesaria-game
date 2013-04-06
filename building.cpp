@@ -224,6 +224,8 @@ LandOverlay* LandOverlay::getInstance(const BuildingType buildingType)
       _mapBuildingByID[B_FORT_LEGIONNAIRE] = new FortLegionnaire();
       _mapBuildingByID[B_FORT_JAVELIN]     = new FortJaveline();
       _mapBuildingByID[B_FORT_MOUNTED]     = new FortMounted();
+      _mapBuildingByID[B_MILITARY_ACADEMY] = new Academy();
+      _mapBuildingByID[B_BARRACKS]         = new Barracks();
       // commerce
       _mapBuildingByID[B_MARKET]    = new Market();
       _mapBuildingByID[B_WAREHOUSE] = new Warehouse();
@@ -966,12 +968,26 @@ GovernorsPalace::GovernorsPalace()
   setPicture(PicLoader::instance().get_picture(rcHousingGroup, 48));
 }
 
-GovernorsHouse* GovernorsHouse::clone() const {return new GovernorsHouse(*this);}
-GovernorsVilla* GovernorsVilla::clone() const {return new GovernorsVilla(*this);}
-GovernorsPalace* GovernorsPalace::clone() const {return new GovernorsPalace(*this);}
+GovernorsHouse*  GovernorsHouse::clone()  const { return new GovernorsHouse(*this);  }
+GovernorsVilla*  GovernorsVilla::clone()  const { return new GovernorsVilla(*this);  }
+GovernorsPalace* GovernorsPalace::clone() const { return new GovernorsPalace(*this); }
 
+Academy::Academy()
+{
+  setType(B_MILITARY_ACADEMY);
+  _size = 3;
+  setPicture(PicLoader::instance().get_picture(rcSecurityGroup, 18));
+}
 
+Barracks::Barracks()
+{
+  setType(B_BARRACKS);
+  _size = 3;
+  setPicture(PicLoader::instance().get_picture(rcSecurityGroup, 17));
+}
 
+Academy*  Academy::clone()  const { return new Academy(*this);  }
+Barracks* Barracks::clone() const { return new Barracks(*this); }
 
 NativeBuilding::NativeBuilding() {}
 

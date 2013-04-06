@@ -268,7 +268,19 @@ public:
   
 };
 
+class Academy : public WorkingBuilding
+{
+public:
+  Academy();
+  Academy* clone() const;
+};
 
+class Barracks : public WorkingBuilding
+{
+public:
+  Barracks();
+  Barracks* clone() const;
+};
 
 class Shipyard : public Building
 {
