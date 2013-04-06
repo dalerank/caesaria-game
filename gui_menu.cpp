@@ -620,6 +620,9 @@ void BuildMenu_administration::addButtons()
   addBuildButton(B_FORUM);
   addBuildButton(B_SENATE);
   
+  addBuildButton(B_STATUE1);
+  addBuildButton(B_STATUE2);
+  addBuildButton(B_STATUE3);
   addBuildButton(B_GOVERNOR_HOUSE);
   addBuildButton(B_GOVERNOR_VILLA);
   addBuildButton(B_GOVERNOR_PALACE);

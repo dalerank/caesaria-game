@@ -243,6 +243,33 @@ public:
 //  void unserialize(InputSerialStream &stream);
 };
 
+
+class SmallStatue : public Building
+{
+public:
+  SmallStatue();
+  SmallStatue* clone() const;
+  
+};
+
+class MediumStatue : public Building
+{
+public:
+  MediumStatue();
+  MediumStatue* clone() const;
+  
+};
+
+class BigStatue : public Building
+{
+public:
+  BigStatue();
+  BigStatue* clone() const;
+  
+};
+
+
+
 class Shipyard : public Building
 {
 public:
@@ -303,6 +330,8 @@ public:
   void unserialize(InputSerialStream &stream);
   //virtual GuiInfoBox* makeInfoBox();
 };
+
+
 
 
 #endif

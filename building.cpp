@@ -39,6 +39,7 @@ static const char* rcAqueductGroup = "land2a";
 static const char* rcRoadGroup     = "land2a";
 static const char* rcCommerceGroup = "commerce";
 static const char* rcHousingGroup  = "housng1a";
+
 }
 
 std::map<BuildingType, LandOverlay*> LandOverlay::_mapBuildingByID;  // key=buildingType, value=instance
@@ -208,7 +209,10 @@ LandOverlay* LandOverlay::getInstance(const BuildingType buildingType)
       _mapBuildingByID[B_SENATE] = new Senate();
       _mapBuildingByID[B_GOVERNOR_HOUSE]  = new GovernorsHouse();
       _mapBuildingByID[B_GOVERNOR_VILLA]  = new GovernorsVilla();
-      _mapBuildingByID[B_GOVERNOR_PALACE] = new GovernorsPalace();      
+      _mapBuildingByID[B_GOVERNOR_PALACE] = new GovernorsPalace(); 
+      _mapBuildingByID[B_STATUE1] = new SmallStatue(); 
+      _mapBuildingByID[B_STATUE2] = new MediumStatue(); 
+      _mapBuildingByID[B_STATUE3] = new BigStatue(); 
       // water
       _mapBuildingByID[B_WELL]      = new BuildingWell();
       _mapBuildingByID[B_FOUNTAIN]  = new BuildingFountain();
@@ -390,6 +394,7 @@ Reservoir::Reservoir()
  
   AnimLoader animLoader(PicLoader::instance());
   animLoader.fill_animation(_animation, rcUtilityGroup, 35, 8);
+  animLoader.fill_animation_reverse(_animation, rcUtilityGroup, 42, 7);
   animLoader.change_offset(_animation, 47, 63);
   _fgPictures.resize(1);
   //_fgPictures[0]=;
@@ -901,6 +906,31 @@ void Granary::unserialize(InputSerialStream &stream)
 // transport 93 - missionaire post   2 x 2
 // circus    1 ~ 18 hippodrome    5x(5 x 5)
 
+SmallStatue::SmallStatue()
+{
+ setType(B_STATUE1);
+  _size = 1;
+  setPicture(PicLoader::instance().get_picture("govt", 1));
+}
+
+MediumStatue::MediumStatue()
+{
+ setType(B_STATUE2);
+  _size = 2;
+  setPicture(PicLoader::instance().get_picture("govt", 2));
+}
+
+BigStatue::BigStatue()
+{
+ setType(B_STATUE3);
+  _size = 3;
+  setPicture(PicLoader::instance().get_picture("govt", 3));
+}
+
+SmallStatue* SmallStatue::clone() const {return new SmallStatue(*this);}
+MediumStatue* MediumStatue::clone() const {return new MediumStatue(*this);}
+BigStatue* BigStatue::clone() const {return new BigStatue(*this);}
+
 GovernorsHouse::GovernorsHouse()
 {
   setType(B_GOVERNOR_HOUSE);
@@ -925,6 +955,8 @@ GovernorsPalace::GovernorsPalace()
 GovernorsHouse* GovernorsHouse::clone() const {return new GovernorsHouse(*this);}
 GovernorsVilla* GovernorsVilla::clone() const {return new GovernorsVilla(*this);}
 GovernorsPalace* GovernorsPalace::clone() const {return new GovernorsPalace(*this);}
+
+
 
 
 NativeBuilding::NativeBuilding() {}
