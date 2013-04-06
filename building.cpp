@@ -34,12 +34,13 @@
 #include "gettext.hpp"
 
 namespace {
-static const char* rcUtilityGroup  = "utilitya";
-static const char* rcAqueductGroup = "land2a";
-static const char* rcRoadGroup     = "land2a";
-static const char* rcCommerceGroup = "commerce";
-static const char* rcHousingGroup  = "housng1a";
-static const char* rcSecurityGroup = "security";
+static const char* rcUtilityGroup    = "utilitya";
+static const char* rcAqueductGroup   = "land2a";
+static const char* rcRoadGroup       = "land2a";
+static const char* rcCommerceGroup   = "commerce";
+static const char* rcHousingGroup    = "housng1a";
+static const char* rcSecurityGroup   = "security";
+static const char* rcGovernmentGroup = "govt";
 }
 
 std::map<BuildingType, LandOverlay*> LandOverlay::_mapBuildingByID;  // key=buildingType, value=instance
@@ -813,9 +814,9 @@ Granary::Granary()
    _goodStore.setCurrentQty(G_WHEAT, 300);
 
    AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, "commerce", 146, 7);
+   animLoader.fill_animation(_animation, rcCommerceGroup, 146, 7);
    // do the animation in reverse
-   animLoader.fill_animation_reverse(_animation, "commerce", 151, 6);
+   animLoader.fill_animation_reverse(_animation, rcCommerceGroup, 151, 6);
    PicLoader& ldr = PicLoader::instance();
    _animation.get_pictures().push_back(&ldr.get_picture( rcCommerceGroup, 151));
    _animation.get_pictures().push_back(&ldr.get_picture( rcCommerceGroup, 150));
@@ -913,21 +914,21 @@ SmallStatue::SmallStatue()
 {
  setType(B_STATUE1);
   _size = 1;
-  setPicture(PicLoader::instance().get_picture("govt", 1));
+  setPicture(PicLoader::instance().get_picture(rcGovernmentGroup, 1));
 }
 
 MediumStatue::MediumStatue()
 {
  setType(B_STATUE2);
   _size = 2;
-  setPicture(PicLoader::instance().get_picture("govt", 2));
+  setPicture(PicLoader::instance().get_picture(rcGovernmentGroup, 2));
 }
 
 BigStatue::BigStatue()
 {
  setType(B_STATUE3);
   _size = 3;
-  setPicture(PicLoader::instance().get_picture("govt", 3));
+  setPicture(PicLoader::instance().get_picture(rcGovernmentGroup, 3));
 }
 
 SmallStatue* SmallStatue::clone() const {return new SmallStatue(*this);}
