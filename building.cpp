@@ -1079,7 +1079,6 @@ TriumphalArch::TriumphalArch()
   setType(B_TRIUMPHAL_ARCH);
   _size = 3;
   setPicture(PicLoader::instance().get_picture("land3a", 43));
-  // std::cout << getPicture().get_xoffset() << " " << getPicture().get_yoffset() << " " << getPicture().get_width() << " " << getPicture().get_height() << std::endl;
   getPicture().set_offset(0,116);
   AnimLoader animLoader(PicLoader::instance());
   animLoader.fill_animation(_animation, "land3a", 44, 1);
@@ -1102,6 +1101,7 @@ FortLegionnaire::FortLegionnaire()
   setPicture(PicLoader::instance().get_picture(rcSecurityGroup, 12));
 
   Picture* logo = &PicLoader::instance().get_picture(rcSecurityGroup, 16);
+  logo -> set_offset(80,10);
   _fgPictures.resize(1);
   _fgPictures.at(0) = logo;  
 }
@@ -1118,6 +1118,7 @@ FortMounted::FortMounted()
   setPicture(PicLoader::instance().get_picture(rcSecurityGroup, 12));
 
   Picture* logo = &PicLoader::instance().get_picture(rcSecurityGroup, 15);
+  logo -> set_offset(80,10);
   _fgPictures.resize(1);
   _fgPictures.at(0) = logo;
 }
@@ -1134,6 +1135,8 @@ FortJaveline::FortJaveline()
   setPicture(PicLoader::instance().get_picture(rcSecurityGroup, 12));
 
   Picture* logo = &PicLoader::instance().get_picture(rcSecurityGroup, 14);
+  //std::cout << logo->get_xoffset() << " " << logo->get_yoffset() << " " << logo->get_width() << " " << logo->get_height() << std::endl;
+  logo -> set_offset(80,10);
   _fgPictures.resize(1);
   _fgPictures.at(0) = logo;  
 }
