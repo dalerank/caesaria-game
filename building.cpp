@@ -220,6 +220,7 @@ LandOverlay* LandOverlay::getInstance(const BuildingType buildingType)
       _mapBuildingByID[B_RESERVOIR] = new Reservoir();
       // security
       _mapBuildingByID[B_PREFECT]   = new BuildingPrefect();
+      _mapBuildingByID[B_FORT_LEGIONNAIRE]   = new FortLegionnaire();
       // commerce
       _mapBuildingByID[B_MARKET]    = new Market();
       _mapBuildingByID[B_WAREHOUSE] = new Warehouse();
@@ -1088,4 +1089,17 @@ TriumphalArch::TriumphalArch()
 TriumphalArch* TriumphalArch::clone() const
 {
    return new TriumphalArch(*this);
+}
+
+FortLegionnaire::FortLegionnaire()
+{
+  setType(B_FORT_LEGIONNAIRE);
+  _size=3;
+  setPicture(PicLoader::instance().get_picture("security", 12));
+  
+}
+
+FortLegionnaire* FortLegionnaire::clone() const
+{
+   return new FortLegionnaire(*this);
 }

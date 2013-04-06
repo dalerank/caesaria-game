@@ -331,6 +331,13 @@ public:
   //virtual GuiInfoBox* makeInfoBox();
 };
 
+class FortLegionnaire : public Building
+{
+public:  
+  FortLegionnaire();
+  FortLegionnaire* clone() const;
+};  
+
 
 
 
