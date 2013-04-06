@@ -42,8 +42,9 @@ public:
    void monthStep();
 
    std::list<Walker*>& getWalkerList();
+   std::list<Walker*> getWalkerList( const WalkerType type );
    std::list<LandOverlay*>& getOverlayList();
-   std::list<LandOverlay*> getBuildingList(const BuildingType buildingType);
+   std::list<LandOverlay*> getBuildingList( const BuildingType buildingType );
 
    void setRoadEntryIJ(const int i, const int j);
    void setRoadExitIJ(const int i, const int j);
@@ -52,8 +53,12 @@ public:
 
    int getRoadEntryI() const;
    int getRoadEntryJ() const;
+   TilePos getRoadEntryIJ() const;
+   
    int getRoadExitI() const;
    int getRoadExitJ() const;
+   TilePos getRoadExitIJ() const;
+   
    int getBoatEntryI() const;
    int getBoatEntryJ() const;
    int getBoatExitI() const;
@@ -101,6 +106,7 @@ private:
    int _taxRate;
    
    void calculatePopulation();
+   void _createImigrants();
 };
 
 

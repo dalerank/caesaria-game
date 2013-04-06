@@ -88,7 +88,8 @@ public:
    virtual bool canBuild(const int i, const int j) const;  // returns true if it can be built there
    virtual void build(const int i, const int j);
    const std::list<Tile*>& getAccessRoads() const;  // return all road tiles adjacent to the construction
-   virtual void computeAccessRoads();  // virtual because HOUSE has different behaviour
+   virtual void computeAccessRoads();  
+   virtual Uint8 getMaxDistance2Road() const; // virtual because HOUSE has different behaviour
 
 protected:
    std::list<Tile*> _accessRoads;
@@ -240,6 +241,28 @@ public:
   
 //  void serialize(OutputSerialStream &stream);
 //  void unserialize(InputSerialStream &stream);
+};
+
+class Shipyard : public Building
+{
+public:
+  Shipyard();
+  Shipyard* clone() const;
+};
+
+class TriumphalArch : public Building
+{
+public:
+  TriumphalArch();
+  TriumphalArch* clone() const;
+};
+
+class Dock : public Building
+{
+public:
+  Dock();
+  Dock* clone() const;
+  void timeStep(const unsigned long time);
 };
 
 class NativeBuilding : public Building

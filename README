@@ -9,6 +9,7 @@ The game is still not quite playable
 
 
 Releases:
+03apr2013: added many buildings
 
 02mar2013: first binary release for windows
            start implement the menubar with money/population/date
@@ -40,4 +41,4 @@ DEPENDENCIES:
 
 1. libarchive
 2. SDL (SDL_image, SDL_ttf, SDL_mixer)
-3. OpenGL	
+3. OpenGL

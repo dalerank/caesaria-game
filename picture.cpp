@@ -16,12 +16,15 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#include <picture.hpp>
+#include "picture.hpp"
 
 #include <sdl_facade.hpp>
-#include <exception.hpp>
 #include <iostream>
 #include <sstream>
+#include <sdl_facade.hpp>
+
+#include "exception.hpp"
+#include "oc3_positioni.h"
 
 
 
@@ -50,6 +53,12 @@ void Picture::set_offset(const int xoffset, const int yoffset)
 {
    _xoffset = xoffset;
    _yoffset = yoffset;
+}
+
+void Picture::set_offset( const Point& offset )
+{
+	_xoffset = offset.getX();
+	_yoffset = offset.getY();
 }
 
 void Picture::add_offset(const int dx, const int dy)

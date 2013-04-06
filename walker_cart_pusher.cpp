@@ -100,7 +100,7 @@ Building &CartPusher::getConsumerBuilding()
 
 Picture& CartPusher::getCartPicture()
 {
-   if (_cartPicture == NULL)
+   if( _cartPicture == NULL )
    {
       _cartPicture = &CartLoader::instance().getCart(_stock, getDirection());
    }
@@ -213,7 +213,6 @@ Building* CartPusher::getWalkerDestination_factory(Propagator &pathPropagator, P
 
    return res;
 }
-
 
 Warehouse* CartPusher::getWalkerDestination_warehouse(Propagator &pathPropagator, PathWay &oPathWay)
 {

@@ -26,6 +26,7 @@
 #include "scenario.hpp"
 #include "walker_market_buyer.hpp"
 #include "walker_cart_pusher.hpp"
+#include <oc3_positioni.h>
 
 
 std::map<WalkerType, Walker*> Walker::_mapWalkerByID;  // key=walkerType, value=instance
@@ -64,7 +65,7 @@ Walker* Walker::getInstance(const WalkerType walkerType)
       _mapWalkerByID[WT_SERVICE] = new ServiceWalker(S_MAX);  // dummy serviceType
       _mapWalkerByID[WT_MARKET_BUYER] = new MarketBuyer();
       _mapWalkerByID[WT_CART_PUSHER] = new CartPusher();
-      _mapWalkerByID[WT_IMMIGRANT] = new Immigrant();
+      //_mapWalkerByID[WT_IMMIGRANT] = new Immigrant();
       _mapWalkerByID[WT_TRAINEE] = new TraineeWalker(WTT_NONE);
    }
 
@@ -440,7 +441,13 @@ void Walker::unserialize(InputSerialStream &stream)
    _animIndex = stream.read_int(1, 0, 50);
 }
 
-Immigrant::Immigrant()
+class Immigrant::Impl
+{
+public:
+    Point destination;
+};
+
+Immigrant::Immigrant() : _d( new Impl )
 {
    _walkerType = WT_IMMIGRANT;
    _walkerGraphic = WG_HOMELESS;
@@ -448,7 +455,48 @@ Immigrant::Immigrant()
 
 Immigrant* Immigrant::clone() const
 {
-   return new Immigrant(*this);
+   Immigrant* ret = new Immigrant();
+   ret->_d->destination = _d->destination;
+   return ret;
+}
+
+void Immigrant::assignPath( const Building& home )
+{
+    City& city = Scenario::instance().getCity();
+    Tile& exitTile = city.getTilemap().at( city.getRoadExitI(), city.getRoadExitJ() );
+
+    Road* exitRoad = dynamic_cast< Road* >( exitTile.get_terrain().getOverlay() );
+    if( exitRoad )
+    {
+        Propagator pathfinder;
+	    PathWay pathWay;
+        pathfinder.init( const_cast< Building& >( home ) );
+        bool findPath = pathfinder.getPath( *exitRoad, pathWay );
+	    if( findPath )
+	    {
+		    setPathWay( pathWay );
+		    setIJ(_pathWay.getOrigin().getI(), _pathWay.getOrigin().getJ());   
+	    }
+    }
+    else
+        _isDeleted = true;
+}
+
+void Immigrant::onDestination()
+{  
+    _isDeleted = true;
+}
+
+Immigrant* Immigrant::create( const Building& startPoint )
+{
+    Immigrant* newImmigrant = new Immigrant();
+    newImmigrant->assignPath( startPoint );
+    return newImmigrant;
+}
+
+Immigrant::~Immigrant()
+{
+
 }
 
 Soldier::Soldier()
@@ -601,8 +649,11 @@ std::set<Building*> ServiceWalker::getReachedBuildings(const int i, const int j)
       TerrainTile &terrain = tile.get_terrain();
       if (terrain.isBuilding())
       {
-         Building *building = dynamic_cast<Building*>(terrain.getOverlay());
-         res.insert(building);
+         Building* building = dynamic_cast<Building*>( terrain.getOverlay() );
+         if( building )
+         {
+            res.insert(building);
+         }
       }
    }
 
@@ -623,7 +674,7 @@ float ServiceWalker::evaluatePath(PathWay &pathWay)
       std::set<Building*> reachedBuildings = getReachedBuildings(tile.getI(), tile.getJ());
       for (std::set<Building*>::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
       {
-         Building &building = **itBuilding;
+         Building& building = **itBuilding;
          std::pair<std::set<Building*>::iterator, bool> rc = doneBuildings.insert(&building);
          if (rc.second == true)
          {
@@ -631,7 +682,7 @@ float ServiceWalker::evaluatePath(PathWay &pathWay)
             res = res + building.evaluateService(*this);
          }
       }
-      distance ++;
+      distance++;
    }
 
    // std::cout << "evaluate path ";

@@ -17,12 +17,12 @@
 
 
 
-#include <path_finding.hpp>
+#include "path_finding.hpp"
 
-#include <tilemap.hpp>
-#include <city.hpp>
-#include <scenario.hpp>
-#include <exception.hpp>
+#include "tilemap.hpp"
+#include "city.hpp"
+#include "scenario.hpp"
+#include "exception.hpp"
 
 #include <iostream>
 
@@ -368,7 +368,7 @@ void PathWay::unserialize(InputSerialStream &stream)
       DirectionType dir = (DirectionType) stream.read_int(1, 0, D_MAX);
       _directionList.push_back(dir);
    }
-   _isReverse = stream.read_int(1, 0, 1);
+   _isReverse = stream.read_int(1, 0, 1) > 0;
    int off = stream.read_int(2, 0, 65535);
    _directionIt = _directionList.begin();
    _directionIt_reverse = _directionList.rbegin();
@@ -489,9 +489,7 @@ void Propagator::propagate(const int maxDistance)
       // this road is no longer active
       _activeBranches.erase(firstBranch);
    }
-
 }
-
 
 bool Propagator::getPath(Road &destination, PathWay &oPathWay)
 {
@@ -536,7 +534,7 @@ bool Propagator::getPath(Building &destination, PathWay &oPathWay)
       {
          // for each destination tile
          Tile &tile= **itTile;
-         Road &road = dynamic_cast<Road&> (*tile.get_terrain().getOverlay());
+         Road &road = dynamic_cast<Road&>( *tile.get_terrain().getOverlay() );
 
          // searches path to that given tile
          mapIt = _completedBranches.find(&road);

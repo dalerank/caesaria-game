@@ -33,6 +33,13 @@
 #include "warehouse.hpp"
 #include "gettext.hpp"
 
+namespace {
+static const char* rcUtilityGroup  = "utilitya";
+static const char* rcAqueductGroup = "land2a";
+static const char* rcRoadGroup     = "land2a";
+static const char* rcCommerceGroup = "commerce";
+static const char* rcHousingGroup  = "housng1a";
+}
 
 std::map<BuildingType, LandOverlay*> LandOverlay::_mapBuildingByID;  // key=buildingType, value=instance
 
@@ -194,7 +201,7 @@ LandOverlay* LandOverlay::getInstance(const BuildingType buildingType)
       _mapBuildingByID[B_LION]         = new BuildingLion();
       _mapBuildingByID[B_CHARIOT]      = new BuildingChariot();
       // road&house
-      _mapBuildingByID[B_HOUSE] = new House(1);
+      _mapBuildingByID[B_HOUSE] = new House( House::smallHovel );
       _mapBuildingByID[B_ROAD]  = new Road();
       // administration
       _mapBuildingByID[B_FORUM]  = new Forum();
@@ -233,6 +240,10 @@ LandOverlay* LandOverlay::getInstance(const BuildingType buildingType)
       _mapBuildingByID[B_POTTERY]   = new FactoryPottery();
       // utility
       _mapBuildingByID[B_ENGINEER] = new BuildingEngineer();
+      _mapBuildingByID[B_DOCK]     = new Dock();
+      _mapBuildingByID[B_SHIPYARD] = new Shipyard();
+      _mapBuildingByID[B_WHARF]    = new Wharf();
+      _mapBuildingByID[B_TRIUMPHAL_ARCH]  = new TriumphalArch();
       // religion
       _mapBuildingByID[B_TEMPLE_CERES]   = new TempleCeres();
       _mapBuildingByID[B_TEMPLE_NEPTUNE] = new TempleNeptune();
@@ -295,6 +306,7 @@ bool Construction::canBuild(const int i, const int j) const
 
       is_constructible &= tile.get_terrain().isConstructible();
    }
+
    return is_constructible;
 }
 
@@ -311,28 +323,35 @@ const std::list<Tile*>& Construction::getAccessRoads() const
 
 void Construction::computeAccessRoads()
 {
-   _accessRoads.clear();
+	_accessRoads.clear();
 
-   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   int mi = _master_tile->getI();
-   int mj = _master_tile->getJ();
+	Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+	int mi = _master_tile->getI();
+	int mj = _master_tile->getJ();
 
-   std::list<Tile*> rect = tilemap.getRectangle(mi-1, mj-1, mi+_size, mj+_size, false);
-   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
-   {
-      Tile &tile = **itTiles;
+	Uint8 maxDst2road = getMaxDistance2Road();
+	std::list<Tile*> rect = tilemap.getRectangle( mi-maxDst2road, mj-maxDst2road, 
+												  mi+_size+maxDst2road-1, mj+_size+maxDst2road-1, false);
+	for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+	{
+		Tile* tile = *itTiles;
 
-      if (tile.get_terrain().isRoad())
-      {
-         _accessRoads.push_back(&tile);
-      }
-   }
+		if( tile->get_terrain().isRoad() )
+		{
+			_accessRoads.push_back( tile );
+		}
+	}
+}
+
+Uint8 Construction::getMaxDistance2Road() const
+{
+	return 1;
 }
 
 Aqueduct::Aqueduct()
 {
   setType(B_AQUEDUCT);
-  setPicture(PicLoader::instance().get_picture("land2a", 133));
+  setPicture( PicLoader::instance().get_picture( rcAqueductGroup, 133) );
   _size = 1;
   // land2a 119 120         - aqueduct over road
   // land2a 121 122         - aqueduct over plain ground
@@ -363,14 +382,14 @@ void Aqueduct::setTerrain(TerrainTile &terrain)
 Reservoir::Reservoir()
 {
   setType(B_RESERVOIR);
-  setPicture(PicLoader::instance().get_picture("utilitya", 34));
+  setPicture( PicLoader::instance().get_picture( rcUtilityGroup, 34) );
   _size = 3;
   
   // utilitya 34      - emptry reservoir
   // utilitya 35 ~ 42 - full reservoir animation
  
   AnimLoader animLoader(PicLoader::instance());
-  animLoader.fill_animation(_animation, "utilitya", 35, 8);
+  animLoader.fill_animation(_animation, rcUtilityGroup, 35, 8);
   animLoader.change_offset(_animation, 47, 63);
   _fgPictures.resize(1);
   //_fgPictures[0]=;
@@ -404,7 +423,7 @@ void Reservoir::timeStep(const unsigned long time)
 Road::Road()
 {
   setType(B_ROAD);
-  setPicture(PicLoader::instance().get_picture("land2a", 44));  // default picture for build tool
+  setPicture(PicLoader::instance().get_picture( rcRoadGroup, 44));  // default picture for build tool
 }
 
 Road* Road::clone() const
@@ -521,7 +540,7 @@ Picture& Road::computePicture()
       break;
    }
 
-   Picture *picture = &PicLoader::instance().get_picture("land2a", index);
+   Picture *picture = &PicLoader::instance().get_picture( rcRoadGroup, index);
    return *picture;
 }
 
@@ -649,7 +668,7 @@ float Building::evaluateTrainee(const WalkerTraineeType traineeType)
    if (_traineeMap.count(traineeType) == 1)
    {
       int currentLevel = _traineeMap[traineeType];
-      res = 101 - currentLevel;
+      res = (float)( 101 - currentLevel );
    }
 
    return res;
@@ -697,8 +716,8 @@ void Building::serialize(OutputSerialStream &stream)
 void Building::unserialize(InputSerialStream &stream)
 {
    Construction::unserialize(stream);
-   _damageLevel = stream.read_int(1, 0, 100);
-   _fireLevel = stream.read_int(1, 0, 100);
+   _damageLevel = (float)stream.read_int(1, 0, 100);
+   _fireLevel = (float)stream.read_int(1, 0, 100);
 
    int size = stream.read_int(1, 0, WTT_MAX);
    for (int i=0; i<size; ++i)
@@ -773,7 +792,7 @@ Granary::Granary()
    setWorkers(0);
 
    _size = 3;
-   setPicture(PicLoader::instance().get_picture("commerce", 140));
+   setPicture(PicLoader::instance().get_picture( rcCommerceGroup, 140));
    _fgPictures.resize(6);  // 1 upper level + 4 windows + animation
    int maxQty = 2400;
    _goodStore.setMaxQty(maxQty);
@@ -788,13 +807,15 @@ Granary::Granary()
    AnimLoader animLoader(PicLoader::instance());
    animLoader.fill_animation(_animation, "commerce", 146, 7);
    // do the animation in reverse
-   _animation.get_pictures().push_back(&PicLoader::instance().get_picture("commerce", 151));
-   _animation.get_pictures().push_back(&PicLoader::instance().get_picture("commerce", 150));
-   _animation.get_pictures().push_back(&PicLoader::instance().get_picture("commerce", 149));
-   _animation.get_pictures().push_back(&PicLoader::instance().get_picture("commerce", 148));
-   _animation.get_pictures().push_back(&PicLoader::instance().get_picture("commerce", 147));
+   animLoader.fill_animation_reverse(_animation, "commerce", 151, 6);
+   PicLoader& ldr = PicLoader::instance();
+   _animation.get_pictures().push_back(&ldr.get_picture( rcCommerceGroup, 151));
+   _animation.get_pictures().push_back(&ldr.get_picture( rcCommerceGroup, 150));
+   _animation.get_pictures().push_back(&ldr.get_picture( rcCommerceGroup, 149));
+   _animation.get_pictures().push_back(&ldr.get_picture( rcCommerceGroup, 148));
+   _animation.get_pictures().push_back(&ldr.get_picture( rcCommerceGroup, 147));
 
-   _fgPictures[0] = &PicLoader::instance().get_picture("commerce", 141);
+   _fgPictures[0] = &ldr.get_picture( rcCommerceGroup, 141);
    _fgPictures[5] = _animation.get_current_picture();
    computePictures();
 }
@@ -828,21 +849,22 @@ void Granary::computePictures()
       _fgPictures[n+1] = NULL;
    }
 
+   PicLoader& ldr = PicLoader::instance();
    if (allQty > 0)
    {
-      _fgPictures[1] = &PicLoader::instance().get_picture("commerce", 142);
+      _fgPictures[1] = &ldr.get_picture( rcCommerceGroup, 142);
    }
    if (allQty > maxQty * 0.25)
    {
-      _fgPictures[2] = &PicLoader::instance().get_picture("commerce", 143);
+      _fgPictures[2] = &ldr.get_picture( rcCommerceGroup, 143);
    }
    if (allQty > maxQty * 0.5)
    {
-      _fgPictures[3] = &PicLoader::instance().get_picture("commerce", 144);
+      _fgPictures[3] = &ldr.get_picture( rcCommerceGroup, 144);
    }
    if (allQty > maxQty * 0.9)
    {
-      _fgPictures[4] = &PicLoader::instance().get_picture("commerce", 145);
+      _fgPictures[4] = &ldr.get_picture( rcCommerceGroup, 145);
    }
 }
 
@@ -883,21 +905,21 @@ GovernorsHouse::GovernorsHouse()
 {
   setType(B_GOVERNOR_HOUSE);
   _size = 3;
-  setPicture(PicLoader::instance().get_picture("housng1a", 46));
+  setPicture(PicLoader::instance().get_picture(rcHousingGroup, 46));
 }
 
 GovernorsVilla::GovernorsVilla()
 {
   setType(B_GOVERNOR_VILLA);
   _size = 4;
-  setPicture(PicLoader::instance().get_picture("housng1a", 47));
+  setPicture(PicLoader::instance().get_picture(rcHousingGroup, 47));
 }
 
 GovernorsPalace::GovernorsPalace()
 {
   setType(B_GOVERNOR_PALACE);
   _size = 5;
-  setPicture(PicLoader::instance().get_picture("housng1a", 48));
+  setPicture(PicLoader::instance().get_picture(rcHousingGroup, 48));
 }
 
 GovernorsHouse* GovernorsHouse::clone() const {return new GovernorsHouse(*this);}
@@ -925,7 +947,7 @@ NativeHut::NativeHut()
 {
   setType(B_NATIVE_HUT);
   _size = 1;
-  setPicture(PicLoader::instance().get_picture("housng1a", 49));
+  setPicture(PicLoader::instance().get_picture(rcHousingGroup, 49));
   //setPicture(PicLoader::instance().get_picture("housng1a", 50));
 }
 
@@ -939,7 +961,7 @@ NativeCenter::NativeCenter()
 {
   setType(B_NATIVE_CENTER);
   _size = 2;
-  setPicture(PicLoader::instance().get_picture("housng1a", 51));
+  setPicture(PicLoader::instance().get_picture(rcHousingGroup, 51));
 }
 
 void NativeCenter::serialize(OutputSerialStream &stream)  {Building::serialize(stream);}
@@ -955,7 +977,7 @@ NativeField::NativeField()
 {
   setType(B_NATIVE_FIELD);
   _size = 1;
-  setPicture(PicLoader::instance().get_picture("commerce", 13));  
+  setPicture(PicLoader::instance().get_picture(rcCommerceGroup, 13));  
 }
 
 void NativeField::serialize(OutputSerialStream &stream) {Building::serialize(stream);}
@@ -965,4 +987,73 @@ void NativeField::unserialize(InputSerialStream &stream) {Building::unserialize(
 NativeField* NativeField::clone() const
 {
   return new NativeField(*this);
+}
+
+Shipyard::Shipyard()
+{
+  setType(B_SHIPYARD);
+  _size = 2;
+  setPicture(PicLoader::instance().get_picture("transport", 1));
+  // also transport 2 3 4 check position of river on map
+}
+
+Shipyard* Shipyard::clone() const
+{
+   return new Shipyard(*this);
+}
+
+// dock pictures
+// transport 5        animation = 6~16
+// transport 17       animation = 18~28
+// transport 29       animation = 30~40
+// transport 41       animation = 42~51
+
+Dock::Dock()
+{
+  setType(B_DOCK);
+  _size = 2;
+  setPicture(PicLoader::instance().get_picture("transport", 5));  
+
+  AnimLoader animLoader(PicLoader::instance());
+  animLoader.fill_animation(_animation, "transport", 6, 11);
+  // now fill in reverse order
+  animLoader.fill_animation_reverse(_animation, "transport", 15, 10);
+  
+  animLoader.change_offset(_animation, 107, 61);
+  _fgPictures.resize(1);  
+}
+
+void Dock::timeStep(const unsigned long time)
+{
+  _animation.nextFrame();
+  
+  // takes current animation frame and put it into foreground
+  _fgPictures.at(0) = _animation.get_current_picture(); 
+}
+
+
+Dock* Dock::clone() const
+{
+   return new Dock(*this);
+}
+
+// second arch pictures is land3a 45 + 46	
+
+TriumphalArch::TriumphalArch()
+{
+  setType(B_TRIUMPHAL_ARCH);
+  _size = 3;
+  setPicture(PicLoader::instance().get_picture("land3a", 43));
+  // std::cout << getPicture().get_xoffset() << " " << getPicture().get_yoffset() << " " << getPicture().get_width() << " " << getPicture().get_height() << std::endl;
+  getPicture().set_offset(0,116);
+  AnimLoader animLoader(PicLoader::instance());
+  animLoader.fill_animation(_animation, "land3a", 44, 1);
+  animLoader.change_offset(_animation, 63, 97);
+  _fgPictures.resize(1);
+  _fgPictures.at(0) = _animation.get_current_picture(); 
+}
+
+TriumphalArch* TriumphalArch::clone() const
+{
+   return new TriumphalArch(*this);
 }

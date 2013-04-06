@@ -20,6 +20,7 @@
 #define WALKER_HPP
 
 #include <string>
+#include <memory>
 
 #include "building.hpp"
 #include "service_building.hpp"
@@ -109,12 +110,20 @@ private:
 class Immigrant : public Walker
 {
 public:
-   Immigrant();
-   virtual Immigrant* clone() const;
+    virtual Immigrant* clone() const;
+
+    static Immigrant* create( const Building& startPoint );
+    
+    void onDestination();
+    ~Immigrant();
 private:
+    Immigrant();
+ 
+    void assignPath( const Building& home );
 
+    class Impl;
+    std::auto_ptr< Impl > _d;
 };
-
 
 /** Soldier, friend or foo */
 class Soldier : public Walker

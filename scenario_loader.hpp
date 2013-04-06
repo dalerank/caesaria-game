@@ -40,6 +40,7 @@ private:
    void init_entry_exit(std::fstream &f, City &ioCity);
    void init_climate(std::fstream &f, City &ioCity);
 
+   void _initEntryExitPicture( City &ioCity );
 };
 
 

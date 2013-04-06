@@ -46,6 +46,7 @@
 #include "screen_wait.hpp"
 #include "screen_menu.hpp"
 #include "screen_game.hpp"
+#include "house_level.hpp"
 
 #if defined(_MSC_VER)
 	#undef main
@@ -202,7 +203,7 @@ void CaesarApp::setScreenMenu()
       {
         /* temporary*/
         std::vector <fs::path> filelist = scanForMaps();
-	std::srand(std::time(0));
+	std::srand( (Uint32)std::time(0));
 	std::string file = filelist.at(std::rand()%filelist.size()).string();
 	std::cout<<"Loading map:" << file << std::endl;
         loadScenario(file);

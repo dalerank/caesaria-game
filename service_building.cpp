@@ -428,6 +428,11 @@ TempleOracle::TempleOracle() : ServiceBuilding(S_TEMPLE_ORACLE)
    setType(B_TEMPLE_ORACLE);
    _size = 2;
    setPicture(PicLoader::instance().get_picture("security", 55));
+   
+  AnimLoader animLoader(PicLoader::instance());
+  animLoader.fill_animation(_animation, "security", 56, 6);
+  animLoader.change_offset(_animation, 9, 30);
+  _fgPictures.resize(1);   
 }
 
 TempleOracle* TempleOracle::clone() const
@@ -550,10 +555,9 @@ Forum* Forum::clone() const
 
 Senate::Senate() : ServiceBuilding(S_SENATE)
 {
-   setType(B_SENATE);
-   _size = 5;
-   setPicture(PicLoader::instance().get_picture("govt", 4));
-   std::cout << "Senate::Senate()" << std::endl;
+  setType(B_SENATE);
+  _size = 5;
+  setPicture(PicLoader::instance().get_picture("govt", 4));
 }
 
 Senate* Senate::clone() const
