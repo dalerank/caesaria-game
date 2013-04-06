@@ -156,17 +156,31 @@ void BuildingWell::deliverService()
 }
 
 
+
+
 BuildingFountain::BuildingFountain() : ServiceBuilding(S_FOUNTAIN)
 {
    setType(B_FOUNTAIN);
    _size = 1;
    setPicture(PicLoader::instance().get_picture("utilitya", 10));
+   
+  // utilitya 10      - emptry 
+  // utilitya 11 ~ 17 - working fontain
+   
+  AnimLoader animLoader(PicLoader::instance());
+  animLoader.fill_animation(_animation, "utilitya", 11, 8);
+  animLoader.fill_animation_reverse(_animation, "utilitya", 17, 7);
+  animLoader.change_offset(_animation, 11, 23);
+  _fgPictures.resize(1);
+   
+   
 }
 
 BuildingFountain* BuildingFountain::clone() const
 {
    return new BuildingFountain(*this);
 }
+
 
 void BuildingFountain::deliverService()
 {
