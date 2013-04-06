@@ -594,6 +594,7 @@ void BuildMenu_education::addButtons()
   addBuildButton(B_SCHOOL);
   addBuildButton(B_LIBRARY);
   addBuildButton(B_COLLEGE);
+  addBuildButton(B_MISSION_POST);
 }
 
 

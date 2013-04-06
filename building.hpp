@@ -284,6 +284,13 @@ public:
   TriumphalArch* clone() const;
 };
 
+class MissionPost : public Building
+{
+public:
+  MissionPost();
+  MissionPost* clone() const;
+};
+
 class Dock : public Building
 {
 public:

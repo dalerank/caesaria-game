@@ -213,7 +213,7 @@ LandOverlay* LandOverlay::getInstance(const BuildingType buildingType)
       _mapBuildingByID[B_GOVERNOR_PALACE] = new GovernorsPalace(); 
       _mapBuildingByID[B_STATUE1] = new SmallStatue(); 
       _mapBuildingByID[B_STATUE2] = new MediumStatue(); 
-      _mapBuildingByID[B_STATUE3] = new BigStatue(); 
+      _mapBuildingByID[B_STATUE3] = new BigStatue();
       // water
       _mapBuildingByID[B_WELL]      = new BuildingWell();
       _mapBuildingByID[B_FOUNTAIN]  = new BuildingFountain();
@@ -273,6 +273,7 @@ LandOverlay* LandOverlay::getInstance(const BuildingType buildingType)
       _mapBuildingByID[B_SCHOOL]  = new School();
       _mapBuildingByID[B_LIBRARY] = new Library();
       _mapBuildingByID[B_COLLEGE] = new College();
+      _mapBuildingByID[B_MISSION_POST] = new MissionPost();
       // natives
       _mapBuildingByID[B_NATIVE_HUT]    = new NativeHut();
       _mapBuildingByID[B_NATIVE_CENTER] = new NativeCenter();
@@ -910,6 +911,14 @@ void Granary::unserialize(InputSerialStream &stream)
 // transport 93 - missionaire post   2 x 2
 // circus    1 ~ 18 hippodrome    5x(5 x 5)
 
+MissionPost::MissionPost()
+{
+ setType(B_MISSION_POST);
+  _size = 2;
+  setPicture(PicLoader::instance().get_picture("transport", 93));
+}
+
+
 SmallStatue::SmallStatue()
 {
  setType(B_STATUE1);
@@ -931,9 +940,10 @@ BigStatue::BigStatue()
   setPicture(PicLoader::instance().get_picture(rcGovernmentGroup, 3));
 }
 
-SmallStatue* SmallStatue::clone() const {return new SmallStatue(*this);}
-MediumStatue* MediumStatue::clone() const {return new MediumStatue(*this);}
-BigStatue* BigStatue::clone() const {return new BigStatue(*this);}
+MissionPost*  MissionPost::clone()  const { return new MissionPost(*this);  }
+SmallStatue*  SmallStatue::clone()  const { return new SmallStatue(*this);  }
+MediumStatue* MediumStatue::clone() const { return new MediumStatue(*this); }
+BigStatue*    BigStatue::clone()    const { return new BigStatue(*this);    }
 
 GovernorsHouse::GovernorsHouse()
 {

@@ -169,6 +169,7 @@ BuildingDataHolder::BuildingDataHolder()
    addData(BuildingData(B_SCHOOL, "school", 50));
    addData(BuildingData(B_COLLEGE, "college", 100));
    addData(BuildingData(B_LIBRARY, "library", 75));
+   addData(BuildingData(B_MISSION_POST, "mission post", 0));
 
    // // religion
    addData(BuildingData(B_TEMPLE_CERES, "temple_ceres", 50));
