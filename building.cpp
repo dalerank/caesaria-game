@@ -39,7 +39,7 @@ static const char* rcAqueductGroup = "land2a";
 static const char* rcRoadGroup     = "land2a";
 static const char* rcCommerceGroup = "commerce";
 static const char* rcHousingGroup  = "housng1a";
-
+static const char* rcSecurityGroup = "security";
 }
 
 std::map<BuildingType, LandOverlay*> LandOverlay::_mapBuildingByID;  // key=buildingType, value=instance
@@ -220,7 +220,9 @@ LandOverlay* LandOverlay::getInstance(const BuildingType buildingType)
       _mapBuildingByID[B_RESERVOIR] = new Reservoir();
       // security
       _mapBuildingByID[B_PREFECT]   = new BuildingPrefect();
-      _mapBuildingByID[B_FORT_LEGIONNAIRE]   = new FortLegionnaire();
+      _mapBuildingByID[B_FORT_LEGIONNAIRE] = new FortLegionnaire();
+      _mapBuildingByID[B_FORT_JAVELIN]     = new FortJaveline();
+      _mapBuildingByID[B_FORT_MOUNTED]     = new FortMounted();
       // commerce
       _mapBuildingByID[B_MARKET]    = new Market();
       _mapBuildingByID[B_WAREHOUSE] = new Warehouse();
@@ -1091,15 +1093,52 @@ TriumphalArch* TriumphalArch::clone() const
    return new TriumphalArch(*this);
 }
 
+
+
 FortLegionnaire::FortLegionnaire()
 {
   setType(B_FORT_LEGIONNAIRE);
-  _size=3;
-  setPicture(PicLoader::instance().get_picture("security", 12));
-  
+  _size = 3;
+  setPicture(PicLoader::instance().get_picture(rcSecurityGroup, 12));
+
+  Picture* logo = &PicLoader::instance().get_picture(rcSecurityGroup, 16);
+  _fgPictures.resize(1);
+  _fgPictures.at(0) = logo;  
 }
 
 FortLegionnaire* FortLegionnaire::clone() const
 {
    return new FortLegionnaire(*this);
+}
+
+FortMounted::FortMounted()
+{
+  setType(B_FORT_MOUNTED);
+  _size = 3;
+  setPicture(PicLoader::instance().get_picture(rcSecurityGroup, 12));
+
+  Picture* logo = &PicLoader::instance().get_picture(rcSecurityGroup, 15);
+  _fgPictures.resize(1);
+  _fgPictures.at(0) = logo;
+}
+
+FortMounted* FortMounted::clone() const
+{
+   return new FortMounted(*this);
+}
+
+FortJaveline::FortJaveline()
+{
+  setType(B_FORT_JAVELIN);
+  _size = 3;
+  setPicture(PicLoader::instance().get_picture(rcSecurityGroup, 12));
+
+  Picture* logo = &PicLoader::instance().get_picture(rcSecurityGroup, 14);
+  _fgPictures.resize(1);
+  _fgPictures.at(0) = logo;  
+}
+
+FortJaveline* FortJaveline::clone() const
+{
+   return new FortJaveline(*this);
 }

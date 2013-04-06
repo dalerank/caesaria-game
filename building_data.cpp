@@ -153,8 +153,8 @@ BuildingDataHolder::BuildingDataHolder()
    
    // security
    addData(BuildingData(B_FORT_LEGIONNAIRE, "fort_legionaries", 1000));
-   //addData(BuildingData(B_"fort_javelin", 1000));
-   //addData(BuildingData(B_"fort_horse", 1000));
+   addData(BuildingData(B_FORT_JAVELIN, "fort_javelin", 1000));
+   addData(BuildingData(B_FORT_MOUNTED, "fort_horse", 1000));
    addData(BuildingData(B_PREFECT, "prefect", 30));
    //addData(BuildingData(B_"barracks", 150));
    //addData(BuildingData(B_"academy", 1000));

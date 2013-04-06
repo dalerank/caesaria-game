@@ -336,9 +336,21 @@ class FortLegionnaire : public Building
 public:  
   FortLegionnaire();
   FortLegionnaire* clone() const;
-};  
+};
 
+class FortJaveline : public Building
+{
+public:  
+  FortJaveline();
+  FortJaveline* clone() const;
+};
 
+class FortMounted : public Building
+{
+public:  
+  FortMounted();
+  FortMounted* clone() const;
+};
 
 
 #endif
