@@ -20,6 +20,8 @@
 #include "service_building.hpp"
 
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 
 #include "scenario.hpp"
 #include "walker.hpp"
@@ -156,22 +158,39 @@ void BuildingWell::deliverService()
 }
 
 
-
-
 BuildingFountain::BuildingFountain() : ServiceBuilding(S_FOUNTAIN)
 {
    setType(B_FOUNTAIN);
    _size = 1;
-   setPicture(PicLoader::instance().get_picture("utilitya", 10));
    
-  // utilitya 10      - emptry 
-  // utilitya 11 ~ 17 - working fontain
+   int id;
    
-  AnimLoader animLoader(PicLoader::instance());
-  animLoader.fill_animation(_animation, "utilitya", 11, 8);
-  animLoader.fill_animation_reverse(_animation, "utilitya", 17, 7);
-  animLoader.change_offset(_animation, 11, 23);
+   std::srand(std::time(NULL));
+   
+   id = std::rand() % 4;
+   
+   std::cout << id << std::endl;
+   
+   setPicture(PicLoader::instance().get_picture("utilitya", 26));
+   AnimLoader animLoader(PicLoader::instance());
+   animLoader.fill_animation(_animation, "utilitya", 27, 7);
+   //animLoader.fill_animation_reverse(_animation, "utilitya", 25, 7);
+   animLoader.change_offset(_animation, 14, 26);
   _fgPictures.resize(1);
+   
+  //2 10 18 26
+  // utilitya 10      - empty 
+  // utilitya 11 - 17 - working fontain
+   
+  // the first fountain's (10) ofsets ~ 11, 23 
+  /*AnimLoader animLoader(PicLoader::instance());
+  animLoader.fill_animation(_animation, "utilitya", 11, 7); 
+  animLoader.change_offset(_animation, 11, 23);
+  _fgPictures.resize(1);*/
+  
+  // the second (2)    ~ 8, 42
+  // the third (18)    ~ 8, 24
+  // the 4rd   (26)    ~14, 26
    
    
 }
