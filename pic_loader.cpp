@@ -723,7 +723,9 @@ void CartLoader::loadAll()
 {
    std::cout << "Loading cart graphics" << std::endl;
 
-   _carts.resize(G_MAX);
+   // FIX: size of std::vector to match number of carts with goods + emmigrants + immigrants
+   // _carts.resize(G_MAX);
+   _carts.resize(CT_MAX);
 
    std::vector<Picture*> cart;  // key=direction
    bool frontCart = false;
