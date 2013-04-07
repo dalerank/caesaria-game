@@ -27,6 +27,10 @@
 #include "gui_info_box.hpp"
 #include "gettext.hpp"
 
+namespace {
+static const char* rcEntertaimentGroup    = "entertainment";
+}
+
 
 TrainingBuilding::TrainingBuilding()
 {
@@ -93,10 +97,10 @@ BuildingActor::BuildingActor()
 {
    setType(B_ACTOR);
    _size = 3;
-   setPicture(PicLoader::instance().get_picture("entertainment", 81));
+   setPicture(PicLoader::instance().get_picture(rcEntertaimentGroup, 81));
 
    AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, "entertainment", 82, 9);
+   animLoader.fill_animation(_animation, rcEntertaimentGroup, 82, 9);
    animLoader.change_offset(_animation, 68, -6);
    _fgPictures.resize(1);
 }
@@ -118,10 +122,10 @@ BuildingGladiator::BuildingGladiator()
 {
    setType(B_GLADIATOR);
    _size = 3;
-   setPicture(PicLoader::instance().get_picture("entertainment", 51));
+   setPicture(PicLoader::instance().get_picture(rcEntertaimentGroup, 51));
 
    AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, "entertainment", 52, 10);
+   animLoader.fill_animation(_animation, rcEntertaimentGroup, 52, 10);
    animLoader.change_offset(_animation, 62, 24);
    _fgPictures.resize(1);
 }
@@ -144,10 +148,10 @@ BuildingLion::BuildingLion()
 {
    setType(B_LION);
    _size = 3;
-   setPicture(PicLoader::instance().get_picture("entertainment", 62));
+   setPicture(PicLoader::instance().get_picture(rcEntertaimentGroup, 62));
 
    AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, "entertainment", 63, 18);
+   animLoader.fill_animation(_animation, rcEntertaimentGroup, 63, 18);
    animLoader.change_offset(_animation, 78, 21);
    _fgPictures.resize(1);
 }
@@ -170,10 +174,10 @@ BuildingChariot::BuildingChariot()
 {
    setType(B_CHARIOT);
    _size = 3;
-   setPicture(PicLoader::instance().get_picture("entertainment", 91));
+   setPicture(PicLoader::instance().get_picture(rcEntertaimentGroup, 91));
 
    AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, "entertainment", 92, 10);
+   animLoader.fill_animation(_animation, rcEntertaimentGroup, 92, 10);
    animLoader.change_offset(_animation, 54, 23);
    _fgPictures.resize(1);
 }

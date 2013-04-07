@@ -34,12 +34,14 @@
 #include "scenario.hpp"
 #include "oc3_positioni.h"
 
+namespace {
 static const char* panelBgName = "paneling";
 static const Uint32 panelBgStatus = 15;
 static const Uint32 dateLabelOffset = 155;
 static const Uint32 populationLabelOffset = 345;
 static const Uint32 fundLabelOffset = 465;
 static const Uint32 maximazeBtnPicId = 101;
+}
 
 MenuBar::MenuBar()
 {
@@ -548,63 +550,6 @@ void BuildMenu::addBuildButton(const BuildingType buildingType)
 BuildMenu *BuildMenu::getMenuInstance(const BuildMenuType menuType)
 {
    BuildMenu *res = NULL;
-/*   if (menuType == BM_WATER)
-   {
-      res = new BuildMenu_water();
-   }
-   else if (menuType == BM_HEALTH)
-   {
-      res = new BuildMenu_health();
-   }
-   else if (menuType == BM_SECURITY)
-   {
-      res = new BuildMenu_security();
-   }
-   else if (menuType == BM_EDUCATION)
-   {
-      res = new BuildMenu_education();
-   }
-   else if (menuType == BM_ENGINEERING)
-   {
-      res = new BuildMenu_engineering();
-   }
-   else if (menuType == BM_ADMINISTRATION)
-   {
-      res = new BuildMenu_administration();
-   }
-   else if (menuType == BM_ENTERTAINMENT)
-   {
-      res = new BuildMenu_entertainment();
-   }
-   else if (menuType == BM_COMMERCE)
-   {
-      res = new BuildMenu_commerce();
-   }
-   else if (menuType == BM_FARM)
-   {
-      res = new BuildMenu_farm();
-   }
-   else if (menuType == BM_RAW_MATERIAL)
-   {
-      res = new BuildMenu_raw_factory();
-   }
-   else if (menuType == BM_FACTORY)
-   {
-      res = new BuildMenu_factory();
-   }
-   else if (menuType == BM_RELIGION)
-   {
-      res = new BuildMenu_religion();
-   }
-   else if (menuType == BM_TEMPLE)
-   {
-      res = new BuildMenu_temple();
-   }
-   else if (menuType == BM_BIGTEMPLE)
-   {
-      res = new BuildMenu_bigtemple();
-   }*/
-
 
    switch (menuType)
    {
@@ -640,6 +585,11 @@ void BuildMenu_water::addButtons()
 void BuildMenu_security::addButtons()
 {
   addBuildButton(B_PREFECT);
+  addBuildButton(B_FORT_LEGIONNAIRE);
+  addBuildButton(B_FORT_JAVELIN);
+  addBuildButton(B_FORT_MOUNTED);
+  addBuildButton(B_MILITARY_ACADEMY);
+  addBuildButton(B_BARRACKS);
 }
 
 
@@ -648,6 +598,7 @@ void BuildMenu_education::addButtons()
   addBuildButton(B_SCHOOL);
   addBuildButton(B_LIBRARY);
   addBuildButton(B_COLLEGE);
+  addBuildButton(B_MISSION_POST);
 }
 
 
@@ -669,6 +620,8 @@ void BuildMenu_engineering::addButtons()
   addBuildButton(B_SHIPYARD);
   addBuildButton(B_WHARF);
   addBuildButton(B_TRIUMPHAL_ARCH);
+  addBuildButton(B_GARDEN);
+  addBuildButton(B_PLAZA);   
 }
 
 
@@ -677,6 +630,9 @@ void BuildMenu_administration::addButtons()
   addBuildButton(B_FORUM);
   addBuildButton(B_SENATE);
   
+  addBuildButton(B_STATUE1);
+  addBuildButton(B_STATUE2);
+  addBuildButton(B_STATUE3);
   addBuildButton(B_GOVERNOR_HOUSE);
   addBuildButton(B_GOVERNOR_VILLA);
   addBuildButton(B_GOVERNOR_PALACE);

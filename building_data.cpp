@@ -147,17 +147,17 @@ BuildingDataHolder::BuildingDataHolder()
    // administration
    addData(BuildingData(B_SENATE, "senate", 250));
    addData(BuildingData(B_FORUM, "forum", 75));
-   addData(BuildingData(B_GOVERNOR_HOUSE, "governor's_house", 500));
-   addData(BuildingData(B_GOVERNOR_VILLA, "governor's_villa", 500));
-   addData(BuildingData(B_GOVERNOR_PALACE, "governor's_palace", 500));
+   addData(BuildingData(B_GOVERNOR_HOUSE, "governor's_house", 150));
+   addData(BuildingData(B_GOVERNOR_VILLA, "governor's_villa", 400));
+   addData(BuildingData(B_GOVERNOR_PALACE, "governor's_palace", 700));
    
    // security
-   //addData(BuildingData(B_LEGIONARIES, "fort_legionaries", 1000));
-   //addData(BuildingData(B_"fort_javelin", 1000));
-   //addData(BuildingData(B_"fort_horse", 1000));
+   addData(BuildingData(B_FORT_LEGIONNAIRE, "fort_legionaries", 1000));
+   addData(BuildingData(B_FORT_JAVELIN, "fort_javelin", 1000));
+   addData(BuildingData(B_FORT_MOUNTED, "fort_horse", 1000));
    addData(BuildingData(B_PREFECT, "prefect", 30));
-   //addData(BuildingData(B_"barracks", 150));
-   //addData(BuildingData(B_"academy", 1000));
+   addData(BuildingData(B_BARRACKS, "barracks", 150));
+   addData(BuildingData(B_MILITARY_ACADEMY, "academy", 1000));
 
    // health
    addData(BuildingData(B_DOCTOR, "doctor", 30));
@@ -169,6 +169,7 @@ BuildingDataHolder::BuildingDataHolder()
    addData(BuildingData(B_SCHOOL, "school", 50));
    addData(BuildingData(B_COLLEGE, "college", 100));
    addData(BuildingData(B_LIBRARY, "library", 75));
+   addData(BuildingData(B_MISSION_POST, "mission post", 100));
 
    // // religion
    addData(BuildingData(B_TEMPLE_CERES, "temple_ceres", 50));

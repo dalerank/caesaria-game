@@ -26,7 +26,7 @@
 #include "path_finding.hpp"
 #include "exception.hpp"
 #include "oc3_emigrant.h"
-#include <oc3_positioni.h>
+#include "oc3_positioni.h"
 
 City::City()
 {
@@ -194,44 +194,36 @@ std::list<LandOverlay*> City::getBuildingList(const BuildingType buildingType)
    return res;
 }
 
+void City::recomputeRoadsForAll()
+{
+   for (std::list<LandOverlay*>::iterator itOverlay = _overlayList.begin(); itOverlay!=_overlayList.end(); ++itOverlay)
+   {
+      // for each overlay
+      LandOverlay *overlay = *itOverlay;
+      Construction *construction = dynamic_cast<Construction*>(overlay);
+      if (construction != NULL)
+      {
+         // overlay matches the filter
+         construction->computeAccessRoads();
+	 // for some constructions we need to update picture
+	 if (construction->getType() == B_ROAD) construction->setPicture(dynamic_cast<Road*>(construction)->computePicture());
+      }
+   }
+}
 
 Tilemap& City::getTilemap()
 {
    return _tilemap;
 }
 
-int City::getRoadEntryI() const
-{
-   return _roadEntryI;
-}
-int City::getRoadEntryJ() const
-{
-   return _roadEntryJ;
-}
-int City::getRoadExitI() const
-{
-   return _roadExitI;
-}
-int City::getRoadExitJ() const
-{
-   return _roadExitJ;
-}
-int City::getBoatEntryI() const
-{
-   return _boatEntryI;
-}
-int City::getBoatEntryJ() const
-{
-   return _boatEntryJ;
-}
-int City::getBoatExitI() const
-{
-   return _boatExitI;
-}
-int City::getBoatExitJ() const
-{
-   return _boatExitJ;
-}
+int City::getRoadEntryI() const { return _roadEntryI; }
+int City::getRoadEntryJ() const { return _roadEntryJ; }
+int City::getRoadExitI() const  { return _roadExitI;  }
+int City::getRoadExitJ() const  { return _roadExitJ;  }
+int City::getBoatEntryI() const { return _boatEntryI; }
+int City::getBoatEntryJ() const { return _boatEntryJ; }
+int City::getBoatExitI() const  { return _boatExitI;  }
+int City::getBoatExitJ() const  { return _boatExitJ;  }
 
 ClimateType City::getClimate() const
 {
@@ -320,9 +312,14 @@ void City::clearLand(const int i, const int j)
       int j1 = j;
 
       LandOverlay* overlay = terrain.getOverlay();
+      
+      bool deleteRoad = false;
+
+      if (terrain.isRoad()) deleteRoad = true;
+      
       if (overlay != NULL)
       {
-         size = overlay->getSize();
+	 size = overlay->getSize();
          i1 = overlay->getTile().getI();
          j1 = overlay->getTile().getJ();
          overlay->destroy();
@@ -339,6 +336,7 @@ void City::clearLand(const int i, const int j)
          terrain.setTree(false);
          terrain.setBuilding(false);
          terrain.setRoad(false);
+	 terrain.setGarden(false);
          terrain.setOverlay(NULL);
 
          // choose a random landscape picture:
@@ -362,7 +360,14 @@ void City::clearLand(const int i, const int j)
          }
          tile.set_picture(&PicLoader::instance().get_picture(res_pfx, res_id));
       }
-   }
+      
+    // recompute roads;
+    // there is problem that we NEED to recompute all roads map for all buildings
+    // because MaxDistance2Road can be any number
+    
+    if (deleteRoad) recomputeRoadsForAll();
+      
+  }
 
 }
 
