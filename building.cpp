@@ -34,13 +34,14 @@
 #include "gettext.hpp"
 
 namespace {
-static const char* rcUtilityGroup    = "utilitya";
-static const char* rcAqueductGroup   = "land2a";
-static const char* rcRoadGroup       = "land2a";
-static const char* rcCommerceGroup   = "commerce";
-static const char* rcHousingGroup    = "housng1a";
-static const char* rcSecurityGroup   = "security";
-static const char* rcGovernmentGroup = "govt";
+static const char* rcUtilityGroup      = "utilitya";
+static const char* rcAqueductGroup     = "land2a";
+static const char* rcRoadGroup         = "land2a";
+static const char* rcCommerceGroup     = "commerce";
+static const char* rcHousingGroup      = "housng1a";
+static const char* rcSecurityGroup     = "security";
+static const char* rcGovernmentGroup   = "govt";
+static const char* rcEntertaimentGroup = "entertainment";
 }
 
 std::map<BuildingType, LandOverlay*> LandOverlay::_mapBuildingByID;  // key=buildingType, value=instance
@@ -214,6 +215,7 @@ LandOverlay* LandOverlay::getInstance(const BuildingType buildingType)
       _mapBuildingByID[B_STATUE1] = new SmallStatue(); 
       _mapBuildingByID[B_STATUE2] = new MediumStatue(); 
       _mapBuildingByID[B_STATUE3] = new BigStatue();
+      _mapBuildingByID[B_GARDEN]  = new Garden();
       // water
       _mapBuildingByID[B_WELL]      = new BuildingWell();
       _mapBuildingByID[B_FOUNTAIN]  = new BuildingFountain();
@@ -388,6 +390,26 @@ void Aqueduct::setTerrain(TerrainTile &terrain)
   terrain.reset();
   terrain.setOverlay(this);
   terrain.setBuilding(true);
+}
+
+Garden::Garden()
+{
+  setType(B_GARDEN);
+  setPicture( PicLoader::instance().get_picture( rcEntertaimentGroup, 110) ); // 110 111 112 113
+  _size = 1;
+}
+
+Garden* Garden::clone() const
+{
+  return new Garden(*this);
+}
+
+void Garden::setTerrain(TerrainTile &terrain)
+{
+  terrain.reset();
+  terrain.setOverlay(this);
+  terrain.setBuilding(true);
+  terrain.setGarden(true);
 }
 
 Reservoir::Reservoir()
@@ -917,6 +939,8 @@ MissionPost::MissionPost()
 {
  setType(B_MISSION_POST);
   _size = 2;
+  setMaxWorkers(20);
+  setWorkers(0);  
   setPicture(PicLoader::instance().get_picture("transport", 93));
 }
 
@@ -951,6 +975,8 @@ GovernorsHouse::GovernorsHouse()
 {
   setType(B_GOVERNOR_HOUSE);
   _size = 3;
+  setMaxWorkers(5);
+  setWorkers(0);    
   setPicture(PicLoader::instance().get_picture(rcHousingGroup, 46));
 }
 
@@ -958,6 +984,8 @@ GovernorsVilla::GovernorsVilla()
 {
   setType(B_GOVERNOR_VILLA);
   _size = 4;
+  setMaxWorkers(10);
+  setWorkers(0);    
   setPicture(PicLoader::instance().get_picture(rcHousingGroup, 47));
 }
 
@@ -965,6 +993,8 @@ GovernorsPalace::GovernorsPalace()
 {
   setType(B_GOVERNOR_PALACE);
   _size = 5;
+  setMaxWorkers(15);
+  setWorkers(0);  
   setPicture(PicLoader::instance().get_picture(rcHousingGroup, 48));
 }
 
@@ -976,6 +1006,8 @@ Academy::Academy()
 {
   setType(B_MILITARY_ACADEMY);
   _size = 3;
+  setMaxWorkers(20);
+  setWorkers(0);
   setPicture(PicLoader::instance().get_picture(rcSecurityGroup, 18));
 }
 
@@ -983,6 +1015,8 @@ Barracks::Barracks()
 {
   setType(B_BARRACKS);
   _size = 3;
+  setMaxWorkers(5);
+  setWorkers(0);  
   setPicture(PicLoader::instance().get_picture(rcSecurityGroup, 17));
 }
 

@@ -39,21 +39,23 @@ public:
    bool isConstructible() const;
    bool isDestructible() const;
 //   bool isWalkable();
-//   bool isBuilding();
    // isBurnable
 
-   bool isWater() const;
-   bool isRock() const;
-   bool isTree() const;
-   bool isBuilding() const;
-   bool isRoad() const;
+   bool isWater() const                    { return _isWater;    }
+   bool isRock() const                     { return _isRock;     }
+   bool isTree() const                     { return _isTree;     }
+   bool isBuilding() const                 { return _isBuilding; }
+   bool isRoad() const                     { return _isRoad;     }
+   bool isGarden() const                   { return _isGarden;   }
 
-   void setWater(const bool isWater);
-   void setRock(const bool isRock);
-   void setTree(const bool isTree);
-   void setBuilding(const bool isBuilding);
-   void setRoad(const bool isRoad);
+   void setWater(const bool isWater)       { _isWater = isWater;       }
+   void setRock(const bool isRock)         { _isRock = isRock;         }
+   void setTree(const bool isTree)         { _isTree = isTree;         }
+   void setBuilding(const bool isBuilding) { _isBuilding = isBuilding; }
+   void setRoad(const bool isRoad)         { _isRoad = isRoad;         }
+   void setGarden(const bool isGarden)     { _isGarden = isGarden;     }
 
+   
    void setOverlay(LandOverlay *overlay);
    LandOverlay *getOverlay() const;
 
@@ -69,6 +71,7 @@ private:
    bool _isTree;
    bool _isBuilding;
    bool _isRoad;
+   bool _isGarden;
    LandOverlay *_overlay;
 };
 

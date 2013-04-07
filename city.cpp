@@ -26,7 +26,7 @@
 #include "path_finding.hpp"
 #include "exception.hpp"
 #include "oc3_emigrant.h"
-#include <oc3_positioni.h>
+#include "oc3_positioni.h"
 
 City::City()
 {
@@ -200,38 +200,14 @@ Tilemap& City::getTilemap()
    return _tilemap;
 }
 
-int City::getRoadEntryI() const
-{
-   return _roadEntryI;
-}
-int City::getRoadEntryJ() const
-{
-   return _roadEntryJ;
-}
-int City::getRoadExitI() const
-{
-   return _roadExitI;
-}
-int City::getRoadExitJ() const
-{
-   return _roadExitJ;
-}
-int City::getBoatEntryI() const
-{
-   return _boatEntryI;
-}
-int City::getBoatEntryJ() const
-{
-   return _boatEntryJ;
-}
-int City::getBoatExitI() const
-{
-   return _boatExitI;
-}
-int City::getBoatExitJ() const
-{
-   return _boatExitJ;
-}
+int City::getRoadEntryI() const { return _roadEntryI; }
+int City::getRoadEntryJ() const { return _roadEntryJ; }
+int City::getRoadExitI() const  { return _roadExitI;  }
+int City::getRoadExitJ() const  { return _roadExitJ;  }
+int City::getBoatEntryI() const { return _boatEntryI; }
+int City::getBoatEntryJ() const { return _boatEntryJ; }
+int City::getBoatExitI() const  { return _boatExitI;  }
+int City::getBoatExitJ() const  { return _boatExitJ;  }
 
 ClimateType City::getClimate() const
 {
@@ -339,6 +315,7 @@ void City::clearLand(const int i, const int j)
          terrain.setTree(false);
          terrain.setBuilding(false);
          terrain.setRoad(false);
+	 terrain.setGarden(false);
          terrain.setOverlay(NULL);
 
          // choose a random landscape picture:

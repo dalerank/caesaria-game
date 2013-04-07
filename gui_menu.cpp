@@ -34,12 +34,14 @@
 #include "scenario.hpp"
 #include "oc3_positioni.h"
 
+namespace {
 static const char* panelBgName = "paneling";
 static const Uint32 panelBgStatus = 15;
 static const Uint32 dateLabelOffset = 155;
 static const Uint32 populationLabelOffset = 345;
 static const Uint32 fundLabelOffset = 465;
 static const Uint32 maximazeBtnPicId = 101;
+}
 
 MenuBar::MenuBar()
 {
@@ -618,6 +620,7 @@ void BuildMenu_engineering::addButtons()
   addBuildButton(B_SHIPYARD);
   addBuildButton(B_WHARF);
   addBuildButton(B_TRIUMPHAL_ARCH);
+  addBuildButton(B_GARDEN);  
 }
 
 

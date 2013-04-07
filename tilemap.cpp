@@ -24,7 +24,7 @@
 #include "pic_loader.hpp"
 #include "building.hpp"
 #include "exception.hpp"
-#include <oc3_positioni.h>
+#include "oc3_positioni.h"
 
 TerrainTile::TerrainTile()
 {
@@ -49,56 +49,6 @@ bool TerrainTile::isConstructible() const
 bool TerrainTile::isDestructible() const
 {
    return (_isTree || _isBuilding || _isRoad);
-}
-
-bool TerrainTile::isWater() const
-{
-   return _isWater;
-}
-
-void TerrainTile::setWater(const bool isWater)
-{
-   _isWater = isWater;
-}
-
-bool TerrainTile::isRock() const
-{
-   return _isRock;
-}
-
-void TerrainTile::setRock(const bool isRock)
-{
-   _isRock = isRock;
-}
-
-bool TerrainTile::isTree() const
-{
-   return _isTree;
-}
-
-void TerrainTile::setTree(const bool isTree)
-{
-   _isTree = isTree;
-}
-
-bool TerrainTile::isRoad() const
-{
-   return _isRoad;
-}
-
-void TerrainTile::setRoad(const bool isRoad)
-{
-   _isRoad = isRoad;
-}
-
-bool TerrainTile::isBuilding() const
-{
-   return _isBuilding;
-}
-
-void TerrainTile::setBuilding(const bool isBuilding)
-{
-   _isBuilding = isBuilding;
 }
 
 void TerrainTile::setOverlay(LandOverlay *overlay)

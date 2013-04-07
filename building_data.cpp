@@ -147,9 +147,9 @@ BuildingDataHolder::BuildingDataHolder()
    // administration
    addData(BuildingData(B_SENATE, "senate", 250));
    addData(BuildingData(B_FORUM, "forum", 75));
-   addData(BuildingData(B_GOVERNOR_HOUSE, "governor's_house", 500));
-   addData(BuildingData(B_GOVERNOR_VILLA, "governor's_villa", 500));
-   addData(BuildingData(B_GOVERNOR_PALACE, "governor's_palace", 500));
+   addData(BuildingData(B_GOVERNOR_HOUSE, "governor's_house", 150));
+   addData(BuildingData(B_GOVERNOR_VILLA, "governor's_villa", 400));
+   addData(BuildingData(B_GOVERNOR_PALACE, "governor's_palace", 700));
    
    // security
    addData(BuildingData(B_FORT_LEGIONNAIRE, "fort_legionaries", 1000));
@@ -169,7 +169,7 @@ BuildingDataHolder::BuildingDataHolder()
    addData(BuildingData(B_SCHOOL, "school", 50));
    addData(BuildingData(B_COLLEGE, "college", 100));
    addData(BuildingData(B_LIBRARY, "library", 75));
-   addData(BuildingData(B_MISSION_POST, "mission post", 0));
+   addData(BuildingData(B_MISSION_POST, "mission post", 100));
 
    // // religion
    addData(BuildingData(B_TEMPLE_CERES, "temple_ceres", 50));

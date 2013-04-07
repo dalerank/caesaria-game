@@ -118,6 +118,14 @@ public:
   void timeStep(const unsigned long time);
 };
 
+class Garden : public Construction
+{
+public:
+  Garden();
+  virtual Garden* clone() const;
+  virtual void setTerrain(TerrainTile &terrain);  
+};
+
 class Road : public Construction
 {
 public:
@@ -213,7 +221,7 @@ private:
    SimpleGoodStore _goodStore;
 };
 
-class GovernorsHouse  : public Building
+class GovernorsHouse  : public WorkingBuilding
 {
 public:
   GovernorsHouse();
@@ -223,7 +231,7 @@ public:
 //  void unserialize(InputSerialStream &stream);
 };
 
-class GovernorsVilla  : public Building
+class GovernorsVilla  : public WorkingBuilding
 {
 public:
   GovernorsVilla();
@@ -233,7 +241,7 @@ public:
 //  void unserialize(InputSerialStream &stream);
 };
 
-class GovernorsPalace : public Building
+class GovernorsPalace : public WorkingBuilding
 {
 public:
   GovernorsPalace();
@@ -296,7 +304,7 @@ public:
   TriumphalArch* clone() const;
 };
 
-class MissionPost : public Building
+class MissionPost : public WorkingBuilding
 {
 public:
   MissionPost();
