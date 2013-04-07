@@ -118,6 +118,14 @@ public:
    BuildingCollosseum* clone() const;
 };
 
+
+class BuildingHippodrome : public EntertainmentBuilding
+{
+public:
+   BuildingHippodrome();
+   BuildingHippodrome* clone() const;
+};
+
 class TempleCeres : public ServiceBuilding
 {
 public:

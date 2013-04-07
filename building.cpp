@@ -203,6 +203,7 @@ LandOverlay* LandOverlay::getInstance(const BuildingType buildingType)
       _mapBuildingByID[B_GLADIATOR]    = new BuildingGladiator();
       _mapBuildingByID[B_LION]         = new BuildingLion();
       _mapBuildingByID[B_CHARIOT]      = new BuildingChariot();
+      _mapBuildingByID[B_HIPPODROME]   = new BuildingHippodrome();
       // road&house
       _mapBuildingByID[B_HOUSE] = new House( House::smallHovel );
       _mapBuildingByID[B_ROAD]  = new Road();
