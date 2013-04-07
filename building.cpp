@@ -34,11 +34,14 @@
 #include "gettext.hpp"
 
 namespace {
-static const char* rcUtilityGroup  = "utilitya";
-static const char* rcAqueductGroup = "land2a";
-static const char* rcRoadGroup     = "land2a";
-static const char* rcCommerceGroup = "commerce";
-static const char* rcHousingGroup  = "housng1a";
+static const char* rcUtilityGroup      = "utilitya";
+static const char* rcAqueductGroup     = "land2a";
+static const char* rcRoadGroup         = "land2a";
+static const char* rcCommerceGroup     = "commerce";
+static const char* rcHousingGroup      = "housng1a";
+static const char* rcSecurityGroup     = "security";
+static const char* rcGovernmentGroup   = "govt";
+static const char* rcEntertaimentGroup = "entertainment";
 }
 
 std::map<BuildingType, LandOverlay*> LandOverlay::_mapBuildingByID;  // key=buildingType, value=instance
@@ -208,7 +211,12 @@ LandOverlay* LandOverlay::getInstance(const BuildingType buildingType)
       _mapBuildingByID[B_SENATE] = new Senate();
       _mapBuildingByID[B_GOVERNOR_HOUSE]  = new GovernorsHouse();
       _mapBuildingByID[B_GOVERNOR_VILLA]  = new GovernorsVilla();
-      _mapBuildingByID[B_GOVERNOR_PALACE] = new GovernorsPalace();      
+      _mapBuildingByID[B_GOVERNOR_PALACE] = new GovernorsPalace(); 
+      _mapBuildingByID[B_STATUE1] = new SmallStatue(); 
+      _mapBuildingByID[B_STATUE2] = new MediumStatue(); 
+      _mapBuildingByID[B_STATUE3] = new BigStatue();
+      _mapBuildingByID[B_GARDEN]  = new Garden();
+      _mapBuildingByID[B_PLAZA]   = new Plaza();
       // water
       _mapBuildingByID[B_WELL]      = new BuildingWell();
       _mapBuildingByID[B_FOUNTAIN]  = new BuildingFountain();
@@ -216,6 +224,11 @@ LandOverlay* LandOverlay::getInstance(const BuildingType buildingType)
       _mapBuildingByID[B_RESERVOIR] = new Reservoir();
       // security
       _mapBuildingByID[B_PREFECT]   = new BuildingPrefect();
+      _mapBuildingByID[B_FORT_LEGIONNAIRE] = new FortLegionnaire();
+      _mapBuildingByID[B_FORT_JAVELIN]     = new FortJaveline();
+      _mapBuildingByID[B_FORT_MOUNTED]     = new FortMounted();
+      _mapBuildingByID[B_MILITARY_ACADEMY] = new Academy();
+      _mapBuildingByID[B_BARRACKS]         = new Barracks();
       // commerce
       _mapBuildingByID[B_MARKET]    = new Market();
       _mapBuildingByID[B_WAREHOUSE] = new Warehouse();
@@ -265,6 +278,7 @@ LandOverlay* LandOverlay::getInstance(const BuildingType buildingType)
       _mapBuildingByID[B_SCHOOL]  = new School();
       _mapBuildingByID[B_LIBRARY] = new Library();
       _mapBuildingByID[B_COLLEGE] = new College();
+      _mapBuildingByID[B_MISSION_POST] = new MissionPost();
       // natives
       _mapBuildingByID[B_NATIVE_HUT]    = new NativeHut();
       _mapBuildingByID[B_NATIVE_CENTER] = new NativeCenter();
@@ -321,6 +335,10 @@ const std::list<Tile*>& Construction::getAccessRoads() const
    return _accessRoads;
 }
 
+// here the problem lays: if we remove road, it is left in _accessRoads array
+// also we need to recompute _accessRoads if we place new road tile
+// on next to this road tile buildings
+
 void Construction::computeAccessRoads()
 {
 	_accessRoads.clear();
@@ -330,8 +348,7 @@ void Construction::computeAccessRoads()
 	int mj = _master_tile->getJ();
 
 	Uint8 maxDst2road = getMaxDistance2Road();
-	std::list<Tile*> rect = tilemap.getRectangle( mi-maxDst2road, mj-maxDst2road, 
-												  mi+_size+maxDst2road-1, mj+_size+maxDst2road-1, false);
+	std::list<Tile*> rect = tilemap.getRectangle( mi-maxDst2road, mj-maxDst2road, mi+_size+maxDst2road-1, mj+_size+maxDst2road-1, false);
 	for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
 	{
 		Tile* tile = *itTiles;
@@ -379,6 +396,68 @@ void Aqueduct::setTerrain(TerrainTile &terrain)
   terrain.setBuilding(true);
 }
 
+// I didn't decide what is the best approach: make Plaza as constructions or as upgrade to roads
+
+Plaza::Plaza()
+{
+  setType(B_PLAZA);
+  setPicture( PicLoader::instance().get_picture( rcEntertaimentGroup, 102) ); // 102 ~ 107
+  _size = 1;
+}
+
+Plaza* Plaza::clone() const
+{
+  return new Plaza(*this);
+}
+
+void Plaza::setTerrain(TerrainTile &terrain)
+{
+  terrain.reset();
+  terrain.setOverlay(this);
+  terrain.setRoad(true);
+}
+
+// Plazas can be built ONLY on top of existing roads
+// Also in original game there was a bug:
+// gamer could place any number of plazas on one road tile (!!!)
+
+bool Plaza::canBuild(const int i, const int j) const
+{
+   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+
+   bool is_constructible = true;
+
+   std::list<Tile*> rect = tilemap.getFilledRectangle(i, j, i+_size-1, j+_size-1);
+   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+   {
+      Tile &tile = **itTiles;
+
+      is_constructible &= tile.get_terrain().isRoad();
+   }
+
+   return is_constructible;
+}
+
+Garden::Garden()
+{
+  setType(B_GARDEN);
+  setPicture( PicLoader::instance().get_picture( rcEntertaimentGroup, 110) ); // 110 111 112 113
+  _size = 1;
+}
+
+Garden* Garden::clone() const
+{
+  return new Garden(*this);
+}
+
+void Garden::setTerrain(TerrainTile &terrain)
+{
+  terrain.reset();
+  terrain.setOverlay(this);
+  terrain.setBuilding(true);
+  terrain.setGarden(true);
+}
+
 Reservoir::Reservoir()
 {
   setType(B_RESERVOIR);
@@ -390,6 +469,7 @@ Reservoir::Reservoir()
  
   AnimLoader animLoader(PicLoader::instance());
   animLoader.fill_animation(_animation, rcUtilityGroup, 35, 8);
+  animLoader.fill_animation_reverse(_animation, rcUtilityGroup, 42, 7);
   animLoader.change_offset(_animation, 47, 63);
   _fgPictures.resize(1);
   //_fgPictures[0]=;
@@ -436,6 +516,7 @@ void Road::build(const int i, const int j)
    Construction::build(i, j);
    setPicture(computePicture());
 
+   // update adjacent roads
    for (std::list<Tile*>::iterator itTile = _accessRoads.begin(); itTile != _accessRoads.end(); ++itTile)
    {
       Tile &tile = **itTile;
@@ -805,15 +886,10 @@ Granary::Granary()
    _goodStore.setCurrentQty(G_WHEAT, 300);
 
    AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, "commerce", 146, 7);
+   animLoader.fill_animation(_animation, rcCommerceGroup, 146, 7);
    // do the animation in reverse
-   animLoader.fill_animation_reverse(_animation, "commerce", 151, 6);
+   animLoader.fill_animation_reverse(_animation, rcCommerceGroup, 151, 6);
    PicLoader& ldr = PicLoader::instance();
-   _animation.get_pictures().push_back(&ldr.get_picture( rcCommerceGroup, 151));
-   _animation.get_pictures().push_back(&ldr.get_picture( rcCommerceGroup, 150));
-   _animation.get_pictures().push_back(&ldr.get_picture( rcCommerceGroup, 149));
-   _animation.get_pictures().push_back(&ldr.get_picture( rcCommerceGroup, 148));
-   _animation.get_pictures().push_back(&ldr.get_picture( rcCommerceGroup, 147));
 
    _fgPictures[0] = &ldr.get_picture( rcCommerceGroup, 141);
    _fgPictures[5] = _animation.get_current_picture();
@@ -901,10 +977,48 @@ void Granary::unserialize(InputSerialStream &stream)
 // transport 93 - missionaire post   2 x 2
 // circus    1 ~ 18 hippodrome    5x(5 x 5)
 
+MissionPost::MissionPost()
+{
+ setType(B_MISSION_POST);
+  _size = 2;
+  setMaxWorkers(20);
+  setWorkers(0);  
+  setPicture(PicLoader::instance().get_picture("transport", 93));
+}
+
+
+SmallStatue::SmallStatue()
+{
+ setType(B_STATUE1);
+  _size = 1;
+  setPicture(PicLoader::instance().get_picture(rcGovernmentGroup, 1));
+}
+
+MediumStatue::MediumStatue()
+{
+ setType(B_STATUE2);
+  _size = 2;
+  setPicture(PicLoader::instance().get_picture(rcGovernmentGroup, 2));
+}
+
+BigStatue::BigStatue()
+{
+ setType(B_STATUE3);
+  _size = 3;
+  setPicture(PicLoader::instance().get_picture(rcGovernmentGroup, 3));
+}
+
+MissionPost*  MissionPost::clone()  const { return new MissionPost(*this);  }
+SmallStatue*  SmallStatue::clone()  const { return new SmallStatue(*this);  }
+MediumStatue* MediumStatue::clone() const { return new MediumStatue(*this); }
+BigStatue*    BigStatue::clone()    const { return new BigStatue(*this);    }
+
 GovernorsHouse::GovernorsHouse()
 {
   setType(B_GOVERNOR_HOUSE);
   _size = 3;
+  setMaxWorkers(5);
+  setWorkers(0);    
   setPicture(PicLoader::instance().get_picture(rcHousingGroup, 46));
 }
 
@@ -912,6 +1026,8 @@ GovernorsVilla::GovernorsVilla()
 {
   setType(B_GOVERNOR_VILLA);
   _size = 4;
+  setMaxWorkers(10);
+  setWorkers(0);    
   setPicture(PicLoader::instance().get_picture(rcHousingGroup, 47));
 }
 
@@ -919,13 +1035,35 @@ GovernorsPalace::GovernorsPalace()
 {
   setType(B_GOVERNOR_PALACE);
   _size = 5;
+  setMaxWorkers(15);
+  setWorkers(0);  
   setPicture(PicLoader::instance().get_picture(rcHousingGroup, 48));
 }
 
-GovernorsHouse* GovernorsHouse::clone() const {return new GovernorsHouse(*this);}
-GovernorsVilla* GovernorsVilla::clone() const {return new GovernorsVilla(*this);}
-GovernorsPalace* GovernorsPalace::clone() const {return new GovernorsPalace(*this);}
+GovernorsHouse*  GovernorsHouse::clone()  const { return new GovernorsHouse(*this);  }
+GovernorsVilla*  GovernorsVilla::clone()  const { return new GovernorsVilla(*this);  }
+GovernorsPalace* GovernorsPalace::clone() const { return new GovernorsPalace(*this); }
 
+Academy::Academy()
+{
+  setType(B_MILITARY_ACADEMY);
+  _size = 3;
+  setMaxWorkers(20);
+  setWorkers(0);
+  setPicture(PicLoader::instance().get_picture(rcSecurityGroup, 18));
+}
+
+Barracks::Barracks()
+{
+  setType(B_BARRACKS);
+  _size = 3;
+  setMaxWorkers(5);
+  setWorkers(0);  
+  setPicture(PicLoader::instance().get_picture(rcSecurityGroup, 17));
+}
+
+Academy*  Academy::clone()  const { return new Academy(*this);  }
+Barracks* Barracks::clone() const { return new Barracks(*this); }
 
 NativeBuilding::NativeBuilding() {}
 
@@ -1044,7 +1182,6 @@ TriumphalArch::TriumphalArch()
   setType(B_TRIUMPHAL_ARCH);
   _size = 3;
   setPicture(PicLoader::instance().get_picture("land3a", 43));
-  // std::cout << getPicture().get_xoffset() << " " << getPicture().get_yoffset() << " " << getPicture().get_width() << " " << getPicture().get_height() << std::endl;
   getPicture().set_offset(0,116);
   AnimLoader animLoader(PicLoader::instance());
   animLoader.fill_animation(_animation, "land3a", 44, 1);
@@ -1056,4 +1193,58 @@ TriumphalArch::TriumphalArch()
 TriumphalArch* TriumphalArch::clone() const
 {
    return new TriumphalArch(*this);
+}
+
+
+
+FortLegionnaire::FortLegionnaire()
+{
+  setType(B_FORT_LEGIONNAIRE);
+  _size = 3;
+  setPicture(PicLoader::instance().get_picture(rcSecurityGroup, 12));
+
+  Picture* logo = &PicLoader::instance().get_picture(rcSecurityGroup, 16);
+  logo -> set_offset(80,10);
+  _fgPictures.resize(1);
+  _fgPictures.at(0) = logo;  
+}
+
+FortLegionnaire* FortLegionnaire::clone() const
+{
+   return new FortLegionnaire(*this);
+}
+
+FortMounted::FortMounted()
+{
+  setType(B_FORT_MOUNTED);
+  _size = 3;
+  setPicture(PicLoader::instance().get_picture(rcSecurityGroup, 12));
+
+  Picture* logo = &PicLoader::instance().get_picture(rcSecurityGroup, 15);
+  logo -> set_offset(80,10);
+  _fgPictures.resize(1);
+  _fgPictures.at(0) = logo;
+}
+
+FortMounted* FortMounted::clone() const
+{
+   return new FortMounted(*this);
+}
+
+FortJaveline::FortJaveline()
+{
+  setType(B_FORT_JAVELIN);
+  _size = 3;
+  setPicture(PicLoader::instance().get_picture(rcSecurityGroup, 12));
+
+  Picture* logo = &PicLoader::instance().get_picture(rcSecurityGroup, 14);
+  //std::cout << logo->get_xoffset() << " " << logo->get_yoffset() << " " << logo->get_width() << " " << logo->get_height() << std::endl;
+  logo -> set_offset(80,10);
+  _fgPictures.resize(1);
+  _fgPictures.at(0) = logo;  
+}
+
+FortJaveline* FortJaveline::clone() const
+{
+   return new FortJaveline(*this);
 }

@@ -770,7 +770,8 @@ void CartLoader::loadAll()
    _carts[G_FISH] = cart;
 }
 
-static const Point frontCartOffsetSouth = Point( -33, 35 );
+namespace{
+static const Point frontCartOffsetSouth = /*Point( -33, 35 )*/Point(-33,22);
 static const Point frontCartOffsetWest  = Point( -31, 35 );
 static const Point frontCartOffsetNorth = Point( -5, 37 );
 static const Point frontCartOffsetEast  = Point( -5, 22 );
@@ -779,6 +780,7 @@ static const Point backCartOffsetSouth = Point( -5, 40 );
 static const Point backCartOffsetWest  = Point( -5, 22 );
 static const Point backCartOffsetNorth = Point( -33, 22 );
 static const Point backCartOffsetEast  = Point( -31, 35 );
+}
 
 void CartLoader::fillCart(std::vector<Picture*> &ioCart, const std::string &prefix, const int start, bool back )
 {
@@ -786,19 +788,20 @@ void CartLoader::fillCart(std::vector<Picture*> &ioCart, const std::string &pref
 
    ioCart.clear();
    ioCart.resize(D_MAX);
-   ioCart[D_NORTH] = &picLoader.get_picture(rcCartsGroup, start);
-   ioCart[D_NORTH_EAST] = &picLoader.get_picture(rcCartsGroup, start+1);
-   ioCart[D_EAST] = &picLoader.get_picture(rcCartsGroup, start+2);
-   ioCart[D_SOUTH_EAST] = &picLoader.get_picture(rcCartsGroup, start+3);
-   ioCart[D_SOUTH] = &picLoader.get_picture(rcCartsGroup, start+4);
-   ioCart[D_SOUTH_WEST] = &picLoader.get_picture(rcCartsGroup, start+5);
-   ioCart[D_WEST] = &picLoader.get_picture(rcCartsGroup, start+6);
-   ioCart[D_NORTH_WEST] = &picLoader.get_picture(rcCartsGroup, start+7);
+   
+   ioCart[D_NORTH]      = &picLoader.get_picture(rcCartsGroup, start);
+   ioCart[D_NORTH_EAST] = &picLoader.get_picture(rcCartsGroup, start + 1);
+   ioCart[D_EAST]       = &picLoader.get_picture(rcCartsGroup, start + 2);
+   ioCart[D_SOUTH_EAST] = &picLoader.get_picture(rcCartsGroup, start + 3);
+   ioCart[D_SOUTH]      = &picLoader.get_picture(rcCartsGroup, start + 4);
+   ioCart[D_SOUTH_WEST] = &picLoader.get_picture(rcCartsGroup, start + 5);
+   ioCart[D_WEST]       = &picLoader.get_picture(rcCartsGroup, start + 6);
+   ioCart[D_NORTH_WEST] = &picLoader.get_picture(rcCartsGroup, start + 7);
 
    ioCart[D_SOUTH]->set_offset( back ? backCartOffsetSouth : frontCartOffsetSouth);
-   ioCart[D_WEST]->set_offset( back ? backCartOffsetWest : frontCartOffsetWest );
-   ioCart[D_NORTH]->set_offset( back ? backCartOffsetNorth : frontCartOffsetNorth  );
-   ioCart[D_EAST]->set_offset( back ? backCartOffsetEast : frontCartOffsetEast );
+   ioCart[D_WEST]->set_offset ( back ? backCartOffsetWest  : frontCartOffsetWest );
+   ioCart[D_NORTH]->set_offset( back ? backCartOffsetNorth : frontCartOffsetNorth);
+   ioCart[D_EAST]->set_offset ( back ? backCartOffsetEast  : frontCartOffsetEast );
 }
 
 Picture& CartLoader::getCart(const GoodStock &stock, const DirectionType &direction)

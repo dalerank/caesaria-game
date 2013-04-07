@@ -17,19 +17,20 @@
 
 
 
-#include <warehouse.hpp>
+#include "warehouse.hpp"
 
-#include <pic_loader.hpp>
-// #include <scenario.hpp>
-// #include <walker.hpp>
-#include <exception.hpp>
-#include <gui_info_box.hpp>
-
-#include <gettext.hpp>
 #include <iostream>
-// #include <algorithm>
+
+#include "pic_loader.hpp"
+#include "exception.hpp"
+#include "gui_info_box.hpp"
+#include "gettext.hpp"
 
 
+namespace
+{
+static const char* rcWarehouseGroup      =   "warehouse";
+}
 
 WarehouseTile::WarehouseTile(const int i, const int j)
 {
@@ -103,7 +104,7 @@ void WarehouseTile::computePicture()
       picIdx += _stock._currentQty/100 -1;
    }
 
-   _picture = PicLoader::instance().get_picture("warehouse", picIdx);
+   _picture = PicLoader::instance().get_picture(rcWarehouseGroup, picIdx);
    _picture.add_offset(30*(_i+_j), 15*(_j-_i));
 }
 
@@ -114,12 +115,12 @@ Warehouse::Warehouse()
 
    _size = 3;
    // _name = _("Entrepot");
-   _picture = &PicLoader::instance().get_picture("warehouse", 19);
+   _picture = &PicLoader::instance().get_picture(rcWarehouseGroup, 19);
    _fgPictures.resize(12);  // 8 tiles + 4
 
    AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, "warehouse", 2, 16);
-   animLoader.fill_animation(_animFlag, "warehouse", 84, 8);
+   animLoader.fill_animation(_animation, rcWarehouseGroup, 2, 16);
+   animLoader.fill_animation(_animFlag, rcWarehouseGroup, 84, 8);
 
    init();
 }
@@ -127,8 +128,8 @@ Warehouse::Warehouse()
 
 void Warehouse::init()
 {
-   _fgPictures[0] = &PicLoader::instance().get_picture("warehouse", 1);
-   _fgPictures[1] = &PicLoader::instance().get_picture("warehouse", 18);
+   _fgPictures[0] = &PicLoader::instance().get_picture(rcWarehouseGroup, 1);
+   _fgPictures[1] = &PicLoader::instance().get_picture(rcWarehouseGroup, 18);
    _fgPictures[2] = _animation.get_current_picture();
    _fgPictures[3] = _animFlag.get_current_picture();
 
