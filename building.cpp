@@ -335,6 +335,10 @@ const std::list<Tile*>& Construction::getAccessRoads() const
    return _accessRoads;
 }
 
+// here the problem lays: if we remove road, it is left in _accessRoads array
+// also we need to recompute _accessRoads if we place new road tile
+// on next to this road tile buildings
+
 void Construction::computeAccessRoads()
 {
 	_accessRoads.clear();
@@ -344,8 +348,7 @@ void Construction::computeAccessRoads()
 	int mj = _master_tile->getJ();
 
 	Uint8 maxDst2road = getMaxDistance2Road();
-	std::list<Tile*> rect = tilemap.getRectangle( mi-maxDst2road, mj-maxDst2road, 
-												  mi+_size+maxDst2road-1, mj+_size+maxDst2road-1, false);
+	std::list<Tile*> rect = tilemap.getRectangle( mi-maxDst2road, mj-maxDst2road, mi+_size+maxDst2road-1, mj+_size+maxDst2road-1, false);
 	for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
 	{
 		Tile* tile = *itTiles;
@@ -507,6 +510,7 @@ void Road::build(const int i, const int j)
    Construction::build(i, j);
    setPicture(computePicture());
 
+   // update adjactment roads
    for (std::list<Tile*>::iterator itTile = _accessRoads.begin(); itTile != _accessRoads.end(); ++itTile)
    {
       Tile &tile = **itTile;
@@ -880,11 +884,6 @@ Granary::Granary()
    // do the animation in reverse
    animLoader.fill_animation_reverse(_animation, rcCommerceGroup, 151, 6);
    PicLoader& ldr = PicLoader::instance();
-   _animation.get_pictures().push_back(&ldr.get_picture( rcCommerceGroup, 151));
-   _animation.get_pictures().push_back(&ldr.get_picture( rcCommerceGroup, 150));
-   _animation.get_pictures().push_back(&ldr.get_picture( rcCommerceGroup, 149));
-   _animation.get_pictures().push_back(&ldr.get_picture( rcCommerceGroup, 148));
-   _animation.get_pictures().push_back(&ldr.get_picture( rcCommerceGroup, 147));
 
    _fgPictures[0] = &ldr.get_picture( rcCommerceGroup, 141);
    _fgPictures[5] = _animation.get_current_picture();

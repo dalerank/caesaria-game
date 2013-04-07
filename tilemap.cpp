@@ -314,6 +314,7 @@ std::list<Tile*> Tilemap::getRectangle(const int i1, const int j1, const int i2,
    return res;
 }
 
+// Get tiles inside of rectangle
 
 std::list<Tile*> Tilemap::getFilledRectangle(const int i1, const int j1, const int i2, const int j2)
 {
