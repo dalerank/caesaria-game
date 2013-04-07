@@ -126,6 +126,15 @@ public:
   virtual void setTerrain(TerrainTile &terrain);  
 };
 
+class Plaza : public Construction
+{
+public:
+  Plaza();
+  virtual Plaza* clone() const;
+  virtual void setTerrain(TerrainTile &terrain);  
+  virtual bool canBuild(const int i, const int j) const;
+};
+
 class Road : public Construction
 {
 public:

@@ -216,6 +216,7 @@ LandOverlay* LandOverlay::getInstance(const BuildingType buildingType)
       _mapBuildingByID[B_STATUE2] = new MediumStatue(); 
       _mapBuildingByID[B_STATUE3] = new BigStatue();
       _mapBuildingByID[B_GARDEN]  = new Garden();
+      _mapBuildingByID[B_PLAZA]   = new Plaza();
       // water
       _mapBuildingByID[B_WELL]      = new BuildingWell();
       _mapBuildingByID[B_FOUNTAIN]  = new BuildingFountain();
@@ -390,6 +391,42 @@ void Aqueduct::setTerrain(TerrainTile &terrain)
   terrain.reset();
   terrain.setOverlay(this);
   terrain.setBuilding(true);
+}
+
+Plaza::Plaza()
+{
+  setType(B_PLAZA);
+  setPicture( PicLoader::instance().get_picture( rcEntertaimentGroup, 102) ); // 102 ~ 107
+  _size = 1;
+}
+
+Plaza* Plaza::clone() const
+{
+  return new Plaza(*this);
+}
+
+void Plaza::setTerrain(TerrainTile &terrain)
+{
+  terrain.reset();
+  terrain.setOverlay(this);
+  terrain.setRoad(true);
+}
+
+bool Plaza::canBuild(const int i, const int j) const
+{
+   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+
+   bool is_constructible = true;
+
+   std::list<Tile*> rect = tilemap.getFilledRectangle(i, j, i+_size-1, j+_size-1);
+   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+   {
+      Tile &tile = **itTiles;
+
+      is_constructible &= tile.get_terrain().isRoad();
+   }
+
+   return is_constructible;
 }
 
 Garden::Garden()

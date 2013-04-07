@@ -620,7 +620,8 @@ void BuildMenu_engineering::addButtons()
   addBuildButton(B_SHIPYARD);
   addBuildButton(B_WHARF);
   addBuildButton(B_TRIUMPHAL_ARCH);
-  addBuildButton(B_GARDEN);  
+  addBuildButton(B_GARDEN);
+  addBuildButton(B_PLAZA);   
 }
 
 
