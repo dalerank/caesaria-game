@@ -340,21 +340,25 @@ BuildingCollosseum* BuildingCollosseum::clone() const
 
 BuildingHippodrome::BuildingHippodrome() : EntertainmentBuilding(S_HIPPODROME)
 {
- setType(B_HIPPODROME);
- _size = 5;
- setPicture(PicLoader::instance().get_picture("circus", 5));
- getPicture().set_offset(0,106);
- 
-// getPicture().set_offset(0,160); for the first
- 
-  Picture* logo = &PicLoader::instance().get_picture("circus", 3);
-  logo -> set_offset(150,181);
-  _fgPictures.resize(5);
-  _fgPictures.at(0) = logo;
+    setType(B_HIPPODROME);
+    _size = 5;
+    setPicture(PicLoader::instance().get_picture("circus", 5));
+    getPicture().set_offset(0,106);
+    Picture* logo = &PicLoader::instance().get_picture("circus", 3);
+    Picture* logo1 = &PicLoader::instance().get_picture("circus", 1);
+    logo -> set_offset(150,181);
+    logo1 -> set_offset(300,310);
+    _fgPictures.resize(5);
+    _fgPictures.at(0) = logo;
+    _fgPictures.at(1) = logo1;
+  
+
   
  
  
 }
+
+
 
 BuildingHippodrome* BuildingHippodrome::clone() const
 {
