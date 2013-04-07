@@ -28,6 +28,10 @@
 #include "gettext.hpp"
 
 
+namespace {
+  static const char* rcCommerceGroup     = "commerce";
+}
+
 Factory::Factory(const GoodType inType, const GoodType outType)
 {
    setMaxWorkers(10);
@@ -179,10 +183,10 @@ FactoryMarble::FactoryMarble() : Factory(G_NONE, G_MARBLE)
    setType(B_MARBLE);
    _size = 2;
    _productionRate = 9.6f;
-   _picture = &PicLoader::instance().get_picture("commerce", 43);
+   _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 43);
 
    AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, "commerce", 44, 10);
+   animLoader.fill_animation(_animation, rcCommerceGroup, 44, 10);
    _fgPictures.resize(2);
 }
 
@@ -213,10 +217,10 @@ FactoryTimber::FactoryTimber() : Factory(G_NONE, G_TIMBER)
    setType(B_TIMBER);
    _size = 2;
    _productionRate = 9.6f;
-   _picture = &PicLoader::instance().get_picture("commerce", 72);
+   _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 72);
 
    AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, "commerce", 73, 10);
+   animLoader.fill_animation(_animation, rcCommerceGroup, 73, 10);
    _fgPictures.resize(2);
 }
 
@@ -247,10 +251,10 @@ FactoryIron::FactoryIron() : Factory(G_NONE, G_IRON)
    setType(B_IRON);
    _size = 2;
    _productionRate = 9.6f;
-   _picture = &PicLoader::instance().get_picture("commerce", 54);
+   _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 54);
 
    AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, "commerce", 55, 6);
+   animLoader.fill_animation(_animation, rcCommerceGroup, 55, 6);
    _fgPictures.resize(2);
 }
 
@@ -281,10 +285,10 @@ FactoryClay::FactoryClay() : Factory(G_NONE, G_CLAY)
    setType(B_CLAY);
    _size = 2;
    _productionRate = 9.6f;
-   _picture = &PicLoader::instance().get_picture("commerce", 61);
+   _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 61);
 
    AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, "commerce", 62, 10);
+   animLoader.fill_animation(_animation, rcCommerceGroup, 62, 10);
    _fgPictures.resize(2);
 }
 
@@ -314,10 +318,10 @@ FactoryWeapon::FactoryWeapon() : Factory(G_IRON, G_WEAPON)
 {
    setType(B_WEAPON);
    _size = 2;
-   _picture = &PicLoader::instance().get_picture("commerce", 108);
+   _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 108);
 
    AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, "commerce", 109, 6);
+   animLoader.fill_animation(_animation, rcCommerceGroup, 109, 6);
    _fgPictures.resize(2);
 }
 
@@ -331,10 +335,10 @@ FactoryFurniture::FactoryFurniture() : Factory(G_TIMBER, G_FURNITURE)
 {
    setType(B_FURNITURE);
    _size = 2;
-   _picture = &PicLoader::instance().get_picture("commerce", 117);
+   _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 117);
 
    AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, "commerce", 118, 14);
+   animLoader.fill_animation(_animation, rcCommerceGroup, 118, 14);
    _fgPictures.resize(2);
 }
 
@@ -348,10 +352,10 @@ FactoryWine::FactoryWine() : Factory(G_GRAPE, G_WINE)
 {
    setType(B_WINE);
    _size = 2;
-   _picture = &PicLoader::instance().get_picture("commerce", 86);
+   _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 86);
 
    AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, "commerce", 87, 12);
+   animLoader.fill_animation(_animation, rcCommerceGroup, 87, 12);
    _fgPictures.resize(2);
 }
 
@@ -365,10 +369,10 @@ FactoryOil::FactoryOil() : Factory(G_OLIVE, G_OIL)
 {
    setType(B_OIL);
    _size = 2;
-   _picture = &PicLoader::instance().get_picture("commerce", 99);
+   _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 99);
 
    AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, "commerce", 100, 8);
+   animLoader.fill_animation(_animation, rcCommerceGroup, 100, 8);
    _fgPictures.resize(2);
 }
 
@@ -382,10 +386,10 @@ FactoryPottery::FactoryPottery() : Factory(G_CLAY, G_POTTERY)
 {
    setType(B_POTTERY);
    _size = 2;
-   _picture = &PicLoader::instance().get_picture("commerce", 132);
+   _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 132);
 
    AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, "commerce", 133, 7);
+   animLoader.fill_animation(_animation, rcCommerceGroup, 133, 7);
    _fgPictures.resize(2);
 }
 
@@ -426,7 +430,7 @@ FarmTile::FarmTile(const GoodType outGood, const int i, const int j)
    }
 
    AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, "commerce", picIdx, 5);
+   animLoader.fill_animation(_animation, rcCommerceGroup, picIdx, 5);
    computePicture(0);
 }
 
@@ -450,7 +454,7 @@ Farm::Farm(const GoodType outGood) : Factory(G_NONE, outGood)
    _size = 3;
    _picture = &_pictureBuilding;
 
-   _pictureBuilding = PicLoader::instance().get_picture("commerce", 12);  // farm building
+   _pictureBuilding = PicLoader::instance().get_picture(rcCommerceGroup, 12);  // farm building
    _pictureBuilding.add_offset(30, 15);
    init();
 }

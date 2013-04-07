@@ -26,7 +26,7 @@
 #include "scenario.hpp"
 #include "walker_market_buyer.hpp"
 #include "walker_cart_pusher.hpp"
-#include <oc3_positioni.h>
+#include "oc3_positioni.h"
 
 
 std::map<WalkerType, Walker*> Walker::_mapWalkerByID;  // key=walkerType, value=instance

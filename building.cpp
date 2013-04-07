@@ -396,6 +396,8 @@ void Aqueduct::setTerrain(TerrainTile &terrain)
   terrain.setBuilding(true);
 }
 
+// I didn't decide what is the best approach: make Plaza as constructions or as upgrade to roads
+
 Plaza::Plaza()
 {
   setType(B_PLAZA);
@@ -414,6 +416,10 @@ void Plaza::setTerrain(TerrainTile &terrain)
   terrain.setOverlay(this);
   terrain.setRoad(true);
 }
+
+// Plazas can be built ONLY on top of existing roads
+// Also in original game there was a bug:
+// gamer could place any number of plazas on one road tile (!!!)
 
 bool Plaza::canBuild(const int i, const int j) const
 {
@@ -510,7 +516,7 @@ void Road::build(const int i, const int j)
    Construction::build(i, j);
    setPicture(computePicture());
 
-   // update adjactment roads
+   // update adjacent roads
    for (std::list<Tile*>::iterator itTile = _accessRoads.begin(); itTile != _accessRoads.end(); ++itTile)
    {
       Tile &tile = **itTile;
