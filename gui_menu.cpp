@@ -155,38 +155,61 @@ Picture& MenuBar::getBgPicture()
 
 Menu::Menu()
 {
-   _bgPicture = &PicLoader::instance().get_picture( panelBgName, 16 );
-   _btPicture = &PicLoader::instance().get_picture( panelBgName, 21 );
+  menuType = false;
+  
+  if (menuType) 
+  {
+    // SMALL MENU
+    // _bgPicture = &PicLoader::instance().get_picture( panelBgName, 16 );
+    // _btPicture = &PicLoader::instance().get_picture( panelBgName, 21 );
+  }
+  else
+  {
+    // BIG MENU
+    _bgPicture = &PicLoader::instance().get_picture( panelBgName, 17 );
+    _btPicture = &PicLoader::instance().get_picture( panelBgName, 20 );
+  }
+   
+  const Picture& rigthImageTile = PicLoader::instance().get_picture( panelBgName, 14 );
 
-   const Picture& rigthImageTile = PicLoader::instance().get_picture( panelBgName, 14 );
+  setSize(_bgPicture->get_width() + rigthImageTile.get_width(), _bgPicture->get_height() + _btPicture->get_height() );
+  SdlFacade &sdlFacade = SdlFacade::instance();
+  _rigthPicture = &sdlFacade.createPicture( rigthImageTile.get_width(), getHeight());
+  SDL_SetAlpha(_bgPicture->get_surface(), 0, 0);  // remove surface alpha
 
-   setSize(_bgPicture->get_width() + rigthImageTile.get_width(), _bgPicture->get_height() + _btPicture->get_height() );
-   SdlFacade &sdlFacade = SdlFacade::instance();
-   _rigthPicture = &sdlFacade.createPicture( rigthImageTile.get_width(), getHeight());
-   SDL_SetAlpha(_bgPicture->get_surface(), 0, 0);  // remove surface alpha
+  int y = 0;
+  while( y < getHeight() )
+  {
+    sdlFacade.drawPicture(rigthImageTile, *_rigthPicture, 0, y);
+    y += rigthImageTile.get_height();
+  }
 
-   int y = 0;
-   while( y < getHeight() )
-   {
-       sdlFacade.drawPicture(rigthImageTile, *_rigthPicture, 0, y);
-       y += rigthImageTile.get_height();
-   }
+  // // top of menu
+  //_menuButton.setText("Menu");
+  //_menuButton.setEvent(WidgetEvent::InGameMenuEvent());
+  //_menuButton.setNormalPicture(PicLoader::instance().get_picture("paneling", 234));
+  //_menuButton.setHoverPicture(PicLoader::instance().get_picture("paneling", 234+1));
+  //_menuButton.setSelectedPicture(PicLoader::instance().get_picture("paneling", 234+2));
+  //_menuButton.setUnavailablePicture(PicLoader::instance().get_picture("paneling", 234+3));
+  //_menuButton.init_pictures();
+  //add_widget(_menuButton);
+  
+  Point offset( 1, 32 );
+  int dy = 35;
 
-   // // top of menu
-   //_menuButton.setText("Menu");
-   //_menuButton.setEvent(WidgetEvent::InGameMenuEvent());
-   //_menuButton.setNormalPicture(PicLoader::instance().get_picture("paneling", 234));
-   //_menuButton.setHoverPicture(PicLoader::instance().get_picture("paneling", 234+1));
-   //_menuButton.setSelectedPicture(PicLoader::instance().get_picture("paneling", 234+2));
-   //_menuButton.setUnavailablePicture(PicLoader::instance().get_picture("paneling", 234+3));
-   //_menuButton.init_pictures();
-   //add_widget(_menuButton);
-
-   Point offset( 1, 32 );
-   int dy = 35;
-   set4Button( _minimizeButton, WidgetEvent::ChangeSideMenuType(), maximizeBtnPicId );
-   _minimizeButton.setPosition( Point( 6, 4 ));
-
+  set4Button(_menuButton , WidgetEvent::ChangeSideMenuType(), 15 );
+  _menuButton.setPosition( Point( 4, 4 ));
+  
+  if (menuType)
+  {
+    set4Button( _minimizeButton, WidgetEvent::ChangeSideMenuType(), maximizeBtnPicId );
+    _minimizeButton.setPosition( Point( 6, 4 ));
+  }
+  else
+  {
+    set4Button( _minimizeButton, WidgetEvent::ChangeSideMenuType(), 97 );
+    _minimizeButton.setPosition( Point( 127, 5 ));
+  }
    // //
    // _midIcon.setPicture(PicLoader::instance().get_picture("panelwindows", 1));
    // _midIcon.setPosition(8, 217);
@@ -204,45 +227,73 @@ Menu::Menu()
    // set3Button(_rotateLeftButton, WidgetEvent(), 91);
    // set3Button(_rotateRightButton, WidgetEvent(), 94);
 
-   set4Button(_houseButton, WidgetEvent::BuildingEvent(B_HOUSE), 123);
-   _houseButton.setPosition( offset + Point( 0, dy * 0 ) );
-
-   set4Button(_clearButton, WidgetEvent::ClearLandEvent(), 131);
-   _clearButton.setPosition( offset + Point( 0, dy * 1 ) );
-
-   set4Button(_roadButton, WidgetEvent::BuildingEvent(B_ROAD), 135);
-   _roadButton.setPosition( offset + Point( 0, dy * 2 ) );
-   // second row
-   set4Button(_waterButton, WidgetEvent::BuildMenuEvent(BM_WATER), 127);
-   _waterButton.setPosition( offset + Point( 0, dy * 3 ));
-
-   set4Button(_healthButton, WidgetEvent::BuildMenuEvent(BM_HEALTH), 163);
-   _healthButton.setPosition( offset + Point( 0, dy * 4 ) );
-
-   set4Button(_templeButton, WidgetEvent::BuildMenuEvent(BM_RELIGION), 151);
-   _templeButton.setPosition( offset + Point( 0, dy * 5 ) );
-   // third row
-   set4Button(_educationButton, WidgetEvent::BuildMenuEvent(BM_EDUCATION), 147);
-   _educationButton.setPosition( offset + Point( 0, dy * 6 ) );
-
-   set4Button(_entertainmentButton, WidgetEvent::BuildMenuEvent(BM_ENTERTAINMENT), 143);
-   _entertainmentButton.setPosition( offset + Point( 0, dy * 7 ) );
-
-   set4Button(_administrationButton, WidgetEvent::BuildMenuEvent(BM_ADMINISTRATION), 139);
-   _administrationButton.setPosition( offset + Point( 0, dy * 8 ) );
-   // 4th row
-   set4Button(_engineerButton, WidgetEvent::BuildMenuEvent(BM_ENGINEERING), 167);
-   _engineerButton.setPosition( offset + Point( 0, dy * 9 ) );
-
-   set4Button(_securityButton, WidgetEvent::BuildMenuEvent(BM_SECURITY), 159);
-   _securityButton.setPosition( offset + Point( 0, dy * 10 ) );
-
-   set4Button(_commerceButton, WidgetEvent::BuildMenuEvent(BM_COMMERCE), 155);
-   _commerceButton.setPosition( offset + Point( 0, dy * 11 ) );
-//   // 5th row
-//   set4Button(_cancelButton, WidgetEvent(), 171);
-//   set4Button(_messageButton, WidgetEvent(), 115);
-//   set4Button(_disasterButton, WidgetEvent(), 119);
+  if (menuType)
+  {
+    set4Button(_houseButton, WidgetEvent::BuildingEvent(B_HOUSE), 123);
+    _houseButton.setPosition( offset + Point( 0, dy * 0 ) );
+    set4Button(_clearButton, WidgetEvent::ClearLandEvent(), 131);
+    _clearButton.setPosition( offset + Point( 0, dy * 1 ) );    
+    set4Button(_roadButton, WidgetEvent::BuildingEvent(B_ROAD), 135);
+    _roadButton.setPosition( offset + Point( 0, dy * 2 ) );
+    // second row
+    set4Button(_waterButton, WidgetEvent::BuildMenuEvent(BM_WATER), 127);
+    _waterButton.setPosition( offset + Point( 0, dy * 3 ));
+    set4Button(_healthButton, WidgetEvent::BuildMenuEvent(BM_HEALTH), 163);
+    _healthButton.setPosition( offset + Point( 0, dy * 4 ) );
+    set4Button(_templeButton, WidgetEvent::BuildMenuEvent(BM_RELIGION), 151);
+    _templeButton.setPosition( offset + Point( 0, dy * 5 ) );
+    // third row
+    set4Button(_educationButton, WidgetEvent::BuildMenuEvent(BM_EDUCATION), 147);
+    _educationButton.setPosition( offset + Point( 0, dy * 6 ) );
+    set4Button(_entertainmentButton, WidgetEvent::BuildMenuEvent(BM_ENTERTAINMENT), 143);
+    _entertainmentButton.setPosition( offset + Point( 0, dy * 7 ) );
+    set4Button(_administrationButton, WidgetEvent::BuildMenuEvent(BM_ADMINISTRATION), 139);
+    _administrationButton.setPosition( offset + Point( 0, dy * 8 ) );
+    // 4th row
+    set4Button(_engineerButton, WidgetEvent::BuildMenuEvent(BM_ENGINEERING), 167);
+    _engineerButton.setPosition( offset + Point( 0, dy * 9 ) );
+    set4Button(_securityButton, WidgetEvent::BuildMenuEvent(BM_SECURITY), 159);
+    _securityButton.setPosition( offset + Point( 0, dy * 10 ) );
+    set4Button(_commerceButton, WidgetEvent::BuildMenuEvent(BM_COMMERCE), 155);
+    _commerceButton.setPosition( offset + Point( 0, dy * 11 ) );
+  }
+  else
+  {
+    set4Button(_houseButton, WidgetEvent::BuildingEvent(B_HOUSE), 123);
+    _houseButton.setPosition( Point( 13, 277 ) );
+    set4Button(_clearButton, WidgetEvent::ClearLandEvent(), 131);
+    _clearButton.setPosition( Point( 64, 277 ) );    
+    set4Button(_roadButton, WidgetEvent::BuildingEvent(B_ROAD), 135);
+    _roadButton.setPosition( Point( 113, 277) );   
+    // second row
+    set4Button(_waterButton, WidgetEvent::BuildMenuEvent(BM_WATER), 127);
+    _waterButton.setPosition( Point( 13, 313));
+    set4Button(_healthButton, WidgetEvent::BuildMenuEvent(BM_HEALTH), 163);
+    _healthButton.setPosition( Point( 64, 313 ) );
+    set4Button(_templeButton, WidgetEvent::BuildMenuEvent(BM_RELIGION), 151);
+    _templeButton.setPosition( Point( 113, 313 ) );
+    // third row
+    set4Button(_educationButton, WidgetEvent::BuildMenuEvent(BM_EDUCATION), 147);
+    _educationButton.setPosition( Point( 13, 349 ) );
+    set4Button(_entertainmentButton, WidgetEvent::BuildMenuEvent(BM_ENTERTAINMENT), 143);
+    _entertainmentButton.setPosition( Point( 64, 349 ) );
+    set4Button(_administrationButton, WidgetEvent::BuildMenuEvent(BM_ADMINISTRATION), 139);
+    _administrationButton.setPosition( Point( 113, 349 ) );
+    // 4th row
+    set4Button(_engineerButton, WidgetEvent::BuildMenuEvent(BM_ENGINEERING), 167);
+    _engineerButton.setPosition( Point( 13, 385 ) );
+    set4Button(_securityButton, WidgetEvent::BuildMenuEvent(BM_SECURITY), 159);
+    _securityButton.setPosition( Point( 64, 385 ) );
+    set4Button(_commerceButton, WidgetEvent::BuildMenuEvent(BM_COMMERCE), 155);
+    _commerceButton.setPosition( Point( 113, 385 ) );
+    // 5th row
+    set4Button(_cancelButton, WidgetEvent(), 171);
+    _cancelButton.setPosition( Point( 13, 421 ) );
+    set4Button(_messageButton, WidgetEvent(), 115);
+    _messageButton.setPosition( Point( 64, 421 ) );
+    set4Button(_disasterButton, WidgetEvent(), 119);
+    _disasterButton.setPosition( Point( 113, 421 ) );
+  }
 
    // set button position
    // _menuButton.setPosition(4, 3);

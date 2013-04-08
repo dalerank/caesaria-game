@@ -70,9 +70,13 @@ public:
    const Picture& getBgPicture() const;
    const Picture& getBottomPicture() const; 
    const Picture& getRigthPicture() const;
+   
+   void changeSideMenuType() { menuType = false;}
 
 private:
 
+  bool menuType; // true for small menu and false for big menu
+  
    // init the given button with data. this button has 3 states
    void set3Button(ImageButton &oButton, const WidgetEvent &event, const int pic_index);
 
@@ -85,7 +89,7 @@ private:
 
    ImageIcon _midIcon;
    //ImageIcon _bottomIcon;
-   ImageTextButton _menuButton;
+   ImageButton _menuButton;
    ImageButton _minimizeButton;
    ImageButton _senateButton;
    ImageButton _empireButton;

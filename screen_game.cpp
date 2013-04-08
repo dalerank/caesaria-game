@@ -30,12 +30,12 @@
 
 ScreenGame::ScreenGame()
 {
-   _scenario = NULL;
-   _menu = NULL;
-   _menuBar = NULL;
-   _buildMenu = NULL;
-   _inGameMenu = NULL;
-   _infoBox = NULL;
+  _scenario   = NULL;
+  _menu       = NULL;
+  _menuBar    = NULL;
+  _buildMenu  = NULL;
+  _inGameMenu = NULL;
+  _infoBox    = NULL;
 }
 
 ScreenGame::~ScreenGame() {}
@@ -55,7 +55,7 @@ void ScreenGame::init()
    _menu->setPosition( engine.getScreenWidth() - _menu->getWidth(), _menuBar->getHeight() );
    _menu->setListener(this);
 
-   getMapArea().setViewSize(engine.getScreenWidth(), engine.getScreenHeight()+8*30);  // 8*30: used for high buildings (granary...), visible even when not in tilemap_area.
+   getMapArea().setViewSize(engine.getScreenWidth(), engine.getScreenHeight()+8 * 30);  // 8*30: used for high buildings (granary...), visible even when not in tilemap_area.
    getMapArea().setCenterIJ(25, 10);
 }
 
@@ -293,7 +293,7 @@ void ScreenGame::handleWidgetEvent(const WidgetEvent &event, Widget *widget)
          buildMenu->init();
          y = std::min(y, engine.getScreenHeight() - buildMenu->getHeight());
          y = std::max(y, 0);
-         buildMenu->setPosition(engine.getScreenWidth() - buildMenu->getWidth() - _menu->getWidth()-5, y);
+         buildMenu->setPosition(engine.getScreenWidth() - buildMenu->getWidth() - _menu->getWidth() - 5, y);
          setBuildMenu(buildMenu);
       }
 
@@ -304,7 +304,7 @@ void ScreenGame::handleWidgetEvent(const WidgetEvent &event, Widget *widget)
       GfxEngine &engine = GfxEngine::instance();
       InGameMenu* inGameMenu = new InGameMenu();
       inGameMenu->init();
-      inGameMenu->setPosition(engine.getScreenWidth() - inGameMenu->getWidth() - _menu->getWidth()-5, 50);
+      inGameMenu->setPosition(engine.getScreenWidth() - inGameMenu->getWidth() - _menu->getWidth() - 5, 50);
       setInGameMenu(inGameMenu);
    }
    break;
@@ -340,6 +340,13 @@ void ScreenGame::handleWidgetEvent(const WidgetEvent &event, Widget *widget)
       _guiTilemap.setRemoveTool();
    }
    break;
+     case WE_ChangeSideMenuType:
+   {
+      std::cout << "change menu pls!!!" << std::endl;
+      _menu->changeSideMenuType();
+   }
+   break;
+   
    }// end of switch statement
 
 }
