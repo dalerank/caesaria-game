@@ -265,7 +265,9 @@ void ScreenGame::handleEvent(SDL_Event &event)
 
 void ScreenGame::handleWidgetEvent(const WidgetEvent &event, Widget *widget)
 {
-   if (event._eventType == WE_BuildMenu)
+   switch(event._eventType)
+   {
+     case WE_BuildMenu:
    {
       BuildMenuType menuType = event._buildMenuType;
       BuildMenu* buildMenu = BuildMenu::getMenuInstance(menuType);
@@ -296,7 +298,8 @@ void ScreenGame::handleWidgetEvent(const WidgetEvent &event, Widget *widget)
       }
 
    }
-   else if (event._eventType == WE_InGameMenu)
+   break;
+     case WE_InGameMenu:
    {
       GfxEngine &engine = GfxEngine::instance();
       InGameMenu* inGameMenu = new InGameMenu();
@@ -304,7 +307,8 @@ void ScreenGame::handleWidgetEvent(const WidgetEvent &event, Widget *widget)
       inGameMenu->setPosition(engine.getScreenWidth() - inGameMenu->getWidth() - _menu->getWidth()-5, 50);
       setInGameMenu(inGameMenu);
    }
-   else if (event._eventType == WE_SaveGame)
+   break;
+     case WE_SaveGame:
    {
       if (_scenario != NULL)
       {
@@ -318,7 +322,8 @@ void ScreenGame::handleWidgetEvent(const WidgetEvent &event, Widget *widget)
          }
       }
    }
-   else if (event._eventType == WE_Building)
+   break;
+     case WE_Building:
    {
       BuildingType buildingType = event._buildingType;
       Construction *construction = dynamic_cast<Construction*>(LandOverlay::getInstance(buildingType));
@@ -329,10 +334,13 @@ void ScreenGame::handleWidgetEvent(const WidgetEvent &event, Widget *widget)
          _buildMenu->setDeleted();
       }
    }
-   else if (event._eventType == WE_ClearLand)
+   break;
+     case WE_ClearLand:
    {
       _guiTilemap.setRemoveTool();
    }
+   break;
+   }// end of switch statement
 
 }
 

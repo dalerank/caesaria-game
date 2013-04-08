@@ -40,7 +40,7 @@ static const Uint32 panelBgStatus = 15;
 static const Uint32 dateLabelOffset = 155;
 static const Uint32 populationLabelOffset = 345;
 static const Uint32 fundLabelOffset = 465;
-static const Uint32 maximazeBtnPicId = 101;
+static const Uint32 maximizeBtnPicId = 101;
 }
 
 MenuBar::MenuBar()
@@ -184,7 +184,7 @@ Menu::Menu()
 
    Point offset( 1, 32 );
    int dy = 35;
-   set4Button( _minimizeButton, WidgetEvent(), maximazeBtnPicId );
+   set4Button( _minimizeButton, WidgetEvent::ChangeSideMenuType(), maximizeBtnPicId );
    _minimizeButton.setPosition( Point( 6, 4 ));
 
    // //

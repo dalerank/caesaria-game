@@ -98,6 +98,15 @@ WidgetEvent WidgetEvent::ClearLandEvent()
    return res;
 }
 
+WidgetEvent WidgetEvent::ChangeSideMenuType()
+{
+  // DEBUG
+  std::cout << "Change menu detected!!!" << std::endl;
+  
+  WidgetEvent res;
+  res._eventType = WE_ChangeSideMenuType;
+  return res;
+}
 
 Widget::Widget()
 {
