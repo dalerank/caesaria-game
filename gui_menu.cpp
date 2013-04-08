@@ -229,6 +229,7 @@ Menu::Menu()
 
   if (menuType)
   {
+    // first row
     set4Button(_houseButton, WidgetEvent::BuildingEvent(B_HOUSE), 123);
     _houseButton.setPosition( offset + Point( 0, dy * 0 ) );
     set4Button(_clearButton, WidgetEvent::ClearLandEvent(), 131);
@@ -259,6 +260,20 @@ Menu::Menu()
   }
   else
   {
+    // header
+    set3Button(_senateButton, WidgetEvent(), 79);
+    _senateButton.setPosition( Point(7, 155) );
+    set3Button(_empireButton, WidgetEvent(), 82);
+    _empireButton.setPosition( Point(84, 155) );
+    set3Button(_missionButton, WidgetEvent(), 85);
+    _missionButton.setPosition( Point(7, 184) );
+    set3Button(_northButton, WidgetEvent(), 88);
+    _northButton.setPosition( Point(46, 184) );
+    set3Button(_rotateLeftButton, WidgetEvent(), 91);
+    _rotateLeftButton.setPosition( Point(84, 184) );
+    set3Button(_rotateRightButton, WidgetEvent(), 94);
+    _rotateRightButton.setPosition( Point(123, 184) );
+    // first row
     set4Button(_houseButton, WidgetEvent::BuildingEvent(B_HOUSE), 123);
     _houseButton.setPosition( Point( 13, 277 ) );
     set4Button(_clearButton, WidgetEvent::ClearLandEvent(), 131);
@@ -290,42 +305,25 @@ Menu::Menu()
     set4Button(_cancelButton, WidgetEvent(), 171);
     _cancelButton.setPosition( Point( 13, 421 ) );
     set4Button(_messageButton, WidgetEvent(), 115);
-    _messageButton.setPosition( Point( 64, 421 ) );
+    _messageButton.setPosition( Point( 64, 421 ) ); // or 63,421???
     set4Button(_disasterButton, WidgetEvent(), 119);
     _disasterButton.setPosition( Point( 113, 421 ) );
+    
+//   // set button position
+//   _menuButton.setPosition(4, 3);
+//   _minimizeButton.setPosition(127, 5);
   }
 
    // set button position
    // _menuButton.setPosition(4, 3);
-   // _minimizeButton.setPosition(127, 5);
    // header
-   // _senateButton.setPosition(7, 155);
+   
    // _empireButton.setPosition(84, 155);
    // _missionButton.setPosition(7, 184);
    // _northButton.setPosition(46, 184);
    // _rotateLeftButton.setPosition(84, 184);
    // _rotateRightButton.setPosition(123, 184);
-   // first row
-
    
-   
-   // second row
-   
-   
-   
-   // third row
-   
-   
-   
-   // 4th row
-   
-   
-   
-//   // 5th row
-//   _cancelButton.setPosition(x0, y0+dy*12);
-//   _messageButton.setPosition(x0, y0+dy*13);
-//   _disasterButton.setPosition(x0, y0+dy*14);
-
 //   _bgPicture = &PicLoader::instance().get_picture("paneling", 17);
 //   setSize(_bgPicture->get_surface()->w, _bgPicture->get_surface()->h);
 //
@@ -349,65 +347,6 @@ Menu::Menu()
 //   //_bottomIcon.setPicture(PicLoader::instance().get_picture("paneling", 20));
 //   //_bottomIcon.setPosition(0, _bgPicture->get_surface()->h);
 //   //add_widget(_bottomIcon);
-//
-//   // header
-//   set3Button(_senateButton, WidgetEvent(), 79);
-//   set3Button(_empireButton, WidgetEvent(), 82);
-//   set3Button(_missionButton, WidgetEvent(), 85);
-//   set3Button(_northButton, WidgetEvent(), 88);
-//   set3Button(_rotateLeftButton, WidgetEvent(), 91);
-//   set3Button(_rotateRightButton, WidgetEvent(), 94);
-//
-//   set4Button(_houseButton, WidgetEvent::BuildingEvent(B_HOUSE), 123);
-//   set4Button(_clearButton, WidgetEvent::ClearLandEvent(), 131);
-//   set4Button(_roadButton, WidgetEvent::BuildingEvent(B_ROAD), 135);
-//   // second row
-//   set4Button(_waterButton, WidgetEvent::BuildMenuEvent(BM_WATER), 127);
-//   set4Button(_healthButton, WidgetEvent::BuildMenuEvent(BM_HEALTH), 163);
-//   set4Button(_templeButton, WidgetEvent::BuildMenuEvent(BM_TEMPLE), 151);
-//   // third row
-//   set4Button(_educationButton, WidgetEvent::BuildMenuEvent(BM_EDUCATION), 147);
-//   set4Button(_entertainmentButton, WidgetEvent::BuildMenuEvent(BM_ENTERTAINMENT), 143);
-//   set4Button(_administrationButton, WidgetEvent::BuildMenuEvent(BM_ADMINISTRATION), 139);
-//   // 4th row
-//   set4Button(_engineerButton, WidgetEvent::BuildMenuEvent(BM_ENGINEERING), 167);
-//   set4Button(_securityButton, WidgetEvent::BuildMenuEvent(BM_SECURITY), 159);
-//   set4Button(_commerceButton, WidgetEvent::BuildMenuEvent(BM_COMMERCE), 155);
-//   // 5th row
-//   set4Button(_cancelButton, WidgetEvent(), 171);
-//   set4Button(_messageButton, WidgetEvent(), 115);
-//   set4Button(_disasterButton, WidgetEvent(), 119);
-//
-//   // set button position
-//   _menuButton.setPosition(4, 3);
-//   _minimizeButton.setPosition(127, 5);
-//   // header
-//   _senateButton.setPosition(7, 155);
-//   _empireButton.setPosition(84, 155);
-//   _missionButton.setPosition(7, 184);
-//   _northButton.setPosition(46, 184);
-//   _rotateLeftButton.setPosition(84, 184);
-//   _rotateRightButton.setPosition(123, 184);
-//   // first row
-//   _houseButton.setPosition(13, 277);
-//   _clearButton.setPosition(63, 277);
-//   _roadButton.setPosition(113, 277);
-//   // second row
-//   _waterButton.setPosition(13, 313);
-//   _healthButton.setPosition(63, 313);
-//   _templeButton.setPosition(113, 313);
-//   // third row
-//   _educationButton.setPosition(13, 349);
-//   _entertainmentButton.setPosition(63, 349);
-//   _administrationButton.setPosition(113, 349);
-//   // 4th row
-//   _engineerButton.setPosition(13, 385);
-//   _securityButton.setPosition(63, 385);
-//   _commerceButton.setPosition(113, 385);
-//   // 5th row
-//   _cancelButton.setPosition(13, 421);
-//   _messageButton.setPosition(63, 421);
-//   _disasterButton.setPosition(113, 421);
 }
 
 void Menu::draw(const int dx, const int dy)
