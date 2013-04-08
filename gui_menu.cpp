@@ -160,8 +160,8 @@ Menu::Menu()
   if (menuType) 
   {
     // SMALL MENU
-    // _bgPicture = &PicLoader::instance().get_picture( panelBgName, 16 );
-    // _btPicture = &PicLoader::instance().get_picture( panelBgName, 21 );
+    _bgPicture = &PicLoader::instance().get_picture( panelBgName, 16 );
+    _btPicture = &PicLoader::instance().get_picture( panelBgName, 21 );
   }
   else
   {
@@ -197,9 +197,6 @@ Menu::Menu()
   Point offset( 1, 32 );
   int dy = 35;
 
-  set4Button(_menuButton , WidgetEvent::ChangeSideMenuType(), 15 );
-  _menuButton.setPosition( Point( 4, 4 ));
-  
   if (menuType)
   {
     set4Button( _minimizeButton, WidgetEvent::ChangeSideMenuType(), maximizeBtnPicId );
@@ -207,25 +204,16 @@ Menu::Menu()
   }
   else
   {
+//    set4Button(_menuButton , WidgetEvent::ChangeSideMenuType(), 15 );
+//    _menuButton.setPosition( Point( 4, 4 ));
     set4Button( _minimizeButton, WidgetEvent::ChangeSideMenuType(), 97 );
     _minimizeButton.setPosition( Point( 127, 5 ));
   }
-   // //
-   // _midIcon.setPicture(PicLoader::instance().get_picture("panelwindows", 1));
-   // _midIcon.setPosition(8, 217);
-   // add_widget(_midIcon);
 
    //_bottomIcon.setPicture(PicLoader::instance().get_picture("paneling", 20));
    //_bottomIcon.setPosition(0, _bgPicture->get_surface()->h);
    //add_widget(_bottomIcon);
 
-   // // header
-   // set3Button(_senateButton, WidgetEvent(), 79);
-   // set3Button(_empireButton, WidgetEvent(), 82);
-   // set3Button(_missionButton, WidgetEvent(), 85);
-   // set3Button(_northButton, WidgetEvent(), 88);
-   // set3Button(_rotateLeftButton, WidgetEvent(), 91);
-   // set3Button(_rotateRightButton, WidgetEvent(), 94);
 
   if (menuType)
   {
@@ -273,6 +261,12 @@ Menu::Menu()
     _rotateLeftButton.setPosition( Point(84, 184) );
     set3Button(_rotateRightButton, WidgetEvent(), 94);
     _rotateRightButton.setPosition( Point(123, 184) );
+    // picture in middle
+    // please note that this picture must be changed 
+    // when user select any building tool
+    _midIcon.setPicture(PicLoader::instance().get_picture("panelwindows", 13));
+    _midIcon.setPosition(7, 216);
+    add_widget(_midIcon);
     // first row
     set4Button(_houseButton, WidgetEvent::BuildingEvent(B_HOUSE), 123);
     _houseButton.setPosition( Point( 13, 277 ) );
@@ -308,45 +302,7 @@ Menu::Menu()
     _messageButton.setPosition( Point( 64, 421 ) ); // or 63,421???
     set4Button(_disasterButton, WidgetEvent(), 119);
     _disasterButton.setPosition( Point( 113, 421 ) );
-    
-//   // set button position
-//   _menuButton.setPosition(4, 3);
-//   _minimizeButton.setPosition(127, 5);
   }
-
-   // set button position
-   // _menuButton.setPosition(4, 3);
-   // header
-   
-   // _empireButton.setPosition(84, 155);
-   // _missionButton.setPosition(7, 184);
-   // _northButton.setPosition(46, 184);
-   // _rotateLeftButton.setPosition(84, 184);
-   // _rotateRightButton.setPosition(123, 184);
-   
-//   _bgPicture = &PicLoader::instance().get_picture("paneling", 17);
-//   setSize(_bgPicture->get_surface()->w, _bgPicture->get_surface()->h);
-//
-//   // top of menu
-//   _menuButton.setText("Menu");
-//   _menuButton.setEvent(WidgetEvent::InGameMenuEvent());
-//   _menuButton.setNormalPicture(PicLoader::instance().get_picture("paneling", 234));
-//   _menuButton.setHoverPicture(PicLoader::instance().get_picture("paneling", 234+1));
-//   _menuButton.setSelectedPicture(PicLoader::instance().get_picture("paneling", 234+2));
-//   _menuButton.setUnavailablePicture(PicLoader::instance().get_picture("paneling", 234+3));
-//   _menuButton.init_pictures();
-//   add_widget(_menuButton);
-//
-//   set4Button(_minimizeButton, WidgetEvent(), 97);
-//
-//   //
-//   _midIcon.setPicture(PicLoader::instance().get_picture("panelwindows", 1));
-//   _midIcon.setPosition(8, 217);
-//   add_widget(_midIcon);
-//
-//   //_bottomIcon.setPicture(PicLoader::instance().get_picture("paneling", 20));
-//   //_bottomIcon.setPosition(0, _bgPicture->get_surface()->h);
-//   //add_widget(_bottomIcon);
 }
 
 void Menu::draw(const int dx, const int dy)
