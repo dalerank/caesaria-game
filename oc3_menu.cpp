@@ -4,6 +4,9 @@
 #include "sdl_facade.hpp"
 #include "pic_loader.hpp"
 #include "oc3_resourcegroup.h"
+#include "oc3_event.h"
+
+static const int REMOVE_TOOL_ID = B_MAX + 1; 
 
 class Menu::Impl
 {
@@ -33,7 +36,33 @@ public:
     PushButton* healthButton;
     PushButton* engineerButton;
     PushButton* cancelButton;
+
+oc3_signals public:
+    Signal2< int, Widget* > onCreateBuildMenuSignal;
+    Signal0<> onCreateHouseSignal;
+    Signal0<> onCreateRoadSignal;
+    Signal0<> onRemoveToolSignal;
 };
+
+Signal2<int, Widget*>& Menu::onCreateBuildMenu()
+{
+    return _d->onCreateBuildMenuSignal;
+}
+
+Signal0<>& Menu::onCreateHouse()
+{
+    return _d->onCreateHouseSignal;
+}
+
+Signal0<>& Menu::onCreateRoad()
+{
+    return _d->onCreateRoadSignal;
+}
+
+Signal0<>& Menu::onRemoveTool()
+{
+    return _d->onRemoveToolSignal;
+}
 
 void configureButton(PushButton* oButton, const int pic_index)
 {
@@ -62,6 +91,19 @@ Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id
     configureButton( _d->minimizeButton, ResourceGroup::maximazeBtnPicId );
     _d->minimizeButton->setPosition( Point( 6, 4 ));
 
+    _d->houseButton = new PushButton( this, Rect( 0, 0, 39, 26), "", B_HOUSE );
+    configureButton( _d->houseButton, ResourceGroup::houseBtnPicId );
+    _d->houseButton->setPosition( offset + Point( 0, dy * 0 ) );
+
+    _d->clearButton = new PushButton( this, Rect( 0, 0, 39, 26), "", REMOVE_TOOL_ID );
+    configureButton(_d->clearButton, 131 );
+    _d->clearButton->setPosition( offset + Point( 0, dy * 1 ) );
+
+    _d->roadButton = new PushButton( this, Rect( 0, 0, 39, 26), "", B_ROAD );
+    configureButton(_d->roadButton, 135);
+    _d->roadButton->setPosition( offset + Point( 0, dy * 2 ) );
+
+
     // //
     // _midIcon.setPicture(PicLoader::instance().get_picture("panelwindows", 1));
     // _midIcon.setPosition(8, 217);
@@ -79,14 +121,9 @@ Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id
     // set3Button(_rotateLeftButton, WidgetEvent(), 91);
     // set3Button(_rotateRightButton, WidgetEvent(), 94);
 
-//     configureButton(_d->houseButton, /*WidgetEvent::BuildingEvent(B_HOUSE),*/ 123);
-//     _d->houseButton->setPosition( offset + Point( 0, dy * 0 ) );
-// 
-//     configureButton(_d->clearButton, /*WidgetEvent::ClearLandEvent(),*/ 131);
-//     _d->clearButton->setPosition( offset + Point( 0, dy * 1 ) );
-// 
-//     configureButton(_d->roadButton, /*WidgetEvent::BuildingEvent(B_ROAD),*/ 135);
-//     _d->roadButton->setPosition( offset + Point( 0, dy * 2 ) );
+ 
+ 
+
 //     // second row
 //     configureButton(_d->waterButton, /*WidgetEvent::BuildMenuEvent(BM_WATER),*/ 127);
 //     _d->waterButton->setPosition( offset + Point( 0, dy * 3 ));
@@ -232,8 +269,22 @@ void Menu::draw( GfxEngine& painter )
     Widget::draw( painter );
 }
 
-void Menu::unselect()
+bool Menu::onEvent(const NEvent& event)
 {
+    if( event.EventType == OC3_GUI_EVENT && event.GuiEvent.EventType == OC3_BUTTON_CLICKED )
+    {
+        if( event.GuiEvent.Caller->getID() == B_HOUSE )
+            _d->onCreateHouseSignal.emit();
+        else if( event.GuiEvent.Caller->getID() == B_ROAD )
+            _d->onCreateRoadSignal.emit();
+        else if( event.GuiEvent.Caller->getID() == REMOVE_TOOL_ID )
+            _d->onRemoveToolSignal.emit();
+        else
+            _d->onCreateBuildMenuSignal.emit( event.GuiEvent.Caller->getID(), event.GuiEvent.Caller );
+        return true;
+    }
+
+    return Widget::onEvent( event );
 }
 
 MenuPtr Menu::create( Widget* parent, int id )

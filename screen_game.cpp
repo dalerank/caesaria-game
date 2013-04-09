@@ -33,6 +33,7 @@
 #include "oc3_topmenu.h"
 #include "oc3_menu.h"
 #include "oc3_event.h"
+#include "oc3_buildmenu.h"
 
 class ScreenGame::Impl
 {
@@ -49,8 +50,6 @@ public:
 ScreenGame::ScreenGame() : _d( new Impl )
 {
    _scenario = NULL;
-   _buildMenu = NULL;
-   //_inGameMenu = NULL;
    _infoBox = NULL;
 }
 
@@ -60,30 +59,34 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
 {
     _d->gui = &gui;
     _d->engine = &engine;
-   // enable key repeat, 1ms delay, 100ms repeat
-   SDL_EnableKeyRepeat(1, 100);
+    // enable key repeat, 1ms delay, 100ms repeat
+    SDL_EnableKeyRepeat(1, 100);
 
-   _d->gui->clear();
+    _d->gui->clear();
 
-   const Picture& rPanelPic = PicLoader::instance().get_picture( ResourceGroup::panelBackground, 14 );
-   Rect rPanelRect( engine.getScreenWidth() - rPanelPic.get_width(), 0,
+    const Picture& rPanelPic = PicLoader::instance().get_picture( ResourceGroup::panelBackground, 14 );
+    Rect rPanelRect( engine.getScreenWidth() - rPanelPic.get_width(), 0,
                     engine.getScreenWidth(), engine.getScreenHeight() );
-   _d->rightPanel = MenuRigthPanel::create( gui.getRootWidget(), rPanelRect, rPanelPic);
+    _d->rightPanel = MenuRigthPanel::create( gui.getRootWidget(), rPanelRect, rPanelPic);
 
-   _d->topMenu = TopMenu::create( gui.getRootWidget(), 23 );
+    _d->topMenu = TopMenu::create( gui.getRootWidget(), 23 );
 
-   _d->menu = Menu::create( gui.getRootWidget(), -1 );
-   _d->menu->setPosition( Point( engine.getScreenWidth() - _d->menu->getWidth() - _d->rightPanel->getWidth(), 
+    _d->menu = Menu::create( gui.getRootWidget(), -1 );
+    _d->menu->setPosition( Point( engine.getScreenWidth() - _d->menu->getWidth() - _d->rightPanel->getWidth(), 
                                  _d->topMenu->getHeight() ) );
 
+    CONNECT( _d->menu, onCreateBuildMenu(), this, ScreenGame::createBuildMenu );
+    CONNECT( _d->menu, onCreateHouse(), this, ScreenGame::resolveHouseBuilding );
+    CONNECT( _d->menu, onCreateRoad(), this, ScreenGame::resolveRoadBuilding );
+    CONNECT( _d->menu, onRemoveTool(), this, ScreenGame::resolveRemoveTool );
   /* _d->extMenu = ExtentMenu::create();
    _d->extMenu->setPosition( engine.getScreenWidth() - _d->extMenu->getWidth() - _d->rightPanel->getWidth(), 
                              _d->topMenu->getHeight() ); */
 
 
-   getMapArea().setViewSize( engine.getScreenWidth(), 
+    getMapArea().setViewSize( engine.getScreenWidth(), 
                              engine.getScreenHeight()+8*30);  // 8*30: used for high buildings (granary...), visible even when not in tilemap_area.
-   getMapArea().setCenterIJ(25, 10);
+    getMapArea().setCenterIJ(25, 10);
 }
 
 TilemapArea& ScreenGame::getMapArea()
@@ -101,46 +104,6 @@ void ScreenGame::setScenario(Scenario &scenario)
    _guiTilemap.init(city, _mapArea, this);
 }
 
-// void ScreenGame::setInfoBox(GuiInfoBox *infoBox)
-// {
-//    _infoBox = infoBox;
-// }
-
-// void ScreenGame::setBuildMenu(BuildMenu *buildMenu)
-// {
-//    if (_buildMenu != NULL)
-//    {
-//       // delete the old buildMenu
-//       _buildMenu->setDeleted();
-//    }
-//    _buildMenu = buildMenu;
-//    if (_buildMenu == NULL)
-//    {
-//       // unselect the active menu button, if any
-//       _menu->unselect();
-//    }
-//    else
-//    {
-//       // link the new buildMenu
-//       _buildMenu->setListener(this);
-//    }
-// }
-
-// void ScreenGame::setInGameMenu(InGameMenu *inGameMenu)
-// {
-//    if (_inGameMenu != NULL)
-//    {
-//       // delete the old menu
-//       _inGameMenu->setDeleted();
-//    }
-//    _inGameMenu = inGameMenu;
-//    if (_inGameMenu != NULL)
-//    {
-//       // link the new menu
-//       _inGameMenu->setListener(this);
-//    }
-// }
-
 void ScreenGame::drawTilemap()
 {
    _guiTilemap.drawTilemap();
@@ -150,24 +113,6 @@ void ScreenGame::drawInterface()
 {
 	_d->gui->beforeDraw();
     _d->gui->draw();
-
-//     if (_infoBox != NULL)
-//     {
-//         GuiInfoBox &infoBox = *_infoBox;
-//         infoBox.draw(0, 0);
-//     }
-// 
-//     if (_buildMenu != NULL)
-//     {
-//       BuildMenu &buildMenu = *_buildMenu;
-//       buildMenu.draw(0, 0);
-//     }
-// 
-//     if (_inGameMenu != NULL)
-//     {
-//       InGameMenu &inGameMenu = *_inGameMenu;
-//       inGameMenu.draw(0, 0);
-//     }
 }
 
 
@@ -194,74 +139,49 @@ void ScreenGame::handleEvent( NEvent& event )
         std::cout << "SDLK_ESCAPE was pressed" << std::endl;
         stop();
     }
-
-//    bool isPreview = true;
-//    switch (event.type)
-//    {
-//    case SDL_MOUSEMOTION:
-//       if( _menu->contains(event.button.x, event.button.y) )
-//       {
-//          isPreview = false;
-//       }
-//       _guiTilemap.setPreview(isPreview);
-//       _menu->handleEvent(event);
-//       
-//       break;
-//    case SDL_MOUSEBUTTONDOWN:
-//       if (_menu->contains(event.button.x, event.button.y))
-//       {
-//          _menu->handleEvent(event);
-//       }
-//       else
-//       {
-//          _guiTilemap.handleEvent(event);
-//       }
-//       break;
-//    case SDL_KEYDOWN:
-//      
-//       
-//       break;
-//    }
-
 }
 
 int ScreenGame::getResult() const
 {
 	return 0;
 }
+
+void ScreenGame::createBuildMenu( int type, Widget* parent )
+{
+    BuildMenu* buildMenu = BuildMenu::getMenuInstance( (BuildMenuType)type, _d->gui->getRootWidget() );
+    
+    if( buildMenu != NULL )
+    {
+       // we have a new buildMenu: initialize it
+       GfxEngine &engine = GfxEngine::instance();
+    
+       // compute the Y position of the menu, ugly because of submenus   
+       buildMenu->init();
+       int y = math::clamp< int >( parent->getScreenTop(), 0, engine.getScreenHeight() - buildMenu->getHeight() );
+       buildMenu->setPosition( Point( engine.getScreenWidth() - buildMenu->getWidth() - _d->menu->getWidth() - 5, y ) );
+    }
+}
+
+void ScreenGame::resolveHouseBuilding()
+{
+    Construction *construction = dynamic_cast<Construction*>(LandOverlay::getInstance(B_HOUSE));
+    _guiTilemap.setBuildInstance(construction);
+}
+
+void ScreenGame::resolveRoadBuilding()
+{
+    Construction *construction = dynamic_cast<Construction*>(LandOverlay::getInstance(B_ROAD));
+    _guiTilemap.setBuildInstance(construction);
+}
+
+void ScreenGame::resolveRemoveTool()
+{
+    _guiTilemap.setRemoveTool();
+}
+
 // void ScreenGame::handleWidgetEvent(const WidgetEvent& event, Widget *widget)
 // {
-//    if (event._eventType == WE_BuildMenu)
-//    {
-//       BuildMenuType menuType = event._buildMenuType;
-//       BuildMenu* buildMenu = BuildMenu::getMenuInstance( menuType);
-// 
-//       if (buildMenu != NULL)
-//       {
-//          // we have a new buildMenu: initialize it
-//          GfxEngine &engine = GfxEngine::instance();
-// 
-//          // compute the Y position of the menu, ugly because of submenus
-//          int y;
-//          if (dynamic_cast<BuildMenu*>(widget->getParent()) == NULL)
-//          {
-//             // this is not a submenu
-//             y = widget->getY();
-//          }
-//          else
-//          {
-//             // this is a submenu
-//             y = widget->getParent()->getY();  // Y position of the buildMenu
-//          }
-// 
-//          buildMenu->init();
-//          y = std::min(y, engine.getScreenHeight() - buildMenu->getHeight());
-//          y = std::max(y, 0);
-//          buildMenu->setPosition(engine.getScreenWidth() - buildMenu->getWidth() - _menu->getWidth()-5, y);
-//          setBuildMenu(buildMenu);
-//       }
-// 
-//    }
+//    
 //    else if (event._eventType == WE_InGameMenu)
 //    {
 //       GfxEngine &engine = GfxEngine::instance();
@@ -284,20 +204,6 @@ int ScreenGame::getResult() const
 //          }
 //       }
 //    }
-//    else if (event._eventType == WE_Building)
-//    {
-//       BuildingType buildingType = event._buildingType;
-//       Construction *construction = dynamic_cast<Construction*>(LandOverlay::getInstance(buildingType));
-//       _guiTilemap.setBuildInstance(construction);
-//       if (_buildMenu != NULL)
-//       {
-//          // delete buildMenu, if any
-//          _buildMenu->setDeleted();
-//       }
-//    }
-//    else if (event._eventType == WE_ClearLand)
-//    {
-//       _guiTilemap.setRemoveTool();
-//    }
+//  
 // 
 // }

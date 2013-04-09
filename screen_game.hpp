@@ -41,9 +41,6 @@ public:
 
    TilemapArea& getMapArea();
    void setScenario(Scenario &scenario);
-   //void setBuildMenu(BuildMenu *buildMenu);
-   //void setInGameMenu(InGameMenu *inGameMenu);
-   //void setInfoBox(GuiInfoBox *infoBox);
 
    virtual void afterFrame();
    virtual void handleEvent( NEvent& event);
@@ -62,10 +59,12 @@ private:
 
    // stupid function, returns 0 if no shift pressed, 1 if shift pressed
    int isModShift();
+   void createBuildMenu( int type, Widget* parent );
+   void resolveHouseBuilding();
+   void resolveRoadBuilding();
+   void resolveRemoveTool();
 
    GuiInfoBox* _infoBox;   // info box to display, if any
-   BuildMenu* _buildMenu;   // build menu to display, if any
-   //InGameMenu* _inGameMenu;   // inGameMenu to display, if any
    Scenario* _scenario; // current game scenario
    TilemapArea _mapArea;  // visible map area
 

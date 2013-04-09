@@ -3,7 +3,6 @@
 
 #include "oc3_widget.h"
 #include "enums.hpp"
-#include <SDL_events.h>
 
 class PushButton;
 

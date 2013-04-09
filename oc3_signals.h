@@ -174,19 +174,19 @@ private:
 public:
 	void connect( _Delegate delegate )
 	{
-		delegateList.insert( delegate );
+		delegateList.push_back( delegate );
 	}
 
 	template< class X, class Y >
 	void connect( Y * obj, void (X::*func)( Param1 p1, Param2 p2 ) )
 	{
-		delegateList.insert( makeDelegate( obj, func ) );
+		delegateList.push_back( makeDelegate( obj, func ) );
 	}
 
 	template< class X, class Y >
 	void connect( Y * obj, void (X::*func)( Param1 p1, Param2 p2 ) const )
 	{
-		delegateList.insert( makeDelegate( obj, func ) );
+		delegateList.push_back( makeDelegate( obj, func ) );
 	}
 
 	void disconnect( _Delegate delegate )
@@ -249,19 +249,19 @@ private:
 public:
 	void connect( _Delegate delegate )
 	{
-		delegateList.insert( delegate );
+		delegateList.push_back( delegate );
 	}
 
 	template< class X, class Y >
 	void connect( Y * obj, void (X::*func)( Param1 p1, Param2 p2, Param3 p3 ) )
 	{
-		delegateList.insert( makeDelegate( obj, func ) );
+		delegateList.push_back( makeDelegate( obj, func ) );
 	}
 
 	template< class X, class Y >
 	void connect( Y * obj, void (X::*func)( Param1 p1, Param2 p2, Param3 p3 ) const )
 	{
-		delegateList.insert( makeDelegate( obj, func ) );
+		delegateList.push_back( makeDelegate( obj, func ) );
 	}
 
 	void disconnect( _Delegate delegate )
@@ -325,19 +325,19 @@ private:
 public:
 	void connect( _Delegate delegate )
 	{
-		delegateList.insert( delegate );
+		delegateList.push_back( delegate );
 	}
 
 	template< class X, class Y >
 	void connect( Y * obj, void (X::*func)( Param1 p1, Param2 p2, Param3 p3, Param4 p4 ) )
 	{
-		delegateList.insert( makeDelegate( obj, func ) );
+		delegateList.push_back( makeDelegate( obj, func ) );
 	}
 
 	template< class X, class Y >
 	void connect( Y * obj, void (X::*func)( Param1 p1, Param2 p2, Param3 p3, Param4 p4 ) const )
 	{
-		delegateList.insert( makeDelegate( obj, func ) );
+		delegateList.push_back( makeDelegate( obj, func ) );
 	}
 
 	void disconnect( _Delegate delegate )
@@ -401,19 +401,19 @@ private:
 public:
 	void connect( _Delegate delegate )
 	{
-		delegateList.insert( delegate );
+		delegateList.push_back( delegate );
 	}
 
 	template< class X, class Y >
 	void connect( Y * obj, void (X::*func)( Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5 ) )
 	{
-		delegateList.insert( makeDelegate( obj, func ) );
+		delegateList.push_back( makeDelegate( obj, func ) );
 	}
 
 	template< class X, class Y >
 	void connect( Y * obj, void (X::*func)( Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5 ) const )
 	{
-		delegateList.insert( makeDelegate( obj, func ) );
+		delegateList.push_back( makeDelegate( obj, func ) );
 	}
 
 	void disconnect( _Delegate delegate )
@@ -477,19 +477,19 @@ private:
 public:
 	void connect( _Delegate delegate )
 	{
-		delegateList.insert( delegate );
+		delegateList.push_back( delegate );
 	}
 
 	template< class X, class Y >
 	void connect( Y * obj, void (X::*func)( Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6 ) )
 	{
-		delegateList.insert( makeDelegate( obj, func ) );
+		delegateList.push_back( makeDelegate( obj, func ) );
 	}
 
 	template< class X, class Y >
 	void connect( Y * obj, void (X::*func)( Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6 ) const )
 	{
-		delegateList.insert( makeDelegate( obj, func ) );
+		delegateList.push_back( makeDelegate( obj, func ) );
 	}
 
 	void disconnect( _Delegate delegate )
@@ -553,19 +553,19 @@ private:
 public:
 	void connect( _Delegate delegate )
 	{
-		delegateList.insert( delegate );
+		delegateList.push_back( delegate );
 	}
 
 	template< class X, class Y >
 	void connect( Y * obj, void (X::*func)( Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6, Param7 p7 ) )
 	{
-		delegateList.insert( makeDelegate( obj, func ) );
+		delegateList.push_back( makeDelegate( obj, func ) );
 	}
 
 	template< class X, class Y >
 	void connect( Y * obj, void (X::*func)( Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6, Param7 p7 ) const )
 	{
-		delegateList.insert( makeDelegate( obj, func ) );
+		delegateList.push_back( makeDelegate( obj, func ) );
 	}
 
 	void disconnect( _Delegate delegate )
@@ -629,19 +629,19 @@ private:
 public:
 	void connect( _Delegate delegate )
 	{
-		delegateList.insert( delegate );
+		delegateList.push_back( delegate );
 	}
 
 	template< class X, class Y >
 	void connect( Y * obj, void (X::*func)( Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6, Param7 p7, Param8 p8 ) )
 	{
-		delegateList.insert( makeDelegate( obj, func ) );
+		delegateList.push_back( makeDelegate( obj, func ) );
 	}
 
 	template< class X, class Y >
 	void connect( Y * obj, void (X::*func)( Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6, Param7 p7, Param8 p8 ) const )
 	{
-		delegateList.insert( makeDelegate( obj, func ) );
+		delegateList.push_back( makeDelegate( obj, func ) );
 	}
 
 	void disconnect( _Delegate delegate )

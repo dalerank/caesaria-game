@@ -92,17 +92,4 @@ enum BuildMenuType
     BM_MAX 
 };
 
-enum WidgetEventType
-{
-   WE_NONE,
-   WE_NewGame, WE_SaveGame, WE_LoadGame, WE_QuitGame,
-   WE_OptionsMenu, // game options
-   WE_InGameMenu,  // screen_game: options/saveGame/quitGame
-   WE_BuildMenu,   // screen_game: select a group of buildings (security buildings/...)
-   WE_Building,    // screen_game: select a building (prefecture/...)
-   WE_ClearLand,   // screen_game: clear some land (building, tree, ...)
-   WE_MAX
-};
-
-
 #endif
