@@ -258,6 +258,20 @@ void ScreenGame::handleWidgetEvent(const WidgetEvent &event, Widget *widget)
 
       if (buildMenu != NULL)
       {
+         // here we can also update mid_picture when side menu is big
+	 // very ugly!
+	 switch (menuType)
+	 {
+	   case BM_RELIGION:      _menu->changeMidIcon(2); break;
+	   case BM_ADMINISTRATION:_menu->changeMidIcon(3); break;
+	   case BM_WATER:         _menu->changeMidIcon(4); break;
+	   case BM_ENTERTAINMENT: _menu->changeMidIcon(5); break;
+	   case BM_HEALTH:        _menu->changeMidIcon(6); break;
+	   case BM_EDUCATION:     _menu->changeMidIcon(7); break;
+	   case BM_ENGINEERING:   _menu->changeMidIcon(8); break;
+	   case BM_SECURITY:      _menu->changeMidIcon(9); break;
+	   case BM_COMMERCE:      _menu->changeMidIcon(10); break;
+	}
          // we have a new buildMenu: initialize it
          GfxEngine &engine = GfxEngine::instance();
 
@@ -310,6 +324,13 @@ void ScreenGame::handleWidgetEvent(const WidgetEvent &event, Widget *widget)
      case WE_Building:
    {
       BuildingType buildingType = event._buildingType;
+      
+	 switch (buildingType)
+	 {
+	   case B_ROAD:      _menu->changeMidIcon(11); break;
+	   case B_HOUSE:     _menu->changeMidIcon(1); break;
+	}
+      
       Construction *construction = dynamic_cast<Construction*>(LandOverlay::getInstance(buildingType));
       _guiTilemap.setBuildInstance(construction);
       if (_buildMenu != NULL)
@@ -322,6 +343,8 @@ void ScreenGame::handleWidgetEvent(const WidgetEvent &event, Widget *widget)
      case WE_ClearLand:
    {
       _guiTilemap.setRemoveTool();
+      // update mid_image
+      _menu->changeMidIcon(12);
    }
    break;
      case WE_ChangeSideMenuType:

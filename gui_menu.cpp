@@ -305,6 +305,32 @@ Menu::Menu()
   }
 }
 
+void Menu::changeMidIcon(int i)
+{
+  if (!menuType) // only if side menu is big
+  {
+    _midIcon.setPicture(PicLoader::instance().get_picture("panelwindows", i));
+  }
+  // panelwindows  1 - B_HOUSE
+  // panelwindows  2 - BM_RELIGION
+  // panelwindows  3 - BM_ADMINISTRATION
+  // panelwindows  4 - BM_WATER
+  // panelwindows  5 - BM_ENTERTAINMENT
+  // panelwindows  6 - BM_HEALTH
+  // panelwindows  7 - BM_EDUCATION
+  // panelwindows  8 - BM_ENGINEERING
+  // panelwindows  9 - BM_SECURITY
+  // panelwindows 10 - BM_COMMERCE
+  // panelwindows 11 - B_ROAD
+  // panelwindows 12 - ClearLandEvent
+  // panelwindows 13 - None
+  
+  // panelwindows 36 - ClearLandEvent (DESERT)
+  // panelwindows 37 - B_ROAD (DESERT)
+  // panelwindows 38 - BM_WATER (DESERT)
+  // panelwindows 39 - BM_SECURITY (DESERT)
+}
+
 void Menu::draw(const int dx, const int dy)
 {
    drawPicture( getBgPicture(), dx, dy );

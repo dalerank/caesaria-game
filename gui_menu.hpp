@@ -72,6 +72,7 @@ public:
    const Picture& getRigthPicture() const;
    
    void changeSideMenuType() { menuType = false;}
+   void changeMidIcon(int i = 13);
 
 private:
 
