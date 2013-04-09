@@ -12,8 +12,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2013 Dare Slim, dalerankn8@gmail.com
 
 #ifndef __OPENCAESAR3_ALIGNMENT_H_INCLUDED__
 #define __OPENCAESAR3_ALIGNMENT_H_INCLUDED__

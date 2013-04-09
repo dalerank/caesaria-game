@@ -1,3 +1,18 @@
+// This file is part of openCaesar3.
+//
+// openCaesar3 is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// openCaesar3 is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+
 #ifndef __OPENCAESAR3_LIST_H_INCLUDED__
 #define __OPENCAESAR3_LIST_H_INCLUDED__
 
@@ -291,7 +306,7 @@ public:
 
 
 	//! Inserts an element after an element.
-	/** \param it Iterator pointing to element after which the new element
+	/** \param it iterator pointing to element after which the new element
 	should be inserted.
 	\param element The new element to be inserted into the list.
 	*/
@@ -315,7 +330,7 @@ public:
 
 
 	//! Inserts an element before an element.
-	/** \param it Iterator pointing to element before which the new element
+	/** \param it iterator pointing to element before which the new element
 	should be inserted.
 	\param element The new element to be inserted into the list.
 	*/
@@ -339,11 +354,11 @@ public:
 
 
 	//! Erases an element.
-	/** \param it Iterator pointing to the element which shall be erased.
-	\return Iterator pointing to next element. */
+	/** \param it iterator pointing to the element which shall be erased.
+	\return iterator pointing to next element. */
 	iterator erase(iterator& it)
 	{
-		// suggest changing this to a const Iterator& and
+		// suggest changing this to a const iterator& and
 		// working around line: it.Current = 0 (possibly with a mutable, or just let it be garbage?)
 
 		iterator returnIterator(it);
@@ -382,10 +397,10 @@ public:
 	\param other Swap content with this object	*/
 	void swap(List<T>& other)
 	{
-                math::swap(_first, other.First);
-                math::swap(_last, other.Last);
-                math::swap(_size, other.Size);
-                math::swap(_allocator, other.allocator);	// memory is still released by the same allocator used for allocation
+                math::swap(_first, other._first);
+                math::swap(_last, other._last);
+                math::swap(_size, other._size);
+                math::swap(_allocator, other._allocator);	// memory is still released by the same allocator used for allocation
 	}
 
 
