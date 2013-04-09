@@ -39,8 +39,7 @@ public:
 
 oc3_signals public:
     Signal2< int, Widget* > onCreateBuildMenuSignal;
-    Signal0<> onCreateHouseSignal;
-    Signal0<> onCreateRoadSignal;
+    Signal1< int > onCreateConstructionSignal;
     Signal0<> onRemoveToolSignal;
 };
 
@@ -49,14 +48,9 @@ Signal2<int, Widget*>& Menu::onCreateBuildMenu()
     return _d->onCreateBuildMenuSignal;
 }
 
-Signal0<>& Menu::onCreateHouse()
+Signal1< int >& Menu::onCreateConstruction()
 {
-    return _d->onCreateHouseSignal;
-}
-
-Signal0<>& Menu::onCreateRoad()
-{
-    return _d->onCreateRoadSignal;
+    return _d->onCreateConstructionSignal;
 }
 
 Signal0<>& Menu::onRemoveTool()
@@ -277,10 +271,9 @@ bool Menu::onEvent(const NEvent& event)
 {
     if( event.EventType == OC3_GUI_EVENT && event.GuiEvent.EventType == OC3_BUTTON_CLICKED )
     {
-        if( event.GuiEvent.Caller->getID() == B_HOUSE )
-            _d->onCreateHouseSignal.emit();
-        else if( event.GuiEvent.Caller->getID() == B_ROAD )
-            _d->onCreateRoadSignal.emit();
+        int id = event.GuiEvent.Caller->getID();
+        if( id == B_HOUSE || id == B_ROAD )
+            _d->onCreateConstructionSignal.emit( id );
         else if( event.GuiEvent.Caller->getID() == REMOVE_TOOL_ID )
             _d->onRemoveToolSignal.emit();
         else

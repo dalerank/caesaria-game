@@ -60,8 +60,7 @@ private:
    // stupid function, returns 0 if no shift pressed, 1 if shift pressed
    int isModShift();
    void createBuildMenu( int type, Widget* parent );
-   void resolveHouseBuilding();
-   void resolveRoadBuilding();
+   void resolveCreateConstruction( int type );
    void resolveRemoveTool();
 
    GuiInfoBox* _infoBox;   // info box to display, if any

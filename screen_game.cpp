@@ -43,7 +43,6 @@ public:
     GuiEnv* gui;
     GfxEngine* engine;
     TopMenuPtr topMenu;
-    BuildMenu* buildMenu;
     MenuPtr menu;
 };
 
@@ -52,7 +51,6 @@ ScreenGame::ScreenGame() : _d( new Impl )
 {
    _scenario = NULL;
    _infoBox = NULL;
-   _d->buildMenu = 0;
 }
 
 ScreenGame::~ScreenGame() {}
@@ -78,8 +76,7 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
                                  _d->topMenu->getHeight() ) );
 
     CONNECT( _d->menu, onCreateBuildMenu(), this, ScreenGame::createBuildMenu );
-    CONNECT( _d->menu, onCreateHouse(), this, ScreenGame::resolveHouseBuilding );
-    CONNECT( _d->menu, onCreateRoad(), this, ScreenGame::resolveRoadBuilding );
+    CONNECT( _d->menu, onCreateConstruction(), this, ScreenGame::resolveCreateConstruction );
     CONNECT( _d->menu, onRemoveTool(), this, ScreenGame::resolveRemoveTool );
   /* _d->extMenu = ExtentMenu::create();
    _d->extMenu->setPosition( engine.getScreenWidth() - _d->extMenu->getWidth() - _d->rightPanel->getWidth(), 
@@ -150,32 +147,26 @@ int ScreenGame::getResult() const
 
 void ScreenGame::createBuildMenu( int type, Widget* parent )
 {
-    if( _d->buildMenu )
-        _d->buildMenu->deleteLater();
-
-    _d->buildMenu = BuildMenu::getMenuInstance( (BuildMenuType)type, _d->gui->getRootWidget() );
+    BuildMenu* buildMenu = BuildMenu::getMenuInstance( (BuildMenuType)type, _d->gui->getRootWidget() );
     
-    if( _d->buildMenu != NULL )
+    if( buildMenu != NULL )
     {
        // we have a new buildMenu: initialize it
        GfxEngine &engine = GfxEngine::instance();
+
+       CONNECT( buildMenu, onCreateBuildMenu(), this, ScreenGame::createBuildMenu );
+       CONNECT( buildMenu, onCreateConstruction(), this, ScreenGame::resolveCreateConstruction );
     
        // compute the Y position of the menu, ugly because of submenus   
-       _d->buildMenu->init();
-       int y = math::clamp< int >( parent->getScreenTop(), 0, engine.getScreenHeight() - _d->buildMenu->getHeight() );
-       _d->buildMenu->setPosition( Point( _d->menu->getScreenLeft() - _d->buildMenu->getWidth() - 5, y ) );
+       buildMenu->init();
+       int y = math::clamp< int >( parent->getScreenTop(), 0, engine.getScreenHeight() - buildMenu->getHeight() );
+       buildMenu->setPosition( Point( _d->menu->getScreenLeft() - buildMenu->getWidth() - 5, y ) );
     }
 }
 
-void ScreenGame::resolveHouseBuilding()
+void ScreenGame::resolveCreateConstruction( int type )
 {
-    Construction *construction = dynamic_cast<Construction*>(LandOverlay::getInstance(B_HOUSE));
-    _guiTilemap.setBuildInstance(construction);
-}
-
-void ScreenGame::resolveRoadBuilding()
-{
-    Construction *construction = dynamic_cast<Construction*>(LandOverlay::getInstance(B_ROAD));
+    Construction *construction = dynamic_cast<Construction*>(LandOverlay::getInstance( BuildingType( type ) ) );
     _guiTilemap.setBuildInstance(construction);
 }
 

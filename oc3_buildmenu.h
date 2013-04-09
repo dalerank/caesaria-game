@@ -3,6 +3,7 @@
 
 #include "oc3_widget.h"
 #include "enums.hpp"
+#include "oc3_signals.h"
 
 class PushButton;
 
@@ -20,6 +21,16 @@ public:
     void addSubmenuButton(const BuildMenuType menuType, const std::string &text);
     // add the button in the menu.
     void addBuildButton(const BuildingType buildingType);
+
+    bool onEvent(const NEvent& event);
+
+oc3_signals public:
+    Signal2< int, Widget* >& onCreateBuildMenu();
+    Signal1< int >& onCreateConstruction();
+
+private:
+    class Impl;
+    std::auto_ptr< Impl > _d;
 };
 
 class BuildMenu_water : public BuildMenu

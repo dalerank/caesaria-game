@@ -17,10 +17,9 @@ public:
 
     bool onEvent(const NEvent& event);
 
-public oc3_signals:
+oc3_signals public:
     Signal2< int, Widget* >& onCreateBuildMenu();
-    Signal0<>& onCreateHouse();
-    Signal0<>& onCreateRoad();
+    Signal1< int >& onCreateConstruction();
     Signal0<>& onRemoveTool();
 
 protected:
