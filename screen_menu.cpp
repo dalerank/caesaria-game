@@ -79,7 +79,8 @@ void ScreenMenu::handleEvent(SDL_Event &event)
    case SDL_MOUSEMOTION:
       _menu.handleEvent(event);
       break;
-   case SDL_MOUSEBUTTONDOWN:
+//   case SDL_MOUSEBUTTONDOWN:
+   case SDL_USEREVENT:
       _menu.handleEvent(event);
       break;
    case SDL_KEYDOWN:

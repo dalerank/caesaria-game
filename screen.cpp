@@ -24,17 +24,20 @@
 #include "exception.hpp"
 
 
-Screen::Screen() {}
+Screen::Screen()
+{
+  _eventProcessor.setAllowDrag(true);
+}
 
 Screen::~Screen() {}
 
 
 void Screen::drawFrame()
 {
-   GfxEngine &engine = GfxEngine::instance();
-   engine.init_frame();
-   draw();
-   engine.exit_frame();
+  GfxEngine &engine = GfxEngine::instance();
+  engine.init_frame();
+  draw();
+  engine.exit_frame();
 }
 
 
@@ -71,9 +74,13 @@ WidgetEvent Screen::run()
             exit(0);
          }
 
+         _eventProcessor.processEvent(event);
          handleEvent(event);
       }
 
+      _eventProcessor.timeStep(event);
+      handleEvent(event);
+      
       // sets a fix frameRate
       currentclock = SDL_GetTicks();
       long delay = ref_delay - (currentclock - lastclock);

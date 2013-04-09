@@ -3,23 +3,25 @@
 
 #include <memory>
 
-class PictureConverter;
-typedef std::auto_ptr< PictureConverter > PictureConverterPtr;
+// class PictureConverter;
+// typedef std::auto_ptr< PictureConverter > PictureConverterPtr;
 
 class Picture;
 
 class PictureConverter
 {
-    friend PictureConverterPtr;
+   // friend PictureConverterPtr;
 public:
-    static PictureConverterPtr create();
+   // static PictureConverterPtr create();
+   static PictureConverter& instance();
 
-    void convToGrayscale( Picture& dst, const Picture& src );
-    void rgbBalance( Picture& dst, const Picture& src, int lROffset, int lGOffset, int lBOffset );
+   void convToGrayscale( Picture& dst, const Picture& src );
+   void rgbBalance( Picture& dst, const Picture& src, int lROffset, int lGOffset, int lBOffset );
 
 private:
-    PictureConverter();
-    ~PictureConverter();
+   static PictureConverter *_instance;
+   PictureConverter();
+   ~PictureConverter();
 };
 
 #endif
