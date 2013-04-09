@@ -311,6 +311,7 @@ void GuiTilemap::handleEvent( NEvent& event)
                 if (overlay.canBuild( tilePos.getI(), tilePos.getJ() ))
                 {
                     _city->build(overlay, tilePos.getI(), tilePos.getJ() );
+                    updatePreviewTiles();
                 }
             }
             else
@@ -386,8 +387,8 @@ void GuiTilemap::setBuildInstance(Construction *buildInstance)
    // std::cout << "set build instance!" << std::endl;
    _buildInstance = buildInstance;
    _removeTool = false;
+   updatePreviewTiles();
 }
-
 
 void GuiTilemap::setRemoveTool()
 {
@@ -395,7 +396,6 @@ void GuiTilemap::setRemoveTool()
    _buildInstance = NULL;
    _removeTool = true;
 }
-
 
 void GuiTilemap::discardPreview()
 {
@@ -513,9 +513,6 @@ void GuiTilemap::checkPreviewRemove(const int i, const int j)
         }
     }
 }
-
-
-
 
 Tile& GuiTilemap::getTileIJ(const int i, const int j)
 {
