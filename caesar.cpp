@@ -38,7 +38,6 @@
 #include "gfx_sdl_engine.hpp"
 #include "gfx_gl_engine.hpp"
 #include "sound_engine.hpp"
-#include "gui_menu.hpp"
 #include "walker.hpp"
 #include "gui_info_box.hpp"
 #include "model_loader.hpp"
@@ -47,10 +46,20 @@
 #include "screen_menu.hpp"
 #include "screen_game.hpp"
 #include "house_level.hpp"
+#include "oc3_guienv.h"
 
 #if defined(_MSC_VER)
 	#undef main
 #endif
+
+class CaesarApp::Impl
+{
+public:
+	Scenario*  scenario;
+	ScreenType nextScreen;
+	GfxEngine* engine;
+	GuiEnv* gui;
+};
 
 void CaesarApp::initLocale()
 {
@@ -63,7 +72,7 @@ void CaesarApp::initLocale()
 void CaesarApp::initVideo()
 {
    std::cout << "init graphic engine" << std::endl;
-   new GfxSdlEngine();
+   _d->engine = new GfxSdlEngine();
    
    /* Typical resolutions:
     * 640 x 480; 800 x 600; 1024 x 768; 1400 x 1050; 1600 x 1200
@@ -71,7 +80,6 @@ void CaesarApp::initVideo()
    GfxEngine::instance().setScreenSize(1024, 768);
    GfxEngine::instance().init();
 }
-
 
 void CaesarApp::initSound()
 {
@@ -90,6 +98,11 @@ void CaesarApp::initWaitPictures()
    std::cout << "convert images begin" << std::endl;
    GfxEngine::instance().load_pictures(pic_loader.get_pictures());
    std::cout << "convert images end" << std::endl;
+}
+
+void CaesarApp::initGuiEnvironment()
+{
+	_d->gui = new GuiEnv( *_d->engine );
 }
 
 void CaesarApp::initPictures()
@@ -118,13 +131,12 @@ void CaesarApp::loadScenario(const std::string &scenarioFile)
 {
    std::cout << "load scenario begin" << std::endl;
    
-   _scenario = new Scenario();
+   _d->scenario = new Scenario();
    
    ScenarioLoader scenario_loader;
-   
-   scenario_loader.load(scenarioFile, *_scenario);
+   scenario_loader.load(scenarioFile, *_d->scenario);
 
-   City &city = _scenario->getCity();
+   City &city = _d->scenario->getCity();
 
    std::list<LandOverlay*> llo = city.getOverlayList();
    
@@ -151,8 +163,8 @@ void CaesarApp::loadGame(const std::string &gameFile)
    InputSerialStream stream;
    stream.init(f, -1);
 
-   _scenario = new Scenario();
-   _scenario->unserialize(stream);
+   _d->scenario = new Scenario();
+   _d->scenario->unserialize(stream);
    f.close();
    stream.finalize_read();
 
@@ -163,7 +175,7 @@ void CaesarApp::loadGame(const std::string &gameFile)
 void CaesarApp::setScreenWait()
 {
    ScreenWait screen;
-   screen.init();
+   screen.initialize( *_d->engine, *_d->gui);
    screen.drawFrame();
 }
 
@@ -192,57 +204,64 @@ std::vector <fs::path> CaesarApp::scanForMaps() const
 
 void CaesarApp::setScreenMenu()
 {
-   WidgetEvent wevent;
-   ScreenMenu screen;
-   screen.init();
-   wevent = screen.run();
+    ScreenMenu screen;
+    screen.initialize( *_d->engine, *_d->gui );
+    int result = screen.run();
 
-   switch (wevent._eventType)
-   {
-   case WE_NewGame:
+    switch( result )
+    {
+    case ScreenMenu::startNewGame:
       {
         /* temporary*/
         std::vector <fs::path> filelist = scanForMaps();
-	std::srand( (Uint32)std::time(0));
-	std::string file = filelist.at(std::rand()%filelist.size()).string();
-	std::cout<<"Loading map:" << file << std::endl;
+		std::srand( (Uint32)std::time(0));
+		std::string file = filelist.at(std::rand()%filelist.size()).string();
+		std::cout<<"Loading map:" << file << std::endl;
         loadScenario(file);
         /* end of temporary */
-        _nextScreen = SCREEN_GAME;
+        _d->nextScreen = SCREEN_GAME;
       }
-      break;
-   case WE_LoadGame:
-      loadGame("oc3.sav");
-      _nextScreen = SCREEN_GAME;
-      break;
-   case WE_QuitGame:
-      _nextScreen = SCREEN_QUIT;
-      break;
-   default:
-      THROW("Unexpected widget event: " << wevent._eventType);
+    break;
+   
+    case ScreenMenu::loadSavedGame:
+	{  
+		loadGame("oc3.sav");
+        _d->nextScreen = SCREEN_GAME;
+	}
+    break;
+   
+    case ScreenMenu::closeApplication:
+	{
+		_d->nextScreen = SCREEN_QUIT;
+	}
+    break;
+   
+    default:
+		THROW("Unexpected result event: " << result);
    }
 }
 
 void CaesarApp::setScreenGame()
 {
    ScreenGame screen;
-   screen.setScenario(*_scenario);
-   screen.init();
+   screen.setScenario(*_d->scenario);
+   screen.initialize( *_d->engine, *_d->gui );
    screen.run();
-   _nextScreen = SCREEN_QUIT;
+   _d->nextScreen = SCREEN_QUIT;
 }
 
 
-CaesarApp::CaesarApp()
+CaesarApp::CaesarApp() : _d( new Impl )
 {
-   _scenario = NULL;
-   _nextScreen = SCREEN_NONE;
+   _d->scenario = NULL;
+   _d->nextScreen = SCREEN_NONE;
 }
 
 void CaesarApp::start()
 {
    initLocale();
    initVideo();
+   initGuiEnvironment();
    initSound();
    //SoundEngine::instance().play_music("resources/sound/drums.wav");
    initWaitPictures();  // init some quick pictures for screenWait
@@ -252,13 +271,11 @@ void CaesarApp::start()
    ModelLoader().loadHouseModel("house_model.csv");
    HouseLevelSpec::init();
 
-   WidgetEvent wevent;
+   _d->nextScreen = SCREEN_MENU;
 
-   _nextScreen = SCREEN_MENU;
-
-   while (_nextScreen != SCREEN_QUIT)
+   while(_d->nextScreen != SCREEN_QUIT)
    {
-      switch (_nextScreen)
+      switch(_d->nextScreen)
       {
       case SCREEN_MENU:
          setScreenMenu();
@@ -267,7 +284,7 @@ void CaesarApp::start()
          setScreenGame();
          break;
       default:
-         THROW("Unexpected screen type: " << _nextScreen);
+         THROW("Unexpected screen type: " << _d->nextScreen);
       }
    }
 

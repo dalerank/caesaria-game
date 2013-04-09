@@ -22,7 +22,8 @@
 
 #include "gfx_engine.hpp"
 #include "exception.hpp"
-
+#include "oc3_event.h"
+#include "oc3_eventconverter.h"
 
 Screen::Screen() {}
 
@@ -37,10 +38,9 @@ void Screen::drawFrame()
    engine.exit_frame();
 }
 
+void Screen::handleEvent( NEvent& event) {}
 
-void Screen::handleEvent(SDL_Event &event) {}
-
-void Screen::handleWidgetEvent(const WidgetEvent &event, Widget *widget) {}
+//void Screen::handleWidgetEvent(const WidgetEvent &event, Widget *widget) {}
 
 void Screen::afterFrame() {}
 
@@ -49,7 +49,7 @@ void Screen::stop()
    _isStopped = true;
 }
 
-WidgetEvent Screen::run()
+int Screen::run()
 {
    Uint32 lastclock = SDL_GetTicks();
    Uint32 currentclock = 0;
@@ -57,21 +57,22 @@ WidgetEvent Screen::run()
 
    _isStopped = false;
 
-   while (! _isStopped)
+   while (! isStopped() )
    {
       drawFrame();
       afterFrame();
 
-      SDL_Event event;
+      SDL_Event sdlEvent;
 
-      while ( SDL_PollEvent(&event) )
+      while( SDL_PollEvent(&sdlEvent) )
       {
-         if (event.type == SDL_QUIT)
+         if (sdlEvent.type == SDL_QUIT)
          {
             exit(0);
          }
 
-         handleEvent(event);
+         NEvent nEvent = EventConverter::instance().get( sdlEvent );
+         handleEvent(nEvent);
       }
 
       // sets a fix frameRate
@@ -91,6 +92,10 @@ WidgetEvent Screen::run()
       SDL_Delay(delay);
    }
 
-   return _wevent;
+   return getResult();
 }
 
+bool Screen::isStopped() const
+{
+    return _isStopped;
+}

@@ -33,9 +33,10 @@
 static const char* rcPaneling = "paneling";
 
 
-std::vector<Picture*> GuiInfoBox::_mapPictureGood;
+std::vector<Picture*> GuiInfoBox::_mapPictureGood; 
 
-GuiInfoBox::GuiInfoBox()
+GuiInfoBox::GuiInfoBox( Widget* parent, const Rect& rect, int id )
+: Widget( parent, id, rect )
 {
    _title = "";
    _bgPicture = NULL;
@@ -75,16 +76,14 @@ void GuiInfoBox::initStatic()
    _mapPictureGood[int(G_FISH)     ] = &ldr.get_picture( rcPaneling, 333);
 }
 
-void GuiInfoBox::init(const int width, const int height)
+void GuiInfoBox::_init()
 {
-   setSize(width, height);
-
    SdlFacade &sdlFacade = SdlFacade::instance();
 
-   _bgPicture = &sdlFacade.createPicture(width, height);
+   _bgPicture = &sdlFacade.createPicture( getWidth(), getHeight() );
 
    // draws the box and the inner black box
-   GuiPaneling::instance().draw_white_frame(*_bgPicture, 0, 0, width, height);
+   GuiPaneling::instance().draw_white_frame(*_bgPicture, 0, 0, getWidth(), getHeight() );
 
    // draws the title
    _paintY = 4;
@@ -92,17 +91,17 @@ void GuiInfoBox::init(const int width, const int height)
    int text_width = 0;
    int text_height = 0;
    sdlFacade.getTextSize(font, _title, text_width, text_height);
-   sdlFacade.drawText(*_bgPicture, _title, (width-text_width)/2, _paintY, font);
+   sdlFacade.drawText(*_bgPicture, _title, (getWidth()-text_width)/2, _paintY, font);
    _paintY += 34;
 
    // draws the help button
    _hoverButton = NULL;
-   _helpButton.setEvent(WidgetEvent());
-   _helpButton.setNormalPicture(PicLoader::instance().get_picture("paneling", 529));
+   //_helpButton.setEvent(WidgetEvent());
+   /*_helpButton.setPicture(PicLoader::instance().get_picture("paneling", 529));
    _helpButton.setHoverPicture(PicLoader::instance().get_picture("paneling", 529+1));
    _helpButton.setSelectedPicture(PicLoader::instance().get_picture("paneling", 529+2));
    _helpButton.setPosition(width - 40, 13);
-   add_widget(_helpButton);
+   add_widget(_helpButton);*/
 
    // custom paint
    paint();
@@ -111,10 +110,10 @@ void GuiInfoBox::init(const int width, const int height)
 }
 
 
-void GuiInfoBox::draw(const int dx, const int dy)
+void GuiInfoBox::draw( GfxEngine& engine )
 {
-   drawPicture(getBgPicture(), dx, dy);
-   drawChildren(dx, dy);
+   //drawPicture( getBgPicture(), dx, dy );
+   Widget::draw( engine );
 }
 
 Picture& GuiInfoBox::getBgPicture()
@@ -123,14 +122,14 @@ Picture& GuiInfoBox::getBgPicture()
 }
 
 
-void GuiInfoBox::handleEvent(SDL_Event &event)
+void GuiInfoBox::onEvent( NEvent& event)
 {
-   if (event.type == SDL_MOUSEMOTION)
+/*   if (event.type == SDL_MOUSEMOTION)
    {
       // mouse move: hover the right widget
 
       // get button under the cursor
-      Widget *hoverWidget = get_widget_at(event.motion.x - _x, event.motion.y - _y);
+      Widget *hoverWidget = getElementFromPoint( event.motion.x, event.motion.y );
       ImageButton *hoverButton = dynamic_cast<ImageButton*>(hoverWidget);
 
       if (_hoverButton != NULL && _hoverButton != hoverButton)
@@ -162,7 +161,7 @@ void GuiInfoBox::handleEvent(SDL_Event &event)
       {
          _isDeleted = true;
       }
-   }
+   }*/
 }
 
 
@@ -183,18 +182,19 @@ Picture& GuiInfoBox::getPictureGood(const GoodType& goodType)
 }
 
 
-GuiInfoService::GuiInfoService(ServiceBuilding &building)
+GuiInfoService::GuiInfoService( Widget* parent, ServiceBuilding &building)
+    : GuiInfoBox( parent, Rect( 0, 0, 450, 300 ), -1 )
 {
    _building = &building;
    _title = BuildingDataHolder::instance().getData(building.getType()).getPrettyName();
-   init(450, 300);
+   _init();
 }
 
 
 void GuiInfoService::paint()
 {
    _paintY+=10;
-   GuiPaneling::instance().draw_black_frame(*_bgPicture, 16, _paintY, _width-32, _height-_paintY-16);
+   GuiPaneling::instance().draw_black_frame(*_bgPicture, 16, _paintY, getWidth() - 32, getHeight() -_paintY-16);
    _paintY+=10;
 
    drawWorkers();
@@ -227,11 +227,12 @@ void GuiInfoService::drawWorkers()
 }
 
 
-GuiInfoHouse::GuiInfoHouse(House &house)
+GuiInfoHouse::GuiInfoHouse( Widget* parent, House &house )
+    : GuiInfoBox( parent, Rect( 0, 0, 450, 300 ), -1 )
 {
    _house = &house;
    _title = house.getName();
-   init(450, 300);
+   _init();
 }
 
 
@@ -241,7 +242,7 @@ void GuiInfoHouse::paint()
    drawCrime();
 
    _paintY+=10;
-   GuiPaneling::instance().draw_black_frame(*_bgPicture, 16, _paintY, _width-32, _height-_paintY-16);
+   GuiPaneling::instance().draw_black_frame(*_bgPicture, 16, _paintY, getWidth()-32, getHeight()-_paintY-16);
    _paintY+=10;
 
    // paint basic info about the house
@@ -345,11 +346,12 @@ void GuiInfoHouse::drawGood(const GoodType &goodType, const int col, const int r
 }
 
 
-GuiInfoFactory::GuiInfoFactory(Factory &building)
+GuiInfoFactory::GuiInfoFactory( Widget* parent, Factory &building)
+    : GuiInfoBox( parent, Rect( 0, 0, 450, 220 ), -1 )
 {
    _building = &building;
    _title = BuildingDataHolder::instance().getData(building.getType()).getPrettyName();
-   init(450, 220);
+   _init();
 }
 
 
@@ -389,7 +391,7 @@ void GuiInfoFactory::paint()
    }
 
    _paintY+=10;
-   GuiPaneling::instance().draw_black_frame(*_bgPicture, 16, _paintY, _width-32, _height-_paintY-16);
+   GuiPaneling::instance().draw_black_frame(*_bgPicture, 16, _paintY, getWidth()-32, getHeight()-_paintY-16);
    _paintY+=10;
 
    drawWorkers();
@@ -461,7 +463,8 @@ std::string GuiInfoFactory::getInfoText()
 }
 
 
-GuiInfoGranary::GuiInfoGranary(Granary &building)
+GuiInfoGranary::GuiInfoGranary( Widget* parent, Granary &building)
+    : GuiInfoBox( parent, Rect( 0, 0, 450, 300 ), -1 )
 {
    _building = &building;
    _title = BuildingDataHolder::instance().getData(building.getType()).getPrettyName();
@@ -477,7 +480,8 @@ GuiInfoGranary::GuiInfoGranary(Granary &building)
       }
    }
 
-   init(450, height);
+   setHeight( height );
+   _init();
 }
 
 
@@ -503,7 +507,7 @@ void GuiInfoGranary::paint()
    drawGood(G_VEGETABLE);
 
    _paintY+=10;
-   GuiPaneling::instance().draw_black_frame(*_bgPicture, 16, _paintY, _width-32, _height-_paintY-16);
+   GuiPaneling::instance().draw_black_frame(*_bgPicture, 16, _paintY, getWidth()-32, getHeight()-_paintY-16);
    _paintY+=10;
 
    drawWorkers();
@@ -553,7 +557,8 @@ void GuiInfoGranary::drawGood(const GoodType &goodType)
 }
 
 
-GuiInfoMarket::GuiInfoMarket(Market &building)
+GuiInfoMarket::GuiInfoMarket( Widget* parent, Market &building)
+    : GuiInfoBox( parent, Rect( 0, 0, 450, 300 ), -1 )
 {
    _building = &building;
    _title = BuildingDataHolder::instance().getData(building.getType()).getPrettyName();
@@ -569,7 +574,8 @@ GuiInfoMarket::GuiInfoMarket(Market &building)
       }
    }
 
-   init(450, height);
+   setHeight( height );
+   _init();
 }
 
 
@@ -587,7 +593,7 @@ void GuiInfoMarket::paint()
    drawGood(G_WINE);
 
    _paintY+=10;
-   GuiPaneling::instance().draw_black_frame(*_bgPicture, 16, _paintY, _width-32, _height-_paintY-16);
+   GuiPaneling::instance().draw_black_frame(*_bgPicture, 16, _paintY, getWidth() - 32, getHeight()-_paintY-16);
    _paintY+=10;
 
    drawWorkers();
@@ -636,16 +642,18 @@ void GuiInfoMarket::drawGood(const GoodType &goodType)
    _paintY += 22;
 }
 
-GuiBuilding::GuiBuilding(Building &building)
+GuiBuilding::GuiBuilding( Widget* parent, Building &building)
+    : GuiInfoBox( parent, Rect( 0, 0, 450, 220 ), -1 )
 {
   _building = &building;
   _title = BuildingDataHolder::instance().getData(building.getType()).getPrettyName();
-  init(450, 220);
+
+  _init();
 }
 
 void GuiBuilding::paint()
 {
-//   _paintY+=10;
-//   GuiPaneling::instance().draw_black_frame(*_bgPicture, 16, _paintY, _width-32, _height-_paintY-16);
-//   _paintY+=10;  
+   _paintY+=10;
+   GuiPaneling::instance().draw_black_frame(*_bgPicture, 16, _paintY, getWidth()-32, getHeight()-_paintY-16);
+   _paintY+=10;  
 }

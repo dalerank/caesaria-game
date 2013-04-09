@@ -36,7 +36,7 @@ public:
 
    virtual void timeStep(const unsigned long time);
 
-   virtual GuiInfoBox* makeInfoBox();
+   virtual GuiInfoBox* makeInfoBox( Widget* parent );
    static std::map<GoodType, Factory*>& getSpecimen();
 
    void serialize(OutputSerialStream &stream);

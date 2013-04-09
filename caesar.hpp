@@ -25,7 +25,6 @@
 
 #include <boost/filesystem.hpp>
 
-#include "gui_widget.hpp"
 #include "enums.hpp"
 
 namespace fs = boost::filesystem;
@@ -54,11 +53,11 @@ public:
    std::vector <fs::path> scanForMaps() const;
 
    void initGuiMain();
+   void initGuiEnvironment();
 
 private:
-
-   Scenario *_scenario;
-   ScreenType _nextScreen;
+   class Impl;
+   std::auto_ptr< Impl > _d;
 };
 
 

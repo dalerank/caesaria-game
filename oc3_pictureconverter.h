@@ -16,6 +16,7 @@ public:
 
     void convToGrayscale( Picture& dst, const Picture& src );
     void rgbBalance( Picture& dst, const Picture& src, int lROffset, int lGOffset, int lBOffset );
+    void fill( Picture& pic, int color );
 
 private:
     PictureConverter();

@@ -69,8 +69,8 @@ public:
                                 (math::isEqual(x, other.x) && y>other.y && !math::isEqual(y, other.y));
 	}
 
-        bool operator==(const Vector2<T>& other) const { return isEqual(other, math::ROUNDING_ERROR_f32); }
-        bool operator!=(const Vector2<T>& other) const { return !isEqual(other, math::ROUNDING_ERROR_f32); }
+    bool operator==(const Vector2<T>& other) const { return IsEqual(other, math::ROUNDING_ERROR_f32); }
+    bool operator!=(const Vector2<T>& other) const { return !IsEqual(other, math::ROUNDING_ERROR_f32); }
 
 	// functions
 
@@ -80,7 +80,7 @@ public:
 	\return True if the two vector are (almost) equal, else false. */
     bool IsEqual(const Vector2<T>& other, float tolerance) const
 	{
-        return math::isEqual(x, other.x, tolerance) && math::isEqual(y, other.y, tolerance);
+        return math::isEqual(x, other.x) && math::isEqual(y, other.y);
 	}
 
 	Vector2<T>& set(T nx, T ny) {x=nx; y=ny; return *this; }

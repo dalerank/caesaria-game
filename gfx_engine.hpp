@@ -22,7 +22,7 @@
 #include <list>
 
 #include "picture.hpp"
-
+#include "oc3_size.h"
 
 class GfxEngine
 {
@@ -35,6 +35,7 @@ public:
    virtual void exit() = 0;
 
    void setScreenSize(const int width, const int height);
+   Size getScreenSize() const;
    int getScreenWidth() const;
    int getScreenHeight() const;
 

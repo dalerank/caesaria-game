@@ -29,8 +29,8 @@
 #include <tilemap.hpp>
 #include <tilemap_area.hpp>
 
-
 class ScreenGame;
+struct NEvent;
 
 /* Draws the tilemap area on the screen thanks to the GfxEngine, and handle user events */
 class GuiTilemap
@@ -48,8 +48,9 @@ public:
    
    // returns the tile at the cursor position.
    Tile* getTileXY(const int x, const int y);
+   Tile* getTileXY( const Point& pos );
 
-   void handleEvent(SDL_Event &event);
+   void handleEvent( NEvent& event);
 
    // sets the current build tool (if any)
    void setBuildInstance(Construction *buildInstance);

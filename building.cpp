@@ -869,9 +869,9 @@ void Granary::computePictures()
 }
 
 
-GuiInfoBox* Granary::makeInfoBox()
+GuiInfoBox* Granary::makeInfoBox( Widget* parent )
 {
-   GuiInfoGranary* box = new GuiInfoGranary(*this);
+   GuiInfoGranary* box = new GuiInfoGranary( parent, *this);
    return box;
 }
 
@@ -933,9 +933,9 @@ void NativeBuilding::serialize(OutputSerialStream &stream) {Building::serialize(
 
 void NativeBuilding::unserialize(InputSerialStream &stream) {Building::unserialize(stream);}
 
-GuiInfoBox* NativeBuilding::makeInfoBox()
+GuiInfoBox* NativeBuilding::makeInfoBox( Widget* parent )
 {
-  return new GuiBuilding(*this);
+  return new GuiBuilding( parent, *this);
 }
 
 NativeHut* NativeHut::clone() const

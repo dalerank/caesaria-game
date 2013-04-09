@@ -275,14 +275,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\gui_menu.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\gui_menu.hpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\gui_paneling.cpp"
 				>
 			</File>
@@ -296,14 +288,6 @@
 			</File>
 			<File
 				RelativePath="..\..\gui_tilemap.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\gui_widget.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\gui_widget.hpp"
 				>
 			</File>
 			<File
@@ -331,6 +315,26 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_alignment.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_allocator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_buildmenu.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_buildmenu.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_delegate.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_emigrant.cpp"
 				>
 			</File>
@@ -339,7 +343,63 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_event.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_eventconverter.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_eventconverter.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_extentmenu.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_extentmenu.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_guienv.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_guienv.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_label.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_label.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_list.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_math.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_menu.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_menu.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_menurgihtpanel.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_menurgihtpanel.h"
 				>
 			</File>
 			<File
@@ -355,7 +415,83 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_pushbutton.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_pushbutton.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_rectangle.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_referencecounted.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_requirements.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_resourcegroup.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_resourcegroup.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_safetycast.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_signals.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_size.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_startmenu.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_startmenu.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_time.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_time.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_topmenu.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_topmenu.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_vector2.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_widget.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_widget.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_widgetprivate.h"
 				>
 			</File>
 			<File

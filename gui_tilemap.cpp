@@ -29,6 +29,8 @@
 #include "oc3_positioni.h"
 #include "oc3_pictureconverter.h"
 #include "oc3_pictureconverter.h"
+#include "oc3_event.h"
+
 typedef std::list<Tile*> Tiles;
 
 class GuiTilemap::Impl
@@ -249,6 +251,10 @@ Tile* GuiTilemap::getTileXY(const int x, const int y)
    }
 }
 
+Tile* GuiTilemap::getTileXY( const Point& pos )
+{
+    return getTileXY( pos.getX(), pos.getY() );
+}
 
 TilemapArea &GuiTilemap::getMapArea()
 {
@@ -271,81 +277,108 @@ void GuiTilemap::updatePreviewTiles()
 };
 
 
-void GuiTilemap::handleEvent(SDL_Event &event)
+void GuiTilemap::handleEvent( NEvent& event)
 {
-   if (event.type == SDL_MOUSEMOTION)
-   {
-       _d->lastCursorPos = Point( event.motion.x, event.motion.y );  
-       updatePreviewTiles();
-   }
+    if( event.EventType == OC3_MOUSE_EVENT )
+    {
+        switch( event.MouseEvent.Event  )
+        {
+        case OC3_MOUSE_MOVED:
+        {
+            _d->lastCursorPos = event.MouseEvent.getPosition();  
+            updatePreviewTiles();
+        }
+        break;        
 
-   if (event.type == SDL_MOUSEBUTTONDOWN)
-   {
-      int button = event.button.button;
-      int x = event.button.x;
-      int y = event.button.y;
+        case OC3_LMOUSE_PRESSED_DOWN:
+        {
+            Tile* tile = getTileXY( event.MouseEvent.getPosition() );  // tile under the cursor (or NULL)
+            if( tile == 0 )
+                break;
 
-      Tile* tile = getTileXY(x, y);  // tile under the cursor (or NULL)
-      if (tile == NULL)
-      {
-         // std::cout << "No Tile pressed at ("<<x<<","<<y<<")" << std::endl;
-      }
-      else
-      {
-         int i = tile->getI();
-         int j = tile->getJ();
-         std::cout << "Tile ("<<i<<","<<j<<") pressed at ("<<x<<","<<y<<") with button:" << button << std::endl;
+            TilePos tilePos = tile->getIJ();
+            std::cout << "Tile ("<< tilePos.getI() <<","<< tilePos.getJ() <<") pressed at ("
+                      << event.MouseEvent.X <<","<< event.MouseEvent.Y <<") left button" << std::endl;
 
-         if (button == 1)
-         {
             // left button
             if (_removeTool)
             {
-               _city->clearLand(i, j);
+                _city->clearLand( tilePos.getI(), tilePos.getJ() );
             }
             else if (_buildInstance != NULL)
             {
-               Construction& overlay = *_buildInstance;
-               if (overlay.canBuild(i, j))
-               {
-                  _city->build(overlay, i, j);
-               }
+                Construction& overlay = *_buildInstance;
+                if (overlay.canBuild( tilePos.getI(), tilePos.getJ() ))
+                {
+                    _city->build(overlay, tilePos.getI(), tilePos.getJ() );
+                }
             }
             else
             {
-               getMapArea().setCenterIJ(i, j);
+                getMapArea().setCenterIJ( tilePos.getI(), tilePos.getJ() );
             }
-         }
-         else if (button == 3)
-         {
+        }
+        break;
+
+        case OC3_RMOUSE_PRESSED_DOWN:
+        {
+            Tile* tile = getTileXY( event.MouseEvent.getPosition() );  // tile under the cursor (or NULL)
             if (_removeTool)
             { 
-				// discard removeTool
-               _removeTool = false;
-               discardPreview();
+                 // discard removeTool
+                _removeTool = false;
+                discardPreview();
             }
             else if (_buildInstance != NULL)
             {
-				// discard buildTool
-               _buildInstance = NULL;
-               discardPreview();
+                // discard buildTool
+                _buildInstance = NULL;
+                discardPreview();
             }
-            else if (tile->get_terrain().getOverlay() != NULL)
+            else if( tile->get_terrain().getOverlay() != NULL)
             {
-               // tile has an overlay
-               LandOverlay &overlay = *tile->get_terrain().getOverlay();
-               GuiInfoBox* infoBox = overlay.makeInfoBox();
+                // tile has an overlay
+                LandOverlay &overlay = *tile->get_terrain().getOverlay();
+                GuiInfoBox* infoBox = overlay.makeInfoBox();
+                if (infoBox != NULL)
+                {
+                    infoBox->setPosition( Point( (GfxEngine::instance().getScreenWidth()-infoBox->getWidth())/2, 10) );
+                     //_screenGame->setInfoBox(infoBox);
+                }
+            }         
+        }
+        break;
 
-               if (infoBox != NULL)
-               {
-                  infoBox->setPosition((GfxEngine::instance().getScreenWidth()-infoBox->getWidth())/2, 10);
-                  _screenGame->setInfoBox(infoBox);
-               }
-            }
-         }
-      }
+        default:
+        break;
+        }
+    }  
 
-   }
+    if( event.EventType == OC3_KEYBOARD_EVENT )
+    {
+        switch( event.KeyboardEvent.Key )
+        {
+        case KEY_UP:
+            std::cout << "KEY_UP was pressed" << std::endl;
+            getMapArea().moveUp(1 + ( event.KeyboardEvent.Shift ? 4 : 0 ) );
+        break;
+
+        case KEY_DOWN:          
+            std::cout << "KEY_DOWN was pressed" << std::endl;
+            getMapArea().moveDown(1 + ( event.KeyboardEvent.Shift ? 4 : 0 ) );
+        break;
+
+        case KEY_RIGHT:
+            std::cout << "SDLK_RIGHT was pressed" << std::endl;
+            getMapArea().moveRight(1 + ( event.KeyboardEvent.Shift ? 4 : 0 ));
+        break;
+
+        case KEY_LEFT:
+            std::cout << "SDLK_LEFT was pressed" << std::endl;
+            getMapArea().moveLeft(1 + ( event.KeyboardEvent.Shift ? 4 : 0 ) );
+        break;     
+        }
+    }
 }
 
 void GuiTilemap::setBuildInstance(Construction *buildInstance)

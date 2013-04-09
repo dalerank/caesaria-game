@@ -10,6 +10,9 @@ public:
     Point() : Vector2<int>( 0, 0 ) {}
 
     Point operator+(const Point& other) const { return Point( x + other.x, y + other.y ); }
+
+    void setX( const int nx ) { x = nx; }
+    void setY( const int ny ) { y = ny; }
 };
 
 class PointF : public Vector2<float>

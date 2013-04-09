@@ -19,34 +19,37 @@
 #ifndef SCREEN_MENU_HPP
 #define SCREEN_MENU_HPP
 
-#include "picture.hpp"
 #include "screen.hpp"
-#include "gui_menu.hpp"
-
+#include <memory>
 
 // displays the newGame/loadGame/quitGame menu
-class ScreenMenu: public Screen
+class ScreenMenu : public Screen
 {
 public:
-   ScreenMenu();
-   ~ScreenMenu();
+    enum 
+    { 
+        startNewGame=0,
+        loadSavedGame,
+        closeApplication,
+        unlknowState=0xff
+    } Result;
+    
+    ScreenMenu();
+    ~ScreenMenu();
 
-   void init();
+    void handleEvent( NEvent& event);
 
-   virtual void handleEvent(SDL_Event &event);
-   virtual void handleWidgetEvent(const WidgetEvent &event, Widget *widget);
-
-   // draws the menu/menubar/etc... on the screen
-   virtual void draw();
+    // draws the menu/menubar/etc... on the screen
+    void draw();
+    void initialize( GfxEngine& engine, GuiEnv& gui );
 
 protected:
-   void initMenu();
-   void setBgPicture(Picture *picture);
+    int getResult() const;
+    bool isStopped() const;
 
 private:
-
-   Picture *_bgPicture;
-   StartMenu _menu;         // menu to display
+    class Impl;
+    std::auto_ptr< Impl > _d;
 };
 
 

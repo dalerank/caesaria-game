@@ -1,0 +1,112 @@
+#include "oc3_topmenu.h"
+#include "oc3_label.h"
+#include "pic_loader.hpp"
+#include "oc3_resourcegroup.h"
+#include "sdl_facade.hpp"
+
+static const Uint32 dateLabelOffset = 155;
+static const Uint32 populationLabelOffset = 345;
+static const Uint32 fundLabelOffset = 465;
+static const Uint32 panelBgStatus = 15;
+
+class TopMenu::Impl
+{
+public:
+    Label* lbPopulation;
+    Label* lbFunds;
+    Label* lbDate;
+    Picture* bgPicture;
+};
+
+TopMenuPtr TopMenu::create( Widget* parent, const int height )
+{
+    TopMenuPtr ret( new TopMenu( parent, height) );
+    ret->setGeometry( Rect( 0, 0, parent->getWidth(), height ) );
+
+    PicLoader& loader = PicLoader::instance();
+    FontCollection& fonts = FontCollection::instance();
+
+    std::vector<Picture> p_marble;
+
+    for (int i = 1; i<=12; ++i)
+    {
+        p_marble.push_back(loader.get_picture( ResourceGroup::panelBackground, i));
+    }
+
+    SdlFacade &sdlFacade = SdlFacade::instance();
+    ret->_d->bgPicture = &sdlFacade.createPicture( ret->getWidth(), ret->getHeight() );
+    SDL_SetAlpha( ret->_d->bgPicture->get_surface(), 0, 0);  // remove surface alpha
+
+    int i = 0;
+    unsigned int x = 0;
+    while (x < ret->getWidth())
+    {
+        const Picture& pic = p_marble[i%10];
+        sdlFacade.drawPicture(pic, *ret->_d->bgPicture, x, 0);
+        x += pic.get_width();
+        i++;
+    }
+
+    Size lbSize( 120, 23 );
+    ret->_d->lbPopulation = new Label( ret.get(), Rect( Point( ret->getWidth() - populationLabelOffset, 0 ), lbSize ),
+        "Pop 34,124", false, true, -1 );
+    ret->_d->lbPopulation->setBackgroundPicture( loader.get_picture( ResourceGroup::panelBackground, panelBgStatus ) );
+    ret->_d->lbPopulation->setFont( fonts.getFont(FONT_2_WHITE) );
+    //_populationLabel.setTextPosition(20, 0);
+
+    ret->_d->lbFunds = new Label( ret.get(), Rect( Point( ret->getWidth() - fundLabelOffset, 0), lbSize ),
+        "Dn 10,000", false, true, -1 );
+    ret->_d->lbFunds->setFont( fonts.getFont(FONT_2_WHITE));
+    ret->_d->lbFunds->setBackgroundPicture( loader.get_picture( ResourceGroup::panelBackground, panelBgStatus ) );
+    //_fundsLabel.setTextPosition(20, 0);
+
+    ret->_d->lbFunds = new Label( ret.get(), Rect( Point( ret->getWidth() - dateLabelOffset, 0), lbSize ),
+        "Feb 39 BC", false, true, -1 );
+    ret->_d->lbFunds->setFont( fonts.getFont(FONT_2_YELLOW));
+    ret->_d->lbFunds->setBackgroundPicture( loader.get_picture( ResourceGroup::panelBackground, panelBgStatus ) );
+    //_dateLabel.setTextPosition(20, 0);
+
+    GfxEngine::instance().load_picture(*ret->_d->bgPicture);
+
+    return ret;
+}
+
+void TopMenu::draw( GfxEngine& engine )
+{
+    engine.drawPicture( *_d->bgPicture, getScreenLeft(), getScreenTop() );
+    Widget::draw( engine );
+}
+
+void TopMenu::setPopulation( int value )
+{
+    char buffer[100];
+    sprintf(buffer, "Pop %d", value);  // "'" is the thousands separator
+    _d->lbPopulation->setText( buffer );
+}
+
+void TopMenu::setFunds( int value )
+{
+    char buffer[100];
+    sprintf(buffer, "Dn %d", value );  // "'" is the thousands separator
+    _d->lbFunds->setText( buffer );
+}
+
+void TopMenu::setDate( int value )
+{
+    char buffer[100];
+
+    const char *args[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+    const char *age[] = {"BC", "AD"};
+
+    sprintf(buffer, "%.3s %d %.2s", args[value % 12], (int)std::abs(((int)value/12-39)), age[((int)value/12-39)>0]);
+
+    //_dateLabel.setText("Feb 39 BC");
+    _d->lbDate->setText( buffer );
+}
+
+TopMenu::TopMenu( Widget* parent, const int height ) 
+: Widget( parent, -1, Rect( 0, 0, parent->getWidth(), height ) ),
+  _d( new Impl )
+{
+
+}

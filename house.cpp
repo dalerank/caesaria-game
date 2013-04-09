@@ -108,9 +108,9 @@ void House::timeStep(const unsigned long time)
 }
 
 
-GuiInfoBox* House::makeInfoBox()
+GuiInfoBox* House::makeInfoBox( Widget* parent )
 {
-  return new GuiInfoHouse(*this);
+  return new GuiInfoHouse( parent, *this);
 }
 
 

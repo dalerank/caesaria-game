@@ -28,7 +28,7 @@
 #include "enums.hpp"
 #include "good.hpp"
 
-
+class Widget;
 class GuiInfoBox;
 
 class LandOverlay : public Serializable
@@ -204,7 +204,7 @@ public:
    void timeStep(const unsigned long time);
    void computePictures();
    SimpleGoodStore& getGoodStore();
-   virtual GuiInfoBox* makeInfoBox();
+   virtual GuiInfoBox* makeInfoBox( Widget* parent );
 
    void serialize(OutputSerialStream &stream);
    void unserialize(InputSerialStream &stream);
@@ -271,7 +271,7 @@ public:
   NativeBuilding();
   void serialize(OutputSerialStream &stream);
   void unserialize(InputSerialStream &stream);
-  virtual GuiInfoBox* makeInfoBox();
+  virtual GuiInfoBox* makeInfoBox( Widget* parent );
 };
 
 class NativeHut    : public NativeBuilding

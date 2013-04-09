@@ -113,3 +113,20 @@ PictureConverter::PictureConverter()
 {
 
 }
+
+void PictureConverter::fill( Picture& pic, int color )
+{
+    SDL_Surface* source = pic.get_surface();
+
+    SDL_LockSurface( source );
+    Uint32* imgpixels = (Uint32*)source->pixels;
+
+    for (int i=0; i<source->h; i++) 
+    {
+        for (int j=0; j<source->w; j++) 
+        {
+            imgpixels[ i * source->w + j ] = color;
+        }
+    }
+    SDL_UnlockSurface(source);
+}
