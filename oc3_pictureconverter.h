@@ -3,16 +3,11 @@
 
 #include <memory>
 
-// class PictureConverter;
-// typedef std::auto_ptr< PictureConverter > PictureConverterPtr;
-
 class Picture;
 
 class PictureConverter
 {
-   // friend PictureConverterPtr;
 public:
-   // static PictureConverterPtr create();
    static PictureConverter& instance();
 
    void convToGrayscale( Picture& dst, const Picture& src );
