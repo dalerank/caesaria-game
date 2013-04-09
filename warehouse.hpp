@@ -19,9 +19,10 @@
 #ifndef WAREHOUSE_HPP
 #define WAREHOUSE_HPP
 
-#include <building.hpp>
-#include <enums.hpp>
-#include <good.hpp>
+#include "building.hpp"
+#include "enums.hpp"
+#include "good.hpp"
+
 #include <string>
 #include <list>
 

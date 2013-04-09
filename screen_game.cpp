@@ -42,15 +42,15 @@ public:
     ExtentMenuPtr extMenu;
     GuiEnv* gui;
     GfxEngine* engine;
-    TopMenuPtr topMenu;
-    MenuPtr menu;
+    TopMenu* topMenu;
+    Menu* menu;
 };
 
 
 ScreenGame::ScreenGame() : _d( new Impl )
 {
+   _d->topMenu = NULL;
    _scenario = NULL;
-   _infoBox = NULL;
 }
 
 ScreenGame::~ScreenGame() {}

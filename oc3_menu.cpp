@@ -293,9 +293,9 @@ bool Menu::onEvent(const NEvent& event)
     return Widget::onEvent( event );
 }
 
-MenuPtr Menu::create( Widget* parent, int id )
+Menu* Menu::create( Widget* parent, int id )
 {
-	MenuPtr ret( new Menu( parent, id, Rect( 0, 0, 1, 1 ) ) );
+	Menu* ret = new Menu( parent, id, Rect( 0, 0, 1, 1 ) );
 
     SdlFacade &sdlFacade = SdlFacade::instance();
 

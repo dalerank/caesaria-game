@@ -43,4 +43,6 @@ DEPENDENCIES:
 3. OpenGL
 
 Installing dependencies on OpenSUSE:
-sudo zypper install libarchive-devel libSDL-devel libSDL_ttf-devel libSDL_image-devel libSDL_mixer-devel 
+sudo zypper install libarchive-devel libSDL-devel libSDL_ttf-devel libSDL_image-devel libSDL_mixer-devel
+Installing dependencies on Ubuntu:
+sudo apt-get install libarchive-dev zlib1g-dev zlib1g unshield libsdl1.2-dev libsdl1.2debian qt4-dev-tools

@@ -3,13 +3,10 @@
 
 #include "oc3_widget.h"
 
-class TopMenu;
-typedef std::auto_ptr< TopMenu > TopMenuPtr;
-
 class TopMenu : public Widget
 {
 public:
-    static TopMenuPtr create( Widget* parent, const int height );
+    static TopMenu* create( Widget* parent, const int height );
 
     // draw on screen
     virtual void draw( GfxEngine& engine );

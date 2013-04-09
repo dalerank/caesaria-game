@@ -20,6 +20,8 @@
 #include "service_building.hpp"
 
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 
 #include "scenario.hpp"
 #include "walker.hpp"
@@ -159,13 +161,44 @@ BuildingFountain::BuildingFountain() : ServiceBuilding(S_FOUNTAIN)
 {
    setType(B_FOUNTAIN);
    _size = 1;
-   setPicture(PicLoader::instance().get_picture("utilitya", 10));
+   
+   int id;
+   
+   std::srand(std::time(NULL));
+   
+   id = std::rand() % 4;
+   
+   std::cout << id << std::endl;
+   
+   setPicture(PicLoader::instance().get_picture("utilitya", 26));
+   AnimLoader animLoader(PicLoader::instance());
+   animLoader.fill_animation(_animation, "utilitya", 27, 7);
+   //animLoader.fill_animation_reverse(_animation, "utilitya", 25, 7);
+   animLoader.change_offset(_animation, 14, 26);
+  _fgPictures.resize(1);
+   
+  //2 10 18 26
+  // utilitya 10      - empty 
+  // utilitya 11 - 17 - working fontain
+   
+  // the first fountain's (10) ofsets ~ 11, 23 
+  /*AnimLoader animLoader(PicLoader::instance());
+  animLoader.fill_animation(_animation, "utilitya", 11, 7); 
+  animLoader.change_offset(_animation, 11, 23);
+  _fgPictures.resize(1);*/
+  
+  // the second (2)    ~ 8, 42
+  // the third (18)    ~ 8, 24
+  // the 4rd   (26)    ~14, 26
+   
+   
 }
 
 BuildingFountain* BuildingFountain::clone() const
 {
    return new BuildingFountain(*this);
 }
+
 
 void BuildingFountain::deliverService()
 {
@@ -302,6 +335,37 @@ BuildingCollosseum* BuildingCollosseum::clone() const
    return new BuildingCollosseum(*this);
 }
 
+//------------
+
+BuildingHippodrome::BuildingHippodrome() : EntertainmentBuilding(S_HIPPODROME)
+{
+    setType(B_HIPPODROME);
+    _size = 5;
+    setPicture(PicLoader::instance().get_picture("circus", 5));
+    getPicture().set_offset(0,106);
+    Picture* logo = &PicLoader::instance().get_picture("circus", 3);
+    Picture* logo1 = &PicLoader::instance().get_picture("circus", 1);
+    logo -> set_offset(150,181);
+    logo1 -> set_offset(300,310);
+    _fgPictures.resize(5);
+    _fgPictures.at(0) = logo;
+    _fgPictures.at(1) = logo1;
+  
+
+  
+ 
+ 
+}
+
+
+
+BuildingHippodrome* BuildingHippodrome::clone() const
+{
+   return new BuildingHippodrome(*this);
+}
+
+//-----------
+
 TempleCeres::TempleCeres() : ServiceBuilding(S_TEMPLE_CERES)
 {
    setType(B_TEMPLE_CERES);
@@ -313,6 +377,7 @@ TempleCeres* TempleCeres::clone() const
 {
    return new TempleCeres(*this);
 }
+
 
 BigTempleCeres::BigTempleCeres() : ServiceBuilding(S_TEMPLE_CERES)
 {

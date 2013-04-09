@@ -18,9 +18,9 @@ public:
     Picture* bgPicture;
 };
 
-TopMenuPtr TopMenu::create( Widget* parent, const int height )
+TopMenu* TopMenu::create( Widget* parent, const int height )
 {
-    TopMenuPtr ret( new TopMenu( parent, height) );
+    TopMenu* ret = new TopMenu( parent, height);
     ret->setGeometry( Rect( 0, 0, parent->getWidth(), height ) );
 
     PicLoader& loader = PicLoader::instance();
@@ -48,21 +48,21 @@ TopMenuPtr TopMenu::create( Widget* parent, const int height )
     }
 
     Size lbSize( 120, 23 );
-    ret->_d->lbPopulation = new Label( ret.get(), Rect( Point( ret->getWidth() - populationLabelOffset, 0 ), lbSize ),
+    ret->_d->lbPopulation = new Label( ret, Rect( Point( ret->getWidth() - populationLabelOffset, 0 ), lbSize ),
         "Pop 34,124", false, true, -1 );
     ret->_d->lbPopulation->setBackgroundPicture( loader.get_picture( ResourceGroup::panelBackground, panelBgStatus ) );
     ret->_d->lbPopulation->setFont( fonts.getFont(FONT_2_WHITE) );
     ret->_d->lbPopulation->setTextAlignment( alignCenter, alignCenter );
     //_populationLabel.setTextPosition(20, 0);
 
-    ret->_d->lbFunds = new Label( ret.get(), Rect( Point( ret->getWidth() - fundLabelOffset, 0), lbSize ),
+    ret->_d->lbFunds = new Label( ret, Rect( Point( ret->getWidth() - fundLabelOffset, 0), lbSize ),
         "Dn 10,000", false, true, -1 );
     ret->_d->lbFunds->setFont( fonts.getFont(FONT_2_WHITE));
     ret->_d->lbFunds->setTextAlignment( alignCenter, alignCenter );
     ret->_d->lbFunds->setBackgroundPicture( loader.get_picture( ResourceGroup::panelBackground, panelBgStatus ) );
     //_fundsLabel.setTextPosition(20, 0);
 
-    ret->_d->lbDate = new Label( ret.get(), Rect( Point( ret->getWidth() - dateLabelOffset, 0), lbSize ),
+    ret->_d->lbDate = new Label( ret, Rect( Point( ret->getWidth() - dateLabelOffset, 0), lbSize ),
         "Feb 39 BC", false, true, -1 );
     ret->_d->lbDate->setFont( fonts.getFont(FONT_2_YELLOW));
     ret->_d->lbDate->setTextAlignment( alignCenter, alignCenter );

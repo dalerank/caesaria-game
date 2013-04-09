@@ -114,8 +114,7 @@ void MainWindow::loadFile(const QString &filename) {
 		// Just have a long list of images
 		int numImages = sgFile->totalImageCount();
 		for (int i = 0; i < numImages; i++) {
-			QTreeWidgetItem *item = new ImageTreeItem(treeWidget, i,
-				sgFile->image(i));
+			new ImageTreeItem(treeWidget, i, sgFile->image(i));
 		}
 	} else {
 		// Split up by file

@@ -4,13 +4,10 @@
 #include "oc3_widget.h"
 #include "oc3_signals.h"
 
-class Menu;
-typedef std::auto_ptr< Menu > MenuPtr;
-
 class Menu : public Widget
 {
 public:
-    static MenuPtr create( Widget* parent, int id );
+    static Menu* create( Widget* parent, int id );
 
     // draw on screen
     virtual void draw( GfxEngine& engine );

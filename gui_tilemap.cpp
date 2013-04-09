@@ -304,6 +304,7 @@ void GuiTilemap::handleEvent( NEvent& event)
             if (_removeTool)
             {
                 _city->clearLand( tilePos.getI(), tilePos.getJ() );
+                updatePreviewTiles();
             }
             else if (_buildInstance != NULL)
             {
