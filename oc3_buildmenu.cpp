@@ -22,7 +22,6 @@
 #include <cstdlib>
 #include <iterator>
 #include <string>
-#include <iosfwd>
 
 #include "gettext.hpp"
 #include "oc3_pushbutton.h"

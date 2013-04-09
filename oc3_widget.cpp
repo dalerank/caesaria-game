@@ -149,7 +149,7 @@ void Widget::setGeometry( const Rect& r, GeometryType mode )
 {
     if( getParent() )
     {
-        const Rect& r2 = getParent()->getAbsoluteRect();
+        /*const Rect& r2 = */getParent()->getAbsoluteRect();
 
 //         NSizeF d = r2.getSize().As<f32>();//( (f32)(r2.getSize().Width), (f32)(r2.getSize().Height) );
 // 
@@ -624,7 +624,7 @@ void Widget::recalculateAbsolutePosition( bool recursive )
 {
     Rect parentAbsolute(0,0,0,0);
     Rect parentAbsoluteClip;
-    float fw=0.f, fh=0.f;
+    //float fw=0.f, fh=0.f;
 
     if ( getParent() )
     {
@@ -645,12 +645,14 @@ void Widget::recalculateAbsolutePosition( bool recursive )
     const int diffx = parentAbsolute.getWidth() - _d->lastParentRect.getWidth();
     const int diffy = parentAbsolute.getHeight() - _d->lastParentRect.getHeight();
 
+    /* QUESTION: garbage code?????
     if (_alignLeft == alignScale || _alignRight == alignScale)
         fw = (float)parentAbsolute.getWidth();
 
     if (_alignTop == alignScale || _alignBottom == alignScale)
         fh = (float)parentAbsolute.getHeight();
-
+    */
+    
     switch (_alignLeft)
     {
     case alignAuto:
