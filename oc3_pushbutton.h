@@ -58,6 +58,10 @@ public:
 
     void setFont( const Font& font );
 
+    Font& getFont( ElementState state );
+
+    void setIsPushButton( bool value );
+
 public oc3_signals:
     virtual Signal0<>& onClicked(); 
 
@@ -73,8 +77,9 @@ protected:
 	void btnClicked_();
 
 	virtual ElementState getActiveButtonState_();
-    void _updateTexture( ElementState state );
+    virtual void _updateTexture( ElementState state );
 
+    Picture* _getPicture( ElementState state );
 private:
     class Impl;
     std::auto_ptr< Impl > _d;

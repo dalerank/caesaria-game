@@ -43,6 +43,7 @@ public:
     GuiEnv* gui;
     GfxEngine* engine;
     TopMenuPtr topMenu;
+    BuildMenu* buildMenu;
     MenuPtr menu;
 };
 
@@ -51,6 +52,7 @@ ScreenGame::ScreenGame() : _d( new Impl )
 {
    _scenario = NULL;
    _infoBox = NULL;
+   _d->buildMenu = 0;
 }
 
 ScreenGame::~ScreenGame() {}
@@ -148,17 +150,20 @@ int ScreenGame::getResult() const
 
 void ScreenGame::createBuildMenu( int type, Widget* parent )
 {
-    BuildMenu* buildMenu = BuildMenu::getMenuInstance( (BuildMenuType)type, _d->gui->getRootWidget() );
+    if( _d->buildMenu )
+        _d->buildMenu->deleteLater();
+
+    _d->buildMenu = BuildMenu::getMenuInstance( (BuildMenuType)type, _d->gui->getRootWidget() );
     
-    if( buildMenu != NULL )
+    if( _d->buildMenu != NULL )
     {
        // we have a new buildMenu: initialize it
        GfxEngine &engine = GfxEngine::instance();
     
        // compute the Y position of the menu, ugly because of submenus   
-       buildMenu->init();
-       int y = math::clamp< int >( parent->getScreenTop(), 0, engine.getScreenHeight() - buildMenu->getHeight() );
-       buildMenu->setPosition( Point( engine.getScreenWidth() - buildMenu->getWidth() - _d->menu->getWidth() - 5, y ) );
+       _d->buildMenu->init();
+       int y = math::clamp< int >( parent->getScreenTop(), 0, engine.getScreenHeight() - _d->buildMenu->getHeight() );
+       _d->buildMenu->setPosition( Point( _d->menu->getScreenLeft() - _d->buildMenu->getWidth() - 5, y ) );
     }
 }
 

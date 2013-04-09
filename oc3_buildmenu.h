@@ -20,15 +20,6 @@ public:
     void addSubmenuButton(const BuildMenuType menuType, const std::string &text);
     // add the button in the menu.
     void addBuildButton(const BuildingType buildingType);
-
-    // returns true if widget needs to be deleted
-    bool isDeleted() const;
-    void setDeleted();
-
-protected:
-    bool _isDeleted;  // true if needs to be deleted
-
-    PushButton* _hoverButton;
 };
 
 class BuildMenu_water : public BuildMenu
@@ -42,6 +33,7 @@ public:
 class BuildMenu_security : public BuildMenu
 {
 public:
+    BuildMenu_security( Widget* parent, const Rect& rectangle );
     void addButtons();
 };
 
@@ -49,6 +41,7 @@ public:
 class BuildMenu_education : public BuildMenu
 {
 public:
+    BuildMenu_education( Widget* parent, const Rect& rectangle );
     void addButtons();
 };
 
@@ -56,6 +49,7 @@ public:
 class BuildMenu_health : public BuildMenu
 {
 public:
+    BuildMenu_health( Widget* parent, const Rect& rectangle );
     void addButtons();
 };
 
@@ -63,6 +57,7 @@ public:
 class BuildMenu_engineering : public BuildMenu
 {
 public:
+    BuildMenu_engineering( Widget* parent, const Rect& rectangle );
     void addButtons();
 };
 
@@ -70,6 +65,7 @@ public:
 class BuildMenu_administration : public BuildMenu
 {
 public:
+    BuildMenu_administration( Widget* parent, const Rect& rectangle );
     void addButtons();
 };
 
@@ -77,6 +73,7 @@ public:
 class BuildMenu_entertainment : public BuildMenu
 {
 public:
+    BuildMenu_entertainment( Widget* parent, const Rect& rectangle );
     void addButtons();
 };
 
@@ -84,6 +81,7 @@ public:
 class BuildMenu_commerce : public BuildMenu
 {
 public:
+    BuildMenu_commerce( Widget* parent, const Rect& rectangle );
     void addButtons();
 };
 
@@ -91,6 +89,7 @@ public:
 class BuildMenu_farm : public BuildMenu
 {
 public:
+    BuildMenu_farm( Widget* parent, const Rect& rectangle );
     void addButtons();
 };
 
@@ -98,6 +97,7 @@ public:
 class BuildMenu_raw_factory : public BuildMenu
 {
 public:
+    BuildMenu_raw_factory( Widget* parent, const Rect& rectangle );
     void addButtons();
 };
 
@@ -105,24 +105,28 @@ public:
 class BuildMenu_factory : public BuildMenu
 {
 public:
+    BuildMenu_factory( Widget* parent, const Rect& rectangle );
     void addButtons();
 };
 
 class BuildMenu_religion: public BuildMenu
 {
 public:
+    BuildMenu_religion( Widget* parent, const Rect& rectangle );
     void addButtons();
 };
 
 class BuildMenu_temple : public BuildMenu
 {
 public:
+    BuildMenu_temple( Widget* parent, const Rect& rectangle );
     void addButtons();
 };
 
 class BuildMenu_bigtemple : public BuildMenu
 {
 public:
+    BuildMenu_bigtemple( Widget* parent, const Rect& rectangle );
     void addButtons();
 };
 

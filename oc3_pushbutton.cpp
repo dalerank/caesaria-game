@@ -124,6 +124,11 @@ PushButton::~PushButton()
 {
 }
 
+void PushButton::setIsPushButton( bool value )
+{
+    _d->isPushButton = value;
+}
+
 bool PushButton::isPushButton() const
 {
     return _d->isPushButton;
@@ -370,4 +375,14 @@ void PushButton::setFont( const Font& font )
         _d->buttonStates[ ElementState(i) ].font = font;
         _updateTexture( ElementState(i) );
     }
+}
+
+Picture* PushButton::_getPicture( ElementState state )
+{
+    return _d->buttonStates[ state ].texture; 
+}
+
+Font& PushButton::getFont( ElementState state )
+{
+    return _d->buttonStates[ state ].font;
 }

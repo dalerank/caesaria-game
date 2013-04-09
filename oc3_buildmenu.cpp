@@ -7,6 +7,7 @@
 #include <string>
 #include <iosfwd>
 
+#include "gettext.hpp"
 #include "oc3_pushbutton.h"
 #include "gui_paneling.hpp"
 
@@ -25,11 +26,23 @@ public:
         Font& fontRed = FontCollection::instance().getFont(FONT_2_RED);
 
         setFont( fontRed, stHovered );
+        setTextAlignment( alignUpperLeft, alignCenter );
+    }
 
-        // draw cost
-        if (_cost >= 0)
-        {
-            Widget::setText( _originalText + itoa( _cost, 0, 10 ) );            
+    void _updateTexture( ElementState state )
+    {
+        PushButton::_updateTexture( state );
+
+        Font& font = getFont( state );
+
+        if( font.isValid() && _cost >= 0)
+        {           
+            char buffer[32];
+            itoa( _cost, buffer, 10 );
+            Rect textRect = font.calculateTextRect( buffer, Rect( 0, 0, getWidth(), getHeight() ),
+                                                    alignLowerRight, getVerticalTextAlign() );
+            SdlFacade::instance().drawText( *_getPicture( state ), buffer, textRect.getLeft(), textRect.getTop(), 
+                                            font );
         }
     }
 
@@ -38,39 +51,23 @@ public:
         _cost = cost;
     }
 
+    void resizeEvent_()
+    {
+        for( int i=0; i < StateCount; i++ )
+            _updateTexture( ElementState(i) );
+    }
+
     int getCost() const
     {
         return _cost;
     }
 
-    void setCostX(const int x)
-    {
-        _costX = x;
-    }
-
-    // cost=-1 => no cost display
-    virtual void init_pictures()
-    {
-        // draw button text
-        
-    }
-
-    void setText(const std::string &text)
-    {
-        _originalText = text;
-        PushButton::setText( _originalText + itoa( _cost, 0, 10 ) );
-    }
-
 private:
-    std::string _originalText;
     int _cost;   // cost of the building
-    int _costX;  // position of the "cost" text
 };
 
 BuildMenu::BuildMenu( Widget* parent, const Rect& rectangle, int id ) : Widget( parent, id, rectangle )
 {
-    _isDeleted = false;
-    _hoverButton = NULL;
 }
 
 void BuildMenu::init()
@@ -86,14 +83,16 @@ void BuildMenu::init()
     Font &font = FontCollection::instance().getFont(FONT_2);
     for (Widget::ConstChildIterator itWidget = getChildren().begin(); itWidget != getChildren().end(); ++itWidget)
     {
-        Widget* widget = *itWidget;
-        if( BuildButton *button = dynamic_cast< BuildButton* >( widget ) )
+        if( BuildButton *button = dynamic_cast< BuildButton* >( *itWidget ) )
         {
             sdlFacade.getTextSize(font, button->getText(), text_width, text_height);
             max_text_width = std::max(max_text_width, text_width);
 
-            sdlFacade.getTextSize(font, itoa( button->getCost(), 0, 10 ), text_width, text_height);
+            char buffer[32];
+            sdlFacade.getTextSize(font, itoa( button->getCost(), buffer, 10 ), text_width, text_height);
             max_cost_width = std::max(max_cost_width, text_width);
+
+            CONNECT( button, onClicked(), this, BuildMenu::deleteLater );
         }
     }
 
@@ -102,11 +101,9 @@ void BuildMenu::init()
     // set the same size for all buttons
     for (Widget::ConstChildIterator itWidget = getChildren().begin(); itWidget != getChildren().end(); ++itWidget)
     {
-        Widget *widget = *itWidget;
-        if( BuildButton *button = dynamic_cast< BuildButton* >( widget ) )
+        if( BuildButton *button = dynamic_cast< BuildButton* >( *itWidget ) )
         {
             button->setWidth( getWidth() );
-            button->setCostX( getWidth() - max_cost_width-10);
         }
     }
 
@@ -116,18 +113,6 @@ void BuildMenu::init()
 BuildMenu::~BuildMenu()
 {
 }
-
-
-bool BuildMenu::isDeleted() const
-{
-    return _isDeleted;
-}
-
-void BuildMenu::setDeleted()
-{
-    _isDeleted = true;
-}
-
 
 void BuildMenu::addSubmenuButton(const BuildMenuType menuType, const std::string &text)
 {
@@ -161,20 +146,20 @@ BuildMenu *BuildMenu::getMenuInstance(const BuildMenuType menuType, Widget* pare
 
     switch (menuType)
     {
-    case BM_WATER:          res = new BuildMenu_water( parent, Rect( 0, 0, 60, 120 ) ); break;
-    /*case BM_HEALTH:         res = new BuildMenu_health(); break;
-    case BM_SECURITY:       res = new BuildMenu_security(); break;
-    case BM_EDUCATION:      res = new BuildMenu_education(); break;
-    case BM_ENGINEERING:    res = new BuildMenu_engineering(); break;
-    case BM_ADMINISTRATION: res = new BuildMenu_administration(); break;
-    case BM_ENTERTAINMENT:  res = new BuildMenu_entertainment(); break;
-    case BM_COMMERCE:       res = new BuildMenu_commerce(); break;
-    case BM_FARM:           res = new BuildMenu_farm(); break;
-    case BM_RAW_MATERIAL:   res = new BuildMenu_raw_factory(); break;
-    case BM_FACTORY:        res = new BuildMenu_factory(); break;
-    case BM_RELIGION:       res = new BuildMenu_religion(); break;
-    case BM_TEMPLE:         res = new BuildMenu_temple(); break;
-    case BM_BIGTEMPLE:      res = new BuildMenu_bigtemple(); break;*/
+    case BM_WATER:          res = new BuildMenu_water( parent, Rect( 0, 0, 60, 1 ) ); break;
+    case BM_HEALTH:         res = new BuildMenu_health( parent, Rect( 0, 0, 60, 1 ) ); break;
+    case BM_SECURITY:       res = new BuildMenu_security( parent, Rect( 0, 0, 60, 1 )); break;
+    case BM_EDUCATION:      res = new BuildMenu_education( parent, Rect( 0, 0, 60, 1 )); break;
+    case BM_ENGINEERING:    res = new BuildMenu_engineering( parent, Rect( 0, 0, 60, 1 )); break;
+    case BM_ADMINISTRATION: res = new BuildMenu_administration( parent, Rect( 0, 0, 60, 1 )); break;
+    case BM_ENTERTAINMENT:  res = new BuildMenu_entertainment( parent, Rect( 0, 0, 60, 1 )); break;
+    case BM_COMMERCE:       res = new BuildMenu_commerce( parent, Rect( 0, 0, 60, 1 )); break;
+    case BM_FARM:           res = new BuildMenu_farm( parent, Rect( 0, 0, 60, 1 )); break;
+    case BM_RAW_MATERIAL:   res = new BuildMenu_raw_factory( parent, Rect( 0, 0, 60, 1 )); break;
+    case BM_FACTORY:        res = new BuildMenu_factory( parent, Rect( 0, 0, 60, 1 )); break;
+    case BM_RELIGION:       res = new BuildMenu_religion( parent, Rect( 0, 0, 60, 1 )); break;
+    case BM_TEMPLE:         res = new BuildMenu_temple( parent, Rect( 0, 0, 60, 1 )); break;
+    case BM_BIGTEMPLE:      res = new BuildMenu_bigtemple( parent, Rect( 0, 0, 60, 1 ) ); break;
     default:       break; // DO NOTHING 
     };
 
@@ -200,6 +185,11 @@ void BuildMenu_security::addButtons()
     addBuildButton(B_PREFECT);
 }
 
+BuildMenu_security::BuildMenu_security( Widget* parent, const Rect& rectangle )
+: BuildMenu( parent, rectangle, -1 )	 
+{
+
+}
 
 void BuildMenu_education::addButtons()
 {
@@ -208,6 +198,11 @@ void BuildMenu_education::addButtons()
     addBuildButton(B_COLLEGE);
 }
 
+BuildMenu_education::BuildMenu_education( Widget* parent, const Rect& rectangle )
+: BuildMenu( parent, rectangle, -1 )	 
+{
+
+}
 
 void BuildMenu_health::addButtons()
 {
@@ -217,6 +212,11 @@ void BuildMenu_health::addButtons()
     addBuildButton(B_HOSPITAL);
 }
 
+BuildMenu_health::BuildMenu_health( Widget* parent, const Rect& rectangle )
+: BuildMenu( parent, rectangle, -1 )	 
+{
+
+}
 
 void BuildMenu_engineering::addButtons()
 {
@@ -229,6 +229,11 @@ void BuildMenu_engineering::addButtons()
     addBuildButton(B_TRIUMPHAL_ARCH);
 }
 
+BuildMenu_engineering::BuildMenu_engineering( Widget* parent, const Rect& rectangle )
+: BuildMenu( parent, rectangle, -1 )	 
+{
+
+}
 
 void BuildMenu_administration::addButtons()
 {
@@ -240,6 +245,11 @@ void BuildMenu_administration::addButtons()
     addBuildButton(B_GOVERNOR_PALACE);
 }
 
+BuildMenu_administration::BuildMenu_administration( Widget* parent, const Rect& rectangle )
+: BuildMenu( parent, rectangle, -1 )	 
+{
+
+}
 
 void BuildMenu_entertainment::addButtons()
 {
@@ -253,18 +263,28 @@ void BuildMenu_entertainment::addButtons()
     addBuildButton(B_CHARIOT);
 }
 
+BuildMenu_entertainment::BuildMenu_entertainment( Widget* parent, const Rect& rectangle )
+: BuildMenu( parent, rectangle, -1 )	 
+{
+
+}
 
 void BuildMenu_commerce::addButtons()
 {
-    addSubmenuButton(BM_FARM, "##Farm##" );
-    addSubmenuButton(BM_RAW_MATERIAL, "##Raw materials##" );
-    addSubmenuButton(BM_FACTORY, "##Factory##" );
+    addSubmenuButton(BM_FARM, _("Farm") );
+    addSubmenuButton(BM_RAW_MATERIAL, _("Raw materials") );
+    addSubmenuButton(BM_FACTORY, _("Factory") );
 
     addBuildButton(B_MARKET);
     addBuildButton(B_GRANARY);
     addBuildButton(B_WAREHOUSE);
 }
 
+BuildMenu_commerce::BuildMenu_commerce( Widget* parent, const Rect& rectangle )
+: BuildMenu( parent, rectangle, -1 )	 
+{
+
+}
 
 void BuildMenu_farm::addButtons()
 {
@@ -276,6 +296,11 @@ void BuildMenu_farm::addButtons()
     addBuildButton(B_VEGETABLE);
 }
 
+BuildMenu_farm::BuildMenu_farm( Widget* parent, const Rect& rectangle )
+: BuildMenu( parent, rectangle, -1 )	 
+{
+
+}
 
 void BuildMenu_raw_factory::addButtons()
 {
@@ -285,6 +310,11 @@ void BuildMenu_raw_factory::addButtons()
     addBuildButton(B_CLAY);
 }
 
+BuildMenu_raw_factory::BuildMenu_raw_factory( Widget* parent, const Rect& rectangle )
+: BuildMenu( parent, rectangle, -1 )	 
+{
+
+}
 
 void BuildMenu_factory::addButtons()
 {
@@ -295,16 +325,27 @@ void BuildMenu_factory::addButtons()
     addBuildButton(B_POTTERY);
 }
 
+BuildMenu_factory::BuildMenu_factory( Widget* parent, const Rect& rectangle )
+: BuildMenu( parent, rectangle, -1 )	 
+{
+
+}
+
 void BuildMenu_religion::addButtons()
 {
-    addSubmenuButton(BM_TEMPLE , "##Small temples##" );   
-    addSubmenuButton(BM_BIGTEMPLE , "##Large temples##" );
+    addSubmenuButton(BM_TEMPLE , _("Small temples") );   
+    addSubmenuButton(BM_BIGTEMPLE , _("Large temples") );
     addBuildButton(B_TEMPLE_ORACLE);   
+}
+
+BuildMenu_religion::BuildMenu_religion( Widget* parent, const Rect& rectangle )
+: BuildMenu( parent, rectangle, -1 )	 
+{
+
 }
 
 void BuildMenu_temple::addButtons()
 {
-
     addBuildButton(B_TEMPLE_CERES);
     addBuildButton(B_TEMPLE_NEPTUNE);
     addBuildButton(B_TEMPLE_MARS);
@@ -312,6 +353,11 @@ void BuildMenu_temple::addButtons()
     addBuildButton(B_TEMPLE_MERCURE);
 }
 
+BuildMenu_temple::BuildMenu_temple( Widget* parent, const Rect& rectangle )
+: BuildMenu( parent, rectangle, -1 )	 
+{
+
+}
 void BuildMenu_bigtemple::addButtons()
 {
     addBuildButton(B_BIG_TEMPLE_CERES);
@@ -319,4 +365,10 @@ void BuildMenu_bigtemple::addButtons()
     addBuildButton(B_BIG_TEMPLE_MARS);
     addBuildButton(B_BIG_TEMPLE_VENUS);
     addBuildButton(B_BIG_TEMPLE_MERCURE);
+}
+
+BuildMenu_bigtemple::BuildMenu_bigtemple( Widget* parent, const Rect& rectangle )
+: BuildMenu( parent, rectangle, -1 )	 
+{
+
 }

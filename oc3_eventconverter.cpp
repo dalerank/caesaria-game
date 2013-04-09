@@ -5,7 +5,7 @@
 struct SMouseMultiClicks
 {
     SMouseMultiClicks()
-        : DoubleClickTime(500), CountSuccessiveClicks(0), LastClickTime(0), LastMouseInputEvent(OC3_MOUSE_EVENT_COUNT)
+        : DoubleClickTime(200), CountSuccessiveClicks(0), LastClickTime(0), LastMouseInputEvent(OC3_MOUSE_EVENT_COUNT)
     {}
 
     int DoubleClickTime;

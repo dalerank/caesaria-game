@@ -270,7 +270,7 @@ Rect Font::calculateTextRect( const std::string& text, const Rect& baseRect,
     default:
         // align to top edge
         resultRect.UpperLeftCorner.setY( 0 );
-        resultRect.LowerRightCorner.setY( d.getWidth() );
+        resultRect.LowerRightCorner.setY( d.getHeight() );
         break;
     }
 

@@ -71,6 +71,7 @@ void configureButton(PushButton* oButton, const int pic_index)
     oButton->setPicture( &loader.get_picture( ResourceGroup::panelBackground, pic_index+1), stHovered );
     oButton->setPicture( &loader.get_picture( ResourceGroup::panelBackground, pic_index+2), stPressed );
     oButton->setPicture( &loader.get_picture( ResourceGroup::panelBackground, pic_index+3), stDisabled );
+    oButton->setIsPushButton( true );
 }
 
 Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id, rectangle ), _d( new Impl )
@@ -103,7 +104,41 @@ Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id
     configureButton(_d->roadButton, 135);
     _d->roadButton->setPosition( offset + Point( 0, dy * 2 ) );
 
+    _d->waterButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_WATER );
+    configureButton(_d->waterButton,  127);
+    _d->waterButton->setPosition( offset + Point( 0, dy * 3 ));
 
+    _d->healthButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_HEALTH );
+    configureButton(_d->healthButton, 163);
+    _d->healthButton->setPosition( offset + Point( 0, dy * 4 ) );
+
+    _d->templeButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_RELIGION );
+    configureButton(_d->templeButton, 151);
+    _d->templeButton->setPosition( offset + Point( 0, dy * 5 ) );
+
+    _d->educationButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_EDUCATION );
+    configureButton(_d->educationButton, 147);
+    _d->educationButton->setPosition( offset + Point( 0, dy * 6 ) );
+
+    _d->entertainmentButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_ENTERTAINMENT );
+    configureButton(_d->entertainmentButton, 143);
+    _d->entertainmentButton->setPosition( offset + Point( 0, dy * 7 ) );
+
+    _d->administrationButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_ADMINISTRATION );
+    configureButton(_d->administrationButton, 139);
+    _d->administrationButton->setPosition( offset + Point( 0, dy * 8 ) );
+
+    _d->engineerButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_ENGINEERING );
+    configureButton(_d->engineerButton, 167);
+    _d->engineerButton->setPosition( offset + Point( 0, dy * 9 ) );
+
+    _d->securityButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_SECURITY );
+    configureButton(_d->securityButton, 159);
+    _d->securityButton->setPosition( offset + Point( 0, dy * 10 ) );
+
+    _d->commerceButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_COMMERCE );
+    configureButton(_d->commerceButton, 155);
+    _d->commerceButton->setPosition( offset + Point( 0, dy * 11 ) );
     // //
     // _midIcon.setPicture(PicLoader::instance().get_picture("panelwindows", 1));
     // _midIcon.setPosition(8, 217);
@@ -120,37 +155,6 @@ Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id
     // set3Button(_northButton, WidgetEvent(), 88);
     // set3Button(_rotateLeftButton, WidgetEvent(), 91);
     // set3Button(_rotateRightButton, WidgetEvent(), 94);
-
- 
- 
-
-//     // second row
-//     configureButton(_d->waterButton, /*WidgetEvent::BuildMenuEvent(BM_WATER),*/ 127);
-//     _d->waterButton->setPosition( offset + Point( 0, dy * 3 ));
-// 
-//     configureButton(_d->healthButton,/* WidgetEvent::BuildMenuEvent(BM_HEALTH),*/ 163);
-//     _d->healthButton->setPosition( offset + Point( 0, dy * 4 ) );
-// 
-//     configureButton(_d->templeButton, /*WidgetEvent::BuildMenuEvent(BM_RELIGION),*/ 151);
-//     _d->templeButton->setPosition( offset + Point( 0, dy * 5 ) );
-//     // third row
-//     configureButton(_d->educationButton, /*WidgetEvent::BuildMenuEvent(BM_EDUCATION),*/ 147);
-//     _d->educationButton->setPosition( offset + Point( 0, dy * 6 ) );
-// 
-//     configureButton(_d->entertainmentButton, /*WidgetEvent::BuildMenuEvent(BM_ENTERTAINMENT),*/ 143);
-//     _d->entertainmentButton->setPosition( offset + Point( 0, dy * 7 ) );
-// 
-//     configureButton(_d->administrationButton, /*WidgetEvent::BuildMenuEvent(BM_ADMINISTRATION),*/ 139);
-//     _d->administrationButton->setPosition( offset + Point( 0, dy * 8 ) );
-//     // 4th row
-//     configureButton(_d->engineerButton, /*WidgetEvent::BuildMenuEvent(BM_ENGINEERING),*/ 167);
-//     _d->engineerButton->setPosition( offset + Point( 0, dy * 9 ) );
-// 
-//     configureButton(_d->securityButton, /*WidgetEvent::BuildMenuEvent(BM_SECURITY),*/ 159);
-//     _d->securityButton->setPosition( offset + Point( 0, dy * 10 ) );
-// 
-//     configureButton(_d->commerceButton, /*WidgetEvent::BuildMenuEvent(BM_COMMERCE),*/ 155);
-//     _d->commerceButton->setPosition( offset + Point( 0, dy * 11 ) );
 
     //   // 5th row
     //   set4Button(_cancelButton, WidgetEvent(), 171);
@@ -281,6 +285,15 @@ bool Menu::onEvent(const NEvent& event)
             _d->onRemoveToolSignal.emit();
         else
             _d->onCreateBuildMenuSignal.emit( event.GuiEvent.Caller->getID(), event.GuiEvent.Caller );
+
+        for( ConstChildIterator it=getChildren().begin(); it != getChildren().end(); it++ )
+        {
+            if( *it == event.GuiEvent.Caller )
+                continue;
+
+            if( PushButton* btn = safety_cast< PushButton* >( *it ) )
+                btn->setPressed( false );
+        }
         return true;
     }
 
