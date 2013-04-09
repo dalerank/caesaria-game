@@ -30,12 +30,12 @@
 
 ScreenGame::ScreenGame()
 {
-   _scenario = NULL;
-   _menu = NULL;
-   _menuBar = NULL;
-   _buildMenu = NULL;
-   _inGameMenu = NULL;
-   _infoBox = NULL;
+  _scenario   = NULL;
+  _menu       = NULL;
+  _menuBar    = NULL;
+  _buildMenu  = NULL;
+  _inGameMenu = NULL;
+  _infoBox    = NULL;
 }
 
 ScreenGame::~ScreenGame() {}
@@ -55,7 +55,7 @@ void ScreenGame::init()
    _menu->setPosition( engine.getScreenWidth() - _menu->getWidth(), _menuBar->getHeight() );
    _menu->setListener(this);
 
-   getMapArea().setViewSize(engine.getScreenWidth(), engine.getScreenHeight()+8*30);  // 8*30: used for high buildings (granary...), visible even when not in tilemap_area.
+   getMapArea().setViewSize(engine.getScreenWidth(), engine.getScreenHeight()+8 * 30);  // 8*30: used for high buildings (granary...), visible even when not in tilemap_area.
    getMapArea().setCenterIJ(25, 10);
 }
 
@@ -231,33 +231,17 @@ void ScreenGame::handleEvent(SDL_Event &event)
       }
       break;
    case SDL_KEYDOWN:
-      if (event.key.keysym.sym == SDLK_UP)
-      {
-//	 std::cout << "SDLK_UP was pressed" << std::endl;
-         getMapArea().moveUp(1 + 4*isModShift());
-      }
-      else if (event.key.keysym.sym == SDLK_DOWN)
-      {
-//	 std::cout << "SDLK_DOWN was pressed" << std::endl;
-         getMapArea().moveDown(1 + 4*isModShift());
-      }
-      else if (event.key.keysym.sym == SDLK_RIGHT)
-      {
-//	 std::cout << "SDLK_RIGHT was pressed" << std::endl;
-         getMapArea().moveRight(1 + 4*isModShift());
-      }
-      else if (event.key.keysym.sym == SDLK_LEFT)
-      {
-//	 std::cout << "SDLK_LEFT was pressed" << std::endl;
-         getMapArea().moveLeft(1 + 4*isModShift());
-      }
-      else if (event.key.keysym.sym == SDLK_ESCAPE)
-      {
-//	 std::cout << "SDLK_ESCAPE was pressed" << std::endl;
-         stop();
-      }
-      
-      break;
+   { 
+     switch(event.key.keysym.sym)
+     {
+       case SDLK_UP:        getMapArea().moveUp(1 + 4*isModShift());    break;
+       case SDLK_DOWN:      getMapArea().moveDown(1 + 4*isModShift());  break;
+       case SDLK_RIGHT:     getMapArea().moveRight(1 + 4*isModShift()); break;
+       case SDLK_LEFT:      getMapArea().moveLeft(1 + 4*isModShift());  break;
+       case SDLK_ESCAPE:    stop(); break;
+     }
+   }   
+   break;
    }
 
 }
@@ -265,13 +249,29 @@ void ScreenGame::handleEvent(SDL_Event &event)
 
 void ScreenGame::handleWidgetEvent(const WidgetEvent &event, Widget *widget)
 {
-   if (event._eventType == WE_BuildMenu)
+   switch(event._eventType)
+   {
+     case WE_BuildMenu:
    {
       BuildMenuType menuType = event._buildMenuType;
       BuildMenu* buildMenu = BuildMenu::getMenuInstance(menuType);
 
       if (buildMenu != NULL)
       {
+         // here we can also update mid_picture when side menu is big
+	 // very ugly!
+	 switch (menuType)
+	 {
+	   case BM_RELIGION:      _menu->changeMidIcon(2); break;
+	   case BM_ADMINISTRATION:_menu->changeMidIcon(3); break;
+	   case BM_WATER:         _menu->changeMidIcon(4); break;
+	   case BM_ENTERTAINMENT: _menu->changeMidIcon(5); break;
+	   case BM_HEALTH:        _menu->changeMidIcon(6); break;
+	   case BM_EDUCATION:     _menu->changeMidIcon(7); break;
+	   case BM_ENGINEERING:   _menu->changeMidIcon(8); break;
+	   case BM_SECURITY:      _menu->changeMidIcon(9); break;
+	   case BM_COMMERCE:      _menu->changeMidIcon(10); break;
+	}
          // we have a new buildMenu: initialize it
          GfxEngine &engine = GfxEngine::instance();
 
@@ -291,20 +291,22 @@ void ScreenGame::handleWidgetEvent(const WidgetEvent &event, Widget *widget)
          buildMenu->init();
          y = std::min(y, engine.getScreenHeight() - buildMenu->getHeight());
          y = std::max(y, 0);
-         buildMenu->setPosition(engine.getScreenWidth() - buildMenu->getWidth() - _menu->getWidth()-5, y);
+         buildMenu->setPosition(engine.getScreenWidth() - buildMenu->getWidth() - _menu->getWidth() - 5, y);
          setBuildMenu(buildMenu);
       }
 
    }
-   else if (event._eventType == WE_InGameMenu)
+   break;
+     case WE_InGameMenu:
    {
       GfxEngine &engine = GfxEngine::instance();
       InGameMenu* inGameMenu = new InGameMenu();
       inGameMenu->init();
-      inGameMenu->setPosition(engine.getScreenWidth() - inGameMenu->getWidth() - _menu->getWidth()-5, 50);
+      inGameMenu->setPosition(engine.getScreenWidth() - inGameMenu->getWidth() - _menu->getWidth() - 5, 50);
       setInGameMenu(inGameMenu);
    }
-   else if (event._eventType == WE_SaveGame)
+   break;
+     case WE_SaveGame:
    {
       if (_scenario != NULL)
       {
@@ -318,9 +320,17 @@ void ScreenGame::handleWidgetEvent(const WidgetEvent &event, Widget *widget)
          }
       }
    }
-   else if (event._eventType == WE_Building)
+   break;
+     case WE_Building:
    {
       BuildingType buildingType = event._buildingType;
+      
+	 switch (buildingType)
+	 {
+	   case B_ROAD:      _menu->changeMidIcon(11); break;
+	   case B_HOUSE:     _menu->changeMidIcon(1); break;
+	}
+      
       Construction *construction = dynamic_cast<Construction*>(LandOverlay::getInstance(buildingType));
       _guiTilemap.setBuildInstance(construction);
       if (_buildMenu != NULL)
@@ -329,10 +339,22 @@ void ScreenGame::handleWidgetEvent(const WidgetEvent &event, Widget *widget)
          _buildMenu->setDeleted();
       }
    }
-   else if (event._eventType == WE_ClearLand)
+   break;
+     case WE_ClearLand:
    {
       _guiTilemap.setRemoveTool();
+      // update mid_image
+      _menu->changeMidIcon(12);
    }
+   break;
+     case WE_ChangeSideMenuType:
+   {
+      std::cout << "change menu pls!!!" << std::endl;
+      _menu->changeSideMenuType();
+   }
+   break;
+   
+   }// end of switch statement
 
 }
 

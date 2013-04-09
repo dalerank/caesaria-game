@@ -46,6 +46,7 @@ struct WidgetEvent
    static WidgetEvent BuildingEvent(const BuildingType buildingType);
    static WidgetEvent InGameMenuEvent();
    static WidgetEvent ClearLandEvent();
+   static WidgetEvent ChangeSideMenuType();
 };
 
 

@@ -203,6 +203,7 @@ LandOverlay* LandOverlay::getInstance(const BuildingType buildingType)
       _mapBuildingByID[B_GLADIATOR]    = new BuildingGladiator();
       _mapBuildingByID[B_LION]         = new BuildingLion();
       _mapBuildingByID[B_CHARIOT]      = new BuildingChariot();
+      _mapBuildingByID[B_HIPPODROME]   = new BuildingHippodrome();
       // road&house
       _mapBuildingByID[B_HOUSE] = new House( House::smallHovel );
       _mapBuildingByID[B_ROAD]  = new Road();
@@ -513,18 +514,30 @@ Road* Road::clone() const
 
 void Road::build(const int i, const int j)
 {
-   Construction::build(i, j);
-   setPicture(computePicture());
+  Construction::build(i, j);
+  setPicture(computePicture());
 
-   // update adjacent roads
-   for (std::list<Tile*>::iterator itTile = _accessRoads.begin(); itTile != _accessRoads.end(); ++itTile)
-   {
-      Tile &tile = **itTile;
-      Road &road = (Road&) *tile.get_terrain().getOverlay();
-      road.computeAccessRoads();
-      road.setPicture(road.computePicture());
-   }
-
+  // update adjacent roads
+  for (std::list<Tile*>::iterator itTile = _accessRoads.begin(); itTile != _accessRoads.end(); ++itTile)
+  {
+    Tile &tile = **itTile;
+    Road &road = (Road&) *tile.get_terrain().getOverlay();
+    road.computeAccessRoads();
+    road.setPicture(road.computePicture());
+  }
+  // NOTE: also we need to update accessRoads for adjacent building
+  // how to detect them if MaxDistance2Road can be any
+  // so let's recompute accessRoads for every _building_
+  std::list<LandOverlay*> list = Scenario::instance().getCity().getOverlayList(); // it looks terrible!!!!
+  for (std::list<LandOverlay*>::iterator itOverlay = list.begin(); itOverlay!=list.end(); ++itOverlay)
+  {
+    LandOverlay *overlay = *itOverlay;
+    Building *construction = dynamic_cast<Building*>(overlay);
+    if (construction != NULL) // if NULL then it ISN'T building
+    {
+      construction->computeAccessRoads();
+    }    
+  }
 }
 
 void Road::setTerrain(TerrainTile &terrain)
