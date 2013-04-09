@@ -85,6 +85,8 @@ public:
     virtual void setBackgroundPicture( const Picture& picture );
 
     void setFont( const Font& font );
+
+    void setTextAlignment( TypeAlign horizontal, TypeAlign vertical );
     
 public oc3_signals:
     virtual Signal0<>& onClicked();

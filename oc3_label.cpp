@@ -94,7 +94,42 @@ void Label::_updateTexture()
     }
 
     if( _d->font.isValid() )
-        SdlFacade::instance().drawText( *_d->picture, getText(), 0, 0, _d->font );
+    {
+        Rect frameRect( Point( 0, 0 ), getSize() );
+        string rText = _d->prefix + _text;
+
+        if( rText.size() && _d->font.isValid() )
+        {
+            //eColor = GetResultColor( eColor );
+            if( !_d->WordWrap )
+            {
+                Rect textRect = _d->font.calculateTextRect( rText, frameRect, 
+                                                            getHorizontalTextAlign(), getVerticalTextAlign() );
+
+                SdlFacade::instance().drawText( *_d->picture, getText(), textRect.getLeft(), textRect.getTop(), _d->font );
+            }
+            else
+            {
+                if( _d->font != _d->lastBreakFont )
+                {  
+                    _d->breakText( getText(), getSize() );
+                }
+
+                Rect r = frameRect;
+                int height = _d->font.getSize("A").getHeight();// + font.GetKerningHeight();
+
+                for (unsigned int i=0; i<_d->brokenText.size(); ++i)
+                {
+                    Rect textRect = _d->font.calculateTextRect( rText, r, 
+                                                                getHorizontalTextAlign(), getVerticalTextAlign() );
+
+                    SdlFacade::instance().drawText( *_d->picture, _d->brokenText[i], textRect.getLeft(), textRect.getTop(), _d->font );
+
+                    r += Point( 0, height );
+                }
+            }
+        }
+    }
 }
 
 //! destructor
@@ -487,37 +522,7 @@ void Label::beforeDraw( GfxEngine& painter )
 	{
         _updateTexture();
 
-        _d->needUpdatePicture = false;
-
-		Rect frameRect( Point( 0, 0 ), getSize() );
-		string rText = _d->prefix + _text;
-        Font font = _d->font;
-
-		if( rText.size() && font.isValid() )
-		{
-    		//eColor = GetResultColor( eColor );
-			if( !_d->WordWrap )
-			{
-                SdlFacade::instance().drawText( *_d->picture, getText(), frameRect.UpperLeftCorner.getX(), frameRect.UpperLeftCorner.getY(), font );
-			}
-			else
-			{
-				if( font != _d->lastBreakFont )
-                {  
-					_d->breakText( getText(), getSize() );
-                }
-
-				Rect r = frameRect;
-				int height = font.getSize("A").getHeight();// + font.GetKerningHeight();
-
-				for (unsigned int i=0; i<_d->brokenText.size(); ++i)
-				{
-                    SdlFacade::instance().drawText( *_d->picture, _d->brokenText[i], r.UpperLeftCorner.getX(), r.UpperLeftCorner.getY(), font );
-
-					r += Point( 0, height );
-				}
-			}
-		}
+        _d->needUpdatePicture = false;		
 	}
 
 	Widget::beforeDraw( painter );
@@ -536,14 +541,23 @@ bool Label::isBorderVisible() const
 void Label::setPrefixText( const string& prefix )
 {
 	_d->prefix = prefix;
+    _d->needUpdatePicture = true;
 }
 
 void Label::setBackgroundPicture( const Picture& picture )
 {
     _d->bgPicture = const_cast< Picture* >( &picture );
+    _d->needUpdatePicture = true;
 }
 
 void Label::setFont( const Font& font )
 {
     _d->font = font;
+    _d->needUpdatePicture = true;
+}
+
+void Label::setTextAlignment( TypeAlign horizontal, TypeAlign vertical )
+{
+    Widget::setTextAlignment( horizontal, vertical );
+    _d->needUpdatePicture = true;
 }

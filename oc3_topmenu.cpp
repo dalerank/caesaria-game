@@ -5,8 +5,8 @@
 #include "sdl_facade.hpp"
 
 static const Uint32 dateLabelOffset = 155;
-static const Uint32 populationLabelOffset = 345;
-static const Uint32 fundLabelOffset = 465;
+static const Uint32 populationLabelOffset = 344;
+static const Uint32 fundLabelOffset = 464;
 static const Uint32 panelBgStatus = 15;
 
 class TopMenu::Impl
@@ -52,18 +52,21 @@ TopMenuPtr TopMenu::create( Widget* parent, const int height )
         "Pop 34,124", false, true, -1 );
     ret->_d->lbPopulation->setBackgroundPicture( loader.get_picture( ResourceGroup::panelBackground, panelBgStatus ) );
     ret->_d->lbPopulation->setFont( fonts.getFont(FONT_2_WHITE) );
+    ret->_d->lbPopulation->setTextAlignment( alignCenter, alignCenter );
     //_populationLabel.setTextPosition(20, 0);
 
     ret->_d->lbFunds = new Label( ret.get(), Rect( Point( ret->getWidth() - fundLabelOffset, 0), lbSize ),
         "Dn 10,000", false, true, -1 );
     ret->_d->lbFunds->setFont( fonts.getFont(FONT_2_WHITE));
+    ret->_d->lbFunds->setTextAlignment( alignCenter, alignCenter );
     ret->_d->lbFunds->setBackgroundPicture( loader.get_picture( ResourceGroup::panelBackground, panelBgStatus ) );
     //_fundsLabel.setTextPosition(20, 0);
 
-    ret->_d->lbFunds = new Label( ret.get(), Rect( Point( ret->getWidth() - dateLabelOffset, 0), lbSize ),
+    ret->_d->lbDate = new Label( ret.get(), Rect( Point( ret->getWidth() - dateLabelOffset, 0), lbSize ),
         "Feb 39 BC", false, true, -1 );
-    ret->_d->lbFunds->setFont( fonts.getFont(FONT_2_YELLOW));
-    ret->_d->lbFunds->setBackgroundPicture( loader.get_picture( ResourceGroup::panelBackground, panelBgStatus ) );
+    ret->_d->lbDate->setFont( fonts.getFont(FONT_2_YELLOW));
+    ret->_d->lbDate->setTextAlignment( alignCenter, alignCenter );
+    ret->_d->lbDate->setBackgroundPicture( loader.get_picture( ResourceGroup::panelBackground, panelBgStatus ) );
     //_dateLabel.setTextPosition(20, 0);
 
     GfxEngine::instance().load_picture(*ret->_d->bgPicture);
