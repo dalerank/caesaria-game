@@ -28,8 +28,13 @@
             #define _OC3_DEBUG_BREAK_IF( _CONDITION_ ) if (_CONDITION_) {_asm int 3}
         #endif
     #else
+#if defined (__GNUC__)
+  #include <cassert>
+  #define _OC3_DEBUG_BREAK_IF( _CONDITION_ ) assert( !(_CONDITION_) );
+#else
         #define _OC3_DEBUG_BREAK_IF( _CONDITION_ ) assert( !(_CONDITION_) );
-    #endif
+#endif
+        #endif
 #else
     #define _OC3_DEBUG_BREAK_IF( _CONDITION_ )
 #endif

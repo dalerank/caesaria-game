@@ -16,7 +16,8 @@
 #ifndef __OPENCAESAR3_MATH_INCLUDE_
 #define __OPENCAESAR3_MATH_INCLUDE_
 
-#include <math.h>
+#include <cmath>
+#include <algorithm>
 #include <limits.h>
 #include <float.h>
 

@@ -50,7 +50,7 @@ public:
     template< class T >
     T findChild( const std::string& internalName, bool recursiveFind = false )
     {
-        Widgets::ConstIterator it = getChildren().begin();
+        Widgets::const_iterator it = getChildren().begin();
         for( ; it != getChildren().end(); it++ )
         {
             if( (*it)->getInternalName() == internalName )

@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <cstdlib>
 #include <iterator>
 #include <string>
 #include <iosfwd>
@@ -58,7 +59,8 @@ public:
         if( font.isValid() && _cost >= 0)
         {           
             char buffer[32];
-            itoa( _cost, buffer, 10 );
+            //itoa( _cost, buffer, 10 ); - no itoa in linux :-(
+	    sprintf(buffer, "%i", _cost);
             Rect textRect = font.calculateTextRect( buffer, Rect( 0, 0, getWidth(), getHeight() ),
                                                     alignLowerRight, getVerticalTextAlign() );
             SdlFacade::instance().drawText( *_getPicture( state ), buffer, textRect.getLeft(), textRect.getTop(), 
@@ -154,7 +156,8 @@ void BuildMenu::init()
             max_text_width = std::max(max_text_width, text_width);
 
             char buffer[32];
-            sdlFacade.getTextSize(font, itoa( button->getCost(), buffer, 10 ), text_width, text_height);
+	    sprintf(buffer, "%i", button->getCost());
+            sdlFacade.getTextSize(font, buffer, text_width, text_height);
             max_cost_width = std::max(max_cost_width, text_width);
         }
     }

@@ -397,10 +397,10 @@ public:
 	\param other Swap content with this object	*/
 	void swap(List<T>& other)
 	{
-                math::swap(_first, other._first);
-                math::swap(_last, other._last);
-                math::swap(_size, other._size);
-                math::swap(_allocator, other._allocator);	// memory is still released by the same allocator used for allocation
+                std::swap(_first, other._first);
+                std::swap(_last, other._last);
+                std::swap(_size, other._size);
+                std::swap(_allocator, other._allocator);	// memory is still released by the same allocator used for allocation
 	}
 
 

@@ -15,7 +15,10 @@
 
 
 #include "oc3_time.h"
-#include <time.h>
+#include <ctime>
+#include <cstdlib>
+#include <cstdio>
+#include <stdint.h>
 
 #ifdef _WIN32
     #include "Windows.h"
@@ -273,7 +276,7 @@ unsigned int DateTime::getElapsedTime()
 #else
         timeval tv;
         gettimeofday(&tv, 0);
-        return (u32)(tv.tv_sec * 1000) + (tv.tv_usec / 1000);
+        return (uint32_t)(tv.tv_sec * 1000) + (tv.tv_usec / 1000);
 #endif
 }
 
