@@ -60,7 +60,6 @@ private:
 
    // stupid function, returns 0 if no shift pressed, 1 if shift pressed
    int isModShift();
-   void createBuildMenu( int type, Widget* parent );
    void resolveCreateConstruction( int type );
    void resolveRemoveTool();
    void showTileInfo( Tile* tile );

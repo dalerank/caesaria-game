@@ -27,11 +27,9 @@
 #include "oc3_pushbutton.h"
 #include "gui_paneling.hpp"
 #include "oc3_event.h"
+#include "oc3_guienv.h"
 
 #include "building_data.hpp"
-
-static const int subMenuCreateIdHigh = 0x1000;
-static BuildMenu* buildMenuInstance = 0;
 
 // used to display the building name and its cost
 class BuildButton : public PushButton
@@ -86,53 +84,9 @@ private:
     int _cost;   // cost of the building
 };
 
-class BuildMenu::Impl
-{
-oc3_signals public:
-    Signal2< int, Widget* > onCreateBuildMenuSignal;
-    Signal1< int > onCreateConstructionSignal;
-};
-
 BuildMenu::BuildMenu( Widget* parent, const Rect& rectangle, int id )
-    : Widget( parent, id, rectangle ), _d( new Impl )
+    : Widget( parent, id, rectangle )
 {
-}
-
-Signal2<int, Widget*>& BuildMenu::onCreateBuildMenu()
-{
-    return _d->onCreateBuildMenuSignal;
-}
-
-Signal1< int >& BuildMenu::onCreateConstruction()
-{
-    return _d->onCreateConstructionSignal;
-}
-
-
-bool BuildMenu::onEvent(const NEvent& event)
-{
-    if( event.EventType == OC3_GUI_EVENT && event.GuiEvent.EventType == OC3_BUTTON_CLICKED )
-    {
-        buildMenuInstance = 0;
-
-        if( BuildButton* btn = safety_cast< BuildButton* >( event.GuiEvent.Caller ) )
-        {
-            int id = btn->getID();
-            if( id & subMenuCreateIdHigh )
-            {
-                _d->onCreateBuildMenuSignal.emit( id & 0xff, this );
-            }
-            else
-            {
-                _d->onCreateConstructionSignal.emit( id );
-            }
-        }
-     
-        deleteLater();
-        return true;
-    }
-
-    return Widget::onEvent( event );
 }
 
 void BuildMenu::init()
@@ -171,7 +125,6 @@ void BuildMenu::init()
     }
 }
 
-
 BuildMenu::~BuildMenu()
 {
 }
@@ -204,44 +157,34 @@ void BuildMenu::addBuildButton(const BuildingType buildingType)
 
 BuildMenu *BuildMenu::getMenuInstance(const BuildMenuType menuType, Widget* parent )
 {
-    if( buildMenuInstance )
-    {
-        buildMenuInstance->deleteLater();
-        buildMenuInstance = 0;
-    }
-
+    BuildMenu* ret = 0;
     switch (menuType)
     {
-    case BM_WATER:          buildMenuInstance = new BuildMenu_water( parent, Rect( 0, 0, 60, 1 ) ); break;
-    case BM_HEALTH:         buildMenuInstance = new BuildMenu_health( parent, Rect( 0, 0, 60, 1 ) ); break;
-    case BM_SECURITY:       buildMenuInstance = new BuildMenu_security( parent, Rect( 0, 0, 60, 1 )); break;
-    case BM_EDUCATION:      buildMenuInstance = new BuildMenu_education( parent, Rect( 0, 0, 60, 1 )); break;
-    case BM_ENGINEERING:    buildMenuInstance = new BuildMenu_engineering( parent, Rect( 0, 0, 60, 1 )); break;
-    case BM_ADMINISTRATION: buildMenuInstance = new BuildMenu_administration( parent, Rect( 0, 0, 60, 1 )); break;
-    case BM_ENTERTAINMENT:  buildMenuInstance = new BuildMenu_entertainment( parent, Rect( 0, 0, 60, 1 )); break;
-    case BM_COMMERCE:       buildMenuInstance = new BuildMenu_commerce( parent, Rect( 0, 0, 60, 1 )); break;
-    case BM_FARM:           buildMenuInstance = new BuildMenu_farm( parent, Rect( 0, 0, 60, 1 )); break;
-    case BM_RAW_MATERIAL:   buildMenuInstance = new BuildMenu_raw_factory( parent, Rect( 0, 0, 60, 1 )); break;
-    case BM_FACTORY:        buildMenuInstance = new BuildMenu_factory( parent, Rect( 0, 0, 60, 1 )); break;
-    case BM_RELIGION:       buildMenuInstance = new BuildMenu_religion( parent, Rect( 0, 0, 60, 1 )); break;
-    case BM_TEMPLE:         buildMenuInstance = new BuildMenu_temple( parent, Rect( 0, 0, 60, 1 )); break;
-    case BM_BIGTEMPLE:      buildMenuInstance = new BuildMenu_bigtemple( parent, Rect( 0, 0, 60, 1 ) ); break;
+    case BM_WATER:          ret = new BuildMenu_water( parent, Rect( 0, 0, 60, 1 ) ); break;
+    case BM_HEALTH:         ret = new BuildMenu_health( parent, Rect( 0, 0, 60, 1 ) ); break;
+    case BM_SECURITY:       ret = new BuildMenu_security( parent, Rect( 0, 0, 60, 1 )); break;
+    case BM_EDUCATION:      ret = new BuildMenu_education( parent, Rect( 0, 0, 60, 1 )); break;
+    case BM_ENGINEERING:    ret = new BuildMenu_engineering( parent, Rect( 0, 0, 60, 1 )); break;
+    case BM_ADMINISTRATION: ret = new BuildMenu_administration( parent, Rect( 0, 0, 60, 1 )); break;
+    case BM_ENTERTAINMENT:  ret = new BuildMenu_entertainment( parent, Rect( 0, 0, 60, 1 )); break;
+    case BM_COMMERCE:       ret = new BuildMenu_commerce( parent, Rect( 0, 0, 60, 1 )); break;
+    case BM_FARM:           ret = new BuildMenu_farm( parent, Rect( 0, 0, 60, 1 )); break;
+    case BM_RAW_MATERIAL:   ret = new BuildMenu_raw_factory( parent, Rect( 0, 0, 60, 1 )); break;
+    case BM_FACTORY:        ret = new BuildMenu_factory( parent, Rect( 0, 0, 60, 1 )); break;
+    case BM_RELIGION:       ret = new BuildMenu_religion( parent, Rect( 0, 0, 60, 1 )); break;
+    case BM_TEMPLE:         ret = new BuildMenu_temple( parent, Rect( 0, 0, 60, 1 )); break;
+    case BM_BIGTEMPLE:      ret = new BuildMenu_bigtemple( parent, Rect( 0, 0, 60, 1 ) ); break;
     default:       break; // DO NOTHING 
     };
 
-    return buildMenuInstance;
+    return ret;
 }
 
-bool BuildMenu::deleteInstance()
+bool BuildMenu::isPointInside( const Point& point ) const
 {
-    if( buildMenuInstance )
-    {
-        buildMenuInstance->deleteLater();
-        buildMenuInstance = 0;
-        return true;
-    }
-
-    return false;
+    Rect clickedRect = _environment->getRootWidget()->getAbsoluteRect();
+    clickedRect.LowerRightCorner = Point( getParent()->getScreenLeft(), 0 );
+    return clickedRect.isPointInside( point );
 }
 
 void BuildMenu_water::addButtons()

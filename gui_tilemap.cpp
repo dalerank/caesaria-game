@@ -323,7 +323,7 @@ void GuiTilemap::handleEvent( NEvent& event)
         }
         break;
 
-        case OC3_RMOUSE_PRESSED_DOWN:
+        case OC3_RMOUSE_LEFT_UP:
         {
             Tile* tile = getTileXY( event.MouseEvent.getPosition() );  // tile under the cursor (or NULL)
             if (_removeTool)

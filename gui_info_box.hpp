@@ -34,32 +34,31 @@ class PushButton;
 class GuiInfoBox : public Widget
 {
 public:
-   GuiInfoBox( Widget* parent, const Rect& rect, int id );
-   virtual ~GuiInfoBox();
-   void initStatic();
-   virtual void draw( GfxEngine& engine );  // draw on screen
-   virtual void paint() = 0;  // custom paint the bg picture
+    GuiInfoBox( Widget* parent, const Rect& rect, int id );
+    virtual ~GuiInfoBox();
+    void initStatic();
+    virtual void draw( GfxEngine& engine );  // draw on screen
+    virtual void paint() = 0;  // custom paint the bg picture
 
-   Picture& getBgPicture();
+    Picture& getBgPicture();
 
-   void onEvent(NEvent& event);
-   // returns true if widget needs to be deleted
-   bool isDeleted() const;
+    bool onEvent( const NEvent& event);
 
-   Picture& getPictureGood(const GoodType& goodType);
+    bool isPointInside(const Point& point) const;
+
+    Picture& getPictureGood(const GoodType& goodType);
 
 protected:
     void _init();
 
-   std::string _title;
-   Picture *_bgPicture;
-   bool _isDeleted;  // true if needs to be deleted
-   PushButton* _helpButton;
-   PushButton* _hoverButton;
+    std::string _title;
+    Picture *_bgPicture;
+    PushButton* _helpButton;
+    PushButton* _hoverButton;
 
-   static std::vector<Picture*> _mapPictureGood;  // index=GoodType, value=Picture
+    static std::vector<Picture*> _mapPictureGood;  // index=GoodType, value=Picture
 
-   int _paintY;  // Y pixel coordinate of the next paint operation
+    int _paintY;  // Y pixel coordinate of the next paint operation
 };
 
 
@@ -77,6 +76,12 @@ private:
    ServiceBuilding *_building;
 };
 
+class InfoBoxLand : public GuiInfoBox
+{
+public:
+    InfoBoxLand( Widget* parent, Tile* tile );
+    virtual void paint();
+};
 
 // info box about a factory building
 class GuiInfoFactory : public GuiInfoBox

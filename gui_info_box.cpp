@@ -29,9 +29,8 @@
 #include "gui_paneling.hpp"
 #include "building_data.hpp"
 #include "house_level.hpp"
-
-static const char* rcPaneling = "paneling";
-
+#include "oc3_resourcegroup.h"
+#include "oc3_event.h"
 
 std::vector<Picture*> GuiInfoBox::_mapPictureGood; 
 
@@ -39,8 +38,7 @@ GuiInfoBox::GuiInfoBox( Widget* parent, const Rect& rect, int id )
 : Widget( parent, id, rect )
 {
    _title = "";
-   _bgPicture = NULL;
-   _isDeleted = false;
+   _bgPicture = 0;
 
    if (_mapPictureGood.empty())
    {
@@ -58,22 +56,22 @@ void GuiInfoBox::initStatic()
 {
    _mapPictureGood.resize(G_MAX);
    PicLoader& ldr = PicLoader::instance();
-   _mapPictureGood[int(G_WHEAT)    ] = &ldr.get_picture( rcPaneling, 317);
-   _mapPictureGood[int(G_VEGETABLE)] = &ldr.get_picture( rcPaneling, 318);
-   _mapPictureGood[int(G_FRUIT)    ] = &ldr.get_picture( rcPaneling, 319);
-   _mapPictureGood[int(G_OLIVE)    ] = &ldr.get_picture( rcPaneling, 320);
-   _mapPictureGood[int(G_GRAPE)    ] = &ldr.get_picture( rcPaneling, 321);
-   _mapPictureGood[int(G_MEAT)     ] = &ldr.get_picture( rcPaneling, 322);
-   _mapPictureGood[int(G_WINE)     ] = &ldr.get_picture( rcPaneling, 323);
-   _mapPictureGood[int(G_OIL)      ] = &ldr.get_picture( rcPaneling, 324);
-   _mapPictureGood[int(G_IRON)     ] = &ldr.get_picture( rcPaneling, 325);
-   _mapPictureGood[int(G_TIMBER)   ] = &ldr.get_picture( rcPaneling, 326);
-   _mapPictureGood[int(G_CLAY)     ] = &ldr.get_picture( rcPaneling, 327);
-   _mapPictureGood[int(G_MARBLE)   ] = &ldr.get_picture( rcPaneling, 328);
-   _mapPictureGood[int(G_WEAPON)   ] = &ldr.get_picture( rcPaneling, 329);
-   _mapPictureGood[int(G_FURNITURE)] = &ldr.get_picture( rcPaneling, 330);
-   _mapPictureGood[int(G_POTTERY)  ] = &ldr.get_picture( rcPaneling, 331);
-   _mapPictureGood[int(G_FISH)     ] = &ldr.get_picture( rcPaneling, 333);
+   _mapPictureGood[int(G_WHEAT)    ] = &ldr.get_picture( ResourceGroup::panelBackground, 317);
+   _mapPictureGood[int(G_VEGETABLE)] = &ldr.get_picture( ResourceGroup::panelBackground, 318);
+   _mapPictureGood[int(G_FRUIT)    ] = &ldr.get_picture( ResourceGroup::panelBackground, 319);
+   _mapPictureGood[int(G_OLIVE)    ] = &ldr.get_picture( ResourceGroup::panelBackground, 320);
+   _mapPictureGood[int(G_GRAPE)    ] = &ldr.get_picture( ResourceGroup::panelBackground, 321);
+   _mapPictureGood[int(G_MEAT)     ] = &ldr.get_picture( ResourceGroup::panelBackground, 322);
+   _mapPictureGood[int(G_WINE)     ] = &ldr.get_picture( ResourceGroup::panelBackground, 323);
+   _mapPictureGood[int(G_OIL)      ] = &ldr.get_picture( ResourceGroup::panelBackground, 324);
+   _mapPictureGood[int(G_IRON)     ] = &ldr.get_picture( ResourceGroup::panelBackground, 325);
+   _mapPictureGood[int(G_TIMBER)   ] = &ldr.get_picture( ResourceGroup::panelBackground, 326);
+   _mapPictureGood[int(G_CLAY)     ] = &ldr.get_picture( ResourceGroup::panelBackground, 327);
+   _mapPictureGood[int(G_MARBLE)   ] = &ldr.get_picture( ResourceGroup::panelBackground, 328);
+   _mapPictureGood[int(G_WEAPON)   ] = &ldr.get_picture( ResourceGroup::panelBackground, 329);
+   _mapPictureGood[int(G_FURNITURE)] = &ldr.get_picture( ResourceGroup::panelBackground, 330);
+   _mapPictureGood[int(G_POTTERY)  ] = &ldr.get_picture( ResourceGroup::panelBackground, 331);
+   _mapPictureGood[int(G_FISH)     ] = &ldr.get_picture( ResourceGroup::panelBackground, 333);
 }
 
 void GuiInfoBox::_init()
@@ -112,7 +110,7 @@ void GuiInfoBox::_init()
 
 void GuiInfoBox::draw( GfxEngine& engine )
 {
-   //drawPicture( getBgPicture(), dx, dy );
+   engine.drawPicture( getBgPicture(), getScreenLeft(), getScreenTop() );
    Widget::draw( engine );
 }
 
@@ -121,9 +119,26 @@ Picture& GuiInfoBox::getBgPicture()
    return *_bgPicture;
 }
 
-
-void GuiInfoBox::onEvent( NEvent& event)
+bool GuiInfoBox::isPointInside( const Point& point ) const
 {
+    //resolve all screen for self using
+    return getParent()->getAbsoluteRect().isPointInside( point );
+}
+
+bool GuiInfoBox::onEvent( const NEvent& event)
+{
+    switch( event.EventType )
+    {
+    case OC3_MOUSE_EVENT:
+        if( event.MouseEvent.Event == OC3_RMOUSE_LEFT_UP )
+        {
+            deleteLater();
+            return true;
+        }
+    break;
+    }
+
+    return Widget::onEvent( event );
 /*   if (event.type == SDL_MOUSEMOTION)
    {
       // mouse move: hover the right widget
@@ -163,13 +178,6 @@ void GuiInfoBox::onEvent( NEvent& event)
       }
    }*/
 }
-
-
-bool GuiInfoBox::isDeleted() const
-{
-   return _isDeleted;
-}
-
 
 Picture& GuiInfoBox::getPictureGood(const GoodType& goodType)
 {
@@ -264,7 +272,7 @@ void GuiInfoHouse::drawHabitants()
 
    // citizen or patrician picture
    Uint32 picId = _house->getLevelSpec().isPatrician() ? 541 : 542; 
-   Picture* pic = &PicLoader::instance().get_picture( rcPaneling, picId);
+   Picture* pic = &PicLoader::instance().get_picture( ResourceGroup::panelBackground, picId);
    
    sdlFacade.drawPicture( *pic, *_bgPicture, 16+15, _paintY);
 
@@ -656,4 +664,18 @@ void GuiBuilding::paint()
    _paintY+=10;
    GuiPaneling::instance().draw_black_frame(*_bgPicture, 16, _paintY, getWidth()-32, getHeight()-_paintY-16);
    _paintY+=10;  
+}
+
+InfoBoxLand::InfoBoxLand( Widget* parent, Tile* tile )
+    : GuiInfoBox( parent, Rect( 0, 0, 450, 220 ), -1 )
+{
+    _title = "Land information";
+    _init();
+}
+
+void InfoBoxLand::paint()
+{
+    _paintY+=10;
+    GuiPaneling::instance().draw_black_frame(*_bgPicture, 16, _paintY, getWidth()-32, getHeight()-_paintY-16);
+    _paintY+=10;  
 }

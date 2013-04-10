@@ -21,6 +21,8 @@
 #include "pic_loader.hpp"
 #include "oc3_resourcegroup.h"
 #include "oc3_event.h"
+#include "oc3_buildmenu.h"
+#include "oc3_guienv.h"
 
 static const int REMOVE_TOOL_ID = B_MAX + 1; 
 
@@ -55,15 +57,9 @@ public:
     PushButton* cancelButton;
 
 oc3_signals public:
-    Signal2< int, Widget* > onCreateBuildMenuSignal;
     Signal1< int > onCreateConstructionSignal;
     Signal0<> onRemoveToolSignal;
 };
-
-Signal2<int, Widget*>& Menu::onCreateBuildMenu()
-{
-    return _d->onCreateBuildMenuSignal;
-}
 
 Signal1< int >& Menu::onCreateConstruction()
 {
@@ -105,50 +101,50 @@ Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id
     _d->minimizeButton->setPosition( Point( 6, 4 ));
 
     _d->houseButton = new PushButton( this, Rect( 0, 0, 39, 26), "", B_HOUSE );
-    configureButton( _d->houseButton, ResourceMenu::houseBtnPicId, false );
+    configureButton( _d->houseButton, ResourceMenu::houseBtnPicId, true );
     _d->houseButton->setPosition( offset + Point( 0, dy * 0 ) );
 
     _d->clearButton = new PushButton( this, Rect( 0, 0, 39, 26), "", REMOVE_TOOL_ID );
-    configureButton(_d->clearButton, 131, false );
+    configureButton(_d->clearButton, 131, true );
     _d->clearButton->setPosition( offset + Point( 0, dy * 1 ) );
 
     _d->roadButton = new PushButton( this, Rect( 0, 0, 39, 26), "", B_ROAD );
-    configureButton(_d->roadButton, 135, false );
+    configureButton(_d->roadButton, 135, true );
     _d->roadButton->setPosition( offset + Point( 0, dy * 2 ) );
 
-    _d->waterButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_WATER );
+    _d->waterButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_WATER | BuildMenu::subMenuCreateIdHigh);
     configureButton(_d->waterButton,  127, true );
     _d->waterButton->setPosition( offset + Point( 0, dy * 3 ));
 
-    _d->healthButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_HEALTH );
+    _d->healthButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_HEALTH | BuildMenu::subMenuCreateIdHigh);
     configureButton(_d->healthButton, 163, true );
     _d->healthButton->setPosition( offset + Point( 0, dy * 4 ) );
 
-    _d->templeButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_RELIGION );
+    _d->templeButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_RELIGION | BuildMenu::subMenuCreateIdHigh);
     configureButton(_d->templeButton, 151, true);
     _d->templeButton->setPosition( offset + Point( 0, dy * 5 ) );
 
-    _d->educationButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_EDUCATION );
+    _d->educationButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_EDUCATION | BuildMenu::subMenuCreateIdHigh);
     configureButton(_d->educationButton, 147, true );
     _d->educationButton->setPosition( offset + Point( 0, dy * 6 ) );
 
-    _d->entertainmentButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_ENTERTAINMENT );
+    _d->entertainmentButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_ENTERTAINMENT | BuildMenu::subMenuCreateIdHigh );
     configureButton(_d->entertainmentButton, 143, true );
     _d->entertainmentButton->setPosition( offset + Point( 0, dy * 7 ) );
 
-    _d->administrationButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_ADMINISTRATION );
+    _d->administrationButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_ADMINISTRATION | BuildMenu::subMenuCreateIdHigh);
     configureButton(_d->administrationButton, 139, true );
     _d->administrationButton->setPosition( offset + Point( 0, dy * 8 ) );
 
-    _d->engineerButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_ENGINEERING );
+    _d->engineerButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_ENGINEERING | BuildMenu::subMenuCreateIdHigh);
     configureButton(_d->engineerButton, 167, true );
     _d->engineerButton->setPosition( offset + Point( 0, dy * 9 ) );
 
-    _d->securityButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_SECURITY );
+    _d->securityButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_SECURITY | BuildMenu::subMenuCreateIdHigh);
     configureButton(_d->securityButton, 159, true );
     _d->securityButton->setPosition( offset + Point( 0, dy * 10 ) );
 
-    _d->commerceButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_COMMERCE );
+    _d->commerceButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_COMMERCE | BuildMenu::subMenuCreateIdHigh );
     configureButton(_d->commerceButton, 155, true );
     _d->commerceButton->setPosition( offset + Point( 0, dy * 11 ) );
     // //
@@ -290,7 +286,7 @@ bool Menu::onEvent(const NEvent& event)
     if( event.EventType == OC3_GUI_EVENT && event.GuiEvent.EventType == OC3_BUTTON_CLICKED )
     {
         if( !event.GuiEvent.Caller )
-            return true;
+            return false;
 
         int id = event.GuiEvent.Caller->getID();
         switch( id )
@@ -298,17 +294,34 @@ bool Menu::onEvent(const NEvent& event)
         case B_HOUSE:
         case B_ROAD:
             _d->onCreateConstructionSignal.emit( id );
+            _createBuildMenu( -1, this );
         break;
 
         case REMOVE_TOOL_ID:
             _d->onRemoveToolSignal.emit();
+            _createBuildMenu( -1, this );
         break;
         
         default:
             if( _d->lastPressed != event.GuiEvent.Caller )
             {
-                _d->lastPressed = event.GuiEvent.Caller;
-                _d->onCreateBuildMenuSignal.emit( id, event.GuiEvent.Caller );                
+                if( event.GuiEvent.Caller->getParent() == this )
+                    _d->lastPressed = event.GuiEvent.Caller;
+                
+                if( PushButton* btn = safety_cast< PushButton* >( event.GuiEvent.Caller ) )
+                {
+                    int id = btn->getID();
+                    if( id & BuildMenu::subMenuCreateIdHigh )
+                    {
+                        _createBuildMenu( id & 0xff, event.GuiEvent.Caller );        
+                    }
+                    else
+                    {
+                        _d->onCreateConstructionSignal.emit( id );
+                        _createBuildMenu( -1, this );
+                        _d->lastPressed = 0;
+                    }
+                }
             }
 
             unselectAll();
@@ -317,6 +330,14 @@ bool Menu::onEvent(const NEvent& event)
         break;
         }
         
+        return true;
+    }
+
+    if( event.EventType == OC3_MOUSE_EVENT && event.MouseEvent.Event == OC3_RMOUSE_LEFT_UP )
+    {
+        _createBuildMenu( -1, this );
+        unselectAll();
+        _d->lastPressed = 0;
         return true;
     }
 
@@ -354,4 +375,25 @@ bool Menu::unselectAll()
     }
 
     return anyPressed;
+}
+
+void Menu::_createBuildMenu( int type, Widget* parent )
+{
+    List< BuildMenu* > menus = findChildren<BuildMenu*>();
+    for( List< BuildMenu* >::iterator it=menus.begin(); it != menus.end(); it++ )
+        (*it)->deleteLater();
+
+    BuildMenu* buildMenu = BuildMenu::getMenuInstance( (BuildMenuType)type, this );
+
+    if( buildMenu != NULL )
+    {
+        buildMenu->setNotClipped( true );
+
+        buildMenu->init();
+
+        
+
+        int y = math::clamp< int >( parent->getScreenTop() - getScreenTop(), 0, _environment->getRootWidget()->getHeight() - buildMenu->getHeight() );
+        buildMenu->setPosition( Point( -(int)buildMenu->getWidth() - 5, y ) );
+    }
 }

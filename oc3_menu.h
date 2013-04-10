@@ -34,7 +34,6 @@ public:
     bool unselectAll();
 
 oc3_signals public:
-    Signal2< int, Widget* >& onCreateBuildMenu();
     Signal1< int >& onCreateConstruction();
     Signal0<>& onRemoveTool();
 
@@ -43,6 +42,7 @@ protected:
     ScopedPtr< Impl > _d;
 
     Menu( Widget* parent, int id, const Rect& rectangle );
+    void _createBuildMenu( int type, Widget* parent );
 };
 
 #endif

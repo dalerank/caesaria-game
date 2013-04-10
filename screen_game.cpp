@@ -33,7 +33,7 @@
 #include "oc3_topmenu.h"
 #include "oc3_menu.h"
 #include "oc3_event.h"
-#include "oc3_buildmenu.h"
+#include "oc3_infoboxmanager.h"
 
 class ScreenGame::Impl
 {
@@ -44,6 +44,7 @@ public:
     GfxEngine* engine;
     TopMenu* topMenu;
     Menu* menu;
+    InfoBoxManagerPtr infoBoxMgr;
 };
 
 ScreenGame::ScreenGame() : _d( new Impl )
@@ -58,6 +59,7 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
 {
     _d->gui = &gui;
     _d->engine = &engine;
+    _d->infoBoxMgr = InfoBoxManager::create( &gui );
     // enable key repeat, 1ms delay, 100ms repeat
     SDL_EnableKeyRepeat(1, 100);
 
@@ -77,7 +79,6 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
     //over other elements
     _d->rightPanel->bringToFront();
 
-    CONNECT( _d->menu, onCreateBuildMenu(), this, ScreenGame::createBuildMenu );
     CONNECT( _d->menu, onCreateConstruction(), this, ScreenGame::resolveCreateConstruction );
     CONNECT( _d->menu, onRemoveTool(), this, ScreenGame::resolveRemoveTool );
 
@@ -118,7 +119,6 @@ void ScreenGame::drawInterface()
     _d->gui->draw();
 }
 
-
 void ScreenGame::draw()
 {
    drawTilemap();
@@ -134,9 +134,9 @@ void ScreenGame::handleEvent( NEvent& event )
 {
     bool eventResolved = _d->gui->handleEvent( event );      
 
-    if( event.EventType == OC3_MOUSE_EVENT && event.MouseEvent.Event == OC3_RMOUSE_LEFT_UP )
+    if( event.EventType == OC3_MOUSE_EVENT && 
+        event.MouseEvent.Event == OC3_RMOUSE_LEFT_UP )
     {
-        eventResolved |= BuildMenu::deleteInstance();
         eventResolved |= _d->menu->unselectAll();
     }
     
@@ -155,25 +155,6 @@ int ScreenGame::getResult() const
 	return 0;
 }
 
-void ScreenGame::createBuildMenu( int type, Widget* parent )
-{
-    BuildMenu* buildMenu = BuildMenu::getMenuInstance( (BuildMenuType)type, _d->gui->getRootWidget() );
-    
-    if( buildMenu != NULL )
-    {
-       // we have a new buildMenu: initialize it
-       GfxEngine &engine = GfxEngine::instance();
-
-       CONNECT( buildMenu, onCreateBuildMenu(), this, ScreenGame::createBuildMenu );
-       CONNECT( buildMenu, onCreateConstruction(), this, ScreenGame::resolveCreateConstruction );
-    
-       // compute the Y position of the menu, ugly because of submenus   
-       buildMenu->init();
-       int y = math::clamp< int >( parent->getScreenTop(), 0, engine.getScreenHeight() - buildMenu->getHeight() );
-       buildMenu->setPosition( Point( _d->menu->getScreenLeft() - buildMenu->getWidth() - 5, y ) );
-    }
-}
-
 void ScreenGame::resolveCreateConstruction( int type )
 {
     Construction *construction = dynamic_cast<Construction*>(LandOverlay::getInstance( BuildingType( type ) ) );
@@ -187,7 +168,7 @@ void ScreenGame::resolveRemoveTool()
 
 void ScreenGame::showTileInfo( Tile* tile )
 {
-
+    _d->infoBoxMgr->showHelp( tile );
 }
 // void ScreenGame::handleWidgetEvent(const WidgetEvent& event, Widget *widget)
 // {

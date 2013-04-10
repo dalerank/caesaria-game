@@ -111,7 +111,7 @@ public:
 
 	inline void swap(ScopedPtr<T, Cleanup> &other)
 	{
-		math::swap(d, other.d);
+		std::swap(d, other.d);
 	}
 
 	typedef T *pointer;

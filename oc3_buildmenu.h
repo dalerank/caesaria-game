@@ -19,34 +19,28 @@
 #include "oc3_widget.h"
 #include "enums.hpp"
 #include "oc3_signals.h"
+#include "oc3_scopedptr.h"
 
 class PushButton;
 
 class BuildMenu : public Widget
 {
 public:
+    static const int subMenuCreateIdHigh = 0x1000;
+
     BuildMenu( Widget* parent, const Rect& rectangle, int id );
     virtual void addButtons() = 0;
     virtual ~BuildMenu();
     void init();
 
     static BuildMenu* getMenuInstance(const BuildMenuType menuType, Widget* parent);
-    static bool deleteInstance();
 
     // add the subMenu in the menu.
     void addSubmenuButton(const BuildMenuType menuType, const std::string &text);
     // add the button in the menu.
     void addBuildButton(const BuildingType buildingType);
 
-    bool onEvent(const NEvent& event);
-
-oc3_signals public:
-    Signal2< int, Widget* >& onCreateBuildMenu();
-    Signal1< int >& onCreateConstruction();
-
-private:
-    class Impl;
-    std::auto_ptr< Impl > _d;
+    bool isPointInside(const Point& point) const;
 };
 
 class BuildMenu_water : public BuildMenu

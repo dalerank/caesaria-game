@@ -459,12 +459,12 @@ bool GuiEnv::handleEvent( const NEvent& event )
 //             }
 //             else
                 if( getFocus() )
-                    getFocus()->onEvent( event );
+                    return getFocus()->onEvent( event );
         break;
 
         default:
             if( _d->hovered )
-                _d->hovered->onEvent( event );
+                return _d->hovered->onEvent( event );
         break;
         }
     break;
