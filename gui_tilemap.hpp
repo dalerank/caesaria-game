@@ -22,12 +22,13 @@
 
 #include <list>
 #include <vector>
-#include <memory>
 
 #include <picture.hpp>
 #include <city.hpp>
 #include <tilemap.hpp>
 #include <tilemap_area.hpp>
+#include "oc3_signals.h"
+#include "oc3_scopedptr.h"
 
 class ScreenGame;
 struct NEvent;
@@ -59,6 +60,9 @@ public:
 
    // activate/deactivate build preview (aka priorityTiles)
    void setPreview(const bool isPreview);
+
+oc3_signals public:
+   Signal1< Tile* >& onShowTileInfo();
 
 protected:
    // used to discard the build/remove preview
@@ -97,7 +101,7 @@ private:
    ScreenGame *_screenGame;
 
    class Impl;
-   std::auto_ptr< Impl > _d;
+   ScopedPtr< Impl > _d;
 };
 
 

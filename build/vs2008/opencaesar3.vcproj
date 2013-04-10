@@ -371,6 +371,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_infoboxmanager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_infoboxmanager.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_label.cpp"
 				>
 			</File>
@@ -447,11 +455,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_scopedptr.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_signals.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\oc3_size.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_smartptr.h"
 				>
 			</File>
 			<File

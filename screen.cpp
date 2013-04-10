@@ -40,8 +40,6 @@ void Screen::drawFrame()
 
 void Screen::handleEvent( NEvent& event) {}
 
-//void Screen::handleWidgetEvent(const WidgetEvent &event, Widget *widget) {}
-
 void Screen::afterFrame() {}
 
 void Screen::stop()

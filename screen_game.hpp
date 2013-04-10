@@ -27,6 +27,7 @@
 #include "gui_tilemap.hpp"
 #include "gui_info_box.hpp"
 #include "screen.hpp"
+#include "oc3_scopedptr.h"
 
 class Menu;
 class BuildMenu;
@@ -62,6 +63,7 @@ private:
    void createBuildMenu( int type, Widget* parent );
    void resolveCreateConstruction( int type );
    void resolveRemoveTool();
+   void showTileInfo( Tile* tile );
 
    GuiInfoBox* _infoBox;   // info box to display, if any
    Scenario* _scenario; // current game scenario
@@ -70,7 +72,7 @@ private:
    GuiTilemap _guiTilemap;
 
    class Impl;
-   std::auto_ptr< Impl > _d;
+   ScopedPtr< Impl > _d;
 };
 
 

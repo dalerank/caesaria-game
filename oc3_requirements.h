@@ -34,4 +34,8 @@
     #define _OC3_DEBUG_BREAK_IF( _CONDITION_ )
 #endif
 
+#define _OC3_DISABLE_COPY(Class) \
+    Class( const Class& ); \
+    Class& operator=( const Class& );
+
 #endif

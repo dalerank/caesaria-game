@@ -22,7 +22,7 @@
 #define oc3_signals
 #define oc3_slots
 
-#define CONNECT( a, signal, b, slot ) a->signal.connect( b, &slot )
+#define CONNECT( a, signal, b, slot ) (a)->signal.connect( (b), &slot )
 
 template< class Param0 = void >
 class Signal0

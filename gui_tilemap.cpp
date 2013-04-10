@@ -24,7 +24,6 @@
 
 #include "gfx_engine.hpp"
 #include "exception.hpp"
-#include "gui_info_box.hpp"
 #include "screen_game.hpp"
 #include "oc3_positioni.h"
 #include "oc3_pictureconverter.h"
@@ -39,6 +38,9 @@ public:
     Tiles postTiles;  // these tiles have draw over "normal" tilemap tiles!
     Picture buildInstncePicture;
     Point lastCursorPos;
+
+oc3_signals public:
+    Signal1< Tile* > onShowTileInfoSignal;
 };
 
 
@@ -128,7 +130,6 @@ void GuiTilemap::drawTile( const Tile& tile )
 		}
 	}
 }
-
 
 void GuiTilemap::drawTilemap()
 {
@@ -337,16 +338,9 @@ void GuiTilemap::handleEvent( NEvent& event)
                 _buildInstance = NULL;
                 discardPreview();
             }
-            else if( tile->get_terrain().getOverlay() != NULL)
+            else
             {
-                // tile has an overlay
-                LandOverlay &overlay = *tile->get_terrain().getOverlay();
-                GuiInfoBox* infoBox = overlay.makeInfoBox();
-                if (infoBox != NULL)
-                {
-                    infoBox->setPosition( Point( (GfxEngine::instance().getScreenWidth()-infoBox->getWidth())/2, 10) );
-                     //_screenGame->setInfoBox(infoBox);
-                }
+                _d->onShowTileInfoSignal.emit( tile );
             }         
         }
         break;
@@ -520,3 +514,7 @@ Tile& GuiTilemap::getTileIJ(const int i, const int j)
    return _tilemap->at(i, j);
 }
 
+Signal1< Tile* >& GuiTilemap::onShowTileInfo()
+{
+    return _d->onShowTileInfoSignal;
+}

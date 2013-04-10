@@ -78,6 +78,8 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
     CONNECT( _d->menu, onCreateBuildMenu(), this, ScreenGame::createBuildMenu );
     CONNECT( _d->menu, onCreateConstruction(), this, ScreenGame::resolveCreateConstruction );
     CONNECT( _d->menu, onRemoveTool(), this, ScreenGame::resolveRemoveTool );
+
+    CONNECT( &_guiTilemap, onShowTileInfo(), this, ScreenGame::showTileInfo );
   /* _d->extMenu = ExtentMenu::create();
    _d->extMenu->setPosition( engine.getScreenWidth() - _d->extMenu->getWidth() - _d->rightPanel->getWidth(), 
                              _d->topMenu->getHeight() ); */
@@ -175,6 +177,10 @@ void ScreenGame::resolveRemoveTool()
     _guiTilemap.setRemoveTool();
 }
 
+void ScreenGame::showTileInfo( Tile* tile )
+{
+
+}
 // void ScreenGame::handleWidgetEvent(const WidgetEvent& event, Widget *widget)
 // {
 //    
