@@ -36,7 +36,7 @@ public:
 oc3_signals public:
     Signal1< int >& onCreateConstruction();
     Signal0<>& onRemoveTool();
-    Signal0<>& onMaximaze();
+    Signal0<>& onMaximize();
 
 protected:
     class Impl;
@@ -52,7 +52,7 @@ public:
     static ExtentMenu* create( Widget* parent, int id );
 
     void minimize();
-    void maximaze();
+    void maximize();
 protected:
     ExtentMenu( Widget* parent, int id, const Rect& rectangle );
 };

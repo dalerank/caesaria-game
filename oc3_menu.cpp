@@ -27,7 +27,7 @@
 #include "oc3_widgetpositionanimator.h"
 
 static const int REMOVE_TOOL_ID = B_MAX + 1; 
-static const int MAXIMAZE_ID = REMOVE_TOOL_ID + 1;
+static const int MAXIMIZE_ID = REMOVE_TOOL_ID + 1;
 
 class Menu::Impl
 {
@@ -62,7 +62,7 @@ public:
 oc3_signals public:
     Signal1< int > onCreateConstructionSignal;
     Signal0<> onRemoveToolSignal;
-    Signal0<> onMaximazeSignal;
+    Signal0<> onMaximizeSignal;
 };
 
 Signal1< int >& Menu::onCreateConstruction()
@@ -90,8 +90,8 @@ Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id
 
     Point offset( 1, 32 );
     int dy = 35;
-    _d->minimizeButton = new PushButton( this, Rect( 0, 0, 31, 20), "", MAXIMAZE_ID );
-    GuiPaneling::configureTexturedButton( _d->minimizeButton, ResourceGroup::panelBackground, ResourceMenu::maximazeBtnPicId, false );
+    _d->minimizeButton = new PushButton( this, Rect( 0, 0, 31, 20), "", MAXIMIZE_ID );
+    GuiPaneling::configureTexturedButton( _d->minimizeButton, ResourceGroup::panelBackground, ResourceMenu::maximizeBtnPicId, false );
     _d->minimizeButton->setPosition( Point( 6, 4 ));
 
     _d->houseButton = new PushButton( this, Rect( 0, 0, 39, 26), "", B_HOUSE );
@@ -199,11 +199,11 @@ bool Menu::onEvent(const NEvent& event)
         int id = event.GuiEvent.Caller->getID();
         switch( id )
         {
-        case MAXIMAZE_ID:
+        case MAXIMIZE_ID:
             _d->lastPressed = 0;
             unselectAll();
             _createBuildMenu( -1, this );
-            _d->onMaximazeSignal.emit();
+            _d->onMaximizeSignal.emit();
         break;
 
         case B_HOUSE:
@@ -324,9 +324,9 @@ void Menu::_createBuildMenu( int type, Widget* parent )
     }
 }
 
-Signal0<>& Menu::onMaximaze()
+Signal0<>& Menu::onMaximize()
 {
-    return _d->onMaximazeSignal;
+    return _d->onMaximizeSignal;
 }
 
 ExtentMenu* ExtentMenu::create( Widget* parent, int id )
@@ -356,7 +356,7 @@ void ExtentMenu::minimize()
                                                    stopPos, 300 );
 }
 
-void ExtentMenu::maximaze()
+void ExtentMenu::maximize()
 {
     Point stopPos = getRelativeRect().UpperLeftCorner - Point( getWidth(), 0 );
     show();

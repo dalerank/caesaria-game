@@ -26,7 +26,7 @@ public:
 class ResourceMenu
 {
 public:
-    static const int maximazeBtnPicId = 101;
+    static const int maximizeBtnPicId = 101;
     static const int houseBtnPicId = 123;
     static const int helpInfBtnPicId = 528;
     static const int exitInfBtnPicId = 532;

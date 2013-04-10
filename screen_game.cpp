@@ -84,7 +84,7 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
 
     CONNECT( _d->menu, onCreateConstruction(), this, ScreenGame::resolveCreateConstruction );
     CONNECT( _d->menu, onRemoveTool(), this, ScreenGame::resolveRemoveTool );
-    CONNECT( _d->menu, onMaximaze(), _d->extMenu, ExtentMenu::maximaze );
+    CONNECT( _d->menu, onMaximize(), _d->extMenu, ExtentMenu::maximize );
 
     CONNECT( _d->extMenu, onCreateConstruction(), this, ScreenGame::resolveCreateConstruction );
 
