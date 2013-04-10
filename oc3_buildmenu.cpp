@@ -56,7 +56,7 @@ public:
         if( font.isValid() && _cost >= 0)
         {           
             char buffer[32];
-            itoa( _cost, buffer, 10 );
+            sprintf( buffer, "%d", _cost );
             Rect textRect = font.calculateTextRect( buffer, Rect( 0, 0, getWidth(), getHeight() ),
                                                     alignLowerRight, getVerticalTextAlign() );
             SdlFacade::instance().drawText( *_getPicture( state ), buffer, textRect.getLeft(), textRect.getTop(), 
