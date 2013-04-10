@@ -579,7 +579,7 @@ Picture& Road::computePicture()
       }
    }
 
-   std::cout << "direction flags=" << directionFlags << std::endl;
+   // std::cout << "direction flags=" << directionFlags << std::endl;
 
    int index;
    switch (directionFlags)

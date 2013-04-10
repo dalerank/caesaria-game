@@ -18,6 +18,8 @@
 
 #include "caesar.hpp"
 
+#include "screen_wait.hpp"
+
 #include <cstdlib>
 #include <string>
 #include <sstream>
@@ -42,7 +44,7 @@
 #include "gui_info_box.hpp"
 #include "model_loader.hpp"
 
-#include "screen_wait.hpp"
+
 #include "screen_menu.hpp"
 #include "screen_game.hpp"
 #include "house_level.hpp"

@@ -19,9 +19,9 @@
 
 #include <iostream>
 #include <cmath>
+#include <cstdlib>
 #include <iterator>
 #include <string>
-#include <iosfwd>
 
 #include "gettext.hpp"
 #include "oc3_pushbutton.h"
@@ -108,7 +108,8 @@ void BuildMenu::init()
             max_text_width = std::max(max_text_width, text_width);
 
             char buffer[32];
-            sdlFacade.getTextSize(font, itoa( button->getCost(), buffer, 10 ), text_width, text_height);
+	    sprintf(buffer, "%i", button->getCost());
+            sdlFacade.getTextSize(font, buffer, text_width, text_height);
             max_cost_width = std::max(max_cost_width, text_width);
         }
     }
