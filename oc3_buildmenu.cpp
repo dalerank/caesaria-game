@@ -232,6 +232,18 @@ BuildMenu *BuildMenu::getMenuInstance(const BuildMenuType menuType, Widget* pare
     return buildMenuInstance;
 }
 
+bool BuildMenu::deleteInstance()
+{
+    if( buildMenuInstance )
+    {
+        buildMenuInstance->deleteLater();
+        buildMenuInstance = 0;
+        return true;
+    }
+
+    return false;
+}
+
 void BuildMenu_water::addButtons()
 {
     addBuildButton(B_FOUNTAIN);

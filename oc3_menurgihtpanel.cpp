@@ -34,9 +34,9 @@ void MenuRigthPanel::draw( GfxEngine& engine )
     engine.drawPicture( *_d->picture, getScreenLeft(), getScreenTop() );
 }
 
-MenuRigthPanelPtr MenuRigthPanel::create( Widget* parent, const Rect& rectangle, const Picture& tilePic )
+MenuRigthPanel* MenuRigthPanel::create( Widget* parent, const Rect& rectangle, const Picture& tilePic )
 {
-    MenuRigthPanelPtr ret( new MenuRigthPanel( parent ) );
+    MenuRigthPanel* ret = new MenuRigthPanel( parent );
 
     ret->setGeometry( rectangle );
     SdlFacade &sdlFacade = SdlFacade::instance();

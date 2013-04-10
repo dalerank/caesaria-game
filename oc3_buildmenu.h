@@ -31,6 +31,7 @@ public:
     void init();
 
     static BuildMenu* getMenuInstance(const BuildMenuType menuType, Widget* parent);
+    static bool deleteInstance();
 
     // add the subMenu in the menu.
     void addSubmenuButton(const BuildMenuType menuType, const std::string &text);

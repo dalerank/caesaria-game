@@ -232,9 +232,9 @@ void ExtentMenu::draw( GfxEngine& engine )
     Widget::draw( engine );
 }
 
-ExtentMenuPtr ExtentMenu::create( Widget* parent, const Rect& rect, int id )
+ExtentMenu* ExtentMenu::create( Widget* parent, const Rect& rect, int id )
 {
-    ExtentMenuPtr ret( new ExtentMenu( parent, rect, id ) );
+    ExtentMenu* ret( new ExtentMenu( parent, rect, id ) );
     return ret;
 }
 

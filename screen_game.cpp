@@ -38,14 +38,13 @@
 class ScreenGame::Impl
 {
 public:
-    MenuRigthPanelPtr rightPanel;
-    ExtentMenuPtr extMenu;
+    MenuRigthPanel* rightPanel;
+    ExtentMenu* extMenu;
     GuiEnv* gui;
     GfxEngine* engine;
     TopMenu* topMenu;
     Menu* menu;
 };
-
 
 ScreenGame::ScreenGame() : _d( new Impl )
 {
@@ -74,6 +73,9 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
     _d->menu = Menu::create( gui.getRootWidget(), -1 );
     _d->menu->setPosition( Point( engine.getScreenWidth() - _d->menu->getWidth() - _d->rightPanel->getWidth(), 
                                  _d->topMenu->getHeight() ) );
+
+    //over other elements
+    _d->rightPanel->bringToFront();
 
     CONNECT( _d->menu, onCreateBuildMenu(), this, ScreenGame::createBuildMenu );
     CONNECT( _d->menu, onCreateConstruction(), this, ScreenGame::resolveCreateConstruction );
@@ -130,14 +132,20 @@ void ScreenGame::afterFrame()
 
 void ScreenGame::handleEvent( NEvent& event )
 {
-    bool eventResolved = _d->gui->handleEvent( event );           
+    bool eventResolved = _d->gui->handleEvent( event );      
 
+    if( event.EventType == OC3_MOUSE_EVENT && event.MouseEvent.Event == OC3_RMOUSE_LEFT_UP )
+    {
+        eventResolved |= BuildMenu::deleteInstance();
+        eventResolved |= _d->menu->unselectAll();
+    }
+    
     if( !eventResolved )
         _guiTilemap.handleEvent( event );
 
     if( event.EventType == OC3_KEYBOARD_EVENT && event.KeyboardEvent.Key == KEY_ESCAPE )
     {
-        std::cout << "SDLK_ESCAPE was pressed" << std::endl;
+        std::cout << "EVENT_ESCAPE was pressed" << std::endl;
         stop();
     }
 }

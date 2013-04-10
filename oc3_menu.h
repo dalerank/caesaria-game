@@ -19,6 +19,7 @@
 
 #include "oc3_widget.h"
 #include "oc3_signals.h"
+#include "oc3_scopedptr.h"
 
 class Menu : public Widget
 {
@@ -30,6 +31,8 @@ public:
 
     bool onEvent(const NEvent& event);
 
+    bool unselectAll();
+
 oc3_signals public:
     Signal2< int, Widget* >& onCreateBuildMenu();
     Signal1< int >& onCreateConstruction();
@@ -37,7 +40,7 @@ oc3_signals public:
 
 protected:
     class Impl;
-    std::auto_ptr< Impl > _d;
+    ScopedPtr< Impl > _d;
 
     Menu( Widget* parent, int id, const Rect& rectangle );
 };

@@ -29,6 +29,7 @@ class Menu::Impl
 public:
     Picture* bgPicture;
 
+    Widget* lastPressed;
     PushButton* menuButton;
     PushButton* minimizeButton;
     PushButton* senateButton;
@@ -74,18 +75,19 @@ Signal0<>& Menu::onRemoveTool()
     return _d->onRemoveToolSignal;
 }
 
-void configureButton(PushButton* oButton, const int pic_index)
+void configureButton(PushButton* oButton, const int pic_index, bool pushButton )
 {
     PicLoader& loader = PicLoader::instance();
     oButton->setPicture( &loader.get_picture( ResourceGroup::panelBackground, pic_index), stNormal );
     oButton->setPicture( &loader.get_picture( ResourceGroup::panelBackground, pic_index+1), stHovered );
     oButton->setPicture( &loader.get_picture( ResourceGroup::panelBackground, pic_index+2), stPressed );
     oButton->setPicture( &loader.get_picture( ResourceGroup::panelBackground, pic_index+3), stDisabled );
-    oButton->setIsPushButton( true );
+    oButton->setIsPushButton( pushButton );
 }
 
 Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id, rectangle ), _d( new Impl )
 {
+    _d->lastPressed = 0;
     // // top of menu
     //_menuButton.setText("Menu");
     //_menuButton.setEvent(WidgetEvent::InGameMenuEvent());
@@ -99,55 +101,55 @@ Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id
     Point offset( 1, 32 );
     int dy = 35;
     _d->minimizeButton = new PushButton( this, Rect( 0, 0, 31, 20) );
-    configureButton( _d->minimizeButton, ResourceGroup::maximazeBtnPicId );
+    configureButton( _d->minimizeButton, ResourceMenu::maximazeBtnPicId, false );
     _d->minimizeButton->setPosition( Point( 6, 4 ));
 
     _d->houseButton = new PushButton( this, Rect( 0, 0, 39, 26), "", B_HOUSE );
-    configureButton( _d->houseButton, ResourceGroup::houseBtnPicId );
+    configureButton( _d->houseButton, ResourceMenu::houseBtnPicId, false );
     _d->houseButton->setPosition( offset + Point( 0, dy * 0 ) );
 
     _d->clearButton = new PushButton( this, Rect( 0, 0, 39, 26), "", REMOVE_TOOL_ID );
-    configureButton(_d->clearButton, 131 );
+    configureButton(_d->clearButton, 131, false );
     _d->clearButton->setPosition( offset + Point( 0, dy * 1 ) );
 
     _d->roadButton = new PushButton( this, Rect( 0, 0, 39, 26), "", B_ROAD );
-    configureButton(_d->roadButton, 135);
+    configureButton(_d->roadButton, 135, false );
     _d->roadButton->setPosition( offset + Point( 0, dy * 2 ) );
 
     _d->waterButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_WATER );
-    configureButton(_d->waterButton,  127);
+    configureButton(_d->waterButton,  127, true );
     _d->waterButton->setPosition( offset + Point( 0, dy * 3 ));
 
     _d->healthButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_HEALTH );
-    configureButton(_d->healthButton, 163);
+    configureButton(_d->healthButton, 163, true );
     _d->healthButton->setPosition( offset + Point( 0, dy * 4 ) );
 
     _d->templeButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_RELIGION );
-    configureButton(_d->templeButton, 151);
+    configureButton(_d->templeButton, 151, true);
     _d->templeButton->setPosition( offset + Point( 0, dy * 5 ) );
 
     _d->educationButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_EDUCATION );
-    configureButton(_d->educationButton, 147);
+    configureButton(_d->educationButton, 147, true );
     _d->educationButton->setPosition( offset + Point( 0, dy * 6 ) );
 
     _d->entertainmentButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_ENTERTAINMENT );
-    configureButton(_d->entertainmentButton, 143);
+    configureButton(_d->entertainmentButton, 143, true );
     _d->entertainmentButton->setPosition( offset + Point( 0, dy * 7 ) );
 
     _d->administrationButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_ADMINISTRATION );
-    configureButton(_d->administrationButton, 139);
+    configureButton(_d->administrationButton, 139, true );
     _d->administrationButton->setPosition( offset + Point( 0, dy * 8 ) );
 
     _d->engineerButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_ENGINEERING );
-    configureButton(_d->engineerButton, 167);
+    configureButton(_d->engineerButton, 167, true );
     _d->engineerButton->setPosition( offset + Point( 0, dy * 9 ) );
 
     _d->securityButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_SECURITY );
-    configureButton(_d->securityButton, 159);
+    configureButton(_d->securityButton, 159, true );
     _d->securityButton->setPosition( offset + Point( 0, dy * 10 ) );
 
     _d->commerceButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_COMMERCE );
-    configureButton(_d->commerceButton, 155);
+    configureButton(_d->commerceButton, 155, true );
     _d->commerceButton->setPosition( offset + Point( 0, dy * 11 ) );
     // //
     // _midIcon.setPicture(PicLoader::instance().get_picture("panelwindows", 1));
@@ -287,22 +289,34 @@ bool Menu::onEvent(const NEvent& event)
 {
     if( event.EventType == OC3_GUI_EVENT && event.GuiEvent.EventType == OC3_BUTTON_CLICKED )
     {
+        if( !event.GuiEvent.Caller )
+            return true;
+
         int id = event.GuiEvent.Caller->getID();
-        if( id == B_HOUSE || id == B_ROAD )
-            _d->onCreateConstructionSignal.emit( id );
-        else if( event.GuiEvent.Caller->getID() == REMOVE_TOOL_ID )
-            _d->onRemoveToolSignal.emit();
-        else
-            _d->onCreateBuildMenuSignal.emit( event.GuiEvent.Caller->getID(), event.GuiEvent.Caller );
-
-        for( ConstChildIterator it=getChildren().begin(); it != getChildren().end(); it++ )
+        switch( id )
         {
-            if( *it == event.GuiEvent.Caller )
-                continue;
+        case B_HOUSE:
+        case B_ROAD:
+            _d->onCreateConstructionSignal.emit( id );
+        break;
 
-            if( PushButton* btn = safety_cast< PushButton* >( *it ) )
-                btn->setPressed( false );
+        case REMOVE_TOOL_ID:
+            _d->onRemoveToolSignal.emit();
+        break;
+        
+        default:
+            if( _d->lastPressed != event.GuiEvent.Caller )
+            {
+                _d->lastPressed = event.GuiEvent.Caller;
+                _d->onCreateBuildMenuSignal.emit( id, event.GuiEvent.Caller );                
+            }
+
+            unselectAll();
+            if( PushButton* btn = safety_cast< PushButton* >( _d->lastPressed ) )
+                btn->setPressed( true );
+        break;
         }
+        
         return true;
     }
 
@@ -325,4 +339,19 @@ Menu* Menu::create( Widget* parent, int id )
     ret->setGeometry( Rect( 0, 0, bground.get_width(), ret->_d->bgPicture->get_height() ) );
 
 	return ret;
+}
+
+bool Menu::unselectAll()
+{
+    bool anyPressed = false;
+    for( ConstChildIterator it=getChildren().begin(); it != getChildren().end(); it++ )
+    {
+        if( PushButton* btn = safety_cast< PushButton* >( *it ) )
+        {
+            anyPressed |= btn->isPressed();
+            btn->setPressed( false );
+        }
+    }
+
+    return anyPressed;
 }
