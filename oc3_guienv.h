@@ -37,6 +37,7 @@ public:
 	
     Widget* getRootWidget();								//  
     Widget* getFocus() const;
+    Point getCursorPos() const;
 
     bool isHovered( const Widget* element );
     Widget* getHoveredElement() const;

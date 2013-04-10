@@ -29,6 +29,7 @@
 #include "service_building.hpp"
 
 class PushButton;
+class Label;
 
 // base class for info boxes
 class GuiInfoBox : public Widget
@@ -81,6 +82,11 @@ class InfoBoxLand : public GuiInfoBox
 public:
     InfoBoxLand( Widget* parent, Tile* tile );
     virtual void paint();
+
+private:
+    Label* _text;
+    PushButton* _btnExit;
+    PushButton* _btnHelp;
 };
 
 // info box about a factory building

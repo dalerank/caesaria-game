@@ -32,15 +32,24 @@ void InfoBoxManager::showHelp( Tile* tile )
     LandOverlay* overlay = tile->get_terrain().getOverlay();
     GuiInfoBox* infoBox = 0;
 
-    if( !overlay  )
+    if( !overlay )
     {
         const TerrainTile& terrain = tile->get_terrain();
         infoBox = new InfoBoxLand( _d->gui->getRootWidget(), tile );
     }
+    else
+    {
+        if( Road* road = safety_cast< Road* >( overlay ) )
+        {
+            infoBox = new InfoBoxLand( _d->gui->getRootWidget(), tile );
+        }
+    }
     
     if( infoBox  )
     {
-        infoBox->setPosition( Point( (_d->gui->getRootWidget()->getWidth() - infoBox->getWidth()) / 2, 30) );
+        Point pos( 156, ( _d->gui->getCursorPos().getY() < _d->gui->getRootWidget()->getHeight() / 2 ) ? 407 : 30);
+
+        infoBox->setPosition( pos );
         //_screenGame->setInfoBox(infoBox);
     }
 }

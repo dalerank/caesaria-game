@@ -133,13 +133,7 @@ void ScreenGame::afterFrame()
 void ScreenGame::handleEvent( NEvent& event )
 {
     bool eventResolved = _d->gui->handleEvent( event );      
-
-    if( event.EventType == OC3_MOUSE_EVENT && 
-        event.MouseEvent.Event == OC3_RMOUSE_LEFT_UP )
-    {
-        eventResolved |= _d->menu->unselectAll();
-    }
-    
+   
     if( !eventResolved )
         _guiTilemap.handleEvent( event );
 

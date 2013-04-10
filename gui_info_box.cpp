@@ -31,6 +31,8 @@
 #include "house_level.hpp"
 #include "oc3_resourcegroup.h"
 #include "oc3_event.h"
+#include "oc3_pushbutton.h"
+#include "oc3_label.h"
 
 std::vector<Picture*> GuiInfoBox::_mapPictureGood; 
 
@@ -138,45 +140,7 @@ bool GuiInfoBox::onEvent( const NEvent& event)
     break;
     }
 
-    return Widget::onEvent( event );
-/*   if (event.type == SDL_MOUSEMOTION)
-   {
-      // mouse move: hover the right widget
-
-      // get button under the cursor
-      Widget *hoverWidget = getElementFromPoint( event.motion.x, event.motion.y );
-      ImageButton *hoverButton = dynamic_cast<ImageButton*>(hoverWidget);
-
-      if (_hoverButton != NULL && _hoverButton != hoverButton)
-      {
-         // mouse quits hover button => unhover
-         _hoverButton->setState(B_NORMAL);
-         _hoverButton = NULL;
-      }
-      if (hoverButton != NULL && hoverButton->getState() == B_NORMAL)
-      {
-         // mouse enters a normal button => hover
-         hoverButton->setState(B_HOVER);
-         _hoverButton = hoverButton;
-      }
-   }
-   if (event.type == SDL_MOUSEBUTTONDOWN)
-   {
-      int button = event.button.button;
-      // int x = event.button.x;
-      // int y = event.button.y;
-      if (button == SDL_BUTTON_RIGHT)
-      {
-         _isDeleted = true;
-      }
-   }
-   if (event.type == SDL_KEYDOWN)
-   {
-      if (event.key.keysym.sym == SDLK_ESCAPE)
-      {
-         _isDeleted = true;
-      }
-   }*/
+    return true;
 }
 
 Picture& GuiInfoBox::getPictureGood(const GoodType& goodType)
@@ -667,15 +631,47 @@ void GuiBuilding::paint()
 }
 
 InfoBoxLand::InfoBoxLand( Widget* parent, Tile* tile )
-    : GuiInfoBox( parent, Rect( 0, 0, 450, 220 ), -1 )
+    : GuiInfoBox( parent, Rect( 0, 0, 510, 350 ), -1 )
 {
-    _title = "Land information";
+    Label* _text = new Label( this, Rect( 36, 239, 470, 338 ), "" );
+    _text->setFont( FontCollection::instance().getFont(FONT_2) );
+    _btnExit = new PushButton( this, Rect( 472, 311, 495, 334 ) );
+    GuiPaneling::configureTexturedButton( _btnExit, ResourceGroup::panelBackground, ResourceMenu::exitInfBtnPicId, false);
+    _btnHelp = new PushButton( this, Rect( 14, 311, 38, 334 ) );
+    GuiPaneling::configureTexturedButton( _btnHelp, ResourceGroup::panelBackground, ResourceMenu::helpInfBtnPicId, false);
+
+    CONNECT( _btnExit, onClicked(), this, InfoBoxLand::deleteLater );
+
+    if( tile->get_terrain().isTree() )
+    {
+        _title = _("##trees_and_forest_caption");
+        _text->setText( _("##trees_and_forest_text"));
+    } 
+    else if( tile->get_terrain().isWater() )
+    {
+        _title = _("##water_caption");
+        _text->setText( _("##water_text"));
+    }
+    else if( tile->get_terrain().isRock() )
+    {
+        _title = _("##rock_caption");
+        _text->setText( _("##rock_text"));
+    }
+    else if( tile->get_terrain().isRoad() )
+    {
+        _title = _("##road_caption");
+        _text->setText( _("##road_text"));
+    }
+    else 
+    {
+        _title = _("##clear_land_caption");
+        _text->setText( _("##clear_land_text"));
+    }
+
     _init();
 }
 
 void InfoBoxLand::paint()
 {
-    _paintY+=10;
-    GuiPaneling::instance().draw_black_frame(*_bgPicture, 16, _paintY, getWidth()-32, getHeight()-_paintY-16);
-    _paintY+=10;  
+    GuiPaneling::instance().draw_black_frame(*_bgPicture, 16, 40, getWidth()-32, 190 );
 }

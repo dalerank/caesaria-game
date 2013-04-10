@@ -23,6 +23,7 @@
 #include "oc3_event.h"
 #include "oc3_buildmenu.h"
 #include "oc3_guienv.h"
+#include "gui_paneling.hpp"
 
 static const int REMOVE_TOOL_ID = B_MAX + 1; 
 
@@ -71,16 +72,6 @@ Signal0<>& Menu::onRemoveTool()
     return _d->onRemoveToolSignal;
 }
 
-void configureButton(PushButton* oButton, const int pic_index, bool pushButton )
-{
-    PicLoader& loader = PicLoader::instance();
-    oButton->setPicture( &loader.get_picture( ResourceGroup::panelBackground, pic_index), stNormal );
-    oButton->setPicture( &loader.get_picture( ResourceGroup::panelBackground, pic_index+1), stHovered );
-    oButton->setPicture( &loader.get_picture( ResourceGroup::panelBackground, pic_index+2), stPressed );
-    oButton->setPicture( &loader.get_picture( ResourceGroup::panelBackground, pic_index+3), stDisabled );
-    oButton->setIsPushButton( pushButton );
-}
-
 Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id, rectangle ), _d( new Impl )
 {
     _d->lastPressed = 0;
@@ -97,55 +88,55 @@ Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id
     Point offset( 1, 32 );
     int dy = 35;
     _d->minimizeButton = new PushButton( this, Rect( 0, 0, 31, 20) );
-    configureButton( _d->minimizeButton, ResourceMenu::maximazeBtnPicId, false );
+    GuiPaneling::configureTexturedButton( _d->minimizeButton, ResourceGroup::panelBackground, ResourceMenu::maximazeBtnPicId, false );
     _d->minimizeButton->setPosition( Point( 6, 4 ));
 
     _d->houseButton = new PushButton( this, Rect( 0, 0, 39, 26), "", B_HOUSE );
-    configureButton( _d->houseButton, ResourceMenu::houseBtnPicId, true );
+    GuiPaneling::configureTexturedButton( _d->houseButton, ResourceGroup::panelBackground, ResourceMenu::houseBtnPicId, true );
     _d->houseButton->setPosition( offset + Point( 0, dy * 0 ) );
 
     _d->clearButton = new PushButton( this, Rect( 0, 0, 39, 26), "", REMOVE_TOOL_ID );
-    configureButton(_d->clearButton, 131, true );
+    GuiPaneling::configureTexturedButton(_d->clearButton, ResourceGroup::panelBackground, 131, true );
     _d->clearButton->setPosition( offset + Point( 0, dy * 1 ) );
 
     _d->roadButton = new PushButton( this, Rect( 0, 0, 39, 26), "", B_ROAD );
-    configureButton(_d->roadButton, 135, true );
+    GuiPaneling::configureTexturedButton(_d->roadButton, ResourceGroup::panelBackground, 135, true );
     _d->roadButton->setPosition( offset + Point( 0, dy * 2 ) );
 
     _d->waterButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_WATER | BuildMenu::subMenuCreateIdHigh);
-    configureButton(_d->waterButton,  127, true );
+    GuiPaneling::configureTexturedButton(_d->waterButton,  ResourceGroup::panelBackground, 127, true );
     _d->waterButton->setPosition( offset + Point( 0, dy * 3 ));
 
     _d->healthButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_HEALTH | BuildMenu::subMenuCreateIdHigh);
-    configureButton(_d->healthButton, 163, true );
+    GuiPaneling::configureTexturedButton(_d->healthButton, ResourceGroup::panelBackground, 163, true );
     _d->healthButton->setPosition( offset + Point( 0, dy * 4 ) );
 
     _d->templeButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_RELIGION | BuildMenu::subMenuCreateIdHigh);
-    configureButton(_d->templeButton, 151, true);
+    GuiPaneling::configureTexturedButton(_d->templeButton, ResourceGroup::panelBackground, 151, true);
     _d->templeButton->setPosition( offset + Point( 0, dy * 5 ) );
 
     _d->educationButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_EDUCATION | BuildMenu::subMenuCreateIdHigh);
-    configureButton(_d->educationButton, 147, true );
+    GuiPaneling::configureTexturedButton(_d->educationButton, ResourceGroup::panelBackground, 147, true );
     _d->educationButton->setPosition( offset + Point( 0, dy * 6 ) );
 
     _d->entertainmentButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_ENTERTAINMENT | BuildMenu::subMenuCreateIdHigh );
-    configureButton(_d->entertainmentButton, 143, true );
+    GuiPaneling::configureTexturedButton(_d->entertainmentButton, ResourceGroup::panelBackground, 143, true );
     _d->entertainmentButton->setPosition( offset + Point( 0, dy * 7 ) );
 
     _d->administrationButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_ADMINISTRATION | BuildMenu::subMenuCreateIdHigh);
-    configureButton(_d->administrationButton, 139, true );
+    GuiPaneling::configureTexturedButton(_d->administrationButton, ResourceGroup::panelBackground, 139, true );
     _d->administrationButton->setPosition( offset + Point( 0, dy * 8 ) );
 
     _d->engineerButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_ENGINEERING | BuildMenu::subMenuCreateIdHigh);
-    configureButton(_d->engineerButton, 167, true );
+    GuiPaneling::configureTexturedButton(_d->engineerButton, ResourceGroup::panelBackground, 167, true );
     _d->engineerButton->setPosition( offset + Point( 0, dy * 9 ) );
 
     _d->securityButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_SECURITY | BuildMenu::subMenuCreateIdHigh);
-    configureButton(_d->securityButton, 159, true );
+    GuiPaneling::configureTexturedButton(_d->securityButton, ResourceGroup::panelBackground, 159, true );
     _d->securityButton->setPosition( offset + Point( 0, dy * 10 ) );
 
     _d->commerceButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_COMMERCE | BuildMenu::subMenuCreateIdHigh );
-    configureButton(_d->commerceButton, 155, true );
+    GuiPaneling::configureTexturedButton(_d->commerceButton, ResourceGroup::panelBackground, 155, true );
     _d->commerceButton->setPosition( offset + Point( 0, dy * 11 ) );
     // //
     // _midIcon.setPicture(PicLoader::instance().get_picture("panelwindows", 1));
@@ -333,12 +324,25 @@ bool Menu::onEvent(const NEvent& event)
         return true;
     }
 
-    if( event.EventType == OC3_MOUSE_EVENT && event.MouseEvent.Event == OC3_RMOUSE_LEFT_UP )
+    if( event.EventType == OC3_MOUSE_EVENT )
     {
-        _createBuildMenu( -1, this );
-        unselectAll();
-        _d->lastPressed = 0;
+        switch( event.MouseEvent.Event )
+        {
+        case OC3_RMOUSE_LEFT_UP:
+            _createBuildMenu( -1, this );
+            unselectAll();
+            _d->lastPressed = 0;
         return true;
+
+        case OC3_LMOUSE_PRESSED_DOWN:
+        case OC3_LMOUSE_LEFT_UP:
+            {
+                //lock movement for tilemap
+                if( findChildren<BuildMenu*>().size() > 0 )
+                    return true;
+            }
+        break;
+        }
     }
 
     return Widget::onEvent( event );
