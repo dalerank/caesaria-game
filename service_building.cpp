@@ -126,12 +126,11 @@ std::map<ServiceType, ServiceBuilding*>& ServiceBuilding::getSpecimen()
    return _specimen;
 }
 
-GuiInfoBox* ServiceBuilding::makeInfoBox()
+GuiInfoBox* ServiceBuilding::makeInfoBox( Widget* parent )
 {
-   GuiInfoService* box = new GuiInfoService(*this);
+   GuiInfoService* box = new GuiInfoService( parent, *this);
    return box;
 }
-
 
 BuildingWell::BuildingWell() : ServiceBuilding(S_WELL)
 {
@@ -689,9 +688,9 @@ void Market::timeStep(const unsigned long time)
 }
 
 
-GuiInfoBox* Market::makeInfoBox()
+GuiInfoBox* Market::makeInfoBox( Widget* parent )
 {
-   GuiInfoMarket* box = new GuiInfoMarket(*this);
+   GuiInfoMarket* box = new GuiInfoMarket( parent, *this);
    return box;
 }
 

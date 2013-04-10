@@ -33,7 +33,7 @@ public:
 
    void timeStep(const unsigned long time);
 
-   virtual GuiInfoBox* makeInfoBox();
+   virtual GuiInfoBox* makeInfoBox( Widget* parent );
 
    SimpleGoodStore& getGoodStore();
 

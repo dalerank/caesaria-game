@@ -24,12 +24,13 @@
 
 #include "picture.hpp"
 #include "scenario.hpp"
-#include "gui_menu.hpp"
 #include "gui_tilemap.hpp"
 #include "gui_info_box.hpp"
-
 #include "screen.hpp"
+#include "oc3_scopedptr.h"
 
+class Menu;
+class BuildMenu;
 
 class ScreenGame: public Screen
 {
@@ -37,22 +38,21 @@ public:
    ScreenGame();
    ~ScreenGame();
 
-   void init();
+   void initialize( GfxEngine& engine, GuiEnv& gui );
 
    TilemapArea& getMapArea();
    void setScenario(Scenario &scenario);
-   void setBuildMenu(BuildMenu *buildMenu);
-   void setInGameMenu(InGameMenu *inGameMenu);
-   void setInfoBox(GuiInfoBox *infoBox);
 
    virtual void afterFrame();
-   virtual void handleEvent(SDL_Event &event);
-   virtual void handleWidgetEvent(const WidgetEvent &event, Widget *widget);
+   virtual void handleEvent( NEvent& event);
 
    virtual void draw();
 
+protected:
+	int getResult() const;
+
 private:
-   void setMenu(Menu &menu);
+   //void setMenu(Menu &menu);
 
    void drawTilemap();
    void drawInterface();
@@ -60,17 +60,18 @@ private:
 
    // stupid function, returns 0 if no shift pressed, 1 if shift pressed
    int isModShift();
+   void resolveCreateConstruction( int type );
+   void resolveRemoveTool();
+   void showTileInfo( Tile* tile );
 
-private:
    GuiInfoBox* _infoBox;   // info box to display, if any
-   MenuBar* _menuBar;   // menu bar to display
-   Menu* _menu;         // menu to display
-   BuildMenu* _buildMenu;   // build menu to display, if any
-   InGameMenu* _inGameMenu;   // inGameMenu to display, if any
    Scenario* _scenario; // current game scenario
    TilemapArea _mapArea;  // visible map area
 
    GuiTilemap _guiTilemap;
+
+   class Impl;
+   ScopedPtr< Impl > _d;
 };
 
 

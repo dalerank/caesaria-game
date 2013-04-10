@@ -16,9 +16,10 @@
 #ifndef __OPENCAESAR3_MATH_INCLUDE_
 #define __OPENCAESAR3_MATH_INCLUDE_
 
-#include <math.h>
-#include <limits.h>
-#include <float.h>
+#include <cmath>
+#include <algorithm>
+#include <climits>
+#include <cfloat>
 
 namespace math
 {
@@ -104,7 +105,8 @@ inline double degToRad64( double degrees)
 }
 
 //! returns if a equals b, taking possible rounding errors into account
-inline bool isEqual(const float a, const float b)
+template<class T>
+inline bool isEqual(const T a, const T b)
 {
     return (a + ROUNDING_ERROR_f32 >= b) && (a - ROUNDING_ERROR_f32 <= b);
 }

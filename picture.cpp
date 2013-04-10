@@ -25,8 +25,7 @@
 
 #include "exception.hpp"
 #include "oc3_positioni.h"
-
-
+#include "oc3_rectangle.h"
 
 Picture::Picture()
 {
@@ -93,11 +92,21 @@ void Picture::set_name(std::string &name)
 {
    _name = name;
 }
+
 std::string Picture::get_name()
 {
    return _name;
 }
 
+Size Picture::getSize() const
+{
+    return Size( _width, _height );
+}
+
+bool Picture::isValid() const
+{
+    return _surface != 0;
+}
 
 void Animation::init(const std::vector<Picture*> &pictures)
 {
@@ -137,8 +146,14 @@ Picture* Animation::get_current_picture()
 
 Font::Font(TTF_Font &ttfFont, SDL_Color &color)
 {
-   _ttfFont = &ttfFont;
-   _color = color;
+    _ttfFont = &ttfFont;
+    _color = color;
+}
+
+Font::Font()
+{
+    _ttfFont = 0;
+    _color = SDL_Color();
 }
 
 TTF_Font& Font::getTTF()
@@ -197,6 +212,72 @@ std::list<std::string> Font::split_text(const std::string &text, const int width
    return res;
 }
 
+bool Font::isValid() const
+{
+    return _ttfFont != 0;
+}
+
+Size Font::getSize( const std::string& text ) const
+{
+    int w, h;
+    TTF_SizeText( _ttfFont, text.c_str(), &w, &h);
+
+    return Size( w, h );
+}
+
+bool Font::operator!=( const Font& other ) const
+{
+    return !( _ttfFont == other._ttfFont );
+}
+
+Rect Font::calculateTextRect( const std::string& text, const Rect& baseRect, 
+                              TypeAlign horizontalAlign, TypeAlign verticalAlign )
+{
+    Rect resultRect;
+    Size d = getSize( text );
+
+    // justification
+    switch (horizontalAlign)
+    {
+    case alignCenter:
+        // align to h centre
+        resultRect.UpperLeftCorner.setX( (baseRect.getWidth()/2) - (d.getWidth()/2) );
+        resultRect.LowerRightCorner.setX( (baseRect.getWidth()/2) + (d.getWidth()/2) );
+        break;
+    case alignLowerRight:
+        // align to right edge
+        resultRect.UpperLeftCorner.setX( baseRect.getWidth() - d.getWidth() );
+        resultRect.LowerRightCorner.setX( baseRect.getWidth() );
+        break;
+    default:
+        // align to left edge
+        resultRect.UpperLeftCorner.setX( 0 );
+        resultRect.LowerRightCorner.setX( d.getWidth() );
+    }
+
+    switch (verticalAlign)
+    {
+    case alignCenter:
+        // align to v centre
+        resultRect.UpperLeftCorner.setY( (baseRect.getHeight()/2) - (d.getHeight()/2) );
+        resultRect.LowerRightCorner.setY( (baseRect.getHeight()/2) + (d.getHeight()/2) );
+        break;
+    case alignLowerRight:
+        // align to bottom edge
+        resultRect.UpperLeftCorner.setY( baseRect.getHeight() - d.getHeight() );
+        resultRect.LowerRightCorner.setY( baseRect.getHeight() );
+        break;
+    default:
+        // align to top edge
+        resultRect.UpperLeftCorner.setY( 0 );
+        resultRect.LowerRightCorner.setY( d.getHeight() );
+        break;
+    }
+
+    resultRect += baseRect.UpperLeftCorner;
+
+    return resultRect;
+}
 
 FontCollection* FontCollection::_instance = NULL;
 

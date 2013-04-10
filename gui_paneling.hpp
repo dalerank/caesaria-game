@@ -21,6 +21,8 @@
 
 #include <picture.hpp>
 
+class PushButton;
+
 // utility class to draw the user interface
 class GuiPaneling
 {
@@ -60,6 +62,7 @@ public:
    // draws a text button background  offset=22(lightgray), 25(gray), 62(small_green), 65(small_brown), 68(small_grey)
    void draw_basic_text_button(Picture &dstpic, const int x, const int y, const int width, const int offset);
 
+   static void configureTexturedButton( PushButton* oButton, const std::string& group, const int pic_index, bool pushButton );
 protected:
    static GuiPaneling *_instance;
 
@@ -68,7 +71,6 @@ protected:
 
    // draws a rectangular perimeter
    void draw_basic0_borders(Picture &dstpic, const int x, const int y, const int width, const int height, const int offset);
-
 };
 
 #endif

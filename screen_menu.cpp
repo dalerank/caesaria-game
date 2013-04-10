@@ -24,76 +24,78 @@
 #include "exception.hpp"
 #include "pic_loader.hpp"
 
+#include "oc3_startmenu.h"
+#include "oc3_guienv.h"
+#include "oc3_pushbutton.h"
 
-ScreenMenu::ScreenMenu()
+class ScreenMenu::Impl
 {
-   _bgPicture = NULL;
+public:
+    Picture* bgPicture;
+    StartMenu* menu;         // menu to display
+    GfxEngine* engine;
+    GuiEnv* gui;
+    int result;
+    bool isStoped;
+
+    void resolveNewGame() { result=startNewGame; isStoped=true; }
+    void resolveLoadGame() { result=loadSavedGame; isStoped=true; }
+    void resolveQuitGame() { result=closeApplication; isStoped=true; }
+};
+
+ScreenMenu::ScreenMenu() : _d( new Impl )
+{
+    _d->bgPicture = NULL;
+    _d->isStoped = false;
 }
 
 ScreenMenu::~ScreenMenu() {}
 
-void ScreenMenu::init()
-{
-   setBgPicture(&PicLoader::instance().get_picture("title", 1));
-
-   initMenu();
-}
-
-void ScreenMenu::setBgPicture(Picture *picture)
-{
-   _bgPicture = picture;
-
-   // center the bgPicture on the screen
-   GfxEngine &engine = GfxEngine::instance();
-   int x = (engine.getScreenWidth() - _bgPicture->get_width()) / 2;
-   int y = (engine.getScreenHeight() - _bgPicture->get_height()) / 2;
-   _bgPicture->set_offset(x, -y);
-}
-
-void ScreenMenu::initMenu()
-{
-   _menu.init();
-
-   // center the menu on the screen
-   GfxEngine &engine = GfxEngine::instance();
-   int x = (engine.getScreenWidth() - _menu.getWidth()) / 2;
-   int y = (engine.getScreenHeight() - _menu.getHeight()) / 2;
-   _menu.setPosition(x, y);
-   _menu.setListener(this);
-}
-
-
 void ScreenMenu::draw()
 {
-   GfxEngine &engine = GfxEngine::instance();
+	_d->gui->beforeDraw();
 
-   engine.drawPicture(*_bgPicture, 0, 0);
-   _menu.draw(0, 0);
+    _d->engine->drawPicture(*_d->bgPicture, 0, 0);
+    _d->gui->draw();
 }
 
-
-void ScreenMenu::handleEvent(SDL_Event &event)
+void ScreenMenu::handleEvent( NEvent& event )
 {
-   switch (event.type)
-   {
-   case SDL_MOUSEMOTION:
-      _menu.handleEvent(event);
-      break;
-   case SDL_MOUSEBUTTONDOWN:
-      _menu.handleEvent(event);
-      break;
-   case SDL_KEYDOWN:
-      if (event.key.keysym.sym == SDLK_ESCAPE)
-      {
-         handleWidgetEvent(WidgetEvent::QuitGameEvent(), NULL);
-      }
-      break;
-   }
-
+    _d->gui->handleEvent( event );
 }
 
+void ScreenMenu::initialize( GfxEngine& engine, GuiEnv& gui )
+{
+    _d->bgPicture = &PicLoader::instance().get_picture("title", 1);
 
-void ScreenMenu::handleWidgetEvent(const WidgetEvent &event, Widget *widget)
+    // center the bgPicture on the screen
+    _d->bgPicture->set_offset( (engine.getScreenWidth() - _d->bgPicture->get_width()) / 2,
+                               -( engine.getScreenHeight() - _d->bgPicture->get_height() ) / 2 );
+
+    _d->gui = &gui;
+    _d->engine = &engine;
+    _d->menu = new StartMenu( gui.getRootWidget() );
+
+    PushButton* btn = _d->menu->addButton( "New game", -1 );
+    CONNECT( btn, onClicked(), _d.get(), Impl::resolveNewGame );
+
+    btn = _d->menu->addButton( "Load game", -1 );
+    CONNECT( btn, onClicked(), _d.get(), Impl::resolveLoadGame );
+
+    btn = _d->menu->addButton( "Quit", -1 );
+    CONNECT( btn, onClicked(), _d.get(), Impl::resolveQuitGame );
+}
+
+int ScreenMenu::getResult() const
+{
+	return _d->result;
+}
+
+bool ScreenMenu::isStopped() const
+{
+    return _d->isStoped;
+}
+/*void ScreenMenu::handleWidgetEvent(const WidgetEvent &event, Widget *widget)
 {
    _wevent = event;
 
@@ -111,5 +113,5 @@ void ScreenMenu::handleWidgetEvent(const WidgetEvent &event, Widget *widget)
    default:
       THROW("Unexpected widget event: " << event._eventType);
    }
-}
+}*/
 
