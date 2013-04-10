@@ -24,8 +24,10 @@
 #include "oc3_buildmenu.h"
 #include "oc3_guienv.h"
 #include "gui_paneling.hpp"
+#include "oc3_widgetpositionanimator.h"
 
 static const int REMOVE_TOOL_ID = B_MAX + 1; 
+static const int MAXIMAZE_ID = REMOVE_TOOL_ID + 1;
 
 class Menu::Impl
 {
@@ -60,6 +62,7 @@ public:
 oc3_signals public:
     Signal1< int > onCreateConstructionSignal;
     Signal0<> onRemoveToolSignal;
+    Signal0<> onMaximazeSignal;
 };
 
 Signal1< int >& Menu::onCreateConstruction()
@@ -87,7 +90,7 @@ Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id
 
     Point offset( 1, 32 );
     int dy = 35;
-    _d->minimizeButton = new PushButton( this, Rect( 0, 0, 31, 20) );
+    _d->minimizeButton = new PushButton( this, Rect( 0, 0, 31, 20), "", MAXIMAZE_ID );
     GuiPaneling::configureTexturedButton( _d->minimizeButton, ResourceGroup::panelBackground, ResourceMenu::maximazeBtnPicId, false );
     _d->minimizeButton->setPosition( Point( 6, 4 ));
 
@@ -162,7 +165,6 @@ Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id
 
     // set button position
     // _menuButton.setPosition(4, 3);
-    // _minimizeButton.setPosition(127, 5);
     // header
     // _senateButton.setPosition(7, 155);
     // _empireButton.setPosition(84, 155);
@@ -171,91 +173,6 @@ Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id
     // _rotateLeftButton.setPosition(84, 184);
     // _rotateRightButton.setPosition(123, 184);
 
-
-
-    //   // 5th row
-    //   _cancelButton.setPosition(x0, y0+dy*12);
-    //   _messageButton.setPosition(x0, y0+dy*13);
-    //   _disasterButton.setPosition(x0, y0+dy*14);
-
-    //   _bgPicture = &PicLoader::instance().get_picture("paneling", 17);
-    //   setSize(_bgPicture->get_surface()->w, _bgPicture->get_surface()->h);
-    //
-    //   // top of menu
-    //   _menuButton.setText("Menu");
-    //   _menuButton.setEvent(WidgetEvent::InGameMenuEvent());
-    //   _menuButton.setNormalPicture(PicLoader::instance().get_picture("paneling", 234));
-    //   _menuButton.setHoverPicture(PicLoader::instance().get_picture("paneling", 234+1));
-    //   _menuButton.setSelectedPicture(PicLoader::instance().get_picture("paneling", 234+2));
-    //   _menuButton.setUnavailablePicture(PicLoader::instance().get_picture("paneling", 234+3));
-    //   _menuButton.init_pictures();
-    //   add_widget(_menuButton);
-    //
-    //   set4Button(_minimizeButton, WidgetEvent(), 97);
-    //
-    //   //
-    //   _midIcon.setPicture(PicLoader::instance().get_picture("panelwindows", 1));
-    //   _midIcon.setPosition(8, 217);
-    //   add_widget(_midIcon);
-    //
-    //   //_bottomIcon.setPicture(PicLoader::instance().get_picture("paneling", 20));
-    //   //_bottomIcon.setPosition(0, _bgPicture->get_surface()->h);
-    //   //add_widget(_bottomIcon);
-    //
-    //   // header
-    //   set3Button(_senateButton, WidgetEvent(), 79);
-    //   set3Button(_empireButton, WidgetEvent(), 82);
-    //   set3Button(_missionButton, WidgetEvent(), 85);
-    //   set3Button(_northButton, WidgetEvent(), 88);
-    //   set3Button(_rotateLeftButton, WidgetEvent(), 91);
-    //   set3Button(_rotateRightButton, WidgetEvent(), 94);
-    //
-    //   set4Button(_houseButton, WidgetEvent::BuildingEvent(B_HOUSE), 123);
-    //   set4Button(_clearButton, WidgetEvent::ClearLandEvent(), 131);
-    //   set4Button(_roadButton, WidgetEvent::BuildingEvent(B_ROAD), 135);
-    //   // second row
-    //   set4Button(_waterButton, WidgetEvent::BuildMenuEvent(BM_WATER), 127);
-    //   set4Button(_healthButton, WidgetEvent::BuildMenuEvent(BM_HEALTH), 163);
-    //   set4Button(_templeButton, WidgetEvent::BuildMenuEvent(BM_TEMPLE), 151);
-    //   // third row
-    //   set4Button(_educationButton, WidgetEvent::BuildMenuEvent(BM_EDUCATION), 147);
-    //   set4Button(_entertainmentButton, WidgetEvent::BuildMenuEvent(BM_ENTERTAINMENT), 143);
-    //   set4Button(_administrationButton, WidgetEvent::BuildMenuEvent(BM_ADMINISTRATION), 139);
-    //   // 4th row
-    //   set4Button(_engineerButton, WidgetEvent::BuildMenuEvent(BM_ENGINEERING), 167);
-    //   set4Button(_securityButton, WidgetEvent::BuildMenuEvent(BM_SECURITY), 159);
-    //   set4Button(_commerceButton, WidgetEvent::BuildMenuEvent(BM_COMMERCE), 155);
-    //   // 5th row
-    //   set4Button(_cancelButton, WidgetEvent(), 171);
-    //   set4Button(_messageButton, WidgetEvent(), 115);
-    //   set4Button(_disasterButton, WidgetEvent(), 119);
-    //
-    //   // set button position
-    //   _menuButton.setPosition(4, 3);
-    //   _minimizeButton.setPosition(127, 5);
-    //   // header
-    //   _senateButton.setPosition(7, 155);
-    //   _empireButton.setPosition(84, 155);
-    //   _missionButton.setPosition(7, 184);
-    //   _northButton.setPosition(46, 184);
-    //   _rotateLeftButton.setPosition(84, 184);
-    //   _rotateRightButton.setPosition(123, 184);
-    //   // first row
-    //   _houseButton.setPosition(13, 277);
-    //   _clearButton.setPosition(63, 277);
-    //   _roadButton.setPosition(113, 277);
-    //   // second row
-    //   _waterButton.setPosition(13, 313);
-    //   _healthButton.setPosition(63, 313);
-    //   _templeButton.setPosition(113, 313);
-    //   // third row
-    //   _educationButton.setPosition(13, 349);
-    //   _entertainmentButton.setPosition(63, 349);
-    //   _administrationButton.setPosition(113, 349);
-    //   // 4th row
-    //   _engineerButton.setPosition(13, 385);
-    //   _securityButton.setPosition(63, 385);
-    //   _commerceButton.setPosition(113, 385);
     //   // 5th row
     //   _cancelButton.setPosition(13, 421);
     //   _messageButton.setPosition(63, 421);
@@ -282,6 +199,13 @@ bool Menu::onEvent(const NEvent& event)
         int id = event.GuiEvent.Caller->getID();
         switch( id )
         {
+        case MAXIMAZE_ID:
+            _d->lastPressed = 0;
+            unselectAll();
+            _createBuildMenu( -1, this );
+            _d->onMaximazeSignal.emit();
+        break;
+
         case B_HOUSE:
         case B_ROAD:
             _d->onCreateConstructionSignal.emit( id );
@@ -394,10 +318,76 @@ void Menu::_createBuildMenu( int type, Widget* parent )
         buildMenu->setNotClipped( true );
 
         buildMenu->init();
-
-        
-
+       
         int y = math::clamp< int >( parent->getScreenTop() - getScreenTop(), 0, _environment->getRootWidget()->getHeight() - buildMenu->getHeight() );
         buildMenu->setPosition( Point( -(int)buildMenu->getWidth() - 5, y ) );
     }
+}
+
+Signal0<>& Menu::onMaximaze()
+{
+    return _d->onMaximazeSignal;
+}
+
+ExtentMenu* ExtentMenu::create( Widget* parent, int id )
+{
+    ExtentMenu* ret = new ExtentMenu( parent, id, Rect( 0, 0, 1, 1 ) );
+
+    SdlFacade &sdlFacade = SdlFacade::instance();
+
+    const Picture& bground = PicLoader::instance().get_picture( ResourceGroup::panelBackground, 17 );
+    const Picture& bottom = PicLoader::instance().get_picture( ResourceGroup::panelBackground, 20 );
+
+    ret->_d->bgPicture = &sdlFacade.createPicture( bground.get_width(), bground.get_height() + bottom.get_height() );
+    sdlFacade.drawPicture( bground, *ret->_d->bgPicture, 0, 0);
+    sdlFacade.drawPicture( bottom, *ret->_d->bgPicture, 0, bground.get_height() );
+
+    ret->setGeometry( Rect( 0, 0, bground.get_width(), ret->_d->bgPicture->get_height() ) );
+
+    return ret;
+}
+
+void ExtentMenu::minimize()
+{
+    _d->lastPressed = 0;
+    _createBuildMenu( -1, this );
+    Point stopPos = getRelativeRect().UpperLeftCorner + Point( getWidth(), 0 );
+    PositionAnimator* anim = new PositionAnimator( this, WidgetAnimator::removeSelf, 
+                                                   stopPos, 300 );
+}
+
+void ExtentMenu::maximaze()
+{
+    Point stopPos = getRelativeRect().UpperLeftCorner - Point( getWidth(), 0 );
+    show();
+    PositionAnimator* anim = new PositionAnimator( this, WidgetAnimator::showParent | WidgetAnimator::removeSelf, 
+                                                   stopPos, 300 );
+}
+
+ExtentMenu::ExtentMenu( Widget* parent, int id, const Rect& rectangle )
+    : Menu( parent, id, rectangle )
+{
+    GuiPaneling::configureTexturedButton( _d->minimizeButton, ResourceGroup::panelBackground, 97, false );
+    _d->minimizeButton->setPosition( Point( 127, 5 ) );
+    CONNECT( _d->minimizeButton, onClicked(), this, ExtentMenu::minimize );
+
+    _d->houseButton->setPosition( Point( 13, 277 ) );
+    _d->houseButton->setIsPushButton( false );
+    _d->clearButton->setPosition( Point( 63, 277 ) );
+    _d->clearButton->setIsPushButton( false );
+    _d->roadButton->setPosition( Point( 113, 277 ) );
+    _d->roadButton->setIsPushButton( false );
+
+    _d->waterButton->setPosition( Point( 13, 313 ) );
+    _d->healthButton->setPosition( Point( 63, 313 ) );
+    _d->templeButton->setPosition( Point( 113, 313 ) );
+    _d->educationButton->setPosition( Point(13, 349 ));
+    _d->entertainmentButton->setPosition( Point(63, 349 ) );
+    _d->administrationButton->setPosition( Point( 113, 349) );
+    _d->engineerButton->setPosition( Point( 13, 385 ) );
+    _d->securityButton->setPosition( Point( 63, 385 ) );
+    _d->commerceButton->setPosition( Point( 113, 385) );
+    //   _cancelButton.setPosition(13, 421);
+    //   _messageButton.setPosition(63, 421);
+    //   _disasterButton.setPosition(113, 421);
 }

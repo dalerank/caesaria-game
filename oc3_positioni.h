@@ -18,6 +18,8 @@
 
 #include "oc3_vector2.h"
 
+class PointF;
+
 class Point : public Vector2<int>
 {
 public:
@@ -25,15 +27,32 @@ public:
     Point() : Vector2<int>( 0, 0 ) {}
 
     Point operator+(const Point& other) const { return Point( x + other.x, y + other.y ); }
+    Point operator-(const Point& other) const { return Point( x - other.x, y - other.y ); }
 
     void setX( const int nx ) { x = nx; }
     void setY( const int ny ) { y = ny; }
+
+    PointF toPointF() const; 
 };
 
 class PointF : public Vector2<float>
 {
+public:
+    PointF( const float x, const float y ) : Vector2<float>( x, y ) {}
+    PointF() : Vector2<float>( 0, 0 ) {}
 
+    PointF operator+(const PointF& other) const { return PointF( x + other.x, y + other.y ); }
+
+    void setX( const float nx ) { x = nx; }
+    void setY( const float ny ) { y = ny; }
+
+    Point toPoint() { return Point( (int)x, (int)y ); }
 };
+
+inline PointF Point::toPointF() const
+{ 
+    return PointF( (float)x, (float)y ); 
+}
 
 class TilePos : public Vector2<int>
 {

@@ -28,7 +28,6 @@
 #include "scenario_saver.hpp"
 #include "oc3_menurgihtpanel.h"
 #include "oc3_resourcegroup.h"
-#include "oc3_extentmenu.h"
 #include "oc3_guienv.h"
 #include "oc3_topmenu.h"
 #include "oc3_menu.h"
@@ -39,11 +38,11 @@ class ScreenGame::Impl
 {
 public:
     MenuRigthPanel* rightPanel;
-    ExtentMenu* extMenu;
     GuiEnv* gui;
     GfxEngine* engine;
     TopMenu* topMenu;
     Menu* menu;
+    ExtentMenu* extMenu;
     InfoBoxManagerPtr infoBoxMgr;
 };
 
@@ -76,11 +75,18 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
     _d->menu->setPosition( Point( engine.getScreenWidth() - _d->menu->getWidth() - _d->rightPanel->getWidth(), 
                                  _d->topMenu->getHeight() ) );
 
+    _d->extMenu = ExtentMenu::create( gui.getRootWidget(), -1 );
+    _d->extMenu->setPosition( Point( engine.getScreenWidth() - _d->extMenu->getWidth() - _d->rightPanel->getWidth(), 
+                                     _d->topMenu->getHeight() ) );
+
     //over other elements
     _d->rightPanel->bringToFront();
 
     CONNECT( _d->menu, onCreateConstruction(), this, ScreenGame::resolveCreateConstruction );
     CONNECT( _d->menu, onRemoveTool(), this, ScreenGame::resolveRemoveTool );
+    CONNECT( _d->menu, onMaximaze(), _d->extMenu, ExtentMenu::maximaze );
+
+    CONNECT( _d->extMenu, onCreateConstruction(), this, ScreenGame::resolveCreateConstruction );
 
     CONNECT( &_guiTilemap, onShowTileInfo(), this, ScreenGame::showTileInfo );
   /* _d->extMenu = ExtentMenu::create();

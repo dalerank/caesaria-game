@@ -103,7 +103,7 @@ public:
 
 	//! Gets the length of the vector.
 	/** \return The length of the vector. */
-    T getLength() const { return sqrt( x*x + y*y ); }
+    float getLength() const { return sqrt( (float)x*(float)x + (float)y*(float)y ); }
 
 	//! Get the squared length of this vector
 	/** This is useful because it is much faster than getLength().
@@ -134,7 +134,7 @@ public:
 	/** Here, the vector is interpreted as a point in 2-dimensional space.
 	\param other Other vector to measure from.
 	\return Distance from other point. */
-	T getDistanceFrom(const Vector2<T>& other) const
+	float getDistanceFrom(const Vector2<T>& other) const
 	{
 		return Vector2<T>(x - other.x, y - other.y).getLength();
 	}

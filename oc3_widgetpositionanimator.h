@@ -13,32 +13,37 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
+#ifndef __OPENCAESAR3_POSITIONANIMATOR_H_INCLUDE_
+#define __OPENCAESAR3_POSITIONANIMATOR_H_INCLUDE_
 
-#ifndef __OPENCAESAR3_EXTENTMENU_H_INCLUDE_
-#define __OPENCAESAR3_EXTENTMENU_H_INCLUDE_
-
-#include "oc3_widget.h"
+#include "oc3_widgetanimator.h"
 #include "oc3_scopedptr.h"
 
-class Picture;
-
-class ExtentMenu : public Widget
+class PositionAnimator : public WidgetAnimator
 {
 public:
-    static ExtentMenu* create( Widget* parent, const Rect& rect, int id );
+	PositionAnimator( Widget* node, 
+                      int flags,
+				      const Point& stopPos,
+					  int time=1000 );
 
-    // draw on screen
-    virtual void draw( GfxEngine& engine );
-    virtual const Picture& getBgPicture() const;
+    ~PositionAnimator(void);
 
-    void minimize();
+	void beforeDraw( GfxEngine& painter );
 
-private:
-    ExtentMenu( Widget* parent, const Rect& rect, int id );
-    
-    class Impl;
-    ScopedPtr< Impl > _d;
+	virtual void restart();
+
+	void setStartPos( const Point& p );
+	Point getStartPos() const;
+
+    void setStopPos( const Point& p );
+	Point getStopPos() const;
+
+    void setTime( int time );
+
+protected:
+	class Impl;
+	ScopedPtr< Impl > _d;
 };
-
 
 #endif

@@ -355,11 +355,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_extentmenu.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\oc3_extentmenu.h"
+				RelativePath="..\..\oc3_flagholder.h"
 				>
 			</File>
 			<File
@@ -504,6 +500,22 @@
 			</File>
 			<File
 				RelativePath="..\..\oc3_widget.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_widgetanimator.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_widgetanimator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_widgetpositionanimator.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_widgetpositionanimator.h"
 				>
 			</File>
 			<File
