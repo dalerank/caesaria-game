@@ -17,3 +17,4 @@
 #include "oc3_resourcegroup.h"
 
 const char* ResourceGroup::panelBackground = "paneling";
+const char* ResourceGroup::menuMiddleIcons = "panelwindows";

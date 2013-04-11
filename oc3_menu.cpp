@@ -75,6 +75,21 @@ Signal0<>& Menu::onRemoveTool()
     return _d->onRemoveToolSignal;
 }
 
+class MenuButton : public PushButton
+{
+public:
+    MenuButton( Widget* parent, const Rect& rectangle, const std::string& caption, int id, int midIconId )
+        : PushButton( parent, rectangle, caption, id )
+    {
+        _midIconId = midIconId;
+    }
+
+    int getMidIconId() const { return _midIconId; }
+
+private:
+    int _midIconId;
+};
+
 Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id, rectangle ), _d( new Impl )
 {
     _d->lastPressed = 0;
@@ -94,61 +109,71 @@ Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id
     GuiPaneling::configureTexturedButton( _d->minimizeButton, ResourceGroup::panelBackground, ResourceMenu::maximazeBtnPicId, false );
     _d->minimizeButton->setPosition( Point( 6, 4 ));
 
-    _d->houseButton = new PushButton( this, Rect( 0, 0, 39, 26), "", B_HOUSE );
+    _d->houseButton = new MenuButton( this, Rect( 0, 0, 39, 26), "", B_HOUSE, ResourceMenu::houseMidPicId );
     GuiPaneling::configureTexturedButton( _d->houseButton, ResourceGroup::panelBackground, ResourceMenu::houseBtnPicId, true );
     _d->houseButton->setPosition( offset + Point( 0, dy * 0 ) );
 
-    _d->clearButton = new PushButton( this, Rect( 0, 0, 39, 26), "", REMOVE_TOOL_ID );
+    _d->clearButton = new MenuButton( this, Rect( 0, 0, 39, 26), "", 
+                                      REMOVE_TOOL_ID, ResourceMenu::clearMidPicId );
     GuiPaneling::configureTexturedButton(_d->clearButton, ResourceGroup::panelBackground, 131, true );
     _d->clearButton->setPosition( offset + Point( 0, dy * 1 ) );
 
-    _d->roadButton = new PushButton( this, Rect( 0, 0, 39, 26), "", B_ROAD );
+    _d->roadButton = new MenuButton( this, Rect( 0, 0, 39, 26), "", 
+                                     B_ROAD, ResourceMenu::clearMidPicId  );
     GuiPaneling::configureTexturedButton(_d->roadButton, ResourceGroup::panelBackground, 135, true );
     _d->roadButton->setPosition( offset + Point( 0, dy * 2 ) );
 
-    _d->waterButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_WATER | BuildMenu::subMenuCreateIdHigh);
+    _d->waterButton = new MenuButton( this, Rect( 0, 0, 39, 26), "", 
+                                      BM_WATER | BuildMenu::subMenuCreateIdHigh, 
+                                      ResourceMenu::waterMidPicId );
     GuiPaneling::configureTexturedButton(_d->waterButton,  ResourceGroup::panelBackground, 127, true );
     _d->waterButton->setPosition( offset + Point( 0, dy * 3 ));
 
-    _d->healthButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_HEALTH | BuildMenu::subMenuCreateIdHigh);
+    _d->healthButton = new MenuButton( this, Rect( 0, 0, 39, 26), "", 
+                                       BM_HEALTH | BuildMenu::subMenuCreateIdHigh, 
+                                       ResourceMenu::healthMidPicId );
     GuiPaneling::configureTexturedButton(_d->healthButton, ResourceGroup::panelBackground, 163, true );
     _d->healthButton->setPosition( offset + Point( 0, dy * 4 ) );
 
-    _d->templeButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_RELIGION | BuildMenu::subMenuCreateIdHigh);
+    _d->templeButton = new MenuButton( this, Rect( 0, 0, 39, 26), "", 
+                                       BM_RELIGION | BuildMenu::subMenuCreateIdHigh, 
+                                       ResourceMenu::religionMidPicId );
     GuiPaneling::configureTexturedButton(_d->templeButton, ResourceGroup::panelBackground, 151, true);
     _d->templeButton->setPosition( offset + Point( 0, dy * 5 ) );
 
-    _d->educationButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_EDUCATION | BuildMenu::subMenuCreateIdHigh);
+    _d->educationButton = new MenuButton( this, Rect( 0, 0, 39, 26), "",
+                                          BM_EDUCATION | BuildMenu::subMenuCreateIdHigh, 
+                                          ResourceMenu::educationMidPicId );
     GuiPaneling::configureTexturedButton(_d->educationButton, ResourceGroup::panelBackground, 147, true );
     _d->educationButton->setPosition( offset + Point( 0, dy * 6 ) );
 
-    _d->entertainmentButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_ENTERTAINMENT | BuildMenu::subMenuCreateIdHigh );
+    _d->entertainmentButton = new MenuButton( this, Rect( 0, 0, 39, 26), "", 
+                                              BM_ENTERTAINMENT | BuildMenu::subMenuCreateIdHigh,
+                                              ResourceMenu::entertainmentMidPicId );
     GuiPaneling::configureTexturedButton(_d->entertainmentButton, ResourceGroup::panelBackground, 143, true );
     _d->entertainmentButton->setPosition( offset + Point( 0, dy * 7 ) );
 
-    _d->administrationButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_ADMINISTRATION | BuildMenu::subMenuCreateIdHigh);
+    _d->administrationButton = new MenuButton( this, Rect( 0, 0, 39, 26), "", 
+                                               BM_ADMINISTRATION | BuildMenu::subMenuCreateIdHigh, 
+                                               ResourceMenu::administrationMidPicId );
     GuiPaneling::configureTexturedButton(_d->administrationButton, ResourceGroup::panelBackground, 139, true );
     _d->administrationButton->setPosition( offset + Point( 0, dy * 8 ) );
 
-    _d->engineerButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_ENGINEERING | BuildMenu::subMenuCreateIdHigh);
+    _d->engineerButton = new MenuButton( this, Rect( 0, 0, 39, 26), "", 
+                                         BM_ENGINEERING | BuildMenu::subMenuCreateIdHigh, 
+                                         ResourceMenu::engineerMidPicId );
     GuiPaneling::configureTexturedButton(_d->engineerButton, ResourceGroup::panelBackground, 167, true );
     _d->engineerButton->setPosition( offset + Point( 0, dy * 9 ) );
 
-    _d->securityButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_SECURITY | BuildMenu::subMenuCreateIdHigh);
+    _d->securityButton = new MenuButton( this, Rect( 0, 0, 39, 26), "", 
+                                         BM_SECURITY | BuildMenu::subMenuCreateIdHigh,
+                                         ResourceMenu::securityMidPicId );
     GuiPaneling::configureTexturedButton(_d->securityButton, ResourceGroup::panelBackground, 159, true );
     _d->securityButton->setPosition( offset + Point( 0, dy * 10 ) );
 
     _d->commerceButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_COMMERCE | BuildMenu::subMenuCreateIdHigh );
     GuiPaneling::configureTexturedButton(_d->commerceButton, ResourceGroup::panelBackground, 155, true );
     _d->commerceButton->setPosition( offset + Point( 0, dy * 11 ) );
-    // //
-    // _midIcon.setPicture(PicLoader::instance().get_picture("panelwindows", 1));
-    // _midIcon.setPosition(8, 217);
-    // add_widget(_midIcon);
-
-    //_bottomIcon.setPicture(PicLoader::instance().get_picture("paneling", 20));
-    //_bottomIcon.setPosition(0, _bgPicture->get_surface()->h);
-    //add_widget(_bottomIcon);
 
     // // header
     // set3Button(_senateButton, WidgetEvent(), 79);
@@ -178,6 +203,14 @@ Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id
     //   _messageButton.setPosition(63, 421);
     //   _disasterButton.setPosition(113, 421);
 }
+
+/*PushButton* Menu::addButton( int startPic, bool pushBtn, int yMul, int id, bool haveSubmenu, int midPic )
+{
+    MenuButton* ret = new MenuButton( this, Rect( 0, 0, 39, 26), "", -1, -1 );
+    ret->setID( id | ( haveSubmenu ? BuildMenu::subMenuCreateIdHigh : 0 ) );
+    GuiPaneling::configureTexturedButton( ret, ResourceGroup::panelBackground, startPic, pushBtn );
+    _d->commerceButton->setPosition( offset + Point( 0, dy * yMul ) );
+}*/
 
 void Menu::draw( GfxEngine& painter )
 {
