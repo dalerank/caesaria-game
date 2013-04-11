@@ -434,6 +434,7 @@ bool GuiEnv::handleEvent( const NEvent& event )
         switch( event.MouseEvent.Event )
         {
         case OC3_LMOUSE_PRESSED_DOWN:
+        case OC3_RMOUSE_PRESSED_DOWN:
             if ( (_d->hovered && _d->hovered != getFocus()) || !getFocus() )
             {
                 setFocus(_d->hovered);

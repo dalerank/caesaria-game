@@ -635,9 +635,9 @@ InfoBoxLand::InfoBoxLand( Widget* parent, Tile* tile )
 {
     Label* _text = new Label( this, Rect( 36, 239, 470, 338 ), "" );
     _text->setFont( FontCollection::instance().getFont(FONT_2) );
-    _btnExit = new PushButton( this, Rect( 472, 311, 495, 334 ) );
+    _btnExit = new PushButton( this, Rect( 472, 311, 496, 335 ) );
     GuiPaneling::configureTexturedButton( _btnExit, ResourceGroup::panelBackground, ResourceMenu::exitInfBtnPicId, false);
-    _btnHelp = new PushButton( this, Rect( 14, 311, 38, 334 ) );
+    _btnHelp = new PushButton( this, Rect( 14, 311, 38, 335 ) );
     GuiPaneling::configureTexturedButton( _btnHelp, ResourceGroup::panelBackground, ResourceMenu::helpInfBtnPicId, false);
 
     CONNECT( _btnExit, onClicked(), this, InfoBoxLand::deleteLater );

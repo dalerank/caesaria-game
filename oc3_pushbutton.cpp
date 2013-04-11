@@ -402,3 +402,11 @@ Font& PushButton::getFont( ElementState state )
 {
     return _d->buttonStates[ state ].font;
 }
+
+void PushButton::resizeEvent_()
+{
+    for( int i=0; i != StateCount; i++ )
+    {
+        _updateTexture( ElementState(i) );
+    }
+}

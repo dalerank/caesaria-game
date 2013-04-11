@@ -64,12 +64,13 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
 
     _d->gui->clear();
 
+    const int topMenuHeight = 23;
     const Picture& rPanelPic = PicLoader::instance().get_picture( ResourceGroup::panelBackground, 14 );
-    Rect rPanelRect( engine.getScreenWidth() - rPanelPic.get_width(), 0,
-                    engine.getScreenWidth(), engine.getScreenHeight() );
+    Rect rPanelRect( engine.getScreenWidth() - rPanelPic.get_width(), topMenuHeight,
+                     engine.getScreenWidth(), engine.getScreenHeight() );
     _d->rightPanel = MenuRigthPanel::create( gui.getRootWidget(), rPanelRect, rPanelPic);
 
-    _d->topMenu = TopMenu::create( gui.getRootWidget(), 23 );
+    _d->topMenu = TopMenu::create( gui.getRootWidget(), topMenuHeight );
 
     _d->menu = Menu::create( gui.getRootWidget(), -1 );
     _d->menu->setPosition( Point( engine.getScreenWidth() - _d->menu->getWidth() - _d->rightPanel->getWidth(), 
@@ -87,6 +88,10 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
     CONNECT( _d->menu, onMaximize(), _d->extMenu, ExtentMenu::maximize );
 
     CONNECT( _d->extMenu, onCreateConstruction(), this, ScreenGame::resolveCreateConstruction );
+    CONNECT( _d->extMenu, onRemoveTool(), this, ScreenGame::resolveRemoveTool );
+
+    //CONNECT( &_guiTilemap, onDiscardPreview(), _d->menu, Menu::unselectAll );
+    //CONNECT( &_guiTilemap, onDiscardPreview(), _d->extMenu, Menu::unselectAll );
 
     CONNECT( &_guiTilemap, onShowTileInfo(), this, ScreenGame::showTileInfo );
   /* _d->extMenu = ExtentMenu::create();
