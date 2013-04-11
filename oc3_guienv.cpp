@@ -19,6 +19,8 @@
 #include "oc3_rectangle.h"
 #include "gfx_engine.hpp"
 #include "oc3_event.h"
+#include "oc3_label.h"
+#include "oc3_time.h"
 
 class GuiEnv::Impl
 {
@@ -116,7 +118,7 @@ void GuiEnv::draw()
 
 	Widget::draw( *_d->engine );
 
-    //drawTooltip_( DateTime::getElapsedTime() );
+    drawTooltip_( DateTime::getElapsedTime() );
 
     // make sure tooltip is always on top
     if(_d->toolTip.Element)
@@ -233,34 +235,19 @@ void GuiEnv::deleteLater( Widget* ptrElement )
 
 Widget* GuiEnv::createStandartTooltip_()
 {
-//     Rect pos;
-// 
-// 	const ElementStyle& tooltipStyle = getSkin()->GetElementStyle( NES_TOOLTIP, NULL );
-// 	Font styleFont = tooltipStyle.getFont().available()
-// 							? tooltipStyle.getFont()
-// 							: Font( Font::builtinName );
-// 
-//     pos.UpperLeftCorner = LastHoveredMousePos;
-//     core::NSizeU dim = styleFont.getDimension( HoveredNoSubelement->getTooltipText() );
-// 
-// 	pos.LowerRightCorner = pos.UpperLeftCorner + core::Point( dim.Width, dim.Height );
-// 	pos.LowerRightCorner += tooltipStyle.GetMargin().getRect().UpperLeftCorner;
-// 	pos.LowerRightCorner -= tooltipStyle.GetMargin().getRect().LowerRightCorner;
-// 
-//     pos.constrainTo( getRootWidget()->getAbsoluteRect() );
-// 
-//     Label* elm = new Label( getRootWidget(), pos, HoveredNoSubelement->getTooltipText(), true, true );
-// 	elm->setStyle( ElementStyleNames[ NES_TOOLTIP ] );
-//     elm->setSubElement(true);
-//     elm->grab();
-// 
-//     s32 textHeight = elm->getTextHeight();
-//     pos = elm->getRelativeRect();
-//     pos.LowerRightCorner.Y = pos.UpperLeftCorner.Y + textHeight;
-//     elm->setGeometry( pos );
-// 
-//     return elm;
-    return 0;
+    Font styleFont = FontCollection::instance().getFont( FONT_2 );
+
+    Label* elm = new Label( this, Rect( 0, 0, 2, 2 ), _d->hoveredNoSubelement->getTooltipText(), true, true );
+    elm->setSubElement(true);
+    elm->grab();
+
+    Size size( elm->getTextWidth(), elm->getTextHeight() );
+    Rect rect( _d->cursorPos, size );
+    //rect.constrainTo( getAbsoluteRect() );
+    rect -= Point( size.getWidth() + 20, -20 );
+    elm->setGeometry( rect );
+
+    return elm;
 }
 
 //
@@ -367,7 +354,7 @@ void GuiEnv::updateHoveredElement( const Point& mousePos )
 
         if( _d->hoveredNoSubelement )
         {
-           // _d->toolTip.EnterTime = DateTime::getElapsedTime();
+            _d->toolTip.EnterTime = DateTime::getElapsedTime();
         }
     }
 }
@@ -434,6 +421,7 @@ bool GuiEnv::handleEvent( const NEvent& event )
         switch( event.MouseEvent.Event )
         {
         case OC3_LMOUSE_PRESSED_DOWN:
+        case OC3_RMOUSE_PRESSED_DOWN:
             if ( (_d->hovered && _d->hovered != getFocus()) || !getFocus() )
             {
                 setFocus(_d->hovered);

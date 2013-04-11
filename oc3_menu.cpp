@@ -25,6 +25,8 @@
 #include "oc3_guienv.h"
 #include "gui_paneling.hpp"
 #include "oc3_widgetpositionanimator.h"
+#include "oc3_label.h"
+#include "gettext.hpp"
 
 static const int REMOVE_TOOL_ID = B_MAX + 1; 
 static const int MAXIMIZE_ID = REMOVE_TOOL_ID + 1;
@@ -58,6 +60,7 @@ public:
     PushButton* healthButton;
     PushButton* engineerButton;
     PushButton* cancelButton;
+    Label* middleLabel;
 
 oc3_signals public:
     Signal1< int > onCreateConstructionSignal;
@@ -75,6 +78,21 @@ Signal0<>& Menu::onRemoveTool()
     return _d->onRemoveToolSignal;
 }
 
+class MenuButton : public PushButton
+{
+public:
+    MenuButton( Widget* parent, const Rect& rectangle, const std::string& caption, int id, int midIconId )
+        : PushButton( parent, rectangle, caption, id )
+    {
+        _midIconId = midIconId;
+    }
+
+    int getMidPicId() const { return _midIconId; }
+    void setMidPicId( int id ) { _midIconId = id; }
+private:
+    int _midIconId;
+};
+
 Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id, rectangle ), _d( new Impl )
 {
     _d->lastPressed = 0;
@@ -88,95 +106,56 @@ Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id
     //_menuButton.init_pictures();
     //add_widget(_menuButton);
 
+    const bool haveSubMenu = true;
+    _d->minimizeButton = _addButton( ResourceMenu::maximizeBtnPicId, false, 0, MAXIMIZE_ID, !haveSubMenu, ResourceMenu::emptyMidPicId );
+    _d->minimizeButton->setGeometry( Rect( Point( 6, 4 ), Size( 31, 20 ) ) );
+
+    _d->houseButton = _addButton( ResourceMenu::houseBtnPicId, true, 0, B_HOUSE, 
+                                  !haveSubMenu, ResourceMenu::houseMidPicId, _("##houseBtnTooltip") );
+    
+    _d->clearButton = _addButton( 131, true, 1, REMOVE_TOOL_ID, 
+                                  !haveSubMenu, ResourceMenu::clearMidPicId, _("##clearBtnTooltip") );
+    
+    _d->roadButton = _addButton( 135, true, 2, B_ROAD, !haveSubMenu, ResourceMenu::roadMidPicId, _("##roadBtnTooltip") );
+    _d->waterButton = _addButton( 127, true, 3, BM_WATER, haveSubMenu, ResourceMenu::waterMidPicId, _("##waterBtnTooltip") );
+    _d->healthButton = _addButton( 163, true, 4, BM_HEALTH, haveSubMenu, ResourceMenu::healthMidPicId, _("##healthBtnTooltip") );
+    _d->templeButton = _addButton( 151, true, 5, BM_RELIGION, haveSubMenu, ResourceMenu::religionMidPicId, _("##templeBtnTooltip") );
+    _d->educationButton = _addButton( 147, true, 6, BM_EDUCATION, haveSubMenu, ResourceMenu::educationMidPicId, _("##educationBtnTooltip") );
+    
+    _d->entertainmentButton = _addButton( 143, true, 7, BM_ENTERTAINMENT, haveSubMenu, 
+                                          ResourceMenu::entertainmentMidPicId, _("##entertainmentBtnTooltip") );
+    
+    _d->administrationButton = _addButton( 139, true, 8, BM_ADMINISTRATION, haveSubMenu, 
+                                           ResourceMenu::administrationMidPicId, _("##administractionBtnTooltip") );
+    
+    _d->engineerButton = _addButton( 167, true, 9, BM_ENGINEERING, haveSubMenu, 
+                                     ResourceMenu::engineerMidPicId, _("##engineerBtnTooltip") );
+    
+    _d->securityButton = _addButton( 159, true, 10, BM_SECURITY, haveSubMenu, 
+                                     ResourceMenu::securityMidPicId, _("##securityBtnTooltip") );
+    
+    _d->commerceButton = _addButton( 155, true, 11, BM_COMMERCE, haveSubMenu, 
+                                     ResourceMenu::comerceMidPicId, _("##comerceBtnTooltip") );
+}
+
+PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul, 
+                             int id, bool haveSubmenu, int midPic, const std::string& tooltip )
+{
     Point offset( 1, 32 );
     int dy = 35;
-    _d->minimizeButton = new PushButton( this, Rect( 0, 0, 31, 20), "", MAXIMIZE_ID );
-    GuiPaneling::configureTexturedButton( _d->minimizeButton, ResourceGroup::panelBackground, ResourceMenu::maximizeBtnPicId, false );
-    _d->minimizeButton->setPosition( Point( 6, 4 ));
 
-    _d->houseButton = new PushButton( this, Rect( 0, 0, 39, 26), "", B_HOUSE );
-    GuiPaneling::configureTexturedButton( _d->houseButton, ResourceGroup::panelBackground, ResourceMenu::houseBtnPicId, true );
-    _d->houseButton->setPosition( offset + Point( 0, dy * 0 ) );
+    MenuButton* ret = new MenuButton( this, Rect( 0, 0, 39, 26), "", -1, -1 );
+    ret->setID( id | ( haveSubmenu ? BuildMenu::subMenuCreateIdHigh : 0 ) );
+    GuiPaneling::configureTexturedButton( ret, ResourceGroup::panelBackground, startPic, pushBtn );
+    ret->setPosition( offset + Point( 0, dy * yMul ) );
+    ret->setTooltipText( tooltip );
 
-    _d->clearButton = new PushButton( this, Rect( 0, 0, 39, 26), "", REMOVE_TOOL_ID );
-    GuiPaneling::configureTexturedButton(_d->clearButton, ResourceGroup::panelBackground, 131, true );
-    _d->clearButton->setPosition( offset + Point( 0, dy * 1 ) );
+    if( MenuButton* btn = safety_cast< MenuButton* >( ret ) )
+    {
+        btn->setMidPicId( midPic );
+    }
 
-    _d->roadButton = new PushButton( this, Rect( 0, 0, 39, 26), "", B_ROAD );
-    GuiPaneling::configureTexturedButton(_d->roadButton, ResourceGroup::panelBackground, 135, true );
-    _d->roadButton->setPosition( offset + Point( 0, dy * 2 ) );
-
-    _d->waterButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_WATER | BuildMenu::subMenuCreateIdHigh);
-    GuiPaneling::configureTexturedButton(_d->waterButton,  ResourceGroup::panelBackground, 127, true );
-    _d->waterButton->setPosition( offset + Point( 0, dy * 3 ));
-
-    _d->healthButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_HEALTH | BuildMenu::subMenuCreateIdHigh);
-    GuiPaneling::configureTexturedButton(_d->healthButton, ResourceGroup::panelBackground, 163, true );
-    _d->healthButton->setPosition( offset + Point( 0, dy * 4 ) );
-
-    _d->templeButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_RELIGION | BuildMenu::subMenuCreateIdHigh);
-    GuiPaneling::configureTexturedButton(_d->templeButton, ResourceGroup::panelBackground, 151, true);
-    _d->templeButton->setPosition( offset + Point( 0, dy * 5 ) );
-
-    _d->educationButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_EDUCATION | BuildMenu::subMenuCreateIdHigh);
-    GuiPaneling::configureTexturedButton(_d->educationButton, ResourceGroup::panelBackground, 147, true );
-    _d->educationButton->setPosition( offset + Point( 0, dy * 6 ) );
-
-    _d->entertainmentButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_ENTERTAINMENT | BuildMenu::subMenuCreateIdHigh );
-    GuiPaneling::configureTexturedButton(_d->entertainmentButton, ResourceGroup::panelBackground, 143, true );
-    _d->entertainmentButton->setPosition( offset + Point( 0, dy * 7 ) );
-
-    _d->administrationButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_ADMINISTRATION | BuildMenu::subMenuCreateIdHigh);
-    GuiPaneling::configureTexturedButton(_d->administrationButton, ResourceGroup::panelBackground, 139, true );
-    _d->administrationButton->setPosition( offset + Point( 0, dy * 8 ) );
-
-    _d->engineerButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_ENGINEERING | BuildMenu::subMenuCreateIdHigh);
-    GuiPaneling::configureTexturedButton(_d->engineerButton, ResourceGroup::panelBackground, 167, true );
-    _d->engineerButton->setPosition( offset + Point( 0, dy * 9 ) );
-
-    _d->securityButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_SECURITY | BuildMenu::subMenuCreateIdHigh);
-    GuiPaneling::configureTexturedButton(_d->securityButton, ResourceGroup::panelBackground, 159, true );
-    _d->securityButton->setPosition( offset + Point( 0, dy * 10 ) );
-
-    _d->commerceButton = new PushButton( this, Rect( 0, 0, 39, 26), "", BM_COMMERCE | BuildMenu::subMenuCreateIdHigh );
-    GuiPaneling::configureTexturedButton(_d->commerceButton, ResourceGroup::panelBackground, 155, true );
-    _d->commerceButton->setPosition( offset + Point( 0, dy * 11 ) );
-    // //
-    // _midIcon.setPicture(PicLoader::instance().get_picture("panelwindows", 1));
-    // _midIcon.setPosition(8, 217);
-    // add_widget(_midIcon);
-
-    //_bottomIcon.setPicture(PicLoader::instance().get_picture("paneling", 20));
-    //_bottomIcon.setPosition(0, _bgPicture->get_surface()->h);
-    //add_widget(_bottomIcon);
-
-    // // header
-    // set3Button(_senateButton, WidgetEvent(), 79);
-    // set3Button(_empireButton, WidgetEvent(), 82);
-    // set3Button(_missionButton, WidgetEvent(), 85);
-    // set3Button(_northButton, WidgetEvent(), 88);
-    // set3Button(_rotateLeftButton, WidgetEvent(), 91);
-    // set3Button(_rotateRightButton, WidgetEvent(), 94);
-
-    //   // 5th row
-    //   set4Button(_cancelButton, WidgetEvent(), 171);
-    //   set4Button(_messageButton, WidgetEvent(), 115);
-    //   set4Button(_disasterButton, WidgetEvent(), 119);
-
-    // set button position
-    // _menuButton.setPosition(4, 3);
-    // header
-    // _senateButton.setPosition(7, 155);
-    // _empireButton.setPosition(84, 155);
-    // _missionButton.setPosition(7, 184);
-    // _northButton.setPosition(46, 184);
-    // _rotateLeftButton.setPosition(84, 184);
-    // _rotateRightButton.setPosition(123, 184);
-
-    //   // 5th row
-    //   _cancelButton.setPosition(13, 421);
-    //   _messageButton.setPosition(63, 421);
-    //   _disasterButton.setPosition(113, 421);
+    return ret;
 }
 
 void Menu::draw( GfxEngine& painter )
@@ -201,18 +180,19 @@ bool Menu::onEvent(const NEvent& event)
         {
         case MAXIMIZE_ID:
             _d->lastPressed = 0;
-            unselectAll();
             _createBuildMenu( -1, this );
             _d->onMaximizeSignal.emit();
         break;
 
         case B_HOUSE:
         case B_ROAD:
+            _d->lastPressed = event.GuiEvent.Caller;
             _d->onCreateConstructionSignal.emit( id );
             _createBuildMenu( -1, this );
         break;
 
         case REMOVE_TOOL_ID:
+            _d->lastPressed = event.GuiEvent.Caller;
             _d->onRemoveToolSignal.emit();
             _createBuildMenu( -1, this );
         break;
@@ -234,18 +214,27 @@ bool Menu::onEvent(const NEvent& event)
                     {
                         _d->onCreateConstructionSignal.emit( id );
                         _createBuildMenu( -1, this );
-                        _d->lastPressed = 0;
+                        setFocus();
+                        //_d->lastPressed = 0;
                     }
                 }
             }
 
-            unselectAll();
-            if( PushButton* btn = safety_cast< PushButton* >( _d->lastPressed ) )
-                btn->setPressed( true );
         break;
         }
-        
+
+        unselectAll();
+        if( PushButton* btn = safety_cast< PushButton* >( _d->lastPressed ) )
+        {
+            btn->setPressed( true && btn->isPushButton() );
+        }
         return true;
+    }
+
+    if( event.EventType == OC3_GUI_EVENT && event.GuiEvent.EventType == OC3_ELEMENT_FOCUS_LOST )
+    {
+        unselectAll();
+        _d->lastPressed = 0;
     }
 
     if( event.EventType == OC3_MOUSE_EVENT )
@@ -387,7 +376,43 @@ ExtentMenu::ExtentMenu( Widget* parent, int id, const Rect& rectangle )
     _d->engineerButton->setPosition( Point( 13, 385 ) );
     _d->securityButton->setPosition( Point( 63, 385 ) );
     _d->commerceButton->setPosition( Point( 113, 385) );
-    //   _cancelButton.setPosition(13, 421);
-    //   _messageButton.setPosition(63, 421);
-    //   _disasterButton.setPosition(113, 421);
+
+    // // header
+    _d->senateButton = _addButton( 79, false, 0, -1, false, -1, _("##senateBtnTooltip") );
+    _d->senateButton->setGeometry( Rect( Point( 7, 155 ), Size( 71, 23 ) ) );
+    _d->empireButton = _addButton( 82, false, 0, -1, false, -1, _("##empireBtnTooltip") );
+    _d->empireButton->setGeometry( Rect( Point( 84, 155 ), Size( 71, 23 ) ) );
+   
+    _d->missionButton = _addButton( 85, false, 0, -1, false, -1, _("##missionBtnTooltip") );
+    _d->missionButton->setGeometry( Rect( Point( 7, 184 ), Size( 33, 22 ) ) );
+    _d->northButton = _addButton( 88, false, 0, -1, false, -1, _("##northBtnTooltip") );
+    _d->northButton->setGeometry( Rect( Point( 46, 184 ), Size( 33, 22 ) ) );
+    _d->rotateLeftButton = _addButton( 91, false, 0, -1, false, -1, _("##rotateLeftBtnTooltip") );
+    _d->rotateLeftButton->setGeometry( Rect( Point( 84, 184 ), Size( 33, 22 ) ) );
+    _d->rotateRightButton = _addButton( 94, false, 0, -1, false, -1, _("##rotateRightBtnTooltip") );
+    _d->rotateRightButton->setGeometry( Rect( Point( 123, 184 ), Size( 33, 22 ) ) );
+
+    _d->cancelButton = _addButton( 171, false, 0, -1, false, -1, _("##cancelBtnTooltip") );
+    _d->cancelButton->setGeometry( Rect( Point( 13, 421 ), Size( 39, 22 ) ) );
+    _d->messageButton = _addButton( 115, false, 0, -1, false, -1, _("##messageBtnTooltip") );
+    _d->messageButton->setGeometry( Rect( Point( 63, 421 ), Size( 39, 22 ) ) );
+    _d->disasterButton = _addButton( 119, false, 0, -1, false, -1, _("##disasterBtnTooltip") );
+    _d->disasterButton->setGeometry( Rect( Point( 113, 421 ), Size( 39, 22 ) ) );
+
+    _d->middleLabel = new Label(this, Rect( Point( 7, 216 ), Size( 148, 52 )) );
+    _d->middleLabel->setBackgroundPicture( PicLoader::instance().get_picture( ResourceGroup::menuMiddleIcons, ResourceMenu::emptyMidPicId ) );
+}
+
+bool ExtentMenu::onEvent(const NEvent& event)
+{
+    if( event.EventType == OC3_GUI_EVENT && event.GuiEvent.EventType == OC3_BUTTON_CLICKED )
+    {
+        if( MenuButton* btn = safety_cast< MenuButton* >( event.GuiEvent.Caller ) )
+        {
+            int picId = btn->getMidPicId() > 0 ? btn->getMidPicId() : ResourceMenu::emptyMidPicId;
+            _d->middleLabel->setBackgroundPicture( PicLoader::instance().get_picture( ResourceGroup::menuMiddleIcons, picId ) );
+        }
+    }
+
+    return Menu::onEvent( event );
 }

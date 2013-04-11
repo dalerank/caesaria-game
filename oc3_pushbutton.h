@@ -83,6 +83,8 @@ public oc3_signals:
 
 protected:
 
+    void resizeEvent_();
+
     //! when left mouse button pressed down
 	bool leftMouseBtnPressed_( const NEvent& event );
 

@@ -107,6 +107,9 @@ public:
 public oc3_signals:
     virtual Signal0<>& onClicked();
 
+protected:
+    void resizeEvent_();
+
 private:
     void _updateTexture();
 

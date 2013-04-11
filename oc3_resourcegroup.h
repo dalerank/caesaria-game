@@ -21,6 +21,7 @@ class ResourceGroup
 {
 public:
     static const char* panelBackground;
+    static const char* menuMiddleIcons;
 };
 
 class ResourceMenu
@@ -30,6 +31,20 @@ public:
     static const int houseBtnPicId = 123;
     static const int helpInfBtnPicId = 528;
     static const int exitInfBtnPicId = 532;
+
+    static const int houseMidPicId = 1;
+    static const int clearMidPicId = 12;
+    static const int roadMidPicId = 11;
+    static const int waterMidPicId = 4;
+    static const int healthMidPicId = 6;
+    static const int religionMidPicId = 2;
+    static const int educationMidPicId = 7;
+    static const int administrationMidPicId = 3;
+    static const int entertainmentMidPicId = 5;
+    static const int engineerMidPicId = 8;
+    static const int securityMidPicId = 9;
+    static const int comerceMidPicId = 10;
+    static const int emptyMidPicId = 13;
 };
 
 #endif

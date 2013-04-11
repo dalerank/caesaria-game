@@ -70,6 +70,7 @@ SDL_Surface* Picture::get_surface() const
 {
    return _surface;
 }
+
 int Picture::get_xoffset() const
 {
    return _xoffset;

@@ -21,6 +21,8 @@
 #include "oc3_signals.h"
 #include "oc3_scopedptr.h"
 
+class PushButton;
+
 class Menu : public Widget
 {
 public:
@@ -44,6 +46,9 @@ protected:
 
     Menu( Widget* parent, int id, const Rect& rectangle );
     void _createBuildMenu( int type, Widget* parent );
+    PushButton* _addButton( int startPic, bool pushBtn, int yMul, 
+                            int id, bool haveSubmenu, int midPic, 
+                            const std::string& tooltip="" );
 };
 
 class ExtentMenu : public Menu
@@ -53,6 +58,8 @@ public:
 
     void minimize();
     void maximize();
+
+    bool onEvent(const NEvent& event);
 protected:
     ExtentMenu( Widget* parent, int id, const Rect& rectangle );
 };
