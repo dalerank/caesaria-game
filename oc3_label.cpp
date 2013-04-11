@@ -162,7 +162,8 @@ void Label::draw( GfxEngine& painter )
     Rect frameRect( getAbsoluteRect() );
 
     // draw background
-    painter.drawPicture( *_d->picture, frameRect.getLeft(), frameRect.getTop() );
+    if( _d->picture )
+        painter.drawPicture( *_d->picture, frameRect.getLeft(), frameRect.getTop() );
 
     Widget::draw( painter );
 }
@@ -575,5 +576,10 @@ void Label::setFont( const Font& font )
 void Label::setTextAlignment( TypeAlign horizontal, TypeAlign vertical )
 {
     Widget::setTextAlignment( horizontal, vertical );
+    _d->needUpdatePicture = true;
+}
+
+void Label::resizeEvent_()
+{
     _d->needUpdatePicture = true;
 }

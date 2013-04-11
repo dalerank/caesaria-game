@@ -46,7 +46,9 @@ protected:
 
     Menu( Widget* parent, int id, const Rect& rectangle );
     void _createBuildMenu( int type, Widget* parent );
-    PushButton* _addButton( int startPic, bool pushBtn, int yMul, int id, bool haveSubmenu, int midPic );
+    PushButton* _addButton( int startPic, bool pushBtn, int yMul, 
+                            int id, bool haveSubmenu, int midPic, 
+                            const std::string& tooltip="" );
 };
 
 class ExtentMenu : public Menu
