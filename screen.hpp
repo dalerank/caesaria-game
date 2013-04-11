@@ -19,33 +19,40 @@
 #ifndef SCREEN_HPP
 #define SCREEN_HPP
 
-#include "gui_widget.hpp"
+class GfxEngine;
+class GuiEnv;
+struct NEvent;
 
-class Screen: public WidgetListener
+class Screen
 {
 public:
-   virtual ~Screen();
+    virtual ~Screen();
 
-   virtual void handleEvent(SDL_Event &event);
-   virtual void handleWidgetEvent(const WidgetEvent &event, Widget *widget);
+    virtual void handleEvent( NEvent& event);
+   //virtual void handleWidgetEvent(const WidgetEvent &event, Widget *widget);
 
-   virtual void draw() = 0;
+    virtual void draw() = 0;
 
    // this method is executed after every frame. default: do nothing
-   virtual void afterFrame();
+    virtual void afterFrame();
 
    // runs the screen (main loop), returns _wevent
-   WidgetEvent run();
-   void stop();
+    int run();
+    void stop();
 
    // draws the complete frame
-   void drawFrame();
+    void drawFrame();
+
+    virtual void initialize( GfxEngine& engine, GuiEnv& gui ) = 0;
 
 protected:
-   Screen();
+    virtual bool isStopped() const;
+    virtual int getResult() const = 0;
 
-   WidgetEvent _wevent;  // event to pass to the main loop
-   bool _isStopped;  // screen needs to stop its loop
+    Screen();
+
+    //WidgetEvent _wevent;  // event to pass to the main loop
+    bool _isStopped;  // screen needs to stop its loop
 };
 
 

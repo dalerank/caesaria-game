@@ -23,6 +23,7 @@
 #include <pic_loader.hpp>
 #include <sdl_facade.hpp>
 #include <gettext.hpp>
+#include "oc3_pushbutton.h"
 
 #include <iostream>
 
@@ -37,6 +38,16 @@ GuiPaneling& GuiPaneling::instance()
       if (_instance == NULL) THROW("Memory error, cannot instantiate object");
    }
    return *_instance;
+}
+
+void GuiPaneling::configureTexturedButton( PushButton* oButton, const std::string& rcGroup, const int pic_index, bool pushButton )
+{
+    PicLoader& loader = PicLoader::instance();
+    oButton->setPicture( &loader.get_picture( rcGroup, pic_index), stNormal );
+    oButton->setPicture( &loader.get_picture( rcGroup, pic_index+1), stHovered );
+    oButton->setPicture( &loader.get_picture( rcGroup, pic_index+2), stPressed );
+    oButton->setPicture( &loader.get_picture( rcGroup, pic_index+3), stDisabled );
+    oButton->setIsPushButton( pushButton );
 }
 
 

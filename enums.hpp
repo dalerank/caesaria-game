@@ -72,20 +72,24 @@ enum BuildingType
    B_MAX
 };
 
-enum BuildMenuType { BM_NONE, BM_WATER, BM_HEALTH, BM_SECURITY, BM_EDUCATION, BM_ENGINEERING, BM_ADMINISTRATION, BM_ENTERTAINMENT, BM_COMMERCE, BM_FARM, BM_RAW_MATERIAL, BM_FACTORY, BM_RELIGION, BM_TEMPLE, BM_BIGTEMPLE, BM_MAX };
-
-enum WidgetEventType
-{
-  WE_NONE,
-  WE_NewGame, WE_SaveGame, WE_LoadGame, WE_QuitGame,
-  WE_OptionsMenu, // game options
-  WE_InGameMenu,  // screen_game: options/saveGame/quitGame
-  WE_BuildMenu,   // screen_game: select a group of buildings (security buildings/...)
-  WE_Building,    // screen_game: select a building (prefecture/...)
-  WE_ClearLand,   // screen_game: clear some land (building, tree, ...)
-  WE_ChangeSideMenuType, // change side menu type: from "small" to "big" and vice versa
-  WE_MAX
+enum BuildMenuType 
+{ 
+    BM_NONE, 
+    BM_WATER, 
+    BM_HEALTH, 
+    BM_SECURITY, 
+    BM_EDUCATION, 
+    BM_ENGINEERING, 
+    BM_ADMINISTRATION, 
+    BM_ENTERTAINMENT, 
+    BM_COMMERCE, 
+    BM_FARM, 
+    BM_RAW_MATERIAL, 
+    BM_FACTORY, 
+    BM_RELIGION, 
+    BM_TEMPLE, 
+    BM_BIGTEMPLE, 
+    BM_MAX 
 };
-
 
 #endif

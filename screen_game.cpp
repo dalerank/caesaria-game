@@ -26,37 +26,82 @@
 #include "exception.hpp"
 #include "warehouse.hpp"
 #include "scenario_saver.hpp"
+#include "oc3_menurgihtpanel.h"
+#include "oc3_resourcegroup.h"
+#include "oc3_guienv.h"
+#include "oc3_topmenu.h"
+#include "oc3_menu.h"
+#include "oc3_event.h"
+#include "oc3_infoboxmanager.h"
 
-
-ScreenGame::ScreenGame()
+class ScreenGame::Impl
 {
-  _scenario   = NULL;
-  _menu       = NULL;
-  _menuBar    = NULL;
-  _buildMenu  = NULL;
-  _inGameMenu = NULL;
-  _infoBox    = NULL;
+public:
+    MenuRigthPanel* rightPanel;
+    GuiEnv* gui;
+    GfxEngine* engine;
+    TopMenu* topMenu;
+    Menu* menu;
+    ExtentMenu* extMenu;
+    InfoBoxManagerPtr infoBoxMgr;
+};
+
+ScreenGame::ScreenGame() : _d( new Impl )
+{
+   _d->topMenu = NULL;
+   _scenario = NULL;
 }
 
 ScreenGame::~ScreenGame() {}
 
-void ScreenGame::init()
+void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
 {
-   // enable key repeat, 1ms delay, 100ms repeat
-   SDL_EnableKeyRepeat(1, 100);
+    _d->gui = &gui;
+    _d->engine = &engine;
+    _d->infoBoxMgr = InfoBoxManager::create( &gui );
+    // enable key repeat, 1ms delay, 100ms repeat
+    SDL_EnableKeyRepeat(1, 100);
 
-   GfxEngine &engine = GfxEngine::instance();
+    _d->gui->clear();
 
-   _menuBar = new MenuBar();
-   _menuBar->setPosition(0, 0);
-   _menuBar->init( engine.getScreenWidth(), 23 );
+    const int topMenuHeight = 23;
+    const Picture& rPanelPic = PicLoader::instance().get_picture( ResourceGroup::panelBackground, 14 );
+    Rect rPanelRect( engine.getScreenWidth() - rPanelPic.get_width(), topMenuHeight,
+                     engine.getScreenWidth(), engine.getScreenHeight() );
+    _d->rightPanel = MenuRigthPanel::create( gui.getRootWidget(), rPanelRect, rPanelPic);
 
-   _menu = new Menu();
-   _menu->setPosition( engine.getScreenWidth() - _menu->getWidth(), _menuBar->getHeight() );
-   _menu->setListener(this);
+    _d->topMenu = TopMenu::create( gui.getRootWidget(), topMenuHeight );
 
-   getMapArea().setViewSize(engine.getScreenWidth(), engine.getScreenHeight()+8 * 30);  // 8*30: used for high buildings (granary...), visible even when not in tilemap_area.
-   getMapArea().setCenterIJ(25, 10);
+    _d->menu = Menu::create( gui.getRootWidget(), -1 );
+    _d->menu->setPosition( Point( engine.getScreenWidth() - _d->menu->getWidth() - _d->rightPanel->getWidth(), 
+                                 _d->topMenu->getHeight() ) );
+
+    _d->extMenu = ExtentMenu::create( gui.getRootWidget(), -1 );
+    _d->extMenu->setPosition( Point( engine.getScreenWidth() - _d->extMenu->getWidth() - _d->rightPanel->getWidth(), 
+                                     _d->topMenu->getHeight() ) );
+
+    //over other elements
+    _d->rightPanel->bringToFront();
+
+    CONNECT( _d->menu, onCreateConstruction(), this, ScreenGame::resolveCreateConstruction );
+    CONNECT( _d->menu, onRemoveTool(), this, ScreenGame::resolveRemoveTool );
+    CONNECT( _d->menu, onMaximize(), _d->extMenu, ExtentMenu::maximize );
+
+    CONNECT( _d->extMenu, onCreateConstruction(), this, ScreenGame::resolveCreateConstruction );
+    CONNECT( _d->extMenu, onRemoveTool(), this, ScreenGame::resolveRemoveTool );
+
+    //CONNECT( &_guiTilemap, onDiscardPreview(), _d->menu, Menu::unselectAll );
+    //CONNECT( &_guiTilemap, onDiscardPreview(), _d->extMenu, Menu::unselectAll );
+
+    CONNECT( &_guiTilemap, onShowTileInfo(), this, ScreenGame::showTileInfo );
+  /* _d->extMenu = ExtentMenu::create();
+   _d->extMenu->setPosition( engine.getScreenWidth() - _d->extMenu->getWidth() - _d->rightPanel->getWidth(), 
+                             _d->topMenu->getHeight() ); */
+
+
+    getMapArea().setViewSize( engine.getScreenWidth(), 
+                             engine.getScreenHeight()+8*30);  // 8*30: used for high buildings (granary...), visible even when not in tilemap_area.
+    getMapArea().setCenterIJ(25, 10);
 }
 
 TilemapArea& ScreenGame::getMapArea()
@@ -74,78 +119,16 @@ void ScreenGame::setScenario(Scenario &scenario)
    _guiTilemap.init(city, _mapArea, this);
 }
 
-void ScreenGame::setInfoBox(GuiInfoBox *infoBox)
-{
-   _infoBox = infoBox;
-}
-
-void ScreenGame::setBuildMenu(BuildMenu *buildMenu)
-{
-   if (_buildMenu != NULL)
-   {
-      // delete the old buildMenu
-      _buildMenu->setDeleted();
-   }
-   _buildMenu = buildMenu;
-   if (_buildMenu == NULL)
-   {
-      // unselect the active menu button, if any
-      _menu->unselect();
-   }
-   else
-   {
-      // link the new buildMenu
-      _buildMenu->setListener(this);
-   }
-}
-
-void ScreenGame::setInGameMenu(InGameMenu *inGameMenu)
-{
-   if (_inGameMenu != NULL)
-   {
-      // delete the old menu
-      _inGameMenu->setDeleted();
-   }
-   _inGameMenu = inGameMenu;
-   if (_inGameMenu != NULL)
-   {
-      // link the new menu
-      _inGameMenu->setListener(this);
-   }
-}
-
-
 void ScreenGame::drawTilemap()
 {
    _guiTilemap.drawTilemap();
 }
 
-
 void ScreenGame::drawInterface()
 {
-   _menuBar->draw( 0, 0 );
-   _menu->draw( 0, 0 );
-
-   if (_infoBox != NULL)
-   {
-      GuiInfoBox &infoBox = *_infoBox;
-      infoBox.draw(0, 0);
-   }
-
-   if (_buildMenu != NULL)
-   {
-      BuildMenu &buildMenu = *_buildMenu;
-      buildMenu.draw(0, 0);
-   }
-
-   if (_inGameMenu != NULL)
-   {
-      InGameMenu &inGameMenu = *_inGameMenu;
-      inGameMenu.draw(0, 0);
-   }
-
+	_d->gui->beforeDraw();
+    _d->gui->draw();
 }
-
 
 void ScreenGame::draw()
 {
@@ -158,204 +141,65 @@ void ScreenGame::afterFrame()
    _scenario->getCity().timeStep();
 }
 
-int ScreenGame::isModShift()
+void ScreenGame::handleEvent( NEvent& event )
 {
-   if ((SDL_GetModState() & (KMOD_LSHIFT | KMOD_RSHIFT)) != 0)
-   {
-      return 1;
-   }
-   else
-   {
-      return 0;
-   }
-}
-
-void ScreenGame::handleEvent(SDL_Event &event)
-{
-   if (_infoBox != NULL)
-   {
-      // infoBox is modal: it consumes all events
-      _infoBox->handleEvent(event);
-      if (_infoBox->isDeleted())
-      {
-         delete _infoBox;
-         _infoBox = NULL;
-      }
-      return;
-   }
-
-   if (_buildMenu != NULL)
-   {
-      // buildMenu is modal: it consumes all events
-      _buildMenu->handleEvent(event);
-      if (_buildMenu->isDeleted())
-      {
-         delete _buildMenu;
-         setBuildMenu(NULL);
-      }
-      return;
-   }
-
-   if (_inGameMenu != NULL)
-   {
-      // inGameMenu is modal: it consumes all events
-      _inGameMenu->handleEvent(event);
-      if (_inGameMenu->isDeleted())
-      {
-         delete _inGameMenu;
-         setInGameMenu(NULL);
-      }
-      return;
-   }
-
-   bool isPreview = true;
-   switch (event.type)
-   {
-   case SDL_MOUSEMOTION:
-      if (_menu->contains(event.button.x, event.button.y))
-      {
-         isPreview = false;
-      }
-      _guiTilemap.setPreview(isPreview);
-      _menu->handleEvent(event);
-      _guiTilemap.handleEvent(event);
-      break;
-   case SDL_MOUSEBUTTONDOWN:
-      if (_menu->contains(event.button.x, event.button.y))
-      {
-         _menu->handleEvent(event);
-      }
-      else
-      {
-         _guiTilemap.handleEvent(event);
-      }
-      break;
-   case SDL_KEYDOWN:
-   { 
-     switch(event.key.keysym.sym)
-     {
-       case SDLK_UP:        getMapArea().moveUp(1 + 4*isModShift());    break;
-       case SDLK_DOWN:      getMapArea().moveDown(1 + 4*isModShift());  break;
-       case SDLK_RIGHT:     getMapArea().moveRight(1 + 4*isModShift()); break;
-       case SDLK_LEFT:      getMapArea().moveLeft(1 + 4*isModShift());  break;
-       case SDLK_ESCAPE:    stop(); break;
-     }
-   }   
-   break;
-   }
-
-}
-
-
-void ScreenGame::handleWidgetEvent(const WidgetEvent &event, Widget *widget)
-{
-   switch(event._eventType)
-   {
-     case WE_BuildMenu:
-   {
-      BuildMenuType menuType = event._buildMenuType;
-      BuildMenu* buildMenu = BuildMenu::getMenuInstance(menuType);
-
-      if (buildMenu != NULL)
-      {
-         // here we can also update mid_picture when side menu is big
-	 // very ugly!
-	 switch (menuType)
-	 {
-	   case BM_RELIGION:      _menu->changeMidIcon(2); break;
-	   case BM_ADMINISTRATION:_menu->changeMidIcon(3); break;
-	   case BM_WATER:         _menu->changeMidIcon(4); break;
-	   case BM_ENTERTAINMENT: _menu->changeMidIcon(5); break;
-	   case BM_HEALTH:        _menu->changeMidIcon(6); break;
-	   case BM_EDUCATION:     _menu->changeMidIcon(7); break;
-	   case BM_ENGINEERING:   _menu->changeMidIcon(8); break;
-	   case BM_SECURITY:      _menu->changeMidIcon(9); break;
-	   case BM_COMMERCE:      _menu->changeMidIcon(10); break;
-	}
-         // we have a new buildMenu: initialize it
-         GfxEngine &engine = GfxEngine::instance();
-
-         // compute the Y position of the menu, ugly because of submenus
-         int y;
-         if (dynamic_cast<BuildMenu*>(widget->getParent()) == NULL)
-         {
-            // this is not a submenu
-            y = widget->getY();
-         }
-         else
-         {
-            // this is a submenu
-            y = widget->getParent()->getY();  // Y position of the buildMenu
-         }
-
-         buildMenu->init();
-         y = std::min(y, engine.getScreenHeight() - buildMenu->getHeight());
-         y = std::max(y, 0);
-         buildMenu->setPosition(engine.getScreenWidth() - buildMenu->getWidth() - _menu->getWidth() - 5, y);
-         setBuildMenu(buildMenu);
-      }
-
-   }
-   break;
-     case WE_InGameMenu:
-   {
-      GfxEngine &engine = GfxEngine::instance();
-      InGameMenu* inGameMenu = new InGameMenu();
-      inGameMenu->init();
-      inGameMenu->setPosition(engine.getScreenWidth() - inGameMenu->getWidth() - _menu->getWidth() - 5, 50);
-      setInGameMenu(inGameMenu);
-   }
-   break;
-     case WE_SaveGame:
-   {
-      if (_scenario != NULL)
-      {
-         std::cout << "SAVE" << std::endl;
-         ScenarioSaver saver = ScenarioSaver();
-         saver.save("oc3.sav");
-         if (_inGameMenu != NULL)
-         {
-            // delete menu, if any
-            _inGameMenu->setDeleted();
-         }
-      }
-   }
-   break;
-     case WE_Building:
-   {
-      BuildingType buildingType = event._buildingType;
-      
-	 switch (buildingType)
-	 {
-	   case B_ROAD:      _menu->changeMidIcon(11); break;
-	   case B_HOUSE:     _menu->changeMidIcon(1); break;
-	}
-      
-      Construction *construction = dynamic_cast<Construction*>(LandOverlay::getInstance(buildingType));
-      _guiTilemap.setBuildInstance(construction);
-      if (_buildMenu != NULL)
-      {
-         // delete buildMenu, if any
-         _buildMenu->setDeleted();
-      }
-   }
-   break;
-     case WE_ClearLand:
-   {
-      _guiTilemap.setRemoveTool();
-      // update mid_image
-      _menu->changeMidIcon(12);
-   }
-   break;
-     case WE_ChangeSideMenuType:
-   {
-      std::cout << "change menu pls!!!" << std::endl;
-      _menu->changeSideMenuType();
-   }
-   break;
+    bool eventResolved = _d->gui->handleEvent( event );      
    
-   }// end of switch statement
+    if( !eventResolved )
+        _guiTilemap.handleEvent( event );
 
+    if( event.EventType == OC3_KEYBOARD_EVENT && event.KeyboardEvent.Key == KEY_ESCAPE )
+    {
+        std::cout << "EVENT_ESCAPE was pressed" << std::endl;
+        stop();
+    }
 }
 
+int ScreenGame::getResult() const
+{
+	return 0;
+}
 
+void ScreenGame::resolveCreateConstruction( int type )
+{
+    Construction *construction = dynamic_cast<Construction*>(LandOverlay::getInstance( BuildingType( type ) ) );
+    _guiTilemap.setBuildInstance(construction);
+}
+
+void ScreenGame::resolveRemoveTool()
+{
+    _guiTilemap.setRemoveTool();
+}
+
+void ScreenGame::showTileInfo( Tile* tile )
+{
+    _d->infoBoxMgr->showHelp( tile );
+}
+// void ScreenGame::handleWidgetEvent(const WidgetEvent& event, Widget *widget)
+// {
+//    
+//    else if (event._eventType == WE_InGameMenu)
+//    {
+//       GfxEngine &engine = GfxEngine::instance();
+//       InGameMenu* inGameMenu = new InGameMenu();
+//       inGameMenu->init();
+//       inGameMenu->setPosition(engine.getScreenWidth() - inGameMenu->getWidth() - _menu->getWidth()-5, 50);
+//       setInGameMenu(inGameMenu);
+//    }
+//    else if (event._eventType == WE_SaveGame)
+//    {
+//       if (_scenario != NULL)
+//       {
+//          std::cout << "SAVE" << std::endl;
+//          ScenarioSaver saver = ScenarioSaver();
+//          saver.save("oc3.sav");
+//          if (_inGameMenu != NULL)
+//          {
+//             // delete menu, if any
+//             _inGameMenu->setDeleted();
+//          }
+//       }
+//    }
+//  
+// 
+// }

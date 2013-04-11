@@ -157,9 +157,9 @@ SimpleGoodStore& Factory::getGoodStore()
 }
 
 
-GuiInfoBox* Factory::makeInfoBox()
+GuiInfoBox* Factory::makeInfoBox( Widget* parent )
 {
-   GuiInfoFactory* box = new GuiInfoFactory(*this);
+   GuiInfoFactory* box = new GuiInfoFactory( parent, *this);
    return box;
 }
 
