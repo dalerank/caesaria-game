@@ -51,7 +51,7 @@ Picture& SdlFacade::createPicture(const int width, const int height)
 {
    SDL_Surface* img;
    const Uint32 flags = 0;
-   img = SDL_CreateRGBSurface(flags, width, height, 24, 0, 0, 0, 0);  // opaque picture with default mask
+   img = SDL_CreateRGBSurface(flags, width, height, 32, 0, 0, 0, 0);  // opaque picture with default mask
    if (img == NULL) THROW("Cannot make surface, size=" << width << "x" << height);
 
    Picture *pic = new Picture();

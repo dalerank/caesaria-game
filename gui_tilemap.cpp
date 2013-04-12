@@ -15,6 +15,8 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
+
+
 #include "gui_tilemap.hpp"
 
 #include <algorithm>
@@ -36,6 +38,8 @@ public:
     Tiles postTiles;  // these tiles have draw over "normal" tilemap tiles!
     Picture buildInstncePicture;
     Point lastCursorPos;
+    Point lmbPressedPoint;
+    bool  lmbPressed;
 
 oc3_signals public:
     Signal1< Tile* > onShowTileInfoSignal;
@@ -291,6 +295,13 @@ void GuiTilemap::handleEvent( NEvent& event)
 
         case OC3_LMOUSE_PRESSED_DOWN:
         {
+            _d->lmbPressedPoint = event.MouseEvent.getPosition();
+            _d->lmbPressed = true;
+        }
+        break;
+
+        case OC3_LMOUSE_LEFT_UP:
+        {
             Tile* tile = getTileXY( event.MouseEvent.getPosition() );  // tile under the cursor (or NULL)
             if( tile == 0 )
                 break;
@@ -318,6 +329,8 @@ void GuiTilemap::handleEvent( NEvent& event)
             {
                 getMapArea().setCenterIJ( tilePos.getI(), tilePos.getJ() );
             }
+
+            _d->lmbPressed = false;
         }
         break;
 
