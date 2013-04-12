@@ -105,6 +105,9 @@ public:
   virtual void build(const int i, const int j);
   Picture& computePicture();
   virtual void setTerrain(TerrainTile &terrain);
+  void updateAqueducts();
+private:
+  Aqueduct *_north, *_east, *_south, *_west;
 };
 
 class Reservoir : public Construction
