@@ -48,18 +48,14 @@ public:
    void drawTilemap();
    
    // returns the tile at the cursor position.
-   Tile* getTileXY(const int x, const int y);
-   Tile* getTileXY( const Point& pos );
-
+   Tile* getTileXY( const int x, const int y, bool overborder=false );
+   Tile* getTileXY( const Point& pos, bool overborder=false );
    void handleEvent( NEvent& event);
 
    // sets the current build tool (if any)
-   void setBuildInstance(Construction *buildInstance);
+   void setBuildInstance(Construction *buildInstance, bool multiBuild );
    // sets the current remove tool (if any)
    void setRemoveTool();
-
-   // activate/deactivate build preview (aka priorityTiles)
-   void setPreview(const bool isPreview);
 
 oc3_signals public:
    Signal1< Tile* >& onShowTileInfo();
@@ -82,6 +78,10 @@ protected:
    void drawTile( const Tile &tile );
 
    void drawTileEx( const Tile& tile, const int depth );
+
+   void _getSelectedArea( TilePos& outStartPos, TilePos& outStopPos );
+   void _clearLand();
+   void _buildAll();
 
 private:
    City* _city;     // city to display

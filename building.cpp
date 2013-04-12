@@ -327,6 +327,11 @@ bool Construction::canBuild(const int i, const int j) const
    return is_constructible;
 }
 
+bool Construction::canBuild( const TilePos& pos ) const
+{
+    return canBuild( pos.getI(), pos.getJ() );
+}
+
 void Construction::build(const int i, const int j)
 {
    LandOverlay::build(i, j);
