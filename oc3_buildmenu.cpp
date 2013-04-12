@@ -249,6 +249,8 @@ void BuildMenu_engineering::addButtons()
     addBuildButton(B_SHIPYARD);
     addBuildButton(B_WHARF);
     addBuildButton(B_TRIUMPHAL_ARCH);
+    
+    addBuildButton(B_PLAZA);
 }
 
 BuildMenu_engineering::BuildMenu_engineering( Widget* parent, const Rect& rectangle )

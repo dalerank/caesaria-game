@@ -365,7 +365,9 @@ void Construction::computeAccessRoads()
 
 Uint8 Construction::getMaxDistance2Road() const
 {
-	return 1;
+  return 1;
+  // it is default value
+  // for houses - 2
 }
 
 Aqueduct::Aqueduct()
@@ -473,29 +475,43 @@ Picture& Aqueduct::computePicture()
      index = 121; // it's impossible, but ...
    }   
    
-   Picture *picture = &PicLoader::instance().get_picture( rcAqueductGroup, index);
-   return *picture;   
+   return PicLoader::instance().get_picture( rcAqueductGroup, index);
 }
 
 // I didn't decide what is the best approach: make Plaza as constructions or as upgrade to roads
 
 Plaza::Plaza()
 {
+  //std::cout << "Plaza::Plaza" << std::endl;
+
+  // somewhere we need to delete original road and then we need to think
+  // because as we remove original road we need to recompute adjacent tiles
+  // or we will run into big troubles
+ 
   setType(B_PLAZA);
-  setPicture( PicLoader::instance().get_picture( rcEntertaimentGroup, 102) ); // 102 ~ 107
+  setPicture(computePicture()); // 102 ~ 107
   _size = 1;
 }
 
 Plaza* Plaza::clone() const
 {
+  //std::cout << "Plaza::clone" << std::endl;
   return new Plaza(*this);
 }
 
 void Plaza::setTerrain(TerrainTile &terrain)
 {
+  //std::cout << "Plaza::setTerrain" << std::endl;
+  
   terrain.reset();
   terrain.setOverlay(this);
   terrain.setRoad(true);
+}
+
+Picture& Plaza::computePicture()
+{
+  //std::cout << "Plaza::computePicture" << std::endl;
+  return PicLoader::instance().get_picture( rcEntertaimentGroup, 102);
 }
 
 // Plazas can be built ONLY on top of existing roads
@@ -504,19 +520,20 @@ void Plaza::setTerrain(TerrainTile &terrain)
 
 bool Plaza::canBuild(const int i, const int j) const
 {
-   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  //std::cout << "Plaza::canBuild" << std::endl;
+  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
 
-   bool is_constructible = true;
+  bool is_constructible = true;
 
-   std::list<Tile*> rect = tilemap.getFilledRectangle(i, j, i+_size-1, j+_size-1);
-   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
-   {
-      Tile &tile = **itTiles;
+  std::list<Tile*> rect = tilemap.getFilledRectangle(i, j, i + _size - 1, j + _size - 1); // something very complex ???
+  for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+  {
+    Tile &tile = **itTiles;
 
-      is_constructible &= tile.get_terrain().isRoad();
-   }
+    is_constructible &= tile.get_terrain().isRoad();
+  }
 
-   return is_constructible;
+  return is_constructible;
 }
 
 Garden::Garden()
@@ -594,7 +611,7 @@ void Reservoir::timeStep(const unsigned long time)
     if( DateTime::getElapsedTime() - _lastTimeAnimate < 100 )
         return;
 
-    _lastTimeAnimate = DateTime::getElapsedTime();
+    _lastTimeAnimate = DateTime::	getElapsedTime();
 
     if( !_mayAnimate )
     {
