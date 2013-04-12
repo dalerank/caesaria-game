@@ -27,6 +27,7 @@
 #include "tilemap.hpp"
 #include "enums.hpp"
 #include "good.hpp"
+#include "oc3_scopedptr.h"
 
 class Widget;
 class GuiInfoBox;
@@ -110,12 +111,16 @@ class Reservoir : public Construction
 {
 public:
   Reservoir();
+  ~Reservoir();
   virtual Reservoir* clone() const;
 
-  virtual void build(const int i, const int j);
+  void build(const int i, const int j);
   Picture& computePicture();
-  virtual void setTerrain(TerrainTile &terrain);
+  void setTerrain(TerrainTile &terrain);
   void timeStep(const unsigned long time);
+private:
+    bool _mayAnimate;
+    int _lastTimeAnimate;
 };
 
 class Garden : public Construction

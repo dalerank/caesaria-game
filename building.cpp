@@ -32,6 +32,8 @@
 #include "training_building.hpp"
 #include "warehouse.hpp"
 #include "gettext.hpp"
+#include "sdl_facade.hpp"
+#include "oc3_time.h"
 
 namespace {
 static const char* rcUtilityGroup      = "utilitya";
@@ -462,13 +464,14 @@ void Garden::setTerrain(TerrainTile &terrain)
 Reservoir::Reservoir()
 {
   setType(B_RESERVOIR);
-  setPicture( PicLoader::instance().get_picture( rcUtilityGroup, 34) );
-  _size = 3;
+  setPicture( PicLoader::instance().get_picture( rcUtilityGroup, 34 ) );
+ _size = 3;
+  _lastTimeAnimate = DateTime::getElapsedTime();
   
   // utilitya 34      - emptry reservoir
   // utilitya 35 ~ 42 - full reservoir animation
  
-  AnimLoader animLoader(PicLoader::instance());
+  AnimLoader animLoader( PicLoader::instance() );
   animLoader.fill_animation(_animation, rcUtilityGroup, 35, 8);
   animLoader.fill_animation_reverse(_animation, rcUtilityGroup, 42, 7);
   animLoader.change_offset(_animation, 47, 63);
@@ -481,9 +484,24 @@ Reservoir* Reservoir::clone() const
   return new Reservoir(*this);
 }
 
+Reservoir::~Reservoir()
+{
+}
+
 void Reservoir::build(const int i, const int j)
 {
   Construction::build(i, j);  
+
+  bool near_water = false;  // tells if the factory is next to a mountain
+
+  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  std::list<Tile*> rect = tilemap.getRectangle( i-1, j-1, i+_size, j+_size, false);
+  for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+  {
+      near_water |= (*itTiles)->get_terrain().isWater();
+  }
+
+  _mayAnimate = near_water;
 }
 
 void Reservoir::setTerrain(TerrainTile &terrain)
@@ -495,10 +513,21 @@ void Reservoir::setTerrain(TerrainTile &terrain)
 
 void Reservoir::timeStep(const unsigned long time)
 {
-  _animation.nextFrame();
-  
-  // takes current animation frame and put it into foreground
-  _fgPictures.at(0) = _animation.get_current_picture(); 
+    if( DateTime::getElapsedTime() - _lastTimeAnimate < 100 )
+        return;
+
+    _lastTimeAnimate = DateTime::getElapsedTime();
+
+    if( !_mayAnimate )
+    {
+        _fgPictures[ 0 ] = 0;
+        return;
+    }
+
+    _animation.nextFrame();
+    
+    // takes current animation frame and put it into foreground
+    _fgPictures[ 0 ] = _animation.get_current_picture(); 
 }
 
 Road::Road()
