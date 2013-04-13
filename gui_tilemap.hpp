@@ -23,10 +23,10 @@
 #include <list>
 #include <vector>
 
-#include <picture.hpp>
-#include <city.hpp>
-#include <tilemap.hpp>
-#include <tilemap_area.hpp>
+#include "picture.hpp"
+#include "city.hpp"
+#include "tilemap.hpp"
+#include "tilemap_area.hpp"
 #include "oc3_signals.h"
 #include "oc3_scopedptr.h"
 
