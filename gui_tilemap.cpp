@@ -14,6 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+
 #include "gui_tilemap.hpp"
 
 #include <algorithm>
@@ -24,24 +25,24 @@
 #include "screen_game.hpp"
 #include "oc3_positioni.h"
 #include "oc3_pictureconverter.h"
-#include "oc3_pictureconverter.h"
 #include "oc3_event.h"
 #include "oc3_roadpropagator.h"
 
 class GuiTilemap::Impl
 {
 public:
-    Tiles postTiles;  // these tiles have draw over "normal" tilemap tiles!
-    Picture buildInstncePicture;
-    Point lastCursorPos;
-    Point startCursorPos;
-    bool  lmbPressed;
-    bool buildRoad;
-    bool  multiBuild;
+  Tiles postTiles;  // these tiles have draw over "normal" tilemap tiles!
+  Picture buildInstncePicture;
+  Point lastCursorPos;
+  Point startCursorPos;
+  bool  lmbPressed;
+  bool buildRoad;
+  bool  multiBuild;
 
-    TilePos lastTilePos;
+  TilePos lastTilePos;
+
 oc3_signals public:
-    Signal1< Tile* > onShowTileInfoSignal;
+  Signal1< Tile* > onShowTileInfoSignal;
 };
 
 
@@ -434,22 +435,18 @@ void GuiTilemap::handleEvent( NEvent& event )
         switch( event.KeyboardEvent.Key )
         {
         case KEY_UP:
-            std::cout << "KEY_UP was pressed" << std::endl;
             getMapArea().moveUp(1 + ( event.KeyboardEvent.Shift ? 4 : 0 ) );
         break;
 
         case KEY_DOWN:          
-            std::cout << "KEY_DOWN was pressed" << std::endl;
             getMapArea().moveDown(1 + ( event.KeyboardEvent.Shift ? 4 : 0 ) );
         break;
 
         case KEY_RIGHT:
-            std::cout << "SDLK_RIGHT was pressed" << std::endl;
             getMapArea().moveRight(1 + ( event.KeyboardEvent.Shift ? 4 : 0 ));
         break;
 
         case KEY_LEFT:
-            std::cout << "SDLK_LEFT was pressed" << std::endl;
             getMapArea().moveLeft(1 + ( event.KeyboardEvent.Shift ? 4 : 0 ) );
         break;     
         }
