@@ -87,6 +87,7 @@ public:
    Construction();
 
    virtual bool canBuild(const int i, const int j) const;  // returns true if it can be built there
+   virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
    virtual void build(const int i, const int j);
    const std::list<Tile*>& getAccessRoads() const;  // return all road tiles adjacent to the construction
    virtual void computeAccessRoads();  

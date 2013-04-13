@@ -300,6 +300,11 @@ void City::build(Construction &buildInstance, const int i, const int j)
    _funds -= buildingData.getCost();
 }
 
+void City::build( Construction &buildInstance, const TilePos& pos )
+{
+    build( buildInstance, pos.getI(), pos.getJ() );
+}
+
 void City::clearLand(const int i, const int j)
 {
    Tile& cursorTile = _tilemap.at(i, j);
@@ -371,6 +376,10 @@ void City::clearLand(const int i, const int j)
 
 }
 
+void City::clearLand( const TilePos& pos )
+{
+    clearLand( pos.getI(), pos.getJ() );
+}
 
 void City::collectTaxes()
 {

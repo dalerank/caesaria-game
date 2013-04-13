@@ -447,6 +447,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_roadpropagator.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_roadpropagator.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_safetycast.h"
 				>
 			</File>

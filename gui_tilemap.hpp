@@ -37,6 +37,8 @@ struct NEvent;
 class GuiTilemap
 {
 public:
+   typedef std::list<Tile*> Tiles;
+
    GuiTilemap();
    ~GuiTilemap();
 
@@ -48,18 +50,15 @@ public:
    void drawTilemap();
    
    // returns the tile at the cursor position.
-   Tile* getTileXY(const int x, const int y);
-   Tile* getTileXY( const Point& pos );
-
+   Tile* getTileXY( const int x, const int y, bool overborder=false );
+   Tile* getTileXY( const Point& pos, bool overborder=false );
    void handleEvent( NEvent& event);
 
    // sets the current build tool (if any)
-   void setBuildInstance(Construction *buildInstance);
+   void setBuildInstance(Construction *buildInstance, bool multiBuild );
+   void setBuildRoad( Construction* buildInstance );
    // sets the current remove tool (if any)
    void setRemoveTool();
-
-   // activate/deactivate build preview (aka priorityTiles)
-   void setPreview(const bool isPreview);
 
 oc3_signals public:
    Signal1< Tile* >& onShowTileInfo();
@@ -70,6 +69,7 @@ protected:
 
    // used to display the future building at mouse location
    void checkPreviewBuild(const int i, const int j);
+   void checkPreviewBuild(const TilePos& pos );
    // used to display the future removed building at mouse location
    void checkPreviewRemove(const int i, const int j);
 
@@ -82,6 +82,10 @@ protected:
    void drawTile( const Tile &tile );
 
    void drawTileEx( const Tile& tile, const int depth );
+
+   void _getSelectedArea( TilePos& outStartPos, TilePos& outStopPos );
+   void _clearLand();
+   void _buildAll();
 
 private:
    City* _city;     // city to display

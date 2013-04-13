@@ -14,9 +14,6 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-
-
-
 #include "gui_tilemap.hpp"
 
 #include <algorithm>
@@ -29,8 +26,7 @@
 #include "oc3_pictureconverter.h"
 #include "oc3_pictureconverter.h"
 #include "oc3_event.h"
-
-typedef std::list<Tile*> Tiles;
+#include "oc3_roadpropagator.h"
 
 class GuiTilemap::Impl
 {
@@ -38,9 +34,12 @@ public:
     Tiles postTiles;  // these tiles have draw over "normal" tilemap tiles!
     Picture buildInstncePicture;
     Point lastCursorPos;
-    Point lmbPressedPoint;
+    Point startCursorPos;
     bool  lmbPressed;
+    bool buildRoad;
+    bool  multiBuild;
 
+    TilePos lastTilePos;
 oc3_signals public:
     Signal1< Tile* > onShowTileInfoSignal;
 };
@@ -50,16 +49,11 @@ GuiTilemap::GuiTilemap() : _d( new Impl )
 {
    _city = NULL;
    _mapArea = NULL;
-   _isPreview = false;
+   _d->buildRoad = false;
+   _d->multiBuild = false;
 }
 
 GuiTilemap::~GuiTilemap() {}
-
-
-void GuiTilemap::setPreview(const bool isPreview)
-{
-   _isPreview = isPreview;
-}
 
 void GuiTilemap::init(City &city, TilemapArea &mapArea, ScreenGame *screen)
 {
@@ -228,21 +222,25 @@ void GuiTilemap::drawTilemap()
         for( Tiles::iterator itPostTile = _d->postTiles.begin(); itPostTile != _d->postTiles.end(); ++itPostTile )
         {
             int z = (*itPostTile)->getJ() - (*itPostTile)->getI();
-			drawTileEx( **itPostTile, z );
+		    drawTileEx( **itPostTile, z );
         }       
     }
 }
 
-Tile* GuiTilemap::getTileXY(const int x, const int y)
+Tile* GuiTilemap::getTileXY(const int x, const int y, bool overborder)
 {
    int dx = x-_tilemap_xoffset;  // x relative to the left most pixel of the tilemap
    int dy = y-_tilemap_yoffset;  // y relative to the left most pixel of the tilemap
    int i = (dx+2*dy)/60;
    int j = (dx-2*dy)/60;
+   if( overborder )
+   {
+       i = math::clamp( i, 0, _tilemap->getSize()-1 );
+       j = math::clamp( j, 0, _tilemap->getSize()-1 );
+   }
    // std::cout << "ij ("<<i<<","<<j<<")"<<std::endl;
 
-   Tilemap &tilemap = *_tilemap;
-   if (i>=0 && j>=0 && i<tilemap.getSize() && j<tilemap.getSize())
+   if (i>=0 && j>=0 && i<_tilemap->getSize() && j<_tilemap->getSize())
    {
       // valid coordinate
       return &getTileIJ(i, j);
@@ -254,9 +252,9 @@ Tile* GuiTilemap::getTileXY(const int x, const int y)
    }
 }
 
-Tile* GuiTilemap::getTileXY( const Point& pos )
+Tile* GuiTilemap::getTileXY( const Point& pos, bool overborder )
 {
-    return getTileXY( pos.getX(), pos.getY() );
+    return getTileXY( pos.getX(), pos.getY(), overborder );
 }
 
 TilemapArea &GuiTilemap::getMapArea()
@@ -266,21 +264,87 @@ TilemapArea &GuiTilemap::getMapArea()
 
 void GuiTilemap::updatePreviewTiles()
 {
-    Tile* tile = getTileXY( _d->lastCursorPos.getX(), _d->lastCursorPos.getY() );  // tile under the cursor (or NULL)
+    if( !_buildInstance && !_removeTool )
+        return;
+
+    Tile* curTile = getTileXY( _d->lastCursorPos, true );
+    if( curTile && _d->lastTilePos == curTile->getIJ() )
+        return;
+
+    _d->lastTilePos = curTile->getIJ();
+
     discardPreview();
-
-    if( tile )
+    
+    if( _d->buildRoad )
     {
-        int i = tile->getI();
-        int j = tile->getJ();
+        Tile* startTile = getTileXY( _d->startCursorPos, true );  // tile under the cursor (or NULL)
+        Tile* stopTile = getTileXY( _d->lastCursorPos, true );
 
-        checkPreviewBuild(i, j);
-        checkPreviewRemove(i, j);
+        RoadPropagator rp( *_tilemap, startTile );
+
+        Tiles pathWay;
+        bool havepath = rp.getPath( stopTile, pathWay );
+        if( havepath )
+        {
+            for( Tiles::iterator it=pathWay.begin(); it != pathWay.end(); it++ )
+            {
+                if( !(*it)->get_terrain().isRoad() )
+                {
+                    checkPreviewBuild( (*it)->getIJ() );
+                }
+            }
+        }
     }
-};
+    else
+    {
+        TilePos startPos, stopPos;
+        _getSelectedArea( startPos, stopPos );
 
+        for( int i=startPos.getI(); i <= stopPos.getI(); i++ )
+            for( int j=startPos.getJ(); j <=stopPos.getJ(); j++ )
+            {
+                checkPreviewBuild(i, j);
+                checkPreviewRemove(i, j);
+            }
+    }
+}
 
-void GuiTilemap::handleEvent( NEvent& event)
+void GuiTilemap::_getSelectedArea( TilePos& outStartPos, TilePos& outStopPos )
+{
+    Tile* startTile = getTileXY( _d->startCursorPos, true );  // tile under the cursor (or NULL)
+    Tile* stopTile = getTileXY( _d->lastCursorPos, true );
+
+    TilePos startPosTmp = startTile->getIJ();
+    TilePos stopPosTmp = stopTile->getIJ();
+
+    outStartPos = TilePos( std::min<int>( startPosTmp.getI(), stopPosTmp.getI() ), std::min<int>( startPosTmp.getJ(), stopPosTmp.getJ() ) );
+    outStopPos = TilePos( std::max<int>( startPosTmp.getI(), stopPosTmp.getI() ), std::max<int>( startPosTmp.getJ(), stopPosTmp.getJ() ) );
+}
+
+void GuiTilemap::_clearLand()
+{
+    TilePos startPos, stopPos;
+    _getSelectedArea( startPos, stopPos );
+
+    for( int i=startPos.getI(); i <= stopPos.getI(); i++ )
+        for( int j=startPos.getJ(); j <=stopPos.getJ(); j++ )
+        {
+             _city->clearLand( i, j );
+        }   
+}
+
+void GuiTilemap::_buildAll()
+{
+    for( Tiles::iterator it=_d->postTiles.begin(); it != _d->postTiles.end(); it++ )
+    {
+        if( _buildInstance->canBuild( (*it)->getIJ() ))
+        {
+            _city->build( *_buildInstance, (*it)->getIJ() );                    
+        }
+    }       
+}
+
+void GuiTilemap::handleEvent( NEvent& event )
 {
     if( event.EventType == OC3_MOUSE_EVENT )
     {
@@ -289,14 +353,20 @@ void GuiTilemap::handleEvent( NEvent& event)
         case OC3_MOUSE_MOVED:
         {
             _d->lastCursorPos = event.MouseEvent.getPosition();  
+            if( !_d->lmbPressed 
+                || _d->startCursorPos.getX() < 0 
+                || !_d->multiBuild )
+                _d->startCursorPos = _d->lastCursorPos;
+           
             updatePreviewTiles();
         }
         break;        
 
         case OC3_LMOUSE_PRESSED_DOWN:
         {
-            _d->lmbPressedPoint = event.MouseEvent.getPosition();
+            _d->startCursorPos = event.MouseEvent.getPosition();
             _d->lmbPressed = true;
+            updatePreviewTiles();
         }
         break;
 
@@ -313,17 +383,14 @@ void GuiTilemap::handleEvent( NEvent& event)
             // left button
             if (_removeTool)
             {
-                _city->clearLand( tilePos.getI(), tilePos.getJ() );
+                _clearLand();                
                 updatePreviewTiles();
             }
             else if (_buildInstance != NULL)
             {
-                Construction& overlay = *_buildInstance;
-                if (overlay.canBuild( tilePos.getI(), tilePos.getJ() ))
-                {
-                    _city->build(overlay, tilePos.getI(), tilePos.getJ() );
-                    updatePreviewTiles();
-                }
+                _buildAll();
+               
+                updatePreviewTiles();
             }
             else
             {
@@ -331,6 +398,7 @@ void GuiTilemap::handleEvent( NEvent& event)
             }
 
             _d->lmbPressed = false;
+            _d->startCursorPos = _d->lastCursorPos;
         }
         break;
 
@@ -388,11 +456,14 @@ void GuiTilemap::handleEvent( NEvent& event)
     }
 }
 
-void GuiTilemap::setBuildInstance(Construction *buildInstance)
+void GuiTilemap::setBuildInstance(Construction *buildInstance, bool multiBuild )
 {
    // std::cout << "set build instance!" << std::endl;
    _buildInstance = buildInstance;
    _removeTool = false;
+   _d->multiBuild = multiBuild;
+   _d->buildRoad = false;
+   _d->startCursorPos = Point( -1, -1 );
    updatePreviewTiles();
 }
 
@@ -400,6 +471,7 @@ void GuiTilemap::setRemoveTool()
 {
    // std::cout << "set remove tool!" << std::endl;
    _buildInstance = NULL;
+   _d->multiBuild = true;
    _removeTool = true;
 }
 
@@ -466,6 +538,11 @@ void GuiTilemap::checkPreviewBuild(const int i, const int j)
    }
 }
 
+void GuiTilemap::checkPreviewBuild( const TilePos& pos )
+{
+    checkPreviewBuild( pos.getI(), pos.getJ() );
+}
+
 void GuiTilemap::checkPreviewRemove(const int i, const int j)
 {
     if (_removeTool)
@@ -528,4 +605,15 @@ Tile& GuiTilemap::getTileIJ(const int i, const int j)
 Signal1< Tile* >& GuiTilemap::onShowTileInfo()
 {
     return _d->onShowTileInfoSignal;
+}
+
+void GuiTilemap::setBuildRoad( Construction* buildInstance )
+{
+    // std::cout << "set build instance!" << std::endl;
+    _buildInstance = buildInstance;
+    _removeTool = false;
+    _d->multiBuild = true;
+    _d->buildRoad = true;
+    _d->startCursorPos = Point( -1, -1 );
+    updatePreviewTiles();
 }
