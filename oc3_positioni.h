@@ -64,6 +64,8 @@ public:
     int getJ() const { return y; }
 
     TilePos& operator=(const TilePos& other) { set( other.x, other.y ); return *this; }
+    TilePos& operator+=(const TilePos& other) { set( x+other.x, y+other.y ); return *this; }
     TilePos operator+(const TilePos& other) const { return TilePos( x + other.x, y + other.y ); }
+    bool operator==(const TilePos& other) const{ return (x == other.x) && ( y == other.y ); }
 };
 #endif // __NRP_POSITION_H_INCLUDED__

@@ -368,7 +368,7 @@ void House::_update()
 
 Uint8 House::getMaxDistance2Road() const
 {
-	return 2;
+  return 2;
 }
 
 void House::addHabitants( const Uint8 newHabitCount )

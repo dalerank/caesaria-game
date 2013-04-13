@@ -32,6 +32,8 @@
 #include "training_building.hpp"
 #include "warehouse.hpp"
 #include "gettext.hpp"
+#include "sdl_facade.hpp"
+#include "oc3_time.h"
 
 namespace {
 static const char* rcUtilityGroup      = "utilitya";
@@ -325,6 +327,11 @@ bool Construction::canBuild(const int i, const int j) const
    return is_constructible;
 }
 
+bool Construction::canBuild( const TilePos& pos ) const
+{
+    return canBuild( pos.getI(), pos.getJ() );
+}
+
 void Construction::build(const int i, const int j)
 {
    LandOverlay::build(i, j);
@@ -342,34 +349,36 @@ const std::list<Tile*>& Construction::getAccessRoads() const
 
 void Construction::computeAccessRoads()
 {
-	_accessRoads.clear();
+  _accessRoads.clear();
 
-	Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-	int mi = _master_tile->getI();
-	int mj = _master_tile->getJ();
+  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  int mi = _master_tile->getI();
+  int mj = _master_tile->getJ();
 
-	Uint8 maxDst2road = getMaxDistance2Road();
-	std::list<Tile*> rect = tilemap.getRectangle( mi-maxDst2road, mj-maxDst2road, mi+_size+maxDst2road-1, mj+_size+maxDst2road-1, false);
-	for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
-	{
-		Tile* tile = *itTiles;
+  Uint8 maxDst2road = getMaxDistance2Road();
+  std::list<Tile*> rect = tilemap.getRectangle( mi - maxDst2road, mj - maxDst2road, mi + _size + maxDst2road - 1, mj + _size + maxDst2road - 1, false);
+  for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+  {
+    Tile* tile = *itTiles;
 
-		if( tile->get_terrain().isRoad() )
-		{
-			_accessRoads.push_back( tile );
-		}
-	}
+    if ( tile->get_terrain().isRoad() )
+    {
+      _accessRoads.push_back( tile );
+    }
+  }
 }
 
 Uint8 Construction::getMaxDistance2Road() const
 {
-	return 1;
+  return 1;
+  // it is default value
+  // for houses - 2
 }
 
 Aqueduct::Aqueduct()
 {
   setType(B_AQUEDUCT);
-  setPicture( PicLoader::instance().get_picture( rcAqueductGroup, 133) );
+  setPicture( PicLoader::instance().get_picture( rcAqueductGroup, 133) ); // default picture for aqueduct
   _size = 1;
   // land2a 119 120         - aqueduct over road
   // land2a 121 122         - aqueduct over plain ground
@@ -387,7 +396,33 @@ Aqueduct* Aqueduct::clone() const
 
 void Aqueduct::build(const int i, const int j)
 {
-  Construction::build(i, j);  
+  Construction::build(i, j);
+  
+  updateAqueducts(); // need to rewrite as computeAccessRoads()
+
+  setPicture(computePicture());
+
+  // update adjacent aqueducts
+  if (_south != NULL) {_south->updateAqueducts();_south->setPicture(_south->computePicture());}
+  if (_west  != NULL) {_west->updateAqueducts();_west->setPicture(_west->computePicture());}
+  if (_north != NULL) {_north->updateAqueducts();_north->setPicture(_north->computePicture());}
+  if (_east  != NULL) {_east->updateAqueducts();_east->setPicture(_east->computePicture());}
+}
+
+void Aqueduct::updateAqueducts()
+{
+  // TEMPORARY!!!!
+  // find adjacent aqueducts
+  int i = getTile().getI();
+  int j = getTile().getJ();
+  LandOverlay* __west   = Scenario::instance().getCity().getTilemap().at(i - 1, j).get_terrain().getOverlay();
+  LandOverlay* __south  = Scenario::instance().getCity().getTilemap().at(i, j - 1).get_terrain().getOverlay();
+  LandOverlay* __east   = Scenario::instance().getCity().getTilemap().at(i + 1, j).get_terrain().getOverlay();
+  LandOverlay* __north  = Scenario::instance().getCity().getTilemap().at(i, j + 1).get_terrain().getOverlay();
+  _south = dynamic_cast<Aqueduct*>(__south); // if not aqueduct -> NULL
+  _west  = dynamic_cast<Aqueduct*>(__west);
+  _north = dynamic_cast<Aqueduct*>(__north);
+  _east  = dynamic_cast<Aqueduct*>(__east);
 }
 
 void Aqueduct::setTerrain(TerrainTile &terrain)
@@ -397,25 +432,91 @@ void Aqueduct::setTerrain(TerrainTile &terrain)
   terrain.setBuilding(true);
 }
 
+Picture& Aqueduct::computePicture()
+{
+  // find correct picture as for roads
+   int i = getTile().getI();
+   int j = getTile().getJ();
+   
+   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
+   
+   if (_north != NULL) { directionFlags += 1; }
+   if (_east  != NULL) { directionFlags += 2; }
+   if (_south != NULL) { directionFlags += 4; }
+   if (_west  != NULL) { directionFlags += 8; }
+   
+   int index;
+   switch (directionFlags)
+   {
+   case 0:  // no neighbours!
+     index = 121; break;
+   case 1:  // N
+   case 4:  // S
+   case 5:  // N + S
+     index = 121; break;
+   case 3:  // N + E
+     index = 123; break;
+   case 6:  // E + S
+     index = 124; break;
+   case 7:  // N + E + S
+     index = 129; break;
+   case 9:  // N + W
+     index = 126; break;
+   case 2:  // E
+   case 8:  // W
+   case 10: // E + W
+     index = 122; break;
+   case 11: // N + E + W
+     index = 132; break;
+   case 12: // S + W
+     index = 125;  break;
+   case 13: // N + S + W
+     index = 131; break;
+   case 14: // E + S + W
+     index = 130; break;
+   case 15: // N + S + E + W (crossing)
+     index = 133; break;
+   default:
+     index = 121; // it's impossible, but ...
+   }   
+   
+   return PicLoader::instance().get_picture( rcAqueductGroup, index);
+}
+
 // I didn't decide what is the best approach: make Plaza as constructions or as upgrade to roads
 
 Plaza::Plaza()
 {
+  //std::cout << "Plaza::Plaza" << std::endl;
+
+  // somewhere we need to delete original road and then we need to think
+  // because as we remove original road we need to recompute adjacent tiles
+  // or we will run into big troubles
+ 
   setType(B_PLAZA);
-  setPicture( PicLoader::instance().get_picture( rcEntertaimentGroup, 102) ); // 102 ~ 107
+  setPicture(computePicture()); // 102 ~ 107
   _size = 1;
 }
 
 Plaza* Plaza::clone() const
 {
+  //std::cout << "Plaza::clone" << std::endl;
   return new Plaza(*this);
 }
 
 void Plaza::setTerrain(TerrainTile &terrain)
 {
+  //std::cout << "Plaza::setTerrain" << std::endl;
+  
   terrain.reset();
   terrain.setOverlay(this);
   terrain.setRoad(true);
+}
+
+Picture& Plaza::computePicture()
+{
+  //std::cout << "Plaza::computePicture" << std::endl;
+  return PicLoader::instance().get_picture( rcEntertaimentGroup, 102);
 }
 
 // Plazas can be built ONLY on top of existing roads
@@ -424,19 +525,20 @@ void Plaza::setTerrain(TerrainTile &terrain)
 
 bool Plaza::canBuild(const int i, const int j) const
 {
-   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  //std::cout << "Plaza::canBuild" << std::endl;
+  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
 
-   bool is_constructible = true;
+  bool is_constructible = true;
 
-   std::list<Tile*> rect = tilemap.getFilledRectangle(i, j, i+_size-1, j+_size-1);
-   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
-   {
-      Tile &tile = **itTiles;
+  std::list<Tile*> rect = tilemap.getFilledRectangle(i, j, i + _size - 1, j + _size - 1); // something very complex ???
+  for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+  {
+    Tile &tile = **itTiles;
 
-      is_constructible &= tile.get_terrain().isRoad();
-   }
+    is_constructible &= tile.get_terrain().isRoad();
+  }
 
-   return is_constructible;
+  return is_constructible;
 }
 
 Garden::Garden()
@@ -462,13 +564,14 @@ void Garden::setTerrain(TerrainTile &terrain)
 Reservoir::Reservoir()
 {
   setType(B_RESERVOIR);
-  setPicture( PicLoader::instance().get_picture( rcUtilityGroup, 34) );
-  _size = 3;
+  setPicture( PicLoader::instance().get_picture( rcUtilityGroup, 34 ) );
+ _size = 3;
+  _lastTimeAnimate = DateTime::getElapsedTime();
   
   // utilitya 34      - emptry reservoir
   // utilitya 35 ~ 42 - full reservoir animation
  
-  AnimLoader animLoader(PicLoader::instance());
+  AnimLoader animLoader( PicLoader::instance() );
   animLoader.fill_animation(_animation, rcUtilityGroup, 35, 8);
   animLoader.fill_animation_reverse(_animation, rcUtilityGroup, 42, 7);
   animLoader.change_offset(_animation, 47, 63);
@@ -481,9 +584,24 @@ Reservoir* Reservoir::clone() const
   return new Reservoir(*this);
 }
 
+Reservoir::~Reservoir()
+{
+}
+
 void Reservoir::build(const int i, const int j)
 {
   Construction::build(i, j);  
+
+  bool near_water = false;  // tells if the factory is next to a mountain
+
+  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  std::list<Tile*> rect = tilemap.getRectangle( i-1, j-1, i+_size, j+_size, false);
+  for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+  {
+      near_water |= (*itTiles)->get_terrain().isWater();
+  }
+
+  _mayAnimate = near_water;
 }
 
 void Reservoir::setTerrain(TerrainTile &terrain)
@@ -495,10 +613,21 @@ void Reservoir::setTerrain(TerrainTile &terrain)
 
 void Reservoir::timeStep(const unsigned long time)
 {
-  _animation.nextFrame();
-  
-  // takes current animation frame and put it into foreground
-  _fgPictures.at(0) = _animation.get_current_picture(); 
+    if( DateTime::getElapsedTime() - _lastTimeAnimate < 100 )
+        return;
+
+    _lastTimeAnimate = DateTime::	getElapsedTime();
+
+    if( !_mayAnimate )
+    {
+        _fgPictures[ 0 ] = 0;
+        return;
+    }
+
+    _animation.nextFrame();
+    
+    // takes current animation frame and put it into foreground
+    _fgPictures[ 0 ] = _animation.get_current_picture(); 
 }
 
 Road::Road()
@@ -521,7 +650,7 @@ void Road::build(const int i, const int j)
   for (std::list<Tile*>::iterator itTile = _accessRoads.begin(); itTile != _accessRoads.end(); ++itTile)
   {
     Tile &tile = **itTile;
-    Road &road = (Road&) *tile.get_terrain().getOverlay();
+    Road &road = (Road&) *tile.get_terrain().getOverlay(); // let's think: may here different type screw up whole program?
     road.computeAccessRoads();
     road.setPicture(road.computePicture());
   }
@@ -536,7 +665,7 @@ void Road::build(const int i, const int j)
     if (construction != NULL) // if NULL then it ISN'T building
     {
       construction->computeAccessRoads();
-    }    
+    }
   }
 }
 
@@ -557,26 +686,10 @@ Picture& Road::computePicture()
    for (std::list<Tile*>::iterator itRoads = roads.begin(); itRoads!=roads.end(); ++itRoads)
    {
       Tile &tile = **itRoads;
-      if (tile.getJ() > j)
-      {
-         // road to the north
-         directionFlags += 1;
-      }
-      else if (tile.getJ() < j)
-      {
-         // road to the south
-         directionFlags += 4;
-      }
-      else if (tile.getI() > i)
-      {
-         // road to the east
-         directionFlags += 2;
-      }
-      else if (tile.getI() < i)
-      {
-         // road to the west
-         directionFlags += 8;
-      }
+      if (tile.getJ() > j)      { directionFlags += 1; } // road to the north
+      else if (tile.getJ() < j) { directionFlags += 4; } // road to the south
+      else if (tile.getI() > i) { directionFlags += 2; } // road to the east
+      else if (tile.getI() < i) { directionFlags += 8; } // road to the west
    }
 
    // std::cout << "direction flags=" << directionFlags << std::endl;

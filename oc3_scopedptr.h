@@ -17,6 +17,7 @@
 #define __OPENCAESAR3_SCOPEDPTR_H_INCLUDE_
 
 #include "oc3_requirements.h"
+#include <algorithm>
 
 template <typename T>
 struct ScopedPtrDeleter

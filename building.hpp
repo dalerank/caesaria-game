@@ -27,6 +27,7 @@
 #include "tilemap.hpp"
 #include "enums.hpp"
 #include "good.hpp"
+#include "oc3_scopedptr.h"
 
 class Widget;
 class GuiInfoBox;
@@ -86,6 +87,7 @@ public:
    Construction();
 
    virtual bool canBuild(const int i, const int j) const;  // returns true if it can be built there
+   virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
    virtual void build(const int i, const int j);
    const std::list<Tile*>& getAccessRoads() const;  // return all road tiles adjacent to the construction
    virtual void computeAccessRoads();  
@@ -104,18 +106,25 @@ public:
   virtual void build(const int i, const int j);
   Picture& computePicture();
   virtual void setTerrain(TerrainTile &terrain);
+  void updateAqueducts();
+private:
+  Aqueduct *_north, *_east, *_south, *_west;
 };
 
 class Reservoir : public Construction
 {
 public:
   Reservoir();
+  ~Reservoir();
   virtual Reservoir* clone() const;
 
-  virtual void build(const int i, const int j);
+  void build(const int i, const int j);
   Picture& computePicture();
-  virtual void setTerrain(TerrainTile &terrain);
+  void setTerrain(TerrainTile &terrain);
   void timeStep(const unsigned long time);
+private:
+  bool _mayAnimate;
+  int _lastTimeAnimate;
 };
 
 class Garden : public Construction
@@ -126,15 +135,6 @@ public:
   virtual void setTerrain(TerrainTile &terrain);  
 };
 
-class Plaza : public Construction
-{
-public:
-  Plaza();
-  virtual Plaza* clone() const;
-  virtual void setTerrain(TerrainTile &terrain);  
-  virtual bool canBuild(const int i, const int j) const;
-};
-
 class Road : public Construction
 {
 public:
@@ -142,8 +142,18 @@ public:
   virtual Road* clone() const;
 
   virtual void build(const int i, const int j);
-  Picture& computePicture();
+  virtual Picture& computePicture();
   virtual void setTerrain(TerrainTile &terrain);
+};
+
+class Plaza : public Road
+{
+public:
+  Plaza();
+  virtual Plaza* clone() const;
+  virtual void setTerrain(TerrainTile &terrain);  
+  virtual bool canBuild(const int i, const int j) const;
+  virtual Picture& computePicture();
 };
 
 
