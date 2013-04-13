@@ -37,6 +37,8 @@ struct NEvent;
 class GuiTilemap
 {
 public:
+   typedef std::list<Tile*> Tiles;
+
    GuiTilemap();
    ~GuiTilemap();
 
@@ -54,6 +56,7 @@ public:
 
    // sets the current build tool (if any)
    void setBuildInstance(Construction *buildInstance, bool multiBuild );
+   void setBuildRoad( Construction* buildInstance );
    // sets the current remove tool (if any)
    void setRemoveTool();
 
@@ -66,6 +69,7 @@ protected:
 
    // used to display the future building at mouse location
    void checkPreviewBuild(const int i, const int j);
+   void checkPreviewBuild(const TilePos& pos );
    // used to display the future removed building at mouse location
    void checkPreviewRemove(const int i, const int j);
 

@@ -162,10 +162,21 @@ int ScreenGame::getResult() const
 
 void ScreenGame::resolveCreateConstruction( int type )
 {
-    Construction *construction = dynamic_cast<Construction*>(LandOverlay::getInstance( BuildingType( type ) ) );
-    bool multiBuild = safety_cast< House* >( construction ) != 0;
+    bool multiBuild = false;
+    Construction *construction = dynamic_cast<Construction*>( LandOverlay::getInstance( BuildingType( type ) ) );
+    switch( type )
+    {
+    case B_ROAD:
+        _guiTilemap.setBuildRoad( construction );
+    break;
 
-    _guiTilemap.setBuildInstance( construction, multiBuild );
+    case B_HOUSE:
+        multiBuild = true;
+        //break not needed that catch multibuild flag
+    default:
+        _guiTilemap.setBuildInstance( construction, multiBuild );
+    break;    
+    }   
 }
 
 void ScreenGame::resolveRemoveTool()

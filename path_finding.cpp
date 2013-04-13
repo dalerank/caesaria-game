@@ -701,6 +701,5 @@ void Propagator::getAllPaths(const int maxDistance, std::list<PathWay> &oPathWay
       // this branch is no longer active
       _activeBranches.erase(firstBranch);
    }
-
 }
 

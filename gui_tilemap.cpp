@@ -14,9 +14,6 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-
-
-
 #include "gui_tilemap.hpp"
 
 #include <algorithm>
@@ -29,8 +26,7 @@
 #include "oc3_pictureconverter.h"
 #include "oc3_pictureconverter.h"
 #include "oc3_event.h"
-
-typedef std::list<Tile*> Tiles;
+#include "oc3_roadpropagator.h"
 
 class GuiTilemap::Impl
 {
@@ -40,8 +36,10 @@ public:
     Point lastCursorPos;
     Point startCursorPos;
     bool  lmbPressed;
+    bool buildRoad;
     bool  multiBuild;
 
+    TilePos lastTilePos;
 oc3_signals public:
     Signal1< Tile* > onShowTileInfoSignal;
 };
@@ -51,6 +49,7 @@ GuiTilemap::GuiTilemap() : _d( new Impl )
 {
    _city = NULL;
    _mapArea = NULL;
+   _d->buildRoad = false;
    _d->multiBuild = false;
 }
 
@@ -236,8 +235,8 @@ Tile* GuiTilemap::getTileXY(const int x, const int y, bool overborder)
    int j = (dx-2*dy)/60;
    if( overborder )
    {
-       i = math::clamp( i, 0, _tilemap->getSize() );
-       j = math::clamp( j, 0, _tilemap->getSize() );
+       i = math::clamp( i, 0, _tilemap->getSize()-1 );
+       j = math::clamp( j, 0, _tilemap->getSize()-1 );
    }
    // std::cout << "ij ("<<i<<","<<j<<")"<<std::endl;
 
@@ -268,17 +267,46 @@ void GuiTilemap::updatePreviewTiles()
     if( !_buildInstance && !_removeTool )
         return;
 
-    TilePos startPos, stopPos;
-    _getSelectedArea( startPos, stopPos );
+    Tile* curTile = getTileXY( _d->lastCursorPos, true );
+    if( curTile && _d->lastTilePos == curTile->getIJ() )
+        return;
+
+    _d->lastTilePos = curTile->getIJ();
 
     discardPreview();
     
-    for( int i=startPos.getI(); i <= stopPos.getI(); i++ )
-        for( int j=startPos.getJ(); j <=stopPos.getJ(); j++ )
+    if( _d->buildRoad )
+    {
+        Tile* startTile = getTileXY( _d->startCursorPos, true );  // tile under the cursor (or NULL)
+        Tile* stopTile = getTileXY( _d->lastCursorPos, true );
+
+        RoadPropagator rp( *_tilemap, startTile );
+
+        Tiles pathWay;
+        bool havepath = rp.getPath( stopTile, pathWay );
+        if( havepath )
         {
-            checkPreviewBuild(i, j);
-            checkPreviewRemove(i, j);
+            for( Tiles::iterator it=pathWay.begin(); it != pathWay.end(); it++ )
+            {
+                if( !(*it)->get_terrain().isRoad() )
+                {
+                    checkPreviewBuild( (*it)->getIJ() );
+                }
+            }
         }
+    }
+    else
+    {
+        TilePos startPos, stopPos;
+        _getSelectedArea( startPos, stopPos );
+
+        for( int i=startPos.getI(); i <= stopPos.getI(); i++ )
+            for( int j=startPos.getJ(); j <=stopPos.getJ(); j++ )
+            {
+                checkPreviewBuild(i, j);
+                checkPreviewRemove(i, j);
+            }
+    }
 }
 
 void GuiTilemap::_getSelectedArea( TilePos& outStartPos, TilePos& outStopPos )
@@ -307,19 +335,13 @@ void GuiTilemap::_clearLand()
 
 void GuiTilemap::_buildAll()
 {
-    TilePos startPos, stopPos;
-    _getSelectedArea( startPos, stopPos );
-
-    for( int i = startPos.getI(); i <= stopPos.getI(); i++ )
-        for( int j = startPos.getJ(); j <= stopPos.getJ(); j++ )
+    for( Tiles::iterator it=_d->postTiles.begin(); it != _d->postTiles.end(); it++ )
+    {
+        if( _buildInstance->canBuild( (*it)->getIJ() ))
         {
-            TilePos tilePos( i, j );
-
-            if( _buildInstance->canBuild( tilePos ))
-            {
-                _city->build( *_buildInstance, tilePos );                    
-            }
-        }       
+            _city->build( *_buildInstance, (*it)->getIJ() );                    
+        }
+    }       
 }
 
 void GuiTilemap::handleEvent( NEvent& event )
@@ -440,6 +462,7 @@ void GuiTilemap::setBuildInstance(Construction *buildInstance, bool multiBuild )
    _buildInstance = buildInstance;
    _removeTool = false;
    _d->multiBuild = multiBuild;
+   _d->buildRoad = false;
    _d->startCursorPos = Point( -1, -1 );
    updatePreviewTiles();
 }
@@ -515,6 +538,11 @@ void GuiTilemap::checkPreviewBuild(const int i, const int j)
    }
 }
 
+void GuiTilemap::checkPreviewBuild( const TilePos& pos )
+{
+    checkPreviewBuild( pos.getI(), pos.getJ() );
+}
+
 void GuiTilemap::checkPreviewRemove(const int i, const int j)
 {
     if (_removeTool)
@@ -577,4 +605,15 @@ Tile& GuiTilemap::getTileIJ(const int i, const int j)
 Signal1< Tile* >& GuiTilemap::onShowTileInfo()
 {
     return _d->onShowTileInfoSignal;
+}
+
+void GuiTilemap::setBuildRoad( Construction* buildInstance )
+{
+    // std::cout << "set build instance!" << std::endl;
+    _buildInstance = buildInstance;
+    _removeTool = false;
+    _d->multiBuild = true;
+    _d->buildRoad = true;
+    _d->startCursorPos = Point( -1, -1 );
+    updatePreviewTiles();
 }

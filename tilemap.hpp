@@ -122,9 +122,9 @@ public:
    void init(const int size);
 
    bool is_inside(const int i, const int j) const;
-   Tile& at(const int i, const int j);
+   Tile& at( const int i, const int j );
    Tile& at( const TilePos& ij );
-   const Tile& at(const int i, const int j) const;
+   const Tile& at( const int i, const int j ) const;
 
    // returns all tiles on a rectangular perimeter
    // (i1, j1) : left corner of the rectangle (minI, minJ)
