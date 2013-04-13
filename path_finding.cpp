@@ -519,7 +519,7 @@ bool Propagator::getPath(Road &destination, PathWay &oPathWay)
 }
 
 
-bool Propagator::getPath(Building &destination, PathWay &oPathWay)
+bool Propagator::getPath(Building& destination, PathWay &oPathWay)
 {
    const std::list<Tile*>& destTiles = destination.getAccessRoads();
    std::map<Road*, PathWay>::iterator mapIt;

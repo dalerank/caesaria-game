@@ -78,9 +78,10 @@ void Emigrant::getPictureList(std::vector<Picture*> &oPics)
 
 void Emigrant::assignPath( const Road& startPoint )
 {
+    City& city = Scenario::instance().getCity();
 	std::list<PathWay> pathWayList;
 
-	std::list<LandOverlay*> houses = Scenario::instance().getCity().getBuildingList(B_HOUSE);
+	std::list<LandOverlay*> houses = city.getBuildingList(B_HOUSE);
 	House* blankHouse = 0;
 	for( std::list<LandOverlay*>::iterator itHouse = houses.begin(); itHouse != houses.end(); ++itHouse )
 	{
@@ -98,26 +99,55 @@ void Emigrant::assignPath( const Road& startPoint )
 	Propagator pathfinder;
 	PathWay pathWay;
 	pathfinder.init( const_cast< Road& >( startPoint ) );
-	bool findPath = pathfinder.getPath( *blankHouse, pathWay );
-	if( findPath )
-	{
-		setPathWay( pathWay );
-		setIJ(_pathWay.getOrigin().getI(), _pathWay.getOrigin().getJ());   
-	}
+    if( blankHouse )
+    {
+	    bool findPath = pathfinder.getPath( *blankHouse, pathWay );
+	    if( findPath )
+	    {
+		    setPathWay( pathWay );
+		    setIJ(_pathWay.getOrigin().getI(), _pathWay.getOrigin().getJ());   
+	    }
+    }
+    else
+    {
+        Road* exitTile = dynamic_cast< Road* >( city.getTilemap().at( city.getRoadExitIJ() ).get_terrain().getOverlay() );
+        _d->destination = TilePos( -1, -1 );
+        bool findPath = pathfinder.getPath( *exitTile, pathWay );
+        if( findPath )
+        {
+            setPathWay( pathWay );
+        }
+        else
+            _isDeleted = true;
+    }
 }
 
 void Emigrant::onDestination()
-{
-	const Tile& tile = Scenario::instance().getCity().getTilemap().at( _d->destination );
+{   
+    if( _d->destination.getI() > 0 && _d->destination.getJ() > 0 )
+    {
+	    const Tile& tile = Scenario::instance().getCity().getTilemap().at( _d->destination );
 
-	LandOverlay* overlay = tile.get_terrain().getOverlay();
-	if( House* house = dynamic_cast<House*>( overlay ) )
-	{
-		if( house->getNbHabitants() < house->getMaxHabitants() )
-		{
-			house->addHabitants( 1 );
-		}
-	}
+	    LandOverlay* overlay = tile.get_terrain().getOverlay();
+	    if( House* house = dynamic_cast<House*>( overlay ) )
+	    {
+		    if( house->getNbHabitants() < house->getMaxHabitants() )
+		    {
+			    house->addHabitants( 1 );
+                _isDeleted = true;
+                return;
+		    }
+            else
+            {
+                if( const Road* r = dynamic_cast< const Road* >( _pathWay.getDestination().get_terrain().getOverlay() ))
+                {
+                    assignPath( *r );
+                    _isDeleted = false;
+                    return;
+                }
+            }
+	    }
+    }
 
 	_isDeleted = true;
 }
