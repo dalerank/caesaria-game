@@ -98,7 +98,7 @@ void House::timeStep(const unsigned long time)
       else
       {
          validate = _nextHouseLevelSpec->checkHouse(*this);
-         if (validate)
+         if( validate && _currentHabitants > 0 )
          {
             levelUp();
          }

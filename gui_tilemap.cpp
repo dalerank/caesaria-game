@@ -463,7 +463,7 @@ void GuiTilemap::setBuildInstance(Construction *buildInstance, bool multiBuild )
    _removeTool = false;
    _d->multiBuild = multiBuild;
    _d->buildRoad = false;
-   _d->startCursorPos = Point( -1, -1 );
+   _d->startCursorPos = _d->lastCursorPos;
    updatePreviewTiles();
 }
 

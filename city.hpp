@@ -19,7 +19,6 @@
 #ifndef CITY_HPP
 #define CITY_HPP
 
-
 #include "tilemap.hpp"
 #include "walker.hpp"
 #include "building.hpp"
@@ -28,6 +27,7 @@
 #include "house.hpp"
 #include "enums.hpp"
 #include "serializer.hpp"
+#include "oc3_signals.h"
 
 #include <list>
 
@@ -37,6 +37,7 @@ class City : public Serializable
 {
 public:
    City();
+   ~City();
 
    void timeStep();  // performs one simulation step
    void monthStep();
@@ -72,8 +73,7 @@ public:
    long getFunds() const;
    void setFunds(const long funds);
    long getPopulation() const;
-   void setPopulation(const long population);
-   unsigned long getMonth() const {return _month;}
+   unsigned long getMonth() const;
 
    Tilemap& getTilemap();
 
@@ -91,6 +91,11 @@ public:
 
    unsigned long getTime();
 
+oc3_signals public:
+   Signal1<int>& onPopulationChanged();
+   Signal1<int>& onFundsChanged();
+   Signal1<int>& onMonthChanged();
+
 private:
    int _roadEntryI, _roadEntryJ;
    int _roadExitI, _roadExitJ;
@@ -102,14 +107,14 @@ private:
    std::list<Walker*> _walkerList;
    std::list<LandOverlay*> _overlayList;
    unsigned long _time;  // number of timesteps since start
-   unsigned long _month; // number of months since start
-   long _funds;  // amount of money
-   long _population;  // number of inhabitants
    int _taxRate;
    
-   void calculatePopulation();
+   void _calculatePopulation();
    void _createImigrants();
    void recomputeRoadsForAll();
+
+   class Impl;
+   ScopedPtr< Impl > _d;
 };
 
 

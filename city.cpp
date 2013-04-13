@@ -16,7 +16,6 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-
 #include "city.hpp"
 
 #include <iostream>
@@ -28,10 +27,22 @@
 #include "oc3_emigrant.h"
 #include "oc3_positioni.h"
 
-City::City()
+class City::Impl
+{
+public:
+    Signal1<int> onPopulationChangedSignal;
+    Signal1<int> onFundsChangedSignal;
+    Signal1<int> onMonthChangedSignal;
+
+    int population;
+    long funds;  // amount of money
+    unsigned long month; // number of months since start
+};
+
+City::City() : _d( new Impl )
 {
    _time = 0;
-   _month = 0;
+   _d->month = 0;
    _roadEntryI = 0;
    _roadEntryJ = 0;
    _roadExitI = 0;
@@ -40,8 +51,8 @@ City::City()
    _boatEntryJ = 0;
    _boatExitI = 0;
    _boatExitJ = 0;
-   _funds = 1000;
-   _population = 0;
+   _d->funds = 1000;
+   _d->population = 0;
    _taxRate = 700;
    _climate = C_CENTRAL;
 }
@@ -59,7 +70,7 @@ void City::timeStep()
    if( _time % 110 == 1 )
    {
       // every X seconds
-      _month++;
+      _d->month++;
       monthStep();
    }
 
@@ -101,7 +112,8 @@ void City::timeStep()
 void City::monthStep()
 {
    collectTaxes();
-   calculatePopulation();
+   _calculatePopulation();
+   _d->onMonthChangedSignal.emit( _d->month );
 }
 
 void City::_createImigrants()
@@ -270,24 +282,19 @@ void City::setTaxRate(const int taxRate)
 
 long City::getFunds() const
 {
-   return _funds;
+   return _d->funds;
 }
 
 void City::setFunds(const long funds)
 {
-   _funds = funds;
+   _d->funds = funds;
 }
 
 long City::getPopulation() const
 {
    /* here we need to calculate population ??? */
    
-   return _population;
-}
-
-void City::setPopulation(const long population)
-{
-   _population = population;
+   return _d->population;
 }
 
 void City::build(Construction &buildInstance, const int i, const int j)
@@ -297,7 +304,8 @@ void City::build(Construction &buildInstance, const int i, const int j)
    Construction *building = (Construction *) buildInstance.clone();
    building->build(i, j);
    _overlayList.push_back(building);
-   _funds -= buildingData.getCost();
+   _d->funds -= buildingData.getCost();
+   _d->onFundsChangedSignal.emit( _d->funds );
 }
 
 void City::build( Construction &buildInstance, const TilePos& pos )
@@ -391,12 +399,13 @@ void City::collectTaxes()
       taxes += house.collectTaxes();
    }
 
-   _funds += taxes;
+   _d->funds += taxes;
+   _d->onFundsChangedSignal.emit( _d->funds );
 
    std::cout << "Monthly Taxes=" << taxes << std::endl;
 }
 
-void City::calculatePopulation()
+void City::_calculatePopulation()
 {
   long pop = 0; /* population can't be negative - should be unsigned long long*/
   
@@ -410,7 +419,8 @@ void City::calculatePopulation()
     }
   }
   
-  setPopulation(pop);
+  _d->population = pop;
+  _d->onPopulationChangedSignal.emit( pop );
 }
 
 void City::serialize(OutputSerialStream &stream)
@@ -428,8 +438,8 @@ void City::serialize(OutputSerialStream &stream)
    stream.write_int(_boatExitJ, 2, 0, 1000);
    stream.write_int((int) _climate, 2, 0, C_MAX);
    stream.write_int(_time, 4, 0, 1000000);
-   stream.write_int(_funds, 4, 0, 1000000);
-   stream.write_int(_population, 4, 0, 1000000);
+   stream.write_int(_d->funds, 4, 0, 1000000);
+   stream.write_int(_d->population, 4, 0, 1000000);
 
    // walkers
    stream.write_int(_walkerList.size(), 2, 0, 65535);
@@ -466,8 +476,8 @@ void City::unserialize(InputSerialStream &stream)
    _boatExitJ = stream.read_int(2, 0, 1000);
    _climate = (ClimateType) stream.read_int(2, 0, 1000);
    _time = stream.read_int(4, 0, 1000000);
-   _funds = stream.read_int(4, 0, 1000000);
-   _population = stream.read_int(4, 0, 1000000);
+   _d->funds = stream.read_int(4, 0, 1000000);
+   _d->population = stream.read_int(4, 0, 1000000);
 
    // walkers
    int nbItems = stream.read_int(2, 0, 65535);
@@ -510,4 +520,28 @@ TilePos City::getRoadEntryIJ() const
 TilePos City::getRoadExitIJ() const
 {
     return TilePos( _roadExitI, _roadExitJ );
+}
+
+City::~City()
+{
+}
+
+Signal1<int>& City::onPopulationChanged()
+{
+    return _d->onPopulationChangedSignal;
+}
+
+Signal1<int>& City::onFundsChanged()
+{
+    return _d->onFundsChangedSignal;
+}
+
+unsigned long City::getMonth() const
+{
+    return _d->month;
+}
+
+Signal1<int>& City::onMonthChanged()
+{
+    return _d->onMonthChangedSignal;
 }

@@ -90,8 +90,9 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
     CONNECT( _d->extMenu, onCreateConstruction(), this, ScreenGame::resolveCreateConstruction );
     CONNECT( _d->extMenu, onRemoveTool(), this, ScreenGame::resolveRemoveTool );
 
-    //CONNECT( &_guiTilemap, onDiscardPreview(), _d->menu, Menu::unselectAll );
-    //CONNECT( &_guiTilemap, onDiscardPreview(), _d->extMenu, Menu::unselectAll );
+    CONNECT( &_scenario->getCity(), onPopulationChanged(), _d->topMenu, TopMenu::setPopulation );
+    CONNECT( &_scenario->getCity(), onFundsChanged(), _d->topMenu, TopMenu::setFunds );
+    CONNECT( &_scenario->getCity(), onMonthChanged(), _d->topMenu, TopMenu::setDate );
 
     CONNECT( &_guiTilemap, onShowTileInfo(), this, ScreenGame::showTileInfo );
   /* _d->extMenu = ExtentMenu::create();

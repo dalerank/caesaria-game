@@ -228,7 +228,7 @@ void Walker::dec(int &ioSI, int &ioI, int &ioAmount, const int iMidPos, bool &oN
 
 void Walker::walk()
 {
-   if (_action._direction == D_NONE)
+   if (D_NONE == _action._direction )
    {
       // nothing to do
       return;
