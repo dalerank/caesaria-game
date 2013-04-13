@@ -42,6 +42,9 @@ enum ServiceType { S_WELL, S_FOUNTAIN, S_MARKET, S_ENGINEER, S_SENATE, S_FORUM, 
 
 enum ClimateType { C_CENTRAL, C_NORTHERN, C_DESERT, C_MAX };
 
+// Climate types changes:
+// farms productivity, fire rates, fountain radius
+
 enum ScreenType { SCREEN_NONE, SCREEN_MENU, SCREEN_GAME, SCREEN_QUIT, SCREEN_MAX };
 
 enum WalkerTraineeType { WTT_NONE, WTT_ACTOR, WTT_GLADIATOR, WTT_TAMER, WTT_CHARIOT, WTT_MAX };
