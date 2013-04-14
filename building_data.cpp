@@ -228,6 +228,9 @@ BuildingDataHolder::BuildingDataHolder()
    addData(BuildingData(B_NATIVE_HUT, "native hut", 0));
    addData(BuildingData(B_NATIVE_CENTER, "native center", 0));   
    addData(BuildingData(B_NATIVE_FIELD, "native field", 0));   
+
+   //damages
+   addData(BuildingData(B_BURNING_RUINS, "burningRuins", 0)); 
    
 
    // populate _mapBuildingByService
@@ -251,6 +254,7 @@ BuildingDataHolder::BuildingDataHolder()
    _mapBuildingByService[S_AMPHITHEATER] = B_AMPHITHEATER;
    _mapBuildingByService[S_COLLOSSEUM] = B_COLLOSSEUM;
    _mapBuildingByService[S_HIPPODROME] = B_HIPPODROME;
+   _mapBuildingByService[S_BURNING_RUINS] = B_BURNING_RUINS;
 
    // populate _mapBuildingByInGood
    _mapBuildingByInGood[G_IRON]   = B_WEAPON;
@@ -278,5 +282,7 @@ BuildingDataHolder::BuildingDataHolder()
    _mapBuildingByOutGood[G_FURNITURE] = B_FURNITURE;
    _mapBuildingByOutGood[G_POTTERY]   = B_POTTERY;
    _mapBuildingByOutGood[G_FISH]      = B_WHARF;
+
+
 }
 

@@ -20,12 +20,6 @@
 #include "picture.hpp"
 #include "oc3_math.h"
 
-PictureConverterPtr PictureConverter::create()
-{
-    return PictureConverterPtr( new PictureConverter() );
-}
-
-
 void PictureConverter::rgbBalance( Picture& dst, const Picture& src, int lROffset, int lGOffset, int lBOffset )
 {
     SDL_Surface* source = const_cast< Picture& >( src ).get_surface();
@@ -134,14 +128,7 @@ void PictureConverter::fill( Picture& pic, int color )
     SDL_Surface* source = pic.get_surface();
 
     SDL_LockSurface( source );
-    Uint32* imgpixels = (Uint32*)source->pixels;
-
-    for (int i=0; i<source->h; i++) 
-    {
-        for (int j=0; j<source->w; j++) 
-        {
-            imgpixels[ i * source->w + j ] = color;
-        }
-    }
+    SDL_FillRect(source, NULL, SDL_MapRGBA(source->format, (color>>24)&0xff, (color>>16)&0xff, 
+                                                           (color>>8)&0xff, (color&0xff))); 
     SDL_UnlockSurface(source);
 }

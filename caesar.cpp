@@ -219,7 +219,8 @@ void CaesarApp::setScreenMenu()
 		std::srand( (Uint32)std::time(0));
 		std::string file = filelist.at(std::rand()%filelist.size()).string();
 		std::cout<<"Loading map:" << file << std::endl;
-        loadScenario(file);
+        //loadScenario(file);
+        loadScenario( "./resources/maps/mediolanum.map" );
         /* end of temporary */
         _d->nextScreen = SCREEN_GAME;
       }

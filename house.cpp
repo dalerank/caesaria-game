@@ -15,8 +15,6 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
-
 #include "house.hpp"
 
 #include <iostream>
@@ -37,6 +35,7 @@ House::House(const int houseId) : Building()
    _nextHouseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel+1);
    _name = _houseLevelSpec->getLevelName();
    _currentHabitants = 0;
+   // _fireLevel = 98;
 
    _goodStore.setMaxQty(10000);  // no limit
    _goodStore.setMaxQty(G_WHEAT, 100);
@@ -98,19 +97,20 @@ void House::timeStep(const unsigned long time)
       else
       {
          validate = _nextHouseLevelSpec->checkHouse(*this);
-         if (validate)
+         if( validate && _currentHabitants > 0 )
          {
             levelUp();
          }
       }
-
    }
+   if( _currentHabitants > 0 )
+       Building::timeStep( time );
 }
 
 
 GuiInfoBox* House::makeInfoBox( Widget* parent )
 {
-  return new GuiInfoHouse( parent, *this);
+  return new InfoBoxHouse( parent, *this);
 }
 
 

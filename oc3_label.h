@@ -111,7 +111,7 @@ protected:
     void resizeEvent_();
 
 private:
-    void _updateTexture();
+    void _updateTexture( GfxEngine& painter );
 
     class Impl;
     std::auto_ptr< Impl > _d;   

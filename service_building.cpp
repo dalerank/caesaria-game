@@ -156,7 +156,6 @@ void BuildingWell::deliverService()
    }
 }
 
-
 BuildingFountain::BuildingFountain() : ServiceBuilding(S_FOUNTAIN)
 {
    setType(B_FOUNTAIN);

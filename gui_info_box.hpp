@@ -39,7 +39,6 @@ public:
     virtual ~GuiInfoBox();
     void initStatic();
     virtual void draw( GfxEngine& engine );  // draw on screen
-    virtual void paint() = 0;  // custom paint the bg picture
 
     Picture& getBgPicture();
 
@@ -49,17 +48,12 @@ public:
 
     Picture& getPictureGood(const GoodType& goodType);
 
+    void setTitle( const std::string& title );
 protected:
-    void _init();
+    void _resizeEvent();
 
-    std::string _title;
-    Picture *_bgPicture;
-    PushButton* _helpButton;
-    PushButton* _hoverButton;
-
-    static std::vector<Picture*> _mapPictureGood;  // index=GoodType, value=Picture
-
-    int _paintY;  // Y pixel coordinate of the next paint operation
+    class Impl;
+    ScopedPtr< Impl > _d;
 };
 
 
@@ -67,23 +61,24 @@ protected:
 class GuiInfoService : public GuiInfoBox
 {
 public:
-   GuiInfoService( Widget* parent, ServiceBuilding &building);
-   virtual void paint();
+    GuiInfoService( Widget* parent, ServiceBuilding &building);
+    virtual void paint();
 
-   void drawWorkers();
+    void drawWorkers( int& );
 
 private:
-
-   ServiceBuilding *_building;
+    Label* _dmgLabel;
+    ServiceBuilding *_building;
 };
 
 class InfoBoxLand : public GuiInfoBox
 {
 public:
-    InfoBoxLand( Widget* parent, Tile* tile );
-    virtual void paint();
-
+    InfoBoxLand( Widget* parent, Tile* tile );    
+    //bool onEvent(const NEvent& event);
 private:
+    void _paint();
+
     Label* _text;
     PushButton* _btnExit;
     PushButton* _btnHelp;
@@ -96,7 +91,7 @@ public:
    GuiInfoFactory( Widget* parent, Factory &building);
    virtual void paint();
 
-   void drawWorkers();
+   void drawWorkers( int& );
    std::string getInfoText();
 
 private:
@@ -111,8 +106,8 @@ public:
    GuiInfoGranary( Widget* parent, Granary &building);
    virtual void paint();
 
-   void drawWorkers();
-   void drawGood(const GoodType &goodType);
+   void drawWorkers( int );
+   void drawGood(const GoodType &goodType, int&);
 
 private:
    Granary *_building;
@@ -126,8 +121,8 @@ public:
    GuiInfoMarket( Widget* parent, Market &building);
    virtual void paint();
 
-   void drawWorkers();
-   void drawGood(const GoodType &goodType);
+   void drawWorkers( int );
+   void drawGood(const GoodType &goodType, int&);
 
 private:
    Market *_building;
@@ -135,20 +130,18 @@ private:
 
 
 // info box about a house
-class GuiInfoHouse : public GuiInfoBox
+class InfoBoxHouse : public GuiInfoBox
 {
 public:
-   GuiInfoHouse( Widget* paarent, House &house);
-   virtual void paint();
+   InfoBoxHouse( Widget* paarent, House &house);
+
 
    void drawHabitants();
-   void drawTaxes();
-   void drawCrime();
-   void drawGood(const GoodType &goodType, const int col, const int row);
+   void drawGood(const GoodType &goodType, const int col, const int row, int paintY );
 
 private:
-
-   House *_house;
+   void _paint();
+   House& _house;
 };
 
 class GuiBuilding : public GuiInfoBox

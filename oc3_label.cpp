@@ -18,6 +18,7 @@
 #include "gfx_engine.hpp"
 #include "sdl_facade.hpp"
 #include "gui_paneling.hpp"
+#include "oc3_pictureconverter.h"
 
 using namespace std;
 
@@ -80,6 +81,7 @@ Label::Label(Widget* parent, const Rect& rectangle, const string& text, bool bor
     _d->bgPicture = 0;
 	_d->isBorderVisible = border;
 	_d->isBackgroundVisible = background;
+ 
 
     #ifdef _DEBUG
         setDebugName( "OC3_label");
@@ -89,7 +91,7 @@ Label::Label(Widget* parent, const Rect& rectangle, const string& text, bool bor
     setText( text );
 }
 
-void Label::_updateTexture()
+void Label::_updateTexture( GfxEngine& painter )
 {
     Size btnSize = getSize();
 
@@ -97,7 +99,10 @@ void Label::_updateTexture()
         _d->releaseTexture();
 
     if( !_d->picture )
+    {
         _d->picture = &SdlFacade::instance().createPicture( btnSize.getWidth(), btnSize.getHeight() );
+        painter.load_picture( *_d->picture );
+    }
 
     // draw button background
     if( _d->bgPicture )
@@ -106,7 +111,14 @@ void Label::_updateTexture()
     }    
     else
     {
-        GuiPaneling::instance().draw_white_area( *_d->picture, 0, 0, getSize().getWidth(), getSize().getHeight() );
+        if( !_d->isBackgroundVisible )
+            GuiPaneling::instance().draw_white_area( *_d->picture, 0, 0, getSize().getWidth(), getSize().getHeight() );
+        else
+        {
+            GuiPaneling::instance().draw_black_area( *_d->picture, 0, 0, getSize().getWidth(), getSize().getHeight() );
+            //PictureConverter::fill( *_d->picture, 0 );
+
+        }
     }
 
     if( _d->font.isValid() )
@@ -537,7 +549,7 @@ void Label::beforeDraw( GfxEngine& painter )
 {
     if( _d->needUpdatePicture )
 	{
-        _updateTexture();
+        _updateTexture( painter );
 
         _d->needUpdatePicture = false;		
 	}

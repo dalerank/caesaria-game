@@ -13,23 +13,21 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_PICTURECONVERTER_H_INCLUDE_
-#define __OPENCAESAR3_PICTURECONVERTER_H_INCLUDE_
+#ifndef __OPENCAESAR3_BURNINGRUINS_H_INCLUDE_
+#define __OPENCAESAR3_BURNINGRUINS_H_INCLUDE_
 
-#include <memory>
+#include "service_building.hpp"
 
-class Picture;
-
-class PictureConverter
+class BurningRuins : public ServiceBuilding
 {
 public:
-    static void convToGrayscale( Picture& dst, const Picture& src );
-    static void rgbBalance( Picture& dst, const Picture& src, int lROffset, int lGOffset, int lBOffset );
-    static void fill( Picture& pic, int color );
+    BurningRuins();
+    BurningRuins* clone() const;
 
-private:
-    PictureConverter();
-    ~PictureConverter();
+    void deliverService();
+    void timeStep(const unsigned long time);
+    void burn();
 };
+
 
 #endif

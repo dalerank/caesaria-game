@@ -123,7 +123,8 @@ void Emigrant::assignPath( const Road& startPoint )
 }
 
 void Emigrant::onDestination()
-{   
+{
+    _isDeleted = true;
     if( _d->destination.getI() > 0 && _d->destination.getJ() > 0 )
     {
 	    const Tile& tile = Scenario::instance().getCity().getTilemap().at( _d->destination );
@@ -134,22 +135,18 @@ void Emigrant::onDestination()
 		    if( house->getNbHabitants() < house->getMaxHabitants() )
 		    {
 			    house->addHabitants( 1 );
-                _isDeleted = true;
-                return;
+                Walker::onDestination();
 		    }
             else
             {
                 if( const Road* r = dynamic_cast< const Road* >( _pathWay.getDestination().get_terrain().getOverlay() ))
                 {
-                    assignPath( *r );
                     _isDeleted = false;
-                    return;
+                    assignPath( *r );
                 }
             }
 	    }
     }
-
-	_isDeleted = true;
 }
 
 void Emigrant::onNewDirection()
