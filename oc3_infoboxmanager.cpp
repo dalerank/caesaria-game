@@ -43,6 +43,10 @@ void InfoBoxManager::showHelp( Tile* tile )
         {
             infoBox = new InfoBoxLand( _d->gui->getRootWidget(), tile );
         }
+        else if( House* house = safety_cast< House* >( overlay ) )
+        {
+            infoBox = new InfoBoxHouse( _d->gui->getRootWidget(), *house );
+        }
     }
     
     if( infoBox  )

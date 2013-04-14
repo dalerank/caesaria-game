@@ -34,81 +34,67 @@
 #include "oc3_pushbutton.h"
 #include "oc3_label.h"
 
-std::vector<Picture*> GuiInfoBox::_mapPictureGood; 
+class InfoBoxHelper
+{
+public:
+    std::vector<Picture*> mapPictureGood;  // index=GoodType, value=Picture
+    
+    static InfoBoxHelper& getInstance()
+    {
+        static InfoBoxHelper inst;
+        return inst;
+    }
+
+    InfoBoxHelper()
+    {
+        mapPictureGood.resize(G_MAX);
+        PicLoader& ldr = PicLoader::instance();
+        mapPictureGood[int(G_WHEAT)    ] = &ldr.get_picture( ResourceGroup::panelBackground, 317);
+        mapPictureGood[int(G_VEGETABLE)] = &ldr.get_picture( ResourceGroup::panelBackground, 318);
+        mapPictureGood[int(G_FRUIT)    ] = &ldr.get_picture( ResourceGroup::panelBackground, 319);
+        mapPictureGood[int(G_OLIVE)    ] = &ldr.get_picture( ResourceGroup::panelBackground, 320);
+        mapPictureGood[int(G_GRAPE)    ] = &ldr.get_picture( ResourceGroup::panelBackground, 321);
+        mapPictureGood[int(G_MEAT)     ] = &ldr.get_picture( ResourceGroup::panelBackground, 322);
+        mapPictureGood[int(G_WINE)     ] = &ldr.get_picture( ResourceGroup::panelBackground, 323);
+        mapPictureGood[int(G_OIL)      ] = &ldr.get_picture( ResourceGroup::panelBackground, 324);
+        mapPictureGood[int(G_IRON)     ] = &ldr.get_picture( ResourceGroup::panelBackground, 325);
+        mapPictureGood[int(G_TIMBER)   ] = &ldr.get_picture( ResourceGroup::panelBackground, 326);
+        mapPictureGood[int(G_CLAY)     ] = &ldr.get_picture( ResourceGroup::panelBackground, 327);
+        mapPictureGood[int(G_MARBLE)   ] = &ldr.get_picture( ResourceGroup::panelBackground, 328);
+        mapPictureGood[int(G_WEAPON)   ] = &ldr.get_picture( ResourceGroup::panelBackground, 329);
+        mapPictureGood[int(G_FURNITURE)] = &ldr.get_picture( ResourceGroup::panelBackground, 330);
+        mapPictureGood[int(G_POTTERY)  ] = &ldr.get_picture( ResourceGroup::panelBackground, 331);
+        mapPictureGood[int(G_FISH)     ] = &ldr.get_picture( ResourceGroup::panelBackground, 333);
+    }
+};
+
+class GuiInfoBox::Impl
+{
+public:
+    Picture *bgPicture;
+    Label* lbTitle;
+};
 
 GuiInfoBox::GuiInfoBox( Widget* parent, const Rect& rect, int id )
-: Widget( parent, id, rect )
+: Widget( parent, id, rect ), _d( new Impl )
 {
-   _title = "";
-   _bgPicture = 0;
+    // create the title
+    _d->lbTitle = new Label( this, Rect( 16, 16+4, getWidth()-16, 16 + 34 ) );
+    _d->lbTitle->setFont( FontCollection::instance().getFont(FONT_3) );
+    _d->lbTitle->setTextAlignment( alignCenter, alignCenter );
 
-   if (_mapPictureGood.empty())
-   {
-      initStatic();
-   }
+    SdlFacade &sdlFacade = SdlFacade::instance();
+    _d->bgPicture = &sdlFacade.createPicture( getWidth(), getHeight() );
+
+   // draws the box and the inner black box
+   GuiPaneling::instance().draw_white_frame(*_d->bgPicture, 0, 0, getWidth(), getHeight() );
+   GfxEngine::instance().load_picture(*_d->bgPicture);
 }
 
 GuiInfoBox::~GuiInfoBox()
 {
   
 }
-
-
-void GuiInfoBox::initStatic()
-{
-   _mapPictureGood.resize(G_MAX);
-   PicLoader& ldr = PicLoader::instance();
-   _mapPictureGood[int(G_WHEAT)    ] = &ldr.get_picture( ResourceGroup::panelBackground, 317);
-   _mapPictureGood[int(G_VEGETABLE)] = &ldr.get_picture( ResourceGroup::panelBackground, 318);
-   _mapPictureGood[int(G_FRUIT)    ] = &ldr.get_picture( ResourceGroup::panelBackground, 319);
-   _mapPictureGood[int(G_OLIVE)    ] = &ldr.get_picture( ResourceGroup::panelBackground, 320);
-   _mapPictureGood[int(G_GRAPE)    ] = &ldr.get_picture( ResourceGroup::panelBackground, 321);
-   _mapPictureGood[int(G_MEAT)     ] = &ldr.get_picture( ResourceGroup::panelBackground, 322);
-   _mapPictureGood[int(G_WINE)     ] = &ldr.get_picture( ResourceGroup::panelBackground, 323);
-   _mapPictureGood[int(G_OIL)      ] = &ldr.get_picture( ResourceGroup::panelBackground, 324);
-   _mapPictureGood[int(G_IRON)     ] = &ldr.get_picture( ResourceGroup::panelBackground, 325);
-   _mapPictureGood[int(G_TIMBER)   ] = &ldr.get_picture( ResourceGroup::panelBackground, 326);
-   _mapPictureGood[int(G_CLAY)     ] = &ldr.get_picture( ResourceGroup::panelBackground, 327);
-   _mapPictureGood[int(G_MARBLE)   ] = &ldr.get_picture( ResourceGroup::panelBackground, 328);
-   _mapPictureGood[int(G_WEAPON)   ] = &ldr.get_picture( ResourceGroup::panelBackground, 329);
-   _mapPictureGood[int(G_FURNITURE)] = &ldr.get_picture( ResourceGroup::panelBackground, 330);
-   _mapPictureGood[int(G_POTTERY)  ] = &ldr.get_picture( ResourceGroup::panelBackground, 331);
-   _mapPictureGood[int(G_FISH)     ] = &ldr.get_picture( ResourceGroup::panelBackground, 333);
-}
-
-void GuiInfoBox::_init()
-{
-   SdlFacade &sdlFacade = SdlFacade::instance();
-
-   _bgPicture = &sdlFacade.createPicture( getWidth(), getHeight() );
-
-   // draws the box and the inner black box
-   GuiPaneling::instance().draw_white_frame(*_bgPicture, 0, 0, getWidth(), getHeight() );
-
-   // draws the title
-   _paintY = 4;
-   Font &font = FontCollection::instance().getFont(FONT_3);
-   int text_width = 0;
-   int text_height = 0;
-   sdlFacade.getTextSize(font, _title, text_width, text_height);
-   sdlFacade.drawText(*_bgPicture, _title, (getWidth()-text_width)/2, _paintY, font);
-   _paintY += 34;
-
-   // draws the help button
-   _hoverButton = NULL;
-   //_helpButton.setEvent(WidgetEvent());
-   /*_helpButton.setPicture(PicLoader::instance().get_picture("paneling", 529));
-   _helpButton.setHoverPicture(PicLoader::instance().get_picture("paneling", 529+1));
-   _helpButton.setSelectedPicture(PicLoader::instance().get_picture("paneling", 529+2));
-   _helpButton.setPosition(width - 40, 13);
-   add_widget(_helpButton);*/
-
-   // custom paint
-   paint();
-
-   GfxEngine::instance().load_picture(*_bgPicture);
-}
-
 
 void GuiInfoBox::draw( GfxEngine& engine )
 {
@@ -118,7 +104,7 @@ void GuiInfoBox::draw( GfxEngine& engine )
 
 Picture& GuiInfoBox::getBgPicture()
 {
-   return *_bgPicture;
+   return *_d->bgPicture;
 }
 
 bool GuiInfoBox::isPointInside( const Point& point ) const
@@ -140,181 +126,162 @@ bool GuiInfoBox::onEvent( const NEvent& event)
     break;
     }
 
-    return true;
+    return Widget::onEvent( event );
 }
 
 Picture& GuiInfoBox::getPictureGood(const GoodType& goodType)
 {
-   Picture* res = _mapPictureGood[int(goodType)];
-   if (res == NULL)
-   {
+    Picture* res = InfoBoxHelper::getInstance().mapPictureGood[int(goodType)];
+    if (res == NULL)
+    {
       THROW("No picture for good type:" << goodType);
-   }
-   return *res;
+    }
+    return *res;
 }
 
+void GuiInfoBox::setTitle( const std::string& title )
+{
+    _d->lbTitle->setText( title );
+}
 
 GuiInfoService::GuiInfoService( Widget* parent, ServiceBuilding &building)
     : GuiInfoBox( parent, Rect( 0, 0, 450, 300 ), -1 )
 {
    _building = &building;
-   _title = BuildingDataHolder::instance().getData(building.getType()).getPrettyName();
-   _init();
+   setTitle( BuildingDataHolder::instance().getData(building.getType()).getPrettyName() );
+   paint(); 
 }
 
 
 void GuiInfoService::paint()
 {
-   _paintY+=10;
-   GuiPaneling::instance().draw_black_frame(*_bgPicture, 16, _paintY, getWidth() - 32, getHeight() -_paintY-16);
-   _paintY+=10;
+   int paintY = _d->lbTitle->getBottom() + 10 ;
+   GuiPaneling::instance().draw_black_frame(*_d->bgPicture, 16, paintY, getWidth() - 32, getHeight() - paintY - 16);
+   
+   paintY+=10;
 
-   drawWorkers();
+   drawWorkers( paintY );
 
-   SdlFacade &sdlFacade = SdlFacade::instance();
-   char buffer[1000];
+   _dmgLabel = new Label( this, Rect( 16 + 42, paintY, getWidth() - 16 - 42, getHeight() - 16) ); 
+   char buffer[100];
    sprintf(buffer, "%d%% damage - %d%% fire", (int)_building->getDamageLevel(), (int)_building->getFireLevel());
-   Font &font = FontCollection::instance().getFont(FONT_2);
-   sdlFacade.drawText(*_bgPicture, std::string(buffer), 16+42, _paintY+5, font);
-
-   _paintY+=10;
+   _dmgLabel->setText( buffer );
 }
 
 
-void GuiInfoService::drawWorkers()
+void GuiInfoService::drawWorkers( int& paintY )
 {
    SdlFacade &sdlFacade = SdlFacade::instance();
 
    // picture of citizen
    Picture *pic = &PicLoader::instance().get_picture("paneling", 542);
-   sdlFacade.drawPicture(*pic, *_bgPicture, 16+15, _paintY);
+   sdlFacade.drawPicture(*pic, *_d->bgPicture, 16+15, paintY);
 
    // number of workers
    char buffer[1000];
    sprintf(buffer, _("%d employes (%d requis)"), _building->getWorkers(), _building->getMaxWorkers());
 
    Font &font = FontCollection::instance().getFont(FONT_2);
-   sdlFacade.drawText(*_bgPicture, std::string(buffer), 16+42, _paintY+5, font);
-   _paintY+=20;
+   sdlFacade.drawText(*_d->bgPicture, std::string(buffer), 16+42, paintY+5, font);
+   paintY+=20;
 }
 
 
-GuiInfoHouse::GuiInfoHouse( Widget* parent, House &house )
-    : GuiInfoBox( parent, Rect( 0, 0, 450, 300 ), -1 )
+InfoBoxHouse::InfoBoxHouse( Widget* parent, House &house )
+    : GuiInfoBox( parent, Rect( 0, 0, 450, 300 ), -1 ), _house( house)
 {
-   _house = &house;
-   _title = house.getName();
-   _init();
+   setTitle( house.getName() );
 }
 
 
-void GuiInfoHouse::paint()
+void InfoBoxHouse::paint()
 {
-   drawTaxes();
-   drawCrime();
+    int taxes = -1; // _house->getMonthlyTaxes();
+    Label* taxesLb = new Label( this, Rect( 16 + 15, 20, getWidth() - 16, 20 + 60 ) );
+    char buffer[1000];
+    if (taxes == -1)
+    {
+        sprintf(buffer, _("Aucun percepteur ne passe ici. Ne paye pas de taxes"));
+        taxesLb->setFont( FontCollection::instance().getFont(FONT_2_RED) );
+    }
+    else
+    {
+        sprintf(buffer, _("Paye %d Denarii de taxes par mois"), taxes);
+    }
 
-   _paintY+=10;
-   GuiPaneling::instance().draw_black_frame(*_bgPicture, 16, _paintY, getWidth()-32, getHeight()-_paintY-16);
-   _paintY+=10;
+    taxesLb->setText( buffer );
+    //_paintY+=22;
+  
+    Label* lbCrime = new Label( this, taxesLb->getRelativeRect() + Point( 0, 22 ) );
+    sprintf(buffer, _("Ce quartier est tranquille"));
+    lbCrime->setText( buffer );
+
+//    _paintY+=10;
+//    GuiPaneling::instance().draw_black_frame(*_bgPicture, 16, _paintY, getWidth()-32, getHeight()-_paintY-16);
+//    _paintY+=10;
 
    // paint basic info about the house
    drawHabitants();
 
    // paint goods
-   _paintY+=15;
-   drawGood(G_WHEAT, 0, 0);
-   drawGood(G_POTTERY, 0, 1);
-   drawGood(G_FURNITURE, 1, 1);
-   drawGood(G_OIL, 2, 1);
-   drawGood(G_WINE, 3, 1);
+   //_paintY+=15;
+
+   drawGood(G_WHEAT, 0, 0, lbCrime->getBottom() );
+   drawGood(G_POTTERY, 0, 1, lbCrime->getBottom());
+   drawGood(G_FURNITURE, 1, 1, lbCrime->getBottom());
+   drawGood(G_OIL, 2, 1, lbCrime->getBottom());
+   drawGood(G_WINE, 3, 1, lbCrime->getBottom());
 }
 
 
-void GuiInfoHouse::drawHabitants()
+void InfoBoxHouse::drawHabitants()
 {
-   SdlFacade &sdlFacade = SdlFacade::instance();
+   /*SdlFacade &sdlFacade = SdlFacade::instance();
 
    // citizen or patrician picture
-   Uint32 picId = _house->getLevelSpec().isPatrician() ? 541 : 542; 
+   Uint32 picId = _house.getLevelSpec().isPatrician() ? 541 : 542; 
    Picture* pic = &PicLoader::instance().get_picture( ResourceGroup::panelBackground, picId);
    
-   sdlFacade.drawPicture( *pic, *_bgPicture, 16+15, _paintY);
+   sdlFacade.drawPicture( *pic, *_d->bgPicture, 16+15, _paintY);
 
    // number of habitants
    char buffer[1000];
    Font *font = &FontCollection::instance().getFont(FONT_2);
-   int freeRoom = _house->getMaxHabitants() - _house->getNbHabitants();
+   int freeRoom = _house.getMaxHabitants() - _house.getNbHabitants();
    if (freeRoom > 0)
    {
       // there is some room for new habitants!
-      sprintf(buffer, _("%d occupants, %d places disponibles"), _house->getNbHabitants(), freeRoom);
+      sprintf(buffer, _("%d occupants, %d places disponibles"), _house.getNbHabitants(), freeRoom);
    }
    else if (freeRoom == 0)
    {
       // full house!
-      sprintf(buffer, _("%d occupants"), _house->getNbHabitants());
+      sprintf(buffer, _("%d occupants"), _house.getNbHabitants());
    }
    else if (freeRoom < 0)
    {
       // too many habitants!
-      sprintf(buffer, _("%d occupants, %d habitants en trop"), _house->getNbHabitants(), -freeRoom);
+      sprintf(buffer, _("%d occupants, %d habitants en trop"), _house.getNbHabitants(), -freeRoom);
       font = &FontCollection::instance().getFont(FONT_2_RED);
    }
 
-   sdlFacade.drawText(*_bgPicture, std::string(buffer), 16+42, _paintY+5, *font);
-   _paintY+=33;
+   sdlFacade.drawText(*_d->bgPicture, std::string(buffer), 16+42, _paintY+5, *font);
+   _paintY+=33;*/
 }
 
-
-void GuiInfoHouse::drawTaxes()
-{
-   SdlFacade &sdlFacade = SdlFacade::instance();
-
-   int taxes = -1; // _house->getMonthlyTaxes();
-
-   char buffer[1000];
-   Font *font = &FontCollection::instance().getFont(FONT_2);
-   if (taxes == -1)
-   {
-      sprintf(buffer, _("Aucun percepteur ne passe ici. Ne paye pas de taxes"));
-      font = &FontCollection::instance().getFont(FONT_2_RED);
-   }
-   else
-   {
-      sprintf(buffer, _("Paye %d Denarii de taxes par mois"), taxes);
-   }
-
-   sdlFacade.drawText(*_bgPicture, std::string(buffer), 16+15, _paintY, *font);
-   _paintY+=22;
-}
-
-
-void GuiInfoHouse::drawCrime()
-{
-   SdlFacade &sdlFacade = SdlFacade::instance();
-
-   char buffer[1000];
-   Font *font = &FontCollection::instance().getFont(FONT_2);
-   sprintf(buffer, _("Ce quartier est tranquille"));
-
-   sdlFacade.drawText(*_bgPicture, std::string(buffer), 16+15, _paintY, *font);
-   _paintY+=22;
-}
-
-
-void GuiInfoHouse::drawGood(const GoodType &goodType, const int col, const int row)
+void InfoBoxHouse::drawGood(const GoodType &goodType, const int col, const int row, int paintY )
 {
    SdlFacade &sdlFacade = SdlFacade::instance();
    Font &font = FontCollection::instance().getFont(FONT_2);
-   int qty = _house->getGoodStore().getCurrentQty(goodType);
+   int qty = _house.getGoodStore().getCurrentQty(goodType);
 
    // pictures of goods
    Picture &pic = getPictureGood(goodType);
-   sdlFacade.drawPicture(pic, *_bgPicture, 31+100*col, _paintY+2+32*row);
+   sdlFacade.drawPicture(pic, *_d->bgPicture, 31+100*col, paintY+2+32*row);
 
    char buffer[1000];
    sprintf(buffer, "%d", qty);
-   sdlFacade.drawText(*_bgPicture, std::string(buffer), 61+100*col, _paintY+32*row, font);
+   sdlFacade.drawText(*_d->bgPicture, std::string(buffer), 61+100*col, paintY+32*row, font);
 }
 
 
@@ -322,8 +289,8 @@ GuiInfoFactory::GuiInfoFactory( Widget* parent, Factory &building)
     : GuiInfoBox( parent, Rect( 0, 0, 450, 220 ), -1 )
 {
    _building = &building;
-   _title = BuildingDataHolder::instance().getData(building.getType()).getPrettyName();
-   _init();
+   setTitle( BuildingDataHolder::instance().getData(building.getType()).getPrettyName() );
+   paint();
 }
 
 
@@ -336,20 +303,22 @@ void GuiInfoFactory::paint()
 
    // paint progress
    char buffer[1000];
-   int progress = _building->getProgress();
+   int progress = _building->getProgress();\
+   int _paintY = _d->lbTitle->getBottom();
+
    sprintf(buffer, _("Le travail est a %d%% termine."), progress);
-   sdlFacade.drawText(*_bgPicture, std::string(buffer), 15, _paintY, font);
+   sdlFacade.drawText(*_d->bgPicture, std::string(buffer), 15, _paintY, font);
    _paintY+=22;
 
    // paint picture of in good
    if (_building->getInGood()._goodType != G_NONE)
    {
       Picture &pic = getPictureGood(_building->getInGood()._goodType);
-      sdlFacade.drawPicture(pic, *_bgPicture, 15, _paintY+2);
+      sdlFacade.drawPicture(pic, *_d->bgPicture, 15, _paintY+2);
       int amount = _building->getInGood()._currentQty / 100;
       std::string goodName = Good::instance(_building->getInGood()._goodType).getName();
       sprintf(buffer, _("%s en stock: %d unites"), goodName.c_str(), amount);
-      sdlFacade.drawText(*_bgPicture, std::string(buffer), 42, _paintY, font);
+      sdlFacade.drawText(*_d->bgPicture, std::string(buffer), 42, _paintY, font);
       _paintY+=22;
    }
 
@@ -358,33 +327,33 @@ void GuiInfoFactory::paint()
    for (std::list<std::string>::iterator itlines = text_lines.begin(); itlines != text_lines.end(); ++itlines)
    {
       std::string &line = *itlines;
-      sdlFacade.drawText(*_bgPicture, line, 15, _paintY, font);
+      sdlFacade.drawText(*_d->bgPicture, line, 15, _paintY, font);
       _paintY+=19;
    }
 
    _paintY+=10;
-   GuiPaneling::instance().draw_black_frame(*_bgPicture, 16, _paintY, getWidth()-32, getHeight()-_paintY-16);
+   GuiPaneling::instance().draw_black_frame(*_d->bgPicture, 16, _paintY, getWidth()-32, getHeight()-_paintY-16);
    _paintY+=10;
 
-   drawWorkers();
+   drawWorkers( _paintY );
 }
 
 
-void GuiInfoFactory::drawWorkers()
+void GuiInfoFactory::drawWorkers( int& paintY )
 {
    SdlFacade &sdlFacade = SdlFacade::instance();
 
    // picture of citizen
    Picture *pic = &PicLoader::instance().get_picture("paneling", 542);
-   sdlFacade.drawPicture(*pic, *_bgPicture, 16+15, _paintY);
+   sdlFacade.drawPicture(*pic, *_d->bgPicture, 16+15, paintY);
 
    // number of workers
    char buffer[1000];
    sprintf(buffer, _("%d employes (%d requis)"), _building->getWorkers(), _building->getMaxWorkers());
 
    Font &font = FontCollection::instance().getFont(FONT_2);
-   sdlFacade.drawText(*_bgPicture, std::string(buffer), 16+42, _paintY+5, font);
-   _paintY+=20;
+   sdlFacade.drawText(*_d->bgPicture, std::string(buffer), 16+42, paintY+5, font);
+   paintY += 20 ;
 }
 
 
@@ -439,7 +408,7 @@ GuiInfoGranary::GuiInfoGranary( Widget* parent, Granary &building)
     : GuiInfoBox( parent, Rect( 0, 0, 450, 300 ), -1 )
 {
    _building = &building;
-   _title = BuildingDataHolder::instance().getData(building.getType()).getPrettyName();
+   setTitle( BuildingDataHolder::instance().getData(building.getType()).getPrettyName() );
 
    int height = 160;
 
@@ -453,7 +422,7 @@ GuiInfoGranary::GuiInfoGranary( Widget* parent, Granary &building)
    }
 
    setHeight( height );
-   _init();
+   paint();
 }
 
 
@@ -464,47 +433,48 @@ void GuiInfoGranary::paint()
    Font &font = FontCollection::instance().getFont(FONT_2);
 
    // summary: total stock, free capacity
+   int _paintY = _d->lbTitle->getBottom();
    int currentQty = _building->getGoodStore().getCurrentQty();
    int maxQty = _building->getGoodStore().getMaxQty();
    char buffer[1000];
    sprintf(buffer, _("%d unites en stock. Espace pour %d unites."), currentQty, maxQty-currentQty);
 
-   sdlFacade.drawText(*_bgPicture, std::string(buffer), 16, _paintY+5, font);
+   sdlFacade.drawText(*_d->bgPicture, std::string(buffer), 16, _paintY+5, font);
    _paintY+=40;
 
-   drawGood(G_WHEAT);
-   drawGood(G_FISH);
-   drawGood(G_MEAT);
-   drawGood(G_FRUIT);
-   drawGood(G_VEGETABLE);
+   drawGood(G_WHEAT, _paintY);
+   drawGood(G_FISH, _paintY);
+   drawGood(G_MEAT, _paintY);
+   drawGood(G_FRUIT, _paintY);
+   drawGood(G_VEGETABLE, _paintY);
 
    _paintY+=10;
-   GuiPaneling::instance().draw_black_frame(*_bgPicture, 16, _paintY, getWidth()-32, getHeight()-_paintY-16);
+   GuiPaneling::instance().draw_black_frame(*_d->bgPicture, 16, _paintY, getWidth()-32, getHeight()-_paintY-16);
    _paintY+=10;
 
-   drawWorkers();
+   drawWorkers( _paintY );
 }
 
 
-void GuiInfoGranary::drawWorkers()
+void GuiInfoGranary::drawWorkers( int paintY )
 {
    SdlFacade &sdlFacade = SdlFacade::instance();
 
    // picture of citizen
    Picture *pic = &PicLoader::instance().get_picture("paneling", 542);
-   sdlFacade.drawPicture(*pic, *_bgPicture, 16+15, _paintY);
+   sdlFacade.drawPicture(*pic, *_d->bgPicture, 16+15, paintY);
 
    // number of workers
    char buffer[1000];
    sprintf(buffer, _("%d employes (%d requis)"), _building->getWorkers(), _building->getMaxWorkers());
 
    Font &font = FontCollection::instance().getFont(FONT_2);
-   sdlFacade.drawText(*_bgPicture, std::string(buffer), 16+42, _paintY+5, font);
-   _paintY+=20;
+   sdlFacade.drawText(*_d->bgPicture, std::string(buffer), 16+42, paintY+5, font);
+   paintY+=20;
 }
 
 
-void GuiInfoGranary::drawGood(const GoodType &goodType)
+void GuiInfoGranary::drawGood(const GoodType &goodType, int& paintY)
 {
    Good &good = Good::instance(goodType);
    SdlFacade &sdlFacade = SdlFacade::instance();
@@ -519,13 +489,13 @@ void GuiInfoGranary::drawGood(const GoodType &goodType)
 
    // pictures of goods
    Picture &pic = getPictureGood(goodType);
-   sdlFacade.drawPicture(pic, *_bgPicture, 31, _paintY);
+   sdlFacade.drawPicture(pic, *_d->bgPicture, 31, paintY);
 
    char buffer[1000];
    sprintf(buffer, "%d ", qty);
-   sdlFacade.drawText(*_bgPicture, std::string(buffer) + good.getName(), 61, _paintY, font);
+   sdlFacade.drawText(*_d->bgPicture, std::string(buffer) + good.getName(), 61, paintY, font);
 
-   _paintY += 22;
+   paintY += 22;
 }
 
 
@@ -533,7 +503,7 @@ GuiInfoMarket::GuiInfoMarket( Widget* parent, Market &building)
     : GuiInfoBox( parent, Rect( 0, 0, 450, 300 ), -1 )
 {
    _building = &building;
-   _title = BuildingDataHolder::instance().getData(building.getType()).getPrettyName();
+   setTitle( BuildingDataHolder::instance().getData(building.getType()).getPrettyName() );
    int height = 120;
    GoodStore& goodStore = building.getGoodStore();
    for (int n = 0; n<G_MAX; ++n)
@@ -547,50 +517,51 @@ GuiInfoMarket::GuiInfoMarket( Widget* parent, Market &building)
    }
 
    setHeight( height );
-   _init();
+   paint();
 }
 
 
 void GuiInfoMarket::paint()
 {
-   drawGood(G_WHEAT);
-   drawGood(G_FISH);
-   drawGood(G_MEAT);
-   drawGood(G_FRUIT);
-   drawGood(G_VEGETABLE);
+   int paintY = _d->lbTitle->getBottom() + 10;
+   drawGood(G_WHEAT, paintY );
+   drawGood(G_FISH, paintY);
+   drawGood(G_MEAT, paintY);
+   drawGood(G_FRUIT, paintY);
+   drawGood(G_VEGETABLE, paintY);
 
-   drawGood(G_POTTERY);
-   drawGood(G_FURNITURE);
-   drawGood(G_OIL);
-   drawGood(G_WINE);
+   drawGood(G_POTTERY, paintY);
+   drawGood(G_FURNITURE, paintY);
+   drawGood(G_OIL, paintY);
+   drawGood(G_WINE, paintY);
 
-   _paintY+=10;
-   GuiPaneling::instance().draw_black_frame(*_bgPicture, 16, _paintY, getWidth() - 32, getHeight()-_paintY-16);
-   _paintY+=10;
+   paintY += 10;
+   GuiPaneling::instance().draw_black_frame(*_d->bgPicture, 16, paintY, getWidth() - 32, getHeight() - paintY-16);
+   paintY += 10;
 
-   drawWorkers();
+   drawWorkers( paintY );
 }
 
 
-void GuiInfoMarket::drawWorkers()
+void GuiInfoMarket::drawWorkers( int paintY )
 {
    SdlFacade &sdlFacade = SdlFacade::instance();
 
    // picture of citizen
    Picture *pic = &PicLoader::instance().get_picture("paneling", 542);
-   sdlFacade.drawPicture(*pic, *_bgPicture, 16+15, _paintY);
+   sdlFacade.drawPicture(*pic, *_d->bgPicture, 16+15, paintY);
 
    // number of workers
    char buffer[1000];
    sprintf(buffer, _("%d employes (%d requis)"), _building->getWorkers(), _building->getMaxWorkers());
 
    Font &font = FontCollection::instance().getFont(FONT_2);
-   sdlFacade.drawText(*_bgPicture, std::string(buffer), 16+42, _paintY+5, font);
-   _paintY+=20;
+   sdlFacade.drawText(*_d->bgPicture, std::string(buffer), 16+42, paintY+5, font);
+   paintY+=20;
 }
 
 
-void GuiInfoMarket::drawGood(const GoodType &goodType)
+void GuiInfoMarket::drawGood(const GoodType &goodType, int& paintY )
 {
    Good &good = Good::instance(goodType);
    SdlFacade &sdlFacade = SdlFacade::instance();
@@ -605,29 +576,29 @@ void GuiInfoMarket::drawGood(const GoodType &goodType)
 
    // pictures of goods
    Picture &pic = getPictureGood(goodType);
-   sdlFacade.drawPicture(pic, *_bgPicture, 31, _paintY);
+   sdlFacade.drawPicture(pic, *_d->bgPicture, 31, paintY);
 
    char buffer[1000];
    sprintf(buffer, "%d ", qty);
-   sdlFacade.drawText(*_bgPicture, std::string(buffer) + good.getName(), 61, _paintY, font);
+   sdlFacade.drawText(*_d->bgPicture, std::string(buffer) + good.getName(), 61, paintY, font);
 
-   _paintY += 22;
+   paintY += 22;
 }
 
 GuiBuilding::GuiBuilding( Widget* parent, Building &building)
     : GuiInfoBox( parent, Rect( 0, 0, 450, 220 ), -1 )
 {
   _building = &building;
-  _title = BuildingDataHolder::instance().getData(building.getType()).getPrettyName();
+  setTitle( BuildingDataHolder::instance().getData(building.getType()).getPrettyName() );
 
-  _init();
+  paint();
 }
 
 void GuiBuilding::paint()
 {
-   _paintY+=10;
-   GuiPaneling::instance().draw_black_frame(*_bgPicture, 16, _paintY, getWidth()-32, getHeight()-_paintY-16);
-   _paintY+=10;  
+   int paintY = _d->lbTitle->getBottom() + 10;
+   GuiPaneling::instance().draw_black_frame(*_d->bgPicture, 16, paintY, getWidth()-32, getHeight()-paintY-16);
+   paintY+=10;  
 }
 
 InfoBoxLand::InfoBoxLand( Widget* parent, Tile* tile )
@@ -644,34 +615,47 @@ InfoBoxLand::InfoBoxLand( Widget* parent, Tile* tile )
 
     if( tile->get_terrain().isTree() )
     {
-        _title = _("##trees_and_forest_caption");
+        setTitle( _("##trees_and_forest_caption") );
         _text->setText( _("##trees_and_forest_text"));
     } 
     else if( tile->get_terrain().isWater() )
     {
-        _title = _("##water_caption");
+        setTitle( _("##water_caption") );
         _text->setText( _("##water_text"));
     }
     else if( tile->get_terrain().isRock() )
     {
-        _title = _("##rock_caption");
+        setTitle( _("##rock_caption") );
         _text->setText( _("##rock_text"));
     }
     else if( tile->get_terrain().isRoad() )
     {
-        _title = _("##road_caption");
+        setTitle( _("##road_caption") );
         _text->setText( _("##road_text"));
     }
     else 
     {
-        _title = _("##clear_land_caption");
+        setTitle( _("##clear_land_caption") );
         _text->setText( _("##clear_land_text"));
     }
 
-    _init();
+    GuiPaneling::instance().draw_black_frame( *_d->bgPicture, 16, _d->lbTitle->getBottom() + 10, getWidth()-32, 180 );
 }
 
-void InfoBoxLand::paint()
+/*bool InfoBoxLand::onEvent(const NEvent& event)
 {
-    GuiPaneling::instance().draw_black_frame(*_bgPicture, 16, 40, getWidth()-32, 190 );
-}
+    if( event.EventType == OC3_GUI_EVENT )
+    {
+        switch( event.GuiEvent.EventType ) 
+        {
+        case OC3_BUTTON_CLICKED:
+            if( event.GuiEvent.Caller == _btnExit )
+            {
+                deleteLater();
+            }
+        return true;
+        }
+    }
+
+    return GuiInfoBox::onEvent( event );
+}*/
