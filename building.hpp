@@ -108,6 +108,7 @@ public:
   Picture& computePicture();
   virtual void setTerrain(TerrainTile &terrain);
   void updateAqueducts();
+  virtual bool canBuild(const int i, const int j) const;
 private:
   Aqueduct *_north, *_east, *_south, *_west;
 };

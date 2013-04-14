@@ -437,9 +437,56 @@ void Aqueduct::updateAqueducts()
 
 void Aqueduct::setTerrain(TerrainTile &terrain)
 {
+  bool isRoad = false;
+  isRoad = terrain.isRoad();
   terrain.reset();
   terrain.setOverlay(this);
   terrain.setBuilding(true);
+  terrain.setRoad(isRoad);
+}
+
+bool Aqueduct::canBuild(const int i, const int j) const
+{
+  bool is_free = Construction::canBuild(i, j);
+  
+  if (is_free) return true; // we try to build on free tile
+  
+  // we can place on road
+  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+
+  // we can't build on plazas
+  if (dynamic_cast<Plaza*>(tilemap.at(i, j).get_terrain().getOverlay()) != NULL)
+    return false;
+
+  // and we can't build on intersections
+  if (tilemap.at(i, j).get_terrain().isRoad()){
+
+    
+    
+   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
+      if (tilemap.at(i, j + 1).get_terrain().isRoad()) { directionFlags += 1; } // road to the north
+      if (tilemap.at(i, j - 1).get_terrain().isRoad()) { directionFlags += 4; } // road to the south
+      if (tilemap.at(i + 1, j).get_terrain().isRoad()) { directionFlags += 2; } // road to the east
+      if (tilemap.at(i - 1, j).get_terrain().isRoad()) { directionFlags += 8; } // road to the west
+
+   std::cout << "direction flags=" << directionFlags << std::endl;
+   
+   int index;
+   switch (directionFlags)
+   {
+   case 0:  // no road!
+   case 1:  // North
+   case 2:  // East
+   case 4:  // South
+   case 8:  // West
+   case 5:  // North+South
+   case 10: // East+West
+      return true;
+   }  
+  
+    
+  }
+  return false;
 }
 
 Picture& Aqueduct::computePicture()
@@ -463,7 +510,7 @@ Picture& Aqueduct::computePicture()
    case 1:  // N
    case 4:  // S
    case 5:  // N + S
-     index = 121; break;
+     index = 121; if (getTile().get_terrain().isRoad()) index = 119; break;
    case 3:  // N + E
      index = 123; break;
    case 6:  // E + S
@@ -475,7 +522,7 @@ Picture& Aqueduct::computePicture()
    case 2:  // E
    case 8:  // W
    case 10: // E + W
-     index = 122; break;
+     index = 122; if (getTile().get_terrain().isRoad()) index = 120; break;
    case 11: // N + E + W
      index = 132; break;
    case 12: // S + W
