@@ -66,6 +66,8 @@ PicMetaData::PicMetaData()
    setRange("land1a", 1, 303, info);
    setRange("oc3_land", 1, 2, info);
    setRange("land2a", 1, 151, info);
+   setRange("land2a", 187, 195, info); //burning ruins start animation
+   setRange("land2a", 214, 231, info); //burning ruins middle animation
    setRange("land3a", 47, 92, info);
    setRange("plateau", 1, 44, info);
    setRange(rcCommerceGroup, 1, 167, info);

@@ -74,7 +74,6 @@ public:
    virtual void deliverService();
 };
 
-
 class BuildingEngineer : public ServiceBuilding
 {
 public:

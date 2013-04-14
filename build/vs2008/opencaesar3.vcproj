@@ -331,6 +331,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_burningruins.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_burningruins.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_delegate.h"
 				>
 			</File>

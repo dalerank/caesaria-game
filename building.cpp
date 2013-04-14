@@ -34,6 +34,7 @@
 #include "gettext.hpp"
 #include "sdl_facade.hpp"
 #include "oc3_time.h"
+#include "oc3_burningruins.h"
 
 namespace {
 static const char* rcUtilityGroup      = "utilitya";
@@ -286,6 +287,9 @@ LandOverlay* LandOverlay::getInstance(const BuildingType buildingType)
       _mapBuildingByID[B_NATIVE_HUT]    = new NativeHut();
       _mapBuildingByID[B_NATIVE_CENTER] = new NativeCenter();
       _mapBuildingByID[B_NATIVE_FIELD]  = new NativeField();
+
+      //damages
+      _mapBuildingByID[B_BURNING_RUINS ] = new BurningRuins();
    }
 
    std::map<BuildingType, LandOverlay*>::iterator mapIt;
@@ -373,6 +377,12 @@ Uint8 Construction::getMaxDistance2Road() const
   return 1;
   // it is default value
   // for houses - 2
+}
+
+void Construction::burn()
+{
+    _isDeleted = true;
+    Scenario::instance().getCity().burn( getTile().getIJ() );
 }
 
 Aqueduct::Aqueduct()
@@ -782,6 +792,7 @@ void Building::timeStep(const unsigned long time)
       if (_fireLevel >= 100)
       {
          std::cout << "Building catch fire!" << std::cout;
+         burn();
       }
    }
 }

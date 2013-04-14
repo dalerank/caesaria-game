@@ -83,8 +83,11 @@ public:
    // add construction
    void build(Construction &buildInstance, const int i, const int j);
    void build(Construction &buildInstance, const TilePos& pos );
+
+   //
+   void burn( const TilePos& pos );
    // remove construction
-   void clearLand(const int i, const int j);
+   void clearLand( const int i, const int j );
    void clearLand( const TilePos& pos );
    // collect taxes from all houses
    void collectTaxes();

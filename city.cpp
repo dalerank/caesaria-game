@@ -92,20 +92,22 @@ void City::timeStep()
    }
 
    std::list<LandOverlay*>::iterator overlayIt = _overlayList.begin();
-   while (overlayIt != _overlayList.end())
+   while( overlayIt != _overlayList.end() )
    {
-      LandOverlay &overlay = **overlayIt;
-      overlay.timeStep(_time);
+       (*overlayIt)->timeStep(_time);
 
-      if (overlay.isDeleted())
-      {
-         // remove the overlay from the overlay list
-         overlayIt = _overlayList.erase(overlayIt);
-      }
-      else
-      {
-         ++overlayIt;
-      }
+       if( (*overlayIt)->isDeleted() )
+       {
+          // remove the overlay from the overlay list
+           (*overlayIt)->destroy();
+           delete (*overlayIt);
+
+           overlayIt = _overlayList.erase(overlayIt);
+       }
+       else
+       {
+          ++overlayIt;
+       }
    }
 }
 
@@ -297,11 +299,11 @@ long City::getPopulation() const
    return _d->population;
 }
 
-void City::build(Construction &buildInstance, const int i, const int j)
+void City::build(Construction& buildInstance, const int i, const int j)
 {
-   BuildingData &buildingData = BuildingDataHolder::instance().getData(buildInstance.getType());
+   BuildingData& buildingData = BuildingDataHolder::instance().getData(buildInstance.getType());
    // make new building
-   Construction *building = (Construction *) buildInstance.clone();
+   Construction* building = (Construction*)buildInstance.clone();
    building->build(i, j);
    _overlayList.push_back(building);
    _d->funds -= buildingData.getCost();
@@ -313,12 +315,48 @@ void City::build( Construction &buildInstance, const TilePos& pos )
     build( buildInstance, pos.getI(), pos.getJ() );
 }
 
+void City::burn( const TilePos& pos )
+{
+    TerrainTile& terrain = _tilemap.at( pos ).get_terrain();
+
+    if( terrain.isDestructible() )
+    {
+        int size = 1;
+        int i1 = pos.getI();
+        int j1 = pos.getJ();
+
+        LandOverlay* overlay = terrain.getOverlay();
+
+        bool deleteRoad = false;
+
+        /*if( terrain.isRoad() ) 
+            deleteRoad = true; */
+
+        std::list<Tile*> clearedTiles = _tilemap.getFilledRectangle(i1, j1, i1+size-1, j1+size-1);
+        for (std::list<Tile*>::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
+        {
+            Construction* ruins = dynamic_cast<Construction*>( LandOverlay::getInstance( B_BURNING_RUINS ) );
+            if( ruins )
+                build( *ruins, (*itTile)->getIJ() );
+       }
+
+        // recompute roads;
+        // there is problem that we NEED to recompute all roads map for all buildings
+        // because MaxDistance2Road can be any number
+
+//         if( deleteRoad )
+//         {
+//             recomputeRoadsForAll();     
+//         }
+    }
+}
+
 void City::clearLand(const int i, const int j)
 {
    Tile& cursorTile = _tilemap.at(i, j);
    TerrainTile& terrain = cursorTile.get_terrain();
 
-   if (terrain.isDestructible())
+   if( terrain.isDestructible() )
    {
       int size = 1;
       int i1 = i;
@@ -332,7 +370,7 @@ void City::clearLand(const int i, const int j)
       
       if (overlay != NULL)
       {
-	 size = overlay->getSize();
+	     size = overlay->getSize();
          i1 = overlay->getTile().getI();
          j1 = overlay->getTile().getJ();
          overlay->destroy();
@@ -349,7 +387,7 @@ void City::clearLand(const int i, const int j)
          terrain.setTree(false);
          terrain.setBuilding(false);
          terrain.setRoad(false);
-	 terrain.setGarden(false);
+	     terrain.setGarden(false);
          terrain.setOverlay(NULL);
 
          // choose a random landscape picture:
@@ -378,10 +416,11 @@ void City::clearLand(const int i, const int j)
     // there is problem that we NEED to recompute all roads map for all buildings
     // because MaxDistance2Road can be any number
     
-    if (deleteRoad) recomputeRoadsForAll();
-      
+    if( deleteRoad )
+    {
+        recomputeRoadsForAll();     
+    }
   }
-
 }
 
 void City::clearLand( const TilePos& pos )
