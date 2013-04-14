@@ -35,7 +35,7 @@ House::House(const int houseId) : Building()
    _nextHouseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel+1);
    _name = _houseLevelSpec->getLevelName();
    _currentHabitants = 0;
-   //_fireLevel = 98;
+   // _fireLevel = 98;
 
    _goodStore.setMaxQty(10000);  // no limit
    _goodStore.setMaxQty(G_WHEAT, 100);
