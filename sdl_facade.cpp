@@ -140,9 +140,9 @@ void SdlFacade::drawImage(SDL_Surface *srcimg, const int sx, const int sy, const
 
 void SdlFacade::drawText(Picture &dstpic, const std::string &text, const int dx, const int dy, Font &font)
 {
-   TTF_Font *ttf = &font.getTTF();
+   TTF_Font* ttf = &font.getTTF();
    SDL_Color color = font.getColor();
-   SDL_Surface *sText = TTF_RenderUTF8_Blended( ttf, text.c_str(), color );
+   SDL_Surface* sText = TTF_RenderUTF8_Blended( ttf, text.c_str(), color );
    drawImage(sText, dstpic.get_surface(), dx, dy);
    SDL_FreeSurface( sText );
 }

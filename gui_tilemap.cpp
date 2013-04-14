@@ -492,8 +492,7 @@ void GuiTilemap::checkPreviewBuild(const int i, const int j)
       int size = overlay.getSize();
       if( overlay.canBuild(i, j) )
       {
-          PictureConverterPtr converter = PictureConverter::create();
-          converter->rgbBalance( _d->buildInstncePicture, overlay.getPicture(), -255, +0, -255 );
+          PictureConverter::rgbBalance( _d->buildInstncePicture, overlay.getPicture(), -255, +0, -255 );
 
           Tile *masterTile=0;
           for (int dj = 0; dj<size; ++dj)
@@ -565,8 +564,7 @@ void GuiTilemap::checkPreviewRemove(const int i, const int j)
             }
             else
             {
-                PictureConverterPtr converter = PictureConverter::create();
-                converter->rgbBalance( _d->buildInstncePicture, overlay->getPicture(), +0, -255, -255 );
+                PictureConverter::rgbBalance( _d->buildInstncePicture, overlay->getPicture(), +0, -255, -255 );
 
                 // remove the overlay, and make single tile of cleared land
                 int size = overlay->getSize();

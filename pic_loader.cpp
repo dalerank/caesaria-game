@@ -842,10 +842,10 @@ void FontLoader::load_all()
    std::string full_font_path = "FreeSerif.ttf";
    TTF_Font *ttf;
 
-   SDL_Color black = {0, 0, 0, 0};
-   SDL_Color red = {160, 0, 0, 0};  // dim red
-   SDL_Color white = {215, 215, 215, 0};  // dim white
-   SDL_Color yellow = {160, 160, 0, 0}; 
+   SDL_Color black = {0, 0, 0, 255};
+   SDL_Color red = {160, 0, 0, 255};  // dim red
+   SDL_Color white = {215, 215, 215, 255};  // dim white
+   SDL_Color yellow = {160, 160, 0, 255}; 
 
    ttf = TTF_OpenFont(full_font_path.c_str(), 12);
    if (ttf == NULL) THROW("Cannot load font file:" << full_font_path << ", error:" << TTF_GetError());

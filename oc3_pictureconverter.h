@@ -18,20 +18,14 @@
 
 #include <memory>
 
-class PictureConverter;
-typedef std::auto_ptr< PictureConverter > PictureConverterPtr;
-
 class Picture;
 
 class PictureConverter
 {
-    friend PictureConverterPtr;
 public:
-    static PictureConverterPtr create();
-
-    void convToGrayscale( Picture& dst, const Picture& src );
-    void rgbBalance( Picture& dst, const Picture& src, int lROffset, int lGOffset, int lBOffset );
-    void fill( Picture& pic, int color );
+    static void convToGrayscale( Picture& dst, const Picture& src );
+    static void rgbBalance( Picture& dst, const Picture& src, int lROffset, int lGOffset, int lBOffset );
+    static void fill( Picture& pic, int color );
 
 private:
     PictureConverter();

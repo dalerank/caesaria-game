@@ -134,13 +134,13 @@ class InfoBoxHouse : public GuiInfoBox
 {
 public:
    InfoBoxHouse( Widget* paarent, House &house);
-   virtual void paint();
+
 
    void drawHabitants();
    void drawGood(const GoodType &goodType, const int col, const int row, int paintY );
 
 private:
-
+   void _paint();
    House& _house;
 };
 

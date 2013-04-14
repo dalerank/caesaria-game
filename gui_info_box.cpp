@@ -79,7 +79,7 @@ GuiInfoBox::GuiInfoBox( Widget* parent, const Rect& rect, int id )
 : Widget( parent, id, rect ), _d( new Impl )
 {
     // create the title
-    _d->lbTitle = new Label( this, Rect( 16, 16+4, getWidth()-16, 16 + 34 ) );
+    _d->lbTitle = new Label( this, Rect( 16, 10, getWidth()-16, 10 + 30 ), "", true );
     _d->lbTitle->setFont( FontCollection::instance().getFont(FONT_3) );
     _d->lbTitle->setTextAlignment( alignCenter, alignCenter );
 
@@ -191,13 +191,15 @@ InfoBoxHouse::InfoBoxHouse( Widget* parent, House &house )
     : GuiInfoBox( parent, Rect( 0, 0, 450, 300 ), -1 ), _house( house)
 {
    setTitle( house.getName() );
+   _paint();
 }
 
 
-void InfoBoxHouse::paint()
+void InfoBoxHouse::_paint()
 {
     int taxes = -1; // _house->getMonthlyTaxes();
-    Label* taxesLb = new Label( this, Rect( 16 + 15, 20, getWidth() - 16, 20 + 60 ) );
+    Label* taxesLb = new Label( this, Rect( 16 + 15, _d->lbTitle->getBottom(), getWidth() - 16, 
+                                            _d->lbTitle->getBottom() + 60 ) );
     char buffer[1000];
     if (taxes == -1)
     {
@@ -216,15 +218,8 @@ void InfoBoxHouse::paint()
     sprintf(buffer, _("Ce quartier est tranquille"));
     lbCrime->setText( buffer );
 
-//    _paintY+=10;
-//    GuiPaneling::instance().draw_black_frame(*_bgPicture, 16, _paintY, getWidth()-32, getHeight()-_paintY-16);
-//    _paintY+=10;
-
    // paint basic info about the house
    drawHabitants();
-
-   // paint goods
-   //_paintY+=15;
 
    drawGood(G_WHEAT, 0, 0, lbCrime->getBottom() );
    drawGood(G_POTTERY, 0, 1, lbCrime->getBottom());
@@ -236,37 +231,35 @@ void InfoBoxHouse::paint()
 
 void InfoBoxHouse::drawHabitants()
 {
-   /*SdlFacade &sdlFacade = SdlFacade::instance();
+   SdlFacade &sdlFacade = SdlFacade::instance();
 
    // citizen or patrician picture
    Uint32 picId = _house.getLevelSpec().isPatrician() ? 541 : 542; 
-   Picture* pic = &PicLoader::instance().get_picture( ResourceGroup::panelBackground, picId);
    
-   sdlFacade.drawPicture( *pic, *_d->bgPicture, 16+15, _paintY);
+   sdlFacade.drawPicture( PicLoader::instance().get_picture( ResourceGroup::panelBackground, picId ), *_d->bgPicture, 16+15, 157 );
 
    // number of habitants
+   Label* lbHabitantas = new Label( this, Rect( 60, 157, 490, 190 ), "" );
    char buffer[1000];
-   Font *font = &FontCollection::instance().getFont(FONT_2);
    int freeRoom = _house.getMaxHabitants() - _house.getNbHabitants();
-   if (freeRoom > 0)
+   if( freeRoom > 0 )
    {
       // there is some room for new habitants!
-      sprintf(buffer, _("%d occupants, %d places disponibles"), _house.getNbHabitants(), freeRoom);
+      sprintf(buffer, _("%d citizens, additional rooms for %d"), _house.getNbHabitants(), freeRoom);
    }
    else if (freeRoom == 0)
    {
       // full house!
-      sprintf(buffer, _("%d occupants"), _house.getNbHabitants());
+      sprintf(buffer, _("%d citizens"), _house.getNbHabitants());
    }
    else if (freeRoom < 0)
    {
       // too many habitants!
-      sprintf(buffer, _("%d occupants, %d habitants en trop"), _house.getNbHabitants(), -freeRoom);
-      font = &FontCollection::instance().getFont(FONT_2_RED);
+      sprintf(buffer, _("%d citizens, %d habitants en trop"), _house.getNbHabitants(), -freeRoom);
+      lbHabitantas->setFont( FontCollection::instance().getFont(FONT_2_RED) );
    }
 
-   sdlFacade.drawText(*_d->bgPicture, std::string(buffer), 16+42, _paintY+5, *font);
-   _paintY+=33;*/
+   lbHabitantas->setText( buffer );
 }
 
 void InfoBoxHouse::drawGood(const GoodType &goodType, const int col, const int row, int paintY )
@@ -604,7 +597,7 @@ void GuiBuilding::paint()
 InfoBoxLand::InfoBoxLand( Widget* parent, Tile* tile )
     : GuiInfoBox( parent, Rect( 0, 0, 510, 350 ), -1 )
 {
-    Label* _text = new Label( this, Rect( 36, 239, 470, 338 ), "" );
+    Label* _text = new Label( this, Rect( 36, 239, 470, 338 ), "", true );
     _text->setFont( FontCollection::instance().getFont(FONT_2) );
     _btnExit = new PushButton( this, Rect( 472, 311, 496, 335 ) );
     GuiPaneling::configureTexturedButton( _btnExit, ResourceGroup::panelBackground, ResourceMenu::exitInfBtnPicId, false);
