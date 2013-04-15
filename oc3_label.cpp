@@ -39,6 +39,7 @@ public:
 	bool RightToLeft;
 	string prefix;
     bool needUpdatePicture;
+    int lineIntervalOffset;
 	Picture* bgPicture;
     Picture* picture;
 	//core::FlagHolder<u32> flags;
@@ -47,7 +48,8 @@ public:
 	Impl() : textMargin( Rect( 0, 0, 0, 0) ),
 			 OverrideBGColorEnabled(false), WordWrap(false),
 			 RestrainTextInside(true), RightToLeft(false), 
-             needUpdatePicture(false), bgPicture( 0 ), picture( 0 )
+             needUpdatePicture(false), bgPicture( 0 ), picture( 0 ),
+             lineIntervalOffset( 0 )
 	{
         font = FontCollection::instance().getFont(FONT_2);
 	}
@@ -153,7 +155,7 @@ void Label::_updateTexture( GfxEngine& painter )
 
                     SdlFacade::instance().drawText( *_d->picture, _d->brokenText[i], textRect.getLeft(), textRect.getTop(), _d->font );
 
-                    r += Point( 0, height );
+                    r += Point( 0, height + _d->lineIntervalOffset );
                 }
             }
         }
@@ -593,5 +595,11 @@ void Label::setTextAlignment( TypeAlign horizontal, TypeAlign vertical )
 
 void Label::resizeEvent_()
 {
+    _d->needUpdatePicture = true;
+}
+
+void Label::setLineIntevalOffset( const int offset )
+{
+    _d->lineIntervalOffset = offset;
     _d->needUpdatePicture = true;
 }

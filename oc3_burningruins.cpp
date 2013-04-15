@@ -15,6 +15,7 @@
 
 #include "oc3_burningruins.h"
 #include "pic_loader.hpp"
+#include "oc3_resourcegroup.h"
 
 BurningRuins::BurningRuins() : ServiceBuilding(S_BURNING_RUINS)
 {
@@ -26,7 +27,7 @@ BurningRuins::BurningRuins() : ServiceBuilding(S_BURNING_RUINS)
     AnimLoader animLoader(PicLoader::instance());
     animLoader.fill_animation(_animation, "land2a", 188, 8);
     animLoader.change_offset(_animation, 14, 26);
-    _fgPictures.resize(1);
+    _fgPictures.resize(1);           
 }
 
 BurningRuins* BurningRuins::clone() const
@@ -43,22 +44,24 @@ void BurningRuins::timeStep(const unsigned long time)
         _fireLevel -= _fireIncrement;
         if( _fireLevel == 50 )
         {
-            setPicture(PicLoader::instance().get_picture("land2a", 214));
+            setPicture(PicLoader::instance().get_picture( ResourceGroup::land2a, 214));
             AnimLoader animLoader(PicLoader::instance());
-            animLoader.fill_animation(_animation, "land2a", 215, 8);
+            animLoader.fill_animation(_animation, ResourceGroup::land2a, 215, 8);
             animLoader.change_offset(_animation, 14, 26);
         }
         else if( _fireLevel == 25 )
         {
-            setPicture(PicLoader::instance().get_picture("land2a", 223));
+            setPicture(PicLoader::instance().get_picture( ResourceGroup::land2a, 223));
             AnimLoader animLoader(PicLoader::instance());
             animLoader.fill_animation(_animation, "land2a", 224, 8);
             animLoader.change_offset(_animation, 14, 26);
         }
-        else if( _fireLevel == 0 )
+        else if( _fireLevel == 1 )
         {
+            setPicture(PicLoader::instance().get_picture( ResourceGroup::land2a, 111 + rand() % 8 ));
             _animation.init( std::vector<Picture*>() );
             _fgPictures.clear();
+            getTile().get_terrain().setBuilding( true );
         }           
     }
 }
@@ -79,3 +82,12 @@ void BurningRuins::burn()
 {
 
 }
+
+void BurningRuins::build( const int i, const int j )
+{
+    ServiceBuilding::build( i, j );
+    //while burning can't remove it
+    getTile().get_terrain().setTree( false );
+    getTile().get_terrain().setBuilding( false );
+    getTile().get_terrain().setRoad( false );
+}   

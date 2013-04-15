@@ -73,6 +73,8 @@ class GuiInfoBox::Impl
 public:
     Picture *bgPicture;
     Label* lbTitle;
+    PushButton* btnExit;
+    PushButton* btnHelp;
 };
 
 GuiInfoBox::GuiInfoBox( Widget* parent, const Rect& rect, int id )
@@ -83,12 +85,19 @@ GuiInfoBox::GuiInfoBox( Widget* parent, const Rect& rect, int id )
     _d->lbTitle->setFont( FontCollection::instance().getFont(FONT_3) );
     _d->lbTitle->setTextAlignment( alignCenter, alignCenter );
 
+    _d->btnExit = new PushButton( this, Rect( 472, getHeight() - 39, 496, getHeight() - 15 ) );
+    GuiPaneling::configureTexturedButton( _d->btnExit, ResourceGroup::panelBackground, ResourceMenu::exitInfBtnPicId, false);
+    _d->btnHelp = new PushButton( this, Rect( 14, getHeight() - 39, 38, getHeight() - 15 ) );
+    GuiPaneling::configureTexturedButton( _d->btnHelp, ResourceGroup::panelBackground, ResourceMenu::helpInfBtnPicId, false);
+
+    CONNECT( _d->btnExit, onClicked(), this, InfoBoxLand::deleteLater );
+
     SdlFacade &sdlFacade = SdlFacade::instance();
     _d->bgPicture = &sdlFacade.createPicture( getWidth(), getHeight() );
 
-   // draws the box and the inner black box
-   GuiPaneling::instance().draw_white_frame(*_d->bgPicture, 0, 0, getWidth(), getHeight() );
-   GfxEngine::instance().load_picture(*_d->bgPicture);
+    // draws the box and the inner black box
+    GuiPaneling::instance().draw_white_frame(*_d->bgPicture, 0, 0, getWidth(), getHeight() );
+    GfxEngine::instance().load_picture(*_d->bgPicture);
 }
 
 GuiInfoBox::~GuiInfoBox()
@@ -187,9 +196,19 @@ void GuiInfoService::drawWorkers( int& paintY )
 }
 
 
-InfoBoxHouse::InfoBoxHouse( Widget* parent, House &house )
-    : GuiInfoBox( parent, Rect( 0, 0, 450, 300 ), -1 ), _house( house)
+class InfoBoxHouse::Impl
 {
+public:
+    House* house;
+    Label* lbHabitants;
+    Label* lbCrime;
+};
+
+InfoBoxHouse::InfoBoxHouse( Widget* parent, House &house )
+    : GuiInfoBox( parent, Rect( 0, 0, 510, 360 ), -1 ),
+      _ed( new Impl )
+{
+   _ed->house = &house;
    setTitle( house.getName() );
    _paint();
 }
@@ -197,10 +216,17 @@ InfoBoxHouse::InfoBoxHouse( Widget* parent, House &house )
 
 void InfoBoxHouse::_paint()
 {
+    int lbHeight = 20;
+    GuiPaneling::instance().draw_black_frame( *_d->bgPicture, 16, 150, 
+                                               _d->btnExit->getRight() - _d->btnHelp->getLeft(), 
+                                               _d->btnExit->getTop() - 150 - 5 );
+
+    drawHabitants();
+    
     int taxes = -1; // _house->getMonthlyTaxes();
-    Label* taxesLb = new Label( this, Rect( 16 + 15, _d->lbTitle->getBottom(), getWidth() - 16, 
-                                            _d->lbTitle->getBottom() + 60 ) );
-    char buffer[1000];
+    Label* taxesLb = new Label( this, Rect( 16 + 15, _ed->lbHabitants->getBottom(), getWidth() - 16, 
+                                            _ed->lbHabitants->getBottom() + lbHeight ), "", false, true );
+    char buffer[200];
     if (taxes == -1)
     {
         sprintf(buffer, _("Aucun percepteur ne passe ici. Ne paye pas de taxes"));
@@ -214,18 +240,27 @@ void InfoBoxHouse::_paint()
     taxesLb->setText( buffer );
     //_paintY+=22;
   
-    Label* lbCrime = new Label( this, taxesLb->getRelativeRect() + Point( 0, 22 ) );
-    sprintf(buffer, _("Ce quartier est tranquille"));
-    lbCrime->setText( buffer );
+    _ed->lbCrime = new Label( this, taxesLb->getRelativeRect() + Point( 0, 22 ), "", false, true );
+    sprintf(buffer, _("Inhabitants didn't report about crimes"));
+    _ed->lbCrime->setText( buffer );
 
-   // paint basic info about the house
-   drawHabitants();
+    if( _ed->house->getLevelSpec().getHouseLevel() > 2 )
+    {
+        drawGood(G_WHEAT, 0, 0 );
+    }
+    else
+    {
+        Label* lb = new Label( this, _ed->lbCrime->getRelativeRect() + Point( 0, 30 ), "", false, true ); 
+        lb->setHeight( 30 );
+        lb->setLineIntevalOffset( -6 );
+        lb->setText( _("Inabitants of tents provide themselves with food, conducting a subsistence economy") );
+        lb->setWordWrap( true );
+    }
 
-   drawGood(G_WHEAT, 0, 0, lbCrime->getBottom() );
-   drawGood(G_POTTERY, 0, 1, lbCrime->getBottom());
-   drawGood(G_FURNITURE, 1, 1, lbCrime->getBottom());
-   drawGood(G_OIL, 2, 1, lbCrime->getBottom());
-   drawGood(G_WINE, 3, 1, lbCrime->getBottom());
+    drawGood(G_POTTERY, 0, 1);
+    drawGood(G_FURNITURE, 1, 1);
+    drawGood(G_OIL, 2, 1);
+    drawGood(G_WINE, 3, 1);
 }
 
 
@@ -234,49 +269,49 @@ void InfoBoxHouse::drawHabitants()
    SdlFacade &sdlFacade = SdlFacade::instance();
 
    // citizen or patrician picture
-   Uint32 picId = _house.getLevelSpec().isPatrician() ? 541 : 542; 
+   Uint32 picId = _ed->house->getLevelSpec().isPatrician() ? 541 : 542; 
    
-   sdlFacade.drawPicture( PicLoader::instance().get_picture( ResourceGroup::panelBackground, picId ), *_d->bgPicture, 16+15, 157 );
+   Picture& citPic = PicLoader::instance().get_picture( ResourceGroup::panelBackground, picId );
+   sdlFacade.drawPicture( citPic, *_d->bgPicture, 16+15, 157 );
 
    // number of habitants
-   Label* lbHabitantas = new Label( this, Rect( 60, 157, 490, 190 ), "" );
-   char buffer[1000];
-   int freeRoom = _house.getMaxHabitants() - _house.getNbHabitants();
+   _ed->lbHabitants = new Label( this, Rect( 60, 157, getWidth() - 16, 157 + citPic.get_height() ), "", false, true );
+   char buffer[200];
+   int freeRoom = _ed->house->getMaxHabitants() - _ed->house->getNbHabitants();
    if( freeRoom > 0 )
    {
       // there is some room for new habitants!
-      sprintf(buffer, _("%d citizens, additional rooms for %d"), _house.getNbHabitants(), freeRoom);
+      sprintf(buffer, _("%d citizens, additional rooms for %d"), _ed->house->getNbHabitants(), freeRoom);
    }
    else if (freeRoom == 0)
    {
       // full house!
-      sprintf(buffer, _("%d citizens"), _house.getNbHabitants());
+      sprintf(buffer, _("%d citizens"), _ed->house->getNbHabitants());
    }
    else if (freeRoom < 0)
    {
       // too many habitants!
-      sprintf(buffer, _("%d citizens, %d habitants en trop"), _house.getNbHabitants(), -freeRoom);
-      lbHabitantas->setFont( FontCollection::instance().getFont(FONT_2_RED) );
+      sprintf(buffer, _("%d citizens, %d habitants en trop"), _ed->house->getNbHabitants(), -freeRoom);
+      _ed->lbHabitants->setFont( FontCollection::instance().getFont(FONT_2_RED) );
    }
 
-   lbHabitantas->setText( buffer );
+   _ed->lbHabitants->setText( buffer );
 }
 
-void InfoBoxHouse::drawGood(const GoodType &goodType, const int col, const int row, int paintY )
+void InfoBoxHouse::drawGood(const GoodType &goodType, const int col, const int row )
 {
    SdlFacade &sdlFacade = SdlFacade::instance();
    Font &font = FontCollection::instance().getFont(FONT_2);
-   int qty = _house.getGoodStore().getCurrentQty(goodType);
+   int qty = _ed->house->getGoodStore().getCurrentQty(goodType);
 
    // pictures of goods
    Picture &pic = getPictureGood(goodType);
-   sdlFacade.drawPicture(pic, *_d->bgPicture, 31+100*col, paintY+2+32*row);
+   sdlFacade.drawPicture(pic, *_d->bgPicture, 31+100*col, _ed->lbCrime->getBottom() + 2 + 40 * row);
 
    char buffer[1000];
    sprintf(buffer, "%d", qty);
-   sdlFacade.drawText(*_d->bgPicture, std::string(buffer), 61+100*col, paintY+32*row, font);
+   sdlFacade.drawText(*_d->bgPicture, std::string(buffer), 61+100*col, _ed->lbCrime->getBottom() + 40 * row, font);
 }
-
 
 GuiInfoFactory::GuiInfoFactory( Widget* parent, Factory &building)
     : GuiInfoBox( parent, Rect( 0, 0, 450, 220 ), -1 )
@@ -599,12 +634,6 @@ InfoBoxLand::InfoBoxLand( Widget* parent, Tile* tile )
 {
     Label* _text = new Label( this, Rect( 36, 239, 470, 338 ), "", true );
     _text->setFont( FontCollection::instance().getFont(FONT_2) );
-    _btnExit = new PushButton( this, Rect( 472, 311, 496, 335 ) );
-    GuiPaneling::configureTexturedButton( _btnExit, ResourceGroup::panelBackground, ResourceMenu::exitInfBtnPicId, false);
-    _btnHelp = new PushButton( this, Rect( 14, 311, 38, 335 ) );
-    GuiPaneling::configureTexturedButton( _btnHelp, ResourceGroup::panelBackground, ResourceMenu::helpInfBtnPicId, false);
-
-    CONNECT( _btnExit, onClicked(), this, InfoBoxLand::deleteLater );
 
     if( tile->get_terrain().isTree() )
     {
@@ -634,21 +663,3 @@ InfoBoxLand::InfoBoxLand( Widget* parent, Tile* tile )
 
     GuiPaneling::instance().draw_black_frame( *_d->bgPicture, 16, _d->lbTitle->getBottom() + 10, getWidth()-32, 180 );
 }
-
-/*bool InfoBoxLand::onEvent(const NEvent& event)
-{
-    if( event.EventType == OC3_GUI_EVENT )
-    {
-        switch( event.GuiEvent.EventType ) 
-        {
-        case OC3_BUTTON_CLICKED:
-            if( event.GuiEvent.Caller == _btnExit )
-            {
-                deleteLater();
-            }
-        return true;
-        }
-    }
-
-    return GuiInfoBox::onEvent( event );
-}*/

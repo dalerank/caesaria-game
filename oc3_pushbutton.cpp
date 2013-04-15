@@ -21,6 +21,7 @@
 #include "sdl_facade.hpp"
 #include "gui_paneling.hpp"
 #include "gfx_engine.hpp"
+#include <iostream>
 
 struct ButtonState
 {
@@ -99,10 +100,10 @@ PushButton::PushButton( Widget* parent,
     _text = caption;
     setNotClipped(noclip);
 
-    for( int i=0; i < StateCount; i++)
-    {
-       _updateTexture( ElementState(i) );
-    }
+//     for( int i=0; i < StateCount; i++)
+//     {
+//        _updateTexture( ElementState(i) );
+//     }
 }
 
 void PushButton::_updateTexture( ElementState state )
@@ -130,7 +131,7 @@ void PushButton::_updateTexture( ElementState state )
     if( _d->buttonStates[ state ].font.isValid() )
     {
         Rect textRect = _d->buttonStates[ state ].font.calculateTextRect( getText(), Rect( 0, 0, getWidth(), getHeight() ),
-                                                                         getHorizontalTextAlign(), getVerticalTextAlign() );
+                                                                          getHorizontalTextAlign(), getVerticalTextAlign() );
         SdlFacade::instance().drawText( *curTxs, getText(), textRect.getLeft(), textRect.getTop(), _d->buttonStates[ state ].font );
     }
 }
@@ -314,6 +315,9 @@ void PushButton::beforeDraw( GfxEngine& painter )
     //			draw sprites for focused and mouse-over 
     //          Point spritePos = AbsoluteRect.getCenter();
     _d->currentButtonState = getActiveButtonState_();
+
+    if( !_d->buttonStates[ _d->currentButtonState ].texture )
+        _updateTexture( _d->currentButtonState );
 
 	Widget::beforeDraw( painter  );
 }
