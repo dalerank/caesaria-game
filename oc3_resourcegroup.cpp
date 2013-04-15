@@ -18,3 +18,4 @@
 
 const char* ResourceGroup::panelBackground = "paneling";
 const char* ResourceGroup::menuMiddleIcons = "panelwindows";
+const char* ResourceGroup::land2a = "land2a";
