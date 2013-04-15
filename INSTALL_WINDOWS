@@ -36,7 +36,8 @@
       * TotalCommander, http://www.ghisler.com/
 
 5. Pack all files from C3 folder into pics.zip, from C3_North to pics_north.zip, from C3_South to pics_south.zip
-      move these 3 zip files to openCaesar3/pics
+   Pack c3title_00001.png into pics_wait.zip
+      move these zip files to openCaesar3/pics
       Several tools are available on the internet for this, for example:
       * 7zip, http://www.7-zip.org/. You may need to use the ".bzip2" compression.
 
