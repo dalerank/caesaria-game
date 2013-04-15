@@ -80,8 +80,6 @@ private:
     void _paint();
 
     Label* _text;
-    PushButton* _btnExit;
-    PushButton* _btnHelp;
 };
 
 // info box about a factory building
@@ -137,11 +135,13 @@ public:
 
 
    void drawHabitants();
-   void drawGood(const GoodType &goodType, const int col, const int row, int paintY );
+   void drawGood(const GoodType &goodType, const int col, const int row );
 
 private:
    void _paint();
-   House& _house;
+   
+   class Impl;
+   ScopedPtr< Impl > _ed;
 };
 
 class GuiBuilding : public GuiInfoBox

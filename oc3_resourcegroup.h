@@ -22,6 +22,7 @@ class ResourceGroup
 public:
     static const char* panelBackground;
     static const char* menuMiddleIcons;
+    static const char* land2a;
 };
 
 class ResourceMenu

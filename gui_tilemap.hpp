@@ -77,7 +77,7 @@ protected:
    Tile& getTileIJ(const int i, const int j);
    
    // update preview tiles
-   void updatePreviewTiles();
+   void updatePreviewTiles( bool force=false );
 
    void drawTile( const Tile &tile );
 

@@ -125,7 +125,8 @@ void Emigrant::assignPath( const Road& startPoint )
 void Emigrant::onDestination()
 {
     _isDeleted = true;
-    if( _d->destination.getI() > 0 && _d->destination.getJ() > 0 )
+    bool gooutCity = true;
+    if( _d->destination.getI() > 0 && _d->destination.getJ() > 0 )  //have destination
     {
 	    const Tile& tile = Scenario::instance().getCity().getTilemap().at( _d->destination );
 
@@ -136,16 +137,22 @@ void Emigrant::onDestination()
 		    {
 			    house->addHabitants( 1 );
                 Walker::onDestination();
+                gooutCity = false;
 		    }
-            else
-            {
-                if( const Road* r = dynamic_cast< const Road* >( _pathWay.getDestination().get_terrain().getOverlay() ))
-                {
-                    _isDeleted = false;
-                    assignPath( *r );
-                }
-            }
 	    }
+    }
+    else
+    {   
+        return;                                                     //no destination, may delete
+    }
+
+    if( gooutCity )
+    {
+        if( const Road* r = dynamic_cast< const Road* >( _pathWay.getDestination().get_terrain().getOverlay() ))
+        {
+            _isDeleted = false;
+            assignPath( *r );
+        }
     }
 }
 
