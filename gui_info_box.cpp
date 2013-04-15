@@ -218,7 +218,8 @@ void InfoBoxHouse::_paint()
 {
     int lbHeight = 20;
     GuiPaneling::instance().draw_black_frame( *_d->bgPicture, 16, 150, 
-                                               _d->btnExit->getRight() - _d->btnHelp->getLeft(), _d->btnExit->getTop() - 150 - 5 );
+                                               _d->btnExit->getRight() - _d->btnHelp->getLeft(), 
+                                               _d->btnExit->getTop() - 150 - 5 );
 
     drawHabitants();
     
