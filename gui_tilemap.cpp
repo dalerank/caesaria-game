@@ -385,12 +385,12 @@ void GuiTilemap::handleEvent( NEvent& event )
             if (_removeTool)
             {
                 _clearLand();  
+                _d->startCursorPos = _d->lastCursorPos;
                 updatePreviewTiles( true );
             }
             else if (_buildInstance != NULL)
             {
-                _buildAll();
-               
+                _buildAll();               
                 updatePreviewTiles( true );
             }
             else

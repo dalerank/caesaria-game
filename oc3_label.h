@@ -103,6 +103,8 @@ public:
     void setFont( const Font& font );
 
     void setTextAlignment( TypeAlign horizontal, TypeAlign vertical );
+
+    void setLineIntevalOffset( const int offset );
     
 public oc3_signals:
     virtual Signal0<>& onClicked();
