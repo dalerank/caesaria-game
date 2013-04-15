@@ -263,13 +263,13 @@ TilemapArea &GuiTilemap::getMapArea()
    return *_mapArea;
 }
 
-void GuiTilemap::updatePreviewTiles()
+void GuiTilemap::updatePreviewTiles( bool force )
 {
     if( !_buildInstance && !_removeTool )
         return;
 
     Tile* curTile = getTileXY( _d->lastCursorPos, true );
-    if( curTile && _d->lastTilePos == curTile->getIJ() )
+    if( curTile && !force && _d->lastTilePos == curTile->getIJ() )
         return;
 
     _d->lastTilePos = curTile->getIJ();
@@ -384,14 +384,14 @@ void GuiTilemap::handleEvent( NEvent& event )
             // left button
             if (_removeTool)
             {
-                _clearLand();                
-                updatePreviewTiles();
+                _clearLand();  
+                updatePreviewTiles( true );
             }
             else if (_buildInstance != NULL)
             {
                 _buildAll();
                
-                updatePreviewTiles();
+                updatePreviewTiles( true );
             }
             else
             {

@@ -126,7 +126,7 @@ void Emigrant::onDestination()
 {
     _isDeleted = true;
     bool gooutCity = true;
-    if( _d->destination.getI() > 0 && _d->destination.getJ() > 0 )
+    if( _d->destination.getI() > 0 && _d->destination.getJ() > 0 )  //have destination
     {
 	    const Tile& tile = Scenario::instance().getCity().getTilemap().at( _d->destination );
 
@@ -142,8 +142,8 @@ void Emigrant::onDestination()
 	    }
     }
     else
-    {
-        return;
+    {   
+        return;                                                     //no destination, may delete
     }
 
     if( gooutCity )
