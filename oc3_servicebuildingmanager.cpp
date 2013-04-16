@@ -13,11 +13,19 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "oc3_servicebuildingmanager.h"
+#include "service_building.hpp"
+#include "oc3_buildingengineer.h"
 
-#include "oc3_resourcegroup.h"
-
-const char* ResourceGroup::panelBackground = "paneling";
-const char* ResourceGroup::menuMiddleIcons = "panelwindows";
-const char* ResourceGroup::land2a = "land2a";
-const char* ResourceGroup::sprites = "sprites";
-const char* ResourceGroup::buildingEngineer = "transport";
+ServiceBuilding* ServiceBuildingManager::getBuilding( ServiceType type )
+{
+    switch( type )
+    {
+    case S_WELL: return new BuildingWell();
+    case S_FOUNTAIN: return new BuildingFountain();
+    case S_ENGINEER: return new BuildingEngineer();
+    case S_PREFECT: return new BuildingPrefect();
+    case S_THEATER: return new BuildingTheater();
+    default: return 0;
+    }
+}

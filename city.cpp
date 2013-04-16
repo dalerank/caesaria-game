@@ -26,6 +26,7 @@
 #include "exception.hpp"
 #include "oc3_emigrant.h"
 #include "oc3_positioni.h"
+#include "oc3_constructionmanager.h"
 
 class City::Impl
 {
@@ -333,7 +334,7 @@ void City::disaster( const TilePos& pos, DisasterType type )
         for (std::list<Tile*>::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
         {
             BuildingType dstr2constr[] = { B_BURNING_RUINS, B_COLLAPSED_RUINS };
-            Construction* ruins = dynamic_cast<Construction*>( LandOverlay::getInstance( dstr2constr[type] ) );
+            Construction* ruins = dynamic_cast<Construction*>( ConstructionManager::getInstance().create( dstr2constr[type] ) );
             if( ruins )
                 build( *ruins, (*itTile)->getIJ() );
        }

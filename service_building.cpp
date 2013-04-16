@@ -109,23 +109,6 @@ void ServiceBuilding::unserialize(InputSerialStream &stream)
    _serviceRange = stream.read_int(2, 0, 65535);
 }
 
-
-std::map<ServiceType, ServiceBuilding*> ServiceBuilding::_specimen;
-
-std::map<ServiceType, ServiceBuilding*>& ServiceBuilding::getSpecimen()
-{
-   if (_specimen.empty())
-   {
-      _specimen[S_WELL] = new BuildingWell();
-      _specimen[S_FOUNTAIN] = new BuildingFountain();
-      _specimen[S_ENGINEER] = new BuildingEngineer();
-      _specimen[S_PREFECT] = new BuildingPrefect();
-      _specimen[S_THEATER] = new BuildingTheater();
-   }
-
-   return _specimen;
-}
-
 GuiInfoBox* ServiceBuilding::makeInfoBox( Widget* parent )
 {
    GuiInfoService* box = new GuiInfoService( parent, *this);
@@ -210,19 +193,6 @@ void BuildingFountain::deliverService()
    }
 }
 
-BuildingEngineer::BuildingEngineer() : ServiceBuilding(S_ENGINEER)
-{
-   setType(B_ENGINEER);
-   _size = 1;
-   setPicture(PicLoader::instance().get_picture("transport", 56));
-}
-
-BuildingEngineer* BuildingEngineer::clone() const
-{
-   return new BuildingEngineer(*this);
-}
-
-
 BuildingPrefect::BuildingPrefect() : ServiceBuilding(S_PREFECT)
 {
    setType(B_PREFECT);
@@ -234,7 +204,6 @@ BuildingPrefect* BuildingPrefect::clone() const
 {
    return new BuildingPrefect(*this);
 }
-
 
 EntertainmentBuilding::EntertainmentBuilding(const ServiceType &service) : ServiceBuilding(service)
 {

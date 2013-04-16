@@ -60,7 +60,6 @@ public:
 
    BuildingType getType() const;
    void setType(const BuildingType buildingType);
-   static LandOverlay* getInstance(const BuildingType buildingType);  // get an instance of the given type
 
    void serialize(OutputSerialStream &stream);
    static LandOverlay& unserialize_all(InputSerialStream &stream);

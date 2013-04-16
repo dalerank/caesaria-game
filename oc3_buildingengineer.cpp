@@ -13,11 +13,18 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-
+#include "oc3_buildingengineer.h"
+#include "pic_loader.hpp"
 #include "oc3_resourcegroup.h"
 
-const char* ResourceGroup::panelBackground = "paneling";
-const char* ResourceGroup::menuMiddleIcons = "panelwindows";
-const char* ResourceGroup::land2a = "land2a";
-const char* ResourceGroup::sprites = "sprites";
-const char* ResourceGroup::buildingEngineer = "transport";
+BuildingEngineer::BuildingEngineer() : ServiceBuilding(S_ENGINEER)
+{
+    setType(B_ENGINEER);
+    _size = 1;
+    setPicture( Picture::load( ResourceGroup::buildingEngineer, 56 ) );
+}
+
+BuildingEngineer* BuildingEngineer::clone() const
+{
+    return new BuildingEngineer(*this);
+}

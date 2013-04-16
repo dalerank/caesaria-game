@@ -24,6 +24,7 @@ public:
     static const char* menuMiddleIcons;
     static const char* land2a;
     static const char* sprites;
+    static const char* buildingEngineer;
 };
 
 class ResourceMenu

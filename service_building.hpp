@@ -38,8 +38,6 @@ public:
    // called when a service man should service the neighborhood
    virtual void deliverService();
 
-   static std::map<ServiceType, ServiceBuilding*>& getSpecimen();
-
    virtual GuiInfoBox* makeInfoBox( Widget* parent );
 
    void serialize(OutputSerialStream &stream);
@@ -73,14 +71,6 @@ public:
 
    virtual void deliverService();
 };
-
-class BuildingEngineer : public ServiceBuilding
-{
-public:
-   BuildingEngineer();
-   BuildingEngineer* clone() const;
-};
-
 
 class BuildingPrefect : public ServiceBuilding
 {

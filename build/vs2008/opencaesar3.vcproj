@@ -331,6 +331,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_buildingengineer.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_buildingengineer.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_buildmenu.cpp"
 				>
 			</File>
@@ -352,6 +360,14 @@
 			</File>
 			<File
 				RelativePath="..\..\oc3_collapsedruins.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_constructionmanager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_constructionmanager.h"
 				>
 			</File>
 			<File
@@ -484,6 +500,10 @@
 			</File>
 			<File
 				RelativePath="..\..\oc3_scopedptr.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_servicebuildingmanager.cpp"
 				>
 			</File>
 			<File
@@ -745,6 +765,10 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 		</Filter>
+		<File
+			RelativePath="..\..\oc3_servicebuildingmanager.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

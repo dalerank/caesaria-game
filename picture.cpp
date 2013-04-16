@@ -26,6 +26,7 @@
 #include "exception.hpp"
 #include "oc3_positioni.h"
 #include "oc3_rectangle.h"
+#include "pic_loader.hpp"
 
 Picture::Picture()
 {
@@ -107,6 +108,11 @@ Size Picture::getSize() const
 bool Picture::isValid() const
 {
     return _surface != 0;
+}
+
+Picture& Picture::load( const char* group, const int id )
+{
+    return PicLoader::instance().get_picture( group, id );
 }
 
 Font::Font(TTF_Font &ttfFont, SDL_Color &color)

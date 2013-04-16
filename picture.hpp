@@ -61,6 +61,8 @@ public:
 
    bool isValid() const;
 
+   static Picture& load( const char* group, const int id );
+
 private:
    // the image is shifted when displayed
    int _xoffset;
