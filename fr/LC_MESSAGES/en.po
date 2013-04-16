@@ -15,13 +15,13 @@ msgid "%d employes (%d requis)"
 msgstr "%d employees (%d needed)"
 
 msgid "%d occupants, %d places disponibles"
-msgstr "%d occupants, %d places disponibles"
+msgstr "%d occupants, %d available places"
 
 msgid "%d occupants"
 msgstr ""
 
 msgid "%d occupants, %d habitants en trop"
-msgstr ""
+msgstr "%d occupants, %d additional inhabitants"
 
 msgid "Aucun percepteur ne passe ici. Ne paye pas de taxes"
 msgstr "Not visited by a taxman. Not paying taxes."
@@ -30,7 +30,7 @@ msgid "Paye %d Denarii de taxes par mois"
 msgstr "Pays %d denarii of taxes a month"
 
 msgid "Ce quartier est tranquille"
-msgstr ""
+msgstr "This neighbourhood is quiet"
 
 msgid "%s en stock: %d unites"
 msgstr "%s in stock: %d units"
@@ -117,14 +117,14 @@ msgid "Palais luxueux"
 msgstr "Luxury palace"
 
 msgid "Le travail est a %d%% termine."
-msgstr "Le travail est à %d%% terminé."
+msgstr "The work is %d%% finished."
 
 msgid ""
 "Cette fabrique dispose de toute la main-d'oeuvre necessaire et produit des "
 "armes de qualite en quantite."
 msgstr ""
-"Cette fabrique dispose de toute la main-d'oeuvre nécessaire et produit des "
-"armes de qualité en quantité."
+"This factory has all the employees it needs. It produces the maximum "
+"amount of weapons."
 
 msgid "Ble"
 msgstr "Wheat"
@@ -148,7 +148,7 @@ msgid "Huile"
 msgstr "Oil"
 
 msgid "Raisin"
-msgstr ""
+msgstr "Vines"
 
 msgid "Vin"
 msgstr "Wine"
@@ -191,43 +191,40 @@ msgstr ""
 "Production stopped as ordered by the gouverner."
 
 msgid "Blé- Production arretee par manque de personnel"
-msgstr "This farm does not have any workers. Its fileds are empty."
+msgstr "This wheat farm has stopped producing due to worker shortage."
 
 msgid "Blé- Production quasimment a l'arret par manque de main-d'oeuvre"
 msgstr ""
-"Compte tenu du nombre d'employés de cette ferme, la production est "
-"pratiquement arrétée."
+"This wheat farm has almost stopped producing due to worker shortage."
 
 msgid "Blé- Production tres ralentie par manque d'employes"
 msgstr ""
-"Seuls quelques employés travaillent ici. La production de blé est donc très "
-"lente."
+"This wheat farm has slowed its production due to shortage of workers."
 
 msgid "Blé- Production limitee par manque de personnel"
-msgstr "La ferme manque de main-d'oeuvre, ce qui fait chuter son rendement."
+msgstr "This wheat farm has limited its production due to shortage of workers."
 
 msgid "Blé- Production legerement ralentie par manque d'employes"
 msgstr ""
-"Cette ferme ne dispose pas de suffisamment d'ouvriers. La production "
-"pourrait être meilleure avec plus de main-d'oeuvre."
+"This farm doesn't have enough workers. The production "
+" could go faster with extra workers."
 
 msgid "Blé- Production a son maximum"
 msgstr ""
-"Cette ferme dispose de toute la main-d'oeuvre nécessaire. La production est "
-"à son maximum."
+"This farm has all the employees it needs. Productions is "
+"at maximmum."
 
 msgid "Armes- Production arretee sous ordre du gouverneur"
 msgstr ""
-"La production de cette fabrique d'armes a été interdite par votre conseiller "
-"commercial."
+"Your trade advisor ordered a halt to the production of weapons. "
 
 msgid "Armes- Production arretee par manque de personnel"
-msgstr "Cette fabrique n'emploie personne. La production a cessé."
+msgstr "This workshop doesn't hire anyone. The productions has stopped."
 
 msgid "Armes- Production quasimment a l'arret par manque de main-d'oeuvre"
 msgstr ""
-"Compte tenu du nombre d'employés de cette fabrique, la production est "
-"pratiquement inexistante. Très peu d'armes seront fabriquées cette année."
+"Due to the number of workers, the production of this "
+"workshop is almost down to 0. Few weapons will be produced this year."
 
 msgid "Armes- Production tres ralentie par manque d'employes"
 msgstr ""
@@ -256,8 +253,7 @@ msgstr ""
 
 msgid "Fer- Production arretee sous ordre du gouverneur"
 msgstr ""
-"Votre conseiller commercial a ordonné l'arrêt de l'exploitation de cette "
-"mine de fer."
+"Your trade advisor ordered a halt to the mining of iron. "
 
 msgid "Fer- Production arretee par manque de personnel"
 msgstr "Cette mine n'emploie personne. La production est inexistante."
@@ -444,16 +440,16 @@ msgid "building_temple_mars"
 msgstr "Temple of Mars"
 
 msgid "building_temple_venus"
-msgstr "Temple of Vénus"
+msgstr "Temple of Venus"
 
 msgid "building_temple_mercure"
-msgstr "Temple of Mercure"
+msgstr "Temple of Mercury"
 
 msgid "Ferme"
 msgstr "Farm"
 
 msgid "Matieres premieres"
-msgstr "Matières premières"
+msgstr "Raw materials"
 
 msgid "Atelier"
 msgstr "Atelier"
