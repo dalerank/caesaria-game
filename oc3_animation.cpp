@@ -17,11 +17,10 @@
 #include "oc3_positioni.h"
 #include "pic_loader.hpp"
 
-void Animation::start(bool loop, unsigned int delay)
+void Animation::start(bool loop)
 {
     _animIndex = 0;
     _loop = loop;
-    _frameDelay = 0;
     _lastTimeUpdate = 0;
 }
 
@@ -75,7 +74,8 @@ int Animation::getCurrentIndex() const
 
 Animation::Animation()
 {
-    start( true, 0 );
+    _frameDelay = 0;
+    start( true );
 }
 
 void Animation::setFrameDelay( const unsigned int delay )
@@ -104,4 +104,19 @@ void Animation::load( const std::string &prefix, const int start, const int numb
 void Animation::clear()
 {
     _pictures.clear();
+}
+
+bool Animation::isRunning() const
+{
+    return _animIndex >= 0;
+}
+
+bool Animation::isStopped() const
+{
+    return _animIndex == -1;
+}
+
+void Animation::stop()
+{
+    _animIndex = -1;
 }

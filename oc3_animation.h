@@ -32,7 +32,8 @@ public:
 
     Animation();
 
-    void start(bool loop=true, unsigned int delay=0);
+    void start(bool loop=true);
+    void stop();
 
     Pictures& getPictures();
     const Pictures& getPictures() const;
@@ -46,6 +47,9 @@ public:
     void setLoop( bool loop );
    
     void setOffset( const Point& offset );
+
+    bool isRunning() const;
+    bool isStopped() const;
 
     void clear();
     void load(const std::string &prefix, const int start, const int number, bool reverse = false, const int step = 1);

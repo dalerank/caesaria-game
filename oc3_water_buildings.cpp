@@ -18,10 +18,10 @@
 #include <iostream>
 
 #include "scenario.hpp"
+#include "oc3_resourcegroup.h"
 #include "oc3_positioni.h"
 
 namespace {
-  static const char* rcUtilityGroup      = "utilitya";
   static const char* rcAqueductGroup     = "land2a";
 }
 
@@ -180,14 +180,14 @@ Picture& Aqueduct::computePicture()
 Reservoir::Reservoir()
 {
   setType(B_RESERVOIR);
-  setPicture( PicLoader::instance().get_picture( rcUtilityGroup, 34 ) );
+  setPicture( PicLoader::instance().get_picture( ResourceGroup::utilitya, 34 ) );
  _size = 3;
   
   // utilitya 34      - emptry reservoir
   // utilitya 35 ~ 42 - full reservoir animation
  
-  _animation.load(rcUtilityGroup, 35, 8);
-  _animation.load(rcUtilityGroup, 42, 7, Animation::reverse);
+  _animation.load( ResourceGroup::utilitya, 35, 8);
+  _animation.load( ResourceGroup::utilitya, 42, 7, Animation::reverse);
   _animation.setFrameDelay( 11 );
   _animation.setOffset( Point( 47, 63 ) );
   _fgPictures.resize(1);

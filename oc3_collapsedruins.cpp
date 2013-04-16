@@ -23,7 +23,13 @@ CollapsedRuins::CollapsedRuins() : ServiceBuilding(S_COLLAPSED_RUINS)
 {
     setType(B_COLLAPSED_RUINS);
     _size = 1;
-    _damageLevel = 1;          
+    _damageLevel = 1;   
+
+    _animation.load( ResourceGroup::sprites, 1, 8 );
+    _animation.setOffset( Point( 14, 26 ) );
+    _animation.setFrameDelay( 4 );
+    _animation.setLoop( false );
+    _fgPictures.resize(1); 
 }
 
 CollapsedRuins* CollapsedRuins::clone() const
@@ -61,10 +67,4 @@ void CollapsedRuins::build( const int i, const int j )
     getTile().get_terrain().setBuilding( false );
     getTile().get_terrain().setRoad( false );
     setPicture( PicLoader::instance().get_picture( ResourceGroup::land2a, 111 + rand() % 8 ) );
-
-    _animation.load( ResourceGroup::sprites, 1, 8 );
-    _animation.setOffset( Point( 14, 26 ) );
-    _animation.setFrameDelay( 4 );
-    _animation.setLoop( false );
-    _fgPictures.resize(1); 
 }   

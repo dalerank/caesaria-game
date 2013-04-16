@@ -23,6 +23,12 @@ class BuildingEngineer : public ServiceBuilding
 public:
     BuildingEngineer();
     BuildingEngineer* clone() const;
+    void timeStep(const unsigned long time);
+
+    void deliverService();
+
+private:
+    int _workerCount;
 };
 
 #endif

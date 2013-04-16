@@ -16,15 +16,51 @@
 #include "oc3_buildingengineer.h"
 #include "pic_loader.hpp"
 #include "oc3_resourcegroup.h"
+#include "oc3_positioni.h"
+// 
+// class BuildingEngineer::Impl
+// {
+// public:
+// 
+// };
 
 BuildingEngineer::BuildingEngineer() : ServiceBuilding(S_ENGINEER)
 {
     setType(B_ENGINEER);
     _size = 1;
+    _workerCount = 1;
     setPicture( Picture::load( ResourceGroup::buildingEngineer, 56 ) );
+
+    _animation.load( ResourceGroup::buildingEngineer, 57, 10);
+    _animation.setFrameDelay( 4 );
+    _animation.setOffset( Point( 10, 42 ) );
+    _fgPictures.resize(1);
 }
 
 BuildingEngineer* BuildingEngineer::clone() const
 {
     return new BuildingEngineer(*this);
+}
+
+void BuildingEngineer::timeStep(const unsigned long time)
+{
+    bool mayAnimate = _workerCount > 0;
+
+    if( mayAnimate && _animation.isStopped() )
+    {
+        _animation.start();
+    }
+
+    if( !mayAnimate && _animation.isRunning() )
+    {
+        _animation.stop();
+    }
+
+    ServiceBuilding::timeStep( time );
+}
+
+void BuildingEngineer::deliverService()
+{
+    if( _workerCount > 0 )
+        ServiceBuilding::deliverService();
 }

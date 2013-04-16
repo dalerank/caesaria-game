@@ -73,14 +73,14 @@ PicMetaData::PicMetaData()
    setRange("land3a", 47, 92, info);
    setRange("plateau", 1, 44, info);
    setRange(rcCommerceGroup, 1, 167, info);
-   setRange("transport", 1, 93, info);
-   setRange("security", 1, 61, info);
+   setRange( "transport", 1, 93, info);
+   setRange( "security", 1, 61, info);
    setRange(rcEntertaimentGroup, 1, 116, info);
    setRange("housng1a", 1, 51, info);
    setRange(rcWarehouseGroup, 19, 83, info);
-   setRange("utilitya", 1, 42, info);
+   setRange( ResourceGroup::utilitya, 1, 42, info);
    setRange("govt", 1, 10, info);
-   setRange(ResourceGroup::sprites, 1, 8, info );
+   setRange( ResourceGroup::sprites, 1, 8, info );
 
    setOne(rcEntertaimentGroup, 12, 37, 62); // amphitheater
    setOne(rcEntertaimentGroup, 35, 34, 37); // theater
