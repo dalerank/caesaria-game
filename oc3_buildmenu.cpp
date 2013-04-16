@@ -14,8 +14,8 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "oc3_buildmenu.h"
-#include "sdl_facade.hpp"
+#include "oc3_buildmenu.hpp"
+#include "oc3_sdl_facade.hpp"
 
 #include <iostream>
 #include <cmath>
@@ -23,14 +23,14 @@
 #include <iterator>
 #include <string>
 
-#include "gettext.hpp"
-#include "oc3_pushbutton.h"
-#include "gui_paneling.hpp"
-#include "oc3_event.h"
-#include "oc3_guienv.h"
-#include "oc3_time.h"
+#include "oc3_gettext.hpp"
+#include "oc3_pushbutton.hpp"
+#include "oc3_gui_paneling.hpp"
+#include "oc3_event.hpp"
+#include "oc3_guienv.hpp"
+#include "oc3_time.hpp"
 
-#include "building_data.hpp"
+#include "oc3_building_data.hpp"
 
 // used to display the building name and its cost
 class BuildButton : public PushButton

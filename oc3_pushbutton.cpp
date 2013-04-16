@@ -14,13 +14,13 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "oc3_pushbutton.h"
-#include "oc3_event.h"
-#include "oc3_time.h"
-#include "oc3_guienv.h"
-#include "sdl_facade.hpp"
-#include "gui_paneling.hpp"
-#include "gfx_engine.hpp"
+#include "oc3_pushbutton.hpp"
+#include "oc3_event.hpp"
+#include "oc3_time.hpp"
+#include "oc3_guienv.hpp"
+#include "oc3_sdl_facade.hpp"
+#include "oc3_gui_paneling.hpp"
+#include "oc3_gfx_engine.hpp"
 #include <iostream>
 
 struct ButtonState

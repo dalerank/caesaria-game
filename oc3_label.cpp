@@ -14,11 +14,11 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "oc3_label.h"
-#include "gfx_engine.hpp"
-#include "sdl_facade.hpp"
-#include "gui_paneling.hpp"
-#include "oc3_pictureconverter.h"
+#include "oc3_label.hpp"
+#include "oc3_gfx_engine.hpp"
+#include "oc3_sdl_facade.hpp"
+#include "oc3_gui_paneling.hpp"
+#include "oc3_pictureconverter.hpp"
 
 using namespace std;
 

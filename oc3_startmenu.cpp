@@ -16,25 +16,25 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#include "oc3_startmenu.h"
+#include "oc3_startmenu.hpp"
 
 #include <iostream>
 #include <cmath>
 #include <iterator>
 
-#include "exception.hpp"
-#include "pic_loader.hpp"
-#include "sdl_facade.hpp"
-#include "gui_paneling.hpp"
-#include "gettext.hpp"
-#include "building.hpp"
-#include "building_data.hpp"
-#include "city.hpp"
-#include "scenario.hpp"
-#include "oc3_positioni.h"
-#include "oc3_resourcegroup.h"
-#include "oc3_pushbutton.h"
-#include "oc3_label.h"
+#include "oc3_exception.hpp"
+#include "oc3_pic_loader.hpp"
+#include "oc3_sdl_facade.hpp"
+#include "oc3_gui_paneling.hpp"
+#include "oc3_gettext.hpp"
+#include "oc3_building.hpp"
+#include "oc3_building_data.hpp"
+#include "oc3_city.hpp"
+#include "oc3_scenario.hpp"
+#include "oc3_positioni.hpp"
+#include "oc3_resourcegroup.hpp"
+#include "oc3_pushbutton.hpp"
+#include "oc3_label.hpp"
 
 StartMenu::StartMenu( Widget* parent ) 
 	: Widget( parent, -1, parent->getRelativeRect() )

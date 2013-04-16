@@ -14,11 +14,11 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "oc3_topmenu.h"
-#include "oc3_label.h"
-#include "pic_loader.hpp"
-#include "oc3_resourcegroup.h"
-#include "sdl_facade.hpp"
+#include "oc3_topmenu.hpp"
+#include "oc3_label.hpp"
+#include "oc3_pic_loader.hpp"
+#include "oc3_resourcegroup.hpp"
+#include "oc3_sdl_facade.hpp"
 
 static const Uint32 dateLabelOffset = 155;
 static const Uint32 populationLabelOffset = 344;

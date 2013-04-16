@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_widgetanimator.h"
-#include "gfx_engine.hpp"
+#include "oc3_widgetanimator.hpp"
+#include "oc3_gfx_engine.hpp"
 
 WidgetAnimator::WidgetAnimator( Widget* parent, int flags ) 
     : Widget( parent, -1, Rect( 0, 0, 1, 1 ) )

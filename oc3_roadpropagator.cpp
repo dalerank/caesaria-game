@@ -14,14 +14,14 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "oc3_roadpropagator.h"
+#include "oc3_roadpropagator.hpp"
 
 #include <set>
 #include <map>
 
-#include "exception.hpp"
-#include "tilemap.hpp"
-#include "oc3_positioni.h"
+#include "oc3_exception.hpp"
+#include "oc3_tilemap.hpp"
+#include "oc3_positioni.hpp"
 
 class RoadPropagator::Impl
 {

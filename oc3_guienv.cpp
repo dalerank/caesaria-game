@@ -13,14 +13,14 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_guienv.h"
+#include "oc3_guienv.hpp"
 
-#include "oc3_widgetprivate.h"
-#include "oc3_rectangle.h"
-#include "gfx_engine.hpp"
-#include "oc3_event.h"
-#include "oc3_label.h"
-#include "oc3_time.h"
+#include "oc3_widgetprivate.hpp"
+#include "oc3_rectangle.hpp"
+#include "oc3_gfx_engine.hpp"
+#include "oc3_event.hpp"
+#include "oc3_label.hpp"
+#include "oc3_time.hpp"
 
 class GuiEnv::Impl
 {

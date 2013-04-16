@@ -17,8 +17,8 @@
 
 #include <iostream>
 
-#include "scenario.hpp"
-#include "oc3_time.h"
+#include "oc3_scenario.hpp"
+#include "oc3_time.hpp"
 
 namespace {
   static const char* rcUtilityGroup      = "utilitya";
