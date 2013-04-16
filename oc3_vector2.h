@@ -1,3 +1,18 @@
+// This file is part of openCaesar3.
+//
+// openCaesar3 is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// openCaesar3 is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+
 #ifndef __OPENCAESAR3_VECTOR2_INCLUDED__
 #define __OPENCAESAR3_VECTOR2_INCLUDED__
 
@@ -69,8 +84,8 @@ public:
                                 (math::isEqual(x, other.x) && y>other.y && !math::isEqual(y, other.y));
 	}
 
-        bool operator==(const Vector2<T>& other) const { return isEqual(other, math::ROUNDING_ERROR_f32); }
-        bool operator!=(const Vector2<T>& other) const { return !isEqual(other, math::ROUNDING_ERROR_f32); }
+    bool operator==(const Vector2<T>& other) const { return IsEqual(other, math::ROUNDING_ERROR_f32); }
+    bool operator!=(const Vector2<T>& other) const { return !IsEqual(other, math::ROUNDING_ERROR_f32); }
 
 	// functions
 
@@ -80,7 +95,7 @@ public:
 	\return True if the two vector are (almost) equal, else false. */
     bool IsEqual(const Vector2<T>& other, float tolerance) const
 	{
-        return math::isEqual(x, other.x, tolerance) && math::isEqual(y, other.y, tolerance);
+        return math::isEqual(x, other.x) && math::isEqual(y, other.y);
 	}
 
 	Vector2<T>& set(T nx, T ny) {x=nx; y=ny; return *this; }
@@ -88,7 +103,7 @@ public:
 
 	//! Gets the length of the vector.
 	/** \return The length of the vector. */
-    T getLength() const { return sqrt( x*x + y*y ); }
+    float getLength() const { return sqrt( (float)x*(float)x + (float)y*(float)y ); }
 
 	//! Get the squared length of this vector
 	/** This is useful because it is much faster than getLength().
@@ -119,7 +134,7 @@ public:
 	/** Here, the vector is interpreted as a point in 2-dimensional space.
 	\param other Other vector to measure from.
 	\return Distance from other point. */
-	T getDistanceFrom(const Vector2<T>& other) const
+	float getDistanceFrom(const Vector2<T>& other) const
 	{
 		return Vector2<T>(x - other.x, y - other.y).getLength();
 	}
@@ -311,4 +326,3 @@ protected:
 };
 
 #endif
-

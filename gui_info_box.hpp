@@ -22,41 +22,38 @@
 #include <string>
 #include <list>
 
-#include "gui_menu.hpp"
+#include "oc3_widget.h"
 #include "picture.hpp"
 #include "house.hpp"
 #include "factory_building.hpp"
 #include "service_building.hpp"
 
+class PushButton;
+class Label;
+
 // base class for info boxes
-class GuiInfoBox : public WidgetGroup
+class GuiInfoBox : public Widget
 {
 public:
-   GuiInfoBox();
-   virtual ~GuiInfoBox();
-   void init(const int width, const int height);
-   void initStatic();
-   virtual void draw(const int dx, const int dy);  // draw on screen
-   virtual void paint() = 0;  // custom paint the bg picture
+    GuiInfoBox( Widget* parent, const Rect& rect, int id );
+    virtual ~GuiInfoBox();
+    void initStatic();
+    virtual void draw( GfxEngine& engine );  // draw on screen
 
-   Picture& getBgPicture();
+    Picture& getBgPicture();
 
-   void handleEvent(SDL_Event &event);
-   // returns true if widget needs to be deleted
-   bool isDeleted() const;
+    bool onEvent( const NEvent& event);
 
-   Picture& getPictureGood(const GoodType& goodType);
+    bool isPointInside(const Point& point) const;
 
+    Picture& getPictureGood(const GoodType& goodType);
+
+    void setTitle( const std::string& title );
 protected:
-   std::string _title;
-   Picture *_bgPicture;
-   bool _isDeleted;  // true if needs to be deleted
-   ImageButton _helpButton;
-   ImageButton* _hoverButton;
+    void _resizeEvent();
 
-   static std::vector<Picture*> _mapPictureGood;  // index=GoodType, value=Picture
-
-   int _paintY;  // Y pixel coordinate of the next paint operation
+    class Impl;
+    ScopedPtr< Impl > _d;
 };
 
 
@@ -64,25 +61,35 @@ protected:
 class GuiInfoService : public GuiInfoBox
 {
 public:
-   GuiInfoService(ServiceBuilding &building);
-   virtual void paint();
+    GuiInfoService( Widget* parent, ServiceBuilding &building);
+    virtual void paint();
 
-   void drawWorkers();
+    void drawWorkers( int& );
 
 private:
-
-   ServiceBuilding *_building;
+    Label* _dmgLabel;
+    ServiceBuilding *_building;
 };
 
+class InfoBoxLand : public GuiInfoBox
+{
+public:
+    InfoBoxLand( Widget* parent, Tile* tile );    
+    //bool onEvent(const NEvent& event);
+private:
+    void _paint();
+
+    Label* _text;
+};
 
 // info box about a factory building
 class GuiInfoFactory : public GuiInfoBox
 {
 public:
-   GuiInfoFactory(Factory &building);
+   GuiInfoFactory( Widget* parent, Factory &building);
    virtual void paint();
 
-   void drawWorkers();
+   void drawWorkers( int& );
    std::string getInfoText();
 
 private:
@@ -94,11 +101,11 @@ private:
 class GuiInfoGranary : public GuiInfoBox
 {
 public:
-   GuiInfoGranary(Granary &building);
+   GuiInfoGranary( Widget* parent, Granary &building);
    virtual void paint();
 
-   void drawWorkers();
-   void drawGood(const GoodType &goodType);
+   void drawWorkers( int );
+   void drawGood(const GoodType &goodType, int&);
 
 private:
    Granary *_building;
@@ -109,11 +116,11 @@ private:
 class GuiInfoMarket : public GuiInfoBox
 {
 public:
-   GuiInfoMarket(Market &building);
+   GuiInfoMarket( Widget* parent, Market &building);
    virtual void paint();
 
-   void drawWorkers();
-   void drawGood(const GoodType &goodType);
+   void drawWorkers( int );
+   void drawGood(const GoodType &goodType, int&);
 
 private:
    Market *_building;
@@ -121,26 +128,26 @@ private:
 
 
 // info box about a house
-class GuiInfoHouse : public GuiInfoBox
+class InfoBoxHouse : public GuiInfoBox
 {
 public:
-   GuiInfoHouse(House &house);
-   virtual void paint();
+   InfoBoxHouse( Widget* paarent, House &house);
+
 
    void drawHabitants();
-   void drawTaxes();
-   void drawCrime();
-   void drawGood(const GoodType &goodType, const int col, const int row);
+   void drawGood(const GoodType &goodType, const int col, const int row );
 
 private:
-
-   House *_house;
+   void _paint();
+   
+   class Impl;
+   ScopedPtr< Impl > _ed;
 };
 
 class GuiBuilding : public GuiInfoBox
 {
 public:
-   GuiBuilding(Building &building);
+   GuiBuilding( Widget* parent, Building &building);
    virtual void paint();
 
 private:

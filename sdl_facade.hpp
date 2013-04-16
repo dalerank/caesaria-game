@@ -48,6 +48,7 @@ public:
 
    // draws a line of text on a picture
    void drawText(Picture &dstpic, const std::string &text, const int dx, const int dy, Font &font);
+
    // returns the size of a text line
    void getTextSize(Font &font, const std::string &text, int &width, int &height);
 
@@ -61,7 +62,6 @@ public:
 
    // changes the pixels: perform a logical OR (used to transform black to some other color, without touching the alpha value)
    void color_or(SDL_Surface *img, const SDL_Color &color);
-
 protected:
    std::list<Picture*> _createdPics;  // list of all pictures created by the sdl_facade
 

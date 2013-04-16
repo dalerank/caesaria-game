@@ -38,9 +38,12 @@ enum CartTypes {G_SCARB1 = G_MAX, G_SCARB2, CT_MAX };
   
 enum ServiceType { S_WELL, S_FOUNTAIN, S_MARKET, S_ENGINEER, S_SENATE, S_FORUM, S_PREFECT, S_TEMPLE_NEPTUNE, S_TEMPLE_CERES, S_TEMPLE_VENUS,
   S_TEMPLE_MARS, S_TEMPLE_MERCURE, S_TEMPLE_ORACLE, S_DOCTOR, S_BARBER, S_BATHS, S_HOSPITAL, S_SCHOOL, S_LIBRARY, S_COLLEGE,
-  S_THEATER, S_AMPHITHEATER, S_COLLOSSEUM, S_HIPPODROME, S_MAX };
+  S_THEATER, S_AMPHITHEATER, S_COLLOSSEUM, S_HIPPODROME, S_BURNING_RUINS, S_MAX };
 
 enum ClimateType { C_CENTRAL, C_NORTHERN, C_DESERT, C_MAX };
+
+// Climate types changes:
+// farms productivity, fire rates, fountain radius
 
 enum ScreenType { SCREEN_NONE, SCREEN_MENU, SCREEN_GAME, SCREEN_QUIT, SCREEN_MAX };
 
@@ -68,23 +71,28 @@ enum BuildingType
    B_BIG_TEMPLE_CERES, B_BIG_TEMPLE_MARS, B_BIG_TEMPLE_NEPTUNE, B_BIG_TEMPLE_MERCURE, B_BIG_TEMPLE_VENUS, // religion: big temples
    B_TEMPLE_ORACLE, // religion: others
    B_NATIVE_HUT, B_NATIVE_CENTER, B_NATIVE_FIELD, // building of natives
-   B_TRIUMPHAL_ARCH,
+   B_TRIUMPHAL_ARCH, B_BURNING_RUINS,
    B_MAX
 };
 
-enum BuildMenuType { BM_NONE, BM_WATER, BM_HEALTH, BM_SECURITY, BM_EDUCATION, BM_ENGINEERING, BM_ADMINISTRATION, BM_ENTERTAINMENT, BM_COMMERCE, BM_FARM, BM_RAW_MATERIAL, BM_FACTORY, BM_RELIGION, BM_TEMPLE, BM_BIGTEMPLE, BM_MAX };
-
-enum WidgetEventType
-{
-   WE_NONE,
-   WE_NewGame, WE_SaveGame, WE_LoadGame, WE_QuitGame,
-   WE_OptionsMenu, // game options
-   WE_InGameMenu,  // screen_game: options/saveGame/quitGame
-   WE_BuildMenu,   // screen_game: select a group of buildings (security buildings/...)
-   WE_Building,    // screen_game: select a building (prefecture/...)
-   WE_ClearLand,   // screen_game: clear some land (building, tree, ...)
-   WE_MAX
+enum BuildMenuType 
+{ 
+    BM_NONE, 
+    BM_WATER, 
+    BM_HEALTH, 
+    BM_SECURITY, 
+    BM_EDUCATION, 
+    BM_ENGINEERING, 
+    BM_ADMINISTRATION, 
+    BM_ENTERTAINMENT, 
+    BM_COMMERCE, 
+    BM_FARM, 
+    BM_RAW_MATERIAL, 
+    BM_FACTORY, 
+    BM_RELIGION, 
+    BM_TEMPLE, 
+    BM_BIGTEMPLE, 
+    BM_MAX 
 };
-
 
 #endif

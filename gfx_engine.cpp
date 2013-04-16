@@ -40,7 +40,6 @@ GfxEngine::GfxEngine()
    _instance = this;
 }
 
-
 GfxEngine::~GfxEngine()
 {
    _instance = NULL;
@@ -73,4 +72,8 @@ void GfxEngine::load_pictures(const std::list<Picture*> &ioPictures)
    }
 }
 
+Size GfxEngine::getScreenSize() const
+{
+    return Size( _screen_width, _screen_height );
+}
 

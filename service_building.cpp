@@ -126,12 +126,11 @@ std::map<ServiceType, ServiceBuilding*>& ServiceBuilding::getSpecimen()
    return _specimen;
 }
 
-GuiInfoBox* ServiceBuilding::makeInfoBox()
+GuiInfoBox* ServiceBuilding::makeInfoBox( Widget* parent )
 {
-   GuiInfoService* box = new GuiInfoService(*this);
+   GuiInfoService* box = new GuiInfoService( parent, *this);
    return box;
 }
-
 
 BuildingWell::BuildingWell() : ServiceBuilding(S_WELL)
 {
@@ -156,7 +155,6 @@ void BuildingWell::deliverService()
       building.applyService(walker);
    }
 }
-
 
 BuildingFountain::BuildingFountain() : ServiceBuilding(S_FOUNTAIN)
 {
@@ -336,6 +334,37 @@ BuildingCollosseum* BuildingCollosseum::clone() const
    return new BuildingCollosseum(*this);
 }
 
+//------------
+
+BuildingHippodrome::BuildingHippodrome() : EntertainmentBuilding(S_HIPPODROME)
+{
+    setType(B_HIPPODROME);
+    _size = 5;
+    setPicture(PicLoader::instance().get_picture("circus", 5));
+    getPicture().set_offset(0,106);
+    Picture* logo = &PicLoader::instance().get_picture("circus", 3);
+    Picture* logo1 = &PicLoader::instance().get_picture("circus", 1);
+    logo -> set_offset(150,181);
+    logo1 -> set_offset(300,310);
+    _fgPictures.resize(5);
+    _fgPictures.at(0) = logo;
+    _fgPictures.at(1) = logo1;
+  
+
+  
+ 
+ 
+}
+
+
+
+BuildingHippodrome* BuildingHippodrome::clone() const
+{
+   return new BuildingHippodrome(*this);
+}
+
+//-----------
+
 TempleCeres::TempleCeres() : ServiceBuilding(S_TEMPLE_CERES)
 {
    setType(B_TEMPLE_CERES);
@@ -347,6 +376,7 @@ TempleCeres* TempleCeres::clone() const
 {
    return new TempleCeres(*this);
 }
+
 
 BigTempleCeres::BigTempleCeres() : ServiceBuilding(S_TEMPLE_CERES)
 {
@@ -657,9 +687,9 @@ void Market::timeStep(const unsigned long time)
 }
 
 
-GuiInfoBox* Market::makeInfoBox()
+GuiInfoBox* Market::makeInfoBox( Widget* parent )
 {
-   GuiInfoMarket* box = new GuiInfoMarket(*this);
+   GuiInfoMarket* box = new GuiInfoMarket( parent, *this);
    return box;
 }
 

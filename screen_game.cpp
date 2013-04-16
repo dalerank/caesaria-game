@@ -26,37 +26,83 @@
 #include "exception.hpp"
 #include "warehouse.hpp"
 #include "scenario_saver.hpp"
+#include "oc3_menurgihtpanel.h"
+#include "oc3_resourcegroup.h"
+#include "oc3_guienv.h"
+#include "oc3_topmenu.h"
+#include "oc3_menu.h"
+#include "oc3_event.h"
+#include "oc3_infoboxmanager.h"
 
-
-ScreenGame::ScreenGame()
+class ScreenGame::Impl
 {
+public:
+    MenuRigthPanel* rightPanel;
+    GuiEnv* gui;
+    GfxEngine* engine;
+    TopMenu* topMenu;
+    Menu* menu;
+    ExtentMenu* extMenu;
+    InfoBoxManagerPtr infoBoxMgr;
+};
+
+ScreenGame::ScreenGame() : _d( new Impl )
+{
+   _d->topMenu = NULL;
    _scenario = NULL;
-   _menu = NULL;
-   _menuBar = NULL;
-   _buildMenu = NULL;
-   _inGameMenu = NULL;
-   _infoBox = NULL;
 }
 
 ScreenGame::~ScreenGame() {}
 
-void ScreenGame::init()
+void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
 {
-   // enable key repeat, 1ms delay, 100ms repeat
-   SDL_EnableKeyRepeat(1, 100);
+    _d->gui = &gui;
+    _d->engine = &engine;
+    _d->infoBoxMgr = InfoBoxManager::create( &gui );
+    // enable key repeat, 1ms delay, 100ms repeat
+    SDL_EnableKeyRepeat(1, 100);
 
-   GfxEngine &engine = GfxEngine::instance();
+    _d->gui->clear();
 
-   _menuBar = new MenuBar();
-   _menuBar->setPosition(0, 0);
-   _menuBar->init( engine.getScreenWidth(), 23 );
+    const int topMenuHeight = 23;
+    const Picture& rPanelPic = PicLoader::instance().get_picture( ResourceGroup::panelBackground, 14 );
+    Rect rPanelRect( engine.getScreenWidth() - rPanelPic.get_width(), topMenuHeight,
+                     engine.getScreenWidth(), engine.getScreenHeight() );
+    _d->rightPanel = MenuRigthPanel::create( gui.getRootWidget(), rPanelRect, rPanelPic);
 
-   _menu = new Menu();
-   _menu->setPosition( engine.getScreenWidth() - _menu->getWidth(), _menuBar->getHeight() );
-   _menu->setListener(this);
+    _d->topMenu = TopMenu::create( gui.getRootWidget(), topMenuHeight );
 
-   getMapArea().setViewSize(engine.getScreenWidth(), engine.getScreenHeight()+8*30);  // 8*30: used for high buildings (granary...), visible even when not in tilemap_area.
-   getMapArea().setCenterIJ(25, 10);
+    _d->menu = Menu::create( gui.getRootWidget(), -1 );
+    _d->menu->setPosition( Point( engine.getScreenWidth() - _d->menu->getWidth() - _d->rightPanel->getWidth(), 
+                                 _d->topMenu->getHeight() ) );
+
+    _d->extMenu = ExtentMenu::create( gui.getRootWidget(), -1 );
+    _d->extMenu->setPosition( Point( engine.getScreenWidth() - _d->extMenu->getWidth() - _d->rightPanel->getWidth(), 
+                                     _d->topMenu->getHeight() ) );
+
+    //over other elements
+    _d->rightPanel->bringToFront();
+
+    CONNECT( _d->menu, onCreateConstruction(), this, ScreenGame::resolveCreateConstruction );
+    CONNECT( _d->menu, onRemoveTool(), this, ScreenGame::resolveRemoveTool );
+    CONNECT( _d->menu, onMaximize(), _d->extMenu, ExtentMenu::maximize );
+
+    CONNECT( _d->extMenu, onCreateConstruction(), this, ScreenGame::resolveCreateConstruction );
+    CONNECT( _d->extMenu, onRemoveTool(), this, ScreenGame::resolveRemoveTool );
+
+    CONNECT( &_scenario->getCity(), onPopulationChanged(), _d->topMenu, TopMenu::setPopulation );
+    CONNECT( &_scenario->getCity(), onFundsChanged(), _d->topMenu, TopMenu::setFunds );
+    CONNECT( &_scenario->getCity(), onMonthChanged(), _d->topMenu, TopMenu::setDate );
+
+    CONNECT( &_guiTilemap, onShowTileInfo(), this, ScreenGame::showTileInfo );
+  /* _d->extMenu = ExtentMenu::create();
+   _d->extMenu->setPosition( engine.getScreenWidth() - _d->extMenu->getWidth() - _d->rightPanel->getWidth(), 
+                             _d->topMenu->getHeight() ); */
+
+
+    getMapArea().setViewSize( engine.getScreenWidth(), 
+                             engine.getScreenHeight()+8*30);  // 8*30: used for high buildings (granary...), visible even when not in tilemap_area.
+    getMapArea().setCenterIJ(25, 10);
 }
 
 TilemapArea& ScreenGame::getMapArea()
@@ -74,78 +120,16 @@ void ScreenGame::setScenario(Scenario &scenario)
    _guiTilemap.init(city, _mapArea, this);
 }
 
-void ScreenGame::setInfoBox(GuiInfoBox *infoBox)
-{
-   _infoBox = infoBox;
-}
-
-void ScreenGame::setBuildMenu(BuildMenu *buildMenu)
-{
-   if (_buildMenu != NULL)
-   {
-      // delete the old buildMenu
-      _buildMenu->setDeleted();
-   }
-   _buildMenu = buildMenu;
-   if (_buildMenu == NULL)
-   {
-      // unselect the active menu button, if any
-      _menu->unselect();
-   }
-   else
-   {
-      // link the new buildMenu
-      _buildMenu->setListener(this);
-   }
-}
-
-void ScreenGame::setInGameMenu(InGameMenu *inGameMenu)
-{
-   if (_inGameMenu != NULL)
-   {
-      // delete the old menu
-      _inGameMenu->setDeleted();
-   }
-   _inGameMenu = inGameMenu;
-   if (_inGameMenu != NULL)
-   {
-      // link the new menu
-      _inGameMenu->setListener(this);
-   }
-}
-
-
 void ScreenGame::drawTilemap()
 {
    _guiTilemap.drawTilemap();
 }
 
-
 void ScreenGame::drawInterface()
 {
-   _menuBar->draw( 0, 0 );
-   _menu->draw( 0, 0 );
-
-   if (_infoBox != NULL)
-   {
-      GuiInfoBox &infoBox = *_infoBox;
-      infoBox.draw(0, 0);
-   }
-
-   if (_buildMenu != NULL)
-   {
-      BuildMenu &buildMenu = *_buildMenu;
-      buildMenu.draw(0, 0);
-   }
-
-   if (_inGameMenu != NULL)
-   {
-      InGameMenu &inGameMenu = *_inGameMenu;
-      inGameMenu.draw(0, 0);
-   }
-
+	_d->gui->beforeDraw();
+    _d->gui->draw();
 }
-
 
 void ScreenGame::draw()
 {
@@ -158,182 +142,78 @@ void ScreenGame::afterFrame()
    _scenario->getCity().timeStep();
 }
 
-int ScreenGame::isModShift()
+void ScreenGame::handleEvent( NEvent& event )
 {
-   if ((SDL_GetModState() & (KMOD_LSHIFT | KMOD_RSHIFT)) != 0)
-   {
-      return 1;
-   }
-   else
-   {
-      return 0;
-   }
+    bool eventResolved = _d->gui->handleEvent( event );      
+   
+    if( !eventResolved )
+        _guiTilemap.handleEvent( event );
+
+    if( event.EventType == OC3_KEYBOARD_EVENT && event.KeyboardEvent.Key == KEY_ESCAPE )
+    {
+        std::cout << "EVENT_ESCAPE was pressed" << std::endl;
+        stop();
+    }
 }
 
-void ScreenGame::handleEvent(SDL_Event &event)
+int ScreenGame::getResult() const
 {
-   if (_infoBox != NULL)
-   {
-      // infoBox is modal: it consumes all events
-      _infoBox->handleEvent(event);
-      if (_infoBox->isDeleted())
-      {
-         delete _infoBox;
-         _infoBox = NULL;
-      }
-      return;
-   }
-
-   if (_buildMenu != NULL)
-   {
-      // buildMenu is modal: it consumes all events
-      _buildMenu->handleEvent(event);
-      if (_buildMenu->isDeleted())
-      {
-         delete _buildMenu;
-         setBuildMenu(NULL);
-      }
-      return;
-   }
-
-   if (_inGameMenu != NULL)
-   {
-      // inGameMenu is modal: it consumes all events
-      _inGameMenu->handleEvent(event);
-      if (_inGameMenu->isDeleted())
-      {
-         delete _inGameMenu;
-         setInGameMenu(NULL);
-      }
-      return;
-   }
-
-   bool isPreview = true;
-   switch (event.type)
-   {
-   case SDL_MOUSEMOTION:
-      if (_menu->contains(event.button.x, event.button.y))
-      {
-         isPreview = false;
-      }
-      _guiTilemap.setPreview(isPreview);
-      _menu->handleEvent(event);
-      _guiTilemap.handleEvent(event);
-      break;
-   case SDL_MOUSEBUTTONDOWN:
-      if (_menu->contains(event.button.x, event.button.y))
-      {
-         _menu->handleEvent(event);
-      }
-      else
-      {
-         _guiTilemap.handleEvent(event);
-      }
-      break;
-   case SDL_KEYDOWN:
-      if (event.key.keysym.sym == SDLK_UP)
-      {
-//	 std::cout << "SDLK_UP was pressed" << std::endl;
-         getMapArea().moveUp(1 + 4*isModShift());
-      }
-      else if (event.key.keysym.sym == SDLK_DOWN)
-      {
-//	 std::cout << "SDLK_DOWN was pressed" << std::endl;
-         getMapArea().moveDown(1 + 4*isModShift());
-      }
-      else if (event.key.keysym.sym == SDLK_RIGHT)
-      {
-//	 std::cout << "SDLK_RIGHT was pressed" << std::endl;
-         getMapArea().moveRight(1 + 4*isModShift());
-      }
-      else if (event.key.keysym.sym == SDLK_LEFT)
-      {
-//	 std::cout << "SDLK_LEFT was pressed" << std::endl;
-         getMapArea().moveLeft(1 + 4*isModShift());
-      }
-      else if (event.key.keysym.sym == SDLK_ESCAPE)
-      {
-//	 std::cout << "SDLK_ESCAPE was pressed" << std::endl;
-         stop();
-      }
-      
-      break;
-   }
-
+	return 0;
 }
 
-
-void ScreenGame::handleWidgetEvent(const WidgetEvent &event, Widget *widget)
+void ScreenGame::resolveCreateConstruction( int type )
 {
-   if (event._eventType == WE_BuildMenu)
-   {
-      BuildMenuType menuType = event._buildMenuType;
-      BuildMenu* buildMenu = BuildMenu::getMenuInstance(menuType);
+    bool multiBuild = false;
+    Construction* construction = dynamic_cast<Construction*>( LandOverlay::getInstance( BuildingType( type ) ) );
+    switch( type )
+    {
+    case B_ROAD:
+        _guiTilemap.setBuildRoad( construction );
+    break;
 
-      if (buildMenu != NULL)
-      {
-         // we have a new buildMenu: initialize it
-         GfxEngine &engine = GfxEngine::instance();
-
-         // compute the Y position of the menu, ugly because of submenus
-         int y;
-         if (dynamic_cast<BuildMenu*>(widget->getParent()) == NULL)
-         {
-            // this is not a submenu
-            y = widget->getY();
-         }
-         else
-         {
-            // this is a submenu
-            y = widget->getParent()->getY();  // Y position of the buildMenu
-         }
-
-         buildMenu->init();
-         y = std::min(y, engine.getScreenHeight() - buildMenu->getHeight());
-         y = std::max(y, 0);
-         buildMenu->setPosition(engine.getScreenWidth() - buildMenu->getWidth() - _menu->getWidth()-5, y);
-         setBuildMenu(buildMenu);
-      }
-
-   }
-   else if (event._eventType == WE_InGameMenu)
-   {
-      GfxEngine &engine = GfxEngine::instance();
-      InGameMenu* inGameMenu = new InGameMenu();
-      inGameMenu->init();
-      inGameMenu->setPosition(engine.getScreenWidth() - inGameMenu->getWidth() - _menu->getWidth()-5, 50);
-      setInGameMenu(inGameMenu);
-   }
-   else if (event._eventType == WE_SaveGame)
-   {
-      if (_scenario != NULL)
-      {
-         std::cout << "SAVE" << std::endl;
-         ScenarioSaver saver = ScenarioSaver();
-         saver.save("oc3.sav");
-         if (_inGameMenu != NULL)
-         {
-            // delete menu, if any
-            _inGameMenu->setDeleted();
-         }
-      }
-   }
-   else if (event._eventType == WE_Building)
-   {
-      BuildingType buildingType = event._buildingType;
-      Construction *construction = dynamic_cast<Construction*>(LandOverlay::getInstance(buildingType));
-      _guiTilemap.setBuildInstance(construction);
-      if (_buildMenu != NULL)
-      {
-         // delete buildMenu, if any
-         _buildMenu->setDeleted();
-      }
-   }
-   else if (event._eventType == WE_ClearLand)
-   {
-      _guiTilemap.setRemoveTool();
-   }
-
+    case B_HOUSE:
+        multiBuild = true;
+        //break not needed that catch multibuild flag
+    default:
+        _guiTilemap.setBuildInstance( construction, multiBuild );
+    break;    
+    }   
 }
 
+void ScreenGame::resolveRemoveTool()
+{
+    _guiTilemap.setRemoveTool();
+}
 
+void ScreenGame::showTileInfo( Tile* tile )
+{
+    _d->infoBoxMgr->showHelp( tile );
+}
+// void ScreenGame::handleWidgetEvent(const WidgetEvent& event, Widget *widget)
+// {
+//    
+//    else if (event._eventType == WE_InGameMenu)
+//    {
+//       GfxEngine &engine = GfxEngine::instance();
+//       InGameMenu* inGameMenu = new InGameMenu();
+//       inGameMenu->init();
+//       inGameMenu->setPosition(engine.getScreenWidth() - inGameMenu->getWidth() - _menu->getWidth()-5, 50);
+//       setInGameMenu(inGameMenu);
+//    }
+//    else if (event._eventType == WE_SaveGame)
+//    {
+//       if (_scenario != NULL)
+//       {
+//          std::cout << "SAVE" << std::endl;
+//          ScenarioSaver saver = ScenarioSaver();
+//          saver.save("oc3.sav");
+//          if (_inGameMenu != NULL)
+//          {
+//             // delete menu, if any
+//             _inGameMenu->setDeleted();
+//          }
+//       }
+//    }
+//  
+// 
+// }

@@ -519,7 +519,7 @@ bool Propagator::getPath(Road &destination, PathWay &oPathWay)
 }
 
 
-bool Propagator::getPath(Building &destination, PathWay &oPathWay)
+bool Propagator::getPath(Building& destination, PathWay &oPathWay)
 {
    const std::list<Tile*>& destTiles = destination.getAccessRoads();
    std::map<Road*, PathWay>::iterator mapIt;
@@ -701,6 +701,5 @@ void Propagator::getAllPaths(const int maxDistance, std::list<PathWay> &oPathWay
       // this branch is no longer active
       _activeBranches.erase(firstBranch);
    }
-
 }
 

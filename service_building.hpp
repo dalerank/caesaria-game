@@ -21,8 +21,8 @@
 
 #include "building.hpp"
 
-
 class Walker;
+class Widget;
 
 class ServiceBuilding : public WorkingBuilding
 {
@@ -40,7 +40,7 @@ public:
 
    static std::map<ServiceType, ServiceBuilding*>& getSpecimen();
 
-   virtual GuiInfoBox* makeInfoBox();
+   virtual GuiInfoBox* makeInfoBox( Widget* parent );
 
    void serialize(OutputSerialStream &stream);
    void unserialize(InputSerialStream &stream);
@@ -73,7 +73,6 @@ public:
 
    virtual void deliverService();
 };
-
 
 class BuildingEngineer : public ServiceBuilding
 {
@@ -116,6 +115,14 @@ class BuildingCollosseum : public EntertainmentBuilding
 public:
    BuildingCollosseum();
    BuildingCollosseum* clone() const;
+};
+
+
+class BuildingHippodrome : public EntertainmentBuilding
+{
+public:
+   BuildingHippodrome();
+   BuildingHippodrome* clone() const;
 };
 
 class TempleCeres : public ServiceBuilding
@@ -266,7 +273,7 @@ public:
    Market* clone() const;
 
    void timeStep(const unsigned long time);
-   virtual GuiInfoBox* makeInfoBox();
+   virtual GuiInfoBox* makeInfoBox( Widget* );
 
    SimpleGoodStore& getGoodStore();
    std::list<GoodType> getMostNeededGoods();  // used by the market buyer

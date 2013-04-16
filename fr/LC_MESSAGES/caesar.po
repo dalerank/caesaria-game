@@ -509,3 +509,9 @@ msgstr ""
 
 msgid "need library or school"
 msgstr ""
+
+msgid "##trees_and_forest_caption"
+msgstr "Trees and forest"
+
+msdid "##trees_and_forest_text"
+msgstr "It is impossible to pass through trees, but they can be cut down. However they are vital for the forest industry as sawmills need to be built about trees."

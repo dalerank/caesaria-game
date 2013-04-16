@@ -1,3 +1,18 @@
+// This file is part of openCaesar3.
+//
+// openCaesar3 is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// openCaesar3 is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+
 #include "oc3_emigrant.h"
 #include "oc3_positioni.h"
 #include "scenario.hpp"
@@ -63,9 +78,10 @@ void Emigrant::getPictureList(std::vector<Picture*> &oPics)
 
 void Emigrant::assignPath( const Road& startPoint )
 {
+    City& city = Scenario::instance().getCity();
 	std::list<PathWay> pathWayList;
 
-	std::list<LandOverlay*> houses = Scenario::instance().getCity().getBuildingList(B_HOUSE);
+	std::list<LandOverlay*> houses = city.getBuildingList(B_HOUSE);
 	House* blankHouse = 0;
 	for( std::list<LandOverlay*>::iterator itHouse = houses.begin(); itHouse != houses.end(); ++itHouse )
 	{
@@ -83,28 +99,61 @@ void Emigrant::assignPath( const Road& startPoint )
 	Propagator pathfinder;
 	PathWay pathWay;
 	pathfinder.init( const_cast< Road& >( startPoint ) );
-	bool findPath = pathfinder.getPath( *blankHouse, pathWay );
-	if( findPath )
-	{
-		setPathWay( pathWay );
-		setIJ(_pathWay.getOrigin().getI(), _pathWay.getOrigin().getJ());   
-	}
+    if( blankHouse )
+    {
+	    bool findPath = pathfinder.getPath( *blankHouse, pathWay );
+	    if( findPath )
+	    {
+		    setPathWay( pathWay );
+		    setIJ(_pathWay.getOrigin().getI(), _pathWay.getOrigin().getJ());   
+	    }
+    }
+    else
+    {
+        Road* exitTile = dynamic_cast< Road* >( city.getTilemap().at( city.getRoadExitIJ() ).get_terrain().getOverlay() );
+        _d->destination = TilePos( -1, -1 );
+        bool findPath = pathfinder.getPath( *exitTile, pathWay );
+        if( findPath )
+        {
+            setPathWay( pathWay );
+        }
+        else
+            _isDeleted = true;
+    }
 }
 
 void Emigrant::onDestination()
 {
-	const Tile& tile = Scenario::instance().getCity().getTilemap().at( _d->destination );
+    _isDeleted = true;
+    bool gooutCity = true;
+    if( _d->destination.getI() > 0 && _d->destination.getJ() > 0 )  //have destination
+    {
+	    const Tile& tile = Scenario::instance().getCity().getTilemap().at( _d->destination );
 
-	LandOverlay* overlay = tile.get_terrain().getOverlay();
-	if( House* house = dynamic_cast<House*>( overlay ) )
-	{
-		if( house->getNbHabitants() < house->getMaxHabitants() )
-		{
-			house->addHabitants( 1 );
-		}
-	}
+	    LandOverlay* overlay = tile.get_terrain().getOverlay();
+	    if( House* house = dynamic_cast<House*>( overlay ) )
+	    {
+		    if( house->getNbHabitants() < house->getMaxHabitants() )
+		    {
+			    house->addHabitants( 1 );
+                Walker::onDestination();
+                gooutCity = false;
+		    }
+	    }
+    }
+    else
+    {   
+        return;                                                     //no destination, may delete
+    }
 
-	_isDeleted = true;
+    if( gooutCity )
+    {
+        if( const Road* r = dynamic_cast< const Road* >( _pathWay.getDestination().get_terrain().getOverlay() ))
+        {
+            _isDeleted = false;
+            assignPath( *r );
+        }
+    }
 }
 
 void Emigrant::onNewDirection()

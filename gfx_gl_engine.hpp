@@ -29,14 +29,11 @@
 
 #include <picture.hpp>
 
-
 // This is the OpenGL engine
 // It does a dumb drawing from back to front, in a 2D projection, with no depth buffer
 class GfxGlEngine : public GfxEngine
 {
-
 public:
-
    GfxGlEngine();
    virtual ~GfxGlEngine();
    virtual void init();

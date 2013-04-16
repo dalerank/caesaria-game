@@ -27,10 +27,13 @@
 #include <map>
 #include <list>
 #include <string>
-
 #include <SDL_ttf.h>
+#include "oc3_alignment.h"
+
+#include "oc3_size.h"
 
 class Point;
+class Rect;
 
 // an image with offset, this is the basic rendered object
 class Picture
@@ -54,6 +57,10 @@ public:
    int get_yoffset() const;
    int get_width() const;
    int get_height() const;
+
+   Size getSize() const;
+
+   bool isValid() const;
 
 private:
    // the image is shifted when displayed
@@ -96,16 +103,26 @@ private:
 class Font
 {
 public:
-   Font(TTF_Font &ttfFont, SDL_Color &color);
+    Font();
+    Font(TTF_Font &ttfFont, SDL_Color &color);
 
-   TTF_Font &getTTF();
+    TTF_Font &getTTF();
 
-   SDL_Color &getColor();
-   std::list<std::string> split_text(const std::string &text, const int width);
+    SDL_Color &getColor();
+    std::list<std::string> split_text(const std::string &text, const int width);
+
+    bool isValid() const;
+
+    Size getSize( const std::string& text ) const;
+
+    bool operator!=(const Font& other) const;
+
+    Rect calculateTextRect( const std::string& text, const Rect& baseRect, 
+                            TypeAlign horizontalAlign, TypeAlign verticalAlign );
 
 private:
-   TTF_Font *_ttfFont;
-   SDL_Color _color;
+    TTF_Font *_ttfFont;
+    SDL_Color _color;
 };
 
 

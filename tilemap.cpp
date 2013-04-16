@@ -38,7 +38,7 @@ void TerrainTile::reset()
    _isTree = false;
    _isBuilding = false;
    _isRoad = false;
-   _overlay = NULL;
+   _overlay = NULL; // BUG? What will be with old overlay?
 }
 
 bool TerrainTile::isConstructible() const

@@ -1,15 +1,24 @@
+// This file is part of openCaesar3.
+//
+// openCaesar3 is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// openCaesar3 is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+
 #include "oc3_pictureconverter.h"
 
 #include <SDL_image.h>
 
 #include "picture.hpp"
 #include "oc3_math.h"
-
-PictureConverterPtr PictureConverter::create()
-{
-    return PictureConverterPtr( new PictureConverter() );
-}
-
 
 void PictureConverter::rgbBalance( Picture& dst, const Picture& src, int lROffset, int lGOffset, int lBOffset )
 {
@@ -112,4 +121,14 @@ PictureConverter::~PictureConverter()
 PictureConverter::PictureConverter()
 {
 
+}
+
+void PictureConverter::fill( Picture& pic, int color )
+{
+    SDL_Surface* source = pic.get_surface();
+
+    SDL_LockSurface( source );
+    SDL_FillRect(source, NULL, SDL_MapRGBA(source->format, (color>>24)&0xff, (color>>16)&0xff, 
+                                                           (color>>8)&0xff, (color&0xff))); 
+    SDL_UnlockSurface(source);
 }

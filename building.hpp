@@ -27,8 +27,9 @@
 #include "tilemap.hpp"
 #include "enums.hpp"
 #include "good.hpp"
+#include "oc3_scopedptr.h"
 
-
+class Widget;
 class GuiInfoBox;
 
 class LandOverlay : public Serializable
@@ -86,36 +87,15 @@ public:
    Construction();
 
    virtual bool canBuild(const int i, const int j) const;  // returns true if it can be built there
+   virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
    virtual void build(const int i, const int j);
+   virtual void burn();
    const std::list<Tile*>& getAccessRoads() const;  // return all road tiles adjacent to the construction
    virtual void computeAccessRoads();  
    virtual Uint8 getMaxDistance2Road() const; // virtual because HOUSE has different behaviour
 
 protected:
    std::list<Tile*> _accessRoads;
-};
-
-class Aqueduct : public Construction
-{
-public:
-  Aqueduct();
-  virtual Aqueduct* clone() const;
-
-  virtual void build(const int i, const int j);
-  Picture& computePicture();
-  virtual void setTerrain(TerrainTile &terrain);
-};
-
-class Reservoir : public Construction
-{
-public:
-  Reservoir();
-  virtual Reservoir* clone() const;
-
-  virtual void build(const int i, const int j);
-  Picture& computePicture();
-  virtual void setTerrain(TerrainTile &terrain);
-  void timeStep(const unsigned long time);
 };
 
 class Garden : public Construction
@@ -126,15 +106,6 @@ public:
   virtual void setTerrain(TerrainTile &terrain);  
 };
 
-class Plaza : public Construction
-{
-public:
-  Plaza();
-  virtual Plaza* clone() const;
-  virtual void setTerrain(TerrainTile &terrain);  
-  virtual bool canBuild(const int i, const int j) const;
-};
-
 class Road : public Construction
 {
 public:
@@ -142,8 +113,18 @@ public:
   virtual Road* clone() const;
 
   virtual void build(const int i, const int j);
-  Picture& computePicture();
+  virtual Picture& computePicture();
   virtual void setTerrain(TerrainTile &terrain);
+};
+
+class Plaza : public Road
+{
+public:
+  Plaza();
+  virtual Plaza* clone() const;
+  virtual void setTerrain(TerrainTile &terrain);  
+  virtual bool canBuild(const int i, const int j) const;
+  virtual Picture& computePicture();
 };
 
 
@@ -221,7 +202,7 @@ public:
    void timeStep(const unsigned long time);
    void computePictures();
    SimpleGoodStore& getGoodStore();
-   virtual GuiInfoBox* makeInfoBox();
+   virtual GuiInfoBox* makeInfoBox( Widget* parent );
 
    void serialize(OutputSerialStream &stream);
    void unserialize(InputSerialStream &stream);
@@ -334,7 +315,7 @@ public:
   NativeBuilding();
   void serialize(OutputSerialStream &stream);
   void unserialize(InputSerialStream &stream);
-  virtual GuiInfoBox* makeInfoBox();
+  virtual GuiInfoBox* makeInfoBox( Widget* parent );
 };
 
 class NativeHut    : public NativeBuilding
