@@ -83,6 +83,7 @@ void Aqueduct::setTerrain(TerrainTile &terrain)
   terrain.setOverlay(this);
   terrain.setBuilding(true);
   terrain.setRoad(isRoad);
+  terrain.setAqueduct(true); // mandatory!
 }
 
 bool Aqueduct::canBuild(const int i, const int j) const

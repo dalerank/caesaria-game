@@ -346,7 +346,7 @@ void Garden::setTerrain(TerrainTile &terrain)
 {
   terrain.reset();
   terrain.setOverlay(this);
-  terrain.setBuilding(true);
+  terrain.setBuilding(true); // are gardens buildings or not???? try to investigate from original game
   terrain.setGarden(true);
 }
 
