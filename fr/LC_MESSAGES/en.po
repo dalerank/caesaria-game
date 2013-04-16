@@ -27,13 +27,13 @@ msgid "Aucun percepteur ne passe ici. Ne paye pas de taxes"
 msgstr "Not visited by a taxman. Not paying taxes."
 
 msgid "Paye %d Denarii de taxes par mois"
-msgstr ""
+msgstr "Pays %d denarii of taxes a month"
 
 msgid "Ce quartier est tranquille"
 msgstr ""
 
 msgid "%s en stock: %d unites"
-msgstr "%s en stock: %d unités"
+msgstr "%s in stock: %d units"
 
 msgid "House has no such good "
 msgstr ""
@@ -63,58 +63,58 @@ msgid "Grande tente"
 msgstr "Large tent"
 
 msgid "Petite hutte"
-msgstr ""
+msgstr "Small shack"
 
 msgid "Grande hutte"
-msgstr ""
+msgstr "Large shack"
 
 msgid "Petit taudis"
-msgstr ""
+msgstr "Small hovel"
 
 msgid "Grand taudis"
-msgstr ""
+msgstr "Large hovel"
 
 msgid "Petite maison"
-msgstr ""
+msgstr "Small casa"
 
 msgid "Grande maison"
-msgstr ""
+msgstr "Large casa"
 
 msgid "Petite insula"
-msgstr ""
+msgstr "Small insulae"
 
 msgid "Insula moyenne"
-msgstr ""
+msgstr "Medium insulae"
 
 msgid "Grande insula"
-msgstr ""
+msgstr "Large insulae"
 
 msgid "Insula imposante"
-msgstr ""
+msgstr "Grand insulae"
 
 msgid "Petite villa"
-msgstr ""
+msgstr "Small villa"
 
 msgid "Villa moyenne"
-msgstr ""
+msgstr "Medium villa"
 
 msgid "Grande Villa"
-msgstr ""
+msgstr "Large villa"
 
 msgid "Villa imposante"
-msgstr ""
+msgstr "Grand villa"
 
 msgid "Petit palais"
 msgstr "Small palace"
 
 msgid "Palais moyen"
-msgstr ""
+msgstr "Medium palace"
 
 msgid "Grand palais"
 msgstr "Large palace"
 
 msgid "Palais luxueux"
-msgstr ""
+msgstr "Luxury palace"
 
 msgid "Le travail est a %d%% termine."
 msgstr "Le travail est à %d%% terminé."
@@ -188,11 +188,10 @@ msgstr "%d units in stock. Space available for %d units."
 
 msgid "Blé- Production arretee sous ordre du gouverneur"
 msgstr ""
-"La production de cette ferme est arrétée sur ordre de votre conseiller "
-"commercial."
+"Production stopped as ordered by the gouverner."
 
 msgid "Blé- Production arretee par manque de personnel"
-msgstr "Cette ferme n'emploie personne. Ses champs sont en friche."
+msgstr "This farm does not have any workers. Its fileds are empty."
 
 msgid "Blé- Production quasimment a l'arret par manque de main-d'oeuvre"
 msgstr ""
@@ -292,166 +291,166 @@ msgid "Terrain vague"
 msgstr "Plain field"
 
 msgid "building_theater"
-msgstr "Théâtre"
+msgstr "Theatre"
 
 msgid "building_amphitheater"
-msgstr "Amphithéâtre"
+msgstr "Amphitheater"
 
 msgid "building_hippodrome"
 msgstr "Hippodrome"
 
 msgid "building_collosseum"
-msgstr "Colisée"
+msgstr "Colosseum"
 
 msgid "building_actor"
-msgstr "Ecole de théâtre"
+msgstr "Actor colony"
 
 msgid "building_gladiator"
-msgstr "Ecole de gladiateurs"
+msgstr "Gladiator school"
 
 msgid "building_lion"
-msgstr "Parc à lions"
+msgstr "Lian pit"
 
 msgid "building_chariot"
-msgstr "Fabrique de chariots"
+msgstr "Chariot maker"
 
 msgid "building_house"
-msgstr "Maison"
+msgstr "House"
 
 msgid "building_road"
-msgstr "Route"
+msgstr "Road"
 
 msgid "building_plaza"
-msgstr "Place"
+msgstr "Plazza"
 
 msgid "building_garden"
-msgstr "Jardin"
+msgstr "Gardens"
 
 msgid "building_senate"
-msgstr "Sénat"
+msgstr "Senate"
 
 msgid "building_forum"
 msgstr "Forum"
 
 msgid "building_prefect"
-msgstr "Préfecture"
+msgstr "Prefecture"
 
 msgid "building_doctor"
-msgstr "Dispensaire"
+msgstr "Doctor"
 
 msgid "building_hospital"
-msgstr "Hôpital"
+msgstr "Hospital"
 
 msgid "building_baths"
-msgstr "Thermes"
+msgstr "Baths"
 
 msgid "building_barber"
-msgstr "Barbier"
+msgstr "Barber"
 
 msgid "building_school"
-msgstr "Ecole"
+msgstr "School"
 
 msgid "building_college"
-msgstr "Université"
+msgstr "University"
 
 msgid "building_library"
-msgstr "Bibliothèque"
+msgstr "Library"
 
 msgid "building_market"
-msgstr "Marché"
+msgstr "Market"
 
 msgid "building_granary"
-msgstr "Grenier"
+msgstr "Granary"
 
 msgid "building_warehouse"
-msgstr "Entrepôt"
+msgstr "Warehouse"
 
 msgid "building_wheat"
-msgstr "Ferme de blé"
+msgstr "Wheat farm"
 
 msgid "building_fruit"
-msgstr "Verger"
+msgstr "Fruit farm"
 
 msgid "building_vegetable"
-msgstr "Potager"
+msgstr "Vegetable farm"
 
 msgid "building_olive"
-msgstr "Oliveraie"
+msgstr "Olive farm"
 
 msgid "building_grape"
-msgstr "Vignes"
+msgstr "Vine farm"
 
 msgid "building_meat"
-msgstr "Porcherie"
+msgstr "Pig farm"
 
 msgid "building_marble"
-msgstr "Carrière de marbre"
+msgstr "Marble quarry"
 
 msgid "building_iron"
-msgstr "Mine de fer"
+msgstr "Iron mine"
 
 msgid "building_timber"
-msgstr "Chantier de bois"
+msgstr "Timber yard"
 
 msgid "building_clay"
-msgstr "Puits d'argile"
+msgstr "Clay pit"
 
 msgid "building_wine"
-msgstr "Fabrique de vin"
+msgstr "Wine workshop"
 
 msgid "building_oil"
-msgstr "Fabrique d'huile"
+msgstr "Oil workshop"
 
 msgid "building_weapon"
-msgstr "Fabrique d'armes"
+msgstr "Weapons workshop"
 
 msgid "building_furniture"
-msgstr "Fabrique de meubles"
+msgstr "Furniture workshop"
 
 msgid "building_pottery"
-msgstr "Atelier de potteries"
+msgstr "Pottery workshop"
 
 msgid "building_engineer"
-msgstr "Etude d'architectes"
+msgstr "Engineer's post"
 
 msgid "building_statue1"
-msgstr "Petite statue"
+msgstr "Small statue"
 
 msgid "building_statue2"
 msgstr "Statue"
 
 msgid "building_statue3"
-msgstr "Grande statue"
+msgstr "Large statue"
 
 msgid "building_low_bridge"
-msgstr "Pont bas"
+msgstr "Low bridge"
 
 msgid "building_high_bridge"
-msgstr "Pont haut"
+msgstr "High bridge"
 
 msgid "building_well"
-msgstr "Puits"
+msgstr "Well"
 
 msgid "building_fountain"
 msgstr "Fontaine"
 
 msgid "building_temple_ceres"
-msgstr "Temple à Ceres"
+msgstr "Temple of Ceres"
 
 msgid "building_temple_neptune"
-msgstr "Temple à Neptune"
+msgstr "Temple of Neptune"
 
 msgid "building_temple_mars"
-msgstr "Temple à Mars"
+msgstr "Temple of Mars"
 
 msgid "building_temple_venus"
-msgstr "Temple à Vénus"
+msgstr "Temple of Vénus"
 
 msgid "building_temple_mercure"
-msgstr "Temple à Mercure"
+msgstr "Temple of Mercure"
 
 msgid "Ferme"
-msgstr "Ferme"
+msgstr "Farm"
 
 msgid "Matieres premieres"
 msgstr "Matières premières"
@@ -460,22 +459,22 @@ msgid "Atelier"
 msgstr "Atelier"
 
 msgid "New Game"
-msgstr "Nouvelle partie"
+msgstr "New Game"
 
 msgid "Load Game"
-msgstr "Charger une partie"
+msgstr "Load Game"
 
 msgid "Quit"
-msgstr "Quitter"
+msgstr "Quit"
 
 msgid "Options"
-msgstr ""
+msgstr "Options"
 
 msgid "Save Game"
-msgstr "Sauver"
+msgstr "Save Game"
 
 msgid "Quit Game"
-msgstr "Quitter"
+msgstr "Quit Game"
 
 msgid "need fountain"
 msgstr ""
