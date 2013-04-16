@@ -35,7 +35,9 @@
 #include "sdl_facade.hpp"
 #include "oc3_time.h"
 #include "oc3_burningruins.h"
+#include "oc3_collapsedruins.h"
 #include "oc3_water_buildings.hpp"
+#include "oc3_constructionmanager.h"
 
 namespace {
 static const char* rcRoadGroup         = "land2a";
@@ -179,8 +181,7 @@ LandOverlay& LandOverlay::unserialize_all(InputSerialStream &stream)
    BuildingType buildingType = (BuildingType) stream.read_int(1, 0, B_MAX);
    int i = stream.read_int(2, 0, 1000);
    int j = stream.read_int(2, 0, 1000);
-   LandOverlay *instance = getInstance(buildingType);
-   LandOverlay *res = instance->clone();
+   LandOverlay *res = ConstructionManager::getInstance().create( buildingType )->clone();
    res->_master_tile = &Scenario::instance().getCity().getTilemap().at(i, j);
    res->unserialize(stream);
    stream.link(objectID, res);
@@ -190,124 +191,6 @@ LandOverlay& LandOverlay::unserialize_all(InputSerialStream &stream)
 void LandOverlay::unserialize(InputSerialStream &stream)
 {
 }
-
-LandOverlay* LandOverlay::getInstance(const BuildingType buildingType)
-{
-   if (_mapBuildingByID.empty())
-   {
-      // first call to this method
-
-      // entertainment
-      _mapBuildingByID[B_THEATER]      = new BuildingTheater();
-      _mapBuildingByID[B_AMPHITHEATER] = new BuildingAmphiTheater();
-      _mapBuildingByID[B_COLLOSSEUM]   = new BuildingCollosseum();
-      _mapBuildingByID[B_ACTOR]        = new BuildingActor();
-      _mapBuildingByID[B_GLADIATOR]    = new BuildingGladiator();
-      _mapBuildingByID[B_LION]         = new BuildingLion();
-      _mapBuildingByID[B_CHARIOT]      = new BuildingChariot();
-      _mapBuildingByID[B_HIPPODROME]   = new BuildingHippodrome();
-      // road&house
-      _mapBuildingByID[B_HOUSE] = new House( House::smallHovel );
-      _mapBuildingByID[B_ROAD]  = new Road();
-      // administration
-      _mapBuildingByID[B_FORUM]  = new Forum();
-      _mapBuildingByID[B_SENATE] = new Senate();
-      _mapBuildingByID[B_GOVERNOR_HOUSE]  = new GovernorsHouse();
-      _mapBuildingByID[B_GOVERNOR_VILLA]  = new GovernorsVilla();
-      _mapBuildingByID[B_GOVERNOR_PALACE] = new GovernorsPalace(); 
-      _mapBuildingByID[B_STATUE1] = new SmallStatue(); 
-      _mapBuildingByID[B_STATUE2] = new MediumStatue(); 
-      _mapBuildingByID[B_STATUE3] = new BigStatue();
-      _mapBuildingByID[B_GARDEN]  = new Garden();
-      _mapBuildingByID[B_PLAZA]   = new Plaza();
-      // water
-      _mapBuildingByID[B_WELL]      = new BuildingWell();
-      _mapBuildingByID[B_FOUNTAIN]  = new BuildingFountain();
-      _mapBuildingByID[B_AQUEDUCT]  = new Aqueduct();
-      _mapBuildingByID[B_RESERVOIR] = new Reservoir();
-      // security
-      _mapBuildingByID[B_PREFECT]   = new BuildingPrefect();
-      _mapBuildingByID[B_FORT_LEGIONNAIRE] = new FortLegionnaire();
-      _mapBuildingByID[B_FORT_JAVELIN]     = new FortJaveline();
-      _mapBuildingByID[B_FORT_MOUNTED]     = new FortMounted();
-      _mapBuildingByID[B_MILITARY_ACADEMY] = new Academy();
-      _mapBuildingByID[B_BARRACKS]         = new Barracks();
-      // commerce
-      _mapBuildingByID[B_MARKET]    = new Market();
-      _mapBuildingByID[B_WAREHOUSE] = new Warehouse();
-      _mapBuildingByID[B_GRANARY]   = new Granary();
-      // farms
-      _mapBuildingByID[B_WHEAT]     = new FarmWheat();
-      _mapBuildingByID[B_OLIVE]     = new FarmOlive();
-      _mapBuildingByID[B_GRAPE]     = new FarmGrape();
-      _mapBuildingByID[B_MEAT]      = new FarmMeat();
-      _mapBuildingByID[B_FRUIT]     = new FarmFruit();
-      _mapBuildingByID[B_VEGETABLE] = new FarmVegetable();
-      // raw materials
-      _mapBuildingByID[B_IRON]   = new FactoryIron();
-      _mapBuildingByID[B_TIMBER] = new FactoryTimber();
-      _mapBuildingByID[B_CLAY]   = new FactoryClay();
-      _mapBuildingByID[B_MARBLE] = new FactoryMarble();
-      // factories
-      _mapBuildingByID[B_WEAPON]    = new FactoryWeapon();
-      _mapBuildingByID[B_FURNITURE] = new FactoryFurniture();
-      _mapBuildingByID[B_WINE]      = new FactoryWine();
-      _mapBuildingByID[B_OIL]       = new FactoryOil();
-      _mapBuildingByID[B_POTTERY]   = new FactoryPottery();
-      // utility
-      _mapBuildingByID[B_ENGINEER] = new BuildingEngineer();
-      _mapBuildingByID[B_DOCK]     = new Dock();
-      _mapBuildingByID[B_SHIPYARD] = new Shipyard();
-      _mapBuildingByID[B_WHARF]    = new Wharf();
-      _mapBuildingByID[B_TRIUMPHAL_ARCH]  = new TriumphalArch();
-      // religion
-      _mapBuildingByID[B_TEMPLE_CERES]   = new TempleCeres();
-      _mapBuildingByID[B_TEMPLE_NEPTUNE] = new TempleNeptune();
-      _mapBuildingByID[B_TEMPLE_MARS]    = new TempleMars();
-      _mapBuildingByID[B_TEMPLE_VENUS]   = new TempleVenus();
-      _mapBuildingByID[B_TEMPLE_MERCURE] = new TempleMercure();
-      _mapBuildingByID[B_BIG_TEMPLE_CERES]   = new BigTempleCeres();
-      _mapBuildingByID[B_BIG_TEMPLE_NEPTUNE] = new BigTempleNeptune();
-      _mapBuildingByID[B_BIG_TEMPLE_MARS]    = new BigTempleMars();
-      _mapBuildingByID[B_BIG_TEMPLE_VENUS]   = new BigTempleVenus();
-      _mapBuildingByID[B_BIG_TEMPLE_MERCURE] = new BigTempleMercure();
-      _mapBuildingByID[B_TEMPLE_ORACLE]  = new TempleOracle();
-      // health
-      _mapBuildingByID[B_BATHS]    = new Baths();
-      _mapBuildingByID[B_BARBER]   = new Barber();
-      _mapBuildingByID[B_DOCTOR]   = new Doctor();
-      _mapBuildingByID[B_HOSPITAL] = new Hospital();
-      // education
-      _mapBuildingByID[B_SCHOOL]  = new School();
-      _mapBuildingByID[B_LIBRARY] = new Library();
-      _mapBuildingByID[B_COLLEGE] = new College();
-      _mapBuildingByID[B_MISSION_POST] = new MissionPost();
-      // natives
-      _mapBuildingByID[B_NATIVE_HUT]    = new NativeHut();
-      _mapBuildingByID[B_NATIVE_CENTER] = new NativeCenter();
-      _mapBuildingByID[B_NATIVE_FIELD]  = new NativeField();
-
-      //damages
-      _mapBuildingByID[B_BURNING_RUINS ] = new BurningRuins();
-   }
-
-   std::map<BuildingType, LandOverlay*>::iterator mapIt;
-   mapIt = _mapBuildingByID.find(buildingType);
-   LandOverlay *res;
-
-   if (mapIt == _mapBuildingByID.end())
-   {
-      // THROW("Unknown building type:" << buildingType);
-      res = NULL;
-   }
-   else
-   {
-      res = mapIt->second;
-   }
-   return res;
-}
-
-
 
 Construction::Construction()
 {
@@ -381,9 +264,14 @@ Uint8 Construction::getMaxDistance2Road() const
 void Construction::burn()
 {
     _isDeleted = true;
-    Scenario::instance().getCity().burn( getTile().getIJ() );
+    Scenario::instance().getCity().disaster( getTile().getIJ(), DSTR_BURN );
 }
 
+void Construction::collapse()
+{
+    _isDeleted = true;
+    Scenario::instance().getCity().disaster( getTile().getIJ(), DSTR_COLLAPSE );
+}
 // I didn't decide what is the best approach: make Plaza as constructions or as upgrade to roads
 
 Plaza::Plaza()
@@ -458,7 +346,7 @@ void Garden::setTerrain(TerrainTile &terrain)
 {
   terrain.reset();
   terrain.setOverlay(this);
-  terrain.setBuilding(true);
+  terrain.setBuilding(true); // are gardens buildings or not???? try to investigate from original game
   terrain.setGarden(true);
 }
 
@@ -611,6 +499,7 @@ void Building::timeStep(const unsigned long time)
       if (_damageLevel >= 100)
       {
          std::cout << "Building destroyed!" << std::cout;
+         collapse();
       }
       if (_fireLevel >= 100)
       {
@@ -845,14 +734,13 @@ Granary::Granary()
 
    _goodStore.setCurrentQty(G_WHEAT, 300);
 
-   AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, rcCommerceGroup, 146, 7);
+   _animation.load(rcCommerceGroup, 146, 7);
    // do the animation in reverse
-   animLoader.fill_animation_reverse(_animation, rcCommerceGroup, 151, 6);
+   _animation.load(rcCommerceGroup, 151, 6);
    PicLoader& ldr = PicLoader::instance();
 
    _fgPictures[0] = &ldr.get_picture( rcCommerceGroup, 141);
-   _fgPictures[5] = _animation.get_current_picture();
+   _fgPictures[5] = _animation.getCurrentPicture();
    computePictures();
 }
 
@@ -864,9 +752,9 @@ Granary* Granary::clone() const
 
 void Granary::timeStep(const unsigned long time)
 {
-   _animation.nextFrame();
+   _animation.update( time );
 
-   _fgPictures[5] = _animation.get_current_picture();
+   _fgPictures[5] = _animation.getCurrentPicture();
 }
 
 SimpleGoodStore& Granary::getGoodStore()
@@ -1008,8 +896,8 @@ Academy::Academy()
 {
   setType(B_MILITARY_ACADEMY);
   _size = 3;
-  setMaxWorkers(20);
-  setWorkers(0);
+  setMaxWorkers( 20 );
+  setWorkers( 0 );
   setPicture(PicLoader::instance().get_picture(rcSecurityGroup, 18));
 }
 
@@ -1052,8 +940,6 @@ NativeHut::NativeHut()
 void NativeHut::serialize(OutputSerialStream &stream)  {Building::serialize(stream);}
 
 void NativeHut::unserialize(InputSerialStream &stream) {Building::unserialize(stream);}
-
-
 
 NativeCenter::NativeCenter()
 {
@@ -1112,21 +998,20 @@ Dock::Dock()
   _size = 2;
   setPicture(PicLoader::instance().get_picture("transport", 5));  
 
-  AnimLoader animLoader(PicLoader::instance());
-  animLoader.fill_animation(_animation, "transport", 6, 11);
+  _animation.load( "transport", 6, 11);
   // now fill in reverse order
-  animLoader.fill_animation_reverse(_animation, "transport", 15, 10);
+  _animation.load( "transport", 15, 10, Animation::reverse );
   
-  animLoader.change_offset(_animation, 107, 61);
+  _animation.setOffset( Point( 107, 61 ) );
   _fgPictures.resize(1);  
 }
 
 void Dock::timeStep(const unsigned long time)
 {
-  _animation.nextFrame();
+  _animation.update( time );
   
   // takes current animation frame and put it into foreground
-  _fgPictures.at(0) = _animation.get_current_picture(); 
+  _fgPictures.at(0) = _animation.getCurrentPicture(); 
 }
 
 
@@ -1143,11 +1028,10 @@ TriumphalArch::TriumphalArch()
   _size = 3;
   setPicture(PicLoader::instance().get_picture("land3a", 43));
   getPicture().set_offset(0,116);
-  AnimLoader animLoader(PicLoader::instance());
-  animLoader.fill_animation(_animation, "land3a", 44, 1);
-  animLoader.change_offset(_animation, 63, 97);
+  _animation.load("land3a", 44, 1);
+  _animation.setOffset( Point( 63, 97 ) );
   _fgPictures.resize(1);
-  _fgPictures.at(0) = _animation.get_current_picture(); 
+  _fgPictures.at(0) = _animation.getCurrentPicture(); 
 }
 
 TriumphalArch* TriumphalArch::clone() const

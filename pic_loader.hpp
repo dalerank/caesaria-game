@@ -100,22 +100,7 @@ private:
    std::map<std::string, Picture> _resources;  // key=image name, value=picture
 };
 
-
-
-class AnimLoader
-{
-public:
-   AnimLoader(PicLoader &loader);
-
-   // get animation from resources. example: prefix=buildings/Commerce , start=18, number=5, step=1
-   // it will return 5 Pictures (18, 19, 20, 21, 22)
-   void fill_animation(Animation& oAnim, const std::string &prefix, const int start, const int number, const int step = 1);
-   void change_offset(Animation& ioAnim, const int xoffset, const int yoffset);
-   void fill_animation_reverse(Animation&, const std::string&, const int, const int, const int step = 1);
-private:
-   PicLoader* _loader;
-};
-
+class Animation;
 
 struct WalkerAction
 {
@@ -136,7 +121,7 @@ public:
    // prefix: image prefix
    // start: index of the first frame
    // size: number of frames for the walking movement
-   void fillWalk(std::map<WalkerAction, Animation> &ioMap, const std::string &prefix, const int start, const int size);
+   void fillWalk( std::map<WalkerAction, Animation> &ioMap, const std::string &prefix, const int start, const int size);
 
    const std::map<WalkerAction, Animation>& getAnimationMap(const WalkerGraphicType walkerGraphic);
 

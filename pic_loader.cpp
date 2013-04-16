@@ -34,6 +34,8 @@
 #include "oc3_positioni.h"
 #include "exception.hpp"
 #include "sdl_facade.hpp"
+#include "oc3_resourcegroup.h"
+#include "oc3_animation.h"
 
 namespace {
 static const char* rcCartsGroup    = "carts";
@@ -71,13 +73,14 @@ PicMetaData::PicMetaData()
    setRange("land3a", 47, 92, info);
    setRange("plateau", 1, 44, info);
    setRange(rcCommerceGroup, 1, 167, info);
-   setRange("transport", 1, 93, info);
-   setRange("security", 1, 61, info);
+   setRange( "transport", 1, 93, info);
+   setRange( "security", 1, 61, info);
    setRange(rcEntertaimentGroup, 1, 116, info);
    setRange("housng1a", 1, 51, info);
    setRange(rcWarehouseGroup, 19, 83, info);
-   setRange("utilitya", 1, 42, info);
+   setRange( ResourceGroup::utilitya, 1, 42, info);
    setRange("govt", 1, 10, info);
+   setRange( ResourceGroup::sprites, 1, 8, info );
 
    setOne(rcEntertaimentGroup, 12, 37, 62); // amphitheater
    setOne(rcEntertaimentGroup, 35, 34, 37); // theater
@@ -492,45 +495,6 @@ Picture& PicLoader::get_pic_by_id(const int imgId)
 }
 
 
-AnimLoader::AnimLoader(PicLoader &loader)
-{
-   _loader = &loader;
-}
-
-void AnimLoader::fill_animation(Animation &oAnim, const std::string &prefix, const int start, const int number, const int step)
-{
-   std::vector<Picture*> pictures;
-   for (int i = 0; i < number; ++i)
-   {
-      Picture &pic = _loader->get_picture(prefix, start+i*step);
-      pictures.push_back(&pic);
-   }
-   oAnim.init(pictures);
-}
-
-void AnimLoader::fill_animation_reverse(Animation &oAnim, const std::string &prefix, const int start, const int number, const int step)
-{
-   std::vector<Picture*> pictures;
-   for (int i = 0; i < number; ++i)
-   {
-      Picture &pic = _loader->get_picture(prefix, start - i * step);
-      pictures.push_back(&pic);
-   }
-   oAnim.init(pictures);
-}
-
-void AnimLoader::change_offset(Animation &ioAnim, const int xoffset, const int yoffset)
-{
-   std::vector<Picture*>::iterator it;
-   for (it = ioAnim.get_pictures().begin(); it != ioAnim.get_pictures().end(); ++it)
-   {
-      Picture &pic = **it;
-      pic.set_offset(xoffset, yoffset);
-   }
-}
-
-
-
 bool operator<(const WalkerAction &v1, const WalkerAction &v2)
 {
    if (v1._action!=v2._action)
@@ -675,27 +639,25 @@ void WalkerLoader::loadAll()
 
 void WalkerLoader::fillWalk(std::map<WalkerAction, Animation> &ioMap, const std::string &prefix, const int start, const int size)
 {
-   AnimLoader animLoader(PicLoader::instance());
-
    WalkerAction action;
    action._action = WA_MOVE;
 
    action._direction = D_NORTH;
-   animLoader.fill_animation(ioMap[action], prefix, start  , size, 8);
+   ioMap[action].load( prefix, start, size, Animation::straight, 8);
    action._direction = D_NORTH_EAST;
-   animLoader.fill_animation(ioMap[action], prefix, start+1, size, 8);
+   ioMap[action].load( prefix, start+1, size, Animation::straight, 8);
    action._direction = D_EAST;
-   animLoader.fill_animation(ioMap[action], prefix, start+2, size, 8);
+   ioMap[action].load( prefix, start+2, size, Animation::straight, 8);
    action._direction = D_SOUTH_EAST;
-   animLoader.fill_animation(ioMap[action], prefix, start+3, size, 8);
+   ioMap[action].load( prefix, start+3, size, Animation::straight, 8);
    action._direction = D_SOUTH;
-   animLoader.fill_animation(ioMap[action], prefix, start+4, size, 8);
+   ioMap[action].load( prefix, start+4, size, Animation::straight, 8);
    action._direction = D_SOUTH_WEST;
-   animLoader.fill_animation(ioMap[action], prefix, start+5, size, 8);
+   ioMap[action].load( prefix, start+5, size, Animation::straight, 8);
    action._direction = D_WEST;
-   animLoader.fill_animation(ioMap[action], prefix, start+6, size, 8);
+   ioMap[action].load( prefix, start+6, size, Animation::straight, 8);
    action._direction = D_NORTH_WEST;
-   animLoader.fill_animation(ioMap[action], prefix, start+7, size, 8);
+   ioMap[action].load( prefix, start+7, size, Animation::straight, 8);
 }
 
 const std::map<WalkerAction, Animation>& WalkerLoader::getAnimationMap(const WalkerGraphicType walkerGraphic)

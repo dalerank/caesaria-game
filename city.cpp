@@ -26,6 +26,7 @@
 #include "exception.hpp"
 #include "oc3_emigrant.h"
 #include "oc3_positioni.h"
+#include "oc3_constructionmanager.h"
 
 class City::Impl
 {
@@ -315,7 +316,7 @@ void City::build( Construction &buildInstance, const TilePos& pos )
     build( buildInstance, pos.getI(), pos.getJ() );
 }
 
-void City::burn( const TilePos& pos )
+void City::disaster( const TilePos& pos, DisasterType type )
 {
     TerrainTile& terrain = _tilemap.at( pos ).get_terrain();
 
@@ -329,25 +330,14 @@ void City::burn( const TilePos& pos )
 
         bool deleteRoad = false;
 
-        /*if( terrain.isRoad() ) 
-            deleteRoad = true; */
-
         std::list<Tile*> clearedTiles = _tilemap.getFilledRectangle(i1, j1, i1+size-1, j1+size-1);
         for (std::list<Tile*>::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
         {
-            Construction* ruins = dynamic_cast<Construction*>( LandOverlay::getInstance( B_BURNING_RUINS ) );
+            BuildingType dstr2constr[] = { B_BURNING_RUINS, B_COLLAPSED_RUINS };
+            Construction* ruins = dynamic_cast<Construction*>( ConstructionManager::getInstance().create( dstr2constr[type] ) );
             if( ruins )
                 build( *ruins, (*itTile)->getIJ() );
        }
-
-        // recompute roads;
-        // there is problem that we NEED to recompute all roads map for all buildings
-        // because MaxDistance2Road can be any number
-
-//         if( deleteRoad )
-//         {
-//             recomputeRoadsForAll();     
-//         }
     }
 }
 

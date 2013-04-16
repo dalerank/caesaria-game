@@ -13,12 +13,25 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
+#ifndef __OPENCAESAR3_CONSTRUCTIONMANAGER_H_INCLUDE_
+#define __OPENCAESAR3_CONSTRUCTIONMANAGER_H_INCLUDE_
 
-#include "oc3_resourcegroup.h"
+#include "enums.hpp"
+#include "oc3_scopedptr.h"
 
-const char* ResourceGroup::panelBackground = "paneling";
-const char* ResourceGroup::menuMiddleIcons = "panelwindows";
-const char* ResourceGroup::land2a = "land2a";
-const char* ResourceGroup::sprites = "sprites";
-const char* ResourceGroup::buildingEngineer = "transport";  
-const char* ResourceGroup::utilitya      = "utilitya";
+class LandOverlay;
+
+class ConstructionManager
+{
+public:
+    static ConstructionManager& getInstance();
+    LandOverlay* create(const BuildingType buildingType);
+
+private:
+    ConstructionManager();
+
+    class Impl;
+    ScopedPtr< Impl > _d;
+};
+
+#endif  //__OPENCAESAR3_CONSTRUCTIONMANAGER_H_INCLUDE_

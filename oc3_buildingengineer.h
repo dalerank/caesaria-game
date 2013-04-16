@@ -13,12 +13,22 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
+#ifndef __OPENCAESAR3_BUILDINGENGINEER_H_INCLUDE_
+#define __OPENCAESAR3_BUILDINGENGINEER_H_INCLUDE_
 
-#include "oc3_resourcegroup.h"
+#include "service_building.hpp"
 
-const char* ResourceGroup::panelBackground = "paneling";
-const char* ResourceGroup::menuMiddleIcons = "panelwindows";
-const char* ResourceGroup::land2a = "land2a";
-const char* ResourceGroup::sprites = "sprites";
-const char* ResourceGroup::buildingEngineer = "transport";  
-const char* ResourceGroup::utilitya      = "utilitya";
+class BuildingEngineer : public ServiceBuilding
+{
+public:
+    BuildingEngineer();
+    BuildingEngineer* clone() const;
+    void timeStep(const unsigned long time);
+
+    void deliverService();
+
+private:
+    int _workerCount;
+};
+
+#endif

@@ -27,12 +27,14 @@
 #include "oc3_pictureconverter.h"
 #include "oc3_event.h"
 #include "oc3_roadpropagator.h"
+#include "sdl_facade.hpp"
 
 class GuiTilemap::Impl
 {
 public:
+  typedef std::vector< Picture* > Pictures;
   Tiles postTiles;  // these tiles have draw over "normal" tilemap tiles!
-  Picture buildInstncePicture;
+  Pictures previewToolPictures;
   Point lastCursorPos;
   Point startCursorPos;
   bool  lmbPressed;
@@ -263,13 +265,13 @@ TilemapArea &GuiTilemap::getMapArea()
    return *_mapArea;
 }
 
-void GuiTilemap::updatePreviewTiles()
+void GuiTilemap::updatePreviewTiles( bool force )
 {
     if( !_buildInstance && !_removeTool )
         return;
 
     Tile* curTile = getTileXY( _d->lastCursorPos, true );
-    if( curTile && _d->lastTilePos == curTile->getIJ() )
+    if( curTile && !force && _d->lastTilePos == curTile->getIJ() )
         return;
 
     _d->lastTilePos = curTile->getIJ();
@@ -384,14 +386,14 @@ void GuiTilemap::handleEvent( NEvent& event )
             // left button
             if (_removeTool)
             {
-                _clearLand();                
-                updatePreviewTiles();
+                _clearLand();  
+                _d->startCursorPos = _d->lastCursorPos;
+                updatePreviewTiles( true );
             }
             else if (_buildInstance != NULL)
             {
-                _buildAll();
-               
-                updatePreviewTiles();
+                _buildAll();               
+                updatePreviewTiles( true );
             }
             else
             {
@@ -474,9 +476,19 @@ void GuiTilemap::setRemoveTool()
 
 void GuiTilemap::discardPreview()
 {
-   for( Tiles::iterator it=_d->postTiles.begin(); it != _d->postTiles.end(); it++ )
-        delete *it;
-   _d->postTiles.clear();
+    for( Impl::Pictures::iterator it=_d->previewToolPictures.begin(); it != _d->previewToolPictures.end(); it++ )
+    {
+        SdlFacade::instance().deletePicture( **it );
+    }
+
+    _d->previewToolPictures.clear();
+
+    for( Tiles::iterator it=_d->postTiles.begin(); it != _d->postTiles.end(); it++ )
+    {
+         delete *it;
+    }
+
+    _d->postTiles.clear();
 }
 
 void GuiTilemap::checkPreviewBuild(const int i, const int j)
@@ -489,7 +501,8 @@ void GuiTilemap::checkPreviewBuild(const int i, const int j)
       int size = overlay.getSize();
       if( overlay.canBuild(i, j) )
       {
-          PictureConverter::rgbBalance( _d->buildInstncePicture, overlay.getPicture(), -255, +0, -255 );
+          _d->previewToolPictures.push_back( new Picture() );
+          PictureConverter::rgbBalance( *_d->previewToolPictures.back(), overlay.getPicture(), -255, +0, -255 );
 
           Tile *masterTile=0;
           for (int dj = 0; dj<size; ++dj)
@@ -503,7 +516,7 @@ void GuiTilemap::checkPreviewBuild(const int i, const int j)
                       // this is the masterTile
                       masterTile = tile;
                   }
-                  tile->set_picture( &_d->buildInstncePicture );
+                  tile->set_picture( _d->previewToolPictures.back() );
                   tile->set_master_tile(masterTile);
                   TerrainTile &terrain = tile->get_terrain();
                   terrain.setOverlay(&overlay);
@@ -561,7 +574,8 @@ void GuiTilemap::checkPreviewRemove(const int i, const int j)
             }
             else
             {
-                PictureConverter::rgbBalance( _d->buildInstncePicture, overlay->getPicture(), +0, -255, -255 );
+                _d->previewToolPictures.push_back( new Picture() );
+                PictureConverter::rgbBalance( *_d->previewToolPictures.back(), overlay->getPicture(), +0, -255, -255 );
 
                 // remove the overlay, and make single tile of cleared land
                 int size = overlay->getSize();
@@ -580,10 +594,10 @@ void GuiTilemap::checkPreviewRemove(const int i, const int j)
                             masterTile = tile;
                         }                        
 
-                        tile->set_picture( &_d->buildInstncePicture );
+                        tile->set_picture( _d->previewToolPictures.back() );
                         tile->set_master_tile( masterTile );  // single tile
                         TerrainTile &terrain = tile->get_terrain();
-                        terrain.setOverlay( overlay );
+                        terrain.setOverlay( 0 );
                         _d->postTiles.push_back( tile );
                     }
                 }

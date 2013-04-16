@@ -33,60 +33,50 @@ TerrainTile::TerrainTile()
 
 void TerrainTile::reset()
 {
-   _isWater = false;
-   _isRock = false;
-   _isTree = false;
-   _isBuilding = false;
-   _isRoad = false;
-   _overlay = NULL; // BUG? What will be with old overlay?
+  _isWater    = false;
+  _isRock     = false;
+  _isTree     = false;
+  _isBuilding = false;
+  _isRoad     = false;
+  _isAqueduct = false;
+  _isGarden   = false;
+  _overlay    = NULL; // BUG? What will be with old overlay?
 }
 
 bool TerrainTile::isConstructible() const
 {
-   return !(_isWater || _isRock || _isTree || _isBuilding || _isRoad);
+  return !(_isWater || _isRock || _isTree || _isBuilding || _isRoad);
 }
 
 bool TerrainTile::isDestructible() const
 {
-   return (_isTree || _isBuilding || _isRoad);
+  return (_isTree || _isBuilding || _isRoad);
 }
 
 void TerrainTile::setOverlay(LandOverlay *overlay)
 {
-   _overlay = overlay;
+  _overlay = overlay;
 }
 
 LandOverlay *TerrainTile::getOverlay() const
 {
-   return _overlay;
+  return _overlay;
 }
 
 int TerrainTile::encode() const
 {
-   int res = 0;
-   if (isTree())
-   {
-      res += 0x1;
-      res += 0x10;
-   }
-   if (isRock())
-   {
-      res += 0x2;
-   }
-   if (isWater())
-   {
-      res += 0x4;
-   }
-   if (isBuilding())
-   {
-      res += 0x8;
-   }
-   if (isRoad())
-   {
-      res += 0x40;
-   }
+  int res = 0;
+  if (isTree())
+  {
+    res += 0x1;
+    res += 0x10;
+  }
+  if (isRock())     { res +=  0x2; }
+  if (isWater())    { res +=  0x4; }
+  if (isBuilding()) { res +=  0x8; }
+  if (isRoad())     { res += 0x40; }
 
-   return res;
+  return res;
 }
 
 void TerrainTile::decode(const int bitset)

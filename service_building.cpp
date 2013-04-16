@@ -60,12 +60,12 @@ void ServiceBuilding::timeStep(const unsigned long time)
       _serviceTimer -= 1;
    }
 
-   _animation.nextFrame();
-   Picture *pic = _animation.get_current_picture();
+   _animation.update( time );
+   Picture *pic = _animation.getCurrentPicture();
    if (pic != NULL)
    {
       int level = _fgPictures.size()-1;
-      _fgPictures[level] = _animation.get_current_picture();
+      _fgPictures[level] = _animation.getCurrentPicture();
    }
 }
 
@@ -107,23 +107,6 @@ void ServiceBuilding::unserialize(InputSerialStream &stream)
    _serviceTimer = stream.read_int(2, 0, 1000);
    _serviceDelay = stream.read_int(2, 0, 1000);
    _serviceRange = stream.read_int(2, 0, 65535);
-}
-
-
-std::map<ServiceType, ServiceBuilding*> ServiceBuilding::_specimen;
-
-std::map<ServiceType, ServiceBuilding*>& ServiceBuilding::getSpecimen()
-{
-   if (_specimen.empty())
-   {
-      _specimen[S_WELL] = new BuildingWell();
-      _specimen[S_FOUNTAIN] = new BuildingFountain();
-      _specimen[S_ENGINEER] = new BuildingEngineer();
-      _specimen[S_PREFECT] = new BuildingPrefect();
-      _specimen[S_THEATER] = new BuildingTheater();
-   }
-
-   return _specimen;
 }
 
 GuiInfoBox* ServiceBuilding::makeInfoBox( Widget* parent )
@@ -170,10 +153,9 @@ BuildingFountain::BuildingFountain() : ServiceBuilding(S_FOUNTAIN)
    std::cout << id << std::endl;
    
    setPicture(PicLoader::instance().get_picture("utilitya", 26));
-   AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, "utilitya", 27, 7);
+   _animation.load( "utilitya", 27, 7);
    //animLoader.fill_animation_reverse(_animation, "utilitya", 25, 7);
-   animLoader.change_offset(_animation, 14, 26);
+   _animation.setOffset( Point( 14, 26 ) );
   _fgPictures.resize(1);
    
   //2 10 18 26
@@ -211,19 +193,6 @@ void BuildingFountain::deliverService()
    }
 }
 
-BuildingEngineer::BuildingEngineer() : ServiceBuilding(S_ENGINEER)
-{
-   setType(B_ENGINEER);
-   _size = 1;
-   setPicture(PicLoader::instance().get_picture("transport", 56));
-}
-
-BuildingEngineer* BuildingEngineer::clone() const
-{
-   return new BuildingEngineer(*this);
-}
-
-
 BuildingPrefect::BuildingPrefect() : ServiceBuilding(S_PREFECT)
 {
    setType(B_PREFECT);
@@ -235,7 +204,6 @@ BuildingPrefect* BuildingPrefect::clone() const
 {
    return new BuildingPrefect(*this);
 }
-
 
 EntertainmentBuilding::EntertainmentBuilding(const ServiceType &service) : ServiceBuilding(service)
 {
@@ -284,9 +252,9 @@ BuildingTheater::BuildingTheater() : EntertainmentBuilding(S_THEATER)
    _size = 2;
    setPicture(PicLoader::instance().get_picture("entertainment", 13));
 
-   AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, "entertainment", 14, 21);
-   animLoader.change_offset(_animation, 60, 36);
+   _animation.load("entertainment", 14, 21);
+   _animation.setOffset( Point( 60, 36 ) );
+  
    _fgPictures.resize(2);
    _fgPictures[0] = &PicLoader::instance().get_picture("entertainment", 35);
 }
@@ -303,9 +271,8 @@ BuildingAmphiTheater::BuildingAmphiTheater() : EntertainmentBuilding(S_AMPHITHEA
    _size = 3;
    setPicture(PicLoader::instance().get_picture("entertainment", 1));
 
-   AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, "entertainment", 2, 10);
-   animLoader.change_offset(_animation, 100, 49);
+   _animation.load("entertainment", 2, 10);
+   _animation.setOffset( Point( 100, 49 ) );
    _fgPictures.resize(2);
    _fgPictures[0] = &PicLoader::instance().get_picture("entertainment", 12);
 }
@@ -322,9 +289,8 @@ BuildingCollosseum::BuildingCollosseum() : EntertainmentBuilding(S_COLLOSSEUM)
    _size = 5;
    setPicture(PicLoader::instance().get_picture("entertainment", 36));
 
-   AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, "entertainment", 37, 13);
-   animLoader.change_offset(_animation, 122, 81);
+   _animation.load("entertainment", 37, 13);
+   _animation.setOffset( Point( 122, 81 ) );
    _fgPictures.resize(2);
    _fgPictures[0] = &PicLoader::instance().get_picture("entertainment", 50);
 }
@@ -492,9 +458,8 @@ TempleOracle::TempleOracle() : ServiceBuilding(S_TEMPLE_ORACLE)
    _size = 2;
    setPicture(PicLoader::instance().get_picture("security", 55));
    
-  AnimLoader animLoader(PicLoader::instance());
-  animLoader.fill_animation(_animation, "security", 56, 6);
-  animLoader.change_offset(_animation, 9, 30);
+  _animation.load("security", 56, 6);
+  _animation.setOffset( Point( 9, 30 ) );
   _fgPictures.resize(1);   
 }
 
@@ -502,7 +467,6 @@ TempleOracle* TempleOracle::clone() const
 {
    return new TempleOracle(*this);
 }
-
 
 School::School() : ServiceBuilding(S_SCHOOL)
 {
@@ -549,9 +513,8 @@ Baths::Baths() : ServiceBuilding(S_BATHS)
    _size = 2;
    setPicture(PicLoader::instance().get_picture("security", 21));
 
-   AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, "security", 22, 10);
-   animLoader.change_offset(_animation, 23, 25);
+   _animation.load( "security", 22, 10);
+   _animation.setOffset( Point( 23, 25 ) );
    _fgPictures.resize(2);
 }
 
@@ -646,8 +609,7 @@ Market::Market() : ServiceBuilding(S_MARKET)
    _goodStore.setMaxQty(G_POTTERY, 300);
    _goodStore.setCurrentQty(G_WHEAT, 200);
 
-   AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, "commerce", 2, 10);
+   _animation.load( "commerce", 2, 10);
 }
 
 Market* Market::clone() const

@@ -28,6 +28,7 @@
 #include "enums.hpp"
 #include "good.hpp"
 #include "oc3_scopedptr.h"
+#include "oc3_animation.h"
 
 class Widget;
 class GuiInfoBox;
@@ -59,7 +60,6 @@ public:
 
    BuildingType getType() const;
    void setType(const BuildingType buildingType);
-   static LandOverlay* getInstance(const BuildingType buildingType);  // get an instance of the given type
 
    void serialize(OutputSerialStream &stream);
    static LandOverlay& unserialize_all(InputSerialStream &stream);
@@ -90,6 +90,7 @@ public:
    virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
    virtual void build(const int i, const int j);
    virtual void burn();
+   virtual void collapse();
    const std::list<Tile*>& getAccessRoads() const;  // return all road tiles adjacent to the construction
    virtual void computeAccessRoads();  
    virtual Uint8 getMaxDistance2Road() const; // virtual because HOUSE has different behaviour
