@@ -22,7 +22,7 @@
 #include <string>
 #include <map>
 #include <list>
-#include <enums.hpp>
+#include "enums.hpp"
 
 
 
@@ -47,7 +47,6 @@ public:
    // returns True if patrician villa
    bool isPatrician();
 
-   // returns True if the house satisfies this house_level
    bool checkHouse(House &house);
 
    int computeEntertainmentLevel(House &house);

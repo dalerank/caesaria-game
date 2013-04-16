@@ -27,8 +27,6 @@
 #include "gui_paneling.hpp"
 #include "oc3_positioni.h"
 #include "picture.hpp"
-#include "custom_event.hpp"
-
 
 WidgetEvent::WidgetEvent()
 {
@@ -241,13 +239,11 @@ void Widget::handleEvent(SDL_Event &event)
       }
       _underMouse = underMouse;  // save the new state
    }
-   else if (event.type == SDL_USEREVENT && event.user.code == SDL_USER_MOUSECLICK)
+   else if (event.type == SDL_MOUSEBUTTONDOWN)
    {
       // mouse click
-      SDL_USER_MouseClickEvent &uevent = *(SDL_USER_MouseClickEvent*)event.user.data1;
-
       // check if the mouse is on the widget (maybe the widget did not receive former mouseMove events)
-      bool underMouse = contains(uevent.x, uevent.y);
+      bool underMouse = contains(event.button.x, event.button.y);
       if (underMouse && ! _underMouse)
       {
          onMouseEnter();
@@ -258,7 +254,7 @@ void Widget::handleEvent(SDL_Event &event)
       }
       _underMouse = underMouse;  // save the new state
 
-      if (uevent.button == SDL_BUTTON_LEFT)
+      if (event.button.button == SDL_BUTTON_LEFT)
       {
          if (_underMouse)
          {
@@ -324,32 +320,15 @@ Widget* WidgetGroup::get_widget_at(const int x, const int y)
 void WidgetGroup::handleEvent(SDL_Event &event)
 {
    SDL_Event event2 = event;
-   SDL_USER_MouseClickEvent uevent_click;
-   SDL_USER_MouseDragEvent uevent_drag;
-
-   // translate events relative to (x, y)
    if (event.type == SDL_MOUSEMOTION)
    {
       event2.motion.x -= _x;
       event2.motion.y -= _y;
    }
-   else if (event.type == SDL_USEREVENT && event.user.code == SDL_USER_MOUSECLICK)
+   else if (event.type == SDL_MOUSEBUTTONDOWN)
    {
-      // mouse click
-      uevent_click = *(SDL_USER_MouseClickEvent*)event.user.data1;
-      uevent_click.x -= _x;
-      uevent_click.y -= _y;
-      event2.user.data1 = &uevent_click;
-   }
-   else if (event.type == SDL_USEREVENT && event.user.code == SDL_USER_MOUSEDRAG)
-   {
-      // mouse drag
-      uevent_drag = *(SDL_USER_MouseDragEvent*)event.user.data1;
-      uevent_drag.x1 -= _x;
-      uevent_drag.y1 -= _y;
-      uevent_drag.x2 -= _x;
-      uevent_drag.y2 -= _y;
-      event2.user.data1 = &uevent_drag;
+      event2.button.x -= _x;
+      event2.button.y -= _y;
    }
 
    for (std::list<Widget*>::iterator itWidget = _widget_list.begin(); itWidget != _widget_list.end(); ++itWidget)

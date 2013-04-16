@@ -33,7 +33,6 @@
 #include "city.hpp"
 #include "scenario.hpp"
 #include "oc3_positioni.h"
-#include "custom_event.hpp"
 
 namespace {
 static const char* panelBgName = "paneling";
@@ -424,12 +423,11 @@ BuildMenu::BuildMenu()
 
 void BuildMenu::handleEvent(SDL_Event &event)
 {
-   if (event.type == SDL_USEREVENT && event.user.code == SDL_USER_MOUSECLICK)
+   if (event.type == SDL_MOUSEBUTTONDOWN)
    {
       // mouse click
-      SDL_USER_MouseClickEvent &uevent = *(SDL_USER_MouseClickEvent*)event.user.data1;
 
-      if (uevent.button == SDL_BUTTON_RIGHT)
+      if (event.button.button == SDL_BUTTON_RIGHT)
       {
          // right click
          _isDeleted = true;

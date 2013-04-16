@@ -10,8 +10,6 @@ The game is still not quite playable
 Releases:
 03apr2013: added many buildings
 
-02apr2013: implement click&drag to build houses and clear land
-
 02mar2013: first binary release for windows
            start implement the menubar with money/population/date
            use the slim interface for build menu (regression: no more access to save/load game)

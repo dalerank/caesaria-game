@@ -29,7 +29,6 @@
 #include "gui_paneling.hpp"
 #include "building_data.hpp"
 #include "house_level.hpp"
-#include "custom_event.hpp"
 
 static const char* rcPaneling = "paneling";
 
@@ -147,12 +146,9 @@ void GuiInfoBox::handleEvent(SDL_Event &event)
          _hoverButton = hoverButton;
       }
    }
-   if (event.type == SDL_USEREVENT && event.user.code == SDL_USER_MOUSECLICK)
+   if (event.type == SDL_MOUSEBUTTONDOWN)
    {
-      // mouse click
-      SDL_USER_MouseClickEvent &uevent = *(SDL_USER_MouseClickEvent*)event.user.data1;
-
-      int button = uevent.button;
+      int button = event.button.button;
       // int x = event.button.x;
       // int y = event.button.y;
       if (button == SDL_BUTTON_RIGHT)

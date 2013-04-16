@@ -5,16 +5,9 @@
 #include "picture.hpp"
 #include "oc3_math.h"
 
-
-PictureConverter *PictureConverter::_instance = NULL;
-
-PictureConverter &PictureConverter::instance()
+PictureConverterPtr PictureConverter::create()
 {
-   if (_instance == NULL)
-   {
-      _instance = new PictureConverter();
-   }
-   return *_instance;
+    return PictureConverterPtr( new PictureConverter() );
 }
 
 

@@ -209,8 +209,9 @@ void ScreenGame::handleEvent(SDL_Event &event)
    }
 
    bool isPreview = true;
-   if (event.type == SDL_MOUSEMOTION)
+   switch (event.type)
    {
+   case SDL_MOUSEMOTION:
       if (_menu->contains(event.button.x, event.button.y))
       {
          isPreview = false;
@@ -218,12 +219,9 @@ void ScreenGame::handleEvent(SDL_Event &event)
       _guiTilemap.setPreview(isPreview);
       _menu->handleEvent(event);
       _guiTilemap.handleEvent(event);
-   }
-   else if (event.type == SDL_USEREVENT && event.user.code == SDL_USER_MOUSECLICK)
-   {
-      SDL_USER_MouseClickEvent &uevent = *(SDL_USER_MouseClickEvent*)event.user.data1;
-
-      if (_menu->contains(uevent.x, uevent.y))
+      break;
+   case SDL_MOUSEBUTTONDOWN:
+      if (_menu->contains(event.button.x, event.button.y))
       {
          _menu->handleEvent(event);
       }
@@ -231,22 +229,8 @@ void ScreenGame::handleEvent(SDL_Event &event)
       {
          _guiTilemap.handleEvent(event);
       }
-   }
-   else if (event.type == SDL_USEREVENT && event.user.code == SDL_USER_MOUSEDRAG)
-   {
-      SDL_USER_MouseDragEvent &uevent = *(SDL_USER_MouseDragEvent*)event.user.data1;
-
-      if (_menu->contains(uevent.x1, uevent.y1))
-      {
-         _menu->handleEvent(event);
-      }
-      else
-      {
-         _guiTilemap.handleEvent(event);
-      }
-   }
-   else if (event.type == SDL_KEYDOWN)
-   {
+      break;
+   case SDL_KEYDOWN:
       if (event.key.keysym.sym == SDLK_UP)
       {
 //	 std::cout << "SDLK_UP was pressed" << std::endl;
@@ -272,6 +256,8 @@ void ScreenGame::handleEvent(SDL_Event &event)
 //	 std::cout << "SDLK_ESCAPE was pressed" << std::endl;
          stop();
       }
+      
+      break;
    }
 
 }
