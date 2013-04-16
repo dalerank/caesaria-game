@@ -107,7 +107,7 @@ void Factory::timeStep(const unsigned long time)
 
    _progress += work;
 
-   if (_progress > 100.0)
+   if( _progress > 100.0 )
    {
       if (inStock._goodType != G_NONE)
       {
@@ -118,22 +118,19 @@ void Factory::timeStep(const unsigned long time)
       _progress -= 100.0;
    }
 
-   if ((time&1) == 0)
+   _animation.update( time );
+   Picture *pic = _animation.get_current_picture();
+   if (pic != NULL)
    {
-      _animation.nextFrame();
-      Picture *pic = _animation.get_current_picture();
-      if (pic != NULL)
-      {
-         // animation of the working factory
-         int level = _fgPictures.size()-1;
-         _fgPictures[level] = _animation.get_current_picture();
-      }
-
-      // if (inStock._goodType != G_NONE && inStock._currentQty >= 0)
-      // {
-      //    _fgPictures[0] = _stockPicture;
-      // }
+      // animation of the working factory
+      int level = _fgPictures.size()-1;
+      _fgPictures[level] = _animation.get_current_picture();
    }
+
+   // if (inStock._goodType != G_NONE && inStock._currentQty >= 0)
+   // {
+   //    _fgPictures[0] = _stockPicture;
+   // }   
 }
 
 

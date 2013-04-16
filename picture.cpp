@@ -109,10 +109,13 @@ bool Picture::isValid() const
     return _surface != 0;
 }
 
-void Animation::init(const std::vector<Picture*> &pictures)
+void Animation::init(const std::vector<Picture*> &pictures, bool loop, unsigned int delay)
 {
    _pictures = pictures;
    _animIndex = 0;
+   _loop = loop;
+   _frameDelay = 0;
+   _lastTimeUpdate = 0;
 }
 
 std::vector<Picture*>& Animation::get_pictures()
@@ -125,29 +128,49 @@ const std::vector<Picture*>& Animation::get_pictures() const
    return _pictures;
 }
 
-void Animation::nextFrame()
-{
-   _animIndex += 1;
+void Animation::update( unsigned int time )
+{  
+    if( _animIndex < 0 )
+        return;
+
+    if( _frameDelay > 0 )
+    {
+        if( time - _lastTimeUpdate < _frameDelay )
+            return;
+    }
+
+    _animIndex += 1;
+    _lastTimeUpdate = time;
+
+    if( _animIndex >= _pictures.size() ) 
+    {
+        _animIndex = _loop ? 0 : -1;
+    }
 }
 
 Picture* Animation::get_current_picture()
 {
-   if (_pictures.size() == 0)
-   {
-      return NULL;
-   }
-
-   if (_animIndex >= _pictures.size())
-   {
-      _animIndex = 0;
-   }
-
-   return _pictures[_animIndex];
+   return (_pictures.size() > 0 && _animIndex >= 0) ? _pictures[_animIndex] : 0;
 }
 
 int Animation::getCurrentIndex() const
 {
     return _animIndex;
+}
+
+Animation::Animation() : _loop( true )
+{
+    
+}
+
+void Animation::setFrameDelay( const unsigned int delay )
+{
+    _frameDelay = delay;
+}
+
+void Animation::setLoop( bool loop )
+{
+    _loop = loop;
 }
 
 Font::Font(TTF_Font &ttfFont, SDL_Color &color)

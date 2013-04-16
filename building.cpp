@@ -689,7 +689,7 @@ void Reservoir::timeStep(const unsigned long time)
         return;
     }
 
-    _animation.nextFrame();
+    _animation.update( time );
     
     // takes current animation frame and put it into foreground
     _fgPictures[ 0 ] = _animation.get_current_picture(); 
@@ -1097,7 +1097,7 @@ Granary* Granary::clone() const
 
 void Granary::timeStep(const unsigned long time)
 {
-   _animation.nextFrame();
+   _animation.update( time );
 
    _fgPictures[5] = _animation.get_current_picture();
 }
@@ -1356,7 +1356,7 @@ Dock::Dock()
 
 void Dock::timeStep(const unsigned long time)
 {
-  _animation.nextFrame();
+  _animation.update( time );
   
   // takes current animation frame and put it into foreground
   _fgPictures.at(0) = _animation.get_current_picture(); 

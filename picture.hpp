@@ -19,7 +19,6 @@
 #ifndef PICTURE_HPP
 #define PICTURE_HPP
 
-
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_opengl.h>
@@ -84,21 +83,28 @@ private:
 class Animation
 {
 public:
-   Animation() {}
+    Animation();
 
-   void init(const std::vector<Picture*> &pictures);
+    void init(const std::vector<Picture*> &pictures, bool loop=true, unsigned int delay=0);
 
-   std::vector<Picture*>& get_pictures();
-   const std::vector<Picture*>& get_pictures() const;
+    std::vector<Picture*>& get_pictures();
+    const std::vector<Picture*>& get_pictures() const;
 
-   int getCurrentIndex() const;
+    int getCurrentIndex() const;
 
-   void nextFrame();
-   Picture* get_current_picture();
+    void update( unsigned int time );
+    Picture* get_current_picture();
+
+    void setFrameDelay( const unsigned int delay );
+    void setLoop( bool loop );
 
 private:
-   std::vector<Picture*> _pictures;
-   unsigned int _animIndex;  // index of the current frame
+    std::vector<Picture*> _pictures;
+    int _animIndex;  // index of the current frame
+    unsigned int _frameDelay;
+    unsigned int _lastTimeUpdate;
+    
+    bool _loop;
 };
 
 

@@ -60,7 +60,7 @@ void ServiceBuilding::timeStep(const unsigned long time)
       _serviceTimer -= 1;
    }
 
-   _animation.nextFrame();
+   _animation.update( time );
    Picture *pic = _animation.get_current_picture();
    if (pic != NULL)
    {

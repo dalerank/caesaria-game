@@ -22,12 +22,7 @@ CollapsedRuins::CollapsedRuins() : ServiceBuilding(S_COLLAPSED_RUINS)
 {
     setType(B_COLLAPSED_RUINS);
     _size = 1;
-    _damageLevel = 1;
-
-    AnimLoader animLoader(PicLoader::instance());
-    animLoader.fill_animation(_animation, ResourceGroup::sprites, 1, 8);
-    animLoader.change_offset(_animation, 14, 26);
-    _fgPictures.resize(1);           
+    _damageLevel = 1;          
 }
 
 CollapsedRuins* CollapsedRuins::clone() const
@@ -37,15 +32,7 @@ CollapsedRuins* CollapsedRuins::clone() const
 
 void CollapsedRuins::timeStep(const unsigned long time)
 {
-    if( time % 4 == 0 )
-        ServiceBuilding::timeStep( time );    
-
-    if( _animation.getCurrentIndex() == 7 )
-    {
-        _animation.init( std::vector<Picture*>() );
-        _fgPictures.clear();
-        getTile().get_terrain().setBuilding( true );
-    }
+    ServiceBuilding::timeStep( time );    
 }
 
 void CollapsedRuins::deliverService()
@@ -72,5 +59,12 @@ void CollapsedRuins::build( const int i, const int j )
     getTile().get_terrain().setTree( false );
     getTile().get_terrain().setBuilding( false );
     getTile().get_terrain().setRoad( false );
-    setPicture(PicLoader::instance().get_picture( ResourceGroup::land2a, 111 + rand() % 8 ));
+    setPicture( PicLoader::instance().get_picture( ResourceGroup::land2a, 111 + rand() % 8 ) );
+
+    AnimLoader animLoader( PicLoader::instance() );
+    animLoader.fill_animation( _animation, ResourceGroup::sprites, 1, 8 );
+    animLoader.change_offset( _animation, 14, 26 );
+    _animation.setFrameDelay( 4 );
+    _animation.setLoop( false );
+    _fgPictures.resize(1); 
 }   

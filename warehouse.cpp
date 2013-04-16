@@ -169,8 +169,8 @@ Warehouse* Warehouse::clone() const
 
 void Warehouse::timeStep(const unsigned long time)
 {
-   _animation.nextFrame();
-   _animFlag.nextFrame();
+   _animation.update( time );
+   _animFlag.update( time );
 
    _fgPictures[2] = _animation.get_current_picture();
    _fgPictures[3] = _animFlag.get_current_picture();
