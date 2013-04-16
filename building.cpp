@@ -35,6 +35,7 @@
 #include "sdl_facade.hpp"
 #include "oc3_time.h"
 #include "oc3_burningruins.h"
+#include "oc3_collapsedruins.h"
 
 namespace {
 static const char* rcUtilityGroup      = "utilitya";
@@ -290,6 +291,7 @@ LandOverlay* LandOverlay::getInstance(const BuildingType buildingType)
 
       //damages
       _mapBuildingByID[B_BURNING_RUINS ] = new BurningRuins();
+      _mapBuildingByID[B_COLLAPSED_RUINS ] = new CollapsedRuins();
    }
 
    std::map<BuildingType, LandOverlay*>::iterator mapIt;
@@ -382,7 +384,13 @@ Uint8 Construction::getMaxDistance2Road() const
 void Construction::burn()
 {
     _isDeleted = true;
-    Scenario::instance().getCity().burn( getTile().getIJ() );
+    Scenario::instance().getCity().disaster( getTile().getIJ(), DSTR_BURN );
+}
+
+void Construction::collapse()
+{
+    _isDeleted = true;
+    Scenario::instance().getCity().disaster( getTile().getIJ(), DSTR_COLLAPSE );
 }
 
 Aqueduct::Aqueduct()
@@ -835,6 +843,7 @@ void Building::timeStep(const unsigned long time)
       if (_damageLevel >= 100)
       {
          std::cout << "Building destroyed!" << std::cout;
+         collapse();
       }
       if (_fireLevel >= 100)
       {

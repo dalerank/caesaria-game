@@ -339,6 +339,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_collapsedruins.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_collapsedruins.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_delegate.h"
 				>
 			</File>

@@ -145,6 +145,11 @@ Picture* Animation::get_current_picture()
    return _pictures[_animIndex];
 }
 
+int Animation::getCurrentIndex() const
+{
+    return _animIndex;
+}
+
 Font::Font(TTF_Font &ttfFont, SDL_Color &color)
 {
     _ttfFont = &ttfFont;

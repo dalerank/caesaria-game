@@ -23,6 +23,7 @@ public:
     static const char* panelBackground;
     static const char* menuMiddleIcons;
     static const char* land2a;
+    static const char* sprites;
 };
 
 class ResourceMenu

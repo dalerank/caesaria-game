@@ -91,6 +91,8 @@ public:
    std::vector<Picture*>& get_pictures();
    const std::vector<Picture*>& get_pictures() const;
 
+   int getCurrentIndex() const;
+
    void nextFrame();
    Picture* get_current_picture();
 

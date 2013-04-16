@@ -23,9 +23,9 @@ BurningRuins::BurningRuins() : ServiceBuilding(S_BURNING_RUINS)
     _size = 1;
     _fireLevel = 99;
 
-    setPicture(PicLoader::instance().get_picture("land2a", 187));
+    setPicture(PicLoader::instance().get_picture( ResourceGroup::land2a, 187));
     AnimLoader animLoader(PicLoader::instance());
-    animLoader.fill_animation(_animation, "land2a", 188, 8);
+    animLoader.fill_animation(_animation, ResourceGroup::land2a, 188, 8);
     animLoader.change_offset(_animation, 14, 26);
     _fgPictures.resize(1);           
 }
@@ -41,7 +41,7 @@ void BurningRuins::timeStep(const unsigned long time)
 
     if (time % 16 == 0 && _fireLevel > 0)
     {
-        _fireLevel -= _fireIncrement;
+        _fireLevel -= 1;
         if( _fireLevel == 50 )
         {
             setPicture(PicLoader::instance().get_picture( ResourceGroup::land2a, 214));

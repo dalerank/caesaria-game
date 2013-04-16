@@ -231,6 +231,7 @@ BuildingDataHolder::BuildingDataHolder()
 
    //damages
    addData(BuildingData(B_BURNING_RUINS, "burningRuins", 0)); 
+   addData(BuildingData(B_COLLAPSED_RUINS, "burningRuins", 0)); 
    
 
    // populate _mapBuildingByService
@@ -254,7 +255,10 @@ BuildingDataHolder::BuildingDataHolder()
    _mapBuildingByService[S_AMPHITHEATER] = B_AMPHITHEATER;
    _mapBuildingByService[S_COLLOSSEUM] = B_COLLOSSEUM;
    _mapBuildingByService[S_HIPPODROME] = B_HIPPODROME;
+
+   //damages
    _mapBuildingByService[S_BURNING_RUINS] = B_BURNING_RUINS;
+   _mapBuildingByService[S_COLLAPSED_RUINS] = B_COLLAPSED_RUINS;
 
    // populate _mapBuildingByInGood
    _mapBuildingByInGood[G_IRON]   = B_WEAPON;

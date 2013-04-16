@@ -34,6 +34,7 @@
 #include "oc3_positioni.h"
 #include "exception.hpp"
 #include "sdl_facade.hpp"
+#include "oc3_resourcegroup.h"
 
 namespace {
 static const char* rcCartsGroup    = "carts";
@@ -78,6 +79,7 @@ PicMetaData::PicMetaData()
    setRange(rcWarehouseGroup, 19, 83, info);
    setRange("utilitya", 1, 42, info);
    setRange("govt", 1, 10, info);
+   setRange(ResourceGroup::sprites, 1, 8, info );
 
    setOne(rcEntertaimentGroup, 12, 37, 62); // amphitheater
    setOne(rcEntertaimentGroup, 35, 34, 37); // theater
