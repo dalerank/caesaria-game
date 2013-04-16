@@ -853,14 +853,13 @@ Granary::Granary()
 
    _goodStore.setCurrentQty(G_WHEAT, 300);
 
-   AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, rcCommerceGroup, 146, 7);
+   _animation.load(rcCommerceGroup, 146, 7);
    // do the animation in reverse
-   animLoader.fill_animation_reverse(_animation, rcCommerceGroup, 151, 6);
+   _animation.load(rcCommerceGroup, 151, 6);
    PicLoader& ldr = PicLoader::instance();
 
    _fgPictures[0] = &ldr.get_picture( rcCommerceGroup, 141);
-   _fgPictures[5] = _animation.get_current_picture();
+   _fgPictures[5] = _animation.getCurrentPicture();
    computePictures();
 }
 
@@ -874,7 +873,7 @@ void Granary::timeStep(const unsigned long time)
 {
    _animation.update( time );
 
-   _fgPictures[5] = _animation.get_current_picture();
+   _fgPictures[5] = _animation.getCurrentPicture();
 }
 
 SimpleGoodStore& Granary::getGoodStore()
@@ -1120,12 +1119,11 @@ Dock::Dock()
   _size = 2;
   setPicture(PicLoader::instance().get_picture("transport", 5));  
 
-  AnimLoader animLoader(PicLoader::instance());
-  animLoader.fill_animation(_animation, "transport", 6, 11);
+  _animation.load( "transport", 6, 11);
   // now fill in reverse order
-  animLoader.fill_animation_reverse(_animation, "transport", 15, 10);
+  _animation.load( "transport", 15, 10, Animation::reverse );
   
-  animLoader.change_offset(_animation, 107, 61);
+  _animation.setOffset( Point( 107, 61 ) );
   _fgPictures.resize(1);  
 }
 
@@ -1134,7 +1132,7 @@ void Dock::timeStep(const unsigned long time)
   _animation.update( time );
   
   // takes current animation frame and put it into foreground
-  _fgPictures.at(0) = _animation.get_current_picture(); 
+  _fgPictures.at(0) = _animation.getCurrentPicture(); 
 }
 
 
@@ -1151,11 +1149,10 @@ TriumphalArch::TriumphalArch()
   _size = 3;
   setPicture(PicLoader::instance().get_picture("land3a", 43));
   getPicture().set_offset(0,116);
-  AnimLoader animLoader(PicLoader::instance());
-  animLoader.fill_animation(_animation, "land3a", 44, 1);
-  animLoader.change_offset(_animation, 63, 97);
+  _animation.load("land3a", 44, 1);
+  _animation.setOffset( Point( 63, 97 ) );
   _fgPictures.resize(1);
-  _fgPictures.at(0) = _animation.get_current_picture(); 
+  _fgPictures.at(0) = _animation.getCurrentPicture(); 
 }
 
 TriumphalArch* TriumphalArch::clone() const

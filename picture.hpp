@@ -78,36 +78,6 @@ private:
    GLuint _glTextureID;  // texture ID for openGL
 };
 
-
-// several frames for a basic visual animation
-class Animation
-{
-public:
-    Animation();
-
-    void init(const std::vector<Picture*> &pictures, bool loop=true, unsigned int delay=0);
-
-    std::vector<Picture*>& get_pictures();
-    const std::vector<Picture*>& get_pictures() const;
-
-    int getCurrentIndex() const;
-
-    void update( unsigned int time );
-    Picture* get_current_picture();
-
-    void setFrameDelay( const unsigned int delay );
-    void setLoop( bool loop );
-
-private:
-    std::vector<Picture*> _pictures;
-    int _animIndex;  // index of the current frame
-    unsigned int _frameDelay;
-    unsigned int _lastTimeUpdate;
-    
-    bool _loop;
-};
-
-
 class Font
 {
 public:

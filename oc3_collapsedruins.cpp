@@ -16,6 +16,7 @@
 #include "oc3_collapsedruins.h"
 #include "pic_loader.hpp"
 #include "oc3_resourcegroup.h"
+#include "oc3_positioni.h"
 #include "oc3_time.h"
 
 CollapsedRuins::CollapsedRuins() : ServiceBuilding(S_COLLAPSED_RUINS)
@@ -61,9 +62,8 @@ void CollapsedRuins::build( const int i, const int j )
     getTile().get_terrain().setRoad( false );
     setPicture( PicLoader::instance().get_picture( ResourceGroup::land2a, 111 + rand() % 8 ) );
 
-    AnimLoader animLoader( PicLoader::instance() );
-    animLoader.fill_animation( _animation, ResourceGroup::sprites, 1, 8 );
-    animLoader.change_offset( _animation, 14, 26 );
+    _animation.load( ResourceGroup::sprites, 1, 8 );
+    _animation.setOffset( Point( 14, 26 ) );
     _animation.setFrameDelay( 4 );
     _animation.setLoop( false );
     _fgPictures.resize(1); 

@@ -135,7 +135,7 @@ public:
 
 
    void drawHabitants();
-   void drawGood(const GoodType &goodType, const int col, const int row );
+   void drawGood(const GoodType &goodType, const int col, const int row, const int startY );
 
 private:
    void _paint();

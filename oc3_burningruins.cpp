@@ -16,6 +16,7 @@
 #include "oc3_burningruins.h"
 #include "pic_loader.hpp"
 #include "oc3_resourcegroup.h"
+#include "oc3_positioni.h"
 
 BurningRuins::BurningRuins() : ServiceBuilding(S_BURNING_RUINS)
 {
@@ -24,9 +25,8 @@ BurningRuins::BurningRuins() : ServiceBuilding(S_BURNING_RUINS)
     _fireLevel = 99;
 
     setPicture(PicLoader::instance().get_picture( ResourceGroup::land2a, 187));
-    AnimLoader animLoader(PicLoader::instance());
-    animLoader.fill_animation(_animation, ResourceGroup::land2a, 188, 8);
-    animLoader.change_offset(_animation, 14, 26);
+    _animation.load( ResourceGroup::land2a, 188, 8 );
+    _animation.setOffset( Point( 14, 26 ) );
     _fgPictures.resize(1);           
 }
 
@@ -45,21 +45,21 @@ void BurningRuins::timeStep(const unsigned long time)
         if( _fireLevel == 50 )
         {
             setPicture(PicLoader::instance().get_picture( ResourceGroup::land2a, 214));
-            AnimLoader animLoader(PicLoader::instance());
-            animLoader.fill_animation(_animation, ResourceGroup::land2a, 215, 8);
-            animLoader.change_offset(_animation, 14, 26);
+            _animation.clear();
+            _animation.load( ResourceGroup::land2a, 215, 8);
+            _animation.setOffset( Point( 14, 26 ) );
         }
         else if( _fireLevel == 25 )
         {
             setPicture(PicLoader::instance().get_picture( ResourceGroup::land2a, 223));
-            AnimLoader animLoader(PicLoader::instance());
-            animLoader.fill_animation(_animation, "land2a", 224, 8);
-            animLoader.change_offset(_animation, 14, 26);
+            _animation.clear();
+            _animation.load(ResourceGroup::land2a, 224, 8);
+            _animation.setOffset( Point( 14, 26 ) );
         }
         else if( _fireLevel == 1 )
         {
             setPicture(PicLoader::instance().get_picture( ResourceGroup::land2a, 111 + rand() % 8 ));
-            _animation.init( std::vector<Picture*>() );
+            _animation.clear();
             _fgPictures.clear();
             getTile().get_terrain().setBuilding( true );
         }           

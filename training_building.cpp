@@ -55,11 +55,11 @@ void TrainingBuilding::timeStep(const unsigned long time)
    }
 
    _animation.update( time );
-   Picture *pic = _animation.get_current_picture();
+   Picture *pic = _animation.getCurrentPicture();
    if (pic != NULL)
    {
       int level = _fgPictures.size()-1;
-      _fgPictures[level] = _animation.get_current_picture();
+      _fgPictures[level] = _animation.getCurrentPicture();
    }
 }
 
@@ -99,9 +99,8 @@ BuildingActor::BuildingActor()
    _size = 3;
    setPicture(PicLoader::instance().get_picture(rcEntertaimentGroup, 81));
 
-   AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, rcEntertaimentGroup, 82, 9);
-   animLoader.change_offset(_animation, 68, -6);
+   _animation.load( rcEntertaimentGroup, 82, 9);
+   _animation.setOffset( Point( 68, -6 ) );
    _fgPictures.resize(1);
 }
 
@@ -124,9 +123,8 @@ BuildingGladiator::BuildingGladiator()
    _size = 3;
    setPicture(PicLoader::instance().get_picture(rcEntertaimentGroup, 51));
 
-   AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, rcEntertaimentGroup, 52, 10);
-   animLoader.change_offset(_animation, 62, 24);
+   _animation.load(rcEntertaimentGroup, 52, 10);
+   _animation.setOffset( Point( 62, 24 ) );
    _fgPictures.resize(1);
 }
 
@@ -150,9 +148,8 @@ BuildingLion::BuildingLion()
    _size = 3;
    setPicture(PicLoader::instance().get_picture(rcEntertaimentGroup, 62));
 
-   AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, rcEntertaimentGroup, 63, 18);
-   animLoader.change_offset(_animation, 78, 21);
+   _animation.load( rcEntertaimentGroup, 63, 18);
+   _animation.setOffset( Point( 78, 21) );
    _fgPictures.resize(1);
 }
 
@@ -176,9 +173,8 @@ BuildingChariot::BuildingChariot()
    _size = 3;
    setPicture(PicLoader::instance().get_picture(rcEntertaimentGroup, 91));
 
-   AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, rcEntertaimentGroup, 92, 10);
-   animLoader.change_offset(_animation, 54, 23);
+   _animation.load(rcEntertaimentGroup, 92, 10);
+   _animation.setOffset( Point( 54, 23 ));
    _fgPictures.resize(1);
 }
 

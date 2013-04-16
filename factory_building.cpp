@@ -119,12 +119,12 @@ void Factory::timeStep(const unsigned long time)
    }
 
    _animation.update( time );
-   Picture *pic = _animation.get_current_picture();
+   Picture *pic = _animation.getCurrentPicture();
    if (pic != NULL)
    {
       // animation of the working factory
       int level = _fgPictures.size()-1;
-      _fgPictures[level] = _animation.get_current_picture();
+      _fgPictures[level] = _animation.getCurrentPicture();
    }
 
    // if (inStock._goodType != G_NONE && inStock._currentQty >= 0)
@@ -182,8 +182,7 @@ FactoryMarble::FactoryMarble() : Factory(G_NONE, G_MARBLE)
    _productionRate = 9.6f;
    _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 43);
 
-   AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, rcCommerceGroup, 44, 10);
+   _animation.load(rcCommerceGroup, 44, 10);
    _fgPictures.resize(2);
 }
 
@@ -216,8 +215,7 @@ FactoryTimber::FactoryTimber() : Factory(G_NONE, G_TIMBER)
    _productionRate = 9.6f;
    _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 72);
 
-   AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, rcCommerceGroup, 73, 10);
+   _animation.load( rcCommerceGroup, 73, 10);
    _fgPictures.resize(2);
 }
 
@@ -250,8 +248,7 @@ FactoryIron::FactoryIron() : Factory(G_NONE, G_IRON)
    _productionRate = 9.6f;
    _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 54);
 
-   AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, rcCommerceGroup, 55, 6);
+   _animation.load( rcCommerceGroup, 55, 6);
    _fgPictures.resize(2);
 }
 
@@ -284,8 +281,7 @@ FactoryClay::FactoryClay() : Factory(G_NONE, G_CLAY)
    _productionRate = 9.6f;
    _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 61);
 
-   AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, rcCommerceGroup, 62, 10);
+   _animation.load( rcCommerceGroup, 62, 10);
    _fgPictures.resize(2);
 }
 
@@ -317,8 +313,7 @@ FactoryWeapon::FactoryWeapon() : Factory(G_IRON, G_WEAPON)
    _size = 2;
    _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 108);
 
-   AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, rcCommerceGroup, 109, 6);
+   _animation.load( rcCommerceGroup, 109, 6);
    _fgPictures.resize(2);
 }
 
@@ -334,8 +329,7 @@ FactoryFurniture::FactoryFurniture() : Factory(G_TIMBER, G_FURNITURE)
    _size = 2;
    _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 117);
 
-   AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, rcCommerceGroup, 118, 14);
+   _animation.load(rcCommerceGroup, 118, 14);
    _fgPictures.resize(2);
 }
 
@@ -351,8 +345,7 @@ FactoryWine::FactoryWine() : Factory(G_GRAPE, G_WINE)
    _size = 2;
    _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 86);
 
-   AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, rcCommerceGroup, 87, 12);
+   _animation.load(rcCommerceGroup, 87, 12);
    _fgPictures.resize(2);
 }
 
@@ -368,8 +361,7 @@ FactoryOil::FactoryOil() : Factory(G_OLIVE, G_OIL)
    _size = 2;
    _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 99);
 
-   AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, rcCommerceGroup, 100, 8);
+   _animation.load(rcCommerceGroup, 100, 8);
    _fgPictures.resize(2);
 }
 
@@ -385,8 +377,7 @@ FactoryPottery::FactoryPottery() : Factory(G_CLAY, G_POTTERY)
    _size = 2;
    _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 132);
 
-   AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, rcCommerceGroup, 133, 7);
+   _animation.load(rcCommerceGroup, 133, 7);
    _fgPictures.resize(2);
 }
 
@@ -426,18 +417,17 @@ FarmTile::FarmTile(const GoodType outGood, const int i, const int j)
       THROW("Unexpected farmType in farm:" << outGood);
    }
 
-   AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, rcCommerceGroup, picIdx, 5);
+   _animation.load( rcCommerceGroup, picIdx, 5);
    computePicture(0);
 }
 
 void FarmTile::computePicture(const int percent)
 {
-   std::vector<Picture*> &pictures = _animation.get_pictures();
+    Animation::Pictures& pictures = _animation.getPictures();
 
-   int picIdx = (percent * (pictures.size()-1)) / 100;
-   _picture = *pictures[picIdx];
-   _picture.add_offset(30*(_i+_j), 15*(_j-_i));
+    int picIdx = (percent * (pictures.size()-1)) / 100;
+    _picture = *pictures[picIdx];
+    _picture.add_offset(30*(_i+_j), 15*(_j-_i));
 }
 
 Picture& FarmTile::getPicture()

@@ -391,7 +391,7 @@ Picture& Walker::getMainPicture()
       _animation = &(itAnimMap->second);
    }
 
-   return *_animation->get_pictures()[_animIndex];
+   return *_animation->getPictures()[_animIndex];
 }
 
 void Walker::serialize(OutputSerialStream &stream)

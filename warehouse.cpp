@@ -118,9 +118,8 @@ Warehouse::Warehouse()
    _picture = &PicLoader::instance().get_picture(rcWarehouseGroup, 19);
    _fgPictures.resize(12);  // 8 tiles + 4
 
-   AnimLoader animLoader(PicLoader::instance());
-   animLoader.fill_animation(_animation, rcWarehouseGroup, 2, 16);
-   animLoader.fill_animation(_animFlag, rcWarehouseGroup, 84, 8);
+   _animation.load( rcWarehouseGroup, 2, 16 );
+   _animFlag.load( rcWarehouseGroup, 84, 8 );
 
    init();
 }
@@ -130,8 +129,8 @@ void Warehouse::init()
 {
    _fgPictures[0] = &PicLoader::instance().get_picture(rcWarehouseGroup, 1);
    _fgPictures[1] = &PicLoader::instance().get_picture(rcWarehouseGroup, 18);
-   _fgPictures[2] = _animation.get_current_picture();
-   _fgPictures[3] = _animFlag.get_current_picture();
+   _fgPictures[2] = _animation.getCurrentPicture();
+   _fgPictures[3] = _animFlag.getCurrentPicture();
 
    // add subTiles in Z-order (from far to near)
    _subTiles.clear();
@@ -172,8 +171,8 @@ void Warehouse::timeStep(const unsigned long time)
    _animation.update( time );
    _animFlag.update( time );
 
-   _fgPictures[2] = _animation.get_current_picture();
-   _fgPictures[3] = _animFlag.get_current_picture();
+   _fgPictures[2] = _animation.getCurrentPicture();
+   _fgPictures[3] = _animFlag.getCurrentPicture();
 }
 
 void Warehouse::computePictures()
