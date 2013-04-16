@@ -519,6 +519,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_water_buildings.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_water_buildings.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_widget.cpp"
 				>
 			</File>

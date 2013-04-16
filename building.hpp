@@ -99,37 +99,6 @@ protected:
    std::list<Tile*> _accessRoads;
 };
 
-class Aqueduct : public Construction
-{
-public:
-  Aqueduct();
-  virtual Aqueduct* clone() const;
-
-  virtual void build(const int i, const int j);
-  Picture& computePicture();
-  virtual void setTerrain(TerrainTile &terrain);
-  void updateAqueducts();
-  virtual bool canBuild(const int i, const int j) const;
-private:
-  Aqueduct *_north, *_east, *_south, *_west;
-};
-
-class Reservoir : public Construction
-{
-public:
-  Reservoir();
-  ~Reservoir();
-  virtual Reservoir* clone() const;
-
-  void build(const int i, const int j);
-  Picture& computePicture();
-  void setTerrain(TerrainTile &terrain);
-  void timeStep(const unsigned long time);
-private:
-  bool _mayAnimate;
-  int _lastTimeAnimate;
-};
-
 class Garden : public Construction
 {
 public:
