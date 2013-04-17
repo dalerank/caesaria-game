@@ -47,6 +47,7 @@ public:
    virtual LandOverlay* clone() const = 0;
    virtual void setTerrain(TerrainTile &terrain) = 0;
    virtual void build(const int i, const int j);
+   virtual void build(const TilePos& pos );
    virtual void destroy();  // handles the walkers
 
    // graphic

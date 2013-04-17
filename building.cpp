@@ -122,6 +122,11 @@ void LandOverlay::build(const int i, const int j)
    }
 }
 
+void LandOverlay::build( const TilePos& pos )
+{
+    build( pos.getI(), pos.getJ() );
+}
+
 void LandOverlay::destroy()
 {
 }

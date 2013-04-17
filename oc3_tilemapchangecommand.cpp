@@ -40,6 +40,7 @@ TilemapChangeCommand::TilemapChangeCommand( BuildingType type )
     _d->isMultiBuilding = false;
     _d->isRemoveTool = false;
     _d->isValid = true;
+    _d->isBorderBuilding = false;
 
     switch( type )
     {
@@ -47,14 +48,15 @@ TilemapChangeCommand::TilemapChangeCommand( BuildingType type )
     case B_AQUEDUCT:
         _d->isBorderBuilding = true;
         _d->isMultiBuilding = true;
-        break;
+    break;
 
     case B_HOUSE:
         _d->isMultiBuilding = true;
         //break not needed that catch multibuild flag
+    break;
+
     default:
-        _d->isValid = false;
-        break;    
+    break;    
     }   
 }
 
@@ -108,4 +110,5 @@ TilemapRemoveCommand::TilemapRemoveCommand()
 {
     _d->isValid = true;
     _d->isRemoveTool = true;
+    _d->isMultiBuilding = true;
 }

@@ -336,7 +336,7 @@ void GuiTilemap::_buildAll()
     for( Tiles::iterator it=_d->postTiles.begin(); it != _d->postTiles.end(); it++ )
     {
         Construction* cnstr = _d->changeCommand.getContruction();
-        if( cnstr && cnstr->canBuild( (*it)->getIJ(), *_tilemap ))
+        if( cnstr && cnstr->canBuild( (*it)->getIJ() ))
         {
             _city->build( *cnstr, (*it)->getIJ() );                    
         }
@@ -354,7 +354,7 @@ void GuiTilemap::handleEvent( NEvent& event )
             _d->lastCursorPos = event.MouseEvent.getPosition();  
             if( !_d->lmbPressed 
                 || _d->startCursorPos.getX() < 0 
-                || !_d->changeCommand.isMultiBuilding() )
+                || (_d->changeCommand.isValid() && !_d->changeCommand.isMultiBuilding()) )
                 _d->startCursorPos = _d->lastCursorPos;
            
             updatePreviewTiles();
@@ -363,7 +363,7 @@ void GuiTilemap::handleEvent( NEvent& event )
 
         case OC3_LMOUSE_PRESSED_DOWN:
         {
-            _d->startCursorPos = event.MouseEvent.getPosition();
+            _d->startCursorPos = _d->lastCursorPos;
             _d->lmbPressed = true;
             updatePreviewTiles();
         }
@@ -382,17 +382,16 @@ void GuiTilemap::handleEvent( NEvent& event )
             // left button
             if( _d->changeCommand.isValid() )
             {
+                _d->startCursorPos = _d->lastCursorPos;
                 if( _d->changeCommand.isRemoveTool() )
                 {
-                    _clearLand();  
-                    _d->startCursorPos = _d->lastCursorPos;
-                    updatePreviewTiles( true );
+                    _clearLand();                      
                 }
                 else if( _d->changeCommand.getContruction() )
                 {
                     _buildAll();               
-                    updatePreviewTiles( true );
                 }
+                updatePreviewTiles( true );
             }
             else
             {
@@ -471,7 +470,7 @@ void GuiTilemap::checkPreviewBuild( const TilePos& pos )
    if( overlay )
    {
       int size = overlay->getSize();
-      if( overlay->canBuild( pos, *_tilemap ) )
+      if( overlay->canBuild( pos ) )
       {
           _d->previewToolPictures.push_back( new Picture() );
           PictureConverter::rgbBalance( *_d->previewToolPictures.back(), overlay->getPicture(), -255, +0, -255 );

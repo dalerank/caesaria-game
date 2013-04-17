@@ -264,7 +264,7 @@ void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
 		      NativeHut* build = new NativeHut();
 		      tile.get_terrain().setOverlay((LandOverlay*)build);
 		      overlay = tile.get_terrain().getOverlay();
-		      overlay->build( pos, oTilemap );
+		      overlay->build( pos );
 		      oCity.getOverlayList().push_back(overlay);
 	          }
 	          break;
@@ -280,7 +280,7 @@ void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
 		        overlay = tile.get_terrain().getOverlay();
 		        if (overlay != NULL)
 		        {
-		          overlay->build( pos, oTilemap );
+		          overlay->build( pos );
 		          oCity.getOverlayList().push_back(overlay);
 		        }
 		      }
@@ -292,7 +292,7 @@ void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
 		      NativeField* build = new NativeField();
 		      tile.get_terrain().setOverlay((LandOverlay*)build);
 		      overlay = tile.get_terrain().getOverlay();
-		      overlay->build( pos, oTilemap );
+		      overlay->build( pos );
 		      oCity.getOverlayList().push_back(overlay);
 	          }
 	          break;
@@ -301,7 +301,7 @@ void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
 	 
          if (overlay != NULL)
          {
-            overlay->build( pos, oTilemap);
+            overlay->build( pos );
             oCity.getOverlayList().push_back(overlay);
          }
       }
