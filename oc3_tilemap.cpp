@@ -58,7 +58,7 @@ bool TerrainTile::isWalkable(const bool allLand) const
    // TODO: test building to allow garden, gatehouse, granary, ...
    bool extendedRoad = false;
 
-   return (_isRoad || extendedRoad || (allLand && !_isTree && !_isRock && !_isBuilding));
+   return (_isRoad || extendedRoad || (allLand && !_isWater && !_isTree && !_isRock && !_isBuilding && !_isAqueduct));
 }
 
 void TerrainTile::setOverlay(LandOverlay *overlay)
@@ -218,7 +218,7 @@ TerrainTile& Tile::get_terrain()
 
 bool Tile::is_flat() const
 {
-   return get_terrain().isRoad();
+   return !(_terrain.isRock() || _terrain.isTree() || _terrain.isBuilding() || _terrain.isAqueduct());
 }
 
 TilePos Tile::getIJ() const
