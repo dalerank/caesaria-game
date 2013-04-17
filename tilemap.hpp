@@ -121,26 +121,30 @@ private:
 class Tilemap : public Serializable
 {
 public:
+    static const bool checkCorners = true;
    Tilemap();
    void init(const int size);
 
    bool is_inside(const int i, const int j) const;
    Tile& at( const int i, const int j );
    Tile& at( const TilePos& ij );
+   
    const Tile& at( const int i, const int j ) const;
+   const Tile& at( const TilePos& ij ) const;
 
    // returns all tiles on a rectangular perimeter
    // (i1, j1) : left corner of the rectangle (minI, minJ)
    // (i2, j2) : right corner of the rectangle (maxI, maxJ)
    // corners  : if false, don't return corner tiles
-   std::list<Tile*> getRectangle(const int i1, const int j1, const int i2, const int j2, const bool corners = true);
+   std::list<Tile*> getRectangle(const TilePos& start, const TilePos& stope, const bool corners = true );
+   std::list<Tile*> getRectangle(const TilePos& pos, const Size& size, const bool corners = true );
 
    // returns all tiles in a rectangular area
    // (i1, j1) : left corner of the rectangle (minI, minJ)
    // (i2, j2) : right corner of the rectangle (maxI, maxJ)
    std::list<Tile*> getFilledRectangle(const int i1, const int j1, const int i2, const int j2);
-
    int getSize() const;
+   std::list<Tile*> getRectangle(const int i1, const int j1, const int i2, const int j2, const bool corners = true);
 
    void serialize(OutputSerialStream &stream);
    void unserialize(InputSerialStream &stream);

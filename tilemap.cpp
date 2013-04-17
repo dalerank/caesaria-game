@@ -260,6 +260,11 @@ Tile& Tilemap::at( const TilePos& ij )
     return _tile_array[ ij.getI() ][ ij.getJ() ];
 }
 
+const Tile& Tilemap::at( const TilePos& ij ) const
+{
+    return _tile_array[ ij.getI() ][ ij.getJ() ];
+}
+
 int Tilemap::getSize() const
 {
    return _size;
@@ -304,6 +309,11 @@ std::list<Tile*> Tilemap::getRectangle(const int i1, const int j1, const int i2,
    return res;
 }
 
+std::list<Tile*> Tilemap::getRectangle( const TilePos& start, const TilePos& stop, const bool corners /*= true*/ )
+{
+    return getRectangle( start.getI(), start.getJ(), stop.getI(), stop.getJ(), corners );
+}
+
 // Get tiles inside of rectangle
 
 std::list<Tile*> Tilemap::getFilledRectangle(const int i1, const int j1, const int i2, const int j2)
@@ -323,7 +333,6 @@ std::list<Tile*> Tilemap::getFilledRectangle(const int i1, const int j1, const i
 
    return res;
 }
-
 
 void Tilemap::serialize(OutputSerialStream &stream)
 {

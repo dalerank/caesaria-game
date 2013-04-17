@@ -224,85 +224,84 @@ void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
       for (int itB=0; itB<size; ++itB)
       {
          // for each col
-         int i = itB;
-         int j = size - itA - 1;
+         TilePos pos( itB, size - itA - 1 );
 
          short int terrainBitset;  // 16bits
          f.read((char*)&terrainBitset, 2);
-         Tile &tile = oTilemap.at(i, j);
+         Tile &tile = oTilemap.at( pos );
          decode_terrain(terrainBitset, tile);
 
  
          LandOverlay *overlay = tile.get_terrain().getOverlay();
 	 
-	 // Check if it is building and type of building
-	 if (overlay == NULL && (terrainBitset & 0x8))
-	 {
-	     std::cout << "Building at (" << tile.getI() << "," << tile.getJ() << ")" << " with type ";
- 	     std::streampos old = f.tellg();
-	     f.seekg(kGraphicGrid + 162 * 2 * (border_size + itA) + 2 * border_size + 2 * itB, std::ios::beg);
-	     short int tmp;
-	     f.read((char*)&tmp, 2);
-	     std::cout.setf(std::ios::hex, std::ios::basefield);
-	     std::cout << tmp << std::endl;
-	     std::cout.unsetf(std::ios::hex);
-	     f.seekg(old);
-	     // 0xb0e, 0xb0f - Native Hut
-	     // 0xb10 - Native Center
-	     // 0xb11 - Native Field
-	     
-	     // NOTHERN:
-	     // 0xb0b, 0xb0c - Native Hut
-	     // 0xb0d - Native Center
-	     // 0xb44 - Native Field
-	     switch (tmp)
-	     {	
-	      case 0xb0e:
-	      case 0xb0f:
-	      case 0xb0b:
-	      case 0xb0c:
-	      {
-		  NativeHut* build = new NativeHut();
-		  tile.get_terrain().setOverlay((LandOverlay*)build);
-		  overlay = tile.get_terrain().getOverlay();
-		  overlay->build(i, j);
-		  oCity.getOverlayList().push_back(overlay);
-	      }
-	      break;
-	      case 0xb10:
-	      case 0xb0d:
-	      {
-		  // we need to find master tile
-		  if (tile.is_master_tile())
-		  {
-		    std::cout << "Tile is master" << std::endl;
-		    NativeCenter* build = new NativeCenter();
-		    tile.get_terrain().setOverlay((LandOverlay*)build);
-		    overlay = tile.get_terrain().getOverlay();
-		    if (overlay != NULL)
-		    {
-		      overlay->build(i, j);
+	     // Check if it is building and type of building
+	     if (overlay == NULL && (terrainBitset & 0x8))
+	     {
+	         std::cout << "Building at (" << tile.getI() << "," << tile.getJ() << ")" << " with type ";
+ 	         std::streampos old = f.tellg();
+	         f.seekg(kGraphicGrid + 162 * 2 * (border_size + itA) + 2 * border_size + 2 * itB, std::ios::beg);
+	         short int tmp;
+	         f.read((char*)&tmp, 2);
+	         std::cout.setf(std::ios::hex, std::ios::basefield);
+	         std::cout << tmp << std::endl;
+	         std::cout.unsetf(std::ios::hex);
+	         f.seekg(old);
+	         // 0xb0e, 0xb0f - Native Hut
+	         // 0xb10 - Native Center
+	         // 0xb11 - Native Field
+    	     
+	         // NOTHERN:
+	         // 0xb0b, 0xb0c - Native Hut
+	         // 0xb0d - Native Center
+	         // 0xb44 - Native Field
+	         switch (tmp)
+	         {	
+	          case 0xb0e:
+	          case 0xb0f:
+	          case 0xb0b:
+	          case 0xb0c:
+	          {
+		      NativeHut* build = new NativeHut();
+		      tile.get_terrain().setOverlay((LandOverlay*)build);
+		      overlay = tile.get_terrain().getOverlay();
+		      overlay->build( pos, oTilemap );
 		      oCity.getOverlayList().push_back(overlay);
-		    }
-		  }
-	      }
-	      break;
-	      case 0xb11:
-	      case 0xb44:
-	      {
-		  NativeField* build = new NativeField();
-		  tile.get_terrain().setOverlay((LandOverlay*)build);
-		  overlay = tile.get_terrain().getOverlay();
-		  overlay->build(i, j);
-		  oCity.getOverlayList().push_back(overlay);
-	      }
-	      break;
+	          }
+	          break;
+	          case 0xb10:
+	          case 0xb0d:
+	          {
+		      // we need to find master tile
+		      if (tile.is_master_tile())
+		      {
+		        std::cout << "Tile is master" << std::endl;
+		        NativeCenter* build = new NativeCenter();
+		        tile.get_terrain().setOverlay((LandOverlay*)build);
+		        overlay = tile.get_terrain().getOverlay();
+		        if (overlay != NULL)
+		        {
+		          overlay->build( pos, oTilemap );
+		          oCity.getOverlayList().push_back(overlay);
+		        }
+		      }
+	          }
+	          break;
+	          case 0xb11:
+	          case 0xb44:
+	          {
+		      NativeField* build = new NativeField();
+		      tile.get_terrain().setOverlay((LandOverlay*)build);
+		      overlay = tile.get_terrain().getOverlay();
+		      overlay->build( pos, oTilemap );
+		      oCity.getOverlayList().push_back(overlay);
+	          }
+	          break;
+	         }
 	     }
-	 }
 	 
          if (overlay != NULL)
          {
-            overlay->build(i, j);
+            overlay->build( pos, oTilemap);
             oCity.getOverlayList().push_back(overlay);
          }
       }

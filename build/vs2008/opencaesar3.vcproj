@@ -531,6 +531,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_tilemapchangecommand.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_tilemapchangecommand.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_time.cpp"
 				>
 			</File>
