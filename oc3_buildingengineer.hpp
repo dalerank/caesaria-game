@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_BUILDINGENGINEER_H_INCLUDE_
 #define __OPENCAESAR3_BUILDINGENGINEER_H_INCLUDE_
 
-#include "service_building.hpp"
+#include "oc3_service_building.hpp"
 
 class BuildingEngineer : public ServiceBuilding
 {

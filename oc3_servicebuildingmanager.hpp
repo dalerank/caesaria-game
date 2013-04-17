@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_SERVICEBUILDING_MANAGER_H_INCLUDE_
 #define __OPENCAESAR3_SERVICEBUILDING_MANAGER_H_INCLUDE_
 
-#include "enums.hpp"
+#include "oc3_enums.hpp"
 
 class ServiceBuilding;
 

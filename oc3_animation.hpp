@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_ANIMATION_H_INCLUDE_
 #define __OPENCAESAR3_ANIMATION_H_INCLUDE_
 
-#include "picture.hpp"
+#include "oc3_picture.hpp"
 
 class Point;
 

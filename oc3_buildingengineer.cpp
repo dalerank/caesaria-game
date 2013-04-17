@@ -13,10 +13,10 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_buildingengineer.h"
-#include "pic_loader.hpp"
-#include "oc3_resourcegroup.h"
-#include "oc3_positioni.h"
+#include "oc3_buildingengineer.hpp"
+#include "oc3_pic_loader.hpp"
+#include "oc3_resourcegroup.hpp"
+#include "oc3_positioni.hpp"
 // 
 // class BuildingEngineer::Impl
 // {

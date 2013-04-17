@@ -16,8 +16,8 @@
 #ifndef __OPENCAESAR3_CONSTRUCTIONMANAGER_H_INCLUDE_
 #define __OPENCAESAR3_CONSTRUCTIONMANAGER_H_INCLUDE_
 
-#include "enums.hpp"
-#include "oc3_scopedptr.h"
+#include "oc3_enums.hpp"
+#include "oc3_scopedptr.hpp"
 
 class LandOverlay;
 

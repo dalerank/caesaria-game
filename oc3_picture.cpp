@@ -25,7 +25,7 @@
 #include "oc3_exception.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_rectangle.hpp"
-#include "pic_loader.hpp"
+#include "oc3_pic_loader.hpp"
 
 Picture::Picture()
 {

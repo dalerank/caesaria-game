@@ -28,7 +28,7 @@
 #include "oc3_enums.hpp"
 #include "oc3_good.hpp"
 #include "oc3_scopedptr.hpp"
-#include "oc3_animation.h"
+#include "oc3_animation.hpp"
 
 class Widget;
 class GuiInfoBox;

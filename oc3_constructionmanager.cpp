@@ -13,16 +13,16 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_constructionmanager.h"
-#include "service_building.hpp"
-#include "training_building.hpp"
+#include "oc3_constructionmanager.hpp"
+#include "oc3_service_building.hpp"
+#include "oc3_training_building.hpp"
 #include "oc3_water_buildings.hpp"
-#include "warehouse.hpp"
-#include "oc3_collapsedruins.h"
-#include "oc3_buildingengineer.h"
-#include "factory_building.hpp"
-#include "oc3_burningruins.h"
-#include "house.hpp"
+#include "oc3_warehouse.hpp"
+#include "oc3_collapsedruins.hpp"
+#include "oc3_buildingengineer.hpp"
+#include "oc3_factory_building.hpp"
+#include "oc3_burningruins.hpp"
+#include "oc3_house.hpp"
 
 #include <map>
 
