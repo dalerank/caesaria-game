@@ -74,7 +74,8 @@ private:
 class InfoBoxLand : public GuiInfoBox
 {
 public:
-    InfoBoxLand( Widget* parent, Tile* tile );    
+    InfoBoxLand( Widget* parent, Tile* tile );   
+    void setText( const std::string& text );
     //bool onEvent(const NEvent& event);
 private:
     void _paint();
@@ -82,6 +83,16 @@ private:
     Label* _text;
 };
 
+class InfoBoxFreeHouse : public InfoBoxLand
+{
+public:
+    InfoBoxFreeHouse( Widget* parent, Tile* tile );   
+
+    //bool onEvent(const NEvent& event);
+private:
+    //void _paint();
+
+};
 // info box about a factory building
 class GuiInfoFactory : public GuiInfoBox
 {

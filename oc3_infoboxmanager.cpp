@@ -45,7 +45,12 @@ void InfoBoxManager::showHelp( Tile* tile )
         }
         else if( House* house = safety_cast< House* >( overlay ) )
         {
-            infoBox = new InfoBoxHouse( _d->gui->getRootWidget(), *house );
+            if( house->getNbHabitants() > 0 )
+                infoBox = new InfoBoxHouse( _d->gui->getRootWidget(), *house );
+            else
+            {
+                infoBox = new InfoBoxFreeHouse( _d->gui->getRootWidget(), tile );
+            }
         }
     }
     
