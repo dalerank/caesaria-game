@@ -81,7 +81,6 @@ public:
    void unserialize(InputSerialStream &stream);
 
    // add construction
-   void build(Construction &buildInstance, const int i, const int j);
    void build(Construction &buildInstance, const TilePos& pos );
 
    //

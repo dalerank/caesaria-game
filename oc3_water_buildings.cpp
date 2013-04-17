@@ -44,9 +44,9 @@ Aqueduct* Aqueduct::clone() const
   return new Aqueduct(*this);
 }
 
-void Aqueduct::build(const int i, const int j)
+void Aqueduct::build(const TilePos& pos )
 {
-  Construction::build(i, j);
+  Construction::build( pos );
   
   updateAqueducts(); // need to rewrite as computeAccessRoads()
 
@@ -204,14 +204,14 @@ Reservoir::~Reservoir()
 {
 }
 
-void Reservoir::build(const int i, const int j)
+void Reservoir::build(const TilePos& pos )
 {
-  Construction::build(i, j);  
+  Construction::build( pos );  
 
   bool near_water = false;  // tells if the factory is next to a mountain
 
   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-  std::list<Tile*> rect = tilemap.getRectangle( i - 1, j - 1, i + _size, j + _size, false);
+  std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size+1 ), !Tilemap::checkCorners );
   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {
       near_water |= (*itTiles)->get_terrain().isWater();

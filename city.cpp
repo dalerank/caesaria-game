@@ -300,20 +300,15 @@ long City::getPopulation() const
    return _d->population;
 }
 
-void City::build(Construction& buildInstance, const int i, const int j)
+void City::build( Construction& buildInstance, const TilePos& pos )
 {
    BuildingData& buildingData = BuildingDataHolder::instance().getData(buildInstance.getType());
    // make new building
    Construction* building = (Construction*)buildInstance.clone();
-   building->build(i, j);
+   building->build( pos );
    _overlayList.push_back(building);
    _d->funds -= buildingData.getCost();
    _d->onFundsChangedSignal.emit( _d->funds );
-}
-
-void City::build( Construction &buildInstance, const TilePos& pos )
-{
-    build( buildInstance, pos.getI(), pos.getJ() );
 }
 
 void City::disaster( const TilePos& pos, DisasterType type )
@@ -533,11 +528,7 @@ void City::unserialize(InputSerialStream &stream)
    std::list<LandOverlay*> llo = _overlayList;
    for (std::list<LandOverlay*>::iterator itLLO = llo.begin(); itLLO!=llo.end(); ++itLLO)
    {
-      LandOverlay &overlay = **itLLO;
-      int i = overlay.getTile().getI();
-      int j = overlay.getTile().getJ();
-
-      overlay.build(i, j);
+      (*itLLO)->build( (*itLLO)->getTile().getIJ());
    }
 }
 

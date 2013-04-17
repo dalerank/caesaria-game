@@ -27,7 +27,7 @@ public:
     void deliverService();
     void timeStep(const unsigned long time);
     void burn();
-    void build(const int i, const int j);
+    void build(const TilePos& pos );
 };
 
 #endif

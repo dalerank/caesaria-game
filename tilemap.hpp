@@ -144,7 +144,6 @@ public:
    // (i2, j2) : right corner of the rectangle (maxI, maxJ)
    std::list<Tile*> getFilledRectangle(const int i1, const int j1, const int i2, const int j2);
    int getSize() const;
-   std::list<Tile*> getRectangle(const int i1, const int j1, const int i2, const int j2, const bool corners = true);
 
    void serialize(OutputSerialStream &stream);
    void unserialize(InputSerialStream &stream);

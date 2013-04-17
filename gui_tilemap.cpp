@@ -325,10 +325,12 @@ void GuiTilemap::_clearLand()
     _getSelectedArea( startPos, stopPos );
 
     for( int i=startPos.getI(); i <= stopPos.getI(); i++ )
+    {
         for( int j=startPos.getJ(); j <=stopPos.getJ(); j++ )
         {
              _city->clearLand( i, j );
         }   
+    }
 }
 
 void GuiTilemap::_buildAll()
@@ -381,8 +383,7 @@ void GuiTilemap::handleEvent( NEvent& event )
 
             // left button
             if( _d->changeCommand.isValid() )
-            {
-                _d->startCursorPos = _d->lastCursorPos;
+            {                
                 if( _d->changeCommand.isRemoveTool() )
                 {
                     _clearLand();                      
@@ -391,6 +392,7 @@ void GuiTilemap::handleEvent( NEvent& event )
                 {
                     _buildAll();               
                 }
+                _d->startCursorPos = _d->lastCursorPos;
                 updatePreviewTiles( true );
             }
             else

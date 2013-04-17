@@ -191,17 +191,16 @@ FactoryMarble* FactoryMarble::clone() const
    return new FactoryMarble(*this);
 }
 
-bool FactoryMarble::canBuild(const int i, const int j) const
+bool FactoryMarble::canBuild(const TilePos& pos ) const
 {
-   bool is_constructible = Construction::canBuild(i, j);
+   bool is_constructible = Construction::canBuild( pos );
    bool near_mountain = false;  // tells if the factory is next to a mountain
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getRectangle(i-1, j-1, i+_size, j+_size, false);
+   std::list<Tile*> rect = tilemap.getRectangle( pos +TilePos( -1, -1 ), Size( _size+1 ), false);
    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
-      Tile &tile = **itTiles;
-      near_mountain |= tile.get_terrain().isRock();
+      near_mountain |= (*itTiles)->get_terrain().isRock();
    }
 
    return (is_constructible && near_mountain);
@@ -224,13 +223,13 @@ FactoryTimber* FactoryTimber::clone() const
    return new FactoryTimber(*this);
 }
 
-bool FactoryTimber::canBuild(const int i, const int j) const
+bool FactoryTimber::canBuild(const TilePos& pos ) const
 {
-   bool is_constructible = Construction::canBuild(i, j);
+   bool is_constructible = Construction::canBuild( pos );
    bool near_forest = false;  // tells if the factory is next to a forest
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getRectangle(i-1, j-1, i+_size, j+_size, false);
+   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 1 ), false);
    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
       Tile &tile = **itTiles;
@@ -257,17 +256,16 @@ FactoryIron* FactoryIron::clone() const
    return new FactoryIron(*this);
 }
 
-bool FactoryIron::canBuild(const int i, const int j) const
+bool FactoryIron::canBuild(const TilePos& pos ) const
 {
-   bool is_constructible = Construction::canBuild(i, j);
+   bool is_constructible = Construction::canBuild( pos );
    bool near_mountain = false;  // tells if the factory is next to a mountain
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getRectangle(i-1, j-1, i+_size, j+_size, false);
+   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size+1), false);
    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
-      Tile &tile = **itTiles;
-      near_mountain |= tile.get_terrain().isRock();
+      near_mountain |= (*itTiles)->get_terrain().isRock();
    }
 
    return (is_constructible && near_mountain);
@@ -290,17 +288,16 @@ FactoryClay* FactoryClay::clone() const
    return new FactoryClay(*this);
 }
 
-bool FactoryClay::canBuild(const int i, const int j) const
+bool FactoryClay::canBuild(const TilePos& pos ) const
 {
-   bool is_constructible = Construction::canBuild(i, j);
+   bool is_constructible = Construction::canBuild( pos );
    bool near_water = false;
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getRectangle(i-1, j-1, i+_size, j+_size, false);
+   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1), Size( _size+1 ), false);
    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
-     Tile &tile = **itTiles;
-     near_water |= tile.get_terrain().isWater();
+     near_water |= (*itTiles)->get_terrain().isWater();
    }
 
    return (is_constructible && near_water);
@@ -387,10 +384,10 @@ FactoryPottery* FactoryPottery::clone() const
 }
 
 
-FarmTile::FarmTile(const GoodType outGood, const int i, const int j)
+FarmTile::FarmTile(const GoodType outGood, const TilePos& pos )
 {
-   _i = i;
-   _j = j;
+   _i = pos.getI();
+   _j = pos.getJ();
 
    int picIdx = 0;
    switch (outGood)
@@ -450,11 +447,11 @@ void Farm::init()
 {
    GoodType farmType = _outGoodType;
    // add subTiles in draw order
-   _subTiles.push_back(FarmTile(farmType, 0, 0));
-   _subTiles.push_back(FarmTile(farmType, 2, 2));
-   _subTiles.push_back(FarmTile(farmType, 1, 0));
-   _subTiles.push_back(FarmTile(farmType, 2, 1));
-   _subTiles.push_back(FarmTile(farmType, 2, 0));
+   _subTiles.push_back(FarmTile(farmType, TilePos( 0, 0 ) ));
+   _subTiles.push_back(FarmTile(farmType, TilePos( 2, 2 ) ));
+   _subTiles.push_back(FarmTile(farmType, TilePos( 1, 0 ) ));
+   _subTiles.push_back(FarmTile(farmType, TilePos( 2, 1 ) ));
+   _subTiles.push_back(FarmTile(farmType, TilePos( 2, 0 ) ));
 
    _fgPictures.resize(5);
    for (int n = 0; n<5; ++n)
@@ -586,9 +583,9 @@ Wharf* Wharf::clone() const
 }
 
 /* INCORRECT! */
-bool Wharf::canBuild(const int i, const int j) const
+bool Wharf::canBuild(const TilePos& pos ) const
 {
-  bool is_constructible = Construction::canBuild(i, j);
+  bool is_constructible = Construction::canBuild( pos );
 
   // We can build wharf only on straight border of water and land
   //
@@ -605,18 +602,18 @@ bool Wharf::canBuild(const int i, const int j) const
    
   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
    
-  std::list<Tile*> rect = tilemap.getRectangle(i - 1, j - 1, i + _size, j + _size, false);
+  std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size+1 ), false);
   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {
     Tile &tile = **itTiles;
-    std::cout << tile.getI() << " " << tile.getJ() << "  " << i << " " << j << std::endl;
+    std::cout << tile.getI() << " " << tile.getJ() << "  " << pos.getI() << " " << pos.getJ() << std::endl;
       
      // if (tiles.get_terrain().isWater())
       
-      if (tile.getJ() > (j + _size -1) && !tile.get_terrain().isWater()) {  bNorth = false; }
-      if (tile.getJ() < j && !tile.get_terrain().isWater())              {  bSouth = false; }
-      if (tile.getI() > (i + _size -1) && !tile.get_terrain().isWater()) {  bEast = false;  }
-      if (tile.getI() < i && !tile.get_terrain().isWater())              {  bWest = false;  }      
+      if (tile.getJ() > (pos.getJ() + _size -1) && !tile.get_terrain().isWater()) {  bNorth = false; }
+      if (tile.getJ() < pos.getJ() && !tile.get_terrain().isWater())              {  bSouth = false; }
+      if (tile.getI() > (pos.getI() + _size -1) && !tile.get_terrain().isWater()) {  bEast = false;  }
+      if (tile.getI() < pos.getI() && !tile.get_terrain().isWater())              {  bWest = false;  }      
    }
 
    return (is_constructible && (bNorth || bSouth || bEast || bWest));

@@ -45,9 +45,8 @@ public:
    int getSize() const;  // size in tiles (1=1x1, 2=2x2, ...)
    bool isDeleted() const;  // returns true if the overlay should be forgotten
    virtual LandOverlay* clone() const = 0;
-   virtual void setTerrain(TerrainTile &terrain) = 0;
-   virtual void build(const int i, const int j);
-   virtual void build(const TilePos& pos );
+   virtual void setTerrain( TerrainTile &terrain ) = 0;
+   virtual void build( const TilePos& pos );
    virtual void destroy();  // handles the walkers
 
    // graphic
@@ -89,7 +88,7 @@ public:
 
    virtual bool canBuild(const int i, const int j) const;  // returns true if it can be built there
    virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
-   virtual void build(const int i, const int j);
+   virtual void build( const TilePos& pos );
    virtual void burn();
    virtual void collapse();
    const std::list<Tile*>& getAccessRoads() const;  // return all road tiles adjacent to the construction
@@ -114,7 +113,7 @@ public:
   Road();
   virtual Road* clone() const;
 
-  virtual void build(const int i, const int j);
+  virtual void build(const TilePos& pos );
   virtual Picture& computePicture();
   virtual void setTerrain(TerrainTile &terrain);
 };

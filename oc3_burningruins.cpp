@@ -83,9 +83,9 @@ void BurningRuins::burn()
 
 }
 
-void BurningRuins::build( const int i, const int j )
+void BurningRuins::build( const TilePos& pos )
 {
-    ServiceBuilding::build( i, j );
+    ServiceBuilding::build( pos );
     //while burning can't remove it
     getTile().get_terrain().setTree( false );
     getTile().get_terrain().setBuilding( false );

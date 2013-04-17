@@ -270,50 +270,49 @@ int Tilemap::getSize() const
    return _size;
 }
 
-std::list<Tile*> Tilemap::getRectangle(const int i1, const int j1, const int i2, const int j2, const bool corners)
-{
-   std::list<Tile*> res;
-
-   int delta_corners = 0;
-   if (! corners)
-   {
-      delta_corners = 1;
-   }
-
-   for (int i = i1+delta_corners; i <= i2-delta_corners; ++i)
-   {
-      if (is_inside(i, j1))
-      {
-         res.push_back(&at(i, j1));
-      }
-
-      if (is_inside(i, j2))
-      {
-         res.push_back(&at(i, j2));
-      }
-   }
-
-   for (int j = j1+1; j <= j2-1; ++j)  // corners have been handled already
-   {
-      if (is_inside(i1, j))
-      {
-         res.push_back(&at(i1, j));
-      }
-
-      if (is_inside(i2, j))
-      {
-         res.push_back(&at(i2, j));
-      }
-   }
-
-   return res;
-}
-
 std::list<Tile*> Tilemap::getRectangle( const TilePos& start, const TilePos& stop, const bool corners /*= true*/ )
 {
-    return getRectangle( start.getI(), start.getJ(), stop.getI(), stop.getJ(), corners );
+    std::list<Tile*> res;
+
+    int delta_corners = 0;
+    if (! corners)
+    {
+        delta_corners = 1;
+    }
+
+    for (int i = start.getI()+delta_corners; i <= stop.getI()-delta_corners; ++i)
+    {
+        if (is_inside(i, start.getJ() ))
+        {
+            res.push_back(&at(i, start.getJ() ));
+        }
+
+        if (is_inside(i, stop.getJ() ))
+        {
+            res.push_back( &at( i, stop.getJ() ));
+        }
+    }
+
+    for (int j = start.getJ()+1; j <= stop.getJ()-1; ++j)  // corners have been handled already
+    {
+        if (is_inside(start.getI(), j))
+        {
+            res.push_back(&at(start.getI(), j));
+        }
+
+        if (is_inside(stop.getI(), j))
+        {
+            res.push_back(&at(stop.getI(), j));
+        }
+    }
+
+    return res;
 }
 
+std::list<Tile*> Tilemap::getRectangle( const TilePos& pos, const Size& size, const bool corners /*= true */ )
+{
+    return getRectangle( pos, pos + TilePos( size.getWidth(), size.getHeight()), corners );
+}
 // Get tiles inside of rectangle
 
 std::list<Tile*> Tilemap::getFilledRectangle(const int i1, const int j1, const int i2, const int j2)

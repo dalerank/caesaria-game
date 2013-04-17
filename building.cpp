@@ -101,30 +101,25 @@ void LandOverlay::setPicture(Picture &picture)
    }
 }
 
-void LandOverlay::build(const int i, const int j)
-{
-   City &city = Scenario::instance().getCity();
-   Tilemap &tilemap = city.getTilemap();
-
-   _master_tile = &tilemap.at(i, j);
-
-   for (int dj = 0; dj<_size; ++dj)
-   {
-      for (int di = 0; di<_size; ++di)
-      {
-         Tile &tile = tilemap.at(i+di, j+dj);
-         tile.set_master_tile(_master_tile);
-         tile.set_picture(_picture);
-         TerrainTile &terrain = tile.get_terrain();
-         terrain.setOverlay(this);
-         setTerrain(terrain);
-      }
-   }
-}
-
 void LandOverlay::build( const TilePos& pos )
 {
-    build( pos.getI(), pos.getJ() );
+    City &city = Scenario::instance().getCity();
+    Tilemap &tilemap = city.getTilemap();
+
+    _master_tile = &tilemap.at( pos );
+
+    for (int dj = 0; dj<_size; ++dj)
+    {
+        for (int di = 0; di<_size; ++di)
+        {
+            Tile &tile = tilemap.at( pos + TilePos( di, dj ) );
+            tile.set_master_tile(_master_tile);
+            tile.set_picture(_picture);
+            TerrainTile &terrain = tile.get_terrain();
+            terrain.setOverlay(this);
+            setTerrain(terrain);
+        }
+    }
 }
 
 void LandOverlay::destroy()
@@ -223,9 +218,9 @@ bool Construction::canBuild( const TilePos& pos ) const
     return canBuild( pos.getI(), pos.getJ() );
 }
 
-void Construction::build(const int i, const int j)
+void Construction::build(const TilePos& pos )
 {
-   LandOverlay::build(i, j);
+   LandOverlay::build( pos );
    computeAccessRoads();
 }
 
@@ -243,11 +238,11 @@ void Construction::computeAccessRoads()
   _accessRoads.clear();
 
   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-  int mi = _master_tile->getI();
-  int mj = _master_tile->getJ();
 
   Uint8 maxDst2road = getMaxDistance2Road();
-  std::list<Tile*> rect = tilemap.getRectangle( mi - maxDst2road, mj - maxDst2road, mi + _size + maxDst2road - 1, mj + _size + maxDst2road - 1, false);
+  std::list<Tile*> rect = tilemap.getRectangle( _master_tile->getIJ() + TilePos( -maxDst2road, -maxDst2road ),
+                                                _master_tile->getIJ() + TilePos( _size + maxDst2road - 1, _size + maxDst2road - 1 ), 
+                                                !Tilemap::checkCorners );
   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {
     Tile* tile = *itTiles;
@@ -367,9 +362,9 @@ Road* Road::clone() const
   return new Road(*this);
 }
 
-void Road::build(const int i, const int j)
+void Road::build(const TilePos& pos )
 {
-  Construction::build(i, j);
+  Construction::build( pos );
   setPicture(computePicture());
 
   // update adjacent roads
