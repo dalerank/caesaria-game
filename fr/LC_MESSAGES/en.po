@@ -1,0 +1,506 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-04-09 02:47+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Andrei Branescu <andreibranescu@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: English \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "%d employes (%d requis)"
+msgstr "%d employees (%d needed)"
+
+msgid "%d occupants, %d places disponibles"
+msgstr "%d occupants, %d available places"
+
+msgid "%d occupants"
+msgstr ""
+
+msgid "%d occupants, %d habitants en trop"
+msgstr "%d occupants, %d additional inhabitants"
+
+msgid "Aucun percepteur ne passe ici. Ne paye pas de taxes"
+msgstr "Not visited by a taxman. Not paying taxes."
+
+msgid "Paye %d Denarii de taxes par mois"
+msgstr "Pays %d denarii of taxes a month"
+
+msgid "Ce quartier est tranquille"
+msgstr "This neighbourhood is quiet"
+
+msgid "%s en stock: %d unites"
+msgstr "%s in stock: %d units"
+
+msgid "House has no such good "
+msgstr ""
+
+msgid "Requires access to service "
+msgstr ""
+
+msgid "Requires access to entertainment level "
+msgstr ""
+
+msgid "Requires access to "
+msgstr ""
+
+msgid " health service(s)"
+msgstr ""
+
+msgid " educational service(s)"
+msgstr ""
+
+msgid " temple(s)"
+msgstr ""
+
+msgid "Petite tente"
+msgstr "Small tent"
+
+msgid "Grande tente"
+msgstr "Large tent"
+
+msgid "Petite hutte"
+msgstr "Small shack"
+
+msgid "Grande hutte"
+msgstr "Large shack"
+
+msgid "Petit taudis"
+msgstr "Small hovel"
+
+msgid "Grand taudis"
+msgstr "Large hovel"
+
+msgid "Petite maison"
+msgstr "Small casa"
+
+msgid "Grande maison"
+msgstr "Large casa"
+
+msgid "Petite insula"
+msgstr "Small insulae"
+
+msgid "Insula moyenne"
+msgstr "Medium insulae"
+
+msgid "Grande insula"
+msgstr "Large insulae"
+
+msgid "Insula imposante"
+msgstr "Grand insulae"
+
+msgid "Petite villa"
+msgstr "Small villa"
+
+msgid "Villa moyenne"
+msgstr "Medium villa"
+
+msgid "Grande Villa"
+msgstr "Large villa"
+
+msgid "Villa imposante"
+msgstr "Grand villa"
+
+msgid "Petit palais"
+msgstr "Small palace"
+
+msgid "Palais moyen"
+msgstr "Medium palace"
+
+msgid "Grand palais"
+msgstr "Large palace"
+
+msgid "Palais luxueux"
+msgstr "Luxury palace"
+
+msgid "Le travail est a %d%% termine."
+msgstr "The work is %d%% finished."
+
+msgid ""
+"Cette fabrique dispose de toute la main-d'oeuvre necessaire et produit des "
+"armes de qualite en quantite."
+msgstr ""
+"This factory has all the employees it needs. It produces the maximum "
+"amount of weapons."
+
+msgid "Ble"
+msgstr "Wheat"
+
+msgid "Poisson"
+msgstr "Fish"
+
+msgid "Viande"
+msgstr "Meat"
+
+msgid "Fruits"
+msgstr ""
+
+msgid "Legumes"
+msgstr "Vegetables"
+
+msgid "Olives"
+msgstr ""
+
+msgid "Huile"
+msgstr "Oil"
+
+msgid "Raisin"
+msgstr "Vines"
+
+msgid "Vin"
+msgstr "Wine"
+
+msgid "Bois"
+msgstr "Wood"
+
+msgid "Meubles"
+msgstr "Furniture"
+
+msgid "Argile"
+msgstr "Clay"
+
+msgid "Poterie"
+msgstr "Pottery"
+
+msgid "Fer"
+msgstr "Iron"
+
+msgid "Armes"
+msgstr "Weapons"
+
+msgid "Marbre"
+msgstr "Marble"
+
+msgid "Rien"
+msgstr "Nothing"
+
+msgid "Grenier"
+msgstr "Granary"
+
+msgid "Marche"
+msgstr "Market"
+
+msgid "%d unites en stock. Espace pour %d unites."
+msgstr "%d units in stock. Space available for %d units."
+
+msgid "Blé- Production arretee sous ordre du gouverneur"
+msgstr ""
+"Production stopped as ordered by the gouverner."
+
+msgid "Blé- Production arretee par manque de personnel"
+msgstr "This wheat farm has stopped producing due to worker shortage."
+
+msgid "Blé- Production quasimment a l'arret par manque de main-d'oeuvre"
+msgstr ""
+"This wheat farm has almost stopped producing due to worker shortage."
+
+msgid "Blé- Production tres ralentie par manque d'employes"
+msgstr ""
+"This wheat farm has slowed its production due to shortage of workers."
+
+msgid "Blé- Production limitee par manque de personnel"
+msgstr "This wheat farm has limited its production due to shortage of workers."
+
+msgid "Blé- Production legerement ralentie par manque d'employes"
+msgstr ""
+"This farm doesn't have enough workers. The production "
+" could go faster with extra workers."
+
+msgid "Blé- Production a son maximum"
+msgstr ""
+"This farm has all the employees it needs. Productions is "
+"at maximmum."
+
+msgid "Armes- Production arretee sous ordre du gouverneur"
+msgstr ""
+"Your trade advisor ordered a halt to the production of weapons. "
+
+msgid "Armes- Production arretee par manque de personnel"
+msgstr "This workshop doesn't hire anyone. The productions has stopped."
+
+msgid "Armes- Production quasimment a l'arret par manque de main-d'oeuvre"
+msgstr ""
+"Due to the number of workers, the production of this "
+"workshop is almost down to 0. Few weapons will be produced this year."
+
+msgid "Armes- Production tres ralentie par manque d'employes"
+msgstr ""
+"Seuls quelques employés travaillent ici. La production est donc très "
+"ralentie."
+
+msgid "Armes- Production limitee par manque de personnel"
+msgstr ""
+"Cette fabrique manque de personnel, et la production d'armes est plus longue "
+"que d'habitude."
+
+msgid "Armes- Production legerement ralentie par manque d'employes"
+msgstr ""
+"Cette fabrique ne dispose pas de suffisamment d'ouvriers, la production sera "
+"donc légèrement réduite."
+
+msgid "Armes- Production a son maximum"
+msgstr ""
+"Cette fabrique dispose de toute la main-d'oeuvre nécessaire et produit des "
+"armes de qualité."
+
+msgid "Armes- Production arretee par manque de matiere premiere"
+msgstr ""
+"Cette fabrique a besoin qu'on lui livre du fer en provenance d'un entrepôt "
+"ou d'une mine afin de pouvoir construire des armes."
+
+msgid "Fer- Production arretee sous ordre du gouverneur"
+msgstr ""
+"Your trade advisor ordered a halt to the mining of iron. "
+
+msgid "Fer- Production arretee par manque de personnel"
+msgstr "Cette mine n'emploie personne. La production est inexistante."
+
+msgid "Fer- Production quasimment a l'arret par manque de main-d'oeuvre"
+msgstr ""
+"Compte tenu du nombre de mineurs ici, la production est presque nulle. Très "
+"peu de fer sera extrait cette année."
+
+msgid "Fer- Production tres ralentie par manque d'employes"
+msgstr ""
+"Seuls quelques employés travaillent ici. La production est donc très "
+"ralentie."
+
+msgid "Fer- Production limitee par manque de personnel"
+msgstr ""
+"Cette mine manque de main-d'oeuvre. La production est plus longue que "
+"d'habitude."
+
+msgid "Fer- Production legerement ralentie par manque d'employes"
+msgstr ""
+"Cette mine ne dispose pas de suffisamment d'ouvriers. L'extraction pourrait "
+"être plus efficace avec plus de mineurs."
+
+msgid "Fer- Production a son maximum"
+msgstr ""
+"Cette mine dispose de toute la main-d'oeuvre nécessaire, et la production de "
+"fer est abondante."
+
+msgid "Terrain vague"
+msgstr "Plain field"
+
+msgid "building_theater"
+msgstr "Theatre"
+
+msgid "building_amphitheater"
+msgstr "Amphitheater"
+
+msgid "building_hippodrome"
+msgstr "Hippodrome"
+
+msgid "building_collosseum"
+msgstr "Colosseum"
+
+msgid "building_actor"
+msgstr "Actor colony"
+
+msgid "building_gladiator"
+msgstr "Gladiator school"
+
+msgid "building_lion"
+msgstr "Lian pit"
+
+msgid "building_chariot"
+msgstr "Chariot maker"
+
+msgid "building_house"
+msgstr "House"
+
+msgid "building_road"
+msgstr "Road"
+
+msgid "building_plaza"
+msgstr "Plazza"
+
+msgid "building_garden"
+msgstr "Gardens"
+
+msgid "building_senate"
+msgstr "Senate"
+
+msgid "building_forum"
+msgstr "Forum"
+
+msgid "building_prefect"
+msgstr "Prefecture"
+
+msgid "building_doctor"
+msgstr "Doctor"
+
+msgid "building_hospital"
+msgstr "Hospital"
+
+msgid "building_baths"
+msgstr "Baths"
+
+msgid "building_barber"
+msgstr "Barber"
+
+msgid "building_school"
+msgstr "School"
+
+msgid "building_college"
+msgstr "University"
+
+msgid "building_library"
+msgstr "Library"
+
+msgid "building_market"
+msgstr "Market"
+
+msgid "building_granary"
+msgstr "Granary"
+
+msgid "building_warehouse"
+msgstr "Warehouse"
+
+msgid "building_wheat"
+msgstr "Wheat farm"
+
+msgid "building_fruit"
+msgstr "Fruit farm"
+
+msgid "building_vegetable"
+msgstr "Vegetable farm"
+
+msgid "building_olive"
+msgstr "Olive farm"
+
+msgid "building_grape"
+msgstr "Vine farm"
+
+msgid "building_meat"
+msgstr "Pig farm"
+
+msgid "building_marble"
+msgstr "Marble quarry"
+
+msgid "building_iron"
+msgstr "Iron mine"
+
+msgid "building_timber"
+msgstr "Timber yard"
+
+msgid "building_clay"
+msgstr "Clay pit"
+
+msgid "building_wine"
+msgstr "Wine workshop"
+
+msgid "building_oil"
+msgstr "Oil workshop"
+
+msgid "building_weapon"
+msgstr "Weapons workshop"
+
+msgid "building_furniture"
+msgstr "Furniture workshop"
+
+msgid "building_pottery"
+msgstr "Pottery workshop"
+
+msgid "building_engineer"
+msgstr "Engineer's post"
+
+msgid "building_statue1"
+msgstr "Small statue"
+
+msgid "building_statue2"
+msgstr "Statue"
+
+msgid "building_statue3"
+msgstr "Large statue"
+
+msgid "building_low_bridge"
+msgstr "Low bridge"
+
+msgid "building_high_bridge"
+msgstr "High bridge"
+
+msgid "building_well"
+msgstr "Well"
+
+msgid "building_fountain"
+msgstr "Fontaine"
+
+msgid "building_temple_ceres"
+msgstr "Temple of Ceres"
+
+msgid "building_temple_neptune"
+msgstr "Temple of Neptune"
+
+msgid "building_temple_mars"
+msgstr "Temple of Mars"
+
+msgid "building_temple_venus"
+msgstr "Temple of Venus"
+
+msgid "building_temple_mercure"
+msgstr "Temple of Mercury"
+
+msgid "Ferme"
+msgstr "Farm"
+
+msgid "Matieres premieres"
+msgstr "Raw materials"
+
+msgid "Atelier"
+msgstr "Atelier"
+
+msgid "New Game"
+msgstr "New Game"
+
+msgid "Load Game"
+msgstr "Load Game"
+
+msgid "Quit"
+msgstr "Quit"
+
+msgid "Options"
+msgstr "Options"
+
+msgid "Save Game"
+msgstr "Save Game"
+
+msgid "Quit Game"
+msgstr "Quit Game"
+
+msgid "need fountain"
+msgstr ""
+
+msgid "need water"
+msgstr ""
+
+msgid "need hospital"
+msgstr ""
+
+msgid "need doctor"
+msgstr ""
+
+msgid "need barber"
+msgstr ""
+
+msgid "need doctor or hospital"
+msgstr ""
+
+msgid "need bath"
+msgstr ""
+
+msgid "need college"
+msgstr ""
+
+msgid "need library"
+msgstr ""
+
+msgid "need school"
+msgstr ""
+
+msgid "need library or school"
+msgstr ""
