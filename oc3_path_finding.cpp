@@ -382,7 +382,7 @@ Propagator::Propagator()
    _city = &Scenario::instance().getCity();
    _tilemap = &_city->getTilemap();
    _allLands = false;
-   _allDirections = false;
+   _allDirections = true;
 }
 
 

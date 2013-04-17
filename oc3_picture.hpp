@@ -19,7 +19,6 @@
 #ifndef PICTURE_HPP
 #define PICTURE_HPP
 
-
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_opengl.h>
@@ -62,6 +61,8 @@ public:
 
    bool isValid() const;
 
+   static Picture& load( const char* group, const int id );
+
 private:
    // the image is shifted when displayed
    int _xoffset;
@@ -78,27 +79,6 @@ private:
    // for OPEN_GL surface
    GLuint _glTextureID;  // texture ID for openGL
 };
-
-
-// several frames for a basic visual animation
-class Animation
-{
-public:
-   Animation() {}
-
-   void init(const std::vector<Picture*> &pictures);
-
-   std::vector<Picture*>& get_pictures();
-   const std::vector<Picture*>& get_pictures() const;
-
-   void nextFrame();
-   Picture* get_current_picture();
-
-private:
-   std::vector<Picture*> _pictures;
-   unsigned int _animIndex;  // index of the current frame
-};
-
 
 class Font
 {

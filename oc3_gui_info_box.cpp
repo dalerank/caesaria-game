@@ -244,23 +244,25 @@ void InfoBoxHouse::_paint()
     sprintf(buffer, _("Inhabitants didn't report about crimes"));
     _ed->lbCrime->setText( buffer );
 
+    int startY = _ed->lbCrime->getBottom() + 10;
     if( _ed->house->getLevelSpec().getHouseLevel() > 2 )
     {
-        drawGood(G_WHEAT, 0, 0 );
+        drawGood(G_WHEAT, 0, 0, startY );
     }
     else
     {
         Label* lb = new Label( this, _ed->lbCrime->getRelativeRect() + Point( 0, 30 ), "", false, true ); 
         lb->setHeight( 30 );
         lb->setLineIntevalOffset( -6 );
-        lb->setText( _("Inabitants of tents provide themselves with food, conducting a subsistence economy") );
+        lb->setText( _("Inabitants of tents provide food themselves, conducting a subsistence economy") );
         lb->setWordWrap( true );
+        startY = lb->getBottom() + 10;
     }
 
-    drawGood(G_POTTERY, 0, 1);
-    drawGood(G_FURNITURE, 1, 1);
-    drawGood(G_OIL, 2, 1);
-    drawGood(G_WINE, 3, 1);
+    drawGood(G_POTTERY, 0, 1, startY);
+    drawGood(G_FURNITURE, 1, 1, startY);
+    drawGood(G_OIL, 2, 1, startY);
+    drawGood(G_WINE, 3, 1, startY);
 }
 
 
@@ -298,7 +300,7 @@ void InfoBoxHouse::drawHabitants()
    _ed->lbHabitants->setText( buffer );
 }
 
-void InfoBoxHouse::drawGood(const GoodType &goodType, const int col, const int row )
+void InfoBoxHouse::drawGood(const GoodType &goodType, const int col, const int row, const int startY )
 {
    SdlFacade &sdlFacade = SdlFacade::instance();
    Font &font = FontCollection::instance().getFont(FONT_2);
@@ -306,11 +308,11 @@ void InfoBoxHouse::drawGood(const GoodType &goodType, const int col, const int r
 
    // pictures of goods
    Picture &pic = getPictureGood(goodType);
-   sdlFacade.drawPicture(pic, *_d->bgPicture, 31+100*col, _ed->lbCrime->getBottom() + 2 + 40 * row);
+   sdlFacade.drawPicture(pic, *_d->bgPicture, 31+100*col, startY + 2 + 30 * row);
 
    char buffer[1000];
    sprintf(buffer, "%d", qty);
-   sdlFacade.drawText(*_d->bgPicture, std::string(buffer), 61+100*col, _ed->lbCrime->getBottom() + 40 * row, font);
+   sdlFacade.drawText(*_d->bgPicture, std::string(buffer), 61+100*col, startY + 30 * row, font);
 }
 
 GuiInfoFactory::GuiInfoFactory( Widget* parent, Factory &building)

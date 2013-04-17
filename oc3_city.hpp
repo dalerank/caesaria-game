@@ -85,7 +85,7 @@ public:
    void build(Construction &buildInstance, const TilePos& pos );
 
    //
-   void burn( const TilePos& pos );
+   void disaster( const TilePos& pos, DisasterType type );
    // remove construction
    void clearLand( const int i, const int j );
    void clearLand( const TilePos& pos );

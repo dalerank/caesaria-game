@@ -19,9 +19,9 @@
 
 #include "oc3_scenario.hpp"
 #include "oc3_time.hpp"
+#include "oc3_positioni.hpp"
 
 namespace {
-  static const char* rcUtilityGroup      = "utilitya";
   static const char* rcAqueductGroup     = "land2a";
 }
 
@@ -83,6 +83,7 @@ void Aqueduct::setTerrain(TerrainTile &terrain)
   terrain.setOverlay(this);
   terrain.setBuilding(true);
   terrain.setRoad(isRoad);
+  terrain.setAqueduct(true); // mandatory!
 }
 
 bool Aqueduct::canBuild(const int i, const int j) const
@@ -180,17 +181,16 @@ Picture& Aqueduct::computePicture()
 Reservoir::Reservoir()
 {
   setType(B_RESERVOIR);
-  setPicture( PicLoader::instance().get_picture( rcUtilityGroup, 34 ) );
+  setPicture( PicLoader::instance().get_picture( ResourceGroup::utilitya, 34 ) );
  _size = 3;
-  _lastTimeAnimate = DateTime::getElapsedTime();
   
   // utilitya 34      - emptry reservoir
   // utilitya 35 ~ 42 - full reservoir animation
  
-  AnimLoader animLoader( PicLoader::instance() );
-  animLoader.fill_animation(_animation, rcUtilityGroup, 35, 8);
-  animLoader.fill_animation_reverse(_animation, rcUtilityGroup, 42, 7);
-  animLoader.change_offset(_animation, 47, 63);
+  _animation.load( ResourceGroup::utilitya, 35, 8);
+  _animation.load( ResourceGroup::utilitya, 42, 7, Animation::reverse);
+  _animation.setFrameDelay( 11 );
+  _animation.setOffset( Point( 47, 63 ) );
   _fgPictures.resize(1);
   //_fgPictures[0]=;
 }
@@ -287,19 +287,14 @@ void Reservoir::setTerrain(TerrainTile &terrain)
 
 void Reservoir::timeStep(const unsigned long time)
 {
-    if( DateTime::getElapsedTime() - _lastTimeAnimate < 100 )
-        return;
-
-    _lastTimeAnimate = DateTime::	getElapsedTime();
-
     if( !_mayAnimate )
     {
         _fgPictures[ 0 ] = 0;
         return;
     }
 
-    _animation.nextFrame();
+    _animation.update( time );
     
     // takes current animation frame and put it into foreground
-    _fgPictures[ 0 ] = _animation.get_current_picture(); 
+    _fgPictures[ 0 ] = _animation.getCurrentPicture(); 
 }

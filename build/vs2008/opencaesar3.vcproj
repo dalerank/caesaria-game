@@ -323,6 +323,22 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_animation.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_animation.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_buildingengineer.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_buildingengineer.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_buildmenu.cpp"
 				>
 			</File>
@@ -336,6 +352,22 @@
 			</File>
 			<File
 				RelativePath="..\..\oc3_burningruins.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_collapsedruins.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_collapsedruins.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_constructionmanager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_constructionmanager.h"
 				>
 			</File>
 			<File
@@ -471,6 +503,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_servicebuildingmanager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_servicebuildingmanager.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_signals.h"
 				>
 			</File>
@@ -508,6 +548,14 @@
 			</File>
 			<File
 				RelativePath="..\..\oc3_vector2.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_water_buildings.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_water_buildings.hpp"
 				>
 			</File>
 			<File

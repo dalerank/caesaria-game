@@ -47,7 +47,8 @@ OBJECTS=oc3_caesar.o oc3_pic_loader.o oc3_tilemap.o oc3_tilemap_area.o oc3_city.
 	oc3_gui_tilemap.o oc3_house_level.o oc3_house.o oc3_building_data.o oc3_factory_building.o oc3_service_building.o oc3_training_building.o oc3_good.o oc3_building.o oc3_warehouse.o \
 	oc3_walker.o oc3_walker_market_buyer.o oc3_walker_cart_pusher.o oc3_gui_info_box.o oc3_buildmenu.o oc3_emigrant.o oc3_eventconverter.o oc3_widgetanimator.o oc3_guienv.o \
 	oc3_label.o oc3_menu.o oc3_menurgihtpanel.o oc3_pictureconverter.o oc3_pushbutton.o oc3_resourcegroup.o oc3_startmenu.o oc3_time.o oc3_topmenu.o \
-	oc3_widget.o oc3_widgetpositionanimator.o oc3_infoboxmanager.o oc3_roadpropagator.o oc3_burningruins.o oc3_water_buildings.o
+	oc3_widget.o oc3_widgetpositionanimator.o oc3_infoboxmanager.o oc3_roadpropagator.o oc3_burningruins.o oc3_water_buildings.o oc3_animation.o \
+	oc3_buildingengineer.o oc3_constructionmanager.o oc3_collapsedruins.o 
 
 
 all: $(CAESAR_EXE) tags chmod

@@ -13,12 +13,21 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
+#ifndef __OPENCAESAR3_COLLAPSED_RUINS_H_INCLUDE_
+#define __OPENCAESAR3_COLLAPSED_RUINS_H_INCLUDE_
 
-#include "oc3_resourcegroup.hpp"
+#include "service_building.hpp"
 
-const char* ResourceGroup::panelBackground = "paneling";
-const char* ResourceGroup::menuMiddleIcons = "panelwindows";
-const char* ResourceGroup::land2a = "land2a";
-const char* ResourceGroup::sprites = "sprites";
-const char* ResourceGroup::buildingEngineer = "transport";  
-const char* ResourceGroup::utilitya      = "utilitya";
+class CollapsedRuins : public ServiceBuilding
+{
+public:
+    CollapsedRuins();
+    CollapsedRuins* clone() const;
+
+    void deliverService();
+    void timeStep(const unsigned long time);
+    void burn();
+    void build(const int i, const int j);
+};
+
+#endif

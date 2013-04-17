@@ -25,6 +25,7 @@
 #include "oc3_exception.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_rectangle.hpp"
+#include "pic_loader.hpp"
 
 Picture::Picture()
 {
@@ -108,40 +109,9 @@ bool Picture::isValid() const
     return _surface != 0;
 }
 
-void Animation::init(const std::vector<Picture*> &pictures)
+Picture& Picture::load( const char* group, const int id )
 {
-   _pictures = pictures;
-   _animIndex = 0;
-}
-
-std::vector<Picture*>& Animation::get_pictures()
-{
-   return _pictures;
-}
-
-const std::vector<Picture*>& Animation::get_pictures() const
-{
-   return _pictures;
-}
-
-void Animation::nextFrame()
-{
-   _animIndex += 1;
-}
-
-Picture* Animation::get_current_picture()
-{
-   if (_pictures.size() == 0)
-   {
-      return NULL;
-   }
-
-   if (_animIndex >= _pictures.size())
-   {
-      _animIndex = 0;
-   }
-
-   return _pictures[_animIndex];
+    return PicLoader::instance().get_picture( group, id );
 }
 
 Font::Font(TTF_Font &ttfFont, SDL_Color &color)

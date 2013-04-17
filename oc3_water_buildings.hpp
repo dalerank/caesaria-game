@@ -54,7 +54,6 @@ public:
   void updateAqueducts();
 private:
   bool _mayAnimate;
-  int _lastTimeAnimate;
 };
 
 #endif // __OPENCAESAR3_WATER_BUILDGINDS_INCLUDED__

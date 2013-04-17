@@ -33,6 +33,7 @@
 #include "oc3_menu.hpp"
 #include "oc3_event.hpp"
 #include "oc3_infoboxmanager.hpp"
+#include "oc3_constructionmanager.hpp"
 
 class ScreenGame::Impl
 {
@@ -164,7 +165,7 @@ int ScreenGame::getResult() const
 void ScreenGame::resolveCreateConstruction( int type )
 {
     bool multiBuild = false;
-    Construction* construction = dynamic_cast<Construction*>( LandOverlay::getInstance( BuildingType( type ) ) );
+    Construction* construction = dynamic_cast<Construction*>( ConstructionManager::getInstance().create( BuildingType( type ) ) );
     switch( type )
     {
     case B_ROAD:

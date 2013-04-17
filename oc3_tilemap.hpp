@@ -47,6 +47,7 @@ public:
    bool isBuilding() const                 { return _isBuilding; }
    bool isRoad() const                     { return _isRoad;     }
    bool isGarden() const                   { return _isGarden;   }
+   bool isAqueduct() const                 { return _isAqueduct; }
 
    void setWater(const bool isWater)       { _isWater = isWater;       }
    void setRock(const bool isRock)         { _isRock = isRock;         }
@@ -54,6 +55,7 @@ public:
    void setBuilding(const bool isBuilding) { _isBuilding = isBuilding; }
    void setRoad(const bool isRoad)         { _isRoad = isRoad;         }
    void setGarden(const bool isGarden)     { _isGarden = isGarden;     }
+   void setAqueduct(const bool isAqueduct) { _isAqueduct = isAqueduct; }
 
    
    void setOverlay(LandOverlay *overlay);
@@ -72,6 +74,7 @@ private:
    bool _isBuilding;
    bool _isRoad;
    bool _isGarden;
+   bool _isAqueduct;
    LandOverlay *_overlay;
 };
 
