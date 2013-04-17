@@ -14,14 +14,14 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "oc3_roadpropagator.h"
+#include "oc3_roadpropagator.hpp"
 
 #include <set>
 #include <map>
 
-#include "exception.hpp"
-#include "tilemap.hpp"
-#include "oc3_positioni.h"
+#include "oc3_exception.hpp"
+#include "oc3_tilemap.hpp"
+#include "oc3_positioni.hpp"
 
 class RoadPropagator::Impl
 {
@@ -55,7 +55,8 @@ bool RoadPropagator::getPath( Tile* destination, std::list< Tile* >& oPathWay )
         return true;
     }
     
-    for( int i=startPos.getI(); i != stopPos.getI(); i+=iStep )
+    // propagate on I axis
+    for( int i=startPos.getI();; i+=iStep )
     {
         Tile* curTile = &_d->tilemap->at( i, stopPos.getJ() );
          
@@ -63,9 +64,13 @@ bool RoadPropagator::getPath( Tile* destination, std::list< Tile* >& oPathWay )
             oPathWay.push_back( curTile );
         else
             return false;
+
+        if( i == stopPos.getI() )
+           break;
     }
 
-    for( int j=startPos.getJ(); j != stopPos.getJ(); j+=jStep )
+    // propagate on J axis
+    for( int j=startPos.getJ();; j+=jStep )
     {
         Tile* curTile = &_d->tilemap->at( startPos.getI(), j );
 
@@ -73,6 +78,9 @@ bool RoadPropagator::getPath( Tile* destination, std::list< Tile* >& oPathWay )
             oPathWay.push_back( curTile );
         else
             return false;
+
+        if( j == stopPos.getJ() )
+           break;
     }
 
     return true;

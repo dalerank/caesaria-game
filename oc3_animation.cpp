@@ -13,9 +13,9 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_animation.h"
-#include "oc3_positioni.h"
-#include "pic_loader.hpp"
+#include "oc3_animation.hpp"
+#include "oc3_positioni.hpp"
+#include "oc3_pic_loader.hpp"
 
 void Animation::start(bool loop)
 {

@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_eventconverter.h"
-#include "oc3_time.h"
+#include "oc3_eventconverter.hpp"
+#include "oc3_time.hpp"
 #include <map>
 
 struct SMouseMultiClicks
