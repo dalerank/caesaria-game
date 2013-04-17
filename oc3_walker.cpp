@@ -45,6 +45,8 @@ Walker::Walker()
 
    _midTileI = 7;
    _midTileJ = 7;
+   _remainMoveI = 0;
+   _remainMoveJ = 0;
 };
 
 Walker::~Walker()
@@ -229,25 +231,22 @@ void Walker::walk()
    }
    _animIndex = (_animIndex+1) % 12;
 
-   int amountI = 0;  // amount of movement
-   int amountJ = 0;  // amount of movement
-
    switch (_action._direction)
    {
    case D_NORTH:
    case D_SOUTH:
-      amountJ = _speed;
+      _remainMoveJ += _speed;
       break;
    case D_EAST:
    case D_WEST:
-      amountI = _speed;
+      _remainMoveI += _speed;
       break;
    case D_NORTH_EAST:
    case D_SOUTH_WEST:
    case D_SOUTH_EAST:
    case D_NORTH_WEST:
-      amountI = _speed;  // TODO: decrease speed
-      amountJ = _speed;  // TODO: decrease speed
+      _remainMoveI += float(_speed)*0.7;
+      _remainMoveJ += float(_speed)*0.7;
       break;
    default:
       THROW("Invalid move direction: " << _action._direction);
@@ -257,6 +256,10 @@ void Walker::walk()
 
    bool newTile = false;
    bool midTile = false;
+   int amountI = int(_remainMoveI);
+   int amountJ = int(_remainMoveJ);
+   _remainMoveI -= amountI;
+   _remainMoveJ -= amountJ;
 
    // std::cout << "walker step, amount :" << amount << std::endl;
    while (amountI+amountJ > 0)
