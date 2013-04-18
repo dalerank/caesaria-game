@@ -45,6 +45,7 @@ public:
 
    // position and movement
    int getI() const;
+   TilePos getIJ() const;
    int getJ() const;
    int getII() const;
    int getJJ() const;
@@ -136,7 +137,6 @@ private:
 
 };
 
-
 /** This walker gives a service to buildings along the road */
 class ServiceWalker : public Walker
 {
@@ -157,7 +157,9 @@ public:
    // evaluates the service demand on the given pathWay
    float evaluatePath(PathWay &pathWay);
    void reservePath(PathWay &pathWay);
-   std::set<Building*> getReachedBuildings(const int i, const int j);
+   std::set<Building*> getReachedBuildings(const TilePos& pos );
+
+   void setMaxDistance( const int distance );
 
    void serialize(OutputSerialStream &stream);
    void unserialize(InputSerialStream &stream);

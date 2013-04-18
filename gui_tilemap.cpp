@@ -324,11 +324,12 @@ void GuiTilemap::_clearLand()
     TilePos startPos, stopPos;
     _getSelectedArea( startPos, stopPos );
 
-    for( int i=startPos.getI(); i <= stopPos.getI(); i++ )
+    TilePos pnt = startPos;
+    for( ; pnt.getI() <= stopPos.getI(); pnt+=TilePos( 1, 0 ) )
     {
-        for( int j=startPos.getJ(); j <=stopPos.getJ(); j++ )
+        for( ; pnt.getJ() <= stopPos.getJ(); pnt += TilePos( 0, 1 ) )
         {
-             _city->clearLand( i, j );
+             _city->clearLand( pnt );
         }   
     }
 }

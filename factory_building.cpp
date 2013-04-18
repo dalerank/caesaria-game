@@ -26,11 +26,7 @@
 #include "exception.hpp"
 #include "gui_info_box.hpp"
 #include "gettext.hpp"
-
-
-namespace {
-  static const char* rcCommerceGroup     = "commerce";
-}
+#include "oc3_resourcegroup.h"
 
 Factory::Factory(const GoodType inType, const GoodType outType)
 {
@@ -180,9 +176,10 @@ FactoryMarble::FactoryMarble() : Factory(G_NONE, G_MARBLE)
    setType(B_MARBLE);
    _size = 2;
    _productionRate = 9.6f;
-   _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 43);
+   _picture = &PicLoader::instance().get_picture(ResourceGroup::commerce, 43);
 
-   _animation.load(rcCommerceGroup, 44, 10);
+   _animation.load(ResourceGroup::commerce, 44, 10);
+   _animation.setFrameDelay( 4 );
    _fgPictures.resize(2);
 }
 
@@ -197,7 +194,7 @@ bool FactoryMarble::canBuild(const TilePos& pos ) const
    bool near_mountain = false;  // tells if the factory is next to a mountain
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getRectangle( pos +TilePos( -1, -1 ), Size( _size+1 ), false);
+   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size+1 ), !Tilemap::checkCorners);
    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
       near_mountain |= (*itTiles)->get_terrain().isRock();
@@ -206,15 +203,31 @@ bool FactoryMarble::canBuild(const TilePos& pos ) const
    return (is_constructible && near_mountain);
 }
 
+void FactoryMarble::timeStep( const unsigned long time )
+{
+    bool mayAnimate = getWorkers() > 0;
+
+    if( mayAnimate && _animation.isStopped() )
+    {
+        _animation.start();
+    }
+
+    if( !mayAnimate && _animation.isRunning() )
+    {
+        _animation.stop();
+    }
+
+    Factory::timeStep( time );
+}
 
 FactoryTimber::FactoryTimber() : Factory(G_NONE, G_TIMBER)
 {
    setType(B_TIMBER);
    _size = 2;
    _productionRate = 9.6f;
-   _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 72);
+   _picture = &PicLoader::instance().get_picture(ResourceGroup::commerce, 72);
 
-   _animation.load( rcCommerceGroup, 73, 10);
+   _animation.load( ResourceGroup::commerce, 73, 10);
    _fgPictures.resize(2);
 }
 
@@ -229,7 +242,7 @@ bool FactoryTimber::canBuild(const TilePos& pos ) const
    bool near_forest = false;  // tells if the factory is next to a forest
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 1 ), false);
+   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size ), !Tilemap::checkCorners );
    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
       Tile &tile = **itTiles;
@@ -245,9 +258,9 @@ FactoryIron::FactoryIron() : Factory(G_NONE, G_IRON)
    setType(B_IRON);
    _size = 2;
    _productionRate = 9.6f;
-   _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 54);
+   _picture = &PicLoader::instance().get_picture(ResourceGroup::commerce, 54);
 
-   _animation.load( rcCommerceGroup, 55, 6);
+   _animation.load( ResourceGroup::commerce, 55, 6);
    _fgPictures.resize(2);
 }
 
@@ -262,7 +275,7 @@ bool FactoryIron::canBuild(const TilePos& pos ) const
    bool near_mountain = false;  // tells if the factory is next to a mountain
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size+1), false);
+   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size ), !Tilemap::checkCorners );
    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
       near_mountain |= (*itTiles)->get_terrain().isRock();
@@ -277,9 +290,9 @@ FactoryClay::FactoryClay() : Factory(G_NONE, G_CLAY)
    setType(B_CLAY);
    _size = 2;
    _productionRate = 9.6f;
-   _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 61);
+   _picture = &PicLoader::instance().get_picture(ResourceGroup::commerce, 61);
 
-   _animation.load( rcCommerceGroup, 62, 10);
+   _animation.load( ResourceGroup::commerce, 62, 10);
    _fgPictures.resize(2);
 }
 
@@ -294,7 +307,7 @@ bool FactoryClay::canBuild(const TilePos& pos ) const
    bool near_water = false;
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1), Size( _size+1 ), false);
+   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1), Size( _size ), !Tilemap::checkCorners );
    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
      near_water |= (*itTiles)->get_terrain().isWater();
@@ -308,9 +321,9 @@ FactoryWeapon::FactoryWeapon() : Factory(G_IRON, G_WEAPON)
 {
    setType(B_WEAPON);
    _size = 2;
-   _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 108);
+   _picture = &PicLoader::instance().get_picture(ResourceGroup::commerce, 108);
 
-   _animation.load( rcCommerceGroup, 109, 6);
+   _animation.load( ResourceGroup::commerce, 109, 6);
    _fgPictures.resize(2);
 }
 
@@ -324,9 +337,9 @@ FactoryFurniture::FactoryFurniture() : Factory(G_TIMBER, G_FURNITURE)
 {
    setType(B_FURNITURE);
    _size = 2;
-   _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 117);
+   _picture = &PicLoader::instance().get_picture(ResourceGroup::commerce, 117);
 
-   _animation.load(rcCommerceGroup, 118, 14);
+   _animation.load(ResourceGroup::commerce, 118, 14);
    _fgPictures.resize(2);
 }
 
@@ -340,9 +353,9 @@ FactoryWine::FactoryWine() : Factory(G_GRAPE, G_WINE)
 {
    setType(B_WINE);
    _size = 2;
-   _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 86);
+   _picture = &PicLoader::instance().get_picture(ResourceGroup::commerce, 86);
 
-   _animation.load(rcCommerceGroup, 87, 12);
+   _animation.load(ResourceGroup::commerce, 87, 12);
    _fgPictures.resize(2);
 }
 
@@ -356,9 +369,9 @@ FactoryOil::FactoryOil() : Factory(G_OLIVE, G_OIL)
 {
    setType(B_OIL);
    _size = 2;
-   _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 99);
+   _picture = &PicLoader::instance().get_picture(ResourceGroup::commerce, 99);
 
-   _animation.load(rcCommerceGroup, 100, 8);
+   _animation.load(ResourceGroup::commerce, 100, 8);
    _fgPictures.resize(2);
 }
 
@@ -372,9 +385,9 @@ FactoryPottery::FactoryPottery() : Factory(G_CLAY, G_POTTERY)
 {
    setType(B_POTTERY);
    _size = 2;
-   _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 132);
+   _picture = &PicLoader::instance().get_picture(ResourceGroup::commerce, 132);
 
-   _animation.load(rcCommerceGroup, 133, 7);
+   _animation.load(ResourceGroup::commerce, 133, 7);
    _fgPictures.resize(2);
 }
 
@@ -414,7 +427,7 @@ FarmTile::FarmTile(const GoodType outGood, const TilePos& pos )
       THROW("Unexpected farmType in farm:" << outGood);
    }
 
-   _animation.load( rcCommerceGroup, picIdx, 5);
+   _animation.load( ResourceGroup::commerce, picIdx, 5);
    computePicture(0);
 }
 
@@ -438,7 +451,7 @@ Farm::Farm(const GoodType outGood) : Factory(G_NONE, outGood)
    _size = 3;
    _picture = &_pictureBuilding;
 
-   _pictureBuilding = PicLoader::instance().get_picture(rcCommerceGroup, 12);  // farm building
+   _pictureBuilding = PicLoader::instance().get_picture(ResourceGroup::commerce, 12);  // farm building
    _pictureBuilding.add_offset(30, 15);
    init();
 }

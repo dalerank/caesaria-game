@@ -27,6 +27,7 @@ public:
     static const char* buildingEngineer;
     static const char* utilitya;
     static const char* commerce;
+    static const char* security;
 };
 
 class ResourceMenu

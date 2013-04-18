@@ -86,9 +86,9 @@ void Aqueduct::setTerrain(TerrainTile &terrain)
   terrain.setAqueduct(true); // mandatory!
 }
 
-bool Aqueduct::canBuild(const int i, const int j) const
+bool Aqueduct::canBuild( const TilePos& pos ) const
 {
-  bool is_free = Construction::canBuild(i, j);
+  bool is_free = Construction::canBuild( pos );
   
   if (is_free) return true; // we try to build on free tile
   
@@ -96,17 +96,17 @@ bool Aqueduct::canBuild(const int i, const int j) const
   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
 
   // we can't build on plazas
-  if (dynamic_cast<Plaza*>(tilemap.at(i, j).get_terrain().getOverlay()) != NULL)
+  if (dynamic_cast<Plaza*>(tilemap.at( pos ).get_terrain().getOverlay()) != NULL)
     return false;
 
   // and we can't build on intersections
-  if (tilemap.at(i, j).get_terrain().isRoad())
+  if (tilemap.at( pos ).get_terrain().isRoad())
   {
     int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
-    if (tilemap.at(i, j + 1).get_terrain().isRoad()) { directionFlags += 1; } // road to the north
-    if (tilemap.at(i, j - 1).get_terrain().isRoad()) { directionFlags += 4; } // road to the south
-    if (tilemap.at(i + 1, j).get_terrain().isRoad()) { directionFlags += 2; } // road to the east
-    if (tilemap.at(i - 1, j).get_terrain().isRoad()) { directionFlags += 8; } // road to the west
+    if (tilemap.at( pos + TilePos( 0, 1 ) ).get_terrain().isRoad()) { directionFlags += 1; } // road to the north
+    if (tilemap.at( pos + TilePos( 0, -1 ) ).get_terrain().isRoad()) { directionFlags += 4; } // road to the south
+    if (tilemap.at( pos + TilePos( 1, 0 ) ).get_terrain().isRoad()) { directionFlags += 2; } // road to the east
+    if (tilemap.at( pos + TilePos( -1, 0) ).get_terrain().isRoad()) { directionFlags += 8; } // road to the west
 
     std::cout << "direction flags=" << directionFlags << std::endl;
    

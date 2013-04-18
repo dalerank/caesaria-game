@@ -61,6 +61,7 @@ public:
    FactoryMarble();
    virtual FactoryMarble* clone() const;
    virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
+   void timeStep(const unsigned long time);
 };
 
 class FactoryTimber : public Factory

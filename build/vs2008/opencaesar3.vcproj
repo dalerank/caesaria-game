@@ -595,6 +595,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_workerhunter.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_workerhunter.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\path_finding.cpp"
 				>
 			</File>

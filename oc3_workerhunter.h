@@ -13,18 +13,22 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_BUILDINGENGINEER_H_INCLUDE_
-#define __OPENCAESAR3_BUILDINGENGINEER_H_INCLUDE_
+#ifndef __OPENCAESAR3_WORKERSHUNTER_H_INCLUDE_
+#define __OPENCAESAR3_WORKERSHUNTER_H_INCLUDE_
 
-#include "service_building.hpp"
+#include "walker.hpp"
 
-class BuildingEngineer : public ServiceBuilding
+class WorkersHunter : public ServiceWalker
 {
 public:
-    BuildingEngineer();
-    BuildingEngineer* clone() const;
-    void timeStep(const unsigned long time);
-    void deliverService();
+    WorkersHunter( ServiceBuilding& building );
+
+    int getWorkersNeeded() const;
+
+    int start( const int workersNeeded );
+    void hireWorkers( const int workers );
+private:
+    int _workersNeeded;
 };
 
-#endif
+#endif//__OPENCAESAR3_WORKERSHUNTER_H_INCLUDE_

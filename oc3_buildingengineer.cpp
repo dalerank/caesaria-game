@@ -17,18 +17,12 @@
 #include "pic_loader.hpp"
 #include "oc3_resourcegroup.h"
 #include "oc3_positioni.h"
-// 
-// class BuildingEngineer::Impl
-// {
-// public:
-// 
-// };
 
 BuildingEngineer::BuildingEngineer() : ServiceBuilding(S_ENGINEER)
 {
     setType(B_ENGINEER);
     _size = 1;
-    _workerCount = 1;
+    setWorkers( 0 );
     setPicture( Picture::load( ResourceGroup::buildingEngineer, 56 ) );
 
     _animation.load( ResourceGroup::buildingEngineer, 57, 10);
@@ -44,7 +38,7 @@ BuildingEngineer* BuildingEngineer::clone() const
 
 void BuildingEngineer::timeStep(const unsigned long time)
 {
-    bool mayAnimate = _workerCount > 0;
+    bool mayAnimate = getWorkers() > 0;
 
     if( mayAnimate && _animation.isStopped() )
     {
@@ -61,6 +55,6 @@ void BuildingEngineer::timeStep(const unsigned long time)
 
 void BuildingEngineer::deliverService()
 {
-    if( _workerCount > 0 )
+    if( getWorkers() > 0 )
         ServiceBuilding::deliverService();
 }

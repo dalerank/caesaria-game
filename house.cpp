@@ -23,6 +23,7 @@
 #include "gui_info_box.hpp"
 #include "scenario.hpp"
 #include "exception.hpp"
+#include "oc3_workerhunter.h"
 
 static const char* rcGrourName = "housng1a";
 
@@ -87,10 +88,10 @@ void House::timeStep(const unsigned long time)
       }
    }
 
-   if (time % 64 == 0)
+   if( time % 64 == 0 )
    {
       bool validate = _houseLevelSpec->checkHouse(*this);
-      if (! validate)
+      if (!validate)
       {
          levelDown();
       }
@@ -102,11 +103,13 @@ void House::timeStep(const unsigned long time)
             levelUp();
          }
       }
+
+      _freeWorkersCount = _currentHabitants;
    }
+
    if( _currentHabitants > 0 )
        Building::timeStep( time );
 }
-
 
 GuiInfoBox* House::makeInfoBox( Widget* parent )
 {
@@ -234,7 +237,7 @@ void House::buyMarket(ServiceWalker &walker)
    }
 }
 
-void House::applyService(ServiceWalker &walker)
+void House::applyService(ServiceWalker& walker)
 {
   Building::applyService(walker);  // handles basic services, and remove service reservation
 
@@ -271,6 +274,14 @@ void House::applyService(ServiceWalker &walker)
   case S_PREFECT:
   case S_MAX:
     break;
+  case S_WORKERS_HUNTER:
+      if( WorkersHunter* hunter = safety_cast< WorkersHunter* >( &walker ) )
+      {
+          int hiredWorkers = math::clamp( _freeWorkersCount, 0, hunter->getWorkersNeeded() );
+          _freeWorkersCount -= hiredWorkers;
+          hunter->hireWorkers( hiredWorkers );
+      }
+  break;
   }
 }
 

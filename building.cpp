@@ -38,10 +38,10 @@
 #include "oc3_collapsedruins.h"
 #include "oc3_water_buildings.hpp"
 #include "oc3_constructionmanager.h"
+#include "oc3_resourcegroup.h"
 
 namespace {
 static const char* rcRoadGroup         = "land2a";
-static const char* rcCommerceGroup     = "commerce";
 static const char* rcHousingGroup      = "housng1a";
 static const char* rcSecurityGroup     = "security";
 static const char* rcGovernmentGroup   = "govt";
@@ -196,26 +196,19 @@ Construction::Construction()
 {
 }
 
-bool Construction::canBuild(const int i, const int j) const
+bool Construction::canBuild(const TilePos& pos ) const
 {
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
 
    bool is_constructible = true;
 
-   std::list<Tile*> rect = tilemap.getFilledRectangle(i, j, i+_size-1, j+_size-1);
+   std::list<Tile*> rect = tilemap.getFilledRectangle( pos, Size( _size-1 ) );
    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
-      Tile &tile = **itTiles;
-
-      is_constructible &= tile.get_terrain().isConstructible();
+      is_constructible &= (*itTiles)->get_terrain().isConstructible();
    }
 
    return is_constructible;
-}
-
-bool Construction::canBuild( const TilePos& pos ) const
-{
-    return canBuild( pos.getI(), pos.getJ() );
 }
 
 void Construction::build(const TilePos& pos )
@@ -312,19 +305,17 @@ Picture& Plaza::computePicture()
 // Also in original game there was a bug:
 // gamer could place any number of plazas on one road tile (!!!)
 
-bool Plaza::canBuild(const int i, const int j) const
+bool Plaza::canBuild(const TilePos& pos ) const
 {
   //std::cout << "Plaza::canBuild" << std::endl;
   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
 
   bool is_constructible = true;
 
-  std::list<Tile*> rect = tilemap.getFilledRectangle(i, j, i + _size - 1, j + _size - 1); // something very complex ???
+  std::list<Tile*> rect = tilemap.getFilledRectangle( pos, Size( _size-1 ) ); // something very complex ???
   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {
-    Tile &tile = **itTiles;
-
-    is_constructible &= tile.get_terrain().isRoad();
+    is_constructible &= (*itTiles)->get_terrain().isRoad();
   }
 
   return is_constructible;
@@ -672,7 +663,7 @@ WorkingBuilding::WorkingBuilding()
    _isActive = true;
 }
 
-void WorkingBuilding::setMaxWorkers(const int &maxWorkers)
+void WorkingBuilding::setMaxWorkers(const int maxWorkers)
 {
    _maxWorkers = maxWorkers;
 }
@@ -682,7 +673,7 @@ int WorkingBuilding::getMaxWorkers()
    return _maxWorkers;
 }
 
-void WorkingBuilding::setWorkers(const int &currentWorkers)
+void WorkingBuilding::setWorkers(const int currentWorkers)
 {
    _currentWorkers = currentWorkers;
 }
@@ -692,7 +683,7 @@ int WorkingBuilding::getWorkers()
    return _currentWorkers;
 }
 
-void WorkingBuilding::setActive(const bool &value)
+void WorkingBuilding::setActive(const bool value)
 {
    _isActive = value;
 }
@@ -714,6 +705,10 @@ void WorkingBuilding::unserialize(InputSerialStream &stream)
    _currentWorkers = stream.read_int(1, 0, 100);
 }
 
+void WorkingBuilding::addWorkers( const int workers )
+{
+    _currentWorkers += workers;
+}
 
 Granary::Granary()
 {
@@ -722,7 +717,7 @@ Granary::Granary()
    setWorkers(0);
 
    _size = 3;
-   setPicture(PicLoader::instance().get_picture( rcCommerceGroup, 140));
+   setPicture(PicLoader::instance().get_picture( ResourceGroup::commerce, 140));
    _fgPictures.resize(6);  // 1 upper level + 4 windows + animation
    int maxQty = 2400;
    _goodStore.setMaxQty(maxQty);
@@ -734,12 +729,12 @@ Granary::Granary()
 
    _goodStore.setCurrentQty(G_WHEAT, 300);
 
-   _animation.load(rcCommerceGroup, 146, 7);
+   _animation.load(ResourceGroup::commerce, 146, 7);
    // do the animation in reverse
-   _animation.load(rcCommerceGroup, 151, 6);
+   _animation.load(ResourceGroup::commerce, 151, 6);
    PicLoader& ldr = PicLoader::instance();
 
-   _fgPictures[0] = &ldr.get_picture( rcCommerceGroup, 141);
+   _fgPictures[0] = &ldr.get_picture( ResourceGroup::commerce, 141);
    _fgPictures[5] = _animation.getCurrentPicture();
    computePictures();
 }
@@ -776,19 +771,19 @@ void Granary::computePictures()
    PicLoader& ldr = PicLoader::instance();
    if (allQty > 0)
    {
-      _fgPictures[1] = &ldr.get_picture( rcCommerceGroup, 142);
+      _fgPictures[1] = &ldr.get_picture( ResourceGroup::commerce, 142);
    }
    if (allQty > maxQty * 0.25)
    {
-      _fgPictures[2] = &ldr.get_picture( rcCommerceGroup, 143);
+      _fgPictures[2] = &ldr.get_picture( ResourceGroup::commerce, 143);
    }
    if (allQty > maxQty * 0.5)
    {
-      _fgPictures[3] = &ldr.get_picture( rcCommerceGroup, 144);
+      _fgPictures[3] = &ldr.get_picture( ResourceGroup::commerce, 144);
    }
    if (allQty > maxQty * 0.9)
    {
-      _fgPictures[4] = &ldr.get_picture( rcCommerceGroup, 145);
+      _fgPictures[4] = &ldr.get_picture( ResourceGroup::commerce, 145);
    }
 }
 
@@ -961,7 +956,7 @@ NativeField::NativeField()
 {
   setType(B_NATIVE_FIELD);
   _size = 1;
-  setPicture(PicLoader::instance().get_picture(rcCommerceGroup, 13));  
+  setPicture(PicLoader::instance().get_picture(ResourceGroup::commerce, 13));  
 }
 
 void NativeField::serialize(OutputSerialStream &stream) {Building::serialize(stream);}

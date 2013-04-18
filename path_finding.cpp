@@ -23,6 +23,7 @@
 #include "city.hpp"
 #include "scenario.hpp"
 #include "exception.hpp"
+#include "oc3_positioni.h"
 
 #include <iostream>
 
@@ -200,12 +201,12 @@ void PathWay::setNextDirection(const DirectionType direction)
       break;
    }
 
-   if (! _tilemap->is_inside(_destinationI, _destinationJ))
+   if (! _tilemap->is_inside( TilePos( _destinationI, _destinationJ ) ))
    {
       THROW("Destination is out of range");
    }
 
-   _tileList.push_back(& _tilemap->at(_destinationI, _destinationJ));
+   _tileList.push_back( &_tilemap->at(_destinationI, _destinationJ));
 
    _directionList.push_back(direction);
 }

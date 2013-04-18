@@ -318,14 +318,12 @@ void City::disaster( const TilePos& pos, DisasterType type )
     if( terrain.isDestructible() )
     {
         int size = 1;
-        int i1 = pos.getI();
-        int j1 = pos.getJ();
-
+ 
         LandOverlay* overlay = terrain.getOverlay();
 
         bool deleteRoad = false;
 
-        std::list<Tile*> clearedTiles = _tilemap.getFilledRectangle(i1, j1, i1+size-1, j1+size-1);
+        std::list<Tile*> clearedTiles = _tilemap.getFilledRectangle( pos, Size( size ) );
         for (std::list<Tile*>::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
         {
             BuildingType dstr2constr[] = { B_BURNING_RUINS, B_COLLAPSED_RUINS };
@@ -336,16 +334,15 @@ void City::disaster( const TilePos& pos, DisasterType type )
     }
 }
 
-void City::clearLand(const int i, const int j)
+void City::clearLand(const TilePos& pos  )
 {
-   Tile& cursorTile = _tilemap.at(i, j);
+   Tile& cursorTile = _tilemap.at( pos );
    TerrainTile& terrain = cursorTile.get_terrain();
 
    if( terrain.isDestructible() )
    {
       int size = 1;
-      int i1 = i;
-      int j1 = j;
+      TilePos rPos = pos;
 
       LandOverlay* overlay = terrain.getOverlay();
       
@@ -356,14 +353,13 @@ void City::clearLand(const int i, const int j)
       if (overlay != NULL)
       {
 	     size = overlay->getSize();
-         i1 = overlay->getTile().getI();
-         j1 = overlay->getTile().getJ();
+         rPos = overlay->getTile().getIJ();
          overlay->destroy();
          _overlayList.remove(overlay);
          delete overlay;
       }
 
-      std::list<Tile*> clearedTiles = _tilemap.getFilledRectangle(i1, j1, i1+size-1, j1+size-1);
+      std::list<Tile*> clearedTiles = _tilemap.getFilledRectangle( rPos, Size( size ) );
       for (std::list<Tile*>::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
       {
          Tile &tile = **itTile;
@@ -406,11 +402,6 @@ void City::clearLand(const int i, const int j)
         recomputeRoadsForAll();     
     }
   }
-}
-
-void City::clearLand( const TilePos& pos )
-{
-    clearLand( pos.getI(), pos.getJ() );
 }
 
 void City::collectTaxes()

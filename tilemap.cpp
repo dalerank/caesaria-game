@@ -240,9 +240,9 @@ void Tilemap::init(const int size)
    }
 }
 
-bool Tilemap::is_inside(const int i, const int j) const
+bool Tilemap::is_inside(const TilePos& pos ) const
 {
-   return (i>=0 && j>=0 && i<_size && j<_size);
+   return ( pos.getI() >= 0 && pos.getJ()>=0 && pos.getI()<_size && pos.getJ()<_size);
 }
 
 Tile& Tilemap::at(const int i, const int j)
@@ -280,14 +280,23 @@ std::list<Tile*> Tilemap::getRectangle( const TilePos& start, const TilePos& sto
         delta_corners = 1;
     }
 
-    for (int i = start.getI()+delta_corners; i <= stop.getI()-delta_corners; ++i)
+    /*Rect maxRect( 0, 0, _size, _size );
+    Rect rect( start.getI()+delta_corners, start.getJ()+delta_corners, 
+               stop.getI()-delta_corners, stop.getJ()-delta_corners );
+
+    rect.constrainTo( maxRect );
+    for( int i=rect.getLeft(); i < rect.getRight(); i++ )
+        for( int j=rect.getTop(); j < rect.getBottom(); j++ )
+            ret.push_back( &at( TilePos( i, j ) ) );
+    */
+    for(int i = start.getI()+delta_corners; i <= stop.getI()-delta_corners; ++i)
     {
-        if (is_inside(i, start.getJ() ))
+        if (is_inside( TilePos( i, start.getJ() ) ))
         {
-            res.push_back(&at(i, start.getJ() ));
+            res.push_back( &at(i, start.getJ() ));
         }
 
-        if (is_inside(i, stop.getJ() ))
+        if (is_inside( TilePos( i, stop.getJ() ) ))
         {
             res.push_back( &at( i, stop.getJ() ));
         }
@@ -295,12 +304,12 @@ std::list<Tile*> Tilemap::getRectangle( const TilePos& start, const TilePos& sto
 
     for (int j = start.getJ()+1; j <= stop.getJ()-1; ++j)  // corners have been handled already
     {
-        if (is_inside(start.getI(), j))
+        if (is_inside( TilePos( start.getI(), j ) ))
         {
             res.push_back(&at(start.getI(), j));
         }
 
-        if (is_inside(stop.getI(), j))
+        if (is_inside( TilePos( stop.getI(), j ) ))
         {
             res.push_back(&at(stop.getI(), j));
         }
@@ -315,22 +324,27 @@ std::list<Tile*> Tilemap::getRectangle( const TilePos& pos, const Size& size, co
 }
 // Get tiles inside of rectangle
 
-std::list<Tile*> Tilemap::getFilledRectangle(const int i1, const int j1, const int i2, const int j2)
+std::list<Tile*> Tilemap::getFilledRectangle(const TilePos& start, const TilePos& stop )
 {
    std::list<Tile*> res;
 
-   for (int i = i1; i <= i2; ++i)
+   for (int i = start.getI(); i <= stop.getI(); ++i)
    {
-      for (int j = j1; j <= j2; ++j)
+      for (int j = start.getJ(); j <= stop.getJ(); ++j)
       {
-         if (is_inside(i, j))
+         if( is_inside( TilePos( i, j ) ))
          {
-            res.push_back(&at(i, j));
+            res.push_back(&at( TilePos( i, j ) ) );
          }
       }
    }
 
    return res;
+}
+
+std::list<Tile*> Tilemap::getFilledRectangle( const TilePos& start, const Size& size )
+{
+    return getFilledRectangle( start, start + TilePos( size.getWidth(), size.getHeight() ) );
 }
 
 void Tilemap::serialize(OutputSerialStream &stream)

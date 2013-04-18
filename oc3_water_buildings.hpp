@@ -35,7 +35,7 @@ public:
   virtual void build(const TilePos& pos );
   Picture& computePicture();
   virtual void setTerrain(TerrainTile &terrain);
-  virtual bool canBuild(const int i, const int j) const;
+  virtual bool canBuild(const TilePos& pos ) const;
   void updateAqueducts();
 };
 

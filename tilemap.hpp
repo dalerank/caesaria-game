@@ -125,7 +125,7 @@ public:
    Tilemap();
    void init(const int size);
 
-   bool is_inside(const int i, const int j) const;
+   bool is_inside( const TilePos& pos ) const;
    Tile& at( const int i, const int j );
    Tile& at( const TilePos& ij );
    
@@ -142,7 +142,8 @@ public:
    // returns all tiles in a rectangular area
    // (i1, j1) : left corner of the rectangle (minI, minJ)
    // (i2, j2) : right corner of the rectangle (maxI, maxJ)
-   std::list<Tile*> getFilledRectangle(const int i1, const int j1, const int i2, const int j2);
+   std::list<Tile*> getFilledRectangle( const TilePos& start, const TilePos& stop );
+   std::list<Tile*> getFilledRectangle( const TilePos& start, const Size& size );
    int getSize() const;
 
    void serialize(OutputSerialStream &stream);
