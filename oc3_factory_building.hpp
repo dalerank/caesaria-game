@@ -60,7 +60,8 @@ class FactoryMarble : public Factory
 public:
    FactoryMarble();
    virtual FactoryMarble* clone() const;
-   virtual bool canBuild(const int i, const int j) const;  // returns true if it can be built there
+   virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
+   void timeStep(const unsigned long time);
 };
 
 class FactoryTimber : public Factory
@@ -68,7 +69,7 @@ class FactoryTimber : public Factory
 public:
    FactoryTimber();
    virtual FactoryTimber* clone() const;
-   virtual bool canBuild(const int i, const int j) const;  // returns true if it can be built there
+   virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
 };
 
 class FactoryIron : public Factory
@@ -76,7 +77,7 @@ class FactoryIron : public Factory
 public:
    FactoryIron();
    virtual FactoryIron* clone() const;
-   virtual bool canBuild(const int i, const int j) const;  // returns true if it can be built there
+   virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
 };
 
 class FactoryClay : public Factory
@@ -84,7 +85,7 @@ class FactoryClay : public Factory
 public:
    FactoryClay();
    virtual FactoryClay* clone() const;
-   virtual bool canBuild(const int i, const int j) const;  // returns true if it can be built there
+   virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
 };
 
 class FactoryWeapon : public Factory
@@ -126,7 +127,7 @@ public:
 class FarmTile
 {
 public:
-   FarmTile(const GoodType outGood, const int i, const int j);
+   FarmTile(const GoodType outGood, const TilePos& pos );
    void computePicture(const int percent);
    Picture& getPicture();
 
@@ -199,7 +200,7 @@ class Wharf : public Factory
 public:
   Wharf();
   Wharf* clone() const;
-  virtual bool canBuild(const int i, const int j) const;  // returns true if it can be built there
+  virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
 };
 
 #endif

@@ -21,7 +21,7 @@
 #include <stdint.h>
 
 #ifdef _WIN32
-    #include "oc3_Windows.hpp"
+    #include "windows.h"
 #else
     #include <sys/time.h>
 #endif

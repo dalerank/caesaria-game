@@ -22,3 +22,6 @@ const char* ResourceGroup::land2a = "land2a";
 const char* ResourceGroup::sprites = "sprites";
 const char* ResourceGroup::buildingEngineer = "transport";  
 const char* ResourceGroup::utilitya      = "utilitya";
+const char* ResourceGroup::commerce = "commerce";
+const char* ResourceGroup::security = "security";
+const char* ResourceGroup::aqueduct = "land2a";

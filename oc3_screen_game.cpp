@@ -34,6 +34,7 @@
 #include "oc3_event.hpp"
 #include "oc3_infoboxmanager.hpp"
 #include "oc3_constructionmanager.hpp"
+#include "oc3_tilemapchangecommand.hpp"
 
 class ScreenGame::Impl
 {
@@ -164,26 +165,12 @@ int ScreenGame::getResult() const
 
 void ScreenGame::resolveCreateConstruction( int type )
 {
-    bool multiBuild = false;
-    Construction* construction = dynamic_cast<Construction*>( ConstructionManager::getInstance().create( BuildingType( type ) ) );
-    switch( type )
-    {
-    case B_ROAD:
-        _guiTilemap.setBuildRoad( construction );
-    break;
-
-    case B_HOUSE:
-        multiBuild = true;
-        //break not needed that catch multibuild flag
-    default:
-        _guiTilemap.setBuildInstance( construction, multiBuild );
-    break;    
-    }   
+    _guiTilemap.setChangeCommand( TilemapChangeCommand( BuildingType( type ) ) );
 }
 
 void ScreenGame::resolveRemoveTool()
 {
-    _guiTilemap.setRemoveTool();
+    _guiTilemap.setChangeCommand( TilemapRemoveCommand() );
 }
 
 void ScreenGame::showTileInfo( Tile* tile )

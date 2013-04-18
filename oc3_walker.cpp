@@ -245,8 +245,8 @@ void Walker::walk()
    case D_SOUTH_WEST:
    case D_SOUTH_EAST:
    case D_NORTH_WEST:
-      _remainMoveI += float(_speed)*0.7;
-      _remainMoveJ += float(_speed)*0.7;
+      _remainMoveI += _speed*0.7f;
+      _remainMoveJ += _speed*0.7f;
       break;
    default:
       THROW("Invalid move direction: " << _action._direction);
@@ -463,6 +463,11 @@ void Walker::unserialize(InputSerialStream &stream)
    _animIndex = stream.read_int(1, 0, 50);
 }
 
+TilePos Walker::getIJ() const
+{
+    return TilePos( _i, _j );
+}
+
 class Immigrant::Impl
 {
 public:
@@ -655,21 +660,18 @@ void ServiceWalker::computeWalkerPath()
    Scenario::instance().getCity().getWalkerList().push_back(this);
 }
 
-std::set<Building*> ServiceWalker::getReachedBuildings(const int i, const int j)
+std::set<Building*> ServiceWalker::getReachedBuildings(const TilePos& pos )
 {
    std::set<Building*> res;
 
    int reachDistance = 2;
-   int i1 = i - reachDistance;
-   int j1 = j - reachDistance;
-   int i2 = i + reachDistance;
-   int j2 = j + reachDistance;
-   std::list<Tile*> reachedTiles = Scenario::instance().getCity().getTilemap().getFilledRectangle(i1, j1, i2, j2);
+   TilePos start = pos - TilePos( reachDistance, reachDistance );
+   TilePos stop = pos + TilePos( reachDistance, reachDistance );
+   std::list<Tile*> reachedTiles = Scenario::instance().getCity().getTilemap().getFilledRectangle( start, stop );
    for (std::list<Tile*>::iterator itTile = reachedTiles.begin(); itTile != reachedTiles.end(); ++itTile)
    {
-      Tile &tile = **itTile;
-      TerrainTile &terrain = tile.get_terrain();
-      if (terrain.isBuilding())
+      TerrainTile& terrain = (*itTile)->get_terrain();
+      if( terrain.isBuilding() )
       {
          Building* building = dynamic_cast<Building*>( terrain.getOverlay() );
          if( building )
@@ -692,16 +694,14 @@ float ServiceWalker::evaluatePath(PathWay &pathWay)
    float res = 0.0;
    for (std::list<Tile*>::iterator itTile = pathTileList.begin(); itTile != pathTileList.end(); ++itTile)
    {
-      Tile &tile = **itTile;
-      std::set<Building*> reachedBuildings = getReachedBuildings(tile.getI(), tile.getJ());
+      std::set<Building*> reachedBuildings = getReachedBuildings( (*itTile)->getIJ() );
       for (std::set<Building*>::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
       {
-         Building& building = **itBuilding;
-         std::pair<std::set<Building*>::iterator, bool> rc = doneBuildings.insert(&building);
+         std::pair<std::set<Building*>::iterator, bool> rc = doneBuildings.insert( *itBuilding );
          if (rc.second == true)
          {
             // the building has not been evaluated yet
-            res = res + building.evaluateService(*this);
+            res += (*itBuilding)->evaluateService(*this);
          }
       }
       distance++;
@@ -722,16 +722,14 @@ void ServiceWalker::reservePath(PathWay &pathWay)
 
    for (std::list<Tile*>::iterator itTile = pathTileList.begin(); itTile != pathTileList.end(); ++itTile)
    {
-      Tile &tile = **itTile;
-      std::set<Building*> reachedBuildings = getReachedBuildings(tile.getI(), tile.getJ());
+      std::set<Building*> reachedBuildings = getReachedBuildings( (*itTile)->getIJ() );
       for (std::set<Building*>::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
       {
-         Building &building = **itBuilding;
-         std::pair<std::set<Building*>::iterator, bool> rc = doneBuildings.insert(&building);
+         std::pair<std::set<Building*>::iterator, bool> rc = doneBuildings.insert( *itBuilding );
          if (rc.second == true)
          {
             // the building has not been reserved yet
-            building.reserveService(_service);
+            (*itBuilding)->reserveService(_service);
          }
       }
    }
@@ -746,11 +744,10 @@ void ServiceWalker::onNewTile()
 {
    Walker::onNewTile();
 
-   std::set<Building*> reachedBuildings = getReachedBuildings(getI(), getJ());
+   std::set<Building*> reachedBuildings = getReachedBuildings( getIJ() );
    for (std::set<Building*>::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
    {
-      Building &building = **itBuilding;
-      building.applyService(*this);
+      (*itBuilding)->applyService(*this);
    }
 }
 
@@ -789,6 +786,10 @@ void ServiceWalker::unserialize(InputSerialStream &stream)
    _maxDistance = stream.read_int(2, 0, 65535);
 }
 
+void ServiceWalker::setMaxDistance( const int distance )
+{
+    _maxDistance = distance;
+}
 
 TraineeWalker::TraineeWalker(const WalkerTraineeType traineeType)
 {

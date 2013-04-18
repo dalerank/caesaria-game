@@ -30,7 +30,9 @@
 #include "oc3_signals.hpp"
 #include "oc3_scopedptr.hpp"
 
+
 class ScreenGame;
+class TilemapChangeCommand;
 struct NEvent;
 
 /* Draws the tilemap area on the screen thanks to the GfxEngine, and handle user events */
@@ -55,10 +57,7 @@ public:
    void handleEvent( NEvent& event);
 
    // sets the current build tool (if any)
-   void setBuildInstance(Construction *buildInstance, bool multiBuild );
-   void setBuildRoad( Construction* buildInstance );
-   // sets the current remove tool (if any)
-   void setRemoveTool();
+   void setChangeCommand( const TilemapChangeCommand& command );
 
 oc3_signals public:
    Signal1< Tile* >& onShowTileInfo();
@@ -68,7 +67,6 @@ protected:
    void discardPreview();
 
    // used to display the future building at mouse location
-   void checkPreviewBuild(const int i, const int j);
    void checkPreviewBuild(const TilePos& pos );
    // used to display the future removed building at mouse location
    void checkPreviewRemove(const int i, const int j);
@@ -99,9 +97,6 @@ private:
    std::vector<Tile*> _multiTiles;  // used to avoid redisplay of a multi-tile.
    //std::list<Tile*> _priorityTiles;  // these tiles have priority over "normal" tilemap tiles!
 
-   bool _isPreview;
-   bool _removeTool;  // true when using "clear land" tool
-   Construction *_buildInstance;
    ScreenGame *_screenGame;
 
    class Impl;

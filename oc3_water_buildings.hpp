@@ -32,11 +32,12 @@ public:
   Aqueduct();
   virtual Aqueduct* clone() const;
 
-  virtual void build(const int i, const int j);
+  virtual void build(const TilePos& pos );
   Picture& computePicture();
   virtual void setTerrain(TerrainTile &terrain);
-  virtual bool canBuild(const int i, const int j) const;
+  virtual bool canBuild(const TilePos& pos ) const;
   void updateAqueducts();
+  void updatePicture();
 };
 
 
@@ -47,7 +48,7 @@ public:
   ~Reservoir();
   virtual Reservoir* clone() const;
 
-  void build(const int i, const int j);
+  void build(const TilePos& pos );
   Picture& computePicture();
   void setTerrain(TerrainTile &terrain);
   void timeStep(const unsigned long time);

@@ -45,8 +45,8 @@ public:
    int getSize() const;  // size in tiles (1=1x1, 2=2x2, ...)
    bool isDeleted() const;  // returns true if the overlay should be forgotten
    virtual LandOverlay* clone() const = 0;
-   virtual void setTerrain(TerrainTile &terrain) = 0;
-   virtual void build(const int i, const int j);
+   virtual void setTerrain( TerrainTile &terrain ) = 0;
+   virtual void build( const TilePos& pos );
    virtual void destroy();  // handles the walkers
 
    // graphic
@@ -86,9 +86,8 @@ class Construction : public LandOverlay
 public:
    Construction();
 
-   virtual bool canBuild(const int i, const int j) const;  // returns true if it can be built there
    virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
-   virtual void build(const int i, const int j);
+   virtual void build( const TilePos& pos );
    virtual void burn();
    virtual void collapse();
    const std::list<Tile*>& getAccessRoads() const;  // return all road tiles adjacent to the construction
@@ -113,9 +112,10 @@ public:
   Road();
   virtual Road* clone() const;
 
-  virtual void build(const int i, const int j);
+  virtual void build(const TilePos& pos );
   virtual Picture& computePicture();
   virtual void setTerrain(TerrainTile &terrain);
+  bool canBuild(const TilePos& pos ) const;
 };
 
 class Plaza : public Road
@@ -124,7 +124,7 @@ public:
   Plaza();
   virtual Plaza* clone() const;
   virtual void setTerrain(TerrainTile &terrain);  
-  virtual bool canBuild(const int i, const int j) const;
+  virtual bool canBuild(const TilePos& pos ) const;
   virtual Picture& computePicture();
 };
 
@@ -175,13 +175,15 @@ class WorkingBuilding : public Building
 public:
    WorkingBuilding();
 
-   void setMaxWorkers(const int &maxWorkers);
+   void setMaxWorkers(const int maxWorkers);
    int getMaxWorkers();
 
-   void setWorkers(const int &currentWorkers);
+   void setWorkers(const int currentWorkers);
+   void addWorkers( const int workers );
+
    int getWorkers();
 
-   void setActive(const bool &value);  // if false then this building is stopped
+   void setActive(const bool value);  // if false then this building is stopped
    bool isActive();
 
    void serialize(OutputSerialStream &stream);

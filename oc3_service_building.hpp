@@ -77,6 +77,8 @@ class BuildingPrefect : public ServiceBuilding
 public:
    BuildingPrefect();
    BuildingPrefect* clone() const;
+   void timeStep(const unsigned long time);
+   void deliverService();
 };
 
 class EntertainmentBuilding : public ServiceBuilding

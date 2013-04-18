@@ -38,12 +38,11 @@
 #include "oc3_collapsedruins.hpp"
 #include "oc3_water_buildings.hpp"
 #include "oc3_constructionmanager.hpp"
+#include "oc3_resourcegroup.hpp"
 
 namespace {
 static const char* rcRoadGroup         = "land2a";
-static const char* rcCommerceGroup     = "commerce";
 static const char* rcHousingGroup      = "housng1a";
-static const char* rcSecurityGroup     = "security";
 static const char* rcGovernmentGroup   = "govt";
 static const char* rcEntertaimentGroup = "entertainment";
 }
@@ -101,25 +100,25 @@ void LandOverlay::setPicture(Picture &picture)
    }
 }
 
-void LandOverlay::build(const int i, const int j)
+void LandOverlay::build( const TilePos& pos )
 {
-   City &city = Scenario::instance().getCity();
-   Tilemap &tilemap = city.getTilemap();
+    City &city = Scenario::instance().getCity();
+    Tilemap &tilemap = city.getTilemap();
 
-   _master_tile = &tilemap.at(i, j);
+    _master_tile = &tilemap.at( pos );
 
-   for (int dj = 0; dj<_size; ++dj)
-   {
-      for (int di = 0; di<_size; ++di)
-      {
-         Tile &tile = tilemap.at(i+di, j+dj);
-         tile.set_master_tile(_master_tile);
-         tile.set_picture(_picture);
-         TerrainTile &terrain = tile.get_terrain();
-         terrain.setOverlay(this);
-         setTerrain(terrain);
-      }
-   }
+    for (int dj = 0; dj<_size; ++dj)
+    {
+        for (int di = 0; di<_size; ++di)
+        {
+            Tile &tile = tilemap.at( pos + TilePos( di, dj ) );
+            tile.set_master_tile(_master_tile);
+            tile.set_picture(_picture);
+            TerrainTile &terrain = tile.get_terrain();
+            terrain.setOverlay(this);
+            setTerrain(terrain);
+        }
+    }
 }
 
 void LandOverlay::destroy()
@@ -196,31 +195,24 @@ Construction::Construction()
 {
 }
 
-bool Construction::canBuild(const int i, const int j) const
+bool Construction::canBuild(const TilePos& pos ) const
 {
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
 
    bool is_constructible = true;
 
-   std::list<Tile*> rect = tilemap.getFilledRectangle(i, j, i+_size-1, j+_size-1);
+   std::list<Tile*> rect = tilemap.getFilledRectangle( pos, Size( _size-1 ) );
    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
-      Tile &tile = **itTiles;
-
-      is_constructible &= tile.get_terrain().isConstructible();
+      is_constructible &= (*itTiles)->get_terrain().isConstructible();
    }
 
    return is_constructible;
 }
 
-bool Construction::canBuild( const TilePos& pos ) const
+void Construction::build(const TilePos& pos )
 {
-    return canBuild( pos.getI(), pos.getJ() );
-}
-
-void Construction::build(const int i, const int j)
-{
-   LandOverlay::build(i, j);
+   LandOverlay::build( pos );
    computeAccessRoads();
 }
 
@@ -232,17 +224,18 @@ const std::list<Tile*>& Construction::getAccessRoads() const
 // here the problem lays: if we remove road, it is left in _accessRoads array
 // also we need to recompute _accessRoads if we place new road tile
 // on next to this road tile buildings
-
 void Construction::computeAccessRoads()
 {
   _accessRoads.clear();
+  if( !_master_tile )
+      return;
 
   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-  int mi = _master_tile->getI();
-  int mj = _master_tile->getJ();
 
   Uint8 maxDst2road = getMaxDistance2Road();
-  std::list<Tile*> rect = tilemap.getRectangle( mi - maxDst2road, mj - maxDst2road, mi + _size + maxDst2road - 1, mj + _size + maxDst2road - 1, false);
+  std::list<Tile*> rect = tilemap.getRectangle( _master_tile->getIJ() + TilePos( -maxDst2road, -maxDst2road ),
+                                                _master_tile->getIJ() + TilePos( _size + maxDst2road - 1, _size + maxDst2road - 1 ), 
+                                                !Tilemap::checkCorners );
   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {
     Tile* tile = *itTiles;
@@ -312,19 +305,17 @@ Picture& Plaza::computePicture()
 // Also in original game there was a bug:
 // gamer could place any number of plazas on one road tile (!!!)
 
-bool Plaza::canBuild(const int i, const int j) const
+bool Plaza::canBuild(const TilePos& pos ) const
 {
   //std::cout << "Plaza::canBuild" << std::endl;
   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
 
   bool is_constructible = true;
 
-  std::list<Tile*> rect = tilemap.getFilledRectangle(i, j, i + _size - 1, j + _size - 1); // something very complex ???
+  std::list<Tile*> rect = tilemap.getFilledRectangle( pos, Size( _size-1 ) ); // something very complex ???
   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {
-    Tile &tile = **itTiles;
-
-    is_constructible &= tile.get_terrain().isRoad();
+    is_constructible &= (*itTiles)->get_terrain().isRoad();
   }
 
   return is_constructible;
@@ -362,18 +353,29 @@ Road* Road::clone() const
   return new Road(*this);
 }
 
-void Road::build(const int i, const int j)
+void Road::build(const TilePos& pos )
 {
-  Construction::build(i, j);
-  setPicture(computePicture());
+    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+    LandOverlay* saveOverlay = tilemap.at( pos ).get_terrain().getOverlay();
+
+    Construction::build( pos );
+    setPicture(computePicture());
+
+    if( Aqueduct* aqua = safety_cast< Aqueduct* >( saveOverlay ) )
+    {
+        aqua->build( pos );
+        return;
+    }
 
   // update adjacent roads
   for (std::list<Tile*>::iterator itTile = _accessRoads.begin(); itTile != _accessRoads.end(); ++itTile)
   {
-    Tile &tile = **itTile;
-    Road &road = (Road&) *tile.get_terrain().getOverlay(); // let's think: may here different type screw up whole program?
-    road.computeAccessRoads();
-    road.setPicture(road.computePicture());
+    Road* road = safety_cast< Road* >( (*itTile)->get_terrain().getOverlay() ); // let's think: may here different type screw up whole program?
+    if( road )
+    {
+        road->computeAccessRoads();
+        road->setPicture(road->computePicture());
+    }
   }
   // NOTE: also we need to update accessRoads for adjacent building
   // how to detect them if MaxDistance2Road can be any
@@ -389,6 +391,25 @@ void Road::build(const int i, const int j)
     }
   }
 }
+
+bool Road::canBuild(const TilePos& pos ) const
+{
+    bool is_free = Construction::canBuild( pos );
+
+    if( is_free ) 
+        return true; // we try to build on free tile
+
+    // we can place on road
+    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+    TerrainTile& terrain = tilemap.at( pos ).get_terrain();
+
+    // we can't build on plazas, but show that we can
+    if( safety_cast< Aqueduct* >( terrain.getOverlay() ) != 0 )
+        return true;
+
+    return false;
+}
+
 
 void Road::setTerrain(TerrainTile &terrain)
 {
@@ -471,7 +492,6 @@ Picture& Road::computePicture()
    Picture *picture = &PicLoader::instance().get_picture( rcRoadGroup, index);
    return *picture;
 }
-
 
 Building::Building()
 {
@@ -672,7 +692,7 @@ WorkingBuilding::WorkingBuilding()
    _isActive = true;
 }
 
-void WorkingBuilding::setMaxWorkers(const int &maxWorkers)
+void WorkingBuilding::setMaxWorkers(const int maxWorkers)
 {
    _maxWorkers = maxWorkers;
 }
@@ -682,7 +702,7 @@ int WorkingBuilding::getMaxWorkers()
    return _maxWorkers;
 }
 
-void WorkingBuilding::setWorkers(const int &currentWorkers)
+void WorkingBuilding::setWorkers(const int currentWorkers)
 {
    _currentWorkers = currentWorkers;
 }
@@ -692,7 +712,7 @@ int WorkingBuilding::getWorkers()
    return _currentWorkers;
 }
 
-void WorkingBuilding::setActive(const bool &value)
+void WorkingBuilding::setActive(const bool value)
 {
    _isActive = value;
 }
@@ -714,6 +734,10 @@ void WorkingBuilding::unserialize(InputSerialStream &stream)
    _currentWorkers = stream.read_int(1, 0, 100);
 }
 
+void WorkingBuilding::addWorkers( const int workers )
+{
+    _currentWorkers += workers;
+}
 
 Granary::Granary()
 {
@@ -722,7 +746,7 @@ Granary::Granary()
    setWorkers(0);
 
    _size = 3;
-   setPicture(PicLoader::instance().get_picture( rcCommerceGroup, 140));
+   setPicture(PicLoader::instance().get_picture( ResourceGroup::commerce, 140));
    _fgPictures.resize(6);  // 1 upper level + 4 windows + animation
    int maxQty = 2400;
    _goodStore.setMaxQty(maxQty);
@@ -734,12 +758,12 @@ Granary::Granary()
 
    _goodStore.setCurrentQty(G_WHEAT, 300);
 
-   _animation.load(rcCommerceGroup, 146, 7);
+   _animation.load(ResourceGroup::commerce, 146, 7);
    // do the animation in reverse
-   _animation.load(rcCommerceGroup, 151, 6);
+   _animation.load(ResourceGroup::commerce, 151, 6);
    PicLoader& ldr = PicLoader::instance();
 
-   _fgPictures[0] = &ldr.get_picture( rcCommerceGroup, 141);
+   _fgPictures[0] = &ldr.get_picture( ResourceGroup::commerce, 141);
    _fgPictures[5] = _animation.getCurrentPicture();
    computePictures();
 }
@@ -776,19 +800,19 @@ void Granary::computePictures()
    PicLoader& ldr = PicLoader::instance();
    if (allQty > 0)
    {
-      _fgPictures[1] = &ldr.get_picture( rcCommerceGroup, 142);
+      _fgPictures[1] = &ldr.get_picture( ResourceGroup::commerce, 142);
    }
    if (allQty > maxQty * 0.25)
    {
-      _fgPictures[2] = &ldr.get_picture( rcCommerceGroup, 143);
+      _fgPictures[2] = &ldr.get_picture( ResourceGroup::commerce, 143);
    }
    if (allQty > maxQty * 0.5)
    {
-      _fgPictures[3] = &ldr.get_picture( rcCommerceGroup, 144);
+      _fgPictures[3] = &ldr.get_picture( ResourceGroup::commerce, 144);
    }
    if (allQty > maxQty * 0.9)
    {
-      _fgPictures[4] = &ldr.get_picture( rcCommerceGroup, 145);
+      _fgPictures[4] = &ldr.get_picture( ResourceGroup::commerce, 145);
    }
 }
 
@@ -898,7 +922,7 @@ Academy::Academy()
   _size = 3;
   setMaxWorkers( 20 );
   setWorkers( 0 );
-  setPicture(PicLoader::instance().get_picture(rcSecurityGroup, 18));
+  setPicture(PicLoader::instance().get_picture( ResourceGroup::security, 18));
 }
 
 Barracks::Barracks()
@@ -907,7 +931,7 @@ Barracks::Barracks()
   _size = 3;
   setMaxWorkers(5);
   setWorkers(0);  
-  setPicture(PicLoader::instance().get_picture(rcSecurityGroup, 17));
+  setPicture(PicLoader::instance().get_picture(ResourceGroup::security, 17));
 }
 
 Academy*  Academy::clone()  const { return new Academy(*this);  }
@@ -961,7 +985,7 @@ NativeField::NativeField()
 {
   setType(B_NATIVE_FIELD);
   _size = 1;
-  setPicture(PicLoader::instance().get_picture(rcCommerceGroup, 13));  
+  setPicture(PicLoader::instance().get_picture(ResourceGroup::commerce, 13));  
 }
 
 void NativeField::serialize(OutputSerialStream &stream) {Building::serialize(stream);}
@@ -1045,9 +1069,9 @@ FortLegionnaire::FortLegionnaire()
 {
   setType(B_FORT_LEGIONNAIRE);
   _size = 3;
-  setPicture(PicLoader::instance().get_picture(rcSecurityGroup, 12));
+  setPicture(PicLoader::instance().get_picture(ResourceGroup::security, 12));
 
-  Picture* logo = &PicLoader::instance().get_picture(rcSecurityGroup, 16);
+  Picture* logo = &PicLoader::instance().get_picture(ResourceGroup::security, 16);
   logo -> set_offset(80,10);
   _fgPictures.resize(1);
   _fgPictures.at(0) = logo;  
@@ -1062,9 +1086,9 @@ FortMounted::FortMounted()
 {
   setType(B_FORT_MOUNTED);
   _size = 3;
-  setPicture(PicLoader::instance().get_picture(rcSecurityGroup, 12));
+  setPicture(PicLoader::instance().get_picture(ResourceGroup::security, 12));
 
-  Picture* logo = &PicLoader::instance().get_picture(rcSecurityGroup, 15);
+  Picture* logo = &PicLoader::instance().get_picture(ResourceGroup::security, 15);
   logo -> set_offset(80,10);
   _fgPictures.resize(1);
   _fgPictures.at(0) = logo;
@@ -1079,9 +1103,9 @@ FortJaveline::FortJaveline()
 {
   setType(B_FORT_JAVELIN);
   _size = 3;
-  setPicture(PicLoader::instance().get_picture(rcSecurityGroup, 12));
+  setPicture(PicLoader::instance().get_picture(ResourceGroup::security, 12));
 
-  Picture* logo = &PicLoader::instance().get_picture(rcSecurityGroup, 14);
+  Picture* logo = &PicLoader::instance().get_picture(ResourceGroup::security, 14);
   //std::cout << logo->get_xoffset() << " " << logo->get_yoffset() << " " << logo->get_width() << " " << logo->get_height() << std::endl;
   logo -> set_offset(80,10);
   _fgPictures.resize(1);

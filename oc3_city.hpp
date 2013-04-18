@@ -81,13 +81,11 @@ public:
    void unserialize(InputSerialStream &stream);
 
    // add construction
-   void build(Construction &buildInstance, const int i, const int j);
    void build(Construction &buildInstance, const TilePos& pos );
 
    //
    void disaster( const TilePos& pos, DisasterType type );
    // remove construction
-   void clearLand( const int i, const int j );
    void clearLand( const TilePos& pos );
    // collect taxes from all houses
    void collectTaxes();

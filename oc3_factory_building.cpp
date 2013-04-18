@@ -26,11 +26,7 @@
 #include "oc3_exception.hpp"
 #include "oc3_gui_info_box.hpp"
 #include "oc3_gettext.hpp"
-
-
-namespace {
-  static const char* rcCommerceGroup     = "commerce";
-}
+#include "oc3_resourcegroup.hpp"
 
 Factory::Factory(const GoodType inType, const GoodType outType)
 {
@@ -180,9 +176,10 @@ FactoryMarble::FactoryMarble() : Factory(G_NONE, G_MARBLE)
    setType(B_MARBLE);
    _size = 2;
    _productionRate = 9.6f;
-   _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 43);
+   _picture = &PicLoader::instance().get_picture(ResourceGroup::commerce, 43);
 
-   _animation.load(rcCommerceGroup, 44, 10);
+   _animation.load(ResourceGroup::commerce, 44, 10);
+   _animation.setFrameDelay( 4 );
    _fgPictures.resize(2);
 }
 
@@ -191,31 +188,46 @@ FactoryMarble* FactoryMarble::clone() const
    return new FactoryMarble(*this);
 }
 
-bool FactoryMarble::canBuild(const int i, const int j) const
+bool FactoryMarble::canBuild(const TilePos& pos ) const
 {
-   bool is_constructible = Construction::canBuild(i, j);
+   bool is_constructible = Construction::canBuild( pos );
    bool near_mountain = false;  // tells if the factory is next to a mountain
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getRectangle(i-1, j-1, i+_size, j+_size, false);
+   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size+1 ), !Tilemap::checkCorners);
    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
-      Tile &tile = **itTiles;
-      near_mountain |= tile.get_terrain().isRock();
+      near_mountain |= (*itTiles)->get_terrain().isRock();
    }
 
    return (is_constructible && near_mountain);
 }
 
+void FactoryMarble::timeStep( const unsigned long time )
+{
+    bool mayAnimate = getWorkers() > 0;
+
+    if( mayAnimate && _animation.isStopped() )
+    {
+        _animation.start();
+    }
+
+    if( !mayAnimate && _animation.isRunning() )
+    {
+        _animation.stop();
+    }
+
+    Factory::timeStep( time );
+}
 
 FactoryTimber::FactoryTimber() : Factory(G_NONE, G_TIMBER)
 {
    setType(B_TIMBER);
    _size = 2;
    _productionRate = 9.6f;
-   _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 72);
+   _picture = &PicLoader::instance().get_picture(ResourceGroup::commerce, 72);
 
-   _animation.load( rcCommerceGroup, 73, 10);
+   _animation.load( ResourceGroup::commerce, 73, 10);
    _fgPictures.resize(2);
 }
 
@@ -224,13 +236,13 @@ FactoryTimber* FactoryTimber::clone() const
    return new FactoryTimber(*this);
 }
 
-bool FactoryTimber::canBuild(const int i, const int j) const
+bool FactoryTimber::canBuild(const TilePos& pos ) const
 {
-   bool is_constructible = Construction::canBuild(i, j);
+   bool is_constructible = Construction::canBuild( pos );
    bool near_forest = false;  // tells if the factory is next to a forest
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getRectangle(i-1, j-1, i+_size, j+_size, false);
+   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size ), !Tilemap::checkCorners );
    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
       Tile &tile = **itTiles;
@@ -246,9 +258,9 @@ FactoryIron::FactoryIron() : Factory(G_NONE, G_IRON)
    setType(B_IRON);
    _size = 2;
    _productionRate = 9.6f;
-   _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 54);
+   _picture = &PicLoader::instance().get_picture(ResourceGroup::commerce, 54);
 
-   _animation.load( rcCommerceGroup, 55, 6);
+   _animation.load( ResourceGroup::commerce, 55, 6);
    _fgPictures.resize(2);
 }
 
@@ -257,17 +269,16 @@ FactoryIron* FactoryIron::clone() const
    return new FactoryIron(*this);
 }
 
-bool FactoryIron::canBuild(const int i, const int j) const
+bool FactoryIron::canBuild(const TilePos& pos ) const
 {
-   bool is_constructible = Construction::canBuild(i, j);
+   bool is_constructible = Construction::canBuild( pos );
    bool near_mountain = false;  // tells if the factory is next to a mountain
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getRectangle(i-1, j-1, i+_size, j+_size, false);
+   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size ), !Tilemap::checkCorners );
    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
-      Tile &tile = **itTiles;
-      near_mountain |= tile.get_terrain().isRock();
+      near_mountain |= (*itTiles)->get_terrain().isRock();
    }
 
    return (is_constructible && near_mountain);
@@ -279,9 +290,9 @@ FactoryClay::FactoryClay() : Factory(G_NONE, G_CLAY)
    setType(B_CLAY);
    _size = 2;
    _productionRate = 9.6f;
-   _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 61);
+   _picture = &PicLoader::instance().get_picture(ResourceGroup::commerce, 61);
 
-   _animation.load( rcCommerceGroup, 62, 10);
+   _animation.load( ResourceGroup::commerce, 62, 10);
    _fgPictures.resize(2);
 }
 
@@ -290,17 +301,16 @@ FactoryClay* FactoryClay::clone() const
    return new FactoryClay(*this);
 }
 
-bool FactoryClay::canBuild(const int i, const int j) const
+bool FactoryClay::canBuild(const TilePos& pos ) const
 {
-   bool is_constructible = Construction::canBuild(i, j);
+   bool is_constructible = Construction::canBuild( pos );
    bool near_water = false;
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getRectangle(i-1, j-1, i+_size, j+_size, false);
+   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1), Size( _size ), !Tilemap::checkCorners );
    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
-     Tile &tile = **itTiles;
-     near_water |= tile.get_terrain().isWater();
+     near_water |= (*itTiles)->get_terrain().isWater();
    }
 
    return (is_constructible && near_water);
@@ -311,9 +321,9 @@ FactoryWeapon::FactoryWeapon() : Factory(G_IRON, G_WEAPON)
 {
    setType(B_WEAPON);
    _size = 2;
-   _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 108);
+   _picture = &PicLoader::instance().get_picture(ResourceGroup::commerce, 108);
 
-   _animation.load( rcCommerceGroup, 109, 6);
+   _animation.load( ResourceGroup::commerce, 109, 6);
    _fgPictures.resize(2);
 }
 
@@ -327,9 +337,9 @@ FactoryFurniture::FactoryFurniture() : Factory(G_TIMBER, G_FURNITURE)
 {
    setType(B_FURNITURE);
    _size = 2;
-   _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 117);
+   _picture = &PicLoader::instance().get_picture(ResourceGroup::commerce, 117);
 
-   _animation.load(rcCommerceGroup, 118, 14);
+   _animation.load(ResourceGroup::commerce, 118, 14);
    _fgPictures.resize(2);
 }
 
@@ -343,9 +353,9 @@ FactoryWine::FactoryWine() : Factory(G_GRAPE, G_WINE)
 {
    setType(B_WINE);
    _size = 2;
-   _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 86);
+   _picture = &PicLoader::instance().get_picture(ResourceGroup::commerce, 86);
 
-   _animation.load(rcCommerceGroup, 87, 12);
+   _animation.load(ResourceGroup::commerce, 87, 12);
    _fgPictures.resize(2);
 }
 
@@ -359,9 +369,9 @@ FactoryOil::FactoryOil() : Factory(G_OLIVE, G_OIL)
 {
    setType(B_OIL);
    _size = 2;
-   _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 99);
+   _picture = &PicLoader::instance().get_picture(ResourceGroup::commerce, 99);
 
-   _animation.load(rcCommerceGroup, 100, 8);
+   _animation.load(ResourceGroup::commerce, 100, 8);
    _fgPictures.resize(2);
 }
 
@@ -375,9 +385,9 @@ FactoryPottery::FactoryPottery() : Factory(G_CLAY, G_POTTERY)
 {
    setType(B_POTTERY);
    _size = 2;
-   _picture = &PicLoader::instance().get_picture(rcCommerceGroup, 132);
+   _picture = &PicLoader::instance().get_picture(ResourceGroup::commerce, 132);
 
-   _animation.load(rcCommerceGroup, 133, 7);
+   _animation.load(ResourceGroup::commerce, 133, 7);
    _fgPictures.resize(2);
 }
 
@@ -387,10 +397,10 @@ FactoryPottery* FactoryPottery::clone() const
 }
 
 
-FarmTile::FarmTile(const GoodType outGood, const int i, const int j)
+FarmTile::FarmTile(const GoodType outGood, const TilePos& pos )
 {
-   _i = i;
-   _j = j;
+   _i = pos.getI();
+   _j = pos.getJ();
 
    int picIdx = 0;
    switch (outGood)
@@ -417,7 +427,7 @@ FarmTile::FarmTile(const GoodType outGood, const int i, const int j)
       THROW("Unexpected farmType in farm:" << outGood);
    }
 
-   _animation.load( rcCommerceGroup, picIdx, 5);
+   _animation.load( ResourceGroup::commerce, picIdx, 5);
    computePicture(0);
 }
 
@@ -441,7 +451,7 @@ Farm::Farm(const GoodType outGood) : Factory(G_NONE, outGood)
    _size = 3;
    _picture = &_pictureBuilding;
 
-   _pictureBuilding = PicLoader::instance().get_picture(rcCommerceGroup, 12);  // farm building
+   _pictureBuilding = PicLoader::instance().get_picture(ResourceGroup::commerce, 12);  // farm building
    _pictureBuilding.add_offset(30, 15);
    init();
 }
@@ -450,11 +460,11 @@ void Farm::init()
 {
    GoodType farmType = _outGoodType;
    // add subTiles in draw order
-   _subTiles.push_back(FarmTile(farmType, 0, 0));
-   _subTiles.push_back(FarmTile(farmType, 2, 2));
-   _subTiles.push_back(FarmTile(farmType, 1, 0));
-   _subTiles.push_back(FarmTile(farmType, 2, 1));
-   _subTiles.push_back(FarmTile(farmType, 2, 0));
+   _subTiles.push_back(FarmTile(farmType, TilePos( 0, 0 ) ));
+   _subTiles.push_back(FarmTile(farmType, TilePos( 2, 2 ) ));
+   _subTiles.push_back(FarmTile(farmType, TilePos( 1, 0 ) ));
+   _subTiles.push_back(FarmTile(farmType, TilePos( 2, 1 ) ));
+   _subTiles.push_back(FarmTile(farmType, TilePos( 2, 0 ) ));
 
    _fgPictures.resize(5);
    for (int n = 0; n<5; ++n)
@@ -586,9 +596,9 @@ Wharf* Wharf::clone() const
 }
 
 /* INCORRECT! */
-bool Wharf::canBuild(const int i, const int j) const
+bool Wharf::canBuild(const TilePos& pos ) const
 {
-  bool is_constructible = Construction::canBuild(i, j);
+  bool is_constructible = Construction::canBuild( pos );
 
   // We can build wharf only on straight border of water and land
   //
@@ -605,18 +615,18 @@ bool Wharf::canBuild(const int i, const int j) const
    
   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
    
-  std::list<Tile*> rect = tilemap.getRectangle(i - 1, j - 1, i + _size, j + _size, false);
+  std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size+1 ), false);
   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {
     Tile &tile = **itTiles;
-    std::cout << tile.getI() << " " << tile.getJ() << "  " << i << " " << j << std::endl;
+    std::cout << tile.getI() << " " << tile.getJ() << "  " << pos.getI() << " " << pos.getJ() << std::endl;
       
      // if (tiles.get_terrain().isWater())
       
-      if (tile.getJ() > (j + _size -1) && !tile.get_terrain().isWater()) {  bNorth = false; }
-      if (tile.getJ() < j && !tile.get_terrain().isWater())              {  bSouth = false; }
-      if (tile.getI() > (i + _size -1) && !tile.get_terrain().isWater()) {  bEast = false;  }
-      if (tile.getI() < i && !tile.get_terrain().isWater())              {  bWest = false;  }      
+      if (tile.getJ() > (pos.getJ() + _size -1) && !tile.get_terrain().isWater()) {  bNorth = false; }
+      if (tile.getJ() < pos.getJ() && !tile.get_terrain().isWater())              {  bSouth = false; }
+      if (tile.getI() > (pos.getI() + _size -1) && !tile.get_terrain().isWater()) {  bEast = false;  }
+      if (tile.getI() < pos.getI() && !tile.get_terrain().isWater())              {  bWest = false;  }      
    }
 
    return (is_constructible && (bNorth || bSouth || bEast || bWest));

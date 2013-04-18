@@ -23,6 +23,7 @@
 #include "oc3_city.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_exception.hpp"
+#include "oc3_positioni.hpp"
 
 #include <iostream>
 
@@ -201,12 +202,12 @@ void PathWay::setNextDirection(const DirectionType direction)
       break;
    }
 
-   if (! _tilemap->is_inside(_destinationI, _destinationJ))
+   if (! _tilemap->is_inside( TilePos( _destinationI, _destinationJ ) ))
    {
       THROW("Destination is out of range");
    }
 
-   _tileList.push_back(& _tilemap->at(_destinationI, _destinationJ));
+   _tileList.push_back( &_tilemap->at(_destinationI, _destinationJ));
 
    _directionList.push_back(direction);
 }
@@ -465,7 +466,8 @@ void Propagator::propagate(const int maxDistance)
       }
 
       // propagate to neighbour tiles
-      const std::list<Tile*> accessTiles = _tilemap->getRectangle(tile.getI()-1, tile.getJ()-1, tile.getI()+1, tile.getJ()+1, _allDirections);
+      const std::list<Tile*> accessTiles = _tilemap->getRectangle( tile.getIJ() + TilePos( -1,-1 ),
+                                                                   tile.getIJ() + TilePos( 1, 1 ), _allDirections);
       for (std::list<Tile*>::const_iterator itTile = accessTiles.begin(); itTile!=accessTiles.end(); ++itTile)
       {
          // for every neighbor tile
@@ -642,7 +644,8 @@ void Propagator::getAllPaths(const int maxDistance, std::list<PathWay> &oPathWay
          // std::cout << "Propagation from tile " << tile.getI() << ", " << tile.getJ() << std::endl;
 
          // propagate to neighbour tiles
-         const std::list<Tile*> accessTiles = _tilemap->getRectangle(tile.getI()-1, tile.getJ()-1, tile.getI()+1, tile.getJ()+1, _allDirections);
+         const std::list<Tile*> accessTiles = _tilemap->getRectangle( tile.getIJ() + TilePos( -1, -1 ), 
+                                                                      tile.getIJ() + TilePos( 1, 1 ), _allDirections);
 
          // nextTiles = accessTiles - alreadyProcessedTiles
          std::list<Tile*> nextTiles;

@@ -29,6 +29,7 @@
 #include "oc3_exception.hpp"
 #include "oc3_gui_info_box.hpp"
 #include "oc3_gettext.hpp"
+#include "oc3_resourcegroup.hpp"
 
 
 ServiceBuilding::ServiceBuilding(const ServiceType &service)
@@ -131,11 +132,10 @@ void BuildingWell::deliverService()
 {
    ServiceWalker walker(getService());
    walker.setServiceBuilding(*this);
-   std::set<Building*> reachedBuildings = walker.getReachedBuildings(getTile().getI(), getTile().getJ());
+   std::set<Building*> reachedBuildings = walker.getReachedBuildings( getTile().getIJ() );
    for (std::set<Building*>::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
    {
-      Building &building = **itBuilding;
-      building.applyService(walker);
+      (*itBuilding)->applyService(walker);
    }
 }
 
@@ -185,7 +185,7 @@ void BuildingFountain::deliverService()
 {
    ServiceWalker walker(getService());
    walker.setServiceBuilding(*this);
-   std::set<Building*> reachedBuildings = walker.getReachedBuildings(getTile().getI(), getTile().getJ());
+   std::set<Building*> reachedBuildings = walker.getReachedBuildings( getTile().getIJ() );
    for (std::set<Building*>::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
    {
       Building &building = **itBuilding;
@@ -197,7 +197,35 @@ BuildingPrefect::BuildingPrefect() : ServiceBuilding(S_PREFECT)
 {
    setType(B_PREFECT);
    _size = 1;
-   setPicture(PicLoader::instance().get_picture("security", 1));
+   setPicture(PicLoader::instance().get_picture(ResourceGroup::security, 1));
+
+   _animation.load( ResourceGroup::security, 2, 10);
+   _animation.setFrameDelay( 4 );
+   _animation.setOffset( Point( 10, 42 ) );
+   _fgPictures.resize(1);
+}
+
+void BuildingPrefect::timeStep(const unsigned long time)
+{
+    bool mayAnimate = getWorkers() > 0;
+
+    if( mayAnimate && _animation.isStopped() )
+    {
+        _animation.start();
+    }
+
+    if( !mayAnimate && _animation.isRunning() )
+    {
+        _animation.stop();
+    }
+
+    ServiceBuilding::timeStep( time );
+}
+
+void BuildingPrefect::deliverService()
+{
+    if( getWorkers() > 0 )
+        ServiceBuilding::deliverService();
 }
 
 BuildingPrefect* BuildingPrefect::clone() const
@@ -335,7 +363,7 @@ TempleCeres::TempleCeres() : ServiceBuilding(S_TEMPLE_CERES)
 {
    setType(B_TEMPLE_CERES);
    _size = 2;
-   setPicture(PicLoader::instance().get_picture("security", 45));
+   setPicture(PicLoader::instance().get_picture( ResourceGroup::security, 45));
 }
 
 TempleCeres* TempleCeres::clone() const
@@ -348,7 +376,7 @@ BigTempleCeres::BigTempleCeres() : ServiceBuilding(S_TEMPLE_CERES)
 {
    setType(B_BIG_TEMPLE_CERES);
    _size = 3;
-   setPicture(PicLoader::instance().get_picture("security", 46));
+   setPicture(PicLoader::instance().get_picture( ResourceGroup::security, 46));
 }
 
 BigTempleCeres* BigTempleCeres::clone() const
@@ -360,7 +388,7 @@ TempleNeptune::TempleNeptune() : ServiceBuilding(S_TEMPLE_NEPTUNE)
 {
    setType(B_TEMPLE_NEPTUNE);
    _size = 2;
-   setPicture(PicLoader::instance().get_picture("security", 47));
+   setPicture(PicLoader::instance().get_picture( ResourceGroup::security, 47));
 }
 
 TempleNeptune* TempleNeptune::clone() const
@@ -372,7 +400,7 @@ BigTempleNeptune::BigTempleNeptune() : ServiceBuilding(S_TEMPLE_NEPTUNE)
 {
    setType(B_BIG_TEMPLE_NEPTUNE);
    _size = 3;
-   setPicture(PicLoader::instance().get_picture("security", 48));
+   setPicture(PicLoader::instance().get_picture( ResourceGroup::security, 48));
 }
 
 BigTempleNeptune* BigTempleNeptune::clone() const

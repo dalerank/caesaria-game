@@ -15,13 +15,10 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
-
 #include "oc3_serializer.hpp"
-
-#include <iostream>
 #include "oc3_exception.hpp"
 
+#include <iostream>
 
 SerialStream::SerialStream()
 {

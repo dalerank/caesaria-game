@@ -634,7 +634,7 @@ void GuiBuilding::paint()
 InfoBoxLand::InfoBoxLand( Widget* parent, Tile* tile )
     : GuiInfoBox( parent, Rect( 0, 0, 510, 350 ), -1 )
 {
-    Label* _text = new Label( this, Rect( 36, 239, 470, 338 ), "", true );
+    _text = new Label( this, Rect( 36, 239, 470, 338 ), "", true );
     _text->setFont( FontCollection::instance().getFont(FONT_2) );
 
     if( tile->get_terrain().isTree() )
@@ -665,3 +665,15 @@ InfoBoxLand::InfoBoxLand( Widget* parent, Tile* tile )
 
     GuiPaneling::instance().draw_black_frame( *_d->bgPicture, 16, _d->lbTitle->getBottom() + 10, getWidth()-32, 180 );
 }
+
+void InfoBoxLand::setText( const std::string& text )
+{
+    _text->setText( text );
+}
+
+InfoBoxFreeHouse::InfoBoxFreeHouse( Widget* parent, Tile* tile )
+    : InfoBoxLand( parent, tile )
+{
+    setTitle( _("##freehouse_caption") );
+    setText( _("##freehouse_text") );
+}   

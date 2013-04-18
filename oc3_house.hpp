@@ -39,6 +39,7 @@ public:
 
    // return the current house level
    HouseLevelSpec& getLevelSpec();
+
    virtual void applyService(ServiceWalker &walker);
    virtual float evaluateService(ServiceWalker &walker);
    virtual void buyMarket(ServiceWalker &walker);
@@ -62,6 +63,7 @@ private:
    std::map<ServiceType, int> _serviceAccessMap;  // value=access to the service (0=no access, 100=good access)
    int _currentHabitants;
    int _maxHabitants;
+   int _freeWorkersCount;
    int _houseId;  // pictureId
    int _houseLevel;
    HouseLevelSpec* _houseLevelSpec;  // characteristics of the current house level

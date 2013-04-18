@@ -28,6 +28,7 @@
 #include "oc3_event.hpp"
 #include "oc3_roadpropagator.hpp"
 #include "oc3_sdl_facade.hpp"
+#include "oc3_tilemapchangecommand.hpp"
 
 class GuiTilemap::Impl
 {
@@ -38,10 +39,9 @@ public:
   Point lastCursorPos;
   Point startCursorPos;
   bool  lmbPressed;
-  bool buildRoad;
-  bool  multiBuild;
 
   TilePos lastTilePos;
+  TilemapChangeCommand changeCommand;
 
 oc3_signals public:
   Signal1< Tile* > onShowTileInfoSignal;
@@ -52,8 +52,6 @@ GuiTilemap::GuiTilemap() : _d( new Impl )
 {
    _city = NULL;
    _mapArea = NULL;
-   _d->buildRoad = false;
-   _d->multiBuild = false;
 }
 
 GuiTilemap::~GuiTilemap() {}
@@ -64,16 +62,14 @@ void GuiTilemap::init(City &city, TilemapArea &mapArea, ScreenGame *screen)
    _tilemap = &_city->getTilemap();
    _mapArea = &mapArea;
    _screenGame = screen;
-   _buildInstance = NULL;
-   _removeTool = false;
 }
 
 void GuiTilemap::drawTileEx( const Tile& tile, const int depth )
 {
-    if( tile.is_flat() )
+    /*if( tile.is_flat() )
     {
         return;  // tile has already been drawn!
-    }
+    }*/
 
     Tile* master = tile.get_master_tile();
 
@@ -267,7 +263,7 @@ TilemapArea &GuiTilemap::getMapArea()
 
 void GuiTilemap::updatePreviewTiles( bool force )
 {
-    if( !_buildInstance && !_removeTool )
+    if( !_d->changeCommand.isValid() )
         return;
 
     Tile* curTile = getTileXY( _d->lastCursorPos, true );
@@ -278,7 +274,7 @@ void GuiTilemap::updatePreviewTiles( bool force )
 
     discardPreview();
     
-    if( _d->buildRoad )
+    if( _d->changeCommand.isBorderBuilding() )
     {
         Tile* startTile = getTileXY( _d->startCursorPos, true );  // tile under the cursor (or NULL)
         Tile* stopTile = getTileXY( _d->lastCursorPos, true );
@@ -291,10 +287,7 @@ void GuiTilemap::updatePreviewTiles( bool force )
         {
             for( Tiles::iterator it=pathWay.begin(); it != pathWay.end(); it++ )
             {
-                if( !(*it)->get_terrain().isRoad() )
-                {
-                    checkPreviewBuild( (*it)->getIJ() );
-                }
+                checkPreviewBuild( (*it)->getIJ() );
             }
         }
     }
@@ -304,11 +297,13 @@ void GuiTilemap::updatePreviewTiles( bool force )
         _getSelectedArea( startPos, stopPos );
 
         for( int i=startPos.getI(); i <= stopPos.getI(); i++ )
+        {
             for( int j=startPos.getJ(); j <=stopPos.getJ(); j++ )
             {
-                checkPreviewBuild(i, j);
+                checkPreviewBuild( TilePos( i, j ) );
                 checkPreviewRemove(i, j);
             }
+        }
     }
 }
 
@@ -329,20 +324,24 @@ void GuiTilemap::_clearLand()
     TilePos startPos, stopPos;
     _getSelectedArea( startPos, stopPos );
 
-    for( int i=startPos.getI(); i <= stopPos.getI(); i++ )
-        for( int j=startPos.getJ(); j <=stopPos.getJ(); j++ )
+    TilePos pnt = startPos;
+    for( ; pnt.getI() <= stopPos.getI(); pnt+=TilePos( 1, 0 ) )
+    {
+        for( ; pnt.getJ() <= stopPos.getJ(); pnt += TilePos( 0, 1 ) )
         {
-             _city->clearLand( i, j );
+             _city->clearLand( pnt );
         }   
+    }
 }
 
 void GuiTilemap::_buildAll()
 {
     for( Tiles::iterator it=_d->postTiles.begin(); it != _d->postTiles.end(); it++ )
     {
-        if( _buildInstance->canBuild( (*it)->getIJ() ))
+        Construction* cnstr = _d->changeCommand.getContruction();
+        if( cnstr && cnstr->canBuild( (*it)->getIJ() ))
         {
-            _city->build( *_buildInstance, (*it)->getIJ() );                    
+            _city->build( *cnstr, (*it)->getIJ() );                    
         }
     }       
 }
@@ -358,7 +357,7 @@ void GuiTilemap::handleEvent( NEvent& event )
             _d->lastCursorPos = event.MouseEvent.getPosition();  
             if( !_d->lmbPressed 
                 || _d->startCursorPos.getX() < 0 
-                || !_d->multiBuild )
+                || (_d->changeCommand.isValid() && !_d->changeCommand.isMultiBuilding()) )
                 _d->startCursorPos = _d->lastCursorPos;
            
             updatePreviewTiles();
@@ -367,7 +366,7 @@ void GuiTilemap::handleEvent( NEvent& event )
 
         case OC3_LMOUSE_PRESSED_DOWN:
         {
-            _d->startCursorPos = event.MouseEvent.getPosition();
+            _d->startCursorPos = _d->lastCursorPos;
             _d->lmbPressed = true;
             updatePreviewTiles();
         }
@@ -384,15 +383,17 @@ void GuiTilemap::handleEvent( NEvent& event )
                       << event.MouseEvent.X <<","<< event.MouseEvent.Y <<") left button" << std::endl;
 
             // left button
-            if (_removeTool)
-            {
-                _clearLand();  
+            if( _d->changeCommand.isValid() )
+            {                
+                if( _d->changeCommand.isRemoveTool() )
+                {
+                    _clearLand();                      
+                }
+                else if( _d->changeCommand.getContruction() )
+                {
+                    _buildAll();               
+                }
                 _d->startCursorPos = _d->lastCursorPos;
-                updatePreviewTiles( true );
-            }
-            else if (_buildInstance != NULL)
-            {
-                _buildAll();               
                 updatePreviewTiles( true );
             }
             else
@@ -408,16 +409,9 @@ void GuiTilemap::handleEvent( NEvent& event )
         case OC3_RMOUSE_LEFT_UP:
         {
             Tile* tile = getTileXY( event.MouseEvent.getPosition() );  // tile under the cursor (or NULL)
-            if (_removeTool)
+            if( _d->changeCommand.isValid() )
             { 
-                 // discard removeTool
-                _removeTool = false;
-                discardPreview();
-            }
-            else if (_buildInstance != NULL)
-            {
-                // discard buildTool
-                _buildInstance = NULL;
+                _d->changeCommand = TilemapChangeCommand();
                 discardPreview();
             }
             else
@@ -455,25 +449,6 @@ void GuiTilemap::handleEvent( NEvent& event )
     }
 }
 
-void GuiTilemap::setBuildInstance(Construction *buildInstance, bool multiBuild )
-{
-   // std::cout << "set build instance!" << std::endl;
-   _buildInstance = buildInstance;
-   _removeTool = false;
-   _d->multiBuild = multiBuild;
-   _d->buildRoad = false;
-   _d->startCursorPos = _d->lastCursorPos;
-   updatePreviewTiles();
-}
-
-void GuiTilemap::setRemoveTool()
-{
-   // std::cout << "set remove tool!" << std::endl;
-   _buildInstance = NULL;
-   _d->multiBuild = true;
-   _removeTool = true;
-}
-
 void GuiTilemap::discardPreview()
 {
     for( Impl::Pictures::iterator it=_d->previewToolPictures.begin(); it != _d->previewToolPictures.end(); it++ )
@@ -491,25 +466,24 @@ void GuiTilemap::discardPreview()
     _d->postTiles.clear();
 }
 
-void GuiTilemap::checkPreviewBuild(const int i, const int j)
+void GuiTilemap::checkPreviewBuild( const TilePos& pos )
 {
    // TODO: do only when needed, when (i, j, _buildInstance) has changed
-   if (_buildInstance != NULL)
+   Construction* overlay = _d->changeCommand.getContruction();
+   if( overlay )
    {
-      Construction& overlay = *_buildInstance;
-
-      int size = overlay.getSize();
-      if( overlay.canBuild(i, j) )
+      int size = overlay->getSize();
+      if( overlay->canBuild( pos ) )
       {
           _d->previewToolPictures.push_back( new Picture() );
-          PictureConverter::rgbBalance( *_d->previewToolPictures.back(), overlay.getPicture(), -255, +0, -255 );
+          PictureConverter::rgbBalance( *_d->previewToolPictures.back(), overlay->getPicture(), -255, +0, -255 );
 
           Tile *masterTile=0;
           for (int dj = 0; dj<size; ++dj)
           {
               for (int di = 0; di<size; ++di)
               {
-                  Tile* tile = new Tile(_tilemap->at(i+di, j+dj));  // make a copy of tile
+                  Tile* tile = new Tile(_tilemap->at( pos + TilePos( di, dj ) ));  // make a copy of tile
 
                   if (di==0 && dj==0)
                   {
@@ -519,7 +493,7 @@ void GuiTilemap::checkPreviewBuild(const int i, const int j)
                   tile->set_picture( _d->previewToolPictures.back() );
                   tile->set_master_tile(masterTile);
                   TerrainTile &terrain = tile->get_terrain();
-                  terrain.setOverlay(&overlay);
+                  terrain.setOverlay( overlay );
                   _d->postTiles.push_back( tile );
                   //_priorityTiles.push_back( tile );
               }
@@ -534,7 +508,7 @@ void GuiTilemap::checkPreviewBuild(const int i, const int j)
           {
               for (int di = 0; di<size; ++di)
               {
-                  Tile* tile = new Tile(_tilemap->at(i+di, j+dj));  // make a copy of tile
+                  Tile* tile = new Tile(_tilemap->at( pos + TilePos( di, dj ) ));  // make a copy of tile
 
                   bool isConstructible = tile->get_terrain().isConstructible();
                   tile->set_picture( isConstructible ? &grnPicture : &redPicture );
@@ -547,14 +521,9 @@ void GuiTilemap::checkPreviewBuild(const int i, const int j)
    }
 }
 
-void GuiTilemap::checkPreviewBuild( const TilePos& pos )
-{
-    checkPreviewBuild( pos.getI(), pos.getJ() );
-}
-
 void GuiTilemap::checkPreviewRemove(const int i, const int j)
 {
-    if (_removeTool)
+    if( _d->changeCommand.isRemoveTool() )
     {
         Tile& cursorTile = _tilemap->at(i, j);
         TerrainTile& terrain = cursorTile.get_terrain();
@@ -616,13 +585,10 @@ Signal1< Tile* >& GuiTilemap::onShowTileInfo()
     return _d->onShowTileInfoSignal;
 }
 
-void GuiTilemap::setBuildRoad( Construction* buildInstance )
+void GuiTilemap::setChangeCommand( const TilemapChangeCommand& command )
 {
-    // std::cout << "set build instance!" << std::endl;
-    _buildInstance = buildInstance;
-    _removeTool = false;
-    _d->multiBuild = true;
-    _d->buildRoad = true;
-    _d->startCursorPos = Point( -1, -1 );
+    _d->changeCommand = command;
+    _d->startCursorPos = _d->lastCursorPos;
+    //_d->startCursorPos = Point( -1, -1 );
     updatePreviewTiles();
 }
