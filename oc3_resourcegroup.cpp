@@ -14,7 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "oc3_resourcegroup.h"
+#include "oc3_resourcegroup.hpp"
 
 const char* ResourceGroup::panelBackground = "paneling";
 const char* ResourceGroup::menuMiddleIcons = "panelwindows";

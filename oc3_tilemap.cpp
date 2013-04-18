@@ -17,14 +17,14 @@
 
 
 
-#include "tilemap.hpp"
+#include "oc3_tilemap.hpp"
 
 #include <iostream>
 
-#include "pic_loader.hpp"
-#include "building.hpp"
-#include "exception.hpp"
-#include "oc3_positioni.h"
+#include "oc3_pic_loader.hpp"
+#include "oc3_building.hpp"
+#include "oc3_exception.hpp"
+#include "oc3_positioni.hpp"
 
 TerrainTile::TerrainTile()
 {
@@ -51,6 +51,14 @@ bool TerrainTile::isConstructible() const
 bool TerrainTile::isDestructible() const
 {
   return (_isTree || _isBuilding || _isRoad);
+}
+
+bool TerrainTile::isWalkable(const bool allLand) const
+{
+   // TODO: test building to allow garden, gatehouse, granary, ...
+   bool extendedRoad = false;
+
+   return (_isRoad || extendedRoad || (allLand && !_isWater && !_isTree && !_isRock && !_isBuilding && !_isAqueduct));
 }
 
 void TerrainTile::setOverlay(LandOverlay *overlay)
@@ -210,7 +218,7 @@ TerrainTile& Tile::get_terrain()
 
 bool Tile::is_flat() const
 {
-   return get_terrain().isRoad();
+   return !(_terrain.isRock() || _terrain.isTree() || _terrain.isBuilding() || _terrain.isAqueduct());
 }
 
 TilePos Tile::getIJ() const

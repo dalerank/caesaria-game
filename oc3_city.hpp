@@ -19,15 +19,15 @@
 #ifndef CITY_HPP
 #define CITY_HPP
 
-#include "tilemap.hpp"
-#include "walker.hpp"
-#include "building.hpp"
-#include "service_building.hpp"
-#include "factory_building.hpp"
-#include "house.hpp"
-#include "enums.hpp"
-#include "serializer.hpp"
-#include "oc3_signals.h"
+#include "oc3_tilemap.hpp"
+#include "oc3_walker.hpp"
+#include "oc3_building.hpp"
+#include "oc3_service_building.hpp"
+#include "oc3_factory_building.hpp"
+#include "oc3_house.hpp"
+#include "oc3_enums.hpp"
+#include "oc3_serializer.hpp"
+#include "oc3_signals.hpp"
 
 #include <list>
 

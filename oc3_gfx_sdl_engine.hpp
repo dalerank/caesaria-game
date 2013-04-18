@@ -19,14 +19,14 @@
 #ifndef GFX_SDL_ENGINE_HPP
 #define GFX_SDL_ENGINE_HPP
 
-#include "gfx_engine.hpp"
+#include "oc3_gfx_engine.hpp"
 
 #include <list>
 #include <vector>
 #include <SDL.h>
 #include <SDL_image.h>
 
-#include "picture.hpp"
+#include "oc3_picture.hpp"
 
 
 // This is the SDL engine

@@ -22,8 +22,8 @@
 #include <vector>
 #include <list>
 
-#include "serializer.hpp"
-#include "picture.hpp"
+#include "oc3_serializer.hpp"
+#include "oc3_picture.hpp"
 
 class LandOverlay;
 class TilePos;
@@ -38,7 +38,7 @@ public:
 
    bool isConstructible() const;
    bool isDestructible() const;
-//   bool isWalkable();
+   bool isWalkable(const bool allLands) const;
    // isBurnable
 
    bool isWater() const                    { return _isWater;    }

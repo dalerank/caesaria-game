@@ -17,16 +17,16 @@
 
 
 
-#include "walker.hpp"
+#include "oc3_walker.hpp"
 
 #include <iostream>
 
-#include "building_data.hpp"
-#include "exception.hpp"
-#include "scenario.hpp"
-#include "walker_market_buyer.hpp"
-#include "walker_cart_pusher.hpp"
-#include "oc3_positioni.h"
+#include "oc3_building_data.hpp"
+#include "oc3_exception.hpp"
+#include "oc3_scenario.hpp"
+#include "oc3_walker_market_buyer.hpp"
+#include "oc3_walker_cart_pusher.hpp"
+#include "oc3_positioni.hpp"
 
 
 std::map<WalkerType, Walker*> Walker::_mapWalkerByID;  // key=walkerType, value=instance
@@ -45,6 +45,8 @@ Walker::Walker()
 
    _midTileI = 7;
    _midTileJ = 7;
+   _remainMoveI = 0;
+   _remainMoveJ = 0;
 };
 
 Walker::~Walker()
@@ -174,9 +176,6 @@ WalkerGraphicType Walker::getWalkerGraphic() const
 // ioSI: subtile index, ioI: tile index, ioAmount: distance, iMidPos: subtile offset 0, oNewTile: true if tile change, oMidTile: true if on tile center
 void Walker::inc(int &ioSI, int &ioI, int &ioAmount, const int iMidPos, bool &oNewTile, bool &oMidTile)
 {
-   oMidTile = false;
-   oNewTile = false;
-
    int delta = ioAmount;
    if ((ioSI<iMidPos) && (ioSI+delta>=iMidPos))  // midpos is ahead and inside the current movement
    {
@@ -201,9 +200,6 @@ void Walker::inc(int &ioSI, int &ioI, int &ioAmount, const int iMidPos, bool &oN
 // ioSI: subtile index, ioI: tile index, ioAmount: distance, iMidPos: subtile offset 0, oNewTile: true if tile change, oMidTile: true if on tile center
 void Walker::dec(int &ioSI, int &ioI, int &ioAmount, const int iMidPos, bool &oNewTile, bool &oMidTile)
 {
-   oMidTile = false;
-   oNewTile = false;
-
    int delta = ioAmount;
    if ((ioSI>iMidPos) && (ioSI-delta<=iMidPos))  // midpos is ahead and inside the current movement
    {
@@ -234,43 +230,69 @@ void Walker::walk()
       return;
    }
    _animIndex = (_animIndex+1) % 12;
-   int amount = _speed;  // amount of movement
+
+   switch (_action._direction)
+   {
+   case D_NORTH:
+   case D_SOUTH:
+      _remainMoveJ += _speed;
+      break;
+   case D_EAST:
+   case D_WEST:
+      _remainMoveI += _speed;
+      break;
+   case D_NORTH_EAST:
+   case D_SOUTH_WEST:
+   case D_SOUTH_EAST:
+   case D_NORTH_WEST:
+      _remainMoveI += _speed*0.7f;
+      _remainMoveJ += _speed*0.7f;
+      break;
+   default:
+      THROW("Invalid move direction: " << _action._direction);
+      break;
+   }
+   
 
    bool newTile = false;
    bool midTile = false;
+   int amountI = int(_remainMoveI);
+   int amountJ = int(_remainMoveJ);
+   _remainMoveI -= amountI;
+   _remainMoveJ -= amountJ;
 
    // std::cout << "walker step, amount :" << amount << std::endl;
-   while (amount > 0)
+   while (amountI+amountJ > 0)
    {
       switch (_action._direction)
       {
       case D_NORTH:
-         inc(_sj, _j, amount, _midTileJ, newTile, midTile);
+         inc(_sj, _j, amountJ, _midTileJ, newTile, midTile);
          break;
       case D_NORTH_EAST:
-         inc(_sj, _j, amount, _midTileJ, newTile, midTile);
-         inc(_si, _i, amount, _midTileI, newTile, midTile);
+         inc(_sj, _j, amountJ, _midTileJ, newTile, midTile);
+         inc(_si, _i, amountI, _midTileI, newTile, midTile);
          break;
       case D_EAST:
-         inc(_si, _i, amount, _midTileI, newTile, midTile);
+         inc(_si, _i, amountI, _midTileI, newTile, midTile);
          break;
       case D_SOUTH_EAST:
-         dec(_sj, _j, amount, _midTileJ, newTile, midTile);
-         inc(_si, _i, amount, _midTileI, newTile, midTile);
+         dec(_sj, _j, amountJ, _midTileJ, newTile, midTile);
+         inc(_si, _i, amountI, _midTileI, newTile, midTile);
          break;
       case D_SOUTH:
-         dec(_sj, _j, amount, _midTileJ, newTile, midTile);
+         dec(_sj, _j, amountJ, _midTileJ, newTile, midTile);
          break;
       case D_SOUTH_WEST:
-         dec(_sj, _j, amount, _midTileJ, newTile, midTile);
-         dec(_si, _i, amount, _midTileI, newTile, midTile);
+         dec(_sj, _j, amountJ, _midTileJ, newTile, midTile);
+         dec(_si, _i, amountI, _midTileI, newTile, midTile);
          break;
       case D_WEST:
-         dec(_si, _i, amount, _midTileI, newTile, midTile);
+         dec(_si, _i, amountI, _midTileI, newTile, midTile);
          break;
       case D_NORTH_WEST:
-         inc(_sj, _j, amount, _midTileJ, newTile, midTile);
-         dec(_si, _i, amount, _midTileI, newTile, midTile);
+         inc(_sj, _j, amountJ, _midTileJ, newTile, midTile);
+         dec(_si, _i, amountI, _midTileI, newTile, midTile);
          break;
       default:
          THROW("Invalid move direction: " << _action._direction);

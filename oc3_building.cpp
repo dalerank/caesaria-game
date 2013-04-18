@@ -17,33 +17,32 @@
 
 
 
-#include "building.hpp"
+#include "oc3_building.hpp"
 
 #include <iostream>
 #include <algorithm>
 
-#include "scenario.hpp"
-#include "walker.hpp"
-#include "exception.hpp"
-#include "gui_info_box.hpp"
-#include "building_data.hpp"
-#include "factory_building.hpp"
-#include "service_building.hpp"
-#include "training_building.hpp"
-#include "warehouse.hpp"
-#include "gettext.hpp"
-#include "sdl_facade.hpp"
-#include "oc3_time.h"
-#include "oc3_burningruins.h"
-#include "oc3_collapsedruins.h"
+#include "oc3_scenario.hpp"
+#include "oc3_walker.hpp"
+#include "oc3_exception.hpp"
+#include "oc3_gui_info_box.hpp"
+#include "oc3_building_data.hpp"
+#include "oc3_factory_building.hpp"
+#include "oc3_service_building.hpp"
+#include "oc3_training_building.hpp"
+#include "oc3_warehouse.hpp"
+#include "oc3_gettext.hpp"
+#include "oc3_sdl_facade.hpp"
+#include "oc3_time.hpp"
+#include "oc3_burningruins.hpp"
+#include "oc3_collapsedruins.hpp"
 #include "oc3_water_buildings.hpp"
-#include "oc3_constructionmanager.h"
-#include "oc3_resourcegroup.h"
+#include "oc3_constructionmanager.hpp"
+#include "oc3_resourcegroup.hpp"
 
 namespace {
 static const char* rcRoadGroup         = "land2a";
 static const char* rcHousingGroup      = "housng1a";
-static const char* rcSecurityGroup     = "security";
 static const char* rcGovernmentGroup   = "govt";
 static const char* rcEntertaimentGroup = "entertainment";
 }
@@ -893,7 +892,7 @@ Academy::Academy()
   _size = 3;
   setMaxWorkers( 20 );
   setWorkers( 0 );
-  setPicture(PicLoader::instance().get_picture(rcSecurityGroup, 18));
+  setPicture(PicLoader::instance().get_picture( ResourceGroup::security, 18));
 }
 
 Barracks::Barracks()
@@ -902,7 +901,7 @@ Barracks::Barracks()
   _size = 3;
   setMaxWorkers(5);
   setWorkers(0);  
-  setPicture(PicLoader::instance().get_picture(rcSecurityGroup, 17));
+  setPicture(PicLoader::instance().get_picture(ResourceGroup::security, 17));
 }
 
 Academy*  Academy::clone()  const { return new Academy(*this);  }
@@ -1040,9 +1039,9 @@ FortLegionnaire::FortLegionnaire()
 {
   setType(B_FORT_LEGIONNAIRE);
   _size = 3;
-  setPicture(PicLoader::instance().get_picture(rcSecurityGroup, 12));
+  setPicture(PicLoader::instance().get_picture(ResourceGroup::security, 12));
 
-  Picture* logo = &PicLoader::instance().get_picture(rcSecurityGroup, 16);
+  Picture* logo = &PicLoader::instance().get_picture(ResourceGroup::security, 16);
   logo -> set_offset(80,10);
   _fgPictures.resize(1);
   _fgPictures.at(0) = logo;  
@@ -1057,9 +1056,9 @@ FortMounted::FortMounted()
 {
   setType(B_FORT_MOUNTED);
   _size = 3;
-  setPicture(PicLoader::instance().get_picture(rcSecurityGroup, 12));
+  setPicture(PicLoader::instance().get_picture(ResourceGroup::security, 12));
 
-  Picture* logo = &PicLoader::instance().get_picture(rcSecurityGroup, 15);
+  Picture* logo = &PicLoader::instance().get_picture(ResourceGroup::security, 15);
   logo -> set_offset(80,10);
   _fgPictures.resize(1);
   _fgPictures.at(0) = logo;
@@ -1074,9 +1073,9 @@ FortJaveline::FortJaveline()
 {
   setType(B_FORT_JAVELIN);
   _size = 3;
-  setPicture(PicLoader::instance().get_picture(rcSecurityGroup, 12));
+  setPicture(PicLoader::instance().get_picture(ResourceGroup::security, 12));
 
-  Picture* logo = &PicLoader::instance().get_picture(rcSecurityGroup, 14);
+  Picture* logo = &PicLoader::instance().get_picture(ResourceGroup::security, 14);
   //std::cout << logo->get_xoffset() << " " << logo->get_yoffset() << " " << logo->get_width() << " " << logo->get_height() << std::endl;
   logo -> set_offset(80,10);
   _fgPictures.resize(1);

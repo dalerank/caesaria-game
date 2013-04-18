@@ -17,13 +17,13 @@
 
 
 
-#include "scenario_loader.hpp"
+#include "oc3_scenario_loader.hpp"
 
 #include <iostream>
 
-#include "exception.hpp"
-#include "pic_loader.hpp"
-#include <oc3_positioni.h>
+#include "oc3_exception.hpp"
+#include "oc3_pic_loader.hpp"
+#include "oc3_positioni.hpp"
 
 
 ScenarioLoader::ScenarioLoader()

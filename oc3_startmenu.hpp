@@ -19,10 +19,10 @@
 #ifndef __OPENCAESAR3_MENU_H_INCLUDE_
 #define __OPENCAESAR3_MENU_H_INCLUDE_
 
-#include "oc3_widget.h"
+#include "oc3_widget.hpp"
 
-#include "picture.hpp"
-#include "enums.hpp"
+#include "oc3_picture.hpp"
+#include "oc3_enums.hpp"
 
 class PushButton;
 

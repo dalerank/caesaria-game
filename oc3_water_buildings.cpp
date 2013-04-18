@@ -17,9 +17,10 @@
 
 #include <iostream>
 
-#include "scenario.hpp"
-#include "oc3_resourcegroup.h"
-#include "oc3_positioni.h"
+#include "oc3_scenario.hpp"
+#include "oc3_time.hpp"
+#include "oc3_positioni.hpp"
+#include "oc3_resourcegroup.hpp"
 
 namespace {
   static const char* rcAqueductGroup     = "land2a";

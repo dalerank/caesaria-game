@@ -20,9 +20,9 @@
 #define PATH_FINDING_HPP
 
 
-#include "building.hpp"
-#include "enums.hpp"
-#include "serializer.hpp"
+#include "oc3_building.hpp"
+#include "oc3_enums.hpp"
+#include "oc3_serializer.hpp"
 
 #include <list>
 
@@ -73,17 +73,18 @@ class Propagator
 {
 public:
    Propagator();
+   void setAllLands(const bool value);
+   void setAllDirections(const bool value);
 
    /** propagate some data in the road network
    * param origin : propagation origin
    * param oCompletedBranches: result of the propagation: road=destination, pathWay=path
    */
-   void init(Road& origin);
-   void init(std::list<Road*>& origin);
-   void init(Construction& origin);
+   void init(Tile& origin);
+   void init(const std::list<Tile*>& origin);
+   void init(const Construction& origin);
    void propagate(const int maxDistance);
 
-   void getReachedRoads(std::map<Road*, PathWay> &oPathWayList);
    void getReachedBuildings(const BuildingType buildingType, std::map<Building*, PathWay> &oPathWayList);
 
    /** finds the shortest path between origin and destination
@@ -99,7 +100,10 @@ public:
 
 private:
    std::set<PathWay> _activeBranches;
-   std::map<Road*, PathWay> _completedBranches;
+   std::map<Tile*, PathWay> _completedBranches;
+
+   bool _allLands;  // true if can walk in all lands, false if limited to roads
+   bool _allDirections;  // true if can walk in all directions, false if limited to North/South/East/West
 
    City *_city;
    Tilemap *_tilemap;

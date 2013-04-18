@@ -17,16 +17,16 @@
 
 
 
-#include "factory_building.hpp"
+#include "oc3_factory_building.hpp"
 
 #include <iostream>
 
-#include "scenario.hpp"
-#include "walker_cart_pusher.hpp"
-#include "exception.hpp"
-#include "gui_info_box.hpp"
-#include "gettext.hpp"
-#include "oc3_resourcegroup.h"
+#include "oc3_scenario.hpp"
+#include "oc3_walker_cart_pusher.hpp"
+#include "oc3_exception.hpp"
+#include "oc3_gui_info_box.hpp"
+#include "oc3_gettext.hpp"
+#include "oc3_resourcegroup.hpp"
 
 Factory::Factory(const GoodType inType, const GoodType outType)
 {

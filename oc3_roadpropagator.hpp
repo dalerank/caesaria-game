@@ -17,7 +17,7 @@
 #ifndef __OPENCAESAR3_ROADPROPAGATOR_H_INCLUDE_
 #define __OPENCAESAR3_ROADPROPAGATOR_H_INCLUDE_
 
-#include "oc3_scopedptr.h"
+#include "oc3_scopedptr.hpp"
 #include <list>
 
 class Tile;

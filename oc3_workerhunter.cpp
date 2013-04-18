@@ -13,10 +13,10 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_workerhunter.h"
-#include "house.hpp"
-#include "oc3_safetycast.h"
-#include "oc3_positioni.h"
+#include "oc3_workerhunter.hpp"
+#include "oc3_house.hpp"
+#include "oc3_safetycast.hpp"
+#include "oc3_positioni.hpp"
 
 WorkersHunter::WorkersHunter( ServiceBuilding& building )
  : ServiceWalker(S_WORKERS_HUNTER)

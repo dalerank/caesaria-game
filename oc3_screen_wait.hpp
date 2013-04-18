@@ -1,7 +1,7 @@
 ﻿#ifndef SCREEN_WAIT_HPP
 #define SCREEN_WAIT_HPP
 
-#include "screen.hpp"
+#include "oc3_screen.hpp"
 #include <memory>
 
 class GfxEngine;

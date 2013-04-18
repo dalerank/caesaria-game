@@ -17,13 +17,13 @@
 
 
 
-#include <gui_paneling.hpp>
+#include "oc3_gui_paneling.hpp"
 #include <SDL.h>
-#include <exception.hpp>
-#include <pic_loader.hpp>
-#include <sdl_facade.hpp>
-#include <gettext.hpp>
-#include "oc3_pushbutton.h"
+#include "oc3_exception.hpp"
+#include "oc3_pic_loader.hpp"
+#include "oc3_sdl_facade.hpp"
+#include "oc3_gettext.hpp"
+#include "oc3_pushbutton.hpp"
 
 #include <iostream>
 

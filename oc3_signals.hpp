@@ -16,8 +16,8 @@
 #ifndef __OPENCAESAR_SIGNAL_H_INCLUDE_
 #define __OPENCAESAR_SIGNAL_H_INCLUDE_
 
-#include "oc3_delegate.h"
-#include "oc3_list.h"
+#include "oc3_delegate.hpp"
+#include "oc3_list.hpp"
 
 #define oc3_signals
 #define oc3_slots

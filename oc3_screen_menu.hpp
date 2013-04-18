@@ -19,7 +19,7 @@
 #ifndef SCREEN_MENU_HPP
 #define SCREEN_MENU_HPP
 
-#include "screen.hpp"
+#include "oc3_screen.hpp"
 #include <memory>
 
 // displays the newGame/loadGame/quitGame menu

@@ -17,22 +17,22 @@
 
 
 
-#include "gui_info_box.hpp"
+#include "oc3_gui_info_box.hpp"
 
 #include <SDL.h>
 #include <iostream>
 
-#include "exception.hpp"
-#include "pic_loader.hpp"
-#include "sdl_facade.hpp"
-#include "gettext.hpp"
-#include "gui_paneling.hpp"
-#include "building_data.hpp"
-#include "house_level.hpp"
-#include "oc3_resourcegroup.h"
-#include "oc3_event.h"
-#include "oc3_pushbutton.h"
-#include "oc3_label.h"
+#include "oc3_exception.hpp"
+#include "oc3_pic_loader.hpp"
+#include "oc3_sdl_facade.hpp"
+#include "oc3_gettext.hpp"
+#include "oc3_gui_paneling.hpp"
+#include "oc3_building_data.hpp"
+#include "oc3_house_level.hpp"
+#include "oc3_resourcegroup.hpp"
+#include "oc3_event.hpp"
+#include "oc3_pushbutton.hpp"
+#include "oc3_label.hpp"
 
 class InfoBoxHelper
 {

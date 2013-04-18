@@ -16,17 +16,16 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#include "picture.hpp"
+#include "oc3_picture.hpp"
 
-#include <sdl_facade.hpp>
+#include "oc3_sdl_facade.hpp"
 #include <iostream>
 #include <sstream>
-#include <sdl_facade.hpp>
 
-#include "exception.hpp"
-#include "oc3_positioni.h"
-#include "oc3_rectangle.h"
-#include "pic_loader.hpp"
+#include "oc3_exception.hpp"
+#include "oc3_positioni.hpp"
+#include "oc3_rectangle.hpp"
+#include "oc3_pic_loader.hpp"
 
 Picture::Picture()
 {

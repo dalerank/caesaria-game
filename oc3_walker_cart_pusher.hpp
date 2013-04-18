@@ -19,9 +19,9 @@
 #ifndef WALKER_CART_PUSHER_HPP
 #define WALKER_CART_PUSHER_HPP
 
-#include "walker.hpp"
-#include "warehouse.hpp"
-#include "factory_building.hpp"
+#include "oc3_walker.hpp"
+#include "oc3_warehouse.hpp"
+#include "oc3_factory_building.hpp"
 
 
 /** This walker delivers goods */

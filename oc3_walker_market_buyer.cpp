@@ -17,10 +17,10 @@
 
 
 
-#include <walker_market_buyer.hpp>
-#include <building_data.hpp>
-#include <exception.hpp>
-#include <scenario.hpp>
+#include "oc3_walker_market_buyer.hpp"
+#include "oc3_building_data.hpp"
+#include "oc3_exception.hpp"
+#include "oc3_scenario.hpp"
 #include <iostream>
 
 

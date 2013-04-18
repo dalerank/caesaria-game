@@ -16,8 +16,8 @@
 #ifndef __OPENCAESAR3_POSITIONANIMATOR_H_INCLUDE_
 #define __OPENCAESAR3_POSITIONANIMATOR_H_INCLUDE_
 
-#include "oc3_widgetanimator.h"
-#include "oc3_scopedptr.h"
+#include "oc3_widgetanimator.hpp"
+#include "oc3_scopedptr.hpp"
 
 class PositionAnimator : public WidgetAnimator
 {

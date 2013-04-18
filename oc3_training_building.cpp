@@ -17,15 +17,15 @@
 
 
 
-#include "training_building.hpp"
+#include "oc3_training_building.hpp"
 
 #include <iostream>
 
-#include "scenario.hpp"
-#include "walker.hpp"
-#include "exception.hpp"
-#include "gui_info_box.hpp"
-#include "gettext.hpp"
+#include "oc3_scenario.hpp"
+#include "oc3_walker.hpp"
+#include "oc3_exception.hpp"
+#include "oc3_gui_info_box.hpp"
+#include "oc3_gettext.hpp"
 
 namespace {
 static const char* rcEntertaimentGroup    = "entertainment";

@@ -17,8 +17,8 @@
 #ifndef __OPENCAESAR3_TILEMAPCHANGECOMMAND_H_INCLUDE_
 #define __OPENCAESAR3_TILEMAPCHANGECOMMAND_H_INCLUDE_
 
-#include "oc3_scopedptr.h"
-#include "enums.hpp"
+#include "oc3_scopedptr.hpp"
+#include "oc3_enums.hpp"
 
 class Construction;
 

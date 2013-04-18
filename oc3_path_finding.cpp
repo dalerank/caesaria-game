@@ -17,13 +17,13 @@
 
 
 
-#include "path_finding.hpp"
+#include "oc3_path_finding.hpp"
 
-#include "tilemap.hpp"
-#include "city.hpp"
-#include "scenario.hpp"
-#include "exception.hpp"
-#include "oc3_positioni.h"
+#include "oc3_tilemap.hpp"
+#include "oc3_city.hpp"
+#include "oc3_scenario.hpp"
+#include "oc3_exception.hpp"
+#include "oc3_positioni.hpp"
 
 #include <iostream>
 
@@ -74,6 +74,7 @@ void PathWay::init(Tilemap &tilemap, Tile &origin)
 
 int PathWay::getLength() const
 {
+   // TODO: various lands have various travel time (road easier to travel than open country)
    return _directionList.size();
 }
 
@@ -381,58 +382,58 @@ Propagator::Propagator()
 {
    _city = &Scenario::instance().getCity();
    _tilemap = &_city->getTilemap();
+   _allLands = false;
+   _allDirections = true;
 }
 
 
-void Propagator::init(Construction &origin)
+void Propagator::setAllLands(const bool value)
 {
-   std::list<Road*> accessRoads;
+   _allLands = value;
+}
 
+void Propagator::setAllDirections(const bool value)
+{
+   _allDirections = value;
+}
+
+
+void Propagator::init(const Construction &origin)
+{
    // init propagation on access roads
-   const std::list<Tile*>& accessTiles = origin.getAccessRoads();
-   for (std::list<Tile*>::const_iterator itTile = accessTiles.begin(); itTile!=accessTiles.end(); ++itTile)
-   {
-      // for every access road
-      Tile &tile = **itTile;
-      //std::cout << "road access " << tile.getI() << "," << tile.getJ() << std::endl;
-      Road &road = dynamic_cast<Road&> (*tile.get_terrain().getOverlay());
-
-      accessRoads.push_back(&road);
-   }
-
-   init(accessRoads);
+   init(origin.getAccessRoads());
 }
 
 
-void Propagator::init(Road &origin)
+void Propagator::init(Tile &origin)
 {
-   std::list<Road*> roadList;
-   roadList.push_back(&origin);
+   std::list<Tile*> tileList;
+   tileList.push_back(&origin);
 
-   init(roadList);
+   init(tileList);
 }
 
 
-void Propagator::init(std::list<Road*> &origin)
+void Propagator::init(const std::list<Tile*> &origin)
 {
    _activeBranches.clear();
    _completedBranches.clear();
 
-   // init propagation on access roads
-   for (std::list<Road*>::const_iterator itRoad = origin.begin(); itRoad!=origin.end(); ++itRoad)
+   // init propagation
+   for (std::list<Tile*>::const_iterator itTile = origin.begin(); itTile!=origin.end(); ++itTile)
    {
-      // for every access road
-      Road &road = **itRoad;
-      //std::cout << "road access " << tile.getI() << "," << tile.getJ() << std::endl;
+      // for every access tile
+      Tile &tile = **itTile;
+      // std::cout << "Tile access " << tile.getI() << "," << tile.getJ() << std::endl;
 
       PathWay pathWay;
-      pathWay.init(*_tilemap, road.getTile());
+      pathWay.init(*_tilemap, tile);
 
       // init active branches
       _activeBranches.insert(pathWay);
 
       // init trivial completed branches
-      _completedBranches.insert(std::pair<Road*, PathWay>(&road, pathWay));
+      _completedBranches.insert(std::pair<Tile*, PathWay>(&tile, pathWay));
    }
 }
 
@@ -443,64 +444,66 @@ void Propagator::propagate(const int maxDistance)
 
    std::set<PathWay>::iterator firstBranch;
 
-   // propagate on all roads
+   // propagate on all tiles
    while (!_activeBranches.empty())
    {
-      // while there are active roads
+      // while there are active paths
       if ((nbLoops++)>100000) THROW("Infinite loop detected during propagation");
 
-      // get the lowest_distance active road
+      // get the shortest active path
       firstBranch = _activeBranches.begin();
 
       const PathWay &pathWay = *firstBranch;
       Tile& tile = pathWay.getDestination();
-      Road& road = dynamic_cast<Road&> (*tile.get_terrain().getOverlay());
       //std::cout << "Propagation from tile " << tile.getI() << ", " << tile.getJ() << std::endl;
 
-      int roadLength = 1;
-      if (pathWay.getLength() + roadLength > maxDistance)
+      int tileLength = 1;
+      if (pathWay.getLength() + tileLength > maxDistance)
       {
-         // we processed all roads within range. stop the propagation
+         // we processed all paths within range. stop the propagation
          //std::cout << "MaxDistance reached. stop propagation" << std::endl;
          break;
       }
 
-      // propagate to neighbour roads
-      const std::list<Tile*>& accessTiles = road.getAccessRoads();
+      // propagate to neighbour tiles
+      const std::list<Tile*> accessTiles = _tilemap->getRectangle( tile.getIJ() + TilePos( -1,-1 ),
+                                                                   tile.getIJ() + TilePos( 1, 1 ), _allDirections);
       for (std::list<Tile*>::const_iterator itTile = accessTiles.begin(); itTile!=accessTiles.end(); ++itTile)
       {
-         // for every access road
+         // for every neighbor tile
          Tile &tile2 = **itTile;
-         // std::cout << "Next tile: " << tile2.getI() << ", " << tile2.getJ() << std::endl;
-
-         Road &road2 = dynamic_cast<Road&> (*tile2.get_terrain().getOverlay());
-         if (_completedBranches.find(&road2)==_completedBranches.end())
+         if (tile2.get_terrain().isWalkable(_allLands))
          {
-            // the road has not been processed yet
-            PathWay pathWay2(pathWay);
-            pathWay2.setNextTile(tile2);
-            _activeBranches.insert(pathWay2);
-            _completedBranches.insert(std::pair<Road*, PathWay>(&road2, pathWay2));
+            // std::cout << "Next tile: " << tile2.getI() << ", " << tile2.getJ() << std::endl;
 
-            // pathWay2.prettyPrint();
-            // std::cout << "distance at:" << tile2.getI() << "," << tile2.getJ() << " is:" << pathWay2.getLength() << std::endl;
+            if (_completedBranches.find(&tile2)==_completedBranches.end())
+            {
+               // the tile has not been processed yet
+               PathWay pathWay2(pathWay);
+               pathWay2.setNextTile(tile2);
+               _activeBranches.insert(pathWay2);
+               _completedBranches.insert(std::pair<Tile*, PathWay>(&tile2, pathWay2));
+
+               // pathWay2.prettyPrint();
+               // std::cout << "distance at:" << tile2.getI() << "," << tile2.getJ() << " is:" << pathWay2.getLength() << std::endl;
+            }
          }
       }
 
-      // this road is no longer active
+      // this path is no longer active
       _activeBranches.erase(firstBranch);
    }
 }
 
 bool Propagator::getPath(Road &destination, PathWay &oPathWay)
 {
-   std::map<Road*, PathWay>::iterator mapIt;
+   std::map<Tile*, PathWay>::iterator mapIt;
    int distance = 30;
    while (true)
    {
       propagate(distance);
 
-      mapIt = _completedBranches.find(&destination);
+      mapIt = _completedBranches.find(&destination.getTile());
       if (mapIt != _completedBranches.end())
       {
          // found pathWay!
@@ -523,7 +526,7 @@ bool Propagator::getPath(Road &destination, PathWay &oPathWay)
 bool Propagator::getPath(Building& destination, PathWay &oPathWay)
 {
    const std::list<Tile*>& destTiles = destination.getAccessRoads();
-   std::map<Road*, PathWay>::iterator mapIt;
+   std::map<Tile*, PathWay>::iterator mapIt;
    std::set<PathWay> destPath;  // paths to the destination building, ordered by distance
    int distance = 30;
    while (true)
@@ -535,10 +538,9 @@ bool Propagator::getPath(Building& destination, PathWay &oPathWay)
       {
          // for each destination tile
          Tile &tile= **itTile;
-         Road &road = dynamic_cast<Road&>( *tile.get_terrain().getOverlay() );
 
          // searches path to that given tile
-         mapIt = _completedBranches.find(&road);
+         mapIt = _completedBranches.find(&tile);
 
          if (mapIt != _completedBranches.end())
          {
@@ -567,12 +569,6 @@ bool Propagator::getPath(Building& destination, PathWay &oPathWay)
 }
 
 
-void Propagator::getReachedRoads(std::map<Road*, PathWay> &oPathWayList)
-{
-   oPathWayList = _completedBranches;
-}
-
-
 void Propagator::getReachedBuildings(const BuildingType buildingType, std::map<Building*, PathWay> &oPathWayList)
 {
    // init the building list
@@ -597,10 +593,9 @@ void Propagator::getReachedBuildings(const BuildingType buildingType, std::map<B
       {
          // for each destination tile
          Tile &tile= **itTile;
-         Road &road = dynamic_cast<Road&> (*tile.get_terrain().getOverlay());
 
          // searches path to that given tile
-         std::map<Road*, PathWay>::iterator pathWayIt= _completedBranches.find(&road);
+         std::map<Tile*, PathWay>::iterator pathWayIt= _completedBranches.find(&tile);
 
          if (pathWayIt != _completedBranches.end())
          {
@@ -646,20 +641,20 @@ void Propagator::getAllPaths(const int maxDistance, std::list<PathWay> &oPathWay
          if ((nbLoops++)>100000) THROW("Infinite loop detected during propagation");
 
          Tile& tile = pathWay.getDestination();
-         Road& road = dynamic_cast<Road&> (*tile.get_terrain().getOverlay());
          // std::cout << "Propagation from tile " << tile.getI() << ", " << tile.getJ() << std::endl;
 
-         // propagate to neighbour roads
-         const std::list<Tile*>& accessTiles = road.getAccessRoads();
+         // propagate to neighbour tiles
+         const std::list<Tile*> accessTiles = _tilemap->getRectangle( tile.getIJ() + TilePos( -1, -1 ), 
+                                                                      tile.getIJ() + TilePos( 1, 1 ), _allDirections);
 
          // nextTiles = accessTiles - alreadyProcessedTiles
          std::list<Tile*> nextTiles;
          for (std::list<Tile*>::const_iterator itTile = accessTiles.begin(); itTile!=accessTiles.end(); ++itTile)
          {
-            // for every access road
+            // for every neighbour tile
             Tile &tile2 = **itTile;
 
-            if (! pathWay.contains(tile2) )
+            if (tile2.get_terrain().isWalkable(_allLands) && !pathWay.contains(tile2) )
             {
                nextTiles.push_back(&tile2);
             }
@@ -673,7 +668,7 @@ void Propagator::getAllPaths(const int maxDistance, std::list<PathWay> &oPathWay
 
          for (std::list<Tile*>::const_iterator itTile = nextTiles.begin(); itTile!=nextTiles.end(); ++itTile)
          {
-            // for every next road
+            // for every neighbor tile
             Tile &tile2 = **itTile;
             // std::cout << "Next tile: " << tile2.getI() << ", " << tile2.getJ() << std::endl;
 

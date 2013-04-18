@@ -14,9 +14,9 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "oc3_widget.h"
-#include "oc3_widgetprivate.h"
-#include "oc3_guienv.h"
+#include "oc3_widget.hpp"
+#include "oc3_widgetprivate.hpp"
+#include "oc3_guienv.hpp"
 
 void Widget::beforeDraw( GfxEngine& painter )
 {

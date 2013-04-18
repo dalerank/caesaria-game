@@ -17,10 +17,10 @@
 
 
 
-#include <sdl_facade.hpp>
+#include "oc3_sdl_facade.hpp"
 
-#include <gfx_engine.hpp>
-#include <exception.hpp>
+#include "oc3_gfx_engine.hpp"
+#include "oc3_exception.hpp"
 
 
 SdlFacade* SdlFacade::_instance = NULL;

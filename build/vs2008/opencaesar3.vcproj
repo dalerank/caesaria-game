@@ -183,143 +183,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\building.cpp"
+				RelativePath="..\..\oc3_alignment.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\building.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\building_data.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\building_data.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\caesar.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\caesar.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\city.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\city.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\enums.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\exception.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\factory_building.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\factory_building.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\gettext.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\gfx_engine.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\gfx_engine.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\gfx_gl_engine.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\gfx_gl_engine.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\gfx_sdl_engine.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\gfx_sdl_engine.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\good.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\good.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\gui_info_box.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\gui_info_box.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\gui_paneling.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\gui_paneling.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\gui_tilemap.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\gui_tilemap.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\house.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\house.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\house_level.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\house_level.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\model_loader.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\model_loader.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\oc3_alignment.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\oc3_allocator.h"
+				RelativePath="..\..\oc3_allocator.hpp"
 				>
 			</File>
 			<File
@@ -327,7 +195,23 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_animation.h"
+				RelativePath="..\..\oc3_animation.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_building.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_building.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_building_data.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_building_data.hpp"
 				>
 			</File>
 			<File
@@ -335,7 +219,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_buildingengineer.h"
+				RelativePath="..\..\oc3_buildingengineer.hpp"
 				>
 			</File>
 			<File
@@ -343,7 +227,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_buildmenu.h"
+				RelativePath="..\..\oc3_buildmenu.hpp"
 				>
 			</File>
 			<File
@@ -351,7 +235,23 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_burningruins.h"
+				RelativePath="..\..\oc3_burningruins.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_caesar.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_caesar.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_city.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_city.hpp"
 				>
 			</File>
 			<File
@@ -359,7 +259,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_collapsedruins.h"
+				RelativePath="..\..\oc3_collapsedruins.hpp"
 				>
 			</File>
 			<File
@@ -367,11 +267,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_constructionmanager.h"
+				RelativePath="..\..\oc3_constructionmanager.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_delegate.h"
+				RelativePath="..\..\oc3_delegate.hpp"
 				>
 			</File>
 			<File
@@ -379,11 +279,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_emigrant.h"
+				RelativePath="..\..\oc3_emigrant.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_event.h"
+				RelativePath="..\..\oc3_enums.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_event.hpp"
 				>
 			</File>
 			<File
@@ -391,11 +295,79 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_eventconverter.h"
+				RelativePath="..\..\oc3_eventconverter.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_flagholder.h"
+				RelativePath="..\..\oc3_exception.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_factory_building.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_factory_building.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_flagholder.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_gfx_engine.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_gfx_engine.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_gfx_gl_engine.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_gfx_gl_engine.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_gfx_sdl_engine.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_gfx_sdl_engine.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_good.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_good.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_gui_info_box.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_gui_info_box.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_gui_paneling.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_gui_paneling.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_gui_tilemap.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_gui_tilemap.hpp"
 				>
 			</File>
 			<File
@@ -403,7 +375,23 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_guienv.h"
+				RelativePath="..\..\oc3_guienv.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_house.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_house.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_house_level.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_house_level.hpp"
 				>
 			</File>
 			<File
@@ -411,7 +399,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_infoboxmanager.h"
+				RelativePath="..\..\oc3_infoboxmanager.hpp"
 				>
 			</File>
 			<File
@@ -419,15 +407,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_label.h"
+				RelativePath="..\..\oc3_label.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_list.h"
+				RelativePath="..\..\oc3_list.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_math.h"
+				RelativePath="..\..\oc3_math.hpp"
 				>
 			</File>
 			<File
@@ -435,7 +423,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_menu.h"
+				RelativePath="..\..\oc3_menu.hpp"
 				>
 			</File>
 			<File
@@ -443,7 +431,39 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_menurgihtpanel.h"
+				RelativePath="..\..\oc3_menurgihtpanel.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_model_loader.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_model_loader.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_path_finding.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_path_finding.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_pic_loader.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_pic_loader.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_picture.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_picture.hpp"
 				>
 			</File>
 			<File
@@ -451,11 +471,19 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_pictureconverter.h"
+				RelativePath="..\..\oc3_pictureconverter.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_positioni.h"
+				RelativePath="..\..\oc3_player.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_player.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_positioni.hpp"
 				>
 			</File>
 			<File
@@ -463,19 +491,19 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_pushbutton.h"
+				RelativePath="..\..\oc3_pushbutton.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_rectangle.h"
+				RelativePath="..\..\oc3_rectangle.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_referencecounted.h"
+				RelativePath="..\..\oc3_referencecounted.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_requirements.h"
+				RelativePath="..\..\oc3_requirements.hpp"
 				>
 			</File>
 			<File
@@ -483,7 +511,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_resourcegroup.h"
+				RelativePath="..\..\oc3_resourcegroup.hpp"
 				>
 			</File>
 			<File
@@ -491,15 +519,95 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_roadpropagator.h"
+				RelativePath="..\..\oc3_roadpropagator.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_safetycast.h"
+				RelativePath="..\..\oc3_safetycast.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_scopedptr.h"
+				RelativePath="..\..\oc3_scenario.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_scenario.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_scenario_loader.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_scenario_loader.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_scenario_saver.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_scenario_saver.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_scopedptr.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_screen.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_screen.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_screen_game.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_screen_game.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_screen_menu.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_screen_menu.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_screen_wait.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_screen_wait.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_sdl_facade.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_sdl_facade.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_serializer.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_serializer.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_service_building.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_service_building.hpp"
 				>
 			</File>
 			<File
@@ -507,19 +615,27 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_servicebuildingmanager.h"
+				RelativePath="..\..\oc3_servicebuildingmanager.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_signals.h"
+				RelativePath="..\..\oc3_signals.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_size.h"
+				RelativePath="..\..\oc3_size.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_smartptr.h"
+				RelativePath="..\..\oc3_smartptr.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_sound_engine.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_sound_engine.hpp"
 				>
 			</File>
 			<File
@@ -527,7 +643,23 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_startmenu.h"
+				RelativePath="..\..\oc3_startmenu.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_tilemap.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_tilemap.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_tilemap_area.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_tilemap_area.hpp"
 				>
 			</File>
 			<File
@@ -535,7 +667,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_tilemapchangecommand.h"
+				RelativePath="..\..\oc3_tilemapchangecommand.hpp"
 				>
 			</File>
 			<File
@@ -543,7 +675,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_time.h"
+				RelativePath="..\..\oc3_time.hpp"
 				>
 			</File>
 			<File
@@ -551,11 +683,51 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_topmenu.h"
+				RelativePath="..\..\oc3_topmenu.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_vector2.h"
+				RelativePath="..\..\oc3_training_building.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_training_building.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_vector2.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_walker.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_walker.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_walker_cart_pusher.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_walker_cart_pusher.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_walker_market_buyer.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_walker_market_buyer.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_warehouse.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_warehouse.hpp"
 				>
 			</File>
 			<File
@@ -571,7 +743,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_widget.h"
+				RelativePath="..\..\oc3_widget.hpp"
 				>
 			</File>
 			<File
@@ -579,7 +751,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_widgetanimator.h"
+				RelativePath="..\..\oc3_widgetanimator.hpp"
 				>
 			</File>
 			<File
@@ -587,11 +759,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_widgetpositionanimator.h"
+				RelativePath="..\..\oc3_widgetpositionanimator.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_widgetprivate.h"
+				RelativePath="..\..\oc3_widgetprivate.hpp"
 				>
 			</File>
 			<File
@@ -603,179 +775,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\path_finding.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\path_finding.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\pic_loader.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\pic_loader.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\picture.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\picture.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\player.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\player.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\scenario.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\scenario.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\scenario_loader.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\scenario_loader.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\scenario_saver.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\scenario_saver.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\screen.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\screen.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\screen_game.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\screen_game.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\screen_menu.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\screen_menu.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\screen_wait.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\screen_wait.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\sdl_facade.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\sdl_facade.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\serializer.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\serializer.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\service_building.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\service_building.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\sound_engine.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\sound_engine.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tilemap.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tilemap.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tilemap_area.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tilemap_area.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\training_building.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\training_building.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\walker.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\walker.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\walker_cart_pusher.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\walker_cart_pusher.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\walker_market_buyer.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\walker_market_buyer.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\warehouse.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\warehouse.hpp"
+				RelativePath="..\..\oc3_workerhunter.hpp"
 				>
 			</File>
 		</Filter>

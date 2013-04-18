@@ -21,8 +21,8 @@
 
 #include <string>
 
-#include "city.hpp"
-#include "serializer.hpp"
+#include "oc3_city.hpp"
+#include "oc3_serializer.hpp"
 
 
 class Scenario : public Serializable

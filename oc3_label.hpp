@@ -17,9 +17,9 @@
 #ifndef __OPENCAESAR3_GUILABEL_H_INCLUDE_
 #define __OPENCAESAR3_GUILABEL_H_INCLUDE_
 
-#include "oc3_widget.h"
-#include "picture.hpp"
-#include "oc3_signals.h"
+#include "oc3_widget.hpp"
+#include "oc3_picture.hpp"
+#include "oc3_signals.hpp"
 
 class Label : public Widget
 {	

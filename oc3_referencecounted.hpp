@@ -18,7 +18,7 @@
 #define __OPENCAESAR3_REFERENCE_COUNTED_H_INCLUDED__
 
 #include <string>
-#include "oc3_requirements.h"
+#include "oc3_requirements.hpp"
 
 class ReferenceCounted
 {

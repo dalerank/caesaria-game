@@ -27,9 +27,9 @@
 #include <list>
 #include <string>
 #include <SDL_ttf.h>
-#include "oc3_alignment.h"
+#include "oc3_alignment.hpp"
 
-#include "oc3_size.h"
+#include "oc3_size.hpp"
 
 class Point;
 class Rect;

@@ -16,7 +16,7 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#include "pic_loader.hpp"
+#include "oc3_pic_loader.hpp"
 
 #include <cstdlib>
 #include <string>
@@ -31,11 +31,11 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
-#include "oc3_positioni.h"
-#include "exception.hpp"
-#include "sdl_facade.hpp"
-#include "oc3_resourcegroup.h"
-#include "oc3_animation.h"
+#include "oc3_positioni.hpp"
+#include "oc3_exception.hpp"
+#include "oc3_sdl_facade.hpp"
+#include "oc3_resourcegroup.hpp"
+#include "oc3_animation.hpp"
 
 namespace {
 static const char* rcCartsGroup    = "carts";

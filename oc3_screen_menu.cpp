@@ -16,17 +16,17 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#include "screen_menu.hpp"
+#include "oc3_screen_menu.hpp"
 
 #include <iostream>
 
-#include "gfx_engine.hpp"
-#include "exception.hpp"
-#include "pic_loader.hpp"
+#include "oc3_gfx_engine.hpp"
+#include "oc3_exception.hpp"
+#include "oc3_pic_loader.hpp"
 
-#include "oc3_startmenu.h"
-#include "oc3_guienv.h"
-#include "oc3_pushbutton.h"
+#include "oc3_startmenu.hpp"
+#include "oc3_guienv.hpp"
+#include "oc3_pushbutton.hpp"
 
 class ScreenMenu::Impl
 {

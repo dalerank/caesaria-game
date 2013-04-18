@@ -22,12 +22,12 @@
 #include <list>
 #include <vector>
 
-#include "picture.hpp"
-#include "scenario.hpp"
-#include "gui_tilemap.hpp"
-#include "gui_info_box.hpp"
-#include "screen.hpp"
-#include "oc3_scopedptr.h"
+#include "oc3_picture.hpp"
+#include "oc3_scenario.hpp"
+#include "oc3_gui_tilemap.hpp"
+#include "oc3_gui_info_box.hpp"
+#include "oc3_screen.hpp"
+#include "oc3_scopedptr.hpp"
 
 class Menu;
 class BuildMenu;

@@ -16,16 +16,16 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#include <gfx_sdl_engine.hpp>
+#include "oc3_gfx_sdl_engine.hpp"
 
 #include <cstdlib>
 #include <string>
 #include <sstream>
 #include <iostream>
 
-#include "exception.hpp"
-#include "pic_loader.hpp"
-#include "sdl_facade.hpp"
+#include "oc3_exception.hpp"
+#include "oc3_pic_loader.hpp"
+#include "oc3_sdl_facade.hpp"
 
 
 GfxSdlEngine::GfxSdlEngine() : GfxEngine()

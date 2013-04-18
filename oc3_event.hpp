@@ -17,7 +17,7 @@
 #ifndef __OPENCAESAR3_EVENT_H_INCLUDED__
 #define __OPENCAESAR3_EVENT_H_INCLUDED__
 
-#include "oc3_positioni.h"
+#include "oc3_positioni.hpp"
 
 class Widget;
 

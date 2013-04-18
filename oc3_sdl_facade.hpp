@@ -21,7 +21,7 @@
 
 
 #include <list>
-#include <picture.hpp>
+#include "oc3_picture.hpp"
 #include <string>
 
 

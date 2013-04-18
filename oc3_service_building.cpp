@@ -17,19 +17,19 @@
 
 
 
-#include "service_building.hpp"
+#include "oc3_service_building.hpp"
 
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
 
-#include "scenario.hpp"
-#include "walker.hpp"
-#include "walker_market_buyer.hpp"
-#include "exception.hpp"
-#include "gui_info_box.hpp"
-#include "gettext.hpp"
-#include "oc3_resourcegroup.h"
+#include "oc3_scenario.hpp"
+#include "oc3_walker.hpp"
+#include "oc3_walker_market_buyer.hpp"
+#include "oc3_exception.hpp"
+#include "oc3_gui_info_box.hpp"
+#include "oc3_gettext.hpp"
+#include "oc3_resourcegroup.hpp"
 
 
 ServiceBuilding::ServiceBuilding(const ServiceType &service)

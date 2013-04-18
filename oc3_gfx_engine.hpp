@@ -21,8 +21,8 @@
 
 #include <list>
 
-#include "picture.hpp"
-#include "oc3_size.h"
+#include "oc3_picture.hpp"
+#include "oc3_size.hpp"
 
 class GfxEngine
 {

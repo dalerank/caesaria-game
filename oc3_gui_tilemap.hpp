@@ -23,12 +23,12 @@
 #include <list>
 #include <vector>
 
-#include "picture.hpp"
-#include "city.hpp"
-#include "tilemap.hpp"
-#include "tilemap_area.hpp"
-#include "oc3_signals.h"
-#include "oc3_scopedptr.h"
+#include "oc3_picture.hpp"
+#include "oc3_city.hpp"
+#include "oc3_tilemap.hpp"
+#include "oc3_tilemap_area.hpp"
+#include "oc3_signals.hpp"
+#include "oc3_scopedptr.hpp"
 
 
 class ScreenGame;

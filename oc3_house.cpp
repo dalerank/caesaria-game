@@ -15,15 +15,15 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#include "house.hpp"
+#include "oc3_house.hpp"
 
 #include <iostream>
 
-#include "house_level.hpp"
-#include "gui_info_box.hpp"
-#include "scenario.hpp"
-#include "exception.hpp"
-#include "oc3_workerhunter.h"
+#include "oc3_house_level.hpp"
+#include "oc3_gui_info_box.hpp"
+#include "oc3_scenario.hpp"
+#include "oc3_exception.hpp"
+#include "oc3_workerhunter.hpp"
 
 static const char* rcGrourName = "housng1a";
 

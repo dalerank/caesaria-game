@@ -19,11 +19,11 @@
 
 #include <memory>
 
-#include "oc3_referencecounted.h"
-#include "oc3_list.h"
-#include "oc3_rectangle.h"
-#include "oc3_alignment.h"
-#include "oc3_safetycast.h"
+#include "oc3_referencecounted.hpp"
+#include "oc3_list.hpp"
+#include "oc3_rectangle.hpp"
+#include "oc3_alignment.hpp"
+#include "oc3_safetycast.hpp"
 
 class GfxEngine;
 class GuiEnv;

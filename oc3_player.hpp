@@ -20,8 +20,8 @@
 #define PLAYER_HPP
 
 
-#include "enums.hpp"
-#include "serializer.hpp"
+#include "oc3_enums.hpp"
+#include "oc3_serializer.hpp"
 #include <list>
 
 

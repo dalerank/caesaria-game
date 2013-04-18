@@ -19,8 +19,8 @@
 #ifndef SCENARIO_LOADER_HPP
 #define SCENARIO_LOADER_HPP
 
-#include "tilemap.hpp"
-#include "scenario.hpp"
+#include "oc3_tilemap.hpp"
+#include "oc3_scenario.hpp"
 
 #include <fstream>
 #include <string>

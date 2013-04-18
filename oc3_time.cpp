@@ -14,14 +14,14 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "oc3_time.h"
+#include "oc3_time.hpp"
 #include <ctime>
 #include <cstdlib>
 #include <cstdio>
 #include <stdint.h>
 
 #ifdef _WIN32
-    #include "Windows.h"
+    #include "windows.h"
 #else
     #include <sys/time.h>
 #endif

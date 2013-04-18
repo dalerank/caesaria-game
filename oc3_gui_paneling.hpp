@@ -19,7 +19,7 @@
 #ifndef GUI_PANELING_HPP
 #define GUI_PANELING_HPP
 
-#include <picture.hpp>
+#include "oc3_picture.hpp"
 
 class PushButton;
 

@@ -16,17 +16,17 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#include "city.hpp"
+#include "oc3_city.hpp"
 
 #include <iostream>
 #include <set>
 
-#include "building_data.hpp"
-#include "path_finding.hpp"
-#include "exception.hpp"
-#include "oc3_emigrant.h"
-#include "oc3_positioni.h"
-#include "oc3_constructionmanager.h"
+#include "oc3_building_data.hpp"
+#include "oc3_path_finding.hpp"
+#include "oc3_exception.hpp"
+#include "oc3_emigrant.hpp"
+#include "oc3_positioni.hpp"
+#include "oc3_constructionmanager.hpp"
 
 class City::Impl
 {

@@ -17,7 +17,7 @@
 #ifndef __OPENCAESAR3_GUIENVIRONMENT_INCLUDE_
 #define __OPENCAESAR3_GUIENVIRONMENT_INCLUDE_
 
-#include "oc3_widget.h"
+#include "oc3_widget.hpp"
 #include <memory>
 
 class GfxEngine;

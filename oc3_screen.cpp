@@ -16,14 +16,14 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#include "screen.hpp"
+#include "oc3_screen.hpp"
 
 #include <iostream>
 
-#include "gfx_engine.hpp"
-#include "exception.hpp"
-#include "oc3_event.h"
-#include "oc3_eventconverter.h"
+#include "oc3_gfx_engine.hpp"
+#include "oc3_exception.hpp"
+#include "oc3_event.hpp"
+#include "oc3_eventconverter.hpp"
 
 Screen::Screen() {}
 

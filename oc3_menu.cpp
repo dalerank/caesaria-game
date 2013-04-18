@@ -14,19 +14,19 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "oc3_menu.h"
-#include "oc3_pushbutton.h"
-#include "picture.hpp"
-#include "sdl_facade.hpp"
-#include "pic_loader.hpp"
-#include "oc3_resourcegroup.h"
-#include "oc3_event.h"
-#include "oc3_buildmenu.h"
-#include "oc3_guienv.h"
-#include "gui_paneling.hpp"
-#include "oc3_widgetpositionanimator.h"
-#include "oc3_label.h"
-#include "gettext.hpp"
+#include "oc3_menu.hpp"
+#include "oc3_pushbutton.hpp"
+#include "oc3_picture.hpp"
+#include "oc3_sdl_facade.hpp"
+#include "oc3_pic_loader.hpp"
+#include "oc3_resourcegroup.hpp"
+#include "oc3_event.hpp"
+#include "oc3_buildmenu.hpp"
+#include "oc3_guienv.hpp"
+#include "oc3_gui_paneling.hpp"
+#include "oc3_widgetpositionanimator.hpp"
+#include "oc3_label.hpp"
+#include "oc3_gettext.hpp"
 
 static const int REMOVE_TOOL_ID = B_MAX + 1; 
 static const int MAXIMIZE_ID = REMOVE_TOOL_ID + 1;

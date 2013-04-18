@@ -19,7 +19,7 @@
 #ifndef GFX_GL_ENGINE_HPP
 #define GFX_GL_ENGINE_HPP
 
-#include <gfx_engine.hpp>
+#include "oc3_gfx_engine.hpp"
 
 #include <list>
 #include <vector>
@@ -27,7 +27,7 @@
 #include <SDL_image.h>
 #include <SDL_opengl.h>
 
-#include <picture.hpp>
+#include "oc3_picture.hpp"
 
 // This is the OpenGL engine
 // It does a dumb drawing from back to front, in a 2D projection, with no depth buffer

@@ -16,7 +16,7 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#include <sound_engine.hpp>
+#include "oc3_sound_engine.hpp"
 
 #include <cstdlib>
 #include <string>
@@ -24,7 +24,7 @@
 #include <iostream>
 #include <SDL.h>
 
-#include <exception.hpp>
+#include "oc3_exception.hpp"
 
 
 SoundEngine* SoundEngine::_instance = NULL;

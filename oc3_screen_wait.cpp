@@ -16,12 +16,12 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#include <screen_wait.hpp>
+#include "oc3_screen_wait.hpp"
 
-#include <gfx_engine.hpp>
-#include <exception.hpp>
+#include "oc3_gfx_engine.hpp"
+#include "oc3_exception.hpp"
 #include <iostream>
-#include <pic_loader.hpp>
+#include "oc3_pic_loader.hpp"
 
 class ScreenWait::Impl
 {

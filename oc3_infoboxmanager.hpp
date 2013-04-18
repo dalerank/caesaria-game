@@ -1,9 +1,9 @@
 #ifndef __OPENCAESAR3_INFOBOX_MANAGER_H_INCLUDE_
 #define __OPENCAESAR3_INFOBOX_MANAGER_H_INCLUDE_
 
-#include "oc3_smartptr.h"
-#include "oc3_referencecounted.h"
-#include "oc3_scopedptr.h"
+#include "oc3_smartptr.hpp"
+#include "oc3_referencecounted.hpp"
+#include "oc3_scopedptr.hpp"
 
 class GuiEnv;
 class Tile;

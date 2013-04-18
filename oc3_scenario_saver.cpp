@@ -17,11 +17,11 @@
 
 
 
-#include "scenario_saver.hpp"
+#include "oc3_scenario_saver.hpp"
 
 #include <iostream>
 
-#include "exception.hpp"
+#include "oc3_exception.hpp"
 
 
 std::string ScenarioSaver::MAGIC = "OC3";

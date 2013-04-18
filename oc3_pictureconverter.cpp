@@ -13,12 +13,12 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_pictureconverter.h"
+#include "oc3_pictureconverter.hpp"
 
 #include <SDL_image.h>
 
-#include "picture.hpp"
-#include "oc3_math.h"
+#include "oc3_picture.hpp"
+#include "oc3_math.hpp"
 
 void PictureConverter::rgbBalance( Picture& dst, const Picture& src, int lROffset, int lGOffset, int lBOffset )
 {

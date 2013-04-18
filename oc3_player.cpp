@@ -17,7 +17,7 @@
 
 
 
-#include "player.hpp"
+#include "oc3_player.hpp"
 
 
 Player::Player()

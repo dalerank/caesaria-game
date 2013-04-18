@@ -22,14 +22,14 @@
 #include <string>
 #include <memory>
 
-#include "building.hpp"
-#include "service_building.hpp"
-#include "tilemap.hpp"
-#include "picture.hpp"
-#include "enums.hpp"
-#include "pic_loader.hpp"
-#include "path_finding.hpp"
-#include "serializer.hpp"
+#include "oc3_building.hpp"
+#include "oc3_service_building.hpp"
+#include "oc3_tilemap.hpp"
+#include "oc3_picture.hpp"
+#include "oc3_enums.hpp"
+#include "oc3_pic_loader.hpp"
+#include "oc3_path_finding.hpp"
+#include "oc3_serializer.hpp"
 
 
 class Walker : public Serializable
@@ -98,6 +98,7 @@ private:
    int _si, _sj; // subtile coordinate in the current tile: 0..15
    int _ii, _jj; // subtile coordinate across all tiles: 0..15*mapsize (ii=15*i+si)
    int _speed;
+   float _remainMoveI, _remainMoveJ;  // remaining movement
    int _midTileI, _midTileJ;  // subtile coordinate in the current tile, at starting position
 
    const Animation *_animation;  // current animation

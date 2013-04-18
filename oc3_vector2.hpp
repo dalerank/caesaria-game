@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_VECTOR2_INCLUDED__
 #define __OPENCAESAR3_VECTOR2_INCLUDED__
 
-#include "oc3_math.h"
+#include "oc3_math.hpp"
 
 template <class T>
 class Vector2

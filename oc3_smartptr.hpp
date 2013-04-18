@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_SMARTPTR_H_INCLUDE_
 
 #include <cstddef>
-#include "oc3_requirements.h"
+#include "oc3_requirements.hpp"
   
 template<class T> class SmartPtr
 {

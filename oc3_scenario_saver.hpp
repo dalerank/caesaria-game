@@ -22,8 +22,8 @@
 #include <fstream>
 #include <string>
 
-#include "serializer.hpp"
-#include "scenario.hpp"
+#include "oc3_serializer.hpp"
+#include "oc3_scenario.hpp"
 
 
 class ScenarioSaver : public Serializable

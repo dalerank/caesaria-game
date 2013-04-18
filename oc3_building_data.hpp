@@ -22,7 +22,7 @@
 #include <string>
 #include <map>
 
-#include "enums.hpp"
+#include "oc3_enums.hpp"
 
 // contains some metaData for a building type
 class BuildingData

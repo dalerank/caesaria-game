@@ -17,8 +17,8 @@
 #ifndef __OPENCAESAR3_RECTANGLE_H_INCLUDED__
 #define __OPENCAESAR3_RECTANGLE_H_INCLUDED__
 
-#include "oc3_positioni.h"
-#include "oc3_size.h"
+#include "oc3_positioni.hpp"
+#include "oc3_size.hpp"
 
 //! Rectangle.
 /** Mostly used by 2D GUI elements and for 2D drawing methods.

@@ -16,25 +16,25 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#include <screen_game.hpp>
+#include "oc3_screen_game.hpp"
 
 #include <algorithm>
 #include <iostream>
 
-#include "gfx_engine.hpp"
-#include "gfx_sdl_engine.hpp"
-#include "exception.hpp"
-#include "warehouse.hpp"
-#include "scenario_saver.hpp"
-#include "oc3_menurgihtpanel.h"
-#include "oc3_resourcegroup.h"
-#include "oc3_guienv.h"
-#include "oc3_topmenu.h"
-#include "oc3_menu.h"
-#include "oc3_event.h"
-#include "oc3_infoboxmanager.h"
-#include "oc3_constructionmanager.h"
-#include "oc3_tilemapchangecommand.h"
+#include "oc3_gfx_engine.hpp"
+#include "oc3_gfx_sdl_engine.hpp"
+#include "oc3_exception.hpp"
+#include "oc3_warehouse.hpp"
+#include "oc3_scenario_saver.hpp"
+#include "oc3_menurgihtpanel.hpp"
+#include "oc3_resourcegroup.hpp"
+#include "oc3_guienv.hpp"
+#include "oc3_topmenu.hpp"
+#include "oc3_menu.hpp"
+#include "oc3_event.hpp"
+#include "oc3_infoboxmanager.hpp"
+#include "oc3_constructionmanager.hpp"
+#include "oc3_tilemapchangecommand.hpp"
 
 class ScreenGame::Impl
 {

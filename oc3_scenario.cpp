@@ -17,11 +17,11 @@
 
 
 
-#include "scenario.hpp"
+#include "oc3_scenario.hpp"
 
 #include <iostream>
 
-#include "exception.hpp"
+#include "oc3_exception.hpp"
 
 Scenario* Scenario::_instance = NULL;
 

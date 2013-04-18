@@ -17,12 +17,12 @@
 
 
 
-#include "building_data.hpp"
+#include "oc3_building_data.hpp"
 
 #include <iostream>
 
-#include "exception.hpp"
-#include "gettext.hpp"
+#include "oc3_exception.hpp"
+#include "oc3_gettext.hpp"
 
 
 BuildingData::BuildingData(const BuildingType buildingType, const std::string &name, const int cost)

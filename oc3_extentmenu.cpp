@@ -14,13 +14,13 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "oc3_extentmenu.h"
+#include "oc3_extentmenu.hpp"
 
-#include "sdl_facade.hpp"
-#include "pic_loader.hpp"
-#include "oc3_resourcegroup.h"
-#include "oc3_positioni.h"
-#include "oc3_pushbutton.h"
+#include "oc3_sdl_facade.hpp"
+#include "oc3_pic_loader.hpp"
+#include "oc3_resourcegroup.hpp"
+#include "oc3_positioni.hpp"
+#include "oc3_pushbutton.hpp"
 #include <iostream>
 
 static const Uint32 minimizeBtnPicId = 97;

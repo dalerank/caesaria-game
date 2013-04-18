@@ -15,20 +15,20 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#include "gui_tilemap.hpp"
+#include "oc3_gui_tilemap.hpp"
 
 #include <algorithm>
 #include <iostream>
 
-#include "gfx_engine.hpp"
-#include "exception.hpp"
-#include "screen_game.hpp"
-#include "oc3_positioni.h"
-#include "oc3_pictureconverter.h"
-#include "oc3_event.h"
-#include "oc3_roadpropagator.h"
-#include "sdl_facade.hpp"
-#include "oc3_tilemapchangecommand.h"
+#include "oc3_gfx_engine.hpp"
+#include "oc3_exception.hpp"
+#include "oc3_screen_game.hpp"
+#include "oc3_positioni.hpp"
+#include "oc3_pictureconverter.hpp"
+#include "oc3_event.hpp"
+#include "oc3_roadpropagator.hpp"
+#include "oc3_sdl_facade.hpp"
+#include "oc3_tilemapchangecommand.hpp"
 
 class GuiTilemap::Impl
 {
@@ -66,10 +66,10 @@ void GuiTilemap::init(City &city, TilemapArea &mapArea, ScreenGame *screen)
 
 void GuiTilemap::drawTileEx( const Tile& tile, const int depth )
 {
-    if( tile.is_flat() )
+    /*if( tile.is_flat() )
     {
         return;  // tile has already been drawn!
-    }
+    }*/
 
     Tile* master = tile.get_master_tile();
 

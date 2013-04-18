@@ -25,7 +25,7 @@
 
 #include <boost/filesystem.hpp>
 
-#include "enums.hpp"
+#include "oc3_enums.hpp"
 
 namespace fs = boost::filesystem;
 

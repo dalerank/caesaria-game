@@ -17,14 +17,14 @@
 
 
 
-#include "warehouse.hpp"
+#include "oc3_warehouse.hpp"
 
 #include <iostream>
 
-#include "pic_loader.hpp"
-#include "exception.hpp"
-#include "gui_info_box.hpp"
-#include "gettext.hpp"
+#include "oc3_pic_loader.hpp"
+#include "oc3_exception.hpp"
+#include "oc3_gui_info_box.hpp"
+#include "oc3_gettext.hpp"
 
 
 namespace

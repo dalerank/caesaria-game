@@ -17,7 +17,7 @@
 #ifndef __OPENCAESAR3_EVENTCONVERTER_H_INCLUDE_
 #define __OPENCAESAR3_EVENTCONVERTER_H_INCLUDE_
 
-#include "oc3_event.h"
+#include "oc3_event.hpp"
 #include <memory>
 #include <SDL_events.h>
 

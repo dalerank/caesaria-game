@@ -16,9 +16,9 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#include "caesar.hpp"
+#include "oc3_caesar.hpp"
 
-#include "screen_wait.hpp"
+#include "oc3_screen_wait.hpp"
 
 #include <cstdlib>
 #include <string>
@@ -31,24 +31,24 @@
 #include <locale.h>
 #include <algorithm>
 
-#include "exception.hpp"
-#include "pic_loader.hpp"
-#include "scenario_loader.hpp"
-#include "scenario.hpp"
-#include "city.hpp"
-#include "picture.hpp"
-#include "gfx_sdl_engine.hpp"
-#include "gfx_gl_engine.hpp"
-#include "sound_engine.hpp"
-#include "walker.hpp"
-#include "gui_info_box.hpp"
-#include "model_loader.hpp"
+#include "oc3_exception.hpp"
+#include "oc3_pic_loader.hpp"
+#include "oc3_scenario_loader.hpp"
+#include "oc3_scenario.hpp"
+#include "oc3_city.hpp"
+#include "oc3_picture.hpp"
+#include "oc3_gfx_sdl_engine.hpp"
+#include "oc3_gfx_gl_engine.hpp"
+#include "oc3_sound_engine.hpp"
+#include "oc3_walker.hpp"
+#include "oc3_gui_info_box.hpp"
+#include "oc3_model_loader.hpp"
 
 
-#include "screen_menu.hpp"
-#include "screen_game.hpp"
-#include "house_level.hpp"
-#include "oc3_guienv.h"
+#include "oc3_screen_menu.hpp"
+#include "oc3_screen_game.hpp"
+#include "oc3_house_level.hpp"
+#include "oc3_guienv.hpp"
 
 #if defined(_MSC_VER)
 	#undef main

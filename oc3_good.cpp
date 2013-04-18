@@ -17,10 +17,10 @@
 
 
 
-#include <good.hpp>
+#include "oc3_good.hpp"
 
-#include <gettext.hpp>
-#include <exception.hpp>
+#include "oc3_gettext.hpp"
+#include "oc3_exception.hpp"
 #include <iostream>
 #include <algorithm>
 

@@ -14,10 +14,10 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "oc3_menurgihtpanel.h"
-#include "sdl_facade.hpp"
-#include "picture.hpp"
-#include "gfx_engine.hpp"
+#include "oc3_menurgihtpanel.hpp"
+#include "oc3_sdl_facade.hpp"
+#include "oc3_picture.hpp"
+#include "oc3_gfx_engine.hpp"
 
 class MenuRigthPanel::Impl
 {

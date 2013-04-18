@@ -19,11 +19,11 @@
 #ifndef GOOD_HPP
 #define GOOD_HPP
 
-#include <enums.hpp>
+#include "oc3_enums.hpp"
 #include <string>
 #include <vector>
 #include <map>
-#include <serializer.hpp>
+#include "oc3_serializer.hpp"
 
 
 class Good

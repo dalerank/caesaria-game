@@ -23,7 +23,7 @@
 #include <list>
 #include <vector>
 
-#include "tilemap.hpp"
+#include "oc3_tilemap.hpp"
 
 
 /* A subset of the tilemap, this is the visible area. Has convenient methods to sort tiles per depth */

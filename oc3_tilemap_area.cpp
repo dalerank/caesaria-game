@@ -17,12 +17,12 @@
 
 
 
-#include "tilemap_area.hpp"
+#include "oc3_tilemap_area.hpp"
 
 #include <algorithm>
 #include <iostream>
 
-#include "exception.hpp"
+#include "oc3_exception.hpp"
 
 TilemapArea::TilemapArea()
 {

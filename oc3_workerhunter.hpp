@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_WORKERSHUNTER_H_INCLUDE_
 #define __OPENCAESAR3_WORKERSHUNTER_H_INCLUDE_
 
-#include "walker.hpp"
+#include "oc3_walker.hpp"
 
 class WorkersHunter : public ServiceWalker
 {

@@ -23,10 +23,10 @@
 #include <map>
 #include <vector>
 
-#include "picture.hpp"
-#include "gfx_engine.hpp"
-#include "enums.hpp"
-#include "good.hpp"
+#include "oc3_picture.hpp"
+#include "oc3_gfx_engine.hpp"
+#include "oc3_enums.hpp"
+#include "oc3_good.hpp"
 
 
 class PicInfo

@@ -19,9 +19,9 @@
 #ifndef WAREHOUSE_HPP
 #define WAREHOUSE_HPP
 
-#include "building.hpp"
-#include "enums.hpp"
-#include "good.hpp"
+#include "oc3_building.hpp"
+#include "oc3_enums.hpp"
+#include "oc3_good.hpp"
 
 #include <string>
 #include <list>

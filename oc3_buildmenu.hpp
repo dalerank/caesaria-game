@@ -16,10 +16,10 @@
 #ifndef __OPENCAESAR_BUILDMENU_H_INCLUDE_
 #define __OPENCAESAR_BUILDMENU_H_INCLUDE_
 
-#include "oc3_widget.h"
-#include "enums.hpp"
-#include "oc3_signals.h"
-#include "oc3_scopedptr.h"
+#include "oc3_widget.hpp"
+#include "oc3_enums.hpp"
+#include "oc3_signals.hpp"
+#include "oc3_scopedptr.hpp"
 
 class PushButton;
 

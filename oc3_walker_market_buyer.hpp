@@ -19,8 +19,8 @@
 #ifndef WALKER_MARKET_BUYER_HPP
 #define WALKER_MARKET_BUYER_HPP
 
-#include "walker.hpp"
-#include "warehouse.hpp"
+#include "oc3_walker.hpp"
+#include "oc3_warehouse.hpp"
 
 
 /** This is the market lady buying goods at granaries and warehouses */

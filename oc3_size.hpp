@@ -17,7 +17,7 @@
 #ifndef __OPENCAESAR3_SIZE_H_INCLUDED__
 #define __OPENCAESAR3_SIZE_H_INCLUDED__
 
-#include "oc3_vector2.h"
+#include "oc3_vector2.hpp"
 
 class Size : public Vector2<int>
 {

@@ -19,7 +19,7 @@
 #ifndef SERVICE_BUILDING_HPP
 #define SERVICE_BUILDING_HPP
 
-#include "building.hpp"
+#include "oc3_building.hpp"
 
 class Walker;
 class Widget;

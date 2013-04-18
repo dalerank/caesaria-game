@@ -22,11 +22,11 @@
 #include <string>
 #include <list>
 
-#include "oc3_widget.h"
-#include "picture.hpp"
-#include "house.hpp"
-#include "factory_building.hpp"
-#include "service_building.hpp"
+#include "oc3_widget.hpp"
+#include "oc3_picture.hpp"
+#include "oc3_house.hpp"
+#include "oc3_factory_building.hpp"
+#include "oc3_service_building.hpp"
 
 class PushButton;
 class Label;
