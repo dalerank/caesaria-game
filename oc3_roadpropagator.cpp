@@ -56,17 +56,14 @@ bool RoadPropagator::getPath( Tile* destination, std::list< Tile* >& oPathWay )
     }
     
     // propagate on I axis
-    for( int i=startPos.getI();; i+=iStep )
+    for( TilePos tmp( startPos.getI(), stopPos.getJ() ); tmp.getI() <= stopPos.getI(); tmp+=TilePos( 1, 0 ) )
     {
-        Tile* curTile = &_d->tilemap->at( i, stopPos.getJ() );
+        Tile& curTile = _d->tilemap->at( tmp );
          
-        if( curTile->get_terrain().isConstructible() || curTile->get_terrain().isRoad() )
-            oPathWay.push_back( curTile );
+        if( curTile.get_terrain().isConstructible() || curTile.get_terrain().isRoad() )
+            oPathWay.push_back( &curTile );
         else
             return false;
-
-        if( i == stopPos.getI() )
-           break;
     }
 
     // propagate on J axis

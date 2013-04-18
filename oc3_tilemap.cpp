@@ -129,6 +129,8 @@ void TerrainTile::decode(const int bitset)
    }
    if (bitset & 0x400)
    {
+       int i=0;
+       setRock( true );
       //setAccessRamp(true);
    }
    if (bitset & 0x800)
