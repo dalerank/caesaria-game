@@ -28,6 +28,7 @@ public:
     static const char* utilitya;
     static const char* commerce;
     static const char* security;
+    static const char* aqueduct;
 };
 
 class ResourceMenu

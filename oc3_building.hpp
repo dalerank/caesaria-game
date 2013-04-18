@@ -115,6 +115,7 @@ public:
   virtual void build(const TilePos& pos );
   virtual Picture& computePicture();
   virtual void setTerrain(TerrainTile &terrain);
+  bool canBuild(const TilePos& pos ) const;
 };
 
 class Plaza : public Road

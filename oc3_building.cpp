@@ -224,10 +224,11 @@ const std::list<Tile*>& Construction::getAccessRoads() const
 // here the problem lays: if we remove road, it is left in _accessRoads array
 // also we need to recompute _accessRoads if we place new road tile
 // on next to this road tile buildings
-
 void Construction::computeAccessRoads()
 {
   _accessRoads.clear();
+  if( !_master_tile )
+      return;
 
   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
 
@@ -354,16 +355,27 @@ Road* Road::clone() const
 
 void Road::build(const TilePos& pos )
 {
-  Construction::build( pos );
-  setPicture(computePicture());
+    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+    LandOverlay* saveOverlay = tilemap.at( pos ).get_terrain().getOverlay();
+
+    Construction::build( pos );
+    setPicture(computePicture());
+
+    if( Aqueduct* aqua = safety_cast< Aqueduct* >( saveOverlay ) )
+    {
+        aqua->build( pos );
+        return;
+    }
 
   // update adjacent roads
   for (std::list<Tile*>::iterator itTile = _accessRoads.begin(); itTile != _accessRoads.end(); ++itTile)
   {
-    Tile &tile = **itTile;
-    Road &road = (Road&) *tile.get_terrain().getOverlay(); // let's think: may here different type screw up whole program?
-    road.computeAccessRoads();
-    road.setPicture(road.computePicture());
+    Road* road = safety_cast< Road* >( (*itTile)->get_terrain().getOverlay() ); // let's think: may here different type screw up whole program?
+    if( road )
+    {
+        road->computeAccessRoads();
+        road->setPicture(road->computePicture());
+    }
   }
   // NOTE: also we need to update accessRoads for adjacent building
   // how to detect them if MaxDistance2Road can be any
@@ -379,6 +391,25 @@ void Road::build(const TilePos& pos )
     }
   }
 }
+
+bool Road::canBuild(const TilePos& pos ) const
+{
+    bool is_free = Construction::canBuild( pos );
+
+    if( is_free ) 
+        return true; // we try to build on free tile
+
+    // we can place on road
+    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+    TerrainTile& terrain = tilemap.at( pos ).get_terrain();
+
+    // we can't build on plazas, but show that we can
+    if( safety_cast< Aqueduct* >( terrain.getOverlay() ) != 0 )
+        return true;
+
+    return false;
+}
+
 
 void Road::setTerrain(TerrainTile &terrain)
 {
@@ -461,7 +492,6 @@ Picture& Road::computePicture()
    Picture *picture = &PicLoader::instance().get_picture( rcRoadGroup, index);
    return *picture;
 }
-
 
 Building::Building()
 {

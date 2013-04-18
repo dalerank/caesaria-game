@@ -60,7 +60,8 @@ bool RoadPropagator::getPath( Tile* destination, std::list< Tile* >& oPathWay )
     {
         Tile& curTile = _d->tilemap->at( tmp );
          
-        if( curTile.get_terrain().isConstructible() || curTile.get_terrain().isRoad() )
+        if( curTile.get_terrain().isConstructible() || curTile.get_terrain().isRoad() 
+            || curTile.get_terrain().isAqueduct() )
             oPathWay.push_back( &curTile );
         else
             return false;
@@ -71,7 +72,8 @@ bool RoadPropagator::getPath( Tile* destination, std::list< Tile* >& oPathWay )
     {
         Tile* curTile = &_d->tilemap->at( startPos.getI(), j );
 
-        if( curTile->get_terrain().isConstructible() || curTile->get_terrain().isRoad() )
+        if( curTile->get_terrain().isConstructible() || curTile->get_terrain().isRoad() 
+            || curTile->get_terrain().isAqueduct() )
             oPathWay.push_back( curTile );
         else
             return false;

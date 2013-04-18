@@ -21,15 +21,12 @@
 #include "oc3_time.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_resourcegroup.hpp"
-
-namespace {
-  static const char* rcAqueductGroup     = "land2a";
-}
+#include "oc3_safetycast.hpp"
 
 Aqueduct::Aqueduct()
 {
   setType(B_AQUEDUCT);
-  setPicture( PicLoader::instance().get_picture( rcAqueductGroup, 133) ); // default picture for aqueduct
+  setPicture( PicLoader::instance().get_picture( ResourceGroup::aqueduct, 133) ); // default picture for aqueduct
   _size = 1;
   // land2a 119 120         - aqueduct over road
   // land2a 121 122         - aqueduct over plain ground
@@ -47,6 +44,13 @@ Aqueduct* Aqueduct::clone() const
 
 void Aqueduct::build(const TilePos& pos )
 {
+  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  TerrainTile& terrain = tilemap.at( pos ).get_terrain();
+
+  // we can't build on plazas
+  if( dynamic_cast<Aqueduct*>( terrain.getOverlay() ) != 0 )
+        return;
+
   Construction::build( pos );
   
   updateAqueducts(); // need to rewrite as computeAccessRoads()
@@ -91,17 +95,23 @@ bool Aqueduct::canBuild( const TilePos& pos ) const
 {
   bool is_free = Construction::canBuild( pos );
   
-  if (is_free) return true; // we try to build on free tile
+  if( is_free ) 
+      return true; // we try to build on free tile
   
   // we can place on road
   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  TerrainTile& terrain = tilemap.at( pos ).get_terrain();
 
   // we can't build on plazas
-  if (dynamic_cast<Plaza*>(tilemap.at( pos ).get_terrain().getOverlay()) != NULL)
-    return false;
+  if( dynamic_cast<Plaza*>( terrain.getOverlay() ) != NULL)
+      return false;
+
+  // we can show that will build over other aqueduct
+  if( safety_cast< Aqueduct* >( terrain.getOverlay() ) != NULL )
+      return true;
 
   // and we can't build on intersections
-  if (tilemap.at( pos ).get_terrain().isRoad())
+  if ( terrain.isRoad())
   {
     int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
     if (tilemap.at( pos + TilePos( 0, 1 ) ).get_terrain().isRoad()) { directionFlags += 1; } // road to the north
@@ -175,9 +185,13 @@ Picture& Aqueduct::computePicture()
      index = 121; // it's impossible, but ...
    }   
    
-   return PicLoader::instance().get_picture( rcAqueductGroup, index);
+   return PicLoader::instance().get_picture( ResourceGroup::aqueduct, index);
 }
 
+void Aqueduct::updatePicture()
+{
+    setPicture(computePicture());
+}
 
 Reservoir::Reservoir()
 {
