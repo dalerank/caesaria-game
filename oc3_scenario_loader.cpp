@@ -50,6 +50,7 @@ namespace {
   const int kGraphicGrid = 0x0;
   const int kEdgeGrid    = 0xcd08;
   const int kTerrainGrid = 0x1338c;
+  const int kRndmTerGrid = 0x20094;
   const int kRandomGrid  = 0x26718;
   const int kZeroGrid    = 0x2cd9c;
   const int kCamera      = 0x33428;
@@ -156,6 +157,22 @@ void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
 
    oTilemap.init(size);
 
+   // here also make copy of original arrays in memory
+   
+   f.seekg(kGraphicGrid, std::ios::beg);
+   f.read((char*)oCity.pGraphicGrid, 52488);
+   f.seekg(kEdgeGrid, std::ios::beg);
+   f.read((char*)oCity.pEdgeGrid, 26244);
+   f.seekg(kTerrainGrid, std::ios::beg);
+   f.read((char*)oCity.pTerrainGrid, 52488);
+   f.seekg(kRndmTerGrid, std::ios::beg);
+   f.read((char*)oCity.pRndmTerGrid, 26244);
+   f.seekg(kRandomGrid, std::ios::beg);
+   f.read((char*)oCity.pRandomGrid, 26244);
+   f.seekg(kZeroGrid, std::ios::beg);
+   f.read((char*)oCity.pZeroGrid, 26244);
+   
+   
    // loads the graphics map
    int border_size = (162 - size) / 2;
    

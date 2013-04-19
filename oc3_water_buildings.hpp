@@ -18,12 +18,20 @@
 
 #include "oc3_building.hpp"
 
+class WaterSource;
+class Aqueduct;
+class Reservoir;
+
 class WaterSource
 {
 public:
+  WaterSource() {_north = NULL; _east = NULL; _south = NULL; _west = NULL;}
+  
   virtual void updateAqueducts() = 0;
-protected:
-  WaterSource *_north, *_east, *_south, *_west;
+  virtual void link(Aqueduct&) = 0;
+  virtual void link(Reservoir&) = 0;
+
+  WaterSource *_north, *_east, *_south, *_west; // public is bad...
 };
 
 class Aqueduct : public Construction, public WaterSource
@@ -38,6 +46,8 @@ public:
   virtual bool canBuild(const TilePos& pos ) const;
   void updateAqueducts();
   void updatePicture();
+  virtual void link(Aqueduct&);
+  virtual void link(Reservoir&);
 };
 
 
@@ -53,6 +63,8 @@ public:
   void setTerrain(TerrainTile &terrain);
   void timeStep(const unsigned long time);
   void updateAqueducts();
+  virtual void link(Aqueduct&);
+  virtual void link(Reservoir&);
 private:
   bool _mayAnimate;
 };

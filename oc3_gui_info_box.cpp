@@ -21,6 +21,8 @@
 
 #include <SDL.h>
 #include <iostream>
+#include <iomanip>
+#include <boost/format.hpp>
 
 #include "oc3_exception.hpp"
 #include "oc3_pic_loader.hpp"
@@ -33,6 +35,8 @@
 #include "oc3_event.hpp"
 #include "oc3_pushbutton.hpp"
 #include "oc3_label.hpp"
+#include "oc3_city.hpp"
+#include "oc3_scenario.hpp"
 
 class InfoBoxHelper
 {
@@ -663,6 +667,27 @@ InfoBoxLand::InfoBoxLand( Widget* parent, Tile* tile )
         _text->setText( _("##clear_land_text"));
     }
 
+    // DEBUG OUTPUT
+    
+    City& oCity = Scenario::instance().getCity();
+    Tilemap& oTilemap = Scenario::instance().getCity().getTilemap();
+    int size = oTilemap.getSize();
+    int border_size = (162 - size) / 2;
+    
+    std::stringstream ss;
+
+    int index = (size - tile->getJ() - 1 + border_size) * 162 + tile->getI() + border_size;
+    
+    ss << "Tile at: (" << tile->getI() << "," << tile->getJ() << ")" << " "  
+        << boost::format("%04X") % ((short int) oCity.pGraphicGrid[index]) << " "  
+        << boost::format("%02X") % ((short int) oCity.pEdgeGrid[index]) << " "  
+        << boost::format("%04X") % ((short int) oCity.pTerrainGrid[index]) << " "  
+        << boost::format("%02X") % ((short int) oCity.pRndmTerGrid[index]) << " "  
+        << boost::format("%02X") % ((short int) oCity.pRandomGrid[index]) << " "  
+        << boost::format("%02X") % ((short int) oCity.pZeroGrid[index]) << std::endl ;
+    
+    _text->setText(ss.str());
+    
     GuiPaneling::instance().draw_black_frame( *_d->bgPicture, 16, _d->lbTitle->getBottom() + 10, getWidth()-32, 180 );
 }
 

@@ -56,6 +56,17 @@ City::City() : _d( new Impl )
    _d->population = 0;
    _taxRate = 700;
    _climate = C_CENTRAL;
+   
+   // DEBUG
+   pGraphicGrid = (short int     *)malloc(52488);
+   pEdgeGrid    = (unsigned char *)malloc(26244);
+   pTerrainGrid = (short int     *)malloc(52488);
+   pRndmTerGrid = (unsigned char *)malloc(26244);
+   pRandomGrid  = (unsigned char *)malloc(26244);
+   pZeroGrid    = (unsigned char *)malloc(26244);
+   if ( pGraphicGrid == NULL || pEdgeGrid == NULL || pTerrainGrid == NULL ||
+     pRndmTerGrid == NULL || pRandomGrid == NULL || pZeroGrid == NULL )
+     THROW("NOT ENOUGH MEMORY!!!! FATAL");
 }
 
 void City::timeStep()
