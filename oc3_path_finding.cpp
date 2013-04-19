@@ -15,8 +15,6 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
-
 #include "oc3_path_finding.hpp"
 
 #include "oc3_tilemap.hpp"
@@ -378,6 +376,15 @@ void PathWay::unserialize(InputSerialStream &stream)
    std::advance(_directionIt, off);
 }
 
+void PathWay::addRelativeStep( const TilePos& pos )
+{
+    TilePos savePos( _destinationI, _destinationJ );
+    _destinationI += pos.getI();
+    _destinationJ += pos.getJ();
+
+    setNextTile( _tilemap->at( savePos ) );
+}
+
 Propagator::Propagator()
 {
    _city = &Scenario::instance().getCity();
@@ -448,7 +455,7 @@ void Propagator::propagate(const int maxDistance)
    while (!_activeBranches.empty())
    {
       // while there are active paths
-      if ((nbLoops++)>100000) THROW("Infinite loop detected during propagation");
+      if ((nbLoops++)>10000) THROW("Infinite loop detected during propagation");
 
       // get the shortest active path
       firstBranch = _activeBranches.begin();
@@ -568,7 +575,6 @@ bool Propagator::getPath(Building& destination, PathWay &oPathWay)
    }
 }
 
-
 void Propagator::getReachedBuildings(const BuildingType buildingType, std::map<Building*, PathWay> &oPathWayList)
 {
    // init the building list
@@ -614,7 +620,6 @@ void Propagator::getReachedBuildings(const BuildingType buildingType, std::map<B
    }
 
 }
-
 
 void Propagator::getAllPaths(const int maxDistance, std::list<PathWay> &oPathWayList)
 {
@@ -699,3 +704,23 @@ void Propagator::getAllPaths(const int maxDistance, std::list<PathWay> &oPathWay
    }
 }
 
+bool Propagator::getPathEx( Building &destination, PathWay &oPathWay, bool addLastSteps )
+{
+    bool ret = getPath( destination, oPathWay );
+
+    if( ret && addLastSteps )
+    {
+        TilePos lastStep = oPathWay.getDestination().getIJ();
+        TilePos housePos = destination.getTile().getIJ();               
+        while( lastStep != housePos )
+        {
+            TilePos offset( housePos.getI() == lastStep.getI() ? 0 : ( housePos.getI() - lastStep.getI() < 0 ? -1 : 1 ),
+                housePos.getJ() == lastStep.getJ() ? 0 : ( housePos.getJ() - lastStep.getJ() < 0 ? -1 : 1 ) );
+
+            lastStep += offset;
+            oPathWay.addRelativeStep( -offset );
+        }
+    }
+
+    return ret;
+}

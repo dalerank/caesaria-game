@@ -46,6 +46,7 @@ public:
 
    void setNextDirection(const DirectionType direction);
    void setNextTile(Tile &tile);
+   void addRelativeStep( const TilePos& pos );
    bool contains(Tile &tile);
    std::list<Tile*>& getAllTiles();
 
@@ -93,6 +94,7 @@ public:
     */
    bool getPath(Road &destination, PathWay &oPathWay);
    bool getPath(Building &destination, PathWay &oPathWay);
+   bool getPathEx(Building &destination, PathWay &oPathWay, bool addLastSteps );
 
    /** returns all paths starting at origin */
    void getAllPaths(const int maxDistance, std::list<PathWay> &oPathWayList);
