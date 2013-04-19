@@ -101,9 +101,9 @@ void Emigrant::assignPath( const Road& startPoint )
 	pathfinder.init( const_cast< Road& >( startPoint ) );
     if( blankHouse )
     {
-	    bool findPath = pathfinder.getPath( *blankHouse, pathWay );
+	    bool findPath = pathfinder.getPathEx( *blankHouse, pathWay, true );
 	    if( findPath )
-	    {
+	    {        
 		    setPathWay( pathWay );
 		    setIJ(_pathWay.getOrigin().getI(), _pathWay.getOrigin().getJ());   
 	    }

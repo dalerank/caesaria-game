@@ -49,9 +49,9 @@ public:
    int getJ() const;
    int getII() const;
    int getJJ() const;
-   void setIJ(const int i, const int j);
+   void setIJ( const int i, const int j);
    void setPathWay(PathWay &pathWay);
-   void setDestinationIJ(const int i, const int j);
+   void setDestinationIJ( const int i, const int j );
    void setSpeed(const int speed);
    virtual void onNewTile();  // called when the walker is on a new tile
    virtual void onMidTile();  // called when the walker is on the middle of a tile
