@@ -26,39 +26,40 @@
 class RoadPropagator::Impl
 {
 public:
-    Tilemap* tilemap;
-    Tile* startTile;
+    const Tilemap& tilemap;
+    const Tile& startTile;
 
     int mapSize;
+
+    Impl( const Tilemap& tmap, const Tile& start ) : tilemap(tmap), startTile(start)
+    {
+
+    }
 };
 
-RoadPropagator::RoadPropagator( Tilemap& tileMap, Tile* startTile ) : _d( new Impl )
+RoadPropagator::RoadPropagator( const Tilemap& tileMap, const Tile& startTile ) 
+    : _d( new Impl( tileMap, startTile ) )
 {
-    _d->tilemap = &tileMap;
-    _d->startTile = startTile;
     _d->mapSize = tileMap.getSize();
 }
 
-bool RoadPropagator::getPath( Tile* destination, std::list< Tile* >& oPathWay )
+bool RoadPropagator::getPath( const Tile& destination, ConstWayOnTiles& oPathWay ) const
 {
-    if( !_d->startTile || !destination )    
-        return false;
-
-    TilePos startPos = _d->startTile->getIJ();
-    TilePos stopPos = destination->getIJ();
+    TilePos startPos = _d->startTile.getIJ();
+    TilePos stopPos = destination.getIJ();
     int iStep = startPos.getI() < stopPos.getI() ? 1 : -1;
     int jStep = startPos.getJ() < stopPos.getJ() ? 1 : -1;
 
     if( startPos == stopPos )
     {
-        oPathWay.push_back( _d->startTile );
+        oPathWay.push_back( &_d->startTile );
         return true;
     }
     
     // propagate on I axis
     for( TilePos tmp( startPos.getI(), stopPos.getJ() ); tmp.getI() <= stopPos.getI(); tmp+=TilePos( 1, 0 ) )
     {
-        Tile& curTile = _d->tilemap->at( tmp );
+        const Tile& curTile = _d->tilemap.at( tmp );
          
         if( curTile.get_terrain().isConstructible() || curTile.get_terrain().isRoad() 
             || curTile.get_terrain().isAqueduct() )
@@ -70,11 +71,11 @@ bool RoadPropagator::getPath( Tile* destination, std::list< Tile* >& oPathWay )
     // propagate on J axis
     for( int j=startPos.getJ();; j+=jStep )
     {
-        Tile* curTile = &_d->tilemap->at( startPos.getI(), j );
+        const Tile& curTile = _d->tilemap.at( startPos.getI(), j );
 
-        if( curTile->get_terrain().isConstructible() || curTile->get_terrain().isRoad() 
-            || curTile->get_terrain().isAqueduct() )
-            oPathWay.push_back( curTile );
+        if( curTile.get_terrain().isConstructible() || curTile.get_terrain().isRoad() 
+            || curTile.get_terrain().isAqueduct() )
+            oPathWay.push_back( &curTile );
         else
             return false;
 

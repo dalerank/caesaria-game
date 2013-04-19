@@ -29,12 +29,14 @@
 #include "oc3_roadpropagator.hpp"
 #include "oc3_sdl_facade.hpp"
 #include "oc3_tilemapchangecommand.hpp"
+#include "oc3_tilemap.hpp"
 
 class GuiTilemap::Impl
 {
 public:
   typedef std::vector< Picture* > Pictures;
-  Tiles postTiles;  // these tiles have draw over "normal" tilemap tiles!
+  
+  PtrTilesList postTiles;  // these tiles have draw over "normal" tilemap tiles!
   Pictures previewToolPictures;
   Point lastCursorPos;
   Point startCursorPos;
@@ -218,7 +220,7 @@ void GuiTilemap::drawTilemap()
 
    //Third part: drawing build/remove tools
     {
-        for( Tiles::iterator itPostTile = _d->postTiles.begin(); itPostTile != _d->postTiles.end(); ++itPostTile )
+        for( PtrTilesList::iterator itPostTile = _d->postTiles.begin(); itPostTile != _d->postTiles.end(); ++itPostTile )
         {
             int z = (*itPostTile)->getJ() - (*itPostTile)->getI();
 		    drawTileEx( **itPostTile, z );
@@ -279,13 +281,13 @@ void GuiTilemap::updatePreviewTiles( bool force )
         Tile* startTile = getTileXY( _d->startCursorPos, true );  // tile under the cursor (or NULL)
         Tile* stopTile = getTileXY( _d->lastCursorPos, true );
 
-        RoadPropagator rp( *_tilemap, startTile );
+        RoadPropagator rp( *_tilemap, *startTile );
 
-        Tiles pathWay;
-        bool havepath = rp.getPath( stopTile, pathWay );
+        ConstWayOnTiles pathWay;
+        bool havepath = rp.getPath( *stopTile, pathWay );
         if( havepath )
         {
-            for( Tiles::iterator it=pathWay.begin(); it != pathWay.end(); it++ )
+            for( ConstWayOnTiles::iterator it=pathWay.begin(); it != pathWay.end(); it++ )
             {
                 checkPreviewBuild( (*it)->getIJ() );
             }
@@ -336,7 +338,7 @@ void GuiTilemap::_clearLand()
 
 void GuiTilemap::_buildAll()
 {
-    for( Tiles::iterator it=_d->postTiles.begin(); it != _d->postTiles.end(); it++ )
+    for( PtrTilesList::iterator it=_d->postTiles.begin(); it != _d->postTiles.end(); it++ )
     {
         Construction* cnstr = _d->changeCommand.getContruction();
         if( cnstr && cnstr->canBuild( (*it)->getIJ() ))
@@ -458,7 +460,7 @@ void GuiTilemap::discardPreview()
 
     _d->previewToolPictures.clear();
 
-    for( Tiles::iterator it=_d->postTiles.begin(); it != _d->postTiles.end(); it++ )
+    for( PtrTilesList::iterator it=_d->postTiles.begin(); it != _d->postTiles.end(); it++ )
     {
          delete *it;
     }
