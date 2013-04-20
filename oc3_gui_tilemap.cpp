@@ -228,14 +228,14 @@ void GuiTilemap::drawTilemap()
 
 Tile* GuiTilemap::getTileXY(const int x, const int y, bool overborder)
 {
-   int dx = x-_tilemap_xoffset;  // x relative to the left most pixel of the tilemap
-   int dy = y-_tilemap_yoffset;  // y relative to the left most pixel of the tilemap
-   int i = (dx+2*dy)/60;
-   int j = (dx-2*dy)/60;
+   int dx = x - _tilemap_xoffset;  // x relative to the left most pixel of the tilemap
+   int dy = y - _tilemap_yoffset;  // y relative to the left most pixel of the tilemap
+   int i = (dx + 2 * dy) / 60;
+   int j = (dx - 2 * dy) / 60;
    if( overborder )
    {
-       i = math::clamp( i, 0, _tilemap->getSize()-1 );
-       j = math::clamp( j, 0, _tilemap->getSize()-1 );
+       i = math::clamp( i, 0, _tilemap->getSize() - 1 );
+       j = math::clamp( j, 0, _tilemap->getSize() - 1 );
    }
    // std::cout << "ij ("<<i<<","<<j<<")"<<std::endl;
 
@@ -310,44 +310,45 @@ void GuiTilemap::updatePreviewTiles( bool force )
 void GuiTilemap::_getSelectedArea( TilePos& outStartPos, TilePos& outStopPos )
 {
     Tile* startTile = getTileXY( _d->startCursorPos, true );  // tile under the cursor (or NULL)
-    Tile* stopTile = getTileXY( _d->lastCursorPos, true );
+    Tile* stopTile  = getTileXY( _d->lastCursorPos, true );
 
     TilePos startPosTmp = startTile->getIJ();
-    TilePos stopPosTmp = stopTile->getIJ();
+    TilePos stopPosTmp  = stopTile->getIJ();
 
+    std::cout << "GuiTilemap::_getSelectedArea" << " ";
+    std::cout << "(" << startPosTmp.getI() << " " << startPosTmp.getJ() << ") (" << stopPosTmp.getI() << " " << stopPosTmp.getJ() << ")" << std::endl;
+    
     outStartPos = TilePos( std::min<int>( startPosTmp.getI(), stopPosTmp.getI() ), std::min<int>( startPosTmp.getJ(), stopPosTmp.getJ() ) );
-    outStopPos = TilePos( std::max<int>( startPosTmp.getI(), stopPosTmp.getI() ), std::max<int>( startPosTmp.getJ(), stopPosTmp.getJ() ) );
+    outStopPos  = TilePos( std::max<int>( startPosTmp.getI(), stopPosTmp.getI() ), std::max<int>( startPosTmp.getJ(), stopPosTmp.getJ() ) );
 }
 
 void GuiTilemap::_clearLand()
 {
-    TilePos startPos, stopPos;
-    _getSelectedArea( startPos, stopPos );
+  TilePos startPos, stopPos;
+  _getSelectedArea( startPos, stopPos );
+  int i, j;
 
-    TilePos pnt = startPos;
-    for( ; pnt.getI() <= stopPos.getI(); pnt+=TilePos( 1, 0 ) )
+  for (i = startPos.getI(); i <= stopPos.getI(); i++) 
+  {
+    for (j = startPos.getJ(); j <= stopPos.getJ(); j++ )
     {
-        for( ; pnt.getJ() <= stopPos.getJ(); pnt += TilePos( 0, 1 ) )
-        {
-             _city->clearLand( pnt );
-        }   
-    }
+      std::cout << "(" << i << " " << j << ") ";
+      _city->clearLand( TilePos(i,j) );
+    }   
+  }
+  std::cout << std::endl;
 }
 
-
-//buggy function!!!
 void GuiTilemap::_buildAll()
 {
   for( Tiles::iterator it=_d->postTiles.begin(); it != _d->postTiles.end(); it++ )
   {
-    std::cout << "(" << (*it)->getI() << " " << (*it)->getJ() << ") " ;   
     Construction* cnstr = _d->changeCommand.getContruction();
     if( cnstr && cnstr->canBuild( (*it)->getIJ() ) && (*it)->is_master_tile())
     {
       _city->build( *cnstr, (*it)->getIJ() );
     }
   }
-  std::cout << std::endl;
 }
 
 void GuiTilemap::handleEvent( NEvent& event )
