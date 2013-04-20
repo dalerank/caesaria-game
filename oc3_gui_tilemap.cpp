@@ -309,17 +309,17 @@ void GuiTilemap::updatePreviewTiles( bool force )
 
 void GuiTilemap::_getSelectedArea( TilePos& outStartPos, TilePos& outStopPos )
 {
-    Tile* startTile = getTileXY( _d->startCursorPos, true );  // tile under the cursor (or NULL)
-    Tile* stopTile  = getTileXY( _d->lastCursorPos, true );
+  Tile* startTile = getTileXY( _d->startCursorPos, true );  // tile under the cursor (or NULL)
+  Tile* stopTile  = getTileXY( _d->lastCursorPos, true );
 
-    TilePos startPosTmp = startTile->getIJ();
-    TilePos stopPosTmp  = stopTile->getIJ();
+  TilePos startPosTmp = startTile->getIJ();
+  TilePos stopPosTmp  = stopTile->getIJ();
 
-    std::cout << "GuiTilemap::_getSelectedArea" << " ";
-    std::cout << "(" << startPosTmp.getI() << " " << startPosTmp.getJ() << ") (" << stopPosTmp.getI() << " " << stopPosTmp.getJ() << ")" << std::endl;
+//  std::cout << "GuiTilemap::_getSelectedArea" << " ";
+//  std::cout << "(" << startPosTmp.getI() << " " << startPosTmp.getJ() << ") (" << stopPosTmp.getI() << " " << stopPosTmp.getJ() << ")" << std::endl;
     
-    outStartPos = TilePos( std::min<int>( startPosTmp.getI(), stopPosTmp.getI() ), std::min<int>( startPosTmp.getJ(), stopPosTmp.getJ() ) );
-    outStopPos  = TilePos( std::max<int>( startPosTmp.getI(), stopPosTmp.getI() ), std::max<int>( startPosTmp.getJ(), stopPosTmp.getJ() ) );
+  outStartPos = TilePos( std::min<int>( startPosTmp.getI(), stopPosTmp.getI() ), std::min<int>( startPosTmp.getJ(), stopPosTmp.getJ() ) );
+  outStopPos  = TilePos( std::max<int>( startPosTmp.getI(), stopPosTmp.getI() ), std::max<int>( startPosTmp.getJ(), stopPosTmp.getJ() ) );
 }
 
 void GuiTilemap::_clearLand()
@@ -332,11 +332,11 @@ void GuiTilemap::_clearLand()
   {
     for (j = startPos.getJ(); j <= stopPos.getJ(); j++ )
     {
-      std::cout << "(" << i << " " << j << ") ";
+//      std::cout << "(" << i << " " << j << ") ";
       _city->clearLand( TilePos(i,j) );
     }   
   }
-  std::cout << std::endl;
+//  std::cout << std::endl;
 }
 
 void GuiTilemap::_buildAll()

@@ -131,19 +131,18 @@ void Reservoir::link(Reservoir& target)
 
 void Aqueduct::updateAqueducts()
 {
-  // TEMPORARY!!!!
-  // find adjacent aqueducts
   int i = getTile().getI();
   int j = getTile().getJ();
-  WaterSource* __west   = dynamic_cast<WaterSource*>(Scenario::instance().getCity().getTilemap().at(i - 1, j).get_terrain().getOverlay());
-  WaterSource* __south  = dynamic_cast<WaterSource*>(Scenario::instance().getCity().getTilemap().at(i, j - 1).get_terrain().getOverlay());
-  WaterSource* __east   = dynamic_cast<WaterSource*>(Scenario::instance().getCity().getTilemap().at(i + 1, j).get_terrain().getOverlay());
-  WaterSource* __north  = dynamic_cast<WaterSource*>(Scenario::instance().getCity().getTilemap().at(i, j + 1).get_terrain().getOverlay());
   
-  if (__south != NULL) __south->link(*this);
-  if (__west  != NULL) __west->link(*this);
-  if (__north != NULL) __north->link(*this);
-  if (__east  != NULL) __east->link(*this);
+  std::list<Tile*> rect = Scenario::instance().getCity().getTilemap().getRectangle( TilePos( i - 1, j - 1),
+                                                TilePos( i + 1, j + 1), 
+                                                !Tilemap::checkCorners );
+  for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+  {
+    Tile* tile = *itTiles;
+    WaterSource* ws = dynamic_cast<WaterSource*>(tile->get_terrain().getOverlay());
+    if (ws != NULL) ws->link(*this);
+  }  
   
   setPicture(computePicture());
 }
