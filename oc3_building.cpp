@@ -767,9 +767,9 @@ Granary::Granary()
 
    _goodStore.setCurrentQty(G_WHEAT, 300);
 
-   _animation.load(ResourceGroup::commerce, 146, 7);
+   _animation.load(ResourceGroup::commerce, 146, 7, Animation::straight);
    // do the animation in reverse
-   _animation.load(ResourceGroup::commerce, 151, 6);
+   _animation.load(ResourceGroup::commerce, 151, 6, Animation::reverse);
    PicLoader& ldr = PicLoader::instance();
 
    _fgPictures[0] = &ldr.get_picture( ResourceGroup::commerce, 141);
