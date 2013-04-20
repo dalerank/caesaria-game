@@ -340,68 +340,67 @@ void City::disaster( const TilePos& pos, DisasterType type )
 
 void City::clearLand(const TilePos& pos  )
 {
-  std::cout << "City::clearLand" << std::endl;
   Tile& cursorTile = _tilemap.at( pos );
   TerrainTile& terrain = cursorTile.get_terrain();
 
-   if( terrain.isDestructible() )
-   {
-      int size = 1;
-      TilePos rPos = pos;
+  if( terrain.isDestructible() )
+  {
+    int size = 1;
+    TilePos rPos = pos;
 
-      LandOverlay* overlay = terrain.getOverlay();
+    LandOverlay* overlay = terrain.getOverlay();
       
-      bool deleteRoad = false;
+    bool deleteRoad = false;
 
-      if (terrain.isRoad()) deleteRoad = true;
+    if (terrain.isRoad()) deleteRoad = true;
       
-      if (overlay != NULL)
+    if (overlay != NULL)	
+    {
+      size = overlay->getSize();
+      rPos = overlay->getTile().getIJ();
+      overlay->destroy();
+      _overlayList.remove(overlay);
+      delete overlay;
+    }
+
+    std::list<Tile*> clearedTiles = _tilemap.getFilledRectangle( rPos, Size( size - 1 ) );
+    for (std::list<Tile*>::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
+    {
+      Tile &tile = **itTile;
+      tile.set_master_tile(NULL);
+      TerrainTile &terrain = tile.get_terrain();
+      terrain.setTree(false);
+      terrain.setBuilding(false);
+      terrain.setRoad(false);
+      terrain.setGarden(false);
+      terrain.setOverlay(NULL);
+
+      // choose a random landscape picture:
+      // flat land1a 2-9;
+      // wheat: land1a 18-29;
+      // green_something: land1a 62-119;  => 58
+      // green_flat: land1a 232-289; => 58
+
+      // choose a random background image, green_something 62-119 or green_flat 232-240
+      std::string res_pfx = "land1a";
+      int res_id = 0;
+      if (rand() % 10 > 6)
       {
-         size = overlay->getSize();
-         rPos = overlay->getTile().getIJ();
-         overlay->destroy();
-         _overlayList.remove(overlay);
-         delete overlay;
+	// 30% => choose green_sth 62-119
+        res_id = 62 + rand() % (119 - 62 + 1);
       }
-
-      std::list<Tile*> clearedTiles = _tilemap.getFilledRectangle( rPos, Size( size ) );
-      for (std::list<Tile*>::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
+      else
       {
-         Tile &tile = **itTile;
-         tile.set_master_tile(NULL);
-         TerrainTile &terrain = tile.get_terrain();
-         terrain.setTree(false);
-         terrain.setBuilding(false);
-         terrain.setRoad(false);
-         terrain.setGarden(false);
-         terrain.setOverlay(NULL);
-
-         // choose a random landscape picture:
-         // flat land1a 2-9;
-         // wheat: land1a 18-29;
-         // green_something: land1a 62-119;  => 58
-         // green_flat: land1a 232-289; => 58
-
-         // choose a random background image, green_something 62-119 or green_flat 232-240
-         std::string res_pfx = "land1a";
-         int res_id = 0;
-         if (rand() % 10 > 6)
-         {
-            // 30% => choose green_sth 62-119
-            res_id = 62 + rand() % (119 - 62 + 1);
-         }
-         else
-         {
-            // 70% => choose green_flat 232-289
-            res_id = 232 + rand() % (289 - 232 + 1);
-         }
-         // FIX: when delete building on meadow, meadow is replaced by common land tile
-         if (terrain.isMeadow())
-         {
-           res_id = 18 + rand() % (29 - 18 + 1);
-         }
-         tile.set_picture(&PicLoader::instance().get_picture(res_pfx, res_id));
+	// 70% => choose green_flat 232-289
+	res_id = 232 + rand() % (289 - 232 + 1);
       }
+      // FIX: when delete building on meadow, meadow is replaced by common land tile
+      if (terrain.isMeadow())
+      {
+	res_id = 18 + rand() % (29 - 18 + 1);
+      }
+      tile.set_picture(&PicLoader::instance().get_picture(res_pfx, res_id));
+    }
       
     // recompute roads;
     // there is problem that we NEED to recompute all roads map for all buildings
@@ -409,7 +408,7 @@ void City::clearLand(const TilePos& pos  )
     
     if( deleteRoad )
     {
-        recomputeRoadsForAll();     
+      recomputeRoadsForAll();     
     }
   }
 }
