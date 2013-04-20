@@ -18,6 +18,7 @@
 
 #include <set>
 #include <map>
+#include <iostream>
 
 #include "oc3_exception.hpp"
 #include "oc3_tilemap.hpp"
@@ -41,48 +42,56 @@ RoadPropagator::RoadPropagator( Tilemap& tileMap, Tile* startTile ) : _d( new Im
 
 bool RoadPropagator::getPath( Tile* destination, std::list< Tile* >& oPathWay )
 {
-    if( !_d->startTile || !destination )    
-        return false;
+  if( !_d->startTile || !destination )    
+    return false;
 
-    TilePos startPos = _d->startTile->getIJ();
-    TilePos stopPos = destination->getIJ();
-    int iStep = startPos.getI() < stopPos.getI() ? 1 : -1;
-    int jStep = startPos.getJ() < stopPos.getJ() ? 1 : -1;
+  TilePos startPos = _d->startTile->getIJ();
+  TilePos stopPos  = destination->getIJ();
+  int iStep = (startPos.getI() < stopPos.getI()) ? 1 : -1;
+  int jStep = (startPos.getJ() < stopPos.getJ()) ? 1 : -1;
 
-    if( startPos == stopPos )
-    {
-        oPathWay.push_back( _d->startTile );
-        return true;
-    }
-    
-    // propagate on I axis
-    for( TilePos tmp( startPos.getI(), stopPos.getJ() ); tmp.getI() <= stopPos.getI(); tmp+=TilePos( 1, 0 ) )
-    {
-        Tile& curTile = _d->tilemap->at( tmp );
-         
-        if( curTile.get_terrain().isConstructible() || curTile.get_terrain().isRoad() 
-            || curTile.get_terrain().isAqueduct() )
-            oPathWay.push_back( &curTile );
-        else
-            return false;
-    }
+//  std::cout << "RoadPropagator::getPath" << std::endl;
 
-    // propagate on J axis
-    for( int j=startPos.getJ();; j+=jStep )
-    {
-        Tile* curTile = &_d->tilemap->at( startPos.getI(), j );
-
-        if( curTile->get_terrain().isConstructible() || curTile->get_terrain().isRoad() 
-            || curTile->get_terrain().isAqueduct() )
-            oPathWay.push_back( curTile );
-        else
-            return false;
-
-        if( j == stopPos.getJ() )
-           break;
-    }
-
+//  std::cout << "(" << startPos.getI() << " " << startPos.getJ() << ") (" << stopPos.getI() << " " << stopPos.getJ() << ")" << std::endl;
+  
+  if( startPos == stopPos )
+  {
+    oPathWay.push_back( _d->startTile );
     return true;
+  }
+    
+  // propagate on I axis
+//  std::cout << "i axis" << std::endl;
+  for( TilePos tmp( startPos.getI(), stopPos.getJ() ); ; tmp+=TilePos( iStep, 0 ) )
+  {
+    Tile& curTile = _d->tilemap->at( tmp );
+         
+    if( curTile.get_terrain().isConstructible() || curTile.get_terrain().isRoad() 
+	|| curTile.get_terrain().isAqueduct() )
+      oPathWay.push_back( &curTile );
+    else
+      return false;
+    if (tmp.getI() == stopPos.getI())
+      break;
+  }
+
+  // propagate on J axis
+//  std::cout << "j axis" << std::endl;
+  for( int j=startPos.getJ();; j+=jStep )
+  {
+    Tile* curTile = &_d->tilemap->at( startPos.getI(), j );
+
+    if( curTile->get_terrain().isConstructible() || curTile->get_terrain().isRoad() 
+	|| curTile->get_terrain().isAqueduct() )
+      oPathWay.push_back( curTile );
+    else
+      return false;
+
+    if( j == stopPos.getJ() )
+      break;
+  }
+
+  return true;
 }
 
 RoadPropagator::~RoadPropagator()

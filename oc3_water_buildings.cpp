@@ -97,8 +97,6 @@ void Aqueduct::link(Reservoir& target)
 void Aqueduct::destroy()
 {
   std::cout << "aqueduct::destroy()" << std::endl;
-  int i = getTile().getI();
-  int j = getTile().getJ();
   
   // update adjacent aqueducts
 
@@ -191,22 +189,35 @@ bool Aqueduct::canBuild( const TilePos& pos ) const
   if( dynamic_cast<Plaza*>( terrain.getOverlay() ) != NULL)
       return false;
 
-  // we can show that will build over other aqueduct
+  // we can show that won't build over other aqueduct
   if( safety_cast< Aqueduct* >( terrain.getOverlay() ) != NULL )
-      return true;
+      return false;
 
+  // also we can't build if next tile is road + aqueduct
+  if ( terrain.isRoad() )
+  {
+    std::list<Tile*> rect = Scenario::instance().getCity().getTilemap().getRectangle( pos + TilePos (-1, -1),
+                                                pos + TilePos (1, 1), 
+                                                !Tilemap::checkCorners );
+    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+    {
+      Tile* tile = *itTiles;
+      if (tile->get_terrain().isRoad() && tile->get_terrain().isAqueduct())
+	return false;
+    }    
+  }
+  
   // and we can't build on intersections
-  if ( terrain.isRoad())
+  if ( terrain.isRoad() )
   {
     int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
-    if (tilemap.at( pos + TilePos( 0, 1 ) ).get_terrain().isRoad()) { directionFlags += 1; } // road to the north
-    if (tilemap.at( pos + TilePos( 0, -1 ) ).get_terrain().isRoad()) { directionFlags += 4; } // road to the south
-    if (tilemap.at( pos + TilePos( 1, 0 ) ).get_terrain().isRoad()) { directionFlags += 2; } // road to the east
-    if (tilemap.at( pos + TilePos( -1, 0) ).get_terrain().isRoad()) { directionFlags += 8; } // road to the west
+    if (tilemap.at( pos + TilePos(  0,  1 ) ).get_terrain().isRoad()) { directionFlags += 1; } // road to the north
+    if (tilemap.at( pos + TilePos(  0, -1 ) ).get_terrain().isRoad()) { directionFlags += 4; } // road to the south
+    if (tilemap.at( pos + TilePos(  1,  0 ) ).get_terrain().isRoad()) { directionFlags += 2; } // road to the east
+    if (tilemap.at( pos + TilePos( -1,  0 ) ).get_terrain().isRoad()) { directionFlags += 8; } // road to the west
 
     std::cout << "direction flags=" << directionFlags << std::endl;
    
-    int index;
     switch (directionFlags)
     {
     case 0:  // no road!
@@ -225,9 +236,7 @@ bool Aqueduct::canBuild( const TilePos& pos ) const
 Picture& Aqueduct::computePicture()
 {
   // find correct picture as for roads
-   int i = getTile().getI();
-   int j = getTile().getJ();
-   
+  
    int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
    
    if (_north != NULL) { directionFlags += 1; }
