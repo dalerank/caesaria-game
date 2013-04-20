@@ -16,6 +16,7 @@
 #include "oc3_water_buildings.hpp"
 
 #include <iostream>
+#include <stdexcept>
 
 #include "oc3_scenario.hpp"
 #include "oc3_time.hpp"
@@ -151,15 +152,52 @@ void Reservoir::updateAqueducts()
   // find adjacent aqueducts
   int i = getTile().getI() + 1;
   int j = getTile().getJ() + 1;
-  WaterSource* __west   = dynamic_cast<WaterSource*>(Scenario::instance().getCity().getTilemap().at(i - 2, j).get_terrain().getOverlay());
-  WaterSource* __south  = dynamic_cast<WaterSource*>(Scenario::instance().getCity().getTilemap().at(i, j - 2).get_terrain().getOverlay());
-  WaterSource* __east   = dynamic_cast<WaterSource*>(Scenario::instance().getCity().getTilemap().at(i + 2, j).get_terrain().getOverlay());
-  WaterSource* __north  = dynamic_cast<WaterSource*>(Scenario::instance().getCity().getTilemap().at(i, j + 2).get_terrain().getOverlay());
   
-  if (__south != NULL) __south->link(*this);
+  try
+  {
+  WaterSource* __west   = dynamic_cast<WaterSource*>(Scenario::instance().getCity().getTilemap().at(i - 2, j).get_terrain().getOverlay());
   if (__west  != NULL) __west->link(*this);
-  if (__north != NULL) __north->link(*this);
+  }
+  catch(std::out_of_range)
+  {
+    
+  }
+
+  
+  try
+  {
+  WaterSource* __south  = dynamic_cast<WaterSource*>(Scenario::instance().getCity().getTilemap().at(i, j - 2).get_terrain().getOverlay());
+  if (__south != NULL) __south->link(*this);
+  }
+  catch(std::out_of_range)
+  {
+    
+  }
+
+  
+  try
+  {
+  WaterSource* __east   = dynamic_cast<WaterSource*>(Scenario::instance().getCity().getTilemap().at(i + 2, j).get_terrain().getOverlay());
   if (__east  != NULL) __east->link(*this);
+  }
+  catch(std::out_of_range)
+  {
+    
+  }
+
+  
+  try
+  {
+  WaterSource* __north  = dynamic_cast<WaterSource*>(Scenario::instance().getCity().getTilemap().at(i, j + 2).get_terrain().getOverlay());
+  if (__north != NULL) __north->link(*this);
+  }
+  catch(std::out_of_range)
+  {
+    
+  }
+  
+  
+  
 }
 
 void Aqueduct::setTerrain(TerrainTile &terrain)
