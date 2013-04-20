@@ -97,7 +97,19 @@ void Aqueduct::link(Reservoir& target)
 
 void Aqueduct::destroy()
 {
-  std::cout << "aqueduct::destroy()" << std::endl;
+//  std::cout << "Aqueduct::destroy()" << std::endl;
+  
+  // update adjacent aqueducts
+
+  if (_south != NULL) { _south->_north = NULL; Aqueduct *a = dynamic_cast<Aqueduct*>(_south); if (a!=NULL) a->setPicture(a->computePicture());}
+  if (_west  != NULL) { _west->_east = NULL;   Aqueduct *a = dynamic_cast<Aqueduct*>(_west);  if (a!=NULL) a->setPicture(a->computePicture());}
+  if (_north != NULL) { _north->_south = NULL; Aqueduct *a = dynamic_cast<Aqueduct*>(_north); if (a!=NULL) a->setPicture(a->computePicture());}
+  if (_east  != NULL) { _east->_west = NULL;   Aqueduct *a = dynamic_cast<Aqueduct*>(_east);  if (a!=NULL) a->setPicture(a->computePicture());}
+}
+
+void Reservoir::destroy()
+{
+//  std::cout << "Reservoir::destroy()" << std::endl;
   
   // update adjacent aqueducts
 
@@ -106,6 +118,7 @@ void Aqueduct::destroy()
   if (_north != NULL) { _north->_south = NULL; dynamic_cast<Aqueduct*>(_north)->setPicture(dynamic_cast<Aqueduct*>(_north)->computePicture());}
   if (_east  != NULL) { _east->_west = NULL;   dynamic_cast<Aqueduct*>(_east)->setPicture(dynamic_cast<Aqueduct*>(_east)->computePicture());}
 }
+
 
 void Reservoir::link(Aqueduct& target)
 {

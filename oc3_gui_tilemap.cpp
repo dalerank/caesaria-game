@@ -279,7 +279,7 @@ void GuiTilemap::updatePreviewTiles( bool force )
     Tile* startTile = getTileXY( _d->startCursorPos, true );  // tile under the cursor (or NULL)
     Tile* stopTile  = getTileXY( _d->lastCursorPos,  true );
 
-    std::cout << "(" << startTile->getI() << " " << startTile->getJ() << ") (" << stopTile->getI() << " " << stopTile->getJ() << ")" << std::endl;
+//    std::cout << "(" << startTile->getI() << " " << startTile->getJ() << ") (" << stopTile->getI() << " " << stopTile->getJ() << ")" << std::endl;
     
     RoadPropagator rp( *_tilemap, startTile );
 
@@ -288,13 +288,13 @@ void GuiTilemap::updatePreviewTiles( bool force )
     bool havepath = rp.getPath( stopTile, pathWay );
     if( havepath )
     {
-      std::cout << "path: ";
+//      std::cout << "path: ";
       for( Tiles::iterator it = pathWay.begin(); it != pathWay.end(); it++ )
       {
-	std::cout << "(" << (*it)->getI() << " " << (*it)->getJ() << ") ";
+//	std::cout << "(" << (*it)->getI() << " " << (*it)->getJ() << ") ";
 	checkPreviewBuild( (*it)->getIJ() );
       }
-      std::cout << std::endl;
+//      std::cout << std::endl;
     }
   }
   else
@@ -350,13 +350,13 @@ void GuiTilemap::_buildAll()
   for( Tiles::iterator it=_d->postTiles.begin(); it != _d->postTiles.end(); it++ )
   {
     Construction* cnstr = _d->changeCommand.getContruction();
-    std::cout << "(" << (*it)->getI() << " " << (*it)->getJ() << ") ";
+//    std::cout << "(" << (*it)->getI() << " " << (*it)->getJ() << ") ";
     if( cnstr && cnstr->canBuild( (*it)->getIJ() ) && (*it)->is_master_tile())
     {
       _city->build( *cnstr, (*it)->getIJ() );
     }
   }
-  std::cout << std::endl;
+//  std::cout << std::endl;
 }
 
 void GuiTilemap::handleEvent( NEvent& event )
@@ -392,8 +392,8 @@ void GuiTilemap::handleEvent( NEvent& event )
                 break;
 
             TilePos tilePos = tile->getIJ();
-            std::cout << "Tile ("<< tilePos.getI() <<","<< tilePos.getJ() <<") pressed at ("
-                      << event.MouseEvent.X <<","<< event.MouseEvent.Y <<") left button" << std::endl;
+//            std::cout << "Tile ("<< tilePos.getI() <<","<< tilePos.getJ() <<") pressed at ("
+//                      << event.MouseEvent.X <<","<< event.MouseEvent.Y <<") left button" << std::endl;
 
             // left button
             if( _d->changeCommand.isValid() )
