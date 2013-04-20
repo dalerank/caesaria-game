@@ -242,67 +242,60 @@ Tilemap& City::getTilemap()
    return _tilemap;
 }
 
-int City::getRoadEntryI() const { return _roadEntryI; }
-int City::getRoadEntryJ() const { return _roadEntryJ; }
-int City::getRoadExitI() const  { return _roadExitI;  }
-int City::getRoadExitJ() const  { return _roadExitJ;  }
-int City::getBoatEntryI() const { return _boatEntryI; }
-int City::getBoatEntryJ() const { return _boatEntryJ; }
-int City::getBoatExitI() const  { return _boatExitI;  }
-int City::getBoatExitJ() const  { return _boatExitJ;  }
+unsigned int City::getRoadEntryI() const { return _roadEntryI; }
+unsigned int City::getRoadEntryJ() const { return _roadEntryJ; }
+unsigned int City::getRoadExitI() const  { return _roadExitI;  }
+unsigned int City::getRoadExitJ() const  { return _roadExitJ;  }
+unsigned int City::getBoatEntryI() const { return _boatEntryI; }
+unsigned int City::getBoatEntryJ() const { return _boatEntryJ; }
+unsigned int City::getBoatExitI() const  { return _boatExitI;  }
+unsigned int City::getBoatExitJ() const  { return _boatExitJ;  }
 
-ClimateType City::getClimate() const
-{
-   return _climate;
-}
-void City::setClimate(const ClimateType climate)
-{
-   _climate = climate;
-}
+ClimateType City::getClimate() const     { return _climate;    }
 
-void City::setRoadEntryIJ(const int i, const int j)
-{
-   _roadEntryI = i;
-   _roadEntryJ = j;
-}
+void City::setClimate(const ClimateType climate) { _climate = climate; }
 
-void City::setRoadExitIJ(const int i, const int j)
+// paste here protection from bad values
+void City::setRoadEntryIJ(unsigned int i, unsigned int j)
 {
-   _roadExitI = i;
-   _roadExitJ = j;
+  int size = getTilemap().getSize();
+  if (i >= size) i = size - 1;
+  if (j >= size) j = size - 1;
+  _roadEntryI = i;
+  _roadEntryJ = j;
 }
 
-void City::setBoatEntryIJ(const int i, const int j)
+void City::setRoadExitIJ(unsigned int i, unsigned int j)
 {
-   _boatEntryI = i;
-   _boatEntryJ = j;
+  int size = getTilemap().getSize();
+  if (i >= size) i = size - 1;
+  if (j >= size) j = size - 1;
+  _roadExitI  = i;
+  _roadExitJ  = j;
 }
 
-void City::setBoatExitIJ(const int i, const int j)
+void City::setBoatEntryIJ(unsigned int i, unsigned int j)
 {
-   _boatExitI = i;
-   _boatExitJ = j;
+  int size = getTilemap().getSize();
+  if (i >= size) i = size - 1;
+  if (j >= size) j = size - 1;
+  _boatEntryI = i;
+  _boatEntryJ = j;
 }
 
-int City::getTaxRate() const
+void City::setBoatExitIJ(unsigned int i, unsigned int j)
 {
-   return _taxRate;
+  int size = getTilemap().getSize();
+  if (i >= size) i = size - 1;
+  if (j >= size) j = size - 1;
+  _boatExitI  = i;
+  _boatExitJ = j;
 }
 
-void City::setTaxRate(const int taxRate)
-{
-   _taxRate = taxRate;
-}
-
-long City::getFunds() const
-{
-   return _d->funds;
-}
-
-void City::setFunds(const long funds)
-{
-   _d->funds = funds;
-}
+int City::getTaxRate() const                 {  return _taxRate;    }
+void City::setTaxRate(const int taxRate)     {  _taxRate = taxRate; }
+long City::getFunds() const                  {  return _d->funds;   }
+void City::setFunds(const long funds)        {  _d->funds = funds;  }
 
 long City::getPopulation() const
 {
@@ -347,8 +340,9 @@ void City::disaster( const TilePos& pos, DisasterType type )
 
 void City::clearLand(const TilePos& pos  )
 {
-   Tile& cursorTile = _tilemap.at( pos );
-   TerrainTile& terrain = cursorTile.get_terrain();
+  std::cout << "City::clearLand" << std::endl;
+  Tile& cursorTile = _tilemap.at( pos );
+  TerrainTile& terrain = cursorTile.get_terrain();
 
    if( terrain.isDestructible() )
    {
@@ -363,7 +357,7 @@ void City::clearLand(const TilePos& pos  )
       
       if (overlay != NULL)
       {
-	     size = overlay->getSize();
+         size = overlay->getSize();
          rPos = overlay->getTile().getIJ();
          overlay->destroy();
          _overlayList.remove(overlay);
@@ -379,7 +373,7 @@ void City::clearLand(const TilePos& pos  )
          terrain.setTree(false);
          terrain.setBuilding(false);
          terrain.setRoad(false);
-	     terrain.setGarden(false);
+         terrain.setGarden(false);
          terrain.setOverlay(NULL);
 
          // choose a random landscape picture:
@@ -400,6 +394,11 @@ void City::clearLand(const TilePos& pos  )
          {
             // 70% => choose green_flat 232-289
             res_id = 232 + rand() % (289 - 232 + 1);
+         }
+         // FIX: when delete building on meadow, meadow is replaced by common land tile
+         if (terrain.isMeadow())
+         {
+           res_id = 18 + rand() % (29 - 18 + 1);
          }
          tile.set_picture(&PicLoader::instance().get_picture(res_pfx, res_id));
       }
@@ -536,12 +535,12 @@ void City::unserialize(InputSerialStream &stream)
 
 TilePos City::getRoadEntryIJ() const
 {
-    return TilePos( _roadEntryI, _roadEntryJ );
+  return TilePos( _roadEntryI, _roadEntryJ );
 }
 
 TilePos City::getRoadExitIJ() const
 {
-    return TilePos( _roadExitI, _roadExitJ );
+  return TilePos( _roadExitI, _roadExitJ );
 }
 
 City::~City()
@@ -550,20 +549,20 @@ City::~City()
 
 Signal1<int>& City::onPopulationChanged()
 {
-    return _d->onPopulationChangedSignal;
+  return _d->onPopulationChangedSignal;
 }
 
 Signal1<int>& City::onFundsChanged()
 {
-    return _d->onFundsChangedSignal;
+  return _d->onFundsChangedSignal;
 }
 
 unsigned long City::getMonth() const
 {
-    return _d->month;
+  return _d->month;
 }
 
 Signal1<int>& City::onMonthChanged()
 {
-    return _d->onMonthChangedSignal;
+  return _d->onMonthChangedSignal;
 }

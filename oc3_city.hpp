@@ -47,23 +47,23 @@ public:
    std::list<LandOverlay*>& getOverlayList();
    std::list<LandOverlay*> getBuildingList( const BuildingType buildingType );
 
-   void setRoadEntryIJ(const int i, const int j);
-   void setRoadExitIJ(const int i, const int j);
-   void setBoatEntryIJ(const int i, const int j);
-   void setBoatExitIJ(const int i, const int j);
+   void setRoadEntryIJ(const unsigned int i, const unsigned int j);
+   void setRoadExitIJ(const unsigned int i, const unsigned int j);
+   void setBoatEntryIJ(const unsigned int i, const unsigned int j);
+   void setBoatExitIJ(const unsigned int i, const unsigned int j);
 
-   int getRoadEntryI() const;
-   int getRoadEntryJ() const;
+   unsigned int getRoadEntryI() const;
+   unsigned int getRoadEntryJ() const;
    TilePos getRoadEntryIJ() const;
    
-   int getRoadExitI() const;
-   int getRoadExitJ() const;
+   unsigned int getRoadExitI() const;
+   unsigned int getRoadExitJ() const;
    TilePos getRoadExitIJ() const;
    
-   int getBoatEntryI() const;
-   int getBoatEntryJ() const;
-   int getBoatExitI() const;
-   int getBoatExitJ() const;
+   unsigned int getBoatEntryI() const;
+   unsigned int getBoatEntryJ() const;
+   unsigned int getBoatExitI() const;
+   unsigned int getBoatExitJ() const;
 
    ClimateType getClimate() const;
    void setClimate(const ClimateType);
@@ -108,10 +108,10 @@ oc3_signals public:
    Signal1<int>& onMonthChanged();
 
 private:
-   int _roadEntryI, _roadEntryJ;
-   int _roadExitI, _roadExitJ;
-   int _boatEntryI, _boatEntryJ;
-   int _boatExitI, _boatExitJ;
+   unsigned int _roadEntryI, _roadEntryJ; //coordinates can't be nagative!
+   unsigned int _roadExitI, _roadExitJ;
+   unsigned int _boatEntryI, _boatEntryJ;
+   unsigned int _boatExitI, _boatExitJ;
 
    ClimateType _climate;
    Tilemap _tilemap;

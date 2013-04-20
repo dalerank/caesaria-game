@@ -289,10 +289,11 @@ Plaza* Plaza::clone() const
 void Plaza::setTerrain(TerrainTile &terrain)
 {
   //std::cout << "Plaza::setTerrain" << std::endl;
-  
+  bool isMeadow = terrain.isMeadow();  
   terrain.reset();
   terrain.setOverlay(this);
   terrain.setRoad(true);
+  terrain.setMeadow(isMeadow);
 }
 
 Picture& Plaza::computePicture()
@@ -335,10 +336,12 @@ Garden* Garden::clone() const
 
 void Garden::setTerrain(TerrainTile &terrain)
 {
+  bool isMeadow = terrain.isMeadow();
   terrain.reset();
   terrain.setOverlay(this);
   terrain.setBuilding(true); // are gardens buildings or not???? try to investigate from original game
   terrain.setGarden(true);
+  terrain.setMeadow(isMeadow);    
 }
 
 
@@ -503,9 +506,15 @@ Building::Building()
 
 void Building::setTerrain(TerrainTile &terrain)
 {
-   terrain.reset();
-   terrain.setOverlay(this);
-   terrain.setBuilding(true);
+  // here goes the problem
+  // when we reset tile, we delete information
+  // about it's original information
+  // try to fix
+  bool isMeadow = terrain.isMeadow();
+  terrain.reset();
+  terrain.setOverlay(this);
+  terrain.setBuilding(true);
+  terrain.setMeadow(isMeadow);
 }
 
 void Building::timeStep(const unsigned long time)

@@ -104,7 +104,7 @@ void CaesarApp::initWaitPictures()
 
 void CaesarApp::initGuiEnvironment()
 {
-	_d->gui = new GuiEnv( *_d->engine );
+  _d->gui = new GuiEnv( *_d->engine );
 }
 
 void CaesarApp::initPictures()

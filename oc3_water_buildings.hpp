@@ -48,6 +48,7 @@ public:
   void updatePicture();
   virtual void link(Aqueduct&);
   virtual void link(Reservoir&);
+  virtual void destroy();
 };
 
 

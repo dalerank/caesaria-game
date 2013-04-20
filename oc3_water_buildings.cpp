@@ -54,8 +54,6 @@ void Aqueduct::build(const TilePos& pos )
   Construction::build( pos );
   
   updateAqueducts(); // need to rewrite as computeAccessRoads()
-
-  setPicture(computePicture());
 }
 
 void Aqueduct::link(Aqueduct& target)
@@ -96,6 +94,20 @@ void Aqueduct::link(Reservoir& target)
   setPicture(computePicture());
 }
 
+void Aqueduct::destroy()
+{
+  std::cout << "aqueduct::destroy()" << std::endl;
+  int i = getTile().getI();
+  int j = getTile().getJ();
+  
+  // update adjacent aqueducts
+
+  if (_south != NULL) { _south->_north = NULL; dynamic_cast<Aqueduct*>(_south)->setPicture(dynamic_cast<Aqueduct*>(_south)->computePicture());}
+  if (_west  != NULL) { _west->_east = NULL;   dynamic_cast<Aqueduct*>(_west)->setPicture(dynamic_cast<Aqueduct*>(_west)->computePicture());}
+  if (_north != NULL) { _north->_south = NULL; dynamic_cast<Aqueduct*>(_north)->setPicture(dynamic_cast<Aqueduct*>(_north)->computePicture());}
+  if (_east  != NULL) { _east->_west = NULL;   dynamic_cast<Aqueduct*>(_east)->setPicture(dynamic_cast<Aqueduct*>(_east)->computePicture());}
+}
+
 void Reservoir::link(Aqueduct& target)
 {
   // check target coordinates and compare with our coords
@@ -132,6 +144,8 @@ void Aqueduct::updateAqueducts()
   if (__west  != NULL) __west->link(*this);
   if (__north != NULL) __north->link(*this);
   if (__east  != NULL) __east->link(*this);
+  
+  setPicture(computePicture());
 }
 
 void Reservoir::updateAqueducts()
@@ -153,12 +167,13 @@ void Reservoir::updateAqueducts()
 
 void Aqueduct::setTerrain(TerrainTile &terrain)
 {
-  bool isRoad = false;
-  isRoad = terrain.isRoad();
+  bool isRoad   = terrain.isRoad();
+  bool isMeadow = terrain.isMeadow();
   terrain.reset();
   terrain.setOverlay(this);
   terrain.setBuilding(true);
   terrain.setRoad(isRoad);
+  terrain.setMeadow(isMeadow);
   terrain.setAqueduct(true); // mandatory!
 }
 
@@ -261,7 +276,7 @@ Picture& Aqueduct::computePicture()
 
 void Aqueduct::updatePicture()
 {
-    setPicture(computePicture());
+  setPicture(computePicture());
 }
 
 Reservoir::Reservoir()
@@ -316,9 +331,11 @@ void Reservoir::build(const TilePos& pos )
 
 void Reservoir::setTerrain(TerrainTile &terrain)
 {
+  bool isMeadow = terrain.isMeadow();
   terrain.reset();
   terrain.setOverlay(this);
   terrain.setBuilding(true);
+  terrain.setMeadow(isMeadow);
 }
 
 void Reservoir::timeStep(const unsigned long time)

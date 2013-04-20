@@ -513,7 +513,7 @@ void GuiTilemap::checkPreviewBuild( const TilePos& pos )
                   bool isConstructible = tile->get_terrain().isConstructible();
                   tile->set_picture( isConstructible ? &grnPicture : &redPicture );
                   tile->set_master_tile(0);
-				  tile->get_terrain().reset();
+                  tile->get_terrain().reset();
                   _d->postTiles.push_back( tile );
               }
           }
@@ -577,18 +577,18 @@ void GuiTilemap::checkPreviewRemove(const int i, const int j)
 
 Tile& GuiTilemap::getTileIJ(const int i, const int j)
 {
-   return _tilemap->at(i, j);
+  return _tilemap->at(i, j);
 }
 
 Signal1< Tile* >& GuiTilemap::onShowTileInfo()
 {
-    return _d->onShowTileInfoSignal;
+  return _d->onShowTileInfoSignal;
 }
 
 void GuiTilemap::setChangeCommand( const TilemapChangeCommand& command )
 {
-    _d->changeCommand = command;
-    _d->startCursorPos = _d->lastCursorPos;
-    //_d->startCursorPos = Point( -1, -1 );
-    updatePreviewTiles();
+  _d->changeCommand = command;
+  _d->startCursorPos = _d->lastCursorPos;
+  //_d->startCursorPos = Point( -1, -1 );
+  updatePreviewTiles();
 }

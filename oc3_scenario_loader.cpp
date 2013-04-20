@@ -435,21 +435,22 @@ void ScenarioLoader::init_climate(std::fstream &f, City &ioCity)
 
 void ScenarioLoader::init_entry_exit(std::fstream &f, City &ioCity)
 {
-   int size = ioCity.getTilemap().getSize();
+   unsigned int size = ioCity.getTilemap().getSize();
 
    // init road entry/exit point
-   int i = 0;
-   int j = 0;
+   unsigned short int i = 0;
+   unsigned short int j = 0;
    f.seekg(kRoadEntry, std::ios::beg);
    f.read((char*)&i, 2);
    f.read((char*)&j, 2);
-   ioCity.setRoadEntryIJ(i, size-j-1);
+   
+   ioCity.setRoadEntryIJ(i, size - j - 1);
 
-   i=0;
-   j=0;
+   i = 0;
+   j = 0;
    f.read((char*)&i, 2);
    f.read((char*)&j, 2);
-   ioCity.setRoadExitIJ(i, size-j-1);
+   ioCity.setRoadExitIJ(i, size - j - 1);
 
    // init boat entry/exit point
    i = 0;
@@ -457,25 +458,25 @@ void ScenarioLoader::init_entry_exit(std::fstream &f, City &ioCity)
    f.seekg(kBoatEntry, std::ios::beg);
    f.read((char*)&i, 2);
    f.read((char*)&j, 2);
-   ioCity.setBoatEntryIJ(i, size-j-1);
+   ioCity.setBoatEntryIJ(i, size - j - 1);
 
-   i=0;
-   j=0;
+   i = 0;
+   j = 0;
    f.read((char*)&i, 2);
    f.read((char*)&j, 2);
-   ioCity.setBoatExitIJ(i, size-j-1);
+   ioCity.setBoatExitIJ(i, size - j - 1);
 
-//   std::cout << "road entry at:" << ioCity.getRoadEntryI() << "," << ioCity.getRoadEntryJ() << std::endl;
-//   std::cout << "road exit at:"  << ioCity.getRoadExitI()  << "," << ioCity.getRoadExitJ()  << std::endl;
-//   std::cout << "boat entry at:" << ioCity.getBoatEntryI() << "," << ioCity.getBoatEntryJ() << std::endl;
-//   std::cout << "boat exit at:"  << ioCity.getBoatExitI()  << "," << ioCity.getBoatExitJ()  << std::endl;
+   //std::cout << "road entry at:" << ioCity.getRoadEntryI() << "," << ioCity.getRoadEntryJ() << std::endl;
+   //std::cout << "road exit at:"  << ioCity.getRoadExitI()  << "," << ioCity.getRoadExitJ()  << std::endl;
+   //std::cout << "boat entry at:" << ioCity.getBoatEntryI() << "," << ioCity.getBoatEntryJ() << std::endl;
+   //std::cout << "boat exit at:"  << ioCity.getBoatExitI()  << "," << ioCity.getBoatExitJ()  << std::endl;
 }
 
 static void initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap, const Uint32 picIdStart, bool exit )
 {
-    Uint32 idOffset=0;
+    Uint32 idOffset = 0;
     TilePos tlOffset;
-    if( tlPos.getI() == 0 || tlPos.getI() == tileMap.getSize()-1 )
+    if( tlPos.getI() == 0 || tlPos.getI() == tileMap.getSize() - 1 )
     {
         tlOffset = TilePos( 0, 1 );
         idOffset = exit 
@@ -483,7 +484,7 @@ static void initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap, const Uin
                     : ( tlPos.getI() == 0 ? 3 : 1 );
 
     }
-    else if( tlPos.getJ() == 0 || tlPos.getJ() == tileMap.getSize()-1 )
+    else if( tlPos.getJ() == 0 || tlPos.getJ() == tileMap.getSize() - 1 )
     {
         tlOffset = TilePos( 1, 0 );
         idOffset = exit 
@@ -492,7 +493,11 @@ static void initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap, const Uin
     }
 
     Tile& signTile = tileMap.at( tlPos + tlOffset );
-    signTile.set_picture( &PicLoader::instance().get_picture( "land3a", picIdStart + idOffset ) );
+    
+    std::cout << tlPos.getI() << " " << tlPos.getJ() << " " << std::endl;
+    std::cout << tlOffset.getI() << " " << tlOffset.getJ() << " " << std::endl;
+    
+    signTile.set_picture(&PicLoader::instance().get_picture( "land3a", picIdStart + idOffset ));
     signTile.get_terrain().setRock( true );
 };
 
@@ -500,7 +505,8 @@ void ScenarioLoader::_initEntryExitPicture( City &ioCity )
 {
     Tilemap& tileMap = ioCity.getTilemap();
 
+    // exit and entry can't point to one tile or .... can!
     initEntryExitTile( ioCity.getRoadEntryIJ(), tileMap, 89, false );
-    initEntryExitTile( ioCity.getRoadExitIJ(), tileMap, 85, true );    
+    initEntryExitTile( ioCity.getRoadExitIJ(),  tileMap, 85, true );    
 }
 
