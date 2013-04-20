@@ -219,23 +219,23 @@ bool Tilemap::is_inside(const TilePos& pos ) const
 
 Tile& Tilemap::at(const int i, const int j)
 {
-   return _tile_array[i][j];
+   return _tile_array.at(i).at(j);
 }
 
 const Tile& Tilemap::at(const int i, const int j) const
 {
-   return _tile_array[i][j];
+   return _tile_array.at(i).at(j);
 }
 
 Tile& Tilemap::at( const TilePos& ij )
 {
-    return _tile_array[ ij.getI() ][ ij.getJ() ];
+    return _tile_array.at(ij.getI()).at(ij.getJ());
     // bad! No check of arrays borders!!!
 }
 
 const Tile& Tilemap::at( const TilePos& ij ) const
 {
-    return _tile_array[ ij.getI() ][ ij.getJ() ];
+    return _tile_array.at(ij.getI()).at(ij.getJ());
 }
 
 int Tilemap::getSize() const
