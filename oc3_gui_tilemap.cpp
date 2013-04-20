@@ -334,16 +334,20 @@ void GuiTilemap::_clearLand()
     }
 }
 
+
+//buggy function!!!
 void GuiTilemap::_buildAll()
 {
-    for( Tiles::iterator it=_d->postTiles.begin(); it != _d->postTiles.end(); it++ )
+  for( Tiles::iterator it=_d->postTiles.begin(); it != _d->postTiles.end(); it++ )
+  {
+    std::cout << "(" << (*it)->getI() << " " << (*it)->getJ() << ") " ;   
+    Construction* cnstr = _d->changeCommand.getContruction();
+    if( cnstr && cnstr->canBuild( (*it)->getIJ() ) && (*it)->is_master_tile())
     {
-        Construction* cnstr = _d->changeCommand.getContruction();
-        if( cnstr && cnstr->canBuild( (*it)->getIJ() ))
-        {
-            _city->build( *cnstr, (*it)->getIJ() );                    
-        }
-    }       
+      _city->build( *cnstr, (*it)->getIJ() );
+    }
+  }
+  std::cout << std::endl;
 }
 
 void GuiTilemap::handleEvent( NEvent& event )
@@ -479,9 +483,9 @@ void GuiTilemap::checkPreviewBuild( const TilePos& pos )
           PictureConverter::rgbBalance( *_d->previewToolPictures.back(), overlay->getPicture(), -255, +0, -255 );
 
           Tile *masterTile=0;
-          for (int dj = 0; dj<size; ++dj)
+          for (int dj = 0; dj < size; ++dj)
           {
-              for (int di = 0; di<size; ++di)
+              for (int di = 0; di < size; ++di)
               {
                   Tile* tile = new Tile(_tilemap->at( pos + TilePos( di, dj ) ));  // make a copy of tile
 
