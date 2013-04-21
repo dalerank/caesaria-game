@@ -194,7 +194,7 @@ bool FactoryMarble::canBuild(const TilePos& pos ) const
    bool near_mountain = false;  // tells if the factory is next to a mountain
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size+1 ), !Tilemap::checkCorners);
+   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 1 ), Tilemap::checkCorners);
    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
       near_mountain |= (*itTiles)->get_terrain().isRock();
@@ -242,7 +242,7 @@ bool FactoryTimber::canBuild(const TilePos& pos ) const
    bool near_forest = false;  // tells if the factory is next to a forest
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size ), !Tilemap::checkCorners );
+   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 1 ), Tilemap::checkCorners );
    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
       Tile &tile = **itTiles;
