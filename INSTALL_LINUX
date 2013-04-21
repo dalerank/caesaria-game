@@ -40,7 +40,7 @@ unshield x /media/CAESAR3/data1.CAB
 
 1.b Install dependencies
 
-sudo apt-get install libarchive-dev zlib1g-dev zlib1g unshield libsdl1.2-dev libsdl1.2debian qt4-dev-tools
+sudo apt-get install build-essential g++ libarchive-dev zlib1g-dev zlib1g unshield libsdl1.2* libsdl-image1.2* libsdl-mixer1.2* libboost1.50* libsdl-ttf2.0* qt4-dev-tools ctags
 
 
 1.c Install and launch SGReader
