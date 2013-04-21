@@ -206,29 +206,29 @@ std::vector <fs::path> CaesarApp::scanForMaps() const
 
 void CaesarApp::setScreenMenu()
 {
-    ScreenMenu screen;
-    screen.initialize( *_d->engine, *_d->gui );
-    int result = screen.run();
+  ScreenMenu screen;
+  screen.initialize( *_d->engine, *_d->gui );
+  int result = screen.run();
 
-    switch( result )
-    {
+  switch( result )
+  {
     case ScreenMenu::startNewGame:
-      {
-        /* temporary*/
-        std::vector <fs::path> filelist = scanForMaps();
-		std::srand( (Uint32)std::time(0));
-		std::string file = filelist.at(std::rand()%filelist.size()).string();
-		std::cout<<"Loading map:" << file << std::endl;
-        //loadScenario(file);
-        loadScenario( "./resources/maps/mediolanum.map" );
+    {
+      /* temporary*/
+      std::vector <fs::path> filelist = scanForMaps();
+      std::srand( (Uint32)std::time(0));
+      std::string file = filelist.at(std::rand()%filelist.size()).string();
+      std::cout<<"Loading map:" << file << std::endl;
+      loadScenario(file);
+        //loadScenario( "./resources/maps/mediolanum.map" );
         /* end of temporary */
-        _d->nextScreen = SCREEN_GAME;
-      }
+      _d->nextScreen = SCREEN_GAME;
+    }
     break;
    
     case ScreenMenu::loadSavedGame:
 	{  
-		loadGame("oc3.sav");
+	loadGame("oc3.sav");
         _d->nextScreen = SCREEN_GAME;
 	}
     break;

@@ -40,6 +40,9 @@ void ScenarioLoader::load(const std::string& filename, Scenario &oScenario)
 
    init_entry_exit(f, oScenario.getCity());
    _initEntryExitPicture( oScenario.getCity() );
+   
+   init_start_camera_pos(f, oScenario.getCity());
+   
    f.close();
 }
 
@@ -470,6 +473,17 @@ void ScenarioLoader::init_entry_exit(std::fstream &f, City &ioCity)
    //std::cout << "road exit at:"  << ioCity.getRoadExitI()  << "," << ioCity.getRoadExitJ()  << std::endl;
    //std::cout << "boat entry at:" << ioCity.getBoatEntryI() << "," << ioCity.getBoatEntryJ() << std::endl;
    //std::cout << "boat exit at:"  << ioCity.getBoatExitI()  << "," << ioCity.getBoatExitJ()  << std::endl;
+}
+
+void ScenarioLoader::init_start_camera_pos(std::fstream &f, City &ioCity)
+{
+   unsigned short int i = 0;
+   unsigned short int j = 0;
+   f.seekg(kCamera, std::ios::beg);
+   f.read((char*)&i, 2);
+   f.read((char*)&j, 2);
+   
+   ioCity.setCameraStartIJ(i, j);
 }
 
 static void initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap, const Uint32 picIdStart, bool exit )

@@ -565,3 +565,9 @@ Signal1<int>& City::onMonthChanged()
 {
   return _d->onMonthChangedSignal;
 }
+
+void City::setCameraStartIJ(const unsigned int i, const unsigned int j) {_cameraStartI = i; _cameraStartJ = j;}
+void City::setCameraStartIJ(const TilePos pos) {_cameraStartI = pos.getI(); _cameraStartJ = pos.getJ();}
+unsigned int City::getCameraStartI() const {return _cameraStartI;}
+unsigned int City::getCameraStartJ() const {return _cameraStartJ;}
+TilePos City::getCameraStartIJ() const {return TilePos(_cameraStartI,_cameraStartJ);}

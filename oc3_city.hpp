@@ -56,6 +56,12 @@ public:
    unsigned int getRoadEntryJ() const;
    TilePos getRoadEntryIJ() const;
    
+   void setCameraStartIJ(const unsigned int i, const unsigned int j);
+   void setCameraStartIJ(const TilePos pos);
+   unsigned int getCameraStartI() const;
+   unsigned int getCameraStartJ() const;
+   TilePos getCameraStartIJ() const;
+      
    unsigned int getRoadExitI() const;
    unsigned int getRoadExitJ() const;
    TilePos getRoadExitIJ() const;
@@ -112,6 +118,7 @@ private:
    unsigned int _roadExitI, _roadExitJ;
    unsigned int _boatEntryI, _boatEntryJ;
    unsigned int _boatExitI, _boatExitJ;
+   unsigned int _cameraStartI, _cameraStartJ;
 
    ClimateType _climate;
    Tilemap _tilemap;
