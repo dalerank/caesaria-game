@@ -402,11 +402,9 @@ bool Road::canBuild(const TilePos& pos ) const
     if( is_free ) 
         return true; // we try to build on free tile
 
-    // we can place on road
     Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
     TerrainTile& terrain = tilemap.at( pos ).get_terrain();
 
-    // we can't build on plazas, but show that we can
     if( safety_cast< Aqueduct* >( terrain.getOverlay() ) != 0 )
         return true;
 
