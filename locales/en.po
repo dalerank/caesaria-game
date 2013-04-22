@@ -1,0 +1,541 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR Andrei Branescu <andreibranescu@gmail.com>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-04-09 02:47+0200\n"
+"PO-Revision-Date: 2013-04-22 03:03+0200\n"
+"Last-Translator: Andrei Branescu <andreibranescu@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: oc3_buildmenu.cpp:300 oc3_caesar.cpp:77
+msgid "Farm"
+msgstr ""
+
+#: oc3_buildmenu.cpp:301
+msgid "Raw materials"
+msgstr ""
+
+#: oc3_buildmenu.cpp:302
+msgid "Factory"
+msgstr "Workshop"
+
+#: oc3_buildmenu.cpp:362
+msgid "Small temples"
+msgstr ""
+
+#: oc3_buildmenu.cpp:363
+msgid "Large temples"
+msgstr ""
+
+#: oc3_good.cpp:108
+msgid "Rien"
+msgstr ""
+
+#: oc3_good.cpp:111
+msgid "Ble"
+msgstr ""
+
+#: oc3_good.cpp:116
+msgid "Poisson"
+msgstr ""
+
+#: oc3_good.cpp:119
+msgid "Viande"
+msgstr ""
+
+#: oc3_good.cpp:124
+msgid "Fruits"
+msgstr ""
+
+#: oc3_good.cpp:129
+msgid "Legumes"
+msgstr ""
+
+#: oc3_good.cpp:134
+msgid "Olives"
+msgstr ""
+
+#: oc3_good.cpp:139
+msgid "Huile"
+msgstr ""
+
+#: oc3_good.cpp:144
+msgid "Raisin"
+msgstr ""
+
+#: oc3_good.cpp:149
+msgid "Vin"
+msgstr ""
+
+#: oc3_good.cpp:154
+msgid "Bois"
+msgstr ""
+
+#: oc3_good.cpp:159
+msgid "Meubles"
+msgstr ""
+
+#: oc3_good.cpp:164
+msgid "Argile"
+msgstr ""
+
+#: oc3_good.cpp:169
+msgid "Poterie"
+msgstr ""
+
+#: oc3_good.cpp:174
+msgid "Fer"
+msgstr ""
+
+#: oc3_good.cpp:179
+msgid "Armes"
+msgstr ""
+
+#: oc3_good.cpp:184
+msgid "Marbre"
+msgstr ""
+
+#: oc3_gui_info_box.cpp:195 oc3_gui_info_box.cpp:386 oc3_gui_info_box.cpp:503
+#: oc3_gui_info_box.cpp:590
+#, c-format
+msgid "%d employes (%d requis)"
+msgstr "%d employees (%d needed)"
+
+#: oc3_gui_info_box.cpp:236
+#, c-format
+msgid "Aucun percepteur ne passe ici. Ne paye pas de taxes"
+msgstr "No taxe collector passes through here. Doesn't pay taxes."
+
+#: oc3_gui_info_box.cpp:241
+#, c-format
+msgid "Paye %d Denarii de taxes par mois"
+msgstr "Pays %d Denarii of taxes each month"
+
+#: oc3_gui_info_box.cpp:248
+#, c-format
+msgid "Inhabitants didn't report about crimes"
+msgstr "Inhabitants didn't report any crimes"
+
+#: oc3_gui_info_box.cpp:261
+msgid ""
+"Inabitants of tents provide food themselves, conducting a subsistence economy"
+msgstr ""
+"Inabitants of tents produce the food themselves, conducting a subsistence "
+"economy"
+
+#: oc3_gui_info_box.cpp:290
+#, c-format
+msgid "%d citizens, additional rooms for %d"
+msgstr ""
+
+#: oc3_gui_info_box.cpp:295
+#, c-format
+msgid "%d citizens"
+msgstr ""
+
+#: oc3_gui_info_box.cpp:300
+#, c-format
+msgid "%d citizens, %d habitants en trop"
+msgstr "%d citizens, %d extra inhabitants"
+
+#: oc3_gui_info_box.cpp:343
+#, c-format
+msgid "Le travail est a %d%% termine."
+msgstr "The work is  %d%% done."
+
+#: oc3_gui_info_box.cpp:354
+#, c-format
+msgid "%s en stock: %d unites"
+msgstr "%s in stock: %d units"
+
+#: oc3_gui_info_box.cpp:474
+#, c-format
+msgid "%d unites en stock. Espace pour %d unites."
+msgstr "%d units in stock. Space for %d units."
+
+#: oc3_gui_info_box.cpp:646
+msgid "##trees_and_forest_caption"
+msgstr ""
+
+#: oc3_gui_info_box.cpp:647
+msgid "##trees_and_forest_text"
+msgstr ""
+
+#: oc3_gui_info_box.cpp:651
+msgid "##water_caption"
+msgstr ""
+
+#: oc3_gui_info_box.cpp:652
+msgid "##water_text"
+msgstr ""
+
+#: oc3_gui_info_box.cpp:656
+msgid "##rock_caption"
+msgstr ""
+
+#: oc3_gui_info_box.cpp:657
+msgid "##rock_text"
+msgstr ""
+
+#: oc3_gui_info_box.cpp:661
+msgid "##road_caption"
+msgstr ""
+
+#: oc3_gui_info_box.cpp:662
+msgid "##road_text"
+msgstr ""
+
+#: oc3_gui_info_box.cpp:666
+msgid "##clear_land_caption"
+msgstr ""
+
+#: oc3_gui_info_box.cpp:667
+msgid "##clear_land_text"
+msgstr ""
+
+#: oc3_gui_info_box.cpp:702
+msgid "##freehouse_caption"
+msgstr ""
+
+#: oc3_gui_info_box.cpp:703
+msgid "##freehouse_text"
+msgstr ""
+
+#: oc3_house_level.cpp:246
+msgid "need fountain"
+msgstr ""
+
+#: oc3_house_level.cpp:250
+msgid "need water"
+msgstr ""
+
+#: oc3_house_level.cpp:333
+msgid "need hospital"
+msgstr ""
+
+#: oc3_house_level.cpp:337
+msgid "need doctor"
+msgstr ""
+
+#: oc3_house_level.cpp:343
+msgid "need barber"
+msgstr ""
+
+#: oc3_house_level.cpp:348
+msgid "need doctor or hospital"
+msgstr ""
+
+#: oc3_house_level.cpp:353
+msgid "need bath"
+msgstr ""
+
+#: oc3_house_level.cpp:376
+msgid "need college"
+msgstr ""
+
+#: oc3_house_level.cpp:381
+msgid "need library"
+msgstr ""
+
+#: oc3_house_level.cpp:385
+msgid "need school"
+msgstr ""
+
+#: oc3_house_level.cpp:390
+msgid "need library or school"
+msgstr ""
+
+#: oc3_menu.cpp:114
+msgid "##houseBtnTooltip"
+msgstr "Build housing"
+
+#: oc3_menu.cpp:117
+msgid "##clearBtnTooltip"
+msgstr "Clear land"
+
+#: oc3_menu.cpp:119
+msgid "##roadBtnTooltip"
+msgstr "Build roads"
+
+#: oc3_menu.cpp:120
+msgid "##waterBtnTooltip"
+msgstr "Water-related structures"
+
+#: oc3_menu.cpp:121
+msgid "##healthBtnTooltip"
+msgstr "Health-related structures"
+
+#: oc3_menu.cpp:122
+msgid "##templeBtnTooltip"
+msgstr "Religious structures"
+
+#: oc3_menu.cpp:123
+msgid "##educationBtnTooltip"
+msgstr "Education structures"
+
+#: oc3_menu.cpp:126
+msgid "##entertainmentBtnTooltip"
+msgstr "Entertainment structures"
+
+#: oc3_menu.cpp:129
+msgid "##administractionBtnTooltip"
+msgstr "Administration or Government structures"
+
+#: oc3_menu.cpp:132
+msgid "##engineerBtnTooltip"
+msgstr "Engineering structures"
+
+#: oc3_menu.cpp:135
+msgid "##securityBtnTooltip"
+msgstr "Security structures"
+
+#: oc3_menu.cpp:138
+msgid "##comerceBtnTooltip"
+msgstr "Industrial structures"
+
+#: oc3_menu.cpp:381
+msgid "##senateBtnTooltip"
+msgstr "Visit your advisors"
+
+#: oc3_menu.cpp:383
+msgid "##empireBtnTooltip"
+msgstr "Go to the map of the Empire"
+
+#: oc3_menu.cpp:386
+msgid "##missionBtnTooltip"
+msgstr "Review your assignment"
+
+#: oc3_menu.cpp:388
+msgid "##northBtnTooltip"
+msgstr "Re-orient your view to Due North"
+
+#: oc3_menu.cpp:390
+msgid "##rotateLeftBtnTooltip"
+msgstr "Rotate the map counter-clockwise"
+
+#: oc3_menu.cpp:392
+msgid "##rotateRightBtnTooltip"
+msgstr "Rotate the map clockwise"
+
+#: oc3_menu.cpp:395
+msgid "##cancelBtnTooltip"
+msgstr "UNDO your last action"
+
+#: oc3_menu.cpp:397
+msgid "##messageBtnTooltip"
+msgstr "View messages"
+
+#: oc3_menu.cpp:399
+msgid "##disasterBtnTooltip"
+msgstr "Cycle through any recent trouble spots in the city"
+
+msgid "building_theater"
+msgstr "Theatre"
+
+msgid "building_amphitheater"
+msgstr "Amphitheater"
+
+msgid "building_hippodrome"
+msgstr "Hippodrome"
+
+msgid "building_collosseum"
+msgstr "Colosseum"
+
+msgid "building_actor"
+msgstr "Actor colony"
+
+msgid "building_gladiator"
+msgstr "Gladiator school"
+
+msgid "building_lion"
+msgstr "Lion pit"
+
+msgid "building_chariot"
+msgstr "Chariot maker"
+
+msgid "building_house"
+msgstr "House"
+
+msgid "building_road"
+msgstr "Road"
+
+msgid "building_plaza"
+msgstr "Plazza"
+
+msgid "building_garden"
+msgstr "Gardens"
+
+msgid "building_senate"
+msgstr "Senate"
+
+msgid "building_forum"
+msgstr "Forum"
+
+msgid "building_prefect"
+msgstr "Prefecture"
+
+msgid "building_doctor"
+msgstr "Doctor"
+
+msgid "building_hospital"
+msgstr "Hospital"
+
+msgid "building_baths"
+msgstr "Baths"
+
+msgid "building_barber"
+msgstr "Barber"
+
+msgid "building_school"
+msgstr "School"
+
+msgid "building_college"
+msgstr "University"
+
+msgid "building_library"
+msgstr "Library"
+
+msgid "building_market"
+msgstr "Market"
+
+msgid "building_granary"
+msgstr "Granary"
+
+msgid "building_warehouse"
+msgstr "Warehouse"
+
+msgid "building_wheat"
+msgstr "Wheat farm"
+
+msgid "building_fruit"
+msgstr "Fruit farm"
+
+msgid "building_vegetable"
+msgstr "Vegetable farm"
+
+msgid "building_olive"
+msgstr "Olive farm"
+
+msgid "building_grape"
+msgstr "Vine farm"
+
+msgid "building_meat"
+msgstr "Pig farm"
+
+msgid "building_marble"
+msgstr "Marble quarry"
+
+msgid "building_iron"
+msgstr "Iron mine"
+
+msgid "building_timber"
+msgstr "Timber yard"
+
+msgid "building_clay"
+msgstr "Clay pit"
+
+msgid "building_wine"
+msgstr "Wine workshop"
+
+msgid "building_oil"
+msgstr "Oil workshop"
+
+msgid "building_weapon"
+msgstr "Weapons workshop"
+
+msgid "building_furniture"
+msgstr "Furniture workshop"
+
+msgid "building_pottery"
+msgstr "Pottery workshop"
+
+msgid "building_engineer"
+msgstr "Engineer's post"
+
+msgid "building_statue1"
+msgstr "Small statue"
+
+msgid "building_statue2"
+msgstr "Statue"
+
+msgid "building_statue3"
+msgstr "Large statue"
+
+msgid "building_low_bridge"
+msgstr "Low bridge"
+
+msgid "building_high_bridge"
+msgstr "High bridge"
+
+msgid "building_well"
+msgstr "Well"
+
+msgid "building_fountain"
+msgstr "Fontaine"
+
+msgid "building_temple_ceres"
+msgstr "Temple of Ceres"
+
+msgid "building_temple_neptune"
+msgstr "Temple of Neptune"
+
+msgid "building_temple_mars"
+msgstr "Temple of Mars"
+
+msgid "building_temple_venus"
+msgstr "Temple of Venus"
+
+msgid "building_temple_mercure"
+msgstr "Temple of Mercury"
+
+msgid "building_big_temple_ceres"
+msgstr "Temple of Ceres"
+
+msgid "building_big_temple_neptune"
+msgstr "Temple of Neptune"
+
+msgid "building_big_temple_mars"
+msgstr "Temple of Mars"
+
+msgid "building_big_temple_venus"
+msgstr "Temple of Venus"
+
+msgid "building_big_temple_mercure"
+msgstr "Temple of Mercury"
+
+msgid "building_temple_oracle"
+msgstr "Oracle"
+
+msgid "building_aqueduct"
+msgstr "Aqueduct"
+
+msgid "building_reservoir"
+msgstr "Reservoir"
+
+msgid "building_shipyard"
+msgstr "Shipyard"
+
+msgid "building_wharf"
+msgstr "Wharf"
+
+msgid "building_governor's_house"
+msgstr "Governor's House"
+
+msgid "building_governor's_villa"
+msgstr "Governor's Villa"
+
+msgid "building_governor's_palace"
+msgstr "Governor's Palace"
+
+msgid "building_dock"
+msgstr "Dock"
