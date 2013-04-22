@@ -41,7 +41,6 @@ void TerrainTile::reset()
   _isAqueduct = false;
   _isGarden   = false;
   _isMeadow   = false;
-  _imgId      = 0;
   _overlay    = NULL; // BUG? What will be with old overlay?
 }
 
@@ -129,6 +128,11 @@ void TerrainTile::unserialize(InputSerialStream &stream)
 void TerrainTile::setOriginalImgId( unsigned int id )
 {
     _imgId = id;
+}
+
+unsigned int TerrainTile::getOriginalImgId() const
+{
+  return _imgId;
 }
 
 Tile::Tile(const int i, const int j)
@@ -414,4 +418,49 @@ void Tilemap::unserialize(InputSerialStream &stream)
 
       }
    }
+}
+
+std::string TerrainTileHelper::convId2PicName( const unsigned int imgId )
+{
+  // example: for land1a_00004.png, pfx=land1a and id=4
+  std::string res_pfx;  // resource name prefix
+  int res_id = imgId;   // id of resource
+
+  if (201<=imgId && imgId < 245)
+  {
+    res_pfx = "plateau";
+    res_id = imgId - 200;
+  }
+  else if (245<=imgId && imgId < 548)
+  {
+    res_pfx = "land1a";
+    res_id = imgId - 244;
+  }
+  else if (548<=imgId && imgId < 779)
+  {
+    res_pfx = "land2a";
+    res_id = imgId - 547;
+  }
+  else if (779<=imgId && imgId < 871)
+  {
+    res_pfx = "land3a";
+    res_id = imgId - 778;      
+  }
+  else
+  {
+    res_pfx = "land1a";
+    res_id = 1;
+
+    // std::cout.setf(std::ios::hex, std::ios::basefield);
+    // std::cout << "Unknown image Id " << imgId << std::endl;
+    // std::cout.unsetf(std::ios::hex);
+
+    if (imgId == 0xb10 || imgId == 0xb0d) {res_pfx = "housng1a", res_id = 51;} // TERRIBLE HACK!
+
+    // THROW("Unknown image Id " << imgId);
+  }
+
+  char ret_str[128];
+  sprintf_s( ret_str, 127, "%s_%05d.png", res_pfx.c_str(), res_id );
+  return std::string( ret_str );
 }

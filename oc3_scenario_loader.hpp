@@ -34,8 +34,7 @@ public:
 
 private:
    void load_map(std::fstream& f, Scenario &oScenario);
-   Picture& get_pic_by_id(const int imgId);
-   void decode_img(const int imgId, Tile &oTile);
+
    void decode_terrain(const int terrainBitset, Tile &oTile);
    void init_entry_exit(std::fstream &f, City &ioCity);
    void init_climate(std::fstream &f, City &ioCity);

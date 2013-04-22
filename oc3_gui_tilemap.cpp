@@ -281,16 +281,15 @@ void GuiTilemap::updatePreviewTiles( bool force )
     Tile* startTile = getTileXY( _d->startCursorPos, true );  // tile under the cursor (or NULL)
     Tile* stopTile  = getTileXY( _d->lastCursorPos,  true );
 
-        RoadPropagator rp( *_tilemap, *startTile );
+    RoadPropagator rp( *_tilemap, *startTile );
 
-        ConstWayOnTiles pathWay;
-        bool havepath = rp.getPath( *stopTile, pathWay );
-        if( havepath )
+    ConstWayOnTiles pathWay;
+    bool havepath = rp.getPath( *stopTile, pathWay );
+    if( havepath )
+    {
+        for( ConstWayOnTiles::iterator it=pathWay.begin(); it != pathWay.end(); it++ )
         {
-            for( ConstWayOnTiles::iterator it=pathWay.begin(); it != pathWay.end(); it++ )
-            {
-                checkPreviewBuild( (*it)->getIJ() );
-            }
+            checkPreviewBuild( (*it)->getIJ() );
         }
     }
   }
@@ -303,8 +302,8 @@ void GuiTilemap::updatePreviewTiles( bool force )
     {
       for( int j = startPos.getJ(); j <=stopPos.getJ(); j++ )
       {
-	checkPreviewBuild( TilePos( i, j ) );
-	checkPreviewRemove(i, j);
+	      checkPreviewBuild( TilePos( i, j ) );
+	      checkPreviewRemove(i, j);
       }
     }
   }
@@ -335,16 +334,14 @@ void GuiTilemap::_clearLand()
   {
     for (j = startPos.getJ(); j <= stopPos.getJ(); j++ )
     {
-//      std::cout << "(" << i << " " << j << ") ";
       _city->clearLand( TilePos(i,j) );
     }   
   }
-//  std::cout << std::endl;
 }
 
 void GuiTilemap::_buildAll()
 {
-  for( Tiles::iterator it=_d->postTiles.begin(); it != _d->postTiles.end(); it++ )
+  for( PtrTilesList::iterator it=_d->postTiles.begin(); it != _d->postTiles.end(); it++ )
   {
     Construction* cnstr = _d->changeCommand.getContruction();
 //    std::cout << "(" << (*it)->getI() << " " << (*it)->getJ() << ") ";

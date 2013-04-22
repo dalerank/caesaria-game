@@ -67,6 +67,7 @@ public:
    void decode(const int bitset);
 
    void setOriginalImgId( unsigned int id );
+   unsigned int getOriginalImgId() const;
 
    void serialize(OutputSerialStream &stream);
    void unserialize(InputSerialStream &stream);
@@ -83,6 +84,11 @@ private:
    LandOverlay *_overlay;
 };
 
+class TerrainTileHelper
+{
+public:
+  static std::string convId2PicName( const unsigned int imgId );
+};
 
 
 // a Tile in the Tilemap

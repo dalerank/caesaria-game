@@ -46,11 +46,8 @@ RoadPropagator::RoadPropagator( const Tilemap& tileMap, const Tile& startTile )
 
 bool RoadPropagator::getPath( const Tile& destination, ConstWayOnTiles& oPathWay ) const
 {
-  if( !_d->startTile || !destination )    
-    return false;
-
-  TilePos startPos = _d->startTile->getIJ();
-  TilePos stopPos  = destination->getIJ();
+  TilePos startPos = _d->startTile.getIJ();
+  TilePos stopPos  = destination.getIJ();
   int iStep = (startPos.getI() < stopPos.getI()) ? 1 : -1;
   int jStep = (startPos.getJ() < stopPos.getJ()) ? 1 : -1;
 
@@ -60,7 +57,7 @@ bool RoadPropagator::getPath( const Tile& destination, ConstWayOnTiles& oPathWay
   
   if( startPos == stopPos )
   {
-    oPathWay.push_back( _d->startTile );
+    oPathWay.push_back( &_d->startTile );
     return true;
   }
     
@@ -83,9 +80,9 @@ bool RoadPropagator::getPath( const Tile& destination, ConstWayOnTiles& oPathWay
     {
         const Tile& curTile = _d->tilemap.at( startPos.getI(), j );
 
-    if( curTile->get_terrain().isConstructible() || curTile->get_terrain().isRoad() 
-	|| curTile->get_terrain().isAqueduct() )
-      oPathWay.push_back( curTile );
+    if( curTile.get_terrain().isConstructible() || curTile.get_terrain().isRoad() 
+      	|| curTile.get_terrain().isAqueduct() )
+      oPathWay.push_back( &curTile );
     else
       return false;
 
