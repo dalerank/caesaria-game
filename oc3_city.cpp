@@ -38,6 +38,8 @@ public:
     int population;
     long funds;  // amount of money
     unsigned long month; // number of months since start
+
+    std::list<LandOverlay*> overlayList;
 };
 
 City::City() : _d( new Impl )
@@ -103,8 +105,8 @@ void City::timeStep()
       }
    }
 
-   std::list<LandOverlay*>::iterator overlayIt = _overlayList.begin();
-   while( overlayIt != _overlayList.end() )
+   std::list<LandOverlay*>::iterator overlayIt = _d->overlayList.begin();
+   while( overlayIt != _d->overlayList.end() )
    {
        (*overlayIt)->timeStep(_time);
 
@@ -114,7 +116,7 @@ void City::timeStep()
            (*overlayIt)->destroy();
            delete (*overlayIt);
 
-           overlayIt = _overlayList.erase(overlayIt);
+           overlayIt = _d->overlayList.erase(overlayIt);
        }
        else
        {
@@ -167,11 +169,6 @@ void City::_createImigrants()
     }    
 }
 
-City::Walkers& City::getWalkerList()
-{
-   return _walkerList;
-}
-
 City::Walkers City::getWalkerList( const WalkerType type )
 {
 	std::list<Walker*> res;
@@ -192,7 +189,7 @@ City::Walkers City::getWalkerList( const WalkerType type )
 
 std::list<LandOverlay*>& City::getOverlayList()
 {
-   return _overlayList;
+   return _d->overlayList;
 }
 
 unsigned long City::getTime()
@@ -205,7 +202,7 @@ std::list<LandOverlay*> City::getBuildingList(const BuildingType buildingType)
 {
    std::list<LandOverlay*> res;
 
-   for (std::list<LandOverlay*>::iterator itOverlay = _overlayList.begin(); itOverlay!=_overlayList.end(); ++itOverlay)
+   for (std::list<LandOverlay*>::iterator itOverlay = _d->overlayList.begin(); itOverlay!=_d->overlayList.end(); ++itOverlay)
    {
       // for each overlay
       LandOverlay *overlay = *itOverlay;
@@ -222,7 +219,7 @@ std::list<LandOverlay*> City::getBuildingList(const BuildingType buildingType)
 
 void City::recomputeRoadsForAll()
 {
-   for (std::list<LandOverlay*>::iterator itOverlay = _overlayList.begin(); itOverlay!=_overlayList.end(); ++itOverlay)
+   for (std::list<LandOverlay*>::iterator itOverlay = _d->overlayList.begin(); itOverlay!=_d->overlayList.end(); ++itOverlay)
    {
       // for each overlay
       LandOverlay *overlay = *itOverlay;
@@ -310,7 +307,7 @@ void City::build( Construction& buildInstance, const TilePos& pos )
    // make new building
    Construction* building = (Construction*)buildInstance.clone();
    building->build( pos );
-   _overlayList.push_back(building);
+   _d->overlayList.push_back(building);
    _d->funds -= buildingData.getCost();
    _d->onFundsChangedSignal.emit( _d->funds );
 }
@@ -463,7 +460,7 @@ void City::serialize(OutputSerialStream &stream)
 
    // walkers
    stream.write_int(_walkerList.size(), 2, 0, 65535);
-   for (std::list<Walker*>::iterator itWalker = _walkerList.begin(); itWalker != _walkerList.end(); ++itWalker)
+   for (Walkers::iterator itWalker = _walkerList.begin(); itWalker != _walkerList.end(); ++itWalker)
    {
       // std::cout << "WRITE WALKER @" << stream.tell() << std::endl;
       Walker &walker = **itWalker;
@@ -471,8 +468,10 @@ void City::serialize(OutputSerialStream &stream)
    }
 
    // overlays
-   stream.write_int(_overlayList.size(), 2, 0, 65535);
-   for (std::list<LandOverlay*>::iterator itOverlay = _overlayList.begin(); itOverlay != _overlayList.end(); ++itOverlay)
+   stream.write_int(_d->overlayList.size(), 2, 0, 65535);
+   for (LandOverlays::iterator itOverlay = _d->overlayList.begin(); 
+        itOverlay != _d->overlayList.end(); 
+        ++itOverlay)
    {
       // std::cout << "WRITE OVERLAY @" << stream.tell() << std::endl;
       LandOverlay &overlay = **itOverlay;
@@ -514,15 +513,15 @@ void City::unserialize(InputSerialStream &stream)
    {
       // std::cout << "READ OVERLAY @" << stream.tell() << std::endl;
       LandOverlay &overlay = LandOverlay::unserialize_all(stream);
-      _overlayList.push_back(&overlay);
+      _d->overlayList.push_back(&overlay);
    }
 
    // set all pointers to overlays&walkers
    stream.set_dangling_pointers(false); // ignore missing pointers
 
    // finalize the buildings
-   std::list<LandOverlay*> llo = _overlayList;
-   for (std::list<LandOverlay*>::iterator itLLO = llo.begin(); itLLO!=llo.end(); ++itLLO)
+   for( LandOverlays::iterator itLLO = _d->overlayList.begin(); 
+        itLLO!=_d->overlayList.end(); ++itLLO)
    {
       (*itLLO)->build( (*itLLO)->getTile().getIJ());
    }
@@ -560,6 +559,16 @@ unsigned long City::getMonth() const
 Signal1<int>& City::onMonthChanged()
 {
   return _d->onMonthChangedSignal;
+}
+
+void City::addWalker( Walker& walker )
+{
+  _walkerList.push_back( &walker );
+}
+
+void City::removeWalker( Walker& walker )
+{
+  _walkerList.remove( &walker );
 }
 
 void City::setCameraStartIJ(const unsigned int i, const unsigned int j) {_cameraStartI = i; _cameraStartJ = j;}

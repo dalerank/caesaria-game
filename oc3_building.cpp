@@ -47,7 +47,7 @@ static const char* rcGovernmentGroup   = "govt";
 static const char* rcEntertaimentGroup = "entertainment";
 }
 
-std::map<BuildingType, LandOverlay*> LandOverlay::_mapBuildingByID;  // key=buildingType, value=instance
+//std::map<BuildingType, LandOverlay*> LandOverlay::_mapBuildingByID;  // key=buildingType, value=instance
 
 LandOverlay::LandOverlay()
 {

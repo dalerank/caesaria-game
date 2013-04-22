@@ -185,7 +185,7 @@ void GuiTilemap::drawTilemap()
 
         std::vector<Picture*> pictureList;
 
-        City::Walkers walkerList = _city->getWalkerList();
+        City::Walkers walkerList = _city->getWalkerList( WT_ALL );
         for( City::Walkers::iterator itWalker =  walkerList.begin();
               itWalker != walkerList.end(); ++itWalker)
         {
@@ -196,7 +196,7 @@ void GuiTilemap::drawTilemap()
            {
               pictureList.clear();
               anim.getPictureList(pictureList);
-              for (std::vector<Picture*>::iterator picIt = pictureList.begin(); picIt != pictureList.end(); ++picIt)
+              for( std::vector<Picture*>::iterator picIt = pictureList.begin(); picIt != pictureList.end(); ++picIt )
               {
                  if (*picIt == NULL)
                  {
@@ -492,9 +492,8 @@ void GuiTilemap::checkPreviewBuild( const TilePos& pos )
                       masterTile = tile;
                   }
                   tile->set_picture( _d->previewToolPictures.back() );
-                  tile->set_master_tile(masterTile);
-                  TerrainTile &terrain = tile->get_terrain();
-                  terrain.setOverlay( overlay );
+                  tile->set_master_tile( masterTile );
+                  tile->get_terrain().setOverlay( overlay );
                   _d->postTiles.push_back( tile );
                   //_priorityTiles.push_back( tile );
               }

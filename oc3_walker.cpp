@@ -657,7 +657,7 @@ void ServiceWalker::computeWalkerPath()
    reservePath(*bestPath);
    setPathWay(*bestPath);
    setIJ(_pathWay.getOrigin().getI(), _pathWay.getOrigin().getJ());
-   Scenario::instance().getCity().getWalkerList().push_back(this);
+   Scenario::instance().getCity().addWalker( *this );
 }
 
 std::set<Building*> ServiceWalker::getReachedBuildings(const TilePos& pos )
@@ -866,7 +866,7 @@ void TraineeWalker::computeWalkerPath()
       pathPropagator.getPath(*_destinationBuilding, pathWay);
       setPathWay(pathWay);
       setIJ(_pathWay.getOrigin().getI(), _pathWay.getOrigin().getJ());
-      Scenario::instance().getCity().getWalkerList().push_back(this);
+      Scenario::instance().getCity().addWalker( *this );
       _destinationBuilding->reserveTrainee(_traineeType);
    }
    else

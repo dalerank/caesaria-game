@@ -74,9 +74,8 @@ void ServiceBuilding::destroy()
 {
    for (std::list<Walker*>::iterator itWalker = _walkerList.begin(); itWalker != _walkerList.end(); ++itWalker)
    {
-      Walker *walker = *itWalker;
-      Scenario::instance().getCity().getWalkerList().remove(walker);
-      delete walker;
+      Scenario::instance().getCity().removeWalker( **itWalker );
+      delete *itWalker;
    }
 
    WorkingBuilding::destroy();

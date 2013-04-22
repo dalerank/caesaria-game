@@ -107,7 +107,7 @@ void MarketBuyer::computeWalkerDestination()
    }
 
    setIJ(_pathWay.getOrigin().getI(), _pathWay.getOrigin().getJ());
-   Scenario::instance().getCity().getWalkerList().push_back(this);
+   Scenario::instance().getCity().addWalker( *this );
 }
 
 
