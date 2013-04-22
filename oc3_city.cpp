@@ -165,8 +165,7 @@ void City::_createImigrants()
     if( roadEntry )
     {
 		  vacantPop = std::max<Uint32>( 1, rand() % std::max<Uint32>( 1, vacantPop / 2 ) );
-      Emigrant* ni = Emigrant::create( *roadEntry );
-      _d->walkerList.push_back( ni );
+      Emigrant::create( *this, *roadEntry );
     }    
 }
 
@@ -179,7 +178,7 @@ City::Walkers City::getWalkerList( const WalkerType type )
 	{
 		// for each walker
 		walker = *itWalker;
-		if( walker != NULL && (walker->getType() == type || WT_ALL == type ) )
+		if( walker && (walker->getType() == type || WT_ALL == type ) )
 		{
 			res.push_back(walker);
 		}

@@ -18,21 +18,30 @@
 
 #include "oc3_walker.hpp"
 
+class City;
+class House;
+
 /** This is an immigrant coming with his stuff */
 class Immigrant : public Walker
 {
 public:
-  virtual Immigrant* clone() const;
-
-  static Immigrant* create( const Building& startPoint );
+  static Immigrant* create( City& city, const Building& startPoint );
 
   void onDestination();
   ~Immigrant();
+
+protected:
+  virtual Immigrant* clone() const;
+
+  void setCartPicture( Picture* pic );
+  virtual Picture* getCartPicture();
+  
+  Immigrant( City& city );
+
+  void assignPath( Tile& startTile );
+  void _checkPath( Tile& startPoint, Building* house );
+  House* _findBlankHouse();
 private:
-  Immigrant();
-
-  void assignPath( const Building& home );
-
   class Impl;
   std::auto_ptr< Impl > _d;
 };

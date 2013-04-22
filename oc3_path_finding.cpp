@@ -376,15 +376,6 @@ void PathWay::unserialize(InputSerialStream &stream)
    std::advance(_directionIt, off);
 }
 
-void PathWay::addRelativeStep( const TilePos& pos )
-{
-    TilePos savePos( _destinationI, _destinationJ );
-    _destinationI += pos.getI();
-    _destinationJ += pos.getJ();
-
-    setNextTile( _tilemap->at( savePos ) );
-}
-
 Propagator::Propagator()
 {
    _city = &Scenario::instance().getCity();
@@ -408,20 +399,22 @@ void Propagator::setAllDirections(const bool value)
 void Propagator::init(const Construction &origin)
 {
    // init propagation on access roads
+  _origin = &origin.getTile();
    init(origin.getAccessRoads());
 }
 
 
-void Propagator::init(Tile &origin)
+void Propagator::init(Tile& origin)
 {
+  _origin = &origin;
    std::list<Tile*> tileList;
    tileList.push_back(&origin);
 
-   init(tileList);
+   init( tileList );
 }
 
 
-void Propagator::init(const std::list<Tile*> &origin)
+void Propagator::init(const std::list<Tile*>& origin)
 {
    _activeBranches.clear();
    _completedBranches.clear();
@@ -710,17 +703,33 @@ bool Propagator::getPathEx( Building &destination, PathWay &oPathWay, bool addLa
 
     if( ret && addLastSteps )
     {
-        TilePos lastStep = oPathWay.getDestination().getIJ();
         TilePos housePos = destination.getTile().getIJ();               
-        while( lastStep != housePos )
+        while( oPathWay.getDestination().getIJ() != housePos )
         {
-            TilePos offset( housePos.getI() == lastStep.getI() ? 0 : ( housePos.getI() - lastStep.getI() < 0 ? -1 : 1 ),
-                housePos.getJ() == lastStep.getJ() ? 0 : ( housePos.getJ() - lastStep.getJ() < 0 ? -1 : 1 ) );
-
-            lastStep += offset;
-            oPathWay.addRelativeStep( -offset );
+          TilePos ij = oPathWay.getDestination().getIJ();
+          TilePos move( math::clamp( housePos.getI() - ij.getI(), -1, 1 ), math::clamp( housePos.getJ() - ij.getJ(), -1, 1 ) );
+          oPathWay.setNextTile( _tilemap->at( ij + move ) );
         }
     }
-
+   
     return ret;
+}
+
+
+bool Propagator::getPathDebug( Tile& destination, PathWay &oPathWay )
+{
+  if( _origin->getIJ() == destination.getIJ() )
+    return false;
+
+  oPathWay.init( *_tilemap, *_origin );
+
+  TilePos housePos = destination.getIJ();               
+  while( oPathWay.getDestination().getIJ() != housePos )
+  {
+    TilePos ij = oPathWay.getDestination().getIJ();
+    TilePos move( math::clamp( housePos.getI() - ij.getI(), -1, 1 ), math::clamp( housePos.getJ() - ij.getJ(), -1, 1 ) );
+    oPathWay.setNextTile( _tilemap->at( ij + move ) );
+  }
+
+  return true;
 }

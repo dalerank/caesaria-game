@@ -13,26 +13,28 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_EMIGRANT_H_INCLUDE_
-#define __OPENCAESAR3_EMIGRANT_H_INCLUDE_
+#ifndef __OPENCAESAR3_WALKERMANAGER_H_INCLUDED__
+#define __OPENCAESAR3_WALKERMANAGER_H_INCLUDED__
 
-#include "oc3_immigrant.hpp"
+#include "oc3_enums.hpp"
+#include "oc3_scopedptr.hpp"
 
-/** This is an immigrant coming with his stuff */
-class Emigrant : public Immigrant
+class Walker;
+class TilePos;
+
+class WalkerManager
 {
 public:
-	static Emigrant* create( City& city, const Road& startPoint );
+  static WalkerManager& getInstance();
 
-	void getPictureList(std::vector<Picture*> &oPics);
-	void onNewDirection();
+  Walker* create(const WalkerType walkerType, const TilePos& pos );  // get an instance of the given type
 
-	~Emigrant();
-protected:
-  virtual Emigrant* clone() const;
-  Picture* getCartPicture();
+  ~WalkerManager();
+private:
+  WalkerManager();
 
-	Emigrant( City& city );
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 #endif

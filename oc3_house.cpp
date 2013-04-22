@@ -24,6 +24,7 @@
 #include "oc3_scenario.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_workerhunter.hpp"
+#include "oc3_immigrant.hpp"
 
 static const char* rcGrourName = "housng1a";
 
@@ -384,6 +385,14 @@ Uint8 House::getMaxDistance2Road() const
 
 void House::addHabitants( const Uint8 newHabitCount )
 {
-    _currentHabitants = (std::min)( _currentHabitants + newHabitCount, _maxHabitants );
-    _update();
+  _currentHabitants = (std::min)( _currentHabitants + newHabitCount, _maxHabitants );
+  _update();
+}
+
+void House::destroy()
+{
+  City& city = Scenario::instance().getCity();
+  Immigrant::create( city, *this );
+
+  Building::destroy();
 }

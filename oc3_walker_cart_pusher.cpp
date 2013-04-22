@@ -24,6 +24,7 @@
 #include "oc3_building_data.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_scenario.hpp"
+#include "oc3_positioni.hpp"
 
 
 CartPusher::CartPusher()
@@ -177,7 +178,7 @@ void CartPusher::computeWalkerDestination()
 
    setConsumerBuilding(*destBuilding);
    setPathWay(pathWay);
-   setIJ(_pathWay.getOrigin().getI(), _pathWay.getOrigin().getJ());
+   setIJ( _pathWay.getOrigin().getIJ() );
 }
 
 

@@ -46,7 +46,6 @@ public:
 
    void setNextDirection(const DirectionType direction);
    void setNextTile(Tile &tile);
-   void addRelativeStep( const TilePos& pos );
    bool contains(Tile &tile);
    std::list<Tile*>& getAllTiles();
 
@@ -95,10 +94,10 @@ public:
    bool getPath(Road &destination, PathWay &oPathWay);
    bool getPath(Building &destination, PathWay &oPathWay);
    bool getPathEx(Building &destination, PathWay &oPathWay, bool addLastSteps );
+   bool getPathDebug( Tile& destination, PathWay &oPathWay );
 
    /** returns all paths starting at origin */
    void getAllPaths(const int maxDistance, std::list<PathWay> &oPathWayList);
-
 
 private:
    std::set<PathWay> _activeBranches;
@@ -108,6 +107,7 @@ private:
    bool _allDirections;  // true if can walk in all directions, false if limited to North/South/East/West
 
    City *_city;
+   Tile* _origin;
    Tilemap *_tilemap;
 };
 

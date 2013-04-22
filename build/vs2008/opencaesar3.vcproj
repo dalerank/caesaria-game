@@ -739,6 +739,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_walkermanager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_walkermanager.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_warehouse.cpp"
 				>
 			</File>

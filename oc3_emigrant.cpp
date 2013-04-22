@@ -17,14 +17,7 @@
 #include "oc3_positioni.hpp"
 #include "oc3_scenario.hpp"
 
-class Emigrant::Impl
-{
-public:
-	TilePos destination;
-	Picture* cartPicture;
-};
-
-Emigrant::Emigrant() : _d( new Impl )
+Emigrant::Emigrant( City& city ) : Immigrant( city )
 {
 	_walkerType = WT_EMIGRANT;
 	_walkerGraphic = WG_PUSHER2;
@@ -32,19 +25,17 @@ Emigrant::Emigrant() : _d( new Impl )
 
 Emigrant* Emigrant::clone() const
 {
-	Emigrant* ret = new Emigrant();
-	ret->_d->destination = _d->destination;
-	return ret;
+  return 0;
 }
 
-Picture& Emigrant::_getCartPicture()
+Picture* Emigrant::getCartPicture()
 {
-	if( _d->cartPicture == NULL )
+  if( Immigrant::getCartPicture() == NULL )
 	{
-		_d->cartPicture = &CartLoader::instance().getCart( G_SCARB1, getDirection());
+		setCartPicture( &CartLoader::instance().getCart( G_SCARB1, getDirection()) );
 	}
 
-	return *_d->cartPicture;
+	return Immigrant::getCartPicture();
 }
 
 void Emigrant::getPictureList(std::vector<Picture*> &oPics)
@@ -58,119 +49,35 @@ void Emigrant::getPictureList(std::vector<Picture*> &oPics)
 	case D_NORTH_WEST:
 	case D_NORTH:
 	case D_NORTH_EAST:
-		oPics.push_back(&_getCartPicture());
+		oPics.push_back( getCartPicture());
 		oPics.push_back(&getMainPicture());
 		break;
 	case D_EAST:
 	case D_SOUTH_EAST:
-		oPics.push_back(&_getCartPicture());
+		oPics.push_back( getCartPicture());
 		oPics.push_back(&getMainPicture());
 		break;
 	case D_SOUTH:
 	case D_SOUTH_WEST:
 		oPics.push_back(&getMainPicture());
-		oPics.push_back(&_getCartPicture());
+		oPics.push_back( getCartPicture());
 		break;
 	default:
 		break;
 	}
 }
 
-void Emigrant::assignPath( const Road& startPoint )
-{
-    City& city = Scenario::instance().getCity();
-	std::list<PathWay> pathWayList;
-
-	std::list<LandOverlay*> houses = city.getBuildingList(B_HOUSE);
-	House* blankHouse = 0;
-	for( std::list<LandOverlay*>::iterator itHouse = houses.begin(); itHouse != houses.end(); ++itHouse )
-	{
-		if( House* house = dynamic_cast<House*>(*itHouse) )
-		{
-			if( house->getNbHabitants() < house->getMaxHabitants() )
-			{
-				blankHouse = house;
-				_d->destination = house->getTile().getIJ();
-				break;
-			}
-		}
-	}
-
-	Propagator pathfinder;
-	PathWay pathWay;
-	pathfinder.init( const_cast< Road& >( startPoint ) );
-  if( blankHouse )
-  {
-	  bool findPath = pathfinder.getPathEx( *blankHouse, pathWay, true );
-	  if( findPath )
-	  {        
-	    setPathWay( pathWay );
-	    setIJ(_pathWay.getOrigin().getI(), _pathWay.getOrigin().getJ());   
-	  }
-  }
-  else
-  {
-    Road* exitTile = dynamic_cast< Road* >( city.getTilemap().at( city.getRoadExitIJ() ).get_terrain().getOverlay() );
-    _d->destination = TilePos( -1, -1 );
-    bool pathFound = false;
-    if( exitTile )
-    { 
-      pathFound = pathfinder.getPath( *exitTile, pathWay );
-
-      if( pathFound )
-      {
-        setPathWay( pathWay );
-      }
-    }
-
-    _isDeleted = !pathFound;
-  }
-}
-
-void Emigrant::onDestination()
-{
-    _isDeleted = true;
-    bool gooutCity = true;
-    if( _d->destination.getI() > 0 && _d->destination.getJ() > 0 )  //have destination
-    {
-	    const Tile& tile = Scenario::instance().getCity().getTilemap().at( _d->destination );
-
-	    LandOverlay* overlay = tile.get_terrain().getOverlay();
-	    if( House* house = dynamic_cast<House*>( overlay ) )
-	    {
-		    if( house->getNbHabitants() < house->getMaxHabitants() )
-		    {
-			    house->addHabitants( 1 );
-                Walker::onDestination();
-                gooutCity = false;
-		    }
-	    }
-    }
-    else
-    {   
-        return;                                                     //no destination, may delete
-    }
-
-    if( gooutCity )
-    {
-        if( const Road* r = dynamic_cast< const Road* >( _pathWay.getDestination().get_terrain().getOverlay() ))
-        {
-            _isDeleted = false;
-            assignPath( *r );
-        }
-    }
-}
-
 void Emigrant::onNewDirection()
 {
 	Walker::onNewDirection();
-	_d->cartPicture = NULL;  // need to get the new graphic
+	setCartPicture( 0 );  // need to get the new graphic
 }
 
-Emigrant* Emigrant::create( const Road& startPoint )
+Emigrant* Emigrant::create( City& city, const Road& startPoint )
 {
-	Emigrant* newEmigrant = new Emigrant();
-	newEmigrant->assignPath( startPoint );
+	Emigrant* newEmigrant = new Emigrant( city );
+	newEmigrant->assignPath( startPoint.getTile() );
+  city.addWalker( *newEmigrant );
 	return newEmigrant;
 }
 

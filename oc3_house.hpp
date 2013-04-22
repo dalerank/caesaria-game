@@ -51,6 +51,8 @@ public:
    void levelUp();
    void levelDown();
 
+   void destroy();
+
    int getNbHabitants();
    int getMaxHabitants();
    void addHabitants( const Uint8 newHabitCount );

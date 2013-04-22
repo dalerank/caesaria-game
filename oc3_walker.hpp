@@ -40,8 +40,7 @@ public:
    virtual ~Walker();
 
    virtual void timeStep(const unsigned long time);  // performs one simulation step
-   WalkerType getType() const;
-   static Walker* getInstance(const WalkerType walkerType);  // get an instance of the given type
+   virtual int getType() const;
    virtual Walker* clone() const = 0;
 
    // position and movement
@@ -50,7 +49,7 @@ public:
    int getJ() const;
    int getII() const;
    int getJJ() const;
-   void setIJ( const int i, const int j);
+   void setIJ( const TilePos& pos );
    void setPathWay(PathWay &pathWay);
    void setDestinationIJ( const int i, const int j );
    void setSpeed(const int speed);
@@ -104,8 +103,6 @@ private:
 
    const Animation *_animation;  // current animation
    int _animIndex;  // current frame in the animation
-
-   static std::map<WalkerType, Walker*> _mapWalkerByID;  // key=walkerType, value=instance
 };
 
 typedef SmartPtr< Walker > WalkerPtr;
@@ -162,7 +159,7 @@ public:
    TraineeWalker(const WalkerTraineeType traineeType);
    virtual TraineeWalker* clone() const;
    void init(const WalkerTraineeType traineeType);
-   WalkerTraineeType getType() const;
+   int getType() const;
 
    void checkDestination(const BuildingType buildingType, Propagator &pathPropagator);
    void start();
