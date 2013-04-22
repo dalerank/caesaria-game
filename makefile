@@ -51,7 +51,7 @@ OBJECTS=oc3_caesar.o oc3_pic_loader.o oc3_tilemap.o oc3_tilemap_area.o oc3_city.
 	oc3_buildingengineer.o oc3_constructionmanager.o oc3_collapsedruins.o oc3_tilemapchangecommand.o oc3_workerhunter.o
 
 
-all: $(CAESAR_EXE) tags chmod
+all: $(CAESAR_EXE) tags chmod gettext
 
 # phony commands are executed without condition
 .PHONY: chmod tags gettext
@@ -81,11 +81,22 @@ format:
 	astyle --formatted --indent=spaces=3 -A1 --suffix=none *.cpp *.hpp
 
 gettext:
+
+	mkdir -p ./en/LC_MESSAGES
+	mkdir -p ./fr_FR/LC_MESSAGES
+	
 	# Extract strings from source code, merge into translation file
-	xgettext -c++ --output=fr/LC_MESSAGES/caesar.po --join-existing -k"_" *.cpp
+	xgettext -c++ --output=locales/fr_FR.po --join-existing -k"_" *.cpp
 	# Remove comments
-	sed -i "/^#/d" fr/LC_MESSAGES/caesar.po
+	#sed -i "/^#/d" fr/LC_MESSAGES/caesar.po
 	# Compile
-	msgfmt fr/LC_MESSAGES/caesar.po -o fr/LC_MESSAGES/caesar.mo
+	msgfmt locales/fr_FR.po -o fr_FR/LC_MESSAGES/caesar.mo
+	
+	# Extract strings from source code, merge into translation file
+	xgettext -c++ --output=locales/en.po --join-existing -k"_" *.cpp
+	# Remove comments
+	#sed -i "/^#/d" fr/LC_MESSAGES/caesar.po
+	# Compile
+	msgfmt locales/en.po -o en/LC_MESSAGES/caesar.mo
 
 
