@@ -1,18 +1,18 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR Andrei Branescu <andreibranescu@gmail.com>, YEAR.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-09 02:47+0200\n"
-"PO-Revision-Date: 2013-04-22 03:03+0200\n"
-"Last-Translator: Andrei Branescu <andreibranescu@gmail.com>\n"
+"POT-Creation-Date: 2013-04-22 20:37+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: en\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -31,27 +31,27 @@ msgstr "Workshop"
 
 #: oc3_buildmenu.cpp:362
 msgid "Small temples"
-msgstr ""
+msgstr "Small temple"
 
 #: oc3_buildmenu.cpp:363
 msgid "Large temples"
-msgstr ""
+msgstr "Large temple"
 
 #: oc3_good.cpp:108
 msgid "Rien"
-msgstr ""
+msgstr "Nothing"
 
 #: oc3_good.cpp:111
 msgid "Ble"
-msgstr ""
+msgstr "Wheat"
 
 #: oc3_good.cpp:116
 msgid "Poisson"
-msgstr ""
+msgstr "Fish"
 
 #: oc3_good.cpp:119
 msgid "Viande"
-msgstr ""
+msgstr "Meat"
 
 #: oc3_good.cpp:124
 msgid "Fruits"
@@ -59,7 +59,7 @@ msgstr ""
 
 #: oc3_good.cpp:129
 msgid "Legumes"
-msgstr ""
+msgstr "Vegetables"
 
 #: oc3_good.cpp:134
 msgid "Olives"
@@ -67,43 +67,43 @@ msgstr ""
 
 #: oc3_good.cpp:139
 msgid "Huile"
-msgstr ""
+msgstr "Oil"
 
 #: oc3_good.cpp:144
 msgid "Raisin"
-msgstr ""
+msgstr "Vines"
 
 #: oc3_good.cpp:149
 msgid "Vin"
-msgstr ""
+msgstr "Wine"
 
 #: oc3_good.cpp:154
 msgid "Bois"
-msgstr ""
+msgstr "Wood"
 
 #: oc3_good.cpp:159
 msgid "Meubles"
-msgstr ""
+msgstr "Furniture"
 
 #: oc3_good.cpp:164
 msgid "Argile"
-msgstr ""
+msgstr "Clay"
 
 #: oc3_good.cpp:169
 msgid "Poterie"
-msgstr ""
+msgstr "Pottery"
 
 #: oc3_good.cpp:174
 msgid "Fer"
-msgstr ""
+msgstr "Iron"
 
 #: oc3_good.cpp:179
 msgid "Armes"
-msgstr ""
+msgstr "Weapons"
 
 #: oc3_good.cpp:184
 msgid "Marbre"
-msgstr ""
+msgstr "Marble"
 
 #: oc3_gui_info_box.cpp:195 oc3_gui_info_box.cpp:386 oc3_gui_info_box.cpp:503
 #: oc3_gui_info_box.cpp:590
@@ -165,7 +165,7 @@ msgstr "%d units in stock. Space for %d units."
 
 #: oc3_gui_info_box.cpp:646
 msgid "##trees_and_forest_caption"
-msgstr ""
+msgstr "Trees and woodland"
 
 #: oc3_gui_info_box.cpp:647
 msgid "##trees_and_forest_text"
@@ -173,7 +173,7 @@ msgstr ""
 
 #: oc3_gui_info_box.cpp:651
 msgid "##water_caption"
-msgstr ""
+msgstr "Water"
 
 #: oc3_gui_info_box.cpp:652
 msgid "##water_text"
@@ -181,7 +181,7 @@ msgstr ""
 
 #: oc3_gui_info_box.cpp:656
 msgid "##rock_caption"
-msgstr ""
+msgstr "Rocks"
 
 #: oc3_gui_info_box.cpp:657
 msgid "##rock_text"
@@ -189,7 +189,7 @@ msgstr ""
 
 #: oc3_gui_info_box.cpp:661
 msgid "##road_caption"
-msgstr ""
+msgstr "Road"
 
 #: oc3_gui_info_box.cpp:662
 msgid "##road_text"
@@ -197,7 +197,7 @@ msgstr ""
 
 #: oc3_gui_info_box.cpp:666
 msgid "##clear_land_caption"
-msgstr ""
+msgstr "Empty land"
 
 #: oc3_gui_info_box.cpp:667
 msgid "##clear_land_text"
@@ -205,7 +205,7 @@ msgstr ""
 
 #: oc3_gui_info_box.cpp:702
 msgid "##freehouse_caption"
-msgstr ""
+msgstr "Vacant lot"
 
 #: oc3_gui_info_box.cpp:703
 msgid "##freehouse_text"
@@ -340,7 +340,7 @@ msgid "##disasterBtnTooltip"
 msgstr "Cycle through any recent trouble spots in the city"
 
 msgid "building_theater"
-msgstr "Theatre"
+msgstr "Theater"
 
 msgid "building_amphitheater"
 msgstr "Amphitheater"
@@ -358,7 +358,7 @@ msgid "building_gladiator"
 msgstr "Gladiator school"
 
 msgid "building_lion"
-msgstr "Lion pit"
+msgstr "Lion house"
 
 msgid "building_chariot"
 msgstr "Chariot maker"
