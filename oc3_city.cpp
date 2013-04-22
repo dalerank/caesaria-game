@@ -259,8 +259,8 @@ void City::setClimate(const ClimateType climate) { _climate = climate; }
 void City::setRoadEntryIJ(unsigned int i, unsigned int j)
 {
   int size = getTilemap().getSize();
-  if (i >= size) i = size - 1;
-  if (j >= size) j = size - 1;
+  i = math::clamp<unsigned int>( i, 0, size - 1 );
+  j = math::clamp<unsigned int>( j, 0, size - 1 );
   _roadEntryI = i;
   _roadEntryJ = j;
 }
@@ -268,8 +268,8 @@ void City::setRoadEntryIJ(unsigned int i, unsigned int j)
 void City::setRoadExitIJ(unsigned int i, unsigned int j)
 {
   int size = getTilemap().getSize();
-  if (i >= size) i = size - 1;
-  if (j >= size) j = size - 1;
+  i = math::clamp<unsigned int>( i, 0, size - 1 );
+  j = math::clamp<unsigned int>( j, 0, size - 1 );
   _roadExitI  = i;
   _roadExitJ  = j;
 }
@@ -277,8 +277,8 @@ void City::setRoadExitIJ(unsigned int i, unsigned int j)
 void City::setBoatEntryIJ(unsigned int i, unsigned int j)
 {
   int size = getTilemap().getSize();
-  if (i >= size) i = size - 1;
-  if (j >= size) j = size - 1;
+  i = math::clamp<unsigned int>( i, 0, size - 1 );
+  j = math::clamp<unsigned int>( j, 0, size - 1 );
   _boatEntryI = i;
   _boatEntryJ = j;
 }
@@ -286,8 +286,8 @@ void City::setBoatEntryIJ(unsigned int i, unsigned int j)
 void City::setBoatExitIJ(unsigned int i, unsigned int j)
 {
   int size = getTilemap().getSize();
-  if (i >= size) i = size - 1;
-  if (j >= size) j = size - 1;
+  i = math::clamp<unsigned int>( i, 0, size - 1 );
+  j = math::clamp<unsigned int>( j, 0, size - 1 );
   _boatExitI  = i;
   _boatExitJ = j;
 }
@@ -366,9 +366,8 @@ void City::clearLand(const TilePos& pos  )
     std::list<Tile*> clearedTiles = _tilemap.getFilledRectangle( rPos, Size( size - 1 ) );
     for (std::list<Tile*>::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
     {
-      Tile &tile = **itTile;
-      tile.set_master_tile(NULL);
-      TerrainTile &terrain = tile.get_terrain();
+      (*itTile)->set_master_tile(NULL);
+      TerrainTile &terrain = (*itTile)->get_terrain();
       terrain.setTree(false);
       terrain.setBuilding(false);
       terrain.setRoad(false);
@@ -381,25 +380,26 @@ void City::clearLand(const TilePos& pos  )
       // green_something: land1a 62-119;  => 58
       // green_flat: land1a 232-289; => 58
 
-      // choose a random background image, green_something 62-119 or green_flat 232-240
-      std::string res_pfx = "land1a";
-      int res_id = 0;
-      if (rand() % 10 > 6)
+      // FIX: when delete building on meadow, meadow is replaced by common land tile
+      if( terrain.isMeadow() )
       {
-	// 30% => choose green_sth 62-119
-        res_id = 62 + rand() % (119 - 62 + 1);
+        unsigned int originId = terrain.getOriginalImgId();
+        Picture& pic = PicLoader::instance().get_picture( TerrainTileHelper::convId2PicName( originId ) );
+
+        (*itTile)->set_picture( &pic );
       }
       else
       {
-	// 70% => choose green_flat 232-289
-	res_id = 232 + rand() % (289 - 232 + 1);
+        // choose a random background image, green_something 62-119 or green_flat 232-240
+        std::string res_pfx = "land1a";
+        // 30% => choose green_sth 62-119
+        // 70% => choose green_flat 232-289
+        int startOffset  = ( (rand() % 10 > 6) ? 62 : 232 ); 
+        int imgId = rand() % 58;
+
+        (*itTile)->set_picture(&PicLoader::instance().get_picture(res_pfx, startOffset + imgId));
       }
-      // FIX: when delete building on meadow, meadow is replaced by common land tile
-      if (terrain.isMeadow())
-      {
-	res_id = 18 + rand() % (29 - 18 + 1);
-      }
-      tile.set_picture(&PicLoader::instance().get_picture(res_pfx, res_id));
+      
     }
       
     // recompute roads;

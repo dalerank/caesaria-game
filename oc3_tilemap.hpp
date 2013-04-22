@@ -66,6 +66,9 @@ public:
    int encode() const;
    void decode(const int bitset);
 
+   void setOriginalImgId( unsigned int id );
+   unsigned int getOriginalImgId() const;
+
    void serialize(OutputSerialStream &stream);
    void unserialize(InputSerialStream &stream);
 private:
@@ -77,9 +80,15 @@ private:
    bool _isGarden;
    bool _isAqueduct;
    bool _isMeadow;
+   unsigned int _imgId;
    LandOverlay *_overlay;
 };
 
+class TerrainTileHelper
+{
+public:
+  static std::string convId2PicName( const unsigned int imgId );
+};
 
 
 // a Tile in the Tilemap
@@ -115,19 +124,29 @@ private:
    Tile* _master_tile;  // left-most tile if multi-tile, or "this" if single-tile
    TerrainTile _terrain;    // infos about the tile (building, tree, road, water, rock...)
 
-   Picture *_picture; // displayed picture
+   Picture *_picture; // displayed picture   
 };
 
+typedef std::list< const Tile* > ConstWayOnTiles;
+typedef std::list< Tile* > WayOnTiles;
+typedef std::list< Tile* > PtrTilesArea;
+typedef std::list< Tile* > PtrTilesList;
+
+typedef std::vector< Tile* > PtrTilesVector;
+typedef std::vector< Tile  > TilesVector;
+typedef std::vector< TilesVector > TileGrid;
 
 // Square Map of the Tiles.
 class Tilemap : public Serializable
 {
 public:
-    static const bool checkCorners = true;
+   static const bool checkCorners = true;
+   
    Tilemap();
    void init(const int size);
 
    bool is_inside( const TilePos& pos ) const;
+
    Tile& at( const int i, const int j );
    Tile& at( const TilePos& ij );
    
@@ -138,21 +157,21 @@ public:
    // (i1, j1) : left corner of the rectangle (minI, minJ)
    // (i2, j2) : right corner of the rectangle (maxI, maxJ)
    // corners  : if false, don't return corner tiles
-   std::list<Tile*> getRectangle(const TilePos& start, const TilePos& stope, const bool corners = true );
-   std::list<Tile*> getRectangle(const TilePos& pos, const Size& size, const bool corners = true );
+   PtrTilesArea getRectangle(const TilePos& start, const TilePos& stope, const bool corners = true );
+   PtrTilesArea getRectangle(const TilePos& pos, const Size& size, const bool corners = true );
 
    // returns all tiles in a rectangular area
    // (i1, j1) : left corner of the rectangle (minI, minJ)
    // (i2, j2) : right corner of the rectangle (maxI, maxJ)
-   std::list<Tile*> getFilledRectangle( const TilePos& start, const TilePos& stop );
-   std::list<Tile*> getFilledRectangle( const TilePos& start, const Size& size );
+   PtrTilesArea getFilledRectangle( const TilePos& start, const TilePos& stop );
+   PtrTilesArea getFilledRectangle( const TilePos& start, const Size& size );
    int getSize() const;
 
    void serialize(OutputSerialStream &stream);
    void unserialize(InputSerialStream &stream);
 
 private:
-   std::vector<std::vector<Tile> > _tile_array;
+   TileGrid _tile_array;
    int _size;
 };
 
