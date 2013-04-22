@@ -88,6 +88,7 @@ class TerrainTileHelper
 {
 public:
   static std::string convId2PicName( const unsigned int imgId );
+  static int convPicName2Id(std::string &pic_name);
 };
 
 // a Tile in the Tilemap

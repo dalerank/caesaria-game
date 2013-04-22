@@ -422,43 +422,6 @@ Picture PicLoader::make_picture(SDL_Surface *surface, const std::string& resourc
    return pic;
 }
 
-
-int PicLoader::get_pic_id_by_name(std::string &pic_name)
-{
-   // example: for land1a_00004.png, return 244+4=248
-   std::string res_pfx;  // resource name prefix = land1a
-   int res_id;   // idx of resource = 4
-
-   // extract the name and idx from name (ex: [land1a, 4])
-   int pos = pic_name.find("_");
-   res_pfx = pic_name.substr(0, pos);
-   std::stringstream ss(pic_name.substr(pos+1));
-   ss >> res_id;
-
-   if (res_pfx == "plateau")
-   {
-      res_id += 200;
-   }
-   else if (res_pfx == "land1a")
-   {
-      res_id += 244;
-   }
-   else if (res_pfx == "land2a")
-   {
-      res_id += 547;
-   }
-   else if (res_pfx == "land3a")
-   {
-      res_id += 778;
-   }
-   else
-   {
-      THROW("Unknown image " << pic_name);
-   }
-
-   return res_id;
-}
-
 /*Picture& PicLoader::get_pic_by_id(const int imgId)
 {
    // example: for land1a_00004.png, pfx=land1a and id=4

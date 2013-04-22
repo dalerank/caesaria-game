@@ -88,7 +88,7 @@ public:
    void load_archive(const std::string &filename);
 
    // used for game save. land1a_00004.png returns 244+4=248
-   int get_pic_id_by_name(std::string &pic_name);
+   //int get_pic_id_by_name(std::string &pic_name);
 
    // used for game load. 248 => land1a_00004.png
    //Picture& get_pic_by_id(const int imgId);
