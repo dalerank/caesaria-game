@@ -289,10 +289,11 @@ Plaza* Plaza::clone() const
 void Plaza::setTerrain(TerrainTile &terrain)
 {
   //std::cout << "Plaza::setTerrain" << std::endl;
-  
+  bool isMeadow = terrain.isMeadow();  
   terrain.reset();
   terrain.setOverlay(this);
   terrain.setRoad(true);
+  terrain.setMeadow(isMeadow);
 }
 
 Picture& Plaza::computePicture()
@@ -335,10 +336,12 @@ Garden* Garden::clone() const
 
 void Garden::setTerrain(TerrainTile &terrain)
 {
+  bool isMeadow = terrain.isMeadow();
   terrain.reset();
   terrain.setOverlay(this);
   terrain.setBuilding(true); // are gardens buildings or not???? try to investigate from original game
   terrain.setGarden(true);
+  terrain.setMeadow(isMeadow);    
 }
 
 
@@ -399,11 +402,9 @@ bool Road::canBuild(const TilePos& pos ) const
     if( is_free ) 
         return true; // we try to build on free tile
 
-    // we can place on road
     Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
     TerrainTile& terrain = tilemap.at( pos ).get_terrain();
 
-    // we can't build on plazas, but show that we can
     if( safety_cast< Aqueduct* >( terrain.getOverlay() ) != 0 )
         return true;
 
@@ -503,9 +504,15 @@ Building::Building()
 
 void Building::setTerrain(TerrainTile &terrain)
 {
-   terrain.reset();
-   terrain.setOverlay(this);
-   terrain.setBuilding(true);
+  // here goes the problem
+  // when we reset tile, we delete information
+  // about it's original information
+  // try to fix
+  bool isMeadow = terrain.isMeadow();
+  terrain.reset();
+  terrain.setOverlay(this);
+  terrain.setBuilding(true);
+  terrain.setMeadow(isMeadow);
 }
 
 void Building::timeStep(const unsigned long time)
@@ -758,9 +765,9 @@ Granary::Granary()
 
    _goodStore.setCurrentQty(G_WHEAT, 300);
 
-   _animation.load(ResourceGroup::commerce, 146, 7);
+   _animation.load(ResourceGroup::commerce, 146, 7, Animation::straight);
    // do the animation in reverse
-   _animation.load(ResourceGroup::commerce, 151, 6);
+   _animation.load(ResourceGroup::commerce, 151, 6, Animation::reverse);
    PicLoader& ldr = PicLoader::instance();
 
    _fgPictures[0] = &ldr.get_picture( ResourceGroup::commerce, 141);

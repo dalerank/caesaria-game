@@ -40,6 +40,7 @@ void TerrainTile::reset()
   _isRoad     = false;
   _isAqueduct = false;
   _isGarden   = false;
+  _isMeadow   = false;
   _imgId      = 0;
   _overlay    = NULL; // BUG? What will be with old overlay?
 }
@@ -80,11 +81,12 @@ int TerrainTile::encode() const
     res += 0x1;
     res += 0x10;
   }
-  if (isRock())     { res +=  0x2; }
-  if (isWater())    { res +=  0x4; }
-  if (isBuilding()) { res +=  0x8; }
-  if (isRoad())     { res += 0x40; }
-
+  if (isRock())     { res +=   0x2; }
+  if (isWater())    { res +=   0x4; }
+  if (isBuilding()) { res +=   0x8; }
+  if (isRoad())     { res +=  0x40; }
+  if (isMeadow())   { res += 0x800; }
+  
   return res;
 }
 
@@ -92,56 +94,22 @@ void TerrainTile::decode(const int bitset)
 {
    reset();
 
-   if (bitset & 0x1)
-   {
-      setTree(true);
+   if (bitset & 0x1)    {  setTree(true);     }
+   if (bitset & 0x2)    {  setRock(true);     }
+   if (bitset & 0x4)    {  setWater(true);    }
+   if (bitset & 0x8)    {  setBuilding(true); }
+   if (bitset & 0x10)   {  setTree(true);     }
+   if (bitset & 0x20)   {  setGarden(true);   }
+   if (bitset & 0x40)   {  setRoad(true);     }
+   if (bitset & 0x100)  {  setAqueduct(true); }
+//   if (bitset & 0x200)  {  setElevation(true);}
+   if (bitset & 0x400)  {
+     int i=0;
+     setRock( true );
+     //setAccessRamp(true);
    }
-   if (bitset & 0x2)
-   {
-      setRock(true);
-   }
-   if (bitset & 0x4)
-   {
-      setWater(true);
-   }
-   if (bitset & 0x8)
-   {
-      setBuilding(true);
-   }
-   if (bitset & 0x10)
-   {
-      setTree(true);
-   }
-   if (bitset & 0x20)
-   {
-      // setGarden(true);
-   }
-   if (bitset & 0x40)
-   {
-      setRoad(true);
-   }
-   if (bitset & 0x100)
-   {
-      //setAqueduct(true);
-   }
-   if (bitset & 0x200)
-   {
-      //setElevation(true);
-   }
-   if (bitset & 0x400)
-   {
-       int i=0;
-       setRock( true );
-      //setAccessRamp(true);
-   }
-   if (bitset & 0x800)
-   {
-      //setMeadow(true);
-   }
-   if (bitset & 0x4000)
-   {
-      //setWall(true);
-   }
+   if (bitset & 0x800)  {  setMeadow(true);   }
+//   if (bitset & 0x4000) {  setWall(true);   }
 }
 
 void TerrainTile::serialize(OutputSerialStream &stream)
@@ -182,15 +150,9 @@ Tile::Tile(const Tile& clone)
    _terrain = clone._terrain;
 }
 
-int Tile::getI() const
-{
-   return _i;
-}
+int Tile::getI() const    {   return _i;   }
 
-int Tile::getJ() const
-{
-   return _j;
-}
+int Tile::getJ() const    {   return _j;   }
 
 
 void Tile::set_picture(Picture *picture)
@@ -263,22 +225,23 @@ bool Tilemap::is_inside(const TilePos& pos ) const
 
 Tile& Tilemap::at(const int i, const int j)
 {
-   return _tile_array[i][j];
+   return _tile_array.at(i).at(j);
 }
 
 const Tile& Tilemap::at(const int i, const int j) const
 {
-   return _tile_array[i][j];
+   return _tile_array.at(i).at(j);
 }
 
 Tile& Tilemap::at( const TilePos& ij )
 {
-    return _tile_array[ ij.getI() ][ ij.getJ() ];
+    return _tile_array.at(ij.getI()).at(ij.getJ());
+    // bad! No check of arrays borders!!!
 }
 
 const Tile& Tilemap::at( const TilePos& ij ) const
 {
-    return _tile_array[ ij.getI() ][ ij.getJ() ];
+    return _tile_array.at(ij.getI()).at(ij.getJ());
 }
 
 int Tilemap::getSize() const

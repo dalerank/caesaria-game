@@ -147,7 +147,8 @@ public:
 
    void computePictures();
    virtual void timeStep(const unsigned long time);
-
+   virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
+   
 protected:
    std::vector<FarmTile> _subTiles;
    Picture _pictureBuilding;  // we need to change its offset

@@ -35,21 +35,21 @@ class BuildMenu;
 class ScreenGame: public Screen
 {
 public:
-   ScreenGame();
-   ~ScreenGame();
+  ScreenGame();
+  ~ScreenGame();
 
-   void initialize( GfxEngine& engine, GuiEnv& gui );
+  void initialize( GfxEngine& engine, GuiEnv& gui );
 
-   TilemapArea& getMapArea();
-   void setScenario(Scenario &scenario);
+  TilemapArea& getMapArea();
+  void setScenario(Scenario &scenario);
 
-   virtual void afterFrame();
-   virtual void handleEvent( NEvent& event);
+  virtual void afterFrame();
+  virtual void handleEvent( NEvent& event);
 
-   virtual void draw();
+  virtual void draw();
 
 protected:
-	int getResult() const;
+  int getResult() const;
 
 private:
    //void setMenu(Menu &menu);

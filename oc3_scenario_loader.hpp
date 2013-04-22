@@ -39,6 +39,7 @@ private:
    void decode_terrain(const int terrainBitset, Tile &oTile);
    void init_entry_exit(std::fstream &f, City &ioCity);
    void init_climate(std::fstream &f, City &ioCity);
+   void init_start_camera_pos(std::fstream &f, City &ioCity);
 
    void _initEntryExitPicture( City &ioCity );
 };

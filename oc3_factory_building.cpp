@@ -194,7 +194,7 @@ bool FactoryMarble::canBuild(const TilePos& pos ) const
    bool near_mountain = false;  // tells if the factory is next to a mountain
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size+1 ), !Tilemap::checkCorners);
+   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 1 ), Tilemap::checkCorners);
    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
       near_mountain |= (*itTiles)->get_terrain().isRock();
@@ -242,7 +242,7 @@ bool FactoryTimber::canBuild(const TilePos& pos ) const
    bool near_forest = false;  // tells if the factory is next to a forest
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size ), !Tilemap::checkCorners );
+   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 1 ), Tilemap::checkCorners );
    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
       Tile &tile = **itTiles;
@@ -275,7 +275,7 @@ bool FactoryIron::canBuild(const TilePos& pos ) const
    bool near_mountain = false;  // tells if the factory is next to a mountain
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size ), !Tilemap::checkCorners );
+   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 1), Tilemap::checkCorners );
    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
       near_mountain |= (*itTiles)->get_terrain().isRock();
@@ -307,7 +307,7 @@ bool FactoryClay::canBuild(const TilePos& pos ) const
    bool near_water = false;
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1), Size( _size ), !Tilemap::checkCorners );
+   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1), Size( _size + 1 ), Tilemap::checkCorners );
    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
      near_water |= (*itTiles)->get_terrain().isWater();
@@ -455,6 +455,22 @@ Farm::Farm(const GoodType outGood) : Factory(G_NONE, outGood)
    _pictureBuilding.add_offset(30, 15);
    init();
 }
+
+bool Farm::canBuild(const TilePos& pos ) const
+{
+   bool is_constructible = Construction::canBuild( pos );
+   bool on_meadow = false;
+
+   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+   std::list<Tile*> rect = tilemap.getFilledRectangle( pos, Size( _size-1 ) );
+   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+   {
+     on_meadow |= (*itTiles)->get_terrain().isMeadow();
+   }
+
+   return (is_constructible && on_meadow);  
+}
+
 
 void Farm::init()
 {

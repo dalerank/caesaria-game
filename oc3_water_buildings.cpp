@@ -16,6 +16,7 @@
 #include "oc3_water_buildings.hpp"
 
 #include <iostream>
+#include <stdexcept>
 
 #include "oc3_scenario.hpp"
 #include "oc3_time.hpp"
@@ -54,40 +55,173 @@ void Aqueduct::build(const TilePos& pos )
   Construction::build( pos );
   
   updateAqueducts(); // need to rewrite as computeAccessRoads()
+}
 
+void Aqueduct::link(Aqueduct& target)
+{
+  // check target coordinates and compare with our coords
+  int i = getTile().getI();
+  int j = getTile().getJ();
+  
+  int oppi = target.getTile().getI();
+  int oppj = target.getTile().getJ();
+  
+  if ((i == oppi - 1) && (j == oppj))      { _east = &target;  target._west = this;}
+  else if ((i == oppi) && (j == oppj - 1)) { _north = &target; target._south = this;}
+  else if ((i == oppi + 1) && (j == oppj)) { _west = &target;  target._east = this;}
+  else if ((i == oppi) && (j == oppj + 1)) { _south = &target; target._north = this;}
+  
   setPicture(computePicture());
+}
 
+void Aqueduct::link(Reservoir& target)
+{
+  // check target coordinates and compare with our coords
+  int i = getTile().getI();
+  int j = getTile().getJ();
+  
+  int oppi = target.getTile().getI();
+  int oppj = target.getTile().getJ();
+  
+  // when we get Reservoir coords, we get master tile coords
+  // so try to calculate center of Reservoir (it will be easier after)
+  oppi++; oppj++;
+  
+  if ((i == oppi - 2) && (j == oppj))      { _east = &target;  target._west = this;}
+  else if ((i == oppi) && (j == oppj - 2)) { _north = &target; target._south = this;}
+  else if ((i == oppi + 2) && (j == oppj)) { _west = &target;  target._east = this;}
+  else if ((i == oppi) && (j == oppj + 2)) { _south = &target; target._north = this;}
+  
+  setPicture(computePicture());
+}
+
+void Aqueduct::destroy()
+{
+//  std::cout << "Aqueduct::destroy()" << std::endl;
+  
   // update adjacent aqueducts
-  if (_south != NULL) {_south->updateAqueducts(); if (dynamic_cast<Aqueduct*>(_south) != NULL) dynamic_cast<Aqueduct*>(_south)->setPicture(dynamic_cast<Aqueduct*>(_south)->computePicture());}
-  if (_west  != NULL) {_west->updateAqueducts();  if (dynamic_cast<Aqueduct*>(_west) != NULL) dynamic_cast<Aqueduct*>(_west)->setPicture(dynamic_cast<Aqueduct*>(_west)->computePicture());}
-  if (_north != NULL) {_north->updateAqueducts(); if (dynamic_cast<Aqueduct*>(_north) != NULL) dynamic_cast<Aqueduct*>(_north)->setPicture(dynamic_cast<Aqueduct*>(_north)->computePicture());}
-  if (_east  != NULL) {_east->updateAqueducts();  if (dynamic_cast<Aqueduct*>(_east) != NULL) dynamic_cast<Aqueduct*>(_east)->setPicture(dynamic_cast<Aqueduct*>(_east)->computePicture());}
+
+  if (_south != NULL) { _south->_north = NULL; Aqueduct *a = dynamic_cast<Aqueduct*>(_south); if (a!=NULL) a->setPicture(a->computePicture());}
+  if (_west  != NULL) { _west->_east = NULL;   Aqueduct *a = dynamic_cast<Aqueduct*>(_west);  if (a!=NULL) a->setPicture(a->computePicture());}
+  if (_north != NULL) { _north->_south = NULL; Aqueduct *a = dynamic_cast<Aqueduct*>(_north); if (a!=NULL) a->setPicture(a->computePicture());}
+  if (_east  != NULL) { _east->_west = NULL;   Aqueduct *a = dynamic_cast<Aqueduct*>(_east);  if (a!=NULL) a->setPicture(a->computePicture());}
+}
+
+void Reservoir::destroy()
+{
+//  std::cout << "Reservoir::destroy()" << std::endl;
+  
+  // update adjacent aqueducts
+
+  if (_south != NULL) { _south->_north = NULL; dynamic_cast<Aqueduct*>(_south)->setPicture(dynamic_cast<Aqueduct*>(_south)->computePicture());}
+  if (_west  != NULL) { _west->_east = NULL;   dynamic_cast<Aqueduct*>(_west)->setPicture(dynamic_cast<Aqueduct*>(_west)->computePicture());}
+  if (_north != NULL) { _north->_south = NULL; dynamic_cast<Aqueduct*>(_north)->setPicture(dynamic_cast<Aqueduct*>(_north)->computePicture());}
+  if (_east  != NULL) { _east->_west = NULL;   dynamic_cast<Aqueduct*>(_east)->setPicture(dynamic_cast<Aqueduct*>(_east)->computePicture());}
+}
+
+
+void Reservoir::link(Aqueduct& target)
+{
+  // check target coordinates and compare with our coords
+  int i = getTile().getI() + 1;
+  int j = getTile().getJ() + 1;
+  
+  int oppi = target.getTile().getI();
+  int oppj = target.getTile().getJ();
+
+  if ((i == oppi - 2) && (j == oppj))      { _east = &target;  target._west = this;}
+  else if ((i == oppi) && (j == oppj - 2)) { _north = &target; target._south = this;}
+  else if ((i == oppi + 2) && (j == oppj)) { _west = &target;  target._east = this;}
+  else if ((i == oppi) && (j == oppj + 2)) { _south = &target; target._north = this;}  
+}
+
+void Reservoir::link(Reservoir& target)
+{
+  // nothing to do
+  // reservoirs can't be connected to each other
 }
 
 void Aqueduct::updateAqueducts()
 {
-  // TEMPORARY!!!!
-  // find adjacent aqueducts
   int i = getTile().getI();
   int j = getTile().getJ();
-  LandOverlay* __west   = Scenario::instance().getCity().getTilemap().at(i - 1, j).get_terrain().getOverlay();
-  LandOverlay* __south  = Scenario::instance().getCity().getTilemap().at(i, j - 1).get_terrain().getOverlay();
-  LandOverlay* __east   = Scenario::instance().getCity().getTilemap().at(i + 1, j).get_terrain().getOverlay();
-  LandOverlay* __north  = Scenario::instance().getCity().getTilemap().at(i, j + 1).get_terrain().getOverlay();
-  _south = dynamic_cast<WaterSource*>(__south); // if not aqueduct -> NULL
-  _west  = dynamic_cast<WaterSource*>(__west);  // it is difficult to check against reservoir
-  _north = dynamic_cast<WaterSource*>(__north); // because reservoir has four exits for water flow
-  _east  = dynamic_cast<WaterSource*>(__east);  // and overlay is 3x3
+  
+  std::list<Tile*> rect = Scenario::instance().getCity().getTilemap().getRectangle( TilePos( i - 1, j - 1),
+                                                TilePos( i + 1, j + 1), 
+                                                !Tilemap::checkCorners );
+  for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+  {
+    Tile* tile = *itTiles;
+    WaterSource* ws = dynamic_cast<WaterSource*>(tile->get_terrain().getOverlay());
+    if (ws != NULL) ws->link(*this);
+  }  
+  
+  setPicture(computePicture());
+}
+
+void Reservoir::updateAqueducts()
+{
+  // TEMPORARY!!!!
+  // find adjacent aqueducts
+  int i = getTile().getI() + 1;
+  int j = getTile().getJ() + 1;
+  
+  try
+  {
+  WaterSource* __west   = dynamic_cast<WaterSource*>(Scenario::instance().getCity().getTilemap().at(i - 2, j).get_terrain().getOverlay());
+  if (__west  != NULL) __west->link(*this);
+  }
+  catch(std::out_of_range)
+  {
+    
+  }
+
+  
+  try
+  {
+  WaterSource* __south  = dynamic_cast<WaterSource*>(Scenario::instance().getCity().getTilemap().at(i, j - 2).get_terrain().getOverlay());
+  if (__south != NULL) __south->link(*this);
+  }
+  catch(std::out_of_range)
+  {
+    
+  }
+
+  
+  try
+  {
+  WaterSource* __east   = dynamic_cast<WaterSource*>(Scenario::instance().getCity().getTilemap().at(i + 2, j).get_terrain().getOverlay());
+  if (__east  != NULL) __east->link(*this);
+  }
+  catch(std::out_of_range)
+  {
+    
+  }
+
+  
+  try
+  {
+  WaterSource* __north  = dynamic_cast<WaterSource*>(Scenario::instance().getCity().getTilemap().at(i, j + 2).get_terrain().getOverlay());
+  if (__north != NULL) __north->link(*this);
+  }
+  catch(std::out_of_range)
+  {
+    
+  }
+  
+  
+  
 }
 
 void Aqueduct::setTerrain(TerrainTile &terrain)
 {
-  bool isRoad = false;
-  isRoad = terrain.isRoad();
+  bool isRoad   = terrain.isRoad();
+  bool isMeadow = terrain.isMeadow();
   terrain.reset();
   terrain.setOverlay(this);
   terrain.setBuilding(true);
   terrain.setRoad(isRoad);
+  terrain.setMeadow(isMeadow);
   terrain.setAqueduct(true); // mandatory!
 }
 
@@ -106,22 +240,35 @@ bool Aqueduct::canBuild( const TilePos& pos ) const
   if( dynamic_cast<Plaza*>( terrain.getOverlay() ) != NULL)
       return false;
 
-  // we can show that will build over other aqueduct
+  // we can show that won't build over other aqueduct
   if( safety_cast< Aqueduct* >( terrain.getOverlay() ) != NULL )
-      return true;
+      return false;
 
+  // also we can't build if next tile is road + aqueduct
+  if ( terrain.isRoad() )
+  {
+    std::list<Tile*> rect = Scenario::instance().getCity().getTilemap().getRectangle( pos + TilePos (-1, -1),
+                                                pos + TilePos (1, 1), 
+                                                !Tilemap::checkCorners );
+    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+    {
+      Tile* tile = *itTiles;
+      if (tile->get_terrain().isRoad() && tile->get_terrain().isAqueduct())
+	return false;
+    }    
+  }
+  
   // and we can't build on intersections
-  if ( terrain.isRoad())
+  if ( terrain.isRoad() )
   {
     int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
-    if (tilemap.at( pos + TilePos( 0, 1 ) ).get_terrain().isRoad()) { directionFlags += 1; } // road to the north
-    if (tilemap.at( pos + TilePos( 0, -1 ) ).get_terrain().isRoad()) { directionFlags += 4; } // road to the south
-    if (tilemap.at( pos + TilePos( 1, 0 ) ).get_terrain().isRoad()) { directionFlags += 2; } // road to the east
-    if (tilemap.at( pos + TilePos( -1, 0) ).get_terrain().isRoad()) { directionFlags += 8; } // road to the west
+    if (tilemap.at( pos + TilePos(  0,  1 ) ).get_terrain().isRoad()) { directionFlags += 1; } // road to the north
+    if (tilemap.at( pos + TilePos(  0, -1 ) ).get_terrain().isRoad()) { directionFlags += 4; } // road to the south
+    if (tilemap.at( pos + TilePos(  1,  0 ) ).get_terrain().isRoad()) { directionFlags += 2; } // road to the east
+    if (tilemap.at( pos + TilePos( -1,  0 ) ).get_terrain().isRoad()) { directionFlags += 8; } // road to the west
 
     std::cout << "direction flags=" << directionFlags << std::endl;
    
-    int index;
     switch (directionFlags)
     {
     case 0:  // no road!
@@ -140,9 +287,7 @@ bool Aqueduct::canBuild( const TilePos& pos ) const
 Picture& Aqueduct::computePicture()
 {
   // find correct picture as for roads
-   int i = getTile().getI();
-   int j = getTile().getJ();
-   
+  
    int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
    
    if (_north != NULL) { directionFlags += 1; }
@@ -190,7 +335,7 @@ Picture& Aqueduct::computePicture()
 
 void Aqueduct::updatePicture()
 {
-    setPicture(computePicture());
+  setPicture(computePicture());
 }
 
 Reservoir::Reservoir()
@@ -237,67 +382,19 @@ void Reservoir::build(const TilePos& pos )
   updateAqueducts();
   
   // update adjacent aqueducts
-  if (_south != NULL) {_south->updateAqueducts(); if (dynamic_cast<Aqueduct*>(_south) != NULL) dynamic_cast<Aqueduct*>(_south)->setPicture(dynamic_cast<Aqueduct*>(_south)->computePicture());}
-  if (_west  != NULL) {_west->updateAqueducts();  if (dynamic_cast<Aqueduct*>(_west) != NULL) dynamic_cast<Aqueduct*>(_west)->setPicture(dynamic_cast<Aqueduct*>(_west)->computePicture());}
-  if (_north != NULL) {_north->updateAqueducts(); if (dynamic_cast<Aqueduct*>(_north) != NULL) dynamic_cast<Aqueduct*>(_north)->setPicture(dynamic_cast<Aqueduct*>(_north)->computePicture());}
-  if (_east  != NULL) {_east->updateAqueducts();  if (dynamic_cast<Aqueduct*>(_east) != NULL) dynamic_cast<Aqueduct*>(_east)->setPicture(dynamic_cast<Aqueduct*>(_east)->computePicture());}
-}
-
-void Reservoir::updateAqueducts()
-{
-  // TEMPORARY!!!! 
-  // find adjacent aqueducts
-  int i = getTile().getI();   
-  int j = getTile().getJ();
-  LandOverlay* __west   = Scenario::instance().getCity().getTilemap().at(i - 1, j + 1).get_terrain().getOverlay();
-  LandOverlay* __south  = Scenario::instance().getCity().getTilemap().at(i + 1, j - 1).get_terrain().getOverlay();
-  LandOverlay* __east   = Scenario::instance().getCity().getTilemap().at(i + 3, j + 1).get_terrain().getOverlay();
-  LandOverlay* __north  = Scenario::instance().getCity().getTilemap().at(i + 1, j + 3).get_terrain().getOverlay();
-  
-  Reservoir* r_south = dynamic_cast<Reservoir*>(__south);
-  Reservoir* r_west  = dynamic_cast<Reservoir*>(__west);
-  Reservoir* r_east  = dynamic_cast<Reservoir*>(__east);
-  Reservoir* r_north = dynamic_cast<Reservoir*>(__north);
-    
-  // it is very complex
-  // need to simplify it
-  
-  if (r_south != NULL)
-  {
-    if (r_south->getTile().getI() == i && r_south->getTile().getJ() == j - 3)
-      _south = dynamic_cast<WaterSource*>(__south);
-  }
-  else
-    _south = dynamic_cast<WaterSource*>(__south); // if not aqueduct -> NULL
-
-  if (r_west != NULL)
-  {
-    if (r_west->getTile().getI() == i - 3 && r_west->getTile().getJ() == j)
-      _west = dynamic_cast<WaterSource*>(_west);    
-  }
-  else
-    _west  = dynamic_cast<WaterSource*>(__west);  // it is difficult to check against reservoir
-  if (r_north != NULL)
-  {
-    if (r_north->getTile().getI() == i && r_north->getTile().getJ() == j + 3)
-      _north = dynamic_cast<WaterSource*>(_north);    
-  }
-  else
-    _north = dynamic_cast<WaterSource*>(__north); // because reservoir has four exits for water flow
-  if (r_east != NULL)
-  {
-    if (r_east->getTile().getI() == i + 3 && r_east->getTile().getJ() == j)
-      _east = dynamic_cast<WaterSource*>(_east);    
-  }
-  else
-    _east = dynamic_cast<WaterSource*>(__east);  // and overlay is 3x3
+  if (dynamic_cast<Aqueduct*>(_south) != NULL) dynamic_cast<Aqueduct*>(_south)->setPicture(dynamic_cast<Aqueduct*>(_south)->computePicture());
+  if (dynamic_cast<Aqueduct*>(_west) != NULL) dynamic_cast<Aqueduct*>(_west)->setPicture(dynamic_cast<Aqueduct*>(_west)->computePicture());
+  if (dynamic_cast<Aqueduct*>(_north) != NULL) dynamic_cast<Aqueduct*>(_north)->setPicture(dynamic_cast<Aqueduct*>(_north)->computePicture());
+  if (dynamic_cast<Aqueduct*>(_east) != NULL) dynamic_cast<Aqueduct*>(_east)->setPicture(dynamic_cast<Aqueduct*>(_east)->computePicture());
 }
 
 void Reservoir::setTerrain(TerrainTile &terrain)
 {
+  bool isMeadow = terrain.isMeadow();
   terrain.reset();
   terrain.setOverlay(this);
   terrain.setBuilding(true);
+  terrain.setMeadow(isMeadow);
 }
 
 void Reservoir::timeStep(const unsigned long time)

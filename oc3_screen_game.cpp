@@ -103,8 +103,9 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
 
 
     getMapArea().setViewSize( engine.getScreenWidth(), 
-                             engine.getScreenHeight()+8*30);  // 8*30: used for high buildings (granary...), visible even when not in tilemap_area.
-    getMapArea().setCenterIJ(25, 10);
+                             engine.getScreenHeight() + 8 * 30);  // 8*30: used for high buildings (granary...), visible even when not in tilemap_area.
+    
+    getMapArea().setCenterIJ(_scenario->getCity().getCameraStartI(), _scenario->getCity().getCameraStartI()); // here move camera to start position of map
 }
 
 TilemapArea& ScreenGame::getMapArea()
@@ -124,13 +125,13 @@ void ScreenGame::setScenario(Scenario &scenario)
 
 void ScreenGame::drawTilemap()
 {
-   _guiTilemap.drawTilemap();
+  _guiTilemap.drawTilemap();
 }
 
 void ScreenGame::drawInterface()
 {
-	_d->gui->beforeDraw();
-    _d->gui->draw();
+  _d->gui->beforeDraw();
+  _d->gui->draw();
 }
 
 void ScreenGame::draw()
