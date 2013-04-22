@@ -40,6 +40,7 @@ void TerrainTile::reset()
   _isRoad     = false;
   _isAqueduct = false;
   _isGarden   = false;
+  _imgId      = 0;
   _overlay    = NULL; // BUG? What will be with old overlay?
 }
 
@@ -155,6 +156,11 @@ void TerrainTile::unserialize(InputSerialStream &stream)
    int terrainBitset = stream.read_int(2, 0, 65535);
    decode(terrainBitset);
    stream.read_objectID((void**)&_overlay);
+}
+
+void TerrainTile::setOriginalImgId( unsigned int id )
+{
+    _imgId = id;
 }
 
 Tile::Tile(const int i, const int j)

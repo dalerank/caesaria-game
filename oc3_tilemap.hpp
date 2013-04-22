@@ -65,6 +65,8 @@ public:
    int encode() const;
    void decode(const int bitset);
 
+   void setOriginalImgId( unsigned int id );
+
    void serialize(OutputSerialStream &stream);
    void unserialize(InputSerialStream &stream);
 private:
@@ -75,6 +77,7 @@ private:
    bool _isRoad;
    bool _isGarden;
    bool _isAqueduct;
+   unsigned int _imgId;
    LandOverlay *_overlay;
 };
 
@@ -113,7 +116,7 @@ private:
    Tile* _master_tile;  // left-most tile if multi-tile, or "this" if single-tile
    TerrainTile _terrain;    // infos about the tile (building, tree, road, water, rock...)
 
-   Picture *_picture; // displayed picture
+   Picture *_picture; // displayed picture   
 };
 
 typedef std::list< const Tile* > ConstWayOnTiles;
