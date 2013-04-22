@@ -39,8 +39,6 @@ struct NEvent;
 class GuiTilemap
 {
 public:
-   typedef std::list<Tile*> Tiles;
-
    GuiTilemap();
    ~GuiTilemap();
 

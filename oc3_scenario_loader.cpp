@@ -191,7 +191,9 @@ void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
          short int imgId;  // 16bits
          f.read((char*)&imgId, 2);
          Tile& tile = oTilemap.at(i, j);
-         decode_img(imgId, tile);      
+         Picture& pic = PicLoader::instance().get_picture( TerrainTileHelper::convId2PicName( imgId ) );
+         tile.set_picture( &pic );
+         tile.get_terrain().setOriginalImgId( imgId );
       }
    }
 
@@ -330,58 +332,6 @@ void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
       }
    }
 }
-
-
-Picture& ScenarioLoader::get_pic_by_id(const int imgId)
-{
-   // example: for land1a_00004.png, pfx=land1a and id=4
-   std::string res_pfx;  // resource name prefix
-   int res_id = imgId;   // id of resource
-
-   if (201<=imgId && imgId < 245)
-   {
-      res_pfx = "plateau";
-      res_id = imgId - 200;
-   }
-   else if (245<=imgId && imgId < 548)
-   {
-      res_pfx = "land1a";
-      res_id = imgId - 244;
-   }
-   else if (548<=imgId && imgId < 779)
-   {
-      res_pfx = "land2a";
-      res_id = imgId - 547;
-   }
-   else if (779<=imgId && imgId < 871)
-   {
-      res_pfx = "land3a";
-      res_id = imgId - 778;      
-   }
-   else
-   {
-      res_pfx = "land1a";
-      res_id = 1;
-      
-      // std::cout.setf(std::ios::hex, std::ios::basefield);
-      // std::cout << "Unknown image Id " << imgId << std::endl;
-      // std::cout.unsetf(std::ios::hex);
-      
-      if (imgId == 0xb10 || imgId == 0xb0d) {res_pfx = "housng1a", res_id = 51;} // TERRIBLE HACK!
-
-      // THROW("Unknown image Id " << imgId);
-   }
-
-   return PicLoader::instance().get_picture(res_pfx, res_id);
-}
-
-
-void ScenarioLoader::decode_img(const int imgId, Tile &oTile)
-{
-    Picture& pic = get_pic_by_id(imgId);
-    oTile.set_picture(&pic);
-}
-
 
 void ScenarioLoader::decode_terrain(const int terrainBitset, Tile &oTile)
 {

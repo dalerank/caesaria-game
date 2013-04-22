@@ -18,22 +18,21 @@
 #define __OPENCAESAR3_ROADPROPAGATOR_H_INCLUDE_
 
 #include "oc3_scopedptr.hpp"
-#include <list>
+#include "oc3_tilemap.hpp"
 
-class Tile;
 class Tilemap;
 
 class RoadPropagator
 {
 public:
-    RoadPropagator( Tilemap& tileMap, Tile* startTile );
+    RoadPropagator( const Tilemap& tileMap, const Tile& startTile );
     ~RoadPropagator();
 
     /** finds the shortest path between origin and destination
     * returns True if a path exists
     * the path is returned in oPathWay
     */
-    bool getPath( Tile* destination, std::list<Tile*>& oPathWay );
+    bool getPath( const Tile& destination, ConstWayOnTiles& oPathWay ) const;
 private:
     class Impl;
     ScopedPtr< Impl > _d;
