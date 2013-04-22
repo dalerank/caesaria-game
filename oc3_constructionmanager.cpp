@@ -23,6 +23,7 @@
 #include "oc3_factory_building.hpp"
 #include "oc3_burningruins.hpp"
 #include "oc3_house.hpp"
+#include "oc3_senate.hpp"
 
 #include <map>
 

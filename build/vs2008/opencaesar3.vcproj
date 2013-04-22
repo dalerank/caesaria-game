@@ -595,6 +595,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_senate.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_senate.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_serializer.cpp"
 				>
 			</File>

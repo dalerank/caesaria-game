@@ -27,7 +27,7 @@
 Aqueduct::Aqueduct()
 {
   setType(B_AQUEDUCT);
-  setPicture( PicLoader::instance().get_picture( ResourceGroup::aqueduct, 133) ); // default picture for aqueduct
+  setPicture( Picture::load( ResourceGroup::aqueduct, 133) ); // default picture for aqueduct
   _size = 1;
   // land2a 119 120         - aqueduct over road
   // land2a 121 122         - aqueduct over plain ground
@@ -258,7 +258,9 @@ bool Aqueduct::canBuild( const TilePos& pos ) const
     {
       Tile* tile = *itTiles;
       if (tile->get_terrain().isRoad() && tile->get_terrain().isAqueduct())
-	return false;
+      {
+	      return false;
+      }
     }    
   }
   
@@ -334,7 +336,7 @@ Picture& Aqueduct::computePicture()
      index = 121; // it's impossible, but ...
    }   
    
-   return PicLoader::instance().get_picture( ResourceGroup::aqueduct, index);
+   return Picture::load( ResourceGroup::aqueduct, index);
 }
 
 void Aqueduct::updatePicture()
@@ -345,7 +347,7 @@ void Aqueduct::updatePicture()
 Reservoir::Reservoir()
 {
   setType(B_RESERVOIR);
-  setPicture( PicLoader::instance().get_picture( ResourceGroup::waterbuildings, 1 )  );
+  setPicture( Picture::load( ResourceGroup::waterbuildings, 1 )  );
   _size = 3;
   
   // utilitya 34      - empty reservoir
@@ -372,7 +374,7 @@ void Reservoir::build(const TilePos& pos )
 {
   Construction::build( pos );  
 
-  setPicture( PicLoader::instance().get_picture( ResourceGroup::waterbuildings, 1 ) );
+  setPicture( Picture::load( ResourceGroup::waterbuildings, 1 ) );
   _mayAnimate = _isNearWater( pos );
   
   updateAqueducts();
@@ -426,7 +428,7 @@ bool Reservoir::canBuild( const TilePos& pos ) const
   bool ret = Construction::canBuild( pos );
 
   bool nearWater = _isNearWater( pos );
-  const_cast< Reservoir* >( this )->setPicture( PicLoader::instance().get_picture( ResourceGroup::waterbuildings, nearWater ? 2 : 1 )  );
+  const_cast< Reservoir* >( this )->setPicture( Picture::load( ResourceGroup::waterbuildings, nearWater ? 2 : 1 )  );
 
   return ret;
 }
