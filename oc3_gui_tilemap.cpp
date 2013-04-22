@@ -172,7 +172,7 @@ void GuiTilemap::drawTilemap()
   }
 
   // SECOND PART: draw all sprites, impassable land and buildings
-  for (itTiles = tiles.begin(); itTiles != tiles.end(); ++itTiles)
+  for( itTiles = tiles.begin(); itTiles != tiles.end(); ++itTiles)
   {
      int i = (*itTiles).first;
      int j = (*itTiles).second;

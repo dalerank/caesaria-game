@@ -30,9 +30,10 @@
 #include "oc3_pic_loader.hpp"
 #include "oc3_path_finding.hpp"
 #include "oc3_serializer.hpp"
+#include "oc3_referencecounted.hpp"
+#include "oc3_smartptr.hpp"
 
-
-class Walker : public Serializable
+class Walker : public Serializable, public ReferenceCounted
 {
 public:
    Walker();
@@ -107,25 +108,7 @@ private:
    static std::map<WalkerType, Walker*> _mapWalkerByID;  // key=walkerType, value=instance
 };
 
-
-/** This is an immigrant coming with his stuff */
-class Immigrant : public Walker
-{
-public:
-    virtual Immigrant* clone() const;
-
-    static Immigrant* create( const Building& startPoint );
-    
-    void onDestination();
-    ~Immigrant();
-private:
-    Immigrant();
- 
-    void assignPath( const Building& home );
-
-    class Impl;
-    std::auto_ptr< Impl > _d;
-};
+typedef SmartPtr< Walker > WalkerPtr;
 
 /** Soldier, friend or foo */
 class Soldier : public Walker

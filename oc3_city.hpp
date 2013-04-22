@@ -126,7 +126,6 @@ private:
 
    ClimateType _climate;
    Tilemap _tilemap;
-   Walkers _walkerList;
    unsigned long _time;  // number of timesteps since start
    int _taxRate;
    

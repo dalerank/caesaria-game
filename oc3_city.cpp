@@ -39,7 +39,8 @@ public:
     long funds;  // amount of money
     unsigned long month; // number of months since start
 
-    std::list<LandOverlay*> overlayList;
+    LandOverlays overlayList;
+    Walkers walkerList;
 };
 
 City::City() : _d( new Impl )
@@ -88,8 +89,8 @@ void City::timeStep()
       monthStep();
    }
 
-   Walkers::iterator walkerIt = _walkerList.begin();
-   while (walkerIt != _walkerList.end())
+   Walkers::iterator walkerIt = _d->walkerList.begin();
+   while (walkerIt != _d->walkerList.end())
    {
       Walker &walker = **walkerIt;
       walker.timeStep(_time);
@@ -97,7 +98,7 @@ void City::timeStep()
       if (walker.isDeleted())
       {
          // remove the walker from the walkers list
-         walkerIt = _walkerList.erase(walkerIt);
+         walkerIt = _d->walkerList.erase(walkerIt);
       }
       else
       {
@@ -163,22 +164,22 @@ void City::_createImigrants()
 
     if( roadEntry )
     {
-		vacantPop = std::max<Uint32>( 1, rand() % std::max<Uint32>( 1, vacantPop / 2 ) );
-        Emigrant* ni = Emigrant::create( *roadEntry );
-        _walkerList.push_back( ni );
+		  vacantPop = std::max<Uint32>( 1, rand() % std::max<Uint32>( 1, vacantPop / 2 ) );
+      Emigrant* ni = Emigrant::create( *roadEntry );
+      _d->walkerList.push_back( ni );
     }    
 }
 
 City::Walkers City::getWalkerList( const WalkerType type )
 {
-	std::list<Walker*> res;
+	Walkers res;
 
 	Walker* walker = 0;
-	for (Walkers::iterator itWalker = _walkerList.begin(); itWalker != _walkerList.end(); ++itWalker )
+	for (Walkers::iterator itWalker = _d->walkerList.begin(); itWalker != _d->walkerList.end(); ++itWalker )
 	{
 		// for each walker
 		walker = *itWalker;
-		if( walker != NULL && walker->getType() == type )
+		if( walker != NULL && (walker->getType() == type || WT_ALL == type ) )
 		{
 			res.push_back(walker);
 		}
@@ -459,8 +460,8 @@ void City::serialize(OutputSerialStream &stream)
    stream.write_int(_d->population, 4, 0, 1000000);
 
    // walkers
-   stream.write_int(_walkerList.size(), 2, 0, 65535);
-   for (Walkers::iterator itWalker = _walkerList.begin(); itWalker != _walkerList.end(); ++itWalker)
+   stream.write_int(_d->walkerList.size(), 2, 0, 65535);
+   for (Walkers::iterator itWalker = _d->walkerList.begin(); itWalker != _d->walkerList.end(); ++itWalker)
    {
       // std::cout << "WRITE WALKER @" << stream.tell() << std::endl;
       Walker &walker = **itWalker;
@@ -504,7 +505,7 @@ void City::unserialize(InputSerialStream &stream)
    {
       // std::cout << "READ WALKER @" << stream.tell() << std::endl;
       Walker &walker = Walker::unserialize_all(stream);
-      _walkerList.push_back(&walker);
+      _d->walkerList.push_back(&walker);
    }
 
    // overlays
@@ -563,12 +564,12 @@ Signal1<int>& City::onMonthChanged()
 
 void City::addWalker( Walker& walker )
 {
-  _walkerList.push_back( &walker );
+  _d->walkerList.push_back( &walker );
 }
 
 void City::removeWalker( Walker& walker )
 {
-  _walkerList.remove( &walker );
+  _d->walkerList.remove( &walker );
 }
 
 void City::setCameraStartIJ(const unsigned int i, const unsigned int j) {_cameraStartI = i; _cameraStartJ = j;}

@@ -468,63 +468,7 @@ TilePos Walker::getIJ() const
     return TilePos( _i, _j );
 }
 
-class Immigrant::Impl
-{
-public:
-    Point destination;
-};
 
-Immigrant::Immigrant() : _d( new Impl )
-{
-   _walkerType = WT_IMMIGRANT;
-   _walkerGraphic = WG_HOMELESS;
-}
-
-Immigrant* Immigrant::clone() const
-{
-   Immigrant* ret = new Immigrant();
-   ret->_d->destination = _d->destination;
-   return ret;
-}
-
-void Immigrant::assignPath( const Building& home )
-{
-    City& city = Scenario::instance().getCity();
-    Tile& exitTile = city.getTilemap().at( city.getRoadExitI(), city.getRoadExitJ() );
-
-    Road* exitRoad = dynamic_cast< Road* >( exitTile.get_terrain().getOverlay() );
-    if( exitRoad )
-    {
-        Propagator pathfinder;
-	    PathWay pathWay;
-        pathfinder.init( const_cast< Building& >( home ) );
-        bool findPath = pathfinder.getPath( *exitRoad, pathWay );
-	    if( findPath )
-	    {
-		    setPathWay( pathWay );
-		    setIJ(_pathWay.getOrigin().getI(), _pathWay.getOrigin().getJ());   
-	    }
-    }
-    else
-        _isDeleted = true;
-}
-
-void Immigrant::onDestination()
-{  
-    _isDeleted = true;
-}
-
-Immigrant* Immigrant::create( const Building& startPoint )
-{
-    Immigrant* newImmigrant = new Immigrant();
-    newImmigrant->assignPath( startPoint );
-    return newImmigrant;
-}
-
-Immigrant::~Immigrant()
-{
-
-}
 
 Soldier::Soldier()
 {
