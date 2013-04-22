@@ -461,6 +461,6 @@ std::string TerrainTileHelper::convId2PicName( const unsigned int imgId )
   }
 
   char ret_str[128];
-  sprintf_s( ret_str, 127, "%s_%05d.png", res_pfx.c_str(), res_id );
+  snprintf( ret_str, 127, "%s_%05d.png", res_pfx.c_str(), res_id );
   return std::string( ret_str );
 }
