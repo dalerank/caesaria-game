@@ -78,6 +78,8 @@ void ServiceBuilding::destroy()
       Scenario::instance().getCity().getWalkerList().remove(walker);
       delete walker;
    }
+
+   WorkingBuilding::destroy();
 }
 
 void ServiceBuilding::deliverService()

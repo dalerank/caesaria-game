@@ -99,27 +99,32 @@ void Emigrant::assignPath( const Road& startPoint )
 	Propagator pathfinder;
 	PathWay pathWay;
 	pathfinder.init( const_cast< Road& >( startPoint ) );
-    if( blankHouse )
-    {
-	    bool findPath = pathfinder.getPathEx( *blankHouse, pathWay, true );
-	    if( findPath )
-	    {        
-		    setPathWay( pathWay );
-		    setIJ(_pathWay.getOrigin().getI(), _pathWay.getOrigin().getJ());   
-	    }
+  if( blankHouse )
+  {
+	  bool findPath = pathfinder.getPathEx( *blankHouse, pathWay, true );
+	  if( findPath )
+	  {        
+	    setPathWay( pathWay );
+	    setIJ(_pathWay.getOrigin().getI(), _pathWay.getOrigin().getJ());   
+	  }
+  }
+  else
+  {
+    Road* exitTile = dynamic_cast< Road* >( city.getTilemap().at( city.getRoadExitIJ() ).get_terrain().getOverlay() );
+    _d->destination = TilePos( -1, -1 );
+    bool pathFound = false;
+    if( exitTile )
+    { 
+      pathFound = pathfinder.getPath( *exitTile, pathWay );
+
+      if( pathFound )
+      {
+        setPathWay( pathWay );
+      }
     }
-    else
-    {
-        Road* exitTile = dynamic_cast< Road* >( city.getTilemap().at( city.getRoadExitIJ() ).get_terrain().getOverlay() );
-        _d->destination = TilePos( -1, -1 );
-        bool findPath = pathfinder.getPath( *exitTile, pathWay );
-        if( findPath )
-        {
-            setPathWay( pathWay );
-        }
-        else
-            _isDeleted = true;
-    }
+
+    _isDeleted = !pathFound;
+  }
 }
 
 void Emigrant::onDestination()

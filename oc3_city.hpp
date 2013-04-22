@@ -36,14 +36,15 @@ class TilePos;
 class City : public Serializable
 {
 public:
+  typedef std::list< Walker* > Walkers;
    City();
    ~City();
 
    void timeStep();  // performs one simulation step
    void monthStep();
 
-   std::list<Walker*>& getWalkerList();
-   std::list<Walker*> getWalkerList( const WalkerType type );
+   Walkers& getWalkerList();
+   Walkers getWalkerList( const WalkerType type );
    std::list<LandOverlay*>& getOverlayList();
    std::list<LandOverlay*> getBuildingList( const BuildingType buildingType );
 
@@ -122,7 +123,7 @@ private:
 
    ClimateType _climate;
    Tilemap _tilemap;
-   std::list<Walker*> _walkerList;
+   Walkers _walkerList;
    std::list<LandOverlay*> _overlayList;
    unsigned long _time;  // number of timesteps since start
    int _taxRate;

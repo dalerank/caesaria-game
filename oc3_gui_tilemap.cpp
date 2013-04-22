@@ -68,17 +68,12 @@ void GuiTilemap::init(City &city, TilemapArea &mapArea, ScreenGame *screen)
 
 void GuiTilemap::drawTileEx( const Tile& tile, const int depth )
 {
-    /*if( tile.is_flat() )
-    {
-        return;  // tile has already been drawn!
-    }*/
-
     Tile* master = tile.get_master_tile();
 
     if( master==NULL )
     {
-        // single-tile
-		drawTile( tile );
+      // single-tile
+		  drawTile( tile );
     }
     else
     {
@@ -90,8 +85,8 @@ void GuiTilemap::drawTileEx( const Tile& tile, const int depth )
             if (std::find(_multiTiles.begin(), _multiTiles.end(), master) == _multiTiles.end())
             {
                 // master has not been drawn yet
-                _multiTiles.push_back(master);  // don't draw that multi-tile again
-				drawTile( *master );
+              _multiTiles.push_back(master);  // don't draw that multi-tile again
+				      drawTile( *master );
             }
         }
     }
@@ -130,102 +125,101 @@ void GuiTilemap::drawTile( const Tile& tile )
 
 void GuiTilemap::drawTilemap()
 {
-   GfxEngine &engine = GfxEngine::instance();
+  GfxEngine &engine = GfxEngine::instance();
 
-   _multiTiles.clear();  // we will draw everything again
-   Tilemap &tilemap = *_tilemap;
-   TilemapArea &mapArea = *_mapArea;
+  _multiTiles.clear();  // we will draw everything again
+  Tilemap &tilemap = *_tilemap;
+  TilemapArea &mapArea = *_mapArea;
 
-   // center the map on the screen
-   int dx = engine.getScreenWidth()/2 - 30*(mapArea.getCenterX()+1) + 1;
-   int dy = engine.getScreenHeight()/2 + 15*(mapArea.getCenterZ()-tilemap.getSize()+1) - 30;
-   _tilemap_xoffset = dx;  // this is the current offset
-   _tilemap_yoffset = dy;  // this is the current offset
+  // center the map on the screen
+  int dx = engine.getScreenWidth()/2 - 30*(mapArea.getCenterX()+1) + 1;
+  int dy = engine.getScreenHeight()/2 + 15*(mapArea.getCenterZ()-tilemap.getSize()+1) - 30;
+  _tilemap_xoffset = dx;  // this is the current offset
+  _tilemap_yoffset = dy;  // this is the current offset
 
-   int lastZ = -1000;  // dummy value
+  int lastZ = -1000;  // dummy value
 
-   const std::vector<std::pair<int, int> >& tiles = mapArea.getTiles();
-   std::vector<std::pair<int, int> >::const_iterator itTiles;
+  const std::vector<std::pair<int, int> >& tiles = mapArea.getTiles();
+  std::vector<std::pair<int, int> >::const_iterator itTiles;
 
-   // FIRST PART: draw all flat land (walkable/boatable)
-   for (itTiles = tiles.begin(); itTiles != tiles.end(); ++itTiles)
-   {
-      int i = (*itTiles).first;
-      int j = (*itTiles).second;
+  // FIRST PART: draw all flat land (walkable/boatable)
+  for( itTiles = tiles.begin(); itTiles != tiles.end(); ++itTiles )
+  {
+    int i = (*itTiles).first;
+    int j = (*itTiles).second;
 
-      Tile& tile = getTileIJ(i, j);
-      Tile* master = tile.get_master_tile();
+    Tile& tile = getTileIJ(i, j);
+    Tile* master = tile.get_master_tile();
 
-      if( tile.is_flat() )
-      {
-         if( master==NULL )
-         {
-            // single-tile
-			 drawTile( tile );
-         }
-         else
-         {
-            // multi-tile: draw the master tile.
-            if (std::find(_multiTiles.begin(), _multiTiles.end(), master) == _multiTiles.end())
-            {
-               // master has not been drawn yet
-               _multiTiles.push_back(master);
-			   drawTile( *master );
-            }
-         }
-      }
-   }
-
-   // SECOND PART: draw all sprites, impassable land and buildings
-   for (itTiles = tiles.begin(); itTiles != tiles.end(); ++itTiles)
-   {
-      int i = (*itTiles).first;
-      int j = (*itTiles).second;
-
-      int z = j - i;
-      if (z != lastZ)
-      {
-         // TODO: pre-sort all animations
-         lastZ = z;
-
-         std::vector<Picture*> pictureList;
-
-         std::list<Walker*> walkerList = _city->getWalkerList();
-         for (std::list<Walker*>::iterator itWalker =  walkerList.begin();
-               itWalker != walkerList.end(); ++itWalker)
-         {
-            // for each walker
-            Walker &anim = **itWalker;
-            int zAnim = anim.getJ() - anim.getI();
-            if (zAnim > z && zAnim <= z+1)
-            {
-               pictureList.clear();
-               anim.getPictureList(pictureList);
-               for (std::vector<Picture*>::iterator picIt = pictureList.begin(); picIt != pictureList.end(); ++picIt)
-               {
-                  if (*picIt == NULL)
-                  {
-                     continue;
-                  }
-                  Picture &pic = **picIt;
-                  engine.drawPicture(pic, 2*(anim.getII()+anim.getJJ())+dx, anim.getII()-anim.getJJ()+dy);
-               }
-            }
-         }
-      }
-
-      Tile& tile = getTileIJ(i, j);
-	  drawTileEx( tile, z );
-   }
-
-   //Third part: drawing build/remove tools
+    if( tile.is_flat() )
     {
-        for( PtrTilesList::iterator itPostTile = _d->postTiles.begin(); itPostTile != _d->postTiles.end(); ++itPostTile )
+      if( master==NULL )
+      {
+        // single-tile
+	      drawTile( tile );
+      }
+      else
+      {
+        // multi-tile: draw the master tile.
+        if (std::find(_multiTiles.begin(), _multiTiles.end(), master) == _multiTiles.end())
         {
-            int z = (*itPostTile)->getJ() - (*itPostTile)->getI();
-		    drawTileEx( **itPostTile, z );
-        }       
+           // master has not been drawn yet
+          _multiTiles.push_back(master);
+	        drawTile( *master );
+        }
+      }
     }
+  }
+
+  // SECOND PART: draw all sprites, impassable land and buildings
+  for (itTiles = tiles.begin(); itTiles != tiles.end(); ++itTiles)
+  {
+     int i = (*itTiles).first;
+     int j = (*itTiles).second;
+
+     int z = j - i;
+     if (z != lastZ)
+     {
+        // TODO: pre-sort all animations
+        lastZ = z;
+
+        std::vector<Picture*> pictureList;
+
+        City::Walkers walkerList = _city->getWalkerList();
+        for( City::Walkers::iterator itWalker =  walkerList.begin();
+              itWalker != walkerList.end(); ++itWalker)
+        {
+           // for each walker
+           Walker &anim = **itWalker;
+           int zAnim = anim.getJ() - anim.getI();
+           if (zAnim > z && zAnim <= z+1)
+           {
+              pictureList.clear();
+              anim.getPictureList(pictureList);
+              for (std::vector<Picture*>::iterator picIt = pictureList.begin(); picIt != pictureList.end(); ++picIt)
+              {
+                 if (*picIt == NULL)
+                 {
+                    continue;
+                 }
+                 engine.drawPicture( **picIt, 2*(anim.getII()+anim.getJJ())+dx, anim.getII()-anim.getJJ()+dy);
+              }
+           }
+        }
+     }
+
+    Tile& tile = getTileIJ(i, j);
+    drawTileEx( tile, z );
+  }
+
+  //Third part: drawing build/remove tools
+  {
+    for( PtrTilesList::iterator itPostTile = _d->postTiles.begin(); itPostTile != _d->postTiles.end(); ++itPostTile )
+    {
+      int z = (*itPostTile)->getJ() - (*itPostTile)->getI();
+	    drawTileEx( **itPostTile, z );
+    }       
+  }
 }
 
 Tile* GuiTilemap::getTileXY(const int x, const int y, bool overborder)

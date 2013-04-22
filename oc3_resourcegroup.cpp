@@ -25,3 +25,4 @@ const char* ResourceGroup::utilitya      = "utilitya";
 const char* ResourceGroup::commerce = "commerce";
 const char* ResourceGroup::security = "security";
 const char* ResourceGroup::aqueduct = "land2a";
+const char* ResourceGroup::waterbuildings = "waterbuildings";

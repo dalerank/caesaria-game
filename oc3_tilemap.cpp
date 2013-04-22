@@ -200,6 +200,11 @@ TilePos Tile::getIJ() const
     return TilePos( _i, _j );
 }
 
+bool Tile::is_master_tile() const
+{
+  return (_master_tile == this);
+}
+
 Tilemap::Tilemap()
 {
    _size = 0;
@@ -388,7 +393,8 @@ void Tilemap::unserialize(InputSerialStream &stream)
          if (imgId != 0 && !terrain.isBuilding())
          {
             // master landscape tile!
-            Picture& pic = picLoader.get_pic_by_id(imgId);
+           std::string picName = TerrainTileHelper::convId2PicName( imgId );
+           Picture& pic = PicLoader::instance().get_picture( picName );
 
             int tile_size = (pic.get_width()+2)/60;  // size of the multi-tile. the multi-tile is a square.
 

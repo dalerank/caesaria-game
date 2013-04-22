@@ -81,6 +81,9 @@ public:
    // loads all resources
    void load_all();
 
+   // create runtime resources
+   void createResources();
+
    // loads all resources of the given archive file
    void load_archive(const std::string &filename);
 
@@ -88,7 +91,7 @@ public:
    int get_pic_id_by_name(std::string &pic_name);
 
    // used for game load. 248 => land1a_00004.png
-   Picture& get_pic_by_id(const int imgId);
+   //Picture& get_pic_by_id(const int imgId);
 
 
 private:

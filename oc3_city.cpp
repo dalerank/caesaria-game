@@ -86,7 +86,7 @@ void City::timeStep()
       monthStep();
    }
 
-   std::list<Walker*>::iterator walkerIt = _walkerList.begin();
+   Walkers::iterator walkerIt = _walkerList.begin();
    while (walkerIt != _walkerList.end())
    {
       Walker &walker = **walkerIt;
@@ -135,21 +135,21 @@ void City::_createImigrants()
 	Uint32 vacantPop=0;
 
 	std::list<LandOverlay*> houses = getBuildingList(B_HOUSE);
-    for( std::list<LandOverlay*>::iterator itHouse = houses.begin(); itHouse != houses.end(); ++itHouse )
-    {
-		House* house = dynamic_cast<House*>(*itHouse);
-        if( house && house->getAccessRoads().size() > 0 )
-        {
-            vacantPop += house->getMaxHabitants() - house->getNbHabitants();
-        }
-    }
+  for( std::list<LandOverlay*>::iterator itHouse = houses.begin(); itHouse != houses.end(); ++itHouse )
+  {
+      House* house = dynamic_cast<House*>(*itHouse);
+      if( house && house->getAccessRoads().size() > 0 )
+      {
+          vacantPop += house->getMaxHabitants() - house->getNbHabitants();
+      }
+  }
 
 	if( vacantPop == 0 )
 	{
 		return;
 	}
 
-	std::list<Walker*> walkers = getWalkerList( WT_EMIGRANT );
+	Walkers walkers = getWalkerList( WT_EMIGRANT );
 
 	if( vacantPop <= walkers.size() )
 	{
@@ -167,17 +167,17 @@ void City::_createImigrants()
     }    
 }
 
-std::list<Walker*>& City::getWalkerList()
+City::Walkers& City::getWalkerList()
 {
    return _walkerList;
 }
 
-std::list<Walker*> City::getWalkerList( const WalkerType type )
+City::Walkers City::getWalkerList( const WalkerType type )
 {
 	std::list<Walker*> res;
 
 	Walker* walker = 0;
-	for (std::list<Walker*>::iterator itWalker = _walkerList.begin(); itWalker != _walkerList.end(); ++itWalker )
+	for (Walkers::iterator itWalker = _walkerList.begin(); itWalker != _walkerList.end(); ++itWalker )
 	{
 		// for each walker
 		walker = *itWalker;
@@ -359,8 +359,6 @@ void City::clearLand(const TilePos& pos  )
       size = overlay->getSize();
       rPos = overlay->getTile().getIJ();
       overlay->destroy();
-      _overlayList.remove(overlay);
-      delete overlay;
     }
 
     std::list<Tile*> clearedTiles = _tilemap.getFilledRectangle( rPos, Size( size - 1 ) );
@@ -391,15 +389,13 @@ void City::clearLand(const TilePos& pos  )
       else
       {
         // choose a random background image, green_something 62-119 or green_flat 232-240
-        std::string res_pfx = "land1a";
-        // 30% => choose green_sth 62-119
+         // 30% => choose green_sth 62-119
         // 70% => choose green_flat 232-289
         int startOffset  = ( (rand() % 10 > 6) ? 62 : 232 ); 
         int imgId = rand() % 58;
 
-        (*itTile)->set_picture(&PicLoader::instance().get_picture(res_pfx, startOffset + imgId));
-      }
-      
+        (*itTile)->set_picture(&PicLoader::instance().get_picture("land1a", startOffset + imgId));
+      }      
     }
       
     // recompute roads;

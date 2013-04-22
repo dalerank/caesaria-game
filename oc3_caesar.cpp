@@ -109,24 +109,28 @@ void CaesarApp::initGuiEnvironment()
 
 void CaesarApp::initPictures()
 {
-   std::cout << "load images begin" << std::endl;
-   PicLoader &pic_loader = PicLoader::instance();
-   pic_loader.load_all();
-   std::cout << "load images end" << std::endl;
+  std::cout << "load images begin" << std::endl;
+  PicLoader &pic_loader = PicLoader::instance();
+  pic_loader.load_all();
+  std::cout << "load images end" << std::endl;
 
-   std::cout << "load walking begin" << std::endl;
-   WalkerLoader &walker_loader = WalkerLoader::instance();
-   walker_loader.loadAll();
-   std::cout << "load walking end" << std::endl;
+  std::cout << "load walking begin" << std::endl;
+  WalkerLoader &walker_loader = WalkerLoader::instance();
+  walker_loader.loadAll();
+  std::cout << "load walking end" << std::endl;
 
-   std::cout << "load fonts begin" << std::endl;
-   FontLoader font_loader;
-   font_loader.load_all();
-   std::cout << "load fonts end" << std::endl;
+  std::cout << "load fonts begin" << std::endl;
+  FontLoader font_loader;
+  font_loader.load_all();
+  std::cout << "load fonts end" << std::endl;
 
-   std::cout << "convert images begin" << std::endl;
-   GfxEngine::instance().load_pictures(pic_loader.get_pictures());
-   std::cout << "convert images end" << std::endl;
+  std::cout << "convert images begin" << std::endl;
+  GfxEngine::instance().load_pictures(pic_loader.get_pictures());
+  std::cout << "convert images end" << std::endl;
+
+  std::cout << "create pictures begin" << std::endl;
+  pic_loader.createResources();
+  std::cout << "create pictures end" << std::endl;
 }
 
 void CaesarApp::loadScenario(const std::string &scenarioFile)
