@@ -395,6 +395,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_immigrant.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_immigrant.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_infoboxmanager.cpp"
 				>
 			</File>
@@ -595,6 +603,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_senate.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_senate.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_serializer.cpp"
 				>
 			</File>
@@ -720,6 +736,14 @@
 			</File>
 			<File
 				RelativePath="..\..\oc3_walker_market_buyer.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_walkermanager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_walkermanager.h"
 				>
 			</File>
 			<File

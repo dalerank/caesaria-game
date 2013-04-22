@@ -140,7 +140,8 @@ void Factory::deliverGood()
    walker->setStock(stock);
    walker->setProducerBuilding(*this);
    walker->start();
-   Scenario::instance().getCity().getWalkerList().push_back(walker);
+
+   Scenario::instance().getCity().addWalker( *walker );
 }
 
 

@@ -13,16 +13,37 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
+#ifndef __OPENCAESAR3_IMMIGRANT_H_INCLUDED__
+#define __OPENCAESAR3_IMMIGRANT_H_INCLUDED__
 
-#include "oc3_resourcegroup.hpp"
+#include "oc3_walker.hpp"
 
-const char* ResourceGroup::panelBackground = "paneling";
-const char* ResourceGroup::menuMiddleIcons = "panelwindows";
-const char* ResourceGroup::land2a = "land2a";
-const char* ResourceGroup::sprites = "sprites";
-const char* ResourceGroup::buildingEngineer = "transport";  
-const char* ResourceGroup::utilitya      = "utilitya";
-const char* ResourceGroup::commerce = "commerce";
-const char* ResourceGroup::security = "security";
-const char* ResourceGroup::aqueduct = "land2a";
-const char* ResourceGroup::waterbuildings = "waterbuildings";
+class City;
+class House;
+
+/** This is an immigrant coming with his stuff */
+class Immigrant : public Walker
+{
+public:
+  static Immigrant* create( City& city, const Building& startPoint );
+
+  void onDestination();
+  ~Immigrant();
+
+protected:
+  virtual Immigrant* clone() const;
+
+  void setCartPicture( Picture* pic );
+  virtual Picture* getCartPicture();
+  
+  Immigrant( City& city );
+
+  void assignPath( Tile& startTile );
+  void _checkPath( Tile& startPoint, Building* house );
+  House* _findBlankHouse();
+private:
+  class Impl;
+  std::auto_ptr< Impl > _d;
+};
+
+#endif

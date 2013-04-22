@@ -51,7 +51,6 @@ public:
   virtual void destroy();
 };
 
-
 class Reservoir : public Construction, public WaterSource
 {
 public:
@@ -60,6 +59,7 @@ public:
   virtual Reservoir* clone() const;
 
   void build(const TilePos& pos );
+  bool canBuild(const TilePos& pos ) const;
   Picture& computePicture();
   void setTerrain(TerrainTile &terrain);
   void timeStep(const unsigned long time);
@@ -67,8 +67,10 @@ public:
   virtual void link(Aqueduct&);
   virtual void link(Reservoir&);
   virtual void destroy();
+  
 private:
   bool _mayAnimate;
+  bool _isNearWater( const TilePos& pos ) const;
 };
 
 #endif // __OPENCAESAR3_WATER_BUILDGINDS_INCLUDED__

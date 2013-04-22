@@ -27,9 +27,7 @@
 #include "oc3_walker_market_buyer.hpp"
 #include "oc3_walker_cart_pusher.hpp"
 #include "oc3_positioni.hpp"
-
-
-std::map<WalkerType, Walker*> Walker::_mapWalkerByID;  // key=walkerType, value=instance
+#include "oc3_walkermanager.h"
 
 Walker::Walker()
 {
@@ -54,39 +52,10 @@ Walker::~Walker()
   
 }
 
-WalkerType Walker::getType() const
+int Walker::getType() const
 {
    return _walkerType;
 }
-
-Walker* Walker::getInstance(const WalkerType walkerType)
-{
-   if (_mapWalkerByID.empty())
-   {
-      // first call to this method
-      _mapWalkerByID[WT_SERVICE] = new ServiceWalker(S_MAX);  // dummy serviceType
-      _mapWalkerByID[WT_MARKET_BUYER] = new MarketBuyer();
-      _mapWalkerByID[WT_CART_PUSHER] = new CartPusher();
-      //_mapWalkerByID[WT_IMMIGRANT] = new Immigrant();
-      _mapWalkerByID[WT_TRAINEE] = new TraineeWalker(WTT_NONE);
-   }
-
-   std::map<WalkerType, Walker*>::iterator mapIt;
-   mapIt = _mapWalkerByID.find(walkerType);
-   Walker *res;
-
-   if (mapIt == _mapWalkerByID.end())
-   {
-      // THROW("Unknown walker type:" << walkerType);
-      res = NULL;
-   }
-   else
-   {
-      res = mapIt->second;
-   }
-   return res;
-}
-
 
 void Walker::timeStep(const unsigned long time)
 {
@@ -107,16 +76,16 @@ bool Walker::isDeleted() const
    return _isDeleted;
 }
 
-void Walker::setIJ(const int i, const int j)
+void Walker::setIJ( const TilePos& pos )
 {
-   _i = i;
-   _j = j;
+   _i = pos.getI();
+   _j = pos.getJ();
 
    _si = _midTileI;
    _sj = _midTileJ;
 
-   _ii = 15*i + _si;
-   _jj = 15*j + _sj;
+   _ii = 15*_i + _si;
+   _jj = 15*_j + _sj;
 }
 
 int Walker::getI() const
@@ -439,8 +408,7 @@ Walker& Walker::unserialize_all(InputSerialStream &stream)
 {
    int objectID = stream.read_objectID();
    WalkerType walkerType = (WalkerType) stream.read_int(1, 0, WT_MAX);
-   Walker *instance = getInstance(walkerType);
-   Walker *res = instance->clone();
+   Walker *res = WalkerManager::getInstance().create( walkerType, TilePos( 0, 0 ) );
    res->unserialize(stream);
    stream.link(objectID, res);
    return *res;
@@ -468,63 +436,7 @@ TilePos Walker::getIJ() const
     return TilePos( _i, _j );
 }
 
-class Immigrant::Impl
-{
-public:
-    Point destination;
-};
 
-Immigrant::Immigrant() : _d( new Impl )
-{
-   _walkerType = WT_IMMIGRANT;
-   _walkerGraphic = WG_HOMELESS;
-}
-
-Immigrant* Immigrant::clone() const
-{
-   Immigrant* ret = new Immigrant();
-   ret->_d->destination = _d->destination;
-   return ret;
-}
-
-void Immigrant::assignPath( const Building& home )
-{
-    City& city = Scenario::instance().getCity();
-    Tile& exitTile = city.getTilemap().at( city.getRoadExitI(), city.getRoadExitJ() );
-
-    Road* exitRoad = dynamic_cast< Road* >( exitTile.get_terrain().getOverlay() );
-    if( exitRoad )
-    {
-        Propagator pathfinder;
-	    PathWay pathWay;
-        pathfinder.init( const_cast< Building& >( home ) );
-        bool findPath = pathfinder.getPath( *exitRoad, pathWay );
-	    if( findPath )
-	    {
-		    setPathWay( pathWay );
-		    setIJ(_pathWay.getOrigin().getI(), _pathWay.getOrigin().getJ());   
-	    }
-    }
-    else
-        _isDeleted = true;
-}
-
-void Immigrant::onDestination()
-{  
-    _isDeleted = true;
-}
-
-Immigrant* Immigrant::create( const Building& startPoint )
-{
-    Immigrant* newImmigrant = new Immigrant();
-    newImmigrant->assignPath( startPoint );
-    return newImmigrant;
-}
-
-Immigrant::~Immigrant()
-{
-
-}
 
 Soldier::Soldier()
 {
@@ -656,8 +568,8 @@ void ServiceWalker::computeWalkerPath()
 
    reservePath(*bestPath);
    setPathWay(*bestPath);
-   setIJ(_pathWay.getOrigin().getI(), _pathWay.getOrigin().getJ());
-   Scenario::instance().getCity().getWalkerList().push_back(this);
+   setIJ(_pathWay.getOrigin().getIJ() );
+   Scenario::instance().getCity().addWalker( *this );
 }
 
 std::set<Building*> ServiceWalker::getReachedBuildings(const TilePos& pos )
@@ -840,7 +752,7 @@ void TraineeWalker::setOriginBuilding(Building &originBuilding)
    _originBuilding = &originBuilding;
 }
 
-WalkerTraineeType TraineeWalker::getType() const
+int TraineeWalker::getType() const
 {
    return _traineeType;
 }
@@ -865,8 +777,8 @@ void TraineeWalker::computeWalkerPath()
       PathWay pathWay;
       pathPropagator.getPath(*_destinationBuilding, pathWay);
       setPathWay(pathWay);
-      setIJ(_pathWay.getOrigin().getI(), _pathWay.getOrigin().getJ());
-      Scenario::instance().getCity().getWalkerList().push_back(this);
+      setIJ( _pathWay.getOrigin().getIJ() );
+      Scenario::instance().getCity().addWalker( *this );
       _destinationBuilding->reserveTrainee(_traineeType);
    }
    else

@@ -13,16 +13,28 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
+#ifndef __OPENCAESAR3_WALKERMANAGER_H_INCLUDED__
+#define __OPENCAESAR3_WALKERMANAGER_H_INCLUDED__
 
-#include "oc3_resourcegroup.hpp"
+#include "oc3_enums.hpp"
+#include "oc3_scopedptr.hpp"
 
-const char* ResourceGroup::panelBackground = "paneling";
-const char* ResourceGroup::menuMiddleIcons = "panelwindows";
-const char* ResourceGroup::land2a = "land2a";
-const char* ResourceGroup::sprites = "sprites";
-const char* ResourceGroup::buildingEngineer = "transport";  
-const char* ResourceGroup::utilitya      = "utilitya";
-const char* ResourceGroup::commerce = "commerce";
-const char* ResourceGroup::security = "security";
-const char* ResourceGroup::aqueduct = "land2a";
-const char* ResourceGroup::waterbuildings = "waterbuildings";
+class Walker;
+class TilePos;
+
+class WalkerManager
+{
+public:
+  static WalkerManager& getInstance();
+
+  Walker* create(const WalkerType walkerType, const TilePos& pos );  // get an instance of the given type
+
+  ~WalkerManager();
+private:
+  WalkerManager();
+
+  class Impl;
+  ScopedPtr< Impl > _d;
+};
+
+#endif

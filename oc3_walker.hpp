@@ -30,17 +30,17 @@
 #include "oc3_pic_loader.hpp"
 #include "oc3_path_finding.hpp"
 #include "oc3_serializer.hpp"
+#include "oc3_referencecounted.hpp"
+#include "oc3_smartptr.hpp"
 
-
-class Walker : public Serializable
+class Walker : public Serializable, public ReferenceCounted
 {
 public:
    Walker();
    virtual ~Walker();
 
    virtual void timeStep(const unsigned long time);  // performs one simulation step
-   WalkerType getType() const;
-   static Walker* getInstance(const WalkerType walkerType);  // get an instance of the given type
+   virtual int getType() const;
    virtual Walker* clone() const = 0;
 
    // position and movement
@@ -49,7 +49,7 @@ public:
    int getJ() const;
    int getII() const;
    int getJJ() const;
-   void setIJ( const int i, const int j);
+   void setIJ( const TilePos& pos );
    void setPathWay(PathWay &pathWay);
    void setDestinationIJ( const int i, const int j );
    void setSpeed(const int speed);
@@ -103,29 +103,9 @@ private:
 
    const Animation *_animation;  // current animation
    int _animIndex;  // current frame in the animation
-
-   static std::map<WalkerType, Walker*> _mapWalkerByID;  // key=walkerType, value=instance
 };
 
-
-/** This is an immigrant coming with his stuff */
-class Immigrant : public Walker
-{
-public:
-    virtual Immigrant* clone() const;
-
-    static Immigrant* create( const Building& startPoint );
-    
-    void onDestination();
-    ~Immigrant();
-private:
-    Immigrant();
- 
-    void assignPath( const Building& home );
-
-    class Impl;
-    std::auto_ptr< Impl > _d;
-};
+typedef SmartPtr< Walker > WalkerPtr;
 
 /** Soldier, friend or foo */
 class Soldier : public Walker
@@ -179,7 +159,7 @@ public:
    TraineeWalker(const WalkerTraineeType traineeType);
    virtual TraineeWalker* clone() const;
    void init(const WalkerTraineeType traineeType);
-   WalkerTraineeType getType() const;
+   int getType() const;
 
    void checkDestination(const BuildingType buildingType, Propagator &pathPropagator);
    void start();

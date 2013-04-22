@@ -27,7 +27,7 @@
 Aqueduct::Aqueduct()
 {
   setType(B_AQUEDUCT);
-  setPicture( PicLoader::instance().get_picture( ResourceGroup::aqueduct, 133) ); // default picture for aqueduct
+  setPicture( Picture::load( ResourceGroup::aqueduct, 133) ); // default picture for aqueduct
   _size = 1;
   // land2a 119 120         - aqueduct over road
   // land2a 121 122         - aqueduct over plain ground
@@ -105,6 +105,8 @@ void Aqueduct::destroy()
   if (_west  != NULL) { _west->_east = NULL;   Aqueduct *a = dynamic_cast<Aqueduct*>(_west);  if (a!=NULL) a->setPicture(a->computePicture());}
   if (_north != NULL) { _north->_south = NULL; Aqueduct *a = dynamic_cast<Aqueduct*>(_north); if (a!=NULL) a->setPicture(a->computePicture());}
   if (_east  != NULL) { _east->_west = NULL;   Aqueduct *a = dynamic_cast<Aqueduct*>(_east);  if (a!=NULL) a->setPicture(a->computePicture());}
+
+  Construction::destroy();
 }
 
 void Reservoir::destroy()
@@ -117,6 +119,8 @@ void Reservoir::destroy()
   if (_west  != NULL) { _west->_east = NULL;   dynamic_cast<Aqueduct*>(_west)->setPicture(dynamic_cast<Aqueduct*>(_west)->computePicture());}
   if (_north != NULL) { _north->_south = NULL; dynamic_cast<Aqueduct*>(_north)->setPicture(dynamic_cast<Aqueduct*>(_north)->computePicture());}
   if (_east  != NULL) { _east->_west = NULL;   dynamic_cast<Aqueduct*>(_east)->setPicture(dynamic_cast<Aqueduct*>(_east)->computePicture());}
+
+  Construction::destroy();
 }
 
 
@@ -254,7 +258,9 @@ bool Aqueduct::canBuild( const TilePos& pos ) const
     {
       Tile* tile = *itTiles;
       if (tile->get_terrain().isRoad() && tile->get_terrain().isAqueduct())
-	return false;
+      {
+	      return false;
+      }
     }    
   }
   
@@ -330,7 +336,7 @@ Picture& Aqueduct::computePicture()
      index = 121; // it's impossible, but ...
    }   
    
-   return PicLoader::instance().get_picture( ResourceGroup::aqueduct, index);
+   return Picture::load( ResourceGroup::aqueduct, index);
 }
 
 void Aqueduct::updatePicture()
@@ -341,10 +347,10 @@ void Aqueduct::updatePicture()
 Reservoir::Reservoir()
 {
   setType(B_RESERVOIR);
-  setPicture( PicLoader::instance().get_picture( ResourceGroup::utilitya, 34 ) );
- _size = 3;
+  setPicture( Picture::load( ResourceGroup::waterbuildings, 1 )  );
+  _size = 3;
   
-  // utilitya 34      - emptry reservoir
+  // utilitya 34      - empty reservoir
   // utilitya 35 ~ 42 - full reservoir animation
  
   _animation.load( ResourceGroup::utilitya, 35, 8);
@@ -368,16 +374,8 @@ void Reservoir::build(const TilePos& pos )
 {
   Construction::build( pos );  
 
-  bool near_water = false;  // tells if the factory is next to a mountain
-
-  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-  std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size+1 ), !Tilemap::checkCorners );
-  for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
-  {
-      near_water |= (*itTiles)->get_terrain().isWater();
-  }
-
-  _mayAnimate = near_water;
+  setPicture( Picture::load( ResourceGroup::waterbuildings, 1 ) );
+  _mayAnimate = _isNearWater( pos );
   
   updateAqueducts();
   
@@ -386,6 +384,20 @@ void Reservoir::build(const TilePos& pos )
   if (dynamic_cast<Aqueduct*>(_west) != NULL) dynamic_cast<Aqueduct*>(_west)->setPicture(dynamic_cast<Aqueduct*>(_west)->computePicture());
   if (dynamic_cast<Aqueduct*>(_north) != NULL) dynamic_cast<Aqueduct*>(_north)->setPicture(dynamic_cast<Aqueduct*>(_north)->computePicture());
   if (dynamic_cast<Aqueduct*>(_east) != NULL) dynamic_cast<Aqueduct*>(_east)->setPicture(dynamic_cast<Aqueduct*>(_east)->computePicture());
+}
+
+bool Reservoir::_isNearWater( const TilePos& pos ) const
+{
+  bool near_water = false;  // tells if the factory is next to a mountain
+
+  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size+1 ), !Tilemap::checkCorners );
+  for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+  {
+    near_water |= (*itTiles)->get_terrain().isWater();
+  }
+
+  return near_water;
 }
 
 void Reservoir::setTerrain(TerrainTile &terrain)
@@ -409,4 +421,14 @@ void Reservoir::timeStep(const unsigned long time)
     
     // takes current animation frame and put it into foreground
     _fgPictures[ 0 ] = _animation.getCurrentPicture(); 
+}
+
+bool Reservoir::canBuild( const TilePos& pos ) const
+{
+  bool ret = Construction::canBuild( pos );
+
+  bool nearWater = _isNearWater( pos );
+  const_cast< Reservoir* >( this )->setPicture( Picture::load( ResourceGroup::waterbuildings, nearWater ? 2 : 1 )  );
+
+  return ret;
 }

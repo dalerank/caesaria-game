@@ -82,6 +82,8 @@ PicMetaData::PicMetaData()
    setRange("govt", 1, 10, info);
    setRange( ResourceGroup::sprites, 1, 8, info );
 
+   setRange( ResourceGroup::waterbuildings, 1, 2, info); //reservoir empty/full
+   
    setOne(rcEntertaimentGroup, 12, 37, 62); // amphitheater
    setOne(rcEntertaimentGroup, 35, 34, 37); // theater
    setOne(rcEntertaimentGroup, 50, 70, 105);  // collosseum
@@ -420,45 +422,7 @@ Picture PicLoader::make_picture(SDL_Surface *surface, const std::string& resourc
    return pic;
 }
 
-
-int PicLoader::get_pic_id_by_name(std::string &pic_name)
-{
-   // example: for land1a_00004.png, return 244+4=248
-   std::string res_pfx;  // resource name prefix = land1a
-   int res_id;   // idx of resource = 4
-
-   // extract the name and idx from name (ex: [land1a, 4])
-   int pos = pic_name.find("_");
-   res_pfx = pic_name.substr(0, pos);
-   std::stringstream ss(pic_name.substr(pos+1));
-   ss >> res_id;
-
-   if (res_pfx == "plateau")
-   {
-      res_id += 200;
-   }
-   else if (res_pfx == "land1a")
-   {
-      res_id += 244;
-   }
-   else if (res_pfx == "land2a")
-   {
-      res_id += 547;
-   }
-   else if (res_pfx == "land3a")
-   {
-      res_id += 778;
-   }
-   else
-   {
-      THROW("Unknown image " << pic_name);
-   }
-
-   return res_id;
-}
-
-
-Picture& PicLoader::get_pic_by_id(const int imgId)
+/*Picture& PicLoader::get_pic_by_id(const int imgId)
 {
    // example: for land1a_00004.png, pfx=land1a and id=4
    std::string res_pfx;  // resource name prefix
@@ -492,8 +456,19 @@ Picture& PicLoader::get_pic_by_id(const int imgId)
    }
 
    return get_picture(res_pfx, res_id);
-}
+} */
 
+void PicLoader::createResources()
+{
+  const Picture& originalPic = get_picture( ResourceGroup::utilitya, 34 );
+  Picture& emptyReservoir = SdlFacade::instance().copyPicture( originalPic );
+  set_picture( std::string( ResourceGroup::waterbuildings ) + "_00001.png", *emptyReservoir.get_surface() );
+
+  Picture& fullReservoir = SdlFacade::instance().copyPicture( originalPic );
+  const Picture& water = get_picture( ResourceGroup::utilitya, 35 );
+  SdlFacade::instance().drawImage( water.get_surface(), fullReservoir.get_surface(), 47, 8 );
+  set_picture( std::string( ResourceGroup::waterbuildings ) + "_00002.png", *fullReservoir.get_surface() );
+}
 
 bool operator<(const WalkerAction &v1, const WalkerAction &v2)
 {

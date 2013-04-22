@@ -47,7 +47,7 @@ static const char* rcGovernmentGroup   = "govt";
 static const char* rcEntertaimentGroup = "entertainment";
 }
 
-std::map<BuildingType, LandOverlay*> LandOverlay::_mapBuildingByID;  // key=buildingType, value=instance
+//std::map<BuildingType, LandOverlay*> LandOverlay::_mapBuildingByID;  // key=buildingType, value=instance
 
 LandOverlay::LandOverlay()
 {
@@ -111,47 +111,48 @@ void LandOverlay::build( const TilePos& pos )
     {
         for (int di = 0; di<_size; ++di)
         {
-            Tile &tile = tilemap.at( pos + TilePos( di, dj ) );
+            Tile& tile = tilemap.at( pos + TilePos( di, dj ) );
             tile.set_master_tile(_master_tile);
             tile.set_picture(_picture);
-            TerrainTile &terrain = tile.get_terrain();
+            TerrainTile& terrain = tile.get_terrain();
             terrain.setOverlay(this);
-            setTerrain(terrain);
+            setTerrain( terrain );
         }
     }
 }
 
 void LandOverlay::destroy()
 {
+  _isDeleted  = true;
 }
 
 Tile& LandOverlay::getTile() const
 {
-   return *_master_tile;
+  return *_master_tile;
 }
 
 int LandOverlay::getSize() const
 {
-   return _size;
+  return _size;
 }
 
 bool LandOverlay::isDeleted() const
 {
-   return _isDeleted;
+  return _isDeleted;
 }
 
 Picture& LandOverlay::getPicture()
 {
-   if (_picture == NULL)
-   {
-      THROW("Picture is NULL!");
-   }
-   return *_picture;
+  if (_picture == NULL)
+  {
+     THROW("Picture is NULL!");
+  }
+  return *_picture;
 }
 
 std::vector<Picture*>& LandOverlay::getForegroundPictures()
 {
-   return _fgPictures;
+  return _fgPictures;
 }
 
 
@@ -163,28 +164,28 @@ GuiInfoBox* LandOverlay::makeInfoBox()
 
 std::string LandOverlay::getName()
 {
-   return _name;
+  return _name;
 }
 
 void LandOverlay::serialize(OutputSerialStream &stream)
 {
-   stream.write_objectID(this);
-   stream.write_int((int) _buildingType, 1, 0, B_MAX);
-   stream.write_int(getTile().getI(), 2, 0, 1000);
-   stream.write_int(getTile().getJ(), 2, 0, 1000);
+  stream.write_objectID(this);
+  stream.write_int((int) _buildingType, 1, 0, B_MAX);
+  stream.write_int(getTile().getI(), 2, 0, 1000);
+  stream.write_int(getTile().getJ(), 2, 0, 1000);
 }
 
 LandOverlay& LandOverlay::unserialize_all(InputSerialStream &stream)
 {
-   int objectID = stream.read_objectID();
-   BuildingType buildingType = (BuildingType) stream.read_int(1, 0, B_MAX);
-   int i = stream.read_int(2, 0, 1000);
-   int j = stream.read_int(2, 0, 1000);
-   LandOverlay *res = ConstructionManager::getInstance().create( buildingType )->clone();
-   res->_master_tile = &Scenario::instance().getCity().getTilemap().at(i, j);
-   res->unserialize(stream);
-   stream.link(objectID, res);
-   return *res;
+  int objectID = stream.read_objectID();
+  BuildingType buildingType = (BuildingType) stream.read_int(1, 0, B_MAX);
+  int i = stream.read_int(2, 0, 1000);
+  int j = stream.read_int(2, 0, 1000);
+  LandOverlay *res = ConstructionManager::getInstance().create( buildingType )->clone();
+  res->_master_tile = &Scenario::instance().getCity().getTilemap().at(i, j);
+  res->unserialize(stream);
+  stream.link(objectID, res);
+  return *res;
 }
 
 void LandOverlay::unserialize(InputSerialStream &stream)
@@ -197,23 +198,23 @@ Construction::Construction()
 
 bool Construction::canBuild(const TilePos& pos ) const
 {
-   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
 
-   bool is_constructible = true;
+  bool is_constructible = true;
 
-   std::list<Tile*> rect = tilemap.getFilledRectangle( pos, Size( _size-1 ) );
-   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
-   {
-      is_constructible &= (*itTiles)->get_terrain().isConstructible();
-   }
+  std::list<Tile*> rect = tilemap.getFilledRectangle( pos, Size( _size-1 ) );
+  for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+  {
+     is_constructible &= (*itTiles)->get_terrain().isConstructible();
+  }
 
-   return is_constructible;
+  return is_constructible;
 }
 
 void Construction::build(const TilePos& pos )
 {
-   LandOverlay::build( pos );
-   computeAccessRoads();
+  LandOverlay::build( pos );
+  computeAccessRoads();
 }
 
 const std::list<Tile*>& Construction::getAccessRoads() const
@@ -256,14 +257,14 @@ Uint8 Construction::getMaxDistance2Road() const
 
 void Construction::burn()
 {
-    _isDeleted = true;
-    Scenario::instance().getCity().disaster( getTile().getIJ(), DSTR_BURN );
+   _isDeleted = true;
+   Scenario::instance().getCity().disaster( getTile().getIJ(), DSTR_BURN );
 }
 
 void Construction::collapse()
 {
-    _isDeleted = true;
-    Scenario::instance().getCity().disaster( getTile().getIJ(), DSTR_COLLAPSE );
+   _isDeleted = true;
+   Scenario::instance().getCity().disaster( getTile().getIJ(), DSTR_COLLAPSE );
 }
 // I didn't decide what is the best approach: make Plaza as constructions or as upgrade to roads
 
@@ -286,7 +287,7 @@ Plaza* Plaza::clone() const
   return new Plaza(*this);
 }
 
-void Plaza::setTerrain(TerrainTile &terrain)
+void Plaza::setTerrain(TerrainTile& terrain)
 {
   //std::cout << "Plaza::setTerrain" << std::endl;
   bool isMeadow = terrain.isMeadow();  
@@ -294,6 +295,7 @@ void Plaza::setTerrain(TerrainTile &terrain)
   terrain.setOverlay(this);
   terrain.setRoad(true);
   terrain.setMeadow(isMeadow);
+  terrain.setOriginalImgId(terrain.getOriginalImgId() );
 }
 
 Picture& Plaza::computePicture()
@@ -412,10 +414,10 @@ bool Road::canBuild(const TilePos& pos ) const
 }
 
 
-void Road::setTerrain(TerrainTile &terrain)
+void Road::setTerrain(TerrainTile& terrain)
 {
    terrain.reset();
-   terrain.setOverlay(this);
+   terrain.setOverlay( this );
    terrain.setRoad(true);
 }
 

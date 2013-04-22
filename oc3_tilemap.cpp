@@ -200,6 +200,11 @@ TilePos Tile::getIJ() const
     return TilePos( _i, _j );
 }
 
+bool Tile::is_master_tile() const
+{
+  return (_master_tile == this);
+}
+
 Tilemap::Tilemap()
 {
    _size = 0;
@@ -354,7 +359,7 @@ void Tilemap::serialize(OutputSerialStream &stream)
             {
                // this is not a building
                pic_name = tile.get_picture().get_name();
-               imgId = picLoader.get_pic_id_by_name(pic_name);
+               imgId = TerrainTileHelper::convPicName2Id(pic_name);
             }
          }
 
@@ -388,7 +393,8 @@ void Tilemap::unserialize(InputSerialStream &stream)
          if (imgId != 0 && !terrain.isBuilding())
          {
             // master landscape tile!
-            Picture& pic = picLoader.get_pic_by_id(imgId);
+           std::string picName = TerrainTileHelper::convId2PicName( imgId );
+           Picture& pic = PicLoader::instance().get_picture( picName );
 
             int tile_size = (pic.get_width()+2)/60;  // size of the multi-tile. the multi-tile is a square.
 
@@ -463,4 +469,40 @@ std::string TerrainTileHelper::convId2PicName( const unsigned int imgId )
   char ret_str[128];
   snprintf( ret_str, 127, "%s_%05d.png", res_pfx.c_str(), res_id );
   return std::string( ret_str );
+}
+
+int TerrainTileHelper::convPicName2Id( std::string &pic_name )
+{
+  // example: for land1a_00004.png, return 244+4=248
+  std::string res_pfx;  // resource name prefix = land1a
+  int res_id;   // idx of resource = 4
+
+  // extract the name and idx from name (ex: [land1a, 4])
+  int pos = pic_name.find("_");
+  res_pfx = pic_name.substr(0, pos);
+  std::stringstream ss(pic_name.substr(pos+1));
+  ss >> res_id;
+
+  if (res_pfx == "plateau")
+  {
+    res_id += 200;
+  }
+  else if (res_pfx == "land1a")
+  {
+    res_id += 244;
+  }
+  else if (res_pfx == "land2a")
+  {
+    res_id += 547;
+  }
+  else if (res_pfx == "land3a")
+  {
+    res_id += 778;
+  }
+  else
+  {
+    THROW("Unknown image " << pic_name);
+  }
+
+  return res_id;
 }

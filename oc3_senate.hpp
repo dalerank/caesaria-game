@@ -13,16 +13,18 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
+#ifndef __OPENCAESAR3_SENATE_H_INCLUDED_
+#define __OPENCAESAR3_SENATE_H_INCLUDED_
 
-#include "oc3_resourcegroup.hpp"
+#include "oc3_service_building.hpp"
 
-const char* ResourceGroup::panelBackground = "paneling";
-const char* ResourceGroup::menuMiddleIcons = "panelwindows";
-const char* ResourceGroup::land2a = "land2a";
-const char* ResourceGroup::sprites = "sprites";
-const char* ResourceGroup::buildingEngineer = "transport";  
-const char* ResourceGroup::utilitya      = "utilitya";
-const char* ResourceGroup::commerce = "commerce";
-const char* ResourceGroup::security = "security";
-const char* ResourceGroup::aqueduct = "land2a";
-const char* ResourceGroup::waterbuildings = "waterbuildings";
+class Senate : public ServiceBuilding
+{
+public:
+  Senate();
+  Senate* clone() const;
+
+  bool canBuild( const TilePos& pos )const;
+};
+
+#endif

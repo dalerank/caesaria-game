@@ -77,7 +77,7 @@ protected:
    int _animIndex; // current frame in the animation
 
    BuildingType _buildingType;
-   static std::map<BuildingType, LandOverlay*> _mapBuildingByID;  // key=buildingType, value=instance
+   //static std::map<BuildingType, LandOverlay*> _mapBuildingByID;  // key=buildingType, value=instance
 };
 
 

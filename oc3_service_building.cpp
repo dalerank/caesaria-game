@@ -74,10 +74,11 @@ void ServiceBuilding::destroy()
 {
    for (std::list<Walker*>::iterator itWalker = _walkerList.begin(); itWalker != _walkerList.end(); ++itWalker)
    {
-      Walker *walker = *itWalker;
-      Scenario::instance().getCity().getWalkerList().remove(walker);
-      delete walker;
+      Scenario::instance().getCity().removeWalker( **itWalker );
+      delete *itWalker;
    }
+
+   WorkingBuilding::destroy();
 }
 
 void ServiceBuilding::deliverService()
@@ -601,22 +602,6 @@ Forum::Forum() : ServiceBuilding(S_FORUM)
 Forum* Forum::clone() const
 {
    return new Forum(*this);
-}
-
-// govt 4  - senate
-// govt 9  - advanced senate
-// govt 5 ~ 8 - senate flags
-
-Senate::Senate() : ServiceBuilding(S_SENATE)
-{
-  setType(B_SENATE);
-  _size = 5;
-  setPicture(PicLoader::instance().get_picture("govt", 4));
-}
-
-Senate* Senate::clone() const
-{
-   return new Senate(*this);
 }
 
 Market::Market() : ServiceBuilding(S_MARKET)

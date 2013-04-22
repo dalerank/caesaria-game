@@ -13,16 +13,36 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "oc3_senate.hpp"
+#include "oc3_scenario.hpp"
+#include "oc3_picture.hpp"
 
-#include "oc3_resourcegroup.hpp"
+// govt 4  - senate
+// govt 9  - advanced senate
+// govt 5 ~ 8 - senate flags
 
-const char* ResourceGroup::panelBackground = "paneling";
-const char* ResourceGroup::menuMiddleIcons = "panelwindows";
-const char* ResourceGroup::land2a = "land2a";
-const char* ResourceGroup::sprites = "sprites";
-const char* ResourceGroup::buildingEngineer = "transport";  
-const char* ResourceGroup::utilitya      = "utilitya";
-const char* ResourceGroup::commerce = "commerce";
-const char* ResourceGroup::security = "security";
-const char* ResourceGroup::aqueduct = "land2a";
-const char* ResourceGroup::waterbuildings = "waterbuildings";
+Senate::Senate() : ServiceBuilding(S_SENATE)
+{
+  setType(B_SENATE);
+  _size = 5;
+  setPicture( Picture::load("govt", 4) );
+}
+
+Senate* Senate::clone() const
+{
+  return new Senate(*this);
+}
+
+bool Senate::canBuild( const TilePos& pos ) const
+{
+  bool mayBuild = ServiceBuilding::canBuild( pos );
+
+  if( mayBuild )
+  {
+    City& city = Scenario::instance().getCity();
+    std::list<LandOverlay*> senate = city.getBuildingList(B_SENATE);
+    mayBuild &= !( senate.size() > 0 );
+  }
+
+  return mayBuild;
+}

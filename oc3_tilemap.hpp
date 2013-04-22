@@ -88,8 +88,8 @@ class TerrainTileHelper
 {
 public:
   static std::string convId2PicName( const unsigned int imgId );
+  static int convPicName2Id(std::string &pic_name);
 };
-
 
 // a Tile in the Tilemap
 class Tile
@@ -112,7 +112,7 @@ public:
    // non-constructible tiles have no foreground => master used for background
    Tile* get_master_tile() const;
    void set_master_tile(Tile* master);
-   bool is_master_tile() const {return (_master_tile == this);};
+   bool is_master_tile() const;;
 
    const TerrainTile& get_terrain() const;
    TerrainTile& get_terrain();

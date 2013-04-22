@@ -29,6 +29,7 @@ public:
     static const char* commerce;
     static const char* security;
     static const char* aqueduct;
+    static const char* waterbuildings;
 };
 
 class ResourceMenu

@@ -16,30 +16,23 @@
 #ifndef __OPENCAESAR3_EMIGRANT_H_INCLUDE_
 #define __OPENCAESAR3_EMIGRANT_H_INCLUDE_
 
-#include "oc3_walker.hpp"
+#include "oc3_immigrant.hpp"
 
 /** This is an immigrant coming with his stuff */
-class Emigrant : public Walker
+class Emigrant : public Immigrant
 {
 public:
-	virtual Emigrant* clone() const;
+	static Emigrant* create( City& city, const Road& startPoint );
 
-	static Emigrant* create( const Road& startPoint );
-
-	void onDestination();
 	void getPictureList(std::vector<Picture*> &oPics);
 	void onNewDirection();
 
 	~Emigrant();
-private:
-	Emigrant();
+protected:
+  virtual Emigrant* clone() const;
+  Picture* getCartPicture();
 
-	void assignPath( const Road& startPoint );
-	class Impl;
-	std::auto_ptr< Impl > _d;
-
-	Picture& _getCartPicture();
-
+	Emigrant( City& city );
 };
 
 #endif

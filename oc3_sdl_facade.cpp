@@ -68,17 +68,19 @@ Picture& SdlFacade::copyPicture(const Picture &pic)
    int height = pic.get_height();
 
    SDL_Surface* img;
-   const SDL_PixelFormat& fmt = *(pic.get_surface()->format);
-   const Uint32 flags = 0;
-   img = SDL_CreateRGBSurface(flags, width, height, fmt.BitsPerPixel, fmt.Rmask, fmt.Gmask, fmt.Bmask, fmt.Amask );
+   //const SDL_PixelFormat& fmt = *(pic.get_surface()->format);
+   //const Uint32 flags = pic.get_surface()->flags;
+   img = SDL_ConvertSurface(pic.get_surface(), pic.get_surface()->format, SDL_SWSURFACE);
    if (img == NULL) THROW("Cannot make surface, size=" << width << "x" << height);
-   drawImage(pic.get_surface(), img, 0, 0);
+   //drawImage(pic.get_surface(), img, 0, 0);
 
    Picture *newpic = new Picture();
-   newpic->init(pic.get_surface(), pic.get_xoffset(), pic.get_yoffset());
+   newpic->init(img, pic.get_xoffset(), pic.get_yoffset());
 
    _createdPics.push_back(newpic);
    return *_createdPics.back();
+
+   
 }
 
 
