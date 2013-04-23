@@ -18,25 +18,13 @@
 #include "oc3_safetycast.hpp"
 #include "oc3_positioni.hpp"
 
-WorkersHunter::WorkersHunter( ServiceBuilding& building )
+WorkersHunter::WorkersHunter( ServiceBuilding& building, const int workersNeeded  )
  : ServiceWalker(S_WORKERS_HUNTER)
 {    
     setServiceBuilding( building );
-}
-
-int WorkersHunter::start( const int workersNeeded )
-{
     _workersNeeded = workersNeeded;
-    ServiceWalker walker( getService() );
-    walker.setServiceBuilding( getServiceBuilding() );
-    std::set<Building*> reachedBuildings = walker.getReachedBuildings( getServiceBuilding().getTile().getIJ() );
-    for( std::set<Building*>::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
-    {
-        if( House* house = safety_cast< House* >( *itBuilding ) )
-            house->applyService(walker);
-    }
-
-    return 0;
+    _walkerGraphic = WG_LIBRARIAN;
+    _walkerType = WT_WORKERS_HUNTER;
 }
 
 void WorkersHunter::hireWorkers( const int workers )
@@ -47,4 +35,16 @@ void WorkersHunter::hireWorkers( const int workers )
 int WorkersHunter::getWorkersNeeded() const
 {
     return _workersNeeded;
+}
+
+void WorkersHunter::onNewTile()
+{
+  Walker::onNewTile();
+
+  std::set<Building*> reachedBuildings = getReachedBuildings( getIJ() );
+  for (std::set<Building*>::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
+  {
+    if( House* house = safety_cast< House* >( *itBuilding ) )
+      (*itBuilding)->applyService(*this);
+  }
 }

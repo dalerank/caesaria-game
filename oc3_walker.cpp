@@ -436,6 +436,10 @@ TilePos Walker::getIJ() const
     return TilePos( _i, _j );
 }
 
+void Walker::deleteLater()
+{
+   _isDeleted = true;
+}
 
 
 Soldier::Soldier()

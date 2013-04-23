@@ -287,6 +287,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_cityservice_workershire.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_cityservice_workershire.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_collapsedruins.cpp"
 				>
 			</File>

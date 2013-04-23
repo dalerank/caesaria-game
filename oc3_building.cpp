@@ -592,13 +592,15 @@ float Building::evaluateService(ServiceWalker &walker)
       return 0.0;
    }
 
-   if (service == S_ENGINEER)
+   switch(service)
    {
+   case S_ENGINEER:
       res = _damageLevel;
-   }
-   else if (service == S_PREFECT)
-   {
+   break;
+
+   case S_PREFECT:
       res = _fireLevel;
+   break;
    }
    return res;
 }

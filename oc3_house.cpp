@@ -296,35 +296,51 @@ float House::evaluateService(ServiceWalker &walker)
       return 0.0;
    }
 
-   if (service == S_ENGINEER)
+   switch(service)
+   {
+   case S_ENGINEER:
    {
       res = _damageLevel;
    }
-   else if (service == S_PREFECT)
-   {
-      res = _fireLevel;
-   }
-   else if (service == S_MARKET)
-   {
-      Market &market = dynamic_cast<Market&> (walker.getServiceBuilding());
-      GoodStore &marketStore = market.getGoodStore();
-      SimpleGoodStore &houseStore = getGoodStore();
-      for (int i = 0; i < G_MAX; ++i)
-      {
-         GoodType goodType = (GoodType) i;
-         int houseQty  = houseStore.getCurrentQty(goodType);
-         int houseSafeQty = _houseLevelSpec->computeMonthlyConsumption(*this, goodType)
-                            + _nextHouseLevelSpec->computeMonthlyConsumption(*this, goodType);
-         int marketQty = marketStore.getCurrentQty(goodType);
-         if (houseQty < houseSafeQty && marketQty > 0)
-         {
-            res += std::min(houseSafeQty - houseQty, marketQty);
-         }
-      }
-   }
-   else
-   {
-      return _houseLevelSpec->evaluateServiceNeed(*this, service);
+   break;
+   case S_PREFECT:
+     {
+       res = _fireLevel;
+     }
+   break;
+
+   case S_MARKET:
+     {
+       Market &market = dynamic_cast<Market&> (walker.getServiceBuilding());
+       GoodStore &marketStore = market.getGoodStore();
+       SimpleGoodStore &houseStore = getGoodStore();
+       for (int i = 0; i < G_MAX; ++i)
+       {
+          GoodType goodType = (GoodType) i;
+          int houseQty  = houseStore.getCurrentQty(goodType);
+          int houseSafeQty = _houseLevelSpec->computeMonthlyConsumption(*this, goodType)
+                             + _nextHouseLevelSpec->computeMonthlyConsumption(*this, goodType);
+          int marketQty = marketStore.getCurrentQty(goodType);
+          if (houseQty < houseSafeQty && marketQty > 0)
+          {
+             res += std::min(houseSafeQty - houseQty, marketQty);
+          }
+       }
+     }
+   break;
+
+   case S_WORKERS_HUNTER:
+     {
+        res = _freeWorkersCount;
+        _reservedServices.erase( S_WORKERS_HUNTER );
+     }
+   break;
+
+   default:
+     {
+       return _houseLevelSpec->evaluateServiceNeed(*this, service);
+     }
+   break;
    }
 
    // std::cout << "House evaluateService " << service << "=" << res << std::endl;

@@ -73,6 +73,7 @@ public:
 
    // state
    bool isDeleted() const;  // returns true if the walker should be forgotten
+   void deleteLater();
 
 protected:
    WalkerType _walkerType;

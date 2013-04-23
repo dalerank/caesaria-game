@@ -29,6 +29,7 @@
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_safetycast.hpp"
 #include "oc3_cityservice_emigrant.hpp"
+#include "oc3_cityservice_workershire.hpp"
 
 typedef std::vector< CityServicePtr > CityServices;
 
@@ -77,6 +78,7 @@ City::City() : _d( new Impl )
      THROW("NOT ENOUGH MEMORY!!!! FATAL");
 
    addService( CityServiceEmigrant::create( *this ) );
+   addService( CityServiceWorkersHire::create( *this ) );
 }
 
 void City::timeStep()

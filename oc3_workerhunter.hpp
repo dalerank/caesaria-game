@@ -21,11 +21,11 @@
 class WorkersHunter : public ServiceWalker
 {
 public:
-    WorkersHunter( ServiceBuilding& building );
+    WorkersHunter( ServiceBuilding& building, const int workersNeeded );
 
     int getWorkersNeeded() const;
 
-    int start( const int workersNeeded );
+    void onNewTile();
     void hireWorkers( const int workers );
 private:
     int _workersNeeded;

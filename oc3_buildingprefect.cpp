@@ -11,7 +11,7 @@ BuildingPrefect::BuildingPrefect() : ServiceBuilding(S_PREFECT)
 
   _animation.load( ResourceGroup::security, 2, 10);
   _animation.setFrameDelay( 4 );
-  _animation.setOffset( Point( 10, 42 ) );
+  _animation.setOffset( Point( 20, 36 ) );
   _fgPictures.resize(1);
 }
 
