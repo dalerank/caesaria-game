@@ -1,4 +1,4 @@
-#include "oc3_cityservice_emigrant.h"
+#include "oc3_cityservice_emigrant.hpp"
 #include "oc3_city.hpp"
 #include "oc3_safetycast.hpp"
 #include "oc3_emigrant.hpp"

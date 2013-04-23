@@ -28,7 +28,7 @@
 #include "oc3_enums.hpp"
 #include "oc3_serializer.hpp"
 #include "oc3_signals.hpp"
-#include "oc3_cityservice.h"
+#include "oc3_cityservice.hpp"
 
 #include <list>
 

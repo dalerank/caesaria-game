@@ -26,9 +26,9 @@
 #include "oc3_exception.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_constructionmanager.hpp"
-#include "oc3_astarpathfinding.h"
+#include "oc3_astarpathfinding.hpp"
 #include "oc3_safetycast.hpp"
-#include "oc3_cityservice_emigrant.h"
+#include "oc3_cityservice_emigrant.hpp"
 
 typedef std::vector< CityServicePtr > CityServices;
 

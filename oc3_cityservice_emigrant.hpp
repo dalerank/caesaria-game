@@ -1,7 +1,7 @@
 #ifndef __OPENCAESAR3_CITYSERVICE_EMIGRANT_H_INCLUDED__
 #define __OPENCAESAR3_CITYSERVICE_EMIGRANT_H_INCLUDED__
 
-#include "oc3_cityservice.h"
+#include "oc3_cityservice.hpp"
 
 class CityServiceEmigrant : public CityService
 {

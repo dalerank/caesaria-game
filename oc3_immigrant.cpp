@@ -17,7 +17,7 @@
 #include "oc3_positioni.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_safetycast.hpp"
-#include "oc3_astarpathfinding.h"
+#include "oc3_astarpathfinding.hpp"
 
 class Immigrant::Impl
 {

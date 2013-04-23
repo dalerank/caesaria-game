@@ -1,7 +1,7 @@
-#include "oc3_astarpathfinding.h"
+#include "oc3_astarpathfinding.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_positioni.hpp"
-#include "oc3_astarpoint.h"
+#include "oc3_astarpoint.hpp"
 #include "oc3_path_finding.hpp"
 
 using namespace std;

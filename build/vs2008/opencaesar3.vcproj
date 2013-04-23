@@ -203,11 +203,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_astarpathfinding.h"
+				RelativePath="..\..\oc3_astarpathfinding.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_astarpoint.h"
+				RelativePath="..\..\oc3_astarpoint.hpp"
 				>
 			</File>
 			<File
@@ -275,7 +275,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_cityservice.h"
+				RelativePath="..\..\oc3_cityservice.hpp"
 				>
 			</File>
 			<File
@@ -283,7 +283,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_cityservice_emigrant.h"
+				RelativePath="..\..\oc3_cityservice_emigrant.hpp"
 				>
 			</File>
 			<File
