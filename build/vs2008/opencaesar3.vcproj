@@ -235,6 +235,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_buildingprefect.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_buildingprefect.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_buildmenu.cpp"
 				>
 			</File>
@@ -264,6 +272,18 @@
 			</File>
 			<File
 				RelativePath="..\..\oc3_city.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_cityservice.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_cityservice_emigrant.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_cityservice_emigrant.h"
 				>
 			</File>
 			<File

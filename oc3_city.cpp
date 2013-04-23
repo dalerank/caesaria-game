@@ -24,11 +24,13 @@
 #include "oc3_building_data.hpp"
 #include "oc3_path_finding.hpp"
 #include "oc3_exception.hpp"
-#include "oc3_emigrant.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_constructionmanager.hpp"
 #include "oc3_astarpathfinding.h"
 #include "oc3_safetycast.hpp"
+#include "oc3_cityservice_emigrant.h"
+
+typedef std::vector< CityServicePtr > CityServices;
 
 class City::Impl
 {
@@ -44,6 +46,7 @@ public:
     LandOverlays overlayList;
     Walkers walkerList;
     TilePos roadEntry; //coordinates can't be negative!
+    CityServices services;
 };
 
 City::City() : _d( new Impl )
@@ -72,60 +75,73 @@ City::City() : _d( new Impl )
    if ( pGraphicGrid == NULL || pEdgeGrid == NULL || pTerrainGrid == NULL ||
      pRndmTerGrid == NULL || pRandomGrid == NULL || pZeroGrid == NULL )
      THROW("NOT ENOUGH MEMORY!!!! FATAL");
+
+   addService( CityServiceEmigrant::create( *this ) );
 }
 
 void City::timeStep()
 {
-   // CALLED 11 time/second
-   _time += 1;
+  // CALLED 11 time/second
+  _time += 1;
 
-   if( _time % 22 == 1 )
-   {
-	   _createImigrants();
-   }
+  if( _time % 110 == 1 )
+  {
+     // every X seconds
+     _d->month++;
+     monthStep();
+  }
 
-   if( _time % 110 == 1 )
-   {
-      // every X seconds
-      _d->month++;
-      monthStep();
-   }
+  Walkers::iterator walkerIt = _d->walkerList.begin();
+  while (walkerIt != _d->walkerList.end())
+  {
+     Walker& walker = **walkerIt;
+     walker.timeStep(_time);
 
-   Walkers::iterator walkerIt = _d->walkerList.begin();
-   while (walkerIt != _d->walkerList.end())
-   {
-      Walker &walker = **walkerIt;
-      walker.timeStep(_time);
+     if( walker.isDeleted() )
+     {
+       // remove the walker from the walkers list  
+       delete *walkerIt;
+       walkerIt = _d->walkerList.erase(walkerIt);       
+     }
+     else
+     {
+        ++walkerIt;
+     }
+  }
 
-      if (walker.isDeleted())
+  LandOverlays::iterator overlayIt = _d->overlayList.begin();
+  while( overlayIt != _d->overlayList.end() )
+  {
+      (*overlayIt)->timeStep(_time);
+
+      if( (*overlayIt)->isDeleted() )
       {
-         // remove the walker from the walkers list
-         walkerIt = _d->walkerList.erase(walkerIt);
+         // remove the overlay from the overlay list
+          (*overlayIt)->destroy();
+          delete (*overlayIt);
+
+          overlayIt = _d->overlayList.erase(overlayIt);
       }
       else
       {
-         ++walkerIt;
+         ++overlayIt;
       }
-   }
+  }
 
-   std::list<LandOverlay*>::iterator overlayIt = _d->overlayList.begin();
-   while( overlayIt != _d->overlayList.end() )
-   {
-       (*overlayIt)->timeStep(_time);
+  CityServices::iterator serviceIt=_d->services.begin();
+  while( serviceIt != _d->services.end() )
+  {
+    (*serviceIt)->update( _time );
 
-       if( (*overlayIt)->isDeleted() )
-       {
-          // remove the overlay from the overlay list
-           (*overlayIt)->destroy();
-           delete (*overlayIt);
+    if( (*serviceIt)->isDeleted() )
+    {
+      (*overlayIt)->destroy();
 
-           overlayIt = _d->overlayList.erase(overlayIt);
-       }
-       else
-       {
-          ++overlayIt;
-       }
-   }
+      serviceIt = _d->services.erase(serviceIt);
+    }
+    else
+      serviceIt++;
+  }
 }
 
 void City::monthStep()
@@ -133,42 +149,6 @@ void City::monthStep()
    collectTaxes();
    _calculatePopulation();
    _d->onMonthChangedSignal.emit( _d->month );
-}
-
-void City::_createImigrants()
-{
-	Uint32 vacantPop=0;
-
-	std::list<LandOverlay*> houses = getBuildingList(B_HOUSE);
-  for( std::list<LandOverlay*>::iterator itHouse = houses.begin(); itHouse != houses.end(); ++itHouse )
-  {
-      House* house = dynamic_cast<House*>(*itHouse);
-      if( house && house->getAccessRoads().size() > 0 )
-      {
-          vacantPop += house->getMaxHabitants() - house->getNbHabitants();
-      }
-  }
-
-	if( vacantPop == 0 )
-	{
-		return;
-	}
-
-	Walkers walkers = getWalkerList( WT_EMIGRANT );
-
-	if( vacantPop <= walkers.size() )
-	{
-		return;
-	}
-
-    Tile& roadTile = _tilemap.at( _d->roadEntry );
-    Road* roadEntry = dynamic_cast< Road* >( roadTile.get_terrain().getOverlay() );
-
-    if( roadEntry )
-    {
-		  vacantPop = std::max<Uint32>( 1, rand() % std::max<Uint32>( 1, vacantPop / 2 ) );
-      Emigrant::create( *this, *roadEntry );
-    }    
 }
 
 City::Walkers City::getWalkerList( const WalkerType type )
@@ -198,7 +178,6 @@ unsigned long City::getTime()
 {
    return _time;
 }
-
 
 std::list<LandOverlay*> City::getBuildingList(const BuildingType buildingType)
 {
@@ -580,3 +559,17 @@ void City::setCameraStartIJ(const TilePos pos) {_cameraStartI = pos.getI(); _cam
 unsigned int City::getCameraStartI() const {return _cameraStartI;}
 unsigned int City::getCameraStartJ() const {return _cameraStartJ;}
 TilePos City::getCameraStartIJ() const {return TilePos(_cameraStartI,_cameraStartJ);}
+
+void City::addService( CityServicePtr service )
+{
+  _d->services.push_back( service );
+}
+
+CityServicePtr City::findService( const std::string& name )
+{
+  for( CityServices::iterator sIt=_d->services.begin(); sIt != _d->services.end(); sIt++ )
+    if( name == (*sIt)->getName() )
+      return *sIt;
+
+  return CityServicePtr();
+}

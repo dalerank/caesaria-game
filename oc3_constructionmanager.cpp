@@ -24,6 +24,7 @@
 #include "oc3_burningruins.hpp"
 #include "oc3_house.hpp"
 #include "oc3_senate.hpp"
+#include "oc3_buildingprefect.hpp"
 
 #include <map>
 

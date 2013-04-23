@@ -28,6 +28,7 @@
 #include "oc3_enums.hpp"
 #include "oc3_serializer.hpp"
 #include "oc3_signals.hpp"
+#include "oc3_cityservice.h"
 
 #include <list>
 
@@ -48,8 +49,11 @@ public:
   void addWalker( Walker& walker );
   void removeWalker( Walker& walker );
 
-   LandOverlays& getOverlayList();
-   LandOverlays getBuildingList( const BuildingType buildingType );
+  void addService( CityServicePtr service );
+  CityServicePtr findService( const std::string& name );
+
+  LandOverlays& getOverlayList();
+  LandOverlays getBuildingList( const BuildingType buildingType );
 
    void setRoadExitIJ(const unsigned int i, const unsigned int j);
    void setBoatEntryIJ(const unsigned int i, const unsigned int j);

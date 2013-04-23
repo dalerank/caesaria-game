@@ -62,23 +62,13 @@ public:
    virtual void deliverService();
 };
 
-
 class BuildingFountain : public ServiceBuilding
 {
 public:
-   BuildingFountain();
-   BuildingFountain* clone() const;
+  BuildingFountain();
+  BuildingFountain* clone() const;
 
-   virtual void deliverService();
-};
-
-class BuildingPrefect : public ServiceBuilding
-{
-public:
-   BuildingPrefect();
-   BuildingPrefect* clone() const;
-   void timeStep(const unsigned long time);
-   void deliverService();
+  virtual void deliverService();
 };
 
 class EntertainmentBuilding : public ServiceBuilding
