@@ -161,7 +161,7 @@ void GuiTilemap::drawTilemap()
       else
       {
         // multi-tile: draw the master tile.
-        if (std::find(_multiTiles.begin(), _multiTiles.end(), master) == _multiTiles.end())
+        if( std::find(_multiTiles.begin(), _multiTiles.end(), master) == _multiTiles.end() )
         {
            // master has not been drawn yet
           _multiTiles.push_back(master);
@@ -373,17 +373,13 @@ void GuiTilemap::handleEvent( NEvent& event )
         }
         break;
 
-        case OC3_LMOUSE_LEFT_UP:
+        case OC3_LMOUSE_LEFT_UP:            // left button
         {
             Tile* tile = getTileXY( event.MouseEvent.getPosition() );  // tile under the cursor (or NULL)
             if( tile == 0 )
                 break;
 
-            TilePos tilePos = tile->getIJ();
-//            std::cout << "Tile ("<< tilePos.getI() <<","<< tilePos.getJ() <<") pressed at ("
-//                      << event.MouseEvent.X <<","<< event.MouseEvent.Y <<") left button" << std::endl;
 
-            // left button
             if( _d->changeCommand.isValid() )
             {                
                 if( _d->changeCommand.isRemoveTool() )
@@ -399,7 +395,7 @@ void GuiTilemap::handleEvent( NEvent& event )
             }
             else
             {
-                getMapArea().setCenterIJ( tilePos.getI(), tilePos.getJ() );
+                getMapArea().setCenterIJ( tile->getIJ() );
             }
 
             _d->lmbPressed = false;

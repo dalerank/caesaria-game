@@ -25,7 +25,6 @@
 
 #include "oc3_tilemap.hpp"
 
-
 /* A subset of the tilemap, this is the visible area. Has convenient methods to sort tiles per depth */
 class TilemapArea
 {
@@ -38,7 +37,7 @@ public:
    // size of the view in pixel
    void setViewSize(const int width, const int height);
 
-   void setCenterIJ(const int i, const int j);
+   void setCenterIJ( const TilePos& pos );
    void setCenterXZ(const int x, const int z);
    int getCenterX();
    int getCenterZ();
@@ -49,7 +48,7 @@ public:
    void moveDown(const int amount);
 
    // return tile coordinates (i, j), in order of depth
-   const std::vector<std::pair<int, int> >& getTiles();
+   const std::vector< std::pair<int, int> >& getTiles();
 
 private:
 
@@ -59,7 +58,7 @@ private:
    int _view_height;   // height of the view (in tiles)  nb_tilesY = 1+2*_view_height
    int _center_x;      // horizontal center of the view (in tiles)
    int _center_z;      // vertical center of the view (in tiles)
-   std::vector<std::pair<int, int> > _coordinates;  // cached list of visible tiles
+   std::vector< std::pair<int, int> > _coordinates;  // cached list of visible tiles
 };
 
 

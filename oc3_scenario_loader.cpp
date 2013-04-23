@@ -397,7 +397,7 @@ void ScenarioLoader::init_entry_exit(std::fstream &f, City &ioCity)
    f.read((char*)&i, 2);
    f.read((char*)&j, 2);
    
-   ioCity.setRoadEntryIJ(i, size - j - 1);
+   ioCity.setRoadEntry( TilePos( i, size - j - 1 ) );
 
    i = 0;
    j = 0;
@@ -470,7 +470,7 @@ void ScenarioLoader::_initEntryExitPicture( City &ioCity )
     Tilemap& tileMap = ioCity.getTilemap();
 
     // exit and entry can't point to one tile or .... can!
-    initEntryExitTile( ioCity.getRoadEntryIJ(), tileMap, 89, false );
-    initEntryExitTile( ioCity.getRoadExitIJ(),  tileMap, 85, true );    
+    initEntryExitTile( ioCity.getRoadEntry(), tileMap, 89, false );
+    initEntryExitTile( ioCity.getRoadExitIJ(), tileMap, 85, true );    
 }
 

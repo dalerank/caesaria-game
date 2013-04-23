@@ -26,7 +26,6 @@
 
 #include <list>
 
-
 class PathWay : public Serializable
 {
 public:
@@ -66,7 +65,6 @@ private:
 };
 bool operator<(const PathWay &v1, const PathWay &v2);
 
-
 class Tilemap;
 class City;
 class Propagator
@@ -93,8 +91,6 @@ public:
     */
    bool getPath(Road &destination, PathWay &oPathWay);
    bool getPath(Building &destination, PathWay &oPathWay);
-   bool getPathEx(Building &destination, PathWay &oPathWay, bool addLastSteps );
-   bool getPathDebug( Tile& destination, PathWay &oPathWay );
 
    /** returns all paths starting at origin */
    void getAllPaths(const int maxDistance, std::list<PathWay> &oPathWayList);

@@ -121,9 +121,13 @@ void LandOverlay::build( const TilePos& pos )
     }
 }
 
-void LandOverlay::destroy()
+void LandOverlay::deleteLater()
 {
   _isDeleted  = true;
+}
+
+void LandOverlay::destroy()
+{
 }
 
 Tile& LandOverlay::getTile() const
@@ -192,6 +196,11 @@ void LandOverlay::unserialize(InputSerialStream &stream)
 {
 }
 
+bool LandOverlay::isWalkable() const
+{
+  return false;
+}
+
 Construction::Construction()
 {
 }
@@ -257,13 +266,13 @@ Uint8 Construction::getMaxDistance2Road() const
 
 void Construction::burn()
 {
-   _isDeleted = true;
+   deleteLater();
    Scenario::instance().getCity().disaster( getTile().getIJ(), DSTR_BURN );
 }
 
 void Construction::collapse()
 {
-   _isDeleted = true;
+   deleteLater();
    Scenario::instance().getCity().disaster( getTile().getIJ(), DSTR_COLLAPSE );
 }
 // I didn't decide what is the best approach: make Plaza as constructions or as upgrade to roads
@@ -346,6 +355,10 @@ void Garden::setTerrain(TerrainTile &terrain)
   terrain.setMeadow(isMeadow);    
 }
 
+bool Garden::isWalkable() const
+{
+  return true;
+}
 
 Road::Road()
 {
@@ -494,6 +507,11 @@ Picture& Road::computePicture()
 
    Picture *picture = &PicLoader::instance().get_picture( rcRoadGroup, index);
    return *picture;
+}
+
+bool Road::isWalkable() const
+{
+  return true;
 }
 
 Building::Building()

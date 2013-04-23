@@ -44,6 +44,8 @@ public:
    Tile& getTile() const;  // master tile, in case of multi-tile area
    int getSize() const;  // size in tiles (1=1x1, 2=2x2, ...)
    bool isDeleted() const;  // returns true if the overlay should be forgotten
+   void deleteLater();
+   virtual bool isWalkable() const;
    virtual LandOverlay* clone() const = 0;
    virtual void setTerrain( TerrainTile &terrain ) = 0;
    virtual void build( const TilePos& pos );
@@ -102,20 +104,23 @@ class Garden : public Construction
 {
 public:
   Garden();
-  virtual Garden* clone() const;
-  virtual void setTerrain(TerrainTile &terrain);  
+  Garden* clone() const;
+  void setTerrain(TerrainTile &terrain);  
+  bool isWalkable() const;
 };
 
 class Road : public Construction
 {
 public:
   Road();
-  virtual Road* clone() const;
-
-  virtual void build(const TilePos& pos );
+  Road* clone() const;
+  
   virtual Picture& computePicture();
-  virtual void setTerrain(TerrainTile &terrain);
+
+  void build(const TilePos& pos );
+  void setTerrain(TerrainTile &terrain);
   bool canBuild(const TilePos& pos ) const;
+  bool isWalkable() const;
 };
 
 class Plaza : public Road
@@ -127,7 +132,6 @@ public:
   virtual bool canBuild(const TilePos& pos ) const;
   virtual Picture& computePicture();
 };
-
 
 class ServiceWalker;
 class Building : public Construction

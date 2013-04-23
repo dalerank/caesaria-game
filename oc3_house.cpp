@@ -391,8 +391,19 @@ void House::addHabitants( const Uint8 newHabitCount )
 
 void House::destroy()
 {
-  City& city = Scenario::instance().getCity();
-  Immigrant::create( city, *this );
+  int lostPeoples = _currentHabitants;
+  _currentHabitants = _maxHabitants;
+
+  if( lostPeoples > 0 )
+  {
+    City& city = Scenario::instance().getCity();
+    Immigrant::create( city, *this );
+  }
 
   Building::destroy();
+}
+
+bool House::isWalkable() const
+{
+  return (_houseId == smallHovel && _currentHabitants == 0) ? true : false;
 }

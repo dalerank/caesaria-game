@@ -199,6 +199,18 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_astarpathfinding.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_astarpathfinding.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_astarpoint.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_building.cpp"
 				>
 			</File>

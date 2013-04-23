@@ -63,6 +63,9 @@ public:
     int getI() const { return x; }
     int getJ() const { return y; }
 
+    void setI( const int i ) { x = i; }
+    void setJ( const int j ) { y = j; }
+
     TilePos& operator=(const TilePos& other) { set( other.x, other.y ); return *this; }
     TilePos& operator+=(const TilePos& other) { set( x+other.x, y+other.y ); return *this; }
     TilePos operator+(const TilePos& other) const { return TilePos( x + other.x, y + other.y ); }

@@ -17,6 +17,7 @@
 #include "oc3_positioni.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_safetycast.hpp"
+#include "oc3_astarpathfinding.h"
 
 class Immigrant::Impl
 {
@@ -55,7 +56,8 @@ House* Immigrant::_findBlankHouse()
   {
     if( House* house = dynamic_cast<House*>(*itHouse) )
     {
-      if( house->getNbHabitants() < house->getMaxHabitants() )
+      if( house->getAccessRoads().size() > 0 && 
+          ( house->getNbHabitants() < house->getMaxHabitants() ) )
       {
         blankHouse = house;
         _d->destination = house->getTile().getIJ();
@@ -73,29 +75,17 @@ void Immigrant::_checkPath( Tile& startPoint, Building* house )
   PathWay pathWay;
   pathfinder.init( startPoint );
 
-  if( house && startPoint.get_terrain().isRoad() )
-  {
-    bool findPath = pathfinder.getPathEx( *house, pathWay, true );
-    if( findPath )
-    {        
-      setPathWay( pathWay );
-      setIJ( _pathWay.getOrigin().getIJ() );   
-    }
-  }
-  else
-  {
-    Tilemap& citymap = _d->city->getTilemap();
-    Tile& destTile = house ? house->getTile() : citymap.at( _d->city->getRoadExitIJ() );
+  Tilemap& citymap = _d->city->getTilemap();
+  Tile& destTile = house ? house->getTile() : citymap.at( _d->city->getRoadExitIJ() );
 
-    bool pathFound = pathfinder.getPathDebug( destTile, pathWay );
-    if( pathFound )
-    {
-        setPathWay( pathWay );
-        setIJ( startPoint.getIJ() );
-    }
-
-    _isDeleted = !pathFound;
+  bool pathFound = Pathfinder::getInstance().getPath( startPoint.getIJ(), destTile.getIJ(), pathWay, false );
+  if( pathFound )
+  {
+     setPathWay( pathWay );
+     setIJ( startPoint.getIJ() );
   }
+
+  _isDeleted = !pathFound;  
 }
 
 void Immigrant::onDestination()

@@ -39,6 +39,10 @@
 
 #define _OC3_DISABLE_COPY(Class) \
     Class( const Class& ); \
-    Class& operator=( const Class& );
+    Class& operator=( const Class& );\
+
+#ifdef _MSC_VER
+  #define snprintf _snprintf
+#endif
 
 #endif

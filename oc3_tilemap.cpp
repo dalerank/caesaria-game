@@ -56,10 +56,14 @@ bool TerrainTile::isDestructible() const
 
 bool TerrainTile::isWalkable(const bool allLand) const
 {
-   // TODO: test building to allow garden, gatehouse, granary, ...
-   bool extendedRoad = false;
+  // TODO: test building to allow garden, gatehouse, granary, ...
+  bool walkable = (_isRoad || (allLand && !_isWater && !_isTree && !_isRock));
+  if( _overlay )
+  {
+    walkable &= _overlay->isWalkable();
+  }
 
-   return (_isRoad || extendedRoad || (allLand && !_isWater && !_isTree && !_isRock && !_isBuilding && !_isAqueduct));
+  return walkable;
 }
 
 void TerrainTile::setOverlay(LandOverlay *overlay)

@@ -21,7 +21,7 @@
 
 #include <algorithm>
 #include <iostream>
-
+#include "oc3_positioni.hpp"
 #include "oc3_exception.hpp"
 
 TilemapArea::TilemapArea()
@@ -55,11 +55,11 @@ void TilemapArea::setViewSize(const int width, const int height)
    _coordinates.reserve(width*height);
 }
 
-void TilemapArea::setCenterIJ(const int i, const int j)
+void TilemapArea::setCenterIJ(const TilePos& pos )
 {
-   int x = i+j;
-   int z = _map_size-1+j-i;
-   setCenterXZ(x, z);
+   int x = pos.getI() + pos.getJ();
+   int z = _map_size-1+pos.getJ()-pos.getI();
+   setCenterXZ( x, z );
 }
 
 void TilemapArea::setCenterXZ(const int x, const int z)

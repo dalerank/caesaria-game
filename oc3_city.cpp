@@ -27,6 +27,8 @@
 #include "oc3_emigrant.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_constructionmanager.hpp"
+#include "oc3_astarpathfinding.h"
+#include "oc3_safetycast.hpp"
 
 class City::Impl
 {
@@ -41,14 +43,14 @@ public:
 
     LandOverlays overlayList;
     Walkers walkerList;
+    TilePos roadEntry; //coordinates can't be negative!
 };
 
 City::City() : _d( new Impl )
 {
    _time = 0;
    _d->month = 0;
-   _roadEntryI = 0;
-   _roadEntryJ = 0;
+   _d->roadEntry = TilePos( 0, 0 );
    _roadExitI = 0;
    _roadExitJ = 0;
    _boatEntryI = 0;
@@ -159,7 +161,7 @@ void City::_createImigrants()
 		return;
 	}
 
-    Tile& roadTile = _tilemap.at( _roadEntryI, _roadEntryJ );
+    Tile& roadTile = _tilemap.at( _d->roadEntry );
     Road* roadEntry = dynamic_cast< Road* >( roadTile.get_terrain().getOverlay() );
 
     if( roadEntry )
@@ -200,13 +202,13 @@ unsigned long City::getTime()
 
 std::list<LandOverlay*> City::getBuildingList(const BuildingType buildingType)
 {
-   std::list<LandOverlay*> res;
+   LandOverlays res;
 
-   for (std::list<LandOverlay*>::iterator itOverlay = _d->overlayList.begin(); itOverlay!=_d->overlayList.end(); ++itOverlay)
+   for (LandOverlays::iterator itOverlay = _d->overlayList.begin(); itOverlay!=_d->overlayList.end(); ++itOverlay)
    {
       // for each overlay
       LandOverlay *overlay = *itOverlay;
-      Construction *construction = dynamic_cast<Construction*>(overlay);
+      Construction *construction = safety_cast<Construction*>(overlay);
       if (construction != NULL && construction->getType() == buildingType)
       {
          // overlay matches the filter
@@ -219,19 +221,22 @@ std::list<LandOverlay*> City::getBuildingList(const BuildingType buildingType)
 
 void City::recomputeRoadsForAll()
 {
-   for (std::list<LandOverlay*>::iterator itOverlay = _d->overlayList.begin(); itOverlay!=_d->overlayList.end(); ++itOverlay)
+   for (LandOverlays::iterator itOverlay = _d->overlayList.begin(); itOverlay!=_d->overlayList.end(); ++itOverlay)
    {
       // for each overlay
       LandOverlay *overlay = *itOverlay;
-      Construction *construction = dynamic_cast<Construction*>(overlay);
-      if (construction != NULL)
+      Construction *construction = safety_cast<Construction*>(overlay);
+      if( construction != NULL )
       {
-         // overlay matches the filter
-         construction->computeAccessRoads();
-	 // for some constructions we need to update picture
-	 if (construction->getType() == B_ROAD) construction->setPicture(dynamic_cast<Road*>(construction)->computePicture());
+        // overlay matches the filter
+        construction->computeAccessRoads();
+	      // for some constructions we need to update picture
+	      if (construction->getType() == B_ROAD) 
+        {
+          construction->setPicture(safety_cast<Road*>(construction)->computePicture());
+        }
       }
-   }
+   }   
 }
 
 Tilemap& City::getTilemap()
@@ -239,8 +244,6 @@ Tilemap& City::getTilemap()
    return _tilemap;
 }
 
-unsigned int City::getRoadEntryI() const { return _roadEntryI; }
-unsigned int City::getRoadEntryJ() const { return _roadEntryJ; }
 unsigned int City::getRoadExitI() const  { return _roadExitI;  }
 unsigned int City::getRoadExitJ() const  { return _roadExitJ;  }
 unsigned int City::getBoatEntryI() const { return _boatEntryI; }
@@ -253,13 +256,11 @@ ClimateType City::getClimate() const     { return _climate;    }
 void City::setClimate(const ClimateType climate) { _climate = climate; }
 
 // paste here protection from bad values
-void City::setRoadEntryIJ(unsigned int i, unsigned int j)
+void City::setRoadEntry( const TilePos& pos )
 {
   int size = getTilemap().getSize();
-  i = math::clamp<unsigned int>( i, 0, size - 1 );
-  j = math::clamp<unsigned int>( j, 0, size - 1 );
-  _roadEntryI = i;
-  _roadEntryJ = j;
+  _d->roadEntry = TilePos( math::clamp<unsigned int>( pos.getI(), 0, size - 1 ),
+                           math::clamp<unsigned int>( pos.getJ(), 0, size - 1 ) );
 }
 
 void City::setRoadExitIJ(unsigned int i, unsigned int j)
@@ -307,9 +308,12 @@ void City::build( Construction& buildInstance, const TilePos& pos )
    // make new building
    Construction* building = (Construction*)buildInstance.clone();
    building->build( pos );
+
    _d->overlayList.push_back(building);
    _d->funds -= buildingData.getCost();
    _d->onFundsChangedSignal.emit( _d->funds );
+
+   Pathfinder::getInstance().update( _tilemap );
 }
 
 void City::disaster( const TilePos& pos, DisasterType type )
@@ -355,7 +359,7 @@ void City::clearLand(const TilePos& pos  )
     {
       size = overlay->getSize();
       rPos = overlay->getTile().getIJ();
-      overlay->destroy();
+      overlay->deleteLater();
     }
 
     std::list<Tile*> clearedTiles = _tilemap.getFilledRectangle( rPos, Size( size - 1 ) );
@@ -445,8 +449,8 @@ void City::serialize(OutputSerialStream &stream)
    // std::cout << "WRITE TILEMAP @" << stream.tell() << std::endl;
    getTilemap().serialize(stream);
    // std::cout << "WRITE CITY @" << stream.tell() << std::endl;
-   stream.write_int(_roadEntryI, 2, 0, 1000);
-   stream.write_int(_roadEntryJ, 2, 0, 1000);
+   stream.write_int( _d->roadEntry.getI(), 2, 0, 1000);
+   stream.write_int( _d->roadEntry.getJ(), 2, 0, 1000);
    stream.write_int(_roadExitI, 2, 0, 1000);
    stream.write_int(_roadExitJ, 2, 0, 1000);
    stream.write_int(_boatEntryI, 2, 0, 1000);
@@ -485,8 +489,8 @@ void City::unserialize(InputSerialStream &stream)
    // std::cout << "READ TILEMAP @" << stream.tell() << std::endl;
    _tilemap.unserialize(stream);
    // std::cout << "READ CITY @" << stream.tell() << std::endl;
-   _roadEntryI = stream.read_int(2, 0, 1000);
-   _roadEntryJ = stream.read_int(2, 0, 1000);
+   _d->roadEntry.setI( stream.read_int(2, 0, 1000) );
+   _d->roadEntry.setJ( stream.read_int(2, 0, 1000) );
    _roadExitI = stream.read_int(2, 0, 1000);
    _roadExitJ = stream.read_int(2, 0, 1000);
    _boatEntryI = stream.read_int(2, 0, 1000);
@@ -527,9 +531,9 @@ void City::unserialize(InputSerialStream &stream)
    }
 }
 
-TilePos City::getRoadEntryIJ() const
+TilePos City::getRoadEntry() const
 {
-  return TilePos( _roadEntryI, _roadEntryJ );
+  return _d->roadEntry;
 }
 
 TilePos City::getRoadExitIJ() const

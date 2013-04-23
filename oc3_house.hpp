@@ -60,6 +60,8 @@ public:
 
    Uint8 getMaxDistance2Road() const; 
 
+   bool isWalkable() const;
+
 private:
    SimpleGoodStore _goodStore;
    std::map<ServiceType, int> _serviceAccessMap;  // value=access to the service (0=no access, 100=good access)

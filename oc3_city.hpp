@@ -51,14 +51,12 @@ public:
    LandOverlays& getOverlayList();
    LandOverlays getBuildingList( const BuildingType buildingType );
 
-   void setRoadEntryIJ(const unsigned int i, const unsigned int j);
    void setRoadExitIJ(const unsigned int i, const unsigned int j);
    void setBoatEntryIJ(const unsigned int i, const unsigned int j);
    void setBoatExitIJ(const unsigned int i, const unsigned int j);
 
-   unsigned int getRoadEntryI() const;
-   unsigned int getRoadEntryJ() const;
-   TilePos getRoadEntryIJ() const;
+   void setRoadEntry( const TilePos& pos );
+   TilePos getRoadEntry() const;
    
    void setCameraStartIJ(const unsigned int i, const unsigned int j);
    void setCameraStartIJ(const TilePos pos);
@@ -118,7 +116,6 @@ oc3_signals public:
    Signal1<int>& onMonthChanged();
 
 private:
-   unsigned int _roadEntryI, _roadEntryJ; //coordinates can't be nagative!
    unsigned int _roadExitI, _roadExitJ;
    unsigned int _boatEntryI, _boatEntryJ;
    unsigned int _boatExitI, _boatExitJ;
