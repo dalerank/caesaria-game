@@ -36,6 +36,7 @@ House::House(const int houseId) : Building()
    _houseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel);
    _nextHouseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel+1);
    _name = _houseLevelSpec->getLevelName();
+   _picIdOffset = 0;
    _currentHabitants = 0;
    //_damageLevel = 98;
 
@@ -64,6 +65,7 @@ House::House(const int houseId) : Building()
 House* House::clone() const
 {
    House *res = new House(this->_houseId);
+   res->_picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
    return res;
 }
 
@@ -132,18 +134,74 @@ HouseLevelSpec& House::getLevelSpec()
 
 void House::levelUp()
 {
-   _houseLevel++;
-   _houseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel);
-   _nextHouseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel+1);
-
+   _houseLevel++;   
+   _picIdOffset = 0;
+   
+   City& city = Scenario::instance().getCity();
+   
    switch (_houseLevel)
    {
    case 1:
       _houseId = 1;
       break;
    case 2:
-      _houseId = 3;
-      break;
+     { 
+       Tilemap& tmap = city.getTilemap();
+       PtrTilesList tiles = tmap.getFilledRectangle( getTile().getIJ(), Size(2) );
+       bool mayGrow = true;
+       for( PtrTilesList::iterator it=tiles.begin(); it != tiles.end(); it++ )
+       {
+         if( !*it )
+         {
+            mayGrow = false;   //some broken, can't grow
+            break;
+         }
+
+         if( House* house = safety_cast< House* >( (*it)->get_terrain().getOverlay() ) )
+         {
+           if( house->getSize() > 1 )  //bigger house near, can't grow
+           {
+             mayGrow = false;
+             break;
+           }            
+         }
+         else
+         {
+           mayGrow = false; //no house near, can't grow
+           break;
+         }
+       }
+
+       _houseId = mayGrow ? 5 : 3;
+       _picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
+
+       if( mayGrow )
+       {
+         int sumHabitants = 0, sumFreeWorkers = 0;
+         PtrTilesList::iterator delIt=tiles.begin();
+         delIt++; //don't remove himself
+         for( ; delIt != tiles.end(); delIt++ )
+         {
+           if( House* house = safety_cast< House* >( (*delIt)->get_terrain().getOverlay() ) )
+           {
+              house->deleteLater();
+              sumHabitants += house->getNbHabitants();
+              sumFreeWorkers += house->_freeWorkersCount;
+           }
+         }
+
+         _currentHabitants = sumHabitants;
+         _freeWorkersCount = sumHabitants;
+         _houseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel);
+         _nextHouseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel+1);
+
+         _update();
+
+         build( getTile().getIJ() );
+         return;
+       }
+     }
+     break;
    case 3:
       _houseId = 7;
       break;
@@ -169,9 +227,12 @@ void House::levelUp()
       _houseId = 27;
       break;
    }
+
+   _houseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel);
+   _nextHouseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel+1);
+
    _update();
 }
-
 
 void House::levelDown()
 {
@@ -218,8 +279,8 @@ void House::levelDown()
 void House::buyMarket(ServiceWalker &walker)
 {
    // std::cout << "House buyMarket" << std::endl;
-   Market &market = dynamic_cast<Market&> (walker.getServiceBuilding());
-   GoodStore &marketStore = market.getGoodStore();
+   Market* market = safety_cast<Market*>( &walker.getServiceBuilding() );
+   GoodStore& marketStore = market->getGoodStore();
    SimpleGoodStore &houseStore = getGoodStore();
    for (int i = 0; i < G_MAX; ++i)
    {
@@ -311,8 +372,8 @@ float House::evaluateService(ServiceWalker &walker)
 
    case S_MARKET:
      {
-       Market &market = dynamic_cast<Market&> (walker.getServiceBuilding());
-       GoodStore &marketStore = market.getGoodStore();
+       Market* market = safety_cast<Market*>( &walker.getServiceBuilding());
+       GoodStore &marketStore = market->getGoodStore();
        SimpleGoodStore &houseStore = getGoodStore();
        for (int i = 0; i < G_MAX; ++i)
        {
@@ -388,8 +449,8 @@ int House::collectTaxes()
 
 void House::_update()
 {
-    Uint8 picId = ( _houseId == smallHovel && _currentHabitants == 0 ) ? 45 : _houseId; 
-    setPicture( PicLoader::instance().get_picture( rcGrourName, picId ) );
+    Uint8 picId = ( _houseId == smallHovel && _currentHabitants == 0 ) ? 45 : (_houseId + _picIdOffset); 
+    setPicture( Picture::load( rcGrourName, picId ) );
     _size = (_picture->get_surface()->w+2)/60;
     _maxHabitants = _houseLevelSpec->getMaxHabitantsByTile() * _size * _size;
 }

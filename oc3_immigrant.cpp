@@ -77,8 +77,10 @@ void Immigrant::_checkPath( Tile& startPoint, Building* house )
 
   Tilemap& citymap = _d->city->getTilemap();
   Tile& destTile = house ? house->getTile() : citymap.at( _d->city->getRoadExitIJ() );
+  Size arrivedArea( house ? house->getSize() : 1 );
 
-  bool pathFound = Pathfinder::getInstance().getPath( startPoint.getIJ(), destTile.getIJ(), pathWay, false, false );
+  bool pathFound = Pathfinder::getInstance().getPath( startPoint.getIJ(), destTile.getIJ(), pathWay, 
+                                                      false, false, arrivedArea );
   if( pathFound )
   {
      setPathWay( pathWay );
@@ -101,7 +103,7 @@ void Immigrant::onDestination()
     {
       if( house->getNbHabitants() < house->getMaxHabitants() )
       {
-        house->addHabitants( 1 );
+        house->addHabitants( 2 );
         Walker::onDestination();
         gooutCity = false;
       }

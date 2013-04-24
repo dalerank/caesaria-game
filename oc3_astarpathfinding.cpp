@@ -35,8 +35,9 @@ void Pathfinder::update( const Tilemap& tilemap )
   }
 }
 
-bool Pathfinder::getPath( const TilePos& start, const TilePos& stop, 
-                          PathWay& oPathWay, bool checkLast, bool tryTraverse )
+bool Pathfinder::getPath( const TilePos& start, const TilePos& stop,  
+                          PathWay& oPathWay, bool checkLast, bool tryTraverse,
+                          const Size& arrivedArea )
 {
   if( pointIsWalkable( start ) )
   {
@@ -74,7 +75,7 @@ bool Pathfinder::getPath( const TilePos& start, const TilePos& stop,
     }
     else
     {
-      return aStar( start, stop, oPathWay );
+      return aStar( start, stop, arrivedArea, oPathWay );
     }
   }
   else
@@ -105,7 +106,12 @@ std::list<AStarPoint*> Pathfinder::getTraversingPoints( const TilePos& start, co
   return points;
 }
 
-bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos, PathWay& oPathWay )
+int Pathfinder::getMaxLoopCount() const
+{
+  return 300;
+}
+
+bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos, const Size& arrivedArea, PathWay& oPathWay )
 {
   oPathWay.init( *_tilemap, _tilemap->at( startPos ) );
 
@@ -120,13 +126,27 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos, PathWay
   list<AStarPoint*> closedList;
   list<AStarPoint*>::iterator i;
 
+  map<AStarPoint*,bool> saveArrivedArea;
+  for( int i=stopPos.getI(); i < stopPos.getI()+arrivedArea.getWidth(); i++ )
+  {
+    for( int j=stopPos.getJ(); j < stopPos.getJ() + arrivedArea.getHeight(); j++ )
+    {
+      AStarPoint* ap = getPoint( TilePos( i, j) );
+      if( ap )
+      {
+        saveArrivedArea[ ap ] = ap->walkable;
+        ap->walkable = true;
+      }
+    }
+  }
+
   unsigned int n = 0;
 
   // Add the start point to the openList
   openList.push_back(start);
   start->opened = true;
 
-  while (n == 0 || (current != end && n < 300))
+  while (n == 0 || (current != end && n < getMaxLoopCount() ))
   {
     // Look for the smallest F value in the openList and make it the current point
     for (i = openList.begin(); i != openList.end(); ++ i)
@@ -138,7 +158,7 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos, PathWay
     }
 
     // Stop if we reached the end
-    if (current == end)
+    if( current == end ) 
     {
       break;
     }
@@ -215,7 +235,7 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos, PathWay
       }
     }
 
-    n ++;
+    n++;
   }
 
   // Reset
@@ -228,6 +248,15 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos, PathWay
     (*i)->closed = false;
   }
 
+  for( map<AStarPoint*,bool>::iterator it=saveArrivedArea.begin(); it != saveArrivedArea.end(); it++ )
+  {
+    it->first->walkable = it->second;
+  }
+
+  if( n == getMaxLoopCount() )
+  {
+    return false;
+  }
   // Resolve the path starting from the end point
   list<AStarPoint*> lPath;
   while( current->hasParent() && current != start )

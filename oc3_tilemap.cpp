@@ -262,7 +262,7 @@ int Tilemap::getSize() const
    return _size;
 }
 
-std::list<Tile*> Tilemap::getRectangle( const TilePos& start, const TilePos& stop, const bool corners /*= true*/ )
+PtrTilesList Tilemap::getRectangle( const TilePos& start, const TilePos& stop, const bool corners /*= true*/ )
 {
     std::list<Tile*> res;
 
@@ -310,13 +310,13 @@ std::list<Tile*> Tilemap::getRectangle( const TilePos& start, const TilePos& sto
     return res;
 }
 
-std::list<Tile*> Tilemap::getRectangle( const TilePos& pos, const Size& size, const bool corners /*= true */ )
+PtrTilesList Tilemap::getRectangle( const TilePos& pos, const Size& size, const bool corners /*= true */ )
 {
     return getRectangle( pos, pos + TilePos( size.getWidth(), size.getHeight()), corners );
 }
 // Get tiles inside of rectangle
 
-std::list<Tile*> Tilemap::getFilledRectangle(const TilePos& start, const TilePos& stop )
+PtrTilesList Tilemap::getFilledRectangle(const TilePos& start, const TilePos& stop )
 {
    std::list<Tile*> res;
 
@@ -334,9 +334,9 @@ std::list<Tile*> Tilemap::getFilledRectangle(const TilePos& start, const TilePos
    return res;
 }
 
-std::list<Tile*> Tilemap::getFilledRectangle( const TilePos& start, const Size& size )
+PtrTilesList Tilemap::getFilledRectangle( const TilePos& start, const Size& size )
 {
-    return getFilledRectangle( start, start + TilePos( size.getWidth(), size.getHeight() ) );
+    return getFilledRectangle( start, start + TilePos( size.getWidth()-1, size.getHeight()-1 ) );
 }
 
 void Tilemap::serialize(OutputSerialStream &stream)

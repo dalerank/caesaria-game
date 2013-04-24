@@ -463,7 +463,7 @@ bool Farm::canBuild(const TilePos& pos ) const
    bool on_meadow = false;
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getFilledRectangle( pos, Size( _size-1 ) );
+   std::list<Tile*> rect = tilemap.getFilledRectangle( pos, Size( _size ) );
    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
      on_meadow |= (*itTiles)->get_terrain().isMeadow();

@@ -10,6 +10,7 @@ class Tilemap;
 class TilePos;
 class PathWay;
 class AStarPoint;
+class Size;
 
 class Pathfinder
 {
@@ -20,12 +21,15 @@ public:
   void update( const Tilemap& tmap );
 
   bool getPath( const TilePos& start, const TilePos& stop, 
-                PathWay& oPathWay, bool checkLast, bool tryTraverse );
+                PathWay& oPathWay, bool checkLast, bool tryTraverse,
+                const Size& arrivedArea );
+
+  int getMaxLoopCount() const;
 
 private:
   Pathfinder();
 
-  bool aStar( const TilePos& start, const TilePos& stop, PathWay& oPathWay );
+  bool aStar( const TilePos& start, const TilePos& stop, const Size& arrivedArea, PathWay& oPathWay );
   std::list<AStarPoint*> getTraversingPoints( const TilePos& start, const TilePos& stop );
 
   AStarPoint* getPoint( const TilePos& pos );

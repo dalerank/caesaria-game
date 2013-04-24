@@ -211,7 +211,7 @@ bool Construction::canBuild(const TilePos& pos ) const
 
   bool is_constructible = true;
 
-  std::list<Tile*> rect = tilemap.getFilledRectangle( pos, Size( _size-1 ) );
+  std::list<Tile*> rect = tilemap.getFilledRectangle( pos, Size( _size ) );
   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {
      is_constructible &= (*itTiles)->get_terrain().isConstructible();
@@ -324,7 +324,7 @@ bool Plaza::canBuild(const TilePos& pos ) const
 
   bool is_constructible = true;
 
-  std::list<Tile*> rect = tilemap.getFilledRectangle( pos, Size( _size-1 ) ); // something very complex ???
+  std::list<Tile*> rect = tilemap.getFilledRectangle( pos, Size( _size ) ); // something very complex ???
   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {
     is_constructible &= (*itTiles)->get_terrain().isRoad();

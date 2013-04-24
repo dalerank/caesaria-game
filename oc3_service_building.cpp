@@ -120,6 +120,8 @@ BuildingWell::BuildingWell() : ServiceBuilding(S_WELL)
 {
    setType(B_WELL);
    _size = 1;
+   _fireIncrement = 0;
+   _damageIncrement = 0;
    setPicture(PicLoader::instance().get_picture("utilitya", 1));
 }
 

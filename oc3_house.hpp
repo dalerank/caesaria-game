@@ -72,6 +72,7 @@ private:
    int _houseLevel;
    HouseLevelSpec* _houseLevelSpec;  // characteristics of the current house level
    HouseLevelSpec* _nextHouseLevelSpec;  // characteristics of the house level+1
+   int _picIdOffset;
 
    void _update();
 };
