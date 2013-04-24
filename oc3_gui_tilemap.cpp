@@ -70,28 +70,33 @@ void GuiTilemap::init(City &city, TilemapArea &mapArea, ScreenGame *screen)
 
 void GuiTilemap::drawTileEx( const Tile& tile, const int depth )
 {
-    Tile* master = tile.get_master_tile();
+  if( tile.is_flat() )
+  {
+    return;  // tile has already been drawn!
+  }
 
-    if( master==NULL )
-    {
-      // single-tile
-		  drawTile( tile );
-    }
-    else
-    {
-        // multi-tile: draw the master tile.
-        int masterZ = master->getJ() - master->getI();
-        if( masterZ == depth )
-        {
-            // it is time to draw the master tile
-            if (std::find(_multiTiles.begin(), _multiTiles.end(), master) == _multiTiles.end())
-            {
-                // master has not been drawn yet
-              _multiTiles.push_back(master);  // don't draw that multi-tile again
-				      drawTile( *master );
-            }
-        }
-    }
+  Tile* master = tile.get_master_tile();
+
+  if( master==NULL )
+  {
+    // single-tile
+	  drawTile( tile );
+  }
+  else
+  {
+      // multi-tile: draw the master tile.
+      int masterZ = master->getJ() - master->getI();
+      if( masterZ == depth )
+      {
+          // it is time to draw the master tile
+          if (std::find(_multiTiles.begin(), _multiTiles.end(), master) == _multiTiles.end())
+          {
+              // master has not been drawn yet
+            _multiTiles.push_back(master);  // don't draw that multi-tile again
+			      drawTile( *master );
+          }
+      }
+  }
 }
 
 void GuiTilemap::drawTile( const Tile& tile )
@@ -171,36 +176,37 @@ void GuiTilemap::drawTilemap()
   // SECOND PART: draw all sprites, impassable land and buildings
   for( itPos = tiles.begin(); itPos != tiles.end(); ++itPos)
   {
-     int z = itPos->getZ();
-     if (z != lastZ)
-     {
-        // TODO: pre-sort all animations
-        lastZ = z;
+    int z = itPos->getZ();
+   
+    if (z != lastZ)
+    {
+       // TODO: pre-sort all animations
+       lastZ = z;
 
-        std::vector<Picture*> pictureList;
+       std::vector<Picture*> pictureList;
 
-        City::Walkers walkerList = _city->getWalkerList( WT_ALL );
-        for( City::Walkers::iterator itWalker =  walkerList.begin();
-              itWalker != walkerList.end(); ++itWalker)
-        {
-           // for each walker
-           Walker &anim = **itWalker;
-           int zAnim = anim.getJ() - anim.getI();
-           if (zAnim > z && zAnim <= z+1)
-           {
-              pictureList.clear();
-              anim.getPictureList(pictureList);
-              for( std::vector<Picture*>::iterator picIt = pictureList.begin(); picIt != pictureList.end(); ++picIt )
-              {
-                 if (*picIt == NULL)
-                 {
-                    continue;
-                 }
-                 engine.drawPicture( **picIt, 2*(anim.getII()+anim.getJJ())+mOffset.getX(), anim.getII()-anim.getJJ()+mOffset.getY());
-              }
-           }
-        }
-     }
+       City::Walkers walkerList = _city->getWalkerList( WT_ALL );
+       for( City::Walkers::iterator itWalker =  walkerList.begin();
+             itWalker != walkerList.end(); ++itWalker)
+       {
+          // for each walker
+          Walker &anim = **itWalker;
+          int zAnim = anim.getJ() - anim.getI();
+          if (zAnim > z && zAnim <= z+1)
+          {
+             pictureList.clear();
+             anim.getPictureList(pictureList);
+             for( std::vector<Picture*>::iterator picIt = pictureList.begin(); picIt != pictureList.end(); ++picIt )
+             {
+                if (*picIt == NULL)
+                {
+                   continue;
+                }
+                engine.drawPicture( **picIt, 2*(anim.getII()+anim.getJJ())+mOffset.getX(), anim.getII()-anim.getJJ()+mOffset.getY());
+             }
+          }
+       }
+    }   
 
     Tile& tile = getTile( *itPos );
     drawTileEx( tile, z );
@@ -470,6 +476,7 @@ void GuiTilemap::checkPreviewBuild( const TilePos& pos )
               for (int di = 0; di < size; ++di)
               {
                   Tile* tile = new Tile(_tilemap->at( pos + TilePos( di, dj ) ));  // make a copy of tile
+                  
 
                   if (di==0 && dj==0)
                   {
@@ -478,6 +485,7 @@ void GuiTilemap::checkPreviewBuild( const TilePos& pos )
                   }
                   tile->set_picture( _d->previewToolPictures.back() );
                   tile->set_master_tile( masterTile );
+                  tile->get_terrain().setBuilding( true );
                   tile->get_terrain().setOverlay( overlay );
                   _d->postTiles.push_back( tile );
                   //_priorityTiles.push_back( tile );
@@ -499,6 +507,7 @@ void GuiTilemap::checkPreviewBuild( const TilePos& pos )
                   tile->set_picture( isConstructible ? &grnPicture : &redPicture );
                   tile->set_master_tile(0);
                   tile->get_terrain().reset();
+                  tile->get_terrain().setBuilding( true );
                   _d->postTiles.push_back( tile );
               }
           }
@@ -523,6 +532,7 @@ void GuiTilemap::checkPreviewRemove(const int i, const int j)
                 Tile* tile = new Tile(_tilemap->at(i, j));  // make a copy of tile
                 tile->set_picture(&pic_clear);
                 tile->set_master_tile(NULL);  // single tile
+                tile->get_terrain().setBuilding( true );
                 _d->postTiles.push_back( tile );
                 //_priorityTiles.push_back(&tile);
             }
@@ -550,8 +560,8 @@ void GuiTilemap::checkPreviewRemove(const int i, const int j)
 
                         tile->set_picture( _d->previewToolPictures.back() );
                         tile->set_master_tile( masterTile );  // single tile
-                        TerrainTile &terrain = tile->get_terrain();
-                        terrain.setOverlay( 0 );
+                        tile->get_terrain().setOverlay( 0 );
+                        tile->get_terrain().setBuilding( true );
                         _d->postTiles.push_back( tile );
                     }
                 }
