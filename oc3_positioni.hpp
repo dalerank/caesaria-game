@@ -54,7 +54,7 @@ inline PointF Point::toPointF() const
     return PointF( (float)x, (float)y ); 
 }
 
-class TilePos : public Vector2<int>
+class TilePos : Vector2<int>
 {
 public:
     TilePos( const int i, const int j ) : Vector2<int>( i, j ) {}
@@ -62,6 +62,7 @@ public:
 
     int getI() const { return x; }
     int getJ() const { return y; }
+    int getZ() const { return y - x; }
 
     void setI( const int i ) { x = i; }
     void setJ( const int j ) { y = j; }
@@ -72,5 +73,6 @@ public:
     TilePos operator-(const TilePos& other) const { return TilePos( x - other.x, y - other.y ); }
     TilePos operator-() const { return TilePos( -x, -y ); }
     bool operator==(const TilePos& other) const{ return (x == other.x) && ( y == other.y ); }
+    bool operator!=(const TilePos& other) const{ return (x != other.x ) || ( y != other.y ); }
 };
 #endif // __NRP_POSITION_H_INCLUDED__

@@ -84,8 +84,8 @@ public:
                                 (math::isEqual(x, other.x) && y>other.y && !math::isEqual(y, other.y));
 	}
 
-    bool operator==(const Vector2<T>& other) const { return IsEqual(other, math::ROUNDING_ERROR_f32); }
-    bool operator!=(const Vector2<T>& other) const { return !IsEqual(other, math::ROUNDING_ERROR_f32); }
+  bool operator==(const Vector2<T>& other) const { return IsEqual(other, math::ROUNDING_ERROR_f32); }
+  bool operator!=(const Vector2<T>& other) const { return !IsEqual(other, math::ROUNDING_ERROR_f32); }
 
 	// functions
 

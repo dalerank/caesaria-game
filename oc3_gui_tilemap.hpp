@@ -69,7 +69,7 @@ protected:
    void checkPreviewRemove(const int i, const int j);
 
    // returns the tile at the grid position (handles priority tiles)
-   Tile& getTileIJ(const int i, const int j);
+   Tile& getTile( const TilePos& pos );
    
    // update preview tiles
    void updatePreviewTiles( bool force=false );

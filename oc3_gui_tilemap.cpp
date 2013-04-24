@@ -139,16 +139,13 @@ void GuiTilemap::drawTilemap()
 
   int lastZ = -1000;  // dummy value
 
-  const std::vector<std::pair<int, int> >& tiles = mapArea.getTiles();
-  std::vector<std::pair<int, int> >::const_iterator itTiles;
+  const std::vector< TilePos >& tiles = mapArea.getTiles();
+  std::vector< TilePos >::const_iterator itPos;
 
   // FIRST PART: draw all flat land (walkable/boatable)
-  for( itTiles = tiles.begin(); itTiles != tiles.end(); ++itTiles )
+  for( itPos = tiles.begin(); itPos != tiles.end(); ++itPos )
   {
-    int i = (*itTiles).first;
-    int j = (*itTiles).second;
-
-    Tile& tile = getTileIJ(i, j);
+    Tile& tile = getTile( *itPos );
     Tile* master = tile.get_master_tile();
 
     if( tile.is_flat() )
@@ -172,12 +169,9 @@ void GuiTilemap::drawTilemap()
   }
 
   // SECOND PART: draw all sprites, impassable land and buildings
-  for( itTiles = tiles.begin(); itTiles != tiles.end(); ++itTiles)
+  for( itPos = tiles.begin(); itPos != tiles.end(); ++itPos)
   {
-     int i = (*itTiles).first;
-     int j = (*itTiles).second;
-
-     int z = j - i;
+     int z = itPos->getZ();
      if (z != lastZ)
      {
         // TODO: pre-sort all animations
@@ -208,7 +202,7 @@ void GuiTilemap::drawTilemap()
         }
      }
 
-    Tile& tile = getTileIJ(i, j);
+    Tile& tile = getTile( *itPos );
     drawTileEx( tile, z );
   }
 
@@ -238,7 +232,7 @@ Tile* GuiTilemap::getTileXY( const Point& pos, bool overborder)
    if (i>=0 && j>=0 && i<_tilemap->getSize() && j<_tilemap->getSize())
    {
       // valid coordinate
-      return &getTileIJ(i, j);
+      return &getTile( TilePos( i, j ) );
    }
    else
    {
@@ -566,9 +560,9 @@ void GuiTilemap::checkPreviewRemove(const int i, const int j)
     }
 }
 
-Tile& GuiTilemap::getTileIJ(const int i, const int j)
+Tile& GuiTilemap::getTile(const TilePos& pos )
 {
-  return _tilemap->at(i, j);
+  return _tilemap->at( pos );
 }
 
 Signal1< Tile* >& GuiTilemap::onShowTileInfo()

@@ -102,9 +102,9 @@ void TilemapArea::moveDown(const int amount)
    setCenterXZ(getCenterX(), getCenterZ()-amount);
 }
 
-const std::vector<std::pair<int, int> >& TilemapArea::getTiles()
+const std::vector< TilePos >& TilemapArea::getTiles()
 {
-   if (_coordinates.empty())
+   if( _coordinates.empty() )
    {
       int zm = _map_size+1;
       int cx = _center_x;
@@ -130,7 +130,7 @@ const std::vector<std::pair<int, int> >& TilemapArea::getTiles()
 
             if (i>=0 && j>=0 && i<_map_size && j<_map_size)
             {
-               _coordinates.push_back(std::make_pair(i, j));
+               _coordinates.push_back( TilePos( i, j ));
             }
          }
       }
