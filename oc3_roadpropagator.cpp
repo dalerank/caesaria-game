@@ -51,38 +51,45 @@ bool RoadPropagator::getPath( const Tile& destination, ConstWayOnTiles& oPathWay
   int iStep = (startPos.getI() < stopPos.getI()) ? 1 : -1;
   int jStep = (startPos.getJ() < stopPos.getJ()) ? 1 : -1;
 
-//  std::cout << "RoadPropagator::getPath" << std::endl;
+  std::cout << "RoadPropagator::getPath" << std::endl;
 
-//  std::cout << "(" << startPos.getI() << " " << startPos.getJ() << ") (" << stopPos.getI() << " " << stopPos.getJ() << ")" << std::endl;
+  std::cout << "(" << startPos.getI() << " " << startPos.getJ() << ") (" << stopPos.getI() << " " << stopPos.getJ() << ")" << std::endl;
   
   if( startPos == stopPos )
   {
     oPathWay.push_back( &_d->startTile );
     return true;
   }
-    
-    // propagate on I axis
-    for( TilePos tmp( startPos.getI(), stopPos.getJ() ); tmp.getI() <= stopPos.getI(); tmp+=TilePos( 1, 0 ) )
-    {
-        const Tile& curTile = _d->tilemap.at( tmp );
+  
+  std::cout << "propagate by I axis" << std::endl;
+  
+  // propagate on I axis
+  for( TilePos tmp( startPos.getI(), stopPos.getJ() ); ; tmp+=TilePos( iStep, 0 ) )
+  {
+    const Tile& curTile = _d->tilemap.at( tmp );
          
-    if( curTile.get_terrain().isConstructible() || curTile.get_terrain().isRoad() 
-	|| curTile.get_terrain().isAqueduct() )
+    if( curTile.get_terrain().isConstructible() || curTile.get_terrain().isRoad() || curTile.get_terrain().isAqueduct() )
+    {
+      std::cout << "+ (" << curTile.getI() << " " << curTile.getJ() << ") ";
       oPathWay.push_back( &curTile );
+    }
     else
       return false;
     if (tmp.getI() == stopPos.getI())
       break;
   }
 
-    // propagate on J axis
-    for( int j=startPos.getJ();; j+=jStep )
-    {
-        const Tile& curTile = _d->tilemap.at( startPos.getI(), j );
+  std::cout << "propagate by J axis" << std::endl;
+  // propagate on J axis
+  for( int j = startPos.getJ();; j+=jStep )
+  {
+    const Tile& curTile = _d->tilemap.at( startPos.getI(), j );
 
-    if( curTile.get_terrain().isConstructible() || curTile.get_terrain().isRoad() 
-      	|| curTile.get_terrain().isAqueduct() )
+    if( curTile.get_terrain().isConstructible() || curTile.get_terrain().isRoad() || curTile.get_terrain().isAqueduct() )
+    {
+      std::cout << "+ (" << curTile.getI() << " " << curTile.getJ() << ") ";
       oPathWay.push_back( &curTile );
+    }
     else
       return false;
 

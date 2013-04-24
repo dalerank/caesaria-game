@@ -717,6 +717,7 @@ static const Point frontCartOffsetEast  = Point(  -5, 22 );
 static const Point frontCartOffsetSouthEast  = Point( -20, 20 );
 static const Point frontCartOffsetNorthWest  = Point( -20, 40 );
 static const Point frontCartOffsetNorthEast  = Point( -5, 30 );
+static const Point frontCartOffsetSouthWest  = Point( -5, 22 );
 
 static const Point backCartOffsetSouth = Point(  -5, 40 );
 static const Point backCartOffsetWest  = Point(  -5, 22 );
@@ -725,6 +726,7 @@ static const Point backCartOffsetEast  = Point( -31, 35 );
 static const Point backCartOffsetSouthEast  = Point( -20, 40 );
 static const Point backCartOffsetNorthWest  = Point( -20, 20 );
 static const Point backCartOffsetNorthEast  = Point( -30, 30 );
+static const Point backCartOffsetSouthWest  = Point( -20, 20 );
 }
 
 void CartLoader::fillCart(std::vector<Picture*> &ioCart, const std::string &prefix, const int start, bool back )
@@ -751,6 +753,7 @@ void CartLoader::fillCart(std::vector<Picture*> &ioCart, const std::string &pref
    ioCart[D_SOUTH_EAST]->set_offset ( back ? backCartOffsetSouthEast  : frontCartOffsetSouthEast );
    ioCart[D_NORTH_WEST]->set_offset ( back ? backCartOffsetNorthWest  : frontCartOffsetNorthWest );
    ioCart[D_NORTH_EAST]->set_offset ( back ? backCartOffsetNorthEast  : frontCartOffsetNorthEast );
+   ioCart[D_SOUTH_WEST]->set_offset ( back ? backCartOffsetSouthWest  : frontCartOffsetSouthWest );
 }
 
 Picture& CartLoader::getCart(const GoodStock &stock, const DirectionType &direction)
