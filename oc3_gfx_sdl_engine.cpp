@@ -26,6 +26,7 @@
 #include "oc3_exception.hpp"
 #include "oc3_pic_loader.hpp"
 #include "oc3_sdl_facade.hpp"
+#include "oc3_requirements.hpp"
 
 
 GfxSdlEngine::GfxSdlEngine() : GfxEngine()
@@ -50,7 +51,12 @@ void GfxSdlEngine::init()
    aFlags |= SDL_SWSURFACE;
 
    _screen = SDL_SetVideoMode(_screen_width, _screen_height, 32, aFlags);  // 32bpp
-   if (_screen == NULL) THROW("Unable to set video mode: " << SDL_GetError());
+   if (_screen == NULL) 
+   {
+     THROW("Unable to set video mode: " << SDL_GetError());
+   }
+
+   SDL_WM_SetCaption( "OpenCaesar 3:"OC3_VERSION, 0 );    
 }
 
 

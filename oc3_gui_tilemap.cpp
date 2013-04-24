@@ -41,6 +41,8 @@ public:
   Point lastCursorPos;
   Point startCursorPos;
   bool  lmbPressed;
+  // current map offset, for private use
+  Point mapOffset;
 
   TilePos lastTilePos;
   TilemapChangeCommand changeCommand;
@@ -97,12 +99,11 @@ void GuiTilemap::drawTile( const Tile& tile )
 	int i = tile.getI();
 	int j = tile.getJ();
 
-	int dx = _tilemap_xoffset;
-	int dy = _tilemap_yoffset;
-
+	Point mOffset = _d->mapOffset;
+	
 	Picture& pic = tile.get_picture();
 	GfxEngine &engine = GfxEngine::instance();
-	engine.drawPicture(pic, 30*(i+j)+dx, 15*(i-j)+dy);
+	engine.drawPicture(pic, 30*(i+j)+mOffset.getX(), 15*(i-j)+mOffset.getY());
 
 	// building foregrounds and animations
 	LandOverlay *overlay = tile.get_terrain().getOverlay();
@@ -118,7 +119,7 @@ void GuiTilemap::drawTile( const Tile& tile )
 				continue;
 			}
 			Picture &fgpic = **itPic;
-			engine.drawPicture(fgpic, 30*(i+j)+dx, 15*(i-j)+dy);
+			engine.drawPicture(fgpic, 30*(i+j)+mOffset.getX(), 15*(i-j)+mOffset.getY());
 		}
 	}
 }
@@ -132,10 +133,9 @@ void GuiTilemap::drawTilemap()
   TilemapArea &mapArea = *_mapArea;
 
   // center the map on the screen
-  int dx = engine.getScreenWidth()/2 - 30*(mapArea.getCenterX()+1) + 1;
-  int dy = engine.getScreenHeight()/2 + 15*(mapArea.getCenterZ()-tilemap.getSize()+1) - 30;
-  _tilemap_xoffset = dx;  // this is the current offset
-  _tilemap_yoffset = dy;  // this is the current offset
+  Point mOffset( engine.getScreenWidth()/2 - 30*(mapArea.getCenterX()+1) + 1,
+                 engine.getScreenHeight()/2 + 15*(mapArea.getCenterZ()-tilemap.getSize()+1) - 30 );
+  _d->mapOffset = mOffset;  // this is the current offset
 
   int lastZ = -1000;  // dummy value
 
@@ -202,7 +202,7 @@ void GuiTilemap::drawTilemap()
                  {
                     continue;
                  }
-                 engine.drawPicture( **picIt, 2*(anim.getII()+anim.getJJ())+dx, anim.getII()-anim.getJJ()+dy);
+                 engine.drawPicture( **picIt, 2*(anim.getII()+anim.getJJ())+mOffset.getX(), anim.getII()-anim.getJJ()+mOffset.getY());
               }
            }
         }
@@ -222,12 +222,12 @@ void GuiTilemap::drawTilemap()
   }
 }
 
-Tile* GuiTilemap::getTileXY(const int x, const int y, bool overborder)
+Tile* GuiTilemap::getTileXY( const Point& pos, bool overborder)
 {
-   int dx = x - _tilemap_xoffset;  // x relative to the left most pixel of the tilemap
-   int dy = y - _tilemap_yoffset;  // y relative to the left most pixel of the tilemap
-   int i = (dx + 2 * dy) / 60;
-   int j = (dx - 2 * dy) / 60;
+   Point mOffset = pos - _d->mapOffset;  // x relative to the left most pixel of the tilemap
+   int i = (mOffset.getX() + 2 * mOffset.getY()) / 60;
+   int j = (mOffset.getX() - 2 * mOffset.getY()) / 60;
+   
    if( overborder )
    {
        i = math::clamp( i, 0, _tilemap->getSize() - 1 );
@@ -245,11 +245,6 @@ Tile* GuiTilemap::getTileXY(const int x, const int y, bool overborder)
       // the pixel is outside the tilemap => no tile here
       return NULL;
    }
-}
-
-Tile* GuiTilemap::getTileXY( const Point& pos, bool overborder )
-{
-    return getTileXY( pos.getX(), pos.getY(), overborder );
 }
 
 TilemapArea &GuiTilemap::getMapArea()

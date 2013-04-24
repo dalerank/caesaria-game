@@ -6,7 +6,7 @@
 
 using namespace std;
 
-const AStarPoint Pathfinder::invalidPoint = AStarPoint( TilePos( 0, 0), false ); 
+const AStarPoint Pathfinder::invalidPoint = AStarPoint( TilePos( 0, 0), false, false ); 
 
 Pathfinder::Pathfinder()
 {
@@ -21,20 +21,22 @@ void Pathfinder::update( const Tilemap& tilemap )
     for( int j=0; j < tilemap.getSize(); j++ )
     {
       TilePos pos( i, j );
-      bool walkable = tilemap.at( pos ).get_terrain().isWalkable(true);
+      const TerrainTile& tt = tilemap.at( pos ).get_terrain();
       if ( !pointExists( pos ) )
       {
-        grid[i][j] = new AStarPoint( pos, walkable);
+        grid[i][j] = new AStarPoint( pos, tt.isWalkable(true), tt.isRoad() );
       }
       else 
       {
-        grid[i][j]->walkable = walkable;
+        grid[i][j]->walkable = tt.isWalkable(true);
+        grid[i][j]->isRoad = tt.isRoad();
       }
     }
   }
 }
 
-bool Pathfinder::getPath( const TilePos& start, const TilePos& stop, PathWay& oPathWay, bool checkLast )
+bool Pathfinder::getPath( const TilePos& start, const TilePos& stop, 
+                          PathWay& oPathWay, bool checkLast, bool tryTraverse )
 {
   if( pointIsWalkable( start ) )
   {
@@ -42,18 +44,21 @@ bool Pathfinder::getPath( const TilePos& start, const TilePos& stop, PathWay& oP
     int const dx = (start.getI() < stop.getI()) ? 1 : -1;
     int const dy = (start.getJ() < stop.getJ()) ? 1 : -1;
 
-    bool pathIsWalkable = true;
+    bool pathIsWalkable = tryTraverse;
 
-    // Get traversing points
     list<AStarPoint*> points1;    
-    points1 = getTraversingPoints( start, stop );
-    list<AStarPoint*>::iterator lastStepIt = checkLast ? points1.end() : points1.rbegin().base();
-
-    // Check if the direct path is safe
-    for( list<AStarPoint*>::iterator i = points1.begin(); 
-         i != lastStepIt && pathIsWalkable; ++i )
+    if( tryTraverse )
     {
-      pathIsWalkable = (*i)->walkable;
+      // Get traversing points      
+      points1 = getTraversingPoints( start, stop );
+      list<AStarPoint*>::iterator lastStepIt = checkLast ? points1.end() : points1.rbegin().base();
+
+      // Check if the direct path is safe
+      for( list<AStarPoint*>::iterator i = points1.begin(); 
+           i != lastStepIt && pathIsWalkable; ++i )
+      {
+        pathIsWalkable = (*i)->walkable;
+      }
     }
 
     if( pathIsWalkable )
@@ -121,7 +126,7 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos, PathWay
   openList.push_back(start);
   start->opened = true;
 
-  while (n == 0 || (current != end && n < 30))
+  while (n == 0 || (current != end && n < 300))
   {
     // Look for the smallest F value in the openList and make it the current point
     for (i = openList.begin(); i != openList.end(); ++ i)

@@ -13,6 +13,8 @@ public:
 
   virtual std::string getName() const { return _name; }
   virtual bool isDeleted() const { return false; }
+  
+  virtual void destroy() {}
 
 protected:
   CityService( City& city, const std::string& name ) 

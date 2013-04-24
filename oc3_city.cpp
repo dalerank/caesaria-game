@@ -96,19 +96,27 @@ void City::timeStep()
   Walkers::iterator walkerIt = _d->walkerList.begin();
   while (walkerIt != _d->walkerList.end())
   {
-     Walker& walker = **walkerIt;
-     walker.timeStep(_time);
+    try
+    {
+      Walker& walker = **walkerIt;
+      walker.timeStep(_time);
 
-     if( walker.isDeleted() )
-     {
-       // remove the walker from the walkers list  
-       delete *walkerIt;
-       walkerIt = _d->walkerList.erase(walkerIt);       
-     }
-     else
-     {
-        ++walkerIt;
-     }
+      if( walker.isDeleted() )
+      {
+        // remove the walker from the walkers list  
+        delete *walkerIt;
+        walkerIt = _d->walkerList.erase(walkerIt);       
+      }
+      else
+      {
+         ++walkerIt;
+      }
+    }
+    catch(...)
+    {
+      int o=0;
+      //volatile error here... WTF
+    }
   }
 
   LandOverlays::iterator overlayIt = _d->overlayList.begin();
@@ -137,7 +145,7 @@ void City::timeStep()
 
     if( (*serviceIt)->isDeleted() )
     {
-      (*overlayIt)->destroy();
+      (*serviceIt)->destroy();
 
       serviceIt = _d->services.erase(serviceIt);
     }

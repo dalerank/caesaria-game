@@ -50,7 +50,6 @@ public:
    void drawTilemap();
    
    // returns the tile at the cursor position.
-   Tile* getTileXY( const int x, const int y, bool overborder=false );
    Tile* getTileXY( const Point& pos, bool overborder=false );
    void handleEvent( NEvent& event);
 
@@ -87,10 +86,6 @@ private:
    City* _city;     // city to display
    Tilemap* _tilemap;
    TilemapArea* _mapArea;  // visible map area
-
-   // current map offset, for private use
-   int _tilemap_xoffset;
-   int _tilemap_yoffset;
 
    std::vector<Tile*> _multiTiles;  // used to avoid redisplay of a multi-tile.
    //std::list<Tile*> _priorityTiles;  // these tiles have priority over "normal" tilemap tiles!

@@ -2,7 +2,7 @@
 !include nsDialogs.nsh
 !include LogicLib.nsh
 
-!define VERSION "ver.03_04_2013"
+!define VERSION "ver.24_04_2013"
 
 
 XPStyle on
@@ -79,7 +79,7 @@ Section "OpenCaesar3"
 	StrCpy $localization $INSTDIR\fr\LC_MESSAGES
 	CreateDirectory $localization
 	SetOutPath $localization
-	File /r /x .svn "..\..\fr\LC_MESSAGES\*.*"
+	File /r /x .svn "..\..\locales\*.*"
 			
 	StrCpy $resourcesn $INSTDIR\resources\maps
 	CreateDirectory $resourcesn

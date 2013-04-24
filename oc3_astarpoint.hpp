@@ -10,6 +10,7 @@ public:
   bool closed;
   bool opened;
   bool walkable;
+  bool isRoad;
   TilePos pos;
   int f, g, h;
 
@@ -20,15 +21,17 @@ public:
     opened = false;
     walkable = false;
     pos = TilePos( 0, 0 );
+    isRoad = false;
 
     f = g = h = 0;
   }
 
-  AStarPoint( const TilePos& p, bool w)
+  AStarPoint( const TilePos& p, bool w, bool r)
   {    
     parent = NULL;
     closed = false;
     opened = false;
+    isRoad = r;
 
     f = g = h = 0;
     walkable = w;
@@ -52,7 +55,8 @@ public:
 
   int getGScore(AStarPoint* p)
   { 
-    return p->g + ((pos.getI() == p->pos.getI() || pos.getJ() == p->pos.getJ()) ? 10 : 14);
+    int offset = p->isRoad ? -5 : +10;
+    return p->g + ((pos.getI() == p->pos.getI() || pos.getJ() == p->pos.getJ()) ? 10 : 14) + offset;
   }
 
   int getHScore(AStarPoint* p)

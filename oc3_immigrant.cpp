@@ -78,7 +78,7 @@ void Immigrant::_checkPath( Tile& startPoint, Building* house )
   Tilemap& citymap = _d->city->getTilemap();
   Tile& destTile = house ? house->getTile() : citymap.at( _d->city->getRoadExitIJ() );
 
-  bool pathFound = Pathfinder::getInstance().getPath( startPoint.getIJ(), destTile.getIJ(), pathWay, false );
+  bool pathFound = Pathfinder::getInstance().getPath( startPoint.getIJ(), destTile.getIJ(), pathWay, false, false );
   if( pathFound )
   {
      setPathWay( pathWay );
