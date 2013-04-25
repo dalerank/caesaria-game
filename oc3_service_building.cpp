@@ -37,9 +37,14 @@ ServiceBuilding::ServiceBuilding(const ServiceType &service)
    _service = service;
    setMaxWorkers(5);
    setWorkers(0);
+   setServiceDelay( 80 );
    _serviceTimer = 0;
-   _serviceDelay = 80;
    _serviceRange = 30;
+}
+
+void ServiceBuilding::setServiceDelay( const int delay )
+{
+  _serviceDelay = delay;
 }
 
 ServiceType ServiceBuilding::getService() const
@@ -54,7 +59,7 @@ void ServiceBuilding::timeStep(const unsigned long time)
    if (_serviceTimer == 0)
    {
       deliverService();
-      _serviceTimer = _serviceDelay;
+      _serviceTimer = getServiceDelay();
    }
    else if (_serviceTimer > 0)
    {
@@ -86,7 +91,7 @@ void ServiceBuilding::deliverService()
    ServiceWalker *walker = new ServiceWalker(_service);
    walker->setServiceBuilding(*this);
    walker->start();
-   _walkerList.push_back(walker);
+   _addWalker( walker );
 }
 
 int ServiceBuilding::getServiceRange() const
@@ -114,6 +119,16 @@ GuiInfoBox* ServiceBuilding::makeInfoBox( Widget* parent )
 {
    GuiInfoService* box = new GuiInfoService( parent, *this);
    return box;
+}
+
+int ServiceBuilding::getServiceDelay() const
+{
+  return _serviceDelay;
+}
+
+void ServiceBuilding::_addWalker( ServiceWalker* walker )
+{
+  _walkerList.push_back( walker );
 }
 
 BuildingWell::BuildingWell() : ServiceBuilding(S_WELL)

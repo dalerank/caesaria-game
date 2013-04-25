@@ -34,6 +34,8 @@ public:
    virtual void destroy();  // handles the walkers
 
    int getServiceRange() const;  // max distance from building to road for road to propose the service
+   virtual int getServiceDelay() const;
+   void setServiceDelay( const int delay );
 
    // called when a service man should service the neighborhood
    virtual void deliverService();
@@ -43,13 +45,17 @@ public:
    void serialize(OutputSerialStream &stream);
    void unserialize(InputSerialStream &stream);
 
+protected:
+  void _addWalker( ServiceWalker* walker );
+
 private:
    ServiceType _service;
    int _serviceTimer;
-   int _serviceDelay;
+   
    int _serviceRange;
    std::list<Walker*> _walkerList;
    static std::map<ServiceType, ServiceBuilding*> _specimen;
+   int _serviceDelay;
 };
 
 

@@ -2,6 +2,7 @@
 #include "oc3_picture.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_positioni.hpp"
+#include "oc3_walker.hpp"
 
 BuildingPrefect::BuildingPrefect() : ServiceBuilding(S_PREFECT)
 {
@@ -13,6 +14,12 @@ BuildingPrefect::BuildingPrefect() : ServiceBuilding(S_PREFECT)
   _animation.setFrameDelay( 4 );
   _animation.setOffset( Point( 20, 36 ) );
   _fgPictures.resize(1);
+}
+
+int BuildingPrefect::getServiceDelay() const
+{
+  float koeff = ( getWorkers() > 0 ) ? (float)getMaxWorkers() / (float)getWorkers() : 1.f;
+  return (int)(ServiceBuilding::getServiceDelay() * koeff);
 }
 
 void BuildingPrefect::timeStep(const unsigned long time)
@@ -35,7 +42,13 @@ void BuildingPrefect::timeStep(const unsigned long time)
 void BuildingPrefect::deliverService()
 {
   if( getWorkers() > 0 )
-    ServiceBuilding::deliverService();
+  {
+    ServiceWalker *walker = new ServiceWalker(getService());
+    walker->setServiceBuilding(*this);
+    walker->start();
+
+    _addWalker( walker );
+  }
 }
 
 BuildingPrefect* BuildingPrefect::clone() const
