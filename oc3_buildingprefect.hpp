@@ -10,6 +10,7 @@ public:
   BuildingPrefect* clone() const;
   void timeStep(const unsigned long time);
   void deliverService();
+  int getServiceDelay() const;
 };
 
 #endif

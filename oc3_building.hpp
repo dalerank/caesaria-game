@@ -180,12 +180,12 @@ public:
    WorkingBuilding();
 
    void setMaxWorkers(const int maxWorkers);
-   int getMaxWorkers();
+   int getMaxWorkers() const;
 
    void setWorkers(const int currentWorkers);
    void addWorkers( const int workers );
 
-   int getWorkers();
+   int getWorkers() const;
 
    void setActive(const bool value);  // if false then this building is stopped
    bool isActive();

@@ -64,7 +64,7 @@ $(CAESAR_EXE): $(OBJECTS)
 	$(CC) $(CFLAGS) $<
 
 clean:
-	rm -f *.o
+	rm -f *.o $(CAESAR_EXE)
 
 release_src: format
 	./release_src.sh

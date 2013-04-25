@@ -726,7 +726,7 @@ void WorkingBuilding::setMaxWorkers(const int maxWorkers)
    _maxWorkers = maxWorkers;
 }
 
-int WorkingBuilding::getMaxWorkers()
+int WorkingBuilding::getMaxWorkers() const
 {
    return _maxWorkers;
 }
@@ -736,7 +736,7 @@ void WorkingBuilding::setWorkers(const int currentWorkers)
    _currentWorkers = currentWorkers;
 }
 
-int WorkingBuilding::getWorkers()
+int WorkingBuilding::getWorkers() const
 {
    return _currentWorkers;
 }
