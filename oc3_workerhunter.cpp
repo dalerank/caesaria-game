@@ -23,7 +23,7 @@ WorkersHunter::WorkersHunter( ServiceBuilding& building, const int workersNeeded
 {    
     setServiceBuilding( building );
     _workersNeeded = workersNeeded;
-    _walkerGraphic = WG_LIBRARIAN;
+    _walkerGraphic = WG_POOR;
     _walkerType = WT_WORKERS_HUNTER;
 }
 

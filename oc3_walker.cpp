@@ -511,7 +511,7 @@ void ServiceWalker::init(const ServiceType service)
     _walkerGraphic = WG_ACTOR;
     break;
   case S_MARKET:
-    _walkerGraphic = WG_CHILD;
+    _walkerGraphic = WG_MARKETLADY;
     break;
   case S_FORUM:
     _walkerGraphic = WG_TAX;
