@@ -6,7 +6,7 @@
 
 using namespace std;
 
-const AStarPoint Pathfinder::invalidPoint = AStarPoint( TilePos( 0, 0), false, false ); 
+const AStarPoint Pathfinder::invalidPoint = AStarPoint( 0 ); 
 
 Pathfinder::Pathfinder()
 {
@@ -21,15 +21,9 @@ void Pathfinder::update( const Tilemap& tilemap )
     for( int j=0; j < tilemap.getSize(); j++ )
     {
       TilePos pos( i, j );
-      const TerrainTile& tt = tilemap.at( pos ).get_terrain();
       if ( !pointExists( pos ) )
       {
-        grid[i][j] = new AStarPoint( pos, tt.isWalkable(true), tt.isRoad() );
-      }
-      else 
-      {
-        grid[i][j]->walkable = tt.isWalkable(true);
-        grid[i][j]->isRoad = tt.isRoad();
+        grid[i][j] = new AStarPoint( &tilemap.at( pos ) );
       }
     }
   }
@@ -58,7 +52,7 @@ bool Pathfinder::getPath( const TilePos& start, const TilePos& stop,
       for( list<AStarPoint*>::iterator i = points1.begin(); 
            i != lastStepIt && pathIsWalkable; ++i )
       {
-        pathIsWalkable = (*i)->walkable;
+        pathIsWalkable = (*i)->isWalkable();
       }
     }
 
@@ -69,7 +63,7 @@ bool Pathfinder::getPath( const TilePos& start, const TilePos& stop,
       i++;
       for( ; i != points1.end() && pathIsWalkable; ++i )
       {
-        oPathWay.setNextTile( _tilemap->at( (*i)->getPosition() ) );
+        oPathWay.setNextTile( *( (*i)->tile ) );
       }
       return true;
     }
@@ -96,9 +90,9 @@ std::list<AStarPoint*> Pathfinder::getTraversingPoints( const TilePos& start, co
   points.push_back( getPoint( start ) );
 
   TilePos housePos = stop;               
-  while( points.back()->getPosition() != housePos )
+  while( points.back()->getPos() != housePos )
   {
-    TilePos ij = points.back()->getPosition();
+    TilePos ij = points.back()->getPos();
     TilePos move( math::clamp( housePos.getI() - ij.getI(), -1, 1 ), math::clamp( housePos.getJ() - ij.getJ(), -1, 1 ) );
     points.push_back( getPoint( ij + move ) );
   }
@@ -126,7 +120,7 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos, const S
   list<AStarPoint*> closedList;
   list<AStarPoint*>::iterator i;
 
-  map<AStarPoint*,bool> saveArrivedArea;
+  map<AStarPoint*,AStarPoint::WalkableType> saveArrivedArea;
   for( int i=stopPos.getI(); i < stopPos.getI()+arrivedArea.getWidth(); i++ )
   {
     for( int j=stopPos.getJ(); j < stopPos.getJ() + arrivedArea.getHeight(); j++ )
@@ -134,8 +128,8 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos, const S
       AStarPoint* ap = getPoint( TilePos( i, j) );
       if( ap )
       {
-        saveArrivedArea[ ap ] = ap->walkable;
-        ap->walkable = true;
+        saveArrivedArea[ ap ] = ap->priorWalkable;
+        ap->priorWalkable = AStarPoint::alwaysWalkable;
       }
     }
   }
@@ -183,10 +177,10 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos, const S
         }
 
         // Get this point
-        child = getPoint( current->pos + TilePos( x, y ) );
+        child = getPoint( current->getPos() + TilePos( x, y ) );
 
         // If it's closed or not walkable then pass
-        if (child->closed || !child->walkable)
+        if (child->closed || !child->isWalkable() )
         {
           continue;
         }
@@ -196,13 +190,13 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos, const S
         {
           // if the next horizontal point is not walkable or in the closed list then pass
           //AStarPoint* tmpPoint = getPoint( current->pos + TilePos( 0, y ) );
-          TilePos tmp = current->pos + TilePos( 0, y );
+          TilePos tmp = current->getPos() + TilePos( 0, y );
           if( !pointIsWalkable( tmp ) || getPoint( tmp )->closed)
           {
             continue;
           }
 
-          tmp = current->pos + TilePos( x, 0 );
+          tmp = current->getPos() + TilePos( x, 0 );
           // if the next vertical point is not walkable or in the closed list then pass
           if( !pointIsWalkable( tmp ) || getPoint( tmp )->closed)
           {
@@ -248,9 +242,9 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos, const S
     (*i)->closed = false;
   }
 
-  for( map<AStarPoint*,bool>::iterator it=saveArrivedArea.begin(); it != saveArrivedArea.end(); it++ )
+  for( map<AStarPoint*,AStarPoint::WalkableType>::iterator it=saveArrivedArea.begin(); it != saveArrivedArea.end(); it++ )
   {
-    it->first->walkable = it->second;
+    it->first->priorWalkable = it->second;
   }
 
   if( n == getMaxLoopCount() )
@@ -268,7 +262,7 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos, const S
 
   for( list<AStarPoint*>::iterator lpIt=lPath.begin(); lpIt != lPath.end(); lpIt++ )
   {
-    oPathWay.setNextTile( _tilemap->at( (*lpIt)->getPosition() ) );
+    oPathWay.setNextTile( _tilemap->at( (*lpIt)->getPos() ) );
   }
 
   return oPathWay.getLength() > 1;
@@ -294,7 +288,7 @@ bool Pathfinder::pointExists( const TilePos& pos )
 
 bool Pathfinder::pointIsWalkable( const TilePos& pos )
 {
-  return (pointExists( pos ) && grid[ pos.getI() ][ pos.getJ() ]->walkable);
+  return (pointExists( pos ) && grid[ pos.getI() ][ pos.getJ() ]->isWalkable() );
 }
 
 Pathfinder& Pathfinder::getInstance()

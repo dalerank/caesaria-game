@@ -210,7 +210,7 @@ void PathWay::setNextDirection(const DirectionType direction)
    _directionList.push_back(direction);
 }
 
-void PathWay::setNextTile(Tile &tile)
+void PathWay::setNextTile( const Tile& tile)
 {
    int dI = tile.getI() - _destinationI;
    int dJ = tile.getJ() - _destinationJ;

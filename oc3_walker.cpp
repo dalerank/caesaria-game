@@ -27,7 +27,7 @@
 #include "oc3_walker_market_buyer.hpp"
 #include "oc3_walker_cart_pusher.hpp"
 #include "oc3_positioni.hpp"
-#include "oc3_walkermanager.h"
+#include "oc3_walkermanager.hpp"
 
 Walker::Walker()
 {

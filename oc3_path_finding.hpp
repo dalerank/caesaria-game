@@ -44,7 +44,7 @@ public:
    bool isDestination() const;
 
    void setNextDirection(const DirectionType direction);
-   void setNextTile(Tile &tile);
+   void setNextTile( const Tile& tile);
    bool contains(Tile &tile);
    std::list<Tile*>& getAllTiles();
 

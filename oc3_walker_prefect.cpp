@@ -13,19 +13,10 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_BUILDINGPREFECT_H_INCLUDED__
-#define __OPENCAESAR3_BUILDINGPREFECT_H_INCLUDED__
+#include "oc3_walker_prefect.hpp"
 
-#include "oc3_service_building.hpp"
-
-class BuildingPrefect : public ServiceBuilding
+WalkerPrefect::WalkerPrefect( ServiceBuilding& building )
+: ServiceWalker( S_PREFECT )
 {
-public:
-  BuildingPrefect();
-  BuildingPrefect* clone() const;
-  void timeStep(const unsigned long time);
-  void deliverService();
-  int getServiceDelay() const;
-};
-
-#endif
+  setServiceBuilding( building );
+}

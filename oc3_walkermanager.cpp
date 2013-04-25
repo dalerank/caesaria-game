@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_walkermanager.h"
+#include "oc3_walkermanager.hpp"
 #include "oc3_walker.hpp"
 #include "oc3_walker_market_buyer.hpp"
 #include "oc3_walker_cart_pusher.hpp"

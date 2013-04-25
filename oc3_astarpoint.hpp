@@ -5,42 +5,52 @@
 
 class AStarPoint
 {
+
 public:
+  typedef enum { autoWalkable, alwaysWalkable, alwaysImpassable } WalkableType;
   AStarPoint* parent;
   bool closed;
   bool opened;
-  bool walkable;
-  bool isRoad;
-  TilePos pos;
   int f, g, h;
+  const Tile* tile;
+  WalkableType priorWalkable;
 
   AStarPoint()
   {
     parent = NULL;
     closed = false;
     opened = false;
-    walkable = false;
-    pos = TilePos( 0, 0 );
-    isRoad = false;
+    priorWalkable = alwaysImpassable;
+    tile = 0;
 
     f = g = h = 0;
   }
 
-  AStarPoint( const TilePos& p, bool w, bool r)
+  TilePos getPos()
+  {
+    return tile ? tile->getIJ() : TilePos( 0, 0 );
+  }
+
+  bool isWalkable()
+  {
+    switch( priorWalkable )
+    {
+    case autoWalkable: return tile ? tile->get_terrain().isWalkable( true ) : false;
+    case alwaysWalkable: return true;
+    case alwaysImpassable: return false;   
+    }
+
+    return false;
+  }
+
+  AStarPoint( const Tile* t ) : tile( t )
   {    
     parent = NULL;
     closed = false;
     opened = false;
-    isRoad = r;
+    priorWalkable = autoWalkable;
 
     f = g = h = 0;
-    walkable = w;
-    pos = p;
-  }
-
-  TilePos getPosition()
-  {
-    return pos;
   }
 
   AStarPoint* getParent()
@@ -55,13 +65,17 @@ public:
 
   int getGScore(AStarPoint* p)
   { 
-    int offset = p->isRoad ? -5 : +10;
-    return p->g + ((pos.getI() == p->pos.getI() || pos.getJ() == p->pos.getJ()) ? 10 : 14) + offset;
+    int offset = p->tile->get_terrain().isRoad() ? -5 : +10;
+    TilePos pos = tile->getIJ(); 
+    TilePos otherPos = p->tile->getIJ();
+    return p->g + ((pos.getI() == otherPos.getI() || pos.getJ() == otherPos.getJ()) ? 10 : 14) + offset;
   }
 
   int getHScore(AStarPoint* p)
   {
-    return (abs(p->pos.getI() - pos.getI()) + abs(p->pos.getJ() - pos.getJ())) * 10;
+    TilePos pos = tile->getIJ(); 
+    TilePos otherPos = p->tile->getIJ();
+    return (abs(otherPos.getI() - pos.getI()) + abs(otherPos.getJ() - pos.getJ())) * 10;
   }
 
   int getGScore()

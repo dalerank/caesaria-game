@@ -779,11 +779,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_walker_prefect.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_walker_prefect.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_walkermanager.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_walkermanager.h"
+				RelativePath="..\..\oc3_walkermanager.hpp"
 				>
 			</File>
 			<File
