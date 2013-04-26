@@ -131,13 +131,23 @@ void ServiceBuilding::_addWalker( ServiceWalker* walker )
   _walkerList.push_back( walker );
 }
 
+void ServiceBuilding::removeWalker( ServiceWalker* walker )
+{
+  _walkerList.remove( walker );
+}
+
+const std::list<Walker*>& ServiceBuilding::_getWalkerList() const
+{
+  return _walkerList;
+}
+
 BuildingWell::BuildingWell() : ServiceBuilding(S_WELL)
 {
    setType(B_WELL);
    _size = 1;
    _fireIncrement = 0;
    _damageIncrement = 0;
-   setPicture(PicLoader::instance().get_picture("utilitya", 1));
+   setPicture( Picture::load("utilitya", 1) );
 }
 
 BuildingWell* BuildingWell::clone() const

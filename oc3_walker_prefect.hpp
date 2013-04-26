@@ -21,9 +21,23 @@
 class WalkerPrefect : public ServiceWalker
 {
 public:
-  WalkerPrefect( ServiceBuilding& building );
+  WalkerPrefect( ServiceBuilding& building, int water=0 );
+ 
+  void onMidTile();
+  void onNewTile();
+  void timeStep(const unsigned long time);
+  float getServiceValue() const;
+  void onDestination();
 
+  ~WalkerPrefect();
+ 
+protected:
+  bool _looks4Fire( std::set<Building*>& buildings, TilePos& pos );
+  void _checkPath2NearestFire( const std::set<Building*>& buildings );
+  void _back2Prefecture();
 
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 #endif //__OPENCAESAR3_WALKER_PREFECT_H_INCLUDED__

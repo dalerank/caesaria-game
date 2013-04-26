@@ -45,8 +45,11 @@ public:
    void serialize(OutputSerialStream &stream);
    void unserialize(InputSerialStream &stream);
 
+   void removeWalker( ServiceWalker* walker );
+
 protected:
   void _addWalker( ServiceWalker* walker );
+  const std::list<Walker*>& _getWalkerList() const;
 
 private:
    ServiceType _service;

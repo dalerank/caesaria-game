@@ -17,6 +17,7 @@
 #define __OPENCAESAR3_BUILDINGPREFECT_H_INCLUDED__
 
 #include "oc3_service_building.hpp"
+#include "oc3_positioni.hpp"
 
 class BuildingPrefect : public ServiceBuilding
 {
@@ -26,6 +27,11 @@ public:
   void timeStep(const unsigned long time);
   void deliverService();
   int getServiceDelay() const;
+
+  void fireDetect( const TilePos& pos );
+
+private:
+  TilePos _fireDetect;
 };
 
 #endif

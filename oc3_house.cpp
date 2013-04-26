@@ -38,7 +38,7 @@ House::House(const int houseId) : Building()
    _name = _houseLevelSpec->getLevelName();
    _picIdOffset = 0;
    _currentHabitants = 0;
-   //_damageLevel = 98;
+   //_fireLevel = 98;
 
    _goodStore.setMaxQty(10000);  // no limit
    _goodStore.setMaxQty(G_WHEAT, 100);

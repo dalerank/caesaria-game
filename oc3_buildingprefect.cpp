@@ -18,12 +18,16 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_walker_prefect.hpp"
+#include "oc3_astarpathfinding.hpp"
+#include "oc3_scenario.hpp"
 
 BuildingPrefect::BuildingPrefect() : ServiceBuilding(S_PREFECT)
 {
   setType(B_PREFECT);
   _size = 1;
+  _fireDetect = TilePos( -1, -1 );
   setPicture( Picture::load( ResourceGroup::security, 1 ) );
+  
 
   _animation.load( ResourceGroup::security, 2, 10);
   _animation.setFrameDelay( 4 );
@@ -56,10 +60,33 @@ void BuildingPrefect::timeStep(const unsigned long time)
 
 void BuildingPrefect::deliverService()
 {
-  if( getWorkers() > 0 )
+  if( getWorkers() > 0 && _getWalkerList().size() == 0 )
   {
-    WalkerPrefect *walker = new WalkerPrefect( *this );
-    walker->start();
+    bool fireDetect = _fireDetect.getI() >= 0;
+    WalkerPrefect *walker = new WalkerPrefect( *this, fireDetect ? 200 : 0 );
+
+    bool patrol = true;
+    if( fireDetect )
+    {
+      PathWay pathway;
+      TilePos startPos = _accessRoads.front()->getIJ();
+      bool pathFounded = Pathfinder::getInstance().getPath( startPos, _fireDetect, pathway, false, Size( 0 ) );
+      patrol = !pathFounded;
+
+      if( pathFounded )
+      {
+        walker->setPathWay( pathway );
+        walker->setIJ( pathway.getOrigin().getIJ() );
+        Scenario::instance().getCity().addWalker( *walker );
+      }
+
+      _fireDetect = TilePos( -1, -1 );
+    }
+    
+    if( patrol )
+    {
+      walker->start();
+    }
 
     _addWalker( walker );
   }
@@ -68,4 +95,9 @@ void BuildingPrefect::deliverService()
 BuildingPrefect* BuildingPrefect::clone() const
 {
   return new BuildingPrefect(*this);
+}
+
+void BuildingPrefect::fireDetect( const TilePos& pos )
+{
+  _fireDetect = pos;
 }
