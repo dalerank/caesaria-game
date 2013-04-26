@@ -314,8 +314,8 @@ PtrTilesList Tilemap::getRectangle( const TilePos& pos, const Size& size, const 
 {
     return getRectangle( pos, pos + TilePos( size.getWidth(), size.getHeight()), corners );
 }
-// Get tiles inside of rectangle
 
+// Get tiles inside of rectangle
 PtrTilesList Tilemap::getFilledRectangle(const TilePos& start, const TilePos& stop )
 {
    std::list<Tile*> res;
