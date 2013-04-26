@@ -231,7 +231,8 @@ BuildingDataHolder::BuildingDataHolder()
 
    //damages
    addData(BuildingData(B_BURNING_RUINS, "burningRuins", 0)); 
-   addData(BuildingData(B_COLLAPSED_RUINS, "burningRuins", 0)); 
+   addData(BuildingData(B_BURNED_RUINS, "burnedRuins", 0)); 
+   addData(BuildingData(B_COLLAPSED_RUINS, "collapsedRuins", 0)); 
    
 
    // populate _mapBuildingByService

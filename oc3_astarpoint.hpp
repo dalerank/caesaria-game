@@ -66,14 +66,14 @@ public:
   int getGScore(AStarPoint* p)
   { 
     int offset = p->tile->get_terrain().isRoad() ? -5 : +10;
-    TilePos pos = tile->getIJ(); 
+    TilePos pos = tile ? tile->getIJ() : TilePos( 0, 0 ); 
     TilePos otherPos = p->tile->getIJ();
     return p->g + ((pos.getI() == otherPos.getI() || pos.getJ() == otherPos.getJ()) ? 10 : 14) + offset;
   }
 
   int getHScore(AStarPoint* p)
   {
-    TilePos pos = tile->getIJ(); 
+    TilePos pos = tile->getIJ() ; 
     TilePos otherPos = p->tile->getIJ();
     return (abs(otherPos.getI() - pos.getI()) + abs(otherPos.getJ() - pos.getJ())) * 10;
   }

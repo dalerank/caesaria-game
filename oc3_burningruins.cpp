@@ -17,6 +17,7 @@
 #include "oc3_pic_loader.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_positioni.hpp"
+#include "oc3_walker.hpp"
 
 BurningRuins::BurningRuins() : ServiceBuilding(S_BURNING_RUINS)
 {
@@ -24,7 +25,7 @@ BurningRuins::BurningRuins() : ServiceBuilding(S_BURNING_RUINS)
     _size = 1;
     _fireLevel = 99;
 
-    setPicture(PicLoader::instance().get_picture( ResourceGroup::land2a, 187));
+    setPicture( Picture::load( ResourceGroup::land2a, 187) );
     _animation.load( ResourceGroup::land2a, 188, 8 );
     _animation.setOffset( Point( 14, 26 ) );
     _fgPictures.resize(1);           
@@ -39,31 +40,39 @@ void BurningRuins::timeStep(const unsigned long time)
 {
     ServiceBuilding::timeStep(time);
 
-    if (time % 16 == 0 && _fireLevel > 0)
+    if (time % 16 == 0 )
     {
+      if( _fireLevel > 0 )
+      {
         _fireLevel -= 1;
         if( _fireLevel == 50 )
         {
-            setPicture(PicLoader::instance().get_picture( ResourceGroup::land2a, 214));
-            _animation.clear();
-            _animation.load( ResourceGroup::land2a, 215, 8);
-            _animation.setOffset( Point( 14, 26 ) );
+          setPicture(Picture::load( ResourceGroup::land2a, 214));
+          _animation.clear();
+          _animation.load( ResourceGroup::land2a, 215, 8);
+          _animation.setOffset( Point( 14, 26 ) );
         }
         else if( _fireLevel == 25 )
         {
-            setPicture(PicLoader::instance().get_picture( ResourceGroup::land2a, 223));
-            _animation.clear();
-            _animation.load(ResourceGroup::land2a, 224, 8);
-            _animation.setOffset( Point( 14, 26 ) );
+          setPicture( Picture::load( ResourceGroup::land2a, 223));
+          _animation.clear();
+          _animation.load(ResourceGroup::land2a, 224, 8);
+          _animation.setOffset( Point( 14, 26 ) );
         }
-        else if( _fireLevel == 1 )
-        {
-            setPicture(PicLoader::instance().get_picture( ResourceGroup::land2a, 111 + rand() % 8 ));
-            _animation.clear();
-            _fgPictures.clear();
-            getTile().get_terrain().setBuilding( true );
-        }           
+      }
+      else
+      {
+        deleteLater();
+        _animation.clear();
+        _fgPictures.clear();
+      }           
     }
+}
+
+void BurningRuins::destroy()
+{
+  BurnedRuins* burned = new BurnedRuins();
+  burned->build( getTile().getIJ() );
 }
 
 void BurningRuins::deliverService()
@@ -88,6 +97,56 @@ void BurningRuins::build( const TilePos& pos )
     ServiceBuilding::build( pos );
     //while burning can't remove it
     getTile().get_terrain().setTree( false );
-    getTile().get_terrain().setBuilding( false );
+    getTile().get_terrain().setBuilding( true );
     getTile().get_terrain().setRoad( false );
+    getTile().get_terrain().setRock( true );
 }   
+
+bool BurningRuins::isWalkable() const
+{
+  return (_fireLevel == 0);
+}
+
+float BurningRuins::evaluateService( ServiceWalker &walker )
+{
+  return _fireLevel;
+}
+
+void BurningRuins::applyService(ServiceWalker &walker)
+{
+  if ( S_PREFECT == walker.getService() )
+  {
+    _fireLevel = math::clamp<float>( _fireLevel - walker.getServiceValue(), 0.f, 100.f );
+  }
+}
+
+void BurnedRuins::timeStep( const unsigned long time )
+{
+
+}
+
+BurnedRuins::BurnedRuins()
+{
+  setPicture( Picture::load( ResourceGroup::land2a, 111 + rand() % 8 ));
+
+  setType(B_BURNED_RUINS);
+  _size = 1;
+}
+
+void BurnedRuins::build( const TilePos& pos )
+{
+  Building::build(pos);
+
+  getTile().get_terrain().setBuilding( true );
+  getTile().get_terrain().setRock( false );
+}
+
+bool BurnedRuins::isWalkable() const
+{
+  return true;
+}
+
+LandOverlay* BurnedRuins::clone() const
+{
+  return 0;
+}

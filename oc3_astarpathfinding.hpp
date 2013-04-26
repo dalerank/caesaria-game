@@ -21,7 +21,7 @@ public:
   void update( const Tilemap& tmap );
 
   bool getPath( const TilePos& start, const TilePos& stop, 
-                PathWay& oPathWay, bool checkLast, bool tryTraverse,
+                PathWay& oPathWay, bool checkLast,
                 const Size& arrivedArea );
 
   int getMaxLoopCount() const;

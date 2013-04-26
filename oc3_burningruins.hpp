@@ -28,6 +28,22 @@ public:
     void timeStep(const unsigned long time);
     void burn();
     void build(const TilePos& pos );
+    bool isWalkable() const;
+    void destroy();
+
+    float evaluateService(ServiceWalker &walker);
+    void applyService(ServiceWalker &walker);
+};
+
+class BurnedRuins : public Building
+{
+public:
+  BurnedRuins();
+  LandOverlay* clone() const;
+
+  void timeStep(const unsigned long time);
+  bool isWalkable() const;
+  void build( const TilePos& pos );
 };
 
 
