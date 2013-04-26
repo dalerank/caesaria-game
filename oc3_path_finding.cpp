@@ -47,14 +47,7 @@ PathWay::PathWay()
 
 PathWay::PathWay(const PathWay &copy)
 {
-   _tilemap = copy._tilemap;
-   _origin = copy._origin;
-   _destinationI = copy._destinationI;
-   _destinationJ = copy._destinationJ;
-   _directionList = copy._directionList;
-   _directionIt = _directionList.begin();
-   _directionIt_reverse = _directionList.rbegin();
-   _tileList = copy._tileList;
+   *this = copy;
 }
 
 void PathWay::init(Tilemap &tilemap, Tile &origin)
@@ -102,6 +95,20 @@ void PathWay::rbegin()
 {
    _directionIt_reverse = _directionList.rbegin();
    _isReverse = true;
+}
+
+void PathWay::toggleDirection()
+{
+  if( _isReverse )
+  {
+    _isReverse = false;
+    _directionIt = _directionIt_reverse.base();
+  }
+  else
+  {
+    _isReverse = true;
+    _directionIt_reverse = Directions::reverse_iterator( _directionIt );
+  }
 }
 
 DirectionType PathWay::getNextDirection()
@@ -376,6 +383,20 @@ void PathWay::unserialize(InputSerialStream &stream)
    std::advance(_directionIt, off);
 }
 
+PathWay& PathWay::operator=( const PathWay& other )
+{
+  _tilemap             = other._tilemap;
+  _origin              = other._origin;
+  _destinationI        = other._destinationI;
+  _destinationJ        = other._destinationJ;
+  _directionList       = other._directionList;
+  _directionIt         = _directionList.begin();
+  _directionIt_reverse = _directionList.rbegin();
+  _tileList            = other._tileList;
+
+  return *this;
+}
+
 Propagator::Propagator()
 {
    _city = &Scenario::instance().getCity();
@@ -383,7 +404,6 @@ Propagator::Propagator()
    _allLands = false;
    _allDirections = true;
 }
-
 
 void Propagator::setAllLands(const bool value)
 {
@@ -403,7 +423,6 @@ void Propagator::init(const Construction &origin)
    init(origin.getAccessRoads());
 }
 
-
 void Propagator::init(Tile& origin)
 {
   _origin = &origin;
@@ -412,7 +431,6 @@ void Propagator::init(Tile& origin)
 
    init( tileList );
 }
-
 
 void Propagator::init(const std::list<Tile*>& origin)
 {
@@ -436,7 +454,6 @@ void Propagator::init(const std::list<Tile*>& origin)
       _completedBranches.insert(std::pair<Tile*, PathWay>(&tile, pathWay));
    }
 }
-
 
 void Propagator::propagate(const int maxDistance)
 {

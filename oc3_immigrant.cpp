@@ -80,7 +80,7 @@ void Immigrant::_checkPath( Tile& startPoint, Building* house )
   Size arrivedArea( house ? house->getSize() : 1 );
 
   bool pathFound = Pathfinder::getInstance().getPath( startPoint.getIJ(), destTile.getIJ(), pathWay, 
-                                                      false, false, arrivedArea );
+                                                      false, arrivedArea );
   if( pathFound )
   {
      setPathWay( pathWay );

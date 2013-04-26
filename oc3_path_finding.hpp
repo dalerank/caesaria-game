@@ -51,15 +51,20 @@ public:
    void prettyPrint() const;
    void serialize(OutputSerialStream &stream);
    void unserialize(InputSerialStream &stream);
+   void toggleDirection();
+
+   PathWay& operator=(const PathWay& other );
 
 private:
    Tilemap *_tilemap;
    Tile *_origin;
    int _destinationI;
    int _destinationJ;
-   std::vector<DirectionType> _directionList;
-   std::vector<DirectionType>::iterator _directionIt;
-   std::vector<DirectionType>::reverse_iterator _directionIt_reverse;
+
+   typedef std::vector<DirectionType> Directions;
+   Directions _directionList;
+   Directions::iterator _directionIt;
+   Directions::reverse_iterator _directionIt_reverse;
    std::list<Tile*> _tileList;
    bool _isReverse;
 };

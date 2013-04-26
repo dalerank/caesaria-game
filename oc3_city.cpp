@@ -48,7 +48,6 @@ public:
     Walkers walkerList;
     TilePos roadEntry; //coordinates can't be negative!
     CityServices services;
-    bool needUpdatePathFinder;
 };
 
 City::City() : _d( new Impl )
@@ -64,7 +63,6 @@ City::City() : _d( new Impl )
    _boatExitJ = 0;
    _d->funds = 1000;
    _d->population = 0;
-   _d->needUpdatePathFinder = true;
    _taxRate = 700;
    _climate = C_CENTRAL;
    
@@ -93,12 +91,6 @@ void City::timeStep()
      // every X seconds
      _d->month++;
      monthStep();
-  }
-
-  if( _d->needUpdatePathFinder )
-  {
-    _d->needUpdatePathFinder = false;
-    Pathfinder::getInstance().update( _tilemap );
   }
 
   Walkers::iterator walkerIt = _d->walkerList.begin();
@@ -309,8 +301,6 @@ void City::build( Construction& buildInstance, const TilePos& pos )
    _d->overlayList.push_back(building);
    _d->funds -= buildingData.getCost();
    _d->onFundsChangedSignal.emit( _d->funds );
-
-   _d->needUpdatePathFinder = true;
 }
 
 void City::disaster( const TilePos& pos, DisasterType type )
