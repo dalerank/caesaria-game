@@ -32,6 +32,7 @@
 #include "oc3_serializer.hpp"
 #include "oc3_referencecounted.hpp"
 #include "oc3_smartptr.hpp"
+#include "oc3_safetycast.hpp"
 
 class Walker : public Serializable, public ReferenceCounted
 {
@@ -133,6 +134,7 @@ public:
 
    void computeWalkerPath();
    void start();
+   virtual float getServiceValue() const;
    virtual void onDestination();
    virtual void onNewTile();  // called when the walker is on a new tile
 
@@ -140,6 +142,8 @@ public:
    float evaluatePath(PathWay &pathWay);
    void reservePath(PathWay &pathWay);
    std::set<Building*> getReachedBuildings(const TilePos& pos );
+
+   virtual unsigned int getReachDistance() const;
 
    void setMaxDistance( const int distance );
 
@@ -152,6 +156,56 @@ private:
    int _maxDistance;
 };
 
+class ServiceWalkerHelper
+{
+public:
+  ServiceWalkerHelper( ServiceWalker& walker )
+    : _walker( walker )
+  {
+
+  }
+
+  std::set< Building* > getReachedBuildings( const TilePos& pos, const BuildingType type )
+  {
+    std::set<Building*> res = _walker.getReachedBuildings( pos );
+
+    std::set<Building*>::iterator it=res.begin();
+    while( it != res.end() )
+    {
+      if( (*it)->getType() != type )
+      {
+        res.erase( it++ );
+      }
+      else
+      {
+        it++;
+      }
+    }
+  }
+
+  template< class T > 
+  std::set< T > getReachedBuildings( const TilePos& pos )
+  {
+    std::set<Building*> res = _walker.getReachedBuildings( pos );
+
+    std::set<T>::iterator it=res.begin();
+    while( it != res.end() )
+    {
+      T building = safety_cast<T*>( it );
+      if( !building )
+      {
+        res.erase( it++ );
+      }
+      else
+      {
+        it++;
+      }
+    }
+  }
+
+private:
+  ServiceWalker& _walker;
+};
 
 /** This walker goes to work */
 class TraineeWalker : public Walker

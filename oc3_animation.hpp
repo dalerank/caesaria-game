@@ -35,6 +35,8 @@ public:
     void start(bool loop=true);
     void stop();
 
+    int clampIndex( const int index ) const;
+
     Pictures& getPictures();
     const Pictures& getPictures() const;
 

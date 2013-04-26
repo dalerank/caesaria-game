@@ -567,6 +567,14 @@ void WalkerLoader::loadAll()
    _animations[WG_PREFECT] = map;
 
    map.clear();
+   fillWalk(map, "citizen02", 767, 12);
+   _animations[WG_PREFECT_DRAG_WATER] = map;
+
+   map.clear();
+   fillWalk(map, "citizen02", 863, 6);
+   _animations[WG_PREFECT_FIGHTS_FIRE] = map;
+
+   map.clear();
    fillWalk(map, "citizen02", 911, 12);
    _animations[WG_HOMELESS] = map;
 

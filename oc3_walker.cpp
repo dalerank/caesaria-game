@@ -198,7 +198,11 @@ void Walker::walk()
       // nothing to do
       return;
    }
-   _animIndex = (_animIndex+1) % 12;
+   
+   if( _animation )
+   {
+     _animIndex = _animation->clampIndex( _animIndex+1 );
+   }
 
    switch (_action._direction)
    {
@@ -380,6 +384,7 @@ Picture& Walker::getMainPicture()
       }
 
       _animation = &(itAnimMap->second);
+      _animIndex = _animation->clampIndex( _animIndex );
    }
 
    return *_animation->getPictures()[_animIndex];
@@ -576,28 +581,34 @@ void ServiceWalker::computeWalkerPath()
    Scenario::instance().getCity().addWalker( *this );
 }
 
+unsigned int ServiceWalker::getReachDistance() const
+{
+  return 2;
+}
+
 std::set<Building*> ServiceWalker::getReachedBuildings(const TilePos& pos )
 {
-   std::set<Building*> res;
+  City& city = Scenario::instance().getCity();
+  std::set<Building*> res;
 
-   int reachDistance = 2;
-   TilePos start = pos - TilePos( reachDistance, reachDistance );
-   TilePos stop = pos + TilePos( reachDistance, reachDistance );
-   std::list<Tile*> reachedTiles = Scenario::instance().getCity().getTilemap().getFilledRectangle( start, stop );
-   for (std::list<Tile*>::iterator itTile = reachedTiles.begin(); itTile != reachedTiles.end(); ++itTile)
-   {
-      TerrainTile& terrain = (*itTile)->get_terrain();
-      if( terrain.isBuilding() )
+  int reachDistance = getReachDistance();
+  TilePos start = pos - TilePos( reachDistance, reachDistance );
+  TilePos stop = pos + TilePos( reachDistance, reachDistance );
+  std::list<Tile*> reachedTiles = city.getTilemap().getFilledRectangle( start, stop );
+  for (std::list<Tile*>::iterator itTile = reachedTiles.begin(); itTile != reachedTiles.end(); ++itTile)
+  {
+    TerrainTile& terrain = (*itTile)->get_terrain();
+    if( terrain.isBuilding() )
+    {
+      Building* building = safety_cast<Building*>( terrain.getOverlay() );
+      if( building )
       {
-         Building* building = dynamic_cast<Building*>( terrain.getOverlay() );
-         if( building )
-         {
-            res.insert(building);
-         }
+        res.insert(building);
       }
-   }
+    }
+  }
 
-   return res;
+  return res;
 }
 
 float ServiceWalker::evaluatePath(PathWay &pathWay)
@@ -705,6 +716,11 @@ void ServiceWalker::unserialize(InputSerialStream &stream)
 void ServiceWalker::setMaxDistance( const int distance )
 {
     _maxDistance = distance;
+}
+
+float ServiceWalker::getServiceValue() const
+{
+  return 100;
 }
 
 TraineeWalker::TraineeWalker(const WalkerTraineeType traineeType)

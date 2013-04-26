@@ -120,3 +120,8 @@ void Animation::stop()
 {
     _animIndex = -1;
 }
+
+int Animation::clampIndex( const int index ) const
+{
+  return index % _pictures.size();
+}
