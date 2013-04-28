@@ -136,6 +136,10 @@ bool GuiInfoBox::onEvent( const NEvent& event)
             deleteLater();
             return true;
         }
+        else if( event.MouseEvent.Event == OC3_LMOUSE_LEFT_UP )
+        {
+          return true;
+        }
     break;
     }
 
@@ -638,7 +642,7 @@ void GuiBuilding::paint()
 InfoBoxLand::InfoBoxLand( Widget* parent, Tile* tile )
     : GuiInfoBox( parent, Rect( 0, 0, 510, 350 ), -1 )
 {
-    _text = new Label( this, Rect( 36, 239, 470, 338 ), "", true );
+    _text = new Label( this, Rect( 38, 239, 470, 338 ), "", true );
     _text->setFont( FontCollection::instance().getFont(FONT_2) );
 
     if( tile->get_terrain().isTree() )

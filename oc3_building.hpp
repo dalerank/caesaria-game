@@ -96,9 +96,11 @@ public:
    virtual void computeAccessRoads();  
    virtual unsigned char getMaxDistance2Road() const; // virtual because HOUSE has different behavior
    virtual char getDesirabilityInfluence() const;
+   virtual void destroy();
 
 protected:
    std::list<Tile*> _accessRoads;
+   void _updateDesirabilityInfluence( bool onBuild );
 };
 
 class Garden : public Construction

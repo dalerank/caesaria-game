@@ -37,7 +37,7 @@ House::House(const int houseId) : Building( B_HOUSE )
    _name = _houseLevelSpec->getLevelName();
    _picIdOffset = 0;
    _currentHabitants = 0;
-   _desirability = 0;
+   _desirability = -3;
    _fireLevel = 90;
 
    _goodStore.setMaxQty(10000);  // no limit
@@ -178,7 +178,8 @@ void House::levelUp()
 
        if( mayGrow )
        {
-         int sumHabitants = 0, sumFreeWorkers = 0;
+         int sumHabitants = getNbHabitants();
+         int sumFreeWorkers = _freeWorkersCount;
          PtrTilesList::iterator delIt=tiles.begin();
          delIt++; //don't remove himself
          for( ; delIt != tiles.end(); delIt++ )

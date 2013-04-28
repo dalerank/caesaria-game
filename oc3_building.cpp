@@ -228,6 +228,22 @@ void Construction::build(const TilePos& pos )
   computeAccessRoads();
 }
 
+void Construction::_updateDesirabilityInfluence( bool onBuild )
+{
+  City &city = Scenario::instance().getCity();
+  Tilemap &tilemap = city.getTilemap();
+
+  PtrTilesList desirabilityArea = tilemap.getFilledRectangle( getTile().getIJ() - TilePos(2, 2), 
+    getTile().getIJ() + TilePos( 2, 2 ) );
+
+  int mul = (onBuild ? 1 : -1);
+  for( PtrTilesList::iterator it=desirabilityArea.begin(); it != desirabilityArea.end(); it++ )
+  {
+    (*it)->get_terrain().appendDesirability( mul * getDesirabilityInfluence() );
+  }
+}
+
+
 const PtrTilesList& Construction::getAccessRoads() const
 {
    return _accessRoads;
@@ -281,6 +297,12 @@ void Construction::collapse()
 char Construction::getDesirabilityInfluence() const
 {
   return 0;
+}
+
+void Construction::destroy()
+{
+  LandOverlay::destroy();
+  _updateDesirabilityInfluence( false );
 }
 
 // I didn't decide what is the best approach: make Plaza as constructions or as upgrade to roads
