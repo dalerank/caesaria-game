@@ -18,16 +18,16 @@
 
 #include "oc3_service_building.hpp"
 
-class CollapsedRuins : public ServiceBuilding
+class CollapsedRuins : public Building
 {
 public:
     CollapsedRuins();
     CollapsedRuins* clone() const;
 
-    void deliverService();
-    void timeStep(const unsigned long time);
     void burn();
     void build(const TilePos& pos );
+
+    bool isWalkable() const;
 };
 
 #endif

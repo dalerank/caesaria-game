@@ -137,7 +137,7 @@ class ServiceWalker;
 class Building : public Construction
 {
 public:
-   Building();
+   Building(const BuildingType type=B_NONE );
    virtual void setTerrain(TerrainTile &terrain);
 
    virtual void timeStep(const unsigned long time);

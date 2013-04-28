@@ -256,11 +256,11 @@ void InfoBoxHouse::_paint()
     else
     {
         Label* lb = new Label( this, _ed->lbCrime->getRelativeRect() + Point( 0, 30 ), "", false, true ); 
-        lb->setHeight( 30 );
+        lb->setHeight( 40 );
         lb->setLineIntevalOffset( -6 );
         lb->setText( _("Inabitants of tents provide food themselves, conducting a subsistence economy") );
         lb->setWordWrap( true );
-        startY = lb->getBottom() + 10;
+        startY = lb->getTop();
     }
 
     drawGood(G_POTTERY, 0, 1, startY);

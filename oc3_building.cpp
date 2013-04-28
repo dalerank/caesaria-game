@@ -514,8 +514,9 @@ bool Road::isWalkable() const
   return true;
 }
 
-Building::Building()
+Building::Building(const BuildingType type )
 {
+   _buildingType = type; 
    _damageLevel = 0.0;
    _fireLevel = 0.0;
    _damageIncrement = 1;
@@ -624,13 +625,18 @@ void Building::applyService(ServiceWalker &walker)
    ServiceType service = walker.getService();
    _reservedServices.erase(service);
 
-   if (service == S_ENGINEER)
+   switch( service )
    {
-      _damageLevel = 0;
-   }
-   else if (service == S_PREFECT)
-   {
+   case S_ENGINEER:
+     {
+       _damageLevel = 0;
+     }
+   break;
+   case S_PREFECT:
+    {
       _fireLevel = 0;
+    }
+   break;
    }
 }
 

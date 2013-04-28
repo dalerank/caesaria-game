@@ -259,7 +259,6 @@ BuildingDataHolder::BuildingDataHolder()
 
    //damages
    _mapBuildingByService[S_BURNING_RUINS] = B_BURNING_RUINS;
-   _mapBuildingByService[S_COLLAPSED_RUINS] = B_COLLAPSED_RUINS;
 
    // populate _mapBuildingByInGood
    _mapBuildingByInGood[G_IRON]   = B_WEAPON;

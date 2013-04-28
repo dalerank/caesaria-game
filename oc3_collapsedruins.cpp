@@ -19,9 +19,8 @@
 #include "oc3_positioni.hpp"
 #include "oc3_time.hpp"
 
-CollapsedRuins::CollapsedRuins() : ServiceBuilding(S_COLLAPSED_RUINS)
+CollapsedRuins::CollapsedRuins() : Building(B_COLLAPSED_RUINS)
 {
-    setType(B_COLLAPSED_RUINS);
     _size = 1;
     _damageLevel = 1;   
 
@@ -37,23 +36,6 @@ CollapsedRuins* CollapsedRuins::clone() const
     return new CollapsedRuins(*this);
 }
 
-void CollapsedRuins::timeStep(const unsigned long time)
-{
-    ServiceBuilding::timeStep( time );    
-}
-
-void CollapsedRuins::deliverService()
-{
-    /*ServiceWalker walker(getService());
-    walker.setServiceBuilding(*this);
-    std::set<Building*> reachedBuildings = walker.getReachedBuildings(getTile().getI(), getTile().getJ());
-    for (std::set<Building*>::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
-    {
-    Building &building = **itBuilding;
-    building.applyService(walker);
-    }*/
-}
-
 void CollapsedRuins::burn()
 {
 
@@ -61,10 +43,15 @@ void CollapsedRuins::burn()
 
 void CollapsedRuins::build( const TilePos& pos )
 {
-    ServiceBuilding::build( pos );
+    Building::build( pos );
     //while burning can't remove it
     getTile().get_terrain().setTree( false );
-    getTile().get_terrain().setBuilding( false );
+    getTile().get_terrain().setBuilding( true );
     getTile().get_terrain().setRoad( false );
-    setPicture( PicLoader::instance().get_picture( ResourceGroup::land2a, 111 + rand() % 8 ) );
+    setPicture( Picture::load( ResourceGroup::land2a, 111 + rand() % 8 ) );
 }   
+
+bool CollapsedRuins::isWalkable() const
+{
+  return true;
+}
