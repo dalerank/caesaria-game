@@ -306,6 +306,7 @@ void City::build( Construction& buildInstance, const TilePos& pos )
 void City::disaster( const TilePos& pos, DisasterType type )
 {
     TerrainTile& terrain = _tilemap.at( pos ).get_terrain();
+    TilePos rPos = pos;
 
     if( terrain.isDestructible() )
     {
@@ -313,11 +314,15 @@ void City::disaster( const TilePos& pos, DisasterType type )
 
         LandOverlay* overlay = terrain.getOverlay();
         if( overlay )
+        {
+          overlay->deleteLater();
           size = overlay->getSize();
+          rPos = overlay->getTile().getIJ();
+        }
 
         bool deleteRoad = false;
 
-        std::list<Tile*> clearedTiles = _tilemap.getFilledRectangle( pos, Size( size ) );
+        std::list<Tile*> clearedTiles = _tilemap.getFilledRectangle( rPos, Size( size ) );
         for (std::list<Tile*>::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
         {
             BuildingType dstr2constr[] = { B_BURNING_RUINS, B_COLLAPSED_RUINS };

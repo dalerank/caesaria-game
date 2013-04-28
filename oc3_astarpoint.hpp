@@ -73,7 +73,7 @@ public:
 
   int getHScore(AStarPoint* p)
   {
-    TilePos pos = tile->getIJ() ; 
+    TilePos pos = tile ? tile->getIJ() : TilePos( 0, 0 ); 
     TilePos otherPos = p->tile->getIJ();
     return (abs(otherPos.getI() - pos.getI()) + abs(otherPos.getJ() - pos.getJ())) * 10;
   }

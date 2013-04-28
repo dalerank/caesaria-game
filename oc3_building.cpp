@@ -893,25 +893,19 @@ MissionPost::MissionPost() : WorkingBuilding(B_MISSION_POST, Size(2) )
 }
 
 
-SmallStatue::SmallStatue()
+SmallStatue::SmallStatue() : Building( B_STATUE1, Size(1) )
 {
- setType(B_STATUE1);
-  _size = 1;
-  setPicture(PicLoader::instance().get_picture(rcGovernmentGroup, 1));
+  setPicture( Picture::load(rcGovernmentGroup, 1));
 }
 
-MediumStatue::MediumStatue()
+MediumStatue::MediumStatue() : Building( B_STATUE2, Size(2) )
 {
- setType(B_STATUE2);
-  _size = 2;
-  setPicture(PicLoader::instance().get_picture(rcGovernmentGroup, 2));
+  setPicture( Picture::load(rcGovernmentGroup, 2));
 }
 
-BigStatue::BigStatue()
+BigStatue::BigStatue() : Building( B_STATUE3, Size(3))
 {
- setType(B_STATUE3);
-  _size = 3;
-  setPicture(PicLoader::instance().get_picture(rcGovernmentGroup, 3));
+  setPicture( Picture::load(rcGovernmentGroup, 3));
 }
 
 MissionPost*  MissionPost::clone()  const { return new MissionPost(*this);  }
@@ -961,7 +955,11 @@ Barracks::Barracks() : WorkingBuilding( B_BARRACKS, Size( 3 ) )
 Academy*  Academy::clone()  const { return new Academy(*this);  }
 Barracks* Barracks::clone() const { return new Barracks(*this); }
 
-NativeBuilding::NativeBuilding() {}
+NativeBuilding::NativeBuilding( const BuildingType type, const Size& size ) 
+: Building( type, size )
+{
+
+}
 
 void NativeBuilding::serialize(OutputSerialStream &stream) {Building::serialize(stream);}
 
@@ -977,11 +975,9 @@ NativeHut* NativeHut::clone() const
   return new NativeHut(*this);
 }
 
-NativeHut::NativeHut()
+NativeHut::NativeHut() : NativeBuilding( B_NATIVE_HUT, Size(1) )
 {
-  setType(B_NATIVE_HUT);
-  _size = 1;
-  setPicture(PicLoader::instance().get_picture(rcHousingGroup, 49));
+  setPicture( Picture::load(rcHousingGroup, 49));
   //setPicture(PicLoader::instance().get_picture("housng1a", 50));
 }
 
@@ -989,11 +985,9 @@ void NativeHut::serialize(OutputSerialStream &stream)  {Building::serialize(stre
 
 void NativeHut::unserialize(InputSerialStream &stream) {Building::unserialize(stream);}
 
-NativeCenter::NativeCenter()
+NativeCenter::NativeCenter() : NativeBuilding( B_NATIVE_CENTER, Size(2) )
 {
-  setType(B_NATIVE_CENTER);
-  _size = 2;
-  setPicture(PicLoader::instance().get_picture(rcHousingGroup, 51));
+  setPicture( Picture::load(rcHousingGroup, 51));
 }
 
 void NativeCenter::serialize(OutputSerialStream &stream)  {Building::serialize(stream);}
@@ -1005,11 +999,9 @@ NativeCenter* NativeCenter::clone() const
   return new NativeCenter(*this);
 }
 
-NativeField::NativeField()
+NativeField::NativeField() : NativeBuilding( B_NATIVE_FIELD, Size(1) ) 
 {
-  setType(B_NATIVE_FIELD);
-  _size = 1;
-  setPicture(PicLoader::instance().get_picture(ResourceGroup::commerce, 13));  
+  setPicture(Picture::load(ResourceGroup::commerce, 13));  
 }
 
 void NativeField::serialize(OutputSerialStream &stream) {Building::serialize(stream);}
@@ -1021,11 +1013,9 @@ NativeField* NativeField::clone() const
   return new NativeField(*this);
 }
 
-Shipyard::Shipyard()
+Shipyard::Shipyard() : Building( B_SHIPYARD, Size(2) )
 {
-  setType(B_SHIPYARD);
-  _size = 2;
-  setPicture(PicLoader::instance().get_picture("transport", 1));
+  setPicture( Picture::load("transport", 1));
   // also transport 2 3 4 check position of river on map
 }
 
@@ -1040,11 +1030,9 @@ Shipyard* Shipyard::clone() const
 // transport 29       animation = 30~40
 // transport 41       animation = 42~51
 
-Dock::Dock()
+Dock::Dock() : Building( B_DOCK, Size(2) )
 {
-  setType(B_DOCK);
-  _size = 2;
-  setPicture(PicLoader::instance().get_picture("transport", 5));  
+  setPicture( Picture::load("transport", 5));  
 
   _animation.load( "transport", 6, 11);
   // now fill in reverse order
@@ -1070,11 +1058,9 @@ Dock* Dock::clone() const
 
 // second arch pictures is land3a 45 + 46	
 
-TriumphalArch::TriumphalArch()
+TriumphalArch::TriumphalArch() : Building( B_TRIUMPHAL_ARCH, Size(3) )
 {
-  setType(B_TRIUMPHAL_ARCH);
-  _size = 3;
-  setPicture(PicLoader::instance().get_picture("land3a", 43));
+  setPicture( Picture::load( "land3a", 43 ) );
   getPicture().set_offset(0,116);
   _animation.load("land3a", 44, 1);
   _animation.setOffset( Point( 63, 97 ) );
@@ -1089,13 +1075,11 @@ TriumphalArch* TriumphalArch::clone() const
 
 
 
-FortLegionnaire::FortLegionnaire()
+FortLegionnaire::FortLegionnaire() : Building( B_FORT_LEGIONNAIRE, Size(3) )
 {
-  setType(B_FORT_LEGIONNAIRE);
-  _size = 3;
-  setPicture(PicLoader::instance().get_picture(ResourceGroup::security, 12));
+  setPicture( Picture::load(ResourceGroup::security, 12));
 
-  Picture* logo = &PicLoader::instance().get_picture(ResourceGroup::security, 16);
+  Picture* logo = &Picture::load(ResourceGroup::security, 16);
   logo -> set_offset(80,10);
   _fgPictures.resize(1);
   _fgPictures.at(0) = logo;  
@@ -1106,13 +1090,11 @@ FortLegionnaire* FortLegionnaire::clone() const
    return new FortLegionnaire(*this);
 }
 
-FortMounted::FortMounted()
+FortMounted::FortMounted() : Building( B_FORT_MOUNTED, Size(3) )
 {
-  setType(B_FORT_MOUNTED);
-  _size = 3;
-  setPicture(PicLoader::instance().get_picture(ResourceGroup::security, 12));
+  setPicture( Picture::load(ResourceGroup::security, 12));
 
-  Picture* logo = &PicLoader::instance().get_picture(ResourceGroup::security, 15);
+  Picture* logo = &Picture::load(ResourceGroup::security, 15);
   logo -> set_offset(80,10);
   _fgPictures.resize(1);
   _fgPictures.at(0) = logo;
@@ -1123,13 +1105,11 @@ FortMounted* FortMounted::clone() const
    return new FortMounted(*this);
 }
 
-FortJaveline::FortJaveline()
+FortJaveline::FortJaveline() : Building( B_FORT_JAVELIN, Size(3) )
 {
-  setType(B_FORT_JAVELIN);
-  _size = 3;
-  setPicture(PicLoader::instance().get_picture(ResourceGroup::security, 12));
+  setPicture( Picture::load(ResourceGroup::security, 12));
 
-  Picture* logo = &PicLoader::instance().get_picture(ResourceGroup::security, 14);
+  Picture* logo = &Picture::load(ResourceGroup::security, 14);
   //std::cout << logo->get_xoffset() << " " << logo->get_yoffset() << " " << logo->get_width() << " " << logo->get_height() << std::endl;
   logo -> set_offset(80,10);
   _fgPictures.resize(1);

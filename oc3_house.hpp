@@ -47,6 +47,7 @@ public:
    bool hasServiceAccess(const ServiceType service);
    int getServiceAccess(const ServiceType service);
    void setServiceAccess(const ServiceType service, const int access);
+   char getDesirabilityInfluence() const;
 
    void levelUp();
    void levelDown();
@@ -73,6 +74,7 @@ private:
    HouseLevelSpec* _houseLevelSpec;  // characteristics of the current house level
    HouseLevelSpec* _nextHouseLevelSpec;  // characteristics of the house level+1
    int _picIdOffset;
+   char _desirability;
 
    void _update();
 };

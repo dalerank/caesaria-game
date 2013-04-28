@@ -95,7 +95,7 @@ void BurningRuins::build( const TilePos& pos )
     ServiceBuilding::build( pos );
     //while burning can't remove it
     getTile().get_terrain().setTree( false );
-    getTile().get_terrain().setBuilding( true );
+    getTile().get_terrain().setBuilding( false );
     getTile().get_terrain().setRoad( false );
     getTile().get_terrain().setRock( true );
 }   

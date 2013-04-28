@@ -28,9 +28,8 @@
 
 static const char* rcGrourName = "housng1a";
 
-House::House(const int houseId) : Building()
+House::House(const int houseId) : Building( B_HOUSE )
 {
-   setType(B_HOUSE);
    _houseId = houseId;
    _houseLevel = HouseLevelSpec::getHouseLevel( houseId );
    _houseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel);
@@ -38,6 +37,7 @@ House::House(const int houseId) : Building()
    _name = _houseLevelSpec->getLevelName();
    _picIdOffset = 0;
    _currentHabitants = 0;
+   _desirability = 0;
    _fireLevel = 90;
 
    _goodStore.setMaxQty(10000);  // no limit
@@ -68,7 +68,6 @@ House* House::clone() const
    res->_picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
    return res;
 }
-
 
 void House::timeStep(const unsigned long time)
 {
@@ -143,6 +142,7 @@ void House::levelUp()
    {
    case 1:
       _houseId = 1;
+      _desirability = -3;
       break;
    case 2:
      { 
@@ -174,6 +174,7 @@ void House::levelUp()
 
        _houseId = mayGrow ? 5 : 3;
        _picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
+       _desirability = -3;
 
        if( mayGrow )
        {
@@ -483,4 +484,9 @@ void House::destroy()
 bool House::isWalkable() const
 {
   return (_houseId == smallHovel && _currentHabitants == 0) ? true : false;
+}
+
+char House::getDesirabilityInfluence() const
+{
+  return _desirability;
 }

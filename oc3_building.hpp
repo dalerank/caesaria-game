@@ -138,7 +138,7 @@ class ServiceWalker;
 class Building : public Construction
 {
 public:
-   Building(const BuildingType type=B_NONE, const Size& size=Size(1) );
+   Building(const BuildingType type, const Size& size=Size(1) );
    virtual void setTerrain(TerrainTile &terrain);
 
    virtual void timeStep(const unsigned long time);
@@ -320,13 +320,13 @@ public:
 class NativeBuilding : public Building
 {
 public:
-  NativeBuilding();
+  NativeBuilding( const BuildingType type, const Size& size );
   void serialize(OutputSerialStream &stream);
   void unserialize(InputSerialStream &stream);
   virtual GuiInfoBox* makeInfoBox( Widget* parent );
 };
 
-class NativeHut    : public NativeBuilding
+class NativeHut : public NativeBuilding
 {
 public:
   NativeHut();
