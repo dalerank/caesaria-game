@@ -109,11 +109,8 @@ void WarehouseTile::computePicture()
 }
 
 
-Warehouse::Warehouse()
+Warehouse::Warehouse() : WorkingBuilding( B_WAREHOUSE, Size( 3 ))
 {
-   setType(B_WAREHOUSE);
-
-   _size = 3;
    // _name = _("Entrepot");
    _picture = &PicLoader::instance().get_picture(rcWarehouseGroup, 19);
    _fgPictures.resize(12);  // 8 tiles + 4

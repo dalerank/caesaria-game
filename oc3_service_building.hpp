@@ -27,7 +27,8 @@ class Widget;
 class ServiceBuilding : public WorkingBuilding
 {
 public:
-   ServiceBuilding(const ServiceType &service);
+   ServiceBuilding( const ServiceType service,
+                    const BuildingType type, const Size& size );
 
    ServiceType getService() const;
    void timeStep(const unsigned long time);
@@ -83,8 +84,9 @@ public:
 class EntertainmentBuilding : public ServiceBuilding
 {
 public:
-   EntertainmentBuilding(const ServiceType &service);
-   virtual void deliverService();
+  EntertainmentBuilding( const ServiceType service, const BuildingType type,
+                         const Size& size);
+  virtual void deliverService();
 };
 
 class BuildingTheater : public EntertainmentBuilding

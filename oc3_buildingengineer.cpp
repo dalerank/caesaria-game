@@ -19,10 +19,8 @@
 #include "oc3_positioni.hpp"
 
 
-BuildingEngineer::BuildingEngineer() : ServiceBuilding(S_ENGINEER)
+BuildingEngineer::BuildingEngineer() : ServiceBuilding(S_ENGINEER, B_ENGINEER, Size(1) )
 {
-    setType(B_ENGINEER);
-    _size = 1;
     setWorkers( 0 );
     setPicture( Picture::load( ResourceGroup::buildingEngineer, 56 ) );
 

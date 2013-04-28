@@ -32,7 +32,8 @@ static const char* rcEntertaimentGroup    = "entertainment";
 }
 
 
-TrainingBuilding::TrainingBuilding()
+TrainingBuilding::TrainingBuilding( const BuildingType type, const Size& size )
+  : WorkingBuilding( type, size )
 {
    setMaxWorkers(5);
    setWorkers(0);
@@ -93,11 +94,9 @@ void TrainingBuilding::unserialize(InputSerialStream &stream)
 //}
 
 
-BuildingActor::BuildingActor()
+BuildingActor::BuildingActor() : TrainingBuilding( B_ACTOR, Size(3) )
 {
-   setType(B_ACTOR);
-   _size = 3;
-   setPicture(PicLoader::instance().get_picture(rcEntertaimentGroup, 81));
+  setPicture( Picture::load(rcEntertaimentGroup, 81));
 
    _animation.load( rcEntertaimentGroup, 82, 9);
    _animation.setOffset( Point( 68, -6 ) );
@@ -117,11 +116,9 @@ void BuildingActor::deliverTrainee()
    trainee->start();
 }
 
-BuildingGladiator::BuildingGladiator()
+BuildingGladiator::BuildingGladiator() : TrainingBuilding( B_GLADIATOR, Size(3))
 {
-   setType(B_GLADIATOR);
-   _size = 3;
-   setPicture(PicLoader::instance().get_picture(rcEntertaimentGroup, 51));
+  setPicture( Picture::load(rcEntertaimentGroup, 51));
 
    _animation.load(rcEntertaimentGroup, 52, 10);
    _animation.setOffset( Point( 62, 24 ) );
@@ -142,11 +139,9 @@ void BuildingGladiator::deliverTrainee()
 }
 
 
-BuildingLion::BuildingLion()
+BuildingLion::BuildingLion() : TrainingBuilding( B_LION, Size(3) )
 {
-   setType(B_LION);
-   _size = 3;
-   setPicture(PicLoader::instance().get_picture(rcEntertaimentGroup, 62));
+  setPicture( Picture::load(rcEntertaimentGroup, 62));
 
    _animation.load( rcEntertaimentGroup, 63, 18);
    _animation.setOffset( Point( 78, 21) );
@@ -167,11 +162,9 @@ void BuildingLion::deliverTrainee()
 }
 
 
-BuildingChariot::BuildingChariot()
+BuildingChariot::BuildingChariot() : TrainingBuilding( B_CHARIOT, Size(3) )
 {
-   setType(B_CHARIOT);
-   _size = 3;
-   setPicture(PicLoader::instance().get_picture(rcEntertaimentGroup, 91));
+  setPicture( Picture::load(rcEntertaimentGroup, 91));
 
    _animation.load(rcEntertaimentGroup, 92, 10);
    _animation.setOffset( Point( 54, 23 ));

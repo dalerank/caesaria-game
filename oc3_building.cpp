@@ -49,13 +49,14 @@ static const char* rcEntertaimentGroup = "entertainment";
 
 //std::map<BuildingType, LandOverlay*> LandOverlay::_mapBuildingByID;  // key=buildingType, value=instance
 
-LandOverlay::LandOverlay()
+LandOverlay::LandOverlay(const BuildingType type, const Size& size)
 {
    _master_tile = NULL;
-   _size = 1;
+   _size = size.getWidth();
    _isDeleted = false;
    _name = "unknown";
    _picture = NULL;
+   setType( type );
 }
 
 LandOverlay::~LandOverlay()
@@ -201,11 +202,12 @@ bool LandOverlay::isWalkable() const
   return false;
 }
 
-Construction::Construction()
+Construction::Construction( const BuildingType type, const Size& size)
+: LandOverlay( type, size )
 {
 }
 
-bool Construction::canBuild(const TilePos& pos ) const
+bool Construction::canBuild( const TilePos& pos ) const
 {
   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
 
@@ -226,7 +228,7 @@ void Construction::build(const TilePos& pos )
   computeAccessRoads();
 }
 
-const std::list<Tile*>& Construction::getAccessRoads() const
+const PtrTilesList& Construction::getAccessRoads() const
 {
    return _accessRoads;
 }
@@ -257,7 +259,7 @@ void Construction::computeAccessRoads()
   }
 }
 
-Uint8 Construction::getMaxDistance2Road() const
+unsigned char Construction::getMaxDistance2Road() const
 {
   return 1;
   // it is default value
@@ -275,12 +277,15 @@ void Construction::collapse()
    deleteLater();
    Scenario::instance().getCity().disaster( getTile().getIJ(), DSTR_COLLAPSE );
 }
-// I didn't decide what is the best approach: make Plaza as constructions or as upgrade to roads
 
+char Construction::getDesirabilityInfluence() const
+{
+  return 0;
+}
+
+// I didn't decide what is the best approach: make Plaza as constructions or as upgrade to roads
 Plaza::Plaza()
 {
-  //std::cout << "Plaza::Plaza" << std::endl;
-
   // somewhere we need to delete original road and then we need to think
   // because as we remove original road we need to recompute adjacent tiles
   // or we will run into big troubles
@@ -333,11 +338,9 @@ bool Plaza::canBuild(const TilePos& pos ) const
   return is_constructible;
 }
 
-Garden::Garden()
+Garden::Garden() : Construction(B_GARDEN, Size(1) )
 {
-  setType(B_GARDEN);
-  setPicture( PicLoader::instance().get_picture( rcEntertaimentGroup, 110) ); // 110 111 112 113
-  _size = 1;
+  setPicture( Picture::load( rcEntertaimentGroup, 110) ); // 110 111 112 113
 }
 
 Garden* Garden::clone() const
@@ -360,10 +363,9 @@ bool Garden::isWalkable() const
   return true;
 }
 
-Road::Road()
+Road::Road() : Construction( B_ROAD, Size(1) )
 {
-  setType(B_ROAD);
-  setPicture(PicLoader::instance().get_picture( rcRoadGroup, 44));  // default picture for build tool
+  setPicture( Picture::load( rcRoadGroup, 44));  // default picture for build tool
 }
 
 Road* Road::clone() const
@@ -514,9 +516,9 @@ bool Road::isWalkable() const
   return true;
 }
 
-Building::Building(const BuildingType type )
+Building::Building(const BuildingType type, const Size& size )
+: Construction( type, size )
 {
-   _buildingType = type; 
    _damageLevel = 0.0;
    _fireLevel = 0.0;
    _damageIncrement = 1;
@@ -720,7 +722,8 @@ void Building::unserialize(InputSerialStream &stream)
    }
 }
 
-WorkingBuilding::WorkingBuilding()
+WorkingBuilding::WorkingBuilding(const BuildingType type, const Size& size)
+: Building( type, size )
 {
    _maxWorkers = 0;
    _currentWorkers = 0;
@@ -774,14 +777,12 @@ void WorkingBuilding::addWorkers( const int workers )
     _currentWorkers += workers;
 }
 
-Granary::Granary()
+Granary::Granary() : WorkingBuilding( B_GRANARY, Size(3) )
 {
-   setType(B_GRANARY);
    setMaxWorkers(5);
    setWorkers(0);
 
-   _size = 3;
-   setPicture(PicLoader::instance().get_picture( ResourceGroup::commerce, 140));
+   setPicture( Picture::load( ResourceGroup::commerce, 140));
    _fgPictures.resize(6);  // 1 upper level + 4 windows + animation
    int maxQty = 2400;
    _goodStore.setMaxQty(maxQty);
@@ -884,10 +885,8 @@ void Granary::unserialize(InputSerialStream &stream)
 // transport 93 - missionaire post   2 x 2
 // circus    1 ~ 18 hippodrome    5x(5 x 5)
 
-MissionPost::MissionPost()
+MissionPost::MissionPost() : WorkingBuilding(B_MISSION_POST, Size(2) )
 {
- setType(B_MISSION_POST);
-  _size = 2;
   setMaxWorkers(20);
   setWorkers(0);  
   setPicture(PicLoader::instance().get_picture("transport", 93));
@@ -920,50 +919,40 @@ SmallStatue*  SmallStatue::clone()  const { return new SmallStatue(*this);  }
 MediumStatue* MediumStatue::clone() const { return new MediumStatue(*this); }
 BigStatue*    BigStatue::clone()    const { return new BigStatue(*this);    }
 
-GovernorsHouse::GovernorsHouse()
+GovernorsHouse::GovernorsHouse() : WorkingBuilding( B_GOVERNOR_HOUSE, Size(3) )
 {
-  setType(B_GOVERNOR_HOUSE);
-  _size = 3;
   setMaxWorkers(5);
   setWorkers(0);    
-  setPicture(PicLoader::instance().get_picture(rcHousingGroup, 46));
+  setPicture(Picture::load(rcHousingGroup, 46));
 }
 
-GovernorsVilla::GovernorsVilla()
+GovernorsVilla::GovernorsVilla() : WorkingBuilding(B_GOVERNOR_VILLA, Size(4) )
 {
-  setType(B_GOVERNOR_VILLA);
-  _size = 4;
   setMaxWorkers(10);
   setWorkers(0);    
-  setPicture(PicLoader::instance().get_picture(rcHousingGroup, 47));
+  setPicture(Picture::load(rcHousingGroup, 47));
 }
 
-GovernorsPalace::GovernorsPalace()
+GovernorsPalace::GovernorsPalace() : WorkingBuilding(B_GOVERNOR_PALACE, Size( 5 ) )
 {
-  setType(B_GOVERNOR_PALACE);
-  _size = 5;
   setMaxWorkers(15);
   setWorkers(0);  
-  setPicture(PicLoader::instance().get_picture(rcHousingGroup, 48));
+  setPicture(Picture::load(rcHousingGroup, 48));
 }
 
 GovernorsHouse*  GovernorsHouse::clone()  const { return new GovernorsHouse(*this);  }
 GovernorsVilla*  GovernorsVilla::clone()  const { return new GovernorsVilla(*this);  }
 GovernorsPalace* GovernorsPalace::clone() const { return new GovernorsPalace(*this); }
 
-Academy::Academy()
+Academy::Academy() : WorkingBuilding( B_MILITARY_ACADEMY, Size(3) )
 {
-  setType(B_MILITARY_ACADEMY);
-  _size = 3;
   setMaxWorkers( 20 );
   setWorkers( 0 );
   setPicture(PicLoader::instance().get_picture( ResourceGroup::security, 18));
 }
 
-Barracks::Barracks()
+Barracks::Barracks() : WorkingBuilding( B_BARRACKS, Size( 3 ) )
 {
-  setType(B_BARRACKS);
-  _size = 3;
   setMaxWorkers(5);
   setWorkers(0);  
   setPicture(PicLoader::instance().get_picture(ResourceGroup::security, 17));

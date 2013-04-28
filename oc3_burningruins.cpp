@@ -19,10 +19,8 @@
 #include "oc3_positioni.hpp"
 #include "oc3_walker.hpp"
 
-BurningRuins::BurningRuins() : ServiceBuilding(S_BURNING_RUINS)
+BurningRuins::BurningRuins() : ServiceBuilding(S_BURNING_RUINS, B_BURNING_RUINS, Size(1) )
 {
-    setType(B_BURNING_RUINS);
-    _size = 1;
     _fireLevel = 99;
 
     setPicture( Picture::load( ResourceGroup::land2a, 187) );
@@ -125,12 +123,9 @@ void BurnedRuins::timeStep( const unsigned long time )
 
 }
 
-BurnedRuins::BurnedRuins()
+BurnedRuins::BurnedRuins() : Building( B_BURNED_RUINS, Size(1) )
 {
   setPicture( Picture::load( ResourceGroup::land2a, 111 + rand() % 8 ));
-
-  setType(B_BURNED_RUINS);
-  _size = 1;
 }
 
 void BurnedRuins::build( const TilePos& pos )

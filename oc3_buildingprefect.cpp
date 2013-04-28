@@ -21,10 +21,8 @@
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_scenario.hpp"
 
-BuildingPrefect::BuildingPrefect() : ServiceBuilding(S_PREFECT)
+BuildingPrefect::BuildingPrefect() : ServiceBuilding(S_PREFECT, B_PREFECT, Size(1))
 {
-  setType(B_PREFECT);
-  _size = 1;
   _fireDetect = TilePos( -1, -1 );
   setPicture( Picture::load( ResourceGroup::security, 1 ) );
   

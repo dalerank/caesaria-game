@@ -36,7 +36,7 @@ class GuiInfoBox;
 class LandOverlay : public Serializable
 {
 public:
-   LandOverlay();
+   LandOverlay( const BuildingType type, const Size& size=Size(1));
    virtual ~LandOverlay();
 
    virtual void timeStep(const unsigned long time);  // perform one simulation step
@@ -86,15 +86,16 @@ protected:
 class Construction : public LandOverlay
 {
 public:
-   Construction();
+   Construction( const BuildingType type, const Size& size);
 
    virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
    virtual void build( const TilePos& pos );
    virtual void burn();
    virtual void collapse();
-   const std::list<Tile*>& getAccessRoads() const;  // return all road tiles adjacent to the construction
+   const PtrTilesList& getAccessRoads() const;  // return all road tiles adjacent to the construction
    virtual void computeAccessRoads();  
-   virtual Uint8 getMaxDistance2Road() const; // virtual because HOUSE has different behaviour
+   virtual unsigned char getMaxDistance2Road() const; // virtual because HOUSE has different behavior
+   virtual char getDesirabilityInfluence() const;
 
 protected:
    std::list<Tile*> _accessRoads;
@@ -137,7 +138,7 @@ class ServiceWalker;
 class Building : public Construction
 {
 public:
-   Building(const BuildingType type=B_NONE );
+   Building(const BuildingType type=B_NONE, const Size& size=Size(1) );
    virtual void setTerrain(TerrainTile &terrain);
 
    virtual void timeStep(const unsigned long time);
@@ -177,7 +178,7 @@ protected:
 class WorkingBuilding : public Building
 {
 public:
-   WorkingBuilding();
+   WorkingBuilding(const BuildingType type, const Size& size);
 
    void setMaxWorkers(const int maxWorkers);
    int getMaxWorkers() const;

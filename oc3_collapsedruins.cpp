@@ -19,9 +19,8 @@
 #include "oc3_positioni.hpp"
 #include "oc3_time.hpp"
 
-CollapsedRuins::CollapsedRuins() : Building(B_COLLAPSED_RUINS)
+CollapsedRuins::CollapsedRuins() : Building(B_COLLAPSED_RUINS, Size(1) )
 {
-    _size = 1;
     _damageLevel = 1;   
 
     _animation.load( ResourceGroup::sprites, 1, 8 );

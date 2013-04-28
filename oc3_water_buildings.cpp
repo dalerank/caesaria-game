@@ -24,11 +24,9 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_safetycast.hpp"
 
-Aqueduct::Aqueduct()
+Aqueduct::Aqueduct() : Construction( B_AQUEDUCT, Size(1) )
 {
-  setType(B_AQUEDUCT);
   setPicture( Picture::load( ResourceGroup::aqueduct, 133) ); // default picture for aqueduct
-  _size = 1;
   // land2a 119 120         - aqueduct over road
   // land2a 121 122         - aqueduct over plain ground
   // land2a 123 124 125 126 - aqueduct corner
@@ -344,11 +342,9 @@ void Aqueduct::updatePicture()
   setPicture(computePicture());
 }
 
-Reservoir::Reservoir()
+Reservoir::Reservoir() : Construction( B_RESERVOIR, Size( 3 ) )
 {
-  setType(B_RESERVOIR);
   setPicture( Picture::load( ResourceGroup::waterbuildings, 1 )  );
-  _size = 3;
   
   // utilitya 34      - empty reservoir
   // utilitya 35 ~ 42 - full reservoir animation

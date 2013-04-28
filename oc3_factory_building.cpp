@@ -28,7 +28,9 @@
 #include "oc3_gettext.hpp"
 #include "oc3_resourcegroup.hpp"
 
-Factory::Factory(const GoodType inType, const GoodType outType)
+Factory::Factory( const GoodType inType, const GoodType outType,
+                  const BuildingType type, const Size& size )
+: WorkingBuilding( type, size )
 {
    setMaxWorkers(10);
    setWorkers(8);
@@ -172,14 +174,12 @@ void Factory::unserialize(InputSerialStream &stream)
 }
 
 
-FactoryMarble::FactoryMarble() : Factory(G_NONE, G_MARBLE)
+FactoryMarble::FactoryMarble() : Factory(G_NONE, G_MARBLE, B_MARBLE, Size(2) )
 {
-   setType(B_MARBLE);
-   _size = 2;
    _productionRate = 9.6f;
-   _picture = &PicLoader::instance().get_picture(ResourceGroup::commerce, 43);
+   _picture = &Picture::load(ResourceGroup::commerce, 43);
 
-   _animation.load(ResourceGroup::commerce, 44, 10);
+   _animation.load( ResourceGroup::commerce, 44, 10);
    _animation.setFrameDelay( 4 );
    _fgPictures.resize(2);
 }
@@ -221,12 +221,10 @@ void FactoryMarble::timeStep( const unsigned long time )
     Factory::timeStep( time );
 }
 
-FactoryTimber::FactoryTimber() : Factory(G_NONE, G_TIMBER)
+FactoryTimber::FactoryTimber() : Factory(G_NONE, G_TIMBER, B_TIMBER, Size(2) )
 {
-   setType(B_TIMBER);
-   _size = 2;
    _productionRate = 9.6f;
-   _picture = &PicLoader::instance().get_picture(ResourceGroup::commerce, 72);
+   _picture = &Picture::load(ResourceGroup::commerce, 72);
 
    _animation.load( ResourceGroup::commerce, 73, 10);
    _fgPictures.resize(2);
@@ -254,12 +252,10 @@ bool FactoryTimber::canBuild(const TilePos& pos ) const
 }
 
 
-FactoryIron::FactoryIron() : Factory(G_NONE, G_IRON)
+FactoryIron::FactoryIron() : Factory(G_NONE, G_IRON, B_IRON, Size(2) )
 {
-   setType(B_IRON);
-   _size = 2;
    _productionRate = 9.6f;
-   _picture = &PicLoader::instance().get_picture(ResourceGroup::commerce, 54);
+   _picture = &Picture::load(ResourceGroup::commerce, 54);
 
    _animation.load( ResourceGroup::commerce, 55, 6);
    _fgPictures.resize(2);
@@ -286,12 +282,10 @@ bool FactoryIron::canBuild(const TilePos& pos ) const
 }
 
 
-FactoryClay::FactoryClay() : Factory(G_NONE, G_CLAY)
+FactoryClay::FactoryClay() : Factory(G_NONE, G_CLAY, B_CLAY, Size(2) )
 {
-   setType(B_CLAY);
-   _size = 2;
    _productionRate = 9.6f;
-   _picture = &PicLoader::instance().get_picture(ResourceGroup::commerce, 61);
+   _picture = &Picture::load(ResourceGroup::commerce, 61);
 
    _animation.load( ResourceGroup::commerce, 62, 10);
    _fgPictures.resize(2);
@@ -318,11 +312,9 @@ bool FactoryClay::canBuild(const TilePos& pos ) const
 }
 
 
-FactoryWeapon::FactoryWeapon() : Factory(G_IRON, G_WEAPON)
+FactoryWeapon::FactoryWeapon() : Factory(G_IRON, G_WEAPON, B_WEAPON, Size(2) )
 {
-   setType(B_WEAPON);
-   _size = 2;
-   _picture = &PicLoader::instance().get_picture(ResourceGroup::commerce, 108);
+  _picture = &Picture::load(ResourceGroup::commerce, 108);
 
    _animation.load( ResourceGroup::commerce, 109, 6);
    _fgPictures.resize(2);
@@ -334,11 +326,9 @@ FactoryWeapon* FactoryWeapon::clone() const
 }
 
 
-FactoryFurniture::FactoryFurniture() : Factory(G_TIMBER, G_FURNITURE)
+FactoryFurniture::FactoryFurniture() : Factory(G_TIMBER, G_FURNITURE, B_FURNITURE, Size(2) )
 {
-   setType(B_FURNITURE);
-   _size = 2;
-   _picture = &PicLoader::instance().get_picture(ResourceGroup::commerce, 117);
+  _picture = &Picture::load(ResourceGroup::commerce, 117);
 
    _animation.load(ResourceGroup::commerce, 118, 14);
    _fgPictures.resize(2);
@@ -350,11 +340,9 @@ FactoryFurniture* FactoryFurniture::clone() const
 }
 
 
-FactoryWine::FactoryWine() : Factory(G_GRAPE, G_WINE)
+FactoryWine::FactoryWine() : Factory(G_GRAPE, G_WINE, B_WINE, Size(2) )
 {
-   setType(B_WINE);
-   _size = 2;
-   _picture = &PicLoader::instance().get_picture(ResourceGroup::commerce, 86);
+  _picture = &Picture::load(ResourceGroup::commerce, 86);
 
    _animation.load(ResourceGroup::commerce, 87, 12);
    _fgPictures.resize(2);
@@ -366,11 +354,9 @@ FactoryWine* FactoryWine::clone() const
 }
 
 
-FactoryOil::FactoryOil() : Factory(G_OLIVE, G_OIL)
+FactoryOil::FactoryOil() : Factory(G_OLIVE, G_OIL, B_OIL, Size(2) )
 {
-   setType(B_OIL);
-   _size = 2;
-   _picture = &PicLoader::instance().get_picture(ResourceGroup::commerce, 99);
+  _picture = &Picture::load(ResourceGroup::commerce, 99);
 
    _animation.load(ResourceGroup::commerce, 100, 8);
    _fgPictures.resize(2);
@@ -382,11 +368,9 @@ FactoryOil* FactoryOil::clone() const
 }
 
 
-FactoryPottery::FactoryPottery() : Factory(G_CLAY, G_POTTERY)
+FactoryPottery::FactoryPottery() : Factory(G_CLAY, G_POTTERY, B_POTTERY, Size(2))
 {
-   setType(B_POTTERY);
-   _size = 2;
-   _picture = &PicLoader::instance().get_picture(ResourceGroup::commerce, 132);
+  _picture = &Picture::load(ResourceGroup::commerce, 132);
 
    _animation.load(ResourceGroup::commerce, 133, 7);
    _fgPictures.resize(2);
@@ -447,12 +431,12 @@ Picture& FarmTile::getPicture()
 }
 
 
-Farm::Farm(const GoodType outGood) : Factory(G_NONE, outGood)
+Farm::Farm(const GoodType outGood, const BuildingType type ) 
+  : Factory(G_NONE, outGood, type, Size(3) )
 {
-   _size = 3;
    _picture = &_pictureBuilding;
 
-   _pictureBuilding = PicLoader::instance().get_picture(ResourceGroup::commerce, 12);  // farm building
+   _pictureBuilding = Picture::load( ResourceGroup::commerce, 12);  // farm building
    _pictureBuilding.add_offset(30, 15);
    init();
 }
@@ -522,9 +506,8 @@ void Farm::timeStep(const unsigned long time)
 }
 
 
-FarmWheat::FarmWheat() : Farm(G_WHEAT)
+FarmWheat::FarmWheat() : Farm(G_WHEAT, B_WHEAT)
 {
-   setType(B_WHEAT);
 }
 
 FarmWheat* FarmWheat::clone() const
@@ -535,9 +518,8 @@ FarmWheat* FarmWheat::clone() const
 }
 
 
-FarmOlive::FarmOlive() : Farm(G_OLIVE)
+FarmOlive::FarmOlive() : Farm(G_OLIVE, B_OLIVE)
 {
-   setType(B_OLIVE);
 }
 
 FarmOlive* FarmOlive::clone() const
@@ -548,9 +530,8 @@ FarmOlive* FarmOlive::clone() const
 }
 
 
-FarmGrape::FarmGrape() : Farm(G_GRAPE)
+FarmGrape::FarmGrape() : Farm(G_GRAPE, B_GRAPE)
 {
-   setType(B_GRAPE);
 }
 
 FarmGrape* FarmGrape::clone() const
@@ -561,9 +542,8 @@ FarmGrape* FarmGrape::clone() const
 }
 
 
-FarmMeat::FarmMeat() : Farm(G_MEAT)
+FarmMeat::FarmMeat() : Farm(G_MEAT, B_MEAT)
 {
-   setType(B_MEAT);
 }
 
 FarmMeat* FarmMeat::clone() const
@@ -574,9 +554,8 @@ FarmMeat* FarmMeat::clone() const
 }
 
 
-FarmFruit::FarmFruit() : Farm(G_FRUIT)
+FarmFruit::FarmFruit() : Farm(G_FRUIT, B_FRUIT)
 {
-   setType(B_FRUIT);
 }
 
 FarmFruit* FarmFruit::clone() const
@@ -587,9 +566,8 @@ FarmFruit* FarmFruit::clone() const
 }
 
 
-FarmVegetable::FarmVegetable() : Farm(G_VEGETABLE)
+FarmVegetable::FarmVegetable() : Farm(G_VEGETABLE, B_VEGETABLE)
 {
-   setType(B_VEGETABLE);
 }
 
 FarmVegetable* FarmVegetable::clone() const
@@ -599,10 +577,8 @@ FarmVegetable* FarmVegetable::clone() const
    return res;
 }
 
-Wharf::Wharf() : Factory(G_NONE, G_FISH)
+Wharf::Wharf() : Factory(G_NONE, G_FISH, B_WHARF, Size(2))
 {
-  setType(B_WHARF);
-  _size = 2;
   // transport 52 53 54 55
   setPicture(PicLoader::instance().get_picture("transport", 52));
 }

@@ -17,6 +17,7 @@ public:
     static InfoBoxManagerPtr create( GuiEnv* gui );
 
     void showHelp( Tile* tile ); 
+    void setShowDebugInfo( const bool showInfo );
 private:
     InfoBoxManager();
     ~InfoBoxManager();

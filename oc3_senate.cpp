@@ -21,10 +21,8 @@
 // govt 9  - advanced senate
 // govt 5 ~ 8 - senate flags
 
-Senate::Senate() : ServiceBuilding(S_SENATE)
+Senate::Senate() : ServiceBuilding(S_SENATE, B_SENATE, Size(5) )
 {
-  setType(B_SENATE);
-  _size = 5;
   setPicture( Picture::load("govt", 4) );
 }
 

@@ -19,18 +19,21 @@
 #include "oc3_infoboxmanager.hpp"
 #include "oc3_gui_info_box.hpp"
 #include "oc3_guienv.hpp"
+#include <iostream>
 
 class InfoBoxManager::Impl
 {
 public:
     GuiEnv* gui;
     GuiInfoBox* infoBox;
+    bool showDebugInfo;
 };
 
 InfoBoxManagerPtr InfoBoxManager::create( GuiEnv* gui )
 {
     InfoBoxManagerPtr ret( new InfoBoxManager() );
     ret->_d->gui = gui;
+    ret->_d->showDebugInfo = true;
 
     return ret;
 }
@@ -49,6 +52,11 @@ void InfoBoxManager::showHelp( Tile* tile )
 {
     LandOverlay* overlay = tile->get_terrain().getOverlay();
     GuiInfoBox* infoBox = 0;
+
+    if( _d->showDebugInfo )
+    {
+      std::cout << "Tile debug info: dsrbl=" << tile->get_terrain().getDesirability() << std::endl; 
+    }
 
     if( !overlay )
     {
@@ -80,3 +88,8 @@ void InfoBoxManager::showHelp( Tile* tile )
         //_screenGame->setInfoBox(infoBox);
     }
 }
+
+void InfoBoxManager::setShowDebugInfo( const bool showInfo )
+{
+  _d->showDebugInfo = showInfo;
+} 

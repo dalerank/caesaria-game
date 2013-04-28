@@ -31,8 +31,9 @@
 #include "oc3_gettext.hpp"
 #include "oc3_resourcegroup.hpp"
 
-
-ServiceBuilding::ServiceBuilding(const ServiceType &service)
+ServiceBuilding::ServiceBuilding(const ServiceType service,
+                                 const BuildingType type, const Size& size)
+                                 : WorkingBuilding( type, size )
 {
    _service = service;
    setMaxWorkers(5);
@@ -141,10 +142,8 @@ const std::list<Walker*>& ServiceBuilding::_getWalkerList() const
   return _walkerList;
 }
 
-BuildingWell::BuildingWell() : ServiceBuilding(S_WELL)
+BuildingWell::BuildingWell() : ServiceBuilding(S_WELL, B_WELL, Size(1) )
 {
-   setType(B_WELL);
-   _size = 1;
    _fireIncrement = 0;
    _damageIncrement = 0;
    setPicture( Picture::load("utilitya", 1) );
@@ -166,21 +165,18 @@ void BuildingWell::deliverService()
    }
 }
 
-BuildingFountain::BuildingFountain() : ServiceBuilding(S_FOUNTAIN)
-{
-   setType(B_FOUNTAIN);
-   _size = 1;
-   
+BuildingFountain::BuildingFountain() : ServiceBuilding(S_FOUNTAIN, B_FOUNTAIN, Size(1))
+{  
    int id;
    
-   std::srand(std::time(NULL));
+   std::srand((unsigned int)std::time(NULL));
    
    id = std::rand() % 4;
    
    std::cout << id << std::endl;
    
-   setPicture(PicLoader::instance().get_picture("utilitya", 26));
-   _animation.load( "utilitya", 27, 7);
+   setPicture( Picture::load( ResourceGroup::utilitya, 26));
+   _animation.load( ResourceGroup::utilitya, 27, 7);
    //animLoader.fill_animation_reverse(_animation, "utilitya", 25, 7);
    _animation.setOffset( Point( 14, 26 ) );
   _fgPictures.resize(1);
@@ -220,7 +216,10 @@ void BuildingFountain::deliverService()
    }
 }
 
-EntertainmentBuilding::EntertainmentBuilding(const ServiceType &service) : ServiceBuilding(service)
+EntertainmentBuilding::EntertainmentBuilding(const ServiceType service, 
+                                             const BuildingType type,
+                                             const Size& size ) 
+  : ServiceBuilding(service, type, size)
 {
    switch (service)
    {
@@ -261,17 +260,15 @@ void EntertainmentBuilding::deliverService()
 }
 
 
-BuildingTheater::BuildingTheater() : EntertainmentBuilding(S_THEATER)
+BuildingTheater::BuildingTheater() : EntertainmentBuilding(S_THEATER, B_THEATER, Size(2))
 {
-   setType(B_THEATER);
-   _size = 2;
-   setPicture(PicLoader::instance().get_picture("entertainment", 13));
+  setPicture( Picture::load( "entertainment", 13));
 
    _animation.load("entertainment", 14, 21);
    _animation.setOffset( Point( 60, 36 ) );
   
    _fgPictures.resize(2);
-   _fgPictures[0] = &PicLoader::instance().get_picture("entertainment", 35);
+   _fgPictures[0] = &Picture::load("entertainment", 35);
 }
 
 BuildingTheater* BuildingTheater::clone() const
@@ -280,16 +277,14 @@ BuildingTheater* BuildingTheater::clone() const
 }
 
 
-BuildingAmphiTheater::BuildingAmphiTheater() : EntertainmentBuilding(S_AMPHITHEATER)
+BuildingAmphiTheater::BuildingAmphiTheater() : EntertainmentBuilding(S_AMPHITHEATER, B_AMPHITHEATER, Size(3))
 {
-   setType(B_AMPHITHEATER);
-   _size = 3;
-   setPicture(PicLoader::instance().get_picture("entertainment", 1));
+  setPicture( Picture::load("entertainment", 1));
 
    _animation.load("entertainment", 2, 10);
    _animation.setOffset( Point( 100, 49 ) );
    _fgPictures.resize(2);
-   _fgPictures[0] = &PicLoader::instance().get_picture("entertainment", 12);
+   _fgPictures[0] = &Picture::load("entertainment", 12);
 }
 
 BuildingAmphiTheater* BuildingAmphiTheater::clone() const
@@ -298,16 +293,14 @@ BuildingAmphiTheater* BuildingAmphiTheater::clone() const
 }
 
 
-BuildingCollosseum::BuildingCollosseum() : EntertainmentBuilding(S_COLLOSSEUM)
+BuildingCollosseum::BuildingCollosseum() : EntertainmentBuilding(S_COLLOSSEUM, B_COLLOSSEUM, Size(5) )
 {
-   setType(B_COLLOSSEUM);
-   _size = 5;
-   setPicture(PicLoader::instance().get_picture("entertainment", 36));
+  setPicture( Picture::load("entertainment", 36));
 
    _animation.load("entertainment", 37, 13);
    _animation.setOffset( Point( 122, 81 ) );
    _fgPictures.resize(2);
-   _fgPictures[0] = &PicLoader::instance().get_picture("entertainment", 50);
+   _fgPictures[0] = &Picture::load("entertainment", 50);
 }
 
 BuildingCollosseum* BuildingCollosseum::clone() const
@@ -317,24 +310,17 @@ BuildingCollosseum* BuildingCollosseum::clone() const
 
 //------------
 
-BuildingHippodrome::BuildingHippodrome() : EntertainmentBuilding(S_HIPPODROME)
+BuildingHippodrome::BuildingHippodrome() : EntertainmentBuilding(S_HIPPODROME, B_HIPPODROME, Size(5) )
 {
-    setType(B_HIPPODROME);
-    _size = 5;
-    setPicture(PicLoader::instance().get_picture("circus", 5));
+  setPicture( Picture::load("circus", 5));
     getPicture().set_offset(0,106);
-    Picture* logo = &PicLoader::instance().get_picture("circus", 3);
-    Picture* logo1 = &PicLoader::instance().get_picture("circus", 1);
+    Picture* logo = &Picture::load("circus", 3);
+    Picture* logo1 = &Picture::load("circus", 1);
     logo -> set_offset(150,181);
     logo1 -> set_offset(300,310);
     _fgPictures.resize(5);
     _fgPictures.at(0) = logo;
     _fgPictures.at(1) = logo1;
-  
-
-  
- 
- 
 }
 
 
@@ -346,11 +332,9 @@ BuildingHippodrome* BuildingHippodrome::clone() const
 
 //-----------
 
-TempleCeres::TempleCeres() : ServiceBuilding(S_TEMPLE_CERES)
+TempleCeres::TempleCeres() : ServiceBuilding(S_TEMPLE_CERES, B_TEMPLE_CERES, Size(2))
 {
-   setType(B_TEMPLE_CERES);
-   _size = 2;
-   setPicture(PicLoader::instance().get_picture( ResourceGroup::security, 45));
+  setPicture( Picture::load( ResourceGroup::security, 45));
 }
 
 TempleCeres* TempleCeres::clone() const
@@ -359,11 +343,9 @@ TempleCeres* TempleCeres::clone() const
 }
 
 
-BigTempleCeres::BigTempleCeres() : ServiceBuilding(S_TEMPLE_CERES)
+BigTempleCeres::BigTempleCeres() : ServiceBuilding(S_TEMPLE_CERES, B_BIG_TEMPLE_CERES, Size(3))
 {
-   setType(B_BIG_TEMPLE_CERES);
-   _size = 3;
-   setPicture(PicLoader::instance().get_picture( ResourceGroup::security, 46));
+  setPicture( Picture::load( ResourceGroup::security, 46));
 }
 
 BigTempleCeres* BigTempleCeres::clone() const
@@ -371,11 +353,9 @@ BigTempleCeres* BigTempleCeres::clone() const
    return new BigTempleCeres(*this);
 }
 
-TempleNeptune::TempleNeptune() : ServiceBuilding(S_TEMPLE_NEPTUNE)
+TempleNeptune::TempleNeptune() : ServiceBuilding(S_TEMPLE_NEPTUNE, B_TEMPLE_NEPTUNE, Size(2) )
 {
-   setType(B_TEMPLE_NEPTUNE);
-   _size = 2;
-   setPicture(PicLoader::instance().get_picture( ResourceGroup::security, 47));
+  setPicture( Picture::load( ResourceGroup::security, 47));
 }
 
 TempleNeptune* TempleNeptune::clone() const
@@ -383,11 +363,9 @@ TempleNeptune* TempleNeptune::clone() const
    return new TempleNeptune(*this);
 }
 
-BigTempleNeptune::BigTempleNeptune() : ServiceBuilding(S_TEMPLE_NEPTUNE)
+BigTempleNeptune::BigTempleNeptune() : ServiceBuilding(S_TEMPLE_NEPTUNE, B_BIG_TEMPLE_NEPTUNE, Size(3))
 {
-   setType(B_BIG_TEMPLE_NEPTUNE);
-   _size = 3;
-   setPicture(PicLoader::instance().get_picture( ResourceGroup::security, 48));
+  setPicture(Picture::load( ResourceGroup::security, 48));
 }
 
 BigTempleNeptune* BigTempleNeptune::clone() const
@@ -395,11 +373,9 @@ BigTempleNeptune* BigTempleNeptune::clone() const
    return new BigTempleNeptune(*this);
 }
 
-TempleMars::TempleMars() : ServiceBuilding(S_TEMPLE_MARS)
+TempleMars::TempleMars() : ServiceBuilding(S_TEMPLE_MARS, B_TEMPLE_MARS, Size(2))
 {
-   setType(B_TEMPLE_MARS);
-   _size = 2;
-   setPicture(PicLoader::instance().get_picture("security", 51));
+  setPicture( Picture::load( ResourceGroup::security, 51));
 }
 
 TempleMars* TempleMars::clone() const
@@ -407,11 +383,9 @@ TempleMars* TempleMars::clone() const
    return new TempleMars(*this);
 }
 
-BigTempleMars::BigTempleMars() : ServiceBuilding(S_TEMPLE_MARS)
+BigTempleMars::BigTempleMars() : ServiceBuilding(S_TEMPLE_MARS, B_BIG_TEMPLE_MARS, Size(3))
 {
-   setType(B_BIG_TEMPLE_MARS);
-   _size = 3;
-   setPicture(PicLoader::instance().get_picture("security", 52));
+  setPicture( Picture::load( ResourceGroup::security, 52));
 }
 
 BigTempleMars* BigTempleMars::clone() const
@@ -419,11 +393,9 @@ BigTempleMars* BigTempleMars::clone() const
    return new BigTempleMars(*this);
 }
 
-TempleVenus::TempleVenus() : ServiceBuilding(S_TEMPLE_VENUS)
+TempleVenus::TempleVenus() : ServiceBuilding(S_TEMPLE_VENUS, B_TEMPLE_VENUS, Size(2))
 {
-   setType(B_TEMPLE_VENUS);
-   _size = 2;
-   setPicture(PicLoader::instance().get_picture("security", 53));
+  setPicture(Picture::load(ResourceGroup::security, 53));
 }
 
 TempleVenus* TempleVenus::clone() const
@@ -431,11 +403,9 @@ TempleVenus* TempleVenus::clone() const
    return new TempleVenus(*this);
 }
 
-BigTempleVenus::BigTempleVenus() : ServiceBuilding(S_TEMPLE_VENUS)
+BigTempleVenus::BigTempleVenus() : ServiceBuilding(S_TEMPLE_VENUS, B_BIG_TEMPLE_VENUS, Size(3))
 {
-   setType(B_BIG_TEMPLE_VENUS);
-   _size = 3;
-   setPicture(PicLoader::instance().get_picture("security", 54));
+  setPicture(Picture::load( ResourceGroup::security, 54));
 }
 
 BigTempleVenus* BigTempleVenus::clone() const
@@ -443,11 +413,9 @@ BigTempleVenus* BigTempleVenus::clone() const
    return new BigTempleVenus(*this);
 }
 
-TempleMercure::TempleMercure() : ServiceBuilding(S_TEMPLE_MERCURE)
+TempleMercure::TempleMercure() : ServiceBuilding(S_TEMPLE_MERCURE, B_TEMPLE_MERCURE, Size(2))
 {
-   setType(B_TEMPLE_MERCURE);
-   _size = 2;
-   setPicture(PicLoader::instance().get_picture("security", 49));
+  setPicture( Picture::load( ResourceGroup::security, 49));
 }
 
 TempleMercure* TempleMercure::clone() const
@@ -455,11 +423,9 @@ TempleMercure* TempleMercure::clone() const
    return new TempleMercure(*this);
 }
 
-BigTempleMercure::BigTempleMercure() : ServiceBuilding(S_TEMPLE_MERCURE)
+BigTempleMercure::BigTempleMercure() : ServiceBuilding(S_TEMPLE_MERCURE, B_BIG_TEMPLE_MERCURE, Size(3))
 {
-   setType(B_BIG_TEMPLE_MERCURE);
-   _size = 3;
-   setPicture(PicLoader::instance().get_picture("security", 50));
+  setPicture(Picture::load( ResourceGroup::security, 50));
 }
 
 BigTempleMercure* BigTempleMercure::clone() const
@@ -467,13 +433,11 @@ BigTempleMercure* BigTempleMercure::clone() const
    return new BigTempleMercure(*this);
 }
 
-TempleOracle::TempleOracle() : ServiceBuilding(S_TEMPLE_ORACLE)
+TempleOracle::TempleOracle() : ServiceBuilding(S_TEMPLE_ORACLE, B_TEMPLE_ORACLE, Size(2) )
 {
-   setType(B_TEMPLE_ORACLE);
-   _size = 2;
-   setPicture(PicLoader::instance().get_picture("security", 55));
+  setPicture( Picture::load( ResourceGroup::security, 55));
    
-  _animation.load("security", 56, 6);
+  _animation.load( ResourceGroup::security, 56, 6);
   _animation.setOffset( Point( 9, 30 ) );
   _fgPictures.resize(1);   
 }
@@ -483,11 +447,9 @@ TempleOracle* TempleOracle::clone() const
    return new TempleOracle(*this);
 }
 
-School::School() : ServiceBuilding(S_SCHOOL)
+School::School() : ServiceBuilding(S_SCHOOL, B_SCHOOL, Size(2))
 {
-   setType(B_SCHOOL);
-   _size = 2;
-   setPicture(PicLoader::instance().get_picture("commerce", 83));
+  setPicture( Picture::load( ResourceGroup::commerce, 83));
 }
 
 School* School::clone() const
@@ -496,11 +458,9 @@ School* School::clone() const
 }
 
 
-Library::Library() : ServiceBuilding(S_LIBRARY)
+Library::Library() : ServiceBuilding(S_LIBRARY, B_LIBRARY, Size(2))
 {
-   setType(B_LIBRARY);
-   _size = 2;
-   setPicture(PicLoader::instance().get_picture("commerce", 84));
+  setPicture( Picture::load( ResourceGroup::commerce, 84));
 }
 
 Library* Library::clone() const
@@ -509,11 +469,9 @@ Library* Library::clone() const
 }
 
 
-College::College() : ServiceBuilding(S_COLLEGE)
+College::College() : ServiceBuilding(S_COLLEGE, B_COLLEGE, Size(3))
 {
-   setType(B_COLLEGE);
-   _size = 3;
-   setPicture(PicLoader::instance().get_picture("commerce", 85));
+  setPicture( Picture::load( ResourceGroup::commerce, 85));
 }
 
 College* College::clone() const
@@ -522,13 +480,11 @@ College* College::clone() const
 }
 
 
-Baths::Baths() : ServiceBuilding(S_BATHS)
+Baths::Baths() : ServiceBuilding(S_BATHS, B_BATHS, Size(2) )
 {
-   setType(B_BATHS);
-   _size = 2;
-   setPicture(PicLoader::instance().get_picture("security", 21));
+  setPicture( Picture::load( ResourceGroup::security, 21));
 
-   _animation.load( "security", 22, 10);
+   _animation.load( ResourceGroup::security, 22, 10);
    _animation.setOffset( Point( 23, 25 ) );
    _fgPictures.resize(2);
 }
@@ -539,11 +495,9 @@ Baths* Baths::clone() const
 }
 
 
-Barber::Barber() : ServiceBuilding(S_BARBER)
+Barber::Barber() : ServiceBuilding(S_BARBER, B_BARBER, Size(1))
 {
-   setType(B_BARBER);
-   _size = 1;
-   setPicture(PicLoader::instance().get_picture("security", 19));
+  setPicture( Picture::load( ResourceGroup::security, 19));
 }
 
 Barber* Barber::clone() const
@@ -552,11 +506,9 @@ Barber* Barber::clone() const
 }
 
 
-Doctor::Doctor() : ServiceBuilding(S_DOCTOR)
+Doctor::Doctor() : ServiceBuilding(S_DOCTOR, B_DOCTOR, Size(1))
 {
-   setType(B_DOCTOR);
-   _size = 1;
-   setPicture(PicLoader::instance().get_picture("security", 20));
+  setPicture( Picture::load( ResourceGroup::security, 20));
 }
 
 Doctor* Doctor::clone() const
@@ -565,11 +517,9 @@ Doctor* Doctor::clone() const
 }
 
 
-Hospital::Hospital() : ServiceBuilding(S_HOSPITAL)
+Hospital::Hospital() : ServiceBuilding(S_HOSPITAL, B_HOSPITAL, Size(3 ) )
 {
-   setType(B_HOSPITAL);
-   _size = 3;
-   setPicture(PicLoader::instance().get_picture("security", 44));
+  setPicture( Picture::load( ResourceGroup::security, 44));
 }
 
 Hospital* Hospital::clone() const
@@ -578,11 +528,9 @@ Hospital* Hospital::clone() const
 }
 
 
-Forum::Forum() : ServiceBuilding(S_FORUM)
+Forum::Forum() : ServiceBuilding(S_FORUM, B_FORUM, Size(2))
 {
-   setType(B_FORUM);
-   _size = 2;
-   setPicture(PicLoader::instance().get_picture("govt", 10));
+  setPicture( Picture::load( "govt", 10));
 }
 
 Forum* Forum::clone() const
@@ -590,15 +538,13 @@ Forum* Forum::clone() const
    return new Forum(*this);
 }
 
-Market::Market() : ServiceBuilding(S_MARKET)
+Market::Market() : ServiceBuilding(S_MARKET, B_MARKET, Size(2) )
 {
-   setType(B_MARKET);
    setMaxWorkers(5);
    setWorkers(0);
 
    _marketBuyer = NULL;
    _buyerDelay = 10;
-   _size = 2;
    // _name = _("Marche");
    setPicture(PicLoader::instance().get_picture("commerce", 1));
    _fgPictures.resize(1);  // animation

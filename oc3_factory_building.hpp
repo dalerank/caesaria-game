@@ -25,7 +25,8 @@
 class Factory: public WorkingBuilding
 {
 public:
-   Factory(const GoodType inGood, const GoodType outGood);
+   Factory( const GoodType inGood, const GoodType outGood,
+            const BuildingType type, const Size& size );
    GoodStock& getInGood();
    GoodStock& getOutGood();
    SimpleGoodStore& getGoodStore();
@@ -142,7 +143,7 @@ private:
 class Farm : public Factory
 {
 public:
-   Farm(const GoodType outGood);
+   Farm(const GoodType outGood, const BuildingType type );
    void init();
 
    void computePictures();

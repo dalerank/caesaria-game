@@ -25,7 +25,7 @@
 class TrainingBuilding : public WorkingBuilding
 {
 public:
-   TrainingBuilding();
+   TrainingBuilding(const BuildingType type, const Size& size);
 
    void timeStep(const unsigned long time);
 
