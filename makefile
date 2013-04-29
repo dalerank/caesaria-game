@@ -49,7 +49,8 @@ OBJECTS=oc3_caesar.o oc3_pic_loader.o oc3_tilemap.o oc3_tilemap_area.o oc3_city.
 	oc3_label.o oc3_menu.o oc3_menurgihtpanel.o oc3_pictureconverter.o oc3_pushbutton.o oc3_resourcegroup.o oc3_startmenu.o oc3_time.o oc3_topmenu.o \
 	oc3_widget.o oc3_widgetpositionanimator.o oc3_infoboxmanager.o oc3_roadpropagator.o oc3_burningruins.o oc3_water_buildings.o oc3_animation.o \
 	oc3_buildingengineer.o oc3_constructionmanager.o oc3_collapsedruins.o oc3_tilemapchangecommand.o oc3_workerhunter.o oc3_senate.o oc3_immigrant.o \
-	oc3_walkermanager.o oc3_astarpathfinding.o oc3_buildingprefect.o oc3_cityservice_emigrant.o oc3_cityservice_workershire.o
+	oc3_walkermanager.o oc3_astarpathfinding.o oc3_buildingprefect.o oc3_cityservice_emigrant.o oc3_cityservice_workershire.o oc3_walker_prefect.o \
+	oc3_tile.o oc3_terraininfo.o
 
 
 all: $(CAESAR_EXE) tags chmod gettext

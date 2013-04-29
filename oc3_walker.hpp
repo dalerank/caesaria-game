@@ -181,6 +181,7 @@ public:
         it++;
       }
     }
+    return res;
   }
 
   template< class T > 
@@ -188,7 +189,7 @@ public:
   {
     std::set<Building*> res = _walker.getReachedBuildings( pos );
 
-    std::set<T>::iterator it=res.begin();
+    typename std::set< T >::iterator it=res.begin();
     while( it != res.end() )
     {
       T building = safety_cast<T*>( it );
@@ -201,6 +202,7 @@ public:
         it++;
       }
     }
+    return res;
   }
 
 private:
