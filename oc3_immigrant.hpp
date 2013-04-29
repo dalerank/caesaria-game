@@ -25,7 +25,8 @@ class House;
 class Immigrant : public Walker
 {
 public:
-  static Immigrant* create( City& city, const Building& startPoint );
+  static Immigrant* create( City& city, const Building& startPoint, 
+                            const unsigned char peoples );
 
   void onDestination();
   ~Immigrant();
@@ -36,11 +37,16 @@ protected:
   void setCartPicture( Picture* pic );
   virtual Picture* getCartPicture();
   
-  Immigrant( City& city );
+  Immigrant( City& city, unsigned char peoples );
 
   void assignPath( Tile& startTile );
   void _checkPath( Tile& startPoint, Building* house );
   House* _findBlankHouse();
+
+protected:
+  void _setPeoplesCount( const unsigned char num );
+  unsigned char _getPeoplesCount() const;
+
 private:
   class Impl;
   std::auto_ptr< Impl > _d;

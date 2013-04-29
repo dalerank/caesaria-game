@@ -333,7 +333,7 @@ void BuildMenu_raw_factory::addButtons()
     addBuildButton(B_MARBLE);
     addBuildButton(B_IRON);
     addBuildButton(B_TIMBER);
-    addBuildButton(B_CLAY);
+    addBuildButton(B_CLAY_PIT);
 }
 
 BuildMenu_raw_factory::BuildMenu_raw_factory( Widget* parent, const Rect& rectangle )

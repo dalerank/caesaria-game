@@ -38,7 +38,6 @@ public:
    virtual void timeStep(const unsigned long time);
 
    virtual GuiInfoBox* makeInfoBox( Widget* parent );
-   static std::map<GoodType, Factory*>& getSpecimen();
 
    void serialize(OutputSerialStream &stream);
    void unserialize(InputSerialStream &stream);
@@ -78,14 +77,6 @@ class FactoryIron : public Factory
 public:
    FactoryIron();
    virtual FactoryIron* clone() const;
-   virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
-};
-
-class FactoryClay : public Factory
-{
-public:
-   FactoryClay();
-   virtual FactoryClay* clone() const;
    virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
 };
 

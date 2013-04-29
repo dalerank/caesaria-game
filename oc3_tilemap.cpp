@@ -127,7 +127,7 @@ PtrTilesList Tilemap::getRectangle( const TilePos& start, const TilePos& stop, c
 
 PtrTilesList Tilemap::getRectangle( const TilePos& pos, const Size& size, const bool corners /*= true */ )
 {
-    return getRectangle( pos, pos + TilePos( size.getWidth(), size.getHeight()), corners );
+    return getRectangle( pos, pos + TilePos( size.getWidth()-1, size.getHeight()-1), corners );
 }
 
 // Get tiles inside of rectangle

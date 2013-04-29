@@ -25,6 +25,7 @@
 #include "oc3_house.hpp"
 #include "oc3_senate.hpp"
 #include "oc3_buildingprefect.hpp"
+#include "oc3_factoryclay.hpp"
 
 #include <map>
 
@@ -86,7 +87,7 @@ public:
         // raw materials
         buildings[B_IRON]   = new FactoryIron();
         buildings[B_TIMBER] = new FactoryTimber();
-        buildings[B_CLAY]   = new FactoryClay();
+        buildings[B_CLAY_PIT]   = new FactoryClay();
         buildings[B_MARBLE] = new FactoryMarble();
         // factories
         buildings[B_WEAPON]    = new FactoryWeapon();

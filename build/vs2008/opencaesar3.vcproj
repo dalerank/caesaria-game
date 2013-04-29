@@ -351,6 +351,18 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_factoryclay.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_factoryclay.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_factorymanager.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_flagholder.hpp"
 				>
 			</File>
@@ -859,10 +871,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_workerhunter.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\oc3_workerhunter.hpp"
 				>
 			</File>
@@ -873,6 +881,10 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 		</Filter>
+		<File
+			RelativePath="..\..\oc3_factorymanager.hpp"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

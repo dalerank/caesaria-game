@@ -15,8 +15,6 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
-
 #include "oc3_factory_building.hpp"
 
 #include <iostream>
@@ -63,30 +61,6 @@ int Factory::getProgress()
 {
    return (int) _progress;
 }
-
-
-std::map<GoodType, Factory*> Factory::_specimen;
-
-std::map<GoodType, Factory*>& Factory::getSpecimen()
-{
-   if (_specimen.empty())
-   {
-      _specimen[G_TIMBER]    = new FactoryTimber();
-      _specimen[G_FURNITURE] = new FactoryFurniture();
-      _specimen[G_IRON]      = new FactoryIron();
-      _specimen[G_WEAPON]    = new FactoryWeapon();
-      _specimen[G_WINE]      = new FactoryWine();
-      _specimen[G_OIL]       = new FactoryOil();
-      _specimen[G_CLAY]      = new FactoryClay();
-      _specimen[G_POTTERY]   = new FactoryPottery();
-      _specimen[G_MARBLE]    = new FactoryMarble();
-      // ????
-      _specimen[G_FISH]      = new Wharf();
-   }
-
-   return _specimen;
-}
-
 
 void Factory::timeStep(const unsigned long time)
 {
@@ -195,7 +169,7 @@ bool FactoryMarble::canBuild(const TilePos& pos ) const
    bool near_mountain = false;  // tells if the factory is next to a mountain
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 1 ), Tilemap::checkCorners);
+   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 2 ), Tilemap::checkCorners);
    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
       near_mountain |= (*itTiles)->get_terrain().isRock();
@@ -241,7 +215,7 @@ bool FactoryTimber::canBuild(const TilePos& pos ) const
    bool near_forest = false;  // tells if the factory is next to a forest
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 1 ), Tilemap::checkCorners );
+   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 2 ), Tilemap::checkCorners );
    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
       Tile &tile = **itTiles;
@@ -272,7 +246,7 @@ bool FactoryIron::canBuild(const TilePos& pos ) const
    bool near_mountain = false;  // tells if the factory is next to a mountain
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 1), Tilemap::checkCorners );
+   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 2), Tilemap::checkCorners );
    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
       near_mountain |= (*itTiles)->get_terrain().isRock();
@@ -282,34 +256,6 @@ bool FactoryIron::canBuild(const TilePos& pos ) const
 }
 
 
-FactoryClay::FactoryClay() : Factory(G_NONE, G_CLAY, B_CLAY, Size(2) )
-{
-   _productionRate = 9.6f;
-   _picture = &Picture::load(ResourceGroup::commerce, 61);
-
-   _animation.load( ResourceGroup::commerce, 62, 10);
-   _fgPictures.resize(2);
-}
-
-FactoryClay* FactoryClay::clone() const
-{
-   return new FactoryClay(*this);
-}
-
-bool FactoryClay::canBuild(const TilePos& pos ) const
-{
-   bool is_constructible = Construction::canBuild( pos );
-   bool near_water = false;
-
-   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1), Size( _size + 1 ), Tilemap::checkCorners );
-   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
-   {
-     near_water |= (*itTiles)->get_terrain().isWater();
-   }
-
-   return (is_constructible && near_water);
-}
 
 
 FactoryWeapon::FactoryWeapon() : Factory(G_IRON, G_WEAPON, B_WEAPON, Size(2) )
@@ -608,7 +554,7 @@ bool Wharf::canBuild(const TilePos& pos ) const
    
   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
    
-  std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size+1 ), false);
+  std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size+2 ), false);
   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {
     Tile &tile = **itTiles;

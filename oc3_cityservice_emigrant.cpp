@@ -41,7 +41,7 @@ void CityServiceEmigrant::update( const unsigned int time )
 
   City::Walkers walkers = _city.getWalkerList( WT_EMIGRANT );
 
-  if( vacantPop <= walkers.size() / 2 )
+  if( vacantPop <= walkers.size() * 5 )
   {
     return;
   }
@@ -51,7 +51,6 @@ void CityServiceEmigrant::update( const unsigned int time )
 
   if( roadEntry )
   {
-    vacantPop = std::max<Uint32>( 1, rand() % std::max<Uint32>( 1, vacantPop / 2 ) );
     Emigrant::create( _city, *roadEntry );
   }    
 }

@@ -138,5 +138,30 @@ private:
    ScopedPtr< Impl > _d;
 };
 
+class CityHelper
+{
+public:
+  CityHelper( City& city ) : _city( city ) {}
+
+  template< class T >
+  std::list< T > getBuildings( const BuildingType type )
+  {
+    std::list< T > ret;
+    City::LandOverlays buildings = _city.getBuildingList( type );
+    for( City::LandOverlays::iterator it = buildings.begin(); 
+          it != buildings.end(); it++  )
+    {
+      if( T b = safety_cast< T >( *it ) )
+      {
+        ret.push_back( b );
+      }
+    }
+
+    return ret;
+  }
+
+protected:
+  City& _city;
+};
 
 #endif

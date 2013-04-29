@@ -199,7 +199,7 @@ BuildingDataHolder::BuildingDataHolder()
    addData(BuildingData(B_MARBLE, "marble", 50));
    addData(BuildingData(B_IRON, "iron", 50));
    addData(BuildingData(B_TIMBER, "timber", 40));
-   addData(BuildingData(B_CLAY, "clay", 40));
+   addData(BuildingData(B_CLAY_PIT, "clay", 40));
    addData(BuildingData(B_WINE, "wine", 45));
    addData(BuildingData(B_OIL, "oil", 50));
    addData(BuildingData(B_WEAPON, "weapon", 50));
@@ -277,7 +277,7 @@ BuildingDataHolder::BuildingDataHolder()
    _mapBuildingByOutGood[G_MARBLE]    = B_MARBLE;
    _mapBuildingByOutGood[G_IRON]      = B_IRON;
    _mapBuildingByOutGood[G_TIMBER]    = B_TIMBER;
-   _mapBuildingByOutGood[G_CLAY]      = B_CLAY;
+   _mapBuildingByOutGood[G_CLAY]      = B_CLAY_PIT;
    _mapBuildingByOutGood[G_OLIVE]     = B_OLIVE;
    _mapBuildingByOutGood[G_GRAPE]     = B_GRAPE;
    _mapBuildingByOutGood[G_WINE]      = B_WINE;

@@ -21,7 +21,6 @@
 
 #include <iostream>
 #include <algorithm>
-
 #include "oc3_scenario.hpp"
 #include "oc3_walker.hpp"
 #include "oc3_exception.hpp"
@@ -133,6 +132,7 @@ void LandOverlay::destroy()
 
 Tile& LandOverlay::getTile() const
 {
+  _OC3_DEBUG_BREAK_IF( !_master_tile && "master tile must be exists" );
   return *_master_tile;
 }
 
@@ -202,6 +202,11 @@ bool LandOverlay::isWalkable() const
   return false;
 }
 
+TilePos LandOverlay::getTilePos() const
+{
+  return _master_tile->getIJ();
+}
+
 Construction::Construction( const BuildingType type, const Size& size)
 : LandOverlay( type, size )
 {
@@ -226,6 +231,7 @@ void Construction::build(const TilePos& pos )
 {
   LandOverlay::build( pos );
   computeAccessRoads();
+  _updateDesirabilityInfluence( true );
 }
 
 void Construction::_updateDesirabilityInfluence( bool onBuild )

@@ -476,7 +476,7 @@ void House::destroy()
   if( lostPeoples > 0 )
   {
     City& city = Scenario::instance().getCity();
-    Immigrant::create( city, *this );
+    Immigrant::create( city, *this, lostPeoples );
   }
 
   Building::destroy();

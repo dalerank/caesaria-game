@@ -30,6 +30,7 @@ CityServiceWorkersHire::CityServiceWorkersHire( City& city )
 {
   _d->priorities[ 1 ] = B_PREFECT;
   _d->priorities[ 2 ] = B_ENGINEER;
+  _d->priorities[ 3 ] = B_CLAY_PIT;
 }
 
 bool CityServiceWorkersHire::_haveHr( ServiceBuilding* building )

@@ -42,6 +42,7 @@ public:
    virtual void timeStep(const unsigned long time);  // perform one simulation step
 
    Tile& getTile() const;  // master tile, in case of multi-tile area
+   TilePos getTilePos() const;
    int getSize() const;  // size in tiles (1=1x1, 2=2x2, ...)
    bool isDeleted() const;  // returns true if the overlay should be forgotten
    void deleteLater();

@@ -17,7 +17,7 @@
 #include "oc3_positioni.hpp"
 #include "oc3_scenario.hpp"
 
-Emigrant::Emigrant( City& city ) : Immigrant( city )
+Emigrant::Emigrant( City& city ) : Immigrant( city, 5 )
 {
 	_walkerType = WT_EMIGRANT;
 	_walkerGraphic = WG_PUSHER2;

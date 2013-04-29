@@ -66,7 +66,7 @@ std::list<AStarPoint*> Pathfinder::getTraversingPoints( const TilePos& start, co
 
 int Pathfinder::getMaxLoopCount() const
 {
-  return 300;
+  return 600;
 }
 
 bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos, const Size& arrivedArea, PathWay& oPathWay )
