@@ -19,14 +19,37 @@
 #include "oc3_enums.hpp"
 #include "oc3_scopedptr.hpp"
 
-class LandOverlay;
+class Construction;
+
+class AbstractConstructor
+{
+public:
+  virtual Construction* create() = 0;
+};
+
+template< class T > class BaseConstructor : public AbstractConstructor
+{
+public:
+  BaseConstructor() 
+  {
+  }
+
+  Construction* create() 
+  {
+    return new T(); 
+  }
+};
 
 class ConstructionManager
 {
 public:
     static ConstructionManager& getInstance();
-    LandOverlay* create(const BuildingType buildingType);
+    Construction* create(const BuildingType buildingType) const;
+    Construction* create(const std::string& typeName ) const;
 
+    bool canCreate( const BuildingType type ) const;
+
+    void addConstructor( const BuildingType type, const std::string& typeName, AbstractConstructor* ctor );
 private:
     ConstructionManager();
 

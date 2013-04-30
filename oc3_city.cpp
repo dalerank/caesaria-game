@@ -291,11 +291,11 @@ long City::getPopulation() const
    return _d->population;
 }
 
-void City::build( Construction& buildInstance, const TilePos& pos )
+void City::build( const BuildingType type, const TilePos& pos )
 {
-   BuildingData& buildingData = BuildingDataHolder::instance().getData(buildInstance.getType());
+   BuildingData& buildingData = BuildingDataHolder::instance().getData( type );
    // make new building
-   Construction* building = (Construction*)buildInstance.clone();
+   Construction* building = ConstructionManager::getInstance().create( type );
    building->build( pos );
 
    _d->overlayList.push_back(building);
@@ -325,10 +325,10 @@ void City::disaster( const TilePos& pos, DisasterType type )
         std::list<Tile*> clearedTiles = _tilemap.getFilledRectangle( rPos, Size( size ) );
         for (std::list<Tile*>::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
         {
-            BuildingType dstr2constr[] = { B_BURNING_RUINS, B_COLLAPSED_RUINS };
-            Construction* ruins = dynamic_cast<Construction*>( ConstructionManager::getInstance().create( dstr2constr[type] ) );
-            if( ruins )
-                build( *ruins, (*itTile)->getIJ() );
+          BuildingType dstr2constr[] = { B_BURNING_RUINS, B_COLLAPSED_RUINS };
+          bool canCreate = ConstructionManager::getInstance().canCreate( dstr2constr[type] );
+          if( canCreate )
+            build( dstr2constr[type], (*itTile)->getIJ() );
        }
     }
 }

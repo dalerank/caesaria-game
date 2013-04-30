@@ -30,11 +30,6 @@ FactoryClay::FactoryClay() : Factory(G_NONE, G_CLAY, B_CLAY_PIT, Size(2) )
   setMaxWorkers( 20 );
 }
 
-FactoryClay* FactoryClay::clone() const
-{
-  return new FactoryClay(*this);
-}
-
 void FactoryClay::timeStep(const unsigned long time)
 {
   bool mayAnimate = getWorkers() > 0;
@@ -49,7 +44,7 @@ void FactoryClay::timeStep(const unsigned long time)
     _animation.stop();
   }
 
-  WorkingBuilding::timeStep( time );
+  Factory::timeStep( time );
 }
 
 bool FactoryClay::canBuild(const TilePos& pos ) const

@@ -33,13 +33,13 @@ CityServiceWorkersHire::CityServiceWorkersHire( City& city )
   _d->priorities[ 3 ] = B_CLAY_PIT;
 }
 
-bool CityServiceWorkersHire::_haveHr( ServiceBuilding* building )
+bool CityServiceWorkersHire::_haveHr( WorkingBuilding* building )
 {
   for( City::Walkers::iterator it=_d->hrInCity.begin(); it != _d->hrInCity.end(); it++ )
   {
     if( WorkersHunter* hr = safety_cast< WorkersHunter* >(*it) )
     {
-      if( &hr->getServiceBuilding() == building )
+      if( &hr->getBase() == building )
         return true;
     }
   }
@@ -49,18 +49,18 @@ bool CityServiceWorkersHire::_haveHr( ServiceBuilding* building )
 
 void CityServiceWorkersHire::_hireByType( const BuildingType type )
 {
-  City::LandOverlays buildings = _city.getBuildingList(type);
-  for( City::LandOverlays::iterator it = buildings.begin(); it != buildings.end(); ++it )
+  CityHelper hlp( _city );
+  std::list< WorkingBuilding* > buildings = hlp.getBuildings< WorkingBuilding* >( type );
+  for( std::list< WorkingBuilding* >::iterator it = buildings.begin(); it != buildings.end(); ++it )
   {
-    ServiceBuilding* sb = safety_cast<ServiceBuilding*>(*it);
-
-    if( _haveHr( sb ) )
+    WorkingBuilding* wb = *it;
+     if( _haveHr( wb ) )
       continue;
 
-    if( sb && sb->getAccessRoads().size() > 0 
-        && sb->getWorkers() < sb->getMaxWorkers() )
+    if( wb && wb->getAccessRoads().size() > 0 
+        && wb->getWorkers() < wb->getMaxWorkers() )
     {
-      WorkersHunter* hr = new WorkersHunter( *sb, sb->getMaxWorkers() - sb->getWorkers() );
+      WorkersHunter* hr = new WorkersHunter( *wb, wb->getMaxWorkers() - wb->getWorkers() );
       hr->setMaxDistance( 20 );
       hr->start();
     }

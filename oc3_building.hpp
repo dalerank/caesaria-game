@@ -47,7 +47,7 @@ public:
    bool isDeleted() const;  // returns true if the overlay should be forgotten
    void deleteLater();
    virtual bool isWalkable() const;
-   virtual LandOverlay* clone() const = 0;
+   //virtual LandOverlay* clone() const = 0;
    virtual void setTerrain( TerrainTile &terrain ) = 0;
    virtual void build( const TilePos& pos );
    virtual void destroy();  // handles the walkers
@@ -108,7 +108,7 @@ class Garden : public Construction
 {
 public:
   Garden();
-  Garden* clone() const;
+  //Garden* clone() const;
   void setTerrain(TerrainTile &terrain);  
   bool isWalkable() const;
 };
@@ -117,7 +117,7 @@ class Road : public Construction
 {
 public:
   Road();
-  Road* clone() const;
+  //Road* clone() const;
   
   virtual Picture& computePicture();
 
@@ -131,7 +131,6 @@ class Plaza : public Road
 {
 public:
   Plaza();
-  virtual Plaza* clone() const;
   virtual void setTerrain(TerrainTile &terrain);  
   virtual bool canBuild(const TilePos& pos ) const;
   virtual Picture& computePicture();

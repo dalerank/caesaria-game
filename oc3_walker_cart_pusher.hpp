@@ -23,13 +23,12 @@
 #include "oc3_warehouse.hpp"
 #include "oc3_factory_building.hpp"
 
-
 /** This walker delivers goods */
 class CartPusher : public Walker
 {
 public:
    CartPusher();
-   virtual CartPusher *clone() const;
+   //virtual CartPusher *clone() const;
    static void initStatic();
 
    void setProducerBuilding(Building &building);
@@ -58,6 +57,5 @@ private:
    int _maxDistance;
    long _reservationID;
 };
-
 
 #endif

@@ -93,7 +93,7 @@ public:
    void unserialize(InputSerialStream &stream);
 
    // add construction
-   void build(Construction &buildInstance, const TilePos& pos );
+   void build( const BuildingType type, const TilePos& pos );
 
    //
    void disaster( const TilePos& pos, DisasterType type );

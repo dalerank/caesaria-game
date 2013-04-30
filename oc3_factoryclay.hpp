@@ -22,7 +22,6 @@ class FactoryClay : public Factory
 {
 public:
   FactoryClay();
-  FactoryClay* clone() const;
   
   bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
   void timeStep(const unsigned long time);

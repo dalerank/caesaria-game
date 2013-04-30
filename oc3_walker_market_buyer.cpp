@@ -49,10 +49,10 @@ MarketBuyer::~MarketBuyer()
   
 }
 
-MarketBuyer* MarketBuyer::clone() const
-{
-   return new MarketBuyer(*this);
-}
+// MarketBuyer* MarketBuyer::clone() const
+// {
+//    return new MarketBuyer(*this);
+// }
 
 void MarketBuyer::setMarket(Market &market)
 {

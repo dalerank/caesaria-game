@@ -15,8 +15,6 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
-
 #include "oc3_walker.hpp"
 
 #include <iostream>
@@ -29,7 +27,13 @@
 #include "oc3_positioni.hpp"
 #include "oc3_walkermanager.hpp"
 
-Walker::Walker()
+class Walker::Impl
+{
+public:
+  Signal1< Walker* > onDestroySignal;
+};
+
+Walker::Walker() : _d( new Impl )
 {
    _action._action = WA_MOVE;
    _action._direction = D_NONE;
@@ -446,6 +450,10 @@ void Walker::deleteLater()
    _isDeleted = true;
 }
 
+Signal1< Walker* >& Walker::onDestroy()
+{
+  return _d->onDestroySignal;
+}
 
 Soldier::Soldier()
 {
@@ -453,15 +461,15 @@ Soldier::Soldier()
    _walkerGraphic = WG_HORSEMAN;
 }
 
-Soldier* Soldier::clone() const
-{
-   return new Soldier(*this);
-}
+// Soldier* Soldier::clone() const
+// {
+//    return new Soldier(*this);
+// }
 
-ServiceWalker::ServiceWalker(const ServiceType service)
+ServiceWalker::ServiceWalker( Building& base, const ServiceType service)
 {
    _walkerType = WT_SERVICE;
-   _building = NULL;
+   _base = &base;
    _maxDistance = 5;  // TODO: _building.getMaxDistance() ?
 
    init(service);
@@ -526,20 +534,15 @@ void ServiceWalker::init(const ServiceType service)
   }
 }
 
-ServiceWalker* ServiceWalker::clone() const
-{
-   return new ServiceWalker(*this);
-}
+// ServiceWalker* ServiceWalker::clone() const
+// {
+//    return new ServiceWalker(*this);
+// }
 
-void ServiceWalker::setServiceBuilding(ServiceBuilding &building)
+Building& ServiceWalker::getBase()
 {
-   _building = &building;
-}
-
-ServiceBuilding &ServiceWalker::getServiceBuilding()
-{
-   if (_building == NULL) THROW("ServiceBuilding is not initialized");
-   return *_building;
+   if (_base == NULL) THROW("ServiceBuilding is not initialized");
+   return *_base;
 }
 
 ServiceType ServiceWalker::getService()
@@ -552,7 +555,7 @@ void ServiceWalker::computeWalkerPath()
    std::list<PathWay> pathWayList;
 
    Propagator pathPropagator;
-   pathPropagator.init(*_building);
+   pathPropagator.init(*_base);
    pathPropagator.getAllPaths(_maxDistance, pathWayList);
 
    float maxPathValue = 0.0;
@@ -699,7 +702,7 @@ void ServiceWalker::serialize(OutputSerialStream &stream)
 {
    Walker::serialize(stream);
    stream.write_int((int) _service, 1, 0, S_MAX);
-   stream.write_objectID(_building);
+   stream.write_objectID(_base);
    stream.write_int(_maxDistance, 2, 0, 65535);
 }
 
@@ -709,7 +712,7 @@ void ServiceWalker::unserialize(InputSerialStream &stream)
    _service = (ServiceType) stream.read_int(1, 0, S_MAX);
    init(_service);
 
-   stream.read_objectID((void**)&_building);
+   stream.read_objectID((void**)&_base);
    _maxDistance = stream.read_int(2, 0, 65535);
 }
 
@@ -762,10 +765,10 @@ void TraineeWalker::init(const WalkerTraineeType traineeType)
    }
 }
 
-TraineeWalker* TraineeWalker::clone() const
-{
-   return new TraineeWalker(*this);
-}
+// TraineeWalker* TraineeWalker::clone() const
+// {
+//    return new TraineeWalker(*this);
+// }
 
 void TraineeWalker::setOriginBuilding(Building &originBuilding)
 {

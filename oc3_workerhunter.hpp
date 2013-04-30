@@ -21,7 +21,7 @@
 class WorkersHunter : public ServiceWalker
 {
 public:
-    WorkersHunter( ServiceBuilding& building, const int workersNeeded );
+    WorkersHunter( WorkingBuilding& building, const int workersNeeded );
 
     int getWorkersNeeded() const;
 

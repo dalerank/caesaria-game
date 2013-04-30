@@ -37,41 +37,45 @@ CartPusher::CartPusher()
    _maxDistance = 25;
 }
 
-CartPusher* CartPusher::clone() const
-{
-   return new CartPusher(*this);
-}
+// CartPusher* CartPusher::clone() const
+// {
+//    return new CartPusher(*this);
+// }
 
 
 void CartPusher::onDestination()
 {
-   Walker::onDestination();
-   _cartPicture = NULL;
+  Walker::onDestination();
+  _cartPicture = NULL;
 
-   Granary *granary = dynamic_cast<Granary*> (_consumerBuilding);
-   Warehouse *warehouse = dynamic_cast<Warehouse*> (_consumerBuilding);
-   Factory *factory = dynamic_cast<Factory*> (_consumerBuilding);
-   if (granary != NULL)
-   {
-      granary->getGoodStore().applyStorageReservation(_stock, _reservationID);
-      granary->computePictures();
-      _reservationID = 0;
-   }
-   else if (warehouse != NULL)
-   {
-      warehouse->getGoodStore().applyStorageReservation(_stock, _reservationID);
-      warehouse->computePictures();
-      _reservationID = 0;
-   }
-   else if (factory != NULL)
-   {
-      factory->getGoodStore().applyStorageReservation(_stock, _reservationID);
-      // factory->computePictures();
-      _reservationID = 0;
-   }
-   _isDeleted = true;
+  if( Granary *granary = safety_cast<Granary*> (_consumerBuilding))
+  {
+     granary->getGoodStore().applyStorageReservation(_stock, _reservationID);
+     granary->computePictures();
+     _reservationID = 0;
+  }
+  else if ( Warehouse *warehouse = safety_cast<Warehouse*> (_consumerBuilding))
+  {
+     warehouse->getGoodStore().applyStorageReservation(_stock, _reservationID);
+     warehouse->computePictures();
+     _reservationID = 0;
+  }
+  else if ( Factory *factory = safety_cast<Factory*> (_consumerBuilding) )
+  {
+     factory->getGoodStore().applyStorageReservation(_stock, _reservationID);
+     // factory->computePictures();
+     _reservationID = 0;
+  }
+  //
+  if( !_pathWay.isReverse() )
+  {
+    _pathWay.toggleDirection();
+  }
+  else
+  {
+    _isDeleted = true;
+  }
 }
-
 
 void CartPusher::setStock(const GoodStock &stock)
 {
@@ -170,15 +174,19 @@ void CartPusher::computeWalkerDestination()
       destBuilding = getWalkerDestination_warehouse(pathPropagator, pathWay);
    }
 
-   if (destBuilding == NULL)
+   if( destBuilding != NULL)
    {
-      _isDeleted = true;  // no destination!
-      return;
+      //_isDeleted = true;  // no destination!
+      setConsumerBuilding( *destBuilding );
+      setPathWay( pathWay );
+      setIJ( _pathWay.getOrigin().getIJ() );
    }
-
-   setConsumerBuilding(*destBuilding);
-   setPathWay(pathWay);
-   setIJ( _pathWay.getOrigin().getIJ() );
+   else
+   {
+     _action._direction = D_NORTH;
+     setIJ( _producerBuilding->getAccessRoads().front()->getIJ() );
+     walk();
+   }
 }
 
 

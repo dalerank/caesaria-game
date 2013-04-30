@@ -336,7 +336,7 @@ void GuiTilemap::_buildAll()
 //    std::cout << "(" << (*it)->getI() << " " << (*it)->getJ() << ") ";
     if( cnstr && cnstr->canBuild( (*it)->getIJ() ) && (*it)->is_master_tile())
     {
-      _city->build( *cnstr, (*it)->getIJ() );
+      _city->build( cnstr->getType(), (*it)->getIJ() );
     }
   }
 //  std::cout << std::endl;

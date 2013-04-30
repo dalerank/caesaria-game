@@ -30,9 +30,8 @@ public:
 };
 
 WalkerPrefect::WalkerPrefect( ServiceBuilding& building, int water )
-: ServiceWalker( S_PREFECT ), _d( new Impl )
+: ServiceWalker( building, S_PREFECT ), _d( new Impl )
 {
-  setServiceBuilding( building );
   setMaxDistance( 10 );
   _d->water = water;
   _d->action = water > 0 ? Impl::gotoFire : Impl::patrol;
@@ -97,7 +96,7 @@ void WalkerPrefect::onDestination()
 
 void WalkerPrefect::_back2Prefecture()
 {
-  bool pathFound = Pathfinder::getInstance().getPath( getIJ(), getServiceBuilding().getTile().getIJ(),
+  bool pathFound = Pathfinder::getInstance().getPath( getIJ(), getBase().getTile().getIJ(),
     _pathWay, false, Size( 0 ) );
 
   if( !pathFound )
@@ -131,7 +130,7 @@ void WalkerPrefect::onMidTile()
         //on next deliverService
 
         //found fire, no water, go prefecture
-        ((BuildingPrefect&)getServiceBuilding()).fireDetect( firePos );         
+        ((BuildingPrefect&)getBase()).fireDetect( firePos );         
         _back2Prefecture();
 
         Walker::onNewDirection();
@@ -160,13 +159,18 @@ void WalkerPrefect::onMidTile()
       {
         //tell our prefecture that need send prefect with water to fight with fire
         //on next deliverService
-        ((BuildingPrefect&)getServiceBuilding()).fireDetect( firePos );         
+        ((BuildingPrefect&)getBase()).fireDetect( firePos );         
       }
 
       if( isDestination )
       {
         deleteLater();
-        getServiceBuilding().removeWalker( this );
+
+        if( BuildingPrefect* prefecture = safety_cast< BuildingPrefect* >( &getBase() ) )
+        {
+          prefecture->removeWalker( this );
+        }
+
         _d->action = Impl::doNothing;
       }
 
