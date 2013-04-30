@@ -20,7 +20,7 @@
 FactoryClay::FactoryClay() : Factory(G_NONE, G_CLAY, B_CLAY_PIT, Size(2) )
 {
   _productionRate = 9.6f;
-  _picture = &Picture::load(ResourceGroup::commerce, 61);
+  _picture = &Picture::load( ResourceGroup::commerce, 61 );
 
   _animation.load( ResourceGroup::commerce, 62, 10);
   _animation.setFrameDelay( 3 );

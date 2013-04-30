@@ -83,9 +83,7 @@ House* Immigrant::_findBlankHouse()
 
 void Immigrant::_checkPath( Tile& startPoint, Building* house )
 {
-  Propagator pathfinder;
   PathWay pathWay;
-  pathfinder.init( startPoint );
 
   Tilemap& citymap = _d->city->getTilemap();
   Tile& destTile = house ? house->getTile() : citymap.at( _d->city->getRoadExitIJ() );
