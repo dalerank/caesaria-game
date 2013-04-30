@@ -107,8 +107,7 @@ private:
    float _remainMoveI, _remainMoveJ;  // remaining movement
    int _midTileI, _midTileJ;  // subtile coordinate in the current tile, at starting position
 
-   const Animation *_animation;  // current animation
-   int _animIndex;  // current frame in the animation
+   Animation _animation;  // current animation
   
    class Impl;
    ScopedPtr< Impl > _d;

@@ -146,7 +146,6 @@ void CartPusher::getPictureList(std::vector<Picture*> &oPics)
    }
 }
 
-
 void CartPusher::computeWalkerDestination()
 {
    // get the list of buildings within reach
@@ -184,6 +183,7 @@ void CartPusher::computeWalkerDestination()
    else
    {
      _action._direction = D_NORTH;
+     setSpeed( 0 );
      setIJ( _producerBuilding->getAccessRoads().front()->getIJ() );
      walk();
    }

@@ -44,22 +44,22 @@ void Animation::setOffset( const Point& offset )
 
 void Animation::update( unsigned int time )
 {  
-    if( _animIndex < 0 )
-        return;
+  if( _animIndex < 0 )
+    return;
 
-    if( _frameDelay > 0 )
-    {
-        if( time - _lastTimeUpdate < _frameDelay )
-            return;
-    }
+  if( _frameDelay > 0 )
+  {
+    if( time - _lastTimeUpdate < _frameDelay )
+      return;
+  }
 
-    _animIndex += 1;
-    _lastTimeUpdate = time;
+  _animIndex += 1;
+  _lastTimeUpdate = time;
 
-    if( _animIndex >= (int)_pictures.size() ) 
-    {
-        _animIndex = _loop ? 0 : -1;
-    }
+  if( _animIndex >= (int)_pictures.size() ) 
+  {
+    _animIndex = _loop ? 0 : -1;
+  }
 }
 
 Picture* Animation::getCurrentPicture()
@@ -121,7 +121,23 @@ void Animation::stop()
     _animIndex = -1;
 }
 
-int Animation::clampIndex( const int index ) const
+Animation& Animation::operator=( const Animation& other )
 {
-  return index % _pictures.size();
+  _pictures = other._pictures;
+  _animIndex = other._animIndex;  // index of the current frame
+  _frameDelay = other._frameDelay;
+  _lastTimeUpdate = _lastTimeUpdate;
+  _loop = other._loop;
+
+  return *this;
+}
+
+int Animation::getPicturesCount() const
+{
+  return _pictures.size();
+}
+
+bool Animation::isValid() const
+{
+  return _pictures.size() > 0;
 }

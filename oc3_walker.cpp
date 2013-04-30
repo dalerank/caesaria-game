@@ -40,8 +40,6 @@ Walker::Walker() : _d( new Impl )
    _walkerType = WT_NONE;
    _walkerGraphic = WG_NONE;
 
-   _animation = NULL;
-   _animIndex = 0;
    _speed = 1;  // default speed
    _isDeleted = false;
 
@@ -67,6 +65,11 @@ void Walker::timeStep(const unsigned long time)
    {
    case WA_MOVE:
       walk();
+     
+      if( _animation.getPicturesCount() > 0 && _speed > 0.f )
+      {
+        _animation.update( time );
+      }
       break;
 
    default:
@@ -203,11 +206,6 @@ void Walker::walk()
       return;
    }
    
-   if( _animation )
-   {
-     _animIndex = _animation->clampIndex( _animIndex+1 );
-   }
-
    switch (_action._direction)
    {
    case D_NORTH:
@@ -329,12 +327,12 @@ void Walker::onDestination()
 {
    // std::cout << "Walker arrived at destination! coord=" << _i << "," << _j << std::endl;
    _action._action=WA_NONE;  // stop moving
-   _animation=NULL;
+   _animation = Animation();
 }
 
 void Walker::onNewDirection()
 {
-   _animation=NULL;  // need to fetch the new animation
+   _animation = Animation();  // need to fetch the new animation
 }
 
 
@@ -363,7 +361,7 @@ void Walker::getPictureList(std::vector<Picture*> &oPics)
 
 Picture& Walker::getMainPicture()
 {
-   if (_animation == NULL)
+   if( !_animation.isValid() )
    {
       const std::map<WalkerAction, Animation>& animMap = WalkerLoader::instance().getAnimationMap(getWalkerGraphic());
       std::map<WalkerAction, Animation>::const_iterator itAnimMap;
@@ -379,7 +377,6 @@ Picture& Walker::getMainPicture()
          {
             action._direction = _action._direction;  // last direction of the walker
          }
-         _animIndex = 0;  // first animation frame
          itAnimMap = animMap.find(action);
       }
       else
@@ -387,11 +384,10 @@ Picture& Walker::getMainPicture()
          itAnimMap = animMap.find(_action);
       }
 
-      _animation = &(itAnimMap->second);
-      _animIndex = _animation->clampIndex( _animIndex );
+      _animation = itAnimMap->second;
    }
 
-   return *_animation->getPictures()[_animIndex];
+   return *_animation.getCurrentPicture();
 }
 
 void Walker::serialize(OutputSerialStream &stream)
@@ -410,7 +406,7 @@ void Walker::serialize(OutputSerialStream &stream)
    stream.write_int(_speed, 1, 0, 50);
    stream.write_int(_midTileI, 1, 0, 50);
    stream.write_int(_midTileJ, 1, 0, 50);
-   stream.write_int(_animIndex, 1, 0, 50);
+   //stream.write_int(_animIndex, 1, 0, 50);
 }
 
 Walker& Walker::unserialize_all(InputSerialStream &stream)
@@ -437,7 +433,7 @@ void Walker::unserialize(InputSerialStream &stream)
    _speed = stream.read_int(1, 0, 50);
    _midTileI = stream.read_int(1, 0, 50);
    _midTileJ = stream.read_int(1, 0, 50);
-   _animIndex = stream.read_int(1, 0, 50);
+   //_animIndex = stream.read_int(1, 0, 50);
 }
 
 TilePos Walker::getIJ() const
@@ -533,11 +529,6 @@ void ServiceWalker::init(const ServiceType service)
     break;
   }
 }
-
-// ServiceWalker* ServiceWalker::clone() const
-// {
-//    return new ServiceWalker(*this);
-// }
 
 Building& ServiceWalker::getBase()
 {

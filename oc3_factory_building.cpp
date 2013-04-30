@@ -26,10 +26,12 @@
 #include "oc3_gettext.hpp"
 #include "oc3_resourcegroup.hpp"
 
+typedef std::vector< CartPusher* > Pushers;
+
 class Factory::Impl
 {
 public:
-  std::vector< CartPusher* > pushers;
+  Pushers pushers;
 };
 
 Factory::Factory( const GoodType inType, const GoodType outType,
@@ -90,8 +92,7 @@ void Factory::timeStep(const unsigned long time)
          // the input good is consumed
          inStock._currentQty -= 100;
       }
-      deliverGood();
-      _progress -= 100.0;
+      deliverGood();      
    }
    else
    {
@@ -113,14 +114,21 @@ void Factory::deliverGood()
 {
    // std::cout << "Factory delivery" << std::endl;
 
-   // make a cart pusher and send him away
-   GoodStock stock(_outGoodType, 100, 100);
-   CartPusher* walker = new CartPusher();
-   walker->setStock(stock);
-   walker->setProducerBuilding(*this);
-   walker->start();
+   // make a cart pusher and send him away   
+   if( _mayDeliverGood() )
+   {
+      GoodStock stock(_outGoodType, 100, 100);
+      CartPusher* walker = new CartPusher();
+      walker->setStock(stock);
+      walker->setProducerBuilding(*this);
+      walker->start();
+      _d->pushers.push_back( walker );
+      _progress -= 100.f;
 
-   Scenario::instance().getCity().addWalker( *walker );
+      Scenario::instance().getCity().addWalker( *walker );
+
+      CONNECT( walker, onDestroy(), this, Factory::resolveWalkerDestroyed );
+   }
 }
 
 
@@ -153,6 +161,23 @@ void Factory::unserialize(InputSerialStream &stream)
 Factory::~Factory()
 {
 
+}
+
+bool Factory::_mayDeliverGood() const
+{
+  return ( getAccessRoads().size() > 0 ) && ( _d->pushers.size() == 0 );
+}
+
+void Factory::resolveWalkerDestroyed( Walker* w )
+{
+  for( Pushers::iterator it=_d->pushers.begin(); it != _d->pushers.end(); it++ )
+  {
+    if( *it == w )
+    {
+      _d->pushers.erase( it );  
+      return;
+    }
+  }
 }
 
 FactoryMarble::FactoryMarble() : Factory(G_NONE, G_MARBLE, B_MARBLE, Size(2) )

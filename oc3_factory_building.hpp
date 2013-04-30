@@ -21,6 +21,7 @@
 
 #include "oc3_building.hpp"
 
+class Walker;
 
 class Factory: public WorkingBuilding
 {
@@ -43,6 +44,11 @@ public:
 
    void serialize(OutputSerialStream &stream);
    void unserialize(InputSerialStream &stream);
+
+   void resolveWalkerDestroyed( Walker* w );
+
+protected:
+   bool _mayDeliverGood() const;
 
 protected:
    GoodType _inGoodType;

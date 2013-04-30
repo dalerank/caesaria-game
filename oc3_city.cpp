@@ -122,6 +122,8 @@ void City::timeStep()
   LandOverlays::iterator overlayIt = _d->overlayList.begin();
   while( overlayIt != _d->overlayList.end() )
   {
+    try
+    {   
       (*overlayIt)->timeStep(_time);
 
       if( (*overlayIt)->isDeleted() )
@@ -136,6 +138,11 @@ void City::timeStep()
       {
          ++overlayIt;
       }
+    }
+    catch(...)
+    {
+      int i=0;
+    }
   }
 
   CityServices::iterator serviceIt=_d->services.begin();

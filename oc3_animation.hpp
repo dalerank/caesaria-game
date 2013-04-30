@@ -32,15 +32,17 @@ public:
 
     Animation();
 
+    Animation& operator=(const Animation& other);
+
     void start(bool loop=true);
     void stop();
-
-    int clampIndex( const int index ) const;
 
     Pictures& getPictures();
     const Pictures& getPictures() const;
 
     int getCurrentIndex() const;
+
+    int getPicturesCount() const;
 
     void update( unsigned int time );
     Picture* getCurrentPicture();
@@ -54,7 +56,9 @@ public:
     bool isStopped() const;
 
     void clear();
-    void load(const std::string &prefix, const int start, const int number, bool reverse = false, const int step = 1);
+    void load( const std::string &prefix, const int start, const int number, bool reverse = false, const int step = 1);
+
+    bool isValid() const;
 private:
     Pictures _pictures;
     int _animIndex;  // index of the current frame
