@@ -128,11 +128,8 @@ private:
    ClimateType _climate;
    Tilemap _tilemap;
    unsigned long _time;  // number of timesteps since start
-   int _taxRate;
    
    void _calculatePopulation();
-   void _createImigrants();
-   void recomputeRoadsForAll();
 
    class Impl;
    ScopedPtr< Impl > _d;

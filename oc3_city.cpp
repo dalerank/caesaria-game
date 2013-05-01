@@ -49,6 +49,8 @@ public:
     Walkers walkerList;
     TilePos roadEntry; //coordinates can't be negative!
     CityServices services;
+    bool needRecomputeAllRoads;
+    int taxRate;
 };
 
 City::City() : _d( new Impl )
@@ -64,7 +66,8 @@ City::City() : _d( new Impl )
    _boatExitJ = 0;
    _d->funds = 1000;
    _d->population = 0;
-   _taxRate = 700;
+   _d->needRecomputeAllRoads = false;
+   _d->taxRate = 700;
    _climate = C_CENTRAL;
    
    // DEBUG
@@ -163,6 +166,27 @@ void City::timeStep()
     else
       serviceIt++;
   }
+
+  if( _d->needRecomputeAllRoads )
+  {
+    _d->needRecomputeAllRoads = false;
+    for (LandOverlays::iterator itOverlay = _d->overlayList.begin(); itOverlay!=_d->overlayList.end(); ++itOverlay)
+    {
+      // for each overlay
+      LandOverlay *overlay = *itOverlay;
+      Construction *construction = safety_cast<Construction*>( overlay );
+      if( construction != NULL )
+      {
+        // overlay matches the filter
+        construction->computeAccessRoads();
+        // for some constructions we need to update picture
+        if( construction->getType() == B_ROAD ) 
+        {
+          construction->setPicture(safety_cast<Road*>(construction)->computePicture());
+        }
+      }
+    }   
+  }
 }
 
 void City::monthStep()
@@ -219,26 +243,6 @@ std::list<LandOverlay*> City::getBuildingList(const BuildingType buildingType)
    return res;
 }
 
-void City::recomputeRoadsForAll()
-{
-   for (LandOverlays::iterator itOverlay = _d->overlayList.begin(); itOverlay!=_d->overlayList.end(); ++itOverlay)
-   {
-      // for each overlay
-      LandOverlay *overlay = *itOverlay;
-      Construction *construction = safety_cast<Construction*>(overlay);
-      if( construction != NULL )
-      {
-        // overlay matches the filter
-        construction->computeAccessRoads();
-	      // for some constructions we need to update picture
-	      if (construction->getType() == B_ROAD) 
-        {
-          construction->setPicture(safety_cast<Road*>(construction)->computePicture());
-        }
-      }
-   }   
-}
-
 Tilemap& City::getTilemap()
 {
    return _tilemap;
@@ -290,8 +294,8 @@ void City::setBoatExitIJ(unsigned int i, unsigned int j)
   _boatExitJ = j;
 }
 
-int City::getTaxRate() const                 {  return _taxRate;    }
-void City::setTaxRate(const int taxRate)     {  _taxRate = taxRate; }
+int City::getTaxRate() const                 {  return _d->taxRate;    }
+void City::setTaxRate(const int taxRate)     {  _d->taxRate = taxRate; }
 long City::getFunds() const                  {  return _d->funds;   }
 void City::setFunds(const long funds)        {  _d->funds = funds;  }
 
@@ -388,9 +392,7 @@ void City::clearLand(const TilePos& pos  )
       if( terrain.isMeadow() )
       {
         unsigned int originId = terrain.getOriginalImgId();
-        Picture& pic = PicLoader::instance().get_picture( TerrainTileHelper::convId2PicName( originId ) );
-
-        (*itTile)->set_picture( &pic );
+        (*itTile)->set_picture( &Picture::load( TerrainTileHelper::convId2PicName( originId ) ) );
       }
       else
       {
@@ -400,17 +402,16 @@ void City::clearLand(const TilePos& pos  )
         int startOffset  = ( (rand() % 10 > 6) ? 62 : 232 ); 
         int imgId = rand() % 58;
 
-        (*itTile)->set_picture(&PicLoader::instance().get_picture("land1a", startOffset + imgId));
+        (*itTile)->set_picture( &Picture::load( "land1a", startOffset + imgId));
       }      
     }
       
     // recompute roads;
     // there is problem that we NEED to recompute all roads map for all buildings
-    // because MaxDistance2Road can be any number
-    
+    // because MaxDistance2Road can be any number    
     if( deleteRoad )
     {
-      recomputeRoadsForAll();     
+      _d->needRecomputeAllRoads = true;     
     }
   }
 }

@@ -62,6 +62,7 @@ public:
    bool isValid() const;
 
    static Picture& load( const char* group, const int id );
+   static Picture& load( const std::string& filename ); 
 
 private:
    // the image is shifted when displayed
