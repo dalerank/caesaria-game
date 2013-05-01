@@ -30,6 +30,7 @@
 #include "oc3_safetycast.hpp"
 #include "oc3_cityservice_emigrant.hpp"
 #include "oc3_cityservice_workershire.hpp"
+#include "oc3_cityservice_timers.hpp"
 
 typedef std::vector< CityServicePtr > CityServices;
 
@@ -73,12 +74,15 @@ City::City() : _d( new Impl )
    pRndmTerGrid = (unsigned char *)malloc(26244);
    pRandomGrid  = (unsigned char *)malloc(26244);
    pZeroGrid    = (unsigned char *)malloc(26244);
-   if ( pGraphicGrid == NULL || pEdgeGrid == NULL || pTerrainGrid == NULL ||
-     pRndmTerGrid == NULL || pRandomGrid == NULL || pZeroGrid == NULL )
+   if( pGraphicGrid == NULL || pEdgeGrid == NULL || pTerrainGrid == NULL ||
+       pRndmTerGrid == NULL || pRandomGrid == NULL || pZeroGrid == NULL )
+   {
      THROW("NOT ENOUGH MEMORY!!!! FATAL");
+   }
 
    addService( CityServiceEmigrant::create( *this ) );
    addService( CityServiceWorkersHire::create( *this ) );
+   addService( CityServicePtr( &CityServiceTimers::getInstance() ) );
 }
 
 void City::timeStep()

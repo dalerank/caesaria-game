@@ -117,17 +117,17 @@ void Factory::deliverGood()
    // make a cart pusher and send him away   
    if( _mayDeliverGood() )
    {
-      GoodStock stock(_outGoodType, 100, 100);
-      CartPusher* walker = new CartPusher();
-      walker->setStock(stock);
-      walker->setProducerBuilding(*this);
-      walker->start();
-      _d->pushers.push_back( walker );
-      _progress -= 100.f;
+     GoodStock stock(_outGoodType, 100, 100);
+     CartPusher* walker = new CartPusher();
+     walker->setStock(stock);
+     walker->setProducerBuilding(*this);
+     walker->start();
+     _d->pushers.push_back( walker );
+     _progress -= 100.f;
 
-      Scenario::instance().getCity().addWalker( *walker );
+     Scenario::instance().getCity().addWalker( *walker );
 
-      CONNECT( walker, onDestroy(), this, Factory::resolveWalkerDestroyed );
+     CONNECT( walker, onDestroy(), this, Factory::resolveWalkerDestroyed );
    }
 }
 

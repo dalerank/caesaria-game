@@ -151,6 +151,7 @@ void CartPusher::computeWalkerDestination()
    // get the list of buildings within reach
    PathWay pathWay;
    Propagator pathPropagator;
+   _consumerBuilding = 0;
    pathPropagator.init(*_producerBuilding);
    pathPropagator.propagate(_maxDistance);
 
@@ -170,15 +171,15 @@ void CartPusher::computeWalkerDestination()
    if (destBuilding == NULL)
    {
       // try send that good to a warehouse
-      destBuilding = getWalkerDestination_warehouse(pathPropagator, pathWay);
+      destBuilding = getWalkerDestination_warehouse( pathPropagator, pathWay );
    }
 
    if( destBuilding != NULL)
    {
       //_isDeleted = true;  // no destination!
-      setConsumerBuilding( *destBuilding );
-      setPathWay( pathWay );
-      setIJ( _pathWay.getOrigin().getIJ() );
+     setConsumerBuilding( *destBuilding );
+     setPathWay( pathWay );
+     setIJ( _pathWay.getOrigin().getIJ() );
    }
    else
    {
@@ -291,4 +292,13 @@ void CartPusher::start()
    computeWalkerDestination();
 }
 
+void CartPusher::timeStep( const unsigned long time )
+{
+  if( (time % 22 == 1) && (0 == _consumerBuilding) )
+  {
+    computeWalkerDestination();
+  }
+
+  Walker::timeStep( time );
+}
 

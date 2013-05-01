@@ -28,8 +28,6 @@ class CartPusher : public Walker
 {
 public:
    CartPusher();
-   //virtual CartPusher *clone() const;
-   static void initStatic();
 
    void setProducerBuilding(Building &building);
    void setConsumerBuilding(Building &building);
@@ -48,6 +46,8 @@ public:
    Building* getWalkerDestination_factory(Propagator &pathPropagator, PathWay &oPathWay);
    Warehouse* getWalkerDestination_warehouse(Propagator &pathPropagator, PathWay &oPathWay);
    Granary* getWalkerDestination_granary(Propagator &pathPropagator, PathWay &oPathWay);
+   
+   void timeStep(const unsigned long time);
 
 private:
    GoodStock _stock;

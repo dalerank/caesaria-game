@@ -1,0 +1,95 @@
+// This file is part of openCaesar3.
+//
+// openCaesar3 is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// openCaesar3 is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+
+#include "oc3_timer.hpp"
+#include "oc3_cityservice_timers.hpp"
+
+class Timer::Impl
+{
+public:
+  unsigned int time;
+  unsigned int startTime;
+  int id;
+  bool loop;
+  bool isActive;
+
+oc3_signals public:
+  Signal1<int> onTimeoutSignal;
+};
+
+Timer::~Timer(void)
+{
+}
+
+Timer::Timer() : _d( new Impl ) 
+{
+  _d->time = 0;
+  _d->isActive = true;
+  _d->loop = false;
+  _d->startTime = 0;
+}
+
+TimerPtr Timer::create( unsigned int time, bool loop, int id/*=-1 */ )
+{
+  TimerPtr ret( new Timer() );
+  ret->_d->time = time;
+  ret->_d->loop = loop;
+  ret->_d->id = id;
+
+  CityServiceTimers::getInstance().addTimer( ret );
+
+  return ret;
+}
+
+void Timer::update( unsigned int time )
+{
+  if( !_d->startTime )
+  {
+    _d->startTime = time;
+  }
+
+  if( _d->isActive && ( time - _d->startTime > _d->time) )
+  {
+    _d->onTimeoutSignal.emit( _d->id );
+
+    _d->isActive = false;
+
+    if( _d->loop )
+    {
+      _d->startTime = time;
+      _d->isActive = true;
+    }
+  }
+}
+
+void Timer::setTime( unsigned int time )
+{
+  _d->time = time;
+}
+
+void Timer::setLoop( bool loop )
+{
+  _d->loop = loop;
+}
+
+Signal1<int>& Timer::onTimeout()
+{
+  return _d->onTimeoutSignal;
+}
+
+bool Timer::isActive() const
+{
+  return _d->isActive;
+}

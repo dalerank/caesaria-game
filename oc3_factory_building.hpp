@@ -48,7 +48,7 @@ public:
    void resolveWalkerDestroyed( Walker* w );
 
 protected:
-   bool _mayDeliverGood() const;
+   virtual bool _mayDeliverGood() const;
 
 protected:
    GoodType _inGoodType;

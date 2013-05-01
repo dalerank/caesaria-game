@@ -287,6 +287,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_cityservice_timers.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_cityservice_timers.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_cityservice_workershire.cpp"
 				>
 			</File>
@@ -764,6 +772,14 @@
 			</File>
 			<File
 				RelativePath="..\..\oc3_time.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_timer.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_timer.hpp"
 				>
 			</File>
 			<File

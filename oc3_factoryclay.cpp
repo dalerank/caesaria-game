@@ -30,7 +30,7 @@ FactoryClay::FactoryClay() : Factory(G_NONE, G_CLAY, B_CLAY_PIT, Size(2) )
   setWorkers( 20 );
 }
 
-void FactoryClay::timeStep(const unsigned long time)
+void FactoryClay::timeStep( const unsigned long time )
 {
   bool mayAnimate = getWorkers() > 0;
 
