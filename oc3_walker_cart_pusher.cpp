@@ -48,32 +48,43 @@ void CartPusher::onDestination()
   Walker::onDestination();
   _cartPicture = NULL;
 
-  if( Granary *granary = safety_cast<Granary*> (_consumerBuilding))
+  if( _consumerBuilding )
   {
-     granary->getGoodStore().applyStorageReservation(_stock, _reservationID);
-     granary->computePictures();
-     _reservationID = 0;
-  }
-  else if ( Warehouse *warehouse = safety_cast<Warehouse*> (_consumerBuilding))
-  {
-     warehouse->getGoodStore().applyStorageReservation(_stock, _reservationID);
-     warehouse->computePictures();
-     _reservationID = 0;
-  }
-  else if ( Factory *factory = safety_cast<Factory*> (_consumerBuilding) )
-  {
-     factory->getGoodStore().applyStorageReservation(_stock, _reservationID);
-     // factory->computePictures();
-     _reservationID = 0;
+    if( Granary *granary = safety_cast<Granary*> (_consumerBuilding))
+    {
+       granary->getGoodStore().applyStorageReservation(_stock, _reservationID);
+       granary->computePictures();
+       _reservationID = 0;
+    }
+    else if ( Warehouse *warehouse = safety_cast<Warehouse*> (_consumerBuilding))
+    {
+       warehouse->getGoodStore().applyStorageReservation(_stock, _reservationID);
+       warehouse->computePictures();
+       _reservationID = 0;
+    }
+    else if ( Factory *factory = safety_cast<Factory*> (_consumerBuilding) )
+    {
+       factory->getGoodStore().applyStorageReservation(_stock, _reservationID);
+       // factory->computePictures();
+       _reservationID = 0;
+    }
   }
   //
   if( !_pathWay.isReverse() )
   {
     _pathWay.toggleDirection();
+    _action._action=WA_MOVE;
+    computeDirection();
+    _consumerBuilding = 0;
   }
   else
   {
-    _isDeleted = true;
+    if( Factory* factory = safety_cast< Factory* >( _producerBuilding ) )
+    {
+      factory->removeWalker( this );
+    }
+
+    deleteLater();
   }
 }
 
@@ -180,6 +191,7 @@ void CartPusher::computeWalkerDestination()
      setConsumerBuilding( *destBuilding );
      setPathWay( pathWay );
      setIJ( _pathWay.getOrigin().getIJ() );
+     setSpeed( 1 );
    }
    else
    {
@@ -294,7 +306,7 @@ void CartPusher::start()
 
 void CartPusher::timeStep( const unsigned long time )
 {
-  if( (time % 22 == 1) && (0 == _consumerBuilding) )
+  if( (time % 22 == 1) && (_pathWay.getLength() < 2) )
   {
     computeWalkerDestination();
   }

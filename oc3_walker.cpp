@@ -30,7 +30,6 @@
 class Walker::Impl
 {
 public:
-  Signal1< Walker* > onDestroySignal;
 };
 
 Walker::Walker() : _d( new Impl )
@@ -51,7 +50,6 @@ Walker::Walker() : _d( new Impl )
 
 Walker::~Walker()
 {
-  
 }
 
 int Walker::getType() const
@@ -446,21 +444,11 @@ void Walker::deleteLater()
    _isDeleted = true;
 }
 
-Signal1< Walker* >& Walker::onDestroy()
-{
-  return _d->onDestroySignal;
-}
-
 Soldier::Soldier()
 {
    _walkerType = WT_SOLDIER;
    _walkerGraphic = WG_HORSEMAN;
 }
-
-// Soldier* Soldier::clone() const
-// {
-//    return new Soldier(*this);
-// }
 
 ServiceWalker::ServiceWalker( Building& base, const ServiceType service)
 {
@@ -755,11 +743,6 @@ void TraineeWalker::init(const WalkerTraineeType traineeType)
       break;
    }
 }
-
-// TraineeWalker* TraineeWalker::clone() const
-// {
-//    return new TraineeWalker(*this);
-// }
 
 void TraineeWalker::setOriginBuilding(Building &originBuilding)
 {

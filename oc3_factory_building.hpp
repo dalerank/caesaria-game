@@ -45,8 +45,7 @@ public:
    void serialize(OutputSerialStream &stream);
    void unserialize(InputSerialStream &stream);
 
-   void resolveWalkerDestroyed( Walker* w );
-
+   void removeWalker( Walker* w );
 protected:
    virtual bool _mayDeliverGood() const;
 

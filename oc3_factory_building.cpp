@@ -126,8 +126,6 @@ void Factory::deliverGood()
      _progress -= 100.f;
 
      Scenario::instance().getCity().addWalker( *walker );
-
-     CONNECT( walker, onDestroy(), this, Factory::resolveWalkerDestroyed );
    }
 }
 
@@ -168,7 +166,7 @@ bool Factory::_mayDeliverGood() const
   return ( getAccessRoads().size() > 0 ) && ( _d->pushers.size() == 0 );
 }
 
-void Factory::resolveWalkerDestroyed( Walker* w )
+void Factory::removeWalker( Walker* w )
 {
   for( Pushers::iterator it=_d->pushers.begin(); it != _d->pushers.end(); it++ )
   {
@@ -533,13 +531,6 @@ FarmMeat::FarmMeat() : Farm(G_MEAT, B_MEAT)
 FarmFruit::FarmFruit() : Farm(G_FRUIT, B_FRUIT)
 {
 }
-
-// FarmFruit* FarmFruit::clone() const
-// {
-//    FarmFruit *res = new FarmFruit(*this);
-//    res->init();
-//    return res;
-// }
 
 
 FarmVegetable::FarmVegetable() : Farm(G_VEGETABLE, B_VEGETABLE)

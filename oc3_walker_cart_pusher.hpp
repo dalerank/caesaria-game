@@ -51,8 +51,8 @@ public:
 
 private:
    GoodStock _stock;
-   Building *_producerBuilding;
-   Building *_consumerBuilding;
+   Building* _producerBuilding;
+   Building* _consumerBuilding;
    Picture *_cartPicture;
    int _maxDistance;
    long _reservationID;

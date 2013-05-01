@@ -77,9 +77,6 @@ public:
    bool isDeleted() const;  // returns true if the walker should be forgotten
    void deleteLater();
 
-oc3_signals public:
-   Signal1< Walker* >& onDestroy();
-
 protected:
    WalkerType _walkerType;
    WalkerGraphicType _walkerGraphic;
