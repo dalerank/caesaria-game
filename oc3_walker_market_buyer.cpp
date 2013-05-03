@@ -49,11 +49,6 @@ MarketBuyer::~MarketBuyer()
   
 }
 
-// MarketBuyer* MarketBuyer::clone() const
-// {
-//    return new MarketBuyer(*this);
-// }
-
 void MarketBuyer::setMarket(Market &market)
 {
    _market = &market;
@@ -108,7 +103,10 @@ void MarketBuyer::computeWalkerDestination()
    }
 
    setIJ(_pathWay.getOrigin().getIJ() );
-   Scenario::instance().getCity().addWalker( *this );
+   WalkerPtr walker( this );
+   walker->drop();
+
+   Scenario::instance().getCity().addWalker( walker );
 }
 
 

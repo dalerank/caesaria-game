@@ -47,8 +47,6 @@ class BuildingActor : public TrainingBuilding
 {
 public:
    BuildingActor();
-   BuildingActor* clone() const;
-
    void deliverTrainee();
 };
 
@@ -56,8 +54,6 @@ class BuildingGladiator : public TrainingBuilding
 {
 public:
    BuildingGladiator();
-   BuildingGladiator* clone() const;
-
    void deliverTrainee();
 };
 
@@ -65,8 +61,6 @@ class BuildingLion : public TrainingBuilding
 {
 public:
    BuildingLion();
-   BuildingLion* clone() const;
-
    void deliverTrainee();
 };
 
@@ -74,8 +68,6 @@ class BuildingChariot : public TrainingBuilding
 {
 public:
    BuildingChariot();
-   BuildingChariot* clone() const;
-
    void deliverTrainee();
 };
 

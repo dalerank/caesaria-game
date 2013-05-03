@@ -36,11 +36,6 @@ Aqueduct::Aqueduct() : Construction( B_AQUEDUCT, Size(1) )
   // land2a 134 - 148       - aqueduct without water
 }
 
-Aqueduct* Aqueduct::clone() const
-{
-  return new Aqueduct(*this);
-}
-
 void Aqueduct::build(const TilePos& pos )
 {
   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
@@ -355,11 +350,6 @@ Reservoir::Reservoir() : Construction( B_RESERVOIR, Size( 3 ) )
   _animation.setOffset( Point( 47, 63 ) );
   _fgPictures.resize(1);
   //_fgPictures[0]=;
-}
-
-Reservoir* Reservoir::clone() const
-{
-  return new Reservoir(*this);
 }
 
 Reservoir::~Reservoir()

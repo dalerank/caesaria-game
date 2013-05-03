@@ -37,12 +37,6 @@ CartPusher::CartPusher()
    _maxDistance = 25;
 }
 
-// CartPusher* CartPusher::clone() const
-// {
-//    return new CartPusher(*this);
-// }
-
-
 void CartPusher::onDestination()
 {
   Walker::onDestination();

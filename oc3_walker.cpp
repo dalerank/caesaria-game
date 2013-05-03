@@ -121,8 +121,8 @@ void Walker::setPathWay(PathWay &pathWay)
    onMidTile();
 }
 
-void Walker::setDestinationIJ(const int i, const int j)
-{
+// void Walker::setDestinationIJ(const TilePos& pos )
+// {
    // Propagator pathPropagator;
    // pathPropagator.init();
    // Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
@@ -134,7 +134,7 @@ void Walker::setDestinationIJ(const int i, const int j)
    // _pathWay.begin();
 
    // onMidTile();
-}
+//}
 
 void Walker::setSpeed(const int speed)
 {
@@ -560,7 +560,10 @@ void ServiceWalker::computeWalkerPath()
    reservePath(*bestPath);
    setPathWay(*bestPath);
    setIJ(_pathWay.getOrigin().getIJ() );
-   Scenario::instance().getCity().addWalker( *this );
+
+   WalkerPtr walker( this );
+   walker->drop();
+   Scenario::instance().getCity().addWalker( walker );
 }
 
 unsigned int ServiceWalker::getReachDistance() const
@@ -775,8 +778,12 @@ void TraineeWalker::computeWalkerPath()
       pathPropagator.getPath(*_destinationBuilding, pathWay);
       setPathWay(pathWay);
       setIJ( _pathWay.getOrigin().getIJ() );
-      Scenario::instance().getCity().addWalker( *this );
+
+      WalkerPtr walker( this );
+      walker->drop();
+
       _destinationBuilding->reserveTrainee(_traineeType);
+      Scenario::instance().getCity().addWalker( walker );
    }
    else
    {

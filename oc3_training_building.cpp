@@ -103,11 +103,6 @@ BuildingActor::BuildingActor() : TrainingBuilding( B_ACTOR, Size(3) )
    _fgPictures.resize(1);
 }
 
-BuildingActor* BuildingActor::clone() const
-{
-   return new BuildingActor(*this);
-}
-
 void BuildingActor::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
@@ -123,11 +118,6 @@ BuildingGladiator::BuildingGladiator() : TrainingBuilding( B_GLADIATOR, Size(3))
    _animation.load(rcEntertaimentGroup, 52, 10);
    _animation.setOffset( Point( 62, 24 ) );
    _fgPictures.resize(1);
-}
-
-BuildingGladiator* BuildingGladiator::clone() const
-{
-   return new BuildingGladiator(*this);
 }
 
 void BuildingGladiator::deliverTrainee()
@@ -148,11 +138,6 @@ BuildingLion::BuildingLion() : TrainingBuilding( B_LION, Size(3) )
    _fgPictures.resize(1);
 }
 
-BuildingLion* BuildingLion::clone() const
-{
-   return new BuildingLion(*this);
-}
-
 void BuildingLion::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
@@ -169,11 +154,6 @@ BuildingChariot::BuildingChariot() : TrainingBuilding( B_CHARIOT, Size(3) )
    _animation.load(rcEntertaimentGroup, 92, 10);
    _animation.setOffset( Point( 54, 23 ));
    _fgPictures.resize(1);
-}
-
-BuildingChariot* BuildingChariot::clone() const
-{
-   return new BuildingChariot(*this);
 }
 
 void BuildingChariot::deliverTrainee()

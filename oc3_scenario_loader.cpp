@@ -403,7 +403,7 @@ void ScenarioLoader::init_entry_exit(std::fstream &f, City &ioCity)
    j = 0;
    f.read((char*)&i, 2);
    f.read((char*)&j, 2);
-   ioCity.setRoadExitIJ(i, size - j - 1);
+   ioCity.setRoadExit( TilePos( i, size - j - 1 ) );
 
    // init boat entry/exit point
    i = 0;

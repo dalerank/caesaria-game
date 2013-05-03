@@ -155,14 +155,6 @@ void Warehouse::init()
    computePictures();
 }
 
-Warehouse* Warehouse::clone() const
-{
-   Warehouse * res = new Warehouse(*this);
-   res->init();
-   return res;
-}
-
-
 void Warehouse::timeStep(const unsigned long time)
 {
    _animation.update( time );

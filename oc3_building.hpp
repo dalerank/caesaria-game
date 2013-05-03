@@ -47,7 +47,6 @@ public:
    bool isDeleted() const;  // returns true if the overlay should be forgotten
    void deleteLater();
    virtual bool isWalkable() const;
-   //virtual LandOverlay* clone() const = 0;
    virtual void setTerrain( TerrainTile &terrain ) = 0;
    virtual void build( const TilePos& pos );
    virtual void destroy();  // handles the walkers
@@ -108,7 +107,6 @@ class Garden : public Construction
 {
 public:
   Garden();
-  //Garden* clone() const;
   void setTerrain(TerrainTile &terrain);  
   bool isWalkable() const;
 };
@@ -117,8 +115,7 @@ class Road : public Construction
 {
 public:
   Road();
-  //Road* clone() const;
-  
+
   virtual Picture& computePicture();
 
   void build(const TilePos& pos );
@@ -207,7 +204,6 @@ class Granary: public WorkingBuilding
 {
 public:
    Granary();
-   Granary* clone() const;
 
    void timeStep(const unsigned long time);
    void computePictures();
@@ -225,7 +221,6 @@ class GovernorsHouse  : public WorkingBuilding
 {
 public:
   GovernorsHouse();
-  GovernorsHouse* clone() const;
   
 //  void serialize(OutputSerialStream &stream);
 //  void unserialize(InputSerialStream &stream);
@@ -235,7 +230,6 @@ class GovernorsVilla  : public WorkingBuilding
 {
 public:
   GovernorsVilla();
-  GovernorsVilla* clone() const;
   
 //  void serialize(OutputSerialStream &stream);
 //  void unserialize(InputSerialStream &stream);
@@ -245,7 +239,6 @@ class GovernorsPalace : public WorkingBuilding
 {
 public:
   GovernorsPalace();
-  GovernorsPalace* clone() const;
   
 //  void serialize(OutputSerialStream &stream);
 //  void unserialize(InputSerialStream &stream);
@@ -256,15 +249,13 @@ class SmallStatue : public Building
 {
 public:
   SmallStatue();
-  SmallStatue* clone() const;
-  
+ 
 };
 
 class MediumStatue : public Building
 {
 public:
   MediumStatue();
-  MediumStatue* clone() const;
   
 };
 
@@ -272,7 +263,6 @@ class BigStatue : public Building
 {
 public:
   BigStatue();
-  BigStatue* clone() const;
   
 };
 
@@ -280,42 +270,36 @@ class Academy : public WorkingBuilding
 {
 public:
   Academy();
-  Academy* clone() const;
 };
 
 class Barracks : public WorkingBuilding
 {
 public:
   Barracks();
-  Barracks* clone() const;
 };
 
 class Shipyard : public Building
 {
 public:
   Shipyard();
-  Shipyard* clone() const;
 };
 
 class TriumphalArch : public Building
 {
 public:
   TriumphalArch();
-  TriumphalArch* clone() const;
 };
 
 class MissionPost : public WorkingBuilding
 {
 public:
   MissionPost();
-  MissionPost* clone() const;
 };
 
 class Dock : public Building
 {
 public:
   Dock();
-  Dock* clone() const;
   void timeStep(const unsigned long time);
 };
 
@@ -332,7 +316,6 @@ class NativeHut : public NativeBuilding
 {
 public:
   NativeHut();
-  NativeHut* clone() const;
   void serialize(OutputSerialStream &stream);
   void unserialize(InputSerialStream &stream);
   //virtual GuiInfoBox* makeInfoBox();  
@@ -342,7 +325,6 @@ class NativeField  : public NativeBuilding
 {
 public:
   NativeField();
-  NativeField* clone() const;  
   void serialize(OutputSerialStream &stream);
   void unserialize(InputSerialStream &stream);
   //virtual GuiInfoBox* makeInfoBox();
@@ -352,7 +334,6 @@ class NativeCenter : public NativeBuilding
 {
 public:
   NativeCenter();
-  NativeCenter* clone() const;  
   void serialize(OutputSerialStream &stream);
   void unserialize(InputSerialStream &stream);
   //virtual GuiInfoBox* makeInfoBox();
@@ -362,21 +343,18 @@ class FortLegionnaire : public Building
 {
 public:  
   FortLegionnaire();
-  FortLegionnaire* clone() const;
 };
 
 class FortJaveline : public Building
 {
 public:  
   FortJaveline();
-  FortJaveline* clone() const;
 };
 
 class FortMounted : public Building
 {
 public:  
   FortMounted();
-  FortMounted* clone() const;
 };
 
 

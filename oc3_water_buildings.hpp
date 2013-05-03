@@ -38,7 +38,6 @@ class Aqueduct : public Construction, public WaterSource
 {
 public:
   Aqueduct();
-  virtual Aqueduct* clone() const;
 
   virtual void build(const TilePos& pos );
   Picture& computePicture();
@@ -56,7 +55,6 @@ class Reservoir : public Construction, public WaterSource
 public:
   Reservoir();
   ~Reservoir();
-  virtual Reservoir* clone() const;
 
   void build(const TilePos& pos );
   bool canBuild(const TilePos& pos ) const;

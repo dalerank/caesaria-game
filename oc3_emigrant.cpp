@@ -23,11 +23,6 @@ Emigrant::Emigrant( City& city ) : Immigrant( city, 5 )
 	_walkerGraphic = WG_PUSHER2;
 }
 
-Emigrant* Emigrant::clone() const
-{
-  return 0;
-}
-
 Picture* Emigrant::getCartPicture()
 {
   if( Immigrant::getCartPicture() == NULL )
@@ -73,11 +68,12 @@ void Emigrant::onNewDirection()
 	setCartPicture( 0 );  // need to get the new graphic
 }
 
-Emigrant* Emigrant::create( City& city, const Road& startPoint )
+EmigrantPtr Emigrant::create( City& city, const Road& startPoint )
 {
-	Emigrant* newEmigrant = new Emigrant( city );
+	EmigrantPtr newEmigrant( new Emigrant( city ) );
+  newEmigrant->drop();
 	newEmigrant->assignPath( startPoint.getTile() );
-  city.addWalker( *newEmigrant );
+  city.addWalker( newEmigrant.as<Walker>() );
 	return newEmigrant;
 }
 

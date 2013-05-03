@@ -559,6 +559,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_predefinitions.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_pushbutton.cpp"
 				>
 			</File>

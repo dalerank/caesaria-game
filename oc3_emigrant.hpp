@@ -18,18 +18,20 @@
 
 #include "oc3_immigrant.hpp"
 
+class Emigrant;
+typedef SmartPtr< Emigrant > EmigrantPtr;
+
 /** This is an immigrant coming with his stuff */
 class Emigrant : public Immigrant
 {
 public:
-	static Emigrant* create( City& city, const Road& startPoint );
+	static EmigrantPtr create( City& city, const Road& startPoint );
 
 	void getPictureList(std::vector<Picture*> &oPics);
 	void onNewDirection();
 
 	~Emigrant();
 protected:
-  virtual Emigrant* clone() const;
   Picture* getCartPicture();
 
 	Emigrant( City& city );

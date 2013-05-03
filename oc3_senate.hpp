@@ -22,8 +22,6 @@ class Senate : public ServiceBuilding
 {
 public:
   Senate();
-  Senate* clone() const;
-
   bool canBuild( const TilePos& pos )const;
 };
 

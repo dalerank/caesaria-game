@@ -29,11 +29,6 @@ BurningRuins::BurningRuins() : ServiceBuilding(S_BURNING_RUINS, B_BURNING_RUINS,
     _fgPictures.resize(1);           
 }
 
-BurningRuins* BurningRuins::clone() const
-{
-    return new BurningRuins(*this);
-}
-
 void BurningRuins::timeStep(const unsigned long time)
 {
     ServiceBuilding::timeStep(time);
@@ -139,9 +134,4 @@ void BurnedRuins::build( const TilePos& pos )
 bool BurnedRuins::isWalkable() const
 {
   return true;
-}
-
-LandOverlay* BurnedRuins::clone() const
-{
-  return 0;
 }

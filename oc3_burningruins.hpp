@@ -22,7 +22,6 @@ class BurningRuins : public ServiceBuilding
 {
 public:
     BurningRuins();
-    BurningRuins* clone() const;
 
     void deliverService();
     void timeStep(const unsigned long time);
@@ -39,7 +38,6 @@ class BurnedRuins : public Building
 {
 public:
   BurnedRuins();
-  LandOverlay* clone() const;
 
   void timeStep(const unsigned long time);
   bool isWalkable() const;

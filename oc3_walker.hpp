@@ -53,7 +53,7 @@ public:
    int getJJ() const;
    void setIJ( const TilePos& pos );
    void setPathWay(PathWay &pathWay);
-   void setDestinationIJ( const int i, const int j );
+   //void setDestinationIJ( const TilePos& pos );
    void setSpeed(const int speed);
    virtual void onNewTile();  // called when the walker is on a new tile
    virtual void onMidTile();  // called when the walker is on the middle of a tile
@@ -110,15 +110,11 @@ private:
    ScopedPtr< Impl > _d;
 };
 
-typedef SmartPtr< Walker > WalkerPtr;
-
 /** Soldier, friend or enemy */
 class Soldier : public Walker
 {
 public:
    Soldier();
-   //virtual Soldier* clone() const;
-
 private:
 
 };
@@ -128,7 +124,6 @@ class ServiceWalker : public Walker
 {
 public:
    ServiceWalker( Building& base, const ServiceType service);
-   //virtual ServiceWalker* clone() const;
    void init(const ServiceType service);
 
    ServiceType getService();
@@ -211,7 +206,6 @@ class TraineeWalker : public Walker
 {
 public:
    TraineeWalker(const WalkerTraineeType traineeType);
-   //virtual TraineeWalker* clone() const;
    void init(const WalkerTraineeType traineeType);
    int getType() const;
 

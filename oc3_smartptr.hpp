@@ -17,6 +17,7 @@
 #define __OPENCAESAR3_SMARTPTR_H_INCLUDE_
 
 #include <cstddef>
+#include "oc3_safetycast.hpp"
 #include "oc3_requirements.hpp"
   
 template<class T> class SmartPtr
@@ -121,7 +122,7 @@ public:
 	{
 		return (obj == aPtr.obj);
 	}
-	
+
 	bool operator!= (const SmartPtr<T> &aPtr)
 	{
 		return (obj != aPtr.obj);
@@ -141,12 +142,23 @@ public:
 	{
 		return (*obj)[index];
 	}
+
+  bool isNull() const
+  {
+    return obj == 0;
+  }
+
+  bool isValid() const
+  {
+    return obj != 0;
+  }
+
 	
   //Conversion operator
 	template<class U>
-	operator SmartPtr<U>() const
+	SmartPtr<U> as() const
 	{
-		SmartPtr<U> newptr = (U*)obj;
+		SmartPtr<U> newptr( safety_cast<U*>(obj) );
 		return newptr;
 	}
 };

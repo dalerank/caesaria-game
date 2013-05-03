@@ -51,15 +51,16 @@ public:
     CityServices services;
     bool needRecomputeAllRoads;
     int taxRate;
+    unsigned long time;  // number of timesteps since start
+    TilePos roadExit;
 };
 
 City::City() : _d( new Impl )
 {
-   _time = 0;
+   _d->time = 0;
    _d->month = 0;
    _d->roadEntry = TilePos( 0, 0 );
-   _roadExitI = 0;
-   _roadExitJ = 0;
+   _d->roadExit = TilePos( 0, 0 );
    _boatEntryI = 0;
    _boatEntryJ = 0;
    _boatExitI = 0;
@@ -91,9 +92,9 @@ City::City() : _d( new Impl )
 void City::timeStep()
 {
   // CALLED 11 time/second
-  _time += 1;
+  _d->time += 1;
 
-  if( _time % 110 == 1 )
+  if( _d->time % 110 == 1 )
   {
      // every X seconds
      _d->month++;
@@ -105,13 +106,13 @@ void City::timeStep()
   {
     try
     {
-      Walker& walker = **walkerIt;
-      walker.timeStep(_time);
+      WalkerPtr walker = *walkerIt;
+      walker->timeStep( _d->time );
 
-      if( walker.isDeleted() )
+      if( walker->isDeleted() )
       {
         // remove the walker from the walkers list  
-        delete *walkerIt;
+        //delete *walkerIt;
         walkerIt = _d->walkerList.erase(walkerIt);       
       }
       else
@@ -131,7 +132,7 @@ void City::timeStep()
   {
     try
     {   
-      (*overlayIt)->timeStep(_time);
+      (*overlayIt)->timeStep(_d->time);
 
       if( (*overlayIt)->isDeleted() )
       {
@@ -155,7 +156,7 @@ void City::timeStep()
   CityServices::iterator serviceIt=_d->services.begin();
   while( serviceIt != _d->services.end() )
   {
-    (*serviceIt)->update( _time );
+    (*serviceIt)->update( _d->time );
 
     if( (*serviceIt)->isDeleted() )
     {
@@ -196,18 +197,16 @@ void City::monthStep()
    _d->onMonthChangedSignal.emit( _d->month );
 }
 
-City::Walkers City::getWalkerList( const WalkerType type )
+Walkers City::getWalkerList( const WalkerType type )
 {
 	Walkers res;
 
-	Walker* walker = 0;
+	WalkerPtr walker;
 	for (Walkers::iterator itWalker = _d->walkerList.begin(); itWalker != _d->walkerList.end(); ++itWalker )
 	{
-		// for each walker
-		walker = *itWalker;
-		if( walker && (walker->getType() == type || WT_ALL == type ) )
+		if( (*itWalker)->getType() == type || WT_ALL == type )
 		{
-			res.push_back(walker);
+			res.push_back( *itWalker );
 		}
 	}
 
@@ -221,7 +220,7 @@ std::list<LandOverlay*>& City::getOverlayList()
 
 unsigned long City::getTime()
 {
-   return _time;
+   return _d->time;
 }
 
 std::list<LandOverlay*> City::getBuildingList(const BuildingType buildingType)
@@ -248,8 +247,6 @@ Tilemap& City::getTilemap()
    return _tilemap;
 }
 
-unsigned int City::getRoadExitI() const  { return _roadExitI;  }
-unsigned int City::getRoadExitJ() const  { return _roadExitJ;  }
 unsigned int City::getBoatEntryI() const { return _boatEntryI; }
 unsigned int City::getBoatEntryJ() const { return _boatEntryJ; }
 unsigned int City::getBoatExitI() const  { return _boatExitI;  }
@@ -267,13 +264,11 @@ void City::setRoadEntry( const TilePos& pos )
                            math::clamp<unsigned int>( pos.getJ(), 0, size - 1 ) );
 }
 
-void City::setRoadExitIJ(unsigned int i, unsigned int j)
+void City::setRoadExit( const TilePos& pos )
 {
   int size = getTilemap().getSize();
-  i = math::clamp<unsigned int>( i, 0, size - 1 );
-  j = math::clamp<unsigned int>( j, 0, size - 1 );
-  _roadExitI  = i;
-  _roadExitJ  = j;
+  _d->roadExit.setI( math::clamp<unsigned int>( pos.getI(), 0, size - 1 ) );
+  _d->roadExit.setJ( math::clamp<unsigned int>( pos.getJ(), 0, size - 1 ) );
 }
 
 void City::setBoatEntryIJ(unsigned int i, unsigned int j)
@@ -457,14 +452,14 @@ void City::serialize(OutputSerialStream &stream)
    // std::cout << "WRITE CITY @" << stream.tell() << std::endl;
    stream.write_int( _d->roadEntry.getI(), 2, 0, 1000);
    stream.write_int( _d->roadEntry.getJ(), 2, 0, 1000);
-   stream.write_int(_roadExitI, 2, 0, 1000);
-   stream.write_int(_roadExitJ, 2, 0, 1000);
+   stream.write_int( _d->roadExit.getI(), 2, 0, 1000);
+   stream.write_int( _d->roadExit.getJ(), 2, 0, 1000);
    stream.write_int(_boatEntryI, 2, 0, 1000);
    stream.write_int(_boatEntryJ, 2, 0, 1000);
    stream.write_int(_boatExitI, 2, 0, 1000);
    stream.write_int(_boatExitJ, 2, 0, 1000);
    stream.write_int((int) _climate, 2, 0, C_MAX);
-   stream.write_int(_time, 4, 0, 1000000);
+   stream.write_int(_d->time, 4, 0, 1000000);
    stream.write_int(_d->funds, 4, 0, 1000000);
    stream.write_int(_d->population, 4, 0, 1000000);
 
@@ -473,8 +468,7 @@ void City::serialize(OutputSerialStream &stream)
    for (Walkers::iterator itWalker = _d->walkerList.begin(); itWalker != _d->walkerList.end(); ++itWalker)
    {
       // std::cout << "WRITE WALKER @" << stream.tell() << std::endl;
-      Walker &walker = **itWalker;
-      walker.serialize(stream);
+      (*itWalker)->serialize(stream);
    }
 
    // overlays
@@ -497,14 +491,14 @@ void City::unserialize(InputSerialStream &stream)
    // std::cout << "READ CITY @" << stream.tell() << std::endl;
    _d->roadEntry.setI( stream.read_int(2, 0, 1000) );
    _d->roadEntry.setJ( stream.read_int(2, 0, 1000) );
-   _roadExitI = stream.read_int(2, 0, 1000);
-   _roadExitJ = stream.read_int(2, 0, 1000);
+   _d->roadExit.setI( stream.read_int(2, 0, 1000) );
+   _d->roadExit.setJ( stream.read_int(2, 0, 1000) );
    _boatEntryI = stream.read_int(2, 0, 1000);
    _boatEntryJ = stream.read_int(2, 0, 1000);
    _boatExitI = stream.read_int(2, 0, 1000);
    _boatExitJ = stream.read_int(2, 0, 1000);
    _climate = (ClimateType) stream.read_int(2, 0, 1000);
-   _time = stream.read_int(4, 0, 1000000);
+   _d->time = stream.read_int(4, 0, 1000000);
    _d->funds = stream.read_int(4, 0, 1000000);
    _d->population = stream.read_int(4, 0, 1000000);
 
@@ -544,7 +538,7 @@ TilePos City::getRoadEntry() const
 
 TilePos City::getRoadExitIJ() const
 {
-  return TilePos( _roadExitI, _roadExitJ );
+  return _d->roadExit;
 }
 
 City::~City()
@@ -571,14 +565,14 @@ Signal1<int>& City::onMonthChanged()
   return _d->onMonthChangedSignal;
 }
 
-void City::addWalker( Walker& walker )
+void City::addWalker( WalkerPtr walker )
 {
-  _d->walkerList.push_back( &walker );
+  _d->walkerList.push_back( walker );
 }
 
-void City::removeWalker( Walker& walker )
+void City::removeWalker( WalkerPtr walker )
 {
-  _d->walkerList.remove( &walker );
+  _d->walkerList.remove( walker );
 }
 
 void City::setCameraStartIJ(const unsigned int i, const unsigned int j) {_cameraStartI = i; _cameraStartJ = j;}

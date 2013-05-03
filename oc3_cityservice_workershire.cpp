@@ -15,7 +15,7 @@ class CityServiceWorkersHire::Impl
 {
 public:
   Priorities priorities;
-  City::Walkers hrInCity;
+  Walkers hrInCity;
 };
 
 CityServicePtr CityServiceWorkersHire::create( City& city )
@@ -35,9 +35,10 @@ CityServiceWorkersHire::CityServiceWorkersHire( City& city )
 
 bool CityServiceWorkersHire::_haveHr( WorkingBuilding* building )
 {
-  for( City::Walkers::iterator it=_d->hrInCity.begin(); it != _d->hrInCity.end(); it++ )
+  for( Walkers::iterator it=_d->hrInCity.begin(); it != _d->hrInCity.end(); it++ )
   {
-    if( WorkersHunter* hr = safety_cast< WorkersHunter* >(*it) )
+    SmartPtr<WorkersHunter> hr = (*it).as<WorkersHunter>();
+    if( hr.isValid() )
     {
       if( &hr->getBase() == building )
         return true;

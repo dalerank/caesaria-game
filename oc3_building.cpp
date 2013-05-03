@@ -819,12 +819,6 @@ Granary::Granary() : WorkingBuilding( B_GRANARY, Size(3) )
    computePictures();
 }
 
-Granary* Granary::clone() const
-{
-   return new Granary(*this);
-}
-
-
 void Granary::timeStep(const unsigned long time)
 {
    _animation.update( time );
@@ -923,11 +917,6 @@ BigStatue::BigStatue() : Building( B_STATUE3, Size(3))
   setPicture( Picture::load(rcGovernmentGroup, 3));
 }
 
-MissionPost*  MissionPost::clone()  const { return new MissionPost(*this);  }
-SmallStatue*  SmallStatue::clone()  const { return new SmallStatue(*this);  }
-MediumStatue* MediumStatue::clone() const { return new MediumStatue(*this); }
-BigStatue*    BigStatue::clone()    const { return new BigStatue(*this);    }
-
 GovernorsHouse::GovernorsHouse() : WorkingBuilding( B_GOVERNOR_HOUSE, Size(3) )
 {
   setMaxWorkers(5);
@@ -949,10 +938,6 @@ GovernorsPalace::GovernorsPalace() : WorkingBuilding(B_GOVERNOR_PALACE, Size( 5 
   setPicture(Picture::load(rcHousingGroup, 48));
 }
 
-GovernorsHouse*  GovernorsHouse::clone()  const { return new GovernorsHouse(*this);  }
-GovernorsVilla*  GovernorsVilla::clone()  const { return new GovernorsVilla(*this);  }
-GovernorsPalace* GovernorsPalace::clone() const { return new GovernorsPalace(*this); }
-
 Academy::Academy() : WorkingBuilding( B_MILITARY_ACADEMY, Size(3) )
 {
   setMaxWorkers( 20 );
@@ -967,9 +952,6 @@ Barracks::Barracks() : WorkingBuilding( B_BARRACKS, Size( 3 ) )
   setPicture(PicLoader::instance().get_picture(ResourceGroup::security, 17));
 }
 
-Academy*  Academy::clone()  const { return new Academy(*this);  }
-Barracks* Barracks::clone() const { return new Barracks(*this); }
-
 NativeBuilding::NativeBuilding( const BuildingType type, const Size& size ) 
 : Building( type, size )
 {
@@ -983,11 +965,6 @@ void NativeBuilding::unserialize(InputSerialStream &stream) {Building::unseriali
 GuiInfoBox* NativeBuilding::makeInfoBox( Widget* parent )
 {
   return new GuiBuilding( parent, *this);
-}
-
-NativeHut* NativeHut::clone() const
-{
-  return new NativeHut(*this);
 }
 
 NativeHut::NativeHut() : NativeBuilding( B_NATIVE_HUT, Size(1) )
@@ -1009,11 +986,6 @@ void NativeCenter::serialize(OutputSerialStream &stream)  {Building::serialize(s
 
 void NativeCenter::unserialize(InputSerialStream &stream) {Building::unserialize(stream);}
 
-NativeCenter* NativeCenter::clone() const
-{
-  return new NativeCenter(*this);
-}
-
 NativeField::NativeField() : NativeBuilding( B_NATIVE_FIELD, Size(1) ) 
 {
   setPicture(Picture::load(ResourceGroup::commerce, 13));  
@@ -1023,20 +995,10 @@ void NativeField::serialize(OutputSerialStream &stream) {Building::serialize(str
 
 void NativeField::unserialize(InputSerialStream &stream) {Building::unserialize(stream);}
 
-NativeField* NativeField::clone() const
-{
-  return new NativeField(*this);
-}
-
 Shipyard::Shipyard() : Building( B_SHIPYARD, Size(2) )
 {
   setPicture( Picture::load("transport", 1));
   // also transport 2 3 4 check position of river on map
-}
-
-Shipyard* Shipyard::clone() const
-{
-   return new Shipyard(*this);
 }
 
 // dock pictures
@@ -1065,12 +1027,6 @@ void Dock::timeStep(const unsigned long time)
   _fgPictures.at(0) = _animation.getCurrentPicture(); 
 }
 
-
-Dock* Dock::clone() const
-{
-   return new Dock(*this);
-}
-
 // second arch pictures is land3a 45 + 46	
 
 TriumphalArch::TriumphalArch() : Building( B_TRIUMPHAL_ARCH, Size(3) )
@@ -1083,13 +1039,6 @@ TriumphalArch::TriumphalArch() : Building( B_TRIUMPHAL_ARCH, Size(3) )
   _fgPictures.at(0) = _animation.getCurrentPicture(); 
 }
 
-TriumphalArch* TriumphalArch::clone() const
-{
-   return new TriumphalArch(*this);
-}
-
-
-
 FortLegionnaire::FortLegionnaire() : Building( B_FORT_LEGIONNAIRE, Size(3) )
 {
   setPicture( Picture::load(ResourceGroup::security, 12));
@@ -1098,11 +1047,6 @@ FortLegionnaire::FortLegionnaire() : Building( B_FORT_LEGIONNAIRE, Size(3) )
   logo -> set_offset(80,10);
   _fgPictures.resize(1);
   _fgPictures.at(0) = logo;  
-}
-
-FortLegionnaire* FortLegionnaire::clone() const
-{
-   return new FortLegionnaire(*this);
 }
 
 FortMounted::FortMounted() : Building( B_FORT_MOUNTED, Size(3) )
@@ -1115,11 +1059,6 @@ FortMounted::FortMounted() : Building( B_FORT_MOUNTED, Size(3) )
   _fgPictures.at(0) = logo;
 }
 
-FortMounted* FortMounted::clone() const
-{
-   return new FortMounted(*this);
-}
-
 FortJaveline::FortJaveline() : Building( B_FORT_JAVELIN, Size(3) )
 {
   setPicture( Picture::load(ResourceGroup::security, 12));
@@ -1129,9 +1068,4 @@ FortJaveline::FortJaveline() : Building( B_FORT_JAVELIN, Size(3) )
   logo -> set_offset(80,10);
   _fgPictures.resize(1);
   _fgPictures.at(0) = logo;  
-}
-
-FortJaveline* FortJaveline::clone() const
-{
-   return new FortJaveline(*this);
 }

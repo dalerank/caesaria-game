@@ -20,8 +20,7 @@
 #define FACTORY_BUILDING_HPP
 
 #include "oc3_building.hpp"
-
-class Walker;
+#include "oc3_predefinitions.hpp"
 
 class Factory: public WorkingBuilding
 {
@@ -45,9 +44,10 @@ public:
    void serialize(OutputSerialStream &stream);
    void unserialize(InputSerialStream &stream);
 
-   void removeWalker( Walker* w );
+   void removeWalker( WalkerPtr w );
 protected:
    virtual bool _mayDeliverGood() const;
+   void _addWalker( WalkerPtr );
 
 protected:
    GoodType _inGoodType;
@@ -76,7 +76,6 @@ class FactoryTimber : public Factory
 {
 public:
    FactoryTimber();
-   //FactoryTimber* clone() const;
    bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
 };
 
@@ -84,7 +83,6 @@ class FactoryIron : public Factory
 {
 public:
    FactoryIron();
-   //FactoryIron* clone() const;
    bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
 };
 
@@ -92,35 +90,30 @@ class FactoryWeapon : public Factory
 {
 public:
    FactoryWeapon();
-   //FactoryWeapon* clone() const;
 };
 
 class FactoryFurniture : public Factory
 {
 public:
    FactoryFurniture();
-   //virtual FactoryFurniture* clone() const;
 };
 
 class FactoryWine : public Factory
 {
 public:
    FactoryWine();
-   //virtual FactoryWine* clone() const;
 };
 
 class FactoryOil : public Factory
 {
 public:
    FactoryOil();
-   //virtual FactoryOil* clone() const;
 };
 
 class FactoryPottery : public Factory
 {
 public:
    FactoryPottery();
-   //virtual FactoryPottery* clone() const;
 };
 
 
@@ -158,49 +151,42 @@ class FarmWheat : public Farm
 {
 public:
    FarmWheat();
-   //virtual FarmWheat* clone() const;
 };
 
 class FarmOlive : public Farm
 {
 public:
    FarmOlive();
-   //virtual FarmOlive* clone() const;
 };
 
 class FarmGrape : public Farm
 {
 public:
    FarmGrape();
-   //virtual FarmGrape* clone() const;
 };
 
 class FarmMeat : public Farm
 {
 public:
    FarmMeat();
-   //virtual FarmMeat* clone() const;
 };
 
 class FarmFruit : public Farm
 {
 public:
    FarmFruit();
-   //virtual FarmFruit* clone() const;
 };
 
 class FarmVegetable : public Farm
 {
 public:
   FarmVegetable();
-  //virtual FarmVegetable* clone() const;
 };
 
 class Wharf : public Factory
 {
 public:
   Wharf();
-  //Wharf* clone() const;
   virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
 };
 

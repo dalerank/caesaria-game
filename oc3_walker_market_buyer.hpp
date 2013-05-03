@@ -30,8 +30,6 @@ public:
    MarketBuyer();
    virtual ~MarketBuyer();
    
-   //MarketBuyer *clone() const;
-
    void setMarket(Market &_market);
    void start();
    virtual void onDestination();

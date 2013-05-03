@@ -185,24 +185,25 @@ void GuiTilemap::drawTilemap()
 
        std::vector<Picture*> pictureList;
 
-       City::Walkers walkerList = _city->getWalkerList( WT_ALL );
-       for( City::Walkers::iterator itWalker =  walkerList.begin();
+       Walkers walkerList = _city->getWalkerList( WT_ALL );
+       for( Walkers::iterator itWalker =  walkerList.begin();
              itWalker != walkerList.end(); ++itWalker)
        {
           // for each walker
-          Walker &anim = **itWalker;
-          int zAnim = anim.getJ() - anim.getI();
+          WalkerPtr anim = *itWalker;
+          int zAnim = anim->getIJ().getZ();// getJ() - anim.getI();
           if (zAnim > z && zAnim <= z+1)
           {
              pictureList.clear();
-             anim.getPictureList(pictureList);
+             anim->getPictureList( pictureList );
              for( std::vector<Picture*>::iterator picIt = pictureList.begin(); picIt != pictureList.end(); ++picIt )
              {
                 if (*picIt == NULL)
                 {
                    continue;
                 }
-                engine.drawPicture( **picIt, 2*(anim.getII()+anim.getJJ())+mOffset.getX(), anim.getII()-anim.getJJ()+mOffset.getY());
+                engine.drawPicture( **picIt, 2*(anim->getII()+anim->getJJ())+mOffset.getX(), 
+                                    anim->getII()-anim->getJJ()+mOffset.getY());
              }
           }
        }

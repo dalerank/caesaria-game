@@ -37,11 +37,6 @@ Immigrant::Immigrant( City& city, const unsigned char peoples ) : _d( new Impl )
   _d->city = &city;
 }
 
-Immigrant* Immigrant::clone() const
-{
-  return 0;
-}
-
 void Immigrant::assignPath( Tile& startPoint )
 {
   House* blankHouse = _findBlankHouse();
@@ -130,12 +125,14 @@ void Immigrant::onDestination()
   }
 }
 
-Immigrant* Immigrant::create( City& city, const Building& startPoint,
+ImmigrantPtr Immigrant::create( City& city, const Building& startPoint,
                               const unsigned char peoples )
 {
-  Immigrant* newImmigrant = new Immigrant( city, peoples );
+  ImmigrantPtr newImmigrant( new Immigrant( city, peoples ) );
+  newImmigrant->drop();
   newImmigrant->assignPath( startPoint.getTile() );
-  city.addWalker( *newImmigrant );
+
+  city.addWalker( newImmigrant.as<Walker>() );
   return newImmigrant;
 }
 
