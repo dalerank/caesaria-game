@@ -21,6 +21,7 @@
 
 #include <iostream>
 #include <algorithm>
+
 #include "oc3_scenario.hpp"
 #include "oc3_walker.hpp"
 #include "oc3_exception.hpp"
