@@ -44,7 +44,7 @@ public:
 
    virtual void timeStep(const unsigned long time);  // performs one simulation step
    virtual int getType() const;
-   virtual Walker* clone() const = 0;
+   //virtual Walker* clone() const = 0;
 
    // position and movement
    int getI() const;

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-22 20:37+0200\n"
+"POT-Creation-Date: 2013-05-06 02:13+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -106,108 +106,109 @@ msgid "Marbre"
 msgstr ""
 
 #: oc3_gui_info_box.cpp:195 oc3_gui_info_box.cpp:386 oc3_gui_info_box.cpp:503
-#: oc3_gui_info_box.cpp:590
+#: oc3_gui_info_box.cpp:590 oc3_gui_info_box.cpp:199 oc3_gui_info_box.cpp:390
+#: oc3_gui_info_box.cpp:507 oc3_gui_info_box.cpp:594
 #, c-format
 msgid "%d employes (%d requis)"
 msgstr ""
 
-#: oc3_gui_info_box.cpp:236
+#: oc3_gui_info_box.cpp:236 oc3_gui_info_box.cpp:240
 #, c-format
 msgid "Aucun percepteur ne passe ici. Ne paye pas de taxes"
 msgstr ""
 
-#: oc3_gui_info_box.cpp:241
+#: oc3_gui_info_box.cpp:241 oc3_gui_info_box.cpp:245
 #, c-format
 msgid "Paye %d Denarii de taxes par mois"
 msgstr ""
 
-#: oc3_gui_info_box.cpp:248
+#: oc3_gui_info_box.cpp:248 oc3_gui_info_box.cpp:252
 #, c-format
 msgid "Inhabitants didn't report about crimes"
 msgstr "Les habitants n'ont pas signalés de crimes"
 
-#: oc3_gui_info_box.cpp:261
+#: oc3_gui_info_box.cpp:261 oc3_gui_info_box.cpp:265
 msgid ""
 "Inabitants of tents provide food themselves, conducting a subsistence economy"
 msgstr ""
 "Les habitants de tentes fournissent de la nourriture pour eux-mêmes, en "
 "réalisant une économie de subsistance"
 
-#: oc3_gui_info_box.cpp:290
+#: oc3_gui_info_box.cpp:290 oc3_gui_info_box.cpp:294
 #, c-format
 msgid "%d citizens, additional rooms for %d"
 msgstr "%d citoyens, place additionel disponible pour %d"
 
-#: oc3_gui_info_box.cpp:295
+#: oc3_gui_info_box.cpp:295 oc3_gui_info_box.cpp:299
 #, c-format
 msgid "%d citizens"
 msgstr "%d citoyens"
 
-#: oc3_gui_info_box.cpp:300
+#: oc3_gui_info_box.cpp:300 oc3_gui_info_box.cpp:304
 #, c-format
 msgid "%d citizens, %d habitants en trop"
 msgstr "%d citoyens, %d habitants en trop"
 
-#: oc3_gui_info_box.cpp:343
+#: oc3_gui_info_box.cpp:343 oc3_gui_info_box.cpp:347
 #, c-format
 msgid "Le travail est a %d%% termine."
 msgstr ""
 
-#: oc3_gui_info_box.cpp:354
+#: oc3_gui_info_box.cpp:354 oc3_gui_info_box.cpp:358
 #, c-format
 msgid "%s en stock: %d unites"
 msgstr ""
 
-#: oc3_gui_info_box.cpp:474
+#: oc3_gui_info_box.cpp:474 oc3_gui_info_box.cpp:478
 #, c-format
 msgid "%d unites en stock. Espace pour %d unites."
 msgstr ""
 
-#: oc3_gui_info_box.cpp:646
+#: oc3_gui_info_box.cpp:646 oc3_gui_info_box.cpp:650
 msgid "##trees_and_forest_caption"
 msgstr ""
 
-#: oc3_gui_info_box.cpp:647
+#: oc3_gui_info_box.cpp:647 oc3_gui_info_box.cpp:651
 msgid "##trees_and_forest_text"
 msgstr ""
 
-#: oc3_gui_info_box.cpp:651
+#: oc3_gui_info_box.cpp:651 oc3_gui_info_box.cpp:655
 msgid "##water_caption"
 msgstr ""
 
-#: oc3_gui_info_box.cpp:652
+#: oc3_gui_info_box.cpp:652 oc3_gui_info_box.cpp:656
 msgid "##water_text"
 msgstr ""
 
-#: oc3_gui_info_box.cpp:656
+#: oc3_gui_info_box.cpp:656 oc3_gui_info_box.cpp:660
 msgid "##rock_caption"
 msgstr ""
 
-#: oc3_gui_info_box.cpp:657
+#: oc3_gui_info_box.cpp:657 oc3_gui_info_box.cpp:661
 msgid "##rock_text"
 msgstr ""
 
-#: oc3_gui_info_box.cpp:661
+#: oc3_gui_info_box.cpp:661 oc3_gui_info_box.cpp:665
 msgid "##road_caption"
 msgstr ""
 
-#: oc3_gui_info_box.cpp:662
+#: oc3_gui_info_box.cpp:662 oc3_gui_info_box.cpp:666
 msgid "##road_text"
 msgstr ""
 
-#: oc3_gui_info_box.cpp:666
+#: oc3_gui_info_box.cpp:666 oc3_gui_info_box.cpp:670
 msgid "##clear_land_caption"
 msgstr ""
 
-#: oc3_gui_info_box.cpp:667
+#: oc3_gui_info_box.cpp:667 oc3_gui_info_box.cpp:671
 msgid "##clear_land_text"
 msgstr ""
 
-#: oc3_gui_info_box.cpp:702
+#: oc3_gui_info_box.cpp:702 oc3_gui_info_box.cpp:706
 msgid "##freehouse_caption"
 msgstr ""
 
-#: oc3_gui_info_box.cpp:703
+#: oc3_gui_info_box.cpp:703 oc3_gui_info_box.cpp:707
 msgid "##freehouse_text"
 msgstr ""
 
