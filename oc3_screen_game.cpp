@@ -110,17 +110,17 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
 
 TilemapArea& ScreenGame::getMapArea()
 {
-   return _mapArea;
+  return _mapArea;
 }
 
 void ScreenGame::setScenario(Scenario &scenario)
 {
-   _scenario = &scenario;
-   City& city = scenario.getCity();
-   Tilemap& tilemap = city.getTilemap();
+  _scenario = &scenario;
+  City& city = scenario.getCity();
+  Tilemap& tilemap = city.getTilemap();
 
-   _mapArea.init(tilemap);
-   _guiTilemap.init(city, _mapArea, this);
+  _mapArea.init(tilemap);
+  _guiTilemap.init(city, _mapArea, this);
 }
 
 void ScreenGame::drawTilemap()
@@ -136,13 +136,13 @@ void ScreenGame::drawInterface()
 
 void ScreenGame::draw()
 {
-   drawTilemap();
-   drawInterface();
+  drawTilemap();
+  drawInterface();
 }
 
 void ScreenGame::afterFrame()
 {
-   _scenario->getCity().timeStep();
+  _scenario->getCity().timeStep();
 }
 
 void ScreenGame::handleEvent( NEvent& event )
