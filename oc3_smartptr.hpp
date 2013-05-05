@@ -101,7 +101,7 @@ public:
   	
 	SmartPtr& operator= (const SmartPtr<T> &aPtr)
 	{
-  		referenceObject(aPtr.obj);
+		referenceObject(aPtr.obj);
 		return *this;
 	}
 	
@@ -161,6 +161,14 @@ public:
 		SmartPtr<U> newptr( safety_cast<U*>(obj) );
 		return newptr;
 	}
+
+  template<class U>
+  bool is() const
+  {
+    U* tmp = safety_cast<U*>(obj);
+    return ( tmp != 0 );
+  }
+
 };
 
 #endif //__OPENCAESAR3_SMARTPTR_H_INCLUDE_

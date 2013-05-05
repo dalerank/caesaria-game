@@ -36,14 +36,12 @@ public:
 
    // compute the destination to fetch the given good
    void computeWalkerDestination();
-   Warehouse* getWalkerDestination_warehouse(Propagator &pathPropagator, PathWay &oPathWay);
-   Granary* getWalkerDestination_granary(Propagator &pathPropagator, PathWay &oPathWay);
 
    void serialize(OutputSerialStream &stream);
    void unserialize(InputSerialStream &stream);
 
 private:
-   Building *_destBuilding;  // granary or warehouse
+   BuildingPtr _destBuilding;  // granary or warehouse
    GoodType _priorityGood;
    Market *_market;
    SimpleGoodStore _basket;

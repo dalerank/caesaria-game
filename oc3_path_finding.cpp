@@ -540,9 +540,9 @@ bool Propagator::getPath(Road &destination, PathWay &oPathWay)
 }
 
 
-bool Propagator::getPath(Building& destination, PathWay &oPathWay)
+bool Propagator::getPath( BuildingPtr destination, PathWay &oPathWay)
 {
-   const std::list<Tile*>& destTiles = destination.getAccessRoads();
+   const std::list<Tile*>& destTiles = destination->getAccessRoads();
    std::map<Tile*, PathWay>::iterator mapIt;
    std::set<PathWay> destPath;  // paths to the destination building, ordered by distance
    int distance = 30;
@@ -585,27 +585,28 @@ bool Propagator::getPath(Building& destination, PathWay &oPathWay)
    }
 }
 
-void Propagator::getReachedBuildings(const BuildingType buildingType, std::map<Building*, PathWay> &oPathWayList)
+void Propagator::getReachedBuildings(const BuildingType buildingType, ReachedBuldings& oPathWayList)
 {
    // init the building list
-   std::list<Building*> buildingList;
-   std::list<LandOverlay*> overlayList = _city->getBuildingList(buildingType);
-   for (std::list<LandOverlay*>::iterator overlayIt= overlayList.begin(); overlayIt!= overlayList.end(); ++overlayIt)
+   Buildings buildingList;
+   LandOverlays overlayList = _city->getBuildingList(buildingType);
+   for ( LandOverlays::iterator overlayIt= overlayList.begin(); overlayIt!= overlayList.end(); ++overlayIt)
    {
-      LandOverlay* overlay= *overlayIt;
-      Building* building= dynamic_cast<Building*>(overlay);
-      buildingList.push_back(building);
+      LandOverlayPtr overlay= *overlayIt;
+      BuildingPtr building= overlay.as<Building>();
+      if( building.isValid() )
+        buildingList.push_back(building);
    }
 
-   for (std::list<Building*>::iterator itDest = buildingList.begin(); itDest != buildingList.end(); ++itDest)
+   for ( Buildings::iterator itDest = buildingList.begin(); itDest != buildingList.end(); ++itDest)
    {
       // for each destination building
-      Building &destination = **itDest;
+      BuildingPtr destination = *itDest;
 
       std::set<PathWay> destPath;  // paths to the current building, ordered by distance
 
-      std::list<Tile*> destTiles= destination.getAccessRoads();
-      for (std::list<Tile*>::iterator itTile= destTiles.begin(); itTile != destTiles.end(); ++itTile)
+      PtrTilesList destTiles= destination->getAccessRoads();
+      for( PtrTilesList::iterator itTile= destTiles.begin(); itTile != destTiles.end(); ++itTile)
       {
          // for each destination tile
          Tile &tile= **itTile;
@@ -625,10 +626,9 @@ void Propagator::getReachedBuildings(const BuildingType buildingType, std::map<B
       {
          // there is a path to that destination
          const PathWay& bestPath = *destPath.begin();
-         oPathWayList.insert(std::make_pair(&destination, bestPath));
+         oPathWayList.insert( std::make_pair( destination, bestPath) );
       }
    }
-
 }
 
 void Propagator::getAllPaths(const int maxDistance, std::list<PathWay> &oPathWayList)
@@ -659,12 +659,12 @@ void Propagator::getAllPaths(const int maxDistance, std::list<PathWay> &oPathWay
          // std::cout << "Propagation from tile " << tile.getI() << ", " << tile.getJ() << std::endl;
 
          // propagate to neighbour tiles
-         const std::list<Tile*> accessTiles = _tilemap->getRectangle( tile.getIJ() + TilePos( -1, -1 ), 
+         const PtrTilesList accessTiles = _tilemap->getRectangle( tile.getIJ() + TilePos( -1, -1 ), 
                                                                       tile.getIJ() + TilePos( 1, 1 ), _allDirections);
 
          // nextTiles = accessTiles - alreadyProcessedTiles
-         std::list<Tile*> nextTiles;
-         for (std::list<Tile*>::const_iterator itTile = accessTiles.begin(); itTile!=accessTiles.end(); ++itTile)
+         PtrTilesList nextTiles;
+         for( PtrTilesList::const_iterator itTile = accessTiles.begin(); itTile!=accessTiles.end(); ++itTile)
          {
             // for every neighbour tile
             Tile &tile2 = **itTile;

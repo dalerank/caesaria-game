@@ -29,8 +29,8 @@ public:
   PrefectAction action;
 };
 
-WalkerPrefect::WalkerPrefect( ServiceBuilding& building, int water )
-: ServiceWalker( building, S_PREFECT ), _d( new Impl )
+WalkerPrefect::WalkerPrefect( ServiceBuildingPtr building, int water )
+: ServiceWalker( building.as<Building>(), S_PREFECT ), _d( new Impl )
 {
   setMaxDistance( 10 );
   _d->water = water;
@@ -43,14 +43,15 @@ void WalkerPrefect::onNewTile()
   Walker::onNewTile();
 }
 
-bool WalkerPrefect::_looks4Fire( std::set<Building*>& buildings, TilePos& pos )
+bool WalkerPrefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, TilePos& pos )
 {
   buildings = getReachedBuildings( getIJ() );
 
-  for( std::set<Building*>::const_iterator itBuilding = buildings.begin(); 
+  for( ServiceWalker::ReachedBuildings::const_iterator itBuilding = buildings.begin(); 
     itBuilding != buildings.end(); ++itBuilding)
   {
-    if( BurningRuins* bruins = safety_cast< BurningRuins* >( *itBuilding ) )
+    SmartPtr< BurningRuins > bruins = ( *itBuilding ).as<BurningRuins>();
+    if( bruins.isValid() )
     {
       pos = bruins->getTile().getIJ();
       return true;
@@ -60,11 +61,11 @@ bool WalkerPrefect::_looks4Fire( std::set<Building*>& buildings, TilePos& pos )
   return false;
 }
 
-void WalkerPrefect::_checkPath2NearestFire( const std::set<Building*>& buildings )
+void WalkerPrefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
 {
   PathWay bestPath;
   int minLength = 9999;
-  for( std::set<Building*>::const_iterator itBuilding = buildings.begin(); 
+  for( ReachedBuildings::const_iterator itBuilding = buildings.begin(); 
        itBuilding != buildings.end(); ++itBuilding)
   {
     if( (*itBuilding)->getType() != B_BURNING_RUINS )
@@ -96,7 +97,7 @@ void WalkerPrefect::onDestination()
 
 void WalkerPrefect::_back2Prefecture()
 {
-  bool pathFound = Pathfinder::getInstance().getPath( getIJ(), getBase().getTile().getIJ(),
+  bool pathFound = Pathfinder::getInstance().getPath( getIJ(), getBase()->getTile().getIJ(),
     _pathWay, false, Size( 0 ) );
 
   if( !pathFound )
@@ -115,7 +116,7 @@ void WalkerPrefect::_back2Prefecture()
 
 void WalkerPrefect::onMidTile()
 {
-  std::set<Building*> reachedBuildings;
+  ReachedBuildings reachedBuildings;
   TilePos firePos;
   bool haveBurningRuinsNear = _looks4Fire( reachedBuildings, firePos );  
   bool isDestination = _pathWay.isDestination();
@@ -137,10 +138,10 @@ void WalkerPrefect::onMidTile()
       }
       else
       {
-        for( std::set<Building*>::iterator itBuilding = reachedBuildings.begin(); 
+        for( ReachedBuildings::iterator itBuilding = reachedBuildings.begin(); 
              itBuilding != reachedBuildings.end(); ++itBuilding)
         {
-          (*itBuilding)->applyService(*this);
+          (*itBuilding)->applyService( ServiceWalkerPtr( this ) );
         }
       }
 
@@ -166,7 +167,8 @@ void WalkerPrefect::onMidTile()
       {
         deleteLater();
 
-        if( BuildingPrefect* prefecture = safety_cast< BuildingPrefect* >( &getBase() ) )
+        BuildingPrefectPtr prefecture = getBase().as<BuildingPrefect>();
+        if( prefecture.isValid() )
         {
           prefecture->removeWalker( this );
         }
@@ -182,8 +184,9 @@ void WalkerPrefect::onMidTile()
     {
       if( _pathWay.getDestination().getIJ().distanceFrom( getIJ() ) < 1.5f )
       {
-        BurningRuins* bruins = safety_cast< BurningRuins* >( _pathWay.getDestination().get_terrain().getOverlay() );
-        if( bruins )
+        LandOverlayPtr overlay = _pathWay.getDestination().get_terrain().getOverlay();
+        BurningRuinsPtr bruins = overlay.as<BurningRuins>();
+        if( bruins.isValid() )
         {
           _d->action = Impl::fightFire;     
           _walkerGraphic = WG_PREFECT_FIGHTS_FIRE;
@@ -224,12 +227,14 @@ void WalkerPrefect::timeStep(const unsigned long time)
   if( _d->action == Impl::fightFire )
   {    
     setSpeed( 0 );
-    BurningRuins* bruins = safety_cast< BurningRuins* >( _pathWay.getDestination().get_terrain().getOverlay() );
-    if( bruins )
+    LandOverlayPtr overlay = _pathWay.getDestination().get_terrain().getOverlay();
+    BurningRuinsPtr bruins = overlay.as<BurningRuins>(); 
+    if( bruins.isValid() )
     {
-      const float beforeFight = bruins->evaluateService( *this );
-      bruins->applyService( *this );
-      const float afterFight = bruins->evaluateService( *this );
+      ServiceWalkerPtr ptr( this );
+      const float beforeFight = bruins->evaluateService( ptr );
+      bruins->applyService( ptr );
+      const float afterFight = bruins->evaluateService( ptr );
       _d->water -= math::clamp( (int)(beforeFight - afterFight), 0, 100 );
 
       if( afterFight == 0)
@@ -237,7 +242,7 @@ void WalkerPrefect::timeStep(const unsigned long time)
     }
 
     //we catch fire, check near tiles for other burning ruins
-    if( 0 == bruins || 0 == _d->water )
+    if( bruins.isNull() || 0 == _d->water )
     {
       _walkerGraphic = WG_PREFECT_DRAG_WATER;
       _d->action = Impl::gotoFire;  

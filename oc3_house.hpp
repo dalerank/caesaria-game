@@ -32,16 +32,14 @@ public:
 
    void timeStep(const unsigned long time);
 
-   virtual GuiInfoBox* makeInfoBox( Widget* parent );
-
    SimpleGoodStore& getGoodStore();
 
    // return the current house level
    HouseLevelSpec& getLevelSpec();
 
-   virtual void applyService(ServiceWalker &walker);
-   virtual float evaluateService(ServiceWalker &walker);
-   virtual void buyMarket(ServiceWalker &walker);
+   virtual void applyService(ServiceWalkerPtr walker);
+   virtual float evaluateService(ServiceWalkerPtr walker);
+   virtual void buyMarket(ServiceWalkerPtr walker);
 
    bool hasServiceAccess(const ServiceType service);
    int getServiceAccess(const ServiceType service);
@@ -77,6 +75,13 @@ private:
 
    void _update();
 };
+
+//operator need for std::set
+inline bool operator<(HousePtr v1, HousePtr v2)
+{
+  return v1.object() < v2.object();
+}
+
 
 
 #endif

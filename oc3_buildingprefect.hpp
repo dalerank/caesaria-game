@@ -33,4 +33,6 @@ private:
   TilePos _fireDetect;
 };
 
+typedef SmartPtr< BuildingPrefect > BuildingPrefectPtr;
+
 #endif

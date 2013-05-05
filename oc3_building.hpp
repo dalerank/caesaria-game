@@ -29,11 +29,12 @@
 #include "oc3_good.hpp"
 #include "oc3_scopedptr.hpp"
 #include "oc3_animation.hpp"
+#include "oc3_referencecounted.hpp"
 
 class Widget;
 class GuiInfoBox;
 
-class LandOverlay : public Serializable
+class LandOverlay : public Serializable, public ReferenceCounted
 {
 public:
    LandOverlay( const BuildingType type, const Size& size=Size(1));
@@ -64,7 +65,7 @@ public:
    void setType(const BuildingType buildingType);
 
    void serialize(OutputSerialStream &stream);
-   static LandOverlay& unserialize_all(InputSerialStream &stream);
+   static LandOverlayPtr unserialize_all(InputSerialStream &stream);
    void unserialize(InputSerialStream &stream);
 
 protected:
@@ -117,6 +118,7 @@ public:
   Road();
 
   virtual Picture& computePicture();
+  void updatePicture();
 
   void build(const TilePos& pos );
   void setTerrain(TerrainTile &terrain);
@@ -143,11 +145,11 @@ public:
    virtual void timeStep(const unsigned long time);
    virtual void storeGoods(GoodStock &stock, const int amount = -1);
    // evaluate the given service
-   virtual float evaluateService(ServiceWalker &walker);
+   virtual float evaluateService(ServiceWalkerPtr walker);
    // handle service reservation
    void reserveService(const ServiceType service);
    void cancelService(const ServiceType service);
-   virtual void applyService(ServiceWalker &walker);
+   virtual void applyService( ServiceWalkerPtr walker);
    // evaluate the need for the given trainee
    virtual float evaluateTrainee(const WalkerTraineeType traineeType);  // returns >0 if trainee is needed
    void reserveTrainee(const WalkerTraineeType traineeType); // trainee will come
@@ -171,6 +173,12 @@ protected:
    std::map<WalkerTraineeType, int> _traineeMap;  // current level of trainees working in the building (0..200)
    std::set<WalkerTraineeType> _reservedTrainees;  // a trainee is on the way
 };
+
+//operator need for std::set
+inline bool operator<(BuildingPtr v1, BuildingPtr v2)
+{
+  return v1.object() < v2.object();
+}
 
 
 /** Building where people work */

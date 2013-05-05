@@ -22,10 +22,10 @@ class WaterSource;
 class Aqueduct;
 class Reservoir;
 
-class WaterSource
+class WaterSource : public Construction
 {
 public:
-  WaterSource() {_north = NULL; _east = NULL; _south = NULL; _west = NULL;}
+  WaterSource( const BuildingType type, const Size& size );
   
   virtual void updateAqueducts() = 0;
   virtual void link(Aqueduct&) = 0;
@@ -34,7 +34,7 @@ public:
   WaterSource *_north, *_east, *_south, *_west; // public is bad...
 };
 
-class Aqueduct : public Construction, public WaterSource
+class Aqueduct : public WaterSource
 {
 public:
   Aqueduct();
@@ -50,7 +50,7 @@ public:
   virtual void destroy();
 };
 
-class Reservoir : public Construction, public WaterSource
+class Reservoir : public WaterSource
 {
 public:
   Reservoir();

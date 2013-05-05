@@ -24,7 +24,7 @@
 #include <ctime>
 
 #include "oc3_scenario.hpp"
-#include "oc3_walker.hpp"
+#include "oc3_servicewalker.hpp"
 #include "oc3_walker_market_buyer.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_gui_info_box.hpp"
@@ -96,9 +96,9 @@ void ServiceBuilding::destroy()
 void ServiceBuilding::deliverService()
 {
    // make a service walker and send him to his wandering
-   ServiceWalker *walker = new ServiceWalker(*this,_service);
-   walker->start();
-   _addWalker( walker );
+  ServiceWalkerPtr serviceman = ServiceWalker::create( BuildingPtr( this ),_service);
+  serviceman->send2City();
+  _addWalker( serviceman.as<Walker>() );
 }
 
 int ServiceBuilding::getServiceRange() const
@@ -163,12 +163,13 @@ BuildingWell::BuildingWell() : ServiceBuilding(S_WELL, B_WELL, Size(1) )
 
 void BuildingWell::deliverService()
 {
-   ServiceWalker walker( *this, getService());
-   std::set<Building*> reachedBuildings = walker.getReachedBuildings( getTile().getIJ() );
-   for (std::set<Building*>::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
-   {
-      (*itBuilding)->applyService(walker);
-   }
+  ServiceWalkerPtr walker = ServiceWalker::create( BuildingPtr( this ), getService());
+  ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( getTile().getIJ() );
+  for( ServiceWalker::ReachedBuildings::iterator itBuilding = reachedBuildings.begin(); 
+       itBuilding != reachedBuildings.end(); ++itBuilding)
+  {
+     (*itBuilding)->applyService( walker );
+  }
 }
 
 BuildingFountain::BuildingFountain() : ServiceBuilding(S_FOUNTAIN, B_FOUNTAIN, Size(1))
@@ -206,13 +207,12 @@ BuildingFountain::BuildingFountain() : ServiceBuilding(S_FOUNTAIN, B_FOUNTAIN, S
 
 void BuildingFountain::deliverService()
 {
-   ServiceWalker walker( *this, getService());
-   std::set<Building*> reachedBuildings = walker.getReachedBuildings( getTile().getIJ() );
-   for (std::set<Building*>::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
-   {
-      Building &building = **itBuilding;
-      building.applyService(walker);
-   }
+  ServiceWalkerPtr walker = ServiceWalker::create( BuildingPtr( this ), getService());
+  ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( getTile().getIJ() );
+  for( ServiceWalker::ReachedBuildings::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
+  {
+    (*itBuilding)->applyService( walker );
+  }
 }
 
 EntertainmentBuilding::EntertainmentBuilding(const ServiceType service, 

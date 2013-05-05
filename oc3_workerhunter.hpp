@@ -16,19 +16,20 @@
 #ifndef __OPENCAESAR3_WORKERSHUNTER_H_INCLUDE_
 #define __OPENCAESAR3_WORKERSHUNTER_H_INCLUDE_
 
-#include "oc3_walker.hpp"
+#include "oc3_servicewalker.hpp"
 
 class WorkersHunter : public ServiceWalker
 {
 public:
-    WorkersHunter( WorkingBuilding& building, const int workersNeeded );
+  static ServiceWalkerPtr create( WorkingBuildingPtr building, const int workersNeeded );
 
-    int getWorkersNeeded() const;
-
-    void onNewTile();
-    void hireWorkers( const int workers );
+  int getWorkersNeeded() const;
+  void onNewTile();
+  void hireWorkers( const int workers );
 private:
-    int _workersNeeded;
+  WorkersHunter( WorkingBuildingPtr building, const int workersNeeded );
+
+  int _workersNeeded;
 };
 
 #endif//__OPENCAESAR3_WORKERSHUNTER_H_INCLUDE_

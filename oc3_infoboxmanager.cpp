@@ -50,7 +50,7 @@ InfoBoxManager::~InfoBoxManager()
 
 void InfoBoxManager::showHelp( Tile* tile )
 {
-    LandOverlay* overlay = tile->get_terrain().getOverlay();
+    LandOverlayPtr overlay = tile->get_terrain().getOverlay();
     GuiInfoBox* infoBox = 0;
 
     if( _d->showDebugInfo )
@@ -58,26 +58,31 @@ void InfoBoxManager::showHelp( Tile* tile )
       std::cout << "Tile debug info: dsrbl=" << tile->get_terrain().getDesirability() << std::endl; 
     }
 
-    if( !overlay )
+    if( overlay.isNull() )
     {
         const TerrainTile& terrain = tile->get_terrain();
         infoBox = new InfoBoxLand( _d->gui->getRootWidget(), tile );
     }
     else
     {
-        if( Road* road = safety_cast< Road* >( overlay ) )
+      SmartPtr< Road > road = overlay.as<Road>();
+      if( road.isValid() )
+      {
+        infoBox = new InfoBoxLand( _d->gui->getRootWidget(), tile );        
+      }
+      
+      HousePtr house = overlay.as<House>();
+      if( house.isValid() )
+      {
+        if( house->getNbHabitants() > 0 )
         {
-            infoBox = new InfoBoxLand( _d->gui->getRootWidget(), tile );
+          infoBox = new InfoBoxHouse( _d->gui->getRootWidget(), house );
         }
-        else if( House* house = safety_cast< House* >( overlay ) )
+        else
         {
-            if( house->getNbHabitants() > 0 )
-                infoBox = new InfoBoxHouse( _d->gui->getRootWidget(), *house );
-            else
-            {
-                infoBox = new InfoBoxFreeHouse( _d->gui->getRootWidget(), tile );
-            }
+          infoBox = new InfoBoxFreeHouse( _d->gui->getRootWidget(), tile );
         }
+      }
     }
     
     if( infoBox  )

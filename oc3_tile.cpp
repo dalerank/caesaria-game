@@ -15,6 +15,7 @@
 
 #include "oc3_tile.hpp"
 #include "oc3_exception.hpp"
+#include "oc3_building.hpp"
 
 Tile::Tile(const int i, const int j)
 {
@@ -47,7 +48,11 @@ void Tile::set_picture(Picture *picture)
 
 Picture& Tile::get_picture() const
 {
-  if (_picture==NULL) THROW("error: picture is null");
+  if( _picture==NULL ) 
+  {
+    THROW("error: picture is null");
+  }
+
   return *_picture;
 }
 

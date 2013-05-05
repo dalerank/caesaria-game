@@ -4,8 +4,7 @@
 #include "oc3_cityservice.hpp"
 #include "oc3_scopedptr.hpp"
 #include "oc3_enums.hpp"
-
-class WorkingBuilding;
+#include "oc3_predefinitions.hpp"
 
 class CityServiceWorkersHire : public CityService
 {
@@ -17,7 +16,7 @@ private:
   CityServiceWorkersHire( City& city );
 
   void _hireByType( const BuildingType type );
-  bool _haveHr( WorkingBuilding* building );
+  bool _haveHr( WorkingBuildingPtr building );
  
   class Impl;
   ScopedPtr< Impl > _d;

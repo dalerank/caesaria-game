@@ -17,7 +17,7 @@
 #include "oc3_pic_loader.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_positioni.hpp"
-#include "oc3_walker.hpp"
+#include "oc3_servicewalker.hpp"
 
 BurningRuins::BurningRuins() : ServiceBuilding(S_BURNING_RUINS, B_BURNING_RUINS, Size(1) )
 {
@@ -100,16 +100,16 @@ bool BurningRuins::isWalkable() const
   return (_fireLevel == 0);
 }
 
-float BurningRuins::evaluateService( ServiceWalker &walker )
+float BurningRuins::evaluateService( ServiceWalkerPtr walker )
 {
   return _fireLevel;
 }
 
-void BurningRuins::applyService(ServiceWalker &walker)
+void BurningRuins::applyService(ServiceWalkerPtr walker)
 {
-  if ( S_PREFECT == walker.getService() )
+  if ( S_PREFECT == walker->getService() )
   {
-    _fireLevel = math::clamp<float>( _fireLevel - walker.getServiceValue(), 0.f, 100.f );
+    _fireLevel = math::clamp<float>( _fireLevel - walker->getServiceValue(), 0.f, 100.f );
   }
 }
 

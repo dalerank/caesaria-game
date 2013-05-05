@@ -17,6 +17,7 @@
 #define __OPENCAESAR3_EMIGRANT_H_INCLUDE_
 
 #include "oc3_immigrant.hpp"
+#include "oc3_predefinitions.hpp"
 
 class Emigrant;
 typedef SmartPtr< Emigrant > EmigrantPtr;
@@ -25,7 +26,7 @@ typedef SmartPtr< Emigrant > EmigrantPtr;
 class Emigrant : public Immigrant
 {
 public:
-	static EmigrantPtr create( City& city, const Road& startPoint );
+	static EmigrantPtr create( City& city, const RoadPtr startPoint );
 
 	void getPictureList(std::vector<Picture*> &oPics);
 	void onNewDirection();

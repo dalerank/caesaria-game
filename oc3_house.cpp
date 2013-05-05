@@ -107,12 +107,6 @@ void House::timeStep(const unsigned long time)
        Building::timeStep( time );
 }
 
-GuiInfoBox* House::makeInfoBox( Widget* parent )
-{
-  return new InfoBoxHouse( parent, *this);
-}
-
-
 SimpleGoodStore& House::getGoodStore()
 {
    return _goodStore;
@@ -151,7 +145,8 @@ void House::levelUp()
             break;
          }
 
-         if( House* house = safety_cast< House* >( (*it)->get_terrain().getOverlay() ) )
+         HousePtr house = (*it)->get_terrain().getOverlay().as<House>();
+         if( house.isValid() )
          {
            if( house->getSize() > 1 )  //bigger house near, can't grow
            {
@@ -178,7 +173,8 @@ void House::levelUp()
          delIt++; //don't remove himself
          for( ; delIt != tiles.end(); delIt++ )
          {
-           if( House* house = safety_cast< House* >( (*delIt)->get_terrain().getOverlay() ) )
+           HousePtr house = (*delIt)->get_terrain().getOverlay().as<House>();
+           if( house.isValid() )
            {
               house->deleteLater();
               sumHabitants += house->getNbHabitants();
@@ -272,11 +268,12 @@ void House::levelDown()
    _update();
 }
 
-void House::buyMarket(ServiceWalker &walker)
+void House::buyMarket( ServiceWalkerPtr walker)
 {
    // std::cout << "House buyMarket" << std::endl;
-   Market* market = safety_cast<Market*>( &walker.getBase() );
+   SmartPtr< Market > market = walker->getBase().as<Market>();
    GoodStore& marketStore = market->getGoodStore();
+
    SimpleGoodStore &houseStore = getGoodStore();
    for (int i = 0; i < G_MAX; ++i)
    {
@@ -295,11 +292,11 @@ void House::buyMarket(ServiceWalker &walker)
    }
 }
 
-void House::applyService(ServiceWalker& walker)
+void House::applyService( ServiceWalkerPtr walker )
 {
   Building::applyService(walker);  // handles basic services, and remove service reservation
 
-  ServiceType service = walker.getService();
+  ServiceType service = walker->getService();
   switch (service)
   {
   case S_WELL:
@@ -333,23 +330,26 @@ void House::applyService(ServiceWalker& walker)
   case S_MAX:
     break;
   case S_WORKERS_HUNTER:
-    if( !_freeWorkersCount )
-      break;
-
-    if( WorkersHunter* hunter = safety_cast< WorkersHunter* >( &walker ) )
     {
-        int hiredWorkers = math::clamp( _freeWorkersCount, 0, hunter->getWorkersNeeded() );
-        _freeWorkersCount -= hiredWorkers;
-        hunter->hireWorkers( hiredWorkers );
+      if( !_freeWorkersCount )
+        break;
+
+      SmartPtr< WorkersHunter > hunter = walker.as<WorkersHunter>();
+      if( hunter.isValid() )
+      {
+          int hiredWorkers = math::clamp( _freeWorkersCount, 0, hunter->getWorkersNeeded() );
+          _freeWorkersCount -= hiredWorkers;
+          hunter->hireWorkers( hiredWorkers );
+      }
     }
   break;
   }
 }
 
-float House::evaluateService(ServiceWalker &walker)
+float House::evaluateService(ServiceWalkerPtr walker)
 {
    float res = 0.0;
-   ServiceType service = walker.getService();
+   ServiceType service = walker->getService();
    if (_reservedServices.count(service) == 1)
    {
       // service is already reserved
@@ -371,7 +371,7 @@ float House::evaluateService(ServiceWalker &walker)
 
    case S_MARKET:
      {
-       Market* market = safety_cast<Market*>( &walker.getBase());
+       SmartPtr< Market > market = walker->getBase().as<Market>();
        GoodStore &marketStore = market->getGoodStore();
        SimpleGoodStore &houseStore = getGoodStore();
        for (int i = 0; i < G_MAX; ++i)

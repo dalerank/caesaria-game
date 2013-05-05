@@ -24,11 +24,11 @@ void CityServiceEmigrant::update( const unsigned int time )
   
   unsigned int vacantPop=0;
 
-  City::LandOverlays houses = _city.getBuildingList(B_HOUSE);
-  for( City::LandOverlays::iterator itHouse = houses.begin(); itHouse != houses.end(); ++itHouse )
+  LandOverlays houses = _city.getBuildingList(B_HOUSE);
+  for( LandOverlays::iterator itHouse = houses.begin(); itHouse != houses.end(); ++itHouse )
   {
-    House* house = safety_cast<House*>(*itHouse);
-    if( house && house->getAccessRoads().size() > 0 )
+    HousePtr house = (*itHouse).as<House>();
+    if( house.isValid() && house->getAccessRoads().size() > 0 )
     {
       vacantPop += house->getMaxHabitants() - house->getNbHabitants();
     }
@@ -47,10 +47,10 @@ void CityServiceEmigrant::update( const unsigned int time )
   }
 
   Tile& roadTile = _city.getTilemap().at( _city.getRoadEntry() );
-  Road* roadEntry = safety_cast< Road* >( roadTile.get_terrain().getOverlay() );
+  SmartPtr< Road > roadEntry = roadTile.get_terrain().getOverlay().as<Road>();
 
-  if( roadEntry )
+  if( roadEntry.isValid() )
   {
-    Emigrant::create( _city, *roadEntry );
+    Emigrant::create( _city, roadEntry );
   }    
 }

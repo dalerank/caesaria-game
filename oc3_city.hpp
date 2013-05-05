@@ -36,7 +36,6 @@ class TilePos;
 class City : public Serializable
 {
 public:
-  typedef std::list< LandOverlay* > LandOverlays;
    City();
    ~City();
 
@@ -135,14 +134,15 @@ public:
   CityHelper( City& city ) : _city( city ) {}
 
   template< class T >
-  std::list< T > getBuildings( const BuildingType type )
+  std::list< SmartPtr< T > > getBuildings( const BuildingType type )
   {
-    std::list< T > ret;
-    City::LandOverlays buildings = _city.getBuildingList( type );
-    for( City::LandOverlays::iterator it = buildings.begin(); 
+    std::list< SmartPtr< T > > ret;
+    LandOverlays buildings = _city.getBuildingList( type );
+    for( LandOverlays::iterator it = buildings.begin(); 
           it != buildings.end(); it++  )
     {
-      if( T b = safety_cast< T >( *it ) )
+      SmartPtr< T > b = (*it).as<T>();
+      if( b.isValid() )
       {
         ret.push_back( b );
       }

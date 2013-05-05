@@ -68,11 +68,11 @@ void Emigrant::onNewDirection()
 	setCartPicture( 0 );  // need to get the new graphic
 }
 
-EmigrantPtr Emigrant::create( City& city, const Road& startPoint )
+EmigrantPtr Emigrant::create( City& city, const RoadPtr startPoint )
 {
 	EmigrantPtr newEmigrant( new Emigrant( city ) );
   newEmigrant->drop();
-	newEmigrant->assignPath( startPoint.getTile() );
+	newEmigrant->assignPath( startPoint->getTile() );
   city.addWalker( newEmigrant.as<Walker>() );
 	return newEmigrant;
 }

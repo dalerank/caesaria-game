@@ -29,10 +29,10 @@ class CartPusher : public Walker
 public:
    CartPusher();
 
-   void setProducerBuilding(Building &building);
-   void setConsumerBuilding(Building &building);
-   Building &getProducerBuilding();
-   Building &getConsumerBuilding();
+   void setProducerBuilding( BuildingPtr building );
+   void setConsumerBuilding( BuildingPtr building );
+   BuildingPtr getProducerBuilding();
+   BuildingPtr getConsumerBuilding();
    void setStock(const GoodStock &stock);
 
    Picture& getCartPicture();
@@ -43,16 +43,16 @@ public:
    void start();
 
    void computeWalkerDestination();
-   Building* getWalkerDestination_factory(Propagator &pathPropagator, PathWay &oPathWay);
-   Warehouse* getWalkerDestination_warehouse(Propagator &pathPropagator, PathWay &oPathWay);
-   Granary* getWalkerDestination_granary(Propagator &pathPropagator, PathWay &oPathWay);
+   BuildingPtr getWalkerDestination_factory(Propagator &pathPropagator, PathWay &oPathWay);
+   BuildingPtr getWalkerDestination_warehouse(Propagator &pathPropagator, PathWay &oPathWay);
+   BuildingPtr getWalkerDestination_granary(Propagator &pathPropagator, PathWay &oPathWay);
    
    void timeStep(const unsigned long time);
 
 private:
    GoodStock _stock;
-   Building* _producerBuilding;
-   Building* _consumerBuilding;
+   BuildingPtr _producerBuilding;
+   BuildingPtr _consumerBuilding;
    Picture *_cartPicture;
    int _maxDistance;
    long _reservationID;

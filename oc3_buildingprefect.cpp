@@ -61,7 +61,7 @@ void BuildingPrefect::deliverService()
   if( getWorkers() > 0 && _getWalkerList().size() == 0 )
   {
     bool fireDetect = _fireDetect.getI() >= 0;
-    SmartPtr< WalkerPrefect > walker( new WalkerPrefect( *this, fireDetect ? 200 : 0 ) );
+    SmartPtr< WalkerPrefect > walker( new WalkerPrefect( ServiceBuildingPtr( this ), fireDetect ? 200 : 0 ) );
     walker->drop();//delete automatically
 
     bool patrol = true;
@@ -83,7 +83,7 @@ void BuildingPrefect::deliverService()
     
     if( patrol )
     {
-      walker->start();
+      walker->send2City();
     }
 
     _addWalker( walker.as<Walker>() );

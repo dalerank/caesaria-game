@@ -22,7 +22,7 @@
 #include <iostream>
 #include <algorithm>
 #include "oc3_scenario.hpp"
-#include "oc3_walker.hpp"
+#include "oc3_servicewalker.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_gui_info_box.hpp"
 #include "oc3_building_data.hpp"
@@ -182,17 +182,17 @@ void LandOverlay::serialize(OutputSerialStream &stream)
   stream.write_int(getTile().getJ(), 2, 0, 1000);
 }
 
-LandOverlay& LandOverlay::unserialize_all(InputSerialStream &stream)
+LandOverlayPtr LandOverlay::unserialize_all(InputSerialStream &stream)
 {
   int objectID = stream.read_objectID();
   BuildingType buildingType = (BuildingType) stream.read_int(1, 0, B_MAX);
   int i = stream.read_int(2, 0, 1000);
   int j = stream.read_int(2, 0, 1000);
-  LandOverlay *res = ConstructionManager::getInstance().create( buildingType );
+  ConstructionPtr res = ConstructionManager::getInstance().create( buildingType );
   res->_master_tile = &Scenario::instance().getCity().getTilemap().at(i, j);
   res->unserialize(stream);
-  stream.link(objectID, res);
-  return *res;
+  stream.link( objectID, res.object() );
+  return res.as<LandOverlay>();
 }
 
 void LandOverlay::unserialize(InputSerialStream &stream)
@@ -391,22 +391,23 @@ Road::Road() : Construction( B_ROAD, Size(1) )
 void Road::build(const TilePos& pos )
 {
     Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-    LandOverlay* saveOverlay = tilemap.at( pos ).get_terrain().getOverlay();
+    LandOverlayPtr overlay = tilemap.at( pos ).get_terrain().getOverlay();
 
     Construction::build( pos );
     setPicture(computePicture());
 
-    if( Aqueduct* aqua = safety_cast< Aqueduct* >( saveOverlay ) )
+    if( overlay.is<Aqueduct>() )
     {
-        aqua->build( pos );
+        overlay->build( pos );
         return;
     }
 
   // update adjacent roads
-  for (std::list<Tile*>::iterator itTile = _accessRoads.begin(); itTile != _accessRoads.end(); ++itTile)
+  for( std::list<Tile*>::iterator itTile = _accessRoads.begin(); 
+      itTile != _accessRoads.end(); ++itTile)
   {
-    Road* road = safety_cast< Road* >( (*itTile)->get_terrain().getOverlay() ); // let's think: may here different type screw up whole program?
-    if( road )
+    SmartPtr< Road > road = (*itTile)->get_terrain().getOverlay().as<Road>(); // let's think: may here different type screw up whole program?
+    if( road.isValid() )
     {
         road->computeAccessRoads();
         road->setPicture(road->computePicture());
@@ -415,12 +416,11 @@ void Road::build(const TilePos& pos )
   // NOTE: also we need to update accessRoads for adjacent building
   // how to detect them if MaxDistance2Road can be any
   // so let's recompute accessRoads for every _building_
-  std::list<LandOverlay*> list = Scenario::instance().getCity().getOverlayList(); // it looks terrible!!!!
-  for (std::list<LandOverlay*>::iterator itOverlay = list.begin(); itOverlay!=list.end(); ++itOverlay)
+  LandOverlays list = Scenario::instance().getCity().getOverlayList(); // it looks terrible!!!!
+  for (LandOverlays::iterator itOverlay = list.begin(); itOverlay!=list.end(); ++itOverlay)
   {
-    LandOverlay *overlay = *itOverlay;
-    Building *construction = dynamic_cast<Building*>(overlay);
-    if (construction != NULL) // if NULL then it ISN'T building
+    BuildingPtr construction = (*itOverlay).as<Building>();
+    if( construction.isValid() ) // if not valid then it isn't building
     {
       construction->computeAccessRoads();
     }
@@ -437,10 +437,7 @@ bool Road::canBuild(const TilePos& pos ) const
     Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
     TerrainTile& terrain = tilemap.at( pos ).get_terrain();
 
-    if( safety_cast< Aqueduct* >( terrain.getOverlay() ) != 0 )
-        return true;
-
-    return false;
+    return terrain.getOverlay().is<Aqueduct>();
 }
 
 
@@ -531,6 +528,11 @@ bool Road::isWalkable() const
   return true;
 }
 
+void Road::updatePicture()
+{
+  setPicture( computePicture() );
+}
+
 Building::Building(const BuildingType type, const Size& size )
 : Construction( type, size )
 {
@@ -600,10 +602,10 @@ void Building::storeGoods(GoodStock &stock, const int amount)
    THROW("This building should not store any goods");
 }
 
-float Building::evaluateService(ServiceWalker &walker)
+float Building::evaluateService(ServiceWalkerPtr walker)
 {
    float res = 0.0;
-   ServiceType service = walker.getService();
+   ServiceType service = walker->getService();
    if (_reservedServices.count(service) == 1)
    {
       // service is already reserved
@@ -635,11 +637,11 @@ void Building::cancelService(const ServiceType service)
    _reservedServices.erase(service);
 }
 
-void Building::applyService(ServiceWalker &walker)
+void Building::applyService( ServiceWalkerPtr walker)
 {
    // std::cout << "apply service" << std::endl;
    // remove service reservation
-   ServiceType service = walker.getService();
+   ServiceType service = walker->getService();
    _reservedServices.erase(service);
 
    switch( service )

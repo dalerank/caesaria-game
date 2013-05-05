@@ -35,6 +35,7 @@
 #include "oc3_safetycast.hpp"
 #include "oc3_signals.hpp"
 #include "oc3_scopedptr.hpp"
+#include "oc3_predefinitions.hpp"
 
 class Walker : public Serializable, public ReferenceCounted
 {
@@ -65,7 +66,7 @@ public:
    DirectionType getDirection();
 
    void serialize(OutputSerialStream &stream);
-   static Walker& unserialize_all(InputSerialStream &stream);
+   static WalkerPtr unserialize_all(InputSerialStream &stream);
    void unserialize(InputSerialStream &stream);
 
    // graphic
@@ -118,116 +119,5 @@ public:
 private:
 
 };
-
-/** This walker gives a service to buildings along the road */
-class ServiceWalker : public Walker
-{
-public:
-   ServiceWalker( Building& base, const ServiceType service);
-   void init(const ServiceType service);
-
-   ServiceType getService();
-   Building& getBase();
-
-   void computeWalkerPath();
-   void start();
-   virtual float getServiceValue() const;
-   virtual void onDestination();
-   virtual void onNewTile();  // called when the walker is on a new tile
-
-   // evaluates the service demand on the given pathWay
-   float evaluatePath(PathWay &pathWay);
-   void reservePath(PathWay &pathWay);
-   std::set<Building*> getReachedBuildings(const TilePos& pos );
-
-   virtual unsigned int getReachDistance() const;
-
-   void setMaxDistance( const int distance );
-
-   void serialize(OutputSerialStream &stream);
-   void unserialize(InputSerialStream &stream);
-
-private:
-   ServiceType _service;
-   Building* _base;
-   int _maxDistance;
-};
-
-class ServiceWalkerHelper
-{
-public:
-  ServiceWalkerHelper( ServiceWalker& walker )
-    : _walker( walker )
-  {
-
-  }
-
-  std::set< Building* > getReachedBuildings( const TilePos& pos, const BuildingType type )
-  {
-    std::set<Building*> res = _walker.getReachedBuildings( pos );
-
-    std::set<Building*>::iterator it=res.begin();
-    while( it != res.end() )
-    {
-      if( (*it)->getType() != type )
-      {
-        res.erase( it++ );
-      }
-      else
-      {
-        it++;
-      }
-    }
-  }
-
-  template< class T > 
-  std::set< T > getReachedBuildings( const TilePos& pos )
-  {
-    std::set<Building*> buildings = _walker.getReachedBuildings( pos );
-    
-    std::set<T> ret;        
-    for( std::set<Building*>::iterator it=buildings.begin(); it != buildings.end(); it++ )
-    {
-      if( T building = safety_cast<T>( *it ) )
-      {
-        ret.insert( building );
-      }
-    }
-
-    return ret;
-  }
-
-private:
-  ServiceWalker& _walker;
-};
-
-/** This walker goes to work */
-class TraineeWalker : public Walker
-{
-public:
-   TraineeWalker(const WalkerTraineeType traineeType);
-   void init(const WalkerTraineeType traineeType);
-   int getType() const;
-
-   void checkDestination(const BuildingType buildingType, Propagator &pathPropagator);
-   void start();
-   void setOriginBuilding(Building &building);
-   void computeWalkerPath();
-
-   virtual void onDestination();
-
-   void serialize(OutputSerialStream &stream);
-   void unserialize(InputSerialStream &stream);
-
-private:
-   WalkerTraineeType _traineeType;
-   Building *_originBuilding;
-   Building *_destinationBuilding;
-   int _maxDistance;
-
-   std::list<BuildingType> _buildingNeed;  // list of buildings needing this trainee
-   float _maxNeed;  // evaluates the need for that trainee
-};
-
 
 #endif

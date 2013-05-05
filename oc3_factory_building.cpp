@@ -120,7 +120,7 @@ void Factory::deliverGood()
      CartPusherPtr walker( new CartPusher() );
      walker->drop(); //destroy walker automatically, when it not needed anyone
      walker->setStock(stock);
-     walker->setProducerBuilding(*this);
+     walker->setProducerBuilding( SmartPtr< Building >( this ) );
      walker->start();
      _progress -= 100.f;
 

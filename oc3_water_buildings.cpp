@@ -24,7 +24,7 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_safetycast.hpp"
 
-Aqueduct::Aqueduct() : Construction( B_AQUEDUCT, Size(1) )
+Aqueduct::Aqueduct() : WaterSource( B_AQUEDUCT, Size(1) )
 {
   setPicture( Picture::load( ResourceGroup::aqueduct, 133) ); // default picture for aqueduct
   // land2a 119 120         - aqueduct over road
@@ -41,8 +41,9 @@ void Aqueduct::build(const TilePos& pos )
   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
   TerrainTile& terrain = tilemap.at( pos ).get_terrain();
 
-  // we can't build on plazas
-  if( dynamic_cast<Aqueduct*>( terrain.getOverlay() ) != 0 )
+  // we can't build if already have aqueduct here
+  SmartPtr<Aqueduct> aqueveduct = terrain.getOverlay().as<Aqueduct>();
+  if( aqueveduct.isNull() )
         return;
 
   Construction::build( pos );
@@ -64,10 +65,10 @@ void Aqueduct::link(Aqueduct& target)
   else if ((i == oppi + 1) && (j == oppj)) { _west = &target;  target._east = this;}
   else if ((i == oppi) && (j == oppj + 1)) { _south = &target; target._north = this;}
   
-  setPicture(computePicture());
+  setPicture( computePicture() );
 }
 
-void Aqueduct::link(Reservoir& target)
+void Aqueduct::link( Reservoir& target )
 {
   // check target coordinates and compare with our coords
   int i = getTile().getI();
@@ -148,9 +149,11 @@ void Aqueduct::updateAqueducts()
                                                 !Tilemap::checkCorners );
   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {
-    Tile* tile = *itTiles;
-    WaterSource* ws = dynamic_cast<WaterSource*>(tile->get_terrain().getOverlay());
-    if (ws != NULL) ws->link(*this);
+    SmartPtr< WaterSource > ws = (*itTiles)->get_terrain().getOverlay().as<WaterSource>();
+    if( ws.isValid() ) 
+    {
+      ws->link(*this);
+    }
   }  
   
   setPicture(computePicture());
@@ -163,10 +166,12 @@ void Reservoir::updateAqueducts()
   int i = getTile().getI() + 1;
   int j = getTile().getJ() + 1;
   
+  Tilemap& tmap = Scenario::instance().getCity().getTilemap();
   try
   {
-  WaterSource* __west   = dynamic_cast<WaterSource*>(Scenario::instance().getCity().getTilemap().at(i - 2, j).get_terrain().getOverlay());
-  if (__west  != NULL) __west->link(*this);
+  SmartPtr< WaterSource > __west   = tmap.at(i - 2, j).get_terrain().getOverlay().as<WaterSource>();
+  if(  __west.isValid() ) 
+    __west->link(*this);
   }
   catch(std::out_of_range)
   {
@@ -176,8 +181,9 @@ void Reservoir::updateAqueducts()
   
   try
   {
-  WaterSource* __south  = dynamic_cast<WaterSource*>(Scenario::instance().getCity().getTilemap().at(i, j - 2).get_terrain().getOverlay());
-  if (__south != NULL) __south->link(*this);
+  SmartPtr< WaterSource > __south  = tmap.at(i, j - 2).get_terrain().getOverlay().as<WaterSource>();
+  if (__south.isValid() )
+    __south->link(*this);
   }
   catch(std::out_of_range)
   {
@@ -187,8 +193,8 @@ void Reservoir::updateAqueducts()
   
   try
   {
-  WaterSource* __east   = dynamic_cast<WaterSource*>(Scenario::instance().getCity().getTilemap().at(i + 2, j).get_terrain().getOverlay());
-  if (__east  != NULL) __east->link(*this);
+  SmartPtr< WaterSource > __east   = tmap.at(i + 2, j).get_terrain().getOverlay().as<WaterSource>();
+  if (__east.isValid()) __east->link(*this);
   }
   catch(std::out_of_range)
   {
@@ -198,8 +204,8 @@ void Reservoir::updateAqueducts()
   
   try
   {
-  WaterSource* __north  = dynamic_cast<WaterSource*>(Scenario::instance().getCity().getTilemap().at(i, j + 2).get_terrain().getOverlay());
-  if (__north != NULL) __north->link(*this);
+  SmartPtr< WaterSource > __north  = tmap.at(i, j + 2).get_terrain().getOverlay().as<WaterSource>();
+  if (__north.isValid()) __north->link(*this);
   }
   catch(std::out_of_range)
   {
@@ -234,11 +240,11 @@ bool Aqueduct::canBuild( const TilePos& pos ) const
   TerrainTile& terrain = tilemap.at( pos ).get_terrain();
 
   // we can't build on plazas
-  if( dynamic_cast<Plaza*>( terrain.getOverlay() ) != NULL)
+  if( terrain.getOverlay().as<Plaza>().isValid() )
       return false;
 
   // we can show that won't build over other aqueduct
-  if( safety_cast< Aqueduct* >( terrain.getOverlay() ) != NULL )
+  if( terrain.getOverlay().as<Aqueduct>().isValid() )
       return false;
 
   // also we can't build if next tile is road + aqueduct
@@ -337,7 +343,7 @@ void Aqueduct::updatePicture()
   setPicture(computePicture());
 }
 
-Reservoir::Reservoir() : Construction( B_RESERVOIR, Size( 3 ) )
+Reservoir::Reservoir() : WaterSource( B_RESERVOIR, Size( 3 ) )
 {
   setPicture( Picture::load( ResourceGroup::waterbuildings, 1 )  );
   
@@ -417,4 +423,9 @@ bool Reservoir::canBuild( const TilePos& pos ) const
   const_cast< Reservoir* >( this )->setPicture( Picture::load( ResourceGroup::waterbuildings, nearWater ? 2 : 1 )  );
 
   return ret;
+}
+
+WaterSource::WaterSource( const BuildingType type, const Size& size ) : Construction( type, size )
+{
+  _north = NULL; _east = NULL; _south = NULL; _west = NULL;
 }

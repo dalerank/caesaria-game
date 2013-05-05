@@ -33,7 +33,7 @@ bool Senate::canBuild( const TilePos& pos ) const
   if( mayBuild )
   {
     City& city = Scenario::instance().getCity();
-    std::list<LandOverlay*> senate = city.getBuildingList(B_SENATE);
+    LandOverlays senate = city.getBuildingList(B_SENATE);
     mayBuild &= !( senate.size() > 0 );
   }
 

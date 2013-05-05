@@ -255,7 +255,7 @@ void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
          Tile &tile = oTilemap.at( pos );
          decode_terrain(terrainBitset, tile);
 
-         LandOverlay *overlay = tile.get_terrain().getOverlay();
+         LandOverlayPtr overlay = tile.get_terrain().getOverlay();
 
 	     // Check if it is building and type of building
 	     if( overlay == NULL && (terrainBitset & 0x8) )
@@ -286,11 +286,12 @@ void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
 	              case 0xb0b:
 	              case 0xb0c:
 	              {
-		          NativeHut* build = new NativeHut();
-		          tile.get_terrain().setOverlay((LandOverlay*)build);
-		          overlay = tile.get_terrain().getOverlay();
-		          overlay->build( pos );
-		          oCity.getOverlayList().push_back(overlay);
+    		          LandOverlayPtr build( new NativeHut() );
+                  build->drop();
+		              tile.get_terrain().setOverlay( build );
+		              overlay = tile.get_terrain().getOverlay();
+		              overlay->build( pos );
+		              oCity.getOverlayList().push_back(overlay);
 	              }
 	              break;
 	              case 0xb10:
@@ -300,10 +301,10 @@ void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
 		              if (tile.is_master_tile())
 		              {
 		                  std::cout << "Tile is master" << std::endl;
-		                  NativeCenter* build = new NativeCenter();
-		                  tile.get_terrain().setOverlay((LandOverlay*)build);
+		                  LandOverlayPtr build( new NativeCenter() );
+		                  tile.get_terrain().setOverlay( build );
 		                  overlay = tile.get_terrain().getOverlay();
-		                  if (overlay != NULL)
+		                  if( overlay != NULL )
 		                  {
 		                    overlay->build( pos );
 		                    oCity.getOverlayList().push_back(overlay);

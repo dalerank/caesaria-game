@@ -42,21 +42,24 @@ void CartPusher::onDestination()
   Walker::onDestination();
   _cartPicture = NULL;
 
-  if( _consumerBuilding )
+  if( _consumerBuilding.isValid() )
   {
-    if( Granary *granary = safety_cast<Granary*> (_consumerBuilding))
+    SmartPtr<Granary> granary = _consumerBuilding.as<Granary>();
+    SmartPtr<Warehouse> warehouse = _consumerBuilding.as<Warehouse>();
+    SmartPtr<Factory> factory = _consumerBuilding.as<Factory>(); 
+    if( granary.isValid() )
     {
        granary->getGoodStore().applyStorageReservation(_stock, _reservationID);
        granary->computePictures();
        _reservationID = 0;
     }
-    else if ( Warehouse *warehouse = safety_cast<Warehouse*> (_consumerBuilding))
+    else if ( warehouse.isValid() )
     {
        warehouse->getGoodStore().applyStorageReservation(_stock, _reservationID);
        warehouse->computePictures();
        _reservationID = 0;
     }
-    else if ( Factory *factory = safety_cast<Factory*> (_consumerBuilding) )
+    else if( factory.isValid() )
     {
        factory->getGoodStore().applyStorageReservation(_stock, _reservationID);
        // factory->computePictures();
@@ -73,7 +76,8 @@ void CartPusher::onDestination()
   }
   else
   {
-    if( Factory* factory = safety_cast< Factory* >( _producerBuilding ) )
+    SmartPtr<Factory> factory = _producerBuilding.as<Factory>();
+    if( factory.isValid() )
     {
       factory->removeWalker( this );
     }
@@ -87,26 +91,29 @@ void CartPusher::setStock(const GoodStock &stock)
    _stock = stock;
 }
 
-void CartPusher::setProducerBuilding(Building &building)
+void CartPusher::setProducerBuilding(BuildingPtr building)
 {
-   _producerBuilding = &building;
+   _producerBuilding = building;
 }
 
-void CartPusher::setConsumerBuilding(Building &building)
+void CartPusher::setConsumerBuilding(BuildingPtr building)
 {
-   _consumerBuilding = &building;
+   _consumerBuilding = building;
 }
 
-Building &CartPusher::getProducerBuilding()
+BuildingPtr CartPusher::getProducerBuilding()
 {
-   if (_producerBuilding == NULL) THROW("ProducerBuilding is not initialized");
-   return *_producerBuilding;
+   if( _producerBuilding.isNull() ) 
+     THROW("ProducerBuilding is not initialized");
+   return _producerBuilding;
 }
 
-Building &CartPusher::getConsumerBuilding()
+BuildingPtr CartPusher::getConsumerBuilding()
 {
-   if (_consumerBuilding == NULL) THROW("ConsumerBuilding is not initialized");
-   return *_consumerBuilding;
+   if( _consumerBuilding.isNull() ) 
+     THROW("ConsumerBuilding is not initialized");
+   
+   return _consumerBuilding;
 }
 
 Picture& CartPusher::getCartPicture()
@@ -157,10 +164,10 @@ void CartPusher::computeWalkerDestination()
    PathWay pathWay;
    Propagator pathPropagator;
    _consumerBuilding = 0;
-   pathPropagator.init(*_producerBuilding);
+   pathPropagator.init( *_producerBuilding.object() );
    pathPropagator.propagate(_maxDistance);
 
-   Building *destBuilding = NULL;
+   BuildingPtr destBuilding;
    if (destBuilding == NULL)
    {
       // try send that good to a factory
@@ -182,7 +189,7 @@ void CartPusher::computeWalkerDestination()
    if( destBuilding != NULL)
    {
       //_isDeleted = true;  // no destination!
-     setConsumerBuilding( *destBuilding );
+     setConsumerBuilding( destBuilding );
      setPathWay( pathWay );
      setIJ( _pathWay.getOrigin().getIJ() );
      setSpeed( 1 );
@@ -197,9 +204,9 @@ void CartPusher::computeWalkerDestination()
 }
 
 
-Building* CartPusher::getWalkerDestination_factory(Propagator &pathPropagator, PathWay &oPathWay)
+BuildingPtr CartPusher::getWalkerDestination_factory(Propagator &pathPropagator, PathWay &oPathWay)
 {
-   Building* res = NULL;
+   BuildingPtr res;
    GoodType goodType = _stock._goodType;
    BuildingType buildingType = BuildingDataHolder::instance().getBuildingTypeByInGood(goodType);
 
@@ -209,20 +216,20 @@ Building* CartPusher::getWalkerDestination_factory(Propagator &pathPropagator, P
       return NULL;
    }
 
-   std::map<Building*, PathWay> pathWayList;
+   Propagator::ReachedBuldings pathWayList;
    pathPropagator.getReachedBuildings(buildingType, pathWayList);
 
-   for (std::map<Building*, PathWay>::iterator pathWayIt= pathWayList.begin(); pathWayIt != pathWayList.end(); ++pathWayIt)
+   for( Propagator::ReachedBuldings::iterator pathWayIt= pathWayList.begin(); pathWayIt != pathWayList.end(); ++pathWayIt)
    {
       // for every factory within range
-      Building* building= pathWayIt->first;
+      BuildingPtr building= pathWayIt->first;
       PathWay& pathWay= pathWayIt->second;
 
-      Factory& factory= (Factory&) *building;
-      _reservationID = factory.getGoodStore().reserveStorage(_stock);
+      SmartPtr<Factory> factory = building.as<Factory>();
+      _reservationID = factory->getGoodStore().reserveStorage(_stock);
       if (_reservationID != 0)
       {
-         res= &factory;
+         res = factory.as<Building>();
          oPathWay = pathWay;
          break;
       }
@@ -231,24 +238,24 @@ Building* CartPusher::getWalkerDestination_factory(Propagator &pathPropagator, P
    return res;
 }
 
-Warehouse* CartPusher::getWalkerDestination_warehouse(Propagator &pathPropagator, PathWay &oPathWay)
+BuildingPtr CartPusher::getWalkerDestination_warehouse(Propagator &pathPropagator, PathWay &oPathWay)
 {
-   Warehouse* res = NULL;
+   BuildingPtr res;
 
-   std::map<Building*, PathWay> pathWayList;
+   Propagator::ReachedBuldings pathWayList;
    pathPropagator.getReachedBuildings(B_WAREHOUSE, pathWayList);
 
-   for (std::map<Building*, PathWay>::iterator pathWayIt= pathWayList.begin(); pathWayIt != pathWayList.end(); ++pathWayIt)
+   for( Propagator::ReachedBuldings::iterator pathWayIt= pathWayList.begin(); pathWayIt != pathWayList.end(); ++pathWayIt)
    {
       // for every warehouse within range
-      Building* building= pathWayIt->first;
+      BuildingPtr building= pathWayIt->first;
       PathWay& pathWay= pathWayIt->second;
 
-      Warehouse& warehouse= (Warehouse&) *building;
-      _reservationID = warehouse.getGoodStore().reserveStorage(_stock);
+      SmartPtr<Warehouse> warehouse= building.as<Warehouse>();
+      _reservationID = warehouse->getGoodStore().reserveStorage(_stock);
       if (_reservationID != 0)
       {
-         res= &warehouse;
+         res = warehouse.as<Building>();
          oPathWay = pathWay;
          break;
       }
@@ -258,9 +265,9 @@ Warehouse* CartPusher::getWalkerDestination_warehouse(Propagator &pathPropagator
 }
 
 
-Granary* CartPusher::getWalkerDestination_granary(Propagator &pathPropagator, PathWay &oPathWay)
+BuildingPtr CartPusher::getWalkerDestination_granary(Propagator &pathPropagator, PathWay &oPathWay)
 {
-   Granary* res = NULL;
+   BuildingPtr res;
 
    GoodType goodType = _stock._goodType;
    if (!(goodType == G_WHEAT || goodType == G_FISH || goodType == G_MEAT || goodType == G_FRUIT || goodType == G_VEGETABLE))
@@ -269,21 +276,21 @@ Granary* CartPusher::getWalkerDestination_granary(Propagator &pathPropagator, Pa
       return NULL;
    }
 
-   std::map<Building*, PathWay> pathWayList;
-   pathPropagator.getReachedBuildings(B_GRANARY, pathWayList);
+   Propagator::ReachedBuldings pathWayList;
+   pathPropagator.getReachedBuildings( B_GRANARY, pathWayList);
 
    // find a granary with enough storage
-   for (std::map<Building*, PathWay>::iterator pathWayIt= pathWayList.begin(); pathWayIt != pathWayList.end(); ++pathWayIt)
+   for( Propagator::ReachedBuldings::iterator pathWayIt= pathWayList.begin(); pathWayIt != pathWayList.end(); ++pathWayIt)
    {
       // for every granary within range
-      Building* building= pathWayIt->first;
+      BuildingPtr building= pathWayIt->first;
       PathWay& pathWay= pathWayIt->second;
 
-      Granary& granary= (Granary&) *building;
-      _reservationID = granary.getGoodStore().reserveStorage(_stock);
+      SmartPtr<Granary> granary= building.as<Granary>();
+      _reservationID = granary->getGoodStore().reserveStorage(_stock);
       if (_reservationID != 0)
       {
-         res= &granary;
+         res = granary.as<Building>();
          oPathWay = pathWay;
          break;
       }

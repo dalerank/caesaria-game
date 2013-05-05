@@ -30,8 +30,8 @@ public:
     bool isWalkable() const;
     void destroy();
 
-    float evaluateService(ServiceWalker &walker);
-    void applyService(ServiceWalker &walker);
+    float evaluateService( ServiceWalkerPtr walker);
+    void applyService( ServiceWalkerPtr walker);
 };
 
 class BurnedRuins : public Building
@@ -44,5 +44,6 @@ public:
   void build( const TilePos& pos );
 };
 
+typedef SmartPtr< BurningRuins > BurningRuinsPtr;
 
 #endif

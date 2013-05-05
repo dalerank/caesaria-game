@@ -41,8 +41,8 @@ protected:
   Immigrant( City& city, unsigned char peoples );
 
   void assignPath( Tile& startTile );
-  void _checkPath( Tile& startPoint, Building* house );
-  House* _findBlankHouse();
+  void _checkPath( Tile& startPoint, HousePtr house );
+  HousePtr _findBlankHouse();
 
 protected:
   void _setPeoplesCount( const unsigned char num );

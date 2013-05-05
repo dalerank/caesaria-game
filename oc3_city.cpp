@@ -37,10 +37,6 @@ typedef std::vector< CityServicePtr > CityServices;
 class City::Impl
 {
 public:
-    Signal1<int> onPopulationChangedSignal;
-    Signal1<int> onFundsChangedSignal;
-    Signal1<int> onMonthChangedSignal;
-
     int population;
     long funds;  // amount of money
     unsigned long month; // number of months since start
@@ -53,6 +49,11 @@ public:
     int taxRate;
     unsigned long time;  // number of timesteps since start
     TilePos roadExit;
+
+oc3_signals public:
+    Signal1<int> onPopulationChangedSignal;
+    Signal1<int> onFundsChangedSignal;
+    Signal1<int> onMonthChangedSignal;
 };
 
 City::City() : _d( new Impl )
@@ -138,7 +139,7 @@ void City::timeStep()
       {
          // remove the overlay from the overlay list
           (*overlayIt)->destroy();
-          delete (*overlayIt);
+          //delete (*overlayIt);
 
           overlayIt = _d->overlayList.erase(overlayIt);
       }
@@ -174,8 +175,8 @@ void City::timeStep()
     for (LandOverlays::iterator itOverlay = _d->overlayList.begin(); itOverlay!=_d->overlayList.end(); ++itOverlay)
     {
       // for each overlay
-      LandOverlay *overlay = *itOverlay;
-      Construction *construction = safety_cast<Construction*>( overlay );
+      LandOverlayPtr overlay = *itOverlay;
+      ConstructionPtr construction = overlay.as<Construction>();
       if( construction != NULL )
       {
         // overlay matches the filter
@@ -183,7 +184,8 @@ void City::timeStep()
         // for some constructions we need to update picture
         if( construction->getType() == B_ROAD ) 
         {
-          construction->setPicture(safety_cast<Road*>(construction)->computePicture());
+          RoadPtr road = construction.as<Road>();
+          road->updatePicture();
         }
       }
     }   
@@ -213,7 +215,7 @@ Walkers City::getWalkerList( const WalkerType type )
 	return res;
 }
 
-std::list<LandOverlay*>& City::getOverlayList()
+LandOverlays& City::getOverlayList()
 {
    return _d->overlayList;
 }
@@ -223,19 +225,20 @@ unsigned long City::getTime()
    return _d->time;
 }
 
-std::list<LandOverlay*> City::getBuildingList(const BuildingType buildingType)
+LandOverlays City::getBuildingList(const BuildingType buildingType)
 {
    LandOverlays res;
 
-   for (LandOverlays::iterator itOverlay = _d->overlayList.begin(); itOverlay!=_d->overlayList.end(); ++itOverlay)
+   for( LandOverlays::iterator itOverlay = _d->overlayList.begin(); 
+        itOverlay!=_d->overlayList.end(); ++itOverlay)
    {
       // for each overlay
-      LandOverlay *overlay = *itOverlay;
-      Construction *construction = safety_cast<Construction*>(overlay);
-      if (construction != NULL && construction->getType() == buildingType)
+      LandOverlayPtr overlay = *itOverlay;
+      ConstructionPtr construction = overlay.as<Construction>();
+      if( construction.isValid() && construction->getType() == buildingType)
       {
          // overlay matches the filter
-         res.push_back(overlay);
+         res.push_back( overlay );
       }
    }
 
@@ -305,10 +308,10 @@ void City::build( const BuildingType type, const TilePos& pos )
 {
    BuildingData& buildingData = BuildingDataHolder::instance().getData( type );
    // make new building
-   Construction* building = ConstructionManager::getInstance().create( type );
+   ConstructionPtr building = ConstructionManager::getInstance().create( type );
    building->build( pos );
 
-   _d->overlayList.push_back(building);
+   _d->overlayList.push_back( building.as<LandOverlay>() );
    _d->funds -= buildingData.getCost();
    _d->onFundsChangedSignal.emit( _d->funds );
 }
@@ -322,8 +325,8 @@ void City::disaster( const TilePos& pos, DisasterType type )
     {
         int size = 1;
 
-        LandOverlay* overlay = terrain.getOverlay();
-        if( overlay )
+        LandOverlayPtr overlay = terrain.getOverlay();
+        if( overlay.isValid() )
         {
           overlay->deleteLater();
           size = overlay->getSize();
@@ -353,13 +356,13 @@ void City::clearLand(const TilePos& pos  )
     int size = 1;
     TilePos rPos = pos;
 
-    LandOverlay* overlay = terrain.getOverlay();
+    LandOverlayPtr overlay = terrain.getOverlay();
       
     bool deleteRoad = false;
 
     if (terrain.isRoad()) deleteRoad = true;
       
-    if (overlay != NULL)	
+    if ( overlay.isValid() )	
     {
       size = overlay->getSize();
       rPos = overlay->getTile().getIJ();
@@ -413,29 +416,31 @@ void City::clearLand(const TilePos& pos  )
 
 void City::collectTaxes()
 {
-   long taxes = 0;
-   std::list<LandOverlay*> houseList = getBuildingList(B_HOUSE);
-   for (std::list<LandOverlay*>::iterator itHouse = houseList.begin(); itHouse != houseList.end(); ++itHouse)
-   {
-      House &house = dynamic_cast<House&>(**itHouse);
-      taxes += house.collectTaxes();
-   }
+  CityHelper hlp( *this );
+  long taxes = 0;
+  
+  std::list<HousePtr> houseList = hlp.getBuildings< House >(B_HOUSE);
+  for( std::list<HousePtr>::iterator itHouse = houseList.begin(); itHouse != houseList.end(); ++itHouse)
+  {
+    taxes += (*itHouse)->collectTaxes();
+  }
 
-   _d->funds += taxes;
-   _d->onFundsChangedSignal.emit( _d->funds );
+  _d->funds += taxes;
+  _d->onFundsChangedSignal.emit( _d->funds );
 
-   std::cout << "Monthly Taxes=" << taxes << std::endl;
+  std::cout << "Monthly Taxes=" << taxes << std::endl;
 }
 
 void City::_calculatePopulation()
 {
   long pop = 0; /* population can't be negative - should be unsigned long long*/
   
-  std::list<LandOverlay*> houseList = getBuildingList(B_HOUSE);
-  for (std::list<LandOverlay*>::iterator itHouse = houseList.begin(); itHouse != houseList.end(); ++itHouse)
+  LandOverlays houseList = getBuildingList(B_HOUSE);
+  for( LandOverlays::iterator itHouse = houseList.begin(); 
+       itHouse != houseList.end(); ++itHouse)
   {
-    //check for error on dyncast
-    if( House* house = dynamic_cast<House*>(*itHouse) )
+    HousePtr house = (*itHouse).as<House>();
+    if( house.isValid() )
     {
         pop += house->getNbHabitants();
     }
@@ -478,8 +483,8 @@ void City::serialize(OutputSerialStream &stream)
         ++itOverlay)
    {
       // std::cout << "WRITE OVERLAY @" << stream.tell() << std::endl;
-      LandOverlay &overlay = **itOverlay;
-      overlay.serialize(stream);
+      LandOverlayPtr overlay = *itOverlay;
+      overlay->serialize( stream );
    }
 
 }
@@ -507,8 +512,8 @@ void City::unserialize(InputSerialStream &stream)
    for (int i = 0; i < nbItems; ++i)
    {
       // std::cout << "READ WALKER @" << stream.tell() << std::endl;
-      Walker &walker = Walker::unserialize_all(stream);
-      _d->walkerList.push_back(&walker);
+      WalkerPtr walker = Walker::unserialize_all( stream );
+      _d->walkerList.push_back( walker );
    }
 
    // overlays
@@ -516,8 +521,8 @@ void City::unserialize(InputSerialStream &stream)
    for (int i = 0; i < nbItems; ++i)
    {
       // std::cout << "READ OVERLAY @" << stream.tell() << std::endl;
-      LandOverlay &overlay = LandOverlay::unserialize_all(stream);
-      _d->overlayList.push_back(&overlay);
+      LandOverlayPtr overlay = LandOverlay::unserialize_all(stream);
+      _d->overlayList.push_back( overlay );
    }
 
    // set all pointers to overlays&walkers

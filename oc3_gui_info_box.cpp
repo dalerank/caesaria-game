@@ -207,17 +207,17 @@ void GuiInfoService::drawWorkers( int& paintY )
 class InfoBoxHouse::Impl
 {
 public:
-    House* house;
+    HousePtr house;
     Label* lbHabitants;
     Label* lbCrime;
 };
 
-InfoBoxHouse::InfoBoxHouse( Widget* parent, House &house )
+InfoBoxHouse::InfoBoxHouse( Widget* parent, HousePtr house )
     : GuiInfoBox( parent, Rect( 0, 0, 510, 360 ), -1 ),
       _ed( new Impl )
 {
-   _ed->house = &house;
-   setTitle( house.getName() );
+   _ed->house = house;
+   setTitle( house->getName() );
    _paint();
 }
 
