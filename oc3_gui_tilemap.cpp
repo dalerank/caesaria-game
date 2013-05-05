@@ -276,10 +276,10 @@ void GuiTilemap::updatePreviewTiles( bool force )
     bool havepath = rp.getPath( *stopTile, pathWay );
     if( havepath )
     {
-        for( ConstWayOnTiles::iterator it=pathWay.begin(); it != pathWay.end(); it++ )
-        {
-            checkPreviewBuild( (*it)->getIJ() );
-        }
+      for( ConstWayOnTiles::iterator it=pathWay.begin(); it != pathWay.end(); it++ )
+      {
+	checkPreviewBuild( (*it)->getIJ() );
+      }
     }
   }
   else
@@ -287,12 +287,14 @@ void GuiTilemap::updatePreviewTiles( bool force )
     TilePos startPos, stopPos;
     _getSelectedArea( startPos, stopPos );
 
+    std::cout << "start is" << startPos << " and stop is " << stopPos << std::endl;
+    
     for( int i = startPos.getI(); i <= stopPos.getI(); i++ )
     {
       for( int j = startPos.getJ(); j <=stopPos.getJ(); j++ )
       {
-	      checkPreviewBuild( TilePos( i, j ) );
-	      checkPreviewRemove(i, j);
+	checkPreviewBuild( TilePos( i, j ) );
+	checkPreviewRemove(i, j);
       }
     }
   }
