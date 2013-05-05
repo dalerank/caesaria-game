@@ -13,22 +13,40 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_WORKERSHUNTER_H_INCLUDE_
-#define __OPENCAESAR3_WORKERSHUNTER_H_INCLUDE_
+#ifndef __OPENCAESAR3_TIMER_H_INCLUDED__
+#define __OPENCAESAR3_TIMER_H_INCLUDED__
 
-#include "oc3_walker.hpp"
+#include "oc3_smartptr.hpp"
+#include "oc3_scopedptr.hpp"
+#include "oc3_referencecounted.hpp"
+#include "oc3_signals.hpp"
 
-class WorkersHunter : public ServiceWalker
+class Timer;
+typedef SmartPtr< Timer > TimerPtr;
+
+class Timer : public ReferenceCounted
 {
 public:
-    WorkersHunter( WorkingBuilding& building, const int workersNeeded );
+  static TimerPtr create( unsigned int time, bool loop, int id=-1 );
 
-    int getWorkersNeeded() const;
+  ~Timer();
 
-    void onNewTile();
-    void hireWorkers( const int workers );
+  void update( unsigned int time );
+
+  void setTime( unsigned int time );
+  void setLoop( bool loop );
+
+  bool isActive() const;
+
+oc3_signals public:
+    virtual Signal1<int>& onTimeout();
+
 private:
-    int _workersNeeded;
+  Timer();
+
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
-#endif//__OPENCAESAR3_WORKERSHUNTER_H_INCLUDE_
+#endif //__OPENCAESAR3_TIMER_H_INCLUDED__
+

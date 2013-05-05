@@ -2,7 +2,7 @@
 !include nsDialogs.nsh
 !include LogicLib.nsh
 
-!define VERSION "ver.24_04_2013"
+!define VERSION "ver.01_05_2013"
 
 
 XPStyle on
@@ -14,7 +14,7 @@ VIAddVersionKey "LegalTrademarks" ""
 VIAddVersionKey "LegalCopyright" "©"
 VIAddVersionKey "FileDescription" "OpenCaesar3"
 VIAddVersionKey "FileVersion" ${VERSION}
-VIProductVersion "0.2013.3.4"
+VIProductVersion "0.2013.1.5"
 
 ; The name of the installer
 OutFile opencaesar3-${VERSION}-installer.exe

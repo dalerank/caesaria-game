@@ -272,11 +272,11 @@ void WarehouseStore::applyStorageReservation(GoodStock &stock, const long reserv
 
    if (stock._goodType != reservedStock._goodType)
    {
-      THROW("GoodType does not match reservation");
+     _OC3_DEBUG_BREAK_IF( "GoodType does not match reservation" );
    }
    if (stock._currentQty < reservedStock._currentQty)
    {
-      THROW("Quantity does not match reservation");
+     _OC3_DEBUG_BREAK_IF( "Quantity does not match reservation" );
    }
 
 

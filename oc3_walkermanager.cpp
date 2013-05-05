@@ -28,7 +28,7 @@ public:
 WalkerManager::WalkerManager() : _d( new Impl )
 {
   // first call to this method
-  _d->mapWalkerByID[WT_SERVICE] = new ServiceWalker(S_MAX);  // dummy serviceType
+  //_d->mapWalkerByID[WT_SERVICE] = new ServiceWalker(S_MAX);  // dummy serviceType
   _d->mapWalkerByID[WT_MARKET_BUYER] = new MarketBuyer();
   _d->mapWalkerByID[WT_CART_PUSHER] = new CartPusher();
   //_d->mapWalkerByID[WT_IMMIGRANT] = new Immigrant();
@@ -54,7 +54,7 @@ Walker* WalkerManager::create( const WalkerType walkerType, const TilePos& pos )
   }
   else
   {
-    res = mapIt->second->clone();
+    //res = mapIt->second->clone();
   }
 
   return res;

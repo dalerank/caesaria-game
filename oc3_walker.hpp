@@ -33,6 +33,8 @@
 #include "oc3_referencecounted.hpp"
 #include "oc3_smartptr.hpp"
 #include "oc3_safetycast.hpp"
+#include "oc3_signals.hpp"
+#include "oc3_scopedptr.hpp"
 
 class Walker : public Serializable, public ReferenceCounted
 {
@@ -103,18 +105,20 @@ private:
    float _remainMoveI, _remainMoveJ;  // remaining movement
    int _midTileI, _midTileJ;  // subtile coordinate in the current tile, at starting position
 
-   const Animation *_animation;  // current animation
-   int _animIndex;  // current frame in the animation
+   Animation _animation;  // current animation
+  
+   class Impl;
+   ScopedPtr< Impl > _d;
 };
 
 typedef SmartPtr< Walker > WalkerPtr;
 
-/** Soldier, friend or foo */
+/** Soldier, friend or enemy */
 class Soldier : public Walker
 {
 public:
    Soldier();
-   virtual Soldier* clone() const;
+   //virtual Soldier* clone() const;
 
 private:
 
@@ -124,13 +128,12 @@ private:
 class ServiceWalker : public Walker
 {
 public:
-   ServiceWalker(const ServiceType service);
-   virtual ServiceWalker* clone() const;
+   ServiceWalker( Building& base, const ServiceType service);
+   //virtual ServiceWalker* clone() const;
    void init(const ServiceType service);
 
    ServiceType getService();
-   void setServiceBuilding(ServiceBuilding &building);
-   ServiceBuilding &getServiceBuilding();
+   Building& getBase();
 
    void computeWalkerPath();
    void start();
@@ -152,7 +155,7 @@ public:
 
 private:
    ServiceType _service;
-   ServiceBuilding *_building;
+   Building* _base;
    int _maxDistance;
 };
 
@@ -181,28 +184,23 @@ public:
         it++;
       }
     }
-    return res;
   }
 
   template< class T > 
   std::set< T > getReachedBuildings( const TilePos& pos )
   {
-    std::set<Building*> res = _walker.getReachedBuildings( pos );
-
-    typename std::set< T >::iterator it=res.begin();
-    while( it != res.end() )
+    std::set<Building*> buildings = _walker.getReachedBuildings( pos );
+    
+    std::set<T> ret;        
+    for( std::set<Building*>::iterator it=buildings.begin(); it != buildings.end(); it++ )
     {
-      T building = safety_cast<T*>( it );
-      if( !building )
+      if( T building = safety_cast<T>( *it ) )
       {
-        res.erase( it++ );
-      }
-      else
-      {
-        it++;
+        ret.insert( building );
       }
     }
-    return res;
+
+    return ret;
   }
 
 private:
@@ -214,7 +212,7 @@ class TraineeWalker : public Walker
 {
 public:
    TraineeWalker(const WalkerTraineeType traineeType);
-   virtual TraineeWalker* clone() const;
+   //virtual TraineeWalker* clone() const;
    void init(const WalkerTraineeType traineeType);
    int getType() const;
 

@@ -21,12 +21,15 @@
 
 #include "oc3_building.hpp"
 
+class Walker;
 
 class Factory: public WorkingBuilding
 {
 public:
    Factory( const GoodType inGood, const GoodType outGood,
             const BuildingType type, const Size& size );
+  ~Factory();
+
    GoodStock& getInGood();
    GoodStock& getOutGood();
    SimpleGoodStore& getGoodStore();
@@ -38,10 +41,13 @@ public:
    virtual void timeStep(const unsigned long time);
 
    virtual GuiInfoBox* makeInfoBox( Widget* parent );
-   static std::map<GoodType, Factory*>& getSpecimen();
 
    void serialize(OutputSerialStream &stream);
    void unserialize(InputSerialStream &stream);
+
+   void removeWalker( Walker* w );
+protected:
+   virtual bool _mayDeliverGood() const;
 
 protected:
    GoodType _inGoodType;
@@ -51,8 +57,9 @@ protected:
    float _productionRate;  // max production / year
    float _progress;  // progress of the work, in percent (0-100).
    Picture *_stockPicture; // stock of input good
-   static std::map<GoodType, Factory*> _specimen;
-   // CartPusher _cartPusher;  // delivery man
+
+   class Impl;
+   ScopedPtr< Impl > _d;
 };
 
 
@@ -60,8 +67,8 @@ class FactoryMarble : public Factory
 {
 public:
    FactoryMarble();
-   virtual FactoryMarble* clone() const;
-   virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
+
+   bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
    void timeStep(const unsigned long time);
 };
 
@@ -69,59 +76,51 @@ class FactoryTimber : public Factory
 {
 public:
    FactoryTimber();
-   virtual FactoryTimber* clone() const;
-   virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
+   //FactoryTimber* clone() const;
+   bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
 };
 
 class FactoryIron : public Factory
 {
 public:
    FactoryIron();
-   virtual FactoryIron* clone() const;
-   virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
-};
-
-class FactoryClay : public Factory
-{
-public:
-   FactoryClay();
-   virtual FactoryClay* clone() const;
-   virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
+   //FactoryIron* clone() const;
+   bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
 };
 
 class FactoryWeapon : public Factory
 {
 public:
    FactoryWeapon();
-   virtual FactoryWeapon* clone() const;
+   //FactoryWeapon* clone() const;
 };
 
 class FactoryFurniture : public Factory
 {
 public:
    FactoryFurniture();
-   virtual FactoryFurniture* clone() const;
+   //virtual FactoryFurniture* clone() const;
 };
 
 class FactoryWine : public Factory
 {
 public:
    FactoryWine();
-   virtual FactoryWine* clone() const;
+   //virtual FactoryWine* clone() const;
 };
 
 class FactoryOil : public Factory
 {
 public:
    FactoryOil();
-   virtual FactoryOil* clone() const;
+   //virtual FactoryOil* clone() const;
 };
 
 class FactoryPottery : public Factory
 {
 public:
    FactoryPottery();
-   virtual FactoryPottery* clone() const;
+   //virtual FactoryPottery* clone() const;
 };
 
 
@@ -159,49 +158,49 @@ class FarmWheat : public Farm
 {
 public:
    FarmWheat();
-   virtual FarmWheat* clone() const;
+   //virtual FarmWheat* clone() const;
 };
 
 class FarmOlive : public Farm
 {
 public:
    FarmOlive();
-   virtual FarmOlive* clone() const;
+   //virtual FarmOlive* clone() const;
 };
 
 class FarmGrape : public Farm
 {
 public:
    FarmGrape();
-   virtual FarmGrape* clone() const;
+   //virtual FarmGrape* clone() const;
 };
 
 class FarmMeat : public Farm
 {
 public:
    FarmMeat();
-   virtual FarmMeat* clone() const;
+   //virtual FarmMeat* clone() const;
 };
 
 class FarmFruit : public Farm
 {
 public:
    FarmFruit();
-   virtual FarmFruit* clone() const;
+   //virtual FarmFruit* clone() const;
 };
 
 class FarmVegetable : public Farm
 {
 public:
   FarmVegetable();
-  virtual FarmVegetable* clone() const;
+  //virtual FarmVegetable* clone() const;
 };
 
 class Wharf : public Factory
 {
 public:
   Wharf();
-  Wharf* clone() const;
+  //Wharf* clone() const;
   virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
 };
 

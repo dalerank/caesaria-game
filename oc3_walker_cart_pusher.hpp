@@ -23,14 +23,11 @@
 #include "oc3_warehouse.hpp"
 #include "oc3_factory_building.hpp"
 
-
 /** This walker delivers goods */
 class CartPusher : public Walker
 {
 public:
    CartPusher();
-   virtual CartPusher *clone() const;
-   static void initStatic();
 
    void setProducerBuilding(Building &building);
    void setConsumerBuilding(Building &building);
@@ -49,15 +46,16 @@ public:
    Building* getWalkerDestination_factory(Propagator &pathPropagator, PathWay &oPathWay);
    Warehouse* getWalkerDestination_warehouse(Propagator &pathPropagator, PathWay &oPathWay);
    Granary* getWalkerDestination_granary(Propagator &pathPropagator, PathWay &oPathWay);
+   
+   void timeStep(const unsigned long time);
 
 private:
    GoodStock _stock;
-   Building *_producerBuilding;
-   Building *_consumerBuilding;
+   Building* _producerBuilding;
+   Building* _consumerBuilding;
    Picture *_cartPicture;
    int _maxDistance;
    long _reservationID;
 };
-
 
 #endif

@@ -24,14 +24,16 @@ class Immigrant::Impl
 public:
   TilePos destination;
   Picture* cartPicture;
+  unsigned char peopleCount;
   City* city;
 };
 
-Immigrant::Immigrant( City& city ) : _d( new Impl )
+Immigrant::Immigrant( City& city, const unsigned char peoples ) : _d( new Impl )
 {
   _walkerType = WT_IMMIGRANT;
   _walkerGraphic = WG_HOMELESS;
   _d->cartPicture = 0;
+  _d->peopleCount = peoples;
   _d->city = &city;
 }
 
@@ -49,21 +51,31 @@ void Immigrant::assignPath( Tile& startPoint )
 
 House* Immigrant::_findBlankHouse()
 {
-  std::list<LandOverlay*> houses = _d->city->getBuildingList(B_HOUSE);
+  CityHelper hlp( *_d->city );
+  std::list< House* > houses = hlp.getBuildings< House* >( B_HOUSE );
   House* blankHouse = 0;
   _d->destination = TilePos( -1, -1 );
-  for( std::list<LandOverlay*>::iterator itHouse = houses.begin(); itHouse != houses.end(); ++itHouse )
+
+  std::list< House* >::iterator itHouse = houses.begin();
+  while( itHouse != houses.end() )
   {
-    if( House* house = dynamic_cast<House*>(*itHouse) )
+    if( (*itHouse)->getAccessRoads().size() > 0 && 
+        ( (*itHouse)->getNbHabitants() < (*itHouse)->getMaxHabitants() ) )
     {
-      if( house->getAccessRoads().size() > 0 && 
-          ( house->getNbHabitants() < house->getMaxHabitants() ) )
-      {
-        blankHouse = house;
-        _d->destination = house->getTile().getIJ();
-        break;
-      }
+      itHouse++;
     }
+    else
+    {
+      itHouse = houses.erase( itHouse );
+    }
+  }
+
+  if( houses.size() > 0 )
+  {
+    itHouse = houses.begin();
+    std::advance(houses.begin(), rand() % houses.size() );
+    blankHouse = *itHouse;
+    _d->destination = blankHouse->getTilePos();
   }
 
   return blankHouse;
@@ -71,9 +83,7 @@ House* Immigrant::_findBlankHouse()
 
 void Immigrant::_checkPath( Tile& startPoint, Building* house )
 {
-  Propagator pathfinder;
   PathWay pathWay;
-  pathfinder.init( startPoint );
 
   Tilemap& citymap = _d->city->getTilemap();
   Tile& destTile = house ? house->getTile() : citymap.at( _d->city->getRoadExitIJ() );
@@ -100,12 +110,15 @@ void Immigrant::onDestination()
 
     LandOverlay* overlay = tile.get_terrain().getOverlay();
     if( House* house = dynamic_cast<House*>( overlay ) )
-    {
+    {      
       if( house->getNbHabitants() < house->getMaxHabitants() )
       {
-        house->addHabitants( 2 );
+        int saveHbCount = house->getNbHabitants();
+        house->addHabitants( _getPeoplesCount() );
+        _d->peopleCount -= ( house->getNbHabitants() - saveHbCount ); 
         Walker::onDestination();
-        gooutCity = false;
+
+        gooutCity = (_d->peopleCount > 0);
       }
     }
   }
@@ -117,9 +130,10 @@ void Immigrant::onDestination()
   }
 }
 
-Immigrant* Immigrant::create( City& city, const Building& startPoint )
+Immigrant* Immigrant::create( City& city, const Building& startPoint,
+                              const unsigned char peoples )
 {
-  Immigrant* newImmigrant = new Immigrant( city );
+  Immigrant* newImmigrant = new Immigrant( city, peoples );
   newImmigrant->assignPath( startPoint.getTile() );
   city.addWalker( *newImmigrant );
   return newImmigrant;
@@ -138,4 +152,14 @@ void Immigrant::setCartPicture( Picture* pic )
 Picture* Immigrant::getCartPicture()
 {
   return _d->cartPicture;
+}
+
+void Immigrant::_setPeoplesCount( const unsigned char num )
+{
+  _d->peopleCount = num;
+}
+
+unsigned char Immigrant::_getPeoplesCount() const
+{
+  return _d->peopleCount;
 }

@@ -31,6 +31,7 @@ static const char* rcGrourName = "housng1a";
 House::House(const int houseId) : Building( B_HOUSE )
 {
    _houseId = houseId;
+   _picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
    _houseLevel = HouseLevelSpec::getHouseLevel( houseId );
    _houseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel);
    _nextHouseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel+1);
@@ -60,13 +61,6 @@ House::House(const int houseId) : Building( B_HOUSE )
    }
 
    _update();
-}
-
-House* House::clone() const
-{
-   House *res = new House(this->_houseId);
-   res->_picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
-   return res;
 }
 
 void House::timeStep(const unsigned long time)
@@ -281,7 +275,7 @@ void House::levelDown()
 void House::buyMarket(ServiceWalker &walker)
 {
    // std::cout << "House buyMarket" << std::endl;
-   Market* market = safety_cast<Market*>( &walker.getServiceBuilding() );
+   Market* market = safety_cast<Market*>( &walker.getBase() );
    GoodStore& marketStore = market->getGoodStore();
    SimpleGoodStore &houseStore = getGoodStore();
    for (int i = 0; i < G_MAX; ++i)
@@ -339,12 +333,15 @@ void House::applyService(ServiceWalker& walker)
   case S_MAX:
     break;
   case S_WORKERS_HUNTER:
-      if( WorkersHunter* hunter = safety_cast< WorkersHunter* >( &walker ) )
-      {
-          int hiredWorkers = math::clamp( _freeWorkersCount, 0, hunter->getWorkersNeeded() );
-          _freeWorkersCount -= hiredWorkers;
-          hunter->hireWorkers( hiredWorkers );
-      }
+    if( !_freeWorkersCount )
+      break;
+
+    if( WorkersHunter* hunter = safety_cast< WorkersHunter* >( &walker ) )
+    {
+        int hiredWorkers = math::clamp( _freeWorkersCount, 0, hunter->getWorkersNeeded() );
+        _freeWorkersCount -= hiredWorkers;
+        hunter->hireWorkers( hiredWorkers );
+    }
   break;
   }
 }
@@ -374,7 +371,7 @@ float House::evaluateService(ServiceWalker &walker)
 
    case S_MARKET:
      {
-       Market* market = safety_cast<Market*>( &walker.getServiceBuilding());
+       Market* market = safety_cast<Market*>( &walker.getBase());
        GoodStore &marketStore = market->getGoodStore();
        SimpleGoodStore &houseStore = getGoodStore();
        for (int i = 0; i < G_MAX; ++i)
@@ -476,7 +473,7 @@ void House::destroy()
   if( lostPeoples > 0 )
   {
     City& city = Scenario::instance().getCity();
-    Immigrant::create( city, *this );
+    Immigrant::create( city, *this, lostPeoples );
   }
 
   Building::destroy();

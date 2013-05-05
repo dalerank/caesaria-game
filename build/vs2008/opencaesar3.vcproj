@@ -287,6 +287,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_cityservice_timers.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_cityservice_timers.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_cityservice_workershire.cpp"
 				>
 			</File>
@@ -348,6 +356,22 @@
 			</File>
 			<File
 				RelativePath="..\..\oc3_factory_building.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_factoryclay.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_factoryclay.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_factorymanager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_factorymanager.hpp"
 				>
 			</File>
 			<File
@@ -751,6 +775,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_timer.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_timer.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_topmenu.cpp"
 				>
 			</File>
@@ -856,10 +888,6 @@
 			</File>
 			<File
 				RelativePath="..\..\oc3_workerhunter.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\oc3_workerhunter.h"
 				>
 			</File>
 			<File

@@ -6,6 +6,11 @@
 
 using namespace std;
 
+class Pathfinder::Impl
+{
+public:
+};
+
 const AStarPoint Pathfinder::invalidPoint = AStarPoint( 0 ); 
 
 Pathfinder::Pathfinder()
@@ -27,21 +32,20 @@ void Pathfinder::update( const Tilemap& tilemap )
   }
 }
 
+bool Pathfinder::getPath( const Tile& start, const Tile& stop, PathWay& oPathWay,
+                          int flags, const Size& arrivedArea )
+{
+  return getPath( start.getIJ(), stop.getIJ(), oPathWay, flags, arrivedArea );
+}
+
 bool Pathfinder::getPath( const TilePos& start, const TilePos& stop,  
-                          PathWay& oPathWay, bool checkLast,
+                          PathWay& oPathWay, int flags,
                           const Size& arrivedArea )
 {
-  if( pointIsWalkable( start ) )
-  {
-    // Calculate line direction
-    return aStar( start, stop, arrivedArea, oPathWay );
-  }
-  else
-  {
-    cout << "not walkable" << endl;
-  }
+  if( (flags & checkStart) && !pointIsWalkable( start ) )
+      return false;
 
-  return false;
+  return aStar( start, stop, arrivedArea, oPathWay, flags );
 }
 
 std::list<AStarPoint*> Pathfinder::getTraversingPoints( const TilePos& start, const TilePos& stop )
@@ -66,10 +70,12 @@ std::list<AStarPoint*> Pathfinder::getTraversingPoints( const TilePos& start, co
 
 int Pathfinder::getMaxLoopCount() const
 {
-  return 300;
+  return 600;
 }
 
-bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos, const Size& arrivedArea, PathWay& oPathWay )
+bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos, 
+                        const Size& arrivedArea, PathWay& oPathWay,
+                        int flags )
 {
   oPathWay.init( *_tilemap, _tilemap->at( startPos ) );
 
@@ -267,4 +273,9 @@ Pathfinder& Pathfinder::getInstance()
 {
   static Pathfinder inst;
   return inst;
+}
+
+Pathfinder::~Pathfinder()
+{
+
 }

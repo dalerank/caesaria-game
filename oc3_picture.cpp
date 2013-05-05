@@ -111,7 +111,12 @@ bool Picture::isValid() const
 
 Picture& Picture::load( const char* group, const int id )
 {
-    return PicLoader::instance().get_picture( group, id );
+  return PicLoader::instance().get_picture( group, id );
+}
+
+Picture& Picture::load( const std::string& filename )
+{
+  return PicLoader::instance().get_picture( filename );
 }
 
 Font::Font(TTF_Font &ttfFont, SDL_Color &color)

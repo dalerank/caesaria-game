@@ -15,8 +15,6 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
-
 #include "oc3_walker.hpp"
 
 #include <iostream>
@@ -29,15 +27,18 @@
 #include "oc3_positioni.hpp"
 #include "oc3_walkermanager.hpp"
 
-Walker::Walker()
+class Walker::Impl
+{
+public:
+};
+
+Walker::Walker() : _d( new Impl )
 {
    _action._action = WA_MOVE;
    _action._direction = D_NONE;
    _walkerType = WT_NONE;
    _walkerGraphic = WG_NONE;
 
-   _animation = NULL;
-   _animIndex = 0;
    _speed = 1;  // default speed
    _isDeleted = false;
 
@@ -49,7 +50,6 @@ Walker::Walker()
 
 Walker::~Walker()
 {
-  
 }
 
 int Walker::getType() const
@@ -63,6 +63,11 @@ void Walker::timeStep(const unsigned long time)
    {
    case WA_MOVE:
       walk();
+     
+      if( _animation.getPicturesCount() > 0 && _speed > 0.f )
+      {
+        _animation.update( time );
+      }
       break;
 
    default:
@@ -199,11 +204,6 @@ void Walker::walk()
       return;
    }
    
-   if( _animation )
-   {
-     _animIndex = _animation->clampIndex( _animIndex+1 );
-   }
-
    switch (_action._direction)
    {
    case D_NORTH:
@@ -325,12 +325,12 @@ void Walker::onDestination()
 {
    // std::cout << "Walker arrived at destination! coord=" << _i << "," << _j << std::endl;
    _action._action=WA_NONE;  // stop moving
-   _animation=NULL;
+   _animation = Animation();
 }
 
 void Walker::onNewDirection()
 {
-   _animation=NULL;  // need to fetch the new animation
+   _animation = Animation();  // need to fetch the new animation
 }
 
 
@@ -359,7 +359,7 @@ void Walker::getPictureList(std::vector<Picture*> &oPics)
 
 Picture& Walker::getMainPicture()
 {
-   if (_animation == NULL)
+   if( !_animation.isValid() )
    {
       const std::map<WalkerAction, Animation>& animMap = WalkerLoader::instance().getAnimationMap(getWalkerGraphic());
       std::map<WalkerAction, Animation>::const_iterator itAnimMap;
@@ -375,7 +375,6 @@ Picture& Walker::getMainPicture()
          {
             action._direction = _action._direction;  // last direction of the walker
          }
-         _animIndex = 0;  // first animation frame
          itAnimMap = animMap.find(action);
       }
       else
@@ -383,11 +382,10 @@ Picture& Walker::getMainPicture()
          itAnimMap = animMap.find(_action);
       }
 
-      _animation = &(itAnimMap->second);
-      _animIndex = _animation->clampIndex( _animIndex );
+      _animation = itAnimMap->second;
    }
 
-   return *_animation->getPictures()[_animIndex];
+   return *_animation.getCurrentPicture();
 }
 
 void Walker::serialize(OutputSerialStream &stream)
@@ -406,7 +404,7 @@ void Walker::serialize(OutputSerialStream &stream)
    stream.write_int(_speed, 1, 0, 50);
    stream.write_int(_midTileI, 1, 0, 50);
    stream.write_int(_midTileJ, 1, 0, 50);
-   stream.write_int(_animIndex, 1, 0, 50);
+   //stream.write_int(_animIndex, 1, 0, 50);
 }
 
 Walker& Walker::unserialize_all(InputSerialStream &stream)
@@ -433,7 +431,7 @@ void Walker::unserialize(InputSerialStream &stream)
    _speed = stream.read_int(1, 0, 50);
    _midTileI = stream.read_int(1, 0, 50);
    _midTileJ = stream.read_int(1, 0, 50);
-   _animIndex = stream.read_int(1, 0, 50);
+   //_animIndex = stream.read_int(1, 0, 50);
 }
 
 TilePos Walker::getIJ() const
@@ -446,22 +444,16 @@ void Walker::deleteLater()
    _isDeleted = true;
 }
 
-
 Soldier::Soldier()
 {
    _walkerType = WT_SOLDIER;
    _walkerGraphic = WG_HORSEMAN;
 }
 
-Soldier* Soldier::clone() const
-{
-   return new Soldier(*this);
-}
-
-ServiceWalker::ServiceWalker(const ServiceType service)
+ServiceWalker::ServiceWalker( Building& base, const ServiceType service)
 {
    _walkerType = WT_SERVICE;
-   _building = NULL;
+   _base = &base;
    _maxDistance = 5;  // TODO: _building.getMaxDistance() ?
 
    init(service);
@@ -526,20 +518,10 @@ void ServiceWalker::init(const ServiceType service)
   }
 }
 
-ServiceWalker* ServiceWalker::clone() const
+Building& ServiceWalker::getBase()
 {
-   return new ServiceWalker(*this);
-}
-
-void ServiceWalker::setServiceBuilding(ServiceBuilding &building)
-{
-   _building = &building;
-}
-
-ServiceBuilding &ServiceWalker::getServiceBuilding()
-{
-   if (_building == NULL) THROW("ServiceBuilding is not initialized");
-   return *_building;
+   if (_base == NULL) THROW("ServiceBuilding is not initialized");
+   return *_base;
 }
 
 ServiceType ServiceWalker::getService()
@@ -552,7 +534,7 @@ void ServiceWalker::computeWalkerPath()
    std::list<PathWay> pathWayList;
 
    Propagator pathPropagator;
-   pathPropagator.init(*_building);
+   pathPropagator.init(*_base);
    pathPropagator.getAllPaths(_maxDistance, pathWayList);
 
    float maxPathValue = 0.0;
@@ -699,7 +681,7 @@ void ServiceWalker::serialize(OutputSerialStream &stream)
 {
    Walker::serialize(stream);
    stream.write_int((int) _service, 1, 0, S_MAX);
-   stream.write_objectID(_building);
+   stream.write_objectID(_base);
    stream.write_int(_maxDistance, 2, 0, 65535);
 }
 
@@ -709,7 +691,7 @@ void ServiceWalker::unserialize(InputSerialStream &stream)
    _service = (ServiceType) stream.read_int(1, 0, S_MAX);
    init(_service);
 
-   stream.read_objectID((void**)&_building);
+   stream.read_objectID((void**)&_base);
    _maxDistance = stream.read_int(2, 0, 65535);
 }
 
@@ -760,11 +742,6 @@ void TraineeWalker::init(const WalkerTraineeType traineeType)
    case WTT_MAX:
       break;
    }
-}
-
-TraineeWalker* TraineeWalker::clone() const
-{
-   return new TraineeWalker(*this);
 }
 
 void TraineeWalker::setOriginBuilding(Building &originBuilding)

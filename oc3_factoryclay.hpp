@@ -13,22 +13,18 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_WORKERSHUNTER_H_INCLUDE_
-#define __OPENCAESAR3_WORKERSHUNTER_H_INCLUDE_
+#ifndef __OPENCAESAR3_FACTORYCLAY_H_INCLUDED__
+#define __OPENCAESAR3_FACTORYCLAY_H_INCLUDED__
 
-#include "oc3_walker.hpp"
+#include "oc3_factory_building.hpp"
 
-class WorkersHunter : public ServiceWalker
+class FactoryClay : public Factory
 {
 public:
-    WorkersHunter( WorkingBuilding& building, const int workersNeeded );
-
-    int getWorkersNeeded() const;
-
-    void onNewTile();
-    void hireWorkers( const int workers );
-private:
-    int _workersNeeded;
+  FactoryClay();
+  
+  bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
+  void timeStep(const unsigned long time);
 };
 
-#endif//__OPENCAESAR3_WORKERSHUNTER_H_INCLUDE_
+#endif //__OPENCAESAR3_FACTORYCLAY_H_INCLUDED__

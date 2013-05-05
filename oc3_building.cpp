@@ -21,7 +21,6 @@
 
 #include <iostream>
 #include <algorithm>
-
 #include "oc3_scenario.hpp"
 #include "oc3_walker.hpp"
 #include "oc3_exception.hpp"
@@ -62,6 +61,7 @@ LandOverlay::LandOverlay(const BuildingType type, const Size& size)
 LandOverlay::~LandOverlay()
 {
   // what we shall to do here?
+  int i=0;
 }
 
 
@@ -129,10 +129,12 @@ void LandOverlay::deleteLater()
 
 void LandOverlay::destroy()
 {
+  int i=0;
 }
 
 Tile& LandOverlay::getTile() const
 {
+  _OC3_DEBUG_BREAK_IF( !_master_tile && "master tile must be exists" );
   return *_master_tile;
 }
 
@@ -186,7 +188,7 @@ LandOverlay& LandOverlay::unserialize_all(InputSerialStream &stream)
   BuildingType buildingType = (BuildingType) stream.read_int(1, 0, B_MAX);
   int i = stream.read_int(2, 0, 1000);
   int j = stream.read_int(2, 0, 1000);
-  LandOverlay *res = ConstructionManager::getInstance().create( buildingType )->clone();
+  LandOverlay *res = ConstructionManager::getInstance().create( buildingType );
   res->_master_tile = &Scenario::instance().getCity().getTilemap().at(i, j);
   res->unserialize(stream);
   stream.link(objectID, res);
@@ -200,6 +202,11 @@ void LandOverlay::unserialize(InputSerialStream &stream)
 bool LandOverlay::isWalkable() const
 {
   return false;
+}
+
+TilePos LandOverlay::getTilePos() const
+{
+  return _master_tile->getIJ();
 }
 
 Construction::Construction( const BuildingType type, const Size& size)
@@ -226,6 +233,7 @@ void Construction::build(const TilePos& pos )
 {
   LandOverlay::build( pos );
   computeAccessRoads();
+  _updateDesirabilityInfluence( true );
 }
 
 void Construction::_updateDesirabilityInfluence( bool onBuild )
@@ -317,11 +325,6 @@ Plaza::Plaza()
   _size = 1;
 }
 
-Plaza* Plaza::clone() const
-{
-  //std::cout << "Plaza::clone" << std::endl;
-  return new Plaza(*this);
-}
 
 void Plaza::setTerrain(TerrainTile& terrain)
 {
@@ -365,11 +368,6 @@ Garden::Garden() : Construction(B_GARDEN, Size(1) )
   setPicture( Picture::load( rcEntertaimentGroup, 110) ); // 110 111 112 113
 }
 
-Garden* Garden::clone() const
-{
-  return new Garden(*this);
-}
-
 void Garden::setTerrain(TerrainTile &terrain)
 {
   bool isMeadow = terrain.isMeadow();
@@ -388,11 +386,6 @@ bool Garden::isWalkable() const
 Road::Road() : Construction( B_ROAD, Size(1) )
 {
   setPicture( Picture::load( rcRoadGroup, 44));  // default picture for build tool
-}
-
-Road* Road::clone() const
-{
-  return new Road(*this);
 }
 
 void Road::build(const TilePos& pos )

@@ -15,8 +15,6 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
-
 #include "oc3_factory_building.hpp"
 
 #include <iostream>
@@ -28,9 +26,17 @@
 #include "oc3_gettext.hpp"
 #include "oc3_resourcegroup.hpp"
 
+typedef std::vector< CartPusher* > Pushers;
+
+class Factory::Impl
+{
+public:
+  Pushers pushers;
+};
+
 Factory::Factory( const GoodType inType, const GoodType outType,
                   const BuildingType type, const Size& size )
-: WorkingBuilding( type, size )
+: WorkingBuilding( type, size ), _d( new Impl )
 {
    setMaxWorkers(10);
    setWorkers(8);
@@ -64,30 +70,6 @@ int Factory::getProgress()
    return (int) _progress;
 }
 
-
-std::map<GoodType, Factory*> Factory::_specimen;
-
-std::map<GoodType, Factory*>& Factory::getSpecimen()
-{
-   if (_specimen.empty())
-   {
-      _specimen[G_TIMBER]    = new FactoryTimber();
-      _specimen[G_FURNITURE] = new FactoryFurniture();
-      _specimen[G_IRON]      = new FactoryIron();
-      _specimen[G_WEAPON]    = new FactoryWeapon();
-      _specimen[G_WINE]      = new FactoryWine();
-      _specimen[G_OIL]       = new FactoryOil();
-      _specimen[G_CLAY]      = new FactoryClay();
-      _specimen[G_POTTERY]   = new FactoryPottery();
-      _specimen[G_MARBLE]    = new FactoryMarble();
-      // ????
-      _specimen[G_FISH]      = new Wharf();
-   }
-
-   return _specimen;
-}
-
-
 void Factory::timeStep(const unsigned long time)
 {
    Building::timeStep(time);
@@ -103,8 +85,6 @@ void Factory::timeStep(const unsigned long time)
       work = 0.0;
    }
 
-   _progress += work;
-
    if( _progress > 100.0 )
    {
       if (inStock._goodType != G_NONE)
@@ -112,23 +92,21 @@ void Factory::timeStep(const unsigned long time)
          // the input good is consumed
          inStock._currentQty -= 100;
       }
-      deliverGood();
-      _progress -= 100.0;
+      deliverGood();      
    }
-
-   _animation.update( time );
-   Picture *pic = _animation.getCurrentPicture();
-   if (pic != NULL)
+   else
    {
-      // animation of the working factory
-      int level = _fgPictures.size()-1;
-      _fgPictures[level] = _animation.getCurrentPicture();
-   }
+     _progress += work;
 
-   // if (inStock._goodType != G_NONE && inStock._currentQty >= 0)
-   // {
-   //    _fgPictures[0] = _stockPicture;
-   // }   
+     _animation.update( time );
+     Picture *pic = _animation.getCurrentPicture();
+     if (pic != NULL)
+     {
+       // animation of the working factory
+       int level = _fgPictures.size()-1;
+       _fgPictures[level] = _animation.getCurrentPicture();
+     }
+   }  
 }
 
 
@@ -136,14 +114,19 @@ void Factory::deliverGood()
 {
    // std::cout << "Factory delivery" << std::endl;
 
-   // make a cart pusher and send him away
-   GoodStock stock(_outGoodType, 100, 100);
-   CartPusher* walker = new CartPusher();
-   walker->setStock(stock);
-   walker->setProducerBuilding(*this);
-   walker->start();
+   // make a cart pusher and send him away   
+   if( _mayDeliverGood() )
+   {
+     GoodStock stock(_outGoodType, 100, 100);
+     CartPusher* walker = new CartPusher();
+     walker->setStock(stock);
+     walker->setProducerBuilding(*this);
+     walker->start();
+     _d->pushers.push_back( walker );
+     _progress -= 100.f;
 
-   Scenario::instance().getCity().addWalker( *walker );
+     Scenario::instance().getCity().addWalker( *walker );
+   }
 }
 
 
@@ -173,6 +156,27 @@ void Factory::unserialize(InputSerialStream &stream)
    _progress = (float)stream.read_int(1, 0, 100); // approximation
 }
 
+Factory::~Factory()
+{
+
+}
+
+bool Factory::_mayDeliverGood() const
+{
+  return ( getAccessRoads().size() > 0 ) && ( _d->pushers.size() == 0 );
+}
+
+void Factory::removeWalker( Walker* w )
+{
+  for( Pushers::iterator it=_d->pushers.begin(); it != _d->pushers.end(); it++ )
+  {
+    if( *it == w )
+    {
+      _d->pushers.erase( it );  
+      return;
+    }
+  }
+}
 
 FactoryMarble::FactoryMarble() : Factory(G_NONE, G_MARBLE, B_MARBLE, Size(2) )
 {
@@ -184,10 +188,10 @@ FactoryMarble::FactoryMarble() : Factory(G_NONE, G_MARBLE, B_MARBLE, Size(2) )
    _fgPictures.resize(2);
 }
 
-FactoryMarble* FactoryMarble::clone() const
-{
-   return new FactoryMarble(*this);
-}
+// FactoryMarble* FactoryMarble::clone() const
+// {
+//    return new FactoryMarble(*this);
+// }
 
 bool FactoryMarble::canBuild(const TilePos& pos ) const
 {
@@ -195,7 +199,7 @@ bool FactoryMarble::canBuild(const TilePos& pos ) const
    bool near_mountain = false;  // tells if the factory is next to a mountain
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 1 ), Tilemap::checkCorners);
+   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 2 ), Tilemap::checkCorners);
    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
       near_mountain |= (*itTiles)->get_terrain().isRock();
@@ -230,10 +234,10 @@ FactoryTimber::FactoryTimber() : Factory(G_NONE, G_TIMBER, B_TIMBER, Size(2) )
    _fgPictures.resize(2);
 }
 
-FactoryTimber* FactoryTimber::clone() const
-{
-   return new FactoryTimber(*this);
-}
+// FactoryTimber* FactoryTimber::clone() const
+// {
+//    return new FactoryTimber(*this);
+// }
 
 bool FactoryTimber::canBuild(const TilePos& pos ) const
 {
@@ -241,7 +245,7 @@ bool FactoryTimber::canBuild(const TilePos& pos ) const
    bool near_forest = false;  // tells if the factory is next to a forest
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 1 ), Tilemap::checkCorners );
+   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 2 ), Tilemap::checkCorners );
    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
       Tile &tile = **itTiles;
@@ -261,10 +265,10 @@ FactoryIron::FactoryIron() : Factory(G_NONE, G_IRON, B_IRON, Size(2) )
    _fgPictures.resize(2);
 }
 
-FactoryIron* FactoryIron::clone() const
-{
-   return new FactoryIron(*this);
-}
+// FactoryIron* FactoryIron::clone() const
+// {
+//    return new FactoryIron(*this);
+// }
 
 bool FactoryIron::canBuild(const TilePos& pos ) const
 {
@@ -272,7 +276,7 @@ bool FactoryIron::canBuild(const TilePos& pos ) const
    bool near_mountain = false;  // tells if the factory is next to a mountain
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 1), Tilemap::checkCorners );
+   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 2), Tilemap::checkCorners );
    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
       near_mountain |= (*itTiles)->get_terrain().isRock();
@@ -280,37 +284,6 @@ bool FactoryIron::canBuild(const TilePos& pos ) const
 
    return (is_constructible && near_mountain);
 }
-
-
-FactoryClay::FactoryClay() : Factory(G_NONE, G_CLAY, B_CLAY, Size(2) )
-{
-   _productionRate = 9.6f;
-   _picture = &Picture::load(ResourceGroup::commerce, 61);
-
-   _animation.load( ResourceGroup::commerce, 62, 10);
-   _fgPictures.resize(2);
-}
-
-FactoryClay* FactoryClay::clone() const
-{
-   return new FactoryClay(*this);
-}
-
-bool FactoryClay::canBuild(const TilePos& pos ) const
-{
-   bool is_constructible = Construction::canBuild( pos );
-   bool near_water = false;
-
-   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1), Size( _size + 1 ), Tilemap::checkCorners );
-   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
-   {
-     near_water |= (*itTiles)->get_terrain().isWater();
-   }
-
-   return (is_constructible && near_water);
-}
-
 
 FactoryWeapon::FactoryWeapon() : Factory(G_IRON, G_WEAPON, B_WEAPON, Size(2) )
 {
@@ -320,10 +293,10 @@ FactoryWeapon::FactoryWeapon() : Factory(G_IRON, G_WEAPON, B_WEAPON, Size(2) )
    _fgPictures.resize(2);
 }
 
-FactoryWeapon* FactoryWeapon::clone() const
-{
-   return new FactoryWeapon(*this);
-}
+// FactoryWeapon* FactoryWeapon::clone() const
+// {
+//    return new FactoryWeapon(*this);
+// }
 
 
 FactoryFurniture::FactoryFurniture() : Factory(G_TIMBER, G_FURNITURE, B_FURNITURE, Size(2) )
@@ -334,10 +307,10 @@ FactoryFurniture::FactoryFurniture() : Factory(G_TIMBER, G_FURNITURE, B_FURNITUR
    _fgPictures.resize(2);
 }
 
-FactoryFurniture* FactoryFurniture::clone() const
-{
-   return new FactoryFurniture(*this);
-}
+// FactoryFurniture* FactoryFurniture::clone() const
+// {
+//    return new FactoryFurniture(*this);
+// }
 
 
 FactoryWine::FactoryWine() : Factory(G_GRAPE, G_WINE, B_WINE, Size(2) )
@@ -348,10 +321,10 @@ FactoryWine::FactoryWine() : Factory(G_GRAPE, G_WINE, B_WINE, Size(2) )
    _fgPictures.resize(2);
 }
 
-FactoryWine* FactoryWine::clone() const
-{
-   return new FactoryWine(*this);
-}
+// FactoryWine* FactoryWine::clone() const
+// {
+//    return new FactoryWine(*this);
+// }
 
 
 FactoryOil::FactoryOil() : Factory(G_OLIVE, G_OIL, B_OIL, Size(2) )
@@ -362,10 +335,10 @@ FactoryOil::FactoryOil() : Factory(G_OLIVE, G_OIL, B_OIL, Size(2) )
    _fgPictures.resize(2);
 }
 
-FactoryOil* FactoryOil::clone() const
-{
-   return new FactoryOil(*this);
-}
+// FactoryOil* FactoryOil::clone() const
+// {
+//    return new FactoryOil(*this);
+// }
 
 
 FactoryPottery::FactoryPottery() : Factory(G_CLAY, G_POTTERY, B_POTTERY, Size(2))
@@ -376,10 +349,10 @@ FactoryPottery::FactoryPottery() : Factory(G_CLAY, G_POTTERY, B_POTTERY, Size(2)
    _fgPictures.resize(2);
 }
 
-FactoryPottery* FactoryPottery::clone() const
-{
-   return new FactoryPottery(*this);
-}
+// FactoryPottery* FactoryPottery::clone() const
+// {
+//    return new FactoryPottery(*this);
+// }
 
 
 FarmTile::FarmTile(const GoodType outGood, const TilePos& pos )
@@ -438,6 +411,7 @@ Farm::Farm(const GoodType outGood, const BuildingType type )
 
    _pictureBuilding = Picture::load( ResourceGroup::commerce, 12);  // farm building
    _pictureBuilding.add_offset(30, 15);
+
    init();
 }
 
@@ -510,59 +484,52 @@ FarmWheat::FarmWheat() : Farm(G_WHEAT, B_WHEAT)
 {
 }
 
-FarmWheat* FarmWheat::clone() const
-{
-   FarmWheat *res = new FarmWheat(*this);
-   res->init();
-   return res;
-}
+// FarmWheat* FarmWheat::clone() const
+// {
+//    FarmWheat *res = new FarmWheat(*this);
+//    res->init();
+//    return res;
+// }
 
 
 FarmOlive::FarmOlive() : Farm(G_OLIVE, B_OLIVE)
 {
 }
 
-FarmOlive* FarmOlive::clone() const
-{
-   FarmOlive *res = new FarmOlive(*this);
-   res->init();
-   return res;
-}
+// FarmOlive* FarmOlive::clone() const
+// {
+//    FarmOlive *res = new FarmOlive(*this);
+//    res->init();
+//    return res;
+// }
 
 
 FarmGrape::FarmGrape() : Farm(G_GRAPE, B_GRAPE)
 {
 }
 
-FarmGrape* FarmGrape::clone() const
-{
-   FarmGrape *res = new FarmGrape(*this);
-   res->init();
-   return res;
-}
+// FarmGrape* FarmGrape::clone() const
+// {
+//    FarmGrape *res = new FarmGrape(*this);
+//    res->init();
+//    return res;
+// }
 
 
 FarmMeat::FarmMeat() : Farm(G_MEAT, B_MEAT)
 {
 }
 
-FarmMeat* FarmMeat::clone() const
-{
-   FarmMeat *res = new FarmMeat(*this);
-   res->init();
-   return res;
-}
+// FarmMeat* FarmMeat::clone() const
+// {
+//    FarmMeat *res = new FarmMeat(*this);
+//    res->init();
+//    return res;
+// }
 
 
 FarmFruit::FarmFruit() : Farm(G_FRUIT, B_FRUIT)
 {
-}
-
-FarmFruit* FarmFruit::clone() const
-{
-   FarmFruit *res = new FarmFruit(*this);
-   res->init();
-   return res;
 }
 
 
@@ -570,12 +537,12 @@ FarmVegetable::FarmVegetable() : Farm(G_VEGETABLE, B_VEGETABLE)
 {
 }
 
-FarmVegetable* FarmVegetable::clone() const
-{
-   FarmVegetable *res = new FarmVegetable(*this);
-   res->init();
-   return res;
-}
+// FarmVegetable* FarmVegetable::clone() const
+// {
+//    FarmVegetable *res = new FarmVegetable(*this);
+//    res->init();
+//    return res;
+// }
 
 Wharf::Wharf() : Factory(G_NONE, G_FISH, B_WHARF, Size(2))
 {
@@ -583,10 +550,10 @@ Wharf::Wharf() : Factory(G_NONE, G_FISH, B_WHARF, Size(2))
   setPicture(PicLoader::instance().get_picture("transport", 52));
 }
 
-Wharf* Wharf::clone() const
-{
-   return new Wharf(*this);
-}
+// Wharf* Wharf::clone() const
+// {
+//    return new Wharf(*this);
+// }
 
 /* INCORRECT! */
 bool Wharf::canBuild(const TilePos& pos ) const
@@ -608,7 +575,7 @@ bool Wharf::canBuild(const TilePos& pos ) const
    
   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
    
-  std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size+1 ), false);
+  std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size+2 ), false);
   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {
     Tile &tile = **itTiles;

@@ -28,8 +28,7 @@ class House : public Building
 public:
    enum { smallHovel=1 } Level;
 
-   House( const int houseId );
-   House* clone() const;
+   House( const int houseId=smallHovel );
 
    void timeStep(const unsigned long time);
 

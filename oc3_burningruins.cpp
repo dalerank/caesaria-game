@@ -55,7 +55,7 @@ void BurningRuins::timeStep(const unsigned long time)
           setPicture( Picture::load( ResourceGroup::land2a, 223));
           _animation.clear();
           _animation.load(ResourceGroup::land2a, 224, 8);
-          _animation.setOffset( Point( 14, 26 ) );
+          _animation.setOffset( Point( 14, 18 ) );
         }
       }
       else

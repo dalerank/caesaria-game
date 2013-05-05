@@ -30,6 +30,7 @@
 #include "oc3_safetycast.hpp"
 #include "oc3_cityservice_emigrant.hpp"
 #include "oc3_cityservice_workershire.hpp"
+#include "oc3_cityservice_timers.hpp"
 
 typedef std::vector< CityServicePtr > CityServices;
 
@@ -48,6 +49,8 @@ public:
     Walkers walkerList;
     TilePos roadEntry; //coordinates can't be negative!
     CityServices services;
+    bool needRecomputeAllRoads;
+    int taxRate;
 };
 
 City::City() : _d( new Impl )
@@ -63,7 +66,8 @@ City::City() : _d( new Impl )
    _boatExitJ = 0;
    _d->funds = 1000;
    _d->population = 0;
-   _taxRate = 700;
+   _d->needRecomputeAllRoads = false;
+   _d->taxRate = 700;
    _climate = C_CENTRAL;
    
    // DEBUG
@@ -73,12 +77,15 @@ City::City() : _d( new Impl )
    pRndmTerGrid = (unsigned char *)malloc(26244);
    pRandomGrid  = (unsigned char *)malloc(26244);
    pZeroGrid    = (unsigned char *)malloc(26244);
-   if ( pGraphicGrid == NULL || pEdgeGrid == NULL || pTerrainGrid == NULL ||
-     pRndmTerGrid == NULL || pRandomGrid == NULL || pZeroGrid == NULL )
+   if( pGraphicGrid == NULL || pEdgeGrid == NULL || pTerrainGrid == NULL ||
+       pRndmTerGrid == NULL || pRandomGrid == NULL || pZeroGrid == NULL )
+   {
      THROW("NOT ENOUGH MEMORY!!!! FATAL");
+   }
 
    addService( CityServiceEmigrant::create( *this ) );
    addService( CityServiceWorkersHire::create( *this ) );
+   addService( CityServicePtr( &CityServiceTimers::getInstance() ) );
 }
 
 void City::timeStep()
@@ -122,6 +129,8 @@ void City::timeStep()
   LandOverlays::iterator overlayIt = _d->overlayList.begin();
   while( overlayIt != _d->overlayList.end() )
   {
+    try
+    {   
       (*overlayIt)->timeStep(_time);
 
       if( (*overlayIt)->isDeleted() )
@@ -136,6 +145,11 @@ void City::timeStep()
       {
          ++overlayIt;
       }
+    }
+    catch(...)
+    {
+      int i=0;
+    }
   }
 
   CityServices::iterator serviceIt=_d->services.begin();
@@ -151,6 +165,27 @@ void City::timeStep()
     }
     else
       serviceIt++;
+  }
+
+  if( _d->needRecomputeAllRoads )
+  {
+    _d->needRecomputeAllRoads = false;
+    for (LandOverlays::iterator itOverlay = _d->overlayList.begin(); itOverlay!=_d->overlayList.end(); ++itOverlay)
+    {
+      // for each overlay
+      LandOverlay *overlay = *itOverlay;
+      Construction *construction = safety_cast<Construction*>( overlay );
+      if( construction != NULL )
+      {
+        // overlay matches the filter
+        construction->computeAccessRoads();
+        // for some constructions we need to update picture
+        if( construction->getType() == B_ROAD ) 
+        {
+          construction->setPicture(safety_cast<Road*>(construction)->computePicture());
+        }
+      }
+    }   
   }
 }
 
@@ -208,26 +243,6 @@ std::list<LandOverlay*> City::getBuildingList(const BuildingType buildingType)
    return res;
 }
 
-void City::recomputeRoadsForAll()
-{
-   for (LandOverlays::iterator itOverlay = _d->overlayList.begin(); itOverlay!=_d->overlayList.end(); ++itOverlay)
-   {
-      // for each overlay
-      LandOverlay *overlay = *itOverlay;
-      Construction *construction = safety_cast<Construction*>(overlay);
-      if( construction != NULL )
-      {
-        // overlay matches the filter
-        construction->computeAccessRoads();
-	      // for some constructions we need to update picture
-	      if (construction->getType() == B_ROAD) 
-        {
-          construction->setPicture(safety_cast<Road*>(construction)->computePicture());
-        }
-      }
-   }   
-}
-
 Tilemap& City::getTilemap()
 {
    return _tilemap;
@@ -279,8 +294,8 @@ void City::setBoatExitIJ(unsigned int i, unsigned int j)
   _boatExitJ = j;
 }
 
-int City::getTaxRate() const                 {  return _taxRate;    }
-void City::setTaxRate(const int taxRate)     {  _taxRate = taxRate; }
+int City::getTaxRate() const                 {  return _d->taxRate;    }
+void City::setTaxRate(const int taxRate)     {  _d->taxRate = taxRate; }
 long City::getFunds() const                  {  return _d->funds;   }
 void City::setFunds(const long funds)        {  _d->funds = funds;  }
 
@@ -291,11 +306,11 @@ long City::getPopulation() const
    return _d->population;
 }
 
-void City::build( Construction& buildInstance, const TilePos& pos )
+void City::build( const BuildingType type, const TilePos& pos )
 {
-   BuildingData& buildingData = BuildingDataHolder::instance().getData(buildInstance.getType());
+   BuildingData& buildingData = BuildingDataHolder::instance().getData( type );
    // make new building
-   Construction* building = (Construction*)buildInstance.clone();
+   Construction* building = ConstructionManager::getInstance().create( type );
    building->build( pos );
 
    _d->overlayList.push_back(building);
@@ -325,10 +340,10 @@ void City::disaster( const TilePos& pos, DisasterType type )
         std::list<Tile*> clearedTiles = _tilemap.getFilledRectangle( rPos, Size( size ) );
         for (std::list<Tile*>::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
         {
-            BuildingType dstr2constr[] = { B_BURNING_RUINS, B_COLLAPSED_RUINS };
-            Construction* ruins = dynamic_cast<Construction*>( ConstructionManager::getInstance().create( dstr2constr[type] ) );
-            if( ruins )
-                build( *ruins, (*itTile)->getIJ() );
+          BuildingType dstr2constr[] = { B_BURNING_RUINS, B_COLLAPSED_RUINS };
+          bool canCreate = ConstructionManager::getInstance().canCreate( dstr2constr[type] );
+          if( canCreate )
+            build( dstr2constr[type], (*itTile)->getIJ() );
        }
     }
 }
@@ -377,9 +392,7 @@ void City::clearLand(const TilePos& pos  )
       if( terrain.isMeadow() )
       {
         unsigned int originId = terrain.getOriginalImgId();
-        Picture& pic = PicLoader::instance().get_picture( TerrainTileHelper::convId2PicName( originId ) );
-
-        (*itTile)->set_picture( &pic );
+        (*itTile)->set_picture( &Picture::load( TerrainTileHelper::convId2PicName( originId ) ) );
       }
       else
       {
@@ -389,17 +402,16 @@ void City::clearLand(const TilePos& pos  )
         int startOffset  = ( (rand() % 10 > 6) ? 62 : 232 ); 
         int imgId = rand() % 58;
 
-        (*itTile)->set_picture(&PicLoader::instance().get_picture("land1a", startOffset + imgId));
+        (*itTile)->set_picture( &Picture::load( "land1a", startOffset + imgId));
       }      
     }
       
     // recompute roads;
     // there is problem that we NEED to recompute all roads map for all buildings
-    // because MaxDistance2Road can be any number
-    
+    // because MaxDistance2Road can be any number    
     if( deleteRoad )
     {
-      recomputeRoadsForAll();     
+      _d->needRecomputeAllRoads = true;     
     }
   }
 }

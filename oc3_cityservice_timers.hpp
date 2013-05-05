@@ -13,22 +13,27 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_WORKERSHUNTER_H_INCLUDE_
-#define __OPENCAESAR3_WORKERSHUNTER_H_INCLUDE_
+#ifndef __OPENCAESAR3_CITYSERVICE_TIMERS_H_INCLUDED__
+#define __OPENCAESAR3_CITYSERVICE_TIMERS_H_INCLUDED__
 
-#include "oc3_walker.hpp"
+#include "oc3_cityservice.hpp"
+#include "oc3_timer.hpp"
 
-class WorkersHunter : public ServiceWalker
+class CityServiceTimers : public CityService
 {
 public:
-    WorkersHunter( WorkingBuilding& building, const int workersNeeded );
+  static CityServiceTimers& getInstance();
 
-    int getWorkersNeeded() const;
+  void update( const unsigned int time );
+  void addTimer( TimerPtr timer );
 
-    void onNewTile();
-    void hireWorkers( const int workers );
+  ~CityServiceTimers();
 private:
-    int _workersNeeded;
+  CityServiceTimers();
+
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
-#endif//__OPENCAESAR3_WORKERSHUNTER_H_INCLUDE_
+
+#endif //__OPENCAESAR3_CITYSERVICE_TIMERS_H_INCLUDED__

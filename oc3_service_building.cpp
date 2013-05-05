@@ -89,8 +89,7 @@ void ServiceBuilding::destroy()
 void ServiceBuilding::deliverService()
 {
    // make a service walker and send him to his wandering
-   ServiceWalker *walker = new ServiceWalker(_service);
-   walker->setServiceBuilding(*this);
+   ServiceWalker *walker = new ServiceWalker(*this,_service);
    walker->start();
    _addWalker( walker );
 }
@@ -156,8 +155,7 @@ BuildingWell* BuildingWell::clone() const
 
 void BuildingWell::deliverService()
 {
-   ServiceWalker walker(getService());
-   walker.setServiceBuilding(*this);
+   ServiceWalker walker( *this, getService());
    std::set<Building*> reachedBuildings = walker.getReachedBuildings( getTile().getIJ() );
    for (std::set<Building*>::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
    {
@@ -206,8 +204,7 @@ BuildingFountain* BuildingFountain::clone() const
 
 void BuildingFountain::deliverService()
 {
-   ServiceWalker walker(getService());
-   walker.setServiceBuilding(*this);
+   ServiceWalker walker( *this, getService());
    std::set<Building*> reachedBuildings = walker.getReachedBuildings( getTile().getIJ() );
    for (std::set<Building*>::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
    {
