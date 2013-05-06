@@ -26,11 +26,6 @@ Senate::Senate() : ServiceBuilding(S_SENATE, B_SENATE, Size(5) )
   setPicture( Picture::load("govt", 4) );
 }
 
-Senate* Senate::clone() const
-{
-  return new Senate(*this);
-}
-
 bool Senate::canBuild( const TilePos& pos ) const
 {
   bool mayBuild = ServiceBuilding::canBuild( pos );
@@ -38,7 +33,7 @@ bool Senate::canBuild( const TilePos& pos ) const
   if( mayBuild )
   {
     City& city = Scenario::instance().getCity();
-    std::list<LandOverlay*> senate = city.getBuildingList(B_SENATE);
+    LandOverlays senate = city.getBuildingList(B_SENATE);
     mayBuild &= !( senate.size() > 0 );
   }
 

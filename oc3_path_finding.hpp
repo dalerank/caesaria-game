@@ -23,7 +23,7 @@
 #include "oc3_building.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_serializer.hpp"
-
+#include "oc3_predefinitions.hpp"
 #include <list>
 
 class PathWay : public Serializable
@@ -46,7 +46,7 @@ public:
    void setNextDirection(const DirectionType direction);
    void setNextTile( const Tile& tile);
    bool contains(Tile &tile);
-   std::list<Tile*>& getAllTiles();
+   PtrTilesList& getAllTiles();
 
    void prettyPrint() const;
    void serialize(OutputSerialStream &stream);
@@ -58,14 +58,13 @@ public:
 private:
    Tilemap *_tilemap;
    Tile *_origin;
-   int _destinationI;
-   int _destinationJ;
+   TilePos _destination;
 
    typedef std::vector<DirectionType> Directions;
    Directions _directionList;
    Directions::iterator _directionIt;
    Directions::reverse_iterator _directionIt_reverse;
-   std::list<Tile*> _tileList;
+   PtrTilesList _tileList;
    bool _isReverse;
 };
 bool operator<(const PathWay &v1, const PathWay &v2);
@@ -75,41 +74,43 @@ class City;
 class Propagator
 {
 public:
-   Propagator();
-   void setAllLands(const bool value);
-   void setAllDirections(const bool value);
+  typedef std::map<BuildingPtr, PathWay> ReachedBuldings;
+  
+  Propagator();
+  void setAllLands(const bool value);
+  void setAllDirections(const bool value);
 
-   /** propagate some data in the road network
-   * param origin : propagation origin
-   * param oCompletedBranches: result of the propagation: road=destination, pathWay=path
+  /** propagate some data in the road network
+  * param origin : propagation origin
+  * param oCompletedBranches: result of the propagation: road=destination, pathWay=path
+  */
+  void init(Tile& origin);
+  void init(const PtrTilesList& origin);
+  void init(const Construction& origin);
+  void propagate(const int maxDistance);
+
+  void getReachedBuildings(const BuildingType buildingType, ReachedBuldings& oPathWayList);
+
+  /** finds the shortest path between origin and destination
+   * returns True if a path exists
+   * the path is returned in oPathWay
    */
-   void init(Tile& origin);
-   void init(const std::list<Tile*>& origin);
-   void init(const Construction& origin);
-   void propagate(const int maxDistance);
+  bool getPath( RoadPtr destination, PathWay &oPathWay);
+  bool getPath(BuildingPtr destination, PathWay &oPathWay);
 
-   void getReachedBuildings(const BuildingType buildingType, std::map<Building*, PathWay> &oPathWayList);
-
-   /** finds the shortest path between origin and destination
-    * returns True if a path exists
-    * the path is returned in oPathWay
-    */
-   bool getPath(Road &destination, PathWay &oPathWay);
-   bool getPath(Building &destination, PathWay &oPathWay);
-
-   /** returns all paths starting at origin */
-   void getAllPaths(const int maxDistance, std::list<PathWay> &oPathWayList);
+  /** returns all paths starting at origin */
+  void getAllPaths(const int maxDistance, std::list<PathWay> &oPathWayList);
 
 private:
-   std::set<PathWay> _activeBranches;
-   std::map<Tile*, PathWay> _completedBranches;
+  std::set<PathWay> _activeBranches;
+  std::map<Tile*, PathWay> _completedBranches;
 
-   bool _allLands;  // true if can walk in all lands, false if limited to roads
-   bool _allDirections;  // true if can walk in all directions, false if limited to North/South/East/West
+  bool _allLands;  // true if can walk in all lands, false if limited to roads
+  bool _allDirections;  // true if can walk in all directions, false if limited to North/South/East/West
 
-   City *_city;
-   Tile* _origin;
-   Tilemap *_tilemap;
+  City* _city;
+  Tile* _origin;
+  Tilemap* _tilemap;
 };
 
 

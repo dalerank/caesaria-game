@@ -49,21 +49,60 @@ MarketBuyer::~MarketBuyer()
   
 }
 
-// MarketBuyer* MarketBuyer::clone() const
-// {
-//    return new MarketBuyer(*this);
-// }
-
 void MarketBuyer::setMarket(Market &market)
 {
    _market = &market;
+}
+
+template< class T >
+BuildingPtr getWalkerDestination2( Propagator &pathPropagator, const BuildingType type, 
+                                    Market& market, SimpleGoodStore& basket, const GoodType what, 
+                                    PathWay &oPathWay, long& reservId )
+{
+  SmartPtr< T > res;
+
+  Propagator::ReachedBuldings pathWayList;
+  pathPropagator.getReachedBuildings(type, pathWayList);
+
+  int max_qty = 0;
+
+  // select the warehouse with the max quantity of requested goods
+  for( Propagator::ReachedBuldings::iterator pathWayIt= pathWayList.begin(); 
+    pathWayIt != pathWayList.end(); ++pathWayIt)
+  {
+    // for every warehouse within range
+    BuildingPtr building= pathWayIt->first;
+    PathWay& pathWay= pathWayIt->second;
+
+    SmartPtr< T > destBuilding = building.as< T >();
+    int qty = destBuilding->getGoodStore().getMaxRetrieve( what );
+    if( qty > max_qty )
+    {
+      res = destBuilding;
+      oPathWay = pathWay;
+      max_qty = qty;
+    }
+  }
+
+  if( res.isValid() )
+  {
+    // a warehouse/granary has been found!
+    // reserve some goods from that warehouse/granary
+    int qty = std::min( max_qty, market.getGoodDemand( what ) );
+    qty = std::min(qty, basket.getMaxQty( what ) - basket.getCurrentQty( what ));
+    // std::cout << "MarketBuyer reserves from warehouse, qty=" << qty << std::endl;
+    GoodStock stock( what, qty, qty);
+    reservId = res->getGoodStore().reserveRetrieval( stock );
+  }
+
+  return res.template as<Building>();
 }
 
 void MarketBuyer::computeWalkerDestination()
 {
    std::list<GoodType> priorityGoods = _market->getMostNeededGoods();
 
-   _destBuilding = NULL;  // no destination yet
+   _destBuilding = BuildingPtr();  // no destination yet
 
    if (priorityGoods.size() > 0)
    {
@@ -83,12 +122,14 @@ void MarketBuyer::computeWalkerDestination()
          if (_priorityGood == G_WHEAT || _priorityGood == G_FISH || _priorityGood == G_MEAT || _priorityGood == G_FRUIT || _priorityGood == G_VEGETABLE)
          {
             // try get that good from a granary
-            _destBuilding = getWalkerDestination_granary(pathPropagator, pathWay);
+            _destBuilding = getWalkerDestination2<Granary>( pathPropagator, B_GRANARY, *_market,
+                                                            _basket, _priorityGood, pathWay, _reservationID );
          }
          else
          {
             // try get that good from a warehouse
-            _destBuilding = getWalkerDestination_warehouse(pathPropagator, pathWay);
+            _destBuilding = getWalkerDestination2<Warehouse>( pathPropagator, B_WAREHOUSE, *_market, 
+                                                              _basket, _priorityGood, pathWay, _reservationID );
          }
 
          if (_destBuilding != NULL)
@@ -108,91 +149,11 @@ void MarketBuyer::computeWalkerDestination()
    }
 
    setIJ(_pathWay.getOrigin().getIJ() );
-   Scenario::instance().getCity().addWalker( *this );
+   WalkerPtr walker( this );
+   walker->drop();
+
+   Scenario::instance().getCity().addWalker( walker );
 }
-
-
-Warehouse* MarketBuyer::getWalkerDestination_warehouse(Propagator &pathPropagator, PathWay &oPathWay)
-{
-   Warehouse* res = NULL;
-
-   std::map<Building*, PathWay> pathWayList;
-   pathPropagator.getReachedBuildings(B_WAREHOUSE, pathWayList);
-
-   int max_qty = 0;
-
-   // select the warehouse with the max quantity of requested goods
-   for (std::map<Building*, PathWay>::iterator pathWayIt= pathWayList.begin(); pathWayIt != pathWayList.end(); ++pathWayIt)
-   {
-      // for every warehouse within range
-      Building* building= pathWayIt->first;
-      PathWay& pathWay= pathWayIt->second;
-
-      Warehouse& warehouse= (Warehouse&) *building;
-      int qty = warehouse.getGoodStore().getMaxRetrieve(_priorityGood);
-      if (qty > max_qty)
-      {
-         res= &warehouse;
-         oPathWay = pathWay;
-         max_qty = qty;
-      }
-   }
-
-   if (res != NULL)
-   {
-      // a warehouse has been found!
-      // reserve some goods from that warehouse
-      int qty = std::min(max_qty, _market->getGoodDemand(_priorityGood));
-      qty = std::min(qty, _basket.getMaxQty(_priorityGood) - _basket.getCurrentQty(_priorityGood));
-      // std::cout << "MarketBuyer reserves from warehouse, qty=" << qty << std::endl;
-      GoodStock stock(_priorityGood, qty, qty);
-      _reservationID = res->getGoodStore().reserveRetrieval(stock);
-   }
-
-   return res;
-}
-
-
-Granary* MarketBuyer::getWalkerDestination_granary(Propagator &pathPropagator, PathWay &oPathWay)
-{
-   Granary* res = NULL;
-
-   std::map<Building*, PathWay> pathWayList;
-   pathPropagator.getReachedBuildings(B_GRANARY, pathWayList);
-
-   int max_qty = 0;
-
-   // select the granary with the max quantity of requested goods
-   for (std::map<Building*, PathWay>::iterator pathWayIt= pathWayList.begin(); pathWayIt != pathWayList.end(); ++pathWayIt)
-   {
-      // for every granary within range
-      Building* building= pathWayIt->first;
-      PathWay& pathWay= pathWayIt->second;
-
-      Granary& granary= (Granary&) *building;
-      int qty = granary.getGoodStore().getMaxRetrieve(_priorityGood);
-      if (qty > max_qty)
-      {
-         res= &granary;
-         oPathWay = pathWay;
-         max_qty = qty;
-      }
-   }
-
-   if (res != NULL)
-   {
-      // a granary has been found!
-      // reserve some goods from that granary
-      int qty = std::min(max_qty, _market->getGoodDemand(_priorityGood));
-      qty = std::min(qty, _basket.getMaxQty(_priorityGood) - _basket.getCurrentQty(_priorityGood));
-      // std::cout << "MarketBuyer reserves from granary, qty=" << qty << std::endl;
-      GoodStock stock(_priorityGood, qty, qty);
-      _reservationID = res->getGoodStore().reserveRetrieval(stock);
-   }
-
-   return res;
-}
-
 
 void MarketBuyer::onDestination()
 {
@@ -213,9 +174,9 @@ void MarketBuyer::onDestination()
       computeDirection();
 
       // get goods from destination building
-      Granary *granary = dynamic_cast<Granary*> (_destBuilding);
-      Warehouse *warehouse = dynamic_cast<Warehouse*> (_destBuilding);
-      if (granary != NULL)
+      SmartPtr<Granary> granary = _destBuilding.as<Granary>();
+      SmartPtr<Warehouse> warehouse = _destBuilding.as<Warehouse>();
+      if( granary.isValid() )
       {
          // this is a granary!
          // std::cout << "MarketBuyer arrives at granary, res=" << _reservationID << std::endl;
@@ -241,7 +202,7 @@ void MarketBuyer::onDestination()
          }
          granary->computePictures();
       }
-      if (warehouse != NULL)
+      else if( warehouse.isValid() )
       {
          // this is a warehouse!
          // std::cout << "Market buyer takes IRON from warehouse" << std::endl;
@@ -281,7 +242,7 @@ void MarketBuyer::start()
 void MarketBuyer::serialize(OutputSerialStream &stream)
 {
    Walker::serialize(stream);
-   stream.write_objectID(_destBuilding);
+   stream.write_objectID( _destBuilding.object() );
    stream.write_int((int)_priorityGood, 1, 0, G_MAX);
    stream.write_objectID(_market);
    _basket.serialize(stream);
@@ -292,7 +253,8 @@ void MarketBuyer::serialize(OutputSerialStream &stream)
 void MarketBuyer::unserialize(InputSerialStream &stream)
 {
    Walker::unserialize(stream);
-   stream.read_objectID((void**)&_destBuilding);
+   //stream.read_objectID((void**)&_destBuilding);
+
    _priorityGood = (GoodType) stream.read_int(1, 0, G_MAX);
    stream.read_objectID((void**)&_market);
    _basket.unserialize(stream);

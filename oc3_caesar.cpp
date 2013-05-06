@@ -144,13 +144,13 @@ void CaesarApp::loadScenario(const std::string &scenarioFile)
 
    City &city = _d->scenario->getCity();
 
-   std::list<LandOverlay*> llo = city.getOverlayList();
+   LandOverlays llo = city.getOverlayList();
    
-   for (std::list<LandOverlay*>::iterator itLLO = llo.begin(); itLLO!=llo.end(); ++itLLO)
+   for ( LandOverlays::iterator itLLO = llo.begin(); itLLO!=llo.end(); ++itLLO)
    {
-      LandOverlay &overlay = **itLLO;
-      Construction* construction = dynamic_cast<Construction*>(&overlay);
-      if (construction != NULL)
+      LandOverlayPtr overlay = *itLLO;
+      ConstructionPtr construction = overlay.as<Construction>();
+      if( construction.isValid() )
       {
          // this is a construction
          construction->computeAccessRoads();

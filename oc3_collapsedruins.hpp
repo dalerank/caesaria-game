@@ -22,7 +22,6 @@ class CollapsedRuins : public Building
 {
 public:
     CollapsedRuins();
-    CollapsedRuins* clone() const;
 
     void burn();
     void build(const TilePos& pos );

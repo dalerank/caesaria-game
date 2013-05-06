@@ -18,6 +18,7 @@
 
 #include "oc3_enums.hpp"
 #include "oc3_scopedptr.hpp"
+#include "oc3_predefinitions.hpp"
 
 class Construction;
 
@@ -44,8 +45,8 @@ class ConstructionManager
 {
 public:
     static ConstructionManager& getInstance();
-    Construction* create(const BuildingType buildingType) const;
-    Construction* create(const std::string& typeName ) const;
+    ConstructionPtr create(const BuildingType buildingType) const;
+    ConstructionPtr create(const std::string& typeName ) const;
 
     bool canCreate( const BuildingType type ) const;
 

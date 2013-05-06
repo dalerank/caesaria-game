@@ -133,11 +133,11 @@ int InputSerialStream::read_objectID(void** objectRef)
       if (objectID == 0)
       {
          // trivial case
-         *objectRef = NULL;
+         //*objectRef = NULL;
       }
       else
       {
-         _mapIdByRef[objectRef] = objectID;
+         _mapIdByRef[ objectRef ] = objectID;
       }
    }
    return objectID;

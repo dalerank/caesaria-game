@@ -16,12 +16,15 @@
 #ifndef __OPENCAESAR3_WALKER_PREFECT_H_INCLUDED__
 #define __OPENCAESAR3_WALKER_PREFECT_H_INCLUDED__
 
-#include "oc3_walker.hpp"
+#include "oc3_servicewalker.hpp"
+
+class WalkerPrefect;
+typedef SmartPtr< WalkerPrefect > WalkerPrefectPtr;
 
 class WalkerPrefect : public ServiceWalker
 {
 public:
-  WalkerPrefect( ServiceBuilding& building, int water=0 );
+  static WalkerPrefectPtr create( ServiceBuildingPtr building, int water=0 );
  
   void onMidTile();
   void onNewTile();
@@ -32,8 +35,10 @@ public:
   ~WalkerPrefect();
  
 protected:
-  bool _looks4Fire( std::set<Building*>& buildings, TilePos& pos );
-  void _checkPath2NearestFire( const std::set<Building*>& buildings );
+  WalkerPrefect( ServiceBuildingPtr building, int water );
+
+  bool _looks4Fire( ReachedBuildings& buildings, TilePos& pos );
+  void _checkPath2NearestFire( const ReachedBuildings& buildings );
   void _back2Prefecture();
 
   class Impl;

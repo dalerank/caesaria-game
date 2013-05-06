@@ -28,17 +28,14 @@
 #include "oc3_enums.hpp"
 #include "oc3_serializer.hpp"
 #include "oc3_signals.hpp"
+#include "oc3_predefinitions.hpp"
 #include "oc3_cityservice.hpp"
-
-#include <list>
 
 class TilePos;
 
 class City : public Serializable
 {
 public:
-  typedef std::list< Walker* > Walkers;
-  typedef std::list< LandOverlay* > LandOverlays;
    City();
    ~City();
 
@@ -46,8 +43,8 @@ public:
    void monthStep();
 
   Walkers getWalkerList( const WalkerType type );
-  void addWalker( Walker& walker );
-  void removeWalker( Walker& walker );
+  void addWalker( WalkerPtr walker );
+  void removeWalker( WalkerPtr walker );
 
   void addService( CityServicePtr service );
   CityServicePtr findService( const std::string& name );
@@ -55,7 +52,7 @@ public:
   LandOverlays& getOverlayList();
   LandOverlays getBuildingList( const BuildingType buildingType );
 
-   void setRoadExitIJ(const unsigned int i, const unsigned int j);
+   void setRoadExit( const TilePos& pos );
    void setBoatEntryIJ(const unsigned int i, const unsigned int j);
    void setBoatExitIJ(const unsigned int i, const unsigned int j);
 
@@ -68,8 +65,6 @@ public:
    unsigned int getCameraStartJ() const;
    TilePos getCameraStartIJ() const;
       
-   unsigned int getRoadExitI() const;
-   unsigned int getRoadExitJ() const;
    TilePos getRoadExitIJ() const;
    
    unsigned int getBoatEntryI() const;
@@ -120,14 +115,12 @@ oc3_signals public:
    Signal1<int>& onMonthChanged();
 
 private:
-   unsigned int _roadExitI, _roadExitJ;
    unsigned int _boatEntryI, _boatEntryJ;
    unsigned int _boatExitI, _boatExitJ;
    unsigned int _cameraStartI, _cameraStartJ;
 
    ClimateType _climate;
    Tilemap _tilemap;
-   unsigned long _time;  // number of timesteps since start
    
    void _calculatePopulation();
 
@@ -141,14 +134,15 @@ public:
   CityHelper( City& city ) : _city( city ) {}
 
   template< class T >
-  std::list< T > getBuildings( const BuildingType type )
+  std::list< SmartPtr< T > > getBuildings( const BuildingType type )
   {
-    std::list< T > ret;
-    City::LandOverlays buildings = _city.getBuildingList( type );
-    for( City::LandOverlays::iterator it = buildings.begin(); 
+    std::list< SmartPtr< T > > ret;
+    LandOverlays buildings = _city.getBuildingList( type );
+    for( LandOverlays::iterator it = buildings.begin(); 
           it != buildings.end(); it++  )
     {
-      if( T b = safety_cast< T >( *it ) )
+      SmartPtr< T > b = (*it).as<T>();
+      if( b.isValid() )
       {
         ret.push_back( b );
       }

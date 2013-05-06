@@ -16,16 +16,12 @@
 #include "oc3_emigrant.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_scenario.hpp"
+#include "oc3_road.hpp"
 
 Emigrant::Emigrant( City& city ) : Immigrant( city, 5 )
 {
 	_walkerType = WT_EMIGRANT;
 	_walkerGraphic = WG_PUSHER2;
-}
-
-Emigrant* Emigrant::clone() const
-{
-  return 0;
 }
 
 Picture* Emigrant::getCartPicture()
@@ -73,11 +69,12 @@ void Emigrant::onNewDirection()
 	setCartPicture( 0 );  // need to get the new graphic
 }
 
-Emigrant* Emigrant::create( City& city, const Road& startPoint )
+EmigrantPtr Emigrant::create( City& city, const RoadPtr startPoint )
 {
-	Emigrant* newEmigrant = new Emigrant( city );
-	newEmigrant->assignPath( startPoint.getTile() );
-  city.addWalker( *newEmigrant );
+	EmigrantPtr newEmigrant( new Emigrant( city ) );
+  newEmigrant->drop();
+	newEmigrant->assignPath( startPoint->getTile() );
+  city.addWalker( newEmigrant.as<Walker>() );
 	return newEmigrant;
 }
 

@@ -25,6 +25,7 @@
 #include "oc3_house.hpp"
 #include "oc3_senate.hpp"
 #include "oc3_buildingprefect.hpp"
+#include "oc3_road.hpp"
 
 #include "oc3_factoryclay.hpp"
 #include "oc3_factorymarble.hpp"
@@ -40,22 +41,23 @@ public:
   ConstructorsMap constructors;
 };
 
-Construction* ConstructionManager::create(const BuildingType buildingType) const
+ConstructionPtr ConstructionManager::create(const BuildingType buildingType) const
 {
-  Construction* ret=NULL;
-
-  //editor workspace
   ConstructorsMap::iterator findConstructor = _d->constructors.find( buildingType );
 
   if( findConstructor != _d->constructors.end() )
-    ret = findConstructor->second->create();
+  {
+    ConstructionPtr ret( findConstructor->second->create() );
+    ret->drop();
+    return ret;
+  }
 
-  return ret;
+  return ConstructionPtr();
 }
 
-Construction* ConstructionManager::create( const std::string& typeName ) const
+ConstructionPtr ConstructionManager::create( const std::string& typeName ) const
 {
-  return 0;
+  return ConstructionPtr();
 }
 
 ConstructionManager& ConstructionManager::getInstance()

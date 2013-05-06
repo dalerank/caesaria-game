@@ -18,6 +18,7 @@
 #include "oc3_scenario.hpp"
 #include "oc3_safetycast.hpp"
 #include "oc3_astarpathfinding.hpp"
+#include "oc3_house.hpp"
 
 class Immigrant::Impl
 {
@@ -37,26 +38,21 @@ Immigrant::Immigrant( City& city, const unsigned char peoples ) : _d( new Impl )
   _d->city = &city;
 }
 
-Immigrant* Immigrant::clone() const
-{
-  return 0;
-}
-
 void Immigrant::assignPath( Tile& startPoint )
 {
-  House* blankHouse = _findBlankHouse();
+  HousePtr blankHouse = _findBlankHouse();
   
   _checkPath( startPoint, blankHouse );
 }
 
-House* Immigrant::_findBlankHouse()
+HousePtr Immigrant::_findBlankHouse()
 {
   CityHelper hlp( *_d->city );
-  std::list< House* > houses = hlp.getBuildings< House* >( B_HOUSE );
-  House* blankHouse = 0;
+  std::list< HousePtr > houses = hlp.getBuildings< House >( B_HOUSE );
+  HousePtr blankHouse;
   _d->destination = TilePos( -1, -1 );
 
-  std::list< House* >::iterator itHouse = houses.begin();
+  std::list< HousePtr >::iterator itHouse = houses.begin();
   while( itHouse != houses.end() )
   {
     if( (*itHouse)->getAccessRoads().size() > 0 && 
@@ -81,13 +77,13 @@ House* Immigrant::_findBlankHouse()
   return blankHouse;
 }
 
-void Immigrant::_checkPath( Tile& startPoint, Building* house )
+void Immigrant::_checkPath( Tile& startPoint, HousePtr house )
 {
   PathWay pathWay;
 
   Tilemap& citymap = _d->city->getTilemap();
-  Tile& destTile = house ? house->getTile() : citymap.at( _d->city->getRoadExitIJ() );
-  Size arrivedArea( house ? house->getSize() : 1 );
+  Tile& destTile = house.isValid() ? house->getTile() : citymap.at( _d->city->getRoadExitIJ() );
+  Size arrivedArea( house.isValid() ? house->getSize() : 1 );
 
   bool pathFound = Pathfinder::getInstance().getPath( startPoint.getIJ(), destTile.getIJ(), pathWay, 
                                                       false, arrivedArea );
@@ -95,6 +91,7 @@ void Immigrant::_checkPath( Tile& startPoint, Building* house )
   {
      setPathWay( pathWay );
      setIJ( startPoint.getIJ() );
+     _action._action=WA_MOVE;
   }
 
   _isDeleted = !pathFound;  
@@ -108,8 +105,8 @@ void Immigrant::onDestination()
   {
     const Tile& tile = _d->city->getTilemap().at( _d->destination );
 
-    LandOverlay* overlay = tile.get_terrain().getOverlay();
-    if( House* house = dynamic_cast<House*>( overlay ) )
+    HousePtr house = tile.get_terrain().getOverlay().as<House>();
+    if( house.isValid() )
     {      
       if( house->getNbHabitants() < house->getMaxHabitants() )
       {
@@ -125,17 +122,19 @@ void Immigrant::onDestination()
 
   if( gooutCity )
   {
-    House* blankHouse = _findBlankHouse();
+    HousePtr blankHouse = _findBlankHouse();
     _checkPath( _d->city->getTilemap().at( getIJ() ), blankHouse );
   }
 }
 
-Immigrant* Immigrant::create( City& city, const Building& startPoint,
+ImmigrantPtr Immigrant::create( City& city, const Building& startPoint,
                               const unsigned char peoples )
 {
-  Immigrant* newImmigrant = new Immigrant( city, peoples );
+  ImmigrantPtr newImmigrant( new Immigrant( city, peoples ) );
+  newImmigrant->drop();
   newImmigrant->assignPath( startPoint.getTile() );
-  city.addWalker( *newImmigrant );
+
+  city.addWalker( newImmigrant.as<Walker>() );
   return newImmigrant;
 }
 

@@ -24,12 +24,11 @@
 #include "oc3_exception.hpp"
 #include "oc3_pic_loader.hpp"
 #include "oc3_positioni.hpp"
-
+#include "oc3_constructionmanager.hpp"
 
 ScenarioLoader::ScenarioLoader()
 {
 }
-
 
 void ScenarioLoader::load(const std::string& filename, Scenario &oScenario)
 {
@@ -255,7 +254,7 @@ void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
          Tile &tile = oTilemap.at( pos );
          decode_terrain(terrainBitset, tile);
 
-         LandOverlay *overlay = tile.get_terrain().getOverlay();
+         LandOverlayPtr overlay = tile.get_terrain().getOverlay();
 
 	     // Check if it is building and type of building
 	     if( overlay == NULL && (terrainBitset & 0x8) )
@@ -286,11 +285,12 @@ void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
 	              case 0xb0b:
 	              case 0xb0c:
 	              {
-		          NativeHut* build = new NativeHut();
-		          tile.get_terrain().setOverlay((LandOverlay*)build);
-		          overlay = tile.get_terrain().getOverlay();
-		          overlay->build( pos );
-		          oCity.getOverlayList().push_back(overlay);
+    		          LandOverlayPtr build( new NativeHut() );
+                  build->drop();
+		              tile.get_terrain().setOverlay( build );
+		              overlay = tile.get_terrain().getOverlay();
+		              overlay->build( pos );
+		              oCity.getOverlayList().push_back(overlay);
 	              }
 	              break;
 	              case 0xb10:
@@ -300,10 +300,10 @@ void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
 		              if (tile.is_master_tile())
 		              {
 		                  std::cout << "Tile is master" << std::endl;
-		                  NativeCenter* build = new NativeCenter();
-		                  tile.get_terrain().setOverlay((LandOverlay*)build);
+		                  LandOverlayPtr build( new NativeCenter() );
+		                  tile.get_terrain().setOverlay( build );
 		                  overlay = tile.get_terrain().getOverlay();
-		                  if (overlay != NULL)
+		                  if( overlay != NULL )
 		                  {
 		                    overlay->build( pos );
 		                    oCity.getOverlayList().push_back(overlay);
@@ -339,13 +339,12 @@ void ScenarioLoader::decode_terrain(const int terrainBitset, Tile &oTile)
 
    terrain.reset();
 
-   LandOverlay *overlay = NULL; // This is the overlay object, if any
+   LandOverlayPtr overlay; // This is the overlay object, if any
 
-   terrain.decode(terrainBitset);
+   terrain.decode( terrainBitset );
    if( terrain.isRoad() )   // road
    {
-      Road *road = new Road();
-      overlay = road;
+      overlay = ConstructionManager::getInstance().create( B_ROAD ).as<LandOverlay>();
    }
 //   else if (terrain.isBuilding())
 //   {
@@ -355,7 +354,7 @@ void ScenarioLoader::decode_terrain(const int terrainBitset, Tile &oTile)
 //   }
 
 
-   terrain.setOverlay(overlay);
+   terrain.setOverlay( overlay );
 }
 
 void ScenarioLoader::init_climate(std::fstream &f, City &ioCity)
@@ -403,7 +402,7 @@ void ScenarioLoader::init_entry_exit(std::fstream &f, City &ioCity)
    j = 0;
    f.read((char*)&i, 2);
    f.read((char*)&j, 2);
-   ioCity.setRoadExitIJ(i, size - j - 1);
+   ioCity.setRoadExit( TilePos( i, size - j - 1 ) );
 
    // init boat entry/exit point
    i = 0;

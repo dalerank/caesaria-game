@@ -22,7 +22,6 @@ class BurningRuins : public ServiceBuilding
 {
 public:
     BurningRuins();
-    BurningRuins* clone() const;
 
     void deliverService();
     void timeStep(const unsigned long time);
@@ -31,20 +30,20 @@ public:
     bool isWalkable() const;
     void destroy();
 
-    float evaluateService(ServiceWalker &walker);
-    void applyService(ServiceWalker &walker);
+    float evaluateService( ServiceWalkerPtr walker);
+    void applyService( ServiceWalkerPtr walker);
 };
 
 class BurnedRuins : public Building
 {
 public:
   BurnedRuins();
-  LandOverlay* clone() const;
 
   void timeStep(const unsigned long time);
   bool isWalkable() const;
   void build( const TilePos& pos );
 };
 
+typedef SmartPtr< BurningRuins > BurningRuinsPtr;
 
 #endif

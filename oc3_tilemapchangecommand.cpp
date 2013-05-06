@@ -24,7 +24,7 @@ public:
     bool isRemoveTool;  // true when using "clear land" tool
     bool isBorderBuilding;
     bool isMultiBuilding;
-    Construction* construction;
+    ConstructionPtr construction;
 };
 
 TilemapChangeCommand::~TilemapChangeCommand()
@@ -35,7 +35,7 @@ TilemapChangeCommand::~TilemapChangeCommand()
 TilemapChangeCommand::TilemapChangeCommand( BuildingType type )
 : _d( new Impl )
 {
-    Construction* construction = dynamic_cast<Construction*>( ConstructionManager::getInstance().create( type ) );
+    ConstructionPtr construction = ConstructionManager::getInstance().create( type );
     _d->construction = construction;
     _d->isMultiBuilding = false;
     _d->isRemoveTool = false;
@@ -100,7 +100,7 @@ bool TilemapChangeCommand::isMultiBuilding() const
     return _d->isMultiBuilding;
 }
 
-Construction* TilemapChangeCommand::getContruction() const
+ConstructionPtr TilemapChangeCommand::getContruction() const
 {
     return _d->construction;
 }

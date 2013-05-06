@@ -17,19 +17,22 @@
 #define __OPENCAESAR3_EMIGRANT_H_INCLUDE_
 
 #include "oc3_immigrant.hpp"
+#include "oc3_predefinitions.hpp"
+
+class Emigrant;
+typedef SmartPtr< Emigrant > EmigrantPtr;
 
 /** This is an immigrant coming with his stuff */
 class Emigrant : public Immigrant
 {
 public:
-	static Emigrant* create( City& city, const Road& startPoint );
+	static EmigrantPtr create( City& city, const RoadPtr startPoint );
 
 	void getPictureList(std::vector<Picture*> &oPics);
 	void onNewDirection();
 
 	~Emigrant();
 protected:
-  virtual Emigrant* clone() const;
   Picture* getCartPicture();
 
 	Emigrant( City& city );

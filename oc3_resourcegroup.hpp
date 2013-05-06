@@ -30,6 +30,8 @@ public:
     static const char* security;
     static const char* aqueduct;
     static const char* waterbuildings;
+    static const char* road;
+    static const char* entertaiment;
 };
 
 class ResourceMenu

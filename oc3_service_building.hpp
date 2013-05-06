@@ -20,8 +20,8 @@
 #define SERVICE_BUILDING_HPP
 
 #include "oc3_building.hpp"
+#include "oc3_predefinitions.hpp"
 
-class Walker;
 class Widget;
 
 class ServiceBuilding : public WorkingBuilding
@@ -29,6 +29,8 @@ class ServiceBuilding : public WorkingBuilding
 public:
    ServiceBuilding( const ServiceType service,
                     const BuildingType type, const Size& size );
+
+   virtual ~ServiceBuilding();
 
    ServiceType getService() const;
    void timeStep(const unsigned long time);
@@ -46,28 +48,28 @@ public:
    void serialize(OutputSerialStream &stream);
    void unserialize(InputSerialStream &stream);
 
-   void removeWalker( ServiceWalker* walker );
+   void removeWalker( WalkerPtr walker );
 
 protected:
-  void _addWalker( ServiceWalker* walker );
-  const std::list<Walker*>& _getWalkerList() const;
+  void _addWalker( WalkerPtr walker );
+  const Walkers& _getWalkerList() const;
 
 private:
    ServiceType _service;
    int _serviceTimer;
    
    int _serviceRange;
-   std::list<Walker*> _walkerList;
+   Walkers _walkerList;
    static std::map<ServiceType, ServiceBuilding*> _specimen;
-   int _serviceDelay;
-};
 
+   class Impl;
+   ScopedPtr< Impl > _d;
+};
 
 class BuildingWell : public ServiceBuilding
 {
 public:
    BuildingWell();
-   BuildingWell* clone() const;
 
    virtual void deliverService();
 };
@@ -76,7 +78,6 @@ class BuildingFountain : public ServiceBuilding
 {
 public:
   BuildingFountain();
-  BuildingFountain* clone() const;
 
   virtual void deliverService();
 };
@@ -93,21 +94,18 @@ class BuildingTheater : public EntertainmentBuilding
 {
 public:
    BuildingTheater();
-   BuildingTheater* clone() const;
 };
 
 class BuildingAmphiTheater : public EntertainmentBuilding
 {
 public:
    BuildingAmphiTheater();
-   BuildingAmphiTheater* clone() const;
 };
 
 class BuildingCollosseum : public EntertainmentBuilding
 {
 public:
    BuildingCollosseum();
-   BuildingCollosseum* clone() const;
 };
 
 
@@ -115,140 +113,120 @@ class BuildingHippodrome : public EntertainmentBuilding
 {
 public:
    BuildingHippodrome();
-   BuildingHippodrome* clone() const;
 };
 
 class TempleCeres : public ServiceBuilding
 {
 public:
    TempleCeres();
-   TempleCeres* clone() const;
 };
 
 class TempleNeptune : public ServiceBuilding
 {
 public:
    TempleNeptune();
-   TempleNeptune* clone() const;
 };
 
 class TempleMars : public ServiceBuilding
 {
 public:
    TempleMars();
-   TempleMars* clone() const;
 };
 
 class TempleVenus : public ServiceBuilding
 {
 public:
    TempleVenus();
-   TempleVenus* clone() const;
 };
 
 class TempleMercure : public ServiceBuilding
 {
 public:
    TempleMercure();
-   TempleMercure* clone() const;
 };
 
 class BigTempleCeres : public ServiceBuilding
 {
 public:
    BigTempleCeres();
-   BigTempleCeres* clone() const;
 };
 
 class BigTempleNeptune : public ServiceBuilding
 {
 public:
    BigTempleNeptune();
-   BigTempleNeptune* clone() const;
 };
 
 class BigTempleMars : public ServiceBuilding
 {
 public:
    BigTempleMars();
-   BigTempleMars* clone() const;
 };
 
 class BigTempleVenus : public ServiceBuilding
 {
 public:
    BigTempleVenus();
-   BigTempleVenus* clone() const;
 };
 
 class BigTempleMercure : public ServiceBuilding
 {
 public:
    BigTempleMercure();
-   BigTempleMercure* clone() const;
 };
 
 class TempleOracle : public ServiceBuilding
 {
 public:
    TempleOracle();
-   TempleOracle* clone() const;
 };
 
 class School : public ServiceBuilding
 {
 public:
    School();
-   School* clone() const;
 };
 
 class Library : public ServiceBuilding
 {
 public:
    Library();
-   Library* clone() const;
 };
 
 class College : public ServiceBuilding
 {
 public:
    College();
-   College* clone() const;
 };
 
 class Baths : public ServiceBuilding
 {
 public:
    Baths();
-   Baths* clone() const;
 };
 
 class Barber : public ServiceBuilding
 {
 public:
    Barber();
-   Barber* clone() const;
 };
 
 class Doctor : public ServiceBuilding
 {
 public:
    Doctor();
-   Doctor* clone() const;
 };
 
 class Hospital : public ServiceBuilding
 {
 public:
    Hospital();
-   Hospital* clone() const;
 };
 
 class Forum : public ServiceBuilding
 {
 public:
    Forum();
-   Forum* clone() const;
 };
 
 class MarketBuyer;
@@ -256,7 +234,6 @@ class Market: public ServiceBuilding
 {
 public:
    Market();
-   Market* clone() const;
 
    void timeStep(const unsigned long time);
    virtual GuiInfoBox* makeInfoBox( Widget* );
@@ -275,6 +252,5 @@ private:
    MarketBuyer *_marketBuyer;
    int _buyerDelay;
 };
-
 
 #endif

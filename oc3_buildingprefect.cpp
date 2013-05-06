@@ -61,7 +61,7 @@ void BuildingPrefect::deliverService()
   if( getWorkers() > 0 && _getWalkerList().size() == 0 )
   {
     bool fireDetect = _fireDetect.getI() >= 0;
-    WalkerPrefect *walker = new WalkerPrefect( *this, fireDetect ? 200 : 0 );
+    WalkerPrefectPtr walker = WalkerPrefect::create( ServiceBuildingPtr( this ), fireDetect ? 200 : 0 );
 
     bool patrol = true;
     if( fireDetect )
@@ -75,7 +75,6 @@ void BuildingPrefect::deliverService()
       {
         walker->setPathWay( pathway );
         walker->setIJ( pathway.getOrigin().getIJ() );
-        Scenario::instance().getCity().addWalker( *walker );
       }
 
       _fireDetect = TilePos( -1, -1 );
@@ -83,16 +82,11 @@ void BuildingPrefect::deliverService()
     
     if( patrol )
     {
-      walker->start();
+      walker->send2City();
     }
 
-    _addWalker( walker );
+    _addWalker( walker.as<Walker>() );
   }
-}
-
-BuildingPrefect* BuildingPrefect::clone() const
-{
-  return new BuildingPrefect(*this);
 }
 
 void BuildingPrefect::fireDetect( const TilePos& pos )

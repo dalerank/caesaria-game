@@ -111,8 +111,8 @@ void GuiTilemap::drawTile( const Tile& tile )
 	engine.drawPicture(pic, 30*(i+j)+mOffset.getX(), 15*(i-j)+mOffset.getY());
 
 	// building foregrounds and animations
-	LandOverlay *overlay = tile.get_terrain().getOverlay();
-	if( overlay != NULL )
+	LandOverlayPtr overlay = tile.get_terrain().getOverlay();
+	if( overlay.isValid() )
 	{
 		std::vector<Picture*>& fgPictures = overlay->getForegroundPictures();
 		for (std::vector<Picture*>::iterator itPic = fgPictures.begin(); itPic != fgPictures.end(); ++itPic)
@@ -185,24 +185,25 @@ void GuiTilemap::drawTilemap()
 
        std::vector<Picture*> pictureList;
 
-       City::Walkers walkerList = _city->getWalkerList( WT_ALL );
-       for( City::Walkers::iterator itWalker =  walkerList.begin();
+       Walkers walkerList = _city->getWalkerList( WT_ALL );
+       for( Walkers::iterator itWalker =  walkerList.begin();
              itWalker != walkerList.end(); ++itWalker)
        {
           // for each walker
-          Walker &anim = **itWalker;
-          int zAnim = anim.getJ() - anim.getI();
+          WalkerPtr anim = *itWalker;
+          int zAnim = anim->getIJ().getZ();// getJ() - anim.getI();
           if (zAnim > z && zAnim <= z+1)
           {
              pictureList.clear();
-             anim.getPictureList(pictureList);
+             anim->getPictureList( pictureList );
              for( std::vector<Picture*>::iterator picIt = pictureList.begin(); picIt != pictureList.end(); ++picIt )
              {
                 if (*picIt == NULL)
                 {
                    continue;
                 }
-                engine.drawPicture( **picIt, 2*(anim.getII()+anim.getJJ())+mOffset.getX(), anim.getII()-anim.getJJ()+mOffset.getY());
+                engine.drawPicture( **picIt, 2*(anim->getII()+anim->getJJ())+mOffset.getX(), 
+                                    anim->getII()-anim->getJJ()+mOffset.getY());
              }
           }
        }
@@ -334,9 +335,11 @@ void GuiTilemap::_buildAll()
 {
   for( PtrTilesList::iterator it=_d->postTiles.begin(); it != _d->postTiles.end(); it++ )
   {
-    Construction* cnstr = _d->changeCommand.getContruction();
+    ConstructionPtr cnstr = _d->changeCommand.getContruction();
 //    std::cout << "(" << (*it)->getI() << " " << (*it)->getJ() << ") ";
-    if( cnstr && cnstr->canBuild( (*it)->getIJ() ) && (*it)->is_master_tile())
+    if( cnstr.isValid() 
+        && cnstr->canBuild( (*it)->getIJ() ) 
+        && (*it)->is_master_tile())
     {
       _city->build( cnstr->getType(), (*it)->getIJ() );
     }
@@ -383,7 +386,7 @@ void GuiTilemap::handleEvent( NEvent& event )
                 {
                     _clearLand();                      
                 }
-                else if( _d->changeCommand.getContruction() )
+                else if( _d->changeCommand.getContruction().isValid() )
                 {
                     _buildAll();               
                 }
@@ -463,8 +466,8 @@ void GuiTilemap::discardPreview()
 void GuiTilemap::checkPreviewBuild( const TilePos& pos )
 {
    // TODO: do only when needed, when (i, j, _buildInstance) has changed
-   Construction* overlay = _d->changeCommand.getContruction();
-   if( overlay )
+   ConstructionPtr overlay = _d->changeCommand.getContruction();
+   if( overlay.isValid() )
    {
       int size = overlay->getSize();
       if( overlay->canBuild( pos ) )
@@ -488,7 +491,7 @@ void GuiTilemap::checkPreviewBuild( const TilePos& pos )
                   tile->set_picture( _d->previewToolPictures.back() );
                   tile->set_master_tile( masterTile );
                   tile->get_terrain().setBuilding( true );
-                  tile->get_terrain().setOverlay( overlay );
+                  tile->get_terrain().setOverlay( overlay.as<LandOverlay>() );
                   _d->postTiles.push_back( tile );
                   //_priorityTiles.push_back( tile );
               }
@@ -503,14 +506,18 @@ void GuiTilemap::checkPreviewBuild( const TilePos& pos )
           {
               for (int di = 0; di < size; ++di)
               {
-                  Tile* tile = new Tile(_tilemap->at( pos + TilePos( di, dj ) ));  // make a copy of tile
+                TilePos rPos = pos + TilePos( di, dj );
+                if( !_tilemap->is_inside( rPos ) )
+                    continue;
 
-                  bool isConstructible = tile->get_terrain().isConstructible();
-                  tile->set_picture( isConstructible ? &grnPicture : &redPicture );
-                  tile->set_master_tile(0);
-                  tile->get_terrain().reset();
-                  tile->get_terrain().setBuilding( true );
-                  _d->postTiles.push_back( tile );
+                Tile* tile = new Tile( _tilemap->at( rPos ) );  // make a copy of tile
+
+                bool isConstructible = tile->get_terrain().isConstructible();
+                tile->set_picture( isConstructible ? &grnPicture : &redPicture );
+                tile->set_master_tile(0);
+                tile->get_terrain().reset();
+                tile->get_terrain().setBuilding( true );
+                _d->postTiles.push_back( tile );
               }
           }
       }
@@ -527,8 +534,8 @@ void GuiTilemap::checkPreviewRemove(const int i, const int j)
         {           
             Picture& pic_clear = PicLoader::instance().get_picture( "oc3_land", 2 );
 
-            LandOverlay* overlay = terrain.getOverlay();
-            if (overlay == NULL)
+            LandOverlayPtr overlay = terrain.getOverlay();
+            if( overlay.isNull() )
             {
                 // this is maybe a lonely tree
                 Tile* tile = new Tile(_tilemap->at(i, j));  // make a copy of tile

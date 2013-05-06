@@ -18,8 +18,8 @@
 
 #include "oc3_enums.hpp"
 #include "oc3_scopedptr.hpp"
+#include "oc3_predefinitions.hpp"
 
-class Walker;
 class TilePos;
 
 class WalkerManager
@@ -27,7 +27,7 @@ class WalkerManager
 public:
   static WalkerManager& getInstance();
 
-  Walker* create(const WalkerType walkerType, const TilePos& pos );  // get an instance of the given type
+  WalkerPtr create(const WalkerType walkerType, const TilePos& pos );  // get an instance of the given type
 
   ~WalkerManager();
 private:

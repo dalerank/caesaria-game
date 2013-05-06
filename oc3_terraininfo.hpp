@@ -17,8 +17,8 @@
 #define __OPENCAESAR3_TERRAININFO_H_INCLUDED__
 
 #include "oc3_serializer.hpp"
+#include "oc3_predefinitions.hpp"
 
-class LandOverlay;
 class TilePos;
 
 class TerrainTile : public Serializable
@@ -52,8 +52,8 @@ public:
   void setAqueduct(const bool isAqueduct) { _isAqueduct = isAqueduct; }
   void setMeadow(const bool isMeadow)     { _isMeadow   = isMeadow;   }
 
-  void setOverlay(LandOverlay *overlay);
-  LandOverlay *getOverlay() const;
+  void setOverlay(LandOverlayPtr overlay);
+  LandOverlayPtr getOverlay() const;
 
   // encode/decode to bitset
   int encode() const;
@@ -78,7 +78,7 @@ private:
   bool _isMeadow;
   int _desirability;
   unsigned int _imgId;
-  LandOverlay *_overlay;
+  LandOverlayPtr _overlay;
 };
 
 class TerrainTileHelper

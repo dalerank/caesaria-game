@@ -15,6 +15,7 @@
 
 #include "oc3_walkermanager.hpp"
 #include "oc3_walker.hpp"
+#include "oc3_traineewalker.hpp"
 #include "oc3_walker_market_buyer.hpp"
 #include "oc3_walker_cart_pusher.hpp"
 #include <map>
@@ -22,18 +23,18 @@
 class WalkerManager::Impl
 {
 public:
-  std::map<WalkerType, Walker*> mapWalkerByID;  // key=walkerType, value=instance
+  std::map<WalkerType, WalkerPtr> mapWalkerByID;  // key=walkerType, value=instance
 };
 
 WalkerManager::WalkerManager() : _d( new Impl )
 {
   // first call to this method
   //_d->mapWalkerByID[WT_SERVICE] = new ServiceWalker(S_MAX);  // dummy serviceType
-  _d->mapWalkerByID[WT_MARKET_BUYER] = new MarketBuyer();
-  _d->mapWalkerByID[WT_CART_PUSHER] = new CartPusher();
+  //_d->mapWalkerByID[WT_MARKET_BUYER] = new MarketBuyer();
+  //_d->mapWalkerByID[WT_CART_PUSHER] = new CartPusher();
   //_d->mapWalkerByID[WT_IMMIGRANT] = new Immigrant();
   //_d->mapWalkerByID[WT_EMIGRANT] = new Emigrant();
-  _d->mapWalkerByID[WT_TRAINEE] = new TraineeWalker(WTT_NONE);
+  //_d->mapWalkerByID[WT_TRAINEE] = TraineeWalker::create( WTT_NONE );
 }
 
 WalkerManager::~WalkerManager()
@@ -41,11 +42,11 @@ WalkerManager::~WalkerManager()
 
 }
 
-Walker* WalkerManager::create( const WalkerType walkerType, const TilePos& pos )
+WalkerPtr WalkerManager::create( const WalkerType walkerType, const TilePos& pos )
 {
-  std::map<WalkerType, Walker*>::iterator mapIt;
-  mapIt = _d->mapWalkerByID.find(walkerType);
-  Walker *res;
+  std::map<WalkerType, WalkerPtr>::iterator mapIt;
+  mapIt = _d->mapWalkerByID.find( walkerType );
+  WalkerPtr res;
 
   if( mapIt == _d->mapWalkerByID.end() )
   {

@@ -30,11 +30,6 @@ BuildingEngineer::BuildingEngineer() : ServiceBuilding(S_ENGINEER, B_ENGINEER, S
     _fgPictures.resize(1);
 }
 
-BuildingEngineer* BuildingEngineer::clone() const
-{
-    return new BuildingEngineer(*this);
-}
-
 void BuildingEngineer::timeStep(const unsigned long time)
 {
     bool mayAnimate = getWorkers() > 0;

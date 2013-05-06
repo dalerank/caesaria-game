@@ -375,6 +375,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_factorymarble.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_factorymarble.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_flagholder.hpp"
 				>
 			</File>
@@ -559,6 +567,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_predefinitions.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_pushbutton.cpp"
 				>
 			</File>
@@ -584,6 +596,14 @@
 			</File>
 			<File
 				RelativePath="..\..\oc3_resourcegroup.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_road.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_road.hpp"
 				>
 			</File>
 			<File
@@ -699,6 +719,18 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_servicewalker.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_servicewalker.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_servicewalker_helper.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_signals.hpp"
 				>
 			</File>
@@ -788,6 +820,14 @@
 			</File>
 			<File
 				RelativePath="..\..\oc3_topmenu.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_traineewalker.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_traineewalker.hpp"
 				>
 			</File>
 			<File

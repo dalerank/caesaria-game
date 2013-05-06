@@ -19,6 +19,7 @@
 
 #include "oc3_scopedptr.hpp"
 #include "oc3_enums.hpp"
+#include "oc3_predefinitions.hpp"
 
 class Construction;
 
@@ -34,7 +35,7 @@ public:
     bool isValid() const;
     bool isBorderBuilding() const;
     bool isMultiBuilding() const;
-    Construction* getContruction() const;
+    ConstructionPtr getContruction() const;
 
 protected:
     class Impl;

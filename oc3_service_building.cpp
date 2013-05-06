@@ -24,16 +24,22 @@
 #include <ctime>
 
 #include "oc3_scenario.hpp"
-#include "oc3_walker.hpp"
+#include "oc3_servicewalker.hpp"
 #include "oc3_walker_market_buyer.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_gui_info_box.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_resourcegroup.hpp"
 
+class ServiceBuilding::Impl
+{
+public:
+  int serviceDelay;
+};
+
 ServiceBuilding::ServiceBuilding(const ServiceType service,
                                  const BuildingType type, const Size& size)
-                                 : WorkingBuilding( type, size )
+                                 : WorkingBuilding( type, size ), _d( new Impl )
 {
    _service = service;
    setMaxWorkers(5);
@@ -45,7 +51,7 @@ ServiceBuilding::ServiceBuilding(const ServiceType service,
 
 void ServiceBuilding::setServiceDelay( const int delay )
 {
-  _serviceDelay = delay;
+  _d->serviceDelay = delay;
 }
 
 ServiceType ServiceBuilding::getService() const
@@ -78,7 +84,8 @@ void ServiceBuilding::timeStep(const unsigned long time)
 
 void ServiceBuilding::destroy()
 {
-   for (std::list<Walker*>::iterator itWalker = _walkerList.begin(); itWalker != _walkerList.end(); ++itWalker)
+   for( Walkers::iterator itWalker = _walkerList.begin(); 
+        itWalker != _walkerList.end(); ++itWalker)
    {
       (*itWalker)->deleteLater();
    }
@@ -89,9 +96,9 @@ void ServiceBuilding::destroy()
 void ServiceBuilding::deliverService()
 {
    // make a service walker and send him to his wandering
-   ServiceWalker *walker = new ServiceWalker(*this,_service);
-   walker->start();
-   _addWalker( walker );
+  ServiceWalkerPtr serviceman = ServiceWalker::create( BuildingPtr( this ),_service);
+  serviceman->send2City();
+  _addWalker( serviceman.as<Walker>() );
 }
 
 int ServiceBuilding::getServiceRange() const
@@ -103,7 +110,7 @@ void ServiceBuilding::serialize(OutputSerialStream &stream)
 {
    WorkingBuilding::serialize(stream);
    stream.write_int(_serviceTimer, 2, 0, 1000);
-   stream.write_int(_serviceDelay, 2, 0, 1000);
+   stream.write_int(_d->serviceDelay, 2, 0, 1000);
    stream.write_int(_serviceRange, 2, 0, 65535);
 }
 
@@ -111,7 +118,7 @@ void ServiceBuilding::unserialize(InputSerialStream &stream)
 {
    WorkingBuilding::unserialize(stream);
    _serviceTimer = stream.read_int(2, 0, 1000);
-   _serviceDelay = stream.read_int(2, 0, 1000);
+   _d->serviceDelay = stream.read_int(2, 0, 1000);
    _serviceRange = stream.read_int(2, 0, 65535);
 }
 
@@ -123,22 +130,28 @@ GuiInfoBox* ServiceBuilding::makeInfoBox( Widget* parent )
 
 int ServiceBuilding::getServiceDelay() const
 {
-  return _serviceDelay;
+  return _d->serviceDelay;
 }
 
-void ServiceBuilding::_addWalker( ServiceWalker* walker )
+void ServiceBuilding::_addWalker( WalkerPtr walker )
 {
+  Scenario::instance().getCity().addWalker( walker );
   _walkerList.push_back( walker );
 }
 
-void ServiceBuilding::removeWalker( ServiceWalker* walker )
+void ServiceBuilding::removeWalker( WalkerPtr walker )
 {
   _walkerList.remove( walker );
 }
 
-const std::list<Walker*>& ServiceBuilding::_getWalkerList() const
+const Walkers& ServiceBuilding::_getWalkerList() const
 {
   return _walkerList;
+}
+
+ServiceBuilding::~ServiceBuilding()
+{
+
 }
 
 BuildingWell::BuildingWell() : ServiceBuilding(S_WELL, B_WELL, Size(1) )
@@ -148,19 +161,15 @@ BuildingWell::BuildingWell() : ServiceBuilding(S_WELL, B_WELL, Size(1) )
    setPicture( Picture::load("utilitya", 1) );
 }
 
-BuildingWell* BuildingWell::clone() const
-{
-   return new BuildingWell(*this);
-}
-
 void BuildingWell::deliverService()
 {
-   ServiceWalker walker( *this, getService());
-   std::set<Building*> reachedBuildings = walker.getReachedBuildings( getTile().getIJ() );
-   for (std::set<Building*>::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
-   {
-      (*itBuilding)->applyService(walker);
-   }
+  ServiceWalkerPtr walker = ServiceWalker::create( BuildingPtr( this ), getService());
+  ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( getTile().getIJ() );
+  for( ServiceWalker::ReachedBuildings::iterator itBuilding = reachedBuildings.begin(); 
+       itBuilding != reachedBuildings.end(); ++itBuilding)
+  {
+     (*itBuilding)->applyService( walker );
+  }
 }
 
 BuildingFountain::BuildingFountain() : ServiceBuilding(S_FOUNTAIN, B_FOUNTAIN, Size(1))
@@ -196,21 +205,14 @@ BuildingFountain::BuildingFountain() : ServiceBuilding(S_FOUNTAIN, B_FOUNTAIN, S
    
 }
 
-BuildingFountain* BuildingFountain::clone() const
-{
-   return new BuildingFountain(*this);
-}
-
-
 void BuildingFountain::deliverService()
 {
-   ServiceWalker walker( *this, getService());
-   std::set<Building*> reachedBuildings = walker.getReachedBuildings( getTile().getIJ() );
-   for (std::set<Building*>::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
-   {
-      Building &building = **itBuilding;
-      building.applyService(walker);
-   }
+  ServiceWalkerPtr walker = ServiceWalker::create( BuildingPtr( this ), getService());
+  ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( getTile().getIJ() );
+  for( ServiceWalker::ReachedBuildings::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
+  {
+    (*itBuilding)->applyService( walker );
+  }
 }
 
 EntertainmentBuilding::EntertainmentBuilding(const ServiceType service, 
@@ -268,12 +270,6 @@ BuildingTheater::BuildingTheater() : EntertainmentBuilding(S_THEATER, B_THEATER,
    _fgPictures[0] = &Picture::load("entertainment", 35);
 }
 
-BuildingTheater* BuildingTheater::clone() const
-{
-   return new BuildingTheater(*this);
-}
-
-
 BuildingAmphiTheater::BuildingAmphiTheater() : EntertainmentBuilding(S_AMPHITHEATER, B_AMPHITHEATER, Size(3))
 {
   setPicture( Picture::load("entertainment", 1));
@@ -284,12 +280,6 @@ BuildingAmphiTheater::BuildingAmphiTheater() : EntertainmentBuilding(S_AMPHITHEA
    _fgPictures[0] = &Picture::load("entertainment", 12);
 }
 
-BuildingAmphiTheater* BuildingAmphiTheater::clone() const
-{
-   return new BuildingAmphiTheater(*this);
-}
-
-
 BuildingCollosseum::BuildingCollosseum() : EntertainmentBuilding(S_COLLOSSEUM, B_COLLOSSEUM, Size(5) )
 {
   setPicture( Picture::load("entertainment", 36));
@@ -298,11 +288,6 @@ BuildingCollosseum::BuildingCollosseum() : EntertainmentBuilding(S_COLLOSSEUM, B
    _animation.setOffset( Point( 122, 81 ) );
    _fgPictures.resize(2);
    _fgPictures[0] = &Picture::load("entertainment", 50);
-}
-
-BuildingCollosseum* BuildingCollosseum::clone() const
-{
-   return new BuildingCollosseum(*this);
 }
 
 //------------
@@ -320,13 +305,6 @@ BuildingHippodrome::BuildingHippodrome() : EntertainmentBuilding(S_HIPPODROME, B
     _fgPictures.at(1) = logo1;
 }
 
-
-
-BuildingHippodrome* BuildingHippodrome::clone() const
-{
-   return new BuildingHippodrome(*this);
-}
-
 //-----------
 
 TempleCeres::TempleCeres() : ServiceBuilding(S_TEMPLE_CERES, B_TEMPLE_CERES, Size(2))
@@ -334,20 +312,9 @@ TempleCeres::TempleCeres() : ServiceBuilding(S_TEMPLE_CERES, B_TEMPLE_CERES, Siz
   setPicture( Picture::load( ResourceGroup::security, 45));
 }
 
-TempleCeres* TempleCeres::clone() const
-{
-   return new TempleCeres(*this);
-}
-
-
 BigTempleCeres::BigTempleCeres() : ServiceBuilding(S_TEMPLE_CERES, B_BIG_TEMPLE_CERES, Size(3))
 {
   setPicture( Picture::load( ResourceGroup::security, 46));
-}
-
-BigTempleCeres* BigTempleCeres::clone() const
-{
-   return new BigTempleCeres(*this);
 }
 
 TempleNeptune::TempleNeptune() : ServiceBuilding(S_TEMPLE_NEPTUNE, B_TEMPLE_NEPTUNE, Size(2) )
@@ -355,19 +322,9 @@ TempleNeptune::TempleNeptune() : ServiceBuilding(S_TEMPLE_NEPTUNE, B_TEMPLE_NEPT
   setPicture( Picture::load( ResourceGroup::security, 47));
 }
 
-TempleNeptune* TempleNeptune::clone() const
-{
-   return new TempleNeptune(*this);
-}
-
 BigTempleNeptune::BigTempleNeptune() : ServiceBuilding(S_TEMPLE_NEPTUNE, B_BIG_TEMPLE_NEPTUNE, Size(3))
 {
   setPicture(Picture::load( ResourceGroup::security, 48));
-}
-
-BigTempleNeptune* BigTempleNeptune::clone() const
-{
-   return new BigTempleNeptune(*this);
 }
 
 TempleMars::TempleMars() : ServiceBuilding(S_TEMPLE_MARS, B_TEMPLE_MARS, Size(2))
@@ -375,19 +332,9 @@ TempleMars::TempleMars() : ServiceBuilding(S_TEMPLE_MARS, B_TEMPLE_MARS, Size(2)
   setPicture( Picture::load( ResourceGroup::security, 51));
 }
 
-TempleMars* TempleMars::clone() const
-{
-   return new TempleMars(*this);
-}
-
 BigTempleMars::BigTempleMars() : ServiceBuilding(S_TEMPLE_MARS, B_BIG_TEMPLE_MARS, Size(3))
 {
   setPicture( Picture::load( ResourceGroup::security, 52));
-}
-
-BigTempleMars* BigTempleMars::clone() const
-{
-   return new BigTempleMars(*this);
 }
 
 TempleVenus::TempleVenus() : ServiceBuilding(S_TEMPLE_VENUS, B_TEMPLE_VENUS, Size(2))
@@ -395,19 +342,9 @@ TempleVenus::TempleVenus() : ServiceBuilding(S_TEMPLE_VENUS, B_TEMPLE_VENUS, Siz
   setPicture(Picture::load(ResourceGroup::security, 53));
 }
 
-TempleVenus* TempleVenus::clone() const
-{
-   return new TempleVenus(*this);
-}
-
 BigTempleVenus::BigTempleVenus() : ServiceBuilding(S_TEMPLE_VENUS, B_BIG_TEMPLE_VENUS, Size(3))
 {
   setPicture(Picture::load( ResourceGroup::security, 54));
-}
-
-BigTempleVenus* BigTempleVenus::clone() const
-{
-   return new BigTempleVenus(*this);
 }
 
 TempleMercure::TempleMercure() : ServiceBuilding(S_TEMPLE_MERCURE, B_TEMPLE_MERCURE, Size(2))
@@ -415,19 +352,9 @@ TempleMercure::TempleMercure() : ServiceBuilding(S_TEMPLE_MERCURE, B_TEMPLE_MERC
   setPicture( Picture::load( ResourceGroup::security, 49));
 }
 
-TempleMercure* TempleMercure::clone() const
-{
-   return new TempleMercure(*this);
-}
-
 BigTempleMercure::BigTempleMercure() : ServiceBuilding(S_TEMPLE_MERCURE, B_BIG_TEMPLE_MERCURE, Size(3))
 {
   setPicture(Picture::load( ResourceGroup::security, 50));
-}
-
-BigTempleMercure* BigTempleMercure::clone() const
-{
-   return new BigTempleMercure(*this);
 }
 
 TempleOracle::TempleOracle() : ServiceBuilding(S_TEMPLE_ORACLE, B_TEMPLE_ORACLE, Size(2) )
@@ -439,43 +366,20 @@ TempleOracle::TempleOracle() : ServiceBuilding(S_TEMPLE_ORACLE, B_TEMPLE_ORACLE,
   _fgPictures.resize(1);   
 }
 
-TempleOracle* TempleOracle::clone() const
-{
-   return new TempleOracle(*this);
-}
-
 School::School() : ServiceBuilding(S_SCHOOL, B_SCHOOL, Size(2))
 {
   setPicture( Picture::load( ResourceGroup::commerce, 83));
 }
-
-School* School::clone() const
-{
-   return new School(*this);
-}
-
 
 Library::Library() : ServiceBuilding(S_LIBRARY, B_LIBRARY, Size(2))
 {
   setPicture( Picture::load( ResourceGroup::commerce, 84));
 }
 
-Library* Library::clone() const
-{
-   return new Library(*this);
-}
-
-
 College::College() : ServiceBuilding(S_COLLEGE, B_COLLEGE, Size(3))
 {
   setPicture( Picture::load( ResourceGroup::commerce, 85));
 }
-
-College* College::clone() const
-{
-   return new College(*this);
-}
-
 
 Baths::Baths() : ServiceBuilding(S_BATHS, B_BATHS, Size(2) )
 {
@@ -486,53 +390,24 @@ Baths::Baths() : ServiceBuilding(S_BATHS, B_BATHS, Size(2) )
    _fgPictures.resize(2);
 }
 
-Baths* Baths::clone() const
-{
-   return new Baths(*this);
-}
-
-
 Barber::Barber() : ServiceBuilding(S_BARBER, B_BARBER, Size(1))
 {
   setPicture( Picture::load( ResourceGroup::security, 19));
 }
-
-Barber* Barber::clone() const
-{
-   return new Barber(*this);
-}
-
 
 Doctor::Doctor() : ServiceBuilding(S_DOCTOR, B_DOCTOR, Size(1))
 {
   setPicture( Picture::load( ResourceGroup::security, 20));
 }
 
-Doctor* Doctor::clone() const
-{
-   return new Doctor(*this);
-}
-
-
 Hospital::Hospital() : ServiceBuilding(S_HOSPITAL, B_HOSPITAL, Size(3 ) )
 {
   setPicture( Picture::load( ResourceGroup::security, 44));
 }
 
-Hospital* Hospital::clone() const
-{
-   return new Hospital(*this);
-}
-
-
 Forum::Forum() : ServiceBuilding(S_FORUM, B_FORUM, Size(2))
 {
   setPicture( Picture::load( "govt", 10));
-}
-
-Forum* Forum::clone() const
-{
-   return new Forum(*this);
 }
 
 Market::Market() : ServiceBuilding(S_MARKET, B_MARKET, Size(2) )
@@ -553,13 +428,6 @@ Market::Market() : ServiceBuilding(S_MARKET, B_MARKET, Size(2) )
 
    _animation.load( "commerce", 2, 10);
 }
-
-Market* Market::clone() const
-{
-   Market* res = new Market(*this);
-   return res;
-}
-
 
 void Market::timeStep(const unsigned long time)
 {

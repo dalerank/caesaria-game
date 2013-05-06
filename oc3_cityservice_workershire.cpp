@@ -15,7 +15,7 @@ class CityServiceWorkersHire::Impl
 {
 public:
   Priorities priorities;
-  City::Walkers hrInCity;
+  Walkers hrInCity;
 };
 
 CityServicePtr CityServiceWorkersHire::create( City& city )
@@ -33,13 +33,14 @@ CityServiceWorkersHire::CityServiceWorkersHire( City& city )
   _d->priorities[ 3 ] = B_CLAY_PIT;
 }
 
-bool CityServiceWorkersHire::_haveHr( WorkingBuilding* building )
+bool CityServiceWorkersHire::_haveHr( WorkingBuildingPtr building )
 {
-  for( City::Walkers::iterator it=_d->hrInCity.begin(); it != _d->hrInCity.end(); it++ )
+  for( Walkers::iterator it=_d->hrInCity.begin(); it != _d->hrInCity.end(); it++ )
   {
-    if( WorkersHunter* hr = safety_cast< WorkersHunter* >(*it) )
+    SmartPtr<WorkersHunter> hr = (*it).as<WorkersHunter>();
+    if( hr.isValid() )
     {
-      if( &hr->getBase() == building )
+      if( hr->getBase() == building.as<Building>() )
         return true;
     }
   }
@@ -50,19 +51,19 @@ bool CityServiceWorkersHire::_haveHr( WorkingBuilding* building )
 void CityServiceWorkersHire::_hireByType( const BuildingType type )
 {
   CityHelper hlp( _city );
-  std::list< WorkingBuilding* > buildings = hlp.getBuildings< WorkingBuilding* >( type );
-  for( std::list< WorkingBuilding* >::iterator it = buildings.begin(); it != buildings.end(); ++it )
+  WorkingBuildings buildings = hlp.getBuildings< WorkingBuilding >( type );
+  for( WorkingBuildings::iterator it = buildings.begin(); it != buildings.end(); ++it )
   {
-    WorkingBuilding* wb = *it;
-     if( _haveHr( wb ) )
+    WorkingBuildingPtr wb = *it;
+    if( _haveHr( wb ) )
       continue;
 
-    if( wb && wb->getAccessRoads().size() > 0 
+    if( wb.isValid() && wb->getAccessRoads().size() > 0 
         && wb->getWorkers() < wb->getMaxWorkers() )
     {
-      WorkersHunter* hr = new WorkersHunter( *wb, wb->getMaxWorkers() - wb->getWorkers() );
+      ServiceWalkerPtr hr = WorkersHunter::create( wb, wb->getMaxWorkers() - wb->getWorkers() );
       hr->setMaxDistance( 20 );
-      hr->start();
+      hr->send2City();
     }
   }
 }

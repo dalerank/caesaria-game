@@ -23,7 +23,6 @@ class BuildingPrefect : public ServiceBuilding
 {
 public:
   BuildingPrefect();
-  BuildingPrefect* clone() const;
   void timeStep(const unsigned long time);
   void deliverService();
   int getServiceDelay() const;
@@ -33,5 +32,7 @@ public:
 private:
   TilePos _fireDetect;
 };
+
+typedef SmartPtr< BuildingPrefect > BuildingPrefectPtr;
 
 #endif

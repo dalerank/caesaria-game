@@ -78,8 +78,6 @@ public:
   TilePos operator-() const { return TilePos( -x, -y ); }
   bool operator==(const TilePos& other) const{ return (x == other.x) && ( y == other.y ); }
   bool operator!=(const TilePos& other) const{ return (x != other.x ) || ( y != other.y ); }
-private:
-  friend std::ostream & operator<<(std::ostream&, const TilePos&);
 };
 
 inline std::ostream & operator << (std::ostream& os, const TilePos& tp)

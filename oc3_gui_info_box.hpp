@@ -142,7 +142,7 @@ private:
 class InfoBoxHouse : public GuiInfoBox
 {
 public:
-   InfoBoxHouse( Widget* paarent, House &house);
+   InfoBoxHouse( Widget* paarent, HousePtr house);
 
 
    void drawHabitants();

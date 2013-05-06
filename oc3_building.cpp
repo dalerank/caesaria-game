@@ -23,7 +23,7 @@
 #include <algorithm>
 
 #include "oc3_scenario.hpp"
-#include "oc3_walker.hpp"
+#include "oc3_servicewalker.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_gui_info_box.hpp"
 #include "oc3_building_data.hpp"
@@ -41,10 +41,8 @@
 #include "oc3_resourcegroup.hpp"
 
 namespace {
-static const char* rcRoadGroup         = "land2a";
 static const char* rcHousingGroup      = "housng1a";
 static const char* rcGovernmentGroup   = "govt";
-static const char* rcEntertaimentGroup = "entertainment";
 }
 
 //std::map<BuildingType, LandOverlay*> LandOverlay::_mapBuildingByID;  // key=buildingType, value=instance
@@ -183,17 +181,17 @@ void LandOverlay::serialize(OutputSerialStream &stream)
   stream.write_int(getTile().getJ(), 2, 0, 1000);
 }
 
-LandOverlay& LandOverlay::unserialize_all(InputSerialStream &stream)
+LandOverlayPtr LandOverlay::unserialize_all(InputSerialStream &stream)
 {
   int objectID = stream.read_objectID();
   BuildingType buildingType = (BuildingType) stream.read_int(1, 0, B_MAX);
   int i = stream.read_int(2, 0, 1000);
   int j = stream.read_int(2, 0, 1000);
-  LandOverlay *res = ConstructionManager::getInstance().create( buildingType );
+  ConstructionPtr res = ConstructionManager::getInstance().create( buildingType );
   res->_master_tile = &Scenario::instance().getCity().getTilemap().at(i, j);
   res->unserialize(stream);
-  stream.link(objectID, res);
-  return *res;
+  stream.link( objectID, res.object() );
+  return res.as<LandOverlay>();
 }
 
 void LandOverlay::unserialize(InputSerialStream &stream)
@@ -221,8 +219,15 @@ bool Construction::canBuild( const TilePos& pos ) const
 
   bool is_constructible = true;
 
-  std::list<Tile*> rect = tilemap.getFilledRectangle( pos, Size( _size ) );
-  for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+  //return area for available tiles
+  PtrTilesArea rect = tilemap.getFilledRectangle( pos, Size( _size ) );
+
+  //on over map size
+  if( rect.size() != _size * _size )
+    return false;
+
+  for( PtrTilesArea::iterator itTiles = rect.begin(); 
+       itTiles != rect.end(); ++itTiles )
   {
      is_constructible &= (*itTiles)->get_terrain().isConstructible();
   }
@@ -314,59 +319,10 @@ void Construction::destroy()
   _updateDesirabilityInfluence( false );
 }
 
-// I didn't decide what is the best approach: make Plaza as constructions or as upgrade to roads
-Plaza::Plaza()
-{
-  // somewhere we need to delete original road and then we need to think
-  // because as we remove original road we need to recompute adjacent tiles
-  // or we will run into big troubles
- 
-  setType(B_PLAZA);
-  setPicture(computePicture()); // 102 ~ 107
-  _size = 1;
-}
-
-
-void Plaza::setTerrain(TerrainTile& terrain)
-{
-  //std::cout << "Plaza::setTerrain" << std::endl;
-  bool isMeadow = terrain.isMeadow();  
-  terrain.reset();
-  terrain.setOverlay(this);
-  terrain.setRoad(true);
-  terrain.setMeadow(isMeadow);
-  terrain.setOriginalImgId(terrain.getOriginalImgId() );
-}
-
-Picture& Plaza::computePicture()
-{
-  //std::cout << "Plaza::computePicture" << std::endl;
-  return PicLoader::instance().get_picture( rcEntertaimentGroup, 102);
-}
-
-// Plazas can be built ONLY on top of existing roads
-// Also in original game there was a bug:
-// gamer could place any number of plazas on one road tile (!!!)
-
-bool Plaza::canBuild(const TilePos& pos ) const
-{
-  //std::cout << "Plaza::canBuild" << std::endl;
-  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-
-  bool is_constructible = true;
-
-  std::list<Tile*> rect = tilemap.getFilledRectangle( pos, Size( _size ) ); // something very complex ???
-  for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
-  {
-    is_constructible &= (*itTiles)->get_terrain().isRoad();
-  }
-
-  return is_constructible;
-}
 
 Garden::Garden() : Construction(B_GARDEN, Size(1) )
 {
-  setPicture( Picture::load( rcEntertaimentGroup, 110) ); // 110 111 112 113
+  setPicture( Picture::load( ResourceGroup::entertaiment, 110) ); // 110 111 112 113
 }
 
 void Garden::setTerrain(TerrainTile &terrain)
@@ -380,154 +336,6 @@ void Garden::setTerrain(TerrainTile &terrain)
 }
 
 bool Garden::isWalkable() const
-{
-  return true;
-}
-
-Road::Road() : Construction( B_ROAD, Size(1) )
-{
-  setPicture( Picture::load( rcRoadGroup, 44));  // default picture for build tool
-}
-
-void Road::build(const TilePos& pos )
-{
-    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-    LandOverlay* saveOverlay = tilemap.at( pos ).get_terrain().getOverlay();
-
-    Construction::build( pos );
-    setPicture(computePicture());
-
-    if( Aqueduct* aqua = safety_cast< Aqueduct* >( saveOverlay ) )
-    {
-        aqua->build( pos );
-        return;
-    }
-
-  // update adjacent roads
-  for (std::list<Tile*>::iterator itTile = _accessRoads.begin(); itTile != _accessRoads.end(); ++itTile)
-  {
-    Road* road = safety_cast< Road* >( (*itTile)->get_terrain().getOverlay() ); // let's think: may here different type screw up whole program?
-    if( road )
-    {
-        road->computeAccessRoads();
-        road->setPicture(road->computePicture());
-    }
-  }
-  // NOTE: also we need to update accessRoads for adjacent building
-  // how to detect them if MaxDistance2Road can be any
-  // so let's recompute accessRoads for every _building_
-  std::list<LandOverlay*> list = Scenario::instance().getCity().getOverlayList(); // it looks terrible!!!!
-  for (std::list<LandOverlay*>::iterator itOverlay = list.begin(); itOverlay!=list.end(); ++itOverlay)
-  {
-    LandOverlay *overlay = *itOverlay;
-    Building *construction = dynamic_cast<Building*>(overlay);
-    if (construction != NULL) // if NULL then it ISN'T building
-    {
-      construction->computeAccessRoads();
-    }
-  }
-}
-
-bool Road::canBuild(const TilePos& pos ) const
-{
-    bool is_free = Construction::canBuild( pos );
-
-    if( is_free ) 
-        return true; // we try to build on free tile
-
-    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-    TerrainTile& terrain = tilemap.at( pos ).get_terrain();
-
-    if( safety_cast< Aqueduct* >( terrain.getOverlay() ) != 0 )
-        return true;
-
-    return false;
-}
-
-
-void Road::setTerrain(TerrainTile& terrain)
-{
-   terrain.reset();
-   terrain.setOverlay( this );
-   terrain.setRoad(true);
-}
-
-Picture& Road::computePicture()
-{
-   int i = getTile().getI();
-   int j = getTile().getJ();
-
-   std::list<Tile*> roads = getAccessRoads();
-   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
-   for (std::list<Tile*>::iterator itRoads = roads.begin(); itRoads!=roads.end(); ++itRoads)
-   {
-      Tile &tile = **itRoads;
-      if (tile.getJ() > j)      { directionFlags += 1; } // road to the north
-      else if (tile.getJ() < j) { directionFlags += 4; } // road to the south
-      else if (tile.getI() > i) { directionFlags += 2; } // road to the east
-      else if (tile.getI() < i) { directionFlags += 8; } // road to the west
-   }
-
-   // std::cout << "direction flags=" << directionFlags << std::endl;
-
-   int index;
-   switch (directionFlags)
-   {
-   case 0:  // no road!
-      index = 101;
-      break;
-   case 1:  // North
-      index = 101;
-      break;
-   case 2:  // East
-      index = 102;
-      break;
-   case 4:  // South
-      index = 103;
-      break;
-   case 8:  // West
-      index = 104;
-      break;
-   case 3:  // North+East
-      index = 97;
-      break;
-   case 5:  // North+South
-      index = 93+2*(rand()%2);
-      break;  // 93/95
-   case 6:  // East+South
-      index = 98;
-      break;
-   case 7:  // North+East+South
-      index = 106;
-      break;
-   case 9:  // North+West
-      index = 100;
-      break;
-   case 10:  // East+West
-      index = 94+2*(rand()%2);
-      break;  // 94/96
-   case 11:  // North+East+West
-      index = 109;
-      break;
-   case 12:  // South+West
-      index = 99;
-      break;
-   case 13:  // North+South+West
-      index = 108;
-      break;
-   case 14:  // East+South+West
-      index = 107;
-      break;
-   case 15:  // North+East+South+West
-      index = 110;
-      break;
-   }
-
-   Picture *picture = &PicLoader::instance().get_picture( rcRoadGroup, index);
-   return *picture;
-}
-
-bool Road::isWalkable() const
 {
   return true;
 }
@@ -601,10 +409,10 @@ void Building::storeGoods(GoodStock &stock, const int amount)
    THROW("This building should not store any goods");
 }
 
-float Building::evaluateService(ServiceWalker &walker)
+float Building::evaluateService(ServiceWalkerPtr walker)
 {
    float res = 0.0;
-   ServiceType service = walker.getService();
+   ServiceType service = walker->getService();
    if (_reservedServices.count(service) == 1)
    {
       // service is already reserved
@@ -636,11 +444,11 @@ void Building::cancelService(const ServiceType service)
    _reservedServices.erase(service);
 }
 
-void Building::applyService(ServiceWalker &walker)
+void Building::applyService( ServiceWalkerPtr walker)
 {
    // std::cout << "apply service" << std::endl;
    // remove service reservation
-   ServiceType service = walker.getService();
+   ServiceType service = walker->getService();
    _reservedServices.erase(service);
 
    switch( service )
@@ -820,12 +628,6 @@ Granary::Granary() : WorkingBuilding( B_GRANARY, Size(3) )
    computePictures();
 }
 
-Granary* Granary::clone() const
-{
-   return new Granary(*this);
-}
-
-
 void Granary::timeStep(const unsigned long time)
 {
    _animation.update( time );
@@ -924,11 +726,6 @@ BigStatue::BigStatue() : Building( B_STATUE3, Size(3))
   setPicture( Picture::load(rcGovernmentGroup, 3));
 }
 
-MissionPost*  MissionPost::clone()  const { return new MissionPost(*this);  }
-SmallStatue*  SmallStatue::clone()  const { return new SmallStatue(*this);  }
-MediumStatue* MediumStatue::clone() const { return new MediumStatue(*this); }
-BigStatue*    BigStatue::clone()    const { return new BigStatue(*this);    }
-
 GovernorsHouse::GovernorsHouse() : WorkingBuilding( B_GOVERNOR_HOUSE, Size(3) )
 {
   setMaxWorkers(5);
@@ -950,10 +747,6 @@ GovernorsPalace::GovernorsPalace() : WorkingBuilding(B_GOVERNOR_PALACE, Size( 5 
   setPicture(Picture::load(rcHousingGroup, 48));
 }
 
-GovernorsHouse*  GovernorsHouse::clone()  const { return new GovernorsHouse(*this);  }
-GovernorsVilla*  GovernorsVilla::clone()  const { return new GovernorsVilla(*this);  }
-GovernorsPalace* GovernorsPalace::clone() const { return new GovernorsPalace(*this); }
-
 Academy::Academy() : WorkingBuilding( B_MILITARY_ACADEMY, Size(3) )
 {
   setMaxWorkers( 20 );
@@ -968,9 +761,6 @@ Barracks::Barracks() : WorkingBuilding( B_BARRACKS, Size( 3 ) )
   setPicture(PicLoader::instance().get_picture(ResourceGroup::security, 17));
 }
 
-Academy*  Academy::clone()  const { return new Academy(*this);  }
-Barracks* Barracks::clone() const { return new Barracks(*this); }
-
 NativeBuilding::NativeBuilding( const BuildingType type, const Size& size ) 
 : Building( type, size )
 {
@@ -984,11 +774,6 @@ void NativeBuilding::unserialize(InputSerialStream &stream) {Building::unseriali
 GuiInfoBox* NativeBuilding::makeInfoBox( Widget* parent )
 {
   return new GuiBuilding( parent, *this);
-}
-
-NativeHut* NativeHut::clone() const
-{
-  return new NativeHut(*this);
 }
 
 NativeHut::NativeHut() : NativeBuilding( B_NATIVE_HUT, Size(1) )
@@ -1010,11 +795,6 @@ void NativeCenter::serialize(OutputSerialStream &stream)  {Building::serialize(s
 
 void NativeCenter::unserialize(InputSerialStream &stream) {Building::unserialize(stream);}
 
-NativeCenter* NativeCenter::clone() const
-{
-  return new NativeCenter(*this);
-}
-
 NativeField::NativeField() : NativeBuilding( B_NATIVE_FIELD, Size(1) ) 
 {
   setPicture(Picture::load(ResourceGroup::commerce, 13));  
@@ -1024,20 +804,10 @@ void NativeField::serialize(OutputSerialStream &stream) {Building::serialize(str
 
 void NativeField::unserialize(InputSerialStream &stream) {Building::unserialize(stream);}
 
-NativeField* NativeField::clone() const
-{
-  return new NativeField(*this);
-}
-
 Shipyard::Shipyard() : Building( B_SHIPYARD, Size(2) )
 {
   setPicture( Picture::load("transport", 1));
   // also transport 2 3 4 check position of river on map
-}
-
-Shipyard* Shipyard::clone() const
-{
-   return new Shipyard(*this);
 }
 
 // dock pictures
@@ -1066,12 +836,6 @@ void Dock::timeStep(const unsigned long time)
   _fgPictures.at(0) = _animation.getCurrentPicture(); 
 }
 
-
-Dock* Dock::clone() const
-{
-   return new Dock(*this);
-}
-
 // second arch pictures is land3a 45 + 46	
 
 TriumphalArch::TriumphalArch() : Building( B_TRIUMPHAL_ARCH, Size(3) )
@@ -1084,13 +848,6 @@ TriumphalArch::TriumphalArch() : Building( B_TRIUMPHAL_ARCH, Size(3) )
   _fgPictures.at(0) = _animation.getCurrentPicture(); 
 }
 
-TriumphalArch* TriumphalArch::clone() const
-{
-   return new TriumphalArch(*this);
-}
-
-
-
 FortLegionnaire::FortLegionnaire() : Building( B_FORT_LEGIONNAIRE, Size(3) )
 {
   setPicture( Picture::load(ResourceGroup::security, 12));
@@ -1099,11 +856,6 @@ FortLegionnaire::FortLegionnaire() : Building( B_FORT_LEGIONNAIRE, Size(3) )
   logo -> set_offset(80,10);
   _fgPictures.resize(1);
   _fgPictures.at(0) = logo;  
-}
-
-FortLegionnaire* FortLegionnaire::clone() const
-{
-   return new FortLegionnaire(*this);
 }
 
 FortMounted::FortMounted() : Building( B_FORT_MOUNTED, Size(3) )
@@ -1116,11 +868,6 @@ FortMounted::FortMounted() : Building( B_FORT_MOUNTED, Size(3) )
   _fgPictures.at(0) = logo;
 }
 
-FortMounted* FortMounted::clone() const
-{
-   return new FortMounted(*this);
-}
-
 FortJaveline::FortJaveline() : Building( B_FORT_JAVELIN, Size(3) )
 {
   setPicture( Picture::load(ResourceGroup::security, 12));
@@ -1130,9 +877,4 @@ FortJaveline::FortJaveline() : Building( B_FORT_JAVELIN, Size(3) )
   logo -> set_offset(80,10);
   _fgPictures.resize(1);
   _fgPictures.at(0) = logo;  
-}
-
-FortJaveline* FortJaveline::clone() const
-{
-   return new FortJaveline(*this);
 }

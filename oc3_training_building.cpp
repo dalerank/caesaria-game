@@ -22,7 +22,7 @@
 #include <iostream>
 
 #include "oc3_scenario.hpp"
-#include "oc3_walker.hpp"
+#include "oc3_traineewalker.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_gui_info_box.hpp"
 #include "oc3_gettext.hpp"
@@ -103,17 +103,12 @@ BuildingActor::BuildingActor() : TrainingBuilding( B_ACTOR, Size(3) )
    _fgPictures.resize(1);
 }
 
-BuildingActor* BuildingActor::clone() const
-{
-   return new BuildingActor(*this);
-}
-
 void BuildingActor::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
-   TraineeWalker *trainee = new TraineeWalker(WTT_ACTOR);
-   trainee->setOriginBuilding(*this);
-   trainee->start();
+  TraineeWalkerPtr trainee = TraineeWalker::create(WTT_ACTOR);
+  trainee->setOriginBuilding(*this);
+  trainee->send2City();
 }
 
 BuildingGladiator::BuildingGladiator() : TrainingBuilding( B_GLADIATOR, Size(3))
@@ -125,17 +120,12 @@ BuildingGladiator::BuildingGladiator() : TrainingBuilding( B_GLADIATOR, Size(3))
    _fgPictures.resize(1);
 }
 
-BuildingGladiator* BuildingGladiator::clone() const
-{
-   return new BuildingGladiator(*this);
-}
-
 void BuildingGladiator::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
-   TraineeWalker *trainee = new TraineeWalker(WTT_GLADIATOR);
-   trainee->setOriginBuilding(*this);
-   trainee->start();
+  TraineeWalkerPtr trainee = TraineeWalker::create(WTT_GLADIATOR);
+  trainee->setOriginBuilding(*this);
+  trainee->send2City();
 }
 
 
@@ -148,17 +138,12 @@ BuildingLion::BuildingLion() : TrainingBuilding( B_LION, Size(3) )
    _fgPictures.resize(1);
 }
 
-BuildingLion* BuildingLion::clone() const
-{
-   return new BuildingLion(*this);
-}
-
 void BuildingLion::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
-   TraineeWalker *trainee = new TraineeWalker(WTT_TAMER);
+  TraineeWalkerPtr trainee = TraineeWalker::create( WTT_TAMER );
    trainee->setOriginBuilding(*this);
-   trainee->start();
+   trainee->send2City();
 }
 
 
@@ -171,17 +156,12 @@ BuildingChariot::BuildingChariot() : TrainingBuilding( B_CHARIOT, Size(3) )
    _fgPictures.resize(1);
 }
 
-BuildingChariot* BuildingChariot::clone() const
-{
-   return new BuildingChariot(*this);
-}
-
 void BuildingChariot::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
-   TraineeWalker *trainee = new TraineeWalker(WTT_CHARIOT);
-   trainee->setOriginBuilding(*this);
-   trainee->start();
+  TraineeWalkerPtr trainee = TraineeWalker::create(WTT_CHARIOT);
+  trainee->setOriginBuilding(*this);
+  trainee->send2City();
 }
 
 

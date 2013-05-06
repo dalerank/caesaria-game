@@ -30,11 +30,6 @@ CollapsedRuins::CollapsedRuins() : Building(B_COLLAPSED_RUINS, Size(1) )
     _fgPictures.resize(1); 
 }
 
-CollapsedRuins* CollapsedRuins::clone() const
-{
-    return new CollapsedRuins(*this);
-}
-
 void CollapsedRuins::burn()
 {
 

@@ -53,7 +53,7 @@ bool TerrainTile::isWalkable(const bool allLand) const
 {
   // TODO: test building to allow garden, gatehouse, granary, ...
   bool walkable = (_isRoad || (allLand && !_isWater && !_isTree && !_isRock));
-  if( _overlay )
+  if( _overlay.isValid() )
   {
     walkable &= _overlay->isWalkable();
   }
@@ -61,12 +61,12 @@ bool TerrainTile::isWalkable(const bool allLand) const
   return walkable;
 }
 
-void TerrainTile::setOverlay(LandOverlay *overlay)
+void TerrainTile::setOverlay(LandOverlayPtr overlay)
 {
   _overlay = overlay;
 }
 
-LandOverlay *TerrainTile::getOverlay() const
+LandOverlayPtr TerrainTile::getOverlay() const
 {
   return _overlay;
 }
@@ -114,14 +114,14 @@ void TerrainTile::serialize(OutputSerialStream &stream)
 {
   int terrainBitset = encode();
   stream.write_int(terrainBitset, 2, 0, 65535);
-  stream.write_objectID(_overlay);
+  stream.write_objectID( _overlay.object() );
 }
 
 void TerrainTile::unserialize(InputSerialStream &stream)
 {
   int terrainBitset = stream.read_int(2, 0, 65535);
   decode(terrainBitset);
-  stream.read_objectID((void**)&_overlay);
+  //stream.read_objectID((void**)&_overlay.object());
 }
 
 void TerrainTile::setOriginalImgId( unsigned int id )

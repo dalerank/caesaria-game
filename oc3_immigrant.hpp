@@ -21,27 +21,28 @@
 class City;
 class House;
 
+class Immigrant;
+typedef SmartPtr< Immigrant > ImmigrantPtr;
+
 /** This is an immigrant coming with his stuff */
 class Immigrant : public Walker
 {
 public:
-  static Immigrant* create( City& city, const Building& startPoint, 
-                            const unsigned char peoples );
+  static ImmigrantPtr create( City& city, const Building& startPoint, 
+                              const unsigned char peoples );
 
   void onDestination();
   ~Immigrant();
 
 protected:
-  virtual Immigrant* clone() const;
-
   void setCartPicture( Picture* pic );
   virtual Picture* getCartPicture();
   
   Immigrant( City& city, unsigned char peoples );
 
   void assignPath( Tile& startTile );
-  void _checkPath( Tile& startPoint, Building* house );
-  House* _findBlankHouse();
+  void _checkPath( Tile& startPoint, HousePtr house );
+  HousePtr _findBlankHouse();
 
 protected:
   void _setPeoplesCount( const unsigned char num );

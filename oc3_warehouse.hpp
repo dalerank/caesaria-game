@@ -73,7 +73,6 @@ class Warehouse: public WorkingBuilding
 
 public:
    Warehouse();
-   Warehouse* clone() const;
    void init();
 
    void timeStep(const unsigned long time);
