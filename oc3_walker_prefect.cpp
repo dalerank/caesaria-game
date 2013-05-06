@@ -131,7 +131,7 @@ void WalkerPrefect::onMidTile()
         //on next deliverService
 
         //found fire, no water, go prefecture
-        ((BuildingPrefect&)getBase()).fireDetect( firePos );         
+        getBase().as<BuildingPrefect>()->fireDetect( firePos );         
         _back2Prefecture();
 
         Walker::onNewDirection();
@@ -160,7 +160,7 @@ void WalkerPrefect::onMidTile()
       {
         //tell our prefecture that need send prefect with water to fight with fire
         //on next deliverService
-        ((BuildingPrefect&)getBase()).fireDetect( firePos );         
+        getBase().as<BuildingPrefect>()->fireDetect( firePos );        
       }
 
       if( isDestination )
