@@ -21,6 +21,7 @@
 
 #include <iostream>
 #include <algorithm>
+
 #include "oc3_scenario.hpp"
 #include "oc3_servicewalker.hpp"
 #include "oc3_exception.hpp"
@@ -220,8 +221,15 @@ bool Construction::canBuild( const TilePos& pos ) const
 
   bool is_constructible = true;
 
-  std::list<Tile*> rect = tilemap.getFilledRectangle( pos, Size( _size ) );
-  for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+  //return area for available tiles
+  PtrTilesArea rect = tilemap.getFilledRectangle( pos, Size( _size ) );
+
+  //on over map size
+  if( rect.size() != _size * _size )
+    return false;
+
+  for( PtrTilesArea::iterator itTiles = rect.begin(); 
+       itTiles != rect.end(); ++itTiles )
   {
      is_constructible &= (*itTiles)->get_terrain().isConstructible();
   }

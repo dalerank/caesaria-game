@@ -277,10 +277,10 @@ void GuiTilemap::updatePreviewTiles( bool force )
     bool havepath = rp.getPath( *stopTile, pathWay );
     if( havepath )
     {
-        for( ConstWayOnTiles::iterator it=pathWay.begin(); it != pathWay.end(); it++ )
-        {
-            checkPreviewBuild( (*it)->getIJ() );
-        }
+      for( ConstWayOnTiles::iterator it=pathWay.begin(); it != pathWay.end(); it++ )
+      {
+	checkPreviewBuild( (*it)->getIJ() );
+      }
     }
   }
   else
@@ -288,12 +288,14 @@ void GuiTilemap::updatePreviewTiles( bool force )
     TilePos startPos, stopPos;
     _getSelectedArea( startPos, stopPos );
 
+    std::cout << "start is" << startPos << " and stop is " << stopPos << std::endl;
+    
     for( int i = startPos.getI(); i <= stopPos.getI(); i++ )
     {
       for( int j = startPos.getJ(); j <=stopPos.getJ(); j++ )
       {
-	      checkPreviewBuild( TilePos( i, j ) );
-	      checkPreviewRemove(i, j);
+	checkPreviewBuild( TilePos( i, j ) );
+	checkPreviewRemove(i, j);
       }
     }
   }
@@ -504,14 +506,18 @@ void GuiTilemap::checkPreviewBuild( const TilePos& pos )
           {
               for (int di = 0; di < size; ++di)
               {
-                  Tile* tile = new Tile(_tilemap->at( pos + TilePos( di, dj ) ));  // make a copy of tile
+                TilePos rPos = pos + TilePos( di, dj );
+                if( !_tilemap->is_inside( rPos ) )
+                    continue;
 
-                  bool isConstructible = tile->get_terrain().isConstructible();
-                  tile->set_picture( isConstructible ? &grnPicture : &redPicture );
-                  tile->set_master_tile(0);
-                  tile->get_terrain().reset();
-                  tile->get_terrain().setBuilding( true );
-                  _d->postTiles.push_back( tile );
+                Tile* tile = new Tile( _tilemap->at( rPos ) );  // make a copy of tile
+
+                bool isConstructible = tile->get_terrain().isConstructible();
+                tile->set_picture( isConstructible ? &grnPicture : &redPicture );
+                tile->set_master_tile(0);
+                tile->get_terrain().reset();
+                tile->get_terrain().setBuilding( true );
+                _d->postTiles.push_back( tile );
               }
           }
       }
