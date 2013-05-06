@@ -260,3 +260,11 @@ float WalkerPrefect::getServiceValue() const
 {
   return 5;
 }
+
+WalkerPrefectPtr WalkerPrefect::create( ServiceBuildingPtr building, int water )
+{
+  WalkerPrefectPtr ret( new WalkerPrefect( building, water ) );
+  ret->drop();
+
+  return ret;
+}

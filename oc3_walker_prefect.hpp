@@ -18,10 +18,13 @@
 
 #include "oc3_servicewalker.hpp"
 
+class WalkerPrefect;
+typedef SmartPtr< WalkerPrefect > WalkerPrefectPtr;
+
 class WalkerPrefect : public ServiceWalker
 {
 public:
-  WalkerPrefect( ServiceBuildingPtr building, int water=0 );
+  static WalkerPrefectPtr create( ServiceBuildingPtr building, int water=0 );
  
   void onMidTile();
   void onNewTile();
@@ -32,6 +35,8 @@ public:
   ~WalkerPrefect();
  
 protected:
+  WalkerPrefect( ServiceBuildingPtr building, int water );
+
   bool _looks4Fire( ReachedBuildings& buildings, TilePos& pos );
   void _checkPath2NearestFire( const ReachedBuildings& buildings );
   void _back2Prefecture();

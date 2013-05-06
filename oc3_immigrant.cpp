@@ -91,6 +91,7 @@ void Immigrant::_checkPath( Tile& startPoint, HousePtr house )
   {
      setPathWay( pathWay );
      setIJ( startPoint.getIJ() );
+     _action._action=WA_MOVE;
   }
 
   _isDeleted = !pathFound;  

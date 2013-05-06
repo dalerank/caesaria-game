@@ -177,6 +177,7 @@ void House::levelUp()
            if( house.isValid() )
            {
               house->deleteLater();
+              house->_currentHabitants = 0;
               sumHabitants += house->getNbHabitants();
               sumFreeWorkers += house->_freeWorkersCount;
            }
