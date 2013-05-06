@@ -44,4 +44,10 @@ typedef SmartPtr< TraineeWalker > TraineeWalkerPtr;
 class Road;
 typedef SmartPtr< Road > RoadPtr;
 
+class Market;
+typedef SmartPtr< Market > MarketPtr;
+
+class MarketBuyer;
+typedef SmartPtr< MarketBuyer > MarketBuyerPtr;
+
 #endif

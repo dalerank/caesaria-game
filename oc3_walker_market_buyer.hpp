@@ -27,26 +27,32 @@
 class MarketBuyer : public Walker
 {
 public:
-   MarketBuyer();
-   virtual ~MarketBuyer();
-   
-   void setMarket(Market &_market);
-   void start();
-   virtual void onDestination();
+  static MarketBuyerPtr create( MarketPtr market );
 
-   // compute the destination to fetch the given good
-   void computeWalkerDestination();
+  virtual ~MarketBuyer();
 
-   void serialize(OutputSerialStream &stream);
-   void unserialize(InputSerialStream &stream);
+  void send2City();
+  virtual void onDestination();
+
+  // compute the destination to fetch the given good
+  void computeWalkerDestination();
+
+  void serialize(OutputSerialStream &stream);
+  void unserialize(InputSerialStream &stream);
+
+protected:
+  void setMarket(MarketPtr _market);
 
 private:
-   BuildingPtr _destBuilding;  // granary or warehouse
-   GoodType _priorityGood;
-   Market *_market;
-   SimpleGoodStore _basket;
-   int _maxDistance;
-   long _reservationID;
+  MarketBuyer();
+
+  class Impl;
+  ScopedPtr< Impl > _d;
+  
+  MarketPtr _market;
+  SimpleGoodStore _basket;
+  int _maxDistance;
+  long _reservationID;
 };
 
 

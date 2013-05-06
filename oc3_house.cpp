@@ -25,6 +25,7 @@
 #include "oc3_exception.hpp"
 #include "oc3_workerhunter.hpp"
 #include "oc3_immigrant.hpp"
+#include "oc3_market.hpp"
 
 static const char* rcGrourName = "housng1a";
 
@@ -272,7 +273,7 @@ void House::levelDown()
 void House::buyMarket( ServiceWalkerPtr walker)
 {
    // std::cout << "House buyMarket" << std::endl;
-   SmartPtr< Market > market = walker->getBase().as<Market>();
+   MarketPtr market = walker->getBase().as<Market>();
    GoodStore& marketStore = market->getGoodStore();
 
    SimpleGoodStore &houseStore = getGoodStore();

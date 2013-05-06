@@ -202,9 +202,7 @@ void ServiceWalker::reservePath(PathWay &pathWay)
 void ServiceWalker::send2City()
 {
   computeWalkerPath();
-
-  WalkerPtr walker( this );
-  Scenario::instance().getCity().addWalker( walker );
+  Scenario::instance().getCity().addWalker( WalkerPtr( this ));
 }
 
 void ServiceWalker::onNewTile()

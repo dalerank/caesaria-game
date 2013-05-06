@@ -166,13 +166,6 @@ void WalkerPrefect::onMidTile()
       if( isDestination )
       {
         deleteLater();
-
-        BuildingPrefectPtr prefecture = getBase().as<BuildingPrefect>();
-        if( prefecture.isValid() )
-        {
-          prefecture->removeWalker( this );
-        }
-
         _d->action = Impl::doNothing;
       }
 

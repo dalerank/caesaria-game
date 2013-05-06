@@ -37,6 +37,7 @@
 #include "oc3_label.hpp"
 #include "oc3_city.hpp"
 #include "oc3_scenario.hpp"
+#include "oc3_market.hpp"
 
 class InfoBoxHelper
 {
