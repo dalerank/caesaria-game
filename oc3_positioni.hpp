@@ -82,7 +82,7 @@ private:
   friend std::ostream & operator<<(std::ostream&, const TilePos&);
 };
 
-std::ostream & operator << (std::ostream& os, const TilePos& tp)
+inline std::ostream & operator << (std::ostream& os, const TilePos& tp)
 {
   return os << "(" << tp.getI() << "," << tp.getJ() << ")";
 }
