@@ -599,6 +599,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_road.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_road.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_roadpropagator.cpp"
 				>
 			</File>

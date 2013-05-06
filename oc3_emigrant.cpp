@@ -16,6 +16,7 @@
 #include "oc3_emigrant.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_scenario.hpp"
+#include "oc3_road.hpp"
 
 Emigrant::Emigrant( City& city ) : Immigrant( city, 5 )
 {

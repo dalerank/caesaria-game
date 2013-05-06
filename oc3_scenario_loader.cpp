@@ -24,12 +24,11 @@
 #include "oc3_exception.hpp"
 #include "oc3_pic_loader.hpp"
 #include "oc3_positioni.hpp"
-
+#include "oc3_constructionmanager.hpp"
 
 ScenarioLoader::ScenarioLoader()
 {
 }
-
 
 void ScenarioLoader::load(const std::string& filename, Scenario &oScenario)
 {
@@ -340,13 +339,12 @@ void ScenarioLoader::decode_terrain(const int terrainBitset, Tile &oTile)
 
    terrain.reset();
 
-   LandOverlay *overlay = NULL; // This is the overlay object, if any
+   LandOverlayPtr overlay; // This is the overlay object, if any
 
-   terrain.decode(terrainBitset);
+   terrain.decode( terrainBitset );
    if( terrain.isRoad() )   // road
    {
-      Road *road = new Road();
-      overlay = road;
+      overlay = ConstructionManager::getInstance().create( B_ROAD ).as<LandOverlay>();
    }
 //   else if (terrain.isBuilding())
 //   {
@@ -356,7 +354,7 @@ void ScenarioLoader::decode_terrain(const int terrainBitset, Tile &oTile)
 //   }
 
 
-   terrain.setOverlay(overlay);
+   terrain.setOverlay( overlay );
 }
 
 void ScenarioLoader::init_climate(std::fstream &f, City &ioCity)

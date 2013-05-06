@@ -23,6 +23,7 @@
 #include "oc3_positioni.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_safetycast.hpp"
+#include "oc3_road.hpp"
 
 Aqueduct::Aqueduct() : WaterSource( B_AQUEDUCT, Size(1) )
 {

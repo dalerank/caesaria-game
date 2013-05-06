@@ -19,6 +19,7 @@
 #include "oc3_infoboxmanager.hpp"
 #include "oc3_gui_info_box.hpp"
 #include "oc3_guienv.hpp"
+#include "oc3_road.hpp"
 #include <iostream>
 
 class InfoBoxManager::Impl
@@ -65,7 +66,7 @@ void InfoBoxManager::showHelp( Tile* tile )
     }
     else
     {
-      SmartPtr< Road > road = overlay.as<Road>();
+      RoadPtr road  = overlay.as<Road>();
       if( road.isValid() )
       {
         infoBox = new InfoBoxLand( _d->gui->getRootWidget(), tile );        

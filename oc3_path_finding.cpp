@@ -22,6 +22,7 @@
 #include "oc3_scenario.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_positioni.hpp"
+#include "oc3_road.hpp"
 
 #include <iostream>
 
@@ -40,8 +41,7 @@ bool operator<(const PathWay &v1, const PathWay &v2)
 PathWay::PathWay()
 {
    _origin = NULL;
-   _destinationI = 0;
-   _destinationJ = 0;
+   _destination = TilePos( 0, 0 );
    _isReverse = false;
 }
 
@@ -54,8 +54,7 @@ void PathWay::init(Tilemap &tilemap, Tile &origin)
 {
    _tilemap = &tilemap;
    _origin = &origin;
-   _destinationI = origin.getI();
-   _destinationJ = origin.getJ();
+   _destination = origin.getIJ();
    _directionList.clear();
    _directionIt = _directionList.begin();
    _directionIt_reverse = _directionList.rbegin();
@@ -76,7 +75,7 @@ Tile &PathWay::getOrigin() const
 
 Tile &PathWay::getDestination() const
 {
-   Tile &res = _tilemap->at(_destinationI, _destinationJ);
+   Tile &res = _tilemap->at( _destination );
    return res;
 }
 
@@ -175,52 +174,48 @@ void PathWay::setNextDirection(const DirectionType direction)
    switch (direction)
    {
    case D_NORTH:
-      _destinationJ += 1;
+      _destination += TilePos( 0, 1 );
       break;
    case D_NORTH_EAST:
-      _destinationI += 1;
-      _destinationJ += 1;
+      _destination += TilePos( 1, 1 );
       break;
    case D_EAST:
-      _destinationI += 1;
+      _destination += TilePos( 1, 0 );
       break;
    case D_SOUTH_EAST:
-      _destinationI += 1;
-      _destinationJ -= 1;
+      _destination += TilePos( 1, -1 );
       break;
    case D_SOUTH:
-      _destinationJ -= 1;
+      _destination += TilePos( 0, -1 );
       break;
    case D_SOUTH_WEST:
-      _destinationI -= 1;
-      _destinationJ -= 1;
+      _destination += TilePos( -1, -1 );
       break;
    case D_WEST:
-      _destinationI -= 1;
+      _destination += TilePos( -1, 0 );
       break;
    case D_NORTH_WEST:
-      _destinationI -= 1;
-      _destinationJ += 1;
+      _destination += TilePos( -1, 1 );
       break;
    default:
       THROW("Unexpected Direction:" << direction);
       break;
    }
 
-   if (! _tilemap->is_inside( TilePos( _destinationI, _destinationJ ) ))
+   if (! _tilemap->is_inside( TilePos( _destination ) ))
    {
       THROW("Destination is out of range");
    }
 
-   _tileList.push_back( &_tilemap->at(_destinationI, _destinationJ));
+   _tileList.push_back( &_tilemap->at( _destination ));
 
    _directionList.push_back(direction);
 }
 
 void PathWay::setNextTile( const Tile& tile)
 {
-   int dI = tile.getI() - _destinationI;
-   int dJ = tile.getJ() - _destinationJ;
+   int dI = tile.getI() - _destination.getI();
+   int dJ = tile.getJ() - _destination.getJ();
 
    DirectionType direction;
 
@@ -272,7 +267,7 @@ bool PathWay::contains(Tile &tile)
 {
    // search in reverse direction, because usually the last tile matches
    bool res = false;
-   for (std::list<Tile*>::reverse_iterator itTile = _tileList.rbegin(); itTile != _tileList.rend(); ++itTile)
+   for (PtrTilesList::reverse_iterator itTile = _tileList.rbegin(); itTile != _tileList.rend(); ++itTile)
    {
       if (*itTile == &tile)
       {
@@ -284,7 +279,7 @@ bool PathWay::contains(Tile &tile)
    return res;
 }
 
-std::list<Tile*>& PathWay::getAllTiles()
+PtrTilesList& PathWay::getAllTiles()
 {
    return _tileList;
 }
@@ -297,7 +292,8 @@ void PathWay::prettyPrint() const
    }
    else
    {
-      std::cout << "pathWay from (" << _origin->getI() << ", " << _origin->getJ() << ") to (" << _destinationI << ", " << _destinationJ << "): ";
+      std::cout << "pathWay from (" << _origin->getI() << ", " << _origin->getJ() 
+                 << ") to (" << _destination.getI() << ", " << _destination.getJ() << "): ";
       for (std::vector<DirectionType>::const_iterator itDir = _directionList.begin(); itDir != _directionList.end(); ++itDir)
       {
          DirectionType direction = *itDir;
@@ -342,8 +338,8 @@ void PathWay::serialize(OutputSerialStream &stream)
 {
    stream.write_int(_origin->getI(), 2, 0, 1000);
    stream.write_int(_origin->getJ(), 2, 0, 1000);
-   stream.write_int(_destinationI, 2, 0, 1000);
-   stream.write_int(_destinationJ, 2, 0, 1000);
+   stream.write_int(_destination.getI(), 2, 0, 1000);
+   stream.write_int(_destination.getJ(), 2, 0, 1000);
    stream.write_int(_directionList.size(), 2, 0, 65535);
    for (std::vector<DirectionType>::iterator itDir = _directionList.begin(); itDir != _directionList.end(); ++itDir)
    {
@@ -367,8 +363,8 @@ void PathWay::unserialize(InputSerialStream &stream)
    int originJ = stream.read_int(2, 0, 1000);
    _tilemap = &Scenario::instance().getCity().getTilemap();
    _origin = &_tilemap->at(originI, originJ);
-   _destinationI = stream.read_int(2, 0, 1000);
-   _destinationJ = stream.read_int(2, 0, 1000);
+   _destination.setI( stream.read_int(2, 0, 1000) );
+   _destination.setJ( stream.read_int(2, 0, 1000) );
    int size = stream.read_int(2, 0, 65535);
    for (int i = 0; i<size; ++i)
    {
@@ -387,8 +383,7 @@ PathWay& PathWay::operator=( const PathWay& other )
 {
   _tilemap             = other._tilemap;
   _origin              = other._origin;
-  _destinationI        = other._destinationI;
-  _destinationJ        = other._destinationJ;
+  _destination         = other._destination;
   _directionList       = other._directionList;
   _directionIt         = _directionList.begin();
   _directionIt_reverse = _directionList.rbegin();
@@ -512,7 +507,7 @@ void Propagator::propagate(const int maxDistance)
    }
 }
 
-bool Propagator::getPath(Road &destination, PathWay &oPathWay)
+bool Propagator::getPath( RoadPtr destination, PathWay &oPathWay)
 {
    std::map<Tile*, PathWay>::iterator mapIt;
    int distance = 30;
@@ -520,7 +515,7 @@ bool Propagator::getPath(Road &destination, PathWay &oPathWay)
    {
       propagate(distance);
 
-      mapIt = _completedBranches.find(&destination.getTile());
+      mapIt = _completedBranches.find( &destination->getTile() );
       if (mapIt != _completedBranches.end())
       {
          // found pathWay!
@@ -542,7 +537,7 @@ bool Propagator::getPath(Road &destination, PathWay &oPathWay)
 
 bool Propagator::getPath( BuildingPtr destination, PathWay &oPathWay)
 {
-   const std::list<Tile*>& destTiles = destination->getAccessRoads();
+   const PtrTilesList& destTiles = destination->getAccessRoads();
    std::map<Tile*, PathWay>::iterator mapIt;
    std::set<PathWay> destPath;  // paths to the destination building, ordered by distance
    int distance = 30;
@@ -551,7 +546,7 @@ bool Propagator::getPath( BuildingPtr destination, PathWay &oPathWay)
       propagate(distance);
 
       // searches reached destTiles
-      for (std::list<Tile*>::const_iterator itTile= destTiles.begin(); itTile != destTiles.end(); ++itTile)
+      for (PtrTilesList::const_iterator itTile= destTiles.begin(); itTile != destTiles.end(); ++itTile)
       {
          // for each destination tile
          Tile &tile= **itTile;
@@ -681,7 +676,7 @@ void Propagator::getAllPaths(const int maxDistance, std::list<PathWay> &oPathWay
             break;
          }
 
-         for (std::list<Tile*>::const_iterator itTile = nextTiles.begin(); itTile!=nextTiles.end(); ++itTile)
+         for (PtrTilesList::const_iterator itTile = nextTiles.begin(); itTile!=nextTiles.end(); ++itTile)
          {
             // for every neighbor tile
             Tile &tile2 = **itTile;

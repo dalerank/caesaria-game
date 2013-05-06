@@ -3,6 +3,7 @@
 #include "oc3_safetycast.hpp"
 #include "oc3_emigrant.hpp"
 #include "oc3_positioni.hpp"
+#include "oc3_road.hpp"
 
 CityServicePtr CityServiceEmigrant::create( City& city )
 {
@@ -47,7 +48,7 @@ void CityServiceEmigrant::update( const unsigned int time )
   }
 
   Tile& roadTile = _city.getTilemap().at( _city.getRoadEntry() );
-  SmartPtr< Road > roadEntry = roadTile.get_terrain().getOverlay().as<Road>();
+  RoadPtr roadEntry = roadTile.get_terrain().getOverlay().as<Road>();
 
   if( roadEntry.isValid() )
   {

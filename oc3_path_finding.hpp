@@ -46,7 +46,7 @@ public:
    void setNextDirection(const DirectionType direction);
    void setNextTile( const Tile& tile);
    bool contains(Tile &tile);
-   std::list<Tile*>& getAllTiles();
+   PtrTilesList& getAllTiles();
 
    void prettyPrint() const;
    void serialize(OutputSerialStream &stream);
@@ -58,14 +58,13 @@ public:
 private:
    Tilemap *_tilemap;
    Tile *_origin;
-   int _destinationI;
-   int _destinationJ;
+   TilePos _destination;
 
    typedef std::vector<DirectionType> Directions;
    Directions _directionList;
    Directions::iterator _directionIt;
    Directions::reverse_iterator _directionIt_reverse;
-   std::list<Tile*> _tileList;
+   PtrTilesList _tileList;
    bool _isReverse;
 };
 bool operator<(const PathWay &v1, const PathWay &v2);
@@ -86,7 +85,7 @@ public:
   * param oCompletedBranches: result of the propagation: road=destination, pathWay=path
   */
   void init(Tile& origin);
-  void init(const std::list<Tile*>& origin);
+  void init(const PtrTilesList& origin);
   void init(const Construction& origin);
   void propagate(const int maxDistance);
 
@@ -96,7 +95,7 @@ public:
    * returns True if a path exists
    * the path is returned in oPathWay
    */
-  bool getPath(Road &destination, PathWay &oPathWay);
+  bool getPath( RoadPtr destination, PathWay &oPathWay);
   bool getPath(BuildingPtr destination, PathWay &oPathWay);
 
   /** returns all paths starting at origin */

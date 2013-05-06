@@ -31,6 +31,7 @@
 #include "oc3_cityservice_emigrant.hpp"
 #include "oc3_cityservice_workershire.hpp"
 #include "oc3_cityservice_timers.hpp"
+#include "oc3_road.hpp"
 
 typedef std::vector< CityServicePtr > CityServices;
 
