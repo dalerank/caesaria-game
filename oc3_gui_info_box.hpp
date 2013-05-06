@@ -27,6 +27,7 @@
 #include "oc3_house.hpp"
 #include "oc3_factory_building.hpp"
 #include "oc3_service_building.hpp"
+#include "oc3_predefinitions.hpp"
 
 class PushButton;
 class Label;
@@ -112,14 +113,14 @@ private:
 class GuiInfoGranary : public GuiInfoBox
 {
 public:
-   GuiInfoGranary( Widget* parent, Granary &building);
+   GuiInfoGranary( Widget* parent, GranaryPtr building);
    virtual void paint();
 
    void drawWorkers( int );
    void drawGood(const GoodType &goodType, int&);
 
 private:
-   Granary *_building;
+   GranaryPtr _building;
 };
 
 

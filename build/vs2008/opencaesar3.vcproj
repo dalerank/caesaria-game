@@ -419,6 +419,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_granary.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_granary.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_gui_info_box.cpp"
 				>
 			</File>

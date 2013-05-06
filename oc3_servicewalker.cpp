@@ -109,7 +109,7 @@ void ServiceWalker::computeWalkerPath()
   if (bestPath == NULL)
   {
     // no good path
-    _isDeleted = true;
+    deleteLater();
     return;
   }
 
@@ -152,11 +152,11 @@ float ServiceWalker::evaluatePath( PathWay& pathWay )
 {
   // evaluate all buildings along the path
   ServiceWalker::ReachedBuildings doneBuildings;  // list of evaluated building: don't do them again
-  std::list<Tile*>& pathTileList = pathWay.getAllTiles();
+  PtrTilesList& pathTileList = pathWay.getAllTiles();
 
   int distance = 0;
   float res = 0.0;
-  for (std::list<Tile*>::iterator itTile = pathTileList.begin(); itTile != pathTileList.end(); ++itTile)
+  for (PtrTilesList::iterator itTile = pathTileList.begin(); itTile != pathTileList.end(); ++itTile)
   {
     ServiceWalker::ReachedBuildings reachedBuildings = getReachedBuildings( (*itTile)->getIJ() );
     for (ServiceWalker::ReachedBuildings::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
@@ -202,7 +202,9 @@ void ServiceWalker::reservePath(PathWay &pathWay)
 void ServiceWalker::send2City()
 {
   computeWalkerPath();
-  Scenario::instance().getCity().addWalker( WalkerPtr( this ));
+
+  if( !isDeleted() )
+    Scenario::instance().getCity().addWalker( WalkerPtr( this ));
 }
 
 void ServiceWalker::onNewTile()

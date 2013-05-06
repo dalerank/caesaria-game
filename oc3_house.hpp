@@ -74,6 +74,9 @@ private:
    char _desirability;
 
    void _update();
+
+private:
+  void _tryUpdate1to2lvl();
 };
 
 //operator need for std::set

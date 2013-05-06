@@ -15,8 +15,6 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
-
 #include "oc3_walker_cart_pusher.hpp"
 
 #include <iostream>
@@ -25,45 +23,57 @@
 #include "oc3_exception.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_positioni.hpp"
+#include "oc3_granary.hpp"
+#include "oc3_warehouse.hpp"
 
-
-CartPusher::CartPusher()
+class CartPusher::Impl
 {
-   _cartPicture = NULL;
+public:
+  GoodStock stock;
+  BuildingPtr producerBuilding;
+  BuildingPtr consumerBuilding;
+  Picture* cartPicture;
+  int maxDistance;
+  long reservationID;
+};
+
+CartPusher::CartPusher() : _d( new Impl )
+{
+   _d->cartPicture = NULL;
    _walkerGraphic = WG_PUSHER;
    _walkerType = WT_CART_PUSHER;
-   _producerBuilding = NULL;
-   _consumerBuilding = NULL;
-   _maxDistance = 25;
+   _d->producerBuilding = NULL;
+   _d->consumerBuilding = NULL;
+   _d->maxDistance = 25;
 }
 
 void CartPusher::onDestination()
 {
   Walker::onDestination();
-  _cartPicture = NULL;
+  _d->cartPicture = NULL;
 
-  if( _consumerBuilding.isValid() )
+  if( _d->consumerBuilding != NULL )
   {
-    SmartPtr<Granary> granary = _consumerBuilding.as<Granary>();
-    SmartPtr<Warehouse> warehouse = _consumerBuilding.as<Warehouse>();
-    SmartPtr<Factory> factory = _consumerBuilding.as<Factory>(); 
-    if( granary.isValid() )
+    GranaryPtr granary = _d->consumerBuilding.as<Granary>();
+    WarehousePtr warehouse = _d->consumerBuilding.as<Warehouse>();
+    FactoryPtr factory = _d->consumerBuilding.as<Factory>(); 
+    if( granary != NULL )
     {
-       granary->getGoodStore().applyStorageReservation(_stock, _reservationID);
+       granary->getGoodStore().applyStorageReservation(_d->stock, _d->reservationID);
        granary->computePictures();
-       _reservationID = 0;
+       _d->reservationID = 0;
     }
-    else if ( warehouse.isValid() )
+    else if ( warehouse != NULL )
     {
-       warehouse->getGoodStore().applyStorageReservation(_stock, _reservationID);
+       warehouse->getGoodStore().applyStorageReservation(_d->stock, _d->reservationID);
        warehouse->computePictures();
-       _reservationID = 0;
+       _d->reservationID = 0;
     }
-    else if( factory.isValid() )
+    else if( factory != NULL )
     {
-       factory->getGoodStore().applyStorageReservation(_stock, _reservationID);
+       factory->getGoodStore().applyStorageReservation(_d->stock, _d->reservationID);
        // factory->computePictures();
-       _reservationID = 0;
+       _d->reservationID = 0;
     }
   }
   //
@@ -72,64 +82,58 @@ void CartPusher::onDestination()
     _pathWay.toggleDirection();
     _action._action=WA_MOVE;
     computeDirection();
-    _consumerBuilding = 0;
+    _d->consumerBuilding = 0;
   }
   else
   {
-    SmartPtr<Factory> factory = _producerBuilding.as<Factory>();
-    if( factory.isValid() )
-    {
-      factory->removeWalker( this );
-    }
-
     deleteLater();
   }
 }
 
 void CartPusher::setStock(const GoodStock &stock)
 {
-   _stock = stock;
+   _d->stock = stock;
 }
 
 void CartPusher::setProducerBuilding(BuildingPtr building)
 {
-   _producerBuilding = building;
+   _d->producerBuilding = building;
 }
 
 void CartPusher::setConsumerBuilding(BuildingPtr building)
 {
-   _consumerBuilding = building;
+   _d->consumerBuilding = building;
 }
 
 BuildingPtr CartPusher::getProducerBuilding()
 {
-   if( _producerBuilding.isNull() ) 
+   if( _d->producerBuilding.isNull() ) 
      THROW("ProducerBuilding is not initialized");
-   return _producerBuilding;
+   return _d->producerBuilding;
 }
 
 BuildingPtr CartPusher::getConsumerBuilding()
 {
-   if( _consumerBuilding.isNull() ) 
+   if( _d->consumerBuilding.isNull() ) 
      THROW("ConsumerBuilding is not initialized");
    
-   return _consumerBuilding;
+   return _d->consumerBuilding;
 }
 
 Picture& CartPusher::getCartPicture()
 {
-   if( _cartPicture == NULL )
+   if( _d->cartPicture == NULL )
    {
-      _cartPicture = &CartLoader::instance().getCart(_stock, getDirection());
+      _d->cartPicture = &CartLoader::instance().getCart(_d->stock, getDirection());
    }
 
-   return *_cartPicture;
+   return *_d->cartPicture;
 }
 
 void CartPusher::onNewDirection()
 {
    Walker::onNewDirection();
-   _cartPicture = NULL;  // need to get the new graphic
+   _d->cartPicture = NULL;  // need to get the new graphic
 }
 
 void CartPusher::getPictureList(std::vector<Picture*> &oPics)
@@ -163,9 +167,9 @@ void CartPusher::computeWalkerDestination()
    // get the list of buildings within reach
    PathWay pathWay;
    Propagator pathPropagator;
-   _consumerBuilding = 0;
-   pathPropagator.init( *_producerBuilding.object() );
-   pathPropagator.propagate(_maxDistance);
+   _d->consumerBuilding = 0;
+   pathPropagator.init( *_d->producerBuilding.object() );
+   pathPropagator.propagate(_d->maxDistance);
 
    BuildingPtr destBuilding;
    if (destBuilding == NULL)
@@ -198,7 +202,7 @@ void CartPusher::computeWalkerDestination()
    {
      _action._direction = D_NORTH;
      setSpeed( 0 );
-     setIJ( _producerBuilding->getAccessRoads().front()->getIJ() );
+     setIJ( _d->producerBuilding->getAccessRoads().front()->getIJ() );
      walk();
    }
 }
@@ -207,7 +211,7 @@ void CartPusher::computeWalkerDestination()
 BuildingPtr CartPusher::getWalkerDestination_factory(Propagator &pathPropagator, PathWay &oPathWay)
 {
    BuildingPtr res;
-   GoodType goodType = _stock._goodType;
+   GoodType goodType = _d->stock._goodType;
    BuildingType buildingType = BuildingDataHolder::instance().getBuildingTypeByInGood(goodType);
 
    if (buildingType == B_NONE)
@@ -226,8 +230,8 @@ BuildingPtr CartPusher::getWalkerDestination_factory(Propagator &pathPropagator,
       PathWay& pathWay= pathWayIt->second;
 
       SmartPtr<Factory> factory = building.as<Factory>();
-      _reservationID = factory->getGoodStore().reserveStorage(_stock);
-      if (_reservationID != 0)
+      _d->reservationID = factory->getGoodStore().reserveStorage(_d->stock);
+      if (_d->reservationID != 0)
       {
          res = factory.as<Building>();
          oPathWay = pathWay;
@@ -252,8 +256,8 @@ BuildingPtr CartPusher::getWalkerDestination_warehouse(Propagator &pathPropagato
       PathWay& pathWay= pathWayIt->second;
 
       SmartPtr<Warehouse> warehouse= building.as<Warehouse>();
-      _reservationID = warehouse->getGoodStore().reserveStorage(_stock);
-      if (_reservationID != 0)
+      _d->reservationID = warehouse->getGoodStore().reserveStorage(_d->stock);
+      if (_d->reservationID != 0)
       {
          res = warehouse.as<Building>();
          oPathWay = pathWay;
@@ -269,7 +273,7 @@ BuildingPtr CartPusher::getWalkerDestination_granary(Propagator &pathPropagator,
 {
    BuildingPtr res;
 
-   GoodType goodType = _stock._goodType;
+   GoodType goodType = _d->stock._goodType;
    if (!(goodType == G_WHEAT || goodType == G_FISH || goodType == G_MEAT || goodType == G_FRUIT || goodType == G_VEGETABLE))
    {
       // this good cannot be stored in a granary
@@ -287,8 +291,8 @@ BuildingPtr CartPusher::getWalkerDestination_granary(Propagator &pathPropagator,
       PathWay& pathWay= pathWayIt->second;
 
       SmartPtr<Granary> granary= building.as<Granary>();
-      _reservationID = granary->getGoodStore().reserveStorage(_stock);
-      if (_reservationID != 0)
+      _d->reservationID = granary->getGoodStore().reserveStorage(_d->stock);
+      if (_d->reservationID != 0)
       {
          res = granary.as<Building>();
          oPathWay = pathWay;
@@ -300,9 +304,12 @@ BuildingPtr CartPusher::getWalkerDestination_granary(Propagator &pathPropagator,
 }
 
 
-void CartPusher::start()
+void CartPusher::send2City()
 {
-   computeWalkerDestination();
+  computeWalkerDestination();
+
+  if( !isDeleted() )
+    Scenario::instance().getCity().addWalker( WalkerPtr( this ) );
 }
 
 void CartPusher::timeStep( const unsigned long time )
@@ -315,3 +322,12 @@ void CartPusher::timeStep( const unsigned long time )
   Walker::timeStep( time );
 }
 
+CartPusherPtr CartPusher::create( BuildingPtr building, const GoodStock& stock )
+{
+  CartPusherPtr ret( new CartPusher() );
+  ret->drop(); //delete automaticlly
+  ret->setStock(stock);
+  ret->setProducerBuilding( building  );
+
+  return ret;
+}

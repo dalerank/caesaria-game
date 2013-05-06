@@ -54,7 +54,7 @@ public:
    void setIJ( const TilePos& pos );
    void setPathWay(PathWay &pathWay);
    //void setDestinationIJ( const TilePos& pos );
-   void setSpeed(const int speed);
+   void setSpeed(const float speed);
    virtual void onNewTile();  // called when the walker is on a new tile
    virtual void onMidTile();  // called when the walker is on the middle of a tile
    virtual void onDestination();  // called when the walker is at his destination
@@ -100,7 +100,6 @@ private:
    int _i, _j;   // tile coordinate
    int _si, _sj; // subtile coordinate in the current tile: 0..15
    int _ii, _jj; // subtile coordinate across all tiles: 0..15*mapsize (ii=15*i+si)
-   int _speed;
    float _remainMoveI, _remainMoveJ;  // remaining movement
    int _midTileI, _midTileJ;  // subtile coordinate in the current tile, at starting position
 

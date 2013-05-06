@@ -108,7 +108,6 @@ void Factory::timeStep(const unsigned long time)
    }  
 }
 
-
 void Factory::deliverGood()
 {
    // std::cout << "Factory delivery" << std::endl;
@@ -117,21 +116,18 @@ void Factory::deliverGood()
    if( _mayDeliverGood() )
    {
      GoodStock stock(_outGoodType, 100, 100);
-     CartPusherPtr walker( new CartPusher() );
-     walker->drop(); //destroy walker automatically, when it not needed anyone
-     walker->setStock(stock);
-     walker->setProducerBuilding( SmartPtr< Building >( this ) );
-     walker->start();
+     CartPusherPtr walker = CartPusher::create( BuildingPtr( this ), stock );
+     walker->send2City();
      _progress -= 100.f;
 
-     _addWalker( walker.as<Walker>() );
+     if( !walker->isDeleted() )
+       _addWalker( walker.as<Walker>() );
    }
 }
 
 void Factory::_addWalker( WalkerPtr walker )
 {
   _d->pushers.push_back( walker );
-  Scenario::instance().getCity().addWalker( walker );
 }
 
 SimpleGoodStore& Factory::getGoodStore()

@@ -20,42 +20,39 @@
 #define WALKER_CART_PUSHER_HPP
 
 #include "oc3_walker.hpp"
-#include "oc3_warehouse.hpp"
-#include "oc3_factory_building.hpp"
 
 /** This walker delivers goods */
 class CartPusher : public Walker
 {
 public:
+  static CartPusherPtr create( BuildingPtr building, const GoodStock& stock );
+
+  void setProducerBuilding( BuildingPtr building );
+  void setConsumerBuilding( BuildingPtr building );
+  BuildingPtr getProducerBuilding();
+  BuildingPtr getConsumerBuilding();
+  void setStock(const GoodStock &stock);
+
+  Picture& getCartPicture();
+  virtual void getPictureList(std::vector<Picture*> &oPics);
+  virtual void onNewDirection();
+  virtual void onDestination();
+
+  void send2City();
+
+  void computeWalkerDestination();
+  BuildingPtr getWalkerDestination_factory(Propagator &pathPropagator, PathWay &oPathWay);
+  BuildingPtr getWalkerDestination_warehouse(Propagator &pathPropagator, PathWay &oPathWay);
+  BuildingPtr getWalkerDestination_granary(Propagator &pathPropagator, PathWay &oPathWay);
+  
+  void timeStep(const unsigned long time);
+
+protected:
    CartPusher();
 
-   void setProducerBuilding( BuildingPtr building );
-   void setConsumerBuilding( BuildingPtr building );
-   BuildingPtr getProducerBuilding();
-   BuildingPtr getConsumerBuilding();
-   void setStock(const GoodStock &stock);
-
-   Picture& getCartPicture();
-   virtual void getPictureList(std::vector<Picture*> &oPics);
-   virtual void onNewDirection();
-   virtual void onDestination();
-
-   void start();
-
-   void computeWalkerDestination();
-   BuildingPtr getWalkerDestination_factory(Propagator &pathPropagator, PathWay &oPathWay);
-   BuildingPtr getWalkerDestination_warehouse(Propagator &pathPropagator, PathWay &oPathWay);
-   BuildingPtr getWalkerDestination_granary(Propagator &pathPropagator, PathWay &oPathWay);
-   
-   void timeStep(const unsigned long time);
-
 private:
-   GoodStock _stock;
-   BuildingPtr _producerBuilding;
-   BuildingPtr _consumerBuilding;
-   Picture *_cartPicture;
-   int _maxDistance;
-   long _reservationID;
+   class Impl;
+   ScopedPtr< Impl > _d;
 };
 
 #endif

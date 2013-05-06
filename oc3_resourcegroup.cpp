@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-
 #include "oc3_resourcegroup.hpp"
 
 const char* ResourceGroup::panelBackground = "paneling";
@@ -28,3 +27,4 @@ const char* ResourceGroup::aqueduct = "land2a";
 const char* ResourceGroup::waterbuildings = "waterbuildings";
 const char* ResourceGroup::road = "land2a";
 const char* ResourceGroup::entertaiment = "entertainment";
+const char* ResourceGroup::warehouse = "warehouse";

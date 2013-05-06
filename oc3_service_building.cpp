@@ -111,7 +111,9 @@ void ServiceBuilding::deliverService()
    // make a service walker and send him to his wandering
   ServiceWalkerPtr serviceman = ServiceWalker::create( BuildingPtr( this ),_service);
   serviceman->send2City();
-  _addWalker( serviceman.as<Walker>() );
+
+  if( !serviceman->isDeleted() )
+      _addWalker( serviceman.as<Walker>() );
 }
 
 int ServiceBuilding::getServiceRange() const

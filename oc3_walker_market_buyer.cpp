@@ -21,6 +21,7 @@
 #include "oc3_scenario.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_market.hpp"
+#include "oc3_granary.hpp"
 #include <iostream>
 
 
@@ -52,11 +53,6 @@ MarketBuyer::MarketBuyer() : _d( new Impl )
 
 MarketBuyer::~MarketBuyer()
 {
-}
-
-void MarketBuyer::setMarket(MarketPtr market)
-{
-   _market = market;
 }
 
 template< class T >
@@ -125,7 +121,8 @@ void MarketBuyer::computeWalkerDestination()
          _d->priorityGood = *itGood;
 
          if( _d->priorityGood == G_WHEAT || _d->priorityGood == G_FISH 
-             || _d->priorityGood == G_MEAT || _d->priorityGood == G_FRUIT || _d->priorityGood == G_VEGETABLE)
+             || _d->priorityGood == G_MEAT || _d->priorityGood == G_FRUIT 
+             || _d->priorityGood == G_VEGETABLE)
          {
             // try get that good from a granary
             _d->destBuilding = getWalkerDestination2<Granary>( pathPropagator, B_GRANARY, _market,
@@ -175,8 +172,9 @@ void MarketBuyer::onDestination()
       computeDirection();
 
       // get goods from destination building
-      SmartPtr<Granary> granary = _d->destBuilding.as<Granary>();
-      SmartPtr<Warehouse> warehouse = _d->destBuilding.as<Warehouse>();
+      GranaryPtr granary = _d->destBuilding.as<Granary>();
+      WarehousePtr warehouse = _d->destBuilding.as<Warehouse>();
+      
       if( granary.isValid() )
       {
          // this is a granary!
@@ -236,8 +234,10 @@ void MarketBuyer::onDestination()
 
 void MarketBuyer::send2City()
 {
-   computeWalkerDestination();
-   Scenario::instance().getCity().addWalker( WalkerPtr( this ) );
+  computeWalkerDestination();
+
+  if( !isDeleted() )
+    Scenario::instance().getCity().addWalker( WalkerPtr( this ) );
 }
 
 
@@ -268,7 +268,7 @@ MarketBuyerPtr MarketBuyer::create( MarketPtr market )
 {
   MarketBuyerPtr ret( new MarketBuyer() );
   ret->drop();
-  ret->setMarket( market );
+  ret->_market = market;
 
   return ret;
 }

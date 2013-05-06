@@ -7,6 +7,17 @@ class Market::Impl
 {
 public:
   SimpleGoodStore goodStore;
+
+  bool isAnyGoodStored()
+  {
+    bool anyGoodStored = false;
+    for( int i = 0; i < G_MAX; ++i)
+    {
+      anyGoodStored |= ( goodStore.getCurrentQty( GoodType(i) ) >= 100 );
+    }
+
+    return anyGoodStored;
+  }
 };
 
 Market::Market() : ServiceBuilding(S_MARKET, B_MARKET, Size(2) ),
@@ -15,8 +26,7 @@ Market::Market() : ServiceBuilding(S_MARKET, B_MARKET, Size(2) ),
   setMaxWorkers(5);
   setWorkers(5);
 
-  // _name = _("Marche");
-  setPicture( Picture::load( ResourceGroup::commerce, 1));
+  setPicture( Picture::load( ResourceGroup::commerce, 1) );
   _fgPictures.resize(1);  // animation
 
   _d->goodStore.setMaxQty(5000);
@@ -24,7 +34,8 @@ Market::Market() : ServiceBuilding(S_MARKET, B_MARKET, Size(2) ),
   _d->goodStore.setMaxQty(G_POTTERY, 300);
   _d->goodStore.setCurrentQty(G_WHEAT, 200);
 
-  _animation.load( ResourceGroup::commerce, 2, 10);
+  _animation.load( ResourceGroup::commerce, 2, 10 );
+  _animation.setFrameDelay( 4 );
 }
 
 void Market::deliverService()
@@ -34,7 +45,15 @@ void Market::deliverService()
     // the marketBuyer is ready to buy something!
     MarketBuyerPtr buyer = MarketBuyer::create( MarketPtr( this ) );
     buyer->send2City();
-    _addWalker( buyer.as<Walker>() );
+
+    if( !buyer->isDeleted() )
+    {
+      _addWalker( buyer.as<Walker>() );
+    }
+    else if( _d->isAnyGoodStored() )
+    {
+      ServiceBuilding::deliverService();
+    }
   }
 }
 

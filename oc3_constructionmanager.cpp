@@ -27,6 +27,7 @@
 #include "oc3_buildingprefect.hpp"
 #include "oc3_road.hpp"
 #include "oc3_market.hpp"
+#include "oc3_granary.hpp"
 
 #include "oc3_factoryclay.hpp"
 #include "oc3_factorymarble.hpp"

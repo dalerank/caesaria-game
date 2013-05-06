@@ -39,9 +39,6 @@
 
 namespace {
 static const char* rcCartsGroup    = "carts";
-static const char* rcCommerceGroup = "commerce";
-static const char* rcEntertaimentGroup  = "entertainment";
-static const char* rcWarehouseGroup  = "warehouse";
 }
 
 PicMetaData* PicMetaData::_instance = NULL;
@@ -67,92 +64,92 @@ PicMetaData::PicMetaData()
    info.yoffset = -1;
    setRange("land1a", 1, 303, info);
    setRange("oc3_land", 1, 2, info);
-   setRange("land2a", 1, 151, info);
-   setRange("land2a", 187, 195, info); //burning ruins start animation
+   setRange( ResourceGroup::land2a, 1, 151, info);
+   setRange( ResourceGroup::land2a, 187, 195, info); //burning ruins start animation
    setRange("land2a", 214, 231, info); //burning ruins middle animation
    setRange("land3a", 47, 92, info);
    setRange("plateau", 1, 44, info);
-   setRange(rcCommerceGroup, 1, 167, info);
+   setRange( ResourceGroup::commerce, 1, 167, info);
    setRange( "transport", 1, 93, info);
-   setRange( "security", 1, 61, info);
-   setRange(rcEntertaimentGroup, 1, 116, info);
+   setRange( ResourceGroup::security, 1, 61, info);
+   setRange( ResourceGroup::entertaiment, 1, 116, info);
    setRange("housng1a", 1, 51, info);
-   setRange(rcWarehouseGroup, 19, 83, info);
+   setRange( ResourceGroup::warehouse, 19, 83, info);
    setRange( ResourceGroup::utilitya, 1, 42, info);
    setRange("govt", 1, 10, info);
    setRange( ResourceGroup::sprites, 1, 8, info );
 
    setRange( ResourceGroup::waterbuildings, 1, 2, info); //reservoir empty/full
    
-   setOne(rcEntertaimentGroup, 12, 37, 62); // amphitheater
-   setOne(rcEntertaimentGroup, 35, 34, 37); // theater
-   setOne(rcEntertaimentGroup, 50, 70, 105);  // collosseum
+   setOne( ResourceGroup::entertaiment, 12, 37, 62); // amphitheater
+   setOne( ResourceGroup::entertaiment, 35, 34, 37); // theater
+   setOne( ResourceGroup::entertaiment, 50, 70, 105);  // collosseum
 
    // animations
    info.xoffset = 42;
    info.yoffset = 34;
-   setRange(rcCommerceGroup, 2, 11, info);  // market poor
+   setRange(ResourceGroup::commerce, 2, 11, info);  // market poor
    info.xoffset = 66;
    info.yoffset = 44;
-   setRange(rcCommerceGroup, 44, 53, info);  // marble
+   setRange(ResourceGroup::commerce, 44, 53, info);  // marble
    info.xoffset = 45;
    info.yoffset = 18;
-   setRange(rcCommerceGroup, 55, 60, info);  // iron
+   setRange(ResourceGroup::commerce, 55, 60, info);  // iron
    info.xoffset = 15;
    info.yoffset = 32;
-   setRange(rcCommerceGroup, 62, 71, info);  // clay
+   setRange(ResourceGroup::commerce, 62, 71, info);  // clay
    info.xoffset = 35;
    info.yoffset = 6;
-   setRange(rcCommerceGroup, 73, 82, info);  // timber
+   setRange(ResourceGroup::commerce, 73, 82, info);  // timber
    info.xoffset = 14;
    info.yoffset = 36;
-   setRange(rcCommerceGroup, 87, 98, info);  // wine
+   setRange(ResourceGroup::commerce, 87, 98, info);  // wine
    info.xoffset = 0;
    info.yoffset = 45;
-   setRange(rcCommerceGroup, 100, 107, info);  // oil
+   setRange(ResourceGroup::commerce, 100, 107, info);  // oil
    info.xoffset = 42;
    info.yoffset = 36;
-   setRange(rcCommerceGroup, 109, 116, info);  // weapons
+   setRange(ResourceGroup::commerce, 109, 116, info);  // weapons
    info.xoffset = 38;
    info.yoffset = 39;
-   setRange(rcCommerceGroup, 118, 131, info);  // furniture
+   setRange(ResourceGroup::commerce, 118, 131, info);  // furniture
    info.xoffset = 65;
    info.yoffset = 42;
-   setRange(rcCommerceGroup, 133, 139, info);  // pottery
+   setRange(ResourceGroup::commerce, 133, 139, info);  // pottery
    info.xoffset = 65;
    info.yoffset = 42;
-   setRange(rcCommerceGroup, 159, 167, info);  // market rich
+   setRange(ResourceGroup::commerce, 159, 167, info);  // market rich
 
    // stock of input good
-   setOne(rcCommerceGroup, 153, 45, -8);  // grapes
-   setOne(rcCommerceGroup, 154, 37, -2);  // olive
-   setOne(rcCommerceGroup, 155, 48, -4);  // timber
-   setOne(rcCommerceGroup, 156, 47, -11);  // iron
-   setOne(rcCommerceGroup, 157, 47, -9);  // clay
+   setOne(ResourceGroup::commerce, 153, 45, -8);  // grapes
+   setOne(ResourceGroup::commerce, 154, 37, -2);  // olive
+   setOne(ResourceGroup::commerce, 155, 48, -4);  // timber
+   setOne(ResourceGroup::commerce, 156, 47, -11);  // iron
+   setOne(ResourceGroup::commerce, 157, 47, -9);  // clay
 
    // warehouse
-   setOne(rcWarehouseGroup, 1, 60, 56);
-   setOne(rcWarehouseGroup, 18, 56, 93);
+   setOne(ResourceGroup::warehouse, 1, 60, 56);
+   setOne(ResourceGroup::warehouse, 18, 56, 93);
    info.xoffset = 55;
    info.yoffset = 75;
-   setRange(rcWarehouseGroup, 2, 17, info);
+   setRange(ResourceGroup::warehouse, 2, 17, info);
    info.xoffset = 79;
    info.yoffset = 108;
-   setRange(rcWarehouseGroup, 84, 91, info);
+   setRange(ResourceGroup::warehouse, 84, 91, info);
 
    // granary
-   setOne(rcCommerceGroup, 141, 28, 109);
-   setOne(rcCommerceGroup, 142, 33, 75);
-   setOne(rcCommerceGroup, 143, 56, 65);
-   setOne(rcCommerceGroup, 144, 92, 65);
-   setOne(rcCommerceGroup, 145, 118, 76);
-   setOne(rcCommerceGroup, 146, 78, 69);
-   setOne(rcCommerceGroup, 147, 78, 69);
-   setOne(rcCommerceGroup, 148, 78, 69);
-   setOne(rcCommerceGroup, 149, 78, 69);
-   setOne(rcCommerceGroup, 150, 78, 69);
-   setOne(rcCommerceGroup, 151, 78, 69);
-   setOne(rcCommerceGroup, 152, 78, 69);
+   setOne(ResourceGroup::commerce, 141, 28, 109);
+   setOne(ResourceGroup::commerce, 142, 33, 75);
+   setOne(ResourceGroup::commerce, 143, 56, 65);
+   setOne(ResourceGroup::commerce, 144, 92, 65);
+   setOne(ResourceGroup::commerce, 145, 118, 76);
+   setOne(ResourceGroup::commerce, 146, 78, 69);
+   setOne(ResourceGroup::commerce, 147, 78, 69);
+   setOne(ResourceGroup::commerce, 148, 78, 69);
+   setOne(ResourceGroup::commerce, 149, 78, 69);
+   setOne(ResourceGroup::commerce, 150, 78, 69);
+   setOne(ResourceGroup::commerce, 151, 78, 69);
+   setOne(ResourceGroup::commerce, 152, 78, 69);
 
    // walkers
    info.xoffset = -2;

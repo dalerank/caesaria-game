@@ -38,6 +38,7 @@
 #include "oc3_city.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_market.hpp"
+#include "oc3_granary.hpp"
 
 class InfoBoxHelper
 {
@@ -443,11 +444,11 @@ std::string GuiInfoFactory::getInfoText()
 }
 
 
-GuiInfoGranary::GuiInfoGranary( Widget* parent, Granary &building)
+GuiInfoGranary::GuiInfoGranary( Widget* parent, GranaryPtr building)
     : GuiInfoBox( parent, Rect( 0, 0, 450, 300 ), -1 )
 {
-   _building = &building;
-   setTitle( BuildingDataHolder::instance().getData(building.getType()).getPrettyName() );
+   _building = building;
+   setTitle( BuildingDataHolder::instance().getData(building->getType()).getPrettyName() );
 
    int height = 160;
 
