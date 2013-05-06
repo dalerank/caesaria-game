@@ -487,6 +487,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_marblepit.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_marblepit.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_math.hpp"
 				>
 			</File>

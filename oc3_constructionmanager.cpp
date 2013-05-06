@@ -26,6 +26,7 @@
 #include "oc3_senate.hpp"
 #include "oc3_buildingprefect.hpp"
 #include "oc3_factoryclay.hpp"
+#include "oc3_marblepit.h"
 
 #include <map>
 

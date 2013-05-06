@@ -62,16 +62,6 @@ protected:
    ScopedPtr< Impl > _d;
 };
 
-
-class FactoryMarble : public Factory
-{
-public:
-   FactoryMarble();
-
-   bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
-   void timeStep(const unsigned long time);
-};
-
 class FactoryTimber : public Factory
 {
 public:
