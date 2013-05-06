@@ -45,7 +45,6 @@ public:
 
    virtual void timeStep(const unsigned long time);  // performs one simulation step
    virtual int getType() const;
-
    // position and movement
    int getI() const;
    TilePos getIJ() const;

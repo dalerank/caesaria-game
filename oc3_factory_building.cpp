@@ -182,7 +182,6 @@ void Factory::removeWalker( WalkerPtr w )
   }
 }
 
-
 FactoryTimber::FactoryTimber() : Factory(G_NONE, G_TIMBER, B_TIMBER, Size(2) )
 {
    _productionRate = 9.6f;

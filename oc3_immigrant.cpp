@@ -69,7 +69,7 @@ HousePtr Immigrant::_findBlankHouse()
   if( houses.size() > 0 )
   {
     itHouse = houses.begin();
-    std::advance(houses.begin(), rand() % houses.size() );
+    std::advance(itHouse, rand() % houses.size() );
     blankHouse = *itHouse;
     _d->destination = blankHouse->getTilePos();
   }

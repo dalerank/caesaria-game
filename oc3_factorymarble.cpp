@@ -13,24 +13,24 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_factoryclay.hpp"
+#include "oc3_factorymarble.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_scenario.hpp"
 
-FactoryClay::FactoryClay() : Factory(G_NONE, G_CLAY, B_CLAY_PIT, Size(2) )
+FactoryMarble::FactoryMarble() : Factory(G_NONE, G_MARBLE, B_MARBLE, Size(2) )
 {
   _productionRate = 9.6f;
-  _picture = &Picture::load( ResourceGroup::commerce, 61 );
+  _picture = &Picture::load( ResourceGroup::commerce, 43 );
 
-  _animation.load( ResourceGroup::commerce, 62, 10);
-  _animation.setFrameDelay( 3 );
+  _animation.load( ResourceGroup::commerce, 44, 10);
+  _animation.setFrameDelay( 4 );
   _fgPictures.resize(2);
-
+  
   setMaxWorkers( 10 );
   setWorkers( 10 );
 }
 
-void FactoryClay::timeStep( const unsigned long time )
+void FactoryMarble::timeStep( const unsigned long time )
 {
   bool mayAnimate = getWorkers() > 0;
 
@@ -47,17 +47,17 @@ void FactoryClay::timeStep( const unsigned long time )
   Factory::timeStep( time );
 }
 
-bool FactoryClay::canBuild(const TilePos& pos ) const
+bool FactoryMarble::canBuild(const TilePos& pos ) const
 {
   bool is_constructible = Construction::canBuild( pos );
-  bool near_water = false;
+  bool near_mountain = false;  // tells if the factory is next to a mountain
 
   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-  PtrTilesList rect = tilemap.getRectangle( pos + TilePos( -1, -1), Size( _size + 2 ), Tilemap::checkCorners );
-  for( PtrTilesList::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles )
+  std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 2 ), Tilemap::checkCorners);
+  for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {
-    near_water |= (*itTiles)->get_terrain().isWater();
+    near_mountain |= (*itTiles)->get_terrain().isRock();
   }
 
-  return (is_constructible && near_water);
-} 
+  return (is_constructible && near_mountain);
+}

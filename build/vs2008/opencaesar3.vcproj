@@ -375,6 +375,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_factorymarble.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_factorymarble.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_flagholder.hpp"
 				>
 			</File>
@@ -484,14 +492,6 @@
 			</File>
 			<File
 				RelativePath="..\..\oc3_list.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\oc3_marblepit.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\oc3_marblepit.h"
 				>
 			</File>
 			<File

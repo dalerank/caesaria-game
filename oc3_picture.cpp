@@ -27,86 +27,89 @@
 #include "oc3_rectangle.hpp"
 #include "oc3_pic_loader.hpp"
 
+// Picture class functions
+
 Picture::Picture()
 {
-   _surface = NULL;
-   _xoffset = 0;
-   _yoffset = 0;
-   _glTextureID = 0;
-   _width = 0;
-   _height = 0;
+  _surface = NULL;
+  _xoffset = 0;
+  _yoffset = 0;
+  _glTextureID = 0;
+  _width = 0;
+  _height = 0;
 
-   _name = "";
+  _name = "";
 }
 
 void Picture::init(SDL_Surface *surface, const int xoffset, const int yoffset)
 {
-   _surface = surface;
-   _xoffset = xoffset;
-   _yoffset = yoffset;
-   _width = _surface->w;
-   _height = _surface->h;
+  _surface = surface;
+  _xoffset = xoffset;
+  _yoffset = yoffset;
+  _width = _surface->w;
+  _height = _surface->h;
 }
 
 void Picture::set_offset(const int xoffset, const int yoffset)
 {
-   _xoffset = xoffset;
-   _yoffset = yoffset;
+  _xoffset = xoffset;
+  _yoffset = yoffset;
 }
 
 void Picture::set_offset( const Point& offset )
 {
-	_xoffset = offset.getX();
-	_yoffset = offset.getY();
+  _xoffset = offset.getX();
+  _yoffset = offset.getY();
 }
 
 void Picture::add_offset(const int dx, const int dy)
 {
-   _xoffset += dx;
-   _yoffset += dy;
+  _xoffset += dx;
+  _yoffset += dy;
 }
 
 SDL_Surface* Picture::get_surface() const
 {
-   return _surface;
+  return _surface;
 }
 
 int Picture::get_xoffset() const
 {
-   return _xoffset;
+  return _xoffset;
 }
+
 int Picture::get_yoffset() const
 {
-   return _yoffset;
+  return _yoffset;
 }
 
 int Picture::get_width() const
 {
-   return _width;
+  return _width;
 }
 int Picture::get_height() const
 {
-   return _height;
+  return _height;
 }
 
 void Picture::set_name(std::string &name)
 {
-   _name = name;
+  _name = name;
 }
 
 std::string Picture::get_name()
 {
-   return _name;
+  return _name;
 }
 
 Size Picture::getSize() const
 {
-    return Size( _width, _height );
+  return Size( _width, _height );
 }
 
 bool Picture::isValid() const
 {
-    return _surface != 0;
+  return _surface != 0;
 }
 
 Picture& Picture::load( const char* group, const int id )
@@ -119,72 +122,73 @@ Picture& Picture::load( const std::string& filename )
   return PicLoader::instance().get_picture( filename );
 }
 
+// Font class functions
+
 Font::Font(TTF_Font &ttfFont, SDL_Color &color)
 {
-    _ttfFont = &ttfFont;
-    _color = color;
+  _ttfFont = &ttfFont;
+  _color = color;
 }
 
 Font::Font()
 {
-    _ttfFont = 0;
-    _color = SDL_Color();
+  _ttfFont = 0;
+  _color = SDL_Color();
 }
 
 TTF_Font& Font::getTTF()
 {
-   return *_ttfFont;
+  return *_ttfFont;
 }
 
 SDL_Color& Font::getColor()
 {
-   return _color;
+  return _color;
 }
-
 
 std::list<std::string> Font::split_text(const std::string &text, const int width)
 {
-   std::list<std::string> res;
-   std::istringstream iss(text);
-   int w;
-   int h;
-   SdlFacade &sdlFacade = SdlFacade::instance();
+  std::list<std::string> res;
+  std::istringstream iss(text);
+  int w;
+  int h;
+  SdlFacade &sdlFacade = SdlFacade::instance();
 
-   std::string currentLine = "";
-   while (iss)
-   {
-      std::string word;
-      iss >> word;
-      sdlFacade.getTextSize(*this, currentLine + " " + word, w, h);
-      if (word == "")
-      {
-         // end of text
-         break;
-      }
-      else if (currentLine == "")
-      {
-         // first word
-         currentLine = word;
-      }
-      else if (w <= width)
-      {
-         // write on current line
-         currentLine += " " + word;
-      }
-      else
-      {
-         // too long, need another line
-         res.push_back(currentLine);
-         currentLine = word;
-      }
-   }
-
-   if (currentLine != "")
-   {
+  std::string currentLine = "";
+  while (iss)
+  {
+    std::string word;
+    iss >> word;
+    sdlFacade.getTextSize(*this, currentLine + " " + word, w, h);
+    if (word == "")
+    {
+      // end of text
+      break;
+    }
+    else if (currentLine == "")
+    {
+      // first word
+      currentLine = word;
+    }
+    else if (w <= width)
+    {
+      // write on current line
+      currentLine += " " + word;
+    }
+    else
+    {
+      // too long, need another line
       res.push_back(currentLine);
-   }
+      currentLine = word;
+    }
+  }
 
-   return res;
+  if (currentLine != "")
+  {
+    res.push_back(currentLine);
+  }
+
+  return res;
 }
 
 bool Font::isValid() const

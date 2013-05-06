@@ -16,6 +16,8 @@
 #ifndef __OPENCAESAR3_POSITION_H_INCLUDED__
 #define __OPENCAESAR3_POSITION_H_INCLUDED__
 
+#include <iostream>
+
 #include "oc3_vector2.hpp"
 
 class PointF;
@@ -57,24 +59,30 @@ inline PointF Point::toPointF() const
 class TilePos : Vector2<int>
 {
 public:
-    TilePos( const int i, const int j ) : Vector2<int>( i, j ) {}
-    TilePos() : Vector2<int>( 0, 0 ) {}
+  TilePos( const int i, const int j ) : Vector2<int>( i, j ) {}
+  TilePos() : Vector2<int>( 0, 0 ) {}
 
-    int getI() const { return x; }
-    int getJ() const { return y; }
-    int getZ() const { return y - x; }
+  int getI() const { return x; }
+  int getJ() const { return y; }
+  int getZ() const { return y - x; }
 
-    void setI( const int i ) { x = i; }
-    void setJ( const int j ) { y = j; }
+  void setI( const int i ) { x = i; }
+  void setJ( const int j ) { y = j; }
 
-    float distanceFrom( const TilePos& other ) { return getDistanceFrom( other );}
+  float distanceFrom( const TilePos& other ) { return getDistanceFrom( other );}
 
-    TilePos& operator=(const TilePos& other) { set( other.x, other.y ); return *this; }
-    TilePos& operator+=(const TilePos& other) { set( x+other.x, y+other.y ); return *this; }
-    TilePos operator+(const TilePos& other) const { return TilePos( x + other.x, y + other.y ); }
-    TilePos operator-(const TilePos& other) const { return TilePos( x - other.x, y - other.y ); }
-    TilePos operator-() const { return TilePos( -x, -y ); }
-    bool operator==(const TilePos& other) const{ return (x == other.x) && ( y == other.y ); }
-    bool operator!=(const TilePos& other) const{ return (x != other.x ) || ( y != other.y ); }
+  TilePos& operator=(const TilePos& other) { set( other.x, other.y ); return *this; }
+  TilePos& operator+=(const TilePos& other) { set( x+other.x, y+other.y ); return *this; }
+  TilePos operator+(const TilePos& other) const { return TilePos( x + other.x, y + other.y ); }
+  TilePos operator-(const TilePos& other) const { return TilePos( x - other.x, y - other.y ); }
+  TilePos operator-() const { return TilePos( -x, -y ); }
+  bool operator==(const TilePos& other) const{ return (x == other.x) && ( y == other.y ); }
+  bool operator!=(const TilePos& other) const{ return (x != other.x ) || ( y != other.y ); }
 };
+
+inline std::ostream & operator << (std::ostream& os, const TilePos& tp)
+{
+  return os << "(" << tp.getI() << "," << tp.getJ() << ")";
+}
+
 #endif // __NRP_POSITION_H_INCLUDED__

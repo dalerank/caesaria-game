@@ -62,6 +62,7 @@ protected:
    ScopedPtr< Impl > _d;
 };
 
+
 class FactoryTimber : public Factory
 {
 public:
