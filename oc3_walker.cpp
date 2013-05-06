@@ -203,23 +203,26 @@ void Walker::walk()
       // nothing to do
       return;
    }
+
+   Tile& tile = Scenario::instance().getCity().getTilemap().at( getIJ() );
+   float roadKoeff = tile.get_terrain().isRoad() ? 1.f : 0.5f;
    
    switch (_action._direction)
    {
    case D_NORTH:
    case D_SOUTH:
-      _remainMoveJ += _speed;
+      _remainMoveJ += _speed * roadKoeff;
       break;
    case D_EAST:
    case D_WEST:
-      _remainMoveI += _speed;
+      _remainMoveI += _speed * roadKoeff;
       break;
    case D_NORTH_EAST:
    case D_SOUTH_WEST:
    case D_SOUTH_EAST:
    case D_NORTH_WEST:
-      _remainMoveI += _speed*0.7f;
-      _remainMoveJ += _speed*0.7f;
+      _remainMoveI += _speed * 0.7f * roadKoeff;
+      _remainMoveJ += _speed * 0.7f * roadKoeff;
       break;
    default:
       THROW("Invalid move direction: " << _action._direction);
