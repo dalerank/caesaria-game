@@ -179,10 +179,12 @@ void Menu::draw( GfxEngine& painter )
   // try to generate and show minimap
   // now we will show it at (0,0)
   // then we will show it in right place
+  if (dynamic_cast<ExtentMenu*>(this) != NULL) // weird check if we have big menu
+  {
   
-  SdlFacade &sdlFacade = SdlFacade::instance();
+    SdlFacade &sdlFacade = SdlFacade::instance();
   
-  int mapsize = Scenario::instance().getCity().getTilemap().getSize();
+    int mapsize = Scenario::instance().getCity().getTilemap().getSize();
   
   Picture& minimap = sdlFacade.createPicture(mapsize * 2 , mapsize * 2);
   SDL_Surface* surface = minimap.get_surface();
@@ -267,7 +269,7 @@ void Menu::draw( GfxEngine& painter )
   sdlFacade.deletePicture(minimap_windows);
   
   // END OF TEMPORARY    
-    
+  }  
   Widget::draw( painter );
 }
 
