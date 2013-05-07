@@ -247,8 +247,8 @@ void Construction::_updateDesirabilityInfluence( bool onBuild )
   City &city = Scenario::instance().getCity();
   Tilemap &tilemap = city.getTilemap();
 
-  PtrTilesList desirabilityArea = tilemap.getFilledRectangle( getTile().getIJ() - TilePos(2, 2), 
-    getTile().getIJ() + TilePos( 2, 2 ) );
+  PtrTilesList desirabilityArea = tilemap.getFilledRectangle( getTile().getIJ() - TilePos( 2, 2 ), 
+    getTile().getIJ() + TilePos( 2 + getSize(), 2 + getSize() ) );
 
   int mul = (onBuild ? 1 : -1);
   for( PtrTilesList::iterator it=desirabilityArea.begin(); it != desirabilityArea.end(); it++ )

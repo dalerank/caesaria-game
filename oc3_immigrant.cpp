@@ -127,12 +127,12 @@ void Immigrant::onDestination()
   }
 }
 
-ImmigrantPtr Immigrant::create( City& city, const Building& startPoint,
+ImmigrantPtr Immigrant::create( City& city, const BuildingPtr startPoint,
                               const unsigned char peoples )
 {
   ImmigrantPtr newImmigrant( new Immigrant( city, peoples ) );
-  newImmigrant->drop();
-  newImmigrant->assignPath( startPoint.getTile() );
+  newImmigrant->drop(); //delete automatically
+  newImmigrant->assignPath( startPoint->getTile() );
 
   city.addWalker( newImmigrant.as<Walker>() );
   return newImmigrant;

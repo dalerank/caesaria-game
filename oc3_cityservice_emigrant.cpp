@@ -31,7 +31,7 @@ void CityServiceEmigrant::update( const unsigned int time )
     HousePtr house = (*itHouse).as<House>();
     if( house.isValid() && house->getAccessRoads().size() > 0 )
     {
-      vacantPop += house->getMaxHabitants() - house->getNbHabitants();
+      vacantPop += math::clamp( house->getMaxHabitants() - house->getNbHabitants(), 0, 0xff );
     }
   }
 

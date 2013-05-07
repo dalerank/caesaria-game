@@ -28,7 +28,7 @@ typedef SmartPtr< Immigrant > ImmigrantPtr;
 class Immigrant : public Walker
 {
 public:
-  static ImmigrantPtr create( City& city, const Building& startPoint, 
+  static ImmigrantPtr create( City& city, BuildingPtr startPoint, 
                               const unsigned char peoples );
 
   void onDestination();
