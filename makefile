@@ -50,7 +50,7 @@ OBJECTS=oc3_caesar.o oc3_pic_loader.o oc3_tilemap.o oc3_tilemap_area.o oc3_city.
 	oc3_widget.o oc3_widgetpositionanimator.o oc3_infoboxmanager.o oc3_roadpropagator.o oc3_burningruins.o oc3_water_buildings.o oc3_animation.o \
 	oc3_buildingengineer.o oc3_constructionmanager.o oc3_collapsedruins.o oc3_tilemapchangecommand.o oc3_workerhunter.o oc3_senate.o oc3_immigrant.o \
 	oc3_walkermanager.o oc3_astarpathfinding.o oc3_buildingprefect.o oc3_cityservice_emigrant.o oc3_cityservice_workershire.o oc3_walker_prefect.o \
-	oc3_tile.o oc3_terraininfo.o oc3_factoryclay.o oc3_cityservice_timers.o oc3_timer.o oc3_factorymarble.o
+	oc3_tile.o oc3_terraininfo.o oc3_factoryclay.o oc3_cityservice_timers.o oc3_timer.o oc3_factorymarble.o oc3_road.o oc3_traineewalker.o oc3_servicewalker.o
 
 
 all: $(CAESAR_EXE) tags chmod gettext

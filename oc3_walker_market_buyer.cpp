@@ -96,7 +96,7 @@ BuildingPtr getWalkerDestination2( Propagator &pathPropagator, const BuildingTyp
     reservId = res->getGoodStore().reserveRetrieval( stock );
   }
 
-  return res.as<Building>();
+  return res.template as<Building>();
 }
 
 void MarketBuyer::computeWalkerDestination()
