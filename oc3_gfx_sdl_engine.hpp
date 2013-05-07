@@ -33,7 +33,6 @@
 // It does a dumb drawing from back to front
 class GfxSdlEngine : public GfxEngine
 {
-
 public:
 
    GfxSdlEngine();

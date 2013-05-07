@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-08 01:27+0400\n"
+"POT-Creation-Date: 2013-05-08 03:19+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -107,108 +107,109 @@ msgstr "Marble"
 
 #: oc3_gui_info_box.cpp:195 oc3_gui_info_box.cpp:386 oc3_gui_info_box.cpp:503
 #: oc3_gui_info_box.cpp:590 oc3_gui_info_box.cpp:199 oc3_gui_info_box.cpp:390
-#: oc3_gui_info_box.cpp:507 oc3_gui_info_box.cpp:594
+#: oc3_gui_info_box.cpp:507 oc3_gui_info_box.cpp:594 oc3_gui_info_box.cpp:201
+#: oc3_gui_info_box.cpp:392 oc3_gui_info_box.cpp:509 oc3_gui_info_box.cpp:596
 #, c-format
 msgid "%d employes (%d requis)"
 msgstr "%d employees (%d needed)"
 
-#: oc3_gui_info_box.cpp:236 oc3_gui_info_box.cpp:240
+#: oc3_gui_info_box.cpp:236 oc3_gui_info_box.cpp:240 oc3_gui_info_box.cpp:242
 #, c-format
 msgid "Aucun percepteur ne passe ici. Ne paye pas de taxes"
 msgstr "No taxe collector passes through here. Doesn't pay taxes."
 
-#: oc3_gui_info_box.cpp:241 oc3_gui_info_box.cpp:245
+#: oc3_gui_info_box.cpp:241 oc3_gui_info_box.cpp:245 oc3_gui_info_box.cpp:247
 #, c-format
 msgid "Paye %d Denarii de taxes par mois"
 msgstr "Pays %d Denarii of taxes each month"
 
-#: oc3_gui_info_box.cpp:248 oc3_gui_info_box.cpp:252
+#: oc3_gui_info_box.cpp:248 oc3_gui_info_box.cpp:252 oc3_gui_info_box.cpp:254
 #, c-format
 msgid "Inhabitants didn't report about crimes"
 msgstr "Inhabitants didn't report any crimes"
 
-#: oc3_gui_info_box.cpp:261 oc3_gui_info_box.cpp:265
+#: oc3_gui_info_box.cpp:261 oc3_gui_info_box.cpp:265 oc3_gui_info_box.cpp:267
 msgid ""
 "Inabitants of tents provide food themselves, conducting a subsistence economy"
 msgstr ""
 "Inabitants of tents produce the food themselves, conducting a subsistence "
 "economy"
 
-#: oc3_gui_info_box.cpp:290 oc3_gui_info_box.cpp:294
+#: oc3_gui_info_box.cpp:290 oc3_gui_info_box.cpp:294 oc3_gui_info_box.cpp:296
 #, c-format
 msgid "%d citizens, additional rooms for %d"
 msgstr ""
 
-#: oc3_gui_info_box.cpp:295 oc3_gui_info_box.cpp:299
+#: oc3_gui_info_box.cpp:295 oc3_gui_info_box.cpp:299 oc3_gui_info_box.cpp:301
 #, c-format
 msgid "%d citizens"
 msgstr ""
 
-#: oc3_gui_info_box.cpp:300 oc3_gui_info_box.cpp:304
+#: oc3_gui_info_box.cpp:300 oc3_gui_info_box.cpp:304 oc3_gui_info_box.cpp:306
 #, c-format
 msgid "%d citizens, %d habitants en trop"
 msgstr "%d citizens, %d extra inhabitants"
 
-#: oc3_gui_info_box.cpp:343 oc3_gui_info_box.cpp:347
+#: oc3_gui_info_box.cpp:343 oc3_gui_info_box.cpp:347 oc3_gui_info_box.cpp:349
 #, c-format
 msgid "Le travail est a %d%% termine."
 msgstr "The work is  %d%% done."
 
-#: oc3_gui_info_box.cpp:354 oc3_gui_info_box.cpp:358
+#: oc3_gui_info_box.cpp:354 oc3_gui_info_box.cpp:358 oc3_gui_info_box.cpp:360
 #, c-format
 msgid "%s en stock: %d unites"
 msgstr "%s in stock: %d units"
 
-#: oc3_gui_info_box.cpp:474 oc3_gui_info_box.cpp:478
+#: oc3_gui_info_box.cpp:474 oc3_gui_info_box.cpp:478 oc3_gui_info_box.cpp:480
 #, c-format
 msgid "%d unites en stock. Espace pour %d unites."
 msgstr "%d units in stock. Space for %d units."
 
-#: oc3_gui_info_box.cpp:646 oc3_gui_info_box.cpp:650
+#: oc3_gui_info_box.cpp:646 oc3_gui_info_box.cpp:650 oc3_gui_info_box.cpp:652
 msgid "##trees_and_forest_caption"
 msgstr "Trees and woodland"
 
-#: oc3_gui_info_box.cpp:647 oc3_gui_info_box.cpp:651
+#: oc3_gui_info_box.cpp:647 oc3_gui_info_box.cpp:651 oc3_gui_info_box.cpp:653
 msgid "##trees_and_forest_text"
 msgstr ""
 
-#: oc3_gui_info_box.cpp:651 oc3_gui_info_box.cpp:655
+#: oc3_gui_info_box.cpp:651 oc3_gui_info_box.cpp:655 oc3_gui_info_box.cpp:657
 msgid "##water_caption"
 msgstr "Water"
 
-#: oc3_gui_info_box.cpp:652 oc3_gui_info_box.cpp:656
+#: oc3_gui_info_box.cpp:652 oc3_gui_info_box.cpp:656 oc3_gui_info_box.cpp:658
 msgid "##water_text"
 msgstr ""
 
-#: oc3_gui_info_box.cpp:656 oc3_gui_info_box.cpp:660
+#: oc3_gui_info_box.cpp:656 oc3_gui_info_box.cpp:660 oc3_gui_info_box.cpp:662
 msgid "##rock_caption"
 msgstr "Rocks"
 
-#: oc3_gui_info_box.cpp:657 oc3_gui_info_box.cpp:661
+#: oc3_gui_info_box.cpp:657 oc3_gui_info_box.cpp:661 oc3_gui_info_box.cpp:663
 msgid "##rock_text"
 msgstr ""
 
-#: oc3_gui_info_box.cpp:661 oc3_gui_info_box.cpp:665
+#: oc3_gui_info_box.cpp:661 oc3_gui_info_box.cpp:665 oc3_gui_info_box.cpp:667
 msgid "##road_caption"
 msgstr "Road"
 
-#: oc3_gui_info_box.cpp:662 oc3_gui_info_box.cpp:666
+#: oc3_gui_info_box.cpp:662 oc3_gui_info_box.cpp:666 oc3_gui_info_box.cpp:668
 msgid "##road_text"
 msgstr ""
 
-#: oc3_gui_info_box.cpp:666 oc3_gui_info_box.cpp:670
+#: oc3_gui_info_box.cpp:666 oc3_gui_info_box.cpp:670 oc3_gui_info_box.cpp:672
 msgid "##clear_land_caption"
 msgstr "Empty land"
 
-#: oc3_gui_info_box.cpp:667 oc3_gui_info_box.cpp:671
+#: oc3_gui_info_box.cpp:667 oc3_gui_info_box.cpp:671 oc3_gui_info_box.cpp:673
 msgid "##clear_land_text"
 msgstr ""
 
-#: oc3_gui_info_box.cpp:702 oc3_gui_info_box.cpp:706
+#: oc3_gui_info_box.cpp:702 oc3_gui_info_box.cpp:706 oc3_gui_info_box.cpp:708
 msgid "##freehouse_caption"
 msgstr "Vacant lot"
 
-#: oc3_gui_info_box.cpp:703 oc3_gui_info_box.cpp:707
+#: oc3_gui_info_box.cpp:703 oc3_gui_info_box.cpp:707 oc3_gui_info_box.cpp:709
 msgid "##freehouse_text"
 msgstr ""
 
@@ -256,87 +257,87 @@ msgstr ""
 msgid "need library or school"
 msgstr ""
 
-#: oc3_menu.cpp:114
+#: oc3_menu.cpp:114 oc3_menu.cpp:115
 msgid "##houseBtnTooltip"
 msgstr "Build housing"
 
-#: oc3_menu.cpp:117
+#: oc3_menu.cpp:117 oc3_menu.cpp:118
 msgid "##clearBtnTooltip"
 msgstr "Clear land"
 
-#: oc3_menu.cpp:119
+#: oc3_menu.cpp:119 oc3_menu.cpp:120
 msgid "##roadBtnTooltip"
 msgstr "Build roads"
 
-#: oc3_menu.cpp:120
+#: oc3_menu.cpp:120 oc3_menu.cpp:121
 msgid "##waterBtnTooltip"
 msgstr "Water-related structures"
 
-#: oc3_menu.cpp:121
+#: oc3_menu.cpp:121 oc3_menu.cpp:122
 msgid "##healthBtnTooltip"
 msgstr "Health-related structures"
 
-#: oc3_menu.cpp:122
+#: oc3_menu.cpp:122 oc3_menu.cpp:123
 msgid "##templeBtnTooltip"
 msgstr "Religious structures"
 
-#: oc3_menu.cpp:123
+#: oc3_menu.cpp:123 oc3_menu.cpp:124
 msgid "##educationBtnTooltip"
 msgstr "Education structures"
 
-#: oc3_menu.cpp:126
+#: oc3_menu.cpp:126 oc3_menu.cpp:127
 msgid "##entertainmentBtnTooltip"
 msgstr "Entertainment structures"
 
-#: oc3_menu.cpp:129
+#: oc3_menu.cpp:129 oc3_menu.cpp:130
 msgid "##administractionBtnTooltip"
 msgstr "Administration or Government structures"
 
-#: oc3_menu.cpp:132
+#: oc3_menu.cpp:132 oc3_menu.cpp:133
 msgid "##engineerBtnTooltip"
 msgstr "Engineering structures"
 
-#: oc3_menu.cpp:135
+#: oc3_menu.cpp:135 oc3_menu.cpp:136
 msgid "##securityBtnTooltip"
 msgstr "Security structures"
 
-#: oc3_menu.cpp:138
+#: oc3_menu.cpp:138 oc3_menu.cpp:139
 msgid "##comerceBtnTooltip"
 msgstr "Industrial structures"
 
-#: oc3_menu.cpp:381
+#: oc3_menu.cpp:381 oc3_menu.cpp:486
 msgid "##senateBtnTooltip"
 msgstr "Visit your advisors"
 
-#: oc3_menu.cpp:383
+#: oc3_menu.cpp:383 oc3_menu.cpp:488
 msgid "##empireBtnTooltip"
 msgstr "Go to the map of the Empire"
 
-#: oc3_menu.cpp:386
+#: oc3_menu.cpp:386 oc3_menu.cpp:491
 msgid "##missionBtnTooltip"
 msgstr "Review your assignment"
 
-#: oc3_menu.cpp:388
+#: oc3_menu.cpp:388 oc3_menu.cpp:493
 msgid "##northBtnTooltip"
 msgstr "Re-orient your view to Due North"
 
-#: oc3_menu.cpp:390
+#: oc3_menu.cpp:390 oc3_menu.cpp:495
 msgid "##rotateLeftBtnTooltip"
 msgstr "Rotate the map counter-clockwise"
 
-#: oc3_menu.cpp:392
+#: oc3_menu.cpp:392 oc3_menu.cpp:497
 msgid "##rotateRightBtnTooltip"
 msgstr "Rotate the map clockwise"
 
-#: oc3_menu.cpp:395
+#: oc3_menu.cpp:395 oc3_menu.cpp:500
 msgid "##cancelBtnTooltip"
 msgstr "UNDO your last action"
 
-#: oc3_menu.cpp:397
+#: oc3_menu.cpp:397 oc3_menu.cpp:502
 msgid "##messageBtnTooltip"
 msgstr "View messages"
 
-#: oc3_menu.cpp:399
+#: oc3_menu.cpp:399 oc3_menu.cpp:504
 msgid "##disasterBtnTooltip"
 msgstr "Cycle through any recent trouble spots in the city"
 

@@ -51,55 +51,55 @@
 #include "oc3_guienv.hpp"
 
 #if defined(_MSC_VER)
-	#undef main
+  #undef main
 #endif
 
 class CaesarApp::Impl
 {
 public:
-	Scenario*  scenario;
-	ScreenType nextScreen;
-	GfxEngine* engine;
-	GuiEnv* gui;
+  Scenario*  scenario;
+  ScreenType nextScreen;
+  GfxEngine* engine;
+  GuiEnv* gui;
 };
 
 void CaesarApp::initLocale()
 {
-   // init the internationalization library (gettext)
-   setlocale(LC_ALL, "");
-   bindtextdomain( "caesar", "." );
-   textdomain("caesar");
+  // init the internationalization library (gettext)
+  setlocale(LC_ALL, "");
+  bindtextdomain( "caesar", "." );
+  textdomain("caesar");
 }
 
 void CaesarApp::initVideo()
 {
-   std::cout << "init graphic engine" << std::endl;
-   _d->engine = new GfxSdlEngine();
+  std::cout << "init graphic engine" << std::endl;
+  _d->engine = new GfxSdlEngine();
    
-   /* Typical resolutions:
-    * 640 x 480; 800 x 600; 1024 x 768; 1400 x 1050; 1600 x 1200
-    */
-   GfxEngine::instance().setScreenSize(1024, 768);
-   GfxEngine::instance().init();
+  /* Typical resolutions:
+   * 640 x 480; 800 x 600; 1024 x 768; 1400 x 1050; 1600 x 1200
+   */
+  GfxEngine::instance().setScreenSize(1024, 768);
+  GfxEngine::instance().init();
 }
 
 void CaesarApp::initSound()
 {
-   std::cout << "init sound engine" << std::endl;
-   new SoundEngine();
-   SoundEngine::instance().init();
+  std::cout << "init sound engine" << std::endl;
+  new SoundEngine();
+  SoundEngine::instance().init();
 }
 
 void CaesarApp::initWaitPictures()
 {
-   std::cout << "load wait images begin" << std::endl;
-   PicLoader &pic_loader = PicLoader::instance();
-   pic_loader.load_wait();
-   std::cout << "load wait images end" << std::endl;
+  std::cout << "load wait images begin" << std::endl;
+  PicLoader &pic_loader = PicLoader::instance();
+  pic_loader.load_wait();
+  std::cout << "load wait images end" << std::endl;
 
-   std::cout << "convert images begin" << std::endl;
-   GfxEngine::instance().load_pictures(pic_loader.get_pictures());
-   std::cout << "convert images end" << std::endl;
+  std::cout << "convert images begin" << std::endl;
+  GfxEngine::instance().load_pictures(pic_loader.get_pictures());
+  std::cout << "convert images end" << std::endl;
 }
 
 void CaesarApp::initGuiEnvironment()
@@ -223,30 +223,28 @@ void CaesarApp::setScreenMenu()
       /* temporary*/
       std::vector <fs::path> filelist = scanForMaps();
       std::srand( (Uint32)std::time(0));
-      std::string file = filelist.at(std::rand()%filelist.size()).string();
+      std::string file = filelist.at(std::rand() % filelist.size()).string();
       std::cout<<"Loading map:" << file << std::endl;
       loadScenario(file);
-        //loadScenario( "./resources/maps/mediolanum.map" );
-        /* end of temporary */
       _d->nextScreen = SCREEN_GAME;
     }
     break;
    
     case ScreenMenu::loadSavedGame:
-	{  
-	loadGame("oc3.sav");
-        _d->nextScreen = SCREEN_GAME;
-	}
+    {  
+      loadGame("oc3.sav");
+      _d->nextScreen = SCREEN_GAME;
+    }
     break;
    
     case ScreenMenu::closeApplication:
-	{
-		_d->nextScreen = SCREEN_QUIT;
-	}
+    {
+      _d->nextScreen = SCREEN_QUIT;
+    }
     break;
    
     default:
-		THROW("Unexpected result event: " << result);
+      THROW("Unexpected result event: " << result);
    }
 }
 
