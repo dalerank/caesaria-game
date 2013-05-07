@@ -47,7 +47,6 @@ private:
   
   MarketPtr _market;
   SimpleGoodStore _basket;
-  int _maxDistance;
   long _reservationID;
 };
 

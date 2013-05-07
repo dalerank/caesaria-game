@@ -30,13 +30,14 @@ class MarketBuyer::Impl
 public:
   BuildingPtr destBuilding;  // granary or warehouse
   GoodType priorityGood;
+  int maxDistance;
 };
 
 MarketBuyer::MarketBuyer() : _d( new Impl )
 {
    _walkerGraphic = WG_MARKETLADY;
    _walkerType = WT_MARKET_BUYER;
-   _maxDistance = 25;
+   _d->maxDistance = 25;
    _basket.setMaxQty(800);  // this is a big basket!
 
    _basket.setMaxQty(G_WHEAT, 800);
@@ -113,7 +114,7 @@ void MarketBuyer::computeWalkerDestination()
       PathWay pathWay;
       Propagator pathPropagator;
       pathPropagator.init( *_market.object() );
-      pathPropagator.propagate(_maxDistance);
+      pathPropagator.propagate( _d->maxDistance);
 
       // try to find the most needed good
       for (std::list<GoodType>::iterator itGood = priorityGoods.begin(); itGood != priorityGoods.end(); ++itGood)
@@ -248,7 +249,7 @@ void MarketBuyer::serialize(OutputSerialStream &stream)
    stream.write_int((int)_d->priorityGood, 1, 0, G_MAX);
    stream.write_objectID( _market.object() );
    _basket.serialize(stream);
-   stream.write_int(_maxDistance, 2, 0, 65535);
+   stream.write_int( _d->maxDistance, 2, 0, 65535);
    stream.write_int(_reservationID, 4, 0, 1000000);
 }
 
@@ -260,7 +261,7 @@ void MarketBuyer::unserialize(InputSerialStream &stream)
    _d->priorityGood = (GoodType) stream.read_int(1, 0, G_MAX);
    stream.read_objectID((void**)&_market);
    _basket.unserialize(stream);
-   _maxDistance = stream.read_int(2, 0, 65535);
+   _d->maxDistance = stream.read_int(2, 0, 65535);
    _reservationID = stream.read_int(4, 0, 1000000);
 }
 
