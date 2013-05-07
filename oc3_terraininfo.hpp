@@ -59,10 +59,10 @@ public:
   int encode() const;
   void decode(const int bitset);
 
-  void setOriginalImgId( unsigned int id );
-  unsigned int getOriginalImgId() const;
+  void setOriginalImgId( unsigned int id ) { _imgId = id;          }
+  unsigned int getOriginalImgId() const    { return _imgId;        }
 
-  int getDesirability() const;
+  int getDesirability() const              { return _desirability; }
   void appendDesirability( int value );
 
   void serialize(OutputSerialStream &stream);
@@ -77,7 +77,7 @@ private:
   bool _isAqueduct;
   bool _isMeadow;
   int _desirability;
-  unsigned int _imgId;
+  unsigned int _imgId;      // original tile information
   LandOverlayPtr _overlay;
 };
 

@@ -182,7 +182,7 @@ void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
    {
       f.seekg(kGraphicGrid + 162 * 2 * (border_size + itA) + 2 * border_size, std::ios::beg);  // skip empty rows and empty cols
 
-      for (int itB=0; itB<size; ++itB)
+      for (int itB = 0; itB < size; ++itB)
       {
          int i = itB;
          int j = size-itA-1;
@@ -197,7 +197,7 @@ void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
    }
 
    // loads the edge map (to know about multi-tile graphics)
-   for (int itA=0; itA<size; ++itA)
+   for (int itA = 0; itA < size; ++itA)
    {
       // for each row
       f.seekg(kEdgeGrid + 162 * (border_size + itA) + border_size, std::ios::beg);  // skip empty rows and empty cols

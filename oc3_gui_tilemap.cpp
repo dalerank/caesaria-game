@@ -218,7 +218,7 @@ void GuiTilemap::drawTilemap()
     for( PtrTilesList::iterator itPostTile = _d->postTiles.begin(); itPostTile != _d->postTiles.end(); ++itPostTile )
     {
       int z = (*itPostTile)->getJ() - (*itPostTile)->getI();
-	    drawTileEx( **itPostTile, z );
+      drawTileEx( **itPostTile, z );
     }       
   }
 }
