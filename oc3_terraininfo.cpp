@@ -124,21 +124,6 @@ void TerrainTile::unserialize(InputSerialStream &stream)
   //stream.read_objectID((void**)&_overlay.object());
 }
 
-void TerrainTile::setOriginalImgId( unsigned int id )
-{
-  _imgId = id;
-}
-
-unsigned int TerrainTile::getOriginalImgId() const
-{
-  return _imgId;
-}
-
-int TerrainTile::getDesirability() const
-{
-  return _desirability;
-}
-
 void TerrainTile::appendDesirability( int value )
 {
   _desirability = math::clamp( _desirability += value, -0xff, 0xff );

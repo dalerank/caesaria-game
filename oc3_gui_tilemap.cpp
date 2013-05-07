@@ -129,6 +129,12 @@ void GuiTilemap::drawTile( const Tile& tile )
 	}
 }
 
+void getBitmapCoordinates(int x, int y, int mapsize, int& x_out, int& y_out)
+{
+  y_out = x + mapsize - y - 1;
+  x_out = x + y;  
+}
+
 void GuiTilemap::drawTilemap()
 {
   GfxEngine &engine = GfxEngine::instance();
@@ -218,9 +224,98 @@ void GuiTilemap::drawTilemap()
     for( PtrTilesList::iterator itPostTile = _d->postTiles.begin(); itPostTile != _d->postTiles.end(); ++itPostTile )
     {
       int z = (*itPostTile)->getJ() - (*itPostTile)->getI();
-	    drawTileEx( **itPostTile, z );
+      drawTileEx( **itPostTile, z );
     }       
   }
+  
+  // TEMPORARY!!!
+  
+  // try to generate and show minimap
+  // now we will show it at (0,0)
+  // then we will show it in right place
+  
+  SdlFacade &sdlFacade = SdlFacade::instance();
+  
+  int mapsize = _city->getTilemap().getSize();
+  
+  Picture& minimap = sdlFacade.createPicture(mapsize * 2 , mapsize * 2);
+  SDL_Surface* surface = minimap.get_surface();
+  
+  sdlFacade.lockSurface(surface);
+  // here we can draw anything
+  
+  // std::cout << "center is (" << _mapArea->getCenterX() << "," << _mapArea->getCenterZ() << ")" << std::endl;
+
+  int border = (162 - mapsize) / 2;
+  int max = border + mapsize;
+  
+  for (int y = border; y < max; y++)
+  {
+    for (int x = border; x < max; x++)
+    {  
+      TerrainTile& tile = _city->getTilemap().at(x - border, y - border).get_terrain();
+      if (tile.isWater())
+      {
+	int coords[2];
+	getBitmapCoordinates(x - border, y - border, mapsize, coords[0], coords[1]);
+        sdlFacade.set_pixel(surface, coords[0], coords[1], 0x39497B);
+	sdlFacade.set_pixel(surface, coords[0] + 1, coords[1], 0x31417B);
+      }
+      else if (tile.isMeadow())
+      {
+	int coords[2];
+	getBitmapCoordinates(x - border, y - border, mapsize, coords[0], coords[1]);
+        sdlFacade.set_pixel(surface, coords[0], coords[1], 0x427118);
+	sdlFacade.set_pixel(surface, coords[0] + 1, coords[1], 0x8C9242);
+      }
+      else if (tile.isTree())
+      {
+	int coords[2];
+	getBitmapCoordinates(x - border, y - border, mapsize, coords[0], coords[1]);
+        sdlFacade.set_pixel(surface, coords[0], coords[1], 0x527931);
+	sdlFacade.set_pixel(surface, coords[0] + 1, coords[1], 0x082008);
+      }
+      else if (tile.isRoad())
+      {
+	int coords[2];
+	getBitmapCoordinates(x - border, y - border, mapsize, coords[0], coords[1]);
+        sdlFacade.set_pixel(surface, coords[0], coords[1], 0x736963);
+	sdlFacade.set_pixel(surface, coords[0] + 1, coords[1], 0x4A3021);
+      }
+      else if (tile.isRock())
+      {
+	int coords[2];
+	getBitmapCoordinates(x - border, y - border, mapsize, coords[0], coords[1]);
+        sdlFacade.set_pixel(surface, coords[0], coords[1], 0x8C8284);
+	sdlFacade.set_pixel(surface, coords[0] + 1, coords[1], 0x5A5152);
+      }
+      else
+      {
+	int coords[2];
+	getBitmapCoordinates(x - border, y - border, mapsize, coords[0], coords[1]);
+        sdlFacade.set_pixel(surface, coords[0], coords[1], 0x4A8231);
+	sdlFacade.set_pixel(surface, coords[0] + 1, coords[1], 0x4A7129);
+      }
+    }
+  }
+
+  // show center of screen on minimap
+  sdlFacade.set_pixel(surface, _mapArea->getCenterX(),   mapsize * 2 - _mapArea->getCenterZ(), 0xFFFFFF);
+  sdlFacade.set_pixel(surface, _mapArea->getCenterX()+1, mapsize * 2- _mapArea->getCenterZ(), 0xFFFFFF);
+  sdlFacade.set_pixel(surface, _mapArea->getCenterX(),   mapsize * 2 -_mapArea->getCenterZ()+1, 0xFFFFFF);
+  sdlFacade.set_pixel(surface, _mapArea->getCenterX()+1, mapsize * 2-_mapArea->getCenterZ()+1, 0xFFFFFF);
+    
+  // 159, 318 -> 0,159
+  // 318, 159 -> 159,159
+  // 0, 159   -> 0, 0
+  // 159, 0   -> 159,0 
+  
+  sdlFacade.unlockSurface(surface);
+  
+  engine.drawPicture(minimap, 0, 20);
+  sdlFacade.deletePicture(minimap);
+  
+  // END OF TEMPORARY
 }
 
 Tile* GuiTilemap::getTileXY( const Point& pos, bool overborder)
