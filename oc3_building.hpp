@@ -270,42 +270,6 @@ public:
   void timeStep(const unsigned long time);
 };
 
-class NativeBuilding : public Building
-{
-public:
-  NativeBuilding( const BuildingType type, const Size& size );
-  void serialize(OutputSerialStream &stream);
-  void unserialize(InputSerialStream &stream);
-  virtual GuiInfoBox* makeInfoBox( Widget* parent );
-};
-
-class NativeHut : public NativeBuilding
-{
-public:
-  NativeHut();
-  void serialize(OutputSerialStream &stream);
-  void unserialize(InputSerialStream &stream);
-  //virtual GuiInfoBox* makeInfoBox();  
-};
-
-class NativeField  : public NativeBuilding
-{
-public:
-  NativeField();
-  void serialize(OutputSerialStream &stream);
-  void unserialize(InputSerialStream &stream);
-  //virtual GuiInfoBox* makeInfoBox();
-};
-
-class NativeCenter : public NativeBuilding
-{
-public:
-  NativeCenter();
-  void serialize(OutputSerialStream &stream);
-  void unserialize(InputSerialStream &stream);
-  //virtual GuiInfoBox* makeInfoBox();
-};
-
 class FortLegionnaire : public Building
 {
 public:  

@@ -48,7 +48,7 @@ public:
     void setX( const float nx ) { x = nx; }
     void setY( const float ny ) { y = ny; }
 
-    Point toPoint() { return Point( (int)x, (int)y ); }
+    Point toPoint() const { return Point( (int)x, (int)y ); }
 };
 
 inline PointF Point::toPointF() const

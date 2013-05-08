@@ -18,9 +18,6 @@
 
 #include "oc3_walker.hpp"
 
-class City;
-class House;
-
 class Immigrant;
 typedef SmartPtr< Immigrant > ImmigrantPtr;
 
@@ -50,7 +47,7 @@ protected:
 
 private:
   class Impl;
-  std::auto_ptr< Impl > _d;
+  ScopedPtr< Impl > _d;
 };
 
 #endif

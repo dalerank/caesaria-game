@@ -285,9 +285,8 @@ void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
 	              case 0xb0b:
 	              case 0xb0c:
 	              {
-    		          LandOverlayPtr build( new NativeHut() );
-                  build->drop();
-		              tile.get_terrain().setOverlay( build );
+                  ConstructionPtr hut = ConstructionManager::getInstance().create( B_NATIVE_HUT );
+                  tile.get_terrain().setOverlay( hut.as<LandOverlay>() );
 		              overlay = tile.get_terrain().getOverlay();
 		              overlay->build( pos );
 		              oCity.getOverlayList().push_back(overlay);
@@ -300,8 +299,8 @@ void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
 		              if (tile.is_master_tile())
 		              {
 		                  std::cout << "Tile is master" << std::endl;
-		                  LandOverlayPtr build( new NativeCenter() );
-		                  tile.get_terrain().setOverlay( build );
+                      ConstructionPtr center = ConstructionManager::getInstance().create( B_NATIVE_CENTER );
+		                  tile.get_terrain().setOverlay( center.as<LandOverlay>() );
 		                  overlay = tile.get_terrain().getOverlay();
 		                  if( overlay != NULL )
 		                  {
@@ -314,8 +313,8 @@ void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
 	              case 0xb11:
 	              case 0xb44:
 	              {
-		              NativeField* build = new NativeField();
-		              tile.get_terrain().setOverlay((LandOverlay*)build);
+                  ConstructionPtr field = ConstructionManager::getInstance().create( B_NATIVE_FIELD );
+		              tile.get_terrain().setOverlay( field.as<LandOverlay>() );
 		              overlay = tile.get_terrain().getOverlay();
 		              overlay->build( pos );
 		              oCity.getOverlayList().push_back(overlay);

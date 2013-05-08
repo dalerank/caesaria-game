@@ -40,11 +40,6 @@
 #include "oc3_constructionmanager.hpp"
 #include "oc3_resourcegroup.hpp"
 
-namespace {
-static const char* rcHousingGroup      = "housng1a";
-static const char* rcGovernmentGroup   = "govt";
-}
-
 //std::map<BuildingType, LandOverlay*> LandOverlay::_mapBuildingByID;  // key=buildingType, value=instance
 
 LandOverlay::LandOverlay(const BuildingType type, const Size& size)
@@ -625,38 +620,38 @@ MissionPost::MissionPost() : WorkingBuilding(B_MISSION_POST, Size(2) )
 
 SmallStatue::SmallStatue() : Building( B_STATUE1, Size(1) )
 {
-  setPicture( Picture::load(rcGovernmentGroup, 1));
+  setPicture( Picture::load( ResourceGroup::govt, 1));
 }
 
 MediumStatue::MediumStatue() : Building( B_STATUE2, Size(2) )
 {
-  setPicture( Picture::load(rcGovernmentGroup, 2));
+  setPicture( Picture::load( ResourceGroup::govt, 2));
 }
 
 BigStatue::BigStatue() : Building( B_STATUE3, Size(3))
 {
-  setPicture( Picture::load(rcGovernmentGroup, 3));
+  setPicture( Picture::load( ResourceGroup::govt, 3));
 }
 
 GovernorsHouse::GovernorsHouse() : WorkingBuilding( B_GOVERNOR_HOUSE, Size(3) )
 {
   setMaxWorkers(5);
   setWorkers(0);    
-  setPicture(Picture::load(rcHousingGroup, 46));
+  setPicture(Picture::load( ResourceGroup::housing, 46));
 }
 
 GovernorsVilla::GovernorsVilla() : WorkingBuilding(B_GOVERNOR_VILLA, Size(4) )
 {
   setMaxWorkers(10);
   setWorkers(0);    
-  setPicture(Picture::load(rcHousingGroup, 47));
+  setPicture(Picture::load( ResourceGroup::housing, 47));
 }
 
 GovernorsPalace::GovernorsPalace() : WorkingBuilding(B_GOVERNOR_PALACE, Size( 5 ) )
 {
   setMaxWorkers(15);
   setWorkers(0);  
-  setPicture(Picture::load(rcHousingGroup, 48));
+  setPicture(Picture::load(ResourceGroup::housing, 48));
 }
 
 Academy::Academy() : WorkingBuilding( B_MILITARY_ACADEMY, Size(3) )
@@ -672,49 +667,6 @@ Barracks::Barracks() : WorkingBuilding( B_BARRACKS, Size( 3 ) )
   setWorkers(0);  
   setPicture(PicLoader::instance().get_picture(ResourceGroup::security, 17));
 }
-
-NativeBuilding::NativeBuilding( const BuildingType type, const Size& size ) 
-: Building( type, size )
-{
-
-}
-
-void NativeBuilding::serialize(OutputSerialStream &stream) {Building::serialize(stream);}
-
-void NativeBuilding::unserialize(InputSerialStream &stream) {Building::unserialize(stream);}
-
-GuiInfoBox* NativeBuilding::makeInfoBox( Widget* parent )
-{
-  return new GuiBuilding( parent, *this);
-}
-
-NativeHut::NativeHut() : NativeBuilding( B_NATIVE_HUT, Size(1) )
-{
-  setPicture( Picture::load(rcHousingGroup, 49));
-  //setPicture(PicLoader::instance().get_picture("housng1a", 50));
-}
-
-void NativeHut::serialize(OutputSerialStream &stream)  {Building::serialize(stream);}
-
-void NativeHut::unserialize(InputSerialStream &stream) {Building::unserialize(stream);}
-
-NativeCenter::NativeCenter() : NativeBuilding( B_NATIVE_CENTER, Size(2) )
-{
-  setPicture( Picture::load(rcHousingGroup, 51));
-}
-
-void NativeCenter::serialize(OutputSerialStream &stream)  {Building::serialize(stream);}
-
-void NativeCenter::unserialize(InputSerialStream &stream) {Building::unserialize(stream);}
-
-NativeField::NativeField() : NativeBuilding( B_NATIVE_FIELD, Size(1) ) 
-{
-  setPicture(Picture::load(ResourceGroup::commerce, 13));  
-}
-
-void NativeField::serialize(OutputSerialStream &stream) {Building::serialize(stream);}
-
-void NativeField::unserialize(InputSerialStream &stream) {Building::unserialize(stream);}
 
 Shipyard::Shipyard() : Building( B_SHIPYARD, Size(2) )
 {

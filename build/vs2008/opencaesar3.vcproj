@@ -259,6 +259,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_bytearray.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_caesar.cpp"
 				>
 			</File>
@@ -539,6 +543,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_nativebuildings.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_nativebuildings.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_path_finding.cpp"
 				>
 			</File>
@@ -775,6 +787,18 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_stringarray.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_stringhelper.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_stringhelper.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_terraininfo.cpp"
 				>
 			</File>
@@ -852,6 +876,18 @@
 			</File>
 			<File
 				RelativePath="..\..\oc3_training_building.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_variant.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_variant.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_variantprivate.hpp"
 				>
 			</File>
 			<File

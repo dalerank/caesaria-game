@@ -2,7 +2,7 @@
 !include nsDialogs.nsh
 !include LogicLib.nsh
 
-!define VERSION "ver.01_05_2013"
+!define VERSION "ver.07_05_2013"
 
 
 XPStyle on
@@ -14,7 +14,7 @@ VIAddVersionKey "LegalTrademarks" ""
 VIAddVersionKey "LegalCopyright" "©"
 VIAddVersionKey "FileDescription" "OpenCaesar3"
 VIAddVersionKey "FileVersion" ${VERSION}
-VIProductVersion "0.2013.1.5"
+VIProductVersion "0.2013.5.7"
 
 ; The name of the installer
 OutFile opencaesar3-${VERSION}-installer.exe
@@ -89,7 +89,9 @@ Section "OpenCaesar3"
 	StrCpy $resourcesn $INSTDIR\resources\pics
 	CreateDirectory $resourcesn
 	SetOutPath $resourcesn
-	File /r /x .svn "..\..\resources\pics\*.*"
+	File "..\..\resources\pics\pics.zip"
+	File "..\..\resources\pics\pics_oc3.zip"
+	File "..\..\resources\pics\pics_wait.zip"
 	
 	StrCpy $sgReader $INSTDIR\sgReader
 	CreateDirectory $sgReader
