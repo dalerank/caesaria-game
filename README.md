@@ -1,8 +1,6 @@
-openCaesar3 
+openCaesar3
 ===========
-
 openCaesar3 is a remake of the classic Caesar3 PC game, a city building game developed by Impression Games and published by Sierra Entertainment, in 1998.
-
 
 The game will be a near clone to the original Caesar3 game. Notorious changes are:
  * new AI for walkers. They just go where they are needed
@@ -10,33 +8,48 @@ The game will be a near clone to the original Caesar3 game. Notorious changes ar
 
 The game is still not quite playable
 
-Dependencies
-============
-  * SDL - http://www.libsdl.org/
-    * SDL_image - http://www.libsdl.org/projects/SDL_image/
-    * SDL_mixer - http://www.libsdl.org/projects/SDL_mixer/
-    * SDL_ttf - http://www.libsdl.org/projects/SDL_ttf/
-  * Boost - http://www.boost.org/
-    * System - http://www.boost.org/doc/libs/release/libs/system/
-    * Filesystem - http://www.boost.org/doc/libs/release/libs/filesystem/
-  * LibArchive - http://www.libarchive.org/
+Building openCaesar3
+-------------------
+See BuildingOpenCaesae3.md
 
-Linux
------
+####Releases:
 
-### Ubuntu/Debian
+##### 03apr2013
+  * added many buildings
 
-	sudo apt-get install libsdl1.2-dev libsdl-image1.2 libsdl-mixer1.2-dev libsdl-ttf2.0-dev
-	sudo apt-get install libboost-system-dev libboost-filesystem-dev 
-	sudo apt-get install libarchive-dev
+##### 02mar2013
+  * first binary release for windows
+  * start implement the menubar with money/population/date
+  * use the slim interface for build menu (regression: no more access to save/load game)
+  * start implement funds and taxes
 
-Building openCaesar3 - Using CMake
-==================================
+##### 09feb2013
+  * implement clear land
+  * add copyright notice
 
-You can build openCaesar using following commands
+##### 01dev2012
+  * save/load game complete.
+  * implement nearly all entertainment buildings
 
-	$ mkdir build
-	$ cd build      
-	$ cmake ..
-	$ cmake --build .
+##### 10nov2012
+  * save/load game starts to work
+
+##### 12oct2012
+  * start implement load game
+
+##### 17sep2012
+  * start implement save game
+
+##### 14jun2012
+  * big code refactoring of the GUI. prepare for game music.
+
+##### 21may2012
+  * add an installation procedure
+
+##### 15may2012
+  * implement some buildings (water, entertainment, education). 
+  * start implementation of house evolution/regression.
+
+##### 20apr2012
+  * first public release.
 
