@@ -69,6 +69,7 @@
 
 find_path(SDL_INCLUDE_DIR SDL.h
   HINTS
+	${CMAKE_CURRENT_SOURCE_DIR}/dependencies/SDL
     ENV SDLDIR
   PATH_SUFFIXES include/SDL include/SDL12 include/SDL11 include
 )
@@ -78,8 +79,9 @@ find_path(SDL_INCLUDE_DIR SDL.h
 find_library(SDL_LIBRARY_TEMP
   NAMES SDL SDL-1.1
   HINTS
+	${CMAKE_CURRENT_SOURCE_DIR}/dependencies/SDL
     ENV SDLDIR
-  PATH_SUFFIXES lib
+  PATH_SUFFIXES lib lib/x86
 )
 
 if(NOT SDL_BUILDING_LIBRARY)
@@ -91,8 +93,9 @@ if(NOT SDL_BUILDING_LIBRARY)
     find_library(SDLMAIN_LIBRARY
       NAMES SDLmain SDLmain-1.1
       HINTS
+		${CMAKE_CURRENT_SOURCE_DIR}/dependencies/SDL
         ENV SDLDIR
-      PATH_SUFFIXES lib
+      PATH_SUFFIXES lib lib/x86
       PATHS
       /sw
       /opt/local

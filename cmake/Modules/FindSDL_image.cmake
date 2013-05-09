@@ -38,9 +38,10 @@ entry initialized from old variable name")
 endif()
 find_path(SDL_IMAGE_INCLUDE_DIR SDL_image.h
   HINTS
+	${CMAKE_CURRENT_SOURCE_DIR}/dependencies/SDL_image
     ENV SDLIMAGEDIR
     ENV SDLDIR
-  PATH_SUFFIXES SDL SDL12 SDL11
+  PATH_SUFFIXES SDL SDL12 SDL11 include
 )
 
 if(NOT SDL_IMAGE_LIBRARY AND SDLIMAGE_LIBRARY)
@@ -50,8 +51,10 @@ endif()
 find_library(SDL_IMAGE_LIBRARY
   NAMES SDL_image
   HINTS
+	${CMAKE_CURRENT_SOURCE_DIR}/dependencies/SDL_image
     ENV SDLIMAGEDIR
     ENV SDLDIR
+  PATH_SUFFIXES lib lib/x86
 )
 
 if(SDL_IMAGE_INCLUDE_DIR AND EXISTS "${SDL_IMAGE_INCLUDE_DIR}/SDL_image.h")

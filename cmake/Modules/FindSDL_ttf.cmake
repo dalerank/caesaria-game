@@ -38,9 +38,10 @@ entry initialized from old variable name")
 endif()
 find_path(SDL_TTF_INCLUDE_DIR SDL_ttf.h
   HINTS
+    ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/SDL_ttf
     ENV SDLTTFDIR
     ENV SDLDIR
-  PATH_SUFFIXES SDL SDL12 SDL11
+  PATH_SUFFIXES SDL SDL12 SDL11 include
 )
 
 if(NOT SDL_TTF_LIBRARY AND SDLTTF_LIBRARY)
@@ -50,8 +51,10 @@ endif()
 find_library(SDL_TTF_LIBRARY
   NAMES SDL_ttf
   HINTS
+	${CMAKE_CURRENT_SOURCE_DIR}/dependencies/SDL_ttf
     ENV SDLTTFDIR
     ENV SDLDIR
+  PATH_SUFFIXES lib lib/x86
 )
 
 if(SDL_TTF_INCLUDE_DIR AND EXISTS "${SDL_TTF_INCLUDE_DIR}/SDL_ttf.h")
