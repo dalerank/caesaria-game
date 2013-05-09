@@ -54,18 +54,18 @@ oc3_signals public:
 
 GuiTilemap::GuiTilemap() : _d( new Impl )
 {
-   _city = NULL;
-   _mapArea = NULL;
+  _city = NULL;
+  _mapArea = NULL;
 }
 
 GuiTilemap::~GuiTilemap() {}
 
 void GuiTilemap::init(City &city, TilemapArea &mapArea, ScreenGame *screen)
 {
-   _city = &city;
-   _tilemap = &_city->getTilemap();
-   _mapArea = &mapArea;
-   _screenGame = screen;
+  _city = &city;
+  _tilemap = &_city->getTilemap();
+  _mapArea = &mapArea;
+  _screenGame = screen;
 }
 
 void GuiTilemap::drawTileEx( const Tile& tile, const int depth )
@@ -80,7 +80,7 @@ void GuiTilemap::drawTileEx( const Tile& tile, const int depth )
   if( master==NULL )
   {
     // single-tile
-	  drawTile( tile );
+    drawTile( tile );
   }
   else
   {
@@ -218,7 +218,7 @@ void GuiTilemap::drawTilemap()
     for( PtrTilesList::iterator itPostTile = _d->postTiles.begin(); itPostTile != _d->postTiles.end(); ++itPostTile )
     {
       int z = (*itPostTile)->getJ() - (*itPostTile)->getI();
-	    drawTileEx( **itPostTile, z );
+      drawTileEx( **itPostTile, z );
     }       
   }
 }

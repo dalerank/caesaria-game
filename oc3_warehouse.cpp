@@ -15,22 +15,15 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
-
 #include "oc3_warehouse.hpp"
 
 #include <iostream>
 
-#include "oc3_pic_loader.hpp"
+#include "oc3_picture.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_gui_info_box.hpp"
 #include "oc3_gettext.hpp"
-
-
-namespace
-{
-static const char* rcWarehouseGroup      =   "warehouse";
-}
+#include "oc3_resourcegroup.hpp"
 
 WarehouseTile::WarehouseTile(const int i, const int j)
 {
@@ -104,7 +97,7 @@ void WarehouseTile::computePicture()
       picIdx += _stock._currentQty/100 -1;
    }
 
-   _picture = PicLoader::instance().get_picture(rcWarehouseGroup, picIdx);
+   _picture = Picture::load( ResourceGroup::warehouse, picIdx );
    _picture.add_offset(30*(_i+_j), 15*(_j-_i));
 }
 
@@ -112,11 +105,12 @@ void WarehouseTile::computePicture()
 Warehouse::Warehouse() : WorkingBuilding( B_WAREHOUSE, Size( 3 ))
 {
    // _name = _("Entrepot");
-   _picture = &PicLoader::instance().get_picture(rcWarehouseGroup, 19);
+  _picture = &Picture::load( ResourceGroup::warehouse, 19);
    _fgPictures.resize(12);  // 8 tiles + 4
 
-   _animation.load( rcWarehouseGroup, 2, 16 );
-   _animFlag.load( rcWarehouseGroup, 84, 8 );
+   _animation.load( ResourceGroup::warehouse, 2, 16 );
+   _animation.setFrameDelay( 4 );
+   _animFlag.load( ResourceGroup::warehouse, 84, 8 );
 
    init();
 }
@@ -124,8 +118,8 @@ Warehouse::Warehouse() : WorkingBuilding( B_WAREHOUSE, Size( 3 ))
 
 void Warehouse::init()
 {
-   _fgPictures[0] = &PicLoader::instance().get_picture(rcWarehouseGroup, 1);
-   _fgPictures[1] = &PicLoader::instance().get_picture(rcWarehouseGroup, 18);
+  _fgPictures[0] = &Picture::load(ResourceGroup::warehouse, 1);
+  _fgPictures[1] = &Picture::load(ResourceGroup::warehouse, 18);
    _fgPictures[2] = _animation.getCurrentPicture();
    _fgPictures[3] = _animFlag.getCurrentPicture();
 

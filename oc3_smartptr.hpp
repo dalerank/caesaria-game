@@ -99,7 +99,7 @@ public:
 		dereferenceObject();
 	}
   	
-	SmartPtr& operator= (const SmartPtr<T> &aPtr)
+	SmartPtr& operator=(const SmartPtr<T> &aPtr)
 	{
 		referenceObject(aPtr.obj);
 		return *this;
@@ -128,12 +128,18 @@ public:
 		return (obj != aPtr.obj);
 	}
 	
-	bool operator== (void *ptr)
+	bool operator==(void *ptr)
 	{
 		return ((void*)obj == ptr);
 	}
+
+  /*operator bool() 
+  {
+    return (obj != 0);
+  }
+  */
 	
-	bool operator!= (void *ptr)
+	bool operator != (void *ptr)
 	{
 		return ((void*)obj != ptr);
 	}
@@ -153,7 +159,6 @@ public:
     return obj != 0;
   }
 
-	
   //Conversion operator
 	template<class U>
 	SmartPtr<U> as() const

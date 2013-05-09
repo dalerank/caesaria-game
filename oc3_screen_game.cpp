@@ -176,6 +176,7 @@ void ScreenGame::resolveRemoveTool()
 
 void ScreenGame::showTileInfo( Tile* tile )
 {
+  if( tile )
     _d->infoBoxMgr->showHelp( tile );
 }
 // void ScreenGame::handleWidgetEvent(const WidgetEvent& event, Widget *widget)

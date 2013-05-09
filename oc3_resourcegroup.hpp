@@ -32,6 +32,7 @@ public:
     static const char* waterbuildings;
     static const char* road;
     static const char* entertaiment;
+    static const char* warehouse;
 };
 
 class ResourceMenu

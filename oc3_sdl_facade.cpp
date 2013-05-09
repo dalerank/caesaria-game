@@ -79,8 +79,6 @@ Picture& SdlFacade::copyPicture(const Picture &pic)
 
    _createdPics.push_back(newpic);
    return *_createdPics.back();
-
-   
 }
 
 

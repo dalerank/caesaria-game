@@ -55,7 +55,7 @@ int Screen::run()
 
    _isStopped = false;
 
-   while (! isStopped() )
+   while ( !isStopped() )
    {
       drawFrame();
       afterFrame();
@@ -76,7 +76,7 @@ int Screen::run()
       // sets a fix frameRate
       currentclock = SDL_GetTicks();
       long delay = ref_delay - (currentclock - lastclock);
-      if (delay < 0)
+      if( delay < 0 )
       {
          // std::cout << "frame takes too much time! " << currentclock - lastclock << std::endl;
          delay = 0;

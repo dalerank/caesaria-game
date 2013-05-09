@@ -30,6 +30,7 @@
 class Walker::Impl
 {
 public:
+  float speed;
 };
 
 Walker::Walker() : _d( new Impl )
@@ -39,7 +40,7 @@ Walker::Walker() : _d( new Impl )
    _walkerType = WT_NONE;
    _walkerGraphic = WG_NONE;
 
-   _speed = 1;  // default speed
+   _d->speed = 1;  // default speed
    _isDeleted = false;
 
    _midTileI = 7;
@@ -64,7 +65,7 @@ void Walker::timeStep(const unsigned long time)
    case WA_MOVE:
       walk();
      
-      if( _animation.getPicturesCount() > 0 && _speed > 0.f )
+      if( _animation.getPicturesCount() > 0 && _d->speed > 0.f )
       {
         _animation.update( time );
       }
@@ -136,9 +137,9 @@ void Walker::setPathWay(PathWay &pathWay)
    // onMidTile();
 //}
 
-void Walker::setSpeed(const int speed)
+void Walker::setSpeed(const float speed)
 {
-   _speed = speed;
+   _d->speed = speed;
 }
 
 WalkerGraphicType Walker::getWalkerGraphic() const
@@ -211,18 +212,18 @@ void Walker::walk()
    {
    case D_NORTH:
    case D_SOUTH:
-      _remainMoveJ += _speed * roadKoeff;
+      _remainMoveJ += _d->speed * roadKoeff;
       break;
    case D_EAST:
    case D_WEST:
-      _remainMoveI += _speed * roadKoeff;
+      _remainMoveI += _d->speed * roadKoeff;
       break;
    case D_NORTH_EAST:
    case D_SOUTH_WEST:
    case D_SOUTH_EAST:
    case D_NORTH_WEST:
-      _remainMoveI += _speed * 0.7f * roadKoeff;
-      _remainMoveJ += _speed * 0.7f * roadKoeff;
+      _remainMoveI += _d->speed * 0.7f * roadKoeff;
+      _remainMoveJ += _d->speed * 0.7f * roadKoeff;
       break;
    default:
       THROW("Invalid move direction: " << _action._direction);
@@ -404,7 +405,7 @@ void Walker::serialize(OutputSerialStream &stream)
    stream.write_int(_sj, 1, 0, 50);
    stream.write_int(_ii, 4, 0, 1000000);
    stream.write_int(_jj, 4, 0, 1000000);
-   stream.write_int(_speed, 1, 0, 50);
+   //stream.write_float(_d->speed, 1, 0, 50);
    stream.write_int(_midTileI, 1, 0, 50);
    stream.write_int(_midTileJ, 1, 0, 50);
    //stream.write_int(_animIndex, 1, 0, 50);
@@ -431,7 +432,7 @@ void Walker::unserialize(InputSerialStream &stream)
    _sj = stream.read_int(1, 0, 50);
    _ii = stream.read_int(4, 0, 1000000);
    _jj = stream.read_int(4, 0, 1000000);
-   _speed = stream.read_int(1, 0, 50);
+   //_d->speed = stream.read_float(1, 0, 50);
    _midTileI = stream.read_int(1, 0, 50);
    _midTileJ = stream.read_int(1, 0, 50);
    //_animIndex = stream.read_int(1, 0, 50);

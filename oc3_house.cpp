@@ -25,6 +25,8 @@
 #include "oc3_exception.hpp"
 #include "oc3_workerhunter.hpp"
 #include "oc3_immigrant.hpp"
+#include "oc3_market.hpp"
+#include "oc3_constructionmanager.hpp"
 
 static const char* rcGrourName = "housng1a";
 
@@ -86,25 +88,35 @@ void House::timeStep(const unsigned long time)
 
    if( time % 64 == 0 )
    {
-      bool validate = _houseLevelSpec->checkHouse(*this);
-      if (!validate)
-      {
-         levelDown();
-      }
-      else
-      {
-         validate = _nextHouseLevelSpec->checkHouse(*this);
-         if( validate && _currentHabitants > 0 )
-         {
-            levelUp();
-         }
-      }
+     bool validate = _houseLevelSpec->checkHouse(*this);
+     if (!validate)
+     {
+       levelDown();
+     }
+     else
+     {
+       validate = _nextHouseLevelSpec->checkHouse(*this);
+       if( validate && _currentHabitants > 0 )
+       {
+          levelUp();
+       }
+     }
 
-      _freeWorkersCount = _currentHabitants;
+     _freeWorkersCount = _currentHabitants;
+
+     int homeless = math::clamp( _currentHabitants - _maxHabitants, 0, 0xff );
+
+     if( homeless > 0 )
+     {
+       _currentHabitants = math::clamp( _currentHabitants, 0, _maxHabitants );
+
+       City& city = Scenario::instance().getCity();
+       ImmigrantPtr im = Immigrant::create( city, BuildingPtr( this ), homeless );
+     }
    }
 
    if( _currentHabitants > 0 )
-       Building::timeStep( time );
+     Building::timeStep( time );
 }
 
 SimpleGoodStore& House::getGoodStore()
@@ -118,86 +130,158 @@ HouseLevelSpec& House::getLevelSpec()
    return *_houseLevelSpec;
 }
 
+void House::_tryUpdate1to2lvl()
+{ 
+  City& city = Scenario::instance().getCity();
+
+  Tilemap& tmap = city.getTilemap();
+  PtrTilesList tiles = tmap.getFilledRectangle( getTile().getIJ(), Size(2) );
+  bool mayGrow = true;
+  for( PtrTilesList::iterator it=tiles.begin(); it != tiles.end(); it++ )
+  {
+    if( !*it )
+    {
+      mayGrow = false;   //some broken, can't grow
+      break;
+    }
+
+    HousePtr house = (*it)->get_terrain().getOverlay().as<House>();
+    if( house.isValid() )
+    {
+      if( house->getSize() > 1 )  //bigger house near, can't grow
+      {
+        mayGrow = false;
+        break;
+      }            
+    }
+    else
+    {
+      mayGrow = false; //no house near, can't grow
+      break;
+    }
+  }
+
+  _houseId = mayGrow ? 5 : 3;
+  _picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
+  _desirability = -3;
+
+  if( mayGrow )
+  {
+    int sumHabitants = getNbHabitants();
+    int sumFreeWorkers = _freeWorkersCount;
+    PtrTilesList::iterator delIt=tiles.begin();
+    delIt++; //don't remove himself
+    for( ; delIt != tiles.end(); delIt++ )
+    {
+      HousePtr house = (*delIt)->get_terrain().getOverlay().as<House>();
+      if( house.isValid() )
+      {
+        house->deleteLater();
+        house->_currentHabitants = 0;
+        sumHabitants += house->getNbHabitants();
+        sumFreeWorkers += house->_freeWorkersCount;
+      }
+    }
+
+    _currentHabitants = sumHabitants;
+    _freeWorkersCount = sumHabitants;
+    _houseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel);
+    _nextHouseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel+1);
+
+    _update();
+    _updateDesirabilityInfluence( false );
+    build( getTile().getIJ() );
+  }
+}
 
 void House::levelUp()
 {
    _houseLevel++;   
    _picIdOffset = 0;
-   
-   City& city = Scenario::instance().getCity();
-   
+      
    switch (_houseLevel)
    {
    case 1:
       _houseId = 1;
       _desirability = -3;
       break;
-   case 2:
+   case 2: 
+     _tryUpdate1to2lvl();
+   break;
+   
+   case 3:
      { 
+       City& city = Scenario::instance().getCity();
+
        Tilemap& tmap = city.getTilemap();
-       PtrTilesList tiles = tmap.getFilledRectangle( getTile().getIJ(), Size(2) );
-       bool mayGrow = true;
-       for( PtrTilesList::iterator it=tiles.begin(); it != tiles.end(); it++ )
+       PtrTilesList tiles = tmap.getFilledRectangle( getTile().getIJ(), Size(2) );       
+       if( getSize() == 1 )
        {
-         if( !*it )
-         {
-            mayGrow = false;   //some broken, can't grow
-            break;
-         }
+         bool mayGrow = true;
 
-         HousePtr house = (*it)->get_terrain().getOverlay().as<House>();
-         if( house.isValid() )
+         for( PtrTilesList::iterator it=tiles.begin(); it != tiles.end(); it++ )
          {
-           if( house->getSize() > 1 )  //bigger house near, can't grow
+           if( *it == NULL )
            {
-             mayGrow = false;
+             mayGrow = false;   //some broken, can't grow
              break;
-           }            
-         }
-         else
-         {
-           mayGrow = false; //no house near, can't grow
-           break;
-         }
-       }
+           }
 
-       _houseId = mayGrow ? 5 : 3;
-       _picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
-       _desirability = -3;
-
-       if( mayGrow )
-       {
-         int sumHabitants = getNbHabitants();
-         int sumFreeWorkers = _freeWorkersCount;
-         PtrTilesList::iterator delIt=tiles.begin();
-         delIt++; //don't remove himself
-         for( ; delIt != tiles.end(); delIt++ )
-         {
-           HousePtr house = (*delIt)->get_terrain().getOverlay().as<House>();
-           if( house.isValid() )
+           HousePtr house = (*it)->get_terrain().getOverlay().as<House>();
+           if( house != NULL && house->getLevelSpec().getHouseLevel() == 2 )
            {
-              house->deleteLater();
-              house->_currentHabitants = 0;
-              sumHabitants += house->getNbHabitants();
-              sumFreeWorkers += house->_freeWorkersCount;
+             if( house->getSize() > 1 )  //bigger house near, can't grow
+             {
+               mayGrow = false;
+               break;
+             }            
+           }
+           else
+           {
+             mayGrow = false; //no house near, can't grow
+             break;
            }
          }
 
-         _currentHabitants = sumHabitants;
-         _freeWorkersCount = sumHabitants;
-         _houseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel);
-         _nextHouseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel+1);
+         if( mayGrow )
+         {
+           int sumHabitants = getNbHabitants();
+           int sumFreeWorkers = _freeWorkersCount;
+           PtrTilesList::iterator delIt=tiles.begin();
+           delIt++; //don't remove himself
+           for( ; delIt != tiles.end(); delIt++ )
+           {
+             HousePtr house = (*delIt)->get_terrain().getOverlay().as<House>();
+             if( house.isValid() )
+             {
+               house->deleteLater();
+               house->_currentHabitants = 0;
+               sumHabitants += house->getNbHabitants();
+               sumFreeWorkers += house->_freeWorkersCount;
+             }
+           }
 
-         _update();
+           _currentHabitants = sumHabitants;
+           _freeWorkersCount = sumHabitants;
+           _houseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel);
+           _nextHouseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel+1);
 
-         build( getTile().getIJ() );
-         return;
+           _update();
+           _updateDesirabilityInfluence( false );
+           build( getTile().getIJ() );
+         }
        }
+     
+       _updateDesirabilityInfluence( false );
+       _desirability = -2;       
+       _updateDesirabilityInfluence( true );
+
+       bool bigSize = getSize() > 1;
+       _houseId = bigSize ? 11 : 7; 
+       _picIdOffset = rand() % ( bigSize ? 2 : 4 );
      }
-     break;
-   case 3:
-      _houseId = 7;
-      break;
+   break;
+   
    case 4:
       _houseId = 10;
       break;
@@ -231,16 +315,52 @@ void House::levelDown()
 {
    _houseLevel--;
    _houseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel);
-   _houseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel+1);
+   _nextHouseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel+1);
 
    switch (_houseLevel)
    {
    case 1:
-      _houseId = 1;
-      break;
+     {
+       _houseId = 1;
+       _picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
+
+       City& city = Scenario::instance().getCity();
+       Tilemap& tmap = city.getTilemap();   
+
+       if( getSize() > 1 )
+       {
+         _updateDesirabilityInfluence( false );
+
+         PtrTilesList tiles = tmap.getFilledRectangle( getTile().getIJ(), Size(2) );      
+         PtrTilesList::iterator it=tiles.begin();
+         int peoplesPerHouse = getNbHabitants() / 4;
+         _currentHabitants = peoplesPerHouse;
+         it++; //no destroy himself
+         for( ; it != tiles.end(); it++ )
+         {
+           HousePtr house = ConstructionManager::getInstance().create( B_HOUSE ).as<House>();
+           house->build( (*it)->getIJ() );
+           house->_currentHabitants = peoplesPerHouse;
+           house->_update();
+         }
+
+         _size = 1;
+         _updateDesirabilityInfluence( true );
+       }
+     }
+   break;
+   
    case 2:
-      _houseId = 3;
-      break;
+     {
+       _houseId = getSize() > 1 ? 5 : 3;
+       _picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
+
+       _updateDesirabilityInfluence( false );
+       _desirability = -3;
+       _updateDesirabilityInfluence( true );
+     }
+   break;
+   
    case 3:
       _houseId = 7;
       break;
@@ -266,13 +386,14 @@ void House::levelDown()
       _houseId = 27;
       break;
    }
+
    _update();
 }
 
 void House::buyMarket( ServiceWalkerPtr walker)
 {
    // std::cout << "House buyMarket" << std::endl;
-   SmartPtr< Market > market = walker->getBase().as<Market>();
+   MarketPtr market = walker->getBase().as<Market>();
    GoodStore& marketStore = market->getGoodStore();
 
    SimpleGoodStore &houseStore = getGoodStore();
@@ -372,7 +493,7 @@ float House::evaluateService(ServiceWalkerPtr walker)
 
    case S_MARKET:
      {
-       SmartPtr< Market > market = walker->getBase().as<Market>();
+       MarketPtr market = walker->getBase().as<Market>();
        GoodStore &marketStore = market->getGoodStore();
        SimpleGoodStore &houseStore = getGoodStore();
        for (int i = 0; i < G_MAX; ++i)
@@ -474,7 +595,7 @@ void House::destroy()
   if( lostPeoples > 0 )
   {
     City& city = Scenario::instance().getCity();
-    Immigrant::create( city, *this, lostPeoples );
+    Immigrant::create( city, BuildingPtr( this ), lostPeoples );
   }
 
   Building::destroy();

@@ -63,22 +63,21 @@ void TraineeWalker::computeWalkerPath()
     checkDestination(buildingType, pathPropagator);
   }
 
-  if (_destinationBuilding != NULL)
+  if( _destinationBuilding != NULL )
   {
     // some building needs that trainee!
     // std::cout << "trainee sent!" << std::endl;
     PathWay pathWay;
     pathPropagator.getPath( _destinationBuilding, pathWay);
-    setPathWay(pathWay);
+    setPathWay( pathWay );
     setIJ( _pathWay.getOrigin().getIJ() );
   }
   else
   {
     // nobody needs him...
     // std::cout << "trainee suicide!" << std::endl;
-    _isDeleted = true;
+    deleteLater();
   }
-
 }
 
 
@@ -107,8 +106,11 @@ void TraineeWalker::send2City()
 {
   computeWalkerPath();
 
-  _destinationBuilding->reserveTrainee(_traineeType);
-  Scenario::instance().getCity().addWalker( WalkerPtr( this ) );
+  if( !isDeleted() )
+  {
+    _destinationBuilding->reserveTrainee(_traineeType);
+    Scenario::instance().getCity().addWalker( WalkerPtr( this ) );
+  }
 }
 
 void TraineeWalker::onDestination()

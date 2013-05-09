@@ -48,7 +48,7 @@ public:
    void serialize(OutputSerialStream &stream);
    void unserialize(InputSerialStream &stream);
 
-   void removeWalker( WalkerPtr walker );
+   //void removeWalker( WalkerPtr walker );
 
 protected:
   void _addWalker( WalkerPtr walker );
@@ -69,9 +69,10 @@ private:
 class BuildingWell : public ServiceBuilding
 {
 public:
-   BuildingWell();
+  BuildingWell();
 
-   virtual void deliverService();
+  char getDesirabilityInfluence() const; 
+  void deliverService();
 };
 
 class BuildingFountain : public ServiceBuilding
@@ -227,30 +228,6 @@ class Forum : public ServiceBuilding
 {
 public:
    Forum();
-};
-
-class MarketBuyer;
-class Market: public ServiceBuilding
-{
-public:
-   Market();
-
-   void timeStep(const unsigned long time);
-   virtual GuiInfoBox* makeInfoBox( Widget* );
-
-   SimpleGoodStore& getGoodStore();
-   std::list<GoodType> getMostNeededGoods();  // used by the market buyer
-
-   // returns the quantity of needed goods
-   int getGoodDemand(const GoodType &goodType);  // used by the market buyer
-
-   void serialize(OutputSerialStream &stream);
-   void unserialize(InputSerialStream &stream);
-
-private:
-   SimpleGoodStore _goodStore;
-   MarketBuyer *_marketBuyer;
-   int _buyerDelay;
 };
 
 #endif

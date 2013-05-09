@@ -20,62 +20,62 @@
 
 Emigrant::Emigrant( City& city ) : Immigrant( city, 5 )
 {
-	_walkerType = WT_EMIGRANT;
-	_walkerGraphic = WG_PUSHER2;
+  _walkerType = WT_EMIGRANT;
+  _walkerGraphic = WG_PUSHER2;
 }
 
 Picture* Emigrant::getCartPicture()
 {
   if( Immigrant::getCartPicture() == NULL )
-	{
-		setCartPicture( &CartLoader::instance().getCart( G_SCARB1, getDirection()) );
-	}
+  {
+    setCartPicture( &CartLoader::instance().getCart( G_SCARB1, getDirection()) );
+  }
 
-	return Immigrant::getCartPicture();
+  return Immigrant::getCartPicture();
 }
 
 void Emigrant::getPictureList(std::vector<Picture*> &oPics)
 {
-	oPics.clear();
+  oPics.clear();
 
-	// depending on the walker direction, the cart is ahead or behind
-	switch (getDirection())
-	{
-	case D_WEST:
-	case D_NORTH_WEST:
-	case D_NORTH:
-	case D_NORTH_EAST:
-		oPics.push_back( getCartPicture());
-		oPics.push_back(&getMainPicture());
-		break;
-	case D_EAST:
-	case D_SOUTH_EAST:
-		oPics.push_back( getCartPicture());
-		oPics.push_back(&getMainPicture());
-		break;
-	case D_SOUTH:
-	case D_SOUTH_WEST:
-		oPics.push_back(&getMainPicture());
-		oPics.push_back( getCartPicture());
-		break;
-	default:
-		break;
-	}
+  // depending on the walker direction, the cart is ahead or behind
+  switch (getDirection())
+  {
+  case D_WEST:
+  case D_NORTH_WEST:
+  case D_NORTH:
+  case D_NORTH_EAST:
+    oPics.push_back( getCartPicture());
+    oPics.push_back(&getMainPicture());
+    break;
+  case D_EAST:
+  case D_SOUTH_EAST:
+    oPics.push_back( getCartPicture());
+    oPics.push_back(&getMainPicture());
+    break;
+  case D_SOUTH:
+  case D_SOUTH_WEST:
+    oPics.push_back(&getMainPicture());
+    oPics.push_back( getCartPicture());
+    break;
+  default:
+    break;
+  }
 }
 
 void Emigrant::onNewDirection()
 {
-	Walker::onNewDirection();
-	setCartPicture( 0 );  // need to get the new graphic
+  Walker::onNewDirection();
+  setCartPicture( 0 );  // need to get the new graphic
 }
 
 EmigrantPtr Emigrant::create( City& city, const RoadPtr startPoint )
 {
-	EmigrantPtr newEmigrant( new Emigrant( city ) );
+  EmigrantPtr newEmigrant( new Emigrant( city ) );
   newEmigrant->drop();
-	newEmigrant->assignPath( startPoint->getTile() );
+  newEmigrant->assignPath( startPoint->getTile() );
   city.addWalker( newEmigrant.as<Walker>() );
-	return newEmigrant;
+  return newEmigrant;
 }
 
 Emigrant::~Emigrant()

@@ -63,6 +63,19 @@ void ServiceBuilding::timeStep(const unsigned long time)
 {
    Building::timeStep(time);
 
+   Walkers::iterator it=_walkerList.begin();
+   while( it != _walkerList.end() )
+   {
+     if( (*it)->isDeleted() )
+     {
+        it = _walkerList.erase( it );
+     }
+     else
+     {
+       it++;
+     }
+   }
+
    if (_serviceTimer == 0)
    {
       deliverService();
@@ -98,7 +111,9 @@ void ServiceBuilding::deliverService()
    // make a service walker and send him to his wandering
   ServiceWalkerPtr serviceman = ServiceWalker::create( BuildingPtr( this ),_service);
   serviceman->send2City();
-  _addWalker( serviceman.as<Walker>() );
+
+  if( !serviceman->isDeleted() )
+      _addWalker( serviceman.as<Walker>() );
 }
 
 int ServiceBuilding::getServiceRange() const
@@ -139,10 +154,10 @@ void ServiceBuilding::_addWalker( WalkerPtr walker )
   _walkerList.push_back( walker );
 }
 
-void ServiceBuilding::removeWalker( WalkerPtr walker )
-{
-  _walkerList.remove( walker );
-}
+// void ServiceBuilding::removeWalker( WalkerPtr walker )
+// {
+//   _walkerList.remove( walker );
+// }
 
 const Walkers& ServiceBuilding::_getWalkerList() const
 {
@@ -170,6 +185,11 @@ void BuildingWell::deliverService()
   {
      (*itBuilding)->applyService( walker );
   }
+}
+
+char BuildingWell::getDesirabilityInfluence() const
+{
+  return -1;
 }
 
 BuildingFountain::BuildingFountain() : ServiceBuilding(S_FOUNTAIN, B_FOUNTAIN, Size(1))
@@ -408,119 +428,4 @@ Hospital::Hospital() : ServiceBuilding(S_HOSPITAL, B_HOSPITAL, Size(3 ) )
 Forum::Forum() : ServiceBuilding(S_FORUM, B_FORUM, Size(2))
 {
   setPicture( Picture::load( "govt", 10));
-}
-
-Market::Market() : ServiceBuilding(S_MARKET, B_MARKET, Size(2) )
-{
-   setMaxWorkers(5);
-   setWorkers(0);
-
-   _marketBuyer = NULL;
-   _buyerDelay = 10;
-   // _name = _("Marche");
-   setPicture(PicLoader::instance().get_picture("commerce", 1));
-   _fgPictures.resize(1);  // animation
-
-   _goodStore.setMaxQty(5000);
-   _goodStore.setMaxQty(G_WHEAT, 400);
-   _goodStore.setMaxQty(G_POTTERY, 300);
-   _goodStore.setCurrentQty(G_WHEAT, 200);
-
-   _animation.load( "commerce", 2, 10);
-}
-
-void Market::timeStep(const unsigned long time)
-{
-   ServiceBuilding::timeStep(time);
-
-   if (_marketBuyer == NULL)
-   {
-      _buyerDelay -= 1;
-
-      if (_buyerDelay == 0)
-      {
-         // the marketBuyer is ready to buy something!
-         _marketBuyer = new MarketBuyer();
-         _marketBuyer->setMarket(*this);
-         _marketBuyer->start();
-         _buyerDelay = 50;
-      }
-   }
-   else
-   {
-      // there is a market buyer
-      if (_marketBuyer->isDeleted())
-      {
-         delete _marketBuyer;
-         _marketBuyer = NULL;
-      }
-   }
-
-}
-
-
-GuiInfoBox* Market::makeInfoBox( Widget* parent )
-{
-   GuiInfoMarket* box = new GuiInfoMarket( parent, *this);
-   return box;
-}
-
-
-SimpleGoodStore& Market::getGoodStore()
-{
-   return _goodStore;
-}
-
-
-std::list<GoodType> Market::getMostNeededGoods()
-{
-   std::list<GoodType> res;
-
-   std::multimap<float, GoodType> mapGoods;  // ordered by demand
-
-   for (int n = 0; n<G_MAX; ++n)
-   {
-      // for all types of good
-      GoodType goodType = (GoodType) n;
-      GoodStock &stock = _goodStore.getStock(goodType);
-      int demand = stock._maxQty - stock._currentQty;
-      if (demand > 99)
-      {
-         mapGoods.insert(std::make_pair(float(stock._currentQty)/float(stock._maxQty), goodType));
-      }
-   }
-
-   for (std::multimap<float, GoodType>::iterator itMap = mapGoods.begin(); itMap != mapGoods.end(); ++itMap)
-   {
-      GoodType goodType = itMap->second;
-      res.push_back(goodType);
-   }
-
-   return res;
-}
-
-
-int Market::getGoodDemand(const GoodType &goodType)
-{
-   int res = 0;
-   GoodStock &stock = _goodStore.getStock(goodType);
-   res = stock._maxQty - stock._currentQty;
-   res = (res/100)*100;  // round at the lowest century
-   return res;
-}
-
-void Market::serialize(OutputSerialStream &stream)
-{
-   ServiceBuilding::serialize(stream);
-   _goodStore.serialize(stream);
-   stream.write_objectID(_marketBuyer);
-   stream.write_int(_buyerDelay, 2, 0, 65535);
-}
-
-void Market::unserialize(InputSerialStream &stream)
-{
-   ServiceBuilding::unserialize(stream);
-   _goodStore.unserialize(stream);
-   stream.read_objectID((void**)&_marketBuyer);
-   _buyerDelay = stream.read_int(2, 0, 1000);
 }

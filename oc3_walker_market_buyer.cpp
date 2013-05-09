@@ -15,21 +15,29 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
-
 #include "oc3_walker_market_buyer.hpp"
 #include "oc3_building_data.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_positioni.hpp"
+#include "oc3_market.hpp"
+#include "oc3_granary.hpp"
 #include <iostream>
 
 
-MarketBuyer::MarketBuyer()
+class MarketBuyer::Impl
+{
+public:
+  BuildingPtr destBuilding;  // granary or warehouse
+  GoodType priorityGood;
+  int maxDistance;
+};
+
+MarketBuyer::MarketBuyer() : _d( new Impl )
 {
    _walkerGraphic = WG_MARKETLADY;
    _walkerType = WT_MARKET_BUYER;
-   _maxDistance = 25;
+   _d->maxDistance = 25;
    _basket.setMaxQty(800);  // this is a big basket!
 
    _basket.setMaxQty(G_WHEAT, 800);
@@ -46,17 +54,11 @@ MarketBuyer::MarketBuyer()
 
 MarketBuyer::~MarketBuyer()
 {
-  
-}
-
-void MarketBuyer::setMarket(Market &market)
-{
-   _market = &market;
 }
 
 template< class T >
 BuildingPtr getWalkerDestination2( Propagator &pathPropagator, const BuildingType type, 
-                                    Market& market, SimpleGoodStore& basket, const GoodType what, 
+                                    MarketPtr market, SimpleGoodStore& basket, const GoodType what, 
                                     PathWay &oPathWay, long& reservId )
 {
   SmartPtr< T > res;
@@ -88,7 +90,7 @@ BuildingPtr getWalkerDestination2( Propagator &pathPropagator, const BuildingTyp
   {
     // a warehouse/granary has been found!
     // reserve some goods from that warehouse/granary
-    int qty = std::min( max_qty, market.getGoodDemand( what ) );
+    int qty = std::min( max_qty, market->getGoodDemand( what ) );
     qty = std::min(qty, basket.getMaxQty( what ) - basket.getCurrentQty( what ));
     // std::cout << "MarketBuyer reserves from warehouse, qty=" << qty << std::endl;
     GoodStock stock( what, qty, qty);
@@ -102,37 +104,39 @@ void MarketBuyer::computeWalkerDestination()
 {
    std::list<GoodType> priorityGoods = _market->getMostNeededGoods();
 
-   _destBuilding = BuildingPtr();  // no destination yet
+   _d->destBuilding = BuildingPtr();  // no destination yet
 
-   if (priorityGoods.size() > 0)
+   if( priorityGoods.size() > 0 )
    {
       // we have something to buy!
 
       // get the list of buildings within reach
       PathWay pathWay;
       Propagator pathPropagator;
-      pathPropagator.init(*_market);
-      pathPropagator.propagate(_maxDistance);
+      pathPropagator.init( *_market.object() );
+      pathPropagator.propagate( _d->maxDistance);
 
       // try to find the most needed good
       for (std::list<GoodType>::iterator itGood = priorityGoods.begin(); itGood != priorityGoods.end(); ++itGood)
       {
-         _priorityGood = *itGood;
+         _d->priorityGood = *itGood;
 
-         if (_priorityGood == G_WHEAT || _priorityGood == G_FISH || _priorityGood == G_MEAT || _priorityGood == G_FRUIT || _priorityGood == G_VEGETABLE)
+         if( _d->priorityGood == G_WHEAT || _d->priorityGood == G_FISH 
+             || _d->priorityGood == G_MEAT || _d->priorityGood == G_FRUIT 
+             || _d->priorityGood == G_VEGETABLE)
          {
             // try get that good from a granary
-            _destBuilding = getWalkerDestination2<Granary>( pathPropagator, B_GRANARY, *_market,
-                                                            _basket, _priorityGood, pathWay, _reservationID );
+            _d->destBuilding = getWalkerDestination2<Granary>( pathPropagator, B_GRANARY, _market,
+                                                            _basket, _d->priorityGood, pathWay, _reservationID );
          }
          else
          {
             // try get that good from a warehouse
-            _destBuilding = getWalkerDestination2<Warehouse>( pathPropagator, B_WAREHOUSE, *_market, 
-                                                              _basket, _priorityGood, pathWay, _reservationID );
+            _d->destBuilding = getWalkerDestination2<Warehouse>( pathPropagator, B_WAREHOUSE, _market, 
+                                                              _basket, _d->priorityGood, pathWay, _reservationID );
          }
 
-         if (_destBuilding != NULL)
+         if( _d->destBuilding != NULL )
          {
             // we found a destination!
             setPathWay(pathWay);
@@ -141,18 +145,14 @@ void MarketBuyer::computeWalkerDestination()
       }
    }
 
-   if (_destBuilding == NULL)
+   if( _d->destBuilding == NULL )
    {
       // we have nothing to buy, or cannot find what we need to buy
-      _isDeleted = true;
+      deleteLater();
       return;
    }
 
    setIJ(_pathWay.getOrigin().getIJ() );
-   WalkerPtr walker( this );
-   walker->drop();
-
-   Scenario::instance().getCity().addWalker( walker );
 }
 
 void MarketBuyer::onDestination()
@@ -161,8 +161,7 @@ void MarketBuyer::onDestination()
    if (_pathWay.isReverse())
    {
       // walker is back in the market
-      _isDeleted= true;
-
+      deleteLater();
       // put the content of the basket in the market
       _market->getGoodStore().storeAll(_basket);
    }
@@ -174,8 +173,9 @@ void MarketBuyer::onDestination()
       computeDirection();
 
       // get goods from destination building
-      SmartPtr<Granary> granary = _destBuilding.as<Granary>();
-      SmartPtr<Warehouse> warehouse = _destBuilding.as<Warehouse>();
+      GranaryPtr granary = _d->destBuilding.as<Granary>();
+      WarehousePtr warehouse = _d->destBuilding.as<Warehouse>();
+      
       if( granary.isValid() )
       {
          // this is a granary!
@@ -191,7 +191,7 @@ void MarketBuyer::onDestination()
             if (qty != 0)
             {
                qty = std::min(qty, granary->getGoodStore().getMaxRetrieve(goodType));
-               qty = std::min(qty, _basket.getMaxQty(_priorityGood) - _basket.getCurrentQty(_priorityGood));
+               qty = std::min(qty, _basket.getMaxQty(_d->priorityGood) - _basket.getCurrentQty(_d->priorityGood));
                if (qty != 0)
                {
                   // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
@@ -218,7 +218,7 @@ void MarketBuyer::onDestination()
             if (qty != 0)
             {
                qty = std::min(qty, warehouse->getGoodStore().getMaxRetrieve(goodType));
-               qty = std::min(qty, _basket.getMaxQty(_priorityGood) - _basket.getCurrentQty(_priorityGood));
+               qty = std::min(qty, _basket.getMaxQty(_d->priorityGood) - _basket.getCurrentQty(_d->priorityGood));
                if (qty != 0)
                {
                   // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
@@ -233,20 +233,23 @@ void MarketBuyer::onDestination()
 }
 
 
-void MarketBuyer::start()
+void MarketBuyer::send2City()
 {
-   computeWalkerDestination();
+  computeWalkerDestination();
+
+  if( !isDeleted() )
+    Scenario::instance().getCity().addWalker( WalkerPtr( this ) );
 }
 
 
 void MarketBuyer::serialize(OutputSerialStream &stream)
 {
    Walker::serialize(stream);
-   stream.write_objectID( _destBuilding.object() );
-   stream.write_int((int)_priorityGood, 1, 0, G_MAX);
-   stream.write_objectID(_market);
+   stream.write_objectID( _d->destBuilding.object() );
+   stream.write_int((int)_d->priorityGood, 1, 0, G_MAX);
+   stream.write_objectID( _market.object() );
    _basket.serialize(stream);
-   stream.write_int(_maxDistance, 2, 0, 65535);
+   stream.write_int( _d->maxDistance, 2, 0, 65535);
    stream.write_int(_reservationID, 4, 0, 1000000);
 }
 
@@ -255,10 +258,18 @@ void MarketBuyer::unserialize(InputSerialStream &stream)
    Walker::unserialize(stream);
    //stream.read_objectID((void**)&_destBuilding);
 
-   _priorityGood = (GoodType) stream.read_int(1, 0, G_MAX);
+   _d->priorityGood = (GoodType) stream.read_int(1, 0, G_MAX);
    stream.read_objectID((void**)&_market);
    _basket.unserialize(stream);
-   _maxDistance = stream.read_int(2, 0, 65535);
+   _d->maxDistance = stream.read_int(2, 0, 65535);
    _reservationID = stream.read_int(4, 0, 1000000);
 }
 
+MarketBuyerPtr MarketBuyer::create( MarketPtr market )
+{
+  MarketBuyerPtr ret( new MarketBuyer() );
+  ret->drop();
+  ret->_market = market;
+
+  return ret;
+}

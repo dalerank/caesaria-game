@@ -27,48 +27,50 @@ Scenario* Scenario::_instance = NULL;
 
 Scenario& Scenario::instance()
 {
-   if (_instance == NULL)
-   {
-      THROW("No Scenario instance!");
-   }
-   return *_instance;
+  if (_instance == NULL)
+  {
+    THROW("No Scenario instance!");
+  }
+  return *_instance;
 }
 
 
 Scenario::Scenario()
 {
-   _instance = this;
-   _description = "";
+  _instance = this;
+  _description = "";
 }
 
 City& Scenario::getCity()
 {
-   return _city;
+  return _city;
 }
 
 std::string Scenario::getDescription() const
 {
-   return _description;
+  return _description;
 }
 
 void Scenario::serialize(OutputSerialStream &stream)
 {
-   stream.write_str(getDescription(), 1000);
-   getCity().serialize(stream);
+  stream.write_str(getDescription(), 1000);
+  getCity().serialize(stream);
 }
 
 void Scenario::unserialize(InputSerialStream &stream)
 {
-   std::string magic = stream.read_fix_str(3);
+  std::string magic = stream.read_fix_str(3);
    
-   if (magic != "OC3") THROW("Not an openCaesar3 saved game file");
+  if (magic != "OC3")
+    THROW("Not an openCaesar3 saved game file");
 
-   int version = stream.read_int(2, 0, 100);
+  int version = stream.read_int(2, 0, 100);
    
-   if (version != 1) THROW("Unsupported version " << version);
+  if (version != 1)
+    THROW("Unsupported version " << version);
 
-   _description = stream.read_str(1000);
+  _description = stream.read_str(1000);
    
-   getCity().unserialize(stream);
+  getCity().unserialize(stream);
 }
 

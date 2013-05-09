@@ -184,24 +184,6 @@ private:
    bool _isActive;
 };
 
-
-class Granary: public WorkingBuilding
-{
-public:
-   Granary();
-
-   void timeStep(const unsigned long time);
-   void computePictures();
-   SimpleGoodStore& getGoodStore();
-   virtual GuiInfoBox* makeInfoBox( Widget* parent );
-
-   void serialize(OutputSerialStream &stream);
-   void unserialize(InputSerialStream &stream);
-
-private:
-   SimpleGoodStore _goodStore;
-};
-
 class GovernorsHouse  : public WorkingBuilding
 {
 public:
