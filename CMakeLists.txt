@@ -34,6 +34,3 @@ link_libraries(
 )
 
 add_executable(${PROJECT_NAME} ${SRC_LIST})
-
-# sgreader
-add_subdirectory(sgreader)
