@@ -1,4 +1,7 @@
 CMakeLists.txt.user
+# Eclipse project files
+.classpath
+.project
 build/*
 resources/*
 dependencies/*
