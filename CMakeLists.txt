@@ -42,4 +42,31 @@ link_libraries(
 
 add_definitions(-DBOOST_ALL_NO_LIB)
 
+# Copy DLL to build output directory
 add_executable(${PROJECT_NAME} ${SRC_LIST})
+
+if(WIN32)
+	set(_LIBS_FOR_DLL_SOURCE
+			${SDL_LIBRARY}
+			${SDL_IMAGE_LIBRARY}
+			${SDL_MIXER_LIBRARY}
+			${LibArchive_LIBRARY}
+			${LIBINTL_LIBRARIES}
+		)
+
+	foreach(_lib ${_LIBS_FOR_DLL_SOURCE})
+		GET_FILENAME_COMPONENT(_lib_abs ${_lib} ABSOLUTE)
+		GET_FILENAME_COMPONENT(_lib_path ${_lib} PATH)
+
+		# Gather list of all .xml and .conf files in "/config"
+		file(GLOB DLLs 	${_lib_path}/*.dll
+						${_lib_path}/../bin/*.dll)
+
+		foreach(dll ${DLLs})
+		  #MESSAGE (DLL: ${dll})
+		  add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD
+							 COMMAND ${CMAKE_COMMAND} -E copy ${dll} $<TARGET_FILE_DIR:${PROJECT_NAME}>)
+		endforeach()
+	endforeach(_lib)
+
+endif(WIN32)
