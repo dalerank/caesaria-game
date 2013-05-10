@@ -50,6 +50,7 @@ if(WIN32)
 			${SDL_LIBRARY}
 			${SDL_IMAGE_LIBRARY}
 			${SDL_MIXER_LIBRARY}
+			${SDL_TTF_LIBRARY}
 			${LibArchive_LIBRARY}
 			${LIBINTL_LIBRARIES}
 		)
@@ -68,5 +69,11 @@ if(WIN32)
 							 COMMAND ${CMAKE_COMMAND} -E copy ${dll} $<TARGET_FILE_DIR:${PROJECT_NAME}>)
 		endforeach()
 	endforeach(_lib)
+
+	# Set resource path in Visual Studio as debuging argument
+	if (MSVC)
+		set(DEBUG_ARGS "-R \"${CMAKE_CURRENT_SOURCE_DIR}/resources\"")
+		configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/vs/opencaesar3.vcxproj.user" "${CMAKE_CURRENT_BINARY_DIR}/opencaesar3.vcxproj.user" @ONLY)
+	endif(MSVC)
 
 endif(WIN32)
