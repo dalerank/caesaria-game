@@ -38,19 +38,19 @@ class CaesarApp
 public:
    CaesarApp();
 
-   void start();
+   void start(const std::string &resourcePath);
 
    void initLocale();
    void initVideo();
    void initSound();
    void initWaitPictures();
-   void initPictures();
+   void initPictures(const std::string &resourcePath);
    void loadScenario(const std::string &scenarioFile);
    void loadGame(const std::string &gameFile);
    void setScreenWait();
-   void setScreenMenu();
+   void setScreenMenu(const std::string &resourcePath);
    void setScreenGame();
-   std::vector <fs::path> scanForMaps() const;
+   std::vector <fs::path> scanForMaps(const std::string &resourcePath) const;
 
    void initGuiMain();
    void initGuiEnvironment();
