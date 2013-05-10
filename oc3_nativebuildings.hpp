@@ -24,6 +24,8 @@ public:
   NativeBuilding( const BuildingType type, const Size& size );
   void save( VariantMap& stream) const;
   void load( const VariantMap& stream);
+
+  void build( const TilePos& pos );
 };
 
 class NativeHut : public NativeBuilding

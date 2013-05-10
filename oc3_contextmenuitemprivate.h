@@ -13,31 +13,31 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
+#ifndef _OPENCAESAR3_CONTEXT_MENU_ITEM_PRIVATE_H_INCLUDE_
+#define _OPENCAESAR3_CONTEXT_MENU_ITEM_PRIVATE_H_INCLUDE_
 
-#ifndef __OPENCAESAR3_TOPMENU_H_INCLUDE_
-#define __OPENCAESAR3_TOPMENU_H_INCLUDE_
+#include "oc3_signals.hpp"
+#include "oc3_size.hpp"
+#include "oc3_flagholder.hpp"
 
-#include "oc3_mainmenu.hpp"
-#include "oc3_scopedptr.hpp"
+class ContextMenu;
 
-class TopMenu : public MainMenu
+class ContextMenuItem::Impl : public FlagHolder<int>
 {
-public:
-    static TopMenu* create( Widget* parent, const int height );
+public: 
+	Size dim;
+	int offset;
+	int luaFunction;	
+	int commandId;
+	bool isAutoChecking;
+	bool checked;
+	bool isSeparator;   
+	bool isHovered;
+	ContextMenu* subMenu;
+	SubMenuAlign subMenuAlignment;
 
-    // draw on screen
-    virtual void draw( GfxEngine& engine );
-
-    void setFunds( int value );
-    void setPopulation( int value );
-    void setDate( int value );
-
-private:
-
-    TopMenu( Widget* parent, const int height );
-    
-    class Impl;
-    ScopedPtr< Impl > _d;
+oc3_signals public:
+	Signal1<bool> onCheckedSignal;
 };
 
-#endif //__OPENCAESAR3_TOPMENU_H_INCLUDE_
+#endif //_OPENCAESAR3_CONTEXT_MENU_ITEM_PRIVATE_H_INCLUDE_

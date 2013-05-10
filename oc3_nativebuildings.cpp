@@ -20,13 +20,18 @@
 NativeBuilding::NativeBuilding( const BuildingType type, const Size& size ) 
 : Building( type, size )
 {
-  getTile().get_terrain().setRock( true );
-  getTile().get_terrain().setBuilding( false );
 }
 
 void NativeBuilding::save( VariantMap& stream) const {Building::save(stream);}
 
 void NativeBuilding::load( const VariantMap& stream) {Building::load(stream);}
+
+void NativeBuilding::build( const TilePos& pos )
+{
+  Building::build( pos );
+  getTile().get_terrain().setRock( true );
+  getTile().get_terrain().setBuilding( false );
+}
 
 NativeHut::NativeHut() : NativeBuilding( B_NATIVE_HUT, Size(1) )
 {

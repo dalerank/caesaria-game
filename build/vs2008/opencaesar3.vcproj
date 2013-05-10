@@ -323,6 +323,30 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_contextmenu.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_contextmenu.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_contextmenuitem.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_contextmenuitem.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_contextmenuitemprivate.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_contextmenuprivate.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_delegate.hpp"
 				>
 			</File>
@@ -499,7 +523,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\oc3_json.h"
+				RelativePath="..\..\oc3_json.hpp"
 				>
 			</File>
 			<File
@@ -512,6 +536,14 @@
 			</File>
 			<File
 				RelativePath="..\..\oc3_list.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_mainmenu.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_mainmenu.hpp"
 				>
 			</File>
 			<File

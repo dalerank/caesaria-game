@@ -13,31 +13,30 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
+#ifndef _OPENCAESAR3_CONTEXT_MENU_PRIVATE_H_INLCUDE_
+#define _OPENCAESAR3_CONTEXT_MENU_PRIVATE_H_INLCUDE_
 
-#ifndef __OPENCAESAR3_TOPMENU_H_INCLUDE_
-#define __OPENCAESAR3_TOPMENU_H_INCLUDE_
+#include <vector>
 
-#include "oc3_mainmenu.hpp"
-#include "oc3_scopedptr.hpp"
+#include "oc3_picture.hpp"
 
-class TopMenu : public MainMenu
+class ContextMenuItem;
+
+class ContextMenu::Impl
 {
 public:
-    static TopMenu* create( Widget* parent, const int height );
+	std::vector< ContextMenuItem* > items;
 
-    // draw on screen
-    virtual void draw( GfxEngine& engine );
+  int highlihted;
+	int lastHighlihted;
+	unsigned int changeTime;
+	bool allowFocus;
 
-    void setFunds( int value );
-    void setPopulation( int value );
-    void setDate( int value );
-
-private:
-
-    TopMenu( Widget* parent, const int height );
-    
-    class Impl;
-    ScopedPtr< Impl > _d;
+	Point pos;
+	Widget* eventParent;
+	Font lastFont;
+	CloseMode closeHandling;
+	bool needRecalculateItems;
 };
 
-#endif //__OPENCAESAR3_TOPMENU_H_INCLUDE_
+#endif //_OPENCAESAR3_CONTEXT_MENU_PRIVATE_H_INLCUDE_

@@ -124,8 +124,11 @@ void TopMenu::setDate( int value )
 }
 
 TopMenu::TopMenu( Widget* parent, const int height ) 
-: Widget( parent, -1, Rect( 0, 0, parent->getWidth(), height ) ),
+: MainMenu( parent, Rect( 0, 0, parent->getWidth(), height ) ),
   _d( new Impl )
 {
-
+  addItem( "File", -1, true, true, false, false );
+  addItem( "Options", -1, true, true, false, false );
+  addItem( "Help", -1, true, true, false, false );
+  addItem( "Advisers", -1, true, true, false, false );
 }

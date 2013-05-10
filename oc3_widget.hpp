@@ -81,16 +81,16 @@ public:
         return ret;
     }
 
-    virtual bool isHovered() const;
+  virtual bool isHovered() const;
 
-    virtual bool isFocused() const;
+  virtual bool isFocused() const;
 
-    virtual void setFocus();
+  virtual void setFocus();
 	virtual void removeFocus();
 
-    virtual void beforeDraw( GfxEngine& painter );
+  virtual void beforeDraw( GfxEngine& painter );
 
-    virtual Rect getClientRect() const;
+  virtual Rect getClientRect() const;
 
     //! Sets another skin independent font.
 	/** If this is set to zero, the button uses the font of the skin.
@@ -167,14 +167,14 @@ public:
 	//! Draws the element and its children.
 	virtual void draw( GfxEngine& painter );
 
-    virtual void animate( unsigned int timeMs );
+  virtual void animate( unsigned int timeMs );
 	
-    //! Checks if an override color is enabled
+  //! Checks if an override color is enabled
 	/** \return true if the override color is enabled, false otherwise */
 	//virtual bool isColorEnabled( unsigned int index=0 ) const;
 
-    //! Destructor
-    virtual ~Widget();
+  //! Destructor
+  virtual ~Widget();
 
 	//! Moves this element in absolute point.
 	virtual void setPosition(const Point& relativePosition);
