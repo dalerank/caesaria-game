@@ -23,8 +23,7 @@
 #include <list>
 
 #include "oc3_serializer.hpp"
-#include "oc3_picture.hpp"
-#include "oc3_tile.hpp"
+#include "oc3_predefinitions.hpp"
 
 // Square Map of the Tiles.
 class Tilemap : public Serializable
@@ -57,8 +56,8 @@ public:
    PtrTilesArea getFilledRectangle( const TilePos& start, const Size& size );
    int getSize() const;
 
-   void serialize(OutputSerialStream &stream);
-   void unserialize(InputSerialStream &stream);
+   void save( VariantMap& stream) const;
+   void load( const VariantMap& stream);
 
 private:
    TileGrid _tile_array;

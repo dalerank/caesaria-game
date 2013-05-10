@@ -495,6 +495,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_json.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_json.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_label.cpp"
 				>
 			</File>
@@ -644,6 +652,14 @@
 			</File>
 			<File
 				RelativePath="..\..\oc3_safetycast.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_saveadapter.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_saveadapter.hpp"
 				>
 			</File>
 			<File

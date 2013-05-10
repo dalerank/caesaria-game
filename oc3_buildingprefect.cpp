@@ -20,6 +20,7 @@
 #include "oc3_walker_prefect.hpp"
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_scenario.hpp"
+#include "oc3_tile.hpp"
 
 BuildingPrefect::BuildingPrefect() : ServiceBuilding(S_PREFECT, B_PREFECT, Size(1))
 {

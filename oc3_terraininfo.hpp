@@ -65,8 +65,9 @@ public:
   int getDesirability() const;
   void appendDesirability( int value );
 
-  void serialize(OutputSerialStream &stream);
-  void unserialize(InputSerialStream &stream);
+  void save( VariantMap& stream) const;
+  void load( const VariantMap& stream);
+
 private:
   bool _isWater;
   bool _isRock;

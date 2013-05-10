@@ -17,14 +17,13 @@
 
 #include "oc3_walker_cart_pusher.hpp"
 
-#include <iostream>
-
 #include "oc3_building_data.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_granary.hpp"
 #include "oc3_warehouse.hpp"
+#include "oc3_tile.hpp"
 
 class CartPusher::Impl
 {

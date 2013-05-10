@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-
 #include "oc3_roadpropagator.hpp"
 
 #include <set>
@@ -23,6 +22,7 @@
 #include "oc3_exception.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_positioni.hpp"
+#include "oc3_tile.hpp"
 
 class RoadPropagator::Impl
 {

@@ -12,12 +12,13 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#include "oc3_serializer.hpp"
-#include "oc3_exception.hpp"
+#ifndef __OPENCAESAR3_STRINGARRAY_H_INCLUDED__
+#define __OPENCAESAR3_STRINGARRAY_H_INCLUDED__
 
-#include <iostream>
+class StringArray : public std::vector< std::string >
+{
+public:
+};
 
-
+#endif //__OPENCAESAR3_STRINGARRAY_H_INCLUDED__

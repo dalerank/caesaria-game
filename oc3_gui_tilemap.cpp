@@ -18,8 +18,8 @@
 #include "oc3_gui_tilemap.hpp"
 
 #include <algorithm>
-#include <iostream>
 
+#include "oc3_tile.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_screen_game.hpp"

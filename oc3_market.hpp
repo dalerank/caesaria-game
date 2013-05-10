@@ -15,8 +15,9 @@ public:
   // returns the quantity of needed goods
   int getGoodDemand(const GoodType &goodType);  // used by the market buyer
 
-  void serialize(OutputSerialStream &stream);
-  void unserialize(InputSerialStream &stream);
+  void save( VariantMap& stream) const;
+  void load( const VariantMap& stream);
+
   void deliverService();
 
 private:

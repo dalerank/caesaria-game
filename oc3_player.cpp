@@ -26,7 +26,7 @@ Player::Player()
 }
 
 
-void Player::serialize(OutputSerialStream &stream)
+void Player::save( VariantMap& stream) const
 {
 //   // std::cout << "WRITE TILEMAP @" << stream.tell() << std::endl;
 //   getTilemap().serialize(stream);
@@ -61,7 +61,7 @@ void Player::serialize(OutputSerialStream &stream)
 //   }
 }
 
-void Player::unserialize(InputSerialStream &stream)
+void Player::load( const VariantMap& stream )
 {
 //   // std::cout << "READ TILEMAP @" << stream.tell() << std::endl;
 //   _tilemap.unserialize(stream);

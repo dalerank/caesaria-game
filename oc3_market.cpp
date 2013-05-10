@@ -99,18 +99,18 @@ int Market::getGoodDemand(const GoodType &goodType)
   return res;
 }
 
-void Market::serialize(OutputSerialStream &stream)
+void Market::save( VariantMap& stream) const 
 {
-  ServiceBuilding::serialize(stream);
-  _d->goodStore.serialize(stream);
+//   ServiceBuilding::serialize(stream);
+//   _d->goodStore.serialize(stream);
   //stream.write_objectID( _getWalkerList().begin().object() );
   //stream.write_int( _d->buyerDelay, 2, 0, 65535 );
 }
 
-void Market::unserialize(InputSerialStream &stream)
+void Market::load( const VariantMap& stream)
 {
-  ServiceBuilding::unserialize(stream);
-  _d->goodStore.unserialize(stream);
+//   ServiceBuilding::unserialize(stream);
+//   _d->goodStore.unserialize(stream);
   //stream.read_objectID((void**)&_marketBuyer);
   //_d->buyerDelay = stream.read_int(2, 0, 1000);
 }

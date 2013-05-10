@@ -17,8 +17,7 @@
 
 #include "oc3_house.hpp"
 
-#include <iostream>
-
+#include "oc3_tile.hpp"
 #include "oc3_house_level.hpp"
 #include "oc3_gui_info_box.hpp"
 #include "oc3_scenario.hpp"

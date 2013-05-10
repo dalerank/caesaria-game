@@ -86,14 +86,14 @@ void Granary::computePictures()
   }
 }
 
-void Granary::serialize(OutputSerialStream &stream)
+void Granary::save( VariantMap& stream) const
 {
-  WorkingBuilding::serialize(stream);
-  _goodStore.serialize(stream);
+//   WorkingBuilding::serialize(stream);
+//   _goodStore.serialize(stream);
 }
 
-void Granary::unserialize(InputSerialStream &stream)
+void Granary::load( const VariantMap& stream)
 {
-  WorkingBuilding::unserialize(stream);
-  _goodStore.unserialize(stream);
+//   WorkingBuilding::unserialize(stream);
+//   _goodStore.unserialize(stream);
 }

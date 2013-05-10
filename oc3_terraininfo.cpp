@@ -110,17 +110,17 @@ void TerrainTile::decode(const int bitset)
   //   if (bitset & 0x4000) {  setWall(true);   }
 }
 
-void TerrainTile::serialize(OutputSerialStream &stream)
+void TerrainTile::save( VariantMap& stream ) const
 {
-  int terrainBitset = encode();
-  stream.write_int(terrainBitset, 2, 0, 65535);
-  stream.write_objectID( _overlay.object() );
+//   int terrainBitset = encode();
+//   stream.write_int(terrainBitset, 2, 0, 65535);
+//   stream.write_objectID( _overlay.object() );
 }
 
-void TerrainTile::unserialize(InputSerialStream &stream)
+void TerrainTile::load( const VariantMap& stream )
 {
-  int terrainBitset = stream.read_int(2, 0, 65535);
-  decode(terrainBitset);
+//   int terrainBitset = stream.read_int(2, 0, 65535);
+//   decode(terrainBitset);
   //stream.read_objectID((void**)&_overlay.object());
 }
 

@@ -2,7 +2,9 @@
 #define __OPENCAESAR3_PREDEFINITIONS_H_INCLUDED__
 
 #include "oc3_smartptr.hpp"
+
 #include <list>
+#include <vector>
 
 class Walker;
 typedef SmartPtr<Walker> WalkerPtr;
@@ -55,5 +57,23 @@ typedef SmartPtr< Granary > GranaryPtr;
 
 class Factory;
 typedef SmartPtr< Factory > FactoryPtr;
+
+class Tile;
+typedef std::list< const Tile* > ConstWayOnTiles;
+typedef std::list< Tile* > WayOnTiles;
+typedef std::list< Tile* > PtrTilesArea;
+typedef std::list< Tile* > PtrTilesList;
+
+typedef std::vector< Tile* > PtrTilesVector;
+typedef std::vector< Tile  > TilesVector;
+typedef std::vector< TilesVector > TileGrid;
+
+class VariantMap;
+class Picture;
+class TilePos;
+class Size;
+class TerrainTile;
+class VariantMap;
+
 
 #endif

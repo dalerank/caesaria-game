@@ -17,8 +17,7 @@
 
 #include "oc3_factory_building.hpp"
 
-#include <iostream>
-
+#include "oc3_tile.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_walker_cart_pusher.hpp"
 #include "oc3_exception.hpp"
@@ -142,18 +141,18 @@ GuiInfoBox* Factory::makeInfoBox( Widget* parent )
    return box;
 }
 
-void Factory::serialize(OutputSerialStream &stream)
+void Factory::save( VariantMap& stream ) const
 {
-   WorkingBuilding::serialize(stream);
-   _goodStore.serialize(stream);
-   stream.write_int((int)_progress, 1, 0, 100); // approximation
+//    WorkingBuilding::serialize(stream);
+//    _goodStore.serialize(stream);
+//    stream.write_int((int)_progress, 1, 0, 100); // approximation
 }
 
-void Factory::unserialize(InputSerialStream &stream)
+void Factory::load( const VariantMap& stream)
 {
-   WorkingBuilding::unserialize(stream);
-   _goodStore.unserialize(stream);
-   _progress = (float)stream.read_int(1, 0, 100); // approximation
+//    WorkingBuilding::unserialize(stream);
+//    _goodStore.unserialize(stream);
+//    _progress = (float)stream.read_int(1, 0, 100); // approximation
 }
 
 Factory::~Factory()

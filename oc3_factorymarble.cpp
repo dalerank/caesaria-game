@@ -16,6 +16,7 @@
 #include "oc3_factorymarble.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_scenario.hpp"
+#include "oc3_tile.hpp"
 
 FactoryMarble::FactoryMarble() : Factory(G_NONE, G_MARBLE, B_MARBLE, Size(2) )
 {

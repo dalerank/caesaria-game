@@ -18,6 +18,7 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_time.hpp"
+#include "oc3_tile.hpp"
 
 CollapsedRuins::CollapsedRuins() : Building(B_COLLAPSED_RUINS, Size(1) )
 {

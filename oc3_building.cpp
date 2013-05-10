@@ -19,9 +19,7 @@
 
 #include "oc3_building.hpp"
 
-#include <iostream>
-#include <algorithm>
-
+#include "oc3_tile.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_servicewalker.hpp"
 #include "oc3_exception.hpp"
@@ -39,6 +37,8 @@
 #include "oc3_water_buildings.hpp"
 #include "oc3_constructionmanager.hpp"
 #include "oc3_resourcegroup.hpp"
+
+#include <algorithm>
 
 //std::map<BuildingType, LandOverlay*> LandOverlay::_mapBuildingByID;  // key=buildingType, value=instance
 
@@ -168,28 +168,28 @@ std::string LandOverlay::getName()
   return _name;
 }
 
-void LandOverlay::serialize(OutputSerialStream &stream)
+void LandOverlay::save( VariantMap& stream ) const
 {
-  stream.write_objectID(this);
-  stream.write_int((int) _buildingType, 1, 0, B_MAX);
-  stream.write_int(getTile().getI(), 2, 0, 1000);
-  stream.write_int(getTile().getJ(), 2, 0, 1000);
+//   stream.write_objectID(this);
+//   stream.write_int((int) _buildingType, 1, 0, B_MAX);
+//   stream.write_int(getTile().getI(), 2, 0, 1000);
+//   stream.write_int(getTile().getJ(), 2, 0, 1000);
 }
 
-LandOverlayPtr LandOverlay::unserialize_all(InputSerialStream &stream)
-{
-  int objectID = stream.read_objectID();
-  BuildingType buildingType = (BuildingType) stream.read_int(1, 0, B_MAX);
-  int i = stream.read_int(2, 0, 1000);
-  int j = stream.read_int(2, 0, 1000);
-  ConstructionPtr res = ConstructionManager::getInstance().create( buildingType );
-  res->_master_tile = &Scenario::instance().getCity().getTilemap().at(i, j);
-  res->unserialize(stream);
-  stream.link( objectID, res.object() );
-  return res.as<LandOverlay>();
-}
+// LandOverlayPtr LandOverlay::unserialize_all(InputSerialStream &stream)
+// {
+//   int objectID = stream.read_objectID();
+//   BuildingType buildingType = (BuildingType) stream.read_int(1, 0, B_MAX);
+//   int i = stream.read_int(2, 0, 1000);
+//   int j = stream.read_int(2, 0, 1000);
+//   ConstructionPtr res = ConstructionManager::getInstance().create( buildingType );
+//   res->_master_tile = &Scenario::instance().getCity().getTilemap().at(i, j);
+//   res->unserialize(stream);
+//   stream.link( objectID, res.object() );
+//   return res.as<LandOverlay>();
+// }
 
-void LandOverlay::unserialize(InputSerialStream &stream)
+void LandOverlay::load( const VariantMap& stream)
 {
 }
 
@@ -496,49 +496,49 @@ void Building::applyTrainee(const WalkerTraineeType traineeType)
    _traineeMap[traineeType] += 100;
 }
 
-void Building::serialize(OutputSerialStream &stream)
+void Building::save( VariantMap& stream) const
 {
-   Construction::serialize(stream);
-   stream.write_int((int) _damageLevel, 1, 0, 100);  // approximation...
-   stream.write_int((int) _fireLevel, 1, 0, 100);  // approximation...
-
-   stream.write_int(_traineeMap.size(), 1, 0, WTT_MAX);
-   for (std::map<WalkerTraineeType, int>::iterator itLevel = _traineeMap.begin(); itLevel != _traineeMap.end(); ++itLevel)
-   {
-      WalkerTraineeType traineeType = itLevel->first;
-      int traineeLevel = itLevel->second;
-      stream.write_int((int)traineeType, 1, 0, WTT_MAX);
-      stream.write_int(traineeLevel, 1, 0, 200);
-   }
-
-   stream.write_int(_reservedTrainees.size(), 1, 0, WTT_MAX);
-   for (std::set<WalkerTraineeType>::iterator itReservation = _reservedTrainees.begin(); itReservation != _reservedTrainees.end(); ++itReservation)
-   {
-      WalkerTraineeType traineeType = *itReservation;
-      stream.write_int((int)traineeType, 1, 0, WTT_MAX);
-   }
+//    Construction::serialize(stream);
+//    stream.write_int((int) _damageLevel, 1, 0, 100);  // approximation...
+//    stream.write_int((int) _fireLevel, 1, 0, 100);  // approximation...
+// 
+//    stream.write_int(_traineeMap.size(), 1, 0, WTT_MAX);
+//    for (std::map<WalkerTraineeType, int>::iterator itLevel = _traineeMap.begin(); itLevel != _traineeMap.end(); ++itLevel)
+//    {
+//       WalkerTraineeType traineeType = itLevel->first;
+//       int traineeLevel = itLevel->second;
+//       stream.write_int((int)traineeType, 1, 0, WTT_MAX);
+//       stream.write_int(traineeLevel, 1, 0, 200);
+//    }
+// 
+//    stream.write_int(_reservedTrainees.size(), 1, 0, WTT_MAX);
+//    for (std::set<WalkerTraineeType>::iterator itReservation = _reservedTrainees.begin(); itReservation != _reservedTrainees.end(); ++itReservation)
+//    {
+//       WalkerTraineeType traineeType = *itReservation;
+//       stream.write_int((int)traineeType, 1, 0, WTT_MAX);
+//    }
 }
 
-void Building::unserialize(InputSerialStream &stream)
+void Building::load( const VariantMap& stream )
 {
-   Construction::unserialize(stream);
-   _damageLevel = (float)stream.read_int(1, 0, 100);
-   _fireLevel = (float)stream.read_int(1, 0, 100);
-
-   int size = stream.read_int(1, 0, WTT_MAX);
-   for (int i=0; i<size; ++i)
-   {
-      WalkerTraineeType traineeType = (WalkerTraineeType) stream.read_int(1, 0, WTT_MAX);
-      int traineeLevel = stream.read_int(1, 0, 200);
-      _traineeMap[traineeType] = traineeLevel;
-   }
-
-   size = stream.read_int(1, 0, WTT_MAX);
-   for (int i=0; i<size; ++i)
-   {
-      WalkerTraineeType traineeType = (WalkerTraineeType) stream.read_int(1, 0, WTT_MAX);
-      _reservedTrainees.insert(traineeType);
-   }
+//    Construction::unserialize(stream);
+//    _damageLevel = (float)stream.read_int(1, 0, 100);
+//    _fireLevel = (float)stream.read_int(1, 0, 100);
+// 
+//    int size = stream.read_int(1, 0, WTT_MAX);
+//    for (int i=0; i<size; ++i)
+//    {
+//       WalkerTraineeType traineeType = (WalkerTraineeType) stream.read_int(1, 0, WTT_MAX);
+//       int traineeLevel = stream.read_int(1, 0, 200);
+//       _traineeMap[traineeType] = traineeLevel;
+//    }
+// 
+//    size = stream.read_int(1, 0, WTT_MAX);
+//    for (int i=0; i<size; ++i)
+//    {
+//       WalkerTraineeType traineeType = (WalkerTraineeType) stream.read_int(1, 0, WTT_MAX);
+//       _reservedTrainees.insert(traineeType);
+//    }
 }
 
 WorkingBuilding::WorkingBuilding(const BuildingType type, const Size& size)
@@ -579,16 +579,16 @@ bool WorkingBuilding::isActive()
    return _isActive;
 }
 
-void WorkingBuilding::serialize(OutputSerialStream &stream)
+void WorkingBuilding::save( VariantMap& stream ) const
 {
-   Building::serialize(stream);
-   stream.write_int((int) _currentWorkers, 1, 0, 100);
+//    Building::serialize(stream);
+//    stream.write_int((int) _currentWorkers, 1, 0, 100);
 }
 
-void WorkingBuilding::unserialize(InputSerialStream &stream)
+void WorkingBuilding::load( const VariantMap& stream)
 {
-   Building::unserialize(stream);
-   _currentWorkers = stream.read_int(1, 0, 100);
+//    Building::unserialize(stream);
+//    _currentWorkers = stream.read_int(1, 0, 100);
 }
 
 void WorkingBuilding::addWorkers( const int workers )

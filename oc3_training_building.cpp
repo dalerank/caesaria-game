@@ -72,18 +72,18 @@ void TrainingBuilding::timeStep(const unsigned long time)
 //    walker->start();
 // }
 
-void TrainingBuilding::serialize(OutputSerialStream &stream)
+void TrainingBuilding::save( VariantMap& stream) const
 {
-   WorkingBuilding::serialize(stream);
-   stream.write_int(_trainingTimer, 2, 0, 1000);
-   stream.write_int(_trainingDelay, 2, 0, 1000);
+//    WorkingBuilding::serialize(stream);
+//    stream.write_int(_trainingTimer, 2, 0, 1000);
+//    stream.write_int(_trainingDelay, 2, 0, 1000);
 }
 
-void TrainingBuilding::unserialize(InputSerialStream &stream)
+void TrainingBuilding::load( const VariantMap& stream )
 {
-   WorkingBuilding::unserialize(stream);
-   _trainingTimer = stream.read_int(2, 0, 1000);
-   _trainingDelay = stream.read_int(2, 0, 1000);
+//    WorkingBuilding::unserialize(stream);
+//    _trainingTimer = stream.read_int(2, 0, 1000);
+//    _trainingDelay = stream.read_int(2, 0, 1000);
 }
 
 

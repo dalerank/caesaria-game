@@ -22,7 +22,7 @@
 #include "oc3_positioni.hpp"
 #include "oc3_market.hpp"
 #include "oc3_granary.hpp"
-#include <iostream>
+#include "oc3_tile.hpp"
 
 
 class MarketBuyer::Impl
@@ -242,27 +242,27 @@ void MarketBuyer::send2City()
 }
 
 
-void MarketBuyer::serialize(OutputSerialStream &stream)
+void MarketBuyer::save( VariantMap& stream ) const
 {
-   Walker::serialize(stream);
-   stream.write_objectID( _d->destBuilding.object() );
-   stream.write_int((int)_d->priorityGood, 1, 0, G_MAX);
-   stream.write_objectID( _market.object() );
-   _basket.serialize(stream);
-   stream.write_int( _d->maxDistance, 2, 0, 65535);
-   stream.write_int(_reservationID, 4, 0, 1000000);
+//    Walker::serialize(stream);
+//    stream.write_objectID( _d->destBuilding.object() );
+//    stream.write_int((int)_d->priorityGood, 1, 0, G_MAX);
+//    stream.write_objectID( _market.object() );
+//    _basket.serialize(stream);
+//    stream.write_int( _d->maxDistance, 2, 0, 65535);
+//    stream.write_int(_reservationID, 4, 0, 1000000);
 }
 
-void MarketBuyer::unserialize(InputSerialStream &stream)
+void MarketBuyer::load( const VariantMap& stream)
 {
-   Walker::unserialize(stream);
-   //stream.read_objectID((void**)&_destBuilding);
-
-   _d->priorityGood = (GoodType) stream.read_int(1, 0, G_MAX);
-   stream.read_objectID((void**)&_market);
-   _basket.unserialize(stream);
-   _d->maxDistance = stream.read_int(2, 0, 65535);
-   _reservationID = stream.read_int(4, 0, 1000000);
+//    Walker::unserialize(stream);
+//    //stream.read_objectID((void**)&_destBuilding);
+// 
+//    _d->priorityGood = (GoodType) stream.read_int(1, 0, G_MAX);
+//    stream.read_objectID((void**)&_market);
+//    _basket.unserialize(stream);
+//    _d->maxDistance = stream.read_int(2, 0, 65535);
+//    _reservationID = stream.read_int(4, 0, 1000000);
 }
 
 MarketBuyerPtr MarketBuyer::create( MarketPtr market )

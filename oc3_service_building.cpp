@@ -19,10 +19,10 @@
 
 #include "oc3_service_building.hpp"
 
-#include <iostream>
 #include <cstdlib>
 #include <ctime>
 
+#include "oc3_tile.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_servicewalker.hpp"
 #include "oc3_walker_market_buyer.hpp"
@@ -121,26 +121,20 @@ int ServiceBuilding::getServiceRange() const
    return _serviceRange;
 }
 
-void ServiceBuilding::serialize(OutputSerialStream &stream)
+void ServiceBuilding::save( VariantMap& stream ) const 
 {
-   WorkingBuilding::serialize(stream);
-   stream.write_int(_serviceTimer, 2, 0, 1000);
-   stream.write_int(_d->serviceDelay, 2, 0, 1000);
-   stream.write_int(_serviceRange, 2, 0, 65535);
+//    WorkingBuilding::serialize(stream);
+//    stream.write_int(_serviceTimer, 2, 0, 1000);
+//    stream.write_int(_d->serviceDelay, 2, 0, 1000);
+//    stream.write_int(_serviceRange, 2, 0, 65535);
 }
 
-void ServiceBuilding::unserialize(InputSerialStream &stream)
+void ServiceBuilding::load( const VariantMap& stream )
 {
-   WorkingBuilding::unserialize(stream);
-   _serviceTimer = stream.read_int(2, 0, 1000);
-   _d->serviceDelay = stream.read_int(2, 0, 1000);
-   _serviceRange = stream.read_int(2, 0, 65535);
-}
-
-GuiInfoBox* ServiceBuilding::makeInfoBox( Widget* parent )
-{
-   GuiInfoService* box = new GuiInfoService( parent, *this);
-   return box;
+//    WorkingBuilding::unserialize(stream);
+//    _serviceTimer = stream.read_int(2, 0, 1000);
+//    _d->serviceDelay = stream.read_int(2, 0, 1000);
+//    _serviceRange = stream.read_int(2, 0, 65535);
 }
 
 int ServiceBuilding::getServiceDelay() const

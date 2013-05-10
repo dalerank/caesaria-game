@@ -30,6 +30,7 @@
 #include "oc3_scopedptr.hpp"
 #include "oc3_animation.hpp"
 #include "oc3_referencecounted.hpp"
+#include "oc3_predefinitions.hpp"
 
 class Widget;
 class GuiInfoBox;
@@ -48,7 +49,7 @@ public:
    bool isDeleted() const;  // returns true if the overlay should be forgotten
    void deleteLater();
    virtual bool isWalkable() const;
-   virtual void setTerrain( TerrainTile &terrain ) = 0;
+   virtual void setTerrain( TerrainTile& terrain ) = 0;
    virtual void build( const TilePos& pos );
    virtual void destroy();  // handles the walkers
 
@@ -64,9 +65,8 @@ public:
    BuildingType getType() const;
    void setType(const BuildingType buildingType);
 
-   void serialize(OutputSerialStream &stream);
-   static LandOverlayPtr unserialize_all(InputSerialStream &stream);
-   void unserialize(InputSerialStream &stream);
+   void save( VariantMap& stream) const;
+   void load( const VariantMap& stream );
 
 protected:
    std::vector<Picture*> _fgPictures;
@@ -138,8 +138,8 @@ public:
    float getFireLevel();
    void setFireLevel(const float value);
 
-   void serialize(OutputSerialStream &stream);
-   void unserialize(InputSerialStream &stream);
+   void save( VariantMap& stream) const;
+   void load( const VariantMap& stream);
 
 protected:
    float _damageLevel;  // >100 => building is destroyed
@@ -175,8 +175,8 @@ public:
    void setActive(const bool value);  // if false then this building is stopped
    bool isActive();
 
-   void serialize(OutputSerialStream &stream);
-   void unserialize(InputSerialStream &stream);
+   void save( VariantMap& stream) const;
+   void load( const VariantMap& stream);
 
 private:
    int _currentWorkers;

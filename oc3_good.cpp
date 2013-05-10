@@ -236,18 +236,18 @@ void GoodStock::addStock(GoodStock &stock, const int iAmount)
    }
 }
 
-void GoodStock::serialize(OutputSerialStream &stream)
+void GoodStock::save( VariantMap& stream ) const
 {
-   stream.write_int((int)_goodType, 1, 0, G_MAX);
-   stream.write_int(_maxQty, 2, 0, 10000);
-   stream.write_int(_currentQty, 2, 0, 10000);
+//    stream.write_int((int)_goodType, 1, 0, G_MAX);
+//    stream.write_int(_maxQty, 2, 0, 10000);
+//    stream.write_int(_currentQty, 2, 0, 10000);
 }
 
-void GoodStock::unserialize(InputSerialStream &stream)
+void GoodStock::load( const VariantMap& stream )
 {
-   _goodType = (GoodType) stream.read_int(1, 0, G_MAX);
-   _maxQty = stream.read_int(2, 0, 10000);
-   _currentQty = stream.read_int(2, 0, 10000);
+//    _goodType = (GoodType) stream.read_int(1, 0, G_MAX);
+//    _maxQty = stream.read_int(2, 0, 10000);
+//    _currentQty = stream.read_int(2, 0, 10000);
 }
 
 
@@ -410,51 +410,51 @@ void GoodStore::storeAll(SimpleGoodStore &goodStore)
       }
    }
 }
-
-void GoodStore::serialize(OutputSerialStream &stream)
+ 
+void GoodStore::save( VariantMap& stream) const 
 {
-   stream.write_int(_nextReservationID, 4, 0, 1000000);
-   stream.write_int(_storeReservations.size(), 2, 0, 1000);
-   for (std::map<long, GoodStock>::iterator itRes = _storeReservations.begin(); itRes != _storeReservations.end(); itRes++)
-   {
-      long resID = itRes->first;
-      GoodStock &stock = itRes->second;
-      stream.write_int(resID, 4, 0, 1000000);
-      stock.serialize(stream);
-   }
-
-   stream.write_int(_retrieveReservations.size(), 2, 0, 1000);
-   for (std::map<long, GoodStock>::iterator itRes = _retrieveReservations.begin(); itRes != _retrieveReservations.end(); itRes++)
-   {
-      long resID = itRes->first;
-      GoodStock &stock = itRes->second;
-      stream.write_int(resID, 4, 0, 1000000);
-      stock.serialize(stream);
-   }
+//    stream.write_int(_nextReservationID, 4, 0, 1000000);
+//    stream.write_int(_storeReservations.size(), 2, 0, 1000);
+//    for (std::map<long, GoodStock>::iterator itRes = _storeReservations.begin(); itRes != _storeReservations.end(); itRes++)
+//    {
+//       long resID = itRes->first;
+//       GoodStock &stock = itRes->second;
+//       stream.write_int(resID, 4, 0, 1000000);
+//       stock.serialize(stream);
+//    }
+// 
+//    stream.write_int(_retrieveReservations.size(), 2, 0, 1000);
+//    for (std::map<long, GoodStock>::iterator itRes = _retrieveReservations.begin(); itRes != _retrieveReservations.end(); itRes++)
+//    {
+//       long resID = itRes->first;
+//       GoodStock &stock = itRes->second;
+//       stream.write_int(resID, 4, 0, 1000000);
+//       stock.serialize(stream);
+//    }
 }
 
-void GoodStore::unserialize(InputSerialStream &stream)
+void GoodStore::load( const VariantMap& stream )
 {
-   _nextReservationID = stream.read_int(4, 0, 1000000);
-   int size = stream.read_int(2, 0, 1000);
-   for (int i=0; i<size; ++i)
-   {
-      long resID = stream.read_int(4, 0, 1000000);
-      GoodStock stock;
-      stock.unserialize(stream);
-
-      _storeReservations[resID] = stock;
-   }
-
-   size = stream.read_int(2, 0, 1000);
-   for (int i=0; i<size; ++i)
-   {
-      long resID = stream.read_int(4, 0, 1000000);
-      GoodStock stock;
-      stock.unserialize(stream);
-
-      _retrieveReservations[resID] = stock;
-   }
+//    _nextReservationID = stream.read_int(4, 0, 1000000);
+//    int size = stream.read_int(2, 0, 1000);
+//    for (int i=0; i<size; ++i)
+//    {
+//       long resID = stream.read_int(4, 0, 1000000);
+//       GoodStock stock;
+//       stock.unserialize(stream);
+// 
+//       _storeReservations[resID] = stock;
+//    }
+// 
+//    size = stream.read_int(2, 0, 1000);
+//    for (int i=0; i<size; ++i)
+//    {
+//       long resID = stream.read_int(4, 0, 1000000);
+//       GoodStock stock;
+//       stock.unserialize(stream);
+// 
+//       _retrieveReservations[resID] = stock;
+//    }
 }
 
 
@@ -599,30 +599,30 @@ void SimpleGoodStore::applyRetrieveReservation(GoodStock &stock, const long rese
 }
 
 
-void SimpleGoodStore::serialize(OutputSerialStream &stream)
+void SimpleGoodStore::save( VariantMap& stream ) const
 {
-   GoodStore::serialize(stream);
-   stream.write_int(_maxQty, 2, 0, 10000);
-   stream.write_int(_currentQty, 2, 0, 10000);
-   stream.write_int(_goodStockList.size(), 1, 0, 50);
-   for (std::vector<GoodStock>::iterator itStock = _goodStockList.begin(); itStock != _goodStockList.end(); itStock++)
-   {
-      GoodStock &stock = *itStock;
-      stock.serialize(stream);
-   }
+//    GoodStore::serialize(stream);
+//    stream.write_int(_maxQty, 2, 0, 10000);
+//    stream.write_int(_currentQty, 2, 0, 10000);
+//    stream.write_int(_goodStockList.size(), 1, 0, 50);
+//    for (std::vector<GoodStock>::iterator itStock = _goodStockList.begin(); itStock != _goodStockList.end(); itStock++)
+//    {
+//       GoodStock &stock = *itStock;
+//       stock.serialize(stream);
+//    }
 }
 
-void SimpleGoodStore::unserialize(InputSerialStream &stream)
+void SimpleGoodStore::load( const VariantMap& stream )
 {
-   GoodStore::unserialize(stream);
-   _maxQty = stream.read_int(2, 0, 10000);
-   _currentQty = stream.read_int(2, 0, 10000);
-
-   int size = stream.read_int(1, 0, 50);
-   for (int i=0; i<size; ++i)
-   {
-      GoodStock stock;
-      stock.unserialize(stream);
-      _goodStockList[stock._goodType] = stock;
-   }
+//    GoodStore::unserialize(stream);
+//    _maxQty = stream.read_int(2, 0, 10000);
+//    _currentQty = stream.read_int(2, 0, 10000);
+// 
+//    int size = stream.read_int(1, 0, 50);
+//    for (int i=0; i<size; ++i)
+//    {
+//       GoodStock stock;
+//       stock.unserialize(stream);
+//       _goodStockList[stock._goodType] = stock;
+//    }
 }

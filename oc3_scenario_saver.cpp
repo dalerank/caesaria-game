@@ -15,43 +15,21 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
-
 #include "oc3_scenario_saver.hpp"
 
 #include <iostream>
 
-#include "oc3_exception.hpp"
-
-
-std::string ScenarioSaver::MAGIC = "OC3";
-
-ScenarioSaver::ScenarioSaver()
+ScenarioSaver::ScenarioSaver( const Scenario& scenario )
 {
 }
 
 
 void ScenarioSaver::save(const std::string& filename)
 {
-   std::fstream f(filename.c_str(), std::ios::out | std::ios::binary);
-   OutputSerialStream stream;
-   stream.init(f, 1);  // version
-   serialize(stream);
-   stream.finalize_write();
-   stream.close();
+//    std::fstream f(filename.c_str(), std::ios::out | std::ios::binary);
+//    OutputSerialStream stream;
+//    stream.init(f, 1);  // version
+//    serialize(stream);
+//    stream.finalize_write();
+//    stream.close();
 }
-
-void ScenarioSaver::serialize(OutputSerialStream &stream)
-{
-   Scenario &scenario = Scenario::instance();
-
-   stream.write(MAGIC.c_str(), 3);
-   stream.write_int(stream._version, 2, 0, 100);
-   scenario.serialize(stream);
-}
-
-
-void ScenarioSaver::unserialize(InputSerialStream &stream)
-{
-}
-

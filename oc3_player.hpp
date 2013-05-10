@@ -31,9 +31,8 @@ class Player : public Serializable
 public:
    Player();
 
-   void serialize(OutputSerialStream &stream);
-   void unserialize(InputSerialStream &stream);
-
+   void save( VariantMap& stream) const;
+   void load( const VariantMap& stream);
 private:
    int _funds;  // amount of money
 };

@@ -13,25 +13,44 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_GRANARY_H_INCLUDED__
-#define __OPENCAESAR3_GRANARY_H_INCLUDED__
+#ifndef __OPENCAESAR3_NATIVEBUILDINGS_H_INCLUDED__
+#define __OPENCAESAR3_NATIVEBUILDINGS_H_INCLUDED__
 
 #include "oc3_building.hpp"
 
-class Granary: public WorkingBuilding
+class NativeBuilding : public Building
 {
 public:
-  Granary();
-
-  void timeStep(const unsigned long time);
-  void computePictures();
-  SimpleGoodStore& getGoodStore();
-
+  NativeBuilding( const BuildingType type, const Size& size );
   void save( VariantMap& stream) const;
   void load( const VariantMap& stream);
+};
 
-private:
-  SimpleGoodStore _goodStore;
+class NativeHut : public NativeBuilding
+{
+public:
+  NativeHut();
+  void save( VariantMap& stream) const;
+  void load( const VariantMap& stream);
+  //virtual GuiInfoBox* makeInfoBox();  
+};
+
+class NativeField  : public NativeBuilding
+{
+public:
+  NativeField();
+  void save( VariantMap& stream) const;
+  void load( const VariantMap& stream);
+  //virtual GuiInfoBox* makeInfoBox();
+};
+
+class NativeCenter : public NativeBuilding
+{
+public:
+  NativeCenter();
+  void save( VariantMap& stream) const;
+  void load( const VariantMap& stream);
+  //virtual GuiInfoBox* makeInfoBox();
 };
 
 

@@ -41,8 +41,8 @@ public:
 
    virtual GuiInfoBox* makeInfoBox( Widget* parent );
 
-   void serialize(OutputSerialStream &stream);
-   void unserialize(InputSerialStream &stream);
+   void save( VariantMap& stream) const;
+   void load( const VariantMap& stream);
 
    void removeWalker( WalkerPtr w );
 protected:

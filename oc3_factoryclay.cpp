@@ -16,6 +16,7 @@
 #include "oc3_factoryclay.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_scenario.hpp"
+#include "oc3_tile.hpp"
 
 FactoryClay::FactoryClay() : Factory(G_NONE, G_CLAY, B_CLAY_PIT, Size(2) )
 {

@@ -1,5 +1,21 @@
+// This file is part of openCaesar3.
+//
+// openCaesar3 is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// openCaesar3 is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+
 #include "oc3_servicewalker.hpp"
 #include "oc3_scenario.hpp"
+#include "oc3_tile.hpp"
 
 ServiceWalker::ServiceWalker( BuildingPtr base, const ServiceType service)
 {
@@ -235,22 +251,22 @@ void ServiceWalker::onDestination()
   }
 }
 
-void ServiceWalker::serialize(OutputSerialStream &stream)
+void ServiceWalker::save( VariantMap& stream ) const
 {
-  Walker::serialize(stream);
-  stream.write_int((int) _service, 1, 0, S_MAX);
-  stream.write_objectID( _base.object() );
-  stream.write_int(_maxDistance, 2, 0, 65535);
+//   Walker::serialize(stream);
+//   stream.write_int((int) _service, 1, 0, S_MAX);
+//   stream.write_objectID( _base.object() );
+//   stream.write_int(_maxDistance, 2, 0, 65535);
 }
 
-void ServiceWalker::unserialize(InputSerialStream &stream)
+void ServiceWalker::load( const VariantMap& stream )
 {
-  Walker::unserialize(stream);
-  _service = (ServiceType) stream.read_int(1, 0, S_MAX);
-  init(_service);
-
-  stream.read_objectID((void**)&_base);
-  _maxDistance = stream.read_int(2, 0, 65535);
+//   Walker::unserialize(stream);
+//   _service = (ServiceType) stream.read_int(1, 0, S_MAX);
+//   init(_service);
+// 
+//   stream.read_objectID((void**)&_base);
+//   _maxDistance = stream.read_int(2, 0, 65535);
 }
 
 void ServiceWalker::setMaxDistance( const int distance )

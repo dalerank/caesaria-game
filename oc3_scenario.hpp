@@ -31,8 +31,8 @@ public:
    static Scenario& instance();
 
    Scenario();
-   void serialize(OutputSerialStream &stream);
-   void unserialize(InputSerialStream &stream);
+   void save( VariantMap& stream) const;
+   void load( const VariantMap& stream);
 
    City& getCity();
    std::string getDescription() const;

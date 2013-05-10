@@ -18,6 +18,7 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_servicewalker.hpp"
+#include "oc3_tile.hpp"
 
 BurningRuins::BurningRuins() : ServiceBuilding(S_BURNING_RUINS, B_BURNING_RUINS, Size(1) )
 {

@@ -167,16 +167,16 @@ void CaesarApp::loadGame(const std::string &gameFile)
 {
    std::cout << "load game begin" << std::endl;
 
-   std::fstream f(gameFile.c_str(), std::ios::in | std::ios::binary);
-   InputSerialStream stream;
-   stream.init(f, -1);
-
-   _d->scenario = new Scenario();
-   _d->scenario->unserialize(stream);
-   f.close();
-   stream.finalize_read();
-
-   std::cout << "load game end" << std::endl;
+//    std::fstream f(gameFile.c_str(), std::ios::in | std::ios::binary);
+//    InputSerialStream stream;
+//    stream.init(f, -1);
+// 
+//    _d->scenario = new Scenario();
+//    _d->scenario->unserialize(stream);
+//    f.close();
+//    stream.finalize_read();
+// 
+//    std::cout << "load game end" << std::endl;
 }
 
 

@@ -17,12 +17,13 @@
 
 #include "oc3_tilemap.hpp"
 
-#include <iostream>
-
+#include "oc3_tile.hpp"
 #include "oc3_pic_loader.hpp"
 #include "oc3_building.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_positioni.hpp"
+#include "oc3_variant.hpp"
+#include "oc3_stringhelper.hpp"
 
 Tilemap::Tilemap()
 {
@@ -154,43 +155,32 @@ PtrTilesList Tilemap::getFilledRectangle( const TilePos& start, const Size& size
     return getFilledRectangle( start, start + TilePos( size.getWidth()-1, size.getHeight()-1 ) );
 }
 
-void Tilemap::serialize(OutputSerialStream &stream)
+void Tilemap::save( VariantMap& stream ) const
 {
-   stream.write_int(_size, 2, 0, 1000);
+  VariantMap options;
 
-   // saves the graphics map
-   PicLoader &picLoader = PicLoader::instance();
-   std::string pic_name;
-   short int imgId;   // 16bits
-   for (int i=0; i<_size; ++i)
-   {
-      for (int j=0; j<_size; ++j)
-      {
-         Tile &tile = at(i, j);
-         TerrainTile &terrain = tile.get_terrain();
+  options[ "size" ] = Variant( _size );
 
-         imgId = 0;
+  // saves the graphics map
+  PicLoader &picLoader = PicLoader::instance();
+  std::string pic_name;
+  for (int i=0; i<_size; ++i)
+  {
+     for (int j=0; j<_size; ++j)
+     {
+        VariantMap tileInfo;
+        at(i, j).get_terrain().save( tileInfo );
 
-         if (&tile == tile.get_master_tile() || tile.get_master_tile() == NULL)
-         {
-            // this is a master tile
-            if ( !terrain.isBuilding() )
-            {
-               // this is not a building
-               pic_name = tile.get_picture().get_name();
-               imgId = TerrainTileHelper::convPicName2Id(pic_name);
-            }
-         }
+        options[ StringHelper::format( 0xff, "%03d%03d") ] = tileInfo;
+     }
+  }
 
-         stream.write_int(imgId, 2, 0, 65535);
-         terrain.serialize(stream);
-      }
-   }
+  stream[ "timemap" ] = options.toVariant();  
 }
 
-void Tilemap::unserialize(InputSerialStream &stream)
+void Tilemap::load( const VariantMap& stream)
 {
-   _size = stream.read_int(2, 0, 1000);
+   /*_size = stream.read_int(2, 0, 1000);
    init(_size);
 
    // loads the graphics map
@@ -243,5 +233,6 @@ void Tilemap::unserialize(InputSerialStream &stream)
 
       }
    }
+   */
 }
 

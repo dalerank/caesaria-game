@@ -17,8 +17,7 @@
 
 #include "oc3_walker.hpp"
 
-#include <iostream>
-
+#include "oc3_tile.hpp"
 #include "oc3_building_data.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_scenario.hpp"
@@ -392,50 +391,50 @@ Picture& Walker::getMainPicture()
    return *_animation.getCurrentPicture();
 }
 
-void Walker::serialize(OutputSerialStream &stream)
+void Walker::save( VariantMap& stream ) const
 {
-   stream.write_objectID(this);
-   stream.write_int((int) _walkerType, 1, 0, WT_MAX);
-   _pathWay.serialize(stream);
-   stream.write_int((int) _action._action, 1, 0, WA_MAX);
-   stream.write_int((int) _action._direction, 1, 0, D_MAX);
-   stream.write_int(_i, 2, 0, 1000);
-   stream.write_int(_j, 2, 0, 1000);
-   stream.write_int(_si, 1, 0, 50);
-   stream.write_int(_sj, 1, 0, 50);
-   stream.write_int(_ii, 4, 0, 1000000);
-   stream.write_int(_jj, 4, 0, 1000000);
-   //stream.write_float(_d->speed, 1, 0, 50);
-   stream.write_int(_midTileI, 1, 0, 50);
-   stream.write_int(_midTileJ, 1, 0, 50);
-   //stream.write_int(_animIndex, 1, 0, 50);
+//    stream.write_objectID(this);
+//    stream.write_int((int) _walkerType, 1, 0, WT_MAX);
+//    _pathWay.serialize(stream);
+//    stream.write_int((int) _action._action, 1, 0, WA_MAX);
+//    stream.write_int((int) _action._direction, 1, 0, D_MAX);
+//    stream.write_int(_i, 2, 0, 1000);
+//    stream.write_int(_j, 2, 0, 1000);
+//    stream.write_int(_si, 1, 0, 50);
+//    stream.write_int(_sj, 1, 0, 50);
+//    stream.write_int(_ii, 4, 0, 1000000);
+//    stream.write_int(_jj, 4, 0, 1000000);
+//    //stream.write_float(_d->speed, 1, 0, 50);
+//    stream.write_int(_midTileI, 1, 0, 50);
+//    stream.write_int(_midTileJ, 1, 0, 50);
+//    //stream.write_int(_animIndex, 1, 0, 50);
 }
 
-WalkerPtr Walker::unserialize_all(InputSerialStream &stream)
-{
-   int objectID = stream.read_objectID();
-   WalkerType walkerType = (WalkerType) stream.read_int(1, 0, WT_MAX);
-   WalkerPtr res = WalkerManager::getInstance().create( walkerType, TilePos( 0, 0 ) );
-   res->unserialize(stream);
-   stream.link( objectID, res.object() );
-   return res;
-}
+// WalkerPtr Walker::unserialize_all(InputSerialStream &stream)
+// {
+//    int objectID = stream.read_objectID();
+//    WalkerType walkerType = (WalkerType) stream.read_int(1, 0, WT_MAX);
+//    WalkerPtr res = WalkerManager::getInstance().create( walkerType, TilePos( 0, 0 ) );
+//    res->unserialize(stream);
+//    stream.link( objectID, res.object() );
+//    return res;
+// }
 
-void Walker::unserialize(InputSerialStream &stream)
+void Walker::load( const VariantMap& stream)
 {
-   _pathWay.unserialize(stream);
-   _action._action = (WalkerActionType) stream.read_int(1, 0, WA_MAX);
-   _action._direction = (DirectionType) stream.read_int(1, 0, D_MAX);
-   _i = stream.read_int(2, 0, 1000);
-   _j = stream.read_int(2, 0, 1000);
-   _si = stream.read_int(1, 0, 50);
-   _sj = stream.read_int(1, 0, 50);
-   _ii = stream.read_int(4, 0, 1000000);
-   _jj = stream.read_int(4, 0, 1000000);
-   //_d->speed = stream.read_float(1, 0, 50);
-   _midTileI = stream.read_int(1, 0, 50);
-   _midTileJ = stream.read_int(1, 0, 50);
-   //_animIndex = stream.read_int(1, 0, 50);
+//    _pathWay.unserialize(stream);
+//    _action._action = (WalkerActionType) stream.read_int(1, 0, WA_MAX);
+//    _action._direction = (DirectionType) stream.read_int(1, 0, D_MAX);
+//    _i = stream.read_int(2, 0, 1000);
+//    _j = stream.read_int(2, 0, 1000);
+//    _si = stream.read_int(1, 0, 50);
+//    _sj = stream.read_int(1, 0, 50);
+//    _ii = stream.read_int(4, 0, 1000000);
+//    _jj = stream.read_int(4, 0, 1000000);
+//    //_d->speed = stream.read_float(1, 0, 50);
+//    _midTileI = stream.read_int(1, 0, 50);
+//    _midTileJ = stream.read_int(1, 0, 50);
+//    //_animIndex = stream.read_int(1, 0, 50);
 }
 
 TilePos Walker::getIJ() const

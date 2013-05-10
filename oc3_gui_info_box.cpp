@@ -20,10 +20,10 @@
 #include "oc3_gui_info_box.hpp"
 
 #include <SDL.h>
-#include <iostream>
 #include <iomanip>
 #include <boost/format.hpp>
 
+#include "oc3_tile.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_pic_loader.hpp"
 #include "oc3_sdl_facade.hpp"

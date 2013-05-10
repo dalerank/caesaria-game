@@ -19,8 +19,7 @@
 
 #include "oc3_scenario_loader.hpp"
 
-#include <iostream>
-
+#include "oc3_tile.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_pic_loader.hpp"
 #include "oc3_positioni.hpp"
@@ -190,7 +189,7 @@ void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
          short int imgId;  // 16bits
          f.read((char*)&imgId, 2);
          Tile& tile = oTilemap.at(i, j);
-         Picture& pic = PicLoader::instance().get_picture( TerrainTileHelper::convId2PicName( imgId ) );
+         Picture& pic = Picture::load( TerrainTileHelper::convId2PicName( imgId ) );
          tile.set_picture( &pic );
          tile.get_terrain().setOriginalImgId( imgId );
       }
