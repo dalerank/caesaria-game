@@ -277,7 +277,7 @@ void CaesarApp::start(const std::string &resourcePath)
    setScreenWait();
 
    initPictures(resourcePath);
-   ModelLoader().loadHouseModel(resourcePath + "../house_model.csv");
+   ModelLoader().loadHouseModel(resourcePath + "/../house_model.csv");
    HouseLevelSpec::init();
 
    _d->nextScreen = SCREEN_MENU;
