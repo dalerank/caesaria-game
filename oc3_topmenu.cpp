@@ -18,6 +18,7 @@
 #include "oc3_label.hpp"
 #include "oc3_pic_loader.hpp"
 #include "oc3_resourcegroup.hpp"
+#include "oc3_contextmenuitem.hpp"
 #include "oc3_sdl_facade.hpp"
 
 static const Uint32 dateLabelOffset = 155;
@@ -90,10 +91,16 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
     return ret;
 }
 
+bool TopMenu::onEvent(const NEvent& event)
+{
+  return MainMenu::onEvent(event);
+}
+
 void TopMenu::draw( GfxEngine& engine )
 {
     engine.drawPicture( *_d->bgPicture, getScreenLeft(), getScreenTop() );
-    Widget::draw( engine );
+
+    MainMenu::draw( engine );
 }
 
 void TopMenu::setPopulation( int value )
@@ -127,7 +134,13 @@ TopMenu::TopMenu( Widget* parent, const int height )
 : MainMenu( parent, Rect( 0, 0, parent->getWidth(), height ) ),
   _d( new Impl )
 {
-  addItem( "File", -1, true, true, false, false );
+  ContextMenuItem* tmp = addItem( "File", -1, true, true, false, false );
+  ContextMenu* file = tmp->addSubMenu();
+  file->addItem( "Save", -1, true, false, false, false );
+  file->addItem( "Load", -1, true, false, false, false );
+  file->addItem( "", -1, false, false, false, false );
+  file->addItem( "Exit", -1, true, false, false, false );
+
   addItem( "Options", -1, true, true, false, false );
   addItem( "Help", -1, true, true, false, false );
   addItem( "Advisers", -1, true, true, false, false );

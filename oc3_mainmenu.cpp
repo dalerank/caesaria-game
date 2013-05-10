@@ -140,19 +140,17 @@ bool MainMenu::onEvent(const NEvent& event)
 
 void MainMenu::recalculateSize_()
 {
-	Rect clientRect; // client rect of parent  
+	Rect parentRect = getParent()->getClientRect(); // client rect of parent  
 
 	//AbstractSkin* skin = getEnvironment()->getSkin();
   Font font = FontCollection::instance().getFont( FONT_2_WHITE );
   
   int height = std::max<int>( DEFAULT_MENU_HEIGHT, getHeight() );
-	setGeometry( Rect( clientRect.UpperLeftCorner.getX(), clientRect.UpperLeftCorner.getY(),
-                     clientRect.LowerRightCorner.getX(), clientRect.UpperLeftCorner.getY() + height ) );
-  clientRect = getParent()->getClientRect();
-
+	setGeometry( Rect( parentRect.UpperLeftCorner.getX(), parentRect.UpperLeftCorner.getY(),
+                     parentRect.LowerRightCorner.getX(), parentRect.UpperLeftCorner.getY() + height ) );
 	Rect rect;
 
-  rect.UpperLeftCorner = clientRect.UpperLeftCorner;
+  rect.UpperLeftCorner = parentRect.UpperLeftCorner;
   height = std::max<int>( font.getSize("A").getHeight() + 5, height );
 	//if (skin && height < skin->getSize ( EGDS_MENU_HEIGHT ))
 	//	height = skin->getSize(EGDS_MENU_HEIGHT);

@@ -27,6 +27,7 @@ public:
 
     // draw on screen
     virtual void draw( GfxEngine& engine );
+    bool onEvent(const NEvent& event);
 
     void setFunds( int value );
     void setPopulation( int value );
@@ -35,7 +36,7 @@ public:
 private:
 
     TopMenu( Widget* parent, const int height );
-    
+
     class Impl;
     ScopedPtr< Impl > _d;
 };
