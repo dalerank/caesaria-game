@@ -27,6 +27,7 @@
 #include "oc3_pic_loader.hpp"
 #include "oc3_sdl_facade.hpp"
 #include "oc3_requirements.hpp"
+#include "oc3_positioni.hpp"
 
 
 GfxSdlEngine::GfxSdlEngine() : GfxEngine()
@@ -97,7 +98,11 @@ void GfxSdlEngine::exit_frame()
 
 void GfxSdlEngine::drawPicture(const Picture &picture, const int dx, const int dy)
 {
-   SdlFacade::instance().drawPicture(picture, _screen, dx, dy);
+  SdlFacade::instance().drawPicture(picture, _screen, dx, dy);
 }
 
+void GfxSdlEngine::drawPicture( const Picture &picture, const Point& pos )
+{
+  SdlFacade::instance().drawPicture(picture, _screen, pos.getX(), pos.getY() );
+}
 

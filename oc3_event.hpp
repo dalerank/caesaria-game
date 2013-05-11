@@ -383,7 +383,7 @@ struct NEvent
 	struct _KeyboardEvent
 	{
 		//! Character corresponding to the key (0, if not a character)
-		wchar_t Char;
+		char Char;
 
 		//! Key which has been pressed or released
 		OC3_KEY_CODE Key;

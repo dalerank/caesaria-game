@@ -51,7 +51,7 @@ void ScreenMenu::Impl::resolveShowLoadMapWnd()
                                           Rect( 0.25f * rootSize.getWidth(), 0.25f * rootSize.getHeight(), 
                                                 0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() ), -1 );
 
-  
+  wnd->setTitle( "##Load map##" );
 }
 
 ScreenMenu::ScreenMenu() : _d( new Impl )

@@ -124,7 +124,7 @@ void PushButton::_updateTexture( ElementState state )
     }    
     else
     {
-        const int picId[StateCount] = { 22, 25, 25, 22 };
+        const int picId[StateCount] = { 22, 25, 25, 22, 25 };
         GuiPaneling::instance().draw_basic_text_button( *curTxs, 0, 0, getSize().getWidth(), picId[ state ] );
     }
 

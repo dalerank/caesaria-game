@@ -41,6 +41,7 @@ public:
     bool operator==(const Size& other) const{ return (x == other.x) && ( y == other.y ); }
     bool operator!=(const Size& other) const{ return (x != other.x ) || ( y != other.y ); }
     Size& operator+=(const Size& other) { x += other.x; y += other.y; return *this; }
+    Size& operator=(const Vector2<int>& s ) { x = s.getX(), y = s.getY(); return *this; }
 };
 
 class SizeF : Vector2<float>

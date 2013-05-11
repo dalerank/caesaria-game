@@ -539,6 +539,26 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\oc3_listbox.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_listbox.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_listboxitem.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_listboxitem.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_listboxprivate.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\oc3_loadmapwindow.cpp"
 				>
 			</File>
@@ -760,6 +780,18 @@
 			</File>
 			<File
 				RelativePath="..\..\oc3_screen_wait.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_scrollbar.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_scrollbar.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\oc3_scrollbarprivate.hpp"
 				>
 			</File>
 			<File

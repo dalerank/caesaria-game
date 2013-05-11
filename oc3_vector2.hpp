@@ -314,8 +314,11 @@ public:
 		return *this;
 	}
 
-    T getX() const { return x; }
-    T getY() const { return y; }
+  T getX() const { return x; }
+  T getY() const { return y; }
+
+  void setX( T xv ) { x = xv; }
+  void setY( T yv ) { y = yv; }
 
 protected:
 	//! X coordinate of vector.

@@ -20,12 +20,14 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_sdl_facade.hpp"
 #include "oc3_gfx_engine.hpp"
+#include "oc3_listbox.hpp"
 
 class LoadMapWindow::Impl
 {
 public:
   Picture *bgPicture;
   Label* lbTitle;
+  ListBox* files;
   PushButton* btnExit;
   PushButton* btnHelp;
 };
@@ -45,6 +47,8 @@ LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect, int id )
   GuiPaneling::configureTexturedButton( _d->btnHelp, ResourceGroup::panelBackground, ResourceMenu::helpInfBtnPicId, false);
 
   CONNECT( _d->btnExit, onClicked(), this, LoadMapWindow::deleteLater );
+
+  _d->files = new ListBox( this, Rect( 10, _d->lbTitle->getBottom(), getWidth() - 10, _d->btnHelp->getTop() - 5 ), -1, true, true, false ); 
 
   SdlFacade &sdlFacade = SdlFacade::instance();
   _d->bgPicture = &sdlFacade.createPicture( getWidth(), getHeight() );

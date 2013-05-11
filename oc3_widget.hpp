@@ -477,4 +477,14 @@ protected:
     Widget* _eventHandler;
 };
 
+enum ElementState
+{
+  stNormal=0, 
+  stPressed, 
+  stHovered, 
+  stDisabled, 
+  stChecked,
+  StateCount
+};
+
 #endif

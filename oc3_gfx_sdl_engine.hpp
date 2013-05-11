@@ -45,6 +45,7 @@ public:
 
    virtual void init_frame();
    virtual void drawPicture(const Picture &picture, const int dx, const int dy);
+   virtual void drawPicture(const Picture &picture, const Point& pos );
    virtual void exit_frame();
 
 private:

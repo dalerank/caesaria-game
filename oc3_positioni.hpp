@@ -27,6 +27,7 @@ class Point : public Vector2<int>
 public:
     Point( const int x, const int y ) : Vector2<int>( x, y ) {}
     Point() : Vector2<int>( 0, 0 ) {}
+    Point( const Vector2<int>& pos ) : Vector2<int>( pos ) {}
 
     Point operator+(const Point& other) const { return Point( x + other.x, y + other.y ); }
     Point operator-(const Point& other) const { return Point( x - other.x, y - other.y ); }
@@ -42,6 +43,7 @@ class PointF : public Vector2<float>
 public:
     PointF( const float x, const float y ) : Vector2<float>( x, y ) {}
     PointF() : Vector2<float>( 0, 0 ) {}
+    PointF( const Vector2<float>& pos ) : Vector2<float>( pos ) {}
 
     PointF operator+(const PointF& other) const { return PointF( x + other.x, y + other.y ); }
 
