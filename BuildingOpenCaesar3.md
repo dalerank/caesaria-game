@@ -29,11 +29,16 @@ After archive has been downloaded extract its content into *dependencies* folder
 To build project you need to install development version of the respective packages.
 
 ##### Ubuntu/Debian
-You can use this commands to install all dependancies on Debian based systems
+You can use this commands to install all dependencies on Debian based systems
 
 	sudo apt-get install libsdl1.2-dev libsdl-image1.2 libsdl-mixer1.2-dev libsdl-ttf2.0-dev
 	sudo apt-get install libboost-system-dev libboost-filesystem-dev 
 	sudo apt-get install libarchive-dev
+
+##### OpenSUSE
+Use zypper or YaST to install all necessary packages
+
+	sudo zypper install libarchive-devel libSDL-devel libSDL_ttf-devel libSDL_image-devel libSDL_mixer-devel 
 
 ###Building openCaesar3
 
