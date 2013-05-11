@@ -10,9 +10,15 @@ The game is still not quite playable
 
 Building openCaesar3
 -------------------
-See BuildingOpenCaesae3.md
+See BuildingOpenCaesar3.md
 
 ####Releases:
+
+##### 11may2013
+  * fixed a lot of bugs
+  * minimap is introduced
+  * migration to cmake building system
+  * houses now can evolve/devolve (a little bit buggy)
 
 ##### 03apr2013
   * added many buildings
