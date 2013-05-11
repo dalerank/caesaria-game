@@ -15,8 +15,6 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
-
 #include "oc3_gui_info_box.hpp"
 
 #include <SDL.h>
@@ -54,23 +52,22 @@ public:
     InfoBoxHelper()
     {
         mapPictureGood.resize(G_MAX);
-        PicLoader& ldr = PicLoader::instance();
-        mapPictureGood[int(G_WHEAT)    ] = &ldr.get_picture( ResourceGroup::panelBackground, 317);
-        mapPictureGood[int(G_VEGETABLE)] = &ldr.get_picture( ResourceGroup::panelBackground, 318);
-        mapPictureGood[int(G_FRUIT)    ] = &ldr.get_picture( ResourceGroup::panelBackground, 319);
-        mapPictureGood[int(G_OLIVE)    ] = &ldr.get_picture( ResourceGroup::panelBackground, 320);
-        mapPictureGood[int(G_GRAPE)    ] = &ldr.get_picture( ResourceGroup::panelBackground, 321);
-        mapPictureGood[int(G_MEAT)     ] = &ldr.get_picture( ResourceGroup::panelBackground, 322);
-        mapPictureGood[int(G_WINE)     ] = &ldr.get_picture( ResourceGroup::panelBackground, 323);
-        mapPictureGood[int(G_OIL)      ] = &ldr.get_picture( ResourceGroup::panelBackground, 324);
-        mapPictureGood[int(G_IRON)     ] = &ldr.get_picture( ResourceGroup::panelBackground, 325);
-        mapPictureGood[int(G_TIMBER)   ] = &ldr.get_picture( ResourceGroup::panelBackground, 326);
-        mapPictureGood[int(G_CLAY)     ] = &ldr.get_picture( ResourceGroup::panelBackground, 327);
-        mapPictureGood[int(G_MARBLE)   ] = &ldr.get_picture( ResourceGroup::panelBackground, 328);
-        mapPictureGood[int(G_WEAPON)   ] = &ldr.get_picture( ResourceGroup::panelBackground, 329);
-        mapPictureGood[int(G_FURNITURE)] = &ldr.get_picture( ResourceGroup::panelBackground, 330);
-        mapPictureGood[int(G_POTTERY)  ] = &ldr.get_picture( ResourceGroup::panelBackground, 331);
-        mapPictureGood[int(G_FISH)     ] = &ldr.get_picture( ResourceGroup::panelBackground, 333);
+        mapPictureGood[int(G_WHEAT)    ] = &Picture::load( ResourceGroup::panelBackground, 317);
+        mapPictureGood[int(G_VEGETABLE)] = &Picture::load( ResourceGroup::panelBackground, 318);
+        mapPictureGood[int(G_FRUIT)    ] = &Picture::load( ResourceGroup::panelBackground, 319);
+        mapPictureGood[int(G_OLIVE)    ] = &Picture::load( ResourceGroup::panelBackground, 320);
+        mapPictureGood[int(G_GRAPE)    ] = &Picture::load( ResourceGroup::panelBackground, 321);
+        mapPictureGood[int(G_MEAT)     ] = &Picture::load( ResourceGroup::panelBackground, 322);
+        mapPictureGood[int(G_WINE)     ] = &Picture::load( ResourceGroup::panelBackground, 323);
+        mapPictureGood[int(G_OIL)      ] = &Picture::load( ResourceGroup::panelBackground, 324);
+        mapPictureGood[int(G_IRON)     ] = &Picture::load( ResourceGroup::panelBackground, 325);
+        mapPictureGood[int(G_TIMBER)   ] = &Picture::load( ResourceGroup::panelBackground, 326);
+        mapPictureGood[int(G_CLAY)     ] = &Picture::load( ResourceGroup::panelBackground, 327);
+        mapPictureGood[int(G_MARBLE)   ] = &Picture::load( ResourceGroup::panelBackground, 328);
+        mapPictureGood[int(G_WEAPON)   ] = &Picture::load( ResourceGroup::panelBackground, 329);
+        mapPictureGood[int(G_FURNITURE)] = &Picture::load( ResourceGroup::panelBackground, 330);
+        mapPictureGood[int(G_POTTERY)  ] = &Picture::load( ResourceGroup::panelBackground, 331);
+        mapPictureGood[int(G_FISH)     ] = &Picture::load( ResourceGroup::panelBackground, 333);
     }
 };
 

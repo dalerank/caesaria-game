@@ -18,8 +18,7 @@
 
 #include "oc3_screen_menu.hpp"
 
-#include <iostream>
-
+#include "oc3_loadmapwindow.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_pic_loader.hpp"
@@ -41,12 +40,24 @@ public:
     void resolveNewGame() { result=startNewGame; isStoped=true; }
     void resolveLoadGame() { result=loadSavedGame; isStoped=true; }
     void resolveQuitGame() { result=closeApplication; isStoped=true; }
+
+    void resolveShowLoadMapWnd();
 };
+
+void ScreenMenu::Impl::resolveShowLoadMapWnd()
+{
+  Size rootSize = gui->getRootWidget()->getSize();
+  LoadMapWindow* wnd = new LoadMapWindow( gui->getRootWidget(), 
+                                          Rect( 0.25f * rootSize.getWidth(), 0.25f * rootSize.getHeight(), 
+                                                0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() ), -1 );
+
+  
+}
 
 ScreenMenu::ScreenMenu() : _d( new Impl )
 {
-    _d->bgPicture = NULL;
-    _d->isStoped = false;
+  _d->bgPicture = NULL;
+  _d->isStoped = false;
 }
 
 ScreenMenu::~ScreenMenu() {}
@@ -66,7 +77,7 @@ void ScreenMenu::handleEvent( NEvent& event )
 
 void ScreenMenu::initialize( GfxEngine& engine, GuiEnv& gui )
 {
-    _d->bgPicture = &PicLoader::instance().get_picture("title", 1);
+  _d->bgPicture = &Picture::load("title", 1);
 
     // center the bgPicture on the screen
     _d->bgPicture->set_offset( (engine.getScreenWidth() - _d->bgPicture->get_width()) / 2,
@@ -82,6 +93,11 @@ void ScreenMenu::initialize( GfxEngine& engine, GuiEnv& gui )
     btn = _d->menu->addButton( "Load game", -1 );
     CONNECT( btn, onClicked(), _d.get(), Impl::resolveLoadGame );
 
+#ifdef _DEBUG
+    btn = _d->menu->addButton( "##Load map##", -1 );
+    CONNECT( btn, onClicked(), _d.get(), Impl::resolveShowLoadMapWnd );
+#endif
+
     btn = _d->menu->addButton( "Quit", -1 );
     CONNECT( btn, onClicked(), _d.get(), Impl::resolveQuitGame );
 }
@@ -95,23 +111,3 @@ bool ScreenMenu::isStopped() const
 {
     return _d->isStoped;
 }
-/*void ScreenMenu::handleWidgetEvent(const WidgetEvent &event, Widget *widget)
-{
-   _wevent = event;
-
-   switch (event._eventType)
-   {
-   case WE_NewGame:
-      stop();
-      break;
-   case WE_LoadGame:
-      stop();
-      break;
-   case WE_QuitGame:
-      stop();
-      break;
-   default:
-      THROW("Unexpected widget event: " << event._eventType);
-   }
-}*/
-

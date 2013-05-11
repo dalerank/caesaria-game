@@ -37,9 +37,9 @@ class GuiInfoBox : public Widget
 {
 public:
     GuiInfoBox( Widget* parent, const Rect& rect, int id );
-    virtual ~GuiInfoBox();
-    void initStatic();
-    virtual void draw( GfxEngine& engine );  // draw on screen
+    ~GuiInfoBox();
+    
+    void draw( GfxEngine& engine );  // draw on screen
 
     Picture& getBgPicture();
 
