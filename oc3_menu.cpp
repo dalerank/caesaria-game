@@ -28,6 +28,8 @@
 #include "oc3_label.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_scenario.hpp"
+#include "oc3_minimap_colours.hpp"
+#include "oc3_gui_tilemap.hpp"
 
 static const int REMOVE_TOOL_ID = B_MAX + 1; 
 static const int MAXIMIZE_ID = REMOVE_TOOL_ID + 1;
@@ -64,34 +66,34 @@ public:
     Label* middleLabel;
 
 oc3_signals public:
-    Signal1< int > onCreateConstructionSignal;
-    Signal0<> onRemoveToolSignal;
-    Signal0<> onMaximizeSignal;
+  Signal1< int > onCreateConstructionSignal;
+  Signal0<> onRemoveToolSignal;
+  Signal0<> onMaximizeSignal;
 };
 
 Signal1< int >& Menu::onCreateConstruction()
 {
-    return _d->onCreateConstructionSignal;
+  return _d->onCreateConstructionSignal;
 }
 
 Signal0<>& Menu::onRemoveTool()
 {
-    return _d->onRemoveToolSignal;
+  return _d->onRemoveToolSignal;
 }
 
 class MenuButton : public PushButton
 {
 public:
-    MenuButton( Widget* parent, const Rect& rectangle, const std::string& caption, int id, int midIconId )
-        : PushButton( parent, rectangle, caption, id )
-    {
-        _midIconId = midIconId;
-    }
+  MenuButton( Widget* parent, const Rect& rectangle, const std::string& caption, int id, int midIconId )
+    : PushButton( parent, rectangle, caption, id )
+  {
+    _midIconId = midIconId;
+  }
 
-    int getMidPicId() const { return _midIconId; }
-    void setMidPicId( int id ) { _midIconId = id; }
+  int getMidPicId() const { return _midIconId; }
+  void setMidPicId( int id ) { _midIconId = id; }
 private:
-    int _midIconId;
+  int _midIconId;
 };
 
 Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id, rectangle ), _d( new Impl )
@@ -159,20 +161,65 @@ PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul,
     return ret;
 }
 
+/* here will be helper functions for minimap generation */
+
+Caesar3Colours *colours;
+
 void getBitmapCoordinates(int x, int y, int mapsize, int& x_out, int& y_out)
 {
   y_out = x + mapsize - y - 1;
-  x_out = x + y;  
+  x_out = x + y;
 }
+
+void getTerrainColours(TerrainTile& tile, int &c1, int &c2)
+{
+  if (tile.isTree())
+  {
+    c1 = colours->colour(Caesar3Colours::MAP_TREE1, 0);
+    c2 = colours->colour(Caesar3Colours::MAP_TREE2, 0);
+  }
+  else if (tile.isRock())
+  {
+    c1 = colours->colour(Caesar3Colours::MAP_ROCK1, 0);
+    c2 = colours->colour(Caesar3Colours::MAP_ROCK2, 0);
+  }
+  else if (tile.isWater())
+  {
+    c1 = colours->colour(Caesar3Colours::MAP_WATER1, 0);
+    c2 = colours->colour(Caesar3Colours::MAP_WATER2, 0);
+  }
+  else if (tile.isRoad())
+  {
+    c1 = colours->colour(Caesar3Colours::MAP_ROAD, 0);
+    c2 = colours->colour(Caesar3Colours::MAP_ROAD, 1);
+  }
+  else if (tile.isMeadow())
+  {
+    c1 = colours->colour(Caesar3Colours::MAP_FERTILE1, 0);
+    c2 = colours->colour(Caesar3Colours::MAP_FERTILE2, 0);    
+  }
+//  else if (tile.isWall())
+//  {
+//    c1 = colours->colour(Caesar3Colours::MAP_WALL, 0);
+//    c2 = colours->colour(Caesar3Colours::MAP_WALL, 1);   
+//  }
+  else // plain terrain
+  {
+    c1 = colours->colour(Caesar3Colours::MAP_EMPTY1, 0);
+    c2 = colours->colour(Caesar3Colours::MAP_EMPTY2, 0);
+  }
+}
+
+/* end of helper functions */
 
 void Menu::draw( GfxEngine& painter )
 {
-    if( !isVisible() )
-        return;
+  if( !isVisible() )
+    return;
 
-    painter.drawPicture( *_d->bgPicture, getScreenLeft(), getScreenTop() );
+  painter.drawPicture( *_d->bgPicture, getScreenLeft(), getScreenTop() );
     
-    // here we will draw minimap
+  // here we will draw minimap
     
   // TEMPORARY!!!
   
@@ -197,66 +244,51 @@ void Menu::draw( GfxEngine& painter )
   int border = (162 - mapsize) / 2;
   int max = border + mapsize;
   
+  colours = new Caesar3Colours(Scenario::instance().getCity().getClimate());
+  
   for (int y = border; y < max; y++)
   {
     for (int x = border; x < max; x++)
     {  
       TerrainTile& tile = Scenario::instance().getCity().getTilemap().at(x - border, y - border).get_terrain();
-      if (tile.isWater())
-      {
-	int coords[2];
-	getBitmapCoordinates(x - border, y - border, mapsize, coords[0], coords[1]);
-        sdlFacade.set_pixel(surface, coords[0], coords[1], 0x39497B);
-	sdlFacade.set_pixel(surface, coords[0] + 1, coords[1], 0x31417B);
-      }
-      else if (tile.isMeadow())
-      {
-	int coords[2];
-	getBitmapCoordinates(x - border, y - border, mapsize, coords[0], coords[1]);
-        sdlFacade.set_pixel(surface, coords[0], coords[1], 0x427118);
-	sdlFacade.set_pixel(surface, coords[0] + 1, coords[1], 0x8C9242);
-      }
-      else if (tile.isTree())
-      {
-	int coords[2];
-	getBitmapCoordinates(x - border, y - border, mapsize, coords[0], coords[1]);
-        sdlFacade.set_pixel(surface, coords[0], coords[1], 0x527931);
-	sdlFacade.set_pixel(surface, coords[0] + 1, coords[1], 0x082008);
-      }
-      else if (tile.isRoad())
-      {
-	int coords[2];
-	getBitmapCoordinates(x - border, y - border, mapsize, coords[0], coords[1]);
-        sdlFacade.set_pixel(surface, coords[0], coords[1], 0x736963);
-	sdlFacade.set_pixel(surface, coords[0] + 1, coords[1], 0x4A3021);
-      }
-      else if (tile.isRock())
-      {
-	int coords[2];
-	getBitmapCoordinates(x - border, y - border, mapsize, coords[0], coords[1]);
-        sdlFacade.set_pixel(surface, coords[0], coords[1], 0x8C8284);
-	sdlFacade.set_pixel(surface, coords[0] + 1, coords[1], 0x5A5152);
-      }
-      else
-      {
-	int coords[2];
-	getBitmapCoordinates(x - border, y - border, mapsize, coords[0], coords[1]);
-        sdlFacade.set_pixel(surface, coords[0], coords[1], 0x4A8231);
-	sdlFacade.set_pixel(surface, coords[0] + 1, coords[1], 0x4A7129);
-      }
+
+      int coords[2];
+      int c1, c2;
+      getBitmapCoordinates(x - border, y - border, mapsize, coords[0], coords[1]);
+      getTerrainColours(tile, c1, c2);
+      sdlFacade.set_pixel(surface, coords[0],     coords[1], c1);
+      sdlFacade.set_pixel(surface, coords[0] + 1, coords[1], c2);
     }
   }
 
+  delete colours;
+  
   // show center of screen on minimap
-  //sdlFacade.set_pixel(surface, Scenario::instance().getCity().getTilemap().getMapArea().getCenterX(),     mapsize * 2 - Scenario::instance().getCity().getTilemap().getMapArea().getCenterZ(), 0xFFFFFF);
-  //sdlFacade.set_pixel(surface, Scenario::instance().getCity().getTilemap().getMapArea().getCenterX() + 1, mapsize * 2 - Scenario::instance().getCity().getTilemap().getMapArea().getCenterZ(), 0xFFFFFF);
-  //sdlFacade.set_pixel(surface, Scenario::instance().getCity().getTilemap().getMapArea().getCenterX(),     mapsize * 2 -Scenario::instance().getCity().getTilemap().getMapArea().getCenterZ() + 1, 0xFFFFFF);
-  //sdlFacade.set_pixel(surface, Scenario::instance().getCity().getTilemap().getMapArea().getCenterX() + 1, mapsize * 2 -Scenario::instance().getCity().getTilemap().getMapArea().getCenterZ() + 1, 0xFFFFFF);
-    
+  sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX(),     mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ(), 0xFFFFFF);
+  sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 1, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ(), 0xFFFFFF);
+  sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX(),     mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 1, 0xFFFFFF);
+  sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 1, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 1, 0xFFFFFF);
+
+  for ( int i = GuiTilemap::instance().getMapArea().getCenterX() - 18; i <= GuiTilemap::instance().getMapArea().getCenterX() + 18; i++ )
+  {
+    sdlFacade.set_pixel(surface, i, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 34, 0xFFFF00);
+    sdlFacade.set_pixel(surface, i, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() - 34, 0xFFFF00);
+  }
+
+  for ( int j = mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() - 34; j <= mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 34; j++ )
+  {
+    sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() - 18, j, 0xFFFF00);
+    sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 18, j, 0xFFFF00);
+  }
+
+  
   // 159, 318 -> 0,159
   // 318, 159 -> 159,159
   // 0, 159   -> 0, 0
   // 159, 0   -> 159,0 
+  
+  
+  // 42,35 -> 66, 11 -> 83, 27    ~57, 51
   
   sdlFacade.unlockSurface(surface);
   

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-08 03:19+0400\n"
+"POT-Creation-Date: 2013-05-11 11:51+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -257,87 +257,96 @@ msgstr ""
 msgid "need library or school"
 msgstr ""
 
-#: oc3_menu.cpp:114 oc3_menu.cpp:115
+#: oc3_menu.cpp:114 oc3_menu.cpp:115 oc3_menu.cpp:117
 msgid "##houseBtnTooltip"
 msgstr "Build housing"
 
-#: oc3_menu.cpp:117 oc3_menu.cpp:118
+#: oc3_menu.cpp:117 oc3_menu.cpp:118 oc3_menu.cpp:120
 msgid "##clearBtnTooltip"
 msgstr "Clear land"
 
-#: oc3_menu.cpp:119 oc3_menu.cpp:120
+#: oc3_menu.cpp:119 oc3_menu.cpp:120 oc3_menu.cpp:122
 msgid "##roadBtnTooltip"
 msgstr "Build roads"
 
-#: oc3_menu.cpp:120 oc3_menu.cpp:121
+#: oc3_menu.cpp:120 oc3_menu.cpp:121 oc3_menu.cpp:123
 msgid "##waterBtnTooltip"
 msgstr "Water-related structures"
 
-#: oc3_menu.cpp:121 oc3_menu.cpp:122
+#: oc3_menu.cpp:121 oc3_menu.cpp:122 oc3_menu.cpp:124
 msgid "##healthBtnTooltip"
 msgstr "Health-related structures"
 
-#: oc3_menu.cpp:122 oc3_menu.cpp:123
+#: oc3_menu.cpp:122 oc3_menu.cpp:123 oc3_menu.cpp:125
 msgid "##templeBtnTooltip"
 msgstr "Religious structures"
 
-#: oc3_menu.cpp:123 oc3_menu.cpp:124
+#: oc3_menu.cpp:123 oc3_menu.cpp:124 oc3_menu.cpp:126
 msgid "##educationBtnTooltip"
 msgstr "Education structures"
 
-#: oc3_menu.cpp:126 oc3_menu.cpp:127
+#: oc3_menu.cpp:126 oc3_menu.cpp:127 oc3_menu.cpp:129
 msgid "##entertainmentBtnTooltip"
 msgstr "Entertainment structures"
 
-#: oc3_menu.cpp:129 oc3_menu.cpp:130
+#: oc3_menu.cpp:129 oc3_menu.cpp:130 oc3_menu.cpp:132
 msgid "##administractionBtnTooltip"
 msgstr "Administration or Government structures"
 
-#: oc3_menu.cpp:132 oc3_menu.cpp:133
+#: oc3_menu.cpp:132 oc3_menu.cpp:133 oc3_menu.cpp:135
 msgid "##engineerBtnTooltip"
 msgstr "Engineering structures"
 
-#: oc3_menu.cpp:135 oc3_menu.cpp:136
+#: oc3_menu.cpp:135 oc3_menu.cpp:136 oc3_menu.cpp:138
 msgid "##securityBtnTooltip"
 msgstr "Security structures"
 
-#: oc3_menu.cpp:138 oc3_menu.cpp:139
+#: oc3_menu.cpp:138 oc3_menu.cpp:139 oc3_menu.cpp:141
 msgid "##comerceBtnTooltip"
 msgstr "Industrial structures"
 
-#: oc3_menu.cpp:381 oc3_menu.cpp:486
+#: oc3_menu.cpp:381 oc3_menu.cpp:486 oc3_menu.cpp:502 oc3_menu.cpp:505
+#: oc3_menu.cpp:511 oc3_menu.cpp:518
 msgid "##senateBtnTooltip"
 msgstr "Visit your advisors"
 
-#: oc3_menu.cpp:383 oc3_menu.cpp:488
+#: oc3_menu.cpp:383 oc3_menu.cpp:488 oc3_menu.cpp:504 oc3_menu.cpp:507
+#: oc3_menu.cpp:513 oc3_menu.cpp:520
 msgid "##empireBtnTooltip"
 msgstr "Go to the map of the Empire"
 
-#: oc3_menu.cpp:386 oc3_menu.cpp:491
+#: oc3_menu.cpp:386 oc3_menu.cpp:491 oc3_menu.cpp:507 oc3_menu.cpp:510
+#: oc3_menu.cpp:516 oc3_menu.cpp:523
 msgid "##missionBtnTooltip"
 msgstr "Review your assignment"
 
-#: oc3_menu.cpp:388 oc3_menu.cpp:493
+#: oc3_menu.cpp:388 oc3_menu.cpp:493 oc3_menu.cpp:509 oc3_menu.cpp:512
+#: oc3_menu.cpp:518 oc3_menu.cpp:525
 msgid "##northBtnTooltip"
 msgstr "Re-orient your view to Due North"
 
-#: oc3_menu.cpp:390 oc3_menu.cpp:495
+#: oc3_menu.cpp:390 oc3_menu.cpp:495 oc3_menu.cpp:511 oc3_menu.cpp:514
+#: oc3_menu.cpp:520 oc3_menu.cpp:527
 msgid "##rotateLeftBtnTooltip"
 msgstr "Rotate the map counter-clockwise"
 
-#: oc3_menu.cpp:392 oc3_menu.cpp:497
+#: oc3_menu.cpp:392 oc3_menu.cpp:497 oc3_menu.cpp:513 oc3_menu.cpp:516
+#: oc3_menu.cpp:522 oc3_menu.cpp:529
 msgid "##rotateRightBtnTooltip"
 msgstr "Rotate the map clockwise"
 
-#: oc3_menu.cpp:395 oc3_menu.cpp:500
+#: oc3_menu.cpp:395 oc3_menu.cpp:500 oc3_menu.cpp:516 oc3_menu.cpp:519
+#: oc3_menu.cpp:525 oc3_menu.cpp:532
 msgid "##cancelBtnTooltip"
 msgstr "UNDO your last action"
 
-#: oc3_menu.cpp:397 oc3_menu.cpp:502
+#: oc3_menu.cpp:397 oc3_menu.cpp:502 oc3_menu.cpp:518 oc3_menu.cpp:521
+#: oc3_menu.cpp:527 oc3_menu.cpp:534
 msgid "##messageBtnTooltip"
 msgstr "View messages"
 
-#: oc3_menu.cpp:399 oc3_menu.cpp:504
+#: oc3_menu.cpp:399 oc3_menu.cpp:504 oc3_menu.cpp:520 oc3_menu.cpp:523
+#: oc3_menu.cpp:529 oc3_menu.cpp:536
 msgid "##disasterBtnTooltip"
 msgstr "Cycle through any recent trouble spots in the city"
 

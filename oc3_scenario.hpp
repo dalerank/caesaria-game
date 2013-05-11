@@ -28,21 +28,21 @@
 class Scenario : public Serializable
 {
 public:
-   static Scenario& instance();
+  static Scenario& instance();
 
-   Scenario();
-   void serialize(OutputSerialStream &stream);
-   void unserialize(InputSerialStream &stream);
+  Scenario();
+  void serialize(OutputSerialStream &stream);
+  void unserialize(InputSerialStream &stream);
 
-   City& getCity();
-   std::string getDescription() const;
+  City& getCity();
+  std::string getDescription() const;
 
 private:
 
-   City _city;
-   std::string _description;
+  City _city;
+  std::string _description;
 
-   static Scenario *_instance;
+  static Scenario *_instance;
 };
 
 #endif

@@ -39,19 +39,19 @@
 class ScreenGame::Impl
 {
 public:
-    MenuRigthPanel* rightPanel;
-    GuiEnv* gui;
-    GfxEngine* engine;
-    TopMenu* topMenu;
-    Menu* menu;
-    ExtentMenu* extMenu;
-    InfoBoxManagerPtr infoBoxMgr;
+  MenuRigthPanel* rightPanel;
+  GuiEnv* gui;
+  GfxEngine* engine;
+  TopMenu* topMenu;
+  Menu* menu;
+  ExtentMenu* extMenu;
+  InfoBoxManagerPtr infoBoxMgr;
 };
 
 ScreenGame::ScreenGame() : _d( new Impl )
 {
-   _d->topMenu = NULL;
-   _scenario = NULL;
+  _d->topMenu = NULL;
+  _scenario = NULL;
 }
 
 ScreenGame::~ScreenGame() {}
@@ -147,31 +147,31 @@ void ScreenGame::afterFrame()
 
 void ScreenGame::handleEvent( NEvent& event )
 {
-    bool eventResolved = _d->gui->handleEvent( event );      
+  bool eventResolved = _d->gui->handleEvent( event );      
    
-    if( !eventResolved )
-        _guiTilemap.handleEvent( event );
+  if( !eventResolved )
+    _guiTilemap.handleEvent( event );
 
-    if( event.EventType == OC3_KEYBOARD_EVENT && event.KeyboardEvent.Key == KEY_ESCAPE )
-    {
-        std::cout << "EVENT_ESCAPE was pressed" << std::endl;
-        stop();
-    }
+  if( event.EventType == OC3_KEYBOARD_EVENT && event.KeyboardEvent.Key == KEY_ESCAPE )
+  {
+    std::cout << "EVENT_ESCAPE was pressed" << std::endl;
+    stop();
+  }
 }
 
 int ScreenGame::getResult() const
 {
-	return 0;
+  return 0;
 }
 
 void ScreenGame::resolveCreateConstruction( int type )
 {
-    _guiTilemap.setChangeCommand( TilemapChangeCommand( BuildingType( type ) ) );
+  _guiTilemap.setChangeCommand( TilemapChangeCommand( BuildingType( type ) ) );
 }
 
 void ScreenGame::resolveRemoveTool()
 {
-    _guiTilemap.setChangeCommand( TilemapRemoveCommand() );
+  _guiTilemap.setChangeCommand( TilemapRemoveCommand() );
 }
 
 void ScreenGame::showTileInfo( Tile* tile )

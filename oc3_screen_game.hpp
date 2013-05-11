@@ -52,26 +52,26 @@ protected:
   int getResult() const;
 
 private:
-   //void setMenu(Menu &menu);
+  //void setMenu(Menu &menu);
 
-   void drawTilemap();
-   void drawInterface();
+  void drawTilemap();
+  void drawInterface();
 
 
-   // stupid function, returns 0 if no shift pressed, 1 if shift pressed
-   int isModShift();
-   void resolveCreateConstruction( int type );
-   void resolveRemoveTool();
-   void showTileInfo( Tile* tile );
+  // stupid function, returns 0 if no shift pressed, 1 if shift pressed
+  int isModShift();
+  void resolveCreateConstruction( int type );
+  void resolveRemoveTool();
+  void showTileInfo( Tile* tile );
 
-   GuiInfoBox* _infoBox;   // info box to display, if any
-   Scenario* _scenario; // current game scenario
-   TilemapArea _mapArea;  // visible map area
+  GuiInfoBox* _infoBox;   // info box to display, if any
+  Scenario* _scenario; // current game scenario
+  TilemapArea _mapArea;  // visible map area
 
-   GuiTilemap _guiTilemap;
+  GuiTilemap _guiTilemap;
 
-   class Impl;
-   ScopedPtr< Impl > _d;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 

@@ -51,11 +51,13 @@ oc3_signals public:
   Signal1< Tile* > onShowTileInfoSignal;
 };
 
+GuiTilemap* GuiTilemap::_instance = NULL;
 
 GuiTilemap::GuiTilemap() : _d( new Impl )
 {
   _city = NULL;
   _mapArea = NULL;
+  _instance = this;
 }
 
 GuiTilemap::~GuiTilemap() {}
@@ -84,18 +86,18 @@ void GuiTilemap::drawTileEx( const Tile& tile, const int depth )
   }
   else
   {
-      // multi-tile: draw the master tile.
-      int masterZ = master->getJ() - master->getI();
-      if( masterZ == depth )
+    // multi-tile: draw the master tile.
+    int masterZ = master->getJ() - master->getI();
+    if( masterZ == depth )
+    {
+      // it is time to draw the master tile
+      if (std::find(_multiTiles.begin(), _multiTiles.end(), master) == _multiTiles.end())
       {
-          // it is time to draw the master tile
-          if (std::find(_multiTiles.begin(), _multiTiles.end(), master) == _multiTiles.end())
-          {
-              // master has not been drawn yet
-            _multiTiles.push_back(master);  // don't draw that multi-tile again
-			      drawTile( *master );
-          }
+	// master has not been drawn yet
+	_multiTiles.push_back(master);  // don't draw that multi-tile again
+	drawTile( *master );
       }
+    }
   }
 }
 
