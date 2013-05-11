@@ -212,6 +212,11 @@ void getTerrainColours(TerrainTile& tile, int &c1, int &c2)
 
 /* end of helper functions */
 
+namespace {
+  static const int kWhite  = 0xFFFFFF;
+  static const int kYellow = 0xFFFF00;
+}
+
 void Menu::draw( GfxEngine& painter )
 {
   if( !isVisible() )
@@ -264,21 +269,21 @@ void Menu::draw( GfxEngine& painter )
   delete colours;
   
   // show center of screen on minimap
-  sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX(),     mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ(), 0xFFFFFF);
-  sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 1, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ(), 0xFFFFFF);
-  sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX(),     mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 1, 0xFFFFFF);
-  sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 1, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 1, 0xFFFFFF);
+  sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX(),     mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ(), kWhite);
+  sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 1, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ(), kWhite);
+  sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX(),     mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 1, kWhite);
+  sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 1, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 1, kWhite);
 
   for ( int i = GuiTilemap::instance().getMapArea().getCenterX() - 18; i <= GuiTilemap::instance().getMapArea().getCenterX() + 18; i++ )
   {
-    sdlFacade.set_pixel(surface, i, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 34, 0xFFFF00);
-    sdlFacade.set_pixel(surface, i, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() - 34, 0xFFFF00);
+    sdlFacade.set_pixel(surface, i, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 34, kYellow);
+    sdlFacade.set_pixel(surface, i, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() - 34, kYellow);
   }
 
   for ( int j = mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() - 34; j <= mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 34; j++ )
   {
-    sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() - 18, j, 0xFFFF00);
-    sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 18, j, 0xFFFF00);
+    sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() - 18, j, kYellow);
+    sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 18, j, kYellow);
   }
 
   
@@ -292,9 +297,15 @@ void Menu::draw( GfxEngine& painter )
   
   sdlFacade.unlockSurface(surface);
   
-  Picture& minimap_windows = sdlFacade.createPicture(145, 111);
+  // this is window where minimap is displayed
+  Picture& minimap_windows = sdlFacade.createPicture(144, 110);
   
-  sdlFacade.drawPicture( minimap, minimap_windows , 0, 0 );
+  int i = GuiTilemap::instance().getMapArea().getCenterX();
+  int j = GuiTilemap::instance().getMapArea().getCenterZ();
+  
+  // 146/2 112/2 = 
+  
+  sdlFacade.drawPicture( minimap, minimap_windows , 146/2 - i, 112/2 + j - mapsize*2 );
   
   painter.drawPicture(minimap_windows, getScreenLeft() + 8, getScreenTop() + 35); // 152, 145
   sdlFacade.deletePicture(minimap);

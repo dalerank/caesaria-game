@@ -98,39 +98,39 @@ SDL_Surface* SdlFacade::createSurface(Uint32 flags, const int width, const int h
 
 void SdlFacade::drawPicture(const Picture &srcpic, Picture &dstpic, const int dx, const int dy)
 {
-   SDL_Surface *srcimg = srcpic.get_surface();
-   SDL_Surface *dstimg = dstpic.get_surface();
-   drawImage(srcimg, dstimg, dx + srcpic.get_xoffset(), dy - srcpic.get_yoffset());
+  SDL_Surface *srcimg = srcpic.get_surface();
+  SDL_Surface *dstimg = dstpic.get_surface();
+  drawImage(srcimg, dstimg, dx + srcpic.get_xoffset(), dy - srcpic.get_yoffset());
 }
 
 
 void SdlFacade::drawPicture(const Picture &srcpic, SDL_Surface *dstimg, const int dx, const int dy)
 {
-   SDL_Surface *srcimg = srcpic.get_surface();
-   drawImage(srcimg, dstimg, dx + srcpic.get_xoffset(), dy - srcpic.get_yoffset());
+  SDL_Surface *srcimg = srcpic.get_surface();
+  drawImage(srcimg, dstimg, dx + srcpic.get_xoffset(), dy - srcpic.get_yoffset());
 }
 
 
 void SdlFacade::drawImage(SDL_Surface *srcimg, SDL_Surface *dstimg, const int dx, const int dy)
 {
-    if( srcimg )
-	    drawImage(srcimg, 0, 0, srcimg->w, srcimg->h, dstimg, dx, dy);
+  if( srcimg )
+    drawImage(srcimg, 0, 0, srcimg->w, srcimg->h, dstimg, dx, dy);
 }
 
 
 void SdlFacade::drawImage(SDL_Surface *srcimg, const int sx, const int sy, const int sw, const int sh, SDL_Surface *dstimg, const int dx, const int dy)
 {
-   SDL_Rect src, dst;
+  SDL_Rect src, dst;
 
-   src.x = sx;
-   src.y = sy;
-   src.w = sw;
-   src.h = sh;
-   dst.x = dx;
-   dst.y = dy;
-   dst.w = src.w;
-   dst.h = src.h;
-   SDL_BlitSurface(srcimg, &src, dstimg, &dst);
+  src.x = sx;
+  src.y = sy;
+  src.w = sw;
+  src.h = sh;
+  dst.x = dx;
+  dst.y = dy;
+  dst.w = src.w;
+  dst.h = src.h;
+  SDL_BlitSurface(srcimg, &src, dstimg, &dst);
 }
 
 
