@@ -142,7 +142,6 @@ private:
   //Color _GetCurrentItemColor( const ListBoxItem& item, bool selected, ElementStyle* itemStyle );
   void _DrawItemIcon( const ListBoxItem& item, const Rect& rectangle, bool highlighted, bool selected, Rect* clip, const int color );
   Rect getItemTextRect_();
-  void needUpdateTexture4Text_( unsigned int index );
   Font _GetCurrentItemFont( const ListBoxItem& item, bool selected );
   int _GetCurrentItemColor( const ListBoxItem& item, bool selected );
   void _updateTexture();

@@ -36,7 +36,7 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
   _d->itemHeight = 0;
   _d->itemHeightOverride = 0;
   _d->totalItemHeight = 0;
-  _d->font = FontCollection::instance().getFont( FONT_2 );
+  _d->font = Font();
 	_d->itemsIconWidth = 0;
 	_d->scrollBar = 0;
 	_d->selectTime = 0;
@@ -45,6 +45,8 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
 	_d->selecting = false;
   _d->background = 0;
 	_d->needItemsRepackTextures = true;
+
+  _d->recalculateItemHeight( FontCollection::instance().getFont( FONT_2 ), getHeight() );
 
 #ifdef _DEBUG
   setDebugName( "ListBox");
@@ -58,16 +60,16 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
 
 	const int s = DEFAULT_SCROLLBAR_SIZE;
 
-    _d->scrollBar = new ScrollBar( this, Rect( getWidth() - s, 0, getWidth(), getHeight()), false );
-    _d->scrollBar->setNotClipped( false );
-    _d->scrollBar->setSubElement(true);
-    _d->scrollBar->setVisibleFilledArea( false );
-    _d->scrollBar->setTabStop(false);
-    _d->scrollBar->setAlignment(alignLowerRight, alignLowerRight, alignUpperLeft, alignLowerRight);
-    _d->scrollBar->setVisible(false);
-    _d->scrollBar->getUpButton()->setVisible( false );
-    _d->scrollBar->getDownButton()->setVisible( false );
-    _d->scrollBar->setPos(0);
+  _d->scrollBar = new ScrollBar( this, Rect( getWidth() - s, 0, getWidth(), getHeight()), false );
+  _d->scrollBar->setNotClipped( false );
+  _d->scrollBar->setSubElement(true);
+  _d->scrollBar->setVisibleFilledArea( false );
+  _d->scrollBar->setTabStop(false);
+  _d->scrollBar->setAlignment(alignLowerRight, alignLowerRight, alignUpperLeft, alignLowerRight);
+  _d->scrollBar->setVisible(false);
+  _d->scrollBar->getUpButton()->setVisible( false );
+  _d->scrollBar->getDownButton()->setVisible( false );
+  _d->scrollBar->setPos(0);
 
 	setNotClipped(!clip);
 
@@ -472,13 +474,11 @@ void ListBox::_SelectNew(int ypos)
     unsigned int now = DateTime::getElapsedTime();
     int oldSelected = _d->selectedItemIndex;
 
-    needUpdateTexture4Text_( oldSelected );
+    _d->needItemsRepackTextures = true;
 
     _d->selectedItemIndex = getItemAt( Point( getScreenLeft(), ypos ) );
-    if (_d->selectedItemIndex<0 && !_d->items.empty())
+    if( _d->selectedItemIndex<0 && !_d->items.empty() )
         _d->selectedItemIndex = 0;
-
-    needUpdateTexture4Text_( _d->selectedItemIndex );
 
     _RecalculateScrollPos();
 
@@ -542,26 +542,13 @@ Rect ListBox::getItemTextRect_()
   if( _d->scrollBar->isVisible() )
       frameRect.LowerRightCorner.setX( frameRect.LowerRightCorner.getX() - DEFAULT_SCROLLBAR_SIZE );
 
-  frameRect.LowerRightCorner.setY( frameRect.UpperLeftCorner.getY() + _d->itemHeight );
-  frameRect.LowerRightCorner -= Point( 4 + _d->itemsIconWidth + 3, 0 );
-
   return frameRect;
-}
-
-void ListBox::needUpdateTexture4Text_( unsigned int index )
-{
-    if ( (unsigned int)index >= _d->items.size() )
-        return;
-
-    _d->needItemsRepackTextures = true;
 }
 
 void ListBox::beforeDraw( GfxEngine& painter)
 {
     if ( !isVisible() )
         return;
-
-    _d->recalculateItemHeight( _d->font, getHeight() );
 
     if( _d->needItemsRepackTextures )
     {
@@ -580,8 +567,8 @@ void ListBox::beforeDraw( GfxEngine& painter)
       {
          ListBoxItem& refItem = _d->items[i];
 
-         if( frameRect.LowerRightCorner.getY() >= getScreenTop() &&
-             frameRect.UpperLeftCorner.getY() <= getScreenBottom() )
+         if( frameRect.LowerRightCorner.getY() >= 0 &&
+             frameRect.UpperLeftCorner.getY() <= getHeight() )
          {
            refItem.setState( _GetCurrentItemState( i, hl ) );
            
@@ -592,7 +579,7 @@ void ListBox::beforeDraw( GfxEngine& painter)
            textRect.UpperLeftCorner += Point( 3, 0 );
 
            currentFont = _GetCurrentItemFont( refItem, i == _d->selectedItemIndex && hl );
-           fontColor = _GetCurrentItemColor( refItem, i==_d->selectedItemIndex && hl );
+           currentFont.setColor( _GetCurrentItemColor( refItem, i==_d->selectedItemIndex && hl ) );
 
            _DrawItemIcon( refItem, textRect, hl, i == _d->selectedItemIndex, &_d->clientClip, fontColor );
 

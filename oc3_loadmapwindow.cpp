@@ -21,6 +21,7 @@
 #include "oc3_sdl_facade.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_listbox.hpp"
+#include "oc3_stringhelper.hpp"
 
 class LoadMapWindow::Impl
 {
@@ -49,6 +50,11 @@ LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect, int id )
   CONNECT( _d->btnExit, onClicked(), this, LoadMapWindow::deleteLater );
 
   _d->files = new ListBox( this, Rect( 10, _d->lbTitle->getBottom(), getWidth() - 10, _d->btnHelp->getTop() - 5 ), -1, true, true, false ); 
+  
+  for( int i=0; i < 20; i++ )
+  {
+    _d->files->addItem( StringHelper::format( 0xff, "Test%d", i ), FontCollection::instance().getFont( FONT_2 ), 0 );
+  }
 
   SdlFacade &sdlFacade = SdlFacade::instance();
   _d->bgPicture = &sdlFacade.createPicture( getWidth(), getHeight() );

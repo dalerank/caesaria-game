@@ -258,6 +258,14 @@ Rect Font::calculateTextRect( const std::string& text, const Rect& baseRect,
     return resultRect;
 }
 
+void Font::setColor( const int dc )
+{
+  _color.b = (dc & 0xff);
+  _color.g = (dc >> 8) & 0xff;
+  _color.r = (dc >> 16) & 0xff;
+  _color.unused = ( dc >> 24 ) & 0xff;
+}
+
 FontCollection* FontCollection::_instance = NULL;
 
 FontCollection& FontCollection::instance()
