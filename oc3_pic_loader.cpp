@@ -803,7 +803,7 @@ FontLoader::FontLoader()
 
 void FontLoader::load_all(const std::string &resourcePath)
 {
-   std::string full_font_path = resourcePath + "/../FreeSerif.ttf";
+   std::string full_font_path = resourcePath + "/FreeSerif.ttf";
    TTF_Font *ttf;
 
    SDL_Color black = {0, 0, 0, 255};
