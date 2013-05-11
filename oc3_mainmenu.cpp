@@ -24,6 +24,7 @@
 MainMenu::MainMenu( Widget* parent, const Rect& rectangle, const int id )
 	: ContextMenu( parent, rectangle, id, false, true)
 {
+  setCloseHandling( cmIgnore );
 #ifdef _DEBUG
 	setDebugName( "MainMenu" );
 #endif
@@ -56,7 +57,6 @@ bool MainMenu::onEvent(const NEvent& event)
 {
 	if (isEnabled())
 	{
-
 		switch(event.EventType)
 		{
 		case OC3_GUI_EVENT:
@@ -89,7 +89,7 @@ bool MainMenu::onEvent(const NEvent& event)
 					getEnvironment()->setFocus(this);
 				}
 
-    			bringToFront();
+    	  bringToFront();
 
 				Point p(event.MouseEvent.getPosition() );
 				bool shouldCloseSubMenu = hasOpenSubMenu_();
@@ -100,14 +100,15 @@ bool MainMenu::onEvent(const NEvent& event)
 				isHighlighted_( event.MouseEvent.getPosition(), true);
 				if ( shouldCloseSubMenu )
 				{
-                    getEnvironment()->removeFocus(this);
+          getEnvironment()->removeFocus(this);
 				}
 
 				return true;
 			}
+
 			case OC3_LMOUSE_LEFT_UP:
 			{
-                Point p(event.MouseEvent.getPosition() );
+        Point p(event.MouseEvent.getPosition() );
 				if (!getAbsoluteClippingRect().isPointInside(p))
 				{
 					int t = sendClick_(p);
@@ -115,23 +116,30 @@ bool MainMenu::onEvent(const NEvent& event)
 						removeFocus();
 				}
 
-			    return true;
+			  return true;
 			}
+
       case OC3_MOUSE_MOVED:
+      {
 				if (getEnvironment()->hasFocus(this) && getHoveredIndex() >= 0)
 				{
-				    int oldHighLighted = getHoveredIndex();
+				  int oldHighLighted = getHoveredIndex();
 					isHighlighted_( event.MouseEvent.getPosition(), true);
 					if ( getHoveredIndex() < 0 )
-                        setHoverIndex_( oldHighLighted );   // keep last hightlight active when moving outside the area
+          {
+            setHoverIndex_( oldHighLighted );   // keep last hightlight active when moving outside the area
+          }
 				}
 				return true;
-			default:
-				break;
+      }
+
+      default:
+			break;
 			}
-			break;
-		default:
-			break;
+		break;
+		
+    default:
+		break;
 		}
 	}
 
@@ -151,7 +159,7 @@ void MainMenu::recalculateSize_()
 	Rect rect;
 
   rect.UpperLeftCorner = parentRect.UpperLeftCorner;
-  height = std::max<int>( font.getSize("A").getHeight() + 5, height );
+  height = std::max<int>( font.getSize("A").getHeight(), height );
 	//if (skin && height < skin->getSize ( EGDS_MENU_HEIGHT ))
 	//	height = skin->getSize(EGDS_MENU_HEIGHT);
 	int width = rect.UpperLeftCorner.getX();
@@ -180,8 +188,8 @@ void MainMenu::recalculateSize_()
   {
     ContextMenuItem* refItem = getItem( i );
 
-    Rect rectangle( refItem->getOffset(), 0, refItem->getOffset() + refItem->getDim().getWidth(), getHeight());
-                    refItem->setGeometry( rectangle );
+    Rect rectangle( refItem->getOffset(), 0, refItem->getOffset() + refItem->getDim().getWidth(), height );
+    refItem->setGeometry( rectangle );
 
 		if (refItem->getSubMenu())
 		{

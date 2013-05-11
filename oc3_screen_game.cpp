@@ -73,6 +73,7 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
     _d->rightPanel = MenuRigthPanel::create( gui.getRootWidget(), rPanelRect, rPanelPic);
 
     _d->topMenu = TopMenu::create( gui.getRootWidget(), topMenuHeight );
+    CONNECT( _d->topMenu, onExit(), this, ScreenGame::stop );
 
     _d->menu = Menu::create( gui.getRootWidget(), -1 );
     _d->menu->setPosition( Point( engine.getScreenWidth() - _d->menu->getWidth() - _d->rightPanel->getWidth(), 

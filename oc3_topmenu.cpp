@@ -33,6 +33,9 @@ public:
     Label* lbFunds;
     Label* lbDate;
     Picture* bgPicture;
+
+oc3_signals public:
+    Signal0<> onExitSignal;
 };
 
 TopMenu* TopMenu::create( Widget* parent, const int height )
@@ -91,10 +94,10 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
     return ret;
 }
 
-bool TopMenu::onEvent(const NEvent& event)
+/*bool TopMenu::onEvent(const NEvent& event)
 {
   return MainMenu::onEvent(event);
-}
+}*/
 
 void TopMenu::draw( GfxEngine& engine )
 {
@@ -139,9 +142,15 @@ TopMenu::TopMenu( Widget* parent, const int height )
   file->addItem( "Save", -1, true, false, false, false );
   file->addItem( "Load", -1, true, false, false, false );
   file->addItem( "", -1, false, false, false, false );
-  file->addItem( "Exit", -1, true, false, false, false );
+  ContextMenuItem* exit = file->addItem( "Exit", -1, true, false, false, false );
+  CONNECT( exit, onClicked(), &_d->onExitSignal, Signal0<>::emit );
 
   addItem( "Options", -1, true, true, false, false );
   addItem( "Help", -1, true, true, false, false );
   addItem( "Advisers", -1, true, true, false, false );
+}
+
+Signal0<>& TopMenu::onExit()
+{
+  return _d->onExitSignal;
 }

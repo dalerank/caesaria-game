@@ -99,7 +99,7 @@ ContextMenuItem* ContextMenu::insertItem(unsigned int idx, const std::string& te
 	if (hasSubMenu)
 	{
 		ContextMenu* subMenu = newItem->addSubMenu( commandId );
-		subMenu->setVisible(false);
+		subMenu->setVisible( false );
 	}
 
   if ( idx < _d->items.size() )
@@ -351,7 +351,7 @@ bool ContextMenu::isHighlighted_( const Point& p, bool canOpenSubMenu )
 	for (i=0; i<(int)_d->items.size(); ++i)
 	{
 		ContextMenuItem* rItem = _d->items[i];
-		if( rItem->isEnabled() && rItem->getSubMenu() && rItem->getSubMenu()->isVisible())
+		if( rItem->isEnabled() && rItem->getSubMenu() && rItem->getSubMenu()->isVisible() )
 		{
 			openmenu = i;
 			break;
@@ -364,18 +364,19 @@ bool ContextMenu::isHighlighted_( const Point& p, bool canOpenSubMenu )
 		if (_d->items[openmenu]->isEnabled() && _d->items[openmenu]->getSubMenu()->isHighlighted_(p, canOpenSubMenu))
 		{
 			_d->highlihted = openmenu;
-            _d->changeTime = DateTime::getElapsedTime();
+      _d->changeTime = DateTime::getElapsedTime();
 			return true;
 		}
 	}
 
 	// highlight myself
+  _d->lastHighlihted = -1;
 	for (i=0; i<(int)_d->items.size(); ++i)
 	{
 		if (_d->items[i]->isEnabled() && _d->items[i]->getAbsoluteRect().isPointInside( p ))
 		{
 			_d->highlihted = i;
-            _d->changeTime = DateTime::getElapsedTime();
+      _d->changeTime = DateTime::getElapsedTime();
 
 			// make submenus visible/invisible
 			if( _d->highlihted != _d->lastHighlihted )
@@ -432,7 +433,6 @@ void ContextMenu::draw( GfxEngine& painter )
 	Widget::draw( painter );
 }
 
-
 void ContextMenu::recalculateSize_()
 {
 	Rect rect;
@@ -480,14 +480,13 @@ void ContextMenu::recalculateSize_()
 			ContextMenu* subMenu = refItem->getSubMenu();
 			const Size subMenuSize = subMenu->getAbsoluteRect().getSize();
 
-            Rect subRect( maxSize.getWidth()-5, refItem->getOffset(), 
-							            maxSize.getWidth()+subMenuSize.getWidth()-5, refItem->getOffset() +subMenuSize.getHeight() );
+      Rect subRect( maxSize.getWidth()-5, refItem->getOffset(), 
+			              maxSize.getWidth()+subMenuSize.getWidth()-5, refItem->getOffset() +subMenuSize.getHeight() );
 
-            // if it would be drawn beyond the right border, then add it to the left side
-            Widget * root = getEnvironment()->getRootWidget();
-            if( root && ContextMenuItem::alignAuto == refItem->getSubMenuAlignment() )
-            {
-				
+      // if it would be drawn beyond the right border, then add it to the left side
+      Widget * root = getEnvironment()->getRootWidget();
+      if( root && ContextMenuItem::alignAuto == refItem->getSubMenuAlignment() )
+      {
         Rect rectRoot( root->getAbsoluteRect() );
 				if ( getAbsoluteRect().UpperLeftCorner.getX() + subRect.LowerRightCorner.getX() > rectRoot.LowerRightCorner.getX() )
 				{
@@ -714,7 +713,9 @@ void ContextMenu::closeAllSubMenus_()
 		if( _d->items[i]->getSubMenu() )
 		{
 			if( _d->items[i]->isVisible() )
+      {
 				setItemVisible( i, false );
+      }
 			//_d->items[i]->getSubMenu()->setVisible(false);
 		}
 

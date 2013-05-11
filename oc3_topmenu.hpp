@@ -27,14 +27,16 @@ public:
 
     // draw on screen
     virtual void draw( GfxEngine& engine );
-    bool onEvent(const NEvent& event);
+    //bool onEvent(const NEvent& event);
 
     void setFunds( int value );
     void setPopulation( int value );
     void setDate( int value );
 
-private:
+oc3_signals public:
+    Signal0<>& onExit();
 
+private:
     TopMenu( Widget* parent, const int height );
 
     class Impl;
