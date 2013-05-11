@@ -205,15 +205,22 @@ PicLoader* PicLoader::_instance = NULL;
 
 PicLoader& PicLoader::instance()
 {
+	return PicLoader::instance("./resource");
+}
+
+PicLoader& PicLoader::instance(const std::string &resourcePath)
+{
    if (_instance == NULL)
    {
-      _instance = new PicLoader();
+      _instance = new PicLoader(resourcePath);
       if (_instance == NULL) THROW("Memory error, cannot instantiate object");
    }
    return *_instance;
 }
 
-PicLoader::PicLoader() { }
+PicLoader::PicLoader(const std::string &resourcePath) :
+	_resourcePath(resourcePath)
+{ }
 
 
 void PicLoader::set_picture(const std::string &name, SDL_Surface &surface)
@@ -321,7 +328,7 @@ std::list<Picture*> PicLoader::get_pictures()
 
 void PicLoader::load_wait()
 {
-   std::string aPath = "resources/pics/";
+   std::string aPath = _resourcePath + "/pics/";
    load_archive(aPath+"pics_wait.zip");
 
    std::cout << "number of images loaded: " << _resources.size() << std::endl;
@@ -329,7 +336,7 @@ void PicLoader::load_wait()
 
 void PicLoader::load_all()
 {
-   std::string aPath = "resources/pics/";
+   std::string aPath = _resourcePath + "/pics/";
    load_archive(aPath+"pics.zip");
    load_archive(aPath+"pics_oc3.zip");	
    std::cout << "number of images loaded: " << _resources.size() << std::endl;
@@ -794,9 +801,9 @@ FontLoader::FontLoader()
 { }
 
 
-void FontLoader::load_all()
+void FontLoader::load_all(const std::string &resourcePath)
 {
-   std::string full_font_path = "FreeSerif.ttf";
+   std::string full_font_path = resourcePath + "/../FreeSerif.ttf";
    TTF_Font *ttf;
 
    SDL_Color black = {0, 0, 0, 255};
