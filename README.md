@@ -33,7 +33,7 @@ See BuildingOpenCaesar3.md
   * implement clear land
   * add copyright notice
 
-##### 01dev2012
+##### 01dec2012
   * save/load game complete.
   * implement nearly all entertainment buildings
 
