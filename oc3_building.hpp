@@ -77,12 +77,12 @@ protected:
    std::string _name;
 
    Animation _animation;  // basic animation (if any)
-   int _animIndex; // current frame in the animation
 
    BuildingType _buildingType;
-   //static std::map<BuildingType, LandOverlay*> _mapBuildingByID;  // key=buildingType, value=instance
-};
 
+   class Impl;
+   ScopedPtr< Impl > _d;
+};
 
 class Construction : public LandOverlay
 {

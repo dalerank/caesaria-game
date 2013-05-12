@@ -101,10 +101,12 @@ int Market::getGoodDemand(const GoodType &goodType)
 
 void Market::save( VariantMap& stream) const 
 {
-//   ServiceBuilding::serialize(stream);
-//   _d->goodStore.serialize(stream);
+  ServiceBuilding::save( stream );
+  VariantMap vm_goodstore;  
+  _d->goodStore.save( vm_goodstore );
+  stream[ "goodStore" ] = vm_goodstore;
+
   //stream.write_objectID( _getWalkerList().begin().object() );
-  //stream.write_int( _d->buyerDelay, 2, 0, 65535 );
 }
 
 void Market::load( const VariantMap& stream)

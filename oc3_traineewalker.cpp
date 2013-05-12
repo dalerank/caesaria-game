@@ -16,6 +16,7 @@
 #include "oc3_traineewalker.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_tile.hpp"
+#include "oc3_variant.hpp"
 
 TraineeWalker::TraineeWalker(const WalkerTraineeType traineeType)
 {
@@ -138,11 +139,13 @@ void TraineeWalker::onDestination()
 
 void TraineeWalker::save( VariantMap& stream ) const
 {
-//   Walker::serialize(stream);
-//   stream.write_int((int) _traineeType, 1, 0, WTT_MAX);
-//   stream.write_objectID( _originBuilding.object() );
-//   stream.write_objectID( _destinationBuilding.object() );
-//   stream.write_int(_maxDistance, 2, 0, 65535);
+  Walker::save( stream );
+  stream[ "traineeType" ] = (int)_traineeType;
+  stream[ "originBldI" ] = _originBuilding->getTile().getI();
+  stream[ "originBldJ" ] = _originBuilding->getTile().getJ();
+  stream[ "destBldI" ] = _destinationBuilding->getTile().getI();
+  stream[ "destBldJ" ] = _destinationBuilding->getTile().getJ();
+  stream[ "maxDistance" ] = _maxDistance;
 }
 
 void TraineeWalker::load( const VariantMap& stream )

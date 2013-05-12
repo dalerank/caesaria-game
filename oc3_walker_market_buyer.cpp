@@ -23,6 +23,7 @@
 #include "oc3_market.hpp"
 #include "oc3_granary.hpp"
 #include "oc3_tile.hpp"
+#include "oc3_variant.hpp"
 
 
 class MarketBuyer::Impl
@@ -244,13 +245,18 @@ void MarketBuyer::send2City()
 
 void MarketBuyer::save( VariantMap& stream ) const
 {
-//    Walker::serialize(stream);
-//    stream.write_objectID( _d->destBuilding.object() );
-//    stream.write_int((int)_d->priorityGood, 1, 0, G_MAX);
-//    stream.write_objectID( _market.object() );
-//    _basket.serialize(stream);
-//    stream.write_int( _d->maxDistance, 2, 0, 65535);
-//    stream.write_int(_reservationID, 4, 0, 1000000);
+  Walker::save( stream );
+  stream[ "destBuildI" ] = _d->destBuilding->getTile().getI();
+  stream[ "destBuildJ" ] = _d->destBuilding->getTile().getJ();
+  stream[ "priorityGood" ] = (int)_d->priorityGood;
+  stream[ "marketI" ] = _market->getTile().getI();
+
+  VariantMap vm_basket;
+  _basket.save( vm_basket );
+  stream[ "basket" ] = vm_basket;
+
+  stream[ "maxDistance" ] = _d->maxDistance;
+  stream[ "reservationId" ] = _reservationID;
 }
 
 void MarketBuyer::load( const VariantMap& stream)

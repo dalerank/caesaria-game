@@ -19,6 +19,7 @@
 
 #include "oc3_scenario.hpp"
 #include "oc3_exception.hpp"
+#include "oc3_variant.hpp"
 
 Scenario* Scenario::_instance = NULL;
 
@@ -56,8 +57,7 @@ std::string Scenario::getDescription() const
 
 void Scenario::save( VariantMap& stream ) const
 {
-//    stream.write_str(getDescription(), 1000);
-//    getCity().serialize(stream);
+  stream[ "description" ] = Variant( getDescription() );
 }
 
 void Scenario::load( const VariantMap& stream)

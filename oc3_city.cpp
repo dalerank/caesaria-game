@@ -460,20 +460,18 @@ void City::save( VariantMap& stream) const
   _d->tilemap.save( vm_tilemap );
 
   stream[ "tilemap" ] = vm_tilemap;
-
-
-//    stream.write_int( _d->roadEntry.getI(), 2, 0, 1000);
-//    stream.write_int( _d->roadEntry.getJ(), 2, 0, 1000);
-//    stream.write_int( _d->roadExit.getI(), 2, 0, 1000);
-//    stream.write_int( _d->roadExit.getJ(), 2, 0, 1000);
-//    stream.write_int(_boatEntryI, 2, 0, 1000);
-//    stream.write_int(_boatEntryJ, 2, 0, 1000);
-//    stream.write_int(_boatExitI, 2, 0, 1000);
-//    stream.write_int(_boatExitJ, 2, 0, 1000);
-//    stream.write_int((int) _climate, 2, 0, C_MAX);
-//    stream.write_int(_d->time, 4, 0, 1000000);
-//    stream.write_int(_d->funds, 4, 0, 1000000);
-//    stream.write_int(_d->population, 4, 0, 1000000);
+  stream[ "roadEntryI" ] = _d->roadEntry.getI();
+  stream[ "roadEntryJ" ] = _d->roadEntry.getJ();
+  stream[ "roadExitI" ]  = _d->roadExit.getI();
+  stream[ "roadExitJ" ] = _d->roadExit.getJ();
+  stream[ "boatEntryI" ] = _boatEntryI;
+  stream[ "boatEnttyJ" ] = _boatEntryJ;
+  stream[ "boatExitI" ] = _boatExitI;
+  stream[ "boatExitJ" ] = _boatExitJ;
+  stream[ "climate" ] = _climate;
+  stream[ "time" ] = _d->time;
+  stream[ "funds" ] = _d->funds;
+  stream[ "populaton" ] = _d->population;
 // 
 //    // walkers
 //    stream.write_int(_d->walkerList.size(), 2, 0, 65535);
@@ -483,16 +481,15 @@ void City::save( VariantMap& stream) const
 //       (*itWalker)->serialize(stream);
 //    }
 // 
-//    // overlays
-//    stream.write_int(_d->overlayList.size(), 2, 0, 65535);
-//    for (LandOverlays::iterator itOverlay = _d->overlayList.begin(); 
-//         itOverlay != _d->overlayList.end(); 
-//         ++itOverlay)
-//    {
-//       // std::cout << "WRITE OVERLAY @" << stream.tell() << std::endl;
-//       LandOverlayPtr overlay = *itOverlay;
-//       overlay->serialize( stream );
-//    }
+  // overlays
+  VariantMap vm_overlays;
+  for( LandOverlays::iterator itOverlay = _d->overlayList.begin(); 
+       itOverlay != _d->overlayList.end(); ++itOverlay )
+  {
+    (*itOverlay)->save( vm_overlays );
+  }
+
+  stream[ "overlays" ] = vm_overlays;
 }
 
 void City::load( const VariantMap& stream)

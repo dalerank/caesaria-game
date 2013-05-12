@@ -37,10 +37,14 @@
 #include "oc3_water_buildings.hpp"
 #include "oc3_constructionmanager.hpp"
 #include "oc3_resourcegroup.hpp"
+#include "oc3_variant.hpp"
 
 #include <algorithm>
 
-//std::map<BuildingType, LandOverlay*> LandOverlay::_mapBuildingByID;  // key=buildingType, value=instance
+class LandOverlay::Impl
+{
+public:
+};
 
 LandOverlay::LandOverlay(const BuildingType type, const Size& size)
 {
@@ -170,24 +174,14 @@ std::string LandOverlay::getName()
 
 void LandOverlay::save( VariantMap& stream ) const
 {
-//   stream.write_objectID(this);
-//   stream.write_int((int) _buildingType, 1, 0, B_MAX);
-//   stream.write_int(getTile().getI(), 2, 0, 1000);
-//   stream.write_int(getTile().getJ(), 2, 0, 1000);
+   stream[ "i" ] = getTile().getI();
+   stream[ "j" ] = getTile().getJ();
+   stream[ "buildingType" ] = (int)_buildingType;
+   stream[ "picture" ] = Variant( _picture ? _picture->get_name() : std::string( "" ) );   
+   stream[ "size" ] = _size;
+   stream[ "isDeleted" ] = _isDeleted;
+   stream[ "name" ] = Variant( _name );
 }
-
-// LandOverlayPtr LandOverlay::unserialize_all(InputSerialStream &stream)
-// {
-//   int objectID = stream.read_objectID();
-//   BuildingType buildingType = (BuildingType) stream.read_int(1, 0, B_MAX);
-//   int i = stream.read_int(2, 0, 1000);
-//   int j = stream.read_int(2, 0, 1000);
-//   ConstructionPtr res = ConstructionManager::getInstance().create( buildingType );
-//   res->_master_tile = &Scenario::instance().getCity().getTilemap().at(i, j);
-//   res->unserialize(stream);
-//   stream.link( objectID, res.object() );
-//   return res.as<LandOverlay>();
-// }
 
 void LandOverlay::load( const VariantMap& stream)
 {
@@ -498,10 +492,10 @@ void Building::applyTrainee(const WalkerTraineeType traineeType)
 
 void Building::save( VariantMap& stream) const
 {
-//    Construction::serialize(stream);
-//    stream.write_int((int) _damageLevel, 1, 0, 100);  // approximation...
-//    stream.write_int((int) _fireLevel, 1, 0, 100);  // approximation...
-// 
+    Construction::save( stream );
+    stream[ "damageLevel" ] = _damageLevel;  
+    stream[ "fireLevel" ] = _fireLevel;  
+
 //    stream.write_int(_traineeMap.size(), 1, 0, WTT_MAX);
 //    for (std::map<WalkerTraineeType, int>::iterator itLevel = _traineeMap.begin(); itLevel != _traineeMap.end(); ++itLevel)
 //    {
@@ -581,8 +575,8 @@ bool WorkingBuilding::isActive()
 
 void WorkingBuilding::save( VariantMap& stream ) const
 {
-//    Building::serialize(stream);
-//    stream.write_int((int) _currentWorkers, 1, 0, 100);
+    Building::save( stream );
+    stream[ "currentWorkers" ] = _currentWorkers;
 }
 
 void WorkingBuilding::load( const VariantMap& stream)

@@ -163,11 +163,8 @@ void Tilemap::save( VariantMap& stream ) const
 
   // saves the graphics map
   VariantList bitsetInfo;
-  bitsetInfo.reverse( _size * _size );
   VariantList desInfo;
-  desInfo.reverse( _size * _size );
   VariantList idInfo;
-  idInfo.reverse( _size * _size );
 
   PtrTilesArea tiles = const_cast< Tilemap* >( this )->getFilledRectangle( TilePos( 0, 0 ), Size( _size ) );
   for( PtrTilesArea::iterator it=tiles.begin(); it != tiles.end(); it++ )

@@ -57,7 +57,7 @@ private:
   Tile* _master_tile;  // left-most tile if multi-tile, or "this" if single-tile
   TerrainTile _terrain;    // infos about the tile (building, tree, road, water, rock...)
 
-  Picture *_picture; // displayed picture   
+  Picture* _picture; // displayed picture   
 };
 
 #endif //__OPENCAESAR3_TILE_H_INCLUDED__

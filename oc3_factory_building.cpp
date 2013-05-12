@@ -46,8 +46,6 @@ Factory::Factory( const GoodType inType, const GoodType outType,
    _goodStore.setMaxQty(1000);  // quite unlimited
    _goodStore.setMaxQty(_inGoodType, 200);
    _goodStore.setMaxQty(_outGoodType, 200);
-
-   _animIndex = 0;
 }
 
 
@@ -143,9 +141,12 @@ GuiInfoBox* Factory::makeInfoBox( Widget* parent )
 
 void Factory::save( VariantMap& stream ) const
 {
-//    WorkingBuilding::serialize(stream);
-//    _goodStore.serialize(stream);
-//    stream.write_int((int)_progress, 1, 0, 100); // approximation
+  WorkingBuilding::save( stream );
+  VariantMap vm_goodstore;
+  _goodStore.save( vm_goodstore );
+
+  stream[ "goodStore" ] = vm_goodstore;
+  stream[ "progress" ] = _progress; 
 }
 
 void Factory::load( const VariantMap& stream)

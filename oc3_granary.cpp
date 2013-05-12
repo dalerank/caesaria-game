@@ -88,8 +88,10 @@ void Granary::computePictures()
 
 void Granary::save( VariantMap& stream) const
 {
-//   WorkingBuilding::serialize(stream);
-//   _goodStore.serialize(stream);
+   WorkingBuilding::save( stream );
+   VariantMap vm_goodstore;
+   _goodStore.save( vm_goodstore );
+   stream[ "goodStore" ] = vm_goodstore;
 }
 
 void Granary::load( const VariantMap& stream)

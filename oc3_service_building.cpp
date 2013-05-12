@@ -15,8 +15,6 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
-
 #include "oc3_service_building.hpp"
 
 #include <cstdlib>
@@ -29,6 +27,7 @@
 #include "oc3_exception.hpp"
 #include "oc3_gui_info_box.hpp"
 #include "oc3_gettext.hpp"
+#include "oc3_variant.hpp"
 #include "oc3_resourcegroup.hpp"
 
 class ServiceBuilding::Impl
@@ -123,10 +122,10 @@ int ServiceBuilding::getServiceRange() const
 
 void ServiceBuilding::save( VariantMap& stream ) const 
 {
-//    WorkingBuilding::serialize(stream);
-//    stream.write_int(_serviceTimer, 2, 0, 1000);
-//    stream.write_int(_d->serviceDelay, 2, 0, 1000);
-//    stream.write_int(_serviceRange, 2, 0, 65535);
+  WorkingBuilding::save( stream );
+  stream[ "timer" ] = _serviceTimer;
+  stream[ "delay" ] = _d->serviceDelay;
+  stream[ "range" ] = _serviceRange;
 }
 
 void ServiceBuilding::load( const VariantMap& stream )

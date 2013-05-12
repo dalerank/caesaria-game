@@ -21,6 +21,8 @@
 
 #include "oc3_gettext.hpp"
 #include "oc3_exception.hpp"
+#include "oc3_variant.hpp"
+
 #include <iostream>
 #include <algorithm>
 
@@ -238,9 +240,9 @@ void GoodStock::addStock(GoodStock &stock, const int iAmount)
 
 void GoodStock::save( VariantMap& stream ) const
 {
-//    stream.write_int((int)_goodType, 1, 0, G_MAX);
-//    stream.write_int(_maxQty, 2, 0, 10000);
-//    stream.write_int(_currentQty, 2, 0, 10000);
+  stream[ "type" ] = (int)_goodType;
+  stream[ "max" ] = _maxQty;
+  stream[ "current" ] = _currentQty;
 }
 
 void GoodStock::load( const VariantMap& stream )
@@ -413,8 +415,8 @@ void GoodStore::storeAll(SimpleGoodStore &goodStore)
  
 void GoodStore::save( VariantMap& stream) const 
 {
-//    stream.write_int(_nextReservationID, 4, 0, 1000000);
-//    stream.write_int(_storeReservations.size(), 2, 0, 1000);
+  stream[ "nextReservationId" ] = _nextReservationID;
+  stream[ "storeReservationSize" ] = _storeReservations.size();
 //    for (std::map<long, GoodStock>::iterator itRes = _storeReservations.begin(); itRes != _storeReservations.end(); itRes++)
 //    {
 //       long resID = itRes->first;
@@ -601,10 +603,10 @@ void SimpleGoodStore::applyRetrieveReservation(GoodStock &stock, const long rese
 
 void SimpleGoodStore::save( VariantMap& stream ) const
 {
-//    GoodStore::serialize(stream);
-//    stream.write_int(_maxQty, 2, 0, 10000);
-//    stream.write_int(_currentQty, 2, 0, 10000);
-//    stream.write_int(_goodStockList.size(), 1, 0, 50);
+  GoodStore::save( stream );
+  stream[ "max" ] = _maxQty;
+  stream[ "current" ] = _currentQty;
+  stream[ "size" ] = _goodStockList.size();
 //    for (std::vector<GoodStock>::iterator itStock = _goodStockList.begin(); itStock != _goodStockList.end(); itStock++)
 //    {
 //       GoodStock &stock = *itStock;

@@ -25,6 +25,7 @@
 #include "oc3_walker_cart_pusher.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_walkermanager.hpp"
+#include "oc3_variant.hpp"
 
 class Walker::Impl
 {
@@ -393,21 +394,24 @@ Picture& Walker::getMainPicture()
 
 void Walker::save( VariantMap& stream ) const
 {
-//    stream.write_objectID(this);
-//    stream.write_int((int) _walkerType, 1, 0, WT_MAX);
-//    _pathWay.serialize(stream);
-//    stream.write_int((int) _action._action, 1, 0, WA_MAX);
-//    stream.write_int((int) _action._direction, 1, 0, D_MAX);
-//    stream.write_int(_i, 2, 0, 1000);
-//    stream.write_int(_j, 2, 0, 1000);
-//    stream.write_int(_si, 1, 0, 50);
-//    stream.write_int(_sj, 1, 0, 50);
-//    stream.write_int(_ii, 4, 0, 1000000);
-//    stream.write_int(_jj, 4, 0, 1000000);
-//    //stream.write_float(_d->speed, 1, 0, 50);
-//    stream.write_int(_midTileI, 1, 0, 50);
-//    stream.write_int(_midTileJ, 1, 0, 50);
-//    //stream.write_int(_animIndex, 1, 0, 50);
+  //stream[ "id" ] = this;
+  stream[ "type" ] = (int)_walkerType;
+
+  VariantMap vm_path;
+  _pathWay.save( vm_path );
+  stream[ "pathway" ] = vm_path;
+
+  stream[ "action" ] = (int)_action._action;
+  stream[ "direction" ] = (int)_action._direction;
+  stream[ "i" ] = _i;
+  stream[ "j" ] = _j;
+  stream[ "si" ] = _si;
+  stream[ "sj" ] = _sj;
+  stream[ "ii" ] = _ii;
+  stream[ "jj" ] = _jj;
+  stream[ "speed" ] = _d->speed;
+  stream[ "midTileI" ] = _midTileI;
+  stream[ "midTileJ" ] = _midTileJ;
 }
 
 // WalkerPtr Walker::unserialize_all(InputSerialStream &stream)

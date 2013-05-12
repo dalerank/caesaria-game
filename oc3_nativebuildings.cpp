@@ -22,7 +22,10 @@ NativeBuilding::NativeBuilding( const BuildingType type, const Size& size )
 {
 }
 
-void NativeBuilding::save( VariantMap& stream) const {Building::save(stream);}
+void NativeBuilding::save( VariantMap& stream) const 
+{
+  Building::save(stream);
+}
 
 void NativeBuilding::load( const VariantMap& stream) {Building::load(stream);}
 
@@ -39,7 +42,10 @@ NativeHut::NativeHut() : NativeBuilding( B_NATIVE_HUT, Size(1) )
   //setPicture(PicLoader::instance().get_picture("housng1a", 50));
 }
 
-void NativeHut::save( VariantMap& stream) const {Building::save(stream);}
+void NativeHut::save( VariantMap& stream) const 
+{
+  Building::save(stream);
+}
 
 void NativeHut::load( const VariantMap& stream) {Building::load(stream);}
 
@@ -48,7 +54,10 @@ NativeCenter::NativeCenter() : NativeBuilding( B_NATIVE_CENTER, Size(2) )
   setPicture( Picture::load(ResourceGroup::housing, 51));
 }
 
-void NativeCenter::save( VariantMap&stream) const {Building::save(stream);}
+void NativeCenter::save( VariantMap&stream) const 
+{
+  Building::save(stream);
+}
 
 void NativeCenter::load( const VariantMap& stream) {Building::load(stream);}
 
@@ -57,6 +66,9 @@ NativeField::NativeField() : NativeBuilding( B_NATIVE_FIELD, Size(1) )
   setPicture(Picture::load(ResourceGroup::commerce, 13));  
 }
 
-void NativeField::save( VariantMap&stream) const {Building::save(stream);}
+void NativeField::save( VariantMap&stream) const 
+{
+  Building::save(stream);
+}
 
 void NativeField::load( const VariantMap& stream) {Building::load(stream);}

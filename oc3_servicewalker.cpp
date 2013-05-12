@@ -16,6 +16,7 @@
 #include "oc3_servicewalker.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_tile.hpp"
+#include "oc3_variant.hpp"
 
 ServiceWalker::ServiceWalker( BuildingPtr base, const ServiceType service)
 {
@@ -253,10 +254,11 @@ void ServiceWalker::onDestination()
 
 void ServiceWalker::save( VariantMap& stream ) const
 {
-//   Walker::serialize(stream);
-//   stream.write_int((int) _service, 1, 0, S_MAX);
-//   stream.write_objectID( _base.object() );
-//   stream.write_int(_maxDistance, 2, 0, 65535);
+  Walker::save( stream );
+  stream[ "type" ] = (int)_service;
+  stream[ "baseI" ] = _base->getTile().getI();
+  stream[ "baseJ" ] = _base->getTile().getJ();
+  stream[ "maxDistance" ] = _maxDistance;
 }
 
 void ServiceWalker::load( const VariantMap& stream )
