@@ -21,7 +21,7 @@
 
 class TilePos;
 
-class TerrainTile : public Serializable
+class TerrainTile
 {
 public:
   TerrainTile();
@@ -64,9 +64,6 @@ public:
 
   int getDesirability() const;
   void appendDesirability( int value );
-
-  void save( VariantMap& stream) const;
-  void load( const VariantMap& stream);
 
 private:
   bool _isWater;

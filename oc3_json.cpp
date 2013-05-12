@@ -142,22 +142,20 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
 // 	}
     else if(data.type() == Variant::Map) // variant is a map?
     {
-      const VariantMap vmap = data.toMap();
-      std::map<std::string, Variant>::const_iterator it = vmap.begin();
+      VariantMap vmap = data.toMap();
+      
       str = "{ \n";
       StringArray pairs;
-      while( it != vmap.end() )
-      {
-              it++;
-
-              std::string serializedValue = serialize( it->second, tab + "  ");
-              if( serializedValue.empty())
-              {
-                      //success = false;
-                pairs.push_back( tab + sanitizeString( it->first ) + std::string( " : \"nonSerializableValue\"" ) );
-                continue;
-              }
-              pairs.push_back( tab + sanitizeString( it->first ) + " : " + serializedValue );
+      for( VariantMap::iterator it = vmap.begin(); it != vmap.end(); it++ )
+      {        
+        std::string serializedValue = serialize( it->second, tab + "  ");
+        if( serializedValue.empty())
+        {
+                //success = false;
+          pairs.push_back( tab + sanitizeString( it->first ) + std::string( " : \"nonSerializableValue\"" ) );
+          continue;
+        }
+        pairs.push_back( tab + sanitizeString( it->first ) + " : " + serializedValue );
       }
       str += join(pairs, ",\n");
       std::string rtab( tab );

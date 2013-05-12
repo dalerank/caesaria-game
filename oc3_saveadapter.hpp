@@ -23,7 +23,7 @@ class SaveAdapter
 public:
   static VariantMap load( const std::string& fileName );
 
-  static bool save( const VariantMap& oprions );
+  static bool save( const VariantMap& options, const std::string& filename );
 private:
   SaveAdapter();
 };

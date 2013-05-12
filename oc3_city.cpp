@@ -31,6 +31,7 @@
 #include "oc3_cityservice_timers.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_road.hpp"
+#include "oc3_variant.hpp"
 
 #include <set>
 
@@ -455,7 +456,11 @@ void City::_calculatePopulation()
 
 void City::save( VariantMap& stream) const
 {
-   _d->tilemap.save( stream );
+  VariantMap vm_tilemap;
+  _d->tilemap.save( vm_tilemap );
+
+  stream[ "tilemap" ] = vm_tilemap;
+
 
 //    stream.write_int( _d->roadEntry.getI(), 2, 0, 1000);
 //    stream.write_int( _d->roadEntry.getJ(), 2, 0, 1000);

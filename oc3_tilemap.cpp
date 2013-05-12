@@ -159,23 +159,27 @@ void Tilemap::save( VariantMap& stream ) const
 {
   VariantMap options;
 
-  options[ "size" ] = Variant( _size );
+  options[ "size" ] = _size;
 
   // saves the graphics map
-  PicLoader &picLoader = PicLoader::instance();
-  std::string pic_name;
-  for (int i=0; i<_size; ++i)
-  {
-     for (int j=0; j<_size; ++j)
-     {
-        VariantMap tileInfo;
-        at(i, j).get_terrain().save( tileInfo );
+  VariantList bitsetInfo;
+  bitsetInfo.reverse( _size * _size );
+  VariantList desInfo;
+  desInfo.reverse( _size * _size );
+  VariantList idInfo;
+  idInfo.reverse( _size * _size );
 
-        options[ StringHelper::format( 0xff, "%03d%03d") ] = tileInfo;
-     }
+  PtrTilesArea tiles = const_cast< Tilemap* >( this )->getFilledRectangle( TilePos( 0, 0 ), Size( _size ) );
+  for( PtrTilesArea::iterator it=tiles.begin(); it != tiles.end(); it++ )
+  {
+    bitsetInfo.push_back( (*it)->get_terrain().encode() );
+    desInfo.push_back( (*it)->get_terrain().getDesirability() );
+    idInfo.push_back( (*it)->get_terrain().getOriginalImgId() );
   }
 
-  stream[ "timemap" ] = options.toVariant();  
+  stream[ "bitset" ] = bitsetInfo;
+  stream[ "desirability" ] = desInfo;
+  stream[ "imgId" ] = idInfo;
 }
 
 void Tilemap::load( const VariantMap& stream)

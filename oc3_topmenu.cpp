@@ -34,9 +34,17 @@ public:
     Label* lbDate;
     Picture* bgPicture;
 
+    void resolveSave();
+
 oc3_signals public:
     Signal0<> onExitSignal;
+    Signal1<std::string> onSaveSignal;
 };
+
+void TopMenu::Impl::resolveSave()
+{
+  onSaveSignal.emit( "./test.oc3save" );
+}
 
 TopMenu* TopMenu::create( Widget* parent, const int height )
 {
@@ -139,11 +147,13 @@ TopMenu::TopMenu( Widget* parent, const int height )
 {
   ContextMenuItem* tmp = addItem( "File", -1, true, true, false, false );
   ContextMenu* file = tmp->addSubMenu();
-  file->addItem( "Save", -1, true, false, false, false );
+  ContextMenuItem* save = file->addItem( "Save", -1, true, false, false, false );
   file->addItem( "Load", -1, true, false, false, false );
   file->addItem( "", -1, false, false, false, false );
   ContextMenuItem* exit = file->addItem( "Exit", -1, true, false, false, false );
+  
   CONNECT( exit, onClicked(), &_d->onExitSignal, Signal0<>::emit );
+  CONNECT( save, onClicked(), _d.data(), Impl::resolveSave );
 
   addItem( "Options", -1, true, true, false, false );
   addItem( "Help", -1, true, true, false, false );
@@ -153,4 +163,9 @@ TopMenu::TopMenu( Widget* parent, const int height )
 Signal0<>& TopMenu::onExit()
 {
   return _d->onExitSignal;
+}
+
+Signal1<std::string>& TopMenu::onSave()
+{
+  return _d->onSaveSignal;
 }

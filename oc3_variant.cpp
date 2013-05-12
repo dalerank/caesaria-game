@@ -171,10 +171,10 @@ static void constructNewVariant( Variant2Impl *x, const void *copy)
 		v_construct<VariantList>(x, copy);
 		break;
 		/*    case Variant::Date:
-		v_construct<QDate>(x, copy);
+		v_construct<Date>(x, copy);
 		break;
 		case Variant::Time:
-		v_construct<QTime>(x, copy);
+		v_construct<Time>(x, copy);
 		break;
 		*/
 	case Variant::NDateTime:
@@ -184,7 +184,7 @@ static void constructNewVariant( Variant2Impl *x, const void *copy)
 		v_construct<ByteArray>(x, copy);
 		break;
 		/*    case Variant::BitArray:
-		v_construct<QBitArray>(x, copy);
+		v_construct<BitArray>(x, copy);
 		break;
 		*/
 	case Variant::NSize:
@@ -266,10 +266,10 @@ static void clearVariant(Variant2Impl *d)
         v_clear<VariantList>(d);
         break;
     /*case Variant::Date:
-        v_clear<QDate>(d);
+        v_clear<Date>(d);
         break;
     case Variant::Time:
-        v_clear<QTime>(d);
+        v_clear<Time>(d);
         break;
     */
       case Variant::NDateTime:
@@ -303,7 +303,7 @@ static void clearVariant(Variant2Impl *d)
 //         v_clear<RectF>(d);
 //         break;
 /*    case Variant::Url:
-        v_clear<QUrl>(d);
+        v_clear<Url>(d);
         break;
   */
     case Variant::LongLong:
@@ -330,9 +330,9 @@ static bool isNull(const Variant2Impl *d)
 /*    switch(d->type) 
     {
     case Variant::Date:
-        return v_cast<QDate>(d)->isNull();
+        return v_cast<Date>(d)->isNull();
     case Variant::Time:
-        return v_cast<QTime>(d)->isNull();
+        return v_cast<Time>(d)->isNull();
     case Variant::String:
     case Variant::DateTime:
     case Variant::NByteArray:
@@ -401,7 +401,7 @@ static bool compare(const Variant2Impl *a, const Variant2Impl *b)
     case Variant::Char:
         return *v_cast<char>(a) == *v_cast<char>(b);
     /*case Variant::NStringArray:
-        return *v_cast<StringList>(a) == *v_cast<QStringList>(b);*/
+        return *v_cast<StringList>(a) == *v_cast<StringList>(b);*/
     case Variant::NSize: return *v_cast<Size>(a) == *v_cast<Size>(b);
     case Variant::NSizeF: return *v_cast<SizeF>(a) == *v_cast<SizeF>(b);
     case Variant::NRectI: return *v_cast<Rect>(a) == *v_cast<Rect>(b);        
@@ -414,7 +414,7 @@ static bool compare(const Variant2Impl *a, const Variant2Impl *b)
     case Variant::NPoint: return *v_cast<Point>(a) == *v_cast<Point>(b);
     case Variant::NPointF: return *v_cast<PointF>(a) == *v_cast<PointF>(b);
 /*    case Variant::Url:
-        return *v_cast<QUrl>(a) == *v_cast<QUrl>(b);*/
+        return *v_cast<Url>(a) == *v_cast<Url>(b);*/
     case Variant::Int:
         return a->data.i == b->data.i;
     case Variant::UInt:
@@ -430,9 +430,9 @@ static bool compare(const Variant2Impl *a, const Variant2Impl *b)
     case Variant::NFloat:
         return a->data.f == b->data.f;
 /*    case Variant::Date:
-        return *v_cast<QDate>(a) == *v_cast<QDate>(b);
+        return *v_cast<Date>(a) == *v_cast<Date>(b);
     case Variant::Time:
-        return *v_cast<QTime>(a) == *v_cast<QTime>(b); */
+        return *v_cast<Time>(a) == *v_cast<Time>(b); */
     case Variant::NDateTime: return *v_cast<DateTime>(a) == *v_cast<DateTime>(b);
     case Variant::NByteArray: return *v_cast<ByteArray>(a) == *v_cast<ByteArray>(b);
     case Variant::Invalid: return true;
@@ -589,7 +589,7 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
     /*case Variant::Url:
         switch (d->type) {
         case Variant::String:
-            *static_cast<Url *>(result) = Url(*v_cast<QString>(d));
+            *static_cast<Url *>(result) = Url(*v_cast<String>(d));
             break;
         default:
             return false;
@@ -757,24 +757,24 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
         }
         break;
 //     case Variant::Date: {
-//         QDate *dt = static_cast<QDate *>(result);
+//         Date *dt = static_cast<Date *>(result);
 //         if (d->type == Variant::DateTime)
-//             *dt = v_cast<QDateTime>(d)->date();
+//             *dt = v_cast<DateTime>(d)->date();
 //         else if (d->type == Variant::String)
-//             *dt = QDate::fromString(*v_cast<QString>(d), Qt::ISODate);
+//             *dt = Date::fromString(*v_cast<String>(d), t::ISODate);
 //         else
 //             return false;
 // 
 //         return dt->isValid();
 //     }
 //     case Variant::Time: {
-//         QTime *t = static_cast<QTime *>(result);
+//         Time *t = static_cast<Time *>(result);
 //         switch (d->type) {
 //         case Variant::DateTime:
-//             *t = v_cast<QDateTime>(d)->time();
+//             *t = v_cast<DateTime>(d)->time();
 //             break;
 //         case Variant::String:
-//             *t = QTime::fromString(*v_cast<QString>(d), Qt::ISODate);
+//             *t = Time::fromString(*v_cast<String>(d), t::ISODate);
 //             break;
 //         default:
 //             return false;
@@ -790,7 +790,7 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
           *dt = DateTime( *v_cast<std::string>(d) );
             break;
 //         case Variant::Date:
-//             *dt = QDateTime(*v_cast<QDate>(d));
+//             *dt = DateTime(*v_cast<Date>(d));
 //             break;
         default:
             return false;
@@ -1020,9 +1020,9 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
         }
         break;
 //     case Variant::Hash:
-//         if ( _wcsicmp( Variant::typeToName(d->type), L"QHash<QString, Variant>") == 0) {
+//         if ( _wcsicmp( Variant::typeToName(d->type), L"Hash<String, Variant>") == 0) {
 //             *static_cast<Variant2Hash *>(result) =
-//                 *static_cast<QHash<QString, Variant> *>(d->data.shared->ptr);
+//                 *static_cast<Hash<String, Variant> *>(d->data.shared->ptr);
 //         } else {
 //             return false;
 //         }
@@ -1090,26 +1090,12 @@ Variant::~Variant()
 Variant::Variant(const Variant &p)
     : _d(p._d)
 {
+  if (p._d.type > Char && p._d.type < UserType) 
+  {
     varHandler->construct(&_d, p.constData());
     _d.is_null = p._d.is_null;
+  }
 }
-
-/*!
-  \fn Variant::Variant(const char *val)
-
-    Constructs a new variant with a string value of \a val.
-    The variant creates a deep copy of \a val, using the encoding
-    set by QTextCodec::setCodecForCStrings().
-
-    Note that \a val is converted to a QString for storing in the
-    variant and Variant::type() will return Variant::QString for
-    the variant.
-
-    You can disable this operator by defining \c
-    QT_NO_CAST_FROM_ASCII when you compile your applications.
-
-    \sa QTextCodec::setCodecForCStrings()
-*/
 
 Variant::Variant(const char *val)
 {
@@ -1174,7 +1160,7 @@ Variant::Variant(const VariantList& rlist)
 
 Variant::Variant(const VariantMap& rmap)
 { _d.is_null = false; _d.type = Variant::Map; v_construct<VariantMap>(&_d, rmap); }
-// Variant::Variant(const QHash<QString, Variant> &hash)
+// Variant::Variant(const Hash<String, Variant> &hash)
 // { _d.is_null = false; _d.type = Hash; v_construct<Variant2Hash>(&_d, hash); }
 
 Variant::Variant(const Point &pt) { _d.is_null = false; _d.type = Variant::NPoint; v_construct<Point>(&_d, pt); }
@@ -1211,22 +1197,22 @@ int Variant::userType() const
 */
 Variant& Variant::operator=(const Variant &variant)
 {
-    if (this == &variant)
-        return *this;
+  if (this == &variant)
+      return *this;
 
-    clear();
-  if (variant._d.type > Char && variant._d.type < UserType) 
-    {
-        _d.type = variant._d.type;
-        varHandler->construct(&_d, variant.constData());
-        _d.is_null = variant._d.is_null;
-    } 
-    else
-    {
-        _d = variant._d;
-    }
+  clear();
+  if( variant._d.type > Char && variant._d.type < UserType ) 
+  {
+    _d.type = variant._d.type;
+    varHandler->construct(&_d, variant.constData());
+    _d.is_null = variant._d.is_null;
+  } 
+  else
+  {
+    _d = variant._d;
+  }
 
-    return *this;
+  return *this;
 }
 
 std::string Variant::typeName() const
@@ -1275,7 +1261,7 @@ Variant::Type Variant::nameToType(const std::string &name)
     if ( name.empty() )
         return Variant::Invalid;
 
-    if( stricmp( name.c_str(),  "UserType" ) )
+    if( !stricmp( name.c_str(),  "UserType" ) )
         return UserType;
 
     int metaType = staticNameToType( name.c_str() );
@@ -1316,7 +1302,7 @@ StringArray Variant::toStringArray() const
 }
 
 /*!
-    Returns the variant as a QString if the variant has type() \l
+    Returns the variant as a String if the variant has type() \l
     String, \l Bool, \l ByteArray, \l Char, \l Date, \l DateTime, \l
     Double, \l Int, \l LongLong, \l StringList, \l Time, \l unsigned int, or
     \l ULongLong; otherwise returns an empty string.
@@ -1375,7 +1361,7 @@ ByteArray Variant::toByteArray() const
     \fn Point Variant::toPoint() const
 
     Returns the variant as a Point if the variant has type()
-    \l Point or \l PointF; otherwise returns a null QPoint.
+    \l Point or \l PointF; otherwise returns a null Point.
 
     \sa canConvert(), convert()
 */
@@ -1464,20 +1450,20 @@ PointF Variant::toPointF() const
 }
 
 // /*!
-//     \fn QUrl Variant::toUrl() const
+//     \fn Url Variant::toUrl() const
 // 
-//     Returns the variant as a QUrl if the variant has type()
-//     \l Url; otherwise returns an invalid QUrl.
+//     Returns the variant as a Url if the variant has type()
+//     \l Url; otherwise returns an invalid Url.
 // 
 //     \sa canConvert(), convert()
 // */
-// QUrl Variant::toUrl() const
+// Url Variant::toUrl() const
 // {
-//     return Variant2ToHelper<QUrl>(_d, Url, handler);
+//     return Variant2ToHelper<Url>(_d, Url, handler);
 // }
 
 /*!
-    \fn QChar Variant::toChar() const
+    \fn Char Variant::toChar() const
 
     Returns the variant as a char if the variant has type() \l Char,
     \l Int, or \l unsigned int; otherwise returns an invalid char.
@@ -1490,7 +1476,7 @@ char Variant::toChar() const
 }
 
 template <typename T>
-inline T qNumVariantToHelper(const Variant2Impl &d,
+inline T numVariantToHelper(const Variant2Impl &d,
                              const Variant2Handler *handler, bool *ok, const T& val)
 {
     unsigned int t = Variant::nameToType( std::string( typeid(T).name() ) );
@@ -1515,14 +1501,14 @@ inline T qNumVariantToHelper(const Variant2Impl &d,
 
     \bold{Warning:} If the value is convertible to a \l LongLong but is too
     large to be represented in an int, the resulting arithmetic overflow will
-    not be reflected in \a ok. A simple workaround is to use QString::toInt().
-    Fixing this bug has been postponed to Qt 5 in order to avoid breaking existing code.
+    not be reflected in \a ok. A simple workaround is to use String::toInt().
+    Fixing this bug has been postponed in order to avoid breaking existing code.
 
     \sa canConvert(), convert()
 */
 int Variant::toInt(bool *ok) const
 {
-    return qNumVariantToHelper<int>(_d, varHandler, ok, _d.data.i);
+    return numVariantToHelper<int>(_d, varHandler, ok, _d.data.i);
 }
 
 // nrp::Color Variant::toColor() const
@@ -1540,14 +1526,14 @@ int Variant::toInt(bool *ok) const
 
     \bold{Warning:} If the value is convertible to a \l ULongLong but is too
     large to be represented in an unsigned int, the resulting arithmetic overflow will
-    not be reflected in \a ok. A simple workaround is to use QString::toUInt().
-    Fixing this bug has been postponed to Qt 5 in order to avoid breaking existing code.
+    not be reflected in \a ok. A simple workaround is to use String::toUInt().
+    Fixing this bug has been postponed to order to avoid breaking existing code.
 
     \sa canConvert(), convert()
 */
 unsigned int Variant::toUInt(bool *ok) const
 {
-    return qNumVariantToHelper<unsigned int>(_d, varHandler, ok, _d.data.u);
+    return numVariantToHelper<unsigned int>(_d, varHandler, ok, _d.data.u);
 }
 
 /*!
@@ -1562,7 +1548,7 @@ unsigned int Variant::toUInt(bool *ok) const
 */
 long long Variant::toLongLong(bool *ok) const
 {
-    return qNumVariantToHelper<long long>(_d, varHandler, ok, _d.data.ll);
+    return numVariantToHelper<long long>(_d, varHandler, ok, _d.data.ll);
 }
 
 /*!
@@ -1578,7 +1564,7 @@ long long Variant::toLongLong(bool *ok) const
 */
 unsigned long long Variant::toULongLong(bool *ok) const
 {
-    return qNumVariantToHelper<unsigned long long>(_d, varHandler, ok, _d.data.ull);
+    return numVariantToHelper<unsigned long long>(_d, varHandler, ok, _d.data.ull);
 }
 
 /*!
@@ -1615,7 +1601,7 @@ bool Variant::toBool() const
 */
 double Variant::toDouble(bool *ok) const
 {
-    return qNumVariantToHelper<double>(_d, varHandler, ok, _d.data.d);
+    return numVariantToHelper<double>(_d, varHandler, ok, _d.data.d);
 }
 
 /*!
@@ -1632,7 +1618,7 @@ double Variant::toDouble(bool *ok) const
 */
 float Variant::toFloat(bool *ok) const
 {
-    return qNumVariantToHelper<float>(_d, varHandler, ok, _d.data.f);
+    return numVariantToHelper<float>(_d, varHandler, ok, _d.data.f);
 }
 
 /*!
@@ -1774,7 +1760,7 @@ bool Variant::canConvert(Type t) const
 {
     //we can treat floats as double
     //the reason for not doing it the "proper" way is that Variant::Float's value is 135,
-    //which can't be handled by qCanConvertMatrix
+    //which can't be handled by canConvertMatrix
     //In addition Variant::Type doesn't have a Float value, so we're using Variant::Float
     const unsigned int currentType = ((_d.type == Variant::NFloat) ? Variant::Double : _d.type);
     if (unsigned int(t) == unsigned int(Variant::NFloat)) t = Variant::Double;
@@ -1838,7 +1824,7 @@ bool Variant::canConvert(Type t) const
 
     \warning For historical reasons, converting a null Variant results
     in a null value of the desired type (e.g., an empty string for
-    QString) and a result of false.
+    string) and a result of false.
 
     \sa canConvert(), clear()
 */
@@ -1865,53 +1851,13 @@ bool Variant::convert(Type t)
     return isOk;
 }
 
-/*!
-    \fn bool operator==(const Variant &v1, const Variant &v2)
-
-    \relates Variant
-
-    Returns true if \a v1 and \a v2 are equal; otherwise returns false.
-
-    \warning This function doesn't support custom types registered
-    with qRegisterMetaType().
-*/
-/*!
-    \fn bool operator!=(const Variant &v1, const Variant &v2)
-
-    \relates Variant
-
-    Returns false if \a v1 and \a v2 are equal; otherwise returns true.
-
-    \warning This function doesn't support custom types registered
-    with qRegisterMetaType().
-*/
-
-/*! \fn bool Variant::operator==(const Variant &v) const
-
-    Compares this Variant with \a v and returns true if they are
-    equal; otherwise returns false.
-
-    In the case of custom types, their equalness operators are not called.
-    Instead the values' addresses are compared.
-*/
-
-/*!
-    \fn bool Variant::operator!=(const Variant &v) const
-
-    Compares this Variant with \a v and returns true if they are not
-    equal; otherwise returns false.
-
-    \warning This function doesn't support custom types registered
-    with qRegisterMetaType().
-*/
-
-static bool qIsNumericType(unsigned int tp)
+static bool isNumericType(unsigned int tp)
 {
     return (tp >= Variant::Bool && tp <= Variant::Double)
            || (tp >= Variant::NLong && tp <= Variant::NFloat);
 }
 
-static bool qIsFloatingPoint(unsigned int tp)
+static bool isFloatingPoint(unsigned int tp)
 {
     return tp == Variant::Double || tp == Variant::NFloat;
 }
@@ -1923,9 +1869,9 @@ bool Variant::cmp(const Variant &v) const
     Variant v2 = v;
     if (_d.type != v2._d.type) 
     {
-        if (qIsNumericType(_d.type) && qIsNumericType(v._d.type)) 
+        if (isNumericType(_d.type) && isNumericType(v._d.type)) 
         {
-            if (qIsFloatingPoint(_d.type) || qIsFloatingPoint(v._d.type))
+            if (isFloatingPoint(_d.type) || isFloatingPoint(v._d.type))
                 return math::isEqual( toFloat(), v.toFloat() );
             else
                 return toLongLong() == v.toLongLong();

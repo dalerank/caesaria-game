@@ -43,6 +43,12 @@ City& Scenario::getCity()
    return _city;
 }
 
+
+const City& Scenario::getCity() const
+{
+  return _city;
+}
+
 std::string Scenario::getDescription() const
 {
    return _description;

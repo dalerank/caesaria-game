@@ -20,6 +20,7 @@
 #define SCENARIO_SAVER_HPP
 
 #include <string>
+#include "oc3_scopedptr.hpp"
 
 class Scenario;
 
@@ -27,8 +28,12 @@ class ScenarioSaver
 {
 public:
    ScenarioSaver( const Scenario& scenario );
+   ~ScenarioSaver();
 
    void save( const std::string& filename );
+private:
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 

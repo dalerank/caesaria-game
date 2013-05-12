@@ -35,6 +35,7 @@ public:
    void load( const VariantMap& stream);
 
    City& getCity();
+   const City& getCity() const;
    std::string getDescription() const;
 
 private:

@@ -46,7 +46,15 @@ SaveAdapter::SaveAdapter()
 
 }
 
-bool SaveAdapter::save( const VariantMap& oprions )
+bool SaveAdapter::save( const VariantMap& options, const std::string& filename )
 {
-  return false;
+  std::string data = Json::serialize( options.toVariant(), " " );
+  if( !data.empty() )
+  {
+    std::fstream f(filename.c_str(), std::ios::out | std::ios::binary);
+    f.write( data.c_str(), data.size() ); 
+    f.close();
+  }
+
+  return true;
 }
