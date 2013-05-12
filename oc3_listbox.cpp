@@ -195,6 +195,7 @@ void ListBox::setSelected(int id)
     _d->selectedItemIndex = ((unsigned int)id>=_d->items.size() ? -1 : id);
 
     _d->selectTime = DateTime::getElapsedTime();
+    _d->needItemsRepackTextures = true;
 
     _RecalculateScrollPos();
 }
@@ -289,6 +290,7 @@ bool ListBox::onEvent(const NEvent& event)
         }
         
         _RecalculateScrollPos();
+        _d->needItemsRepackTextures = true;
 
 				// post the news
         if( oldSelected != _d->selectedItemIndex && !_d->selecting && !isFlag( LBF_MOVEOVER_SELECT ) )
