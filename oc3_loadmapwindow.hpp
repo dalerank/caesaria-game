@@ -19,6 +19,7 @@
 
 #include "oc3_widget.hpp"
 #include "oc3_scopedptr.hpp"
+#include "oc3_signals.hpp"
 
 class Picture;
 
@@ -37,6 +38,9 @@ public:
   bool isPointInside(const Point& point) const;
 
   void setTitle( const std::string& title );
+
+oc3_signals public:
+  Signal1<std::string>& onSelectFile();
 
 protected:
   void _resizeEvent();

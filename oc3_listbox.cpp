@@ -230,7 +230,7 @@ void ListBox::_IndexChanged( unsigned int eventType )
     case OC3_LISTBOX_SELECTED_AGAIN:
         _d->indexSelectedAgain.emit( _d->selectedItemIndex );
         if( _d->selectedItemIndex >= 0 )
-            _d->textSelectedAgain.emit( _d->items[ _d->selectedItemIndex ].getText() );
+            _d->onItemSelectedAgainSignal.emit( _d->items[ _d->selectedItemIndex ].getText() );
     break;
 
     default:
@@ -898,7 +898,7 @@ ListBoxItem& ListBox::addItem( const std::string& text, const Font& font, const 
   i.setIcon( -1 );
   i.setState( stNormal );
   //i.currentHovered = 255;
-	i.OverrideColors[ ListBoxItem::LBC_TEXT ].font = font;
+  i.OverrideColors[ ListBoxItem::LBC_TEXT ].font = font.isValid() ? font : _d->font;
   i.OverrideColors[ ListBoxItem::LBC_TEXT ].color = color;
 
   _d->needItemsRepackTextures = true;
@@ -913,4 +913,9 @@ ListBoxItem& ListBox::addItem( const std::string& text, const Font& font, const 
 int ListBox::getSelected()
 {
     return _d->selectedItemIndex;
+}
+
+Signal1<std::string>& ListBox::onItemSelectedAgain()
+{
+  return _d->onItemSelectedAgainSignal;
 }

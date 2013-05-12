@@ -22,6 +22,7 @@
 #include "oc3_gfx_engine.hpp"
 #include "oc3_listbox.hpp"
 #include "oc3_stringhelper.hpp"
+#include <boost/filesystem.hpp>
 
 class LoadMapWindow::Impl
 {
@@ -31,6 +32,10 @@ public:
   ListBox* files;
   PushButton* btnExit;
   PushButton* btnHelp;
+
+  void fillFiles();
+oc3_signals public:
+  Signal1<std::string> onSelecteFileSignal;
 };
 
 LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect, int id )
@@ -50,11 +55,8 @@ LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect, int id )
   CONNECT( _d->btnExit, onClicked(), this, LoadMapWindow::deleteLater );
 
   _d->files = new ListBox( this, Rect( 10, _d->lbTitle->getBottom(), getWidth() - 10, _d->btnHelp->getTop() - 5 ), -1, true, true, false ); 
-  
-  for( int i=0; i < 20; i++ )
-  {
-    _d->files->addItem( StringHelper::format( 0xff, "Test%d", i ), FontCollection::instance().getFont( FONT_2 ), 0 );
-  }
+  CONNECT( _d->files, onItemSelectedAgain(), &_d->onSelecteFileSignal, Signal1<std::string>::emit );
+  _d->fillFiles();
 
   SdlFacade &sdlFacade = SdlFacade::instance();
   _d->bgPicture = &sdlFacade.createPicture( getWidth(), getHeight() );
@@ -67,6 +69,22 @@ LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect, int id )
 LoadMapWindow::~LoadMapWindow()
 {
 
+}
+
+void LoadMapWindow::Impl::fillFiles()
+{
+  boost::filesystem::path path ("./resources/maps/");
+
+  boost::filesystem::recursive_directory_iterator it( path );
+  boost::filesystem::recursive_directory_iterator end;
+
+  for (; it!=end; ++it)
+  {
+    if( !boost::filesystem::is_directory(*it) )
+    {
+      files->addItem( boost::filesystem::path( *it ).filename().string(), Font(), 0 );
+    }
+  }
 }
 
 void LoadMapWindow::draw( GfxEngine& engine )
@@ -94,4 +112,9 @@ bool LoadMapWindow::onEvent( const NEvent& event)
 void LoadMapWindow::setTitle( const std::string& title )
 {
   _d->lbTitle->setText( title );
+}
+
+Signal1<std::string>& LoadMapWindow::onSelectFile()
+{
+  return _d->onSelecteFileSignal;
 }

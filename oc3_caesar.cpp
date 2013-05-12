@@ -233,20 +233,27 @@ void CaesarApp::setScreenMenu()
     break;
    
     case ScreenMenu::loadSavedGame:
-	{  
-	loadGame("oc3.sav");
-        _d->nextScreen = SCREEN_GAME;
-	}
+	  {  
+    	loadGame("oc3.sav");
+      _d->nextScreen = SCREEN_GAME;
+	  }
+    break;
+
+    case ScreenMenu::loadMap:
+    {
+      loadScenario( screen.getMapName() );
+      _d->nextScreen = SCREEN_GAME;
+    }
     break;
    
     case ScreenMenu::closeApplication:
-	{
-		_d->nextScreen = SCREEN_QUIT;
-	}
+	  {
+		  _d->nextScreen = SCREEN_QUIT;
+	  }
     break;
    
     default:
-		THROW("Unexpected result event: " << result);
+		  THROW("Unexpected result event: " << result);
    }
 }
 

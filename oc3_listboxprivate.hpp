@@ -48,7 +48,7 @@ oc3_signals public:
 	Signal1<int> indexSelected;
   Signal1<std::string> textSelected;
 	Signal1<int> indexSelectedAgain;
-  Signal1<std::string> textSelectedAgain;
+  Signal1<std::string> onItemSelectedAgainSignal;
 
 	void recalculateItemHeight( const Font& defaulFont, int height )
 	{    

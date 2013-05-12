@@ -36,10 +36,17 @@ public:
     GuiEnv* gui;
     int result;
     bool isStoped;
+    std::string fileMap;
 
     void resolveNewGame() { result=startNewGame; isStoped=true; }
     void resolveLoadGame() { result=loadSavedGame; isStoped=true; }
     void resolveQuitGame() { result=closeApplication; isStoped=true; }
+    void resolveSelectMap( std::string fileName )
+    {
+      result = loadMap;
+      fileMap = "./resources/maps/" + fileName;
+      isStoped = true;
+    }
 
     void resolveShowLoadMapWnd();
 };
@@ -51,6 +58,7 @@ void ScreenMenu::Impl::resolveShowLoadMapWnd()
                                           Rect( 0.25f * rootSize.getWidth(), 0.25f * rootSize.getHeight(), 
                                                 0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() ), -1 );
 
+  CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectMap );
   wnd->setTitle( "##Load map##" );
 }
 
@@ -88,18 +96,18 @@ void ScreenMenu::initialize( GfxEngine& engine, GuiEnv& gui )
     _d->menu = new StartMenu( gui.getRootWidget() );
 
     PushButton* btn = _d->menu->addButton( "New game", -1 );
-    CONNECT( btn, onClicked(), _d.get(), Impl::resolveNewGame );
+    CONNECT( btn, onClicked(), _d.data(), Impl::resolveNewGame );
 
     btn = _d->menu->addButton( "Load game", -1 );
-    CONNECT( btn, onClicked(), _d.get(), Impl::resolveLoadGame );
+    CONNECT( btn, onClicked(), _d.data(), Impl::resolveLoadGame );
 
 #ifdef _DEBUG
     btn = _d->menu->addButton( "##Load map##", -1 );
-    CONNECT( btn, onClicked(), _d.get(), Impl::resolveShowLoadMapWnd );
+    CONNECT( btn, onClicked(), _d.data(), Impl::resolveShowLoadMapWnd );
 #endif
 
     btn = _d->menu->addButton( "Quit", -1 );
-    CONNECT( btn, onClicked(), _d.get(), Impl::resolveQuitGame );
+    CONNECT( btn, onClicked(), _d.data(), Impl::resolveQuitGame );
 }
 
 int ScreenMenu::getResult() const
@@ -110,4 +118,9 @@ int ScreenMenu::getResult() const
 bool ScreenMenu::isStopped() const
 {
     return _d->isStoped;
+}
+
+const std::string& ScreenMenu::getMapName() const
+{
+  return _d->fileMap;
 }

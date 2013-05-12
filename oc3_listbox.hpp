@@ -20,6 +20,7 @@
 #include "oc3_flagholder.hpp"
 #include "oc3_listboxitem.hpp"
 #include "oc3_predefinitions.hpp"
+#include "oc3_signals.hpp"
 
 typedef enum { LBF_SELECT_ON_MOVE=0, LBF_SELECT_ON_MOUSE_DOWN,
                LBF_DRAWBACK, LBF_AUTOSCROLL, LBF_MOVEOVER_SELECT, 
@@ -127,6 +128,9 @@ public:
   virtual int getSelected();
 
   void beforeDraw( GfxEngine& painter );
+
+oc3_signals public:
+  Signal1<std::string>& onItemSelectedAgain();
 
 protected:
 	//! Update the position and size of the listbox, and update the scrollbar
