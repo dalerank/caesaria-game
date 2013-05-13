@@ -147,15 +147,61 @@ void ScreenGame::afterFrame()
 
 void ScreenGame::handleEvent( NEvent& event )
 {
-  bool eventResolved = _d->gui->handleEvent( event );      
-   
-  if( !eventResolved )
-    _guiTilemap.handleEvent( event );
-
-  if( event.EventType == OC3_KEYBOARD_EVENT && event.KeyboardEvent.Key == KEY_ESCAPE )
+  //After MouseDown events are send to the same target till MouseUp
+  static enum _MouseEventTarget
   {
-    std::cout << "EVENT_ESCAPE was pressed" << std::endl;
-    stop();
+    _MET_NONE,
+    _MET_GUI,
+    _MET_TILES
+  } _mouseEventTarget = _MET_NONE;
+
+  bool eventResolved = false;
+  if (event.EventType == OC3_MOUSE_EVENT)
+  {
+    if (event.EventType & (OC3_RMOUSE_PRESSED_DOWN | OC3_LMOUSE_PRESSED_DOWN))
+    {
+      eventResolved = _d->gui->handleEvent( event );
+      if (eventResolved)
+      {
+        _mouseEventTarget = _MET_GUI;
+      }
+      else // eventresolved
+      {
+        _mouseEventTarget = _MET_TILES;
+        _guiTilemap.handleEvent( event );
+      }
+      return;
+    }
+
+    switch(_mouseEventTarget)
+    {
+    case _MET_GUI:
+      _d->gui->handleEvent( event );
+      break;
+    case _MET_TILES:
+      _guiTilemap.handleEvent( event );
+      break;
+    default:
+      if (!_d->gui->handleEvent( event ))
+        _guiTilemap.handleEvent( event );
+      break;
+    }
+
+    if (event.EventType & (OC3_RMOUSE_LEFT_UP | OC3_LMOUSE_LEFT_UP))
+      _mouseEventTarget = _MET_NONE;
+  }
+  else
+  {
+    eventResolved = _d->gui->handleEvent( event );      
+   
+    if( !eventResolved )
+      _guiTilemap.handleEvent( event );
+
+    if( event.EventType == OC3_KEYBOARD_EVENT && event.KeyboardEvent.Key == KEY_ESCAPE )
+    {
+      std::cout << "EVENT_ESCAPE was pressed" << std::endl;
+      stop();
+    }
   }
 }
 
