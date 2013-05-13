@@ -51,8 +51,8 @@ public:
 
 ScreenGame::ScreenGame() : _d( new Impl )
 {
-   _d->topMenu = NULL;
-   _scenario = NULL;
+  _d->topMenu = NULL;
+  _scenario = NULL;
 }
 
 ScreenGame::~ScreenGame() {}
@@ -155,31 +155,33 @@ void ScreenGame::afterFrame()
 
 void ScreenGame::handleEvent( NEvent& event )
 {
-    bool eventResolved = _d->gui->handleEvent( event );      
+  bool eventResolved = _d->gui->handleEvent( event );      
    
-    if( !eventResolved )
-        _d->guiTilemap.handleEvent( event );
+  if( !eventResolved )
+    _d->guiTilemap.handleEvent( event );
+  if( !eventResolved )
+    _d->guiTilemap.handleEvent( event );
 
-    if( event.EventType == OC3_KEYBOARD_EVENT && event.KeyboardEvent.Key == KEY_ESCAPE )
-    {
-        std::cout << "EVENT_ESCAPE was pressed" << std::endl;
-        stop();
-    }
+  if( event.EventType == OC3_KEYBOARD_EVENT && event.KeyboardEvent.Key == KEY_ESCAPE )
+  {
+    std::cout << "EVENT_ESCAPE was pressed" << std::endl;
+    stop();
+  }
 }
 
 int ScreenGame::getResult() const
 {
-	return 0;
+  return 0;
 }
 
 void ScreenGame::resolveCreateConstruction( int type )
 {
-    _d->guiTilemap.setChangeCommand( TilemapChangeCommand( BuildingType( type ) ) );
+  _d->guiTilemap.setChangeCommand( TilemapChangeCommand( BuildingType( type ) ) );
 }
 
 void ScreenGame::resolveRemoveTool()
 {
-    _d->guiTilemap.setChangeCommand( TilemapRemoveCommand() );
+  _d->guiTilemap.setChangeCommand( TilemapRemoveCommand() );
 }
 
 void ScreenGame::showTileInfo( Tile* tile )

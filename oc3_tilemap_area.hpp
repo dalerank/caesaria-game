@@ -29,36 +29,43 @@
 class TilemapArea
 {
 public:
-   TilemapArea();
-   ~TilemapArea();
+  TilemapArea();
+  ~TilemapArea();
 
-   void init(Tilemap& tilemap);
+  void init(Tilemap& tilemap);
 
-   // size of the view in pixel
-   void setViewSize(const int width, const int height);
+  // size of the view in pixel
+  void setViewSize(const int width, const int height);
 
-   void setCenterIJ( const TilePos& pos );
-   void setCenterXZ(const int x, const int z);
-   int getCenterX();
-   int getCenterZ();
+  void setCenterIJ( const TilePos& pos );
 
-   void moveRight(const int amount);
-   void moveLeft(const int amount);
-   void moveUp(const int amount);
-   void moveDown(const int amount);
+  void moveRight(const int amount);
+  void moveLeft(const int amount);
+  void moveUp(const int amount);
+  void moveDown(const int amount);
 
-   // return tile coordinates (i, j), in order of depth
-   const std::vector< TilePos >& getTiles();
+  // return tile coordinates (i, j), in order of depth
+  const std::vector< TilePos >& getTiles();
 
+  int getCenterX() const;
+  int getCenterZ() const;
+  int getCenterI() const;
+  int getCenterJ() const;
+  
 private:
-
-   Tilemap* _tilemap;  // tile map to display
-   int _map_size;      // size of the map  (in tiles)
-   int _view_width;    // width of the view (in tiles)  nb_tilesX = 1+2*_view_width
-   int _view_height;   // height of the view (in tiles)  nb_tilesY = 1+2*_view_height
-   int _center_x;      // horizontal center of the view (in tiles)
-   int _center_z;      // vertical center of the view (in tiles)
-   std::vector< TilePos > _coordinates;  // cached list of visible tiles
+  
+  void setCenterXZ(const int x, const int z);
+  
+  int _center_i;
+  int _center_j;
+  
+  Tilemap* _tilemap;  // tile map to display
+  int _map_size;      // size of the map  (in tiles)
+  int _view_width;    // width of the view (in tiles)  nb_tilesX = 1+2*_view_width
+  int _view_height;   // height of the view (in tiles)  nb_tilesY = 1+2*_view_height
+  int _center_x;      // horizontal center of the view (in tiles)
+  int _center_z;      // vertical center of the view (in tiles)
+  std::vector< TilePos > _coordinates;  // cached list of visible tiles
 };
 
 

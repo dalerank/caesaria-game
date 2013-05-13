@@ -99,29 +99,11 @@ void TerrainTile::decode(const int bitset)
   if (bitset & 0x20)   {  setGarden(true);   }
   if (bitset & 0x40)   {  setRoad(true);     }
   if (bitset & 0x100)  {  setAqueduct(true); }
-  //   if (bitset & 0x200)  {  setElevation(true);}
-  if (bitset & 0x400)  {
-    int i=0;
-    setRock( true );
-    //setAccessRamp(true);
-  }
+
+  if (bitset & 0x200)  {  setElevation(true);}
+  if (bitset & 0x400)  {  setRock( true );   }
   if (bitset & 0x800)  {  setMeadow(true);   }
   //   if (bitset & 0x4000) {  setWall(true);   }
-}
-
-void TerrainTile::setOriginalImgId( unsigned int id )
-{
-  _imgId = id;
-}
-
-unsigned int TerrainTile::getOriginalImgId() const
-{
-  return _imgId;
-}
-
-int TerrainTile::getDesirability() const
-{
-  return _desirability;
 }
 
 void TerrainTile::appendDesirability( int value )

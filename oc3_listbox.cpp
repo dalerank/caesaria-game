@@ -563,7 +563,6 @@ void ListBox::beforeDraw( GfxEngine& painter)
 
       TypeAlign itemTextHorizontalAlign, itemTextVerticalAlign;
       Font currentFont;
-      int fontColor;
 
       for (int i=0; i<(int)_d->items.size(); ++i)
       {

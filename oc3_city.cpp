@@ -469,7 +469,7 @@ void City::save( VariantMap& stream) const
   stream[ "boatExitI" ] = _boatExitI;
   stream[ "boatExitJ" ] = _boatExitJ;
   stream[ "climate" ] = _climate;
-  stream[ "time" ] = _d->time;
+  stream[ "time" ] = (unsigned long long)_d->time;
   stream[ "funds" ] = _d->funds;
   stream[ "populaton" ] = _d->population;
 // 

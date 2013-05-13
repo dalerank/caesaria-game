@@ -41,6 +41,8 @@ class GuiTilemap
 public:
    GuiTilemap();
    ~GuiTilemap();
+   
+   static GuiTilemap& instance() { return *_instance;}
 
    void init(City &city, TilemapArea &mapArea, ScreenGame *screen);
 
@@ -94,6 +96,8 @@ private:
 
    class Impl;
    ScopedPtr< Impl > _d;
+   
+   static GuiTilemap *_instance;
 };
 
 

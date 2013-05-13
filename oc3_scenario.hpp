@@ -28,22 +28,22 @@
 class Scenario : public Serializable
 {
 public:
-   static Scenario& instance();
+  static Scenario& instance();
 
-   Scenario();
-   void save( VariantMap& stream) const;
-   void load( const VariantMap& stream);
+  Scenario();
+  void save( VariantMap& stream) const;
+  void load( const VariantMap& stream);
 
-   City& getCity();
-   const City& getCity() const;
-   std::string getDescription() const;
+  City& getCity();
+  const City& getCity() const;
+  std::string getDescription() const;
 
 private:
 
-   City _city;
-   std::string _description;
+  City _city;
+  std::string _description;
 
-   static Scenario *_instance;
+  static Scenario *_instance;
 };
 
 #endif

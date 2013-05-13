@@ -79,8 +79,6 @@ Picture& SdlFacade::copyPicture(const Picture &pic)
 
    _createdPics.push_back(newpic);
    return *_createdPics.back();
-
-   
 }
 
 
@@ -100,39 +98,39 @@ SDL_Surface* SdlFacade::createSurface(Uint32 flags, const int width, const int h
 
 void SdlFacade::drawPicture(const Picture &srcpic, Picture &dstpic, const int dx, const int dy)
 {
-   SDL_Surface *srcimg = srcpic.get_surface();
-   SDL_Surface *dstimg = dstpic.get_surface();
-   drawImage(srcimg, dstimg, dx + srcpic.get_xoffset(), dy - srcpic.get_yoffset());
+  SDL_Surface *srcimg = srcpic.get_surface();
+  SDL_Surface *dstimg = dstpic.get_surface();
+  drawImage(srcimg, dstimg, dx + srcpic.get_xoffset(), dy - srcpic.get_yoffset());
 }
 
 
 void SdlFacade::drawPicture(const Picture &srcpic, SDL_Surface *dstimg, const int dx, const int dy)
 {
-   SDL_Surface *srcimg = srcpic.get_surface();
-   drawImage(srcimg, dstimg, dx + srcpic.get_xoffset(), dy - srcpic.get_yoffset());
+  SDL_Surface *srcimg = srcpic.get_surface();
+  drawImage(srcimg, dstimg, dx + srcpic.get_xoffset(), dy - srcpic.get_yoffset());
 }
 
 
 void SdlFacade::drawImage(SDL_Surface *srcimg, SDL_Surface *dstimg, const int dx, const int dy)
 {
-    if( srcimg )
-	    drawImage(srcimg, 0, 0, srcimg->w, srcimg->h, dstimg, dx, dy);
+  if( srcimg )
+    drawImage(srcimg, 0, 0, srcimg->w, srcimg->h, dstimg, dx, dy);
 }
 
 
 void SdlFacade::drawImage(SDL_Surface *srcimg, const int sx, const int sy, const int sw, const int sh, SDL_Surface *dstimg, const int dx, const int dy)
 {
-   SDL_Rect src, dst;
+  SDL_Rect src, dst;
 
-   src.x = sx;
-   src.y = sy;
-   src.w = sw;
-   src.h = sh;
-   dst.x = dx;
-   dst.y = dy;
-   dst.w = src.w;
-   dst.h = src.h;
-   SDL_BlitSurface(srcimg, &src, dstimg, &dst);
+  src.x = sx;
+  src.y = sy;
+  src.w = sw;
+  src.h = sh;
+  dst.x = dx;
+  dst.y = dy;
+  dst.w = src.w;
+  dst.h = src.h;
+  SDL_BlitSurface(srcimg, &src, dstimg, &dst);
 }
 
 
@@ -217,53 +215,52 @@ Uint32 SdlFacade::get_pixel(SDL_Surface *img, const int x, const int y)
 
 void SdlFacade::set_pixel(SDL_Surface *img, const int x, const int y, const Uint32 color)
 {
-   switch (img->format->BytesPerPixel)
-   {
-   case 1:
-      // 8bpp
-      Uint8 *bufp8;
-      bufp8 = (Uint8 *)img->pixels + y*img->pitch + x;
-      *bufp8 = color;
-      break;
+  switch (img->format->BytesPerPixel)
+  {
+  case 1:
+    // 8bpp
+    Uint8 *bufp8;
+    bufp8 = (Uint8 *)img->pixels + y*img->pitch + x;
+    *bufp8 = color;
+    break;
 
-   case 2:
-      // 15bpp or 16bpp
-      Uint16 *bufp16;
-      bufp16 = (Uint16 *)img->pixels + y*img->pitch/2 + x;
-      *bufp16 = color;
-      break;
+  case 2:
+    // 15bpp or 16bpp
+    Uint16 *bufp16;
+    bufp16 = (Uint16 *)img->pixels + y*img->pitch/2 + x;
+    *bufp16 = color;
+    break;
 
-   case 3:
-      // 24bpp, very slow!
-      THROW("Unsupported graphic mode 24bpp");
-      break;
+  case 3:
+    // 24bpp, very slow!
+    THROW("Unsupported graphic mode 24bpp");
+    break;
 
-   case 4:
-      // 32bpp
-      Uint32 *bufp32;
-      bufp32 = (Uint32 *)img->pixels + y*img->pitch/4 + x;
-      *bufp32 = color;
-      break;
-   }
-
+  case 4:
+    // 32bpp
+    Uint32 *bufp32;
+    bufp32 = (Uint32 *)img->pixels + y*img->pitch/4 + x;
+    *bufp32 = color;
+    break;
+  }
 }
 
 
 void SdlFacade::color_or(SDL_Surface *img, const SDL_Color &color_sub)
 {
-   lockSurface(img);
+  lockSurface(img);
 
-   Uint32 amount = SDL_MapRGBA(img->format, color_sub.r, color_sub.g, color_sub.b, 0);
-   for (int y = 0; y < img->h; ++y)
-   {
-      for (int x = 0; x < img->w; ++x)
-      {
-         Uint32 color = get_pixel(img, x, y);
-         set_pixel(img, x, y, color | amount);
-      }
-   }
+  Uint32 amount = SDL_MapRGBA(img->format, color_sub.r, color_sub.g, color_sub.b, 0);
+  for (int y = 0; y < img->h; ++y)
+  {
+    for (int x = 0; x < img->w; ++x)
+    {
+      Uint32 color = get_pixel(img, x, y);
+      set_pixel(img, x, y, color | amount);
+    }
+  }
 
-   unlockSurface(img);
+  unlockSurface(img);
 }
 
 

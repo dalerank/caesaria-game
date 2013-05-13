@@ -181,12 +181,13 @@ void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
    {
       f.seekg(kGraphicGrid + 162 * 2 * (border_size + itA) + 2 * border_size, std::ios::beg);  // skip empty rows and empty cols
 
-      for (int itB=0; itB<size; ++itB)
+      for (int itB = 0; itB < size; ++itB)
       {
          int i = itB;
          int j = size-itA-1;
 
-         short int imgId;  // 16bits
+         unsigned short int imgId;  // 16bits
+         
          f.read((char*)&imgId, 2);
          Tile& tile = oTilemap.at(i, j);
          Picture& pic = Picture::load( TerrainTileHelper::convId2PicName( imgId ) );
@@ -196,7 +197,7 @@ void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
    }
 
    // loads the edge map (to know about multi-tile graphics)
-   for (int itA=0; itA<size; ++itA)
+   for (int itA = 0; itA < size; ++itA)
    {
       // for each row
       f.seekg(kEdgeGrid + 162 * (border_size + itA) + border_size, std::ios::beg);  // skip empty rows and empty cols
@@ -216,7 +217,7 @@ void ScenarioLoader::load_map(std::fstream& f, Scenario &oScenario)
             Picture& pic = oTilemap.at(i, j).get_picture();
             int tile_size = (pic.get_width() + 2) / 60;  // size of the multi-tile. the multi-tile is a square.
             // DEBUG
-            std::cout << "multi-tile x" << tile_size << " at " << i << "," << j << std::endl;
+            // std::cout << "multi-tile x" << tile_size << " at " << i << "," << j << std::endl;
 
             // master is the left-most subtile
             int mi = i;

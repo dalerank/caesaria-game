@@ -30,6 +30,8 @@ TilemapArea::TilemapArea()
    _map_size = 0;
    _view_width = 0;
    _view_height = 0;
+   _center_i = 0;
+   _center_j = 0;
    _center_x = 0;
    _center_z = 0;
 }
@@ -46,97 +48,97 @@ void TilemapArea::init(Tilemap &tilemap)
 
 void TilemapArea::setViewSize(const int width, const int height)
 {
-   if (_view_width != width || _view_height != height)
-   {
-      _coordinates.clear();
-   }
-   _view_width = (width+59)/60;
-   _view_height = (height+29)/30;
-   _coordinates.reserve(width*height);
+  if (_view_width != width || _view_height != height)
+  {
+    _coordinates.clear();
+  }
+  _view_width = (width + 59) / 60;
+  _view_height = (height + 29) / 30;
+  
+  std::cout << "width and height " <<  _view_width << " " << _view_height << std::endl;
+  
+  _coordinates.reserve(width * height); // ???? WTF
 }
 
 void TilemapArea::setCenterIJ(const TilePos& pos )
 {
-   int x = pos.getI() + pos.getJ();
-   int z = _map_size-1+pos.getJ()-pos.getI();
-   setCenterXZ( x, z );
+  _center_i = pos.getI();
+  _center_j = pos.getJ();
+
+  setCenterXZ( _center_i + _center_j, _map_size - 1 + _center_j - _center_i );
 }
 
 void TilemapArea::setCenterXZ(const int x, const int z)
 {
-   if (_center_x != x || _center_z != z)
-   {
-      _coordinates.clear();
-   }
-   _center_x = x;
-   _center_z = z;
+  if (_center_x != x || _center_z != z)
+  {
+  _coordinates.clear();
+  }
+  _center_x = x;
+  _center_z = z;
 }
 
-int TilemapArea::getCenterX()
-{
-   return _center_x;
-}
+int TilemapArea::getCenterX() const  {   return _center_x;   }
+int TilemapArea::getCenterZ() const  {   return _center_z;   }
+int TilemapArea::getCenterI() const  {   return _center_i;   }
+int TilemapArea::getCenterJ() const  {   return _center_j;   }
 
-int TilemapArea::getCenterZ()
-{
-   return _center_z;
-}
 
 void TilemapArea::moveRight(const int amount)
 {
-   setCenterXZ(getCenterX()+amount, getCenterZ());
+  setCenterXZ(getCenterX() + amount, getCenterZ());
 }
 
 void TilemapArea::moveLeft(const int amount)
 {
-   setCenterXZ(getCenterX()-amount, getCenterZ());
+  setCenterXZ(getCenterX() - amount, getCenterZ());
 }
 
 void TilemapArea::moveUp(const int amount)
 {
-   setCenterXZ(getCenterX(), getCenterZ()+amount);
+  setCenterXZ(getCenterX(), getCenterZ() + amount);
 }
 
 void TilemapArea::moveDown(const int amount)
 {
-   setCenterXZ(getCenterX(), getCenterZ()-amount);
+  setCenterXZ(getCenterX(), getCenterZ() - amount);
 }
 
 const std::vector< TilePos >& TilemapArea::getTiles()
 {
-   if( _coordinates.empty() )
-   {
-      int zm = _map_size+1;
-      int cx = _center_x;
-      int cz = _center_z;
-      int sx = _view_width;  // size x
-      int sz = _view_height; // size z
+  if( _coordinates.empty() )
+  {
+    int zm = _map_size + 1;
+    int cx = _center_x;
+    int cz = _center_z;
+    int sx = _view_width;  // size x
+    int sz = _view_height; // size z
 
-      for (int z=cz+sz; z>=cz-sz; --z)
+    for (int z = cz + sz; z>=cz - sz; --z)
+    {
+      // depth axis. from far to near.
+
+      int xstart = cx - sx;
+      if ((xstart + z) % 2 == 0)
       {
-         // depth axis. from far to near.
-
-         int xstart = cx-sx;
-         if ((xstart+z)%2==0)
-         {
-            ++xstart;
-         }
-
-         for (int x=xstart; x<=cx+sx; x+=2)
-         {
-            // left-right axis
-            int j = (x + z-zm)/2;
-            int i = x-j;
-
-            if (i>=0 && j>=0 && i<_map_size && j<_map_size)
-            {
-               _coordinates.push_back( TilePos( i, j ));
-            }
-         }
+	++xstart;
       }
-   }
 
-   return _coordinates;
+      for (int x = xstart; x<=cx + sx; x+=2)
+      {
+	// left-right axis
+        int j = (x + z - zm)/2;
+        int i = x - j;
+
+        if (i >= 0 && j >= 0 && i < _map_size && j < _map_size)
+        {
+	  _coordinates.push_back( TilePos( i, j ));
+        }
+      }
+    }
+  }
+
+  return _coordinates;
 }
 
 

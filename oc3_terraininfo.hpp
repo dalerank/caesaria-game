@@ -34,23 +34,27 @@ public:
   bool isWalkable(const bool allLands) const;
   // isBurnable
 
-  bool isWater() const                    { return _isWater;    }
-  bool isRock() const                     { return _isRock;     }
-  bool isTree() const                     { return _isTree;     }
-  bool isBuilding() const                 { return _isBuilding; }
-  bool isRoad() const                     { return _isRoad;     }
-  bool isGarden() const                   { return _isGarden;   }
-  bool isAqueduct() const                 { return _isAqueduct; }
-  bool isMeadow() const                   { return _isMeadow;   }
+  bool isWater() const                    { return _isWater;     }
+  bool isRock() const                     { return _isRock;      }
+  bool isTree() const                     { return _isTree;      }
+  bool isBuilding() const                 { return _isBuilding;  }
+  bool isRoad() const                     { return _isRoad;      }
+  bool isGarden() const                   { return _isGarden;    }
+  bool isAqueduct() const                 { return _isAqueduct;  }
+  bool isMeadow() const                   { return _isMeadow;    }
+  bool isElevation() const                { return _isElevation; }
+  bool isWall() const                     { return _isWall;      }
 
-  void setTree(const bool isTree)         { _isTree     = isTree;     }
-  void setRock(const bool isRock)         { _isRock     = isRock;     }
-  void setWater(const bool isWater)       { _isWater    = isWater;    }
-  void setBuilding(const bool isBuilding) { _isBuilding = isBuilding; }
-  void setGarden(const bool isGarden)     { _isGarden   = isGarden;   }
-  void setRoad(const bool isRoad)         { _isRoad     = isRoad;     }
-  void setAqueduct(const bool isAqueduct) { _isAqueduct = isAqueduct; }
-  void setMeadow(const bool isMeadow)     { _isMeadow   = isMeadow;   }
+  void setTree(const bool isTree)           { _isTree      = isTree;      }
+  void setRock(const bool isRock)           { _isRock      = isRock;      }
+  void setWater(const bool isWater)         { _isWater     = isWater;     }
+  void setBuilding(const bool isBuilding)   { _isBuilding  = isBuilding;  }
+  void setGarden(const bool isGarden)       { _isGarden    = isGarden;    }
+  void setRoad(const bool isRoad)           { _isRoad      = isRoad;      }
+  void setAqueduct(const bool isAqueduct)   { _isAqueduct  = isAqueduct;  }
+  void setMeadow(const bool isMeadow)       { _isMeadow    = isMeadow;    }
+  void setElevation(const bool isElevation) { _isElevation = isElevation; }
+  void setWall(const bool isWall)           { _isWall      = isWall;      }
 
   void setOverlay(LandOverlayPtr overlay);
   LandOverlayPtr getOverlay() const;
@@ -59,10 +63,10 @@ public:
   int encode() const;
   void decode(const int bitset);
 
-  void setOriginalImgId( unsigned int id );
-  unsigned int getOriginalImgId() const;
+  void setOriginalImgId( unsigned short int id ) { _imgId = id;          }
+  unsigned short int getOriginalImgId() const    { return _imgId;        }
 
-  int getDesirability() const;
+  int getDesirability() const              { return _desirability; }
   void appendDesirability( int value );
 
 private:
@@ -74,8 +78,13 @@ private:
   bool _isGarden;
   bool _isAqueduct;
   bool _isMeadow;
+  bool _isElevation;
+  bool _isWall;
   int _desirability;
-  unsigned int _imgId;
+  
+  unsigned short int _imgId;      // original tile information
+  
+  
   LandOverlayPtr _overlay;
 };
 

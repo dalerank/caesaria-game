@@ -52,22 +52,23 @@ protected:
   int getResult() const;
 
 private:
-   //void setMenu(Menu &menu);
+  //void setMenu(Menu &menu);
 
-   void drawTilemap();
-   void drawInterface();
+  void drawTilemap();
+  void drawInterface();
 
-   void resolveCreateConstruction( int type );
-   void resolveRemoveTool();
-   void showTileInfo( Tile* tile );
+
+  void resolveCreateConstruction( int type );
+  void resolveRemoveTool();
+  void showTileInfo( Tile* tile );
    void resolveGameSave( std::string filename );
    
-   GuiInfoBox* _infoBox;   // info box to display, if any
-   Scenario* _scenario; // current game scenario
-   TilemapArea _mapArea;  // visible map area
+  GuiInfoBox* _infoBox;   // info box to display, if any
+  Scenario* _scenario; // current game scenario
+  TilemapArea _mapArea;  // visible map area
 
-   class Impl;
-   ScopedPtr< Impl > _d;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 
