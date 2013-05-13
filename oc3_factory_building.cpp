@@ -73,6 +73,17 @@ void Factory::timeStep(const unsigned long time)
 {
    Building::timeStep(time);
 
+   // release walkers
+   std::list<WalkerPtr>::iterator i = _d->pushers.begin();
+   while (i != _d->pushers.end())
+   {
+      bool __isDeleted = (*i)->isDeleted();
+      if (!__isDeleted)
+          _d->pushers.erase(i++);
+      else
+          ++i;
+   }
+
    GoodStock &inStock = getInGood();
 
    float workersRatio = float(getWorkers()) / float(getMaxWorkers());  // work drops if not enough workers
@@ -112,7 +123,8 @@ void Factory::deliverGood()
 {
    // std::cout << "Factory delivery" << std::endl;
 
-   // make a cart pusher and send him away   
+   // make a cart pusher and send him away
+  std::cout << "Good is ready!!!" << std::endl;
    if( _mayDeliverGood() )
    {
      GoodStock stock(_outGoodType, 100, 100);
