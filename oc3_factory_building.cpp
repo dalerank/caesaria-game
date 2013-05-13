@@ -25,6 +25,7 @@
 #include "oc3_gettext.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_predefinitions.hpp"
+#include "oc3_variant.hpp"
 
 class Factory::Impl
 {

@@ -16,6 +16,7 @@
 #include "oc3_granary.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_picture.hpp"
+#include "oc3_variant.hpp"
 
 Granary::Granary() : WorkingBuilding( B_GRANARY, Size(3) )
 {

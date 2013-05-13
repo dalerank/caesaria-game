@@ -26,7 +26,6 @@
 #include <iostream>
 #include <algorithm>
 
-
 std::vector<Good> Good::_mapGood;
 
 Good& Good::instance(const GoodType &goodType)

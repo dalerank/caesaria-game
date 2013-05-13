@@ -583,7 +583,7 @@ void ListBox::beforeDraw( GfxEngine& painter)
            currentFont = _GetCurrentItemFont( refItem, i == _d->selectedItemIndex && hl );
            currentFont.setColor( _GetCurrentItemColor( refItem, i==_d->selectedItemIndex && hl ) );
 
-           _DrawItemIcon( refItem, textRect, hl, i == _d->selectedItemIndex, &_d->clientClip, fontColor );
+           //_DrawItemIcon( refItem, textRect, hl, i == _d->selectedItemIndex, &_d->clientClip, fontColor );
 
            textRect.UpperLeftCorner += Point( _d->itemsIconWidth+3, 0 );
 
