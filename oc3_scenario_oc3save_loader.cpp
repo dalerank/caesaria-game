@@ -12,34 +12,32 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
+#include "oc3_scenario_oc3save_loader.hpp"
+#include "oc3_tile.hpp"
+#include "oc3_exception.hpp"
+#include "oc3_pic_loader.hpp"
+#include "oc3_positioni.hpp"
+#include "oc3_constructionmanager.hpp"
+#include "oc3_scenario.hpp"
 
-#ifndef SCENARIO_LOADER_HPP
-#define SCENARIO_LOADER_HPP
-
-#include "oc3_tilemap.hpp"
-#include "oc3_scopedptr.hpp"
-
-#include <string>
-
-class Scenario;
-
-class ScenarioLoader
+class ScenarioOc3SaveLoader::Impl
 {
 public:
-  static ScenarioLoader& getInstance();
-  ~ScenarioLoader();
 
-  bool load(const std::string& filename, Scenario& oScenario);
-
-private:
-  ScenarioLoader();
-  
-  class Impl;
-  ScopedPtr< Impl > _d;
 };
 
+ScenarioOc3SaveLoader::ScenarioOc3SaveLoader()
+{
 
-#endif
+}
+
+bool ScenarioOc3SaveLoader::load( const std::string& filename, Scenario &oScenario )
+{
+  return false;
+}
+
+bool ScenarioOc3SaveLoader::isLoadableFileExtension( const std::string& filename )
+{
+  return filename.substr( filename.size() - 8 ) == ".oc3save";
+}

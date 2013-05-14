@@ -12,31 +12,22 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
+#ifndef __OPENCAESAR3_SCENARIOMAP_LOADER_H_INCLUDED__
+#define __OPENCAESAR3_SCENARIOMAP_LOADER_H_INCLUDED__
 
-#ifndef SCENARIO_LOADER_HPP
-#define SCENARIO_LOADER_HPP
-
-#include "oc3_tilemap.hpp"
+#include "oc3_scenarioabstractloader.hpp"
 #include "oc3_scopedptr.hpp"
 
-#include <string>
-
-class Scenario;
-
-class ScenarioLoader
+class ScenarioMapLoader : ScenarioAbstractLoader
 {
 public:
-  static ScenarioLoader& getInstance();
-  ~ScenarioLoader();
+  ScenarioMapLoader();
 
-  bool load(const std::string& filename, Scenario& oScenario);
+  bool load(const std::string& filename, Scenario &oScenario);
+  bool isLoadableFileExtension( const std::string& filename );
 
 private:
-  ScenarioLoader();
-  
   class Impl;
   ScopedPtr< Impl > _d;
 };
