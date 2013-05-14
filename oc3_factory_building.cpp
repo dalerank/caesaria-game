@@ -31,6 +31,11 @@ class Factory::Impl
 {
 public:
   Walkers pushers;
+  float productionRate;  // max production / year
+  float progress;  // progress of the work, in percent (0-100).
+  Picture* stockPicture; // stock of input good
+
+  void removeIdlePushers();
 };
 
 Factory::Factory( const GoodType inType, const GoodType outType,
@@ -40,8 +45,8 @@ Factory::Factory( const GoodType inType, const GoodType outType,
    setMaxWorkers(10);
    setWorkers(8);
 
-   _productionRate = 4.8f;
-   _progress = 0.0f;
+   _d->productionRate = 4.8f;
+   _d->progress = 0.0f;
    _inGoodType = inType;
    _outGoodType = outType;
    _goodStore.setMaxQty(1000);  // quite unlimited
@@ -64,36 +69,51 @@ GoodStock& Factory::getOutGood()
 
 int Factory::getProgress()
 {
-   return (int) _progress;
+   return (int) _d->progress;
 }
+
+void Factory::Impl::removeIdlePushers()
+{
+  // release walkers
+  std::list<WalkerPtr>::iterator i = pushers.begin();
+  while (i != pushers.end())
+  {
+    if( (*i)->isDeleted() )
+      pushers.erase( i++ );
+    else
+      ++i;
+  }
+};
 
 void Factory::timeStep(const unsigned long time)
 {
    Building::timeStep(time);
-
+  
    GoodStock &inStock = getInGood();
 
    float workersRatio = float(getWorkers()) / float(getMaxWorkers());  // work drops if not enough workers
    // 1080: number of seconds in a year, 0.67: number of timeSteps per second
-   float work = 100.f / 1080.f / 0.67f * _productionRate * workersRatio * workersRatio;  // work is proportionnal to time and factory speed
+   float work = 100.f / 1080.f / 0.67f * _d->productionRate * workersRatio * workersRatio;  // work is proportionnal to time and factory speed
    if (inStock._goodType != G_NONE && inStock._currentQty == 0)
    {
       // cannot work, no input material!
       work = 0.0;
    }
 
-   if( _progress > 100.0 )
+   if( _d->progress > 100.0 )
    {
       if (inStock._goodType != G_NONE)
       {
          // the input good is consumed
          inStock._currentQty -= 100;
       }
+
+      _d->removeIdlePushers();
       deliverGood();      
    }
    else
    {
-     _progress += work;
+     _d->progress += work;
 
      _animation.update( time );
      Picture *pic = _animation.getCurrentPicture();
@@ -108,19 +128,20 @@ void Factory::timeStep(const unsigned long time)
 
 void Factory::deliverGood()
 {
-   // std::cout << "Factory delivery" << std::endl;
+  // std::cout << "Factory delivery" << std::endl;
 
-   // make a cart pusher and send him away   
-   if( _mayDeliverGood() )
-   {
-     GoodStock stock(_outGoodType, 100, 100);
-     CartPusherPtr walker = CartPusher::create( BuildingPtr( this ), stock );
-     walker->send2City();
-     _progress -= 100.f;
+  // make a cart pusher and send him away
+  std::cout << "Good is ready!!!" << std::endl;
+  if( _mayDeliverGood() )
+  {
+    GoodStock stock(_outGoodType, 100, 100);
+    CartPusherPtr walker = CartPusher::create( BuildingPtr( this ), stock );
+    walker->send2City();
+    _d->progress -= 100.f;
 
-     if( !walker->isDeleted() )
-       _addWalker( walker.as<Walker>() );
-   }
+    if( !walker->isDeleted() )
+      _addWalker( walker.as<Walker>() );
+  }
 }
 
 void Factory::_addWalker( WalkerPtr walker )
@@ -147,7 +168,7 @@ void Factory::save( VariantMap& stream ) const
   _goodStore.save( vm_goodstore );
 
   stream[ "goodStore" ] = vm_goodstore;
-  stream[ "progress" ] = _progress; 
+  stream[ "progress" ] = _d->progress; 
 }
 
 void Factory::load( const VariantMap& stream)
@@ -179,9 +200,14 @@ void Factory::removeWalker( WalkerPtr w )
   }
 }
 
+void Factory::_setProductRate( const float rate )
+{
+  _d->productionRate = rate;
+}
+
 FactoryTimber::FactoryTimber() : Factory(G_NONE, G_TIMBER, B_TIMBER, Size(2) )
 {
-   _productionRate = 9.6f;
+   _setProductRate( 9.6f );
    _picture = &Picture::load(ResourceGroup::commerce, 72);
 
    _animation.load( ResourceGroup::commerce, 73, 10);
@@ -207,7 +233,7 @@ bool FactoryTimber::canBuild(const TilePos& pos ) const
 
 FactoryIron::FactoryIron() : Factory(G_NONE, G_IRON, B_IRON, Size(2) )
 {
-   _productionRate = 9.6f;
+   _setProductRate( 9.6f );
    _picture = &Picture::load(ResourceGroup::commerce, 54);
 
    _animation.load( ResourceGroup::commerce, 55, 6);
@@ -267,155 +293,6 @@ FactoryPottery::FactoryPottery() : Factory(G_CLAY, G_POTTERY, B_POTTERY, Size(2)
 
    _animation.load(ResourceGroup::commerce, 133, 7);
    _fgPictures.resize(2);
-}
-
-FarmTile::FarmTile(const GoodType outGood, const TilePos& pos )
-{
-   _i = pos.getI();
-   _j = pos.getJ();
-
-   int picIdx = 0;
-   switch (outGood)
-   {
-   case G_WHEAT:
-      picIdx = 13;
-      break;
-   case G_VEGETABLE:
-      picIdx = 18;
-      break;
-   case G_FRUIT:
-      picIdx = 23;
-      break;
-   case G_OLIVE:
-      picIdx = 28;
-      break;
-   case G_GRAPE:
-      picIdx = 33;
-      break;
-   case G_MEAT:
-      picIdx = 38;
-      break;
-   default:
-      THROW("Unexpected farmType in farm:" << outGood);
-   }
-
-   _animation.load( ResourceGroup::commerce, picIdx, 5);
-   computePicture(0);
-}
-
-void FarmTile::computePicture(const int percent)
-{
-    Animation::Pictures& pictures = _animation.getPictures();
-
-    int picIdx = (percent * (pictures.size()-1)) / 100;
-    _picture = *pictures[picIdx];
-    _picture.add_offset(30*(_i+_j), 15*(_j-_i));
-}
-
-Picture& FarmTile::getPicture()
-{
-   return _picture;
-}
-
-
-Farm::Farm(const GoodType outGood, const BuildingType type ) 
-  : Factory(G_NONE, outGood, type, Size(3) )
-{
-   _picture = &_pictureBuilding;
-
-   _pictureBuilding = Picture::load( ResourceGroup::commerce, 12);  // farm building
-   _pictureBuilding.add_offset(30, 15);
-
-   init();
-}
-
-bool Farm::canBuild(const TilePos& pos ) const
-{
-   bool is_constructible = Construction::canBuild( pos );
-   bool on_meadow = false;
-
-   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getFilledRectangle( pos, Size( _size ) );
-   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
-   {
-     on_meadow |= (*itTiles)->get_terrain().isMeadow();
-   }
-
-   return (is_constructible && on_meadow);  
-}
-
-
-void Farm::init()
-{
-   GoodType farmType = _outGoodType;
-   // add subTiles in draw order
-   _subTiles.push_back(FarmTile(farmType, TilePos( 0, 0 ) ));
-   _subTiles.push_back(FarmTile(farmType, TilePos( 2, 2 ) ));
-   _subTiles.push_back(FarmTile(farmType, TilePos( 1, 0 ) ));
-   _subTiles.push_back(FarmTile(farmType, TilePos( 2, 1 ) ));
-   _subTiles.push_back(FarmTile(farmType, TilePos( 2, 0 ) ));
-
-   _fgPictures.resize(5);
-   for (int n = 0; n<5; ++n)
-   {
-      _fgPictures[n] = &_subTiles[n].getPicture();
-   }
-}
-
-void Farm::computePictures()
-{
-   int amount = (int) _progress;
-   int percentTile;
-
-   for (int n = 0; n<5; ++n)
-   {
-      if (amount >= 20)   // 20 = 100 / nbSubTiles
-      {
-         // this subtile is at maximum
-         percentTile = 100;  // 100%
-         amount -= 20;  // for next subTiles
-      }
-      else
-      {
-         // this subtile is not at maximum
-         percentTile = 5 * amount;
-         amount = 0;  // for next subTiles
-      }
-      _subTiles[n].computePicture(percentTile);
-   }
-}
-
-
-void Farm::timeStep(const unsigned long time)
-{
-   Factory::timeStep(time);
-
-   computePictures();
-}
-
-
-FarmWheat::FarmWheat() : Farm(G_WHEAT, B_WHEAT)
-{
-}
-
-FarmOlive::FarmOlive() : Farm(G_OLIVE, B_OLIVE)
-{
-}
-
-FarmGrape::FarmGrape() : Farm(G_GRAPE, B_GRAPE)
-{
-}
-
-FarmMeat::FarmMeat() : Farm(G_MEAT, B_MEAT)
-{
-}
-
-FarmFruit::FarmFruit() : Farm(G_FRUIT, B_FRUIT)
-{
-}
-
-FarmVegetable::FarmVegetable() : Farm(G_VEGETABLE, B_VEGETABLE)
-{
 }
 
 Wharf::Wharf() : Factory(G_NONE, G_FISH, B_WHARF, Size(2))

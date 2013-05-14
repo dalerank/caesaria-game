@@ -25,41 +25,39 @@
 class Factory: public WorkingBuilding
 {
 public:
-   Factory( const GoodType inGood, const GoodType outGood,
+  Factory( const GoodType inGood, const GoodType outGood,
             const BuildingType type, const Size& size );
   ~Factory();
 
-   GoodStock& getInGood();
-   GoodStock& getOutGood();
-   SimpleGoodStore& getGoodStore();
+  GoodStock& getInGood();
+  GoodStock& getOutGood();
+  SimpleGoodStore& getGoodStore();
 
-   // called when the factory has made 100 good units
-   void deliverGood();
-   int getProgress();
+  // called when the factory has made 100 good units
+  void deliverGood();
+  int getProgress();
 
-   virtual void timeStep(const unsigned long time);
+  virtual void timeStep(const unsigned long time);
 
-   virtual GuiInfoBox* makeInfoBox( Widget* parent );
+  virtual GuiInfoBox* makeInfoBox( Widget* parent );
 
-   void save( VariantMap& stream) const;
-   void load( const VariantMap& stream);
+  void save( VariantMap& stream) const;
+  void load( const VariantMap& stream);
 
-   void removeWalker( WalkerPtr w );
-protected:
-   virtual bool _mayDeliverGood() const;
-   void _addWalker( WalkerPtr );
+  void removeWalker( WalkerPtr w );
 
 protected:
-   GoodType _inGoodType;
-   GoodType _outGoodType;
-   SimpleGoodStore _goodStore;
+  void _setProductRate( const float rate );
+  virtual bool _mayDeliverGood() const;
+  void _addWalker( WalkerPtr );
 
-   float _productionRate;  // max production / year
-   float _progress;  // progress of the work, in percent (0-100).
-   Picture *_stockPicture; // stock of input good
+protected:
+  GoodType _inGoodType;
+  GoodType _outGoodType;
+  SimpleGoodStore _goodStore;
 
-   class Impl;
-   ScopedPtr< Impl > _d;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 
@@ -108,71 +106,7 @@ public:
 };
 
 
-class FarmTile
-{
-public:
-   FarmTile(const GoodType outGood, const TilePos& pos );
-   void computePicture(const int percent);
-   Picture& getPicture();
 
-private:
-   int _i;
-   int _j;
-   Picture _picture;
-   Animation _animation;
-};
-
-
-class Farm : public Factory
-{
-public:
-   Farm(const GoodType outGood, const BuildingType type );
-   void init();
-
-   void computePictures();
-   virtual void timeStep(const unsigned long time);
-   virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
-   
-protected:
-   std::vector<FarmTile> _subTiles;
-   Picture _pictureBuilding;  // we need to change its offset
-};
-
-class FarmWheat : public Farm
-{
-public:
-   FarmWheat();
-};
-
-class FarmOlive : public Farm
-{
-public:
-   FarmOlive();
-};
-
-class FarmGrape : public Farm
-{
-public:
-   FarmGrape();
-};
-
-class FarmMeat : public Farm
-{
-public:
-   FarmMeat();
-};
-
-class FarmFruit : public Farm
-{
-public:
-   FarmFruit();
-};
-
-class FarmVegetable : public Farm
-{
-public:
-  FarmVegetable();
-};
 
 class Wharf : public Factory
 {

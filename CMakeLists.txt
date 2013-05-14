@@ -54,12 +54,12 @@ link_libraries(
     ${LibArchive_LIBRARY}
 	${LIBINTL_LIBRARIES}
 )
-
 add_definitions(-DBOOST_ALL_NO_LIB)
 
-# Copy DLL to build output directory
 add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST})
+set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME "caesar3")
 
+# Copy DLL to build output directory
 if(WIN32)
 	set(_LIBS_FOR_DLL_SOURCE
 			${SDL_LIBRARY}
