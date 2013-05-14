@@ -261,6 +261,10 @@ void GuiTilemap::updatePreviewTiles( bool force )
     return;
 
   Tile* curTile = getTileXY( _d->lastCursorPos, true );
+
+  if( !curTile )
+    return;
+
   if( curTile && !force && _d->lastTilePos == curTile->getIJ() )
       return;
 
@@ -281,7 +285,7 @@ void GuiTilemap::updatePreviewTiles( bool force )
     {
       for( ConstWayOnTiles::iterator it=pathWay.begin(); it != pathWay.end(); it++ )
       {
-	checkPreviewBuild( (*it)->getIJ() );
+	      checkPreviewBuild( (*it)->getIJ() );
       }
     }
   }
@@ -296,8 +300,8 @@ void GuiTilemap::updatePreviewTiles( bool force )
     {
       for( int j = startPos.getJ(); j <=stopPos.getJ(); j++ )
       {
-	checkPreviewBuild( TilePos( i, j ) );
-	checkPreviewRemove(i, j);
+	      checkPreviewBuild( TilePos( i, j ) );
+	      checkPreviewRemove(i, j);
       }
     }
   }
@@ -379,7 +383,10 @@ void GuiTilemap::handleEvent( NEvent& event )
         {
             Tile* tile = getTileXY( event.MouseEvent.getPosition() );  // tile under the cursor (or NULL)
             if( tile == 0 )
-                break;
+            {
+              _d->lmbPressed = false;
+              break;
+            }
 
 
             if( _d->changeCommand.isValid() )
@@ -595,6 +602,7 @@ void GuiTilemap::setChangeCommand( const TilemapChangeCommand& command )
 {
   _d->changeCommand = command;
   _d->startCursorPos = _d->lastCursorPos;
+  _d->lmbPressed = false;
   //_d->startCursorPos = Point( -1, -1 );
   updatePreviewTiles();
 }

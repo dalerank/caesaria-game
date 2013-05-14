@@ -159,8 +159,6 @@ void ScreenGame::handleEvent( NEvent& event )
    
   if( !eventResolved )
     _d->guiTilemap.handleEvent( event );
-  if( !eventResolved )
-    _d->guiTilemap.handleEvent( event );
 
   if( event.EventType == OC3_KEYBOARD_EVENT && event.KeyboardEvent.Key == KEY_ESCAPE )
   {
