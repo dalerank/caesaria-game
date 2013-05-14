@@ -152,13 +152,11 @@ ServiceWalker::ReachedBuildings ServiceWalker::getReachedBuildings(const TilePos
   for (std::list<Tile*>::iterator itTile = reachedTiles.begin(); itTile != reachedTiles.end(); ++itTile)
   {
     TerrainTile& terrain = (*itTile)->get_terrain();
-    if( terrain.isBuilding() )
+
+    BuildingPtr building = terrain.getOverlay().as<Building>();
+    if( building.isValid() )
     {
-      BuildingPtr building = terrain.getOverlay().as<Building>();
-      if( building.isValid() )
-      {
-        res.insert(building);
-      }
+      res.insert(building);
     }
   }
 
