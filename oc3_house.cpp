@@ -26,20 +26,25 @@
 #include "oc3_immigrant.hpp"
 #include "oc3_market.hpp"
 #include "oc3_constructionmanager.hpp"
+#include "oc3_resourcegroup.hpp"
 
-static const char* rcGrourName = "housng1a";
+class House::Impl
+{
+public:
+  int picIdOffset;
+  char desirability;
+};
 
-House::House(const int houseId) : Building( B_HOUSE )
+House::House(const int houseId) : Building( B_HOUSE ), _d( new Impl )
 {
    _houseId = houseId;
-   _picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
+   _d->picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
    _houseLevel = HouseLevelSpec::getHouseLevel( houseId );
    _houseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel);
    _nextHouseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel+1);
    _name = _houseLevelSpec->getLevelName();
-   _picIdOffset = 0;
    _currentHabitants = 0;
-   _desirability = -3;
+   _d->desirability = -3;
    _fireLevel = 90;
 
    _goodStore.setMaxQty(10000);  // no limit
@@ -129,185 +134,136 @@ HouseLevelSpec& House::getLevelSpec()
    return *_houseLevelSpec;
 }
 
-void House::_tryUpdate1to2lvl()
-{ 
-  City& city = Scenario::instance().getCity();
-
-  Tilemap& tmap = city.getTilemap();
-  PtrTilesList tiles = tmap.getFilledRectangle( getTile().getIJ(), Size(2) );
-  bool mayGrow = true;
-  for( PtrTilesList::iterator it=tiles.begin(); it != tiles.end(); it++ )
+void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int startBigPic, const char desirability )
+{       
+  if( getSize() == 1 )
   {
-    if( !*it )
-    {
-      mayGrow = false;   //some broken, can't grow
-      break;
-    }
+    City& city = Scenario::instance().getCity();
+    Tilemap& tmap = city.getTilemap();
+    PtrTilesList tiles = tmap.getFilledRectangle( getTile().getIJ(), Size(2) );   
+    bool mayGrow = true;
 
-    HousePtr house = (*it)->get_terrain().getOverlay().as<House>();
-    if( house.isValid() )
+    for( PtrTilesList::iterator it=tiles.begin(); it != tiles.end(); it++ )
     {
-      if( house->getSize() > 1 )  //bigger house near, can't grow
+      if( *it == NULL )
       {
-        mayGrow = false;
+        mayGrow = false;   //some broken, can't grow
         break;
-      }            
-    }
-    else
-    {
-      mayGrow = false; //no house near, can't grow
-      break;
-    }
-  }
+      }
 
-  _houseId = mayGrow ? 5 : 3;
-  _picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
-  _desirability = -3;
-
-  if( mayGrow )
-  {
-    int sumHabitants = getNbHabitants();
-    int sumFreeWorkers = _freeWorkersCount;
-    PtrTilesList::iterator delIt=tiles.begin();
-    delIt++; //don't remove himself
-    for( ; delIt != tiles.end(); delIt++ )
-    {
-      HousePtr house = (*delIt)->get_terrain().getOverlay().as<House>();
-      if( house.isValid() )
+      HousePtr house = (*it)->get_terrain().getOverlay().as<House>();
+      if( house != NULL && house->getLevelSpec().getHouseLevel() == level4grow )
       {
-        house->deleteLater();
-        house->_currentHabitants = 0;
-        sumHabitants += house->getNbHabitants();
-        sumFreeWorkers += house->_freeWorkersCount;
+        if( house->getSize() > 1 )  //bigger house near, can't grow
+        {
+          mayGrow = false;
+          break;
+        }            
+      }
+      else
+      {
+        mayGrow = false; //no house near, can't grow
+        break;
       }
     }
 
-    _currentHabitants = sumHabitants;
-    _freeWorkersCount = sumHabitants;
-    _houseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel);
-    _nextHouseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel+1);
+    if( mayGrow )
+    {
+      int sumHabitants = getNbHabitants();
+      int sumFreeWorkers = _freeWorkersCount;
+      PtrTilesList::iterator delIt=tiles.begin();
+      delIt++; //don't remove himself
+      for( ; delIt != tiles.end(); delIt++ )
+      {
+        HousePtr house = (*delIt)->get_terrain().getOverlay().as<House>();
+        if( house.isValid() )
+        {
+          house->deleteLater();
+          house->_currentHabitants = 0;
+          sumHabitants += house->getNbHabitants();
+          sumFreeWorkers += house->_freeWorkersCount;
+        }
+      }
 
-    _update();
-    _updateDesirabilityInfluence( false );
-    build( getTile().getIJ() );
+      _currentHabitants = sumHabitants;
+      _freeWorkersCount = sumHabitants;
+      _houseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel);
+      _nextHouseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel+1);
+
+      _update();
+      _updateDesirabilityInfluence( false );
+      _size++;
+      build( getTile().getIJ() );      
+    }
   }
+
+  _updateDesirabilityInfluence( false );
+  _d->desirability = desirability;       
+  _updateDesirabilityInfluence( true );
+
+  bool bigSize = getSize() > 1;
+  _houseId = bigSize ? startBigPic : startSmallPic; 
+  _d->picIdOffset = bigSize ? 0 : ( (rand() % 10 > 6) ? 1 : 0 );
 }
+
 
 void House::levelUp()
 {
-   _houseLevel++;   
-   _picIdOffset = 0;
-      
-   switch (_houseLevel)
-   {
-   case 1:
-      _houseId = 1;
-      _desirability = -3;
-      break;
-   case 2: 
-     _tryUpdate1to2lvl();
-   break;
-   
-   case 3:
-     { 
-       City& city = Scenario::instance().getCity();
-
-       Tilemap& tmap = city.getTilemap();
-       PtrTilesList tiles = tmap.getFilledRectangle( getTile().getIJ(), Size(2) );       
-       if( getSize() == 1 )
-       {
-         bool mayGrow = true;
-
-         for( PtrTilesList::iterator it=tiles.begin(); it != tiles.end(); it++ )
-         {
-           if( *it == NULL )
-           {
-             mayGrow = false;   //some broken, can't grow
-             break;
-           }
-
-           HousePtr house = (*it)->get_terrain().getOverlay().as<House>();
-           if( house != NULL && house->getLevelSpec().getHouseLevel() == 2 )
-           {
-             if( house->getSize() > 1 )  //bigger house near, can't grow
-             {
-               mayGrow = false;
-               break;
-             }            
-           }
-           else
-           {
-             mayGrow = false; //no house near, can't grow
-             break;
-           }
-         }
-
-         if( mayGrow )
-         {
-           int sumHabitants = getNbHabitants();
-           int sumFreeWorkers = _freeWorkersCount;
-           PtrTilesList::iterator delIt=tiles.begin();
-           delIt++; //don't remove himself
-           for( ; delIt != tiles.end(); delIt++ )
-           {
-             HousePtr house = (*delIt)->get_terrain().getOverlay().as<House>();
-             if( house.isValid() )
-             {
-               house->deleteLater();
-               house->_currentHabitants = 0;
-               sumHabitants += house->getNbHabitants();
-               sumFreeWorkers += house->_freeWorkersCount;
-             }
-           }
-
-           _currentHabitants = sumHabitants;
-           _freeWorkersCount = sumHabitants;
-           _houseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel);
-           _nextHouseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel+1);
-
-           _update();
-           _updateDesirabilityInfluence( false );
-           build( getTile().getIJ() );
-         }
-       }
+  _houseLevel++;   
+  _d->picIdOffset = 0;
      
-       _updateDesirabilityInfluence( false );
-       _desirability = -2;       
-       _updateDesirabilityInfluence( true );
+  switch (_houseLevel)
+  {
+  case 1:
+     _houseId = 1;
+     _d->desirability = -3;
+     break;
+  case 2: _tryUpdate_1_to_11_lvl( 1, 1, 5, -3);
+  break;
+  
+  case 3: _tryUpdate_1_to_11_lvl( 2, 3, 6, -3 ); 
+  break;
+  
+  case 4: _tryUpdate_1_to_11_lvl( 3, 7, 11, -2 );
+  break;
+  
+  case 5: _tryUpdate_1_to_11_lvl( 4, 9, 12, -2 );
+  break;
 
-       bool bigSize = getSize() > 1;
-       _houseId = bigSize ? 11 : 7; 
-       _picIdOffset = rand() % ( bigSize ? 2 : 4 );
-     }
-   break;
-   
-   case 4:
-      _houseId = 10;
-      break;
-   case 5:
-      _houseId = 13;
-      break;
-   case 6:
-      _houseId = 15;
-      break;
-   case 7:
-      _houseId = 19;
-      break;
-   case 8:
-      _houseId = 21;
-      break;
-   case 9:
-      _houseId = 25;
-      break;
-   case 10:
-      _houseId = 27;
-      break;
-   }
+  case 6: _tryUpdate_1_to_11_lvl( 5, 13, 17, -2 );
+  break;
 
-   _houseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel);
-   _nextHouseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel+1);
+  case 7: _tryUpdate_1_to_11_lvl( 6, 15, 18, -2 );
+  break;
 
-   _update();
+  case 8: _tryUpdate_1_to_11_lvl( 7, 19, 23, -1 );
+  break;
+
+  case 9: _tryUpdate_1_to_11_lvl( 8, 21, 24, -1 );
+  break;
+
+  case 10: _tryUpdate_1_to_11_lvl( 9, 25, 29, 0 );
+  break;
+
+  case 11: _tryUpdate_1_to_11_lvl( 10, 27, 30, 0 );
+  break;
+  }
+
+  _houseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel);
+  _nextHouseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel+1);
+
+  _update();
+}
+
+void House::_tryDegrage_11_to_2_lvl( int smallPic, int bigPic, const char desirability )
+{
+  bool bigSize = getSize() > 1;
+  _houseId = bigSize ? bigPic : smallPic;
+  _d->picIdOffset = bigSize ? 0 : ( rand() % 10 > 6 ? 1 : 0 );
+
+  _updateDesirabilityInfluence( false );
+  _d->desirability = desirability;
+  _updateDesirabilityInfluence( true );
 }
 
 void House::levelDown()
@@ -321,7 +277,7 @@ void House::levelDown()
    case 1:
      {
        _houseId = 1;
-       _picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
+       _d->picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
 
        City& city = Scenario::instance().getCity();
        Tilemap& tmap = city.getTilemap();   
@@ -349,41 +305,35 @@ void House::levelDown()
      }
    break;
    
-   case 2:
-     {
-       _houseId = getSize() > 1 ? 5 : 3;
-       _picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
-
-       _updateDesirabilityInfluence( false );
-       _desirability = -3;
-       _updateDesirabilityInfluence( true );
-     }
+   case 2: _tryDegrage_11_to_2_lvl( 1, 5, -3 );
    break;
    
-   case 3:
-      _houseId = 7;
-      break;
-   case 4:
-      _houseId = 10;
-      break;
-   case 5:
-      _houseId = 13;
-      break;
-   case 6:
-      _houseId = 15;
-      break;
-   case 7:
-      _houseId = 19;
-      break;
-   case 8:
-      _houseId = 21;
-      break;
-   case 9:
-      _houseId = 25;
-      break;
-   case 10:
-      _houseId = 27;
-      break;
+   case 3: _tryDegrage_11_to_2_lvl( 3, 6, -3 );
+   break;
+   
+   case 4: _tryDegrage_11_to_2_lvl( 7, 11, -2 );
+   break;
+   
+   case 5: _tryDegrage_11_to_2_lvl( 9, 12, -2 );
+   break;
+
+   case 6: _tryDegrage_11_to_2_lvl( 13, 17, -2 );
+   break;
+
+   case 7: _tryDegrage_11_to_2_lvl( 15, 18, -2 );
+   break;
+
+   case 8: _tryDegrage_11_to_2_lvl( 19, 23, -1 );
+   break;
+
+   case 9: _tryDegrage_11_to_2_lvl( 21, 23, -1 );
+   break;
+
+   case 10: _tryDegrage_11_to_2_lvl( 25, 29, 0 );
+   break;
+
+   case 11: _tryDegrage_11_to_2_lvl( 27, 30, 0 );
+   break;
    }
 
    _update();
@@ -512,7 +462,7 @@ float House::evaluateService(ServiceWalkerPtr walker)
 
    case S_WORKERS_HUNTER:
      {
-        res = _freeWorkersCount;
+        res = (float)_freeWorkersCount;
         _reservedServices.erase( S_WORKERS_HUNTER );
      }
    break;
@@ -569,8 +519,8 @@ int House::collectTaxes()
 
 void House::_update()
 {
-    Uint8 picId = ( _houseId == smallHovel && _currentHabitants == 0 ) ? 45 : (_houseId + _picIdOffset); 
-    setPicture( Picture::load( rcGrourName, picId ) );
+    Uint8 picId = ( _houseId == smallHovel && _currentHabitants == 0 ) ? 45 : (_houseId + _d->picIdOffset); 
+    setPicture( Picture::load( ResourceGroup::housing, picId ) );
     _size = (_picture->get_surface()->w+2)/60;
     _maxHabitants = _houseLevelSpec->getMaxHabitantsByTile() * _size * _size;
 }
@@ -607,5 +557,5 @@ bool House::isWalkable() const
 
 char House::getDesirabilityInfluence() const
 {
-  return _desirability;
+  return _d->desirability;
 }
