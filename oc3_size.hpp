@@ -19,7 +19,9 @@
 
 #include "oc3_vector2.hpp"
 
-class Size : public Vector2<int>
+class SizeF;
+
+class Size : Vector2<int>
 {
 public:
     Size( const int w, const int h ) : Vector2<int>( w, h ) {}
@@ -33,7 +35,40 @@ public:
 
     void setWidth( int w ) { x = w; }
     void setHeight( int h ) { y = h; }
+
+    SizeF toSizeF() const;
+
+    bool operator==(const Size& other) const{ return (x == other.x) && ( y == other.y ); }
+    bool operator!=(const Size& other) const{ return (x != other.x ) || ( y != other.y ); }
+    Size& operator+=(const Size& other) { x += other.x; y += other.y; return *this; }
+    Size& operator=(const Vector2<int>& s ) { x = s.getX(), y = s.getY(); return *this; }
 };
+
+class SizeF : Vector2<float>
+{
+public:
+  SizeF( const float w, const float h ) : Vector2<float>( w, h ) {}
+  SizeF() : Vector2<float>( 0, 0 ) {}
+  SizeF( const float s ) : Vector2<float>( s, s ) {}
+
+  SizeF operator+(const SizeF& other) const { return SizeF( x + other.x, y + other.y ); }
+
+  float getWidth() const { return x; }
+  float getHeight() const { return y; }
+
+  void setWidth( float w ) { x = w; }
+  void setHeight( float h ) { y = h; }
+
+  Size toSize() const { return Size( int(x), int(y) ); }
+
+  bool operator==(const SizeF& other) const { return IsEqual(other, math::ROUNDING_ERROR_f32); }
+  bool operator!=(const SizeF& other) const { return !IsEqual(other, math::ROUNDING_ERROR_f32); }
+};
+
+inline SizeF Size::toSizeF() const
+{
+ return SizeF( float(x), float(y) ); 
+}
 
 #endif
 

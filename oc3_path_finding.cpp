@@ -23,8 +23,10 @@
 #include "oc3_exception.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_road.hpp"
+#include "oc3_tile.hpp"
+#include "oc3_variant.hpp"
 
-#include <iostream>
+#include <iterator>
 
 bool operator<(const PathWay &v1, const PathWay &v2)
 {
@@ -334,49 +336,51 @@ void PathWay::prettyPrint() const
    }
 }
 
-void PathWay::serialize(OutputSerialStream &stream)
+void PathWay::save( VariantMap& stream) const
 {
-   stream.write_int(_origin->getI(), 2, 0, 1000);
-   stream.write_int(_origin->getJ(), 2, 0, 1000);
-   stream.write_int(_destination.getI(), 2, 0, 1000);
-   stream.write_int(_destination.getJ(), 2, 0, 1000);
-   stream.write_int(_directionList.size(), 2, 0, 65535);
-   for (std::vector<DirectionType>::iterator itDir = _directionList.begin(); itDir != _directionList.end(); ++itDir)
-   {
-      DirectionType dir = *itDir;
-      stream.write_int((int) dir, 1, 0, D_MAX);
-   }
-   stream.write_int(_isReverse, 1, 0, 1);
-   if (_isReverse)
-   {
-      stream.write_int(std::distance(_directionList.rbegin(), _directionIt_reverse), 2, 0, 65535);
-   }
-   else
-   {
-      stream.write_int(std::distance(_directionList.begin(), _directionIt), 2, 0, 65535);
-   }
+  stream[ "startI" ] = _origin->getI();
+  stream[ "startJ" ] = _origin->getJ();
+  stream[ "stopI" ] = _destination.getI();
+  stream[ "stopJ" ] = _destination.getJ();
+//    stream.write_int(_directionList.size(), 2, 0, 65535);
+//    for (std::vector<DirectionType>::iterator itDir = _directionList.begin(); itDir != _directionList.end(); ++itDir)
+//    {
+//       DirectionType dir = *itDir;
+//       stream.write_int((int) dir, 1, 0, D_MAX);
+//    }
+  stream[ "reverse" ] = _isReverse;
+  if (_isReverse)
+  {
+    size_t pos = std::distance<Directions::const_reverse_iterator>(_directionList.rbegin(), _directionIt_reverse);
+    stream[ "current" ] = pos;
+  }
+  else
+  {
+    size_t pos = std::distance<Directions::const_iterator>(_directionList.begin(), _directionIt);
+    stream[ "current" ] = pos;
+  }
 }
 
-void PathWay::unserialize(InputSerialStream &stream)
+void PathWay::load( const VariantMap& stream )
 {
-   int originI = stream.read_int(2, 0, 1000);
-   int originJ = stream.read_int(2, 0, 1000);
-   _tilemap = &Scenario::instance().getCity().getTilemap();
-   _origin = &_tilemap->at(originI, originJ);
-   _destination.setI( stream.read_int(2, 0, 1000) );
-   _destination.setJ( stream.read_int(2, 0, 1000) );
-   int size = stream.read_int(2, 0, 65535);
-   for (int i = 0; i<size; ++i)
-   {
-      DirectionType dir = (DirectionType) stream.read_int(1, 0, D_MAX);
-      _directionList.push_back(dir);
-   }
-   _isReverse = stream.read_int(1, 0, 1) > 0;
-   int off = stream.read_int(2, 0, 65535);
-   _directionIt = _directionList.begin();
-   _directionIt_reverse = _directionList.rbegin();
-   std::advance(_directionIt_reverse, off);
-   std::advance(_directionIt, off);
+//    int originI = stream.read_int(2, 0, 1000);
+//    int originJ = stream.read_int(2, 0, 1000);
+//    _tilemap = &Scenario::instance().getCity().getTilemap();
+//    _origin = &_tilemap->at(originI, originJ);
+//    _destination.setI( stream.read_int(2, 0, 1000) );
+//    _destination.setJ( stream.read_int(2, 0, 1000) );
+//    int size = stream.read_int(2, 0, 65535);
+//    for (int i = 0; i<size; ++i)
+//    {
+//       DirectionType dir = (DirectionType) stream.read_int(1, 0, D_MAX);
+//       _directionList.push_back(dir);
+//    }
+//    _isReverse = stream.read_int(1, 0, 1) > 0;
+//    int off = stream.read_int(2, 0, 65535);
+//    _directionIt = _directionList.begin();
+//    _directionIt_reverse = _directionList.rbegin();
+//    std::advance(_directionIt_reverse, off);
+//    std::advance(_directionIt, off);
 }
 
 PathWay& PathWay::operator=( const PathWay& other )

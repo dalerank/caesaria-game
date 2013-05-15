@@ -19,25 +19,21 @@
 #ifndef SCENARIO_SAVER_HPP
 #define SCENARIO_SAVER_HPP
 
-#include <fstream>
 #include <string>
+#include "oc3_scopedptr.hpp"
 
-#include "oc3_serializer.hpp"
-#include "oc3_scenario.hpp"
+class Scenario;
 
-
-class ScenarioSaver : public Serializable
+class ScenarioSaver
 {
 public:
-   ScenarioSaver();
+   ScenarioSaver( const Scenario& scenario );
+   ~ScenarioSaver();
 
-   void save(const std::string& filename);
-   void serialize(OutputSerialStream &stream);
-   void unserialize(InputSerialStream &stream);
-
+   void save( const std::string& filename );
 private:
-
-   static std::string MAGIC;  // magic file header
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 

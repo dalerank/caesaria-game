@@ -30,6 +30,7 @@
 #include "oc3_scenario.hpp"
 #include "oc3_minimap_colours.hpp"
 #include "oc3_gui_tilemap.hpp"
+#include "oc3_tile.hpp"
 
 static const int REMOVE_TOOL_ID = B_MAX + 1; 
 static const int MAXIMIZE_ID = REMOVE_TOOL_ID + 1;
@@ -261,6 +262,10 @@ void Menu::draw( GfxEngine& painter )
       int c1, c2;
       getBitmapCoordinates(x - border, y - border, mapsize, coords[0], coords[1]);
       getTerrainColours(tile, c1, c2);
+
+      if( coords[0] >= surface->w-1 || coords[1] >= surface->h )
+        continue;
+
       sdlFacade.set_pixel(surface, coords[0],     coords[1], c1);
       sdlFacade.set_pixel(surface, coords[0] + 1, coords[1], c2);
     }
@@ -269,6 +274,8 @@ void Menu::draw( GfxEngine& painter )
   delete colours;
   
   // show center of screen on minimap
+  //Exit out of image size on small carts... please fix it
+  /*
   sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX(),     mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ(), kWhite);
   sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 1, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ(), kWhite);
   sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX(),     mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 1, kWhite);
@@ -284,7 +291,7 @@ void Menu::draw( GfxEngine& painter )
   {
     sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() - 18, j, kYellow);
     sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 18, j, kYellow);
-  }
+  }*/
 
   
   // 159, 318 -> 0,159

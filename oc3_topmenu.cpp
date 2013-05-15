@@ -18,6 +18,7 @@
 #include "oc3_label.hpp"
 #include "oc3_pic_loader.hpp"
 #include "oc3_resourcegroup.hpp"
+#include "oc3_contextmenuitem.hpp"
 #include "oc3_sdl_facade.hpp"
 
 static const Uint32 dateLabelOffset = 155;
@@ -32,7 +33,18 @@ public:
     Label* lbFunds;
     Label* lbDate;
     Picture* bgPicture;
+
+    void resolveSave();
+
+oc3_signals public:
+    Signal0<> onExitSignal;
+    Signal1<std::string> onSaveSignal;
 };
+
+void TopMenu::Impl::resolveSave()
+{
+  onSaveSignal.emit( "./test.oc3save" );
+}
 
 TopMenu* TopMenu::create( Widget* parent, const int height )
 {
@@ -90,10 +102,16 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
     return ret;
 }
 
+/*bool TopMenu::onEvent(const NEvent& event)
+{
+  return MainMenu::onEvent(event);
+}*/
+
 void TopMenu::draw( GfxEngine& engine )
 {
     engine.drawPicture( *_d->bgPicture, getScreenLeft(), getScreenTop() );
-    Widget::draw( engine );
+
+    MainMenu::draw( engine );
 }
 
 void TopMenu::setPopulation( int value )
@@ -124,8 +142,30 @@ void TopMenu::setDate( int value )
 }
 
 TopMenu::TopMenu( Widget* parent, const int height ) 
-: Widget( parent, -1, Rect( 0, 0, parent->getWidth(), height ) ),
+: MainMenu( parent, Rect( 0, 0, parent->getWidth(), height ) ),
   _d( new Impl )
 {
+  ContextMenuItem* tmp = addItem( "File", -1, true, true, false, false );
+  ContextMenu* file = tmp->addSubMenu();
+  ContextMenuItem* save = file->addItem( "Save", -1, true, false, false, false );
+  file->addItem( "Load", -1, true, false, false, false );
+  file->addItem( "", -1, false, false, false, false );
+  ContextMenuItem* exit = file->addItem( "Exit", -1, true, false, false, false );
+  
+  CONNECT( exit, onClicked(), &_d->onExitSignal, Signal0<>::emit );
+  CONNECT( save, onClicked(), _d.data(), Impl::resolveSave );
 
+  addItem( "Options", -1, true, true, false, false );
+  addItem( "Help", -1, true, true, false, false );
+  addItem( "Advisers", -1, true, true, false, false );
+}
+
+Signal0<>& TopMenu::onExit()
+{
+  return _d->onExitSignal;
+}
+
+Signal1<std::string>& TopMenu::onSave()
+{
+  return _d->onSaveSignal;
 }

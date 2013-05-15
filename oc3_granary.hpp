@@ -27,8 +27,8 @@ public:
   void computePictures();
   SimpleGoodStore& getGoodStore();
 
-  void serialize(OutputSerialStream &stream);
-  void unserialize(InputSerialStream &stream);
+  void save( VariantMap& stream) const;
+  void load( const VariantMap& stream);
 
 private:
   SimpleGoodStore _goodStore;

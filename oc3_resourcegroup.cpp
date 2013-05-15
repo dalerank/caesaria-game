@@ -28,3 +28,6 @@ const char* ResourceGroup::waterbuildings = "waterbuildings";
 const char* ResourceGroup::road = "land2a";
 const char* ResourceGroup::entertaiment = "entertainment";
 const char* ResourceGroup::warehouse = "warehouse";
+const char* ResourceGroup::housing = "housng1a";
+const char* ResourceGroup::govt   = "govt";
+

@@ -21,7 +21,7 @@
 
 class TilePos;
 
-class TerrainTile : public Serializable
+class TerrainTile
 {
 public:
   TerrainTile();
@@ -69,8 +69,6 @@ public:
   int getDesirability() const              { return _desirability; }
   void appendDesirability( int value );
 
-  void serialize(OutputSerialStream &stream);
-  void unserialize(InputSerialStream &stream);
 private:
   bool _isWater;
   bool _isRock;

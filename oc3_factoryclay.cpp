@@ -16,10 +16,11 @@
 #include "oc3_factoryclay.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_scenario.hpp"
+#include "oc3_tile.hpp"
 
 FactoryClay::FactoryClay() : Factory(G_NONE, G_CLAY, B_CLAY_PIT, Size(2) )
 {
-  _productionRate = 9.6f;
+  _setProductRate( 9.6f );
   _picture = &Picture::load( ResourceGroup::commerce, 61 );
 
   _animation.load( ResourceGroup::commerce, 62, 10);

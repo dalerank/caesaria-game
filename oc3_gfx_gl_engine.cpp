@@ -30,6 +30,7 @@
 #include "oc3_pic_loader.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_sdl_facade.hpp"
+#include "oc3_positioni.hpp"
 
 
 GfxGlEngine::GfxGlEngine() : GfxEngine()
@@ -183,4 +184,8 @@ void GfxGlEngine::drawPicture(const Picture &picture, const int dx, const int dy
    glEnd();
 }
 
+void GfxGlEngine::drawPicture( const Picture &picture, const Point& pos )
+{
+  drawPicture( picture, pos.getX(), pos.getY() );
+}
 

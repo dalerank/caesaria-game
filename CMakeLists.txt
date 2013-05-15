@@ -5,6 +5,7 @@ cmake_minimum_required(VERSION 2.8)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/" ${CMAKE_MODULE_PATH})
 
 aux_source_directory(. SRC_LIST)
+file(GLOB INC_LIST "*.hpp")
 
 find_package(SDL REQUIRED)
 find_package(SDL_image REQUIRED)
@@ -55,7 +56,7 @@ link_libraries(
 )
 add_definitions(-DBOOST_ALL_NO_LIB)
 
-add_executable(${PROJECT_NAME} ${SRC_LIST})
+add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST})
 set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME "caesar3")
 
 # Copy DLL to build output directory

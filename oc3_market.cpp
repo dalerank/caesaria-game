@@ -1,7 +1,23 @@
+// This file is part of openCaesar3.
+//
+// openCaesar3 is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// openCaesar3 is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+
 #include "oc3_market.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_walker_market_buyer.hpp"
+#include "oc3_variant.hpp"
 
 class Market::Impl
 {
@@ -99,18 +115,20 @@ int Market::getGoodDemand(const GoodType &goodType)
   return res;
 }
 
-void Market::serialize(OutputSerialStream &stream)
+void Market::save( VariantMap& stream) const 
 {
-  ServiceBuilding::serialize(stream);
-  _d->goodStore.serialize(stream);
+  ServiceBuilding::save( stream );
+  VariantMap vm_goodstore;  
+  _d->goodStore.save( vm_goodstore );
+  stream[ "goodStore" ] = vm_goodstore;
+
   //stream.write_objectID( _getWalkerList().begin().object() );
-  //stream.write_int( _d->buyerDelay, 2, 0, 65535 );
 }
 
-void Market::unserialize(InputSerialStream &stream)
+void Market::load( const VariantMap& stream)
 {
-  ServiceBuilding::unserialize(stream);
-  _d->goodStore.unserialize(stream);
+//   ServiceBuilding::unserialize(stream);
+//   _d->goodStore.unserialize(stream);
   //stream.read_objectID((void**)&_marketBuyer);
   //_d->buyerDelay = stream.read_int(2, 0, 1000);
 }

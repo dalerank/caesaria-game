@@ -90,6 +90,8 @@ public:
     TTF_Font &getTTF();
 
     SDL_Color &getColor();
+    void setColor( const int color );
+
     std::list<std::string> split_text(const std::string &text, const int width);
 
     bool isValid() const;

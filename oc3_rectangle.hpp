@@ -20,7 +20,7 @@
 #include "oc3_positioni.hpp"
 #include "oc3_size.hpp"
 
-//! Rectangle.
+//! RectT.
 /** Mostly used by 2D GUI elements and for 2D drawing methods.
 It has 2 positions instead of position and dimension and a fast
 method for collision detection with other rectangles and points.
@@ -28,34 +28,31 @@ method for collision detection with other rectangles and points.
 Coordinates are (0,0) for top-left corner, and increasing to the right
 and to the bottom.
 */
-class Rect
+template< class T >
+class RectT
 {
 public:
 
 	//! Default constructor creating empty rectangle at (0,0)
-	Rect() : UpperLeftCorner(0,0), LowerRightCorner(0,0) {}
+	RectT() : UpperLeftCorner(0,0), LowerRightCorner(0,0) {}
 
 	//! Constructor with two corners
-	Rect(int x, int y, int x2, int y2)
+	RectT(T x, T y, T x2, T y2)
 		: UpperLeftCorner(x,y), LowerRightCorner(x2,y2) {}
 
 	//! Constructor with two corners
-	Rect(const Point& upperLeft, const Point& lowerRight)
+	RectT(const Vector2<T>& upperLeft, const Vector2<T>& lowerRight)
 		: UpperLeftCorner(upperLeft), LowerRightCorner(lowerRight) {}
 
-	//! Constructor with upper left corner and dimension
-	Rect(const Point& pos, const Size& size)
-		: UpperLeftCorner(pos), LowerRightCorner(pos.getX() + size.getWidth(), pos.getY() + size.getHeight() ) {}
-
 	//! move right by given numbers
-	Rect operator+(const Point& pos) const
+	RectT<T> operator+(const Vector2<T>& pos) const
 	{
-		Rect ret(*this);
+		RectT<T> ret(*this);
 		return ret+=pos;
 	}
 
 	//! move right by given numbers
-	Rect& operator+=(const Point& pos)
+	RectT<T>& operator+=(const Vector2<T>& pos)
 	{
 		UpperLeftCorner += pos;
 		LowerRightCorner += pos;
@@ -63,14 +60,14 @@ public:
 	}
 
 	//! move left by given numbers
-	Rect operator-(const Point& pos) const
+	RectT<T> operator-(const Vector2<T>& pos) const
 	{
-		Rect ret(*this);
+		RectT<T> ret(*this);
 		return ret-=pos;
 	}
 
 	//! move left by given numbers
-	Rect& operator-=(const Point& pos)
+	RectT<T>& operator-=(const Vector2<T>& pos)
 	{
 		UpperLeftCorner -= pos;
 		LowerRightCorner -= pos;
@@ -78,21 +75,21 @@ public:
 	}
 
 	//! equality operator
-	bool operator==(const Rect& other) const
+	bool operator==(const RectT<T>& other) const
 	{
 		return (UpperLeftCorner == other.UpperLeftCorner &&
 			LowerRightCorner == other.LowerRightCorner);
 	}
 
 	//! inequality operator
-	bool operator!=(const Rect& other) const
+	bool operator!=(const RectT<T>& other) const
 	{
 		return (UpperLeftCorner != other.UpperLeftCorner ||
 			LowerRightCorner != other.LowerRightCorner);
 	}
 
 	//! compares size of rectangles
-	bool operator<(const Rect& other) const
+	bool operator<(const RectT<T>& other) const
 	{
 		return getArea() < other.getArea();
 	}
@@ -106,7 +103,7 @@ public:
 	//! Returns if a 2d point is within this rectangle.
 	/** \param pos Position to test if it lies within this rectangle.
 	\return True if the position is within the rectangle, false if not. */
-	bool isPointInside(const Point& pos) const
+	bool isPointInside(const Vector2<T>& pos) const
 	{
 		return (UpperLeftCorner.getX() <= pos.getX() &&
 			UpperLeftCorner.getY() <= pos.getY() &&
@@ -115,9 +112,9 @@ public:
 	}
 
 	//! Check if the rectangle collides with another rectangle.
-	/** \param other Rectangle to test collision with
+	/** \param other RectT to test collision with
 	\return True if the rectangles collide. */
-	bool isRectCollided(const Rect& other) const
+	bool isRectCollided(const RectT<T>& other) const
 	{
 		return (LowerRightCorner.getY() > other.UpperLeftCorner.getY() &&
 			UpperLeftCorner.getY() < other.LowerRightCorner.getY() &&
@@ -126,8 +123,8 @@ public:
 	}
 
 	//! Clips this rectangle with another one.
-	/** \param other Rectangle to clip with */
-	void clipAgainst(const Rect& other)
+	/** \param other RectT to clip with */
+	void clipAgainst(const RectT<T>& other)
 	{
 		if (other.LowerRightCorner.getX() < LowerRightCorner.getX())
 			LowerRightCorner.setX( other.LowerRightCorner.getX() );
@@ -151,7 +148,7 @@ public:
 
 	//! Moves this rectangle to fit inside another one.
 	/** \return True on success, false if not possible */
-	bool constrainTo(const Rect& other)
+	bool constrainTo(const RectT<T>& other)
 	{
 		if (other.getWidth() < getWidth() || other.getHeight() < getHeight())
 			return false;
@@ -159,42 +156,42 @@ public:
 		int diff = other.LowerRightCorner.getX() - LowerRightCorner.getX();
 		if (diff < 0)
 		{
-			LowerRightCorner += Point( diff, 0 );
-			UpperLeftCorner += Point( diff, 0 );
+			LowerRightCorner += Vector2<T>( diff, 0 );
+			UpperLeftCorner += Vector2<T>( diff, 0 );
 		}
 
 		diff = other.LowerRightCorner.getY() - LowerRightCorner.getY();
 		if (diff < 0)
 		{
-			LowerRightCorner += Point( 0, diff );
-			UpperLeftCorner  += Point( 0, diff );
+			LowerRightCorner += Vector2<T>( 0, diff );
+			UpperLeftCorner  += Vector2<T>( 0, diff );
 		}
 
 		diff = UpperLeftCorner.getX() - other.UpperLeftCorner.getX();
 		if (diff < 0)
 		{
-			UpperLeftCorner -= Point( diff, 0 );
-			LowerRightCorner -= Point( diff, 0 );
+			UpperLeftCorner -= Vector2<T>( diff, 0 );
+			LowerRightCorner -= Vector2<T>( diff, 0 );
 		}
 
 		diff = UpperLeftCorner.getY() - other.UpperLeftCorner.getY();
 		if (diff < 0)
 		{
-			UpperLeftCorner -= Point( diff, 0 );
-			LowerRightCorner -= Point( diff, 0 );
+			UpperLeftCorner -= Vector2<T>( diff, 0 );
+			LowerRightCorner -= Vector2<T>( diff, 0 );
 		}
 
 		return true;
 	}
 
 	//! Get width of rectangle.
-	int getWidth() const
+	T getWidth() const
 	{
 		return LowerRightCorner.getX() - UpperLeftCorner.getX();
 	}
 
 	//! Get height of rectangle.
-	int getHeight() const
+	T getHeight() const
 	{
 		return LowerRightCorner.getY() - UpperLeftCorner.getY();
 	}
@@ -204,14 +201,14 @@ public:
 	{
 		if (LowerRightCorner.getX() < UpperLeftCorner.getX())
         {
-            int tmp = LowerRightCorner.getX();
+            T tmp = LowerRightCorner.getX();
 			LowerRightCorner.setX( UpperLeftCorner.getX() );
             UpperLeftCorner.setX( tmp );
         }
 
 		if (LowerRightCorner.getY() < UpperLeftCorner.getY())
         {
-            int tmp = LowerRightCorner.getY();
+            T tmp = LowerRightCorner.getY();
 			LowerRightCorner.setY( UpperLeftCorner.getY() );
             UpperLeftCorner.setY( tmp );
         }
@@ -227,66 +224,136 @@ public:
 	}
 
     //! Get the center of the rectangle
-	Point getCenter() const
+	Vector2<T> getCenter() const
 	{
-		return Point(
+		return Vector2<T>(
 				(UpperLeftCorner.getX() + LowerRightCorner.getX()) / 2,
 				(UpperLeftCorner.getY() + LowerRightCorner.getY()) / 2);
 	}
 
-	//! Get the dimensions of the rectangle
-	Size getSize() const
-	{
-		return Size(getWidth(), getHeight());
-	}
+  RectT<T> relativeTo( const RectT<T>& other, T limit )
+  {
+    RectT<T> retRect( *this );
+    retRect.UpperLeftCorner -= Vector2<T>( (retRect.UpperLeftCorner.getX() - other.UpperLeftCorner.getX()) / limit, 0 );
+    retRect.UpperLeftCorner -= Vector2<T>( 0, (retRect.UpperLeftCorner.getY() - other.UpperLeftCorner.getY()) / limit );
+    retRect.LowerRightCorner -= Vector2<T>( (retRect.LowerRightCorner.getX() - other.LowerRightCorner.getX()) / limit, 0 );
+    retRect.LowerRightCorner -= Vector2<T>( 0, (retRect.LowerRightCorner.getY() - other.LowerRightCorner.getY()) / limit );
 
-    Rect RelativeTo( const Rect& other, int limit )
-    {
-        Rect retRect( *this );
-        retRect.UpperLeftCorner -= Point( (retRect.UpperLeftCorner.getX() - other.UpperLeftCorner.getX()) / limit, 0 );
-        retRect.UpperLeftCorner -= Point( 0, (retRect.UpperLeftCorner.getY() - other.UpperLeftCorner.getY()) / limit );
-        retRect.LowerRightCorner -= Point( (retRect.LowerRightCorner.getX() - other.LowerRightCorner.getX()) / limit, 0 );
-        retRect.LowerRightCorner -= Point( 0, (retRect.LowerRightCorner.getY() - other.LowerRightCorner.getY()) / limit );
+    return retRect;
+  }
 
-        return retRect;
-    }
+  bool IsEqual(const RectT<T>& other, float tolerance) const
+  {
+    return UpperLeftCorner.IsEqual( other.UpperLeftCorner, tolerance)
+           && LowerRightCorner.IsEqual( other.LowerRightCorner, tolerance);
+  }
 
-    bool IsEqual(const Rect& other, float tolerance) const
-    {
-         return UpperLeftCorner.IsEqual( other.UpperLeftCorner, tolerance)
-                && LowerRightCorner.IsEqual( other.LowerRightCorner, tolerance);
-    }
-
-	int getTop() const
+	T getTop() const
 	{
 		return UpperLeftCorner.getY();
 	}
 
-	int getLeft() const
+	T getLeft() const
 	{
 		return UpperLeftCorner.getX();
 	}
 
-	int getBottom() const
+	T getBottom() const
 	{
 		return LowerRightCorner.getY();
 	}
 
-	int getRight()
+	T getRight()
 	{
 		return LowerRightCorner.getX();
 	}
 
-	int getRight() const
+	T getRight() const
 	{
 		return LowerRightCorner.getX();
 	}
 
 	//! Upper left corner
-	Point UpperLeftCorner;
+	Vector2<T> UpperLeftCorner;
 	//! Lower right corner
-	Point LowerRightCorner;
+	Vector2<T> LowerRightCorner;
 };
+
+class RectF;
+
+class Rect : public RectT<int>
+{
+public:
+
+  Rect() : RectT( 0, 0, 0, 0 ) {}
+  //! Constructor with upper left corner and dimension
+  Rect(const Point& pos, const Size& size)
+    : RectT( pos, Point( pos.getX() + size.getWidth(), pos.getY() + size.getHeight() ) ) {}
+
+  Rect( int x1, int y1, int x2, int y2 )
+    : RectT( x1, y1, x2, y2 ) {}
+
+  Rect operator+(const Point& offset ) const
+  {
+    return Rect( UpperLeftCorner + offset, LowerRightCorner + offset );
+  }
+  
+  //! Get the dimensions of the rectangle
+  Size getSize() const
+  {
+    return Size(getWidth(), getHeight());
+  }
+
+  Rect( const Point& p1, const Point& p2 ) 
+    : RectT( p1, p2 ) {}
+
+  RectF toRectF() const;
+};
+
+class RectF : public RectT<float>
+{
+public:
+  RectF() : RectT( 0, 0, 0, 0 ) {}
+
+  RectF(const PointF& pos, const SizeF& size)
+    : RectT( pos, PointF( pos.getX() + size.getWidth(), pos.getY() + size.getHeight() ) ) {}
+
+  RectF( const PointF& p1, const PointF& p2 )
+    : RectT( p1, p2 ) {}
+
+  RectF& operator=( const RectT<float>& other )
+  {
+    UpperLeftCorner = other.UpperLeftCorner;
+    LowerRightCorner = other.LowerRightCorner;
+
+    return *this;
+  }
+
+  //! Get the dimensions of the rectangle
+  SizeF getSize() const
+  {
+    return SizeF(getWidth(), getHeight());
+  }
+
+  RectF& operator=( const RectF& other )
+  {
+    UpperLeftCorner = other.UpperLeftCorner;
+    LowerRightCorner = other.LowerRightCorner;
+
+    return *this;
+  }
+
+  Rect toRect() const 
+  { 
+    return Rect( UpperLeftCorner.As<int>(), LowerRightCorner.As<int>() );
+  }
+};
+
+inline RectF Rect::toRectF() const
+{
+  return RectF( UpperLeftCorner.As<float>(), LowerRightCorner.As<float>() );
+}
+
 
 #endif //__OPENCAESAR3_RECTANGLE_H_INCLUDED__
 

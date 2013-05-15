@@ -58,17 +58,14 @@ private:
   void drawInterface();
 
 
-  // stupid function, returns 0 if no shift pressed, 1 if shift pressed
-  int isModShift();
   void resolveCreateConstruction( int type );
   void resolveRemoveTool();
   void showTileInfo( Tile* tile );
-
+   void resolveGameSave( std::string filename );
+   
   GuiInfoBox* _infoBox;   // info box to display, if any
   Scenario* _scenario; // current game scenario
   TilemapArea _mapArea;  // visible map area
-
-  GuiTilemap _guiTilemap;
 
   class Impl;
   ScopedPtr< Impl > _d;

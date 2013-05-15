@@ -45,6 +45,7 @@ public:
 
    virtual void init_frame() = 0;  // start a new frame
    virtual void drawPicture(const Picture &pic, const int dx, const int dy) = 0;
+   virtual void drawPicture(const Picture &pic, const Point& pos ) = 0;
    virtual void exit_frame() = 0;  // display the frame
 
 

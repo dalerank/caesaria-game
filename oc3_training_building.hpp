@@ -32,10 +32,8 @@ public:
    // called when a trainee is created
    virtual void deliverTrainee() = 0;
 
-   // virtual GuiInfoBox* makeInfoBox();
-
-   void serialize(OutputSerialStream &stream);
-   void unserialize(InputSerialStream &stream);
+   void save( VariantMap& stream) const;
+   void load( const VariantMap& stream);
 
 private:
    int _trainingTimer;

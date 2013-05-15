@@ -64,9 +64,8 @@ public:
 
    DirectionType getDirection();
 
-   void serialize(OutputSerialStream &stream);
-   static WalkerPtr unserialize_all(InputSerialStream &stream);
-   void unserialize(InputSerialStream &stream);
+   void save( VariantMap& stream) const;
+   void load( const VariantMap& stream);
 
    // graphic
    WalkerGraphicType getWalkerGraphic() const;

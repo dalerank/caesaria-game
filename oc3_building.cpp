@@ -19,9 +19,7 @@
 
 #include "oc3_building.hpp"
 
-#include <iostream>
-#include <algorithm>
-
+#include "oc3_tile.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_servicewalker.hpp"
 #include "oc3_exception.hpp"
@@ -39,13 +37,14 @@
 #include "oc3_water_buildings.hpp"
 #include "oc3_constructionmanager.hpp"
 #include "oc3_resourcegroup.hpp"
+#include "oc3_variant.hpp"
 
-namespace {
-static const char* rcHousingGroup      = "housng1a";
-static const char* rcGovernmentGroup   = "govt";
-}
+#include <algorithm>
 
-//std::map<BuildingType, LandOverlay*> LandOverlay::_mapBuildingByID;  // key=buildingType, value=instance
+class LandOverlay::Impl
+{
+public:
+};
 
 LandOverlay::LandOverlay(const BuildingType type, const Size& size)
 {
@@ -173,28 +172,18 @@ std::string LandOverlay::getName()
   return _name;
 }
 
-void LandOverlay::serialize(OutputSerialStream &stream)
+void LandOverlay::save( VariantMap& stream ) const
 {
-  stream.write_objectID(this);
-  stream.write_int((int) _buildingType, 1, 0, B_MAX);
-  stream.write_int(getTile().getI(), 2, 0, 1000);
-  stream.write_int(getTile().getJ(), 2, 0, 1000);
+   stream[ "i" ] = getTile().getI();
+   stream[ "j" ] = getTile().getJ();
+   stream[ "buildingType" ] = (int)_buildingType;
+   stream[ "picture" ] = Variant( _picture ? _picture->get_name() : std::string( "" ) );   
+   stream[ "size" ] = _size;
+   stream[ "isDeleted" ] = _isDeleted;
+   stream[ "name" ] = Variant( _name );
 }
 
-LandOverlayPtr LandOverlay::unserialize_all(InputSerialStream &stream)
-{
-  int objectID = stream.read_objectID();
-  BuildingType buildingType = (BuildingType) stream.read_int(1, 0, B_MAX);
-  int i = stream.read_int(2, 0, 1000);
-  int j = stream.read_int(2, 0, 1000);
-  ConstructionPtr res = ConstructionManager::getInstance().create( buildingType );
-  res->_master_tile = &Scenario::instance().getCity().getTilemap().at(i, j);
-  res->unserialize(stream);
-  stream.link( objectID, res.object() );
-  return res.as<LandOverlay>();
-}
-
-void LandOverlay::unserialize(InputSerialStream &stream)
+void LandOverlay::load( const VariantMap& stream)
 {
 }
 
@@ -501,49 +490,49 @@ void Building::applyTrainee(const WalkerTraineeType traineeType)
    _traineeMap[traineeType] += 100;
 }
 
-void Building::serialize(OutputSerialStream &stream)
+void Building::save( VariantMap& stream) const
 {
-   Construction::serialize(stream);
-   stream.write_int((int) _damageLevel, 1, 0, 100);  // approximation...
-   stream.write_int((int) _fireLevel, 1, 0, 100);  // approximation...
+    Construction::save( stream );
+    stream[ "damageLevel" ] = _damageLevel;  
+    stream[ "fireLevel" ] = _fireLevel;  
 
-   stream.write_int(_traineeMap.size(), 1, 0, WTT_MAX);
-   for (std::map<WalkerTraineeType, int>::iterator itLevel = _traineeMap.begin(); itLevel != _traineeMap.end(); ++itLevel)
-   {
-      WalkerTraineeType traineeType = itLevel->first;
-      int traineeLevel = itLevel->second;
-      stream.write_int((int)traineeType, 1, 0, WTT_MAX);
-      stream.write_int(traineeLevel, 1, 0, 200);
-   }
-
-   stream.write_int(_reservedTrainees.size(), 1, 0, WTT_MAX);
-   for (std::set<WalkerTraineeType>::iterator itReservation = _reservedTrainees.begin(); itReservation != _reservedTrainees.end(); ++itReservation)
-   {
-      WalkerTraineeType traineeType = *itReservation;
-      stream.write_int((int)traineeType, 1, 0, WTT_MAX);
-   }
+//    stream.write_int(_traineeMap.size(), 1, 0, WTT_MAX);
+//    for (std::map<WalkerTraineeType, int>::iterator itLevel = _traineeMap.begin(); itLevel != _traineeMap.end(); ++itLevel)
+//    {
+//       WalkerTraineeType traineeType = itLevel->first;
+//       int traineeLevel = itLevel->second;
+//       stream.write_int((int)traineeType, 1, 0, WTT_MAX);
+//       stream.write_int(traineeLevel, 1, 0, 200);
+//    }
+// 
+//    stream.write_int(_reservedTrainees.size(), 1, 0, WTT_MAX);
+//    for (std::set<WalkerTraineeType>::iterator itReservation = _reservedTrainees.begin(); itReservation != _reservedTrainees.end(); ++itReservation)
+//    {
+//       WalkerTraineeType traineeType = *itReservation;
+//       stream.write_int((int)traineeType, 1, 0, WTT_MAX);
+//    }
 }
 
-void Building::unserialize(InputSerialStream &stream)
+void Building::load( const VariantMap& stream )
 {
-   Construction::unserialize(stream);
-   _damageLevel = (float)stream.read_int(1, 0, 100);
-   _fireLevel = (float)stream.read_int(1, 0, 100);
-
-   int size = stream.read_int(1, 0, WTT_MAX);
-   for (int i=0; i<size; ++i)
-   {
-      WalkerTraineeType traineeType = (WalkerTraineeType) stream.read_int(1, 0, WTT_MAX);
-      int traineeLevel = stream.read_int(1, 0, 200);
-      _traineeMap[traineeType] = traineeLevel;
-   }
-
-   size = stream.read_int(1, 0, WTT_MAX);
-   for (int i=0; i<size; ++i)
-   {
-      WalkerTraineeType traineeType = (WalkerTraineeType) stream.read_int(1, 0, WTT_MAX);
-      _reservedTrainees.insert(traineeType);
-   }
+//    Construction::unserialize(stream);
+//    _damageLevel = (float)stream.read_int(1, 0, 100);
+//    _fireLevel = (float)stream.read_int(1, 0, 100);
+// 
+//    int size = stream.read_int(1, 0, WTT_MAX);
+//    for (int i=0; i<size; ++i)
+//    {
+//       WalkerTraineeType traineeType = (WalkerTraineeType) stream.read_int(1, 0, WTT_MAX);
+//       int traineeLevel = stream.read_int(1, 0, 200);
+//       _traineeMap[traineeType] = traineeLevel;
+//    }
+// 
+//    size = stream.read_int(1, 0, WTT_MAX);
+//    for (int i=0; i<size; ++i)
+//    {
+//       WalkerTraineeType traineeType = (WalkerTraineeType) stream.read_int(1, 0, WTT_MAX);
+//       _reservedTrainees.insert(traineeType);
+//    }
 }
 
 WorkingBuilding::WorkingBuilding(const BuildingType type, const Size& size)
@@ -584,16 +573,16 @@ bool WorkingBuilding::isActive()
    return _isActive;
 }
 
-void WorkingBuilding::serialize(OutputSerialStream &stream)
+void WorkingBuilding::save( VariantMap& stream ) const
 {
-   Building::serialize(stream);
-   stream.write_int((int) _currentWorkers, 1, 0, 100);
+    Building::save( stream );
+    stream[ "currentWorkers" ] = _currentWorkers;
 }
 
-void WorkingBuilding::unserialize(InputSerialStream &stream)
+void WorkingBuilding::load( const VariantMap& stream)
 {
-   Building::unserialize(stream);
-   _currentWorkers = stream.read_int(1, 0, 100);
+//    Building::unserialize(stream);
+//    _currentWorkers = stream.read_int(1, 0, 100);
 }
 
 void WorkingBuilding::addWorkers( const int workers )
@@ -625,38 +614,38 @@ MissionPost::MissionPost() : WorkingBuilding(B_MISSION_POST, Size(2) )
 
 SmallStatue::SmallStatue() : Building( B_STATUE1, Size(1) )
 {
-  setPicture( Picture::load(rcGovernmentGroup, 1));
+  setPicture( Picture::load( ResourceGroup::govt, 1));
 }
 
 MediumStatue::MediumStatue() : Building( B_STATUE2, Size(2) )
 {
-  setPicture( Picture::load(rcGovernmentGroup, 2));
+  setPicture( Picture::load( ResourceGroup::govt, 2));
 }
 
 BigStatue::BigStatue() : Building( B_STATUE3, Size(3))
 {
-  setPicture( Picture::load(rcGovernmentGroup, 3));
+  setPicture( Picture::load( ResourceGroup::govt, 3));
 }
 
 GovernorsHouse::GovernorsHouse() : WorkingBuilding( B_GOVERNOR_HOUSE, Size(3) )
 {
   setMaxWorkers(5);
   setWorkers(0);    
-  setPicture(Picture::load(rcHousingGroup, 46));
+  setPicture(Picture::load( ResourceGroup::housing, 46));
 }
 
 GovernorsVilla::GovernorsVilla() : WorkingBuilding(B_GOVERNOR_VILLA, Size(4) )
 {
   setMaxWorkers(10);
   setWorkers(0);    
-  setPicture(Picture::load(rcHousingGroup, 47));
+  setPicture(Picture::load( ResourceGroup::housing, 47));
 }
 
 GovernorsPalace::GovernorsPalace() : WorkingBuilding(B_GOVERNOR_PALACE, Size( 5 ) )
 {
   setMaxWorkers(15);
   setWorkers(0);  
-  setPicture(Picture::load(rcHousingGroup, 48));
+  setPicture(Picture::load(ResourceGroup::housing, 48));
 }
 
 Academy::Academy() : WorkingBuilding( B_MILITARY_ACADEMY, Size(3) )
@@ -672,49 +661,6 @@ Barracks::Barracks() : WorkingBuilding( B_BARRACKS, Size( 3 ) )
   setWorkers(0);  
   setPicture(PicLoader::instance().get_picture(ResourceGroup::security, 17));
 }
-
-NativeBuilding::NativeBuilding( const BuildingType type, const Size& size ) 
-: Building( type, size )
-{
-
-}
-
-void NativeBuilding::serialize(OutputSerialStream &stream) {Building::serialize(stream);}
-
-void NativeBuilding::unserialize(InputSerialStream &stream) {Building::unserialize(stream);}
-
-GuiInfoBox* NativeBuilding::makeInfoBox( Widget* parent )
-{
-  return new GuiBuilding( parent, *this);
-}
-
-NativeHut::NativeHut() : NativeBuilding( B_NATIVE_HUT, Size(1) )
-{
-  setPicture( Picture::load(rcHousingGroup, 49));
-  //setPicture(PicLoader::instance().get_picture("housng1a", 50));
-}
-
-void NativeHut::serialize(OutputSerialStream &stream)  {Building::serialize(stream);}
-
-void NativeHut::unserialize(InputSerialStream &stream) {Building::unserialize(stream);}
-
-NativeCenter::NativeCenter() : NativeBuilding( B_NATIVE_CENTER, Size(2) )
-{
-  setPicture( Picture::load(rcHousingGroup, 51));
-}
-
-void NativeCenter::serialize(OutputSerialStream &stream)  {Building::serialize(stream);}
-
-void NativeCenter::unserialize(InputSerialStream &stream) {Building::unserialize(stream);}
-
-NativeField::NativeField() : NativeBuilding( B_NATIVE_FIELD, Size(1) ) 
-{
-  setPicture(Picture::load(ResourceGroup::commerce, 13));  
-}
-
-void NativeField::serialize(OutputSerialStream &stream) {Building::serialize(stream);}
-
-void NativeField::unserialize(InputSerialStream &stream) {Building::unserialize(stream);}
 
 Shipyard::Shipyard() : Building( B_SHIPYARD, Size(2) )
 {

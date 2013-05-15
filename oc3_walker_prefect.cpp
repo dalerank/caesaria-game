@@ -19,6 +19,7 @@
 #include "oc3_buildingprefect.hpp"
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_path_finding.hpp"
+#include "oc3_tile.hpp"
 
 class WalkerPrefect::Impl
 {

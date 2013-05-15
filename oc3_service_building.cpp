@@ -15,20 +15,19 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
-
 #include "oc3_service_building.hpp"
 
-#include <iostream>
 #include <cstdlib>
 #include <ctime>
 
+#include "oc3_tile.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_servicewalker.hpp"
 #include "oc3_walker_market_buyer.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_gui_info_box.hpp"
 #include "oc3_gettext.hpp"
+#include "oc3_variant.hpp"
 #include "oc3_resourcegroup.hpp"
 
 class ServiceBuilding::Impl
@@ -121,26 +120,20 @@ int ServiceBuilding::getServiceRange() const
    return _serviceRange;
 }
 
-void ServiceBuilding::serialize(OutputSerialStream &stream)
+void ServiceBuilding::save( VariantMap& stream ) const 
 {
-   WorkingBuilding::serialize(stream);
-   stream.write_int(_serviceTimer, 2, 0, 1000);
-   stream.write_int(_d->serviceDelay, 2, 0, 1000);
-   stream.write_int(_serviceRange, 2, 0, 65535);
+  WorkingBuilding::save( stream );
+  stream[ "timer" ] = _serviceTimer;
+  stream[ "delay" ] = _d->serviceDelay;
+  stream[ "range" ] = _serviceRange;
 }
 
-void ServiceBuilding::unserialize(InputSerialStream &stream)
+void ServiceBuilding::load( const VariantMap& stream )
 {
-   WorkingBuilding::unserialize(stream);
-   _serviceTimer = stream.read_int(2, 0, 1000);
-   _d->serviceDelay = stream.read_int(2, 0, 1000);
-   _serviceRange = stream.read_int(2, 0, 65535);
-}
-
-GuiInfoBox* ServiceBuilding::makeInfoBox( Widget* parent )
-{
-   GuiInfoService* box = new GuiInfoService( parent, *this);
-   return box;
+//    WorkingBuilding::unserialize(stream);
+//    _serviceTimer = stream.read_int(2, 0, 1000);
+//    _d->serviceDelay = stream.read_int(2, 0, 1000);
+//    _serviceRange = stream.read_int(2, 0, 65535);
 }
 
 int ServiceBuilding::getServiceDelay() const

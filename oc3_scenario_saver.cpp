@@ -15,43 +15,46 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
-
 #include "oc3_scenario_saver.hpp"
+#include "oc3_variant.hpp"
+#include "oc3_saveadapter.hpp"
+#include "oc3_scenario.hpp"
 
-#include <iostream>
+class ScenarioSaver::Impl
+{
+public:
+  const Scenario& scenario;
 
-#include "oc3_exception.hpp"
+  Impl( const Scenario& s ) : scenario( s )
+  {
 
+  }
+};
 
-std::string ScenarioSaver::MAGIC = "OC3";
-
-ScenarioSaver::ScenarioSaver()
+ScenarioSaver::ScenarioSaver( const Scenario& scenario )
+  : _d( new Impl( scenario ) )
 {
 }
 
 
 void ScenarioSaver::save(const std::string& filename)
 {
-   std::fstream f(filename.c_str(), std::ios::out | std::ios::binary);
-   OutputSerialStream stream;
-   stream.init(f, 1);  // version
-   serialize(stream);
-   stream.finalize_write();
-   stream.close();
+  VariantMap vm;
+  vm[ "version" ] = Variant( 1 );
+
+  VariantMap vm_scenario;
+  _d->scenario.save( vm_scenario );
+  vm[ "scenario" ] = vm_scenario;
+
+  VariantMap vm_city;
+  _d->scenario.getCity().save( vm_city );
+  vm[ "city" ] = vm_city;
+
+
+  SaveAdapter::save( vm, filename );
 }
 
-void ScenarioSaver::serialize(OutputSerialStream &stream)
+ScenarioSaver::~ScenarioSaver()
 {
-   Scenario &scenario = Scenario::instance();
 
-   stream.write(MAGIC.c_str(), 3);
-   stream.write_int(stream._version, 2, 0, 100);
-   scenario.serialize(stream);
 }
-
-
-void ScenarioSaver::unserialize(InputSerialStream &stream)
-{
-}
-

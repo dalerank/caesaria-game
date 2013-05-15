@@ -46,6 +46,7 @@ public:
   Menu* menu;
   ExtentMenu* extMenu;
   InfoBoxManagerPtr infoBoxMgr;
+  GuiTilemap guiTilemap;
 };
 
 ScreenGame::ScreenGame() : _d( new Impl )
@@ -81,9 +82,18 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
     _d->extMenu = ExtentMenu::create( gui.getRootWidget(), -1 );
     _d->extMenu->setPosition( Point( engine.getScreenWidth() - _d->extMenu->getWidth() - _d->rightPanel->getWidth(), 
                                      _d->topMenu->getHeight() ) );
-
-    //over other elements
+    
     _d->rightPanel->bringToFront();
+
+    // 8*30: used for high buildings (granary...), visible even when not in tilemap_area.
+    getMapArea().setViewSize( engine.getScreenWidth(), engine.getScreenHeight() + 8 * 30);
+        
+    // here move camera to start position of map
+    getMapArea().setCenterIJ( _scenario->getCity().getCameraStartIJ() ); 
+
+    //connect elements
+    CONNECT( _d->topMenu, onSave(), this, ScreenGame::resolveGameSave );
+    CONNECT( _d->topMenu, onExit(), this, ScreenGame::stop );
 
     CONNECT( _d->menu, onCreateConstruction(), this, ScreenGame::resolveCreateConstruction );
     CONNECT( _d->menu, onRemoveTool(), this, ScreenGame::resolveRemoveTool );
@@ -96,16 +106,14 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
     CONNECT( &_scenario->getCity(), onFundsChanged(), _d->topMenu, TopMenu::setFunds );
     CONNECT( &_scenario->getCity(), onMonthChanged(), _d->topMenu, TopMenu::setDate );
 
-    CONNECT( &_guiTilemap, onShowTileInfo(), this, ScreenGame::showTileInfo );
-  /* _d->extMenu = ExtentMenu::create();
-   _d->extMenu->setPosition( engine.getScreenWidth() - _d->extMenu->getWidth() - _d->rightPanel->getWidth(), 
-                             _d->topMenu->getHeight() ); */
+    CONNECT( &_d->guiTilemap, onShowTileInfo(), this, ScreenGame::showTileInfo );
+}
 
+void ScreenGame::resolveGameSave( std::string filename )
+{
+  ScenarioSaver scnSaver( Scenario::instance() );
 
-    getMapArea().setViewSize( engine.getScreenWidth(), 
-                             engine.getScreenHeight() + 8 * 30);  // 8*30: used for high buildings (granary...), visible even when not in tilemap_area.
-    
-    getMapArea().setCenterIJ( _scenario->getCity().getCameraStartIJ() ); // here move camera to start position of map
+  scnSaver.save( filename );
 }
 
 TilemapArea& ScreenGame::getMapArea()
@@ -120,12 +128,12 @@ void ScreenGame::setScenario(Scenario &scenario)
   Tilemap& tilemap = city.getTilemap();
 
   _mapArea.init(tilemap);
-  _guiTilemap.init(city, _mapArea, this);
+  _d->guiTilemap.init(city, _mapArea, this);
 }
 
 void ScreenGame::drawTilemap()
 {
-  _guiTilemap.drawTilemap();
+  _d->guiTilemap.drawTilemap();
 }
 
 void ScreenGame::drawInterface()
@@ -179,11 +187,11 @@ void ScreenGame::handleEvent( NEvent& event )
       _d->gui->handleEvent( event );
       break;
     case _MET_TILES:
-      _guiTilemap.handleEvent( event );
+      _d->guiTilemap.handleEvent( event );
       break;
     default:
       if (!_d->gui->handleEvent( event ))
-        _guiTilemap.handleEvent( event );
+        _d->guiTilemap.handleEvent( event );
       break;
     }
 
@@ -194,14 +202,13 @@ void ScreenGame::handleEvent( NEvent& event )
   {
     eventResolved = _d->gui->handleEvent( event );      
    
-    if( !eventResolved )
-      _guiTilemap.handleEvent( event );
+  if( !eventResolved )
+    _d->guiTilemap.handleEvent( event );
 
-    if( event.EventType == OC3_KEYBOARD_EVENT && event.KeyboardEvent.Key == KEY_ESCAPE )
-    {
-      std::cout << "EVENT_ESCAPE was pressed" << std::endl;
-      stop();
-    }
+  if( event.EventType == OC3_KEYBOARD_EVENT && event.KeyboardEvent.Key == KEY_ESCAPE )
+  {
+    std::cout << "EVENT_ESCAPE was pressed" << std::endl;
+    stop();
   }
 }
 
@@ -212,12 +219,12 @@ int ScreenGame::getResult() const
 
 void ScreenGame::resolveCreateConstruction( int type )
 {
-  _guiTilemap.setChangeCommand( TilemapChangeCommand( BuildingType( type ) ) );
+  _d->guiTilemap.setChangeCommand( TilemapChangeCommand( BuildingType( type ) ) );
 }
 
 void ScreenGame::resolveRemoveTool()
 {
-  _guiTilemap.setChangeCommand( TilemapRemoveCommand() );
+  _d->guiTilemap.setChangeCommand( TilemapRemoveCommand() );
 }
 
 void ScreenGame::showTileInfo( Tile* tile )

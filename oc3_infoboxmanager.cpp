@@ -20,7 +20,7 @@
 #include "oc3_gui_info_box.hpp"
 #include "oc3_guienv.hpp"
 #include "oc3_road.hpp"
-#include <iostream>
+#include "oc3_tile.hpp"
 
 class InfoBoxManager::Impl
 {

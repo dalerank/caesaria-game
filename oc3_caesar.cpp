@@ -135,31 +135,37 @@ void CaesarApp::initPictures(const std::string &resourcePath)
 
 void CaesarApp::loadScenario(const std::string &scenarioFile)
 {
-   std::cout << "load scenario begin" << std::endl;
-   
-   _d->scenario = new Scenario();
-   
-   ScenarioLoader scenario_loader;
-   scenario_loader.load(scenarioFile, *_d->scenario);
+  std::cout << "load scenario begin" << std::endl;
+  
+  _d->scenario = new Scenario();
+  
+  bool loadok = ScenarioLoader::getInstance().load(scenarioFile, *_d->scenario);
 
-   City &city = _d->scenario->getCity();
+  if( !loadok )
+  {
+    delete _d->scenario;
+    std::cout << "LOADING ERROR: can't load game from" << scenarioFile << std::endl;
+    return;
+  }
 
-   LandOverlays llo = city.getOverlayList();
-   
-   for ( LandOverlays::iterator itLLO = llo.begin(); itLLO!=llo.end(); ++itLLO)
-   {
-      LandOverlayPtr overlay = *itLLO;
-      ConstructionPtr construction = overlay.as<Construction>();
-      if( construction.isValid() )
-      {
-         // this is a construction
-         construction->computeAccessRoads();
-      }
-   }
+  City &city = _d->scenario->getCity();
 
-   Pathfinder::getInstance().update( _d->scenario->getCity().getTilemap() );
+  LandOverlays llo = city.getOverlayList();
+  
+  for ( LandOverlays::iterator itLLO = llo.begin(); itLLO!=llo.end(); ++itLLO)
+  {
+     LandOverlayPtr overlay = *itLLO;
+     ConstructionPtr construction = overlay.as<Construction>();
+     if( construction.isValid() )
+     {
+        // this is a construction
+        construction->computeAccessRoads();
+     }
+  }
 
-   std::cout << "load scenario end" << std::endl;
+  Pathfinder::getInstance().update( _d->scenario->getCity().getTilemap() );
+
+  std::cout << "load scenario end" << std::endl;
 }
 
 
@@ -167,16 +173,16 @@ void CaesarApp::loadGame(const std::string &gameFile)
 {
    std::cout << "load game begin" << std::endl;
 
-   std::fstream f(gameFile.c_str(), std::ios::in | std::ios::binary);
-   InputSerialStream stream;
-   stream.init(f, -1);
-
-   _d->scenario = new Scenario();
-   _d->scenario->unserialize(stream);
-   f.close();
-   stream.finalize_read();
-
-   std::cout << "load game end" << std::endl;
+//    std::fstream f(gameFile.c_str(), std::ios::in | std::ios::binary);
+//    InputSerialStream stream;
+//    stream.init(f, -1);
+// 
+//    _d->scenario = new Scenario();
+//    _d->scenario->unserialize(stream);
+//    f.close();
+//    stream.finalize_read();
+// 
+//    std::cout << "load game end" << std::endl;
 }
 
 
@@ -233,6 +239,13 @@ void CaesarApp::setScreenMenu(const std::string &resourcePath)
     case ScreenMenu::loadSavedGame:
     {  
       loadGame("oc3.sav");
+      _d->nextScreen = SCREEN_GAME;
+    }
+    break;
+
+    case ScreenMenu::loadMap:
+    {
+      loadScenario( screen.getMapName() );
       _d->nextScreen = SCREEN_GAME;
     }
     break;

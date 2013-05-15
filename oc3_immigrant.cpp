@@ -19,6 +19,7 @@
 #include "oc3_safetycast.hpp"
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_house.hpp"
+#include "oc3_tile.hpp"
 
 class Immigrant::Impl
 {

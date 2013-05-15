@@ -20,27 +20,25 @@
 #define SCENARIO_LOADER_HPP
 
 #include "oc3_tilemap.hpp"
-#include "oc3_scenario.hpp"
+#include "oc3_scopedptr.hpp"
 
-#include <fstream>
 #include <string>
+
+class Scenario;
 
 class ScenarioLoader
 {
 public:
-   ScenarioLoader();
+  static ScenarioLoader& getInstance();
+  ~ScenarioLoader();
 
-   void load(const std::string& filename, Scenario &oScenario);
+  bool load(const std::string& filename, Scenario& oScenario);
 
 private:
-   void load_map(std::fstream& f, Scenario &oScenario);
-
-   void decode_terrain(const int terrainBitset, Tile &oTile);
-   void init_entry_exit(std::fstream &f, City &ioCity);
-   void init_climate(std::fstream &f, City &ioCity);
-   void init_start_camera_pos(std::fstream &f, City &ioCity);
-
-   void _initEntryExitPicture( City &ioCity );
+  ScenarioLoader();
+  
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 

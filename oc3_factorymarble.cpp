@@ -16,10 +16,11 @@
 #include "oc3_factorymarble.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_scenario.hpp"
+#include "oc3_tile.hpp"
 
 FactoryMarble::FactoryMarble() : Factory(G_NONE, G_MARBLE, B_MARBLE, Size(2) )
 {
-  _productionRate = 9.6f;
+  _setProductRate( 9.6f );
   _picture = &Picture::load( ResourceGroup::commerce, 43 );
 
   _animation.load( ResourceGroup::commerce, 44, 10);

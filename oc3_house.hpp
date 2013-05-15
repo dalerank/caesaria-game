@@ -20,6 +20,7 @@
 #define HOUSE_HPP
 
 #include "oc3_building.hpp"
+#include "oc3_scopedptr.hpp"
 
 class HouseLevelSpec;
 
@@ -70,13 +71,15 @@ private:
    int _houseLevel;
    HouseLevelSpec* _houseLevelSpec;  // characteristics of the current house level
    HouseLevelSpec* _nextHouseLevelSpec;  // characteristics of the house level+1
-   int _picIdOffset;
-   char _desirability;
-
+ 
    void _update();
 
 private:
-  void _tryUpdate1to2lvl();
+  void _tryUpdate_1_to_11_lvl( int level, int startSmallPic, int startBigPic, const char desirability );
+  void _tryDegrage_11_to_2_lvl( int smallPic, int bigPic, const char desirability );
+
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 //operator need for std::set

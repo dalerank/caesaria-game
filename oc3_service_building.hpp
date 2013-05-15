@@ -42,11 +42,9 @@ public:
 
    // called when a service man should service the neighborhood
    virtual void deliverService();
-
-   virtual GuiInfoBox* makeInfoBox( Widget* parent );
-
-   void serialize(OutputSerialStream &stream);
-   void unserialize(InputSerialStream &stream);
+  
+   void save( VariantMap& stream) const;
+   void load( const VariantMap& stream);
 
    //void removeWalker( WalkerPtr walker );
 

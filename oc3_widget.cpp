@@ -956,7 +956,7 @@ unsigned int Widget::getWidth() const
 
 Size Widget::getSize() const
 {
-	return getRelativeRect().getSize();
+	return Size( _d->relativeRect.getWidth(), _d->relativeRect.getHeight() );
 }
 
 int Widget::getScreenTop() const { return getAbsoluteRect().getTop(); }
@@ -982,7 +982,7 @@ Rect Widget::convertLocalToScreen( const Rect& localRect ) const
 
 void Widget::move( const Point& relativeMovement )
 {
-	setGeometry( _d->desiredRect + relativeMovement);
+	setGeometry( _d->desiredRect + relativeMovement );
 }
 
 int Widget::getBottom() const

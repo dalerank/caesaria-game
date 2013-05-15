@@ -87,43 +87,43 @@ void EventConverter::Impl::createKeyMap()
     KeyMap[ SDLK_DELETE]= KEY_DELETE;
     KeyMap[ SDLK_HELP]= KEY_HELP;
 
-    KeyMap[ SDLK_0]= KEY_KEY_0;
-    KeyMap[ SDLK_1]= KEY_KEY_1;
-    KeyMap[ SDLK_2]= KEY_KEY_2;
-    KeyMap[ SDLK_3]= KEY_KEY_3;
-    KeyMap[ SDLK_4]= KEY_KEY_4;
-    KeyMap[ SDLK_5]= KEY_KEY_5;
-    KeyMap[ SDLK_6]= KEY_KEY_6;
-    KeyMap[ SDLK_7]= KEY_KEY_7;
-    KeyMap[ SDLK_8]= KEY_KEY_8;
-    KeyMap[ SDLK_9]= KEY_KEY_9;
+    KeyMap[ SDLK_0 ]= KEY_KEY_0;
+    KeyMap[ SDLK_1 ]= KEY_KEY_1;
+    KeyMap[ SDLK_2 ]= KEY_KEY_2;
+    KeyMap[ SDLK_3 ]= KEY_KEY_3;
+    KeyMap[ SDLK_4 ]= KEY_KEY_4;
+    KeyMap[ SDLK_5 ]= KEY_KEY_5;
+    KeyMap[ SDLK_6 ]= KEY_KEY_6;
+    KeyMap[ SDLK_7 ]= KEY_KEY_7;
+    KeyMap[ SDLK_8 ]= KEY_KEY_8;
+    KeyMap[ SDLK_9 ]= KEY_KEY_9;
 
-    KeyMap[ SDLK_a]= KEY_KEY_A;
-    KeyMap[ SDLK_b]= KEY_KEY_B;
-    KeyMap[ SDLK_c]= KEY_KEY_C;
-    KeyMap[ SDLK_d]= KEY_KEY_D;
-    KeyMap[ SDLK_e]= KEY_KEY_E;
-    KeyMap[ SDLK_f]= KEY_KEY_F;
-    KeyMap[ SDLK_g]= KEY_KEY_G;
-    KeyMap[ SDLK_h]= KEY_KEY_H;
-    KeyMap[ SDLK_i]= KEY_KEY_I;
-    KeyMap[ SDLK_j]= KEY_KEY_J;
-    KeyMap[ SDLK_k]= KEY_KEY_K;
-    KeyMap[ SDLK_l]= KEY_KEY_L;
-    KeyMap[ SDLK_m]= KEY_KEY_M;
-    KeyMap[ SDLK_n]= KEY_KEY_N;
-    KeyMap[ SDLK_o]= KEY_KEY_O;
-    KeyMap[ SDLK_p]= KEY_KEY_P;
-    KeyMap[ SDLK_q]= KEY_KEY_Q;
-    KeyMap[ SDLK_r]= KEY_KEY_R;
-    KeyMap[ SDLK_s]= KEY_KEY_S;
-    KeyMap[ SDLK_t]= KEY_KEY_T;
-    KeyMap[ SDLK_u]= KEY_KEY_U;
-    KeyMap[ SDLK_v]= KEY_KEY_V;
-    KeyMap[ SDLK_w]= KEY_KEY_W;
-    KeyMap[ SDLK_x]= KEY_KEY_X;
-    KeyMap[ SDLK_y]= KEY_KEY_Y;
-    KeyMap[ SDLK_z]= KEY_KEY_Z;
+    KeyMap[ SDLK_a ]= KEY_KEY_A;
+    KeyMap[ SDLK_b ]= KEY_KEY_B;
+    KeyMap[ SDLK_c ]= KEY_KEY_C;
+    KeyMap[ SDLK_d ]= KEY_KEY_D;
+    KeyMap[ SDLK_e ]= KEY_KEY_E;
+    KeyMap[ SDLK_f ]= KEY_KEY_F;
+    KeyMap[ SDLK_g ]= KEY_KEY_G;
+    KeyMap[ SDLK_h ]= KEY_KEY_H;
+    KeyMap[ SDLK_i ]= KEY_KEY_I;
+    KeyMap[ SDLK_j ]= KEY_KEY_J;
+    KeyMap[ SDLK_k ]= KEY_KEY_K;
+    KeyMap[ SDLK_l ]= KEY_KEY_L;
+    KeyMap[ SDLK_m ]= KEY_KEY_M;
+    KeyMap[ SDLK_n ]= KEY_KEY_N;
+    KeyMap[ SDLK_o ]= KEY_KEY_O;
+    KeyMap[ SDLK_p ]= KEY_KEY_P;
+    KeyMap[ SDLK_q ]= KEY_KEY_Q;
+    KeyMap[ SDLK_r ]= KEY_KEY_R;
+    KeyMap[ SDLK_s ]= KEY_KEY_S;
+    KeyMap[ SDLK_t ]= KEY_KEY_T;
+    KeyMap[ SDLK_u ]= KEY_KEY_U;
+    KeyMap[ SDLK_v ]= KEY_KEY_V;
+    KeyMap[ SDLK_w ]= KEY_KEY_W;
+    KeyMap[ SDLK_x ]= KEY_KEY_X;
+    KeyMap[ SDLK_y ]= KEY_KEY_Y;
+    KeyMap[ SDLK_z ]= KEY_KEY_Z;
 
     KeyMap[ SDLK_LSUPER]= KEY_LWIN;
     KeyMap[ SDLK_RSUPER]= KEY_RWIN;
@@ -285,11 +285,13 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
                 key = (OC3_KEY_CODE)itSym->second;
 
             ret.EventType = OC3_KEYBOARD_EVENT;
-            ret.KeyboardEvent.Char = sdlEvent.key.keysym.unicode;
             ret.KeyboardEvent.Key = key;
             ret.KeyboardEvent.PressedDown = (sdlEvent.type == SDL_KEYDOWN);
             ret.KeyboardEvent.Shift = (sdlEvent.key.keysym.mod & KMOD_SHIFT) != 0;
             ret.KeyboardEvent.Control = (sdlEvent.key.keysym.mod & KMOD_CTRL ) != 0;
+            ret.KeyboardEvent.Char =  ( sdlEvent.key.keysym.unicode != 0 
+                                          ? sdlEvent.key.keysym.unicode&0xff
+                                          : ( key + ( ret.KeyboardEvent.Shift ? 0 : 0x20 ) ) );
         }
         break;
 

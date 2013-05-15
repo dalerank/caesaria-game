@@ -16,6 +16,7 @@
 #include "oc3_granary.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_picture.hpp"
+#include "oc3_variant.hpp"
 
 Granary::Granary() : WorkingBuilding( B_GRANARY, Size(3) )
 {
@@ -86,14 +87,16 @@ void Granary::computePictures()
   }
 }
 
-void Granary::serialize(OutputSerialStream &stream)
+void Granary::save( VariantMap& stream) const
 {
-  WorkingBuilding::serialize(stream);
-  _goodStore.serialize(stream);
+   WorkingBuilding::save( stream );
+   VariantMap vm_goodstore;
+   _goodStore.save( vm_goodstore );
+   stream[ "goodStore" ] = vm_goodstore;
 }
 
-void Granary::unserialize(InputSerialStream &stream)
+void Granary::load( const VariantMap& stream)
 {
-  WorkingBuilding::unserialize(stream);
-  _goodStore.unserialize(stream);
+//   WorkingBuilding::unserialize(stream);
+//   _goodStore.unserialize(stream);
 }

@@ -23,15 +23,6 @@
 class Picture;
 class Font;
 
-enum ElementState
-{
-    stNormal=0, 
-    stPressed, 
-    stHovered, 
-    stDisabled, 
-    StateCount
-};
-
 //Usual button class
 class PushButton : public Widget
 {

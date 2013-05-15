@@ -18,9 +18,7 @@
 
 #include "oc3_city.hpp"
 
-#include <iostream>
-#include <set>
-
+#include "oc3_tile.hpp"
 #include "oc3_building_data.hpp"
 #include "oc3_path_finding.hpp"
 #include "oc3_exception.hpp"
@@ -31,7 +29,11 @@
 #include "oc3_cityservice_emigrant.hpp"
 #include "oc3_cityservice_workershire.hpp"
 #include "oc3_cityservice_timers.hpp"
+#include "oc3_tilemap.hpp"
 #include "oc3_road.hpp"
+#include "oc3_variant.hpp"
+
+#include <set>
 
 typedef std::vector< CityServicePtr > CityServices;
 
@@ -50,6 +52,7 @@ public:
     int taxRate;
     unsigned long time;  // number of timesteps since start
     TilePos roadExit;
+    Tilemap tilemap;
 
 oc3_signals public:
     Signal1<int> onPopulationChangedSignal;
@@ -248,7 +251,7 @@ LandOverlays City::getBuildingList(const BuildingType buildingType)
 
 Tilemap& City::getTilemap()
 {
-   return _tilemap;
+   return _d->tilemap;
 }
 
 unsigned int City::getBoatEntryI() const { return _boatEntryI; }
@@ -319,7 +322,7 @@ void City::build( const BuildingType type, const TilePos& pos )
 
 void City::disaster( const TilePos& pos, DisasterType type )
 {
-    TerrainTile& terrain = _tilemap.at( pos ).get_terrain();
+    TerrainTile& terrain = _d->tilemap.at( pos ).get_terrain();
     TilePos rPos = pos;
 
     if( terrain.isDestructible() )
@@ -336,7 +339,7 @@ void City::disaster( const TilePos& pos, DisasterType type )
 
         bool deleteRoad = false;
 
-        std::list<Tile*> clearedTiles = _tilemap.getFilledRectangle( rPos, Size( size ) );
+        std::list<Tile*> clearedTiles = _d->tilemap.getFilledRectangle( rPos, Size( size ) );
         for (std::list<Tile*>::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
         {
           BuildingType dstr2constr[] = { B_BURNING_RUINS, B_COLLAPSED_RUINS };
@@ -349,7 +352,7 @@ void City::disaster( const TilePos& pos, DisasterType type )
 
 void City::clearLand(const TilePos& pos  )
 {
-  Tile& cursorTile = _tilemap.at( pos );
+  Tile& cursorTile = _d->tilemap.at( pos );
   TerrainTile& terrain = cursorTile.get_terrain();
 
   if( terrain.isDestructible() )
@@ -370,8 +373,8 @@ void City::clearLand(const TilePos& pos  )
       overlay->deleteLater();
     }
 
-    std::list<Tile*> clearedTiles = _tilemap.getFilledRectangle( rPos, Size( size ) );
-    for (std::list<Tile*>::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
+    PtrTilesArea clearedTiles = _d->tilemap.getFilledRectangle( rPos, Size( size ) );
+    for (PtrTilesArea::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
     {
       (*itTile)->set_master_tile(NULL);
       TerrainTile &terrain = (*itTile)->get_terrain();
@@ -451,90 +454,88 @@ void City::_calculatePopulation()
   _d->onPopulationChangedSignal.emit( pop );
 }
 
-void City::serialize(OutputSerialStream &stream)
+void City::save( VariantMap& stream) const
 {
-   // std::cout << "WRITE TILEMAP @" << stream.tell() << std::endl;
-   getTilemap().serialize(stream);
-   // std::cout << "WRITE CITY @" << stream.tell() << std::endl;
-   stream.write_int( _d->roadEntry.getI(), 2, 0, 1000);
-   stream.write_int( _d->roadEntry.getJ(), 2, 0, 1000);
-   stream.write_int( _d->roadExit.getI(), 2, 0, 1000);
-   stream.write_int( _d->roadExit.getJ(), 2, 0, 1000);
-   stream.write_int(_boatEntryI, 2, 0, 1000);
-   stream.write_int(_boatEntryJ, 2, 0, 1000);
-   stream.write_int(_boatExitI, 2, 0, 1000);
-   stream.write_int(_boatExitJ, 2, 0, 1000);
-   stream.write_int((int) _climate, 2, 0, C_MAX);
-   stream.write_int(_d->time, 4, 0, 1000000);
-   stream.write_int(_d->funds, 4, 0, 1000000);
-   stream.write_int(_d->population, 4, 0, 1000000);
+  VariantMap vm_tilemap;
+  _d->tilemap.save( vm_tilemap );
 
-   // walkers
-   stream.write_int(_d->walkerList.size(), 2, 0, 65535);
-   for (Walkers::iterator itWalker = _d->walkerList.begin(); itWalker != _d->walkerList.end(); ++itWalker)
-   {
-      // std::cout << "WRITE WALKER @" << stream.tell() << std::endl;
-      (*itWalker)->serialize(stream);
-   }
+  stream[ "tilemap" ] = vm_tilemap;
+  stream[ "roadEntryI" ] = _d->roadEntry.getI();
+  stream[ "roadEntryJ" ] = _d->roadEntry.getJ();
+  stream[ "roadExitI" ]  = _d->roadExit.getI();
+  stream[ "roadExitJ" ] = _d->roadExit.getJ();
+  stream[ "boatEntryI" ] = _boatEntryI;
+  stream[ "boatEnttyJ" ] = _boatEntryJ;
+  stream[ "boatExitI" ] = _boatExitI;
+  stream[ "boatExitJ" ] = _boatExitJ;
+  stream[ "climate" ] = _climate;
+  stream[ "time" ] = (unsigned long long)_d->time;
+  stream[ "funds" ] = _d->funds;
+  stream[ "populaton" ] = _d->population;
+// 
+//    // walkers
+//    stream.write_int(_d->walkerList.size(), 2, 0, 65535);
+//    for (Walkers::iterator itWalker = _d->walkerList.begin(); itWalker != _d->walkerList.end(); ++itWalker)
+//    {
+//       // std::cout << "WRITE WALKER @" << stream.tell() << std::endl;
+//       (*itWalker)->serialize(stream);
+//    }
+// 
+  // overlays
+  VariantMap vm_overlays;
+  for( LandOverlays::iterator itOverlay = _d->overlayList.begin(); 
+       itOverlay != _d->overlayList.end(); ++itOverlay )
+  {
+    (*itOverlay)->save( vm_overlays );
+  }
 
-   // overlays
-   stream.write_int(_d->overlayList.size(), 2, 0, 65535);
-   for (LandOverlays::iterator itOverlay = _d->overlayList.begin(); 
-        itOverlay != _d->overlayList.end(); 
-        ++itOverlay)
-   {
-      // std::cout << "WRITE OVERLAY @" << stream.tell() << std::endl;
-      LandOverlayPtr overlay = *itOverlay;
-      overlay->serialize( stream );
-   }
-
+  stream[ "overlays" ] = vm_overlays;
 }
 
-void City::unserialize(InputSerialStream &stream)
+void City::load( const VariantMap& stream)
 {
-   // std::cout << "READ TILEMAP @" << stream.tell() << std::endl;
-   _tilemap.unserialize(stream);
-   // std::cout << "READ CITY @" << stream.tell() << std::endl;
-   _d->roadEntry.setI( stream.read_int(2, 0, 1000) );
-   _d->roadEntry.setJ( stream.read_int(2, 0, 1000) );
-   _d->roadExit.setI( stream.read_int(2, 0, 1000) );
-   _d->roadExit.setJ( stream.read_int(2, 0, 1000) );
-   _boatEntryI = stream.read_int(2, 0, 1000);
-   _boatEntryJ = stream.read_int(2, 0, 1000);
-   _boatExitI = stream.read_int(2, 0, 1000);
-   _boatExitJ = stream.read_int(2, 0, 1000);
-   _climate = (ClimateType) stream.read_int(2, 0, 1000);
-   _d->time = stream.read_int(4, 0, 1000000);
-   _d->funds = stream.read_int(4, 0, 1000000);
-   _d->population = stream.read_int(4, 0, 1000000);
-
-   // walkers
-   int nbItems = stream.read_int(2, 0, 65535);
-   for (int i = 0; i < nbItems; ++i)
-   {
-      // std::cout << "READ WALKER @" << stream.tell() << std::endl;
-      WalkerPtr walker = Walker::unserialize_all( stream );
-      _d->walkerList.push_back( walker );
-   }
-
-   // overlays
-   nbItems = stream.read_int(2, 0, 65535);
-   for (int i = 0; i < nbItems; ++i)
-   {
-      // std::cout << "READ OVERLAY @" << stream.tell() << std::endl;
-      LandOverlayPtr overlay = LandOverlay::unserialize_all(stream);
-      _d->overlayList.push_back( overlay );
-   }
-
-   // set all pointers to overlays&walkers
-   stream.set_dangling_pointers(false); // ignore missing pointers
-
-   // finalize the buildings
-   for( LandOverlays::iterator itLLO = _d->overlayList.begin(); 
-        itLLO!=_d->overlayList.end(); ++itLLO)
-   {
-      (*itLLO)->build( (*itLLO)->getTile().getIJ());
-   }
+//    _d->tilemap.unserialize(stream);
+// 
+//     _d->roadEntry.setI( stream.read_int(2, 0, 1000) );
+//    _d->roadEntry.setJ( stream.read_int(2, 0, 1000) );
+//    _d->roadExit.setI( stream.read_int(2, 0, 1000) );
+//    _d->roadExit.setJ( stream.read_int(2, 0, 1000) );
+//    _boatEntryI = stream.read_int(2, 0, 1000);
+//    _boatEntryJ = stream.read_int(2, 0, 1000);
+//    _boatExitI = stream.read_int(2, 0, 1000);
+//    _boatExitJ = stream.read_int(2, 0, 1000);
+//    _climate = (ClimateType) stream.read_int(2, 0, 1000);
+//    _d->time = stream.read_int(4, 0, 1000000);
+//    _d->funds = stream.read_int(4, 0, 1000000);
+//    _d->population = stream.read_int(4, 0, 1000000);
+// 
+//    // walkers
+//    int nbItems = stream.read_int(2, 0, 65535);
+//    for (int i = 0; i < nbItems; ++i)
+//    {
+//       // std::cout << "READ WALKER @" << stream.tell() << std::endl;
+//       WalkerPtr walker = Walker::unserialize_all( stream );
+//       _d->walkerList.push_back( walker );
+//    }
+// 
+//    // overlays
+//    nbItems = stream.read_int(2, 0, 65535);
+//    for (int i = 0; i < nbItems; ++i)
+//    {
+//       // std::cout << "READ OVERLAY @" << stream.tell() << std::endl;
+//       LandOverlayPtr overlay = LandOverlay::unserialize_all(stream);
+//       _d->overlayList.push_back( overlay );
+//    }
+// 
+//    // set all pointers to overlays&walkers
+//    stream.set_dangling_pointers(false); // ignore missing pointers
+// 
+//    // finalize the buildings
+//    for( LandOverlays::iterator itLLO = _d->overlayList.begin(); 
+//         itLLO!=_d->overlayList.end(); ++itLLO)
+//    {
+//       (*itLLO)->build( (*itLLO)->getTile().getIJ());
+//    }
 }
 
 TilePos City::getRoadEntry() const

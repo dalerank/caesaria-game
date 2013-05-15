@@ -26,11 +26,8 @@
 #include "oc3_exception.hpp"
 #include "oc3_gui_info_box.hpp"
 #include "oc3_gettext.hpp"
-
-namespace {
-static const char* rcEntertaimentGroup    = "entertainment";
-}
-
+#include "oc3_variant.hpp"
+#include "oc3_resourcegroup.hpp"
 
 TrainingBuilding::TrainingBuilding( const BuildingType type, const Size& size )
   : WorkingBuilding( type, size )
@@ -72,18 +69,18 @@ void TrainingBuilding::timeStep(const unsigned long time)
 //    walker->start();
 // }
 
-void TrainingBuilding::serialize(OutputSerialStream &stream)
+void TrainingBuilding::save( VariantMap& stream) const
 {
-   WorkingBuilding::serialize(stream);
-   stream.write_int(_trainingTimer, 2, 0, 1000);
-   stream.write_int(_trainingDelay, 2, 0, 1000);
+  WorkingBuilding::save( stream );
+  stream[ "trainingTimer" ] = _trainingTimer;
+  stream[ "trainingDelay" ] = _trainingDelay;
 }
 
-void TrainingBuilding::unserialize(InputSerialStream &stream)
+void TrainingBuilding::load( const VariantMap& stream )
 {
-   WorkingBuilding::unserialize(stream);
-   _trainingTimer = stream.read_int(2, 0, 1000);
-   _trainingDelay = stream.read_int(2, 0, 1000);
+//    WorkingBuilding::unserialize(stream);
+//    _trainingTimer = stream.read_int(2, 0, 1000);
+//    _trainingDelay = stream.read_int(2, 0, 1000);
 }
 
 
@@ -96,11 +93,11 @@ void TrainingBuilding::unserialize(InputSerialStream &stream)
 
 BuildingActor::BuildingActor() : TrainingBuilding( B_ACTOR, Size(3) )
 {
-  setPicture( Picture::load(rcEntertaimentGroup, 81));
+  setPicture( Picture::load( ResourceGroup::entertaiment, 81));
 
-   _animation.load( rcEntertaimentGroup, 82, 9);
-   _animation.setOffset( Point( 68, -6 ) );
-   _fgPictures.resize(1);
+  _animation.load( ResourceGroup::entertaiment, 82, 9);
+  _animation.setOffset( Point( 68, -6 ) );
+  _fgPictures.resize(1);
 }
 
 void BuildingActor::deliverTrainee()
@@ -113,9 +110,9 @@ void BuildingActor::deliverTrainee()
 
 BuildingGladiator::BuildingGladiator() : TrainingBuilding( B_GLADIATOR, Size(3))
 {
-  setPicture( Picture::load(rcEntertaimentGroup, 51));
+  setPicture( Picture::load( ResourceGroup::entertaiment, 51));
 
-   _animation.load(rcEntertaimentGroup, 52, 10);
+   _animation.load( ResourceGroup::entertaiment, 52, 10);
    _animation.setOffset( Point( 62, 24 ) );
    _fgPictures.resize(1);
 }
@@ -131,9 +128,9 @@ void BuildingGladiator::deliverTrainee()
 
 BuildingLion::BuildingLion() : TrainingBuilding( B_LION, Size(3) )
 {
-  setPicture( Picture::load(rcEntertaimentGroup, 62));
+  setPicture( Picture::load( ResourceGroup::entertaiment, 62));
 
-   _animation.load( rcEntertaimentGroup, 63, 18);
+   _animation.load( ResourceGroup::entertaiment, 63, 18);
    _animation.setOffset( Point( 78, 21) );
    _fgPictures.resize(1);
 }
@@ -149,9 +146,9 @@ void BuildingLion::deliverTrainee()
 
 BuildingChariot::BuildingChariot() : TrainingBuilding( B_CHARIOT, Size(3) )
 {
-  setPicture( Picture::load(rcEntertaimentGroup, 91));
+  setPicture( Picture::load( ResourceGroup::entertaiment, 91));
 
-   _animation.load(rcEntertaimentGroup, 92, 10);
+   _animation.load( ResourceGroup::entertaiment, 92, 10);
    _animation.setOffset( Point( 54, 23 ));
    _fgPictures.resize(1);
 }

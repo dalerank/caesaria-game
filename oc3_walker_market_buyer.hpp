@@ -36,8 +36,8 @@ public:
   // compute the destination to fetch the given good
   void computeWalkerDestination();
 
-  void serialize(OutputSerialStream &stream);
-  void unserialize(InputSerialStream &stream);
+  void save( VariantMap& stream) const;
+  void load( const VariantMap& stream);
 
 private:
   MarketBuyer();

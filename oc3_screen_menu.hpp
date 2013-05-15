@@ -20,7 +20,8 @@
 #define SCREEN_MENU_HPP
 
 #include "oc3_screen.hpp"
-#include <memory>
+#include "oc3_scopedptr.hpp"
+#include <string>
 
 // displays the newGame/loadGame/quitGame menu
 class ScreenMenu : public Screen
@@ -29,6 +30,7 @@ public:
     enum 
     { 
         startNewGame=0,
+        loadMap,
         loadSavedGame,
         closeApplication,
         unlknowState=0xff
@@ -43,13 +45,15 @@ public:
     void draw();
     void initialize( GfxEngine& engine, GuiEnv& gui );
 
+    const std::string& getMapName() const;
+
 protected:
     int getResult() const;
     bool isStopped() const;
 
 private:
     class Impl;
-    std::auto_ptr< Impl > _d;
+    ScopedPtr< Impl > _d;
 };
 
 

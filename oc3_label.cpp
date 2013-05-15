@@ -29,8 +29,8 @@ class Label::Impl
 public:
 	StringArray brokenText;
 	Rect textMargin;
-    Font lastBreakFont; // stored because: if skin changes, line break must be recalculated.
-    Font font;
+  Font lastBreakFont; // stored because: if skin changes, line break must be recalculated.
+  Font font;
 	bool isBorderVisible;
 	bool OverrideBGColorEnabled;
 	bool WordWrap;
@@ -38,20 +38,18 @@ public:
 	bool RestrainTextInside;
 	bool RightToLeft;
 	string prefix;
-    bool needUpdatePicture;
-    int lineIntervalOffset;
+  bool needUpdatePicture;
+  int lineIntervalOffset;
 	Picture* bgPicture;
-    Picture* picture;
-	//core::FlagHolder<u32> flags;
+  Picture* picture;
 
-
-	Impl() : textMargin( Rect( 0, 0, 0, 0) ),
-			 OverrideBGColorEnabled(false), WordWrap(false),
-			 RestrainTextInside(true), RightToLeft(false), 
-             needUpdatePicture(false), bgPicture( 0 ), picture( 0 ),
-             lineIntervalOffset( 0 )
+  Impl() : textMargin( Rect( 0, 0, 0, 0) ),
+		    	 OverrideBGColorEnabled(false), WordWrap(false),
+			     RestrainTextInside(true), RightToLeft(false), 
+           needUpdatePicture(false), bgPicture( 0 ), picture( 0 ),
+           lineIntervalOffset( 0 )
 	{
-        font = FontCollection::instance().getFont(FONT_2);
+    font = FontCollection::instance().getFont(FONT_2);
 	}
 
     ~Impl()

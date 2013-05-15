@@ -18,10 +18,8 @@
 
 
 #include "oc3_scenario.hpp"
-
-#include <iostream>
-
 #include "oc3_exception.hpp"
+#include "oc3_variant.hpp"
 
 Scenario* Scenario::_instance = NULL;
 
@@ -46,31 +44,23 @@ City& Scenario::getCity()
   return _city;
 }
 
+
+const City& Scenario::getCity() const
+{
+  return _city;
+}
+
 std::string Scenario::getDescription() const
 {
   return _description;
 }
 
-void Scenario::serialize(OutputSerialStream &stream)
+void Scenario::save( VariantMap& stream ) const
 {
-  stream.write_str(getDescription(), 1000);
-  getCity().serialize(stream);
+  stream[ "description" ] = Variant( getDescription() );
 }
 
-void Scenario::unserialize(InputSerialStream &stream)
+void Scenario::load( const VariantMap& stream)
 {
-  std::string magic = stream.read_fix_str(3);
-   
-  if (magic != "OC3")
-    THROW("Not an openCaesar3 saved game file");
-
-  int version = stream.read_int(2, 0, 100);
-   
-  if (version != 1)
-    THROW("Unsupported version " << version);
-
-  _description = stream.read_str(1000);
-   
-  getCity().unserialize(stream);
 }
 

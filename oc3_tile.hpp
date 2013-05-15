@@ -57,16 +57,7 @@ private:
   Tile* _master_tile;  // left-most tile if multi-tile, or "this" if single-tile
   TerrainTile _terrain;    // infos about the tile (building, tree, road, water, rock...)
 
-  Picture *_picture; // displayed picture   
+  Picture* _picture; // displayed picture   
 };
-
-typedef std::list< const Tile* > ConstWayOnTiles;
-typedef std::list< Tile* > WayOnTiles;
-typedef std::list< Tile* > PtrTilesArea;
-typedef std::list< Tile* > PtrTilesList;
-
-typedef std::vector< Tile* > PtrTilesVector;
-typedef std::vector< Tile  > TilesVector;
-typedef std::vector< TilesVector > TileGrid;
 
 #endif //__OPENCAESAR3_TILE_H_INCLUDED__

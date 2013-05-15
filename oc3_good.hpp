@@ -71,8 +71,8 @@ public:
    /** amount: if -1, amount=stock._currentQty */
    void addStock(GoodStock &stock, const int amount = -1);
 
-   void serialize(OutputSerialStream &stream);
-   void unserialize(InputSerialStream &stream);
+   void save( VariantMap& options ) const;
+   void load( const VariantMap& options );
 
    GoodType _goodType;
    int _maxQty;
@@ -119,8 +119,8 @@ public:
    // store all goods from the given goodStore
    void storeAll(SimpleGoodStore &goodStore);
 
-   void serialize(OutputSerialStream &stream);
-   void unserialize(InputSerialStream &stream);
+   void save( VariantMap& stream ) const;
+   void load( const VariantMap& stream );
 
 protected:
    long _nextReservationID;
@@ -156,8 +156,8 @@ public:
    void applyStorageReservation(GoodStock &stock, const long reservationID);
    void applyRetrieveReservation(GoodStock &stock, const long reservationID);
 
-   void serialize(OutputSerialStream &stream);
-   void unserialize(InputSerialStream &stream);
+   void save( VariantMap& stream ) const;
+   void load( const VariantMap& stream );
 
 private:
    std::vector<GoodStock> _goodStockList;

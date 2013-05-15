@@ -17,26 +17,31 @@
 #ifndef __OPENCAESAR3_TOPMENU_H_INCLUDE_
 #define __OPENCAESAR3_TOPMENU_H_INCLUDE_
 
-#include "oc3_widget.hpp"
+#include "oc3_mainmenu.hpp"
+#include "oc3_scopedptr.hpp"
 
-class TopMenu : public Widget
+class TopMenu : public MainMenu
 {
 public:
     static TopMenu* create( Widget* parent, const int height );
 
     // draw on screen
     virtual void draw( GfxEngine& engine );
+    //bool onEvent(const NEvent& event);
 
     void setFunds( int value );
     void setPopulation( int value );
     void setDate( int value );
 
-private:
+oc3_signals public:
+    Signal0<>& onExit();
+    Signal1<std::string>& onSave();
 
+private:
     TopMenu( Widget* parent, const int height );
-    
+
     class Impl;
-    std::auto_ptr< Impl > _d;
+    ScopedPtr< Impl > _d;
 };
 
 #endif //__OPENCAESAR3_TOPMENU_H_INCLUDE_

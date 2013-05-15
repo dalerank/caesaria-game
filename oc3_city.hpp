@@ -84,8 +84,8 @@ public:
 
    Tilemap& getTilemap();
 
-   void serialize(OutputSerialStream &stream);
-   void unserialize(InputSerialStream &stream);
+   void save( VariantMap& stream) const;
+   void load( const VariantMap& stream);
 
    // add construction
    void build( const BuildingType type, const TilePos& pos );
@@ -119,9 +119,7 @@ private:
    unsigned int _boatExitI, _boatExitJ;
    unsigned int _cameraStartI, _cameraStartJ;
 
-   ClimateType _climate;
-   Tilemap _tilemap;
-   
+   ClimateType _climate;   
    void _calculatePopulation();
 
    class Impl;

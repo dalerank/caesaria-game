@@ -24,6 +24,8 @@
 #include "oc3_enums.hpp"
 #include "oc3_serializer.hpp"
 #include "oc3_predefinitions.hpp"
+#include "oc3_terraininfo.hpp"
+#include "oc3_positioni.hpp"
 #include <list>
 
 class PathWay : public Serializable
@@ -49,8 +51,8 @@ public:
    PtrTilesList& getAllTiles();
 
    void prettyPrint() const;
-   void serialize(OutputSerialStream &stream);
-   void unserialize(InputSerialStream &stream);
+   void save( VariantMap& stream) const;
+   void load( const VariantMap& stream);
    void toggleDirection();
 
    PathWay& operator=(const PathWay& other );
