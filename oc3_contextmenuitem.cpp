@@ -18,60 +18,60 @@
 #include "oc3_contextmenu.hpp"
 
 ContextMenuItem::ContextMenuItem( ContextMenu* parent, const std::string& text ) 
-	: Label( parent, Rect( 0, 0, 1, 1 ), text, false, false, -1 ), _d( new Impl )
+  : Label( parent, Rect( 0, 0, 1, 1 ), text, false, false, -1 ), _d( new Impl )
 {
-	_d->isSeparator = false;
-	_d->subMenuAlignment = alignAuto;
-	_d->checked = false;
-	_d->isHovered = false;
-	_d->isAutoChecking = false;
-	_d->dim = Size( 0, 0 );
-	_d->offset = 0;
-	_d->subMenu = NULL;
-	_d->setFlag( drawSubmenuSprite, false );
-	_d->commandId = -1;
-	_d->luaFunction = -1;
+  _d->isSeparator = false;
+  _d->subMenuAlignment = alignAuto;
+  _d->checked = false;
+  _d->isHovered = false;
+  _d->isAutoChecking = false;
+  _d->dim = Size( 0, 0 );
+  _d->offset = 0;
+  _d->subMenu = NULL;
+  _d->setFlag( drawSubmenuSprite, false );
+  _d->commandId = -1;
+  _d->luaFunction = -1;
 }
 
 Signal1<bool>& ContextMenuItem::onChecked()
 {
-	return _d->onCheckedSignal;
+  return _d->onCheckedSignal;
 }
 
 ContextMenu* ContextMenuItem::addSubMenu( int id )
 {
-	ContextMenu* sub = new ContextMenu( getParent(), Rect(0,0,100,100), id, false, false);
-	setSubMenu( sub );
-	getParent()->bringChildToFront( sub );
-	return sub;
+  ContextMenu* sub = new ContextMenu( getParent(), Rect(0,0,100,100), id, false, false);
+  setSubMenu( sub );
+  getParent()->bringChildToFront( sub );
+  return sub;
 }
 
 //! Adds a sub menu from an element that already exists.
 void ContextMenuItem::setSubMenu( ContextMenu* menu )
 {
-	if( menu )
-		menu->grab();
+  if( menu )
+    menu->grab();
 
-	if( _d->subMenu )
-		_d->subMenu->drop();
+  if( _d->subMenu )
+    _d->subMenu->drop();
 
-	_d->subMenu = menu;
-	menu->setVisible(false);
+  _d->subMenu = menu;
+  menu->setVisible(false);
 
-	if( _d->subMenu )
-	{
-		menu->setAllowFocus( false );
-		if( menu->isFocused() )
-			getParent()->setFocus();
-	}
+  if( _d->subMenu )
+  {
+    menu->setAllowFocus( false );
+    if( menu->isFocused() )
+      getParent()->setFocus();
+  }
 
-	if( ContextMenu* parentCntx = safety_cast< ContextMenu* >( getParent() ) )
-		parentCntx->updateItems();
+  if( ContextMenu* parentCntx = safety_cast< ContextMenu* >( getParent() ) )
+    parentCntx->updateItems();
 }
 
 bool ContextMenuItem::isSeparator() const
 {
-	return _d->isSeparator;
+  return _d->isSeparator;
 }
 
 void ContextMenuItem::setCommandId( int cmdId )
@@ -81,71 +81,71 @@ void ContextMenuItem::setCommandId( int cmdId )
 
 int ContextMenuItem::getCommandId() const
 {
-	return _d->commandId;
+  return _d->commandId;
 }
 
 void ContextMenuItem::toggleCheck()
 {
-	if( _d->isAutoChecking )
-	{
-		_d->checked = !_d->checked;
-		_d->onCheckedSignal.emit( _d->checked );
-	}
+  if( _d->isAutoChecking )
+  {
+    _d->checked = !_d->checked;
+  _d->onCheckedSignal.emit( _d->checked );
+  }
 }
 
 bool ContextMenuItem::isHovered() const
 {
-	return _d->isHovered;
+  return _d->isHovered;
 }
 
 void ContextMenuItem::setAutoChecking( bool autoChecking )
 {
-	_d->isAutoChecking = autoChecking;
+  _d->isAutoChecking = autoChecking;
 }
 
 bool ContextMenuItem::isPointInside( const Point& point ) const
 {
-	return false;
+  return false;
 }
 
 int ContextMenuItem::getOffset() const
 {
-	return _d->offset;
+  return _d->offset;
 }
 
 void ContextMenuItem::setChecked( bool check )
 {
-	_d->checked = check;
+  _d->checked = check;
 }
 
 bool ContextMenuItem::isChecked() const
 {
-	return _d->checked;
+  return _d->checked;
 }
 
 void ContextMenuItem::setIsSeparator( bool isSepar )
 {
-	_d->isSeparator = isSepar;
+  _d->isSeparator = isSepar;
 }
 
 void ContextMenuItem::setHovered( bool hover )
 {
-	_d->isHovered = hover;
+  _d->isHovered = hover;
 }
 
 ContextMenu* ContextMenuItem::getSubMenu() const
 {
-	return _d->subMenu;
+  return _d->subMenu;
 }
 
 void ContextMenuItem::setSubMenuAlignment( SubMenuAlign align )
 {
-	_d->subMenuAlignment = align;
+  _d->subMenuAlignment = align;
 }
 
 ContextMenuItem::SubMenuAlign ContextMenuItem::getSubMenuAlignment() const
 {
-	return _d->subMenuAlignment;
+  return _d->subMenuAlignment;
 }
 
 void ContextMenuItem::setIcon( const Picture& icon )
@@ -155,26 +155,26 @@ void ContextMenuItem::setIcon( const Picture& icon )
 
 void ContextMenuItem::setFlag( DrawFlag flagName, bool set/*=true */ )
 {
-	_d->setFlag( flagName, set );
+  _d->setFlag( flagName, set );
 }
 
 ContextMenuItem::~ContextMenuItem()
 {
-	if( _d->subMenu )
-		_d->subMenu->drop();
+  if( _d->subMenu )
+    _d->subMenu->drop();
 }
 
 void ContextMenuItem::setDim( const Size& size )
 {
-	_d->dim = size;
+  _d->dim = size;
 }
 
 const Size& ContextMenuItem::getDim() const
 {
-	return _d->dim;
+  return _d->dim;
 }
 
 void ContextMenuItem::setOffset( int offset )
 {
-	_d->offset = offset;
+  _d->offset = offset;
 }

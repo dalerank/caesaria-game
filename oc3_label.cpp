@@ -78,17 +78,17 @@ Label::Label(Widget* parent, const Rect& rectangle, const string& text, bool bor
 : Widget( parent, id, rectangle),
 	_d( new Impl )
 {
-    _d->bgPicture = 0;
-	_d->isBorderVisible = border;
-	_d->isBackgroundVisible = background;
+  _d->bgPicture = 0;
+  _d->isBorderVisible = border;
+  _d->isBackgroundVisible = background;
  
 
-    #ifdef _DEBUG
-        setDebugName( "OC3_label");
-    #endif
+  #ifdef _DEBUG
+    setDebugName( "OC3_label");
+  #endif
 
-    setTextAlignment( alignAuto, alignAuto );
-    setText( text );
+  setTextAlignment( alignAuto, alignAuto );
+  setText( text );
 }
 
 void Label::_updateTexture( GfxEngine& painter )
@@ -168,16 +168,16 @@ Label::~Label()
 //! draws the element and its children
 void Label::draw( GfxEngine& painter )
 {
-    if ( !isVisible() )
-        return;
+  if ( !isVisible() )
+    return;
 
-    Rect frameRect( getAbsoluteRect() );
+  Rect frameRect( getAbsoluteRect() );
 
-    // draw background
-    if( _d->picture )
-        painter.drawPicture( *_d->picture, frameRect.getLeft(), frameRect.getTop() );
+  // draw background
+  if( _d->picture )
+    painter.drawPicture( *_d->picture, frameRect.getLeft(), frameRect.getTop() );
 
-    Widget::draw( painter );
+  Widget::draw( painter );
 }
 
 //! Get the font which is used right now for drawing
@@ -209,13 +209,13 @@ Font Label::getFont() const
 //! Sets whether to draw the background
 void Label::setBackgroundVisible(bool draw)
 {
-	_d->isBackgroundVisible = draw;
+  _d->isBackgroundVisible = draw;
 }
 
 //! Sets whether to draw the border
 void Label::setBorderVisible(bool draw)
 {
-	_d->isBorderVisible = draw;
+  _d->isBorderVisible = draw;
 }
 
 

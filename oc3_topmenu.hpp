@@ -23,25 +23,25 @@
 class TopMenu : public MainMenu
 {
 public:
-    static TopMenu* create( Widget* parent, const int height );
+  static TopMenu* create( Widget* parent, const int height );
 
-    // draw on screen
-    virtual void draw( GfxEngine& engine );
-    //bool onEvent(const NEvent& event);
+  // draw on screen
+  virtual void draw( GfxEngine& engine );
+  //bool onEvent(const NEvent& event);
 
-    void setFunds( int value );
-    void setPopulation( int value );
-    void setDate( int value );
+  void setFunds( int value );
+  void setPopulation( int value );
+  void setDate( int value );
 
 oc3_signals public:
-    Signal0<>& onExit();
-    Signal1<std::string>& onSave();
+  Signal0<>& onExit();
+  Signal1<std::string>& onSave();
 
 private:
-    TopMenu( Widget* parent, const int height );
+  TopMenu( Widget* parent, const int height );
 
-    class Impl;
-    ScopedPtr< Impl > _d;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 #endif //__OPENCAESAR3_TOPMENU_H_INCLUDE_

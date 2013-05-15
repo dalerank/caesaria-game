@@ -23,23 +23,22 @@ class MainMenu : public ContextMenu
 {
 public:
 
-	//! constructor
+  //! constructor
   MainMenu( Widget* parent, const Rect& rectangle, const int id=-1);
 
-	//! draws the element and its children
-	//virtual void onPaint( AbstractPainter* painter );
+  //! draws the element and its children
+  //virtual void onPaint( AbstractPainter* painter );
 
-	//! called if an event happened.
-	virtual bool onEvent(const NEvent& event);
+  //! called if an event happened.
+  virtual bool onEvent(const NEvent& event);
 
   ContextMenuItem* addItem( const std::string& text, int commandId, 
                             bool enabled, bool hasSubMenu, 
                             bool checked, bool autoChecking );
 
 protected:
-	//! Updates the absolute position.
-	virtual void recalculateSize_();
+  //! Updates the absolute position.
+  virtual void recalculateSize_();
 };
 
-#endif //  __NRP_MENU_H_INCLUDED__
-
+#endif

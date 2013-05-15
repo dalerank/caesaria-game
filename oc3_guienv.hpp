@@ -25,47 +25,47 @@ class GfxEngine;
 class GuiEnv : Widget
 {
 public:
-    GuiEnv( GfxEngine& painter );
+  GuiEnv( GfxEngine& painter );
 
-    ~GuiEnv();
+  ~GuiEnv();
 
-    bool hasFocus( const Widget* element) const;
-    bool setFocus( Widget* element);
-    bool removeFocus( Widget* element);
+  bool hasFocus( const Widget* element) const;
+  bool setFocus( Widget* element);
+  bool removeFocus( Widget* element);
 
-    double getVersion() const;
-	
-    Widget* getRootWidget();								//  
-    Widget* getFocus() const;
-    Point getCursorPos() const;
+  double getVersion() const;
 
-    bool isHovered( const Widget* element );
-    Widget* getHoveredElement() const;
+  Widget* getRootWidget();								//  
+  Widget* getFocus() const;
+  Point getCursorPos() const;
 
-    void draw();
-    void beforeDraw();
+  bool isHovered( const Widget* element );
+  Widget* getHoveredElement() const;
 
-    void animate( unsigned int time );
+  void draw();
+  void beforeDraw();
 
-    bool handleEvent(const NEvent& event);
+  void animate( unsigned int time );
 
-    virtual void deleteLater( Widget* ptrElement );
+  bool handleEvent(const NEvent& event);
 
-    void clear();
+  virtual void deleteLater( Widget* ptrElement );
+
+  void clear();
    
 private:
-    Widget* createStandartTooltip_();
+  Widget* createStandartTooltip_();
     
-    void drawTooltip_( unsigned int time );
-    void updateHoveredElement( const Point& mousePos);
-    Widget* getNextWidget(bool reverse, bool group);
+  void drawTooltip_( unsigned int time );
+  void updateHoveredElement( const Point& mousePos);
+  Widget* getNextWidget(bool reverse, bool group);
 
-    Widget* _CheckParent( Widget* parent );
+  Widget* _CheckParent( Widget* parent );
   
-    void threatDeletionQueue_();
+  void threatDeletionQueue_();
 
-    class Impl;
-    std::auto_ptr< Impl > _d;
+  class Impl;
+  std::auto_ptr< Impl > _d;
 };
 
 #endif

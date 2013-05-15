@@ -59,54 +59,54 @@ ScreenGame::~ScreenGame() {}
 
 void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
 {
-    _d->gui = &gui;
-    _d->engine = &engine;
-    _d->infoBoxMgr = InfoBoxManager::create( &gui );
-    // enable key repeat, 1ms delay, 100ms repeat
-    SDL_EnableKeyRepeat(1, 100);
+  _d->gui = &gui;
+  _d->engine = &engine;
+  _d->infoBoxMgr = InfoBoxManager::create( &gui );
+  // enable key repeat, 1ms delay, 100ms repeat
+  SDL_EnableKeyRepeat(1, 100);
 
-    _d->gui->clear();
+  _d->gui->clear();
 
-    const int topMenuHeight = 23;
-    const Picture& rPanelPic = PicLoader::instance().get_picture( ResourceGroup::panelBackground, 14 );
-    Rect rPanelRect( engine.getScreenWidth() - rPanelPic.get_width(), topMenuHeight,
-                     engine.getScreenWidth(), engine.getScreenHeight() );
-    _d->rightPanel = MenuRigthPanel::create( gui.getRootWidget(), rPanelRect, rPanelPic);
+  const int topMenuHeight = 23;
+  const Picture& rPanelPic = PicLoader::instance().get_picture( ResourceGroup::panelBackground, 14 );
+  Rect rPanelRect( engine.getScreenWidth() - rPanelPic.get_width(), topMenuHeight,
+                   engine.getScreenWidth(), engine.getScreenHeight() );
+  _d->rightPanel = MenuRigthPanel::create( gui.getRootWidget(), rPanelRect, rPanelPic);
 
-    _d->topMenu = TopMenu::create( gui.getRootWidget(), topMenuHeight );
+  _d->topMenu = TopMenu::create( gui.getRootWidget(), topMenuHeight );
 
-    _d->menu = Menu::create( gui.getRootWidget(), -1 );
-    _d->menu->setPosition( Point( engine.getScreenWidth() - _d->menu->getWidth() - _d->rightPanel->getWidth(), 
+  _d->menu = Menu::create( gui.getRootWidget(), -1 );
+  _d->menu->setPosition( Point( engine.getScreenWidth() - _d->menu->getWidth() - _d->rightPanel->getWidth(), 
                                  _d->topMenu->getHeight() ) );
 
-    _d->extMenu = ExtentMenu::create( gui.getRootWidget(), -1 );
-    _d->extMenu->setPosition( Point( engine.getScreenWidth() - _d->extMenu->getWidth() - _d->rightPanel->getWidth(), 
+  _d->extMenu = ExtentMenu::create( gui.getRootWidget(), -1 );
+  _d->extMenu->setPosition( Point( engine.getScreenWidth() - _d->extMenu->getWidth() - _d->rightPanel->getWidth(), 
                                      _d->topMenu->getHeight() ) );
     
-    _d->rightPanel->bringToFront();
+  _d->rightPanel->bringToFront();
 
-    // 8*30: used for high buildings (granary...), visible even when not in tilemap_area.
-    getMapArea().setViewSize( engine.getScreenWidth(), engine.getScreenHeight() + 8 * 30);
+  // 8*30: used for high buildings (granary...), visible even when not in tilemap_area.
+  getMapArea().setViewSize( engine.getScreenWidth(), engine.getScreenHeight() + 8 * 30);
         
-    // here move camera to start position of map
-    getMapArea().setCenterIJ( _scenario->getCity().getCameraStartIJ() ); 
+  // here move camera to start position of map
+  getMapArea().setCenterIJ( _scenario->getCity().getCameraStartIJ() ); 
 
-    //connect elements
-    CONNECT( _d->topMenu, onSave(), this, ScreenGame::resolveGameSave );
-    CONNECT( _d->topMenu, onExit(), this, ScreenGame::stop );
+  //connect elements
+  CONNECT( _d->topMenu, onSave(), this, ScreenGame::resolveGameSave );
+  CONNECT( _d->topMenu, onExit(), this, ScreenGame::stop );
 
-    CONNECT( _d->menu, onCreateConstruction(), this, ScreenGame::resolveCreateConstruction );
-    CONNECT( _d->menu, onRemoveTool(), this, ScreenGame::resolveRemoveTool );
-    CONNECT( _d->menu, onMaximize(), _d->extMenu, ExtentMenu::maximize );
+  CONNECT( _d->menu, onCreateConstruction(), this, ScreenGame::resolveCreateConstruction );
+  CONNECT( _d->menu, onRemoveTool(), this, ScreenGame::resolveRemoveTool );
+  CONNECT( _d->menu, onMaximize(), _d->extMenu, ExtentMenu::maximize );
 
-    CONNECT( _d->extMenu, onCreateConstruction(), this, ScreenGame::resolveCreateConstruction );
-    CONNECT( _d->extMenu, onRemoveTool(), this, ScreenGame::resolveRemoveTool );
+  CONNECT( _d->extMenu, onCreateConstruction(), this, ScreenGame::resolveCreateConstruction );
+  CONNECT( _d->extMenu, onRemoveTool(), this, ScreenGame::resolveRemoveTool );
 
-    CONNECT( &_scenario->getCity(), onPopulationChanged(), _d->topMenu, TopMenu::setPopulation );
-    CONNECT( &_scenario->getCity(), onFundsChanged(), _d->topMenu, TopMenu::setFunds );
-    CONNECT( &_scenario->getCity(), onMonthChanged(), _d->topMenu, TopMenu::setDate );
+  CONNECT( &_scenario->getCity(), onPopulationChanged(), _d->topMenu, TopMenu::setPopulation );
+  CONNECT( &_scenario->getCity(), onFundsChanged(), _d->topMenu, TopMenu::setFunds );
+  CONNECT( &_scenario->getCity(), onMonthChanged(), _d->topMenu, TopMenu::setDate );
 
-    CONNECT( &_d->guiTilemap, onShowTileInfo(), this, ScreenGame::showTileInfo );
+  CONNECT( &_d->guiTilemap, onShowTileInfo(), this, ScreenGame::showTileInfo );
 }
 
 void ScreenGame::resolveGameSave( std::string filename )
