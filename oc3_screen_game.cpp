@@ -176,7 +176,7 @@ void ScreenGame::handleEvent( NEvent& event )
       else // eventresolved
       {
         _mouseEventTarget = _MET_TILES;
-        _guiTilemap.handleEvent( event );
+        _d->guiTilemap.handleEvent( event );
       }
       return;
     }
@@ -202,13 +202,14 @@ void ScreenGame::handleEvent( NEvent& event )
   {
     eventResolved = _d->gui->handleEvent( event );      
    
-  if( !eventResolved )
-    _d->guiTilemap.handleEvent( event );
+    if( !eventResolved )
+      _d->guiTilemap.handleEvent( event );
 
-  if( event.EventType == OC3_KEYBOARD_EVENT && event.KeyboardEvent.Key == KEY_ESCAPE )
-  {
-    std::cout << "EVENT_ESCAPE was pressed" << std::endl;
-    stop();
+    if( event.EventType == OC3_KEYBOARD_EVENT && event.KeyboardEvent.Key == KEY_ESCAPE )
+    {
+      std::cout << "EVENT_ESCAPE was pressed" << std::endl;
+      stop();
+    }
   }
 }
 

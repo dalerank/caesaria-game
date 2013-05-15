@@ -16,6 +16,8 @@
 #ifndef __OPENCAESAR3_TERRAININFO_H_INCLUDED__
 #define __OPENCAESAR3_TERRAININFO_H_INCLUDED__
 
+#include <string>
+
 #include "oc3_serializer.hpp"
 #include "oc3_predefinitions.hpp"
 

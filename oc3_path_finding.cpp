@@ -352,12 +352,12 @@ void PathWay::save( VariantMap& stream) const
   if (_isReverse)
   {
     size_t pos = std::distance<Directions::const_reverse_iterator>(_directionList.rbegin(), _directionIt_reverse);
-    stream[ "current" ] = pos;
+    stream[ "current" ] = static_cast<unsigned int>(pos);
   }
   else
   {
     size_t pos = std::distance<Directions::const_iterator>(_directionList.begin(), _directionIt);
-    stream[ "current" ] = pos;
+    stream[ "current" ] = static_cast<unsigned int>(pos);
   }
 }
 

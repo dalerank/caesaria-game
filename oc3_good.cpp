@@ -414,8 +414,9 @@ void GoodStore::storeAll(SimpleGoodStore &goodStore)
  
 void GoodStore::save( VariantMap& stream) const 
 {
-  stream[ "nextReservationId" ] = _nextReservationID;
-  stream[ "storeReservationSize" ] = _storeReservations.size();
+  // HACK!!! We must to think about how we will store data on different platforms (OS + 32/64 bit mode)
+  stream[ "nextReservationId" ] = static_cast<int>(_nextReservationID);
+  stream[ "storeReservationSize" ] = static_cast<int>(_storeReservations.size());
 //    for (std::map<long, GoodStock>::iterator itRes = _storeReservations.begin(); itRes != _storeReservations.end(); itRes++)
 //    {
 //       long resID = itRes->first;
@@ -605,7 +606,7 @@ void SimpleGoodStore::save( VariantMap& stream ) const
   GoodStore::save( stream );
   stream[ "max" ] = _maxQty;
   stream[ "current" ] = _currentQty;
-  stream[ "size" ] = _goodStockList.size();
+  stream[ "size" ] = static_cast<unsigned int>(_goodStockList.size());
 //    for (std::vector<GoodStock>::iterator itStock = _goodStockList.begin(); itStock != _goodStockList.end(); itStock++)
 //    {
 //       GoodStock &stock = *itStock;

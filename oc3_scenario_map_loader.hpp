@@ -19,7 +19,7 @@
 #include "oc3_scenarioabstractloader.hpp"
 #include "oc3_scopedptr.hpp"
 
-class ScenarioMapLoader : ScenarioAbstractLoader
+class ScenarioMapLoader : public ScenarioAbstractLoader
 {
 public:
   ScenarioMapLoader();

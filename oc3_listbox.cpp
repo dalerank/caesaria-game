@@ -331,7 +331,7 @@ bool ListBox::onEvent(const NEvent& event)
         if (_d->selectedItemIndex > -1 && _d->keyBuffer.size() > 1)
 				{
             if( _d->items[ _d->selectedItemIndex ].getText().size() >= _d->keyBuffer.size() 
-                && !stricmp( _d->keyBuffer.c_str(), _d->items[_d->selectedItemIndex].getText().substr( 0,_d->keyBuffer.size() ).c_str() ) )
+                && !strcasecmp( _d->keyBuffer.c_str(), _d->items[_d->selectedItemIndex].getText().substr( 0,_d->keyBuffer.size() ).c_str() ) )
 						return true;
 				}
 
@@ -340,7 +340,7 @@ bool ListBox::onEvent(const NEvent& event)
 				{
           if( _d->items[current].getText().size() >= _d->keyBuffer.size())
 					{
-            if( !stricmp( _d->keyBuffer.c_str(), _d->items[current].getText().substr(0,_d->keyBuffer.size()).c_str() ) )
+            if( !strcasecmp( _d->keyBuffer.c_str(), _d->items[current].getText().substr(0,_d->keyBuffer.size()).c_str() ) )
 						{
               if ( _d->selectedItemIndex != current && !_d->selecting && !isFlag( LBF_MOVEOVER_SELECT ))
               {
@@ -356,7 +356,7 @@ bool ListBox::onEvent(const NEvent& event)
 				{
           if( _d->items[current].getText().size() >= _d->keyBuffer.size())
 					{
-            if( !stricmp( _d->keyBuffer.c_str(), _d->items[current].getText().substr( 0,_d->keyBuffer.size()).c_str() ) )
+            if( !strcasecmp( _d->keyBuffer.c_str(), _d->items[current].getText().substr( 0,_d->keyBuffer.size()).c_str() ) )
 						{
               if ( _d->selectedItemIndex != current && !_d->selecting && !isFlag( LBF_MOVEOVER_SELECT ))
               {
