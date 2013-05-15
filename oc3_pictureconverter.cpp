@@ -125,12 +125,11 @@ PictureConverter::PictureConverter()
 
 void PictureConverter::fill( Picture& pic, int color )
 {
-    SDL_Surface* source = pic.get_surface();
+  SDL_Surface* source = pic.get_surface();
 
-    SDL_LockSurface( source );
-    SDL_FillRect(source, NULL, SDL_MapRGBA(source->format, (color>>24)&0xff, (color>>16)&0xff, 
-                                                           (color>>8)&0xff, (color&0xff))); 
-    SDL_UnlockSurface(source);
+  SDL_LockSurface( source );
+  SDL_FillRect(source, NULL, SDL_MapRGBA(source->format, (color>>24)&0xff, (color>>16)&0xff, (color>>8)&0xff, (color&0xff))); 
+  SDL_UnlockSurface(source);
 }
 
 /*

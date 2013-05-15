@@ -64,7 +64,7 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
 
   SdlFacade &sdlFacade = SdlFacade::instance();
   ret->_d->bgPicture = &sdlFacade.createPicture( ret->getWidth(), ret->getHeight() );
-  SDL_SetAlpha( ret->_d->bgPicture->get_surface(), 0, 0);  // remove surface alpha
+  //SDL_SetAlpha( ret->_d->bgPicture->get_surface(), 0, 0);  // remove surface alpha
 
   int i = 0;
   unsigned int x = 0;
@@ -146,7 +146,9 @@ TopMenu::TopMenu( Widget* parent, const int height )
 : MainMenu( parent, Rect( 0, 0, parent->getWidth(), height ) ),
   _d( new Impl )
 {
+  PicLoader& loader = PicLoader::instance();
   ContextMenuItem* tmp = addItem( "File", -1, true, true, false, false );
+  
   ContextMenu* file = tmp->addSubMenu();
   ContextMenuItem* save = file->addItem( "Save", -1, true, false, false, false );
   file->addItem( "Load", -1, true, false, false, false );

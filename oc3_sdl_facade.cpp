@@ -27,12 +27,12 @@ SdlFacade* SdlFacade::_instance = NULL;
 
 SdlFacade& SdlFacade::instance()
 {
-   if (_instance == NULL)
-   {
-      _instance = new SdlFacade();
-      if (_instance == NULL) THROW("Memory error, cannot instantiate object");
-   }
-   return *_instance;
+  if (_instance == NULL)
+  {
+    _instance = new SdlFacade();
+    if (_instance == NULL) THROW("Memory error, cannot instantiate object");
+  }
+  return *_instance;
 }
 
 
@@ -42,16 +42,16 @@ SdlFacade& SdlFacade::instance()
 
 void SdlFacade::deletePicture(Picture &pic)
 {
-   GfxEngine::instance().unload_picture(pic);
-   delete &pic;
-   _createdPics.remove(&pic);
+  GfxEngine::instance().unload_picture(pic);
+  delete &pic;
+  _createdPics.remove(&pic);
 }
 
 Picture& SdlFacade::createPicture(const int width, const int height)
 {
    SDL_Surface* img;
    const Uint32 flags = 0;
-   img = SDL_CreateRGBSurface(flags, width, height, 32, 0, 0, 0, 0);  // opaque picture with default mask
+   img = SDL_CreateRGBSurface(flags, width, height, 32, 0,0,0,0);  // opaque picture with default mask
    if (img == NULL) THROW("Cannot make surface, size=" << width << "x" << height);
 
    Picture *pic = new Picture();
@@ -161,19 +161,19 @@ void SdlFacade::getTextSize(Font &font, const std::string &text, int &width, int
 
 void SdlFacade::lockSurface(SDL_Surface *surface)
 {
-   if (SDL_MUSTLOCK(surface))
-   {
-      int rc = SDL_LockSurface(surface);
-      if (rc < 0) THROW("Cannot lock surface: " << SDL_GetError());
-   }
+  if (SDL_MUSTLOCK(surface))
+  {
+    int rc = SDL_LockSurface(surface);
+    if (rc < 0) THROW("Cannot lock surface: " << SDL_GetError());
+  }
 }
 
 void SdlFacade::unlockSurface(SDL_Surface *surface)
 {
-   if (SDL_MUSTLOCK(surface))
-   {
-      SDL_UnlockSurface(surface);
-   }
+  if (SDL_MUSTLOCK(surface))
+  {
+    SDL_UnlockSurface(surface);
+  }
 }
 
 

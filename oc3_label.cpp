@@ -27,20 +27,20 @@ typedef vector< string > StringArray;
 class Label::Impl
 {
 public:
-	StringArray brokenText;
-	Rect textMargin;
+  StringArray brokenText;
+  Rect textMargin;
   Font lastBreakFont; // stored because: if skin changes, line break must be recalculated.
   Font font;
-	bool isBorderVisible;
-	bool OverrideBGColorEnabled;
-	bool WordWrap;
-	bool isBackgroundVisible;
-	bool RestrainTextInside;
-	bool RightToLeft;
-	string prefix;
+  bool isBorderVisible;
+  bool OverrideBGColorEnabled;
+  bool WordWrap;
+  bool isBackgroundVisible;
+  bool RestrainTextInside;
+  bool RightToLeft;
+  string prefix;
   bool needUpdatePicture;
   int lineIntervalOffset;
-	Picture* bgPicture;
+  Picture* bgPicture;
   Picture* picture;
 
   Impl() : textMargin( Rect( 0, 0, 0, 0) ),
@@ -221,13 +221,13 @@ void Label::setBorderVisible(bool draw)
 
 void Label::setTextRestrainedInside(bool restrainTextInside)
 {
-	_d->RestrainTextInside = restrainTextInside;
+  _d->RestrainTextInside = restrainTextInside;
 }
 
 
 bool Label::isTextRestrainedInside() const
 {
-	return _d->RestrainTextInside;
+  return _d->RestrainTextInside;
 }
 
 
@@ -235,24 +235,24 @@ bool Label::isTextRestrainedInside() const
 //! multiline text control.
 void Label::setWordWrap(bool enable)
 {
-	_d->WordWrap = enable;
-	_d->breakText( getText(), getSize() );
-    _d->needUpdatePicture = true;
+  _d->WordWrap = enable;
+  _d->breakText( getText(), getSize() );
+  _d->needUpdatePicture = true;
 }
 
 bool Label::isWordWrapEnabled() const
 {
-	return _d->WordWrap;
+  return _d->WordWrap;
 }
 
 void Label::setRightToLeft(bool rtl)
 {
-	if( _d->RightToLeft != rtl )
-	{
-		_d->RightToLeft = rtl;
-		_d->breakText( getText(), getSize() );
-        _d->needUpdatePicture = true;
-	}
+  if( _d->RightToLeft != rtl )
+  {
+    _d->RightToLeft = rtl;
+    _d->breakText( getText(), getSize() );
+    _d->needUpdatePicture = true;
+  }
 }
 
 
@@ -537,58 +537,58 @@ int Label::getTextWidth() const
 
 void Label::setPadding( const Rect& margin )
 {
-    _d->textMargin = margin;
+  _d->textMargin = margin;
 }
 
 SDL_Color Label::getBackgroundColor() const
 {
-    return SDL_Color();//_d->bgColor; //getColor( bgColor );
+  return SDL_Color();//_d->bgColor; //getColor( bgColor );
 }
 
 void Label::beforeDraw( GfxEngine& painter )
 {
-    if( _d->needUpdatePicture )
-	{
-        _updateTexture( painter );
+  if( _d->needUpdatePicture )
+  {
+    _updateTexture( painter );
 
-        _d->needUpdatePicture = false;		
-	}
+    _d->needUpdatePicture = false;		
+  }
 
-	Widget::beforeDraw( painter );
+  Widget::beforeDraw( painter );
 }
 
 bool Label::isBackgroundVisible() const
 {
-	return _d->isBackgroundVisible;
+  return _d->isBackgroundVisible;
 }
 
 bool Label::isBorderVisible() const
 {
-	return _d->isBorderVisible;
+  return _d->isBorderVisible;
 }
 
 void Label::setPrefixText( const string& prefix )
 {
-	_d->prefix = prefix;
-    _d->needUpdatePicture = true;
+  _d->prefix = prefix;
+  _d->needUpdatePicture = true;
 }
 
 void Label::setBackgroundPicture( const Picture& picture )
 {
-    _d->bgPicture = const_cast< Picture* >( &picture );
-    _d->needUpdatePicture = true;
+  _d->bgPicture = const_cast< Picture* >( &picture );
+  _d->needUpdatePicture = true;
 }
 
 void Label::setFont( const Font& font )
 {
-    _d->font = font;
-    _d->needUpdatePicture = true;
+  _d->font = font;
+  _d->needUpdatePicture = true;
 }
 
 void Label::setTextAlignment( TypeAlign horizontal, TypeAlign vertical )
 {
-    Widget::setTextAlignment( horizontal, vertical );
-    _d->needUpdatePicture = true;
+  Widget::setTextAlignment( horizontal, vertical );
+  _d->needUpdatePicture = true;
 }
 
 void Label::resizeEvent_()
@@ -596,7 +596,7 @@ void Label::resizeEvent_()
     _d->needUpdatePicture = true;
 }
 
-void Label::setLineIntevalOffset( const int offset )
+void Label::setLineIntervalOffset( const int offset )
 {
     _d->lineIntervalOffset = offset;
     _d->needUpdatePicture = true;
