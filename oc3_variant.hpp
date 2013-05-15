@@ -243,10 +243,10 @@ protected:
     bool cmp(const Variant &other) const;
 
 private:
-    // force compile error, prevent QVariant(bool) to be called
+    // force compile error, prevent Variant(bool) to be called
     inline Variant(void *) { _OC3_DEBUG_BREAK_IF(true); }
-    // force compile error, prevent QVariant(QVariant::Type, int) to be called
-    inline Variant(bool, int) { _OC3_DEBUG_BREAK_IF(false); }
+    // force compile error, prevent Variant(QVariant::Type, int) to be called
+    inline Variant(bool, int) { _OC3_DEBUG_BREAK_IF(true); }
 };
 
 class VariantList : public std::list<Variant>
@@ -272,6 +272,11 @@ public:
     }
 
     return *this;
+  }
+
+  Variant get( const std::string& name ) const
+  {
+    return const_cast< VariantMap& >( *this )[ name ];
   }
 
   Variant toVariant() const

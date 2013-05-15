@@ -26,17 +26,25 @@ VariantMap SaveAdapter::load( const std::string& fileName )
   f.seekg( 0, std::ios::end);
   std::ios::pos_type lastPos = f.tellp();
 
-  f.seekg( 0, std::ios::beg );
-  ScopedPtr< char > data( new char[lastPos] );
+  if( lastPos > 0 )
+  {
+    f.seekg( 0, std::ios::beg );
+    ByteArray data;
+    data.resize( lastPos );
 
-  f.read( data.data(), lastPos );
+    f.read( &data[0], lastPos );
 
-  f.close();
+    f.close();
 
-  bool jsonParsingOk;
-  VariantMap ret = Json::parse( data.data(), jsonParsingOk ).toMap();
-  if( jsonParsingOk )
-    return ret;
+    bool jsonParsingOk;
+    VariantMap ret = Json::parse( data.data(), jsonParsingOk ).toMap();
+    if( jsonParsingOk )
+      return ret;
+  }
+  else
+  {
+    std::cout << "Can't find file " << fileName << std::endl;
+  }
 
   return VariantMap();
 }

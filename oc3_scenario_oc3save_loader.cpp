@@ -20,11 +20,12 @@
 #include "oc3_positioni.hpp"
 #include "oc3_constructionmanager.hpp"
 #include "oc3_scenario.hpp"
+#include "oc3_saveadapter.hpp"
 
 class ScenarioOc3SaveLoader::Impl
 {
 public:
-
+  static const int currentVesion = 1;
 };
 
 ScenarioOc3SaveLoader::ScenarioOc3SaveLoader()
@@ -32,8 +33,18 @@ ScenarioOc3SaveLoader::ScenarioOc3SaveLoader()
 
 }
 
-bool ScenarioOc3SaveLoader::load( const std::string& filename, Scenario &oScenario )
+bool ScenarioOc3SaveLoader::load( const std::string& filename, Scenario& oScenario )
 {
+  VariantMap vm = SaveAdapter::load( filename );
+  
+  if( Impl::currentVesion == vm[ "version" ].toInt() )
+  {
+    oScenario.load( vm[ "scenario" ].toMap() );
+    oScenario.getCity().load( vm[ "city" ].toMap() );
+
+    return true;
+  }
+ 
   return false;
 }
 

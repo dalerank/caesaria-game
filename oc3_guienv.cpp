@@ -114,17 +114,17 @@ void GuiEnv::clear()
 
 void GuiEnv::draw()
 {
-    _OC3_DEBUG_BREAK_IF( !_d->preRenderFunctionCalled && "Called OnPreRender() function needed" );
+  _OC3_DEBUG_BREAK_IF( !_d->preRenderFunctionCalled && "Called OnPreRender() function needed" );
 
 	Widget::draw( *_d->engine );
 
-    drawTooltip_( DateTime::getElapsedTime() );
+  drawTooltip_( DateTime::getElapsedTime() );
 
-    // make sure tooltip is always on top
-    if(_d->toolTip.Element)
-       _d->toolTip.Element->draw( *_d->engine );
+  // make sure tooltip is always on top
+  if(_d->toolTip.Element)
+     _d->toolTip.Element->draw( *_d->engine );
 
-    _d->preRenderFunctionCalled = false;
+  _d->preRenderFunctionCalled = false;
 }
 
 bool GuiEnv::setFocus( Widget* element )

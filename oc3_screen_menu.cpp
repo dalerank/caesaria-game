@@ -39,26 +39,49 @@ public:
     std::string fileMap;
 
     void resolveNewGame() { result=startNewGame; isStoped=true; }
-    void resolveLoadGame() { result=loadSavedGame; isStoped=true; }
+    void resolveLoadGame( std::string fileName ) 
+    {
+      result=loadSavedGame; 
+      fileMap = fileName;
+      isStoped=true; 
+    }
+    
     void resolveQuitGame() { result=closeApplication; isStoped=true; }
-    void resolveSelectMap( std::string fileName )
+    
+    void resolveSelectFile( std::string fileName )
     {
       result = loadMap;
-      fileMap = "./resources/maps/" + fileName;
+      fileMap = fileName;
       isStoped = true;
     }
 
     void resolveShowLoadMapWnd();
+    void resolveShowLoadGameWnd();
 };
+
+void ScreenMenu::Impl::resolveShowLoadGameWnd()
+{
+  Size rootSize = gui->getRootWidget()->getSize();
+  LoadMapWindow* wnd = new LoadMapWindow( gui->getRootWidget(), 
+                                          Rect( 0.25f * rootSize.getWidth(), 0.25f * rootSize.getHeight(), 
+                                          0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() ), 
+                                          "./", ".oc3save",
+                                          -1 );
+
+  CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
+  wnd->setTitle( "##Load save##" );
+}
 
 void ScreenMenu::Impl::resolveShowLoadMapWnd()
 {
   Size rootSize = gui->getRootWidget()->getSize();
   LoadMapWindow* wnd = new LoadMapWindow( gui->getRootWidget(), 
                                           Rect( 0.25f * rootSize.getWidth(), 0.25f * rootSize.getHeight(), 
-                                                0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() ), -1 );
+                                                0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() ), 
+                                                "./resources/maps/", ".map",
+                                                -1 );
 
-  CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectMap );
+  CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
   wnd->setTitle( "##Load map##" );
 }
 
@@ -87,27 +110,29 @@ void ScreenMenu::initialize( GfxEngine& engine, GuiEnv& gui )
 {
   _d->bgPicture = &Picture::load("title", 1);
 
-    // center the bgPicture on the screen
-    _d->bgPicture->set_offset( (engine.getScreenWidth() - _d->bgPicture->get_width()) / 2,
-                               -( engine.getScreenHeight() - _d->bgPicture->get_height() ) / 2 );
+  // center the bgPicture on the screen
+  _d->bgPicture->set_offset( (engine.getScreenWidth() - _d->bgPicture->get_width()) / 2,
+                             -( engine.getScreenHeight() - _d->bgPicture->get_height() ) / 2 );
 
-    _d->gui = &gui;
-    _d->engine = &engine;
-    _d->menu = new StartMenu( gui.getRootWidget() );
+  _d->gui = &gui;
+  _d->gui->clear();
+  
+  _d->engine = &engine;
+  _d->menu = new StartMenu( gui.getRootWidget() );
 
-    PushButton* btn = _d->menu->addButton( "New game", -1 );
-    CONNECT( btn, onClicked(), _d.data(), Impl::resolveNewGame );
+  PushButton* btn = _d->menu->addButton( "New game", -1 );
+  CONNECT( btn, onClicked(), _d.data(), Impl::resolveNewGame );
 
-    btn = _d->menu->addButton( "Load game", -1 );
-    CONNECT( btn, onClicked(), _d.data(), Impl::resolveLoadGame );
+  btn = _d->menu->addButton( "Load game", -1 );
+  CONNECT( btn, onClicked(), _d.data(), Impl::resolveShowLoadGameWnd );
 
 #ifdef _DEBUG
-    btn = _d->menu->addButton( "##Load map##", -1 );
-    CONNECT( btn, onClicked(), _d.data(), Impl::resolveShowLoadMapWnd );
+  btn = _d->menu->addButton( "##Load map##", -1 );
+  CONNECT( btn, onClicked(), _d.data(), Impl::resolveShowLoadMapWnd );
 #endif
 
-    btn = _d->menu->addButton( "Quit", -1 );
-    CONNECT( btn, onClicked(), _d.data(), Impl::resolveQuitGame );
+  btn = _d->menu->addButton( "Quit", -1 );
+  CONNECT( btn, onClicked(), _d.data(), Impl::resolveQuitGame );
 }
 
 int ScreenMenu::getResult() const

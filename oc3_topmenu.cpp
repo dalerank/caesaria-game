@@ -38,13 +38,9 @@ public:
 
 oc3_signals public:
     Signal0<> onExitSignal;
-    Signal1<std::string> onSaveSignal;
+    Signal0<> onEndSignal;
+    Signal0<> onSaveSignal;
 };
-
-void TopMenu::Impl::resolveSave()
-{
-  onSaveSignal.emit( "./test.oc3save" );
-}
 
 TopMenu* TopMenu::create( Widget* parent, const int height )
 {
@@ -147,13 +143,19 @@ TopMenu::TopMenu( Widget* parent, const int height )
 {
   ContextMenuItem* tmp = addItem( "File", -1, true, true, false, false );
   ContextMenu* file = tmp->addSubMenu();
+
   ContextMenuItem* save = file->addItem( "Save", -1, true, false, false, false );
-  file->addItem( "Load", -1, true, false, false, false );
+  //ContextMenuItem* load = file->addItem( "Load", -1, true, false, false, false );
+
   file->addItem( "", -1, false, false, false, false );
+  ContextMenuItem* mainMenu = file->addItem( "Main menu", -1, true, false, false, false );
+
+  file->addItem( "", -1, true, false, false, false );
   ContextMenuItem* exit = file->addItem( "Exit", -1, true, false, false, false );
   
   CONNECT( exit, onClicked(), &_d->onExitSignal, Signal0<>::emit );
-  CONNECT( save, onClicked(), _d.data(), Impl::resolveSave );
+  CONNECT( save, onClicked(), &_d->onSaveSignal, Signal0<>::emit );
+  CONNECT( mainMenu, onClicked(), &_d->onEndSignal, Signal0<>::emit );
 
   addItem( "Options", -1, true, true, false, false );
   addItem( "Help", -1, true, true, false, false );
@@ -165,7 +167,12 @@ Signal0<>& TopMenu::onExit()
   return _d->onExitSignal;
 }
 
-Signal1<std::string>& TopMenu::onSave()
+Signal0<>& TopMenu::onSave()
 {
   return _d->onSaveSignal;
+}
+
+Signal0<>& TopMenu::onEnd()
+{
+  return _d->onEndSignal;
 }

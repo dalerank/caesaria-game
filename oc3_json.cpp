@@ -450,7 +450,7 @@ Variant Json::parseString(const std::string &json, int &index, bool &success)
                 }
                 else
                 {
-                        s.append( &c );
+                        s += c;
                 }
         }
 

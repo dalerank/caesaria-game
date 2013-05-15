@@ -15,7 +15,6 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
 #include "oc3_screen_game.hpp"
 
 #include <algorithm>
@@ -47,12 +46,14 @@ public:
   ExtentMenu* extMenu;
   InfoBoxManagerPtr infoBoxMgr;
   GuiTilemap guiTilemap;
+  Scenario* scenario; // current game scenario
+  int result;
 };
 
 ScreenGame::ScreenGame() : _d( new Impl )
 {
   _d->topMenu = NULL;
-  _scenario = NULL;
+  _d->scenario = NULL;
 }
 
 ScreenGame::~ScreenGame() {}
@@ -68,7 +69,7 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
     _d->gui->clear();
 
     const int topMenuHeight = 23;
-    const Picture& rPanelPic = PicLoader::instance().get_picture( ResourceGroup::panelBackground, 14 );
+    const Picture& rPanelPic = Picture::load( ResourceGroup::panelBackground, 14 );
     Rect rPanelRect( engine.getScreenWidth() - rPanelPic.get_width(), topMenuHeight,
                      engine.getScreenWidth(), engine.getScreenHeight() );
     _d->rightPanel = MenuRigthPanel::create( gui.getRootWidget(), rPanelRect, rPanelPic);
@@ -89,11 +90,12 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
     getMapArea().setViewSize( engine.getScreenWidth(), engine.getScreenHeight() + 8 * 30);
         
     // here move camera to start position of map
-    getMapArea().setCenterIJ( _scenario->getCity().getCameraStartIJ() ); 
+    getMapArea().setCenterIJ( _d->scenario->getCity().getCameraStartIJ() ); 
 
     //connect elements
     CONNECT( _d->topMenu, onSave(), this, ScreenGame::resolveGameSave );
-    CONNECT( _d->topMenu, onExit(), this, ScreenGame::stop );
+    CONNECT( _d->topMenu, onExit(), this, ScreenGame::resolveExitGame );
+    CONNECT( _d->topMenu, onEnd(), this, ScreenGame::resolveEndGame );
 
     CONNECT( _d->menu, onCreateConstruction(), this, ScreenGame::resolveCreateConstruction );
     CONNECT( _d->menu, onRemoveTool(), this, ScreenGame::resolveRemoveTool );
@@ -102,18 +104,18 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
     CONNECT( _d->extMenu, onCreateConstruction(), this, ScreenGame::resolveCreateConstruction );
     CONNECT( _d->extMenu, onRemoveTool(), this, ScreenGame::resolveRemoveTool );
 
-    CONNECT( &_scenario->getCity(), onPopulationChanged(), _d->topMenu, TopMenu::setPopulation );
-    CONNECT( &_scenario->getCity(), onFundsChanged(), _d->topMenu, TopMenu::setFunds );
-    CONNECT( &_scenario->getCity(), onMonthChanged(), _d->topMenu, TopMenu::setDate );
+    CONNECT( &_d->scenario->getCity(), onPopulationChanged(), _d->topMenu, TopMenu::setPopulation );
+    CONNECT( &_d->scenario->getCity(), onFundsChanged(), _d->topMenu, TopMenu::setFunds );
+    CONNECT( &_d->scenario->getCity(), onMonthChanged(), _d->topMenu, TopMenu::setDate );
 
     CONNECT( &_d->guiTilemap, onShowTileInfo(), this, ScreenGame::showTileInfo );
 }
 
-void ScreenGame::resolveGameSave( std::string filename )
+void ScreenGame::resolveGameSave()
 {
   ScenarioSaver scnSaver( Scenario::instance() );
 
-  scnSaver.save( filename );
+  scnSaver.save( "./test.oc3save" );
 }
 
 TilemapArea& ScreenGame::getMapArea()
@@ -123,7 +125,7 @@ TilemapArea& ScreenGame::getMapArea()
 
 void ScreenGame::setScenario(Scenario &scenario)
 {
-  _scenario = &scenario;
+  _d->scenario = &scenario;
   City& city = scenario.getCity();
   Tilemap& tilemap = city.getTilemap();
 
@@ -150,7 +152,7 @@ void ScreenGame::draw()
 
 void ScreenGame::afterFrame()
 {
-  _scenario->getCity().timeStep();
+  _d->scenario->getCity().timeStep();
 }
 
 void ScreenGame::handleEvent( NEvent& event )
@@ -169,7 +171,7 @@ void ScreenGame::handleEvent( NEvent& event )
 
 int ScreenGame::getResult() const
 {
-  return 0;
+  return _d->result;
 }
 
 void ScreenGame::resolveCreateConstruction( int type )
@@ -186,4 +188,16 @@ void ScreenGame::showTileInfo( Tile* tile )
 {
   if( tile )
     _d->infoBoxMgr->showHelp( tile );
+}
+
+void ScreenGame::resolveEndGame()
+{
+  _d->result = ScreenGame::mainMenu;
+  stop();
+}
+
+void ScreenGame::resolveExitGame()
+{
+  _d->result = ScreenGame::quitGame;
+  stop();
 }
