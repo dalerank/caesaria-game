@@ -17,6 +17,7 @@
 #include "oc3_widget.hpp"
 #include "oc3_widgetprivate.hpp"
 #include "oc3_guienv.hpp"
+#include "oc3_event.hpp"
 
 void Widget::beforeDraw( GfxEngine& painter )
 {
@@ -861,6 +862,10 @@ bool Widget::onEvent( const NEvent& event )
 {
     if( _eventHandler )
         _eventHandler->onEvent( event );
+
+    if (event.EventType == OC3_MOUSE_EVENT)
+      if (getParent() && (getParent()->getParent() == NULL))
+        return true;
 
     return getParent() ? getParent()->onEvent(event) : false;
 }

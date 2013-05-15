@@ -1,3 +1,18 @@
+// This file is part of openCaesar3.
+//
+// openCaesar3 is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// openCaesar3 is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+
 #ifndef __OPENCAESAR3_STRINGHELPER_H_INCLUDED__
 #define __OPENCAESAR3_STRINGHELPER_H_INCLUDED__
 
@@ -6,6 +21,7 @@
 class StringHelper
 {
 public:
+  typedef enum { equaleIgnoreCase=0, equaleCase } equaleMode;
   static std::string format( unsigned int max_size, const char* fmt, ...);
 
   //! Convert a simple string of base 10 digits into an unsigned 32 bit integer.
@@ -30,6 +46,8 @@ public:
   sequence.
   */
   static float toFloat(const char* in, const char** out = 0);
+
+  static bool isEquale( const std::string& a, const std::string& b, equaleMode mode=equaleCase );
 
   static std::string replace(std::string text, const std::string& from, const std::string& to);
 };

@@ -13,6 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
+#include <cstring>
+
 #include "oc3_variant.hpp"
 #include "oc3_variantprivate.hpp"
 #include "oc3_stringhelper.hpp"
@@ -135,14 +137,14 @@ typedef bool (*f_canConvert)(const Variant2Impl* d, Variant::Type t);
 
 struct Variant2Handler 
 {
-	f_construct construct;
-	f_clear clear;
-	f_null isNull;
-	f_compare compare;
-	f_convert convert;
-	f_canConvert canConvert;
+  f_construct construct;
+  f_clear clear;
+  f_null isNull;
+  f_compare compare;
+  f_convert convert;
+  f_canConvert canConvert;
 
-	Variant2Handler();
+  Variant2Handler();
 };
 
 static Variant2Handler* varHandler = new Variant2Handler();
@@ -465,11 +467,11 @@ static long long Variant2Number(const Variant2Impl *d)
     case Variant::LongLong:
         return d->data.ll;
     case Variant::Char:        
-        return long long(*static_cast<signed char *>(d->data.ptr));
+        return (long long)(*static_cast<signed char *>(d->data.ptr));
     case Variant::NShort:
-        return long long(*static_cast<short *>(d->data.ptr));
+        return (long long)(*static_cast<short *>(d->data.ptr));
     case Variant::NLong:
-        return long long(*static_cast<long *>(d->data.ptr));
+        return (long long)(*static_cast<long *>(d->data.ptr));
     case Variant::NFloat:
         return (long long)floorf( d->data.f );
     case Variant::Double:
@@ -487,11 +489,11 @@ static unsigned long long Variant2UNumber(const Variant2Impl *d)
     case Variant::ULongLong:
         return d->data.ull;
     case Variant::Char:
-        return unsigned long long (*static_cast<unsigned char*>(d->data.ptr));
+        return (unsigned long long)(*static_cast<unsigned char*>(d->data.ptr));
     case Variant::NUShort:
-        return unsigned long long (*static_cast<unsigned short*>(d->data.ptr));
+        return (unsigned long long)(*static_cast<unsigned short*>(d->data.ptr));
     case Variant::NULong:
-        return unsigned long long (*static_cast<unsigned long *>(d->data.ptr));
+        return (unsigned long long)(*static_cast<unsigned long *>(d->data.ptr));
     }
     _OC3_DEBUG_BREAK_IF( true );
     return 0;
@@ -501,7 +503,7 @@ static long long ConvertToNumber(const Variant2Impl *d, bool *ok)
 {
     *ok = true;
 
-    switch( unsigned long long(d->type) )
+    switch( (unsigned long long)(d->type) )
     {
     case Variant::String:
       return StringHelper::toInt( v_cast<std::string>(d)->c_str() );
@@ -510,7 +512,7 @@ static long long ConvertToNumber(const Variant2Impl *d, bool *ok)
     case Variant::NByteArray:
       return StringHelper::toInt( &(*v_cast<ByteArray>(d))[0] );
     case Variant::Bool:
-        return long long(d->data.b);
+        return (long long)(d->data.b);
     case Variant::Double:
     case Variant::Int:
     case Variant::NUChar:
@@ -523,7 +525,7 @@ static long long ConvertToNumber(const Variant2Impl *d, bool *ok)
     case Variant::UInt:
     case Variant::NUShort:
     case Variant::NULong:
-        return long long(Variant2UNumber(d));
+        return (long long)(Variant2UNumber(d));
     }
 
     *ok = false;
@@ -534,7 +536,7 @@ static unsigned long long ConvertToUnsignedNumber(const Variant2Impl *d, bool *o
 {
     *ok = true;
 
-    switch(unsigned int(d->type)) 
+    switch((unsigned int)(d->type)) 
     {
     case Variant::String:
       return StringHelper::toUint( v_cast<std::string>(d)->c_str() );
@@ -543,14 +545,14 @@ static unsigned long long ConvertToUnsignedNumber(const Variant2Impl *d, bool *o
     case Variant::NByteArray:
       return StringHelper::toUint( &(*v_cast<ByteArray>(d))[0] );
     case Variant::Bool:
-        return unsigned long long(d->data.b);
+        return (unsigned long long)(d->data.b);
     case Variant::Double:
     case Variant::Int:
     case Variant::NShort:
     case Variant::NLong:
     case Variant::NFloat:
     case Variant::LongLong:
-        return unsigned long long(Variant2Number(d));
+        return (unsigned long long)(Variant2Number(d));
     case Variant::ULongLong:
     case Variant::UInt:
     case Variant::NUChar:
@@ -577,14 +579,14 @@ inline bool convertToBool(const Variant2Impl *const d)
  */
 static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void *result, bool *ok)
 {
-    _OC3_DEBUG_BREAK_IF ( d->type == unsigned int( t ) );
+    _OC3_DEBUG_BREAK_IF ( d->type == (unsigned int)( t ) );
     _OC3_DEBUG_BREAK_IF( !result );
 
     bool dummy;
     if (!ok)
         ok = &dummy;
 
-    switch( unsigned int(t) )
+    switch( (unsigned int)(t) )
     {
     /*case Variant::Url:
         switch (d->type) {
@@ -665,14 +667,14 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
         case Variant::NShort:
         case Variant::NLong:
         case Variant::NFloat:
-            *c = char(unsigned short(Variant2Number(d)));
+            *c = (char)(static_cast<unsigned short>(Variant2Number(d)));
             break;
         case Variant::UInt:
         case Variant::ULongLong:
         case Variant::NUChar:
         case Variant::NUShort:
         case Variant::NULong:
-            *c = char(unsigned short(Variant2UNumber(d)));
+            *c = (char)(static_cast<unsigned short>(Variant2UNumber(d)));
             break;
         default:
             return false;
@@ -840,22 +842,22 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
     }
     break;
     case Variant::NShort:
-        *static_cast<short*>(result) = short(ConvertToNumber(d, ok));
+        *static_cast<short*>(result) = static_cast<short>(ConvertToNumber(d, ok));
         return *ok;
     case Variant::NLong:
-        *static_cast<long *>(result) = long(ConvertToNumber(d, ok));
+        *static_cast<long *>(result) = static_cast<long>(ConvertToNumber(d, ok));
         return *ok;
     case Variant::NUShort:
-        *static_cast<unsigned short*>(result) = unsigned short(ConvertToUnsignedNumber(d, ok));
+        *static_cast<unsigned short*>(result) = static_cast<unsigned short>(ConvertToUnsignedNumber(d, ok));
         return *ok;
     case Variant::NULong:
-        *static_cast<unsigned int*>(result) = unsigned int(ConvertToUnsignedNumber(d, ok));
+        *static_cast<unsigned int*>(result) = static_cast<unsigned int>(ConvertToUnsignedNumber(d, ok));
         return *ok;
     case Variant::Int:
-        *static_cast<int*>(result) = int(ConvertToNumber(d, ok));
+        *static_cast<int*>(result) = static_cast<int>(ConvertToNumber(d, ok));
         return *ok;
     case Variant::UInt:
-        *static_cast<unsigned int*>(result) = unsigned int(ConvertToUnsignedNumber(d, ok));
+        *static_cast<unsigned int*>(result) = static_cast<unsigned int>(ConvertToUnsignedNumber(d, ok));
         return *ok;
     case Variant::LongLong:
         *static_cast<long long*>(result) = ConvertToNumber(d, ok);
@@ -866,7 +868,7 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
     }
     case Variant::NUChar: 
     {
-        *static_cast<unsigned char*>(result) = (unsigned char)ConvertToUnsignedNumber(d, ok);
+        *static_cast<unsigned char*>(result) = static_cast<unsigned char>(ConvertToUnsignedNumber(d, ok));
         return *ok;
     }
     case Variant::Bool: 
@@ -1099,13 +1101,20 @@ Variant::Variant(const Variant &p)
 
 Variant::Variant(const char *val)
 {
-    create( String, &std::string( val ) );
+  std::string tmp( val );
+  create( String, &tmp );
 }
 
 Variant::Variant(Type type)
-{ create(type, 0); }
+{
+  create(type, 0);
+}
+
 Variant::Variant(int typeOrUserType, const void *copy)
-{ create(typeOrUserType, copy); _d.is_null = false; }
+{
+  create(typeOrUserType, copy);
+  _d.is_null = false;
+}
 
 /*! \internal
     flags is true if it is a pointer type
@@ -1261,7 +1270,7 @@ Variant::Type Variant::nameToType(const std::string &name)
     if ( name.empty() )
         return Variant::Invalid;
 
-    if( !stricmp( name.c_str(),  "UserType" ) )
+    if( StringHelper::isEquale( name,  "UserType" ) )
         return UserType;
 
     int metaType = staticNameToType( name.c_str() );
@@ -1763,13 +1772,13 @@ bool Variant::canConvert(Type t) const
     //which can't be handled by canConvertMatrix
     //In addition Variant::Type doesn't have a Float value, so we're using Variant::Float
     const unsigned int currentType = ((_d.type == Variant::NFloat) ? Variant::Double : _d.type);
-    if (unsigned int(t) == unsigned int(Variant::NFloat)) t = Variant::Double;
+    if (static_cast<unsigned int>(t) == static_cast<unsigned int>(Variant::NFloat)) t = Variant::Double;
 
-    if (currentType == unsigned int(t))
+    if (currentType == static_cast<unsigned int>(t))
         return true;
 
     if (currentType > Variant::LastCoreType || t > Variant::LastCoreType) {
-        switch (unsigned int(t)) {
+        switch (static_cast<unsigned int>(t)) {
         case Variant::Int:
             return currentType == Variant::KeySequence
                    || currentType == Variant::NULong
@@ -1831,7 +1840,7 @@ bool Variant::canConvert(Type t) const
 
 bool Variant::convert(Type t)
 {
-    if (_d.type == unsigned int(t))
+    if (_d.type == static_cast<unsigned int>(t))
         return true;
 
     Variant oldValue = *this;

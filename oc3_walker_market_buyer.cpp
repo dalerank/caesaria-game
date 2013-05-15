@@ -256,7 +256,7 @@ void MarketBuyer::save( VariantMap& stream ) const
   stream[ "basket" ] = vm_basket;
 
   stream[ "maxDistance" ] = _d->maxDistance;
-  stream[ "reservationId" ] = _reservationID;
+  stream[ "reservationId" ] = static_cast<unsigned int>(_reservationID);
 }
 
 void MarketBuyer::load( const VariantMap& stream)

@@ -18,6 +18,7 @@
 
 #include <vector>
 #include <string>
+#include <cstring>
 
 class ByteArray : public std::vector<char>
 {

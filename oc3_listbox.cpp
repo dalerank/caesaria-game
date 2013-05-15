@@ -17,6 +17,7 @@
 #include "oc3_listboxprivate.hpp"
 #include "oc3_pushbutton.hpp"
 #include "oc3_time.hpp"
+#include "oc3_stringhelper.hpp"
 #include "oc3_event.hpp"
 #include "oc3_sdl_facade.hpp"
 #include "oc3_gfx_engine.hpp"
@@ -331,7 +332,8 @@ bool ListBox::onEvent(const NEvent& event)
         if (_d->selectedItemIndex > -1 && _d->keyBuffer.size() > 1)
 				{
             if( _d->items[ _d->selectedItemIndex ].getText().size() >= _d->keyBuffer.size() 
-                && !stricmp( _d->keyBuffer.c_str(), _d->items[_d->selectedItemIndex].getText().substr( 0,_d->keyBuffer.size() ).c_str() ) )
+              && StringHelper::isEquale( _d->keyBuffer, _d->items[_d->selectedItemIndex].getText().substr( 0,_d->keyBuffer.size() ),
+                                         StringHelper::equaleIgnoreCase ) )
 						return true;
 				}
 
@@ -340,7 +342,8 @@ bool ListBox::onEvent(const NEvent& event)
 				{
           if( _d->items[current].getText().size() >= _d->keyBuffer.size())
 					{
-            if( !stricmp( _d->keyBuffer.c_str(), _d->items[current].getText().substr(0,_d->keyBuffer.size()).c_str() ) )
+            if( StringHelper::isEquale( _d->keyBuffer, _d->items[current].getText().substr(0,_d->keyBuffer.size()),
+                                        StringHelper::equaleIgnoreCase ) )
 						{
               if ( _d->selectedItemIndex != current && !_d->selecting && !isFlag( LBF_MOVEOVER_SELECT ))
               {
@@ -356,8 +359,9 @@ bool ListBox::onEvent(const NEvent& event)
 				{
           if( _d->items[current].getText().size() >= _d->keyBuffer.size())
 					{
-            if( !stricmp( _d->keyBuffer.c_str(), _d->items[current].getText().substr( 0,_d->keyBuffer.size()).c_str() ) )
-						{
+            if( StringHelper::isEquale( _d->keyBuffer, _d->items[current].getText().substr( 0,_d->keyBuffer.size() ),
+                                        StringHelper::equaleIgnoreCase ) )
+            {
               if ( _d->selectedItemIndex != current && !_d->selecting && !isFlag( LBF_MOVEOVER_SELECT ))
               {
                 _IndexChanged( OC3_LISTBOX_CHANGED );

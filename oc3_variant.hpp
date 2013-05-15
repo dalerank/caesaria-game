@@ -26,6 +26,7 @@
 
 #include <list>
 #include <map>
+#include <typeinfo>
 
 class Variant;
 class VariantList;
