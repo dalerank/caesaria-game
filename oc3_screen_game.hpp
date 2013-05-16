@@ -61,7 +61,7 @@ private:
   void resolveCreateConstruction( int type );
   void resolveRemoveTool();
   void showTileInfo( Tile* tile );
-   void resolveGameSave( std::string filename );
+  void resolveGameSave( std::string filename );
    
   GuiInfoBox* _infoBox;   // info box to display, if any
   Scenario* _scenario; // current game scenario
@@ -70,6 +70,5 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
 
 #endif

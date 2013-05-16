@@ -26,14 +26,14 @@
 
 TilemapArea::TilemapArea()
 {
-   _tilemap = NULL;
-   _map_size = 0;
-   _view_width = 0;
-   _view_height = 0;
-   _center_i = 0;
-   _center_j = 0;
-   _center_x = 0;
-   _center_z = 0;
+  _tilemap = NULL;
+  _map_size = 0;
+  _view_width = 0;
+  _view_height = 0;
+  _center_i = 0;
+  _center_j = 0;
+  _center_x = 0;
+  _center_z = 0;
 }
 
 TilemapArea::~TilemapArea()
@@ -42,8 +42,8 @@ TilemapArea::~TilemapArea()
 
 void TilemapArea::init(Tilemap &tilemap)
 {
-   _tilemap = &tilemap;
-   _map_size = tilemap.getSize();
+  _tilemap = &tilemap;
+  _map_size = tilemap.getSize();
 }
 
 void TilemapArea::setViewSize(const int width, const int height)
@@ -140,5 +140,3 @@ const std::vector< TilePos >& TilemapArea::getTiles()
 
   return _coordinates;
 }
-
-

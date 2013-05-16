@@ -27,6 +27,7 @@ class TerrainTile
 {
 public:
   TerrainTile();
+  TerrainTile(unsigned short int);
 
   // reset all fields
   void reset();
@@ -82,11 +83,10 @@ private:
   bool _isMeadow;
   bool _isElevation;
   bool _isWall;
-  int _desirability;
+  int  _desirability;
   
   unsigned short int _imgId;      // original tile information
-  
-  
+    
   LandOverlayPtr _overlay;
 };
 

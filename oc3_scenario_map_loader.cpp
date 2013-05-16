@@ -66,7 +66,7 @@ public:
 
   void loadMap(std::fstream& f, Scenario &oScenario);
 
-  void decodeDerrain(const int terrainBitset, Tile &oTile);
+  void decodeTerrain(const int terrainBitset, Tile &oTile);
 
   void initClimate(std::fstream &f, City &ioCity);
   void initCameraStartPos(std::fstream &f, City &ioCity);
@@ -197,7 +197,7 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario &oScenario)
     for (int itB = 0; itB < size; ++itB)
     {
       int i = itB;
-      int j = size-itA-1;
+      int j = size - itA - 1;
 
       unsigned short int imgId;  // 16bits
 
@@ -265,7 +265,7 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario &oScenario)
 
       f.read((char*)&terrainBitset, 2);
       Tile &tile = oTilemap.at( pos );
-      decodeDerrain(terrainBitset, tile);
+      decodeTerrain(terrainBitset, tile);
 
       LandOverlayPtr overlay = tile.get_terrain().getOverlay();
 
@@ -345,7 +345,7 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario &oScenario)
   }
 }
 
-void ScenarioMapLoader::Impl::decodeDerrain(const int terrainBitset, Tile &oTile)
+void ScenarioMapLoader::Impl::decodeTerrain(const int terrainBitset, Tile &oTile)
 {
   TerrainTile& terrain = oTile.get_terrain();
 
