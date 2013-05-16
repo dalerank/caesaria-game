@@ -274,8 +274,8 @@ void Menu::draw( GfxEngine& painter )
   delete colours;
   
   // show center of screen on minimap
-  //Exit out of image size on small carts... please fix it
-  /*
+  // Exit out of image size on small carts... please fix it
+  
   sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX(),     mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ(), kWhite);
   sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 1, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ(), kWhite);
   sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX(),     mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 1, kWhite);
@@ -291,7 +291,7 @@ void Menu::draw( GfxEngine& painter )
   {
     sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() - 18, j, kYellow);
     sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 18, j, kYellow);
-  }*/
+  }
 
   
   // 159, 318 -> 0,159

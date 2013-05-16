@@ -179,56 +179,25 @@ void SdlFacade::unlockSurface(SDL_Surface *surface)
 
 Uint32 SdlFacade::get_pixel(SDL_Surface *img, const int x, const int y)
 {
-   Uint32 res = 0;
-   switch (img->format->BytesPerPixel)
-   {
-   case 1:
-      // 8bpp
-      Uint8 *bufp8;
-      bufp8 = (Uint8 *)img->pixels + y*img->pitch + x;
-      res = *bufp8;
-      break;
-
-   case 2:
-      // 15bpp or 16bpp
-      Uint16 *bufp16;
-      bufp16 = (Uint16 *)img->pixels + y*img->pitch/2 + x;
-      res = *bufp16;
-      break;
-
-   case 3:
-      // 24bpp, very slow!
-      THROW("Unsupported graphic mode 24bpp");
-      break;
-
-   case 4:
-      // 32bpp
-      Uint32 *bufp32;
-      bufp32 = (Uint32 *)img->pixels + y*img->pitch/4 + x;
-      res = *bufp32;
-      break;
-   }
-
-   return res;
-}
-
-
-void SdlFacade::set_pixel(SDL_Surface *img, const int x, const int y, const Uint32 color)
-{
+  // validate arguments
+  if (img == NULL || x < 0 || y < 0 || x >= img->w || y >= img->h)
+    return 0;
+  
+  Uint32 res = 0;
   switch (img->format->BytesPerPixel)
   {
   case 1:
     // 8bpp
     Uint8 *bufp8;
     bufp8 = (Uint8 *)img->pixels + y*img->pitch + x;
-    *bufp8 = color;
+    res = *bufp8;
     break;
 
   case 2:
     // 15bpp or 16bpp
     Uint16 *bufp16;
     bufp16 = (Uint16 *)img->pixels + y*img->pitch/2 + x;
-    *bufp16 = color;
+    res = *bufp16;
     break;
 
   case 3:
@@ -240,6 +209,45 @@ void SdlFacade::set_pixel(SDL_Surface *img, const int x, const int y, const Uint
     // 32bpp
     Uint32 *bufp32;
     bufp32 = (Uint32 *)img->pixels + y*img->pitch/4 + x;
+    res = *bufp32;
+    break;
+  }
+
+  return res;
+}
+
+
+void SdlFacade::set_pixel(SDL_Surface *img, const int x, const int y, const Uint32 color)
+{
+  // validate arguments
+  if (img == NULL || x < 0 || y < 0 || x >= img->w || y >= img->h)
+    return;
+  
+  switch (img->format->BytesPerPixel)
+  {
+  case 1:
+    // 8bpp
+    Uint8 *bufp8;
+    bufp8 = (Uint8 *)img->pixels + y * img->pitch + x;
+    *bufp8 = color;
+    break;
+
+  case 2:
+    // 15bpp or 16bpp
+    Uint16 *bufp16;
+    bufp16 = (Uint16 *)img->pixels + y * img->pitch / 2 + x;
+    *bufp16 = color;
+    break;
+
+  case 3:
+    // 24bpp, very slow!
+    THROW("Unsupported graphic mode 24bpp");
+    break;
+
+  case 4:
+    // 32bpp
+    Uint32 *bufp32;
+    bufp32 = (Uint32 *)img->pixels + y * img->pitch/4 + x;
     *bufp32 = color;
     break;
   }
