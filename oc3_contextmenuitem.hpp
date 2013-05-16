@@ -24,73 +24,73 @@ class ContextMenu;
 class ContextMenuItem : public Label
 {
 public:    
-	typedef enum { hoverIndex=3 } OpacityIndex;
-	typedef enum { alignRigth=0x1, alignLeft=0x2, alignHorizCenter=0x4, 
-      				   alignTop=0x10, alignBottom=0x20, alignVertCenter=0x40, 
-			      	   alignAuto=0xff } SubMenuAlign;
+  typedef enum { hoverIndex=3 } OpacityIndex;
+  typedef enum { alignRigth=0x1, alignLeft=0x2, alignHorizCenter=0x4, 
+		alignTop=0x10, alignBottom=0x20, alignVertCenter=0x40, 
+		alignAuto=0xff } SubMenuAlign;
 
-	typedef enum 
-	{
-		drawSubmenuSprite = 0,
-		drawCount
-	} DrawFlag;
+  typedef enum 
+  {
+    drawSubmenuSprite = 0,
+    drawCount
+  } DrawFlag;
 
 
   ContextMenuItem( ContextMenu* parent, const std::string& text );
 
-	~ContextMenuItem();
+  ~ContextMenuItem();
 
-	virtual bool isSeparator() const;
+  virtual bool isSeparator() const;
 
   virtual void setCommandId( int cmdId);   
 
   virtual int getCommandId() const;
 
-	virtual ContextMenu* getSubMenu() const;
+  virtual ContextMenu* getSubMenu() const;
 
-	virtual void setIsSeparator( bool isSepar );
+  virtual void setIsSeparator( bool isSepar );
 
   virtual void toggleCheck();
 
-	virtual void setFlag( DrawFlag flagName, bool set=true );
+  virtual void setFlag( DrawFlag flagName, bool set=true );
 
   virtual void setIcon( const Picture& icon );
 
-	virtual bool isHovered() const;
+  virtual bool isHovered() const;
 
-	virtual void setHovered( bool hover );
+  virtual void setHovered( bool hover );
 
   virtual void setAutoChecking( bool autoChecking );
 
-	virtual bool isPointInside(const Point& point) const;
+  virtual bool isPointInside(const Point& point) const;
 
   virtual void setChecked( bool check );
 
   virtual bool isChecked() const;
 
-	virtual int getOffset() const;
+  virtual int getOffset() const;
 
-	virtual void setOffset( int offset );
+  virtual void setOffset( int offset );
 
-	virtual void setDim( const Size& size );
+  virtual void setDim( const Size& size );
 
-	virtual const Size& getDim() const;
+  virtual const Size& getDim() const;
 
-	//! Adds a sub menu from an element that already exists.
-	virtual void setSubMenu( ContextMenu* menu );
+  //! Adds a sub menu from an element that already exists.
+  virtual void setSubMenu( ContextMenu* menu );
 
-	virtual ContextMenu* addSubMenu( int id = -1 );
+  virtual ContextMenu* addSubMenu( int id = -1 );
 
-	virtual void setSubMenuAlignment( SubMenuAlign align );
+  virtual void setSubMenuAlignment( SubMenuAlign align );
 
-	virtual SubMenuAlign getSubMenuAlignment() const;
+  virtual SubMenuAlign getSubMenuAlignment() const;
 
 oc3_signals public:
-	Signal1<bool>& onChecked();
+  Signal1<bool>& onChecked();
 
 private:
-	class Impl;
-	ScopedPtr< Impl > _d;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 #endif //_OPENCAESAR3_CONTEXMENUITEM_INCLUDE_H_

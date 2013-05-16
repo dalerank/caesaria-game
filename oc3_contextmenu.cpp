@@ -24,29 +24,29 @@
 //! constructor
 ContextMenu::ContextMenu( Widget* parent, const Rect& rectangle,
                           int id, bool getFocus, bool allowFocus)
-	: Widget( parent, id, rectangle),
-        _d( new Impl )
+    : Widget( parent, id, rectangle),
+    _d( new Impl )
 {
-	#ifdef _DEBUG
-	    setDebugName( "NrpContextMenu");
-	#endif
+  #ifdef _DEBUG
+    setDebugName( "NrpContextMenu");
+  #endif
 
-	_d->eventParent = 0; 
-	_d->closeHandling = cmRemove;
-	_d->pos = rectangle.UpperLeftCorner;
-	_d->needRecalculateItems = true;
+  _d->eventParent = 0; 
+  _d->closeHandling = cmRemove;
+  _d->pos = rectangle.UpperLeftCorner;
+  _d->needRecalculateItems = true;
 
-	if( getFocus )
-		setFocus();
+  if( getFocus )
+    setFocus();
 
-	setNotClipped(true);
+  setNotClipped(true);
 
-	setTextAlignment( alignCenter, alignUpperLeft );
+  setTextAlignment( alignCenter, alignUpperLeft );
 
-	_d->allowFocus = allowFocus;
-	_d->changeTime = 0;
-	_d->highlihted = -1;
-//	_d->animator->resetFlag( WidgetAnimator::isActive );
+  _d->allowFocus = allowFocus;
+  _d->changeTime = 0;
+  _d->highlihted = -1;
+//  _d->animator->resetFlag( WidgetAnimator::isActive );
 }
 
 //! destructor
@@ -57,19 +57,19 @@ ContextMenu::~ContextMenu()
 //! set behaviour when menus are closed
 void ContextMenu::setCloseHandling(CloseMode onClose)
 {
-	_d->closeHandling = onClose;
+  _d->closeHandling = onClose;
 }
 
 //! get current behaviour when the menue will be closed
 ContextMenu::CloseMode ContextMenu::getCloseHandling() const
 {
-	return _d->closeHandling;
+  return _d->closeHandling;
 }
 
 //! Returns amount of menu items
 unsigned int ContextMenu::getItemCount() const
 {
-	return _d->items.size();
+  return _d->items.size();
 }
 
 
@@ -78,29 +78,29 @@ ContextMenuItem* ContextMenu::addItem( const std::string& text, int commandId,
                           bool enabled, bool hasSubMenu,
                           bool checked, bool autoChecking)
 {
-    return insertItem( _d->items.size(), text, commandId, enabled, hasSubMenu, checked, autoChecking);
+  return insertItem( _d->items.size(), text, commandId, enabled, hasSubMenu, checked, autoChecking);
 }
 
 //! Insert a menu item at specified position.
 ContextMenuItem* ContextMenu::insertItem(unsigned int idx, const std::string& text, int commandId, bool enabled,
     bool hasSubMenu, bool checked, bool autoChecking)
 {
-	ContextMenuItem* newItem = new ContextMenuItem( this, text );
-	newItem->setEnabled( enabled );
-	newItem->setSubElement( true );
-	newItem->setChecked( checked );
-	newItem->setAutoChecking( autoChecking );
-	newItem->setText( text );
-	newItem->setFlag( ContextMenuItem::drawSubmenuSprite );
-	newItem->setIsSeparator( text.empty() );
-	newItem->setCommandId( commandId );
-	sendChildToBack( newItem );
+  ContextMenuItem* newItem = new ContextMenuItem( this, text );
+  newItem->setEnabled( enabled );
+  newItem->setSubElement( true );
+  newItem->setChecked( checked );
+  newItem->setAutoChecking( autoChecking );
+  newItem->setText( text );
+  newItem->setFlag( ContextMenuItem::drawSubmenuSprite );
+  newItem->setIsSeparator( text.empty() );
+  newItem->setCommandId( commandId );
+  sendChildToBack( newItem );
 
-	if (hasSubMenu)
-	{
-		ContextMenu* subMenu = newItem->addSubMenu( commandId );
-		subMenu->setVisible( false );
-	}
+  if (hasSubMenu)
+  {
+    ContextMenu* subMenu = newItem->addSubMenu( commandId );
+    subMenu->setVisible( false );
+  }
 
   if ( idx < _d->items.size() )
   {
@@ -111,62 +111,63 @@ ContextMenuItem* ContextMenu::insertItem(unsigned int idx, const std::string& te
     _d->items.push_back( newItem );
   }
 
-	return newItem;
+  return newItem;
 }
 
 ContextMenuItem* ContextMenu::findItem( int commandId, unsigned int idxStartSearch ) const
 {
-	for ( unsigned int i=idxStartSearch; i<_d->items.size(); ++i )
-	{
-		if ( _d->items[i]->getCommandId() == commandId )
-		{
-			return _d->items[i];
-		}
-	}
-	return NULL;
+  for ( unsigned int i=idxStartSearch; i<_d->items.size(); ++i )
+  {
+    if ( _d->items[i]->getCommandId() == commandId )
+    {
+      return _d->items[i];
+    }
+  }
+  
+  return NULL;
 }
 
 //! Adds a separator item to the menu
 void ContextMenu::addSeparator()
 {
-	addItem(0, -1, true, false, false, false);
+  addItem(0, -1, true, false, false, false);
 }
 
 
 //! Returns text of the menu item.
 ContextMenuItem* ContextMenu::getItem( unsigned int idx ) const
 {
-	if( idx >= _d->items.size() )
-		return NULL;
+  if( idx >= _d->items.size() )
+    return NULL;
 
-	return _d->items[ idx ];
+  return _d->items[ idx ];
 }
 
 //! Sets text of the menu item.
 void ContextMenu::updateItems()
 {
-	_d->needRecalculateItems = true;
+  _d->needRecalculateItems = true;
 }
 
 //! Removes a menu item
 void ContextMenu::removeItem(unsigned int idx)
 {
-	if (idx >= _d->items.size())
-		return;
+  if (idx >= _d->items.size())
+    return;
 
-	_d->items[idx]->deleteLater();
-	_d->items.erase( _d->items.begin() + idx );
-	updateItems();
+  _d->items[idx]->deleteLater();
+  _d->items.erase( _d->items.begin() + idx );
+  updateItems();
 }
 
 //! Removes all menu items
 void ContextMenu::removeAllItems()
 {
-	for (unsigned int i=0; i<_d->items.size(); ++i)
-		_d->items[ i ]->deleteLater();
+  for (unsigned int i = 0; i < _d->items.size(); ++i)
+    _d->items[ i ]->deleteLater();
 
-	_d->items.clear();
-	updateItems();
+  _d->items.clear();
+  updateItems();
 }
 
 //! called if an event happened.
@@ -252,16 +253,16 @@ bool ContextMenu::onEvent(const NEvent& event)
 //! Sets the visible state of this element.
 void ContextMenu::setVisible(bool visible)
 {
-	setHoverIndex_( -1 );
-	closeAllSubMenus_();
+  setHoverIndex_( -1 );
+  closeAllSubMenus_();
 
-	Widget::setVisible( visible );
+  Widget::setVisible( visible );
 }
 
 void ContextMenu::setHoverIndex_( int index )
 {
-	_d->highlihted = index;
-	_d->changeTime = DateTime::getElapsedTime();
+  _d->highlihted = index;
+  _d->changeTime = DateTime::getElapsedTime();
 }
 
 //! sends a click Returns:
@@ -404,33 +405,33 @@ bool ContextMenu::isHighlighted_( const Point& p, bool canOpenSubMenu )
 
 void ContextMenu::beforeDraw( GfxEngine& painter )
 {
-	if( !isVisible() )
-		return;
+  if( !isVisible() )
+    return;
 
   Font font = FontCollection::instance().getFont( FONT_2_WHITE );
 
   if( font != _d->lastFont )
-	{
-		_d->lastFont = font;
-		updateItems();
-	}
+  {
+    _d->lastFont = font;
+    updateItems();
+  }
 
-	if( _d->needRecalculateItems )
-	{
-		_d->needRecalculateItems = false;
-	    recalculateSize_();
-	}
+  if( _d->needRecalculateItems )
+  {
+    _d->needRecalculateItems = false;
+    recalculateSize_();
+  }
 
-	Widget::beforeDraw( painter );
+  Widget::beforeDraw( painter );
 }
 
 //! draws the element and its children
 void ContextMenu::draw( GfxEngine& painter )
 {
-	if ( !isVisible() )
-		return;
+  if ( !isVisible() )
+    return;
 
-	Widget::draw( painter );
+  Widget::draw( painter );
 }
 
 void ContextMenu::recalculateSize_()
@@ -534,20 +535,20 @@ void ContextMenu::recalculateSize_()
 
 void ContextMenu::styleChanged()
 {
-	recalculateSize_();
+  recalculateSize_();
 
-	Widget::styleChanged();
+  Widget::styleChanged();
 }
 
 //! Returns the selected item in the menu
 int ContextMenu::getSelectedIndex() const
 {
-    return _d->highlihted;
+  return _d->highlihted;
 }
 
 ContextMenuItem *ContextMenu::getSelectedItem() const
 {
-    return getItem( _d->highlihted );
+  return getItem( _d->highlihted );
 }
 
 //! Writes attributes of the element.

@@ -841,4 +841,3 @@ void FontLoader::load_all(const std::string &resourcePath)
    Font font3(*ttf, black);
    FontCollection::instance().setFont(FONT_3, font3);
 }
-

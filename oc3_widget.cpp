@@ -21,10 +21,10 @@
 
 void Widget::beforeDraw( GfxEngine& painter )
 {
-	_OC3_DEBUG_BREAK_IF( !_d->parent && "Parent must be exists" );
-    ChildIterator it = _d->children.begin();
-    for (; it != _d->children.end(); ++it)
-         (*it)->beforeDraw( painter );
+  _OC3_DEBUG_BREAK_IF( !_d->parent && "Parent must be exists" );
+  ChildIterator it = _d->children.begin();
+  for (; it != _d->children.end(); ++it)
+    (*it)->beforeDraw( painter );
 }
 
 // void Widget::setFont( Font font, u32 nA/*=0 */ )
@@ -310,59 +310,59 @@ Widget* Widget::getElementFromPoint( const Point& point )
 
 bool Widget::isPointInside( const Point& point ) const
 {
-    return getAbsoluteClippingRect().isPointInside(point);
+  return getAbsoluteClippingRect().isPointInside(point);
 }
 
 void Widget::addChild( Widget* child )
 {
-    addChild_(child);
-    if (child)
-    {
-        child->updateAbsolutePosition();
-    }
+  addChild_(child);
+  if (child)
+  {
+    child->updateAbsolutePosition();
+  }
 }
 
 void Widget::removeChild( Widget* child )
 {
-    ChildIterator it = _d->children.begin();
-    for (; it != _d->children.end(); ++it)
-        if ((*it) == child)
-        {
-            (*it)->_d->parent = 0;
-            (*it)->drop();
-            _d->children.erase(it);
-            return;
-        }
+  ChildIterator it = _d->children.begin();
+  for (; it != _d->children.end(); ++it)
+    if ((*it) == child)
+    {
+      (*it)->_d->parent = 0;
+      (*it)->drop();
+      _d->children.erase(it);
+      return;
+    }
 }
 
 void Widget::draw( GfxEngine& painter )
 {
-    if ( isVisible() )
-    {
-        ChildIterator it = _d->children.begin();
-        for (; it != _d->children.end(); ++it)
-            (*it)->draw( painter );
-    }
+  if ( isVisible() )
+  {
+    ChildIterator it = _d->children.begin();
+    for (; it != _d->children.end(); ++it)
+      (*it)->draw( painter );
+  }
 }
 
 bool Widget::isVisible() const
 {
-    return _isVisible;
+  return _isVisible;
 }
 
 bool Widget::isSubElement() const
 {
-    return _isSubElement;
+  return _isSubElement;
 }
 
 void Widget::setSubElement( bool subElement )
 {
-    _isSubElement = subElement;
+  _isSubElement = subElement;
 }
 
 void Widget::setTabStop( bool enable )
 {
-    _isTabStop = enable;
+  _isTabStop = enable;
 }
 
 void Widget::setTabOrder( int index )
@@ -916,47 +916,47 @@ Size Widget::getMinSize() const
 
 void Widget::installEventHandler( Widget* elementHandler )
 {
-    _eventHandler = elementHandler;
+  _eventHandler = elementHandler;
 }
 
 bool Widget::isHovered() const
 {
-    return _environment->isHovered( this );
+  return _environment->isHovered( this );
 }
 
 bool Widget::isFocused() const
 {
-    return _environment->hasFocus( this );
+  return _environment->hasFocus( this );
 }
 
 Rect Widget::getClientRect() const
 {
-    return Rect( 0, 0, getWidth(), getHeight() );
+  return Rect( 0, 0, getWidth(), getHeight() );
 }
 
 void Widget::setFocus()
 {
-    getEnvironment()->setFocus( this );
+  getEnvironment()->setFocus( this );
 }
 
 void Widget::removeFocus()
 {
-	getEnvironment()->removeFocus( this );
+  getEnvironment()->removeFocus( this );
 }
 
 Rect& Widget::getAbsoluteClippingRectRef() const
 {
-	return _d->absoluteClippingRect;
+  return _d->absoluteClippingRect;
 }
 
 unsigned int Widget::getWidth() const
 {
-	return getRelativeRect().getWidth();
+  return getRelativeRect().getWidth();
 }
 
 Size Widget::getSize() const
 {
-	return Size( _d->relativeRect.getWidth(), _d->relativeRect.getHeight() );
+  return Size( _d->relativeRect.getWidth(), _d->relativeRect.getHeight() );
 }
 
 int Widget::getScreenTop() const { return getAbsoluteRect().getTop(); }
@@ -972,87 +972,87 @@ unsigned int Widget::getArea() const { return getAbsoluteRect().getArea(); }
 
 Point Widget::convertLocalToScreen( const Point& localPoint ) const
 {
-	return localPoint + _d->absoluteRect.UpperLeftCorner;
+  return localPoint + _d->absoluteRect.UpperLeftCorner;
 }
 
 Rect Widget::convertLocalToScreen( const Rect& localRect ) const
 {
-	return localRect + _d->absoluteRect.UpperLeftCorner;
+  return localRect + _d->absoluteRect.UpperLeftCorner;
 }
 
 void Widget::move( const Point& relativeMovement )
 {
-	setGeometry( _d->desiredRect + relativeMovement );
+  setGeometry( _d->desiredRect + relativeMovement );
 }
 
 int Widget::getBottom() const
 {
-    return _d->relativeRect.LowerRightCorner.getY();
+  return _d->relativeRect.LowerRightCorner.getY();
 }
 
 void Widget::setTabGroup( bool isGroup )
 {
-    _isTabGroup = isGroup;
+  _isTabGroup = isGroup;
 }
 
 void Widget::setWidth( unsigned int width )
 {
-    const Rect rectangle( getRelativeRect().UpperLeftCorner, Size( width, getHeight() ) );
-    setGeometry( rectangle );
+  const Rect rectangle( getRelativeRect().UpperLeftCorner, Size( width, getHeight() ) );
+  setGeometry( rectangle );
 }
 
 void Widget::setHeight( unsigned int height )
 {
-	const Rect rectangle( getRelativeRect().UpperLeftCorner, Size( getWidth(), height ) );
-	setGeometry( rectangle );
+  const Rect rectangle( getRelativeRect().UpperLeftCorner, Size( getWidth(), height ) );
+  setGeometry( rectangle );
 }
 
 void Widget::setLeft( int newLeft )
 {
-    setPosition( Point( newLeft, getTop() ) );    
+  setPosition( Point( newLeft, getTop() ) );    
 }
 
 void Widget::setTop( int newTop )
 {
-	setPosition( Point( getLeft(), newTop ) );    
+  setPosition( Point( getLeft(), newTop ) );    
 }
 
 int Widget::getTop() const
 {
-    return getRelativeRect().UpperLeftCorner.getY();
+  return getRelativeRect().UpperLeftCorner.getY();
 }
 
 int Widget::getLeft() const
 {
-    return getRelativeRect().UpperLeftCorner.getX();
+  return getRelativeRect().UpperLeftCorner.getX();
 }
 
 int Widget::getRight() const
 {
-    return getRelativeRect().LowerRightCorner.getX();
+  return getRelativeRect().LowerRightCorner.getX();
 }
 
 void Widget::hide()
 {
-	setVisible( false );
+  setVisible( false );
 }
 
 void Widget::show()
 {
-	setVisible( true );
+  setVisible( true );
 }
 
 TypeAlign Widget::getHorizontalTextAlign() const
 {
-	return _d->textHorzAlign;
+  return _d->textHorzAlign;
 }
 
 TypeAlign Widget::getVerticalTextAlign() const
 {
-	return _d->textVertAlign;
+  return _d->textVertAlign;
 }
 
 void Widget::deleteLater()
 {
-	_environment->deleteLater( this ); 
+  _environment->deleteLater( this ); 
 }

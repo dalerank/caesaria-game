@@ -91,32 +91,32 @@ Widget* GuiEnv::getRootWidget()
 
 void GuiEnv::threatDeletionQueue_()
 {
-    Widget::ChildIterator it = _d->deletionQueue.begin();
-    for( ; it != _d->deletionQueue.end(); it++ )
-    {
-        try{ (*it)->remove(); }
-        catch(...){}
-    }
+  Widget::ChildIterator it = _d->deletionQueue.begin();
+  for( ; it != _d->deletionQueue.end(); it++ )
+  {
+    try{ (*it)->remove(); }
+    catch(...){}
+  }
 
-    _d->deletionQueue.clear();
+  _d->deletionQueue.clear();
 }
 
 void GuiEnv::clear()
 {
-    // Remove the focus
-    setFocus( this );
+  // Remove the focus
+  setFocus( this );
 
-    updateHoveredElement( Point( -9999, -9999 ) );
+  updateHoveredElement( Point( -9999, -9999 ) );
 
-    for( ConstChildIterator it = getChildren().begin(); it != getChildren().end(); it++ )
-        deleteLater( *it );
+  for( ConstChildIterator it = getChildren().begin(); it != getChildren().end(); it++ )
+    deleteLater( *it );
 }
 
 void GuiEnv::draw()
 {
   _OC3_DEBUG_BREAK_IF( !_d->preRenderFunctionCalled && "Called OnPreRender() function needed" );
 
-	Widget::draw( *_d->engine );
+  Widget::draw( *_d->engine );
 
   drawTooltip_( DateTime::getElapsedTime() );
 
@@ -512,35 +512,36 @@ bool GuiEnv::handleEvent( const NEvent& event )
 
 Widget* GuiEnv::_CheckParent( Widget* parent )
 {
-    return parent ? parent : this;
+  return parent ? parent : this;
 }
 
 Widget* GuiEnv::getHoveredElement() const
 {
-    return _d->hovered;
+  return _d->hovered;
 }
 
 void GuiEnv::beforeDraw()
 {
-	const Size screenSize( _d->engine->getScreenSize() );
-	const Point rigthDown = getRootWidget()->getAbsoluteRect().LowerRightCorner;
-	if( rigthDown.getX() != screenSize.getWidth() || rigthDown.getY() != screenSize.getHeight() )
-	{
-		// resize gui environment
-		setGeometry( Rect( Point( 0, 0 ), screenSize ) );
-	}
+  const Size screenSize( _d->engine->getScreenSize() );
+  const Point rigthDown = getRootWidget()->getAbsoluteRect().LowerRightCorner;
+  
+  if( rigthDown.getX() != screenSize.getWidth() || rigthDown.getY() != screenSize.getHeight() )
+  {
+    // resize gui environment
+    setGeometry( Rect( Point( 0, 0 ), screenSize ) );
+  }
 
-    threatDeletionQueue_();
+  threatDeletionQueue_();
 
-	updateHoveredElement( _d->cursorPos );
+  updateHoveredElement( _d->cursorPos );
 
-    for( ConstChildIterator it = Widget::_d->children.begin(); it != Widget::_d->children.end(); ++it)
-         (*it)->beforeDraw( *_d->engine );
+  for( ConstChildIterator it = Widget::_d->children.begin(); it != Widget::_d->children.end(); ++it)
+    (*it)->beforeDraw( *_d->engine );
 
-	if( _d->toolTip.Element )
-		_d->toolTip.Element->bringToFront();
+  if( _d->toolTip.Element )
+    _d->toolTip.Element->bringToFront();
 
-    _d->preRenderFunctionCalled = true;
+  _d->preRenderFunctionCalled = true;
 }
 
 bool GuiEnv::removeFocus( Widget* element)

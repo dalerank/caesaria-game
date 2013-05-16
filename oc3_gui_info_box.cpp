@@ -259,7 +259,7 @@ void InfoBoxHouse::_paint()
     {
         Label* lb = new Label( this, _ed->lbCrime->getRelativeRect() + Point( 0, 30 ), "", false, true ); 
         lb->setHeight( 40 );
-        lb->setLineIntevalOffset( -6 );
+        lb->setLineIntervalOffset( -6 );
         lb->setText( _("Inabitants of tents provide food themselves, conducting a subsistence economy") );
         lb->setWordWrap( true );
         startY = lb->getTop();

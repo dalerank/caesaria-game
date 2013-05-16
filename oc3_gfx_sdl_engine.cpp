@@ -32,7 +32,7 @@
 
 GfxSdlEngine::GfxSdlEngine() : GfxEngine()
 {
-   _screen = NULL;
+  _screen = NULL;
 }
 
 GfxSdlEngine::~GfxSdlEngine()
@@ -41,59 +41,61 @@ GfxSdlEngine::~GfxSdlEngine()
 
 void GfxSdlEngine::init()
 {
-   int rc;
-   rc = SDL_Init(SDL_INIT_VIDEO);
-   if (rc != 0) THROW("Unable to initialize SDL: " << SDL_GetError());
-   rc = TTF_Init();
-   if (rc != 0) THROW("Unable to initialize SDL: " << SDL_GetError());
+  int rc;
+  rc = SDL_Init(SDL_INIT_VIDEO);
+  if (rc != 0) THROW("Unable to initialize SDL: " << SDL_GetError());
+  rc = TTF_Init();
+  if (rc != 0) THROW("Unable to initialize SDL: " << SDL_GetError());
 
-   Uint32 aFlags = 0;
-   aFlags |= SDL_DOUBLEBUF;
-   aFlags |= SDL_SWSURFACE;
+  Uint32 aFlags = 0;
+  aFlags |= SDL_DOUBLEBUF;
+  aFlags |= SDL_SWSURFACE;
 
-   _screen = SDL_SetVideoMode(_screen_width, _screen_height, 32, aFlags);  // 32bpp
-   if (_screen == NULL) 
-   {
-     THROW("Unable to set video mode: " << SDL_GetError());
-   }
+  _screen = SDL_SetVideoMode(_screen_width, _screen_height, 32, aFlags);  // 32bpp
+  if (_screen == NULL) 
+  {
+    THROW("Unable to set video mode: " << SDL_GetError());
+  }
 
-   SDL_WM_SetCaption( "OpenCaesar 3:"OC3_VERSION, 0 );    
+  SDL_WM_SetCaption( "OpenCaesar 3:"OC3_VERSION, 0 );    
 }
 
 
 void GfxSdlEngine::exit()
 {
-   TTF_Quit();
-   SDL_Quit();
+  TTF_Quit();
+  SDL_Quit();
 }
 
+/* Convert picture to SDL surface and then put surface into Picture class
+ */
 
 void GfxSdlEngine::load_picture(Picture& ioPicture)
 {
-   // convert pixel format
-   SDL_Surface *newImage;
-   newImage = SDL_DisplayFormatAlpha(ioPicture._surface);
-   SDL_FreeSurface(ioPicture._surface);
-   if (newImage == NULL) THROW("Cannot convert surface, maybe out of memory");
-   ioPicture._surface = newImage;
+  // convert pixel format
+  SDL_Surface *newImage;
+  newImage = SDL_DisplayFormatAlpha(ioPicture._surface);
+  SDL_FreeSurface(ioPicture._surface);
+  if (newImage == NULL) THROW("Cannot convert surface, maybe out of memory");
+  ioPicture._surface = newImage;
 }
 
 void GfxSdlEngine::unload_picture(Picture& ioPicture)
 {
-   SDL_FreeSurface(ioPicture._surface);
-   ioPicture._surface = NULL;
+  SDL_FreeSurface(ioPicture._surface);
+  ioPicture._surface = NULL;
 }
 
 
 void GfxSdlEngine::init_frame()
 {
-   SDL_FillRect(_screen, NULL, 0);  // black background for a complete redraw
+  SDL_FillRect(_screen, NULL, 0);  // black background for a complete redraw
 }
 
 
 void GfxSdlEngine::exit_frame()
 {
-   SDL_Flip(_screen); //Refresh the screen
+  SDL_Flip(_screen); //Refresh the screen
 }
 
 void GfxSdlEngine::drawPicture(const Picture &picture, const int dx, const int dy)
