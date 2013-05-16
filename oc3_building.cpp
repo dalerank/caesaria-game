@@ -38,6 +38,7 @@
 #include "oc3_constructionmanager.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_stringhelper.hpp"
 
 #include <algorithm>
 
@@ -158,13 +159,6 @@ Picture& LandOverlay::getPicture()
 std::vector<Picture*>& LandOverlay::getForegroundPictures()
 {
   return _fgPictures;
-}
-
-
-GuiInfoBox* LandOverlay::makeInfoBox()
-{
-  std::cout << "LandOverlay::makeInfoBox()" << std::endl;
-  return NULL;
 }
 
 std::string LandOverlay::getName()
@@ -361,13 +355,13 @@ void Building::timeStep(const unsigned long time)
       _fireLevel += _fireIncrement;
       if (_damageLevel >= 100)
       {
-         std::cout << "Building destroyed!" << std::cout;
-         collapse();
+        StringHelper::debug( 0xff, "Building destroyed!" );
+        collapse();
       }
       if (_fireLevel >= 100)
       {
-         std::cout << "Building catch fire!" << std::cout;
-         burn();
+        StringHelper::debug( 0xff, "Building catch fire!" );
+        burn();
       }
    }
 }

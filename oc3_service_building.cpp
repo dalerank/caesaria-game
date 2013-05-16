@@ -187,18 +187,16 @@ char BuildingWell::getDesirabilityInfluence() const
 
 BuildingFountain::BuildingFountain() : ServiceBuilding(S_FOUNTAIN, B_FOUNTAIN, Size(1))
 {  
-   int id;
-   
-   std::srand((unsigned int)std::time(NULL));
-   
-   id = std::rand() % 4;
-   
-   std::cout << id << std::endl;
-   
-   setPicture( Picture::load( ResourceGroup::utilitya, 26));
-   _animation.load( ResourceGroup::utilitya, 27, 7);
-   //animLoader.fill_animation_reverse(_animation, "utilitya", 25, 7);
-   _animation.setOffset( Point( 14, 26 ) );
+  int id;
+  
+  std::srand((unsigned int)std::time(NULL));
+  
+  id = std::rand() % 4;
+    
+  setPicture( Picture::load( ResourceGroup::utilitya, 26));
+  _animation.load( ResourceGroup::utilitya, 27, 7);
+  //animLoader.fill_animation_reverse(_animation, "utilitya", 25, 7);
+  _animation.setOffset( Point( 14, 26 ) );
   _fgPictures.resize(1);
    
   //2 10 18 26
@@ -213,9 +211,7 @@ BuildingFountain::BuildingFountain() : ServiceBuilding(S_FOUNTAIN, B_FOUNTAIN, S
   
   // the second (2)    ~ 8, 42
   // the third (18)    ~ 8, 24
-  // the 4rd   (26)    ~14, 26
-   
-   
+  // the 4rd   (26)    ~14, 26     
 }
 
 void BuildingFountain::deliverService()

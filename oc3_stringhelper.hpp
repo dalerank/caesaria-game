@@ -23,6 +23,7 @@ class StringHelper
 public:
   typedef enum { equaleIgnoreCase=0, equaleCase } equaleMode;
   static std::string format( unsigned int max_size, const char* fmt, ...);
+  static void debug( unsigned int max_size, const char* fmt, ...);
 
   //! Convert a simple string of base 10 digits into an unsigned 32 bit integer.
   /** \param[in] in: The string of digits to convert. No leading chars are

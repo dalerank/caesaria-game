@@ -58,8 +58,6 @@ public:
    Picture& getPicture();
    std::vector<Picture*>& getForegroundPictures();
 
-   // make a new info box (or NULL). The object will need to be deleted.
-   virtual GuiInfoBox* makeInfoBox();
    std::string getName();  // title of the info box
 
    BuildingType getType() const;

@@ -573,7 +573,7 @@ void ListBox::beforeDraw( GfxEngine& painter)
          ListBoxItem& refItem = _d->items[i];
 
          if( frameRect.LowerRightCorner.getY() >= 0 &&
-             frameRect.UpperLeftCorner.getY() <= getHeight() )
+             frameRect.UpperLeftCorner.getY() <= (int)getHeight() )
          {
            refItem.setState( _GetCurrentItemState( i, hl ) );
            
@@ -638,7 +638,7 @@ void ListBox::_RecalculateScrollPos()
 	{
         _d->scrollBar->setPos( _d->scrollBar->getPos() + selPos );
 	}
-	else if (selPos > getHeight() - _d->itemHeight)
+	else if (selPos > (int)getHeight() - _d->itemHeight)
 	{
         _d->scrollBar->setPos( _d->scrollBar->getPos() + selPos - getHeight() + _d->itemHeight );
 	}

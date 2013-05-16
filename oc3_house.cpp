@@ -39,9 +39,10 @@ House::House(const int houseId) : Building( B_HOUSE ), _d( new Impl )
 {
    _houseId = houseId;
    _d->picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
-   _houseLevel = HouseLevelSpec::getHouseLevel( houseId );
-   _houseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel);
-   _nextHouseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel+1);
+   HouseSpecHelper& helper = HouseSpecHelper::getInstance();
+   _houseLevel = helper.getHouseLevel( houseId );
+   _houseLevelSpec = &helper.getHouseLevelSpec(_houseLevel);
+   _nextHouseLevelSpec = &helper.getHouseLevelSpec(_houseLevel+1);
    _name = _houseLevelSpec->getLevelName();
    _currentHabitants = 0;
    _d->desirability = -3;
@@ -187,8 +188,8 @@ void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int start
 
       _currentHabitants = sumHabitants;
       _freeWorkersCount = sumHabitants;
-      _houseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel);
-      _nextHouseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel+1);
+      _houseLevelSpec = &HouseSpecHelper::getInstance().getHouseLevelSpec(_houseLevel);
+      _nextHouseLevelSpec = &HouseSpecHelper::getInstance().getHouseLevelSpec(_houseLevel+1);
 
       _update();
       _updateDesirabilityInfluence( false );
@@ -249,8 +250,8 @@ void House::levelUp()
   break;
   }
 
-  _houseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel);
-  _nextHouseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel+1);
+  _houseLevelSpec = &HouseSpecHelper::getInstance().getHouseLevelSpec(_houseLevel);
+  _nextHouseLevelSpec = &HouseSpecHelper::getInstance().getHouseLevelSpec(_houseLevel+1);
 
   _update();
 }
@@ -269,8 +270,8 @@ void House::_tryDegrage_11_to_2_lvl( int smallPic, int bigPic, const char desira
 void House::levelDown()
 {
    _houseLevel--;
-   _houseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel);
-   _nextHouseLevelSpec = &HouseLevelSpec::getHouseLevelSpec(_houseLevel+1);
+   _houseLevelSpec = &HouseSpecHelper::getInstance().getHouseLevelSpec(_houseLevel);
+   _nextHouseLevelSpec = &HouseSpecHelper::getInstance().getHouseLevelSpec(_houseLevel+1);
 
    switch (_houseLevel)
    {

@@ -215,34 +215,33 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
  */
 Variant Json::parseValue(const std::string &json, int &index, bool &success)
 {
-        //Determine what kind of data we should parse by
-        //checking out the upcoming token
-        switch(Json::lookAhead(json, index))
-        {
-                case JsonTokenString:
-                        return Json::parseString(json, index, success);
-                case JsonTokenNumber:
-                        return Json::parseNumber(json, index);
-                case JsonTokenCurlyOpen:
-                        return Json::parseObject(json, index, success);
-                case JsonTokenSquaredOpen:
-                        return Json::parseArray(json, index, success);
-                case JsonTokenTrue:
-                        Json::nextToken(json, index);
-                        return Variant(true);
-                case JsonTokenFalse:
-                        Json::nextToken(json, index);
-                        return Variant(false);
-                case JsonTokenNull:
-                        Json::nextToken(json, index);
-                        return Variant();
-                case JsonTokenNone:
-                        break;
-        }
+  //Determine what kind of data we should parse by
+  //checking out the upcoming token
+  bool done = false;
+  while(!done)
+  {
+    switch(Json::lookAhead(json, index))
+    {
+      case JsonTokenString:      return Json::parseString(json, index, success);
+      case JsonTokenNumber:      return Json::parseNumber(json, index);
+      
+      case JsonTokenCommentOpen: Json::parseComment(json, index, success); 
+      break;
+      
+      case JsonTokenCurlyOpen:   return Json::parseObject(json, index, success);
+      case JsonTokenSquaredOpen: return Json::parseArray(json, index, success);
+      case JsonTokenTrue:  Json::nextToken(json, index); return Variant(true);
+      case JsonTokenFalse: Json::nextToken(json, index); return Variant(false);
+      case JsonTokenNull:  Json::nextToken(json, index); return Variant();
+      case JsonTokenNone:
+        done = true;
+      break;
+    }
+  }
 
-        //If there were no tokens, flag the failure and return an empty Variant
-        success = false;
-        return Variant();
+  //If there were no tokens, flag the failure and return an empty Variant
+  success = false;
+  return Variant();
 }
 
 /**
@@ -250,69 +249,73 @@ Variant Json::parseValue(const std::string &json, int &index, bool &success)
  */
 Variant Json::parseObject(const std::string &json, int &index, bool &success)
 {
-        VariantMap rmap;
-        int token;
+  VariantMap rmap;
+  int token;
 
-        //Get rid of the whitespace and increment index
-        Json::nextToken(json, index);
+  //Get rid of the whitespace and increment index
+  Json::nextToken(json, index);
 
-        //Loop through all of the key/value pairs of the object
-        bool done = false;
-        while(!done)
-        {
-                //Get the upcoming token
-                token = Json::lookAhead(json, index);
+  //Loop through all of the key/value pairs of the object
+  bool done = false;
+  while(!done)
+  {
+    //Get the upcoming token
+    token = Json::lookAhead(json, index);
 
-                if(token == JsonTokenNone)
-                {
-                         success = false;
-                         return VariantMap();
-                }
-                else if(token == JsonTokenComma)
-                {
-                        Json::nextToken(json, index);
-                }
-                else if(token == JsonTokenCurlyClose)
-                {
-                        Json::nextToken(json, index);
-                        return rmap;
-                }
-                else
-                {
-                        //Parse the key/value pair's name
-                        std::string name = Json::parseString(json, index, success).toString();
+    if(token == JsonTokenNone)
+    {
+      success = false;
+      return VariantMap();
+    }
+    else if(token == JsonTokenComma)
+    {
+      Json::nextToken(json, index);
+    }
+    else if(token == JsonTokenCurlyClose)
+    {
+      Json::nextToken(json, index);
+      return rmap;
+    }
+    else if( token == JsonTokenCommentOpen )
+    {
+      Json::parseComment(json, index, success);
+    }
+    else
+    {
+      //Parse the key/value pair's name
+      std::string name = Json::parseString(json, index, success).toString();
 
-                        if(!success)
-                        {
-                                return VariantMap();
-                        }
+      if(!success)
+      {
+        return VariantMap();
+      }
 
-                        //Get the next token
-                        token = Json::nextToken(json, index);
+      //Get the next token
+      token = Json::nextToken(json, index);
 
-                        //If the next token is not a colon, flag the failure
-                        //return an empty Variant
-                        if(token != JsonTokenColon)
-                        {
-                                success = false;
-                                return Variant(VariantMap());
-                        }
+      //If the next token is not a colon, flag the failure
+      //return an empty Variant
+      if(token != JsonTokenColon)
+      {
+        success = false;
+        return VariantMap();
+      }
 
-                        //Parse the key/value pair's value
-                        Variant value = Json::parseValue(json, index, success);
+      //Parse the key/value pair's value
+      Variant value = Json::parseValue(json, index, success);
 
-                        if(!success)
-                        {
-                                return VariantMap();
-                        }
+      if(!success)
+      {
+        return VariantMap();
+      }
 
-                        //Assign the value to the key in the map
-                        rmap[name] = value;
-                }
-        }
+      //Assign the value to the key in the map
+      rmap[name] = value;
+    }
+  }
 
-        //Return the map successfully
-        return Variant(rmap);
+  //Return the map successfully
+  return Variant(rmap);
 }
 
 /**
@@ -357,6 +360,34 @@ Variant Json::parseArray(const std::string &json, int &index, bool &success)
         }
 
         return Variant(list);
+}
+
+/**
+ * parse comment
+ */
+void Json::parseComment(const std::string &json, int &index, bool &success)
+{
+  char c;
+  success = false;
+  index+=2;
+
+  bool complete = false;
+  while(!complete)
+  {
+    if(index == json.size())
+    {
+      break;
+    }
+
+    c = json[index++];
+
+    if(c == '/' && json[ index - 2 ] == '*' )
+    {
+      complete = true;
+      success = true;;
+      break;
+    }
+  }
 }
 
 /**
@@ -565,38 +596,53 @@ int Json::nextToken(const std::string &json, int &index)
 
         int remainingLength = json.size() - index;
 
+        if( remainingLength > 2 )
+        {
+           if( json[index] == '/' && json[index + 1] == '*' )
+           {
+             index += 2;
+             return JsonTokenCommentOpen;
+           }
+
+           if(  json[index] == '*' && json[index + 1] == '/' )
+           {
+             index += 2;
+             return JsonTokenCommentClose;
+           }
+        }
+
         //True
         if(remainingLength >= 4)
         {
-                if (json[index] == 't' && json[index + 1] == 'r' &&
-                        json[index + 2] == 'u' && json[index + 3] == 'e')
-                {
-                        index += 4;
-                        return JsonTokenTrue;
-                }
+           if (json[index] == 't' && json[index + 1] == 'r' &&
+                   json[index + 2] == 'u' && json[index + 3] == 'e')
+           {
+                   index += 4;
+                   return JsonTokenTrue;
+           }
         }
 
         //False
         if (remainingLength >= 5)
         {
-                if (json[index] == 'f' && json[index + 1] == 'a' &&
-                        json[index + 2] == 'l' && json[index + 3] == 's' &&
-                        json[index + 4] == 'e')
-                {
-                        index += 5;
-                        return JsonTokenFalse;
-                }
+           if (json[index] == 'f' && json[index + 1] == 'a' &&
+                   json[index + 2] == 'l' && json[index + 3] == 's' &&
+                   json[index + 4] == 'e')
+           {
+                   index += 5;
+                   return JsonTokenFalse;
+           }
         }
 
         //Null
         if (remainingLength >= 4)
         {
-                if (json[index] == 'n' && json[index + 1] == 'u' &&
-                        json[index + 2] == 'l' && json[index + 3] == 'l')
-                {
-                        index += 4;
-                        return JsonTokenNull;
-                }
+           if (json[index] == 'n' && json[index + 1] == 'u' &&
+                   json[index + 2] == 'l' && json[index + 3] == 'l')
+           {
+                   index += 4;
+                   return JsonTokenNull;
+           }
         }
 
         return JsonTokenNone;

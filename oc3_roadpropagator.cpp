@@ -17,8 +17,8 @@
 
 #include <set>
 #include <map>
-#include <iostream>
 
+#include "oc3_stringhelper.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_positioni.hpp"
@@ -53,7 +53,7 @@ bool RoadPropagator::getPath( const Tile& destination, ConstWayOnTiles& oPathWay
 
   std::cout << "RoadPropagator::getPath" << std::endl;
 
-  std::cout << "(" << startPos.getI() << " " << startPos.getJ() << ") (" << stopPos.getI() << " " << stopPos.getJ() << ")" << std::endl;
+  StringHelper::debug( 0xff, "(%d, %d) to (%d, %d)", startPos.getI(), startPos.getJ(), stopPos.getI(), stopPos.getJ() );
   
   if( startPos == stopPos )
   {
@@ -70,7 +70,7 @@ bool RoadPropagator::getPath( const Tile& destination, ConstWayOnTiles& oPathWay
          
     if( curTile.get_terrain().isConstructible() || curTile.get_terrain().isRoad() || curTile.get_terrain().isAqueduct() )
     {
-      std::cout << "+ (" << curTile.getI() << " " << curTile.getJ() << ") ";
+      StringHelper::debug( 0xff, "+ (%d, %d)", curTile.getI(), curTile.getJ() );
       oPathWay.push_back( &curTile );
     }
     else

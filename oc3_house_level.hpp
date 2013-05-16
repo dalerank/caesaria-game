@@ -23,20 +23,14 @@
 #include <map>
 #include <list>
 #include "oc3_enums.hpp"
-
-
+#include "oc3_scopedptr.hpp"
 
 class House;
 class HouseLevelSpec
 {
-   friend class ModelLoader;
+   friend class HouseSpecHelper;
 
 public:
-   static HouseLevelSpec &getHouseLevelSpec(const int houseLevel);
-   static void setHouseLevelSpec(HouseLevelSpec &spec);
-   static int getHouseLevel(const int houseId);
-   static void init();
-
    int getHouseLevel();
    int getMaxHabitantsByTile();
    int getTaxRate();
@@ -71,24 +65,42 @@ public:
 //    int getMinReligionLevel();
 //    int getMinWaterLevel();
 //    int getMinFoodLevel();
-
+  
 private:
-   int _houseLevel;
-   int _maxHabitantsByTile;
-   std::string _levelName;
-   int _taxRate;
+  int _houseLevel;
+  int _maxHabitantsByTile;
+  std::string _levelName;
+  int _taxRate;
 
    // required services
-   int _minEntertainmentLevel;
-   int _minHealthLevel;
-   int _minEducationLevel;
-   int _minWaterLevel;  // access to water (no water=0, well=1, fountain=2)
-   int _minReligionLevel;  // number of religions
-   int _minFoodLevel;  // number of food types
-   std::map<GoodType, int> _requiredGoods;  // rate of good usage for every good (furniture, pottery, ...)
+  int _minEntertainmentLevel;
+  int _minHealthLevel;
+  int _midDesirability, _maxDesirability;
+  int _minEducationLevel;
+  int _crime;
+  int _prosperity;
+  int _minWaterLevel;  // access to water (no water=0, well=1, fountain=2)
+  int _minReligionLevel;  // number of religions
+  int _minFoodLevel;  // number of food types
+  std::map<GoodType, int> _requiredGoods;  // rate of good usage for every good (furniture, pottery, ...)
+};
 
-   static std::map<int, HouseLevelSpec> _spec_by_level;  // key=houseLevel, value=houseLevelSpec
-   static std::map<int, int> _level_by_id;  // key=houseId, value=houseLevel
+class HouseSpecHelper
+{
+public:
+  static HouseSpecHelper& getInstance();
+
+  HouseLevelSpec &getHouseLevelSpec(const int houseLevel);
+  void setHouseLevelSpec(HouseLevelSpec &spec);
+  int getHouseLevel(const int houseId);
+  void loadHouseModel( const std::string& filename );
+
+  ~HouseSpecHelper();
+private:
+  HouseSpecHelper();
+  
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 

@@ -103,13 +103,11 @@ void SdlFacade::drawPicture(const Picture &srcpic, Picture &dstpic, const int dx
   drawImage(srcimg, dstimg, dx + srcpic.get_xoffset(), dy - srcpic.get_yoffset());
 }
 
-
 void SdlFacade::drawPicture(const Picture &srcpic, SDL_Surface *dstimg, const int dx, const int dy)
 {
   SDL_Surface *srcimg = srcpic.get_surface();
   drawImage(srcimg, dstimg, dx + srcpic.get_xoffset(), dy - srcpic.get_yoffset());
 }
-
 
 void SdlFacade::drawImage(SDL_Surface *srcimg, SDL_Surface *dstimg, const int dx, const int dy)
 {

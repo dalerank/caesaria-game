@@ -18,8 +18,6 @@
 #include "oc3_gui_info_box.hpp"
 
 #include <SDL.h>
-#include <iomanip>
-#include <boost/format.hpp>
 
 #include "oc3_tile.hpp"
 #include "oc3_exception.hpp"
@@ -37,6 +35,7 @@
 #include "oc3_scenario.hpp"
 #include "oc3_market.hpp"
 #include "oc3_granary.hpp"
+#include "oc3_stringhelper.hpp"
 
 class InfoBoxHelper
 {
@@ -677,19 +676,18 @@ InfoBoxLand::InfoBoxLand( Widget* parent, Tile* tile )
     int size = oTilemap.getSize();
     int border_size = (162 - size) / 2;
     
-    std::stringstream ss;
-
     int index = (size - tile->getJ() - 1 + border_size) * 162 + tile->getI() + border_size;
     
-    ss << "Tile at: (" << tile->getI() << "," << tile->getJ() << ")" << " "  
-        << boost::format("%04X") % ((short int) oCity.pGraphicGrid[index]) << " "  
-        << boost::format("%02X") % ((short int) oCity.pEdgeGrid[index]) << " "  
-        << boost::format("%04X") % ((short int) oCity.pTerrainGrid[index]) << " "  
-        << boost::format("%02X") % ((short int) oCity.pRndmTerGrid[index]) << " "  
-        << boost::format("%02X") % ((short int) oCity.pRandomGrid[index]) << " "  
-        << boost::format("%02X") % ((short int) oCity.pZeroGrid[index]) << std::endl ;
+    std::string text = StringHelper::format( 0xff, "Tile at: (%d,%d) %04X %02X %04X %02X %02X %02X",
+                                             tile->getI(), tile->getJ(),  
+                                            ((short int) oCity.pGraphicGrid[index]),
+                                            ((short int) oCity.pEdgeGrid[index]),
+                                            ((short int) oCity.pTerrainGrid[index]),  
+                                            ((short int) oCity.pRndmTerGrid[index]),  
+                                            ((short int) oCity.pRandomGrid[index]),
+                                            ((short int) oCity.pZeroGrid[index]) );
     
-    _text->setText(ss.str());
+    _text->setText( text );
     
     GuiPaneling::instance().draw_black_frame( *_d->bgPicture, 16, _d->lbTitle->getBottom() + 10, getWidth()-32, 180 );
 }

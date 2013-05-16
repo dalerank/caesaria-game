@@ -98,7 +98,7 @@ public:
     //! Reads attributes of the element
     //virtual void load( core::VariantArray* in);
 
-    virtual void setBackgroundPicture( const Picture& picture );
+    virtual void setBackgroundPicture( const Picture& picture, const Point& offset=Point() );
 
     void setFont( const Font& font );
 

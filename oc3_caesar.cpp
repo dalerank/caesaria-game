@@ -23,7 +23,6 @@
 #include <cstdlib>
 #include <string>
 #include <sstream>
-#include <iostream>
 #include <list>
 #include <SDL.h>
 #include <SDL_image.h>
@@ -32,6 +31,7 @@
 #include <algorithm>
 
 #include "oc3_exception.hpp"
+#include "oc3_stringhelper.hpp"
 #include "oc3_pic_loader.hpp"
 #include "oc3_scenario_loader.hpp"
 #include "oc3_scenario.hpp"
@@ -42,7 +42,6 @@
 #include "oc3_sound_engine.hpp"
 #include "oc3_walker.hpp"
 #include "oc3_gui_info_box.hpp"
-#include "oc3_model_loader.hpp"
 #include "oc3_astarpathfinding.hpp"
 
 #include "oc3_screen_menu.hpp"
@@ -75,7 +74,7 @@ void CaesarApp::Impl::initLocale()
 
 void CaesarApp::initVideo()
 {
-  std::cout << "init graphic engine" << std::endl;
+  StringHelper::debug( 0xff, "init graphic engine" );
   _d->engine = new GfxSdlEngine();
    
   /* Typical resolutions:
@@ -87,7 +86,7 @@ void CaesarApp::initVideo()
 
 void CaesarApp::initSound()
 {
-  std::cout << "init sound engine" << std::endl;
+  StringHelper::debug( 0xff, "init sound engine" );
   new SoundEngine();
   SoundEngine::instance().init();
 }
@@ -282,8 +281,7 @@ void CaesarApp::start(const std::string &resourcePath)
    setScreenWait();
 
    initPictures(resourcePath);
-   ModelLoader().loadHouseModel(resourcePath + "/../house_model.csv");
-   HouseLevelSpec::init();
+   HouseSpecHelper::getInstance().loadHouseModel( resourcePath + "/house.model" );
 
    _d->nextScreen = SCREEN_MENU;
 

@@ -96,7 +96,7 @@ BuildingData& BuildingDataHolder::getData(const BuildingType buildingType)
    mapIt = _mapDataByName.find(buildingType);
    if (mapIt == _mapDataByName.end())
    {
-      THROW("Unknown building " << buildingType);
+      THROW( "Unknown building " << buildingType );
    }
    return mapIt->second;
 }

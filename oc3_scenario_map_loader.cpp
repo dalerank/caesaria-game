@@ -19,6 +19,7 @@
 #include "oc3_scenario.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_constructionmanager.hpp"
+#include "oc3_stringhelper.hpp"
 
 #include <fstream>
 
@@ -469,8 +470,8 @@ static void initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap, const Uin
 
   Tile& signTile = tileMap.at( tlPos + tlOffset );
 
-  std::cout << tlPos.getI() << " " << tlPos.getJ() << " " << std::endl;
-  std::cout << tlOffset.getI() << " " << tlOffset.getJ() << " " << std::endl;
+  StringHelper::debug( 0xff, "(%d, %d)", tlPos.getI(), tlPos.getJ() );
+  StringHelper::debug( 0xff, "(%d, %d)", tlOffset.getI(), tlOffset.getJ() );
 
   signTile.set_picture(&PicLoader::instance().get_picture( "land3a", picIdStart + idOffset ));
   signTile.get_terrain().setRock( true );

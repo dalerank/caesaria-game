@@ -3,6 +3,7 @@
 #include "oc3_positioni.hpp"
 #include "oc3_astarpoint.hpp"
 #include "oc3_path_finding.hpp"
+#include "oc3_stringhelper.hpp"
 
 using namespace std;
 
@@ -254,7 +255,7 @@ AStarPoint* Pathfinder::getPoint( const TilePos& pos )
   }
   else
   {
-    cout << "ERROR: failed to gather point " << pos.getI() << "x" << pos.getJ() << " on grid" << endl;
+    StringHelper::debug( 0xff, "ERROR: failed to gather point (%d,%d) on grid", pos.getI(), pos.getJ() );
     return const_cast< AStarPoint* >( &invalidPoint );
   }
 }
