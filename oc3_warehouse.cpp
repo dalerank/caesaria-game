@@ -120,33 +120,33 @@ void Warehouse::init()
 {
   _fgPictures[0] = &Picture::load(ResourceGroup::warehouse, 1);
   _fgPictures[1] = &Picture::load(ResourceGroup::warehouse, 18);
-   _fgPictures[2] = _animation.getCurrentPicture();
-   _fgPictures[3] = _animFlag.getCurrentPicture();
+  _fgPictures[2] = _animation.getCurrentPicture();
+  _fgPictures[3] = _animFlag.getCurrentPicture();
 
-   // add subTiles in Z-order (from far to near)
-   _subTiles.clear();
-   _subTiles.push_back(WarehouseTile(1, 2));
-   _subTiles.push_back(WarehouseTile(0, 1));
-   _subTiles.push_back(WarehouseTile(2, 2));
-   _subTiles.push_back(WarehouseTile(1, 1));
-   _subTiles.push_back(WarehouseTile(0, 0));
-   _subTiles.push_back(WarehouseTile(2, 1));
-   _subTiles.push_back(WarehouseTile(1, 0));
-   _subTiles.push_back(WarehouseTile(2, 0));
+  // add subTiles in Z-order (from far to near)
+  _subTiles.clear();
+  _subTiles.push_back(WarehouseTile(1, 2));
+  _subTiles.push_back(WarehouseTile(0, 1));
+  _subTiles.push_back(WarehouseTile(2, 2));
+  _subTiles.push_back(WarehouseTile(1, 1));
+  _subTiles.push_back(WarehouseTile(0, 0));
+  _subTiles.push_back(WarehouseTile(2, 1));
+  _subTiles.push_back(WarehouseTile(1, 0));
+  _subTiles.push_back(WarehouseTile(2, 0));
 
-   for (unsigned int n = 0; n<_subTiles.size(); ++n)
-   {
-      _fgPictures[n+4] = &_subTiles[n]._picture;
-   }
+  for (unsigned int n = 0; n<_subTiles.size(); ++n)
+  {
+     _fgPictures[n+4] = &_subTiles[n]._picture;
+  }
 
-   _goodStore.init(*this);
+  _goodStore.init(*this);
 
-   GoodStock stock;
-   stock._goodType = G_POTTERY;
-   stock._currentQty = 300;
-   _goodStore.store(stock, 300);
+  GoodStock stock;
+  stock._goodType = G_POTTERY;
+  stock._currentQty = 300;
+  _goodStore.store(stock, 300);
 
-   computePictures();
+  computePictures();
 }
 
 void Warehouse::timeStep(const unsigned long time)

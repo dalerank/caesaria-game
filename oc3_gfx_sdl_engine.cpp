@@ -28,11 +28,13 @@
 #include "oc3_sdl_facade.hpp"
 #include "oc3_requirements.hpp"
 #include "oc3_positioni.hpp"
+#include "oc3_pictureconverter.hpp"
 
 
 GfxSdlEngine::GfxSdlEngine() : GfxEngine()
 {
   _screen = NULL;
+  resetTileDrawMask();
 }
 
 GfxSdlEngine::~GfxSdlEngine()
@@ -100,7 +102,15 @@ void GfxSdlEngine::exit_frame()
 
 void GfxSdlEngine::drawPicture(const Picture &picture, const int dx, const int dy)
 {
-  SdlFacade::instance().drawPicture(picture, _screen, dx, dy);
+  if( _rmask || _gmask || _bmask )
+  {
+    PictureConverter::maskColor( _maskedPic, picture, _rmask, _gmask, _bmask, _amask );
+    SdlFacade::instance().drawPicture( _maskedPic, _screen, dx, dy );
+  }
+  else
+  {
+    SdlFacade::instance().drawPicture(picture, _screen, dx, dy );
+  }
 }
 
 void GfxSdlEngine::drawPicture( const Picture &picture, const Point& pos )
@@ -108,3 +118,15 @@ void GfxSdlEngine::drawPicture( const Picture &picture, const Point& pos )
   SdlFacade::instance().drawPicture(picture, _screen, pos.getX(), pos.getY() );
 }
 
+void GfxSdlEngine::setTileDrawMask( int rmask, int gmask, int bmask, int amask )
+{
+  _rmask = rmask;
+  _gmask = gmask;
+  _bmask = bmask;
+  _amask = amask;
+}
+
+void GfxSdlEngine::resetTileDrawMask()
+{
+  _rmask = _gmask = _bmask = _amask = 0;
+}

@@ -42,7 +42,7 @@ void Tilemap::init(const int size)
 
       for (int j = 0; j < _size; ++j)
       {
-         _tile_array[i].push_back(Tile(i, j));
+         _tile_array[i].push_back( Tile( TilePos( i, j ) ));
       }
    }
 }

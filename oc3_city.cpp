@@ -118,7 +118,6 @@ void City::timeStep()
       if( walker->isDeleted() )
       {
         // remove the walker from the walkers list  
-        //delete *walkerIt;
         walkerIt = _d->walkerList.erase(walkerIt);       
       }
       else

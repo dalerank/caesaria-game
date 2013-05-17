@@ -51,8 +51,6 @@ public:
    // draws the tilemap on the screen, using a dumb back to front drawing of all pictures.
    void drawTilemap();
    
-   // returns the tile at the cursor position.
-   Tile* getTileXY( const Point& pos, bool overborder=false );
    void handleEvent( NEvent& event);
 
    // sets the current build tool (if any)
@@ -76,22 +74,14 @@ protected:
    // update preview tiles
    void updatePreviewTiles( bool force=false );
 
-   void drawTile( const Tile &tile );
+   void drawTile( Tile& tile );
 
-   void drawTileEx( const Tile& tile, const int depth );
+   void drawTileEx( Tile& tile, const int depth );
 
-   void _getSelectedArea( TilePos& outStartPos, TilePos& outStopPos );
-   void _clearLand();
+   void _clearAll();
    void _buildAll();
 
 private:
-   City* _city;     // city to display
-   Tilemap* _tilemap;
-   TilemapArea* _mapArea;  // visible map area
-
-   std::vector<Tile*> _multiTiles;  // used to avoid redisplay of a multi-tile.
-   //std::list<Tile*> _priorityTiles;  // these tiles have priority over "normal" tilemap tiles!
-
    ScreenGame *_screenGame;
 
    class Impl;
