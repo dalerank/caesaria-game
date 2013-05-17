@@ -211,25 +211,12 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario &oScenario)
       Picture& pic = Picture::load( TerrainTileHelper::convId2PicName( imgId ) );
       tile.set_picture( &pic );
       tile.get_terrain().setOriginalImgId( imgId );
-    }
-  }
-
-  // loads the edge map (to know about multi-tile graphics)
-  for (int itA = 0; itA < size; ++itA)
-  {
-    // for each row
-
-    for (int itB = 0; itB < size; ++itB)
-    {
+      
+      
       // for each col
       unsigned char edge;  // 8bits
 
-      int index = 162 * (border_size + itA) + border_size + itB;
-      
       edge = oCity.pEdgeGrid[index];
-
-      int i = itB;
-      int j = size - itA - 1;
 
       if (edge==0x00)
       {
@@ -253,34 +240,24 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario &oScenario)
           }
         }
       }
-    }
-  }
-
-
-  // loads the terrain map (to know about terrain tiles: tree/rock/water...)
-  for (int itA = 0; itA < size; ++itA)
-  {
-    for (int itB=0; itB<size; ++itB)
-    {
-      // for each col
+      
+            // for each col
       TilePos pos( itB, size - itA - 1 );
 
       short terrainBitset;  // 16bits
-
-      int index = 162 * (border_size + itA) + border_size + itB;
-      
+ 
       terrainBitset = oCity.pTerrainGrid[index];
       
       
-      Tile &tile = oTilemap.at( pos );
-      decodeTerrain(terrainBitset, tile);
+      Tile &ttile = oTilemap.at( pos );
+      decodeTerrain(terrainBitset, ttile);
 
-      LandOverlayPtr overlay = tile.get_terrain().getOverlay();
+      LandOverlayPtr overlay = ttile.get_terrain().getOverlay();
 
       // Check if it is building and type of building
       if( overlay == NULL && (terrainBitset & 0x8) )
       {
-        std::cout << "Building at (" << tile.getI() << "," << tile.getJ() << ")" << " with type ";
+        std::cout << "Building at (" << ttile.getI() << "," << ttile.getJ() << ")" << " with type ";
         std::streampos old = f.tellg();
         f.seekg(kGraphicGrid + 162 * 2 * (border_size + itA) + 2 * border_size + 2 * itB, std::ios::beg);
         short int tmp;
@@ -307,8 +284,8 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario &oScenario)
         case 0xb0c:
           {
             ConstructionPtr hut = ConstructionManager::getInstance().create( B_NATIVE_HUT );
-            tile.get_terrain().setOverlay( hut.as<LandOverlay>() );
-            overlay = tile.get_terrain().getOverlay();
+            ttile.get_terrain().setOverlay( hut.as<LandOverlay>() );
+            overlay = ttile.get_terrain().getOverlay();
             overlay->build( pos );
             oCity.getOverlayList().push_back(overlay);
           }
@@ -321,8 +298,8 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario &oScenario)
             {
               std::cout << "Tile is master" << std::endl;
               ConstructionPtr center = ConstructionManager::getInstance().create( B_NATIVE_CENTER );
-              tile.get_terrain().setOverlay( center.as<LandOverlay>() );
-              overlay = tile.get_terrain().getOverlay();
+              ttile.get_terrain().setOverlay( center.as<LandOverlay>() );
+              overlay = ttile.get_terrain().getOverlay();
               if( overlay != NULL )
               {
                 overlay->build( pos );
@@ -335,8 +312,8 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario &oScenario)
         case 0xb44:
           {
             ConstructionPtr field = ConstructionManager::getInstance().create( B_NATIVE_FIELD );
-            tile.get_terrain().setOverlay( field.as<LandOverlay>() );
-            overlay = tile.get_terrain().getOverlay();
+            ttile.get_terrain().setOverlay( field.as<LandOverlay>() );
+            overlay = ttile.get_terrain().getOverlay();
             overlay->build( pos );
             oCity.getOverlayList().push_back(overlay);
           }
