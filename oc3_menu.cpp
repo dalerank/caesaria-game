@@ -174,20 +174,23 @@ void getBitmapCoordinates(int x, int y, int mapsize, int& x_out, int& y_out)
 
 void getTerrainColours(TerrainTile& tile, int &c1, int &c2)
 {
+  int num3 = tile.getTerrainRndmData() & 3;
+  int num7 = tile.getTerrainRndmData() & 7;
+  
   if (tile.isTree())
   {
-    c1 = colours->colour(Caesar3Colours::MAP_TREE1, 0);
-    c2 = colours->colour(Caesar3Colours::MAP_TREE2, 0);
+    c1 = colours->colour(Caesar3Colours::MAP_TREE1, num3);
+    c2 = colours->colour(Caesar3Colours::MAP_TREE2, num3);
   }
   else if (tile.isRock())
   {
-    c1 = colours->colour(Caesar3Colours::MAP_ROCK1, 0);
-    c2 = colours->colour(Caesar3Colours::MAP_ROCK2, 0);
+    c1 = colours->colour(Caesar3Colours::MAP_ROCK1, num3);
+    c2 = colours->colour(Caesar3Colours::MAP_ROCK2, num3);
   }
   else if (tile.isWater())
   {
-    c1 = colours->colour(Caesar3Colours::MAP_WATER1, 0);
-    c2 = colours->colour(Caesar3Colours::MAP_WATER2, 0);
+    c1 = colours->colour(Caesar3Colours::MAP_WATER1, num3);
+    c2 = colours->colour(Caesar3Colours::MAP_WATER2, num3);
   }
   else if (tile.isRoad())
   {
@@ -196,8 +199,8 @@ void getTerrainColours(TerrainTile& tile, int &c1, int &c2)
   }
   else if (tile.isMeadow())
   {
-    c1 = colours->colour(Caesar3Colours::MAP_FERTILE1, 0);
-    c2 = colours->colour(Caesar3Colours::MAP_FERTILE2, 0);    
+    c1 = colours->colour(Caesar3Colours::MAP_FERTILE1, num3);
+    c2 = colours->colour(Caesar3Colours::MAP_FERTILE2, num3);    
   }
 //  else if (tile.isWall())
 //  {
@@ -206,8 +209,8 @@ void getTerrainColours(TerrainTile& tile, int &c1, int &c2)
 //  }
   else // plain terrain
   {
-    c1 = colours->colour(Caesar3Colours::MAP_EMPTY1, 0);
-    c2 = colours->colour(Caesar3Colours::MAP_EMPTY2, 0);
+    c1 = colours->colour(Caesar3Colours::MAP_EMPTY1, num7);
+    c2 = colours->colour(Caesar3Colours::MAP_EMPTY2, num7);
   }
 }
 
@@ -292,15 +295,6 @@ void Menu::draw( GfxEngine& painter )
     sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() - 18, j, kYellow);
     sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 18, j, kYellow);
   }
-
-  
-  // 159, 318 -> 0,159
-  // 318, 159 -> 159,159
-  // 0, 159   -> 0, 0
-  // 159, 0   -> 159,0 
-  
-  
-  // 42,35 -> 66, 11 -> 83, 27    ~57, 51
   
   sdlFacade.unlockSurface(surface);
   
@@ -309,8 +303,6 @@ void Menu::draw( GfxEngine& painter )
   
   int i = GuiTilemap::instance().getMapArea().getCenterX();
   int j = GuiTilemap::instance().getMapArea().getCenterZ();
-  
-  // 146/2 112/2 = 
   
   sdlFacade.drawPicture( minimap, minimap_windows , 146/2 - i, 112/2 + j - mapsize*2 );
   
