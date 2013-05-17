@@ -65,8 +65,6 @@ protected:
 
    // used to display the future building at mouse location
    void checkPreviewBuild(const TilePos& pos );
-   // used to display the future removed building at mouse location
-   void checkPreviewRemove(const int i, const int j);
 
    // returns the tile at the grid position (handles priority tiles)
    Tile& getTile( const TilePos& pos );
@@ -79,11 +77,8 @@ protected:
    void drawTileEx( Tile& tile, const int depth );
 
    void _clearAll();
-   void _buildAll();
 
 private:
-   ScreenGame *_screenGame;
-
    class Impl;
    ScopedPtr< Impl > _d;
    
