@@ -398,17 +398,13 @@ static void initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap, const Uin
   if( tlPos.getI() == 0 || tlPos.getI() == tileMap.getSize() - 1 )
   {
     tlOffset = TilePos( 0, 1 );
-    idOffset = exit 
-      ? ( tlPos.getI() == 0 ? 1 : 3 )
-      : ( tlPos.getI() == 0 ? 1 : 3 );
+    idOffset = tlPos.getI() == 0 ? 1 : 3 ;
 
   }
   else if( tlPos.getJ() == 0 || tlPos.getJ() == tileMap.getSize() - 1 )
   {
     tlOffset = TilePos( 1, 0 );
-    idOffset = exit 
-      ? ( tlPos.getJ() == 0 ? 2 : 0 )
-      : ( tlPos.getJ() == 0 ? 2 : 0 );
+    idOffset = tlPos.getJ() == 0 ? 2 : 0;
   }
 
   Tile& signTile = tileMap.at( tlPos + tlOffset );
