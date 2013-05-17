@@ -30,25 +30,25 @@
 class ScreenMenu::Impl
 {
 public:
-    Picture* bgPicture;
-    StartMenu* menu;         // menu to display
-    GfxEngine* engine;
-    GuiEnv* gui;
-    int result;
-    bool isStoped;
-    std::string fileMap;
+  Picture* bgPicture;
+  StartMenu* menu;         // menu to display
+  GfxEngine* engine;
+  GuiEnv* gui;
+  int result;
+  bool isStopped;
+  std::string fileMap;
 
-    void resolveNewGame() { result=startNewGame; isStoped=true; }
-    void resolveLoadGame() { result=loadSavedGame; isStoped=true; }
-    void resolveQuitGame() { result=closeApplication; isStoped=true; }
-    void resolveSelectMap( std::string fileName )
-    {
-      result = loadMap;
-      fileMap = "./resources/maps/" + fileName;
-      isStoped = true;
-    }
+  void resolveNewGame()  { result = startNewGame;     isStopped=true; }
+  void resolveLoadGame() { result = loadSavedGame;    isStopped=true; }
+  void resolveQuitGame() { result = closeApplication; isStopped=true; }
+  void resolveSelectMap( std::string fileName )
+  {
+    result = loadMap;
+    fileMap = "./resources/maps/" + fileName;
+    isStopped = true;
+  }
 
-    void resolveShowLoadMapWnd();
+  void resolveShowLoadMapWnd();
 };
 
 void ScreenMenu::Impl::resolveShowLoadMapWnd()
@@ -65,59 +65,59 @@ void ScreenMenu::Impl::resolveShowLoadMapWnd()
 ScreenMenu::ScreenMenu() : _d( new Impl )
 {
   _d->bgPicture = NULL;
-  _d->isStoped = false;
+  _d->isStopped = false;
 }
 
 ScreenMenu::~ScreenMenu() {}
 
 void ScreenMenu::draw()
 {
-	_d->gui->beforeDraw();
+  _d->gui->beforeDraw();
 
-    _d->engine->drawPicture(*_d->bgPicture, 0, 0);
-    _d->gui->draw();
+  _d->engine->drawPicture(*_d->bgPicture, 0, 0);
+  _d->gui->draw();
 }
 
 void ScreenMenu::handleEvent( NEvent& event )
 {
-    _d->gui->handleEvent( event );
+  _d->gui->handleEvent( event );
 }
 
 void ScreenMenu::initialize( GfxEngine& engine, GuiEnv& gui )
 {
   _d->bgPicture = &Picture::load("title", 1);
 
-    // center the bgPicture on the screen
-    _d->bgPicture->set_offset( (engine.getScreenWidth() - _d->bgPicture->get_width()) / 2,
+  // center the bgPicture on the screen
+  _d->bgPicture->set_offset( (engine.getScreenWidth() - _d->bgPicture->get_width()) / 2,
                                -( engine.getScreenHeight() - _d->bgPicture->get_height() ) / 2 );
 
-    _d->gui = &gui;
-    _d->engine = &engine;
-    _d->menu = new StartMenu( gui.getRootWidget() );
+  _d->gui = &gui;
+  _d->engine = &engine;
+  _d->menu = new StartMenu( gui.getRootWidget() );
 
-    PushButton* btn = _d->menu->addButton( "New game", -1 );
-    CONNECT( btn, onClicked(), _d.data(), Impl::resolveNewGame );
+  PushButton* btn = _d->menu->addButton( "New game", -1 );
+  CONNECT( btn, onClicked(), _d.data(), Impl::resolveNewGame );
 
-    btn = _d->menu->addButton( "Load game", -1 );
-    CONNECT( btn, onClicked(), _d.data(), Impl::resolveLoadGame );
+  btn = _d->menu->addButton( "Load game", -1 );
+  CONNECT( btn, onClicked(), _d.data(), Impl::resolveLoadGame );
 
 #ifdef _DEBUG
-    btn = _d->menu->addButton( "##Load map##", -1 );
-    CONNECT( btn, onClicked(), _d.data(), Impl::resolveShowLoadMapWnd );
+  btn = _d->menu->addButton( "##Load map##", -1 );
+  CONNECT( btn, onClicked(), _d.data(), Impl::resolveShowLoadMapWnd );
 #endif
 
-    btn = _d->menu->addButton( "Quit", -1 );
-    CONNECT( btn, onClicked(), _d.data(), Impl::resolveQuitGame );
+  btn = _d->menu->addButton( "Quit", -1 );
+  CONNECT( btn, onClicked(), _d.data(), Impl::resolveQuitGame );
 }
 
 int ScreenMenu::getResult() const
 {
-	return _d->result;
+  return _d->result;
 }
 
 bool ScreenMenu::isStopped() const
 {
-    return _d->isStoped;
+  return _d->isStopped;
 }
 
 const std::string& ScreenMenu::getMapName() const
