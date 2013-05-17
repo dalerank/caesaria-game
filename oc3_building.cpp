@@ -101,23 +101,23 @@ void LandOverlay::setPicture(Picture &picture)
 
 void LandOverlay::build( const TilePos& pos )
 {
-    City &city = Scenario::instance().getCity();
-    Tilemap &tilemap = city.getTilemap();
+  City &city = Scenario::instance().getCity();
+  Tilemap &tilemap = city.getTilemap();
 
-    _master_tile = &tilemap.at( pos );
+  _master_tile = &tilemap.at( pos );
 
-    for (int dj = 0; dj<_size; ++dj)
+  for (int dj = 0; dj < _size; ++dj)
+  {
+    for (int di = 0; di < _size; ++di)
     {
-        for (int di = 0; di<_size; ++di)
-        {
-            Tile& tile = tilemap.at( pos + TilePos( di, dj ) );
-            tile.set_master_tile(_master_tile);
-            tile.set_picture(_picture);
-            TerrainTile& terrain = tile.get_terrain();
-            terrain.setOverlay(this);
-            setTerrain( terrain );
-        }
+      Tile& tile = tilemap.at( pos + TilePos( di, dj ) );
+      tile.set_master_tile(_master_tile);
+      tile.set_picture(_picture);
+      TerrainTile& terrain = tile.get_terrain();
+      terrain.setOverlay(this);
+      setTerrain( terrain );
     }
+  }
 }
 
 void LandOverlay::deleteLater()
@@ -127,7 +127,6 @@ void LandOverlay::deleteLater()
 
 void LandOverlay::destroy()
 {
-  int i=0;
 }
 
 Tile& LandOverlay::getTile() const

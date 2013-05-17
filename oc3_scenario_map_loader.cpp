@@ -225,28 +225,82 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario &oScenario)
       tile.set_picture( &pic );
       
       tile.get_terrain() = terrain; // what happens here?
+    }
+    
+  }
 
-      if (pEdgeGrid[index]==0x00)
+
+  for (int i = 0; i < size; ++i)
+  {
+    for (int j = 0; j < size; ++j)
+    {
+      Tile& tile = oTilemap.at(i, j);
+      TerrainTile& terrain = tile.get_terrain();
+
+      if (terrain.getEdgeData()==0x00)
       {
-        // this is the top of a multi-tile
-        Picture& pic = oTilemap.at(i, j).get_picture();
-        int tile_size = (pic.get_width() + 2) / 60;  // size of the multi-tile. the multi-tile is a square.
-        // DEBUG
-        // std::cout << "multi-tile x" << tile_size << " at " << i << "," << j << std::endl;
+        int size = 1;
 
-        // master is the left-most subtile
-        int mi = i;
-        int mj = j - tile_size + 1;
-        Tile& master = oTilemap.at(mi, mj);
-        for (int di = 0; di < tile_size; ++di)
-        {
-          // for each subrow of the multi-tile
-          for (int dj = 0; dj < tile_size; ++dj)
-          {
-            // for each subcol of the multi-tile
-            oTilemap.at(mi + di, mj + dj).set_master_tile(&master);
-          }
-        }
+	{
+	  int dj;
+	try
+	{	
+	  // find size, 5 is maximal size for building
+	  for (dj = 0; dj < 5; ++dj)
+	  {
+	    int edge = oTilemap.at(i, j - dj).get_terrain().getEdgeData();
+	    // find bottom left corner
+	    if (edge == 8 * dj + 0x40)
+	    {
+	      size = dj + 1;
+	      break;
+	    }
+	  }
+	}
+	catch(...)
+	{
+	  size = dj + 1;
+	}
+	}
+	
+	std::cout << "multi-tile x" << size << " at " << i << "," << j << std::endl;
+	
+	bool bBad = false;
+	
+	std::cout << "probing ";
+	
+	for (int di = 0; di < size && !bBad; ++di)
+	  for (int dj = 0; dj < size && !bBad; ++dj)
+	  {
+	    std::cout << i - di << "," << j - dj << " ";
+	    try
+	    {
+	      int edge = oTilemap.at(i - di, j - dj).get_terrain().getEdgeData();
+	    }
+	    catch(...)
+	    {
+	      
+	    }
+//	    if (edge != 8 * dj + di && edge != 8 * dj + 0x40)
+//	      bBad = true;
+	  }
+	
+	std::cout << std::endl;
+	
+	if (bBad)
+	  THROW ("ERROR in multi-tiles!!!");
+	
+	Tile& master = oTilemap.at(i, j - size + 1);
+	
+	std::cout << "master will be at " << master.getI() << "," << master.getJ() << std::endl;
+	
+	for (int di = 0; di < size; ++di)
+	  for (int dj = 0; dj < size; ++dj)
+	  {
+	      oTilemap.at(master.getI() + di, master.getJ() + dj).set_master_tile(&master);
+	  }
+	
+	std::cout << " decoding " << std::endl;
       }
       
       TilePos pos( i, j );
@@ -257,20 +311,20 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario &oScenario)
 
       // Check if it is building and type of building
       //if (ttile.get_master_tile() == NULL)
-        decodeTerrain(ttile);
+      decodeTerrain(ttile);
     }
   }
 }
 
 void ScenarioMapLoader::Impl::decodeTerrain(Tile &oTile)
 {
+  if (!oTile.is_master_tile() && oTile.get_master_tile()!=NULL)
+    return;
+  
   TerrainTile& terrain = oTile.get_terrain();
-
-  // terrain.reset();
 
   LandOverlayPtr overlay; // This is the overlay object, if any
 
-  // terrain.decode( terrainBitset );
   if( terrain.isRoad() )   // road
   {
     overlay = ConstructionManager::getInstance().create( B_ROAD ).as<LandOverlay>();
@@ -307,7 +361,6 @@ void ScenarioMapLoader::Impl::decodeTerrain(Tile &oTile)
   //terrain.setOverlay( overlay );
   if (overlay != NULL)
   {
-    if (oTile.is_master_tile() || oTile.get_master_tile()==NULL)
       overlay->build( TilePos(oTile.getI(), oTile.getJ()) );
 //    Scenario::instance().getCity().getOverlayList().push_back(overlay);
   }
