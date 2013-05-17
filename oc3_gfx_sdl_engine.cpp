@@ -115,7 +115,7 @@ void GfxSdlEngine::drawPicture(const Picture &picture, const int dx, const int d
 
 void GfxSdlEngine::drawPicture( const Picture &picture, const Point& pos )
 {
-  SdlFacade::instance().drawPicture(picture, _screen, pos.getX(), pos.getY() );
+  drawPicture(picture, pos.getX(), pos.getY() );
 }
 
 void GfxSdlEngine::setTileDrawMask( int rmask, int gmask, int bmask, int amask )

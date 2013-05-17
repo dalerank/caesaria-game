@@ -177,7 +177,7 @@ void LandOverlay::save( VariantMap& stream ) const
    stream[ "name" ] = Variant( _name );
 }
 
-void LandOverlay::load( const VariantMap& stream)
+void LandOverlay::load( const VariantMap& stream )
 {
 }
 

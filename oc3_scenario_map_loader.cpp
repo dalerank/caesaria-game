@@ -423,13 +423,13 @@ void ScenarioMapLoader::Impl::initEntryExit(std::fstream &f, City &ioCity)
   f.seekg(kBoatEntry, std::ios::beg);
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);
-  ioCity.setBoatEntryIJ(i, size - j - 1);
+  ioCity.setBoatEntry( TilePos( i, size - j - 1 ) );
 
   i = 0;
   j = 0;
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);
-  ioCity.setBoatExitIJ(i, size - j - 1);
+  ioCity.setBoatExit( TilePos( i, size - j - 1) );
 
   //std::cout << "road entry at:" << ioCity.getRoadEntryI() << "," << ioCity.getRoadEntryJ() << std::endl;
   //std::cout << "road exit at:"  << ioCity.getRoadExitI()  << "," << ioCity.getRoadExitJ()  << std::endl;
@@ -445,7 +445,7 @@ void ScenarioMapLoader::Impl::initCameraStartPos(std::fstream &f, City &ioCity)
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);
 
-  ioCity.setCameraStartIJ(i, j);
+  ioCity.setCameraPos( TilePos( i, j ) );
 }
 
 static void initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap, const Uint32 picIdStart, bool exit )
@@ -483,5 +483,5 @@ void ScenarioMapLoader::Impl::initEntryExitPicture( City &ioCity )
 
   // exit and entry can't point to one tile or .... can!
   initEntryExitTile( ioCity.getRoadEntry(), tileMap, 89, false );
-  initEntryExitTile( ioCity.getRoadExitIJ(), tileMap, 85, true );    
+  initEntryExitTile( ioCity.getRoadExit(), tileMap, 85, true );    
 }

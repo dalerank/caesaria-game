@@ -22,6 +22,7 @@
 #include "oc3_scopedptr.hpp"
 
 class PushButton;
+class GuiTilemap;
 
 class Menu : public Widget
 {
@@ -54,14 +55,18 @@ protected:
 class ExtentMenu : public Menu
 {
 public:
-    static ExtentMenu* create( Widget* parent, int id );
+    static ExtentMenu* create( Widget* parent, GuiTilemap& tilemap, int id );
 
     void minimize();
     void maximize();
 
     bool onEvent(const NEvent& event);
+
+    void draw( GfxEngine& engine );
+
 protected:
-    ExtentMenu( Widget* parent, int id, const Rect& rectangle );
+    ExtentMenu( Widget* parent, GuiTilemap&, int id, const Rect& rectangle );
+    GuiTilemap& _tmap;
 };
 
 #endif

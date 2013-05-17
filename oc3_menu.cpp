@@ -217,101 +217,6 @@ void Menu::draw( GfxEngine& painter )
 
   painter.drawPicture( *_d->bgPicture, getScreenLeft(), getScreenTop() );
     
-  // here we will draw minimap
-    
-  // TEMPORARY!!!
-  
-  // try to generate and show minimap
-  // now we will show it at (0,0)
-  // then we will show it in right place
-  if (dynamic_cast<ExtentMenu*>(this) != NULL) // weird check if we have big menu
-  {
-  
-    SdlFacade &sdlFacade = SdlFacade::instance();
-  
-    int mapsize = Scenario::instance().getCity().getTilemap().getSize();
-  
-  Picture& minimap = sdlFacade.createPicture(mapsize * 2 , mapsize * 2);
-  SDL_Surface* surface = minimap.get_surface();
-  
-  sdlFacade.lockSurface(surface);
-  // here we can draw anything
-  
-  // std::cout << "center is (" << _mapArea->getCenterX() << "," << _mapArea->getCenterZ() << ")" << std::endl;
-
-  int border = (162 - mapsize) / 2;
-  int max = border + mapsize;
-  
-  colours = new Caesar3Colours(Scenario::instance().getCity().getClimate());
-  
-  for (int y = border; y < max; y++)
-  {
-    for (int x = border; x < max; x++)
-    {  
-      TerrainTile& tile = Scenario::instance().getCity().getTilemap().at(x - border, y - border).get_terrain();
-
-      int coords[2];
-      int c1, c2;
-      getBitmapCoordinates(x - border, y - border, mapsize, coords[0], coords[1]);
-      getTerrainColours(tile, c1, c2);
-
-      if( coords[0] >= surface->w-1 || coords[1] >= surface->h )
-        continue;
-
-      sdlFacade.set_pixel(surface, coords[0],     coords[1], c1);
-      sdlFacade.set_pixel(surface, coords[0] + 1, coords[1], c2);
-    }
-  }
-
-  delete colours;
-  
-  // show center of screen on minimap
-  //Exit out of image size on small carts... please fix it
-  /*
-  sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX(),     mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ(), kWhite);
-  sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 1, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ(), kWhite);
-  sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX(),     mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 1, kWhite);
-  sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 1, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 1, kWhite);
-
-  for ( int i = GuiTilemap::instance().getMapArea().getCenterX() - 18; i <= GuiTilemap::instance().getMapArea().getCenterX() + 18; i++ )
-  {
-    sdlFacade.set_pixel(surface, i, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 34, kYellow);
-    sdlFacade.set_pixel(surface, i, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() - 34, kYellow);
-  }
-
-  for ( int j = mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() - 34; j <= mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 34; j++ )
-  {
-    sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() - 18, j, kYellow);
-    sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 18, j, kYellow);
-  }*/
-
-  
-  // 159, 318 -> 0,159
-  // 318, 159 -> 159,159
-  // 0, 159   -> 0, 0
-  // 159, 0   -> 159,0 
-  
-  
-  // 42,35 -> 66, 11 -> 83, 27    ~57, 51
-  
-  sdlFacade.unlockSurface(surface);
-  
-  // this is window where minimap is displayed
-  Picture& minimap_windows = sdlFacade.createPicture(144, 110);
-  
-  int i = GuiTilemap::instance().getMapArea().getCenterX();
-  int j = GuiTilemap::instance().getMapArea().getCenterZ();
-  
-  // 146/2 112/2 = 
-  
-  sdlFacade.drawPicture( minimap, minimap_windows , 146/2 - i, 112/2 + j - mapsize*2 );
-  
-  painter.drawPicture(minimap_windows, getScreenLeft() + 8, getScreenTop() + 35); // 152, 145
-  sdlFacade.deletePicture(minimap);
-  sdlFacade.deletePicture(minimap_windows);
-  
-  // END OF TEMPORARY    
-  }  
   Widget::draw( painter );
 }
 
@@ -465,9 +370,9 @@ Signal0<>& Menu::onMaximize()
     return _d->onMaximizeSignal;
 }
 
-ExtentMenu* ExtentMenu::create( Widget* parent, int id )
+ExtentMenu* ExtentMenu::create( Widget* parent, GuiTilemap& tmap, int id )
 {
-    ExtentMenu* ret = new ExtentMenu( parent, id, Rect( 0, 0, 1, 1 ) );
+    ExtentMenu* ret = new ExtentMenu( parent, tmap, id, Rect( 0, 0, 1, 1 ) );
 
     SdlFacade &sdlFacade = SdlFacade::instance();
 
@@ -500,8 +405,8 @@ void ExtentMenu::maximize()
                                                    stopPos, 300 );
 }
 
-ExtentMenu::ExtentMenu( Widget* parent, int id, const Rect& rectangle )
-    : Menu( parent, id, rectangle )
+ExtentMenu::ExtentMenu( Widget* parent, GuiTilemap& tmap, int id, const Rect& rectangle )
+    : Menu( parent, id, rectangle ), _tmap( tmap )
 {
     GuiPaneling::configureTexturedButton( _d->minimizeButton, ResourceGroup::panelBackground, 97, false );
     _d->minimizeButton->setPosition( Point( 127, 5 ) );
@@ -565,4 +470,107 @@ bool ExtentMenu::onEvent(const NEvent& event)
     }
 
     return Menu::onEvent( event );
+}
+
+void ExtentMenu::draw( GfxEngine& painter )
+{
+  if( !isVisible() )
+    return;
+
+  Menu::draw( painter );
+  // here we will draw minimap
+
+  // TEMPORARY!!!
+
+  // try to generate and show minimap
+  // now we will show it at (0,0)
+  // then we will show it in right place
+  if (dynamic_cast<ExtentMenu*>(this) != NULL) // weird check if we have big menu
+  {
+
+    SdlFacade &sdlFacade = SdlFacade::instance();
+
+    int mapsize = Scenario::instance().getCity().getTilemap().getSize();
+
+    Picture& minimap = sdlFacade.createPicture(mapsize * 2 , mapsize * 2);
+    SDL_Surface* surface = minimap.get_surface();
+
+    sdlFacade.lockSurface(surface);
+    // here we can draw anything
+
+    // std::cout << "center is (" << _mapArea->getCenterX() << "," << _mapArea->getCenterZ() << ")" << std::endl;
+
+    int border = (162 - mapsize) / 2;
+    int max = border + mapsize;
+
+    colours = new Caesar3Colours(Scenario::instance().getCity().getClimate());
+
+    for (int y = border; y < max; y++)
+    {
+      for (int x = border; x < max; x++)
+      {  
+        TerrainTile& tile = Scenario::instance().getCity().getTilemap().at(x - border, y - border).get_terrain();
+
+        int coords[2];
+        int c1, c2;
+        getBitmapCoordinates(x - border, y - border, mapsize, coords[0], coords[1]);
+        getTerrainColours(tile, c1, c2);
+
+        if( coords[0] >= surface->w-1 || coords[1] >= surface->h )
+          continue;
+
+        sdlFacade.set_pixel(surface, coords[0],     coords[1], c1);
+        sdlFacade.set_pixel(surface, coords[0] + 1, coords[1], c2);
+      }
+    }
+
+    delete colours;
+
+    // show center of screen on minimap
+    //Exit out of image size on small carts... please fix it
+    /*
+    sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX(),     mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ(), kWhite);
+    sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 1, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ(), kWhite);
+    sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX(),     mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 1, kWhite);
+    sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 1, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 1, kWhite);
+
+    for ( int i = GuiTilemap::instance().getMapArea().getCenterX() - 18; i <= GuiTilemap::instance().getMapArea().getCenterX() + 18; i++ )
+    {
+    sdlFacade.set_pixel(surface, i, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 34, kYellow);
+    sdlFacade.set_pixel(surface, i, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() - 34, kYellow);
+    }
+
+    for ( int j = mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() - 34; j <= mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 34; j++ )
+    {
+    sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() - 18, j, kYellow);
+    sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 18, j, kYellow);
+    }*/
+
+
+    // 159, 318 -> 0,159
+    // 318, 159 -> 159,159
+    // 0, 159   -> 0, 0
+    // 159, 0   -> 159,0 
+
+
+    // 42,35 -> 66, 11 -> 83, 27    ~57, 51
+
+    sdlFacade.unlockSurface(surface);
+
+    // this is window where minimap is displayed
+    Picture& minimap_windows = sdlFacade.createPicture(144, 110);
+
+    int i = _tmap.getMapArea().getCenterX();
+    int j = _tmap.getMapArea().getCenterZ();
+
+    // 146/2 112/2 = 
+
+    sdlFacade.drawPicture( minimap, minimap_windows , 146/2 - i, 112/2 + j - mapsize*2 );
+
+    painter.drawPicture(minimap_windows, getScreenLeft() + 8, getScreenTop() + 35); // 152, 145
+    sdlFacade.deletePicture(minimap);
+    sdlFacade.deletePicture(minimap_windows);
+
+    // END OF TEMPORARY    
+  }  
 }

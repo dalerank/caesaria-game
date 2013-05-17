@@ -83,7 +83,7 @@ void Immigrant::_checkPath( Tile& startPoint, HousePtr house )
   PathWay pathWay;
 
   Tilemap& citymap = _d->city->getTilemap();
-  Tile& destTile = house.isValid() ? house->getTile() : citymap.at( _d->city->getRoadExitIJ() );
+  Tile& destTile = house.isValid() ? house->getTile() : citymap.at( _d->city->getRoadExit() );
   Size arrivedArea( house.isValid() ? house->getSize() : 1 );
 
   bool pathFound = Pathfinder::getInstance().getPath( startPoint.getIJ(), destTile.getIJ(), pathWay, 

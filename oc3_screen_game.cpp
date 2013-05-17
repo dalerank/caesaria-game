@@ -80,7 +80,7 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
   _d->menu->setPosition( Point( engine.getScreenWidth() - _d->menu->getWidth() - _d->rightPanel->getWidth(), 
                                  _d->topMenu->getHeight() ) );
 
-  _d->extMenu = ExtentMenu::create( gui.getRootWidget(), -1 );
+  _d->extMenu = ExtentMenu::create( gui.getRootWidget(), _d->guiTilemap, -1 );
   _d->extMenu->setPosition( Point( engine.getScreenWidth() - _d->extMenu->getWidth() - _d->rightPanel->getWidth(), 
                                      _d->topMenu->getHeight() ) );
     
@@ -90,7 +90,7 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
   getMapArea().setViewSize( engine.getScreenWidth(), engine.getScreenHeight() + 8 * 30);
         
   // here move camera to start position of map
-  getMapArea().setCenterIJ( _d->scenario->getCity().getCameraStartIJ() ); 
+  getMapArea().setCenterIJ( _d->scenario->getCity().getCameraPos() ); 
 
   //connect elements
   CONNECT( _d->topMenu, onSave(), this, ScreenGame::resolveGameSave );

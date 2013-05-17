@@ -60,13 +60,10 @@ oc3_signals public:
   Signal1< Tile* > onShowTileInfoSignal;
 };
 
-GuiTilemap* GuiTilemap::_instance = NULL;
-
 GuiTilemap::GuiTilemap() : _d( new Impl )
 {
   _d->city = NULL;
   _d->mapArea = NULL;
-  _instance = this;
 }
 
 GuiTilemap::~GuiTilemap() {}
