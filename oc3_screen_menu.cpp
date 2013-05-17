@@ -126,10 +126,8 @@ void ScreenMenu::initialize( GfxEngine& engine, GuiEnv& gui )
   btn = _d->menu->addButton( "Load game", -1 );
   CONNECT( btn, onClicked(), _d.data(), Impl::resolveShowLoadGameWnd );
 
-#ifdef _DEBUG
   btn = _d->menu->addButton( "##Load map##", -1 );
   CONNECT( btn, onClicked(), _d.data(), Impl::resolveShowLoadMapWnd );
-#endif
 
   btn = _d->menu->addButton( "Quit", -1 );
   CONNECT( btn, onClicked(), _d.data(), Impl::resolveQuitGame );

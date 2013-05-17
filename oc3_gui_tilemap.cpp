@@ -204,6 +204,7 @@ void GuiTilemap::drawTilemap()
                 {
                    continue;
                 }
+
                 engine.drawPicture( **picIt, 2*(anim->getII()+anim->getJJ())+mOffset.getX(), 
                                     anim->getII()-anim->getJJ()+mOffset.getY());
              }
@@ -482,7 +483,7 @@ void GuiTilemap::checkPreviewBuild( const TilePos& pos )
       if( overlay->canBuild( pos ) )
       {
           _d->previewToolPictures.push_back( new Picture() );
-          PictureConverter::rgbBalance( *_d->previewToolPictures.back(), overlay->getPicture(), -255, +0, -255 );
+          PictureConverter::maskColor( *_d->previewToolPictures.back(), overlay->getPicture(), 0x00000000, 0x00ff0000, 0x00000000, 0xff000000 );
 
           Tile *masterTile=0;
           for (int dj = 0; dj < size; ++dj)
@@ -557,7 +558,8 @@ void GuiTilemap::checkPreviewRemove(const int i, const int j)
             else
             {
                 _d->previewToolPictures.push_back( new Picture() );
-                PictureConverter::rgbBalance( *_d->previewToolPictures.back(), overlay->getPicture(), +0, -255, -255 );
+                PictureConverter::maskColor( *_d->previewToolPictures.back(), overlay->getPicture(), 0x00ff0000, 0x00000000, 0x00000000, 0xff000000 );
+                //PictureConverter::rgbBalance( *_d->previewToolPictures.back(), overlay->getPicture(), +0, -255, -255 );
 
                 // remove the overlay, and make single tile of cleared land
                 int size = overlay->getSize();

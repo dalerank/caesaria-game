@@ -24,7 +24,7 @@ void PictureConverter::rgbBalance( Picture& dst, const Picture& src, int lROffse
 {
     SDL_Surface* source = const_cast< Picture& >( src ).get_surface();
 
-    SDL_Surface *target = SDL_CreateRGBSurface(SDL_SWSURFACE, source->w, source->h, 32,
+    SDL_Surface *target = SDL_CreateRGBSurface( SDL_SWSURFACE, source->w, source->h, 32, 
         0x00ff0000, 0x0000ff00, 
         0x000000ff, 0xff000000);
 
@@ -66,6 +66,27 @@ void PictureConverter::rgbBalance( Picture& dst, const Picture& src, int lROffse
     }
 
     dst.init( target, src.get_xoffset(), src.get_yoffset() );   
+}
+
+void PictureConverter::maskColor( Picture& dst, const Picture& src, int rmask, int gmask, int bmask, int amask )
+{
+  SDL_Surface* source = const_cast< Picture& >( src ).get_surface();
+
+  SDL_Surface *target = SDL_CreateRGBSurfaceFrom( src.get_surface()->pixels, source->w, source->h, 32, src.get_surface()->pitch,
+                                                  rmask, gmask, bmask, amask );
+
+  if (target == NULL) 
+  {
+    //cerr << "CreateRGBSurface for rgbbalance conversion failed: " << SDL_GetError() << endl;
+    return;
+  }
+
+  if( dst.get_surface() )
+  {
+    SDL_FreeSurface( dst.get_surface() );
+  }
+
+  dst.init( target, src.get_xoffset(), src.get_yoffset() );   
 }
 
 void PictureConverter::convToGrayscale( Picture& dst, const Picture& src )

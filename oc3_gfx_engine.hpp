@@ -48,7 +48,6 @@ public:
    virtual void drawPicture(const Picture &pic, const Point& pos ) = 0;
    virtual void exit_frame() = 0;  // display the frame
 
-
 protected:
    static GfxEngine* _instance;
 

@@ -38,33 +38,34 @@ static const int MAXIMIZE_ID = REMOVE_TOOL_ID + 1;
 class Menu::Impl
 {
 public:
-    Picture* bgPicture;
+  Picture* bgPicture;
 
-    Widget* lastPressed;
-    PushButton* menuButton;
-    PushButton* minimizeButton;
-    PushButton* senateButton;
-    PushButton* empireButton;
-    PushButton* missionButton;
-    PushButton* northButton;
-    PushButton* rotateLeftButton;
-    PushButton* rotateRightButton;
-    PushButton* messageButton;
-    PushButton* disasterButton;
-    PushButton* houseButton;
-    PushButton* waterButton;
-    PushButton* clearButton;
-    PushButton* roadButton;
-    PushButton* administrationButton;
-    PushButton* entertainmentButton;
-    PushButton* educationButton;
-    PushButton* templeButton;
-    PushButton* commerceButton;
-    PushButton* securityButton;
-    PushButton* healthButton;
-    PushButton* engineerButton;
-    PushButton* cancelButton;
-    Label* middleLabel;
+  Widget* lastPressed;
+  PushButton* menuButton;
+  PushButton* minimizeButton;
+  PushButton* senateButton;
+  PushButton* empireButton;
+  PushButton* missionButton;
+  PushButton* northButton;
+  PushButton* rotateLeftButton;
+  PushButton* rotateRightButton;
+  PushButton* messageButton;
+  PushButton* disasterButton;
+  PushButton* houseButton;
+  PushButton* waterButton;
+  PushButton* clearButton;
+  PushButton* roadButton;
+  PushButton* administrationButton;
+  PushButton* entertainmentButton;
+  PushButton* educationButton;
+  PushButton* templeButton;
+  PushButton* commerceButton;
+  PushButton* securityButton;
+  PushButton* healthButton;
+  PushButton* engineerButton;
+  PushButton* cancelButton;
+  PushButton* overlaysButton;
+  Label* middleLabel;
 
 oc3_signals public:
   Signal1< int > onCreateConstructionSignal;
@@ -100,15 +101,6 @@ private:
 Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id, rectangle ), _d( new Impl )
 {
     _d->lastPressed = 0;
-    // // top of menu
-    //_menuButton.setText("Menu");
-    //_menuButton.setEvent(WidgetEvent::InGameMenuEvent());
-    //_menuButton.setNormalPicture(PicLoader::instance().get_picture("paneling", 234));
-    //_menuButton.setHoverPicture(PicLoader::instance().get_picture("paneling", 234+1));
-    //_menuButton.setSelectedPicture(PicLoader::instance().get_picture("paneling", 234+2));
-    //_menuButton.setUnavailablePicture(PicLoader::instance().get_picture("paneling", 234+3));
-    //_menuButton.init_pictures();
-    //add_widget(_menuButton);
 
     const bool haveSubMenu = true;
     _d->minimizeButton = _addButton( ResourceMenu::maximizeBtnPicId, false, 0, MAXIMIZE_ID, !haveSubMenu, ResourceMenu::emptyMidPicId );
@@ -556,6 +548,9 @@ ExtentMenu::ExtentMenu( Widget* parent, int id, const Rect& rectangle )
 
     _d->middleLabel = new Label(this, Rect( Point( 7, 216 ), Size( 148, 52 )) );
     _d->middleLabel->setBackgroundPicture( PicLoader::instance().get_picture( ResourceGroup::menuMiddleIcons, ResourceMenu::emptyMidPicId ) );
+
+    _d->overlaysButton = new PushButton( this, Rect( 6, 27, 127, 51), "Overlays" );
+
 }
 
 bool ExtentMenu::onEvent(const NEvent& event)
