@@ -13,23 +13,31 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_SCENARIOMAP_LOADER_H_INCLUDED__
-#define __OPENCAESAR3_SCENARIOMAP_LOADER_H_INCLUDED__
+#include "oc3_scenario_sav_loader.hpp"
+#include "oc3_tile.hpp"
+#include "oc3_exception.hpp"
+#include "oc3_pic_loader.hpp"
+#include "oc3_positioni.hpp"
+#include "oc3_constructionmanager.hpp"
+#include "oc3_scenario.hpp"
 
-#include "oc3_scenarioabstractloader.hpp"
-#include "oc3_scopedptr.hpp"
-
-class ScenarioMapLoader : public ScenarioAbstractLoader
+class ScenarioSavLoader::Impl
 {
 public:
-  ScenarioMapLoader();
 
-  bool load(const std::string& filename, Scenario &oScenario);
-  bool isLoadableFileExtension( const std::string& filename );
-
-private:
-  class Impl;
-  ScopedPtr< Impl > _d;
 };
 
-#endif
+ScenarioSavLoader::ScenarioSavLoader()
+{
+
+}
+
+bool ScenarioSavLoader::load( const std::string& filename, Scenario &oScenario )
+{
+  return false;
+}
+
+bool ScenarioSavLoader::isLoadableFileExtension( const std::string& filename )
+{
+  return filename.substr( filename.size() - 4, -1 ) == ".sav";
+}
