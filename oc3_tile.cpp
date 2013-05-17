@@ -17,13 +17,12 @@
 #include "oc3_exception.hpp"
 #include "oc3_building.hpp"
 
-Tile::Tile(const int i, const int j)
+Tile::Tile(const int i, const int j) : _terrain(0,0,0,0,0,0)
 {
   _i = i;
   _j = j;
   _picture = NULL;
   _master_tile = NULL;
-  _terrain.reset();
 }
 
 

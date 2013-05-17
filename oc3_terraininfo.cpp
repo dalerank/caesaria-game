@@ -29,6 +29,7 @@ TerrainTile::TerrainTile(unsigned short int imgId, unsigned char edgeData,
 	      _imgId(imgId), _edgeData(edgeData), _terrainData(terrainData), 
 	      _terrainRandom(terrainRandom), _randomData(randomData), _elevationData(elevationData)
 {
+  reset();
   decode(terrainData);
 }
 

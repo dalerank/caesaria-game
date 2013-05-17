@@ -69,11 +69,19 @@ public:
   void decode(const int bitset);
 
   void setOriginalImgId( unsigned short int id ) { _imgId = id;          }
-  unsigned short int getOriginalImgId() const    { return _imgId;        }
-
-  int getDesirability() const              { return _desirability; }
+ 
+  unsigned short int getOriginalImgId() const    { return _imgId;         }
+  unsigned char      getEdgeData() const         { return _edgeData;      }
+  unsigned short int getTerrainData() const      { return _terrainData;   }
+  unsigned char      getTerrainRndmData() const  { return _terrainRandom; }
+  unsigned char      getRandomData() const       { return _randomData;    }
+  unsigned char      getElevationData() const    { return _elevationData; }
+   
+  int getDesirability() const                    { return _desirability; }
   void appendDesirability( int value );
 
+  
+  
 private:
   bool _isWater;
   bool _isRock;

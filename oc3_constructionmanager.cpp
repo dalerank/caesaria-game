@@ -66,8 +66,8 @@ ConstructionPtr ConstructionManager::create( const std::string& typeName ) const
 
 ConstructionManager& ConstructionManager::getInstance()
 {
-    static ConstructionManager inst;
-    return inst;
+  static ConstructionManager inst;
+  return inst;
 }
 
 ConstructionManager::ConstructionManager() : _d( new Impl )
@@ -181,5 +181,5 @@ void ConstructionManager::addConstructor( const BuildingType type, const std::st
 
 bool ConstructionManager::canCreate( const BuildingType type ) const
 {
- return _d->constructors.find( type ) != _d->constructors.end();   
+  return _d->constructors.find( type ) != _d->constructors.end();   
 }
