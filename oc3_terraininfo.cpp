@@ -18,10 +18,18 @@
 #include "oc3_exception.hpp"
 #include "oc3_variant.hpp"
 
-
 TerrainTile::TerrainTile()
 {
   reset();
+}
+
+TerrainTile::TerrainTile(unsigned short int imgId, unsigned char edgeData,
+	      unsigned short int terrainData, unsigned char terrainRandom,
+	      unsigned char randomData, unsigned char elevationData) :
+	      _imgId(imgId), _edgeData(edgeData), _terrainData(terrainData), 
+	      _terrainRandom(terrainRandom), _randomData(randomData), _elevationData(elevationData)
+{
+  decode(terrainData);
 }
 
 void TerrainTile::reset()

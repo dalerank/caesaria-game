@@ -186,22 +186,27 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario &oScenario)
   f.seekg(kZeroGrid, std::ios::beg);
   f.read((char*)oCity.pZeroGrid, 26244);
 
+  TerrainTile terrain(oCity.pGraphicGrid[0], oCity.pEdgeGrid[0], oCity.pTerrainGrid[0], oCity.pRndmTerGrid[0], oCity.pRandomGrid[0], oCity.pZeroGrid[0]);
 
+//  Tile& tile = oTilemap.at(0, 0);
+//  tile.get_terrain() = terrain;
+  
   // loads the graphics map
   int border_size = (162 - size) / 2;
 
   for (int itA = 0; itA < size; ++itA)
   {
-    f.seekg(kGraphicGrid + 162 * 2 * (border_size + itA) + 2 * border_size, std::ios::beg);  // skip empty rows and empty cols
-
     for (int itB = 0; itB < size; ++itB)
     {
       int i = itB;
       int j = size - itA - 1;
 
+      int index = 162 * (border_size + itA) + border_size + itB;
+      
       unsigned short int imgId;  // 16bits
 
-      f.read((char*)&imgId, 2);
+      imgId = oCity.pGraphicGrid[index];
+      
       Tile& tile = oTilemap.at(i, j);
       Picture& pic = Picture::load( TerrainTileHelper::convId2PicName( imgId ) );
       tile.set_picture( &pic );
@@ -213,13 +218,15 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario &oScenario)
   for (int itA = 0; itA < size; ++itA)
   {
     // for each row
-    f.seekg(kEdgeGrid + 162 * (border_size + itA) + border_size, std::ios::beg);  // skip empty rows and empty cols
 
     for (int itB = 0; itB < size; ++itB)
     {
       // for each col
       unsigned char edge;  // 8bits
-      f.read((char*)&edge, 1);
+
+      int index = 162 * (border_size + itA) + border_size + itB;
+      
+      edge = oCity.pEdgeGrid[index];
 
       int i = itB;
       int j = size - itA - 1;
@@ -253,9 +260,6 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario &oScenario)
   // loads the terrain map (to know about terrain tiles: tree/rock/water...)
   for (int itA = 0; itA < size; ++itA)
   {
-    // for each row
-    f.seekg(kTerrainGrid + 162 * 2 * (border_size + itA) + 2 * border_size, std::ios::beg);  // skip empty rows and empty cols
-
     for (int itB=0; itB<size; ++itB)
     {
       // for each col
@@ -263,7 +267,11 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario &oScenario)
 
       short terrainBitset;  // 16bits
 
-      f.read((char*)&terrainBitset, 2);
+      int index = 162 * (border_size + itA) + border_size + itB;
+      
+      terrainBitset = oCity.pTerrainGrid[index];
+      
+      
       Tile &tile = oTilemap.at( pos );
       decodeTerrain(terrainBitset, tile);
 

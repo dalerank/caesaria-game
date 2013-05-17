@@ -27,7 +27,9 @@ class TerrainTile
 {
 public:
   TerrainTile();
-  TerrainTile(unsigned short int);
+  TerrainTile(unsigned short int imgId, unsigned char edgeData,
+	      unsigned short int terrainData, unsigned char terrainRandom,
+	      unsigned char randomData, unsigned char elevationData);
 
   // reset all fields
   void reset();
@@ -85,7 +87,15 @@ private:
   bool _isWall;
   int  _desirability;
   
-  unsigned short int _imgId;      // original tile information
+  /*
+   * original tile information
+   */
+  unsigned short int _imgId;      
+  unsigned char      _edgeData;
+  unsigned short int _terrainData;
+  unsigned char      _terrainRandom;
+  unsigned char      _randomData;
+  unsigned char      _elevationData;
     
   LandOverlayPtr _overlay;
 };
