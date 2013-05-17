@@ -228,6 +228,10 @@ void getTerrainColours(TerrainTile& tile, int &c1, int &c2)
 void getBuildingColours(TerrainTile& tile, int &c1, int &c2)
 {
   LandOverlayPtr overlay = tile.getOverlay();
+  
+  if (overlay == NULL)
+    return;
+  
   BuildingType type = overlay->getType();
   
   switch(type)
