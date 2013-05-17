@@ -186,8 +186,6 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario &oScenario)
   f.seekg(kZeroGrid, std::ios::beg);
   f.read((char*)oCity.pZeroGrid, 26244);
 
-  TerrainTile terrain(oCity.pGraphicGrid[0], oCity.pEdgeGrid[0], oCity.pTerrainGrid[0], oCity.pRndmTerGrid[0], oCity.pRandomGrid[0], oCity.pZeroGrid[0]);
-
 //  Tile& tile = oTilemap.at(0, 0);
 //  tile.get_terrain() = terrain;
   
@@ -202,6 +200,14 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario &oScenario)
       int j = size - itA - 1;
 
       int index = 162 * (border_size + itA) + border_size + itB;
+
+      TerrainTile terrain(oCity.pGraphicGrid[index],
+			  oCity.pEdgeGrid[index],
+			  oCity.pTerrainGrid[index],
+			  oCity.pRndmTerGrid[index],
+			  oCity.pRandomGrid[index],
+			  oCity.pZeroGrid[index]
+			  );      
       
       unsigned short int imgId;  // 16bits
 
@@ -210,7 +216,10 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario &oScenario)
       Tile& tile = oTilemap.at(i, j);
       Picture& pic = Picture::load( TerrainTileHelper::convId2PicName( imgId ) );
       tile.set_picture( &pic );
-      tile.get_terrain().setOriginalImgId( imgId );
+      
+      tile.get_terrain() = terrain;
+      
+      //tile.get_terrain().setOriginalImgId( imgId );
       
       
       // for each col
