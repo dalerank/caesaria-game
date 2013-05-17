@@ -171,18 +171,37 @@ void CaesarApp::loadScenario(const std::string &scenarioFile)
 
 void CaesarApp::loadGame(const std::string &gameFile)
 {
-   std::cout << "load game begin" << std::endl;
+  std::cout << "load game begin" << std::endl;
 
-//    std::fstream f(gameFile.c_str(), std::ios::in | std::ios::binary);
-//    InputSerialStream stream;
-//    stream.init(f, -1);
-// 
-//    _d->scenario = new Scenario();
-//    _d->scenario->unserialize(stream);
-//    f.close();
-//    stream.finalize_read();
-// 
-//    std::cout << "load game end" << std::endl;
+  _d->scenario = new Scenario();
+  
+  bool loadok = ScenarioLoader::getInstance().load(gameFile, *_d->scenario);   
+
+  if( !loadok )
+  {
+    delete _d->scenario;
+    std::cout << "LOADING ERROR: can't load game from " << gameFile << std::endl;
+    return;
+  }  
+
+  City &city = _d->scenario->getCity();
+  
+  LandOverlays llo = city.getOverlayList();
+  
+  for ( LandOverlays::iterator itLLO = llo.begin(); itLLO!=llo.end(); ++itLLO)
+  {
+     LandOverlayPtr overlay = *itLLO;
+     ConstructionPtr construction = overlay.as<Construction>();
+     if( construction.isValid() )
+     {
+        // this is a construction
+        construction->computeAccessRoads();
+     }
+  }
+
+  Pathfinder::getInstance().update( _d->scenario->getCity().getTilemap() );  
+  
+  std::cout << "load game end" << std::endl;
 }
 
 
@@ -238,7 +257,8 @@ void CaesarApp::setScreenMenu(const std::string &resourcePath)
    
     case ScreenMenu::loadSavedGame:
     {  
-      loadGame("oc3.sav");
+      std::cout<<"Loading map:" << "lepcismagna.sav" << std::endl;
+      loadGame(resourcePath + "/savs/" + "timgad.sav");
       _d->nextScreen = SCREEN_GAME;
     }
     break;

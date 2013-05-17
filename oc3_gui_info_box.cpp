@@ -681,13 +681,15 @@ InfoBoxLand::InfoBoxLand( Widget* parent, Tile* tile )
 
     int index = (size - tile->getJ() - 1 + border_size) * 162 + tile->getI() + border_size;
     
+    TerrainTile& terrain = tile->get_terrain();
+    
     ss << "Tile at: (" << tile->getI() << "," << tile->getJ() << ")" << " "  
-        << boost::format("%04X") % ((short int) oCity.pGraphicGrid[index]) << " "  
-        << boost::format("%02X") % ((short int) oCity.pEdgeGrid[index]) << " "  
-        << boost::format("%04X") % ((short int) oCity.pTerrainGrid[index]) << " "  
-        << boost::format("%02X") % ((short int) oCity.pRndmTerGrid[index]) << " "  
-        << boost::format("%02X") % ((short int) oCity.pRandomGrid[index]) << " "  
-        << boost::format("%02X") % ((short int) oCity.pZeroGrid[index]) << std::endl ;
+        << boost::format("%04X") % ((short int) terrain.getOriginalImgId()) << " "  
+        << boost::format("%02X") % ((short int) terrain.getEdgeData()) << " "  
+        << boost::format("%04X") % ((short int) terrain.getTerrainData()) << " "  
+        << boost::format("%02X") % ((short int) terrain.getTerrainRndmData()) << " "  
+        << boost::format("%02X") % ((short int) terrain.getRandomData()) << " "  
+        << boost::format("%02X") % ((short int) terrain.getElevationData()) << std::endl ;
     
     _text->setText(ss.str());
     

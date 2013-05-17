@@ -172,22 +172,27 @@ void getBitmapCoordinates(int x, int y, int mapsize, int& x_out, int& y_out)
   x_out = x + y;
 }
 
+void getBuildingColours(TerrainTile& tile, int &c1, int &c2);
+
 void getTerrainColours(TerrainTile& tile, int &c1, int &c2)
 {
+  int num3 = tile.getTerrainRndmData() & 3;
+  int num7 = tile.getTerrainRndmData() & 7;
+  
   if (tile.isTree())
   {
-    c1 = colours->colour(Caesar3Colours::MAP_TREE1, 0);
-    c2 = colours->colour(Caesar3Colours::MAP_TREE2, 0);
+    c1 = colours->colour(Caesar3Colours::MAP_TREE1, num3);
+    c2 = colours->colour(Caesar3Colours::MAP_TREE2, num3);
   }
   else if (tile.isRock())
   {
-    c1 = colours->colour(Caesar3Colours::MAP_ROCK1, 0);
-    c2 = colours->colour(Caesar3Colours::MAP_ROCK2, 0);
+    c1 = colours->colour(Caesar3Colours::MAP_ROCK1, num3);
+    c2 = colours->colour(Caesar3Colours::MAP_ROCK2, num3);
   }
   else if (tile.isWater())
   {
-    c1 = colours->colour(Caesar3Colours::MAP_WATER1, 0);
-    c2 = colours->colour(Caesar3Colours::MAP_WATER2, 0);
+    c1 = colours->colour(Caesar3Colours::MAP_WATER1, num3);
+    c2 = colours->colour(Caesar3Colours::MAP_WATER2, num3);
   }
   else if (tile.isRoad())
   {
@@ -196,18 +201,82 @@ void getTerrainColours(TerrainTile& tile, int &c1, int &c2)
   }
   else if (tile.isMeadow())
   {
-    c1 = colours->colour(Caesar3Colours::MAP_FERTILE1, 0);
-    c2 = colours->colour(Caesar3Colours::MAP_FERTILE2, 0);    
+    c1 = colours->colour(Caesar3Colours::MAP_FERTILE1, num3);
+    c2 = colours->colour(Caesar3Colours::MAP_FERTILE2, num3);
   }
-//  else if (tile.isWall())
-//  {
-//    c1 = colours->colour(Caesar3Colours::MAP_WALL, 0);
-//    c2 = colours->colour(Caesar3Colours::MAP_WALL, 1);   
-//  }
+  else if (tile.isWall())
+  {
+    c1 = colours->colour(Caesar3Colours::MAP_WALL, 0);
+    c2 = colours->colour(Caesar3Colours::MAP_WALL, 1);   
+  }
+  else if (tile.isAqueduct()) // and not tile.isRoad()
+  {
+    c1 = colours->colour(Caesar3Colours::MAP_AQUA, 0);
+    c2 = colours->colour(Caesar3Colours::MAP_AQUA, 1);    
+  }
+  else if (tile.isBuilding())
+  {
+    getBuildingColours(tile, c1, c2);
+  }
   else // plain terrain
   {
-    c1 = colours->colour(Caesar3Colours::MAP_EMPTY1, 0);
-    c2 = colours->colour(Caesar3Colours::MAP_EMPTY2, 0);
+    c1 = colours->colour(Caesar3Colours::MAP_EMPTY1, num7);
+    c2 = colours->colour(Caesar3Colours::MAP_EMPTY2, num7);
+  }
+}
+
+void getBuildingColours(TerrainTile& tile, int &c1, int &c2)
+{
+  LandOverlayPtr overlay = tile.getOverlay();
+  
+  if (overlay == NULL)
+    return;
+  
+  BuildingType type = overlay->getType();
+  
+  switch(type)
+  {
+    case B_HOUSE:
+    {
+      switch (overlay->getSize())
+      {
+	case 1:
+	{
+          c1 = colours->colour(Caesar3Colours::MAP_HOUSE, 0);
+          c2 = colours->colour(Caesar3Colours::MAP_HOUSE, 1);
+	  break;
+	}
+	default:
+	{
+          c1 = colours->colour(Caesar3Colours::MAP_HOUSE, 2);
+          c2 = colours->colour(Caesar3Colours::MAP_HOUSE, 0);
+	}
+      }
+      break;
+    }
+    case B_RESERVOIR:
+    {
+      c1 = colours->colour(Caesar3Colours::MAP_AQUA, 1);
+      c2 = colours->colour(Caesar3Colours::MAP_AQUA, 0);
+      break;
+    }
+    default:
+    {
+      switch (overlay->getSize())
+      {
+	case 1:
+	{
+	  c1 = colours->colour(Caesar3Colours::MAP_BUILDING, 0);
+	  c2 = colours->colour(Caesar3Colours::MAP_BUILDING, 1);
+	  break;
+	}
+	default:
+	{
+	  c1 = colours->colour(Caesar3Colours::MAP_BUILDING, 0);
+	  c2 = colours->colour(Caesar3Colours::MAP_BUILDING, 2);
+	}
+      }
+    }
   }
 }
 
@@ -274,8 +343,8 @@ void Menu::draw( GfxEngine& painter )
   delete colours;
   
   // show center of screen on minimap
-  //Exit out of image size on small carts... please fix it
-  /*
+  // Exit out of image size on small carts... please fix it
+  
   sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX(),     mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ(), kWhite);
   sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 1, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ(), kWhite);
   sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX(),     mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 1, kWhite);
@@ -291,16 +360,7 @@ void Menu::draw( GfxEngine& painter )
   {
     sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() - 18, j, kYellow);
     sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 18, j, kYellow);
-  }*/
-
-  
-  // 159, 318 -> 0,159
-  // 318, 159 -> 159,159
-  // 0, 159   -> 0, 0
-  // 159, 0   -> 159,0 
-  
-  
-  // 42,35 -> 66, 11 -> 83, 27    ~57, 51
+  }
   
   sdlFacade.unlockSurface(surface);
   
@@ -309,8 +369,6 @@ void Menu::draw( GfxEngine& painter )
   
   int i = GuiTilemap::instance().getMapArea().getCenterX();
   int j = GuiTilemap::instance().getMapArea().getCenterZ();
-  
-  // 146/2 112/2 = 
   
   sdlFacade.drawPicture( minimap, minimap_windows , 146/2 - i, 112/2 + j - mapsize*2 );
   

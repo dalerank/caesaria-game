@@ -27,6 +27,9 @@ class TerrainTile
 {
 public:
   TerrainTile();
+  TerrainTile(unsigned short int imgId, unsigned char edgeData,
+	      unsigned short int terrainData, unsigned char terrainRandom,
+	      unsigned char randomData, unsigned char elevationData);
 
   // reset all fields
   void reset();
@@ -46,6 +49,7 @@ public:
   bool isMeadow() const                   { return _isMeadow;    }
   bool isElevation() const                { return _isElevation; }
   bool isWall() const                     { return _isWall;      }
+  bool isGateHouse() const                { return _isGateHouse; }
 
   void setTree(const bool isTree)           { _isTree      = isTree;      }
   void setRock(const bool isRock)           { _isRock      = isRock;      }
@@ -57,6 +61,8 @@ public:
   void setMeadow(const bool isMeadow)       { _isMeadow    = isMeadow;    }
   void setElevation(const bool isElevation) { _isElevation = isElevation; }
   void setWall(const bool isWall)           { _isWall      = isWall;      }
+  void setGateHouse(const bool isGateHouse) { _isGateHouse = isGateHouse; }
+  
 
   void setOverlay(LandOverlayPtr overlay);
   LandOverlayPtr getOverlay() const;
@@ -66,9 +72,15 @@ public:
   void decode(const int bitset);
 
   void setOriginalImgId( unsigned short int id ) { _imgId = id;          }
-  unsigned short int getOriginalImgId() const    { return _imgId;        }
-
-  int getDesirability() const              { return _desirability; }
+ 
+  unsigned short int getOriginalImgId() const    { return _imgId;         }
+  unsigned char      getEdgeData() const         { return _edgeData;      }
+  unsigned short int getTerrainData() const      { return _terrainData;   }
+  unsigned char      getTerrainRndmData() const  { return _terrainRandom; }
+  unsigned char      getRandomData() const       { return _randomData;    }
+  unsigned char      getElevationData() const    { return _elevationData; }
+   
+  int getDesirability() const                    { return _desirability; }
   void appendDesirability( int value );
 
 private:
@@ -82,11 +94,19 @@ private:
   bool _isMeadow;
   bool _isElevation;
   bool _isWall;
-  int _desirability;
+  bool _isGateHouse;
+  int  _desirability;
   
-  unsigned short int _imgId;      // original tile information
-  
-  
+  /*
+   * original tile information
+   */
+  unsigned short int _imgId;      
+  unsigned char      _edgeData;
+  unsigned short int _terrainData;
+  unsigned char      _terrainRandom;
+  unsigned char      _randomData;
+  unsigned char      _elevationData;
+    
   LandOverlayPtr _overlay;
 };
 

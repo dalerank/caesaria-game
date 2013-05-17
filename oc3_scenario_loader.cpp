@@ -18,6 +18,7 @@
 #include "oc3_scenario_loader.hpp"
 
 #include "oc3_scenario_map_loader.hpp"
+#include "oc3_scenario_sav_loader.hpp"
 #include "oc3_scenario_oc3save_loader.hpp"
 
 #include <vector>
@@ -48,6 +49,7 @@ ScenarioLoader& ScenarioLoader::getInstance()
 void ScenarioLoader::Impl::initLoaders()
 {
   loaders.push_back( ScenarioAbstractLoaderPtr( new ScenarioMapLoader() ) );
+  loaders.push_back( ScenarioAbstractLoaderPtr( new ScenarioSavLoader() ) );
   loaders.push_back( ScenarioAbstractLoaderPtr( new ScenarioOc3SaveLoader() ) );
 }
 
