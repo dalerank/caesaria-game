@@ -172,6 +172,8 @@ void getBitmapCoordinates(int x, int y, int mapsize, int& x_out, int& y_out)
   x_out = x + y;
 }
 
+void getBuildingColours(TerrainTile& tile, int &c1, int &c2);
+
 void getTerrainColours(TerrainTile& tile, int &c1, int &c2)
 {
   int num3 = tile.getTerrainRndmData() & 3;
@@ -200,17 +202,77 @@ void getTerrainColours(TerrainTile& tile, int &c1, int &c2)
   else if (tile.isMeadow())
   {
     c1 = colours->colour(Caesar3Colours::MAP_FERTILE1, num3);
-    c2 = colours->colour(Caesar3Colours::MAP_FERTILE2, num3);    
+    c2 = colours->colour(Caesar3Colours::MAP_FERTILE2, num3);
   }
 //  else if (tile.isWall())
 //  {
 //    c1 = colours->colour(Caesar3Colours::MAP_WALL, 0);
 //    c2 = colours->colour(Caesar3Colours::MAP_WALL, 1);   
 //  }
+  else if (tile.isAqueduct()) // and not tile.isRoad()
+  {
+    c1 = colours->colour(Caesar3Colours::MAP_AQUA, 0);
+    c2 = colours->colour(Caesar3Colours::MAP_AQUA, 1);    
+  }
+  else if (tile.isBuilding())
+  {
+    getBuildingColours(tile, c1, c2);
+  }
   else // plain terrain
   {
     c1 = colours->colour(Caesar3Colours::MAP_EMPTY1, num7);
     c2 = colours->colour(Caesar3Colours::MAP_EMPTY2, num7);
+  }
+}
+
+void getBuildingColours(TerrainTile& tile, int &c1, int &c2)
+{
+  LandOverlayPtr overlay = tile.getOverlay();
+  BuildingType type = overlay->getType();
+  
+  switch(type)
+  {
+    case B_HOUSE:
+    {
+      switch (overlay->getSize())
+      {
+	case 1:
+	{
+          c1 = colours->colour(Caesar3Colours::MAP_HOUSE, 0);
+          c2 = colours->colour(Caesar3Colours::MAP_HOUSE, 1);
+	  break;
+	}
+	default:
+	{
+          c1 = colours->colour(Caesar3Colours::MAP_HOUSE, 2);
+          c2 = colours->colour(Caesar3Colours::MAP_HOUSE, 0);
+	}
+      }
+      break;
+    }
+    case B_RESERVOIR:
+    {
+      c1 = colours->colour(Caesar3Colours::MAP_AQUA, 1);
+      c2 = colours->colour(Caesar3Colours::MAP_AQUA, 0);
+      break;
+    }
+    default:
+    {
+      switch (overlay->getSize())
+      {
+	case 1:
+	{
+	  c1 = colours->colour(Caesar3Colours::MAP_BUILDING, 0);
+	  c2 = colours->colour(Caesar3Colours::MAP_BUILDING, 1);
+	  break;
+	}
+	default:
+	{
+	  c1 = colours->colour(Caesar3Colours::MAP_BUILDING, 0);
+	  c2 = colours->colour(Caesar3Colours::MAP_BUILDING, 2);
+	}
+      }
+    }
   }
 }
 
