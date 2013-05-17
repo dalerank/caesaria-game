@@ -257,7 +257,7 @@ void CaesarApp::setScreenMenu(const std::string &resourcePath)
    
     case ScreenMenu::loadSavedGame:
     {  
-      std::cout<<"Loading map:" << "timgad.sav" << std::endl;
+      std::cout<<"Loading map:" << "lepcismagna.sav" << std::endl;
       loadGame(resourcePath + "/savs/" + "timgad.sav");
       _d->nextScreen = SCREEN_GAME;
     }

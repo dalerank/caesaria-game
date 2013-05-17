@@ -204,11 +204,11 @@ void getTerrainColours(TerrainTile& tile, int &c1, int &c2)
     c1 = colours->colour(Caesar3Colours::MAP_FERTILE1, num3);
     c2 = colours->colour(Caesar3Colours::MAP_FERTILE2, num3);
   }
-//  else if (tile.isWall())
-//  {
-//    c1 = colours->colour(Caesar3Colours::MAP_WALL, 0);
-//    c2 = colours->colour(Caesar3Colours::MAP_WALL, 1);   
-//  }
+  else if (tile.isWall())
+  {
+    c1 = colours->colour(Caesar3Colours::MAP_WALL, 0);
+    c2 = colours->colour(Caesar3Colours::MAP_WALL, 1);   
+  }
   else if (tile.isAqueduct()) // and not tile.isRoad()
   {
     c1 = colours->colour(Caesar3Colours::MAP_AQUA, 0);

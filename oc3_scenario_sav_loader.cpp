@@ -177,6 +177,7 @@ bool ScenarioSavLoader::load( const std::string& filename, Scenario &oScenario )
     
     oTilemap.init(size);
 
+    oCity.setCameraStartIJ(0, 0);
     
   // loads the graphics map
   int border_size = (162 - size) / 2;
@@ -212,15 +213,7 @@ bool ScenarioSavLoader::load( const std::string& filename, Scenario &oScenario )
   {
     THROW("fatal error when unpacking");
   }
-/*  _d->initClimate(f, oScenario.getCity());
 
-  _d->loadMap(f, oScenario);
-
-  _d->initEntryExit(f, oScenario.getCity());
-  _d->initEntryExitPicture( oScenario.getCity() );
-
-  _d->initCameraStartPos(f, oScenario.getCity());
-*/
   f.close();
 
   return true;

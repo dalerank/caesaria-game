@@ -36,15 +36,17 @@ TerrainTile::TerrainTile(unsigned short int imgId, unsigned char edgeData,
 void TerrainTile::reset()
 {
   _desirability = 0;
-  _isWater    = false;
-  _isRock     = false;
-  _isTree     = false;
-  _isBuilding = false;
-  _isRoad     = false;
-  _isAqueduct = false;
-  _isGarden   = false;
-  _isMeadow   = false;
-  _overlay    = NULL; // BUG? What will be with old overlay?
+  _isWater      = false;
+  _isRock       = false;
+  _isTree       = false;
+  _isBuilding   = false;
+  _isRoad       = false;
+  _isAqueduct   = false;
+  _isGarden     = false;
+  _isMeadow     = false;
+  _isWall       = false;
+  _isGateHouse  = false;
+  _overlay      = NULL; // BUG? What will be with old overlay?
 }
 
 bool TerrainTile::isConstructible() const
@@ -100,19 +102,20 @@ void TerrainTile::decode(const int bitset)
 {
   reset();
 
-  if (bitset & 0x1)    {  setTree(true);     }
-  if (bitset & 0x2)    {  setRock(true);     }
-  if (bitset & 0x4)    {  setWater(true);    }
-  if (bitset & 0x8)    {  setBuilding(true); }
-  if (bitset & 0x10)   {  setTree(true);     }
-  if (bitset & 0x20)   {  setGarden(true);   }
-  if (bitset & 0x40)   {  setRoad(true);     }
-  if (bitset & 0x100)  {  setAqueduct(true); }
+  if (bitset & 0x1)    {  setTree(true);      }
+  if (bitset & 0x2)    {  setRock(true);      }
+  if (bitset & 0x4)    {  setWater(true);     }
+  if (bitset & 0x8)    {  setBuilding(true);  }
+  if (bitset & 0x10)   {  setTree(true);      }
+  if (bitset & 0x20)   {  setGarden(true);    }
+  if (bitset & 0x40)   {  setRoad(true);      }
+  if (bitset & 0x100)  {  setAqueduct(true);  }
 
-  if (bitset & 0x200)  {  setElevation(true);}
-  if (bitset & 0x400)  {  setRock( true );   }
-  if (bitset & 0x800)  {  setMeadow(true);   }
-  //   if (bitset & 0x4000) {  setWall(true);   }
+  if (bitset & 0x200)  {  setElevation(true); }
+  if (bitset & 0x400)  {  setRock( true );    }
+  if (bitset & 0x800)  {  setMeadow(true);    }
+  if (bitset & 0x4000) {  setWall(true);      }
+  if (bitset & 0x8000) {  setGateHouse(true); }
 }
 
 void TerrainTile::appendDesirability( int value )

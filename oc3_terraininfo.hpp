@@ -49,6 +49,7 @@ public:
   bool isMeadow() const                   { return _isMeadow;    }
   bool isElevation() const                { return _isElevation; }
   bool isWall() const                     { return _isWall;      }
+  bool isGateHouse() const                { return _isGateHouse; }
 
   void setTree(const bool isTree)           { _isTree      = isTree;      }
   void setRock(const bool isRock)           { _isRock      = isRock;      }
@@ -60,6 +61,8 @@ public:
   void setMeadow(const bool isMeadow)       { _isMeadow    = isMeadow;    }
   void setElevation(const bool isElevation) { _isElevation = isElevation; }
   void setWall(const bool isWall)           { _isWall      = isWall;      }
+  void setGateHouse(const bool isGateHouse) { _isGateHouse = isGateHouse; }
+  
 
   void setOverlay(LandOverlayPtr overlay);
   LandOverlayPtr getOverlay() const;
@@ -80,8 +83,6 @@ public:
   int getDesirability() const                    { return _desirability; }
   void appendDesirability( int value );
 
-  
-  
 private:
   bool _isWater;
   bool _isRock;
@@ -93,6 +94,7 @@ private:
   bool _isMeadow;
   bool _isElevation;
   bool _isWall;
+  bool _isGateHouse;
   int  _desirability;
   
   /*
