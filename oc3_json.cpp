@@ -186,7 +186,7 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
     {
             str = StringHelper::format( 0xff, "%d", data.toLongLong() );
     }
-    else if (data.canConvert( Variant::NLong ))
+    else if (data.canConvert( Variant::Long ))
     {
             str = StringHelper::format( 0xff, "%d", data.toLongLong() );
     }

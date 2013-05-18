@@ -84,30 +84,32 @@ class Variant
         ULongLong = 5,
         Double = 6,
         Char = 7,
-        Map = 8,
-        List = 9,
-        String = 10,
-        NStringArray = 11,
-        NByteArray = 12,
-        BitArray = 13,
-        Date = 14,
-        Time = 15,
-        NDateTime = 16,
-        Url = 17,
-        Locale = 18,
-        NRectI = 19,
-        NRectF = 20,
-        NSize = 21,
-        NSizeF = 22,
-        Line = 23,
-        LineF = 24,
-        NPoint = 25,
-        NPointF = 26,
-        RegExp = 27,
-        Hash = 28,
-        Reserved = 29,
+        Uchar = 8,
+        Ushort = 9,
+        Ulong = 10,
+        Long = 11,
+        Float = 12,
+        Short = 13,
+        Map = 14,
+        List = 15,
+        String = 16,
+        NStringArray = 17,
+        NByteArray = 18,
+        BitArray = 19,
+        Date = 20,
+        Time = 21,
+        NDateTime = 22,
+        Url = 23,
+        NRectI = 24,
+        NRectF = 25,
+        NSize = 26,
+        NSizeF = 27,
+        Line = 28,
+        LineF = 29,
+        NPoint = 30,
+        NPointF = 31,
 
-        LastCoreType = Reserved,
+        LastCoreType = NPointF,
 
         Font = 64,
         Pixmap = 65,
@@ -134,12 +136,6 @@ class Variant
         Quaternion = 86,
         LastGuiType = Quaternion,
 
-        NUChar = 121,
-        NUShort = 122,
-        NShort = 123,
-        NULong = 124,
-        NLong = 125,
-        NFloat = 126,
         UserType = 127,
         LastType = 0xffffffff // need this so that gcc >= 3.4 allocates 32 bits for Type
     };
@@ -176,7 +172,6 @@ class Variant
 	  Variant( const Rect& rect);
     //Variant( const RectF& rect);
     //Variant( const Color& color);
-    Variant( const char* c );
 
     Variant& operator=( const Variant& other);
 
