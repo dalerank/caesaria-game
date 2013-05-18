@@ -49,15 +49,6 @@ bool ScenarioSavLoader::load( const std::string& filename, Scenario &oScenario )
 {
   std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
  
-  /*
-			buildings = readCompressedShortGrid();
-			edges     = readCompressedByteGrid();
-			skipCompressed(); // building IDs
-			terrain   = readCompressedShortGrid();
-			random     = getRandomData();
-			walkers = getWalkers();  
-  */
-  
   uint32_t tmp;
 
   // need to rewrite better
