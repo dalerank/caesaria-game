@@ -41,19 +41,19 @@ typedef std::vector< CityServicePtr > CityServices;
 class City::Impl
 {
 public:
-    int population;
-    long funds;  // amount of money
-    unsigned long month; // number of months since start
+  int population;
+  long funds;  // amount of money
+  unsigned long month; // number of months since start
 
-    LandOverlays overlayList;
-    Walkers walkerList;
-    TilePos roadEntry; //coordinates can't be negative!
-    CityServices services;
-    bool needRecomputeAllRoads;
-    int taxRate;
-    unsigned long time;  // number of timesteps since start
-    TilePos roadExit;
-    Tilemap tilemap;
+  LandOverlays overlayList;
+  Walkers walkerList;
+  TilePos roadEntry; //coordinates can't be negative!
+  CityServices services;
+  bool needRecomputeAllRoads;
+  int taxRate;
+  unsigned long time;  // number of timesteps since start
+  TilePos roadExit;
+  Tilemap tilemap;
     TilePos boatEntry;
     TilePos boatExit;
     TilePos cameraStart;
@@ -61,41 +61,28 @@ public:
     ClimateType climate;   
 
 oc3_signals public:
-    Signal1<int> onPopulationChangedSignal;
-    Signal1<int> onFundsChangedSignal;
-    Signal1<int> onMonthChangedSignal;
+  Signal1<int> onPopulationChangedSignal;
+  Signal1<int> onFundsChangedSignal;
+  Signal1<int> onMonthChangedSignal;
 };
 
 City::City() : _d( new Impl )
 {
-   _d->time = 0;
-   _d->month = 0;
-   _d->roadEntry = TilePos( 0, 0 );
-   _d->roadExit = TilePos( 0, 0 );
-   _d->boatEntry = TilePos( 0, 0 );
-   _d->boatExit = TilePos( 0, 0 );
-   _d->funds = 1000;
-   _d->population = 0;
-   _d->needRecomputeAllRoads = false;
-   _d->taxRate = 700;
-   _d->climate = C_CENTRAL;
-   
-   // DEBUG
-   pGraphicGrid = (short int     *)malloc(52488);
-   pEdgeGrid    = (unsigned char *)malloc(26244);
-   pTerrainGrid = (short int     *)malloc(52488);
-   pRndmTerGrid = (unsigned char *)malloc(26244);
-   pRandomGrid  = (unsigned char *)malloc(26244);
-   pZeroGrid    = (unsigned char *)malloc(26244);
-   if( pGraphicGrid == NULL || pEdgeGrid == NULL || pTerrainGrid == NULL ||
-       pRndmTerGrid == NULL || pRandomGrid == NULL || pZeroGrid == NULL )
-   {
-     THROW("NOT ENOUGH MEMORY!!!! FATAL");
-   }
+  _d->time = 0;
+  _d->month = 0;
+  _d->roadEntry = TilePos( 0, 0 );
+  _d->roadExit = TilePos( 0, 0 );
+  _d->boatEntry = TilePos( 0, 0 );
+  _d->boatExit = TilePos( 0, 0 );
+  _d->funds = 1000;
+  _d->population = 0;
+  _d->needRecomputeAllRoads = false;
+  _d->taxRate = 700;
+  _d->climate = C_CENTRAL;
 
-   addService( CityServiceEmigrant::create( *this ) );
-   addService( CityServiceWorkersHire::create( *this ) );
-   addService( CityServicePtr( &CityServiceTimers::getInstance() ) );
+  addService( CityServiceEmigrant::create( *this ) );
+  addService( CityServiceWorkersHire::create( *this ) );
+  addService( CityServicePtr( &CityServiceTimers::getInstance() ) );
 }
 
 void City::timeStep()
@@ -201,35 +188,35 @@ void City::timeStep()
 
 void City::monthStep()
 {
-   collectTaxes();
-   _calculatePopulation();
-   _d->onMonthChangedSignal.emit( _d->month );
+  collectTaxes();
+  _calculatePopulation();
+  _d->onMonthChangedSignal.emit( _d->month );
 }
 
 Walkers City::getWalkerList( const WalkerType type )
 {
-	Walkers res;
+  Walkers res;
 
-	WalkerPtr walker;
-	for (Walkers::iterator itWalker = _d->walkerList.begin(); itWalker != _d->walkerList.end(); ++itWalker )
-	{
-		if( (*itWalker)->getType() == type || WT_ALL == type )
-		{
-			res.push_back( *itWalker );
-		}
-	}
+  WalkerPtr walker;
+  for (Walkers::iterator itWalker = _d->walkerList.begin(); itWalker != _d->walkerList.end(); ++itWalker )
+  {
+    if( (*itWalker)->getType() == type || WT_ALL == type )
+    {
+      res.push_back( *itWalker );
+    }
+  }
 
-	return res;
+  return res;
 }
 
 LandOverlays& City::getOverlayList()
 {
-   return _d->overlayList;
+  return _d->overlayList;
 }
 
 unsigned long City::getTime()
 {
-   return _d->time;
+  return _d->time;
 }
 
 LandOverlays City::getBuildingList(const BuildingType buildingType)

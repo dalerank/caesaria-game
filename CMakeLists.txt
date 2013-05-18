@@ -59,6 +59,15 @@ add_definitions(-DBOOST_ALL_NO_LIB)
 add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST})
 set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME "caesar3")
 
+# set compiler options
+if(MSVC)
+  #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} /Wall")
+endif(MSVC)
+
+if(CMAKE_COMPILER_IS_GNUCXX)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wall -g")
+endif(CMAKE_COMPILER_IS_GNUCXX)
+
 # Copy DLL to build output directory
 if(WIN32)
 	set(_LIBS_FOR_DLL_SOURCE

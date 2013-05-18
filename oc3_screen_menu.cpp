@@ -30,32 +30,32 @@
 class ScreenMenu::Impl
 {
 public:
-    Picture* bgPicture;
-    StartMenu* menu;         // menu to display
-    GfxEngine* engine;
-    GuiEnv* gui;
-    int result;
-    bool isStoped;
-    std::string fileMap;
+  Picture* bgPicture;
+  StartMenu* menu;         // menu to display
+  GfxEngine* engine;
+  GuiEnv* gui;
+  int result;
+  bool isStopped;
+  std::string fileMap;
 
-    void resolveNewGame() { result=startNewGame; isStoped=true; }
+    void resolveNewGame() { result=startNewGame; isStopped=true; }
     void resolveLoadGame( std::string fileName ) 
     {
       result=loadSavedGame; 
       fileMap = fileName;
-      isStoped=true; 
+      isStopped=true; 
     }
     
-    void resolveQuitGame() { result=closeApplication; isStoped=true; }
+    void resolveQuitGame() { result=closeApplication; isStopped=true; }
     
     void resolveSelectFile( std::string fileName )
     {
       result = loadMap;
       fileMap = fileName;
-      isStoped = true;
+      isStopped = true;
     }
 
-    void resolveShowLoadMapWnd();
+  void resolveShowLoadMapWnd();
     void resolveShowLoadGameWnd();
 };
 
@@ -88,22 +88,22 @@ void ScreenMenu::Impl::resolveShowLoadMapWnd()
 ScreenMenu::ScreenMenu() : _d( new Impl )
 {
   _d->bgPicture = NULL;
-  _d->isStoped = false;
+  _d->isStopped = false;
 }
 
 ScreenMenu::~ScreenMenu() {}
 
 void ScreenMenu::draw()
 {
-	_d->gui->beforeDraw();
+  _d->gui->beforeDraw();
 
-    _d->engine->drawPicture(*_d->bgPicture, 0, 0);
-    _d->gui->draw();
+  _d->engine->drawPicture(*_d->bgPicture, 0, 0);
+  _d->gui->draw();
 }
 
 void ScreenMenu::handleEvent( NEvent& event )
 {
-    _d->gui->handleEvent( event );
+  _d->gui->handleEvent( event );
 }
 
 void ScreenMenu::initialize( GfxEngine& engine, GuiEnv& gui )
@@ -135,12 +135,12 @@ void ScreenMenu::initialize( GfxEngine& engine, GuiEnv& gui )
 
 int ScreenMenu::getResult() const
 {
-	return _d->result;
+  return _d->result;
 }
 
 bool ScreenMenu::isStopped() const
 {
-    return _d->isStoped;
+  return _d->isStopped;
 }
 
 const std::string& ScreenMenu::getMapName() const

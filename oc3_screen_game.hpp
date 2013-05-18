@@ -72,5 +72,4 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-
 #endif

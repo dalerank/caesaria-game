@@ -13,23 +13,39 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_SCENARIOMAP_LOADER_H_INCLUDED__
-#define __OPENCAESAR3_SCENARIOMAP_LOADER_H_INCLUDED__
+#include "oc3_goodhelper.hpp"
+#include "oc3_good.hpp"
+#include <vector>
 
-#include "oc3_scenarioabstractloader.hpp"
-#include "oc3_scopedptr.hpp"
-
-class ScenarioMapLoader : public ScenarioAbstractLoader
+class GoodHelper::Impl
 {
 public:
-  ScenarioMapLoader();
-
-  bool load(const std::string& filename, Scenario &oScenario);
-  bool isLoadableFileExtension( const std::string& filename );
-
-private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  std::vector<Good> mapGood;  // index=GoodType, value=Good
 };
 
-#endif
+GoodHelper& GoodHelper::getInstance()
+{
+  static GoodHelper inst;
+  return inst;
+}
+
+GoodHelper::GoodHelper() : _d( new Impl )
+{
+  _d->mapGood.resize(G_MAX);
+
+  for (int n = 0; n < G_MAX; ++n)
+  {
+    GoodType goodType = GoodType(n);
+    _d->mapGood[n].init( goodType );
+  }
+}
+
+GoodHelper::~GoodHelper()
+{
+
+}
+
+std::string GoodHelper::getName( GoodType type ) const
+{
+  return _d->mapGood[ type ].getName();
+}

@@ -12,50 +12,26 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#ifndef CAESAR_HPP
-#define CAESAR_HPP
+#ifndef __OPENCAESAR3_GOODHELPER_H_INCLUDED__
+#define __OPENCAESAR3_GOODHELPER_H_INCLUDED__
 
-#include <string>
-#include <vector>
-#include <map>
-
-#include <boost/filesystem.hpp>
-
+#include "oc3_scopedptr.hpp"
 #include "oc3_enums.hpp"
 
-namespace fs = boost::filesystem;
-
-class Menu;
-class MenuBar;
-class Scenario;
-
-class CaesarApp
+class GoodHelper
 {
 public:
-   CaesarApp();
+  static GoodHelper& getInstance();
 
-   void start(const std::string &resourcePath);
-
-   void initVideo();
-   void initSound();
-   void initWaitPictures();
-   
-   void setScreenWait();
-   void setScreenMenu(const std::string &resourcePath);
-   void setScreenGame();
-   std::vector <fs::path> scanForMaps(const std::string &resourcePath) const;
-
-   void initGuiMain();
-   void initGuiEnvironment();
-
+  std::string getName( GoodType type ) const;
+  ~GoodHelper();
 private:
-   class Impl;
-   std::auto_ptr< Impl > _d;
-};
+  GoodHelper();
 
+  class Impl;
+  ScopedPtr< Impl > _d;
+};
 
 #endif

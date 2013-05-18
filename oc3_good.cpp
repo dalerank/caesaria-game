@@ -26,18 +26,6 @@
 #include <iostream>
 #include <algorithm>
 
-std::vector<Good> Good::_mapGood;
-
-Good& Good::instance(const GoodType &goodType)
-{
-   if (_mapGood.empty())
-   {
-      initStatic();
-   }
-
-   return _mapGood[int(goodType)];
-}
-
 std::string Good::getName()
 {
    return _name;
@@ -72,19 +60,6 @@ bool Good::isAllowExport()
 {
    return _allowExport;
 }
-
-
-void Good::initStatic()
-{
-   _mapGood.resize(G_MAX);
-
-   for (int n = 0; n < G_MAX; ++n)
-   {
-      GoodType goodType = GoodType(n);
-      _mapGood[n].init(goodType);
-   }
-}
-
 
 void Good::init(const GoodType &goodType)
 {
@@ -459,6 +434,10 @@ void GoodStore::load( const VariantMap& stream )
 //    }
 }
 
+GoodStore::~GoodStore()
+{
+
+}
 
 SimpleGoodStore::SimpleGoodStore()
 {

@@ -15,24 +15,10 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
 #include "oc3_caesar.hpp"
-
 #include "oc3_screen_wait.hpp"
-
-#include <cstdlib>
-#include <string>
-#include <sstream>
-#include <list>
-#include <SDL.h>
-#include <SDL_image.h>
-#include <libintl.h>
-#include <locale.h>
-#include <algorithm>
-
 #include "oc3_exception.hpp"
 #include "oc3_stringhelper.hpp"
-#include "oc3_pic_loader.hpp"
 #include "oc3_scenario_loader.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_city.hpp"
@@ -48,6 +34,8 @@
 #include "oc3_screen_game.hpp"
 #include "oc3_house_level.hpp"
 #include "oc3_guienv.hpp"
+#include <libintl.h>
+#include <list>
 
 #if defined(_MSC_VER)
   #undef main
@@ -62,6 +50,8 @@ public:
   GuiEnv* gui;
   
   void initLocale();
+  bool load(const std::string& filename);
+  void initPictures(const std::string &resourcePath);
 };
 
 void CaesarApp::Impl::initLocale()
@@ -108,7 +98,7 @@ void CaesarApp::initGuiEnvironment()
   _d->gui = new GuiEnv( *_d->engine );
 }
 
-void CaesarApp::initPictures(const std::string &resourcePath)
+void CaesarApp::Impl::initPictures(const std::string &resourcePath)
 {
   std::cout << "load images begin" << std::endl;
   PicLoader &pic_loader = PicLoader::instance();
@@ -134,24 +124,25 @@ void CaesarApp::initPictures(const std::string &resourcePath)
   std::cout << "create pictures end" << std::endl;
 }
 
-bool CaesarApp::loadScenario(const std::string &scenarioFile)
+bool CaesarApp::Impl::load(const std::string &gameFile)
 {
-  std::cout << "load scenario begin" << std::endl;
+  std::cout << "load game begin" << std::endl;
+
+  scenario = new Scenario();
   
-  _d->scenario = new Scenario();
-  
-  bool loadok = ScenarioLoader::getInstance().load(scenarioFile, *_d->scenario);
+  bool loadok = ScenarioLoader::getInstance().load(gameFile, *scenario);   
 
   if( !loadok )
   {
-    delete _d->scenario;
-    std::cout << "LOADING ERROR: can't load game from" << scenarioFile << std::endl;
+    delete scenario;
+    std::cout << "LOADING ERROR: can't load game from " << gameFile << std::endl;
     return false;
-  }
+  }  
 
-  City &city = _d->scenario->getCity();
-
+  City &city = scenario->getCity();
+  
   LandOverlays llo = city.getOverlayList();
+  
   for ( LandOverlays::iterator itLLO = llo.begin(); itLLO!=llo.end(); ++itLLO)
   {
      LandOverlayPtr overlay = *itLLO;
@@ -163,11 +154,12 @@ bool CaesarApp::loadScenario(const std::string &scenarioFile)
      }
   }
 
-  Pathfinder::getInstance().update( _d->scenario->getCity().getTilemap() );
-
-  std::cout << "load scenario end" << std::endl;
+  Pathfinder::getInstance().update( scenario->getCity().getTilemap() );  
+  
+  std::cout << "load game end" << std::endl;
   return true;
 }
+
 
 void CaesarApp::setScreenWait()
 {
@@ -214,15 +206,22 @@ void CaesarApp::setScreenMenu(const std::string &resourcePath)
       std::srand( (Uint32)std::time(0));
       std::string file = filelist.at(std::rand() % filelist.size()).string();
       std::cout<<"Loading map:" << file << std::endl;
-      loadScenario(file);
-      _d->nextScreen = SCREEN_GAME;
+      bool loadok = _d->load(file);
+      _d->nextScreen = loadok ? SCREEN_GAME : SCREEN_MENU;
     }
     break;
    
     case ScreenMenu::loadSavedGame:
+    {  
+      std::cout<<"Loading map:" << "lepcismagna.sav" << std::endl;
+      bool loadok = _d->load(resourcePath + "/savs/" + "timgad.sav");
+      _d->nextScreen = loadok ? SCREEN_GAME : SCREEN_MENU;
+    }
+    break;
+
     case ScreenMenu::loadMap:
     {
-      bool loadok = loadScenario( screen.getMapName() );
+      bool loadok = _d->load( screen.getMapName() );
       _d->nextScreen = loadok ? SCREEN_GAME : SCREEN_MENU;
     }
     break;
@@ -280,7 +279,7 @@ void CaesarApp::start(const std::string &resourcePath)
    initWaitPictures();  // init some quick pictures for screenWait
    setScreenWait();
 
-   initPictures(resourcePath);
+   _d->initPictures(resourcePath);
    HouseSpecHelper::getInstance().loadHouseModel( resourcePath + "/house.model" );
 
    _d->nextScreen = SCREEN_MENU;

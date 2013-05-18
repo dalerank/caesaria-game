@@ -25,12 +25,10 @@
 #include <map>
 #include "oc3_serializer.hpp"
 
-
 class Good
 {
+  friend class GoodHelper;
 public:
-   static Good& instance(const GoodType &goodType);
-
    std::string getName();
    int getImportPrice();
    int getExportPrice();
@@ -40,7 +38,6 @@ public:
    bool isAllowExport();
 
 private:
-   static void initStatic();
    void init(const GoodType &goodType);
 
    GoodType _goodType;
@@ -57,8 +54,6 @@ private:
    int _usageQuota;   // percent of (rich) population to give access to this product
    int _importTreshold;  // number of units in warehouses above which no import is made
    int _exportTreshold;  // number of units in warehouses under which no export is made
-
-   static std::vector<Good> _mapGood;  // index=GoodType, value=Good
 };
 
 
@@ -85,6 +80,7 @@ class GoodStore : public Serializable
 {
 public:
    GoodStore();
+   virtual ~GoodStore();
 
    virtual int getCurrentQty(const GoodType &goodType) = 0;
 

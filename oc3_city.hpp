@@ -94,16 +94,6 @@ public:
 
    unsigned long getTime();
    
-   // only for DEBUG
-   
-   
-   short int     *pGraphicGrid ;
-   unsigned char *pEdgeGrid    ;
-   short int     *pTerrainGrid ;
-   unsigned char *pRndmTerGrid ;
-   unsigned char *pRandomGrid  ;
-   unsigned char *pZeroGrid    ;   
-
 oc3_signals public:
    Signal1<int>& onPopulationChanged();
    Signal1<int>& onFundsChanged();

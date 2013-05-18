@@ -227,3 +227,7 @@ void Tilemap::load( const VariantMap& stream )
   }
 }
 
+Tilemap::~Tilemap()
+{
+
+}
