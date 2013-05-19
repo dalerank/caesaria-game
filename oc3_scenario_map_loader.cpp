@@ -343,25 +343,25 @@ void ScenarioMapLoader::Impl::decodeTerrain(Tile &oTile)
       case 0xb0f:
       case 0xb0b:
       case 0xb0c:
-	overlay = ConstructionManager::getInstance().create( B_NATIVE_HUT ).as<LandOverlay>();
+	      overlay = ConstructionManager::getInstance().create( B_NATIVE_HUT ).as<LandOverlay>();
         break;
       case 0xb10:
       case 0xb0d:
-	overlay =  ConstructionManager::getInstance().create( B_NATIVE_CENTER ).as<LandOverlay>();
-	std::cout << "creation of Native center at (" << oTile.getI() << "," << oTile.getJ() << ")" << std::endl;
-	break;
+	      overlay =  ConstructionManager::getInstance().create( B_NATIVE_CENTER ).as<LandOverlay>();
+	      std::cout << "creation of Native center at (" << oTile.getI() << "," << oTile.getJ() << ")" << std::endl;
+	      break;
       case 0xb11:
       case 0xb44:
-	overlay = ConstructionManager::getInstance().create( B_NATIVE_FIELD ).as<LandOverlay>();
-	break;
+       	overlay = ConstructionManager::getInstance().create( B_NATIVE_FIELD ).as<LandOverlay>();
+	      break;
     }
   }
 
   //terrain.setOverlay( overlay );
   if (overlay != NULL)
   {
-      overlay->build( TilePos(oTile.getI(), oTile.getJ()) );
-//    Scenario::instance().getCity().getOverlayList().push_back(overlay);
+    overlay->build( oTile.getIJ() );
+    Scenario::instance().getCity().getOverlayList().push_back(overlay);
   }
 }
 

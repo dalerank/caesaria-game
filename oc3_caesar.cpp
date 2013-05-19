@@ -160,7 +160,6 @@ bool CaesarApp::Impl::load(const std::string &gameFile)
   return true;
 }
 
-
 void CaesarApp::setScreenWait()
 {
    ScreenWait screen;

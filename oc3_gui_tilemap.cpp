@@ -367,7 +367,7 @@ void GuiTilemap::_clearAll()
   TilePos startPos, stopPos;
   _d->getSelectedArea( startPos, stopPos );
 
-  PtrTilesList tiles4clear = _d->tilemap->getFilledRectangle( stopPos, stopPos );
+  PtrTilesList tiles4clear = _d->tilemap->getFilledRectangle( startPos, stopPos );
   for( PtrTilesList::iterator it = tiles4clear.begin(); it != tiles4clear.end(); it++) 
   {
       _d->city->clearLand( (*it)->getIJ() );

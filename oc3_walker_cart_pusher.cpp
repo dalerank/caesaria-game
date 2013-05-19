@@ -338,12 +338,8 @@ void CartPusher::save( VariantMap& stream ) const
   VariantMap vm_stock;
   _d->stock.save( vm_stock );
   stream[ "stock" ] = vm_stock;
-  TilePos prPos = _d->producerBuilding->getTile().getIJ();
-  stream[ "producerI" ] = prPos.getI();
-  stream[ "producesJ" ] = prPos.getJ();
-  TilePos cnsmPos = _d->consumerBuilding->getTile().getIJ();
-  stream[ "consumerI" ] = cnsmPos.getI();
-  stream[ "consumerJ" ] = cnsmPos.getJ();
+  stream[ "producerPos" ] = _d->producerBuilding->getTile().getIJ();
+  stream[ "consumerPos" ] = _d->consumerBuilding->getTile().getIJ();
 
   stream[ "maxDistance" ] = _d->maxDistance;
   stream[ "reservationID" ] = _d->reservationID;
@@ -355,11 +351,11 @@ void CartPusher::load( const VariantMap& stream )
   VariantMap vm_stock = stream.get( "stock" ).toMap();
   _d->stock.load( vm_stock );
 
-  TilePos prPos( stream.get( "producerI" ).toInt(), stream.get( "producesJ" ).toInt() );
+  TilePos prPos( stream.get( "producerPos" ).toTilePos() );
   Tile& prTile = Scenario::instance().getCity().getTilemap().at( prPos );
   _d->producerBuilding = prTile.get_terrain().getOverlay().as<Building>();
 
-  TilePos cnsmPos( stream.get( "consumerI" ).toInt(), stream.get( "consumerJ" ).toInt() );
+  TilePos cnsmPos( stream.get( "consumerPos" ).toTilePos() );
   Tile& cnsmTile = Scenario::instance().getCity().getTilemap().at( cnsmPos );
   _d->producerBuilding = prTile.get_terrain().getOverlay().as<Building>();
 

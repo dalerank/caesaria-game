@@ -499,7 +499,7 @@ void City::load( const VariantMap& stream )
   for( VariantMap::iterator it=overlays.begin(); it != overlays.end(); it++ )
   {
     VariantMap overlay = (*it).second.toMap();
-    TilePos buildPos( overlay.get( "i" ).toInt(), overlay.get( "j" ).toInt() );
+    TilePos buildPos( overlay.get( "pos" ).toTilePos() );
     int buildingType = overlay.get( "buildingType" ).toInt();
 
     ConstructionPtr construction = ConstructionManager::getInstance().create( BuildingType( buildingType ) );

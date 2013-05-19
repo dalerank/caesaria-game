@@ -170,13 +170,12 @@ void Immigrant::save( VariantMap& stream ) const
 {
   Walker::save( stream );
   stream[ "peopleCount" ] = _d->peopleCount;
-  stream[ "destinationI" ] = _d->destination.getI();
-  stream[ "destinationJ" ] = _d->destination.getJ();
+  stream[ "destination" ] = _d->destination;
 }
 
 void Immigrant::load( const VariantMap& stream )
 {
   Walker::load( stream );
   _d->peopleCount = stream.get( "peopleCount" ).toInt();
-  _d->destination = TilePos( stream.get( "destinationI" ).toInt(), stream.get( "destinationJ").toInt() );
+  _d->destination = TilePos( stream.get( "destination" ).toTilePos() );
 }

@@ -38,68 +38,66 @@ class GuiInfoBox;
 class LandOverlay : public Serializable, public ReferenceCounted
 {
 public:
-   LandOverlay( const BuildingType type, const Size& size=Size(1));
-   virtual ~LandOverlay();
+  LandOverlay( const BuildingType type, const Size& size=Size(1));
+  virtual ~LandOverlay();
 
-   virtual void timeStep(const unsigned long time);  // perform one simulation step
+  virtual void timeStep(const unsigned long time);  // perform one simulation step
 
-   Tile& getTile() const;  // master tile, in case of multi-tile area
-   TilePos getTilePos() const;
-   int getSize() const;  // size in tiles (1=1x1, 2=2x2, ...)
-   bool isDeleted() const;  // returns true if the overlay should be forgotten
-   void deleteLater();
-   virtual bool isWalkable() const;
-   virtual void setTerrain( TerrainTile& terrain ) = 0;
-   virtual void build( const TilePos& pos );
-   virtual void destroy();  // handles the walkers
+  Tile& getTile() const;  // master tile, in case of multi-tile area
+  TilePos getTilePos() const;
+  int getSize() const;  // size in tiles (1=1x1, 2=2x2, ...)
+  bool isDeleted() const;  // returns true if the overlay should be forgotten
+  void deleteLater();
+  virtual bool isWalkable() const;
+  virtual void setTerrain( TerrainTile& terrain ) = 0;
+  virtual void build( const TilePos& pos );
+  virtual void destroy();  // handles the walkers
 
-   // graphic
-   void setPicture(Picture &picture);
-   Picture& getPicture();
-   std::vector<Picture*>& getForegroundPictures();
+  // graphic
+  void setPicture(Picture &picture);
+  Picture& getPicture();
+  std::vector<Picture*>& getForegroundPictures();
 
-   std::string getName();  // title of the info box
+  std::string getName();  // title of the info box
 
-   BuildingType getType() const;
-   void setType(const BuildingType buildingType);
+  BuildingType getType() const;
+  void setType(const BuildingType buildingType);
 
-   void save( VariantMap& stream) const;
-   void load( const VariantMap& stream );
+  void save( VariantMap& stream) const;
+  void load( const VariantMap& stream );
 
 protected:
-   std::vector<Picture*> _fgPictures;
-   Picture* _picture;
-   Tile* _master_tile;  // left-most tile if multi-tile, or "this" if single-tile
-   int _size;  // size in tiles
-   bool _isDeleted;
-   std::string _name;
+  std::vector<Picture*> _fgPictures;
+  Picture* _picture;
+  Tile* _master_tile;  // left-most tile if multi-tile, or "this" if single-tile
+  int _size;  // size in tiles
+  bool _isDeleted;
+  std::string _name;
 
-   Animation _animation;  // basic animation (if any)
+  Animation _animation;  // basic animation (if any)
 
-   BuildingType _buildingType;
-
-   class Impl;
-   ScopedPtr< Impl > _d;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 class Construction : public LandOverlay
 {
 public:
-   Construction( const BuildingType type, const Size& size);
+  Construction( const BuildingType type, const Size& size);
 
-   virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
-   virtual void build( const TilePos& pos );
-   virtual void burn();
-   virtual void collapse();
-   const PtrTilesList& getAccessRoads() const;  // return all road tiles adjacent to the construction
-   virtual void computeAccessRoads();  
-   virtual unsigned char getMaxDistance2Road() const; // virtual because HOUSE has different behavior
-   virtual char getDesirabilityInfluence() const;
-   virtual void destroy();
+  virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
+  virtual void build( const TilePos& pos );
+  virtual void burn();
+  virtual void collapse();
+  const PtrTilesList& getAccessRoads() const;  // return all road tiles adjacent to the construction
+  virtual void computeAccessRoads();  
+  virtual unsigned char getMaxDistance2Road() const; // virtual because HOUSE has different behavior
+  virtual char getDesirabilityInfluence() const;
+  virtual void destroy();
 
 protected:
-   std::list<Tile*> _accessRoads;
-   void _updateDesirabilityInfluence( bool onBuild );
+  std::list<Tile*> _accessRoads;
+  void _updateDesirabilityInfluence( bool onBuild );
 };
 
 class Garden : public Construction
