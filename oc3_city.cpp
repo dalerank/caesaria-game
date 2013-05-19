@@ -445,20 +445,15 @@ void City::save( VariantMap& stream) const
   _d->tilemap.save( vm_tilemap );
 
   stream[ "tilemap" ] = vm_tilemap;
-  stream[ "roadEntryI" ] = _d->roadEntry.getI();
-  stream[ "roadEntryJ" ] = _d->roadEntry.getJ();
-  stream[ "roadExitI" ]  = _d->roadExit.getI();
-  stream[ "roadExitJ" ] = _d->roadExit.getJ();
-  stream[ "cameraStartI" ] = _d->cameraStart.getI();
-  stream[ "cameraStartJ" ] = _d->cameraStart.getJ();
-  stream[ "boatEntryI" ] = _d->boatEntry.getI();
-  stream[ "boatEnttyJ" ] = _d->boatEntry.getJ();
-  stream[ "boatExitI" ] = _d->boatExit.getI();
-  stream[ "boatExitJ" ] = _d->boatExit.getJ();
+  stream[ "roadEntry" ] = _d->roadEntry;
+  stream[ "roadExit" ]  = _d->roadExit;
+  stream[ "cameraStart" ] = _d->cameraStart;
+  stream[ "boatEntry" ] = _d->boatEntry;
+  stream[ "boatExit" ] = _d->boatExit;
   stream[ "climate" ] = _d->climate;
   stream[ "time" ] = static_cast<unsigned long long>(_d->time);
   stream[ "funds" ] = static_cast<unsigned int>(_d->funds);
-  stream[ "populaton" ] = _d->population;
+  stream[ "population" ] = _d->population;
 
   // walkers
   VariantMap vm_walkers;
@@ -490,15 +485,15 @@ void City::load( const VariantMap& stream )
 {
   _d->tilemap.load( stream.get( "tilemap" ).toMap() );
 
-  _d->roadEntry = TilePos( stream.get( "roadEntryI" ).toInt(), stream.get( "roadEntryJ" ).toInt() );
-  _d->roadExit = TilePos( stream.get( "roadExitI" ).toInt(), stream.get( "roadExitJ" ).toInt() );
-  _d->boatEntry = TilePos( stream.get( "boatEntryI" ).toInt(), stream.get( "boatEnttyJ" ).toInt() );
-  _d->boatExit = TilePos( stream.get( "boatExitI" ).toInt(), stream.get( "boatExitJ" ).toInt() );
+  _d->roadEntry = TilePos( stream.get( "roadEntry" ).toTilePos() );
+  _d->roadExit = TilePos( stream.get( "roadExit" ).toTilePos() );
+  _d->boatEntry = TilePos( stream.get( "boatEntry" ).toTilePos() );
+  _d->boatExit = TilePos( stream.get( "boatExit" ).toTilePos() );
   _d->climate = (ClimateType)stream.get( "climate" ).toInt(); 
   _d->time = (unsigned long)stream.get( "time" ).toULongLong();
   _d->funds = stream.get( "funds" ).toInt();
-  _d->population = stream.get( "populaton" ).toInt();
-  _d->cameraStart = TilePos( stream.get( "cameraStartI" ).toInt(), stream.get( "cameraStartJ" ).toInt() );
+  _d->population = stream.get( "population" ).toInt();
+  _d->cameraStart = TilePos( stream.get( "cameraStart" ).toTilePos() );
 
   VariantMap overlays = stream.get( "overlays" ).toMap();
   for( VariantMap::iterator it=overlays.begin(); it != overlays.end(); it++ )

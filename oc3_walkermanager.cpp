@@ -22,12 +22,13 @@
 #include "oc3_scenario.hpp"
 #include <map>
 
-class WalkerEmigrantCreator : public AbstractWalkerCreator
+template< class T >
+class WalkerMigrantCreator : public AbstractWalkerCreator
 {
 public:
-  Emigrant* create()
+  T* create()
   {
-    EmigrantPtr ret = Emigrant::create( Scenario::instance().getCity() ); 
+    SmartPtr<T> ret = T::create( Scenario::instance().getCity() ); 
     ret->grab();
 
     return ret.object();
@@ -44,7 +45,8 @@ public:
 
 WalkerManager::WalkerManager() : _d( new Impl )
 {
-  addCreator( WT_EMIGRANT, OC3_STR_EXT(WT_EMIGRANT), new WalkerEmigrantCreator() );
+  addCreator( WT_EMIGRANT, OC3_STR_EXT(WT_EMIGRANT), new WalkerMigrantCreator<Emigrant>() );
+  addCreator( WT_IMMIGRANT, OC3_STR_EXT(WT_IMMIGRANT), new WalkerMigrantCreator<Immigrant>() );
 }
 
 WalkerManager::~WalkerManager()

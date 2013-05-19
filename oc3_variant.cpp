@@ -65,6 +65,8 @@ static Variant::Type staticNameToType( const char* name )
 // 		return Variant::LineF;
 	if( !strcmp( name, typeid(Point).name() ) )
 		return Variant::NPoint;
+  if( !strcmp( name, typeid(TilePos).name() ) )
+    return Variant::NTilePos;
 	if( !strcmp( name, typeid(PointF).name() ) )
 		return Variant::NPointF;
 	//if( !strcmp( name, typeid(Font).name() ) )
@@ -113,6 +115,7 @@ static std::string staticTypeToName( Variant::Type t)
 	case Variant::Line : return "Line";
 	case Variant::LineF : return "LineF";
 	case Variant::NPoint : return "Point";
+  case Variant::NTilePos : return "TilePos";
 	case Variant::NPointF : return "PointF";
 	case Variant::Font : return "Font";
 	case Variant::Pixmap : return "Pixmap";
@@ -203,14 +206,11 @@ static void constructNewVariant( Variant2Impl *x, const void *copy)
 	case Variant::NPoint:
 		v_construct<Point>(x, copy);
 		break;
+  case Variant::NTilePos:
+    v_construct<TilePos>(x, copy);
+    break;
 	case Variant::NPointF:
 		v_construct<PointF>(x, copy);
-		break;
-	case Variant::Int:
-		x->data.i = copy ? *static_cast<const int *>(copy) : 0;
-		break;
-	case Variant::UInt:
-		x->data.u = copy ? *static_cast<const unsigned int *>(copy) : 0u;
 		break;
 // 	case Variant::Color:
 // 		v_construct<Color>(x, copy);
@@ -242,7 +242,7 @@ static void clearVariant(Variant2Impl *d)
         v_clear<Variant2Hash>(d);
         break;
     */
-     case Variant::List:
+    case Variant::List:
         v_clear<VariantList>(d);
         break;
     /*case Variant::Date:
@@ -252,27 +252,30 @@ static void clearVariant(Variant2Impl *d)
         v_clear<Time>(d);
         break;
     */
-      case Variant::NDateTime:
+    case Variant::NDateTime:
         v_clear<DateTime>(d);
         break;
     case Variant::NByteArray:
         v_clear<ByteArray>(d);
         break;
     case Variant::NPoint:
-        v_clear<Point>(d);
-        break;
+      v_clear<Point>(d);
+      break;
+    case Variant::NTilePos:
+      v_clear<TilePos>(d);
+      break;
     case Variant::NPointF:
-        v_clear<PointF>(d);
-        break;
+      v_clear<PointF>(d);
+      break;
     case Variant::NSize:
-        v_clear<Size>(d);
-        break;
+      v_clear<Size>(d);
+      break;
     case Variant::NSizeF:
-        v_clear<SizeF>(d);
-        break;
+      v_clear<SizeF>(d);
+      break;
     case Variant::NRectI:
-        v_clear<Rect>(d);
-        break;
+      v_clear<Rect>(d);
+      break;
 //     case Variant::LineF:
 //         v_clear<LineF>(d);
 //         break;
@@ -295,10 +298,10 @@ static void clearVariant(Variant2Impl *d)
     case Variant::Int:
     case Variant::UInt:
     case Variant::Bool:
-        break;
+      break;
     default:
-        _OC3_DEBUG_BREAK_IF( true && "Can't clean variant" );
-        break;
+      _OC3_DEBUG_BREAK_IF( true && "Can't clean variant" );
+      break;
     }
 
     d->type = Variant::Invalid;
@@ -307,42 +310,6 @@ static void clearVariant(Variant2Impl *d)
 
 static bool isNull(const Variant2Impl *d)
 {
-/*    switch(d->type) 
-    {
-    case Variant::Date:
-        return v_cast<Date>(d)->isNull();
-    case Variant::Time:
-        return v_cast<Time>(d)->isNull();
-    case Variant::String:
-    case Variant::DateTime:
-    case Variant::NByteArray:
-    case Variant::Size:
-    case Variant::SizeF:
-    case Variant::Rect:
-    case Variant::Line:
-    case Variant::LineF:
-    case Variant::NRectF:
-    case Variant::Point:
-    case Variant::PointF:
-    case Variant::String:
-    case Variant::RegExp:
-    case Variant::NStringArray:
-    case Variant::Map:
-    case Variant::Char:
-    case Variant::Hash:
-    case Variant::List:
-    case Variant::Invalid:
-    case Variant::UserType:
-    case Variant::Int:
-    case Variant::unsigned int:
-    case Variant::LongLong:
-    case Variant::ULongLong:
-    case Variant::Bool:
-    case Variant::Double:
-    case Variant::NFloat:
-        break;
-    }
-    */
     return d->is_null;
 }
 
@@ -391,6 +358,7 @@ static bool compare(const Variant2Impl *a, const Variant2Impl *b)
 //         return *v_cast<RectF>(a) == *v_cast<RectF>(b);
     case Variant::NPoint: return *v_cast<Point>(a) == *v_cast<Point>(b);
     case Variant::NPointF: return *v_cast<PointF>(a) == *v_cast<PointF>(b);
+    case Variant::NTilePos: return *v_cast<TilePos>(a) == *v_cast<TilePos>(b);
 /*    case Variant::Url:
         return *v_cast<Url>(a) == *v_cast<Url>(b);*/
     case Variant::Char:
@@ -713,6 +681,16 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
 //         }
 //         break;
 //     }
+    case Variant::NTilePos:
+      if( d->type == Variant::List )
+      {
+        TilePos *pos = static_cast< TilePos* >( result );
+        const VariantList *list = v_cast< VariantList >(d);
+        VariantList::const_iterator it = list->begin(); 
+        pos->setI( it->toInt() ); it++;
+        pos->setJ( it->toInt() );
+      }
+    break;
 
     case Variant::NStringArray:
         if (d->type == Variant::List) 
@@ -1148,6 +1126,7 @@ Variant::Variant(const VariantMap& rmap)
 
 Variant::Variant(const Point &pt) { _d.is_null = false; _d.type = Variant::NPoint; v_construct<Point>(&_d, pt); }
 Variant::Variant(const PointF &pt) { _d.is_null = false; _d.type = Variant::NPointF; v_construct<PointF>(&_d, pt); }
+Variant::Variant(const TilePos &pt) { _d.is_null = false; _d.type = Variant::NTilePos; v_construct<TilePos>(&_d, pt); }
 //Variant::Variant(const core::RectF &r) { _d.is_null = false; _d.type = Variant::NRectF; v_construct<core::RectF>(&_d, r); }
 // Variant::Variant(const core::LineF &l) { _d.is_null = false; _d.type = Variant::LineF; v_construct<core::LineF>(&_d, l); }
 // Variant::Variant(const core::Line &l) { _d.is_null = false; _d.type = Variant::Line; v_construct<core::Line>(&_d, l); }
@@ -1338,7 +1317,7 @@ DateTime Variant::toDateTime() const
 */
 ByteArray Variant::toByteArray() const
 {
-    return Variant2ToHelper<ByteArray>(_d, Variant::NByteArray, varHandler);
+  return Variant2ToHelper<ByteArray>(_d, Variant::NByteArray, varHandler);
 }
 
 /*!
@@ -1351,7 +1330,12 @@ ByteArray Variant::toByteArray() const
 */
 Point Variant::toPoint() const
 {
-    return Variant2ToHelper<Point>(_d, Variant::NPoint, varHandler);
+  return Variant2ToHelper<Point>(_d, Variant::NPoint, varHandler);
+}
+
+TilePos Variant::toTilePos() const
+{
+  return Variant2ToHelper<TilePos>( _d, Variant::NTilePos, varHandler );
 }
 
 /*!
@@ -1780,33 +1764,35 @@ bool Variant::canConvert(Type t) const
                    || currentType == Variant::Char
                    || currentType == Variant::Short;
         case Variant::Image:
-            return currentType == Variant::Pixmap || currentType == Variant::Bitmap;
+          return currentType == Variant::Pixmap || currentType == Variant::Bitmap;
+        case Variant::NTilePos:
+          return currentType == Variant::List;
         case Variant::Pixmap:
-            return currentType == Variant::Image || currentType == Variant::Bitmap
+          return currentType == Variant::Image || currentType == Variant::Bitmap
                               || currentType == Variant::Brush;
         case Variant::Bitmap:
-            return currentType == Variant::Pixmap || currentType == Variant::Image;
+          return currentType == Variant::Pixmap || currentType == Variant::Image;
         case Variant::NByteArray:
-            return currentType == Variant::Color;
+          return currentType == Variant::Color;
         case Variant::String:
-            return currentType == Variant::KeySequence || currentType == Variant::Font
+          return currentType == Variant::KeySequence || currentType == Variant::Font
                               || currentType == Variant::Color;
         case Variant::KeySequence:
-            return currentType == Variant::String || currentType == Variant::Int;
+          return currentType == Variant::String || currentType == Variant::Int;
         case Variant::Font:
-            return currentType == Variant::String;
+          return currentType == Variant::String;
         case Variant::Color:
-            return currentType == Variant::String || currentType == Variant::NByteArray
+          return currentType == Variant::String || currentType == Variant::NByteArray
                               || currentType == Variant::Brush;
         case Variant::Brush:
-            return currentType == Variant::Color || currentType == Variant::Pixmap;
+          return currentType == Variant::Color || currentType == Variant::Pixmap;
         case Variant::Long:
         case Variant::Char:
         case Variant::Uchar:
         case Variant::Ulong:
         case Variant::Short:
         case Variant::Ushort:
-            return CanConvertMatrix[Variant::Int] & (1 << currentType) || currentType == Variant::Int;
+          return CanConvertMatrix[Variant::Int] & (1 << currentType) || currentType == Variant::Int;
         default:
             return false;
         }

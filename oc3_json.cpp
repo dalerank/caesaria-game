@@ -174,9 +174,14 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
          str += ".0";
       }
     }
+    else if( data.type() == Variant::NTilePos)
+    {
+      TilePos pos = data.toTilePos();
+      str = StringHelper::format( 0xff, "[ %d, %d ]", pos.getI(), pos.getJ() );
+    }
     else if (data.type() == Variant::Bool) // boolean value?
     {
-            str = data.toBool() ? "true" : "false";
+      str = data.toBool() ? "true" : "false";
     }
     else if (data.type() == Variant::ULongLong) // large unsigned number?
     {
@@ -184,20 +189,20 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
     }
     else if ( data.canConvert( Variant::LongLong ) ) // any signed number?
     {
-            str = StringHelper::format( 0xff, "%d", data.toLongLong() );
+      str = StringHelper::format( 0xff, "%d", data.toLongLong() );
     }
     else if (data.canConvert( Variant::Long ))
     {
-            str = StringHelper::format( 0xff, "%d", data.toLongLong() );
+      str = StringHelper::format( 0xff, "%d", data.toLongLong() );
     }
     else if (data.canConvert( Variant::String ) ) // can value be converted to string?
     {
-            // this will catch Date, DateTime, Url, ...
-            str = sanitizeString( data.toString() );
+      // this will catch Date, DateTime, Url, ...
+      str = sanitizeString( data.toString() );
     }
     else
     {
-            success = false;
+      success = false;
     }
 
     if (success)

@@ -133,7 +133,8 @@ class Variant
         Vector2D = 83,
         Vector3D = 84,
         Vector4D = 85,
-        Quaternion = 86,
+        NTilePos = 86,
+        Quaternion = 87,
         LastGuiType = Quaternion,
 
         UserType = 127,
@@ -161,6 +162,7 @@ class Variant
     Variant( char rchar);
     Variant( const DateTime& datetime);
     Variant( const VariantList& list);
+    Variant( const TilePos& pos );
     Variant( const VariantMap& mapa);
 
     Variant( const Size& size);
@@ -208,6 +210,7 @@ class Variant
     Rect toRect() const;
     Size toSize() const;
     SizeF toSizeF() const;
+    TilePos toTilePos() const;
     //Line toLine() const;
     //LineF toLineF() const;
     //RectF toRectF() const;

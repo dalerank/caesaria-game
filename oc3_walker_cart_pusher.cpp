@@ -24,6 +24,7 @@
 #include "oc3_granary.hpp"
 #include "oc3_warehouse.hpp"
 #include "oc3_tile.hpp"
+#include "oc3_variant.hpp"
 
 class CartPusher::Impl
 {
@@ -329,4 +330,39 @@ CartPusherPtr CartPusher::create( BuildingPtr building, const GoodStock& stock )
   ret->setProducerBuilding( building  );
 
   return ret;
+}
+
+void CartPusher::save( VariantMap& stream ) const
+{
+  Walker::save( stream );
+  VariantMap vm_stock;
+  _d->stock.save( vm_stock );
+  stream[ "stock" ] = vm_stock;
+  TilePos prPos = _d->producerBuilding->getTile().getIJ();
+  stream[ "producerI" ] = prPos.getI();
+  stream[ "producesJ" ] = prPos.getJ();
+  TilePos cnsmPos = _d->consumerBuilding->getTile().getIJ();
+  stream[ "consumerI" ] = cnsmPos.getI();
+  stream[ "consumerJ" ] = cnsmPos.getJ();
+
+  stream[ "maxDistance" ] = _d->maxDistance;
+  stream[ "reservationID" ] = _d->reservationID;
+}
+
+void CartPusher::load( const VariantMap& stream )
+{
+  Walker::load( stream );
+  VariantMap vm_stock = stream.get( "stock" ).toMap();
+  _d->stock.load( vm_stock );
+
+  TilePos prPos( stream.get( "producerI" ).toInt(), stream.get( "producesJ" ).toInt() );
+  Tile& prTile = Scenario::instance().getCity().getTilemap().at( prPos );
+  _d->producerBuilding = prTile.get_terrain().getOverlay().as<Building>();
+
+  TilePos cnsmPos( stream.get( "consumerI" ).toInt(), stream.get( "consumerJ" ).toInt() );
+  Tile& cnsmTile = Scenario::instance().getCity().getTilemap().at( cnsmPos );
+  _d->producerBuilding = prTile.get_terrain().getOverlay().as<Building>();
+
+  _d->maxDistance = stream.get( "maxDistance" ).toInt();
+  _d->reservationID = stream.get( "reservationID" ).toInt();
 }

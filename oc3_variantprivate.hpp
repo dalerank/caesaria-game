@@ -22,27 +22,13 @@
 template <typename T>
 inline const T *v_cast(const Variant2Impl *d, T * = 0)
 {
-  if(sizeof(T) > sizeof(Variant2Impl::Data) )
-  {
-    return static_cast<const T *>(static_cast<const void *>(d->data.ptr));
-  }
-  else
-  {
-    return static_cast<const T *>(static_cast<const void *>(&d->data.c));
-  }
+  return static_cast<const T *>(static_cast<const void *>(d->data.ptr));
 }
 
 template <typename T>
 inline T *v_cast(Variant2Impl *d, T * = 0)
 {
-  if(sizeof(T) > sizeof(Variant2Impl::Data) )
-  {
-    return static_cast<T *>(static_cast<void *>(d->data.ptr));
-  }
-  else
-  {
-    return static_cast<T *>(static_cast<void *>(&d->data.c));
-  }
+  return static_cast<T *>(static_cast<void *>(d->data.ptr));
 }
 
 // constructs a new variant if copy is 0, otherwise copy-constructs
@@ -69,16 +55,9 @@ inline void v_construct(Variant2Impl* x, const T& t)
 template <class T>
 inline void v_clear(Variant2Impl *d, T* = 0)
 {    
-  if (sizeof(T) > sizeof(Variant2Impl::Data)) 
-  {
-    //now we need to cast
-    //because Variant2::PrivateShared doesn't have a virtual destructor
-    delete static_cast< T* >(d->data.ptr);
-  } 
-  else 
-  {
-    v_cast<T>(d)->~T();
-  }
+  //now we need to cast
+  //because Variant2::PrivateShared doesn't have a virtual destructor
+  delete static_cast< T* >(d->data.ptr);
 }
 
 #endif // __OPENCAESAR3_VARIANTPRIVATE_H_INCLUDED__
