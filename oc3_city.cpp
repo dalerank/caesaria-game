@@ -55,11 +55,11 @@ public:
   unsigned long time;  // number of timesteps since start
   TilePos roadExit;
   Tilemap tilemap;
-    TilePos boatEntry;
-    TilePos boatExit;
-    TilePos cameraStart;
+  TilePos boatEntry;
+  TilePos boatExit;
+  TilePos cameraStart;
 
-    ClimateType climate;   
+  ClimateType climate;   
 
 oc3_signals public:
   Signal1<int> onPopulationChangedSignal;
@@ -463,11 +463,11 @@ void City::save( VariantMap& stream) const
   // walkers
   VariantMap vm_walkers;
   int walkedId = 0;
-  for (Walkers::iterator itWalker = _d->walkerList.begin(); itWalker != _d->walkerList.end(); ++itWalker)
+  for (Walkers::iterator itWalker = _d->walkerList.begin(); itWalker != _d->walkerList.end(); ++itWalker, walkedId++)
   {
     // std::cout << "WRITE WALKER @" << stream.tell() << std::endl;
      VariantMap vm_walker;
-    (*itWalker)->save( stream );
+    (*itWalker)->save( vm_walker );
     vm_walkers[ StringHelper::format( 0xff, "%d", walkedId ) ] = vm_walker;
   }
   stream[ "walkers" ] = vm_walkers;
@@ -525,6 +525,7 @@ void City::load( const VariantMap& stream )
     WalkerPtr walker = WalkerManager::getInstance().create( WalkerType( walkerType ) );
     if( walker.isValid() )
     {
+      walker->load( walkerInfo );
       _d->walkerList.push_back( walker );
     }
   }
@@ -575,7 +576,7 @@ void City::removeWalker( WalkerPtr walker )
 }
 
 void City::setCameraPos(const TilePos pos) { _d->cameraStart = pos; }
-TilePos City::getCameraPos() const {return _d->cameraStart;}
+TilePos City::getCameraPos() const {return _d->cameraStart; }
 
 void City::addService( CityServicePtr service )
 {

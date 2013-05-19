@@ -122,21 +122,6 @@ void Walker::setPathWay(PathWay &pathWay)
    onMidTile();
 }
 
-// void Walker::setDestinationIJ(const TilePos& pos )
-// {
-   // Propagator pathPropagator;
-   // pathPropagator.init();
-   // Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   // TerrainTile &currentTerrain = tilemap.at(_i, _j).get_terrain();
-   // Road* currentRoad = dynamic_cast<Road*> (currentTerrain.getOverlay());
-   // TerrainTile &destTerrain = tilemap.at(i, j).get_terrain();
-   // Road* destRoad = dynamic_cast<Road*> (destTerrain.getOverlay());
-   // pathPropagator.getPath(*currentRoad, *destRoad, _pathWay);
-   // _pathWay.begin();
-
-   // onMidTile();
-//}
-
 void Walker::setSpeed(const float speed)
 {
    _d->speed = speed;
@@ -415,31 +400,20 @@ void Walker::save( VariantMap& stream ) const
   stream[ "midTileJ" ] = _midTileJ;
 }
 
-// WalkerPtr Walker::unserialize_all(InputSerialStream &stream)
-// {
-//    int objectID = stream.read_objectID();
-//    WalkerType walkerType = (WalkerType) stream.read_int(1, 0, WT_MAX);
-//    WalkerPtr res = WalkerManager::getInstance().create( walkerType, TilePos( 0, 0 ) );
-//    res->unserialize(stream);
-//    stream.link( objectID, res.object() );
-//    return res;
-// }
-
 void Walker::load( const VariantMap& stream)
 {
-//    _pathWay.unserialize(stream);
-//    _action._action = (WalkerActionType) stream.read_int(1, 0, WA_MAX);
-//    _action._direction = (DirectionType) stream.read_int(1, 0, D_MAX);
-//    _i = stream.read_int(2, 0, 1000);
-//    _j = stream.read_int(2, 0, 1000);
-//    _si = stream.read_int(1, 0, 50);
-//    _sj = stream.read_int(1, 0, 50);
-//    _ii = stream.read_int(4, 0, 1000000);
-//    _jj = stream.read_int(4, 0, 1000000);
-//    //_d->speed = stream.read_float(1, 0, 50);
-//    _midTileI = stream.read_int(1, 0, 50);
-//    _midTileJ = stream.read_int(1, 0, 50);
-//    //_animIndex = stream.read_int(1, 0, 50);
+  _pathWay.load( stream.get( "pathway" ).toMap() );
+  _action._action = (WalkerActionType) stream.get( "action" ).toInt();
+  _action._direction = (DirectionType) stream.get( "direction" ).toInt();
+  _i = stream.get( "i" ).toInt();
+  _j = stream.get( "j" ).toInt();
+  _si = stream.get( "si" ).toInt();
+  _sj = stream.get( "sj" ).toInt();
+  _ii = stream.get( "ii" ).toInt();
+  _jj = stream.get( "jj" ).toInt();
+  _d->speed = stream.get( "speed" ).toInt();
+  _midTileI = stream.get( "midTileI" ).toInt();
+  _midTileJ = stream.get( "midTileJ" ).toInt();
 }
 
 TilePos Walker::getIJ() const

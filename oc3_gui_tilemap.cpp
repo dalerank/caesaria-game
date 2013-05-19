@@ -442,6 +442,7 @@ void GuiTilemap::handleEvent( NEvent& event )
             else
             {
                 getMapArea().setCenterIJ( tile->getIJ() );
+                _d->city->setCameraPos( tile->getIJ() );
             }
 
             _d->lmbPressed = false;

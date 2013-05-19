@@ -33,6 +33,9 @@ public:
   void onDestination();
   ~Immigrant();
 
+  void save(VariantMap& stream) const;
+  void load(const VariantMap& stream);
+
 protected:
   void setCartPicture( Picture* pic );
   virtual Picture* getCartPicture();

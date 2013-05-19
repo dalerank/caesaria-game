@@ -20,6 +20,7 @@
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_house.hpp"
 #include "oc3_tile.hpp"
+#include "oc3_variant.hpp"
 
 class Immigrant::Impl
 {
@@ -164,3 +165,18 @@ void Immigrant::setCapacity( int value )
 {
   _d->peopleCount = value;
 } 
+
+void Immigrant::save( VariantMap& stream ) const
+{
+  Walker::save( stream );
+  stream[ "peopleCount" ] = _d->peopleCount;
+  stream[ "destinationI" ] = _d->destination.getI();
+  stream[ "destinationJ" ] = _d->destination.getJ();
+}
+
+void Immigrant::load( const VariantMap& stream )
+{
+  Walker::load( stream );
+  _d->peopleCount = stream.get( "peopleCount" ).toInt();
+  _d->destination = TilePos( stream.get( "destinationI" ).toInt(), stream.get( "destinationJ").toInt() );
+}

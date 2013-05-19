@@ -66,7 +66,6 @@ public:
    void setCameraPos(const TilePos pos);
    TilePos getCameraPos() const;
       
- 
    ClimateType getClimate() const;
    void setClimate(const ClimateType);
 
