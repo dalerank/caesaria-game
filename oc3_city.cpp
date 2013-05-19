@@ -33,6 +33,7 @@
 #include "oc3_road.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_stringhelper.hpp"
+#include "oc3_walkermanager.hpp"
 
 #include <set>
 
@@ -458,15 +459,19 @@ void City::save( VariantMap& stream) const
   stream[ "time" ] = static_cast<unsigned long long>(_d->time);
   stream[ "funds" ] = static_cast<unsigned int>(_d->funds);
   stream[ "populaton" ] = _d->population;
-// 
-//    // walkers
-//    stream.write_int(_d->walkerList.size(), 2, 0, 65535);
-//    for (Walkers::iterator itWalker = _d->walkerList.begin(); itWalker != _d->walkerList.end(); ++itWalker)
-//    {
-//       // std::cout << "WRITE WALKER @" << stream.tell() << std::endl;
-//       (*itWalker)->serialize(stream);
-//    }
-// 
+
+  // walkers
+  VariantMap vm_walkers;
+  int walkedId = 0;
+  for (Walkers::iterator itWalker = _d->walkerList.begin(); itWalker != _d->walkerList.end(); ++itWalker)
+  {
+    // std::cout << "WRITE WALKER @" << stream.tell() << std::endl;
+     VariantMap vm_walker;
+    (*itWalker)->save( stream );
+    vm_walkers[ StringHelper::format( 0xff, "%d", walkedId ) ] = vm_walker;
+  }
+  stream[ "walkers" ] = vm_walkers;
+
   // overlays
   VariantMap vm_overlays;
   for( LandOverlays::iterator itOverlay = _d->overlayList.begin(); 
@@ -508,6 +513,19 @@ void City::load( const VariantMap& stream )
       construction->build( buildPos );
       construction->load( overlay );
       _d->overlayList.push_back( construction.as<LandOverlay>() );
+    }
+  }
+
+  VariantMap walkers = stream.get( "walkers" ).toMap();
+  for( VariantMap::iterator it=walkers.begin(); it != walkers.end(); it++ )
+  {
+    VariantMap walkerInfo = (*it).second.toMap();
+    int walkerType = walkerInfo.get( "type" ).toInt();
+
+    WalkerPtr walker = WalkerManager::getInstance().create( WalkerType( walkerType ) );
+    if( walker.isValid() )
+    {
+      _d->walkerList.push_back( walker );
     }
   }
 }

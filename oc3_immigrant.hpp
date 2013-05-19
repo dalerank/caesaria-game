@@ -25,8 +25,10 @@ typedef SmartPtr< Immigrant > ImmigrantPtr;
 class Immigrant : public Walker
 {
 public:
-  static ImmigrantPtr create( City& city, BuildingPtr startPoint, 
-                              const unsigned char peoples );
+  static ImmigrantPtr create( City& city );
+
+  void send2City( Tile& startTile );
+  void setCapacity( int value );
 
   void onDestination();
   ~Immigrant();
@@ -35,11 +37,10 @@ protected:
   void setCartPicture( Picture* pic );
   virtual Picture* getCartPicture();
   
-  Immigrant( City& city, unsigned char peoples );
+  Immigrant( City& city );
 
-  void assignPath( Tile& startTile );
-  void _checkPath( Tile& startPoint, HousePtr house );
   HousePtr _findBlankHouse();
+  void _findPath2blankHouse( Tile& startPoint );
 
 protected:
   void _setPeoplesCount( const unsigned char num );

@@ -26,8 +26,8 @@ typedef SmartPtr< Emigrant > EmigrantPtr;
 class Emigrant : public Immigrant
 {
 public:
-	static EmigrantPtr create( City& city, const RoadPtr startPoint );
-
+  static EmigrantPtr create( City& city);
+  
 	void getPictureList(std::vector<Picture*> &oPics);
 	void onNewDirection();
 
@@ -35,7 +35,7 @@ public:
 protected:
   Picture* getCartPicture();
 
-	Emigrant( City& city );
+  Emigrant( City& city );
 };
 
 #endif

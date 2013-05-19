@@ -20,14 +20,31 @@
 #include "oc3_scopedptr.hpp"
 #include "oc3_predefinitions.hpp"
 
-class TilePos;
+class AbstractWalkerCreator
+{
+public:
+  virtual Walker* create() = 0;
+};
+
+template< class T > class WalkerCreator : public AbstractWalkerCreator
+{
+public:
+  Walker* create() 
+  {
+    return new T(); 
+  }
+};
 
 class WalkerManager
 {
 public:
   static WalkerManager& getInstance();
 
-  WalkerPtr create(const WalkerType walkerType, const TilePos& pos );  // get an instance of the given type
+  bool canCreate( const WalkerType type ) const;
+
+  void addCreator( const WalkerType type, const std::string& typeName, AbstractWalkerCreator* ctor );
+
+  WalkerPtr create( const WalkerType walkerType );  // get an instance of the given type
 
   ~WalkerManager();
 private:

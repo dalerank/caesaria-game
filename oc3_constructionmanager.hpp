@@ -22,19 +22,15 @@
 
 class Construction;
 
-class AbstractConstructor
+class AbstractBuildingCreator
 {
 public:
   virtual Construction* create() = 0;
 };
 
-template< class T > class BaseConstructor : public AbstractConstructor
+template< class T > class BuildingCreator : public AbstractBuildingCreator
 {
 public:
-  BaseConstructor() 
-  {
-  }
-
   Construction* create() 
   {
     return new T(); 
@@ -50,7 +46,7 @@ public:
 
     bool canCreate( const BuildingType type ) const;
 
-    void addConstructor( const BuildingType type, const std::string& typeName, AbstractConstructor* ctor );
+    void addCreator( const BuildingType type, const std::string& typeName, AbstractBuildingCreator* ctor );
 private:
     ConstructionManager();
 

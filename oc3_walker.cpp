@@ -403,6 +403,7 @@ void Walker::save( VariantMap& stream ) const
 
   stream[ "action" ] = (int)_action._action;
   stream[ "direction" ] = (int)_action._direction;
+  
   stream[ "i" ] = _i;
   stream[ "j" ] = _j;
   stream[ "si" ] = _si;

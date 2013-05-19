@@ -30,20 +30,13 @@ public:
   City* city;
 };
 
-Immigrant::Immigrant( City& city, const unsigned char peoples ) : _d( new Impl )
+Immigrant::Immigrant( City& city ) : _d( new Impl )
 {
   _walkerType = WT_IMMIGRANT;
   _walkerGraphic = WG_HOMELESS;
   _d->cartPicture = 0;
-  _d->peopleCount = peoples;
+  _d->peopleCount = 0;
   _d->city = &city;
-}
-
-void Immigrant::assignPath( Tile& startPoint )
-{
-  HousePtr blankHouse = _findBlankHouse();
-  
-  _checkPath( startPoint, blankHouse );
 }
 
 HousePtr Immigrant::_findBlankHouse()
@@ -78,8 +71,10 @@ HousePtr Immigrant::_findBlankHouse()
   return blankHouse;
 }
 
-void Immigrant::_checkPath( Tile& startPoint, HousePtr house )
+void Immigrant::_findPath2blankHouse( Tile& startPoint )
 {
+  HousePtr house = _findBlankHouse();
+
   PathWay pathWay;
 
   Tilemap& citymap = _d->city->getTilemap();
@@ -123,20 +118,21 @@ void Immigrant::onDestination()
 
   if( gooutCity )
   {
-    HousePtr blankHouse = _findBlankHouse();
-    _checkPath( _d->city->getTilemap().at( getIJ() ), blankHouse );
+    _findPath2blankHouse( _d->city->getTilemap().at( getIJ() ) );
   }
 }
 
-ImmigrantPtr Immigrant::create( City& city, const BuildingPtr startPoint,
-                              const unsigned char peoples )
+ImmigrantPtr Immigrant::create( City& city )
 {
-  ImmigrantPtr newImmigrant( new Immigrant( city, peoples ) );
+  ImmigrantPtr newImmigrant( new Immigrant( city ) );
   newImmigrant->drop(); //delete automatically
-  newImmigrant->assignPath( startPoint->getTile() );
-
-  city.addWalker( newImmigrant.as<Walker>() );
   return newImmigrant;
+}
+
+void Immigrant::send2City( Tile& startTile )
+{
+  _findPath2blankHouse( startTile );
+  _d->city->addWalker( WalkerPtr( this ) );
 }
 
 Immigrant::~Immigrant()
@@ -163,3 +159,8 @@ unsigned char Immigrant::_getPeoplesCount() const
 {
   return _d->peopleCount;
 }
+
+void Immigrant::setCapacity( int value )
+{
+  _d->peopleCount = value;
+} 

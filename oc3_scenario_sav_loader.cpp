@@ -168,7 +168,7 @@ bool ScenarioSavLoader::load( const std::string& filename, Scenario &oScenario )
     
     oTilemap.init(size);
 
-    oCity.setCameraPos(0, 0);
+    oCity.setCameraPos( TilePos( 0, 0 ) );
     
   // loads the graphics map
   int border_size = (162 - size) / 2;

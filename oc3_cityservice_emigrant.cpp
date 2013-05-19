@@ -64,10 +64,11 @@ void CityServiceEmigrant::update( const unsigned int time )
   }
 
   Tile& roadTile = _city.getTilemap().at( _city.getRoadEntry() );
-  RoadPtr roadEntry = roadTile.get_terrain().getOverlay().as<Road>();
 
-  if( roadEntry.isValid() )
+  EmigrantPtr emigrant = Emigrant::create( _city );
+
+  if( emigrant.isValid() )
   {
-    Emigrant::create( _city, roadEntry );
-  }    
+    emigrant->send2City( roadTile );
+  }
 }

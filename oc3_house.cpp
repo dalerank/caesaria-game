@@ -126,7 +126,9 @@ void House::timeStep(const unsigned long time)
        _d->currentHabitants = math::clamp( _d->currentHabitants, 0, _d->maxHabitants );
 
        City& city = Scenario::instance().getCity();
-       ImmigrantPtr im = Immigrant::create( city, BuildingPtr( this ), homeless );
+       ImmigrantPtr im = Immigrant::create( city );
+       im->setCapacity( homeless );
+       im->send2City( getTile() );
      }
    }
 
@@ -549,13 +551,15 @@ void House::addHabitants( const Uint8 newHabitCount )
 
 void House::destroy()
 {
-  int lostPeoples = _d->currentHabitants;
+  int homeless = _d->currentHabitants;
   _d->currentHabitants = _d->maxHabitants;
 
-  if( lostPeoples > 0 )
+  if( homeless > 0 )
   {
     City& city = Scenario::instance().getCity();
-    Immigrant::create( city, BuildingPtr( this ), lostPeoples );
+    ImmigrantPtr im = Immigrant::create( city );
+    im->setCapacity( homeless );
+    im->send2City( getTile() );
   }
 
   Building::destroy();

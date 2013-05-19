@@ -52,6 +52,12 @@ PathWay::PathWay(const PathWay &copy)
    *this = copy;
 }
 
+PathWay::PathWay( Tilemap& tmap, const TilePos& startPos, const TilePos& stopPos, 
+                  FindType type/*=roadOnly */ )
+{
+  _OC3_DEBUG_BREAK_IF( true && "broken constructor" );
+}
+
 void PathWay::init(Tilemap &tilemap, Tile &origin)
 {
    _tilemap = &tilemap;
@@ -342,45 +348,34 @@ void PathWay::save( VariantMap& stream) const
   stream[ "startJ" ] = _origin->getJ();
   stream[ "stopI" ] = _destination.getI();
   stream[ "stopJ" ] = _destination.getJ();
-//    stream.write_int(_directionList.size(), 2, 0, 65535);
-//    for (std::vector<DirectionType>::iterator itDir = _directionList.begin(); itDir != _directionList.end(); ++itDir)
-//    {
-//       DirectionType dir = *itDir;
-//       stream.write_int((int) dir, 1, 0, D_MAX);
-//    }
+
+  VariantList directions;
+  for( Directions::const_iterator itDir = _directionList.begin(); itDir != _directionList.end(); ++itDir)
+  {
+    directions.push_back( (int)*itDir);
+  }
+  stream[ "directions" ] = directions;
   stream[ "reverse" ] = _isReverse;
-  if (_isReverse)
-  {
-    size_t pos = std::distance<Directions::const_reverse_iterator>(_directionList.rbegin(), _directionIt_reverse);
-    stream[ "current" ] = static_cast<unsigned int>(pos);
-  }
-  else
-  {
-    size_t pos = std::distance<Directions::const_iterator>(_directionList.begin(), _directionIt);
-    stream[ "current" ] = static_cast<unsigned int>(pos);
-  }
+  stream[ "step" ] = getStep();
 }
 
 void PathWay::load( const VariantMap& stream )
 {
-//    int originI = stream.read_int(2, 0, 1000);
-//    int originJ = stream.read_int(2, 0, 1000);
-//    _tilemap = &Scenario::instance().getCity().getTilemap();
-//    _origin = &_tilemap->at(originI, originJ);
-//    _destination.setI( stream.read_int(2, 0, 1000) );
-//    _destination.setJ( stream.read_int(2, 0, 1000) );
-//    int size = stream.read_int(2, 0, 65535);
-//    for (int i = 0; i<size; ++i)
-//    {
-//       DirectionType dir = (DirectionType) stream.read_int(1, 0, D_MAX);
-//       _directionList.push_back(dir);
-//    }
-//    _isReverse = stream.read_int(1, 0, 1) > 0;
-//    int off = stream.read_int(2, 0, 65535);
-//    _directionIt = _directionList.begin();
-//    _directionIt_reverse = _directionList.rbegin();
-//    std::advance(_directionIt_reverse, off);
-//    std::advance(_directionIt, off);
+  _tilemap = &Scenario::instance().getCity().getTilemap();
+  _origin = &_tilemap->at( stream.get( "startI" ).toInt(), stream.get( "startJ" ).toInt() );
+  _destination = TilePos( stream.get( "stopI" ).toInt(), stream.get( "stopJ").toInt() );
+  VariantList directions = stream.get( "directions" ).toList();
+  for( VariantList::iterator it = directions.begin(); it != directions.end(); it++ )
+  {
+     DirectionType dir = (DirectionType)(*it).toInt();
+     _directionList.push_back(dir);
+  }
+  _isReverse = stream.get( "reverser" ).toBool();
+  int off = stream.get( "step" ).toInt();
+  _directionIt = _directionList.begin();
+  _directionIt_reverse = _directionList.rbegin();
+  std::advance(_directionIt_reverse, off);
+  std::advance(_directionIt, off);
 }
 
 PathWay& PathWay::operator=( const PathWay& other )
@@ -394,6 +389,20 @@ PathWay& PathWay::operator=( const PathWay& other )
   _tileList            = other._tileList;
 
   return *this;
+}
+
+unsigned int PathWay::getStep() const
+{
+  if (_isReverse)
+  {
+    size_t pos = std::distance<Directions::const_reverse_iterator>(_directionList.rbegin(), _directionIt_reverse);
+    return static_cast<unsigned int>(pos);
+  }
+  else
+  {
+    size_t pos = std::distance<Directions::const_iterator>(_directionList.begin(), _directionIt);
+    return static_cast<unsigned int>(pos);
+  }
 }
 
 Propagator::Propagator()
