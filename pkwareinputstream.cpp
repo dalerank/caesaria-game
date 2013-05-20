@@ -19,7 +19,7 @@
 /*
 This class is a C++ port from the Dynamite library, written in C.
 http://synce.sourceforge.net/synce/dynamite.php
-Dyamite library licence:
+Dynamite library licence:
 
 Copyright (c) 2003 David Eriksson <twogood@users.sourceforge.net>
 
