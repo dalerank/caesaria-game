@@ -80,23 +80,23 @@ public:
 GuiInfoBox::GuiInfoBox( Widget* parent, const Rect& rect, int id )
 : Widget( parent, id, rect ), _d( new Impl )
 {
-    // create the title
-    _d->lbTitle = new Label( this, Rect( 16, 10, getWidth()-16, 10 + 30 ), "", true );
-    _d->lbTitle->setFont( FontCollection::instance().getFont(FONT_3) );
-    _d->lbTitle->setTextAlignment( alignCenter, alignCenter );
+   // create the title
+   _d->lbTitle = new Label( this, Rect( 16, 10, getWidth()-16, 10 + 30 ), "", true );
+   _d->lbTitle->setFont( FontCollection::instance().getFont(FONT_3) );
+   _d->lbTitle->setTextAlignment( alignCenter, alignCenter );
 
-    _d->btnExit = new PushButton( this, Rect( 472, getHeight() - 39, 496, getHeight() - 15 ) );
-    GuiPaneling::configureTexturedButton( _d->btnExit, ResourceGroup::panelBackground, ResourceMenu::exitInfBtnPicId, false);
-    _d->btnHelp = new PushButton( this, Rect( 14, getHeight() - 39, 38, getHeight() - 15 ) );
-    GuiPaneling::configureTexturedButton( _d->btnHelp, ResourceGroup::panelBackground, ResourceMenu::helpInfBtnPicId, false);
+   _d->btnExit = new PushButton( this, Rect( 472, getHeight() - 39, 496, getHeight() - 15 ) );
+   GuiPaneling::configureTexturedButton( _d->btnExit, ResourceGroup::panelBackground, ResourceMenu::exitInfBtnPicId, false);
+   _d->btnHelp = new PushButton( this, Rect( 14, getHeight() - 39, 38, getHeight() - 15 ) );
+   GuiPaneling::configureTexturedButton( _d->btnHelp, ResourceGroup::panelBackground, ResourceMenu::helpInfBtnPicId, false);
 
-    CONNECT( _d->btnExit, onClicked(), this, InfoBoxLand::deleteLater );
+   CONNECT( _d->btnExit, onClicked(), this, InfoBoxLand::deleteLater );
 
    _d->bgPicture = &GfxEngine::instance().createPicture( getWidth(), getHeight() );
 
-    // draws the box and the inner black box
-    GuiPaneling::instance().draw_white_frame(*_d->bgPicture, 0, 0, getWidth(), getHeight() );
-    GfxEngine::instance().load_picture(*_d->bgPicture);
+   // draws the box and the inner black box
+   GuiPaneling::instance().draw_white_frame(*_d->bgPicture, 0, 0, getWidth(), getHeight() );
+   GfxEngine::instance().load_picture(*_d->bgPicture);
 }
 
 GuiInfoBox::~GuiInfoBox()
@@ -156,44 +156,46 @@ void GuiInfoBox::setTitle( const std::string& title )
     _d->lbTitle->setText( title );
 }
 
-GuiInfoService::GuiInfoService( Widget* parent, ServiceBuilding &building)
-    : GuiInfoBox( parent, Rect( 0, 0, 450, 300 ), -1 )
+GuiInfoService::GuiInfoService( Widget* parent, ServiceBuildingPtr building)
+    : GuiInfoBox( parent, Rect( 0, 0, 510, 256 ), -1 )
 {
-   _building = &building;
-   setTitle( BuildingDataHolder::instance().getData(building.getType()).getPrettyName() );
+   _building = building;
+   setTitle( BuildingDataHolder::instance().getData( building->getType() ).getPrettyName() );
    paint(); 
 }
 
 
 void GuiInfoService::paint()
 {
-   int paintY = _d->lbTitle->getBottom() + 10 ;
-   GuiPaneling::instance().draw_black_frame(*_d->bgPicture, 16, paintY, getWidth() - 32, getHeight() - paintY - 16);
-   
-   paintY+=10;
+  GuiPaneling::instance().draw_black_frame(*_d->bgPicture, 16, 136, getWidth() - 32, 62 );
+  
+  drawWorkers( 150 );
 
-   drawWorkers( paintY );
+  _dmgLabel = new Label( this, Rect( 50, getHeight() - 50, getWidth() - 50, getHeight() - 16 ) ); 
+  std::string text = StringHelper::format( 0xff, "%d%% damage - %d%% fire", 
+                                           (int)_building->getDamageLevel(), (int)_building->getFireLevel());
+  _dmgLabel->setText( text );
 
-   _dmgLabel = new Label( this, Rect( 16 + 42, paintY, getWidth() - 16 - 42, getHeight() - 16) ); 
-   char buffer[100];
-   sprintf(buffer, "%d%% damage - %d%% fire", (int)_building->getDamageLevel(), (int)_building->getFireLevel());
-   _dmgLabel->setText( buffer );
+  _lbHelp = new Label( this, Rect( 16, 50, getWidth() - 16, 130 ) );
 }
 
+void GuiInfoService::setText(const std::string& text)
+{
+  _lbHelp->setText( text );
+}
 
-void GuiInfoService::drawWorkers( int& paintY )
+void GuiInfoService::drawWorkers( int paintY )
 {
    // picture of citizen
    Picture& pic = Picture::load( ResourceGroup::panelBackground, 542);
    _d->bgPicture->draw( pic, 16+15, paintY);
 
    // number of workers
-   std::string text = StringHelper::format( 0xff, _("%d employes (%d requis)"), 
+   std::string text = StringHelper::format( 0xff, _("%d employers (%d requred)"), 
                                             _building->getWorkers(), _building->getMaxWorkers() );
 
    Font &font = FontCollection::instance().getFont(FONT_2);
    font.draw( *_d->bgPicture, text, 16+42, paintY+5 );
-   paintY+=20;
 }
 
 

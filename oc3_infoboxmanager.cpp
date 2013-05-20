@@ -20,7 +20,9 @@
 #include "oc3_gui_info_box.hpp"
 #include "oc3_guienv.hpp"
 #include "oc3_road.hpp"
+#include "oc3_buildingprefect.hpp"
 #include "oc3_tile.hpp"
+#include "oc3_service_building.hpp"
 #include "oc3_stringhelper.hpp"
 
 class InfoBoxManager::Impl
@@ -70,7 +72,7 @@ void InfoBoxManager::showHelp( Tile* tile )
       RoadPtr road  = overlay.as<Road>();
       if( road.isValid() )
       {
-        infoBox = new InfoBoxLand( _d->gui->getRootWidget(), tile );        
+        infoBox = new InfoBoxLand( _d->gui->getRootWidget(), tile );    
       }
       
       HousePtr house = overlay.as<House>();
@@ -84,6 +86,19 @@ void InfoBoxManager::showHelp( Tile* tile )
         {
           infoBox = new InfoBoxFreeHouse( _d->gui->getRootWidget(), tile );
         }
+      }
+
+      BuildingPrefectPtr prefecture = overlay.as<BuildingPrefect>();
+      if( prefecture.isValid() )
+      {
+        Size  size = _d->gui->getRootWidget()->getSize();
+        infoBox = new GuiInfoService( _d->gui->getRootWidget(), prefecture.as<ServiceBuilding>() );
+        infoBox->setPosition( Point( (size.getWidth() - infoBox->getWidth()) / 2, 
+                                      size.getHeight() - infoBox->getHeight()) );
+
+        infoBox->setTitle( "##engineering_post_title##");
+        infoBox->setText( "##engineering_post_text##");
+        return;
       }
     }
     

@@ -62,14 +62,15 @@ protected:
 class GuiInfoService : public GuiInfoBox
 {
 public:
-    GuiInfoService( Widget* parent, ServiceBuilding &building);
-    virtual void paint();
+  GuiInfoService( Widget* parent, ServiceBuildingPtr building);
+  virtual void paint();
 
-    void drawWorkers( int& );
-
+  void drawWorkers( int );
+  void setText(const std::string& text);
 private:
-    Label* _dmgLabel;
-    ServiceBuilding *_building;
+  Label* _dmgLabel;
+  Label* _lbHelp;
+  ServiceBuildingPtr _building;
 };
 
 class InfoBoxLand : public GuiInfoBox
