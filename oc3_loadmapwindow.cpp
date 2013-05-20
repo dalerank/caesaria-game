@@ -18,7 +18,6 @@
 #include "oc3_pushbutton.hpp"
 #include "oc3_gui_paneling.hpp"
 #include "oc3_resourcegroup.hpp"
-#include "oc3_sdl_facade.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_listbox.hpp"
 #include "oc3_stringhelper.hpp"
@@ -70,8 +69,7 @@ LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect,
   CONNECT( _d->files, onItemSelectedAgain(), _d.data(), Impl::resolveFileSelected );
   _d->fillFiles();
 
-  SdlFacade &sdlFacade = SdlFacade::instance();
-  _d->bgPicture = &sdlFacade.createPicture( getWidth(), getHeight() );
+  _d->bgPicture = &GfxEngine::instance().createPicture( getWidth(), getHeight() );
 
   // draws the box and the inner black box
   GuiPaneling::instance().draw_white_frame(*_d->bgPicture, 0, 0, getWidth(), getHeight() );

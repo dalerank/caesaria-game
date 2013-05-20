@@ -16,7 +16,6 @@
 
 #include "oc3_label.hpp"
 #include "oc3_gfx_engine.hpp"
-#include "oc3_sdl_facade.hpp"
 #include "oc3_gui_paneling.hpp"
 #include "oc3_pictureconverter.hpp"
 
@@ -64,8 +63,8 @@ public:
     {
         if( picture )
         {
-            SdlFacade::instance().deletePicture( *picture );
-            picture = 0;
+          GfxEngine::instance().deletePicture( *picture );
+          picture = 0;
         }
     }
 
@@ -101,14 +100,14 @@ void Label::_updateTexture( GfxEngine& painter )
 
     if( !_d->picture )
     {
-        _d->picture = &SdlFacade::instance().createPicture( btnSize.getWidth(), btnSize.getHeight() );
+        _d->picture = &painter.createPicture( btnSize.getWidth(), btnSize.getHeight() );
         painter.load_picture( *_d->picture );
     }
 
     // draw button background
     if( _d->bgPicture )
     {
-        SdlFacade::instance().drawPicture( *_d->bgPicture, *_d->picture, _d->bgOffset.getX(), _d->bgOffset.getY() );
+        _d->picture->draw( *_d->bgPicture, _d->bgOffset.getX(), _d->bgOffset.getY() );
     }    
     else
     {
@@ -135,7 +134,7 @@ void Label::_updateTexture( GfxEngine& painter )
                 Rect textRect = _d->font.calculateTextRect( rText, frameRect, 
                                                             getHorizontalTextAlign(), getVerticalTextAlign() );
 
-                SdlFacade::instance().drawText( *_d->picture, getText(), textRect.getLeft(), textRect.getTop(), _d->font );
+                _d->font.draw( *_d->picture, getText(), textRect.getLeft(), textRect.getTop() );
             }
             else
             {
@@ -152,7 +151,7 @@ void Label::_updateTexture( GfxEngine& painter )
                     Rect textRect = _d->font.calculateTextRect( rText, r, 
                                                                 getHorizontalTextAlign(), getVerticalTextAlign() );
 
-                    SdlFacade::instance().drawText( *_d->picture, _d->brokenText[i], textRect.getLeft(), textRect.getTop(), _d->font );
+                    _d->font.draw( *_d->picture, _d->brokenText[i], textRect.getLeft(), textRect.getTop() );
 
                     r += Point( 0, height + _d->lineIntervalOffset );
                 }

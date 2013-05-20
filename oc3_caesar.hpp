@@ -19,15 +19,13 @@
 #ifndef CAESAR_HPP
 #define CAESAR_HPP
 
+#include "oc3_scopedptr.hpp"
+
 #include <string>
 #include <vector>
 #include <map>
 
-#include <boost/filesystem.hpp>
-
 #include "oc3_enums.hpp"
-
-namespace fs = boost::filesystem;
 
 class Menu;
 class MenuBar;
@@ -38,23 +36,22 @@ class CaesarApp
 public:
    CaesarApp();
 
-   void start(const std::string &resourcePath);
+   void start();
 
    void initVideo();
    void initSound();
    void initWaitPictures();
    
    void setScreenWait();
-   void setScreenMenu(const std::string &resourcePath);
+   void setScreenMenu();
    void setScreenGame();
-   std::vector <fs::path> scanForMaps(const std::string &resourcePath) const;
 
    void initGuiMain();
    void initGuiEnvironment();
 
 private:
    class Impl;
-   std::auto_ptr< Impl > _d;
+   ScopedPtr< Impl > _d;
 };
 
 

@@ -99,12 +99,6 @@ public:
    FactoryOil();
 };
 
-class FactoryPottery : public Factory
-{
-public:
-   FactoryPottery();
-};
-
 class Wharf : public Factory
 {
 public:

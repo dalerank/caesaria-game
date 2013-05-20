@@ -35,6 +35,7 @@ public:
     static const char* warehouse;
     static const char* housing;
     static const char* govt;
+    static const char* carts;
 };
 
 class ResourceMenu

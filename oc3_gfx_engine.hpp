@@ -27,35 +27,39 @@
 class GfxEngine
 {
 public:
-   static GfxEngine& instance();
+  static GfxEngine& instance();
 
-   GfxEngine();
-   virtual ~GfxEngine();
-   virtual void init() = 0;
-   virtual void exit() = 0;
+  GfxEngine();
+  virtual ~GfxEngine();
+  virtual void init() = 0;
+  virtual void exit() = 0;
 
-   void setScreenSize(const int width, const int height);
-   Size getScreenSize() const;
-   int getScreenWidth() const;
-   int getScreenHeight() const;
+  void setScreenSize(const int width, const int height);
+  Size getScreenSize() const;
+  int getScreenWidth() const;
+  int getScreenHeight() const;
 
-   virtual void load_pictures(const std::list<Picture*> &ioPictures);
-   virtual void load_picture(Picture& ioPicture) = 0;
-   virtual void unload_picture(Picture& ioPicture) = 0;
+  virtual void load_pictures(const std::list<Picture*> &ioPictures);
+  virtual void load_picture(Picture& ioPicture) = 0;
+  virtual void unload_picture(Picture& ioPicture) = 0;
 
-   virtual void init_frame() = 0;  // start a new frame
-   virtual void drawPicture(const Picture &pic, const int dx, const int dy) = 0;
-   virtual void drawPicture(const Picture &pic, const Point& pos ) = 0;
-   virtual void exit_frame() = 0;  // display the frame
+  virtual void startRenderFrame() = 0;  // start a new frame
+  virtual void endRenderFrame() = 0;  // display the frame
 
-   virtual void setTileDrawMask( int rmask, int gmask, int bmask, int amask ) = 0;
-   virtual void resetTileDrawMask() = 0;
+  virtual void drawPicture(const Picture &pic, const int dx, const int dy) = 0;
+  virtual void drawPicture(const Picture &pic, const Point& pos ) = 0;
+
+  virtual void setTileDrawMask( int rmask, int gmask, int bmask, int amask ) = 0;
+  virtual void resetTileDrawMask() = 0;
+  virtual void deletePicture( Picture &pic ) = 0;
+  // creates a picture with the given size, it will need to be loaded by the graphic engine
+  virtual Picture& createPicture(int width, int height) = 0;
+
 protected:
-   static GfxEngine* _instance;
+  static GfxEngine* _instance;
 
-   int _screen_width;   // screen width
-   int _screen_height;  // screen height
-
+  int _screen_width;   // screen width
+  int _screen_height;  // screen height
 };
 
 #endif

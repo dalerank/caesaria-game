@@ -27,7 +27,6 @@
 #include "oc3_pictureconverter.hpp"
 #include "oc3_event.hpp"
 #include "oc3_roadpropagator.hpp"
-#include "oc3_sdl_facade.hpp"
 #include "oc3_tilemapchangecommand.hpp"
 #include "oc3_tilemap.hpp"
 
@@ -497,7 +496,7 @@ void GuiTilemap::discardPreview()
 {
   for( Impl::Pictures::iterator it=_d->previewToolPictures.begin(); it != _d->previewToolPictures.end(); it++ )
   {
-    SdlFacade::instance().deletePicture( **it );
+    GfxEngine::instance().deletePicture( **it );
   }
 
   _d->previewToolPictures.clear();

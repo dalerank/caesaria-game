@@ -30,4 +30,5 @@ const char* ResourceGroup::entertaiment = "entertainment";
 const char* ResourceGroup::warehouse = "warehouse";
 const char* ResourceGroup::housing = "housng1a";
 const char* ResourceGroup::govt   = "govt";
+const char* ResourceGroup::carts   = "carts";
 

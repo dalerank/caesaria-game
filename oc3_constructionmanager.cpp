@@ -30,6 +30,7 @@
 #include "oc3_granary.hpp"
 #include "oc3_nativebuildings.hpp"
 #include "oc3_farm.hpp"
+#include "oc3_factory_pottery.hpp"
 
 #include "oc3_factoryclay.hpp"
 #include "oc3_factorymarble.hpp"

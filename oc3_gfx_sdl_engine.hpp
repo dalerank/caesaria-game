@@ -20,13 +20,8 @@
 #define GFX_SDL_ENGINE_HPP
 
 #include "oc3_gfx_engine.hpp"
-
-#include <list>
-#include <vector>
-#include <SDL.h>
-#include <SDL_image.h>
-
 #include "oc3_picture.hpp"
+#include "oc3_scopedptr.hpp"
 
 
 // This is the SDL engine
@@ -41,18 +36,22 @@ public:
    void load_picture(Picture &ioPicture);
    void unload_picture(Picture& ioPicture);
 
-   void init_frame();
+   void startRenderFrame();
    void drawPicture(const Picture &picture, const int dx, const int dy);
    void drawPicture(const Picture &picture, const Point& pos );
-   void exit_frame();
+   void endRenderFrame();
 
    void setTileDrawMask( int rmask, int gmask, int bmask, int amask );
    void resetTileDrawMask();
 
+   // deletes a picture (deallocate memory)
+   void deletePicture( Picture &pic );
+   // creates a picture with the given size, it will need to be loaded by the graphic engine
+   Picture& createPicture(int width, int height);
+
 private:
-   SDL_Surface *_screen;
-   int _rmask, _gmask, _bmask, _amask;
-   Picture _maskedPic;
+   class Impl;
+   ScopedPtr< Impl > _d;
 };
 
 #endif

@@ -15,21 +15,13 @@
 
 
 #include "oc3_buildmenu.hpp"
-#include "oc3_sdl_facade.hpp"
-
-#include <iostream>
-#include <cmath>
-#include <cstdlib>
-#include <iterator>
-#include <string>
-
 #include "oc3_gettext.hpp"
 #include "oc3_pushbutton.hpp"
 #include "oc3_gui_paneling.hpp"
 #include "oc3_event.hpp"
 #include "oc3_guienv.hpp"
 #include "oc3_time.hpp"
-
+#include "oc3_stringhelper.hpp"
 #include "oc3_building_data.hpp"
 
 // used to display the building name and its cost
@@ -60,8 +52,7 @@ public:
             sprintf( buffer, "%d", _cost );
             Rect textRect = font.calculateTextRect( buffer, Rect( 0, 0, getWidth(), getHeight() ),
                                                     alignLowerRight, getVerticalTextAlign() );
-            SdlFacade::instance().drawText( *_getPicture( state ), buffer, textRect.getLeft(), textRect.getTop(), 
-                                            font );
+            font.draw( *_getPicture( state ), buffer, textRect.getLeft(), textRect.getTop() );
         }
     }
 
@@ -95,23 +86,20 @@ void BuildMenu::init()
     addButtons();
 
     // compute the necessary width
-    SdlFacade &sdlFacade = SdlFacade::instance();
     int max_text_width = 0;
     int max_cost_width = 0;
-    int text_width;
-    int text_height;
+    Size textSize;
     Font &font = FontCollection::instance().getFont(FONT_2);
     for (Widget::ConstChildIterator itWidget = getChildren().begin(); itWidget != getChildren().end(); ++itWidget)
     {
         if( BuildButton *button = dynamic_cast< BuildButton* >( *itWidget ) )
         {
-            sdlFacade.getTextSize(font, button->getText(), text_width, text_height);
-            max_text_width = std::max(max_text_width, text_width);
+            textSize = font.getSize( button->getText());
+            max_text_width = std::max(max_text_width, textSize.getWidth() );
 
-            char buffer[32];
-	    sprintf(buffer, "%i", button->getCost());
-            sdlFacade.getTextSize(font, buffer, text_width, text_height);
-            max_cost_width = std::max(max_cost_width, text_width);
+            std::string text = StringHelper::format( 0xff, "%i", button->getCost() );
+            textSize = font.getSize( text );
+            max_cost_width = std::max(max_cost_width, textSize.getWidth());
         }
     }
 

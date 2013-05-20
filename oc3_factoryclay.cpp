@@ -28,7 +28,7 @@ FactoryClay::FactoryClay() : Factory(G_NONE, G_CLAY, B_CLAY_PIT, Size(2) )
   _fgPictures.resize(2);
 
   setMaxWorkers( 10 );
-  setWorkers( 10 );
+  setWorkers( 0 );
 }
 
 void FactoryClay::timeStep( const unsigned long time )

@@ -18,14 +18,11 @@
 
 #include "oc3_picture.hpp"
 
-#include "oc3_sdl_facade.hpp"
-#include <iostream>
-#include <sstream>
-
 #include "oc3_exception.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_rectangle.hpp"
 #include "oc3_pic_loader.hpp"
+#include "oc3_requirements.hpp"
 
 // Picture class functions
 
@@ -122,6 +119,75 @@ Picture& Picture::load( const std::string& filename )
   return PicLoader::instance().get_picture( filename );
 }
 
+Picture& Picture::copy() const
+{
+  if( !_surface )
+  {
+    _OC3_DEBUG_BREAK_IF( true && "No surface" );
+    return GfxEngine::instance().createPicture( _surface->w, _surface->h );
+  }
+
+  int width = _surface->w;
+  int height = _surface->h;
+
+  SDL_Surface* img = 0;
+  img = SDL_ConvertSurface( _surface, _surface->format, SDL_SWSURFACE);
+  if (img == NULL) 
+  {
+    THROW("Cannot make surface, size=" << width << "x" << height);
+  }
+
+  Picture& newpic = GfxEngine::instance().createPicture( width, height );
+  newpic.init(img, width, height);
+
+  return newpic;
+}
+
+void Picture::draw( const Picture &srcpic, const int dx, const int dy )
+{
+  SDL_Surface *srcimg = srcpic.get_surface();
+
+  if( !srcimg || !_surface )
+  {
+    return;
+  }
+
+  SDL_Rect src, dst;
+
+  src.x = 0;
+  src.y = 0;
+  src.w = srcimg->w;
+  src.h = srcimg->h;
+  dst.x = dx + srcpic.get_xoffset();
+  dst.y = dy - srcpic.get_yoffset();
+  dst.w = src.w;
+  dst.h = src.h;
+
+  SDL_BlitSurface(srcimg, &src, _surface, &dst);
+}
+
+void Picture::draw( const Picture &srcpic, const Rect& srcrect, const Point& pos )
+{
+  SDL_Surface *srcimg = srcpic.get_surface();
+
+  if( !srcimg || !_surface )
+  {
+    return;
+  }
+
+  SDL_Rect src, dst;
+
+  src.x = srcrect.UpperLeftCorner.getX();
+  src.y = srcrect.UpperLeftCorner.getY();
+  src.w = srcrect.getWidth();
+  src.h = srcrect.getHeight();
+  dst.x = pos.getX();
+  dst.y = pos.getY();
+  dst.w = src.w;
+  dst.h = src.h;
+
+  SDL_BlitSurface(srcimg, &src, _surface, &dst);
+}
 // Font class functions
 
 Font::Font(TTF_Font &ttfFont, SDL_Color &color)
@@ -150,16 +216,14 @@ std::list<std::string> Font::split_text(const std::string &text, const int width
 {
   std::list<std::string> res;
   std::istringstream iss(text);
-  int w;
-  int h;
-  SdlFacade &sdlFacade = SdlFacade::instance();
+  Size size;
 
   std::string currentLine = "";
   while (iss)
   {
     std::string word;
     iss >> word;
-    sdlFacade.getTextSize(*this, currentLine + " " + word, w, h);
+    size = getSize( currentLine + " " + word );
     if (word == "")
     {
       // end of text
@@ -170,7 +234,7 @@ std::list<std::string> Font::split_text(const std::string &text, const int width
       // first word
       currentLine = word;
     }
-    else if (w <= width)
+    else if (size.getWidth() <= width)
     {
       // write on current line
       currentLine += " " + word;
@@ -266,6 +330,23 @@ void Font::setColor( const int dc )
   _color.unused = ( dc >> 24 ) & 0xff;
 }
 
+void Font::draw(Picture& dstpic, const std::string &text, const int dx, const int dy )
+{
+  if( !_ttfFont || !dstpic.isValid() )
+    return;
+
+  SDL_Surface* sText = TTF_RenderUTF8_Blended( _ttfFont, text.c_str(), _color );
+
+  if( sText )
+  {
+    Picture pic;
+    pic.init( sText, 0, 0 );
+    dstpic.draw( pic, dx, dy);
+  }
+ 
+  SDL_FreeSurface( sText );
+}
+
 FontCollection* FontCollection::_instance = NULL;
 
 FontCollection& FontCollection::instance()
@@ -303,4 +384,97 @@ void FontCollection::setFont(const int key, Font& font)
    // // insert font
    // std::cout << "Registered font with key=" << key << std::endl;
 }
+
+void Picture::lock()
+{
+  if (SDL_MUSTLOCK(_surface))
+  {
+    int rc = SDL_LockSurface(_surface);
+    if (rc < 0) THROW("Cannot lock surface: " << SDL_GetError());
+  }
+}
+
+void Picture::unlock()
+{
+  if (SDL_MUSTLOCK(_surface))
+  {
+    SDL_UnlockSurface(_surface);
+  }
+}
+
+Uint32 Picture::get_pixel(const int x, const int y)
+{
+  // validate arguments
+  if (_surface == NULL || x < 0 || y < 0 || x >= _surface->w || y >= _surface->h)
+    return 0;
+
+  Uint32 res = 0;
+  switch (_surface->format->BytesPerPixel)
+  {
+  case 1:
+    // 8bpp
+    Uint8 *bufp8;
+    bufp8 = (Uint8 *)_surface->pixels + y*_surface->pitch + x;
+    res = *bufp8;
+    break;
+
+  case 2:
+    // 15bpp or 16bpp
+    Uint16 *bufp16;
+    bufp16 = (Uint16 *)_surface->pixels + y*_surface->pitch/2 + x;
+    res = *bufp16;
+    break;
+
+  case 3:
+    // 24bpp, very slow!
+    THROW("Unsupported graphic mode 24bpp");
+    break;
+
+  case 4:
+    // 32bpp
+    Uint32 *bufp32;
+    bufp32 = (Uint32 *)_surface->pixels + y*_surface->pitch/4 + x;
+    res = *bufp32;
+    break;
+  }
+
+  return res;
+}
+
+void Picture::set_pixel(const int x, const int y, const Uint32 color)
+{
+  // validate arguments
+  if (_surface == NULL || x < 0 || y < 0 || x >= _surface->w || y >= _surface->h)
+    return;
+
+  switch (_surface->format->BytesPerPixel)
+  {
+  case 1:
+    // 8bpp
+    Uint8 *bufp8;
+    bufp8 = (Uint8 *)_surface->pixels + y * _surface->pitch + x;
+    *bufp8 = color;
+    break;
+
+  case 2:
+    // 15bpp or 16bpp
+    Uint16 *bufp16;
+    bufp16 = (Uint16 *)_surface->pixels + y * _surface->pitch / 2 + x;
+    *bufp16 = color;
+    break;
+
+  case 3:
+    // 24bpp, very slow!
+    THROW("Unsupported graphic mode 24bpp");
+    break;
+
+  case 4:
+    // 32bpp
+    Uint32 *bufp32;
+    bufp32 = (Uint32 *)_surface->pixels + y * _surface->pitch/4 + x;
+    *bufp32 = color;
+    break;
+  }
+}
+
 
