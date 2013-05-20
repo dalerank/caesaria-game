@@ -18,7 +18,6 @@
 #include "oc3_pic_loader.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_contextmenuitem.hpp"
-#include "oc3_sdl_facade.hpp"
 #include "oc3_stringhelper.hpp"
 
 namespace {

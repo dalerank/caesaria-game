@@ -18,7 +18,6 @@
 
 #include "oc3_picture.hpp"
 
-#include "oc3_sdl_facade.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_rectangle.hpp"
@@ -218,7 +217,6 @@ std::list<std::string> Font::split_text(const std::string &text, const int width
   std::list<std::string> res;
   std::istringstream iss(text);
   Size size;
-  SdlFacade &sdlFacade = SdlFacade::instance();
 
   std::string currentLine = "";
   while (iss)

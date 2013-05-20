@@ -29,7 +29,6 @@
 
 #include "oc3_exception.hpp"
 #include "oc3_pic_loader.hpp"
-#include "oc3_sdl_facade.hpp"
 #include "oc3_requirements.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_pictureconverter.hpp"

@@ -33,7 +33,6 @@
 
 #include "oc3_positioni.hpp"
 #include "oc3_exception.hpp"
-#include "oc3_sdl_facade.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_animation.hpp"
 #include "oc3_app_config.hpp"

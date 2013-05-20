@@ -19,7 +19,6 @@
 #include "oc3_time.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_event.hpp"
-#include "oc3_sdl_facade.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_gui_paneling.hpp"
 

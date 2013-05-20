@@ -20,7 +20,6 @@
 #include "oc3_tile.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_pic_loader.hpp"
-#include "oc3_sdl_facade.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_gui_paneling.hpp"
 #include "oc3_building_data.hpp"
@@ -93,8 +92,7 @@ GuiInfoBox::GuiInfoBox( Widget* parent, const Rect& rect, int id )
 
     CONNECT( _d->btnExit, onClicked(), this, InfoBoxLand::deleteLater );
 
-    SdlFacade &sdlFacade = SdlFacade::instance();
-    _d->bgPicture = &GfxEngine::instance().createPicture( getWidth(), getHeight() );
+   _d->bgPicture = &GfxEngine::instance().createPicture( getWidth(), getHeight() );
 
     // draws the box and the inner black box
     GuiPaneling::instance().draw_white_frame(*_d->bgPicture, 0, 0, getWidth(), getHeight() );
@@ -326,7 +324,6 @@ GuiInfoFactory::GuiInfoFactory( Widget* parent, Factory &building)
 void GuiInfoFactory::paint()
 {
    // paint picture of out good
-   SdlFacade &sdlFacade = SdlFacade::instance();
    //Font &font_red = FontCollection::instance().getFont(FONT_2_RED);
    Font &font = FontCollection::instance().getFont(FONT_2);
 
@@ -371,8 +368,6 @@ void GuiInfoFactory::paint()
 
 void GuiInfoFactory::drawWorkers( int& paintY )
 {
-   SdlFacade &sdlFacade = SdlFacade::instance();
-
    // picture of citizen
    Picture *pic = &Picture::load( ResourceGroup::panelBackground, 542);
    _d->bgPicture->draw( *pic, 16+15, paintY);
@@ -456,7 +451,6 @@ GuiInfoGranary::GuiInfoGranary( Widget* parent, GranaryPtr building)
 
 void GuiInfoGranary::paint()
 {
-   SdlFacade &sdlFacade = SdlFacade::instance();
    //Font &font_red = FontCollection::instance().getFont(FONT_2_RED);
    Font &font = FontCollection::instance().getFont(FONT_2);
 
@@ -486,8 +480,6 @@ void GuiInfoGranary::paint()
 
 void GuiInfoGranary::drawWorkers( int paintY )
 {
-   SdlFacade &sdlFacade = SdlFacade::instance();
-
    // picture of citizen
    Picture& pic = Picture::load( ResourceGroup::panelBackground, 542);
    _d->bgPicture->draw(pic, 16+15, paintY);
@@ -504,7 +496,7 @@ void GuiInfoGranary::drawWorkers( int paintY )
 void GuiInfoGranary::drawGood(const GoodType &goodType, int& paintY)
 {
   std::string goodName = GoodHelper::getInstance().getName( goodType );
-  SdlFacade &sdlFacade = SdlFacade::instance();
+
   Font &font = FontCollection::instance().getFont(FONT_2);
   int qty = _building->getGoodStore().getCurrentQty(goodType);
   if (qty == 0)
@@ -569,8 +561,6 @@ void GuiInfoMarket::paint()
 
 void GuiInfoMarket::drawWorkers( int paintY )
 {
-   SdlFacade &sdlFacade = SdlFacade::instance();
-
    // picture of citizen
    Picture& pic = Picture::load( ResourceGroup::panelBackground, 542);
    _d->bgPicture->draw( pic, 16+15, paintY);
@@ -587,24 +577,24 @@ void GuiInfoMarket::drawWorkers( int paintY )
 void GuiInfoMarket::drawGood(const GoodType &goodType, int& paintY )
 {
   std::string goodName = GoodHelper::getInstance().getName( goodType );
-   SdlFacade &sdlFacade = SdlFacade::instance();
-   Font &font = FontCollection::instance().getFont(FONT_2);
-   int qty = _building->getGoodStore().getCurrentQty(goodType);
 
-   if (qty == 0)
-   {
-      // no drawing
-      return;
-   }
+  Font &font = FontCollection::instance().getFont(FONT_2);
+  int qty = _building->getGoodStore().getCurrentQty(goodType);
 
-   // pictures of goods
-   Picture &pic = getPictureGood(goodType);
-   _d->bgPicture->draw( pic, 31, paintY);
+  if (qty == 0)
+  {
+     // no drawing
+     return;
+  }
 
-   std::string outText = StringHelper::format( 0xff, "%d %s", qty, goodName.c_str() );
-   font.draw(*_d->bgPicture, outText, 61, paintY );
+  // pictures of goods
+  Picture &pic = getPictureGood(goodType);
+  _d->bgPicture->draw( pic, 31, paintY);
 
-   paintY += 22;
+  std::string outText = StringHelper::format( 0xff, "%d %s", qty, goodName.c_str() );
+  font.draw(*_d->bgPicture, outText, 61, paintY );
+
+  paintY += 22;
 }
 
 GuiBuilding::GuiBuilding( Widget* parent, Building &building)

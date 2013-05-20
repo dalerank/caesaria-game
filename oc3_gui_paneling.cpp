@@ -21,7 +21,6 @@
 #include <SDL.h>
 #include "oc3_exception.hpp"
 #include "oc3_pic_loader.hpp"
-#include "oc3_sdl_facade.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_pushbutton.hpp"
 #include "oc3_resourcegroup.hpp"
@@ -122,8 +121,6 @@ void GuiPaneling::draw_white_borders(Picture &dstpic, const int x, const int y, 
 
 void GuiPaneling::draw_black_borders(Picture &dstpic, const int x, const int y, const int width, const int height)
 {
-   SdlFacade &sdlFacade = SdlFacade::instance();
-
    // draws horizontal borders
    for (int i = 0; i<(width/16-1); ++i)
    {
@@ -177,8 +174,6 @@ void GuiPaneling::draw_basic_frame(Picture &dstpic, const int x, const int y, co
 {
    // pics are: 0TopLeft, 1Top, 2TopRight, 3Left, 4Center, 5Right, 6BottomLeft, 7Bottom, 8BottomRight
 
-   SdlFacade &sdlFacade = SdlFacade::instance();
-
    // draws the inside of the box
    for (int j = 0; j<(height/16-1); ++j)
    {
@@ -231,9 +226,6 @@ void GuiPaneling::draw_grey_frame(Picture &dstpic, const int x, const int y, con
 void GuiPaneling::draw_basic0_borders(Picture &dstpic, const int x, const int y, const int width, const int height, const int offset)
 {
    // pics are: 0TopLeft, 1Top, 2TopRight, 3Right, 4BottomRight, 5Bottom, 6BottomLeft, 7Left
-
-   SdlFacade &sdlFacade = SdlFacade::instance();
-
    // draws horizontal borders
    for (int i = 0; i<(width/16-1); ++i)
    {
@@ -274,8 +266,6 @@ void GuiPaneling::draw_white0_borders(Picture &dstpic, const int x, const int y,
 
 void GuiPaneling::draw_basic_text_button(Picture &dstpic, const int x, const int y, const int width, const int offset)
 {
-   SdlFacade &sdlFacade = SdlFacade::instance();
-
    // draws the inside
    for (int i = 0; i<(width/16-1); ++i)
    {

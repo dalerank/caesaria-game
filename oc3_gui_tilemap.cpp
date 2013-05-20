@@ -27,7 +27,6 @@
 #include "oc3_pictureconverter.hpp"
 #include "oc3_event.hpp"
 #include "oc3_roadpropagator.hpp"
-#include "oc3_sdl_facade.hpp"
 #include "oc3_tilemapchangecommand.hpp"
 #include "oc3_tilemap.hpp"
 

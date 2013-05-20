@@ -15,8 +15,6 @@
 
 
 #include "oc3_buildmenu.hpp"
-#include "oc3_sdl_facade.hpp"
-
 #include "oc3_gettext.hpp"
 #include "oc3_pushbutton.hpp"
 #include "oc3_gui_paneling.hpp"

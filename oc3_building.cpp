@@ -30,7 +30,6 @@
 #include "oc3_training_building.hpp"
 #include "oc3_warehouse.hpp"
 #include "oc3_gettext.hpp"
-#include "oc3_sdl_facade.hpp"
 #include "oc3_time.hpp"
 #include "oc3_burningruins.hpp"
 #include "oc3_collapsedruins.hpp"

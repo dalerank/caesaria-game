@@ -16,7 +16,6 @@
 
 #include "oc3_label.hpp"
 #include "oc3_gfx_engine.hpp"
-#include "oc3_sdl_facade.hpp"
 #include "oc3_gui_paneling.hpp"
 #include "oc3_pictureconverter.hpp"
 

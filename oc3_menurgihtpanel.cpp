@@ -15,7 +15,6 @@
 
 
 #include "oc3_menurgihtpanel.hpp"
-#include "oc3_sdl_facade.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_gfx_engine.hpp"
 

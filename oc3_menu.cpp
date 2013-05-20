@@ -17,7 +17,6 @@
 #include "oc3_menu.hpp"
 #include "oc3_pushbutton.hpp"
 #include "oc3_picture.hpp"
-#include "oc3_sdl_facade.hpp"
 #include "oc3_pic_loader.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_event.hpp"
@@ -386,8 +385,6 @@ Menu* Menu::create( Widget* parent, int id )
 {
   Menu* ret = new Menu( parent, id, Rect( 0, 0, 1, 1 ) );
 
-  SdlFacade &sdlFacade = SdlFacade::instance();
-
   const Picture& bground = Picture::load( ResourceGroup::panelBackground, 16 );
   const Picture& bottom  = Picture::load( ResourceGroup::panelBackground, 21 );
 
@@ -442,8 +439,6 @@ Signal0<>& Menu::onMaximize()
 ExtentMenu* ExtentMenu::create( Widget* parent, GuiTilemap& tmap, int id )
 {
     ExtentMenu* ret = new ExtentMenu( parent, tmap, id, Rect( 0, 0, 1, 1 ) );
-
-    SdlFacade &sdlFacade = SdlFacade::instance();
 
     const Picture& bground = Picture::load( ResourceGroup::panelBackground, 17 );
     const Picture& bottom = Picture::load( ResourceGroup::panelBackground, 20 );
@@ -553,9 +548,7 @@ void ExtentMenu::draw( GfxEngine& painter )
 
   // try to generate and show minimap
   // now we will show it at (0,0)
-  // then we will show it in right place
-  SdlFacade &sdlFacade = SdlFacade::instance();
-  
+  // then we will show it in right place 
   int mapsize = Scenario::instance().getCity().getTilemap().getSize();
   
   Picture& minimap = painter.createPicture(mapsize * 2 , mapsize * 2);

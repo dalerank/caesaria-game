@@ -18,7 +18,6 @@
 #include "oc3_pushbutton.hpp"
 #include "oc3_gui_paneling.hpp"
 #include "oc3_resourcegroup.hpp"
-#include "oc3_sdl_facade.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_listbox.hpp"
 #include "oc3_stringhelper.hpp"
