@@ -21,6 +21,7 @@
 #include <cstdio>
 #include <limits>
 #include <climits>
+#include <cstring>
 #include <iostream>
 #include <stdint.h>
 

@@ -342,7 +342,7 @@ void CartPusher::save( VariantMap& stream ) const
   stream[ "consumerPos" ] = _d->consumerBuilding->getTile().getIJ();
 
   stream[ "maxDistance" ] = _d->maxDistance;
-  stream[ "reservationID" ] = _d->reservationID;
+  stream[ "reservationID" ] = static_cast<int>(_d->reservationID);
 }
 
 void CartPusher::load( const VariantMap& stream )

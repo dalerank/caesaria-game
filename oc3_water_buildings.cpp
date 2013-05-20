@@ -15,6 +15,8 @@
 
 #include "oc3_water_buildings.hpp"
 
+#include <stdexcept>
+
 #include "oc3_stringhelper.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_time.hpp"
