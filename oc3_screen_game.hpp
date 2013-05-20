@@ -64,6 +64,8 @@ private:
   void resolveGameSave();
   void resolveEndGame();
   void resolveExitGame();
+
+  void makeScreenShot();
    
   GuiInfoBox* _infoBox;   // info box to display, if any
   TilemapArea _mapArea;  // visible map area

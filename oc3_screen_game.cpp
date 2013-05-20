@@ -47,6 +47,7 @@ public:
   InfoBoxManagerPtr infoBoxMgr;
   GuiTilemap guiTilemap;
   Scenario* scenario; // current game scenario
+  
   int result;
 };
 
@@ -207,12 +208,29 @@ void ScreenGame::handleEvent( NEvent& event )
     if( !eventResolved )
       _d->guiTilemap.handleEvent( event );
 
-    if( event.EventType == OC3_KEYBOARD_EVENT && event.KeyboardEvent.Key == KEY_ESCAPE )
+    if( event.EventType == OC3_KEYBOARD_EVENT )
     {
-      std::cout << "EVENT_ESCAPE was pressed" << std::endl;
-      stop();
+      switch( event.KeyboardEvent.Key )
+      {
+	case KEY_ESCAPE:
+          stop();
+	  break;
+	case KEY_F10:
+	  makeScreenShot();
+	  break;
+      }
     }
   }
+}
+
+void ScreenGame::makeScreenShot()
+{
+  std::cout << "creating screenshot" << std::endl;
+  // get date
+  std::string filename ("screenshot.bmp");
+  // write file
+  SDL_Surface* surface = dynamic_cast<GfxSdlEngine*>(_d->engine)->getScreen().get_surface();
+  SDL_SaveBMP(surface, filename.c_str());
 }
 
 int ScreenGame::getResult() const

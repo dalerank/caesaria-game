@@ -49,6 +49,7 @@ public:
    // creates a picture with the given size, it will need to be loaded by the graphic engine
    Picture& createPicture(int width, int height);
 
+   Picture& getScreen();
 private:
    class Impl;
    ScopedPtr< Impl > _d;

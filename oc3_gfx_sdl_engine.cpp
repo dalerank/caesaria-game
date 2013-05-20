@@ -37,11 +37,17 @@ class GfxSdlEngine::Impl
 {
 public:
   Picture screen;
-  int rmask, gmask, bmask, amask;
   Picture maskedPic;
+  
+  int rmask, gmask, bmask, amask;
   std::list<Picture*> createdPics;  // list of all pictures created by the sdl_facade
 };
 
+
+Picture& GfxSdlEngine::getScreen()
+{
+  return _d->screen;
+}
 
 GfxSdlEngine::GfxSdlEngine() : GfxEngine(), _d( new Impl )
 {

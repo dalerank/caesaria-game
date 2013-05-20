@@ -35,45 +35,45 @@ GfxEngine& GfxEngine::instance()
 
 GfxEngine::GfxEngine()
 {
-   _screen_width = 0;
-   _screen_height = 0;
-   _instance = this;
+  _screen_width = 0;
+  _screen_height = 0;
+  _instance = this;
 }
 
 GfxEngine::~GfxEngine()
 {
-   _instance = NULL;
+  _instance = NULL;
 }
 
 
 void GfxEngine::setScreenSize(const int width, const int height)
 {
-   _screen_width = width;
-   _screen_height = height;
+  _screen_width = width;
+  _screen_height = height;
 }
 
 int GfxEngine::getScreenWidth() const
 {
-   return _screen_width;
+  return _screen_width;
 }
 
 int GfxEngine::getScreenHeight() const
 {
-   return _screen_height;
+  return _screen_height;
 }
 
 void GfxEngine::load_pictures(const std::list<Picture*> &ioPictures)
 {
-   for (std::list<Picture*>::const_iterator it = ioPictures.begin(); it!= ioPictures.end(); ++it)
-   {
-      // for every picture
-      Picture& pic = *(*it);
-      load_picture(pic);
-   }
+  for (std::list<Picture*>::const_iterator it = ioPictures.begin(); it!= ioPictures.end(); ++it)
+  {
+    // for every picture
+    Picture& pic = *(*it);
+    load_picture(pic);
+  }
 }
 
 Size GfxEngine::getScreenSize() const
 {
-    return Size( _screen_width, _screen_height );
+  return Size( _screen_width, _screen_height );
 }
 

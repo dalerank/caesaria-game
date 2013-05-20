@@ -38,65 +38,65 @@
 class InfoBoxHelper
 {
 public:
-    std::vector<Picture*> mapPictureGood;  // index=GoodType, value=Picture
+  std::vector<Picture*> mapPictureGood;  // index=GoodType, value=Picture
     
-    static InfoBoxHelper& getInstance()
-    {
-        static InfoBoxHelper inst;
-        return inst;
-    }
+  static InfoBoxHelper& getInstance()
+  {
+    static InfoBoxHelper inst;
+    return inst;
+  }
 
-    InfoBoxHelper()
-    {
-        mapPictureGood.resize(G_MAX);
-        mapPictureGood[int(G_WHEAT)    ] = &Picture::load( ResourceGroup::panelBackground, 317);
-        mapPictureGood[int(G_VEGETABLE)] = &Picture::load( ResourceGroup::panelBackground, 318);
-        mapPictureGood[int(G_FRUIT)    ] = &Picture::load( ResourceGroup::panelBackground, 319);
-        mapPictureGood[int(G_OLIVE)    ] = &Picture::load( ResourceGroup::panelBackground, 320);
-        mapPictureGood[int(G_GRAPE)    ] = &Picture::load( ResourceGroup::panelBackground, 321);
-        mapPictureGood[int(G_MEAT)     ] = &Picture::load( ResourceGroup::panelBackground, 322);
-        mapPictureGood[int(G_WINE)     ] = &Picture::load( ResourceGroup::panelBackground, 323);
-        mapPictureGood[int(G_OIL)      ] = &Picture::load( ResourceGroup::panelBackground, 324);
-        mapPictureGood[int(G_IRON)     ] = &Picture::load( ResourceGroup::panelBackground, 325);
-        mapPictureGood[int(G_TIMBER)   ] = &Picture::load( ResourceGroup::panelBackground, 326);
-        mapPictureGood[int(G_CLAY)     ] = &Picture::load( ResourceGroup::panelBackground, 327);
-        mapPictureGood[int(G_MARBLE)   ] = &Picture::load( ResourceGroup::panelBackground, 328);
-        mapPictureGood[int(G_WEAPON)   ] = &Picture::load( ResourceGroup::panelBackground, 329);
-        mapPictureGood[int(G_FURNITURE)] = &Picture::load( ResourceGroup::panelBackground, 330);
-        mapPictureGood[int(G_POTTERY)  ] = &Picture::load( ResourceGroup::panelBackground, 331);
-        mapPictureGood[int(G_FISH)     ] = &Picture::load( ResourceGroup::panelBackground, 333);
-    }
+  InfoBoxHelper()
+  {
+    mapPictureGood.resize(G_MAX);
+    mapPictureGood[int(G_WHEAT)    ] = &Picture::load( ResourceGroup::panelBackground, 317);
+    mapPictureGood[int(G_VEGETABLE)] = &Picture::load( ResourceGroup::panelBackground, 318);
+    mapPictureGood[int(G_FRUIT)    ] = &Picture::load( ResourceGroup::panelBackground, 319);
+    mapPictureGood[int(G_OLIVE)    ] = &Picture::load( ResourceGroup::panelBackground, 320);
+    mapPictureGood[int(G_GRAPE)    ] = &Picture::load( ResourceGroup::panelBackground, 321);
+    mapPictureGood[int(G_MEAT)     ] = &Picture::load( ResourceGroup::panelBackground, 322);
+    mapPictureGood[int(G_WINE)     ] = &Picture::load( ResourceGroup::panelBackground, 323);
+    mapPictureGood[int(G_OIL)      ] = &Picture::load( ResourceGroup::panelBackground, 324);
+    mapPictureGood[int(G_IRON)     ] = &Picture::load( ResourceGroup::panelBackground, 325);
+    mapPictureGood[int(G_TIMBER)   ] = &Picture::load( ResourceGroup::panelBackground, 326);
+    mapPictureGood[int(G_CLAY)     ] = &Picture::load( ResourceGroup::panelBackground, 327);
+    mapPictureGood[int(G_MARBLE)   ] = &Picture::load( ResourceGroup::panelBackground, 328);
+    mapPictureGood[int(G_WEAPON)   ] = &Picture::load( ResourceGroup::panelBackground, 329);
+    mapPictureGood[int(G_FURNITURE)] = &Picture::load( ResourceGroup::panelBackground, 330);
+    mapPictureGood[int(G_POTTERY)  ] = &Picture::load( ResourceGroup::panelBackground, 331);
+    mapPictureGood[int(G_FISH)     ] = &Picture::load( ResourceGroup::panelBackground, 333);
+  }
 };
 
 class GuiInfoBox::Impl
 {
 public:
-    Picture *bgPicture;
-    Label* lbTitle;
-    PushButton* btnExit;
-    PushButton* btnHelp;
+  Picture *bgPicture;
+  Label* lbTitle;
+  PushButton* btnExit;
+  PushButton* btnHelp;
 };
 
 GuiInfoBox::GuiInfoBox( Widget* parent, const Rect& rect, int id )
 : Widget( parent, id, rect ), _d( new Impl )
 {
-   // create the title
-   _d->lbTitle = new Label( this, Rect( 16, 10, getWidth()-16, 10 + 30 ), "", true );
-   _d->lbTitle->setFont( FontCollection::instance().getFont(FONT_3) );
-   _d->lbTitle->setTextAlignment( alignCenter, alignCenter );
+  // create the title
+  _d->lbTitle = new Label( this, Rect( 16, 10, getWidth()-16, 10 + 30 ), "", true );
+  _d->lbTitle->setFont( FontCollection::instance().getFont(FONT_3) );
+  _d->lbTitle->setTextAlignment( alignCenter, alignCenter );
 
-   _d->btnExit = new PushButton( this, Rect( 472, getHeight() - 39, 496, getHeight() - 15 ) );
-   GuiPaneling::configureTexturedButton( _d->btnExit, ResourceGroup::panelBackground, ResourceMenu::exitInfBtnPicId, false);
-   _d->btnHelp = new PushButton( this, Rect( 14, getHeight() - 39, 38, getHeight() - 15 ) );
-   GuiPaneling::configureTexturedButton( _d->btnHelp, ResourceGroup::panelBackground, ResourceMenu::helpInfBtnPicId, false);
+  _d->btnExit = new PushButton( this, Rect( 472, getHeight() - 39, 496, getHeight() - 15 ) );
+  GuiPaneling::configureTexturedButton( _d->btnExit, ResourceGroup::panelBackground, ResourceMenu::exitInfBtnPicId, false);
+  _d->btnHelp = new PushButton( this, Rect( 14, getHeight() - 39, 38, getHeight() - 15 ) );
+  GuiPaneling::configureTexturedButton( _d->btnHelp, ResourceGroup::panelBackground, ResourceMenu::helpInfBtnPicId, false);
 
-   CONNECT( _d->btnExit, onClicked(), this, InfoBoxLand::deleteLater );
+  CONNECT( _d->btnExit, onClicked(), this, InfoBoxLand::deleteLater );
 
-   _d->bgPicture = &GfxEngine::instance().createPicture( getWidth(), getHeight() );
+  _d->bgPicture = &GfxEngine::instance().createPicture( getWidth(), getHeight() );
 
-   // draws the box and the inner black box
-   GuiPaneling::instance().draw_white_frame(*_d->bgPicture, 0, 0, getWidth(), getHeight() );
-   GfxEngine::instance().load_picture(*_d->bgPicture);
+  // draws the box and the inner black box
+  GuiPaneling::instance().draw_white_frame(*_d->bgPicture, 0, 0, getWidth(), getHeight() );
+  GfxEngine::instance().load_picture(*_d->bgPicture);
 }
 
 GuiInfoBox::~GuiInfoBox()
@@ -106,64 +106,63 @@ GuiInfoBox::~GuiInfoBox()
 
 void GuiInfoBox::draw( GfxEngine& engine )
 {
-   engine.drawPicture( getBgPicture(), getScreenLeft(), getScreenTop() );
-   Widget::draw( engine );
+  engine.drawPicture( getBgPicture(), getScreenLeft(), getScreenTop() );
+  Widget::draw( engine );
 }
 
 Picture& GuiInfoBox::getBgPicture()
 {
-   return *_d->bgPicture;
+  return *_d->bgPicture;
 }
 
 bool GuiInfoBox::isPointInside( const Point& point ) const
 {
-    //resolve all screen for self using
-    return getParent()->getAbsoluteRect().isPointInside( point );
+  //resolve all screen for self using
+  return getParent()->getAbsoluteRect().isPointInside( point );
 }
 
 bool GuiInfoBox::onEvent( const NEvent& event)
 {
-    switch( event.EventType )
+  switch( event.EventType )
+  {
+  case OC3_MOUSE_EVENT:
+    if( event.MouseEvent.Event == OC3_RMOUSE_LEFT_UP )
     {
-    case OC3_MOUSE_EVENT:
-        if( event.MouseEvent.Event == OC3_RMOUSE_LEFT_UP )
-        {
-            deleteLater();
-            return true;
-        }
-        else if( event.MouseEvent.Event == OC3_LMOUSE_LEFT_UP )
-        {
-          return true;
-        }
-    break;
+      deleteLater();
+      return true;
     }
+    else if( event.MouseEvent.Event == OC3_LMOUSE_LEFT_UP )
+    {
+      return true;
+    }
+    break;
+  }
 
-    return Widget::onEvent( event );
+  return Widget::onEvent( event );
 }
 
 Picture& GuiInfoBox::getPictureGood(const GoodType& goodType)
 {
-    Picture* res = InfoBoxHelper::getInstance().mapPictureGood[int(goodType)];
-    if (res == NULL)
-    {
-      THROW("No picture for good type:" << goodType);
-    }
-    return *res;
+  Picture* res = InfoBoxHelper::getInstance().mapPictureGood[int(goodType)];
+  if (res == NULL)
+  {
+    THROW("No picture for good type:" << goodType);
+  }
+  return *res;
 }
 
 void GuiInfoBox::setTitle( const std::string& title )
 {
-    _d->lbTitle->setText( title );
+  _d->lbTitle->setText( title );
 }
 
 GuiInfoService::GuiInfoService( Widget* parent, ServiceBuildingPtr building)
     : GuiInfoBox( parent, Rect( 0, 0, 510, 256 ), -1 )
 {
-   _building = building;
-   setTitle( BuildingDataHolder::instance().getData( building->getType() ).getPrettyName() );
-   paint(); 
+  _building = building;
+  setTitle( BuildingDataHolder::instance().getData( building->getType() ).getPrettyName() );
+  paint(); 
 }
-
 
 void GuiInfoService::paint()
 {
@@ -186,86 +185,86 @@ void GuiInfoService::setText(const std::string& text)
 
 void GuiInfoService::drawWorkers( int paintY )
 {
-   // picture of citizen
-   Picture& pic = Picture::load( ResourceGroup::panelBackground, 542);
-   _d->bgPicture->draw( pic, 16+15, paintY);
+  // picture of citizen
+  Picture& pic = Picture::load( ResourceGroup::panelBackground, 542);
+  _d->bgPicture->draw( pic, 16+15, paintY);
 
-   // number of workers
-   std::string text = StringHelper::format( 0xff, _("%d employers (%d requred)"), 
+  // number of workers
+  std::string text = StringHelper::format( 0xff, _("%d employers (%d requred)"), 
                                             _building->getWorkers(), _building->getMaxWorkers() );
 
-   Font &font = FontCollection::instance().getFont(FONT_2);
-   font.draw( *_d->bgPicture, text, 16+42, paintY+5 );
+  Font &font = FontCollection::instance().getFont(FONT_2);
+  font.draw( *_d->bgPicture, text, 16+42, paintY+5 );
 }
 
 
 class InfoBoxHouse::Impl
 {
 public:
-    HousePtr house;
-    Label* lbHabitants;
-    Label* lbCrime;
+  HousePtr house;
+  Label* lbHabitants;
+  Label* lbCrime;
 };
 
 InfoBoxHouse::InfoBoxHouse( Widget* parent, HousePtr house )
     : GuiInfoBox( parent, Rect( 0, 0, 510, 360 ), -1 ),
       _ed( new Impl )
 {
-   _ed->house = house;
-   setTitle( house->getName() );
-   _paint();
+  _ed->house = house;
+  setTitle( house->getName() );
+  _paint();
 }
 
 
 void InfoBoxHouse::_paint()
 {
-    int lbHeight = 20;
-    GuiPaneling::instance().draw_black_frame( *_d->bgPicture, 16, 150, 
+  int lbHeight = 20;
+  GuiPaneling::instance().draw_black_frame( *_d->bgPicture, 16, 150, 
                                                _d->btnExit->getRight() - _d->btnHelp->getLeft(), 
                                                _d->btnExit->getTop() - 150 - 5 );
 
-    drawHabitants();
+  drawHabitants();
     
-    int taxes = -1; // _house->getMonthlyTaxes();
-    Label* taxesLb = new Label( this, Rect( 16 + 15, _ed->lbHabitants->getBottom(), getWidth() - 16, 
+  int taxes = -1; // _house->getMonthlyTaxes();
+  Label* taxesLb = new Label( this, Rect( 16 + 15, _ed->lbHabitants->getBottom(), getWidth() - 16, 
                                             _ed->lbHabitants->getBottom() + lbHeight ), "", false, true );
-    char buffer[200];
-    if (taxes == -1)
-    {
-        sprintf(buffer, _("Aucun percepteur ne passe ici. Ne paye pas de taxes"));
-        taxesLb->setFont( FontCollection::instance().getFont(FONT_2_RED) );
-    }
-    else
-    {
-        sprintf(buffer, _("Paye %d Denarii de taxes par mois"), taxes);
-    }
+  char buffer[200];
+  if (taxes == -1)
+  {
+    sprintf(buffer, _("Aucun percepteur ne passe ici. Ne paye pas de taxes"));
+    taxesLb->setFont( FontCollection::instance().getFont(FONT_2_RED) );
+  }
+  else
+  {
+    sprintf(buffer, _("Paye %d Denarii de taxes par mois"), taxes);
+  }
 
-    taxesLb->setText( buffer );
-    //_paintY+=22;
+  taxesLb->setText( buffer );
+  //_paintY+=22;
   
-    _ed->lbCrime = new Label( this, taxesLb->getRelativeRect() + Point( 0, 22 ), "", false, true );
-    sprintf(buffer, _("Inhabitants didn't report about crimes"));
-    _ed->lbCrime->setText( buffer );
+  _ed->lbCrime = new Label( this, taxesLb->getRelativeRect() + Point( 0, 22 ), "", false, true );
+  sprintf(buffer, _("Inhabitants didn't report about crimes"));
+  _ed->lbCrime->setText( buffer );
 
-    int startY = _ed->lbCrime->getBottom() + 10;
-    if( _ed->house->getLevelSpec().getHouseLevel() > 2 )
-    {
-        drawGood(G_WHEAT, 0, 0, startY );
-    }
-    else
-    {
-        Label* lb = new Label( this, _ed->lbCrime->getRelativeRect() + Point( 0, 30 ), "", false, true ); 
-        lb->setHeight( 40 );
-        lb->setLineIntervalOffset( -6 );
-        lb->setText( _("Inabitants of tents provide food themselves, conducting a subsistence economy") );
-        lb->setWordWrap( true );
-        startY = lb->getTop();
-    }
+  int startY = _ed->lbCrime->getBottom() + 10;
+  if( _ed->house->getLevelSpec().getHouseLevel() > 2 )
+  {
+    drawGood(G_WHEAT, 0, 0, startY );
+  }
+  else
+  {
+    Label* lb = new Label( this, _ed->lbCrime->getRelativeRect() + Point( 0, 30 ), "", false, true ); 
+    lb->setHeight( 40 );
+    lb->setLineIntervalOffset( -6 );
+    lb->setText( _("Inabitants of tents provide food themselves, conducting a subsistence economy") );
+    lb->setWordWrap( true );
+    startY = lb->getTop();
+  }
 
-    drawGood(G_POTTERY, 0, 1, startY);
-    drawGood(G_FURNITURE, 1, 1, startY);
-    drawGood(G_OIL, 2, 1, startY);
-    drawGood(G_WINE, 3, 1, startY);
+  drawGood(G_POTTERY, 0, 1, startY);
+  drawGood(G_FURNITURE, 1, 1, startY);
+  drawGood(G_OIL, 2, 1, startY);
+  drawGood(G_WINE, 3, 1, startY);
 }
 
 
@@ -303,23 +302,23 @@ void InfoBoxHouse::drawHabitants()
 
 void InfoBoxHouse::drawGood(const GoodType &goodType, const int col, const int row, const int startY )
 {
-   Font& font = FontCollection::instance().getFont(FONT_2);
-   int qty = _ed->house->getGoodStore().getCurrentQty(goodType);
+  Font& font = FontCollection::instance().getFont(FONT_2);
+  int qty = _ed->house->getGoodStore().getCurrentQty(goodType);
 
-   // pictures of goods
-   Picture &pic = getPictureGood(goodType);
-   _d->bgPicture->draw(pic, 31+100*col, startY + 2 + 30 * row);
+  // pictures of goods
+  Picture &pic = getPictureGood(goodType);
+  _d->bgPicture->draw(pic, 31 + 100 * col, startY + 2 + 30 * row);
 
-   std::string text = StringHelper::format( 0xff, "%d", qty);
-   font.draw( *_d->bgPicture, text, 61+100*col, startY + 30 * row );
+  std::string text = StringHelper::format( 0xff, "%d", qty);
+  font.draw( *_d->bgPicture, text, 61 + 100 * col, startY + 30 * row );
 }
 
 GuiInfoFactory::GuiInfoFactory( Widget* parent, Factory &building)
     : GuiInfoBox( parent, Rect( 0, 0, 450, 220 ), -1 )
 {
-   _building = &building;
-   setTitle( BuildingDataHolder::instance().getData(building.getType()).getPrettyName() );
-   paint();
+  _building = &building;
+  setTitle( BuildingDataHolder::instance().getData(building.getType()).getPrettyName() );
+  paint();
 }
 
 

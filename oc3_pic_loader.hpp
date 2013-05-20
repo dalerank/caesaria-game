@@ -39,19 +39,19 @@ public:
 class PicMetaData
 {
 public:
-   static PicMetaData& instance();
+  static PicMetaData& instance();
 
-   PicInfo& get_data(const std::string &resource_name);   // image name ("Govt_00005")
+  PicInfo& get_data(const std::string &resource_name);   // image name ("Govt_00005")
 
 private:
-   PicMetaData();
-   void setRange(const std::string &preffix, const int first, const int last, PicInfo &data);
-   void setOne(const std::string &preffix, const int index, PicInfo &data);
-   void setOne(const std::string &preffix, const int index, const int xoffset, const int yoffset);
-   static PicMetaData* _instance;
+  PicMetaData();
+  void setRange(const std::string &preffix, const int first, const int last, PicInfo &data);
+  void setOne(const std::string &preffix, const int index, PicInfo &data);
+  void setOne(const std::string &preffix, const int index, const int xoffset, const int yoffset);
+  static PicMetaData* _instance;
 
-   std::map<std::string, PicInfo> _data;   // key=image name (Govt_00005)
-   PicInfo _dummy_data;
+  std::map<std::string, PicInfo> _data;   // key=image name (Govt_00005)
+  PicInfo _dummy_data;
 };
 
 
@@ -59,48 +59,48 @@ private:
 class PicLoader
 {
 public:
-   static PicLoader& instance();
+  static PicLoader& instance();
 
-   // set the current picture
-   void set_picture(const std::string &name, SDL_Surface &surface);
+  // set the current picture
+  void set_picture(const std::string &name, SDL_Surface &surface);
 
-   // show resource
-   Picture& get_picture(const std::string &name);
+  // show resource
+  Picture& get_picture(const std::string &name);
 
-   // show resource
-   Picture& get_picture(const std::string &prefix, const int idx);
+  // show resource
+  Picture& get_picture(const std::string &prefix, const int idx);
 
-   // returns the picture of the given good type
-   Picture& get_picture_good(const GoodType goodType);
+  // returns the picture of the given good type
+  Picture& get_picture_good(const GoodType goodType);
 
-   // show all resources
-   std::list<Picture*> get_pictures();
+  // show all resources
+  std::list<Picture*> get_pictures();
 
-   // loads all resources during load
-   void load_wait();
-   // loads all resources
-   void load_all();
+  // loads all resources during load
+  void load_wait();
+  // loads all resources
+  void load_all();
 
-   // create runtime resources
-   void createResources();
+  // create runtime resources
+  void createResources();
 
-   // loads all resources of the given archive file
-   void load_archive(const std::string &filename);
+  // loads all resources of the given archive file
+  void load_archive(const std::string &filename);
 
-   // used for game save. land1a_00004.png returns 244+4=248
-   //int get_pic_id_by_name(std::string &pic_name);
+  // used for game save. land1a_00004.png returns 244+4=248
+  //int get_pic_id_by_name(std::string &pic_name);
 
-   // used for game load. 248 => land1a_00004.png
-   //Picture& get_pic_by_id(const int imgId);
+  // used for game load. 248 => land1a_00004.png
+  //Picture& get_pic_by_id(const int imgId);
 
 
 private:
-   PicLoader();
-   static PicLoader* _instance;
+  PicLoader();
+  static PicLoader* _instance;
 
-   Picture make_picture(SDL_Surface *surface, const std::string& resource_name) const;
+  Picture make_picture(SDL_Surface *surface, const std::string& resource_name) const;
 
-   std::map<std::string, Picture> _resources;  // key=image name, value=picture
+  std::map<std::string, Picture> _resources;  // key=image name, value=picture
 };
 
 class Animation;
@@ -139,35 +139,35 @@ private:
 class CartLoader
 {
 public:
-   static CartLoader& instance();
+  static CartLoader& instance();
 
-   // loads all cart graphics
-   void loadAll();
+  // loads all cart graphics
+  void loadAll();
 
-   // fills the cart pictures
-   // prefix: image prefix
-   // start: index of the first frame
-   void fillCart(std::vector<Picture*> &ioCart, const std::string &prefix, const int start, bool back );
+  // fills the cart pictures
+  // prefix: image prefix
+  // start: index of the first frame
+  void fillCart(std::vector<Picture*> &ioCart, const std::string &prefix, const int start, bool back );
 
-   Picture& getCart(const GoodStock &stock, const DirectionType &direction);
-   Picture& getCart(GoodType cart, const DirectionType &direction );
-   // for emmigration & immigration
-   Picture& getCart(CartTypes cart, const DirectionType &direction);
+  Picture& getCart(const GoodStock &stock, const DirectionType &direction);
+  Picture& getCart(GoodType cart, const DirectionType &direction );
+  // for emmigration & immigration
+  Picture& getCart(CartTypes cart, const DirectionType &direction);
 
 private:
-   CartLoader();
-   static CartLoader* _instance;
+  CartLoader();
+  static CartLoader* _instance;
 
-   std::vector<std::vector<Picture*> > _carts; // pictures[GoodType][Direction]
+  std::vector<std::vector<Picture*> > _carts; // pictures[GoodType][Direction]
 };
 
 
 class FontLoader
 {
 public:
-   FontLoader();
+  FontLoader();
 
-   void load_all(const std::string &resourcePath);
+  void load_all(const std::string &resourcePath);
 };
 
 

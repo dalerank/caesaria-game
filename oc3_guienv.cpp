@@ -25,29 +25,29 @@
 class GuiEnv::Impl
 {
 public:
-    struct SToolTip
-    {
-        Widget* Element;
-        Uint32 LastTime;
-        Uint32 EnterTime;
-        Uint32 LaunchTime;
-        Uint32 RelaunchTime;
-    };
+  struct SToolTip
+  {
+    Widget* Element;
+    Uint32 LastTime;
+    Uint32 EnterTime;
+    Uint32 LaunchTime;
+    Uint32 RelaunchTime;
+  };
 
-    SToolTip toolTip;
-    bool preRenderFunctionCalled;
+  SToolTip toolTip;
+  bool preRenderFunctionCalled;
 
-    Widget* hovered;
-    Widget* focusedElement;
-    Widget* hoveredNoSubelement;
+  Widget* hovered;
+  Widget* focusedElement;
+  Widget* hoveredNoSubelement;
 
-    Point lastHoveredMousePos;
+  Point lastHoveredMousePos;
 
-    Widget::Widgets deletionQueue;
+  Widget::Widgets deletionQueue;
 
-    Rect _desiredRect;
-	GfxEngine* engine;
-	Point cursorPos;
+  Rect _desiredRect;
+  GfxEngine* engine;
+  Point cursorPos;
 };
 
 GuiEnv::GuiEnv( GfxEngine& engine )
@@ -189,16 +189,17 @@ bool GuiEnv::setFocus( Widget* element )
     // element is the new focus so it doesn't have to be dropped
     _d->focusedElement = element;
 
-    return true;}
+    return true;
+}
 
 Widget* GuiEnv::getFocus() const
 {
-	return _d->focusedElement;
+  return _d->focusedElement;
 }
 
 bool GuiEnv::isHovered( const Widget* element )
 {
-	return element != NULL ? (element == _d->hovered) : false;
+  return element != NULL ? (element == _d->hovered) : false;
 }
 
 void GuiEnv::deleteLater( Widget* ptrElement )
@@ -410,8 +411,8 @@ Widget* GuiEnv::getNextWidget(bool reverse, bool group)
 //! posts an input event to the environment
 bool GuiEnv::handleEvent( const NEvent& event )
 {
-    switch(event.EventType)
-    {
+  switch(event.EventType)
+  {
     case OC3_GUI_EVENT:
         // hey, why is the user sending gui events..?
         break;
@@ -504,10 +505,10 @@ bool GuiEnv::handleEvent( const NEvent& event )
 
     default:
         break;
-    } // end switch
+  } // end switch
 
 
-    return false;
+  return false;
 }
 
 Widget* GuiEnv::_CheckParent( Widget* parent )
@@ -546,29 +547,28 @@ void GuiEnv::beforeDraw()
 
 bool GuiEnv::removeFocus( Widget* element)
 {
-	if( _d->focusedElement && _d->focusedElement == element )
-	{
-		if( _d->focusedElement->onEvent( NEvent::Gui( _d->focusedElement,  0, OC3_ELEMENT_FOCUS_LOST )) )
-		{
+  if( _d->focusedElement && _d->focusedElement == element )
+  {
+    if( _d->focusedElement->onEvent( NEvent::Gui( _d->focusedElement,  0, OC3_ELEMENT_FOCUS_LOST )) )
+    {
+      return false;
+    }
+  }
+  if (_d->focusedElement)
+  {
+    _d->focusedElement->drop();
+    _d->focusedElement = 0;
+  }
 
-			return false;
-		}
-	}
-	if (_d->focusedElement)
-	{
-		_d->focusedElement->drop();
-		_d->focusedElement = 0;
-	}
-
-	return true;
+  return true;
 }
 
 void GuiEnv::animate( unsigned int time )
 {
-    Widget::animate( time );
+  Widget::animate( time );
 }
 
 Point GuiEnv::getCursorPos() const
 {
-    return _d->cursorPos;
+  return _d->cursorPos;
 }

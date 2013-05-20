@@ -244,23 +244,24 @@ void CaesarApp::setScreenMenu()
 
 void CaesarApp::setScreenGame()
 {
-   ScreenGame screen;
-   screen.setScenario(*_d->scenario);
-   screen.initialize( *_d->engine, *_d->gui );
-   int result = screen.run();
+  ScreenGame screen;
+  screen.setScenario(*_d->scenario);
+  screen.initialize( *_d->engine, *_d->gui );
+  int result = screen.run();
 
-   switch( result )
-   {
-   case ScreenGame::mainMenu:
-     _d->nextScreen = SCREEN_MENU;
-   break;
+  switch( result )
+  {
+    case ScreenGame::mainMenu:
+      _d->nextScreen = SCREEN_MENU;
+    break;
 
-   case ScreenGame::quitGame:
-     _d->nextScreen = SCREEN_QUIT;
-   break;
+    case ScreenGame::quitGame:
+      _d->nextScreen = SCREEN_QUIT;
+    break;
 
-   default: _d->nextScreen = SCREEN_QUIT;
-   }   
+    default:
+      _d->nextScreen = SCREEN_QUIT;
+  }   
 }
 
 

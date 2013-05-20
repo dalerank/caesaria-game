@@ -257,30 +257,30 @@ std::list<std::string> Font::split_text(const std::string &text, const int width
 
 bool Font::isValid() const
 {
-    return _ttfFont != 0;
+  return _ttfFont != 0;
 }
 
 Size Font::getSize( const std::string& text ) const
 {
-    int w, h;
-    TTF_SizeText( _ttfFont, text.c_str(), &w, &h);
+  int w, h;
+  TTF_SizeText( _ttfFont, text.c_str(), &w, &h);
 
-    return Size( w, h );
+  return Size( w, h );
 }
 
 bool Font::operator!=( const Font& other ) const
 {
-    return !( _ttfFont == other._ttfFont );
+  return !( _ttfFont == other._ttfFont );
 }
 
 Rect Font::calculateTextRect( const std::string& text, const Rect& baseRect, 
                               TypeAlign horizontalAlign, TypeAlign verticalAlign )
 {
-    Rect resultRect;
-    Size d = getSize( text );
+  Rect resultRect;
+  Size d = getSize( text );
 
-    // justification
-    switch (horizontalAlign)
+  // justification
+  switch (horizontalAlign)
     {
     case alignCenter:
         // align to h centre
@@ -364,25 +364,25 @@ FontCollection::FontCollection()
 
 Font& FontCollection::getFont(const int key)
 {
-   std::map<int, Font>::iterator it = _collection.find(key);
-   if (it == _collection.end())
-   {
-      THROW("Error, font is not initialized, key=" << key);
-   }
-   return (*it).second;
+  std::map<int, Font>::iterator it = _collection.find(key);
+  if (it == _collection.end())
+  {
+    THROW("Error, font is not initialized, key=" << key);
+  }
+  return (*it).second;
 }
 
 void FontCollection::setFont(const int key, Font& font)
 {
-   std::pair<std::map<int, Font>::iterator, bool> ret = _collection.insert(std::pair<int, Font>(key, font));
-   if (ret.second == false)
-   {
-      // no insert font (already exists)
-      THROW("Error, font already exists, key=" << key);
-   }
+  std::pair<std::map<int, Font>::iterator, bool> ret = _collection.insert(std::pair<int, Font>(key, font));
+  if (ret.second == false)
+  {
+    // no insert font (already exists)
+    THROW("Error, font already exists, key=" << key);
+  }
 
-   // // insert font
-   // std::cout << "Registered font with key=" << key << std::endl;
+  // // insert font
+  // std::cout << "Registered font with key=" << key << std::endl;
 }
 
 void Picture::lock()
@@ -476,5 +476,3 @@ void Picture::set_pixel(const int x, const int y, const Uint32 color)
     break;
   }
 }
-
-
