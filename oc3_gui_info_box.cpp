@@ -94,7 +94,7 @@ GuiInfoBox::GuiInfoBox( Widget* parent, const Rect& rect, int id )
     CONNECT( _d->btnExit, onClicked(), this, InfoBoxLand::deleteLater );
 
     SdlFacade &sdlFacade = SdlFacade::instance();
-    _d->bgPicture = &sdlFacade.createPicture( getWidth(), getHeight() );
+    _d->bgPicture = &GfxEngine::instance().createPicture( getWidth(), getHeight() );
 
     // draws the box and the inner black box
     GuiPaneling::instance().draw_white_frame(*_d->bgPicture, 0, 0, getWidth(), getHeight() );
@@ -185,18 +185,16 @@ void GuiInfoService::paint()
 
 void GuiInfoService::drawWorkers( int& paintY )
 {
-   SdlFacade &sdlFacade = SdlFacade::instance();
-
    // picture of citizen
-   Picture *pic = &PicLoader::instance().get_picture("paneling", 542);
-   sdlFacade.drawPicture(*pic, *_d->bgPicture, 16+15, paintY);
+   Picture& pic = Picture::load( ResourceGroup::panelBackground, 542);
+   _d->bgPicture->draw( pic, 16+15, paintY);
 
    // number of workers
-   char buffer[1000];
-   sprintf(buffer, _("%d employes (%d requis)"), _building->getWorkers(), _building->getMaxWorkers());
+   std::string text = StringHelper::format( 0xff, _("%d employes (%d requis)"), 
+                                            _building->getWorkers(), _building->getMaxWorkers() );
 
    Font &font = FontCollection::instance().getFont(FONT_2);
-   sdlFacade.drawText(*_d->bgPicture, std::string(buffer), 16+42, paintY+5, font);
+   font.draw( *_d->bgPicture, text, 16+42, paintY+5 );
    paintY+=20;
 }
 
@@ -273,13 +271,11 @@ void InfoBoxHouse::_paint()
 
 void InfoBoxHouse::drawHabitants()
 {
-   SdlFacade &sdlFacade = SdlFacade::instance();
-
    // citizen or patrician picture
    Uint32 picId = _ed->house->getLevelSpec().isPatrician() ? 541 : 542; 
    
-   Picture& citPic = PicLoader::instance().get_picture( ResourceGroup::panelBackground, picId );
-   sdlFacade.drawPicture( citPic, *_d->bgPicture, 16+15, 157 );
+   Picture& citPic = Picture::load( ResourceGroup::panelBackground, picId );
+   _d->bgPicture->draw( citPic, 16+15, 157 );
 
    // number of habitants
    _ed->lbHabitants = new Label( this, Rect( 60, 157, getWidth() - 16, 157 + citPic.get_height() ), "", false, true );
@@ -307,17 +303,15 @@ void InfoBoxHouse::drawHabitants()
 
 void InfoBoxHouse::drawGood(const GoodType &goodType, const int col, const int row, const int startY )
 {
-   SdlFacade &sdlFacade = SdlFacade::instance();
-   Font &font = FontCollection::instance().getFont(FONT_2);
+   Font& font = FontCollection::instance().getFont(FONT_2);
    int qty = _ed->house->getGoodStore().getCurrentQty(goodType);
 
    // pictures of goods
    Picture &pic = getPictureGood(goodType);
-   sdlFacade.drawPicture(pic, *_d->bgPicture, 31+100*col, startY + 2 + 30 * row);
+   _d->bgPicture->draw(pic, 31+100*col, startY + 2 + 30 * row);
 
-   char buffer[1000];
-   sprintf(buffer, "%d", qty);
-   sdlFacade.drawText(*_d->bgPicture, std::string(buffer), 61+100*col, startY + 30 * row, font);
+   std::string text = StringHelper::format( 0xff, "%d", qty);
+   font.draw( *_d->bgPicture, text, 61+100*col, startY + 30 * row );
 }
 
 GuiInfoFactory::GuiInfoFactory( Widget* parent, Factory &building)
@@ -337,32 +331,33 @@ void GuiInfoFactory::paint()
    Font &font = FontCollection::instance().getFont(FONT_2);
 
    // paint progress
-   char buffer[1000];
-   int progress = _building->getProgress();\
+   int progress = _building->getProgress();
    int _paintY = _d->lbTitle->getBottom();
 
-   sprintf(buffer, _("Le travail est a %d%% termine."), progress);
-   sdlFacade.drawText(*_d->bgPicture, std::string(buffer), 15, _paintY, font);
+   std::string text = StringHelper::format( 0xff, _("Le travail est a %d%% termine."), progress );
+   font.draw(*_d->bgPicture, text, 15, _paintY);
    _paintY+=22;
 
    // paint picture of in good
    if (_building->getInGood()._goodType != G_NONE)
    {
       Picture &pic = getPictureGood(_building->getInGood()._goodType);
-      sdlFacade.drawPicture(pic, *_d->bgPicture, 15, _paintY+2);
+      _d->bgPicture->draw(pic, 15, _paintY+2);
       int amount = _building->getInGood()._currentQty / 100;
       std::string goodName = GoodHelper::getInstance().getName( _building->getInGood()._goodType );
-      sprintf(buffer, _("%s en stock: %d unites"), goodName.c_str(), amount);
-      sdlFacade.drawText(*_d->bgPicture, std::string(buffer), 42, _paintY, font);
+    
+      text = StringHelper::format( 0xff, _("%s en stock: %d unites"), goodName.c_str(), amount );
+      
+      font.draw( *_d->bgPicture, text, 42, _paintY);
       _paintY+=22;
    }
 
-   std::string desc = getInfoText().c_str();
+   std::string desc = getInfoText();
    std::list<std::string> text_lines = font.split_text(desc, getWidth()-32);
    for (std::list<std::string>::iterator itlines = text_lines.begin(); itlines != text_lines.end(); ++itlines)
    {
       std::string &line = *itlines;
-      sdlFacade.drawText(*_d->bgPicture, line, 15, _paintY, font);
+      font.draw(*_d->bgPicture, line, 15, _paintY );
       _paintY+=19;
    }
 
@@ -379,16 +374,15 @@ void GuiInfoFactory::drawWorkers( int& paintY )
    SdlFacade &sdlFacade = SdlFacade::instance();
 
    // picture of citizen
-   Picture *pic = &PicLoader::instance().get_picture("paneling", 542);
-   sdlFacade.drawPicture(*pic, *_d->bgPicture, 16+15, paintY);
+   Picture *pic = &Picture::load( ResourceGroup::panelBackground, 542);
+   _d->bgPicture->draw( *pic, 16+15, paintY);
 
    // number of workers
-   char buffer[1000];
-   sprintf(buffer, _("%d employes (%d requis)"), _building->getWorkers(), _building->getMaxWorkers());
+   std::string text = StringHelper::format( 0xff, _("%d employes (%d requis)"), _building->getWorkers(), _building->getMaxWorkers());
 
    Font &font = FontCollection::instance().getFont(FONT_2);
-   sdlFacade.drawText(*_d->bgPicture, std::string(buffer), 16+42, paintY+5, font);
-   paintY += 20 ;
+   font.draw(*_d->bgPicture, text, 16+42, paintY+5 );
+   paintY += 20;
 }
 
 
@@ -473,7 +467,7 @@ void GuiInfoGranary::paint()
    char buffer[1000];
    sprintf(buffer, _("%d unites en stock. Espace pour %d unites."), currentQty, maxQty-currentQty);
 
-   sdlFacade.drawText(*_d->bgPicture, std::string(buffer), 16, _paintY+5, font);
+   font.draw(*_d->bgPicture, std::string(buffer), 16, _paintY+5);
    _paintY+=40;
 
    drawGood(G_WHEAT, _paintY);
@@ -495,15 +489,14 @@ void GuiInfoGranary::drawWorkers( int paintY )
    SdlFacade &sdlFacade = SdlFacade::instance();
 
    // picture of citizen
-   Picture *pic = &PicLoader::instance().get_picture("paneling", 542);
-   sdlFacade.drawPicture(*pic, *_d->bgPicture, 16+15, paintY);
+   Picture& pic = Picture::load( ResourceGroup::panelBackground, 542);
+   _d->bgPicture->draw(pic, 16+15, paintY);
 
    // number of workers
-   char buffer[1000];
-   sprintf(buffer, _("%d employes (%d requis)"), _building->getWorkers(), _building->getMaxWorkers());
+   std::string text = StringHelper::format( 0xff, _("%d employes (%d requis)"), _building->getWorkers(), _building->getMaxWorkers());
 
-   Font &font = FontCollection::instance().getFont(FONT_2);
-   sdlFacade.drawText(*_d->bgPicture, std::string(buffer), 16+42, paintY+5, font);
+   Font& font = FontCollection::instance().getFont(FONT_2);
+   font.draw(*_d->bgPicture, text, 16+42, paintY+5 );
    paintY+=20;
 }
 
@@ -522,10 +515,10 @@ void GuiInfoGranary::drawGood(const GoodType &goodType, int& paintY)
 
   // pictures of goods
   Picture &pic = getPictureGood(goodType);
-  sdlFacade.drawPicture(pic, *_d->bgPicture, 31, paintY);
+  _d->bgPicture->draw(pic, 31, paintY);
 
   std::string outText = StringHelper::format( 0xff, "%d %s", qty, goodName.c_str() );
-  sdlFacade.drawText(*_d->bgPicture, outText, 61, paintY, font);
+  font.draw( *_d->bgPicture, outText, 61, paintY );
   paintY += 22;
 }
 
@@ -579,15 +572,14 @@ void GuiInfoMarket::drawWorkers( int paintY )
    SdlFacade &sdlFacade = SdlFacade::instance();
 
    // picture of citizen
-   Picture *pic = &PicLoader::instance().get_picture("paneling", 542);
-   sdlFacade.drawPicture(*pic, *_d->bgPicture, 16+15, paintY);
+   Picture& pic = Picture::load( ResourceGroup::panelBackground, 542);
+   _d->bgPicture->draw( pic, 16+15, paintY);
 
    // number of workers
-   char buffer[1000];
-   sprintf(buffer, _("%d employes (%d requis)"), _building->getWorkers(), _building->getMaxWorkers());
+   std::string text = StringHelper::format( 0xff, _("%d employes (%d requis)"), _building->getWorkers(), _building->getMaxWorkers());
 
-   Font &font = FontCollection::instance().getFont(FONT_2);
-   sdlFacade.drawText(*_d->bgPicture, std::string(buffer), 16+42, paintY+5, font);
+   Font& font = FontCollection::instance().getFont(FONT_2);
+   font.draw(*_d->bgPicture, text, 16+42, paintY+5 );
    paintY+=20;
 }
 
@@ -607,10 +599,10 @@ void GuiInfoMarket::drawGood(const GoodType &goodType, int& paintY )
 
    // pictures of goods
    Picture &pic = getPictureGood(goodType);
-   sdlFacade.drawPicture(pic, *_d->bgPicture, 31, paintY);
+   _d->bgPicture->draw( pic, 31, paintY);
 
    std::string outText = StringHelper::format( 0xff, "%d %s", qty, goodName.c_str() );
-   sdlFacade.drawText(*_d->bgPicture, outText, 61, paintY, font);
+   font.draw(*_d->bgPicture, outText, 61, paintY );
 
    paintY += 22;
 }

@@ -22,6 +22,10 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <list>
+#include <vector>
+#include <SDL.h>
+#include <SDL_image.h>
 
 #include "oc3_exception.hpp"
 #include "oc3_pic_loader.hpp"
@@ -30,15 +34,30 @@
 #include "oc3_positioni.hpp"
 #include "oc3_pictureconverter.hpp"
 
-
-GfxSdlEngine::GfxSdlEngine() : GfxEngine()
+class GfxSdlEngine::Impl
 {
-  _screen = NULL;
+public:
+  Picture screen;
+  int rmask, gmask, bmask, amask;
+  Picture maskedPic;
+  std::list<Picture*> createdPics;  // list of all pictures created by the sdl_facade
+};
+
+
+GfxSdlEngine::GfxSdlEngine() : GfxEngine(), _d( new Impl )
+{
   resetTileDrawMask();
 }
 
 GfxSdlEngine::~GfxSdlEngine()
 {
+}
+
+void GfxSdlEngine::deletePicture( Picture &pic )
+{
+  unload_picture( pic );
+  delete &pic;
+  _d->createdPics.remove(&pic);
 }
 
 void GfxSdlEngine::init()
@@ -53,8 +72,9 @@ void GfxSdlEngine::init()
   aFlags |= SDL_DOUBLEBUF;
   aFlags |= SDL_SWSURFACE;
 
-  _screen = SDL_SetVideoMode(_screen_width, _screen_height, 32, aFlags);  // 32bpp
-  if (_screen == NULL) 
+  SDL_Surface* scr = SDL_SetVideoMode(_screen_width, _screen_height, 32, aFlags);  // 32bpp
+  _d->screen.init( scr, 0, 0 );
+  if( !_d->screen.isValid() ) 
   {
     THROW("Unable to set video mode: " << SDL_GetError());
   }
@@ -84,49 +104,66 @@ void GfxSdlEngine::load_picture(Picture& ioPicture)
 
 void GfxSdlEngine::unload_picture(Picture& ioPicture)
 {
-  SDL_FreeSurface(ioPicture._surface);
+  SDL_FreeSurface( ioPicture._surface );
   ioPicture._surface = NULL;
 }
 
 
-void GfxSdlEngine::init_frame()
+void GfxSdlEngine::startRenderFrame()
 {
-  SDL_FillRect(_screen, NULL, 0);  // black background for a complete redraw
+  SDL_FillRect( _d->screen.get_surface(), NULL, 0);  // black background for a complete redraw
 }
 
 
-void GfxSdlEngine::exit_frame()
+void GfxSdlEngine::endRenderFrame()
 {
-  SDL_Flip(_screen); //Refresh the screen
+  SDL_Flip( _d->screen.get_surface() ); //Refresh the screen
 }
 
 void GfxSdlEngine::drawPicture(const Picture &picture, const int dx, const int dy)
 {
-  if( _rmask || _gmask || _bmask )
+  if( _d->rmask || _d->gmask || _d->bmask )
   {
-    PictureConverter::maskColor( _maskedPic, picture, _rmask, _gmask, _bmask, _amask );
-    SdlFacade::instance().drawPicture( _maskedPic, _screen, dx, dy );
+    PictureConverter::maskColor( _d->maskedPic, picture, _d->rmask, _d->gmask, _d->bmask, _d->amask );
+    _d->screen.draw( _d->maskedPic, dx, dy );
   }
   else
   {
-    SdlFacade::instance().drawPicture(picture, _screen, dx, dy );
+    _d->screen.draw( picture, dx, dy );
   }
 }
 
 void GfxSdlEngine::drawPicture( const Picture &picture, const Point& pos )
 {
-  drawPicture(picture, pos.getX(), pos.getY() );
+  drawPicture( picture, pos.getX(), pos.getY() );
 }
 
 void GfxSdlEngine::setTileDrawMask( int rmask, int gmask, int bmask, int amask )
 {
-  _rmask = rmask;
-  _gmask = gmask;
-  _bmask = bmask;
-  _amask = amask;
+  _d->rmask = rmask;
+  _d->gmask = gmask;
+  _d->bmask = bmask;
+  _d->amask = amask;
 }
 
 void GfxSdlEngine::resetTileDrawMask()
 {
-  _rmask = _gmask = _bmask = _amask = 0;
+  _d->rmask = _d->gmask = _d->bmask = _d->amask = 0;
+}
+
+Picture& GfxSdlEngine::createPicture(const int width, const int height)
+{
+  SDL_Surface* img;
+  const Uint32 flags = 0;
+  img = SDL_CreateRGBSurface(flags, width, height, 32, 0,0,0,0);  // opaque picture with default mask
+  if (img == NULL)
+  {
+    THROW("Cannot make surface, size=" << width << "x" << height);
+  }
+
+  Picture *pic = new Picture();
+  pic->init(img, 0, 0);  // no offset
+
+  _d->createdPics.push_back(pic);
+  return *_d->createdPics.back();
 }

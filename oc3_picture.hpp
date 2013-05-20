@@ -51,11 +51,23 @@ public:
    void set_name(std::string &name);  // for save game
    std::string get_name();
 
+   Picture& copy() const;
    SDL_Surface *get_surface() const;
    int get_xoffset() const;
    int get_yoffset() const;
    int get_width() const;
    int get_height() const;
+
+   void draw( const Picture &srcpic, const int dx, const int dy );
+   void draw( const Picture &srcpic, const Rect& srcrect, const Point& pos );
+
+   // lock/unlock the given surface for pixel access
+   void lock();
+   void unlock();
+
+   // Uint32 is the pixel color in the surface format. The surface must be locked!!!
+   Uint32 get_pixel( const int x, const int y);
+   void set_pixel(const int x, const int y, const Uint32 color);
 
    Size getSize() const;
 
@@ -102,6 +114,8 @@ public:
 
     Rect calculateTextRect( const std::string& text, const Rect& baseRect, 
                             TypeAlign horizontalAlign, TypeAlign verticalAlign );
+
+    void draw(Picture &dstpic, const std::string &text, const int dx, const int dy);
 
 private:
     TTF_Font *_ttfFont;

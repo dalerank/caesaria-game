@@ -88,7 +88,7 @@ void GfxGlEngine::unload_picture(Picture &ioPicture)
    ioPicture._surface = NULL;
 }
 
-void GfxGlEngine::load_picture(Picture &ioPicture)
+void GfxGlEngine::load_picture(Picture& ioPicture)
 {
    GLuint &texture = ioPicture._glTextureID;
    SDL_Surface *surface = ioPicture._surface;
@@ -132,10 +132,10 @@ void GfxGlEngine::load_picture(Picture &ioPicture)
    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 
    // Edit the texture object's image data using the information SDL_Surface gives us
-   SdlFacade::instance().lockSurface(surface);
+   ioPicture.lock();
    glTexImage2D( GL_TEXTURE_2D, 0, nOfColors, surface->w, surface->h, 0,
                  texture_format, GL_UNSIGNED_BYTE, surface->pixels );
-   SdlFacade::instance().unlockSurface(surface);
+   ioPicture.unlock();
 }
 
 

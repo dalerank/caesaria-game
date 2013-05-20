@@ -52,34 +52,31 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
   TopMenu* ret = new TopMenu( parent, height);
   ret->setGeometry( Rect( 0, 0, parent->getWidth(), height ) );
 
-  PicLoader& loader = PicLoader::instance();
   FontCollection& fonts = FontCollection::instance();
+  GfxEngine& engine = GfxEngine::instance();
 
   std::vector<Picture> p_marble;
-
   for (int i = 1; i<=12; ++i)
   {
-    p_marble.push_back(loader.get_picture( ResourceGroup::panelBackground, i));
+    p_marble.push_back( Picture::load( ResourceGroup::panelBackground, i));
   }
 
-  SdlFacade &sdlFacade = SdlFacade::instance();
-  ret->_d->bgPicture = &sdlFacade.createPicture( ret->getWidth(), ret->getHeight() );
-  //SDL_SetAlpha( ret->_d->bgPicture->get_surface(), 0, 0);  // remove surface alpha
+  ret->_d->bgPicture = &engine.createPicture( ret->getWidth(), ret->getHeight() );
 
   int i = 0;
   unsigned int x = 0;
   while (x < ret->getWidth())
   {
     const Picture& pic = p_marble[i%10];
-    sdlFacade.drawPicture(pic, *ret->_d->bgPicture, x, 0);
+    ret->_d->bgPicture->draw( pic, x, 0);
     x += pic.get_width();
     i++;
   }
 
   Size lbSize( 120, 23 );
   ret->_d->lbPopulation = new Label( ret, Rect( Point( ret->getWidth() - populationLabelOffset, 0 ), lbSize ),
-      "Pop 34,124", false, true, -1 );
-  ret->_d->lbPopulation->setBackgroundPicture( loader.get_picture( ResourceGroup::panelBackground, panelBgStatus ) );
+                                     "Pop 34,124", false, true, -1 );
+  ret->_d->lbPopulation->setBackgroundPicture( Picture::load( ResourceGroup::panelBackground, panelBgStatus ) );
   ret->_d->lbPopulation->setFont( fonts.getFont(FONT_2_WHITE) );
   ret->_d->lbPopulation->setTextAlignment( alignCenter, alignCenter );
   //_populationLabel.setTextPosition(20, 0);
@@ -88,14 +85,14 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
       "Dn 10,000", false, true, -1 );
   ret->_d->lbFunds->setFont( fonts.getFont(FONT_2_WHITE));
   ret->_d->lbFunds->setTextAlignment( alignCenter, alignCenter );
-  ret->_d->lbFunds->setBackgroundPicture( loader.get_picture( ResourceGroup::panelBackground, panelBgStatus ) );
+  ret->_d->lbFunds->setBackgroundPicture( Picture::load( ResourceGroup::panelBackground, panelBgStatus ) );
   //_fundsLabel.setTextPosition(20, 0);
 
   ret->_d->lbDate = new Label( ret, Rect( Point( ret->getWidth() - dateLabelOffset, 0), lbSize ),
       "Feb 39 BC", false, true, -1 );
   ret->_d->lbDate->setFont( fonts.getFont(FONT_2_YELLOW));
   ret->_d->lbDate->setTextAlignment( alignCenter, alignCenter );
-  ret->_d->lbDate->setBackgroundPicture( loader.get_picture( ResourceGroup::panelBackground, panelBgStatus ) );
+  ret->_d->lbDate->setBackgroundPicture( Picture::load( ResourceGroup::panelBackground, panelBgStatus ) );
   //_dateLabel.setTextPosition(20, 0);
 
   GfxEngine::instance().load_picture(*ret->_d->bgPicture);

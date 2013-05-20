@@ -286,14 +286,6 @@ FactoryOil::FactoryOil() : Factory(G_OLIVE, G_OIL, B_OIL, Size(2) )
    _fgPictures.resize(2);
 }
 
-FactoryPottery::FactoryPottery() : Factory(G_CLAY, G_POTTERY, B_POTTERY, Size(2))
-{
-  _picture = &Picture::load(ResourceGroup::commerce, 132);
-
-   _animation.load(ResourceGroup::commerce, 133, 7);
-   _fgPictures.resize(2);
-}
-
 Wharf::Wharf() : Factory(G_NONE, G_FISH, B_WHARF, Size(2))
 {
   // transport 52 53 54 55

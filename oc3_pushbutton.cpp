@@ -48,7 +48,7 @@ public:
     ElementState currentButtonState, lastButtonState;
     ButtonState buttonStates[ StateCount ];
 
-public oc3_signals:
+oc3_signals public:
     Signal0<> onClickedSignal;
 
 public:
@@ -74,11 +74,11 @@ public:
 
     void releaseTexture( ElementState state )
     {
-        if( buttonStates[ state ].texture )
-        {
-            SdlFacade::instance().deletePicture( *buttonStates[ state ].texture );
-            buttonStates[ state ].texture = 0;
-        }
+      if( buttonStates[ state ].texture )
+      {
+        GfxEngine::instance().deletePicture( *buttonStates[ state ].texture );
+        buttonStates[ state ].texture = 0;
+      }
     }
 };
 
@@ -115,24 +115,24 @@ void PushButton::_updateTexture( ElementState state )
         _d->releaseTexture( state );
 
     if( !curTxs )
-        curTxs = &SdlFacade::instance().createPicture( btnSize.getWidth(), btnSize.getHeight() );
+      curTxs = &GfxEngine::instance().createPicture( btnSize.getWidth(), btnSize.getHeight() );
 
     // draw button background
     if( _d->buttonStates[ state ].bgTexture )
     {
-        SdlFacade::instance().drawPicture( *_d->buttonStates[ state ].bgTexture, *curTxs, 0, 0 );
+      curTxs->draw( *_d->buttonStates[ state ].bgTexture, 0, 0 );
     }    
     else
     {
-        const int picId[StateCount] = { 22, 25, 25, 22, 25 };
-        GuiPaneling::instance().draw_basic_text_button( *curTxs, 0, 0, getSize().getWidth(), picId[ state ] );
+      const int picId[StateCount] = { 22, 25, 25, 22, 25 };
+      GuiPaneling::instance().draw_basic_text_button( *curTxs, 0, 0, getSize().getWidth(), picId[ state ] );
     }
 
     if( _d->buttonStates[ state ].font.isValid() )
     {
-        Rect textRect = _d->buttonStates[ state ].font.calculateTextRect( getText(), Rect( 0, 0, getWidth(), getHeight() ),
-                                                                          getHorizontalTextAlign(), getVerticalTextAlign() );
-        SdlFacade::instance().drawText( *curTxs, getText(), textRect.getLeft(), textRect.getTop(), _d->buttonStates[ state ].font );
+      Rect textRect = _d->buttonStates[ state ].font.calculateTextRect( getText(), Rect( 0, 0, getWidth(), getHeight() ),
+                                                                        getHorizontalTextAlign(), getVerticalTextAlign() );
+      _d->buttonStates[ state ].font.draw( *curTxs, getText(), textRect.getLeft(), textRect.getTop() );
     }
 }
 

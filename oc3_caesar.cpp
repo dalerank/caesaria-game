@@ -34,8 +34,13 @@
 #include "oc3_screen_game.hpp"
 #include "oc3_house_level.hpp"
 #include "oc3_guienv.hpp"
+#include "oc3_app_config.hpp"
+
+#include <boost/filesystem.hpp>
 #include <libintl.h>
 #include <list>
+
+namespace fs = boost::filesystem;
 
 #if defined(_MSC_VER)
   #undef main
@@ -52,6 +57,7 @@ public:
   void initLocale();
   bool load(const std::string& filename);
   void initPictures(const std::string &resourcePath);
+  std::vector<fs::path> scanForMaps(const std::string &resourcePath) const;
 };
 
 void CaesarApp::Impl::initLocale()
@@ -167,11 +173,11 @@ void CaesarApp::setScreenWait()
    screen.drawFrame();
 }
 
-std::vector <fs::path> CaesarApp::scanForMaps(const std::string &resourcePath) const
+std::vector <fs::path> CaesarApp::Impl::scanForMaps(const std::string &resourcePath) const
 {
   // scan for map-files and make their list
     
-  fs::path path (resourcePath + "/maps/");
+  fs::path path( resourcePath + "/maps/" );
   std::vector <fs::path> filelist;
   
   fs::recursive_directory_iterator it (path);
@@ -190,7 +196,7 @@ std::vector <fs::path> CaesarApp::scanForMaps(const std::string &resourcePath) c
   return filelist;
 }
 
-void CaesarApp::setScreenMenu(const std::string &resourcePath)
+void CaesarApp::setScreenMenu()
 {
   ScreenMenu screen;
   screen.initialize( *_d->engine, *_d->gui );
@@ -201,7 +207,7 @@ void CaesarApp::setScreenMenu(const std::string &resourcePath)
     case ScreenMenu::startNewGame:
     {
       /* temporary*/
-      std::vector <fs::path> filelist = scanForMaps(resourcePath);
+      std::vector<fs::path> filelist = _d->scanForMaps( AppConfig::get( AppConfig::resourcePath ).toString() );
       std::srand( (Uint32)std::time(0));
       std::string file = filelist.at(std::rand() % filelist.size()).string();
       std::cout<<"Loading map:" << file << std::endl;
@@ -213,7 +219,7 @@ void CaesarApp::setScreenMenu(const std::string &resourcePath)
     case ScreenMenu::loadSavedGame:
     {  
       std::cout<<"Loading map:" << "lepcismagna.sav" << std::endl;
-      bool loadok = _d->load(resourcePath + "/savs/" + "timgad.sav");
+      bool loadok = _d->load(  AppConfig::get( AppConfig::resourcePath ).toString() + "/savs/" + "timgad.sav");
       _d->nextScreen = loadok ? SCREEN_GAME : SCREEN_MENU;
     }
     break;
@@ -264,11 +270,9 @@ CaesarApp::CaesarApp() : _d( new Impl )
    _d->nextScreen = SCREEN_NONE;
 }
 
-void CaesarApp::start(const std::string &resourcePath)
+void CaesarApp::start()
 {
-   //Create right PicLoader instance in the beginning
-   PicLoader &pic_loader = PicLoader::instance(resourcePath);
-   
+   //Create right PicLoader instance in the beginning   
    _d->initLocale();
    
    initVideo();
@@ -278,8 +282,9 @@ void CaesarApp::start(const std::string &resourcePath)
    initWaitPictures();  // init some quick pictures for screenWait
    setScreenWait();
 
-   _d->initPictures(resourcePath);
-   HouseSpecHelper::getInstance().loadHouseModel( resourcePath + "/house.model" );
+   const std::string rPath =  AppConfig::get( AppConfig::resourcePath ).toString();
+   _d->initPictures( rPath );
+   HouseSpecHelper::getInstance().loadHouseModel( rPath + "/house.model" );
 
    _d->nextScreen = SCREEN_MENU;
 
@@ -288,7 +293,7 @@ void CaesarApp::start(const std::string &resourcePath)
       switch(_d->nextScreen)
       {
       case SCREEN_MENU:
-         setScreenMenu(resourcePath);
+         setScreenMenu();
          break;
       case SCREEN_GAME:
          setScreenGame();
@@ -304,13 +309,11 @@ void CaesarApp::start(const std::string &resourcePath)
 
 int main(int argc, char* argv[])
 {
-   std::string reource_path = "./resources";
    for (int i = 0; i < (argc - 1); i++)
    {
-     std::string sargv(argv[i]);
-	   if ( sargv == "-R")
+	   if( !strcmp( argv[i], "-R" ) )
 	   {
-		   reource_path = argv[i+1];
+       AppConfig::set( AppConfig::resourcePath, Variant( std::string( argv[i+1] ) ) );
 		   break;
 	   }
    }
@@ -318,7 +321,7 @@ int main(int argc, char* argv[])
    try
    {
       CaesarApp app;
-      app.start(reource_path);
+      app.start();
    }
    catch (Exception e)
    {

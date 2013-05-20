@@ -95,16 +95,16 @@ void ListBox::_updateTexture()
 
   if( _d->background && _d->background->getSize() != size )
   {
-    SdlFacade::instance().deletePicture( *_d->background );
-    SdlFacade::instance().deletePicture( *_d->picture );
+    GfxEngine::instance().deletePicture( *_d->background );
+    GfxEngine::instance().deletePicture( *_d->picture );
     _d->background = 0;
     _d->picture = 0;
   }
 
   if( !_d->background )
   {    
-    _d->background = &SdlFacade::instance().createPicture( size.getWidth(), size.getHeight() );
-    _d->picture = &SdlFacade::instance().createPicture( size.getWidth(), size.getHeight() );
+    _d->background = &GfxEngine::instance().createPicture( size.getWidth(), size.getHeight() );
+    _d->picture = &GfxEngine::instance().createPicture( size.getWidth(), size.getHeight() );
     GuiPaneling::instance().draw_black_frame(*_d->background, 0, 0, getWidth(), getHeight() );
   }
 }
@@ -560,7 +560,7 @@ void ListBox::beforeDraw( GfxEngine& painter)
     {
       _updateTexture();
 
-      SdlFacade::instance().drawPicture( *_d->background, *_d->picture, 0, 0 );
+      _d->picture->draw( *_d->background, 0, 0 );
     
       bool hl = ( isFlag( LBF_HIGHLIGHTWHEN_NOTFOCUSED ) || isFocused() || _d->scrollBar->isFocused() );
       Rect frameRect = getItemTextRect_();
@@ -590,7 +590,7 @@ void ListBox::beforeDraw( GfxEngine& painter)
 
            textRect.UpperLeftCorner += Point( _d->itemsIconWidth+3, 0 );
 
-           SdlFacade::instance().drawText( *_d->picture, refItem.getText(), textRect.getLeft(), textRect.getTop(), currentFont );
+           currentFont.draw( *_d->picture, refItem.getText(), textRect.getLeft(), textRect.getTop()  );
          }
 
          frameRect += Point( 0, _d->itemHeight );

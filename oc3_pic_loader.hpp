@@ -60,7 +60,6 @@ class PicLoader
 {
 public:
    static PicLoader& instance();
-   static PicLoader& instance(const std::string &resourcePath);
 
    // set the current picture
    void set_picture(const std::string &name, SDL_Surface &surface);
@@ -96,13 +95,12 @@ public:
 
 
 private:
-   PicLoader(const std::string &resourcePath);
+   PicLoader();
    static PicLoader* _instance;
 
    Picture make_picture(SDL_Surface *surface, const std::string& resource_name) const;
 
    std::map<std::string, Picture> _resources;  // key=image name, value=picture
-   std::string _resourcePath;
 };
 
 class Animation;

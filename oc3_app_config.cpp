@@ -13,18 +13,33 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_factory_pottery.hpp"
-#include "oc3_picture.hpp"
-#include "oc3_resourcegroup.hpp"
+#include "oc3_app_config.hpp"
 
-FactoryPottery::FactoryPottery() : Factory(G_CLAY, G_POTTERY, B_POTTERY, Size(2))
+const std::string AppConfig::resourcePath = "resourcePath";
+
+class AppConfig::Impl
 {
-  _picture = &Picture::load(ResourceGroup::commerce, 132);
+public:
+  VariantMap options;
+};
 
-  _animation.load(ResourceGroup::commerce, 133, 7);
-  _animation.setFrameDelay( 3 );
-  _fgPictures.resize(2);
+AppConfig& AppConfig::getInstance()
+{
+  static AppConfig inst;
+  return inst;
+}
 
-  setMaxWorkers( 10 );
-  setWorkers( 0 );
+AppConfig::AppConfig() : _d( new Impl )
+{
+  _d->options[ resourcePath ] = Variant( std::string( "./resources" ) );
+}
+
+void AppConfig::set( const std::string& option, const Variant& value )
+{
+  getInstance()._d->options[ option ] = value;
+}
+
+Variant AppConfig::get( const std::string& option )
+{
+  return getInstance()._d->options[ option ];
 }

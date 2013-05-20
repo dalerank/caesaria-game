@@ -101,7 +101,7 @@ bool ScenarioMapLoader::isLoadableFileExtension( const std::string& filename )
   return filename.substr( filename.size() - 4, -1 ) == ".map";
 }
 
-void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario &oScenario)
+void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario& oScenario)
 {
   City& oCity = oScenario.getCity();
   Tilemap& oTilemap = oCity.getTilemap();
@@ -330,12 +330,7 @@ void ScenarioMapLoader::Impl::decodeTerrain(Tile &oTile)
   }
   else if (terrain.isBuilding())
   {
-    std::cout << "Building at (" << oTile.getI() << "," << oTile.getJ() << ") with ID: ";
-
-    std::cout.setf(std::ios::hex, std::ios::basefield);
-    std::cout << terrain.getOriginalImgId();
-    std::cout.unsetf(std::ios::hex);
-    std::cout << std::endl;    
+    StringHelper::debug( 0xff, "Building at ( %d, %d ) with ID: %x", oTile.getI(), oTile.getJ(), terrain.getOriginalImgId() );
   
     switch ( terrain.getOriginalImgId() )
     {

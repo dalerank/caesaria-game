@@ -24,9 +24,7 @@
 #include "oc3_sdl_facade.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_pushbutton.hpp"
-
-#include <iostream>
-
+#include "oc3_resourcegroup.hpp"
 
 GuiPaneling* GuiPaneling::_instance = NULL;
 
@@ -53,21 +51,19 @@ void GuiPaneling::configureTexturedButton( PushButton* oButton, const std::strin
 
 void GuiPaneling::draw_white_area(Picture &dstpic, const int x, const int y, const int width, const int height)
 {
-   SdlFacade &sdlFacade = SdlFacade::instance();
-
    for (int j = 0; j<(height/16+1); ++j)
    {
       for (int i = 0; i<(width/16+1); ++i)
       {
          // use some clipping to remove the right and bottom areas
-         Picture &srcpic = PicLoader::instance().get_picture("paneling", 348+i%10 + 12*(j%10));
-         SDL_Surface *srcimg = srcpic.get_surface();
-         SDL_Surface *dstimg = dstpic.get_surface();
-         int dx = 16*i;
-         int dy = 16*j;
-         int sw = std::min(16, width-dx);
-         int sh = std::min(16, height-dy);
-         sdlFacade.drawImage(srcimg, 0, 0, sw, sh, dstimg, x+dx, y+dy);
+        Picture &srcpic = Picture::load( ResourceGroup::panelBackground, 348+i%10 + 12*(j%10));
+
+        int dx = 16*i;
+        int dy = 16*j;
+        int sw = std::min(16, width-dx);
+        int sh = std::min(16, height-dy);
+
+        dstpic.draw( srcpic, Rect( 0, 0, sw, sh), Point( x+dx, y+dy ) );
       }
    }
 }
@@ -75,21 +71,19 @@ void GuiPaneling::draw_white_area(Picture &dstpic, const int x, const int y, con
 
 void GuiPaneling::draw_black_area(Picture &dstpic, const int x, const int y, const int width, const int height)
 {
-   SdlFacade &sdlFacade = SdlFacade::instance();
-
    for (int j = 0; j<(height/16+1); ++j)
    {
       for (int i = 0; i<(width/16+1); ++i)
       {
          // use some clipping to remove the right and bottom areas
-         Picture &srcpic = PicLoader::instance().get_picture("paneling", 487+i%5 + 7*(j%5));
-         SDL_Surface *srcimg = srcpic.get_surface();
-         SDL_Surface *dstimg = dstpic.get_surface();
-         int dx = 16*i;
-         int dy = 16*j;
-         int sw = std::min(16, width-dx);
-         int sh = std::min(16, height-dy);
-         sdlFacade.drawImage(srcimg, 0, 0, sw, sh, dstimg, x+dx, y+dy);
+        Picture &srcpic = Picture::load( ResourceGroup::panelBackground, 487+i%5 + 7*(j%5));
+
+        int dx = 16*i;
+        int dy = 16*j;
+        int sw = std::min(16, width-dx);
+        int sh = std::min(16, height-dy);
+        
+        dstpic.draw( srcpic, Rect( 0, 0, sw, sh ), Point( x+dx, y+dy ) );
       }
    }
 }
@@ -97,34 +91,32 @@ void GuiPaneling::draw_black_area(Picture &dstpic, const int x, const int y, con
 
 void GuiPaneling::draw_white_borders(Picture &dstpic, const int x, const int y, const int width, const int height)
 {
-   SdlFacade &sdlFacade = SdlFacade::instance();
-
    // draws horizontal borders
    for (int i = 0; i<(width/16-1); ++i)
    {
-      // top border
-      sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", 336+i%10), dstpic, x+16+16*i, y);
-      // bottom border
-      sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", 468+i%10), dstpic, x+16+16*i, y+height-16);
+     // top border
+     dstpic.draw( Picture::load( ResourceGroup::panelBackground, 336+i%10), x+16+16*i, y);
+     // bottom border
+     dstpic.draw( Picture::load( ResourceGroup::panelBackground, 468+i%10), x+16+16*i, y+height-16);
    }
 
    // draws vertical borders
    for (int i = 0; i<(height/16-1); ++i)
    {
-      // left border
-      sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", 347+12*(i%10)), dstpic, x, y+16+16*i);
-      // right border
-      sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", 358+12*(i%10)), dstpic, x+width-16, y+16+16*i);
+     // left border
+     dstpic.draw( Picture::load( ResourceGroup::panelBackground, 347+12*(i%10)), x, y+16+16*i);
+     // right border
+     dstpic.draw( Picture::load( ResourceGroup::panelBackground, 358+12*(i%10)), x+width-16, y+16+16*i);
    }
 
    // left-top corner
-   sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", 335), dstpic, x, y);
+   dstpic.draw( Picture::load( ResourceGroup::panelBackground, 335), x, y);
    // left-bottom corner
-   sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", 467), dstpic, x, y+height-16);
+   dstpic.draw( Picture::load( ResourceGroup::panelBackground, 467), x, y+height-16);
    // right-top corner
-   sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", 346), dstpic, x+width-16, y);
+   dstpic.draw( Picture::load( ResourceGroup::panelBackground, 346), x+width-16, y);
    // right-bottom corner
-   sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", 478), dstpic, x+width-16, y+height-16);
+   dstpic.draw( Picture::load( ResourceGroup::panelBackground, 478), x+width-16, y+height-16);
 }
 
 
@@ -136,28 +128,28 @@ void GuiPaneling::draw_black_borders(Picture &dstpic, const int x, const int y, 
    for (int i = 0; i<(width/16-1); ++i)
    {
       // top border
-      sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", 480+i%5), dstpic, x+16+16*i, y);
+      dstpic.draw(Picture::load( ResourceGroup::panelBackground, 480+i%5), x+16+16*i, y);
       // bottom border
-      sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", 522+i%5), dstpic, x+16+16*i, y+height-16);
+      dstpic.draw(Picture::load( ResourceGroup::panelBackground, 522+i%5), x+16+16*i, y+height-16);
    }
 
    // draws vertical borders
    for (int i = 0; i<(height/16-1); ++i)
    {
       // left border
-      sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", 486+7*(i%5)), dstpic, x, y+16+16*i);
+      dstpic.draw(Picture::load( ResourceGroup::panelBackground, 486+7*(i%5)), x, y+16+16*i);
       // right border
-      sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", 492+7*(i%5)), dstpic, x+width-16, y+16+16*i);
+      dstpic.draw(Picture::load( ResourceGroup::panelBackground, 492+7*(i%5)), x+width-16, y+16+16*i);
    }
 
    // left-top corner
-   sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", 479), dstpic, x, y);
+   dstpic.draw(Picture::load( ResourceGroup::panelBackground, 479), x, y);
    // left-bottom corner
-   sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", 521), dstpic, x, y+height-16);
+   dstpic.draw(Picture::load( ResourceGroup::panelBackground, 521), x, y+height-16);
    // right-top corner
-   sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", 485), dstpic, x+width-16, y);
+   dstpic.draw(Picture::load( ResourceGroup::panelBackground, 485), x+width-16, y);
    // right-bottom corner
-   sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", 527), dstpic, x+width-16, y+height-16);
+   dstpic.draw(Picture::load( ResourceGroup::panelBackground, 527), x+width-16, y+height-16);
 }
 
 
@@ -192,7 +184,7 @@ void GuiPaneling::draw_basic_frame(Picture &dstpic, const int x, const int y, co
    {
       for (int i = 0; i<(width/16-1); ++i)
       {
-         sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", offset+4), dstpic, x+16+16*i, y+16+16*j);
+         dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+4), x+16+16*i, y+16+16*j);
       }
    }
 
@@ -200,28 +192,28 @@ void GuiPaneling::draw_basic_frame(Picture &dstpic, const int x, const int y, co
    for (int i = 0; i<(width/16-1); ++i)
    {
       // top border
-      sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", offset+1), dstpic, x+16+16*i, y);
+      dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+1), x+16+16*i, y);
       // bottom border
-      sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", offset+7), dstpic, x+16+16*i, y+height-16);
+      dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+7), x+16+16*i, y+height-16);
    }
 
    // draws vertical borders
    for (int i = 0; i<(height/16-1); ++i)
    {
       // left border
-      sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", offset+3), dstpic, x, y+16+16*i);
+      dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+3), x, y+16+16*i);
       // right border
-      sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", offset+5), dstpic, x+width-16, y+16+16*i);
+      dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+5), x+width-16, y+16+16*i);
    }
 
    // topLeft corner
-   sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", offset+0), dstpic, x, y);
+   dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+0), x, y);
    // topRight corner
-   sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", offset+2), dstpic, x+width-16, y);
+   dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+2), x+width-16, y);
    // bottomLeft corner
-   sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", offset+6), dstpic, x, y+height-16);
+   dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+6), x, y+height-16);
    // bottomRight corner
-   sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", offset+8), dstpic, x+width-16, y+height-16);
+   dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+8), x+width-16, y+height-16);
 }
 
 
@@ -246,28 +238,28 @@ void GuiPaneling::draw_basic0_borders(Picture &dstpic, const int x, const int y,
    for (int i = 0; i<(width/16-1); ++i)
    {
       // top border
-      sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", offset+1), dstpic, x+16+16*i, y);
+      dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+1),x+16+16*i, y);
       // bottom border
-      sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", offset+5), dstpic, x+16+16*i, y+height-16);
+      dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+5),x+16+16*i, y+height-16);
    }
 
    // draws vertical borders
    for (int i = 0; i<(height/16-1); ++i)
    {
       // left border
-      sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", offset+7), dstpic, x, y+16+16*i);
+      dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+7), x, y+16+16*i);
       // right border
-      sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", offset+3), dstpic, x+width-16, y+16+16*i);
+      dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+3), x+width-16, y+16+16*i);
    }
 
    // topLeft corner
-   sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", offset+0), dstpic, x, y);
+   dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+0), x, y);
    // topRight corner
-   sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", offset+2), dstpic, x+width-16, y);
+   dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+2), x+width-16, y);
    // bottomLeft corner
-   sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", offset+6), dstpic, x, y+height-16);
+   dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+6), x, y+height-16);
    // bottomRight corner
-   sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", offset+4), dstpic, x+width-16, y+height-16);
+   dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+4), x+width-16, y+height-16);
 }
 
 void GuiPaneling::draw_brown0_borders(Picture &dstpic, const int x, const int y, const int width, const int height)
@@ -287,13 +279,13 @@ void GuiPaneling::draw_basic_text_button(Picture &dstpic, const int x, const int
    // draws the inside
    for (int i = 0; i<(width/16-1); ++i)
    {
-      sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", offset+1), dstpic, x+16+16*i, y);
+     dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+1), x+16+16*i, y);
    }
 
    // left side
-   sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", offset), dstpic, x, y);
+   dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset), x, y);
 
    // right side
-   sdlFacade.drawPicture(PicLoader::instance().get_picture("paneling", offset+2), dstpic, x+width-16, y);
+   dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+2), x+width-16, y);
 }
 

@@ -33,9 +33,11 @@ Screen::~Screen() {}
 void Screen::drawFrame()
 {
    GfxEngine &engine = GfxEngine::instance();
-   engine.init_frame();
+   engine.startRenderFrame();
+   
    draw();
-   engine.exit_frame();
+   
+   engine.endRenderFrame();
 }
 
 void Screen::handleEvent( NEvent& event) {}

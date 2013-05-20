@@ -36,10 +36,8 @@
 #include "oc3_sdl_facade.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_animation.hpp"
-
-namespace {
-static const char* rcCartsGroup    = "carts";
-}
+#include "oc3_app_config.hpp"
+#include "oc3_stringhelper.hpp"
 
 PicMetaData* PicMetaData::_instance = NULL;
 
@@ -200,28 +198,11 @@ PicInfo& PicMetaData::get_data(const std::string &resource_name)
    return (*it).second;
 }
 
-
-PicLoader* PicLoader::_instance = NULL;
-
 PicLoader& PicLoader::instance()
 {
-	return PicLoader::instance("./resource");
+   static PicLoader inst; 
+   return inst;
 }
-
-PicLoader& PicLoader::instance(const std::string &resourcePath)
-{
-   if (_instance == NULL)
-   {
-      _instance = new PicLoader(resourcePath);
-      if (_instance == NULL) THROW("Memory error, cannot instantiate object");
-   }
-   return *_instance;
-}
-
-PicLoader::PicLoader(const std::string &resourcePath) :
-	_resourcePath(resourcePath)
-{ }
-
 
 void PicLoader::set_picture(const std::string &name, SDL_Surface &surface)
 {
@@ -310,7 +291,7 @@ Picture& PicLoader::get_picture_good(const GoodType goodType)
       THROW("This good type has no picture:" << goodType);
    }
 
-   return get_picture("paneling", pic_index);
+   return get_picture( ResourceGroup::panelBackground, pic_index);
 }
 
 std::list<Picture*> PicLoader::get_pictures()
@@ -328,18 +309,18 @@ std::list<Picture*> PicLoader::get_pictures()
 
 void PicLoader::load_wait()
 {
-   std::string aPath = _resourcePath + "/pics/";
-   load_archive(aPath+"pics_wait.zip");
+  std::string aPath = AppConfig::get( AppConfig::resourcePath ).toString() + "/pics/";
+  load_archive(aPath+"pics_wait.zip");
 
-   std::cout << "number of images loaded: " << _resources.size() << std::endl;
+  StringHelper::debug( 0xff, "number of images loaded: %d", _resources.size() );
 }
 
 void PicLoader::load_all()
 {
-   std::string aPath = _resourcePath + "/pics/";
-   load_archive(aPath+"pics.zip");
-   load_archive(aPath+"pics_oc3.zip");	
-   std::cout << "number of images loaded: " << _resources.size() << std::endl;
+  std::string aPath = AppConfig::get( AppConfig::resourcePath ).toString() + "/pics/";
+  load_archive(aPath+"pics.zip");
+  load_archive(aPath+"pics_oc3.zip");	
+  StringHelper::debug( 0xff, "number of images loaded: %d", _resources.size() );
 }
 
 void PicLoader::load_archive(const std::string &filename)
@@ -464,16 +445,21 @@ Picture PicLoader::make_picture(SDL_Surface *surface, const std::string& resourc
 
 void PicLoader::createResources()
 {
-  const Picture& originalPic = get_picture( ResourceGroup::utilitya, 34 );
-  Picture& emptyReservoir = SdlFacade::instance().copyPicture( originalPic );
+  Picture& originalPic = get_picture( ResourceGroup::utilitya, 34 );
+  Picture& emptyReservoir = originalPic.copy();
   set_picture( std::string( ResourceGroup::waterbuildings ) + "_00001.png", *emptyReservoir.get_surface() );
 
-  Picture& fullReservoir = SdlFacade::instance().copyPicture( originalPic );
-  const Picture& water = get_picture( ResourceGroup::utilitya, 35 );
-  SdlFacade::instance().drawImage( water.get_surface(), fullReservoir.get_surface(), 47, 8 );
+  Picture& fullReservoir = originalPic.copy();
+  Picture& water = get_picture( ResourceGroup::utilitya, 35 );
+  fullReservoir.draw( water, 47, 8 );
+
   set_picture( std::string( ResourceGroup::waterbuildings ) + "_00002.png", *fullReservoir.get_surface() );
 }
 
+PicLoader::PicLoader()
+{
+
+}
 bool operator<(const WalkerAction &v1, const WalkerAction &v2)
 {
    if (v1._action!=v2._action)
@@ -611,15 +597,15 @@ void WalkerLoader::loadAll()
    _animations[WG_HORSEMAN] = map;
 
    map.clear();
-   fillWalk(map, rcCartsGroup, 145, 12);
+   fillWalk(map, ResourceGroup::carts, 145, 12);
    _animations[WG_HORSE_CARAVAN] = map;
 
    map.clear();
-   fillWalk(map, rcCartsGroup, 273, 12);
+   fillWalk(map, ResourceGroup::carts, 273, 12);
    _animations[WG_CAMEL_CARAVAN] = map;
 
    map.clear();
-   fillWalk(map, rcCartsGroup, 369, 12);
+   fillWalk(map, ResourceGroup::carts, 369, 12);
    _animations[WG_LITTLE_HELPER] = map;
 
 }
@@ -681,43 +667,43 @@ void CartLoader::loadAll()
    std::vector<Picture*> cart;  // key=direction
    bool frontCart = false;
 
-   fillCart(cart, rcCartsGroup, 1, frontCart);
+   fillCart(cart, ResourceGroup::carts, 1, frontCart);
    _carts[G_NONE] = cart;
-   fillCart(cart, rcCartsGroup, 9, frontCart);
+   fillCart(cart, ResourceGroup::carts, 9, frontCart);
    _carts[G_WHEAT] = cart;
-   fillCart(cart, rcCartsGroup, 17, frontCart);
+   fillCart(cart, ResourceGroup::carts, 17, frontCart);
    _carts[G_VEGETABLE] = cart;
-   fillCart(cart, rcCartsGroup, 25, frontCart);
+   fillCart(cart, ResourceGroup::carts, 25, frontCart);
    _carts[G_FRUIT] = cart;
-   fillCart(cart, rcCartsGroup, 33, frontCart);
+   fillCart(cart, ResourceGroup::carts, 33, frontCart);
    _carts[G_OLIVE] = cart;
-   fillCart(cart, rcCartsGroup, 41, frontCart);
+   fillCart(cart, ResourceGroup::carts, 41, frontCart);
    _carts[G_GRAPE] = cart;
-   fillCart(cart, rcCartsGroup, 49, frontCart);
+   fillCart(cart, ResourceGroup::carts, 49, frontCart);
    _carts[G_MEAT] = cart;
-   fillCart(cart, rcCartsGroup, 57, frontCart);
+   fillCart(cart, ResourceGroup::carts, 57, frontCart);
    _carts[G_WINE] = cart;
-   fillCart(cart, rcCartsGroup, 65, frontCart);
+   fillCart(cart, ResourceGroup::carts, 65, frontCart);
    _carts[G_OIL] = cart;
-   fillCart(cart, rcCartsGroup, 73, frontCart);
+   fillCart(cart, ResourceGroup::carts, 73, frontCart);
    _carts[G_IRON] = cart;
-   fillCart(cart, rcCartsGroup, 81, frontCart);
+   fillCart(cart, ResourceGroup::carts, 81, frontCart);
    _carts[G_TIMBER] = cart;
-   fillCart(cart, rcCartsGroup, 89, frontCart);
+   fillCart(cart, ResourceGroup::carts, 89, frontCart);
    _carts[G_CLAY] = cart;
-   fillCart(cart, rcCartsGroup, 97, frontCart);
+   fillCart(cart, ResourceGroup::carts, 97, frontCart);
    _carts[G_MARBLE] = cart;
-   fillCart(cart, rcCartsGroup, 105, frontCart);
+   fillCart(cart, ResourceGroup::carts, 105, frontCart);
    _carts[G_WEAPON] = cart;
-   fillCart(cart, rcCartsGroup, 113, frontCart);
+   fillCart(cart, ResourceGroup::carts, 113, frontCart);
    _carts[G_FURNITURE] = cart;
-   fillCart(cart, rcCartsGroup, 121, frontCart);
+   fillCart(cart, ResourceGroup::carts, 121, frontCart);
    _carts[G_POTTERY] = cart;
-   fillCart(cart, rcCartsGroup, 129, !frontCart);
+   fillCart(cart, ResourceGroup::carts, 129, !frontCart);
    _carts[G_SCARB1] = cart;
-   fillCart(cart, rcCartsGroup, 137, !frontCart);
+   fillCart(cart, ResourceGroup::carts, 137, !frontCart);
    _carts[G_SCARB2] = cart;
-   fillCart(cart, rcCartsGroup, 697, frontCart);
+   fillCart(cart, ResourceGroup::carts, 697, frontCart);
    _carts[G_FISH] = cart;
 }
 
@@ -748,14 +734,14 @@ void CartLoader::fillCart(std::vector<Picture*> &ioCart, const std::string &pref
    ioCart.clear();
    ioCart.resize(D_MAX);
    
-   ioCart[D_NORTH]      = &picLoader.get_picture(rcCartsGroup, start);
-   ioCart[D_NORTH_EAST] = &picLoader.get_picture(rcCartsGroup, start + 1);
-   ioCart[D_EAST]       = &picLoader.get_picture(rcCartsGroup, start + 2);
-   ioCart[D_SOUTH_EAST] = &picLoader.get_picture(rcCartsGroup, start + 3);
-   ioCart[D_SOUTH]      = &picLoader.get_picture(rcCartsGroup, start + 4);
-   ioCart[D_SOUTH_WEST] = &picLoader.get_picture(rcCartsGroup, start + 5);
-   ioCart[D_WEST]       = &picLoader.get_picture(rcCartsGroup, start + 6);
-   ioCart[D_NORTH_WEST] = &picLoader.get_picture(rcCartsGroup, start + 7);
+   ioCart[D_NORTH]      = &picLoader.get_picture(ResourceGroup::carts, start);
+   ioCart[D_NORTH_EAST] = &picLoader.get_picture(ResourceGroup::carts, start + 1);
+   ioCart[D_EAST]       = &picLoader.get_picture(ResourceGroup::carts, start + 2);
+   ioCart[D_SOUTH_EAST] = &picLoader.get_picture(ResourceGroup::carts, start + 3);
+   ioCart[D_SOUTH]      = &picLoader.get_picture(ResourceGroup::carts, start + 4);
+   ioCart[D_SOUTH_WEST] = &picLoader.get_picture(ResourceGroup::carts, start + 5);
+   ioCart[D_WEST]       = &picLoader.get_picture(ResourceGroup::carts, start + 6);
+   ioCart[D_NORTH_WEST] = &picLoader.get_picture(ResourceGroup::carts, start + 7);
 
    ioCart[D_SOUTH]->set_offset( back ? backCartOffsetSouth : frontCartOffsetSouth);
    ioCart[D_WEST]->set_offset ( back ? backCartOffsetWest  : frontCartOffsetWest );

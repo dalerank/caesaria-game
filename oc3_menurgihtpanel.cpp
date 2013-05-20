@@ -39,15 +39,14 @@ MenuRigthPanel* MenuRigthPanel::create( Widget* parent, const Rect& rectangle, c
     MenuRigthPanel* ret = new MenuRigthPanel( parent );
 
     ret->setGeometry( rectangle );
-    SdlFacade &sdlFacade = SdlFacade::instance();
     
-    ret->_d->picture = &sdlFacade.createPicture( rectangle.getWidth(), rectangle.getHeight() );
+    ret->_d->picture = &GfxEngine::instance().createPicture( rectangle.getWidth(), rectangle.getHeight() );
     SDL_SetAlpha( ret->_d->picture->get_surface(), 0, 0 );  // remove surface alpha
 
     int y = 0;
     while( y <  ret->_d->picture->get_height() )
     {
-        sdlFacade.drawPicture( tilePic, *ret->_d->picture, 0, y);
+        ret->_d->picture->draw( tilePic, 0, y);
         y += tilePic.get_height();
     }
 

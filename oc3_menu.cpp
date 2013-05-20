@@ -388,12 +388,12 @@ Menu* Menu::create( Widget* parent, int id )
 
   SdlFacade &sdlFacade = SdlFacade::instance();
 
-  const Picture& bground = PicLoader::instance().get_picture( ResourceGroup::panelBackground, 16 );
-  const Picture& bottom  = PicLoader::instance().get_picture( ResourceGroup::panelBackground, 21 );
+  const Picture& bground = Picture::load( ResourceGroup::panelBackground, 16 );
+  const Picture& bottom  = Picture::load( ResourceGroup::panelBackground, 21 );
 
-  ret->_d->bgPicture = &sdlFacade.createPicture( bground.get_width(), bground.get_height() + bottom.get_height() );
-  sdlFacade.drawPicture( bground, *ret->_d->bgPicture , 0, 0);
-  sdlFacade.drawPicture( bottom, *ret->_d->bgPicture , 0, bground.get_height() );
+  ret->_d->bgPicture = &GfxEngine::instance().createPicture( bground.get_width(), bground.get_height() + bottom.get_height() );
+  ret->_d->bgPicture->draw( bground, 0, 0);
+  ret->_d->bgPicture->draw( bottom,  0, bground.get_height() );
 
   ret->setGeometry( Rect( 0, 0, bground.get_width(), ret->_d->bgPicture->get_height() ) );
 
@@ -445,12 +445,12 @@ ExtentMenu* ExtentMenu::create( Widget* parent, GuiTilemap& tmap, int id )
 
     SdlFacade &sdlFacade = SdlFacade::instance();
 
-    const Picture& bground = PicLoader::instance().get_picture( ResourceGroup::panelBackground, 17 );
-    const Picture& bottom = PicLoader::instance().get_picture( ResourceGroup::panelBackground, 20 );
+    const Picture& bground = Picture::load( ResourceGroup::panelBackground, 17 );
+    const Picture& bottom = Picture::load( ResourceGroup::panelBackground, 20 );
 
-    ret->_d->bgPicture = &sdlFacade.createPicture( bground.get_width(), bground.get_height() + bottom.get_height() );
-    sdlFacade.drawPicture( bground, *ret->_d->bgPicture, 0, 0);
-    sdlFacade.drawPicture( bottom, *ret->_d->bgPicture, 0, bground.get_height() );
+    ret->_d->bgPicture = &GfxEngine::instance().createPicture( bground.get_width(), bground.get_height() + bottom.get_height() );
+    ret->_d->bgPicture->draw( bground, 0, 0);
+    ret->_d->bgPicture->draw( bottom, 0, bground.get_height() );
 
     ret->setGeometry( Rect( 0, 0, bground.get_width(), ret->_d->bgPicture->get_height() ) );
 
@@ -523,7 +523,7 @@ ExtentMenu::ExtentMenu( Widget* parent, GuiTilemap& tmap, int id, const Rect& re
     _d->middleLabel = new Label(this, Rect( Point( 7, 216 ), Size( 148, 52 )) );
     _d->middleLabel->setBackgroundPicture( PicLoader::instance().get_picture( ResourceGroup::menuMiddleIcons, ResourceMenu::emptyMidPicId ) );
 
-    _d->overlaysButton = new PushButton( this, Rect( 6, 27, 127, 51), "Overlays" );
+    _d->overlaysButton = new PushButton( this, Rect( 4, 3, 122, 28 ), "Overlays" );
 
 }
 
@@ -558,10 +558,9 @@ void ExtentMenu::draw( GfxEngine& painter )
   
   int mapsize = Scenario::instance().getCity().getTilemap().getSize();
   
-  Picture& minimap = sdlFacade.createPicture(mapsize * 2 , mapsize * 2);
-  SDL_Surface* surface = minimap.get_surface();
-  
-  sdlFacade.lockSurface(surface);
+  Picture& minimap = painter.createPicture(mapsize * 2 , mapsize * 2);
+
+  minimap.lock();
   // here we can draw anything
   
   // std::cout << "center is (" << _mapArea->getCenterX() << "," << _mapArea->getCenterZ() << ")" << std::endl;
@@ -582,11 +581,11 @@ void ExtentMenu::draw( GfxEngine& painter )
       getBitmapCoordinates(x - border, y - border, mapsize, coords[0], coords[1]);
       getTerrainColours(tile, c1, c2);
 
-      if( coords[0] >= surface->w-1 || coords[1] >= surface->h )
+      if( coords[0] >= minimap.get_width()-1 || coords[1] >= minimap.get_height() )
         continue;
 
-      sdlFacade.set_pixel(surface, coords[0],     coords[1], c1);
-      sdlFacade.set_pixel(surface, coords[0] + 1, coords[1], c2);
+      minimap.set_pixel( coords[0],     coords[1], c1);
+      minimap.set_pixel( coords[0] + 1, coords[1], c2);
     }
   }
 
@@ -613,17 +612,18 @@ void ExtentMenu::draw( GfxEngine& painter )
   }
   */
   
-  sdlFacade.unlockSurface(surface);
+  minimap.unlock();
   
   // this is window where minimap is displayed
-  Picture& minimap_windows = sdlFacade.createPicture(144, 110);
+  Picture& minimap_windows = painter.createPicture(144, 110);
   
   int i = _tmap.getMapArea().getCenterX();
   int j = _tmap.getMapArea().getCenterZ();
   
-  sdlFacade.drawPicture( minimap, minimap_windows , 146/2 - i, 112/2 + j - mapsize*2 );
+  minimap_windows.draw( minimap, 146/2 - i, 112/2 + j - mapsize*2 );
   
-  painter.drawPicture(minimap_windows, getScreenLeft() + 8, getScreenTop() + 35); // 152, 145
-  sdlFacade.deletePicture(minimap);
-  sdlFacade.deletePicture(minimap_windows);
+  painter.drawPicture( minimap_windows, getScreenLeft() + 8, getScreenTop() + 35); // 152, 145
+
+  painter.deletePicture(minimap);
+  painter.deletePicture(minimap_windows);
 }
