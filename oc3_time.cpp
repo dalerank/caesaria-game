@@ -173,7 +173,7 @@ DateTime::DateTime( const DateTime& time )
 DateTime::DateTime( const string& strValue )
 {
     sscanf( strValue.c_str(), "y=%04d m=%02d d=%02d h=%02d mi=%02d",
-               &year, &month, &day, &hour, &minutes );
+            &year, &month, &day, &hour, &minutes );
 }
 
 DateTime::DateTime( unsigned char y, unsigned char m, unsigned char d, 

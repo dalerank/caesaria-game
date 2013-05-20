@@ -26,27 +26,29 @@
 #include "oc3_positioni.hpp"
 #include "oc3_walkermanager.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_stringhelper.hpp"
 
 class Walker::Impl
 {
 public:
   float speed;
+  TilePos pos;
 };
 
 Walker::Walker() : _d( new Impl )
 {
-   _action._action = WA_MOVE;
-   _action._direction = D_NONE;
-   _walkerType = WT_NONE;
-   _walkerGraphic = WG_NONE;
+  _action._action = WA_MOVE;
+  _action._direction = D_NONE;
+  _walkerType = WT_NONE;
+  _walkerGraphic = WG_NONE;
 
-   _d->speed = 1;  // default speed
-   _isDeleted = false;
+  _d->speed = 1;  // default speed
+  _isDeleted = false;
 
-   _midTileI = 7;
-   _midTileJ = 7;
-   _remainMoveI = 0;
-   _remainMoveJ = 0;
+  _midTileI = 7;
+  _midTileJ = 7;
+  _remainMoveI = 0;
+  _remainMoveJ = 0;
 };
 
 Walker::~Walker()
@@ -84,24 +86,23 @@ bool Walker::isDeleted() const
 
 void Walker::setIJ( const TilePos& pos )
 {
-   _i = pos.getI();
-   _j = pos.getJ();
+   _d->pos = pos;
 
    _si = _midTileI;
    _sj = _midTileJ;
 
-   _ii = 15*_i + _si;
-   _jj = 15*_j + _sj;
+   _ii = 15*_d->pos.getI() + _si;
+   _jj = 15*_d->pos.getJ() + _sj;
 }
 
 int Walker::getI() const
 {
-   return _i;
+   return _d->pos.getI();
 }
 
 int Walker::getJ() const
 {
-   return _j;
+   return _d->pos.getJ();
 }
 
 int Walker::getII() const
@@ -121,21 +122,6 @@ void Walker::setPathWay(PathWay &pathWay)
 
    onMidTile();
 }
-
-// void Walker::setDestinationIJ(const TilePos& pos )
-// {
-   // Propagator pathPropagator;
-   // pathPropagator.init();
-   // Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   // TerrainTile &currentTerrain = tilemap.at(_i, _j).get_terrain();
-   // Road* currentRoad = dynamic_cast<Road*> (currentTerrain.getOverlay());
-   // TerrainTile &destTerrain = tilemap.at(i, j).get_terrain();
-   // Road* destRoad = dynamic_cast<Road*> (destTerrain.getOverlay());
-   // pathPropagator.getPath(*currentRoad, *destRoad, _pathWay);
-   // _pathWay.begin();
-
-   // onMidTile();
-//}
 
 void Walker::setSpeed(const float speed)
 {
@@ -244,32 +230,32 @@ void Walker::walk()
       switch (_action._direction)
       {
       case D_NORTH:
-         inc(_sj, _j, amountJ, _midTileJ, newTile, midTile);
+         inc(_sj, _d->pos.rj(), amountJ, _midTileJ, newTile, midTile);
          break;
       case D_NORTH_EAST:
-         inc(_sj, _j, amountJ, _midTileJ, newTile, midTile);
-         inc(_si, _i, amountI, _midTileI, newTile, midTile);
+         inc(_sj, _d->pos.rj(), amountJ, _midTileJ, newTile, midTile);
+         inc(_si, _d->pos.ri(), amountI, _midTileI, newTile, midTile);
          break;
       case D_EAST:
-         inc(_si, _i, amountI, _midTileI, newTile, midTile);
+         inc(_si, _d->pos.ri(), amountI, _midTileI, newTile, midTile);
          break;
       case D_SOUTH_EAST:
-         dec(_sj, _j, amountJ, _midTileJ, newTile, midTile);
-         inc(_si, _i, amountI, _midTileI, newTile, midTile);
+         dec(_sj, _d->pos.rj(), amountJ, _midTileJ, newTile, midTile);
+         inc(_si, _d->pos.ri(), amountI, _midTileI, newTile, midTile);
          break;
       case D_SOUTH:
-         dec(_sj, _j, amountJ, _midTileJ, newTile, midTile);
+         dec(_sj, _d->pos.rj(), amountJ, _midTileJ, newTile, midTile);
          break;
       case D_SOUTH_WEST:
-         dec(_sj, _j, amountJ, _midTileJ, newTile, midTile);
-         dec(_si, _i, amountI, _midTileI, newTile, midTile);
+         dec(_sj, _d->pos.rj(), amountJ, _midTileJ, newTile, midTile);
+         dec(_si, _d->pos.ri(), amountI, _midTileI, newTile, midTile);
          break;
       case D_WEST:
-         dec(_si, _i, amountI, _midTileI, newTile, midTile);
+         dec(_si, _d->pos.ri(), amountI, _midTileI, newTile, midTile);
          break;
       case D_NORTH_WEST:
-         inc(_sj, _j, amountJ, _midTileJ, newTile, midTile);
-         dec(_si, _i, amountI, _midTileI, newTile, midTile);
+         inc(_sj, _d->pos.rj(), amountJ, _midTileJ, newTile, midTile);
+         dec(_si, _d->pos.ri(), amountI, _midTileI, newTile, midTile);
          break;
       default:
          THROW("Invalid move direction: " << _action._direction);
@@ -293,8 +279,8 @@ void Walker::walk()
       // if (amount != 0) std::cout << "walker remaining step :" << amount << std::endl;
    }
 
-   _ii = _i*15+_si;
-   _jj = _j*15+_sj;
+   _ii = _d->pos.getI()*15+_si;
+   _jj = _d->pos.getJ()*15+_sj;
 }
 
 
@@ -302,10 +288,10 @@ void Walker::onNewTile()
 {
    // std::cout << "Walker is on a new tile! coord=" << _i << "," << _j << std::endl;
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   Tile& currentTile = tilemap.at(_i, _j);
+   Tile& currentTile = tilemap.at( _d->pos );
    if( !currentTile.get_terrain().isRoad() )
    {
-      std::cout << "Walker at " << _i << "," << _j << " is not on a road!!!" << std::endl;
+     StringHelper::debug( 0xff, "Walker at (%d, %d) is not on a road!!!", _d->pos.getI(), _d->pos.getJ() );
    }
 }
 
@@ -403,8 +389,8 @@ void Walker::save( VariantMap& stream ) const
 
   stream[ "action" ] = (int)_action._action;
   stream[ "direction" ] = (int)_action._direction;
-  stream[ "i" ] = _i;
-  stream[ "j" ] = _j;
+  
+  stream[ "pos" ] = _d->pos;
   stream[ "si" ] = _si;
   stream[ "sj" ] = _sj;
   stream[ "ii" ] = _ii;
@@ -414,36 +400,24 @@ void Walker::save( VariantMap& stream ) const
   stream[ "midTileJ" ] = _midTileJ;
 }
 
-// WalkerPtr Walker::unserialize_all(InputSerialStream &stream)
-// {
-//    int objectID = stream.read_objectID();
-//    WalkerType walkerType = (WalkerType) stream.read_int(1, 0, WT_MAX);
-//    WalkerPtr res = WalkerManager::getInstance().create( walkerType, TilePos( 0, 0 ) );
-//    res->unserialize(stream);
-//    stream.link( objectID, res.object() );
-//    return res;
-// }
-
 void Walker::load( const VariantMap& stream)
 {
-//    _pathWay.unserialize(stream);
-//    _action._action = (WalkerActionType) stream.read_int(1, 0, WA_MAX);
-//    _action._direction = (DirectionType) stream.read_int(1, 0, D_MAX);
-//    _i = stream.read_int(2, 0, 1000);
-//    _j = stream.read_int(2, 0, 1000);
-//    _si = stream.read_int(1, 0, 50);
-//    _sj = stream.read_int(1, 0, 50);
-//    _ii = stream.read_int(4, 0, 1000000);
-//    _jj = stream.read_int(4, 0, 1000000);
-//    //_d->speed = stream.read_float(1, 0, 50);
-//    _midTileI = stream.read_int(1, 0, 50);
-//    _midTileJ = stream.read_int(1, 0, 50);
-//    //_animIndex = stream.read_int(1, 0, 50);
+  _pathWay.load( stream.get( "pathway" ).toMap() );
+  _action._action = (WalkerActionType) stream.get( "action" ).toInt();
+  _action._direction = (DirectionType) stream.get( "direction" ).toInt();
+  _d->pos = stream.get( "pos" ).toTilePos();
+  _si = stream.get( "si" ).toInt();
+  _sj = stream.get( "sj" ).toInt();
+  _ii = stream.get( "ii" ).toInt();
+  _jj = stream.get( "jj" ).toInt();
+  _d->speed = stream.get( "speed" ).toFloat();
+  _midTileI = stream.get( "midTileI" ).toInt();
+  _midTileJ = stream.get( "midTileJ" ).toInt();
 }
 
 TilePos Walker::getIJ() const
 {
-    return TilePos( _i, _j );
+    return _d->pos;
 }
 
 void Walker::deleteLater()

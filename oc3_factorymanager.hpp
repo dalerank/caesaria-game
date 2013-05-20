@@ -5,10 +5,9 @@
 #include "oc3_smartptr.hpp"
 #include "oc3_referencecounted.hpp"
 #include "oc3_enums.hpp"
+#include "oc3_predefinitions.hpp"
 
 #include <map>
-
-class Factory;
 
 class FactoryManager : public ReferenceCounted
 {

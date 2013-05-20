@@ -68,6 +68,9 @@ public:
   int getJ() const { return y; }
   int getZ() const { return y - x; }
 
+  int& ri() { return x; }
+  int& rj() { return y; }
+
   void setI( const int i ) { x = i; }
   void setJ( const int j ) { y = j; }
 

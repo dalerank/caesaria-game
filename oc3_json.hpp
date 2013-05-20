@@ -35,7 +35,9 @@ enum JsonToken
         JsonTokenNumber = 8,
         JsonTokenTrue = 9,
         JsonTokenFalse = 10,
-        JsonTokenNull = 11
+        JsonTokenNull = 11,
+        JsonTokenCommentOpen = 12,
+        JsonTokenCommentClose = 13
 };
 
 /**
@@ -129,6 +131,8 @@ public:
    static Variant parseString(const std::string &json, int &index,
                                                            bool &success);
 
+   static void parseComment(const std::string &json, int &index, bool &success);
+
    /**
     * Parses a number starting from index
     *
@@ -176,6 +180,7 @@ public:
     * \return int The next JSON token
     */
    static int nextToken(const std::string &json, int &index);
+
 };
 
 #endif //__OPENCAESAR3_JSON_PARSER_H_INCLUDE__

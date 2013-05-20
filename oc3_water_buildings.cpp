@@ -15,9 +15,7 @@
 
 #include "oc3_water_buildings.hpp"
 
-#include <iostream>
-#include <stdexcept>
-
+#include "oc3_stringhelper.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_time.hpp"
 #include "oc3_positioni.hpp"
@@ -274,7 +272,7 @@ bool Aqueduct::canBuild( const TilePos& pos ) const
     if (tilemap.at( pos + TilePos(  1,  0 ) ).get_terrain().isRoad()) { directionFlags += 2; } // road to the east
     if (tilemap.at( pos + TilePos( -1,  0 ) ).get_terrain().isRoad()) { directionFlags += 8; } // road to the west
 
-    std::cout << "direction flags=" << directionFlags << std::endl;
+    StringHelper::debug( 0xff, "direction flags=%d", directionFlags );
    
     switch (directionFlags)
     {

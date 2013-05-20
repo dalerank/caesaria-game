@@ -19,7 +19,6 @@
 #ifndef PATH_FINDING_HPP
 #define PATH_FINDING_HPP
 
-
 #include "oc3_building.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_serializer.hpp"
@@ -28,35 +27,40 @@
 #include "oc3_positioni.hpp"
 #include <list>
 
-class PathWay : public Serializable
+class PathWay
 {
 public:
-   PathWay();
-   PathWay(const PathWay &copy);
-   void init(Tilemap &tilemap, Tile &origin);
+  typedef enum { roadOnly=0, allTerrain } FindType;
+  PathWay();
+  PathWay( const PathWay &copy );
+  PathWay( Tilemap& tmap, const TilePos& startPos, const TilePos& stopPos, 
+           FindType type=roadOnly );
 
-   int getLength() const;
-   Tile &getOrigin() const;
-   Tile &getDestination() const;
-   bool isReverse() const;
+  void init( Tilemap &tilemap, Tile &origin );
 
-   void begin();
-   void rbegin();
-   virtual DirectionType getNextDirection();
-   bool isDestination() const;
+  int getLength() const;
+  Tile& getOrigin() const;
+  Tile& getDestination() const;
+  bool isReverse() const;
+  unsigned int getStep() const;
 
-   void setNextDirection(const DirectionType direction);
-   void setNextTile( const Tile& tile);
-   bool contains(Tile &tile);
-   PtrTilesList& getAllTiles();
+  void begin();
+  void rbegin();
+  virtual DirectionType getNextDirection();
+  bool isDestination() const;
 
-   void prettyPrint() const;
-   void save( VariantMap& stream) const;
-   void load( const VariantMap& stream);
-   void toggleDirection();
+  void setNextDirection(const DirectionType direction);
+  void setNextTile( const Tile& tile);
+  bool contains(Tile &tile);
+  PtrTilesList& getAllTiles();
 
-   PathWay& operator=(const PathWay& other );
+  void prettyPrint() const;
+  void toggleDirection();
 
+  PathWay& operator=(const PathWay& other );
+ 
+  void load( const VariantMap& stream );
+  void save( VariantMap& stream) const;
 private:
    Tilemap *_tilemap;
    Tile *_origin;
@@ -71,7 +75,6 @@ private:
 };
 bool operator<(const PathWay &v1, const PathWay &v2);
 
-class Tilemap;
 class City;
 class Propagator
 {
@@ -97,8 +100,8 @@ public:
    * returns True if a path exists
    * the path is returned in oPathWay
    */
-  bool getPath( RoadPtr destination, PathWay &oPathWay);
-  bool getPath(BuildingPtr destination, PathWay &oPathWay);
+  bool getPath( RoadPtr destination, PathWay& oPathWay );
+  bool getPath( BuildingPtr destination, PathWay& oPathWay );
 
   /** returns all paths starting at origin */
   void getAllPaths(const int maxDistance, std::list<PathWay> &oPathWayList);

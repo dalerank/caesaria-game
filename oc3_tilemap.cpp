@@ -42,7 +42,7 @@ void Tilemap::init(const int size)
 
       for (int j = 0; j < _size; ++j)
       {
-         _tile_array[i].push_back(Tile(i, j));
+         _tile_array[i].push_back( Tile( TilePos( i, j ) ));
       }
    }
 }
@@ -157,10 +157,6 @@ PtrTilesList Tilemap::getFilledRectangle( const TilePos& start, const Size& size
 
 void Tilemap::save( VariantMap& stream ) const
 {
-  VariantMap options;
-
-  options[ "size" ] = _size;
-
   // saves the graphics map
   VariantList bitsetInfo;
   VariantList desInfo;
@@ -177,63 +173,61 @@ void Tilemap::save( VariantMap& stream ) const
   stream[ "bitset" ] = bitsetInfo;
   stream[ "desirability" ] = desInfo;
   stream[ "imgId" ] = idInfo;
+  stream[ "size" ] = _size;
 }
 
-void Tilemap::load( const VariantMap& stream)
+void Tilemap::load( const VariantMap& stream )
 {
-   /*_size = stream.read_int(2, 0, 1000);
-   init(_size);
+  VariantList bitsetInfo = stream.get( "bitset" ).toList();
+  VariantList desInfo = stream.get( "desirability" ).toList();
+  VariantList idInfo = stream.get( "imgId" ).toList();
 
-   // loads the graphics map
-   PicLoader &picLoader = PicLoader::instance();
-   short int imgId;   // 16bits
-   for (int i=0; i<_size; ++i)
-   {
-      for (int j=0; j<_size; ++j)
+  int size = stream.get( "size" ).toInt();
+
+  init( size );
+
+  VariantList::iterator imgIdIt = idInfo.begin();
+  VariantList::iterator bitsetInfoIt = bitsetInfo.begin();
+  VariantList::iterator desirabilityIt = desInfo.begin();
+
+  PtrTilesArea tiles = const_cast< Tilemap* >( this )->getFilledRectangle( TilePos( 0, 0 ), Size( _size ) );
+  for( PtrTilesArea::iterator it=tiles.begin(); it != tiles.end(); 
+       it++, imgIdIt++, bitsetInfoIt++, desirabilityIt++ )
+  {
+    Tile* tile = *it;
+
+    tile->get_terrain().decode( (*bitsetInfoIt).toInt() );
+    tile->get_terrain().appendDesirability( (*desirabilityIt).toInt() );
+
+    int imgId = (*imgIdIt).toInt();
+    if( imgId != 0 )
+    {
+      std::string picName = TerrainTileHelper::convId2PicName( imgId );
+      Picture& pic = Picture::load( picName );
+
+      tile->get_terrain().setOriginalImgId( imgId );
+
+      int tile_size = (pic.get_width()+2)/60;  // size of the multi-tile. the multi-tile is a square.
+
+      // master is the left-most subtile
+      Tile* master = (tile_size == 1) ? NULL : tile;
+      
+      for( int di=0; di<tile_size; ++di )
       {
-         Tile &tile = at(i, j);
-         TerrainTile &terrain = tile.get_terrain();
-
-         imgId = (short)stream.read_int(2, 0, 65535);
-
-         // terrain
-         terrain.unserialize(stream);
-         // cannot access the overlay at this stage (it has not be unserialized yet)
-
-         if (imgId != 0 && !terrain.isBuilding())
-         {
-            // master landscape tile!
-           std::string picName = TerrainTileHelper::convId2PicName( imgId );
-           Picture& pic = PicLoader::instance().get_picture( picName );
-
-            int tile_size = (pic.get_width()+2)/60;  // size of the multi-tile. the multi-tile is a square.
-
-            // master is the left-most subtile
-            Tile* master;
-            if (tile_size == 1)
-            {
-               master = NULL;
-            }
-            else
-            {
-               master = &at(i, j);
-            }
-
-            for (int di=0; di<tile_size; ++di)
-            {
-               // for each subrow of the multi-tile
-               for (int dj=0; dj<tile_size; ++dj)
-               {
-                  // for each subcol of the multi-tile
-                  Tile &sub_tile = at(i+di, j+dj);
-                  sub_tile.set_master_tile(master);
-                  sub_tile.set_picture(&pic);
-               }
-            }
-         }
-
+        // for each subrow of the multi-tile
+        for (int dj=0; dj<tile_size; ++dj)
+        {
+          // for each subcol of the multi-tile
+          Tile &sub_tile = at( tile->getIJ() + TilePos( di, dj ) );
+          sub_tile.set_master_tile(master);
+          sub_tile.set_picture(&pic);
+        }
       }
-   }
-   */
+    }
+  }
 }
 
+Tilemap::~Tilemap()
+{
+
+}

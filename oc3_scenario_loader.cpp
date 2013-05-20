@@ -20,6 +20,7 @@
 #include "oc3_scenario_map_loader.hpp"
 #include "oc3_scenario_sav_loader.hpp"
 #include "oc3_scenario_oc3save_loader.hpp"
+#include "oc3_scenario_load_finalizer.hpp"
 
 #include <vector>
 
@@ -66,7 +67,15 @@ bool ScenarioLoader::load( const std::string& filename, Scenario& scenario )
     if( (*it)->isLoadableFileExtension( filename ) /*||
         (*it)->isLoadableFileFormat(file) */ )
     {
-      return (*it)->load( filename, scenario );
+      bool loadok = (*it)->load( filename, scenario );
+      
+      if( loadok )
+      {
+        ScenarioLoadFinalizer finalizer( scenario );
+        finalizer.check();
+      }
+
+      return loadok;
     }
   }
 

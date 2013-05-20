@@ -38,22 +38,25 @@
 #include "oc3_constructionmanager.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_stringhelper.hpp"
 
 #include <algorithm>
 
 class LandOverlay::Impl
 {
 public:
+  BuildingType buildingType;
 };
 
 LandOverlay::LandOverlay(const BuildingType type, const Size& size)
+: _d( new Impl )
 {
-   _master_tile = NULL;
-   _size = size.getWidth();
-   _isDeleted = false;
-   _name = "unknown";
-   _picture = NULL;
-   setType( type );
+  _master_tile = NULL;
+  _size = size.getWidth();
+  _isDeleted = false;
+  _name = "unknown";
+  _picture = NULL;
+  setType( type );
 }
 
 LandOverlay::~LandOverlay()
@@ -65,12 +68,12 @@ LandOverlay::~LandOverlay()
 
 BuildingType LandOverlay::getType() const
 {
-   return _buildingType;
+   return _d->buildingType;
 }
 
 void LandOverlay::setType(const BuildingType buildingType)
 {
-   _buildingType = buildingType;
+   _d->buildingType = buildingType;
    _name = BuildingDataHolder::instance().getData(buildingType).getName();
 }
 
@@ -159,13 +162,6 @@ std::vector<Picture*>& LandOverlay::getForegroundPictures()
   return _fgPictures;
 }
 
-
-GuiInfoBox* LandOverlay::makeInfoBox()
-{
-  std::cout << "LandOverlay::makeInfoBox()" << std::endl;
-  return NULL;
-}
-
 std::string LandOverlay::getName()
 {
   return _name;
@@ -173,17 +169,21 @@ std::string LandOverlay::getName()
 
 void LandOverlay::save( VariantMap& stream ) const
 {
-   stream[ "i" ] = getTile().getI();
-   stream[ "j" ] = getTile().getJ();
-   stream[ "buildingType" ] = (int)_buildingType;
-   stream[ "picture" ] = Variant( _picture ? _picture->get_name() : std::string( "" ) );   
-   stream[ "size" ] = _size;
-   stream[ "isDeleted" ] = _isDeleted;
-   stream[ "name" ] = Variant( _name );
+  stream[ "pos" ] = getTile().getIJ();
+  stream[ "buildingType" ] = (int)_d->buildingType;
+  stream[ "picture" ] = Variant( _picture ? _picture->get_name() : std::string( "" ) );   
+  stream[ "size" ] = _size;
+  stream[ "isDeleted" ] = _isDeleted;
+  stream[ "name" ] = Variant( _name );
 }
 
-void LandOverlay::load( const VariantMap& stream)
+void LandOverlay::load( const VariantMap& stream )
 {
+  _name = stream.get( "name" ).toString();
+  _d->buildingType = (BuildingType)stream.get( "buildingType" ).toInt();
+  _picture = &Picture::load( stream.get( "picture" ).toString() + ".png" );
+  _size = stream.get( "size" ).toInt();
+  _isDeleted = stream.get( "isDeleted" ).toBool();
 }
 
 bool LandOverlay::isWalkable() const
@@ -360,13 +360,13 @@ void Building::timeStep(const unsigned long time)
       _fireLevel += _fireIncrement;
       if (_damageLevel >= 100)
       {
-         std::cout << "Building destroyed!" << std::cout;
-         collapse();
+        StringHelper::debug( 0xff, "Building destroyed!" );
+        collapse();
       }
       if (_fireLevel >= 100)
       {
-         std::cout << "Building catch fire!" << std::cout;
-         burn();
+        StringHelper::debug( 0xff, "Building catch fire!" );
+        burn();
       }
    }
 }

@@ -47,6 +47,9 @@ public:
   
   void timeStep(const unsigned long time);
 
+  void save(VariantMap& stream) const;
+  void load(const VariantMap& stream);
+
 protected:
    CartPusher();
 

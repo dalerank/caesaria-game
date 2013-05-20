@@ -19,16 +19,13 @@
 #include "oc3_terraininfo.hpp"
 #include "oc3_positioni.hpp"
 
-#include <list>
-#include <vector>
-
 class Picture;
 
 // a Tile in the Tilemap
 class Tile
 {
 public:
-  Tile(const int i, const int j);
+  Tile(const TilePos& pos);
   Tile(const Tile& clone);
 
   // tile coordinates
@@ -51,13 +48,17 @@ public:
   TerrainTile& get_terrain();
   bool is_flat() const;  // returns true if the tile is walkable/boatable (for display purpose)
 
+  void resetWasDrawn() { _wasDrawn = false; }
+  void setWasDrawn() { _wasDrawn = true; }
+  bool wasDrawn() { return _wasDrawn; }
+
 private:
-  int _i; // coordinates of the tile
-  int _j; // coordinates of the tile
+  TilePos _pos; // coordinates of the tile
   Tile* _master_tile;  // left-most tile if multi-tile, or "this" if single-tile
   TerrainTile _terrain;    // infos about the tile (building, tree, road, water, rock...)
 
-  Picture* _picture; // displayed picture   
+  Picture* _picture; // displayed picture  
+  bool _wasDrawn;
 };
 
 #endif //__OPENCAESAR3_TILE_H_INCLUDED__

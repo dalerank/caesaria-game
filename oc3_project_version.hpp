@@ -12,26 +12,16 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
+#ifndef __OPENCAESAR3_PROJECT_VERSION_INCLUDE_H_
+#define __OPENCAESAR3_PROJECT_VERSION_INCLUDE_H_
 
-#ifndef MODEL_LOADER_HPP
-#define MODEL_LOADER_HPP
+#define OC3_VERSION_MAJOR 0
+#define OC3_VERSION_MINOR 0
+#define OC3_VERSION_REVSN 395
 
-#include <fstream>
-#include <string>
-
-class ModelLoader
-{
-public:
-   ModelLoader();
-
-   void loadHouseModel(const std::string& filename);
-
-   int readInt(std::istringstream& stream);
-   std::string readString(std::istringstream& stream);
-};
-
+#define OC3_STR_EXT(__A) #__A
+#define OC3_STR_A(__A) OC3_STR_EXT(__A)
+#define OC3_VERSION OC3_STR_A(OC3_VERSION_MAJOR)"."OC3_STR_A(OC3_VERSION_MINOR)"."OC3_STR_A(OC3_VERSION_REVSN)
 
 #endif

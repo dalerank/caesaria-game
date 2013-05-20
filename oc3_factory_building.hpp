@@ -105,9 +105,6 @@ public:
    FactoryPottery();
 };
 
-
-
-
 class Wharf : public Factory
 {
 public:

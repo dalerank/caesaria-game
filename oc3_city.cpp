@@ -32,6 +32,8 @@
 #include "oc3_tilemap.hpp"
 #include "oc3_road.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_stringhelper.hpp"
+#include "oc3_walkermanager.hpp"
 
 #include <set>
 
@@ -53,6 +55,11 @@ public:
   unsigned long time;  // number of timesteps since start
   TilePos roadExit;
   Tilemap tilemap;
+  TilePos boatEntry;
+  TilePos boatExit;
+  TilePos cameraStart;
+
+  ClimateType climate;   
 
 oc3_signals public:
   Signal1<int> onPopulationChangedSignal;
@@ -66,15 +73,13 @@ City::City() : _d( new Impl )
   _d->month = 0;
   _d->roadEntry = TilePos( 0, 0 );
   _d->roadExit = TilePos( 0, 0 );
-  _boatEntryI = 0;
-  _boatEntryJ = 0;
-  _boatExitI = 0;
-  _boatExitJ = 0;
+  _d->boatEntry = TilePos( 0, 0 );
+  _d->boatExit = TilePos( 0, 0 );
   _d->funds = 1000;
   _d->population = 0;
   _d->needRecomputeAllRoads = false;
   _d->taxRate = 700;
-  _climate = C_CENTRAL;
+  _d->climate = C_CENTRAL;
 
   addService( CityServiceEmigrant::create( *this ) );
   addService( CityServiceWorkersHire::create( *this ) );
@@ -104,7 +109,6 @@ void City::timeStep()
       if( walker->isDeleted() )
       {
         // remove the walker from the walkers list  
-        //delete *walkerIt;
         walkerIt = _d->walkerList.erase(walkerIt);       
       }
       else
@@ -241,14 +245,12 @@ Tilemap& City::getTilemap()
    return _d->tilemap;
 }
 
-unsigned int City::getBoatEntryI() const { return _boatEntryI; }
-unsigned int City::getBoatEntryJ() const { return _boatEntryJ; }
-unsigned int City::getBoatExitI() const  { return _boatExitI;  }
-unsigned int City::getBoatExitJ() const  { return _boatExitJ;  }
+TilePos City::getBoatEntry() const { return _d->boatEntry; }
+TilePos City::getBoatExit() const  { return _d->boatExit;  }
 
-ClimateType City::getClimate() const     { return _climate;    }
+ClimateType City::getClimate() const     { return _d->climate;    }
 
-void City::setClimate(const ClimateType climate) { _climate = climate; }
+void City::setClimate(const ClimateType climate) { _d->climate = climate; }
 
 // paste here protection from bad values
 void City::setRoadEntry( const TilePos& pos )
@@ -265,22 +267,18 @@ void City::setRoadExit( const TilePos& pos )
   _d->roadExit.setJ( math::clamp<unsigned int>( pos.getJ(), 0, size - 1 ) );
 }
 
-void City::setBoatEntryIJ(unsigned int i, unsigned int j)
+void City::setBoatEntry(const TilePos& pos )
 {
   int size = getTilemap().getSize();
-  i = math::clamp<unsigned int>( i, 0, size - 1 );
-  j = math::clamp<unsigned int>( j, 0, size - 1 );
-  _boatEntryI = i;
-  _boatEntryJ = j;
+  _d->boatEntry.setI( math::clamp<unsigned int>( pos.getI(), 0, size - 1 ) );
+  _d->boatEntry.setJ( math::clamp<unsigned int>( pos.getJ(), 0, size - 1 ) );
 }
 
-void City::setBoatExitIJ(unsigned int i, unsigned int j)
+void City::setBoatExit( const TilePos& pos )
 {
   int size = getTilemap().getSize();
-  i = math::clamp<unsigned int>( i, 0, size - 1 );
-  j = math::clamp<unsigned int>( j, 0, size - 1 );
-  _boatExitI  = i;
-  _boatExitJ = j;
+  _d->boatExit.setI( math::clamp<unsigned int>( pos.getI(), 0, size - 1 ) );
+  _d->boatExit.setJ( math::clamp<unsigned int>( pos.getJ(), 0, size - 1 ) );
 }
 
 int City::getTaxRate() const                 {  return _d->taxRate;    }
@@ -447,82 +445,85 @@ void City::save( VariantMap& stream) const
   _d->tilemap.save( vm_tilemap );
 
   stream[ "tilemap" ] = vm_tilemap;
-  stream[ "roadEntryI" ] = _d->roadEntry.getI();
-  stream[ "roadEntryJ" ] = _d->roadEntry.getJ();
-  stream[ "roadExitI" ]  = _d->roadExit.getI();
-  stream[ "roadExitJ" ] = _d->roadExit.getJ();
-  stream[ "boatEntryI" ] = _boatEntryI;
-  stream[ "boatEnttyJ" ] = _boatEntryJ;
-  stream[ "boatExitI" ] = _boatExitI;
-  stream[ "boatExitJ" ] = _boatExitJ;
-  stream[ "climate" ] = _climate;
+  stream[ "roadEntry" ] = _d->roadEntry;
+  stream[ "roadExit" ]  = _d->roadExit;
+  stream[ "cameraStart" ] = _d->cameraStart;
+  stream[ "boatEntry" ] = _d->boatEntry;
+  stream[ "boatExit" ] = _d->boatExit;
+  stream[ "climate" ] = _d->climate;
   stream[ "time" ] = static_cast<unsigned long long>(_d->time);
   stream[ "funds" ] = static_cast<unsigned int>(_d->funds);
-  stream[ "populaton" ] = _d->population;
-// 
-//    // walkers
-//    stream.write_int(_d->walkerList.size(), 2, 0, 65535);
-//    for (Walkers::iterator itWalker = _d->walkerList.begin(); itWalker != _d->walkerList.end(); ++itWalker)
-//    {
-//       // std::cout << "WRITE WALKER @" << stream.tell() << std::endl;
-//       (*itWalker)->serialize(stream);
-//    }
-// 
+  stream[ "population" ] = _d->population;
+
+  // walkers
+  VariantMap vm_walkers;
+  int walkedId = 0;
+  for (Walkers::iterator itWalker = _d->walkerList.begin(); itWalker != _d->walkerList.end(); ++itWalker, walkedId++)
+  {
+    // std::cout << "WRITE WALKER @" << stream.tell() << std::endl;
+     VariantMap vm_walker;
+    (*itWalker)->save( vm_walker );
+    vm_walkers[ StringHelper::format( 0xff, "%d", walkedId ) ] = vm_walker;
+  }
+  stream[ "walkers" ] = vm_walkers;
+
   // overlays
   VariantMap vm_overlays;
   for( LandOverlays::iterator itOverlay = _d->overlayList.begin(); 
        itOverlay != _d->overlayList.end(); ++itOverlay )
   {
-    (*itOverlay)->save( vm_overlays );
+    VariantMap vm_overlay;
+    (*itOverlay)->save( vm_overlay );
+    vm_overlays[ StringHelper::format( 0xff, "%03d%03d", (*itOverlay)->getTile().getI(),
+                                                         (*itOverlay)->getTile().getJ() ) ] = vm_overlay;
   }
 
   stream[ "overlays" ] = vm_overlays;
 }
 
-void City::load( const VariantMap& stream)
+void City::load( const VariantMap& stream )
 {
-//    _d->tilemap.unserialize(stream);
-// 
-//     _d->roadEntry.setI( stream.read_int(2, 0, 1000) );
-//    _d->roadEntry.setJ( stream.read_int(2, 0, 1000) );
-//    _d->roadExit.setI( stream.read_int(2, 0, 1000) );
-//    _d->roadExit.setJ( stream.read_int(2, 0, 1000) );
-//    _boatEntryI = stream.read_int(2, 0, 1000);
-//    _boatEntryJ = stream.read_int(2, 0, 1000);
-//    _boatExitI = stream.read_int(2, 0, 1000);
-//    _boatExitJ = stream.read_int(2, 0, 1000);
-//    _climate = (ClimateType) stream.read_int(2, 0, 1000);
-//    _d->time = stream.read_int(4, 0, 1000000);
-//    _d->funds = stream.read_int(4, 0, 1000000);
-//    _d->population = stream.read_int(4, 0, 1000000);
-// 
-//    // walkers
-//    int nbItems = stream.read_int(2, 0, 65535);
-//    for (int i = 0; i < nbItems; ++i)
-//    {
-//       // std::cout << "READ WALKER @" << stream.tell() << std::endl;
-//       WalkerPtr walker = Walker::unserialize_all( stream );
-//       _d->walkerList.push_back( walker );
-//    }
-// 
-//    // overlays
-//    nbItems = stream.read_int(2, 0, 65535);
-//    for (int i = 0; i < nbItems; ++i)
-//    {
-//       // std::cout << "READ OVERLAY @" << stream.tell() << std::endl;
-//       LandOverlayPtr overlay = LandOverlay::unserialize_all(stream);
-//       _d->overlayList.push_back( overlay );
-//    }
-// 
-//    // set all pointers to overlays&walkers
-//    stream.set_dangling_pointers(false); // ignore missing pointers
-// 
-//    // finalize the buildings
-//    for( LandOverlays::iterator itLLO = _d->overlayList.begin(); 
-//         itLLO!=_d->overlayList.end(); ++itLLO)
-//    {
-//       (*itLLO)->build( (*itLLO)->getTile().getIJ());
-//    }
+  _d->tilemap.load( stream.get( "tilemap" ).toMap() );
+
+  _d->roadEntry = TilePos( stream.get( "roadEntry" ).toTilePos() );
+  _d->roadExit = TilePos( stream.get( "roadExit" ).toTilePos() );
+  _d->boatEntry = TilePos( stream.get( "boatEntry" ).toTilePos() );
+  _d->boatExit = TilePos( stream.get( "boatExit" ).toTilePos() );
+  _d->climate = (ClimateType)stream.get( "climate" ).toInt(); 
+  _d->time = (unsigned long)stream.get( "time" ).toULongLong();
+  _d->funds = stream.get( "funds" ).toInt();
+  _d->population = stream.get( "population" ).toInt();
+  _d->cameraStart = TilePos( stream.get( "cameraStart" ).toTilePos() );
+
+  VariantMap overlays = stream.get( "overlays" ).toMap();
+  for( VariantMap::iterator it=overlays.begin(); it != overlays.end(); it++ )
+  {
+    VariantMap overlay = (*it).second.toMap();
+    TilePos buildPos( overlay.get( "pos" ).toTilePos() );
+    int buildingType = overlay.get( "buildingType" ).toInt();
+
+    ConstructionPtr construction = ConstructionManager::getInstance().create( BuildingType( buildingType ) );
+    if( construction.isValid() )
+    {
+      construction->build( buildPos );
+      construction->load( overlay );
+      _d->overlayList.push_back( construction.as<LandOverlay>() );
+    }
+  }
+
+  VariantMap walkers = stream.get( "walkers" ).toMap();
+  for( VariantMap::iterator it=walkers.begin(); it != walkers.end(); it++ )
+  {
+    VariantMap walkerInfo = (*it).second.toMap();
+    int walkerType = walkerInfo.get( "type" ).toInt();
+
+    WalkerPtr walker = WalkerManager::getInstance().create( WalkerType( walkerType ) );
+    if( walker.isValid() )
+    {
+      walker->load( walkerInfo );
+      _d->walkerList.push_back( walker );
+    }
+  }
 }
 
 TilePos City::getRoadEntry() const
@@ -530,7 +531,7 @@ TilePos City::getRoadEntry() const
   return _d->roadEntry;
 }
 
-TilePos City::getRoadExitIJ() const
+TilePos City::getRoadExit() const
 {
   return _d->roadExit;
 }
@@ -569,11 +570,8 @@ void City::removeWalker( WalkerPtr walker )
   _d->walkerList.remove( walker );
 }
 
-void City::setCameraStartIJ(const unsigned int i, const unsigned int j) {_cameraStartI = i; _cameraStartJ = j;}
-void City::setCameraStartIJ(const TilePos pos) {_cameraStartI = pos.getI(); _cameraStartJ = pos.getJ();}
-unsigned int City::getCameraStartI() const {return _cameraStartI;}
-unsigned int City::getCameraStartJ() const {return _cameraStartJ;}
-TilePos City::getCameraStartIJ() const {return TilePos(_cameraStartI,_cameraStartJ);}
+void City::setCameraPos(const TilePos pos) { _d->cameraStart = pos; }
+TilePos City::getCameraPos() const {return _d->cameraStart; }
 
 void City::addService( CityServicePtr service )
 {

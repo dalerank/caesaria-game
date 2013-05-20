@@ -53,25 +53,19 @@ public:
   LandOverlays getBuildingList( const BuildingType buildingType );
 
    void setRoadExit( const TilePos& pos );
-   void setBoatEntryIJ(const unsigned int i, const unsigned int j);
-   void setBoatExitIJ(const unsigned int i, const unsigned int j);
-
+   void setBoatEntry( const TilePos& pos );
    void setRoadEntry( const TilePos& pos );
+   void setBoatExit( const TilePos& pos );
+   
+   TilePos getRoadExit() const;
+   TilePos getBoatEntry() const;
+   TilePos getBoatExit() const;
+
    TilePos getRoadEntry() const;
    
-   void setCameraStartIJ(const unsigned int i, const unsigned int j);
-   void setCameraStartIJ(const TilePos pos);
-   unsigned int getCameraStartI() const;
-   unsigned int getCameraStartJ() const;
-   TilePos getCameraStartIJ() const;
+   void setCameraPos(const TilePos pos);
+   TilePos getCameraPos() const;
       
-   TilePos getRoadExitIJ() const;
-   
-   unsigned int getBoatEntryI() const;
-   unsigned int getBoatEntryJ() const;
-   unsigned int getBoatExitI() const;
-   unsigned int getBoatExitJ() const;
-
    ClimateType getClimate() const;
    void setClimate(const ClimateType);
 
@@ -105,11 +99,6 @@ oc3_signals public:
    Signal1<int>& onMonthChanged();
 
 private:
-   unsigned int _boatEntryI, _boatEntryJ;
-   unsigned int _boatExitI, _boatExitJ;
-   unsigned int _cameraStartI, _cameraStartJ;
-
-   ClimateType _climate;   
    void _calculatePopulation();
 
    class Impl;

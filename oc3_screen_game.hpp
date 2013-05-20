@@ -35,6 +35,7 @@ class BuildMenu;
 class ScreenGame: public Screen
 {
 public:
+  typedef enum {mainMenu=0, quitGame} ResultType;
   ScreenGame();
   ~ScreenGame();
 
@@ -57,14 +58,14 @@ private:
   void drawTilemap();
   void drawInterface();
 
-
   void resolveCreateConstruction( int type );
   void resolveRemoveTool();
   void showTileInfo( Tile* tile );
-  void resolveGameSave( std::string filename );
+  void resolveGameSave();
+  void resolveEndGame();
+  void resolveExitGame();
    
   GuiInfoBox* _infoBox;   // info box to display, if any
-  Scenario* _scenario; // current game scenario
   TilemapArea _mapArea;  // visible map area
 
   class Impl;

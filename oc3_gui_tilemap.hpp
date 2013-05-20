@@ -42,8 +42,6 @@ public:
    GuiTilemap();
    ~GuiTilemap();
    
-   static GuiTilemap& instance() { return *_instance;}
-
    void init(City &city, TilemapArea &mapArea, ScreenGame *screen);
 
    TilemapArea &getMapArea();
@@ -51,8 +49,6 @@ public:
    // draws the tilemap on the screen, using a dumb back to front drawing of all pictures.
    void drawTilemap();
    
-   // returns the tile at the cursor position.
-   Tile* getTileXY( const Point& pos, bool overborder=false );
    void handleEvent( NEvent& event);
 
    // sets the current build tool (if any)
@@ -67,8 +63,6 @@ protected:
 
    // used to display the future building at mouse location
    void checkPreviewBuild(const TilePos& pos );
-   // used to display the future removed building at mouse location
-   void checkPreviewRemove(const int i, const int j);
 
    // returns the tile at the grid position (handles priority tiles)
    Tile& getTile( const TilePos& pos );
@@ -76,28 +70,15 @@ protected:
    // update preview tiles
    void updatePreviewTiles( bool force=false );
 
-   void drawTile( const Tile &tile );
+   void drawTile( Tile& tile );
 
-   void drawTileEx( const Tile& tile, const int depth );
+   void drawTileEx( Tile& tile, const int depth );
 
-   void _getSelectedArea( TilePos& outStartPos, TilePos& outStopPos );
-   void _clearLand();
-   void _buildAll();
+   void _clearAll();
 
 private:
-   City* _city;     // city to display
-   Tilemap* _tilemap;
-   TilemapArea* _mapArea;  // visible map area
-
-   std::vector<Tile*> _multiTiles;  // used to avoid redisplay of a multi-tile.
-   //std::list<Tile*> _priorityTiles;  // these tiles have priority over "normal" tilemap tiles!
-
-   ScreenGame *_screenGame;
-
    class Impl;
    ScopedPtr< Impl > _d;
-   
-   static GuiTilemap *_instance;
 };
 
 

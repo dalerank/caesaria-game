@@ -32,6 +32,7 @@ public:
    static const bool checkCorners = true;
    
    Tilemap();
+   virtual ~Tilemap();
    void init(const int size);
 
    bool is_inside( const TilePos& pos ) const;

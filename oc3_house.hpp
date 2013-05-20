@@ -52,6 +52,9 @@ public:
 
    void destroy();
 
+   void save(VariantMap& stream) const;
+   void load(const VariantMap& stream);
+
    int getNbHabitants();
    int getMaxHabitants();
    void addHabitants( const Uint8 newHabitCount );
@@ -62,15 +65,7 @@ public:
    bool isWalkable() const;
 
 private:
-   SimpleGoodStore _goodStore;
-   std::map<ServiceType, int> _serviceAccessMap;  // value=access to the service (0=no access, 100=good access)
-   int _currentHabitants;
-   int _maxHabitants;
-   int _freeWorkersCount;
-   int _houseId;  // pictureId
-   int _houseLevel;
-   HouseLevelSpec* _houseLevelSpec;  // characteristics of the current house level
-   HouseLevelSpec* _nextHouseLevelSpec;  // characteristics of the house level+1
+
  
    void _update();
 

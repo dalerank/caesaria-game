@@ -21,6 +21,7 @@
 #include <cstdio>
 #include <limits>
 #include <climits>
+#include <iostream>
 #include <stdint.h>
 
 static int formatString(std::string& str, int max_size, const char* format, va_list argument_list)
@@ -169,4 +170,32 @@ std::string StringHelper::replace( std::string text, const std::string& from, co
   //std::cout << text << std::endl;
 
   return text;
+}
+
+bool StringHelper::isEquale( const std::string& a, const std::string& b, equaleMode mode )
+{
+  switch( mode )
+  {
+#if defined(_MSC_VER)
+  case equaleIgnoreCase: return !_stricmp( a.c_str(), b.c_str() );
+  case equaleCase: return !strcmp( a.c_str(), b.c_str() );
+#else
+  case equaleIgnoreCase: return !strcasecmp( a.c_str(), b.c_str() );
+  case equaleCase: return !strcmp( a.c_str(), b.c_str() );
+#endif
+  default: return false;
+  }
+}
+
+void StringHelper::debug( unsigned int max_size, const char* fmt, ... )
+{
+  va_list argument_list;
+  va_start(argument_list, fmt);
+
+  std::string ret;
+  int length = formatString( ret, max_size, fmt, argument_list);
+
+  va_end(argument_list);
+
+  std::cout << ret << std::endl;
 }

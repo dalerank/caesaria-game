@@ -17,6 +17,7 @@
 #include "oc3_building.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_stringhelper.hpp"
 
 TerrainTile::TerrainTile()
 {
@@ -163,9 +164,8 @@ std::string TerrainTileHelper::convId2PicName( const unsigned int imgId )
     // THROW("Unknown image Id " << imgId);
   }
 
-  char ret_str[128];
-  snprintf( ret_str, 127, "%s_%05d.png", res_pfx.c_str(), res_id );
-  return std::string( ret_str );
+  std::string ret_str = StringHelper::format( 0xff, "%s_%05d.png", res_pfx.c_str(), res_id );
+  return ret_str;
 }
 
 int TerrainTileHelper::convPicName2Id( std::string &pic_name )

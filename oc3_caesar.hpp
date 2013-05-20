@@ -40,13 +40,10 @@ public:
 
    void start(const std::string &resourcePath);
 
-   void initLocale();
    void initVideo();
    void initSound();
    void initWaitPictures();
-   void initPictures(const std::string &resourcePath);
-   void loadScenario(const std::string &scenarioFile);
-   void loadGame(const std::string &gameFile);
+   
    void setScreenWait();
    void setScreenMenu(const std::string &resourcePath);
    void setScreenGame();

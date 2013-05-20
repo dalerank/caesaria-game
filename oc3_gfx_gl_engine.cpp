@@ -189,3 +189,12 @@ void GfxGlEngine::drawPicture( const Picture &picture, const Point& pos )
   drawPicture( picture, pos.getX(), pos.getY() );
 }
 
+void GfxGlEngine::setTileDrawMask( int rmask, int gmask, int bmask, int amask )
+{
+
+}
+
+void GfxGlEngine::resetTileDrawMask()
+{
+
+}

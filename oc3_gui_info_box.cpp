@@ -17,10 +17,6 @@
 
 #include "oc3_gui_info_box.hpp"
 
-#include <SDL.h>
-#include <iomanip>
-#include <boost/format.hpp>
-
 #include "oc3_tile.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_pic_loader.hpp"
@@ -37,6 +33,8 @@
 #include "oc3_scenario.hpp"
 #include "oc3_market.hpp"
 #include "oc3_granary.hpp"
+#include "oc3_stringhelper.hpp"
+#include "oc3_goodhelper.hpp"
 
 class InfoBoxHelper
 {
@@ -353,7 +351,7 @@ void GuiInfoFactory::paint()
       Picture &pic = getPictureGood(_building->getInGood()._goodType);
       sdlFacade.drawPicture(pic, *_d->bgPicture, 15, _paintY+2);
       int amount = _building->getInGood()._currentQty / 100;
-      std::string goodName = Good::instance(_building->getInGood()._goodType).getName();
+      std::string goodName = GoodHelper::getInstance().getName( _building->getInGood()._goodType );
       sprintf(buffer, _("%s en stock: %d unites"), goodName.c_str(), amount);
       sdlFacade.drawText(*_d->bgPicture, std::string(buffer), 42, _paintY, font);
       _paintY+=22;
@@ -396,8 +394,7 @@ void GuiInfoFactory::drawWorkers( int& paintY )
 
 std::string GuiInfoFactory::getInfoText()
 {
-
-   std::string textKey = Good::instance(_building->getOutGood()._goodType).getName();
+   std::string textKey = GoodHelper::getInstance().getName( _building->getOutGood()._goodType );
    if (_building->isActive() == false)
    {
       textKey+= "- Production arretee sous ordre du gouverneur";
@@ -513,26 +510,23 @@ void GuiInfoGranary::drawWorkers( int paintY )
 
 void GuiInfoGranary::drawGood(const GoodType &goodType, int& paintY)
 {
-   Good &good = Good::instance(goodType);
-   SdlFacade &sdlFacade = SdlFacade::instance();
-   Font &font = FontCollection::instance().getFont(FONT_2);
-   int qty = _building->getGoodStore().getCurrentQty(goodType);
+  std::string goodName = GoodHelper::getInstance().getName( goodType );
+  SdlFacade &sdlFacade = SdlFacade::instance();
+  Font &font = FontCollection::instance().getFont(FONT_2);
+  int qty = _building->getGoodStore().getCurrentQty(goodType);
+  if (qty == 0)
+  {
+     // no drawing
+     return;
+  }
 
-   if (qty == 0)
-   {
-      // no drawing
-      return;
-   }
+  // pictures of goods
+  Picture &pic = getPictureGood(goodType);
+  sdlFacade.drawPicture(pic, *_d->bgPicture, 31, paintY);
 
-   // pictures of goods
-   Picture &pic = getPictureGood(goodType);
-   sdlFacade.drawPicture(pic, *_d->bgPicture, 31, paintY);
-
-   char buffer[1000];
-   sprintf(buffer, "%d ", qty);
-   sdlFacade.drawText(*_d->bgPicture, std::string(buffer) + good.getName(), 61, paintY, font);
-
-   paintY += 22;
+  std::string outText = StringHelper::format( 0xff, "%d %s", qty, goodName.c_str() );
+  sdlFacade.drawText(*_d->bgPicture, outText, 61, paintY, font);
+  paintY += 22;
 }
 
 
@@ -600,7 +594,7 @@ void GuiInfoMarket::drawWorkers( int paintY )
 
 void GuiInfoMarket::drawGood(const GoodType &goodType, int& paintY )
 {
-   Good &good = Good::instance(goodType);
+  std::string goodName = GoodHelper::getInstance().getName( goodType );
    SdlFacade &sdlFacade = SdlFacade::instance();
    Font &font = FontCollection::instance().getFont(FONT_2);
    int qty = _building->getGoodStore().getCurrentQty(goodType);
@@ -615,9 +609,8 @@ void GuiInfoMarket::drawGood(const GoodType &goodType, int& paintY )
    Picture &pic = getPictureGood(goodType);
    sdlFacade.drawPicture(pic, *_d->bgPicture, 31, paintY);
 
-   char buffer[1000];
-   sprintf(buffer, "%d ", qty);
-   sdlFacade.drawText(*_d->bgPicture, std::string(buffer) + good.getName(), 61, paintY, font);
+   std::string outText = StringHelper::format( 0xff, "%d %s", qty, goodName.c_str() );
+   sdlFacade.drawText(*_d->bgPicture, outText, 61, paintY, font);
 
    paintY += 22;
 }
@@ -677,21 +670,20 @@ InfoBoxLand::InfoBoxLand( Widget* parent, Tile* tile )
     int size = oTilemap.getSize();
     int border_size = (162 - size) / 2;
     
-    std::stringstream ss;
-
     int index = (size - tile->getJ() - 1 + border_size) * 162 + tile->getI() + border_size;
     
     TerrainTile& terrain = tile->get_terrain();
+
+    std::string text = StringHelper::format( 0xff, "Tile at: (%d,%d) %04X %02X %04X %02X %02X %02X",
+                                             tile->getI(), tile->getJ(),  
+                                            ((short int) terrain.getOriginalImgId() ),
+                                            ((short int) terrain.getEdgeData()),
+                                            ((short int) terrain.getTerrainData()),  
+                                            ((short int) terrain.getTerrainRndmData()),  
+                                            ((short int) terrain.getRandomData()),
+                                            ((short int) terrain.getElevationData() ) );
     
-    ss << "Tile at: (" << tile->getI() << "," << tile->getJ() << ")" << " "  
-        << boost::format("%04X") % ((short int) terrain.getOriginalImgId()) << " "  
-        << boost::format("%02X") % ((short int) terrain.getEdgeData()) << " "  
-        << boost::format("%04X") % ((short int) terrain.getTerrainData()) << " "  
-        << boost::format("%02X") % ((short int) terrain.getTerrainRndmData()) << " "  
-        << boost::format("%02X") % ((short int) terrain.getRandomData()) << " "  
-        << boost::format("%02X") % ((short int) terrain.getElevationData()) << std::endl ;
-    
-    _text->setText(ss.str());
+    _text->setText( text );
     
     GuiPaneling::instance().draw_black_frame( *_d->bgPicture, 16, _d->lbTitle->getBottom() + 10, getWidth()-32, 180 );
 }

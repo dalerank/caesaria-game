@@ -84,30 +84,32 @@ class Variant
         ULongLong = 5,
         Double = 6,
         Char = 7,
-        Map = 8,
-        List = 9,
-        String = 10,
-        NStringArray = 11,
-        NByteArray = 12,
-        BitArray = 13,
-        Date = 14,
-        Time = 15,
-        NDateTime = 16,
-        Url = 17,
-        Locale = 18,
-        NRectI = 19,
-        NRectF = 20,
-        NSize = 21,
-        NSizeF = 22,
-        Line = 23,
-        LineF = 24,
-        NPoint = 25,
-        NPointF = 26,
-        RegExp = 27,
-        Hash = 28,
-        Reserved = 29,
+        Uchar = 8,
+        Ushort = 9,
+        Ulong = 10,
+        Long = 11,
+        Float = 12,
+        Short = 13,
+        Map = 14,
+        List = 15,
+        String = 16,
+        NStringArray = 17,
+        NByteArray = 18,
+        BitArray = 19,
+        Date = 20,
+        Time = 21,
+        NDateTime = 22,
+        Url = 23,
+        NRectI = 24,
+        NRectF = 25,
+        NSize = 26,
+        NSizeF = 27,
+        Line = 28,
+        LineF = 29,
+        NPoint = 30,
+        NPointF = 31,
 
-        LastCoreType = Reserved,
+        LastCoreType = NPointF,
 
         Font = 64,
         Pixmap = 65,
@@ -131,15 +133,10 @@ class Variant
         Vector2D = 83,
         Vector3D = 84,
         Vector4D = 85,
-        Quaternion = 86,
+        NTilePos = 86,
+        Quaternion = 87,
         LastGuiType = Quaternion,
 
-        NUChar = 121,
-        NUShort = 122,
-        NShort = 123,
-        NULong = 124,
-        NLong = 125,
-        NFloat = 126,
         UserType = 127,
         LastType = 0xffffffff // need this so that gcc >= 3.4 allocates 32 bits for Type
     };
@@ -165,6 +162,7 @@ class Variant
     Variant( char rchar);
     Variant( const DateTime& datetime);
     Variant( const VariantList& list);
+    Variant( const TilePos& pos );
     Variant( const VariantMap& mapa);
 
     Variant( const Size& size);
@@ -176,7 +174,6 @@ class Variant
 	  Variant( const Rect& rect);
     //Variant( const RectF& rect);
     //Variant( const Color& color);
-    Variant( const char* c );
 
     Variant& operator=( const Variant& other);
 
@@ -213,6 +210,7 @@ class Variant
     Rect toRect() const;
     Size toSize() const;
     SizeF toSizeF() const;
+    TilePos toTilePos() const;
     //Line toLine() const;
     //LineF toLineF() const;
     //RectF toRectF() const;
@@ -244,10 +242,10 @@ protected:
     bool cmp(const Variant &other) const;
 
 private:
-    // force compile error, prevent QVariant(bool) to be called
+    // force compile error, prevent Variant(bool) to be called
     inline Variant(void *) { _OC3_DEBUG_BREAK_IF(true); }
-    // force compile error, prevent QVariant(QVariant::Type, int) to be called
-    inline Variant(bool, int) { _OC3_DEBUG_BREAK_IF(false); }
+    // force compile error, prevent Variant(QVariant::Type, int) to be called
+    inline Variant(bool, int) { _OC3_DEBUG_BREAK_IF(true); }
 };
 
 class VariantList : public std::list<Variant>
@@ -273,6 +271,11 @@ public:
     }
 
     return *this;
+  }
+
+  Variant get( const std::string& name ) const
+  {
+    return const_cast< VariantMap& >( *this )[ name ];
   }
 
   Variant toVariant() const

@@ -122,7 +122,7 @@ void GuiEnv::draw()
 
   // make sure tooltip is always on top
   if(_d->toolTip.Element)
-    _d->toolTip.Element->draw( *_d->engine );
+     _d->toolTip.Element->draw( *_d->engine );
 
   _d->preRenderFunctionCalled = false;
 }

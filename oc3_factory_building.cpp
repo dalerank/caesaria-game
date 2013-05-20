@@ -26,6 +26,7 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_predefinitions.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_stringhelper.hpp"
 
 class Factory::Impl
 {
@@ -128,10 +129,8 @@ void Factory::timeStep(const unsigned long time)
 
 void Factory::deliverGood()
 {
-  // std::cout << "Factory delivery" << std::endl;
-
   // make a cart pusher and send him away
-  std::cout << "Good is ready!!!" << std::endl;
+  StringHelper::debug( 0xff, "Good is ready!!!" );
   if( _mayDeliverGood() )
   {
     GoodStock stock(_outGoodType, 100, 100);
@@ -329,10 +328,10 @@ bool Wharf::canBuild(const TilePos& pos ) const
       
      // if (tiles.get_terrain().isWater())
       
-      if (tile.getJ() > (pos.getJ() + _size -1) && !tile.get_terrain().isWater()) {  bNorth = false; }
-      if (tile.getJ() < pos.getJ() && !tile.get_terrain().isWater())              {  bSouth = false; }
-      if (tile.getI() > (pos.getI() + _size -1) && !tile.get_terrain().isWater()) {  bEast = false;  }
-      if (tile.getI() < pos.getI() && !tile.get_terrain().isWater())              {  bWest = false;  }      
+     if (tile.getJ() > (pos.getJ() + _size -1) && !tile.get_terrain().isWater()) {  bNorth = false; }
+     if (tile.getJ() < pos.getJ() && !tile.get_terrain().isWater())              {  bSouth = false; }
+     if (tile.getI() > (pos.getI() + _size -1) && !tile.get_terrain().isWater()) {  bEast = false;  }
+     if (tile.getI() < pos.getI() && !tile.get_terrain().isWater())              {  bWest = false;  }      
    }
 
    return (is_constructible && (bNorth || bSouth || bEast || bWest));

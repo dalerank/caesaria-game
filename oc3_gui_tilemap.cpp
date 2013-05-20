@@ -43,34 +43,40 @@ public:
   bool  lmbPressed;
   // current map offset, for private use
   Point mapOffset;
+  City* city;     // city to display
+  Tilemap* tilemap;
+  TilemapArea* mapArea;  // visible map area
+  ScreenGame *screenGame;
 
   TilePos lastTilePos;
   TilemapChangeCommand changeCommand;
+
+  void getSelectedArea( TilePos& outStartPos, TilePos& outStopPos );
+  // returns the tile at the cursor position.
+  Tile* getTileXY( const Point& pos, bool overborder=false );
+  void buildAll();
 
 oc3_signals public:
   Signal1< Tile* > onShowTileInfoSignal;
 };
 
-GuiTilemap* GuiTilemap::_instance = NULL;
-
 GuiTilemap::GuiTilemap() : _d( new Impl )
 {
-  _city = NULL;
-  _mapArea = NULL;
-  _instance = this;
+  _d->city = NULL;
+  _d->mapArea = NULL;
 }
 
 GuiTilemap::~GuiTilemap() {}
 
 void GuiTilemap::init(City &city, TilemapArea &mapArea, ScreenGame *screen)
 {
-  _city = &city;
-  _tilemap = &_city->getTilemap();
-  _mapArea = &mapArea;
-  _screenGame = screen;
+  _d->city = &city;
+  _d->tilemap = &city.getTilemap();
+  _d->mapArea = &mapArea;
+  _d->screenGame = screen;
 }
 
-void GuiTilemap::drawTileEx( const Tile& tile, const int depth )
+void GuiTilemap::drawTileEx( Tile& tile, const int depth )
 {
   if( tile.is_flat() )
   {
@@ -79,55 +85,50 @@ void GuiTilemap::drawTileEx( const Tile& tile, const int depth )
 
   Tile* master = tile.get_master_tile();
 
-  if( master==NULL )
+  if( 0 == master )    // single-tile
   {
-    // single-tile
     drawTile( tile );
+    return;
   }
-  else
+
+  // multi-tile: draw the master tile.
+  // and it is time to draw the master tile
+  if( master->getIJ().getZ() == depth && !master->wasDrawn()  )
   {
-    // multi-tile: draw the master tile.
-    int masterZ = master->getJ() - master->getI();
-    if( masterZ == depth )
-    {
-      // it is time to draw the master tile
-      if (std::find(_multiTiles.begin(), _multiTiles.end(), master) == _multiTiles.end())
-      {
-	// master has not been drawn yet
-	_multiTiles.push_back(master);  // don't draw that multi-tile again
-	drawTile( *master );
-      }
-    }
+    drawTile( *master );
   }
 }
 
-void GuiTilemap::drawTile( const Tile& tile )
+void GuiTilemap::drawTile( Tile& tile )
 {
-	int i = tile.getI();
-	int j = tile.getJ();
+  Point screenPos( 30*(tile.getI()+tile.getJ()), 15*(tile.getI()-tile.getJ()) );
+  screenPos += _d->mapOffset;
 
-	Point mOffset = _d->mapOffset;
-	
 	Picture& pic = tile.get_picture();
 	GfxEngine &engine = GfxEngine::instance();
-	engine.drawPicture(pic, 30*(i+j)+mOffset.getX(), 15*(i-j)+mOffset.getY());
-
-	// building foregrounds and animations
+  tile.setWasDrawn();
+	
+  //draw background
+  engine.drawPicture( pic, screenPos );
+	
 	LandOverlayPtr overlay = tile.get_terrain().getOverlay();
-	if( overlay.isValid() )
+	if( overlay.isNull() )
+  {
+    return;
+  }
+
+  // building foregrounds and animations
+  Impl::Pictures& fgPictures = overlay->getForegroundPictures();
+  for( Impl::Pictures::iterator itPic = fgPictures.begin(); itPic != fgPictures.end(); ++itPic )
 	{
-		std::vector<Picture*>& fgPictures = overlay->getForegroundPictures();
-		for (std::vector<Picture*>::iterator itPic = fgPictures.begin(); itPic != fgPictures.end(); ++itPic)
+		// for each foreground picture
+		if( 0 == *itPic )
 		{
-			// for each foreground picture
-			if (*itPic == NULL)
-			{
-				// skip void picture
-				continue;
-			}
-			Picture &fgpic = **itPic;
-			engine.drawPicture(fgpic, 30*(i+j)+mOffset.getX(), 15*(i-j)+mOffset.getY());
+			// skip void picture
+			continue;
 		}
+
+		engine.drawPicture( **itPic, screenPos);
 	}
 }
 
@@ -135,13 +136,15 @@ void GuiTilemap::drawTilemap()
 {
   GfxEngine &engine = GfxEngine::instance();
 
-  _multiTiles.clear();  // we will draw everything again
-  Tilemap &tilemap = *_tilemap;
-  TilemapArea &mapArea = *_mapArea;
+  Tilemap &tilemap = *_d->tilemap;
+  TilemapArea &mapArea = *_d->mapArea;
+
+  Picture& pic_clear = Picture::load( "oc3_land", 2 );
 
   // center the map on the screen
   Point mOffset( engine.getScreenWidth()/2 - 30*(mapArea.getCenterX()+1) + 1,
                  engine.getScreenHeight()/2 + 15*(mapArea.getCenterZ()-tilemap.getSize()+1) - 30 );
+
   _d->mapOffset = mOffset;  // this is the current offset
 
   int lastZ = -1000;  // dummy value
@@ -149,31 +152,61 @@ void GuiTilemap::drawTilemap()
   const std::vector< TilePos >& tiles = mapArea.getTiles();
   std::vector< TilePos >::const_iterator itPos;
 
+  for( itPos = tiles.begin(); itPos != tiles.end(); ++itPos )
+  {
+    getTile( *itPos ).resetWasDrawn();
+  }
+
+  Rect selectedArea( -1, -1, -1, -1 );
+  if( _d->changeCommand.isRemoveTool() )
+  {
+    TilePos startPos, stopPos;
+    _d->getSelectedArea( startPos, stopPos );
+    selectedArea = Rect( startPos.getI(), startPos.getJ(), stopPos.getI(), stopPos.getJ() );
+  }
+
   // FIRST PART: draw all flat land (walkable/boatable)
   for( itPos = tiles.begin(); itPos != tiles.end(); ++itPos )
   {
     Tile& tile = getTile( *itPos );
     Tile* master = tile.get_master_tile();
 
-    if( tile.is_flat() )
+    if( !tile.is_flat() )
+      continue;
+
+    bool posInSelArea = false;
+    if( selectedArea.UpperLeftCorner.getX() >= 0 )
     {
-      if( master==NULL )
+      if( selectedArea.isPointInside( Point( (*itPos).getI(), (*itPos).getJ() ) ) )
       {
-        // single-tile
-	      drawTile( tile );
-      }
-      else
+        posInSelArea = true;
+      }    
+    }
+    
+    if( master==NULL )
+    {
+      // single-tile
+	    drawTile( tile );
+      if( posInSelArea )
       {
-        // multi-tile: draw the master tile.
-        if( std::find(_multiTiles.begin(), _multiTiles.end(), master) == _multiTiles.end() )
-        {
-           // master has not been drawn yet
-          _multiTiles.push_back(master);
-	        drawTile( *master );
-        }
+        engine.drawPicture( pic_clear, 30*(tile.getI()+tile.getJ())+_d->mapOffset.getX(), 
+                                       15*(tile.getI()-tile.getJ())+_d->mapOffset.getY() );
       }
     }
-  }
+    else
+    {
+      if( posInSelArea )
+      {
+        engine.setTileDrawMask( 0x00ff0000, 0, 0, 0xff000000 );      
+      }
+      
+      // multi-tile: draw the master tile.
+      if( !master->wasDrawn() )
+        drawTile( *master );
+
+      engine.resetTileDrawMask();
+    }    
+  }  
 
   // SECOND PART: draw all sprites, impassable land and buildings
   for( itPos = tiles.begin(); itPos != tiles.end(); ++itPos)
@@ -185,34 +218,41 @@ void GuiTilemap::drawTilemap()
        // TODO: pre-sort all animations
        lastZ = z;
 
-       std::vector<Picture*> pictureList;
+       Impl::Pictures pictureList;
 
-       Walkers walkerList = _city->getWalkerList( WT_ALL );
+       Walkers walkerList = _d->city->getWalkerList( WT_ALL );
        for( Walkers::iterator itWalker =  walkerList.begin();
              itWalker != walkerList.end(); ++itWalker)
        {
           // for each walker
           WalkerPtr anim = *itWalker;
           int zAnim = anim->getIJ().getZ();// getJ() - anim.getI();
-          if (zAnim > z && zAnim <= z+1)
+          if( zAnim > z && zAnim <= z+1 )
           {
              pictureList.clear();
              anim->getPictureList( pictureList );
-             for( std::vector<Picture*>::iterator picIt = pictureList.begin(); picIt != pictureList.end(); ++picIt )
+             for( Impl::Pictures::iterator picIt = pictureList.begin(); picIt != pictureList.end(); ++picIt )
              {
-                if (*picIt == NULL)
+                if( *picIt == NULL )
                 {
                    continue;
                 }
-                engine.drawPicture( **picIt, 2*(anim->getII()+anim->getJJ())+mOffset.getX(), 
-                                    anim->getII()-anim->getJJ()+mOffset.getY());
+
+                engine.drawPicture( **picIt, 2*(anim->getII()+anim->getJJ()) + mOffset.getX(), 
+                                                anim->getII()-anim->getJJ()  + mOffset.getY());
              }
           }
        }
     }   
 
-    Tile& tile = getTile( *itPos );
-    drawTileEx( tile, z );
+    if( selectedArea.UpperLeftCorner.getX() > 0 
+        && selectedArea.isPointInside( Point( (*itPos).getI(), (*itPos).getJ() ) )  )
+    {
+      engine.setTileDrawMask( 0x00ff0000, 0, 0, 0xff000000 );      
+    }
+
+    drawTileEx( getTile( *itPos ), z );
+    engine.resetTileDrawMask();
   }
 
   //Third part: drawing build/remove tools
@@ -220,28 +260,29 @@ void GuiTilemap::drawTilemap()
     for( PtrTilesList::iterator itPostTile = _d->postTiles.begin(); itPostTile != _d->postTiles.end(); ++itPostTile )
     {
       int z = (*itPostTile)->getJ() - (*itPostTile)->getI();
+      (*itPostTile)->resetWasDrawn();
       drawTileEx( **itPostTile, z );
     }       
   }
 }
 
-Tile* GuiTilemap::getTileXY( const Point& pos, bool overborder)
+Tile* GuiTilemap::Impl::getTileXY( const Point& pos, bool overborder)
 {
-   Point mOffset = pos - _d->mapOffset;  // x relative to the left most pixel of the tilemap
+   Point mOffset = pos - mapOffset;  // x relative to the left most pixel of the tilemap
    int i = (mOffset.getX() + 2 * mOffset.getY()) / 60;
    int j = (mOffset.getX() - 2 * mOffset.getY()) / 60;
    
    if( overborder )
    {
-       i = math::clamp( i, 0, _tilemap->getSize() - 1 );
-       j = math::clamp( j, 0, _tilemap->getSize() - 1 );
+       i = math::clamp( i, 0, tilemap->getSize() - 1 );
+       j = math::clamp( j, 0, tilemap->getSize() - 1 );
    }
    // std::cout << "ij ("<<i<<","<<j<<")"<<std::endl;
 
-   if (i>=0 && j>=0 && i<_tilemap->getSize() && j<_tilemap->getSize())
+   if (i>=0 && j>=0 && i < tilemap->getSize() && j < tilemap->getSize())
    {
       // valid coordinate
-      return &getTile( TilePos( i, j ) );
+      return &tilemap->at( TilePos( i, j ) );
    }
    else
    {
@@ -252,7 +293,7 @@ Tile* GuiTilemap::getTileXY( const Point& pos, bool overborder)
 
 TilemapArea &GuiTilemap::getMapArea()
 {
-  return *_mapArea;
+  return *_d->mapArea;
 }
 
 void GuiTilemap::updatePreviewTiles( bool force )
@@ -260,7 +301,7 @@ void GuiTilemap::updatePreviewTiles( bool force )
   if( !_d->changeCommand.isValid() )
     return;
 
-  Tile* curTile = getTileXY( _d->lastCursorPos, true );
+  Tile* curTile = _d->getTileXY( _d->lastCursorPos, true );
 
   if( !curTile )
     return;
@@ -274,10 +315,10 @@ void GuiTilemap::updatePreviewTiles( bool force )
     
   if( _d->changeCommand.isBorderBuilding() )
   {
-    Tile* startTile = getTileXY( _d->startCursorPos, true );  // tile under the cursor (or NULL)
-    Tile* stopTile  = getTileXY( _d->lastCursorPos,  true );
+    Tile* startTile = _d->getTileXY( _d->startCursorPos, true );  // tile under the cursor (or NULL)
+    Tile* stopTile  = _d->getTileXY( _d->lastCursorPos,  true );
 
-    RoadPropagator rp( *_tilemap, *startTile );
+    RoadPropagator rp( *_d->tilemap, *startTile );
 
     ConstWayOnTiles pathWay;
     bool havepath = rp.getPath( *stopTile, pathWay );
@@ -292,7 +333,7 @@ void GuiTilemap::updatePreviewTiles( bool force )
   else
   {
     TilePos startPos, stopPos;
-    _getSelectedArea( startPos, stopPos );
+    _d->getSelectedArea( startPos, stopPos );
 
     std::cout << "start is" << startPos << " and stop is " << stopPos << std::endl;
     
@@ -301,16 +342,15 @@ void GuiTilemap::updatePreviewTiles( bool force )
       for( int j = startPos.getJ(); j <=stopPos.getJ(); j++ )
       {
 	      checkPreviewBuild( TilePos( i, j ) );
-	      checkPreviewRemove(i, j);
       }
     }
   }
 }
 
-void GuiTilemap::_getSelectedArea( TilePos& outStartPos, TilePos& outStopPos )
+void GuiTilemap::Impl::getSelectedArea( TilePos& outStartPos, TilePos& outStopPos )
 {
-  Tile* startTile = getTileXY( _d->startCursorPos, true );  // tile under the cursor (or NULL)
-  Tile* stopTile  = getTileXY( _d->lastCursorPos, true );
+  Tile* startTile = getTileXY( startCursorPos, true );  // tile under the cursor (or NULL)
+  Tile* stopTile  = getTileXY( lastCursorPos, true );
 
   TilePos startPosTmp = startTile->getIJ();
   TilePos stopPosTmp  = stopTile->getIJ();
@@ -322,32 +362,29 @@ void GuiTilemap::_getSelectedArea( TilePos& outStartPos, TilePos& outStopPos )
   outStopPos  = TilePos( std::max<int>( startPosTmp.getI(), stopPosTmp.getI() ), std::max<int>( startPosTmp.getJ(), stopPosTmp.getJ() ) );
 }
 
-void GuiTilemap::_clearLand()
+void GuiTilemap::_clearAll()
 {
   TilePos startPos, stopPos;
-  _getSelectedArea( startPos, stopPos );
-  int i, j;
+  _d->getSelectedArea( startPos, stopPos );
 
-  for (i = startPos.getI(); i <= stopPos.getI(); i++) 
+  PtrTilesList tiles4clear = _d->tilemap->getFilledRectangle( startPos, stopPos );
+  for( PtrTilesList::iterator it = tiles4clear.begin(); it != tiles4clear.end(); it++) 
   {
-    for (j = startPos.getJ(); j <= stopPos.getJ(); j++ )
-    {
-      _city->clearLand( TilePos(i,j) );
-    }   
+      _d->city->clearLand( (*it)->getIJ() );
   }
 }
 
-void GuiTilemap::_buildAll()
+void GuiTilemap::Impl::buildAll()
 {
-  for( PtrTilesList::iterator it=_d->postTiles.begin(); it != _d->postTiles.end(); it++ )
+  for( PtrTilesList::iterator it=postTiles.begin(); it != postTiles.end(); it++ )
   {
-    ConstructionPtr cnstr = _d->changeCommand.getContruction();
-//    std::cout << "(" << (*it)->getI() << " " << (*it)->getJ() << ") ";
+    ConstructionPtr cnstr = changeCommand.getContruction();
+
     if( cnstr.isValid() 
         && cnstr->canBuild( (*it)->getIJ() ) 
         && (*it)->is_master_tile())
     {
-      _city->build( cnstr->getType(), (*it)->getIJ() );
+      city->build( cnstr->getType(), (*it)->getIJ() );
     }
   }
 //  std::cout << std::endl;
@@ -381,7 +418,7 @@ void GuiTilemap::handleEvent( NEvent& event )
 
         case OC3_LMOUSE_LEFT_UP:            // left button
         {
-            Tile* tile = getTileXY( event.MouseEvent.getPosition() );  // tile under the cursor (or NULL)
+            Tile* tile = _d->getTileXY( event.MouseEvent.getPosition() );  // tile under the cursor (or NULL)
             if( tile == 0 )
             {
               _d->lmbPressed = false;
@@ -393,11 +430,11 @@ void GuiTilemap::handleEvent( NEvent& event )
             {                
                 if( _d->changeCommand.isRemoveTool() )
                 {
-                    _clearLand();                      
+                    _clearAll();                      
                 }
                 else if( _d->changeCommand.getContruction().isValid() )
                 {
-                    _buildAll();               
+                    _d->buildAll();               
                 }
                 _d->startCursorPos = _d->lastCursorPos;
                 updatePreviewTiles( true );
@@ -405,6 +442,7 @@ void GuiTilemap::handleEvent( NEvent& event )
             else
             {
                 getMapArea().setCenterIJ( tile->getIJ() );
+                _d->city->setCameraPos( tile->getIJ() );
             }
 
             _d->lmbPressed = false;
@@ -414,7 +452,7 @@ void GuiTilemap::handleEvent( NEvent& event )
 
         case OC3_RMOUSE_LEFT_UP:
         {
-            Tile* tile = getTileXY( event.MouseEvent.getPosition() );  // tile under the cursor (or NULL)
+            Tile* tile = _d->getTileXY( event.MouseEvent.getPosition() );  // tile under the cursor (or NULL)
             if( _d->changeCommand.isValid() )
             { 
                 _d->changeCommand = TilemapChangeCommand();
@@ -464,10 +502,10 @@ void GuiTilemap::discardPreview()
 
   _d->previewToolPictures.clear();
 
-    for( PtrTilesList::iterator it=_d->postTiles.begin(); it != _d->postTiles.end(); it++ )
-    {
-         delete *it;
-    }
+  for( PtrTilesList::iterator it=_d->postTiles.begin(); it != _d->postTiles.end(); it++ )
+  {
+       delete *it;
+  }
 
   _d->postTiles.clear();
 }
@@ -482,16 +520,15 @@ void GuiTilemap::checkPreviewBuild( const TilePos& pos )
       if( overlay->canBuild( pos ) )
       {
           _d->previewToolPictures.push_back( new Picture() );
-          PictureConverter::rgbBalance( *_d->previewToolPictures.back(), overlay->getPicture(), -255, +0, -255 );
+          PictureConverter::maskColor( *_d->previewToolPictures.back(), overlay->getPicture(), 0x00000000, 0x00ff0000, 0x00000000, 0xff000000 );
 
           Tile *masterTile=0;
           for (int dj = 0; dj < size; ++dj)
           {
               for (int di = 0; di < size; ++di)
               {
-                  Tile* tile = new Tile(_tilemap->at( pos + TilePos( di, dj ) ));  // make a copy of tile
+                  Tile* tile = new Tile(_d->tilemap->at( pos + TilePos( di, dj ) ));  // make a copy of tile
                   
-
                   if (di==0 && dj==0)
                   {
                       // this is the masterTile
@@ -508,89 +545,34 @@ void GuiTilemap::checkPreviewBuild( const TilePos& pos )
       }
       else
       {
-          Picture& grnPicture = PicLoader::instance().get_picture( "oc3_land", 1 );
-          Picture& redPicture = PicLoader::instance().get_picture( "oc3_land", 2 );
+        Picture& grnPicture = Picture::load( "oc3_land", 1 );
+        Picture& redPicture = Picture::load( "oc3_land", 2 );
           
-          for (int dj = 0; dj < size; ++dj)
-          {
-              for (int di = 0; di < size; ++di)
-              {
-                TilePos rPos = pos + TilePos( di, dj );
-                if( !_tilemap->is_inside( rPos ) )
-                    continue;
+        for (int dj = 0; dj < size; ++dj)
+        {
+            for (int di = 0; di < size; ++di)
+            {
+              TilePos rPos = pos + TilePos( di, dj );
+              if( !_d->tilemap->is_inside( rPos ) )
+                  continue;
 
-                Tile* tile = new Tile( _tilemap->at( rPos ) );  // make a copy of tile
+              Tile* tile = new Tile( _d->tilemap->at( rPos ) );  // make a copy of tile
 
-                bool isConstructible = tile->get_terrain().isConstructible();
-                tile->set_picture( isConstructible ? &grnPicture : &redPicture );
-                tile->set_master_tile(0);
-                tile->get_terrain().reset();
-                tile->get_terrain().setBuilding( true );
-                _d->postTiles.push_back( tile );
-              }
-          }
+              bool isConstructible = tile->get_terrain().isConstructible();
+              tile->set_picture( isConstructible ? &grnPicture : &redPicture );
+              tile->set_master_tile(0);
+              tile->get_terrain().reset();
+              tile->get_terrain().setBuilding( true );
+              _d->postTiles.push_back( tile );
+            }
+        }
       }
    }
 }
 
-void GuiTilemap::checkPreviewRemove(const int i, const int j)
-{
-    if( _d->changeCommand.isRemoveTool() )
-    {
-        Tile& cursorTile = _tilemap->at(i, j);
-        TerrainTile& terrain = cursorTile.get_terrain();
-        //if( terrain.isDestructible() )
-        {           
-            Picture& pic_clear = PicLoader::instance().get_picture( "oc3_land", 2 );
-
-            LandOverlayPtr overlay = terrain.getOverlay();
-            if( overlay.isNull() )
-            {
-                // this is maybe a lonely tree
-                Tile* tile = new Tile(_tilemap->at(i, j));  // make a copy of tile
-                tile->set_picture(&pic_clear);
-                tile->set_master_tile(NULL);  // single tile
-                tile->get_terrain().setBuilding( true );
-                _d->postTiles.push_back( tile );
-                //_priorityTiles.push_back(&tile);
-            }
-            else
-            {
-                _d->previewToolPictures.push_back( new Picture() );
-                PictureConverter::rgbBalance( *_d->previewToolPictures.back(), overlay->getPicture(), +0, -255, -255 );
-
-                // remove the overlay, and make single tile of cleared land
-                int size = overlay->getSize();
-                TilePos tilePos = overlay->getTile().getIJ(); // master I
-
-                Tile* masterTile = 0;
-                for (int dj = 0; dj<size; ++dj)
-                {
-                    for (int di = 0; di<size; ++di)
-                    {
-                        Tile* tile = new Tile(_tilemap->at( tilePos + TilePos( di, dj ) ) );  // make a copy of tile
-
-                        if (di==0 && dj==0)
-                        {
-                            // this is the masterTile
-                            masterTile = tile;
-                        }                        
-
-                        tile->set_picture( _d->previewToolPictures.back() );
-                        tile->set_master_tile( masterTile );  // single tile
-                        tile->get_terrain().setOverlay( 0 );
-                        tile->get_terrain().setBuilding( true );
-                        _d->postTiles.push_back( tile );
-                    }
-                }
-            }
-        }
-    }
-}
-
 Tile& GuiTilemap::getTile(const TilePos& pos )
 {
-  return _tilemap->at( pos );
+  return _d->tilemap->at( pos );
 }
 
 Signal1< Tile* >& GuiTilemap::onShowTileInfo()

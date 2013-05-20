@@ -34,6 +34,7 @@ public:
   bool isBorderVisible;
   bool OverrideBGColorEnabled;
   bool WordWrap;
+  Point bgOffset;
   bool isBackgroundVisible;
   bool RestrainTextInside;
   bool RightToLeft;
@@ -107,17 +108,17 @@ void Label::_updateTexture( GfxEngine& painter )
     // draw button background
     if( _d->bgPicture )
     {
-        SdlFacade::instance().drawPicture( *_d->bgPicture, *_d->picture, 0, 0 );
+        SdlFacade::instance().drawPicture( *_d->bgPicture, *_d->picture, _d->bgOffset.getX(), _d->bgOffset.getY() );
     }    
     else
     {
         if( !_d->isBackgroundVisible )
+        {
             GuiPaneling::instance().draw_white_area( *_d->picture, 0, 0, getSize().getWidth(), getSize().getHeight() );
+        }
         else
         {
             GuiPaneling::instance().draw_black_area( *_d->picture, 0, 0, getSize().getWidth(), getSize().getHeight() );
-            //PictureConverter::fill( *_d->picture, 0 );
-
         }
     }
 
@@ -573,10 +574,11 @@ void Label::setPrefixText( const string& prefix )
   _d->needUpdatePicture = true;
 }
 
-void Label::setBackgroundPicture( const Picture& picture )
+void Label::setBackgroundPicture( const Picture& picture, const Point& offset )
 {
-  _d->bgPicture = const_cast< Picture* >( &picture );
-  _d->needUpdatePicture = true;
+    _d->bgPicture = const_cast< Picture* >( &picture );
+    _d->bgOffset = offset;
+    _d->needUpdatePicture = true;
 }
 
 void Label::setFont( const Font& font )

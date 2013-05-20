@@ -19,6 +19,7 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_contextmenuitem.hpp"
 #include "oc3_sdl_facade.hpp"
+#include "oc3_stringhelper.hpp"
 
 namespace {
 static const Uint32 dateLabelOffset = 155;
@@ -26,6 +27,9 @@ static const Uint32 populationLabelOffset = 344;
 static const Uint32 fundLabelOffset = 464;
 static const Uint32 panelBgStatus = 15;
 };
+
+static const char *MonthName[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+static const char *AgeName[] = {"BC", "AD"};
 
 class TopMenu::Impl
 {
@@ -39,13 +43,9 @@ public:
 
 oc3_signals public:
   Signal0<> onExitSignal;
-  Signal1<std::string> onSaveSignal;
+  Signal0<> onEndSignal;
+  Signal0<> onSaveSignal;
 };
-
-void TopMenu::Impl::resolveSave()
-{
-  onSaveSignal.emit( "./test.oc3save" );
-}
 
 TopMenu* TopMenu::create( Widget* parent, const int height )
 {
@@ -100,6 +100,30 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
 
   GfxEngine::instance().load_picture(*ret->_d->bgPicture);
 
+  ContextMenuItem* tmp = ret->addItem( "File", -1, true, true, false, false );
+  tmp->setBackgroundPicture( *ret->_d->bgPicture );
+  ContextMenu* file = tmp->addSubMenu();
+
+  ContextMenuItem* save = file->addItem( "Save", -1, true, false, false, false );
+  //ContextMenuItem* load = file->addItem( "Load", -1, true, false, false, false );
+
+  file->addItem( "", -1, false, false, false, false );
+  ContextMenuItem* mainMenu = file->addItem( "Main menu", -1, true, false, false, false );
+
+  file->addItem( "", -1, true, false, false, false );
+  ContextMenuItem* exit = file->addItem( "Exit", -1, true, false, false, false );
+
+  CONNECT( exit, onClicked(), &ret->_d->onExitSignal, Signal0<>::emit );
+  CONNECT( save, onClicked(), &ret->_d->onSaveSignal, Signal0<>::emit );
+  CONNECT( mainMenu, onClicked(), &ret->_d->onEndSignal, Signal0<>::emit );
+
+  tmp = ret->addItem( "Options", -1, true, true, false, false );
+  tmp->setBackgroundPicture( *ret->_d->bgPicture, Point( -tmp->getLeft(), 0 ) );
+  tmp = ret->addItem( "Help", -1, true, true, false, false );
+  tmp->setBackgroundPicture( *ret->_d->bgPicture, Point( -tmp->getLeft(), 0 ) );
+  tmp = ret->addItem( "Advisers", -1, true, true, false, false );
+  tmp->setBackgroundPicture( *ret->_d->bgPicture, Point( -tmp->getLeft(), 0 ) );
+
   return ret;
 }
 
@@ -117,50 +141,28 @@ void TopMenu::draw( GfxEngine& engine )
 
 void TopMenu::setPopulation( int value )
 {
-  char buffer[100];
-  sprintf(buffer, "Pop %d", value);  // "'" is the thousands separator
-  _d->lbPopulation->setText( buffer );
+  _d->lbPopulation->setText( StringHelper::format( 0xff, "Pop %d", value ) );
 }
 
 void TopMenu::setFunds( int value )
 {
-  char buffer[100];
-  sprintf(buffer, "Dn %d", value );  // "'" is the thousands separator
-  _d->lbFunds->setText( buffer );
+  _d->lbFunds->setText( StringHelper::format( 0xff, "Dn %d", value) );
 }
 
 void TopMenu::setDate( int value )
 {
-  char buffer[100];
-
-  const char *args[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-  const char *age[] = {"BC", "AD"};
-
-  sprintf(buffer, "%.3s %d %.2s", args[value % 12], (int)std::abs(((int)value/12-39)), age[((int)value/12-39)>0]);
+  std::string text = StringHelper::format( 0xff, "%.3s %d %.2s", 
+                                           MonthName[value % 12], (int)std::abs(((int)value/12-39)), 
+                                           AgeName[((int)value/12-39)>0]);
 
   //_dateLabel.setText("Feb 39 BC");
-  _d->lbDate->setText( buffer );
+  _d->lbDate->setText( text );
 }
 
 TopMenu::TopMenu( Widget* parent, const int height ) 
 : MainMenu( parent, Rect( 0, 0, parent->getWidth(), height ) ),
   _d( new Impl )
 {
-  PicLoader& loader = PicLoader::instance();
-  ContextMenuItem* tmp = addItem( "File", -1, true, true, false, false );
-  
-  ContextMenu* file = tmp->addSubMenu();
-  ContextMenuItem* save = file->addItem( "Save", -1, true, false, false, false );
-  file->addItem( "Load", -1, true, false, false, false );
-  file->addItem( "", -1, false, false, false, false );
-  ContextMenuItem* exit = file->addItem( "Exit", -1, true, false, false, false );
-  
-  CONNECT( exit, onClicked(), &_d->onExitSignal, Signal0<>::emit );
-  CONNECT( save, onClicked(), _d.data(), Impl::resolveSave );
-
-  addItem( "Options",  -1, true, true, false, false );
-  addItem( "Help",     -1, true, true, false, false );
-  addItem( "Advisors", -1, true, true, false, false );
 }
 
 Signal0<>& TopMenu::onExit()
@@ -168,7 +170,12 @@ Signal0<>& TopMenu::onExit()
   return _d->onExitSignal;
 }
 
-Signal1<std::string>& TopMenu::onSave()
+Signal0<>& TopMenu::onSave()
 {
   return _d->onSaveSignal;
+}
+
+Signal0<>& TopMenu::onEnd()
+{
+  return _d->onEndSignal;
 }

@@ -13,26 +13,39 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_PICTURECONVERTER_H_INCLUDE_
-#define __OPENCAESAR3_PICTURECONVERTER_H_INCLUDE_
+#include "oc3_goodhelper.hpp"
+#include "oc3_good.hpp"
+#include <vector>
 
-#include <memory>
-
-class Picture;
-
-class PictureConverter
+class GoodHelper::Impl
 {
 public:
-    static void convToGrayscale( Picture& dst, const Picture& src );
-    static void rgbBalance( Picture& dst, const Picture& src, int lROffset, int lGOffset, int lBOffset );
-    static void fill( Picture& pic, int color );
-    static void maskColor( Picture& dst, const Picture& src, int rmask=0x00ff0000, int gmask=0x0000ff00, 
-                           int bmask=0x000000ff, int amask=0xff000000 );
-
-private:
-    PictureConverter();
-    ~PictureConverter();
-    
+  std::vector<Good> mapGood;  // index=GoodType, value=Good
 };
 
-#endif
+GoodHelper& GoodHelper::getInstance()
+{
+  static GoodHelper inst;
+  return inst;
+}
+
+GoodHelper::GoodHelper() : _d( new Impl )
+{
+  _d->mapGood.resize(G_MAX);
+
+  for (int n = 0; n < G_MAX; ++n)
+  {
+    GoodType goodType = GoodType(n);
+    _d->mapGood[n].init( goodType );
+  }
+}
+
+GoodHelper::~GoodHelper()
+{
+
+}
+
+std::string GoodHelper::getName( GoodType type ) const
+{
+  return _d->mapGood[ type ].getName();
+}

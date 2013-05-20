@@ -17,27 +17,27 @@
 #include "oc3_exception.hpp"
 #include "oc3_building.hpp"
 
-Tile::Tile(const int i, const int j) : _terrain(0,0,0,0,0,0)
+Tile::Tile( const TilePos& pos) : _terrain( 0, 0, 0, 0, 0, 0 )
 {
-  _i = i;
-  _j = j;
+  _pos = pos;
   _picture = NULL;
+  _wasDrawn = false;
   _master_tile = NULL;
 }
 
 
 Tile::Tile(const Tile& clone)
 {
-  _i = clone._i;
-  _j = clone._j;
+  _pos = clone._pos;
   _picture = clone._picture;
   _master_tile = clone._master_tile;
   _terrain = clone._terrain;
+  _wasDrawn = clone._wasDrawn;
 }
 
-int Tile::getI() const    {   return _i;   }
+int Tile::getI() const    {   return _pos.getI();   }
 
-int Tile::getJ() const    {   return _j;   }
+int Tile::getJ() const    {   return _pos.getJ();   }
 
 
 void Tile::set_picture(Picture *picture)
@@ -82,7 +82,7 @@ bool Tile::is_flat() const
 
 TilePos Tile::getIJ() const
 {
-  return TilePos( _i, _j );
+  return _pos;
 }
 
 bool Tile::is_master_tile() const

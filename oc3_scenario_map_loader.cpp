@@ -19,6 +19,7 @@
 #include "oc3_scenario.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_constructionmanager.hpp"
+#include "oc3_stringhelper.hpp"
 
 #include <fstream>
 
@@ -72,7 +73,6 @@ public:
   void initCameraStartPos(std::fstream &f, City &ioCity);
 
   void initEntryExit(std::fstream &f, City &ioCity);
-  void initEntryExitPicture( City &ioCity );
 };
 
 bool ScenarioMapLoader::load(const std::string& filename, Scenario &oScenario)
@@ -83,7 +83,6 @@ bool ScenarioMapLoader::load(const std::string& filename, Scenario &oScenario)
   _d->loadMap(f, oScenario);
 
   _d->initEntryExit(f, oScenario.getCity());
-  _d->initEntryExitPicture( oScenario.getCity() );
 
   _d->initCameraStartPos(f, oScenario.getCity());
 
@@ -344,25 +343,25 @@ void ScenarioMapLoader::Impl::decodeTerrain(Tile &oTile)
       case 0xb0f:
       case 0xb0b:
       case 0xb0c:
-	overlay = ConstructionManager::getInstance().create( B_NATIVE_HUT ).as<LandOverlay>();
+	      overlay = ConstructionManager::getInstance().create( B_NATIVE_HUT ).as<LandOverlay>();
         break;
       case 0xb10:
       case 0xb0d:
-	overlay =  ConstructionManager::getInstance().create( B_NATIVE_CENTER ).as<LandOverlay>();
-	std::cout << "creation of Native center at (" << oTile.getI() << "," << oTile.getJ() << ")" << std::endl;
-	break;
+	      overlay =  ConstructionManager::getInstance().create( B_NATIVE_CENTER ).as<LandOverlay>();
+	      std::cout << "creation of Native center at (" << oTile.getI() << "," << oTile.getJ() << ")" << std::endl;
+	      break;
       case 0xb11:
       case 0xb44:
-	overlay = ConstructionManager::getInstance().create( B_NATIVE_FIELD ).as<LandOverlay>();
-	break;
+       	overlay = ConstructionManager::getInstance().create( B_NATIVE_FIELD ).as<LandOverlay>();
+	      break;
     }
   }
 
   //terrain.setOverlay( overlay );
   if (overlay != NULL)
   {
-      overlay->build( TilePos(oTile.getI(), oTile.getJ()) );
-//    Scenario::instance().getCity().getOverlayList().push_back(overlay);
+    overlay->build( oTile.getIJ() );
+    Scenario::instance().getCity().getOverlayList().push_back(overlay);
   }
 }
 
@@ -419,13 +418,13 @@ void ScenarioMapLoader::Impl::initEntryExit(std::fstream &f, City &ioCity)
   f.seekg(kBoatEntry, std::ios::beg);
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);
-  ioCity.setBoatEntryIJ(i, size - j - 1);
+  ioCity.setBoatEntry( TilePos( i, size - j - 1 ) );
 
   i = 0;
   j = 0;
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);
-  ioCity.setBoatExitIJ(i, size - j - 1);
+  ioCity.setBoatExit( TilePos( i, size - j - 1) );
 
   //std::cout << "road entry at:" << ioCity.getRoadEntryI() << "," << ioCity.getRoadEntryJ() << std::endl;
   //std::cout << "road exit at:"  << ioCity.getRoadExitI()  << "," << ioCity.getRoadExitJ()  << std::endl;
@@ -441,39 +440,5 @@ void ScenarioMapLoader::Impl::initCameraStartPos(std::fstream &f, City &ioCity)
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);
 
-  ioCity.setCameraStartIJ(i, j);
-}
-
-static void initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap, const Uint32 picIdStart, bool exit )
-{
-  Uint32 idOffset = 0;
-  TilePos tlOffset;
-  if( tlPos.getI() == 0 || tlPos.getI() == tileMap.getSize() - 1 )
-  {
-    tlOffset = TilePos( 0, 1 );
-    idOffset = tlPos.getI() == 0 ? 1 : 3 ;
-
-  }
-  else if( tlPos.getJ() == 0 || tlPos.getJ() == tileMap.getSize() - 1 )
-  {
-    tlOffset = TilePos( 1, 0 );
-    idOffset = tlPos.getJ() == 0 ? 2 : 0;
-  }
-
-  Tile& signTile = tileMap.at( tlPos + tlOffset );
-
-  std::cout << tlPos.getI() << " " << tlPos.getJ() << " " << std::endl;
-  std::cout << tlOffset.getI() << " " << tlOffset.getJ() << " " << std::endl;
-
-  signTile.set_picture(&PicLoader::instance().get_picture( "land3a", picIdStart + idOffset ));
-  signTile.get_terrain().setRock( true );
-};
-
-void ScenarioMapLoader::Impl::initEntryExitPicture( City &ioCity )
-{
-  Tilemap& tileMap = ioCity.getTilemap();
-
-  // exit and entry can't point to one tile or .... can!
-  initEntryExitTile( ioCity.getRoadEntry(), tileMap, 89, false );
-  initEntryExitTile( ioCity.getRoadExitIJ(), tileMap, 85, true );    
+  ioCity.setCameraPos( TilePos( i, j ) );
 }

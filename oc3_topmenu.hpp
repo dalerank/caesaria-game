@@ -35,7 +35,8 @@ public:
 
 oc3_signals public:
   Signal0<>& onExit();
-  Signal1<std::string>& onSave();
+  Signal0<>& onSave();
+  Signal0<>& onEnd();
 
 private:
   TopMenu( Widget* parent, const int height );

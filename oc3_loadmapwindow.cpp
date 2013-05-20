@@ -32,19 +32,31 @@ public:
   ListBox* files;
   PushButton* btnExit;
   PushButton* btnHelp;
+  std::string directory;
+  std::string fileExtension;
 
   void fillFiles();
+
+  void resolveFileSelected( std::string fileName )
+  {
+    onSelecteFileSignal.emit( directory + fileName );
+  }
+
 oc3_signals public:
   Signal1<std::string> onSelecteFileSignal;
 };
 
-LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect, int id )
+LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect,
+                              const std::string& dir, const std::string& ext, 
+                              int id )
 : Widget( parent, id, rect ), _d( new Impl )
 {
   // create the title
   _d->lbTitle = new Label( this, Rect( 16, 10, getWidth()-16, 10 + 30 ), "", true );
   _d->lbTitle->setFont( FontCollection::instance().getFont(FONT_3) );
   _d->lbTitle->setTextAlignment( alignCenter, alignCenter );
+  _d->directory = dir;
+  _d->fileExtension = ext;
 
   _d->btnExit = new PushButton( this, Rect( 472, getHeight() - 39, 496, getHeight() - 15 ) );
   GuiPaneling::configureTexturedButton( _d->btnExit, ResourceGroup::panelBackground, ResourceMenu::exitInfBtnPicId, false);
@@ -55,7 +67,7 @@ LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect, int id )
   CONNECT( _d->btnExit, onClicked(), this, LoadMapWindow::deleteLater );
 
   _d->files = new ListBox( this, Rect( 10, _d->lbTitle->getBottom(), getWidth() - 10, _d->btnHelp->getTop() - 5 ), -1, true, true, false ); 
-  CONNECT( _d->files, onItemSelectedAgain(), &_d->onSelecteFileSignal, Signal1<std::string>::emit );
+  CONNECT( _d->files, onItemSelectedAgain(), _d.data(), Impl::resolveFileSelected );
   _d->fillFiles();
 
   SdlFacade &sdlFacade = SdlFacade::instance();
@@ -73,14 +85,15 @@ LoadMapWindow::~LoadMapWindow()
 
 void LoadMapWindow::Impl::fillFiles()
 {
-  boost::filesystem::path path ("./resources/maps/");
+  boost::filesystem::path path ( directory );
 
   boost::filesystem::recursive_directory_iterator it( path );
   boost::filesystem::recursive_directory_iterator end;
 
   for (; it!=end; ++it)
   {
-    if( !boost::filesystem::is_directory(*it) )
+    if( !boost::filesystem::is_directory(*it) 
+        && boost::filesystem::path( *it ).extension().string() == fileExtension )
     {
       files->addItem( boost::filesystem::path( *it ).filename().string(), Font(), 0 );
     }

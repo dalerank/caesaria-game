@@ -18,23 +18,35 @@
 #include "oc3_traineewalker.hpp"
 #include "oc3_walker_market_buyer.hpp"
 #include "oc3_walker_cart_pusher.hpp"
+#include "oc3_emigrant.hpp"
+#include "oc3_scenario.hpp"
 #include <map>
+
+template< class T >
+class WalkerMigrantCreator : public AbstractWalkerCreator
+{
+public:
+  T* create()
+  {
+    SmartPtr<T> ret = T::create( Scenario::instance().getCity() ); 
+    ret->grab();
+
+    return ret.object();
+  }
+};
 
 class WalkerManager::Impl
 {
 public:
-  std::map<WalkerType, WalkerPtr> mapWalkerByID;  // key=walkerType, value=instance
+  typedef std::map< WalkerType, AbstractWalkerCreator* > WalkerCreators;
+  std::map< std::string, WalkerType > name2typeMap;
+  WalkerCreators constructors;
 };
 
 WalkerManager::WalkerManager() : _d( new Impl )
 {
-  // first call to this method
-  //_d->mapWalkerByID[WT_SERVICE] = new ServiceWalker(S_MAX);  // dummy serviceType
-  //_d->mapWalkerByID[WT_MARKET_BUYER] = new MarketBuyer();
-  //_d->mapWalkerByID[WT_CART_PUSHER] = new CartPusher();
-  //_d->mapWalkerByID[WT_IMMIGRANT] = new Immigrant();
-  //_d->mapWalkerByID[WT_EMIGRANT] = new Emigrant();
-  //_d->mapWalkerByID[WT_TRAINEE] = TraineeWalker::create( WTT_NONE );
+  addCreator( WT_EMIGRANT, OC3_STR_EXT(WT_EMIGRANT), new WalkerMigrantCreator<Emigrant>() );
+  addCreator( WT_IMMIGRANT, OC3_STR_EXT(WT_IMMIGRANT), new WalkerMigrantCreator<Immigrant>() );
 }
 
 WalkerManager::~WalkerManager()
@@ -42,27 +54,39 @@ WalkerManager::~WalkerManager()
 
 }
 
-WalkerPtr WalkerManager::create( const WalkerType walkerType, const TilePos& pos )
+WalkerPtr WalkerManager::create( const WalkerType walkerType )
 {
-  std::map<WalkerType, WalkerPtr>::iterator mapIt;
-  mapIt = _d->mapWalkerByID.find( walkerType );
-  WalkerPtr res;
+  Impl::WalkerCreators::iterator findConstructor = _d->constructors.find( walkerType );
 
-  if( mapIt == _d->mapWalkerByID.end() )
+  if( findConstructor != _d->constructors.end() )
   {
-    // THROW("Unknown walker type:" << walkerType);
-    res = NULL;
-  }
-  else
-  {
-    //res = mapIt->second->clone();
+    WalkerPtr ret( findConstructor->second->create() );
+    ret->drop();
+    return ret;
   }
 
-  return res;
+  return WalkerPtr();
 }
 
 WalkerManager& WalkerManager::getInstance()
 {
   static WalkerManager inst;
   return inst;
+}
+
+void WalkerManager::addCreator( const WalkerType type, const std::string& typeName, AbstractWalkerCreator* ctor )
+{
+  bool alreadyHaveConstructor = _d->name2typeMap.find( typeName ) != _d->name2typeMap.end();
+  _OC3_DEBUG_BREAK_IF( alreadyHaveConstructor && "already have constructor for this type");
+
+  if( !alreadyHaveConstructor )
+  {
+    _d->name2typeMap[ typeName ] = type;
+    _d->constructors[ type ] = ctor;
+  }
+}
+
+bool WalkerManager::canCreate( const WalkerType type ) const
+{
+  return _d->constructors.find( type ) != _d->constructors.end();   
 }

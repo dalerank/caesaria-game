@@ -13,26 +13,20 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_PICTURECONVERTER_H_INCLUDE_
-#define __OPENCAESAR3_PICTURECONVERTER_H_INCLUDE_
+#ifndef __OPENCAESAR3_SCENARIO_LOAD_FINALIZER_H_INCLUDED__
+#define __OPENCAESAR3_SCENARIO_LOAD_FINALIZER_H_INCLUDED__
 
-#include <memory>
+class Scenario;
 
-class Picture;
-
-class PictureConverter
+class ScenarioLoadFinalizer
 {
 public:
-    static void convToGrayscale( Picture& dst, const Picture& src );
-    static void rgbBalance( Picture& dst, const Picture& src, int lROffset, int lGOffset, int lBOffset );
-    static void fill( Picture& pic, int color );
-    static void maskColor( Picture& dst, const Picture& src, int rmask=0x00ff0000, int gmask=0x0000ff00, 
-                           int bmask=0x000000ff, int amask=0xff000000 );
+  ScenarioLoadFinalizer( Scenario& scenario );
+
+  void check();
 
 private:
-    PictureConverter();
-    ~PictureConverter();
-    
+  Scenario& _scenario;
 };
 
-#endif
+#endif //__OPENCAESAR3_SCENARIO_LOAD_FINALIZER_H_INCLUDED__

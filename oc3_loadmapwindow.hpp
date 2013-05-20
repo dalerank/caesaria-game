@@ -26,7 +26,10 @@ class Picture;
 class LoadMapWindow : public Widget
 {
 public:
-  LoadMapWindow( Widget* parent, const Rect& rect, int id );
+  LoadMapWindow( Widget* parent, const Rect& rect, 
+    const std::string& dir, const std::string& ext,
+    int id );
+  
   ~LoadMapWindow();
 
   void draw( GfxEngine& engine );  // draw on screen

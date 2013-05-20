@@ -34,21 +34,25 @@
 class GfxSdlEngine : public GfxEngine
 {
 public:
-
    GfxSdlEngine();
-   virtual ~GfxSdlEngine();
-   virtual void init();
-   virtual void exit();
-   virtual void load_picture(Picture &ioPicture);
-   virtual void unload_picture(Picture& ioPicture);
+   ~GfxSdlEngine();
+   void init();
+   void exit();
+   void load_picture(Picture &ioPicture);
+   void unload_picture(Picture& ioPicture);
 
-   virtual void init_frame();
-   virtual void drawPicture(const Picture &picture, const int dx, const int dy);
-   virtual void drawPicture(const Picture &picture, const Point& pos );
-   virtual void exit_frame();
+   void init_frame();
+   void drawPicture(const Picture &picture, const int dx, const int dy);
+   void drawPicture(const Picture &picture, const Point& pos );
+   void exit_frame();
+
+   void setTileDrawMask( int rmask, int gmask, int bmask, int amask );
+   void resetTileDrawMask();
 
 private:
    SDL_Surface *_screen;
+   int _rmask, _gmask, _bmask, _amask;
+   Picture _maskedPic;
 };
 
 #endif

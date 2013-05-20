@@ -13,17 +13,10 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "oc3_project_version.hpp"
 
 #ifndef __OPENCAESAR3_REQUIREMENTS_INCLUDE_
 #define __OPENCAESAR3_REQUIREMENTS_INCLUDE_
-
-#define OC3_VERSION_MAJOR 0
-#define OC3_VERSION_MINOR 0
-#define OC3_VERSION_REVSN 370
-
-#define OC3_STR_EXT(__A) #__A
-#define OC3_STR_A(__A) OC3_STR_EXT(__A)
-#define OC3_VERSION OC3_STR_A(OC3_VERSION_MAJOR)"."OC3_STR_A(OC3_VERSION_MINOR)"."OC3_STR_A(OC3_VERSION_REVSN)
 
 #define _USE_ASSERT_4_DEBUG
 
@@ -47,10 +40,6 @@
 
 #define _OC3_DISABLE_COPY(Class) \
     Class( const Class& ); \
-    Class& operator=( const Class& );\
-
-#ifdef _MSC_VER
-  #define snprintf _snprintf
-#endif
+    Class& operator=( const Class& );
 
 #endif

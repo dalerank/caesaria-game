@@ -18,8 +18,9 @@
 #include "oc3_scenario.hpp"
 #include "oc3_road.hpp"
 
-Emigrant::Emigrant( City& city ) : Immigrant( city, 5 )
+Emigrant::Emigrant( City& city ) : Immigrant( city )
 {
+  setCapacity( 5 );
   _walkerType = WT_EMIGRANT;
   _walkerGraphic = WG_PUSHER2;
 }
@@ -65,16 +66,14 @@ void Emigrant::getPictureList(std::vector<Picture*> &oPics)
 
 void Emigrant::onNewDirection()
 {
-  Walker::onNewDirection();
+  Immigrant::onNewDirection();
   setCartPicture( 0 );  // need to get the new graphic
 }
 
-EmigrantPtr Emigrant::create( City& city, const RoadPtr startPoint )
+EmigrantPtr Emigrant::create( City& city )
 {
   EmigrantPtr newEmigrant( new Emigrant( city ) );
   newEmigrant->drop();
-  newEmigrant->assignPath( startPoint->getTile() );
-  city.addWalker( newEmigrant.as<Walker>() );
   return newEmigrant;
 }
 

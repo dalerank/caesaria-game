@@ -48,7 +48,8 @@ public:
    virtual void drawPicture(const Picture &pic, const Point& pos ) = 0;
    virtual void exit_frame() = 0;  // display the frame
 
-
+   virtual void setTileDrawMask( int rmask, int gmask, int bmask, int amask ) = 0;
+   virtual void resetTileDrawMask() = 0;
 protected:
    static GfxEngine* _instance;
 

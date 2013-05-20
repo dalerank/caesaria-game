@@ -21,6 +21,7 @@
 #include "oc3_guienv.hpp"
 #include "oc3_road.hpp"
 #include "oc3_tile.hpp"
+#include "oc3_stringhelper.hpp"
 
 class InfoBoxManager::Impl
 {
@@ -56,7 +57,7 @@ void InfoBoxManager::showHelp( Tile* tile )
 
     if( _d->showDebugInfo )
     {
-      std::cout << "Tile debug info: dsrbl=" << tile->get_terrain().getDesirability() << std::endl; 
+      StringHelper::debug( 0xff, "Tile debug info: dsrbl=%d", tile->get_terrain().getDesirability() ); 
     }
 
     if( overlay.isNull() )
