@@ -20,6 +20,9 @@
 #include <algorithm>
 #include <iostream>
 
+#include <boost/date_time/gregorian/gregorian.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+
 #include "oc3_gfx_engine.hpp"
 #include "oc3_gfx_sdl_engine.hpp"
 #include "oc3_exception.hpp"
@@ -225,9 +228,11 @@ void ScreenGame::handleEvent( NEvent& event )
 
 void ScreenGame::makeScreenShot()
 {
+  boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
+  
   std::cout << "creating screenshot" << std::endl;
   // get date
-  std::string filename ("screenshot.bmp");
+  std::string filename (boost::posix_time::to_simple_string(now) + ".bmp");
   // write file
   SDL_Surface* surface = dynamic_cast<GfxSdlEngine*>(_d->engine)->getScreen().get_surface();
   SDL_SaveBMP(surface, filename.c_str());
