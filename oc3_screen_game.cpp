@@ -23,6 +23,8 @@
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
+#include "IMG_savepng.h"
+
 #include "oc3_gfx_engine.hpp"
 #include "oc3_gfx_sdl_engine.hpp"
 #include "oc3_exception.hpp"
@@ -232,10 +234,10 @@ void ScreenGame::makeScreenShot()
   
   std::cout << "creating screenshot" << std::endl;
   // get date
-  std::string filename (boost::posix_time::to_simple_string(now) + ".bmp");
+  std::string filename (boost::posix_time::to_simple_string(now) + ".png");
   // write file
   SDL_Surface* surface = dynamic_cast<GfxSdlEngine*>(_d->engine)->getScreen().get_surface();
-  SDL_SaveBMP(surface, filename.c_str());
+  IMG_SavePNG(filename.c_str(), surface, -1);
 }
 
 int ScreenGame::getResult() const

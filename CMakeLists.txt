@@ -14,20 +14,23 @@ find_package(SDL_ttf REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(LibArchive REQUIRED)
 find_package(Libintl REQUIRED)
+find_package(PNG REQUIRED)
 
 unset(Boost_INCLUDE_DIR CACHE)
 unset(Boost_LIBRARY_DIRS CACHE)
 unset(Boost_FILESYSTEM_LIBRARY CACHE)
 unset(Boost_SYSTEM_LIBRARY CACHE)
+unset(Boost_DATE_TIME_LIBRARY CACHE)
 set(Boost_USE_STATIC_LIBS YES)
 find_package(Boost COMPONENTS filesystem system date_time)
 
 # Check if boost_static libraries are availible
-if (NOT (Boost_FILESYSTEM_LIBRARY AND Boost_SYSTEM_LIBRARY))
+if (NOT (Boost_FILESYSTEM_LIBRARY AND Boost_SYSTEM_LIBRARY AND Boost_DATE_TIME_LIBRARY))
   unset(Boost_INCLUDE_DIR CACHE)
   unset(Boost_LIBRARY_DIRS CACHE)
   unset(Boost_FILESYSTEM_LIBRARY CACHE)
   unset(Boost_SYSTEM_LIBRARY CACHE)
+  unset(Boost_DATE_TIME_LIBRARY CACHE)
   set(Boost_USE_STATIC_LIBS NO)
   find_package(Boost COMPONENTS filesystem system date_time REQUIRED)
 endif()
@@ -41,6 +44,7 @@ include_directories(
   ${OPENGL_INCLUDE_DIR}
   ${LibArchive_INCLUDE_DIR}
   ${LIBINTL_INCLUDE_DIR}
+  ${PNG_INCLUDE_DIR}
 )
 
 link_libraries(
@@ -54,6 +58,7 @@ link_libraries(
   ${OPENGL_gl_LIBRARY}
   ${LibArchive_LIBRARY}
   ${LIBINTL_LIBRARIES}
+  ${PNG_LIBRARY}
 )
 add_definitions(-DBOOST_ALL_NO_LIB)
 
