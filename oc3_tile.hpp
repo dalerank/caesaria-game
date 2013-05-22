@@ -49,8 +49,8 @@ public:
   bool is_flat() const;  // returns true if the tile is walkable/boatable (for display purpose)
 
   void resetWasDrawn() { _wasDrawn = false; }
-  void setWasDrawn() { _wasDrawn = true; }
-  bool wasDrawn() { return _wasDrawn; }
+  void setWasDrawn()   { _wasDrawn = true;  }
+  bool wasDrawn()      { return _wasDrawn;  }
 
 private:
   TilePos _pos; // coordinates of the tile

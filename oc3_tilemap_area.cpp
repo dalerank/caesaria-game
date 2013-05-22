@@ -57,7 +57,7 @@ void TilemapArea::setViewSize(const int width, const int height)
   
   std::cout << "width and height " <<  _view_width << " " << _view_height << std::endl;
   
-  _coordinates.reserve(width * height); // ???? WTF
+  _coordinates.reserve(width * height);
 }
 
 void TilemapArea::setCenterIJ(const TilePos& pos )
@@ -74,6 +74,7 @@ void TilemapArea::setCenterXZ(const int x, const int z)
   {
   _coordinates.clear();
   }
+  
   _center_x = x;
   _center_z = z;
 }

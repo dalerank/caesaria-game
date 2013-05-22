@@ -83,6 +83,7 @@ if(WIN32)
     ${SDL_TTF_LIBRARY}
     ${LibArchive_LIBRARY}
     ${LIBINTL_LIBRARIES}
+    ${PNG_LIBRARY}
   )
   foreach(_lib ${_LIBS_FOR_DLL_SOURCE})
     GET_FILENAME_COMPONENT(_lib_abs ${_lib} ABSOLUTE)
@@ -104,6 +105,7 @@ if(WIN32)
     SET (_BOOST_LIBS
       ${Boost_FILESYSTEM_LIBRARY}
       ${Boost_SYSTEM_LIBRARY}
+      ${Boost_DATE_TIME_LIBRARY}
     )
     foreach(_lib ${_BOOST_LIBS})
       GET_FILENAME_COMPONENT(_lib_path  ${_lib} PATH)

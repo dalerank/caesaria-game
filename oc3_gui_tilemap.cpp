@@ -92,7 +92,7 @@ void GuiTilemap::drawTileEx( Tile& tile, const int depth )
 
   // multi-tile: draw the master tile.
   // and it is time to draw the master tile
-  if( master->getIJ().getZ() == depth && !master->wasDrawn()  )
+  if( master->getIJ().getZ() == depth /* && !master->wasDrawn()  */)
   {
     drawTile( *master );
   }
@@ -100,18 +100,18 @@ void GuiTilemap::drawTileEx( Tile& tile, const int depth )
 
 void GuiTilemap::drawTile( Tile& tile )
 {
-  Point screenPos( 30*(tile.getI()+tile.getJ()), 15*(tile.getI()-tile.getJ()) );
+  Point screenPos( 30 * (tile.getI() + tile.getJ()), 15 * (tile.getI() - tile.getJ()) );
   screenPos += _d->mapOffset;
 
-	Picture& pic = tile.get_picture();
-	GfxEngine &engine = GfxEngine::instance();
+  Picture& pic = tile.get_picture();
+  GfxEngine &engine = GfxEngine::instance();
   tile.setWasDrawn();
-	
+
   //draw background
   engine.drawPicture( pic, screenPos );
-	
-	LandOverlayPtr overlay = tile.get_terrain().getOverlay();
-	if( overlay.isNull() )
+
+  LandOverlayPtr overlay = tile.get_terrain().getOverlay();
+  if( overlay.isNull() )
   {
     return;
   }
@@ -119,16 +119,16 @@ void GuiTilemap::drawTile( Tile& tile )
   // building foregrounds and animations
   Impl::Pictures& fgPictures = overlay->getForegroundPictures();
   for( Impl::Pictures::iterator itPic = fgPictures.begin(); itPic != fgPictures.end(); ++itPic )
-	{
-		// for each foreground picture
-		if( 0 == *itPic )
-		{
-			// skip void picture
-			continue;
-		}
+  {
+    // for each foreground picture
+    if( 0 == *itPic )
+    {
+      // skip void picture
+      continue;
+    }
 
-		engine.drawPicture( **itPic, screenPos);
-	}
+    engine.drawPicture( **itPic, screenPos);
+  }
 }
 
 void GuiTilemap::drawTilemap()
@@ -141,8 +141,8 @@ void GuiTilemap::drawTilemap()
   Picture& pic_clear = Picture::load( "oc3_land", 2 );
 
   // center the map on the screen
-  Point mOffset( engine.getScreenWidth()/2 - 30*(mapArea.getCenterX()+1) + 1,
-                 engine.getScreenHeight()/2 + 15*(mapArea.getCenterZ()-tilemap.getSize()+1) - 30 );
+  Point mOffset( engine.getScreenWidth() / 2 - 30 * (mapArea.getCenterX() + 1) + 1,
+                 engine.getScreenHeight() / 2 + 15 * (mapArea.getCenterZ()-tilemap.getSize() + 1) - 30 );
 
   _d->mapOffset = mOffset;  // this is the current offset
 
@@ -174,6 +174,7 @@ void GuiTilemap::drawTilemap()
       continue;
 
     bool posInSelArea = false;
+    
     if( selectedArea.UpperLeftCorner.getX() >= 0 )
     {
       if( selectedArea.isPointInside( Point( (*itPos).getI(), (*itPos).getJ() ) ) )
@@ -185,18 +186,18 @@ void GuiTilemap::drawTilemap()
     if( master==NULL )
     {
       // single-tile
-	    drawTile( tile );
+      drawTile( tile );
       if( posInSelArea )
       {
-        engine.drawPicture( pic_clear, 30*(tile.getI()+tile.getJ())+_d->mapOffset.getX(), 
-                                       15*(tile.getI()-tile.getJ())+_d->mapOffset.getY() );
+        engine.drawPicture( pic_clear, 30 * (tile.getI() + tile.getJ()) + _d->mapOffset.getX(), 
+                                       15 * (tile.getI() - tile.getJ()) + _d->mapOffset.getY() );
       }
     }
     else
     {
       if( posInSelArea )
       {
-        engine.setTileDrawMask( 0x00ff0000, 0, 0, 0xff000000 );      
+        engine.setTileDrawMask( 0x00ff0000, 0, 0, 0xff000000 );
       }
       
       // multi-tile: draw the master tile.
@@ -237,8 +238,8 @@ void GuiTilemap::drawTilemap()
                    continue;
                 }
 
-                engine.drawPicture( **picIt, 2*(anim->getII()+anim->getJJ()) + mOffset.getX(), 
-                                                anim->getII()-anim->getJJ()  + mOffset.getY());
+                engine.drawPicture( **picIt, 2*(anim->getII() + anim->getJJ()) + mOffset.getX(), 
+                                                anim->getII() - anim->getJJ()  + mOffset.getY());
              }
           }
        }
@@ -255,13 +256,11 @@ void GuiTilemap::drawTilemap()
   }
 
   //Third part: drawing build/remove tools
+  for( PtrTilesList::iterator itPostTile = _d->postTiles.begin(); itPostTile != _d->postTiles.end(); ++itPostTile )
   {
-    for( PtrTilesList::iterator itPostTile = _d->postTiles.begin(); itPostTile != _d->postTiles.end(); ++itPostTile )
-    {
-      int z = (*itPostTile)->getJ() - (*itPostTile)->getI();
-      (*itPostTile)->resetWasDrawn();
-      drawTileEx( **itPostTile, z );
-    }       
+    int z = (*itPostTile)->getJ() - (*itPostTile)->getI();
+    (*itPostTile)->resetWasDrawn();
+    drawTileEx( **itPostTile, z );
   }
 }
 
@@ -325,7 +324,7 @@ void GuiTilemap::updatePreviewTiles( bool force )
     {
       for( ConstWayOnTiles::iterator it=pathWay.begin(); it != pathWay.end(); it++ )
       {
-	      checkPreviewBuild( (*it)->getIJ() );
+	checkPreviewBuild( (*it)->getIJ() );
       }
     }
   }
@@ -340,7 +339,7 @@ void GuiTilemap::updatePreviewTiles( bool force )
     {
       for( int j = startPos.getJ(); j <=stopPos.getJ(); j++ )
       {
-	      checkPreviewBuild( TilePos( i, j ) );
+	checkPreviewBuild( TilePos( i, j ) );
       }
     }
   }

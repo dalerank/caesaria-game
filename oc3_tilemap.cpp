@@ -27,108 +27,98 @@
 
 Tilemap::Tilemap()
 {
-   _size = 0;
+  _size = 0;
 }
 
 void Tilemap::init(const int size)
 {
-   _size = size;
+  _size = size;
 
-   // resize the tile array
-   _tile_array.resize(_size);
-   for (int i = 0; i < _size; ++i)
-   {
-      _tile_array[i].reserve(_size);
+  // resize the tile array
+  _tile_array.resize(_size);
+  for (int i = 0; i < _size; ++i)
+  {
+    _tile_array[i].reserve(_size);
 
-      for (int j = 0; j < _size; ++j)
-      {
-         _tile_array[i].push_back( Tile( TilePos( i, j ) ));
-      }
-   }
+    for (int j = 0; j < _size; ++j)
+    {
+      _tile_array[i].push_back( Tile( TilePos( i, j ) ));
+    }
+  }
 }
 
 bool Tilemap::is_inside(const TilePos& pos ) const
 {
-   return ( pos.getI() >= 0 && pos.getJ()>=0 && pos.getI()<_size && pos.getJ()<_size);
+  return ( pos.getI() >= 0 && pos.getJ()>=0 && pos.getI() < _size && pos.getJ() < _size);
 }
 
 Tile& Tilemap::at(const int i, const int j)
 {
-   return _tile_array.at(i).at(j);
+  return _tile_array.at(i).at(j);
 }
 
 const Tile& Tilemap::at(const int i, const int j) const
 {
-   return _tile_array.at(i).at(j);
+  return _tile_array.at(i).at(j);
 }
 
 Tile& Tilemap::at( const TilePos& ij )
 {
-    return _tile_array.at(ij.getI()).at(ij.getJ());
-    // bad! No check of arrays borders!!!
+  return _tile_array.at(ij.getI()).at(ij.getJ());
 }
 
 const Tile& Tilemap::at( const TilePos& ij ) const
 {
-    return _tile_array.at(ij.getI()).at(ij.getJ());
+  return _tile_array.at(ij.getI()).at(ij.getJ());
 }
 
 int Tilemap::getSize() const
 {
-   return _size;
+  return _size;
 }
 
 PtrTilesList Tilemap::getRectangle( const TilePos& start, const TilePos& stop, const bool corners /*= true*/ )
 {
-    std::list<Tile*> res;
+  std::list<Tile*> res;
 
-    int delta_corners = 0;
-    if (! corners)
+  int delta_corners = 0;
+  if (! corners)
+  {
+    delta_corners = 1;
+  }
+
+  for(int i = start.getI() + delta_corners; i <= stop.getI() - delta_corners; ++i)
+  {
+    if (is_inside( TilePos( i, start.getJ() ) ))
     {
-        delta_corners = 1;
+      res.push_back( &at(i, start.getJ() ));
     }
 
-    /*Rect maxRect( 0, 0, _size, _size );
-    Rect rect( start.getI()+delta_corners, start.getJ()+delta_corners, 
-               stop.getI()-delta_corners, stop.getJ()-delta_corners );
-
-    rect.constrainTo( maxRect );
-    for( int i=rect.getLeft(); i < rect.getRight(); i++ )
-        for( int j=rect.getTop(); j < rect.getBottom(); j++ )
-            ret.push_back( &at( TilePos( i, j ) ) );
-    */
-    for(int i = start.getI()+delta_corners; i <= stop.getI()-delta_corners; ++i)
+    if (is_inside( TilePos( i, stop.getJ() ) ))
     {
-        if (is_inside( TilePos( i, start.getJ() ) ))
-        {
-            res.push_back( &at(i, start.getJ() ));
-        }
+      res.push_back( &at( i, stop.getJ() ));
+    }
+  }
 
-        if (is_inside( TilePos( i, stop.getJ() ) ))
-        {
-            res.push_back( &at( i, stop.getJ() ));
-        }
+  for (int j = start.getJ() + 1; j <= stop.getJ() - 1; ++j)  // corners have been handled already
+  {
+    if (is_inside( TilePos( start.getI(), j ) ))
+    {
+      res.push_back(&at(start.getI(), j));
     }
 
-    for (int j = start.getJ()+1; j <= stop.getJ()-1; ++j)  // corners have been handled already
+    if (is_inside( TilePos( stop.getI(), j ) ))
     {
-        if (is_inside( TilePos( start.getI(), j ) ))
-        {
-            res.push_back(&at(start.getI(), j));
-        }
-
-        if (is_inside( TilePos( stop.getI(), j ) ))
-        {
-            res.push_back(&at(stop.getI(), j));
-        }
+      res.push_back(&at(stop.getI(), j));
     }
+  }
 
-    return res;
+  return res;
 }
 
 PtrTilesList Tilemap::getRectangle( const TilePos& pos, const Size& size, const bool corners /*= true */ )
 {
-    return getRectangle( pos, pos + TilePos( size.getWidth()-1, size.getHeight()-1), corners );
+  return getRectangle( pos, pos + TilePos( size.getWidth()-1, size.getHeight()-1), corners );
 }
 
 // Get tiles inside of rectangle
@@ -152,7 +142,7 @@ PtrTilesList Tilemap::getFilledRectangle(const TilePos& start, const TilePos& st
 
 PtrTilesList Tilemap::getFilledRectangle( const TilePos& start, const Size& size )
 {
-    return getFilledRectangle( start, start + TilePos( size.getWidth()-1, size.getHeight()-1 ) );
+  return getFilledRectangle( start, start + TilePos( size.getWidth()-1, size.getHeight()-1 ) );
 }
 
 void Tilemap::save( VariantMap& stream ) const
@@ -163,35 +153,35 @@ void Tilemap::save( VariantMap& stream ) const
   VariantList idInfo;
 
   PtrTilesArea tiles = const_cast< Tilemap* >( this )->getFilledRectangle( TilePos( 0, 0 ), Size( _size ) );
-  for( PtrTilesArea::iterator it=tiles.begin(); it != tiles.end(); it++ )
+  for( PtrTilesArea::iterator it = tiles.begin(); it != tiles.end(); it++ )
   {
     bitsetInfo.push_back( (*it)->get_terrain().encode() );
     desInfo.push_back( (*it)->get_terrain().getDesirability() );
     idInfo.push_back( (*it)->get_terrain().getOriginalImgId() );
   }
 
-  stream[ "bitset" ] = bitsetInfo;
+  stream[ "bitset" ]       = bitsetInfo;
   stream[ "desirability" ] = desInfo;
-  stream[ "imgId" ] = idInfo;
-  stream[ "size" ] = _size;
+  stream[ "imgId" ]        = idInfo;
+  stream[ "size" ]         = _size;
 }
 
 void Tilemap::load( const VariantMap& stream )
 {
   VariantList bitsetInfo = stream.get( "bitset" ).toList();
-  VariantList desInfo = stream.get( "desirability" ).toList();
-  VariantList idInfo = stream.get( "imgId" ).toList();
+  VariantList desInfo    = stream.get( "desirability" ).toList();
+  VariantList idInfo     = stream.get( "imgId" ).toList();
 
   int size = stream.get( "size" ).toInt();
 
   init( size );
 
-  VariantList::iterator imgIdIt = idInfo.begin();
-  VariantList::iterator bitsetInfoIt = bitsetInfo.begin();
+  VariantList::iterator imgIdIt        = idInfo.begin();
+  VariantList::iterator bitsetInfoIt   = bitsetInfo.begin();
   VariantList::iterator desirabilityIt = desInfo.begin();
 
   PtrTilesArea tiles = const_cast< Tilemap* >( this )->getFilledRectangle( TilePos( 0, 0 ), Size( _size ) );
-  for( PtrTilesArea::iterator it=tiles.begin(); it != tiles.end(); 
+  for( PtrTilesArea::iterator it = tiles.begin(); it != tiles.end(); 
        it++, imgIdIt++, bitsetInfoIt++, desirabilityIt++ )
   {
     Tile* tile = *it;
@@ -212,10 +202,10 @@ void Tilemap::load( const VariantMap& stream )
       // master is the left-most subtile
       Tile* master = (tile_size == 1) ? NULL : tile;
       
-      for( int di=0; di<tile_size; ++di )
+      for ( int di = 0; di<tile_size; ++di )
       {
         // for each subrow of the multi-tile
-        for (int dj=0; dj<tile_size; ++dj)
+        for (int dj = 0; dj<tile_size; ++dj)
         {
           // for each subcol of the multi-tile
           Tile &sub_tile = at( tile->getIJ() + TilePos( di, dj ) );

@@ -23,131 +23,131 @@
 template<class T> class SmartPtr
 {
 protected:
-	//bool managed;
-	T *obj;
+  //bool managed;
+  T *obj;
 public:
   
-	void deleteObject()
-	{	  	  
-		//check again
-		if (obj==NULL) return;
-		  
-		//delete object
-		delete obj;
-		obj = 0;
-	}
+  void deleteObject()
+  {
+    //check again
+    if (obj==NULL) return;
   
-	void dereferenceObject()
-	{
-		if (obj==0) return;
-		     
-		//check if last reference
-		unsigned int lastRef = obj->getReferenceCount();
-		obj->drop();
-
-		if ( lastRef == 1)
-			obj = 0;
-	}
+    //delete object
+    delete obj;
+    obj = 0;
+  }
   
-	void referenceObject(void *aVObj)
-	{
-  		//convert to T
-		T *anObj = (T*)aVObj;
-		  
-		//cancel if object the same
-		if (obj == anObj) return;
+  void dereferenceObject()
+  {
+    if (obj==0) return;
+     
+  //check if last reference
+  unsigned int lastRef = obj->getReferenceCount();
+  obj->drop();
 
-		//dereference old object
-		dereferenceObject();
-
-		//reference new object
-		obj = anObj;
-		  
-		//check again
-		if( obj == 0 ) return;
-		
-		obj->grab();
-	}
-	
-	void detachObject()
-	{
-		obj = 0;
-	}
-	
-	void attachObject(void *anObj)
-	{
-		obj = (T*)anObj;
-	}
+  if ( lastRef == 1)
+    obj = 0;
+  }
   
-	T* object()
-	{
-		return obj;
-	}
-	
-	T* operator->() const
-	{
-  		return obj;
-	}
-  
-	SmartPtr()
-	{
-		obj = 0;
-	}
-	
-	~SmartPtr()
-	{
-		dereferenceObject();
-	}
-  	
-	SmartPtr& operator=(const SmartPtr<T> &aPtr)
-	{
-		referenceObject(aPtr.obj);
-		return *this;
-	}
-	
-	SmartPtr(T *anObj)
-	{
-		obj = 0;
-		referenceObject(anObj);
-		//happens always on "= new <object>"!
-	}
-	
-	SmartPtr(const SmartPtr<T> &aPtr)
-	{
-		obj = 0;
-		referenceObject(aPtr.obj);
-	}
-	
-	bool operator== (const SmartPtr<T> &aPtr)
-	{
-		return (obj == aPtr.obj);
-	}
+  void referenceObject(void *aVObj)
+  {
+    //convert to T
+    T *anObj = (T*)aVObj;
 
-	bool operator!= (const SmartPtr<T> &aPtr)
-	{
-		return (obj != aPtr.obj);
-	}
-	
-	bool operator==(void *ptr)
-	{
-		return ((void*)obj == ptr);
-	}
+    //cancel if object the same
+    if (obj == anObj) return;
+
+    //dereference old object
+    dereferenceObject();
+
+    //reference new object
+    obj = anObj;
+  
+    //check again
+    if( obj == 0 ) return;
+
+    obj->grab();
+  }
+
+  void detachObject()
+  {
+    obj = 0;
+  }
+
+  void attachObject(void *anObj)
+  {
+    obj = (T*)anObj;
+  }
+  
+  T* object()
+  {
+    return obj;
+  }
+
+  T* operator->() const
+  {
+    return obj;
+  }
+  
+  SmartPtr()
+  {
+    obj = 0;
+  }
+
+  ~SmartPtr()
+  {
+    dereferenceObject();
+  }
+
+  SmartPtr& operator=(const SmartPtr<T> &aPtr)
+  {
+    referenceObject(aPtr.obj);
+    return *this;
+  }
+
+  SmartPtr(T *anObj)
+  {
+    obj = 0;
+    referenceObject(anObj);
+    //happens always on "= new <object>"!
+  }
+
+  SmartPtr(const SmartPtr<T> &aPtr)
+  {
+    obj = 0;
+    referenceObject(aPtr.obj);
+  }
+
+  bool operator== (const SmartPtr<T> &aPtr)
+  {
+    return (obj == aPtr.obj);
+  }
+
+  bool operator!= (const SmartPtr<T> &aPtr)
+  {
+    return (obj != aPtr.obj);
+  }
+
+  bool operator==(void *ptr)
+  {
+    return ((void*)obj == ptr);
+  }
 
   /*operator bool() 
   {
     return (obj != 0);
   }
   */
-	
-	bool operator != (void *ptr)
-	{
-		return ((void*)obj != ptr);
-	}
-	
-	T& operator[] (int index)
-	{
-		return (*obj)[index];
-	}
+
+  bool operator != (void *ptr)
+  {
+    return ((void*)obj != ptr);
+  }
+
+  T& operator[] (int index)
+  {
+    return (*obj)[index];
+  }
 
   bool isNull() const
   {
@@ -160,12 +160,11 @@ public:
   }
 
   //Conversion operator
-	template<class U>
-	SmartPtr<U> as() const
-	{
-		SmartPtr<U> newptr( safety_cast<U*>(obj) );
-		return newptr;
-	}
+  template<class U> SmartPtr<U> as() const
+  {
+    SmartPtr<U> newptr( safety_cast<U*>(obj) );
+    return newptr;
+  }
 
   template<class U>
   bool is() const
