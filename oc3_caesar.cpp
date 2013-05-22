@@ -261,7 +261,7 @@ void CaesarApp::setScreenGame()
 
     default:
       _d->nextScreen = SCREEN_QUIT;
-  }   
+  }
 }
 
 
@@ -310,25 +310,24 @@ void CaesarApp::start()
 
 int main(int argc, char* argv[])
 {
-   for (int i = 0; i < (argc - 1); i++)
-   {
-	   if( !strcmp( argv[i], "-R" ) )
-	   {
-       AppConfig::set( AppConfig::resourcePath, Variant( std::string( argv[i+1] ) ) );
-		   break;
-	   }
-   }
+  for (int i = 0; i < (argc - 1); i++)
+  {
+    if( !strcmp( argv[i], "-R" ) )
+    {
+      AppConfig::set( AppConfig::resourcePath, Variant( std::string( argv[i+1] ) ) );
+      break;
+    }
+  }
 
-   try
-   {
-      CaesarApp app;
-      app.start();
-   }
-   catch (Exception e)
-   {
-      std::cout << "FATAL ERROR: " << e.getDescription() << std::endl;
-   }
+  try
+  {
+    CaesarApp app;
+    app.start();
+  }
+  catch (Exception e)
+  {
+    std::cout << "FATAL ERROR: " << e.getDescription() << std::endl;
+  }
 
-   return 0;
+  return 0;
 }
-

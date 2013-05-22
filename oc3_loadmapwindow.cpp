@@ -38,11 +38,11 @@ public:
 
   void resolveFileSelected( std::string fileName )
   {
-    onSelecteFileSignal.emit( directory + fileName );
+    onSelectFileSignal.emit( directory + fileName );
   }
 
 oc3_signals public:
-  Signal1<std::string> onSelecteFileSignal;
+  Signal1<std::string> onSelectFileSignal;
 };
 
 LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect,
@@ -127,5 +127,5 @@ void LoadMapWindow::setTitle( const std::string& title )
 
 Signal1<std::string>& LoadMapWindow::onSelectFile()
 {
-  return _d->onSelecteFileSignal;
+  return _d->onSelectFileSignal;
 }

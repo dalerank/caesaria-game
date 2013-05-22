@@ -38,25 +38,34 @@ public:
   bool isStopped;
   std::string fileMap;
 
-    void resolveNewGame() { result=startNewGame; isStopped=true; }
-    void resolveLoadGame( std::string fileName ) 
-    {
-      result=loadSavedGame; 
-      fileMap = fileName;
-      isStopped=true; 
-    }
-    
-    void resolveQuitGame() { result=closeApplication; isStopped=true; }
-    
-    void resolveSelectFile( std::string fileName )
-    {
-      result = loadMap;
-      fileMap = fileName;
-      isStopped = true;
-    }
+  void resolveNewGame()
+  {
+    result = startNewGame;
+    isStopped = true;
+  }
+  
+  void resolveLoadGame( std::string fileName ) 
+  {
+    result = loadSavedGame; 
+    fileMap = fileName;
+    isStopped = true; 
+  }
+
+  void resolveQuitGame()
+  {
+    result = closeApplication;
+    isStopped = true;
+  }
+
+  void resolveSelectFile( std::string fileName )
+  {
+    result = loadMap;
+    fileMap = fileName;
+    isStopped = true;
+  }
 
   void resolveShowLoadMapWnd();
-    void resolveShowLoadGameWnd();
+  void resolveShowLoadGameWnd();
 };
 
 void ScreenMenu::Impl::resolveShowLoadGameWnd()

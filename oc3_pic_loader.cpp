@@ -407,42 +407,6 @@ Picture PicLoader::make_picture(SDL_Surface *surface, const std::string& resourc
    return pic;
 }
 
-/*Picture& PicLoader::get_pic_by_id(const int imgId)
-{
-   // example: for land1a_00004.png, pfx=land1a and id=4
-   std::string res_pfx;  // resource name prefix
-   int res_id = imgId;   // id of resource
-
-   if (201<=imgId && imgId <245)
-   {
-      res_pfx = "plateau";
-      res_id = imgId-200;
-   }
-   else if (245<=imgId && imgId <548)
-   {
-      res_pfx = "land1a";
-      res_id = imgId-244;
-   }
-   else if (548<=imgId && imgId <779)
-   {
-      res_pfx = "land2a";
-      res_id = imgId-547;
-   }
-   else if (779<=imgId && imgId <871)
-   {
-      res_pfx = "land3a";
-      res_id = imgId-778;
-   }
-   else
-   {
-      res_pfx = "land1a";
-      res_id = 1;
-      // THROW("Unknown image Id " << imgId);
-   }
-
-   return get_picture(res_pfx, res_id);
-} */
-
 void PicLoader::createResources()
 {
   Picture& originalPic = get_picture( ResourceGroup::utilitya, 34 );

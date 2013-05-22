@@ -27,34 +27,33 @@
 class ScreenMenu : public Screen
 {
 public:
-    enum 
-    { 
-        startNewGame=0,
-        loadMap,
-        loadSavedGame,
-        closeApplication,
-        unlknowState=0xff
-    } Result;
+  enum 
+  { 
+    startNewGame = 0,
+    loadMap,
+    loadSavedGame,
+    closeApplication,
+    unknownState = 0xff
+  } Result;
     
-    ScreenMenu();
-    ~ScreenMenu();
+  ScreenMenu();
+  ~ScreenMenu();
 
-    void handleEvent( NEvent& event);
+  void handleEvent( NEvent& event);
 
-    // draws the menu/menubar/etc... on the screen
-    void draw();
-    void initialize( GfxEngine& engine, GuiEnv& gui );
+  // draws the menu/menubar/etc... on the screen
+  void draw();
+  void initialize( GfxEngine& engine, GuiEnv& gui );
 
-    const std::string& getMapName() const;
+  const std::string& getMapName() const;
 
 protected:
-    int getResult() const;
-    bool isStopped() const;
+  int getResult() const;
+  bool isStopped() const;
 
 private:
-    class Impl;
-    ScopedPtr< Impl > _d;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
-
 
 #endif
