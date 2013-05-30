@@ -820,78 +820,78 @@ void Widget::setVisible( bool visible )
 
 bool Widget::isTabStop() const
 {
-    return _isTabStop;
+  return _isTabStop;
 }
 
 bool Widget::hasTabGroup() const
 {
-    return _isTabGroup;
+  return _isTabGroup;
 }
 
 void Widget::setText( const std::string& text )
 {
-    _text = text;
+  _text = text;
 }
 
 void Widget::setTooltipText( const std::string& text )
 {
-    _toolTipText = text;
+  _toolTipText = text;
 }
 
 std::string Widget::getText() const
 {
-    return _text;
+  return _text;
 }
 
 std::string Widget::getTooltipText() const
 {
-    return _toolTipText;
+  return _toolTipText;
 }
 
 int Widget::getID() const
 {
-    return _id;
+  return _id;
 }
 
 void Widget::setID( int id )
 {
-    _id = id;
+  _id = id;
 }
 
 bool Widget::onEvent( const NEvent& event )
 {
-    if( _eventHandler )
-        _eventHandler->onEvent( event );
+  if( _eventHandler )
+    _eventHandler->onEvent( event );
 
-    if (event.EventType == OC3_MOUSE_EVENT)
-      if (getParent() && (getParent()->getParent() == NULL))
-        return true;
+  if (event.EventType == OC3_MOUSE_EVENT)
+    if (getParent() && (getParent()->getParent() == NULL))
+      return true;
 
-    return getParent() ? getParent()->onEvent(event) : false;
+  return getParent() ? getParent()->onEvent(event) : false;
 }
 
 const Widget::Widgets& Widget::getChildren() const
 {
-    return _d->children;
+  return _d->children;
 }
 
 bool Widget::isMyChild( Widget* child ) const
 {
-    if (!child)
-        return false;
-    do
-    {
-        if( child->getParent() )
-            child = child->getParent();
+  if (!child)
+    return false;
+  do
+  {
+    if( child->getParent() )
+      child = child->getParent();
+    
+  } while (child->getParent() && child != this);
 
-    } while (child->getParent() && child != this);
-
-	return child == this;
+  return child == this;
 }
 
 Size Widget::getMaxSize() const
 {
-    return _maxSize;
+  return _maxSize;
 }
 
 Size Widget::getMinSize() const

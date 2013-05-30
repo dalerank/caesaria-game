@@ -117,7 +117,7 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
   tmp->setBackgroundPicture( *ret->_d->bgPicture, Point( -tmp->getLeft(), 0 ) );
   tmp = ret->addItem( "Help", -1, true, true, false, false );
   tmp->setBackgroundPicture( *ret->_d->bgPicture, Point( -tmp->getLeft(), 0 ) );
-  tmp = ret->addItem( "Advisers", -1, true, true, false, false );
+  tmp = ret->addItem( "Advisors", -1, true, true, false, false );
   tmp->setBackgroundPicture( *ret->_d->bgPicture, Point( -tmp->getLeft(), 0 ) );
 
   return ret;

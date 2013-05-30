@@ -28,69 +28,69 @@ class PushButton : public Widget
 {
 public:
 
-	//! constructor
-	PushButton( Widget* parent,
-			    const Rect& rectangle,
-                const std::string& caption="",
-                int id=-1, 
-			    bool noclip=false );
+  //! constructor
+  PushButton( Widget* parent,
+	      const Rect& rectangle,
+	      const std::string& caption = "",
+	      int id = -1, 
+	      bool noclip = false );
 
-	//! destructor
-	~PushButton();
+  //! destructor
+  ~PushButton();
 
-	//! called if an event happened.
-	bool onEvent(const NEvent& event);
+  //! called if an event happened.
+  bool onEvent(const NEvent& event);
 
-    //! prepare render state
-    void beforeDraw( GfxEngine& painter );
+  //! prepare render state
+  void beforeDraw( GfxEngine& painter );
 
-    //! override render function 
-    void draw( GfxEngine& painter );
+  //! override render function 
+  void draw( GfxEngine& painter );
 
-    void setText(const std::string& text );
+  void setText(const std::string& text );
 
-    bool isPushButton() const;
+  bool isPushButton() const;
 
-    void setPressed( bool pressed );
+  void setPressed( bool pressed );
 
-    bool isPressed() const;
+  bool isPressed() const;
 
-    bool isBodyVisible() const;
+  bool isBodyVisible() const;
 
-    void drawIcon( GfxEngine& painter );
+  void drawIcon( GfxEngine& painter );
 
-    void setPicture( Picture* picture, ElementState state );
+  void setPicture( Picture* picture, ElementState state );
 
-    void setFont( const Font& font, ElementState state );
+  void setFont( const Font& font, ElementState state );
 
-    void setFont( const Font& font );
+  void setFont( const Font& font );
 
-    Font& getFont( ElementState state );
+  Font& getFont( ElementState state );
 
-    void setIsPushButton( bool value );
+  void setIsPushButton( bool value );
 
 public oc3_signals:
-    virtual Signal0<>& onClicked(); 
+  virtual Signal0<>& onClicked(); 
 
 protected:
 
-    void resizeEvent_();
+  void resizeEvent_();
 
-    //! when left mouse button pressed down
-	bool leftMouseBtnPressed_( const NEvent& event );
+  //! when left mouse button pressed down
+  bool leftMouseBtnPressed_( const NEvent& event );
 
-    //! when left mouse button left up
-	bool btnMouseUp_( const NEvent& event );
+  //! when left mouse button left up
+  bool btnMouseUp_( const NEvent& event );
 
-    //! when some mouse button clicked
-	void btnClicked_();
+  //! when some mouse button clicked
+  void btnClicked_();
 
-	virtual ElementState getActiveButtonState_();
-    virtual void _updateTexture( ElementState state );
+  virtual ElementState getActiveButtonState_();
+  virtual void _updateTexture( ElementState state );
 
-    Picture* _getPicture( ElementState state );
+  Picture* _getPicture( ElementState state );
 private:
-    class Impl;
+  class Impl;
     std::auto_ptr< Impl > _d;
 };
 
