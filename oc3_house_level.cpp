@@ -571,7 +571,7 @@ HouseSpecHelper::~HouseSpecHelper()
 
 }
 
-void HouseSpecHelper::loadHouseModel( const std::string& filename )
+void HouseSpecHelper::initialize( const std::string& filename )
 {
   VariantMap houses = SaveAdapter::load( filename );
 

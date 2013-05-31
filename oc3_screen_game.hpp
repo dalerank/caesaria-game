@@ -59,8 +59,9 @@ private:
   void drawInterface();
 
   void resolveCreateConstruction( int type );
+  void resolveSelectOverlayView( int type );
   void resolveRemoveTool();
-  void showTileInfo( Tile* tile );
+  void showTileInfo( const Tile& tile );
   void resolveGameSave();
   void resolveEndGame();
   void resolveExitGame();

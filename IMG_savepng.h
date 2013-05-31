@@ -39,8 +39,8 @@ extern "C" {
 
 #include <SDL.h>
 
-extern int IMG_SavePNG(const char *filename, SDL_Surface *surf, int compression);
-extern int IMG_SavePNG_RW(SDL_RWops *dest, SDL_Surface *surf, int compression);
+int IMG_SavePNG(const char *filename, SDL_Surface *surf, int compression);
+int IMG_SavePNG_RW(SDL_RWops *dest, SDL_Surface *surf, int compression);
 
 #ifdef __cplusplus
 }

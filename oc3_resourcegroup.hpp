@@ -28,6 +28,7 @@ public:
     static const char* utilitya;
     static const char* commerce;
     static const char* security;
+    static const char* transport;
     static const char* aqueduct;
     static const char* waterbuildings;
     static const char* road;
@@ -36,6 +37,8 @@ public:
     static const char* housing;
     static const char* govt;
     static const char* carts;
+    static const char* wharf;
+    static const char* waterOverlay;
 };
 
 class ResourceMenu

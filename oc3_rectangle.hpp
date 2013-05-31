@@ -288,14 +288,19 @@ public:
   Rect() : RectT( 0, 0, 0, 0 ) {}
   //! Constructor with upper left corner and dimension
   Rect(const Point& pos, const Size& size)
-    : RectT( pos, Point( pos.getX() + size.getWidth(), pos.getY() + size.getHeight() ) ) {}
+    : RectT<int>( pos, Point( pos.getX() + size.getWidth(), pos.getY() + size.getHeight() ) ) {}
 
   Rect( int x1, int y1, int x2, int y2 )
-    : RectT( x1, y1, x2, y2 ) {}
+    : RectT<int>( x1, y1, x2, y2 ) {}
 
   Rect operator+(const Point& offset ) const
   {
     return Rect( UpperLeftCorner + offset, LowerRightCorner + offset );
+  }
+
+  Rect operator-(const Point& offset ) const
+  {
+    return Rect( UpperLeftCorner - offset, LowerRightCorner - offset );
   }
   
   //! Get the dimensions of the rectangle
@@ -315,11 +320,14 @@ class RectF : public RectT<float>
 public:
   RectF() : RectT( 0, 0, 0, 0 ) {}
 
+  RectF( float x1, float y1, float x2, float y2 )
+    : RectT<float>( x1, y1, x2, y2 ) {}
+
   RectF(const PointF& pos, const SizeF& size)
-    : RectT( pos, PointF( pos.getX() + size.getWidth(), pos.getY() + size.getHeight() ) ) {}
+    : RectT<float>( pos, PointF( pos.getX() + size.getWidth(), pos.getY() + size.getHeight() ) ) {}
 
   RectF( const PointF& p1, const PointF& p2 )
-    : RectT( p1, p2 ) {}
+    : RectT<float>( p1, p2 ) {}
 
   RectF& operator=( const RectT<float>& other )
   {

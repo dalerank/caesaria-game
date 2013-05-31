@@ -33,6 +33,7 @@ class Walker::Impl
 public:
   float speed;
   TilePos pos;
+  TilePos midTile;  // subtile coordinate in the current tile, at starting position
 };
 
 Walker::Walker() : _d( new Impl )
@@ -45,8 +46,7 @@ Walker::Walker() : _d( new Impl )
   _d->speed = 1;  // default speed
   _isDeleted = false;
 
-  _midTileI = 7;
-  _midTileJ = 7;
+  _d->midTile = TilePos( 7, 7 );
   _remainMoveI = 0;
   _remainMoveJ = 0;
 };
@@ -88,8 +88,8 @@ void Walker::setIJ( const TilePos& pos )
 {
    _d->pos = pos;
 
-   _si = _midTileI;
-   _sj = _midTileJ;
+   _si = _d->midTile.getI();
+   _sj = _d->midTile.getJ();
 
    _ii = 15*_d->pos.getI() + _si;
    _jj = 15*_d->pos.getJ() + _sj;
@@ -230,32 +230,32 @@ void Walker::walk()
       switch (_action._direction)
       {
       case D_NORTH:
-         inc(_sj, _d->pos.rj(), amountJ, _midTileJ, newTile, midTile);
+         inc(_sj, _d->pos.rj(), amountJ, _d->midTile.getJ(), newTile, midTile);
          break;
       case D_NORTH_EAST:
-         inc(_sj, _d->pos.rj(), amountJ, _midTileJ, newTile, midTile);
-         inc(_si, _d->pos.ri(), amountI, _midTileI, newTile, midTile);
+         inc(_sj, _d->pos.rj(), amountJ, _d->midTile.getJ(), newTile, midTile);
+         inc(_si, _d->pos.ri(), amountI, _d->midTile.getI(), newTile, midTile);
          break;
       case D_EAST:
-         inc(_si, _d->pos.ri(), amountI, _midTileI, newTile, midTile);
+         inc(_si, _d->pos.ri(), amountI, _d->midTile.getI(), newTile, midTile);
          break;
       case D_SOUTH_EAST:
-         dec(_sj, _d->pos.rj(), amountJ, _midTileJ, newTile, midTile);
-         inc(_si, _d->pos.ri(), amountI, _midTileI, newTile, midTile);
+         dec(_sj, _d->pos.rj(), amountJ, _d->midTile.getJ(), newTile, midTile);
+         inc(_si, _d->pos.ri(), amountI, _d->midTile.getI(), newTile, midTile);
          break;
       case D_SOUTH:
-         dec(_sj, _d->pos.rj(), amountJ, _midTileJ, newTile, midTile);
+         dec(_sj, _d->pos.rj(), amountJ, _d->midTile.getJ(), newTile, midTile);
          break;
       case D_SOUTH_WEST:
-         dec(_sj, _d->pos.rj(), amountJ, _midTileJ, newTile, midTile);
-         dec(_si, _d->pos.ri(), amountI, _midTileI, newTile, midTile);
+         dec(_sj, _d->pos.rj(), amountJ, _d->midTile.getJ(), newTile, midTile);
+         dec(_si, _d->pos.ri(), amountI, _d->midTile.getI(), newTile, midTile);
          break;
       case D_WEST:
-         dec(_si, _d->pos.ri(), amountI, _midTileI, newTile, midTile);
+         dec(_si, _d->pos.ri(), amountI, _d->midTile.getI(), newTile, midTile);
          break;
       case D_NORTH_WEST:
-         inc(_sj, _d->pos.rj(), amountJ, _midTileJ, newTile, midTile);
-         dec(_si, _d->pos.ri(), amountI, _midTileI, newTile, midTile);
+         inc(_sj, _d->pos.rj(), amountJ, _d->midTile.getJ(), newTile, midTile);
+         dec(_si, _d->pos.ri(), amountI, _d->midTile.getI(), newTile, midTile);
          break;
       default:
          THROW("Invalid move direction: " << _action._direction);
@@ -396,8 +396,7 @@ void Walker::save( VariantMap& stream ) const
   stream[ "ii" ] = _ii;
   stream[ "jj" ] = _jj;
   stream[ "speed" ] = _d->speed;
-  stream[ "midTileI" ] = _midTileI;
-  stream[ "midTileJ" ] = _midTileJ;
+  stream[ "midTile" ] = _d->midTile;
 }
 
 void Walker::load( const VariantMap& stream)
@@ -411,8 +410,7 @@ void Walker::load( const VariantMap& stream)
   _ii = stream.get( "ii" ).toInt();
   _jj = stream.get( "jj" ).toInt();
   _d->speed = stream.get( "speed" ).toFloat();
-  _midTileI = stream.get( "midTileI" ).toInt();
-  _midTileJ = stream.get( "midTileJ" ).toInt();
+  _d->midTile = stream.get( "midTile" ).toTilePos();
 }
 
 TilePos Walker::getIJ() const

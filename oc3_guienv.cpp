@@ -236,7 +236,7 @@ void GuiEnv::deleteLater( Widget* ptrElement )
 
 Widget* GuiEnv::createStandartTooltip_()
 {
-    Font styleFont = FontCollection::instance().getFont( FONT_2 );
+    Font styleFont = Font( FONT_2 );
 
     Label* elm = new Label( this, Rect( 0, 0, 2, 2 ), _d->hoveredNoSubelement->getTooltipText(), true, true );
     elm->setSubElement(true);

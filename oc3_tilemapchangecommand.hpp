@@ -20,32 +20,58 @@
 #include "oc3_scopedptr.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_predefinitions.hpp"
+#include "oc3_referencecounted.hpp"
+#include "oc3_smartptr.hpp"
 
 class Construction;
 
-class TilemapChangeCommand
+class TilemapChangeCommand : public ReferenceCounted
 {
 public:
-    TilemapChangeCommand();
-    virtual ~TilemapChangeCommand();
-    TilemapChangeCommand( BuildingType type );
-    TilemapChangeCommand& operator=( const TilemapChangeCommand& other );
-
-    bool isRemoveTool() const;
-    bool isValid() const;
-    bool isBorderBuilding() const;
-    bool isMultiBuilding() const;
-    ConstructionPtr getContruction() const;
-
-protected:
-    class Impl;
-    ScopedPtr< Impl > _d;
+   virtual ~TilemapChangeCommand();
 };
+
+typedef SmartPtr< TilemapChangeCommand > TilemapChangeCommandPtr;
+
+class TilemapBuildCommand : public TilemapChangeCommand
+{
+public:
+  static TilemapChangeCommandPtr create( BuildingType type );
+
+  ConstructionPtr getContruction() const;
+  bool isBorderBuilding() const;
+  bool isMultiBuilding() const;
+public:
+  TilemapBuildCommand();
+  
+  class Impl;
+  ScopedPtr< Impl > _d;
+};
+
+typedef SmartPtr< TilemapBuildCommand > TilemapBuildCommandPtr;
 
 class TilemapRemoveCommand : public TilemapChangeCommand
 {
 public:
-    TilemapRemoveCommand();
+  static TilemapChangeCommandPtr create();
+private:
+  TilemapRemoveCommand();
 };
+
+class TilemapOverlayCommand : public TilemapChangeCommand
+{
+public:
+  static TilemapChangeCommandPtr create( const OverlayType type );
+
+  OverlayType getType() const;
+
+private:
+  TilemapOverlayCommand();
+
+  class Impl;
+  ScopedPtr< Impl > _d;
+};
+
+typedef SmartPtr< TilemapOverlayCommand > TilemapOverlayCommandPtr;
 
 #endif

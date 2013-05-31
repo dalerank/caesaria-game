@@ -24,80 +24,80 @@
 
 struct ButtonState
 {
-  Picture* bgTexture;
-  Picture* texture;
-  Picture* iconTexture;
-  //SDL_Color color;
-  //bool overrideColorEnabled;
-  Font font;
-  Rect rectangle;
-  //ElementStyle* style;
+    Picture* bgTexture;
+    Picture* texture;
+    Picture* iconTexture;
+    //SDL_Color color;
+    //bool overrideColorEnabled;
+    Font font;
+    Rect rectangle;
+    //ElementStyle* style;
 };    
 
 class PushButton::Impl
 {
 public:
-  bool pressed;
-  bool isPushButton;
-  bool drawBody;
-  Rect textRect;
-  Rect iconRect;
-  int clickTime;
+    bool pressed;
+    bool isPushButton;
+    bool drawBody;
+    Rect textRect;
+    Rect iconRect;
+    int clickTime;
     
-  ElementState currentButtonState, lastButtonState;
-  ButtonState buttonStates[ StateCount ];
+    ElementState currentButtonState, lastButtonState;
+    ButtonState buttonStates[ StateCount ];
 
 oc3_signals public:
-  Signal0<> onClickedSignal;
+    Signal0<> onClickedSignal;
 
 public:
 
-  Impl() : pressed(false), 
+    Impl() : pressed(false), 
         isPushButton(false), drawBody( true ),
         clickTime(0)
-  {
-    for( int i = 0; i < StateCount; i++)
     {
-      buttonStates[ ElementState(i) ].texture = 0;
-      buttonStates[ ElementState(i) ].iconTexture = 0;
-      buttonStates[ ElementState(i) ].bgTexture = 0;
-      buttonStates[ ElementState(i) ].font = FontCollection::instance().getFont(FONT_2);
-    }
-  }    
+        for( int i=0; i < StateCount; i++)
+        {
+            buttonStates[ ElementState(i) ].texture = 0;
+            buttonStates[ ElementState(i) ].iconTexture = 0;
+            buttonStates[ ElementState(i) ].bgTexture = 0;
+            buttonStates[ ElementState(i) ].font = Font( FONT_2 );
+        }
+    }    
 
-  ~Impl()
-  {
-    for( int i = 0; i < StateCount; i++)
-      releaseTexture( ElementState(i) );
-  }  
-
-  void releaseTexture( ElementState state )
-  {
-    if( buttonStates[ state ].texture )
+    ~Impl()
     {
-      GfxEngine::instance().deletePicture( *buttonStates[ state ].texture );
-      buttonStates[ state ].texture = 0;
+        for( int i=0; i < StateCount; i++)
+            releaseTexture( ElementState(i) );
+    }  
+
+    void releaseTexture( ElementState state )
+    {
+      if( buttonStates[ state ].texture )
+      {
+        GfxEngine::instance().deletePicture( *buttonStates[ state ].texture );
+        buttonStates[ state ].texture = 0;
+      }
     }
-  }
 };
 
 //! constructor
 PushButton::PushButton( Widget* parent,
-			const Rect& rectangle, 
-			const std::string& caption,
-			int id, 
-			bool noclip )
+					    const Rect& rectangle, 
+                        const std::string& caption,
+                        int id, 
+					    bool noclip )
 : Widget( parent, id, rectangle ), _d( new Impl )
 {
-  setDebugName( "OC3_pushbutton" );
+    setDebugName( "OC3_pushbutton" );
 
-  _d->pressed = false;
-  _d->currentButtonState = stNormal;
-  _d->lastButtonState = StateCount;
-  setTextAlignment( alignCenter, alignCenter );
+    _d->pressed = false;
+    _d->currentButtonState = stNormal;
+    _d->lastButtonState = StateCount;
+    setTextAlignment( alignCenter, alignCenter );
 
-  _text = caption;
-  setNotClipped(noclip);
+    _text = caption;
+    setNotClipped(noclip);
 
 //     for( int i=0; i < StateCount; i++)
 //     {
@@ -107,32 +107,32 @@ PushButton::PushButton( Widget* parent,
 
 void PushButton::_updateTexture( ElementState state )
 {
-  Size btnSize = getSize();
-  Picture*& curTxs = _d->buttonStates[ state ].texture;
+    Size btnSize = getSize();
+    Picture*& curTxs = _d->buttonStates[ state ].texture;
     
-  if( curTxs && curTxs->getSize() != btnSize )
-    _d->releaseTexture( state );
+    if( curTxs && curTxs->getSize() != btnSize )
+        _d->releaseTexture( state );
 
-  if( !curTxs )
-    curTxs = &GfxEngine::instance().createPicture( btnSize.getWidth(), btnSize.getHeight() );
+    if( !curTxs )
+      curTxs = &GfxEngine::instance().createPicture( btnSize.getWidth(), btnSize.getHeight() );
 
-  // draw button background
-  if( _d->buttonStates[ state ].bgTexture )
-  {
-    curTxs->draw( *_d->buttonStates[ state ].bgTexture, 0, 0 );
-  }    
-  else
-  {
-    const int picId[StateCount] = { 22, 25, 25, 22, 25 };
-    GuiPaneling::instance().draw_basic_text_button( *curTxs, 0, 0, getSize().getWidth(), picId[ state ] );
-  }
+    // draw button background
+    if( _d->buttonStates[ state ].bgTexture )
+    {
+      curTxs->draw( *_d->buttonStates[ state ].bgTexture, 0, 0 );
+    }    
+    else
+    {
+      const int picId[StateCount] = { 22, 25, 25, 22, 25 };
+      GuiPaneling::instance().draw_basic_text_button( *curTxs, 0, 0, getSize().getWidth(), picId[ state ] );
+    }
 
-  if( _d->buttonStates[ state ].font.isValid() )
-  {
-    Rect textRect = _d->buttonStates[ state ].font.calculateTextRect( getText(), Rect( 0, 0, getWidth(), getHeight() ),
+    if( _d->buttonStates[ state ].font.isValid() )
+    {
+      Rect textRect = _d->buttonStates[ state ].font.calculateTextRect( getText(), Rect( 0, 0, getWidth(), getHeight() ),
                                                                         getHorizontalTextAlign(), getVerticalTextAlign() );
-    _d->buttonStates[ state ].font.draw( *curTxs, getText(), textRect.getLeft(), textRect.getTop() );
-  }
+      _d->buttonStates[ state ].font.draw( *curTxs, getText(), textRect.getLeft(), textRect.getTop() );
+    }
 }
 
 //! destructor
@@ -152,25 +152,25 @@ bool PushButton::isPushButton() const
 
 void PushButton::setPicture( Picture* picture, ElementState state )
 {
-  Rect rectangle( Point(0,0), picture ? picture->getSize() : Size( 0, 0 ) );
+    Rect rectangle( Point(0,0), picture ? picture->getSize() : Size( 0, 0 ) );
 
-  _d->buttonStates[ state ].bgTexture = picture;
-  _d->buttonStates[ state ].rectangle = rectangle;
-  _updateTexture( state );
+    _d->buttonStates[ state ].bgTexture = picture;
+    _d->buttonStates[ state ].rectangle = rectangle;
+    _updateTexture( state );
 }
 
 void PushButton::setPressed( bool pressed )
 {
-  if( _d->pressed != pressed)
-  {
-    _d->clickTime = DateTime::getElapsedTime();
-    _d->pressed = pressed;
-  }
+    if( _d->pressed != pressed)
+    {
+        _d->clickTime = DateTime::getElapsedTime();
+        _d->pressed = pressed;
+    }
 }
 
 bool PushButton::isPressed() const
 {
-  return _d->pressed;
+    return _d->pressed;
 }
 
 //! called if an event happened.

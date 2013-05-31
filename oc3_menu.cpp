@@ -30,16 +30,10 @@
 #include "oc3_minimap_colours.hpp"
 #include "oc3_gui_tilemap.hpp"
 #include "oc3_tile.hpp"
+#include "oc3_overlays_menu.hpp"
 
-// looks ugly!!! maybe to use enum?
-
-namespace {
-static const int REMOVE_TOOL_ID  = B_MAX + 1; 
-static const int ROTATE_TO_NORTH = REMOVE_TOOL_ID + 1;
-static const int ROTATE_LEFT     = ROTATE_TO_NORTH + 1;
-static const int ROTATE_RIGHT    = ROTATE_LEFT + 1;
-static const int MAXIMIZE_ID     = ROTATE_RIGHT + 1;
-};
+static const int REMOVE_TOOL_ID = B_MAX + 1; 
+static const int MAXIMIZE_ID = REMOVE_TOOL_ID + 1;
 
 class Menu::Impl
 {
@@ -72,6 +66,7 @@ public:
   PushButton* cancelButton;
   PushButton* overlaysButton;
   Label* middleLabel;
+  OverlaysMenu* overlaysMenu; 
 
 oc3_signals public:
   Signal1< int > onCreateConstructionSignal;
@@ -106,47 +101,59 @@ private:
 
 Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id, rectangle ), _d( new Impl )
 {
-  _d->lastPressed = 0;
+    _d->lastPressed = 0;
+    _d->overlaysMenu = 0;
 
-  const bool haveSubMenu = true;
-  _d->minimizeButton = _addButton( ResourceMenu::maximizeBtnPicId, false, 0, MAXIMIZE_ID, !haveSubMenu, ResourceMenu::emptyMidPicId );
-  _d->minimizeButton->setGeometry( Rect( Point( 6, 4 ), Size( 31, 20 ) ) );
+    const bool haveSubMenu = true;
+    _d->minimizeButton = _addButton( ResourceMenu::maximizeBtnPicId, false, 0, MAXIMIZE_ID, !haveSubMenu, ResourceMenu::emptyMidPicId );
+    _d->minimizeButton->setGeometry( Rect( Point( 6, 4 ), Size( 31, 20 ) ) );
 
-  _d->houseButton = _addButton( ResourceMenu::houseBtnPicId, true, 0, B_HOUSE, !haveSubMenu, ResourceMenu::houseMidPicId, _("##houseBtnTooltip") );
-  _d->clearButton = _addButton( 131, true, 1, REMOVE_TOOL_ID, !haveSubMenu, ResourceMenu::clearMidPicId, _("##clearBtnTooltip") );
-  _d->roadButton = _addButton( 135, true, 2, B_ROAD, !haveSubMenu, ResourceMenu::roadMidPicId, _("##roadBtnTooltip") );
-
-  _d->waterButton = _addButton( 127, true, 3, BM_WATER, haveSubMenu, ResourceMenu::waterMidPicId, _("##waterBtnTooltip") );
-  _d->healthButton = _addButton( 163, true, 4, BM_HEALTH, haveSubMenu, ResourceMenu::healthMidPicId, _("##healthBtnTooltip") );
-  _d->templeButton = _addButton( 151, true, 5, BM_RELIGION, haveSubMenu, ResourceMenu::religionMidPicId, _("##templeBtnTooltip") );
-
-  _d->educationButton = _addButton( 147, true, 6, BM_EDUCATION, haveSubMenu, ResourceMenu::educationMidPicId, _("##educationBtnTooltip") );
-  _d->entertainmentButton = _addButton( 143, true, 7, BM_ENTERTAINMENT, haveSubMenu, ResourceMenu::entertainmentMidPicId, _("##entertainmentBtnTooltip") );
-  _d->administrationButton = _addButton( 139, true, 8, BM_ADMINISTRATION, haveSubMenu, ResourceMenu::administrationMidPicId, _("##administractionBtnTooltip") );
-
-  _d->engineerButton = _addButton( 167, true, 9, BM_ENGINEERING, haveSubMenu, ResourceMenu::engineerMidPicId, _("##engineerBtnTooltip") );
-  _d->securityButton = _addButton( 159, true, 10, BM_SECURITY, haveSubMenu, ResourceMenu::securityMidPicId, _("##securityBtnTooltip") );
-  _d->commerceButton = _addButton( 155, true, 11, BM_COMMERCE, haveSubMenu, ResourceMenu::comerceMidPicId, _("##comerceBtnTooltip") );
+    _d->houseButton = _addButton( ResourceMenu::houseBtnPicId, true, 0, B_HOUSE, 
+                                  !haveSubMenu, ResourceMenu::houseMidPicId, _("##houseBtnTooltip") );
+    
+    _d->clearButton = _addButton( 131, true, 1, REMOVE_TOOL_ID, 
+                                  !haveSubMenu, ResourceMenu::clearMidPicId, _("##clearBtnTooltip") );
+    
+    _d->roadButton = _addButton( 135, true, 2, B_ROAD, !haveSubMenu, ResourceMenu::roadMidPicId, _("##roadBtnTooltip") );
+    _d->waterButton = _addButton( 127, true, 3, BM_WATER, haveSubMenu, ResourceMenu::waterMidPicId, _("##waterBtnTooltip") );
+    _d->healthButton = _addButton( 163, true, 4, BM_HEALTH, haveSubMenu, ResourceMenu::healthMidPicId, _("##healthBtnTooltip") );
+    _d->templeButton = _addButton( 151, true, 5, BM_RELIGION, haveSubMenu, ResourceMenu::religionMidPicId, _("##templeBtnTooltip") );
+    _d->educationButton = _addButton( 147, true, 6, BM_EDUCATION, haveSubMenu, ResourceMenu::educationMidPicId, _("##educationBtnTooltip") );
+    
+    _d->entertainmentButton = _addButton( 143, true, 7, BM_ENTERTAINMENT, haveSubMenu, 
+                                          ResourceMenu::entertainmentMidPicId, _("##entertainmentBtnTooltip") );
+    
+    _d->administrationButton = _addButton( 139, true, 8, BM_ADMINISTRATION, haveSubMenu, 
+                                           ResourceMenu::administrationMidPicId, _("##administractionBtnTooltip") );
+    
+    _d->engineerButton = _addButton( 167, true, 9, BM_ENGINEERING, haveSubMenu, 
+                                     ResourceMenu::engineerMidPicId, _("##engineerBtnTooltip") );
+    
+    _d->securityButton = _addButton( 159, true, 10, BM_SECURITY, haveSubMenu, 
+                                     ResourceMenu::securityMidPicId, _("##securityBtnTooltip") );
+    
+    _d->commerceButton = _addButton( 155, true, 11, BM_COMMERCE, haveSubMenu, 
+                                     ResourceMenu::comerceMidPicId, _("##comerceBtnTooltip") );
 }
 
 PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul, 
                              int id, bool haveSubmenu, int midPic, const std::string& tooltip )
 {
-  Point offset( 1, 32 );
-  int dy = 35;
+    Point offset( 1, 32 );
+    int dy = 35;
 
-  MenuButton* ret = new MenuButton( this, Rect( 0, 0, 39, 26), "", -1, -1 );
-  ret->setID( id | ( haveSubmenu ? BuildMenu::subMenuCreateIdHigh : 0 ) );
-  GuiPaneling::configureTexturedButton( ret, ResourceGroup::panelBackground, startPic, pushBtn );
-  ret->setPosition( offset + Point( 0, dy * yMul ) );
-  ret->setTooltipText( tooltip );
+    MenuButton* ret = new MenuButton( this, Rect( 0, 0, 39, 26), "", -1, -1 );
+    ret->setID( id | ( haveSubmenu ? BuildMenu::subMenuCreateIdHigh : 0 ) );
+    GuiPaneling::configureTexturedButton( ret, ResourceGroup::panelBackground, startPic, pushBtn );
+    ret->setPosition( offset + Point( 0, dy * yMul ) );
+    ret->setTooltipText( tooltip );
 
-  if( MenuButton* btn = safety_cast< MenuButton* >( ret ) )
-  {
-    btn->setMidPicId( midPic );
-  }
+    if( MenuButton* btn = safety_cast< MenuButton* >( ret ) )
+    {
+        btn->setMidPicId( midPic );
+    }
 
-  return ret;
+    return ret;
 }
 
 /* here will be helper functions for minimap generation */
@@ -227,42 +234,42 @@ void getBuildingColours(TerrainTile& tile, int &c1, int &c2)
     {
       switch (overlay->getSize())
       {
-	case 1:
-	{
-          c1 = colours->colour(Caesar3Colours::MAP_HOUSE, 0);
-          c2 = colours->colour(Caesar3Colours::MAP_HOUSE, 1);
-	  break;
-	}
-	default:
-	{
-          c1 = colours->colour(Caesar3Colours::MAP_HOUSE, 2);
-          c2 = colours->colour(Caesar3Colours::MAP_HOUSE, 0);
-	}
-      }
-      break;
-    }
-    case B_RESERVOIR:
-    {
-      c1 = colours->colour(Caesar3Colours::MAP_AQUA, 1);
-      c2 = colours->colour(Caesar3Colours::MAP_AQUA, 0);
-      break;
-    }
-    default:
-    {
-      switch (overlay->getSize())
-      {
-	case 1:
-	{
-	  c1 = colours->colour(Caesar3Colours::MAP_BUILDING, 0);
-	  c2 = colours->colour(Caesar3Colours::MAP_BUILDING, 1);
-	  break;
-	}
-	default:
-	{
-	  c1 = colours->colour(Caesar3Colours::MAP_BUILDING, 0);
-	  c2 = colours->colour(Caesar3Colours::MAP_BUILDING, 2);
-	}
-      }
+	      case 1:
+	        {
+            c1 = colours->colour(Caesar3Colours::MAP_HOUSE, 0);
+            c2 = colours->colour(Caesar3Colours::MAP_HOUSE, 1);
+	          break;
+	        }
+	      default:
+	        {
+            c1 = colours->colour(Caesar3Colours::MAP_HOUSE, 2);
+            c2 = colours->colour(Caesar3Colours::MAP_HOUSE, 0);
+	        }
+        }
+        break;
+        }
+      case B_RESERVOIR:
+        {
+          c1 = colours->colour(Caesar3Colours::MAP_AQUA, 1);
+          c2 = colours->colour(Caesar3Colours::MAP_AQUA, 0);
+          break;
+        }
+      default:
+        {
+          switch (overlay->getSize())
+          {
+	        case 1:
+	        {
+	          c1 = colours->colour(Caesar3Colours::MAP_BUILDING, 0);
+	          c2 = colours->colour(Caesar3Colours::MAP_BUILDING, 1);
+	          break;
+	        }
+	        default:
+	        {
+	          c1 = colours->colour(Caesar3Colours::MAP_BUILDING, 0);
+	          c2 = colours->colour(Caesar3Colours::MAP_BUILDING, 2);
+	        }
+        }
     }
   }
 }
@@ -286,101 +293,95 @@ void Menu::draw( GfxEngine& painter )
 
 bool Menu::onEvent(const NEvent& event)
 {
-  if( event.EventType == OC3_GUI_EVENT && event.GuiEvent.EventType == OC3_BUTTON_CLICKED )
-  {
-    if( !event.GuiEvent.Caller )
-      return false;
-
-    int id = event.GuiEvent.Caller->getID();
-    switch( id )
+    if( event.EventType == OC3_GUI_EVENT && event.GuiEvent.EventType == OC3_BUTTON_CLICKED )
     {
-      case MAXIMIZE_ID:
-	_d->lastPressed = 0;
-	_createBuildMenu( -1, this );
-	_d->onMaximizeSignal.emit();
-      break;
-      
-      case ROTATE_TO_NORTH:
-      case ROTATE_LEFT:
-      case ROTATE_RIGHT:
-	_d->lastPressed = 0;
-	_createBuildMenu( -1, this );
-      break;
-	
-      case B_HOUSE:
-      case B_ROAD:
-	_d->lastPressed = event.GuiEvent.Caller;
-        _d->onCreateConstructionSignal.emit( id );
-        _createBuildMenu( -1, this );
-      break;
+        if( !event.GuiEvent.Caller )
+            return false;
 
-      case REMOVE_TOOL_ID:
-	_d->lastPressed = event.GuiEvent.Caller;
-        _d->onRemoveToolSignal.emit();
-        _createBuildMenu( -1, this );
-      break;
-        
-      default:
-	if( _d->lastPressed != event.GuiEvent.Caller )
+        int id = event.GuiEvent.Caller->getID();
+        switch( id )
         {
-	  if( event.GuiEvent.Caller->getParent() == this )
-	    _d->lastPressed = event.GuiEvent.Caller;
+        case MAXIMIZE_ID:
+            _d->lastPressed = 0;
+            _createBuildMenu( -1, this );
+            _d->onMaximizeSignal.emit();
+        break;
 
-            if( PushButton* btn = safety_cast< PushButton* >( event.GuiEvent.Caller ) )
+        case B_HOUSE:
+        case B_ROAD:
+            _d->lastPressed = event.GuiEvent.Caller;
+            _d->onCreateConstructionSignal.emit( id );
+            _createBuildMenu( -1, this );
+        break;
+
+        case REMOVE_TOOL_ID:
+            _d->lastPressed = event.GuiEvent.Caller;
+            _d->onRemoveToolSignal.emit();
+            _createBuildMenu( -1, this );
+        break;
+        
+        default:
+            if( _d->lastPressed != event.GuiEvent.Caller )
             {
-	      int id = btn->getID();
-              if( id & BuildMenu::subMenuCreateIdHigh )
-              {
-		_createBuildMenu( id & 0xff, event.GuiEvent.Caller );        
-              }
-              else
-              {
-		_d->onCreateConstructionSignal.emit( id );
-                _createBuildMenu( -1, this );
-                setFocus();
-                //_d->lastPressed = 0;
-              }
-           }
-        }
+                if( event.GuiEvent.Caller->getParent() == this )
+                    _d->lastPressed = event.GuiEvent.Caller;
+                
+                if( PushButton* btn = safety_cast< PushButton* >( event.GuiEvent.Caller ) )
+                {
+                    int id = btn->getID();
+                    if( id & BuildMenu::subMenuCreateIdHigh )
+                    {
+                        _createBuildMenu( id & 0xff, event.GuiEvent.Caller );        
+                    }
+                    else
+                    {
+                        _d->onCreateConstructionSignal.emit( id );
+                        _createBuildMenu( -1, this );
+                        setFocus();
+                        //_d->lastPressed = 0;
+                    }
+                }
+            }
 
         break;
+        }
+
+        unselectAll();
+        if( PushButton* btn = safety_cast< PushButton* >( _d->lastPressed ) )
+        {
+            btn->setPressed( true && btn->isPushButton() );
+        }
+        return true;
     }
 
-    unselectAll();
-    if( PushButton* btn = safety_cast< PushButton* >( _d->lastPressed ) )
+    if( event.EventType == OC3_GUI_EVENT && event.GuiEvent.EventType == OC3_ELEMENT_FOCUS_LOST )
     {
-      btn->setPressed( true && btn->isPushButton() );
-    }
-    return true;
-  }
-
-  if( event.EventType == OC3_GUI_EVENT && event.GuiEvent.EventType == OC3_ELEMENT_FOCUS_LOST )
-  {
-    unselectAll();
-    _d->lastPressed = 0;
-  }
-
-  if( event.EventType == OC3_MOUSE_EVENT )
-  {
-    switch( event.MouseEvent.Event )
-    {
-      case OC3_RMOUSE_LEFT_UP:
-	_createBuildMenu( -1, this );
         unselectAll();
         _d->lastPressed = 0;
-	return true;
-      break;
-	
-      case OC3_LMOUSE_PRESSED_DOWN:
-      case OC3_LMOUSE_LEFT_UP:
-	//lock movement for tilemap
-        if( findChildren<BuildMenu*>().size() > 0 )
-	  return true;
-      break;
     }
-  }
 
-  return Widget::onEvent( event );
+    if( event.EventType == OC3_MOUSE_EVENT )
+    {
+        switch( event.MouseEvent.Event )
+        {
+        case OC3_RMOUSE_LEFT_UP:
+            _createBuildMenu( -1, this );
+            unselectAll();
+            _d->lastPressed = 0;
+        return true;
+
+        case OC3_LMOUSE_PRESSED_DOWN:
+        case OC3_LMOUSE_LEFT_UP:
+            {
+                //lock movement for tilemap
+                if( findChildren<BuildMenu*>().size() > 0 )
+                    return true;
+            }
+        break;
+        }
+    }
+
+    return Widget::onEvent( event );
 }
 
 Menu* Menu::create( Widget* parent, int id )
@@ -390,11 +391,11 @@ Menu* Menu::create( Widget* parent, int id )
   const Picture& bground = Picture::load( ResourceGroup::panelBackground, 16 );
   const Picture& bottom  = Picture::load( ResourceGroup::panelBackground, 21 );
 
-  ret->_d->bgPicture = &GfxEngine::instance().createPicture( bground.get_width(), bground.get_height() + bottom.get_height() );
+  ret->_d->bgPicture = &GfxEngine::instance().createPicture( bground.getWidth(), bground.getHeight() + bottom.getHeight() );
   ret->_d->bgPicture->draw( bground, 0, 0);
-  ret->_d->bgPicture->draw( bottom,  0, bground.get_height() );
+  ret->_d->bgPicture->draw( bottom,  0, bground.getHeight() );
 
-  ret->setGeometry( Rect( 0, 0, bground.get_width(), ret->_d->bgPicture->get_height() ) );
+  ret->setGeometry( Rect( 0, 0, bground.getWidth(), ret->_d->bgPicture->getHeight() ) );
 
   return ret;
 }
@@ -416,57 +417,59 @@ bool Menu::unselectAll()
 
 void Menu::_createBuildMenu( int type, Widget* parent )
 {
-  List< BuildMenu* > menus = findChildren<BuildMenu*>();
-  for( List< BuildMenu* >::iterator it=menus.begin(); it != menus.end(); it++ )
-    (*it)->deleteLater();
+    List< BuildMenu* > menus = findChildren<BuildMenu*>();
+    for( List< BuildMenu* >::iterator it=menus.begin(); it != menus.end(); it++ )
+        (*it)->deleteLater();
 
-  BuildMenu* buildMenu = BuildMenu::getMenuInstance( (BuildMenuType)type, this );
+    BuildMenu* buildMenu = BuildMenu::getMenuInstance( (BuildMenuType)type, this );
 
-  if( buildMenu != NULL )
-  {
-    buildMenu->setNotClipped( true );
+    if( buildMenu != NULL )
+    {
+        buildMenu->setNotClipped( true );
 
-    buildMenu->init();
+        buildMenu->init();
        
-    int y = math::clamp< int >( parent->getScreenTop() - getScreenTop(), 0, _environment->getRootWidget()->getHeight() - buildMenu->getHeight() );
-    buildMenu->setPosition( Point( -(int)buildMenu->getWidth() - 5, y ) );
-  }
+        int y = math::clamp< int >( parent->getScreenTop() - getScreenTop(), 0, _environment->getRootWidget()->getHeight() - buildMenu->getHeight() );
+        buildMenu->setPosition( Point( -(int)buildMenu->getWidth() - 5, y ) );
+    }
 }
 
 Signal0<>& Menu::onMaximize()
 {
-  return _d->onMaximizeSignal;
+    return _d->onMaximizeSignal;
 }
 
 ExtentMenu* ExtentMenu::create( Widget* parent, GuiTilemap& tmap, int id )
 {
-  ExtentMenu* ret = new ExtentMenu( parent, tmap, id, Rect( 0, 0, 1, 1 ) );
+    ExtentMenu* ret = new ExtentMenu( parent, tmap, id, Rect( 0, 0, 1, 1 ) );
 
-  const Picture& bground = Picture::load( ResourceGroup::panelBackground, 17 );
-  const Picture& bottom = Picture::load( ResourceGroup::panelBackground, 20 );
+    const Picture& bground = Picture::load( ResourceGroup::panelBackground, 17 );
+    const Picture& bottom = Picture::load( ResourceGroup::panelBackground, 20 );
 
-  ret->_d->bgPicture = &GfxEngine::instance().createPicture( bground.get_width(), bground.get_height() + bottom.get_height() );
-  ret->_d->bgPicture->draw( bground, 0, 0);
-  ret->_d->bgPicture->draw( bottom, 0, bground.get_height() );
+    ret->_d->bgPicture = &GfxEngine::instance().createPicture( bground.getWidth(), bground.getHeight() + bottom.getHeight() );
+    ret->_d->bgPicture->draw( bground, 0, 0);
+    ret->_d->bgPicture->draw( bottom, 0, bground.getHeight() );
 
-  ret->setGeometry( Rect( 0, 0, bground.get_width(), ret->_d->bgPicture->get_height() ) );
+    ret->setGeometry( Rect( 0, 0, bground.getWidth(), ret->_d->bgPicture->getHeight() ) );
 
-  return ret;
+    return ret;
 }
 
 void ExtentMenu::minimize()
 {
-  _d->lastPressed = 0;
-  _createBuildMenu( -1, this );
-  Point stopPos = getRelativeRect().UpperLeftCorner + Point( getWidth(), 0 );
-  PositionAnimator* anim = new PositionAnimator( this, WidgetAnimator::removeSelf, stopPos, 300 );
+    _d->lastPressed = 0;
+    _createBuildMenu( -1, this );
+    Point stopPos = getRelativeRect().UpperLeftCorner + Point( getWidth(), 0 );
+    PositionAnimator* anim = new PositionAnimator( this, WidgetAnimator::removeSelf, 
+                                                   stopPos, 300 );
 }
 
 void ExtentMenu::maximize()
 {
-  Point stopPos = getRelativeRect().UpperLeftCorner - Point( getWidth(), 0 );
-  show();
-  PositionAnimator* anim = new PositionAnimator( this, WidgetAnimator::showParent | WidgetAnimator::removeSelf, stopPos, 300 );
+    Point stopPos = getRelativeRect().UpperLeftCorner - Point( getWidth(), 0 );
+    show();
+    PositionAnimator* anim = new PositionAnimator( this, WidgetAnimator::showParent | WidgetAnimator::removeSelf, 
+                                                   stopPos, 300 );
 }
 
 ExtentMenu::ExtentMenu( Widget* parent, GuiTilemap& tmap, int id, const Rect& rectangle )
@@ -501,11 +504,11 @@ ExtentMenu::ExtentMenu( Widget* parent, GuiTilemap& tmap, int id, const Rect& re
   
   _d->missionButton = _addButton( 85, false, 0, -1, false, -1, _("##missionBtnTooltip") );
   _d->missionButton->setGeometry( Rect( Point( 7, 184 ), Size( 33, 22 ) ) );
-  _d->northButton = _addButton( 88, false, 0, ROTATE_TO_NORTH, false, -1, _("##northBtnTooltip") );
+  _d->northButton = _addButton( 88, false, 0, -1, false, -1, _("##northBtnTooltip") );
   _d->northButton->setGeometry( Rect( Point( 46, 184 ), Size( 33, 22 ) ) );
-  _d->rotateLeftButton = _addButton( 91, false, 0, ROTATE_LEFT, false, -1, _("##rotateLeftBtnTooltip") );
+  _d->rotateLeftButton = _addButton( 91, false, 0, -1, false, -1, _("##rotateLeftBtnTooltip") );
   _d->rotateLeftButton->setGeometry( Rect( Point( 84, 184 ), Size( 33, 22 ) ) );
-  _d->rotateRightButton = _addButton( 94, false, 0, ROTATE_RIGHT, false, -1, _("##rotateRightBtnTooltip") );
+  _d->rotateRightButton = _addButton( 94, false, 0, -1, false, -1, _("##rotateRightBtnTooltip") );
   _d->rotateRightButton->setGeometry( Rect( Point( 123, 184 ), Size( 33, 22 ) ) );
 
   _d->cancelButton = _addButton( 171, false, 0, -1, false, -1, _("##cancelBtnTooltip") );
@@ -516,23 +519,27 @@ ExtentMenu::ExtentMenu( Widget* parent, GuiTilemap& tmap, int id, const Rect& re
   _d->disasterButton->setGeometry( Rect( Point( 113, 421 ), Size( 39, 22 ) ) );
 
   _d->middleLabel = new Label(this, Rect( Point( 7, 216 ), Size( 148, 52 )) );
-  _d->middleLabel->setBackgroundPicture( PicLoader::instance().get_picture( ResourceGroup::menuMiddleIcons, ResourceMenu::emptyMidPicId ) );
+  _d->middleLabel->setBackgroundPicture( Picture::load( ResourceGroup::menuMiddleIcons, ResourceMenu::emptyMidPicId ) );
+
+  _d->overlaysMenu = new OverlaysMenu( getParent(), Rect( 0, 0, 160, 1 ), -1 );
+  _d->overlaysMenu->hide();
 
   _d->overlaysButton = new PushButton( this, Rect( 4, 3, 122, 28 ), "Overlays" );
+  CONNECT( _d->overlaysButton, onClicked(), this, ExtentMenu::toggleOverlays );
 }
 
 bool ExtentMenu::onEvent(const NEvent& event)
 {
-  if( event.EventType == OC3_GUI_EVENT && event.GuiEvent.EventType == OC3_BUTTON_CLICKED )
-  {
-    if( MenuButton* btn = safety_cast< MenuButton* >( event.GuiEvent.Caller ) )
+    if( event.EventType == OC3_GUI_EVENT && event.GuiEvent.EventType == OC3_BUTTON_CLICKED )
     {
-      int picId = btn->getMidPicId() > 0 ? btn->getMidPicId() : ResourceMenu::emptyMidPicId;
-      _d->middleLabel->setBackgroundPicture( PicLoader::instance().get_picture( ResourceGroup::menuMiddleIcons, picId ) );
+        if( MenuButton* btn = safety_cast< MenuButton* >( event.GuiEvent.Caller ) )
+        {
+            int picId = btn->getMidPicId() > 0 ? btn->getMidPicId() : ResourceMenu::emptyMidPicId;
+            _d->middleLabel->setBackgroundPicture( PicLoader::instance().get_picture( ResourceGroup::menuMiddleIcons, picId ) );
+        }
     }
-  }
 
-  return Menu::onEvent( event );
+    return Menu::onEvent( event );
 }
 
 void ExtentMenu::draw( GfxEngine& painter )
@@ -553,6 +560,9 @@ void ExtentMenu::draw( GfxEngine& painter )
   Picture& minimap = painter.createPicture(mapsize * 2 , mapsize * 2);
 
   minimap.lock();
+  // here we can draw anything
+  
+  // std::cout << "center is (" << _mapArea->getCenterX() << "," << _mapArea->getCenterZ() << ")" << std::endl;
 
   int border = (162 - mapsize) / 2;
   int max = border + mapsize;
@@ -570,7 +580,7 @@ void ExtentMenu::draw( GfxEngine& painter )
       getBitmapCoordinates(x - border, y - border, mapsize, coords[0], coords[1]);
       getTerrainColours(tile, c1, c2);
 
-      if( coords[0] >= minimap.get_width()-1 || coords[1] >= minimap.get_height() )
+      if( coords[0] >= minimap.getWidth()-1 || coords[1] >= minimap.getHeight() )
         continue;
 
       minimap.set_pixel( coords[0],     coords[1], c1);
@@ -579,6 +589,27 @@ void ExtentMenu::draw( GfxEngine& painter )
   }
 
   delete colours;
+  
+  // show center of screen on minimap
+  // Exit out of image size on small carts... please fix it
+  
+  /*sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX(),     mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ(), kWhite);
+  sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 1, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ(), kWhite);
+  sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX(),     mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 1, kWhite);
+  sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 1, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 1, kWhite);
+
+  for ( int i = GuiTilemap::instance().getMapArea().getCenterX() - 18; i <= GuiTilemap::instance().getMapArea().getCenterX() + 18; i++ )
+  {
+    sdlFacade.set_pixel(surface, i, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 34, kYellow);
+    sdlFacade.set_pixel(surface, i, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() - 34, kYellow);
+  }
+
+  for ( int j = mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() - 34; j <= mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 34; j++ )
+  {
+    sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() - 18, j, kYellow);
+    sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 18, j, kYellow);
+  }
+  */
   
   minimap.unlock();
   
@@ -594,4 +625,15 @@ void ExtentMenu::draw( GfxEngine& painter )
 
   painter.deletePicture(minimap);
   painter.deletePicture(minimap_windows);
+}
+
+void ExtentMenu::toggleOverlays()
+{
+  _d->overlaysMenu->setPosition( Point( getScreenLeft() - 170, 74 ) );
+  _d->overlaysMenu->setVisible( !_d->overlaysMenu->isVisible() );
+}
+
+Signal1<int>& ExtentMenu::onSelectOverlayType()
+{
+  return _d->overlaysMenu->onSelectOverlayType();
 }

@@ -408,7 +408,7 @@ void ContextMenu::beforeDraw( GfxEngine& painter )
   if( !isVisible() )
     return;
 
-  Font font = FontCollection::instance().getFont( FONT_2_WHITE );
+  Font font( FONT_2_WHITE );
 
   if( font != _d->lastFont )
   {

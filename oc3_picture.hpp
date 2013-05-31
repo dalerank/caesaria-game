@@ -26,9 +26,7 @@
 #include <map>
 #include <list>
 #include <string>
-#include <SDL_ttf.h>
 #include "oc3_alignment.hpp"
-
 #include "oc3_size.hpp"
 
 class Point;
@@ -38,7 +36,6 @@ class Rect;
 class Picture
 {
    friend class GfxSdlEngine;
-   friend class GfxSdlDumbEngine;
    friend class GfxGlEngine;
 
 public:
@@ -55,8 +52,8 @@ public:
    SDL_Surface *get_surface() const;
    int get_xoffset() const;
    int get_yoffset() const;
-   int get_width() const;
-   int get_height() const;
+   int getWidth() const;
+   int getHeight() const;
 
    void draw( const Picture &srcpic, const int dx, const int dy );
    void draw( const Picture &srcpic, const Rect& srcrect, const Point& pos );
@@ -92,52 +89,5 @@ private:
    // for OPEN_GL surface
    GLuint _glTextureID;  // texture ID for openGL
 };
-
-class Font
-{
-public:
-    Font();
-    Font(TTF_Font &ttfFont, SDL_Color &color);
-
-    TTF_Font &getTTF();
-
-    SDL_Color &getColor();
-    void setColor( const int color );
-
-    std::list<std::string> split_text(const std::string &text, const int width);
-
-    bool isValid() const;
-
-    Size getSize( const std::string& text ) const;
-
-    bool operator!=(const Font& other) const;
-
-    Rect calculateTextRect( const std::string& text, const Rect& baseRect, 
-                            TypeAlign horizontalAlign, TypeAlign verticalAlign );
-
-    void draw(Picture &dstpic, const std::string &text, const int dx, const int dy);
-
-private:
-    TTF_Font *_ttfFont;
-    SDL_Color _color;
-};
-
-
-enum FontType { FONT_0, FONT_1, FONT_2, FONT_2_RED, FONT_2_WHITE, FONT_2_YELLOW, FONT_3, FONT_4, FONT_5, FONT_6, FONT_7 };
-class FontCollection
-{
-public:
-   static FontCollection& instance();
-
-   Font& getFont(const int key);  // get a saved font
-   void setFont(const int key, Font &font);  // save a font
-
-private:
-   FontCollection();
-
-   static FontCollection *_instance;
-   std::map<int, Font> _collection;
-};
-
 
 #endif

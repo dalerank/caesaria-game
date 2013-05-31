@@ -15,278 +15,264 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
-
 #include "oc3_building_data.hpp"
 
-#include <iostream>
-
-#include "oc3_exception.hpp"
+#include <map>
 #include "oc3_gettext.hpp"
+#include "oc3_saveadapter.hpp"
+#include "oc3_stringhelper.hpp"
 
+BuildingData BuildingData::invalid = BuildingData( B_NONE, "unknown", 0 );
+
+struct BuildingTypeEquale
+{
+  BuildingType type; 
+  std::string name;
+};
+
+BuildingTypeEquale bldTypeEquales[] = { 
+  { B_AMPHITHEATER,   "amphitheater"},  
+  { B_THEATER,        "theater" },
+  { B_HIPPODROME,     "hippodrome" },
+  { B_COLLOSSEUM,     "colloseum" },
+  { B_ACTOR,          "artist_colony" },
+  { B_GLADIATOR,      "gladiator_pit" },
+  { B_LION,           "lion_pit" },             
+  { B_CHARIOT,        "chatioteer_school" },
+  { B_HOUSE,          "house" },               
+  { B_ROAD,           "road" },
+  { B_PLAZA,          "plaza" },
+  { B_GARDEN,         "garden" },             
+  { B_SENATE,         "senate_1" },
+  { B_FORUM,          "forum_1" },             
+  { B_GOVERNOR_HOUSE, "governor_palace_1" },
+  { B_GOVERNOR_VILLA, "governor_palace_2" },  
+  { B_GOVERNOR_PALACE,"governor_palace_3" },
+  { B_FORT_LEGIONNAIRE, "fort_legionaries" }, 
+  { B_FORT_JAVELIN,   "fort_javelin" },
+  { B_FORT_MOUNTED,   "fort_horse" },   
+  { B_PREFECT,        "prefecture" },
+  { B_BARRACKS,       "barracks" },         
+  { B_MILITARY_ACADEMY, "military_academy" },
+  { B_DOCTOR,         "clinic" },             
+  { B_HOSPITAL,       "hospital" },
+  { B_BATHS,          "baths" },               
+  { B_BARBER,         "barber" }, 
+  { B_SCHOOL,         "school" },             
+  { B_COLLEGE,        "academy" },
+  { B_LIBRARY,        "library" },           
+  { B_MISSION_POST,   "mission post" },
+  { B_TEMPLE_CERES,   "small_ceres_temple" }, 
+  { B_TEMPLE_NEPTUNE, "small_neptune_temple" },
+  { B_TEMPLE_MARS,    "small_mars_temple" },   
+  { B_TEMPLE_MERCURE, "small_mercury_temple" },
+  { B_TEMPLE_VENUS,   "small_venus_temple" },
+  { B_BIG_TEMPLE_CERES,  "big_ceres_temple" },
+  { B_BIG_TEMPLE_NEPTUNE,"big_neptune_temple" },
+  { B_BIG_TEMPLE_MARS,   "big_mars_temple"},
+  { B_BIG_TEMPLE_MERCURE,"big_mercure_temple"},
+  { B_BIG_TEMPLE_VENUS,  "big_venus_temple"},
+  { B_TEMPLE_ORACLE,     "temple_oracle"},
+  { B_MARKET,            "market"},
+  { B_GRANARY,        "granery"},
+  { B_WAREHOUSE,      "warehouse"},
+  { B_WHEAT,          "wheat_farm"},
+  { B_FRUIT,          "fig_farm"},
+  { B_VEGETABLE,      "vegetable_farm"},
+  { B_OLIVE,          "olive_farm"},
+  { B_GRAPE,          "vinard"},
+  { B_MEAT,           "meat_farm"},
+  { B_MARBLE,         "quarry"},
+  { B_IRON,           "iron_mine"},
+  { B_TIMBER,         "lubmer_mill"},
+  { B_CLAY_PIT,       "clay_pit"},
+  { B_WINE,           "wine_workshop"},
+  { B_OIL,            "oil_workshop"},
+  { B_WEAPON,         "weapon_workshop"},
+  { B_FURNITURE,      "furniture_workshop"},
+  { B_POTTERY,        "pottery_workshop"},
+  { B_ENGINEER,       "engineering_post"},
+  { B_STATUE1,        "statue_1"},
+  { B_STATUE2,        "statue_2"},
+  { B_STATUE3,        "statue_3"},
+  { B_LOW_BRIDGE,     "low_bridge"},
+  { B_HIGH_BRIDGE,    "high_bridge"},
+  { B_DOCK,           "dock"},
+  { B_SHIPYARD,       "shipyard"},
+  { B_WHARF,          "wharf"},
+  { B_TRIUMPHAL_ARCH, "arch"},
+  { B_WELL,           "well"},
+  { B_FOUNTAIN,       "fountain"},
+  { B_AQUEDUCT,       "aqueduct"},
+  { B_RESERVOIR,      "reservoir"},
+  { B_NATIVE_HUT,     "native_hut"},
+  { B_NATIVE_CENTER,  "native_center"},
+  { B_NATIVE_FIELD,   "native_field"},
+  { B_BURNING_RUINS,  "burning_ruins"},
+  { B_BURNED_RUINS,   "burned_ruins"},
+  { B_COLLAPSED_RUINS,"collapsed_ruins"},
+
+  { B_NONE, "" }
+};
 
 BuildingData::BuildingData(const BuildingType buildingType, const std::string &name, const int cost)
 {
-   _buildingType = buildingType;
-   _name = name;
-   std::string key = "building_"+name;
-   _prettyName = _(key.c_str());  // i18n translation
-   _cost = cost;
+  _buildingType = buildingType;
+  _name = name;
+  std::string key = "building_"+name;
+  _prettyName = _(key.c_str());  // i18n translation
+  _cost = cost;
+  _baseDesirability = 0;
+  _desirabilityRange = 0;
+  _desirabilityStep = 0;
 }
 
 std::string BuildingData::getName() const
 {
-   return _name;
+  return _name;
 }
 
 std::string BuildingData::getPrettyName() const
 {
-   return _prettyName;
+  return _prettyName;
 }
 
 BuildingType BuildingData::getType() const
 {
-   return _buildingType;
+  return _buildingType;
 }
 
 int BuildingData::getCost() const
 {
-   return _cost;
+  return _cost;
 }
 
+class BuildingDataHolder::Impl
+{
+public:
+  typedef std::map<BuildingType, BuildingData> BuildingsMap; 
+  typedef std::map<GoodType, BuildingType> FactoryInMap;
 
-BuildingDataHolder* BuildingDataHolder::_instance = NULL;
+  BuildingsMap buildings;// key=building_type, value=data
+  FactoryInMap mapBuildingByInGood;
+};
 
 BuildingDataHolder& BuildingDataHolder::instance()
 {
-   if (_instance == NULL)
-   {
-      _instance = new BuildingDataHolder();
-      if (_instance == NULL) THROW("Memory error, cannot instantiate object");
-   }
-   return *_instance;
-}
-
-BuildingType BuildingDataHolder::getBuildingTypeByService(const ServiceType serviceType)
-{
-   return _mapBuildingByService[serviceType];
+  static BuildingDataHolder inst;
+  return inst;
 }
 
 BuildingType BuildingDataHolder::getBuildingTypeByInGood(const GoodType inGoodType)
 {
-   BuildingType res = B_NONE;
+  BuildingType res = B_NONE;
 
-   std::map<GoodType, BuildingType>::iterator mapIt;
-   mapIt = _mapBuildingByInGood.find(inGoodType);
-   if (mapIt != _mapBuildingByInGood.end())
-   {
-      res = mapIt->second;
-   }
-   return res;
-}
-
-BuildingType BuildingDataHolder::getBuildingTypeByOutGood(const GoodType outGoodType)
-{
-   return _mapBuildingByOutGood[outGoodType];
+  Impl::FactoryInMap::iterator mapIt;
+  mapIt = _d->mapBuildingByInGood.find(inGoodType);
+  if (mapIt != _d->mapBuildingByInGood.end())
+  {
+    res = mapIt->second;
+  }
+  return res;
 }
 
 BuildingData& BuildingDataHolder::getData(const BuildingType buildingType)
 {
-   std::map<BuildingType, BuildingData>::iterator mapIt;
-   mapIt = _mapDataByName.find(buildingType);
-   if (mapIt == _mapDataByName.end())
-   {
-      THROW( "Unknown building " << buildingType );
-   }
-   return mapIt->second;
+  Impl::BuildingsMap::iterator mapIt;
+  mapIt = _d->buildings.find(buildingType);
+  if (mapIt == _d->buildings.end())
+  {
+    StringHelper::debug( 0xff, "Unknown building %d", buildingType );
+    return BuildingData::invalid;
+  }
+  return mapIt->second;
 }
 
 bool BuildingDataHolder::hasData(const BuildingType buildingType)
 {
-   bool res = true;
-   std::map<BuildingType, BuildingData>::iterator mapIt;
-   mapIt = _mapDataByName.find(buildingType);
-   if (mapIt == _mapDataByName.end())
-   {
-      res = false;
-   }
-   return res;
+  bool res = true;
+  Impl::BuildingsMap::iterator mapIt;
+  mapIt = _d->buildings.find(buildingType);
+  if (mapIt == _d->buildings.end())
+  {
+    res = false;
+  }
+  return res;
 }
 
 void BuildingDataHolder::addData(const BuildingData &data)
 {
-   BuildingType buildingType = data.getType();
+  BuildingType buildingType = data.getType();
 
-   if (hasData(buildingType))
-   {
-      THROW("Building is already set " << data.getName());
-   }
+  if (hasData(buildingType))
+  {
+    StringHelper::debug( 0xff, "Building is already set %s", data.getName() );
+    return;
+  }
 
-   _mapDataByName.insert(std::make_pair(buildingType, data));
+  _d->buildings.insert(std::make_pair(buildingType, data));
 }
 
 
-BuildingDataHolder::BuildingDataHolder()
+BuildingDataHolder::BuildingDataHolder() : _d( new Impl )
 {
-   // entertainment
-   addData(BuildingData(B_AMPHITHEATER, "amphitheater", 100));
-   addData(BuildingData(B_THEATER, "theater", 50));
-   addData(BuildingData(B_HIPPODROME, "hippodrome", 2500));
-   addData(BuildingData(B_COLLOSSEUM, "collosseum", 500));
-   addData(BuildingData(B_ACTOR, "actor", 50));
-   addData(BuildingData(B_GLADIATOR, "gladiator", 75));
-   addData(BuildingData(B_LION, "lion", 75));
-   addData(BuildingData(B_CHARIOT, "chariot", 75));
-
-   // road & house
-   addData(BuildingData(B_HOUSE, "house", 10));
-   addData(BuildingData(B_ROAD, "road", 4));
-   addData(BuildingData(B_PLAZA, "plaza", 15));
-   addData(BuildingData(B_GARDEN, "garden", 12));
-
-   // administration
-   addData(BuildingData(B_SENATE, "senate", 250));
-   addData(BuildingData(B_FORUM, "forum", 75));
-   addData(BuildingData(B_GOVERNOR_HOUSE, "governor's_house", 150));
-   addData(BuildingData(B_GOVERNOR_VILLA, "governor's_villa", 400));
-   addData(BuildingData(B_GOVERNOR_PALACE, "governor's_palace", 700));
-   
-   // security
-   addData(BuildingData(B_FORT_LEGIONNAIRE, "fort_legionaries", 1000));
-   addData(BuildingData(B_FORT_JAVELIN, "fort_javelin", 1000));
-   addData(BuildingData(B_FORT_MOUNTED, "fort_horse", 1000));
-   addData(BuildingData(B_PREFECT, "prefect", 30));
-   addData(BuildingData(B_BARRACKS, "barracks", 150));
-   addData(BuildingData(B_MILITARY_ACADEMY, "academy", 1000));
-
-   // health
-   addData(BuildingData(B_DOCTOR, "doctor", 30));
-   addData(BuildingData(B_HOSPITAL, "hospital", 300));
-   addData(BuildingData(B_BATHS, "baths", 50));
-   addData(BuildingData(B_BARBER, "barber", 25));
-
-   // education
-   addData(BuildingData(B_SCHOOL, "school", 50));
-   addData(BuildingData(B_COLLEGE, "college", 100));
-   addData(BuildingData(B_LIBRARY, "library", 75));
-   addData(BuildingData(B_MISSION_POST, "mission post", 100));
-
-   // // religion
-   addData(BuildingData(B_TEMPLE_CERES, "temple_ceres", 50));
-   addData(BuildingData(B_TEMPLE_NEPTUNE, "temple_neptune", 50));
-   addData(BuildingData(B_TEMPLE_MARS, "temple_mars", 50));
-   addData(BuildingData(B_TEMPLE_MERCURE, "temple_mercure", 50));
-   addData(BuildingData(B_TEMPLE_VENUS, "temple_venus", 50));
-
-   addData(BuildingData(B_BIG_TEMPLE_CERES, "big_temple_ceres", 150));
-   addData(BuildingData(B_BIG_TEMPLE_NEPTUNE, "big_temple_neptune", 150));
-   addData(BuildingData(B_BIG_TEMPLE_MARS, "big_temple_mars", 150));
-   addData(BuildingData(B_BIG_TEMPLE_MERCURE, "big_temple_mercure", 150));
-   addData(BuildingData(B_BIG_TEMPLE_VENUS, "big_temple_venus", 150));
-
-   addData(BuildingData(B_TEMPLE_ORACLE, "temple_oracle", 200));
-
-   // commerce
-   addData(BuildingData(B_MARKET, "market", 40));
-   addData(BuildingData(B_GRANARY, "granary", 100));
-   addData(BuildingData(B_WAREHOUSE, "warehouse", 70));
-   addData(BuildingData(B_WHEAT, "wheat", 40));
-   addData(BuildingData(B_FRUIT, "fruit", 40));
-   addData(BuildingData(B_VEGETABLE, "vegetable", 40));
-   addData(BuildingData(B_OLIVE, "olive", 40));
-   addData(BuildingData(B_GRAPE, "grape", 40));
-   addData(BuildingData(B_MEAT, "meat", 40));
-   addData(BuildingData(B_MARBLE, "marble", 50));
-   addData(BuildingData(B_IRON, "iron", 50));
-   addData(BuildingData(B_TIMBER, "timber", 40));
-   addData(BuildingData(B_CLAY_PIT, "clay", 40));
-   addData(BuildingData(B_WINE, "wine", 45));
-   addData(BuildingData(B_OIL, "oil", 50));
-   addData(BuildingData(B_WEAPON, "weapon", 50));
-   addData(BuildingData(B_FURNITURE, "furniture", 40));
-   addData(BuildingData(B_POTTERY, "pottery", 40));
-
-   // utility
-   addData(BuildingData(B_ENGINEER,    "engineer",     30));
-   addData(BuildingData(B_STATUE1,     "statue1",      12));
-   addData(BuildingData(B_STATUE2,     "statue2",      60));
-   addData(BuildingData(B_STATUE3,     "statue3",     150));
-   addData(BuildingData(B_LOW_BRIDGE,  "low_bridge",   40));
-   addData(BuildingData(B_HIGH_BRIDGE, "high_bridge", 100));
-   addData(BuildingData(B_DOCK,        "dock",        100));
-   addData(BuildingData(B_SHIPYARD,    "shipyard",    100));
-   addData(BuildingData(B_WHARF,       "wharf",       100));
-   addData(BuildingData(B_TRIUMPHAL_ARCH, "arch",     100));
-
-   // water
-   addData(BuildingData(B_WELL, "well", 5));
-   addData(BuildingData(B_FOUNTAIN, "fountain", 15));
-   addData(BuildingData(B_AQUEDUCT, "aqueduct", 0));
-   addData(BuildingData(B_RESERVOIR, "reservoir", 0));
-   
-   // natives
-   addData(BuildingData(B_NATIVE_HUT, "native hut", 0));
-   addData(BuildingData(B_NATIVE_CENTER, "native center", 0));   
-   addData(BuildingData(B_NATIVE_FIELD, "native field", 0));   
-
-   //damages
-   addData(BuildingData(B_BURNING_RUINS, "burningRuins", 0)); 
-   addData(BuildingData(B_BURNED_RUINS, "burnedRuins", 0)); 
-   addData(BuildingData(B_COLLAPSED_RUINS, "collapsedRuins", 0)); 
-   
-
-   // populate _mapBuildingByService
-   _mapBuildingByService[S_ENGINEER] = B_ENGINEER;
-   _mapBuildingByService[S_PREFECT] = B_PREFECT;
-   _mapBuildingByService[S_FORUM] = B_FORUM;
-   _mapBuildingByService[S_SENATE] = B_SENATE;
-   _mapBuildingByService[S_TEMPLE_NEPTUNE] = B_TEMPLE_NEPTUNE;
-   _mapBuildingByService[S_TEMPLE_CERES] = B_TEMPLE_CERES;
-   _mapBuildingByService[S_TEMPLE_VENUS] = B_TEMPLE_VENUS;
-   _mapBuildingByService[S_TEMPLE_MARS] = B_TEMPLE_MARS;
-   _mapBuildingByService[S_TEMPLE_MERCURE] = B_TEMPLE_MERCURE;
-   _mapBuildingByService[S_DOCTOR] = B_DOCTOR;
-   _mapBuildingByService[S_BARBER] = B_BARBER;
-   _mapBuildingByService[S_BATHS] = B_BATHS;
-   _mapBuildingByService[S_HOSPITAL] = B_HOSPITAL;
-   _mapBuildingByService[S_SCHOOL] = B_SCHOOL;
-   _mapBuildingByService[S_LIBRARY] = B_LIBRARY;
-   _mapBuildingByService[S_COLLEGE] = B_COLLEGE;
-   _mapBuildingByService[S_THEATER] = B_THEATER;
-   _mapBuildingByService[S_AMPHITHEATER] = B_AMPHITHEATER;
-   _mapBuildingByService[S_COLLOSSEUM] = B_COLLOSSEUM;
-   _mapBuildingByService[S_HIPPODROME] = B_HIPPODROME;
-
-   //damages
-   _mapBuildingByService[S_BURNING_RUINS] = B_BURNING_RUINS;
-
-   // populate _mapBuildingByInGood
-   _mapBuildingByInGood[G_IRON]   = B_WEAPON;
-   _mapBuildingByInGood[G_TIMBER] = B_FURNITURE;
-   _mapBuildingByInGood[G_CLAY]   = B_POTTERY;
-   _mapBuildingByInGood[G_OLIVE]  = B_OIL;
-   _mapBuildingByInGood[G_GRAPE]  = B_WINE;
-
-   // populate _mapBuildingByOutGood
-   _mapBuildingByOutGood[G_WHEAT]     = B_WHEAT;
-   _mapBuildingByOutGood[G_FRUIT]     = B_FRUIT;
-   _mapBuildingByOutGood[G_VEGETABLE] = B_VEGETABLE;
-   _mapBuildingByOutGood[G_OLIVE]     = B_OLIVE;
-   _mapBuildingByOutGood[G_GRAPE]     = B_GRAPE;
-   _mapBuildingByOutGood[G_MEAT]      = B_MEAT;
-   _mapBuildingByOutGood[G_MARBLE]    = B_MARBLE;
-   _mapBuildingByOutGood[G_IRON]      = B_IRON;
-   _mapBuildingByOutGood[G_TIMBER]    = B_TIMBER;
-   _mapBuildingByOutGood[G_CLAY]      = B_CLAY_PIT;
-   _mapBuildingByOutGood[G_OLIVE]     = B_OLIVE;
-   _mapBuildingByOutGood[G_GRAPE]     = B_GRAPE;
-   _mapBuildingByOutGood[G_WINE]      = B_WINE;
-   _mapBuildingByOutGood[G_OIL]       = B_OIL;
-   _mapBuildingByOutGood[G_WEAPON]    = B_WEAPON;
-   _mapBuildingByOutGood[G_FURNITURE] = B_FURNITURE;
-   _mapBuildingByOutGood[G_POTTERY]   = B_POTTERY;
-   _mapBuildingByOutGood[G_FISH]      = B_WHARF;
-
-
 }
 
+void BuildingDataHolder::initialize( const std::string& filename )
+{
+  // populate _mapBuildingByInGood
+  _d->mapBuildingByInGood[G_IRON]   = B_WEAPON;
+  _d->mapBuildingByInGood[G_TIMBER] = B_FURNITURE;
+  _d->mapBuildingByInGood[G_CLAY]   = B_POTTERY;
+  _d->mapBuildingByInGood[G_OLIVE]  = B_OIL;
+  _d->mapBuildingByInGood[G_GRAPE]  = B_WINE;
+
+  VariantMap constructions = SaveAdapter::load( filename );
+
+  for( VariantMap::iterator it=constructions.begin(); it != constructions.end(); it++ )
+  {
+    VariantMap options = (*it).second.toMap();
+
+    const BuildingType btype = getType( (*it).first );
+    if( btype == B_NONE )
+    {
+      StringHelper::debug( 0xff, "!!!Warning: can't associate type with %s", (*it).first.c_str() );
+      continue;
+    }
+
+    Impl::BuildingsMap::const_iterator bdataIt = _d->buildings.find( btype );
+    if( bdataIt != _d->buildings.end() )
+    {
+      StringHelper::debug( 0xff, "!!!Warning: type %s also initialized", (*it).first.c_str() );
+      continue;
+    }
+
+    BuildingData bData( btype, (*it).first, options[ "cost" ].toInt() );
+    const std::string pretty = options[ "pretty" ].toString();
+    if( !pretty.empty() )
+      bData._prettyName = pretty;
+
+    bData._baseDesirability  = options[ "desirability" ].toInt();
+    bData._desirabilityRange = options[ "desrange" ].toInt();
+    bData._desirabilityStep  = options[ "desstep" ].toInt();
+
+    addData( bData );
+  }
+}
+
+BuildingType BuildingDataHolder::getType( const std::string& name )
+{
+  int index=0;
+  std::string typeName = bldTypeEquales[ index ].name;
+
+  while( typeName.size() > 0 )
+  {
+    if( name == typeName )
+      return bldTypeEquales[ index ].type;
+
+    index++;
+    typeName = bldTypeEquales[ index ].name;
+  }
+
+  return B_NONE;
+}

@@ -18,21 +18,6 @@
 
 #include "oc3_factory_building.hpp"
 
-class FarmTile
-{
-public:
-  FarmTile(const GoodType outGood, const TilePos& pos );
-  void computePicture(const int percent);
-  Picture& getPicture();
-
-private:
-  int _i;
-  int _j;
-  Picture _picture;
-  Animation _animation;
-};
-
-
 class Farm : public Factory
 {
 public:
@@ -44,8 +29,8 @@ public:
   virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
 
 protected:
-  std::vector<FarmTile> _subTiles;
-  Picture _pictureBuilding;  // we need to change its offset
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 class FarmWheat : public Farm
@@ -83,5 +68,7 @@ class FarmVegetable : public Farm
 public:
   FarmVegetable();
 };
+
+typedef SmartPtr< Farm > FarmPtr;
 
 #endif//__OPENCAESAR3_FARM_H_INCLUDED__

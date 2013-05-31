@@ -108,8 +108,8 @@ void ServiceBuilding::destroy()
 void ServiceBuilding::deliverService()
 {
    // make a service walker and send him to his wandering
-  ServiceWalkerPtr serviceman = ServiceWalker::create( BuildingPtr( this ),_service);
-  serviceman->send2City();
+  ServiceWalkerPtr serviceman = ServiceWalker::create( Scenario::instance().getCity(),_service);
+  serviceman->send2City( BuildingPtr( this ) );
 
   if( !serviceman->isDeleted() )
       _addWalker( serviceman.as<Walker>() );
@@ -162,28 +162,6 @@ ServiceBuilding::~ServiceBuilding()
 
 }
 
-BuildingWell::BuildingWell() : ServiceBuilding(S_WELL, B_WELL, Size(1) )
-{
-   _fireIncrement = 0;
-   _damageIncrement = 0;
-   setPicture( Picture::load("utilitya", 1) );
-}
-
-void BuildingWell::deliverService()
-{
-  ServiceWalkerPtr walker = ServiceWalker::create( BuildingPtr( this ), getService());
-  ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( getTile().getIJ() );
-  for( ServiceWalker::ReachedBuildings::iterator itBuilding = reachedBuildings.begin(); 
-       itBuilding != reachedBuildings.end(); ++itBuilding)
-  {
-     (*itBuilding)->applyService( walker );
-  }
-}
-
-char BuildingWell::getDesirabilityInfluence() const
-{
-  return -1;
-}
 
 BuildingFountain::BuildingFountain() : ServiceBuilding(S_FOUNTAIN, B_FOUNTAIN, Size(1))
 {  
@@ -216,7 +194,8 @@ BuildingFountain::BuildingFountain() : ServiceBuilding(S_FOUNTAIN, B_FOUNTAIN, S
 
 void BuildingFountain::deliverService()
 {
-  ServiceWalkerPtr walker = ServiceWalker::create( BuildingPtr( this ), getService());
+  ServiceWalkerPtr walker = ServiceWalker::create( Scenario::instance().getCity(), getService() );
+  walker->setBase( BuildingPtr( this ) );
   ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( getTile().getIJ() );
   for( ServiceWalker::ReachedBuildings::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
   {
@@ -316,64 +295,6 @@ BuildingHippodrome::BuildingHippodrome() : EntertainmentBuilding(S_HIPPODROME, B
 
 //-----------
 
-TempleCeres::TempleCeres() : ServiceBuilding(S_TEMPLE_CERES, B_TEMPLE_CERES, Size(2))
-{
-  setPicture( Picture::load( ResourceGroup::security, 45));
-}
-
-BigTempleCeres::BigTempleCeres() : ServiceBuilding(S_TEMPLE_CERES, B_BIG_TEMPLE_CERES, Size(3))
-{
-  setPicture( Picture::load( ResourceGroup::security, 46));
-}
-
-TempleNeptune::TempleNeptune() : ServiceBuilding(S_TEMPLE_NEPTUNE, B_TEMPLE_NEPTUNE, Size(2) )
-{
-  setPicture( Picture::load( ResourceGroup::security, 47));
-}
-
-BigTempleNeptune::BigTempleNeptune() : ServiceBuilding(S_TEMPLE_NEPTUNE, B_BIG_TEMPLE_NEPTUNE, Size(3))
-{
-  setPicture(Picture::load( ResourceGroup::security, 48));
-}
-
-TempleMars::TempleMars() : ServiceBuilding(S_TEMPLE_MARS, B_TEMPLE_MARS, Size(2))
-{
-  setPicture( Picture::load( ResourceGroup::security, 51));
-}
-
-BigTempleMars::BigTempleMars() : ServiceBuilding(S_TEMPLE_MARS, B_BIG_TEMPLE_MARS, Size(3))
-{
-  setPicture( Picture::load( ResourceGroup::security, 52));
-}
-
-TempleVenus::TempleVenus() : ServiceBuilding(S_TEMPLE_VENUS, B_TEMPLE_VENUS, Size(2))
-{
-  setPicture(Picture::load(ResourceGroup::security, 53));
-}
-
-BigTempleVenus::BigTempleVenus() : ServiceBuilding(S_TEMPLE_VENUS, B_BIG_TEMPLE_VENUS, Size(3))
-{
-  setPicture(Picture::load( ResourceGroup::security, 54));
-}
-
-TempleMercure::TempleMercure() : ServiceBuilding(S_TEMPLE_MERCURE, B_TEMPLE_MERCURE, Size(2))
-{
-  setPicture( Picture::load( ResourceGroup::security, 49));
-}
-
-BigTempleMercure::BigTempleMercure() : ServiceBuilding(S_TEMPLE_MERCURE, B_BIG_TEMPLE_MERCURE, Size(3))
-{
-  setPicture(Picture::load( ResourceGroup::security, 50));
-}
-
-TempleOracle::TempleOracle() : ServiceBuilding(S_TEMPLE_ORACLE, B_TEMPLE_ORACLE, Size(2) )
-{
-  setPicture( Picture::load( ResourceGroup::security, 55));
-   
-  _animation.load( ResourceGroup::security, 56, 6);
-  _animation.setOffset( Point( 9, 30 ) );
-  _fgPictures.resize(1);   
-}
 
 School::School() : ServiceBuilding(S_SCHOOL, B_SCHOOL, Size(2))
 {

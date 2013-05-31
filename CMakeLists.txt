@@ -20,19 +20,17 @@ unset(Boost_INCLUDE_DIR CACHE)
 unset(Boost_LIBRARY_DIRS CACHE)
 unset(Boost_FILESYSTEM_LIBRARY CACHE)
 unset(Boost_SYSTEM_LIBRARY CACHE)
-unset(Boost_DATE_TIME_LIBRARY CACHE)
 set(Boost_USE_STATIC_LIBS YES)
-find_package(Boost COMPONENTS filesystem system date_time)
+find_package(Boost COMPONENTS filesystem system)
 
 # Check if boost_static libraries are availible
-if (NOT (Boost_FILESYSTEM_LIBRARY AND Boost_SYSTEM_LIBRARY AND Boost_DATE_TIME_LIBRARY))
+if (NOT (Boost_FILESYSTEM_LIBRARY AND Boost_SYSTEM_LIBRARY))
   unset(Boost_INCLUDE_DIR CACHE)
   unset(Boost_LIBRARY_DIRS CACHE)
   unset(Boost_FILESYSTEM_LIBRARY CACHE)
   unset(Boost_SYSTEM_LIBRARY CACHE)
-  unset(Boost_DATE_TIME_LIBRARY CACHE)
   set(Boost_USE_STATIC_LIBS NO)
-  find_package(Boost COMPONENTS filesystem system date_time REQUIRED)
+  find_package(Boost COMPONENTS filesystem system REQUIRED)
 endif()
 
 include_directories(
@@ -54,7 +52,6 @@ link_libraries(
   ${SDL_TTF_LIBRARY}
   ${Boost_FILESYSTEM_LIBRARY}
   ${Boost_SYSTEM_LIBRARY}
-  ${Boost_DATE_TIME_LIBRARY}
   ${OPENGL_gl_LIBRARY}
   ${LibArchive_LIBRARY}
   ${LIBINTL_LIBRARIES}
@@ -105,7 +102,6 @@ if(WIN32)
     SET (_BOOST_LIBS
       ${Boost_FILESYSTEM_LIBRARY}
       ${Boost_SYSTEM_LIBRARY}
-      ${Boost_DATE_TIME_LIBRARY}
     )
     foreach(_lib ${_BOOST_LIBS})
       GET_FILENAME_COMPONENT(_lib_path  ${_lib} PATH)

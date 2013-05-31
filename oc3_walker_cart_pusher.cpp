@@ -19,7 +19,7 @@
 
 #include "oc3_building_data.hpp"
 #include "oc3_exception.hpp"
-#include "oc3_scenario.hpp"
+#include "oc3_city.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_granary.hpp"
 #include "oc3_warehouse.hpp"
@@ -29,6 +29,7 @@
 class CartPusher::Impl
 {
 public:
+  City* city;
   GoodStock stock;
   BuildingPtr producerBuilding;
   BuildingPtr consumerBuilding;
@@ -37,7 +38,7 @@ public:
   long reservationID;
 };
 
-CartPusher::CartPusher() : _d( new Impl )
+CartPusher::CartPusher( City& city ) : _d( new Impl )
 {
    _d->cartPicture = NULL;
    _walkerGraphic = WG_PUSHER;
@@ -45,6 +46,7 @@ CartPusher::CartPusher() : _d( new Impl )
    _d->producerBuilding = NULL;
    _d->consumerBuilding = NULL;
    _d->maxDistance = 25;
+   _d->city = &city;
 }
 
 void CartPusher::onDestination()
@@ -304,12 +306,15 @@ BuildingPtr CartPusher::getWalkerDestination_granary(Propagator &pathPropagator,
 }
 
 
-void CartPusher::send2City()
+void CartPusher::send2City( BuildingPtr building, const GoodStock& stock )
 {
+  setStock(stock);
+  setProducerBuilding( building  );
+
   computeWalkerDestination();
 
   if( !isDeleted() )
-    Scenario::instance().getCity().addWalker( WalkerPtr( this ) );
+    _d->city->addWalker( WalkerPtr( this ) );
 }
 
 void CartPusher::timeStep( const unsigned long time )
@@ -322,12 +327,10 @@ void CartPusher::timeStep( const unsigned long time )
   Walker::timeStep( time );
 }
 
-CartPusherPtr CartPusher::create( BuildingPtr building, const GoodStock& stock )
+CartPusherPtr CartPusher::create( City& city )
 {
-  CartPusherPtr ret( new CartPusher() );
-  ret->drop(); //delete automaticlly
-  ret->setStock(stock);
-  ret->setProducerBuilding( building  );
+  CartPusherPtr ret( new CartPusher( city ) );
+  ret->drop(); //delete automatically
 
   return ret;
 }
@@ -335,11 +338,15 @@ CartPusherPtr CartPusher::create( BuildingPtr building, const GoodStock& stock )
 void CartPusher::save( VariantMap& stream ) const
 {
   Walker::save( stream );
+  
   VariantMap vm_stock;
   _d->stock.save( vm_stock );
   stream[ "stock" ] = vm_stock;
+
   stream[ "producerPos" ] = _d->producerBuilding->getTile().getIJ();
-  stream[ "consumerPos" ] = _d->consumerBuilding->getTile().getIJ();
+  stream[ "consumerPos" ] = _d->consumerBuilding.isValid() 
+                                      ? _d->consumerBuilding->getTile().getIJ()
+                                      : TilePos( -1, -1 );
 
   stream[ "maxDistance" ] = _d->maxDistance;
   stream[ "reservationID" ] = static_cast<int>(_d->reservationID);
@@ -348,15 +355,15 @@ void CartPusher::save( VariantMap& stream ) const
 void CartPusher::load( const VariantMap& stream )
 {
   Walker::load( stream );
-  VariantMap vm_stock = stream.get( "stock" ).toMap();
-  _d->stock.load( vm_stock );
+
+  _d->stock.load( stream.get( "stock" ).toMap() );
 
   TilePos prPos( stream.get( "producerPos" ).toTilePos() );
-  Tile& prTile = Scenario::instance().getCity().getTilemap().at( prPos );
+  Tile& prTile = _d->city->getTilemap().at( prPos );
   _d->producerBuilding = prTile.get_terrain().getOverlay().as<Building>();
 
   TilePos cnsmPos( stream.get( "consumerPos" ).toTilePos() );
-  Tile& cnsmTile = Scenario::instance().getCity().getTilemap().at( cnsmPos );
+  Tile& cnsmTile = _d->city->getTilemap().at( cnsmPos );
   _d->producerBuilding = prTile.get_terrain().getOverlay().as<Building>();
 
   _d->maxDistance = stream.get( "maxDistance" ).toInt();

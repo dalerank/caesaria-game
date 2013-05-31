@@ -99,7 +99,6 @@ private:
    int _si, _sj; // subtile coordinate in the current tile: 0..15
    int _ii, _jj; // subtile coordinate across all tiles: 0..15*mapsize (ii=15*i+si)
    float _remainMoveI, _remainMoveJ;  // remaining movement
-   int _midTileI, _midTileJ;  // subtile coordinate in the current tile, at starting position
 
    Animation _animation;  // current animation
   

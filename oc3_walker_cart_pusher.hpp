@@ -25,7 +25,7 @@
 class CartPusher : public Walker
 {
 public:
-  static CartPusherPtr create( BuildingPtr building, const GoodStock& stock );
+  static CartPusherPtr create( City& city );
 
   void setProducerBuilding( BuildingPtr building );
   void setConsumerBuilding( BuildingPtr building );
@@ -38,7 +38,7 @@ public:
   virtual void onNewDirection();
   virtual void onDestination();
 
-  void send2City();
+  void send2City( BuildingPtr building, const GoodStock& stock );
 
   void computeWalkerDestination();
   BuildingPtr getWalkerDestination_factory(Propagator &pathPropagator, PathWay &oPathWay);
@@ -51,7 +51,7 @@ public:
   void load(const VariantMap& stream);
 
 protected:
-   CartPusher();
+   CartPusher( City& city );
 
 private:
    class Impl;

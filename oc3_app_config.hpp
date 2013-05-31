@@ -23,6 +23,9 @@ class AppConfig
 {
 public:
   static const std::string resourcePath;
+  static const std::string pantheonModel;
+  static const std::string houseModel;
+  static const std::string constructionModel;
 
   static AppConfig& getInstance();
 

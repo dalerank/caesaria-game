@@ -17,13 +17,12 @@
 #ifndef __OPENCAESAR3_WIDGET_H_INCLUDE_
 #define __OPENCAESAR3_WIDGET_H_INCLUDE_
 
-#include <memory>
-
 #include "oc3_referencecounted.hpp"
 #include "oc3_list.hpp"
 #include "oc3_rectangle.hpp"
 #include "oc3_alignment.hpp"
 #include "oc3_safetycast.hpp"
+#include "oc3_font.hpp"
 
 class GfxEngine;
 class GuiEnv;
@@ -33,7 +32,7 @@ class WidgetPrivate;
 class Widget : public virtual ReferenceCounted
 {
 public:       
-    typedef List<Widget*> Widgets;
+  typedef List<Widget*> Widgets;
 	typedef Widgets::iterator ChildIterator;
 	typedef Widgets::const_iterator ConstChildIterator;
 
@@ -44,42 +43,42 @@ public:
 //    virtual f32 getOpacity( u32 index=0 ) const;
 //    virtual void setOpacity( f32 nA, s32 index=0 );
 
-    std::string getInternalName() const;
-    void setInternalName( const std::string& name );
+  std::string getInternalName() const;
+  void setInternalName( const std::string& name );
 
-    template< class T >
-    T findChild( const std::string& internalName, bool recursiveFind = false )
-    {
-        Widgets::const_iterator it = getChildren().begin();
-        for( ; it != getChildren().end(); it++ )
-        {
-            if( (*it)->getInternalName() == internalName )
-                return safety_cast< T >( *it );
+  template< class T >
+  T findChild( const std::string& internalName, bool recursiveFind = false )
+  {
+      Widgets::const_iterator it = getChildren().begin();
+      for( ; it != getChildren().end(); it++ )
+      {
+          if( (*it)->getInternalName() == internalName )
+              return safety_cast< T >( *it );
 
-            if( recursiveFind )
-            {
-                T chElm = (*it)->findChild< T >( internalName, recursiveFind );
-                if( chElm )
-                    return chElm;
-            }
-        }
+          if( recursiveFind )
+          {
+              T chElm = (*it)->findChild< T >( internalName, recursiveFind );
+              if( chElm )
+                  return chElm;
+          }
+      }
 
-        return 0;
-    }
+      return 0;
+  }
 
-    template< class T >
-    List< T > findChildren()
-    {
-        List< T > ret;
-        ConstChildIterator it = getChildren().begin();
-        for( ; it != getChildren().end(); it++ )
-        {
-            if( T elm = safety_cast< T >( *it ) )
-                ret.push_back( elm );
-        }        
+  template< class T >
+  List< T > findChildren()
+  {
+      List< T > ret;
+      ConstChildIterator it = getChildren().begin();
+      for( ; it != getChildren().end(); it++ )
+      {
+          if( T elm = safety_cast< T >( *it ) )
+              ret.push_back( elm );
+      }        
 
-        return ret;
-    }
+      return ret;
+  }
 
   virtual bool isHovered() const;
 
@@ -95,39 +94,39 @@ public:
     //! Sets another skin independent font.
 	/** If this is set to zero, the button uses the font of the skin.
 	\param font: New font to set. */
-    //virtual void setFont( Font font, u32 nA=0 );
+  //virtual void setFont( Font font, u32 nA=0 );
 
-    //! Gets the override font (if any)
-    /** \return The override font (may be 0) */
-    //virtual Font getFont( u32 index=0 ) const;
-    
-    virtual GuiEnv* getEnvironment();
+  //! Gets the override font (if any)
+  /** \return The override font (may be 0) */
+  //virtual Font getFont( u32 index=0 ) const;
+  
+  virtual GuiEnv* getEnvironment();
 
-    //! Sets text justification mode
-    /** \param horizontal: EGUIA_UPPERLEFT for left justified (default),
-	 *					   ALIGN_LOWEERRIGHT for right justified, or ALIGN_CENTER for centered text.
-	 *	\param vertical: ALIGN_UPPERLEFT to align with top edge,
-	 *					 ALIGN_LOWEERRIGHT for bottom edge, or ALIGN_CENTER for centered text (default). 
-	 */
-    virtual void setTextAlignment( TypeAlign horizontal, TypeAlign vertical );
+  //! Sets text justification mode
+  /** \param horizontal: EGUIA_UPPERLEFT for left justified (default),
+	*					   ALIGN_LOWEERRIGHT for right justified, or ALIGN_CENTER for centered text.
+	*	\param vertical: ALIGN_UPPERLEFT to align with top edge,
+	*					 ALIGN_LOWEERRIGHT for bottom edge, or ALIGN_CENTER for centered text (default). 
+	*/
+  virtual void setTextAlignment( TypeAlign horizontal, TypeAlign vertical );
 
 	virtual TypeAlign getHorizontalTextAlign() const;
 
 	virtual TypeAlign getVerticalTextAlign() const;
 
-    virtual void styleChanged();
+  virtual void styleChanged();
 
 	virtual void hide();
 
 	virtual void show();
 
-    virtual void setMaxWidth( unsigned int width );
+  virtual void setMaxWidth( unsigned int width );
 
-    virtual void setWidth( unsigned int width );
+  virtual void setWidth( unsigned int width );
 
 	virtual void setHeight( unsigned int height );
 
-    virtual unsigned int getHeight() const;
+  virtual unsigned int getHeight() const;
 
 	virtual unsigned int getWidth() const;
 
@@ -135,7 +134,7 @@ public:
 
 	virtual int getScreenLeft() const;
 
-    virtual int getBottom() const;
+  virtual int getBottom() const;
 	virtual int getScreenBottom() const;
 
 	virtual int getScreenRight() const;
@@ -234,16 +233,16 @@ public:
 	virtual void setEnabled(bool enabled);
 
 	//! Sets the new caption of this element.
-    virtual void setText(const std::string& text);
+  virtual void setText(const std::string& text);
 
 	//! Returns caption of this element.
-    virtual std::string getText() const;
+  virtual std::string getText() const;
 
 	//! Sets the new caption of this element.
-    virtual void setTooltipText(const std::string& text);
+  virtual void setTooltipText(const std::string& text);
 
 	//! Returns caption of this element.
-    virtual std::string getTooltipText() const;
+  virtual std::string getTooltipText() const;
 
 	//! Returns id. Can be used to identify the element.
 	virtual int getID() const;
@@ -302,31 +301,31 @@ public:
 
 	virtual void installEventHandler( Widget* elementHandler );
 
-    //non overriding methods
+  //non overriding methods
 	//! Returns parent of this element.
-    Widget* getParent() const;
+  Widget* getParent() const;
 
 	//! 
-    void deleteLater();
+  void deleteLater();
 
-    //! Returns the relative rectangle of this element.
-    Rect getRelativeRect() const;
+  //! Returns the relative rectangle of this element.
+  Rect getRelativeRect() const;
 
 	//! Sets the relative/absolute rectangle of this element.
 	/** \param r The absolute position to set */
 	void setGeometry(const Rect& r, GeometryType mode=RelativeGeometry );
 
-    //! 
-    void setLeft( int newLeft );
+  //! 
+  void setLeft( int newLeft );
 
-    //!
-    int getLeft() const;
+  //!
+  int getLeft() const;
 
-    //!
-    int getRight() const;
+  //!
+  int getRight() const;
 
-    //!
-    int getTop() const;
+  //!
+  int getTop() const;
 
 	//!
 	void setTop( int newTop );
@@ -336,83 +335,83 @@ public:
         \param r  The rectangle to set, interpreted as a proportion of the parent's area.
 	Meaningful values are in the range [0...1], unless you intend this element to spill
 	outside its parent. */
-    //void setRelativeRectProportional(const RectF& r, GeometryType mode=ProportionalGeometry );
+  //void setRelativeRectProportional(const RectF& r, GeometryType mode=ProportionalGeometry );
 
-    //! Gets the absolute rectangle of this element
-    Rect getAbsoluteRect() const;
+  //! Gets the absolute rectangle of this element
+  Rect getAbsoluteRect() const;
 
-    //! Returns the visible area of the element.
-    Rect getAbsoluteClippingRect() const;
+  //! Returns the visible area of the element.
+  Rect getAbsoluteClippingRect() const;
 
 	//! Returns the visible area of the element.
 	Rect& getAbsoluteClippingRectRef() const;
 
-    //! Sets whether the element will ignore its parent's clipping rectangle
-    /** \param noClip If true, the element will not be clipped by its parent's clipping rectangle. */
-    void setNotClipped(bool noClip);
+  //! Sets whether the element will ignore its parent's clipping rectangle
+  /** \param noClip If true, the element will not be clipped by its parent's clipping rectangle. */
+  void setNotClipped(bool noClip);
 
-    //! Gets whether the element will ignore its parent's clipping rectangle
-    /** \return true if the element is not clipped by its parent's clipping rectangle. */
-    bool isNotClipped() const;
+  //! Gets whether the element will ignore its parent's clipping rectangle
+  /** \return true if the element is not clipped by its parent's clipping rectangle. */
+  bool isNotClipped() const;
 
-    //! Sets the maximum size allowed for this element
-    /** If set to 0,0, there is no maximum size */
-    void setMaxSize( const Size& size);
+  //! Sets the maximum size allowed for this element
+  /** If set to 0,0, there is no maximum size */
+  void setMaxSize( const Size& size);
 
-    Size getMaxSize() const;
+  Size getMaxSize() const;
 
-    Size getMinSize() const;
+  Size getMinSize() const;
 
-    //! Sets the minimum size allowed for this element
-    void setMinSize( const Size& size);
+  //! Sets the minimum size allowed for this element
+  void setMinSize( const Size& size);
 
-    //! The alignment defines how the borders of this element will be positioned when the parent element is resized.
-    void setAlignment(TypeAlign left, TypeAlign right, TypeAlign top, TypeAlign bottom);
+  //! The alignment defines how the borders of this element will be positioned when the parent element is resized.
+  void setAlignment(TypeAlign left, TypeAlign right, TypeAlign top, TypeAlign bottom);
 
-    //! Returns the topmost GUI element at the specific position.
-    /**
-     * This will check this GUI element and all of its descendants, so it
-     * may return this GUI element.  To check all GUI elements, call this
-     * function on device->getGUIEnvironment()->getRootGUIElement(). Note
-     * that the root element is the size of the screen, so doing so (with
-     * an on-screen point) will always return the root element if no other
-     * element is above it at that point.
-     * \param point: The point at which to find a GUI element.
-     * \return The topmost GUI element at that point, or 0 if there are
-     * no candidate elements at this point.
-     */
-    Widget* getElementFromPoint(const Point& point);
+  //! Returns the topmost GUI element at the specific position.
+  /**
+   * This will check this GUI element and all of its descendants, so it
+   * may return this GUI element.  To check all GUI elements, call this
+   * function on device->getGUIEnvironment()->getRootGUIElement(). Note
+   * that the root element is the size of the screen, so doing so (with
+   * an on-screen point) will always return the root element if no other
+   * element is above it at that point.
+   * \param point: The point at which to find a GUI element.
+   * \return The topmost GUI element at that point, or 0 if there are
+   * no candidate elements at this point.
+   */
+  Widget* getElementFromPoint(const Point& point);
 
-    //! Sets another color for the text.
-    /** If set, the static text does not use the EGDC_BUTTON_TEXT color defined
-     *  in the skin, but the set color instead. You don't need to call
-     *  INrpLabel::enableOverrrideColor(true) after this, this is done
-     *  by this function.
-     *  If you set a color, and you want the text displayed with the color
-     *  of the skin again, call IGUIStaticText::enableOverrideColor(false);
-     *  \param color: New color of the text.
-     *  \param na: index of overriding color
+  //! Sets another color for the text.
+  /** If set, the static text does not use the EGDC_BUTTON_TEXT color defined
+   *  in the skin, but the set color instead. You don't need to call
+   *  INrpLabel::enableOverrrideColor(true) after this, this is done
+   *  by this function.
+   *  If you set a color, and you want the text displayed with the color
+   *  of the skin again, call IGUIStaticText::enableOverrideColor(false);
+   *  \param color: New color of the text.
+   *  \param na: index of overriding color
 	 */
-    //void setColor( const Color& color, u32 nA=0 );
+   //void setColor( const Color& color, u32 nA=0 );
 
-    //! Returns an override color
-    //Color getColor( u32 index=0 ) const;
+   //! Returns an override color
+   //Color getColor( u32 index=0 ) const;
 
-    //! returns true if the given element is a child of this one.
-    //! \param child: The child element to check
-    bool isMyChild(Widget* child) const;
+   //! returns true if the given element is a child of this one.
+   //! \param child: The child element to check
+   bool isMyChild(Widget* child) const;
 
-    //! searches elements to find the closest next element to tab to
-    /** \param startOrder: The TabOrder of the current element, -1 if none
-     *  \param reverse: true if searching for a lower number
-     *  \param group: true if searching for a higher one
-     *  \param first: element with the highest/lowest known tab order depending on search direction
-     *  \param closest: the closest match, depending on tab order and direction
-     *  \param includeInvisible: includes invisible elements in the search (default=false)
-     *  \return true if successfully found an element, false to continue searching/fail 
+   //! searches elements to find the closest next element to tab to
+   /** \param startOrder: The TabOrder of the current element, -1 if none
+    *  \param reverse: true if searching for a lower number
+    *  \param group: true if searching for a higher one
+    *  \param first: element with the highest/lowest known tab order depending on search direction
+    *  \param closest: the closest match, depending on tab order and direction
+    *  \param includeInvisible: includes invisible elements in the search (default=false)
+    *  \return true if successfully found an element, false to continue searching/fail 
 	 */
-    bool getNextWidget( int startOrder, bool reverse, bool group,
-                        Widget*& first, Widget*& closest, bool includeInvisible=false) const;
+   bool getNextWidget( int startOrder, bool reverse, bool group,
+                       Widget*& first, Widget*& closest, bool includeInvisible=false) const;
 
 protected:
 
@@ -425,56 +424,56 @@ protected:
 	virtual void resizeEvent_();
 
 protected:
-    // not virtual because needed in constructor
-    void addChild_(Widget* child);
+  // not virtual because needed in constructor
+  void addChild_(Widget* child);
 
 	//FontsMap& getFonts_();
 
-    // not virtual because needed in constructor
-    void recalculateAbsolutePosition(bool recursive);	
+  // not virtual because needed in constructor
+  void recalculateAbsolutePosition(bool recursive);	
 
-    std::auto_ptr< WidgetPrivate > _d;
+  std::auto_ptr< WidgetPrivate > _d;
 
-    //! maximum and minimum size of the element
-    Size _maxSize, _minSize;
+  //! maximum and minimum size of the element
+  Size _maxSize, _minSize;
 
-    //! is visible?
-    bool _isVisible;
+  //! is visible?
+  bool _isVisible;
 
-    //! is enabled?
-    bool _isEnabled;
+  //! is enabled?
+  bool _isEnabled;
 
-    //! is a part of a larger whole and should not be serialized?
-    bool _isSubElement;
+  //! is a part of a larger whole and should not be serialized?
+  bool _isSubElement;
 
-    //! does this element ignore its parent's clipping rectangle?
-    bool _noClip;
+  //! does this element ignore its parent's clipping rectangle?
+  bool _noClip;
 
-    //! caption
-    std::string _text;
+  //! caption
+  std::string _text;
 
 	//! tooltip
-    std::string _toolTipText;
+  std::string _toolTipText;
 
-    //! id
-    int _id;
+  //! id
+  int _id;
 
 	//! tab stop like in windows
-    bool _isTabStop;
+  bool _isTabStop;
 
-    //! tab order
-    int _tabOrder;
+  //! tab order
+  int _tabOrder;
 
-    //! tab groups are containers like windows, use ctrl+tab to navigate
-    bool _isTabGroup;
+  //! tab groups are containers like windows, use ctrl+tab to navigate
+  bool _isTabGroup;
 
-    //! tells the element how to act when its parent is resized
-    TypeAlign _alignLeft, _alignRight, _alignTop, _alignBottom;
+  //! tells the element how to act when its parent is resized
+  TypeAlign _alignLeft, _alignRight, _alignTop, _alignBottom;
 
-    //! GUI Environment
-    GuiEnv* _environment;
-       
-    Widget* _eventHandler;
+  //! GUI Environment
+  GuiEnv* _environment;
+     
+  Widget* _eventHandler;
 };
 
 enum ElementState

@@ -306,6 +306,10 @@ void Construction::destroy()
   _updateDesirabilityInfluence( false );
 }
 
+bool Construction::isNeedRoadAccess() const
+{
+  return true;
+}
 
 Garden::Garden() : Construction(B_GARDEN, Size(1) )
 {

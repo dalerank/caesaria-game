@@ -43,10 +43,10 @@ MenuRigthPanel* MenuRigthPanel::create( Widget* parent, const Rect& rectangle, c
     SDL_SetAlpha( ret->_d->picture->get_surface(), 0, 0 );  // remove surface alpha
 
     int y = 0;
-    while( y <  ret->_d->picture->get_height() )
+    while( y <  ret->_d->picture->getHeight() )
     {
         ret->_d->picture->draw( tilePic, 0, y);
-        y += tilePic.get_height();
+        y += tilePic.getHeight();
     }
 
     return ret;

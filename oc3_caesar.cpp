@@ -29,12 +29,14 @@
 #include "oc3_walker.hpp"
 #include "oc3_gui_info_box.hpp"
 #include "oc3_astarpathfinding.hpp"
+#include "oc3_building_data.hpp"
 
 #include "oc3_screen_menu.hpp"
 #include "oc3_screen_game.hpp"
 #include "oc3_house_level.hpp"
 #include "oc3_guienv.hpp"
 #include "oc3_app_config.hpp"
+#include "oc3_divinity.hpp"
 
 #include <boost/filesystem.hpp>
 #include <libintl.h>
@@ -95,7 +97,7 @@ void CaesarApp::initWaitPictures()
   std::cout << "load wait images end" << std::endl;
 
   std::cout << "convert images begin" << std::endl;
-  GfxEngine::instance().load_pictures(pic_loader.get_pictures());
+  GfxEngine::instance().loadPictures(pic_loader.get_pictures());
   std::cout << "convert images end" << std::endl;
 }
 
@@ -117,12 +119,11 @@ void CaesarApp::Impl::initPictures(const std::string &resourcePath)
   std::cout << "load walking end" << std::endl;
 
   std::cout << "load fonts begin" << std::endl;
-  FontLoader font_loader;
-  font_loader.load_all(resourcePath);
+  FontCollection::instance().initialize( resourcePath );
   std::cout << "load fonts end" << std::endl;
 
   std::cout << "convert images begin" << std::endl;
-  GfxEngine::instance().load_pictures(pic_loader.get_pictures());
+  GfxEngine::instance().loadPictures( pic_loader.get_pictures() );
   std::cout << "convert images end" << std::endl;
 
   std::cout << "create pictures begin" << std::endl;
@@ -261,7 +262,7 @@ void CaesarApp::setScreenGame()
 
     default:
       _d->nextScreen = SCREEN_QUIT;
-  }
+  }   
 }
 
 
@@ -285,9 +286,12 @@ void CaesarApp::start()
 
    const std::string rPath =  AppConfig::get( AppConfig::resourcePath ).toString();
    _d->initPictures( rPath );
-   HouseSpecHelper::getInstance().loadHouseModel( rPath + "/house.model" );
+   HouseSpecHelper::getInstance().initialize( rPath + AppConfig::get( AppConfig::houseModel ).toString() );
+   DivinePantheon::getInstance().initialize( rPath + AppConfig::get( AppConfig::pantheonModel ).toString() );
+   BuildingDataHolder::instance().initialize( rPath + AppConfig::get( AppConfig::constructionModel ).toString() );
 
    _d->nextScreen = SCREEN_MENU;
+   _d->engine->setFlag( 0, 1 );
 
    while(_d->nextScreen != SCREEN_QUIT)
    {
@@ -310,24 +314,25 @@ void CaesarApp::start()
 
 int main(int argc, char* argv[])
 {
-  for (int i = 0; i < (argc - 1); i++)
-  {
-    if( !strcmp( argv[i], "-R" ) )
-    {
-      AppConfig::set( AppConfig::resourcePath, Variant( std::string( argv[i+1] ) ) );
-      break;
-    }
-  }
+   for (int i = 0; i < (argc - 1); i++)
+   {
+	   if( !strcmp( argv[i], "-R" ) )
+	   {
+       AppConfig::set( AppConfig::resourcePath, Variant( std::string( argv[i+1] ) ) );
+		   break;
+	   }
+   }
 
-  try
-  {
-    CaesarApp app;
-    app.start();
-  }
-  catch (Exception e)
-  {
-    std::cout << "FATAL ERROR: " << e.getDescription() << std::endl;
-  }
+   try
+   {
+      CaesarApp app;
+      app.start();
+   }
+   catch (Exception e)
+   {
+      std::cout << "FATAL ERROR: " << e.getDescription() << std::endl;
+   }
 
-  return 0;
+   return 0;
 }
+

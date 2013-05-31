@@ -18,16 +18,22 @@
 
 #include "oc3_servicewalker.hpp"
 
+class WorkersHunter;
+typedef SmartPtr<WorkersHunter> WorkersHunterPtr;
+
 class WorkersHunter : public ServiceWalker
 {
 public:
-  static ServiceWalkerPtr create( WorkingBuildingPtr building, const int workersNeeded );
+  static WorkersHunterPtr create( City& city );
 
   int getWorkersNeeded() const;
   void onNewTile();
   void hireWorkers( const int workers );
+
+  void send2City( WorkingBuildingPtr building, const int workersNeeded );
+
 private:
-  WorkersHunter( WorkingBuildingPtr building, const int workersNeeded );
+  WorkersHunter( City& city );
 
   int _workersNeeded;
 };

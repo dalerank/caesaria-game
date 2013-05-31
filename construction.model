@@ -1,0 +1,751 @@
+/* 4. From left to right, the (BUILDINGS) numbers refer to :-
+	a - Cost of structure or of one tile of a structure (for walls etc)
+	b - Initial desirability value
+	c - desirability step (in tiles)
+	d - desirability step size
+	e - max desirability range
+	f - Number of people a building employs
+	g - future expansion
+	h - future expansion
+*/ 
+{
+  "road" : 
+  {
+	"desirability" : 4,
+	"desrange" : 0
+  },
+  
+  "wall" :
+  {
+    "desirability" : 12,
+	"desrange" : 0
+  },
+  
+  "aqueduct" : 
+  {
+    "cost" : 8,
+    "desirability" : -2,
+	"desrange" : 2,
+	"desstep" : 1
+  },
+
+  "ampitheatre" :
+  {
+	"cost" : 100,
+	"desirability" : 4,
+	"desrange" : 4,
+	"desstep" : -1,
+	"employers" : 12
+  },
+
+  "theatre" : 
+  {
+    "cost" : 50,
+	"desirability" : 2,
+	"desrange" : 2,
+	"desstep" : -1,
+	"employers" : 8
+  },
+
+  "hippodrome" : 
+  {
+    "cost" : 2500,
+	"desirability" : -3,
+	"desrange" : 3,
+	"desstep" : 1,
+	"employers" : 150
+  },
+  
+  "colloseum" : 
+  {
+    "cost" : 500,
+	"desirability" : -3,
+	"desrange" : 3,
+	"desstep" : 1,
+	"employers" : 25
+  },
+  
+  "gladiator_pit" : 
+  {
+    "cost" : 75,
+	"desirability" : -3,
+	"desrange" : 3,
+	"desstep" : 1,
+	"employers" : 8
+  },
+
+  "lion_pit" : 
+  {
+	"cost" : 75,
+	"desirability" : -3,
+	"desrange" : 3,
+	"desstep" : 1,
+	"employers" : 8
+  },
+  
+  "artist_colony" : 
+  {
+	"cost" : 50,
+	"desirability" : -2,
+	"desrange" : 3,
+	"desstep" : 1,
+	"employers" : 5
+  },
+
+  "chatioteer_school" :
+  {
+	"cost" : 75,
+	"desirability" : -3,
+	"desrange" : 3,
+	"desstep" : 1,
+	"employers" : 10
+  },
+  
+  "plaza" :
+  {
+    "cost" : 15,
+	"desirability" : 4,
+	"desrange" : 2,
+	"desstep" : -2,
+	"employers" : 0
+  },  
+
+  "garden" : 
+  {
+    "cost" : 12,
+	"desirability" : 3,
+	"desrange" : 3,
+	"desstep" : -1,
+	"employers" : 0
+  },
+  
+  "fort_legionaries" :
+   {
+    "cost" : 1000,
+	"desirability" : -20,
+	"desrange" : 10,
+	"desstep" : 2,
+	"employers" : 16
+  },
+
+  "statue_small" : 
+   {
+    "cost" : 12,
+	"desirability" : 3,
+	"desrange" : 3,
+	"desstep" : -1,
+	"employers" : 0
+  },
+  
+  "statue_midlle" :
+   {
+    "cost" : 60,
+	"desirability" : 10,
+	"desrange" : 5,
+	"desstep" : -2,
+	"employers" : 0
+  },  
+
+  "statue_big" : 
+   {
+    "cost" : 150,
+	"desirability" : 15,
+	"desrange" : 5,
+	"desstep" : -3,
+	"employers" : 0
+  },  
+
+  "fort_javelin" :
+  {
+    "cost" : 1000,
+	"desirability" : -20,
+	"desrange" : 10,
+	"desstep" : 2,
+	"employers" : 16
+  }, 
+
+  "fort_horse" :
+  {
+    "cost" : 1000,
+	"desirability" : -20,
+	"desrange" : 10,
+	"desstep" : 2,
+	"employers" : 16
+  }, 
+
+  "clinic" :
+  {
+    "cost" : 30,
+	"desirability" : 0,
+	"desrange" : 0,
+	"desstep" : 0,
+	"employers" : 5
+  },  
+  
+  "hospital" :
+  {
+    "cost" : 300,
+	"desirability" : 2,
+	"desrange" : 2,
+	"desstep" : -1,
+	"employers" : 30
+  },
+  
+  "baths" :
+  {
+    "cost" : 50,
+	"desirability" : 4,
+	"desrange" : 4,
+	"desstep" : -1,
+	"employers" : 10
+  }, 
+
+  "barber" :
+  {
+    "cost" : 25,
+	"desirability" : 2,
+	"desrange" : 2,
+	"desstep" : -1,
+	"employers" : 2
+  }, 
+  
+  "school" :
+  {
+    "cost" : 50,
+	"desirability" : -2,
+	"desrange" : 2,
+	"desstep" : 1,
+	"employers" : 10
+  },    
+  
+  "academy" :
+  {
+    "cost" : 100,
+	"desirability" : 4,
+	"desrange" : 4,
+	"desstep" : -1,
+	"employers" : 30
+  },  
+  
+  "library" : 
+  {
+    "cost" : 75,
+	"desirability" : 4,
+	"desrange" : 4,
+	"desstep" : -1,
+	"employers" : 20
+  }, 
+
+  "prefecture" : 
+  {
+    "cost" : 30,
+	"desirability" : -2,
+	"desrange" : 2,
+	"desstep" : 1,
+	"employers" : 6
+  },  
+ 
+  "triumphal_arch" : 
+  {
+    "cost" : 0,
+	"desirability" : 18,
+	"desrange" : 6,
+	"desstep" : -3,
+	"employers" : 0
+  }, 
+  
+  "gatehouse" : 
+  {
+    "cost" : 100,
+	"desirability" : -4,
+	"desrange" : 4,
+	"desstep" : -1,
+	"employers" : 3
+  },  
+
+  "tower" :
+  {
+    "cost" : 150,
+	"desirability" : -8,
+	"desrange" : 4,
+	"desstep" : -2,
+	"employers" : 6
+  },  
+  
+  "small_ceres_temple" :
+  {
+    "cost" : 50,
+	"desirability" : 4,
+	"desrange" : 4,
+	"desstep" : -1,
+	"employers" : 2
+  },  
+  
+  "small_neptune_temple" : 
+  {
+    "cost" : 50,
+	"desirability" : 4,
+	"desrange" : 4,
+	"desstep" : -1,
+	"employers" : 2
+  }, 
+  
+  "small_mercury_temple" : 
+  {
+    "cost" : 50,
+	"desirability" : 4,
+	"desrange" : 4,
+	"desstep" : -1,
+	"employers" : 2
+  },
+ 
+  "small_mars_temple" : 
+  {
+    "cost" : 50,
+	"desirability" : 4,
+	"desrange" : 4,
+	"desstep" : -1,
+	"employers" : 2
+  },
+
+  "small_venus_temple" : 
+  {
+    "cost" : 50,
+	"desirability" : 4,
+	"desrange" : 4,
+	"desstep" : -1,
+	"employers" : 2
+  },
+ 
+  "big_ceres_temple" :
+  {
+    "cost" : 150,
+	"desirability" : 8,
+	"desrange" : 8,
+	"desstep" : -1,
+	"employers" : 5
+  }, 
+  
+  "big_neptune_temple" : 
+  {
+    "cost" : 150,
+	"desirability" : 8,
+	"desrange" : 8,
+	"desstep" : -1,
+	"employers" : 5
+  }, 
+  
+  "big_mercury_temple" :
+  {
+    "cost" : 150,
+	"desirability" : 8,
+	"desrange" : 8,
+	"desstep" : -1,
+	"employers" : 5
+  },
+  
+  "big_mars_temple" : 
+  {
+    "cost" : 150,
+	"desirability" : 8,
+	"desrange" : 8,
+	"desstep" : -1,
+	"employers" : 5
+  },
+  
+  "big_venus_temple" : 
+  {
+    "cost" : 150,
+	"desirability" : 8,
+	"desrange" : 8,
+	"desstep" : -1,
+	"employers" : 5
+  }, 
+
+  "market" :
+  {
+    "cost" : 40,
+	"desirability" : -2,
+	"desrange" : 2,
+	"desstep" : 1,
+	"employers" : 5
+  }, 
+
+  "granery" :
+  {
+    "cost" : 100,
+	"desirability" : -4,
+	"desrange" : 2,
+	"desstep" : 2,
+	"employers" : 6
+  }, 
+
+  "warehouse" : 
+  {
+    "cost" : 70,
+	"desirability" : -6,
+	"desrange" : 3,
+	"desstep" : 2,
+	"employers" : 6
+  }, 
+
+  "shipyard" : 
+  {
+    "cost" : 100,
+	"desirability" : 8,
+	"desrange" : 4,
+	"desstep" : -2,
+	"employers" : 10
+  }, 
+  
+  "dock" : 
+  {
+    "cost" : 100,
+	"desirability" : 8,
+	"desrange" : 4,
+	"desstep" : -2,
+	"employers" : 12
+  }, 
+
+  "wharf" : 
+  {
+    "cost" : 60,
+	"desirability" : 8,
+	"desrange" : 4,
+	"desstep" : -2,
+	"employers" : 6
+  }, 
+  
+  "governor_palace_1" :
+  {
+    "cost" : 150,
+	"desirability" : 12,
+	"desrange" : 6,
+	"desstep" : -2,
+	"employers" : 5
+  }, 
+  
+  "governor_palace_2" :
+  {
+    "cost" : 400,
+	"desirability" : 20,
+	"desrange" : 4,
+	"desstep" : -4,
+	"employers" : 20
+  }, 
+
+  "governor_palace_3" :
+  {
+    "cost" : 700,
+	"desirability" : 28,
+	"desrange" : 7,
+	"desstep" : -4,
+	"employers" : 50
+  },
+  
+  "engineering_post" : 
+  {
+    "cost" : 30,
+	"desirability" : 0,
+	"desrange" : 0,
+	"desstep" : 0,
+	"employers" : 5
+  },
+
+  "foot_bridge" : 
+  {
+    "cost" : 40,
+	"desirability" : 0,
+	"desrange" : 0,
+	"desstep" : 0,
+	"employers" : 0
+  }, 
+  
+  "ship_bridge" :
+  {
+    "cost" : 100,
+	"desirability" : 0,
+	"desrange" : 0,
+	"desstep" : 0,
+	"employers" : 0
+  },
+
+  "senate_1" : 
+  {
+    "cost" : 250,
+	"desirability" : 8,
+	"desrange" : 4,
+	"desstep" : -2,
+	"employers" : 20
+  }, 
+ 
+  "senate_2" : 
+  {
+    "cost" : 400,
+	"desirability" : 8,
+	"desrange" : 8,
+	"desstep" : -1,
+	"employers" : 30
+  }, 
+  
+  "forum_1" : 
+  {
+    "cost" : 75,
+	"desirability" : 3,
+	"desrange" : 3,
+	"desstep" : -1,
+	"employers" : 6
+  }, 
+  
+  "forum_2" : 
+  {
+    "cost" : 125,
+	"desirability" : 3,
+	"desrange" : 3,
+	"desstep" : -1,
+	"employers" : 8
+  },
+  
+  "native_hut" : 
+  {
+    "cost" : 50,
+	"desirability" : 0,
+	"desrange" : 0,
+	"desstep" : 0,
+	"employers" : 0
+  }, 
+  
+  "native_center" :
+  {
+    "cost" : 50,
+	"desirability" : 0,
+	"desrange" : 0,
+	"desstep" : 0,
+	"employers" : 0
+  }, 
+  
+  "reservoir" : 
+  {
+    "cost" : 80,
+	"desirability" : -6,
+	"desrange" : 3,
+	"desstep" : -2,
+	"employers" : 0
+  }, 
+
+  "fountain" : 
+  {
+    "cost" : 15,
+	"desirability" : 0,
+	"desrange" : 0,
+	"desstep" : 0,
+	"employers" : 4
+  }, 
+  
+  "well" : 
+  {
+    "cost" : 5,
+	"desirability" : -1,
+	"desrange" : 1,
+	"desstep" : 1,
+	"employers" : 1
+  }, 
+ 
+  "native_field" : 
+  {
+    "cost" : 0,
+	"desirability" : 0,
+	"desrange" : 0,
+	"desstep" : 0,
+	"employers" : 0
+  },
+  
+  "military_academy" : 
+  {
+    "cost" : 1000,
+	"desirability" : -3,
+	"desrange" : 3,
+	"desstep" : 1,
+	"employers" : 20
+  },
+  
+  "barracks" : 
+  {
+    "cost" : 150,
+	"desirability" : -6,
+	"desrange" : 3,
+	"desstep" : 2,
+	"employers" : 10
+  }, 
+
+  "oracle" : 
+  {
+    "cost" : 20,
+	"desirability" : 8,
+	"desrange" : 7,
+	"desstep" : -1,
+	"employers" : 6
+  }, 
+
+  "burning_ruins" :
+  {
+    "cost" : 0,
+	"desirability" : -2,
+	"desrange" : 2,
+	"desstep" : 1,
+	"employers" : 0
+  }, 
+  
+  "burned_ruins" :
+  {
+    "cost" : 0,
+	"desirability" : -2,
+	"desrange" : 2,
+	"desstep" : 1,
+	"employers" : 0
+  }, 
+  
+  "collapsed_ruins" :
+  {
+    "cost" : 0,
+	"desirability" : -2,
+	"desrange" : 2,
+	"desstep" : 1,
+	"employers" : 0
+  },
+  
+  "wheat_farm" : 
+  {
+    "cost" : 40,
+	"desirability" : -2,
+	"desrange" : 2,
+	"desstep" : 1,
+	"employers" : 10
+  }, 
+
+  "vegtable_farm" :
+  {
+    "cost" : 40,
+	"desirability" : -2,
+	"desrange" : 2,
+	"desstep" : 1,
+	"employers" : 10
+  },
+ 
+  "fig_farm" : 
+  {
+    "cost" : 40,
+	"desirability" : -2,
+	"desrange" : 2,
+	"desstep" : 1,
+	"employers" : 10
+  },
+  
+  "olive_farm" : 
+  {
+    "cost" : 40,
+	"desirability" : -2,
+	"desrange" : 2,
+	"desstep" : 1,
+	"employers" : 10
+  },
+
+  "vinard" :
+  {
+    "cost" : 40,
+	"desirability" : -2,
+	"desrange" : 2,
+	"desstep" : 1,
+	"employers" : 10
+  },
+
+  "meat_farm" : 
+  {
+    "cost" : 40,
+	"desirability" : -2,
+	"desrange" : 2,
+	"desstep" : 1,
+	"employers" : 10
+  },
+
+  "quarry" : 
+  {
+    "cost" : 50,
+	"desirability" : -6,
+	"desrange" : 6,
+	"desstep" : 1,
+	"employers" : 10
+  },
+
+  "iron_mine" :
+  {
+    "cost" : 50,
+	"desirability" : -6,
+	"desrange" : 6,
+	"desstep" : 1,
+	"employers" : 10
+  },
+  
+  "lumber_mill" : 
+  {
+    "cost" : 40,
+	"desirability" : -4,
+	"desrange" : 4,
+	"desstep" : 1,
+	"employers" : 10
+  },
+
+  "clay_pit" : 
+  {
+    "cost" : 40,
+	"desirability" : -3,
+	"desrange" : 3,
+	"desstep" : 1,
+	"employers" : 10
+  },
+  
+  "wine_workshop" :
+  {
+    "cost" : 45,
+	"desirability" : -1,
+	"desrange" : 1,
+	"desstep" : 1,
+	"employers" : 10
+  },
+
+  "oil_workshop" :
+  {
+    "cost" : 50,
+	"desirability" : -4,
+	"desrange" : 2,
+	"desstep" : 2,
+	"employers" : 10
+  },
+  
+  "weapons_workshop" :
+  {
+    "cost" : 50,
+	"desirability" : -4,
+	"desrange" : 2,
+	"desstep" : 2,
+	"employers" : 10
+  },
+  
+  "furniture_workshop" :
+  {
+    "cost" : 40,
+	"desirability" : -4,
+	"desrange" : 2,
+	"desstep" : 2,
+	"employers" : 10
+  },
+  
+  "pottery_workshop" :
+  {
+    "cost" : 40,
+	"desirability" : -4,
+	"desrange" : 2,
+	"desstep" : 2,
+	"employers" : 10
+  }
+}

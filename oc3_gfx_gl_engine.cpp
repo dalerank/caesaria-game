@@ -25,6 +25,7 @@
 #include <vector>
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 
 #include "oc3_exception.hpp"
 #include "oc3_pic_loader.hpp"
@@ -79,7 +80,7 @@ void GfxGlEngine::exit()
 }
 
 
-void GfxGlEngine::unload_picture(Picture &ioPicture)
+void GfxGlEngine::unloadPicture(Picture &ioPicture)
 {
    glDeleteTextures(1, &ioPicture._glTextureID);
    SDL_FreeSurface(ioPicture._surface);
@@ -87,7 +88,7 @@ void GfxGlEngine::unload_picture(Picture &ioPicture)
    ioPicture._surface = NULL;
 }
 
-void GfxGlEngine::load_picture(Picture& ioPicture)
+void GfxGlEngine::loadPicture(Picture& ioPicture)
 {
    GLuint &texture = ioPicture._glTextureID;
    SDL_Surface *surface = ioPicture._surface;
@@ -153,10 +154,10 @@ void GfxGlEngine::exit_frame()
 void GfxGlEngine::drawPicture(const Picture &picture, const int dx, const int dy)
 {
    GLuint aTextureID = picture._glTextureID;
-   int x0 = dx+picture.get_xoffset();
-   int x1 = x0+picture.get_width();
-   int y0 = dy-picture.get_yoffset();
-   int y1 = y0+picture.get_height();
+   float x0 = (float)(dx+picture.get_xoffset());
+   float x1 = x0+picture.getWidth();
+   float y0 = (float)(dy-picture.get_yoffset());
+   float y1 = y0+picture.getHeight();
 
 
    // Bind the texture to which subsequent calls refer to
@@ -196,4 +197,14 @@ void GfxGlEngine::setTileDrawMask( int rmask, int gmask, int bmask, int amask )
 void GfxGlEngine::resetTileDrawMask()
 {
 
+}
+
+void GfxGlEngine::createScreenshot( const std::string& filename )
+{
+
+}
+
+unsigned int GfxGlEngine::getFps() const
+{
+  return 0;
 }

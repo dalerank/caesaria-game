@@ -23,6 +23,8 @@
 #include <list>
 #include <vector>
 
+#include "oc3_size.hpp"
+#include "oc3_scopedptr.hpp"
 #include "oc3_tilemap.hpp"
 
 /* A subset of the tilemap, this is the visible area. Has convenient methods to sort tiles per depth */
@@ -35,7 +37,7 @@ public:
   void init(Tilemap& tilemap);
 
   // size of the view in pixel
-  void setViewSize(const int width, const int height);
+  void setViewSize(const Size& newSize );
 
   void setCenterIJ( const TilePos& pos );
 
@@ -61,11 +63,11 @@ private:
   
   Tilemap* _tilemap;  // tile map to display
   int _map_size;      // size of the map  (in tiles)
-  int _view_width;    // width of the view (in tiles)  nb_tilesX = 1+2*_view_width
-  int _view_height;   // height of the view (in tiles)  nb_tilesY = 1+2*_view_height
   int _center_x;      // horizontal center of the view (in tiles)
   int _center_z;      // vertical center of the view (in tiles)
-  std::vector< TilePos > _coordinates;  // cached list of visible tiles
+
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 

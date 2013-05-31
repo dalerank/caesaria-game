@@ -34,6 +34,9 @@
 #include "oc3_granary.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_goodhelper.hpp"
+#include "oc3_farm.hpp"
+#include "oc3_religion_building.hpp"
+#include "oc3_divinity.hpp"
 
 class InfoBoxHelper
 {
@@ -75,6 +78,7 @@ public:
   Label* lbTitle;
   PushButton* btnExit;
   PushButton* btnHelp;
+  bool isAutoPosition;
 };
 
 GuiInfoBox::GuiInfoBox( Widget* parent, const Rect& rect, int id )
@@ -82,8 +86,9 @@ GuiInfoBox::GuiInfoBox( Widget* parent, const Rect& rect, int id )
 {
   // create the title
   _d->lbTitle = new Label( this, Rect( 16, 10, getWidth()-16, 10 + 30 ), "", true );
-  _d->lbTitle->setFont( FontCollection::instance().getFont(FONT_3) );
+  _d->lbTitle->setFont( Font( FONT_3 ) );
   _d->lbTitle->setTextAlignment( alignCenter, alignCenter );
+  _d->isAutoPosition = true;
 
   _d->btnExit = new PushButton( this, Rect( 472, getHeight() - 39, 496, getHeight() - 15 ) );
   GuiPaneling::configureTexturedButton( _d->btnExit, ResourceGroup::panelBackground, ResourceMenu::exitInfBtnPicId, false);
@@ -96,7 +101,7 @@ GuiInfoBox::GuiInfoBox( Widget* parent, const Rect& rect, int id )
 
   // draws the box and the inner black box
   GuiPaneling::instance().draw_white_frame(*_d->bgPicture, 0, 0, getWidth(), getHeight() );
-  GfxEngine::instance().load_picture(*_d->bgPicture);
+  GfxEngine::instance().loadPicture(*_d->bgPicture);
 }
 
 GuiInfoBox::~GuiInfoBox()
@@ -156,31 +161,52 @@ void GuiInfoBox::setTitle( const std::string& title )
   _d->lbTitle->setText( title );
 }
 
-GuiInfoService::GuiInfoService( Widget* parent, ServiceBuildingPtr building)
-    : GuiInfoBox( parent, Rect( 0, 0, 510, 256 ), -1 )
+bool GuiInfoBox::isAutoPosition() const
 {
-  _building = building;
+  return _d->isAutoPosition;
+}
+
+void GuiInfoBox::setAutoPosition( bool value )
+{
+  _d->isAutoPosition = value;
+}
+
+class GuiInfoService::Impl
+{
+public:
+  Label* dmgLabel;
+  Label* lbHelp;
+  ServiceBuildingPtr building;
+};
+
+GuiInfoService::GuiInfoService( Widget* parent, ServiceBuildingPtr building)
+    : GuiInfoBox( parent, Rect( 0, 0, 510, 256 ), -1 ), _sd( new Impl )
+{
+  _sd->building = building;
   setTitle( BuildingDataHolder::instance().getData( building->getType() ).getPrettyName() );
   paint(); 
 }
 
 void GuiInfoService::paint()
 {
-  GuiPaneling::instance().draw_black_frame(*_d->bgPicture, 16, 136, getWidth() - 32, 62 );
+  GuiPaneling::instance().draw_black_frame( *_d->bgPicture, 16, 136, getWidth() - 32, 62 );
   
-  drawWorkers( 150 );
+  if( _sd->building->getMaxWorkers() > 0 )
+  {
+    drawWorkers( 150 );
+  }
 
-  _dmgLabel = new Label( this, Rect( 50, getHeight() - 50, getWidth() - 50, getHeight() - 16 ) ); 
+  _sd->dmgLabel = new Label( this, Rect( 50, getHeight() - 50, getWidth() - 50, getHeight() - 16 ) ); 
   std::string text = StringHelper::format( 0xff, "%d%% damage - %d%% fire", 
-                                           (int)_building->getDamageLevel(), (int)_building->getFireLevel());
-  _dmgLabel->setText( text );
+                                           (int)_sd->building->getDamageLevel(), (int)_sd->building->getFireLevel());
+  _sd->dmgLabel->setText( text );
 
-  _lbHelp = new Label( this, Rect( 16, 50, getWidth() - 16, 130 ) );
+  _sd->lbHelp = new Label( this, Rect( 16, 50, getWidth() - 16, 130 ) );
 }
 
 void GuiInfoService::setText(const std::string& text)
 {
-  _lbHelp->setText( text );
+  _sd->lbHelp->setText( text );
 }
 
 void GuiInfoService::drawWorkers( int paintY )
@@ -191,9 +217,9 @@ void GuiInfoService::drawWorkers( int paintY )
 
   // number of workers
   std::string text = StringHelper::format( 0xff, _("%d employers (%d requred)"), 
-                                            _building->getWorkers(), _building->getMaxWorkers() );
+                                            _sd->building->getWorkers(), _sd->building->getMaxWorkers() );
 
-  Font &font = FontCollection::instance().getFont(FONT_2);
+  Font &font = Font( FONT_2 );
   font.draw( *_d->bgPicture, text, 16+42, paintY+5 );
 }
 
@@ -206,12 +232,12 @@ public:
   Label* lbCrime;
 };
 
-InfoBoxHouse::InfoBoxHouse( Widget* parent, HousePtr house )
+InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
     : GuiInfoBox( parent, Rect( 0, 0, 510, 360 ), -1 ),
       _ed( new Impl )
 {
-  _ed->house = house;
-  setTitle( house->getName() );
+  _ed->house = tile.get_terrain().getOverlay().as<House>();
+  setTitle( _ed->house->getName() );
   _paint();
 }
 
@@ -232,7 +258,7 @@ void InfoBoxHouse::_paint()
   if (taxes == -1)
   {
     sprintf(buffer, _("Aucun percepteur ne passe ici. Ne paye pas de taxes"));
-    taxesLb->setFont( FontCollection::instance().getFont(FONT_2_RED) );
+    taxesLb->setFont( Font( FONT_2_RED ) );
   }
   else
   {
@@ -277,7 +303,7 @@ void InfoBoxHouse::drawHabitants()
    _d->bgPicture->draw( citPic, 16+15, 157 );
 
    // number of habitants
-   _ed->lbHabitants = new Label( this, Rect( 60, 157, getWidth() - 16, 157 + citPic.get_height() ), "", false, true );
+   _ed->lbHabitants = new Label( this, Rect( 60, 157, getWidth() - 16, 157 + citPic.getHeight() ), "", false, true );
    char buffer[200];
    int freeRoom = _ed->house->getMaxHabitants() - _ed->house->getNbHabitants();
    if( freeRoom > 0 )
@@ -294,7 +320,7 @@ void InfoBoxHouse::drawHabitants()
    {
       // too many habitants!
       sprintf(buffer, _("%d citizens, %d habitants en trop"), _ed->house->getNbHabitants(), -freeRoom);
-      _ed->lbHabitants->setFont( FontCollection::instance().getFont(FONT_2_RED) );
+      _ed->lbHabitants->setFont( Font( FONT_2_RED ) );
    }
 
    _ed->lbHabitants->setText( buffer );
@@ -302,7 +328,7 @@ void InfoBoxHouse::drawHabitants()
 
 void InfoBoxHouse::drawGood(const GoodType &goodType, const int col, const int row, const int startY )
 {
-  Font& font = FontCollection::instance().getFont(FONT_2);
+  Font font( FONT_2 );
   int qty = _ed->house->getGoodStore().getCurrentQty(goodType);
 
   // pictures of goods
@@ -326,7 +352,7 @@ void GuiInfoFactory::paint()
 {
    // paint picture of out good
    //Font &font_red = FontCollection::instance().getFont(FONT_2_RED);
-   Font &font = FontCollection::instance().getFont(FONT_2);
+   Font font( FONT_2 );
 
    // paint progress
    int progress = _building->getProgress();
@@ -350,14 +376,14 @@ void GuiInfoFactory::paint()
       _paintY+=22;
    }
 
-   std::string desc = getInfoText();
+   /*std::string desc = getInfoText();
    std::list<std::string> text_lines = font.split_text(desc, getWidth()-32);
    for (std::list<std::string>::iterator itlines = text_lines.begin(); itlines != text_lines.end(); ++itlines)
    {
       std::string &line = *itlines;
       font.draw(*_d->bgPicture, line, 15, _paintY );
       _paintY+=19;
-   }
+   }*/
 
    _paintY+=10;
    GuiPaneling::instance().draw_black_frame(*_d->bgPicture, 16, _paintY, getWidth()-32, getHeight()-_paintY-16);
@@ -376,7 +402,7 @@ void GuiInfoFactory::drawWorkers( int& paintY )
    // number of workers
    std::string text = StringHelper::format( 0xff, _("%d employes (%d requis)"), _building->getWorkers(), _building->getMaxWorkers());
 
-   Font &font = FontCollection::instance().getFont(FONT_2);
+   Font font( FONT_2 );
    font.draw(*_d->bgPicture, text, 16+42, paintY+5 );
    paintY += 20;
 }
@@ -427,18 +453,24 @@ std::string GuiInfoFactory::getInfoText()
    return _(textKey.c_str());
 }
 
-
-GuiInfoGranary::GuiInfoGranary( Widget* parent, GranaryPtr building)
-    : GuiInfoBox( parent, Rect( 0, 0, 450, 300 ), -1 )
+class GuiInfoGranary::Impl
 {
-   _building = building;
-   setTitle( BuildingDataHolder::instance().getData(building->getType()).getPrettyName() );
+public:
+   GranaryPtr building;
+};
+
+GuiInfoGranary::GuiInfoGranary( Widget* parent, const Tile& tile )
+    : GuiInfoBox( parent, Rect( 0, 0, 450, 300 ), -1 ), _gd( new Impl )
+{
+   _gd->building = tile.get_terrain().getOverlay().as<Granary>();
+
+   setTitle( BuildingDataHolder::instance().getData( _gd->building->getType()).getPrettyName() );
 
    int height = 160;
 
    for (int n = 0; n < G_MAX; ++n)
    {
-      int qty = _building->getGoodStore().getCurrentQty((GoodType) n);
+      int qty = _gd->building->getGoodStore().getCurrentQty((GoodType) n);
       if (qty != 0)
       {
          height += 22;
@@ -453,16 +485,16 @@ GuiInfoGranary::GuiInfoGranary( Widget* parent, GranaryPtr building)
 void GuiInfoGranary::paint()
 {
    //Font &font_red = FontCollection::instance().getFont(FONT_2_RED);
-   Font &font = FontCollection::instance().getFont(FONT_2);
+   Font font( FONT_2 );
 
    // summary: total stock, free capacity
    int _paintY = _d->lbTitle->getBottom();
-   int currentQty = _building->getGoodStore().getCurrentQty();
-   int maxQty = _building->getGoodStore().getMaxQty();
+   int currentQty = _gd->building->getGoodStore().getCurrentQty();
+   int maxQty = _gd->building->getGoodStore().getMaxQty();
    char buffer[1000];
    sprintf(buffer, _("%d unites en stock. Espace pour %d unites."), currentQty, maxQty-currentQty);
 
-   font.draw(*_d->bgPicture, std::string(buffer), 16, _paintY+5);
+   font.draw( *_d->bgPicture, std::string(buffer), 16, _paintY+5 );
    _paintY+=40;
 
    drawGood(G_WHEAT, _paintY);
@@ -486,9 +518,9 @@ void GuiInfoGranary::drawWorkers( int paintY )
    _d->bgPicture->draw(pic, 16+15, paintY);
 
    // number of workers
-   std::string text = StringHelper::format( 0xff, _("%d employes (%d requis)"), _building->getWorkers(), _building->getMaxWorkers());
+   std::string text = StringHelper::format( 0xff, _("%d employers (%d requires)"), _gd->building->getWorkers(), _gd->building->getMaxWorkers());
 
-   Font& font = FontCollection::instance().getFont(FONT_2);
+   Font font( FONT_2 );
    font.draw(*_d->bgPicture, text, 16+42, paintY+5 );
    paintY+=20;
 }
@@ -498,13 +530,8 @@ void GuiInfoGranary::drawGood(const GoodType &goodType, int& paintY)
 {
   std::string goodName = GoodHelper::getInstance().getName( goodType );
 
-  Font &font = FontCollection::instance().getFont(FONT_2);
-  int qty = _building->getGoodStore().getCurrentQty(goodType);
-  if (qty == 0)
-  {
-     // no drawing
-     return;
-  }
+  Font font( FONT_2 );
+  int qty = _gd->building->getGoodStore().getCurrentQty(goodType);
 
   // pictures of goods
   Picture &pic = getPictureGood(goodType);
@@ -515,94 +542,151 @@ void GuiInfoGranary::drawGood(const GoodType &goodType, int& paintY)
   paintY += 22;
 }
 
-
-GuiInfoMarket::GuiInfoMarket( Widget* parent, Market &building)
-    : GuiInfoBox( parent, Rect( 0, 0, 450, 300 ), -1 )
+class InfoBoxTemple::Impl
 {
-   _building = &building;
-   setTitle( BuildingDataHolder::instance().getData(building.getType()).getPrettyName() );
-   int height = 120;
-   GoodStore& goodStore = building.getGoodStore();
-   for (int n = 0; n<G_MAX; ++n)
-   {
-      // for all types of good
-      int qty = goodStore.getCurrentQty((GoodType) n);
-      if (qty != 0)
-      {
-         height += 22;
-      }
-   }
+public:
+  TemplePtr temple;
+  Font font;
+};
 
-   setHeight( height );
+InfoBoxTemple::InfoBoxTemple( Widget* parent, const Tile& tile )
+  : GuiInfoBox( parent, Rect( 0, 0, 510, 256 ), -1 ), _td( new Impl )
+{
+  _td->font = Font( FONT_2 );
+  _td->temple = tile.get_terrain().getOverlay().as<Temple>();
+  RomeDivinityPtr divn = _td->temple->getDivinity();
+
+  std::string text = StringHelper::format( 0xff, "##Temple of ##%s (%s)", 
+                                                 divn->getName().c_str(), 
+                                                 divn->getShortDescription().c_str() );
+  setTitle( text );
+
+  drawWorkers();
+  drawPicture();
+}
+
+void InfoBoxTemple::drawWorkers()
+{
+  int y = 56;
+  GuiPaneling::instance().draw_black_frame(*_d->bgPicture, 16, y, getWidth() - 32, 62 );
+  // picture of citizen
+  Picture& pic = Picture::load( ResourceGroup::panelBackground, 542 );
+  _d->bgPicture->draw( pic, 16+15, y + 12);
+
+  // number of workers
+  std::string text = StringHelper::format( 0xff, _("%d employers (%d requires)"), 
+                                                 _td->temple->getWorkers(), 
+                                                 _td->temple->getMaxWorkers());
+
+  _td->font.draw( *_d->bgPicture, text, 16 + 15 + pic.getWidth() + 5, y+18 );
+}
+
+void InfoBoxTemple::drawPicture()
+{
+  const Picture& pic = _td->temple->getDivinity()->getPicture();
+  _d->bgPicture->draw( pic, 192, 140 );
+}
+
+class GuiInfoMarket::Impl
+{
+public:
+  MarketPtr market;
+  Font goodFont;
+  Label* lbAbout;
+
+};
+
+GuiInfoMarket::GuiInfoMarket( Widget* parent, const Tile& tile )
+    : GuiInfoBox( parent, Rect( 0, 0, 510, 256 ), -1 ), _md( new Impl )
+{
+   _md->market = tile.get_terrain().getOverlay().as<Market>();
+   _md->goodFont = Font( FONT_2 );
+   _md->lbAbout = new Label( this, _d->lbTitle->getRelativeRect() + Point( 0, 30 ) );
+
+   setTitle( "##market_title##" );
    paint();
 }
 
 
 void GuiInfoMarket::paint()
 {
-   int paintY = _d->lbTitle->getBottom() + 10;
-   drawGood(G_WHEAT, paintY );
-   drawGood(G_FISH, paintY);
-   drawGood(G_MEAT, paintY);
-   drawGood(G_FRUIT, paintY);
-   drawGood(G_VEGETABLE, paintY);
-
-   drawGood(G_POTTERY, paintY);
-   drawGood(G_FURNITURE, paintY);
-   drawGood(G_OIL, paintY);
-   drawGood(G_WINE, paintY);
-
-   paintY += 10;
-   GuiPaneling::instance().draw_black_frame(*_d->bgPicture, 16, paintY, getWidth() - 32, getHeight() - paintY-16);
-   paintY += 10;
-
-   drawWorkers( paintY );
-}
-
-
-void GuiInfoMarket::drawWorkers( int paintY )
-{
-   // picture of citizen
-   Picture& pic = Picture::load( ResourceGroup::panelBackground, 542);
-   _d->bgPicture->draw( pic, 16+15, paintY);
-
-   // number of workers
-   std::string text = StringHelper::format( 0xff, _("%d employes (%d requis)"), _building->getWorkers(), _building->getMaxWorkers());
-
-   Font& font = FontCollection::instance().getFont(FONT_2);
-   font.draw(*_d->bgPicture, text, 16+42, paintY+5 );
-   paintY+=20;
-}
-
-
-void GuiInfoMarket::drawGood(const GoodType &goodType, int& paintY )
-{
-  std::string goodName = GoodHelper::getInstance().getName( goodType );
-
-  Font &font = FontCollection::instance().getFont(FONT_2);
-  int qty = _building->getGoodStore().getCurrentQty(goodType);
-
-  if (qty == 0)
+  if( _md->market->getWorkers() > 0 )
   {
-     // no drawing
-     return;
+    int paintY = 78;
+    drawGood(G_WHEAT, 0, paintY );
+    drawGood(G_FISH, 1, paintY);
+    drawGood(G_MEAT, 2, paintY);
+    drawGood(G_FRUIT, 3, paintY);
+    drawGood(G_VEGETABLE, 4, paintY);
+
+    paintY += 24;
+    drawGood(G_POTTERY, 0, paintY);
+    drawGood(G_FURNITURE, 1, paintY);
+    drawGood(G_OIL, 2, paintY);
+    drawGood(G_WINE, 3, paintY); 
+
+    SimpleGoodStore& goods = _md->market->getGoodStore();
+    int furageSum = 0;
+    // for all furage types of good
+    for (int goodType = 0; goodType<G_OLIVE; ++goodType)
+    {
+      furageSum += goods.getCurrentQty( (GoodType)goodType );     
+    }
+
+    _md->lbAbout->setText( 0 == furageSum ? "##market_search_food_source##" : "##market_about##");
   }
+  else
+  {
+    _md->lbAbout->setText( "##market_not_work##" );
+  }
+
+  drawWorkers();
+}
+
+void GuiInfoMarket::drawWorkers()
+{
+  int y = 136;
+  GuiPaneling::instance().draw_black_frame(*_d->bgPicture, 16, y, getWidth() - 32, 62 );
+  // picture of citizen
+  Picture& pic = Picture::load( ResourceGroup::panelBackground, 542);
+  _d->bgPicture->draw( pic, 16+15, y + 12);
+
+  // number of workers
+  std::string text = StringHelper::format( 0xff, _("%d employers (%d requires)"), 
+                                                   _md->market->getWorkers(), 
+                                                   _md->market->getMaxWorkers());
+
+  _md->goodFont.draw(*_d->bgPicture, text, 16+pic.getWidth() + 5, y+18 );
+}
+
+
+void GuiInfoMarket::drawGood(const GoodType &goodType, int index, int paintY )
+{
+  int startOffset = 25;
+
+  int offset = ( getWidth() - startOffset * 2 ) / 5;
+  std::string goodName = GoodHelper::getInstance().getName( goodType );
 
   // pictures of goods
   Picture &pic = getPictureGood(goodType);
-  _d->bgPicture->draw( pic, 31, paintY);
+  Point pos( index * offset + startOffset, paintY );
+  _d->bgPicture->draw( pic, pos.getX(), pos.getY() );
 
-  std::string outText = StringHelper::format( 0xff, "%d %s", qty, goodName.c_str() );
-  font.draw(*_d->bgPicture, outText, 61, paintY );
-
-  paintY += 22;
+  std::string outText = StringHelper::format( 0xff, "%d", _md->market->getGoodStore().getCurrentQty(goodType) );
+  _md->goodFont.draw(*_d->bgPicture, outText, pos.getX() + pic.getWidth() + 5, pos.getY() );
 }
 
-GuiBuilding::GuiBuilding( Widget* parent, Building &building)
-    : GuiInfoBox( parent, Rect( 0, 0, 450, 220 ), -1 )
+class GuiBuilding::Impl
 {
-  _building = &building;
-  setTitle( BuildingDataHolder::instance().getData(building.getType()).getPrettyName() );
+public:
+  BuildingPtr building;
+};
+
+GuiBuilding::GuiBuilding( Widget* parent, const Tile& tile )
+    : GuiInfoBox( parent, Rect( 0, 0, 450, 220 ), -1 ), _bd( new Impl )
+{
+  _bd->building = tile.get_terrain().getOverlay().as<Building>();
+  setTitle( BuildingDataHolder::instance().getData( _bd->building->getType()).getPrettyName() );
 
   paint();
 }
@@ -614,61 +698,59 @@ void GuiBuilding::paint()
    paintY+=10;  
 }
 
-InfoBoxLand::InfoBoxLand( Widget* parent, Tile* tile )
+InfoBoxLand::InfoBoxLand( Widget* parent, const Tile& tile )
     : GuiInfoBox( parent, Rect( 0, 0, 510, 350 ), -1 )
 {
-    _text = new Label( this, Rect( 38, 239, 470, 338 ), "", true );
-    _text->setFont( FontCollection::instance().getFont(FONT_2) );
+  _text = new Label( this, Rect( 38, 239, 470, 338 ), "", true );
+  _text->setFont( Font( FONT_2 ) );
 
-    if( tile->get_terrain().isTree() )
-    {
-        setTitle( _("##trees_and_forest_caption") );
-        _text->setText( _("##trees_and_forest_text"));
-    } 
-    else if( tile->get_terrain().isWater() )
-    {
-        setTitle( _("##water_caption") );
-        _text->setText( _("##water_text"));
-    }
-    else if( tile->get_terrain().isRock() )
-    {
-        setTitle( _("##rock_caption") );
-        _text->setText( _("##rock_text"));
-    }
-    else if( tile->get_terrain().isRoad() )
-    {
-        setTitle( _("##road_caption") );
-        _text->setText( _("##road_text"));
-    }
-    else 
-    {
-        setTitle( _("##clear_land_caption") );
-        _text->setText( _("##clear_land_text"));
-    }
+  if( tile.get_terrain().isTree() )
+  {
+    setTitle( _("##trees_and_forest_caption") );
+    _text->setText( _("##trees_and_forest_text"));
+  } 
+  else if( tile.get_terrain().isWater() )
+  {
+    setTitle( _("##water_caption") );
+    _text->setText( _("##water_text"));
+  }
+  else if( tile.get_terrain().isRock() )
+  {
+    setTitle( _("##rock_caption") );
+    _text->setText( _("##rock_text"));
+  }
+  else if( tile.get_terrain().isRoad() )
+  {
+    setTitle( _("##road_caption") );
+    _text->setText( _("##road_text"));
+  }
+  else 
+  {
+    setTitle( _("##clear_land_caption") );
+    _text->setText( _("##clear_land_text"));
+  }
+ 
+  City& oCity = Scenario::instance().getCity();
+  Tilemap& oTilemap = Scenario::instance().getCity().getTilemap();
+  int size = oTilemap.getSize();
+  int border_size = (162 - size) / 2;
+  
+  int index = (size - tile.getJ() - 1 + border_size) * 162 + tile.getI() + border_size;
+  
+  const TerrainTile& terrain = tile.get_terrain();
 
-    // DEBUG OUTPUT
-    
-    City& oCity = Scenario::instance().getCity();
-    Tilemap& oTilemap = Scenario::instance().getCity().getTilemap();
-    int size = oTilemap.getSize();
-    int border_size = (162 - size) / 2;
-    
-    int index = (size - tile->getJ() - 1 + border_size) * 162 + tile->getI() + border_size;
-    
-    TerrainTile& terrain = tile->get_terrain();
-
-    std::string text = StringHelper::format( 0xff, "Tile at: (%d,%d) %04X %02X %04X %02X %02X %02X",
-                                             tile->getI(), tile->getJ(),  
-                                            ((short int) terrain.getOriginalImgId() ),
-                                            ((short int) terrain.getEdgeData()),
-                                            ((short int) terrain.getTerrainData()),  
-                                            ((short int) terrain.getTerrainRndmData()),  
-                                            ((short int) terrain.getRandomData()),
-                                            ((short int) terrain.getElevationData() ) );
-    
-    _text->setText( text );
-    
-    GuiPaneling::instance().draw_black_frame( *_d->bgPicture, 16, _d->lbTitle->getBottom() + 10, getWidth()-32, 180 );
+  std::string text = StringHelper::format( 0xff, "Tile at: (%d,%d) %04X %02X %04X %02X %02X %02X",
+                                           tile.getI(), tile.getJ(),  
+                                          ((short int) terrain.getOriginalImgId() ),
+                                          ((short int) terrain.getEdgeData()),
+                                          ((short int) terrain.getTerrainData()),  
+                                          ((short int) terrain.getTerrainRndmData()),  
+                                          ((short int) terrain.getRandomData()),
+                                          ((short int) terrain.getElevationData() ) );
+  
+  _text->setText( text );
+  
+  GuiPaneling::instance().draw_black_frame( *_d->bgPicture, 16, _d->lbTitle->getBottom() + 10, getWidth()-32, 180 );
 }
 
 void InfoBoxLand::setText( const std::string& text )
@@ -676,9 +758,69 @@ void InfoBoxLand::setText( const std::string& text )
     _text->setText( text );
 }
 
-InfoBoxFreeHouse::InfoBoxFreeHouse( Widget* parent, Tile* tile )
+InfoBoxFreeHouse::InfoBoxFreeHouse( Widget* parent, const Tile& tile )
     : InfoBoxLand( parent, tile )
 {
     setTitle( _("##freehouse_caption") );
     setText( _("##freehouse_text") );
 }   
+
+class InfoBoxFarm::Impl
+{
+public:
+  FarmPtr farm;
+  Label* lbProgress;
+  Label* lbAbout;
+  Label* lbDesc;
+  Label* dmgLabel;
+
+  void updateAboutText();
+};
+
+void InfoBoxFarm::Impl::updateAboutText()
+{
+  std::string text = "##farm_working_normally##";
+  if( farm->getWorkers() == 0 )
+  {
+    text = "##farm_have_no_workers##";
+  }
+  else if( farm->getWorkers() <= farm->getMaxWorkers() / 2 )
+  {
+    text = "##farm_working_bad##";
+  }
+
+  lbAbout->setText( text );
+}
+
+InfoBoxFarm::InfoBoxFarm( Widget* parent, const Tile& tile )
+: GuiInfoBox( parent, Rect( 0, 0, 510, 350 ), -1 ), _fd( new Impl )
+{
+  _fd->farm = tile.get_terrain().getOverlay().as<Farm>();
+  
+  setTitle( BuildingDataHolder::instance().getData( _fd->farm->getType() ).getPrettyName() );
+  GuiPaneling::instance().draw_black_frame( *_d->bgPicture, 16, 146, getWidth() - 32, 64 );
+
+  // picture of citizen
+  Picture& pic = Picture::load( ResourceGroup::panelBackground, 542);
+  _d->bgPicture->draw( pic, 16+15, 158 );
+
+  // number of workers
+  std::string text = StringHelper::format( 0xff, _("%d employers (%d required)"), 
+                                           _fd->farm->getWorkers(), _fd->farm->getMaxWorkers() );
+
+  Font font( FONT_2 );
+  font.draw( *_d->bgPicture, text, 16+42, 156+5 );
+
+  _fd->dmgLabel = new Label( this, Rect( 50, getHeight() - 50, getWidth() - 50, getHeight() - 16 ) ); 
+  text = StringHelper::format( 0xff, "%d%% damage - %d%% fire", 
+  (int)_fd->farm->getDamageLevel(), (int)_fd->farm->getFireLevel());
+  _fd->dmgLabel->setText( text );
+
+  text = StringHelper::format( 0xff, "##farm_progress## %d%%", _fd->farm->getProgress() );
+  _fd->lbProgress = new Label( this, Rect( 32, 50, getWidth() - 16, 50 + 32 ), text );
+  _fd->lbAbout = new Label( this, Rect( 32, _fd->lbProgress->getBottom() + 6, getWidth() - 16, 130 ) );
+
+  _fd->lbDesc = new Label( this, Rect( 32, 236, getWidth() - 50, getHeight() - 50 ), "##farm_description##" );
+
+  _fd->updateAboutText();
+}

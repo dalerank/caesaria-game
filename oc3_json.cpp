@@ -535,7 +535,7 @@ int Json::lastIndexOfNumber(const std::string &json, int index)
 {
    int lastIndex;
 
-   for(lastIndex = index; lastIndex < json.size(); lastIndex++)
+   for(lastIndex = index; lastIndex < (int)json.size(); lastIndex++)
    {
      if( std::string("0123456789+-.eE").find( json[lastIndex] ) == std::string::npos )
       {
@@ -551,7 +551,7 @@ int Json::lastIndexOfNumber(const std::string &json, int index)
  */
 void Json::eatWhitespace(const std::string &json, int &index)
 {
-        for(; index < json.size(); index++)
+        for(; index < (int)json.size(); index++)
         {
           if(std::string(" \t\n\r").find(json[index]) == std::string::npos)
                 {

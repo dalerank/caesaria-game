@@ -49,7 +49,7 @@ public:
            needUpdatePicture(false), bgPicture( 0 ), picture( 0 ),
            lineIntervalOffset( 0 )
 	{
-    font = FontCollection::instance().getFont(FONT_2);
+    font = Font( FONT_2 );
 	}
 
     ~Impl()
@@ -101,7 +101,7 @@ void Label::_updateTexture( GfxEngine& painter )
     if( !_d->picture )
     {
         _d->picture = &painter.createPicture( btnSize.getWidth(), btnSize.getHeight() );
-        painter.load_picture( *_d->picture );
+        painter.loadPicture( *_d->picture );
     }
 
     // draw button background

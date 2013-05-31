@@ -15,15 +15,10 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
 #include "oc3_pic_loader.hpp"
 
 #include <cstdlib>
 #include <string>
-#include <sstream>
-#include <iostream>
-#include <memory>
-#include <iomanip>
 #include <archive.h>
 #include <archive_entry.h>
 #include <sys/stat.h>
@@ -37,128 +32,119 @@
 #include "oc3_animation.hpp"
 #include "oc3_app_config.hpp"
 #include "oc3_stringhelper.hpp"
+#include "oc3_stringhelper.hpp"
 
-PicMetaData* PicMetaData::_instance = NULL;
+class PicMetaData::Impl
+{
+public:
+  void setRange(const std::string &preffix, const int first, const int last, const Point &data);
+  void setOne(const std::string &preffix, const int index, const Point& data);
+  void setOne(const std::string &preffix, const int index, const int xoffset, const int yoffset);
+
+  std::map<std::string, Point> data;   // key=image name (Govt_00005)
+};
 
 PicMetaData& PicMetaData::instance()
 {
-   if (_instance == NULL)
-   {
-      _instance = new PicMetaData();
-      if (_instance == NULL) THROW("Memory error, cannot instantiate object");
-   }
-   return *_instance;
+   static PicMetaData inst;
+   return inst;
 }
 
-PicMetaData::PicMetaData()
+PicMetaData::PicMetaData() : _d( new Impl )
 {
-   _dummy_data.xoffset = 0;
-   _dummy_data.yoffset = 0;
-
    // tiles
-   PicInfo info;
-   info.xoffset = -1;
-   info.yoffset = -1;
-   setRange("land1a", 1, 303, info);
-   setRange("oc3_land", 1, 2, info);
-   setRange( ResourceGroup::land2a, 1, 151, info);
-   setRange( ResourceGroup::land2a, 187, 195, info); //burning ruins start animation
-   setRange("land2a", 214, 231, info); //burning ruins middle animation
-   setRange("land3a", 47, 92, info);
-   setRange("plateau", 1, 44, info);
-   setRange( ResourceGroup::commerce, 1, 167, info);
-   setRange( "transport", 1, 93, info);
-   setRange( ResourceGroup::security, 1, 61, info);
-   setRange( ResourceGroup::entertaiment, 1, 116, info);
-   setRange("housng1a", 1, 51, info);
-   setRange( ResourceGroup::warehouse, 19, 83, info);
-   setRange( ResourceGroup::utilitya, 1, 42, info);
-   setRange("govt", 1, 10, info);
-   setRange( ResourceGroup::sprites, 1, 8, info );
+  Point offset( -1, -1 );
+  _d->setRange("land1a", 1, 303, offset);
+  _d->setRange("oc3_land", 1, 2, offset);
+  _d->setRange( ResourceGroup::land2a, 1, 151, offset);
+  _d->setRange( ResourceGroup::land2a, 187, 195, offset); //burning ruins start animation
+  _d->setRange( ResourceGroup::land2a, 214, 231, offset); //burning ruins middle animation
+  _d->setRange( "land3a", 47, 92, offset);
+  _d->setRange( "plateau", 1, 44, offset);
+  _d->setRange( ResourceGroup::commerce, 1, 167, offset);
+  _d->setRange( ResourceGroup::transport, 1, 93, offset);
+  _d->setRange( ResourceGroup::security, 1, 61, offset);
+  _d->setRange( ResourceGroup::entertaiment, 1, 116, offset);
+  _d->setRange( ResourceGroup::housing, 1, 51, offset);
+  _d->setRange( ResourceGroup::warehouse, 19, 83, offset);
+  _d->setRange( ResourceGroup::utilitya, 1, 42, offset);
+  _d->setRange( ResourceGroup::govt, 1, 10, offset);
+  _d->setRange( ResourceGroup::sprites, 1, 8, offset );
 
-   setRange( ResourceGroup::waterbuildings, 1, 2, info); //reservoir empty/full
-   
-   setOne( ResourceGroup::entertaiment, 12, 37, 62); // amphitheater
-   setOne( ResourceGroup::entertaiment, 35, 34, 37); // theater
-   setOne( ResourceGroup::entertaiment, 50, 70, 105);  // collosseum
+  _d->setRange( ResourceGroup::waterbuildings, 1, 2, offset); //reservoir empty/full
+  _d->setRange( ResourceGroup::waterOverlay, 1, 2, offset ); //wateroverlar images 1x1
+  _d->setRange( ResourceGroup::waterOverlay, 11, 12, offset ); //wateroverlar images 1x1
 
-   // animations
-   info.xoffset = 42;
-   info.yoffset = 34;
-   setRange(ResourceGroup::commerce, 2, 11, info);  // market poor
-   info.xoffset = 66;
-   info.yoffset = 44;
-   setRange(ResourceGroup::commerce, 44, 53, info);  // marble
-   info.xoffset = 45;
-   info.yoffset = 18;
-   setRange(ResourceGroup::commerce, 55, 60, info);  // iron
-   info.xoffset = 15;
-   info.yoffset = 32;
-   setRange(ResourceGroup::commerce, 62, 71, info);  // clay
-   info.xoffset = 35;
-   info.yoffset = 6;
-   setRange(ResourceGroup::commerce, 73, 82, info);  // timber
-   info.xoffset = 14;
-   info.yoffset = 36;
-   setRange(ResourceGroup::commerce, 87, 98, info);  // wine
-   info.xoffset = 0;
-   info.yoffset = 45;
-   setRange(ResourceGroup::commerce, 100, 107, info);  // oil
-   info.xoffset = 42;
-   info.yoffset = 36;
-   setRange(ResourceGroup::commerce, 109, 116, info);  // weapons
-   info.xoffset = 38;
-   info.yoffset = 39;
-   setRange(ResourceGroup::commerce, 118, 131, info);  // furniture
-   info.xoffset = 65;
-   info.yoffset = 42;
-   setRange(ResourceGroup::commerce, 133, 139, info);  // pottery
-   info.xoffset = 65;
-   info.yoffset = 42;
-   setRange(ResourceGroup::commerce, 159, 167, info);  // market rich
+  offset = Point( 0, 30 );
+  _d->setRange( ResourceGroup::waterOverlay, 3, 4, offset ); //wateroverlar images 2x2
+  _d->setRange( ResourceGroup::waterOverlay, 13, 14, offset ); //wateroverlar images 2x2 
 
-   // stock of input good
-   setOne(ResourceGroup::commerce, 153, 45, -8);  // grapes
-   setOne(ResourceGroup::commerce, 154, 37, -2);  // olive
-   setOne(ResourceGroup::commerce, 155, 48, -4);  // timber
-   setOne(ResourceGroup::commerce, 156, 47, -11);  // iron
-   setOne(ResourceGroup::commerce, 157, 47, -9);  // clay
+  offset = Point( 0, 60 );
 
-   // warehouse
-   setOne(ResourceGroup::warehouse, 1, 60, 56);
-   setOne(ResourceGroup::warehouse, 18, 56, 93);
-   info.xoffset = 55;
-   info.yoffset = 75;
-   setRange(ResourceGroup::warehouse, 2, 17, info);
-   info.xoffset = 79;
-   info.yoffset = 108;
-   setRange(ResourceGroup::warehouse, 84, 91, info);
+  _d->setRange( ResourceGroup::waterOverlay, 5, 6, offset ); //wateroverlar images 3x3
+  _d->setRange( ResourceGroup::waterOverlay, 15, 16, offset ); //wateroverlar images 3x3 
 
-   // granary
-   setOne(ResourceGroup::commerce, 141, 28, 109);
-   setOne(ResourceGroup::commerce, 142, 33, 75);
-   setOne(ResourceGroup::commerce, 143, 56, 65);
-   setOne(ResourceGroup::commerce, 144, 92, 65);
-   setOne(ResourceGroup::commerce, 145, 118, 76);
-   setOne(ResourceGroup::commerce, 146, 78, 69);
-   setOne(ResourceGroup::commerce, 147, 78, 69);
-   setOne(ResourceGroup::commerce, 148, 78, 69);
-   setOne(ResourceGroup::commerce, 149, 78, 69);
-   setOne(ResourceGroup::commerce, 150, 78, 69);
-   setOne(ResourceGroup::commerce, 151, 78, 69);
-   setOne(ResourceGroup::commerce, 152, 78, 69);
+  offset = Point( 0, 90 );
+  _d->setRange( ResourceGroup::waterOverlay, 7, 8, offset ); //wateroverlar images 4x4
+  _d->setRange( ResourceGroup::waterOverlay, 17, 18, offset ); //wateroverlar images 4x4 
+
+  offset = Point( 0, 120 );
+  _d->setRange( ResourceGroup::waterOverlay, 9, 10, offset ); //wateroverlar images 5x5
+  
+  _d->setOne( ResourceGroup::entertaiment, 12, 37, 62); // amphitheater
+  _d->setOne( ResourceGroup::entertaiment, 35, 34, 37); // theater
+  _d->setOne( ResourceGroup::entertaiment, 50, 70, 105);  // collosseum
+
+  // animations
+  _d->setRange(ResourceGroup::commerce, 2, 11, Point( 42, 34 ));  // market poor
+  _d->setRange(ResourceGroup::commerce, 44, 53, Point( 66, 44 ));  // marble
+  _d->setRange(ResourceGroup::commerce, 55, 60, Point( 45, 18 ));  // iron
+  _d->setRange(ResourceGroup::commerce, 62, 71, Point( 15, 32 ));  // clay
+  _d->setRange(ResourceGroup::commerce, 73, 82, Point( 35, 6 ) );  // timber
+  _d->setRange(ResourceGroup::commerce, 87, 98, Point( 14, 36 ) );  // wine
+  _d->setRange(ResourceGroup::commerce, 100, 107, Point( 0, 45 ) );  // oil
+  _d->setRange(ResourceGroup::commerce, 109, 116, Point( 42, 36 ) );  // weapons
+  _d->setRange(ResourceGroup::commerce, 118, 131, Point( 38, 39) );  // furniture
+  _d->setRange(ResourceGroup::commerce, 133, 139, Point( 65, 42 ) );  // pottery
+  _d->setRange(ResourceGroup::commerce, 159, 167, Point( 62, 42 ) );  // market rich
+
+  // stock of input good
+  _d->setOne(ResourceGroup::commerce, 153, 45, -8);  // grapes
+  _d->setOne(ResourceGroup::commerce, 154, 37, -2);  // olive
+  _d->setOne(ResourceGroup::commerce, 155, 48, -4);  // timber
+  _d->setOne(ResourceGroup::commerce, 156, 47, -11);  // iron
+  _d->setOne(ResourceGroup::commerce, 157, 47, -9);  // clay
+
+  // warehouse
+  _d->setOne(ResourceGroup::warehouse, 1, 60, 56);
+  _d->setOne(ResourceGroup::warehouse, 18, 56, 93);
+  _d->setRange(ResourceGroup::warehouse, 2, 17, Point( 55, 75 ));
+  _d->setRange(ResourceGroup::warehouse, 84, 91, Point( 79, 108 ) );
+
+  // granary
+  _d->setOne(ResourceGroup::commerce, 141, 28, 109);
+  _d->setOne(ResourceGroup::commerce, 142, 33, 75);
+  _d->setOne(ResourceGroup::commerce, 143, 56, 65);
+  _d->setOne(ResourceGroup::commerce, 144, 92, 65);
+  _d->setOne(ResourceGroup::commerce, 145, 118, 76);
+  _d->setOne(ResourceGroup::commerce, 146, 78, 69);
+  _d->setOne(ResourceGroup::commerce, 147, 78, 69);
+  _d->setOne(ResourceGroup::commerce, 148, 78, 69);
+  _d->setOne(ResourceGroup::commerce, 149, 78, 69);
+  _d->setOne(ResourceGroup::commerce, 150, 78, 69);
+  _d->setOne(ResourceGroup::commerce, 151, 78, 69);
+  _d->setOne(ResourceGroup::commerce, 152, 78, 69);
 
    // walkers
-   info.xoffset = -2;
-   info.yoffset = -2;
-   setRange("citizen01", 1, 1240, info);
-   setRange("citizen02", 1, 1030, info);
-   setRange("citizen03", 1, 1128, info);
-   setRange("citizen04", 1, 577, info);
-   setRange("citizen05", 1, 184, info);
+  offset = Point( -2, -2 );
+  _d->setRange("citizen01", 1, 1240, offset);
+  _d->setRange("citizen02", 1, 1030, offset);
+  _d->setRange("citizen03", 1, 1128, offset);
+  _d->setRange("citizen04", 1, 577, offset);
+  _d->setRange("citizen05", 1, 184, offset);
 }
 
-void PicMetaData::setRange(const std::string &preffix, const int first, const int last, PicInfo &data)
+void PicMetaData::Impl::setRange(const std::string &preffix, const int first, const int last, const Point& data)
 {
    for (int i = first; i<=last; ++i)
    {
@@ -166,37 +152,34 @@ void PicMetaData::setRange(const std::string &preffix, const int first, const in
    }
 }
 
-void PicMetaData::setOne(const std::string &preffix, const int index, PicInfo &data)
+void PicMetaData::Impl::setOne(const std::string &preffix, const int index, const Point& offset)
 {
-   std::ostringstream oss;
-   oss << preffix << "_" << std::setw(5) << std::setfill('0') << index;
-   std::string resource_name = oss.str();
-   _data[resource_name] = data;
+   std::string resource_name = StringHelper::format( 0xff, "%s_%05d", preffix.c_str(), index );
+   data[resource_name] = offset;
 }
 
-void PicMetaData::setOne(const std::string &preffix, const int index, const int xoffset, const int yoffset)
+void PicMetaData::Impl::setOne(const std::string &preffix, const int index, const int xoffset, const int yoffset)
 {
-   std::ostringstream oss;
-   oss << preffix << "_" << std::setw(5) << std::setfill('0') << index;
-   std::string resource_name = oss.str();
-   PicInfo data;
-   data.xoffset = xoffset;
-   data.yoffset = yoffset;
-   _data[resource_name] = data;
+   std::string resource_name = StringHelper::format( 0xff, "%s_%05d", preffix.c_str(), index );
+   data[resource_name] = Point( xoffset, yoffset );
 }
 
-PicInfo& PicMetaData::get_data(const std::string &resource_name)
+Point PicMetaData::get_data(const std::string &resource_name)
 {
-   std::map<std::string, PicInfo>::iterator it = _data.find(resource_name);
-   if (it == _data.end())
+   std::map<std::string, Point>::iterator it = _d->data.find(resource_name);
+   if (it == _d->data.end())
    {
-      return _dummy_data;
+      return Point();
       // THROW("Invalid resource name: " << resource_name);
    }
 
    return (*it).second;
 }
 
+PicMetaData::~PicMetaData()
+{
+
+}
 PicLoader& PicLoader::instance()
 {
   static PicLoader inst; 
@@ -219,15 +202,16 @@ void PicLoader::set_picture(const std::string &name, SDL_Surface &surface)
 Picture& PicLoader::get_picture(const std::string &name)
 {
    std::map<std::string, Picture>::iterator it = _resources.find(name);
-   if (it == _resources.end()) THROW("Unknown resource " << name);
+   if (it == _resources.end()) 
+   {
+     THROW("Unknown resource " << name);
+   }
    return it->second;
 }
 
 Picture& PicLoader::get_picture(const std::string &prefix, const int idx)
 {
-   std::stringstream ss;
-   ss << prefix << "_" << std::setw(5) << std::setfill('0') << idx << ".png";
-   std::string resource_name = ss.str();
+   std::string resource_name = StringHelper::format( 0xff, "%s_%05d.png", prefix.c_str(),idx );
 
    return get_picture(resource_name);
 }
@@ -366,42 +350,39 @@ void PicLoader::load_archive(const std::string &filename)
 
   rc = archive_read_finish(a);
   if (rc != ARCHIVE_OK)
+  {
     THROW("Error while reading archive " << filename);
+  }
 }
 
 
 Picture PicLoader::make_picture(SDL_Surface *surface, const std::string& resource_name) const
 {
-   int xoffset = 0;
-   int yoffset = 0;
-
-
+   Point offset( 0, 0 );
    // decode the picture name => to set the offset manually
    // resource_name = "buildings/Govt_00005.png"
    int dot_pos = resource_name.find('.');
    std::string filename = resource_name.substr(0, dot_pos);
 
-   PicInfo& pic_info = PicMetaData::instance().get_data(filename);
+   Point pic_info = PicMetaData::instance().get_data(filename);
 
-   if (pic_info.xoffset == -1 && pic_info.yoffset == -1)
+   if (pic_info.getX() == -1 && pic_info.getY() == -1)
    {
       // this is a tiled picture=> automatic offset correction
-      yoffset= surface->h-15*((surface->w+2)/60);   // (w+2)/60 is the size of the tile: (1x1, 2x2, 3x3, ...)
+      offset.setY( surface->h-15*((surface->w+2)/60) );   // (w+2)/60 is the size of the tile: (1x1, 2x2, 3x3, ...)
    }
-   else if (pic_info.xoffset == -2 && pic_info.yoffset == -2)
+   else if (pic_info.getX() == -2 && pic_info.getY() == -2)
    {
       // this is a walker picture=> automatic offset correction
-      xoffset= -surface->w/2;
-      yoffset= int(surface->h*3./4.);
+      offset = Point( -surface->w/2, int(surface->h*3./4.) );
    }
    else
    {
-      xoffset= pic_info.xoffset;
-      yoffset= pic_info.yoffset;
+      offset = pic_info;
    }
 
    Picture pic;
-   pic.init(surface, xoffset, yoffset);
+   pic.init( surface, offset.getX(), offset.getY() );
    pic.set_name(filename);
 
    return pic;
@@ -747,47 +728,4 @@ Picture& CartLoader::getCart(CartTypes cart, const DirectionType &direction)
   return *res;
 }
 
-FontLoader::FontLoader()
-{ }
 
-
-void FontLoader::load_all(const std::string &resourcePath)
-{
-   std::string full_font_path = resourcePath + "/FreeSerif.ttf";
-   TTF_Font *ttf;
-
-   SDL_Color black = {0, 0, 0, 255};
-   SDL_Color red = {160, 0, 0, 255};  // dim red
-   SDL_Color white = {215, 215, 215, 255};  // dim white
-   SDL_Color yellow = {160, 160, 0, 255}; 
-
-   ttf = TTF_OpenFont(full_font_path.c_str(), 12);
-   if (ttf == NULL) THROW("Cannot load font file:" << full_font_path << ", error:" << TTF_GetError());
-   Font font0(*ttf, black);
-   FontCollection::instance().setFont(FONT_0, font0);
-
-   ttf = TTF_OpenFont(full_font_path.c_str(), 18);
-   if (ttf == NULL) THROW("Cannot load font file:" << full_font_path << ", error:" << TTF_GetError());
-   Font font2(*ttf, black);
-   FontCollection::instance().setFont(FONT_2, font2);
-
-   ttf = TTF_OpenFont(full_font_path.c_str(), 18);
-   if (ttf == NULL) THROW("Cannot load font file:" << full_font_path << ", error:" << TTF_GetError());
-   Font font2red(*ttf, red);
-   FontCollection::instance().setFont(FONT_2_RED, font2red);
-
-   ttf = TTF_OpenFont(full_font_path.c_str(), 18);
-   if (ttf == NULL) THROW("Cannot load font file:" << full_font_path << ", error:" << TTF_GetError());
-   Font font2white(*ttf, white);
-   FontCollection::instance().setFont(FONT_2_WHITE, font2white);
-
-   ttf = TTF_OpenFont(full_font_path.c_str(), 18);
-   if (ttf == NULL) THROW("Cannot load font file:" << full_font_path << ", error:" << TTF_GetError());
-   Font font2yellow(*ttf, yellow);
-   FontCollection::instance().setFont(FONT_2_YELLOW, font2yellow);
-
-   ttf = TTF_OpenFont(full_font_path.c_str(), 28);
-   if (ttf == NULL) THROW("Cannot load font file:" << full_font_path << ", error:" << TTF_GetError());
-   Font font3(*ttf, black);
-   FontCollection::instance().setFont(FONT_3, font3);
-}

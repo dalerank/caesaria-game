@@ -38,6 +38,8 @@ public:
 
     SizeF toSizeF() const;
 
+    int getArea() const { return x * y; }
+
     bool operator==(const Size& other) const{ return (x == other.x) && ( y == other.y ); }
     bool operator!=(const Size& other) const{ return (x != other.x ) || ( y != other.y ); }
     Size& operator+=(const Size& other) { x += other.x; y += other.y; return *this; }
@@ -60,6 +62,8 @@ public:
   void setHeight( float h ) { y = h; }
 
   Size toSize() const { return Size( int(x), int(y) ); }
+
+  float getArea() const { return x * y; }
 
   bool operator==(const SizeF& other) const { return IsEqual(other, math::ROUNDING_ERROR_f32); }
   bool operator!=(const SizeF& other) const { return !IsEqual(other, math::ROUNDING_ERROR_f32); }

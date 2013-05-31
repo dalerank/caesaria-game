@@ -20,10 +20,10 @@
 #include "oc3_positioni.hpp"
 #include "oc3_servicewalker_helper.h"
 
-WorkersHunter::WorkersHunter( WorkingBuildingPtr building, const int workersNeeded  )
- : ServiceWalker( building.as<Building>(), S_WORKERS_HUNTER)
+WorkersHunter::WorkersHunter( City& city )
+ : ServiceWalker( city, S_WORKERS_HUNTER )
 {    
-    _workersNeeded = workersNeeded;
+    _workersNeeded = 0;
     _walkerGraphic = WG_POOR;
     _walkerType = WT_WORKERS_HUNTER;
 }
@@ -64,9 +64,15 @@ void WorkersHunter::onNewTile()
   }
 }
 
-ServiceWalkerPtr WorkersHunter::create( WorkingBuildingPtr building, const int workersNeeded )
-{
-  ServiceWalkerPtr ret( new WorkersHunter( building, workersNeeded ) );
+WorkersHunterPtr WorkersHunter::create( City& city )
+{ 
+  WorkersHunterPtr ret( new WorkersHunter( city ) );
   ret->drop();
   return ret;
+}
+
+void WorkersHunter::send2City( WorkingBuildingPtr building, const int workersNeeded )
+{
+  _workersNeeded = workersNeeded;
+  ServiceWalker::send2City( building.as< Building >() );
 }

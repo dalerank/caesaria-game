@@ -89,7 +89,8 @@ public:
   virtual void build( const TilePos& pos );
   virtual void burn();
   virtual void collapse();
-  const PtrTilesList& getAccessRoads() const;  // return all road tiles adjacent to the construction
+  virtual bool isNeedRoadAccess() const;
+  virtual const PtrTilesList& getAccessRoads() const;  // return all road tiles adjacent to the construction
   virtual void computeAccessRoads();  
   virtual unsigned char getMaxDistance2Road() const; // virtual because HOUSE has different behavior
   virtual char getDesirabilityInfluence() const;

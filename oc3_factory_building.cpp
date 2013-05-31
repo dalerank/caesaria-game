@@ -35,6 +35,7 @@ public:
   float productionRate;  // max production / year
   float progress;  // progress of the work, in percent (0-100).
   Picture* stockPicture; // stock of input good
+  SimpleGoodStore goodStore;
 
   void removeIdlePushers();
 };
@@ -50,21 +51,21 @@ Factory::Factory( const GoodType inType, const GoodType outType,
    _d->progress = 0.0f;
    _inGoodType = inType;
    _outGoodType = outType;
-   _goodStore.setMaxQty(1000);  // quite unlimited
-   _goodStore.setMaxQty(_inGoodType, 200);
-   _goodStore.setMaxQty(_outGoodType, 200);
+   _d->goodStore.setMaxQty(1000);  // quite unlimited
+   _d->goodStore.setMaxQty(_inGoodType, 200);
+   _d->goodStore.setMaxQty(_outGoodType, 200);
 }
 
 
 GoodStock& Factory::getInGood()
 {
-   return _goodStore.getStock(_inGoodType);
+   return _d->goodStore.getStock(_inGoodType);
 }
 
 
 GoodStock& Factory::getOutGood()
 {
-   return _goodStore.getStock(_outGoodType);
+   return _d->goodStore.getStock(_outGoodType);
 }
 
 
@@ -130,12 +131,13 @@ void Factory::timeStep(const unsigned long time)
 void Factory::deliverGood()
 {
   // make a cart pusher and send him away
-  StringHelper::debug( 0xff, "Good is ready!!!" );
   if( _mayDeliverGood() )
   {
+    StringHelper::debug( 0xff, "Good is ready!!!" );
+    
     GoodStock stock(_outGoodType, 100, 100);
-    CartPusherPtr walker = CartPusher::create( BuildingPtr( this ), stock );
-    walker->send2City();
+    CartPusherPtr walker = CartPusher::create( Scenario::instance().getCity() );
+    walker->send2City( BuildingPtr( this ), stock );
     _d->progress -= 100.f;
 
     if( !walker->isDeleted() )
@@ -150,21 +152,14 @@ void Factory::_addWalker( WalkerPtr walker )
 
 SimpleGoodStore& Factory::getGoodStore()
 {
-   return _goodStore;
-}
-
-
-GuiInfoBox* Factory::makeInfoBox( Widget* parent )
-{
-   GuiInfoFactory* box = new GuiInfoFactory( parent, *this);
-   return box;
+   return _d->goodStore;
 }
 
 void Factory::save( VariantMap& stream ) const
 {
   WorkingBuilding::save( stream );
   VariantMap vm_goodstore;
-  _goodStore.save( vm_goodstore );
+  _d->goodStore.save( vm_goodstore );
 
   stream[ "goodStore" ] = vm_goodstore;
   stream[ "progress" ] = _d->progress; 
@@ -206,11 +201,11 @@ void Factory::_setProductRate( const float rate )
 
 FactoryTimber::FactoryTimber() : Factory(G_NONE, G_TIMBER, B_TIMBER, Size(2) )
 {
-   _setProductRate( 9.6f );
-   _picture = &Picture::load(ResourceGroup::commerce, 72);
+  _setProductRate( 9.6f );
+  _picture = &Picture::load(ResourceGroup::commerce, 72);
 
-   _animation.load( ResourceGroup::commerce, 73, 10);
-   _fgPictures.resize(2);
+  _animation.load( ResourceGroup::commerce, 73, 10);
+  _fgPictures.resize(2);
 }
 
 bool FactoryTimber::canBuild(const TilePos& pos ) const
@@ -219,8 +214,8 @@ bool FactoryTimber::canBuild(const TilePos& pos ) const
    bool near_forest = false;  // tells if the factory is next to a forest
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 2 ), Tilemap::checkCorners );
-   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+   PtrTilesArea rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 2 ), Tilemap::checkCorners );
+   for( PtrTilesArea::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
       Tile &tile = **itTiles;
       near_forest |= tile.get_terrain().isTree();
@@ -245,8 +240,8 @@ bool FactoryIron::canBuild(const TilePos& pos ) const
    bool near_mountain = false;  // tells if the factory is next to a mountain
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 2), Tilemap::checkCorners );
-   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+   PtrTilesArea rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 2), Tilemap::checkCorners );
+   for( PtrTilesArea::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
       near_mountain |= (*itTiles)->get_terrain().isRock();
    }
@@ -258,38 +253,38 @@ FactoryWeapon::FactoryWeapon() : Factory(G_IRON, G_WEAPON, B_WEAPON, Size(2) )
 {
   _picture = &Picture::load(ResourceGroup::commerce, 108);
 
-   _animation.load( ResourceGroup::commerce, 109, 6);
-   _fgPictures.resize(2);
+  _animation.load( ResourceGroup::commerce, 109, 6);
+  _fgPictures.resize(2);
 }
 
 FactoryFurniture::FactoryFurniture() : Factory(G_TIMBER, G_FURNITURE, B_FURNITURE, Size(2) )
 {
   _picture = &Picture::load(ResourceGroup::commerce, 117);
 
-   _animation.load(ResourceGroup::commerce, 118, 14);
-   _fgPictures.resize(2);
+  _animation.load(ResourceGroup::commerce, 118, 14);
+  _fgPictures.resize(2);
 }
 
 FactoryWine::FactoryWine() : Factory(G_GRAPE, G_WINE, B_WINE, Size(2) )
 {
   _picture = &Picture::load(ResourceGroup::commerce, 86);
 
-   _animation.load(ResourceGroup::commerce, 87, 12);
-   _fgPictures.resize(2);
+  _animation.load(ResourceGroup::commerce, 87, 12);
+  _fgPictures.resize(2);
 }
 
 FactoryOil::FactoryOil() : Factory(G_OLIVE, G_OIL, B_OIL, Size(2) )
 {
   _picture = &Picture::load(ResourceGroup::commerce, 99);
 
-   _animation.load(ResourceGroup::commerce, 100, 8);
-   _fgPictures.resize(2);
+  _animation.load(ResourceGroup::commerce, 100, 8);
+  _fgPictures.resize(2);
 }
 
 Wharf::Wharf() : Factory(G_NONE, G_FISH, B_WHARF, Size(2))
 {
   // transport 52 53 54 55
-  setPicture(PicLoader::instance().get_picture("transport", 52));
+  setPicture( Picture::load( ResourceGroup::wharf, 52));
 }
 
 /* INCORRECT! */
@@ -312,8 +307,8 @@ bool Wharf::canBuild(const TilePos& pos ) const
    
   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
    
-  std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size+2 ), false);
-  for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+  PtrTilesArea rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size+2 ), false);
+  for( PtrTilesArea::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {
     Tile &tile = **itTiles;
     std::cout << tile.getI() << " " << tile.getJ() << "  " << pos.getI() << " " << pos.getJ() << std::endl;

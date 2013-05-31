@@ -21,17 +21,18 @@
 class BurningRuins : public ServiceBuilding
 {
 public:
-    BurningRuins();
+  BurningRuins();
 
-    void deliverService();
-    void timeStep(const unsigned long time);
-    void burn();
-    void build(const TilePos& pos );
-    bool isWalkable() const;
-    void destroy();
+  void deliverService();
+  void timeStep(const unsigned long time);
+  void burn();
+  void build(const TilePos& pos );
+  bool isWalkable() const;
+  void destroy();
 
-    float evaluateService( ServiceWalkerPtr walker);
-    void applyService( ServiceWalkerPtr walker);
+  float evaluateService( ServiceWalkerPtr walker);
+  void applyService( ServiceWalkerPtr walker);
+  bool isNeedRoadAccess() const;
 };
 
 class BurnedRuins : public Building
@@ -42,6 +43,7 @@ public:
   void timeStep(const unsigned long time);
   bool isWalkable() const;
   void build( const TilePos& pos );
+  bool isNeedRoadAccess() const;
 };
 
 typedef SmartPtr< BurningRuins > BurningRuinsPtr;

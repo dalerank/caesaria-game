@@ -19,30 +19,33 @@
 #ifndef BUILDING_DATA_HPP
 #define BUILDING_DATA_HPP
 
-#include <string>
-#include <map>
-
 #include "oc3_enums.hpp"
+#include "oc3_scopedptr.hpp"
 
 // contains some metaData for a building type
 class BuildingData
 {
-public:
-   BuildingData(const BuildingType buildingType, const std::string &name, const int cost);
+  friend class BuildingDataHolder;
 
-   std::string getName() const;
-   std::string getPrettyName() const;
-   BuildingType getType() const;
-   // returns the building price, -1 => cannot be built
-   int getCost() const;
+  static BuildingData invalid;
+public:
+  BuildingData( const BuildingType buildingType, const std::string &name, const int cost );
+
+  std::string getName() const;
+  std::string getPrettyName() const;
+  BuildingType getType() const;
+  // returns the building price, -1 => cannot be built
+  int getCost() const;
 
 private:
-   BuildingType _buildingType;
-   std::string _name;  // debug name  (english, ex:"iron")
-   std::string _prettyName;  // pretty-print name  (i18n, ex:"Mine de fer")
-   int _cost;
+  BuildingType _buildingType;
+  std::string _name;  // debug name  (english, ex:"iron")
+  std::string _prettyName;  // pretty-print name  (i18n, ex:"Iron mine")
+  int _baseDesirability;
+  int _desirabilityRange;
+  int _desirabilityStep;
+  int _cost;
 };
-
 
 // contains some metaData for each building type
 class BuildingDataHolder
@@ -54,21 +57,18 @@ public:
    BuildingData& getData(const BuildingType buildingType);
    bool hasData(const BuildingType buildingType);
 
-   // return building that serve service
-   BuildingType getBuildingTypeByService(const ServiceType serviceType);
    // return factory that consume goodType
    BuildingType getBuildingTypeByInGood(const GoodType inGoodType);
-   // return factory that produce goodType
-   BuildingType getBuildingTypeByOutGood(const GoodType outGoodType);
+
+   static BuildingType getType( const std::string& name );
+
+   void initialize( const std::string& filename );
 
 private:
    BuildingDataHolder();
 
-   std::map<BuildingType, BuildingData> _mapDataByName;  // key=building_type, value=data
-   std::map<ServiceType, BuildingType> _mapBuildingByService;
-   std::map<GoodType, BuildingType> _mapBuildingByInGood;
-   std::map<GoodType, BuildingType> _mapBuildingByOutGood;
-   static BuildingDataHolder *_instance;
+   class Impl;
+   ScopedPtr< Impl > _d;
 };
 
 

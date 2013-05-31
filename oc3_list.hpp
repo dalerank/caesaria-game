@@ -206,12 +206,12 @@ public:
 		return (_first == 0);
 	}
 
-    //! Adds an element at the end of the list.
-    /** \param element Element to add to the list. */
-    void append(const T& element)
-    {
-        push_back( element );
-    }
+  //! Adds an element at the end of the list.
+  /** \param element Element to add to the list. */
+  void append(const T& element)
+  {
+      push_back( element );
+  }
 
 	//! Adds an element at the end of the list.
 	/** \param element Element to add to the list. */
@@ -296,6 +296,20 @@ public:
 		return iterator(_last);
 	}
 
+  T& back()
+  {
+    return _last->Element;
+  }
+
+  const T& front() const
+  {
+    return _first->Element;
+  }
+
+  T& front()
+  {
+    return _first->Element;
+  }
 
 	//! Gets last element.
 	/** \return Const list iterator pointing to the last element of the list. */
@@ -352,6 +366,11 @@ public:
 			_first = node;
 	}
 
+  void pop_front()
+  {
+    erase( iterator(_first) );
+  }
+
 
 	//! Erases an element.
 	/** \param it iterator pointing to the element which shall be erased.
@@ -397,19 +416,18 @@ public:
 	\param other Swap content with this object	*/
 	void swap(List<T>& other)
 	{
-                std::swap(_first, other._first);
-                std::swap(_last, other._last);
-                std::swap(_size, other._size);
-                std::swap(_allocator, other._allocator);	// memory is still released by the same allocator used for allocation
+    std::swap(_first, other._first);
+    std::swap(_last, other._last);
+    std::swap(_size, other._size);
+    std::swap(_allocator, other._allocator);	// memory is still released by the same allocator used for allocation
 	}
 
 
 private:
-
 	SKListNode* _first;
 	SKListNode* _last;
 	unsigned int _size;
-    Allocator<SKListNode> _allocator;
+  Allocator<SKListNode> _allocator;
 };
 
 #endif

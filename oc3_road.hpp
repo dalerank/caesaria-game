@@ -30,6 +30,7 @@ public:
   void setTerrain(TerrainTile &terrain);
   bool canBuild(const TilePos& pos ) const;
   bool isWalkable() const;
+  bool isNeedRoadAccess() const;
 };
 
 class Plaza : public Road

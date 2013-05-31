@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-
 #ifndef __OPENCAESAR3_PUSHBUTTON_H_INCLUDE_
 #define __OPENCAESAR3_PUSHBUTTON_H_INCLUDE_
 
@@ -28,18 +27,18 @@ class PushButton : public Widget
 {
 public:
 
-  //! constructor
-  PushButton( Widget* parent,
-	      const Rect& rectangle,
-	      const std::string& caption = "",
-	      int id = -1, 
-	      bool noclip = false );
+	//! constructor
+	PushButton( Widget* parent,
+			    const Rect& rectangle,
+                const std::string& caption="",
+                int id=-1, 
+			    bool noclip=false );
 
-  //! destructor
-  ~PushButton();
+	//! destructor
+	~PushButton();
 
-  //! called if an event happened.
-  bool onEvent(const NEvent& event);
+	//! called if an event happened.
+	bool onEvent(const NEvent& event);
 
   //! prepare render state
   void beforeDraw( GfxEngine& painter );
@@ -76,22 +75,23 @@ protected:
 
   void resizeEvent_();
 
-  //! when left mouse button pressed down
-  bool leftMouseBtnPressed_( const NEvent& event );
+    //! when left mouse button pressed down
+	bool leftMouseBtnPressed_( const NEvent& event );
 
-  //! when left mouse button left up
-  bool btnMouseUp_( const NEvent& event );
+    //! when left mouse button left up
+	bool btnMouseUp_( const NEvent& event );
 
-  //! when some mouse button clicked
-  void btnClicked_();
+    //! when some mouse button clicked
+	void btnClicked_();
 
-  virtual ElementState getActiveButtonState_();
+	virtual ElementState getActiveButtonState_();
   virtual void _updateTexture( ElementState state );
 
   Picture* _getPicture( ElementState state );
+
 private:
   class Impl;
-    std::auto_ptr< Impl > _d;
+  ScopedPtr< Impl > _d;
 };
 
 #endif

@@ -63,3 +63,4 @@ void Scenario::save( VariantMap& stream ) const
 void Scenario::load( const VariantMap& stream)
 {
 }
+

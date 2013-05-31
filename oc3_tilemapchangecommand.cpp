@@ -17,11 +17,9 @@
 #include "oc3_constructionmanager.hpp"
 #include "oc3_building.hpp"
 
-class TilemapChangeCommand::Impl
+class TilemapBuildCommand::Impl
 {
 public:
-    bool isValid;
-    bool isRemoveTool;  // true when using "clear land" tool
     bool isBorderBuilding;
     bool isMultiBuilding;
     ConstructionPtr construction;
@@ -32,83 +30,92 @@ TilemapChangeCommand::~TilemapChangeCommand()
 
 }
 
-TilemapChangeCommand::TilemapChangeCommand( BuildingType type )
-: _d( new Impl )
-{
-    ConstructionPtr construction = ConstructionManager::getInstance().create( type );
-    _d->construction = construction;
-    _d->isMultiBuilding = false;
-    _d->isRemoveTool = false;
-    _d->isValid = true;
-    _d->isBorderBuilding = false;
-
-    switch( type )
-    {
-    case B_ROAD:
-    case B_AQUEDUCT:
-        _d->isBorderBuilding = true;
-        _d->isMultiBuilding = true;
-    break;
-
-    case B_HOUSE:
-        _d->isMultiBuilding = true;
-        //break not needed that catch multibuild flag
-    break;
-
-    default:
-    break;    
-    }   
-}
-
-TilemapChangeCommand::TilemapChangeCommand() : _d( new Impl )
-{
-    _d->isValid = false;
-    _d->isRemoveTool = false;  // true when using "clear land" tool
-    _d->isBorderBuilding = false;
-    _d->isMultiBuilding = false;
-    _d->construction = 0;
-}
-
-TilemapChangeCommand& TilemapChangeCommand::operator=( const TilemapChangeCommand& other )
-{
-    _d->isValid = other._d->isValid;
-    _d->isRemoveTool = other._d->isRemoveTool;  // true when using "clear land" tool
-    _d->isBorderBuilding = other._d->isBorderBuilding;
-    _d->isMultiBuilding = other._d->isMultiBuilding;
-    _d->construction = other._d->construction;
-
-    return *this;
-}
-
-bool TilemapChangeCommand::isRemoveTool() const
-{
-    return _d->isRemoveTool;
-}
-
-bool TilemapChangeCommand::isValid() const
-{
-    return _d->isValid;
-}
-
-bool TilemapChangeCommand::isBorderBuilding() const
+bool TilemapBuildCommand::isBorderBuilding() const
 {
     return _d->isBorderBuilding;
 }
 
-bool TilemapChangeCommand::isMultiBuilding() const
+bool TilemapBuildCommand::isMultiBuilding() const
 {
     return _d->isMultiBuilding;
 }
 
-ConstructionPtr TilemapChangeCommand::getContruction() const
+ConstructionPtr TilemapBuildCommand::getContruction() const
 {
     return _d->construction;
 }
 
 TilemapRemoveCommand::TilemapRemoveCommand()
-    : TilemapChangeCommand()
 {
-    _d->isValid = true;
-    _d->isRemoveTool = true;
-    _d->isMultiBuilding = true;
+}
+
+TilemapChangeCommandPtr TilemapRemoveCommand::create()
+{
+  TilemapChangeCommandPtr ret( new TilemapRemoveCommand() );
+  ret->drop();
+
+  return ret;
+}
+
+TilemapChangeCommandPtr TilemapBuildCommand::create( BuildingType type )
+{
+  TilemapBuildCommand* newCommand = new TilemapBuildCommand();
+  ConstructionPtr construction = ConstructionManager::getInstance().create( type );
+  newCommand->_d->construction = construction;
+  newCommand->_d->isMultiBuilding = false;
+  newCommand->_d->isBorderBuilding = false;
+
+  switch( type )
+  {
+  case B_ROAD:
+  case B_AQUEDUCT:
+    newCommand->_d->isBorderBuilding = true;
+    newCommand->_d->isMultiBuilding = true;
+    break;
+
+  case B_HOUSE:
+    newCommand->_d->isMultiBuilding = true;
+    //break not needed that catch multibuild flag
+    break;
+
+  default:
+    break;    
+  }   
+
+  TilemapChangeCommandPtr ret( newCommand );
+  ret->drop();
+
+  return ret;
+}
+
+TilemapBuildCommand::TilemapBuildCommand() : _d( new Impl )
+{
+
+}
+
+class TilemapOverlayCommand::Impl
+{
+public:
+  OverlayType type;
+};
+
+TilemapChangeCommandPtr TilemapOverlayCommand::create( const OverlayType type )
+{
+  TilemapOverlayCommand* newCommand = new TilemapOverlayCommand();
+  newCommand->_d->type = type;
+
+  TilemapChangeCommandPtr ret( newCommand );
+  ret->drop();
+
+  return ret;
+}
+
+TilemapOverlayCommand::TilemapOverlayCommand() : _d( new Impl )
+{
+  _d->type = OV_NOTHING;
+}
+
+OverlayType TilemapOverlayCommand::getType() const
+{
+  return _d->type;
 }

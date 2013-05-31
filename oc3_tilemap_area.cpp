@@ -20,16 +20,25 @@
 #include "oc3_tilemap_area.hpp"
 
 #include <algorithm>
-#include <iostream>
 #include "oc3_positioni.hpp"
+#include "oc3_size.hpp"
 #include "oc3_exception.hpp"
+#include "oc3_stringhelper.hpp"
 
-TilemapArea::TilemapArea()
+class TilemapArea::Impl
+{
+public:
+  Size viewSize;    // width of the view (in tiles)  nb_tilesX = 1+2*_view_width
+                    // height of the view (in tiles)  nb_tilesY = 1+2*_view_height
+
+  std::vector< TilePos > coordinates;  // cached list of visible tiles
+};
+
+TilemapArea::TilemapArea() : _d( new Impl )
 {
   _tilemap = NULL;
   _map_size = 0;
-  _view_width = 0;
-  _view_height = 0;
+  _d->viewSize = Size( 0 );
   _center_i = 0;
   _center_j = 0;
   _center_x = 0;
@@ -46,18 +55,17 @@ void TilemapArea::init(Tilemap &tilemap)
   _map_size = tilemap.getSize();
 }
 
-void TilemapArea::setViewSize(const int width, const int height)
+void TilemapArea::setViewSize(const Size& newSize )
 {
-  if (_view_width != width || _view_height != height)
+  if (_d->viewSize != newSize )
   {
-    _coordinates.clear();
+    _d->coordinates.clear();
   }
-  _view_width = (width + 59) / 60;
-  _view_height = (height + 29) / 30;
+  _d->viewSize = Size( (newSize.getWidth() + 59) / 60, ( newSize.getHeight() + 29) / 30 );
   
-  std::cout << "width and height " <<  _view_width << " " << _view_height << std::endl;
+  StringHelper::debug( 0xff, "width:%d height:%d", _d->viewSize.getWidth(), _d->viewSize.getHeight() );
   
-  _coordinates.reserve(width * height);
+  _d->coordinates.reserve( newSize.getArea() ); // ???? WTF
 }
 
 void TilemapArea::setCenterIJ(const TilePos& pos )
@@ -72,7 +80,7 @@ void TilemapArea::setCenterXZ(const int x, const int z)
 {
   if (_center_x != x || _center_z != z)
   {
-  _coordinates.clear();
+    _d->coordinates.clear();
   }
   
   _center_x = x;
@@ -107,25 +115,24 @@ void TilemapArea::moveDown(const int amount)
 
 const std::vector< TilePos >& TilemapArea::getTiles()
 {
-  if( _coordinates.empty() )
+  if( _d->coordinates.empty() )
   {
     int zm = _map_size + 1;
     int cx = _center_x;
     int cz = _center_z;
-    int sx = _view_width;  // size x
-    int sz = _view_height; // size z
+    Size sizeT = _d->viewSize;  // size x
 
-    for (int z = cz + sz; z>=cz - sz; --z)
+    for (int z = cz + sizeT.getHeight(); z>=cz - sizeT.getHeight(); --z)
     {
       // depth axis. from far to near.
 
-      int xstart = cx - sx;
+      int xstart = cx - sizeT.getWidth();
       if ((xstart + z) % 2 == 0)
       {
-	++xstart;
+	      ++xstart;
       }
 
-      for (int x = xstart; x<=cx + sx; x+=2)
+      for (int x = xstart; x<=cx + sizeT.getWidth(); x+=2)
       {
 	// left-right axis
         int j = (x + z - zm)/2;
@@ -133,11 +140,11 @@ const std::vector< TilePos >& TilemapArea::getTiles()
 
         if (i >= 0 && j >= 0 && i < _map_size && j < _map_size)
         {
-	  _coordinates.push_back( TilePos( i, j ));
+	        _d->coordinates.push_back( TilePos( i, j ));
         }
       }
     }
   }
 
-  return _coordinates;
+  return _d->coordinates;
 }

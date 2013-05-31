@@ -46,7 +46,7 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
   _d->background = 0;
 	_d->needItemsRepackTextures = true;
 
-  _d->recalculateItemHeight( FontCollection::instance().getFont( FONT_2 ), getHeight() );
+  _d->recalculateItemHeight( Font( FONT_2 ), getHeight() );
 
 #ifdef _DEBUG
   setDebugName( "ListBox");

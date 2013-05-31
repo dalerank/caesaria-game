@@ -39,8 +39,6 @@ public:
 
   virtual void timeStep(const unsigned long time);
 
-  virtual GuiInfoBox* makeInfoBox( Widget* parent );
-
   void save( VariantMap& stream) const;
   void load( const VariantMap& stream);
 
@@ -54,7 +52,6 @@ protected:
 protected:
   GoodType _inGoodType;
   GoodType _outGoodType;
-  SimpleGoodStore _goodStore;
 
   class Impl;
   ScopedPtr< Impl > _d;

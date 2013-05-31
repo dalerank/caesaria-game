@@ -820,27 +820,27 @@ void Widget::setVisible( bool visible )
 
 bool Widget::isTabStop() const
 {
-  return _isTabStop;
+    return _isTabStop;
 }
 
 bool Widget::hasTabGroup() const
 {
-  return _isTabGroup;
+    return _isTabGroup;
 }
 
 void Widget::setText( const std::string& text )
 {
-  _text = text;
+    _text = text;
 }
 
 void Widget::setTooltipText( const std::string& text )
 {
-  _toolTipText = text;
+    _toolTipText = text;
 }
 
 std::string Widget::getText() const
 {
-  return _text;
+    return _text;
 }
 
 std::string Widget::getTooltipText() const
@@ -861,7 +861,7 @@ void Widget::setID( int id )
 bool Widget::onEvent( const NEvent& event )
 {
   if( _eventHandler )
-    _eventHandler->onEvent( event );
+      _eventHandler->onEvent( event );
 
   if (event.EventType == OC3_MOUSE_EVENT)
     if (getParent() && (getParent()->getParent() == NULL))
@@ -877,21 +877,21 @@ const Widget::Widgets& Widget::getChildren() const
 
 bool Widget::isMyChild( Widget* child ) const
 {
-  if (!child)
-    return false;
-  do
-  {
-    if( child->getParent() )
-      child = child->getParent();
-    
-  } while (child->getParent() && child != this);
+    if (!child)
+        return false;
+    do
+    {
+        if( child->getParent() )
+            child = child->getParent();
 
-  return child == this;
+    } while (child->getParent() && child != this);
+
+	return child == this;
 }
 
 Size Widget::getMaxSize() const
 {
-  return _maxSize;
+    return _maxSize;
 }
 
 Size Widget::getMinSize() const

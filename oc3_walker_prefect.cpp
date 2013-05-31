@@ -20,6 +20,7 @@
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_path_finding.hpp"
 #include "oc3_tile.hpp"
+#include "oc3_city.hpp"
 
 class WalkerPrefect::Impl
 {
@@ -30,13 +31,14 @@ public:
   PrefectAction action;
 };
 
-WalkerPrefect::WalkerPrefect( ServiceBuildingPtr building, int water )
-: ServiceWalker( building.as<Building>(), S_PREFECT ), _d( new Impl )
+WalkerPrefect::WalkerPrefect( City& city )
+: ServiceWalker( city, S_PREFECT ), _d( new Impl )
 {
   setMaxDistance( 10 );
-  _d->water = water;
-  _d->action = water > 0 ? Impl::gotoFire : Impl::patrol;
-  _walkerGraphic = water > 0 ? WG_PREFECT_DRAG_WATER : WG_PREFECT;
+  _walkerType = WT_PREFECT;
+  _d->water = 0;
+  _d->action = Impl::patrol;
+  _walkerGraphic = WG_PREFECT;
 }
 
 void WalkerPrefect::onNewTile()
@@ -255,10 +257,27 @@ float WalkerPrefect::getServiceValue() const
   return 5;
 }
 
-WalkerPrefectPtr WalkerPrefect::create( ServiceBuildingPtr building, int water )
+WalkerPrefectPtr WalkerPrefect::create( City& city )
 {
-  WalkerPrefectPtr ret( new WalkerPrefect( building, water ) );
+  WalkerPrefectPtr ret( new WalkerPrefect( city ) );
   ret->drop();
 
   return ret;
+}
+
+void WalkerPrefect::send2City( BuildingPrefectPtr prefecture, int water/*=0 */ )
+{
+  _d->action = water > 0 ? Impl::gotoFire : Impl::patrol;
+  _walkerGraphic = water > 0 ? WG_PREFECT_DRAG_WATER : WG_PREFECT;
+
+  if( water > 0 )
+  {
+    setBase( prefecture.as<Building>() );
+
+    _getCity().addWalker( WalkerPtr( this ));
+  }
+  else
+  {
+    ServiceWalker::send2City( prefecture.as<Building>() );
+  }
 }

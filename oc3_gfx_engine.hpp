@@ -39,9 +39,11 @@ public:
   int getScreenWidth() const;
   int getScreenHeight() const;
 
-  virtual void load_pictures(const std::list<Picture*> &ioPictures);
-  virtual void load_picture(Picture& ioPicture) = 0;
-  virtual void unload_picture(Picture& ioPicture) = 0;
+  virtual void setFlag( int flag, int value );
+
+  virtual void loadPictures(const std::list<Picture*> &ioPictures);
+  virtual void loadPicture(Picture& ioPicture) = 0;
+  virtual void unloadPicture(Picture& ioPicture) = 0;
 
   virtual void startRenderFrame() = 0;  // start a new frame
   virtual void endRenderFrame() = 0;  // display the frame
@@ -51,9 +53,13 @@ public:
 
   virtual void setTileDrawMask( int rmask, int gmask, int bmask, int amask ) = 0;
   virtual void resetTileDrawMask() = 0;
+  
   virtual void deletePicture( Picture &pic ) = 0;
   // creates a picture with the given size, it will need to be loaded by the graphic engine
   virtual Picture& createPicture(int width, int height) = 0;
+
+  virtual void createScreenshot( const std::string& filename ) = 0;
+  virtual unsigned int getFps() const = 0;
 
 protected:
   static GfxEngine* _instance;

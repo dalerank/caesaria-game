@@ -49,6 +49,10 @@ public:
 
     void draw( GfxEngine& engine );
 
+    void toggleOverlays();
+oc3_signals public:
+    Signal1<int>& onSelectOverlayType();
+
 protected:
     ExtentMenu( Widget* parent, GuiTilemap&, int id, const Rect& rectangle );
     GuiTilemap& _tmap;

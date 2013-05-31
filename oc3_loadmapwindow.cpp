@@ -38,11 +38,11 @@ public:
 
   void resolveFileSelected( std::string fileName )
   {
-    onSelectFileSignal.emit( directory + fileName );
+    onSelecteFileSignal.emit( directory + fileName );
   }
 
 oc3_signals public:
-  Signal1<std::string> onSelectFileSignal;
+  Signal1<std::string> onSelecteFileSignal;
 };
 
 LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect,
@@ -52,7 +52,7 @@ LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect,
 {
   // create the title
   _d->lbTitle = new Label( this, Rect( 16, 10, getWidth()-16, 10 + 30 ), "", true );
-  _d->lbTitle->setFont( FontCollection::instance().getFont(FONT_3) );
+  _d->lbTitle->setFont( Font( FONT_3 ) );
   _d->lbTitle->setTextAlignment( alignCenter, alignCenter );
   _d->directory = dir;
   _d->fileExtension = ext;
@@ -73,7 +73,7 @@ LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect,
 
   // draws the box and the inner black box
   GuiPaneling::instance().draw_white_frame(*_d->bgPicture, 0, 0, getWidth(), getHeight() );
-  GfxEngine::instance().load_picture(*_d->bgPicture);
+  GfxEngine::instance().loadPicture(*_d->bgPicture);
 }
 
 LoadMapWindow::~LoadMapWindow()
@@ -127,5 +127,5 @@ void LoadMapWindow::setTitle( const std::string& title )
 
 Signal1<std::string>& LoadMapWindow::onSelectFile()
 {
-  return _d->onSelectFileSignal;
+  return _d->onSelecteFileSignal;
 }

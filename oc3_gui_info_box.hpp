@@ -24,7 +24,6 @@
 
 #include "oc3_widget.hpp"
 #include "oc3_picture.hpp"
-#include "oc3_house.hpp"
 #include "oc3_factory_building.hpp"
 #include "oc3_service_building.hpp"
 #include "oc3_predefinitions.hpp"
@@ -50,6 +49,9 @@ public:
     Picture& getPictureGood(const GoodType& goodType);
 
     void setTitle( const std::string& title );
+
+    bool isAutoPosition() const;
+    void setAutoPosition( bool value );
 protected:
     void _resizeEvent();
 
@@ -58,25 +60,37 @@ protected:
 };
 
 
+class InfoBoxFarm : public GuiInfoBox
+{
+public:
+  InfoBoxFarm( Widget* parent, const Tile& tile );
+
+  void paint();
+
+private:
+  class Impl;
+  ScopedPtr< Impl > _fd;
+};
+
 // info box about a service building
 class GuiInfoService : public GuiInfoBox
 {
 public:
   GuiInfoService( Widget* parent, ServiceBuildingPtr building);
-  virtual void paint();
-
+  
+  void paint();
   void drawWorkers( int );
   void setText(const std::string& text);
 private:
-  Label* _dmgLabel;
-  Label* _lbHelp;
-  ServiceBuildingPtr _building;
+
+  class Impl;
+  ScopedPtr< Impl > _sd;
 };
 
 class InfoBoxLand : public GuiInfoBox
 {
 public:
-    InfoBoxLand( Widget* parent, Tile* tile );   
+    InfoBoxLand( Widget* parent, const Tile& tile );   
     void setText( const std::string& text );
     //bool onEvent(const NEvent& event);
 private:
@@ -88,12 +102,7 @@ private:
 class InfoBoxFreeHouse : public InfoBoxLand
 {
 public:
-    InfoBoxFreeHouse( Widget* parent, Tile* tile );   
-
-    //bool onEvent(const NEvent& event);
-private:
-    //void _paint();
-
+    InfoBoxFreeHouse( Widget* parent, const Tile& tile );   
 };
 // info box about a factory building
 class GuiInfoFactory : public GuiInfoBox
@@ -114,14 +123,16 @@ private:
 class GuiInfoGranary : public GuiInfoBox
 {
 public:
-   GuiInfoGranary( Widget* parent, GranaryPtr building);
-   virtual void paint();
+  GuiInfoGranary( Widget* parent, const Tile& tile );
+  void paint();
 
-   void drawWorkers( int );
-   void drawGood(const GoodType &goodType, int&);
+  void drawWorkers( int );
+  void drawGood(const GoodType &goodType, int&);
 
 private:
-   GranaryPtr _building;
+
+  class Impl;
+  ScopedPtr< Impl > _gd;
 };
 
 
@@ -129,23 +140,34 @@ private:
 class GuiInfoMarket : public GuiInfoBox
 {
 public:
-   GuiInfoMarket( Widget* parent, Market &building);
-   virtual void paint();
-
-   void drawWorkers( int );
-   void drawGood(const GoodType &goodType, int&);
+   GuiInfoMarket( Widget* parent, const Tile& tile );
+   
+   void paint();
+   void drawWorkers();
+   void drawGood(const GoodType &goodType, int, int );
 
 private:
-   Market *_building;
+   class Impl;
+   ScopedPtr< Impl > _md;
 };
 
+class InfoBoxTemple : public GuiInfoBox
+{
+public:
+  InfoBoxTemple( Widget* parent, const Tile& tile );
+
+  void drawWorkers();
+  void drawPicture();
+private:
+  class Impl;
+  ScopedPtr< Impl > _td;
+};
 
 // info box about a house
 class InfoBoxHouse : public GuiInfoBox
 {
 public:
-   InfoBoxHouse( Widget* paarent, HousePtr house);
-
+   InfoBoxHouse( Widget* paarent, const Tile& tile);
 
    void drawHabitants();
    void drawGood(const GoodType &goodType, const int col, const int row, const int startY );
@@ -160,12 +182,13 @@ private:
 class GuiBuilding : public GuiInfoBox
 {
 public:
-   GuiBuilding( Widget* parent, Building &building);
+   GuiBuilding( Widget* parent, const Tile& tile );
    virtual void paint();
 
 private:
 
-   Building *_building;
+   class Impl;
+   ScopedPtr< Impl > _bd;
 };
 
 #endif

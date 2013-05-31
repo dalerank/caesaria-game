@@ -32,6 +32,11 @@ void Road::build(const TilePos& pos )
   Construction::build( pos );
   setPicture(computePicture());
 
+  if( overlay.is<Road>() )
+  {
+    return;
+  }
+
   if( overlay.is<Aqueduct>() )
   {
     overlay->build( pos );
@@ -40,15 +45,16 @@ void Road::build(const TilePos& pos )
 
   // update adjacent roads
   for( std::list<Tile*>::iterator itTile = _accessRoads.begin(); 
-    itTile != _accessRoads.end(); ++itTile)
+       itTile != _accessRoads.end(); ++itTile)
   {
-    SmartPtr< Road > road = (*itTile)->get_terrain().getOverlay().as<Road>(); // let's think: may here different type screw up whole program?
+    RoadPtr road = (*itTile)->get_terrain().getOverlay().as<Road>(); // let's think: may here different type screw up whole program?
     if( road.isValid() )
     {
       road->computeAccessRoads();
       road->setPicture(road->computePicture());
     }
   }
+  
   // NOTE: also we need to update accessRoads for adjacent building
   // how to detect them if MaxDistance2Road can be any
   // so let's recompute accessRoads for every _building_
@@ -73,7 +79,7 @@ bool Road::canBuild(const TilePos& pos ) const
   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
   TerrainTile& terrain = tilemap.at( pos ).get_terrain();
 
-  return terrain.getOverlay().is<Aqueduct>();
+  return ( terrain.getOverlay().is<Aqueduct>() || terrain.getOverlay().is<Road>() );
 }
 
 
@@ -169,6 +175,10 @@ void Road::updatePicture()
   setPicture( computePicture() );
 }
 
+bool Road::isNeedRoadAccess() const
+{
+  return false;
+}
 // I didn't decide what is the best approach: make Plaza as constructions or as upgrade to roads
 Plaza::Plaza()
 {

@@ -31,6 +31,9 @@ CityServiceWorkersHire::CityServiceWorkersHire( City& city )
   _d->priorities[ 1 ] = B_PREFECT;
   _d->priorities[ 2 ] = B_ENGINEER;
   _d->priorities[ 3 ] = B_CLAY_PIT;
+  _d->priorities[ 4 ] = B_WHEAT;
+  _d->priorities[ 5 ] = B_GRAPE;
+  _d->priorities[ 6 ] = B_GRANARY;
 }
 
 bool CityServiceWorkersHire::_haveHr( WorkingBuildingPtr building )
@@ -61,9 +64,9 @@ void CityServiceWorkersHire::_hireByType( const BuildingType type )
     if( wb.isValid() && wb->getAccessRoads().size() > 0 
         && wb->getWorkers() < wb->getMaxWorkers() )
     {
-      ServiceWalkerPtr hr = WorkersHunter::create( wb, wb->getMaxWorkers() - wb->getWorkers() );
+      WorkersHunterPtr hr = WorkersHunter::create( _city );
       hr->setMaxDistance( 20 );
-      hr->send2City();
+      hr->send2City( wb, wb->getMaxWorkers() - wb->getWorkers());
     }
   }
 }

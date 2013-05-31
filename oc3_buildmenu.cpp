@@ -34,7 +34,7 @@ public:
         _cost = 0;
 
         //Font& font = FontCollection::instance().getFont(FONT_2);
-        Font& fontRed = FontCollection::instance().getFont(FONT_2_RED);
+        Font fontRed( FONT_2_RED );
 
         setFont( fontRed, stHovered );
         setTextAlignment( alignUpperLeft, alignCenter );
@@ -89,7 +89,7 @@ void BuildMenu::init()
     int max_text_width = 0;
     int max_cost_width = 0;
     Size textSize;
-    Font &font = FontCollection::instance().getFont(FONT_2);
+    Font font( FONT_2 );
     for (Widget::ConstChildIterator itWidget = getChildren().begin(); itWidget != getChildren().end(); ++itWidget)
     {
         if( BuildButton *button = dynamic_cast< BuildButton* >( *itWidget ) )

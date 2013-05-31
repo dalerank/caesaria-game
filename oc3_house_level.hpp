@@ -93,7 +93,7 @@ public:
   HouseLevelSpec &getHouseLevelSpec(const int houseLevel);
   void setHouseLevelSpec(HouseLevelSpec &spec);
   int getHouseLevel(const int houseId);
-  void loadHouseModel( const std::string& filename );
+  void initialize( const std::string& filename );
 
   ~HouseSpecHelper();
 private:

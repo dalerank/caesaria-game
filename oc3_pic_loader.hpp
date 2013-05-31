@@ -27,31 +27,23 @@
 #include "oc3_gfx_engine.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_good.hpp"
+#include "oc3_scopedptr.hpp"
 
-
-class PicInfo
-{
-public:
-   int xoffset, yoffset;  // if (-1) : this is a tile picture
-};
 
 // contains data needed for loading pictures
 class PicMetaData
 {
 public:
   static PicMetaData& instance();
+  ~PicMetaData();
 
-  PicInfo& get_data(const std::string &resource_name);   // image name ("Govt_00005")
+  Point get_data(const std::string &resource_name);   // image name ("Govt_00005")
 
 private:
   PicMetaData();
-  void setRange(const std::string &preffix, const int first, const int last, PicInfo &data);
-  void setOne(const std::string &preffix, const int index, PicInfo &data);
-  void setOne(const std::string &preffix, const int index, const int xoffset, const int yoffset);
-  static PicMetaData* _instance;
 
-  std::map<std::string, PicInfo> _data;   // key=image name (Govt_00005)
-  PicInfo _dummy_data;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 
@@ -160,15 +152,5 @@ private:
 
   std::vector<std::vector<Picture*> > _carts; // pictures[GoodType][Direction]
 };
-
-
-class FontLoader
-{
-public:
-  FontLoader();
-
-  void load_all(const std::string &resourcePath);
-};
-
 
 #endif

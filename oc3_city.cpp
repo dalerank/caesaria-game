@@ -65,6 +65,7 @@ oc3_signals public:
   Signal1<int> onPopulationChangedSignal;
   Signal1<int> onFundsChangedSignal;
   Signal1<int> onMonthChangedSignal;
+  Signal1<std::string> onWarningMessageSignal;
 };
 
 City::City() : _d( new Impl )
@@ -303,6 +304,11 @@ void City::build( const BuildingType type, const TilePos& pos )
    _d->overlayList.push_back( building.as<LandOverlay>() );
    _d->funds -= buildingData.getCost();
    _d->onFundsChangedSignal.emit( _d->funds );
+
+   if( building->isNeedRoadAccess() && building->getAccessRoads().empty() )
+   {
+     _d->onWarningMessageSignal.emit( "##building_need_road_access##" );
+   }
 }
 
 void City::disaster( const TilePos& pos, DisasterType type )
@@ -585,4 +591,9 @@ CityServicePtr City::findService( const std::string& name )
       return *sIt;
 
   return CityServicePtr();
+}
+
+Signal1<std::string>& City::onWarningMessage()
+{
+  return _d->onWarningMessageSignal;
 }

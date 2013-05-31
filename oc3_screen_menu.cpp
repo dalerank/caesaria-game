@@ -38,25 +38,16 @@ public:
   bool isStopped;
   std::string fileMap;
 
-  void resolveNewGame()
-  {
-    result = startNewGame;
-    isStopped = true;
-  }
-  
+  void resolveNewGame() { result=startNewGame; isStopped=true; }
   void resolveLoadGame( std::string fileName ) 
   {
-    result = loadSavedGame; 
+    result=loadSavedGame; 
     fileMap = fileName;
-    isStopped = true; 
+    isStopped=true; 
   }
-
-  void resolveQuitGame()
-  {
-    result = closeApplication;
-    isStopped = true;
-  }
-
+  
+  void resolveQuitGame() { result=closeApplication; isStopped=true; }
+  
   void resolveSelectFile( std::string fileName )
   {
     result = loadMap;
@@ -65,15 +56,16 @@ public:
   }
 
   void resolveShowLoadMapWnd();
-  void resolveShowLoadGameWnd();
+    void resolveShowLoadGameWnd();
 };
 
 void ScreenMenu::Impl::resolveShowLoadGameWnd()
 {
   Size rootSize = gui->getRootWidget()->getSize();
+  RectF rect( 0.25f * rootSize.getWidth(), 0.25f * rootSize.getHeight(), 
+              0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() );
   LoadMapWindow* wnd = new LoadMapWindow( gui->getRootWidget(), 
-                                          Rect( 0.25f * rootSize.getWidth(), 0.25f * rootSize.getHeight(), 
-                                          0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() ), 
+                                          rect.toRect(), 
                                           "./", ".oc3save",
                                           -1 );
 
@@ -120,8 +112,8 @@ void ScreenMenu::initialize( GfxEngine& engine, GuiEnv& gui )
   _d->bgPicture = &Picture::load("title", 1);
 
   // center the bgPicture on the screen
-  _d->bgPicture->set_offset( (engine.getScreenWidth() - _d->bgPicture->get_width()) / 2,
-                             -( engine.getScreenHeight() - _d->bgPicture->get_height() ) / 2 );
+  _d->bgPicture->set_offset( (engine.getScreenWidth() - _d->bgPicture->getWidth()) / 2,
+                             -( engine.getScreenHeight() - _d->bgPicture->getHeight() ) / 2 );
 
   _d->gui = &gui;
   _d->gui->clear();

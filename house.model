@@ -31,6 +31,9 @@
 			"habitants" : 5,
 			"minDesirability" : -99,
 		    "maxDesirability" : -10,
+			"desirability" : -3,
+			"desstep" : 1
+			"desrange" : 3,
 			"entertainment" : 0,
 			"water" : 0,
 			"religion" : 0,
@@ -55,6 +58,9 @@
 			"minDesirability" : -12,
 		    "maxDesirability" : -5,
 			"entertainment" : 0,
+			"desirability" : -3,
+			"desstep" : 1
+			"desrange" : 3,
 			"water" : 1,
 			"religion" : 0,
 			"education" : 0,
@@ -78,6 +84,9 @@
 			"minDesirability" : -9,
 		    "maxDesirability" : 0,
 			"entertainment" : 0,
+			"desirability" : -2,
+			"desstep" : 1
+			"desrange" : 2,
 			"water" : 1,
 			"religion" : 0,
 			"education" : 0,
@@ -101,6 +110,9 @@
 			"minDesirability" : -2,
 		    "maxDesirability" : 4,
 			"entertainment" : 0,
+			"desirability" : -2,
+			"desstep" : 1
+			"desrange" : 2,
 			"water" : 1,
 			"religion" : 1,
 			"education" : 0,
@@ -124,6 +136,9 @@
 			"minDesirability" : 2,
 		    "maxDesirability" : 8,
 			"entertainment" : 0,
+			"desirability" : -2,
+			"desstep" : 1
+			"desrange" : 2,
 			"water" : 2
 			"religion" : 1,
 			"education" : 0,
@@ -146,6 +161,9 @@
 			"minDesirability" : 6,
 		    "maxDesirability" : 12,
 			"entertainment" : 10,
+			"desirability" : -2,
+			"desstep" : 1
+			"desrange" : 2,		
 			"water" : 2
 			"religion" : 1,
 			"education" : 0,
@@ -169,6 +187,9 @@
 			"minDesirability" : 10,
 		    "maxDesirability" : 16,
 			"entertainment" : 10,
+			"desirability" : -1,
+			"desstep" : 1
+			"desrange" : 1,		
 			"water" : 2,
 			"religion" : 1,
 			"education" :1,
@@ -192,6 +213,9 @@
 			"minDesirability" : 14,
 		    "maxDesirability" : 20,
 			"entertainment" : 10,
+			"desirability" : -1,
+			"desstep" : 1
+			"desrange" : 1,	
 			"water" : 2,
 			"religion" : 1,
 			"education" :1,
@@ -215,6 +239,9 @@
 			"minDesirability" : 18,
 		    "maxDesirability" : 25,
 			"entertainment" : 25,
+			"desirability" : 0,
+			"desstep" : 0
+			"desrange" : 0,
 			"water" : 2,
 			"religion" : 1,
 			"education" :1,
@@ -238,6 +265,9 @@
 			"minDesirability" : 22,
 		    "maxDesirability" : 32,
 			"entertainment" : 25,
+			"desirability" : 0,
+			"desstep" : 0
+			"desrange" : 0
 			"water" : 2,
 			"religion" : 1,
 			"education" :1,
@@ -261,6 +291,9 @@
 			"minDesirability" : 29,
 		    "maxDesirability" : 40,
 			"entertainment" : 25,
+			"desirability" : 1,
+			"desstep" : -1
+			"desrange" : 2,	
 			"water" : 2,
 			"religion" : 1,
 			"education" :2,
@@ -284,6 +317,9 @@
 			"minDesirability" : 37,
 		    "maxDesirability" : 48,
 			"entertainment" : 35,
+			"desirability" : 1,
+			"desstep" : -1
+			"desrange" : 2,				
 			"water" : 2,
 			"religion" : 1,
 			"education" : 2,
@@ -307,6 +343,9 @@
 			"minDesirability" : 45,
 		    "maxDesirability" : 53,
 			"entertainment" : 35,
+			"desirability" : 2,
+			"desstep" : -1
+			"desrange" : 2,	
 			"water" : 2,
 			"religion" : 2,
 			"education" : 2,
@@ -330,6 +369,9 @@
 			"minDesirability" : 50,
 		    "maxDesirability" : 58,
 			"entertainment" : 40,
+			"desirability" : 2,
+			"desstep" : -1
+			"desrange" : 2,				
 			"water" : 2,
 			"religion" : 2,
 			"education" : 2,
@@ -352,7 +394,9 @@
 			"habitants" : 10,
 			"minDesirability" : 55,
 		    "maxDesirability" : 63,
-			"entertainment" : 45,
+			"desirability" : 2,
+			"desstep" : -1
+			"desrange" : 2,		
 			"water" : 2,
 			"religion" : 2,
 			"education" : 2,
@@ -375,6 +419,9 @@
 			"minDesirability" : 60,
 		    "maxDesirability" : 68,
 			"entertainment" : 50,
+			"desirability" : 2,
+			"desstep" : -1
+			"desrange" : 2,	
 			"water" : 2,
 			"religion" : 3,
 			"education" : 3,
@@ -398,6 +445,9 @@
 			"minDesirability" : 65,
 		    "maxDesirability" : 74,
 			"entertainment" : 55,
+			"desirability" : 3,
+			"desstep" : -1
+			"desrange" : 3,	
 			"water" : 2,
 			"religion" : 3,
 			"education" : 3,
@@ -421,6 +471,9 @@
 			"minDesirability" : 70,
 		    "maxDesirability" : 80,
 			"entertainment" : 60,
+			"desirability" : 3,
+			"desstep" : -1
+			"desrange" : 3,				
 			"water" : 2,
 			"religion" : 4,
 			"education" : 3,
@@ -444,6 +497,9 @@
 			"minDesirability" : 76,
 		    "maxDesirability" : 90,
 			"entertainment" : 70,
+			"desirability" : 4
+			"desstep" : -1
+			"desrange" : 4,				
 			"water" : 2,
 			"religion" : 4,
 			"education" : 3,
@@ -467,6 +523,9 @@
 			"minDesirability" : 85,
 		    "maxDesirability" : 100,
 			"entertainment" : 80,
+			"desirability" : 4,
+			"desstep" : -1
+			"desrange" : 4,				
 			"water" : 2,
 			"religion" : 4,
 			"education" : 3,

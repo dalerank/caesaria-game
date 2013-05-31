@@ -62,13 +62,13 @@ int GfxEngine::getScreenHeight() const
   return _screen_height;
 }
 
-void GfxEngine::load_pictures(const std::list<Picture*> &ioPictures)
+void GfxEngine::loadPictures(const std::list<Picture*> &ioPictures)
 {
   for (std::list<Picture*>::const_iterator it = ioPictures.begin(); it!= ioPictures.end(); ++it)
   {
     // for every picture
     Picture& pic = *(*it);
-    load_picture(pic);
+    loadPicture(pic);
   }
 }
 
@@ -77,3 +77,6 @@ Size GfxEngine::getScreenSize() const
   return Size( _screen_width, _screen_height );
 }
 
+void GfxEngine::setFlag( int flag, int value )
+{
+}

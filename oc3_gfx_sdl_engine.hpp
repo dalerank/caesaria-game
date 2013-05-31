@@ -33,13 +33,15 @@ public:
    ~GfxSdlEngine();
    void init();
    void exit();
-   void load_picture(Picture &ioPicture);
-   void unload_picture(Picture& ioPicture);
+   void loadPicture(Picture &ioPicture);
+   void unloadPicture(Picture& ioPicture);
 
    void startRenderFrame();
    void drawPicture(const Picture &picture, const int dx, const int dy);
    void drawPicture(const Picture &picture, const Point& pos );
    void endRenderFrame();
+
+   void setFlag( int flag, int value );
 
    void setTileDrawMask( int rmask, int gmask, int bmask, int amask );
    void resetTileDrawMask();
@@ -50,6 +52,9 @@ public:
    Picture& createPicture(int width, int height);
 
    Picture& getScreen();
+
+   unsigned int getFps() const;
+   void createScreenshot( const std::string& filename );
 private:
    class Impl;
    ScopedPtr< Impl > _d;

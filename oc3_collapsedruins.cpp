@@ -50,3 +50,8 @@ bool CollapsedRuins::isWalkable() const
 {
   return true;
 }
+
+bool CollapsedRuins::isNeedRoadAccess() const
+{
+  return false;
+}

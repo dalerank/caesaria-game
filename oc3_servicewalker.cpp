@@ -14,24 +14,36 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_servicewalker.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_city.hpp"
 
-ServiceWalker::ServiceWalker( BuildingPtr base, const ServiceType service)
+class ServiceWalker::Impl
+{
+public:
+  City* city;
+  BuildingPtr base;
+  ServiceType service;
+  int maxDistance;
+};
+
+ServiceWalker::ServiceWalker( City& city, const ServiceType service) 
+: _d( new Impl )
 {
   _walkerType = WT_SERVICE;
-  _base = base;
-  _maxDistance = 5;  // TODO: _building.getMaxDistance() ?
+  _walkerGraphic = WG_NONE;
+  _d->maxDistance = 5;  // TODO: _building.getMaxDistance() ?
+  _d->service = service;
+  _d->city = &city;
 
   init(service);
 }
 
 void ServiceWalker::init(const ServiceType service)
 {
-  _service = service;
+  _d->service = service;
 
-  switch (_service)
+  switch (_d->service)
   {
   case S_WELL:
   case S_FOUNTAIN:
@@ -42,9 +54,11 @@ void ServiceWalker::init(const ServiceType service)
   case S_ENGINEER:
     _walkerGraphic = WG_ENGINEER;
     break;
-  case S_PREFECT:
-    _walkerGraphic = WG_PREFECT;
-    break;
+ /*
+     case S_PREFECT:
+        _walkerGraphic = WG_PREFECT;
+        break;*/
+    
   case S_TEMPLE_NEPTUNE:
   case S_TEMPLE_CERES:
   case S_TEMPLE_VENUS:
@@ -86,19 +100,19 @@ void ServiceWalker::init(const ServiceType service)
   }
 }
 
-BuildingPtr ServiceWalker::getBase()
+BuildingPtr ServiceWalker::getBase() const
 {
-  if( _base.isNull() ) 
+  if( _d->base.isNull() ) 
   {
     _OC3_DEBUG_BREAK_IF( "ServiceBuilding is not initialized" );
   }
 
-  return _base;
+  return _d->base;
 }
 
 ServiceType ServiceWalker::getService()
 {
-  return _service;
+  return _d->service;
 }
 
 void ServiceWalker::computeWalkerPath()
@@ -106,8 +120,8 @@ void ServiceWalker::computeWalkerPath()
   std::list<PathWay> pathWayList;
 
   Propagator pathPropagator;
-  pathPropagator.init( *_base.object() );
-  pathPropagator.getAllPaths(_maxDistance, pathWayList);
+  pathPropagator.init( *_d->base.object() );
+  pathPropagator.getAllPaths(_d->maxDistance, pathWayList);
 
   float maxPathValue = 0.0;
   PathWay* bestPath = NULL;
@@ -142,13 +156,12 @@ unsigned int ServiceWalker::getReachDistance() const
 
 ServiceWalker::ReachedBuildings ServiceWalker::getReachedBuildings(const TilePos& pos )
 {
-  City& city = Scenario::instance().getCity();
   ReachedBuildings res;
 
   int reachDistance = getReachDistance();
   TilePos start = pos - TilePos( reachDistance, reachDistance );
   TilePos stop = pos + TilePos( reachDistance, reachDistance );
-  std::list<Tile*> reachedTiles = city.getTilemap().getFilledRectangle( start, stop );
+  std::list<Tile*> reachedTiles = _d->city->getTilemap().getFilledRectangle( start, stop );
   for (std::list<Tile*>::iterator itTile = reachedTiles.begin(); itTile != reachedTiles.end(); ++itTile)
   {
     TerrainTile& terrain = (*itTile)->get_terrain();
@@ -208,18 +221,19 @@ void ServiceWalker::reservePath(PathWay &pathWay)
       if (rc.second == true)
       {
         // the building has not been reserved yet
-        (*itBuilding)->reserveService(_service);
+        (*itBuilding)->reserveService(_d->service);
       }
     }
   }
 }
 
-void ServiceWalker::send2City()
+void ServiceWalker::send2City( BuildingPtr base )
 {
+  setBase( base );
   computeWalkerPath();
 
   if( !isDeleted() )
-    Scenario::instance().getCity().addWalker( WalkerPtr( this ));
+    _d->city->addWalker( WalkerPtr( this ));
 }
 
 void ServiceWalker::onNewTile()
@@ -253,10 +267,9 @@ void ServiceWalker::onDestination()
 void ServiceWalker::save( VariantMap& stream ) const
 {
   Walker::save( stream );
-  stream[ "type" ] = (int)_service;
-  stream[ "baseI" ] = _base->getTile().getI();
-  stream[ "baseJ" ] = _base->getTile().getJ();
-  stream[ "maxDistance" ] = _maxDistance;
+  stream[ "type" ] = (int)_d->service;
+  stream[ "base" ] = _d->base->getTile().getIJ();
+  stream[ "maxDistance" ] = _d->maxDistance;
 }
 
 void ServiceWalker::load( const VariantMap& stream )
@@ -271,7 +284,7 @@ void ServiceWalker::load( const VariantMap& stream )
 
 void ServiceWalker::setMaxDistance( const int distance )
 {
-  _maxDistance = distance;
+  _d->maxDistance = distance;
 }
 
 float ServiceWalker::getServiceValue() const
@@ -279,9 +292,29 @@ float ServiceWalker::getServiceValue() const
   return 100;
 }
 
-ServiceWalkerPtr ServiceWalker::create( BuildingPtr base, const ServiceType service )
+ServiceWalkerPtr ServiceWalker::create( City& city, const ServiceType service )
 {
-  ServiceWalkerPtr ret( new ServiceWalker( base, service ) );
+  ServiceWalkerPtr ret( new ServiceWalker( city, service ) );
   ret->drop();
   return ret;
+}
+
+ServiceWalker::~ServiceWalker()
+{
+
+}
+
+void ServiceWalker::setBase( BuildingPtr base )
+{
+  _d->base = base;
+}
+
+City& ServiceWalker::_getCity() const
+{
+  if( !_d->city )
+  {
+    _OC3_DEBUG_BREAK_IF( true && "city for walker is null" ); 
+  }
+
+  return *_d->city;
 }

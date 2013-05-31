@@ -39,8 +39,8 @@ public:
    void init();
    void exit();
 
-   void load_picture(Picture &ioPicture);
-   void unload_picture(Picture &ioPicture);
+   void loadPicture(Picture &ioPicture);
+   void unloadPicture(Picture &ioPicture);
 
    void init_frame();
    void drawPicture(const Picture &picture, const int dx, const int dy);
@@ -49,6 +49,9 @@ public:
 
    void setTileDrawMask( int rmask, int gmask, int bmask, int amask );
    void resetTileDrawMask();
+
+   void createScreenshot( const std::string& filename );
+   unsigned int getFps() const;
 private:
    SDL_Surface *_screen;
 };

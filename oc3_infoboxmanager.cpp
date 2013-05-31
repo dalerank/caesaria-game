@@ -15,7 +15,6 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
 #include "oc3_infoboxmanager.hpp"
 #include "oc3_gui_info_box.hpp"
 #include "oc3_guienv.hpp"
@@ -23,14 +22,64 @@
 #include "oc3_buildingprefect.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_service_building.hpp"
+#include "oc3_buildingengineer.hpp"
 #include "oc3_stringhelper.hpp"
+#include "oc3_house.hpp"
+
+class InfoBoxHouseCreator : public InfoboxCreator
+{
+public:
+  GuiInfoBox* create( Widget* parent, const Tile& tile )
+  {
+    HousePtr house = tile.get_terrain().getOverlay().as<House>();
+    if( house->getNbHabitants() > 0 )
+    {
+      return new InfoBoxHouse( parent, tile );
+    }
+    else
+    {
+      return new InfoBoxFreeHouse( parent, tile );
+    }
+  }
+};
+
+class ServiceBaseInfoboxCreator : public InfoboxCreator
+{
+public:
+  ServiceBaseInfoboxCreator( const std::string& caption,
+                             const std::string& descr,
+                             bool drawWorkers=false )
+  {
+    title = caption;
+    text = descr;
+    isDrawWorkers = drawWorkers;
+  }
+
+  GuiInfoBox* create( Widget* parent, const Tile& tile )
+  {
+    Size  size = parent->getSize();
+    GuiInfoService* infoBox = new GuiInfoService( parent, tile.get_terrain().getOverlay().as<ServiceBuilding>() );
+    infoBox->setPosition( Point( (size.getWidth() - infoBox->getWidth()) / 2, 
+                                  size.getHeight() - infoBox->getHeight()) );
+
+    infoBox->setTitle( title );
+    infoBox->setText( text );
+    return infoBox;
+  }
+
+  std::string title, text;
+  bool isDrawWorkers;
+};
 
 class InfoBoxManager::Impl
 {
 public:
     GuiEnv* gui;
-    GuiInfoBox* infoBox;
     bool showDebugInfo;
+
+    typedef std::map< BuildingType, InfoboxCreator* > InfoboxCreators;
+    std::map< std::string, BuildingType > name2typeMap;
+    InfoboxCreators constructors;
 };
 
 InfoBoxManagerPtr InfoBoxManager::create( GuiEnv* gui )
@@ -44,7 +93,18 @@ InfoBoxManagerPtr InfoBoxManager::create( GuiEnv* gui )
 
 InfoBoxManager::InfoBoxManager() : _d( new Impl )
 {
-
+  addCreator( B_ROAD, OC3_STR_EXT(B_ROAD), new BaseInfoboxCreator<InfoBoxLand>() );
+  addCreator( B_HOUSE, OC3_STR_EXT(B_HOUSE), new InfoBoxHouseCreator() );
+  addCreator( B_PREFECT, OC3_STR_EXT(B_PREFECT), new ServiceBaseInfoboxCreator( "##prefecture_title##", "##prefecture_text##") );
+  addCreator( B_ENGINEER, OC3_STR_EXT(B_ENGINEER), new ServiceBaseInfoboxCreator( "##engineering_post_title##", "##engineering_post_text##" ) ); 
+  addCreator( B_WELL, OC3_STR_EXT(B_WELL), new ServiceBaseInfoboxCreator( "##well_title##", "##well_text##" ) );
+  addCreator( B_FOUNTAIN, OC3_STR_EXT(B_FOUNTAIN), new ServiceBaseInfoboxCreator( "##fontaun_title##", "##fontaun_text##" ) );
+  addCreator( B_MARKET, OC3_STR_EXT(B_MARKET), new BaseInfoboxCreator<GuiInfoMarket>() );
+  addCreator( B_GRANARY, OC3_STR_EXT(B_GRANARY), new BaseInfoboxCreator<GuiInfoGranary>() );
+  addCreator( B_GRAPE, OC3_STR_EXT(B_GRAPE), new BaseInfoboxCreator<InfoBoxFarm>() );
+  addCreator( B_WHEAT, OC3_STR_EXT(B_WHEAT), new BaseInfoboxCreator<InfoBoxFarm>() );
+  addCreator( B_TEMPLE_CERES, OC3_STR_EXT(B_TEMPLE_CERES), new BaseInfoboxCreator<InfoBoxTemple>() );
+  addCreator( B_NONE, OC3_STR_EXT(B_NONE), new BaseInfoboxCreator<InfoBoxLand>() );
 }
 
 InfoBoxManager::~InfoBoxManager()
@@ -52,66 +112,54 @@ InfoBoxManager::~InfoBoxManager()
 
 }
 
-void InfoBoxManager::showHelp( Tile* tile )
+void InfoBoxManager::showHelp( const Tile& tile )
 {
-    LandOverlayPtr overlay = tile->get_terrain().getOverlay();
-    GuiInfoBox* infoBox = 0;
+  LandOverlayPtr overlay = tile.get_terrain().getOverlay();
+  BuildingType type;
 
-    if( _d->showDebugInfo )
-    {
-      StringHelper::debug( 0xff, "Tile debug info: dsrbl=%d", tile->get_terrain().getDesirability() ); 
-    }
+  if( _d->showDebugInfo )
+  {
+    StringHelper::debug( 0xff, "Tile debug info: dsrbl=%d", tile.get_terrain().getDesirability() ); 
+  }
 
-    if( overlay.isNull() )
-    {
-        const TerrainTile& terrain = tile->get_terrain();
-        infoBox = new InfoBoxLand( _d->gui->getRootWidget(), tile );
-    }
-    else
-    {
-      RoadPtr road  = overlay.as<Road>();
-      if( road.isValid() )
-      {
-        infoBox = new InfoBoxLand( _d->gui->getRootWidget(), tile );    
-      }
-      
-      HousePtr house = overlay.as<House>();
-      if( house.isValid() )
-      {
-        if( house->getNbHabitants() > 0 )
-        {
-          infoBox = new InfoBoxHouse( _d->gui->getRootWidget(), house );
-        }
-        else
-        {
-          infoBox = new InfoBoxFreeHouse( _d->gui->getRootWidget(), tile );
-        }
-      }
+  type = overlay.isNull() ? B_NONE : overlay->getType();
 
-      BuildingPrefectPtr prefecture = overlay.as<BuildingPrefect>();
-      if( prefecture.isValid() )
-      {
-        Size  size = _d->gui->getRootWidget()->getSize();
-        infoBox = new GuiInfoService( _d->gui->getRootWidget(), prefecture.as<ServiceBuilding>() );
-        infoBox->setPosition( Point( (size.getWidth() - infoBox->getWidth()) / 2, 
-                                      size.getHeight() - infoBox->getHeight()) );
+  Impl::InfoboxCreators::iterator findConstructor = _d->constructors.find( type );
 
-        infoBox->setTitle( "##engineering_post_title##");
-        infoBox->setText( "##engineering_post_text##");
-        return;
-      }
-    }
-    
-    if( infoBox  )
-    {
-        Point pos( 156, ( _d->gui->getCursorPos().getY() < _d->gui->getRootWidget()->getHeight() / 2 ) ? 407 : 30);
+  GuiInfoBox* infoBox = findConstructor != _d->constructors.end() 
+                                  ? findConstructor->second->create( _d->gui->getRootWidget(), tile )
+                                  : 0;
+  
+  if( infoBox && infoBox->isAutoPosition() )
+  {
+    Size rSize = _d->gui->getRootWidget()->getSize();
+    int y = ( _d->gui->getCursorPos().getY() < rSize.getHeight() / 2 ) 
+                ? rSize.getHeight() - infoBox->getHeight() - 5
+                : 30;
+    Point pos( ( rSize.getWidth() - infoBox->getWidth() ) / 2, y );
 
-        infoBox->setPosition( pos );
-        //_screenGame->setInfoBox(infoBox);
-    }
+    infoBox->setPosition( pos );
+  }
 }
 
 void InfoBoxManager::setShowDebugInfo( const bool showInfo )
 {
   _d->showDebugInfo = showInfo;
 } 
+
+void InfoBoxManager::addCreator( const BuildingType type, const std::string& typeName, InfoboxCreator* ctor )
+{
+  bool alreadyHaveConstructor = _d->name2typeMap.find( typeName ) != _d->name2typeMap.end();
+  _OC3_DEBUG_BREAK_IF( alreadyHaveConstructor && "already have constructor for this type");
+
+  if( !alreadyHaveConstructor )
+  {
+    _d->name2typeMap[ typeName ] = type;
+    _d->constructors[ type ] = ctor;
+  }
+}
+
+bool InfoBoxManager::canCreate( const BuildingType type ) const
+{
+  return _d->constructors.find( type ) != _d->constructors.end();   
+}

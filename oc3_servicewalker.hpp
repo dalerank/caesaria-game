@@ -24,12 +24,14 @@ class ServiceWalker : public Walker
 public:
   typedef std::set<BuildingPtr> ReachedBuildings;
 
-  static ServiceWalkerPtr create( BuildingPtr base, const ServiceType service );
+  static ServiceWalkerPtr create( City& city, const ServiceType service );
 
   ServiceType getService();
-  BuildingPtr getBase();
+  BuildingPtr getBase() const;
 
-  void send2City();
+  void setBase( BuildingPtr base );
+
+  virtual void send2City( BuildingPtr base );
   virtual float getServiceValue() const;
   virtual void onDestination();
   virtual void onNewTile();  // called when the walker is on a new tile
@@ -46,15 +48,17 @@ public:
   void save( VariantMap& stream) const;
   void load( const VariantMap& stream);
 
+  ~ServiceWalker();
 protected:
-  ServiceWalker( BuildingPtr base, const ServiceType service );
+  ServiceWalker( City& city, const ServiceType service );
+
+  City& _getCity() const;
   void init(const ServiceType service);
   void computeWalkerPath();
 
 private:
-  ServiceType _service;
-  BuildingPtr _base;
-  int _maxDistance;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 #endif

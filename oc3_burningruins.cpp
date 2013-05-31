@@ -30,6 +30,8 @@ BurningRuins::BurningRuins() : ServiceBuilding(S_BURNING_RUINS, B_BURNING_RUINS,
     _fgPictures.resize(1);           
 }
 
+
+
 void BurningRuins::timeStep(const unsigned long time)
 {
     ServiceBuilding::timeStep(time);
@@ -114,6 +116,11 @@ void BurningRuins::applyService(ServiceWalkerPtr walker)
   }
 }
 
+bool BurningRuins::isNeedRoadAccess() const
+{
+  return false;
+}
+
 void BurnedRuins::timeStep( const unsigned long time )
 {
 
@@ -135,4 +142,9 @@ void BurnedRuins::build( const TilePos& pos )
 bool BurnedRuins::isWalkable() const
 {
   return true;
+}
+
+bool BurnedRuins::isNeedRoadAccess() const
+{
+  return false;
 }

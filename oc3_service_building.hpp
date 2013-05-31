@@ -64,15 +64,6 @@ private:
    ScopedPtr< Impl > _d;
 };
 
-class BuildingWell : public ServiceBuilding
-{
-public:
-  BuildingWell();
-
-  char getDesirabilityInfluence() const; 
-  void deliverService();
-};
-
 class BuildingFountain : public ServiceBuilding
 {
 public:
@@ -112,72 +103,6 @@ class BuildingHippodrome : public EntertainmentBuilding
 {
 public:
    BuildingHippodrome();
-};
-
-class TempleCeres : public ServiceBuilding
-{
-public:
-   TempleCeres();
-};
-
-class TempleNeptune : public ServiceBuilding
-{
-public:
-   TempleNeptune();
-};
-
-class TempleMars : public ServiceBuilding
-{
-public:
-   TempleMars();
-};
-
-class TempleVenus : public ServiceBuilding
-{
-public:
-   TempleVenus();
-};
-
-class TempleMercure : public ServiceBuilding
-{
-public:
-   TempleMercure();
-};
-
-class BigTempleCeres : public ServiceBuilding
-{
-public:
-   BigTempleCeres();
-};
-
-class BigTempleNeptune : public ServiceBuilding
-{
-public:
-   BigTempleNeptune();
-};
-
-class BigTempleMars : public ServiceBuilding
-{
-public:
-   BigTempleMars();
-};
-
-class BigTempleVenus : public ServiceBuilding
-{
-public:
-   BigTempleVenus();
-};
-
-class BigTempleMercure : public ServiceBuilding
-{
-public:
-   BigTempleMercure();
-};
-
-class TempleOracle : public ServiceBuilding
-{
-public:
-   TempleOracle();
 };
 
 class School : public ServiceBuilding

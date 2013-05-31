@@ -27,6 +27,7 @@ public:
     void build(const TilePos& pos );
 
     bool isWalkable() const;
+    bool isNeedRoadAccess() const;
 };
 
 #endif

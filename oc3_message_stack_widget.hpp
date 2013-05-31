@@ -17,9 +17,25 @@
 #ifndef __OPENCAESAR3_MESSAGE_STACK_WIDGET_H_INCLUDED__ 
 #define __OPENCAESAR3_MESSAGE_STACK_WIDGET_H_INCLUDED__ 
 
-class WindowMessageStack
+#include "oc3_widget.hpp"
+#include "oc3_scopedptr.hpp"
+
+class WindowMessageStack : public Widget
 {
 public:
+  static WindowMessageStack* create( Widget* parent, int id );
+
+  // draw on screen
+  virtual void draw( GfxEngine& engine );
+
+  bool onEvent(const NEvent& event);
+
+  void addMessage( std::string );
+ 
+private:
+  WindowMessageStack( Widget* parent, int id, const Rect& rectangle );
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 #endif

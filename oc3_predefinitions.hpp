@@ -58,6 +58,12 @@ typedef SmartPtr< Granary > GranaryPtr;
 class Factory;
 typedef SmartPtr< Factory > FactoryPtr;
 
+class RomeDivinity;
+typedef SmartPtr< RomeDivinity > RomeDivinityPtr;
+
+class Temple;
+typedef SmartPtr< Temple > TemplePtr;
+
 class Tile;
 typedef std::list< const Tile* > ConstWayOnTiles;
 typedef std::list< Tile* > WayOnTiles;
@@ -75,5 +81,7 @@ class Size;
 class TerrainTile;
 class VariantMap;
 
+class Widget;
+class GuiEnv;
 
 #endif

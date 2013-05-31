@@ -20,10 +20,24 @@
 #include "oc3_scenario.hpp"
 #include "oc3_tile.hpp"
 
+
+class FarmTile
+{
+public:
+  FarmTile(const GoodType outGood, const TilePos& pos );
+  virtual ~FarmTile();
+  void computePicture(const int percent);
+  Picture& getPicture();
+
+private:
+  TilePos _pos;
+  Picture _picture;
+  Animation _animation;
+};
+
 FarmTile::FarmTile(const GoodType outGood, const TilePos& pos )
 {
-  _i = pos.getI();
-  _j = pos.getJ();
+  _pos = pos;
 
   int picIdx = 0;
   switch (outGood)
@@ -60,7 +74,7 @@ void FarmTile::computePicture(const int percent)
 
   int picIdx = (percent * (pictures.size()-1)) / 100;
   _picture = *pictures[picIdx];
-  _picture.add_offset(30*(_i+_j), 15*(_j-_i));
+  _picture.add_offset(30*(_pos.getI()+_pos.getJ()), 15*(_pos.getJ()-_pos.getI() ));
 }
 
 Picture& FarmTile::getPicture()
@@ -68,16 +82,27 @@ Picture& FarmTile::getPicture()
   return _picture;
 }
 
+FarmTile::~FarmTile()
+{
+
+}
+class Farm::Impl
+{
+public:
+  std::vector<FarmTile> subTiles;
+  Picture pictureBuilding;  // we need to change its offset
+};
 
 Farm::Farm(const GoodType outGood, const BuildingType type ) 
-: Factory(G_NONE, outGood, type, Size(3) )
+: Factory(G_NONE, outGood, type, Size(3) ), _d( new Impl )
 {
-  _picture = &_pictureBuilding;
+  _picture = &_d->pictureBuilding;
 
-  _pictureBuilding = Picture::load( ResourceGroup::commerce, 12);  // farm building
-  _pictureBuilding.add_offset(30, 15);
+  _d->pictureBuilding = Picture::load( ResourceGroup::commerce, 12);  // farm building
+  _d->pictureBuilding.add_offset(30, 15);
 
   init();
+  setWorkers( 0 );
 }
 
 bool Farm::canBuild(const TilePos& pos ) const
@@ -100,16 +125,16 @@ void Farm::init()
 {
   GoodType farmType = _outGoodType;
   // add subTiles in draw order
-  _subTiles.push_back(FarmTile(farmType, TilePos( 0, 0 ) ));
-  _subTiles.push_back(FarmTile(farmType, TilePos( 2, 2 ) ));
-  _subTiles.push_back(FarmTile(farmType, TilePos( 1, 0 ) ));
-  _subTiles.push_back(FarmTile(farmType, TilePos( 2, 1 ) ));
-  _subTiles.push_back(FarmTile(farmType, TilePos( 2, 0 ) ));
+  _d->subTiles.push_back(FarmTile(farmType, TilePos( 0, 0 ) ));
+  _d->subTiles.push_back(FarmTile(farmType, TilePos( 2, 2 ) ));
+  _d->subTiles.push_back(FarmTile(farmType, TilePos( 1, 0 ) ));
+  _d->subTiles.push_back(FarmTile(farmType, TilePos( 2, 1 ) ));
+  _d->subTiles.push_back(FarmTile(farmType, TilePos( 2, 0 ) ));
 
   _fgPictures.resize(5);
   for (int n = 0; n<5; ++n)
   {
-    _fgPictures[n] = &_subTiles[n].getPicture();
+    _fgPictures[n] = &_d->subTiles[n].getPicture();
   }
 }
 
@@ -132,7 +157,7 @@ void Farm::computePictures()
       percentTile = 5 * amount;
       amount = 0;  // for next subTiles
     }
-    _subTiles[n].computePicture(percentTile);
+    _d->subTiles[n].computePicture(percentTile);
   }
 }
 

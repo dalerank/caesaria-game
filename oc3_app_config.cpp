@@ -16,6 +16,9 @@
 #include "oc3_app_config.hpp"
 
 const std::string AppConfig::resourcePath = "resourcePath";
+const std::string AppConfig::pantheonModel = "pantheonConfig";
+const std::string AppConfig::houseModel = "houseModel";
+const std::string AppConfig::constructionModel = "constructionModel";
 
 class AppConfig::Impl
 {
@@ -32,6 +35,9 @@ AppConfig& AppConfig::getInstance()
 AppConfig::AppConfig() : _d( new Impl )
 {
   _d->options[ resourcePath ] = Variant( std::string( "./resources" ) );
+  _d->options[ pantheonModel ] = Variant( std::string( "/pantheon.model" ) );
+  _d->options[ houseModel ] = Variant( std::string( "/house.model" ) );
+  _d->options[ constructionModel ] = Variant( std::string( "/construction.model" ) );
 }
 
 void AppConfig::set( const std::string& option, const Variant& value )

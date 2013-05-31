@@ -18,18 +18,19 @@
 #include "oc3_traineewalker.hpp"
 #include "oc3_walker_market_buyer.hpp"
 #include "oc3_walker_cart_pusher.hpp"
+#include "oc3_walker_prefect.hpp"
 #include "oc3_emigrant.hpp"
 #include "oc3_scenario.hpp"
 #include <map>
 
 template< class T >
-class WalkerMigrantCreator : public AbstractWalkerCreator
+class WalkerPtrCreator : public AbstractWalkerCreator
 {
 public:
   T* create()
   {
     SmartPtr<T> ret = T::create( Scenario::instance().getCity() ); 
-    ret->grab();
+    ret->grab(); //but T::create also drop it, and WalkerManager::create yet call drop
 
     return ret.object();
   }
@@ -45,8 +46,10 @@ public:
 
 WalkerManager::WalkerManager() : _d( new Impl )
 {
-  addCreator( WT_EMIGRANT, OC3_STR_EXT(WT_EMIGRANT), new WalkerMigrantCreator<Emigrant>() );
-  addCreator( WT_IMMIGRANT, OC3_STR_EXT(WT_IMMIGRANT), new WalkerMigrantCreator<Immigrant>() );
+  addCreator( WT_EMIGRANT, OC3_STR_EXT(WT_EMIGRANT), new WalkerPtrCreator<Emigrant>() );
+  addCreator( WT_IMMIGRANT, OC3_STR_EXT(WT_IMMIGRANT), new WalkerPtrCreator<Immigrant>() );
+  addCreator( WT_CART_PUSHER, OC3_STR_EXT(WT_CART_PUSHER), new WalkerPtrCreator<CartPusher>() );
+  addCreator( WT_PREFECT, OC3_STR_EXT(WT_PREFECT), new WalkerPtrCreator<WalkerPrefect>() );
 }
 
 WalkerManager::~WalkerManager()

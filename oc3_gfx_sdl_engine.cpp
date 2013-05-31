@@ -21,17 +21,21 @@
 #include <cstdlib>
 #include <string>
 #include <sstream>
-#include <iostream>
 #include <list>
 #include <vector>
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 
+#include "IMG_savepng.h"
 #include "oc3_exception.hpp"
-#include "oc3_pic_loader.hpp"
 #include "oc3_requirements.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_pictureconverter.hpp"
+#include "oc3_time.hpp"
+#include "oc3_stringhelper.hpp"
+#include "oc3_pic_loader.hpp"
+#include "oc3_font.hpp"
 
 class GfxSdlEngine::Impl
 {
@@ -41,6 +45,10 @@ public:
   
   int rmask, gmask, bmask, amask;
   std::list<Picture*> createdPics;  // list of all pictures created by the sdl_facade
+  unsigned int fps, lastFps;
+  unsigned int lastUpdateFps;
+  Font debugFont;
+  bool showDebugInfo;
 };
 
 
@@ -60,15 +68,18 @@ GfxSdlEngine::~GfxSdlEngine()
 
 void GfxSdlEngine::deletePicture( Picture &pic )
 {
-  unload_picture( pic );
+  unloadPicture( pic );
   delete &pic;
   _d->createdPics.remove(&pic);
 }
 
 void GfxSdlEngine::init()
 {
-  int rc;
-  rc = SDL_Init(SDL_INIT_VIDEO);
+  _d->lastUpdateFps = DateTime::getElapsedTime();
+  _d->fps = 0;
+  _d->showDebugInfo = false;
+
+  int rc = SDL_Init(SDL_INIT_VIDEO);
   if (rc != 0) THROW("Unable to initialize SDL: " << SDL_GetError());
   rc = TTF_Init();
   if (rc != 0) THROW("Unable to initialize SDL: " << SDL_GetError());
@@ -79,6 +90,7 @@ void GfxSdlEngine::init()
 
   SDL_Surface* scr = SDL_SetVideoMode(_screen_width, _screen_height, 32, aFlags);  // 32bpp
   _d->screen.init( scr, 0, 0 );
+  
   if( !_d->screen.isValid() ) 
   {
     THROW("Unable to set video mode: " << SDL_GetError());
@@ -97,7 +109,7 @@ void GfxSdlEngine::exit()
 /* Convert picture to SDL surface and then put surface into Picture class
  */
 
-void GfxSdlEngine::load_picture(Picture& ioPicture)
+void GfxSdlEngine::loadPicture(Picture& ioPicture)
 {
   // convert pixel format
   SDL_Surface *newImage;
@@ -107,7 +119,7 @@ void GfxSdlEngine::load_picture(Picture& ioPicture)
   ioPicture._surface = newImage;
 }
 
-void GfxSdlEngine::unload_picture(Picture& ioPicture)
+void GfxSdlEngine::unloadPicture(Picture& ioPicture)
 {
   SDL_FreeSurface( ioPicture._surface );
   ioPicture._surface = NULL;
@@ -122,7 +134,21 @@ void GfxSdlEngine::startRenderFrame()
 
 void GfxSdlEngine::endRenderFrame()
 {
+  if( _d->showDebugInfo )
+  {
+    std::string debugText = StringHelper::format( 0xff, "fps: %d", _d->lastFps );
+    _d->debugFont.draw( _d->screen, debugText, 4, 22 );
+  }
+
   SDL_Flip( _d->screen.get_surface() ); //Refresh the screen
+  _d->fps++;
+
+  if( DateTime::getElapsedTime() - _d->lastUpdateFps > 1000 )
+  {
+    _d->lastUpdateFps = DateTime::getElapsedTime();
+    _d->lastFps = _d->fps;
+    _d->fps = 0;
+  }
 }
 
 void GfxSdlEngine::drawPicture(const Picture &picture, const int dx, const int dy)
@@ -171,4 +197,20 @@ Picture& GfxSdlEngine::createPicture(const int width, const int height)
 
   _d->createdPics.push_back(pic);
   return *_d->createdPics.back();
+}
+
+void GfxSdlEngine::createScreenshot( const std::string& filename )
+{
+  IMG_SavePNG( filename.c_str(), _d->screen.get_surface(), -1 );
+}
+
+unsigned int GfxSdlEngine::getFps() const
+{
+  return _d->fps;
+}
+
+void GfxSdlEngine::setFlag( int flag, int value )
+{
+  _d->showDebugInfo = value > 0;
+  _d->debugFont = Font( FONT_2 );
 }

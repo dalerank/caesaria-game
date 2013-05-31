@@ -17,6 +17,7 @@
 #define __OPENCAESAR3_WALKER_PREFECT_H_INCLUDED__
 
 #include "oc3_servicewalker.hpp"
+#include "oc3_buildingprefect.hpp"
 
 class WalkerPrefect;
 typedef SmartPtr< WalkerPrefect > WalkerPrefectPtr;
@@ -24,7 +25,7 @@ typedef SmartPtr< WalkerPrefect > WalkerPrefectPtr;
 class WalkerPrefect : public ServiceWalker
 {
 public:
-  static WalkerPrefectPtr create( ServiceBuildingPtr building, int water=0 );
+  static WalkerPrefectPtr create( City& city );
  
   void onMidTile();
   void onNewTile();
@@ -32,10 +33,12 @@ public:
   float getServiceValue() const;
   void onDestination();
 
+  void send2City( BuildingPrefectPtr prefecture, int water=0 );
+
   ~WalkerPrefect();
  
 protected:
-  WalkerPrefect( ServiceBuildingPtr building, int water );
+  WalkerPrefect( City& city );
 
   bool _looks4Fire( ReachedBuildings& buildings, TilePos& pos );
   void _checkPath2NearestFire( const ReachedBuildings& buildings );

@@ -29,10 +29,9 @@
 #include "oc3_tilemap_area.hpp"
 #include "oc3_signals.hpp"
 #include "oc3_scopedptr.hpp"
-
+#include "oc3_tilemapchangecommand.hpp"
 
 class ScreenGame;
-class TilemapChangeCommand;
 struct NEvent;
 
 /* Draws the tilemap area on the screen thanks to the GfxEngine, and handle user events */
@@ -52,10 +51,11 @@ public:
    void handleEvent( NEvent& event);
 
    // sets the current build tool (if any)
-   void setChangeCommand( const TilemapChangeCommand& command );
+   void setChangeCommand( const TilemapChangeCommandPtr command );
 
 oc3_signals public:
-   Signal1< Tile* >& onShowTileInfo();
+   Signal1< const Tile& >& onShowTileInfo();
+   Signal1< std::string >& onWarningMessage();
 
 protected:
    // used to discard the build/remove preview
@@ -73,8 +73,6 @@ protected:
    void drawTile( Tile& tile );
 
    void drawTileEx( Tile& tile, const int depth );
-
-   void _clearAll();
 
 private:
    class Impl;

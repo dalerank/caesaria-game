@@ -41,7 +41,7 @@
 extern "C" {
 #endif
 
-#include <SDL/SDL_byteorder.h> // Needed for endian detection stuff
+#include <SDL_byteorder.h> // Needed for endian detection stuff
 
 // Deal with byte order issues. I would like to take this opportunity to ask
 // the creators of little-endian architectures to die in a fire.

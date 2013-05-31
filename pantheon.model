@@ -1,0 +1,47 @@
+{
+	"ceres" : 
+		{
+			"name" : "Ceres",
+			"short" : "Fertility",
+			"type" : "goddess",
+			/* S_TEPLE_CERES */
+			"service" : 8,
+			"image" : "picture1_00013.png"
+ 		},
+	"mars" :
+		{
+			"name" : "Mars",
+			"short" : "War",
+			"type" : "god",
+			/* S_TEPLE_MARS */
+			"service" : 8,
+			"image" : "picture1_00012.png"
+		},
+	"neptune" :
+		{
+			"name" : "Neptune"
+			"short" : ""
+			"type" : "god",
+			/* S_TEPLE_NEPTUNE */
+			"service" : 7
+			"image" : "picture1_00015.png"
+		},
+	"venus" :
+		{
+			"name" : "Venus"
+			"short" : ""
+			"type" : "goddes"
+			/* S_TEPLE_VENUS */
+			"service" : 9
+			"image" : "picture1_00011.png"
+		},		
+	"mercury" :
+		{
+			"name" : "Mercury"
+			"short" : ""
+			"type" : "god",
+			/* S_TEPLE_MERCURY0 */
+			"service" : 11
+			"image" : "picture1_00014.png"
+		},
+}

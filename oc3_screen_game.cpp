@@ -18,15 +18,8 @@
 #include "oc3_screen_game.hpp"
 
 #include <algorithm>
-#include <iostream>
-
-#include <boost/date_time/gregorian/gregorian.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
-
-#include "IMG_savepng.h"
 
 #include "oc3_gfx_engine.hpp"
-#include "oc3_gfx_sdl_engine.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_warehouse.hpp"
 #include "oc3_scenario_saver.hpp"
@@ -39,6 +32,9 @@
 #include "oc3_infoboxmanager.hpp"
 #include "oc3_constructionmanager.hpp"
 #include "oc3_tilemapchangecommand.hpp"
+#include "oc3_message_stack_widget.hpp"
+#include "oc3_time.hpp"
+#include "oc3_stringhelper.hpp"
 
 class ScreenGame::Impl
 {
@@ -51,6 +47,7 @@ public:
   ExtentMenu* extMenu;
   InfoBoxManagerPtr infoBoxMgr;
   GuiTilemap guiTilemap;
+  WindowMessageStack* wndStackMsgs;
   Scenario* scenario; // current game scenario
   
   int result;
@@ -75,9 +72,10 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
   _d->gui->clear();
 
   const int topMenuHeight = 23;
-  const Picture& rPanelPic = PicLoader::instance().get_picture( ResourceGroup::panelBackground, 14 );
-  Rect rPanelRect( engine.getScreenWidth() - rPanelPic.get_width(), topMenuHeight,
+  const Picture& rPanelPic = Picture::load( ResourceGroup::panelBackground, 14 );
+  Rect rPanelRect( engine.getScreenWidth() - rPanelPic.getWidth(), topMenuHeight,
                    engine.getScreenWidth(), engine.getScreenHeight() );
+
   _d->rightPanel = MenuRigthPanel::create( gui.getRootWidget(), rPanelRect, rPanelPic);
 
   _d->topMenu = TopMenu::create( gui.getRootWidget(), topMenuHeight );
@@ -89,11 +87,15 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
   _d->extMenu = ExtentMenu::create( gui.getRootWidget(), _d->guiTilemap, -1 );
   _d->extMenu->setPosition( Point( engine.getScreenWidth() - _d->extMenu->getWidth() - _d->rightPanel->getWidth(), 
                                      _d->topMenu->getHeight() ) );
+
+  _d->wndStackMsgs = WindowMessageStack::create( gui.getRootWidget(), -1 );
+  _d->wndStackMsgs->setPosition( Point( gui.getRootWidget()->getWidth() / 4, 33 ) );
+  _d->wndStackMsgs->sendToBack();
     
   _d->rightPanel->bringToFront();
 
   // 8*30: used for high buildings (granary...), visible even when not in tilemap_area.
-  getMapArea().setViewSize( engine.getScreenWidth(), engine.getScreenHeight() + 8 * 30);
+  getMapArea().setViewSize( engine.getScreenSize() + Size( 180 ) );
         
   // here move camera to start position of map
   getMapArea().setCenterIJ( _d->scenario->getCity().getCameraPos() ); 
@@ -115,6 +117,10 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
   CONNECT( &_d->scenario->getCity(), onMonthChanged(), _d->topMenu, TopMenu::setDate );
 
   CONNECT( &_d->guiTilemap, onShowTileInfo(), this, ScreenGame::showTileInfo );
+
+  CONNECT( &_d->scenario->getCity(), onWarningMessage(), _d->wndStackMsgs, WindowMessageStack::addMessage );
+  CONNECT( &_d->guiTilemap, onWarningMessage(), _d->wndStackMsgs, WindowMessageStack::addMessage );
+  CONNECT( _d->extMenu, onSelectOverlayType(), this, ScreenGame::resolveSelectOverlayView );
 }
 
 void ScreenGame::resolveGameSave()
@@ -217,12 +223,13 @@ void ScreenGame::handleEvent( NEvent& event )
     {
       switch( event.KeyboardEvent.Key )
       {
-	case KEY_ESCAPE:
-          stop();
-	  break;
-	case KEY_F10:
-	  makeScreenShot();
-	  break;
+	    case KEY_ESCAPE:
+        stop();
+	    break;
+	    
+      case KEY_F10:
+	      makeScreenShot();
+	    break;
       }
     }
   }
@@ -230,14 +237,14 @@ void ScreenGame::handleEvent( NEvent& event )
 
 void ScreenGame::makeScreenShot()
 {
-  boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
-  
-  std::cout << "creating screenshot" << std::endl;
-  // get date
-  std::string filename (boost::posix_time::to_simple_string(now) + ".png");
-  // write file
-  SDL_Surface* surface = dynamic_cast<GfxSdlEngine*>(_d->engine)->getScreen().get_surface();
-  IMG_SavePNG(filename.c_str(), surface, -1);
+  DateTime time = DateTime::getCurrenTime();
+
+  std::string filename = StringHelper::format( 0xff, "oc3_[%04d.%02d.%02_%02d_%02d%02d].png", 
+                                               time.getYear(), time.getMonth(), time.getDay(),
+                                               time.getHour(), time.getMinutes(), time.getSeconds() );
+  StringHelper::debug( 0xff, "creating screenshot %s", filename.c_str() );
+
+  _d->engine->createScreenshot( filename );
 }
 
 int ScreenGame::getResult() const
@@ -247,18 +254,17 @@ int ScreenGame::getResult() const
 
 void ScreenGame::resolveCreateConstruction( int type )
 {
-  _d->guiTilemap.setChangeCommand( TilemapChangeCommand( BuildingType( type ) ) );
+  _d->guiTilemap.setChangeCommand( TilemapBuildCommand::create( BuildingType( type ) ) );
 }
 
 void ScreenGame::resolveRemoveTool()
 {
-  _d->guiTilemap.setChangeCommand( TilemapRemoveCommand() );
+  _d->guiTilemap.setChangeCommand( TilemapRemoveCommand::create() );
 }
 
-void ScreenGame::showTileInfo( Tile* tile )
+void ScreenGame::showTileInfo( const Tile& tile )
 {
-  if( tile )
-    _d->infoBoxMgr->showHelp( tile );
+  _d->infoBoxMgr->showHelp( tile );
 }
 
 void ScreenGame::resolveEndGame()
@@ -271,4 +277,9 @@ void ScreenGame::resolveExitGame()
 {
   _d->result = ScreenGame::quitGame;
   stop();
+}
+
+void ScreenGame::resolveSelectOverlayView( int type )
+{
+  _d->guiTilemap.setChangeCommand( TilemapOverlayCommand::create( OverlayType( type ) ) );
 }

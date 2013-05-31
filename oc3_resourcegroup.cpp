@@ -17,17 +17,21 @@
 
 const char* ResourceGroup::panelBackground = "paneling";
 const char* ResourceGroup::menuMiddleIcons = "panelwindows";
-const char* ResourceGroup::land2a = "land2a";
-const char* ResourceGroup::sprites = "sprites";
-const char* ResourceGroup::buildingEngineer = "transport";  
-const char* ResourceGroup::utilitya      = "utilitya";
-const char* ResourceGroup::commerce = "commerce";
-const char* ResourceGroup::security = "security";
-const char* ResourceGroup::aqueduct = "land2a";
-const char* ResourceGroup::waterbuildings = "waterbuildings";
-const char* ResourceGroup::road = "land2a";
-const char* ResourceGroup::entertaiment = "entertainment";
-const char* ResourceGroup::warehouse = "warehouse";
-const char* ResourceGroup::housing = "housng1a";
-const char* ResourceGroup::govt   = "govt";
-const char* ResourceGroup::carts   = "carts";
+const char* ResourceGroup::land2a          = "land2a";
+const char* ResourceGroup::sprites         = "sprites";
+const char* ResourceGroup::buildingEngineer= "transport";  
+const char* ResourceGroup::wharf           = "transport"; 
+const char* ResourceGroup::transport       = "transport"; 
+const char* ResourceGroup::utilitya        = "utilitya";
+const char* ResourceGroup::commerce        = "commerce";
+const char* ResourceGroup::security        = "security";
+const char* ResourceGroup::aqueduct        = "land2a";
+const char* ResourceGroup::waterbuildings  = "waterbuildings";
+const char* ResourceGroup::road            = "land2a";
+const char* ResourceGroup::entertaiment    = "entertainment";
+const char* ResourceGroup::warehouse       = "warehouse";
+const char* ResourceGroup::housing         = "housng1a";
+const char* ResourceGroup::govt            = "govt";
+const char* ResourceGroup::carts           = "carts";
+const char* ResourceGroup::waterOverlay    = "oc3_wateroverlay";
+

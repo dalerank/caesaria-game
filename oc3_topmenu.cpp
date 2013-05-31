@@ -51,7 +51,6 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
   TopMenu* ret = new TopMenu( parent, height);
   ret->setGeometry( Rect( 0, 0, parent->getWidth(), height ) );
 
-  FontCollection& fonts = FontCollection::instance();
   GfxEngine& engine = GfxEngine::instance();
 
   std::vector<Picture> p_marble;
@@ -68,7 +67,7 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
   {
     const Picture& pic = p_marble[i%10];
     ret->_d->bgPicture->draw( pic, x, 0);
-    x += pic.get_width();
+    x += pic.getWidth();
     i++;
   }
 
@@ -76,25 +75,25 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
   ret->_d->lbPopulation = new Label( ret, Rect( Point( ret->getWidth() - populationLabelOffset, 0 ), lbSize ),
                                      "Pop 34,124", false, true, -1 );
   ret->_d->lbPopulation->setBackgroundPicture( Picture::load( ResourceGroup::panelBackground, panelBgStatus ) );
-  ret->_d->lbPopulation->setFont( fonts.getFont(FONT_2_WHITE) );
+  ret->_d->lbPopulation->setFont( Font(FONT_2_WHITE) );
   ret->_d->lbPopulation->setTextAlignment( alignCenter, alignCenter );
   //_populationLabel.setTextPosition(20, 0);
 
   ret->_d->lbFunds = new Label( ret, Rect( Point( ret->getWidth() - fundLabelOffset, 0), lbSize ),
       "Dn 10,000", false, true, -1 );
-  ret->_d->lbFunds->setFont( fonts.getFont(FONT_2_WHITE));
+  ret->_d->lbFunds->setFont( Font( FONT_2_WHITE ));
   ret->_d->lbFunds->setTextAlignment( alignCenter, alignCenter );
   ret->_d->lbFunds->setBackgroundPicture( Picture::load( ResourceGroup::panelBackground, panelBgStatus ) );
   //_fundsLabel.setTextPosition(20, 0);
 
   ret->_d->lbDate = new Label( ret, Rect( Point( ret->getWidth() - dateLabelOffset, 0), lbSize ),
       "Feb 39 BC", false, true, -1 );
-  ret->_d->lbDate->setFont( fonts.getFont(FONT_2_YELLOW));
+  ret->_d->lbDate->setFont( Font( FONT_2_YELLOW ));
   ret->_d->lbDate->setTextAlignment( alignCenter, alignCenter );
   ret->_d->lbDate->setBackgroundPicture( Picture::load( ResourceGroup::panelBackground, panelBgStatus ) );
   //_dateLabel.setTextPosition(20, 0);
 
-  GfxEngine::instance().load_picture(*ret->_d->bgPicture);
+  GfxEngine::instance().loadPicture(*ret->_d->bgPicture);
 
   ContextMenuItem* tmp = ret->addItem( "File", -1, true, true, false, false );
   tmp->setBackgroundPicture( *ret->_d->bgPicture );
@@ -117,7 +116,7 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
   tmp->setBackgroundPicture( *ret->_d->bgPicture, Point( -tmp->getLeft(), 0 ) );
   tmp = ret->addItem( "Help", -1, true, true, false, false );
   tmp->setBackgroundPicture( *ret->_d->bgPicture, Point( -tmp->getLeft(), 0 ) );
-  tmp = ret->addItem( "Advisors", -1, true, true, false, false );
+  tmp = ret->addItem( "Advisers", -1, true, true, false, false );
   tmp->setBackgroundPicture( *ret->_d->bgPicture, Point( -tmp->getLeft(), 0 ) );
 
   return ret;
