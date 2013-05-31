@@ -17,6 +17,7 @@
 #include "oc3_service_building.hpp"
 #include "oc3_buildingengineer.hpp"
 #include "oc3_buildingprefect.hpp"
+#include "oc3_well.hpp"
 
 ServiceBuilding* ServiceBuildingManager::getBuilding( ServiceType type )
 {

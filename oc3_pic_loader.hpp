@@ -22,6 +22,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <memory>
 
 #include "oc3_picture.hpp"
 #include "oc3_gfx_engine.hpp"

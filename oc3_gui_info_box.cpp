@@ -219,8 +219,8 @@ void GuiInfoService::drawWorkers( int paintY )
   std::string text = StringHelper::format( 0xff, _("%d employers (%d requred)"), 
                                             _sd->building->getWorkers(), _sd->building->getMaxWorkers() );
 
-  Font &font = Font( FONT_2 );
-  font.draw( *_d->bgPicture, text, 16+42, paintY+5 );
+  Font *font = new Font( FONT_2 );
+  font->draw( *_d->bgPicture, text, 16+42, paintY+5 );
 }
 
 
