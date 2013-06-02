@@ -43,6 +43,9 @@
 
 6. From your Caesar3 install dir, copy *.map to resources/maps/
 
+7. Binary dependencies for Visual Studio can be downloaded from http://opencaesar3.org/files/dependencies.7z .
+   After archive has been downloaded extract its content into *dependencies* folder of *openCaesar3 source root*.
+
 7. Run caesar.exe
       in case of error, check the stdout.txt file in the openCaesar3 directory for clues.
 
