@@ -111,7 +111,7 @@ These resources are images, videos and sound needed to run the
 game. The fallowing commands will download an archive and extract the
 needed files into the resources folder: 
 $ wget http://opencaesar3.org/files/resources.7z 
-$ 7za x resources.7z ./ 
+$ 7za x resources.7z
 $ rm resources.7z
 
 
