@@ -85,6 +85,16 @@ libpng-devel boost-devel
 2 Building the game
 ===================
 
+2.1 For those who locally compiled boost.
+
+If you compiled boost you should add the fallowing to your ~/.bashrc:
+   export BOOST_ROOT=/path/to/boost 
+If you followed the guide for Ubuntu 12.04 the path is /home/<username>/usr .
+Then restart your terminal to make the setting take effect or run 
+$ bash
+
+2.2 Actually compiling the game.
+
 First move your terminal to where you want openCaesar 3 to be installed, e.g: 
 $ mkdir games && cd games
 We will then download the source code from github and compile it:
