@@ -74,11 +74,13 @@ You will have to build boost 1.50 or newer from source.
 Fedora 18 and later:
 $ sudo yum install boost-devel
 
-1.c openSUSE
+
+1.c openSUSE 12.3
 
 $ sudo zypper install libarchive-devel libSDL-devel libSDL_ttf-devel \
 libSDL_image-devel libSDL_mixer-devel git cmake gcc-c++ libjpeg-devel \
 libpng-devel boost-devel
+
 
 2 Building the game
 ===================
