@@ -2,15 +2,15 @@ openCaesar3
 ===========
 openCaesar3 is a remake of the classic Caesar3 PC game, a city building game developed by Impression Games and published by Sierra Entertainment, in 1998.
 
-The game will be a near clone to the original Caesar3 game. Notorious changes are:
- * new AI for walkers. They just go where they are needed
- * actors just out of the actor school do not provide access to the entertainment (same for gladiators, ...)
+The game will be a near clone of the original Caesar3 game. Notable changes are:
+ * A new AI for walkers. They just go where they are needed.
+ * Actors coming from the actor school do not provide access to the entertainment. The same goes for lion tamers, gladiators and horse wagons.
 
-The game is still not quite playable
+The game is currently under heavy development and not in a playable state. Developers are invited to participate.
 
 Building openCaesar3
 -------------------
-See BuildingOpenCaesar3.md
+See INSTALL_LINUX or INSTALL_WINDOWS depending on which operating system you are running.
 
 ####Releases:
 
