@@ -68,7 +68,7 @@ bool RoadPropagator::getPath( const Tile& destination, ConstWayOnTiles& oPathWay
   {
     const Tile& curTile = _d->tilemap.at( tmp );
          
-    if( curTile.get_terrain().isConstructible() || curTile.get_terrain().isRoad() || curTile.get_terrain().isAqueduct() )
+    if( curTile.getTerrain().isConstructible() || curTile.getTerrain().isRoad() || curTile.getTerrain().isAqueduct() )
     {
       StringHelper::debug( 0xff, "+ (%d, %d)", curTile.getI(), curTile.getJ() );
       oPathWay.push_back( &curTile );
@@ -85,7 +85,7 @@ bool RoadPropagator::getPath( const Tile& destination, ConstWayOnTiles& oPathWay
   {
     const Tile& curTile = _d->tilemap.at( startPos.getI(), j );
 
-    if( curTile.get_terrain().isConstructible() || curTile.get_terrain().isRoad() || curTile.get_terrain().isAqueduct() )
+    if( curTile.getTerrain().isConstructible() || curTile.getTerrain().isRoad() || curTile.getTerrain().isAqueduct() )
     {
       std::cout << "+ (" << curTile.getI() << " " << curTile.getJ() << ") ";
       oPathWay.push_back( &curTile );

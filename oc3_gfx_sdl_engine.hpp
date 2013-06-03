@@ -29,35 +29,39 @@
 class GfxSdlEngine : public GfxEngine
 {
 public:
-   GfxSdlEngine();
-   ~GfxSdlEngine();
-   void init();
-   void exit();
-   void loadPicture(Picture &ioPicture);
-   void unloadPicture(Picture& ioPicture);
+  GfxSdlEngine();
+  ~GfxSdlEngine();
+  void init();
+  void exit();
+  void delay( const unsigned int msec );
+  bool haveEvent( NEvent& event );
 
-   void startRenderFrame();
-   void drawPicture(const Picture &picture, const int dx, const int dy);
-   void drawPicture(const Picture &picture, const Point& pos );
-   void endRenderFrame();
+  void loadPicture(Picture &ioPicture);
+  void unloadPicture(Picture& ioPicture);
 
-   void setFlag( int flag, int value );
+  void startRenderFrame();
+  void drawPicture(const Picture &picture, const int dx, const int dy);
+  void drawPicture(const Picture &picture, const Point& pos );
+  void endRenderFrame();
 
-   void setTileDrawMask( int rmask, int gmask, int bmask, int amask );
-   void resetTileDrawMask();
+  void setFlag( int flag, int value );
 
-   // deletes a picture (deallocate memory)
-   void deletePicture( Picture &pic );
-   // creates a picture with the given size, it will need to be loaded by the graphic engine
-   Picture& createPicture(int width, int height);
+  void setTileDrawMask( int rmask, int gmask, int bmask, int amask );
+  void resetTileDrawMask();
 
-   Picture& getScreen();
+  // deletes a picture (deallocate memory)
+  void deletePicture( Picture &pic );
+  // creates a picture with the given size, it will need to be loaded by the graphic engine
+  Picture& createPicture(int width, int height);
 
-   unsigned int getFps() const;
-   void createScreenshot( const std::string& filename );
+  Picture& getScreen();
+
+  unsigned int getFps() const;
+  void createScreenshot( const std::string& filename );
+
 private:
-   class Impl;
-   ScopedPtr< Impl > _d;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 #endif

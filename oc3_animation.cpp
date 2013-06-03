@@ -24,21 +24,21 @@ void Animation::start(bool loop)
     _lastTimeUpdate = 0;
 }
 
-Animation::Pictures& Animation::getPictures()
+PicturesArray& Animation::getPictures()
 {
     return _pictures;
 }
 
-const Animation::Pictures& Animation::getPictures() const
+const PicturesArray& Animation::getPictures() const
 {
     return _pictures;
 }
 
 void Animation::setOffset( const Point& offset )
 {
-    for( Pictures::iterator it = _pictures.begin(); it != _pictures.end(); ++it)
+    for( PicturesArray::iterator it = _pictures.begin(); it != _pictures.end(); ++it)
     {
-        (*it)->set_offset(offset.getX(), offset.getY() );
+        (*it)->setOffset(offset.getX(), offset.getY() );
     }
 }
 
@@ -96,7 +96,7 @@ void Animation::load( const std::string &prefix, const int start, const int numb
     int revMul = reverse ? -1 : 1;
     for( int i = 0; i < number; ++i)
     {
-        Picture &pic = loader.get_picture(prefix, start + revMul*i*step);
+        Picture &pic = loader.getPicture(prefix, start + revMul*i*step);
         _pictures.push_back( &pic );
     }
 }

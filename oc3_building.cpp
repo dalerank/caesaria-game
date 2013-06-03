@@ -38,6 +38,7 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_stringhelper.hpp"
+#include "oc3_building_data.hpp"
 
 #include <algorithm>
 
@@ -115,7 +116,7 @@ void LandOverlay::build( const TilePos& pos )
       Tile& tile = tilemap.at( pos + TilePos( di, dj ) );
       tile.set_master_tile(_master_tile);
       tile.set_picture(_picture);
-      TerrainTile& terrain = tile.get_terrain();
+      TerrainTile& terrain = tile.getTerrain();
       terrain.setOverlay(this);
       setTerrain( terrain );
     }
@@ -170,7 +171,7 @@ void LandOverlay::save( VariantMap& stream ) const
 {
   stream[ "pos" ] = getTile().getIJ();
   stream[ "buildingType" ] = (int)_d->buildingType;
-  stream[ "picture" ] = Variant( _picture ? _picture->get_name() : std::string( "" ) );   
+  stream[ "picture" ] = Variant( _picture ? _picture->getName() : std::string( "" ) );   
   stream[ "size" ] = _size;
   stream[ "isDeleted" ] = _isDeleted;
   stream[ "name" ] = Variant( _name );
@@ -192,7 +193,8 @@ bool LandOverlay::isWalkable() const
 
 TilePos LandOverlay::getTilePos() const
 {
-  return _master_tile->getIJ();
+  _OC3_DEBUG_BREAK_IF( !_master_tile && "master tile can't be 0" );
+  return _master_tile ? _master_tile->getIJ() : TilePos( -1, -1 );
 }
 
 Construction::Construction( const BuildingType type, const Size& size)
@@ -216,7 +218,7 @@ bool Construction::canBuild( const TilePos& pos ) const
   for( PtrTilesArea::iterator itTiles = rect.begin(); 
        itTiles != rect.end(); ++itTiles )
   {
-     is_constructible &= (*itTiles)->get_terrain().isConstructible();
+     is_constructible &= (*itTiles)->getTerrain().isConstructible();
   }
 
   return is_constructible;
@@ -240,7 +242,7 @@ void Construction::_updateDesirabilityInfluence( bool onBuild )
   int mul = (onBuild ? 1 : -1);
   for( PtrTilesList::iterator it=desirabilityArea.begin(); it != desirabilityArea.end(); it++ )
   {
-    (*it)->get_terrain().appendDesirability( mul * getDesirabilityInfluence() );
+    (*it)->getTerrain().appendDesirability( mul * getDesirabilityInfluence() );
   }
 }
 
@@ -261,22 +263,22 @@ void Construction::computeAccessRoads()
 
   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
 
-  Uint8 maxDst2road = getMaxDistance2Road();
-  std::list<Tile*> rect = tilemap.getRectangle( _master_tile->getIJ() + TilePos( -maxDst2road, -maxDst2road ),
+  int maxDst2road = getMaxDistance2Road();
+  PtrTilesList rect = tilemap.getRectangle( _master_tile->getIJ() + TilePos( -maxDst2road, -maxDst2road ),
                                                 _master_tile->getIJ() + TilePos( _size + maxDst2road - 1, _size + maxDst2road - 1 ), 
                                                 !Tilemap::checkCorners );
-  for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+  for( PtrTilesList::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {
     Tile* tile = *itTiles;
 
-    if ( tile->get_terrain().isRoad() )
+    if ( tile->getTerrain().isRoad() )
     {
       _accessRoads.push_back( tile );
     }
   }
 }
 
-unsigned char Construction::getMaxDistance2Road() const
+int Construction::getMaxDistance2Road() const
 {
   return 1;
   // it is default value
@@ -495,8 +497,8 @@ void Building::applyTrainee(const WalkerTraineeType traineeType)
 void Building::save( VariantMap& stream) const
 {
     Construction::save( stream );
-    stream[ "damageLevel" ] = _damageLevel;  
-    stream[ "fireLevel" ] = _fireLevel;  
+    stream[ Serializable::damageLevel ] = _damageLevel;  
+    stream[ Serializable::fireLevel ] = _fireLevel;  
 
 //    stream.write_int(_traineeMap.size(), 1, 0, WTT_MAX);
 //    for (std::map<WalkerTraineeType, int>::iterator itLevel = _traineeMap.begin(); itLevel != _traineeMap.end(); ++itLevel)
@@ -517,6 +519,9 @@ void Building::save( VariantMap& stream) const
 
 void Building::load( const VariantMap& stream )
 {
+  Construction::load( stream );
+  _damageLevel = stream.get( Serializable::damageLevel ).toFloat();
+  _fireLevel = stream.get( Serializable::fireLevel ).toFloat();
 //    Construction::unserialize(stream);
 //    _damageLevel = (float)stream.read_int(1, 0, 100);
 //    _fireLevel = (float)stream.read_int(1, 0, 100);
@@ -537,65 +542,6 @@ void Building::load( const VariantMap& stream )
 //    }
 }
 
-WorkingBuilding::WorkingBuilding(const BuildingType type, const Size& size)
-: Building( type, size )
-{
-   _maxWorkers = 0;
-   _currentWorkers = 0;
-   _isActive = true;
-}
-
-void WorkingBuilding::setMaxWorkers(const int maxWorkers)
-{
-   _maxWorkers = maxWorkers;
-}
-
-int WorkingBuilding::getMaxWorkers() const
-{
-   return _maxWorkers;
-}
-
-void WorkingBuilding::setWorkers(const int currentWorkers)
-{
-   _currentWorkers = currentWorkers;
-}
-
-int WorkingBuilding::getWorkers() const
-{
-   return _currentWorkers;
-}
-
-void WorkingBuilding::setActive(const bool value)
-{
-   _isActive = value;
-}
-
-bool WorkingBuilding::isActive()
-{
-   return _isActive;
-}
-
-void WorkingBuilding::save( VariantMap& stream ) const
-{
-    Building::save( stream );
-    stream[ "currentWorkers" ] = _currentWorkers;
-}
-
-void WorkingBuilding::load( const VariantMap& stream)
-{
-//    Building::unserialize(stream);
-//    _currentWorkers = stream.read_int(1, 0, 100);
-}
-
-void WorkingBuilding::addWorkers( const int workers )
-{
-    _currentWorkers += workers;
-}
-
-// housng1a 46 - governor's house    3 x 3
-// housng1a 47 - governor's villa    4 x 4
-// housng1a 48 - governor's palace   5 x 5
-
 // govt     1  - small statue        1 x 1
 // govt     2  - medium statue       2 x 2
 // govt     3  - big statue          3 x 3
@@ -605,14 +551,6 @@ void WorkingBuilding::addWorkers( const int workers )
 
 // transport 93 - missionaire post   2 x 2
 // circus    1 ~ 18 hippodrome    5x(5 x 5)
-
-MissionPost::MissionPost() : WorkingBuilding(B_MISSION_POST, Size(2) )
-{
-  setMaxWorkers(20);
-  setWorkers(0);  
-  setPicture(PicLoader::instance().get_picture("transport", 93));
-}
-
 
 SmallStatue::SmallStatue() : Building( B_STATUE1, Size(1) )
 {
@@ -629,44 +567,9 @@ BigStatue::BigStatue() : Building( B_STATUE3, Size(3))
   setPicture( Picture::load( ResourceGroup::govt, 3));
 }
 
-GovernorsHouse::GovernorsHouse() : WorkingBuilding( B_GOVERNOR_HOUSE, Size(3) )
-{
-  setMaxWorkers(5);
-  setWorkers(0);    
-  setPicture(Picture::load( ResourceGroup::housing, 46));
-}
-
-GovernorsVilla::GovernorsVilla() : WorkingBuilding(B_GOVERNOR_VILLA, Size(4) )
-{
-  setMaxWorkers(10);
-  setWorkers(0);    
-  setPicture(Picture::load( ResourceGroup::housing, 47));
-}
-
-GovernorsPalace::GovernorsPalace() : WorkingBuilding(B_GOVERNOR_PALACE, Size( 5 ) )
-{
-  setMaxWorkers(15);
-  setWorkers(0);  
-  setPicture(Picture::load(ResourceGroup::housing, 48));
-}
-
-Academy::Academy() : WorkingBuilding( B_MILITARY_ACADEMY, Size(3) )
-{
-  setMaxWorkers( 20 );
-  setWorkers( 0 );
-  setPicture(PicLoader::instance().get_picture( ResourceGroup::security, 18));
-}
-
-Barracks::Barracks() : WorkingBuilding( B_BARRACKS, Size( 3 ) )
-{
-  setMaxWorkers(5);
-  setWorkers(0);  
-  setPicture(PicLoader::instance().get_picture(ResourceGroup::security, 17));
-}
-
 Shipyard::Shipyard() : Building( B_SHIPYARD, Size(2) )
 {
-  setPicture( Picture::load("transport", 1));
+  setPicture( Picture::load( ResourceGroup::transport, 1));
   // also transport 2 3 4 check position of river on map
 }
 
@@ -678,11 +581,11 @@ Shipyard::Shipyard() : Building( B_SHIPYARD, Size(2) )
 
 Dock::Dock() : Building( B_DOCK, Size(2) )
 {
-  setPicture( Picture::load("transport", 5));  
+  setPicture( Picture::load( ResourceGroup::transport, 5));  
 
-  _animation.load( "transport", 6, 11);
+  _animation.load( ResourceGroup::transport, 6, 11);
   // now fill in reverse order
-  _animation.load( "transport", 15, 10, Animation::reverse );
+  _animation.load( ResourceGroup::transport, 15, 10, Animation::reverse );
   
   _animation.setOffset( Point( 107, 61 ) );
   _fgPictures.resize(1);  
@@ -701,40 +604,9 @@ void Dock::timeStep(const unsigned long time)
 TriumphalArch::TriumphalArch() : Building( B_TRIUMPHAL_ARCH, Size(3) )
 {
   setPicture( Picture::load( "land3a", 43 ) );
-  getPicture().set_offset(0,116);
+  getPicture().setOffset(0,116);
   _animation.load("land3a", 44, 1);
   _animation.setOffset( Point( 63, 97 ) );
   _fgPictures.resize(1);
   _fgPictures.at(0) = _animation.getCurrentPicture(); 
-}
-
-FortLegionnaire::FortLegionnaire() : Building( B_FORT_LEGIONNAIRE, Size(3) )
-{
-  setPicture( Picture::load(ResourceGroup::security, 12));
-
-  Picture* logo = &Picture::load(ResourceGroup::security, 16);
-  logo -> set_offset(80,10);
-  _fgPictures.resize(1);
-  _fgPictures.at(0) = logo;  
-}
-
-FortMounted::FortMounted() : Building( B_FORT_MOUNTED, Size(3) )
-{
-  setPicture( Picture::load(ResourceGroup::security, 12));
-
-  Picture* logo = &Picture::load(ResourceGroup::security, 15);
-  logo -> set_offset(80,10);
-  _fgPictures.resize(1);
-  _fgPictures.at(0) = logo;
-}
-
-FortJaveline::FortJaveline() : Building( B_FORT_JAVELIN, Size(3) )
-{
-  setPicture( Picture::load(ResourceGroup::security, 12));
-
-  Picture* logo = &Picture::load(ResourceGroup::security, 14);
-  //std::cout << logo->get_xoffset() << " " << logo->get_yoffset() << " " << logo->get_width() << " " << logo->get_height() << std::endl;
-  logo -> set_offset(80,10);
-  _fgPictures.resize(1);
-  _fgPictures.at(0) = logo;  
 }

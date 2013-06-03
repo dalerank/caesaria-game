@@ -15,15 +15,13 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
 #include "oc3_screen.hpp"
-
-#include <iostream>
 
 #include "oc3_gfx_engine.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_event.hpp"
 #include "oc3_eventconverter.hpp"
+#include "oc3_time.hpp"
 
 Screen::Screen() {}
 
@@ -46,53 +44,47 @@ void Screen::afterFrame() {}
 
 void Screen::stop()
 {
-   _isStopped = true;
+  _isStopped = true;
 }
 
 int Screen::run()
 {
-   Uint32 lastclock = SDL_GetTicks();
-   Uint32 currentclock = 0;
-   Uint32 ref_delay = 1000 / 20;  // 20fps
+  GfxEngine &engine = GfxEngine::instance();
+  unsigned int lastclock = DateTime::getElapsedTime();
+  unsigned int currentclock = 0;
+  unsigned int ref_delay = 1000 / 20;  // 20fps
 
-   _isStopped = false;
+  _isStopped = false;
 
-   while ( !isStopped() )
-   {
-      drawFrame();
-      afterFrame();
+  while ( !isStopped() )
+  {
+     drawFrame();
+     afterFrame();
 
-      SDL_Event sdlEvent;
+     NEvent nEvent;
+     while( engine.haveEvent( nEvent )  )
+     {
+       handleEvent( nEvent );
+     }
 
-      while( SDL_PollEvent(&sdlEvent) )
-      {
-         if (sdlEvent.type == SDL_QUIT)
-         {
-            exit(0);
-         }
+     // sets a fix frameRate
+     currentclock = DateTime::getElapsedTime();
+     long delay = ref_delay - (currentclock - lastclock);
+     if( delay < 0 )
+     {
+        // std::cout << "frame takes too much time! " << currentclock - lastclock << std::endl;
+        delay = 0;
+     }
+     // FIX: game spontanous hangs
+     else if (delay > ref_delay)
+     {
+       delay = ref_delay;
+     }
+     lastclock = currentclock;
+     engine.delay( delay );
+  }
 
-         NEvent nEvent = EventConverter::instance().get( sdlEvent );
-         handleEvent(nEvent);
-      }
-
-      // sets a fix frameRate
-      currentclock = SDL_GetTicks();
-      long delay = ref_delay - (currentclock - lastclock);
-      if( delay < 0 )
-      {
-         // std::cout << "frame takes too much time! " << currentclock - lastclock << std::endl;
-         delay = 0;
-      }
-      // FIX: game spontanous hangs
-      else if (delay > ref_delay)
-      {
-        delay = ref_delay;
-      }
-      lastclock = currentclock;
-      SDL_Delay(delay);
-   }
-
-   return getResult();
+  return getResult();
 }
 
 bool Screen::isStopped() const

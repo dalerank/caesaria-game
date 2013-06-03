@@ -19,8 +19,7 @@
 #ifndef TRAINING_BUILDING_HPP
 #define TRAINING_BUILDING_HPP
 
-#include "oc3_building.hpp"
-
+#include "oc3_working_building.hpp"
 
 class TrainingBuilding : public WorkingBuilding
 {
@@ -39,7 +38,6 @@ private:
    int _trainingTimer;
    int _trainingDelay;
 };
-
 
 class BuildingActor : public TrainingBuilding
 {
@@ -68,6 +66,5 @@ public:
    BuildingChariot();
    void deliverTrainee();
 };
-
 
 #endif

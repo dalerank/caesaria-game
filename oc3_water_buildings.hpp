@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_WATER_BUILDGINDS_INCLUDED__
 #define __OPENCAESAR3_WATER_BUILDGINDS_INCLUDED__
 
-#include "oc3_building.hpp"
+#include "oc3_service_building.hpp"
 
 class WaterSource;
 class Aqueduct;
@@ -39,15 +39,15 @@ class Aqueduct : public WaterSource
 public:
   Aqueduct();
 
-  virtual void build(const TilePos& pos );
+  void build(const TilePos& pos );
   Picture& computePicture();
-  virtual void setTerrain(TerrainTile &terrain);
-  virtual bool canBuild(const TilePos& pos ) const;
+  void setTerrain(TerrainTile &terrain);
+  bool canBuild(const TilePos& pos ) const;
   void updateAqueducts();
   void updatePicture();
-  virtual void link(Aqueduct&);
-  virtual void link(Reservoir&);
-  virtual void destroy();
+  void link(Aqueduct&);
+  void link(Reservoir&);
+  void destroy();
 };
 
 class Reservoir : public WaterSource
@@ -58,17 +58,30 @@ public:
 
   void build(const TilePos& pos );
   bool canBuild(const TilePos& pos ) const;
-  Picture& computePicture();
+
   void setTerrain(TerrainTile &terrain);
   void timeStep(const unsigned long time);
   void updateAqueducts();
-  virtual void link(Aqueduct&);
-  virtual void link(Reservoir&);
-  virtual void destroy();
+  void link(Aqueduct&);
+  void link(Reservoir&);
+  void destroy();
   
 private:
   bool _mayAnimate;
   bool _isNearWater( const TilePos& pos ) const;
+};
+
+class BuildingFountain : public ServiceBuilding
+{
+public:
+  BuildingFountain();
+
+  void build( const TilePos& pos );
+  bool canBuild( const TilePos& pos ) const;
+  void deliverService();
+  void timeStep(const unsigned long time);
+private:
+  bool _mayAnimate;
 };
 
 #endif // __OPENCAESAR3_WATER_BUILDGINDS_INCLUDED__

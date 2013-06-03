@@ -77,8 +77,8 @@ void ScreenMenu::Impl::resolveShowLoadMapWnd()
 {
   Size rootSize = gui->getRootWidget()->getSize();
   LoadMapWindow* wnd = new LoadMapWindow( gui->getRootWidget(), 
-                                          Rect( 0.25f * rootSize.getWidth(), 0.25f * rootSize.getHeight(), 
-                                                0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() ), 
+                                          RectF( 0.25f * rootSize.getWidth(), 0.25f * rootSize.getHeight(), 
+                                                0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() ).toRect(), 
                                                 "./resources/maps/", ".map",
                                                 -1 );
 
@@ -112,7 +112,7 @@ void ScreenMenu::initialize( GfxEngine& engine, GuiEnv& gui )
   _d->bgPicture = &Picture::load("title", 1);
 
   // center the bgPicture on the screen
-  _d->bgPicture->set_offset( (engine.getScreenWidth() - _d->bgPicture->getWidth()) / 2,
+  _d->bgPicture->setOffset( (engine.getScreenWidth() - _d->bgPicture->getWidth()) / 2,
                              -( engine.getScreenHeight() - _d->bgPicture->getHeight() ) / 2 );
 
   _d->gui = &gui;

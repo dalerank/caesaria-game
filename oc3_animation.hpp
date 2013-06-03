@@ -28,8 +28,6 @@ public:
     static const bool straight = false;
     static const bool isLoop = true; 
 
-    typedef std::vector<Picture*> Pictures;
-
     Animation();
 
     Animation& operator=(const Animation& other);
@@ -37,8 +35,8 @@ public:
     void start(bool loop=true);
     void stop();
 
-    Pictures& getPictures();
-    const Pictures& getPictures() const;
+    PicturesArray& getPictures();
+    const PicturesArray& getPictures() const;
 
     int getCurrentIndex() const;
 
@@ -60,7 +58,7 @@ public:
 
     bool isValid() const;
 private:
-    Pictures _pictures;
+    PicturesArray _pictures;
     int _animIndex;  // index of the current frame
     unsigned int _frameDelay;
     unsigned int _lastTimeUpdate;

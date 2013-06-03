@@ -40,10 +40,10 @@ GuiPaneling& GuiPaneling::instance()
 void GuiPaneling::configureTexturedButton( PushButton* oButton, const std::string& rcGroup, const int pic_index, bool pushButton )
 {
     PicLoader& loader = PicLoader::instance();
-    oButton->setPicture( &loader.get_picture( rcGroup, pic_index), stNormal );
-    oButton->setPicture( &loader.get_picture( rcGroup, pic_index+1), stHovered );
-    oButton->setPicture( &loader.get_picture( rcGroup, pic_index+2), stPressed );
-    oButton->setPicture( &loader.get_picture( rcGroup, pic_index+3), stDisabled );
+    oButton->setPicture( &loader.getPicture( rcGroup, pic_index), stNormal );
+    oButton->setPicture( &loader.getPicture( rcGroup, pic_index+1), stHovered );
+    oButton->setPicture( &loader.getPicture( rcGroup, pic_index+2), stPressed );
+    oButton->setPicture( &loader.getPicture( rcGroup, pic_index+3), stDisabled );
     oButton->setIsPushButton( pushButton );
 }
 

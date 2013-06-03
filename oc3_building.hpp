@@ -92,7 +92,7 @@ public:
   virtual bool isNeedRoadAccess() const;
   virtual const PtrTilesList& getAccessRoads() const;  // return all road tiles adjacent to the construction
   virtual void computeAccessRoads();  
-  virtual unsigned char getMaxDistance2Road() const; // virtual because HOUSE has different behavior
+  virtual int getMaxDistance2Road() const; // virtual because HOUSE has different behavior
   virtual char getDesirabilityInfluence() const;
   virtual void destroy();
 
@@ -154,61 +154,6 @@ inline bool operator<(BuildingPtr v1, BuildingPtr v2)
   return v1.object() < v2.object();
 }
 
-
-/** Building where people work */
-class WorkingBuilding : public Building
-{
-public:
-   WorkingBuilding(const BuildingType type, const Size& size);
-
-   void setMaxWorkers(const int maxWorkers);
-   int getMaxWorkers() const;
-
-   void setWorkers(const int currentWorkers);
-   void addWorkers( const int workers );
-
-   int getWorkers() const;
-
-   void setActive(const bool value);  // if false then this building is stopped
-   bool isActive();
-
-   void save( VariantMap& stream) const;
-   void load( const VariantMap& stream);
-
-private:
-   int _currentWorkers;
-   int _maxWorkers;
-   bool _isActive;
-};
-
-class GovernorsHouse  : public WorkingBuilding
-{
-public:
-  GovernorsHouse();
-  
-//  void serialize(OutputSerialStream &stream);
-//  void unserialize(InputSerialStream &stream);
-};
-
-class GovernorsVilla  : public WorkingBuilding
-{
-public:
-  GovernorsVilla();
-  
-//  void serialize(OutputSerialStream &stream);
-//  void unserialize(InputSerialStream &stream);
-};
-
-class GovernorsPalace : public WorkingBuilding
-{
-public:
-  GovernorsPalace();
-  
-//  void serialize(OutputSerialStream &stream);
-//  void unserialize(InputSerialStream &stream);
-};
-
-
 class SmallStatue : public Building
 {
 public:
@@ -230,18 +175,6 @@ public:
   
 };
 
-class Academy : public WorkingBuilding
-{
-public:
-  Academy();
-};
-
-class Barracks : public WorkingBuilding
-{
-public:
-  Barracks();
-};
-
 class Shipyard : public Building
 {
 public:
@@ -254,36 +187,11 @@ public:
   TriumphalArch();
 };
 
-class MissionPost : public WorkingBuilding
-{
-public:
-  MissionPost();
-};
-
 class Dock : public Building
 {
 public:
   Dock();
   void timeStep(const unsigned long time);
 };
-
-class FortLegionnaire : public Building
-{
-public:  
-  FortLegionnaire();
-};
-
-class FortJaveline : public Building
-{
-public:  
-  FortJaveline();
-};
-
-class FortMounted : public Building
-{
-public:  
-  FortMounted();
-};
-
 
 #endif

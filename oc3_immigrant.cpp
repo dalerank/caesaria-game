@@ -102,7 +102,7 @@ void Immigrant::onDestination()
   {
     const Tile& tile = _d->city->getTilemap().at( _d->destination );
 
-    HousePtr house = tile.get_terrain().getOverlay().as<House>();
+    HousePtr house = tile.getTerrain().getOverlay().as<House>();
     if( house.isValid() )
     {      
       if( house->getNbHabitants() < house->getMaxHabitants() )

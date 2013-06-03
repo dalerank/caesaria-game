@@ -71,25 +71,26 @@ PicMetaData::PicMetaData() : _d( new Impl )
   _d->setRange( ResourceGroup::govt, 1, 10, offset);
   _d->setRange( ResourceGroup::sprites, 1, 8, offset );
 
-  _d->setRange( ResourceGroup::waterbuildings, 1, 2, offset); //reservoir empty/full
-  _d->setRange( ResourceGroup::waterOverlay, 1, 2, offset ); //wateroverlar images 1x1
-  _d->setRange( ResourceGroup::waterOverlay, 11, 12, offset ); //wateroverlar images 1x1
+  _d->setRange( ResourceGroup::waterOverlay, 1, 2, offset ); //wateroverlay building 1x1
+  _d->setRange( ResourceGroup::waterOverlay, 11, 12, offset ); //wateroverlay houses 1x1
+  _d->setRange( ResourceGroup::waterOverlay, 21, 22, offset ); //wateroverlay reservoir area 1x1
+  _d->setRange( ResourceGroup::waterbuildings, 1, 4, offset ); //waterbuidlings (reservoir,fontain) empty/full
 
   offset = Point( 0, 30 );
-  _d->setRange( ResourceGroup::waterOverlay, 3, 4, offset ); //wateroverlar images 2x2
-  _d->setRange( ResourceGroup::waterOverlay, 13, 14, offset ); //wateroverlar images 2x2 
+  _d->setRange( ResourceGroup::waterOverlay, 3, 4, offset ); //wateroverlay building 2x2
+  _d->setRange( ResourceGroup::waterOverlay, 13, 14, offset ); //wateroverlay houses 2x2 
 
   offset = Point( 0, 60 );
 
-  _d->setRange( ResourceGroup::waterOverlay, 5, 6, offset ); //wateroverlar images 3x3
-  _d->setRange( ResourceGroup::waterOverlay, 15, 16, offset ); //wateroverlar images 3x3 
+  _d->setRange( ResourceGroup::waterOverlay, 5, 6, offset ); //wateroverlay building 3x3
+  _d->setRange( ResourceGroup::waterOverlay, 15, 16, offset ); //wateroverlay houses 3x3 
 
   offset = Point( 0, 90 );
-  _d->setRange( ResourceGroup::waterOverlay, 7, 8, offset ); //wateroverlar images 4x4
-  _d->setRange( ResourceGroup::waterOverlay, 17, 18, offset ); //wateroverlar images 4x4 
+  _d->setRange( ResourceGroup::waterOverlay, 7, 8, offset ); //wateroverlay building 4x4
+  _d->setRange( ResourceGroup::waterOverlay, 17, 18, offset ); //wateroverlay houses 4x4 
 
   offset = Point( 0, 120 );
-  _d->setRange( ResourceGroup::waterOverlay, 9, 10, offset ); //wateroverlar images 5x5
+  _d->setRange( ResourceGroup::waterOverlay, 9, 10, offset ); //wateroverlay building 5x5
   
   _d->setOne( ResourceGroup::entertaiment, 12, 37, 62); // amphitheater
   _d->setOne( ResourceGroup::entertaiment, 35, 34, 37); // theater
@@ -164,7 +165,7 @@ void PicMetaData::Impl::setOne(const std::string &preffix, const int index, cons
    data[resource_name] = Point( xoffset, yoffset );
 }
 
-Point PicMetaData::get_data(const std::string &resource_name)
+Point PicMetaData::get(const std::string &resource_name)
 {
    std::map<std::string, Point>::iterator it = _d->data.find(resource_name);
    if (it == _d->data.end())
@@ -186,20 +187,20 @@ PicLoader& PicLoader::instance()
   return inst;
 }
 
-void PicLoader::set_picture(const std::string &name, SDL_Surface &surface)
+void PicLoader::setPicture(const std::string &name, SDL_Surface &surface)
 {
    // first: we deallocate the current picture, if any
    std::map<std::string, Picture>::iterator it = _resources.find(name);
    if (it != _resources.end())
    {
       Picture &pic = it->second;
-      SDL_FreeSurface(pic.get_surface());
+      SDL_FreeSurface(pic.getSurface());
    }
 
-   _resources[name] = make_picture(&surface, name);
+   _resources[name] = makePicture(&surface, name);
 }
 
-Picture& PicLoader::get_picture(const std::string &name)
+Picture& PicLoader::getPicture(const std::string &name)
 {
    std::map<std::string, Picture>::iterator it = _resources.find(name);
    if (it == _resources.end()) 
@@ -209,15 +210,15 @@ Picture& PicLoader::get_picture(const std::string &name)
    return it->second;
 }
 
-Picture& PicLoader::get_picture(const std::string &prefix, const int idx)
+Picture& PicLoader::getPicture(const std::string &prefix, const int idx)
 {
    std::string resource_name = StringHelper::format( 0xff, "%s_%05d.png", prefix.c_str(),idx );
 
-   return get_picture(resource_name);
+   return getPicture(resource_name);
 }
 
 
-Picture& PicLoader::get_picture_good(const GoodType goodType)
+Picture& PicLoader::getPicture(const GoodType goodType)
 {
    int pic_index;
    switch (goodType)
@@ -274,39 +275,38 @@ Picture& PicLoader::get_picture_good(const GoodType goodType)
       THROW("This good type has no picture:" << goodType);
    }
 
-   return get_picture( ResourceGroup::panelBackground, pic_index);
+   return getPicture( ResourceGroup::panelBackground, pic_index);
 }
 
-std::list<Picture*> PicLoader::get_pictures()
+PicturesArray PicLoader::getPictures()
 {
-   std::list<Picture*> pictures;
+   PicturesArray pictures;
    for (std::map<std::string, Picture>::iterator it = _resources.begin(); it != _resources.end(); ++it)
    {
       // for every resource
-      Picture& pic = (*it).second;
-      pictures.push_back(&pic);
+      pictures.push_back(&(*it).second);
    }
    return pictures;
 }
 
 
-void PicLoader::load_wait()
+void PicLoader::loadWaitPics()
 {
   std::string aPath = AppConfig::get( AppConfig::resourcePath ).toString() + "/pics/";
-  load_archive(aPath+"pics_wait.zip");
+  loadArchive(aPath+"pics_wait.zip");
 
   StringHelper::debug( 0xff, "number of images loaded: %d", _resources.size() );
 }
 
-void PicLoader::load_all()
+void PicLoader::loadAllPics()
 {
   std::string aPath = AppConfig::get( AppConfig::resourcePath ).toString() + "/pics/";
-  load_archive(aPath + "pics.zip");
-  load_archive(aPath + "pics_oc3.zip");	
+  loadArchive(aPath + "pics.zip");
+  loadArchive(aPath + "pics_oc3.zip");	
   StringHelper::debug( 0xff, "number of images loaded: %d", _resources.size() );
 }
 
-void PicLoader::load_archive(const std::string &filename)
+void PicLoader::loadArchive(const std::string &filename)
 {
   std::cout << "reading image archive: " << filename << std::endl;
   struct archive *a;
@@ -344,7 +344,7 @@ void PicLoader::load_archive(const std::string &filename)
     int size = archive_read_data(a, buffer.get(), bufferSize);  // read data into buffer
     rw = SDL_RWFromMem(buffer.get(), size);
     surface = IMG_Load_RW(rw, 0);
-    set_picture(entryname, *surface);
+    setPicture(entryname, *surface);
     SDL_FreeRW(rw);
   }
 
@@ -356,7 +356,7 @@ void PicLoader::load_archive(const std::string &filename)
 }
 
 
-Picture PicLoader::make_picture(SDL_Surface *surface, const std::string& resource_name) const
+Picture PicLoader::makePicture(SDL_Surface *surface, const std::string& resource_name) const
 {
    Point offset( 0, 0 );
    // decode the picture name => to set the offset manually
@@ -364,7 +364,7 @@ Picture PicLoader::make_picture(SDL_Surface *surface, const std::string& resourc
    int dot_pos = resource_name.find('.');
    std::string filename = resource_name.substr(0, dot_pos);
 
-   Point pic_info = PicMetaData::instance().get_data(filename);
+   Point pic_info = PicMetaData::instance().get(filename);
 
    if (pic_info.getX() == -1 && pic_info.getY() == -1)
    {
@@ -382,23 +382,33 @@ Picture PicLoader::make_picture(SDL_Surface *surface, const std::string& resourc
    }
 
    Picture pic;
-   pic.init( surface, offset.getX(), offset.getY() );
-   pic.set_name(filename);
+   pic.init( surface, offset );
+   pic.setName(filename);
 
    return pic;
 }
 
 void PicLoader::createResources()
 {
-  Picture& originalPic = get_picture( ResourceGroup::utilitya, 34 );
+  Picture& originalPic = getPicture( ResourceGroup::utilitya, 34 );
   Picture& emptyReservoir = originalPic.copy();
-  set_picture( std::string( ResourceGroup::waterbuildings ) + "_00001.png", *emptyReservoir.get_surface() );
+  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00001.png", *emptyReservoir.getSurface() );
 
   Picture& fullReservoir = originalPic.copy();
-  Picture& water = get_picture( ResourceGroup::utilitya, 35 );
-  fullReservoir.draw( water, 47, 8 );
+  Picture& water = getPicture( ResourceGroup::utilitya, 35 );
+  fullReservoir.draw( water, 47, 37 );
 
-  set_picture( std::string( ResourceGroup::waterbuildings ) + "_00002.png", *fullReservoir.get_surface() );
+  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00002.png", *fullReservoir.getSurface() );
+
+  Picture& emptyFontainOrig = getPicture( ResourceGroup::utilitya, 10 );
+  Picture& emptyFontain = emptyFontainOrig.copy();
+  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00003.png", *emptyFontain.getSurface() );
+
+  Picture& fullFontain = emptyFontainOrig.copy();
+  Picture& fontainWater = getPicture( ResourceGroup::utilitya, 11 );
+  fullFontain.draw( fontainWater, 12, 25 );
+
+  setPicture( std::string( ResourceGroup::waterbuildings) + "_00004.png", *fullFontain.getSurface() );
 }
 
 PicLoader::PicLoader()
@@ -584,16 +594,16 @@ const std::map<WalkerAction, Animation>& WalkerLoader::getAnimationMap(const Wal
 }
 
 
-CartLoader* CartLoader::_instance = NULL;
+class CartLoader::Impl
+{
+public:
+  std::vector< PicturesArray > carts; // pictures[GoodType][Direction]
+};
 
 CartLoader& CartLoader::instance()
 {
-   if (_instance == NULL)
-   {
-      _instance = new CartLoader();
-      if (_instance == NULL) THROW("Memory error, cannot instantiate object");
-   }
-   return *_instance;
+  static CartLoader inst;
+  return inst;
 }
 
 CartLoader::CartLoader()
@@ -607,49 +617,49 @@ void CartLoader::loadAll()
 
    // FIX: size of std::vector to match number of carts with goods + emmigrants + immigrants
    // _carts.resize(G_MAX);
-   _carts.resize(CT_MAX);
+   _d->carts.resize(CT_MAX);
 
    std::vector<Picture*> cart;  // key=direction
    bool frontCart = false;
 
    fillCart(cart, ResourceGroup::carts, 1, frontCart);
-   _carts[G_NONE] = cart;
+   _d->carts[G_NONE] = cart;
    fillCart(cart, ResourceGroup::carts, 9, frontCart);
-   _carts[G_WHEAT] = cart;
+   _d->carts[G_WHEAT] = cart;
    fillCart(cart, ResourceGroup::carts, 17, frontCart);
-   _carts[G_VEGETABLE] = cart;
+   _d->carts[G_VEGETABLE] = cart;
    fillCart(cart, ResourceGroup::carts, 25, frontCart);
-   _carts[G_FRUIT] = cart;
+   _d->carts[G_FRUIT] = cart;
    fillCart(cart, ResourceGroup::carts, 33, frontCart);
-   _carts[G_OLIVE] = cart;
+   _d->carts[G_OLIVE] = cart;
    fillCart(cart, ResourceGroup::carts, 41, frontCart);
-   _carts[G_GRAPE] = cart;
+   _d->carts[G_GRAPE] = cart;
    fillCart(cart, ResourceGroup::carts, 49, frontCart);
-   _carts[G_MEAT] = cart;
+   _d->carts[G_MEAT] = cart;
    fillCart(cart, ResourceGroup::carts, 57, frontCart);
-   _carts[G_WINE] = cart;
+   _d->carts[G_WINE] = cart;
    fillCart(cart, ResourceGroup::carts, 65, frontCart);
-   _carts[G_OIL] = cart;
+   _d->carts[G_OIL] = cart;
    fillCart(cart, ResourceGroup::carts, 73, frontCart);
-   _carts[G_IRON] = cart;
+   _d->carts[G_IRON] = cart;
    fillCart(cart, ResourceGroup::carts, 81, frontCart);
-   _carts[G_TIMBER] = cart;
+   _d->carts[G_TIMBER] = cart;
    fillCart(cart, ResourceGroup::carts, 89, frontCart);
-   _carts[G_CLAY] = cart;
+   _d->carts[G_CLAY] = cart;
    fillCart(cart, ResourceGroup::carts, 97, frontCart);
-   _carts[G_MARBLE] = cart;
+   _d->carts[G_MARBLE] = cart;
    fillCart(cart, ResourceGroup::carts, 105, frontCart);
-   _carts[G_WEAPON] = cart;
+   _d->carts[G_WEAPON] = cart;
    fillCart(cart, ResourceGroup::carts, 113, frontCart);
-   _carts[G_FURNITURE] = cart;
+   _d->carts[G_FURNITURE] = cart;
    fillCart(cart, ResourceGroup::carts, 121, frontCart);
-   _carts[G_POTTERY] = cart;
+   _d->carts[G_POTTERY] = cart;
    fillCart(cart, ResourceGroup::carts, 129, !frontCart);
-   _carts[G_SCARB1] = cart;
+   _d->carts[G_SCARB1] = cart;
    fillCart(cart, ResourceGroup::carts, 137, !frontCart);
-   _carts[G_SCARB2] = cart;
+   _d->carts[G_SCARB2] = cart;
    fillCart(cart, ResourceGroup::carts, 697, frontCart);
-   _carts[G_FISH] = cart;
+   _d->carts[G_FISH] = cart;
 }
 
 namespace{
@@ -679,24 +689,24 @@ void CartLoader::fillCart(std::vector<Picture*> &ioCart, const std::string &pref
    ioCart.clear();
    ioCart.resize(D_MAX);
    
-   ioCart[D_NORTH]      = &picLoader.get_picture(ResourceGroup::carts, start);
-   ioCart[D_NORTH_EAST] = &picLoader.get_picture(ResourceGroup::carts, start + 1);
-   ioCart[D_EAST]       = &picLoader.get_picture(ResourceGroup::carts, start + 2);
-   ioCart[D_SOUTH_EAST] = &picLoader.get_picture(ResourceGroup::carts, start + 3);
-   ioCart[D_SOUTH]      = &picLoader.get_picture(ResourceGroup::carts, start + 4);
-   ioCart[D_SOUTH_WEST] = &picLoader.get_picture(ResourceGroup::carts, start + 5);
-   ioCart[D_WEST]       = &picLoader.get_picture(ResourceGroup::carts, start + 6);
-   ioCart[D_NORTH_WEST] = &picLoader.get_picture(ResourceGroup::carts, start + 7);
+   ioCart[D_NORTH]      = &picLoader.getPicture(ResourceGroup::carts, start);
+   ioCart[D_NORTH_EAST] = &picLoader.getPicture(ResourceGroup::carts, start + 1);
+   ioCart[D_EAST]       = &picLoader.getPicture(ResourceGroup::carts, start + 2);
+   ioCart[D_SOUTH_EAST] = &picLoader.getPicture(ResourceGroup::carts, start + 3);
+   ioCart[D_SOUTH]      = &picLoader.getPicture(ResourceGroup::carts, start + 4);
+   ioCart[D_SOUTH_WEST] = &picLoader.getPicture(ResourceGroup::carts, start + 5);
+   ioCart[D_WEST]       = &picLoader.getPicture(ResourceGroup::carts, start + 6);
+   ioCart[D_NORTH_WEST] = &picLoader.getPicture(ResourceGroup::carts, start + 7);
 
-   ioCart[D_SOUTH]->set_offset( back ? backCartOffsetSouth : frontCartOffsetSouth);
-   ioCart[D_WEST]->set_offset ( back ? backCartOffsetWest  : frontCartOffsetWest );
-   ioCart[D_NORTH]->set_offset( back ? backCartOffsetNorth : frontCartOffsetNorth);
-   ioCart[D_EAST]->set_offset ( back ? backCartOffsetEast  : frontCartOffsetEast );
+   ioCart[D_SOUTH]->setOffset( back ? backCartOffsetSouth : frontCartOffsetSouth);
+   ioCart[D_WEST]->setOffset ( back ? backCartOffsetWest  : frontCartOffsetWest );
+   ioCart[D_NORTH]->setOffset( back ? backCartOffsetNorth : frontCartOffsetNorth);
+   ioCart[D_EAST]->setOffset ( back ? backCartOffsetEast  : frontCartOffsetEast );
    
-   ioCart[D_SOUTH_EAST]->set_offset ( back ? backCartOffsetSouthEast  : frontCartOffsetSouthEast );
-   ioCart[D_NORTH_WEST]->set_offset ( back ? backCartOffsetNorthWest  : frontCartOffsetNorthWest );
-   ioCart[D_NORTH_EAST]->set_offset ( back ? backCartOffsetNorthEast  : frontCartOffsetNorthEast );
-   ioCart[D_SOUTH_WEST]->set_offset ( back ? backCartOffsetSouthWest  : frontCartOffsetSouthWest );
+   ioCart[D_SOUTH_EAST]->setOffset ( back ? backCartOffsetSouthEast  : frontCartOffsetSouthEast );
+   ioCart[D_NORTH_WEST]->setOffset ( back ? backCartOffsetNorthWest  : frontCartOffsetNorthWest );
+   ioCart[D_NORTH_EAST]->setOffset ( back ? backCartOffsetNorthEast  : frontCartOffsetNorthEast );
+   ioCart[D_SOUTH_WEST]->setOffset ( back ? backCartOffsetSouthWest  : frontCartOffsetSouthWest );
 }
 
 Picture& CartLoader::getCart(const GoodStock &stock, const DirectionType &direction)
@@ -704,11 +714,11 @@ Picture& CartLoader::getCart(const GoodStock &stock, const DirectionType &direct
    Picture *res = NULL;
    if (stock._currentQty == 0)
    {
-      res = _carts.at( G_NONE ).at(direction);
+      res = _d->carts.at( G_NONE ).at(direction);
    }
    else
    {
-      res = _carts.at(stock._goodType).at(direction);
+      res = _d->carts.at(stock._goodType).at(direction);
    }
 
    return *res;
@@ -717,14 +727,14 @@ Picture& CartLoader::getCart(const GoodStock &stock, const DirectionType &direct
 Picture& CartLoader::getCart(GoodType cart, const DirectionType &direction)
 {
   Picture *res = NULL;
-  res = _carts.at( cart ).at( direction );
+  res = _d->carts.at( cart ).at( direction );
   return *res;
 }
 
 Picture& CartLoader::getCart(CartTypes cart, const DirectionType &direction)
 {
   Picture *res = NULL;
-  res = _carts.at( cart ).at( direction );
+  res = _d->carts.at( cart ).at( direction );
   return *res;
 }
 

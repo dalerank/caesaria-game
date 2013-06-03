@@ -31,7 +31,7 @@ class InfoBoxHouseCreator : public InfoboxCreator
 public:
   GuiInfoBox* create( Widget* parent, const Tile& tile )
   {
-    HousePtr house = tile.get_terrain().getOverlay().as<House>();
+    HousePtr house = tile.getTerrain().getOverlay().as<House>();
     if( house->getNbHabitants() > 0 )
     {
       return new InfoBoxHouse( parent, tile );
@@ -58,7 +58,7 @@ public:
   GuiInfoBox* create( Widget* parent, const Tile& tile )
   {
     Size  size = parent->getSize();
-    GuiInfoService* infoBox = new GuiInfoService( parent, tile.get_terrain().getOverlay().as<ServiceBuilding>() );
+    GuiInfoService* infoBox = new GuiInfoService( parent, tile.getTerrain().getOverlay().as<ServiceBuilding>() );
     infoBox->setPosition( Point( (size.getWidth() - infoBox->getWidth()) / 2, 
                                   size.getHeight() - infoBox->getHeight()) );
 
@@ -114,12 +114,12 @@ InfoBoxManager::~InfoBoxManager()
 
 void InfoBoxManager::showHelp( const Tile& tile )
 {
-  LandOverlayPtr overlay = tile.get_terrain().getOverlay();
+  LandOverlayPtr overlay = tile.getTerrain().getOverlay();
   BuildingType type;
 
   if( _d->showDebugInfo )
   {
-    StringHelper::debug( 0xff, "Tile debug info: dsrbl=%d", tile.get_terrain().getDesirability() ); 
+    StringHelper::debug( 0xff, "Tile debug info: dsrbl=%d", tile.getTerrain().getDesirability() ); 
   }
 
   type = overlay.isNull() ? B_NONE : overlay->getType();

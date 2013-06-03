@@ -16,8 +16,8 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#ifndef GUI_TILEMAP_HPP
-#define GUI_TILEMAP_HPP
+#ifndef __OPENCAESAR3_GUITILEMAP_H_INCLUDED__
+#define __OPENCAESAR3_GUITILEMAP_H_INCLUDED__
 
 
 #include <list>

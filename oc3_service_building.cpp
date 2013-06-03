@@ -34,17 +34,19 @@ class ServiceBuilding::Impl
 {
 public:
   int serviceDelay;
+  ServiceType service;
+  int serviceTimer;
 };
 
 ServiceBuilding::ServiceBuilding(const ServiceType service,
                                  const BuildingType type, const Size& size)
                                  : WorkingBuilding( type, size ), _d( new Impl )
 {
-   _service = service;
+   _d->service = service;
    setMaxWorkers(5);
    setWorkers(0);
    setServiceDelay( 80 );
-   _serviceTimer = 0;
+   _d->serviceTimer = 0;
    _serviceRange = 30;
 }
 
@@ -55,7 +57,7 @@ void ServiceBuilding::setServiceDelay( const int delay )
 
 ServiceType ServiceBuilding::getService() const
 {
-   return _service;
+   return _d->service;
 }
 
 void ServiceBuilding::timeStep(const unsigned long time)
@@ -75,14 +77,14 @@ void ServiceBuilding::timeStep(const unsigned long time)
      }
    }
 
-   if (_serviceTimer == 0)
+   if (_d->serviceTimer == 0)
    {
       deliverService();
-      _serviceTimer = getServiceDelay();
+      _d->serviceTimer = getServiceDelay();
    }
-   else if (_serviceTimer > 0)
+   else if (_d->serviceTimer > 0)
    {
-      _serviceTimer -= 1;
+      _d->serviceTimer -= 1;
    }
 
    _animation.update( time );
@@ -108,7 +110,7 @@ void ServiceBuilding::destroy()
 void ServiceBuilding::deliverService()
 {
    // make a service walker and send him to his wandering
-  ServiceWalkerPtr serviceman = ServiceWalker::create( Scenario::instance().getCity(),_service);
+  ServiceWalkerPtr serviceman = ServiceWalker::create( Scenario::instance().getCity(), getService() );
   serviceman->send2City( BuildingPtr( this ) );
 
   if( !serviceman->isDeleted() )
@@ -123,7 +125,7 @@ int ServiceBuilding::getServiceRange() const
 void ServiceBuilding::save( VariantMap& stream ) const 
 {
   WorkingBuilding::save( stream );
-  stream[ "timer" ] = _serviceTimer;
+  stream[ "timer" ] = _d->serviceTimer;
   stream[ "delay" ] = _d->serviceDelay;
   stream[ "range" ] = _serviceRange;
 }
@@ -147,11 +149,6 @@ void ServiceBuilding::_addWalker( WalkerPtr walker )
   _walkerList.push_back( walker );
 }
 
-// void ServiceBuilding::removeWalker( WalkerPtr walker )
-// {
-//   _walkerList.remove( walker );
-// }
-
 const Walkers& ServiceBuilding::_getWalkerList() const
 {
   return _walkerList;
@@ -163,45 +160,7 @@ ServiceBuilding::~ServiceBuilding()
 }
 
 
-BuildingFountain::BuildingFountain() : ServiceBuilding(S_FOUNTAIN, B_FOUNTAIN, Size(1))
-{  
-  int id;
-  
-  std::srand((unsigned int)std::time(NULL));
-  
-  id = std::rand() % 4;
-    
-  setPicture( Picture::load( ResourceGroup::utilitya, 26));
-  _animation.load( ResourceGroup::utilitya, 27, 7);
-  //animLoader.fill_animation_reverse(_animation, "utilitya", 25, 7);
-  _animation.setOffset( Point( 14, 26 ) );
-  _fgPictures.resize(1);
-   
-  //2 10 18 26
-  // utilitya 10      - empty 
-  // utilitya 11 - 17 - working fontain
-   
-  // the first fountain's (10) ofsets ~ 11, 23 
-  /*AnimLoader animLoader(PicLoader::instance());
-  animLoader.fill_animation(_animation, "utilitya", 11, 7); 
-  animLoader.change_offset(_animation, 11, 23);
-  _fgPictures.resize(1);*/
-  
-  // the second (2)    ~ 8, 42
-  // the third (18)    ~ 8, 24
-  // the 4rd   (26)    ~14, 26     
-}
 
-void BuildingFountain::deliverService()
-{
-  ServiceWalkerPtr walker = ServiceWalker::create( Scenario::instance().getCity(), getService() );
-  walker->setBase( BuildingPtr( this ) );
-  ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( getTile().getIJ() );
-  for( ServiceWalker::ReachedBuildings::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
-  {
-    (*itBuilding)->applyService( walker );
-  }
-}
 
 EntertainmentBuilding::EntertainmentBuilding(const ServiceType service, 
                                              const BuildingType type,
@@ -283,11 +242,11 @@ BuildingCollosseum::BuildingCollosseum() : EntertainmentBuilding(S_COLLOSSEUM, B
 BuildingHippodrome::BuildingHippodrome() : EntertainmentBuilding(S_HIPPODROME, B_HIPPODROME, Size(5) )
 {
   setPicture( Picture::load("circus", 5));
-    getPicture().set_offset(0,106);
+    getPicture().setOffset(0,106);
     Picture* logo = &Picture::load("circus", 3);
     Picture* logo1 = &Picture::load("circus", 1);
-    logo -> set_offset(150,181);
-    logo1 -> set_offset(300,310);
+    logo -> setOffset(150,181);
+    logo1 -> setOffset(300,310);
     _fgPictures.resize(5);
     _fgPictures.at(0) = logo;
     _fgPictures.at(1) = logo1;

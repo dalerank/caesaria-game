@@ -13,26 +13,35 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_GRANARY_H_INCLUDED__
-#define __OPENCAESAR3_GRANARY_H_INCLUDED__
+#ifndef __OPENCAESAR3_WORKINGBUILDING_H_INCLUDED__
+#define __OPENCAESAR3_WORKINGBUILDING_H_INCLUDED__
 
-#include "oc3_working_building.hpp"
+#include "oc3_building.hpp"
 
-class Granary: public WorkingBuilding
+/** Building where people work */
+class WorkingBuilding : public Building
 {
 public:
-  Granary();
+  WorkingBuilding(const BuildingType type, const Size& size);
 
-  void timeStep(const unsigned long time);
-  void computePictures();
-  SimpleGoodStore& getGoodStore();
+  void setMaxWorkers(const int maxWorkers);
+  int getMaxWorkers() const;
+
+  void setWorkers(const int currentWorkers);
+  void addWorkers( const int workers );
+
+  int getWorkers() const;
+
+  void setActive(const bool value);  // if false then this building is stopped
+  bool isActive();
 
   void save( VariantMap& stream) const;
   void load( const VariantMap& stream);
 
 private:
-  SimpleGoodStore _goodStore;
+  int _currentWorkers;
+  int _maxWorkers;
+  bool _isActive;
 };
 
-
-#endif
+#endif //__OPENCAESAR3_WORKINGBUILDING_H_INCLUDED__

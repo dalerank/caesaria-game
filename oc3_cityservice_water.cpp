@@ -13,26 +13,29 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_GRANARY_H_INCLUDED__
-#define __OPENCAESAR3_GRANARY_H_INCLUDED__
+#include "oc3_cityservice_water.hpp"
 
-#include "oc3_working_building.hpp"
-
-class Granary: public WorkingBuilding
+class CityServiceWater::Impl
 {
 public:
-  Granary();
-
-  void timeStep(const unsigned long time);
-  void computePictures();
-  SimpleGoodStore& getGoodStore();
-
-  void save( VariantMap& stream) const;
-  void load( const VariantMap& stream);
-
-private:
-  SimpleGoodStore _goodStore;
 };
 
+CityServicePtr CityServiceWater::create( City& city )
+{
+  CityServiceWater* ret = new CityServiceWater( city );
 
-#endif
+  return CityServicePtr( ret );
+}
+
+CityServiceWater::CityServiceWater( City& city )
+: CityService( city, "water" ), _d( new Impl )
+{
+}
+
+void CityServiceWater::update( const unsigned int time )
+{
+  if( time % 22 != 1 )
+    return;
+
+  unsigned int vacantPop=0;
+}

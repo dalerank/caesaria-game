@@ -18,6 +18,7 @@
 #include "oc3_exception.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_stringhelper.hpp"
+#include "oc3_resourcegroup.hpp"
 
 TerrainTile::TerrainTile()
 {
@@ -47,6 +48,7 @@ void TerrainTile::reset()
   _isMeadow     = false;
   _isWall       = false;
   _isGateHouse  = false;
+  _waterService = 0;
   _overlay      = NULL; // BUG? What will be with old overlay?
 }
 
@@ -124,6 +126,26 @@ void TerrainTile::appendDesirability( int value )
   _desirability = math::clamp( _desirability += value, -0xff, 0xff );
 }
 
+void TerrainTile::fillWaterService( const WaterService type )
+{
+  _waterService |= (0xf << (type*4));
+}
+
+void TerrainTile::decreaseWaterService( const WaterService type )
+{
+  int tmpSrvValue = (_waterService >> (type*4)) & 0xf;
+  //tmpSrvValue = math::clamp( tmpSrvValue-1, 0, 0xf );
+  tmpSrvValue = 0;
+
+  _waterService &= ~(0xf<<(type*4));
+  _waterService |= tmpSrvValue << (type*4);
+}
+
+int TerrainTile::getWaterService( const WaterService type ) const
+{
+  return (_waterService >> (type*4)) & 0xf;
+}
+
 std::string TerrainTileHelper::convId2PicName( const unsigned int imgId )
 {
   // example: for land1a_00004.png, pfx=land1a and id=4
@@ -142,7 +164,7 @@ std::string TerrainTileHelper::convId2PicName( const unsigned int imgId )
   }
   else if (548<=imgId && imgId < 779)
   {
-    res_pfx = "land2a";
+    res_pfx = ResourceGroup::land2a;
     res_id = imgId - 547;
   }
   else if (779<=imgId && imgId < 871)
@@ -159,7 +181,7 @@ std::string TerrainTileHelper::convId2PicName( const unsigned int imgId )
     // std::cout << "Unknown image Id " << imgId << std::endl;
     // std::cout.unsetf(std::ios::hex);
 
-    if (imgId == 0xb10 || imgId == 0xb0d) {res_pfx = "housng1a", res_id = 51;} // TERRIBLE HACK!
+    if (imgId == 0xb10 || imgId == 0xb0d) {res_pfx = ResourceGroup::housing, res_id = 51;} // TERRIBLE HACK!
 
     // THROW("Unknown image Id " << imgId);
   }
@@ -168,7 +190,7 @@ std::string TerrainTileHelper::convId2PicName( const unsigned int imgId )
   return ret_str;
 }
 
-int TerrainTileHelper::convPicName2Id( std::string &pic_name )
+int TerrainTileHelper::convPicName2Id( const std::string &pic_name )
 {
   // example: for land1a_00004.png, return 244+4=248
   std::string res_pfx;  // resource name prefix = land1a
@@ -188,7 +210,7 @@ int TerrainTileHelper::convPicName2Id( std::string &pic_name )
   {
     res_id += 244;
   }
-  else if (res_pfx == "land2a")
+  else if (res_pfx == ResourceGroup::land2a)
   {
     res_id += 547;
   }

@@ -540,9 +540,9 @@ void Label::setPadding( const Rect& margin )
   _d->textMargin = margin;
 }
 
-SDL_Color Label::getBackgroundColor() const
+int Label::getBackgroundColor() const
 {
-  return SDL_Color();//_d->bgColor; //getColor( bgColor );
+  return 0;//_d->bgColor; //getColor( bgColor );
 }
 
 void Label::beforeDraw( GfxEngine& painter )

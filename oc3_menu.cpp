@@ -160,10 +160,9 @@ PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul,
 
 Caesar3Colours *colours;
 
-void getBitmapCoordinates(int x, int y, int mapsize, int& x_out, int& y_out)
+Point getBitmapCoordinates(int x, int y, int mapsize )
 {
-  y_out = x + mapsize - y - 1;
-  x_out = x + y;
+  return Point( x + y, x + mapsize - y - 1 );
 }
 
 void getBuildingColours(TerrainTile& tile, int &c1, int &c2);
@@ -535,7 +534,7 @@ bool ExtentMenu::onEvent(const NEvent& event)
         if( MenuButton* btn = safety_cast< MenuButton* >( event.GuiEvent.Caller ) )
         {
             int picId = btn->getMidPicId() > 0 ? btn->getMidPicId() : ResourceMenu::emptyMidPicId;
-            _d->middleLabel->setBackgroundPicture( PicLoader::instance().get_picture( ResourceGroup::menuMiddleIcons, picId ) );
+            _d->middleLabel->setBackgroundPicture( PicLoader::instance().getPicture( ResourceGroup::menuMiddleIcons, picId ) );
         }
     }
 
@@ -573,18 +572,17 @@ void ExtentMenu::draw( GfxEngine& painter )
   {
     for (int x = border; x < max; x++)
     {  
-      TerrainTile& tile = Scenario::instance().getCity().getTilemap().at(x - border, y - border).get_terrain();
+      TerrainTile& tile = Scenario::instance().getCity().getTilemap().at(x - border, y - border).getTerrain();
 
-      int coords[2];
-      int c1, c2;
-      getBitmapCoordinates(x - border, y - border, mapsize, coords[0], coords[1]);
+      Point pnt = getBitmapCoordinates(x - border, y - border, mapsize);
+      int c1, c2;      
       getTerrainColours(tile, c1, c2);
 
-      if( coords[0] >= minimap.getWidth()-1 || coords[1] >= minimap.getHeight() )
+      if( pnt.getX() >= minimap.getWidth()-1 || pnt.getY() >= minimap.getHeight() )
         continue;
 
-      minimap.set_pixel( coords[0],     coords[1], c1);
-      minimap.set_pixel( coords[0] + 1, coords[1], c2);
+      minimap.setPixel( pnt, c1);
+      minimap.setPixel( pnt + Point( 1, 0 ), c2);
     }
   }
 
@@ -593,21 +591,21 @@ void ExtentMenu::draw( GfxEngine& painter )
   // show center of screen on minimap
   // Exit out of image size on small carts... please fix it
   
-  /*sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX(),     mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ(), kWhite);
-  sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 1, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ(), kWhite);
-  sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX(),     mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 1, kWhite);
-  sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 1, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 1, kWhite);
+  /*sdlFacade.setPixel(surface, GuiTilemap::instance().getMapArea().getCenterX(),     mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ(), kWhite);
+  sdlFacade.setPixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 1, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ(), kWhite);
+  sdlFacade.setPixel(surface, GuiTilemap::instance().getMapArea().getCenterX(),     mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 1, kWhite);
+  sdlFacade.setPixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 1, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 1, kWhite);
 
   for ( int i = GuiTilemap::instance().getMapArea().getCenterX() - 18; i <= GuiTilemap::instance().getMapArea().getCenterX() + 18; i++ )
   {
-    sdlFacade.set_pixel(surface, i, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 34, kYellow);
-    sdlFacade.set_pixel(surface, i, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() - 34, kYellow);
+    sdlFacade.setPixel(surface, i, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 34, kYellow);
+    sdlFacade.setPixel(surface, i, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() - 34, kYellow);
   }
 
   for ( int j = mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() - 34; j <= mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 34; j++ )
   {
-    sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() - 18, j, kYellow);
-    sdlFacade.set_pixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 18, j, kYellow);
+    sdlFacade.setPixel(surface, GuiTilemap::instance().getMapArea().getCenterX() - 18, j, kYellow);
+    sdlFacade.setPixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 18, j, kYellow);
   }
   */
   

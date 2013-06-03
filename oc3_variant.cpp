@@ -743,7 +743,7 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
         switch (d->type) 
         {
         case Variant::String:
-          *dt = DateTime( *v_cast<std::string>(d) );
+          *dt = DateTime( v_cast<std::string>(d)->c_str() );
             break;
 //         case Variant::Date:
 //             *dt = DateTime(*v_cast<Date>(d));

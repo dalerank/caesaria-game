@@ -19,7 +19,7 @@
 #ifndef SERVICE_BUILDING_HPP
 #define SERVICE_BUILDING_HPP
 
-#include "oc3_building.hpp"
+#include "oc3_working_building.hpp"
 #include "oc3_predefinitions.hpp"
 
 class Widget;
@@ -52,24 +52,13 @@ protected:
   void _addWalker( WalkerPtr walker );
   const Walkers& _getWalkerList() const;
 
-private:
-   ServiceType _service;
-   int _serviceTimer;
-   
+private:  
    int _serviceRange;
    Walkers _walkerList;
    static std::map<ServiceType, ServiceBuilding*> _specimen;
 
    class Impl;
    ScopedPtr< Impl > _d;
-};
-
-class BuildingFountain : public ServiceBuilding
-{
-public:
-  BuildingFountain();
-
-  virtual void deliverService();
 };
 
 class EntertainmentBuilding : public ServiceBuilding

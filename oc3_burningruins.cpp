@@ -92,10 +92,10 @@ void BurningRuins::build( const TilePos& pos )
 {
     ServiceBuilding::build( pos );
     //while burning can't remove it
-    getTile().get_terrain().setTree( false );
-    getTile().get_terrain().setBuilding( false );
-    getTile().get_terrain().setRoad( false );
-    getTile().get_terrain().setRock( true );
+    getTile().getTerrain().setTree( false );
+    getTile().getTerrain().setBuilding( false );
+    getTile().getTerrain().setRoad( false );
+    getTile().getTerrain().setRock( true );
 }   
 
 bool BurningRuins::isWalkable() const
@@ -135,8 +135,8 @@ void BurnedRuins::build( const TilePos& pos )
 {
   Building::build(pos);
 
-  getTile().get_terrain().setBuilding( true );
-  getTile().get_terrain().setRock( false );
+  getTile().getTerrain().setBuilding( true );
+  getTile().getTerrain().setRock( false );
 }
 
 bool BurnedRuins::isWalkable() const

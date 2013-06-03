@@ -40,9 +40,9 @@ void CollapsedRuins::build( const TilePos& pos )
 {
     Building::build( pos );
     //while burning can't remove it
-    getTile().get_terrain().setTree( false );
-    getTile().get_terrain().setBuilding( true );
-    getTile().get_terrain().setRoad( false );
+    getTile().getTerrain().setTree( false );
+    getTile().getTerrain().setBuilding( true );
+    getTile().getTerrain().setRoad( false );
     setPicture( Picture::load( ResourceGroup::land2a, 111 + rand() % 8 ) );
 }   
 

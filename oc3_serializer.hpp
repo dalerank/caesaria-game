@@ -23,9 +23,11 @@ class VariantMap;
 class Serializable
 {
 public:
-   // read/write self on stream
-   virtual void save( VariantMap& options ) const = 0;
-   virtual void load( const VariantMap& options ) = 0;
+  static const char* damageLevel;
+  static const char* fireLevel;
+  // read/write self on stream
+  virtual void save( VariantMap& options ) const = 0;
+  virtual void load( const VariantMap& options ) = 0;
 };
 
 

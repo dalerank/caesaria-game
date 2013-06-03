@@ -360,11 +360,11 @@ void CartPusher::load( const VariantMap& stream )
 
   TilePos prPos( stream.get( "producerPos" ).toTilePos() );
   Tile& prTile = _d->city->getTilemap().at( prPos );
-  _d->producerBuilding = prTile.get_terrain().getOverlay().as<Building>();
+  _d->producerBuilding = prTile.getTerrain().getOverlay().as<Building>();
 
   TilePos cnsmPos( stream.get( "consumerPos" ).toTilePos() );
   Tile& cnsmTile = _d->city->getTilemap().at( cnsmPos );
-  _d->producerBuilding = prTile.get_terrain().getOverlay().as<Building>();
+  _d->producerBuilding = prTile.getTerrain().getOverlay().as<Building>();
 
   _d->maxDistance = stream.get( "maxDistance" ).toInt();
   _d->reservationID = stream.get( "reservationID" ).toInt();

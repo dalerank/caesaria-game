@@ -1,63 +1,61 @@
 openCaesar3
------------
+===========
 openCaesar3 is a remake of the classic Caesar3 PC game, a city building game developed by Impression Games and published by Sierra Entertainment, in 1998.
 
-The game will be a near clone of the original Caesar3 game. Notable changes are:
- * A new AI for walkers. They will walk where they are needed the most.
- * Actors coming from the actor school do not provide access to the entertainment. The same goes for lion tamers, gladiators and horse wagons.
+The game will be a near clone to the original Caesar3 game. Notorious changes are:
+ * new AI for walkers. They just go where they are needed
+ * actors just out of the actor school do not provide access to the entertainment (same for gladiators, ...)
 
-The game is currently under heavy development and not in a playable state. Developers are invited to participate.
+The game is still not quite playable
 
 Building openCaesar3
 -------------------
-See INSTALL_LINUX.md or INSTALL_WINDOWS.md depending on which operating system you are running.
+See BuildingOpenCaesar3.md
 
-####External dependencies
+####Releases:
 
-Releases:
----------
-##### 2013-05-11
-  * Fixed a lot of bugs.
-  * Minimap is introduced.
-  * Migration to cmake building system.
-  * Houses now can evolve/devolve (a little bit buggy).
+##### 11may2013
+  * fixed a lot of bugs
+  * minimap is introduced
+  * migration to cmake building system
+  * houses now can evolve/devolve (a little bit buggy)
 
-##### 2013-04-03
-  * Added many buildings.
+##### 03apr2013
+  * added many buildings
 
-##### 2013-03-02
-  * First binary release for windows.
-  * Start implement the menubar with money/population/date.
-  * Use the slim interface for build menu (regression: no more access to save/load game).
-  * Start implement funds and taxes.
+##### 02mar2013
+  * first binary release for windows
+  * start implement the menubar with money/population/date
+  * use the slim interface for build menu (regression: no more access to save/load game)
+  * start implement funds and taxes
 
-##### 2013-02-09
-  * Implement clear land.
-  * Add copyright notice.
+##### 09feb2013
+  * implement clear land
+  * add copyright notice
 
-##### 2012-12-01
-  * Save/load game complete.
-  * Implement nearly all entertainment buildings.
+##### 01dec2012
+  * save/load game complete.
+  * implement nearly all entertainment buildings
 
-##### 2012-11-10
-  * Save/load game starts to work.
+##### 10nov2012
+  * save/load game starts to work
 
-##### 2012-10-12
-  * Start implement load game.
+##### 12oct2012
+  * start implement load game
 
-##### 2012-09-17
-  * Start implement save game.
+##### 17sep2012
+  * start implement save game
 
-##### 2012-06-14
-  * Big code refactoring of the GUI. prepare for game music.
+##### 14jun2012
+  * big code refactoring of the GUI. prepare for game music.
 
-##### 2012-05-21
-  * Add an installation procedure.
+##### 21may2012
+  * add an installation procedure
 
-##### 2012-05-15
-  * Implement some buildings (water, entertainment, education). 
-  * Start implementation of house evolution/regression.
+##### 15may2012
+  * implement some buildings (water, entertainment, education). 
+  * start implementation of house evolution/regression.
 
-##### 2012-04-20
-  * First public release.
+##### 20apr2012
+  * first public release.
 

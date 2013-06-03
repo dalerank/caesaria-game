@@ -13,26 +13,33 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_GRANARY_H_INCLUDED__
-#define __OPENCAESAR3_GRANARY_H_INCLUDED__
+#ifndef __OPENCAESAR3_MILITARY_BUILDING_H_INCLUDED__
+#define __OPENCAESAR3_MILITARY_BUILDING_H_INCLUDED__
 
 #include "oc3_working_building.hpp"
 
-class Granary: public WorkingBuilding
+class Barracks : public WorkingBuilding
 {
 public:
-  Granary();
-
-  void timeStep(const unsigned long time);
-  void computePictures();
-  SimpleGoodStore& getGoodStore();
-
-  void save( VariantMap& stream) const;
-  void load( const VariantMap& stream);
-
-private:
-  SimpleGoodStore _goodStore;
+  Barracks();
 };
 
+class FortLegionnaire : public Building
+{
+public:  
+  FortLegionnaire();
+};
+
+class FortJaveline : public Building
+{
+public:  
+  FortJaveline();
+};
+
+class FortMounted : public Building
+{
+public:  
+  FortMounted();
+};
 
 #endif

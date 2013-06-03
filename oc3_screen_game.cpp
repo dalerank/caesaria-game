@@ -67,7 +67,6 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
   _d->engine = &engine;
   _d->infoBoxMgr = InfoBoxManager::create( &gui );
   // enable key repeat, 1ms delay, 100ms repeat
-  SDL_EnableKeyRepeat(1, 100);
 
   _d->gui->clear();
 

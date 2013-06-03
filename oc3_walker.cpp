@@ -192,7 +192,7 @@ void Walker::walk()
    }
 
    Tile& tile = Scenario::instance().getCity().getTilemap().at( getIJ() );
-   float roadKoeff = tile.get_terrain().isRoad() ? 1.f : 0.5f;
+   float roadKoeff = tile.getTerrain().isRoad() ? 1.f : 0.5f;
    
    switch (_action._direction)
    {
@@ -289,7 +289,7 @@ void Walker::onNewTile()
    // std::cout << "Walker is on a new tile! coord=" << _i << "," << _j << std::endl;
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
    Tile& currentTile = tilemap.at( _d->pos );
-   if( !currentTile.get_terrain().isRoad() )
+   if( !currentTile.getTerrain().isRoad() )
    {
      StringHelper::debug( 0xff, "Walker at (%d, %d) is not on a road!!!", _d->pos.getI(), _d->pos.getJ() );
    }

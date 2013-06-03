@@ -28,10 +28,10 @@ public:
   struct SToolTip
   {
     Widget* Element;
-    Uint32 LastTime;
-    Uint32 EnterTime;
-    Uint32 LaunchTime;
-    Uint32 RelaunchTime;
+    unsigned int LastTime;
+    unsigned int EnterTime;
+    unsigned int LaunchTime;
+    unsigned int RelaunchTime;
   };
 
   SToolTip toolTip;

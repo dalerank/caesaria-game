@@ -29,7 +29,7 @@
 	"desstep" : 1
   },
 
-  "ampitheatre" :
+  "amphitheater" :
   {
 	"cost" : 100,
 	"desirability" : 4,
@@ -38,7 +38,7 @@
 	"employers" : 12
   },
 
-  "theatre" : 
+  "theater" : 
   {
     "cost" : 50,
 	"desirability" : 2,
@@ -137,7 +137,7 @@
 	"employers" : 0
   },
   
-  "statue_midlle" :
+  "statue_middle" :
    {
     "cost" : 60,
 	"desirability" : 10,
@@ -548,7 +548,10 @@
 	"desirability" : -1,
 	"desrange" : 1,
 	"desstep" : 1,
-	"employers" : 1
+	"employers" : 1,
+	"pretty" : "Well",
+	"resource" : "utilitya",
+	"rcindex" : 1
   }, 
  
   "native_field" : 
@@ -623,7 +626,7 @@
 	"employers" : 10
   }, 
 
-  "vegtable_farm" :
+  "vegetable_farm" :
   {
     "cost" : 40,
 	"desirability" : -2,

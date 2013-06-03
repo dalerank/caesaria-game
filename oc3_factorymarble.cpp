@@ -57,7 +57,7 @@ bool FactoryMarble::canBuild(const TilePos& pos ) const
   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 2 ), Tilemap::checkCorners);
   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {
-    near_mountain |= (*itTiles)->get_terrain().isRock();
+    near_mountain |= (*itTiles)->getTerrain().isRock();
   }
 
   return (is_constructible && near_mountain);

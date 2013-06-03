@@ -19,23 +19,21 @@
 #ifndef WAREHOUSE_HPP
 #define WAREHOUSE_HPP
 
-#include "oc3_building.hpp"
+#include "oc3_working_building.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_good.hpp"
+#include "oc3_positioni.hpp"
 
 #include <string>
 #include <list>
 
-
-
 class WarehouseTile
 {
 public:
-   WarehouseTile(const int i, const int j);
+   WarehouseTile(const TilePos& pos );
    void computePicture();
 
-   int _i;
-   int _j;
+   TilePos _pos;
    GoodStock _stock;
    Picture _picture;
 };
@@ -81,7 +79,8 @@ public:
 
 private:
    Animation _animFlag;  // the flag above the warehouse
-   std::vector<WarehouseTile> _subTiles;
+   typedef std::vector<WarehouseTile> WhTiles;
+   WhTiles _subTiles;
    WarehouseStore _goodStore;
 };
 

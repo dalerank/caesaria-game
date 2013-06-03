@@ -70,11 +70,11 @@ FarmTile::FarmTile(const GoodType outGood, const TilePos& pos )
 
 void FarmTile::computePicture(const int percent)
 {
-  Animation::Pictures& pictures = _animation.getPictures();
+  PicturesArray& pictures = _animation.getPictures();
 
   int picIdx = (percent * (pictures.size()-1)) / 100;
   _picture = *pictures[picIdx];
-  _picture.add_offset(30*(_pos.getI()+_pos.getJ()), 15*(_pos.getJ()-_pos.getI() ));
+  _picture.addOffset(30*(_pos.getI()+_pos.getJ()), 15*(_pos.getJ()-_pos.getI() ));
 }
 
 Picture& FarmTile::getPicture()
@@ -99,7 +99,7 @@ Farm::Farm(const GoodType outGood, const BuildingType type )
   _picture = &_d->pictureBuilding;
 
   _d->pictureBuilding = Picture::load( ResourceGroup::commerce, 12);  // farm building
-  _d->pictureBuilding.add_offset(30, 15);
+  _d->pictureBuilding.addOffset(30, 15);
 
   init();
   setWorkers( 0 );
@@ -111,10 +111,10 @@ bool Farm::canBuild(const TilePos& pos ) const
   bool on_meadow = false;
 
   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-  std::list<Tile*> rect = tilemap.getFilledRectangle( pos, Size( _size ) );
-  for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+  PtrTilesArea rect = tilemap.getFilledRectangle( pos, Size( _size ) );
+  for( PtrTilesArea::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {
-    on_meadow |= (*itTiles)->get_terrain().isMeadow();
+    on_meadow |= (*itTiles)->getTerrain().isMeadow();
   }
 
   return (is_constructible && on_meadow);  

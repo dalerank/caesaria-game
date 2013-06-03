@@ -19,9 +19,6 @@
 #ifndef TILEMAP_HPP
 #define TILEMAP_HPP
 
-#include <vector>
-#include <list>
-
 #include "oc3_serializer.hpp"
 #include "oc3_predefinitions.hpp"
 
@@ -35,7 +32,7 @@ public:
    virtual ~Tilemap();
    void init(const int size);
 
-   bool is_inside( const TilePos& pos ) const;
+   bool isInside( const TilePos& pos ) const;
 
    Tile& at( const int i, const int j );
    Tile& at( const TilePos& ij );
@@ -59,6 +56,7 @@ public:
 
    void save( VariantMap& stream) const;
    void load( const VariantMap& stream);
+   TilePos fit( const TilePos& pos ) const;
 
 private:
    TileGrid _tile_array;

@@ -18,6 +18,7 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_exception.hpp"
 #include <SDL_ttf.h>
+#include <map>
 
 class Font::Impl
 {
@@ -139,7 +140,7 @@ void Font::draw(Picture& dstpic, const std::string &text, const int dx, const in
   if( sText )
   {
     Picture pic;
-    pic.init( sText, 0, 0 );
+    pic.init( sText, Point( 0, 0 ) );
     dstpic.draw( pic, dx, dy);
   }
 
@@ -179,7 +180,7 @@ public:
 
   void setFont( const int key, Font font )
   {
-    std::pair<std::map<int, Font>::iterator, bool> ret = collection.insert(std::pair<int, Font>(key, font));
+    std::pair< std::map<int, Font>::iterator, bool> ret = collection.insert(std::pair<int, Font>(key, font));
     if( ret.second == false )
     {
       // no insert font (already exists)

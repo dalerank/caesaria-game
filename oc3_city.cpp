@@ -313,7 +313,7 @@ void City::build( const BuildingType type, const TilePos& pos )
 
 void City::disaster( const TilePos& pos, DisasterType type )
 {
-    TerrainTile& terrain = _d->tilemap.at( pos ).get_terrain();
+    TerrainTile& terrain = _d->tilemap.at( pos ).getTerrain();
     TilePos rPos = pos;
 
     if( terrain.isDestructible() )
@@ -330,8 +330,8 @@ void City::disaster( const TilePos& pos, DisasterType type )
 
         bool deleteRoad = false;
 
-        std::list<Tile*> clearedTiles = _d->tilemap.getFilledRectangle( rPos, Size( size ) );
-        for (std::list<Tile*>::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
+        PtrTilesArea clearedTiles = _d->tilemap.getFilledRectangle( rPos, Size( size ) );
+        for( PtrTilesArea::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
         {
           BuildingType dstr2constr[] = { B_BURNING_RUINS, B_COLLAPSED_RUINS };
           bool canCreate = ConstructionManager::getInstance().canCreate( dstr2constr[type] );
@@ -344,7 +344,7 @@ void City::disaster( const TilePos& pos, DisasterType type )
 void City::clearLand(const TilePos& pos  )
 {
   Tile& cursorTile = _d->tilemap.at( pos );
-  TerrainTile& terrain = cursorTile.get_terrain();
+  TerrainTile& terrain = cursorTile.getTerrain();
 
   if( terrain.isDestructible() )
   {
@@ -368,7 +368,7 @@ void City::clearLand(const TilePos& pos  )
     for (PtrTilesArea::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
     {
       (*itTile)->set_master_tile(NULL);
-      TerrainTile &terrain = (*itTile)->get_terrain();
+      TerrainTile &terrain = (*itTile)->getTerrain();
       terrain.setTree(false);
       terrain.setBuilding(false);
       terrain.setRoad(false);

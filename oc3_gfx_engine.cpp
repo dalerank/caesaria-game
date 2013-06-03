@@ -62,13 +62,12 @@ int GfxEngine::getScreenHeight() const
   return _screen_height;
 }
 
-void GfxEngine::loadPictures(const std::list<Picture*> &ioPictures)
+void GfxEngine::loadPictures(const PicturesArray& ioPictures)
 {
-  for (std::list<Picture*>::const_iterator it = ioPictures.begin(); it!= ioPictures.end(); ++it)
+  for( PicturesArray::const_iterator it = ioPictures.begin(); it!= ioPictures.end(); ++it)
   {
     // for every picture
-    Picture& pic = *(*it);
-    loadPicture(pic);
+    loadPicture( *(*it) );
   }
 }
 
