@@ -119,17 +119,17 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
   tmp = ret->addItem( "Advisers", -1, true, true, false, false );
   tmp->setBackgroundPicture( *ret->_d->bgPicture, Point( -tmp->getLeft(), 0 ) );
   ContextMenu* advisersMenu = tmp->addSubMenu();
-  advisersMenu->addItem( "##adv_employments_m##" );
-  advisersMenu->addItem( "##adv_military_m##" );
-  advisersMenu->addItem( "##adv_empire_m##" );
-  advisersMenu->addItem( "##adv_ratings_m##" );
-  advisersMenu->addItem( "##adv_population_m##" );
-  advisersMenu->addItem( "##adv_health_m##" );
-  advisersMenu->addItem( "##adv_education_m##" );
-  advisersMenu->addItem( "##adv_religion_m##" );
-  advisersMenu->addItem( "##adv_entertainment_m##" );
-  advisersMenu->addItem( "##adv_finance_m##" );
-  advisersMenu->addItem( "##adv_main_m##" );
+  advisersMenu->addItem( "##adv_employments_m##", -1 );
+  advisersMenu->addItem( "##adv_military_m##", -1 );
+  advisersMenu->addItem( "##adv_empire_m##", -1 );
+  advisersMenu->addItem( "##adv_ratings_m##", -1 );
+  advisersMenu->addItem( "##adv_population_m##", -1 );
+  advisersMenu->addItem( "##adv_health_m##", -1 );
+  advisersMenu->addItem( "##adv_education_m##", -1 );
+  advisersMenu->addItem( "##adv_religion_m##", -1 );
+  advisersMenu->addItem( "##adv_entertainment_m##", -1 );
+  advisersMenu->addItem( "##adv_finance_m##", -1 );
+  advisersMenu->addItem( "##adv_main_m##", -1 );
 
   return ret;
 }
