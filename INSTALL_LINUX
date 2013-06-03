@@ -75,8 +75,25 @@ Fedora 18 and later:
 $ sudo yum install boost-devel
 
 
+1.c openSUSE 12.3
+
+$ sudo zypper install libarchive-devel libSDL-devel libSDL_ttf-devel \
+libSDL_image-devel libSDL_mixer-devel git cmake gcc-c++ libjpeg-devel \
+libpng-devel boost-devel
+
+
 2 Building the game
 ===================
+
+2.1 For those who locally compiled boost.
+
+If you compiled boost you should add the fallowing to your ~/.bashrc:
+   export BOOST_ROOT=/path/to/boost 
+If you followed the guide for Ubuntu 12.04 the path is /home/<username>/usr .
+Then restart your terminal to make the setting take effect or run 
+$ bash
+
+2.2 Actually compiling the game.
 
 First move your terminal to where you want openCaesar 3 to be installed, e.g: 
 $ mkdir games && cd games
@@ -94,7 +111,7 @@ These resources are images, videos and sound needed to run the
 game. The fallowing commands will download an archive and extract the
 needed files into the resources folder: 
 $ wget http://opencaesar3.org/files/resources.7z 
-$ 7za x resources.7z ./ 
+$ 7za x resources.7z
 $ rm resources.7z
 
 
