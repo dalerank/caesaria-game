@@ -782,6 +782,16 @@ msgstr "Exit"
  #########
 
 
+msgid "##funds_tooltip##"
+msgstr "Current city funds"
+
+msgid "##population_tooltip##"
+msgstr "Current city population"
+
+msgid "##date_tooltip##"
+msgstr "The current date!"
+
+
 msgid "##gmenu_file##"
 msgstr "File"
 

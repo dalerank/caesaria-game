@@ -78,6 +78,7 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
   ret->_d->lbPopulation->setBackgroundPicture( Picture::load( ResourceGroup::panelBackground, panelBgStatus ) );
   ret->_d->lbPopulation->setFont( Font(FONT_2_WHITE) );
   ret->_d->lbPopulation->setTextAlignment( alignCenter, alignCenter );
+  ret->_d->lbPopulation->setTooltipText( _("##population_tooltip##") );
   //_populationLabel.setTextPosition(20, 0);
 
   ret->_d->lbFunds = new Label( ret, Rect( Point( ret->getWidth() - fundLabelOffset, 0), lbSize ),
@@ -85,6 +86,7 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
   ret->_d->lbFunds->setFont( Font( FONT_2_WHITE ));
   ret->_d->lbFunds->setTextAlignment( alignCenter, alignCenter );
   ret->_d->lbFunds->setBackgroundPicture( Picture::load( ResourceGroup::panelBackground, panelBgStatus ) );
+  ret->_d->lbFunds->setTooltipText( _("##funds_tooltip##") );
   //_fundsLabel.setTextPosition(20, 0);
 
   ret->_d->lbDate = new Label( ret, Rect( Point( ret->getWidth() - dateLabelOffset, 0), lbSize ),
@@ -92,6 +94,7 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
   ret->_d->lbDate->setFont( Font( FONT_2_YELLOW ));
   ret->_d->lbDate->setTextAlignment( alignCenter, alignCenter );
   ret->_d->lbDate->setBackgroundPicture( Picture::load( ResourceGroup::panelBackground, panelBgStatus ) );
+  ret->_d->lbDate->setTooltipText( _("##date_tooltip##") );
   //_dateLabel.setTextPosition(20, 0);
 
   GfxEngine::instance().loadPicture(*ret->_d->bgPicture);
