@@ -613,6 +613,64 @@ msgstr "Special Orders"
 
  #########
 #
+#  Farm Info Box Text
+#
+ #########
+
+msgid "Production %d%% complete."
+msgstr ""
+
+msgid "##farm_have_no_workers##"
+msgstr "This farm has no employees. Production has ceased."
+
+msgid "##farm_working_normally##"
+msgstr "This farm has all the employees it needs. It gets maximum yield for its acreage."
+
+msgid "##farm_working_bad##"
+msgstr "This farm is producing some food, but with more employees production would be increased."
+
+msgid "##farm_title_wheat##"
+msgstr "Wheat farm"
+
+msgid "##farm_description_wheat##"
+msgstr "Grain is the basic foodstuff for your population. It must be stored in granaries to feed your people, or warehouses if it is for export."
+
+msgid "##farm_title_fruit##"
+msgstr "Orchard"
+
+msgid "##farm_description_fruit##"
+msgstr "Fruit is important to the balanced diet your people need for happiness and health. Granaries store fruit for local consumption, and warehouses take surpluses for export."
+
+msgid "##farm_title_olive##"
+msgstr "Olive farm"
+
+msgid "##farm_description_olive##"
+msgstr "Olives are most valuable for their oil. Workshops press olives to yield oil for cooking, lighting, lubrication and preservation."
+
+msgid "##farm_title_vine##"
+msgstr "Vineyard"
+
+msgid "##farm_description_vine##"
+msgstr "The grapes from these vines were bred specifically for winemaking. Workshops make fine wine for your own patricians, and for export."
+
+msgid "##farm_title_meat##"
+msgstr "Pig farm"
+
+msgid "##farm_description_meat##"
+msgstr "Well-fed citizens want meat in their diet. Meat can be kept in granaries for local consumption, or taken to warehouses for export."
+
+msgid "##farm_title_vegetable##"
+msgstr "Vegetable farm"
+
+msgid "##farm_description_vegetable##"
+msgstr "Vegetables are important to the balanced diet your people need for happiness and health. Granaries store vegetables for local consumption, and warehouses take surpluses for export."
+
+
+
+
+
+ #########
+#
 #  House Info Box Text
 #
  #########

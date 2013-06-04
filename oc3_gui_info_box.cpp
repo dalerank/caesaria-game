@@ -85,7 +85,7 @@ GuiInfoBox::GuiInfoBox( Widget* parent, const Rect& rect, int id )
 : Widget( parent, id, rect ), _d( new Impl )
 {
   // create the title
-  _d->lbTitle = new Label( this, Rect( 16, 10, getWidth()-16, 10 + 30 ), "", true );
+  _d->lbTitle = new Label( this, Rect( 50, 10, getWidth()-50, 10 + 30 ), "", true );
   _d->lbTitle->setFont( Font( FONT_3 ) );
   _d->lbTitle->setTextAlignment( alignCenter, alignCenter );
   _d->isAutoPosition = true;
@@ -797,14 +797,14 @@ public:
 
 void InfoBoxFarm::Impl::updateAboutText()
 {
-  std::string text = "##farm_working_normally##";
+  std::string text = _("##farm_working_normally##");
   if( farm->getWorkers() == 0 )
   {
-    text = "##farm_have_no_workers##";
+    text = _("##farm_have_no_workers##");
   }
   else if( farm->getWorkers() <= farm->getMaxWorkers() / 2 )
   {
-    text = "##farm_working_bad##";
+    text = _("##farm_working_bad##");
   }
 
   lbAbout->setText( text );
@@ -815,30 +815,74 @@ InfoBoxFarm::InfoBoxFarm( Widget* parent, const Tile& tile )
 {
   _fd->farm = tile.get_terrain().getOverlay().as<Farm>();
   
-  setTitle( BuildingDataHolder::instance().getData( _fd->farm->getType() ).getPrettyName() );
   GuiPaneling::instance().draw_black_frame( *_d->bgPicture, 16, 146, getWidth() - 32, 64 );
 
   // picture of citizen
   Picture& pic = Picture::load( ResourceGroup::panelBackground, 542);
-  _d->bgPicture->draw( pic, 16+15, 158 );
+  _d->bgPicture->draw( pic, 16+15, 160 );
 
   // number of workers
-  std::string text = StringHelper::format( 0xff, _("%d employers (%d required)"), 
+  std::string text = StringHelper::format( 0xff, _("%d employers (%d requires)"), 
                                            _fd->farm->getWorkers(), _fd->farm->getMaxWorkers() );
 
   Font font( FONT_2 );
-  font.draw( *_d->bgPicture, text, 16+42, 156+5 );
+  font.draw( *_d->bgPicture, text, 16+42, 158+5 );
 
   _fd->dmgLabel = new Label( this, Rect( 50, getHeight() - 50, getWidth() - 50, getHeight() - 16 ) ); 
   text = StringHelper::format( 0xff, "%d%% damage - %d%% fire", 
   (int)_fd->farm->getDamageLevel(), (int)_fd->farm->getFireLevel());
   _fd->dmgLabel->setText( text );
 
-  text = StringHelper::format( 0xff, "##farm_progress## %d%%", _fd->farm->getProgress() );
+  text = StringHelper::format( 0xff, _("Production %d%% complete."), _fd->farm->getProgress() );
   _fd->lbProgress = new Label( this, Rect( 32, 50, getWidth() - 16, 50 + 32 ), text );
   _fd->lbAbout = new Label( this, Rect( 32, _fd->lbProgress->getBottom() + 6, getWidth() - 16, 130 ) );
+  _fd->lbAbout->setWordWrap( true );
 
-  _fd->lbDesc = new Label( this, Rect( 32, 236, getWidth() - 50, getHeight() - 50 ), "##farm_description##" );
+  std::string desc, name;
+  GoodType goodType = G_NONE;
+  switch( _fd->farm->getType() )
+  {
+    case B_WHEAT:
+      desc.assign( _("##farm_description_wheat##") );
+      name.assign( _("##farm_title_wheat##") );
+      goodType = G_WHEAT;
+      break;
+    case B_FRUIT:
+      desc.assign( _("##farm_description_fruit##") );
+      name.assign( _("##farm_title_fruit##") );
+      goodType = G_FRUIT;
+      break;
+    case B_OLIVE:
+      desc.assign( _("##farm_description_olive##") );
+      name.assign( _("##farm_title_olive##") );
+      goodType = G_OLIVE;
+      break;
+    case B_GRAPE:
+      desc.assign( _("##farm_description_vine##") );
+      name.assign( _("##farm_title_vine##") );
+      goodType = G_GRAPE;
+      break;
+    case B_MEAT:
+      desc.assign( _("##farm_description_meat##") );
+      name.assign( _("##farm_title_meat##") );
+      goodType = G_MEAT;
+      break;
+    case B_VEGETABLE:
+      desc.assign( _("##farm_description_vegetable##") );
+      name.assign( _("##farm_title_vegetable##") );
+      goodType = G_VEGETABLE;
+      break;
+    default:
+      break;
+  }
+  _fd->lbDesc = new Label( this, Rect( 32, 236, getWidth() - 50, getHeight() - 50 ), desc );
+  _fd->lbDesc->setWordWrap( true );
+
+  setTitle( name );
+
+   // pictures of goods
+  Picture &goodIcon = getPictureGood(goodType);
+  _d->bgPicture->draw( goodIcon, 16, 16 );
 
   _fd->updateAboutText();
 }
