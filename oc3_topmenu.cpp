@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "oc3_gettext.hpp"
 #include "oc3_topmenu.hpp"
 #include "oc3_label.hpp"
 #include "oc3_pic_loader.hpp"
@@ -95,28 +96,28 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
 
   GfxEngine::instance().loadPicture(*ret->_d->bgPicture);
 
-  ContextMenuItem* tmp = ret->addItem( "File", -1, true, true, false, false );
+  ContextMenuItem* tmp = ret->addItem( _("##gmenu_file##"), -1, true, true, false, false );
   tmp->setBackgroundPicture( *ret->_d->bgPicture );
   ContextMenu* file = tmp->addSubMenu();
 
-  ContextMenuItem* save = file->addItem( "Save", -1, true, false, false, false );
+  ContextMenuItem* save = file->addItem( _("##gmenu_file_save##"), -1, true, false, false, false );
   //ContextMenuItem* load = file->addItem( "Load", -1, true, false, false, false );
 
   file->addItem( "", -1, false, false, false, false );
-  ContextMenuItem* mainMenu = file->addItem( "Main menu", -1, true, false, false, false );
+  ContextMenuItem* mainMenu = file->addItem( _("##gmenu_file_mainmenu##"), -1, true, false, false, false );
 
   file->addItem( "", -1, true, false, false, false );
-  ContextMenuItem* exit = file->addItem( "Exit", -1, true, false, false, false );
+  ContextMenuItem* exit = file->addItem( _("##gmenu_file_exit##"), -1, true, false, false, false );
 
   CONNECT( exit, onClicked(), &ret->_d->onExitSignal, Signal0<>::emit );
   CONNECT( save, onClicked(), &ret->_d->onSaveSignal, Signal0<>::emit );
   CONNECT( mainMenu, onClicked(), &ret->_d->onEndSignal, Signal0<>::emit );
 
-  tmp = ret->addItem( "Options", -1, true, true, false, false );
+  tmp = ret->addItem( _("##gmenu_options##"), -1, true, true, false, false );
   tmp->setBackgroundPicture( *ret->_d->bgPicture, Point( -tmp->getLeft(), 0 ) );
-  tmp = ret->addItem( "Help", -1, true, true, false, false );
+  tmp = ret->addItem( _("##gmenu_help##"), -1, true, true, false, false );
   tmp->setBackgroundPicture( *ret->_d->bgPicture, Point( -tmp->getLeft(), 0 ) );
-  tmp = ret->addItem( "Advisers", -1, true, true, false, false );
+  tmp = ret->addItem( _("##gmenu_advisors##"), -1, true, true, false, false );
   tmp->setBackgroundPicture( *ret->_d->bgPicture, Point( -tmp->getLeft(), 0 ) );
 
   return ret;

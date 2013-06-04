@@ -771,3 +771,51 @@ msgstr "City Construction Kit"
 msgid "##mainmenu_quit##"
 msgstr "Exit"
 
+
+
+
+
+ #########
+#
+#  Game Top Menu Text
+#
+ #########
+
+
+msgid "##gmenu_file##"
+msgstr "File"
+
+msgid "##gmenu_file_tooltip##"
+msgstr "Load, save, new game and exit"
+
+msgid "##gmenu_file_save##"
+msgstr "Save"
+
+msgid "##gmenu_file_mainmenu##"
+msgstr "Main menu"
+
+msgid "##gmenu_file_exit##"
+msgstr "Exit"
+
+
+msgid "##gmenu_options##"
+msgstr "Options"
+
+# Note: this is 'Sound and speed options' in real English Caesar 3
+#		Changed as it also has other types of options available
+msgid "##gmenu_options_tooltip##"
+msgstr "Game options"
+
+
+msgid "##gmenu_help##"
+msgstr "Help"
+
+msgid "##gmenu_help_tooltip##"
+msgstr "Access Game Help"
+
+
+msgid "##gmenu_advisors##"
+msgstr "Advisors"
+
+msgid "##gmenu_advisors_tooltip##"
+msgstr "Go directly to specific advisor reports"
