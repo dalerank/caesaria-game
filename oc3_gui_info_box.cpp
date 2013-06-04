@@ -886,3 +886,21 @@ InfoBoxFarm::InfoBoxFarm( Widget* parent, const Tile& tile )
 
   _fd->updateAboutText();
 }
+
+class InfoBoxBasic::Impl
+{
+public:
+  Label* lbText;
+};
+
+InfoBoxBasic::InfoBoxBasic( Widget* parent, const Tile& tile )
+: GuiInfoBox( parent, Rect( 0, 0, 510, 300 ), -1 ), _bd( new Impl )
+{
+  _bd->lbText = new Label( this, Rect( 32, 64, 510 - 32, 300 - 48 ) );
+  _bd->lbText->setWordWrap( true );
+}
+
+void InfoBoxBasic::setText( const std::string& text )
+{
+  _bd->lbText->setText( text );
+}

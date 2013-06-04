@@ -737,6 +737,24 @@ msgstr "Commerce"
 
 
 
+
+
+ #########
+#
+#  Garden/Statue Info Box Text
+#
+ #########
+
+msgid "##garden_desc##"
+msgstr "This pleasant lot gives citizens relief from the noise, heat and dirt of the city with a cool oasis of green space. Everyone wants a garden next door."
+
+msgid "##statue_desc##"
+msgstr "Monuments to prominent citizens and historic events enhance a neighborhood's prestige. People are proud to have statues nearby...and the bigger, the better."
+
+
+
+
+
  #########
 #
 #  Land Type Info Box Text
