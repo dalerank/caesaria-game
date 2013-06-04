@@ -610,6 +610,27 @@ msgstr "Special Orders"
 
 
 
+
+ #########
+#
+#  House Info Box Text
+#
+ #########
+
+
+msgid "##freehouse_caption##"
+msgstr "Vacant lot"
+
+msgid "##freehouse_text##"
+msgstr "No one has so much as pitched a tent here yet, although immigrants will probably arrive shortly if the city has food and jobs to offer."
+
+msgid "##freehouse_text_noroad##"
+msgstr "No one will make their home here as it is too far to the nearest road. Unless road access is added soon, this site will revert to open land."
+
+
+
+
+
  #########
 #
 #  Market Info Box Text

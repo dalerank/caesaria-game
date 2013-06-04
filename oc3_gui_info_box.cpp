@@ -771,8 +771,16 @@ void InfoBoxLand::setText( const std::string& text )
 InfoBoxFreeHouse::InfoBoxFreeHouse( Widget* parent, const Tile& tile )
     : InfoBoxLand( parent, tile )
 {
-    setTitle( _("##freehouse_caption") );
-    setText( _("##freehouse_text") );
+    setTitle( _("##freehouse_caption##") );
+
+    if( tile.get_terrain().getOverlay().as<Construction>()->getAccessRoads().size() == 0 )
+    {
+      setText( _("##freehouse_text_noroad##") );
+    }
+    else
+    {
+      setText( _("##freehouse_text##") );
+    }
 }   
 
 class InfoBoxFarm::Impl
