@@ -327,10 +327,13 @@ msgstr "Hide the Control Panel to see a wider playing area"
 msgid "##maximizeBtnTooltip"
 msgstr "Display the full Control Panel"
 
-msgid "building_theater"
+msgid "building_triumphal_arch"
+msgstr "Trimphal Arch"
+
+msgid "building_theatre"
 msgstr "Theater"
 
-msgid "building_amphitheater"
+msgid "building_ampitheatre"
 msgstr "Amphitheater"
 
 msgid "building_hippodrome"
@@ -408,7 +411,7 @@ msgstr "Wheat"
 msgid "building_fig_farm"
 msgstr "Fruit"
 
-msgid "building_vegetable_farm"
+msgid "building_vegtable_farm"
 msgstr "Vegetables"
 
 msgid "building_olive_farm"
@@ -426,7 +429,7 @@ msgstr "Marble quarry"
 msgid "building_iron_mine"
 msgstr "Iron mine"
 
-msgid "building_timber_yard"
+msgid "building_lumber_mill"
 msgstr "Timber yard"
 
 msgid "building_clay_pit"
@@ -438,7 +441,7 @@ msgstr "Wine"
 msgid "building_oil_workshop"
 msgstr "Oil"
 
-msgid "building_weapon_workshop"
+msgid "building_weapons_workshop"
 msgstr "Weapons"
 
 msgid "building_furniture_workshop"
@@ -450,19 +453,19 @@ msgstr "Pottery"
 msgid "building_engineering_post"
 msgstr "Engineer's post"
 
-msgid "building_statue1"
+msgid "building_statue_small"
 msgstr "Small statue"
 
-msgid "building_statue2"
+msgid "building_statue_middle"
 msgstr "Medium statue"
 
-msgid "building_statue3"
+msgid "building_statue_big"
 msgstr "Large statue"
 
-msgid "building_low_bridge"
+msgid "building_foot_bridge"
 msgstr "Low bridge"
 
-msgid "building_high_bridge"
+msgid "building_ship_bridge"
 msgstr "Ship bridge"
 
 msgid "building_well"
@@ -501,7 +504,7 @@ msgstr "Venus"
 msgid "building_big_mercury_temple"
 msgstr "Mercury"
 
-msgid "building_temple_oracle"
+msgid "building_oracle"
 msgstr "Oracle"
 
 msgid "building_aqueduct"
