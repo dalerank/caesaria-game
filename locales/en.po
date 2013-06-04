@@ -604,6 +604,9 @@ msgstr "Exit this panel"
 msgid "##infobox_tooltip_help##"
 msgstr "Display the relevent help page for this panel"
 
+msgid "##special_orders##"
+msgstr "Special Orders"
+
 
 
 

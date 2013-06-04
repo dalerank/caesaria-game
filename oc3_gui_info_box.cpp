@@ -459,12 +459,14 @@ class GuiInfoGranary::Impl
 {
 public:
    GranaryPtr building;
+   PushButton* btnOrders;
 };
 
 GuiInfoGranary::GuiInfoGranary( Widget* parent, const Tile& tile )
     : GuiInfoBox( parent, Rect( 0, 0, 510, 280 ), -1 ), _gd( new Impl )
 {
    _gd->building = tile.get_terrain().getOverlay().as<Granary>();
+   _gd->btnOrders = new PushButton( this, Rect( 155, getHeight() - 39, 355, getHeight() - 15 ), _("##special_orders##") );
 
    setTitle( BuildingDataHolder::instance().getData( _gd->building->getType()).getPrettyName() );
 
