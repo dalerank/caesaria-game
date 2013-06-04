@@ -173,7 +173,7 @@ msgstr ""
 #: oc3_gui_info_box.cpp:495
 #, c-format
 msgid "%d unites en stock. Espace pour %d unites."
-msgstr ""
+msgstr "%d units in stock. Space for %d more units."
 
 #: oc3_gui_info_box.cpp:521 oc3_gui_info_box.cpp:577 oc3_gui_info_box.cpp:655
 #, c-format

@@ -462,24 +462,12 @@ public:
 };
 
 GuiInfoGranary::GuiInfoGranary( Widget* parent, const Tile& tile )
-    : GuiInfoBox( parent, Rect( 0, 0, 450, 300 ), -1 ), _gd( new Impl )
+    : GuiInfoBox( parent, Rect( 0, 0, 510, 280 ), -1 ), _gd( new Impl )
 {
    _gd->building = tile.get_terrain().getOverlay().as<Granary>();
 
    setTitle( BuildingDataHolder::instance().getData( _gd->building->getType()).getPrettyName() );
 
-   int height = 160;
-
-   for (int n = 0; n < G_MAX; ++n)
-   {
-      int qty = _gd->building->getGoodStore().getCurrentQty((GoodType) n);
-      if (qty != 0)
-      {
-         height += 22;
-      }
-   }
-
-   setHeight( height );
    paint();
 }
 
@@ -493,21 +481,21 @@ void GuiInfoGranary::paint()
    int _paintY = _d->lbTitle->getBottom();
    int currentQty = _gd->building->getGoodStore().getCurrentQty();
    int maxQty = _gd->building->getGoodStore().getMaxQty();
-   char buffer[1000];
-   sprintf(buffer, _("%d unites en stock. Espace pour %d unites."), currentQty, maxQty-currentQty);
+   std::string desc = StringHelper::format( 0xff, _("%d unites en stock. Espace pour %d unites."), currentQty, maxQty-currentQty);
 
-   font.draw( *_d->bgPicture, std::string(buffer), 16, _paintY+5 );
+   font.draw( *_d->bgPicture, desc, 16, _paintY+5 );
    _paintY+=40;
 
-   drawGood(G_WHEAT, _paintY);
-   drawGood(G_FISH, _paintY);
-   drawGood(G_MEAT, _paintY);
-   drawGood(G_FRUIT, _paintY);
-   drawGood(G_VEGETABLE, _paintY);
+   int _col2PaintY = _paintY;
+   drawGood(G_WHEAT, 0, _paintY);
+   drawGood(G_FISH, 0, _paintY);
+   drawGood(G_MEAT, 0, _paintY);
+   drawGood(G_FRUIT, 1, _col2PaintY);
+   drawGood(G_VEGETABLE, 1, _col2PaintY);
 
-   _paintY+=10;
-   GuiPaneling::instance().draw_black_frame(*_d->bgPicture, 16, _paintY, getWidth()-32, getHeight()-_paintY-16);
-   _paintY+=10;
+   _paintY+=12;
+   GuiPaneling::instance().draw_black_frame(*_d->bgPicture, 16, _paintY, getWidth()-32, 62);
+   _paintY+=12;
 
    drawWorkers( _paintY );
 }
@@ -524,11 +512,10 @@ void GuiInfoGranary::drawWorkers( int paintY )
 
    Font font( FONT_2 );
    font.draw(*_d->bgPicture, text, 16+42, paintY+5 );
-   paintY+=20;
 }
 
 
-void GuiInfoGranary::drawGood(const GoodType &goodType, int& paintY)
+void GuiInfoGranary::drawGood(const GoodType &goodType, int col, int& paintY)
 {
   std::string goodName = GoodHelper::getInstance().getName( goodType );
 
@@ -537,11 +524,11 @@ void GuiInfoGranary::drawGood(const GoodType &goodType, int& paintY)
 
   // pictures of goods
   Picture &pic = getPictureGood(goodType);
-  _d->bgPicture->draw(pic, 31, paintY);
+  _d->bgPicture->draw(pic, (col == 0 ? 31 : 250), paintY);
 
   std::string outText = StringHelper::format( 0xff, "%d %s", qty, goodName.c_str() );
-  font.draw( *_d->bgPicture, outText, 61, paintY );
-  paintY += 22;
+  font.draw( *_d->bgPicture, outText, (col == 0 ? 61 : 280), paintY );
+  paintY += 25;
 }
 
 class InfoBoxTemple::Impl

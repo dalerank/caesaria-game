@@ -127,7 +127,7 @@ public:
   void paint();
 
   void drawWorkers( int );
-  void drawGood(const GoodType &goodType, int&);
+  void drawGood(const GoodType &goodType, int, int&);
 
 private:
 
