@@ -524,7 +524,7 @@ ExtentMenu::ExtentMenu( Widget* parent, GuiTilemap& tmap, int id, const Rect& re
   _d->overlaysMenu = new OverlaysMenu( getParent(), Rect( 0, 0, 160, 1 ), -1 );
   _d->overlaysMenu->hide();
 
-  _d->overlaysButton = new PushButton( this, Rect( 4, 3, 122, 28 ), "Overlays" );
+  _d->overlaysButton = new PushButton( this, Rect( 4, 3, 122, 28 ), _("##ovrm_text##") );
   CONNECT( _d->overlaysButton, onClicked(), this, ExtentMenu::toggleOverlays );
 }
 
