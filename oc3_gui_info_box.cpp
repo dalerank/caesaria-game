@@ -591,8 +591,9 @@ GuiInfoMarket::GuiInfoMarket( Widget* parent, const Tile& tile )
    _md->market = tile.get_terrain().getOverlay().as<Market>();
    _md->goodFont = Font( FONT_2 );
    _md->lbAbout = new Label( this, _d->lbTitle->getRelativeRect() + Point( 0, 30 ) );
+   _md->lbAbout->setWordWrap( true );
 
-   setTitle( "##market_title##" );
+   setTitle( _("building_market") );
    paint();
 }
 
@@ -601,19 +602,6 @@ void GuiInfoMarket::paint()
 {
   if( _md->market->getWorkers() > 0 )
   {
-    int paintY = 78;
-    drawGood(G_WHEAT, 0, paintY );
-    drawGood(G_FISH, 1, paintY);
-    drawGood(G_MEAT, 2, paintY);
-    drawGood(G_FRUIT, 3, paintY);
-    drawGood(G_VEGETABLE, 4, paintY);
-
-    paintY += 24;
-    drawGood(G_POTTERY, 0, paintY);
-    drawGood(G_FURNITURE, 1, paintY);
-    drawGood(G_OIL, 2, paintY);
-    drawGood(G_WINE, 3, paintY); 
-
     SimpleGoodStore& goods = _md->market->getGoodStore();
     int furageSum = 0;
     // for all furage types of good
@@ -622,11 +610,33 @@ void GuiInfoMarket::paint()
       furageSum += goods.getCurrentQty( (GoodType)goodType );     
     }
 
-    _md->lbAbout->setText( 0 == furageSum ? "##market_search_food_source##" : "##market_about##");
+    int paintY = 78;
+    if( 0 < furageSum )
+    {
+      drawGood(G_WHEAT, 0, paintY );
+      drawGood(G_FISH, 1, paintY);
+      drawGood(G_MEAT, 2, paintY);
+      drawGood(G_FRUIT, 3, paintY);
+      drawGood(G_VEGETABLE, 4, paintY);
+      _md->lbAbout->setHeight( 25 );
+    }
+    else
+    {
+      _md->lbAbout->setHeight( 50 );
+    }
+
+    paintY += 24;
+    drawGood(G_POTTERY, 0, paintY);
+    drawGood(G_FURNITURE, 1, paintY);
+    drawGood(G_OIL, 2, paintY);
+    drawGood(G_WINE, 3, paintY); 
+
+    _md->lbAbout->setText( 0 == furageSum ? _("##market_search_food_source##") : _("##market_about##"));
   }
   else
   {
-    _md->lbAbout->setText( "##market_not_work##" );
+    _md->lbAbout->setHeight( 50 );
+    _md->lbAbout->setText( _("##market_not_work##") );
   }
 
   drawWorkers();
@@ -645,7 +655,7 @@ void GuiInfoMarket::drawWorkers()
                                                    _md->market->getWorkers(), 
                                                    _md->market->getMaxWorkers());
 
-  _md->goodFont.draw(*_d->bgPicture, text, 16+pic.getWidth() + 5, y+18 );
+  _md->goodFont.draw(*_d->bgPicture, text, 16+42, y+18 );
 }
 
 
@@ -662,7 +672,7 @@ void GuiInfoMarket::drawGood(const GoodType &goodType, int index, int paintY )
   _d->bgPicture->draw( pic, pos.getX(), pos.getY() );
 
   std::string outText = StringHelper::format( 0xff, "%d", _md->market->getGoodStore().getCurrentQty(goodType) );
-  _md->goodFont.draw(*_d->bgPicture, outText, pos.getX() + pic.getWidth() + 5, pos.getY() );
+  _md->goodFont.draw(*_d->bgPicture, outText, pos.getX() + 30, pos.getY() );
 }
 
 class GuiBuilding::Impl

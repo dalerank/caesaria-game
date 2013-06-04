@@ -607,6 +607,24 @@ msgstr "Display the relevent help page for this panel"
 
 
 
+ #########
+#
+#  Market Info Box Text
+#
+ #########
+
+msgid "##market_not_work##"
+msgstr "This market is not operational, and supplies no produce to the local community."
+
+msgid "##market_search_food_source##"
+msgstr "This market has traders, but they are currently looking for a source of food to sell."
+
+msgid "##market_about##"
+msgstr "This market is fully operational."
+
+
+
+
 
  #########
 #
