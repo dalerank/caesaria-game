@@ -582,6 +582,13 @@ msgstr "Commerce"
  #########
 
 
+msgid "##clear_land_caption"
+msgstr "Empty land"
+
+msgid "##clear_land_text"
+msgstr "This land may be built upon freely, and allows the passage of not only friendly but also enemy soldiers!"
+
+
 msgid "##trees_and_forest_caption"
 msgstr "Trees"
 
@@ -610,14 +617,11 @@ msgstr "Road"
 msgid "##road_text"
 msgstr " "
 
+msgid "##plaza_caption"
+msgstr "Plaza"
 
-msgid "##clear_land_caption"
-msgstr "Empty land"
-
-msgid "##clear_land_text"
-msgstr "This land may be built upon freely, and allows the passage of not only friendly but also enemy soldiers!"
-
-
+msgid "##plaza_text"
+msgstr "A better class of road"
 
 
 

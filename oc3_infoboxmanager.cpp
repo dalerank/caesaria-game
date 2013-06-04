@@ -104,6 +104,7 @@ InfoBoxManager::InfoBoxManager() : _d( new Impl )
   addCreator( B_GRAPE, OC3_STR_EXT(B_GRAPE), new BaseInfoboxCreator<InfoBoxFarm>() );
   addCreator( B_WHEAT, OC3_STR_EXT(B_WHEAT), new BaseInfoboxCreator<InfoBoxFarm>() );
   addCreator( B_TEMPLE_CERES, OC3_STR_EXT(B_TEMPLE_CERES), new BaseInfoboxCreator<InfoBoxTemple>() );
+  addCreator( B_PLAZA, OC3_STR_EXT(B_PLAZA), new BaseInfoboxCreator<InfoBoxLand>() );
   addCreator( B_NONE, OC3_STR_EXT(B_NONE), new BaseInfoboxCreator<InfoBoxLand>() );
 }
 

@@ -723,8 +723,16 @@ InfoBoxLand::InfoBoxLand( Widget* parent, const Tile& tile )
   }
   else if( tile.get_terrain().isRoad() )
   {
-    setTitle( _("##road_caption") );
-    _text->setText( _("##road_text"));
+    if( tile.get_terrain().getOverlay()->getType() == B_PLAZA )
+    {
+      setTitle( _("##plaza_caption") );
+      _text->setText( _("##plaza_text"));
+    }
+    else 
+    {
+     setTitle( _("##road_caption") );
+      _text->setText( _("##road_text"));
+    }
   }
   else 
   {
