@@ -105,7 +105,8 @@ Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id
     _d->overlaysMenu = 0;
 
     const bool haveSubMenu = true;
-    _d->minimizeButton = _addButton( ResourceMenu::maximizeBtnPicId, false, 0, MAXIMIZE_ID, !haveSubMenu, ResourceMenu::emptyMidPicId );
+    _d->minimizeButton = _addButton( ResourceMenu::maximizeBtnPicId, false, 0, MAXIMIZE_ID,
+                                     !haveSubMenu, ResourceMenu::emptyMidPicId, _("##minimizeBtnTooltip") );
     _d->minimizeButton->setGeometry( Rect( Point( 6, 4 ), Size( 31, 20 ) ) );
 
     _d->houseButton = _addButton( ResourceMenu::houseBtnPicId, true, 0, B_HOUSE, 
@@ -436,6 +437,7 @@ void Menu::_createBuildMenu( int type, Widget* parent )
 
 Signal0<>& Menu::onMaximize()
 {
+    _d->minimizeButton->setTooltipText( _("##maximizeBtnTooltip") );
     return _d->onMaximizeSignal;
 }
 
@@ -457,6 +459,7 @@ ExtentMenu* ExtentMenu::create( Widget* parent, GuiTilemap& tmap, int id )
 
 void ExtentMenu::minimize()
 {
+    _d->minimizeButton->setTooltipText( _("##minimizeBtnTooltip") );
     _d->lastPressed = 0;
     _createBuildMenu( -1, this );
     Point stopPos = getRelativeRect().UpperLeftCorner + Point( getWidth(), 0 );
@@ -525,6 +528,7 @@ ExtentMenu::ExtentMenu( Widget* parent, GuiTilemap& tmap, int id, const Rect& re
   _d->overlaysMenu->hide();
 
   _d->overlaysButton = new PushButton( this, Rect( 4, 3, 122, 28 ), _("##ovrm_text##") );
+  _d->overlaysButton->setTooltipText( _("##ovrm_tooltip##") );
   CONNECT( _d->overlaysButton, onClicked(), this, ExtentMenu::toggleOverlays );
 }
 

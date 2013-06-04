@@ -91,8 +91,10 @@ GuiInfoBox::GuiInfoBox( Widget* parent, const Rect& rect, int id )
   _d->isAutoPosition = true;
 
   _d->btnExit = new PushButton( this, Rect( 472, getHeight() - 39, 496, getHeight() - 15 ) );
+  _d->btnExit->setTooltipText( _("##infobox_tooltip_exit##") );
   GuiPaneling::configureTexturedButton( _d->btnExit, ResourceGroup::panelBackground, ResourceMenu::exitInfBtnPicId, false);
   _d->btnHelp = new PushButton( this, Rect( 14, getHeight() - 39, 38, getHeight() - 15 ) );
+  _d->btnHelp->setTooltipText( _("##infobox_tooltip_help##") );
   GuiPaneling::configureTexturedButton( _d->btnHelp, ResourceGroup::panelBackground, ResourceMenu::helpInfBtnPicId, false);
 
   CONNECT( _d->btnExit, onClicked(), this, InfoBoxLand::deleteLater );
