@@ -705,6 +705,7 @@ InfoBoxLand::InfoBoxLand( Widget* parent, const Tile& tile )
 {
   _text = new Label( this, Rect( 38, 239, 470, 338 ), "", true );
   _text->setFont( Font( FONT_2 ) );
+  _text->setWordWrap( true );
 
   if( tile.get_terrain().isTree() )
   {

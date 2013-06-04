@@ -28,9 +28,6 @@ static const Uint32 fundLabelOffset = 464;
 static const Uint32 panelBgStatus = 15;
 };
 
-static const char *MonthName[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-static const char *AgeName[] = {"BC", "AD"};
-
 class TopMenu::Impl
 {
 public:
@@ -140,19 +137,20 @@ void TopMenu::draw( GfxEngine& engine )
 
 void TopMenu::setPopulation( int value )
 {
-  _d->lbPopulation->setText( StringHelper::format( 0xff, "Pop %d", value ) );
+  _d->lbPopulation->setText( StringHelper::format( 0xff, "%.3s %d", _("##population_short##"), value ) );
 }
 
 void TopMenu::setFunds( int value )
 {
-  _d->lbFunds->setText( StringHelper::format( 0xff, "Dn %d", value) );
+  _d->lbFunds->setText( StringHelper::format( 0xff, "%.2s %d", _("##denarii_short##"), value) );
 }
 
 void TopMenu::setDate( int value )
 {
+  std::string month = _( StringHelper::format( 0xff, "##month_%d_short##", (value % 12) + 1).c_str() );
+  std::string age = _( StringHelper::format( 0xff, "##age_%s##", ( ((int)value/12-39) > 0 ? "ad" : "bc" ) ).c_str() );
   std::string text = StringHelper::format( 0xff, "%.3s %d %.2s", 
-                                           MonthName[value % 12], (int)std::abs(((int)value/12-39)), 
-                                           AgeName[((int)value/12-39)>0]);
+                                           month.c_str(), (int)std::abs(((int)value/12-39)), age.c_str());
 
   //_dateLabel.setText("Feb 39 BC");
   _d->lbDate->setText( text );

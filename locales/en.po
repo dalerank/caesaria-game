@@ -534,6 +534,65 @@ msgstr "Dock"
 
  #########
 #
+# General Text
+#
+ #########
+
+
+msgid "##population_short##"
+msgstr "Pop"
+
+msgid "##denarii_short##"
+msgstr "Dn"
+
+msgid "##age_bc##"
+msgstr "BC"
+
+msgid "##age_ad##"
+msgstr "AD"
+
+msgid "##month_1_short##"
+msgstr "Jan"
+
+msgid "##month_2_short##"
+msgstr "Feb"
+
+msgid "##month_3_short##"
+msgstr "Mar"
+
+msgid "##month_4_short##"
+msgstr "Apr"
+
+msgid "##month_5_short##"
+msgstr "May"
+
+msgid "##month_6_short##"
+msgstr "Jun"
+
+msgid "##month_7_short##"
+msgstr "Jul"
+
+msgid "##month_8_short##"
+msgstr "Aug"
+
+msgid "##month_9_short##"
+msgstr "Sep"
+
+msgid "##month_10_short##"
+msgstr "Oct"
+
+msgid "##month_11_short##"
+msgstr "Nov"
+
+msgid "##month_12_short##"
+msgstr "Dec"
+
+
+
+
+
+ #########
+#
 #  Info Box General Text
 #
  #########
