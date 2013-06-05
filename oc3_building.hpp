@@ -150,7 +150,7 @@ protected:
    std::set<WalkerTraineeType> _reservedTrainees;  // a trainee is on the way
 };
 
-//operator need for std::set
+//operator need for std::reset
 inline bool operator<(BuildingPtr v1, BuildingPtr v2)
 {
   return v1.object() < v2.object();

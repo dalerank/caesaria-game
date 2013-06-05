@@ -25,7 +25,7 @@
 struct ButtonState
 {
     Picture* bgTexture;
-    Picture* texture;
+    PictureRef texture;
     Picture* iconTexture;
     //SDL_Color color;
     //bool overrideColorEnabled;
@@ -58,7 +58,7 @@ public:
     {
         for( int i=0; i < StateCount; i++)
         {
-            buttonStates[ ElementState(i) ].texture = 0;
+            buttonStates[ ElementState(i) ].texture.reset( 0 );
             buttonStates[ ElementState(i) ].iconTexture = 0;
             buttonStates[ ElementState(i) ].bgTexture = 0;
             buttonStates[ ElementState(i) ].font = Font( FONT_2 );
@@ -75,8 +75,7 @@ public:
     {
       if( buttonStates[ state ].texture )
       {
-        GfxEngine::instance().deletePicture( *buttonStates[ state ].texture );
-        buttonStates[ state ].texture = 0;
+        buttonStates[ state ].texture.reset();
       }
     }
 };
@@ -108,13 +107,13 @@ PushButton::PushButton( Widget* parent,
 void PushButton::_updateTexture( ElementState state )
 {
     Size btnSize = getSize();
-    Picture*& curTxs = _d->buttonStates[ state ].texture;
+    PictureRef& curTxs = _d->buttonStates[ state ].texture;
     
-    if( curTxs && curTxs->getSize() != btnSize )
+    if( !curTxs.isNull() && curTxs->getSize() != btnSize )
         _d->releaseTexture( state );
 
-    if( !curTxs )
-      curTxs = &GfxEngine::instance().createPicture( btnSize.getWidth(), btnSize.getHeight() );
+    if( curTxs.isNull() )
+      curTxs.reset( Picture::create( btnSize ) );
 
     // draw button background
     if( _d->buttonStates[ state ].bgTexture )
@@ -396,7 +395,7 @@ void PushButton::setFont( const Font& font )
     }
 }
 
-Picture* PushButton::_getPicture( ElementState state )
+PictureRef& PushButton::_getPicture( ElementState state )
 {
     return _d->buttonStates[ state ].texture; 
 }

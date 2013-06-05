@@ -41,7 +41,7 @@ public:
   bool needUpdatePicture;
   int lineIntervalOffset;
   Picture* bgPicture;
-  Picture* picture;
+  PictureRef picture;
 
   Impl() : textMargin( Rect( 0, 0, 0, 0) ),
 		    	 OverrideBGColorEnabled(false), WordWrap(false),
@@ -63,8 +63,7 @@ public:
     {
         if( picture )
         {
-          GfxEngine::instance().deletePicture( *picture );
-          picture = 0;
+          picture.reset();
         }
     }
 
@@ -100,8 +99,8 @@ void Label::_updateTexture( GfxEngine& painter )
 
     if( !_d->picture )
     {
-        _d->picture = &painter.createPicture( btnSize.getWidth(), btnSize.getHeight() );
-        painter.loadPicture( *_d->picture );
+      _d->picture.reset( Picture::create( btnSize ) );
+      //painter.loadPicture( *_d->picture );
     }
 
     // draw button background

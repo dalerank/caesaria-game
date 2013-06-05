@@ -23,6 +23,7 @@
 #include "oc3_rectangle.hpp"
 #include "oc3_pic_loader.hpp"
 #include "oc3_requirements.hpp"
+#include "oc3_color.hpp"
 
 // Picture class functions
 
@@ -129,12 +130,12 @@ Picture& Picture::load( const std::string& filename )
   return PicLoader::instance().getPicture( filename );
 }
 
-Picture& Picture::copy() const
+Picture* Picture::copy() const
 {
   if( !_d->surface )
   {
     _OC3_DEBUG_BREAK_IF( true && "No surface" );
-    return GfxEngine::instance().createPicture( 100, 100 );
+    return GfxEngine::instance().createPicture( Size( 100 ) );
   }
 
   int width = _d->surface->w;
@@ -147,8 +148,8 @@ Picture& Picture::copy() const
     THROW("Cannot make surface, size=" << width << "x" << height);
   }
 
-  Picture& newpic = GfxEngine::instance().createPicture( width, height );
-  newpic.init(img, _d->offset );
+  Picture* newpic = GfxEngine::instance().createPicture( Size( width, height ) );
+  newpic->init(img, _d->offset );
 
   return newpic;
 }
@@ -198,6 +199,30 @@ void Picture::draw( const Picture &srcpic, const Rect& srcrect, const Point& pos
 
   SDL_BlitSurface(srcimg, &src, _d->surface, &dst);
 }
+
+void Picture::draw( const Picture &srcpic, const Rect& srcrect, const Rect& dstrect )
+{
+  SDL_Surface *srcimg = srcpic.getSurface();
+
+  if( !srcimg || !_d->surface )
+  {
+    return;
+  }
+
+  SDL_Rect src, dst;
+
+  src.x = srcrect.getLeft();
+  src.y = srcrect.getTop();
+  src.w = srcrect.getWidth();
+  src.h = srcrect.getHeight();
+  dst.x = dstrect.getLeft();
+  dst.y = dstrect.getTop();
+  dst.w = dstrect.getWidth();
+  dst.h = dstrect.getHeight();
+
+  SDL_BlitSurface(srcimg, &src, _d->surface, &dst);
+}
+
 
 void Picture::lock()
 {
@@ -319,8 +344,23 @@ unsigned int& Picture::getGlTextureID() const
   return _d->glTextureID;
 }
 
-void Picture::reset()
+void Picture::destroy( Picture* ptr )
 {
-  _d->glTextureID = 0;
-  _d->surface = NULL;
+  GfxEngine::instance().deletePicture( ptr );
+}
+
+void Picture::fill( const NColor& color, const Rect& rect )
+{
+  SDL_Surface* source = _d->surface;
+
+  SDL_LockSurface( source );
+  SDL_Rect sdlRect = { rect.getLeft(), rect.getTop(), rect.getWidth(), rect.getHeight() };
+
+  SDL_FillRect(source, rect.getWidth() > 0 ? &sdlRect : NULL, SDL_MapRGBA(source->format, color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha() )); 
+  SDL_UnlockSurface(source);
+}
+
+Picture* Picture::create( const Size& size )
+{
+  return GfxEngine::instance().createPicture( size );
 }

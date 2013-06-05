@@ -24,8 +24,8 @@
 class ListBox::Impl
 {
 public:
-  Picture* background;
-  Picture* picture;
+  PictureRef background;
+  PictureRef picture;
   std::vector< ListBoxItem > items;
 	Rect clientClip;
   bool dragEventSended;

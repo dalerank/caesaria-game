@@ -74,7 +74,7 @@ public:
 class GuiInfoBox::Impl
 {
 public:
-  Picture *bgPicture;
+  PictureRef bgPicture;
   Label* lbTitle;
   PushButton* btnExit;
   PushButton* btnHelp;
@@ -99,7 +99,7 @@ GuiInfoBox::GuiInfoBox( Widget* parent, const Rect& rect, int id )
 
   CONNECT( _d->btnExit, onClicked(), this, InfoBoxLand::deleteLater );
 
-  _d->bgPicture = &GfxEngine::instance().createPicture( getWidth(), getHeight() );
+  _d->bgPicture.reset( Picture::create( getSize() ) );
 
   // draws the box and the inner black box
   GuiPaneling::instance().draw_white_frame(*_d->bgPicture, 0, 0, getWidth(), getHeight() );

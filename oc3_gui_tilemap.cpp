@@ -612,7 +612,7 @@ void GuiTilemap::discardPreview()
 {
   for( Impl::Pictures::iterator it=_d->previewToolPictures.begin(); it != _d->previewToolPictures.end(); it++ )
   {
-    GfxEngine::instance().deletePicture( **it );
+    Picture::destroy( *it );
   }
 
   _d->previewToolPictures.clear();

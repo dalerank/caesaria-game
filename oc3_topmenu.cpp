@@ -34,7 +34,7 @@ public:
   Label* lbPopulation;
   Label* lbFunds;
   Label* lbDate;
-  Picture* bgPicture;
+  PictureRef bgPicture;
 
   void resolveSave();
 
@@ -57,7 +57,7 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
     p_marble.push_back( Picture::load( ResourceGroup::panelBackground, i));
   }
 
-  ret->_d->bgPicture = &engine.createPicture( ret->getWidth(), ret->getHeight() );
+  ret->_d->bgPicture.reset( Picture::create( ret->getSize() ) );
 
   int i = 0;
   unsigned int x = 0;

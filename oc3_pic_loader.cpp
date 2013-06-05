@@ -189,15 +189,20 @@ PicLoader& PicLoader::instance()
 
 void PicLoader::setPicture(const std::string &name, SDL_Surface &surface)
 {
-   // first: we deallocate the current picture, if any
-   std::map<std::string, Picture>::iterator it = _resources.find(name);
-   if (it != _resources.end())
-   {
-      Picture &pic = it->second;
-      SDL_FreeSurface(pic.getSurface());
-   }
+  // first: we deallocate the current picture, if any
+  std::map<std::string, Picture>::iterator it = _resources.find(name);
+  if (it != _resources.end())
+  {
+     Picture &pic = it->second;
+     SDL_FreeSurface(pic.getSurface());
+  }
 
-   _resources[name] = makePicture(&surface, name);
+  _resources[name] = makePicture(&surface, name);
+}
+
+void PicLoader::setPicture( const std::string &name, const Picture& pic )
+{
+  setPicture( name, *pic.getSurface() );
 }
 
 Picture& PicLoader::getPicture(const std::string &name)
@@ -391,24 +396,18 @@ Picture PicLoader::makePicture(SDL_Surface *surface, const std::string& resource
 void PicLoader::createResources()
 {
   Picture& originalPic = getPicture( ResourceGroup::utilitya, 34 );
-  Picture& emptyReservoir = originalPic.copy();
-  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00001.png", *emptyReservoir.getSurface() );
+  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00001.png", *originalPic.getSurface() );
 
-  Picture& fullReservoir = originalPic.copy();
-  Picture& water = getPicture( ResourceGroup::utilitya, 35 );
-  fullReservoir.draw( water, 47, 37 );
-
-  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00002.png", *fullReservoir.getSurface() );
+  Picture* fullReservoir = originalPic.copy(); //mem leak on destroy picloader
+  fullReservoir->draw( getPicture( ResourceGroup::utilitya, 35 ), 47, 37 );
+  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00002.png", *fullReservoir->getSurface() );
 
   Picture& emptyFontainOrig = getPicture( ResourceGroup::utilitya, 10 );
-  Picture& emptyFontain = emptyFontainOrig.copy();
-  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00003.png", *emptyFontain.getSurface() );
+  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00003.png", *emptyFontainOrig.getSurface() );
 
-  Picture& fullFontain = emptyFontainOrig.copy();
-  Picture& fontainWater = getPicture( ResourceGroup::utilitya, 11 );
-  fullFontain.draw( fontainWater, 12, 25 );
-
-  setPicture( std::string( ResourceGroup::waterbuildings) + "_00004.png", *fullFontain.getSurface() );
+  Picture* fullFontain = emptyFontainOrig.copy();  //mem leak on destroy picloader
+  fullFontain->draw( getPicture( ResourceGroup::utilitya, 11 ), 12, 25 );
+  setPicture( std::string( ResourceGroup::waterbuildings) + "_00004.png", *fullFontain->getSurface() );
 }
 
 PicLoader::PicLoader()

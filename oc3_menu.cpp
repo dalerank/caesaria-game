@@ -38,7 +38,7 @@ static const int MAXIMIZE_ID = REMOVE_TOOL_ID + 1;
 class Menu::Impl
 {
 public:
-  Picture* bgPicture;
+  PictureRef bgPicture;
 
   Widget* lastPressed;
   PushButton* menuButton;
@@ -392,7 +392,7 @@ Menu* Menu::create( Widget* parent, int id )
   const Picture& bground = Picture::load( ResourceGroup::panelBackground, 16 );
   const Picture& bottom  = Picture::load( ResourceGroup::panelBackground, 21 );
 
-  ret->_d->bgPicture = &GfxEngine::instance().createPicture( bground.getWidth(), bground.getHeight() + bottom.getHeight() );
+  ret->_d->bgPicture.reset( Picture::create( Size( bground.getWidth(), bground.getHeight() + bottom.getHeight() ) ) );
   ret->_d->bgPicture->draw( bground, 0, 0);
   ret->_d->bgPicture->draw( bottom,  0, bground.getHeight() );
 
@@ -448,7 +448,7 @@ ExtentMenu* ExtentMenu::create( Widget* parent, GuiTilemap& tmap, int id )
     const Picture& bground = Picture::load( ResourceGroup::panelBackground, 17 );
     const Picture& bottom = Picture::load( ResourceGroup::panelBackground, 20 );
 
-    ret->_d->bgPicture = &GfxEngine::instance().createPicture( bground.getWidth(), bground.getHeight() + bottom.getHeight() );
+    ret->_d->bgPicture.reset( Picture::create( Size( bground.getWidth(), bground.getHeight() + bottom.getHeight() ) ) );
     ret->_d->bgPicture->draw( bground, 0, 0);
     ret->_d->bgPicture->draw( bottom, 0, bground.getHeight() );
 
@@ -563,9 +563,9 @@ void ExtentMenu::draw( GfxEngine& painter )
   // then we will show it in right place 
   int mapsize = Scenario::instance().getCity().getTilemap().getSize();
   
-  Picture& minimap = painter.createPicture(mapsize * 2 , mapsize * 2);
+  PictureRef minimap( Picture::create( Size( mapsize * 2 ) ) );
 
-  minimap.lock();
+  minimap->lock();
   // here we can draw anything
   
   // std::cout << "center is (" << _mapArea->getCenterX() << "," << _mapArea->getCenterZ() << ")" << std::endl;
@@ -585,11 +585,11 @@ void ExtentMenu::draw( GfxEngine& painter )
       int c1, c2;      
       getTerrainColours(tile, c1, c2);
 
-      if( pnt.getX() >= minimap.getWidth()-1 || pnt.getY() >= minimap.getHeight() )
+      if( pnt.getX() >= minimap->getWidth()-1 || pnt.getY() >= minimap->getHeight() )
         continue;
 
-      minimap.setPixel( pnt, c1);
-      minimap.setPixel( pnt + Point( 1, 0 ), c2);
+      minimap->setPixel( pnt, c1);
+      minimap->setPixel( pnt + Point( 1, 0 ), c2);
     }
   }
 
@@ -616,20 +616,20 @@ void ExtentMenu::draw( GfxEngine& painter )
   }
   */
   
-  minimap.unlock();
+  minimap->unlock();
   
   // this is window where minimap is displayed
-  Picture& minimap_windows = painter.createPicture(144, 110);
+  PictureRef minimap_windows( Picture::create( Size( 144, 110) ) );
   
   int i = _tmap.getMapArea().getCenterX();
   int j = _tmap.getMapArea().getCenterZ();
   
-  minimap_windows.draw( minimap, 146/2 - i, 112/2 + j - mapsize*2 );
+  minimap_windows->draw( *minimap, 146/2 - i, 112/2 + j - mapsize*2 );
   
-  painter.drawPicture( minimap_windows, getScreenLeft() + 8, getScreenTop() + 35); // 152, 145
+  painter.drawPicture( *minimap_windows, getScreenLeft() + 8, getScreenTop() + 35); // 152, 145
 
-  painter.deletePicture(minimap);
-  painter.deletePicture(minimap_windows);
+  //painter.deletePicture(minimap);
+  //painter.deletePicture(minimap_windows);
 }
 
 void ExtentMenu::toggleOverlays()

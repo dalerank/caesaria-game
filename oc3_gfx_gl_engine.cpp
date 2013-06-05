@@ -87,7 +87,7 @@ void GfxGlEngine::unloadPicture(Picture &ioPicture)
   glDeleteTextures(1, &texture );
   SDL_FreeSurface(ioPicture.getSurface());
 
-  ioPicture.reset();
+  ioPicture = Picture();
 }
 
 void GfxGlEngine::loadPicture(Picture& ioPicture)

@@ -43,7 +43,6 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
 	_d->selectedItemIndex = -1;
 	_d->lastKeyTime = 0;
 	_d->selecting = false;
-  _d->background = 0;
 	_d->needItemsRepackTextures = true;
 
   _d->recalculateItemHeight( Font( FONT_2 ), getHeight() );
@@ -94,17 +93,15 @@ void ListBox::_updateTexture()
 
   if( _d->background && _d->background->getSize() != size )
   {
-    GfxEngine::instance().deletePicture( *_d->background );
-    GfxEngine::instance().deletePicture( *_d->picture );
-    _d->background = 0;
-    _d->picture = 0;
+    _d->background.reset();
+    _d->picture.reset();
   }
 
   if( !_d->background )
   {    
-    _d->background = &GfxEngine::instance().createPicture( size.getWidth(), size.getHeight() );
-    _d->picture = &GfxEngine::instance().createPicture( size.getWidth(), size.getHeight() );
-    GuiPaneling::instance().draw_black_frame(*_d->background, 0, 0, getWidth(), getHeight() );
+    _d->background.reset( Picture::create( size ) );
+    _d->picture.reset( Picture::create( size ) );
+    GuiPaneling::instance().draw_black_frame( *_d->background, 0, 0, getWidth(), getHeight() );
   }
 }
 

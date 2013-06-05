@@ -50,9 +50,10 @@ public:
   void resetTileDrawMask();
 
   // deletes a picture (deallocate memory)
-  void deletePicture( Picture &pic );
+  void deletePicture( Picture* pic );
+
   // creates a picture with the given size, it will need to be loaded by the graphic engine
-  Picture& createPicture(int width, int height);
+  Picture* createPicture(const Size& size);
 
   Picture& getScreen();
 

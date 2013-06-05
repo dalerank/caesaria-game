@@ -24,7 +24,7 @@
 class WindowMessageStack::Impl
 {
 public:
-  Picture* lbBackgorund;
+  PictureRef lbBackgorund;
 
   void updatePositions( Widget::Widgets& childs, const Rect& rectangle )
   {
@@ -41,7 +41,7 @@ public:
 WindowMessageStack::WindowMessageStack( Widget* parent, int id, const Rect& rectangle ) 
   : Widget( parent, id, rectangle ), _d( new Impl )
 {
-  _d->lbBackgorund = &GfxEngine::instance().createPicture( rectangle.getWidth(), 20 );
+  _d->lbBackgorund.reset( Picture::create( Size( rectangle.getWidth(), 20 ) ) );
   GuiPaneling::instance().draw_basic_text_button( *_d->lbBackgorund, 0, 0, rectangle.getWidth(), 65 );
   Picture& emlbPic = Picture::load( ResourceGroup::panelBackground, 543 );
   _d->lbBackgorund->draw( emlbPic, 4, 2 );

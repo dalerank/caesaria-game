@@ -16,14 +16,14 @@
 
 #include "oc3_empiremap_window.hpp"
 #include "oc3_picture.hpp"
-#include "oc3_pictureconverter.hpp"
-#include "oc3_gfx_engine.hpp"
 #include "oc3_event.hpp"
+#include "oc3_gfx_engine.hpp"
+#include "oc3_color.hpp"
 
 class EmpireMapWindow::Impl
 {
 public:
-  Picture border;
+  PictureRef border;
   Picture empireMap;
   Point offset;
 };
@@ -32,8 +32,7 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
  : Widget( parent, id, Rect( Point(0, 0), parent->getSize() ) ), _d( new Impl )
 {
   // use some clipping to remove the right and bottom areas
-  _d->border = GfxEngine::instance().createPicture( getWidth(), getHeight() );
-  GfxEngine::instance().loadPicture( _d->border );
+  _d->border.reset( Picture::create( getSize() ) );
   _d->empireMap = Picture::load( "the_empire", 1 );
 
   Picture& backgr = Picture::load( "empire_panels", 4 );
@@ -41,35 +40,35 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
   {
     for( int x=0; x < getWidth(); x += backgr.getWidth() )
     {
-      _d->border.draw( backgr, x, y );
+      _d->border->draw( backgr, x, y );
     }
   }
 
   Picture& lrBorderPic = Picture::load( "empire_panels", 1 );
   for( int y = 0; y < getHeight(); y += lrBorderPic.getHeight() )
   {
-    _d->border.draw( lrBorderPic, 0, y );
-    _d->border.draw( lrBorderPic, getWidth() - lrBorderPic.getWidth(), y );
+    _d->border->draw( lrBorderPic, 0, y );
+    _d->border->draw( lrBorderPic, getWidth() - lrBorderPic.getWidth(), y );
   }
 
   Picture& tdBorderPic = Picture::load( "empire_panels", 2 );
   for( int x = 0; x < getWidth(); x += tdBorderPic.getWidth() )
   {
-    _d->border.draw( tdBorderPic, x, 0 );
-    _d->border.draw( tdBorderPic, x, getHeight() - tdBorderPic.getHeight() );
-    _d->border.draw( tdBorderPic, x, getHeight() - 120 );
+    _d->border->draw( tdBorderPic, x, 0 );
+    _d->border->draw( tdBorderPic, x, getHeight() - tdBorderPic.getHeight() );
+    _d->border->draw( tdBorderPic, x, getHeight() - 120 );
   }
 
   Picture& corner = Picture::load( "empire_panels", 3 );
-  _d->border.draw( corner, 0, 0 );    //left top
-  _d->border.draw( corner, 0, getHeight() - corner.getHeight() ); //top right
-  _d->border.draw( corner, getWidth() - corner.getWidth(), 0 ); //left bottom
-  _d->border.draw( corner, getWidth() - corner.getWidth(), getHeight() - corner.getHeight() ); //bottom right
-  _d->border.draw( corner, 0, getHeight() - 120 ); //left middle
-  _d->border.draw( corner, getWidth() - corner.getWidth(), getHeight() - 120 ); //right middle
+  _d->border->draw( corner, 0, 0 );    //left top
+  _d->border->draw( corner, 0, getHeight() - corner.getHeight() ); //top right
+  _d->border->draw( corner, getWidth() - corner.getWidth(), 0 ); //left bottom
+  _d->border->draw( corner, getWidth() - corner.getWidth(), getHeight() - corner.getHeight() ); //bottom right
+  _d->border->draw( corner, 0, getHeight() - 120 ); //left middle
+  _d->border->draw( corner, getWidth() - corner.getWidth(), getHeight() - 120 ); //right middle
 
-  PictureConverter::fill( _d->border, 0x000000ff, Rect( corner.getWidth(), corner.getHeight(), 
-                                                        getWidth() - corner.getWidth(), getHeight() - 120 ) );
+  _d->border->fill( 0x000000ff, Rect( corner.getWidth(), corner.getHeight(), 
+                                      getWidth() - corner.getWidth(), getHeight() - 120 ) );
 }
 
 void EmpireMapWindow::draw( GfxEngine& engine )
@@ -78,7 +77,7 @@ void EmpireMapWindow::draw( GfxEngine& engine )
     return;
 
   engine.drawPicture( _d->empireMap, _d->offset );
-  engine.drawPicture( _d->border, Point( 0, 0 ) );
+  engine.drawPicture( *_d->border, Point( 0, 0 ) );
 
   Widget::draw( engine );
 }

@@ -26,7 +26,7 @@
 class LoadMapWindow::Impl
 {
 public:
-  Picture *bgPicture;
+  PictureRef bgPicture;
   Label* lbTitle;
   ListBox* files;
   PushButton* btnExit;
@@ -69,7 +69,7 @@ LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect,
   CONNECT( _d->files, onItemSelectedAgain(), _d.data(), Impl::resolveFileSelected );
   _d->fillFiles();
 
-  _d->bgPicture = &GfxEngine::instance().createPicture( getWidth(), getHeight() );
+  _d->bgPicture.reset( Picture::create( getSize() ) );
 
   // draws the box and the inner black box
   GuiPaneling::instance().draw_white_frame(*_d->bgPicture, 0, 0, getWidth(), getHeight() );

@@ -18,8 +18,8 @@
 
 #include "oc3_widget.hpp"
 #include "oc3_signals.hpp"
+#include "oc3_picture.hpp"
 
-class Picture;
 class Font;
 
 //Usual button class
@@ -87,7 +87,7 @@ protected:
 	virtual ElementState getActiveButtonState_();
   virtual void _updateTexture( ElementState state );
 
-  Picture* _getPicture( ElementState state );
+  PictureRef& _getPicture( ElementState state );
 
 private:
   class Impl;
