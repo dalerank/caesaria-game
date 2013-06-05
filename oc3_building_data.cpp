@@ -111,11 +111,9 @@ BuildingTypeEquale bldTypeEquales[] = {
   { B_BURNING_RUINS,  "burning_ruins"},
   { B_BURNED_RUINS,   "burned_ruins"},
   { B_COLLAPSED_RUINS,"collapsed_ruins"},
-  { B_FOOT_BRIDGE, "foot_bridge" },
   { B_FORUM_2, "forum_2" },
   { B_GATEHOUSE, "gatehouse" },
   { B_SENATE_2, "senate_2" },
-  { B_SHIP_BRIDGE, "ship_bridge" },
   { B_TOWER, "tower" },
   { B_WALL, "wall"  },
 

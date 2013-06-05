@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "oc3_gettext.hpp"
 #include "oc3_topmenu.hpp"
 #include "oc3_label.hpp"
 #include "oc3_pic_loader.hpp"
@@ -26,9 +27,6 @@ static const int populationLabelOffset = 344;
 static const int fundLabelOffset = 464;
 static const int panelBgStatus = 15;
 };
-
-static const char *MonthName[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-static const char *AgeName[] = {"BC", "AD"};
 
 class TopMenu::Impl
 {
@@ -77,6 +75,7 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
   ret->_d->lbPopulation->setBackgroundPicture( Picture::load( ResourceGroup::panelBackground, panelBgStatus ) );
   ret->_d->lbPopulation->setFont( Font(FONT_2_WHITE) );
   ret->_d->lbPopulation->setTextAlignment( alignCenter, alignCenter );
+  ret->_d->lbPopulation->setTooltipText( _("##population_tooltip##") );
   //_populationLabel.setTextPosition(20, 0);
 
   ret->_d->lbFunds = new Label( ret, Rect( Point( ret->getWidth() - fundLabelOffset, 0), lbSize ),
@@ -84,6 +83,7 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
   ret->_d->lbFunds->setFont( Font( FONT_2_WHITE ));
   ret->_d->lbFunds->setTextAlignment( alignCenter, alignCenter );
   ret->_d->lbFunds->setBackgroundPicture( Picture::load( ResourceGroup::panelBackground, panelBgStatus ) );
+  ret->_d->lbFunds->setTooltipText( _("##funds_tooltip##") );
   //_fundsLabel.setTextPosition(20, 0);
 
   ret->_d->lbDate = new Label( ret, Rect( Point( ret->getWidth() - dateLabelOffset, 0), lbSize ),
@@ -91,32 +91,33 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
   ret->_d->lbDate->setFont( Font( FONT_2_YELLOW ));
   ret->_d->lbDate->setTextAlignment( alignCenter, alignCenter );
   ret->_d->lbDate->setBackgroundPicture( Picture::load( ResourceGroup::panelBackground, panelBgStatus ) );
+  ret->_d->lbDate->setTooltipText( _("##date_tooltip##") );
   //_dateLabel.setTextPosition(20, 0);
 
   GfxEngine::instance().loadPicture(*ret->_d->bgPicture);
 
-  ContextMenuItem* tmp = ret->addItem( "File", -1, true, true, false, false );
+  ContextMenuItem* tmp = ret->addItem( _("##gmenu_file##"), -1, true, true, false, false );
   tmp->setBackgroundPicture( *ret->_d->bgPicture );
   ContextMenu* file = tmp->addSubMenu();
 
-  ContextMenuItem* save = file->addItem( "Save", -1, true, false, false, false );
+  ContextMenuItem* save = file->addItem( _("##gmenu_file_save##"), -1, true, false, false, false );
   //ContextMenuItem* load = file->addItem( "Load", -1, true, false, false, false );
 
   file->addItem( "", -1, false, false, false, false );
-  ContextMenuItem* mainMenu = file->addItem( "Main menu", -1, true, false, false, false );
+  ContextMenuItem* mainMenu = file->addItem( _("##gmenu_file_mainmenu##"), -1, true, false, false, false );
 
   file->addItem( "", -1, true, false, false, false );
-  ContextMenuItem* exit = file->addItem( "Exit", -1, true, false, false, false );
+  ContextMenuItem* exit = file->addItem( _("##gmenu_file_exit##"), -1, true, false, false, false );
 
   CONNECT( exit, onClicked(), &ret->_d->onExitSignal, Signal0<>::emit );
   CONNECT( save, onClicked(), &ret->_d->onSaveSignal, Signal0<>::emit );
   CONNECT( mainMenu, onClicked(), &ret->_d->onEndSignal, Signal0<>::emit );
 
-  tmp = ret->addItem( "Options", -1, true, true, false, false );
+  tmp = ret->addItem( _("##gmenu_options##"), -1, true, true, false, false );
   tmp->setBackgroundPicture( *ret->_d->bgPicture, Point( -tmp->getLeft(), 0 ) );
-  tmp = ret->addItem( "Help", -1, true, true, false, false );
+  tmp = ret->addItem( _("##gmenu_help##"), -1, true, true, false, false );
   tmp->setBackgroundPicture( *ret->_d->bgPicture, Point( -tmp->getLeft(), 0 ) );
-  tmp = ret->addItem( "Advisers", -1, true, true, false, false );
+  tmp = ret->addItem( _("##gmenu_advisors##"), -1, true, true, false, false );
   tmp->setBackgroundPicture( *ret->_d->bgPicture, Point( -tmp->getLeft(), 0 ) );
   ContextMenu* advisersMenu = tmp->addSubMenu();
   advisersMenu->addItem( "##adv_employments_m##", -1 );
@@ -148,19 +149,20 @@ void TopMenu::draw( GfxEngine& engine )
 
 void TopMenu::setPopulation( int value )
 {
-  _d->lbPopulation->setText( StringHelper::format( 0xff, "Pop %d", value ) );
+  _d->lbPopulation->setText( StringHelper::format( 0xff, "%.3s %d", _("##population_short##"), value ) );
 }
 
 void TopMenu::setFunds( int value )
 {
-  _d->lbFunds->setText( StringHelper::format( 0xff, "Dn %d", value) );
+  _d->lbFunds->setText( StringHelper::format( 0xff, "%.2s %d", _("##denarii_short##"), value) );
 }
 
 void TopMenu::setDate( int value )
 {
+  std::string month = _( StringHelper::format( 0xff, "##month_%d_short##", (value % 12) + 1).c_str() );
+  std::string age = _( StringHelper::format( 0xff, "##age_%s##", ( ((int)value/12-39) > 0 ? "ad" : "bc" ) ).c_str() );
   std::string text = StringHelper::format( 0xff, "%.3s %d %.2s", 
-                                           MonthName[value % 12], (int)std::abs(((int)value/12-39)), 
-                                           AgeName[((int)value/12-39)>0]);
+                                           month.c_str(), (int)std::abs(((int)value/12-39)), age.c_str());
 
   //_dateLabel.setText("Feb 39 BC");
   _d->lbDate->setText( text );

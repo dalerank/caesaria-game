@@ -452,7 +452,7 @@
 	"employers" : 5
   },
 
-  "foot_bridge" : 
+  "low_bridge" : 
   {
     "cost" : 40,
 	"desirability" : 0,
@@ -461,7 +461,7 @@
 	"employers" : 0
   }, 
   
-  "ship_bridge" :
+  "high_bridge" :
   {
     "cost" : 100,
 	"desirability" : 0,
