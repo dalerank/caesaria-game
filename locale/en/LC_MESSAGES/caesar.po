@@ -13,19 +13,20 @@
 # You should have received a copy of the GNU General Public License
 # along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Version 1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-06-03 03:21+0000\n"
-"PO-Revision-Date: 2013-06-04 00:43+0000\n"
+"PO-Revision-Date: 2013-06-05 14:17+0400\n"
 "Last-Translator: tracertong <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language-Team: OpenCaesar3 Project <opencaesar3@github.com>\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.5\n"
+"X-Poedit-SourceCharset: windows-1251\n"
 
 #: oc3_buildmenu.cpp:288
 msgid "Farm"
@@ -531,17 +532,11 @@ msgstr "Governor's palace"
 msgid "building_dock"
 msgstr "Dock"
 
-
-
-
-
- #########
+# ########
 #
 # General Text
 #
- #########
-
-
+# ########
 msgid "##population_short##"
 msgstr "Pop"
 
@@ -590,17 +585,11 @@ msgstr "Nov"
 msgid "##month_12_short##"
 msgstr "Dec"
 
-
-
-
-
- #########
+# ########
 #
 #  Info Box General Text
 #
- #########
-
-
+# ########
 msgid "##infobox_tooltip_exit##"
 msgstr "Exit this panel"
 
@@ -610,16 +599,11 @@ msgstr "Display the relevent help page for this panel"
 msgid "##special_orders##"
 msgstr "Special Orders"
 
-
-
-
-
- #########
+# ########
 #
 #  Farm Info Box Text
 #
- #########
-
+# ########
 msgid "Production %d%% complete."
 msgstr ""
 
@@ -627,96 +611,106 @@ msgid "##farm_have_no_workers##"
 msgstr "This farm has no employees. Production has ceased."
 
 msgid "##farm_working_normally##"
-msgstr "This farm has all the employees it needs. It gets maximum yield for its acreage."
+msgstr ""
+"This farm has all the employees it needs. It gets maximum yield for its "
+"acreage."
 
 msgid "##farm_working_bad##"
-msgstr "This farm is producing some food, but with more employees production would be increased."
+msgstr ""
+"This farm is producing some food, but with more employees production would "
+"be increased."
 
 msgid "##farm_title_wheat##"
 msgstr "Wheat farm"
 
 msgid "##farm_description_wheat##"
-msgstr "Grain is the basic foodstuff for your population. It must be stored in granaries to feed your people, or warehouses if it is for export."
+msgstr ""
+"Grain is the basic foodstuff for your population. It must be stored in "
+"granaries to feed your people, or warehouses if it is for export."
 
 msgid "##farm_title_fruit##"
 msgstr "Orchard"
 
 msgid "##farm_description_fruit##"
-msgstr "Fruit is important to the balanced diet your people need for happiness and health. Granaries store fruit for local consumption, and warehouses take surpluses for export."
+msgstr ""
+"Fruit is important to the balanced diet your people need for happiness and "
+"health. Granaries store fruit for local consumption, and warehouses take "
+"surpluses for export."
 
 msgid "##farm_title_olive##"
 msgstr "Olive farm"
 
 msgid "##farm_description_olive##"
-msgstr "Olives are most valuable for their oil. Workshops press olives to yield oil for cooking, lighting, lubrication and preservation."
+msgstr ""
+"Olives are most valuable for their oil. Workshops press olives to yield oil "
+"for cooking, lighting, lubrication and preservation."
 
 msgid "##farm_title_vine##"
 msgstr "Vineyard"
 
 msgid "##farm_description_vine##"
-msgstr "The grapes from these vines were bred specifically for winemaking. Workshops make fine wine for your own patricians, and for export."
+msgstr ""
+"The grapes from these vines were bred specifically for winemaking. Workshops "
+"make fine wine for your own patricians, and for export."
 
 msgid "##farm_title_meat##"
 msgstr "Pig farm"
 
 msgid "##farm_description_meat##"
-msgstr "Well-fed citizens want meat in their diet. Meat can be kept in granaries for local consumption, or taken to warehouses for export."
+msgstr ""
+"Well-fed citizens want meat in their diet. Meat can be kept in granaries for "
+"local consumption, or taken to warehouses for export."
 
 msgid "##farm_title_vegetable##"
 msgstr "Vegetable farm"
 
 msgid "##farm_description_vegetable##"
-msgstr "Vegetables are important to the balanced diet your people need for happiness and health. Granaries store vegetables for local consumption, and warehouses take surpluses for export."
+msgstr ""
+"Vegetables are important to the balanced diet your people need for happiness "
+"and health. Granaries store vegetables for local consumption, and warehouses "
+"take surpluses for export."
 
-
-
-
-
- #########
+# ########
 #
 #  House Info Box Text
 #
- #########
-
-
+# ########
 msgid "##freehouse_caption##"
 msgstr "Vacant lot"
 
 msgid "##freehouse_text##"
-msgstr "No one has so much as pitched a tent here yet, although immigrants will probably arrive shortly if the city has food and jobs to offer."
+msgstr ""
+"No one has so much as pitched a tent here yet, although immigrants will "
+"probably arrive shortly if the city has food and jobs to offer."
 
 msgid "##freehouse_text_noroad##"
-msgstr "No one will make their home here as it is too far to the nearest road. Unless road access is added soon, this site will revert to open land."
+msgstr ""
+"No one will make their home here as it is too far to the nearest road. "
+"Unless road access is added soon, this site will revert to open land."
 
-
-
-
-
- #########
+# ########
 #
 #  Market Info Box Text
 #
- #########
-
+# ########
 msgid "##market_not_work##"
-msgstr "This market is not operational, and supplies no produce to the local community."
+msgstr ""
+"This market is not operational, and supplies no produce to the local "
+"community."
 
 msgid "##market_search_food_source##"
-msgstr "This market has traders, but they are currently looking for a source of food to sell."
+msgstr ""
+"This market has traders, but they are currently looking for a source of food "
+"to sell."
 
 msgid "##market_about##"
 msgstr "This market is fully operational."
 
-
-
-
-
- #########
+# ########
 #
 #  Temple Info Box Text
 #
- #########
-
+# ########
 msgid "Temple of %s (%s)"
 msgstr "Temple to %s (%s)"
 
@@ -735,60 +729,59 @@ msgstr "Love"
 msgid "##god_mercury_short##"
 msgstr "Commerce"
 
-
-
-
-
- #########
+# ########
 #
 #  Garden/Statue Info Box Text
 #
- #########
-
+# ########
 msgid "##garden_desc##"
-msgstr "This pleasant lot gives citizens relief from the noise, heat and dirt of the city with a cool oasis of green space. Everyone wants a garden next door."
+msgstr ""
+"This pleasant lot gives citizens relief from the noise, heat and dirt of the "
+"city with a cool oasis of green space. Everyone wants a garden next door."
 
 msgid "##statue_desc##"
-msgstr "Monuments to prominent citizens and historic events enhance a neighborhood's prestige. People are proud to have statues nearby...and the bigger, the better."
+msgstr ""
+"Monuments to prominent citizens and historic events enhance a neighborhood's "
+"prestige. People are proud to have statues nearby...and the bigger, the "
+"better."
 
-
-
-
-
- #########
+# ########
 #
 #  Land Type Info Box Text
 #
- #########
-
-
+# ########
 msgid "##clear_land_caption"
 msgstr "Empty land"
 
 msgid "##clear_land_text"
-msgstr "This land may be built upon freely, and allows the passage of not only friendly but also enemy soldiers!"
-
+msgstr ""
+"This land may be built upon freely, and allows the passage of not only "
+"friendly but also enemy soldiers!"
 
 msgid "##trees_and_forest_caption"
 msgstr "Trees"
 
 msgid "##trees_and_forest_text"
-msgstr "Impassable terrain that may be cleared to allow city expansion. Timber yards can only produce timber when built next to trees."
-
+msgstr ""
+"Impassable terrain that may be cleared to allow city expansion. Timber yards "
+"can only produce timber when built next to trees."
 
 msgid "##water_caption"
 msgstr "Water"
 
 msgid "##water_text"
-msgstr "Impassable, but may be bridged at certain points. Water is often a vital trade link to the rest of the Empire via the construction of docks. Clay pits must be adjacent to water."
-
+msgstr ""
+"Impassable, but may be bridged at certain points. Water is often a vital "
+"trade link to the rest of the Empire via the construction of docks. Clay "
+"pits must be adjacent to water."
 
 msgid "##rock_caption"
 msgstr "Rocks"
 
 msgid "##rock_text"
-msgstr "Rocks are impassable and may not be cleared. Marble quarries and iron mines only work if they are built adjacent to rocks."
-
+msgstr ""
+"Rocks are impassable and may not be cleared. Marble quarries and iron mines "
+"only work if they are built adjacent to rocks."
 
 msgid "##road_caption"
 msgstr "Road"
@@ -803,34 +796,24 @@ msgstr "Plaza"
 msgid "##plaza_text"
 msgstr "A better class of road"
 
-
-
- #########
+# ########
 #
 #  Top Center Message Text
 #
- #########
-
-
+# ########
 msgid "##need_build_on_cleared_area##"
 msgstr "Must build on cleared land"
 
 msgid "##building_need_road_access##"
 msgstr "This building needs road access"
 
-
-
-
-
- #########
+# ########
 #
 #  Overlay Interface Text
 #
- #########
-  # TODO
-  #  * Normalise the use of plural/singular.
-
-
+# ########
+# TODO
+#  * Normalise the use of plural/singular.
 msgid "##ovrm_text##"
 msgstr "Overlays"
 
@@ -840,10 +823,8 @@ msgstr "Select a city overlay report"
 msgid "##ovrm_nothing##"
 msgstr "Normal"
 
-
 msgid "##ovrm_water##"
 msgstr "Water"
-
 
 msgid "##ovrm_risk##"
 msgstr "Risks"
@@ -863,7 +844,6 @@ msgstr "Native"
 msgid "##ovrm_troubles##"
 msgstr "Problems"
 
-
 msgid "##ovrm_entertainment##"
 msgstr "Entertainment"
 
@@ -882,7 +862,6 @@ msgstr "Colosseum"
 msgid "##ovrm_hpdrome##"
 msgstr "Hippodrome"
 
-
 msgid "##ovrm_education##"
 msgstr "Education"
 
@@ -897,7 +876,6 @@ msgstr "Library"
 
 msgid "##ovrm_academy##"
 msgstr "Academy"
-
 
 msgid "##ovrm_health##"
 msgstr "Health"
@@ -915,7 +893,6 @@ msgstr "Doctor"
 msgid "##ovrm_hospital##"
 msgstr "Hospital"
 
-
 msgid "##ovrm_commerce##"
 msgstr "Commerce"
 
@@ -928,21 +905,14 @@ msgstr "Food stocks"
 msgid "##ovrm_prestige##"
 msgstr "Desirability"
 
-
 msgid "##ovrm_religion##"
 msgstr "Religion"
 
-
-
-
-
- #########
+# ########
 #
 #  Main Menu Text
 #
- #########
-
-
+# ########
 msgid "##mainmenu_newgame##"
 msgstr "Start new career"
 
@@ -955,17 +925,11 @@ msgstr "City Construction Kit"
 msgid "##mainmenu_quit##"
 msgstr "Exit"
 
-
-
-
-
- #########
+# ########
 #
 #  Game Top Menu Text
 #
- #########
-
-
+# ########
 msgid "##funds_tooltip##"
 msgstr "Current city funds"
 
@@ -974,7 +938,6 @@ msgstr "Current city population"
 
 msgid "##date_tooltip##"
 msgstr "The current date!"
-
 
 msgid "##gmenu_file##"
 msgstr "File"
@@ -991,22 +954,19 @@ msgstr "Main menu"
 msgid "##gmenu_file_exit##"
 msgstr "Exit"
 
-
 msgid "##gmenu_options##"
 msgstr "Options"
 
 # Note: this is 'Sound and speed options' in real English Caesar 3
-#		Changed as it also has other types of options available
+# 		Changed as it also has other types of options available
 msgid "##gmenu_options_tooltip##"
 msgstr "Game options"
-
 
 msgid "##gmenu_help##"
 msgstr "Help"
 
 msgid "##gmenu_help_tooltip##"
 msgstr "Access Game Help"
-
 
 msgid "##gmenu_advisors##"
 msgstr "Advisors"
