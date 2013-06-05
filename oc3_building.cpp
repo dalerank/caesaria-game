@@ -315,7 +315,7 @@ bool Construction::isNeedRoadAccess() const
 
 Garden::Garden() : Construction(B_GARDEN, Size(1) )
 {
-  setPicture( Picture::load( ResourceGroup::entertaiment, 110) ); // 110 111 112 113
+  setPicture( Picture::load( ResourceGroup::entertaiment, 110) ); // 110 111 112 113  
 }
 
 void Garden::setTerrain(TerrainTile &terrain)
