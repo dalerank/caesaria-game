@@ -16,6 +16,9 @@
 #ifndef __OPENCAESAR3_STRINGARRAY_H_INCLUDED__
 #define __OPENCAESAR3_STRINGARRAY_H_INCLUDED__
 
+#include <vector>
+#include <string>
+
 class StringArray : public std::vector< std::string >
 {
 public:

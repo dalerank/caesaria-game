@@ -27,7 +27,7 @@ Road::Road() : Construction( B_ROAD, Size(1) )
 void Road::build(const TilePos& pos )
 {
   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-  LandOverlayPtr overlay = tilemap.at( pos ).get_terrain().getOverlay();
+  LandOverlayPtr overlay = tilemap.at( pos ).getTerrain().getOverlay();
 
   Construction::build( pos );
   setPicture(computePicture());
@@ -47,7 +47,7 @@ void Road::build(const TilePos& pos )
   for( std::list<Tile*>::iterator itTile = _accessRoads.begin(); 
        itTile != _accessRoads.end(); ++itTile)
   {
-    RoadPtr road = (*itTile)->get_terrain().getOverlay().as<Road>(); // let's think: may here different type screw up whole program?
+    RoadPtr road = (*itTile)->getTerrain().getOverlay().as<Road>(); // let's think: may here different type screw up whole program?
     if( road.isValid() )
     {
       road->computeAccessRoads();
@@ -77,7 +77,7 @@ bool Road::canBuild(const TilePos& pos ) const
     return true; // we try to build on free tile
 
   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-  TerrainTile& terrain = tilemap.at( pos ).get_terrain();
+  TerrainTile& terrain = tilemap.at( pos ).getTerrain();
 
   return ( terrain.getOverlay().is<Aqueduct>() || terrain.getOverlay().is<Road>() );
 }
@@ -220,10 +220,10 @@ bool Plaza::canBuild(const TilePos& pos ) const
 
   bool is_constructible = true;
 
-  std::list<Tile*> rect = tilemap.getFilledRectangle( pos, Size( _size ) ); // something very complex ???
-  for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+  PtrTilesArea rect = tilemap.getFilledRectangle( pos, Size( _size ) ); // something very complex ???
+  for( PtrTilesArea::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {
-    is_constructible &= (*itTiles)->get_terrain().isRoad();
+    is_constructible &= (*itTiles)->getTerrain().isRoad();
   }
 
   return is_constructible;

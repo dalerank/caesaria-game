@@ -17,7 +17,7 @@
 #ifndef __OPENCAESAR3_DATETIME_H_INCLUDE_
 #define __OPENCAESAR3_DATETIME_H_INCLUDE_
 
-#include <string>
+#include <time.h>
 
 class DateTime
 {
@@ -43,7 +43,7 @@ public:
     void setDay( unsigned char day );
     void setSeconds( unsigned char second );
 
-    DateTime( const std::string& strValue );
+    DateTime( const char* strValue );
 
     DateTime( unsigned char year, unsigned char month, unsigned char day, 
               unsigned char hour=0, unsigned char minute=0, unsigned char sec=0 );
@@ -74,8 +74,8 @@ public:
 
     DateTime& operator=( time_t t );
 
-    static std::string getDayName( unsigned char d );
-    static std::string getMonthName( unsigned char d );
+    static const char* getDayName( unsigned char d );
+    static const char* getMonthName( unsigned char d );
 
     unsigned char getMonthLength() const;
     unsigned char getWeekNumber() const;

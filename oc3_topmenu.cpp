@@ -21,10 +21,10 @@
 #include "oc3_stringhelper.hpp"
 
 namespace {
-static const Uint32 dateLabelOffset = 155;
-static const Uint32 populationLabelOffset = 344;
-static const Uint32 fundLabelOffset = 464;
-static const Uint32 panelBgStatus = 15;
+static const int dateLabelOffset = 155;
+static const int populationLabelOffset = 344;
+static const int fundLabelOffset = 464;
+static const int panelBgStatus = 15;
 };
 
 static const char *MonthName[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
@@ -118,6 +118,18 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
   tmp->setBackgroundPicture( *ret->_d->bgPicture, Point( -tmp->getLeft(), 0 ) );
   tmp = ret->addItem( "Advisers", -1, true, true, false, false );
   tmp->setBackgroundPicture( *ret->_d->bgPicture, Point( -tmp->getLeft(), 0 ) );
+  ContextMenu* advisersMenu = tmp->addSubMenu();
+  advisersMenu->addItem( "##adv_employments_m##", -1 );
+  advisersMenu->addItem( "##adv_military_m##", -1 );
+  advisersMenu->addItem( "##adv_empire_m##", -1 );
+  advisersMenu->addItem( "##adv_ratings_m##", -1 );
+  advisersMenu->addItem( "##adv_population_m##", -1 );
+  advisersMenu->addItem( "##adv_health_m##", -1 );
+  advisersMenu->addItem( "##adv_education_m##", -1 );
+  advisersMenu->addItem( "##adv_religion_m##", -1 );
+  advisersMenu->addItem( "##adv_entertainment_m##", -1 );
+  advisersMenu->addItem( "##adv_finance_m##", -1 );
+  advisersMenu->addItem( "##adv_main_m##", -1 );
 
   return ret;
 }

@@ -17,9 +17,8 @@
 #define __OPENCAESAR3_TERRAININFO_H_INCLUDED__
 
 #include <string>
-
-#include "oc3_serializer.hpp"
 #include "oc3_predefinitions.hpp"
+#include "oc3_enums.hpp"
 
 class TilePos;
 
@@ -83,6 +82,10 @@ public:
   int getDesirability() const                    { return _desirability; }
   void appendDesirability( int value );
 
+  void fillWaterService( const WaterService type );
+  void decreaseWaterService( const WaterService type );
+  int getWaterService( const WaterService type ) const;
+
 private:
   bool _isWater;
   bool _isRock;
@@ -96,6 +99,7 @@ private:
   bool _isWall;
   bool _isGateHouse;
   int  _desirability;
+  int  _waterService;
   
   /*
    * original tile information
@@ -114,7 +118,7 @@ class TerrainTileHelper
 {
 public:
   static std::string convId2PicName( const unsigned int imgId );
-  static int convPicName2Id(std::string &pic_name);
+  static int convPicName2Id( const std::string &pic_name);
 };
 
 #endif //__OPENCAESAR3_TERRAININFO_H_INCLUDED__

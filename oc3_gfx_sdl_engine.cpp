@@ -36,6 +36,7 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_pic_loader.hpp"
 #include "oc3_font.hpp"
+#include "oc3_eventconverter.hpp"
 
 class GfxSdlEngine::Impl
 {
@@ -89,7 +90,7 @@ void GfxSdlEngine::init()
   aFlags |= SDL_SWSURFACE;
 
   SDL_Surface* scr = SDL_SetVideoMode(_screen_width, _screen_height, 32, aFlags);  // 32bpp
-  _d->screen.init( scr, 0, 0 );
+  _d->screen.init( scr, Point( 0, 0 ) );
   
   if( !_d->screen.isValid() ) 
   {
@@ -97,6 +98,8 @@ void GfxSdlEngine::init()
   }
 
   SDL_WM_SetCaption( "OpenCaesar 3:"OC3_VERSION, 0 );    
+
+  SDL_EnableKeyRepeat(1, 100);
 }
 
 
@@ -113,22 +116,22 @@ void GfxSdlEngine::loadPicture(Picture& ioPicture)
 {
   // convert pixel format
   SDL_Surface *newImage;
-  newImage = SDL_DisplayFormatAlpha(ioPicture._surface);
-  SDL_FreeSurface(ioPicture._surface);
+  newImage = SDL_DisplayFormatAlpha( ioPicture.getSurface() );
+  SDL_FreeSurface(ioPicture.getSurface());
   if (newImage == NULL) THROW("Cannot convert surface, maybe out of memory");
-  ioPicture._surface = newImage;
+  ioPicture.init( newImage, ioPicture.getOffset() );
 }
 
 void GfxSdlEngine::unloadPicture(Picture& ioPicture)
 {
-  SDL_FreeSurface( ioPicture._surface );
-  ioPicture._surface = NULL;
+  SDL_FreeSurface( ioPicture.getSurface() );
+  ioPicture.reset();
 }
 
 
 void GfxSdlEngine::startRenderFrame()
 {
-  SDL_FillRect( _d->screen.get_surface(), NULL, 0);  // black background for a complete redraw
+  SDL_FillRect( _d->screen.getSurface(), NULL, 0);  // black background for a complete redraw
 }
 
 
@@ -140,7 +143,7 @@ void GfxSdlEngine::endRenderFrame()
     _d->debugFont.draw( _d->screen, debugText, 4, 22 );
   }
 
-  SDL_Flip( _d->screen.get_surface() ); //Refresh the screen
+  SDL_Flip( _d->screen.getSurface() ); //Refresh the screen
   _d->fps++;
 
   if( DateTime::getElapsedTime() - _d->lastUpdateFps > 1000 )
@@ -193,7 +196,7 @@ Picture& GfxSdlEngine::createPicture(const int width, const int height)
   }
 
   Picture *pic = new Picture();
-  pic->init(img, 0, 0);  // no offset
+  pic->init(img, Point( 0, 0 ));  // no offset
 
   _d->createdPics.push_back(pic);
   return *_d->createdPics.back();
@@ -201,7 +204,7 @@ Picture& GfxSdlEngine::createPicture(const int width, const int height)
 
 void GfxSdlEngine::createScreenshot( const std::string& filename )
 {
-  IMG_SavePNG( filename.c_str(), _d->screen.get_surface(), -1 );
+  IMG_SavePNG( filename.c_str(), _d->screen.getSurface(), -1 );
 }
 
 unsigned int GfxSdlEngine::getFps() const
@@ -213,4 +216,22 @@ void GfxSdlEngine::setFlag( int flag, int value )
 {
   _d->showDebugInfo = value > 0;
   _d->debugFont = Font( FONT_2 );
+}
+
+void GfxSdlEngine::delay( const unsigned int msec )
+{
+  SDL_Delay( msec );
+}
+
+bool GfxSdlEngine::haveEvent( NEvent& event )
+{
+  SDL_Event sdlEvent;
+
+  if( SDL_PollEvent(&sdlEvent) )
+  {
+    event = EventConverter::instance().get( sdlEvent );
+    return true;
+  }
+
+  return false;
 }

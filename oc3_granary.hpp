@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_GRANARY_H_INCLUDED__
 #define __OPENCAESAR3_GRANARY_H_INCLUDED__
 
-#include "oc3_building.hpp"
+#include "oc3_working_building.hpp"
 
 class Granary: public WorkingBuilding
 {

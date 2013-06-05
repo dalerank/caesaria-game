@@ -42,7 +42,7 @@ static void initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap, const uns
   StringHelper::debug( 0xff, "(%d, %d)", tlOffset.getI(), tlOffset.getJ() );
 
   signTile.set_picture(&Picture::load( "land3a", picIdStart + idOffset ));
-  signTile.get_terrain().setRock( true );
+  signTile.getTerrain().setRock( true );
 };
 
 void ScenarioLoadFinalizer::check()

@@ -218,7 +218,7 @@ bool FactoryTimber::canBuild(const TilePos& pos ) const
    for( PtrTilesArea::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
       Tile &tile = **itTiles;
-      near_forest |= tile.get_terrain().isTree();
+      near_forest |= tile.getTerrain().isTree();
    }
 
    return (is_constructible && near_forest);
@@ -243,7 +243,7 @@ bool FactoryIron::canBuild(const TilePos& pos ) const
    PtrTilesArea rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 2), Tilemap::checkCorners );
    for( PtrTilesArea::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
-      near_mountain |= (*itTiles)->get_terrain().isRock();
+      near_mountain |= (*itTiles)->getTerrain().isRock();
    }
 
    return (is_constructible && near_mountain);
@@ -315,10 +315,10 @@ bool Wharf::canBuild(const TilePos& pos ) const
       
      // if (tiles.get_terrain().isWater())
       
-     if (tile.getJ() > (pos.getJ() + _size -1) && !tile.get_terrain().isWater()) {  bNorth = false; }
-     if (tile.getJ() < pos.getJ() && !tile.get_terrain().isWater())              {  bSouth = false; }
-     if (tile.getI() > (pos.getI() + _size -1) && !tile.get_terrain().isWater()) {  bEast = false;  }
-     if (tile.getI() < pos.getI() && !tile.get_terrain().isWater())              {  bWest = false;  }      
+     if (tile.getJ() > (pos.getJ() + _size -1) && !tile.getTerrain().isWater()) {  bNorth = false; }
+     if (tile.getJ() < pos.getJ() && !tile.getTerrain().isWater())              {  bSouth = false; }
+     if (tile.getI() > (pos.getI() + _size -1) && !tile.getTerrain().isWater()) {  bEast = false;  }
+     if (tile.getI() < pos.getI() && !tile.getTerrain().isWater())              {  bWest = false;  }      
    }
 
    return (is_constructible && (bNorth || bSouth || bEast || bWest));

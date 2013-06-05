@@ -70,9 +70,9 @@ BuildingTypeEquale bldTypeEquales[] = {
   { B_BIG_TEMPLE_CERES,  "big_ceres_temple" },
   { B_BIG_TEMPLE_NEPTUNE,"big_neptune_temple" },
   { B_BIG_TEMPLE_MARS,   "big_mars_temple"},
-  { B_BIG_TEMPLE_MERCURE,"big_mercure_temple"},
+  { B_BIG_TEMPLE_MERCURE,"big_mercury_temple"},
   { B_BIG_TEMPLE_VENUS,  "big_venus_temple"},
-  { B_TEMPLE_ORACLE,     "temple_oracle"},
+  { B_TEMPLE_ORACLE,     "oracle"},
   { B_MARKET,            "market"},
   { B_GRANARY,        "granery"},
   { B_WAREHOUSE,      "warehouse"},
@@ -84,23 +84,23 @@ BuildingTypeEquale bldTypeEquales[] = {
   { B_MEAT,           "meat_farm"},
   { B_MARBLE,         "quarry"},
   { B_IRON,           "iron_mine"},
-  { B_TIMBER,         "lubmer_mill"},
+  { B_TIMBER,         "lumber_mill"},
   { B_CLAY_PIT,       "clay_pit"},
   { B_WINE,           "wine_workshop"},
   { B_OIL,            "oil_workshop"},
-  { B_WEAPON,         "weapon_workshop"},
+  { B_WEAPON,         "weapons_workshop"},
   { B_FURNITURE,      "furniture_workshop"},
   { B_POTTERY,        "pottery_workshop"},
   { B_ENGINEER,       "engineering_post"},
-  { B_STATUE1,        "statue_1"},
-  { B_STATUE2,        "statue_2"},
-  { B_STATUE3,        "statue_3"},
+  { B_STATUE1,        "statue_small"},
+  { B_STATUE2,        "statue_middle"},
+  { B_STATUE3,        "statue_big"},
   { B_LOW_BRIDGE,     "low_bridge"},
   { B_HIGH_BRIDGE,    "high_bridge"},
   { B_DOCK,           "dock"},
   { B_SHIPYARD,       "shipyard"},
   { B_WHARF,          "wharf"},
-  { B_TRIUMPHAL_ARCH, "arch"},
+  { B_TRIUMPHAL_ARCH, "triumphal_arch"},
   { B_WELL,           "well"},
   { B_FOUNTAIN,       "fountain"},
   { B_AQUEDUCT,       "aqueduct"},
@@ -111,6 +111,13 @@ BuildingTypeEquale bldTypeEquales[] = {
   { B_BURNING_RUINS,  "burning_ruins"},
   { B_BURNED_RUINS,   "burned_ruins"},
   { B_COLLAPSED_RUINS,"collapsed_ruins"},
+  { B_FOOT_BRIDGE, "foot_bridge" },
+  { B_FORUM_2, "forum_2" },
+  { B_GATEHOUSE, "gatehouse" },
+  { B_SENATE_2, "senate_2" },
+  { B_SHIP_BRIDGE, "ship_bridge" },
+  { B_TOWER, "tower" },
+  { B_WALL, "wall"  },
 
   { B_NONE, "" }
 };
@@ -145,6 +152,21 @@ BuildingType BuildingData::getType() const
 int BuildingData::getCost() const
 {
   return _cost;
+}
+
+int BuildingData::getEmployers() const
+{
+  return _employers;
+}
+
+std::string BuildingData::getResouceGroup() const
+{
+  return _resourceGroup;
+}
+
+int BuildingData::getResourceIndex() const
+{
+  return _rcIndex;
 }
 
 class BuildingDataHolder::Impl
@@ -206,7 +228,7 @@ void BuildingDataHolder::addData(const BuildingData &data)
 
   if (hasData(buildingType))
   {
-    StringHelper::debug( 0xff, "Building is already set %s", data.getName().c_str() );
+    StringHelper::debug( 0xff, "Building is already set %s", data.getName() );
     return;
   }
 
@@ -255,6 +277,9 @@ void BuildingDataHolder::initialize( const std::string& filename )
     bData._baseDesirability  = options[ "desirability" ].toInt();
     bData._desirabilityRange = options[ "desrange" ].toInt();
     bData._desirabilityStep  = options[ "desstep" ].toInt();
+    bData._employers = options[ "employers" ].toInt();
+    bData._resourceGroup = options[ "resource" ].toString();
+    bData._rcIndex = options[ "rcindex" ].toInt();
 
     addData( bData );
   }

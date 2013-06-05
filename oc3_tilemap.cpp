@@ -47,9 +47,17 @@ void Tilemap::init(const int size)
   }
 }
 
-bool Tilemap::is_inside(const TilePos& pos ) const
+bool Tilemap::isInside(const TilePos& pos ) const
 {
   return ( pos.getI() >= 0 && pos.getJ()>=0 && pos.getI() < _size && pos.getJ() < _size);
+}
+
+TilePos Tilemap::fit( const TilePos& pos ) const
+{
+  TilePos ret;
+  ret.setI( math::clamp( pos.getI(), 0, _size ) );
+  ret.setJ( math::clamp( pos.getJ(), 0, _size ) );
+  return ret;
 }
 
 Tile& Tilemap::at(const int i, const int j)
@@ -89,12 +97,12 @@ PtrTilesList Tilemap::getRectangle( const TilePos& start, const TilePos& stop, c
 
   for(int i = start.getI() + delta_corners; i <= stop.getI() - delta_corners; ++i)
   {
-    if (is_inside( TilePos( i, start.getJ() ) ))
+    if (isInside( TilePos( i, start.getJ() ) ))
     {
       res.push_back( &at(i, start.getJ() ));
     }
 
-    if (is_inside( TilePos( i, stop.getJ() ) ))
+    if (isInside( TilePos( i, stop.getJ() ) ))
     {
       res.push_back( &at( i, stop.getJ() ));
     }
@@ -102,12 +110,12 @@ PtrTilesList Tilemap::getRectangle( const TilePos& start, const TilePos& stop, c
 
   for (int j = start.getJ() + 1; j <= stop.getJ() - 1; ++j)  // corners have been handled already
   {
-    if (is_inside( TilePos( start.getI(), j ) ))
+    if (isInside( TilePos( start.getI(), j ) ))
     {
       res.push_back(&at(start.getI(), j));
     }
 
-    if (is_inside( TilePos( stop.getI(), j ) ))
+    if (isInside( TilePos( stop.getI(), j ) ))
     {
       res.push_back(&at(stop.getI(), j));
     }
@@ -130,7 +138,7 @@ PtrTilesList Tilemap::getFilledRectangle(const TilePos& start, const TilePos& st
    {
       for (int j = start.getJ(); j <= stop.getJ(); ++j)
       {
-         if( is_inside( TilePos( i, j ) ))
+         if( isInside( TilePos( i, j ) ))
          {
             res.push_back(&at( TilePos( i, j ) ) );
          }
@@ -155,9 +163,9 @@ void Tilemap::save( VariantMap& stream ) const
   PtrTilesArea tiles = const_cast< Tilemap* >( this )->getFilledRectangle( TilePos( 0, 0 ), Size( _size ) );
   for( PtrTilesArea::iterator it = tiles.begin(); it != tiles.end(); it++ )
   {
-    bitsetInfo.push_back( (*it)->get_terrain().encode() );
-    desInfo.push_back( (*it)->get_terrain().getDesirability() );
-    idInfo.push_back( (*it)->get_terrain().getOriginalImgId() );
+    bitsetInfo.push_back( (*it)->getTerrain().encode() );
+    desInfo.push_back( (*it)->getTerrain().getDesirability() );
+    idInfo.push_back( (*it)->getTerrain().getOriginalImgId() );
   }
 
   stream[ "bitset" ]       = bitsetInfo;
@@ -186,8 +194,8 @@ void Tilemap::load( const VariantMap& stream )
   {
     Tile* tile = *it;
 
-    tile->get_terrain().decode( (*bitsetInfoIt).toInt() );
-    tile->get_terrain().appendDesirability( (*desirabilityIt).toInt() );
+    tile->getTerrain().decode( (*bitsetInfoIt).toInt() );
+    tile->getTerrain().appendDesirability( (*desirabilityIt).toInt() );
 
     int imgId = (*imgIdIt).toInt();
     if( imgId != 0 )
@@ -195,7 +203,7 @@ void Tilemap::load( const VariantMap& stream )
       std::string picName = TerrainTileHelper::convId2PicName( imgId );
       Picture& pic = Picture::load( picName );
 
-      tile->get_terrain().setOriginalImgId( imgId );
+      tile->getTerrain().setOriginalImgId( imgId );
 
       int tile_size = (pic.getWidth()+2)/60;  // size of the multi-tile. the multi-tile is a square.
 

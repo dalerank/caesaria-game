@@ -18,6 +18,7 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_exception.hpp"
 #include <SDL_ttf.h>
+#include <map>
 
 class Font::Impl
 {
@@ -40,6 +41,45 @@ Font::Font( const Font& other ) : _d( new Impl )
 Font::Font( const std::string& family, const int size )
 {
 
+}
+
+// unsigned int Font::getKerningSize( )
+// {
+//   if( _d->ttfFont )
+//   {
+//     return TTF_GetFontKerningSize( );
+//   }
+// }
+
+unsigned int Font::getWidthFromCharacter( char c ) const
+{
+  int minx, maxx, miny, maxy, advance;
+  TTF_GlyphMetrics( _d->ttfFont, c, &minx, &maxx, &miny, &maxy, &advance );
+  
+  return advance;
+}
+
+unsigned int Font::getKerningHeight() const
+{
+  return 3;
+}
+
+int Font::getCharacterFromPos(const std::string& text, int pixel_x) const
+{
+  int x = 0;
+  int idx = 0;
+
+  while (text[idx])
+  {
+    x += getWidthFromCharacter(text[idx]);
+
+    if (x >= pixel_x)
+      return idx;
+
+    ++idx;
+  }
+
+  return -1;
 }
 
 Font::Font( FontType type ) : _d( new Impl )
@@ -139,7 +179,7 @@ void Font::draw(Picture& dstpic, const std::string &text, const int dx, const in
   if( sText )
   {
     Picture pic;
-    pic.init( sText, 0, 0 );
+    pic.init( sText, Point( 0, 0 ) );
     dstpic.draw( pic, dx, dy);
   }
 
@@ -179,7 +219,7 @@ public:
 
   void setFont( const int key, Font font )
   {
-    std::pair<std::map<int, Font>::iterator, bool> ret = collection.insert(std::pair<int, Font>(key, font));
+    std::pair< std::map<int, Font>::iterator, bool> ret = collection.insert(std::pair<int, Font>(key, font));
     if( ret.second == false )
     {
       // no insert font (already exists)

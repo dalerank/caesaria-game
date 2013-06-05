@@ -100,6 +100,33 @@ public:
 		return getWidth() * getHeight();
 	}
 
+  //! Adds a point to the rectangle
+  /** Causes the rectangle to grow bigger if point is outside of
+  the box
+  \param p Point to add to the box. */
+  void addInternalPoint(const Vector2<T>& p)
+  {
+    addInternalPoint(p.getX(), p.getY());
+  }
+
+  //! Adds a point to the bounding rectangle
+  /** Causes the rectangle to grow bigger if point is outside of
+  the box
+  \param x X-Coordinate of the point to add to this box.
+  \param y Y-Coordinate of the point to add to this box. */
+  void addInternalPoint(T x, T y)
+  {
+    if (x>LowerRightCorner.getX() )
+      LowerRightCorner.setX( x );
+    if (y>LowerRightCorner.getY() )
+      LowerRightCorner.setY( y );
+
+    if (x<UpperLeftCorner.getX() )
+      UpperLeftCorner.setX( x );
+    if (y<UpperLeftCorner.getY())
+      UpperLeftCorner.setY( y );
+  }
+
 	//! Returns if a 2d point is within this rectangle.
 	/** \param pos Position to test if it lies within this rectangle.
 	\return True if the position is within the rectangle, false if not. */

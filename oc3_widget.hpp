@@ -17,8 +17,6 @@
 #ifndef __OPENCAESAR3_WIDGET_H_INCLUDE_
 #define __OPENCAESAR3_WIDGET_H_INCLUDE_
 
-#include <memory>
-
 #include "oc3_referencecounted.hpp"
 #include "oc3_list.hpp"
 #include "oc3_rectangle.hpp"

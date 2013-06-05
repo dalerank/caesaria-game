@@ -15,10 +15,7 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
-
 #include "oc3_gui_paneling.hpp"
-#include <SDL.h>
 #include "oc3_exception.hpp"
 #include "oc3_pic_loader.hpp"
 #include "oc3_gettext.hpp"
@@ -40,10 +37,10 @@ GuiPaneling& GuiPaneling::instance()
 void GuiPaneling::configureTexturedButton( PushButton* oButton, const std::string& rcGroup, const int pic_index, bool pushButton )
 {
     PicLoader& loader = PicLoader::instance();
-    oButton->setPicture( &loader.get_picture( rcGroup, pic_index), stNormal );
-    oButton->setPicture( &loader.get_picture( rcGroup, pic_index+1), stHovered );
-    oButton->setPicture( &loader.get_picture( rcGroup, pic_index+2), stPressed );
-    oButton->setPicture( &loader.get_picture( rcGroup, pic_index+3), stDisabled );
+    oButton->setPicture( &loader.getPicture( rcGroup, pic_index), stNormal );
+    oButton->setPicture( &loader.getPicture( rcGroup, pic_index+1), stHovered );
+    oButton->setPicture( &loader.getPicture( rcGroup, pic_index+2), stPressed );
+    oButton->setPicture( &loader.getPicture( rcGroup, pic_index+3), stDisabled );
     oButton->setIsPushButton( pushButton );
 }
 

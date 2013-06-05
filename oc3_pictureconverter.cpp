@@ -19,10 +19,11 @@
 
 #include "oc3_picture.hpp"
 #include "oc3_math.hpp"
+#include "oc3_positioni.hpp"
 
 void PictureConverter::rgbBalance( Picture& dst, const Picture& src, int lROffset, int lGOffset, int lBOffset )
 {
-    SDL_Surface* source = const_cast< Picture& >( src ).get_surface();
+    SDL_Surface* source = const_cast< Picture& >( src ).getSurface();
 
     SDL_Surface *target = SDL_CreateRGBSurface( SDL_SWSURFACE, source->w, source->h, 32, 
         0x00ff0000, 0x0000ff00, 
@@ -60,19 +61,19 @@ void PictureConverter::rgbBalance( Picture& dst, const Picture& src, int lROffse
     SDL_UnlockSurface(target);
     SDL_UnlockSurface(source);
 
-    if( dst.get_surface() )
+    if( dst.getSurface() )
     {
-        SDL_FreeSurface( dst.get_surface() );
+        SDL_FreeSurface( dst.getSurface() );
     }
 
-    dst.init( target, src.get_xoffset(), src.get_yoffset() );   
+    dst.init( target, src.getOffset() );   
 }
 
 void PictureConverter::maskColor( Picture& dst, const Picture& src, int rmask, int gmask, int bmask, int amask )
 {
-  SDL_Surface* source = const_cast< Picture& >( src ).get_surface();
+  SDL_Surface* source = const_cast< Picture& >( src ).getSurface();
 
-  SDL_Surface *target = SDL_CreateRGBSurfaceFrom( src.get_surface()->pixels, source->w, source->h, 32, src.get_surface()->pitch,
+  SDL_Surface *target = SDL_CreateRGBSurfaceFrom( src.getSurface()->pixels, source->w, source->h, 32, src.getSurface()->pitch,
                                                   rmask, gmask, bmask, amask );
 
   if (target == NULL) 
@@ -81,17 +82,17 @@ void PictureConverter::maskColor( Picture& dst, const Picture& src, int rmask, i
     return;
   }
 
-  if( dst.get_surface() )
+  if( dst.getSurface() )
   {
-    SDL_FreeSurface( dst.get_surface() );
+    SDL_FreeSurface( dst.getSurface() );
   }
 
-  dst.init( target, src.get_xoffset(), src.get_yoffset() );   
+  dst.init( target, src.getOffset() );   
 }
 
 void PictureConverter::convToGrayscale( Picture& dst, const Picture& src )
 {
-    SDL_Surface* source = const_cast< Picture& >( src ).get_surface();
+    SDL_Surface* source = const_cast< Picture& >( src ).getSurface();
 
     SDL_Surface *target = SDL_CreateRGBSurface(SDL_SWSURFACE, source->w, source->h, 32,
         0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
@@ -126,12 +127,12 @@ void PictureConverter::convToGrayscale( Picture& dst, const Picture& src )
     SDL_UnlockSurface(target);
     SDL_UnlockSurface(source);
 
-    if( dst.get_surface() )
+    if( dst.getSurface() )
     {
-        SDL_FreeSurface( dst.get_surface() );
+        SDL_FreeSurface( dst.getSurface() );
     }
 
-    dst.init( target, src.get_xoffset(), src.get_yoffset() );
+    dst.init( target, src.getOffset() );
 }
 
 PictureConverter::~PictureConverter()
@@ -144,12 +145,14 @@ PictureConverter::PictureConverter()
 
 }
 
-void PictureConverter::fill( Picture& pic, int color )
+void PictureConverter::fill( Picture& pic, int color, const Rect& rect )
 {
-  SDL_Surface* source = pic.get_surface();
+  SDL_Surface* source = pic.getSurface();
 
   SDL_LockSurface( source );
-  SDL_FillRect(source, NULL, SDL_MapRGBA(source->format, (color>>24)&0xff, (color>>16)&0xff, (color>>8)&0xff, (color&0xff))); 
+  SDL_Rect sdlRect = { rect.getLeft(), rect.getTop(), rect.getWidth(), rect.getHeight() };
+
+  SDL_FillRect(source, rect.getWidth() > 0 ? &sdlRect : NULL, SDL_MapRGBA(source->format, (color>>16)&0xff, (color>>8)&0xff, color&0xff, (color>>24)&0xff )); 
   SDL_UnlockSurface(source);
 }
 

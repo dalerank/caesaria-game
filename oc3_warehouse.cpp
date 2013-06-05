@@ -25,10 +25,9 @@
 #include "oc3_gettext.hpp"
 #include "oc3_resourcegroup.hpp"
 
-WarehouseTile::WarehouseTile(const int i, const int j)
+WarehouseTile::WarehouseTile( const TilePos& pos )
 {
-   _i = i;
-   _j = j;
+   _pos = pos;
    _stock._maxQty = 400;
    computePicture();
 }
@@ -98,7 +97,7 @@ void WarehouseTile::computePicture()
    }
 
    _picture = Picture::load( ResourceGroup::warehouse, picIdx );
-   _picture.add_offset(30*(_i+_j), 15*(_j-_i));
+   _picture.addOffset(30*(_pos.getI()+_pos.getJ()), 15*(_pos.getJ()-_pos.getI()));
 }
 
 
@@ -106,13 +105,13 @@ Warehouse::Warehouse() : WorkingBuilding( B_WAREHOUSE, Size( 3 ))
 {
    // _name = _("Entrepot");
   _picture = &Picture::load( ResourceGroup::warehouse, 19);
-   _fgPictures.resize(12);  // 8 tiles + 4
+  _fgPictures.resize(12);  // 8 tiles + 4
 
-   _animation.load( ResourceGroup::warehouse, 2, 16 );
-   _animation.setFrameDelay( 4 );
-   _animFlag.load( ResourceGroup::warehouse, 84, 8 );
+  _animation.load( ResourceGroup::warehouse, 2, 16 );
+  _animation.setFrameDelay( 4 );
+  _animFlag.load( ResourceGroup::warehouse, 84, 8 );
 
-   init();
+  init();
 }
 
 
@@ -125,14 +124,14 @@ void Warehouse::init()
 
   // add subTiles in Z-order (from far to near)
   _subTiles.clear();
-  _subTiles.push_back(WarehouseTile(1, 2));
-  _subTiles.push_back(WarehouseTile(0, 1));
-  _subTiles.push_back(WarehouseTile(2, 2));
-  _subTiles.push_back(WarehouseTile(1, 1));
-  _subTiles.push_back(WarehouseTile(0, 0));
-  _subTiles.push_back(WarehouseTile(2, 1));
-  _subTiles.push_back(WarehouseTile(1, 0));
-  _subTiles.push_back(WarehouseTile(2, 0));
+  _subTiles.push_back( WarehouseTile( TilePos( 1, 2 ) ));
+  _subTiles.push_back( WarehouseTile( TilePos( 0, 1 ) ));
+  _subTiles.push_back( WarehouseTile( TilePos( 2, 2 ) ));
+  _subTiles.push_back( WarehouseTile( TilePos( 1, 1 ) ));
+  _subTiles.push_back( WarehouseTile( TilePos( 0, 0 ) ));
+  _subTiles.push_back( WarehouseTile( TilePos( 2, 1 ) ));
+  _subTiles.push_back( WarehouseTile( TilePos( 1, 0 ) ));
+  _subTiles.push_back( WarehouseTile( TilePos( 2, 0 ) ));
 
   for (unsigned int n = 0; n<_subTiles.size(); ++n)
   {

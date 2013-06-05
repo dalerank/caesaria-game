@@ -43,12 +43,12 @@ void ScreenWait::initialize( GfxEngine& engine, GuiEnv& gui )
 	_d->engine = &engine;
 	_d->gui = &gui;
 
-	_d->bgPicture = &PicLoader::instance().get_picture("c3title", 1);
+	_d->bgPicture = &PicLoader::instance().getPicture("c3title", 1);
 
 	// center the bgPicture on the screen
 	int x = (engine.getScreenWidth() - _d->bgPicture->getWidth()) / 2;
 	int y = (engine.getScreenHeight() - _d->bgPicture->getHeight()) / 2;
-	_d->bgPicture->set_offset(x, -y);
+	_d->bgPicture->setOffset(x, -y);
 }
 
 void ScreenWait::draw()

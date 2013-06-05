@@ -34,16 +34,22 @@ public:
   std::string getName() const;
   std::string getPrettyName() const;
   BuildingType getType() const;
+  int getEmployers() const;
   // returns the building price, -1 => cannot be built
   int getCost() const;
+  std::string getResouceGroup() const;
+  int getResourceIndex() const;
 
 private:
   BuildingType _buildingType;
   std::string _name;  // debug name  (english, ex:"iron")
   std::string _prettyName;  // pretty-print name  (i18n, ex:"Iron mine")
+  std::string _resourceGroup;
+  int _rcIndex;
   int _baseDesirability;
   int _desirabilityRange;
   int _desirabilityStep;
+  int _employers;
   int _cost;
 };
 

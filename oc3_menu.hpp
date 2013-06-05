@@ -15,7 +15,7 @@ public:
     static Menu* create( Widget* parent, int id );
 
     // draw on screen
-    virtual void draw( GfxEngine& engine );
+    void draw( GfxEngine& engine );
 
     bool onEvent(const NEvent& event);
 
@@ -50,8 +50,10 @@ public:
     void draw( GfxEngine& engine );
 
     void toggleOverlays();
+
 oc3_signals public:
     Signal1<int>& onSelectOverlayType();
+    Signal0<>& onEmpireMapShow();
 
 protected:
     ExtentMenu( Widget* parent, GuiTilemap&, int id, const Rect& rectangle );

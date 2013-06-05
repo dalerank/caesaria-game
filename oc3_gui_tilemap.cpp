@@ -147,45 +147,63 @@ void GuiTilemap::Impl::drawTileWater( Tile& tile )
   
   tile.setWasDrawn();
 
-  const TerrainTile& terrain = tile.get_terrain();
+  bool needDrawAnimations = false;
+  const TerrainTile& terrain = tile.getTerrain();
   if( terrain.getOverlay().isNull() )
   {
     //draw background
     engine->drawPicture( tile.get_picture(), screenPos );
-    return;
+  }
+  else
+  {   
+    LandOverlayPtr overlay = terrain.getOverlay();
+    Picture* pic = 0;
+    switch( overlay->getType() )
+    {
+      //water buildings
+    case B_ROAD:
+    case B_PLAZA:
+    case B_RESERVOIR:
+    case B_FOUNTAIN:
+    case B_WELL:
+      pic = &tile.get_picture();
+      needDrawAnimations = true;
+    break;  
+
+      //houses
+    case B_HOUSE:
+      {
+        HousePtr house = overlay.as< House >();
+        bool haveWater = house->hasServiceAccess( S_WELL ) || house->hasServiceAccess( S_FOUNTAIN );
+
+        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize() - 1)*2 + ( haveWater ? 2 : 1 ) + 10 );
+      }
+    break;
+      
+      //other buildings
+    default:
+      pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize() - 1)*2 + 1 );
+    break;
+    }  
+
+    engine->drawPicture( *pic, screenPos );
+
+    if( needDrawAnimations )
+    {
+      drawAnimations( overlay, screenPos );
+    }
   }
   
-  bool needDrawAnimations = false;
-  LandOverlayPtr overlay = terrain.getOverlay();
-  Picture* pic = 0;
-  switch( overlay->getType() )
+  if( !needDrawAnimations && terrain.isWalkable(true) )
   {
-    //water buildings
-  case B_ROAD:
-  case B_PLAZA:
-  case B_RESERVOIR:
-  case B_FOUNTAIN:
-  case B_WELL:
-    pic = &tile.get_picture();
-    needDrawAnimations = true;
-  break;  
-
-    //houses
-  case B_HOUSE:
-    pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize() - 1)*2 + 1 + 10 );
-  break;
+    int reservoirWater = terrain.getWaterService( WTR_RESERVOIR );
+    int fontainWater = terrain.getWaterService( WTR_FONTAIN );
     
-    //other buildings
-  default:
-    pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize() - 1)*2 + 1 );
-  break;
-  }  
-
-  engine->drawPicture( *pic, screenPos );
-
-  if( needDrawAnimations )
-  {
-    drawAnimations( overlay, screenPos );
+    if( fontainWater + reservoirWater > 0 )
+    {
+      int picIndex = (fontainWater > 0 ? 22 : 21);
+      engine->drawPicture( Picture::load( ResourceGroup::waterOverlay, picIndex ), screenPos );
+    }
   }
 }
 
@@ -200,7 +218,7 @@ void GuiTilemap::Impl::drawTileBase( Tile& tile )
   //draw background
   engine->drawPicture( pic, screenPos );
 
-  LandOverlayPtr overlay = tile.get_terrain().getOverlay();
+  LandOverlayPtr overlay = tile.getTerrain().getOverlay();
   if( overlay.isNull() )
   {
     return;
@@ -637,8 +655,8 @@ void GuiTilemap::checkPreviewBuild( const TilePos& pos )
                  }
                  tile->set_picture( _d->previewToolPictures.back() );
                  tile->set_master_tile( masterTile );
-                 tile->get_terrain().setBuilding( true );
-                 tile->get_terrain().setOverlay( overlay.as<LandOverlay>() );
+                 tile->getTerrain().setBuilding( true );
+                 tile->getTerrain().setOverlay( overlay.as<LandOverlay>() );
                  _d->postTiles.push_back( tile );
                  //_priorityTiles.push_back( tile );
              }
@@ -654,16 +672,16 @@ void GuiTilemap::checkPreviewBuild( const TilePos& pos )
            for (int di = 0; di < size; ++di)
            {
              TilePos rPos = pos + TilePos( di, dj );
-             if( !_d->tilemap->is_inside( rPos ) )
+             if( !_d->tilemap->isInside( rPos ) )
                  continue;
 
              Tile* tile = new Tile( _d->tilemap->at( rPos ) );  // make a copy of tile
 
-             bool isConstructible = tile->get_terrain().isConstructible();
+             bool isConstructible = tile->getTerrain().isConstructible();
              tile->set_picture( isConstructible ? &grnPicture : &redPicture );
              tile->set_master_tile(0);
-             tile->get_terrain().reset();
-             tile->get_terrain().setBuilding( true );
+             tile->getTerrain().reset();
+             tile->getTerrain().setBuilding( true );
              _d->postTiles.push_back( tile );
            }
        }

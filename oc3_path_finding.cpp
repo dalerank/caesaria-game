@@ -210,7 +210,7 @@ void PathWay::setNextDirection(const DirectionType direction)
       break;
    }
 
-   if (! _tilemap->is_inside( TilePos( _destination ) ))
+   if (! _tilemap->isInside( TilePos( _destination ) ))
    {
       THROW("Destination is out of range");
    }
@@ -497,7 +497,7 @@ void Propagator::propagate(const int maxDistance)
       {
          // for every neighbor tile
          Tile &tile2 = **itTile;
-         if (tile2.get_terrain().isWalkable(_allLands))
+         if (tile2.getTerrain().isWalkable(_allLands))
          {
             // std::cout << "Next tile: " << tile2.getI() << ", " << tile2.getJ() << std::endl;
 
@@ -677,7 +677,7 @@ void Propagator::getAllPaths(const int maxDistance, std::list<PathWay> &oPathWay
             // for every neighbour tile
             Tile &tile2 = **itTile;
 
-            if (tile2.get_terrain().isWalkable(_allLands) && !pathWay.contains(tile2) )
+            if (tile2.getTerrain().isWalkable(_allLands) && !pathWay.contains(tile2) )
             {
                nextTiles.push_back(&tile2);
             }

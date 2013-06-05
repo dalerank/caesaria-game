@@ -40,7 +40,7 @@ MenuRigthPanel* MenuRigthPanel::create( Widget* parent, const Rect& rectangle, c
     ret->setGeometry( rectangle );
     
     ret->_d->picture = &GfxEngine::instance().createPicture( rectangle.getWidth(), rectangle.getHeight() );
-    SDL_SetAlpha( ret->_d->picture->get_surface(), 0, 0 );  // remove surface alpha
+    //SDL_SetAlpha( ret->_d->picture->getSurface(), 0, 0 );  // remove surface alpha
 
     int y = 0;
     while( y <  ret->_d->picture->getHeight() )

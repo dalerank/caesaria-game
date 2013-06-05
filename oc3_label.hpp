@@ -42,7 +42,7 @@ public:
   //! Sets another color for the background.
   //virtual void setBackgroundColor( const SDL_Color& color);
 
-  virtual SDL_Color getBackgroundColor() const;
+  virtual int getBackgroundColor() const;
 
   //! Sets whether to draw the background
   virtual void setBackgroundVisible(bool draw);

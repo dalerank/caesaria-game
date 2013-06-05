@@ -23,8 +23,6 @@ BuildingWell::BuildingWell() : ServiceBuilding(S_WELL, B_WELL, Size(1) )
 {
   _fireIncrement = 0;
   _damageIncrement = 0;
-  setMaxWorkers( 0 );
-  setPicture( Picture::load( ResourceGroup::utilitya, 1) );
 }
 
 void BuildingWell::deliverService()

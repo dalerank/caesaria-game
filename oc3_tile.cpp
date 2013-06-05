@@ -65,12 +65,12 @@ void Tile::set_master_tile(Tile* master)
   _master_tile = master;
 }
 
-const TerrainTile& Tile::get_terrain() const
+const TerrainTile& Tile::getTerrain() const
 {
   return _terrain;
 }
 
-TerrainTile& Tile::get_terrain()
+TerrainTile& Tile::getTerrain()
 {
   return _terrain;
 }

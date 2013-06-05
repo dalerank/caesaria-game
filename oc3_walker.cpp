@@ -34,6 +34,17 @@ public:
   float speed;
   TilePos pos;
   TilePos midTile;  // subtile coordinate in the current tile, at starting position
+  float speedMultiplier;
+
+  float getSpeed() const
+  {
+    return speedMultiplier * speed;
+  }
+
+  void updateSpeedMultiplier( const Tile& tile ) 
+  {
+    speedMultiplier = (tile.getTerrain().isRoad() || tile.getTerrain().isGarden()) ? 1.f : 0.5f;
+  }
 };
 
 Walker::Walker() : _d( new Impl )
@@ -43,7 +54,8 @@ Walker::Walker() : _d( new Impl )
   _walkerType = WT_NONE;
   _walkerGraphic = WG_NONE;
 
-  _d->speed = 1;  // default speed
+  _d->speed = 1.f;  // default speed
+  _d->speedMultiplier = 1.f;
   _isDeleted = false;
 
   _d->midTile = TilePos( 7, 7 );
@@ -67,7 +79,7 @@ void Walker::timeStep(const unsigned long time)
    case WA_MOVE:
       walk();
      
-      if( _animation.getPicturesCount() > 0 && _d->speed > 0.f )
+      if( _animation.getPicturesCount() > 0 && _d->getSpeed() > 0.f )
       {
         _animation.update( time );
       }
@@ -182,7 +194,6 @@ void Walker::dec(int &ioSI, int &ioI, int &ioAmount, const int iMidPos, bool &oN
    ioSI -= delta;
 }
 
-
 void Walker::walk()
 {
    if (D_NONE == _action._direction )
@@ -192,24 +203,23 @@ void Walker::walk()
    }
 
    Tile& tile = Scenario::instance().getCity().getTilemap().at( getIJ() );
-   float roadKoeff = tile.get_terrain().isRoad() ? 1.f : 0.5f;
-   
+    
    switch (_action._direction)
    {
    case D_NORTH:
    case D_SOUTH:
-      _remainMoveJ += _d->speed * roadKoeff;
+      _remainMoveJ += _d->getSpeed();
       break;
    case D_EAST:
    case D_WEST:
-      _remainMoveI += _d->speed * roadKoeff;
+      _remainMoveI += _d->getSpeed();
       break;
    case D_NORTH_EAST:
    case D_SOUTH_WEST:
    case D_SOUTH_EAST:
    case D_NORTH_WEST:
-      _remainMoveI += _d->speed * 0.7f * roadKoeff;
-      _remainMoveJ += _d->speed * 0.7f * roadKoeff;
+      _remainMoveI += _d->getSpeed() * 0.7f;
+      _remainMoveJ += _d->getSpeed() * 0.7f ;
       break;
    default:
       THROW("Invalid move direction: " << _action._direction);
@@ -289,7 +299,8 @@ void Walker::onNewTile()
    // std::cout << "Walker is on a new tile! coord=" << _i << "," << _j << std::endl;
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
    Tile& currentTile = tilemap.at( _d->pos );
-   if( !currentTile.get_terrain().isRoad() )
+   _d->updateSpeedMultiplier( currentTile );
+   if( !currentTile.getTerrain().isRoad() )
    {
      StringHelper::debug( 0xff, "Walker at (%d, %d) is not on a road!!!", _d->pos.getI(), _d->pos.getJ() );
    }
@@ -397,6 +408,7 @@ void Walker::save( VariantMap& stream ) const
   stream[ "jj" ] = _jj;
   stream[ "speed" ] = _d->speed;
   stream[ "midTile" ] = _d->midTile;
+  stream[ "speedMul" ] = _d->speedMultiplier;
 }
 
 void Walker::load( const VariantMap& stream)
@@ -409,6 +421,7 @@ void Walker::load( const VariantMap& stream)
   _sj = stream.get( "sj" ).toInt();
   _ii = stream.get( "ii" ).toInt();
   _jj = stream.get( "jj" ).toInt();
+  _d->speedMultiplier = stream.get( "speedMul" ).toFloat();
   _d->speed = stream.get( "speed" ).toFloat();
   _d->midTile = stream.get( "midTile" ).toTilePos();
 }

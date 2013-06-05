@@ -38,6 +38,7 @@ public:
    ~GfxGlEngine();
    void init();
    void exit();
+   void delay( const unsigned int msec );
 
    void loadPicture(Picture &ioPicture);
    void unloadPicture(Picture &ioPicture);
@@ -52,6 +53,8 @@ public:
 
    void createScreenshot( const std::string& filename );
    unsigned int getFps() const;
+   bool haveEvent( NEvent& event );
+
 private:
    SDL_Surface *_screen;
 };

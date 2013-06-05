@@ -28,8 +28,8 @@
 
 using namespace std;
 
-string dayNames[ DateTime::maxDayNumber ] = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
-string monthNames[ DateTime::maxMonthNumber ] = { "January", "February", "March", "April", 
+const char* dayNames[ DateTime::maxDayNumber ] = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+const char* monthNames[ DateTime::maxMonthNumber ] = { "January", "February", "March", "April", 
                                                   "May", "June", "July", "August", "September", 
                                                   "October", "November", "December" };
 
@@ -170,9 +170,9 @@ DateTime::DateTime( const DateTime& time )
     year = time.year;
 }
 
-DateTime::DateTime( const string& strValue )
+DateTime::DateTime( const char* strValue )
 {
-    sscanf( strValue.c_str(), "y=%04d m=%02d d=%02d h=%02d mi=%02d",
+    sscanf( strValue, "y=%04d m=%02d d=%02d h=%02d mi=%02d",
             &year, &month, &day, &hour, &minutes );
 }
 
@@ -229,12 +229,12 @@ unsigned char DateTime::getDayOfWeek() const
     return d.tm_wday;
 }
 
-string DateTime::getDayName( unsigned char d )
+const char* DateTime::getDayName( unsigned char d )
 {
    return dayNames[ d ];
 }
 
-string DateTime::getMonthName( unsigned char d )
+const char* DateTime::getMonthName( unsigned char d )
 {
     return monthNames[ d ];
 }

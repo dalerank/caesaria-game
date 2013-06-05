@@ -164,7 +164,7 @@ void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int start
         break;
       }
 
-      HousePtr house = (*it)->get_terrain().getOverlay().as<House>();
+      HousePtr house = (*it)->getTerrain().getOverlay().as<House>();
       if( house != NULL && house->getLevelSpec().getHouseLevel() == level4grow )
       {
         if( house->getSize() > 1 )  //bigger house near, can't grow
@@ -188,7 +188,7 @@ void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int start
       delIt++; //don't remove himself
       for( ; delIt != tiles.end(); delIt++ )
       {
-        HousePtr house = (*delIt)->get_terrain().getOverlay().as<House>();
+        HousePtr house = (*delIt)->getTerrain().getOverlay().as<House>();
         if( house.isValid() )
         {
           house->deleteLater();
@@ -532,18 +532,18 @@ int House::collectTaxes()
 
 void House::_update()
 {
-    Uint8 picId = ( _d->houseId == smallHovel && _d->currentHabitants == 0 ) ? 45 : (_d->houseId + _d->picIdOffset); 
+    int picId = ( _d->houseId == smallHovel && _d->currentHabitants == 0 ) ? 45 : (_d->houseId + _d->picIdOffset); 
     setPicture( Picture::load( ResourceGroup::housing, picId ) );
-    _size = (_picture->get_surface()->w+2)/60;
+    _size = (_picture->getWidth() + 2) / 60;
     _d->maxHabitants = _d->houseLevelSpec->getMaxHabitantsByTile() * _size * _size;
 }
 
-Uint8 House::getMaxDistance2Road() const
+int House::getMaxDistance2Road() const
 {
   return 2;
 }
 
-void House::addHabitants( const Uint8 newHabitCount )
+void House::addHabitants( const int newHabitCount )
 {
   _d->currentHabitants = (std::min)( _d->currentHabitants + newHabitCount, _d->maxHabitants );
   _update();

@@ -32,8 +32,8 @@ void NativeBuilding::load( const VariantMap& stream) {Building::load(stream);}
 void NativeBuilding::build( const TilePos& pos )
 {
   Building::build( pos );
-  getTile().get_terrain().setRock( true );
-  getTile().get_terrain().setBuilding( false );
+  getTile().getTerrain().setRock( true );
+  getTile().getTerrain().setBuilding( false );
 }
 
 NativeHut::NativeHut() : NativeBuilding( B_NATIVE_HUT, Size(1) )

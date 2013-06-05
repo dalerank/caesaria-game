@@ -36,6 +36,9 @@
 
 #include "oc3_factoryclay.hpp"
 #include "oc3_factorymarble.hpp"
+#include "oc3_goverment_building.hpp"
+#include "oc3_military_building.hpp"
+#include "oc3_academy.hpp"
 
 #include <map>
 

@@ -161,10 +161,10 @@ ServiceWalker::ReachedBuildings ServiceWalker::getReachedBuildings(const TilePos
   int reachDistance = getReachDistance();
   TilePos start = pos - TilePos( reachDistance, reachDistance );
   TilePos stop = pos + TilePos( reachDistance, reachDistance );
-  std::list<Tile*> reachedTiles = _d->city->getTilemap().getFilledRectangle( start, stop );
-  for (std::list<Tile*>::iterator itTile = reachedTiles.begin(); itTile != reachedTiles.end(); ++itTile)
+  PtrTilesArea reachedTiles = _d->city->getTilemap().getFilledRectangle( start, stop );
+  for( PtrTilesArea::iterator itTile = reachedTiles.begin(); itTile != reachedTiles.end(); ++itTile)
   {
-    TerrainTile& terrain = (*itTile)->get_terrain();
+    TerrainTile& terrain = (*itTile)->getTerrain();
 
     BuildingPtr building = terrain.getOverlay().as<Building>();
     if( building.isValid() )

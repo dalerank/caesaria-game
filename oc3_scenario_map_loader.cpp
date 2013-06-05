@@ -109,9 +109,9 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario& oScenario)
   /* get number of city */
 
   f.seekg(kLocation, std::ios::beg);
-  Uint8 location;
+  unsigned int location;
   f.read((char*)&location, 1);
-  std::cout << "Location of city is " << (int)(location+1) << std::endl;
+  StringHelper::debug( 0xff, "Location of city is %d", (int)(location+1) );
 
   /* 1 - Lugdunum
   2 - Corinthus
@@ -161,7 +161,7 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario& oScenario)
   int size_2;
   f.read((char*)&size,   4);
   f.read((char*)&size_2, 4);
-  std::cout << "map size = " << size << std::endl;
+  StringHelper::debug( 0xff, "Map size is %d", size );
 
   if (size != size_2)
   {
@@ -223,90 +223,92 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario& oScenario)
       Picture& pic = Picture::load( TerrainTileHelper::convId2PicName( pGraphicGrid[index] ) );
       tile.set_picture( &pic );
       
-      tile.get_terrain() = terrain; // what happens here?
-    }
-    
+      tile.getTerrain() = terrain; // what happens here?
+    }    
   }
-
 
   for (int i = 0; i < size; ++i)
   {
     for (int j = 0; j < size; ++j)
     {
       Tile& tile = oTilemap.at(i, j);
-      TerrainTile& terrain = tile.get_terrain();
+      TerrainTile& terrain = tile.getTerrain();
 
       if (terrain.getEdgeData()==0x00)
       {
         int size = 1;
 
-	{
-	  int dj;
-	try
-	{	
-	  // find size, 5 is maximal size for building
-	  for (dj = 0; dj < 5; ++dj)
-	  {
-	    int edge = oTilemap.at(i, j - dj).get_terrain().getEdgeData();
-	    // find bottom left corner
-	    if (edge == 8 * dj + 0x40)
-	    {
-	      size = dj + 1;
-	      break;
-	    }
-	  }
-	}
-	catch(...)
-	{
-	  size = dj + 1;
-	}
-	}
+	      {
+	        int dj;
+	        try
+	        {	
+	          // find size, 5 is maximal size for building
+	          for (dj = 0; dj < 5; ++dj)
+	          {
+	            int edge = oTilemap.at(i, j - dj).getTerrain().getEdgeData();
+	            // find bottom left corner
+	            if (edge == 8 * dj + 0x40)
+	            {
+	              size = dj + 1;
+	              break;
+	            }
+	          }
+	        }
+	        catch(...)
+	        {
+	          size = dj + 1;
+	        }
+	      }
 	
-	std::cout << "multi-tile x" << size << " at " << i << "," << j << std::endl;
+        StringHelper::debug( 0xff, "Multi-tile x %d at (%d,%d)", size, i, j );
 	
-	bool bBad = false;
+	      bool bBad = false;
 	
-	std::cout << "probing ";
+	      //Str << "probing ";
+      	
+	      for (int di = 0; di < size && !bBad; ++di)
+        {
+	        for (int dj = 0; dj < size && !bBad; ++dj)
+	        {
+	          //std::cout << i - di << "," << j - dj << " ";
+	          try
+	          {
+	            int edge = oTilemap.at(i - di, j - dj).getTerrain().getEdgeData();
+	          }
+	          catch(...)
+	          {
+      	      
+	          }
+      //	    if (edge != 8 * dj + di && edge != 8 * dj + 0x40)
+      //	      bBad = true;
+	        }
+        }
 	
-	for (int di = 0; di < size && !bBad; ++di)
-	  for (int dj = 0; dj < size && !bBad; ++dj)
-	  {
-	    std::cout << i - di << "," << j - dj << " ";
-	    try
-	    {
-	      int edge = oTilemap.at(i - di, j - dj).get_terrain().getEdgeData();
-	    }
-	    catch(...)
-	    {
-	      
-	    }
-//	    if (edge != 8 * dj + di && edge != 8 * dj + 0x40)
-//	      bBad = true;
-	  }
+	//std::cout << std::endl;
 	
-	std::cout << std::endl;
-	
-	if (bBad)
-	  THROW ("ERROR in multi-tiles!!!");
-	
-	Tile& master = oTilemap.at(i, j - size + 1);
-	
-	std::cout << "master will be at " << master.getI() << "," << master.getJ() << std::endl;
-	
-	for (int di = 0; di < size; ++di)
-	  for (int dj = 0; dj < size; ++dj)
-	  {
-	      oTilemap.at(master.getI() + di, master.getJ() + dj).set_master_tile(&master);
-	  }
-	
-	std::cout << " decoding " << std::endl;
+	      if (bBad)
+	        THROW ("ERROR in multi-tiles!!!");
+      	
+	      Tile& master = oTilemap.at(i, j - size + 1);
+      	
+        StringHelper::debug( 0xff, "Master will be at (%d,%d)", master.getI(), master.getJ() );
+      	
+	      for (int di = 0; di < size; ++di)
+        {
+	        for (int dj = 0; dj < size; ++dj)
+	        {
+	            oTilemap.at(master.getI() + di, master.getJ() + dj).set_master_tile(&master);
+	        }
+        }
+    	
+        StringHelper::debug( 0xff, " decoding " );
       }
       
       TilePos pos( i, j );
 
       Tile &ttile = oTilemap.at( pos );
 
-      LandOverlayPtr overlay = ttile.get_terrain().getOverlay();
+      LandOverlayPtr overlay = ttile.getTerrain().getOverlay();
 
       // Check if it is building and type of building
       //if (ttile.get_master_tile() == NULL)
@@ -320,7 +322,7 @@ void ScenarioMapLoader::Impl::decodeTerrain(Tile &oTile)
   if (!oTile.is_master_tile() && oTile.get_master_tile()!=NULL)
     return;
   
-  TerrainTile& terrain = oTile.get_terrain();
+  TerrainTile& terrain = oTile.getTerrain();
 
   LandOverlayPtr overlay; // This is the overlay object, if any
 
@@ -343,7 +345,7 @@ void ScenarioMapLoader::Impl::decodeTerrain(Tile &oTile)
       case 0xb10:
       case 0xb0d:
 	      overlay =  ConstructionManager::getInstance().create( B_NATIVE_CENTER ).as<LandOverlay>();
-	      std::cout << "creation of Native center at (" << oTile.getI() << "," << oTile.getJ() << ")" << std::endl;
+        StringHelper::debug( 0xff, "creation of Native center at (%d,%d)", oTile.getI(), oTile.getJ() );
 	      break;
       case 0xb11:
       case 0xb44:
@@ -370,7 +372,7 @@ void ScenarioMapLoader::Impl::initClimate(std::fstream &f, City &ioCity)
   ClimateType climate = (ClimateType) i;
   ioCity.setClimate(climate);
 
-  std::cout << "Climate type is " << climate << std::endl;
+  StringHelper::debug( 0xff, "Climate type is %d", climate );
 
   // reload all pics for the given climate
   //   PicLoader &pic_loader = PicLoader::instance();

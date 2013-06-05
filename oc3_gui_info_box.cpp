@@ -219,8 +219,8 @@ void GuiInfoService::drawWorkers( int paintY )
   std::string text = StringHelper::format( 0xff, _("%d employers (%d requred)"), 
                                             _sd->building->getWorkers(), _sd->building->getMaxWorkers() );
 
-  Font *font = new Font( FONT_2 );
-  font->draw( *_d->bgPicture, text, 16+42, paintY+5 );
+  Font &font = Font( FONT_2 );
+  font.draw( *_d->bgPicture, text, 16+42, paintY+5 );
 }
 
 
@@ -236,7 +236,7 @@ InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
     : GuiInfoBox( parent, Rect( 0, 0, 510, 360 ), -1 ),
       _ed( new Impl )
 {
-  _ed->house = tile.get_terrain().getOverlay().as<House>();
+  _ed->house = tile.getTerrain().getOverlay().as<House>();
   setTitle( _ed->house->getName() );
   _paint();
 }
@@ -297,7 +297,7 @@ void InfoBoxHouse::_paint()
 void InfoBoxHouse::drawHabitants()
 {
    // citizen or patrician picture
-   Uint32 picId = _ed->house->getLevelSpec().isPatrician() ? 541 : 542; 
+   int picId = _ed->house->getLevelSpec().isPatrician() ? 541 : 542; 
    
    Picture& citPic = Picture::load( ResourceGroup::panelBackground, picId );
    _d->bgPicture->draw( citPic, 16+15, 157 );
@@ -343,7 +343,7 @@ GuiInfoFactory::GuiInfoFactory( Widget* parent, Factory &building)
     : GuiInfoBox( parent, Rect( 0, 0, 450, 220 ), -1 )
 {
   _building = &building;
-  setTitle( BuildingDataHolder::instance().getData(building.getType()).getPrettyName() );
+  setTitle( BuildingDataHolder::instance().getData( building.getType() ).getPrettyName() );
   paint();
 }
 
@@ -462,7 +462,7 @@ public:
 GuiInfoGranary::GuiInfoGranary( Widget* parent, const Tile& tile )
     : GuiInfoBox( parent, Rect( 0, 0, 450, 300 ), -1 ), _gd( new Impl )
 {
-   _gd->building = tile.get_terrain().getOverlay().as<Granary>();
+   _gd->building = tile.getTerrain().getOverlay().as<Granary>();
 
    setTitle( BuildingDataHolder::instance().getData( _gd->building->getType()).getPrettyName() );
 
@@ -553,7 +553,7 @@ InfoBoxTemple::InfoBoxTemple( Widget* parent, const Tile& tile )
   : GuiInfoBox( parent, Rect( 0, 0, 510, 256 ), -1 ), _td( new Impl )
 {
   _td->font = Font( FONT_2 );
-  _td->temple = tile.get_terrain().getOverlay().as<Temple>();
+  _td->temple = tile.getTerrain().getOverlay().as<Temple>();
   RomeDivinityPtr divn = _td->temple->getDivinity();
 
   std::string text = StringHelper::format( 0xff, "##Temple of ##%s (%s)", 
@@ -599,7 +599,7 @@ public:
 GuiInfoMarket::GuiInfoMarket( Widget* parent, const Tile& tile )
     : GuiInfoBox( parent, Rect( 0, 0, 510, 256 ), -1 ), _md( new Impl )
 {
-   _md->market = tile.get_terrain().getOverlay().as<Market>();
+   _md->market = tile.getTerrain().getOverlay().as<Market>();
    _md->goodFont = Font( FONT_2 );
    _md->lbAbout = new Label( this, _d->lbTitle->getRelativeRect() + Point( 0, 30 ) );
 
@@ -685,7 +685,7 @@ public:
 GuiBuilding::GuiBuilding( Widget* parent, const Tile& tile )
     : GuiInfoBox( parent, Rect( 0, 0, 450, 220 ), -1 ), _bd( new Impl )
 {
-  _bd->building = tile.get_terrain().getOverlay().as<Building>();
+  _bd->building = tile.getTerrain().getOverlay().as<Building>();
   setTitle( BuildingDataHolder::instance().getData( _bd->building->getType()).getPrettyName() );
 
   paint();
@@ -704,22 +704,22 @@ InfoBoxLand::InfoBoxLand( Widget* parent, const Tile& tile )
   _text = new Label( this, Rect( 38, 239, 470, 338 ), "", true );
   _text->setFont( Font( FONT_2 ) );
 
-  if( tile.get_terrain().isTree() )
+  if( tile.getTerrain().isTree() )
   {
     setTitle( _("##trees_and_forest_caption") );
     _text->setText( _("##trees_and_forest_text"));
   } 
-  else if( tile.get_terrain().isWater() )
+  else if( tile.getTerrain().isWater() )
   {
     setTitle( _("##water_caption") );
     _text->setText( _("##water_text"));
   }
-  else if( tile.get_terrain().isRock() )
+  else if( tile.getTerrain().isRock() )
   {
     setTitle( _("##rock_caption") );
     _text->setText( _("##rock_text"));
   }
-  else if( tile.get_terrain().isRoad() )
+  else if( tile.getTerrain().isRoad() )
   {
     setTitle( _("##road_caption") );
     _text->setText( _("##road_text"));
@@ -737,7 +737,7 @@ InfoBoxLand::InfoBoxLand( Widget* parent, const Tile& tile )
   
   int index = (size - tile.getJ() - 1 + border_size) * 162 + tile.getI() + border_size;
   
-  const TerrainTile& terrain = tile.get_terrain();
+  const TerrainTile& terrain = tile.getTerrain();
 
   std::string text = StringHelper::format( 0xff, "Tile at: (%d,%d) %04X %02X %04X %02X %02X %02X",
                                            tile.getI(), tile.getJ(),  
@@ -795,7 +795,7 @@ void InfoBoxFarm::Impl::updateAboutText()
 InfoBoxFarm::InfoBoxFarm( Widget* parent, const Tile& tile )
 : GuiInfoBox( parent, Rect( 0, 0, 510, 350 ), -1 ), _fd( new Impl )
 {
-  _fd->farm = tile.get_terrain().getOverlay().as<Farm>();
+  _fd->farm = tile.getTerrain().getOverlay().as<Farm>();
   
   setTitle( BuildingDataHolder::instance().getData( _fd->farm->getType() ).getPrettyName() );
   GuiPaneling::instance().draw_black_frame( *_d->bgPicture, 16, 146, getWidth() - 32, 64 );

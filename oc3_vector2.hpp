@@ -118,17 +118,17 @@ public:
 		return x*other.x + y*other.y;
 	}
 
-    template< class A >
-    Vector2<A> As()
-    {
-        return Vector2<A>( (A)x, (A)y );
-    }
+  template< class A >
+  Vector2<A> As()
+  {
+      return Vector2<A>( (A)x, (A)y );
+  }
 
-    template< class A >
-    Vector2<A> As() const
-    {
-        return Vector2<A>( (A)x, (A)y );
-    }
+  template< class A >
+  Vector2<A> As() const
+  {
+      return Vector2<A>( (A)x, (A)y );
+  }
 
 	//! Gets distance from another point.
 	/** Here, the vector is interpreted as a point in 2-dimensional space.

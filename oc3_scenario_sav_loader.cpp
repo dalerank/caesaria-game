@@ -194,7 +194,7 @@ bool ScenarioSavLoader::load( const std::string& filename, Scenario &oScenario )
       Picture& pic = Picture::load( TerrainTileHelper::convId2PicName( pGraphicGrid[index] ) );
       tile.set_picture( &pic );
       
-      tile.get_terrain() = terrain; // what happens here?
+      tile.getTerrain() = terrain; // what happens here?
     }
     
   }    

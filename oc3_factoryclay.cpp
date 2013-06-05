@@ -57,7 +57,7 @@ bool FactoryClay::canBuild(const TilePos& pos ) const
   PtrTilesList rect = tilemap.getRectangle( pos + TilePos( -1, -1), Size( _size + 2 ), Tilemap::checkCorners );
   for( PtrTilesList::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles )
   {
-    near_water |= (*itTiles)->get_terrain().isWater();
+    near_water |= (*itTiles)->getTerrain().isWater();
   }
 
   return (is_constructible && near_water);

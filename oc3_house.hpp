@@ -57,10 +57,10 @@ public:
 
    int getNbHabitants();
    int getMaxHabitants();
-   void addHabitants( const Uint8 newHabitCount );
+   void addHabitants( const int newHabitCount );
    int collectTaxes();  // compute the tax level for this house, called once per month
 
-   Uint8 getMaxDistance2Road() const; 
+   int getMaxDistance2Road() const; 
 
    bool isWalkable() const;
 

@@ -26,7 +26,7 @@ public:
   static TopMenu* create( Widget* parent, const int height );
 
   // draw on screen
-  virtual void draw( GfxEngine& engine );
+  void draw( GfxEngine& engine );
   //bool onEvent(const NEvent& event);
 
   void setFunds( int value );

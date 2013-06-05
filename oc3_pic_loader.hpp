@@ -16,13 +16,12 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#ifndef PIC_LOADER_HPP
-#define PIC_LOADER_HPP
+#ifndef __OPENCAESAR3_PICLOADER_H_INCLUDED__
+#define __OPENCAESAR3_PICLOADER_H_INCLUDED__
 
 #include <string>
 #include <map>
 #include <vector>
-#include <memory>
 
 #include "oc3_picture.hpp"
 #include "oc3_gfx_engine.hpp"
@@ -38,7 +37,7 @@ public:
   static PicMetaData& instance();
   ~PicMetaData();
 
-  Point get_data(const std::string &resource_name);   // image name ("Govt_00005")
+  Point get(const std::string &resource_name);   // image name ("Govt_00005")
 
 private:
   PicMetaData();
@@ -55,43 +54,36 @@ public:
   static PicLoader& instance();
 
   // set the current picture
-  void set_picture(const std::string &name, SDL_Surface &surface);
+  void setPicture(const std::string &name, SDL_Surface &surface);
 
   // show resource
-  Picture& get_picture(const std::string &name);
+  Picture& getPicture(const std::string &name);
 
   // show resource
-  Picture& get_picture(const std::string &prefix, const int idx);
+  Picture& getPicture(const std::string &prefix, const int idx);
 
   // returns the picture of the given good type
-  Picture& get_picture_good(const GoodType goodType);
+  Picture& getPicture(const GoodType goodType);
 
   // show all resources
-  std::list<Picture*> get_pictures();
+  PicturesArray getPictures();
 
   // loads all resources during load
-  void load_wait();
+  void loadWaitPics();
   // loads all resources
-  void load_all();
+  void loadAllPics();
 
   // create runtime resources
   void createResources();
 
   // loads all resources of the given archive file
-  void load_archive(const std::string &filename);
-
-  // used for game save. land1a_00004.png returns 244+4=248
-  //int get_pic_id_by_name(std::string &pic_name);
-
-  // used for game load. 248 => land1a_00004.png
-  //Picture& get_pic_by_id(const int imgId);
-
+  void loadArchive(const std::string &filename);
 
 private:
   PicLoader();
   static PicLoader* _instance;
 
-  Picture make_picture(SDL_Surface *surface, const std::string& resource_name) const;
+  Picture makePicture(SDL_Surface *surface, const std::string& resource_name) const;
 
   std::map<std::string, Picture> _resources;  // key=image name, value=picture
 };
@@ -149,9 +141,9 @@ public:
 
 private:
   CartLoader();
-  static CartLoader* _instance;
 
-  std::vector<std::vector<Picture*> > _carts; // pictures[GoodType][Direction]
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
-#endif
+#endif //__OPENCAESAR3_PICLOADER_H_INCLUDED__

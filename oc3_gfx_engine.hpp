@@ -19,10 +19,10 @@
 #ifndef GFX_ENGINE_HPP
 #define GFX_ENGINE_HPP
 
-#include <list>
-
 #include "oc3_picture.hpp"
 #include "oc3_size.hpp"
+
+struct NEvent;
 
 class GfxEngine
 {
@@ -33,7 +33,10 @@ public:
   virtual ~GfxEngine();
   virtual void init() = 0;
   virtual void exit() = 0;
+  virtual void delay( const unsigned int msec ) = 0;
+  virtual bool haveEvent( NEvent& event ) = 0;
 
+  
   void setScreenSize(const int width, const int height);
   Size getScreenSize() const;
   int getScreenWidth() const;
@@ -41,9 +44,9 @@ public:
 
   virtual void setFlag( int flag, int value );
 
-  virtual void loadPictures(const std::list<Picture*> &ioPictures);
-  virtual void loadPicture(Picture& ioPicture) = 0;
-  virtual void unloadPicture(Picture& ioPicture) = 0;
+  virtual void loadPictures( const PicturesArray& ioPictures);
+  virtual void loadPicture( Picture& ioPicture) = 0;
+  virtual void unloadPicture( Picture& ioPicture) = 0;
 
   virtual void startRenderFrame() = 0;  // start a new frame
   virtual void endRenderFrame() = 0;  // display the frame

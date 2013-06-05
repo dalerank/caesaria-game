@@ -19,39 +19,36 @@
 #ifndef PICTURE_HPP
 #define PICTURE_HPP
 
-#include <SDL.h>
-#include <SDL_image.h>
-#include <SDL_opengl.h>
 #include <vector>
-#include <map>
-#include <list>
 #include <string>
 #include "oc3_alignment.hpp"
 #include "oc3_size.hpp"
+#include "oc3_scopedptr.hpp"
 
 class Point;
 class Rect;
+struct SDL_Surface;
 
 // an image with offset, this is the basic rendered object
 class Picture
 {
-   friend class GfxSdlEngine;
-   friend class GfxGlEngine;
-
 public:
    Picture();
+   ~Picture();
 
-   void init(SDL_Surface* surface, const int xoffset, const int yoffset);
-   void set_offset(const int xoffset, const int yoffset);
-   void set_offset( const Point& xoffset );
-   void add_offset(const int dx, const int dy);
-   void set_name(std::string &name);  // for save game
-   std::string get_name();
+   Picture( const Picture& other );
+   Picture& operator=(const Picture& other);
+   
+   void init(SDL_Surface* surface, const Point& offset );
 
+   void setOffset(const int xoffset, const int yoffset);
+   void setOffset( const Point& xoffset );
+   void addOffset(const int dx, const int dy);
+   void setName(std::string &name);  // for save game
+   std::string getName();
    Picture& copy() const;
-   SDL_Surface *get_surface() const;
-   int get_xoffset() const;
-   int get_yoffset() const;
+   SDL_Surface *getSurface() const;
+   Point getOffset() const;
    int getWidth() const;
    int getHeight() const;
 
@@ -63,31 +60,24 @@ public:
    void unlock();
 
    // Uint32 is the pixel color in the surface format. The surface must be locked!!!
-   Uint32 get_pixel( const int x, const int y);
-   void set_pixel(const int x, const int y, const Uint32 color);
+   int getPixel( const Point& pos );
+   void setPixel(const Point& pos, const int color);
 
    Size getSize() const;
 
    bool isValid() const;
 
-   static Picture& load( const char* group, const int id );
+   void reset();
+
+   static Picture& load( const std::string& group, const int id );
    static Picture& load( const std::string& filename ); 
 
+   unsigned int& getGlTextureID() const;
 private:
-   // the image is shifted when displayed
-   int _xoffset;
-   int _yoffset;
-   int _width;
-   int _height;
-
-   // for game save
-   std::string _name;
-
-   // for SDL surface
-   SDL_Surface *_surface;
-
-   // for OPEN_GL surface
-   GLuint _glTextureID;  // texture ID for openGL
+   class Impl;
+   ScopedPtr< Impl > _d;
 };
+
+typedef std::vector<Picture*> PicturesArray;
 
 #endif
