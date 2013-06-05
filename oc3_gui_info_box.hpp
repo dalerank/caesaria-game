@@ -59,6 +59,19 @@ protected:
     ScopedPtr< Impl > _d;
 };
 
+// Simple info box with static text on plain background
+class InfoBoxBasic : public GuiInfoBox
+{
+public:
+  InfoBoxBasic( Widget* parent, const Tile& tile );
+
+  void setText( const std::string& text );
+
+private:
+  class Impl;
+  ScopedPtr< Impl > _bd;
+};
+
 
 class InfoBoxFarm : public GuiInfoBox
 {
@@ -127,7 +140,7 @@ public:
   void paint();
 
   void drawWorkers( int );
-  void drawGood(const GoodType &goodType, int&);
+  void drawGood(const GoodType &goodType, int, int&);
 
 private:
 

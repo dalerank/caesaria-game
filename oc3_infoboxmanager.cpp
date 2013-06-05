@@ -25,6 +25,7 @@
 #include "oc3_buildingengineer.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_house.hpp"
+#include "oc3_gettext.hpp"
 
 class InfoBoxHouseCreator : public InfoboxCreator
 {
@@ -71,6 +72,31 @@ public:
   bool isDrawWorkers;
 };
 
+class InfoBoxBasicCreator : public InfoboxCreator
+{
+public:
+  InfoBoxBasicCreator( const std::string& caption,
+                       const std::string& desc )
+  {
+    title = caption;
+    text = desc;
+  }
+
+  GuiInfoBox* create( Widget* parent, const Tile& tile )
+  {
+    Size  size = parent->getSize();
+    InfoBoxBasic* infoBox = new InfoBoxBasic( parent, tile );
+    infoBox->setPosition( Point( (size.getWidth() - infoBox->getWidth()) / 2, 
+                                  size.getHeight() - infoBox->getHeight()) );
+
+    infoBox->setTitle( title );
+    infoBox->setText( text );
+    return infoBox;
+  }
+
+  std::string title, text;
+};
+
 class InfoBoxManager::Impl
 {
 public:
@@ -103,7 +129,16 @@ InfoBoxManager::InfoBoxManager() : _d( new Impl )
   addCreator( B_GRANARY, OC3_STR_EXT(B_GRANARY), new BaseInfoboxCreator<GuiInfoGranary>() );
   addCreator( B_GRAPE, OC3_STR_EXT(B_GRAPE), new BaseInfoboxCreator<InfoBoxFarm>() );
   addCreator( B_WHEAT, OC3_STR_EXT(B_WHEAT), new BaseInfoboxCreator<InfoBoxFarm>() );
+  addCreator( B_OLIVE, OC3_STR_EXT(B_OLIVE), new BaseInfoboxCreator<InfoBoxFarm>() );
+  addCreator( B_FRUIT, OC3_STR_EXT(B_FRUIT), new BaseInfoboxCreator<InfoBoxFarm>() );
+  addCreator( B_MEAT, OC3_STR_EXT(B_MEAT), new BaseInfoboxCreator<InfoBoxFarm>() );
+  addCreator( B_VEGETABLE, OC3_STR_EXT(B_VEGETABLE), new BaseInfoboxCreator<InfoBoxFarm>() );
   addCreator( B_TEMPLE_CERES, OC3_STR_EXT(B_TEMPLE_CERES), new BaseInfoboxCreator<InfoBoxTemple>() );
+  addCreator( B_GARDEN, OC3_STR_EXT(B_GARDEN), new InfoBoxBasicCreator( _("building_garden"), _("##garden_desc##")) );
+  addCreator( B_STATUE1, OC3_STR_EXT(B_STATUE1), new InfoBoxBasicCreator( _("building_statue_small"), _("##statue_desc##")) );
+  addCreator( B_STATUE2, OC3_STR_EXT(B_STATUE2), new InfoBoxBasicCreator( _("building_statue_middle"), _("##statue_desc##")) );
+  addCreator( B_STATUE3, OC3_STR_EXT(B_STATUE3), new InfoBoxBasicCreator( _("building_statue_big"), _("##statue_desc##")) );
+  addCreator( B_PLAZA, OC3_STR_EXT(B_PLAZA), new BaseInfoboxCreator<InfoBoxLand>() );
   addCreator( B_NONE, OC3_STR_EXT(B_NONE), new BaseInfoboxCreator<InfoBoxLand>() );
 }
 

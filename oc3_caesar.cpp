@@ -67,7 +67,7 @@ void CaesarApp::Impl::initLocale()
   // init the internationalization library (gettext)
   setlocale(LC_ALL, "");
   bindtextdomain( "caesar", "." );
-  textdomain("caesar");
+  textdomain( "caesar" );
 }
 
 void CaesarApp::initVideo()

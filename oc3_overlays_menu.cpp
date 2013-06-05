@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "oc3_gettext.hpp"
 #include "oc3_overlays_menu.hpp"
 #include "oc3_pushbutton.hpp"
 #include "oc3_event.hpp"
@@ -47,51 +48,51 @@ void OverlaysMenu::_addButtons( const OverlayType type )
   switch( type )
   {
   case OV_COUNT:
-    _addButton( OV_NOTHING, "##ovrm_nothing##", startPos );
-    _addButton( OV_WATER, "##ovrm_water##", startPos+=offset );
-    _addButton( OV_RISK, "##ovrm_risk##", startPos+=offset );
-    _addButton( OV_ENTERTAINMENT, "##ovrm_entertainment##", startPos+=offset );
-    _addButton( OV_EDUCATION, "##ovrm_education##", startPos+=offset );
-    _addButton( OV_HEALTH, "##ovrm_health##", startPos+=offset );
-    _addButton( OV_COMMERCE, "##ovrm_commerce##", startPos+=offset );
-    _addButton( OV_RELIGION, "##ovrm_religion##", startPos+=offset );
+    _addButton( OV_NOTHING, _("##ovrm_nothing##"), startPos );
+    _addButton( OV_WATER, _("##ovrm_water##"), startPos+=offset );
+    _addButton( OV_RISK, _("##ovrm_risk##"), startPos+=offset );
+    _addButton( OV_ENTERTAINMENT, _("##ovrm_entertainment##"), startPos+=offset );
+    _addButton( OV_EDUCATION, _("##ovrm_education##"), startPos+=offset );
+    _addButton( OV_HEALTH, _("##ovrm_health##"), startPos+=offset );
+    _addButton( OV_COMMERCE, _("##ovrm_commerce##"), startPos+=offset );
+    _addButton( OV_RELIGION, _("##ovrm_religion##"), startPos+=offset );
     setHeight( 8 * offset.getY() );
     break;
 
   case OV_RISK:
-    _addButton( OV_RISK_FIRE, "##ovrm_fire##", startPos );
-    _addButton( OV_RISK_DAMAGE, "##ovrm_damage##", startPos+=offset );
-    _addButton( OV_RISK_CRIME, "##ovrm_crime##", startPos+=offset );
-    _addButton( OV_RISK_ABORIGEN, "##ovrm_aborigen##", startPos+=offset );
-    _addButton( OV_RISK_TROUBLES, "##ovrm_troubles##", startPos+=offset );
+    _addButton( OV_RISK_FIRE, _("##ovrm_fire##"), startPos );
+    _addButton( OV_RISK_DAMAGE, _("##ovrm_damage##"), startPos+=offset );
+    _addButton( OV_RISK_CRIME, _("##ovrm_crime##"), startPos+=offset );
+    _addButton( OV_RISK_ABORIGEN, _("##ovrm_aborigen##"), startPos+=offset );
+    _addButton( OV_RISK_TROUBLES, _("##ovrm_troubles##"), startPos+=offset );
     break;
 
   case OV_ENTERTAINMENT:
-    _addButton( OV_ENTERTAINMENT_ALL, "##ovrm_entr_all##", startPos );
-    _addButton( OV_ENTERTAINMENT_THEATRES, "##ovrm_theatres##", startPos+=offset );
-    _addButton( OV_ENTERTAINMENT_AMPHITHEATRES, "##ovrm_amtheatres##", startPos+=offset );
-    _addButton( OV_ENTERTAINMENT_COLLISEUM, "##ovrm_colliseum##", startPos+=offset );
-    _addButton( OV_ENTERTAINMENT_HIPPODROME, "##ovrm_hpdrome##", startPos+=offset );
+    _addButton( OV_ENTERTAINMENT_ALL, _("##ovrm_entr_all##"), startPos );
+    _addButton( OV_ENTERTAINMENT_THEATRES, _("##ovrm_theatres##"), startPos+=offset );
+    _addButton( OV_ENTERTAINMENT_AMPHITHEATRES, _("##ovrm_amtheatres##"), startPos+=offset );
+    _addButton( OV_ENTERTAINMENT_COLLISEUM, _("##ovrm_colliseum##"), startPos+=offset );
+    _addButton( OV_ENTERTAINMENT_HIPPODROME, _("##ovrm_hpdrome##"), startPos+=offset );
     break;
 
   case OV_EDUCATION:
-    _addButton( OV_EDUCATION_ALL, "##ovrm_edct_all##", startPos );
-    _addButton( OV_EDUCATION_SCHOOL, "##ovrm_school##", startPos+=offset );
-    _addButton( OV_EDUCATION_LIBRARY, "##ovrm_library##", startPos+=offset );
-    _addButton( OV_EDUCATION_ACADEMY, "##ovrm_academy##", startPos+=offset );
+    _addButton( OV_EDUCATION_ALL, _("##ovrm_edct_all##"), startPos );
+    _addButton( OV_EDUCATION_SCHOOL, _("##ovrm_school##"), startPos+=offset );
+    _addButton( OV_EDUCATION_LIBRARY, _("##ovrm_library##"), startPos+=offset );
+    _addButton( OV_EDUCATION_ACADEMY, _("##ovrm_academy##"), startPos+=offset );
     break;
 
   case OV_HEALTH:
-    _addButton( OV_HEALTH_BARBER, "##ovrm_barber##", startPos );
-    _addButton( OV_HEALTH_BATH, "##ovrm_bath##", startPos+=offset );
-    _addButton( OV_HEALTH_CLINIC, "##ovrm_clinic##", startPos+=offset );
-    _addButton( OV_HEALTH_HOSPITAL, "##ovrm_hospital##", startPos+=offset );
+    _addButton( OV_HEALTH_BARBER, _("##ovrm_barber##"), startPos );
+    _addButton( OV_HEALTH_BATH, _("##ovrm_bath##"), startPos+=offset );
+    _addButton( OV_HEALTH_CLINIC, _("##ovrm_clinic##"), startPos+=offset );
+    _addButton( OV_HEALTH_HOSPITAL, _("##ovrm_hospital##"), startPos+=offset );
     break;
 
   case OV_COMMERCE:
-    _addButton( OV_COMMERCE_TAX, "##ovrm_tax##", startPos );
-    _addButton( OV_COMMERCE_FOOD, "##ovrm_food##", startPos+=offset );
-    _addButton( OV_COMMERCE_PRESTIGE, "##ovrm_prestige##", startPos+=offset );
+    _addButton( OV_COMMERCE_TAX, _("##ovrm_tax##"), startPos );
+    _addButton( OV_COMMERCE_FOOD, _("##ovrm_food##"), startPos+=offset );
+    _addButton( OV_COMMERCE_PRESTIGE, _("##ovrm_prestige##"), startPos+=offset );
     break;
   }  
 }

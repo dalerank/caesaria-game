@@ -16,6 +16,7 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
+#include "oc3_gettext.hpp"
 #include "oc3_screen_menu.hpp"
 
 #include "oc3_loadmapwindow.hpp"
@@ -121,16 +122,16 @@ void ScreenMenu::initialize( GfxEngine& engine, GuiEnv& gui )
   _d->engine = &engine;
   _d->menu = new StartMenu( gui.getRootWidget() );
 
-  PushButton* btn = _d->menu->addButton( "New game", -1 );
+  PushButton* btn = _d->menu->addButton( _("##mainmenu_newgame##"), -1 );
   CONNECT( btn, onClicked(), _d.data(), Impl::resolveNewGame );
 
-  btn = _d->menu->addButton( "Load game", -1 );
+  btn = _d->menu->addButton( _("##mainmenu_loadgame##"), -1 );
   CONNECT( btn, onClicked(), _d.data(), Impl::resolveShowLoadGameWnd );
 
-  btn = _d->menu->addButton( "##Load map##", -1 );
+  btn = _d->menu->addButton( _("##mainmenu_loadmap##"), -1 );
   CONNECT( btn, onClicked(), _d.data(), Impl::resolveShowLoadMapWnd );
 
-  btn = _d->menu->addButton( "Quit", -1 );
+  btn = _d->menu->addButton( _("##mainmenu_quit##"), -1 );
   CONNECT( btn, onClicked(), _d.data(), Impl::resolveQuitGame );
 }
 

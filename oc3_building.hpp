@@ -107,6 +107,8 @@ public:
   Garden();
   void setTerrain(TerrainTile &terrain);  
   bool isWalkable() const;
+  bool isNeedRoadAccess() const;
+  void build( const TilePos& pos );
 };
 
 class ServiceWalker;
