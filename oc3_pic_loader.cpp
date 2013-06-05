@@ -607,7 +607,7 @@ CartLoader& CartLoader::instance()
   return inst;
 }
 
-CartLoader::CartLoader()
+CartLoader::CartLoader() : _d( new Impl )
 {
    loadAll();
 }
