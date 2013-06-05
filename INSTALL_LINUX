@@ -7,61 +7,150 @@
 //
 // openCaesar3 is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with openCaesar3. If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2013 Rovanion Luckey, rovanion.luckey@gmail.com
 
 
-                     Installation of openCaesar3 on Linux
+               Installation of openCaesar3 on Linux
+=======================================================================
+
+Open up a terminal and follow the instructions below. Terminal
+commands are denoted with a "$", this character should not be included
+with the commands. Depending on which distribution and version you are
+running the instructions will differ. To find out what you are
+running, run: 
+$ cat /etc/*-release
+If your distribution is not listed in these instructions, feel free
+to add instructions for it.
 
 
-The opencaesar3 software uses the original (c) Caesar3 art for graphics, sounds and animations.
-For copyright reasons, I do not upload Caesar3 material.
-Therefore you need to install Caesar3 to install opencaesar3.
+1 Install dependencies
+======================
 
-1. Extract the picture files
+1.a Ubuntu and Debian:
 
-1.a Install Caesar3
+1.a.1 Base dependencies
+$ sudo apt-get install build-essential g++ libarchive-dev zlib1g-dev \
+libsdl1.2-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev \
+qt4-dev-tools ctags libqxt-dev git cmake p7zip-full wget
 
-* You only need the Caesar3 CD.
-insert your CaesarCD (mounted in /media/CAESAR3 for example)
-cd ~
-mkdir caesar3_orig
-cd caesar3_orig
-unshield x /media/CAESAR3/data1.CAB
+1.a.2 Installing Boost: Ubuntu 12.04 and older: 
+You have to build boost from source, follow this guide:
+http://blog.jedf.com/2012/06/installing-boost-libraries-150-on.html
 
-=> this will extract all files from the data1.CAB archive to your local directory
-=> you need to install the "unshield" package if you don't have it already.
+Ubuntu 12.10: 
+$ sudo apt-get install libboost1.50-all-dev
 
+Ubuntu 13.04: 
+$ sudo apt-get install libboost1.53-all-dev
 
-1.b Install dependencies
+Ubuntu 13.10 and newer: 
+$ sudo apt-get install libboost-all-dev
 
-sudo apt-get install build-essential g++ libarchive-dev zlib1g-dev zlib1g unshield libsdl1.2* libsdl-image1.2* libsdl-mixer1.2* libboost1.50* libsdl-ttf2.0* qt4-dev-tools ctags
+Debian 7: 
+You will have to build boost 1.50 or newer from source.
 
-
-1.c Install and launch SGReader
-
-* Download the SGReader tool "sgreader-src.tar.gz"
-cd ~
-tar xvzf sgreader-src.tar.gz
-cd sgreader-src
-qmake
-make
-
-=> this extracts and compiles the source code.
+Debian 8, testing and sid: 
+$ sudo apt-get install libboost1.53-all-dev
 
 
-1.d Run the SGReader tool
+1.b Fedora:
 
-cd ~/sgreader-src
-./sgreader
-in File/Batch_Extract...
+1.b.1 Base dependencies
+$ sudo yum install make automake gcc gcc-c++ libarchive-devel \
+zlib-devel SDL-devel SDL_image-devel SDL_mixer-devel SDL_ttf-devel \
+qt-devel ctags cmake git p7zip wget libpng12-devel
+
+1.b.2 Installing Boost
+Fedora 17 and older:
+You will have to build boost 1.50 or newer from source.
+
+Fedora 18 and later:
+$ sudo yum install boost-devel
+
+
+1.c openSUSE 12.3
+
+$ sudo zypper install libarchive-devel libSDL-devel libSDL_ttf-devel \
+libSDL_image-devel libSDL_mixer-devel git cmake gcc-c++ libjpeg-devel \
+libpng-devel boost-devel
+
+
+2 Building the game
+===================
+
+2.1 For those who locally compiled boost.
+
+If you compiled boost you should add the fallowing to your ~/.bashrc:
+   export BOOST_ROOT=/path/to/boost 
+If you followed the guide for Ubuntu 12.04 the path is /home/<username>/usr .
+Then restart your terminal to make the setting take effect or run 
+$ bash
+
+2.2 Actually compiling the game.
+
+First move your terminal to where you want openCaesar 3 to be installed, e.g: 
+$ mkdir games && cd games
+We will then download the source code from github and compile it:
+$ git clone git://github.com/gecube/opencaesar3.git
+$ cd opencaesar3
+$ cmake ./
+$ make
+
+
+3 Installing resources
+======================
+
+These resources are images, videos and sound needed to run the
+game. The fallowing commands will download an archive and extract the
+needed files into the resources folder: 
+$ wget http://opencaesar3.org/files/resources.7z 
+$ 7za x resources.7z
+$ rm resources.7z
+
+
+4 Running the game
+==================
+
+In order to start the game, simply execute the caesar3 binary now
+located in your opencaesar3 folder:
+$ ./caesar3
+
+
+
+
+5 Appendix: SGReader and extracting resources
+=============================================
+
+SGReader is a tool developed to read and extract resources from the
+installed Caesar 3 resource files. If you want to extract your own
+resources or just explore the resources, compiling and usage will be
+outlined in this chapter. Note though that openCaesar 3 requires more
+resources than those just on the original Caesar 3 CD.
+
+
+5.1 Compiling SGReader
+
+Go to the sgreader folder in the folder where you installed openCaesar3,
+in this guide it was ~/games/openceasar3/ :
+$ cd ~/games/opencaesar3/cgreader
+Then compile the code and launch SGReader:
+$ cmake ./
+$ make
+$ ./sgreader
+
+
+5.2 Extracting resources from Caesar 3 install
+
+Once SGReader has started select File -> Batch Extract. 
 Select the input folder:
-  Select the directory where you installed Caesar3 (eg: ~/caesar3)
+  Select the directory where you installed Caesar3 (eg: ~/caesar3_orig)
 Choose files to extract:
   Select C3.sg2, C3_North.sg2 and C3_south.sg2
 Set the output folder:
@@ -70,22 +159,11 @@ Run the extraction...
 Images extracted:
   you should get approx 26314 extracted images, and 124 skipped images.
 
+In order to move these files into the resource folder run the
+fallowing install script:
+$ cd ..
+$ ./install --pic-dir ~/caesar3_extract --data-dir ~/caesar3_orig
 
-2. Install opencaesar3
 
-2.a Download opencaesar3 archive, for example: caesar_2012_05_21.20_55_51.tgz
-
-cd ~
-tar xvzf caesar_2012_05_21.20_55_51.tgz
-cd opencaesar3
-make
-
-2.b Install
-
-./install.sh --pic-dir ~/caesar3_extract --data-dir ~/caesar3_orig
-ln -s /usr/share/fonts/truetype/freefont/FreeSerif.ttf .
-
-2.c Run!
-
-./run.sh
-
+Though note as mentioned above that openCaesar 3 requires more
+resources than those just on the original Caesar 3 CD.
