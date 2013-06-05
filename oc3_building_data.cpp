@@ -228,7 +228,7 @@ void BuildingDataHolder::addData(const BuildingData &data)
 
   if (hasData(buildingType))
   {
-    StringHelper::debug( 0xff, "Building is already set %s", data.getName() );
+    StringHelper::debug( 0xff, "Building is already set %s", data.getName().c_str() );
     return;
   }
 

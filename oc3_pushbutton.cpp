@@ -13,6 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
+#include <iostream>
+#include <memory>
 
 #include "oc3_pushbutton.hpp"
 #include "oc3_event.hpp"
@@ -20,7 +22,7 @@
 #include "oc3_guienv.hpp"
 #include "oc3_gui_paneling.hpp"
 #include "oc3_gfx_engine.hpp"
-#include <iostream>
+
 
 struct ButtonState
 {

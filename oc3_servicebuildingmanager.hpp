@@ -23,7 +23,7 @@ class ServiceBuilding;
 class ServiceBuildingManager
 {
 public:
-    static ServiceBuilding* getBuilding( ServiceType type );
+  static ServiceBuilding* getBuilding( ServiceType type );
 };
 
 #endif

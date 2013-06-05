@@ -15,6 +15,8 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
+#include <cstdio>
+
 #include "oc3_gui_info_box.hpp"
 
 #include "oc3_tile.hpp"
@@ -219,8 +221,8 @@ void GuiInfoService::drawWorkers( int paintY )
   std::string text = StringHelper::format( 0xff, _("%d employers (%d requred)"), 
                                             _sd->building->getWorkers(), _sd->building->getMaxWorkers() );
 
-  Font &font = Font( FONT_2 );
-  font.draw( *_d->bgPicture, text, 16+42, paintY+5 );
+  Font *font = new Font( FONT_2 );
+  font->draw( *_d->bgPicture, text, 16 + 42, paintY + 5 );
 }
 
 
@@ -296,34 +298,34 @@ void InfoBoxHouse::_paint()
 
 void InfoBoxHouse::drawHabitants()
 {
-   // citizen or patrician picture
-   int picId = _ed->house->getLevelSpec().isPatrician() ? 541 : 542; 
+  // citizen or patrician picture
+  int picId = _ed->house->getLevelSpec().isPatrician() ? 541 : 542; 
    
-   Picture& citPic = Picture::load( ResourceGroup::panelBackground, picId );
-   _d->bgPicture->draw( citPic, 16+15, 157 );
+  Picture& citPic = Picture::load( ResourceGroup::panelBackground, picId );
+  _d->bgPicture->draw( citPic, 16+15, 157 );
 
-   // number of habitants
-   _ed->lbHabitants = new Label( this, Rect( 60, 157, getWidth() - 16, 157 + citPic.getHeight() ), "", false, true );
-   char buffer[200];
-   int freeRoom = _ed->house->getMaxHabitants() - _ed->house->getNbHabitants();
-   if( freeRoom > 0 )
-   {
-      // there is some room for new habitants!
-      sprintf(buffer, _("%d citizens, additional rooms for %d"), _ed->house->getNbHabitants(), freeRoom);
-   }
-   else if (freeRoom == 0)
-   {
-      // full house!
-      sprintf(buffer, _("%d citizens"), _ed->house->getNbHabitants());
-   }
-   else if (freeRoom < 0)
-   {
-      // too many habitants!
-      sprintf(buffer, _("%d citizens, %d habitants en trop"), _ed->house->getNbHabitants(), -freeRoom);
-      _ed->lbHabitants->setFont( Font( FONT_2_RED ) );
-   }
+  // number of habitants
+  _ed->lbHabitants = new Label( this, Rect( 60, 157, getWidth() - 16, 157 + citPic.getHeight() ), "", false, true );
+  char buffer[200];
+  int freeRoom = _ed->house->getMaxHabitants() - _ed->house->getNbHabitants();
+  if( freeRoom > 0 )
+  {
+    // there is some room for new habitants!
+    sprintf(buffer, _("%d citizens, additional rooms for %d"), _ed->house->getNbHabitants(), freeRoom);
+  }
+  else if (freeRoom == 0)
+  {
+    // full house!
+    sprintf(buffer, _("%d citizens"), _ed->house->getNbHabitants());
+  }
+  else if (freeRoom < 0)
+  {
+    // too many habitants!
+    sprintf(buffer, _("%d citizens, %d habitants en trop"), _ed->house->getNbHabitants(), -freeRoom);
+    _ed->lbHabitants->setFont( Font( FONT_2_RED ) );
+  }
 
-   _ed->lbHabitants->setText( buffer );
+  _ed->lbHabitants->setText( buffer );
 }
 
 void InfoBoxHouse::drawGood(const GoodType &goodType, const int col, const int row, const int startY )

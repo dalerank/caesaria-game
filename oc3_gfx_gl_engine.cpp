@@ -92,10 +92,10 @@ void GfxGlEngine::unloadPicture(Picture &ioPicture)
 
 void GfxGlEngine::loadPicture(Picture& ioPicture)
 {
-   GLuint& texture = (GLuint)ioPicture.getGlTextureID();
+   GLuint* texture =  new GLuint(ioPicture.getGlTextureID());
    SDL_Surface *surface = ioPicture.getSurface();
    GLenum texture_format;
-   GLint  nOfColors;
+   GLint nOfColors;
 
    // SDL_Surface *surface2
    // get the number of channels in the SDL surface
@@ -123,11 +123,11 @@ void GfxGlEngine::loadPicture(Picture& ioPicture)
    {
       // the picture has no texture ID!
       // generate a texture ID
-      glGenTextures( 1, &texture );
+      glGenTextures( 1, texture );
    }
 
    // Bind the texture object
-   glBindTexture( GL_TEXTURE_2D, texture );
+   glBindTexture( GL_TEXTURE_2D, *texture );
 
    // Set the texture's stretching properties
    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );

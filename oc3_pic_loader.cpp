@@ -19,6 +19,7 @@
 
 #include <cstdlib>
 #include <string>
+#include <memory>
 #include <archive.h>
 #include <archive_entry.h>
 #include <sys/stat.h>
