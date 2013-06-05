@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_PICTURECONVERTER_H_INCLUDE_
 #define __OPENCAESAR3_PICTURECONVERTER_H_INCLUDE_
 
-#include <memory>
+#include "oc3_rectangle.hpp"
 
 class Picture;
 
@@ -25,7 +25,7 @@ class PictureConverter
 public:
     static void convToGrayscale( Picture& dst, const Picture& src );
     static void rgbBalance( Picture& dst, const Picture& src, int lROffset, int lGOffset, int lBOffset );
-    static void fill( Picture& pic, int color );
+    static void fill( Picture& pic, int color, const Rect& rect=Rect(0, 0, 0, 0) );
     static void maskColor( Picture& dst, const Picture& src, int rmask=0x00ff0000, int gmask=0x0000ff00, 
                            int bmask=0x000000ff, int amask=0xff000000 );
 

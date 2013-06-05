@@ -67,7 +67,8 @@ private:
   void resolveExitGame();
 
   void makeScreenShot();
-   
+  void showEmpireMapWindow();
+
   GuiInfoBox* _infoBox;   // info box to display, if any
   TilemapArea _mapArea;  // visible map area
 

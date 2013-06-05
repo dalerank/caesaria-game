@@ -35,6 +35,7 @@
 #include "oc3_message_stack_widget.hpp"
 #include "oc3_time.hpp"
 #include "oc3_stringhelper.hpp"
+#include "oc3_empiremap_window.hpp"
 
 class ScreenGame::Impl
 {
@@ -120,6 +121,7 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
   CONNECT( &_d->scenario->getCity(), onWarningMessage(), _d->wndStackMsgs, WindowMessageStack::addMessage );
   CONNECT( &_d->guiTilemap, onWarningMessage(), _d->wndStackMsgs, WindowMessageStack::addMessage );
   CONNECT( _d->extMenu, onSelectOverlayType(), this, ScreenGame::resolveSelectOverlayView );
+  CONNECT( _d->extMenu, onEmpireMapShow(), this, ScreenGame::showEmpireMapWindow );
 }
 
 void ScreenGame::resolveGameSave()
@@ -127,6 +129,11 @@ void ScreenGame::resolveGameSave()
   ScenarioSaver scnSaver( Scenario::instance() );
 
   scnSaver.save( "./test.oc3save" );
+}
+
+void ScreenGame::showEmpireMapWindow()
+{  
+  EmpireMapWindow* emap = EmpireMapWindow::create( _d->gui->getRootWidget(), -1 );
 }
 
 TilemapArea& ScreenGame::getMapArea()

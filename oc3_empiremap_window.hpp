@@ -13,15 +13,26 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_STRINGARRAY_H_INCLUDED__
-#define __OPENCAESAR3_STRINGARRAY_H_INCLUDED__
+#ifndef __OPENCAESAR3_EMPIREMAP_WINDOW_H_INCLUDED__
+#define __OPENCAESAR3_EMPIREMAP_WINDOW_H_INCLUDED__
 
-#include <vector>
-#include <string>
+#include "oc3_widget.hpp"
 
-class StringArray : public std::vector< std::string >
+class EmpireMapWindow : public Widget
 {
 public:
+  static EmpireMapWindow* create( Widget* parent, int id );
+
+  // draw on screen
+  void draw( GfxEngine& engine );
+
+  bool onEvent(const NEvent& event);
+
+protected:
+  class Impl;
+  ScopedPtr< Impl > _d;
+
+  EmpireMapWindow( Widget* parent, int id );
 };
 
-#endif //__OPENCAESAR3_STRINGARRAY_H_INCLUDED__
+#endif //__OPENCAESAR3_EMPIREMAP_WINDOW_H_INCLUDED__

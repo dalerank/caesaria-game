@@ -15,10 +15,7 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
-
 #include "oc3_gui_paneling.hpp"
-#include <SDL.h>
 #include "oc3_exception.hpp"
 #include "oc3_pic_loader.hpp"
 #include "oc3_gettext.hpp"

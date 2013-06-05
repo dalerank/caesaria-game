@@ -145,12 +145,14 @@ PictureConverter::PictureConverter()
 
 }
 
-void PictureConverter::fill( Picture& pic, int color )
+void PictureConverter::fill( Picture& pic, int color, const Rect& rect )
 {
   SDL_Surface* source = pic.getSurface();
 
   SDL_LockSurface( source );
-  SDL_FillRect(source, NULL, SDL_MapRGBA(source->format, (color>>24)&0xff, (color>>16)&0xff, (color>>8)&0xff, (color&0xff))); 
+  SDL_Rect sdlRect = { rect.getLeft(), rect.getTop(), rect.getWidth(), rect.getHeight() };
+
+  SDL_FillRect(source, rect.getWidth() > 0 ? &sdlRect : NULL, SDL_MapRGBA(source->format, (color>>16)&0xff, (color>>8)&0xff, color&0xff, (color>>24)&0xff )); 
   SDL_UnlockSurface(source);
 }
 
