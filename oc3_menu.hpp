@@ -54,6 +54,7 @@ public:
 oc3_signals public:
     Signal1<int>& onSelectOverlayType();
     Signal0<>& onEmpireMapShow();
+    Signal0<>& onAdvisorsWindowShow();
 
 protected:
     ExtentMenu( Widget* parent, GuiTilemap&, int id, const Rect& rectangle );

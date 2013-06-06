@@ -362,5 +362,8 @@ void Picture::fill( const NColor& color, const Rect& rect )
 
 Picture* Picture::create( const Size& size )
 {
-  return GfxEngine::instance().createPicture( size );
+  Picture* ret = GfxEngine::instance().createPicture( size );
+  GfxEngine::instance().loadPicture( *ret );
+
+  return ret;
 }

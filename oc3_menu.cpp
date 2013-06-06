@@ -73,6 +73,7 @@ oc3_signals public:
   Signal0<> onRemoveToolSignal;
   Signal0<> onMaximizeSignal;
   Signal0<> onEmpireMapShowSignal;
+  Signal0<> onAdvisorsWndShowSignal;
 };
 
 Signal1< int >& Menu::onCreateConstruction()
@@ -532,6 +533,7 @@ ExtentMenu::ExtentMenu( Widget* parent, GuiTilemap& tmap, int id, const Rect& re
   
   CONNECT( _d->overlaysButton, onClicked(), this, ExtentMenu::toggleOverlays );
   CONNECT( _d->empireButton, onClicked(), &_d->onEmpireMapShowSignal, Signal0<>::emit );
+  CONNECT( _d->senateButton, onClicked(), &_d->onAdvisorsWndShowSignal, Signal0<>::emit );
 }
 
 bool ExtentMenu::onEvent(const NEvent& event)
@@ -646,4 +648,9 @@ Signal1<int>& ExtentMenu::onSelectOverlayType()
 Signal0<>& ExtentMenu::onEmpireMapShow()
 {
   return _d->onEmpireMapShowSignal;
+}
+
+Signal0<>& ExtentMenu::onAdvisorsWindowShow()
+{
+  return _d->onAdvisorsWndShowSignal;
 }

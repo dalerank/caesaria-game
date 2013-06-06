@@ -103,7 +103,6 @@ GuiInfoBox::GuiInfoBox( Widget* parent, const Rect& rect, int id )
 
   // draws the box and the inner black box
   GuiPaneling::instance().draw_white_frame(*_d->bgPicture, 0, 0, getWidth(), getHeight() );
-  GfxEngine::instance().loadPicture(*_d->bgPicture);
 }
 
 GuiInfoBox::~GuiInfoBox()

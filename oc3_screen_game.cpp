@@ -36,6 +36,7 @@
 #include "oc3_time.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_empiremap_window.hpp"
+#include "oc3_advisors_window.hpp"
 
 class ScreenGame::Impl
 {
@@ -122,6 +123,7 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
   CONNECT( &_d->guiTilemap, onWarningMessage(), _d->wndStackMsgs, WindowMessageStack::addMessage );
   CONNECT( _d->extMenu, onSelectOverlayType(), this, ScreenGame::resolveSelectOverlayView );
   CONNECT( _d->extMenu, onEmpireMapShow(), this, ScreenGame::showEmpireMapWindow );
+  CONNECT( _d->extMenu, onAdvisorsWindowShow(), this, ScreenGame::showAdvisorsWindow );
 }
 
 void ScreenGame::resolveGameSave()
@@ -288,4 +290,9 @@ void ScreenGame::resolveExitGame()
 void ScreenGame::resolveSelectOverlayView( int type )
 {
   _d->guiTilemap.setChangeCommand( TilemapOverlayCommand::create( OverlayType( type ) ) );
+}
+
+void ScreenGame::showAdvisorsWindow()
+{
+  AdvisorsWindow* advWnd = AdvisorsWindow::create( _d->gui->getRootWidget(), -1 );
 }
