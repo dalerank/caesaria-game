@@ -22,7 +22,7 @@
 #include "oc3_gfx_engine.hpp"
 #include "oc3_gui_paneling.hpp"
 
-#define DEFAULT_SCROLLBAR_SIZE 15
+#define DEFAULT_SCROLLBAR_SIZE 19
 
 //! constructor
 ListBox::ListBox( Widget* parent,const Rect& rectangle,
@@ -59,15 +59,13 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
 
 	const int s = DEFAULT_SCROLLBAR_SIZE;
 
-  _d->scrollBar = new ScrollBar( this, Rect( getWidth() - s, 0, getWidth(), getHeight()), false );
+  _d->scrollBar = new ScrollBar( this, Rect( getWidth() - s - 3, 0, getWidth()-3, getHeight()-3), false );
   _d->scrollBar->setNotClipped( false );
   _d->scrollBar->setSubElement(true);
   _d->scrollBar->setVisibleFilledArea( false );
   _d->scrollBar->setTabStop(false);
   _d->scrollBar->setAlignment(alignLowerRight, alignLowerRight, alignUpperLeft, alignLowerRight);
   _d->scrollBar->setVisible(false);
-  _d->scrollBar->getUpButton()->setVisible( false );
-  _d->scrollBar->getDownButton()->setVisible( false );
   _d->scrollBar->setPos(0);
 
 	setNotClipped(!clip);
@@ -379,7 +377,10 @@ bool ListBox::onEvent(const NEvent& event)
 			case OC3_SCROLL_BAR_CHANGED:
         {
           if (event.GuiEvent.Caller == _d->scrollBar)
+          {
+            _d->needItemsRepackTextures = true;
 			      return true;
+          }
         }
 		  break;
 
@@ -586,7 +587,7 @@ void ListBox::beforeDraw( GfxEngine& painter)
 
            textRect.UpperLeftCorner += Point( _d->itemsIconWidth+3, 0 );
 
-           currentFont.draw( *_d->picture, refItem.getText(), textRect.getLeft(), textRect.getTop()  );
+           currentFont.draw( *_d->picture, refItem.getText(), textRect.getLeft(), textRect.getTop() - _d->scrollBar->getPos() );
          }
 
          frameRect += Point( 0, _d->itemHeight );
@@ -628,15 +629,15 @@ void ListBox::_RecalculateScrollPos()
 	if (!isFlag( LBF_AUTOSCROLL ))
 		return;
 
-    const int selPos = (_d->selectedItemIndex == -1 ? _d->totalItemHeight : _d->selectedItemIndex * _d->itemHeight) - _d->scrollBar->getPos();
+  const int selPos = (_d->selectedItemIndex == -1 ? _d->totalItemHeight : _d->selectedItemIndex * _d->itemHeight) - _d->scrollBar->getPos();
 
 	if (selPos < 0)
 	{
-        _d->scrollBar->setPos( _d->scrollBar->getPos() + selPos );
+    _d->scrollBar->setPos( _d->scrollBar->getPos() + selPos );
 	}
 	else if (selPos > (int)getHeight() - _d->itemHeight)
 	{
-        _d->scrollBar->setPos( _d->scrollBar->getPos() + selPos - getHeight() + _d->itemHeight );
+    _d->scrollBar->setPos( _d->scrollBar->getPos() + selPos - getHeight() + _d->itemHeight );
 	}
 }
 
