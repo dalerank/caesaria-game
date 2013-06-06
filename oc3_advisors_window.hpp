@@ -39,7 +39,8 @@ public:
     advisorMain,
     advisorCount
   } AdvisorType;
-  static AdvisorsWindow* create( Widget* parent, int id );
+
+  static AdvisorsWindow* create( Widget* parent, int id, const AdvisorType type  );
 
   // draw on screen
   void draw( GfxEngine& engine );

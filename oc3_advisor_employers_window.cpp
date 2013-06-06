@@ -24,13 +24,13 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_gfx_engine.hpp"
 
-class AdvisorEmployerPanel::Impl
+class AdvisorEmployerWindow::Impl
 {
 public:
   PictureRef background;
 };
 
-AdvisorEmployerPanel::AdvisorEmployerPanel( Widget* parent, int id ) 
+AdvisorEmployerWindow::AdvisorEmployerWindow( Widget* parent, int id ) 
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),
@@ -104,7 +104,7 @@ AdvisorEmployerPanel::AdvisorEmployerPanel( Widget* parent, int id )
   title->setTextAlignment( alignCenter, alignCenter );
 }
 
-void AdvisorEmployerPanel::draw( GfxEngine& painter )
+void AdvisorEmployerWindow::draw( GfxEngine& painter )
 {
   if( !isVisible() )
     return;

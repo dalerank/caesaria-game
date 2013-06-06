@@ -13,30 +13,16 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_ADVISOR_EMPLOYERS_WINDOW_H_INCLUDED__
-#define __OPENCAESAR3_ADVISOR_EMPLOYERS_WINDOW_H_INCLUDED__
+#ifndef __OPENCAESAR3_ADVISOR_LEGION_WINDOW_H_INCLUDED__
+#define __OPENCAESAR3_ADVISOR_LEGION_WINDOW_H_INCLUDED__
 
 #include "oc3_widget.hpp"
 #include "oc3_scopedptr.hpp"
 
-class AdvisorEmployerWindow : public Widget
+class AdvisorLegionWindow : public Widget
 {
 public:
-  typedef enum 
-  {
-    prIndustryAndTrade=0,
-    prFood,
-    prEngineers,
-    prWater,
-    prPrefectures,
-    prMilitary,
-    prEntertainment,
-    prHealthAndEducation,
-    prAdministrationAndReligion,
-    prCount
-  } PriorityIndex;
-
-  AdvisorEmployerWindow( Widget* parent, int id );
+  AdvisorLegionWindow( Widget* parent, int id );
 
   void draw( GfxEngine& painter );
 

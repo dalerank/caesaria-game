@@ -294,5 +294,5 @@ void ScreenGame::resolveSelectOverlayView( int type )
 
 void ScreenGame::showAdvisorsWindow()
 {
-  AdvisorsWindow* advWnd = AdvisorsWindow::create( _d->gui->getRootWidget(), -1 );
+  AdvisorsWindow* advWnd = AdvisorsWindow::create( _d->gui->getRootWidget(), -1, AdvisorsWindow::advisorEmployers );
 }

@@ -26,6 +26,7 @@
 #include "oc3_gettext.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_advisor_employers_window.hpp"
+#include "oc3_advisor_legion_window.hpp"
 
 class AdvisorsWindow::Impl
 {
@@ -79,7 +80,7 @@ AdvisorsWindow::AdvisorsWindow( Widget* parent, int id )
   addButton( advisorMain, 266 );
   //!!! exit button have no pressed image
   btn = addButton( advisorCount, 267 );
-  btn->setPicture( &Picture::load( ResourceGroup::panelBackground, 266 + 12 ), stPressed );
+  btn->setPicture( &Picture::load( ResourceGroup::advisorwindow, 3 ), stPressed );
   //!!!
 
   showAdvisor( advisorEmployers );
@@ -104,7 +105,8 @@ void AdvisorsWindow::showAdvisor( const AdvisorType type )
 
   switch( type )
   {
-  case advisorEmployers: _d->advisorPanel = new AdvisorEmployerPanel( this, advisorEmployers ); break;
+  case advisorEmployers: _d->advisorPanel = new AdvisorEmployerWindow( this, advisorEmployers ); break;
+  case advisorLegion: _d->advisorPanel = new AdvisorLegionWindow( this, advisorLegion ); break;
 
   default:
   break;
@@ -150,7 +152,10 @@ bool AdvisorsWindow::onEvent( const NEvent& event )
   return Widget::onEvent( event );
 }
 
-AdvisorsWindow* AdvisorsWindow::create( Widget* parent, int id )
+AdvisorsWindow* AdvisorsWindow::create( Widget* parent, int id, const AdvisorType type )
 {
-  return new AdvisorsWindow( parent, id );
+  AdvisorsWindow* ret = new AdvisorsWindow( parent, id );
+  ret->showAdvisor( type );
+
+  return ret;
 }
