@@ -38,9 +38,9 @@ Font::Font( const Font& other ) : _d( new Impl )
   *this = other;
 }
 
-Font::Font( const std::string& family, const int size )
+Font Font::create( const std::string& family, const int size )
 {
-
+  return Font();
 }
 
 // unsigned int Font::getKerningSize( )
@@ -80,11 +80,6 @@ int Font::getCharacterFromPos(const std::string& text, int pixel_x) const
   }
 
   return -1;
-}
-
-Font::Font( FontType type ) : _d( new Impl )
-{
-  *this = FontCollection::instance().getFont_( type );
 }
 
 int Font::getColor() const
@@ -201,6 +196,11 @@ Font& Font::operator=( const Font& other )
   _d->ttfFont = other._d->ttfFont;
   _d->color = other._d->color;
   return *this;
+}
+
+Font Font::create( FontType type )
+{
+  return FontCollection::instance().getFont_( type );
 }
 
 class FontCollection::Impl

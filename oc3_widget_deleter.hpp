@@ -21,14 +21,14 @@
 class WidgetDeleter : public WidgetAnimator
 {
 public:
-	WidgetDeleter( Widget* node, unsigned int time );
-	~WidgetDeleter(void);
+  WidgetDeleter( Widget* node, size_t time );
+  ~WidgetDeleter(void);
 
-	virtual void draw( GfxEngine& painter );
+  virtual void draw( GfxEngine& painter );
 
 private:
-	unsigned int _delay;
-	unsigned int _startTime;
+  unsigned int _delay;
+  unsigned int _startTime;
 };
 
 #endif

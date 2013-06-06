@@ -211,7 +211,7 @@ unsigned int GfxSdlEngine::getFps() const
 void GfxSdlEngine::setFlag( int flag, int value )
 {
   _d->showDebugInfo = value > 0;
-  _d->debugFont = Font( FONT_2 );
+  _d->debugFont = Font::create( FONT_2 );
 }
 
 void GfxSdlEngine::delay( const unsigned int msec )

@@ -973,3 +973,39 @@ msgstr "Advisors"
 
 msgid "##gmenu_advisors_tooltip##"
 msgstr "Go directly to specific advisor reports"
+
+msgid "##adv_employments_m##"
+msgstr "Labor"
+
+msgid "##adv_military_m##"
+msgstr "Legion"
+
+msgid "##adv_empire_m##"
+msgstr "Emperor"
+
+msgid "##adv_ratings_m##"
+msgstr "Ratings"
+
+msgid "##adv_trade_m##"
+msgstr "Trade"
+
+msgid "##adv_population_m##"
+msgstr "Population"
+
+msgid "##adv_health_m##"
+msgstr "Health"
+
+msgid "##adv_education_m##"
+msgstr "Education"
+
+msgid "##adv_religion_m##"
+msgstr "Religion"
+
+msgid "##adv_entertainment_m##"
+msgstr "Entertainment"
+
+msgid "##adv_finance_m##"
+msgstr "Finances"
+
+msgid "##adv_main_m##"
+msgstr "Chief Advisor"

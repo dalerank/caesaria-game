@@ -151,7 +151,7 @@ void MainMenu::recalculateSize_()
 	Rect parentRect = getParent()->getClientRect(); // client rect of parent  
 
 	//AbstractSkin* skin = getEnvironment()->getSkin();
-  Font font = Font( FONT_2_WHITE );
+  Font font = Font::create( FONT_2_WHITE );
   
   int height = std::max<int>( DEFAULT_MENU_HEIGHT, getHeight() );
 	setGeometry( Rect( parentRect.UpperLeftCorner.getX(), parentRect.UpperLeftCorner.getY(),

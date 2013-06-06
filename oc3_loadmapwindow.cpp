@@ -52,7 +52,7 @@ LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect,
 {
   // create the title
   _d->lbTitle = new Label( this, Rect( 16, 10, getWidth()-16, 10 + 30 ), "", true );
-  _d->lbTitle->setFont( Font( FONT_3 ) );
+  _d->lbTitle->setFont( Font::create( FONT_3 ) );
   _d->lbTitle->setTextAlignment( alignCenter, alignCenter );
   _d->directory = dir;
   _d->fileExtension = ext;

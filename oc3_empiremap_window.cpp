@@ -14,6 +14,8 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 
+#include <memory>
+
 #include "oc3_empiremap_window.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_event.hpp"

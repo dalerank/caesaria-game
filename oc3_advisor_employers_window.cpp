@@ -49,7 +49,7 @@ AdvisorEmployerWindow::AdvisorEmployerWindow( Widget* parent, int id )
   GuiPaneling::instance().draw_black_frame(*_d->background, salaryBgRect.getLeft(), salaryBgRect.getTop(),
     salaryBgRect.getWidth(), salaryBgRect.getHeight() );
 
-  Font font( FONT_1 );
+  Font font = Font::create( FONT_1 );
   font.draw( *_d->background, _("##advemployer_panel_priority##"), 56, 54 );
   font.draw( *_d->background, _("##advemployer_panel_sector##"), 164, 54 );
   font.draw( *_d->background, _("##advemployer_panel_needworkers##"), 400, 54 );
@@ -60,19 +60,19 @@ AdvisorEmployerWindow::AdvisorEmployerWindow( Widget* parent, int id )
   Point btnOffset( 0, 25 );
   PushButton* btn = new PushButton( this, Rect( startPos, btnSize ), "industry&trade", prIndustryAndTrade );
   btn = new PushButton( this, Rect( startPos + btnOffset, btnSize ), "food", prFood );
-  btn->setFont( Font( FONT_1 ) );
+  btn->setFont( Font::create( FONT_1 ) );
   btn = new PushButton( this, Rect( startPos + btnOffset * 2, btnSize ), "ingineers", prEngineers );
-  btn->setFont( Font( FONT_1 ) );
+  btn->setFont( Font::create( FONT_1 ) );
   btn = new PushButton( this, Rect( startPos + btnOffset * 3, btnSize ), "water", prWater );
-  btn->setFont( Font( FONT_1 ) );
+  btn->setFont( Font::create( FONT_1 ) );
   btn = new PushButton( this, Rect( startPos + btnOffset * 4, btnSize ), "prefectures", prPrefectures );
-  btn->setFont( Font( FONT_1 ) );
+  btn->setFont( Font::create( FONT_1 ) );
   btn = new PushButton( this, Rect( startPos + btnOffset * 5, btnSize ), "military", prMilitary );
-  btn->setFont( Font( FONT_1 ) );
+  btn->setFont( Font::create( FONT_1 ) );
   btn = new PushButton( this, Rect( startPos + btnOffset * 6, btnSize ), "entertainment", prEntertainment );
-  btn->setFont( Font( FONT_1 ) );
+  btn->setFont( Font::create( FONT_1 ) );
   btn = new PushButton( this, Rect( startPos + btnOffset * 7, btnSize ), "health&education", prHealthAndEducation );
-  btn->setFont( Font( FONT_1 ) );
+  btn->setFont( Font::create( FONT_1 ) );
   btn = new PushButton( this, Rect( startPos + btnOffset * 8, btnSize ), "administation&religion", prAdministrationAndReligion );
 
   btn = new PushButton( this, Rect( Point( 160, 356 ), Size( 24 ) ), "", -1 );
@@ -85,7 +85,7 @@ AdvisorEmployerWindow::AdvisorEmployerWindow( Widget* parent, int id )
   btn->setPicture( &Picture::load( ResourceGroup::advisorwindow, 2 ), stHovered );
   btn->setPicture( &Picture::load( ResourceGroup::advisorwindow, 2 ), stPressed );
 
-  Font font2( FONT_2 );
+  Font font2 = Font::create( FONT_2 );
   font2.draw( *_d->background, _("##advemployer_panel_salary##"), salaryBgRect.UpperLeftCorner + Point( 4, 4) );
 
   int pay = 30, romePay = 30;
@@ -100,7 +100,7 @@ AdvisorEmployerWindow::AdvisorEmployerWindow( Widget* parent, int id )
 
   Label* title = new Label( this, Rect( 10, 10, getWidth() - 10, 10 + 40) );
   title->setText( _("##advemployer_panel_title##") );
-  title->setFont( Font( FONT_3 ) );
+  title->setFont( Font::create( FONT_3 ) );
   title->setTextAlignment( alignCenter, alignCenter );
 }
 

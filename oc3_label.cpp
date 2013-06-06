@@ -49,7 +49,7 @@ public:
            needUpdatePicture(false), bgPicture( 0 ), picture( 0 ),
            lineIntervalOffset( 0 )
 	{
-    font = Font( FONT_2 );
+    font = Font::create( FONT_2 );
 	}
 
     ~Impl()

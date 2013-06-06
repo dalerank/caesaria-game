@@ -570,17 +570,38 @@ void Building::load( const VariantMap& stream )
 
 SmallStatue::SmallStatue() : Building( B_STATUE1, Size(1) )
 {
+  _fireIncrement = 0;
+  _damageIncrement = 0;
   setPicture( Picture::load( ResourceGroup::govt, 1));
+}
+
+bool SmallStatue::isNeedRoadAccess() const
+{
+  return false;
 }
 
 MediumStatue::MediumStatue() : Building( B_STATUE2, Size(2) )
 {
+  _fireIncrement = 0;
+  _damageIncrement = 0;
   setPicture( Picture::load( ResourceGroup::govt, 2));
+}
+
+bool MediumStatue::isNeedRoadAccess() const
+{
+  return false;
 }
 
 BigStatue::BigStatue() : Building( B_STATUE3, Size(3))
 {
+  _fireIncrement = 0;
+  _damageIncrement = 0;
   setPicture( Picture::load( ResourceGroup::govt, 3));
+}
+
+bool BigStatue::isNeedRoadAccess() const
+{
+  return false;
 }
 
 Shipyard::Shipyard() : Building( B_SHIPYARD, Size(2) )

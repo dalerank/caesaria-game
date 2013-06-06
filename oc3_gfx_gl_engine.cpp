@@ -95,7 +95,7 @@ void GfxGlEngine::loadPicture(Picture& ioPicture)
    GLuint& texture = (GLuint)ioPicture.getGlTextureID();
    SDL_Surface *surface = ioPicture.getSurface();
    GLenum texture_format;
-   GLint  nOfColors;
+   GLint nOfColors;
 
    // SDL_Surface *surface2
    // get the number of channels in the SDL surface

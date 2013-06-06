@@ -19,6 +19,7 @@
 
 #include <cstdlib>
 #include <string>
+#include <memory>
 #include <archive.h>
 #include <archive_entry.h>
 #include <sys/stat.h>
@@ -605,7 +606,7 @@ CartLoader& CartLoader::instance()
   return inst;
 }
 
-CartLoader::CartLoader()
+CartLoader::CartLoader() : _d( new Impl )
 {
    loadAll();
 }

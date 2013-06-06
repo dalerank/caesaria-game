@@ -130,7 +130,7 @@ Font EditBox::getActiveFont()
   if ( _d->overrideFont.isValid() )
     return _d->overrideFont;
   
-  return Font( FONT_2 );
+  return Font::create( FONT_2 );
 }
 
 //! Sets another color for the text.
@@ -930,14 +930,14 @@ void EditBox::draw( GfxEngine& painter )
 //! Sets the new caption of this element.
 void EditBox::setText(const std::string& text)
 {
-	_text = text;
-	if (unsigned int(_d->cursorPos) > _text.size())
+  _text = text;
+  if (static_cast<unsigned int>(_d->cursorPos) > _text.size())
   {
-		_d->cursorPos = _text.size();
+    _d->cursorPos = _text.size();
   }
 
   _d->horizScrollPos = 0;
-	breakText();
+  breakText();
 
   _d->needUpdateTexture = true;
 }

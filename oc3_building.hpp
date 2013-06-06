@@ -160,21 +160,21 @@ class SmallStatue : public Building
 {
 public:
   SmallStatue();
- 
+  bool isNeedRoadAccess() const;
 };
 
 class MediumStatue : public Building
 {
 public:
   MediumStatue();
-  
+  bool isNeedRoadAccess() const;
 };
 
 class BigStatue : public Building
 {
 public:
   BigStatue();
-  
+  bool isNeedRoadAccess() const;
 };
 
 class Shipyard : public Building

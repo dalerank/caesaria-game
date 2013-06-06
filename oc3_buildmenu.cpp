@@ -13,6 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
+#include <cstdio>
+#include <cstring>
 
 #include "oc3_buildmenu.hpp"
 #include "oc3_gettext.hpp"
@@ -34,7 +36,7 @@ public:
         _cost = 0;
 
         //Font& font = FontCollection::instance().getFont(FONT_2);
-        Font fontRed( FONT_2_RED );
+        Font fontRed = Font::create( FONT_2_RED );
 
         setFont( fontRed, stHovered );
         setTextAlignment( alignUpperLeft, alignCenter );
@@ -89,7 +91,7 @@ void BuildMenu::init()
     int max_text_width = 0;
     int max_cost_width = 0;
     Size textSize;
-    Font font( FONT_2 );
+    Font font = Font::create( FONT_2 );
     for (Widget::ConstChildIterator itWidget = getChildren().begin(); itWidget != getChildren().end(); ++itWidget)
     {
         if( BuildButton *button = dynamic_cast< BuildButton* >( *itWidget ) )

@@ -47,7 +47,7 @@ AdvisorLegionWindow::AdvisorLegionWindow( Widget* parent, int id )
 
   Label* title = new Label( this, Rect( 10, 10, getWidth() - 10, 10 + 40) );
   title->setText( _("##advlegion_window_title##") );
-  title->setFont( Font( FONT_3 ) );
+  title->setFont( Font::create( FONT_3 ) );
   title->setTextAlignment( alignCenter, alignCenter );
 
   _d->alarm = new Label( this, Rect( 60, getHeight()-60, getWidth() - 60, getHeight() - 40 ), _("##advlegion_noalarm##") );

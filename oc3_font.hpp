@@ -28,8 +28,9 @@ class Font
 
 public:
   Font();
-  Font( const std::string& family, const int size );
-  Font( FontType type );
+  static Font create( const std::string& family, const int size );
+  static Font create( FontType type );
+  
   ~Font();
 
   Font( const Font& other );
