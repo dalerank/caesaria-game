@@ -42,6 +42,7 @@ oc3_signals public:
   Signal0<> onExitSignal;
   Signal0<> onEndSignal;
   Signal0<> onSaveSignal;
+  Signal1<int> onRequestAdvisorSignal;
 };
 
 TopMenu* TopMenu::create( Widget* parent, const int height )
@@ -187,4 +188,9 @@ Signal0<>& TopMenu::onSave()
 Signal0<>& TopMenu::onEnd()
 {
   return _d->onEndSignal;
+}
+
+Signal1<int>& TopMenu::onRequestAdvisor()
+{
+  return _d->onRequestAdvisorSignal;
 }

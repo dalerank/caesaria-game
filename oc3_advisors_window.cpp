@@ -81,6 +81,7 @@ AdvisorsWindow::AdvisorsWindow( Widget* parent, int id )
   //!!! exit button have no pressed image
   btn = addButton( advisorCount, 267 );
   btn->setPicture( &Picture::load( ResourceGroup::advisorwindow, 3 ), stPressed );
+  CONNECT( btn, onClicked(), this, AdvisorsWindow::deleteLater );
   //!!!
 
   showAdvisor( advisorEmployers );

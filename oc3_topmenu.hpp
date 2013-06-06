@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-
 #ifndef __OPENCAESAR3_TOPMENU_H_INCLUDE_
 #define __OPENCAESAR3_TOPMENU_H_INCLUDE_
 
@@ -37,6 +36,7 @@ oc3_signals public:
   Signal0<>& onExit();
   Signal0<>& onSave();
   Signal0<>& onEnd();
+  Signal1<int>& onRequestAdvisor();
 
 private:
   TopMenu( Widget* parent, const int height );
