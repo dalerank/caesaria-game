@@ -186,6 +186,11 @@ void Font::draw(Picture& dstpic, const std::string &text, const int dx, const in
   SDL_FreeSurface( sText );
 }
 
+void Font::draw( Picture &dstpic, const std::string &text, const Point& pos )
+{
+  draw( dstpic, text, pos.getX(), pos.getY() );
+}
+
 Font::~Font()
 {
 

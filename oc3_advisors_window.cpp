@@ -24,76 +24,8 @@
 #include "oc3_gui_paneling.hpp"
 #include "oc3_label.hpp"
 #include "oc3_gettext.hpp"
-
-class AdvisorEmployerPanel : public Widget
-{
-public:
-  typedef enum 
-  {
-    prIndustryAndTrade=0,
-    prFood,
-    prEngineers,
-    prWater,
-    prPrefectures,
-    prMilitary,
-    prEntertainment,
-    prHealthAndEducation,
-    prAdministrationAndReligion,
-    prCount
-  } PriorityIndex;
-  AdvisorEmployerPanel( Widget* parent, int id )
-    : Widget( parent, id, Rect( 0, 0, 1, 1 ) )
-  {
-    setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),
-                       Size( 640, 416 ) ) );
-
-    _background.reset( Picture::create( getSize() ) );
-    //main background
-    GuiPaneling::instance().draw_white_frame(*_background, 0, 0, getWidth(), getHeight() );
-
-    //buttons background
-    Point startPos( 32, 70 );
-    GuiPaneling::instance().draw_black_frame(*_background, startPos.getX(), startPos.getY(), 576, 238 );
-
-    startPos += Point( 8, 8 );
-    Size btnSize( 560, 22 );
-    Point btnOffset( 0, 25 );
-    PushButton* btn = new PushButton( this, Rect( startPos, btnSize ), "industry&trade", prIndustryAndTrade );
-    btn = new PushButton( this, Rect( startPos + btnOffset, btnSize ), "food", prFood );
-    btn->setFont( Font( FONT_1 ) );
-    btn = new PushButton( this, Rect( startPos + btnOffset * 2, btnSize ), "ingineers", prEngineers );
-    btn->setFont( Font( FONT_1 ) );
-    btn = new PushButton( this, Rect( startPos + btnOffset * 3, btnSize ), "water", prWater );
-    btn->setFont( Font( FONT_1 ) );
-    btn = new PushButton( this, Rect( startPos + btnOffset * 4, btnSize ), "prefectures", prPrefectures );
-    btn->setFont( Font( FONT_1 ) );
-    btn = new PushButton( this, Rect( startPos + btnOffset * 5, btnSize ), "military", prMilitary );
-    btn->setFont( Font( FONT_1 ) );
-    btn = new PushButton( this, Rect( startPos + btnOffset * 6, btnSize ), "entertainment", prEntertainment );
-    btn->setFont( Font( FONT_1 ) );
-    btn = new PushButton( this, Rect( startPos + btnOffset * 7, btnSize ), "health&education", prHealthAndEducation );
-    btn->setFont( Font( FONT_1 ) );
-    btn = new PushButton( this, Rect( startPos + btnOffset * 8, btnSize ), "administation&religion", prAdministrationAndReligion );
-
-    Label* title = new Label( this, Rect( 10, 10, getWidth() - 10, 10 + 40) );
-    title->setText( _("##advemployer_panel_title##") );
-    title->setFont( Font( FONT_3 ) );
-    title->setTextAlignment( alignCenter, alignCenter );
-  }
-
-  void draw( GfxEngine& painter )
-  {
-    if( !isVisible() )
-      return;
-
-    painter.drawPicture( *_background, getScreenLeft(), getScreenTop() );
-
-    Widget::draw( painter );
-  }
-
-private:
-  PictureRef _background;
-};
+#include "oc3_stringhelper.hpp"
+#include "oc3_advisor_employers_window.hpp"
 
 class AdvisorsWindow::Impl
 {

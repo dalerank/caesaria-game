@@ -39,6 +39,7 @@ public:
     static const char* carts;
     static const char* wharf;
     static const char* waterOverlay;
+    static const char* advisorwindow;
 };
 
 class ResourceMenu

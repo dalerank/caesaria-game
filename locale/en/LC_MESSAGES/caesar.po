@@ -18,7 +18,7 @@ msgstr ""
 "Project-Id-Version: Version 1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-06-03 03:21+0000\n"
-"PO-Revision-Date: 2013-06-05 14:17+0400\n"
+"PO-Revision-Date: 2013-06-06 17:01+0400\n"
 "Last-Translator: tracertong <EMAIL@ADDRESS>\n"
 "Language-Team: OpenCaesar3 Project <opencaesar3@github.com>\n"
 "Language: en\n"
@@ -35,6 +35,30 @@ msgstr ""
 #: oc3_buildmenu.cpp:289
 msgid "Raw materials"
 msgstr ""
+
+msgid "##advemployer_panel_priority##"
+msgstr "Priority"
+
+msgid "##advemployer_panel_denaries##"
+msgstr "denaries"
+
+msgid "##advemployer_panel_romepay##"
+msgstr "Rome pay"
+
+msgid "##advemployer_panel_sector##"
+msgstr "Sector"
+
+msgid "##advemployer_panel_needworkers##"
+msgstr "Need"
+
+msgid "##advemployer_panel_haveworkers##"
+msgstr "Worked"
+
+msgid "##advemployer_panel_workers##"
+msgstr "Workers"
+
+msgid "##advemployer_panel_workless##"
+msgstr "workless"
 
 #: oc3_buildmenu.cpp:290
 msgid "Factory"

@@ -49,6 +49,8 @@ public:
                           TypeAlign horizontalAlign, TypeAlign verticalAlign );
 
   void draw(Picture &dstpic, const std::string &text, const int dx, const int dy);
+  void draw(Picture &dstpic, const std::string &text, const Point& pos );
+
   unsigned int getWidthFromCharacter( char c ) const;
   int getCharacterFromPos(const std::string& text, int pixel_x) const;
   unsigned int getKerningHeight() const;
