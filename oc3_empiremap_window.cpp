@@ -28,6 +28,8 @@ public:
   PictureRef border;
   Picture empireMap;
   Point offset;
+  bool dragging;
+  Point dragStartPosition;
 };
 
 EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
@@ -36,6 +38,7 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
   // use some clipping to remove the right and bottom areas
   _d->border.reset( Picture::create( getSize() ) );
   _d->empireMap = Picture::load( "the_empire", 1 );
+  _d->dragging = false;
 
   Picture& backgr = Picture::load( "empire_panels", 4 );
   for( int y=getHeight() - 120; y < getHeight(); y+=backgr.getHeight() )
@@ -86,9 +89,57 @@ void EmpireMapWindow::draw( GfxEngine& engine )
 
 bool EmpireMapWindow::onEvent( const NEvent& event )
 {
-  if( event.EventType == OC3_MOUSE_EVENT && event.MouseEvent.Event == OC3_RMOUSE_LEFT_UP )
+  if( event.EventType == OC3_MOUSE_EVENT )
   {
-    deleteLater();
+    switch(event.MouseEvent.Event)
+    {
+    case OC3_LMOUSE_PRESSED_DOWN:
+      _d->dragStartPosition = event.MouseEvent.getPosition();
+      _d->dragging = true;//_d->flags.isFlag( draggable );
+      bringToFront();
+    break;
+
+    case OC3_RMOUSE_LEFT_UP:
+      deleteLater();
+      _d->dragging = false;
+    break;
+
+    case OC3_LMOUSE_LEFT_UP:
+      _d->dragging = false;
+    break;
+
+    case OC3_MOUSE_MOVED:
+      {
+        bool t = _d->dragging;
+        t;
+      
+      if ( !event.MouseEvent.isLeftPressed() )
+        _d->dragging = false;
+
+      if( _d->dragging )
+      {
+        // gui window should not be dragged outside its parent
+        if( _d->offset.getX() > 0
+            || _d->offset.getX() + _d->empireMap.getWidth() < getWidth()
+            || _d->offset.getY() > 0 
+            || _d->offset.getY() + _d->empireMap.getHeight() < getHeight() )
+        {
+          break;
+        }
+
+        _d->offset += (event.MouseEvent.getPosition() - _d->dragStartPosition);
+        _d->dragStartPosition = event.MouseEvent.getPosition();
+
+        _d->offset.setX( math::clamp<int>( _d->offset.getX(), -_d->empireMap.getWidth() + getWidth(), 0 ) );
+        _d->offset.setY( math::clamp<int>( _d->offset.getY(), -_d->empireMap.getHeight() + getHeight(), 0 ) );
+      }
+      }
+    break;
+    
+    default:
+    break;
+    }
+
     return true;
   }
 
