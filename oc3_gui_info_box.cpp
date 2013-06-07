@@ -28,7 +28,7 @@
 #include "oc3_house_level.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_event.hpp"
-#include "oc3_pushbutton.hpp"
+#include "oc3_texturedbutton.hpp"
 #include "oc3_label.hpp"
 #include "oc3_city.hpp"
 #include "oc3_scenario.hpp"
@@ -92,12 +92,11 @@ GuiInfoBox::GuiInfoBox( Widget* parent, const Rect& rect, int id )
   _d->lbTitle->setTextAlignment( alignCenter, alignCenter );
   _d->isAutoPosition = true;
 
-  _d->btnExit = new PushButton( this, Rect( 472, getHeight() - 39, 496, getHeight() - 15 ) );
+  _d->btnExit = new TexturedButton( this, Point( 472, getHeight() - 39 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
   _d->btnExit->setTooltipText( _("##infobox_tooltip_exit##") );
-  GuiPaneling::configureTexturedButton( _d->btnExit, ResourceGroup::panelBackground, ResourceMenu::exitInfBtnPicId, false);
-  _d->btnHelp = new PushButton( this, Rect( 14, getHeight() - 39, 38, getHeight() - 15 ) );
+
+  _d->btnHelp = new TexturedButton( this, Point( 14, getHeight() - 39 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
   _d->btnHelp->setTooltipText( _("##infobox_tooltip_help##") );
-  GuiPaneling::configureTexturedButton( _d->btnHelp, ResourceGroup::panelBackground, ResourceMenu::helpInfBtnPicId, false);
 
   CONNECT( _d->btnExit, onClicked(), this, InfoBoxLand::deleteLater );
 

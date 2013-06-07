@@ -29,10 +29,10 @@ public:
 
 	//! constructor
 	PushButton( Widget* parent,
-			    const Rect& rectangle,
-                const std::string& caption="",
-                int id=-1, 
-			    bool noclip=false );
+			        const Rect& rectangle,
+              const std::string& caption="",
+              int id=-1, 
+			        bool noclip=false );
 
 	//! destructor
 	~PushButton();

@@ -186,7 +186,7 @@ Picture* GfxSdlEngine::createPicture(const Size& size )
 {
   SDL_Surface* img;
   const Uint32 flags = 0;
-  img = SDL_CreateRGBSurface(flags, size.getWidth(), size.getHeight(), 32, 0,0,0,0);  // opaque picture with default mask
+  img = SDL_CreateRGBSurface(flags, size.getWidth(), size.getHeight(), 32, 0, 0, 0, 0 );  // opaque picture with default mask
   if (img == NULL)
   {
     THROW( "Cannot make surface, size=" << size.getWidth() << "x" << size.getHeight() );

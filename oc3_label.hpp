@@ -106,7 +106,7 @@ public:
 
   void setLineIntervalOffset( const int offset );
     
-public oc3_signals:
+oc3_signals public:
   virtual Signal0<>& onClicked();
 
 protected:

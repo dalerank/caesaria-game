@@ -20,6 +20,7 @@
 #include "oc3_picture.hpp"
 #include "oc3_event.hpp"
 #include "oc3_gfx_engine.hpp"
+#include "oc3_texturedbutton.hpp"
 #include "oc3_color.hpp"
 
 class EmpireMapWindow::Impl
@@ -30,6 +31,12 @@ public:
   Point offset;
   bool dragging;
   Point dragStartPosition;
+  Picture leftEagle, rightEagle;
+  Size eagleOffset;
+  Picture centerPicture;
+  PushButton* btnHelp;
+  PushButton* btnExit;
+  PushButton* btnTrade;
 };
 
 EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
@@ -72,8 +79,18 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
   _d->border->draw( corner, 0, getHeight() - 120 ); //left middle
   _d->border->draw( corner, getWidth() - corner.getWidth(), getHeight() - 120 ); //right middle
 
-  _d->border->fill( 0x000000ff, Rect( corner.getWidth(), corner.getHeight(), 
+  _d->border->fill( 0x00000000, Rect( corner.getWidth(), corner.getHeight(), 
                                       getWidth() - corner.getWidth(), getHeight() - 120 ) );
+
+  _d->leftEagle = Picture::load( "empire_panels", 7 );
+  _d->rightEagle = Picture::load( "empire_panels", 8 );
+  _d->eagleOffset = corner.getSize();
+
+  _d->centerPicture = Picture::load( "empire_panels", 9 );
+
+  _d->btnHelp = new TexturedButton( this, Point( 20, getHeight() - 44 ), Size( 24 ), -1, 528 );
+  _d->btnHelp = new TexturedButton( this, Point( getWidth() - 44, getHeight() - 44 ), Size( 24 ), -1, 533 );
+  _d->btnTrade = new TexturedButton( this, Point( getWidth() - 48, getHeight() - 100), Size( 28 ), -1, 292 );
 }
 
 void EmpireMapWindow::draw( GfxEngine& engine )
@@ -84,6 +101,12 @@ void EmpireMapWindow::draw( GfxEngine& engine )
   engine.drawPicture( _d->empireMap, _d->offset );
   engine.drawPicture( *_d->border, Point( 0, 0 ) );
 
+  engine.drawPicture( _d->leftEagle, _d->eagleOffset.getWidth(), getHeight() - 120 + _d->eagleOffset.getHeight() - _d->leftEagle.getHeight() - 10 );
+  engine.drawPicture( _d->rightEagle, getWidth() - _d->eagleOffset.getWidth() - _d->rightEagle.getWidth(), 
+                                      getHeight() - 120 + _d->eagleOffset.getHeight() - _d->rightEagle.getHeight() - 10 );
+
+  engine.drawPicture( _d->centerPicture, (getWidth() - _d->centerPicture.getWidth()) / 2, 
+                                          getHeight() - 120 - _d->centerPicture.getHeight() + 20 );
   Widget::draw( engine );
 }
 

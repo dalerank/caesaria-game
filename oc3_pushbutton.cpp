@@ -23,7 +23,6 @@
 #include "oc3_gui_paneling.hpp"
 #include "oc3_gfx_engine.hpp"
 
-
 struct ButtonState
 {
     Picture* bgTexture;

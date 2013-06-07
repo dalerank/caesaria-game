@@ -105,6 +105,7 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
   CONNECT( _d->topMenu, onSave(), this, ScreenGame::resolveGameSave );
   CONNECT( _d->topMenu, onExit(), this, ScreenGame::resolveExitGame );
   CONNECT( _d->topMenu, onEnd(), this, ScreenGame::resolveEndGame );
+  CONNECT( _d->topMenu, onRequestAdvisor(), this, ScreenGame::showAdvisorsWindow );
 
   CONNECT( _d->menu, onCreateConstruction(), this, ScreenGame::resolveCreateConstruction );
   CONNECT( _d->menu, onRemoveTool(), this, ScreenGame::resolveRemoveTool );
@@ -294,5 +295,10 @@ void ScreenGame::resolveSelectOverlayView( int type )
 
 void ScreenGame::showAdvisorsWindow()
 {
-  AdvisorsWindow* advWnd = AdvisorsWindow::create( _d->gui->getRootWidget(), -1, AdvisorsWindow::advisorEmployers );
+  showAdvisorsWindow( ADV_EMPLOYERS );
+}
+
+void ScreenGame::showAdvisorsWindow( const int advType )
+{
+  AdvisorsWindow* advWnd = AdvisorsWindow::create( _d->gui->getRootWidget(), -1, (AdvisorType)advType );
 }

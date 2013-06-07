@@ -17,29 +17,13 @@
 #define __OPENCAESAR3_ADVISORSWINDOW_H_INCLUDED__
 
 #include "oc3_widget.hpp"
+#include "oc3_enums.hpp"
 
 class PushButton;
 
 class AdvisorsWindow : public Widget
 {
 public:
-  typedef enum 
-  {
-    advisorEmployers=0,
-    advisorLegion,
-    advisorEmpire,
-    advisorRatings,
-    advisorTrading,
-    advisorHistory,
-    advisorHealth,
-    advisorEducation,
-    advisorEntertainment,
-    advisorReligion,
-    advisorFinance,
-    advisorMain,
-    advisorCount
-  } AdvisorType;
-
   static AdvisorsWindow* create( Widget* parent, int id, const AdvisorType type  );
 
   // draw on screen

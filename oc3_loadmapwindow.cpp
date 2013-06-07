@@ -15,7 +15,7 @@
 
 #include "oc3_loadmapwindow.hpp"
 #include "oc3_label.hpp"
-#include "oc3_pushbutton.hpp"
+#include "oc3_texturedbutton.hpp"
 #include "oc3_gui_paneling.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_gfx_engine.hpp"
@@ -57,12 +57,8 @@ LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect,
   _d->directory = dir;
   _d->fileExtension = ext;
 
-  _d->btnExit = new PushButton( this, Rect( 472, getHeight() - 39, 496, getHeight() - 15 ) );
-  GuiPaneling::configureTexturedButton( _d->btnExit, ResourceGroup::panelBackground, ResourceMenu::exitInfBtnPicId, false);
-  
-  _d->btnHelp = new PushButton( this, Rect( 14, getHeight() - 39, 38, getHeight() - 15 ) );
-  GuiPaneling::configureTexturedButton( _d->btnHelp, ResourceGroup::panelBackground, ResourceMenu::helpInfBtnPicId, false);
-
+  _d->btnExit = new TexturedButton( this, Point( 472, getHeight() - 39), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
+  _d->btnHelp = new TexturedButton( this, Point( 14, getHeight() - 39 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
   CONNECT( _d->btnExit, onClicked(), this, LoadMapWindow::deleteLater );
 
   _d->files = new ListBox( this, Rect( 10, _d->lbTitle->getBottom(), getWidth() - 10, _d->btnHelp->getTop() - 5 ), -1, true, true, false ); 

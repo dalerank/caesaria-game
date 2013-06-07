@@ -68,6 +68,7 @@ private:
 
   void makeScreenShot();
   void showEmpireMapWindow();
+  void showAdvisorsWindow( const int advType );
   void showAdvisorsWindow();
 
   GuiInfoBox* _infoBox;   // info box to display, if any

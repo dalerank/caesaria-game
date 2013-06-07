@@ -19,7 +19,7 @@
 #include "oc3_pictureconverter.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_event.hpp"
-#include "oc3_pushbutton.hpp"
+#include "oc3_texturedbutton.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_gui_paneling.hpp"
 #include "oc3_label.hpp"
@@ -40,14 +40,9 @@ public:
 
 PushButton* AdvisorsWindow::addButton( const int pos, const int picId )
 {
-  Point tabButtonPos( (getWidth() - 636) / 2, getHeight() / 2 + 192);
+  Point tabButtonPos( (getWidth() - 636) / 2 + 10, getHeight() / 2 + 192 + 10);
 
-  Rect buttonRect( tabButtonPos + Point( 10, 10), Size( 40 ) );
-  buttonRect += Point( 48, 0 ) * pos;
-  PushButton* btn = new PushButton( this, buttonRect, "", pos );
-  btn->setPicture( &Picture::load( ResourceGroup::panelBackground, picId ), stNormal );
-  btn->setPicture( &Picture::load( ResourceGroup::panelBackground, picId ), stHovered );
-  btn->setPicture( &Picture::load( ResourceGroup::panelBackground, picId + 13 ), stPressed );
+  PushButton* btn = new TexturedButton( this, tabButtonPos + Point( 48, 0 ) * pos, Size( 40 ), pos, picId, picId, picId + 13 );
   btn->setIsPushButton( true );
   return btn;
 }
@@ -66,25 +61,25 @@ AdvisorsWindow::AdvisorsWindow( Widget* parent, int id )
   Point tabButtonPos( (getWidth() - 636) / 2, getHeight() / 2 + 192);
   GuiPaneling::instance().draw_white_frame(*_d->background, tabButtonPos.getX(), tabButtonPos.getY(), 
                                                             636, 60 );
-  PushButton* btn = addButton( advisorEmployers, 255 );
-  addButton( advisorLegion, 256 );
-  addButton( advisorEmpire, 257 );
-  addButton( advisorRatings, 258 );
-  addButton( advisorTrading, 259 );
-  addButton( advisorHistory, 260 );
-  addButton( advisorHealth, 261 );
-  addButton( advisorEducation, 262 );
-  addButton( advisorEntertainment, 263 );
-  addButton( advisorReligion, 264 );
-  addButton( advisorFinance, 265 );
-  addButton( advisorMain, 266 );
+  PushButton* btn = addButton( ADV_EMPLOYERS, 255 );
+  addButton( ADV_LEGION, 256 );
+  addButton( ADV_EMPIRE, 257 );
+  addButton( ADV_RATINGS, 258 );
+  addButton( ADV_TRADING, 259 );
+  addButton( ADV_POPULATION, 260 );
+  addButton( ADV_HEALTH, 261 );
+  addButton( ADV_EDUCATION, 262 );
+  addButton( ADV_ENTERTAINMENT, 263 );
+  addButton( ADV_RELIGION, 264 );
+  addButton( ADV_FINANCE, 265 );
+  addButton( ADV_MAIN, 266 );
   //!!! exit button have no pressed image
-  btn = addButton( advisorCount, 267 );
+  btn = addButton( ADV_COUNT, 267 );
   btn->setPicture( &Picture::load( ResourceGroup::advisorwindow, 3 ), stPressed );
   CONNECT( btn, onClicked(), this, AdvisorsWindow::deleteLater );
   //!!!
 
-  showAdvisor( advisorEmployers );
+  showAdvisor( ADV_EMPLOYERS );
 }
 
 void AdvisorsWindow::showAdvisor( const AdvisorType type )
@@ -106,8 +101,8 @@ void AdvisorsWindow::showAdvisor( const AdvisorType type )
 
   switch( type )
   {
-  case advisorEmployers: _d->advisorPanel = new AdvisorEmployerWindow( this, advisorEmployers ); break;
-  case advisorLegion: _d->advisorPanel = new AdvisorLegionWindow( this, advisorLegion ); break;
+  case ADV_EMPLOYERS: _d->advisorPanel = new AdvisorEmployerWindow( this, ADV_EMPLOYERS ); break;
+  case ADV_LEGION: _d->advisorPanel = new AdvisorLegionWindow( this, ADV_LEGION ); break;
 
   default:
   break;

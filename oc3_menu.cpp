@@ -15,7 +15,7 @@
 
 
 #include "oc3_menu.hpp"
-#include "oc3_pushbutton.hpp"
+#include "oc3_texturedbutton.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_pic_loader.hpp"
 #include "oc3_resourcegroup.hpp"
@@ -86,13 +86,14 @@ Signal0<>& Menu::onRemoveTool()
   return _d->onRemoveToolSignal;
 }
 
-class MenuButton : public PushButton
+class MenuButton : public TexturedButton
 {
 public:
-  MenuButton( Widget* parent, const Rect& rectangle, const std::string& caption, int id, int midIconId )
-    : PushButton( parent, rectangle, caption, id )
+  MenuButton( Widget* parent, const Point& pos, int id, int midIconId, int startPic, bool pushBtn )
+    : TexturedButton( parent, pos, Size( 39, 26 ), id, startPic )
   {
     _midIconId = midIconId;
+    setIsPushButton( pushBtn );
   }
 
   int getMidPicId() const { return _midIconId; }
@@ -145,9 +146,8 @@ PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul,
     Point offset( 1, 32 );
     int dy = 35;
 
-    MenuButton* ret = new MenuButton( this, Rect( 0, 0, 39, 26), "", -1, -1 );
+    MenuButton* ret = new MenuButton( this, Point( 0, 0 ), -1, -1, startPic, pushBtn );
     ret->setID( id | ( haveSubmenu ? BuildMenu::subMenuCreateIdHigh : 0 ) );
-    GuiPaneling::configureTexturedButton( ret, ResourceGroup::panelBackground, startPic, pushBtn );
     ret->setPosition( offset + Point( 0, dy * yMul ) );
     ret->setTooltipText( tooltip );
 
@@ -479,8 +479,9 @@ void ExtentMenu::maximize()
 ExtentMenu::ExtentMenu( Widget* parent, GuiTilemap& tmap, int id, const Rect& rectangle )
     : Menu( parent, id, rectangle ), _tmap( tmap )
 {
-  GuiPaneling::configureTexturedButton( _d->minimizeButton, ResourceGroup::panelBackground, 97, false );
-  _d->minimizeButton->setPosition( Point( 127, 5 ) );
+  _d->minimizeButton->deleteLater();
+  _d->minimizeButton = _addButton( 97, false, 0, MAXIMIZE_ID, false, ResourceMenu::emptyMidPicId, _("##minimizeBtnTooltip") );
+  _d->minimizeButton->setGeometry( Rect( Point( 127, 5 ), Size( 31, 20 ) ) );
   CONNECT( _d->minimizeButton, onClicked(), this, ExtentMenu::minimize );
 
   _d->houseButton->setPosition( Point( 13, 277 ) );
