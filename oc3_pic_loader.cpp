@@ -70,7 +70,8 @@ PicMetaData::PicMetaData() : _d( new Impl )
   _d->setRange( ResourceGroup::warehouse, 19, 83, offset);
   _d->setRange( ResourceGroup::utilitya, 1, 42, offset);
   _d->setRange( ResourceGroup::govt, 1, 10, offset);
-  _d->setRange( ResourceGroup::sprites, 1, 8, offset );
+  _d->setRange( ResourceGroup::sprites, 1, 8, offset ); //collapse fog
+  _d->setRange( ResourceGroup::sprites, 9, 20, offset ); //overlay columns
 
   _d->setRange( ResourceGroup::waterOverlay, 1, 2, offset ); //wateroverlay building 1x1
   _d->setRange( ResourceGroup::waterOverlay, 11, 12, offset ); //wateroverlay houses 1x1

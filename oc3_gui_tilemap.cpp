@@ -28,6 +28,8 @@
 #include "oc3_tilemapchangecommand.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_stringhelper.hpp"
+#include "oc3_house.hpp"
+#include "oc3_house_level.hpp"
 
 class GuiTilemap::Impl
 {
@@ -62,8 +64,10 @@ public:
 
   void drawTileBase( Tile& tile );
   void drawTileWater( Tile& tile );
+  void drawTileFire( Tile& tile );
   void drawTileInSelArea( Tile& tile, Tile* master );
   void drawAnimations( LandOverlayPtr overlay, const Point& screenPos );
+  void drawColumn( const Point& pos, const int startPicId, const int percent );
 
   template< class X, class Y >
   void setDrawFunction( Y* obj, void (X::*func)( Tile& ) )
@@ -137,6 +141,74 @@ void GuiTilemap::Impl::drawAnimations( LandOverlayPtr overlay, const Point& scre
     }
 
     engine->drawPicture( **itPic, screenPos);
+  }
+}
+
+void GuiTilemap::Impl::drawTileFire( Tile& tile )
+{
+  Point screenPos( 30 * (tile.getI() + tile.getJ()), 15 * (tile.getI() - tile.getJ()) );
+  screenPos += mapOffset;
+
+  tile.setWasDrawn();
+
+  bool needDrawAnimations = false;
+  const TerrainTile& terrain = tile.getTerrain();
+  if( terrain.getOverlay().isNull() )
+  {
+    //draw background
+    engine->drawPicture( tile.get_picture(), screenPos );
+  }
+  else
+  {   
+    LandOverlayPtr overlay = terrain.getOverlay();
+    Picture* pic = 0;
+    int fireLevel = 0;
+    switch( overlay->getType() )
+    {
+      //water buildings
+    case B_ROAD:
+    case B_PLAZA:
+    case B_BURNING_RUINS:
+    case B_BURNED_RUINS:
+    case B_COLLAPSED_RUINS:
+    case B_PREFECT:
+      pic = &tile.get_picture();
+      needDrawAnimations = true;
+    break;  
+
+      //houses
+    case B_HOUSE:
+      {
+        HousePtr house = overlay.as< House >();
+        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize() - 1)*2 + 11 );
+        fireLevel = house->getFireLevel();
+        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() ==0);
+      }
+    break;
+
+      //other buildings
+    default:
+      {
+        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize() - 1)*2 + 1 );
+        BuildingPtr building = overlay.as< Building >();
+        if( building.isValid() )
+        {
+          fireLevel = building->getFireLevel();
+        }
+      }
+    break;
+    }  
+
+    engine->drawPicture( *pic, screenPos );
+
+    if( needDrawAnimations )
+    {
+      drawAnimations( overlay, screenPos );
+    }
+    else
+    {
+      drawColumn( screenPos, 18, fireLevel );
+    }
   }
 }
 
@@ -505,6 +577,23 @@ void GuiTilemap::Impl::buildAll()
   }
 }
 
+void GuiTilemap::Impl::drawColumn( const Point& pos, const int startPicId, const int percent )
+{
+  engine->drawPicture( Picture::load( ResourceGroup::sprites, startPicId + 2 ), pos + Point( 5, 15 ) );
+  
+  int roundPercent = ( percent / 10 ) * 10;
+  Picture& pic = Picture::load( ResourceGroup::sprites, startPicId + 1 );
+  for( int offsetY=10; offsetY < roundPercent; offsetY += 10 )
+  {
+    engine->drawPicture( pic, pos - Point( -13, -5 + offsetY ) );
+  }
+
+  if( percent >= 10 )
+  {
+    engine->drawPicture( Picture::load( ResourceGroup::sprites, startPicId ), pos - Point( -1, -6 + roundPercent ) );
+  }
+}
+
 void GuiTilemap::handleEvent( NEvent& event )
 {
     if( event.EventType == OC3_MOUSE_EVENT )
@@ -713,13 +802,9 @@ void GuiTilemap::setChangeCommand( const TilemapChangeCommandPtr command )
     TilemapOverlayCommandPtr ovCmd = _d->changeCommand.as<TilemapOverlayCommand>();
     switch( ovCmd->getType() )
     {
-    case OV_WATER:
-      _d->setDrawFunction( _d.data(), &Impl::drawTileWater );
-    break;
-
-    default:
-      _d->setDrawFunction( _d.data(), &Impl::drawTileBase );
-    break;
+    case OV_WATER: _d->setDrawFunction( _d.data(), &Impl::drawTileWater ); break;
+    case OV_RISK_FIRE: _d->setDrawFunction( _d.data(), &Impl::drawTileFire ); break;
+    default:_d->setDrawFunction( _d.data(), &Impl::drawTileBase ); break;
     }
 
     _d->changeCommand = TilemapChangeCommandPtr();
