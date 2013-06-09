@@ -229,7 +229,8 @@ void Aqueduct::setTerrain(TerrainTile &terrain)
 {
   bool isRoad   = terrain.isRoad();
   bool isMeadow = terrain.isMeadow();
-  terrain.reset();
+
+  terrain.clearFlags();
   terrain.setOverlay(this);
   terrain.setBuilding(true);
   terrain.setRoad(isRoad);
@@ -404,7 +405,7 @@ bool Reservoir::_isNearWater( const TilePos& pos ) const
 void Reservoir::setTerrain(TerrainTile &terrain)
 {
   bool isMeadow = terrain.isMeadow();
-  terrain.reset();
+  terrain.clearFlags();
   terrain.setOverlay(this);
   terrain.setBuilding(true);
   terrain.setMeadow(isMeadow);

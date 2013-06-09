@@ -823,7 +823,7 @@ void GuiTilemap::checkPreviewBuild( const TilePos& pos )
              bool isConstructible = tile->getTerrain().isConstructible();
              tile->setPicture( isConstructible ? &grnPicture : &redPicture );
              tile->setMasterTile(0);
-             tile->getTerrain().reset();
+             tile->getTerrain().clearFlags();
              tile->getTerrain().setBuilding( true );
              _d->postTiles.push_back( tile );
            }

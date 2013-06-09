@@ -348,7 +348,7 @@ Garden::Garden() : Construction(B_GARDEN, Size(1) )
 void Garden::setTerrain(TerrainTile &terrain)
 {
   bool isMeadow = terrain.isMeadow();
-  terrain.reset();
+  terrain.clearFlags();
   terrain.setOverlay(this);
   terrain.setBuilding(true); // are gardens buildings or not???? try to investigate from original game
   terrain.setGarden(true);
@@ -389,11 +389,11 @@ void Building::setTerrain(TerrainTile &terrain)
   // when we reset tile, we delete information
   // about it's original information
   // try to fix
-  bool isMeadow = terrain.isMeadow();
-  terrain.reset();
+  bool saveMeadow = terrain.isMeadow();
+  terrain.clearFlags();
   terrain.setOverlay(this);
   terrain.setBuilding(true);
-  terrain.setMeadow(isMeadow);
+  terrain.setMeadow(saveMeadow);
 }
 
 void Building::timeStep(const unsigned long time)
