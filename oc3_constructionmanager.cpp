@@ -169,6 +169,7 @@ ConstructionManager::ConstructionManager() : _d( new Impl )
 
   //damages
   addCreator(B_BURNING_RUINS , OC3_STR_EXT(B_BURNING_RUINS), new BuildingCreator<BurningRuins>() );
+  addCreator(B_BURNED_RUINS , OC3_STR_EXT(B_BURNED_RUINS), new BuildingCreator<BurnedRuins>() );
   addCreator(B_COLLAPSED_RUINS , OC3_STR_EXT(B_COLLAPSED_RUINS), new BuildingCreator<CollapsedRuins>() );
 }
 

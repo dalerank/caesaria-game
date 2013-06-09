@@ -96,7 +96,7 @@ void LandOverlay::setPicture(Picture &picture)
          for (int di = 0; di<_size; ++di)
          {
             Tile &tile = tilemap.at(i+di, j+dj);
-            tile.set_picture(_picture);
+            tile.setPicture(_picture);
          }
       }
    }
@@ -114,8 +114,8 @@ void LandOverlay::build( const TilePos& pos )
     for (int di = 0; di < _size; ++di)
     {
       Tile& tile = tilemap.at( pos + TilePos( di, dj ) );
-      tile.set_master_tile(_master_tile);
-      tile.set_picture(_picture);
+      tile.setMasterTile(_master_tile);
+      tile.setPicture(_picture);
       TerrainTile& terrain = tile.getTerrain();
       terrain.setOverlay(this);
       setTerrain( terrain );
@@ -228,21 +228,36 @@ void Construction::build(const TilePos& pos )
 {
   LandOverlay::build( pos );
   computeAccessRoads();
-  _updateDesirabilityInfluence( true );
+  _updateDesirabilityInfluence( duPositive );
 }
 
-void Construction::_updateDesirabilityInfluence( bool onBuild )
+void Construction::_updateDesirabilityInfluence( const DsbrlUpdate type )
 {
   City &city = Scenario::instance().getCity();
   Tilemap &tilemap = city.getTilemap();
 
-  PtrTilesList desirabilityArea = tilemap.getFilledRectangle( getTile().getIJ() - TilePos( 2, 2 ), 
-    getTile().getIJ() + TilePos( 2 + getSize(), 2 + getSize() ) );
+  int dsrblRange = getDesirabilityRange();
+  int step = getDesirabilityStep();
+  int desInfluence = getDesirabilityInfluence();
+  int mul = ( type == duPositive ? 1 : -1);
 
-  int mul = (onBuild ? 1 : -1);
-  for( PtrTilesList::iterator it=desirabilityArea.begin(); it != desirabilityArea.end(); it++ )
+  PtrTilesArea selfArea = tilemap.getFilledRectangle( getTilePos(), getSize() );
+  for( PtrTilesArea::iterator it=selfArea.begin(); it != selfArea.end(); it++ )
   {
-    (*it)->getTerrain().appendDesirability( mul * getDesirabilityInfluence() );
+    (*it)->getTerrain().appendDesirability( mul * desInfluence );
+  }
+
+  for( int curRange=1; curRange <= dsrblRange; curRange++ )
+  {
+    PtrTilesArea perimetr = tilemap.getRectangle( getTilePos() - TilePos( curRange, curRange ), 
+                                                  getTilePos() + TilePos( curRange - 1 + getSize(), curRange - 1 + getSize() ) );
+
+    for( PtrTilesArea::iterator it=perimetr.begin(); it != perimetr.end(); it++ )
+    {
+      (*it)->getTerrain().appendDesirability( mul * desInfluence );
+    }
+
+    desInfluence += step;
   }
 }
 
@@ -299,18 +314,28 @@ void Construction::collapse()
 
 char Construction::getDesirabilityInfluence() const
 {
-  return 0;
+  return BuildingDataHolder::instance().getData( getType() ).getDesirbilityInfluence();
+}
+
+unsigned char Construction::getDesirabilityRange() const
+{
+  return BuildingDataHolder::instance().getData( getType() ).getDesirbilityRange();
 }
 
 void Construction::destroy()
 {
   LandOverlay::destroy();
-  _updateDesirabilityInfluence( false );
+  _updateDesirabilityInfluence( duNegative );
 }
 
 bool Construction::isNeedRoadAccess() const
 {
   return true;
+}
+
+char Construction::getDesirabilityStep() const
+{
+  return BuildingDataHolder::instance().getData( getType() ).getDesirabilityStep();
 }
 
 Garden::Garden() : Construction(B_GARDEN, Size(1) )

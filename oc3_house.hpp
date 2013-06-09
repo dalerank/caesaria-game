@@ -46,6 +46,8 @@ public:
    int getServiceAccess(const ServiceType service);
    void setServiceAccess(const ServiceType service, const int access);
    char getDesirabilityInfluence() const;
+   unsigned char getDesirabilityRange() const;
+   char getDesirabilityStep() const;
 
    void levelUp();
    void levelDown();
@@ -82,7 +84,5 @@ inline bool operator<(HousePtr v1, HousePtr v2)
 {
   return v1.object() < v2.object();
 }
-
-
 
 #endif

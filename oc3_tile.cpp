@@ -40,12 +40,12 @@ int Tile::getI() const    {   return _pos.getI();   }
 int Tile::getJ() const    {   return _pos.getJ();   }
 
 
-void Tile::set_picture(Picture *picture)
+void Tile::setPicture(Picture *picture)
 {
   _picture = picture;
 }
 
-Picture& Tile::get_picture() const
+Picture& Tile::getPicture() const
 {
   if( _picture==NULL ) 
   {
@@ -55,12 +55,12 @@ Picture& Tile::get_picture() const
   return *_picture;
 }
 
-Tile* Tile::get_master_tile() const
+Tile* Tile::getMasterTile() const
 {
   return _master_tile;
 }
 
-void Tile::set_master_tile(Tile* master)
+void Tile::setMasterTile(Tile* master)
 {
   _master_tile = master;
 }
@@ -75,7 +75,7 @@ TerrainTile& Tile::getTerrain()
   return _terrain;
 }
 
-bool Tile::is_flat() const
+bool Tile::isFlat() const
 {
   return !(_terrain.isRock() || _terrain.isTree() || _terrain.isBuilding() || _terrain.isAqueduct());
 }
@@ -85,7 +85,12 @@ TilePos Tile::getIJ() const
   return _pos;
 }
 
-bool Tile::is_master_tile() const
+bool Tile::isMasterTile() const
 {
   return (_master_tile == this);
+}
+
+Point Tile::getScreenPos() const
+{
+  return Point( 30 * ( getI() + getJ()), 15 * (getI() - getJ()) );
 }

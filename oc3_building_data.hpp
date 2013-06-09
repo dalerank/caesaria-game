@@ -39,6 +39,9 @@ public:
   int getCost() const;
   std::string getResouceGroup() const;
   int getResourceIndex() const;
+  char getDesirbilityInfluence() const;
+  char getDesirabilityStep() const;
+  char getDesirbilityRange() const;
 
 private:
   BuildingType _buildingType;

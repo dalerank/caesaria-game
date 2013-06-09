@@ -221,7 +221,7 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario& oScenario)
       
       Tile& tile = oTilemap.at(i, j);
       Picture& pic = Picture::load( TerrainTileHelper::convId2PicName( pGraphicGrid[index] ) );
-      tile.set_picture( &pic );
+      tile.setPicture( &pic );
       
       tile.getTerrain() = terrain; // what happens here?
     }    
@@ -297,7 +297,7 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario& oScenario)
         {
 	        for (int dj = 0; dj < size; ++dj)
 	        {
-	            oTilemap.at(master.getI() + di, master.getJ() + dj).set_master_tile(&master);
+	            oTilemap.at(master.getI() + di, master.getJ() + dj).setMasterTile(&master);
 	        }
         }
     	
@@ -311,7 +311,7 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario& oScenario)
       LandOverlayPtr overlay = ttile.getTerrain().getOverlay();
 
       // Check if it is building and type of building
-      //if (ttile.get_master_tile() == NULL)
+      //if (ttile.getMasterTile() == NULL)
       decodeTerrain(ttile);
     }
   }
@@ -319,7 +319,7 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario& oScenario)
 
 void ScenarioMapLoader::Impl::decodeTerrain(Tile &oTile)
 {
-  if (!oTile.is_master_tile() && oTile.get_master_tile()!=NULL)
+  if (!oTile.isMasterTile() && oTile.getMasterTile()!=NULL)
     return;
   
   TerrainTile& terrain = oTile.getTerrain();

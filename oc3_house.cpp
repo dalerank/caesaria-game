@@ -204,15 +204,15 @@ void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int start
       _d->nextHouseLevelSpec = &HouseSpecHelper::getInstance().getHouseLevelSpec(_d->houseLevel+1);
 
       _update();
-      _updateDesirabilityInfluence( false );
+      _updateDesirabilityInfluence( Construction::duNegative );
       _size++;
       build( getTile().getIJ() );      
     }
   }
 
-  _updateDesirabilityInfluence( false );
+  _updateDesirabilityInfluence( Construction::duNegative );
   _d->desirability = desirability;       
-  _updateDesirabilityInfluence( true );
+  _updateDesirabilityInfluence( Construction::duPositive );
 
   bool bigSize = getSize() > 1;
   _d->houseId = bigSize ? startBigPic : startSmallPic; 
@@ -274,9 +274,9 @@ void House::_tryDegrage_11_to_2_lvl( int smallPic, int bigPic, const char desira
   _d->houseId = bigSize ? bigPic : smallPic;
   _d->picIdOffset = bigSize ? 0 : ( rand() % 10 > 6 ? 1 : 0 );
 
-  _updateDesirabilityInfluence( false );
+  _updateDesirabilityInfluence( Construction::duNegative );
   _d->desirability = desirability;
-  _updateDesirabilityInfluence( true );
+  _updateDesirabilityInfluence( Construction::duPositive );
 }
 
 void House::levelDown()
@@ -297,7 +297,7 @@ void House::levelDown()
 
        if( getSize() > 1 )
        {
-         _updateDesirabilityInfluence( false );
+         _updateDesirabilityInfluence( Construction::duNegative );
 
          PtrTilesList tiles = tmap.getFilledRectangle( getTile().getIJ(), Size(2) );      
          PtrTilesList::iterator it=tiles.begin();
@@ -313,7 +313,7 @@ void House::levelDown()
          }
 
          _size = 1;
-         _updateDesirabilityInfluence( true );
+         _updateDesirabilityInfluence( Construction::duPositive );
        }
      }
    break;
@@ -632,4 +632,14 @@ void House::load( const VariantMap& stream )
   }
 
   _update();
+}
+
+unsigned char House::getDesirabilityRange() const
+{
+  return abs( _d->desirability );
+}
+
+char House::getDesirabilityStep() const
+{
+  return _d->desirability > 0 ? -1 : 1;
 }

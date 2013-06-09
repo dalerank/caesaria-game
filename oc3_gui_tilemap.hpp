@@ -19,10 +19,6 @@
 #ifndef __OPENCAESAR3_GUITILEMAP_H_INCLUDED__
 #define __OPENCAESAR3_GUITILEMAP_H_INCLUDED__
 
-
-#include <list>
-#include <vector>
-
 #include "oc3_picture.hpp"
 #include "oc3_city.hpp"
 #include "oc3_tilemap.hpp"
@@ -49,6 +45,8 @@ public:
    void drawTilemap();
    
    void handleEvent( NEvent& event);
+
+   Tilemap& getTilemap();
 
    // sets the current build tool (if any)
    void setChangeCommand( const TilemapChangeCommandPtr command );

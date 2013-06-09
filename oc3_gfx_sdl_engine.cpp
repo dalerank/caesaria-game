@@ -68,7 +68,8 @@ GfxSdlEngine::~GfxSdlEngine()
 
 void GfxSdlEngine::deletePicture( Picture* pic )
 {
-  unloadPicture( *pic );
+  if( pic )
+    unloadPicture( *pic );
 }
 
 void GfxSdlEngine::init()

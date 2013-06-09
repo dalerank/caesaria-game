@@ -88,17 +88,17 @@ typedef std::vector<Picture*> PicturesArray;
 
 struct PictureRefDeleter
 {
-  static inline void cleanup( Picture* pointer )
+  static inline void cleanup( Picture* pic )
   {
     // Enforce a complete type.
     // If you get a compile error here, you need add destructor in class-container
     typedef char IsIncompleteType[ sizeof(Picture) ? 1 : -1 ];
     (void) sizeof(IsIncompleteType);
 
-    Picture::destroy( pointer );
+    Picture::destroy( pic );
   }
 };
 
-typedef ScopedPtr< Picture > PictureRef;
+typedef ScopedPtr< Picture, PictureRefDeleter > PictureRef;
 
 #endif

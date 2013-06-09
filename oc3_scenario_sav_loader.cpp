@@ -192,7 +192,7 @@ bool ScenarioSavLoader::load( const std::string& filename, Scenario &oScenario )
       
       Tile& tile = oTilemap.at(i, j);
       Picture& pic = Picture::load( TerrainTileHelper::convId2PicName( pGraphicGrid[index] ) );
-      tile.set_picture( &pic );
+      tile.setPicture( &pic );
       
       tile.getTerrain() = terrain; // what happens here?
     }

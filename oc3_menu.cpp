@@ -17,6 +17,7 @@
 #include "oc3_menu.hpp"
 #include "oc3_texturedbutton.hpp"
 #include "oc3_picture.hpp"
+#include "oc3_color.hpp"
 #include "oc3_pic_loader.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_event.hpp"
@@ -67,6 +68,8 @@ public:
   PushButton* overlaysButton;
   Label* middleLabel;
   OverlaysMenu* overlaysMenu; 
+  PictureRef minimap;
+  PictureRef fullmap;
 
 oc3_signals public:
   Signal1< int > onCreateConstructionSignal;
@@ -219,6 +222,9 @@ void getTerrainColours(TerrainTile& tile, int &c1, int &c2)
     c1 = colours->colour(Caesar3Colours::MAP_EMPTY1, num7);
     c2 = colours->colour(Caesar3Colours::MAP_EMPTY2, num7);
   }
+
+  c1 |= 0xff000000;
+  c2 |= 0xff000000;
 }
 
 void getBuildingColours(TerrainTile& tile, int &c1, int &c2)
@@ -274,6 +280,9 @@ void getBuildingColours(TerrainTile& tile, int &c1, int &c2)
         }
     }
   }
+
+  c1 |= 0xff000000;
+  c2 |= 0xff000000;
 }
 
 /* end of helper functions */
@@ -449,6 +458,8 @@ ExtentMenu* ExtentMenu::create( Widget* parent, GuiTilemap& tmap, int id )
     const Picture& bground = Picture::load( ResourceGroup::panelBackground, 17 );
     const Picture& bottom = Picture::load( ResourceGroup::panelBackground, 20 );
 
+    ret->_d->fullmap.reset( Picture::create( Size( ret->_tmap.getTilemap().getSize() * 2 ) ) );
+    ret->_d->minimap.reset( Picture::create( Size( 144, 110 ) ) );
     ret->_d->bgPicture.reset( Picture::create( Size( bground.getWidth(), bground.getHeight() + bottom.getHeight() ) ) );
     ret->_d->bgPicture->draw( bground, 0, 0);
     ret->_d->bgPicture->draw( bottom, 0, bground.getHeight() );
@@ -544,7 +555,7 @@ bool ExtentMenu::onEvent(const NEvent& event)
         if( MenuButton* btn = safety_cast< MenuButton* >( event.GuiEvent.Caller ) )
         {
             int picId = btn->getMidPicId() > 0 ? btn->getMidPicId() : ResourceMenu::emptyMidPicId;
-            _d->middleLabel->setBackgroundPicture( PicLoader::instance().getPicture( ResourceGroup::menuMiddleIcons, picId ) );
+            _d->middleLabel->setBackgroundPicture( Picture::load( ResourceGroup::menuMiddleIcons, picId ) );
         }
     }
 
@@ -564,11 +575,9 @@ void ExtentMenu::draw( GfxEngine& painter )
   // try to generate and show minimap
   // now we will show it at (0,0)
   // then we will show it in right place 
-  int mapsize = Scenario::instance().getCity().getTilemap().getSize();
-  
-  PictureRef minimap( Picture::create( Size( mapsize * 2 ) ) );
+  int mapsize = _tmap.getTilemap().getSize(); 
 
-  minimap->lock();
+  _d->fullmap->lock();
   // here we can draw anything
   
   // std::cout << "center is (" << _mapArea->getCenterX() << "," << _mapArea->getCenterZ() << ")" << std::endl;
@@ -588,11 +597,11 @@ void ExtentMenu::draw( GfxEngine& painter )
       int c1, c2;      
       getTerrainColours(tile, c1, c2);
 
-      if( pnt.getX() >= minimap->getWidth()-1 || pnt.getY() >= minimap->getHeight() )
+      if( pnt.getX() >= _d->fullmap->getWidth()-1 || pnt.getY() >= _d->fullmap->getHeight() )
         continue;
 
-      minimap->setPixel( pnt, c1);
-      minimap->setPixel( pnt + Point( 1, 0 ), c2);
+      _d->fullmap->setPixel( pnt, c1);
+      _d->fullmap->setPixel( pnt + Point( 1, 0 ), c2);
     }
   }
 
@@ -619,17 +628,18 @@ void ExtentMenu::draw( GfxEngine& painter )
   }
   */
   
-  minimap->unlock();
+  _d->fullmap->unlock();
   
   // this is window where minimap is displayed
-  PictureRef minimap_windows( Picture::create( Size( 144, 110) ) );
+  
   
   int i = _tmap.getMapArea().getCenterX();
   int j = _tmap.getMapArea().getCenterZ();
   
-  minimap_windows->draw( *minimap, 146/2 - i, 112/2 + j - mapsize*2 );
+  _d->minimap->fill( 0xff000000, Rect() );
+  _d->minimap->draw( *_d->fullmap, 146/2 - i, 112/2 + j - mapsize*2 );
   
-  painter.drawPicture( *minimap_windows, getScreenLeft() + 8, getScreenTop() + 35); // 152, 145
+  painter.drawPicture( *_d->minimap, getScreenLeft() + 8, getScreenTop() + 35); // 152, 145
 
   //painter.deletePicture(minimap);
   //painter.deletePicture(minimap_windows);

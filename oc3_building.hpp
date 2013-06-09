@@ -94,11 +94,16 @@ public:
   virtual void computeAccessRoads();  
   virtual int getMaxDistance2Road() const; // virtual because HOUSE has different behavior
   virtual char getDesirabilityInfluence() const;
-  virtual void destroy();
+  virtual unsigned char getDesirabilityRange() const;
+  virtual char getDesirabilityStep() const;
 
+  virtual void destroy();
 protected:
   std::list<Tile*> _accessRoads;
-  void _updateDesirabilityInfluence( bool onBuild );
+  
+  typedef enum { duPositive=true, duNegative=false } DsbrlUpdate;
+  void _updateDesirabilityInfluence( const DsbrlUpdate type );
+
 };
 
 class Garden : public Construction
