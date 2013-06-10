@@ -92,7 +92,7 @@ void GfxGlEngine::unloadPicture(Picture &ioPicture)
 
 void GfxGlEngine::loadPicture(Picture& ioPicture)
 {
-   GLuint& texture = (GLuint)ioPicture.getGlTextureID();
+   GLuint& texture(ioPicture.getGlTextureID());
    SDL_Surface *surface = ioPicture.getSurface();
    GLenum texture_format;
    GLint nOfColors;
