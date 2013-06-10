@@ -48,7 +48,7 @@ public:
   Menu* menu;
   ExtentMenu* extMenu;
   InfoBoxManagerPtr infoBoxMgr;
-  GuiTilemap guiTilemap;
+  TilemapRenderer guiTilemap;
   WindowMessageStack* wndStackMsgs;
   Scenario* scenario; // current game scenario
   

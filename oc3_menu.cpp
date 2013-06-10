@@ -29,7 +29,7 @@
 #include "oc3_gettext.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_minimap_colours.hpp"
-#include "oc3_gui_tilemap.hpp"
+#include "oc3_tilemap_renderer.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_overlays_menu.hpp"
 
@@ -451,7 +451,7 @@ Signal0<>& Menu::onMaximize()
     return _d->onMaximizeSignal;
 }
 
-ExtentMenu* ExtentMenu::create( Widget* parent, GuiTilemap& tmap, int id )
+ExtentMenu* ExtentMenu::create( Widget* parent, TilemapRenderer& tmap, int id )
 {
     ExtentMenu* ret = new ExtentMenu( parent, tmap, id, Rect( 0, 0, 1, 1 ) );
 
@@ -487,7 +487,7 @@ void ExtentMenu::maximize()
                                                    stopPos, 300 );
 }
 
-ExtentMenu::ExtentMenu( Widget* parent, GuiTilemap& tmap, int id, const Rect& rectangle )
+ExtentMenu::ExtentMenu( Widget* parent, TilemapRenderer& tmap, int id, const Rect& rectangle )
     : Menu( parent, id, rectangle ), _tmap( tmap )
 {
   _d->minimizeButton->deleteLater();
@@ -610,21 +610,21 @@ void ExtentMenu::draw( GfxEngine& painter )
   // show center of screen on minimap
   // Exit out of image size on small carts... please fix it
   
-  /*sdlFacade.setPixel(surface, GuiTilemap::instance().getMapArea().getCenterX(),     mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ(), kWhite);
-  sdlFacade.setPixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 1, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ(), kWhite);
-  sdlFacade.setPixel(surface, GuiTilemap::instance().getMapArea().getCenterX(),     mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 1, kWhite);
-  sdlFacade.setPixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 1, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 1, kWhite);
+  /*sdlFacade.setPixel(surface, TilemapRenderer::instance().getMapArea().getCenterX(),     mapsize * 2 - TilemapRenderer::instance().getMapArea().getCenterZ(), kWhite);
+  sdlFacade.setPixel(surface, TilemapRenderer::instance().getMapArea().getCenterX() + 1, mapsize * 2 - TilemapRenderer::instance().getMapArea().getCenterZ(), kWhite);
+  sdlFacade.setPixel(surface, TilemapRenderer::instance().getMapArea().getCenterX(),     mapsize * 2 - TilemapRenderer::instance().getMapArea().getCenterZ() + 1, kWhite);
+  sdlFacade.setPixel(surface, TilemapRenderer::instance().getMapArea().getCenterX() + 1, mapsize * 2 - TilemapRenderer::instance().getMapArea().getCenterZ() + 1, kWhite);
 
-  for ( int i = GuiTilemap::instance().getMapArea().getCenterX() - 18; i <= GuiTilemap::instance().getMapArea().getCenterX() + 18; i++ )
+  for ( int i = TilemapRenderer::instance().getMapArea().getCenterX() - 18; i <= TilemapRenderer::instance().getMapArea().getCenterX() + 18; i++ )
   {
-    sdlFacade.setPixel(surface, i, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 34, kYellow);
-    sdlFacade.setPixel(surface, i, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() - 34, kYellow);
+    sdlFacade.setPixel(surface, i, mapsize * 2 - TilemapRenderer::instance().getMapArea().getCenterZ() + 34, kYellow);
+    sdlFacade.setPixel(surface, i, mapsize * 2 - TilemapRenderer::instance().getMapArea().getCenterZ() - 34, kYellow);
   }
 
-  for ( int j = mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() - 34; j <= mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 34; j++ )
+  for ( int j = mapsize * 2 - TilemapRenderer::instance().getMapArea().getCenterZ() - 34; j <= mapsize * 2 - TilemapRenderer::instance().getMapArea().getCenterZ() + 34; j++ )
   {
-    sdlFacade.setPixel(surface, GuiTilemap::instance().getMapArea().getCenterX() - 18, j, kYellow);
-    sdlFacade.setPixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 18, j, kYellow);
+    sdlFacade.setPixel(surface, TilemapRenderer::instance().getMapArea().getCenterX() - 18, j, kYellow);
+    sdlFacade.setPixel(surface, TilemapRenderer::instance().getMapArea().getCenterX() + 18, j, kYellow);
   }
   */
   

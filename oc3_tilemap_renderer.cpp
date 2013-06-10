@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#include "oc3_gui_tilemap.hpp"
+#include "oc3_tilemap_renderer.hpp"
 
 #include <list>
 #include <vector>
@@ -34,7 +34,7 @@
 #include "oc3_house.hpp"
 #include "oc3_house_level.hpp"
 
-class GuiTilemap::Impl
+class TilemapRenderer::Impl
 {
 public:
   typedef std::vector< Picture* > Pictures;
@@ -91,15 +91,15 @@ oc3_signals public:
   Signal1< std::string > onWarningMessageSignal;
 };
 
-GuiTilemap::GuiTilemap() : _d( new Impl )
+TilemapRenderer::TilemapRenderer() : _d( new Impl )
 {
   _d->city = NULL;
   _d->mapArea = NULL;
 }
 
-GuiTilemap::~GuiTilemap() {}
+TilemapRenderer::~TilemapRenderer() {}
 
-void GuiTilemap::init( City &city, TilemapArea &mapArea, ScreenGame *screen)
+void TilemapRenderer::init( City &city, TilemapArea &mapArea, ScreenGame *screen)
 {
   _d->city = &city;
   _d->tilemap = &city.getTilemap();
@@ -110,7 +110,7 @@ void GuiTilemap::init( City &city, TilemapArea &mapArea, ScreenGame *screen)
   _d->setDrawFunction( _d.data(), &Impl::drawTileBase );
 }
 
-void GuiTilemap::Impl::drawTileEx( Tile& tile, const int depth )
+void TilemapRenderer::Impl::drawTileEx( Tile& tile, const int depth )
 {
   if( tile.isFlat() )
   {
@@ -133,12 +133,12 @@ void GuiTilemap::Impl::drawTileEx( Tile& tile, const int depth )
   }
 }
 
-void GuiTilemap::Impl::drawTile( Tile& tile )
+void TilemapRenderer::Impl::drawTile( Tile& tile )
 {
   drawTileFunction( tile );
 }
 
-void GuiTilemap::Impl::drawAnimations( LandOverlayPtr overlay, const Point& screenPos )
+void TilemapRenderer::Impl::drawAnimations( LandOverlayPtr overlay, const Point& screenPos )
 {
   // building foregrounds and animations
   Impl::Pictures& fgPictures = overlay->getForegroundPictures();
@@ -155,7 +155,7 @@ void GuiTilemap::Impl::drawAnimations( LandOverlayPtr overlay, const Point& scre
   }
 }
 
-void GuiTilemap::Impl::drawTileDesirability( Tile& tile )
+void TilemapRenderer::Impl::drawTileDesirability( Tile& tile )
 {
   Point screenPos = tile.getScreenPos() + mapOffset;
 
@@ -205,7 +205,7 @@ void GuiTilemap::Impl::drawTileDesirability( Tile& tile )
 }
 
 
-void GuiTilemap::Impl::drawTileFire( Tile& tile )
+void TilemapRenderer::Impl::drawTileFire( Tile& tile )
 {
   Point screenPos = tile.getScreenPos() + mapOffset;
 
@@ -272,7 +272,7 @@ void GuiTilemap::Impl::drawTileFire( Tile& tile )
   }
 }
 
-void GuiTilemap::Impl::drawTileFood( Tile& tile )
+void TilemapRenderer::Impl::drawTileFood( Tile& tile )
 {
   Point screenPos = tile.getScreenPos() + mapOffset;
 
@@ -333,7 +333,7 @@ void GuiTilemap::Impl::drawTileFood( Tile& tile )
   }
 }
 
-void GuiTilemap::Impl::drawTileWater( Tile& tile )
+void TilemapRenderer::Impl::drawTileWater( Tile& tile )
 {
   Point screenPos( 30 * (tile.getI() + tile.getJ()), 15 * (tile.getI() - tile.getJ()) );
   screenPos += mapOffset;
@@ -400,7 +400,7 @@ void GuiTilemap::Impl::drawTileWater( Tile& tile )
   }
 }
 
-void GuiTilemap::Impl::drawTileBase( Tile& tile )
+void TilemapRenderer::Impl::drawTileBase( Tile& tile )
 {
   Point screenPos( 30 * (tile.getI() + tile.getJ()), 15 * (tile.getI() - tile.getJ()) );
   screenPos += mapOffset;
@@ -420,7 +420,7 @@ void GuiTilemap::Impl::drawTileBase( Tile& tile )
   drawAnimations( overlay, screenPos );
 }
 
-void GuiTilemap::Impl::drawTileInSelArea( Tile& tile, Tile* master )
+void TilemapRenderer::Impl::drawTileInSelArea( Tile& tile, Tile* master )
 {
   if( master==NULL )
   {
@@ -441,7 +441,7 @@ void GuiTilemap::Impl::drawTileInSelArea( Tile& tile, Tile* master )
   }  
 }
 
-void GuiTilemap::Impl::drawTilemapWithRemoveTools()
+void TilemapRenderer::Impl::drawTilemapWithRemoveTools()
 {
   // center the map on the screen
   mapOffset = Point( engine->getScreenWidth() / 2 - 30 * (mapArea->getCenterX() + 1) + 1,
@@ -537,7 +537,7 @@ void GuiTilemap::Impl::drawTilemapWithRemoveTools()
   }
 }
 
-void GuiTilemap::Impl::simpleDrawTilemap()
+void TilemapRenderer::Impl::simpleDrawTilemap()
 {
   // center the map on the screen
   mapOffset = Point( engine->getScreenWidth() / 2 - 30 * (mapArea->getCenterX() + 1) + 1,
@@ -616,7 +616,7 @@ void GuiTilemap::Impl::simpleDrawTilemap()
   }
 }
 
-void GuiTilemap::drawTilemap()
+void TilemapRenderer::drawTilemap()
 {
   if( _d->changeCommand.isValid() && _d->changeCommand.is<TilemapRemoveCommand>() )
   {
@@ -636,7 +636,7 @@ void GuiTilemap::drawTilemap()
   }
 }
 
-Tile* GuiTilemap::Impl::getTileXY( const Point& pos, bool overborder)
+Tile* TilemapRenderer::Impl::getTileXY( const Point& pos, bool overborder)
 {
    Point mOffset = pos - mapOffset;  // x relative to the left most pixel of the tilemap
    int i = (mOffset.getX() + 2 * mOffset.getY()) / 60;
@@ -661,12 +661,12 @@ Tile* GuiTilemap::Impl::getTileXY( const Point& pos, bool overborder)
    }
 }
 
-TilemapArea &GuiTilemap::getMapArea()
+TilemapArea &TilemapRenderer::getMapArea()
 {
   return *_d->mapArea;
 }
 
-void GuiTilemap::updatePreviewTiles( bool force )
+void TilemapRenderer::updatePreviewTiles( bool force )
 {
   TilemapBuildCommandPtr bldCommand = _d->changeCommand.as<TilemapBuildCommand>();
   if( bldCommand.isNull() )
@@ -721,7 +721,7 @@ void GuiTilemap::updatePreviewTiles( bool force )
   }
 }
 
-void GuiTilemap::Impl::getSelectedArea( TilePos& outStartPos, TilePos& outStopPos )
+void TilemapRenderer::Impl::getSelectedArea( TilePos& outStartPos, TilePos& outStopPos )
 {
   Tile* startTile = getTileXY( startCursorPos, true );  // tile under the cursor (or NULL)
   Tile* stopTile  = getTileXY( lastCursorPos, true );
@@ -729,14 +729,14 @@ void GuiTilemap::Impl::getSelectedArea( TilePos& outStartPos, TilePos& outStopPo
   TilePos startPosTmp = startTile->getIJ();
   TilePos stopPosTmp  = stopTile->getIJ();
 
-//  std::cout << "GuiTilemap::_getSelectedArea" << " ";
+//  std::cout << "TilemapRenderer::_getSelectedArea" << " ";
 //  std::cout << "(" << startPosTmp.getI() << " " << startPosTmp.getJ() << ") (" << stopPosTmp.getI() << " " << stopPosTmp.getJ() << ")" << std::endl;
     
   outStartPos = TilePos( std::min<int>( startPosTmp.getI(), stopPosTmp.getI() ), std::min<int>( startPosTmp.getJ(), stopPosTmp.getJ() ) );
   outStopPos  = TilePos( std::max<int>( startPosTmp.getI(), stopPosTmp.getI() ), std::max<int>( startPosTmp.getJ(), stopPosTmp.getJ() ) );
 }
 
-void GuiTilemap::Impl::clearAll()
+void TilemapRenderer::Impl::clearAll()
 {
   TilePos startPos, stopPos;
   getSelectedArea( startPos, stopPos );
@@ -748,7 +748,7 @@ void GuiTilemap::Impl::clearAll()
   }
 }
 
-void GuiTilemap::Impl::buildAll()
+void TilemapRenderer::Impl::buildAll()
 {
   TilemapBuildCommandPtr bldCommand = changeCommand.as<TilemapBuildCommand>();
   if( bldCommand.isNull() )
@@ -778,7 +778,7 @@ void GuiTilemap::Impl::buildAll()
   }
 }
 
-void GuiTilemap::Impl::drawColumn( const Point& pos, const int startPicId, const int percent )
+void TilemapRenderer::Impl::drawColumn( const Point& pos, const int startPicId, const int percent )
 {
   engine->drawPicture( Picture::load( ResourceGroup::sprites, startPicId + 2 ), pos + Point( 5, 15 ) );
   
@@ -795,7 +795,7 @@ void GuiTilemap::Impl::drawColumn( const Point& pos, const int startPicId, const
   }
 }
 
-void GuiTilemap::handleEvent( NEvent& event )
+void TilemapRenderer::handleEvent( NEvent& event )
 {
     if( event.EventType == OC3_MOUSE_EVENT )
     {
@@ -898,7 +898,7 @@ void GuiTilemap::handleEvent( NEvent& event )
     }
 }
 
-void GuiTilemap::discardPreview()
+void TilemapRenderer::discardPreview()
 {
   for( Impl::Pictures::iterator it=_d->previewToolPictures.begin(); it != _d->previewToolPictures.end(); it++ )
   {
@@ -915,7 +915,7 @@ void GuiTilemap::discardPreview()
   _d->postTiles.clear();
 }
 
-void GuiTilemap::checkPreviewBuild( const TilePos& pos )
+void TilemapRenderer::checkPreviewBuild( const TilePos& pos )
 {
   TilemapBuildCommandPtr bldCommand = _d->changeCommand.as<TilemapBuildCommand>();
   if( bldCommand.isNull() )
@@ -979,17 +979,17 @@ void GuiTilemap::checkPreviewBuild( const TilePos& pos )
   }
 }
 
-Tile& GuiTilemap::getTile(const TilePos& pos )
+Tile& TilemapRenderer::getTile(const TilePos& pos )
 {
   return _d->tilemap->at( pos );
 }
 
-Signal1< const Tile& >& GuiTilemap::onShowTileInfo()
+Signal1< const Tile& >& TilemapRenderer::onShowTileInfo()
 {
   return _d->onShowTileInfoSignal;
 }
 
-void GuiTilemap::setChangeCommand( const TilemapChangeCommandPtr command )
+void TilemapRenderer::setChangeCommand( const TilemapChangeCommandPtr command )
 {
   _d->changeCommand = command;
   _d->startCursorPos = _d->lastCursorPos;
@@ -1014,12 +1014,12 @@ void GuiTilemap::setChangeCommand( const TilemapChangeCommandPtr command )
   }
 }
 
-Signal1< std::string >& GuiTilemap::onWarningMessage()
+Signal1< std::string >& TilemapRenderer::onWarningMessage()
 {
   return _d->onWarningMessageSignal;
 }
 
-Tilemap& GuiTilemap::getTilemap()
+Tilemap& TilemapRenderer::getTilemap()
 { 
   return *_d->tilemap;
 }

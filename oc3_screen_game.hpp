@@ -24,7 +24,7 @@
 
 #include "oc3_picture.hpp"
 #include "oc3_scenario.hpp"
-#include "oc3_gui_tilemap.hpp"
+#include "oc3_tilemap_renderer.hpp"
 #include "oc3_gui_info_box.hpp"
 #include "oc3_screen.hpp"
 #include "oc3_scopedptr.hpp"

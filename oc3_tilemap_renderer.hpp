@@ -31,11 +31,11 @@ class ScreenGame;
 struct NEvent;
 
 /* Draws the tilemap area on the screen thanks to the GfxEngine, and handle user events */
-class GuiTilemap
+class TilemapRenderer
 {
 public:
-   GuiTilemap();
-   ~GuiTilemap();
+   TilemapRenderer();
+   ~TilemapRenderer();
    
    void init(City &city, TilemapArea &mapArea, ScreenGame *screen);
 
