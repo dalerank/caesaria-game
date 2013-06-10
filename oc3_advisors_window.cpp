@@ -76,6 +76,7 @@ AdvisorsWindow::AdvisorsWindow( Widget* parent, int id )
   //!!! exit button have no pressed image
   btn = addButton( ADV_COUNT, 267 );
   btn->setPicture( &Picture::load( ResourceGroup::advisorwindow, 3 ), stPressed );
+  btn->setIsPushButton( false );
   CONNECT( btn, onClicked(), this, AdvisorsWindow::deleteLater );
   //!!!
 

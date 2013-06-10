@@ -26,13 +26,15 @@ class Font;
 class PushButton : public Widget
 {
 public:
+  typedef enum { GrayBorderLine, WhiteBorderUp, BlackBorderUp } BackgroundStyle;
 
 	//! constructor
 	PushButton( Widget* parent,
 			        const Rect& rectangle,
               const std::string& caption="",
               int id=-1, 
-			        bool noclip=false );
+			        bool noclip=false,
+              const BackgroundStyle bgtyle=GrayBorderLine);
 
 	//! destructor
 	~PushButton();
@@ -59,6 +61,8 @@ public:
   void drawIcon( GfxEngine& painter );
 
   void setPicture( Picture* picture, ElementState state );
+
+  void setBackgroundStyle( const BackgroundStyle style );
 
   void setFont( const Font& font, ElementState state );
 
