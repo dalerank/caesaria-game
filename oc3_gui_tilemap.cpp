@@ -74,6 +74,12 @@ public:
   void drawAnimations( LandOverlayPtr overlay, const Point& screenPos );
   void drawColumn( const Point& pos, const int startPicId, const int percent );
 
+  void drawTilemapWithRemoveTools();
+  void simpleDrawTilemap();
+
+  void drawTile( Tile& tile );
+  void drawTileEx( Tile& tile, const int depth );
+
   template< class X, class Y >
   void setDrawFunction( Y* obj, void (X::*func)( Tile& ) )
   {
@@ -104,7 +110,7 @@ void GuiTilemap::init( City &city, TilemapArea &mapArea, ScreenGame *screen)
   _d->setDrawFunction( _d.data(), &Impl::drawTileBase );
 }
 
-void GuiTilemap::drawTileEx( Tile& tile, const int depth )
+void GuiTilemap::Impl::drawTileEx( Tile& tile, const int depth )
 {
   if( tile.isFlat() )
   {
@@ -127,9 +133,9 @@ void GuiTilemap::drawTileEx( Tile& tile, const int depth )
   }
 }
 
-void GuiTilemap::drawTile( Tile& tile )
+void GuiTilemap::Impl::drawTile( Tile& tile )
 {
-  _d->drawTileFunction( tile );
+  drawTileFunction( tile );
 }
 
 void GuiTilemap::Impl::drawAnimations( LandOverlayPtr overlay, const Point& screenPos )
@@ -435,48 +441,39 @@ void GuiTilemap::Impl::drawTileInSelArea( Tile& tile, Tile* master )
   }  
 }
 
-void GuiTilemap::drawTilemap()
+void GuiTilemap::Impl::drawTilemapWithRemoveTools()
 {
-  Tilemap &tilemap = *_d->tilemap;
-  TilemapArea &mapArea = *_d->mapArea;  
-
   // center the map on the screen
-  Point mOffset( _d->engine->getScreenWidth() / 2 - 30 * (mapArea.getCenterX() + 1) + 1,
-                 _d->engine->getScreenHeight() / 2 + 15 * (mapArea.getCenterZ()-tilemap.getSize() + 1) - 30 );
-
-  _d->mapOffset = mOffset;  // this is the current offset
+  mapOffset = Point( engine->getScreenWidth() / 2 - 30 * (mapArea->getCenterX() + 1) + 1,
+                     engine->getScreenHeight() / 2 + 15 * (mapArea->getCenterZ()-tilemap->getSize() + 1) - 30 );
 
   int lastZ = -1000;  // dummy value
 
-  const std::vector< TilePos >& tiles = mapArea.getTiles();
+  const std::vector< TilePos >& tiles = mapArea->getTiles();
   std::vector< TilePos >::const_iterator itPos;
 
   for( itPos = tiles.begin(); itPos != tiles.end(); ++itPos )
   {
-    getTile( *itPos ).resetWasDrawn();
+    tilemap->at( *itPos ).resetWasDrawn();
   }
 
-  Rect selectedArea( -1, -1, -1, -1 );
-  if( _d->changeCommand.isValid() && _d->changeCommand.is<TilemapRemoveCommand>() )
-  {
-    TilePos startPos, stopPos;
-    _d->getSelectedArea( startPos, stopPos );
-    selectedArea = Rect( startPos.getI(), startPos.getJ(), stopPos.getI(), stopPos.getJ() );
-  }
+  TilePos startPos, stopPos;
+  getSelectedArea( startPos, stopPos );
+  
+  Rect destroyArea = Rect( startPos.getI(), startPos.getJ(), stopPos.getI(), stopPos.getJ() );
 
   // FIRST PART: draw all flat land (walkable/boatable)
   for( itPos = tiles.begin(); itPos != tiles.end(); ++itPos )
   {
-    Tile& tile = getTile( *itPos );
+    Tile& tile = tilemap->at( *itPos );
     Tile* master = tile.getMasterTile();
 
     if( !tile.isFlat() )
       continue;
-   
-    if( selectedArea.UpperLeftCorner.getX() >= 0 && 
-        selectedArea.isPointInside( Point( (*itPos).getI(), (*itPos).getJ() ) ) )
+
+    if( destroyArea.isPointInside( Point( (*itPos).getI(), (*itPos).getJ() ) ) )
     {
-      _d->drawTileInSelArea( tile, master );  
+      drawTileInSelArea( tile, master );  
     }
     else
     {
@@ -485,11 +482,10 @@ void GuiTilemap::drawTilemap()
         // single-tile
         drawTile( tile );
       }
-      else
+      else if( !master->wasDrawn() )
       {
         // multi-tile: draw the master tile.
-        if( !master->wasDrawn() )
-          drawTile( *master );
+        drawTile( *master );
       }    
     }
   }  
@@ -498,55 +494,145 @@ void GuiTilemap::drawTilemap()
   for( itPos = tiles.begin(); itPos != tiles.end(); ++itPos)
   {
     int z = itPos->getZ();
-   
+
     if (z != lastZ)
     {
-       // TODO: pre-sort all animations
-       lastZ = z;
+      // TODO: pre-sort all animations
+      lastZ = z;
 
-       Impl::Pictures pictureList;
+      Impl::Pictures pictureList;
 
-       Walkers walkerList = _d->city->getWalkerList( WT_ALL );
-       for( Walkers::iterator itWalker =  walkerList.begin();
-             itWalker != walkerList.end(); ++itWalker)
-       {
-          // for each walker
-          WalkerPtr anim = *itWalker;
-          int zAnim = anim->getIJ().getZ();// getJ() - anim.getI();
-          if( zAnim > z && zAnim <= z+1 )
+      Walkers walkerList = city->getWalkerList( WT_ALL );
+      for( Walkers::iterator itWalker =  walkerList.begin();
+        itWalker != walkerList.end(); ++itWalker)
+      {
+        // for each walker
+        WalkerPtr anim = *itWalker;
+        int zAnim = anim->getIJ().getZ();// getJ() - anim.getI();
+        if( zAnim > z && zAnim <= z+1 )
+        {
+          pictureList.clear();
+          anim->getPictureList( pictureList );
+          for( Impl::Pictures::iterator picIt = pictureList.begin(); picIt != pictureList.end(); ++picIt )
           {
-             pictureList.clear();
-             anim->getPictureList( pictureList );
-             for( Impl::Pictures::iterator picIt = pictureList.begin(); picIt != pictureList.end(); ++picIt )
-             {
-                if( *picIt == NULL )
-                {
-                   continue;
-                }
+            if( *picIt == NULL )
+            {
+              continue;
+            }
 
-                _d->engine->drawPicture( **picIt, 2*(anim->getII() + anim->getJJ()) + mOffset.getX(), 
-                                                     anim->getII() - anim->getJJ()  + mOffset.getY());
-             }
+            engine->drawPicture( **picIt, Point( 2*(anim->getII() + anim->getJJ()),
+                                                 anim->getII() - anim->getJJ() ) + mapOffset );
           }
-       }
+        }
+      }
     }   
 
-    if( selectedArea.UpperLeftCorner.getX() > 0 
-        && selectedArea.isPointInside( Point( (*itPos).getI(), (*itPos).getJ() ) )  )
+    if( destroyArea.isPointInside( Point( (*itPos).getI(), (*itPos).getJ() ) )  )
     {
-      _d->engine->setTileDrawMask( 0x00ff0000, 0, 0, 0xff000000 );      
+      engine->setTileDrawMask( 0x00ff0000, 0, 0, 0xff000000 );      
     }
 
-    drawTileEx( getTile( *itPos ), z );
-    _d->engine->resetTileDrawMask();
+    drawTileEx( tilemap->at( *itPos ), z );
+    engine->resetTileDrawMask();
+  }
+}
+
+void GuiTilemap::Impl::simpleDrawTilemap()
+{
+  // center the map on the screen
+  mapOffset = Point( engine->getScreenWidth() / 2 - 30 * (mapArea->getCenterX() + 1) + 1,
+                     engine->getScreenHeight() / 2 + 15 * (mapArea->getCenterZ()-tilemap->getSize() + 1) - 30 );
+
+  int lastZ = -1000;  // dummy value
+
+  const std::vector< TilePos >& tiles = mapArea->getTiles();
+  std::vector< TilePos >::const_iterator itPos;
+
+  for( itPos = tiles.begin(); itPos != tiles.end(); ++itPos )
+  {
+    tilemap->at( *itPos ).resetWasDrawn();
   }
 
-  //Third part: drawing build/remove tools
+  // FIRST PART: draw all flat land (walkable/boatable)
+  for( itPos = tiles.begin(); itPos != tiles.end(); ++itPos )
+  {
+    Tile& tile = tilemap->at( *itPos );
+    Tile* master = tile.getMasterTile();
+
+    if( !tile.isFlat() )
+      continue;
+
+    if( master==NULL )
+    {
+      // single-tile
+      drawTile( tile );
+    }
+    else
+    {
+      // multi-tile: draw the master tile.
+      if( !master->wasDrawn() )
+        drawTile( *master );
+    }    
+  }  
+
+  // SECOND PART: draw all sprites, impassable land and buildings
+  for( itPos = tiles.begin(); itPos != tiles.end(); ++itPos)
+  {
+    int z = itPos->getZ();
+
+    if (z != lastZ)
+    {
+      // TODO: pre-sort all animations
+      lastZ = z;
+
+      Impl::Pictures pictureList;
+
+      Walkers walkerList = city->getWalkerList( WT_ALL );
+      for( Walkers::iterator itWalker =  walkerList.begin();
+        itWalker != walkerList.end(); ++itWalker)
+      {
+        // for each walker
+        WalkerPtr anim = *itWalker;
+        int zAnim = anim->getIJ().getZ();// getJ() - anim.getI();
+        if( zAnim > z && zAnim <= z+1 )
+        {
+          pictureList.clear();
+          anim->getPictureList( pictureList );
+          for( Impl::Pictures::iterator picIt = pictureList.begin(); picIt != pictureList.end(); ++picIt )
+          {
+            if( *picIt == NULL )
+            {
+              continue;
+            }
+
+            engine->drawPicture( **picIt, Point( 2*( anim->getII() + anim->getJJ() ),
+                                                 anim->getII() - anim->getJJ() ) + mapOffset );
+          }
+        }
+      }
+    }   
+
+    drawTileEx( tilemap->at( *itPos ), z );
+  }
+}
+
+void GuiTilemap::drawTilemap()
+{
+  if( _d->changeCommand.isValid() && _d->changeCommand.is<TilemapRemoveCommand>() )
+  {
+    _d->drawTilemapWithRemoveTools();
+  }
+  else
+  {
+    _d->simpleDrawTilemap();
+  }
+
+  //Third part: drawing build tools
   for( PtrTilesList::iterator itPostTile = _d->postTiles.begin(); itPostTile != _d->postTiles.end(); ++itPostTile )
   {
     int z = (*itPostTile)->getJ() - (*itPostTile)->getI();
     (*itPostTile)->resetWasDrawn();
-    drawTileEx( **itPostTile, z );
+    _d->drawTileEx( **itPostTile, z );
   }
 }
 

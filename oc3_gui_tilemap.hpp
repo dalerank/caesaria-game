@@ -68,10 +68,6 @@ protected:
    // update preview tiles
    void updatePreviewTiles( bool force=false );
 
-   void drawTile( Tile& tile );
-
-   void drawTileEx( Tile& tile, const int depth );
-
 private:
    class Impl;
    ScopedPtr< Impl > _d;
