@@ -325,18 +325,16 @@ void TilemapRenderer::Impl::drawTileFood( Tile& tile )
     {
       drawAnimations( overlay, screenPos );
     }
-    else
+    else if( foodLevel >= 0 )
     {
-      if( foodLevel >= 0 )
-          drawColumn( screenPos, 18, math::clamp( 100 - foodLevel, 0, 100 ) );
+      drawColumn( screenPos, 18, math::clamp( 100 - foodLevel, 0, 100 ) );
     }
   }
 }
 
 void TilemapRenderer::Impl::drawTileWater( Tile& tile )
 {
-  Point screenPos( 30 * (tile.getI() + tile.getJ()), 15 * (tile.getI() - tile.getJ()) );
-  screenPos += mapOffset;
+  Point screenPos = tile.getScreenPos() + mapOffset;
   
   tile.setWasDrawn();
 
@@ -402,8 +400,7 @@ void TilemapRenderer::Impl::drawTileWater( Tile& tile )
 
 void TilemapRenderer::Impl::drawTileBase( Tile& tile )
 {
-  Point screenPos( 30 * (tile.getI() + tile.getJ()), 15 * (tile.getI() - tile.getJ()) );
-  screenPos += mapOffset;
+  Point screenPos = tile.getScreenPos() + mapOffset;
 
   tile.setWasDrawn();
 
@@ -426,8 +423,7 @@ void TilemapRenderer::Impl::drawTileInSelArea( Tile& tile, Tile* master )
   {
     // single-tile
     drawTileFunction( tile );
-    engine->drawPicture( *clearPic, 30 * (tile.getI() + tile.getJ()) + mapOffset.getX(), 
-                                    15 * (tile.getI() - tile.getJ()) + mapOffset.getY() );
+    engine->drawPicture( *clearPic, tile.getScreenPos() + mapOffset );
   }
   else
   {
@@ -618,6 +614,7 @@ void TilemapRenderer::Impl::simpleDrawTilemap()
 
 void TilemapRenderer::drawTilemap()
 {
+  //First part: drawing city
   if( _d->changeCommand.isValid() && _d->changeCommand.is<TilemapRemoveCommand>() )
   {
     _d->drawTilemapWithRemoveTools();
@@ -627,12 +624,11 @@ void TilemapRenderer::drawTilemap()
     _d->simpleDrawTilemap();
   }
 
-  //Third part: drawing build tools
+  //Second part: drawing build tools
   for( PtrTilesList::iterator itPostTile = _d->postTiles.begin(); itPostTile != _d->postTiles.end(); ++itPostTile )
   {
-    int z = (*itPostTile)->getJ() - (*itPostTile)->getI();
     (*itPostTile)->resetWasDrawn();
-    _d->drawTileEx( **itPostTile, z );
+    _d->drawTileEx( **itPostTile, (*itPostTile)->getIJ().getZ() );
   }
 }
 
@@ -969,9 +965,10 @@ void TilemapRenderer::checkPreviewBuild( const TilePos& pos )
 
              bool isConstructible = tile->getTerrain().isConstructible();
              tile->setPicture( isConstructible ? &grnPicture : &redPicture );
-             tile->setMasterTile(0);
+             tile->setMasterTile( 0 );
              tile->getTerrain().clearFlags();
              tile->getTerrain().setBuilding( true );
+             tile->getTerrain().setOverlay( 0 );
              _d->postTiles.push_back( tile );
            }
        }
