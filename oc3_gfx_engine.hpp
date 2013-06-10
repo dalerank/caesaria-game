@@ -57,9 +57,9 @@ public:
   virtual void setTileDrawMask( int rmask, int gmask, int bmask, int amask ) = 0;
   virtual void resetTileDrawMask() = 0;
   
-  virtual void deletePicture( Picture &pic ) = 0;
+  virtual void deletePicture( Picture* pic ) = 0;
   // creates a picture with the given size, it will need to be loaded by the graphic engine
-  virtual Picture& createPicture(int width, int height) = 0;
+  virtual Picture* createPicture(const Size& size ) = 0;
 
   virtual void createScreenshot( const std::string& filename ) = 0;
   virtual unsigned int getFps() const = 0;

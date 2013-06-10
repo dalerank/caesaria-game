@@ -312,14 +312,13 @@ unsigned int ContextMenu::sendClick_(const Point& p)
 		else 
 			getParent()->onEvent(event);
 
-/*
-        if( _d->highlihted >= 0 )
-            CallFunctionByRef( _d->items[_d->highlihted]->luaFunction,  this, (void*)_d->highlihted );
-*/
-
 		ContextMenuItem* tItem = getSelectedItem();
 		if( tItem )
+    {
 			tItem->onClicked().emit();
+
+      _d->onItemActionSignal.emit( tItem->getCommandId() );
+    }
 		return 1;
 	}
 
@@ -408,7 +407,7 @@ void ContextMenu::beforeDraw( GfxEngine& painter )
   if( !isVisible() )
     return;
 
-  Font font( FONT_2_WHITE );
+  Font font = Font::create( FONT_2_WHITE );
 
   if( font != _d->lastFont )
   {
@@ -731,4 +730,9 @@ void ContextMenu::setAllowFocus( bool enabled )
 int ContextMenu::getHoveredIndex() const
 {
 	return _d->highlihted;
+}
+
+Signal1<int>& ContextMenu::onItemAction()
+{
+  return _d->onItemActionSignal;
 }

@@ -47,6 +47,7 @@ public:
     isStopped=true; 
   }
   
+  void resolvePlayMission();
   void resolveQuitGame() { result=closeApplication; isStopped=true; }
   
   void resolveSelectFile( std::string fileName )
@@ -57,7 +58,7 @@ public:
   }
 
   void resolveShowLoadMapWnd();
-    void resolveShowLoadGameWnd();
+  void resolveShowLoadGameWnd();
 };
 
 void ScreenMenu::Impl::resolveShowLoadGameWnd()
@@ -71,7 +72,21 @@ void ScreenMenu::Impl::resolveShowLoadGameWnd()
                                           -1 );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
-  wnd->setTitle( "##Load save##" );
+  wnd->setTitle( _("##Load save##") );
+}
+
+void ScreenMenu::Impl::resolvePlayMission()
+{
+  Size rootSize = gui->getRootWidget()->getSize();
+  RectF rect( 0.25f * rootSize.getWidth(), 0.25f * rootSize.getHeight(), 
+    0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() );
+  LoadMapWindow* wnd = new LoadMapWindow( gui->getRootWidget(), 
+                                          rect.toRect(), 
+                                          "./resources/missions", ".oc3mission",
+                                          -1 );
+
+  CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
+  wnd->setTitle( _("##Select mission##") );
 }
 
 void ScreenMenu::Impl::resolveShowLoadMapWnd()
@@ -84,7 +99,7 @@ void ScreenMenu::Impl::resolveShowLoadMapWnd()
                                                 -1 );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
-  wnd->setTitle( "##Load map##" );
+  wnd->setTitle( _("##Load map##") );
 }
 
 ScreenMenu::ScreenMenu() : _d( new Impl )
@@ -124,6 +139,9 @@ void ScreenMenu::initialize( GfxEngine& engine, GuiEnv& gui )
 
   PushButton* btn = _d->menu->addButton( _("##mainmenu_newgame##"), -1 );
   CONNECT( btn, onClicked(), _d.data(), Impl::resolveNewGame );
+
+  btn = _d->menu->addButton( _("##mainmenu_playmission##"), -1 );
+  CONNECT( btn, onClicked(), _d.data(), Impl::resolvePlayMission );
 
   btn = _d->menu->addButton( _("##mainmenu_loadgame##"), -1 );
   CONNECT( btn, onClicked(), _d.data(), Impl::resolveShowLoadGameWnd );

@@ -30,7 +30,7 @@ public:
 
     unsigned char getHour() const;
     unsigned char getMonth() const;
-    unsigned char getYear() const;
+    unsigned int getYear() const;
     unsigned char getMinutes() const;
     unsigned char getDay() const;
     unsigned char getDayOfWeek() const;
@@ -38,14 +38,14 @@ public:
 
     void setHour( unsigned char hour );
     void setMonth( unsigned char month );
-    void setYear( unsigned char year );
+    void setYear( unsigned int year );
     void setMinutes( unsigned char minute );
     void setDay( unsigned char day );
     void setSeconds( unsigned char second );
 
     DateTime( const char* strValue );
 
-    DateTime( unsigned char year, unsigned char month, unsigned char day, 
+    DateTime( unsigned int year, unsigned char month, unsigned char day, 
               unsigned char hour=0, unsigned char minute=0, unsigned char sec=0 );
 
     DateTime( const DateTime& time );

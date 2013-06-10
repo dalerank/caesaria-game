@@ -45,7 +45,6 @@ public:
   Picture maskedPic;
   
   int rmask, gmask, bmask, amask;
-  std::list<Picture*> createdPics;  // list of all pictures created by the sdl_facade
   unsigned int fps, lastFps;
   unsigned int lastUpdateFps;
   Font debugFont;
@@ -67,11 +66,10 @@ GfxSdlEngine::~GfxSdlEngine()
 {
 }
 
-void GfxSdlEngine::deletePicture( Picture &pic )
+void GfxSdlEngine::deletePicture( Picture* pic )
 {
-  unloadPicture( pic );
-  delete &pic;
-  _d->createdPics.remove(&pic);
+  if( pic )
+    unloadPicture( *pic );
 }
 
 void GfxSdlEngine::init()
@@ -112,7 +110,7 @@ void GfxSdlEngine::exit()
 /* Convert picture to SDL surface and then put surface into Picture class
  */
 
-void GfxSdlEngine::loadPicture(Picture& ioPicture)
+void GfxSdlEngine::loadPicture( Picture& ioPicture)
 {
   // convert pixel format
   SDL_Surface *newImage;
@@ -122,10 +120,10 @@ void GfxSdlEngine::loadPicture(Picture& ioPicture)
   ioPicture.init( newImage, ioPicture.getOffset() );
 }
 
-void GfxSdlEngine::unloadPicture(Picture& ioPicture)
+void GfxSdlEngine::unloadPicture( Picture& ioPicture )
 {
   SDL_FreeSurface( ioPicture.getSurface() );
-  ioPicture.reset();
+  ioPicture = Picture();
 }
 
 
@@ -185,21 +183,20 @@ void GfxSdlEngine::resetTileDrawMask()
   _d->rmask = _d->gmask = _d->bmask = _d->amask = 0;
 }
 
-Picture& GfxSdlEngine::createPicture(const int width, const int height)
+Picture* GfxSdlEngine::createPicture(const Size& size )
 {
   SDL_Surface* img;
   const Uint32 flags = 0;
-  img = SDL_CreateRGBSurface(flags, width, height, 32, 0,0,0,0);  // opaque picture with default mask
+  img = SDL_CreateRGBSurface(flags, size.getWidth(), size.getHeight(), 32, 0, 0, 0, 0 );  // opaque picture with default mask
   if (img == NULL)
   {
-    THROW("Cannot make surface, size=" << width << "x" << height);
+    THROW( "Cannot make surface, size=" << size.getWidth() << "x" << size.getHeight() );
   }
 
   Picture *pic = new Picture();
   pic->init(img, Point( 0, 0 ));  // no offset
-
-  _d->createdPics.push_back(pic);
-  return *_d->createdPics.back();
+  
+  return pic;
 }
 
 void GfxSdlEngine::createScreenshot( const std::string& filename )
@@ -215,7 +212,7 @@ unsigned int GfxSdlEngine::getFps() const
 void GfxSdlEngine::setFlag( int flag, int value )
 {
   _d->showDebugInfo = value > 0;
-  _d->debugFont = Font( FONT_2 );
+  _d->debugFont = Font::create( FONT_2 );
 }
 
 void GfxSdlEngine::delay( const unsigned int msec )

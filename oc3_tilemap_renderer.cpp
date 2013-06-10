@@ -15,7 +15,10 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#include "oc3_gui_tilemap.hpp"
+#include "oc3_tilemap_renderer.hpp"
+
+#include <list>
+#include <vector>
 
 #include "oc3_tile.hpp"
 #include "oc3_gfx_engine.hpp"
@@ -28,8 +31,10 @@
 #include "oc3_tilemapchangecommand.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_stringhelper.hpp"
+#include "oc3_house.hpp"
+#include "oc3_house_level.hpp"
 
-class GuiTilemap::Impl
+class TilemapRenderer::Impl
 {
 public:
   typedef std::vector< Picture* > Pictures;
@@ -62,8 +67,18 @@ public:
 
   void drawTileBase( Tile& tile );
   void drawTileWater( Tile& tile );
+  void drawTileDesirability( Tile& tile );
+  void drawTileFire( Tile& tile );
   void drawTileInSelArea( Tile& tile, Tile* master );
+  void drawTileFood( Tile& tile );
   void drawAnimations( LandOverlayPtr overlay, const Point& screenPos );
+  void drawColumn( const Point& pos, const int startPicId, const int percent );
+
+  void drawTilemapWithRemoveTools();
+  void simpleDrawTilemap();
+
+  void drawTile( Tile& tile );
+  void drawTileEx( Tile& tile, const int depth );
 
   template< class X, class Y >
   void setDrawFunction( Y* obj, void (X::*func)( Tile& ) )
@@ -76,15 +91,15 @@ oc3_signals public:
   Signal1< std::string > onWarningMessageSignal;
 };
 
-GuiTilemap::GuiTilemap() : _d( new Impl )
+TilemapRenderer::TilemapRenderer() : _d( new Impl )
 {
   _d->city = NULL;
   _d->mapArea = NULL;
 }
 
-GuiTilemap::~GuiTilemap() {}
+TilemapRenderer::~TilemapRenderer() {}
 
-void GuiTilemap::init( City &city, TilemapArea &mapArea, ScreenGame *screen)
+void TilemapRenderer::init( City &city, TilemapArea &mapArea, ScreenGame *screen)
 {
   _d->city = &city;
   _d->tilemap = &city.getTilemap();
@@ -95,14 +110,14 @@ void GuiTilemap::init( City &city, TilemapArea &mapArea, ScreenGame *screen)
   _d->setDrawFunction( _d.data(), &Impl::drawTileBase );
 }
 
-void GuiTilemap::drawTileEx( Tile& tile, const int depth )
+void TilemapRenderer::Impl::drawTileEx( Tile& tile, const int depth )
 {
-  if( tile.is_flat() )
+  if( tile.isFlat() )
   {
     return;  // tile has already been drawn!
   }
 
-  Tile* master = tile.get_master_tile();
+  Tile* master = tile.getMasterTile();
 
   if( 0 == master )    // single-tile
   {
@@ -118,12 +133,12 @@ void GuiTilemap::drawTileEx( Tile& tile, const int depth )
   }
 }
 
-void GuiTilemap::drawTile( Tile& tile )
+void TilemapRenderer::Impl::drawTile( Tile& tile )
 {
-  _d->drawTileFunction( tile );
+  drawTileFunction( tile );
 }
 
-void GuiTilemap::Impl::drawAnimations( LandOverlayPtr overlay, const Point& screenPos )
+void TilemapRenderer::Impl::drawAnimations( LandOverlayPtr overlay, const Point& screenPos )
 {
   // building foregrounds and animations
   Impl::Pictures& fgPictures = overlay->getForegroundPictures();
@@ -140,10 +155,186 @@ void GuiTilemap::Impl::drawAnimations( LandOverlayPtr overlay, const Point& scre
   }
 }
 
-void GuiTilemap::Impl::drawTileWater( Tile& tile )
+void TilemapRenderer::Impl::drawTileDesirability( Tile& tile )
 {
-  Point screenPos( 30 * (tile.getI() + tile.getJ()), 15 * (tile.getI() - tile.getJ()) );
-  screenPos += mapOffset;
+  Point screenPos = tile.getScreenPos() + mapOffset;
+
+  tile.setWasDrawn();
+
+  const TerrainTile& terrain = tile.getTerrain();
+  if( terrain.getOverlay().isNull() )
+  {
+    //draw background
+    if( terrain.isConstructible() && terrain.getDesirability() != 0 )
+    {
+      int picOffset = math::clamp( terrain.getDesirability() / 16, -5, 6 );
+      Picture& pic = Picture::load( ResourceGroup::land2a, 37 + picOffset );
+      engine->drawPicture( pic, screenPos );
+    }
+    else
+    {
+      engine->drawPicture( tile.getPicture(), screenPos );
+    }    
+  }
+  else
+  {   
+    LandOverlayPtr overlay = terrain.getOverlay();
+    switch( overlay->getType() )
+    {
+    //roads
+    case B_ROAD:
+    case B_PLAZA:
+      engine->drawPicture( tile.getPicture(), screenPos );
+      drawAnimations( overlay, screenPos );
+    break;  
+
+    //other buildings
+    default:      
+      {
+        int picOffset = math::clamp( terrain.getDesirability() / 16, -5, 6 );
+        Picture& pic = Picture::load( ResourceGroup::land2a, 37 + picOffset );
+        PtrTilesList tiles4clear = tilemap->getFilledRectangle( tile.getIJ(), overlay->getSize() );
+        for( PtrTilesList::iterator it = tiles4clear.begin(); it != tiles4clear.end(); it++) 
+        {
+          engine->drawPicture( pic, (*it)->getScreenPos() + mapOffset );
+        }
+      }
+    break;
+    } 
+  }
+}
+
+
+void TilemapRenderer::Impl::drawTileFire( Tile& tile )
+{
+  Point screenPos = tile.getScreenPos() + mapOffset;
+
+  tile.setWasDrawn();
+
+  bool needDrawAnimations = false;
+  const TerrainTile& terrain = tile.getTerrain();
+  if( terrain.getOverlay().isNull() )
+  {
+    //draw background
+    engine->drawPicture( tile.getPicture(), screenPos );
+  }
+  else
+  {   
+    LandOverlayPtr overlay = terrain.getOverlay();
+    Picture* pic = 0;
+    int fireLevel = 0;
+    switch( overlay->getType() )
+    {
+    //fire buildings and roads
+    case B_ROAD:
+    case B_PLAZA:
+    case B_BURNING_RUINS:
+    case B_BURNED_RUINS:
+    case B_COLLAPSED_RUINS:
+    case B_PREFECT:
+      pic = &tile.getPicture();
+      needDrawAnimations = true;
+    break;  
+
+      //houses
+    case B_HOUSE:
+      {
+        HousePtr house = overlay.as< House >();
+        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize() - 1)*2 + 11 );
+        fireLevel = house->getFireLevel();
+        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() ==0);
+      }
+    break;
+
+      //other buildings
+    default:
+      {
+        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize() - 1)*2 + 1 );
+        BuildingPtr building = overlay.as< Building >();
+        if( building.isValid() )
+        {
+          fireLevel = building->getFireLevel();
+        }
+      }
+    break;
+    }  
+
+    engine->drawPicture( *pic, screenPos );
+
+    if( needDrawAnimations )
+    {
+      drawAnimations( overlay, screenPos );
+    }
+    else
+    {
+      drawColumn( screenPos, 18, fireLevel );
+    }
+  }
+}
+
+void TilemapRenderer::Impl::drawTileFood( Tile& tile )
+{
+  Point screenPos = tile.getScreenPos() + mapOffset;
+
+  tile.setWasDrawn();
+
+  bool needDrawAnimations = false;
+  const TerrainTile& terrain = tile.getTerrain();
+  if( terrain.getOverlay().isNull() )
+  {
+    //draw background
+    engine->drawPicture( tile.getPicture(), screenPos );
+  }
+  else
+  {   
+    LandOverlayPtr overlay = terrain.getOverlay();
+    Picture* pic = 0;
+    int foodLevel = -1;
+    switch( overlay->getType() )
+    {
+      //fire buildings and roads
+    case B_ROAD:
+    case B_PLAZA:
+    case B_MARKET:
+    case B_GRANARY:
+      pic = &tile.getPicture();
+      needDrawAnimations = true;
+    break;  
+
+      //houses
+    case B_HOUSE:
+      {
+        HousePtr house = overlay.as< House >();
+        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize() - 1)*2 + 11 );
+        foodLevel = house->getFoodLevel();
+        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() ==0);
+      }
+      break;
+
+      //other buildings
+    default:
+      {
+        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize() - 1)*2 + 1 );
+      }
+      break;
+    }  
+
+    engine->drawPicture( *pic, screenPos );
+
+    if( needDrawAnimations )
+    {
+      drawAnimations( overlay, screenPos );
+    }
+    else if( foodLevel >= 0 )
+    {
+      drawColumn( screenPos, 18, math::clamp( 100 - foodLevel, 0, 100 ) );
+    }
+  }
+}
+
+void TilemapRenderer::Impl::drawTileWater( Tile& tile )
+{
+  Point screenPos = tile.getScreenPos() + mapOffset;
   
   tile.setWasDrawn();
 
@@ -152,7 +343,7 @@ void GuiTilemap::Impl::drawTileWater( Tile& tile )
   if( terrain.getOverlay().isNull() )
   {
     //draw background
-    engine->drawPicture( tile.get_picture(), screenPos );
+    engine->drawPicture( tile.getPicture(), screenPos );
   }
   else
   {   
@@ -166,7 +357,7 @@ void GuiTilemap::Impl::drawTileWater( Tile& tile )
     case B_RESERVOIR:
     case B_FOUNTAIN:
     case B_WELL:
-      pic = &tile.get_picture();
+      pic = &tile.getPicture();
       needDrawAnimations = true;
     break;  
 
@@ -207,14 +398,13 @@ void GuiTilemap::Impl::drawTileWater( Tile& tile )
   }
 }
 
-void GuiTilemap::Impl::drawTileBase( Tile& tile )
+void TilemapRenderer::Impl::drawTileBase( Tile& tile )
 {
-  Point screenPos( 30 * (tile.getI() + tile.getJ()), 15 * (tile.getI() - tile.getJ()) );
-  screenPos += mapOffset;
+  Point screenPos = tile.getScreenPos() + mapOffset;
 
   tile.setWasDrawn();
 
-  Picture& pic = tile.get_picture();
+  Picture& pic = tile.getPicture();
   //draw background
   engine->drawPicture( pic, screenPos );
 
@@ -227,14 +417,13 @@ void GuiTilemap::Impl::drawTileBase( Tile& tile )
   drawAnimations( overlay, screenPos );
 }
 
-void GuiTilemap::Impl::drawTileInSelArea( Tile& tile, Tile* master )
+void TilemapRenderer::Impl::drawTileInSelArea( Tile& tile, Tile* master )
 {
   if( master==NULL )
   {
     // single-tile
     drawTileFunction( tile );
-    engine->drawPicture( *clearPic, 30 * (tile.getI() + tile.getJ()) + mapOffset.getX(), 
-                                    15 * (tile.getI() - tile.getJ()) + mapOffset.getY() );
+    engine->drawPicture( *clearPic, tile.getScreenPos() + mapOffset );
   }
   else
   {
@@ -248,48 +437,39 @@ void GuiTilemap::Impl::drawTileInSelArea( Tile& tile, Tile* master )
   }  
 }
 
-void GuiTilemap::drawTilemap()
+void TilemapRenderer::Impl::drawTilemapWithRemoveTools()
 {
-  Tilemap &tilemap = *_d->tilemap;
-  TilemapArea &mapArea = *_d->mapArea;  
-
   // center the map on the screen
-  Point mOffset( _d->engine->getScreenWidth() / 2 - 30 * (mapArea.getCenterX() + 1) + 1,
-                 _d->engine->getScreenHeight() / 2 + 15 * (mapArea.getCenterZ()-tilemap.getSize() + 1) - 30 );
-
-  _d->mapOffset = mOffset;  // this is the current offset
+  mapOffset = Point( engine->getScreenWidth() / 2 - 30 * (mapArea->getCenterX() + 1) + 1,
+                     engine->getScreenHeight() / 2 + 15 * (mapArea->getCenterZ()-tilemap->getSize() + 1) - 30 );
 
   int lastZ = -1000;  // dummy value
 
-  const std::vector< TilePos >& tiles = mapArea.getTiles();
+  const std::vector< TilePos >& tiles = mapArea->getTiles();
   std::vector< TilePos >::const_iterator itPos;
 
   for( itPos = tiles.begin(); itPos != tiles.end(); ++itPos )
   {
-    getTile( *itPos ).resetWasDrawn();
+    tilemap->at( *itPos ).resetWasDrawn();
   }
 
-  Rect selectedArea( -1, -1, -1, -1 );
-  if( _d->changeCommand.isValid() && _d->changeCommand.is<TilemapRemoveCommand>() )
-  {
-    TilePos startPos, stopPos;
-    _d->getSelectedArea( startPos, stopPos );
-    selectedArea = Rect( startPos.getI(), startPos.getJ(), stopPos.getI(), stopPos.getJ() );
-  }
+  TilePos startPos, stopPos;
+  getSelectedArea( startPos, stopPos );
+  
+  Rect destroyArea = Rect( startPos.getI(), startPos.getJ(), stopPos.getI(), stopPos.getJ() );
 
   // FIRST PART: draw all flat land (walkable/boatable)
   for( itPos = tiles.begin(); itPos != tiles.end(); ++itPos )
   {
-    Tile& tile = getTile( *itPos );
-    Tile* master = tile.get_master_tile();
+    Tile& tile = tilemap->at( *itPos );
+    Tile* master = tile.getMasterTile();
 
-    if( !tile.is_flat() )
+    if( !tile.isFlat() )
       continue;
-   
-    if( selectedArea.UpperLeftCorner.getX() >= 0 && 
-        selectedArea.isPointInside( Point( (*itPos).getI(), (*itPos).getJ() ) ) )
+
+    if( destroyArea.isPointInside( Point( (*itPos).getI(), (*itPos).getJ() ) ) )
     {
-      _d->drawTileInSelArea( tile, master );  
+      drawTileInSelArea( tile, master );  
     }
     else
     {
@@ -298,11 +478,10 @@ void GuiTilemap::drawTilemap()
         // single-tile
         drawTile( tile );
       }
-      else
+      else if( !master->wasDrawn() )
       {
         // multi-tile: draw the master tile.
-        if( !master->wasDrawn() )
-          drawTile( *master );
+        drawTile( *master );
       }    
     }
   }  
@@ -311,59 +490,149 @@ void GuiTilemap::drawTilemap()
   for( itPos = tiles.begin(); itPos != tiles.end(); ++itPos)
   {
     int z = itPos->getZ();
-   
+
     if (z != lastZ)
     {
-       // TODO: pre-sort all animations
-       lastZ = z;
+      // TODO: pre-sort all animations
+      lastZ = z;
 
-       Impl::Pictures pictureList;
+      Impl::Pictures pictureList;
 
-       Walkers walkerList = _d->city->getWalkerList( WT_ALL );
-       for( Walkers::iterator itWalker =  walkerList.begin();
-             itWalker != walkerList.end(); ++itWalker)
-       {
-          // for each walker
-          WalkerPtr anim = *itWalker;
-          int zAnim = anim->getIJ().getZ();// getJ() - anim.getI();
-          if( zAnim > z && zAnim <= z+1 )
+      Walkers walkerList = city->getWalkerList( WT_ALL );
+      for( Walkers::iterator itWalker =  walkerList.begin();
+        itWalker != walkerList.end(); ++itWalker)
+      {
+        // for each walker
+        WalkerPtr anim = *itWalker;
+        int zAnim = anim->getIJ().getZ();// getJ() - anim.getI();
+        if( zAnim > z && zAnim <= z+1 )
+        {
+          pictureList.clear();
+          anim->getPictureList( pictureList );
+          for( Impl::Pictures::iterator picIt = pictureList.begin(); picIt != pictureList.end(); ++picIt )
           {
-             pictureList.clear();
-             anim->getPictureList( pictureList );
-             for( Impl::Pictures::iterator picIt = pictureList.begin(); picIt != pictureList.end(); ++picIt )
-             {
-                if( *picIt == NULL )
-                {
-                   continue;
-                }
+            if( *picIt == NULL )
+            {
+              continue;
+            }
 
-                _d->engine->drawPicture( **picIt, 2*(anim->getII() + anim->getJJ()) + mOffset.getX(), 
-                                                     anim->getII() - anim->getJJ()  + mOffset.getY());
-             }
+            engine->drawPicture( **picIt, Point( 2*(anim->getII() + anim->getJJ()),
+                                                 anim->getII() - anim->getJJ() ) + mapOffset );
           }
-       }
+        }
+      }
     }   
 
-    if( selectedArea.UpperLeftCorner.getX() > 0 
-        && selectedArea.isPointInside( Point( (*itPos).getI(), (*itPos).getJ() ) )  )
+    if( destroyArea.isPointInside( Point( (*itPos).getI(), (*itPos).getJ() ) )  )
     {
-      _d->engine->setTileDrawMask( 0x00ff0000, 0, 0, 0xff000000 );      
+      engine->setTileDrawMask( 0x00ff0000, 0, 0, 0xff000000 );      
     }
 
-    drawTileEx( getTile( *itPos ), z );
-    _d->engine->resetTileDrawMask();
-  }
-
-  //Third part: drawing build/remove tools
-  for( PtrTilesList::iterator itPostTile = _d->postTiles.begin(); itPostTile != _d->postTiles.end(); ++itPostTile )
-  {
-    int z = (*itPostTile)->getJ() - (*itPostTile)->getI();
-    (*itPostTile)->resetWasDrawn();
-    drawTileEx( **itPostTile, z );
+    drawTileEx( tilemap->at( *itPos ), z );
+    engine->resetTileDrawMask();
   }
 }
 
-Tile* GuiTilemap::Impl::getTileXY( const Point& pos, bool overborder)
+void TilemapRenderer::Impl::simpleDrawTilemap()
+{
+  // center the map on the screen
+  mapOffset = Point( engine->getScreenWidth() / 2 - 30 * (mapArea->getCenterX() + 1) + 1,
+                     engine->getScreenHeight() / 2 + 15 * (mapArea->getCenterZ()-tilemap->getSize() + 1) - 30 );
+
+  int lastZ = -1000;  // dummy value
+
+  const std::vector< TilePos >& tiles = mapArea->getTiles();
+  std::vector< TilePos >::const_iterator itPos;
+
+  for( itPos = tiles.begin(); itPos != tiles.end(); ++itPos )
+  {
+    tilemap->at( *itPos ).resetWasDrawn();
+  }
+
+  // FIRST PART: draw all flat land (walkable/boatable)
+  for( itPos = tiles.begin(); itPos != tiles.end(); ++itPos )
+  {
+    Tile& tile = tilemap->at( *itPos );
+    Tile* master = tile.getMasterTile();
+
+    if( !tile.isFlat() )
+      continue;
+
+    if( master==NULL )
+    {
+      // single-tile
+      drawTile( tile );
+    }
+    else
+    {
+      // multi-tile: draw the master tile.
+      if( !master->wasDrawn() )
+        drawTile( *master );
+    }    
+  }  
+
+  // SECOND PART: draw all sprites, impassable land and buildings
+  for( itPos = tiles.begin(); itPos != tiles.end(); ++itPos)
+  {
+    int z = itPos->getZ();
+
+    if (z != lastZ)
+    {
+      // TODO: pre-sort all animations
+      lastZ = z;
+
+      Impl::Pictures pictureList;
+
+      Walkers walkerList = city->getWalkerList( WT_ALL );
+      for( Walkers::iterator itWalker =  walkerList.begin();
+        itWalker != walkerList.end(); ++itWalker)
+      {
+        // for each walker
+        WalkerPtr anim = *itWalker;
+        int zAnim = anim->getIJ().getZ();// getJ() - anim.getI();
+        if( zAnim > z && zAnim <= z+1 )
+        {
+          pictureList.clear();
+          anim->getPictureList( pictureList );
+          for( Impl::Pictures::iterator picIt = pictureList.begin(); picIt != pictureList.end(); ++picIt )
+          {
+            if( *picIt == NULL )
+            {
+              continue;
+            }
+
+            engine->drawPicture( **picIt, Point( 2*( anim->getII() + anim->getJJ() ),
+                                                 anim->getII() - anim->getJJ() ) + mapOffset );
+          }
+        }
+      }
+    }   
+
+    drawTileEx( tilemap->at( *itPos ), z );
+  }
+}
+
+void TilemapRenderer::drawTilemap()
+{
+  //First part: drawing city
+  if( _d->changeCommand.isValid() && _d->changeCommand.is<TilemapRemoveCommand>() )
+  {
+    _d->drawTilemapWithRemoveTools();
+  }
+  else
+  {
+    _d->simpleDrawTilemap();
+  }
+
+  //Second part: drawing build tools
+  for( PtrTilesList::iterator itPostTile = _d->postTiles.begin(); itPostTile != _d->postTiles.end(); ++itPostTile )
+  {
+    (*itPostTile)->resetWasDrawn();
+    _d->drawTileEx( **itPostTile, (*itPostTile)->getIJ().getZ() );
+  }
+}
+
+Tile* TilemapRenderer::Impl::getTileXY( const Point& pos, bool overborder)
 {
    Point mOffset = pos - mapOffset;  // x relative to the left most pixel of the tilemap
    int i = (mOffset.getX() + 2 * mOffset.getY()) / 60;
@@ -388,12 +657,12 @@ Tile* GuiTilemap::Impl::getTileXY( const Point& pos, bool overborder)
    }
 }
 
-TilemapArea &GuiTilemap::getMapArea()
+TilemapArea &TilemapRenderer::getMapArea()
 {
   return *_d->mapArea;
 }
 
-void GuiTilemap::updatePreviewTiles( bool force )
+void TilemapRenderer::updatePreviewTiles( bool force )
 {
   TilemapBuildCommandPtr bldCommand = _d->changeCommand.as<TilemapBuildCommand>();
   if( bldCommand.isNull() )
@@ -448,7 +717,7 @@ void GuiTilemap::updatePreviewTiles( bool force )
   }
 }
 
-void GuiTilemap::Impl::getSelectedArea( TilePos& outStartPos, TilePos& outStopPos )
+void TilemapRenderer::Impl::getSelectedArea( TilePos& outStartPos, TilePos& outStopPos )
 {
   Tile* startTile = getTileXY( startCursorPos, true );  // tile under the cursor (or NULL)
   Tile* stopTile  = getTileXY( lastCursorPos, true );
@@ -456,14 +725,14 @@ void GuiTilemap::Impl::getSelectedArea( TilePos& outStartPos, TilePos& outStopPo
   TilePos startPosTmp = startTile->getIJ();
   TilePos stopPosTmp  = stopTile->getIJ();
 
-//  std::cout << "GuiTilemap::_getSelectedArea" << " ";
+//  std::cout << "TilemapRenderer::_getSelectedArea" << " ";
 //  std::cout << "(" << startPosTmp.getI() << " " << startPosTmp.getJ() << ") (" << stopPosTmp.getI() << " " << stopPosTmp.getJ() << ")" << std::endl;
     
   outStartPos = TilePos( std::min<int>( startPosTmp.getI(), stopPosTmp.getI() ), std::min<int>( startPosTmp.getJ(), stopPosTmp.getJ() ) );
   outStopPos  = TilePos( std::max<int>( startPosTmp.getI(), stopPosTmp.getI() ), std::max<int>( startPosTmp.getJ(), stopPosTmp.getJ() ) );
 }
 
-void GuiTilemap::Impl::clearAll()
+void TilemapRenderer::Impl::clearAll()
 {
   TilePos startPos, stopPos;
   getSelectedArea( startPos, stopPos );
@@ -475,7 +744,7 @@ void GuiTilemap::Impl::clearAll()
   }
 }
 
-void GuiTilemap::Impl::buildAll()
+void TilemapRenderer::Impl::buildAll()
 {
   TilemapBuildCommandPtr bldCommand = changeCommand.as<TilemapBuildCommand>();
   if( bldCommand.isNull() )
@@ -492,7 +761,7 @@ void GuiTilemap::Impl::buildAll()
   bool buildOk = false;
   for( PtrTilesList::iterator it=postTiles.begin(); it != postTiles.end(); it++ )
   {   
-    if( cnstr->canBuild( (*it)->getIJ() ) && (*it)->is_master_tile())
+    if( cnstr->canBuild( (*it)->getIJ() ) && (*it)->isMasterTile())
     {
       city->build( cnstr->getType(), (*it)->getIJ() );
       buildOk = true;
@@ -505,7 +774,24 @@ void GuiTilemap::Impl::buildAll()
   }
 }
 
-void GuiTilemap::handleEvent( NEvent& event )
+void TilemapRenderer::Impl::drawColumn( const Point& pos, const int startPicId, const int percent )
+{
+  engine->drawPicture( Picture::load( ResourceGroup::sprites, startPicId + 2 ), pos + Point( 5, 15 ) );
+  
+  int roundPercent = ( percent / 10 ) * 10;
+  Picture& pic = Picture::load( ResourceGroup::sprites, startPicId + 1 );
+  for( int offsetY=10; offsetY < roundPercent; offsetY += 10 )
+  {
+    engine->drawPicture( pic, pos - Point( -13, -5 + offsetY ) );
+  }
+
+  if( percent >= 10 )
+  {
+    engine->drawPicture( Picture::load( ResourceGroup::sprites, startPicId ), pos - Point( -1, -6 + roundPercent ) );
+  }
+}
+
+void TilemapRenderer::handleEvent( NEvent& event )
 {
     if( event.EventType == OC3_MOUSE_EVENT )
     {
@@ -608,11 +894,11 @@ void GuiTilemap::handleEvent( NEvent& event )
     }
 }
 
-void GuiTilemap::discardPreview()
+void TilemapRenderer::discardPreview()
 {
   for( Impl::Pictures::iterator it=_d->previewToolPictures.begin(); it != _d->previewToolPictures.end(); it++ )
   {
-    GfxEngine::instance().deletePicture( **it );
+    Picture::destroy( *it );
   }
 
   _d->previewToolPictures.clear();
@@ -625,7 +911,7 @@ void GuiTilemap::discardPreview()
   _d->postTiles.clear();
 }
 
-void GuiTilemap::checkPreviewBuild( const TilePos& pos )
+void TilemapRenderer::checkPreviewBuild( const TilePos& pos )
 {
   TilemapBuildCommandPtr bldCommand = _d->changeCommand.as<TilemapBuildCommand>();
   if( bldCommand.isNull() )
@@ -653,8 +939,8 @@ void GuiTilemap::checkPreviewBuild( const TilePos& pos )
                      // this is the masterTile
                      masterTile = tile;
                  }
-                 tile->set_picture( _d->previewToolPictures.back() );
-                 tile->set_master_tile( masterTile );
+                 tile->setPicture( _d->previewToolPictures.back() );
+                 tile->setMasterTile( masterTile );
                  tile->getTerrain().setBuilding( true );
                  tile->getTerrain().setOverlay( overlay.as<LandOverlay>() );
                  _d->postTiles.push_back( tile );
@@ -678,10 +964,11 @@ void GuiTilemap::checkPreviewBuild( const TilePos& pos )
              Tile* tile = new Tile( _d->tilemap->at( rPos ) );  // make a copy of tile
 
              bool isConstructible = tile->getTerrain().isConstructible();
-             tile->set_picture( isConstructible ? &grnPicture : &redPicture );
-             tile->set_master_tile(0);
-             tile->getTerrain().reset();
+             tile->setPicture( isConstructible ? &grnPicture : &redPicture );
+             tile->setMasterTile( 0 );
+             tile->getTerrain().clearFlags();
              tile->getTerrain().setBuilding( true );
+             tile->getTerrain().setOverlay( 0 );
              _d->postTiles.push_back( tile );
            }
        }
@@ -689,17 +976,17 @@ void GuiTilemap::checkPreviewBuild( const TilePos& pos )
   }
 }
 
-Tile& GuiTilemap::getTile(const TilePos& pos )
+Tile& TilemapRenderer::getTile(const TilePos& pos )
 {
   return _d->tilemap->at( pos );
 }
 
-Signal1< const Tile& >& GuiTilemap::onShowTileInfo()
+Signal1< const Tile& >& TilemapRenderer::onShowTileInfo()
 {
   return _d->onShowTileInfoSignal;
 }
 
-void GuiTilemap::setChangeCommand( const TilemapChangeCommandPtr command )
+void TilemapRenderer::setChangeCommand( const TilemapChangeCommandPtr command )
 {
   _d->changeCommand = command;
   _d->startCursorPos = _d->lastCursorPos;
@@ -713,20 +1000,23 @@ void GuiTilemap::setChangeCommand( const TilemapChangeCommandPtr command )
     TilemapOverlayCommandPtr ovCmd = _d->changeCommand.as<TilemapOverlayCommand>();
     switch( ovCmd->getType() )
     {
-    case OV_WATER:
-      _d->setDrawFunction( _d.data(), &Impl::drawTileWater );
-    break;
-
-    default:
-      _d->setDrawFunction( _d.data(), &Impl::drawTileBase );
-    break;
+    case OV_WATER: _d->setDrawFunction( _d.data(), &Impl::drawTileWater ); break;
+    case OV_RISK_FIRE: _d->setDrawFunction( _d.data(), &Impl::drawTileFire ); break;
+    case OV_COMMERCE_PRESTIGE: _d->setDrawFunction( _d.data(), &Impl::drawTileDesirability ); break;
+    case OV_COMMERCE_FOOD: _d->setDrawFunction( _d.data(), &Impl::drawTileFood ); break;
+    default:_d->setDrawFunction( _d.data(), &Impl::drawTileBase ); break;
     }
 
     _d->changeCommand = TilemapChangeCommandPtr();
   }
 }
 
-Signal1< std::string >& GuiTilemap::onWarningMessage()
+Signal1< std::string >& TilemapRenderer::onWarningMessage()
 {
   return _d->onWarningMessageSignal;
+}
+
+Tilemap& TilemapRenderer::getTilemap()
+{ 
+  return *_d->tilemap;
 }

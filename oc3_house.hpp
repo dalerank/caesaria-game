@@ -27,7 +27,7 @@ class HouseLevelSpec;
 class House : public Building
 {
 public:
-   enum { smallHovel=1 } Level;
+   enum { smallHovel=1, bigTent, smallHut, bigHut } Level;
 
    House( const int houseId=smallHovel );
 
@@ -44,8 +44,11 @@ public:
 
    bool hasServiceAccess(const ServiceType service);
    int getServiceAccess(const ServiceType service);
+   int getFoodLevel();
    void setServiceAccess(const ServiceType service, const int access);
    char getDesirabilityInfluence() const;
+   unsigned char getDesirabilityRange() const;
+   char getDesirabilityStep() const;
 
    void levelUp();
    void levelDown();
@@ -82,7 +85,5 @@ inline bool operator<(HousePtr v1, HousePtr v2)
 {
   return v1.object() < v2.object();
 }
-
-
 
 #endif

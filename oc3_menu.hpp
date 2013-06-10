@@ -7,7 +7,7 @@
 #include "oc3_scopedptr.hpp"
 
 class PushButton;
-class GuiTilemap;
+class TilemapRenderer;
 
 class Menu : public Widget
 {
@@ -40,7 +40,7 @@ protected:
 class ExtentMenu : public Menu
 {
 public:
-    static ExtentMenu* create( Widget* parent, GuiTilemap& tilemap, int id );
+    static ExtentMenu* create( Widget* parent, TilemapRenderer& tilemap, int id );
 
     void minimize();
     void maximize();
@@ -54,10 +54,11 @@ public:
 oc3_signals public:
     Signal1<int>& onSelectOverlayType();
     Signal0<>& onEmpireMapShow();
+    Signal0<>& onAdvisorsWindowShow();
 
 protected:
-    ExtentMenu( Widget* parent, GuiTilemap&, int id, const Rect& rectangle );
-    GuiTilemap& _tmap;
+    ExtentMenu( Widget* parent, TilemapRenderer&, int id, const Rect& rectangle );
+    TilemapRenderer& _tmap;
 };
 
 #endif

@@ -21,15 +21,22 @@
 
 class Picture;
 
-enum FontType { FONT_0, FONT_1, FONT_2, FONT_2_RED, FONT_2_WHITE, FONT_2_YELLOW, FONT_3, FONT_4, FONT_5, FONT_6, FONT_7 };
+enum FontType { FONT_0, FONT_1, FONT_1_WHITE, FONT_1_RED, 
+                FONT_2, FONT_2_RED, FONT_2_WHITE, FONT_2_YELLOW, 
+                FONT_3, 
+                FONT_4, 
+                FONT_5, 
+                FONT_6, 
+                FONT_7 };
 class Font
 {
   friend class FontCollection;
 
 public:
   Font();
-  Font( const std::string& family, const int size );
-  Font( FontType type );
+  static Font create( const std::string& family, const int size );
+  static Font create( FontType type );
+  
   ~Font();
 
   Font( const Font& other );
@@ -49,6 +56,8 @@ public:
                           TypeAlign horizontalAlign, TypeAlign verticalAlign );
 
   void draw(Picture &dstpic, const std::string &text, const int dx, const int dy);
+  void draw(Picture &dstpic, const std::string &text, const Point& pos );
+
   unsigned int getWidthFromCharacter( char c ) const;
   int getCharacterFromPos(const std::string& text, int pixel_x) const;
   unsigned int getKerningHeight() const;

@@ -44,6 +44,7 @@ public:
   bool isWalkable() const;
   void build( const TilePos& pos );
   bool isNeedRoadAccess() const;
+  void destroy();
 };
 
 typedef SmartPtr< BurningRuins > BurningRuinsPtr;

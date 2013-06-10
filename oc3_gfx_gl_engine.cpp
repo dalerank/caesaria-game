@@ -87,12 +87,12 @@ void GfxGlEngine::unloadPicture(Picture &ioPicture)
   glDeleteTextures(1, &texture );
   SDL_FreeSurface(ioPicture.getSurface());
 
-  ioPicture.reset();
+  ioPicture = Picture();
 }
 
 void GfxGlEngine::loadPicture(Picture& ioPicture)
 {
-   GLuint* texture =  new GLuint(ioPicture.getGlTextureID());
+   GLuint& texture = (GLuint)ioPicture.getGlTextureID();
    SDL_Surface *surface = ioPicture.getSurface();
    GLenum texture_format;
    GLint nOfColors;
@@ -123,11 +123,11 @@ void GfxGlEngine::loadPicture(Picture& ioPicture)
    {
       // the picture has no texture ID!
       // generate a texture ID
-      glGenTextures( 1, texture );
+      glGenTextures( 1, &texture );
    }
 
    // Bind the texture object
-   glBindTexture( GL_TEXTURE_2D, *texture );
+   glBindTexture( GL_TEXTURE_2D, texture );
 
    // Set the texture's stretching properties
    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );

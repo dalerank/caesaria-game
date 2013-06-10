@@ -19,6 +19,7 @@
 #include "oc3_positioni.hpp"
 #include "oc3_servicewalker.hpp"
 #include "oc3_tile.hpp"
+#include "oc3_scenario.hpp"
 
 BurningRuins::BurningRuins() : ServiceBuilding(S_BURNING_RUINS, B_BURNING_RUINS, Size(1) )
 {
@@ -29,8 +30,6 @@ BurningRuins::BurningRuins() : ServiceBuilding(S_BURNING_RUINS, B_BURNING_RUINS,
     _animation.setOffset( Point( 14, 26 ) );
     _fgPictures.resize(1);           
 }
-
-
 
 void BurningRuins::timeStep(const unsigned long time)
 {
@@ -67,20 +66,21 @@ void BurningRuins::timeStep(const unsigned long time)
 
 void BurningRuins::destroy()
 {
-  BurnedRuins* burned = new BurnedRuins();
-  burned->build( getTile().getIJ() );
+  ServiceBuilding::destroy();
+
+  Scenario::instance().getCity().build( B_BURNED_RUINS, getTilePos());
 }
 
 void BurningRuins::deliverService()
 {
-    /*ServiceWalker walker(getService());
-    walker.setServiceBuilding(*this);
-    std::set<Building*> reachedBuildings = walker.getReachedBuildings(getTile().getI(), getTile().getJ());
-    for (std::set<Building*>::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
-    {
-        Building &building = **itBuilding;
-        building.applyService(walker);
-    }*/
+  /*ServiceWalker walker(getService());
+  walker.setServiceBuilding(*this);
+  std::set<Building*> reachedBuildings = walker.getReachedBuildings(getTile().getI(), getTile().getJ());
+  for (std::set<Building*>::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
+  {
+    Building &building = **itBuilding;
+    building.applyService(walker);
+  }*/
 }
 
 void BurningRuins::burn()
@@ -90,12 +90,12 @@ void BurningRuins::burn()
 
 void BurningRuins::build( const TilePos& pos )
 {
-    ServiceBuilding::build( pos );
-    //while burning can't remove it
-    getTile().getTerrain().setTree( false );
-    getTile().getTerrain().setBuilding( false );
-    getTile().getTerrain().setRoad( false );
-    getTile().getTerrain().setRock( true );
+  ServiceBuilding::build( pos );
+  //while burning can't remove it
+  getTile().getTerrain().setTree( false );
+  getTile().getTerrain().setBuilding( false );
+  getTile().getTerrain().setRoad( false );
+  getTile().getTerrain().setRock( true );
 }   
 
 bool BurningRuins::isWalkable() const
@@ -147,4 +147,9 @@ bool BurnedRuins::isWalkable() const
 bool BurnedRuins::isNeedRoadAccess() const
 {
   return false;
+}
+
+void BurnedRuins::destroy()
+{
+  Building::destroy();
 }

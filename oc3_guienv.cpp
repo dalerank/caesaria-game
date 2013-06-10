@@ -236,19 +236,19 @@ void GuiEnv::deleteLater( Widget* ptrElement )
 
 Widget* GuiEnv::createStandartTooltip_()
 {
-    Font styleFont = Font( FONT_2 );
+  Font styleFont = Font::create( FONT_2 );
 
-    Label* elm = new Label( this, Rect( 0, 0, 2, 2 ), _d->hoveredNoSubelement->getTooltipText(), true, true );
-    elm->setSubElement(true);
-    elm->grab();
+  Label* elm = new Label( this, Rect( 0, 0, 2, 2 ), _d->hoveredNoSubelement->getTooltipText(), true, true );
+  elm->setSubElement(true);
+  elm->grab();
 
-    Size size( elm->getTextWidth(), elm->getTextHeight() );
-    Rect rect( _d->cursorPos, size );
-    //rect.constrainTo( getAbsoluteRect() );
-    rect -= Point( size.getWidth() + 20, -20 );
-    elm->setGeometry( rect );
+  Size size( elm->getTextWidth(), elm->getTextHeight() );
+  Rect rect( _d->cursorPos, size );
+  //rect.constrainTo( getAbsoluteRect() );
+  rect -= Point( size.getWidth() + 20, -20 );
+  elm->setGeometry( rect );
 
-    return elm;
+  return elm;
 }
 
 //

@@ -15,8 +15,9 @@
 
 
 #include "oc3_menu.hpp"
-#include "oc3_pushbutton.hpp"
+#include "oc3_texturedbutton.hpp"
 #include "oc3_picture.hpp"
+#include "oc3_color.hpp"
 #include "oc3_pic_loader.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_event.hpp"
@@ -28,7 +29,7 @@
 #include "oc3_gettext.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_minimap_colours.hpp"
-#include "oc3_gui_tilemap.hpp"
+#include "oc3_tilemap_renderer.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_overlays_menu.hpp"
 
@@ -38,7 +39,7 @@ static const int MAXIMIZE_ID = REMOVE_TOOL_ID + 1;
 class Menu::Impl
 {
 public:
-  Picture* bgPicture;
+  PictureRef bgPicture;
 
   Widget* lastPressed;
   PushButton* menuButton;
@@ -67,12 +68,15 @@ public:
   PushButton* overlaysButton;
   Label* middleLabel;
   OverlaysMenu* overlaysMenu; 
+  PictureRef minimap;
+  PictureRef fullmap;
 
 oc3_signals public:
   Signal1< int > onCreateConstructionSignal;
   Signal0<> onRemoveToolSignal;
   Signal0<> onMaximizeSignal;
   Signal0<> onEmpireMapShowSignal;
+  Signal0<> onAdvisorsWndShowSignal;
 };
 
 Signal1< int >& Menu::onCreateConstruction()
@@ -85,13 +89,14 @@ Signal0<>& Menu::onRemoveTool()
   return _d->onRemoveToolSignal;
 }
 
-class MenuButton : public PushButton
+class MenuButton : public TexturedButton
 {
 public:
-  MenuButton( Widget* parent, const Rect& rectangle, const std::string& caption, int id, int midIconId )
-    : PushButton( parent, rectangle, caption, id )
+  MenuButton( Widget* parent, const Point& pos, int id, int midIconId, int startPic, bool pushBtn )
+    : TexturedButton( parent, pos, Size( 39, 26 ), id, startPic )
   {
     _midIconId = midIconId;
+    setIsPushButton( pushBtn );
   }
 
   int getMidPicId() const { return _midIconId; }
@@ -144,9 +149,8 @@ PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul,
     Point offset( 1, 32 );
     int dy = 35;
 
-    MenuButton* ret = new MenuButton( this, Rect( 0, 0, 39, 26), "", -1, -1 );
+    MenuButton* ret = new MenuButton( this, Point( 0, 0 ), -1, -1, startPic, pushBtn );
     ret->setID( id | ( haveSubmenu ? BuildMenu::subMenuCreateIdHigh : 0 ) );
-    GuiPaneling::configureTexturedButton( ret, ResourceGroup::panelBackground, startPic, pushBtn );
     ret->setPosition( offset + Point( 0, dy * yMul ) );
     ret->setTooltipText( tooltip );
 
@@ -218,6 +222,9 @@ void getTerrainColours(TerrainTile& tile, int &c1, int &c2)
     c1 = colours->colour(Caesar3Colours::MAP_EMPTY1, num7);
     c2 = colours->colour(Caesar3Colours::MAP_EMPTY2, num7);
   }
+
+  c1 |= 0xff000000;
+  c2 |= 0xff000000;
 }
 
 void getBuildingColours(TerrainTile& tile, int &c1, int &c2)
@@ -273,6 +280,9 @@ void getBuildingColours(TerrainTile& tile, int &c1, int &c2)
         }
     }
   }
+
+  c1 |= 0xff000000;
+  c2 |= 0xff000000;
 }
 
 /* end of helper functions */
@@ -392,7 +402,7 @@ Menu* Menu::create( Widget* parent, int id )
   const Picture& bground = Picture::load( ResourceGroup::panelBackground, 16 );
   const Picture& bottom  = Picture::load( ResourceGroup::panelBackground, 21 );
 
-  ret->_d->bgPicture = &GfxEngine::instance().createPicture( bground.getWidth(), bground.getHeight() + bottom.getHeight() );
+  ret->_d->bgPicture.reset( Picture::create( Size( bground.getWidth(), bground.getHeight() + bottom.getHeight() ) ) );
   ret->_d->bgPicture->draw( bground, 0, 0);
   ret->_d->bgPicture->draw( bottom,  0, bground.getHeight() );
 
@@ -441,14 +451,16 @@ Signal0<>& Menu::onMaximize()
     return _d->onMaximizeSignal;
 }
 
-ExtentMenu* ExtentMenu::create( Widget* parent, GuiTilemap& tmap, int id )
+ExtentMenu* ExtentMenu::create( Widget* parent, TilemapRenderer& tmap, int id )
 {
     ExtentMenu* ret = new ExtentMenu( parent, tmap, id, Rect( 0, 0, 1, 1 ) );
 
     const Picture& bground = Picture::load( ResourceGroup::panelBackground, 17 );
     const Picture& bottom = Picture::load( ResourceGroup::panelBackground, 20 );
 
-    ret->_d->bgPicture = &GfxEngine::instance().createPicture( bground.getWidth(), bground.getHeight() + bottom.getHeight() );
+    ret->_d->fullmap.reset( Picture::create( Size( ret->_tmap.getTilemap().getSize() * 2 ) ) );
+    ret->_d->minimap.reset( Picture::create( Size( 144, 110 ) ) );
+    ret->_d->bgPicture.reset( Picture::create( Size( bground.getWidth(), bground.getHeight() + bottom.getHeight() ) ) );
     ret->_d->bgPicture->draw( bground, 0, 0);
     ret->_d->bgPicture->draw( bottom, 0, bground.getHeight() );
 
@@ -475,11 +487,12 @@ void ExtentMenu::maximize()
                                                    stopPos, 300 );
 }
 
-ExtentMenu::ExtentMenu( Widget* parent, GuiTilemap& tmap, int id, const Rect& rectangle )
+ExtentMenu::ExtentMenu( Widget* parent, TilemapRenderer& tmap, int id, const Rect& rectangle )
     : Menu( parent, id, rectangle ), _tmap( tmap )
 {
-  GuiPaneling::configureTexturedButton( _d->minimizeButton, ResourceGroup::panelBackground, 97, false );
-  _d->minimizeButton->setPosition( Point( 127, 5 ) );
+  _d->minimizeButton->deleteLater();
+  _d->minimizeButton = _addButton( 97, false, 0, MAXIMIZE_ID, false, ResourceMenu::emptyMidPicId, _("##minimizeBtnTooltip") );
+  _d->minimizeButton->setGeometry( Rect( Point( 127, 5 ), Size( 31, 20 ) ) );
   CONNECT( _d->minimizeButton, onClicked(), this, ExtentMenu::minimize );
 
   _d->houseButton->setPosition( Point( 13, 277 ) );
@@ -532,6 +545,7 @@ ExtentMenu::ExtentMenu( Widget* parent, GuiTilemap& tmap, int id, const Rect& re
   
   CONNECT( _d->overlaysButton, onClicked(), this, ExtentMenu::toggleOverlays );
   CONNECT( _d->empireButton, onClicked(), &_d->onEmpireMapShowSignal, Signal0<>::emit );
+  CONNECT( _d->senateButton, onClicked(), &_d->onAdvisorsWndShowSignal, Signal0<>::emit );
 }
 
 bool ExtentMenu::onEvent(const NEvent& event)
@@ -541,7 +555,7 @@ bool ExtentMenu::onEvent(const NEvent& event)
         if( MenuButton* btn = safety_cast< MenuButton* >( event.GuiEvent.Caller ) )
         {
             int picId = btn->getMidPicId() > 0 ? btn->getMidPicId() : ResourceMenu::emptyMidPicId;
-            _d->middleLabel->setBackgroundPicture( PicLoader::instance().getPicture( ResourceGroup::menuMiddleIcons, picId ) );
+            _d->middleLabel->setBackgroundPicture( Picture::load( ResourceGroup::menuMiddleIcons, picId ) );
         }
     }
 
@@ -561,11 +575,9 @@ void ExtentMenu::draw( GfxEngine& painter )
   // try to generate and show minimap
   // now we will show it at (0,0)
   // then we will show it in right place 
-  int mapsize = Scenario::instance().getCity().getTilemap().getSize();
-  
-  Picture& minimap = painter.createPicture(mapsize * 2 , mapsize * 2);
+  int mapsize = _tmap.getTilemap().getSize(); 
 
-  minimap.lock();
+  _d->fullmap->lock();
   // here we can draw anything
   
   // std::cout << "center is (" << _mapArea->getCenterX() << "," << _mapArea->getCenterZ() << ")" << std::endl;
@@ -585,11 +597,11 @@ void ExtentMenu::draw( GfxEngine& painter )
       int c1, c2;      
       getTerrainColours(tile, c1, c2);
 
-      if( pnt.getX() >= minimap.getWidth()-1 || pnt.getY() >= minimap.getHeight() )
+      if( pnt.getX() >= _d->fullmap->getWidth()-1 || pnt.getY() >= _d->fullmap->getHeight() )
         continue;
 
-      minimap.setPixel( pnt, c1);
-      minimap.setPixel( pnt + Point( 1, 0 ), c2);
+      _d->fullmap->setPixel( pnt, c1);
+      _d->fullmap->setPixel( pnt + Point( 1, 0 ), c2);
     }
   }
 
@@ -598,38 +610,39 @@ void ExtentMenu::draw( GfxEngine& painter )
   // show center of screen on minimap
   // Exit out of image size on small carts... please fix it
   
-  /*sdlFacade.setPixel(surface, GuiTilemap::instance().getMapArea().getCenterX(),     mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ(), kWhite);
-  sdlFacade.setPixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 1, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ(), kWhite);
-  sdlFacade.setPixel(surface, GuiTilemap::instance().getMapArea().getCenterX(),     mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 1, kWhite);
-  sdlFacade.setPixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 1, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 1, kWhite);
+  /*sdlFacade.setPixel(surface, TilemapRenderer::instance().getMapArea().getCenterX(),     mapsize * 2 - TilemapRenderer::instance().getMapArea().getCenterZ(), kWhite);
+  sdlFacade.setPixel(surface, TilemapRenderer::instance().getMapArea().getCenterX() + 1, mapsize * 2 - TilemapRenderer::instance().getMapArea().getCenterZ(), kWhite);
+  sdlFacade.setPixel(surface, TilemapRenderer::instance().getMapArea().getCenterX(),     mapsize * 2 - TilemapRenderer::instance().getMapArea().getCenterZ() + 1, kWhite);
+  sdlFacade.setPixel(surface, TilemapRenderer::instance().getMapArea().getCenterX() + 1, mapsize * 2 - TilemapRenderer::instance().getMapArea().getCenterZ() + 1, kWhite);
 
-  for ( int i = GuiTilemap::instance().getMapArea().getCenterX() - 18; i <= GuiTilemap::instance().getMapArea().getCenterX() + 18; i++ )
+  for ( int i = TilemapRenderer::instance().getMapArea().getCenterX() - 18; i <= TilemapRenderer::instance().getMapArea().getCenterX() + 18; i++ )
   {
-    sdlFacade.setPixel(surface, i, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 34, kYellow);
-    sdlFacade.setPixel(surface, i, mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() - 34, kYellow);
+    sdlFacade.setPixel(surface, i, mapsize * 2 - TilemapRenderer::instance().getMapArea().getCenterZ() + 34, kYellow);
+    sdlFacade.setPixel(surface, i, mapsize * 2 - TilemapRenderer::instance().getMapArea().getCenterZ() - 34, kYellow);
   }
 
-  for ( int j = mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() - 34; j <= mapsize * 2 - GuiTilemap::instance().getMapArea().getCenterZ() + 34; j++ )
+  for ( int j = mapsize * 2 - TilemapRenderer::instance().getMapArea().getCenterZ() - 34; j <= mapsize * 2 - TilemapRenderer::instance().getMapArea().getCenterZ() + 34; j++ )
   {
-    sdlFacade.setPixel(surface, GuiTilemap::instance().getMapArea().getCenterX() - 18, j, kYellow);
-    sdlFacade.setPixel(surface, GuiTilemap::instance().getMapArea().getCenterX() + 18, j, kYellow);
+    sdlFacade.setPixel(surface, TilemapRenderer::instance().getMapArea().getCenterX() - 18, j, kYellow);
+    sdlFacade.setPixel(surface, TilemapRenderer::instance().getMapArea().getCenterX() + 18, j, kYellow);
   }
   */
   
-  minimap.unlock();
+  _d->fullmap->unlock();
   
   // this is window where minimap is displayed
-  Picture& minimap_windows = painter.createPicture(144, 110);
+  
   
   int i = _tmap.getMapArea().getCenterX();
   int j = _tmap.getMapArea().getCenterZ();
   
-  minimap_windows.draw( minimap, 146/2 - i, 112/2 + j - mapsize*2 );
+  _d->minimap->fill( 0xff000000, Rect() );
+  _d->minimap->draw( *_d->fullmap, 146/2 - i, 112/2 + j - mapsize*2 );
   
-  painter.drawPicture( minimap_windows, getScreenLeft() + 8, getScreenTop() + 35); // 152, 145
+  painter.drawPicture( *_d->minimap, getScreenLeft() + 8, getScreenTop() + 35); // 152, 145
 
-  painter.deletePicture(minimap);
-  painter.deletePicture(minimap_windows);
+  //painter.deletePicture(minimap);
+  //painter.deletePicture(minimap_windows);
 }
 
 void ExtentMenu::toggleOverlays()
@@ -646,4 +659,9 @@ Signal1<int>& ExtentMenu::onSelectOverlayType()
 Signal0<>& ExtentMenu::onEmpireMapShow()
 {
   return _d->onEmpireMapShowSignal;
+}
+
+Signal0<>& ExtentMenu::onAdvisorsWindowShow()
+{
+  return _d->onAdvisorsWndShowSignal;
 }

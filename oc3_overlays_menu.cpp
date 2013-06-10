@@ -100,8 +100,9 @@ void OverlaysMenu::_addButtons( const OverlayType type )
 void OverlaysMenu::_addButton(const OverlayType ovType, const std::string& name, const Point& offset )
 {
   PushButton* btn = new PushButton( this, Rect( 0, 0, getWidth(), 22 ) + offset, name, ovType );
-
+  btn->setFont( Font::create( FONT_1 ) );
   btn->setNotClipped( true );
+  
   if( offset.getX() != 0 )
     _d->buttons.push_back( btn );
 }

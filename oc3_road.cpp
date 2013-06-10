@@ -85,9 +85,9 @@ bool Road::canBuild(const TilePos& pos ) const
 
 void Road::setTerrain(TerrainTile& terrain)
 {
-  terrain.reset();
+  terrain.clearFlags();
   terrain.setOverlay( this );
-  terrain.setRoad(true);
+  terrain.setRoad( true );
 }
 
 Picture& Road::computePicture()
@@ -196,11 +196,10 @@ void Plaza::setTerrain(TerrainTile& terrain)
 {
   //std::cout << "Plaza::setTerrain" << std::endl;
   bool isMeadow = terrain.isMeadow();  
-  terrain.reset();
+  terrain.clearFlags();
   terrain.setOverlay(this);
   terrain.setRoad(true);
-  terrain.setMeadow(isMeadow);
-  terrain.setOriginalImgId(terrain.getOriginalImgId() );
+  terrain.setMeadow( isMeadow );
 }
 
 Picture& Plaza::computePicture()

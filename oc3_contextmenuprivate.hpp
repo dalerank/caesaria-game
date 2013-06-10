@@ -19,6 +19,7 @@
 #include <vector>
 
 #include "oc3_picture.hpp"
+#include "oc3_signals.hpp"
 
 class ContextMenuItem;
 
@@ -37,6 +38,9 @@ public:
 	Font lastFont;
 	CloseMode closeHandling;
 	bool needRecalculateItems;
+
+oc3_signals public:
+  Signal1<int> onItemActionSignal;
 };
 
 #endif //_OPENCAESAR3_CONTEXT_MENU_PRIVATE_H_INLCUDE_

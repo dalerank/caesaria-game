@@ -24,13 +24,15 @@
 #include "oc3_alignment.hpp"
 #include "oc3_size.hpp"
 #include "oc3_scopedptr.hpp"
+#include "oc3_referencecounted.hpp"
 
 class Point;
 class Rect;
+class NColor;
 struct SDL_Surface;
-
+  
 // an image with offset, this is the basic rendered object
-class Picture
+class Picture : public ReferenceCounted
 {
 public:
    Picture();
@@ -46,14 +48,17 @@ public:
    void addOffset(const int dx, const int dy);
    void setName(std::string &name);  // for save game
    std::string getName();
-   Picture& copy() const;
-   SDL_Surface *getSurface() const;
+   Picture* copy() const;
+   SDL_Surface* getSurface() const;
    Point getOffset() const;
    int getWidth() const;
    int getHeight() const;
 
    void draw( const Picture &srcpic, const int dx, const int dy );
    void draw( const Picture &srcpic, const Rect& srcrect, const Point& pos );
+   void draw( const Picture &srcpic, const Rect& srcrect, const Rect& dstrect );
+
+   void fill( const NColor& color, const Rect& rect );
 
    // lock/unlock the given surface for pixel access
    void lock();
@@ -67,10 +72,11 @@ public:
 
    bool isValid() const;
 
-   void reset();
-
    static Picture& load( const std::string& group, const int id );
    static Picture& load( const std::string& filename ); 
+
+   static Picture* create( const Size& size );
+   static void destroy( Picture* ptr );
 
    unsigned int& getGlTextureID() const;
 private:
@@ -79,5 +85,20 @@ private:
 };
 
 typedef std::vector<Picture*> PicturesArray;
+
+struct PictureRefDeleter
+{
+  static inline void cleanup( Picture* pic )
+  {
+    // Enforce a complete type.
+    // If you get a compile error here, you need add destructor in class-container
+    typedef char IsIncompleteType[ sizeof(Picture) ? 1 : -1 ];
+    (void) sizeof(IsIncompleteType);
+
+    Picture::destroy( pic );
+  }
+};
+
+typedef ScopedPtr< Picture, PictureRefDeleter > PictureRef;
 
 #endif

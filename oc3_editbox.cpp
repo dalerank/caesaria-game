@@ -130,7 +130,7 @@ Font EditBox::getActiveFont()
   if ( _d->overrideFont.isValid() )
     return _d->overrideFont;
   
-  return Font( FONT_2 );
+  return Font::create( FONT_2 );
 }
 
 //! Sets another color for the text.

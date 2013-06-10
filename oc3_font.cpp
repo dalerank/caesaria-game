@@ -38,9 +38,9 @@ Font::Font( const Font& other ) : _d( new Impl )
   *this = other;
 }
 
-Font::Font( const std::string& family, const int size )
+Font Font::create( const std::string& family, const int size )
 {
-
+  return Font();
 }
 
 // unsigned int Font::getKerningSize( )
@@ -80,11 +80,6 @@ int Font::getCharacterFromPos(const std::string& text, int pixel_x) const
   }
 
   return -1;
-}
-
-Font::Font( FontType type ) : _d( new Impl )
-{
-  *this = FontCollection::instance().getFont_( type );
 }
 
 int Font::getColor() const
@@ -186,6 +181,11 @@ void Font::draw(Picture& dstpic, const std::string &text, const int dx, const in
   SDL_FreeSurface( sText );
 }
 
+void Font::draw( Picture &dstpic, const std::string &text, const Point& pos )
+{
+  draw( dstpic, text, pos.getX(), pos.getY() );
+}
+
 Font::~Font()
 {
 
@@ -196,6 +196,11 @@ Font& Font::operator=( const Font& other )
   _d->ttfFont = other._d->ttfFont;
   _d->color = other._d->color;
   return *this;
+}
+
+Font Font::create( FontType type )
+{
+  return FontCollection::instance().getFont_( type );
 }
 
 class FontCollection::Impl
@@ -265,6 +270,8 @@ void FontCollection::initialize(const std::string &resourcePath)
 
   _d->addFont( FONT_0, full_font_path, 12, black );
   _d->addFont( FONT_1, full_font_path, 16, black );
+  _d->addFont( FONT_1_WHITE, full_font_path, 16, white );
+  _d->addFont( FONT_1_RED, full_font_path, 16, red );
   _d->addFont( FONT_2, full_font_path, 18, black );
   _d->addFont( FONT_2_RED, full_font_path, 18, red );
   _d->addFont( FONT_2_WHITE, full_font_path, 18, white );

@@ -38,7 +38,6 @@ public:
   bool needRecalculateParams;
   Point cursorPos;
 
-	RectF currentSliderRect;
 	Picture texture;
   Picture sliderPictureUp, sliderPictureDown;
 	Picture sliderTexture;

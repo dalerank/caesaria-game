@@ -32,21 +32,22 @@ public:
   int getI() const;
   int getJ() const;
   TilePos getIJ() const;
+  Point getScreenPos() const;
 
   // displayed picture
-  void set_picture(Picture *picture);
-  Picture& get_picture() const;
+  void setPicture(Picture *picture);
+  Picture& getPicture() const;
 
   // used for multi-tile graphics: current displayed picture
   // background of constructible tiles is 1x1 => master used for foreground
   // non-constructible tiles have no foreground => master used for background
-  Tile* get_master_tile() const;
-  void set_master_tile(Tile* master);
-  bool is_master_tile() const;;
+  Tile* getMasterTile() const;
+  void setMasterTile(Tile* master);
+  bool isMasterTile() const;;
 
   const TerrainTile& getTerrain() const;
   TerrainTile& getTerrain();
-  bool is_flat() const;  // returns true if the tile is walkable/boatable (for display purpose)
+  bool isFlat() const;  // returns true if the tile is walkable/boatable (for display purpose)
 
   void resetWasDrawn() { _wasDrawn = false; }
   void setWasDrawn()   { _wasDrawn = true;  }

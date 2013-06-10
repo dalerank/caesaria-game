@@ -167,6 +167,21 @@ int BuildingData::getResourceIndex() const
   return _rcIndex;
 }
 
+char BuildingData::getDesirbilityInfluence() const
+{
+  return _baseDesirability;
+}
+
+char BuildingData::getDesirbilityRange() const
+{
+  return _desirabilityRange;
+}
+
+char BuildingData::getDesirabilityStep() const
+{
+  return _desirabilityStep;
+}
+
 class BuildingDataHolder::Impl
 {
 public:

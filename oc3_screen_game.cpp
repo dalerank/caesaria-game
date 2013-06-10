@@ -36,6 +36,7 @@
 #include "oc3_time.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_empiremap_window.hpp"
+#include "oc3_advisors_window.hpp"
 
 class ScreenGame::Impl
 {
@@ -47,7 +48,7 @@ public:
   Menu* menu;
   ExtentMenu* extMenu;
   InfoBoxManagerPtr infoBoxMgr;
-  GuiTilemap guiTilemap;
+  TilemapRenderer guiTilemap;
   WindowMessageStack* wndStackMsgs;
   Scenario* scenario; // current game scenario
   
@@ -104,6 +105,7 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
   CONNECT( _d->topMenu, onSave(), this, ScreenGame::resolveGameSave );
   CONNECT( _d->topMenu, onExit(), this, ScreenGame::resolveExitGame );
   CONNECT( _d->topMenu, onEnd(), this, ScreenGame::resolveEndGame );
+  CONNECT( _d->topMenu, onRequestAdvisor(), this, ScreenGame::showAdvisorsWindow );
 
   CONNECT( _d->menu, onCreateConstruction(), this, ScreenGame::resolveCreateConstruction );
   CONNECT( _d->menu, onRemoveTool(), this, ScreenGame::resolveRemoveTool );
@@ -122,6 +124,7 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
   CONNECT( &_d->guiTilemap, onWarningMessage(), _d->wndStackMsgs, WindowMessageStack::addMessage );
   CONNECT( _d->extMenu, onSelectOverlayType(), this, ScreenGame::resolveSelectOverlayView );
   CONNECT( _d->extMenu, onEmpireMapShow(), this, ScreenGame::showEmpireMapWindow );
+  CONNECT( _d->extMenu, onAdvisorsWindowShow(), this, ScreenGame::showAdvisorsWindow );
 }
 
 void ScreenGame::resolveGameSave()
@@ -245,7 +248,7 @@ void ScreenGame::makeScreenShot()
 {
   DateTime time = DateTime::getCurrenTime();
 
-  std::string filename = StringHelper::format( 0xff, "oc3_[%04d.%02d.%02_%02d_%02d%02d].png", 
+  std::string filename = StringHelper::format( 0xff, "oc3_[%04d_%02d_%02d_%02d_%02d_%02d].png", 
                                                time.getYear(), time.getMonth(), time.getDay(),
                                                time.getHour(), time.getMinutes(), time.getSeconds() );
   StringHelper::debug( 0xff, "creating screenshot %s", filename.c_str() );
@@ -288,4 +291,14 @@ void ScreenGame::resolveExitGame()
 void ScreenGame::resolveSelectOverlayView( int type )
 {
   _d->guiTilemap.setChangeCommand( TilemapOverlayCommand::create( OverlayType( type ) ) );
+}
+
+void ScreenGame::showAdvisorsWindow()
+{
+  showAdvisorsWindow( ADV_EMPLOYERS );
+}
+
+void ScreenGame::showAdvisorsWindow( const int advType )
+{
+  AdvisorsWindow* advWnd = AdvisorsWindow::create( _d->gui->getRootWidget(), -1, (AdvisorType)advType );
 }

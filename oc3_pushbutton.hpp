@@ -18,21 +18,23 @@
 
 #include "oc3_widget.hpp"
 #include "oc3_signals.hpp"
+#include "oc3_picture.hpp"
 
-class Picture;
 class Font;
 
 //Usual button class
 class PushButton : public Widget
 {
 public:
+  typedef enum { GrayBorderLine, WhiteBorderUp, BlackBorderUp } BackgroundStyle;
 
 	//! constructor
 	PushButton( Widget* parent,
-			    const Rect& rectangle,
-                const std::string& caption="",
-                int id=-1, 
-			    bool noclip=false );
+			        const Rect& rectangle,
+              const std::string& caption="",
+              int id=-1, 
+			        bool noclip=false,
+              const BackgroundStyle bgtyle=GrayBorderLine);
 
 	//! destructor
 	~PushButton();
@@ -59,6 +61,8 @@ public:
   void drawIcon( GfxEngine& painter );
 
   void setPicture( Picture* picture, ElementState state );
+
+  void setBackgroundStyle( const BackgroundStyle style );
 
   void setFont( const Font& font, ElementState state );
 
@@ -87,7 +91,7 @@ protected:
 	virtual ElementState getActiveButtonState_();
   virtual void _updateTexture( ElementState state );
 
-  Picture* _getPicture( ElementState state );
+  PictureRef& _getPicture( ElementState state );
 
 private:
   class Impl;

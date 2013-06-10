@@ -299,15 +299,18 @@ void City::build( const BuildingType type, const TilePos& pos )
    BuildingData& buildingData = BuildingDataHolder::instance().getData( type );
    // make new building
    ConstructionPtr building = ConstructionManager::getInstance().create( type );
-   building->build( pos );
-
-   _d->overlayList.push_back( building.as<LandOverlay>() );
-   _d->funds -= buildingData.getCost();
-   _d->onFundsChangedSignal.emit( _d->funds );
-
-   if( building->isNeedRoadAccess() && building->getAccessRoads().empty() )
+   if( building.isValid() )
    {
-     _d->onWarningMessageSignal.emit( "##building_need_road_access##" );
+     building->build( pos );
+
+     _d->overlayList.push_back( building.as<LandOverlay>() );
+     _d->funds -= buildingData.getCost();
+     _d->onFundsChangedSignal.emit( _d->funds );
+
+     if( building->isNeedRoadAccess() && building->getAccessRoads().empty() )
+     {
+       _d->onWarningMessageSignal.emit( "##building_need_road_access##" );
+     }
    }
 }
 
@@ -367,7 +370,7 @@ void City::clearLand(const TilePos& pos  )
     PtrTilesArea clearedTiles = _d->tilemap.getFilledRectangle( rPos, Size( size ) );
     for (PtrTilesArea::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
     {
-      (*itTile)->set_master_tile(NULL);
+      (*itTile)->setMasterTile(NULL);
       TerrainTile &terrain = (*itTile)->getTerrain();
       terrain.setTree(false);
       terrain.setBuilding(false);
@@ -385,7 +388,7 @@ void City::clearLand(const TilePos& pos  )
       if( terrain.isMeadow() )
       {
         unsigned int originId = terrain.getOriginalImgId();
-        (*itTile)->set_picture( &Picture::load( TerrainTileHelper::convId2PicName( originId ) ) );
+        (*itTile)->setPicture( &Picture::load( TerrainTileHelper::convId2PicName( originId ) ) );
       }
       else
       {
@@ -395,7 +398,7 @@ void City::clearLand(const TilePos& pos  )
         int startOffset  = ( (rand() % 10 > 6) ? 62 : 232 ); 
         int imgId = rand() % 58;
 
-        (*itTile)->set_picture( &Picture::load( "land1a", startOffset + imgId));
+        (*itTile)->setPicture( &Picture::load( "land1a", startOffset + imgId));
       }      
     }
       

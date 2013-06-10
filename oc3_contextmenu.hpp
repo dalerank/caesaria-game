@@ -118,7 +118,7 @@ public:
 	int getHoveredIndex() const;
 
 oc3_signals public:
-  //virtual core::Signal1<unsigned int>& ItemAction();
+  virtual Signal1<int>& onItemAction();
 	
 protected:
 	void setHoverIndex_( int index );

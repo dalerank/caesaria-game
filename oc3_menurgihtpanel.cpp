@@ -21,7 +21,7 @@
 class MenuRigthPanel::Impl
 {
 public:
-    Picture* picture; 
+    PictureRef picture; 
 };
 
 MenuRigthPanel::MenuRigthPanel( Widget* parent ) : Widget( parent, -1, Rect( 0, 0, 100, 100 ) ), _d( new Impl )
@@ -39,7 +39,7 @@ MenuRigthPanel* MenuRigthPanel::create( Widget* parent, const Rect& rectangle, c
 
     ret->setGeometry( rectangle );
     
-    ret->_d->picture = &GfxEngine::instance().createPicture( rectangle.getWidth(), rectangle.getHeight() );
+    ret->_d->picture.reset( Picture::create( rectangle.getSize() ) );
     //SDL_SetAlpha( ret->_d->picture->getSurface(), 0, 0 );  // remove surface alpha
 
     int y = 0;

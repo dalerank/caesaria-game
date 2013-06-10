@@ -34,4 +34,5 @@ const char* ResourceGroup::housing         = "housng1a";
 const char* ResourceGroup::govt            = "govt";
 const char* ResourceGroup::carts           = "carts";
 const char* ResourceGroup::waterOverlay    = "oc3_wateroverlay";
+const char* ResourceGroup::advisorwindow   = "oc3_advisorwindow";
 

@@ -19,6 +19,7 @@
 #include <string>
 #include "oc3_predefinitions.hpp"
 #include "oc3_enums.hpp"
+#include "oc3_flagholder.hpp"
 
 class TilePos;
 
@@ -31,7 +32,6 @@ public:
 	      unsigned char randomData, unsigned char elevationData);
 
   // reset all fields
-  void reset();
 
   bool isConstructible() const;
   bool isDestructible() const;
@@ -61,7 +61,7 @@ public:
   void setElevation(const bool isElevation) { _isElevation = isElevation; }
   void setWall(const bool isWall)           { _isWall      = isWall;      }
   void setGateHouse(const bool isGateHouse) { _isGateHouse = isGateHouse; }
-  
+  void clearFlags();
 
   void setOverlay(LandOverlayPtr overlay);
   LandOverlayPtr getOverlay() const;
@@ -87,6 +87,8 @@ public:
   int getWaterService( const WaterService type ) const;
 
 private:
+  void _reset();
+
   bool _isWater;
   bool _isRock;
   bool _isTree;

@@ -19,10 +19,6 @@
 #ifndef __OPENCAESAR3_GUITILEMAP_H_INCLUDED__
 #define __OPENCAESAR3_GUITILEMAP_H_INCLUDED__
 
-
-#include <list>
-#include <vector>
-
 #include "oc3_picture.hpp"
 #include "oc3_city.hpp"
 #include "oc3_tilemap.hpp"
@@ -35,11 +31,11 @@ class ScreenGame;
 struct NEvent;
 
 /* Draws the tilemap area on the screen thanks to the GfxEngine, and handle user events */
-class GuiTilemap
+class TilemapRenderer
 {
 public:
-   GuiTilemap();
-   ~GuiTilemap();
+   TilemapRenderer();
+   ~TilemapRenderer();
    
    void init(City &city, TilemapArea &mapArea, ScreenGame *screen);
 
@@ -49,6 +45,8 @@ public:
    void drawTilemap();
    
    void handleEvent( NEvent& event);
+
+   Tilemap& getTilemap();
 
    // sets the current build tool (if any)
    void setChangeCommand( const TilemapChangeCommandPtr command );
@@ -69,10 +67,6 @@ protected:
    
    // update preview tiles
    void updatePreviewTiles( bool force=false );
-
-   void drawTile( Tile& tile );
-
-   void drawTileEx( Tile& tile, const int depth );
 
 private:
    class Impl;

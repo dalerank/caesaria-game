@@ -23,11 +23,10 @@
 #include "oc3_gui_paneling.hpp"
 #include "oc3_gfx_engine.hpp"
 
-
 struct ButtonState
 {
     Picture* bgTexture;
-    Picture* texture;
+    PictureRef texture;
     Picture* iconTexture;
     //SDL_Color color;
     //bool overrideColorEnabled;
@@ -39,48 +38,48 @@ struct ButtonState
 class PushButton::Impl
 {
 public:
-    bool pressed;
-    bool isPushButton;
-    bool drawBody;
-    Rect textRect;
-    Rect iconRect;
-    int clickTime;
-    
-    ElementState currentButtonState, lastButtonState;
-    ButtonState buttonStates[ StateCount ];
+  bool pressed;
+  bool isPushButton;
+  bool drawBody;
+  Rect textRect;
+  Rect iconRect;
+  int clickTime;
+  BackgroundStyle bgStyle;
+  
+  ElementState currentButtonState, lastButtonState;
+  ButtonState buttonStates[ StateCount ];
 
 oc3_signals public:
-    Signal0<> onClickedSignal;
+  Signal0<> onClickedSignal;
 
 public:
 
-    Impl() : pressed(false), 
-        isPushButton(false), drawBody( true ),
-        clickTime(0)
+  Impl() : pressed(false), 
+      isPushButton(false), drawBody( true ),
+      clickTime(0)
+  {
+    for( int i=0; i < StateCount; i++)
     {
-        for( int i=0; i < StateCount; i++)
-        {
-            buttonStates[ ElementState(i) ].texture = 0;
-            buttonStates[ ElementState(i) ].iconTexture = 0;
-            buttonStates[ ElementState(i) ].bgTexture = 0;
-            buttonStates[ ElementState(i) ].font = Font( FONT_2 );
-        }
-    }    
-
-    ~Impl()
-    {
-        for( int i=0; i < StateCount; i++)
-            releaseTexture( ElementState(i) );
-    }  
-
-    void releaseTexture( ElementState state )
-    {
-      if( buttonStates[ state ].texture )
-      {
-        GfxEngine::instance().deletePicture( *buttonStates[ state ].texture );
-        buttonStates[ state ].texture = 0;
-      }
+      buttonStates[ ElementState(i) ].texture.reset( 0 );
+      buttonStates[ ElementState(i) ].iconTexture = 0;
+      buttonStates[ ElementState(i) ].bgTexture = 0;
+      buttonStates[ ElementState(i) ].font = Font::create( FONT_2 );
     }
+  }    
+
+  ~Impl()
+  {
+    for( int i=0; i < StateCount; i++)
+      releaseTexture( ElementState(i) );
+  }  
+
+  void releaseTexture( ElementState state )
+  {
+    if( buttonStates[ state ].texture )
+    {
+      buttonStates[ state ].texture.reset();
+    }
+  }
 };
 
 //! constructor
@@ -88,53 +87,79 @@ PushButton::PushButton( Widget* parent,
 					    const Rect& rectangle, 
                         const std::string& caption,
                         int id, 
-					    bool noclip )
+					              bool noclip, 
+                        const BackgroundStyle bgStyle )
 : Widget( parent, id, rectangle ), _d( new Impl )
 {
-    setDebugName( "OC3_pushbutton" );
+  setDebugName( "OC3_pushbutton" );
 
-    _d->pressed = false;
-    _d->currentButtonState = stNormal;
-    _d->lastButtonState = StateCount;
-    setTextAlignment( alignCenter, alignCenter );
+  _d->pressed = false;
+  _d->currentButtonState = stNormal;
+  _d->lastButtonState = StateCount;
+  _d->bgStyle = bgStyle;
+  setTextAlignment( alignCenter, alignCenter );
 
-    _text = caption;
-    setNotClipped(noclip);
-
-//     for( int i=0; i < StateCount; i++)
-//     {
-//        _updateTexture( ElementState(i) );
-//     }
+  _text = caption;
+  setNotClipped(noclip);
 }
 
 void PushButton::_updateTexture( ElementState state )
 {
-    Size btnSize = getSize();
-    Picture*& curTxs = _d->buttonStates[ state ].texture;
-    
-    if( curTxs && curTxs->getSize() != btnSize )
-        _d->releaseTexture( state );
+  Size btnSize = getSize();
+  PictureRef& curTxs = _d->buttonStates[ state ].texture;
+  
+  if( !curTxs.isNull() && curTxs->getSize() != btnSize )
+      _d->releaseTexture( state );
 
-    if( !curTxs )
-      curTxs = &GfxEngine::instance().createPicture( btnSize.getWidth(), btnSize.getHeight() );
+  if( curTxs.isNull() )
+    curTxs.reset( Picture::create( btnSize ) );
 
-    // draw button background
-    if( _d->buttonStates[ state ].bgTexture )
+  // draw button background
+  if( _d->buttonStates[ state ].bgTexture )
+  {
+    curTxs->draw( *_d->buttonStates[ state ].bgTexture, 0, 0 );
+  }    
+  else
+  {
+    switch( _d->bgStyle )
     {
-      curTxs->draw( *_d->buttonStates[ state ].bgTexture, 0, 0 );
-    }    
-    else
+    case GrayBorderLine:
     {
       const int picId[StateCount] = { 22, 25, 25, 22, 25 };
-      GuiPaneling::instance().draw_basic_text_button( *curTxs, 0, 0, getSize().getWidth(), picId[ state ] );
+      GuiPaneling::instance().draw_basic_text_button( *curTxs, 0, 0, getWidth(), picId[ state ] );
     }
+    break;
 
-    if( _d->buttonStates[ state ].font.isValid() )
+    case WhiteBorderUp:
     {
-      Rect textRect = _d->buttonStates[ state ].font.calculateTextRect( getText(), Rect( 0, 0, getWidth(), getHeight() ),
-                                                                        getHorizontalTextAlign(), getVerticalTextAlign() );
-      _d->buttonStates[ state ].font.draw( *curTxs, getText(), textRect.getLeft(), textRect.getTop() );
+      GuiPaneling::instance().draw_white_area( *curTxs, 0, 0, getWidth(), getHeight() );
+      
+      if( state == stHovered )
+        GuiPaneling::instance().draw_brown0_borders( *curTxs, 0, 0, getWidth(), getHeight() );
+      else
+        GuiPaneling::instance().draw_white0_borders( *curTxs, 0, 0, getWidth(), getHeight() );
     }
+    break;
+
+    case BlackBorderUp:
+    {
+      GuiPaneling::instance().draw_black_area( *curTxs, 0, 0, getWidth(), getHeight() );
+
+      if( state == stHovered )
+        GuiPaneling::instance().draw_brown0_borders( *curTxs, 0, 0, getWidth(), getHeight() );
+      else
+        GuiPaneling::instance().draw_white0_borders( *curTxs, 0, 0, getWidth(), getHeight() );
+    }
+    break;
+    }
+  }
+
+  if( _d->buttonStates[ state ].font.isValid() )
+  {
+    Rect textRect = _d->buttonStates[ state ].font.calculateTextRect( getText(), Rect( 0, 0, getWidth(), getHeight() ),
+                                                                      getHorizontalTextAlign(), getVerticalTextAlign() );
+    _d->buttonStates[ state ].font.draw( *curTxs, getText(), textRect.getLeft(), textRect.getTop() );
+  }
 }
 
 //! destructor
@@ -144,119 +169,122 @@ PushButton::~PushButton()
 
 void PushButton::setIsPushButton( bool value )
 {
-    _d->isPushButton = value;
+  _d->isPushButton = value;
 }
 
 bool PushButton::isPushButton() const
 {
-    return _d->isPushButton;
+  return _d->isPushButton;
 }
 
 void PushButton::setPicture( Picture* picture, ElementState state )
 {
-    Rect rectangle( Point(0,0), picture ? picture->getSize() : Size( 0, 0 ) );
+  Rect rectangle( Point(0,0), picture ? picture->getSize() : Size( 0, 0 ) );
 
-    _d->buttonStates[ state ].bgTexture = picture;
-    _d->buttonStates[ state ].rectangle = rectangle;
-    _updateTexture( state );
+  _d->buttonStates[ state ].bgTexture = picture;
+  _d->buttonStates[ state ].rectangle = rectangle;
+  _updateTexture( state );
 }
 
 void PushButton::setPressed( bool pressed )
 {
-    if( _d->pressed != pressed)
-    {
-        _d->clickTime = DateTime::getElapsedTime();
-        _d->pressed = pressed;
-    }
+  if( _d->pressed != pressed)
+  {
+      _d->clickTime = DateTime::getElapsedTime();
+      _d->pressed = pressed;
+  }
 }
 
 bool PushButton::isPressed() const
 {
-    return _d->pressed;
+  return _d->pressed;
 }
 
 //! called if an event happened.
 bool PushButton::onEvent(const NEvent& event)
 {
-    if( !isEnabled() )
-        return getParent()->onEvent(event);
+  if( !isEnabled() )
+  {
+    return getParent()->onEvent(event);
+  }
 
-    switch(event.EventType)
+  switch(event.EventType)
+  {
+  case OC3_KEYBOARD_EVENT:
+    if( event.KeyboardEvent.PressedDown
+        && ( event.KeyboardEvent.Key == KEY_RETURN || event.KeyboardEvent.Key == KEY_SPACE ) )
     {
-    case OC3_KEYBOARD_EVENT:
-        if( event.KeyboardEvent.PressedDown
-            && ( event.KeyboardEvent.Key == KEY_RETURN || event.KeyboardEvent.Key == KEY_SPACE ) )
-        {
-            if ( !isPushButton() )
-                setPressed(true);
-            else
-                setPressed(!isPressed());
+      if ( !isPushButton() )
+        setPressed(true);
+      else
+        setPressed( !isPressed() );
 
-            return true;
+      return true;
+    }
+
+    if( isPressed() && !isPushButton() && event.KeyboardEvent.PressedDown
+        && event.KeyboardEvent.Key == KEY_ESCAPE)
+    {
+      setPressed(false);
+      return true;
+    }
+    else
+      if( !event.KeyboardEvent.PressedDown && isPressed()
+          && ( event.KeyboardEvent.Key == KEY_RETURN || event.KeyboardEvent.Key == KEY_SPACE ) )
+      {
+        if (!isPushButton())
+        {
+          setPressed(false);
         }
 
-        if( isPressed()
-            && !isPushButton()
-            && event.KeyboardEvent.PressedDown
-            && event.KeyboardEvent.Key == KEY_ESCAPE)
-        {
-                setPressed(false);
-                return true;
-        }
-        else
-          if( !event.KeyboardEvent.PressedDown
-              && isPressed()
-              && ( event.KeyboardEvent.Key == KEY_RETURN || event.KeyboardEvent.Key == KEY_SPACE ) )
-          {
-              if (!isPushButton())
-                      setPressed(false);
+        btnClicked_();
+        return true;
+      }
+   break;
 
-              btnClicked_();
-              return true;
-          }
-     break;
-
-     case OC3_GUI_EVENT:
-            switch(event.GuiEvent.EventType)
-            {
-            case OC3_ELEMENT_FOCUS_LOST:
-                            if (event.GuiEvent.Caller == this && !isPushButton())
-                                    setPressed(false);
-            break;
-
-            default:
-            break;
-            }
+   case OC3_GUI_EVENT:
+    switch(event.GuiEvent.EventType)
+    {
+    case OC3_ELEMENT_FOCUS_LOST:
+      if (event.GuiEvent.Caller == this && !isPushButton())
+      {
+        setPressed(false);
+      }
     break;
 
-    case OC3_MOUSE_EVENT:
-            switch( event.MouseEvent.Event  )
-            {
-            case OC3_LMOUSE_PRESSED_DOWN: return leftMouseBtnPressed_( event );
-            case OC3_LMOUSE_LEFT_UP: return btnMouseUp_( event );
-
-            default:
-            break;
-            }
-    break;
-	
     default:
     break;
     }
+  break;
+
+  case OC3_MOUSE_EVENT:
+    switch( event.MouseEvent.Event  )
+    {
+    case OC3_LMOUSE_PRESSED_DOWN: return leftMouseBtnPressed_( event );
+    case OC3_LMOUSE_LEFT_UP: return btnMouseUp_( event );
+
+    default:
+    break;
+    }
+  break;
+	
+  default:
+  break;
+  }
 
 	return getParent() ? getParent()->onEvent(event) : false;
 }
 
 void PushButton::btnClicked_()
 {
-    getParent()->onEvent( NEvent::Gui( this, 0, OC3_BUTTON_CLICKED ) );
+  getParent()->onEvent( NEvent::Gui( this, 0, OC3_BUTTON_CLICKED ) );
 
-    onClicked().emit();
+  onClicked().emit();
 }
 
 Signal0<>& PushButton::onClicked()
 {
-    return _d->onClickedSignal;
+  return _d->onClickedSignal;
 }
 
 bool PushButton::btnMouseUp_( const NEvent& event )
@@ -302,46 +330,46 @@ bool PushButton::leftMouseBtnPressed_( const NEvent& event )
 
 ElementState PushButton::getActiveButtonState_()
 {
-    if( isEnabled() )
-        return ( isPressed() 
-                    ? stPressed 
-                    : ( isHovered() ? stHovered : stNormal) );
+  if( isEnabled() )
+      return ( isPressed() 
+                  ? stPressed 
+                  : ( isHovered() ? stHovered : stNormal) );
 
-    return stDisabled;
+  return stDisabled;
 }
 
 void PushButton::beforeDraw( GfxEngine& painter )
 {
-    // todo:	move sprite up and text down if the pressed state has a sprite
-    //			draw sprites for focused and mouse-over 
-    //          Point spritePos = AbsoluteRect.getCenter();
-    _d->currentButtonState = getActiveButtonState_();
+  // todo:	move sprite up and text down if the pressed state has a sprite
+  //			draw sprites for focused and mouse-over 
+  //          Point spritePos = AbsoluteRect.getCenter();
+  _d->currentButtonState = getActiveButtonState_();
 
-    if( !_d->buttonStates[ _d->currentButtonState ].texture )
-        _updateTexture( _d->currentButtonState );
+  if( !_d->buttonStates[ _d->currentButtonState ].texture )
+    _updateTexture( _d->currentButtonState );
 
 	Widget::beforeDraw( painter  );
 }
 
 bool PushButton::isBodyVisible() const
 {
-    return _d->drawBody;
+  return _d->drawBody;
 }
 
 //! draws the element and its children
 void PushButton::draw( GfxEngine& painter )
 {
-    if( !isVisible() )
-        return;
+  if( !isVisible() )
+    return;
 
 	// todo:	move sprite up and text down if the pressed state has a sprite
 	//			draw sprites for focused and mouse-over 
-    if( isBodyVisible() )
+  if( isBodyVisible() )
+  {
+	  const ButtonState& state = _d->buttonStates[ _d->currentButtonState ];
+    if( state.texture )
     {
-		const ButtonState& state = _d->buttonStates[ _d->currentButtonState ];
-        if( state.texture )
-        {
-            painter.drawPicture( *state.texture, getScreenLeft(), getScreenTop() );
+      painter.drawPicture( *state.texture, getScreenLeft(), getScreenTop() );
 
 //             if( isEnabled() &&
 //                 ( hoverImageOpacity <= 0xff ) &&
@@ -359,59 +387,64 @@ void PushButton::draw( GfxEngine& painter )
         }
 	}
 
-    drawIcon( painter );
+  drawIcon( painter );
  
-    Widget::draw( painter );
+  Widget::draw( painter );
 }
 
 void PushButton::drawIcon( GfxEngine& painter )
 {
-    Picture* iconTexture = _d->buttonStates[ _d->currentButtonState ].iconTexture;	
+  Picture* iconTexture = _d->buttonStates[ _d->currentButtonState ].iconTexture;	
 
-    if( !iconTexture )
-        return;
+  if( !iconTexture )
+      return;
 
-    Point pos = convertLocalToScreen( _d->iconRect ).UpperLeftCorner;
-    painter.drawPicture( *iconTexture, pos.getX(), pos.getY() );
+  Point pos = convertLocalToScreen( _d->iconRect ).UpperLeftCorner;
+  painter.drawPicture( *iconTexture, pos.getX(), pos.getY() );
 }
 
 void PushButton::setText( const std::string& text )
 {
 	Widget::setText( text );
 
-    for( int i=0; i != StateCount; i++ )
-        _updateTexture( ElementState(i) );
+  resizeEvent_();
 }
 
 void PushButton::setFont( const Font& font, ElementState state )
 {
-    _d->buttonStates[ state ].font = font;
-    _updateTexture( state );
+  _d->buttonStates[ state ].font = font;
+  _updateTexture( state );
 }
 
 void PushButton::setFont( const Font& font )
 {
-    for( int i=0; i != StateCount; i++ )
-    {
-        _d->buttonStates[ ElementState(i) ].font = font;
-        _updateTexture( ElementState(i) );
-    }
+  for( int i=0; i != StateCount; i++ )
+  {
+      _d->buttonStates[ ElementState(i) ].font = font;
+      _updateTexture( ElementState(i) );
+  }
 }
 
-Picture* PushButton::_getPicture( ElementState state )
+PictureRef& PushButton::_getPicture( ElementState state )
 {
-    return _d->buttonStates[ state ].texture; 
+  return _d->buttonStates[ state ].texture; 
 }
 
 Font& PushButton::getFont( ElementState state )
 {
-    return _d->buttonStates[ state ].font;
+  return _d->buttonStates[ state ].font;
 }
 
 void PushButton::resizeEvent_()
 {
-    for( int i=0; i != StateCount; i++ )
-    {
-        _updateTexture( ElementState(i) );
-    }
+  for( int i=0; i != StateCount; i++ )
+  {
+      _updateTexture( ElementState(i) );
+  }
+}
+
+void PushButton::setBackgroundStyle( const BackgroundStyle style )
+{
+  _d->bgStyle = style;
+  resizeEvent_();
 }

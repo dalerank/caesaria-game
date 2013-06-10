@@ -19,6 +19,7 @@
 #include "oc3_event.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_guienv.hpp"
+#include "oc3_resourcegroup.hpp"
 
 ScrollBar::ScrollBar(  Widget* parent, const Rect& rectangle,
                              bool horizontal, int id, bool noclip)
@@ -33,6 +34,9 @@ ScrollBar::ScrollBar(  Widget* parent, const Rect& rectangle,
 {
 	_d->upButton = 0;
 	_d->downButton = 0;
+
+  _d->sliderPictureUp = Picture::load( ResourceGroup::panelBackground, 59 );
+  _d->sliderPictureDown = Picture::load( ResourceGroup::panelBackground, 51 );
 
 #ifdef _DEBUG
    setDebugName("ScrollBar");
@@ -59,7 +63,7 @@ ScrollBar::~ScrollBar()
 {
 }
 
-void ScrollBar::_PositionChanged()
+void ScrollBar::_resolvePositionChanged()
 {
     getParent()->onEvent( NEvent::Gui( this, 0, OC3_SCROLL_BAR_CHANGED ) );
 
@@ -106,7 +110,7 @@ bool ScrollBar::onEvent(const NEvent& event)
 
                 if (_value != oldPos)
 				{
-					_PositionChanged();
+					_resolvePositionChanged();
 				}
 				if (absorb)
 					return true;
@@ -124,7 +128,7 @@ bool ScrollBar::onEvent(const NEvent& event)
           setPos(_value+_smallStep);
         }
 				
-        _PositionChanged();
+        _resolvePositionChanged();
 
 				return true;
 			}
@@ -151,7 +155,7 @@ bool ScrollBar::onEvent(const NEvent& event)
                             ( (int)event.MouseEvent.Wheel * _smallStep * (_horizontal ? 1 : -1 ) )
 							);
 
-						_PositionChanged();
+						_resolvePositionChanged();
 						return true;
 					}
 					break;
@@ -192,11 +196,11 @@ bool ScrollBar::onEvent(const NEvent& event)
 						{
 							if ( isInside )
 							{
-                                _draggedBySlider = _d->sliderRect.isPointInside( _d->cursorPos );
-                                _trayClick = !_draggedBySlider;
+                _draggedBySlider = _d->sliderRect.isPointInside( _d->cursorPos );
+                _trayClick = !_draggedBySlider;
 							}
 
-                            if (_draggedBySlider)
+              if( _draggedBySlider )
 							{
 								setPos(newPos);
 							}
@@ -221,7 +225,7 @@ bool ScrollBar::onEvent(const NEvent& event)
 
                         if (_value != oldPos )
 						{
-							_PositionChanged();
+							_resolvePositionChanged();
 						}
 						return isInside;
 					} break;
@@ -245,14 +249,14 @@ void ScrollBar::resizeEvent_()
 
 void ScrollBar::afterPaint( unsigned int timeMs )
 {
-    if( !isVisible() )
-        return;
+  if( !isVisible() )
+      return;
 
-    if( _dragging && !_draggedBySlider && _trayClick && timeMs > _lastTimeChange + 200 )
+  if( _dragging && !_draggedBySlider && _trayClick && timeMs > _lastTimeChange + 200 )
 	{
-        _lastTimeChange = timeMs;
+    _lastTimeChange = timeMs;
 
-        const int oldPos = _value;
+    const int oldPos = _value;
 
     if (_desiredPos >= _value + _largeStep)
     {
@@ -272,15 +276,6 @@ void ScrollBar::afterPaint( unsigned int timeMs )
       getParent()->onEvent( NEvent::Gui( this, 0, OC3_SCROLL_BAR_CHANGED ) );
 		}
 	}
-
-  if( /*(timeMs > _lastTimeSliderRectUpdate + 20) && */!_d->currentSliderRect.IsEqual( _d->sliderRect.toRectF(), 0.3f ))
-  {
-    //_lastTimeSliderRectUpdate = timeMs;
-    _d->currentSliderRect = _d->currentSliderRect.relativeTo( _d->sliderRect.toRectF(), 10.f );
-
-    if( _d->currentSliderRect.IsEqual( _d->sliderRect.toRectF(), 0.3f ) )
-        _d->currentSliderRect = _d->sliderRect.toRectF();
-  }
 }
 
 void ScrollBar::beforeDraw( GfxEngine& painter )
@@ -315,16 +310,12 @@ void ScrollBar::beforeDraw( GfxEngine& painter )
     }
 
   _isSliderHovered = _d->sliderRect.isPointInside( _d->cursorPos );
-    
-	if( _d->sliderTexture.isValid() )
-  {
-    ElementState st = _dragging && _draggedBySlider
+  ElementState st = _dragging && _draggedBySlider
                                 ? stPressed
                                 : (_lastSliderHovered ? stHovered : stNormal);
 
-    _d->sliderTexture = (st == stPressed) ? _d->sliderPictureDown : _d->sliderPictureUp;
-  }
-
+  _d->sliderTexture = (st == stPressed) ? _d->sliderPictureDown : _d->sliderPictureUp;
+ 
   if( needRecalculateSliderParams )
   {
     _lastSliderPos = _sliderPos;
@@ -343,7 +334,7 @@ void ScrollBar::beforeDraw( GfxEngine& painter )
       }
       else
       {
-        _d->sliderRect.UpperLeftCorner.setY( getScreenTop()+ _lastSliderPos - _drawLenght/2 );
+        _d->sliderRect.UpperLeftCorner.setY( getScreenTop() + _lastSliderPos - _drawLenght/2 );
         if( _d->upButton && _d->upButton->isVisible() )
             _d->sliderRect.UpperLeftCorner += Point( 0, _d->upButton->getHeight() );
 
@@ -369,10 +360,9 @@ void ScrollBar::draw( GfxEngine& painter )
   }
 
   //draw slider
-  Rect curRect( _d->currentSliderRect.toRect() );
   if( _d->sliderTexture.isValid() )
   {
-    painter.drawPicture( _d->sliderTexture, curRect.UpperLeftCorner );
+    painter.drawPicture( _d->sliderTexture, _d->sliderRect.UpperLeftCorner );
   }
 
 	// draw buttons
@@ -584,9 +574,9 @@ void ScrollBar::setBackgroundImage( const Picture& pixmap )
   _d->textureRect = Rect( Point(0,0), pixmap.getSize() );
 }
 
-void ScrollBar::setSliderImage( const Picture& pixmap )
+void ScrollBar::setSliderImage( const Picture& pixmap, const ElementState state )
 {
-	_d->sliderTexture = pixmap;
+  (state == stNormal ? _d->sliderPictureUp : _d->sliderPictureDown ) = pixmap;
 	_d->sliderTextureRect = Rect( Point(0,0), pixmap.getSize() );
 }
 

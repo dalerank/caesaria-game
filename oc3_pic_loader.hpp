@@ -55,6 +55,7 @@ public:
 
   // set the current picture
   void setPicture(const std::string &name, SDL_Surface &surface);
+  void setPicture(const std::string &name, const Picture& picture);
 
   // show resource
   Picture& getPicture(const std::string &name);

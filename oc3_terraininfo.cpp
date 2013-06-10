@@ -22,7 +22,7 @@
 
 TerrainTile::TerrainTile()
 {
-  reset();
+  _reset();
 }
 
 TerrainTile::TerrainTile(unsigned short int imgId, unsigned char edgeData,
@@ -31,23 +31,14 @@ TerrainTile::TerrainTile(unsigned short int imgId, unsigned char edgeData,
 	      _imgId(imgId), _edgeData(edgeData), _terrainData(terrainData), 
 	      _terrainRandom(terrainRandom), _randomData(randomData), _elevationData(elevationData)
 {
-  reset();
+  _reset();
   decode(terrainData);
 }
 
-void TerrainTile::reset()
+void TerrainTile::_reset()
 {
+  clearFlags();
   _desirability = 0;
-  _isWater      = false;
-  _isRock       = false;
-  _isTree       = false;
-  _isBuilding   = false;
-  _isRoad       = false;
-  _isAqueduct   = false;
-  _isGarden     = false;
-  _isMeadow     = false;
-  _isWall       = false;
-  _isGateHouse  = false;
   _waterService = 0;
   _overlay      = NULL; // BUG? What will be with old overlay?
 }
@@ -103,7 +94,7 @@ int TerrainTile::encode() const
 
 void TerrainTile::decode(const int bitset)
 {
-  reset();
+  clearFlags();
 
   if (bitset & 0x1)    {  setTree(true);      }
   if (bitset & 0x2)    {  setRock(true);      }
@@ -144,6 +135,20 @@ void TerrainTile::decreaseWaterService( const WaterService type )
 int TerrainTile::getWaterService( const WaterService type ) const
 {
   return (_waterService >> (type*4)) & 0xf;
+}
+
+void TerrainTile::clearFlags()
+{
+  _isWater      = false;
+  _isRock       = false;
+  _isTree       = false;
+  _isBuilding   = false;
+  _isRoad       = false;
+  _isAqueduct   = false;
+  _isGarden     = false;
+  _isMeadow     = false;
+  _isWall       = false;
+  _isGateHouse  = false;
 }
 
 std::string TerrainTileHelper::convId2PicName( const unsigned int imgId )

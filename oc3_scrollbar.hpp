@@ -84,7 +84,7 @@ public:
 
 	virtual PushButton* getDownButton();
 
-	virtual void setSliderImage( const Picture& pixmap );
+	virtual void setSliderImage( const Picture& pixmap, const ElementState state );
 
 	//! Writes attributes of the element.
 	virtual void save( VariantMap& out ) const;
@@ -129,7 +129,7 @@ protected:
 	class Impl;
 	ScopedPtr< Impl > _d;
 
-  void _PositionChanged();
+  void _resolvePositionChanged();
   std::string _GetFullStyleName();
   PushButton* _CreateButton( const Rect& rectangle,
                              TypeAlign left, TypeAlign rigth, TypeAlign top, TypeAlign bottom );

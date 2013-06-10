@@ -22,7 +22,7 @@
 #include "oc3_gfx_engine.hpp"
 #include "oc3_gui_paneling.hpp"
 
-#define DEFAULT_SCROLLBAR_SIZE 15
+#define DEFAULT_SCROLLBAR_SIZE 19
 
 //! constructor
 ListBox::ListBox( Widget* parent,const Rect& rectangle,
@@ -43,10 +43,9 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
 	_d->selectedItemIndex = -1;
 	_d->lastKeyTime = 0;
 	_d->selecting = false;
-  _d->background = 0;
 	_d->needItemsRepackTextures = true;
 
-  _d->recalculateItemHeight( Font( FONT_2 ), getHeight() );
+  _d->recalculateItemHeight( Font::create( FONT_2 ), getHeight() );
 
 #ifdef _DEBUG
   setDebugName( "ListBox");
@@ -60,15 +59,13 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
 
 	const int s = DEFAULT_SCROLLBAR_SIZE;
 
-  _d->scrollBar = new ScrollBar( this, Rect( getWidth() - s, 0, getWidth(), getHeight()), false );
+  _d->scrollBar = new ScrollBar( this, Rect( getWidth() - s - 3, 0, getWidth()-3, getHeight()-3), false );
   _d->scrollBar->setNotClipped( false );
   _d->scrollBar->setSubElement(true);
   _d->scrollBar->setVisibleFilledArea( false );
   _d->scrollBar->setTabStop(false);
   _d->scrollBar->setAlignment(alignLowerRight, alignLowerRight, alignUpperLeft, alignLowerRight);
   _d->scrollBar->setVisible(false);
-  _d->scrollBar->getUpButton()->setVisible( false );
-  _d->scrollBar->getDownButton()->setVisible( false );
   _d->scrollBar->setPos(0);
 
 	setNotClipped(!clip);
@@ -94,17 +91,15 @@ void ListBox::_updateTexture()
 
   if( _d->background && _d->background->getSize() != size )
   {
-    GfxEngine::instance().deletePicture( *_d->background );
-    GfxEngine::instance().deletePicture( *_d->picture );
-    _d->background = 0;
-    _d->picture = 0;
+    _d->background.reset();
+    _d->picture.reset();
   }
 
   if( !_d->background )
   {    
-    _d->background = &GfxEngine::instance().createPicture( size.getWidth(), size.getHeight() );
-    _d->picture = &GfxEngine::instance().createPicture( size.getWidth(), size.getHeight() );
-    GuiPaneling::instance().draw_black_frame(*_d->background, 0, 0, getWidth(), getHeight() );
+    _d->background.reset( Picture::create( size ) );
+    _d->picture.reset( Picture::create( size ) );
+    GuiPaneling::instance().draw_black_frame( *_d->background, 0, 0, getWidth(), getHeight() );
   }
 }
 
@@ -382,7 +377,10 @@ bool ListBox::onEvent(const NEvent& event)
 			case OC3_SCROLL_BAR_CHANGED:
         {
           if (event.GuiEvent.Caller == _d->scrollBar)
+          {
+            _d->needItemsRepackTextures = true;
 			      return true;
+          }
         }
 		  break;
 
@@ -589,7 +587,7 @@ void ListBox::beforeDraw( GfxEngine& painter)
 
            textRect.UpperLeftCorner += Point( _d->itemsIconWidth+3, 0 );
 
-           currentFont.draw( *_d->picture, refItem.getText(), textRect.getLeft(), textRect.getTop()  );
+           currentFont.draw( *_d->picture, refItem.getText(), textRect.getLeft(), textRect.getTop() - _d->scrollBar->getPos() );
          }
 
          frameRect += Point( 0, _d->itemHeight );
@@ -631,15 +629,15 @@ void ListBox::_RecalculateScrollPos()
 	if (!isFlag( LBF_AUTOSCROLL ))
 		return;
 
-    const int selPos = (_d->selectedItemIndex == -1 ? _d->totalItemHeight : _d->selectedItemIndex * _d->itemHeight) - _d->scrollBar->getPos();
+  const int selPos = (_d->selectedItemIndex == -1 ? _d->totalItemHeight : _d->selectedItemIndex * _d->itemHeight) - _d->scrollBar->getPos();
 
 	if (selPos < 0)
 	{
-        _d->scrollBar->setPos( _d->scrollBar->getPos() + selPos );
+    _d->scrollBar->setPos( _d->scrollBar->getPos() + selPos );
 	}
 	else if (selPos > (int)getHeight() - _d->itemHeight)
 	{
-        _d->scrollBar->setPos( _d->scrollBar->getPos() + selPos - getHeight() + _d->itemHeight );
+    _d->scrollBar->setPos( _d->scrollBar->getPos() + selPos - getHeight() + _d->itemHeight );
 	}
 }
 

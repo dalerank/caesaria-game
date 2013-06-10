@@ -36,17 +36,6 @@ GuiPaneling& GuiPaneling::instance()
    return *_instance;
 }
 
-void GuiPaneling::configureTexturedButton( PushButton* oButton, const std::string& rcGroup, const int pic_index, bool pushButton )
-{
-    PicLoader& loader = PicLoader::instance();
-    oButton->setPicture( &loader.getPicture( rcGroup, pic_index), stNormal );
-    oButton->setPicture( &loader.getPicture( rcGroup, pic_index+1), stHovered );
-    oButton->setPicture( &loader.getPicture( rcGroup, pic_index+2), stPressed );
-    oButton->setPicture( &loader.getPicture( rcGroup, pic_index+3), stDisabled );
-    oButton->setIsPushButton( pushButton );
-}
-
-
 void GuiPaneling::draw_white_area(Picture &dstpic, const int x, const int y, const int width, const int height)
 {
    for (int j = 0; j<(height/16+1); ++j)
