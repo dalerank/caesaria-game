@@ -270,6 +270,8 @@ void FontCollection::initialize(const std::string &resourcePath)
 
   _d->addFont( FONT_0, full_font_path, 12, black );
   _d->addFont( FONT_1, full_font_path, 16, black );
+  _d->addFont( FONT_1_WHITE, full_font_path, 16, white );
+  _d->addFont( FONT_1_RED, full_font_path, 16, red );
   _d->addFont( FONT_2, full_font_path, 18, black );
   _d->addFont( FONT_2_RED, full_font_path, 18, red );
   _d->addFont( FONT_2_WHITE, full_font_path, 18, white );
