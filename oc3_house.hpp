@@ -27,7 +27,7 @@ class HouseLevelSpec;
 class House : public Building
 {
 public:
-   enum { smallHovel=1 } Level;
+   enum { smallHovel=1, bigTent, smallHut, bigHut } Level;
 
    House( const int houseId=smallHovel );
 
@@ -44,6 +44,7 @@ public:
 
    bool hasServiceAccess(const ServiceType service);
    int getServiceAccess(const ServiceType service);
+   int getFoodLevel();
    void setServiceAccess(const ServiceType service, const int access);
    char getDesirabilityInfluence() const;
    unsigned char getDesirabilityRange() const;

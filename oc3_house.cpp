@@ -352,7 +352,7 @@ void House::levelDown()
    _update();
 }
 
-void House::buyMarket( ServiceWalkerPtr walker)
+void House::buyMarket( ServiceWalkerPtr walker )
 {
    // std::cout << "House buyMarket" << std::endl;
    MarketPtr market = walker->getBase().as<Market>();
@@ -642,4 +642,21 @@ unsigned char House::getDesirabilityRange() const
 char House::getDesirabilityStep() const
 {
   return _d->desirability > 0 ? -1 : 1;
+}
+
+int House::getFoodLevel()
+{
+  switch( _d->houseLevelSpec->getHouseLevel() )
+  {
+  case smallHovel:
+  case bigTent:
+    return -1;
+  
+  case smallHut:
+  case bigHut: 
+    return getGoodStore().getCurrentQty(G_WHEAT);
+  
+  default: 
+    return -1;
+  }
 }

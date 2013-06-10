@@ -70,6 +70,7 @@ public:
   void drawTileDesirability( Tile& tile );
   void drawTileFire( Tile& tile );
   void drawTileInSelArea( Tile& tile, Tile* master );
+  void drawTileFood( Tile& tile );
   void drawAnimations( LandOverlayPtr overlay, const Point& screenPos );
   void drawColumn( const Point& pos, const int startPicId, const int percent );
 
@@ -200,8 +201,7 @@ void GuiTilemap::Impl::drawTileDesirability( Tile& tile )
 
 void GuiTilemap::Impl::drawTileFire( Tile& tile )
 {
-  Point screenPos( 30 * (tile.getI() + tile.getJ()), 15 * (tile.getI() - tile.getJ()) );
-  screenPos += mapOffset;
+  Point screenPos = tile.getScreenPos() + mapOffset;
 
   tile.setWasDrawn();
 
@@ -262,6 +262,67 @@ void GuiTilemap::Impl::drawTileFire( Tile& tile )
     else
     {
       drawColumn( screenPos, 18, fireLevel );
+    }
+  }
+}
+
+void GuiTilemap::Impl::drawTileFood( Tile& tile )
+{
+  Point screenPos = tile.getScreenPos() + mapOffset;
+
+  tile.setWasDrawn();
+
+  bool needDrawAnimations = false;
+  const TerrainTile& terrain = tile.getTerrain();
+  if( terrain.getOverlay().isNull() )
+  {
+    //draw background
+    engine->drawPicture( tile.getPicture(), screenPos );
+  }
+  else
+  {   
+    LandOverlayPtr overlay = terrain.getOverlay();
+    Picture* pic = 0;
+    int foodLevel = -1;
+    switch( overlay->getType() )
+    {
+      //fire buildings and roads
+    case B_ROAD:
+    case B_PLAZA:
+    case B_MARKET:
+    case B_GRANARY:
+      pic = &tile.getPicture();
+      needDrawAnimations = true;
+    break;  
+
+      //houses
+    case B_HOUSE:
+      {
+        HousePtr house = overlay.as< House >();
+        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize() - 1)*2 + 11 );
+        foodLevel = house->getFoodLevel();
+        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() ==0);
+      }
+      break;
+
+      //other buildings
+    default:
+      {
+        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize() - 1)*2 + 1 );
+      }
+      break;
+    }  
+
+    engine->drawPicture( *pic, screenPos );
+
+    if( needDrawAnimations )
+    {
+      drawAnimations( overlay, screenPos );
+    }
+    else
+    {
+      if( foodLevel >= 0 )
+          drawColumn( screenPos, 18, math::clamp( 100 - foodLevel, 0, 100 ) );
     }
   }
 }
@@ -859,6 +920,7 @@ void GuiTilemap::setChangeCommand( const TilemapChangeCommandPtr command )
     case OV_WATER: _d->setDrawFunction( _d.data(), &Impl::drawTileWater ); break;
     case OV_RISK_FIRE: _d->setDrawFunction( _d.data(), &Impl::drawTileFire ); break;
     case OV_COMMERCE_PRESTIGE: _d->setDrawFunction( _d.data(), &Impl::drawTileDesirability ); break;
+    case OV_COMMERCE_FOOD: _d->setDrawFunction( _d.data(), &Impl::drawTileFood ); break;
     default:_d->setDrawFunction( _d.data(), &Impl::drawTileBase ); break;
     }
 
