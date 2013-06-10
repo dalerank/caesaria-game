@@ -1,0 +1,67 @@
+{
+	"map" : "./resources/maps/Corinthus.map"
+	"funds" : 8000
+	"maxHouseLevel" : "big_villa"
+	"start" : "350.01.01"
+	"overview" : [ "This is the 1st peaceful mission. After the two training levels,",
+				   "the shackles are removed and you are given plenty of freedom to build what you want,",
+				   "right from the start. This level is quite forgiving, so go ahead and experiment, ",
+				   "you can even afford to make a few mistakes. Don't run out of money, and everything will work out in the end" ]
+	
+	"targets" : {
+		"population" : 2500
+		"culture" : 35
+		"prosperity" : 10
+		"peace" : 20 
+		"favour" : 60
+	}
+	
+	"trade" : {
+		"Syracusae" : {
+			"type" : "sea"
+			"sells" : {
+				"meat" : 15
+				"marble" : 15
+			}
+			
+			"buys" : {
+				"olives" : 15
+				"oil" : 25
+				"furniture" : 15
+			}
+		}
+		
+		"Tarentum" : {
+			"type" : "land"
+			"sells" : {
+				"furniture" : 15
+				"wine" : 15 
+			}
+			
+			"buys" : {
+				"pottery" : 25
+			}
+		}
+	}
+	
+	
+	"events" : {
+		"Jul.348" : {
+			"start" : "348.06.01"
+			"type" : "emperor_request"
+			"goodType" : "oil"
+			"count" : 10
+		}
+		
+		"Apr.345" : {
+			"start" : "345.04.01"
+			"type" : "emperor_request"
+			"goodType" : "oil"
+			"count" : 15
+		}
+	}
+	
+	"manufactoring" : {
+	    "avaible" : [ "pottery", "furniture", "oil" ]
+	}
+}

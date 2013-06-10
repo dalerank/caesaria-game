@@ -60,8 +60,8 @@ AdvisorsWindow::AdvisorsWindow( Widget* parent, int id )
   _d->background->draw( backgr, Rect( Point( 0, 0), backgr.getSize() ), Rect( Point( 0,0), getSize() ) ); 
 
   Point tabButtonPos( (getWidth() - 636) / 2, getHeight() / 2 + 192);
-  GuiPaneling::instance().draw_white_frame(*_d->background, tabButtonPos.getX(), tabButtonPos.getY(), 
-                                                            636, 60 );
+
+  _d->background->draw( Picture::load( ResourceGroup::menuMiddleIcons, 14 ), tabButtonPos.getX(), tabButtonPos.getY() );
   PushButton* btn = addButton( ADV_EMPLOYERS, 255 );
   addButton( ADV_LEGION, 256 );
   addButton( ADV_EMPIRE, 257 );
