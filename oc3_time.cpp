@@ -176,7 +176,7 @@ DateTime::DateTime( const char* strValue )
             &year, &month, &day, &hour, &minutes );
 }
 
-DateTime::DateTime( unsigned char y, unsigned char m, unsigned char d, 
+DateTime::DateTime( unsigned int y, unsigned char m, unsigned char d, 
                     unsigned char h, unsigned char mm, unsigned char s )
 {
    year = y;
@@ -196,13 +196,13 @@ DateTime::DateTime()
 
 unsigned char DateTime::getHour() const {    return hour;}
 unsigned char DateTime::getMonth() const {    return month; }
-unsigned char DateTime::getYear() const {     return year; }
+unsigned int DateTime::getYear() const {     return year; }
 unsigned char DateTime::getMinutes() const {     return minutes; }
 unsigned char DateTime::getDay() const {     return day; }
 unsigned char DateTime::getSeconds() const  {     return seconds; }
 void DateTime::setHour( unsigned char h ) {     hour = h; }
 void DateTime::setMonth( unsigned char m ) {     month = m; }
-void DateTime::setYear( unsigned char y ) {     year = y; }
+void DateTime::setYear( unsigned int y ) {     year = y; }
 void DateTime::setMinutes( unsigned char m )  {    minutes = m; }
 void DateTime::setDay( unsigned char d ) { day = d; }
 void DateTime::setSeconds( unsigned char s ) { seconds = s; }

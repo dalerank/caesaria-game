@@ -248,7 +248,7 @@ void ScreenGame::makeScreenShot()
 {
   DateTime time = DateTime::getCurrenTime();
 
-  std::string filename = StringHelper::format( 0xff, "oc3_[%04d.%02d.%02_%02d_%02d%02d].png", 
+  std::string filename = StringHelper::format( 0xff, "oc3_[%04d_%02d_%02d_%02d_%02d_%02d].png", 
                                                time.getYear(), time.getMonth(), time.getDay(),
                                                time.getHour(), time.getMinutes(), time.getSeconds() );
   StringHelper::debug( 0xff, "creating screenshot %s", filename.c_str() );
