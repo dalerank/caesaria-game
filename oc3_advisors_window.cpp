@@ -28,6 +28,7 @@
 #include "oc3_advisor_employers_window.hpp"
 #include "oc3_advisor_legion_window.hpp"
 #include "oc3_advisor_emperor_window.hpp"
+#include "oc3_advisor_ratings_window.hpp"
 
 class AdvisorsWindow::Impl
 {
@@ -106,6 +107,7 @@ void AdvisorsWindow::showAdvisor( const AdvisorType type )
   case ADV_EMPLOYERS: _d->advisorPanel = new AdvisorEmployerWindow( this, ADV_EMPLOYERS ); break;
   case ADV_LEGION: _d->advisorPanel = new AdvisorLegionWindow( this, ADV_LEGION ); break;
   case ADV_EMPIRE: _d->advisorPanel = new AdvisorEmperorWindow( this, ADV_EMPIRE ); break;
+  case ADV_RATINGS: _d->advisorPanel = new AdvisorRatingsWindow( this, ADV_RATINGS ); break;
 
   default:
   break;
