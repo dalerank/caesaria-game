@@ -60,6 +60,7 @@ public:
   TilePos cameraStart;
 
   ClimateType climate;   
+  UniqueId walkerIdCount;
 
 oc3_signals public:
   Signal1<int> onPopulationChangedSignal;
@@ -571,6 +572,7 @@ Signal1<int>& City::onMonthChanged()
 
 void City::addWalker( WalkerPtr walker )
 {
+  walker->setUniqueId( ++_d->walkerIdCount );
   _d->walkerList.push_back( walker );
 }
 

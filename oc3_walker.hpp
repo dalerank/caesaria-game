@@ -37,6 +37,8 @@
 #include "oc3_scopedptr.hpp"
 #include "oc3_predefinitions.hpp"
 
+typedef unsigned int UniqueId;
+
 class Walker : public Serializable, public ReferenceCounted
 {
 public:
@@ -61,6 +63,7 @@ public:
    virtual void onNewDirection(); // called when the walker changes direction
    void computeDirection();
    void walk();
+   void setUniqueId( const UniqueId uid );
 
    DirectionType getDirection();
 
@@ -95,8 +98,7 @@ private:
    void inc(int &ioSI, int &ioI, int &ioAmount, const int iMidPos, bool &oNewTile, bool &oMidTile);
    void dec(int &ioSI, int &ioI, int &ioAmount, const int iMidPos, bool &oNewTile, bool &oMidTile);
 
-private:
-   int _si, _sj; // subtile coordinate in the current tile: 0..15
+private:   
    int _ii, _jj; // subtile coordinate across all tiles: 0..15*mapsize (ii=15*i+si)
    float _remainMoveI, _remainMoveJ;  // remaining movement
 

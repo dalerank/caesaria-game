@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_buildingprefect.hpp"
+#include "oc3_prefecture.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_positioni.hpp"
@@ -22,7 +22,7 @@
 #include "oc3_scenario.hpp"
 #include "oc3_tile.hpp"
 
-BuildingPrefect::BuildingPrefect() : ServiceBuilding(S_PREFECT, B_PREFECT, Size(1))
+BuildingPrefecture::BuildingPrefecture() : ServiceBuilding(S_PREFECT, B_PREFECT, Size(1))
 {
   _fireDetect = TilePos( -1, -1 );
   setPicture( Picture::load( ResourceGroup::security, 1 ) );
@@ -34,13 +34,13 @@ BuildingPrefect::BuildingPrefect() : ServiceBuilding(S_PREFECT, B_PREFECT, Size(
   _fgPictures.resize(1);
 }
 
-int BuildingPrefect::getServiceDelay() const
+int BuildingPrefecture::getServiceDelay() const
 {
   float koeff = ( getWorkers() > 0 ) ? (float)getMaxWorkers() / (float)getWorkers() : 1.f;
   return (int)(ServiceBuilding::getServiceDelay() * koeff);
 }
 
-void BuildingPrefect::timeStep(const unsigned long time)
+void BuildingPrefecture::timeStep(const unsigned long time)
 {
   bool mayAnimate = getWorkers() > 0;
 
@@ -57,9 +57,9 @@ void BuildingPrefect::timeStep(const unsigned long time)
   ServiceBuilding::timeStep( time );
 }
 
-void BuildingPrefect::deliverService()
+void BuildingPrefecture::deliverService()
 {
-  if( getWorkers() > 0 && _getWalkerList().size() == 0 )
+  if( getWorkers() > 0 && getWalkerList().size() == 0 )
   {
     bool fireDetect = _fireDetect.getI() >= 0;
     WalkerPrefectPtr walker = WalkerPrefect::create( Scenario::instance().getCity() );
@@ -81,13 +81,13 @@ void BuildingPrefect::deliverService()
       _fireDetect = TilePos( -1, -1 );
     }
     
-    walker->send2City( BuildingPrefectPtr( this ), fireDetect ? 200 : 0 );
+    walker->send2City( BuildingPrefecturePtr( this ), fireDetect ? 200 : 0 );
 
-    _addWalker( walker.as<Walker>() );
+    addWalker( walker.as<Walker>() );
   }
 }
 
-void BuildingPrefect::fireDetect( const TilePos& pos )
+void BuildingPrefecture::fireDetect( const TilePos& pos )
 {
   _fireDetect = pos;
 }

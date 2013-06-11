@@ -19,10 +19,10 @@
 #include "oc3_service_building.hpp"
 #include "oc3_positioni.hpp"
 
-class BuildingPrefect : public ServiceBuilding
+class BuildingPrefecture : public ServiceBuilding
 {
 public:
-  BuildingPrefect();
+  BuildingPrefecture();
   void timeStep(const unsigned long time);
   void deliverService();
   int getServiceDelay() const;
@@ -33,6 +33,6 @@ private:
   TilePos _fireDetect;
 };
 
-typedef SmartPtr< BuildingPrefect > BuildingPrefectPtr;
+typedef SmartPtr< BuildingPrefecture > BuildingPrefecturePtr;
 
 #endif

@@ -33,8 +33,10 @@ class Walker::Impl
 public:
   float speed;
   TilePos pos;
-  TilePos midTile;  // subtile coordinate in the current tile, at starting position
+  UniqueId uid;
+  Point midTilePos;  // subtile coordinate in the current tile, at starting position
   float speedMultiplier;
+  Point subTilePos; // subtile coordinate in the current tile: 0..15
 
   float getSpeed() const
   {
@@ -58,7 +60,7 @@ Walker::Walker() : _d( new Impl )
   _d->speedMultiplier = 1.f;
   _isDeleted = false;
 
-  _d->midTile = TilePos( 7, 7 );
+  _d->midTilePos = Point( 7, 7 );
   _remainMoveI = 0;
   _remainMoveJ = 0;
 };
@@ -100,11 +102,10 @@ void Walker::setIJ( const TilePos& pos )
 {
    _d->pos = pos;
 
-   _si = _d->midTile.getI();
-   _sj = _d->midTile.getJ();
+   _d->subTilePos = _d->midTilePos;
 
-   _ii = 15*_d->pos.getI() + _si;
-   _jj = 15*_d->pos.getJ() + _sj;
+   _ii = 15*_d->pos.getI() + _d->subTilePos.getX();
+   _jj = 15*_d->pos.getJ() + _d->subTilePos.getY();
 }
 
 int Walker::getI() const
@@ -235,42 +236,49 @@ void Walker::walk()
    _remainMoveJ -= amountJ;
 
    // std::cout << "walker step, amount :" << amount << std::endl;
+   int tmpX = _d->subTilePos.getX();
+   int tmpY = _d->subTilePos.getY();
+   int tmpJ = _d->pos.getJ();
+   int tmpI = _d->pos.getI();
    while (amountI+amountJ > 0)
    {
       switch (_action._direction)
       {
       case D_NORTH:
-         inc(_sj, _d->pos.rj(), amountJ, _d->midTile.getJ(), newTile, midTile);
+         inc(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
          break;
       case D_NORTH_EAST:
-         inc(_sj, _d->pos.rj(), amountJ, _d->midTile.getJ(), newTile, midTile);
-         inc(_si, _d->pos.ri(), amountI, _d->midTile.getI(), newTile, midTile);
+         inc(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
+         inc(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
          break;
       case D_EAST:
-         inc(_si, _d->pos.ri(), amountI, _d->midTile.getI(), newTile, midTile);
+         inc(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
          break;
       case D_SOUTH_EAST:
-         dec(_sj, _d->pos.rj(), amountJ, _d->midTile.getJ(), newTile, midTile);
-         inc(_si, _d->pos.ri(), amountI, _d->midTile.getI(), newTile, midTile);
+         dec(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
+         inc(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
          break;
       case D_SOUTH:
-         dec(_sj, _d->pos.rj(), amountJ, _d->midTile.getJ(), newTile, midTile);
+         dec(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
          break;
       case D_SOUTH_WEST:
-         dec(_sj, _d->pos.rj(), amountJ, _d->midTile.getJ(), newTile, midTile);
-         dec(_si, _d->pos.ri(), amountI, _d->midTile.getI(), newTile, midTile);
+         dec(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
+         dec(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
          break;
       case D_WEST:
-         dec(_si, _d->pos.ri(), amountI, _d->midTile.getI(), newTile, midTile);
+         dec(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
          break;
       case D_NORTH_WEST:
-         inc(_sj, _d->pos.rj(), amountJ, _d->midTile.getJ(), newTile, midTile);
-         dec(_si, _d->pos.ri(), amountI, _d->midTile.getI(), newTile, midTile);
+         inc(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
+         dec(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
          break;
       default:
          THROW("Invalid move direction: " << _action._direction);
          break;
       }
+
+      _d->subTilePos = Point( tmpX, tmpY );
+      _d->pos = TilePos( tmpI, tmpJ );
 
       if (newTile)
       {
@@ -289,8 +297,8 @@ void Walker::walk()
       // if (amount != 0) std::cout << "walker remaining step :" << amount << std::endl;
    }
 
-   _ii = _d->pos.getI()*15+_si;
-   _jj = _d->pos.getJ()*15+_sj;
+   _ii = _d->pos.getI()*15+_d->subTilePos.getX();
+   _jj = _d->pos.getJ()*15+_d->subTilePos.getY();
 }
 
 
@@ -402,13 +410,13 @@ void Walker::save( VariantMap& stream ) const
   stream[ "direction" ] = (int)_action._direction;
   
   stream[ "pos" ] = _d->pos;
-  stream[ "si" ] = _si;
-  stream[ "sj" ] = _sj;
+  stream[ "subtilepos" ] = _d->subTilePos;
   stream[ "ii" ] = _ii;
   stream[ "jj" ] = _jj;
   stream[ "speed" ] = _d->speed;
-  stream[ "midTile" ] = _d->midTile;
+  stream[ "midTile" ] = _d->midTilePos;
   stream[ "speedMul" ] = _d->speedMultiplier;
+  stream[ "uid" ] = (int)_d->uid;
 }
 
 void Walker::load( const VariantMap& stream)
@@ -417,13 +425,13 @@ void Walker::load( const VariantMap& stream)
   _action._action = (WalkerActionType) stream.get( "action" ).toInt();
   _action._direction = (DirectionType) stream.get( "direction" ).toInt();
   _d->pos = stream.get( "pos" ).toTilePos();
-  _si = stream.get( "si" ).toInt();
-  _sj = stream.get( "sj" ).toInt();
+  _d->subTilePos = stream.get( "subtilepos" ).toPoint();
   _ii = stream.get( "ii" ).toInt();
   _jj = stream.get( "jj" ).toInt();
+  _d->uid = (UniqueId)stream.get( "uid" ).toInt();
   _d->speedMultiplier = stream.get( "speedMul" ).toFloat();
   _d->speed = stream.get( "speed" ).toFloat();
-  _d->midTile = stream.get( "midTile" ).toTilePos();
+  _d->midTilePos = stream.get( "midTile" ).toPoint();
 }
 
 TilePos Walker::getIJ() const
@@ -434,6 +442,11 @@ TilePos Walker::getIJ() const
 void Walker::deleteLater()
 {
    _isDeleted = true;
+}
+
+void Walker::setUniqueId( const UniqueId uid )
+{
+  _d->uid = uid;
 }
 
 Soldier::Soldier()

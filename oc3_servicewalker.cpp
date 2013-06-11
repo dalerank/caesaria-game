@@ -102,10 +102,7 @@ void ServiceWalker::init(const ServiceType service)
 
 BuildingPtr ServiceWalker::getBase() const
 {
-  if( _d->base.isNull() ) 
-  {
-    _OC3_DEBUG_BREAK_IF( "ServiceBuilding is not initialized" );
-  }
+  _OC3_DEBUG_BREAK_IF( _d->base.isNull() && "ServiceBuilding is not initialized" );
 
   return _d->base;
 }
@@ -210,9 +207,9 @@ void ServiceWalker::reservePath(PathWay &pathWay)
 {
   // reserve all buildings along the path
   ReachedBuildings doneBuildings;  // list of evaluated building: don't do them again
-  std::list<Tile*>& pathTileList = pathWay.getAllTiles();
+  PtrTilesList& pathTileList = pathWay.getAllTiles();
 
-  for (std::list<Tile*>::iterator itTile = pathTileList.begin(); itTile != pathTileList.end(); ++itTile)
+  for (PtrTilesList::iterator itTile = pathTileList.begin(); itTile != pathTileList.end(); ++itTile)
   {
     ReachedBuildings reachedBuildings = getReachedBuildings( (*itTile)->getIJ() );
     for (ReachedBuildings::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
@@ -274,12 +271,16 @@ void ServiceWalker::save( VariantMap& stream ) const
 
 void ServiceWalker::load( const VariantMap& stream )
 {
-//   Walker::unserialize(stream);
-//   _service = (ServiceType) stream.read_int(1, 0, S_MAX);
-//   init(_service);
-// 
-//   stream.read_objectID((void**)&_base);
-//   _maxDistance = stream.read_int(2, 0, 65535);
+  Walker::load( stream );
+
+  _d->service = (ServiceType)stream.get( "type" ).toInt();
+  _d->maxDistance = stream.get( "maxDistance" ).toInt();
+  init(_d->service);
+  TilePos basePos = stream.get( "base" ).toTilePos();
+  LandOverlayPtr overlay = _d->city->getTilemap().at( basePos ).getTerrain().getOverlay();
+
+  _d->base = overlay.as<Building>();
+  _OC3_DEBUG_BREAK_IF( _d->base.isNull() && "Not found base building for service walker" );
 }
 
 void ServiceWalker::setMaxDistance( const int distance )

@@ -24,7 +24,7 @@
 #include "oc3_burningruins.hpp"
 #include "oc3_house.hpp"
 #include "oc3_senate.hpp"
-#include "oc3_buildingprefect.hpp"
+#include "oc3_prefecture.hpp"
 #include "oc3_road.hpp"
 #include "oc3_market.hpp"
 #include "oc3_granary.hpp"
@@ -106,7 +106,7 @@ ConstructionManager::ConstructionManager() : _d( new Impl )
   addCreator(B_AQUEDUCT, OC3_STR_EXT(B_AQUEDUCT), new BuildingCreator<Aqueduct>() );
   addCreator(B_RESERVOIR, OC3_STR_EXT(B_RESERVOIR), new BuildingCreator<Reservoir>() );
   // security
-  addCreator(B_PREFECT, OC3_STR_EXT(B_PREFECT)  , new BuildingCreator<BuildingPrefect>() );
+  addCreator(B_PREFECT, OC3_STR_EXT(B_PREFECT)  , new BuildingCreator<BuildingPrefecture>() );
   addCreator(B_FORT_LEGIONNAIRE, OC3_STR_EXT(B_FORT_LEGIONNAIRE), new BuildingCreator<FortLegionnaire>() );
   addCreator(B_FORT_JAVELIN, OC3_STR_EXT(B_FORT_JAVELIN)   , new BuildingCreator<FortJaveline>() );
   addCreator(B_FORT_MOUNTED, OC3_STR_EXT(B_FORT_MOUNTED)  , new BuildingCreator<FortMounted>() );
