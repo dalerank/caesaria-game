@@ -36,7 +36,10 @@ public:
   UniqueId uid;
   Point midTilePos;  // subtile coordinate in the current tile, at starting position
   float speedMultiplier;
-  Point subTilePos; // subtile coordinate in the current tile: 0..15
+  Point tileOffset; // subtile coordinate in the current tile: 0..15
+  Animation animation;  // current animation
+  Point posOnMap; // subtile coordinate across all tiles: 0..15*mapsize (ii=15*i+si)
+  PointF remainMove;  // remaining movement
 
   float getSpeed() const
   {
@@ -61,8 +64,7 @@ Walker::Walker() : _d( new Impl )
   _isDeleted = false;
 
   _d->midTilePos = Point( 7, 7 );
-  _remainMoveI = 0;
-  _remainMoveJ = 0;
+  _d->remainMove = PointF( 0, 0 );
 };
 
 Walker::~Walker()
@@ -81,9 +83,9 @@ void Walker::timeStep(const unsigned long time)
    case WA_MOVE:
       walk();
      
-      if( _animation.getPicturesCount() > 0 && _d->getSpeed() > 0.f )
+      if( _d->animation.getPicturesCount() > 0 && _d->getSpeed() > 0.f )
       {
-        _animation.update( time );
+        _d->animation.update( time );
       }
       break;
 
@@ -102,10 +104,9 @@ void Walker::setIJ( const TilePos& pos )
 {
    _d->pos = pos;
 
-   _d->subTilePos = _d->midTilePos;
+   _d->tileOffset = _d->midTilePos;
 
-   _ii = 15*_d->pos.getI() + _d->subTilePos.getX();
-   _jj = 15*_d->pos.getJ() + _d->subTilePos.getY();
+   _d->posOnMap = Point( _d->pos.getI(), _d->pos.getJ() ) * 15 + _d->tileOffset ;
 }
 
 int Walker::getI() const
@@ -118,15 +119,11 @@ int Walker::getJ() const
    return _d->pos.getJ();
 }
 
-int Walker::getII() const
+Point Walker::getPosition() const
 {
-   return _ii;
-}
-
-int Walker::getJJ() const
-{
-   return _jj;
-}
+  return Point( 2*(_d->posOnMap.getX() + _d->posOnMap.getY()),
+                   _d->posOnMap.getX() - _d->posOnMap.getY() );
+} 
 
 void Walker::setPathWay(PathWay &pathWay)
 {
@@ -209,18 +206,17 @@ void Walker::walk()
    {
    case D_NORTH:
    case D_SOUTH:
-      _remainMoveJ += _d->getSpeed();
+      _d->remainMove += PointF( 0, _d->getSpeed() );
       break;
    case D_EAST:
    case D_WEST:
-      _remainMoveI += _d->getSpeed();
+      _d->remainMove += PointF( _d->getSpeed(), 0 );
       break;
    case D_NORTH_EAST:
    case D_SOUTH_WEST:
    case D_SOUTH_EAST:
    case D_NORTH_WEST:
-      _remainMoveI += _d->getSpeed() * 0.7f;
-      _remainMoveJ += _d->getSpeed() * 0.7f ;
+      _d->remainMove += PointF( _d->getSpeed() * 0.7f, _d->getSpeed() * 0.7f );
       break;
    default:
       THROW("Invalid move direction: " << _action._direction);
@@ -230,14 +226,13 @@ void Walker::walk()
 
    bool newTile = false;
    bool midTile = false;
-   int amountI = int(_remainMoveI);
-   int amountJ = int(_remainMoveJ);
-   _remainMoveI -= amountI;
-   _remainMoveJ -= amountJ;
+   int amountI = int(_d->remainMove.getX());
+   int amountJ = int(_d->remainMove.getY());
+   _d->remainMove -= PointF( amountI, amountJ );
 
    // std::cout << "walker step, amount :" << amount << std::endl;
-   int tmpX = _d->subTilePos.getX();
-   int tmpY = _d->subTilePos.getY();
+   int tmpX = _d->tileOffset.getX();
+   int tmpY = _d->tileOffset.getY();
    int tmpJ = _d->pos.getJ();
    int tmpI = _d->pos.getI();
    while (amountI+amountJ > 0)
@@ -277,7 +272,7 @@ void Walker::walk()
          break;
       }
 
-      _d->subTilePos = Point( tmpX, tmpY );
+      _d->tileOffset = Point( tmpX, tmpY );
       _d->pos = TilePos( tmpI, tmpJ );
 
       if (newTile)
@@ -297,8 +292,7 @@ void Walker::walk()
       // if (amount != 0) std::cout << "walker remaining step :" << amount << std::endl;
    }
 
-   _ii = _d->pos.getI()*15+_d->subTilePos.getX();
-   _jj = _d->pos.getJ()*15+_d->subTilePos.getY();
+   _d->posOnMap = Point( _d->pos.getI(), _d->pos.getJ() )*15 + _d->tileOffset;
 }
 
 
@@ -334,12 +328,12 @@ void Walker::onDestination()
 {
    // std::cout << "Walker arrived at destination! coord=" << _i << "," << _j << std::endl;
    _action._action=WA_NONE;  // stop moving
-   _animation = Animation();
+   _d->animation = Animation();
 }
 
 void Walker::onNewDirection()
 {
-   _animation = Animation();  // need to fetch the new animation
+   _d->animation = Animation();  // need to fetch the new animation
 }
 
 
@@ -368,7 +362,7 @@ void Walker::getPictureList(std::vector<Picture*> &oPics)
 
 Picture& Walker::getMainPicture()
 {
-   if( !_animation.isValid() )
+   if( !_d->animation.isValid() )
    {
       const std::map<WalkerAction, Animation>& animMap = WalkerLoader::instance().getAnimationMap(getWalkerGraphic());
       std::map<WalkerAction, Animation>::const_iterator itAnimMap;
@@ -391,10 +385,10 @@ Picture& Walker::getMainPicture()
          itAnimMap = animMap.find(_action);
       }
 
-      _animation = itAnimMap->second;
+      _d->animation = itAnimMap->second;
    }
 
-   return *_animation.getCurrentPicture();
+   return *_d->animation.getCurrentPicture();
 }
 
 void Walker::save( VariantMap& stream ) const
@@ -410,13 +404,13 @@ void Walker::save( VariantMap& stream ) const
   stream[ "direction" ] = (int)_action._direction;
   
   stream[ "pos" ] = _d->pos;
-  stream[ "subtilepos" ] = _d->subTilePos;
-  stream[ "ii" ] = _ii;
-  stream[ "jj" ] = _jj;
+  stream[ "tileoffset" ] = _d->tileOffset;
+  stream[ "mappos" ] = _d->posOnMap;
   stream[ "speed" ] = _d->speed;
   stream[ "midTile" ] = _d->midTilePos;
   stream[ "speedMul" ] = _d->speedMultiplier;
-  stream[ "uid" ] = (int)_d->uid;
+  stream[ "uid" ] = (unsigned int)_d->uid;
+  stream[ "remainmove" ] = _d->remainMove;
 }
 
 void Walker::load( const VariantMap& stream)
@@ -425,13 +419,13 @@ void Walker::load( const VariantMap& stream)
   _action._action = (WalkerActionType) stream.get( "action" ).toInt();
   _action._direction = (DirectionType) stream.get( "direction" ).toInt();
   _d->pos = stream.get( "pos" ).toTilePos();
-  _d->subTilePos = stream.get( "subtilepos" ).toPoint();
-  _ii = stream.get( "ii" ).toInt();
-  _jj = stream.get( "jj" ).toInt();
+  _d->tileOffset = stream.get( "tileoffset" ).toPoint();
+  _d->posOnMap = stream.get( "mappos" ).toPoint();
   _d->uid = (UniqueId)stream.get( "uid" ).toInt();
   _d->speedMultiplier = stream.get( "speedMul" ).toFloat();
   _d->speed = stream.get( "speed" ).toFloat();
   _d->midTilePos = stream.get( "midTile" ).toPoint();
+  _d->remainMove = stream.get( "remainmove" ).toPointF();
 }
 
 TilePos Walker::getIJ() const

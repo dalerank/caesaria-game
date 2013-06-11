@@ -290,6 +290,7 @@ void WalkerPrefect::load( const VariantMap& stream )
  
   _d->action = (Impl::PrefectAction)stream.get( "prefectAction" ).toInt();
   _d->water = stream.get( "water" ).toInt();
+  _walkerGraphic = _d->water > 0 ? WG_PREFECT_DRAG_WATER : WG_PREFECT;
 
   BuildingPrefecturePtr prefecture = getBase().as<BuildingPrefecture>(); 
   if( prefecture.isValid() )

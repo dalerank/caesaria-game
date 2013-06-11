@@ -54,11 +54,7 @@ void ServiceWalker::init(const ServiceType service)
   case S_ENGINEER:
     _walkerGraphic = WG_ENGINEER;
     break;
- /*
-     case S_PREFECT:
-        _walkerGraphic = WG_PREFECT;
-        break;*/
-    
+
   case S_TEMPLE_NEPTUNE:
   case S_TEMPLE_CERES:
   case S_TEMPLE_VENUS:
@@ -264,7 +260,7 @@ void ServiceWalker::onDestination()
 void ServiceWalker::save( VariantMap& stream ) const
 {
   Walker::save( stream );
-  stream[ "type" ] = (int)_d->service;
+  stream[ "service" ] = (int)_d->service;
   stream[ "base" ] = _d->base->getTile().getIJ();
   stream[ "maxDistance" ] = _d->maxDistance;
 }
@@ -273,9 +269,9 @@ void ServiceWalker::load( const VariantMap& stream )
 {
   Walker::load( stream );
 
-  _d->service = (ServiceType)stream.get( "type" ).toInt();
+  init( (ServiceType)stream.get( "service" ).toInt() );
   _d->maxDistance = stream.get( "maxDistance" ).toInt();
-  init(_d->service);
+
   TilePos basePos = stream.get( "base" ).toTilePos();
   LandOverlayPtr overlay = _d->city->getTilemap().at( basePos ).getTerrain().getOverlay();
 

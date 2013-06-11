@@ -344,10 +344,8 @@ void PathWay::prettyPrint() const
 
 void PathWay::save( VariantMap& stream) const
 {
-  stream[ "startI" ] = _origin->getI();
-  stream[ "startJ" ] = _origin->getJ();
-  stream[ "stopI" ] = _destination.getI();
-  stream[ "stopJ" ] = _destination.getJ();
+  stream[ "startPos" ] = _origin->getIJ();
+  stream[ "stopPos" ] = _destination;
 
   VariantList directions;
   for( Directions::const_iterator itDir = _directionList.begin(); itDir != _directionList.end(); ++itDir)
@@ -362,15 +360,15 @@ void PathWay::save( VariantMap& stream) const
 void PathWay::load( const VariantMap& stream )
 {
   _tilemap = &Scenario::instance().getCity().getTilemap();
-  _origin = &_tilemap->at( stream.get( "startI" ).toInt(), stream.get( "startJ" ).toInt() );
-  _destination = TilePos( stream.get( "stopI" ).toInt(), stream.get( "stopJ").toInt() );
+  _origin = &_tilemap->at( stream.get( "startPos" ).toTilePos() );
+  _destination = _origin->getIJ();//stream.get( "stopPos" ).toTilePos();
   VariantList directions = stream.get( "directions" ).toList();
   for( VariantList::iterator it = directions.begin(); it != directions.end(); it++ )
   {
      DirectionType dir = (DirectionType)(*it).toInt();
-     _directionList.push_back(dir);
+     setNextDirection( dir );
   }
-  _isReverse = stream.get( "reverser" ).toBool();
+  _isReverse = stream.get( "reverse" ).toBool();
   int off = stream.get( "step" ).toInt();
   _directionIt = _directionList.begin();
   _directionIt_reverse = _directionList.rbegin();

@@ -81,6 +81,7 @@ City::City() : _d( new Impl )
   _d->population = 0;
   _d->needRecomputeAllRoads = false;
   _d->taxRate = 700;
+  _d->walkerIdCount = 0;
   _d->climate = C_CENTRAL;
 
   addService( CityServiceEmigrant::create( *this ) );

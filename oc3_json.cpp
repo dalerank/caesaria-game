@@ -168,7 +168,7 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
     }
     else if(data.type() == Variant::Double) // double?
     {
-      str = StringHelper::format( 0xff, "%f", data.toDouble() );
+      str = StringHelper::format( 0xff, "\"%f\"", data.toDouble() );
       if( str.find(".") == std::string::npos && str.find("e") == std::string::npos )
       {
          str += ".0";
@@ -178,6 +178,16 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
     {
       TilePos pos = data.toTilePos();
       str = StringHelper::format( 0xff, "[ %d, %d ]", pos.getI(), pos.getJ() );
+    }
+    else if( data.type() == Variant::NPoint)
+    {
+      Point pos = data.toPoint();
+      str = StringHelper::format( 0xff, "[ %d, %d ]", pos.getX(), pos.getY() );
+    }
+    else if( data.type() == Variant::NPointF)
+    {
+      PointF pos = data.toPointF();
+      str = StringHelper::format( 0xff, "[ \"%f\", \"%f\" ]", pos.getX(), pos.getY() );
     }
     else if (data.type() == Variant::Bool) // boolean value?
     {

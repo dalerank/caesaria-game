@@ -157,7 +157,7 @@ void TilemapRenderer::Impl::drawAnimations( LandOverlayPtr overlay, const Point&
 
 void TilemapRenderer::Impl::drawTileDesirability( Tile& tile )
 {
-  Point screenPos = tile.getScreenPos() + mapOffset;
+  Point screenPos = tile.getXY() + mapOffset;
 
   tile.setWasDrawn();
 
@@ -196,7 +196,7 @@ void TilemapRenderer::Impl::drawTileDesirability( Tile& tile )
         PtrTilesList tiles4clear = tilemap->getFilledRectangle( tile.getIJ(), overlay->getSize() );
         for( PtrTilesList::iterator it = tiles4clear.begin(); it != tiles4clear.end(); it++) 
         {
-          engine->drawPicture( pic, (*it)->getScreenPos() + mapOffset );
+          engine->drawPicture( pic, (*it)->getXY() + mapOffset );
         }
       }
     break;
@@ -207,7 +207,7 @@ void TilemapRenderer::Impl::drawTileDesirability( Tile& tile )
 
 void TilemapRenderer::Impl::drawTileFire( Tile& tile )
 {
-  Point screenPos = tile.getScreenPos() + mapOffset;
+  Point screenPos = tile.getXY() + mapOffset;
 
   tile.setWasDrawn();
 
@@ -274,7 +274,7 @@ void TilemapRenderer::Impl::drawTileFire( Tile& tile )
 
 void TilemapRenderer::Impl::drawTileFood( Tile& tile )
 {
-  Point screenPos = tile.getScreenPos() + mapOffset;
+  Point screenPos = tile.getXY() + mapOffset;
 
   tile.setWasDrawn();
 
@@ -334,7 +334,7 @@ void TilemapRenderer::Impl::drawTileFood( Tile& tile )
 
 void TilemapRenderer::Impl::drawTileWater( Tile& tile )
 {
-  Point screenPos = tile.getScreenPos() + mapOffset;
+  Point screenPos = tile.getXY() + mapOffset;
   
   tile.setWasDrawn();
 
@@ -400,7 +400,7 @@ void TilemapRenderer::Impl::drawTileWater( Tile& tile )
 
 void TilemapRenderer::Impl::drawTileBase( Tile& tile )
 {
-  Point screenPos = tile.getScreenPos() + mapOffset;
+  Point screenPos = tile.getXY() + mapOffset;
 
   tile.setWasDrawn();
 
@@ -423,7 +423,7 @@ void TilemapRenderer::Impl::drawTileInSelArea( Tile& tile, Tile* master )
   {
     // single-tile
     drawTileFunction( tile );
-    engine->drawPicture( *clearPic, tile.getScreenPos() + mapOffset );
+    engine->drawPicture( *clearPic, tile.getXY() + mapOffset );
   }
   else
   {
@@ -503,12 +503,12 @@ void TilemapRenderer::Impl::drawTilemapWithRemoveTools()
         itWalker != walkerList.end(); ++itWalker)
       {
         // for each walker
-        WalkerPtr anim = *itWalker;
-        int zAnim = anim->getIJ().getZ();// getJ() - anim.getI();
+        WalkerPtr walker = *itWalker;
+        int zAnim = walker->getIJ().getZ();// getJ() - walker.getI();
         if( zAnim > z && zAnim <= z+1 )
         {
           pictureList.clear();
-          anim->getPictureList( pictureList );
+          walker->getPictureList( pictureList );
           for( Impl::Pictures::iterator picIt = pictureList.begin(); picIt != pictureList.end(); ++picIt )
           {
             if( *picIt == NULL )
@@ -516,8 +516,7 @@ void TilemapRenderer::Impl::drawTilemapWithRemoveTools()
               continue;
             }
 
-            engine->drawPicture( **picIt, Point( 2*(anim->getII() + anim->getJJ()),
-                                                 anim->getII() - anim->getJJ() ) + mapOffset );
+            engine->drawPicture( **picIt, walker->getPosition() + mapOffset );
           }
         }
       }
@@ -588,12 +587,12 @@ void TilemapRenderer::Impl::simpleDrawTilemap()
         itWalker != walkerList.end(); ++itWalker)
       {
         // for each walker
-        WalkerPtr anim = *itWalker;
-        int zAnim = anim->getIJ().getZ();// getJ() - anim.getI();
+        WalkerPtr walker = *itWalker;
+        int zAnim = walker->getIJ().getZ();// getJ() - walker.getI();
         if( zAnim > z && zAnim <= z+1 )
         {
           pictureList.clear();
-          anim->getPictureList( pictureList );
+          walker->getPictureList( pictureList );
           for( Impl::Pictures::iterator picIt = pictureList.begin(); picIt != pictureList.end(); ++picIt )
           {
             if( *picIt == NULL )
@@ -601,8 +600,7 @@ void TilemapRenderer::Impl::simpleDrawTilemap()
               continue;
             }
 
-            engine->drawPicture( **picIt, Point( 2*( anim->getII() + anim->getJJ() ),
-                                                 anim->getII() - anim->getJJ() ) + mapOffset );
+            engine->drawPicture( **picIt, walker->getPosition() + mapOffset );
           }
         }
       }

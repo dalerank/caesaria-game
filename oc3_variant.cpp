@@ -692,6 +692,36 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
       }
     break;
 
+    case Variant::NPoint:
+      if( d->type == Variant::List )
+      {
+        Point *pos = static_cast< Point* >( result );
+        const VariantList *list = v_cast< VariantList >(d);
+        VariantList::const_iterator it = list->begin(); 
+        pos->setX( it->toInt() ); it++;
+        pos->setY( it->toInt() );
+      }
+      else if (d->type == Variant::NPoint)
+        *static_cast<PointF*>(result) = v_cast<Point>(d)->toPointF();
+      else
+        return false;
+    break;
+
+    case Variant::NPointF:
+      if( d->type == Variant::List )
+      {
+        Point *pos = static_cast< Point* >( result );
+        const VariantList *list = v_cast< VariantList >(d);
+        VariantList::const_iterator it = list->begin(); 
+        pos->setX( it->toFloat() ); it++;
+        pos->setY( it->toFloat() );
+      }
+      else if (d->type == Variant::NPointF)
+        *static_cast<Point*>(result) = v_cast<PointF>(d)->toPoint();
+      else
+        return false;
+    break;
+
     case Variant::NStringArray:
         if (d->type == Variant::List) 
         {
@@ -992,18 +1022,6 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
 //         else
 //             return false;
 //         break;
-    case Variant::NPointF:
-        if (d->type == Variant::NPoint)
-            *static_cast<PointF*>(result) = v_cast<Point>(d)->toPointF();
-        else
-            return false;
-        break;
-    case Variant::NPoint:
-        if (d->type == Variant::NPointF)
-            *static_cast<Point*>(result) = v_cast<PointF>(d)->toPoint();
-        else
-            return false;
-        break;
     default:
         return false;
     }
@@ -1242,12 +1260,12 @@ template <typename T>
 inline T Variant2ToHelper(const Variant2Impl &d, Variant::Type t,
                           const Variant2Handler *handler, T * = 0)
 {
-    if (d.type == t)
-        return *v_cast<T>(&d);
+  if (d.type == t)
+      return *v_cast<T>(&d);
 
-    T ret;
+  T ret;
 	varHandler->convert(&d, t, &ret, 0);
-    return ret;
+  return ret;
 }
 
 /*!
