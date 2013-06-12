@@ -13,37 +13,26 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_TOPMENU_H_INCLUDE_
-#define __OPENCAESAR3_TOPMENU_H_INCLUDE_
+#ifndef __OPENCAESAR3_SAVE_DIALOG_H_INCLUDED__
+#define __OPENCAESAR3_SAVE_DIALOG_H_INCLUDED__
 
-#include "oc3_mainmenu.hpp"
+#include "oc3_widget.hpp"
 #include "oc3_scopedptr.hpp"
+#include "oc3_signals.hpp"
 
-class TopMenu : public MainMenu
+class SaveDialog : public Widget
 {
 public:
-  static TopMenu* create( Widget* parent, const int height );
+  SaveDialog( Widget* parent, const std::string& dir, const std::string& fileExt, int id );
 
-  // draw on screen
-  void draw( GfxEngine& engine );
-  //bool onEvent(const NEvent& event);
-
-  void setFunds( int value );
-  void setPopulation( int value );
-  void setDate( int value );
+  void draw( GfxEngine& painter );
 
 oc3_signals public:
-  Signal0<>& onExit();
-  Signal0<>& onSave();
-  Signal0<>& onEnd();
-  Signal0<>& onLoad();
-  Signal1<int>& onRequestAdvisor();
+  Signal1<std::string>& onFileSelected();
 
 private:
-  TopMenu( Widget* parent, const int height );
-
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#endif //__OPENCAESAR3_TOPMENU_H_INCLUDE_
+#endif //__OPENCAESAR3_SAVE_DIALOG_H_INCLUDED__

@@ -36,6 +36,7 @@
 #include "oc3_time.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_empiremap_window.hpp"
+#include "oc3_save_dialog.hpp"
 #include "oc3_advisors_window.hpp"
 
 class ScreenGame::Impl
@@ -46,6 +47,8 @@ public:
   GfxEngine* engine;
   TopMenu* topMenu;
   Menu* menu;
+  GuiInfoBox* infoBox;   // info box to display, if any
+  TilemapArea mapArea;  // visible map area
   ExtentMenu* extMenu;
   InfoBoxManagerPtr infoBoxMgr;
   TilemapRenderer guiTilemap;
@@ -53,6 +56,17 @@ public:
   Scenario* scenario; // current game scenario
   
   int result;
+
+  void resolveGameSave( std::string filename );
+  void showSaveDialog();
+  void showEmpireMapWindow();
+  void showAdvisorsWindow( const int advType );
+  void showAdvisorsWindow();
+  void resolveCreateConstruction( int type );
+  void resolveSelectOverlayView( int type );
+  void resolveRemoveTool();
+  void showTileInfo( const Tile& tile );
+  void makeScreenShot();
 };
 
 ScreenGame::ScreenGame() : _d( new Impl )
@@ -102,46 +116,52 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
   getMapArea().setCenterIJ( _d->scenario->getCity().getCameraPos() ); 
 
   //connect elements
-  CONNECT( _d->topMenu, onSave(), this, ScreenGame::resolveGameSave );
+  CONNECT( _d->topMenu, onSave(), _d.data(), Impl::showSaveDialog );
   CONNECT( _d->topMenu, onExit(), this, ScreenGame::resolveExitGame );
   CONNECT( _d->topMenu, onEnd(), this, ScreenGame::resolveEndGame );
-  CONNECT( _d->topMenu, onRequestAdvisor(), this, ScreenGame::showAdvisorsWindow );
+  CONNECT( _d->topMenu, onRequestAdvisor(), _d.data(), Impl::showAdvisorsWindow );
 
-  CONNECT( _d->menu, onCreateConstruction(), this, ScreenGame::resolveCreateConstruction );
-  CONNECT( _d->menu, onRemoveTool(), this, ScreenGame::resolveRemoveTool );
+  CONNECT( _d->menu, onCreateConstruction(), _d.data(), Impl::resolveCreateConstruction );
+  CONNECT( _d->menu, onRemoveTool(), _d.data(), Impl::resolveRemoveTool );
   CONNECT( _d->menu, onMaximize(), _d->extMenu, ExtentMenu::maximize );
 
-  CONNECT( _d->extMenu, onCreateConstruction(), this, ScreenGame::resolveCreateConstruction );
-  CONNECT( _d->extMenu, onRemoveTool(), this, ScreenGame::resolveRemoveTool );
+  CONNECT( _d->extMenu, onCreateConstruction(), _d.data(), Impl::resolveCreateConstruction );
+  CONNECT( _d->extMenu, onRemoveTool(), _d.data(), Impl::resolveRemoveTool );
 
   CONNECT( &_d->scenario->getCity(), onPopulationChanged(), _d->topMenu, TopMenu::setPopulation );
   CONNECT( &_d->scenario->getCity(), onFundsChanged(), _d->topMenu, TopMenu::setFunds );
   CONNECT( &_d->scenario->getCity(), onMonthChanged(), _d->topMenu, TopMenu::setDate );
 
-  CONNECT( &_d->guiTilemap, onShowTileInfo(), this, ScreenGame::showTileInfo );
+  CONNECT( &_d->guiTilemap, onShowTileInfo(), _d.data(), Impl::showTileInfo );
 
   CONNECT( &_d->scenario->getCity(), onWarningMessage(), _d->wndStackMsgs, WindowMessageStack::addMessage );
   CONNECT( &_d->guiTilemap, onWarningMessage(), _d->wndStackMsgs, WindowMessageStack::addMessage );
-  CONNECT( _d->extMenu, onSelectOverlayType(), this, ScreenGame::resolveSelectOverlayView );
-  CONNECT( _d->extMenu, onEmpireMapShow(), this, ScreenGame::showEmpireMapWindow );
-  CONNECT( _d->extMenu, onAdvisorsWindowShow(), this, ScreenGame::showAdvisorsWindow );
+  CONNECT( _d->extMenu, onSelectOverlayType(), _d.data(), Impl::resolveSelectOverlayView );
+  CONNECT( _d->extMenu, onEmpireMapShow(), _d.data(), Impl::showEmpireMapWindow );
+  CONNECT( _d->extMenu, onAdvisorsWindowShow(), _d.data(), Impl::showAdvisorsWindow );
 }
 
-void ScreenGame::resolveGameSave()
+void ScreenGame::Impl::showSaveDialog()
+{
+  SaveDialog* dialog = new SaveDialog( gui->getRootWidget(), "./saves/", ".oc3save", -1 );
+  CONNECT( dialog, onFileSelected(), this, Impl::resolveGameSave );
+}
+
+void ScreenGame::Impl::resolveGameSave( std::string filename )
 {
   ScenarioSaver scnSaver( Scenario::instance() );
 
-  scnSaver.save( "./test.oc3save" );
+  scnSaver.save( filename );
 }
 
-void ScreenGame::showEmpireMapWindow()
+void ScreenGame::Impl::showEmpireMapWindow()
 {  
-  EmpireMapWindow* emap = EmpireMapWindow::create( _d->gui->getRootWidget(), -1 );
+  EmpireMapWindow* emap = EmpireMapWindow::create( gui->getRootWidget(), -1 );
 }
 
 TilemapArea& ScreenGame::getMapArea()
 {
-  return _mapArea;
+  return _d->mapArea;
 }
 
 void ScreenGame::setScenario(Scenario &scenario)
@@ -150,25 +170,15 @@ void ScreenGame::setScenario(Scenario &scenario)
   City& city = scenario.getCity();
   Tilemap& tilemap = city.getTilemap();
 
-  _mapArea.init(tilemap);
-  _d->guiTilemap.init(city, _mapArea, this);
-}
-
-void ScreenGame::drawTilemap()
-{
-  _d->guiTilemap.drawTilemap();
-}
-
-void ScreenGame::drawInterface()
-{
-  _d->gui->beforeDraw();
-  _d->gui->draw();
+  _d->mapArea.init(tilemap);
+  _d->guiTilemap.init(city, _d->mapArea, this);
 }
 
 void ScreenGame::draw()
 {
-  drawTilemap();
-  drawInterface();
+  _d->guiTilemap.drawTilemap();
+  _d->gui->beforeDraw();
+  _d->gui->draw();
 }
 
 void ScreenGame::afterFrame()
@@ -237,14 +247,14 @@ void ScreenGame::handleEvent( NEvent& event )
 	    break;
 	    
       case KEY_F10:
-	      makeScreenShot();
+	      _d->makeScreenShot();
 	    break;
       }
     }
   }
 }
 
-void ScreenGame::makeScreenShot()
+void ScreenGame::Impl::makeScreenShot()
 {
   DateTime time = DateTime::getCurrenTime();
 
@@ -253,7 +263,7 @@ void ScreenGame::makeScreenShot()
                                                time.getHour(), time.getMinutes(), time.getSeconds() );
   StringHelper::debug( 0xff, "creating screenshot %s", filename.c_str() );
 
-  _d->engine->createScreenshot( filename );
+  engine->createScreenshot( filename );
 }
 
 int ScreenGame::getResult() const
@@ -261,19 +271,19 @@ int ScreenGame::getResult() const
   return _d->result;
 }
 
-void ScreenGame::resolveCreateConstruction( int type )
+void ScreenGame::Impl::resolveCreateConstruction( int type )
 {
-  _d->guiTilemap.setChangeCommand( TilemapBuildCommand::create( BuildingType( type ) ) );
+  guiTilemap.setChangeCommand( TilemapBuildCommand::create( BuildingType( type ) ) );
 }
 
-void ScreenGame::resolveRemoveTool()
+void ScreenGame::Impl::resolveRemoveTool()
 {
-  _d->guiTilemap.setChangeCommand( TilemapRemoveCommand::create() );
+  guiTilemap.setChangeCommand( TilemapRemoveCommand::create() );
 }
 
-void ScreenGame::showTileInfo( const Tile& tile )
+void ScreenGame::Impl::showTileInfo( const Tile& tile )
 {
-  _d->infoBoxMgr->showHelp( tile );
+  infoBoxMgr->showHelp( tile );
 }
 
 void ScreenGame::resolveEndGame()
@@ -288,17 +298,17 @@ void ScreenGame::resolveExitGame()
   stop();
 }
 
-void ScreenGame::resolveSelectOverlayView( int type )
+void ScreenGame::Impl::resolveSelectOverlayView( int type )
 {
-  _d->guiTilemap.setChangeCommand( TilemapOverlayCommand::create( OverlayType( type ) ) );
+  guiTilemap.setChangeCommand( TilemapOverlayCommand::create( OverlayType( type ) ) );
 }
 
-void ScreenGame::showAdvisorsWindow()
+void ScreenGame::Impl::showAdvisorsWindow()
 {
   showAdvisorsWindow( ADV_EMPLOYERS );
 }
 
-void ScreenGame::showAdvisorsWindow( const int advType )
+void ScreenGame::Impl::showAdvisorsWindow( const int advType )
 {
-  AdvisorsWindow* advWnd = AdvisorsWindow::create( _d->gui->getRootWidget(), -1, (AdvisorType)advType );
+  AdvisorsWindow* advWnd = AdvisorsWindow::create( gui->getRootWidget(), -1, (AdvisorType)advType );
 }
