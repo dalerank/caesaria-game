@@ -118,6 +118,7 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
 
   tmp = ret->addItem( _("##gmenu_options##"), -1, true, true, false, false );
   tmp->setBackgroundPicture( *ret->_d->bgPicture, Point( -tmp->getLeft(), 0 ) );
+
   tmp = ret->addItem( _("##gmenu_help##"), -1, true, true, false, false );
   tmp->setBackgroundPicture( *ret->_d->bgPicture, Point( -tmp->getLeft(), 0 ) );
   tmp = ret->addItem( _("##gmenu_advisors##"), -1, true, true, false, false );

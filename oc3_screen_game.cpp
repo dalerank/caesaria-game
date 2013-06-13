@@ -38,6 +38,7 @@
 #include "oc3_empiremap_window.hpp"
 #include "oc3_save_dialog.hpp"
 #include "oc3_advisors_window.hpp"
+//#include "oc3_popup_messagebox.hpp"
 
 class ScreenGame::Impl
 {
@@ -85,6 +86,9 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
   // enable key repeat, 1ms delay, 100ms repeat
 
   _d->gui->clear();
+
+  /*new PopupMessageBox( _d->gui->getRootWidget(), "Test title", "This is test string for popup message box", 
+                       "Sen 351 BC", "For New player" ); */
 
   const int topMenuHeight = 23;
   const Picture& rPanelPic = Picture::load( ResourceGroup::panelBackground, 14 );
