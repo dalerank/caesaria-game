@@ -13,42 +13,36 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_TIMER_H_INCLUDED__
-#define __OPENCAESAR3_TIMER_H_INCLUDED__
+#ifndef __OPENCAESAR3_ALARM_EVENT_HOLDER_H_INCLUDED__
+#define __OPENCAESAR3_ALARM_EVENT_HOLDER_H_INCLUDED__
 
-#include "oc3_smartptr.hpp"
 #include "oc3_scopedptr.hpp"
-#include "oc3_referencecounted.hpp"
+#include "oc3_positioni.hpp"
 #include "oc3_signals.hpp"
 
-class Timer;
-typedef SmartPtr< Timer > TimerPtr;
+#include <string>
 
-class Timer : public ReferenceCounted
+class AlarmEventHolder
 {
 public:
-  typedef enum { looped=true, singleShot=false };
-  static TimerPtr create( unsigned int time, bool loop, int id=-1 );
+  AlarmEventHolder();
 
-  ~Timer();
+  ~AlarmEventHolder();
 
-  void update( unsigned int time );
-
-  void setTime( unsigned int time );
-  void setLoop( bool loop );
-
-  bool isActive() const;
+  void add( const TilePos& pos, const std::string& message );
+  void next();
+  
+  bool haveAlarms() const;
+  TilePos getCurrentPos() const;
+  std::string getCurrentMessage() const;
 
 oc3_signals public:
-  Signal1<int>& onTimeoutA();
-  Signal0<>& onTimeout();
+  Signal1<bool>& onAlarmChange();
+  Signal1<const TilePos& >& onMoveToAlarm();
 
 private:
-  Timer();
-
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#endif //__OPENCAESAR3_TIMER_H_INCLUDED__
-
+#endif //__OPENCAESAR3_ALARM_EVENT_HOLDER_H_INCLUDED__

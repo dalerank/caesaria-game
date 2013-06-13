@@ -51,10 +51,13 @@ public:
 
     void toggleOverlays();
 
+    void setAlarmEnabled( bool enabled );
+
 oc3_signals public:
     Signal1<int>& onSelectOverlayType();
     Signal0<>& onEmpireMapShow();
     Signal0<>& onAdvisorsWindowShow();
+    Signal0<>& onSwitchAlarm();
 
 protected:
     ExtentMenu( Widget* parent, TilemapRenderer&, int id, const Rect& rectangle );

@@ -228,7 +228,7 @@ void Walker::walk()
    bool midTile = false;
    int amountI = int(_d->remainMove.getX());
    int amountJ = int(_d->remainMove.getY());
-   _d->remainMove -= PointF( amountI, amountJ );
+   _d->remainMove -= Point( amountI, amountJ ).toPointF();
 
    // std::cout << "walker step, amount :" << amount << std::endl;
    int tmpX = _d->tileOffset.getX();

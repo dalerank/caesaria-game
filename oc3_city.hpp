@@ -98,6 +98,7 @@ oc3_signals public:
    Signal1<int>& onFundsChanged();
    Signal1<int>& onMonthChanged();
    Signal1<std::string>& onWarningMessage();
+   Signal2<const TilePos&, const std::string& >& onDisasterEvent();
 
 private:
    void _calculatePopulation();

@@ -38,6 +38,7 @@
 #include "oc3_empiremap_window.hpp"
 #include "oc3_save_dialog.hpp"
 #include "oc3_advisors_window.hpp"
+#include "oc3_alarm_event_holder.hpp"
 //#include "oc3_popup_messagebox.hpp"
 
 class ScreenGame::Impl
@@ -55,7 +56,8 @@ public:
   TilemapRenderer guiTilemap;
   WindowMessageStack* wndStackMsgs;
   Scenario* scenario; // current game scenario
-  
+  AlarmEventHolder alarmsHolder;
+
   int result;
 
   void resolveGameSave( std::string filename );
@@ -143,6 +145,11 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
   CONNECT( _d->extMenu, onSelectOverlayType(), _d.data(), Impl::resolveSelectOverlayView );
   CONNECT( _d->extMenu, onEmpireMapShow(), _d.data(), Impl::showEmpireMapWindow );
   CONNECT( _d->extMenu, onAdvisorsWindowShow(), _d.data(), Impl::showAdvisorsWindow );
+
+  CONNECT( &_d->scenario->getCity(), onDisasterEvent(), &_d->alarmsHolder, AlarmEventHolder::add );
+  CONNECT( _d->extMenu, onSwitchAlarm(), &_d->alarmsHolder, AlarmEventHolder::next );
+  CONNECT( &_d->alarmsHolder, onMoveToAlarm(), &_d->mapArea, TilemapArea::setCenterIJ );
+  CONNECT( &_d->alarmsHolder, onAlarmChange(), _d->extMenu, ExtentMenu::setAlarmEnabled );
 }
 
 void ScreenGame::Impl::showSaveDialog()

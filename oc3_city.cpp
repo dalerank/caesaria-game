@@ -34,6 +34,7 @@
 #include "oc3_variant.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_walkermanager.hpp"
+#include "oc3_gettext.hpp"
 
 #include <set>
 
@@ -67,6 +68,7 @@ oc3_signals public:
   Signal1<int> onFundsChangedSignal;
   Signal1<int> onMonthChangedSignal;
   Signal1<std::string> onWarningMessageSignal;
+  Signal2<const TilePos&, const std::string&> onDisasterEventSignal;
 };
 
 City::City() : _d( new Impl )
@@ -318,32 +320,37 @@ void City::build( const BuildingType type, const TilePos& pos )
 
 void City::disaster( const TilePos& pos, DisasterType type )
 {
-    TerrainTile& terrain = _d->tilemap.at( pos ).getTerrain();
-    TilePos rPos = pos;
+  TerrainTile& terrain = _d->tilemap.at( pos ).getTerrain();
+  TilePos rPos = pos;
 
-    if( terrain.isDestructible() )
+  if( terrain.isDestructible() )
+  {
+    int size = 1;
+
+    LandOverlayPtr overlay = terrain.getOverlay();
+    if( overlay.isValid() )
     {
-        int size = 1;
-
-        LandOverlayPtr overlay = terrain.getOverlay();
-        if( overlay.isValid() )
-        {
-          overlay->deleteLater();
-          size = overlay->getSize();
-          rPos = overlay->getTile().getIJ();
-        }
-
-        bool deleteRoad = false;
-
-        PtrTilesArea clearedTiles = _d->tilemap.getFilledRectangle( rPos, Size( size ) );
-        for( PtrTilesArea::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
-        {
-          BuildingType dstr2constr[] = { B_BURNING_RUINS, B_COLLAPSED_RUINS };
-          bool canCreate = ConstructionManager::getInstance().canCreate( dstr2constr[type] );
-          if( canCreate )
-            build( dstr2constr[type], (*itTile)->getIJ() );
-       }
+      overlay->deleteLater();
+      size = overlay->getSize();
+      rPos = overlay->getTile().getIJ();
     }
+
+    bool deleteRoad = false;
+
+    PtrTilesArea clearedTiles = _d->tilemap.getFilledRectangle( rPos, Size( size ) );
+    for( PtrTilesArea::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
+    {
+      BuildingType dstr2constr[] = { B_BURNING_RUINS, B_COLLAPSED_RUINS };
+      bool canCreate = ConstructionManager::getInstance().canCreate( dstr2constr[type] );
+      if( canCreate )
+      {
+        build( dstr2constr[type], (*itTile)->getIJ() );
+      }
+    }
+
+    std::string dstr2string[] = { _("##alarm_fire_in_city##"), _("##alarm_building_collapsed##") };
+    _d->onDisasterEventSignal.emit( pos, dstr2string[type] );
+  }
 }
 
 void City::clearLand(const TilePos& pos  )
@@ -602,4 +609,9 @@ CityServicePtr City::findService( const std::string& name )
 Signal1<std::string>& City::onWarningMessage()
 {
   return _d->onWarningMessageSignal;
+}
+
+Signal2<const TilePos&, const std::string& >& City::onDisasterEvent()
+{
+  return _d->onDisasterEventSignal;
 }
