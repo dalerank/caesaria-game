@@ -27,6 +27,9 @@ public:
   bool canBuild(const TilePos& pos ) const;
   void setTerrain( TerrainTile& terrain );
 
+private:
+  void _computePictures( const TilePos& startPos, const TilePos& endPos, DirectionType dir );
+
   class Impl;
   ScopedPtr< Impl > _d;
 };

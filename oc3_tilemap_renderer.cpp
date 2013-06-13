@@ -622,13 +622,20 @@ void TilemapRenderer::drawTilemap()
   }
 
   //Second part: drawing build tools
-  _d->engine->setTileDrawMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
-  for( PtrTilesList::iterator itPostTile = _d->postTiles.begin(); itPostTile != _d->postTiles.end(); ++itPostTile )
+  if( _d->changeCommand.isValid() && _d->changeCommand.is<TilemapBuildCommand>() )
   {
-    (*itPostTile)->resetWasDrawn();
-    _d->drawTileEx( **itPostTile, (*itPostTile)->getIJ().getZ() );
+    if( _d->changeCommand.as<TilemapBuildCommand>()->isCanBuild() )
+    {
+      _d->engine->setTileDrawMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
+    }
+
+    for( PtrTilesList::iterator itPostTile = _d->postTiles.begin(); itPostTile != _d->postTiles.end(); ++itPostTile )
+    {
+      (*itPostTile)->resetWasDrawn();
+      _d->drawTileEx( **itPostTile, (*itPostTile)->getIJ().getZ() );
+    }
+    _d->engine->resetTileDrawMask();
   }
-  _d->engine->resetTileDrawMask();
 }
 
 Tile* TilemapRenderer::Impl::getTileXY( const Point& pos, bool overborder)
@@ -914,34 +921,34 @@ void TilemapRenderer::checkPreviewBuild( const TilePos& pos )
   if( overlay.isValid() )
   {
      int size = overlay->getSize();
+     
      if( overlay->canBuild( pos ) )
      {
-         //_d->previewToolPictures.push_back( new Picture() );
-         //PictureConverter::maskColor( *_d->previewToolPictures.back(), overlay->getPicture(), 0x00000000, 0x00ff0000, 0x00000000, 0xff000000 );
-
-         Tile *masterTile=0;
-         for (int dj = 0; dj < size; ++dj)
-         {
-             for (int di = 0; di < size; ++di)
-             {
-                 Tile* tile = new Tile(_d->tilemap->at( pos + TilePos( di, dj ) ));  // make a copy of tile
-                 
-                 if (di==0 && dj==0)
-                 {
-                     // this is the masterTile
-                     masterTile = tile;
-                 }
-                 tile->setPicture( &overlay->getPicture() );
-                 tile->setMasterTile( masterTile );
-                 tile->getTerrain().setBuilding( true );
-                 tile->getTerrain().setOverlay( overlay.as<LandOverlay>() );
-                 _d->postTiles.push_back( tile );
-                 //_priorityTiles.push_back( tile );
-             }
-         }
+       bldCommand->setCanBuild( true );        
+       Tile *masterTile=0;
+       for (int dj = 0; dj < size; ++dj)
+       {
+           for (int di = 0; di < size; ++di)
+           {
+               Tile* tile = new Tile(_d->tilemap->at( pos + TilePos( di, dj ) ));  // make a copy of tile
+               
+               if (di==0 && dj==0)
+               {
+                   // this is the masterTile
+                   masterTile = tile;
+               }
+               tile->setPicture( &overlay->getPicture() );
+               tile->setMasterTile( masterTile );
+               tile->getTerrain().setBuilding( true );
+               tile->getTerrain().setOverlay( overlay.as<LandOverlay>() );
+               _d->postTiles.push_back( tile );
+               //_priorityTiles.push_back( tile );
+           }
+       }
      }
      else
      {
+       bldCommand->setCanBuild( false );   
        Picture& grnPicture = Picture::load( "oc3_land", 1 );
        Picture& redPicture = Picture::load( "oc3_land", 2 );
          
