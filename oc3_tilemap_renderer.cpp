@@ -41,7 +41,6 @@ public:
   
   Picture* clearPic;
   PtrTilesList postTiles;  // these tiles have draw over "normal" tilemap tiles!
-  Pictures previewToolPictures;
   Point lastCursorPos;
   Point startCursorPos;
   bool  lmbPressed;
@@ -241,7 +240,7 @@ void TilemapRenderer::Impl::drawTileFire( Tile& tile )
       {
         HousePtr house = overlay.as< House >();
         pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize() - 1)*2 + 11 );
-        fireLevel = house->getFireLevel();
+        fireLevel = (int)house->getFireLevel();
         needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() ==0);
       }
     break;
@@ -253,7 +252,7 @@ void TilemapRenderer::Impl::drawTileFire( Tile& tile )
         BuildingPtr building = overlay.as< Building >();
         if( building.isValid() )
         {
-          fireLevel = building->getFireLevel();
+          fireLevel = (int)building->getFireLevel();
         }
       }
     break;
@@ -623,11 +622,13 @@ void TilemapRenderer::drawTilemap()
   }
 
   //Second part: drawing build tools
+  _d->engine->setTileDrawMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
   for( PtrTilesList::iterator itPostTile = _d->postTiles.begin(); itPostTile != _d->postTiles.end(); ++itPostTile )
   {
     (*itPostTile)->resetWasDrawn();
     _d->drawTileEx( **itPostTile, (*itPostTile)->getIJ().getZ() );
   }
+  _d->engine->resetTileDrawMask();
 }
 
 Tile* TilemapRenderer::Impl::getTileXY( const Point& pos, bool overborder)
@@ -894,13 +895,6 @@ void TilemapRenderer::handleEvent( NEvent& event )
 
 void TilemapRenderer::discardPreview()
 {
-  for( Impl::Pictures::iterator it=_d->previewToolPictures.begin(); it != _d->previewToolPictures.end(); it++ )
-  {
-    Picture::destroy( *it );
-  }
-
-  _d->previewToolPictures.clear();
-
   for( PtrTilesList::iterator it=_d->postTiles.begin(); it != _d->postTiles.end(); it++ )
   {
        delete *it;
@@ -922,8 +916,8 @@ void TilemapRenderer::checkPreviewBuild( const TilePos& pos )
      int size = overlay->getSize();
      if( overlay->canBuild( pos ) )
      {
-         _d->previewToolPictures.push_back( new Picture() );
-         PictureConverter::maskColor( *_d->previewToolPictures.back(), overlay->getPicture(), 0x00000000, 0x00ff0000, 0x00000000, 0xff000000 );
+         //_d->previewToolPictures.push_back( new Picture() );
+         //PictureConverter::maskColor( *_d->previewToolPictures.back(), overlay->getPicture(), 0x00000000, 0x00ff0000, 0x00000000, 0xff000000 );
 
          Tile *masterTile=0;
          for (int dj = 0; dj < size; ++dj)
@@ -937,7 +931,7 @@ void TilemapRenderer::checkPreviewBuild( const TilePos& pos )
                      // this is the masterTile
                      masterTile = tile;
                  }
-                 tile->setPicture( _d->previewToolPictures.back() );
+                 tile->setPicture( &overlay->getPicture() );
                  tile->setMasterTile( masterTile );
                  tile->getTerrain().setBuilding( true );
                  tile->getTerrain().setOverlay( overlay.as<LandOverlay>() );

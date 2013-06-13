@@ -103,7 +103,6 @@ protected:
   
   typedef enum { duPositive=true, duNegative=false } DsbrlUpdate;
   void _updateDesirabilityInfluence( const DsbrlUpdate type );
-
 };
 
 class Garden : public Construction
