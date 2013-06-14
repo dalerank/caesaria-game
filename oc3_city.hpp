@@ -83,6 +83,7 @@ public:
 
    // add construction
    void build( const BuildingType type, const TilePos& pos );
+   void build( ConstructionPtr building, const TilePos& pos );
 
    //
    void disaster( const TilePos& pos, DisasterType type );
@@ -98,6 +99,7 @@ oc3_signals public:
    Signal1<int>& onFundsChanged();
    Signal1<int>& onMonthChanged();
    Signal1<std::string>& onWarningMessage();
+   Signal2<const TilePos&, const std::string& >& onDisasterEvent();
 
 private:
    void _calculatePopulation();

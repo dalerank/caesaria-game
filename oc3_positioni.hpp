@@ -31,6 +31,7 @@ public:
 
     Point operator+(const Point& other) const { return Point( x + other.x, y + other.y ); }
     Point operator-(const Point& other) const { return Point( x - other.x, y - other.y ); }
+    Point operator*(int mul) { return Point( x*mul, y*mul ); }
 
     void setX( const int nx ) { x = nx; }
     void setY( const int ny ) { y = ny; }
@@ -80,6 +81,7 @@ public:
   TilePos& operator+=(const TilePos& other) { set( x+other.x, y+other.y ); return *this; }
   TilePos operator+(const TilePos& other) const { return TilePos( x + other.x, y + other.y ); }
   TilePos operator-(const TilePos& other) const { return TilePos( x - other.x, y - other.y ); }
+  TilePos operator*(int v) const { return TilePos( x * v, y * v ); }
   TilePos operator-() const { return TilePos( -x, -y ); }
   bool operator==(const TilePos& other) const{ return (x == other.x) && ( y == other.y ); }
   bool operator!=(const TilePos& other) const{ return (x != other.x ) || ( y != other.y ); }

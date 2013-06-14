@@ -186,7 +186,11 @@ std::string TerrainTileHelper::convId2PicName( const unsigned int imgId )
     // std::cout << "Unknown image Id " << imgId << std::endl;
     // std::cout.unsetf(std::ios::hex);
 
-    if (imgId == 0xb10 || imgId == 0xb0d) {res_pfx = ResourceGroup::housing, res_id = 51;} // TERRIBLE HACK!
+    if (imgId == 0xb10 || imgId == 0xb0d) 
+    {
+      res_pfx = ResourceGroup::housing;
+      res_id = 51;
+    } // TERRIBLE HACK!
 
     // THROW("Unknown image Id " << imgId);
   }

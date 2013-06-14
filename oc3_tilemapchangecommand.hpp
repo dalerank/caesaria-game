@@ -41,6 +41,8 @@ public:
   ConstructionPtr getContruction() const;
   bool isBorderBuilding() const;
   bool isMultiBuilding() const;
+  bool isCanBuild() const;
+  void setCanBuild( bool cb );
 public:
   TilemapBuildCommand();
   

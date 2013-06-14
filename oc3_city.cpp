@@ -34,6 +34,7 @@
 #include "oc3_variant.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_walkermanager.hpp"
+#include "oc3_gettext.hpp"
 
 #include <set>
 
@@ -60,12 +61,14 @@ public:
   TilePos cameraStart;
 
   ClimateType climate;   
+  UniqueId walkerIdCount;
 
 oc3_signals public:
   Signal1<int> onPopulationChangedSignal;
   Signal1<int> onFundsChangedSignal;
   Signal1<int> onMonthChangedSignal;
   Signal1<std::string> onWarningMessageSignal;
+  Signal2<const TilePos&, const std::string&> onDisasterEventSignal;
 };
 
 City::City() : _d( new Impl )
@@ -80,6 +83,7 @@ City::City() : _d( new Impl )
   _d->population = 0;
   _d->needRecomputeAllRoads = false;
   _d->taxRate = 700;
+  _d->walkerIdCount = 0;
   _d->climate = C_CENTRAL;
 
   addService( CityServiceEmigrant::create( *this ) );
@@ -295,53 +299,63 @@ long City::getPopulation() const
 }
 
 void City::build( const BuildingType type, const TilePos& pos )
-{
-   BuildingData& buildingData = BuildingDataHolder::instance().getData( type );
+{   
    // make new building
    ConstructionPtr building = ConstructionManager::getInstance().create( type );
-   if( building.isValid() )
-   {
-     building->build( pos );
+   build( building, pos );
+}
 
-     _d->overlayList.push_back( building.as<LandOverlay>() );
-     _d->funds -= buildingData.getCost();
-     _d->onFundsChangedSignal.emit( _d->funds );
+void City::build( ConstructionPtr building, const TilePos& pos )
+{
+  BuildingData& buildingData = BuildingDataHolder::instance().getData( building->getType() );
+  if( building.isValid() )
+  {
+    building->build( pos );
 
-     if( building->isNeedRoadAccess() && building->getAccessRoads().empty() )
-     {
-       _d->onWarningMessageSignal.emit( "##building_need_road_access##" );
-     }
-   }
+    _d->overlayList.push_back( building.as<LandOverlay>() );
+    _d->funds -= buildingData.getCost();
+    _d->onFundsChangedSignal.emit( _d->funds );
+
+    if( building->isNeedRoadAccess() && building->getAccessRoads().empty() )
+    {
+      _d->onWarningMessageSignal.emit( "##building_need_road_access##" );
+    }
+  }
 }
 
 void City::disaster( const TilePos& pos, DisasterType type )
 {
-    TerrainTile& terrain = _d->tilemap.at( pos ).getTerrain();
-    TilePos rPos = pos;
+  TerrainTile& terrain = _d->tilemap.at( pos ).getTerrain();
+  TilePos rPos = pos;
 
-    if( terrain.isDestructible() )
+  if( terrain.isDestructible() )
+  {
+    Size size( 1 );
+
+    LandOverlayPtr overlay = terrain.getOverlay();
+    if( overlay.isValid() )
     {
-        int size = 1;
-
-        LandOverlayPtr overlay = terrain.getOverlay();
-        if( overlay.isValid() )
-        {
-          overlay->deleteLater();
-          size = overlay->getSize();
-          rPos = overlay->getTile().getIJ();
-        }
-
-        bool deleteRoad = false;
-
-        PtrTilesArea clearedTiles = _d->tilemap.getFilledRectangle( rPos, Size( size ) );
-        for( PtrTilesArea::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
-        {
-          BuildingType dstr2constr[] = { B_BURNING_RUINS, B_COLLAPSED_RUINS };
-          bool canCreate = ConstructionManager::getInstance().canCreate( dstr2constr[type] );
-          if( canCreate )
-            build( dstr2constr[type], (*itTile)->getIJ() );
-       }
+      overlay->deleteLater();
+      size = overlay->getSize();
+      rPos = overlay->getTile().getIJ();
     }
+
+    bool deleteRoad = false;
+
+    PtrTilesArea clearedTiles = _d->tilemap.getFilledRectangle( rPos, size );
+    for( PtrTilesArea::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
+    {
+      BuildingType dstr2constr[] = { B_BURNING_RUINS, B_COLLAPSED_RUINS };
+      bool canCreate = ConstructionManager::getInstance().canCreate( dstr2constr[type] );
+      if( canCreate )
+      {
+        build( dstr2constr[type], (*itTile)->getIJ() );
+      }
+    }
+
+    std::string dstr2string[] = { _("##alarm_fire_in_city##"), _("##alarm_building_collapsed##") };
+    _d->onDisasterEventSignal.emit( pos, dstr2string[type] );
+  }
 }
 
 void City::clearLand(const TilePos& pos  )
@@ -351,7 +365,7 @@ void City::clearLand(const TilePos& pos  )
 
   if( terrain.isDestructible() )
   {
-    int size = 1;
+    Size size( 1 );
     TilePos rPos = pos;
 
     LandOverlayPtr overlay = terrain.getOverlay();
@@ -367,7 +381,7 @@ void City::clearLand(const TilePos& pos  )
       overlay->deleteLater();
     }
 
-    PtrTilesArea clearedTiles = _d->tilemap.getFilledRectangle( rPos, Size( size ) );
+    PtrTilesArea clearedTiles = _d->tilemap.getFilledRectangle( rPos, size );
     for (PtrTilesArea::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
     {
       (*itTile)->setMasterTile(NULL);
@@ -571,6 +585,7 @@ Signal1<int>& City::onMonthChanged()
 
 void City::addWalker( WalkerPtr walker )
 {
+  walker->setUniqueId( ++_d->walkerIdCount );
   _d->walkerList.push_back( walker );
 }
 
@@ -599,4 +614,9 @@ CityServicePtr City::findService( const std::string& name )
 Signal1<std::string>& City::onWarningMessage()
 {
   return _d->onWarningMessageSignal;
+}
+
+Signal2<const TilePos&, const std::string& >& City::onDisasterEvent()
+{
+  return _d->onDisasterEventSignal;
 }

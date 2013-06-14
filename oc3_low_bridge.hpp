@@ -13,18 +13,28 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_factory_pottery.hpp"
-#include "oc3_picture.hpp"
-#include "oc3_resourcegroup.hpp"
+#ifndef __OPENCAESAR3_LOW_BRIDGE_H_INCLUDED__
+#define __OPENCAESAR3_LOW_BRIDGE_H_INCLUDED__
 
-FactoryPottery::FactoryPottery() : Factory(G_CLAY, G_POTTERY, B_POTTERY, Size(2))
+#include "oc3_building.hpp"
+#include "oc3_scopedptr.hpp"
+
+class LowBridge : public Construction
 {
-  setPicture( Picture::load(ResourceGroup::commerce, 132) );
+public:
+  LowBridge();
 
-  _animation.load(ResourceGroup::commerce, 133, 7);
-  _animation.setFrameDelay( 3 );
-  _fgPictures.resize(2);
+  bool canBuild(const TilePos& pos ) const;
+  void setTerrain( TerrainTile& terrain );
+  void build( const TilePos& pos );
+  void destroy();
 
-  setMaxWorkers( 10 );
-  setWorkers( 0 );
-}
+private:
+  void _computePictures( const TilePos& startPos, const TilePos& endPos, DirectionType dir );
+  void _checkParams( DirectionType& direction, TilePos& start, TilePos& stop, const TilePos& curPos ) const;
+
+  class Impl;
+  ScopedPtr< Impl > _d;
+};
+
+#endif //__OPENCAESAR3_LOW_BRIDGE_H_INCLUDED__

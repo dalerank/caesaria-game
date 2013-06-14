@@ -114,7 +114,7 @@ void ServiceBuilding::deliverService()
   serviceman->send2City( BuildingPtr( this ) );
 
   if( !serviceman->isDeleted() )
-      _addWalker( serviceman.as<Walker>() );
+      addWalker( serviceman.as<Walker>() );
 }
 
 int ServiceBuilding::getServiceRange() const
@@ -143,13 +143,12 @@ int ServiceBuilding::getServiceDelay() const
   return _d->serviceDelay;
 }
 
-void ServiceBuilding::_addWalker( WalkerPtr walker )
+void ServiceBuilding::addWalker( WalkerPtr walker )
 {
-  Scenario::instance().getCity().addWalker( walker );
   _walkerList.push_back( walker );
 }
 
-const Walkers& ServiceBuilding::_getWalkerList() const
+const Walkers& ServiceBuilding::getWalkerList() const
 {
   return _walkerList;
 }

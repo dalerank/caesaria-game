@@ -41,7 +41,6 @@ public:
   
   Picture* clearPic;
   PtrTilesList postTiles;  // these tiles have draw over "normal" tilemap tiles!
-  Pictures previewToolPictures;
   Point lastCursorPos;
   Point startCursorPos;
   bool  lmbPressed;
@@ -157,7 +156,7 @@ void TilemapRenderer::Impl::drawAnimations( LandOverlayPtr overlay, const Point&
 
 void TilemapRenderer::Impl::drawTileDesirability( Tile& tile )
 {
-  Point screenPos = tile.getScreenPos() + mapOffset;
+  Point screenPos = tile.getXY() + mapOffset;
 
   tile.setWasDrawn();
 
@@ -196,7 +195,7 @@ void TilemapRenderer::Impl::drawTileDesirability( Tile& tile )
         PtrTilesList tiles4clear = tilemap->getFilledRectangle( tile.getIJ(), overlay->getSize() );
         for( PtrTilesList::iterator it = tiles4clear.begin(); it != tiles4clear.end(); it++) 
         {
-          engine->drawPicture( pic, (*it)->getScreenPos() + mapOffset );
+          engine->drawPicture( pic, (*it)->getXY() + mapOffset );
         }
       }
     break;
@@ -207,7 +206,7 @@ void TilemapRenderer::Impl::drawTileDesirability( Tile& tile )
 
 void TilemapRenderer::Impl::drawTileFire( Tile& tile )
 {
-  Point screenPos = tile.getScreenPos() + mapOffset;
+  Point screenPos = tile.getXY() + mapOffset;
 
   tile.setWasDrawn();
 
@@ -240,8 +239,8 @@ void TilemapRenderer::Impl::drawTileFire( Tile& tile )
     case B_HOUSE:
       {
         HousePtr house = overlay.as< House >();
-        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize() - 1)*2 + 11 );
-        fireLevel = house->getFireLevel();
+        pic = &Picture::load( ResourceGroup::waterOverlay, ( overlay->getSize().getWidth() - 1 )*2 + 11 );
+        fireLevel = (int)house->getFireLevel();
         needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() ==0);
       }
     break;
@@ -249,11 +248,11 @@ void TilemapRenderer::Impl::drawTileFire( Tile& tile )
       //other buildings
     default:
       {
-        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize() - 1)*2 + 1 );
+        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + 1 );
         BuildingPtr building = overlay.as< Building >();
         if( building.isValid() )
         {
-          fireLevel = building->getFireLevel();
+          fireLevel = (int)building->getFireLevel();
         }
       }
     break;
@@ -274,7 +273,7 @@ void TilemapRenderer::Impl::drawTileFire( Tile& tile )
 
 void TilemapRenderer::Impl::drawTileFood( Tile& tile )
 {
-  Point screenPos = tile.getScreenPos() + mapOffset;
+  Point screenPos = tile.getXY() + mapOffset;
 
   tile.setWasDrawn();
 
@@ -305,7 +304,7 @@ void TilemapRenderer::Impl::drawTileFood( Tile& tile )
     case B_HOUSE:
       {
         HousePtr house = overlay.as< House >();
-        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize() - 1)*2 + 11 );
+        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + 11 );
         foodLevel = house->getFoodLevel();
         needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() ==0);
       }
@@ -314,7 +313,7 @@ void TilemapRenderer::Impl::drawTileFood( Tile& tile )
       //other buildings
     default:
       {
-        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize() - 1)*2 + 1 );
+        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + 1 );
       }
       break;
     }  
@@ -334,7 +333,7 @@ void TilemapRenderer::Impl::drawTileFood( Tile& tile )
 
 void TilemapRenderer::Impl::drawTileWater( Tile& tile )
 {
-  Point screenPos = tile.getScreenPos() + mapOffset;
+  Point screenPos = tile.getXY() + mapOffset;
   
   tile.setWasDrawn();
 
@@ -367,13 +366,13 @@ void TilemapRenderer::Impl::drawTileWater( Tile& tile )
         HousePtr house = overlay.as< House >();
         bool haveWater = house->hasServiceAccess( S_WELL ) || house->hasServiceAccess( S_FOUNTAIN );
 
-        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize() - 1)*2 + ( haveWater ? 2 : 1 ) + 10 );
+        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + ( haveWater ? 2 : 1 ) + 10 );
       }
     break;
       
       //other buildings
     default:
-      pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize() - 1)*2 + 1 );
+      pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + 1 );
     break;
     }  
 
@@ -400,7 +399,7 @@ void TilemapRenderer::Impl::drawTileWater( Tile& tile )
 
 void TilemapRenderer::Impl::drawTileBase( Tile& tile )
 {
-  Point screenPos = tile.getScreenPos() + mapOffset;
+  Point screenPos = tile.getXY() + mapOffset;
 
   tile.setWasDrawn();
 
@@ -423,7 +422,7 @@ void TilemapRenderer::Impl::drawTileInSelArea( Tile& tile, Tile* master )
   {
     // single-tile
     drawTileFunction( tile );
-    engine->drawPicture( *clearPic, tile.getScreenPos() + mapOffset );
+    engine->drawPicture( *clearPic, tile.getXY() + mapOffset );
   }
   else
   {
@@ -503,12 +502,12 @@ void TilemapRenderer::Impl::drawTilemapWithRemoveTools()
         itWalker != walkerList.end(); ++itWalker)
       {
         // for each walker
-        WalkerPtr anim = *itWalker;
-        int zAnim = anim->getIJ().getZ();// getJ() - anim.getI();
+        WalkerPtr walker = *itWalker;
+        int zAnim = walker->getIJ().getZ();// getJ() - walker.getI();
         if( zAnim > z && zAnim <= z+1 )
         {
           pictureList.clear();
-          anim->getPictureList( pictureList );
+          walker->getPictureList( pictureList );
           for( Impl::Pictures::iterator picIt = pictureList.begin(); picIt != pictureList.end(); ++picIt )
           {
             if( *picIt == NULL )
@@ -516,8 +515,7 @@ void TilemapRenderer::Impl::drawTilemapWithRemoveTools()
               continue;
             }
 
-            engine->drawPicture( **picIt, Point( 2*(anim->getII() + anim->getJJ()),
-                                                 anim->getII() - anim->getJJ() ) + mapOffset );
+            engine->drawPicture( **picIt, walker->getPosition() + mapOffset );
           }
         }
       }
@@ -588,12 +586,12 @@ void TilemapRenderer::Impl::simpleDrawTilemap()
         itWalker != walkerList.end(); ++itWalker)
       {
         // for each walker
-        WalkerPtr anim = *itWalker;
-        int zAnim = anim->getIJ().getZ();// getJ() - anim.getI();
+        WalkerPtr walker = *itWalker;
+        int zAnim = walker->getIJ().getZ();// getJ() - walker.getI();
         if( zAnim > z && zAnim <= z+1 )
         {
           pictureList.clear();
-          anim->getPictureList( pictureList );
+          walker->getPictureList( pictureList );
           for( Impl::Pictures::iterator picIt = pictureList.begin(); picIt != pictureList.end(); ++picIt )
           {
             if( *picIt == NULL )
@@ -601,8 +599,7 @@ void TilemapRenderer::Impl::simpleDrawTilemap()
               continue;
             }
 
-            engine->drawPicture( **picIt, Point( 2*( anim->getII() + anim->getJJ() ),
-                                                 anim->getII() - anim->getJJ() ) + mapOffset );
+            engine->drawPicture( **picIt, walker->getPosition() + mapOffset );
           }
         }
       }
@@ -625,10 +622,19 @@ void TilemapRenderer::drawTilemap()
   }
 
   //Second part: drawing build tools
-  for( PtrTilesList::iterator itPostTile = _d->postTiles.begin(); itPostTile != _d->postTiles.end(); ++itPostTile )
+  if( _d->changeCommand.isValid() && _d->changeCommand.is<TilemapBuildCommand>() )
   {
-    (*itPostTile)->resetWasDrawn();
-    _d->drawTileEx( **itPostTile, (*itPostTile)->getIJ().getZ() );
+    if( _d->changeCommand.as<TilemapBuildCommand>()->isCanBuild() )
+    {
+      _d->engine->setTileDrawMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
+    }
+
+    for( PtrTilesList::iterator itPostTile = _d->postTiles.begin(); itPostTile != _d->postTiles.end(); ++itPostTile )
+    {
+      (*itPostTile)->resetWasDrawn();
+      _d->drawTileEx( **itPostTile, (*itPostTile)->getIJ().getZ() );
+    }
+    _d->engine->resetTileDrawMask();
   }
 }
 
@@ -896,13 +902,6 @@ void TilemapRenderer::handleEvent( NEvent& event )
 
 void TilemapRenderer::discardPreview()
 {
-  for( Impl::Pictures::iterator it=_d->previewToolPictures.begin(); it != _d->previewToolPictures.end(); it++ )
-  {
-    Picture::destroy( *it );
-  }
-
-  _d->previewToolPictures.clear();
-
   for( PtrTilesList::iterator it=_d->postTiles.begin(); it != _d->postTiles.end(); it++ )
   {
        delete *it;
@@ -921,35 +920,35 @@ void TilemapRenderer::checkPreviewBuild( const TilePos& pos )
   ConstructionPtr overlay = bldCommand->getContruction();
   if( overlay.isValid() )
   {
-     int size = overlay->getSize();
+     int size = overlay->getSize().getWidth();
+     
      if( overlay->canBuild( pos ) )
      {
-         _d->previewToolPictures.push_back( new Picture() );
-         PictureConverter::maskColor( *_d->previewToolPictures.back(), overlay->getPicture(), 0x00000000, 0x00ff0000, 0x00000000, 0xff000000 );
-
-         Tile *masterTile=0;
-         for (int dj = 0; dj < size; ++dj)
-         {
-             for (int di = 0; di < size; ++di)
-             {
-                 Tile* tile = new Tile(_d->tilemap->at( pos + TilePos( di, dj ) ));  // make a copy of tile
-                 
-                 if (di==0 && dj==0)
-                 {
-                     // this is the masterTile
-                     masterTile = tile;
-                 }
-                 tile->setPicture( _d->previewToolPictures.back() );
-                 tile->setMasterTile( masterTile );
-                 tile->getTerrain().setBuilding( true );
-                 tile->getTerrain().setOverlay( overlay.as<LandOverlay>() );
-                 _d->postTiles.push_back( tile );
-                 //_priorityTiles.push_back( tile );
-             }
-         }
+       bldCommand->setCanBuild( true );        
+       Tile *masterTile=0;
+       for (int dj = 0; dj < size; ++dj)
+       {
+           for (int di = 0; di < size; ++di)
+           {
+               Tile* tile = new Tile(_d->tilemap->at( pos + TilePos( di, dj ) ));  // make a copy of tile
+               
+               if (di==0 && dj==0)
+               {
+                   // this is the masterTile
+                   masterTile = tile;
+               }
+               tile->setPicture( &overlay->getPicture() );
+               tile->setMasterTile( masterTile );
+               tile->getTerrain().setBuilding( true );
+               tile->getTerrain().setOverlay( overlay.as<LandOverlay>() );
+               _d->postTiles.push_back( tile );
+               //_priorityTiles.push_back( tile );
+           }
+       }
      }
      else
      {
+       bldCommand->setCanBuild( false );   
        Picture& grnPicture = Picture::load( "oc3_land", 1 );
        Picture& redPicture = Picture::load( "oc3_land", 2 );
          

@@ -27,6 +27,7 @@ typedef SmartPtr< Timer > TimerPtr;
 class Timer : public ReferenceCounted
 {
 public:
+  typedef enum { looped=true, singleShot=false };
   static TimerPtr create( unsigned int time, bool loop, int id=-1 );
 
   ~Timer();
@@ -39,7 +40,8 @@ public:
   bool isActive() const;
 
 oc3_signals public:
-    virtual Signal1<int>& onTimeout();
+  Signal1<int>& onTimeoutA();
+  Signal0<>& onTimeout();
 
 private:
   Timer();

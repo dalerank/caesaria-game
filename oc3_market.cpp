@@ -56,7 +56,7 @@ Market::Market() : ServiceBuilding(S_MARKET, B_MARKET, Size(2) ),
 
 void Market::deliverService()
 {
-  if( getWorkers() > 0 && _getWalkerList().size() == 0 )
+  if( getWorkers() > 0 && getWalkerList().size() == 0 )
   {
     // the marketBuyer is ready to buy something!
     MarketBuyerPtr buyer = MarketBuyer::create( MarketPtr( this ) );
@@ -64,7 +64,7 @@ void Market::deliverService()
 
     if( !buyer->isDeleted() )
     {
-      _addWalker( buyer.as<Walker>() );
+      addWalker( buyer.as<Walker>() );
     }
     else if( _d->isAnyGoodStored() )
     {
@@ -122,7 +122,7 @@ void Market::save( VariantMap& stream) const
   _d->goodStore.save( vm_goodstore );
   stream[ "goodStore" ] = vm_goodstore;
 
-  //stream.write_objectID( _getWalkerList().begin().object() );
+  //stream.write_objectID( getWalkerList().begin().object() );
 }
 
 void Market::load( const VariantMap& stream)

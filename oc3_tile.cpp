@@ -90,7 +90,7 @@ bool Tile::isMasterTile() const
   return (_master_tile == this);
 }
 
-Point Tile::getScreenPos() const
+Point Tile::getXY() const
 {
   return Point( 30 * ( getI() + getJ()), 15 * (getI() - getJ()) );
 }

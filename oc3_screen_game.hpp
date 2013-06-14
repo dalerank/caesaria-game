@@ -55,24 +55,8 @@ protected:
 private:
   //void setMenu(Menu &menu);
 
-  void drawTilemap();
-  void drawInterface();
-
-  void resolveCreateConstruction( int type );
-  void resolveSelectOverlayView( int type );
-  void resolveRemoveTool();
-  void showTileInfo( const Tile& tile );
-  void resolveGameSave();
   void resolveEndGame();
   void resolveExitGame();
-
-  void makeScreenShot();
-  void showEmpireMapWindow();
-  void showAdvisorsWindow( const int advType );
-  void showAdvisorsWindow();
-
-  GuiInfoBox* _infoBox;   // info box to display, if any
-  TilemapArea _mapArea;  // visible map area
 
   class Impl;
   ScopedPtr< Impl > _d;

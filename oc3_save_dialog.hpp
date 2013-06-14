@@ -13,18 +13,26 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_factory_pottery.hpp"
-#include "oc3_picture.hpp"
-#include "oc3_resourcegroup.hpp"
+#ifndef __OPENCAESAR3_SAVE_DIALOG_H_INCLUDED__
+#define __OPENCAESAR3_SAVE_DIALOG_H_INCLUDED__
 
-FactoryPottery::FactoryPottery() : Factory(G_CLAY, G_POTTERY, B_POTTERY, Size(2))
+#include "oc3_widget.hpp"
+#include "oc3_scopedptr.hpp"
+#include "oc3_signals.hpp"
+
+class SaveDialog : public Widget
 {
-  setPicture( Picture::load(ResourceGroup::commerce, 132) );
+public:
+  SaveDialog( Widget* parent, const std::string& dir, const std::string& fileExt, int id );
 
-  _animation.load(ResourceGroup::commerce, 133, 7);
-  _animation.setFrameDelay( 3 );
-  _fgPictures.resize(2);
+  void draw( GfxEngine& painter );
 
-  setMaxWorkers( 10 );
-  setWorkers( 0 );
-}
+oc3_signals public:
+  Signal1<std::string>& onFileSelected();
+
+private:
+  class Impl;
+  ScopedPtr< Impl > _d;
+};
+
+#endif //__OPENCAESAR3_SAVE_DIALOG_H_INCLUDED__

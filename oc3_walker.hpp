@@ -37,6 +37,8 @@
 #include "oc3_scopedptr.hpp"
 #include "oc3_predefinitions.hpp"
 
+typedef unsigned int UniqueId;
+
 class Walker : public Serializable, public ReferenceCounted
 {
 public:
@@ -47,11 +49,13 @@ public:
    virtual int getType() const;
    // position and movement
    int getI() const;
-   TilePos getIJ() const;
    int getJ() const;
-   int getII() const;
-   int getJJ() const;
+
+   TilePos getIJ() const;
    void setIJ( const TilePos& pos );
+
+   Point getPosition() const;
+
    void setPathWay(PathWay &pathWay);
    //void setDestinationIJ( const TilePos& pos );
    void setSpeed(const float speed);
@@ -61,6 +65,7 @@ public:
    virtual void onNewDirection(); // called when the walker changes direction
    void computeDirection();
    void walk();
+   void setUniqueId( const UniqueId uid );
 
    DirectionType getDirection();
 
@@ -95,13 +100,7 @@ private:
    void inc(int &ioSI, int &ioI, int &ioAmount, const int iMidPos, bool &oNewTile, bool &oMidTile);
    void dec(int &ioSI, int &ioI, int &ioAmount, const int iMidPos, bool &oNewTile, bool &oMidTile);
 
-private:
-   int _si, _sj; // subtile coordinate in the current tile: 0..15
-   int _ii, _jj; // subtile coordinate across all tiles: 0..15*mapsize (ii=15*i+si)
-   float _remainMoveI, _remainMoveJ;  // remaining movement
-
-   Animation _animation;  // current animation
-  
+private:   
    class Impl;
    ScopedPtr< Impl > _d;
 };

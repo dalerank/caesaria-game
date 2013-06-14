@@ -188,7 +188,7 @@ Plaza::Plaza()
 
   setType(B_PLAZA);
   setPicture(computePicture()); // 102 ~ 107
-  _size = 1;
+  setSize( Size( 1 ) );
 }
 
 
@@ -219,7 +219,7 @@ bool Plaza::canBuild(const TilePos& pos ) const
 
   bool is_constructible = true;
 
-  PtrTilesArea rect = tilemap.getFilledRectangle( pos, Size( _size ) ); // something very complex ???
+  PtrTilesArea rect = tilemap.getFilledRectangle( pos, getSize() ); // something very complex ???
   for( PtrTilesArea::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {
     is_constructible &= (*itTiles)->getTerrain().isRoad();

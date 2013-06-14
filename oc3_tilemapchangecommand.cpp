@@ -23,6 +23,7 @@ public:
     bool isBorderBuilding;
     bool isMultiBuilding;
     ConstructionPtr construction;
+    bool canBuild;
 };
 
 TilemapChangeCommand::~TilemapChangeCommand()
@@ -64,6 +65,7 @@ TilemapChangeCommandPtr TilemapBuildCommand::create( BuildingType type )
   newCommand->_d->construction = construction;
   newCommand->_d->isMultiBuilding = false;
   newCommand->_d->isBorderBuilding = false;
+  newCommand->_d->canBuild = false;
 
   switch( type )
   {
@@ -91,6 +93,16 @@ TilemapChangeCommandPtr TilemapBuildCommand::create( BuildingType type )
 TilemapBuildCommand::TilemapBuildCommand() : _d( new Impl )
 {
 
+}
+
+void TilemapBuildCommand::setCanBuild( bool cb )
+{
+  _d->canBuild = cb;
+}
+
+bool TilemapBuildCommand::isCanBuild() const
+{
+  return _d->canBuild;
 }
 
 class TilemapOverlayCommand::Impl

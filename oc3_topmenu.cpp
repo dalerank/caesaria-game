@@ -42,6 +42,7 @@ oc3_signals public:
   Signal0<> onExitSignal;
   Signal0<> onEndSignal;
   Signal0<> onSaveSignal;
+  Signal0<> onLoadSignal;
   Signal1<int> onRequestAdvisorSignal;
 };
 
@@ -102,7 +103,7 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
   ContextMenu* file = tmp->addSubMenu();
 
   ContextMenuItem* save = file->addItem( _("##gmenu_file_save##"), -1, true, false, false, false );
-  //ContextMenuItem* load = file->addItem( "Load", -1, true, false, false, false );
+  ContextMenuItem* load = file->addItem( _("##gmenu_file_load##"), -1, true, false, false, false );
 
   file->addItem( "", -1, false, false, false, false );
   ContextMenuItem* mainMenu = file->addItem( _("##gmenu_file_mainmenu##"), -1, true, false, false, false );
@@ -112,10 +113,12 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
 
   CONNECT( exit, onClicked(), &ret->_d->onExitSignal, Signal0<>::emit );
   CONNECT( save, onClicked(), &ret->_d->onSaveSignal, Signal0<>::emit );
+  CONNECT( load, onClicked(), &ret->_d->onLoadSignal, Signal0<>::emit );
   CONNECT( mainMenu, onClicked(), &ret->_d->onEndSignal, Signal0<>::emit );
 
   tmp = ret->addItem( _("##gmenu_options##"), -1, true, true, false, false );
   tmp->setBackgroundPicture( *ret->_d->bgPicture, Point( -tmp->getLeft(), 0 ) );
+
   tmp = ret->addItem( _("##gmenu_help##"), -1, true, true, false, false );
   tmp->setBackgroundPicture( *ret->_d->bgPicture, Point( -tmp->getLeft(), 0 ) );
   tmp = ret->addItem( _("##gmenu_advisors##"), -1, true, true, false, false );
@@ -195,4 +198,9 @@ Signal0<>& TopMenu::onEnd()
 Signal1<int>& TopMenu::onRequestAdvisor()
 {
   return _d->onRequestAdvisorSignal;
+}
+
+Signal0<>& TopMenu::onLoad()
+{
+  return _d->onLoadSignal;
 }

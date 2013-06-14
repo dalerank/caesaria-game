@@ -32,7 +32,7 @@ public:
   int getI() const;
   int getJ() const;
   TilePos getIJ() const;
-  Point getScreenPos() const;
+  Point getXY() const;
 
   // displayed picture
   void setPicture(Picture *picture);

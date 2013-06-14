@@ -36,6 +36,7 @@ oc3_signals public:
   Signal0<>& onExit();
   Signal0<>& onSave();
   Signal0<>& onEnd();
+  Signal0<>& onLoad();
   Signal1<int>& onRequestAdvisor();
 
 private:

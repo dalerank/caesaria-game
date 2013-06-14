@@ -77,6 +77,7 @@ oc3_signals public:
   Signal0<> onMaximizeSignal;
   Signal0<> onEmpireMapShowSignal;
   Signal0<> onAdvisorsWndShowSignal;
+  Signal0<> onSwitchAlarmSignal;
 };
 
 Signal1< int >& Menu::onCreateConstruction()
@@ -240,7 +241,7 @@ void getBuildingColours(TerrainTile& tile, int &c1, int &c2)
   {
     case B_HOUSE:
     {
-      switch (overlay->getSize())
+      switch (overlay->getSize().getWidth())
       {
 	      case 1:
 	        {
@@ -264,7 +265,7 @@ void getBuildingColours(TerrainTile& tile, int &c1, int &c2)
         }
       default:
         {
-          switch (overlay->getSize())
+          switch (overlay->getSize().getWidth())
           {
 	        case 1:
 	        {
@@ -533,6 +534,7 @@ ExtentMenu::ExtentMenu( Widget* parent, TilemapRenderer& tmap, int id, const Rec
   _d->messageButton->setGeometry( Rect( Point( 63, 421 ), Size( 39, 22 ) ) );
   _d->disasterButton = _addButton( 119, false, 0, -1, false, -1, _("##disasterBtnTooltip") );
   _d->disasterButton->setGeometry( Rect( Point( 113, 421 ), Size( 39, 22 ) ) );
+  _d->disasterButton->setEnabled( false );
 
   _d->middleLabel = new Label(this, Rect( Point( 7, 216 ), Size( 148, 52 )) );
   _d->middleLabel->setBackgroundPicture( Picture::load( ResourceGroup::menuMiddleIcons, ResourceMenu::emptyMidPicId ) );
@@ -546,6 +548,7 @@ ExtentMenu::ExtentMenu( Widget* parent, TilemapRenderer& tmap, int id, const Rec
   CONNECT( _d->overlaysButton, onClicked(), this, ExtentMenu::toggleOverlays );
   CONNECT( _d->empireButton, onClicked(), &_d->onEmpireMapShowSignal, Signal0<>::emit );
   CONNECT( _d->senateButton, onClicked(), &_d->onAdvisorsWndShowSignal, Signal0<>::emit );
+  CONNECT( _d->disasterButton, onClicked(), &_d->onSwitchAlarmSignal, Signal0<>::emit );
 }
 
 bool ExtentMenu::onEvent(const NEvent& event)
@@ -664,4 +667,14 @@ Signal0<>& ExtentMenu::onEmpireMapShow()
 Signal0<>& ExtentMenu::onAdvisorsWindowShow()
 {
   return _d->onAdvisorsWndShowSignal;
+}
+
+Signal0<>& ExtentMenu::onSwitchAlarm()
+{
+  return _d->onSwitchAlarmSignal;
+}
+
+void ExtentMenu::setAlarmEnabled( bool enabled )
+{
+  _d->disasterButton->setEnabled( enabled );
 }

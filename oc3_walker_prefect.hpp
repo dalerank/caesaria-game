@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_WALKER_PREFECT_H_INCLUDED__
 
 #include "oc3_servicewalker.hpp"
-#include "oc3_buildingprefect.hpp"
+#include "oc3_prefecture.hpp"
 
 class WalkerPrefect;
 typedef SmartPtr< WalkerPrefect > WalkerPrefectPtr;
@@ -33,7 +33,10 @@ public:
   float getServiceValue() const;
   void onDestination();
 
-  void send2City( BuildingPrefectPtr prefecture, int water=0 );
+  void load( const VariantMap& stream );
+  void save( VariantMap& stream ) const;
+
+  void send2City( BuildingPrefecturePtr prefecture, int water=0 );
 
   ~WalkerPrefect();
  

@@ -13,18 +13,36 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_factory_pottery.hpp"
-#include "oc3_picture.hpp"
-#include "oc3_resourcegroup.hpp"
+#ifndef __OPENCAESAR3_ALARM_EVENT_HOLDER_H_INCLUDED__
+#define __OPENCAESAR3_ALARM_EVENT_HOLDER_H_INCLUDED__
 
-FactoryPottery::FactoryPottery() : Factory(G_CLAY, G_POTTERY, B_POTTERY, Size(2))
+#include "oc3_scopedptr.hpp"
+#include "oc3_positioni.hpp"
+#include "oc3_signals.hpp"
+
+#include <string>
+
+class AlarmEventHolder
 {
-  setPicture( Picture::load(ResourceGroup::commerce, 132) );
+public:
+  AlarmEventHolder();
 
-  _animation.load(ResourceGroup::commerce, 133, 7);
-  _animation.setFrameDelay( 3 );
-  _fgPictures.resize(2);
+  ~AlarmEventHolder();
 
-  setMaxWorkers( 10 );
-  setWorkers( 0 );
-}
+  void add( const TilePos& pos, const std::string& message );
+  void next();
+  
+  bool haveAlarms() const;
+  TilePos getCurrentPos() const;
+  std::string getCurrentMessage() const;
+
+oc3_signals public:
+  Signal1<bool>& onAlarmChange();
+  Signal1<const TilePos& >& onMoveToAlarm();
+
+private:
+  class Impl;
+  ScopedPtr< Impl > _d;
+};
+
+#endif //__OPENCAESAR3_ALARM_EVENT_HOLDER_H_INCLUDED__

@@ -13,18 +13,28 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_factory_pottery.hpp"
-#include "oc3_picture.hpp"
-#include "oc3_resourcegroup.hpp"
+#ifndef __OPENCAESAR3_POPUP_MESSAGEBOX_H_INCLUDED__
+#define __OPENCAESAR3_POPUP_MESSAGEBOX_H_INCLUDED__
 
-FactoryPottery::FactoryPottery() : Factory(G_CLAY, G_POTTERY, B_POTTERY, Size(2))
+#include "oc3_widget.hpp"
+#include "oc3_scopedptr.hpp"
+#include "oc3_signals.hpp"
+
+class PopupMessageBox : public Widget
 {
-  setPicture( Picture::load(ResourceGroup::commerce, 132) );
+public:
+  PopupMessageBox( Widget* parent, 
+                   const std::string& title, 
+                   const std::string& text, 
+                   const std::string& time="",
+                   const std::string& receiver="",
+                   int id=-1 );
 
-  _animation.load(ResourceGroup::commerce, 133, 7);
-  _animation.setFrameDelay( 3 );
-  _fgPictures.resize(2);
+  void draw( GfxEngine& painter );
 
-  setMaxWorkers( 10 );
-  setWorkers( 0 );
-}
+private:
+  class Impl;
+  ScopedPtr< Impl > _d;
+};
+
+#endif //__OPENCAESAR3_POPUP_MESSAGEBOX_H_INCLUDED__

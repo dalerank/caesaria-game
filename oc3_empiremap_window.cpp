@@ -48,23 +48,23 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
   _d->dragging = false;
 
   Picture& backgr = Picture::load( "empire_panels", 4 );
-  for( int y=getHeight() - 120; y < getHeight(); y+=backgr.getHeight() )
+  for( unsigned int y=getHeight() - 120; y < getHeight(); y+=backgr.getHeight() )
   {
-    for( int x=0; x < getWidth(); x += backgr.getWidth() )
+    for( unsigned int x=0; x < getWidth(); x += backgr.getWidth() )
     {
       _d->border->draw( backgr, x, y );
     }
   }
 
   Picture& lrBorderPic = Picture::load( "empire_panels", 1 );
-  for( int y = 0; y < getHeight(); y += lrBorderPic.getHeight() )
+  for( unsigned int y = 0; y < getHeight(); y += lrBorderPic.getHeight() )
   {
     _d->border->draw( lrBorderPic, 0, y );
     _d->border->draw( lrBorderPic, getWidth() - lrBorderPic.getWidth(), y );
   }
 
   Picture& tdBorderPic = Picture::load( "empire_panels", 2 );
-  for( int x = 0; x < getWidth(); x += tdBorderPic.getWidth() )
+  for( unsigned int x = 0; x < getWidth(); x += tdBorderPic.getWidth() )
   {
     _d->border->draw( tdBorderPic, x, 0 );
     _d->border->draw( tdBorderPic, x, getHeight() - tdBorderPic.getHeight() );

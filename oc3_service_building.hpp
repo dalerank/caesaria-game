@@ -27,38 +27,36 @@ class Widget;
 class ServiceBuilding : public WorkingBuilding
 {
 public:
-   ServiceBuilding( const ServiceType service,
-                    const BuildingType type, const Size& size );
+  ServiceBuilding( const ServiceType service,
+                   const BuildingType type, const Size& size );
 
-   virtual ~ServiceBuilding();
+  virtual ~ServiceBuilding();
 
-   ServiceType getService() const;
-   void timeStep(const unsigned long time);
-   virtual void destroy();  // handles the walkers
+  ServiceType getService() const;
+  void timeStep(const unsigned long time);
+  virtual void destroy();  // handles the walkers
 
-   int getServiceRange() const;  // max distance from building to road for road to propose the service
-   virtual int getServiceDelay() const;
-   void setServiceDelay( const int delay );
+  int getServiceRange() const;  // max distance from building to road for road to propose the service
+  virtual int getServiceDelay() const;
+  void setServiceDelay( const int delay );
 
-   // called when a service man should service the neighborhood
-   virtual void deliverService();
+  // called when a service man should service the neighborhood
+  virtual void deliverService();
   
-   void save( VariantMap& stream) const;
-   void load( const VariantMap& stream);
+  void save( VariantMap& stream) const;
+  void load( const VariantMap& stream);
 
-   //void removeWalker( WalkerPtr walker );
-
-protected:
-  void _addWalker( WalkerPtr walker );
-  const Walkers& _getWalkerList() const;
+  //void removeWalker( WalkerPtr walker );
+  void addWalker( WalkerPtr walker );
+  const Walkers& getWalkerList() const;
 
 private:  
-   int _serviceRange;
-   Walkers _walkerList;
-   static std::map<ServiceType, ServiceBuilding*> _specimen;
+  int _serviceRange;
+  Walkers _walkerList;
+  static std::map<ServiceType, ServiceBuilding*> _specimen;
 
-   class Impl;
-   ScopedPtr< Impl > _d;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 class EntertainmentBuilding : public ServiceBuilding
