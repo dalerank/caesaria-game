@@ -17,7 +17,7 @@
 #include "oc3_water_buildings.hpp"
 #include "oc3_service_building.hpp"
 #include "oc3_buildingengineer.hpp"
-#include "oc3_buildingprefect.hpp"
+#include "oc3_prefecture.hpp"
 #include "oc3_well.hpp"
 
 ServiceBuilding* ServiceBuildingManager::getBuilding( ServiceType type )
@@ -27,7 +27,7 @@ ServiceBuilding* ServiceBuildingManager::getBuilding( ServiceType type )
     case S_WELL:	return new BuildingWell();
     case S_FOUNTAIN:	return new BuildingFountain();
     case S_ENGINEER:	return new BuildingEngineer();
-    case S_PREFECT:	return new BuildingPrefect();
+    case S_PREFECT:	return new BuildingPrefecture();
     case S_THEATER:	return new BuildingTheater();
     default:		return 0;
   }
