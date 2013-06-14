@@ -154,7 +154,10 @@ void GfxSdlEngine::endRenderFrame()
 
 void GfxSdlEngine::drawPicture(const Picture &picture, const int dx, const int dy)
 {
-  if( _d->rmask || _d->gmask || _d->bmask )
+  if( !picture.isValid() )
+      return;
+
+  if( _d->rmask || _d->gmask || _d->bmask  )
   {
     PictureConverter::maskColor( _d->maskedPic, picture, _d->rmask, _d->gmask, _d->bmask, _d->amask );
     _d->screen.draw( _d->maskedPic, dx, dy );

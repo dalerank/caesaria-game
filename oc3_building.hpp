@@ -45,7 +45,8 @@ public:
 
   Tile& getTile() const;  // master tile, in case of multi-tile area
   TilePos getTilePos() const;
-  int getSize() const;  // size in tiles (1=1x1, 2=2x2, ...)
+  Size getSize() const;  // size in tiles (1=1x1, 2=2x2, ...)
+  void setSize( const Size& size );
   bool isDeleted() const;  // returns true if the overlay should be forgotten
   void deleteLater();
   virtual bool isWalkable() const;
@@ -58,7 +59,8 @@ public:
   Picture& getPicture();
   std::vector<Picture*>& getForegroundPictures();
 
-  std::string getName();  // title of the info box
+  std::string getName();  // landoverlay debug name
+  void setName( const std::string& name );
 
   BuildingType getType() const;
   void setType(const BuildingType buildingType);
@@ -68,11 +70,8 @@ public:
 
 protected:
   std::vector<Picture*> _fgPictures;
-  Picture* _picture;
   Tile* _master_tile;  // left-most tile if multi-tile, or "this" if single-tile
-  int _size;  // size in tiles
   bool _isDeleted;
-  std::string _name;
 
   Animation _animation;  // basic animation (if any)
 

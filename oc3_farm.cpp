@@ -96,11 +96,10 @@ public:
 Farm::Farm(const GoodType outGood, const BuildingType type ) 
 : Factory(G_NONE, outGood, type, Size(3) ), _d( new Impl )
 {
-  _picture = &_d->pictureBuilding;
-
   _d->pictureBuilding = Picture::load( ResourceGroup::commerce, 12);  // farm building
   _d->pictureBuilding.addOffset(30, 15);
 
+  setPicture( _d->pictureBuilding );
   init();
   setWorkers( 0 );
 }
@@ -111,7 +110,7 @@ bool Farm::canBuild(const TilePos& pos ) const
   bool on_meadow = false;
 
   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-  PtrTilesArea rect = tilemap.getFilledRectangle( pos, Size( _size ) );
+  PtrTilesArea rect = tilemap.getFilledRectangle( pos, getSize() );
   for( PtrTilesArea::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {
     on_meadow |= (*itTiles)->getTerrain().isMeadow();

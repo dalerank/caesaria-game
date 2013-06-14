@@ -21,7 +21,7 @@
 FactoryMarble::FactoryMarble() : Factory(G_NONE, G_MARBLE, B_MARBLE, Size(2) )
 {
   _setProductRate( 9.6f );
-  _picture = &Picture::load( ResourceGroup::commerce, 43 );
+  setPicture( Picture::load( ResourceGroup::commerce, 43 ) );
 
   _animation.load( ResourceGroup::commerce, 44, 10);
   _animation.setFrameDelay( 4 );
@@ -54,7 +54,7 @@ bool FactoryMarble::canBuild(const TilePos& pos ) const
   bool near_mountain = false;  // tells if the factory is next to a mountain
 
   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-  std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 2 ), Tilemap::checkCorners);
+  std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), Tilemap::checkCorners);
   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {
     near_mountain |= (*itTiles)->getTerrain().isRock();

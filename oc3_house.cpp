@@ -53,7 +53,7 @@ House::House(const int houseId) : Building( B_HOUSE ), _d( new Impl )
    _d->houseLevel = helper.getHouseLevel( houseId );
    _d->houseLevelSpec = &helper.getHouseLevelSpec( _d->houseLevel );
    _d->nextHouseLevelSpec = &helper.getHouseLevelSpec( _d->houseLevel+1);
-   _name = _d->houseLevelSpec->getLevelName();
+   setName( _d->houseLevelSpec->getLevelName() );
    _d->currentHabitants = 0;
    _d->desirability = -3;
    _fireLevel = 90;
@@ -167,7 +167,7 @@ void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int start
       HousePtr house = (*it)->getTerrain().getOverlay().as<House>();
       if( house != NULL && house->getLevelSpec().getHouseLevel() == level4grow )
       {
-        if( house->getSize() > 1 )  //bigger house near, can't grow
+        if( house->getSize().getWidth() > 1 )  //bigger house near, can't grow
         {
           mayGrow = false;
           break;
@@ -205,7 +205,7 @@ void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int start
 
       _update();
       _updateDesirabilityInfluence( Construction::duNegative );
-      _size++;
+      setSize( getSize() + Size(1) );
       build( getTile().getIJ() );      
     }
   }
@@ -214,7 +214,7 @@ void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int start
   _d->desirability = desirability;       
   _updateDesirabilityInfluence( Construction::duPositive );
 
-  bool bigSize = getSize() > 1;
+  bool bigSize = getSize().getWidth() > 1;
   _d->houseId = bigSize ? startBigPic : startSmallPic; 
   _d->picIdOffset = bigSize ? 0 : ( (rand() % 10 > 6) ? 1 : 0 );
 }
@@ -270,7 +270,7 @@ void House::levelUp()
 
 void House::_tryDegrage_11_to_2_lvl( int smallPic, int bigPic, const char desirability )
 {
-  bool bigSize = getSize() > 1;
+  bool bigSize = getSize().getWidth() > 1;
   _d->houseId = bigSize ? bigPic : smallPic;
   _d->picIdOffset = bigSize ? 0 : ( rand() % 10 > 6 ? 1 : 0 );
 
@@ -295,7 +295,7 @@ void House::levelDown()
        City& city = Scenario::instance().getCity();
        Tilemap& tmap = city.getTilemap();   
 
-       if( getSize() > 1 )
+       if( getSize().getWidth() > 1 )
        {
          _updateDesirabilityInfluence( Construction::duNegative );
 
@@ -312,7 +312,7 @@ void House::levelDown()
            house->_update();
          }
 
-         _size = 1;
+         setSize( Size( 1 ) );
          _updateDesirabilityInfluence( Construction::duPositive );
        }
      }
@@ -534,8 +534,8 @@ void House::_update()
 {
     int picId = ( _d->houseId == smallHovel && _d->currentHabitants == 0 ) ? 45 : (_d->houseId + _d->picIdOffset); 
     setPicture( Picture::load( ResourceGroup::housing, picId ) );
-    _size = (_picture->getWidth() + 2) / 60;
-    _d->maxHabitants = _d->houseLevelSpec->getMaxHabitantsByTile() * _size * _size;
+    setSize( Size( ( getPicture().getWidth() + 2) / 60 ) );
+    _d->maxHabitants = _d->houseLevelSpec->getMaxHabitantsByTile() * getSize().getArea();
 }
 
 int House::getMaxDistance2Road() const

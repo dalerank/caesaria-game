@@ -239,7 +239,7 @@ void TilemapRenderer::Impl::drawTileFire( Tile& tile )
     case B_HOUSE:
       {
         HousePtr house = overlay.as< House >();
-        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize() - 1)*2 + 11 );
+        pic = &Picture::load( ResourceGroup::waterOverlay, ( overlay->getSize().getWidth() - 1 )*2 + 11 );
         fireLevel = (int)house->getFireLevel();
         needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() ==0);
       }
@@ -248,7 +248,7 @@ void TilemapRenderer::Impl::drawTileFire( Tile& tile )
       //other buildings
     default:
       {
-        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize() - 1)*2 + 1 );
+        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + 1 );
         BuildingPtr building = overlay.as< Building >();
         if( building.isValid() )
         {
@@ -304,7 +304,7 @@ void TilemapRenderer::Impl::drawTileFood( Tile& tile )
     case B_HOUSE:
       {
         HousePtr house = overlay.as< House >();
-        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize() - 1)*2 + 11 );
+        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + 11 );
         foodLevel = house->getFoodLevel();
         needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() ==0);
       }
@@ -313,7 +313,7 @@ void TilemapRenderer::Impl::drawTileFood( Tile& tile )
       //other buildings
     default:
       {
-        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize() - 1)*2 + 1 );
+        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + 1 );
       }
       break;
     }  
@@ -366,13 +366,13 @@ void TilemapRenderer::Impl::drawTileWater( Tile& tile )
         HousePtr house = overlay.as< House >();
         bool haveWater = house->hasServiceAccess( S_WELL ) || house->hasServiceAccess( S_FOUNTAIN );
 
-        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize() - 1)*2 + ( haveWater ? 2 : 1 ) + 10 );
+        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + ( haveWater ? 2 : 1 ) + 10 );
       }
     break;
       
       //other buildings
     default:
-      pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize() - 1)*2 + 1 );
+      pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + 1 );
     break;
     }  
 
@@ -920,7 +920,7 @@ void TilemapRenderer::checkPreviewBuild( const TilePos& pos )
   ConstructionPtr overlay = bldCommand->getContruction();
   if( overlay.isValid() )
   {
-     int size = overlay->getSize();
+     int size = overlay->getSize().getWidth();
      
      if( overlay->canBuild( pos ) )
      {

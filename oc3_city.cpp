@@ -299,23 +299,28 @@ long City::getPopulation() const
 }
 
 void City::build( const BuildingType type, const TilePos& pos )
-{
-   BuildingData& buildingData = BuildingDataHolder::instance().getData( type );
+{   
    // make new building
    ConstructionPtr building = ConstructionManager::getInstance().create( type );
-   if( building.isValid() )
-   {
-     building->build( pos );
+   build( building, pos );
+}
 
-     _d->overlayList.push_back( building.as<LandOverlay>() );
-     _d->funds -= buildingData.getCost();
-     _d->onFundsChangedSignal.emit( _d->funds );
+void City::build( ConstructionPtr building, const TilePos& pos )
+{
+  BuildingData& buildingData = BuildingDataHolder::instance().getData( building->getType() );
+  if( building.isValid() )
+  {
+    building->build( pos );
 
-     if( building->isNeedRoadAccess() && building->getAccessRoads().empty() )
-     {
-       _d->onWarningMessageSignal.emit( "##building_need_road_access##" );
-     }
-   }
+    _d->overlayList.push_back( building.as<LandOverlay>() );
+    _d->funds -= buildingData.getCost();
+    _d->onFundsChangedSignal.emit( _d->funds );
+
+    if( building->isNeedRoadAccess() && building->getAccessRoads().empty() )
+    {
+      _d->onWarningMessageSignal.emit( "##building_need_road_access##" );
+    }
+  }
 }
 
 void City::disaster( const TilePos& pos, DisasterType type )
@@ -325,7 +330,7 @@ void City::disaster( const TilePos& pos, DisasterType type )
 
   if( terrain.isDestructible() )
   {
-    int size = 1;
+    Size size( 1 );
 
     LandOverlayPtr overlay = terrain.getOverlay();
     if( overlay.isValid() )
@@ -337,7 +342,7 @@ void City::disaster( const TilePos& pos, DisasterType type )
 
     bool deleteRoad = false;
 
-    PtrTilesArea clearedTiles = _d->tilemap.getFilledRectangle( rPos, Size( size ) );
+    PtrTilesArea clearedTiles = _d->tilemap.getFilledRectangle( rPos, size );
     for( PtrTilesArea::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
     {
       BuildingType dstr2constr[] = { B_BURNING_RUINS, B_COLLAPSED_RUINS };
@@ -360,7 +365,7 @@ void City::clearLand(const TilePos& pos  )
 
   if( terrain.isDestructible() )
   {
-    int size = 1;
+    Size size( 1 );
     TilePos rPos = pos;
 
     LandOverlayPtr overlay = terrain.getOverlay();
@@ -376,7 +381,7 @@ void City::clearLand(const TilePos& pos  )
       overlay->deleteLater();
     }
 
-    PtrTilesArea clearedTiles = _d->tilemap.getFilledRectangle( rPos, Size( size ) );
+    PtrTilesArea clearedTiles = _d->tilemap.getFilledRectangle( rPos, size );
     for (PtrTilesArea::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
     {
       (*itTile)->setMasterTile(NULL);

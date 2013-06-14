@@ -202,7 +202,7 @@ void Factory::_setProductRate( const float rate )
 FactoryTimber::FactoryTimber() : Factory(G_NONE, G_TIMBER, B_TIMBER, Size(2) )
 {
   _setProductRate( 9.6f );
-  _picture = &Picture::load(ResourceGroup::commerce, 72);
+  setPicture( Picture::load(ResourceGroup::commerce, 72) );
 
   _animation.load( ResourceGroup::commerce, 73, 10);
   _fgPictures.resize(2);
@@ -214,7 +214,7 @@ bool FactoryTimber::canBuild(const TilePos& pos ) const
    bool near_forest = false;  // tells if the factory is next to a forest
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   PtrTilesArea rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 2 ), Tilemap::checkCorners );
+   PtrTilesArea rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), Tilemap::checkCorners );
    for( PtrTilesArea::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
       Tile &tile = **itTiles;
@@ -228,7 +228,7 @@ bool FactoryTimber::canBuild(const TilePos& pos ) const
 FactoryIron::FactoryIron() : Factory(G_NONE, G_IRON, B_IRON, Size(2) )
 {
    _setProductRate( 9.6f );
-   _picture = &Picture::load(ResourceGroup::commerce, 54);
+   setPicture( Picture::load(ResourceGroup::commerce, 54) );
 
    _animation.load( ResourceGroup::commerce, 55, 6);
    _fgPictures.resize(2);
@@ -240,7 +240,7 @@ bool FactoryIron::canBuild(const TilePos& pos ) const
    bool near_mountain = false;  // tells if the factory is next to a mountain
 
    Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   PtrTilesArea rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size + 2), Tilemap::checkCorners );
+   PtrTilesArea rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size(2), Tilemap::checkCorners );
    for( PtrTilesArea::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
       near_mountain |= (*itTiles)->getTerrain().isRock();
@@ -251,7 +251,7 @@ bool FactoryIron::canBuild(const TilePos& pos ) const
 
 FactoryWeapon::FactoryWeapon() : Factory(G_IRON, G_WEAPON, B_WEAPON, Size(2) )
 {
-  _picture = &Picture::load(ResourceGroup::commerce, 108);
+  setPicture( Picture::load(ResourceGroup::commerce, 108) );
 
   _animation.load( ResourceGroup::commerce, 109, 6);
   _fgPictures.resize(2);
@@ -259,7 +259,7 @@ FactoryWeapon::FactoryWeapon() : Factory(G_IRON, G_WEAPON, B_WEAPON, Size(2) )
 
 FactoryFurniture::FactoryFurniture() : Factory(G_TIMBER, G_FURNITURE, B_FURNITURE, Size(2) )
 {
-  _picture = &Picture::load(ResourceGroup::commerce, 117);
+  setPicture( Picture::load(ResourceGroup::commerce, 117) );
 
   _animation.load(ResourceGroup::commerce, 118, 14);
   _fgPictures.resize(2);
@@ -267,7 +267,7 @@ FactoryFurniture::FactoryFurniture() : Factory(G_TIMBER, G_FURNITURE, B_FURNITUR
 
 FactoryWine::FactoryWine() : Factory(G_GRAPE, G_WINE, B_WINE, Size(2) )
 {
-  _picture = &Picture::load(ResourceGroup::commerce, 86);
+  setPicture( Picture::load(ResourceGroup::commerce, 86) );
 
   _animation.load(ResourceGroup::commerce, 87, 12);
   _fgPictures.resize(2);
@@ -275,7 +275,7 @@ FactoryWine::FactoryWine() : Factory(G_GRAPE, G_WINE, B_WINE, Size(2) )
 
 FactoryOil::FactoryOil() : Factory(G_OLIVE, G_OIL, B_OIL, Size(2) )
 {
-  _picture = &Picture::load(ResourceGroup::commerce, 99);
+  setPicture( Picture::load(ResourceGroup::commerce, 99) );
 
   _animation.load(ResourceGroup::commerce, 100, 8);
   _fgPictures.resize(2);
@@ -307,7 +307,7 @@ bool Wharf::canBuild(const TilePos& pos ) const
    
   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
    
-  PtrTilesArea rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size+2 ), false);
+  PtrTilesArea rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), false);
   for( PtrTilesArea::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {
     Tile &tile = **itTiles;
@@ -315,9 +315,10 @@ bool Wharf::canBuild(const TilePos& pos ) const
       
      // if (tiles.get_terrain().isWater())
       
-     if (tile.getJ() > (pos.getJ() + _size -1) && !tile.getTerrain().isWater()) {  bNorth = false; }
+    int size = getSize().getWidth();
+     if (tile.getJ() > (pos.getJ() + size -1) && !tile.getTerrain().isWater()) {  bNorth = false; }
      if (tile.getJ() < pos.getJ() && !tile.getTerrain().isWater())              {  bSouth = false; }
-     if (tile.getI() > (pos.getI() + _size -1) && !tile.getTerrain().isWater()) {  bEast = false;  }
+     if (tile.getI() > (pos.getI() + size -1) && !tile.getTerrain().isWater()) {  bEast = false;  }
      if (tile.getI() < pos.getI() && !tile.getTerrain().isWater())              {  bWest = false;  }      
    }
 

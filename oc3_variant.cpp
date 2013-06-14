@@ -710,7 +710,7 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
     case Variant::NPointF:
       if( d->type == Variant::List )
       {
-        Point *pos = static_cast< Point* >( result );
+        PointF *pos = static_cast< PointF* >( result );
         const VariantList *list = v_cast< VariantList >(d);
         VariantList::const_iterator it = list->begin(); 
         pos->setX( it->toFloat() ); it++;

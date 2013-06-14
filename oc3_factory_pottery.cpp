@@ -19,7 +19,7 @@
 
 FactoryPottery::FactoryPottery() : Factory(G_CLAY, G_POTTERY, B_POTTERY, Size(2))
 {
-  _picture = &Picture::load(ResourceGroup::commerce, 132);
+  setPicture( Picture::load(ResourceGroup::commerce, 132) );
 
   _animation.load(ResourceGroup::commerce, 133, 7);
   _animation.setFrameDelay( 3 );

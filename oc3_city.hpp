@@ -83,6 +83,7 @@ public:
 
    // add construction
    void build( const BuildingType type, const TilePos& pos );
+   void build( ConstructionPtr building, const TilePos& pos );
 
    //
    void disaster( const TilePos& pos, DisasterType type );

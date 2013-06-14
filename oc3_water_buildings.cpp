@@ -110,7 +110,7 @@ void Reservoir::destroy()
 {
   //now remove water flag from near tiles
   Tilemap& tmap = Scenario::instance().getCity().getTilemap();
-  PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 + getSize() ) ); 
+  PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() ); 
   for( PtrTilesArea::iterator it=reachedTiles.begin(); it != reachedTiles.end(); it++ )
   {
     (*it)->getTerrain().decreaseWaterService( WTR_RESERVOIR );
@@ -393,7 +393,7 @@ bool Reservoir::_isNearWater( const TilePos& pos ) const
   bool near_water = false;  // tells if the factory is next to a mountain
 
   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-  std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), Size( _size+2 ), !Tilemap::checkCorners );
+  std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), !Tilemap::checkCorners );
   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {
     near_water |= (*itTiles)->getTerrain().isWater();
@@ -423,7 +423,7 @@ void Reservoir::timeStep(const unsigned long time)
   if( time % 22 == 1 )
   {
     Tilemap& tmap = Scenario::instance().getCity().getTilemap();
-    PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 + getSize() ) ); 
+    PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() ); 
     for( PtrTilesArea::iterator it=reachedTiles.begin(); it != reachedTiles.end(); it++ )
     {
       (*it)->getTerrain().fillWaterService( WTR_RESERVOIR );
@@ -494,7 +494,7 @@ void BuildingFountain::deliverService()
   {
     //remove fontain service from tiles
     Tilemap& tmap = Scenario::instance().getCity().getTilemap();
-    PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 + getSize() ) ); 
+    PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() ); 
     for( PtrTilesArea::iterator it=reachedTiles.begin(); it != reachedTiles.end(); it++ )
     {
       (*it)->getTerrain().decreaseWaterService( WTR_FONTAIN );
@@ -522,7 +522,7 @@ void BuildingFountain::timeStep(const unsigned long time)
   if( time % 22 == 1 )
   {
     Tilemap& tmap = Scenario::instance().getCity().getTilemap();
-    PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 + getSize() ) ); 
+    PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() ); 
     for( PtrTilesArea::iterator it=reachedTiles.begin(); it != reachedTiles.end(); it++ )
     {
       (*it)->getTerrain().fillWaterService( WTR_FONTAIN );

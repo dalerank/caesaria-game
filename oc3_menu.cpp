@@ -241,7 +241,7 @@ void getBuildingColours(TerrainTile& tile, int &c1, int &c2)
   {
     case B_HOUSE:
     {
-      switch (overlay->getSize())
+      switch (overlay->getSize().getWidth())
       {
 	      case 1:
 	        {
@@ -265,7 +265,7 @@ void getBuildingColours(TerrainTile& tile, int &c1, int &c2)
         }
       default:
         {
-          switch (overlay->getSize())
+          switch (overlay->getSize().getWidth())
           {
 	        case 1:
 	        {

@@ -46,16 +46,18 @@ class LandOverlay::Impl
 {
 public:
   BuildingType buildingType;
+  std::string name;
+  Picture picture;
+  Size size;  // size in tiles
 };
 
 LandOverlay::LandOverlay(const BuildingType type, const Size& size)
 : _d( new Impl )
 {
   _master_tile = NULL;
-  _size = size.getWidth();
+  _d->size = size;
   _isDeleted = false;
-  _name = "unknown";
-  _picture = NULL;
+  _d->name = "unknown";
   setType( type );
 }
 
@@ -74,7 +76,7 @@ BuildingType LandOverlay::getType() const
 void LandOverlay::setType(const BuildingType buildingType)
 {
    _d->buildingType = buildingType;
-   _name = BuildingDataHolder::instance().getData(buildingType).getName();
+   _d->name = BuildingDataHolder::instance().getData(buildingType).getName();
 }
 
 void LandOverlay::timeStep(const unsigned long time) { }
@@ -83,7 +85,7 @@ void LandOverlay::setPicture(Picture &picture)
 {
    Tilemap &tilemap = Scenario::instance().getCity().getTilemap();
 
-   _picture = &picture;
+   _d->picture = picture;
 
    if (_master_tile != NULL)
    {
@@ -91,12 +93,12 @@ void LandOverlay::setPicture(Picture &picture)
       int i = _master_tile->getI();
       int j = _master_tile->getJ();
 
-      for (int dj = 0; dj<_size; ++dj)
+      for (int dj = 0; dj<_d->size.getWidth(); ++dj)
       {
-         for (int di = 0; di<_size; ++di)
+         for (int di = 0; di<_d->size.getHeight(); ++di)
          {
             Tile &tile = tilemap.at(i+di, j+dj);
-            tile.setPicture(_picture);
+            tile.setPicture( &_d->picture );
          }
       }
    }
@@ -109,13 +111,13 @@ void LandOverlay::build( const TilePos& pos )
 
   _master_tile = &tilemap.at( pos );
 
-  for (int dj = 0; dj < _size; ++dj)
+  for (int dj = 0; dj < _d->size.getWidth(); ++dj)
   {
-    for (int di = 0; di < _size; ++di)
+    for (int di = 0; di < _d->size.getHeight(); ++di)
     {
       Tile& tile = tilemap.at( pos + TilePos( di, dj ) );
       tile.setMasterTile(_master_tile);
-      tile.setPicture(_picture);
+      tile.setPicture( &_d->picture);
       TerrainTile& terrain = tile.getTerrain();
       terrain.setOverlay(this);
       setTerrain( terrain );
@@ -138,9 +140,9 @@ Tile& LandOverlay::getTile() const
   return *_master_tile;
 }
 
-int LandOverlay::getSize() const
+Size LandOverlay::getSize() const
 {
-  return _size;
+  return _d->size;
 }
 
 bool LandOverlay::isDeleted() const
@@ -150,11 +152,7 @@ bool LandOverlay::isDeleted() const
 
 Picture& LandOverlay::getPicture()
 {
-  if (_picture == NULL)
-  {
-     THROW("Picture is NULL!");
-  }
-  return *_picture;
+  return _d->picture;
 }
 
 std::vector<Picture*>& LandOverlay::getForegroundPictures()
@@ -164,25 +162,25 @@ std::vector<Picture*>& LandOverlay::getForegroundPictures()
 
 std::string LandOverlay::getName()
 {
-  return _name;
+  return _d->name;
 }
 
 void LandOverlay::save( VariantMap& stream ) const
 {
   stream[ "pos" ] = getTile().getIJ();
   stream[ "buildingType" ] = (int)_d->buildingType;
-  stream[ "picture" ] = Variant( _picture ? _picture->getName() : std::string( "" ) );   
-  stream[ "size" ] = _size;
+  stream[ "picture" ] = Variant( _d->picture.getName() );   
+  stream[ "size" ] = _d->size;
   stream[ "isDeleted" ] = _isDeleted;
-  stream[ "name" ] = Variant( _name );
+  stream[ "name" ] = Variant( _d->name );
 }
 
 void LandOverlay::load( const VariantMap& stream )
 {
-  _name = stream.get( "name" ).toString();
+  _d->name = stream.get( "name" ).toString();
   _d->buildingType = (BuildingType)stream.get( "buildingType" ).toInt();
-  _picture = &Picture::load( stream.get( "picture" ).toString() + ".png" );
-  _size = stream.get( "size" ).toInt();
+  _d->picture = Picture::load( stream.get( "picture" ).toString() + ".png" );
+  _d->size = stream.get( "size" ).toSize();
   _isDeleted = stream.get( "isDeleted" ).toBool();
 }
 
@@ -197,6 +195,16 @@ TilePos LandOverlay::getTilePos() const
   return _master_tile ? _master_tile->getIJ() : TilePos( -1, -1 );
 }
 
+void LandOverlay::setName( const std::string& name )
+{
+  _d->name = name;
+}
+
+void LandOverlay::setSize( const Size& size )
+{
+  _d->size = size;
+}
+
 Construction::Construction( const BuildingType type, const Size& size)
 : LandOverlay( type, size )
 {
@@ -209,10 +217,10 @@ bool Construction::canBuild( const TilePos& pos ) const
   bool is_constructible = true;
 
   //return area for available tiles
-  PtrTilesArea rect = tilemap.getFilledRectangle( pos, Size( _size ) );
+  PtrTilesArea rect = tilemap.getFilledRectangle( pos, getSize() );
 
   //on over map size
-  if( rect.size() != _size * _size )
+  if( rect.size() != getSize().getArea() )
     return false;
 
   for( PtrTilesArea::iterator itTiles = rect.begin(); 
@@ -250,7 +258,7 @@ void Construction::_updateDesirabilityInfluence( const DsbrlUpdate type )
   for( int curRange=1; curRange <= dsrblRange; curRange++ )
   {
     PtrTilesArea perimetr = tilemap.getRectangle( getTilePos() - TilePos( curRange, curRange ), 
-                                                  getTilePos() + TilePos( curRange - 1 + getSize(), curRange - 1 + getSize() ) );
+                                                  getSize() + Size( 2 * curRange - 1 ) );
 
     for( PtrTilesArea::iterator it=perimetr.begin(); it != perimetr.end(); it++ )
     {
@@ -280,8 +288,7 @@ void Construction::computeAccessRoads()
 
   int maxDst2road = getMaxDistance2Road();
   PtrTilesList rect = tilemap.getRectangle( _master_tile->getIJ() + TilePos( -maxDst2road, -maxDst2road ),
-                                                _master_tile->getIJ() + TilePos( _size + maxDst2road - 1, _size + maxDst2road - 1 ), 
-                                                !Tilemap::checkCorners );
+                                            getSize() + Size( 2 * maxDst2road ), !Tilemap::checkCorners );
   for( PtrTilesList::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {
     Tile* tile = *itTiles;

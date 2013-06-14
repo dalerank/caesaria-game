@@ -104,7 +104,7 @@ void WarehouseTile::computePicture()
 Warehouse::Warehouse() : WorkingBuilding( B_WAREHOUSE, Size( 3 ))
 {
    // _name = _("Entrepot");
-  _picture = &Picture::load( ResourceGroup::warehouse, 19);
+  setPicture( Picture::load( ResourceGroup::warehouse, 19) );
   _fgPictures.resize(12);  // 8 tiles + 4
 
   _animation.load( ResourceGroup::warehouse, 2, 16 );

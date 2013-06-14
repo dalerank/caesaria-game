@@ -69,17 +69,8 @@ int Screen::run()
 
      // sets a fix frameRate
      currentclock = DateTime::getElapsedTime();
-     long delay = ref_delay - (currentclock - lastclock);
-     if( delay < 0 )
-     {
-        // std::cout << "frame takes too much time! " << currentclock - lastclock << std::endl;
-        delay = 0;
-     }
-     // FIX: game spontanous hangs
-     else if (delay > ref_delay)
-     {
-       delay = ref_delay;
-     }
+     unsigned int delay = math::clamp<int>( ref_delay - (currentclock - lastclock), 0, ref_delay );
+     
      lastclock = currentclock;
      engine.delay( delay );
   }

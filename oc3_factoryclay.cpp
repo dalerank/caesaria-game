@@ -21,7 +21,7 @@
 FactoryClay::FactoryClay() : Factory(G_NONE, G_CLAY, B_CLAY_PIT, Size(2) )
 {
   _setProductRate( 9.6f );
-  _picture = &Picture::load( ResourceGroup::commerce, 61 );
+  setPicture( Picture::load( ResourceGroup::commerce, 61 ) );
 
   _animation.load( ResourceGroup::commerce, 62, 10);
   _animation.setFrameDelay( 3 );
@@ -54,7 +54,7 @@ bool FactoryClay::canBuild(const TilePos& pos ) const
   bool near_water = false;
 
   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-  PtrTilesList rect = tilemap.getRectangle( pos + TilePos( -1, -1), Size( _size + 2 ), Tilemap::checkCorners );
+  PtrTilesList rect = tilemap.getRectangle( pos + TilePos( -1, -1), getSize() + Size( 2 ), Tilemap::checkCorners );
   for( PtrTilesList::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles )
   {
     near_water |= (*itTiles)->getTerrain().isWater();
