@@ -47,12 +47,15 @@ public:
   TilePos getTilePos() const;
   Size getSize() const;  // size in tiles (1=1x1, 2=2x2, ...)
   void setSize( const Size& size );
+  
   bool isDeleted() const;  // returns true if the overlay should be forgotten
   void deleteLater();
+  
   virtual bool isWalkable() const;
   virtual void setTerrain( TerrainTile& terrain ) = 0;
   virtual void build( const TilePos& pos );
-  virtual void destroy();  // handles the walkers
+  virtual void destroy();  // handles the delete
+  virtual Point getOffset( const Point& subpos ) const;
 
   // graphic
   void setPicture(Picture &picture);

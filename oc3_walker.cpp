@@ -292,7 +292,11 @@ void Walker::walk()
       // if (amount != 0) std::cout << "walker remaining step :" << amount << std::endl;
    }
 
-   _d->posOnMap = Point( _d->pos.getI(), _d->pos.getJ() )*15 + _d->tileOffset;
+   Point overlayOffset = tile.getTerrain().getOverlay().isValid() 
+                              ? tile.getTerrain().getOverlay()->getOffset( _d->tileOffset ) 
+                              : Point( 0, 0 );
+
+   _d->posOnMap = Point( _d->pos.getI(), _d->pos.getJ() )*15 + _d->tileOffset + overlayOffset;
 }
 
 

@@ -890,10 +890,10 @@ void EditBox::beforeDraw( GfxEngine& painter )
 
 	    {
 		    wchar_t lastChar = _d->cursorPos-startPos > 0 ? txtLine->at( _d->cursorPos-startPos-1 ) : 0;
-		    charcursorpos = _d->lastBreakFont.getSize( stringBeforeCursor ).getWidth() + 4/*font.GetKerningWidth(L"_", lastChar ? &lastChar : NULL )*/ ;
+		    charcursorpos = _d->lastBreakFont.getSize( stringBeforeCursor ).getWidth() + 1/*font.GetKerningWidth(L"_", lastChar ? &lastChar : NULL )*/ ;
 	    }
 
-      setTextRect(cursorLine, "_" );
+      setTextRect(cursorLine);
       _d->cursorRect = _d->currentTextRect;
       _d->cursorRect.UpperLeftCorner += Point( charcursorpos + 1, 0 );
       _d->cursorRect.LowerRightCorner = _d->cursorRect.UpperLeftCorner + Point( 1, getHeight() );

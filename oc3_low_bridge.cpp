@@ -24,6 +24,7 @@
 class LowBridgeSubTile : public Construction
 {
 public:
+  typedef enum { liftingSE=67, spanSE=68, descentSE=69, liftingSW=70, spanSW=71, descentSW=72 };
   LowBridgeSubTile( const TilePos& pos, int index )
     : Construction( B_LOW_BRIDGE, Size( 1 ) )
   {
@@ -65,6 +66,21 @@ public:
     if( _parent )
     {
       _parent->deleteLater();
+    }
+  }
+
+  Point getOffset( const Point& subpos ) const
+  {
+    switch( _index )
+    {
+    case liftingSE: return Point( 0, subpos.getX() );
+    case spanSE:    return Point( 0, 10 );
+    case descentSE: return Point( 0, 10 - subpos.getX() );
+    case descentSW: return Point( -subpos.getY(), 0 );
+    case spanSW:    return Point( -10, 0 );
+    case liftingSW: return Point( -(10 - subpos.getY()), 0 );
+
+    default: return Point( 0, 0 );
     }
   }
 
@@ -137,12 +153,12 @@ void LowBridge::_computePictures( const TilePos& startPos, const TilePos& endPos
       tiles.pop_back();
       tiles.pop_front();
 
-      _d->addSpan( tiles.front()->getIJ() - startPos - TilePos( 1, 0 ), 67 );
+      _d->addSpan( tiles.front()->getIJ() - startPos - TilePos( 1, 0 ), LowBridgeSubTile::liftingSE );
       for( PtrTilesArea::iterator it=tiles.begin(); it != tiles.end(); it++ )
       {
-        _d->addSpan( (*it)->getIJ() - startPos, 68 );
+        _d->addSpan( (*it)->getIJ() - startPos, LowBridgeSubTile::spanSE );
       }
-      _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 1, 0 ), 69 );     
+      _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 1, 0 ), LowBridgeSubTile::descentSE );     
     }
   break;
 
@@ -153,12 +169,12 @@ void LowBridge::_computePictures( const TilePos& startPos, const TilePos& endPos
       tiles.pop_back();
       tiles.pop_front();
 
-      _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 0, 1 ), 70 );
+      _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 0, 1 ), LowBridgeSubTile::liftingSW );
       for( PtrTilesArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
       {
-        _d->addSpan( (*it)->getIJ() - startPos, 71 );
+        _d->addSpan( (*it)->getIJ() - startPos, LowBridgeSubTile::spanSW );
       }
-      _d->addSpan( tiles.front()->getIJ() - startPos - TilePos( 0, 1 ), 72 );    
+      _d->addSpan( tiles.front()->getIJ() - startPos - TilePos( 0, 1 ), LowBridgeSubTile::descentSW );    
     }
     break;
 
@@ -172,13 +188,13 @@ void LowBridge::_computePictures( const TilePos& startPos, const TilePos& endPos
       tiles.pop_back();
       tiles.pop_front();
 
-      _d->addSpan( tiles.front()->getIJ() - startPos - TilePos( 1, 0 ), 67 );
+      _d->addSpan( tiles.front()->getIJ() - startPos - TilePos( 1, 0 ), LowBridgeSubTile::liftingSE );
       for( PtrTilesArea::iterator it=tiles.begin(); it != tiles.end(); it++ )
       {        
-        _d->addSpan( (*it)->getIJ() - startPos, 68 );
+        _d->addSpan( (*it)->getIJ() - startPos, LowBridgeSubTile::spanSE );
         //_d->subtiles.push_back( LowBridgeSubTile( (*it)->getIJ() - startPos, water ) );
       }
-      _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 1, 0 ), 69 );
+      _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 1, 0 ), LowBridgeSubTile::descentSE );
     }
   break;
 
@@ -192,13 +208,13 @@ void LowBridge::_computePictures( const TilePos& startPos, const TilePos& endPos
       tiles.pop_back();
       tiles.pop_front();
 
-      _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 0, 1 ), 70 );
+      _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 0, 1 ), LowBridgeSubTile::liftingSW );
       for( PtrTilesArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
       {        
-        _d->addSpan( (*it)->getIJ() - startPos, 71 );
+        _d->addSpan( (*it)->getIJ() - startPos, LowBridgeSubTile::spanSW );
         //_d->subtiles.push_back( LowBridgeSubTile( (*it)->getIJ() - startPos, water ) );
       }
-      _d->addSpan( tiles.front()->getIJ() - startPos - TilePos( 0, 1 ), 72 );
+      _d->addSpan( tiles.front()->getIJ() - startPos - TilePos( 0, 1 ), LowBridgeSubTile::descentSW );
     }
   break;
 
