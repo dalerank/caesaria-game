@@ -31,7 +31,7 @@ public:
     _index = index;
 
     _picture = Picture::load( ResourceGroup::transport, index );
-    _picture.addOffset(30*(_pos.getI()+_pos.getJ()), 15*(_pos.getJ()-_pos.getI()));
+    _picture.addOffset(30*(_pos.getI()+_pos.getJ()), 15*(_pos.getJ()-_pos.getI()) - 10);
   }
 
   ~LowBridgeSubTile()
@@ -48,7 +48,9 @@ public:
     Construction::build( pos );
     _fgPictures.clear();
     _pos = pos;
-    _fgPictures.push_back( &Picture::load( ResourceGroup::transport, _index ) );
+    _picture = Picture::load( ResourceGroup::transport, _index );
+    _picture.addOffset( 10, -10 );
+    _fgPictures.push_back( &_picture );
   }
 
   void setTerrain( TerrainTile& terrain )
@@ -140,13 +142,7 @@ void LowBridge::_computePictures( const TilePos& startPos, const TilePos& endPos
       {
         _d->addSpan( (*it)->getIJ() - startPos, 68 );
       }
-      _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 1, 0 ), 69 );
-      //_d->subtiles.push_back( LowBridgeSubTile( tiles.back()->getIJ() - pos + TilePos( 1, 0 ), tile.getPicture() ) );
-
-      for( LowBridgeSubTiles::iterator it=_d->subtiles.begin(); it != _d->subtiles.end(); it++ )
-      {
-        _fgPictures.push_back( &(*it)->_picture );
-      }
+      _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 1, 0 ), 69 );     
     }
   break;
 
@@ -162,14 +158,7 @@ void LowBridge::_computePictures( const TilePos& startPos, const TilePos& endPos
       {
         _d->addSpan( (*it)->getIJ() - startPos, 71 );
       }
-      _d->addSpan( tiles.front()->getIJ() - startPos - TilePos( 0, 1 ), 72 );
-      
-      //_d->subtiles.push_back( LowBridgeSubTile( tiles.back()->getIJ() - pos + TilePos( 1, 0 ), tile.getPicture() ) );
-
-      for( LowBridgeSubTiles::iterator it=_d->subtiles.begin(); it != _d->subtiles.end(); it++ )
-      {
-        _fgPictures.push_back( &(*it)->_picture );
-      }
+      _d->addSpan( tiles.front()->getIJ() - startPos - TilePos( 0, 1 ), 72 );    
     }
     break;
 
@@ -190,12 +179,6 @@ void LowBridge::_computePictures( const TilePos& startPos, const TilePos& endPos
         //_d->subtiles.push_back( LowBridgeSubTile( (*it)->getIJ() - startPos, water ) );
       }
       _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 1, 0 ), 69 );
-      //_d->subtiles.push_back( LowBridgeSubTile( tiles.back()->getIJ() - pos + TilePos( 1, 0 ), tile.getPicture() ) );
-
-      for( LowBridgeSubTiles::iterator it=_d->subtiles.begin(); it != _d->subtiles.end(); it++ )
-      {
-        _fgPictures.push_back( &(*it)->_picture );
-      }
     }
   break;
 
@@ -216,18 +199,16 @@ void LowBridge::_computePictures( const TilePos& startPos, const TilePos& endPos
         //_d->subtiles.push_back( LowBridgeSubTile( (*it)->getIJ() - startPos, water ) );
       }
       _d->addSpan( tiles.front()->getIJ() - startPos - TilePos( 0, 1 ), 72 );
-      
-      //_d->subtiles.push_back( LowBridgeSubTile( tiles.back()->getIJ() - pos + TilePos( 1, 0 ), tile.getPicture() ) );
-
-      for( LowBridgeSubTiles::iterator it=_d->subtiles.begin(); it != _d->subtiles.end(); it++ )
-      {
-        _fgPictures.push_back( &(*it)->_picture );
-      }
     }
   break;
 
   default:
   break;
+  }
+
+  for( LowBridgeSubTiles::iterator it=_d->subtiles.begin(); it != _d->subtiles.end(); it++ )
+  {
+    _fgPictures.push_back( &(*it)->_picture );
   }
 }
 
