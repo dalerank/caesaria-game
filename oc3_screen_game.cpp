@@ -65,6 +65,7 @@ public:
   void showEmpireMapWindow();
   void showAdvisorsWindow( const int advType );
   void showAdvisorsWindow();
+  void showTradeAdvisorWindow();
   void resolveCreateConstruction( int type );
   void resolveSelectOverlayView( int type );
   void resolveRemoveTool();
@@ -163,11 +164,6 @@ void ScreenGame::Impl::resolveGameSave( std::string filename )
   ScenarioSaver scnSaver( Scenario::instance() );
 
   scnSaver.save( filename );
-}
-
-void ScreenGame::Impl::showEmpireMapWindow()
-{  
-  EmpireMapWindow* emap = EmpireMapWindow::create( gui->getRootWidget(), -1 );
 }
 
 TilemapArea& ScreenGame::getMapArea()
@@ -320,6 +316,37 @@ void ScreenGame::Impl::showAdvisorsWindow()
 }
 
 void ScreenGame::Impl::showAdvisorsWindow( const int advType )
+{  
+  List<AdvisorsWindow*> wndList = gui->getRootWidget()->findChildren<AdvisorsWindow*>();
+
+  if( wndList.size() == 1 )
+  {
+    wndList.front()->bringToFront();
+    wndList.front()->showAdvisor( (AdvisorType)advType ); 
+  }
+  else
+  {
+    AdvisorsWindow* advWnd = AdvisorsWindow::create( gui->getRootWidget(), -1, (AdvisorType)advType );
+    CONNECT( advWnd, onEmpireMapRequest(), this, Impl::showEmpireMapWindow ); 
+  }
+}
+
+void ScreenGame::Impl::showTradeAdvisorWindow()
 {
-  AdvisorsWindow* advWnd = AdvisorsWindow::create( gui->getRootWidget(), -1, (AdvisorType)advType );
+  showAdvisorsWindow( ADV_TRADING );
+}
+
+void ScreenGame::Impl::showEmpireMapWindow()
+{  
+  List<EmpireMapWindow*> wndList = gui->getRootWidget()->findChildren<EmpireMapWindow*>();
+
+  if( wndList.size() == 1 )
+  {
+    wndList.front()->bringToFront();
+  }
+  else
+  {
+    EmpireMapWindow* emap = EmpireMapWindow::create( gui->getRootWidget(), -1 );
+    CONNECT( emap, onTradeAdvisorRequest(), this, Impl::showTradeAdvisorWindow ); 
+  }  
 }

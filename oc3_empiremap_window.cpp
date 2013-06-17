@@ -89,8 +89,11 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
   _d->centerPicture = Picture::load( "empire_panels", 9 );
 
   _d->btnHelp = new TexturedButton( this, Point( 20, getHeight() - 44 ), Size( 24 ), -1, 528 );
-  _d->btnHelp = new TexturedButton( this, Point( getWidth() - 44, getHeight() - 44 ), Size( 24 ), -1, 533 );
+  _d->btnExit = new TexturedButton( this, Point( getWidth() - 44, getHeight() - 44 ), Size( 24 ), -1, 533 );
   _d->btnTrade = new TexturedButton( this, Point( getWidth() - 48, getHeight() - 100), Size( 28 ), -1, 292 );
+
+  CONNECT( _d->btnExit, onClicked(), this, EmpireMapWindow::deleteLater );
+  CONNECT( _d->btnTrade, onClicked(), this, EmpireMapWindow::deleteLater );
 }
 
 void EmpireMapWindow::draw( GfxEngine& engine )
@@ -172,4 +175,9 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
 EmpireMapWindow* EmpireMapWindow::create( Widget* parent, int id )
 {
   return new EmpireMapWindow( parent, id );
+}
+
+Signal0<>& EmpireMapWindow::onTradeAdvisorRequest()
+{
+  return _d->btnTrade->onClicked(); 
 }

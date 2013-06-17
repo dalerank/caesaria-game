@@ -18,6 +18,7 @@
 
 #include "oc3_widget.hpp"
 #include "oc3_enums.hpp"
+#include "oc3_signals.hpp"
 
 class PushButton;
 
@@ -32,6 +33,9 @@ public:
   void showAdvisor( const AdvisorType type );
 
   bool onEvent(const NEvent& event);
+
+oc3_signals public:
+  Signal0<>& onEmpireMapRequest();
 
 protected:
   class Impl;

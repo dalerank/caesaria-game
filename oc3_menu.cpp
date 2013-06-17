@@ -75,9 +75,9 @@ oc3_signals public:
   Signal1< int > onCreateConstructionSignal;
   Signal0<> onRemoveToolSignal;
   Signal0<> onMaximizeSignal;
-  Signal0<> onEmpireMapShowSignal;
-  Signal0<> onAdvisorsWndShowSignal;
-  Signal0<> onSwitchAlarmSignal;
+  //Signal0<> onEmpireMapShowSignal;
+  //Signal0<> onAdvisorsWndShowSignal;
+  //Signal0<> onSwitchAlarmSignal;
 };
 
 Signal1< int >& Menu::onCreateConstruction()
@@ -546,9 +546,9 @@ ExtentMenu::ExtentMenu( Widget* parent, TilemapRenderer& tmap, int id, const Rec
   _d->overlaysButton->setTooltipText( _("##ovrm_tooltip##") );
   
   CONNECT( _d->overlaysButton, onClicked(), this, ExtentMenu::toggleOverlays );
-  CONNECT( _d->empireButton, onClicked(), &_d->onEmpireMapShowSignal, Signal0<>::emit );
-  CONNECT( _d->senateButton, onClicked(), &_d->onAdvisorsWndShowSignal, Signal0<>::emit );
-  CONNECT( _d->disasterButton, onClicked(), &_d->onSwitchAlarmSignal, Signal0<>::emit );
+  //CONNECT( _d->empireButton, onClicked(), &_d->onEmpireMapShowSignal, Signal0<>::emit );
+  //CONNECT( _d->senateButton, onClicked(), &_d->onAdvisorsWndShowSignal, Signal0<>::emit );
+  //CONNECT( _d->disasterButton, onClicked(), &_d->onSwitchAlarmSignal, Signal0<>::emit );
 }
 
 bool ExtentMenu::onEvent(const NEvent& event)
@@ -661,17 +661,17 @@ Signal1<int>& ExtentMenu::onSelectOverlayType()
 
 Signal0<>& ExtentMenu::onEmpireMapShow()
 {
-  return _d->onEmpireMapShowSignal;
+  return _d->empireButton->onClicked();// onEmpireMapShowSignal;
 }
 
 Signal0<>& ExtentMenu::onAdvisorsWindowShow()
 {
-  return _d->onAdvisorsWndShowSignal;
+  return _d->senateButton->onClicked();//onAdvisorsWndShowSignal;
 }
 
 Signal0<>& ExtentMenu::onSwitchAlarm()
 {
-  return _d->onSwitchAlarmSignal;
+  return _d->disasterButton->onClicked(); //onSwitchAlarmSignal;
 }
 
 void ExtentMenu::setAlarmEnabled( bool enabled )
