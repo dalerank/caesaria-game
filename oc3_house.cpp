@@ -534,7 +534,7 @@ void House::_update()
 {
     int picId = ( _d->houseId == smallHovel && _d->currentHabitants == 0 ) ? 45 : (_d->houseId + _d->picIdOffset); 
     setPicture( Picture::load( ResourceGroup::housing, picId ) );
-    setSize( Size( ( getPicture().getWidth() + 2) / 60 ) );
+    setSize( Size( (getPicture().getWidth() + 2 ) / 60 ) );
     _d->maxHabitants = _d->houseLevelSpec->getMaxHabitantsByTile() * getSize().getArea();
 }
 
