@@ -51,7 +51,6 @@ namespace fs = boost::filesystem;
 class CaesarApp::Impl
 {
 public:
-  Scenario*  scenario;
   ScreenType nextScreen;
   GfxEngine* engine;
   GuiEnv* gui;
@@ -134,19 +133,18 @@ void CaesarApp::Impl::initPictures(const std::string &resourcePath)
 bool CaesarApp::Impl::load(const std::string &gameFile)
 {
   std::cout << "load game begin" << std::endl;
-
-  scenario = new Scenario();
   
-  bool loadok = ScenarioLoader::getInstance().load(gameFile, *scenario);   
+  Scenario& scenario = Scenario::instance();
+
+  bool loadok = ScenarioLoader::getInstance().load(gameFile, scenario);   
 
   if( !loadok )
   {
-    delete scenario;
     std::cout << "LOADING ERROR: can't load game from " << gameFile << std::endl;
     return false;
   }  
 
-  City &city = scenario->getCity();
+  City &city = scenario.getCity();
   
   LandOverlays llo = city.getOverlayList();
   
@@ -161,7 +159,7 @@ bool CaesarApp::Impl::load(const std::string &gameFile)
      }
   }
 
-  Pathfinder::getInstance().update( scenario->getCity().getTilemap() );  
+  Pathfinder::getInstance().update( scenario.getCity().getTilemap() );  
   
   std::cout << "load game end" << std::endl;
   return true;
@@ -246,7 +244,7 @@ void CaesarApp::setScreenMenu()
 void CaesarApp::setScreenGame()
 {
   ScreenGame screen;
-  screen.setScenario(*_d->scenario);
+  screen.setScenario( Scenario::instance() );
   screen.initialize( *_d->engine, *_d->gui );
   int result = screen.run();
 
@@ -268,7 +266,6 @@ void CaesarApp::setScreenGame()
 
 CaesarApp::CaesarApp() : _d( new Impl )
 {
-   _d->scenario = NULL;
    _d->nextScreen = SCREEN_NONE;
 }
 

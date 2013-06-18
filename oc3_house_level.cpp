@@ -34,7 +34,7 @@ int HouseLevelSpec::getHouseLevel()
    return _houseLevel;
 }
 
-std::string& HouseLevelSpec::getLevelName()
+const std::string& HouseLevelSpec::getLevelName() const
 {
    return _levelName;
 }
@@ -484,10 +484,16 @@ int HouseLevelSpec::computeMonthlyConsumption(House &house, const GoodType goodT
    return res;
 }
 
+const std::string& HouseLevelSpec::getInternalName() const
+{
+  return _internalName;
+}
+
 class HouseSpecHelper::Impl
 {
 public:
-  std::map<int, HouseLevelSpec> spec_by_level;  // key=houseLevel, value=houseLevelSpec
+  typedef std::map<int, HouseLevelSpec> HouseLevels;
+  HouseLevels spec_by_level;  // key=houseLevel, value=houseLevelSpec
   std::map<int, int> level_by_id;  // key=houseId, value=houseLevel
 };
 
@@ -566,6 +572,19 @@ int HouseSpecHelper::getHouseLevel(const int houseId)
   return _d->level_by_id[houseId];
 }
 
+int HouseSpecHelper::getHouseLevel( const std::string& name )
+{
+  for( Impl::HouseLevels::iterator it=_d->spec_by_level.begin(); it != _d->spec_by_level.end(); it++ )
+  {
+    if( (*it).second.getInternalName() == name )
+    {
+      return (*it).second.getHouseLevel();
+    }
+  }
+
+  return 0;
+}
+
 HouseSpecHelper::~HouseSpecHelper()
 {
 
@@ -589,6 +608,7 @@ void HouseSpecHelper::initialize( const std::string& filename )
 
     HouseLevelSpec spec;
     spec._houseLevel = hSpec.get( "level" ).toInt();
+    spec._internalName = (*it).first;
     spec._levelName = hSpec.get( "title" ).toString();
     spec._maxHabitantsByTile = hSpec.get( "habitants" ).toInt();
     spec._midDesirability = hSpec.get( "minDesirability" ).toInt();  // min desirability

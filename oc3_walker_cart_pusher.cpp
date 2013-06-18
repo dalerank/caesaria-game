@@ -25,6 +25,7 @@
 #include "oc3_warehouse.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_factory_building.hpp"
 
 class CartPusher::Impl
 {

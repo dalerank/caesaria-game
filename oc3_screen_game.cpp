@@ -39,7 +39,8 @@
 #include "oc3_save_dialog.hpp"
 #include "oc3_advisors_window.hpp"
 #include "oc3_alarm_event_holder.hpp"
-//#include "oc3_popup_messagebox.hpp"
+#include "oc3_tilemap_renderer.hpp"
+#include "oc3_scenario.hpp"
 
 class ScreenGame::Impl
 {
@@ -102,11 +103,11 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
 
   _d->topMenu = TopMenu::create( gui.getRootWidget(), topMenuHeight );
 
-  _d->menu = Menu::create( gui.getRootWidget(), -1 );
+  _d->menu = Menu::create( gui.getRootWidget(), -1, _d->scenario->getCity() );
   _d->menu->setPosition( Point( engine.getScreenWidth() - _d->menu->getWidth() - _d->rightPanel->getWidth(), 
                                  _d->topMenu->getHeight() ) );
 
-  _d->extMenu = ExtentMenu::create( gui.getRootWidget(), _d->guiTilemap, -1 );
+  _d->extMenu = ExtentMenu::create( gui.getRootWidget(), _d->guiTilemap, -1, _d->scenario->getCity() );
   _d->extMenu->setPosition( Point( engine.getScreenWidth() - _d->extMenu->getWidth() - _d->rightPanel->getWidth(), 
                                      _d->topMenu->getHeight() ) );
 

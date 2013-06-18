@@ -21,6 +21,10 @@
 #include "oc3_constructionmanager.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_saveadapter.hpp"
+#include "oc3_scenario_loader.hpp"
+#include "oc3_win_targets.hpp"
+#include "oc3_build_options.hpp"
+#include "oc3_building_data.hpp"
 
 class ScenarioOc3MissionLoader::Impl
 {
@@ -41,7 +45,25 @@ bool ScenarioOc3MissionLoader::load( const std::string& filename, Scenario& oSce
   {
     std::string mapToLoad = vm[ "map" ].toString();
 
-    //oScenario.getCity().load(  );
+    ScenarioLoader::getInstance().load( mapToLoad, oScenario );
+    City& city = oScenario.getCity();
+    city.setFunds( vm[ "funds" ].toInt() );
+    city.setDate( vm[ "date" ].toDateTime() );
+
+    oScenario.getWinTargets().load( vm[ "targets" ].toMap() );
+
+    CityBuildOptions& boptions = city.getBuildOptions();
+    VariantList saveOptions = vm[ "buildoptions" ].toList();
+    boptions.clear();
+    boptions.setIndustryAvaible( BM_FARM, false );
+    boptions.setIndustryAvaible( BM_RAW_MATERIAL, false );
+    boptions.setIndustryAvaible( BM_FACTORY, false );
+
+    for( VariantList::iterator it = saveOptions.begin(); it != saveOptions.end(); it++ )
+    {
+      BuildingType btype = BuildingDataHolder::getType( (*it).toString() );
+      boptions.setBuildingAvailble( btype, true );
+    }
 
     return true;
   }
@@ -51,5 +73,5 @@ bool ScenarioOc3MissionLoader::load( const std::string& filename, Scenario& oSce
 
 bool ScenarioOc3MissionLoader::isLoadableFileExtension( const std::string& filename )
 {
-  return filename.substr( filename.size() - 8 ) == ".oc3mission";
+  return filename.substr( filename.size() - 11 ) == ".oc3mission";
 }

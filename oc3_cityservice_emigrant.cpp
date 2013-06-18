@@ -19,6 +19,7 @@
 #include "oc3_emigrant.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_road.hpp"
+#include "oc3_house.hpp"
 #include "oc3_tile.hpp"
 
 CityServicePtr CityServiceEmigrant::create( City& city )

@@ -18,44 +18,50 @@
 
 #include "oc3_widget.hpp"
 #include "oc3_enums.hpp"
-#include "oc3_signals.hpp"
-#include "oc3_scopedptr.hpp"
 
 class PushButton;
+class CityBuildOptions;
 
 class BuildMenu : public Widget
 {
 public:
-    static const int subMenuCreateIdHigh = 0x1000;
+  static const int subMenuCreateIdHigh = 0x1000;
 
-    BuildMenu( Widget* parent, const Rect& rectangle, int id );
-    virtual void addButtons() = 0;
-    virtual ~BuildMenu();
-    void init();
+  BuildMenu( Widget* parent, const Rect& rectangle, int id );
+  virtual ~BuildMenu();
 
-    static BuildMenu* getMenuInstance(const BuildMenuType menuType, Widget* parent);
+  static BuildMenu* create( const BuildMenuType menuType, 
+                            Widget* parent );
 
-    // add the subMenu in the menu.
-    void addSubmenuButton(const BuildMenuType menuType, const std::string &text);
-    // add the button in the menu.
-    void addBuildButton(const BuildingType buildingType);
+  // add the subMenu in the menu.
+  void addSubmenuButton(const BuildMenuType menuType, const std::string &text);
 
-    bool isPointInside(const Point& point) const;
+  // add the button in the menu.
+  void addBuildButton(const BuildingType buildingType);
+
+  bool isPointInside(const Point& point) const;
+
+  virtual void initialize();
+
+  void setBuildOptions( CityBuildOptions* options );
+
+protected:
+  CityBuildOptions* _options;
 };
 
 class BuildMenu_water : public BuildMenu
 {
 public:
-    BuildMenu_water( Widget* parent, const Rect& rectangle );
-    void addButtons();
+  BuildMenu_water( Widget* parent, const Rect& rectangle );
+  void initialize();
 };
 
 
 class BuildMenu_security : public BuildMenu
 {
 public:
-    BuildMenu_security( Widget* parent, const Rect& rectangle );
-    void addButtons();
+  BuildMenu_security( Widget* parent, const Rect& rectangle );
+  void initialize();
 };
 
 
@@ -63,7 +69,7 @@ class BuildMenu_education : public BuildMenu
 {
 public:
     BuildMenu_education( Widget* parent, const Rect& rectangle );
-    void addButtons();
+    void initialize();
 };
 
 
@@ -71,7 +77,7 @@ class BuildMenu_health : public BuildMenu
 {
 public:
     BuildMenu_health( Widget* parent, const Rect& rectangle );
-    void addButtons();
+    void initialize();
 };
 
 
@@ -79,7 +85,7 @@ class BuildMenu_engineering : public BuildMenu
 {
 public:
     BuildMenu_engineering( Widget* parent, const Rect& rectangle );
-    void addButtons();
+    void initialize();
 };
 
 
@@ -87,7 +93,7 @@ class BuildMenu_administration : public BuildMenu
 {
 public:
     BuildMenu_administration( Widget* parent, const Rect& rectangle );
-    void addButtons();
+    void initialize();
 };
 
 
@@ -95,7 +101,7 @@ class BuildMenu_entertainment : public BuildMenu
 {
 public:
     BuildMenu_entertainment( Widget* parent, const Rect& rectangle );
-    void addButtons();
+    void initialize();
 };
 
 
@@ -103,7 +109,7 @@ class BuildMenu_commerce : public BuildMenu
 {
 public:
     BuildMenu_commerce( Widget* parent, const Rect& rectangle );
-    void addButtons();
+    void initialize();
 };
 
 
@@ -111,7 +117,7 @@ class BuildMenu_farm : public BuildMenu
 {
 public:
     BuildMenu_farm( Widget* parent, const Rect& rectangle );
-    void addButtons();
+    void initialize();
 };
 
 
@@ -119,7 +125,7 @@ class BuildMenu_raw_factory : public BuildMenu
 {
 public:
     BuildMenu_raw_factory( Widget* parent, const Rect& rectangle );
-    void addButtons();
+    void initialize();
 };
 
 
@@ -127,28 +133,28 @@ class BuildMenu_factory : public BuildMenu
 {
 public:
     BuildMenu_factory( Widget* parent, const Rect& rectangle );
-    void addButtons();
+    void initialize();
 };
 
 class BuildMenu_religion: public BuildMenu
 {
 public:
     BuildMenu_religion( Widget* parent, const Rect& rectangle );
-    void addButtons();
+    void initialize();
 };
 
 class BuildMenu_temple : public BuildMenu
 {
 public:
     BuildMenu_temple( Widget* parent, const Rect& rectangle );
-    void addButtons();
+    void initialize();
 };
 
 class BuildMenu_bigtemple : public BuildMenu
 {
 public:
     BuildMenu_bigtemple( Widget* parent, const Rect& rectangle );
-    void addButtons();
+    void initialize();
 };
 
 

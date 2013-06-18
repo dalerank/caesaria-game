@@ -13,39 +13,30 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_TOPMENU_H_INCLUDE_
-#define __OPENCAESAR3_TOPMENU_H_INCLUDE_
 
-#include "oc3_mainmenu.hpp"
+#ifndef __OPENCAESAR3_WIN_TARGETS_H_INCLUDED__
+#define __OPENCAESAR3_WIN_TARGETS_H_INCLUDED__
+
+#include "oc3_referencecounted.hpp"
+#include "oc3_smartptr.hpp"
 #include "oc3_scopedptr.hpp"
 
-class DateTime;
+class VariantMap;
 
-class TopMenu : public MainMenu
+class CityWinTargets : public ReferenceCounted
 {
 public:
-  static TopMenu* create( Widget* parent, const int height );
+  CityWinTargets();
+  ~CityWinTargets();
 
-  // draw on screen
-  void draw( GfxEngine& engine );
-  //bool onEvent(const NEvent& event);
+  void setMaxHouseLevel( const int level );
+  bool isSuccess() const;
 
-  void setFunds( int value );
-  void setPopulation( int value );
-  void setDate( const DateTime& time );
-
-oc3_signals public:
-  Signal0<>& onExit();
-  Signal0<>& onSave();
-  Signal0<>& onEnd();
-  Signal0<>& onLoad();
-  Signal1<int>& onRequestAdvisor();
+  void load( const VariantMap& stream );
 
 private:
-  TopMenu( Widget* parent, const int height );
-
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#endif //__OPENCAESAR3_TOPMENU_H_INCLUDE_
+#endif

@@ -30,7 +30,7 @@ public:
 
     unsigned char getHour() const;
     unsigned char getMonth() const;
-    unsigned int getYear() const;
+    int getYear() const;
     unsigned char getMinutes() const;
     unsigned char getDay() const;
     unsigned char getDayOfWeek() const;
@@ -45,7 +45,7 @@ public:
 
     DateTime( const char* strValue );
 
-    DateTime( unsigned int year, unsigned char month, unsigned char day, 
+    DateTime( int year, unsigned char month, unsigned char day, 
               unsigned char hour=0, unsigned char minute=0, unsigned char sec=0 );
 
     DateTime( const DateTime& time );
@@ -104,7 +104,7 @@ private:
     unsigned int hour;
     unsigned int day;
     unsigned int month;
-    unsigned int year;
+    int year;
 
     time_t to_time_t() const;
 

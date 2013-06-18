@@ -146,11 +146,11 @@ tm _getOsLocalTime( time_t date )
 
 DateTime& DateTime::appendMonth( int m/*=1 */ )
 {
-    int retMonth = year * 12 + month + m;
-    year = (int)retMonth / 12;
-    month = retMonth - year * 12;
+  int sumMonth = month + m;
+  int month = sumMonth % 12;
+  year += (year > 0 ? 1 : -1) * (sumMonth / 12);
 
-    return *this;
+  return *this;
 }
 
 DateTime DateTime::getDate() const
@@ -172,11 +172,11 @@ DateTime::DateTime( const DateTime& time )
 
 DateTime::DateTime( const char* strValue )
 {
-    sscanf( strValue, "y=%04d m=%02d d=%02d h=%02d mi=%02d",
-            &year, &month, &day, &hour, &minutes );
+  sscanf( strValue, "%04d.%02d.%02d:%02d.%02d.%02d",
+          &year, &month, &day, &hour, &minutes, &seconds );
 }
 
-DateTime::DateTime( unsigned int y, unsigned char m, unsigned char d, 
+DateTime::DateTime( int y, unsigned char m, unsigned char d, 
                     unsigned char h, unsigned char mm, unsigned char s )
 {
    year = y;
@@ -196,7 +196,7 @@ DateTime::DateTime()
 
 unsigned char DateTime::getHour() const {    return hour;}
 unsigned char DateTime::getMonth() const {    return month; }
-unsigned int DateTime::getYear() const {     return year; }
+int DateTime::getYear() const {     return year; }
 unsigned char DateTime::getMinutes() const {     return minutes; }
 unsigned char DateTime::getDay() const {     return day; }
 unsigned char DateTime::getSeconds() const  {     return seconds; }
@@ -272,11 +272,11 @@ DateTime DateTime::getTime() const
 unsigned int DateTime::getElapsedTime()
 {
 #ifdef _WIN32
-        return ::GetTickCount();
+  return ::GetTickCount();
 #else
-        timeval tv;
-        gettimeofday(&tv, 0);
-        return (uint32_t)(tv.tv_sec * 1000) + (tv.tv_usec / 1000);
+  timeval tv;
+  gettimeofday(&tv, 0);
+  return (uint32_t)(tv.tv_sec * 1000) + (tv.tv_usec / 1000);
 #endif
 }
 

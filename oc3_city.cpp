@@ -31,10 +31,13 @@
 #include "oc3_cityservice_timers.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_road.hpp"
+#include "oc3_time.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_walkermanager.hpp"
 #include "oc3_gettext.hpp"
+#include "oc3_build_options.hpp"
+#include "oc3_house.hpp"
 
 #include <set>
 
@@ -45,7 +48,7 @@ class City::Impl
 public:
   int population;
   long funds;  // amount of money
-  unsigned long month; // number of months since start
+  int time; // number of months since start
 
   LandOverlays overlayList;
   Walkers walkerList;
@@ -53,12 +56,13 @@ public:
   CityServices services;
   bool needRecomputeAllRoads;
   int taxRate;
-  unsigned long time;  // number of timesteps since start
+  DateTime date;  // number of timesteps since start
   TilePos roadExit;
   Tilemap tilemap;
   TilePos boatEntry;
   TilePos boatExit;
   TilePos cameraStart;
+  CityBuildOptions buildOptions;
 
   ClimateType climate;   
   UniqueId walkerIdCount;
@@ -66,15 +70,15 @@ public:
 oc3_signals public:
   Signal1<int> onPopulationChangedSignal;
   Signal1<int> onFundsChangedSignal;
-  Signal1<int> onMonthChangedSignal;
+  Signal1<const DateTime&> onMonthChangedSignal;
   Signal1<std::string> onWarningMessageSignal;
   Signal2<const TilePos&, const std::string&> onDisasterEventSignal;
 };
 
 City::City() : _d( new Impl )
 {
+  _d->date = DateTime( 0, 0, 0 ) ;
   _d->time = 0;
-  _d->month = 0;
   _d->roadEntry = TilePos( 0, 0 );
   _d->roadExit = TilePos( 0, 0 );
   _d->boatEntry = TilePos( 0, 0 );
@@ -99,7 +103,7 @@ void City::timeStep()
   if( _d->time % 110 == 1 )
   {
      // every X seconds
-     _d->month++;
+     _d->date.appendMonth( 1 );
      monthStep();
   }
 
@@ -133,7 +137,7 @@ void City::timeStep()
   {
     try
     {   
-      (*overlayIt)->timeStep(_d->time);
+      (*overlayIt)->timeStep( _d->time );
 
       if( (*overlayIt)->isDeleted() )
       {
@@ -196,7 +200,7 @@ void City::monthStep()
 {
   collectTaxes();
   _calculatePopulation();
-  _d->onMonthChangedSignal.emit( _d->month );
+  _d->onMonthChangedSignal.emit( _d->date );
 }
 
 Walkers City::getWalkerList( const WalkerType type )
@@ -218,11 +222,6 @@ Walkers City::getWalkerList( const WalkerType type )
 LandOverlays& City::getOverlayList()
 {
   return _d->overlayList;
-}
-
-unsigned long City::getTime()
-{
-  return _d->time;
 }
 
 LandOverlays City::getBuildingList(const BuildingType buildingType)
@@ -573,12 +572,12 @@ Signal1<int>& City::onFundsChanged()
   return _d->onFundsChangedSignal;
 }
 
-unsigned long City::getMonth() const
+const DateTime& City::getDate() const
 {
-  return _d->month;
+  return _d->date;
 }
 
-Signal1<int>& City::onMonthChanged()
+Signal1<const DateTime&>& City::onMonthChanged()
 {
   return _d->onMonthChangedSignal;
 }
@@ -619,4 +618,14 @@ Signal1<std::string>& City::onWarningMessage()
 Signal2<const TilePos&, const std::string& >& City::onDisasterEvent()
 {
   return _d->onDisasterEventSignal;
+}
+
+void City::setDate( const DateTime& date )
+{
+  _d->date = date; 
+}
+
+CityBuildOptions& City::getBuildOptions()
+{
+  return _d->buildOptions;
 }

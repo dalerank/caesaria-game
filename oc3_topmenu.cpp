@@ -20,6 +20,7 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_contextmenuitem.hpp"
 #include "oc3_stringhelper.hpp"
+#include "oc3_time.hpp"
 
 namespace {
 static const int dateLabelOffset = 155;
@@ -163,14 +164,12 @@ void TopMenu::setFunds( int value )
   _d->lbFunds->setText( StringHelper::format( 0xff, "%.2s %d", _("##denarii_short##"), value) );
 }
 
-void TopMenu::setDate( int value )
+void TopMenu::setDate( const DateTime& time )
 {
-  std::string month = _( StringHelper::format( 0xff, "##month_%d_short##", (value % 12) + 1).c_str() );
-  std::string age = _( StringHelper::format( 0xff, "##age_%s##", ( ((int)value/12-39) > 0 ? "ad" : "bc" ) ).c_str() );
+  std::string month = _( StringHelper::format( 0xff, "##month_%d_short##", time.getMonth() + 1).c_str() );
+  std::string age = _( StringHelper::format( 0xff, "##age_%s##", time.getYear() > 0 ? "ad" : "bc" ).c_str() );
   std::string text = StringHelper::format( 0xff, "%.3s %d %.2s", 
-                                           month.c_str(), (int)std::abs(((int)value/12-39)), age.c_str());
-
-  //_dateLabel.setText("Feb 39 BC");
+                                           month.c_str(), time.getMonth(), age.c_str());
   _d->lbDate->setText( text );
 }
 

@@ -27,7 +27,6 @@
 #include "oc3_widgetpositionanimator.hpp"
 #include "oc3_label.hpp"
 #include "oc3_gettext.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_minimap_colours.hpp"
 #include "oc3_tilemap_renderer.hpp"
 #include "oc3_tile.hpp"
@@ -70,6 +69,7 @@ public:
   OverlaysMenu* overlaysMenu; 
   PictureRef minimap;
   PictureRef fullmap;
+  City* city;
 
 oc3_signals public:
   Signal1< int > onCreateConstructionSignal;
@@ -396,7 +396,7 @@ bool Menu::onEvent(const NEvent& event)
     return Widget::onEvent( event );
 }
 
-Menu* Menu::create( Widget* parent, int id )
+Menu* Menu::create( Widget* parent, int id, City& city )
 {
   Menu* ret = new Menu( parent, id, Rect( 0, 0, 1, 1 ) );
 
@@ -406,6 +406,7 @@ Menu* Menu::create( Widget* parent, int id )
   ret->_d->bgPicture.reset( Picture::create( Size( bground.getWidth(), bground.getHeight() + bottom.getHeight() ) ) );
   ret->_d->bgPicture->draw( bground, 0, 0);
   ret->_d->bgPicture->draw( bottom,  0, bground.getHeight() );
+  ret->_d->city = &city;
 
   ret->setGeometry( Rect( 0, 0, bground.getWidth(), ret->_d->bgPicture->getHeight() ) );
 
@@ -433,13 +434,14 @@ void Menu::_createBuildMenu( int type, Widget* parent )
     for( List< BuildMenu* >::iterator it=menus.begin(); it != menus.end(); it++ )
         (*it)->deleteLater();
 
-    BuildMenu* buildMenu = BuildMenu::getMenuInstance( (BuildMenuType)type, this );
+    BuildMenu* buildMenu = BuildMenu::create( (BuildMenuType)type, this );
 
     if( buildMenu != NULL )
     {
         buildMenu->setNotClipped( true );
 
-        buildMenu->init();
+        buildMenu->setBuildOptions( &_d->city->getBuildOptions() );
+        buildMenu->initialize();
        
         int y = math::clamp< int >( parent->getScreenTop() - getScreenTop(), 0, _environment->getRootWidget()->getHeight() - buildMenu->getHeight() );
         buildMenu->setPosition( Point( -(int)buildMenu->getWidth() - 5, y ) );
@@ -452,7 +454,7 @@ Signal0<>& Menu::onMaximize()
     return _d->onMaximizeSignal;
 }
 
-ExtentMenu* ExtentMenu::create( Widget* parent, TilemapRenderer& tmap, int id )
+ExtentMenu* ExtentMenu::create( Widget* parent, TilemapRenderer& tmap, int id, City& city )
 {
     ExtentMenu* ret = new ExtentMenu( parent, tmap, id, Rect( 0, 0, 1, 1 ) );
 
@@ -464,6 +466,7 @@ ExtentMenu* ExtentMenu::create( Widget* parent, TilemapRenderer& tmap, int id )
     ret->_d->bgPicture.reset( Picture::create( Size( bground.getWidth(), bground.getHeight() + bottom.getHeight() ) ) );
     ret->_d->bgPicture->draw( bground, 0, 0);
     ret->_d->bgPicture->draw( bottom, 0, bground.getHeight() );
+    ret->_d->city = &city;
 
     ret->setGeometry( Rect( 0, 0, bground.getWidth(), ret->_d->bgPicture->getHeight() ) );
 
@@ -588,13 +591,13 @@ void ExtentMenu::draw( GfxEngine& painter )
   int border = (162 - mapsize) / 2;
   int max = border + mapsize;
   
-  colours = new Caesar3Colours(Scenario::instance().getCity().getClimate());
+  colours = new Caesar3Colours( _d->city->getClimate());
   
   for (int y = border; y < max; y++)
   {
     for (int x = border; x < max; x++)
     {  
-      TerrainTile& tile = Scenario::instance().getCity().getTilemap().at(x - border, y - border).getTerrain();
+      TerrainTile& tile = _d->city->getTilemap().at(x - border, y - border).getTerrain();
 
       Point pnt = getBitmapCoordinates(x - border, y - border, mapsize);
       int c1, c2;      

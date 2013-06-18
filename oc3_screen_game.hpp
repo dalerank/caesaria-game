@@ -19,18 +19,12 @@
 #ifndef SCREEN_GAME_HPP
 #define SCREEN_GAME_HPP
 
-#include <list>
-#include <vector>
-
 #include "oc3_picture.hpp"
-#include "oc3_scenario.hpp"
-#include "oc3_tilemap_renderer.hpp"
-#include "oc3_gui_info_box.hpp"
 #include "oc3_screen.hpp"
 #include "oc3_scopedptr.hpp"
 
-class Menu;
-class BuildMenu;
+class Scenario;
+class TilemapArea;
 
 class ScreenGame: public Screen
 {
@@ -53,8 +47,6 @@ protected:
   int getResult() const;
 
 private:
-  //void setMenu(Menu &menu);
-
   void resolveEndGame();
   void resolveExitGame();
 

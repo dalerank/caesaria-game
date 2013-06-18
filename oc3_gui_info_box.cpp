@@ -37,6 +37,7 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_goodhelper.hpp"
 #include "oc3_farm.hpp"
+#include "oc3_house.hpp"
 #include "oc3_religion_building.hpp"
 #include "oc3_divinity.hpp"
 

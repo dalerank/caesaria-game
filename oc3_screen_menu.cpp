@@ -82,7 +82,7 @@ void ScreenMenu::Impl::resolvePlayMission()
     0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() );
   LoadMapWindow* wnd = new LoadMapWindow( gui->getRootWidget(), 
                                           rect.toRect(), 
-                                          "./resources/missions", ".oc3mission",
+                                          "./resources/missions/", ".oc3mission",
                                           -1 );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );

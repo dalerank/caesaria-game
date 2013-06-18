@@ -1,0 +1,31 @@
+{
+	"Tarentum" : {
+		"location" : [ 30, 30 ]
+		"sells" : {
+				"furniture" : 15
+				"wine" : 15 
+			}
+			
+			"buys" : {
+				"pottery" : 25
+			}
+		}
+		type : "sea"
+	}
+	
+	"Syracusae" : {
+		"location" : [ 80, 80 ]
+		"sells" : {
+				"meat" : 15
+				"marble" : 15
+			}
+			
+			"buys" : {
+				"olives" : 15
+				"oil" : 25
+				"furniture" : 15
+			}
+		}
+		"type" : "land"
+	}
+}

@@ -36,7 +36,8 @@ public:
    int getTaxRate();
 
    // return the house type "small casa, luxury villa, ..."
-   std::string& getLevelName();
+   const std::string& getLevelName() const;
+   const std::string& getInternalName() const;
 
    // returns True if patrician villa
    bool isPatrician();
@@ -70,6 +71,7 @@ private:
   int _houseLevel;
   int _maxHabitantsByTile;
   std::string _levelName;
+  std::string _internalName;
   int _taxRate;
 
    // required services
@@ -90,9 +92,10 @@ class HouseSpecHelper
 public:
   static HouseSpecHelper& getInstance();
 
-  HouseLevelSpec &getHouseLevelSpec(const int houseLevel);
+  HouseLevelSpec& getHouseLevelSpec(const int houseLevel);
   void setHouseLevelSpec(HouseLevelSpec &spec);
   int getHouseLevel(const int houseId);
+  int getHouseLevel( const std::string& name );
   void initialize( const std::string& filename );
 
   ~HouseSpecHelper();
