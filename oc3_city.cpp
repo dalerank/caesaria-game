@@ -29,6 +29,7 @@
 #include "oc3_cityservice_emigrant.hpp"
 #include "oc3_cityservice_workershire.hpp"
 #include "oc3_cityservice_timers.hpp"
+#include "oc3_cityservice_prosperity.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_road.hpp"
 #include "oc3_time.hpp"
@@ -77,7 +78,7 @@ oc3_signals public:
 
 City::City() : _d( new Impl )
 {
-  _d->date = DateTime( 0, 0, 0 ) ;
+  _d->date = DateTime( -350, 0, 0 ) ;
   _d->time = 0;
   _d->roadEntry = TilePos( 0, 0 );
   _d->roadExit = TilePos( 0, 0 );
@@ -93,6 +94,7 @@ City::City() : _d( new Impl )
   addService( CityServiceEmigrant::create( *this ) );
   addService( CityServiceWorkersHire::create( *this ) );
   addService( CityServicePtr( &CityServiceTimers::getInstance() ) );
+  addService( CityServiceProsperity::create( *this ) );
 }
 
 void City::timeStep()
@@ -290,7 +292,7 @@ void City::setTaxRate(const int taxRate)     {  _d->taxRate = taxRate; }
 long City::getFunds() const                  {  return _d->funds;   }
 void City::setFunds(const long funds)        {  _d->funds = funds;  }
 
-long City::getPopulation() const
+int City::getPopulation() const
 {
    /* here we need to calculate population ??? */
    
@@ -601,9 +603,9 @@ void City::addService( CityServicePtr service )
   _d->services.push_back( service );
 }
 
-CityServicePtr City::findService( const std::string& name )
+CityServicePtr City::findService( const std::string& name ) const
 {
-  for( CityServices::iterator sIt=_d->services.begin(); sIt != _d->services.end(); sIt++ )
+  for( CityServices::const_iterator sIt=_d->services.begin(); sIt != _d->services.end(); sIt++ )
     if( name == (*sIt)->getName() )
       return *sIt;
 
@@ -628,4 +630,10 @@ void City::setDate( const DateTime& date )
 CityBuildOptions& City::getBuildOptions()
 {
   return _d->buildOptions;
+}
+
+int City::getProsperity() const
+{
+  CityServicePtr csPrsp = findService( "prosperity" );
+  return csPrsp.isValid() ? csPrsp.as<CityServiceProsperity>()->getProsperity() : 0;
 }

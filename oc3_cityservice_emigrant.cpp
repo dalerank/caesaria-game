@@ -24,9 +24,10 @@
 
 CityServicePtr CityServiceEmigrant::create( City& city )
 {
-  CityServiceEmigrant* ret = new CityServiceEmigrant( city );
-  
-  return CityServicePtr( ret );
+  CityServicePtr ret( new CityServiceEmigrant( city ) );
+  ret->drop();
+
+  return ret;
 }
 
 CityServiceEmigrant::CityServiceEmigrant( City& city )

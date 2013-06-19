@@ -36,7 +36,7 @@ public:
    SimpleGoodStore& getGoodStore();
 
    // return the current house level
-   HouseLevelSpec& getLevelSpec();
+   const HouseLevelSpec& getLevelSpec() const;
 
    virtual void applyService(ServiceWalkerPtr walker);
    virtual float evaluateService(ServiceWalkerPtr walker);

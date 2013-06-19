@@ -20,9 +20,10 @@ public:
 
 CityServicePtr CityServiceWorkersHire::create( City& city )
 {
-  CityServiceWorkersHire* ret = new CityServiceWorkersHire( city );
+  CityServicePtr ret( new CityServiceWorkersHire( city ));
+  ret->drop();
 
-  return CityServicePtr( ret );
+  return ret;
 }
 
 CityServiceWorkersHire::CityServiceWorkersHire( City& city )
@@ -34,6 +35,7 @@ CityServiceWorkersHire::CityServiceWorkersHire( City& city )
   _d->priorities[ 4 ] = B_WHEAT;
   _d->priorities[ 5 ] = B_GRAPE;
   _d->priorities[ 6 ] = B_GRANARY;
+  _d->priorities[ 7 ] = B_IRON;
 }
 
 bool CityServiceWorkersHire::_haveHr( WorkingBuildingPtr building )

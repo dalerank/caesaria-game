@@ -15,8 +15,6 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
-
 #include "oc3_house_level.hpp"
 
 #include "oc3_house.hpp"
@@ -26,32 +24,55 @@
 #include "oc3_variant.hpp"
 #include "oc3_saveadapter.hpp"
 
-typedef std::map<int, HouseLevelSpec> HouseLevelSpecsMap;
-typedef std::map<int, int> HouseLevelSpecsEqMap;
+#include <string>
+#include <map>
+#include <list>
 
-int HouseLevelSpec::getHouseLevel()
+class HouseLevelSpec::Impl
 {
-   return _houseLevel;
+public:
+  int houseLevel;
+  int maxHabitantsByTile;
+  std::string levelName;
+  std::string internalName;
+  int taxRate;
+
+  // required services
+  int minEntertainmentLevel;
+  int minHealthLevel;
+  int midDesirability, maxDesirability;
+  int minEducationLevel;
+  int crime;
+  int prosperity;
+  int minWaterLevel;  // access to water (no water=0, well=1, fountain=2)
+  int minReligionLevel;  // number of religions
+  int minFoodLevel;  // number of food types
+  std::map<GoodType, int> requiredGoods;  // rate of good usage for every good (furniture, pottery, ...)
+};
+
+int HouseLevelSpec::getHouseLevel() const
+{
+   return _d->houseLevel;
 }
 
 const std::string& HouseLevelSpec::getLevelName() const
 {
-   return _levelName;
+   return _d->levelName;
 }
 
-bool HouseLevelSpec::isPatrician()
+bool HouseLevelSpec::isPatrician() const
 {
-   return _houseLevel > 12;
+   return _d->houseLevel > 12;
 }
 
-int HouseLevelSpec::getMaxHabitantsByTile()
+int HouseLevelSpec::getMaxHabitantsByTile() const
 {
-   return _maxHabitantsByTile;
+   return _d->maxHabitantsByTile;
 }
 
-int HouseLevelSpec::getTaxRate()
+int HouseLevelSpec::getTaxRate() const
 {
-   return _taxRate;
+   return _d->taxRate;
 }
 
 // int HouseLevelSpec::getMinEntertainmentLevel()
@@ -93,7 +114,7 @@ bool HouseLevelSpec::checkHouse(House &house)
 
    value = computeEntertainmentLevel(house);
    // std::cout << "entertainment=" << value << std::endl;
-   if (value < _minEntertainmentLevel)
+   if (value < _d->minEntertainmentLevel)
    {
       res = false;
       StringHelper::debug( 0xff, "missing entertainment" );
@@ -101,7 +122,7 @@ bool HouseLevelSpec::checkHouse(House &house)
 
    value = computeEducationLevel(house, reason);
    // std::cout << "education=" << value << " " << reason << std::endl;
-   if (value < _minEducationLevel)
+   if (value < _d->minEducationLevel)
    {
       res = false;
       StringHelper::debug( 0xff, "missing education, %s", reason.c_str() );
@@ -109,7 +130,7 @@ bool HouseLevelSpec::checkHouse(House &house)
 
    value = computeHealthLevel(house, reason);
    // std::cout << "health=" << value << " " << reason << std::endl;
-   if (value < _minHealthLevel)
+   if (value < _d->minHealthLevel)
    {
       res = false;
       StringHelper::debug( 0xff, "missing health, %s", reason.c_str() );
@@ -117,7 +138,7 @@ bool HouseLevelSpec::checkHouse(House &house)
 
    value = computeReligionLevel(house);
    // std::cout << "religion=" << value << std::endl;
-   if (value < _minReligionLevel)
+   if (value < _d->minReligionLevel)
    {
       res = false;
       StringHelper::debug( 0xff, "missing religion" );
@@ -125,7 +146,7 @@ bool HouseLevelSpec::checkHouse(House &house)
 
    value = computeWaterLevel(house, reason);
    // std::cout << "water=" << value << " " << reason << std::endl;
-   if (value < _minWaterLevel)
+   if (value < _d->minWaterLevel)
    {
       res = false;
       StringHelper::debug( 0xff, "missing water, %s", reason.c_str() );
@@ -133,25 +154,25 @@ bool HouseLevelSpec::checkHouse(House &house)
 
    value = computeFoodLevel(house);
    // std::cout << "food=" << value << std::endl;
-   if (value < _minFoodLevel)
+   if (value < _d->minFoodLevel)
    {
       res = false;
       StringHelper::debug( 0xff, "missing food" );
    }
 
-   if (_requiredGoods[G_POTTERY] != 0 && house.getGoodStore().getCurrentQty(G_POTTERY) == 0)
+   if (_d->requiredGoods[G_POTTERY] != 0 && house.getGoodStore().getCurrentQty(G_POTTERY) == 0)
    {
       res = false;
       StringHelper::debug( 0xff, "missing pottery" );
    }
 
-   if (_requiredGoods[G_FURNITURE] != 0 && house.getGoodStore().getCurrentQty(G_FURNITURE) == 0)
+   if (_d->requiredGoods[G_FURNITURE] != 0 && house.getGoodStore().getCurrentQty(G_FURNITURE) == 0)
    {
       res = false;
       StringHelper::debug( 0xff, "missing furniture" );
    }
 
-   if (_requiredGoods[G_OIL] != 0 && house.getGoodStore().getCurrentQty(G_OIL) == 0)
+   if (_d->requiredGoods[G_OIL] != 0 && house.getGoodStore().getCurrentQty(G_OIL) == 0)
    {
       res = false;
       StringHelper::debug( 0xff, "missing oil" );
@@ -394,14 +415,14 @@ float HouseLevelSpec::evaluateServiceNeed(House &house, const ServiceType servic
 float HouseLevelSpec::evaluateEntertainmentNeed(House &house, const ServiceType service)
 {
    int houseLevel = house.getLevelSpec().getHouseLevel();
-   return (float)HouseSpecHelper::getInstance().getHouseLevelSpec(houseLevel+1)._minEntertainmentLevel;
+   return (float)next()._d->minEntertainmentLevel;
 }
 
 float HouseLevelSpec::evaluateEducationNeed(House &house, const ServiceType service)
 {
    float res = 0;
    int houseLevel = house.getLevelSpec().getHouseLevel();
-   int minLevel = HouseSpecHelper::getInstance().getHouseLevelSpec(houseLevel+1)._minEducationLevel;
+   int minLevel = next()._d->minEducationLevel;
    if (minLevel == 1)
    {
       // need school or library
@@ -431,7 +452,7 @@ float HouseLevelSpec::evaluateHealthNeed(House &house, const ServiceType service
 {
    float res = 0;
    int houseLevel = house.getLevelSpec().getHouseLevel();
-   int minLevel = HouseSpecHelper::getInstance().getHouseLevelSpec(houseLevel+1)._minHealthLevel;
+   int minLevel = next()._d->minHealthLevel;
    if (minLevel >= 1 && service == S_BATHS)
    {
       // minLevel>=1  => need baths
@@ -462,7 +483,7 @@ float HouseLevelSpec::evaluateHealthNeed(House &house, const ServiceType service
 float HouseLevelSpec::evaluateReligionNeed(House &house, const ServiceType service)
 {
    int houseLevel = house.getLevelSpec().getHouseLevel();
-   int minLevel = HouseSpecHelper::getInstance().getHouseLevelSpec(houseLevel+1)._minReligionLevel;
+   int minLevel = next()._d->minReligionLevel;
 
    return (float)minLevel;
 }
@@ -476,9 +497,9 @@ float HouseLevelSpec::evaluateReligionNeed(House &house, const ServiceType servi
 int HouseLevelSpec::computeMonthlyConsumption(House &house, const GoodType goodType)
 {
    int res = 0;
-   if (_requiredGoods[goodType] != 0)
+   if (_d->requiredGoods[goodType] != 0)
    {
-      res = house.getMaxHabitants() * _requiredGoods[goodType];
+      res = house.getMaxHabitants() * _d->requiredGoods[goodType];
    }
 
    return res;
@@ -486,15 +507,69 @@ int HouseLevelSpec::computeMonthlyConsumption(House &house, const GoodType goodT
 
 const std::string& HouseLevelSpec::getInternalName() const
 {
-  return _internalName;
+  return _d->internalName;
+}
+
+int HouseLevelSpec::getProsperity() const
+{
+  return _d->prosperity;
+}
+
+HouseLevelSpec::~HouseLevelSpec()
+{
+
+}
+
+HouseLevelSpec::HouseLevelSpec() : _d( new Impl )
+{
+
+}
+
+HouseLevelSpec::HouseLevelSpec( const HouseLevelSpec& other ) : _d( new Impl )
+{
+  *this = other;
+}
+
+HouseLevelSpec HouseLevelSpec::next() const
+{
+  return HouseSpecHelper::getInstance().getHouseLevelSpec(_d->houseLevel+1);
+}
+
+HouseLevelSpec& HouseLevelSpec::operator=( const HouseLevelSpec& other )
+{
+  _d->houseLevel = other._d->houseLevel;
+  _d->maxHabitantsByTile = other._d->maxHabitantsByTile;
+  _d->levelName = other._d->levelName;
+  _d->internalName = other._d->internalName;
+  _d->taxRate = other._d->taxRate;
+
+  // required services
+  _d->minEntertainmentLevel = other._d->minEntertainmentLevel;
+  _d->minHealthLevel = other._d->minHealthLevel;
+  _d->midDesirability = other._d->midDesirability;
+  _d->maxDesirability = other._d->maxDesirability;
+  _d->minEducationLevel = other._d->minEducationLevel;
+  _d->crime = other._d->crime;
+  _d->prosperity = other._d->prosperity;
+  _d->minWaterLevel = other._d->minWaterLevel;  // access to water (no water=0, well=1, fountain=2)
+  _d->minReligionLevel = other._d->minReligionLevel;  // number of religions
+  _d->minFoodLevel = other._d->minFoodLevel;  // number of food types
+  for( std::map<GoodType, int>::iterator it=other._d->requiredGoods.begin(); it != other._d->requiredGoods.end(); it++ )
+  {
+    _d->requiredGoods[ (*it).first ] = (*it).second;
+  }
+
+  return *this;
 }
 
 class HouseSpecHelper::Impl
 {
 public:
-  typedef std::map<int, HouseLevelSpec> HouseLevels;
+  typedef std::map<int, int> HouseLevelSpecsEqMap;
+  typedef std::map<int, HouseLevelSpec > HouseLevels;
+
   HouseLevels spec_by_level;  // key=houseLevel, value=houseLevelSpec
-  std::map<int, int> level_by_id;  // key=houseId, value=houseLevel
+  HouseLevelSpecsEqMap level_by_id;  // key=houseId, value=houseLevel
 };
 
 HouseSpecHelper& HouseSpecHelper::getInstance()
@@ -556,15 +631,10 @@ HouseSpecHelper::HouseSpecHelper() : _d( new Impl )
   _d->level_by_id[45] = 0;
 }
 
-HouseLevelSpec& HouseSpecHelper::getHouseLevelSpec(const int houseLevel)
+HouseLevelSpec HouseSpecHelper::getHouseLevelSpec(const int houseLevel)
 {
   int level = (math::clamp)(houseLevel, 0, 17);
   return _d->spec_by_level[level];
-}
-
-void HouseSpecHelper::setHouseLevelSpec(HouseLevelSpec &spec)
-{
-  _d->spec_by_level[ spec.getHouseLevel() ] = spec;
 }
 
 int HouseSpecHelper::getHouseLevel(const int houseId)
@@ -607,29 +677,29 @@ void HouseSpecHelper::initialize( const std::string& filename )
     VariantMap hSpec = (*it).second.toMap();
 
     HouseLevelSpec spec;
-    spec._houseLevel = hSpec.get( "level" ).toInt();
-    spec._internalName = (*it).first;
-    spec._levelName = hSpec.get( "title" ).toString();
-    spec._maxHabitantsByTile = hSpec.get( "habitants" ).toInt();
-    spec._midDesirability = hSpec.get( "minDesirability" ).toInt();  // min desirability
-    spec._maxDesirability = hSpec.get( "maxDesirability" ).toInt();  // desirability levelUp
-    spec._minEntertainmentLevel = hSpec.get( "entertainment" ).toInt();
-    spec._minWaterLevel = hSpec.get( "water" ).toInt();
-    spec._minReligionLevel = hSpec.get( "religion" ).toInt();
-    spec._minEducationLevel = hSpec.get( "education" ).toInt();
-    spec._minHealthLevel = hSpec.get( "health" ).toInt();
-    spec._minFoodLevel = hSpec.get( "food" ).toInt();
+    spec._d->houseLevel = hSpec[ "level" ].toInt();
+    spec._d->internalName = (*it).first;
+    spec._d->levelName = hSpec[ "title" ].toString();
+    spec._d->maxHabitantsByTile = hSpec.get( "habitants" ).toInt();
+    spec._d->midDesirability = hSpec.get( "minDesirability" ).toInt();  // min desirability
+    spec._d->maxDesirability = hSpec.get( "maxDesirability" ).toInt();  // desirability levelUp
+    spec._d->minEntertainmentLevel = hSpec.get( "entertainment" ).toInt();
+    spec._d->minWaterLevel = hSpec.get( "water" ).toInt();
+    spec._d->minReligionLevel = hSpec.get( "religion" ).toInt();
+    spec._d->minEducationLevel = hSpec.get( "education" ).toInt();
+    spec._d->minHealthLevel = hSpec.get( "health" ).toInt();
+    spec._d->minFoodLevel = hSpec.get( "food" ).toInt();
     
-    spec._requiredGoods[G_WHEAT] = 1;  // hard coded ... to be changed!
-    spec._requiredGoods[G_POTTERY] = hSpec.get( "pottery" ).toInt();  // pottery
-    spec._requiredGoods[G_OIL] = hSpec.get( "oil" ).toInt();  // oil
-    spec._requiredGoods[G_FURNITURE] = hSpec.get( "furniture").toInt();// furniture
-    spec._requiredGoods[G_WINE] = hSpec.get( "wine" ).toInt();  // wine
-    spec._crime = hSpec.get( "crime" ).toInt();;  // crime
-    spec._prosperity = hSpec.get( "prosperity" ).toInt();  // prosperity
-    spec._taxRate = hSpec.get( "tax" ).toInt();// tax_rate
+    spec._d->requiredGoods[G_WHEAT] = 1;  // hard coded ... to be changed!
+    spec._d->requiredGoods[G_POTTERY] = hSpec.get( "pottery" ).toInt();  // pottery
+    spec._d->requiredGoods[G_OIL] = hSpec.get( "oil" ).toInt();  // oil
+    spec._d->requiredGoods[G_FURNITURE] = hSpec.get( "furniture").toInt();// furniture
+    spec._d->requiredGoods[G_WINE] = hSpec.get( "wine" ).toInt();  // wine
+    spec._d->crime = hSpec.get( "crime" ).toInt();;  // crime
+    spec._d->prosperity = hSpec.get( "prosperity" ).toInt();  // prosperity
+    spec._d->taxRate = hSpec.get( "tax" ).toInt();// tax_rate
 
-    HouseSpecHelper::getInstance().setHouseLevelSpec( spec );    
+    _d->spec_by_level[ spec._d->houseLevel ] = spec;
   }
 
 }

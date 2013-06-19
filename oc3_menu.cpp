@@ -450,45 +450,45 @@ void Menu::_createBuildMenu( int type, Widget* parent )
 
 Signal0<>& Menu::onMaximize()
 {
-    _d->minimizeButton->setTooltipText( _("##maximizeBtnTooltip") );
-    return _d->onMaximizeSignal;
+  _d->minimizeButton->setTooltipText( _("##maximizeBtnTooltip##") );
+  return _d->onMaximizeSignal;
 }
 
 ExtentMenu* ExtentMenu::create( Widget* parent, TilemapRenderer& tmap, int id, City& city )
 {
-    ExtentMenu* ret = new ExtentMenu( parent, tmap, id, Rect( 0, 0, 1, 1 ) );
+  ExtentMenu* ret = new ExtentMenu( parent, tmap, id, Rect( 0, 0, 1, 1 ) );
 
-    const Picture& bground = Picture::load( ResourceGroup::panelBackground, 17 );
-    const Picture& bottom = Picture::load( ResourceGroup::panelBackground, 20 );
+  const Picture& bground = Picture::load( ResourceGroup::panelBackground, 17 );
+  const Picture& bottom = Picture::load( ResourceGroup::panelBackground, 20 );
 
-    ret->_d->fullmap.reset( Picture::create( Size( ret->_tmap.getTilemap().getSize() * 2 ) ) );
-    ret->_d->minimap.reset( Picture::create( Size( 144, 110 ) ) );
-    ret->_d->bgPicture.reset( Picture::create( Size( bground.getWidth(), bground.getHeight() + bottom.getHeight() ) ) );
-    ret->_d->bgPicture->draw( bground, 0, 0);
-    ret->_d->bgPicture->draw( bottom, 0, bground.getHeight() );
-    ret->_d->city = &city;
+  ret->_d->fullmap.reset( Picture::create( Size( ret->_tmap.getTilemap().getSize() * 2 ) ) );
+  ret->_d->minimap.reset( Picture::create( Size( 144, 110 ) ) );
+  ret->_d->bgPicture.reset( Picture::create( Size( bground.getWidth(), bground.getHeight() + bottom.getHeight() ) ) );
+  ret->_d->bgPicture->draw( bground, 0, 0);
+  ret->_d->bgPicture->draw( bottom, 0, bground.getHeight() );
+  ret->_d->city = &city;
 
-    ret->setGeometry( Rect( 0, 0, bground.getWidth(), ret->_d->bgPicture->getHeight() ) );
+  ret->setGeometry( Rect( 0, 0, bground.getWidth(), ret->_d->bgPicture->getHeight() ) );
 
-    return ret;
+  return ret;
 }
 
 void ExtentMenu::minimize()
 {
-    _d->minimizeButton->setTooltipText( _("##minimizeBtnTooltip") );
-    _d->lastPressed = 0;
-    _createBuildMenu( -1, this );
-    Point stopPos = getRelativeRect().UpperLeftCorner + Point( getWidth(), 0 );
-    PositionAnimator* anim = new PositionAnimator( this, WidgetAnimator::removeSelf, 
-                                                   stopPos, 300 );
+  _d->minimizeButton->setTooltipText( _("##minimizeBtnTooltip") );
+  _d->lastPressed = 0;
+  _createBuildMenu( -1, this );
+  Point stopPos = getRelativeRect().UpperLeftCorner + Point( getWidth(), 0 );
+  PositionAnimator* anim = new PositionAnimator( this, WidgetAnimator::removeSelf, 
+                                                 stopPos, 300 );
 }
 
 void ExtentMenu::maximize()
 {
-    Point stopPos = getRelativeRect().UpperLeftCorner - Point( getWidth(), 0 );
-    show();
-    PositionAnimator* anim = new PositionAnimator( this, WidgetAnimator::showParent | WidgetAnimator::removeSelf, 
-                                                   stopPos, 300 );
+  Point stopPos = getRelativeRect().UpperLeftCorner - Point( getWidth(), 0 );
+  show();
+  PositionAnimator* anim = new PositionAnimator( this, WidgetAnimator::showParent | WidgetAnimator::removeSelf, 
+                                                 stopPos, 300 );
 }
 
 ExtentMenu::ExtentMenu( Widget* parent, TilemapRenderer& tmap, int id, const Rect& rectangle )
@@ -556,16 +556,16 @@ ExtentMenu::ExtentMenu( Widget* parent, TilemapRenderer& tmap, int id, const Rec
 
 bool ExtentMenu::onEvent(const NEvent& event)
 {
-    if( event.EventType == OC3_GUI_EVENT && event.GuiEvent.EventType == OC3_BUTTON_CLICKED )
+  if( event.EventType == OC3_GUI_EVENT && event.GuiEvent.EventType == OC3_BUTTON_CLICKED )
+  {
+    if( MenuButton* btn = safety_cast< MenuButton* >( event.GuiEvent.Caller ) )
     {
-        if( MenuButton* btn = safety_cast< MenuButton* >( event.GuiEvent.Caller ) )
-        {
-            int picId = btn->getMidPicId() > 0 ? btn->getMidPicId() : ResourceMenu::emptyMidPicId;
-            _d->middleLabel->setBackgroundPicture( Picture::load( ResourceGroup::menuMiddleIcons, picId ) );
-        }
+      int picId = btn->getMidPicId() > 0 ? btn->getMidPicId() : ResourceMenu::emptyMidPicId;
+      _d->middleLabel->setBackgroundPicture( Picture::load( ResourceGroup::menuMiddleIcons, picId ) );
     }
+  }
 
-    return Menu::onEvent( event );
+  return Menu::onEvent( event );
 }
 
 void ExtentMenu::draw( GfxEngine& painter )

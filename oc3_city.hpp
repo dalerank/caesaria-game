@@ -45,7 +45,7 @@ public:
   void removeWalker( WalkerPtr walker );
 
   void addService( CityServicePtr service );
-  CityServicePtr findService( const std::string& name );
+  CityServicePtr findService( const std::string& name ) const;
 
   LandOverlays& getOverlayList();
   LandOverlays getBuildingList( const BuildingType buildingType );
@@ -72,7 +72,8 @@ public:
   long getFunds() const;
   void setFunds(const long funds);
 
-  long getPopulation() const;
+  int getPopulation() const;
+  int getProsperity() const;
 
   Tilemap& getTilemap();
 

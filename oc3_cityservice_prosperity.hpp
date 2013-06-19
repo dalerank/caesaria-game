@@ -13,37 +13,25 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_ADVISORSWINDOW_H_INCLUDED__
-#define __OPENCAESAR3_ADVISORSWINDOW_H_INCLUDED__
+#ifndef __OPENCAESAR3_CITYSERVICE_PROSPERITY_H_INCLUDED__
+#define __OPENCAESAR3_CITYSERVICE_PROSPERITY_H_INCLUDED__
 
-#include "oc3_widget.hpp"
-#include "oc3_enums.hpp"
-#include "oc3_signals.hpp"
+#include "oc3_cityservice.hpp"
+#include "oc3_scopedptr.hpp"
 
-class PushButton;
-class City;
-
-class AdvisorsWindow : public Widget
+class CityServiceProsperity : public CityService
 {
 public:
-  static AdvisorsWindow* create( Widget* parent, int id, const AdvisorType type, City& city  );
+  static CityServicePtr create( City& city );
 
-  // draw on screen
-  void draw( GfxEngine& engine );
+  void update( const unsigned int time );
+  int getProsperity() const;
 
-  void showAdvisor( const AdvisorType type );
+private:
+  CityServiceProsperity( City& city );
 
-  bool onEvent(const NEvent& event);
-
-oc3_signals public:
-  Signal0<>& onEmpireMapRequest();
-
-protected:
   class Impl;
   ScopedPtr< Impl > _d;
-
-  AdvisorsWindow( Widget* parent, int id, City& city );
-  PushButton* addButton( const int pos, const int picId );
 };
 
-#endif
+#endif //__OPENCAESAR3_CITYSERVICE_PROSPERITY_H_INCLUDED__

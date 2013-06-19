@@ -48,9 +48,12 @@ Granary::Granary() : WorkingBuilding( B_GRANARY, Size(3) )
 
 void Granary::timeStep(const unsigned long time)
 {
-  _animation.update( time );
+  if( getWorkers() > 0 )
+  {
+    _animation.update( time );
 
-  _fgPictures[5] = _animation.getCurrentPicture();
+    _fgPictures[5] = _animation.getCurrentPicture();
+  }
 }
 
 SimpleGoodStore& Granary::getGoodStore()

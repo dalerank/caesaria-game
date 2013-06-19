@@ -147,8 +147,8 @@ tm _getOsLocalTime( time_t date )
 DateTime& DateTime::appendMonth( int m/*=1 */ )
 {
   int sumMonth = month + m;
-  int month = sumMonth % 12;
-  year += (year > 0 ? 1 : -1) * (sumMonth / 12);
+  month = sumMonth % 12;
+  year += sumMonth / 12;
 
   return *this;
 }

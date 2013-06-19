@@ -23,20 +23,65 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_gfx_engine.hpp"
+#include "oc3_font.hpp"
+#include "oc3_city.hpp"
+
+class RatingButton : public PushButton
+{
+public:
+  RatingButton( Widget* parent, const Point& pos, const std::string& title )
+    : PushButton( parent, Rect( pos, Size( 108, 65 )), title, -1, false, PushButton::WhiteBorderUp )
+  {
+    setTextAlignment( alignCenter, alignUpperLeft );
+    _value = 0;
+    _target = 0;
+  }
+
+  void _updateTexture( ElementState state )
+  {
+    PushButton::_updateTexture( state );
+
+    Font digitFont = Font::create( FONT_3 );
+    PictureRef& pic = _getPicture( state );
+    digitFont.draw( *pic, StringHelper::format( 0xff, "%d", _value ), getWidth() / 2 - 10, 15 );
+
+    Font targetFont = Font::create( FONT_1 );
+    targetFont.draw( *pic, StringHelper::format( 0xff, "%d need", _target), 10, getHeight() - 25 );
+  }
+
+  void setValue( const int value )
+  {
+    _value = value;
+    resizeEvent_();
+  }
+
+  void setTarget( const int value )
+  {
+    _target = value;
+    resizeEvent_();
+  }
+
+private:
+  int _value;
+  int _target;
+};
 
 class AdvisorRatingsWindow::Impl
 {
 public:
   PictureRef background;
-  PushButton* btnCulture;
-  PushButton* btnProsperity;
-  PushButton* btnPeace;
-  PushButton* btnFavour;
+  RatingButton* btnCulture;
+  RatingButton* btnProsperity;
+  RatingButton* btnPeace;
+  RatingButton* btnFavour;
+
+  City const* city;
 };
 
-AdvisorRatingsWindow::AdvisorRatingsWindow( Widget* parent, int id ) 
+AdvisorRatingsWindow::AdvisorRatingsWindow( Widget* parent, int id, const City& city ) 
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
+  _d->city = &city;
   setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),
                Size( 640, 432 ) ) );
 
@@ -54,10 +99,12 @@ AdvisorRatingsWindow::AdvisorRatingsWindow( Widget* parent, int id )
 
   _d->background->draw( Picture::load( ResourceGroup::menuMiddleIcons, 27), 60, 50 );
 
-  _d->btnCulture = new PushButton( this, Rect( Point( 80, 290), Size( 108, 65 ) ), "", -1, false, PushButton::WhiteBorderUp );
-  _d->btnProsperity = new PushButton( this, Rect( Point( 200, 290), Size( 108, 65 ) ), "", -1, false, PushButton::WhiteBorderUp );
-  _d->btnPeace = new PushButton( this, Rect( Point( 320, 290), Size( 108, 65 ) ), "", -1, false, PushButton::WhiteBorderUp );
-  _d->btnFavour = new PushButton( this, Rect( Point( 440, 290), Size( 108, 65 ) ), "", -1, false, PushButton::WhiteBorderUp );
+  _d->btnCulture    = new RatingButton( this, Point( 80,  290), "culture" );
+  _d->btnProsperity = new RatingButton( this, Point( 200, 290), "prosperity");
+  _d->btnProsperity->setValue( _d->city->getProsperity() );
+
+  _d->btnPeace      = new RatingButton( this, Point( 320, 290), "peace" );
+  _d->btnFavour     = new RatingButton( this, Point( 440, 290), "favour" );
 }
 
 void AdvisorRatingsWindow::draw( GfxEngine& painter )

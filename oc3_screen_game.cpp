@@ -327,7 +327,8 @@ void ScreenGame::Impl::showAdvisorsWindow( const int advType )
   }
   else
   {
-    AdvisorsWindow* advWnd = AdvisorsWindow::create( gui->getRootWidget(), -1, (AdvisorType)advType );
+    AdvisorsWindow* advWnd = AdvisorsWindow::create( gui->getRootWidget(), -1, 
+                                                     (AdvisorType)advType, scenario->getCity() );
     CONNECT( advWnd, onEmpireMapRequest(), this, Impl::showEmpireMapWindow ); 
   }
 }

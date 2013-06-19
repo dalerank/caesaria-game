@@ -23,6 +23,7 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_gui_paneling.hpp"
 #include "oc3_label.hpp"
+#include "oc3_city.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_advisor_employers_window.hpp"
@@ -40,6 +41,8 @@ public:
   Point offset;
   PictureRef tabBg;
 
+  City* city;
+
 oc3_signals public:
   Signal0<> onEmpireMapRequestSignal;
 };
@@ -53,12 +56,13 @@ PushButton* AdvisorsWindow::addButton( const int pos, const int picId )
   return btn;
 }
 
-AdvisorsWindow::AdvisorsWindow( Widget* parent, int id )
+AdvisorsWindow::AdvisorsWindow( Widget* parent, int id, City& city )
 : Widget( parent, id, Rect( Point(0, 0), parent->getSize() ) ), _d( new Impl )
 {
   // use some clipping to remove the right and bottom areas
   _d->background.reset( Picture::create( getSize() ) );
   _d->advisorPanel = 0;
+  _d->city = &city;
 
   Picture& backgr = Picture::load( "senate", 1 );
 
@@ -114,7 +118,7 @@ void AdvisorsWindow::showAdvisor( const AdvisorType type )
   case ADV_EMPLOYERS: _d->advisorPanel = new AdvisorEmployerWindow( this, ADV_EMPLOYERS ); break;
   case ADV_LEGION: _d->advisorPanel = new AdvisorLegionWindow( this, ADV_LEGION ); break;
   case ADV_EMPIRE: _d->advisorPanel = new AdvisorEmperorWindow( this, ADV_EMPIRE ); break;
-  case ADV_RATINGS: _d->advisorPanel = new AdvisorRatingsWindow( this, ADV_RATINGS ); break;
+  case ADV_RATINGS: _d->advisorPanel = new AdvisorRatingsWindow( this, ADV_RATINGS, *_d->city ); break;
   case ADV_TRADING:
     {
       AdvisorTradeWindow* wnd = new AdvisorTradeWindow( this, ADV_TRADING );
@@ -157,9 +161,9 @@ bool AdvisorsWindow::onEvent( const NEvent& event )
   return Widget::onEvent( event );
 }
 
-AdvisorsWindow* AdvisorsWindow::create( Widget* parent, int id, const AdvisorType type )
+AdvisorsWindow* AdvisorsWindow::create( Widget* parent, int id, const AdvisorType type, City& city )
 {
-  AdvisorsWindow* ret = new AdvisorsWindow( parent, id );
+  AdvisorsWindow* ret = new AdvisorsWindow( parent, id, city );
   ret->showAdvisor( type );
 
   return ret;

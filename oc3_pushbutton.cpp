@@ -25,14 +25,14 @@
 
 struct ButtonState
 {
-    Picture* bgTexture;
-    PictureRef texture;
-    Picture* iconTexture;
-    //SDL_Color color;
-    //bool overrideColorEnabled;
-    Font font;
-    Rect rectangle;
-    //ElementStyle* style;
+  Picture* bgTexture;
+  PictureRef texture;
+  Picture* iconTexture;
+  //SDL_Color color;
+  //bool overrideColorEnabled;
+  Font font;
+  Rect rectangle;
+  //ElementStyle* style;
 };    
 
 class PushButton::Impl
@@ -439,7 +439,7 @@ void PushButton::resizeEvent_()
 {
   for( int i=0; i != StateCount; i++ )
   {
-      _updateTexture( ElementState(i) );
+    _updateTexture( ElementState(i) );
   }
 }
 

@@ -19,10 +19,12 @@
 #include "oc3_widget.hpp"
 #include "oc3_scopedptr.hpp"
 
+class City;
+
 class AdvisorRatingsWindow : public Widget
 {
 public:
-  AdvisorRatingsWindow( Widget* parent, int id );
+  AdvisorRatingsWindow( Widget* parent, int id, const City& city );
 
   void draw( GfxEngine& painter );
 
