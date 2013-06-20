@@ -223,6 +223,10 @@ void Picture::draw( const Picture &srcpic, const Rect& srcrect, const Rect& dstr
   SDL_BlitSurface(srcimg, &src, _d->surface, &dst);
 }
 
+void Picture::draw( const Picture &srcpic, const Point& pos )
+{
+  draw( srcpic, pos.getX(), pos.getY() );
+}
 
 void Picture::lock()
 {

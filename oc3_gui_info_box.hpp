@@ -121,14 +121,14 @@ public:
 class GuiInfoFactory : public GuiInfoBox
 {
 public:
-   GuiInfoFactory( Widget* parent, Factory &building);
+   GuiInfoFactory( Widget* parent, const Tile& tile );
    virtual void paint();
 
    void drawWorkers( int& );
    std::string getInfoText();
 
 private:
-   Factory *_building;
+   FactoryPtr _building;
 };
 
 
@@ -137,8 +137,8 @@ class GuiInfoGranary : public GuiInfoBox
 {
 public:
   GuiInfoGranary( Widget* parent, const Tile& tile );
+  
   void paint();
-
   void drawWorkers( int );
   void drawGood(const GoodType &goodType, int, int&);
 
@@ -163,6 +163,21 @@ private:
    class Impl;
    ScopedPtr< Impl > _md;
 };
+
+class InfoBoxWarehouse : public GuiInfoBox
+{
+public:
+  InfoBoxWarehouse( Widget* parent, const Tile& tile );
+
+  void paint();
+  void drawWorkers();
+  void drawGood(const GoodType &goodType, int, int& );
+
+private:
+  class Impl;
+  ScopedPtr< Impl > _wd;
+};
+
 
 class InfoBoxTemple : public GuiInfoBox
 {

@@ -348,7 +348,7 @@ BuildMenu_farm::BuildMenu_farm( Widget* parent, const Rect& rectangle )
 void BuildMenu_raw_factory::initialize()
 {
   addBuildButton(B_MARBLE);
-  addBuildButton(B_IRON);
+  addBuildButton(B_IRON_MINE);
   addBuildButton(B_TIMBER);
   addBuildButton(B_CLAY_PIT);
 

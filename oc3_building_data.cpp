@@ -83,7 +83,7 @@ BuildingTypeEquale bldTypeEquales[] = {
   { B_GRAPE,          "vinard"},
   { B_MEAT,           "meat_farm"},
   { B_MARBLE,         "quarry"},
-  { B_IRON,           "iron_mine"},
+  { B_IRON_MINE,           "iron_mine"},
   { B_TIMBER,         "lumber_mill"},
   { B_CLAY_PIT,       "clay_pit"},
   { B_WINE,           "wine_workshop"},

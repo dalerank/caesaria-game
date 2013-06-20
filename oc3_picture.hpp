@@ -55,6 +55,7 @@ public:
    int getHeight() const;
 
    void draw( const Picture &srcpic, const int dx, const int dy );
+   void draw( const Picture &srcpic, const Point& pos );
    void draw( const Picture &srcpic, const Rect& srcrect, const Point& pos );
    void draw( const Picture &srcpic, const Rect& srcrect, const Rect& dstrect );
 

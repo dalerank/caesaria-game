@@ -90,6 +90,11 @@ void Factory::Impl::removeIdlePushers()
 void Factory::timeStep(const unsigned long time)
 {
    Building::timeStep(time);
+
+   if( getWorkers() == 0 )
+   {
+     return;
+   }
   
    GoodStock &inStock = getInGood();
 
@@ -226,7 +231,7 @@ bool FactoryTimber::canBuild(const TilePos& pos ) const
 }
 
 
-FactoryIron::FactoryIron() : Factory(G_NONE, G_IRON, B_IRON, Size(2) )
+FactoryIron::FactoryIron() : Factory(G_NONE, G_IRON, B_IRON_MINE, Size(2) )
 {
   _setProductRate( 9.6f );
   setWorkers( 0 );

@@ -126,7 +126,7 @@ ConstructionManager::ConstructionManager() : _d( new Impl )
   addCreator(B_FRUIT, OC3_STR_EXT(B_FRUIT)    , new BuildingCreator<FarmFruit>() );
   addCreator(B_VEGETABLE, OC3_STR_EXT(B_VEGETABLE), new BuildingCreator<FarmVegetable>() );
   // raw materials
-  addCreator(B_IRON, OC3_STR_EXT(B_IRON)  , new BuildingCreator<FactoryIron>() );
+  addCreator(B_IRON_MINE, OC3_STR_EXT(B_IRON_MINE)  , new BuildingCreator<FactoryIron>() );
   addCreator(B_TIMBER, OC3_STR_EXT(B_TIMBER), new BuildingCreator<FactoryTimber>() );
   addCreator(B_CLAY_PIT, OC3_STR_EXT(B_CLAY_PIT)  , new BuildingCreator<FactoryClay>() );
   addCreator(B_MARBLE, OC3_STR_EXT(B_MARBLE), new BuildingCreator<FactoryMarble>() );
