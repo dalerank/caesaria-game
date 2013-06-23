@@ -30,6 +30,7 @@
 #include "oc3_cityservice_workershire.hpp"
 #include "oc3_cityservice_timers.hpp"
 #include "oc3_cityservice_prosperity.hpp"
+#include "oc3_cityservice_shoreline.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_road.hpp"
 #include "oc3_time.hpp"
@@ -95,6 +96,7 @@ City::City() : _d( new Impl )
   addService( CityServiceWorkersHire::create( *this ) );
   addService( CityServicePtr( &CityServiceTimers::getInstance() ) );
   addService( CityServiceProsperity::create( *this ) );
+  addService( CityServiceShoreline::create( *this ) );
 }
 
 void City::timeStep()
