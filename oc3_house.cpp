@@ -117,8 +117,6 @@ void House::timeStep(const unsigned long time)
        }
      }
 
-     _d->freeWorkersCount = _d->currentHabitants;
-
      int homeless = math::clamp( _d->currentHabitants - _d->maxHabitants, 0, 0xff );
 
      if( homeless > 0 )
@@ -199,7 +197,7 @@ void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int start
       }
 
       _d->currentHabitants = sumHabitants;
-      _d->freeWorkersCount = sumHabitants;
+      _d->freeWorkersCount = sumFreeWorkers;
       _d->houseLevelSpec = HouseSpecHelper::getInstance().getHouseLevelSpec(_d->houseLevel);
       _d->nextHouseLevelSpec = _d->houseLevelSpec.next();
 
@@ -658,5 +656,22 @@ int House::getFoodLevel()
   
   default: 
     return -1;
+  }
+}
+
+int House::getScholars() const
+{
+  HouseLevelSpec level = getLevelSpec();
+  if( level.getHouseLevel() < 3 )
+  {
+    return 0;
+  }
+  else if( level.isPatrician() )
+  {
+    return _d->currentHabitants / 4;
+  }
+  else
+  {
+    return _d->currentHabitants / 5;
   }
 }

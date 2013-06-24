@@ -601,3 +601,8 @@ void Label::setLineIntervalOffset( const int offset )
     _d->lineIntervalOffset = offset;
     _d->needUpdatePicture = true;
 }
+
+Picture& Label::getPicture()
+{
+  return *_d->picture.data();
+}
