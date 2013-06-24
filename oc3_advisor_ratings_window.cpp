@@ -25,6 +25,9 @@
 #include "oc3_gfx_engine.hpp"
 #include "oc3_font.hpp"
 #include "oc3_city.hpp"
+#include "oc3_scenario.hpp"
+#include "oc3_win_targets.hpp"
+#include "oc3_texturedbutton.hpp"
 
 class RatingButton : public PushButton
 {
@@ -74,9 +77,31 @@ public:
   RatingButton* btnProsperity;
   RatingButton* btnPeace;
   RatingButton* btnFavour;
+  TexturedButton* btnHelp;
+
+  void drawColumn( const Point& center, const int value );
 
   City const* city;
 };
+
+void AdvisorRatingsWindow::Impl::drawColumn( const Point& center, const int value )
+{
+  int columnStartY = 275;
+  Picture& footer = Picture::load( ResourceGroup::panelBackground, 544 );
+  Picture& header = Picture::load( ResourceGroup::panelBackground, 546 );
+  Picture& body = Picture::load( ResourceGroup::panelBackground, 545 );
+
+  for( int i=0; i < value; i++ )
+  {
+    background->draw( body, center.getX() - body.getWidth() / 2, columnStartY - 10 - i * 2 );
+  }
+
+  background->draw( footer, center.getX() - footer.getWidth() / 2, columnStartY - footer.getHeight() );
+  if( value >= 50 )
+  {
+    background->draw( header, center.getX() - header.getWidth() / 2, columnStartY - 10 - value * 2);
+  }
+}
 
 AdvisorRatingsWindow::AdvisorRatingsWindow( Widget* parent, int id, const City& city ) 
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
@@ -85,13 +110,12 @@ AdvisorRatingsWindow::AdvisorRatingsWindow( Widget* parent, int id, const City& 
   setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),
                Size( 640, 432 ) ) );
 
-  Label* title = new Label( this, Rect( 10, 10, getWidth() - 10, 10 + 40) );
+  Label* title = new Label( this, Rect( 60, 10, 225, 10 + 40) );
   title->setText( "Ratings" );
   title->setFont( Font::create( FONT_3 ) );
-  title->setTextAlignment( alignCenter, alignCenter );
+  title->setTextAlignment( alignUpperLeft, alignCenter );
 
   _d->background.reset( Picture::create( getSize() ) );
-  //main _d->_d->background
   GuiPaneling::instance().draw_white_frame(*_d->background, 0, 0, getWidth(), getHeight() );
 
   //buttons _d->_d->background
@@ -99,12 +123,32 @@ AdvisorRatingsWindow::AdvisorRatingsWindow( Widget* parent, int id, const City& 
 
   _d->background->draw( Picture::load( ResourceGroup::menuMiddleIcons, 27), 60, 50 );
 
+  CityWinTargets& targets = Scenario::instance().getWinTargets();
+
+  Font font = Font::create( FONT_2 );
+  font.draw( *_d->background, StringHelper::format( 0xff, "(%s %d)", _("##need_population##"), targets.getPopulation() ), 225, 15);
+
   _d->btnCulture    = new RatingButton( this, Point( 80,  290), "culture" );
+  _d->btnCulture->setTarget( targets.getCulture() );
+  _d->btnCulture->setValue( 0 );
+  _d->drawColumn( _d->btnCulture->getRelativeRect().getCenter(), 0 );
+
   _d->btnProsperity = new RatingButton( this, Point( 200, 290), "prosperity");
   _d->btnProsperity->setValue( _d->city->getProsperity() );
+  _d->btnProsperity->setTarget( targets.getProsperity() );
+  _d->drawColumn( _d->btnProsperity->getRelativeRect().getCenter(), _d->city->getProsperity() );
 
   _d->btnPeace      = new RatingButton( this, Point( 320, 290), "peace" );
+  //_d->btnPeace->setValue( _d->city->getPeace() );
+  _d->btnPeace->setTarget( targets.getPeace() );
+  _d->drawColumn( _d->btnPeace->getRelativeRect().getCenter(), 0 );
+
   _d->btnFavour     = new RatingButton( this, Point( 440, 290), "favour" );
+  //_d->btnFavour->setValue( _d->city->getFavour() );
+  _d->btnFavour->setTarget( targets.getFavour() );
+  _d->drawColumn( _d->btnFavour->getRelativeRect().getCenter(), 0 );
+
+  _d->btnHelp = new TexturedButton( this, Point( 12, getHeight() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 }
 
 void AdvisorRatingsWindow::draw( GfxEngine& painter )

@@ -33,21 +33,16 @@ CityWinTargets::CityWinTargets() : _d( new Impl )
 {
   _d->success = false;
   _d->maxHouseLevel = 30;
-  _d->population = 999999;
-  _d->culture = 999;
-  _d->prosperity = 999;
-  _d->favour = 999;
-  _d->peace = 999;
+  _d->population = 0;
+  _d->culture = 0;
+  _d->prosperity = 0;
+  _d->favour = 0;
+  _d->peace = 0;
 }
 
 CityWinTargets::~CityWinTargets()
 {
 
-}
-
-void CityWinTargets::setMaxHouseLevel( const int level )
-{
-  _d->maxHouseLevel = level;
 }
 
 bool CityWinTargets::isSuccess() const
@@ -64,4 +59,29 @@ void CityWinTargets::load( const VariantMap& stream )
   _d->prosperity = stream.get( "prosperity" ).toInt();
   _d->favour = stream.get( "favour" ).toInt();
   _d->peace = stream.get( "peace" ).toInt();
+}
+
+int CityWinTargets::getCulture() const
+{
+  return _d->culture;
+}
+
+int CityWinTargets::getProsperity() const
+{
+  return _d->prosperity;
+}
+
+int CityWinTargets::getFavour() const
+{
+  return _d->favour;
+}
+
+int CityWinTargets::getPeace() const
+{
+  return _d->peace;
+}
+
+int CityWinTargets::getPopulation() const
+{
+  return _d->population;
 }

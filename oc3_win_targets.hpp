@@ -29,7 +29,12 @@ public:
   CityWinTargets();
   ~CityWinTargets();
 
-  void setMaxHouseLevel( const int level );
+  int getCulture() const;
+  int getProsperity() const;
+  int getFavour() const;
+  int getPeace() const;
+  int getPopulation() const;
+
   bool isSuccess() const;
 
   void load( const VariantMap& stream );
