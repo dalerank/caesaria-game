@@ -470,6 +470,7 @@ void TilemapRenderer::Impl::drawTileWater( Tile& tile )
   tile.setWasDrawn();
 
   bool needDrawAnimations = false;
+  Size areaSize(1);
   const TerrainTile& terrain = tile.getTerrain();
   if( terrain.getOverlay().isNull() )
   {
@@ -499,12 +500,14 @@ void TilemapRenderer::Impl::drawTileWater( Tile& tile )
         bool haveWater = house->hasServiceAccess( S_WELL ) || house->hasServiceAccess( S_FOUNTAIN );
 
         pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + ( haveWater ? 2 : 1 ) + 10 );
+        areaSize = overlay->getSize();
       }
     break;
       
       //other buildings
     default:
       pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + 1 );
+      areaSize = overlay->getSize();
     break;
     }  
 
@@ -516,15 +519,29 @@ void TilemapRenderer::Impl::drawTileWater( Tile& tile )
     }
   }
   
-  if( !needDrawAnimations && terrain.isWalkable(true) )
+  if( !needDrawAnimations && (terrain.isWalkable(true) || terrain.isBuilding()) )
   {
-    int reservoirWater = terrain.getWaterService( WTR_RESERVOIR );
-    int fontainWater = terrain.getWaterService( WTR_FONTAIN );
-    
-    if( fontainWater + reservoirWater > 0 )
+    PtrTilesArea area;
+    if( areaSize.getWidth() == 1 )
     {
-      int picIndex = (fontainWater > 0 ? 22 : 21);
-      engine->drawPicture( Picture::load( ResourceGroup::waterOverlay, picIndex ), screenPos );
+      area.push_back( &tile );
+    }
+    else
+    {
+      area = tilemap->getFilledRectangle( tile.getIJ(), areaSize );
+    }
+
+    for( PtrTilesArea::iterator it=area.begin(); it != area.end(); it++ )
+    {
+      TerrainTile& curTera = (*it)->getTerrain();
+      int reservoirWater = curTera.getWaterService( WTR_RESERVOIR );
+      int fontainWater = curTera.getWaterService( WTR_FONTAIN );
+      
+      if( fontainWater + reservoirWater > 0 )
+      {
+        int picIndex = (fontainWater > 0 ? 22 : 21);
+        engine->drawPicture( Picture::load( ResourceGroup::waterOverlay, picIndex ), (*it)->getXY() + mapOffset );
+      }
     }
   }
 }
