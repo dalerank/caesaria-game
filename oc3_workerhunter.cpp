@@ -19,6 +19,9 @@
 #include "oc3_safetycast.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_servicewalker_helper.h"
+#include "oc3_city.hpp"
+#include "oc3_enums.hpp"
+#include "oc3_path_finding.hpp"
 
 WorkersHunter::WorkersHunter( City& city )
  : ServiceWalker( city, S_WORKERS_HUNTER )
@@ -51,16 +54,17 @@ void WorkersHunter::onNewTile()
   {
     ServiceWalkerHelper hlp( *this );
     std::set<HousePtr> houses = hlp.getReachedBuildings<House>( getIJ() );
-    for( std::set<HousePtr>::iterator it = houses.begin(); 
-         it != houses.end(); ++it)
+    for( std::set<HousePtr>::iterator it = houses.begin(); it != houses.end(); ++it)
     {
         (*it)->applyService( ServiceWalkerPtr( this ) );
     }
   }
   else
   {
-    if( !_pathWay.isReverse() ) 
-      _pathWay.toggleDirection();
+    if( !_getPathway().isReverse() ) 
+    {
+      _getPathway().toggleDirection();
+    }
   }
 }
 

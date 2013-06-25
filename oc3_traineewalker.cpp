@@ -17,6 +17,7 @@
 #include "oc3_scenario.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_path_finding.hpp"
 
 TraineeWalker::TraineeWalker(const WalkerTraineeType traineeType)
 {
@@ -87,7 +88,7 @@ void TraineeWalker::computeWalkerPath()
     PathWay pathWay;
     pathPropagator.getPath( _destinationBuilding, pathWay);
     setPathWay( pathWay );
-    setIJ( _pathWay.getOrigin().getIJ() );
+    setIJ( _getPathway().getOrigin().getIJ() );
   }
   else
   {

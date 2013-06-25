@@ -21,6 +21,9 @@
 
 #include "oc3_walker.hpp"
 
+class Propagator;
+class City;
+
 /** This walker delivers goods */
 class CartPusher : public Walker
 {
@@ -41,9 +44,9 @@ public:
   void send2City( BuildingPtr building, const GoodStock& stock );
 
   void computeWalkerDestination();
-  BuildingPtr getWalkerDestination_factory(Propagator &pathPropagator, PathWay &oPathWay);
-  BuildingPtr getWalkerDestination_warehouse(Propagator &pathPropagator, PathWay &oPathWay);
-  BuildingPtr getWalkerDestination_granary(Propagator &pathPropagator, PathWay &oPathWay);
+  BuildingPtr getWalkerDestination_factory(Propagator& pathPropagator, PathWay &oPathWay);
+  BuildingPtr getWalkerDestination_warehouse(Propagator& pathPropagator, PathWay &oPathWay);
+  BuildingPtr getWalkerDestination_granary(Propagator& pathPropagator, PathWay &oPathWay);
   
   void timeStep(const unsigned long time);
 

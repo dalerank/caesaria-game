@@ -21,7 +21,6 @@
 
 #include "oc3_tile.hpp"
 #include "oc3_exception.hpp"
-#include "oc3_pic_loader.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_gui_paneling.hpp"
 #include "oc3_building_data.hpp"
@@ -41,6 +40,7 @@
 #include "oc3_religion_building.hpp"
 #include "oc3_divinity.hpp"
 #include "oc3_warehouse.hpp"
+#include "oc3_gfx_engine.hpp"
 
 class InfoBoxHelper
 {

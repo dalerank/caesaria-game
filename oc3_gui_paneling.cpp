@@ -19,7 +19,6 @@
 
 #include "oc3_gui_paneling.hpp"
 #include "oc3_exception.hpp"
-#include "oc3_pic_loader.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_pushbutton.hpp"
 #include "oc3_resourcegroup.hpp"

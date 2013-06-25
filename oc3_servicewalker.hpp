@@ -18,6 +18,8 @@
 
 #include "oc3_walker.hpp"
 
+class City;
+
 /** This walker gives a service to buildings along the road */
 class ServiceWalker : public Walker
 {

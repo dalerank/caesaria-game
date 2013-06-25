@@ -14,7 +14,6 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_buildingengineer.hpp"
-#include "oc3_pic_loader.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_positioni.hpp"
 

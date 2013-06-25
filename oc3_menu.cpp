@@ -18,7 +18,6 @@
 #include "oc3_texturedbutton.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_color.hpp"
-#include "oc3_pic_loader.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_event.hpp"
 #include "oc3_buildmenu.hpp"
@@ -30,6 +29,7 @@
 #include "oc3_minimap_colours.hpp"
 #include "oc3_tilemap_renderer.hpp"
 #include "oc3_tile.hpp"
+#include "oc3_gfx_engine.hpp"
 #include "oc3_overlays_menu.hpp"
 
 static const int REMOVE_TOOL_ID = B_MAX + 1; 

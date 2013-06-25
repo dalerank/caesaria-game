@@ -22,8 +22,6 @@
 #include "oc3_loadmapwindow.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_exception.hpp"
-#include "oc3_pic_loader.hpp"
-
 #include "oc3_startmenu.hpp"
 #include "oc3_guienv.hpp"
 #include "oc3_pushbutton.hpp"

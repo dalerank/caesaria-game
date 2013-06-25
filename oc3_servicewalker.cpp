@@ -17,6 +17,7 @@
 #include "oc3_tile.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_city.hpp"
+#include "oc3_path_finding.hpp"
 
 class ServiceWalker::Impl
 {
@@ -139,7 +140,7 @@ void ServiceWalker::computeWalkerPath()
 
   reservePath(*bestPath);
   setPathWay(*bestPath);
-  setIJ(_pathWay.getOrigin().getIJ() );
+  setIJ( _getPathway().getOrigin().getIJ() );
 }
 
 unsigned int ServiceWalker::getReachDistance() const
@@ -243,7 +244,7 @@ void ServiceWalker::onNewTile()
 void ServiceWalker::onDestination()
 {
   Walker::onDestination();
-  if (_pathWay.isReverse())
+  if (_getPathway().isReverse())
   {
     // walker is back in the market
     _isDeleted= true;
@@ -251,7 +252,7 @@ void ServiceWalker::onDestination()
   else
   {
     // walker finished service => get back to service building
-    _pathWay.rbegin();
+    _getPathway().rbegin();
     _action._action=WA_MOVE;
     computeDirection();
   }

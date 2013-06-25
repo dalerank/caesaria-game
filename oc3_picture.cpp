@@ -21,7 +21,8 @@
 #include "oc3_exception.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_rectangle.hpp"
-#include "oc3_pic_loader.hpp"
+#include "oc3_picture_bank.hpp"
+#include "oc3_gfx_engine.hpp"
 #include "oc3_requirements.hpp"
 #include "oc3_color.hpp"
 

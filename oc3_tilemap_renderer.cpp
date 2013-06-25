@@ -311,7 +311,7 @@ void TilemapRenderer::Impl::drawTileReligion( Tile& tile )
         religionLevel += house->getServiceAccess(S_TEMPLE_MARS);
         religionLevel += house->getServiceAccess(S_TEMPLE_NEPTUNE);
         religionLevel += house->getServiceAccess(S_TEMPLE_CERES);
-        religionLevel = math::clamp( house->getLevelSpec().getMinReligionLevel(), 0, 100 );
+        religionLevel = math::clamp( religionLevel / (house->getLevelSpec().getMinReligionLevel()+1), 0, 100 );
         needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() ==0);
       }
     break;

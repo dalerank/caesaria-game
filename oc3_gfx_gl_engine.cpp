@@ -28,7 +28,6 @@
 #include <SDL_ttf.h>
 
 #include "oc3_exception.hpp"
-#include "oc3_pic_loader.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_eventconverter.hpp"

@@ -57,7 +57,7 @@ House::House(const int houseId) : Building( B_HOUSE ), _d( new Impl )
    setName( _d->houseLevelSpec.getLevelName() );
    _d->currentHabitants = 0;
    _d->desirability = -3;
-   _fireLevel = 0;
+   _fireLevel = 90;
 
    _d->goodStore.setMaxQty(10000);  // no limit
    _d->goodStore.setMaxQty(G_WHEAT, 100);

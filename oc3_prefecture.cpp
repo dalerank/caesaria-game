@@ -21,6 +21,7 @@
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_tile.hpp"
+#include "oc3_path_finding.hpp"
 
 BuildingPrefecture::BuildingPrefecture() : ServiceBuilding(S_PREFECT, B_PREFECT, Size(1))
 {

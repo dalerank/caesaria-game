@@ -16,11 +16,12 @@
 #include "oc3_gettext.hpp"
 #include "oc3_topmenu.hpp"
 #include "oc3_label.hpp"
-#include "oc3_pic_loader.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_contextmenuitem.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_time.hpp"
+#include "oc3_gfx_engine.hpp"
+#include "oc3_enums.hpp"
 
 namespace {
 static const int dateLabelOffset = 155;
@@ -51,8 +52,6 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
 {
   TopMenu* ret = new TopMenu( parent, height);
   ret->setGeometry( Rect( 0, 0, parent->getWidth(), height ) );
-
-  GfxEngine& engine = GfxEngine::instance();
 
   std::vector<Picture> p_marble;
   for (int i = 1; i<=12; ++i)
@@ -96,8 +95,6 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
   ret->_d->lbDate->setBackgroundPicture( Picture::load( ResourceGroup::panelBackground, panelBgStatus ) );
   ret->_d->lbDate->setTooltipText( _("##date_tooltip##") );
   //_dateLabel.setTextPosition(20, 0);
-
-  GfxEngine::instance().loadPicture(*ret->_d->bgPicture);
 
   ContextMenuItem* tmp = ret->addItem( _("##gmenu_file##"), -1, true, true, false, false );
   tmp->setBackgroundPicture( *ret->_d->bgPicture );

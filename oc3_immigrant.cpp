@@ -21,6 +21,7 @@
 #include "oc3_house.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_path_finding.hpp"
 
 class Immigrant::Impl
 {

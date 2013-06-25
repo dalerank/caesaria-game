@@ -30,7 +30,7 @@
 #include "oc3_gui_info_box.hpp"
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_building_data.hpp"
-
+#include "oc3_picture_bank.hpp"
 #include "oc3_screen_menu.hpp"
 #include "oc3_screen_game.hpp"
 #include "oc3_house_level.hpp"

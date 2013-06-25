@@ -24,28 +24,9 @@
 #include <vector>
 
 #include "oc3_picture.hpp"
-#include "oc3_gfx_engine.hpp"
-#include "oc3_enums.hpp"
+#include "oc3_walker_action.hpp"
 #include "oc3_good.hpp"
 #include "oc3_scopedptr.hpp"
-
-
-// contains data needed for loading pictures
-class PicMetaData
-{
-public:
-  static PicMetaData& instance();
-  ~PicMetaData();
-
-  Point get(const std::string &resource_name);   // image name ("Govt_00005")
-
-private:
-  PicMetaData();
-
-  class Impl;
-  ScopedPtr< Impl > _d;
-};
-
 
 // loads pictures from files
 class PicLoader
@@ -79,24 +60,18 @@ public:
 
   // loads all resources of the given archive file
   void loadArchive(const std::string &filename);
+  ~PicLoader();
 
 private:
   PicLoader();
-  static PicLoader* _instance;
 
   Picture makePicture(SDL_Surface *surface, const std::string& resource_name) const;
 
-  std::map<std::string, Picture> _resources;  // key=image name, value=picture
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 class Animation;
-
-struct WalkerAction
-{
-   WalkerActionType _action;
-   DirectionType _direction;
-};
-bool operator<(const WalkerAction &v1, const WalkerAction &v2);
 
 class WalkerLoader
 {
@@ -116,7 +91,6 @@ public:
 
 private:
    WalkerLoader();
-   static WalkerLoader* _instance;
 
    std::vector<std::map<WalkerAction, Animation> > _animations; // anim[WalkerGraphic][WalkerAction]
 };
