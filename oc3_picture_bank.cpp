@@ -303,135 +303,144 @@ PicLoader::~PicLoader()
 
 }
 
+class WalkerLoader::Impl
+{
+public:
+  typedef std::vector< WalkerLoader::WalkerAnimationMap > Animations;
+  Animations animations; // anim[WalkerGraphic][WalkerAction]
+};
+
 WalkerLoader& WalkerLoader::instance()
 {
    static WalkerLoader inst;
    return inst;
 }
 
-WalkerLoader::WalkerLoader() { }
+WalkerLoader::WalkerLoader() : _d( new Impl )
+{ 
+}
 
 void WalkerLoader::loadAll()
 {
-   _animations.resize(30);  // number of walker types
+   _d->animations.resize(30);  // number of walker types
 
    std::map<WalkerAction, Animation> map;
 
    map.clear();
    fillWalk(map, "citizen01", 1, 12);
-   _animations[WG_POOR] = map;
+   _d->animations[WG_POOR] = map;
 
    map.clear();
    fillWalk(map, "citizen01", 105, 12);
-   _animations[WG_BATH] = map;
+   _d->animations[WG_BATH] = map;
 
    map.clear();
    fillWalk(map, "citizen01", 209, 12);
-   _animations[WG_PRIEST] = map;
+   _d->animations[WG_PRIEST] = map;
 
    map.clear();
    fillWalk(map, "citizen01", 313, 12);
-   _animations[WG_ACTOR] = map;
+   _d->animations[WG_ACTOR] = map;
 
    map.clear();
    fillWalk(map, "citizen01", 417, 12);
-   _animations[WG_TAMER] = map;
+   _d->animations[WG_TAMER] = map;
 
    map.clear();
    fillWalk(map, "citizen01", 617, 12);
-   _animations[WG_TAX] = map;
+   _d->animations[WG_TAX] = map;
 
    map.clear();
    fillWalk(map, "citizen01", 721, 12);
-   _animations[WG_CHILD] = map;
+   _d->animations[WG_CHILD] = map;
 
    map.clear();
    fillWalk(map, "citizen01", 825, 12);
-   _animations[WG_MARKETLADY] = map;
+   _d->animations[WG_MARKETLADY] = map;
 
    map.clear();
    fillWalk(map, "citizen01", 929, 12);
-   _animations[WG_PUSHER] = map;
+   _d->animations[WG_PUSHER] = map;
 
    map.clear();
    fillWalk(map, "citizen01", 1033, 12);
-   _animations[WG_PUSHER2] = map;
+   _d->animations[WG_PUSHER2] = map;
 
    map.clear();
    fillWalk(map, "citizen01", 1137, 12);
-   _animations[WG_ENGINEER] = map;
+   _d->animations[WG_ENGINEER] = map;
 
    map.clear();
    fillWalk(map, "citizen02", 1, 12);
-   _animations[WG_GLADIATOR] = map;
+   _d->animations[WG_GLADIATOR] = map;
 
    map.clear();
    fillWalk(map, "citizen02", 199, 12);
-   _animations[WG_GLADIATOR2] = map;
+   _d->animations[WG_GLADIATOR2] = map;
 
    map.clear();
    fillWalk(map, "citizen02", 351, 12);
-   _animations[WG_RIOTER] = map;
+   _d->animations[WG_RIOTER] = map;
 
    map.clear();
    fillWalk(map, "citizen02", 463, 12);
-   _animations[WG_BARBER] = map;
+   _d->animations[WG_BARBER] = map;
 
    map.clear();
    fillWalk(map, "citizen02", 615, 12);
-   _animations[WG_PREFECT] = map;
+   _d->animations[WG_PREFECT] = map;
 
    map.clear();
    fillWalk(map, "citizen02", 767, 12);
-   _animations[WG_PREFECT_DRAG_WATER] = map;
+   _d->animations[WG_PREFECT_DRAG_WATER] = map;
 
    map.clear();
    fillWalk(map, "citizen02", 863, 6);
-   _animations[WG_PREFECT_FIGHTS_FIRE] = map;
+   _d->animations[WG_PREFECT_FIGHTS_FIRE] = map;
 
    map.clear();
    fillWalk(map, "citizen02", 911, 12);
-   _animations[WG_HOMELESS] = map;
+   _d->animations[WG_HOMELESS] = map;
 
    map.clear();
    fillWalk(map, "citizen03", 713, 12);
-   _animations[WG_RICH] = map;
+   _d->animations[WG_RICH] = map;
 
    map.clear();
    fillWalk(map, "citizen03", 817, 12);
-   _animations[WG_DOCTOR] = map;
+   _d->animations[WG_DOCTOR] = map;
 
    map.clear();
    fillWalk(map, "citizen03", 921, 12);
-   _animations[WG_RICH2] = map;
+   _d->animations[WG_RICH2] = map;
 
    map.clear();
    fillWalk(map, "citizen03", 1025, 12);
-   _animations[WG_LIBRARIAN] = map;
+   _d->animations[WG_LIBRARIAN] = map;
 
    map.clear();
    fillWalk(map, "citizen03", 553, 12);
-   _animations[WG_SOLDIER] = map;
+   _d->animations[WG_SOLDIER] = map;
 
    map.clear();
    fillWalk(map, "citizen03", 241, 12);
-   _animations[WG_JAVELINEER] = map;
+   _d->animations[WG_JAVELINEER] = map;
 
    map.clear();
    fillWalk(map, "citizen04", 1, 12);
-   _animations[WG_HORSEMAN] = map;
+   _d->animations[WG_HORSEMAN] = map;
 
    map.clear();
    fillWalk(map, ResourceGroup::carts, 145, 12);
-   _animations[WG_HORSE_CARAVAN] = map;
+   _d->animations[WG_HORSE_CARAVAN] = map;
 
    map.clear();
    fillWalk(map, ResourceGroup::carts, 273, 12);
-   _animations[WG_CAMEL_CARAVAN] = map;
+   _d->animations[WG_CAMEL_CARAVAN] = map;
 
    map.clear();
    fillWalk(map, ResourceGroup::carts, 369, 12);
-   _animations[WG_LITTLE_HELPER] = map;
+   _d->animations[WG_LITTLE_HELPER] = map;
 
 }
 
@@ -460,7 +469,7 @@ void WalkerLoader::fillWalk(std::map<WalkerAction, Animation> &ioMap, const std:
 
 const std::map<WalkerAction, Animation>& WalkerLoader::getAnimationMap(const WalkerGraphicType walkerGraphic)
 {
-   return _animations[walkerGraphic];
+   return _d->animations[walkerGraphic];
 }
 
 

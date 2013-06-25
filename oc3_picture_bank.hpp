@@ -19,9 +19,7 @@
 #ifndef __OPENCAESAR3_PICLOADER_H_INCLUDED__
 #define __OPENCAESAR3_PICLOADER_H_INCLUDED__
 
-#include <string>
 #include <map>
-#include <vector>
 
 #include "oc3_picture.hpp"
 #include "oc3_walker_action.hpp"
@@ -76,6 +74,8 @@ class Animation;
 class WalkerLoader
 {
 public:
+   typedef std::map<WalkerAction, Animation> WalkerAnimationMap;
+   
    static WalkerLoader& instance();
 
    // loads all walker animations
@@ -85,14 +85,15 @@ public:
    // prefix: image prefix
    // start: index of the first frame
    // size: number of frames for the walking movement
-   void fillWalk( std::map<WalkerAction, Animation> &ioMap, const std::string &prefix, const int start, const int size);
+   void fillWalk( WalkerAnimationMap& ioMap, const std::string &prefix, const int start, const int size);
 
-   const std::map<WalkerAction, Animation>& getAnimationMap(const WalkerGraphicType walkerGraphic);
+   const WalkerAnimationMap& getAnimationMap(const WalkerGraphicType walkerGraphic);
 
 private:
    WalkerLoader();
 
-   std::vector<std::map<WalkerAction, Animation> > _animations; // anim[WalkerGraphic][WalkerAction]
+   class Impl;
+   ScopedPtr< Impl > _d;
 };
 
 
