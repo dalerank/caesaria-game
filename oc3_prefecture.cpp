@@ -23,7 +23,7 @@
 #include "oc3_tile.hpp"
 #include "oc3_path_finding.hpp"
 
-BuildingPrefecture::BuildingPrefecture() : ServiceBuilding(S_PREFECT, B_PREFECT, Size(1))
+BuildingPrefecture::BuildingPrefecture() : ServiceBuilding(S_PREFECT, B_PREFECTURE, Size(1))
 {
   _fireDetect = TilePos( -1, -1 );
   setPicture( Picture::load( ResourceGroup::security, 1 ) );

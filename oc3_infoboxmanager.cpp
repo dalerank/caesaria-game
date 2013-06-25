@@ -121,8 +121,8 @@ InfoBoxManager::InfoBoxManager() : _d( new Impl )
 {
   addCreator( B_ROAD, OC3_STR_EXT(B_ROAD), new BaseInfoboxCreator<InfoBoxLand>() );
   addCreator( B_HOUSE, OC3_STR_EXT(B_HOUSE), new InfoBoxHouseCreator() );
-  addCreator( B_PREFECT, OC3_STR_EXT(B_PREFECT), new ServiceBaseInfoboxCreator( "##prefecture_title##", "##prefecture_text##") );
-  addCreator( B_ENGINEER, OC3_STR_EXT(B_ENGINEER), new ServiceBaseInfoboxCreator( "##engineering_post_title##", "##engineering_post_text##" ) ); 
+  addCreator( B_PREFECTURE, OC3_STR_EXT(B_PREFECTURE), new ServiceBaseInfoboxCreator( "##prefecture_title##", "##prefecture_text##") );
+  addCreator( B_ENGINEER_POST, OC3_STR_EXT(B_ENGINEER_POST), new ServiceBaseInfoboxCreator( "##engineering_post_title##", "##engineering_post_text##" ) ); 
   addCreator( B_WELL, OC3_STR_EXT(B_WELL), new ServiceBaseInfoboxCreator( "##well_title##", "##well_text##" ) );
   addCreator( B_FOUNTAIN, OC3_STR_EXT(B_FOUNTAIN), new ServiceBaseInfoboxCreator( "##fontaun_title##", "##fontaun_text##" ) );
   addCreator( B_MARKET, OC3_STR_EXT(B_MARKET), new BaseInfoboxCreator<GuiInfoMarket>() );

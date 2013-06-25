@@ -108,7 +108,7 @@ ConstructionManager::ConstructionManager() : _d( new Impl )
   addCreator(B_AQUEDUCT, OC3_STR_EXT(B_AQUEDUCT), new BuildingCreator<Aqueduct>() );
   addCreator(B_RESERVOIR, OC3_STR_EXT(B_RESERVOIR), new BuildingCreator<Reservoir>() );
   // security
-  addCreator(B_PREFECT, OC3_STR_EXT(B_PREFECT)  , new BuildingCreator<BuildingPrefecture>() );
+  addCreator(B_PREFECTURE, OC3_STR_EXT(B_PREFECTURE)  , new BuildingCreator<BuildingPrefecture>() );
   addCreator(B_FORT_LEGIONNAIRE, OC3_STR_EXT(B_FORT_LEGIONNAIRE), new BuildingCreator<FortLegionnaire>() );
   addCreator(B_FORT_JAVELIN, OC3_STR_EXT(B_FORT_JAVELIN)   , new BuildingCreator<FortJaveline>() );
   addCreator(B_FORT_MOUNTED, OC3_STR_EXT(B_FORT_MOUNTED)  , new BuildingCreator<FortMounted>() );
@@ -137,7 +137,7 @@ ConstructionManager::ConstructionManager() : _d( new Impl )
   addCreator(B_OIL, OC3_STR_EXT(B_OIL)      , new BuildingCreator<FactoryOil>() );
   addCreator(B_POTTERY, OC3_STR_EXT(B_POTTERY)  , new BuildingCreator<FactoryPottery>() );
   // utility
-  addCreator(B_ENGINEER, OC3_STR_EXT(B_ENGINEER), new BuildingCreator<BuildingEngineer>() );
+  addCreator(B_ENGINEER_POST, OC3_STR_EXT(B_ENGINEER_POST), new BuildingCreator<BuildingEngineer>() );
   addCreator(B_LOW_BRIDGE, OC3_STR_EXT(B_LOW_BRIDGE), new BuildingCreator<LowBridge>() );
   addCreator(B_HIGH_BRIDGE, OC3_STR_EXT(B_HIGH_BRIDGE), new BuildingCreator<HighBridge>() );
   addCreator(B_DOCK, OC3_STR_EXT(B_DOCK)    , new BuildingCreator<Dock>() );

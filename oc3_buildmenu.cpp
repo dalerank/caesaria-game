@@ -203,7 +203,7 @@ BuildMenu_water::BuildMenu_water( Widget* parent, const Rect& rectangle )
 
 void BuildMenu_security::initialize()
 {
-  addBuildButton(B_PREFECT);
+  addBuildButton(B_PREFECTURE);
 
   BuildMenu::initialize();
 }
@@ -247,7 +247,7 @@ BuildMenu_health::BuildMenu_health( Widget* parent, const Rect& rectangle )
 
 void BuildMenu_engineering::initialize()
 {
-  addBuildButton(B_ENGINEER);
+  addBuildButton(B_ENGINEER_POST);
   addBuildButton(B_LOW_BRIDGE);
   addBuildButton(B_HIGH_BRIDGE);
   addBuildButton(B_DOCK);

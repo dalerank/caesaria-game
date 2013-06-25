@@ -38,7 +38,7 @@ void BuildingWell::deliverService()
   }
 }
 
-char BuildingWell::getDesirabilityInfluence() const
+bool BuildingWell::isNeedRoadAccess() const
 {
-  return -1;
+  return false;
 }

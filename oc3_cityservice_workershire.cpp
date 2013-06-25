@@ -29,8 +29,8 @@ CityServicePtr CityServiceWorkersHire::create( City& city )
 CityServiceWorkersHire::CityServiceWorkersHire( City& city )
 : CityService( city, "workershire" ), _d( new Impl )
 {
-  _d->priorities[ 1 ] = B_PREFECT;
-  _d->priorities[ 2 ] = B_ENGINEER;
+  _d->priorities[ 1 ] = B_PREFECTURE;
+  _d->priorities[ 2 ] = B_ENGINEER_POST;
   _d->priorities[ 3 ] = B_CLAY_PIT;
   _d->priorities[ 4 ] = B_WHEAT_FARM;
   _d->priorities[ 5 ] = B_GRAPE;
