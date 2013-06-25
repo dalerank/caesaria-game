@@ -119,7 +119,7 @@ ConstructionManager::ConstructionManager() : _d( new Impl )
   addCreator(B_WAREHOUSE, OC3_STR_EXT(B_WAREHOUSE), new BuildingCreator<Warehouse>() );
   addCreator(B_GRANARY, OC3_STR_EXT(B_GRANARY)  , new BuildingCreator<Granary>() );
   // farms
-  addCreator(B_WHEAT, OC3_STR_EXT(B_WHEAT)    , new BuildingCreator<FarmWheat>() );
+  addCreator(B_WHEAT_FARM, OC3_STR_EXT(B_WHEAT_FARM)    , new BuildingCreator<FarmWheat>() );
   addCreator(B_OLIVE, OC3_STR_EXT(B_OLIVE)    , new BuildingCreator<FarmOlive>() );
   addCreator(B_GRAPE, OC3_STR_EXT(B_GRAPE)    , new BuildingCreator<FarmGrape>() );
   addCreator(B_MEAT, OC3_STR_EXT(B_MEAT)     , new BuildingCreator<FarmMeat>() );

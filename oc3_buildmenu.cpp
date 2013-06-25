@@ -329,7 +329,7 @@ BuildMenu_commerce::BuildMenu_commerce( Widget* parent, const Rect& rectangle )
 
 void BuildMenu_farm::initialize()
 {
-  addBuildButton(B_WHEAT);
+  addBuildButton(B_WHEAT_FARM);
   addBuildButton(B_FRUIT);
   addBuildButton(B_OLIVE);
   addBuildButton(B_GRAPE);

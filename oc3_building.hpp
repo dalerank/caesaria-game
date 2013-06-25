@@ -68,8 +68,8 @@ public:
   BuildingType getType() const;
   void setType(const BuildingType buildingType);
 
-  void save( VariantMap& stream) const;
-  void load( const VariantMap& stream );
+  virtual void save( VariantMap& stream) const;
+  virtual void load( const VariantMap& stream );
 
 protected:
   std::vector<Picture*> _fgPictures;

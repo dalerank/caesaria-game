@@ -35,7 +35,6 @@ public:
 WalkerPrefect::WalkerPrefect( City& city )
 : ServiceWalker( city, S_PREFECT ), _d( new Impl )
 {
-  setMaxDistance( 10 );
   _walkerType = WT_PREFECT;
   _d->water = 0;
   _d->action = Impl::patrol;

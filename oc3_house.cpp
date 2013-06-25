@@ -49,6 +49,7 @@ House::House(const int houseId) : Building( B_HOUSE ), _d( new Impl )
 {
    _d->houseId = houseId;
    _d->picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
+   _d->freeWorkersCount = 0;
    HouseSpecHelper& helper = HouseSpecHelper::getInstance();
    _d->houseLevel = helper.getHouseLevel( houseId );
    _d->houseLevelSpec = helper.getHouseLevelSpec( _d->houseLevel);
@@ -56,7 +57,7 @@ House::House(const int houseId) : Building( B_HOUSE ), _d( new Impl )
    setName( _d->houseLevelSpec.getLevelName() );
    _d->currentHabitants = 0;
    _d->desirability = -3;
-   _fireLevel = 90;
+   _fireLevel = 0;
 
    _d->goodStore.setMaxQty(10000);  // no limit
    _d->goodStore.setMaxQty(G_WHEAT, 100);
@@ -543,7 +544,9 @@ int House::getMaxDistance2Road() const
 
 void House::addHabitants( const int newHabitCount )
 {
-  _d->currentHabitants = (std::min)( _d->currentHabitants + newHabitCount, _d->maxHabitants );
+  int peoplesCount = (std::min)( _d->currentHabitants + newHabitCount, _d->maxHabitants );
+  _d->currentHabitants = peoplesCount;
+  _d->freeWorkersCount += peoplesCount / 2;
   _update();
 }
 

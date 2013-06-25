@@ -65,7 +65,7 @@ public:
 //    int getMinEntertainmentLevel();
 //    int getMinEducationLevel();
 //    int getMinHealthLevel();
-//    int getMinReligionLevel();
+  int getMinReligionLevel() const;
 //    int getMinWaterLevel();
 //    int getMinFoodLevel();
   ~HouseLevelSpec();

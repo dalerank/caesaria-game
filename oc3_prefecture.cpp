@@ -63,6 +63,7 @@ void BuildingPrefecture::deliverService()
   {
     bool fireDetect = _fireDetect.getI() >= 0;
     WalkerPrefectPtr walker = WalkerPrefect::create( Scenario::instance().getCity() );
+    walker->setMaxDistance( 26 );
 
     bool patrol = true;
     if( fireDetect )

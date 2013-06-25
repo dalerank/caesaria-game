@@ -933,7 +933,7 @@ InfoBoxFarm::InfoBoxFarm( Widget* parent, const Tile& tile )
   GoodType goodType = G_NONE;
   switch( _fd->farm->getType() )
   {
-    case B_WHEAT:
+    case B_WHEAT_FARM:
       desc.assign( _("##farm_description_wheat##") );
       name.assign( _("##farm_title_wheat##") );
       goodType = G_WHEAT;

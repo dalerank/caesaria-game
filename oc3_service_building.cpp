@@ -111,6 +111,7 @@ void ServiceBuilding::deliverService()
 {
    // make a service walker and send him to his wandering
   ServiceWalkerPtr serviceman = ServiceWalker::create( Scenario::instance().getCity(), getService() );
+  serviceman->setMaxDistance( getWalkerDistance() );
   serviceman->send2City( BuildingPtr( this ) );
 
   if( !serviceman->isDeleted() )
@@ -158,8 +159,10 @@ ServiceBuilding::~ServiceBuilding()
 
 }
 
-
-
+unsigned int ServiceBuilding::getWalkerDistance() const
+{
+  return 5;
+}
 
 EntertainmentBuilding::EntertainmentBuilding(const ServiceType service, 
                                              const BuildingType type,

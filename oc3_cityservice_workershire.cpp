@@ -32,10 +32,11 @@ CityServiceWorkersHire::CityServiceWorkersHire( City& city )
   _d->priorities[ 1 ] = B_PREFECT;
   _d->priorities[ 2 ] = B_ENGINEER;
   _d->priorities[ 3 ] = B_CLAY_PIT;
-  _d->priorities[ 4 ] = B_WHEAT;
+  _d->priorities[ 4 ] = B_WHEAT_FARM;
   _d->priorities[ 5 ] = B_GRAPE;
   _d->priorities[ 6 ] = B_GRANARY;
   _d->priorities[ 7 ] = B_IRON_MINE;
+  _d->priorities[ 8 ] = B_TEMPLE_CERES;
 }
 
 bool CityServiceWorkersHire::_haveHr( WorkingBuildingPtr building )

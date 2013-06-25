@@ -27,6 +27,8 @@ public:
 protected:
   Temple( RomeDivinityPtr divinity, BuildingType type, int imgId, const Size& size );
 
+  virtual unsigned int getWalkerDistance() const;
+
 private:
   class Impl;
   ScopedPtr< Impl > _td;

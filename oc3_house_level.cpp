@@ -90,10 +90,10 @@ int HouseLevelSpec::getTaxRate() const
 //    return _minHealthLevel;
 // }
 //
-// int HouseLevelSpec::getMinReligionLevel()
-// {
-//    return _minReligionLevel;
-// }
+int HouseLevelSpec::getMinReligionLevel() const
+{
+  return _d->minReligionLevel;
+}
 //
 // int HouseLevelSpec::getMinWaterLevel()
 // {
@@ -347,26 +347,11 @@ int HouseLevelSpec::computeEducationLevel(House &house, std::string &oMissingReq
 int HouseLevelSpec::computeReligionLevel(House &house)
 {
    int res = 0;
-   if (house.hasServiceAccess(S_TEMPLE_MERCURE))
-   {
-      res++;
-   }
-   if (house.hasServiceAccess(S_TEMPLE_VENUS))
-   {
-      res++;
-   }
-   if (house.hasServiceAccess(S_TEMPLE_MARS))
-   {
-      res++;
-   }
-   if (house.hasServiceAccess(S_TEMPLE_NEPTUNE))
-   {
-      res++;
-   }
-   if (house.hasServiceAccess(S_TEMPLE_CERES))
-   {
-      res++;
-   }
+   res += house.hasServiceAccess(S_TEMPLE_MERCURE) ? 1 : 0;
+   res += house.hasServiceAccess(S_TEMPLE_VENUS) ? 1 : 0;
+   res += house.hasServiceAccess(S_TEMPLE_MARS) ? 1 : 0;
+   res += house.hasServiceAccess(S_TEMPLE_NEPTUNE) ? 1 : 0;
+   res += house.hasServiceAccess(S_TEMPLE_CERES) ? 1 : 0;
    return res;
 }
 

@@ -68,6 +68,7 @@ public:
   void drawTileWater( Tile& tile );
   void drawTileDesirability( Tile& tile );
   void drawTileFire( Tile& tile );
+  void drawTileReligion( Tile& tile );
   void drawTileInSelArea( Tile& tile, Tile* master );
   void drawTileFood( Tile& tile );
   void drawAnimations( LandOverlayPtr overlay, const Point& screenPos );
@@ -203,7 +204,6 @@ void TilemapRenderer::Impl::drawTileDesirability( Tile& tile )
   }
 }
 
-
 void TilemapRenderer::Impl::drawTileFire( Tile& tile )
 {
   Point screenPos = tile.getXY() + mapOffset;
@@ -267,6 +267,72 @@ void TilemapRenderer::Impl::drawTileFire( Tile& tile )
     else
     {
       drawColumn( screenPos, 18, fireLevel );
+    }
+  }
+}
+
+void TilemapRenderer::Impl::drawTileReligion( Tile& tile )
+{
+  Point screenPos = tile.getXY() + mapOffset;
+
+  tile.setWasDrawn();
+
+  bool needDrawAnimations = false;
+  const TerrainTile& terrain = tile.getTerrain();
+  if( terrain.getOverlay().isNull() )
+  {
+    //draw background
+    engine->drawPicture( tile.getPicture(), screenPos );
+  }
+  else
+  {   
+    LandOverlayPtr overlay = terrain.getOverlay();
+    Picture* pic = 0;
+    int religionLevel = -1;
+    switch( overlay->getType() )
+    {
+      //fire buildings and roads
+    case B_ROAD:
+    case B_PLAZA:
+    case B_TEMPLE_CERES: case B_TEMPLE_MARS: case B_TEMPLE_MERCURE: case B_TEMPLE_NEPTUNE: case B_TEMPLE_VENUS:
+    case B_TEMPLE_ORACLE:
+    case B_BIG_TEMPLE_CERES: case B_BIG_TEMPLE_MARS: case B_BIG_TEMPLE_MERCURE: case B_BIG_TEMPLE_NEPTUNE: case B_BIG_TEMPLE_VENUS:
+      pic = &tile.getPicture();
+      needDrawAnimations = true;
+    break;  
+
+      //houses
+    case B_HOUSE:
+      {
+        HousePtr house = overlay.as< House >();
+        pic = &Picture::load( ResourceGroup::waterOverlay, ( overlay->getSize().getWidth() - 1 )*2 + 11 );
+        religionLevel = house->getServiceAccess(S_TEMPLE_MERCURE);
+        religionLevel += house->getServiceAccess(S_TEMPLE_VENUS);
+        religionLevel += house->getServiceAccess(S_TEMPLE_MARS);
+        religionLevel += house->getServiceAccess(S_TEMPLE_NEPTUNE);
+        religionLevel += house->getServiceAccess(S_TEMPLE_CERES);
+        religionLevel = math::clamp( house->getLevelSpec().getMinReligionLevel(), 0, 100 );
+        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() ==0);
+      }
+    break;
+
+      //other buildings
+    default:
+      {
+        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + 1 );
+      }
+    break;
+    }  
+
+    engine->drawPicture( *pic, screenPos );
+
+    if( needDrawAnimations )
+    {
+      drawAnimations( overlay, screenPos );
+    }
+    else if( religionLevel > 0 )
+    {
+      drawColumn( screenPos, 12, religionLevel );
     }
   }
 }
@@ -1003,6 +1069,7 @@ void TilemapRenderer::setChangeCommand( const TilemapChangeCommandPtr command )
     case OV_RISK_FIRE: _d->setDrawFunction( _d.data(), &Impl::drawTileFire ); break;
     case OV_COMMERCE_PRESTIGE: _d->setDrawFunction( _d.data(), &Impl::drawTileDesirability ); break;
     case OV_COMMERCE_FOOD: _d->setDrawFunction( _d.data(), &Impl::drawTileFood ); break;
+    case OV_RELIGION: _d->setDrawFunction( _d.data(), &Impl::drawTileReligion ); break;
     default:_d->setDrawFunction( _d.data(), &Impl::drawTileBase ); break;
     }
 
