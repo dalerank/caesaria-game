@@ -42,19 +42,6 @@ public:
   typedef Pictures::iterator ItPicture;
 
   Pictures resources;  // key=image name, value=picture
-
-  unsigned int getHash( const std::string& text ) const
-  {
-    unsigned int nHash = 0;
-    const char* key = text.c_str();
-    if( key )
-    {
-      while(*key)
-        nHash = (nHash<<5) + nHash + *key++;
-    }
-
-    return nHash;
-  }
 };
 
 PicLoader& PicLoader::instance()
@@ -252,7 +239,7 @@ Picture PicLoader::makePicture(SDL_Surface *surface, const std::string& resource
    int dot_pos = resource_name.find('.');
    std::string filename = resource_name.substr(0, dot_pos);
 
-   Point pic_info = PicMetaData::instance().get(filename);
+   Point pic_info = PictureInfoBank::instance().getOffset(filename);
 
    if (pic_info.getX() == -1 && pic_info.getY() == -1)
    {
@@ -324,123 +311,123 @@ void WalkerLoader::loadAll()
 {
    _d->animations.resize(30);  // number of walker types
 
-   std::map<WalkerAction, Animation> map;
+   WalkerAnimationMap waMap;
 
-   map.clear();
-   fillWalk(map, "citizen01", 1, 12);
-   _d->animations[WG_POOR] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen01", 1, 12);
+   _d->animations[WG_POOR] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen01", 105, 12);
-   _d->animations[WG_BATH] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen01", 105, 12);
+   _d->animations[WG_BATH] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen01", 209, 12);
-   _d->animations[WG_PRIEST] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen01", 209, 12);
+   _d->animations[WG_PRIEST] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen01", 313, 12);
-   _d->animations[WG_ACTOR] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen01", 313, 12);
+   _d->animations[WG_ACTOR] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen01", 417, 12);
-   _d->animations[WG_TAMER] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen01", 417, 12);
+   _d->animations[WG_TAMER] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen01", 617, 12);
-   _d->animations[WG_TAX] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen01", 617, 12);
+   _d->animations[WG_TAX] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen01", 721, 12);
-   _d->animations[WG_CHILD] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen01", 721, 12);
+   _d->animations[WG_CHILD] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen01", 825, 12);
-   _d->animations[WG_MARKETLADY] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen01", 825, 12);
+   _d->animations[WG_MARKETLADY] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen01", 929, 12);
-   _d->animations[WG_PUSHER] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen01", 929, 12);
+   _d->animations[WG_PUSHER] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen01", 1033, 12);
-   _d->animations[WG_PUSHER2] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen01", 1033, 12);
+   _d->animations[WG_PUSHER2] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen01", 1137, 12);
-   _d->animations[WG_ENGINEER] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen01", 1137, 12);
+   _d->animations[WG_ENGINEER] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen02", 1, 12);
-   _d->animations[WG_GLADIATOR] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen02", 1, 12);
+   _d->animations[WG_GLADIATOR] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen02", 199, 12);
-   _d->animations[WG_GLADIATOR2] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen02", 199, 12);
+   _d->animations[WG_GLADIATOR2] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen02", 351, 12);
-   _d->animations[WG_RIOTER] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen02", 351, 12);
+   _d->animations[WG_RIOTER] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen02", 463, 12);
-   _d->animations[WG_BARBER] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen02", 463, 12);
+   _d->animations[WG_BARBER] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen02", 615, 12);
-   _d->animations[WG_PREFECT] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen02", 615, 12);
+   _d->animations[WG_PREFECT] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen02", 767, 12);
-   _d->animations[WG_PREFECT_DRAG_WATER] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen02", 767, 12);
+   _d->animations[WG_PREFECT_DRAG_WATER] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen02", 863, 6);
-   _d->animations[WG_PREFECT_FIGHTS_FIRE] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen02", 863, 6);
+   _d->animations[WG_PREFECT_FIGHTS_FIRE] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen02", 911, 12);
-   _d->animations[WG_HOMELESS] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen02", 911, 12);
+   _d->animations[WG_HOMELESS] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen03", 713, 12);
-   _d->animations[WG_RICH] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen03", 713, 12);
+   _d->animations[WG_RICH] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen03", 817, 12);
-   _d->animations[WG_DOCTOR] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen03", 817, 12);
+   _d->animations[WG_DOCTOR] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen03", 921, 12);
-   _d->animations[WG_RICH2] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen03", 921, 12);
+   _d->animations[WG_RICH2] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen03", 1025, 12);
-   _d->animations[WG_LIBRARIAN] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen03", 1025, 12);
+   _d->animations[WG_LIBRARIAN] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen03", 553, 12);
-   _d->animations[WG_SOLDIER] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen03", 553, 12);
+   _d->animations[WG_SOLDIER] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen03", 241, 12);
-   _d->animations[WG_JAVELINEER] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen03", 241, 12);
+   _d->animations[WG_JAVELINEER] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen04", 1, 12);
-   _d->animations[WG_HORSEMAN] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen04", 1, 12);
+   _d->animations[WG_HORSEMAN] = waMap;
 
-   map.clear();
-   fillWalk(map, ResourceGroup::carts, 145, 12);
-   _d->animations[WG_HORSE_CARAVAN] = map;
+   waMap.clear();
+   fillWalk(waMap, ResourceGroup::carts, 145, 12);
+   _d->animations[WG_HORSE_CARAVAN] = waMap;
 
-   map.clear();
-   fillWalk(map, ResourceGroup::carts, 273, 12);
-   _d->animations[WG_CAMEL_CARAVAN] = map;
+   waMap.clear();
+   fillWalk(waMap, ResourceGroup::carts, 273, 12);
+   _d->animations[WG_CAMEL_CARAVAN] = waMap;
 
-   map.clear();
-   fillWalk(map, ResourceGroup::carts, 369, 12);
-   _d->animations[WG_LITTLE_HELPER] = map;
+   waMap.clear();
+   fillWalk(waMap, ResourceGroup::carts, 369, 12);
+   _d->animations[WG_LITTLE_HELPER] = waMap;
 
 }
 

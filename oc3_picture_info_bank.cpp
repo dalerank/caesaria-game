@@ -20,23 +20,24 @@
 
 #include <map>
 
-class PicMetaData::Impl
+class PictureInfoBank::Impl
 {
 public:
   void setRange(const std::string &preffix, const int first, const int last, const Point &data);
   void setOne(const std::string &preffix, const int index, const Point& data);
   void setOne(const std::string &preffix, const int index, const int xoffset, const int yoffset);
 
-  std::map<std::string, Point> data;   // key=image name (Govt_00005)
+  typedef std::map<int, Point> PictureInfoMap;
+  PictureInfoMap data;   // key=image name (Govt_00005)
 };
 
-PicMetaData& PicMetaData::instance()
+PictureInfoBank& PictureInfoBank::instance()
 {
-  static PicMetaData inst;
+  static PictureInfoBank inst;
   return inst;
 }
 
-PicMetaData::PicMetaData() : _d( new Impl )
+PictureInfoBank::PictureInfoBank() : _d( new Impl )
 {
   // tiles
   Point offset( -1, -1 );
@@ -135,7 +136,7 @@ PicMetaData::PicMetaData() : _d( new Impl )
   _d->setRange("citizen05", 1, 184, offset);
 }
 
-void PicMetaData::Impl::setRange(const std::string &preffix, const int first, const int last, const Point& data)
+void PictureInfoBank::Impl::setRange(const std::string& preffix, const int first, const int last, const Point& data)
 {
   for (int i = first; i<=last; ++i)
   {
@@ -143,21 +144,21 @@ void PicMetaData::Impl::setRange(const std::string &preffix, const int first, co
   }
 }
 
-void PicMetaData::Impl::setOne(const std::string &preffix, const int index, const Point& offset)
+void PictureInfoBank::Impl::setOne(const std::string& preffix, const int index, const Point& offset)
 {
-  std::string resource_name = StringHelper::format( 0xff, "%s_%05d", preffix.c_str(), index );
-  data[resource_name] = offset;
+  unsigned int hashName = StringHelper::hash( 0xff, "%s_%05d", preffix.c_str(), index );
+  data[hashName] = offset;
 }
 
-void PicMetaData::Impl::setOne(const std::string &preffix, const int index, const int xoffset, const int yoffset)
+void PictureInfoBank::Impl::setOne(const std::string& preffix, const int index, const int xoffset, const int yoffset)
 {
-  std::string resource_name = StringHelper::format( 0xff, "%s_%05d", preffix.c_str(), index );
-  data[resource_name] = Point( xoffset, yoffset );
+  unsigned int hashName = StringHelper::hash( 0xff, "%s_%05d", preffix.c_str(), index );
+  data[hashName] = Point( xoffset, yoffset );
 }
 
-Point PicMetaData::get(const std::string &resource_name)
+Point PictureInfoBank::getOffset(const std::string& resource_name)
 {
-  std::map<std::string, Point>::iterator it = _d->data.find(resource_name);
+  Impl::PictureInfoMap::iterator it = _d->data.find( StringHelper::hash( resource_name ) );
   if (it == _d->data.end())
   {
     return Point();
@@ -167,7 +168,7 @@ Point PicMetaData::get(const std::string &resource_name)
   return (*it).second;
 }
 
-PicMetaData::~PicMetaData()
+PictureInfoBank::~PictureInfoBank()
 {
 
 }

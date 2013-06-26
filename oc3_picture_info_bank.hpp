@@ -20,16 +20,16 @@
 #include "oc3_scopedptr.hpp"
 
 // contains data needed for loading pictures
-class PicMetaData
+class PictureInfoBank
 {
 public:
-  static PicMetaData& instance();
-  ~PicMetaData();
+  static PictureInfoBank& instance();
+  ~PictureInfoBank();
 
-  Point get(const std::string &resource_name);   // image name ("Govt_00005")
+  Point getOffset(const std::string &resource_name);   // image name ("Govt_00005")
 
 private:
-  PicMetaData();
+  PictureInfoBank();
 
   class Impl;
   ScopedPtr< Impl > _d;
