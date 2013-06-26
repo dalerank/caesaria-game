@@ -33,6 +33,7 @@
 #include "oc3_advisor_trade_window.hpp"
 #include "oc3_advisor_education_window.hpp"
 #include "oc3_advisor_health_window.hpp"
+#include "oc3_advisor_entertainment_window.hpp"
 
 class AdvisorsWindow::Impl
 {
@@ -131,6 +132,7 @@ void AdvisorsWindow::showAdvisor( const AdvisorType type )
 
   case ADV_EDUCATION: _d->advisorPanel = new AdvisorEducationWindow( *_d->city, this, -1 ); break;
   case ADV_HEALTH: _d->advisorPanel = new AdvisorHealthWindow( *_d->city, this, -1 ); break;
+  case ADV_ENTERTAINMENT: _d->advisorPanel = new AdvisorEntertainmentWindow( *_d->city, this, -1 ); break;
 
   default:
   break;
