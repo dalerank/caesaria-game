@@ -27,7 +27,7 @@ public:
   void setOne(const std::string &preffix, const int index, const Point& data);
   void setOne(const std::string &preffix, const int index, const int xoffset, const int yoffset);
 
-  typedef std::map<int, Point> PictureInfoMap;
+  typedef std::map< unsigned int, Point> PictureInfoMap;
   PictureInfoMap data;   // key=image name (Govt_00005)
 };
 

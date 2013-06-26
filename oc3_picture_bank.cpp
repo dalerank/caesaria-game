@@ -35,51 +35,51 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_picture_info_bank.hpp"
 
-class PicLoader::Impl
+class PictureBank::Impl
 {
 public:
-  typedef std::map<std::string, Picture> Pictures;
+  typedef std::map< unsigned int, Picture> Pictures;
   typedef Pictures::iterator ItPicture;
 
   Pictures resources;  // key=image name, value=picture
 };
 
-PicLoader& PicLoader::instance()
+PictureBank& PictureBank::instance()
 {
-  static PicLoader inst; 
+  static PictureBank inst; 
   return inst;
 }
 
-void PicLoader::setPicture(const std::string &name, SDL_Surface &surface)
+void PictureBank::setPicture(const std::string &name, SDL_Surface &surface)
 {
   // first: we deallocate the current picture, if any
-  Impl::ItPicture it = _d->resources.find(name);
+  unsigned int picId = StringHelper::hash( name );
+  Impl::ItPicture it = _d->resources.find( picId );
   if (it != _d->resources.end())
   {
-     Picture &pic = it->second;
-     SDL_FreeSurface(pic.getSurface());
+     SDL_FreeSurface( it->second.getSurface());
   }
 
-  _d->resources[name] = makePicture(&surface, name);
+  _d->resources[ picId ] = makePicture(&surface, name);
 }
 
-void PicLoader::setPicture( const std::string &name, const Picture& pic )
+void PictureBank::setPicture( const std::string &name, const Picture& pic )
 {
   setPicture( name, *pic.getSurface() );
 }
 
-Picture& PicLoader::getPicture(const std::string &name)
+Picture& PictureBank::getPicture(const std::string &name)
 {
-   Impl::ItPicture it = _d->resources.find(name);
-   if (it == _d->resources.end()) 
-   {
-     THROW("Unknown resource " << name);
-   }
+  Impl::ItPicture it = _d->resources.find( StringHelper::hash( name ) );
+  if (it == _d->resources.end()) 
+  {
+    THROW("Unknown resource " << name);
+  }
 
-   return it->second;
+  return it->second;
 }
 
-Picture& PicLoader::getPicture(const std::string &prefix, const int idx)
+Picture& PictureBank::getPicture(const std::string &prefix, const int idx)
 {
    std::string resource_name = StringHelper::format( 0xff, "%s_%05d.png", prefix.c_str(),idx );
 
@@ -87,7 +87,7 @@ Picture& PicLoader::getPicture(const std::string &prefix, const int idx)
 }
 
 
-Picture& PicLoader::getPicture(const GoodType goodType)
+Picture& PictureBank::getPicture(const GoodType goodType)
 {
    int pic_index;
    switch (goodType)
@@ -147,7 +147,7 @@ Picture& PicLoader::getPicture(const GoodType goodType)
    return getPicture( ResourceGroup::panelBackground, pic_index);
 }
 
-PicturesArray PicLoader::getPictures()
+PicturesArray PictureBank::getPictures()
 {
    PicturesArray pictures;
    for( Impl::ItPicture it = _d->resources.begin(); it != _d->resources.end(); ++it)
@@ -158,7 +158,7 @@ PicturesArray PicLoader::getPictures()
    return pictures;
 }
 
-void PicLoader::loadWaitPics()
+void PictureBank::loadWaitPics()
 {
   std::string aPath = AppConfig::get( AppConfig::resourcePath ).toString() + "/pics/";
   loadArchive(aPath+"pics_wait.zip");
@@ -166,7 +166,7 @@ void PicLoader::loadWaitPics()
   StringHelper::debug( 0xff, "number of images loaded: %d", _d->resources.size() );
 }
 
-void PicLoader::loadAllPics()
+void PictureBank::loadAllPics()
 {
   std::string aPath = AppConfig::get( AppConfig::resourcePath ).toString() + "/pics/";
   loadArchive(aPath + "pics.zip");
@@ -174,7 +174,7 @@ void PicLoader::loadAllPics()
   StringHelper::debug( 0xff, "number of images loaded: %d", _d->resources.size() );
 }
 
-void PicLoader::loadArchive(const std::string &filename)
+void PictureBank::loadArchive(const std::string &filename)
 {
   std::cout << "reading image archive: " << filename << std::endl;
   struct archive *a;
@@ -231,7 +231,7 @@ void PicLoader::loadArchive(const std::string &filename)
 }
 
 
-Picture PicLoader::makePicture(SDL_Surface *surface, const std::string& resource_name) const
+Picture PictureBank::makePicture(SDL_Surface *surface, const std::string& resource_name) const
 {
    Point offset( 0, 0 );
    // decode the picture name => to set the offset manually
@@ -263,7 +263,7 @@ Picture PicLoader::makePicture(SDL_Surface *surface, const std::string& resource
    return pic;
 }
 
-void PicLoader::createResources()
+void PictureBank::createResources()
 {
   Picture& originalPic = getPicture( ResourceGroup::utilitya, 34 );
   setPicture( std::string( ResourceGroup::waterbuildings ) + "_00001.png", *originalPic.getSurface() );
@@ -280,12 +280,12 @@ void PicLoader::createResources()
   setPicture( std::string( ResourceGroup::waterbuildings) + "_00004.png", *fullFontain->getSurface() );
 }
 
-PicLoader::PicLoader() : _d( new Impl )
+PictureBank::PictureBank() : _d( new Impl )
 {
 
 }
 
-PicLoader::~PicLoader()
+PictureBank::~PictureBank()
 {
 
 }
@@ -550,7 +550,7 @@ static const Point backCartOffsetSouthWest  = Point( -20, 20 );
 
 void CartLoader::fillCart(std::vector<Picture*> &ioCart, const std::string &prefix, const int start, bool back )
 {
-   PicLoader &picLoader = PicLoader::instance();
+   PictureBank &picLoader = PictureBank::instance();
 
    ioCart.clear();
    ioCart.resize(D_MAX);

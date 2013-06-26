@@ -123,12 +123,12 @@ bool Picture::isValid() const
 
 Picture& Picture::load( const std::string& group, const int id )
 {
-  return PicLoader::instance().getPicture( group, id );
+  return PictureBank::instance().getPicture( group, id );
 }
 
 Picture& Picture::load( const std::string& filename )
 {
-  return PicLoader::instance().getPicture( filename );
+  return PictureBank::instance().getPicture( filename );
 }
 
 Picture* Picture::copy() const

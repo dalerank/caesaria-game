@@ -27,10 +27,10 @@
 #include "oc3_scopedptr.hpp"
 
 // loads pictures from files
-class PicLoader
+class PictureBank
 {
 public:
-  static PicLoader& instance();
+  static PictureBank& instance();
 
   // set the current picture
   void setPicture(const std::string &name, SDL_Surface &surface);
@@ -58,10 +58,10 @@ public:
 
   // loads all resources of the given archive file
   void loadArchive(const std::string &filename);
-  ~PicLoader();
+  ~PictureBank();
 
 private:
-  PicLoader();
+  PictureBank();
 
   Picture makePicture(SDL_Surface *surface, const std::string& resource_name) const;
 

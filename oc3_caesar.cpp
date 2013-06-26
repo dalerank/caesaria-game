@@ -91,7 +91,7 @@ void CaesarApp::initSound()
 void CaesarApp::initWaitPictures()
 {
   std::cout << "load wait images begin" << std::endl;
-  PicLoader &pic_loader = PicLoader::instance();
+  PictureBank &pic_loader = PictureBank::instance();
   pic_loader.loadWaitPics();
   std::cout << "load wait images end" << std::endl;
 
@@ -108,7 +108,7 @@ void CaesarApp::initGuiEnvironment()
 void CaesarApp::Impl::initPictures(const std::string &resourcePath)
 {
   std::cout << "load images begin" << std::endl;
-  PicLoader &pic_loader = PicLoader::instance();
+  PictureBank &pic_loader = PictureBank::instance();
   pic_loader.loadAllPics();
   std::cout << "load images end" << std::endl;
 
@@ -271,7 +271,7 @@ CaesarApp::CaesarApp() : _d( new Impl )
 
 void CaesarApp::start()
 {
-   //Create right PicLoader instance in the beginning   
+   //Create right PictureBank instance in the beginning   
    _d->initLocale();
    
    initVideo();
