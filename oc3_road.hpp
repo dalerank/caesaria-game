@@ -26,11 +26,11 @@ public:
   virtual Picture& computePicture();
   void updatePicture();
 
-  void build(const TilePos& pos );
-  void setTerrain(TerrainTile &terrain);
-  bool canBuild(const TilePos& pos ) const;
-  bool isWalkable() const;
-  bool isNeedRoadAccess() const;
+  virtual void build(const TilePos& pos );
+  virtual void setTerrain(TerrainTile &terrain);
+  virtual bool canBuild(const TilePos& pos ) const;
+  virtual bool isWalkable() const;
+  virtual bool isNeedRoadAccess() const;
 };
 
 class Plaza : public Road

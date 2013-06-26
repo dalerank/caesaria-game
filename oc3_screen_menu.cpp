@@ -22,8 +22,6 @@
 #include "oc3_loadmapwindow.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_exception.hpp"
-#include "oc3_pic_loader.hpp"
-
 #include "oc3_startmenu.hpp"
 #include "oc3_guienv.hpp"
 #include "oc3_pushbutton.hpp"
@@ -82,7 +80,7 @@ void ScreenMenu::Impl::resolvePlayMission()
     0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() );
   LoadMapWindow* wnd = new LoadMapWindow( gui->getRootWidget(), 
                                           rect.toRect(), 
-                                          "./resources/missions", ".oc3mission",
+                                          "./resources/missions/", ".oc3mission",
                                           -1 );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );

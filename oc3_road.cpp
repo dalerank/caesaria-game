@@ -30,7 +30,7 @@ void Road::build(const TilePos& pos )
   LandOverlayPtr overlay = tilemap.at( pos ).getTerrain().getOverlay();
 
   Construction::build( pos );
-  setPicture(computePicture());
+  setPicture( computePicture() );
 
   if( overlay.is<Road>() )
   {
@@ -44,8 +44,7 @@ void Road::build(const TilePos& pos )
   }
 
   // update adjacent roads
-  for( std::list<Tile*>::iterator itTile = _accessRoads.begin(); 
-       itTile != _accessRoads.end(); ++itTile)
+  for( PtrTilesList::iterator itTile = _accessRoads.begin(); itTile != _accessRoads.end(); ++itTile)
   {
     RoadPtr road = (*itTile)->getTerrain().getOverlay().as<Road>(); // let's think: may here different type screw up whole program?
     if( road.isValid() )
@@ -59,7 +58,7 @@ void Road::build(const TilePos& pos )
   // how to detect them if MaxDistance2Road can be any
   // so let's recompute accessRoads for every _building_
   LandOverlays list = Scenario::instance().getCity().getOverlayList(); // it looks terrible!!!!
-  for (LandOverlays::iterator itOverlay = list.begin(); itOverlay!=list.end(); ++itOverlay)
+  for( LandOverlays::iterator itOverlay = list.begin(); itOverlay!=list.end(); ++itOverlay )
   {
     BuildingPtr construction = (*itOverlay).as<Building>();
     if( construction.isValid() ) // if not valid then it isn't building
@@ -95,15 +94,15 @@ Picture& Road::computePicture()
   int i = getTile().getI();
   int j = getTile().getJ();
 
-  std::list<Tile*> roads = getAccessRoads();
+  PtrTilesList roads = getAccessRoads();
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
-  for (std::list<Tile*>::iterator itRoads = roads.begin(); itRoads!=roads.end(); ++itRoads)
+  for( PtrTilesList::iterator itRoads = roads.begin(); itRoads!=roads.end(); ++itRoads)
   {
-    Tile &tile = **itRoads;
-    if (tile.getJ() > j)      { directionFlags += 1; } // road to the north
-    else if (tile.getJ() < j) { directionFlags += 4; } // road to the south
-    else if (tile.getI() > i) { directionFlags += 2; } // road to the east
-    else if (tile.getI() < i) { directionFlags += 8; } // road to the west
+    Tile* tile = *itRoads;
+    if (tile->getJ() > j)      { directionFlags += 1; } // road to the north
+    else if (tile->getJ() < j) { directionFlags += 4; } // road to the south
+    else if (tile->getI() > i) { directionFlags += 2; } // road to the east
+    else if (tile->getI() < i) { directionFlags += 8; } // road to the west
   }
 
   // std::cout << "direction flags=" << directionFlags << std::endl;

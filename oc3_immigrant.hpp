@@ -18,6 +18,8 @@
 
 #include "oc3_walker.hpp"
 
+class City;
+
 class Immigrant;
 typedef SmartPtr< Immigrant > ImmigrantPtr;
 

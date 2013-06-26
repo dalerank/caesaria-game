@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#include "oc3_pic_loader.hpp"
+#include "oc3_picture_bank.hpp"
 
 #include <cstdlib>
 #include <string>
@@ -33,191 +33,53 @@
 #include "oc3_animation.hpp"
 #include "oc3_app_config.hpp"
 #include "oc3_stringhelper.hpp"
-#include "oc3_stringhelper.hpp"
+#include "oc3_picture_info_bank.hpp"
 
-class PicMetaData::Impl
+class PictureBank::Impl
 {
 public:
-  void setRange(const std::string &preffix, const int first, const int last, const Point &data);
-  void setOne(const std::string &preffix, const int index, const Point& data);
-  void setOne(const std::string &preffix, const int index, const int xoffset, const int yoffset);
+  typedef std::map< unsigned int, Picture> Pictures;
+  typedef Pictures::iterator ItPicture;
 
-  std::map<std::string, Point> data;   // key=image name (Govt_00005)
+  Pictures resources;  // key=image name, value=picture
 };
 
-PicMetaData& PicMetaData::instance()
+PictureBank& PictureBank::instance()
 {
-   static PicMetaData inst;
-   return inst;
-}
-
-PicMetaData::PicMetaData() : _d( new Impl )
-{
-   // tiles
-  Point offset( -1, -1 );
-  _d->setRange("land1a", 1, 303, offset);
-  _d->setRange("oc3_land", 1, 2, offset);
-  _d->setRange( ResourceGroup::land2a, 1, 151, offset);
-  _d->setRange( ResourceGroup::land2a, 187, 195, offset); //burning ruins start animation
-  _d->setRange( ResourceGroup::land2a, 214, 231, offset); //burning ruins middle animation
-  _d->setRange( "land3a", 47, 92, offset);
-  _d->setRange( "plateau", 1, 44, offset);
-  _d->setRange( ResourceGroup::commerce, 1, 167, offset);
-  _d->setRange( ResourceGroup::transport, 1, 93, offset);
-  _d->setRange( ResourceGroup::security, 1, 61, offset);
-  _d->setRange( ResourceGroup::entertaiment, 1, 116, offset);
-  _d->setRange( ResourceGroup::housing, 1, 51, offset);
-  _d->setRange( ResourceGroup::warehouse, 19, 83, offset);
-  _d->setRange( ResourceGroup::utilitya, 1, 42, offset);
-  _d->setRange( ResourceGroup::govt, 1, 10, offset);
-  _d->setRange( ResourceGroup::sprites, 1, 8, offset ); //collapse fog
-  _d->setRange( ResourceGroup::sprites, 9, 20, offset ); //overlay columns
-
-  _d->setRange( ResourceGroup::waterOverlay, 1, 2, offset ); //wateroverlay building 1x1
-  _d->setRange( ResourceGroup::waterOverlay, 11, 12, offset ); //wateroverlay houses 1x1
-  _d->setRange( ResourceGroup::waterOverlay, 21, 22, offset ); //wateroverlay reservoir area 1x1
-  _d->setRange( ResourceGroup::waterbuildings, 1, 4, offset ); //waterbuidlings (reservoir,fontain) empty/full
-
-  offset = Point( 0, 30 );
-  _d->setRange( ResourceGroup::waterOverlay, 3, 4, offset ); //wateroverlay building 2x2
-  _d->setRange( ResourceGroup::waterOverlay, 13, 14, offset ); //wateroverlay houses 2x2 
-
-  offset = Point( 0, 60 );
-
-  _d->setRange( ResourceGroup::waterOverlay, 5, 6, offset ); //wateroverlay building 3x3
-  _d->setRange( ResourceGroup::waterOverlay, 15, 16, offset ); //wateroverlay houses 3x3 
-
-  offset = Point( 0, 90 );
-  _d->setRange( ResourceGroup::waterOverlay, 7, 8, offset ); //wateroverlay building 4x4
-  _d->setRange( ResourceGroup::waterOverlay, 17, 18, offset ); //wateroverlay houses 4x4 
-
-  offset = Point( 0, 120 );
-  _d->setRange( ResourceGroup::waterOverlay, 9, 10, offset ); //wateroverlay building 5x5
-  
-  _d->setOne( ResourceGroup::entertaiment, 12, 37, 62); // amphitheater
-  _d->setOne( ResourceGroup::entertaiment, 35, 34, 37); // theater
-  _d->setOne( ResourceGroup::entertaiment, 50, 70, 105);  // collosseum
-
-  // animations
-  _d->setRange(ResourceGroup::commerce, 2, 11, Point( 42, 34 ));  // market poor
-  _d->setRange(ResourceGroup::commerce, 44, 53, Point( 66, 44 ));  // marble
-  _d->setRange(ResourceGroup::commerce, 55, 60, Point( 45, 18 ));  // iron
-  _d->setRange(ResourceGroup::commerce, 62, 71, Point( 15, 32 ));  // clay
-  _d->setRange(ResourceGroup::commerce, 73, 82, Point( 35, 6 ) );  // timber
-  _d->setRange(ResourceGroup::commerce, 87, 98, Point( 14, 36 ) );  // wine
-  _d->setRange(ResourceGroup::commerce, 100, 107, Point( 0, 45 ) );  // oil
-  _d->setRange(ResourceGroup::commerce, 109, 116, Point( 42, 36 ) );  // weapons
-  _d->setRange(ResourceGroup::commerce, 118, 131, Point( 38, 39) );  // furniture
-  _d->setRange(ResourceGroup::commerce, 133, 139, Point( 65, 42 ) );  // pottery
-  _d->setRange(ResourceGroup::commerce, 159, 167, Point( 62, 42 ) );  // market rich
-
-  // stock of input good
-  _d->setOne(ResourceGroup::commerce, 153, 45, -8);  // grapes
-  _d->setOne(ResourceGroup::commerce, 154, 37, -2);  // olive
-  _d->setOne(ResourceGroup::commerce, 155, 48, -4);  // timber
-  _d->setOne(ResourceGroup::commerce, 156, 47, -11);  // iron
-  _d->setOne(ResourceGroup::commerce, 157, 47, -9);  // clay
-
-  // warehouse
-  _d->setOne(ResourceGroup::warehouse, 1, 60, 56);
-  _d->setOne(ResourceGroup::warehouse, 18, 56, 93);
-  _d->setRange(ResourceGroup::warehouse, 2, 17, Point( 55, 75 ));
-  _d->setRange(ResourceGroup::warehouse, 84, 91, Point( 79, 108 ) );
-
-  // granary
-  _d->setOne(ResourceGroup::commerce, 141, 28, 109);
-  _d->setOne(ResourceGroup::commerce, 142, 33, 75);
-  _d->setOne(ResourceGroup::commerce, 143, 56, 65);
-  _d->setOne(ResourceGroup::commerce, 144, 92, 65);
-  _d->setOne(ResourceGroup::commerce, 145, 118, 76);
-  _d->setOne(ResourceGroup::commerce, 146, 78, 69);
-  _d->setOne(ResourceGroup::commerce, 147, 78, 69);
-  _d->setOne(ResourceGroup::commerce, 148, 78, 69);
-  _d->setOne(ResourceGroup::commerce, 149, 78, 69);
-  _d->setOne(ResourceGroup::commerce, 150, 78, 69);
-  _d->setOne(ResourceGroup::commerce, 151, 78, 69);
-  _d->setOne(ResourceGroup::commerce, 152, 78, 69);
-
-   // walkers
-  offset = Point( -2, -2 );
-  _d->setRange("citizen01", 1, 1240, offset);
-  _d->setRange("citizen02", 1, 1030, offset);
-  _d->setRange("citizen03", 1, 1128, offset);
-  _d->setRange("citizen04", 1, 577, offset);
-  _d->setRange("citizen05", 1, 184, offset);
-}
-
-void PicMetaData::Impl::setRange(const std::string &preffix, const int first, const int last, const Point& data)
-{
-   for (int i = first; i<=last; ++i)
-   {
-      setOne(preffix, i, data);
-   }
-}
-
-void PicMetaData::Impl::setOne(const std::string &preffix, const int index, const Point& offset)
-{
-   std::string resource_name = StringHelper::format( 0xff, "%s_%05d", preffix.c_str(), index );
-   data[resource_name] = offset;
-}
-
-void PicMetaData::Impl::setOne(const std::string &preffix, const int index, const int xoffset, const int yoffset)
-{
-   std::string resource_name = StringHelper::format( 0xff, "%s_%05d", preffix.c_str(), index );
-   data[resource_name] = Point( xoffset, yoffset );
-}
-
-Point PicMetaData::get(const std::string &resource_name)
-{
-   std::map<std::string, Point>::iterator it = _d->data.find(resource_name);
-   if (it == _d->data.end())
-   {
-      return Point();
-      // THROW("Invalid resource name: " << resource_name);
-   }
-
-   return (*it).second;
-}
-
-PicMetaData::~PicMetaData()
-{
-
-}
-PicLoader& PicLoader::instance()
-{
-  static PicLoader inst; 
+  static PictureBank inst; 
   return inst;
 }
 
-void PicLoader::setPicture(const std::string &name, SDL_Surface &surface)
+void PictureBank::setPicture(const std::string &name, SDL_Surface &surface)
 {
   // first: we deallocate the current picture, if any
-  std::map<std::string, Picture>::iterator it = _resources.find(name);
-  if (it != _resources.end())
+  unsigned int picId = StringHelper::hash( name );
+  Impl::ItPicture it = _d->resources.find( picId );
+  if (it != _d->resources.end())
   {
-     Picture &pic = it->second;
-     SDL_FreeSurface(pic.getSurface());
+     SDL_FreeSurface( it->second.getSurface());
   }
 
-  _resources[name] = makePicture(&surface, name);
+  _d->resources[ picId ] = makePicture(&surface, name);
 }
 
-void PicLoader::setPicture( const std::string &name, const Picture& pic )
+void PictureBank::setPicture( const std::string &name, const Picture& pic )
 {
   setPicture( name, *pic.getSurface() );
 }
 
-Picture& PicLoader::getPicture(const std::string &name)
+Picture& PictureBank::getPicture(const std::string &name)
 {
-   std::map<std::string, Picture>::iterator it = _resources.find(name);
-   if (it == _resources.end()) 
-   {
-     THROW("Unknown resource " << name);
-   }
-   return it->second;
+  Impl::ItPicture it = _d->resources.find( StringHelper::hash( name ) );
+  if (it == _d->resources.end()) 
+  {
+    THROW("Unknown resource " << name);
+  }
+
+  return it->second;
 }
 
-Picture& PicLoader::getPicture(const std::string &prefix, const int idx)
+Picture& PictureBank::getPicture(const std::string &prefix, const int idx)
 {
    std::string resource_name = StringHelper::format( 0xff, "%s_%05d.png", prefix.c_str(),idx );
 
@@ -225,7 +87,7 @@ Picture& PicLoader::getPicture(const std::string &prefix, const int idx)
 }
 
 
-Picture& PicLoader::getPicture(const GoodType goodType)
+Picture& PictureBank::getPicture(const GoodType goodType)
 {
    int pic_index;
    switch (goodType)
@@ -285,10 +147,10 @@ Picture& PicLoader::getPicture(const GoodType goodType)
    return getPicture( ResourceGroup::panelBackground, pic_index);
 }
 
-PicturesArray PicLoader::getPictures()
+PicturesArray PictureBank::getPictures()
 {
    PicturesArray pictures;
-   for (std::map<std::string, Picture>::iterator it = _resources.begin(); it != _resources.end(); ++it)
+   for( Impl::ItPicture it = _d->resources.begin(); it != _d->resources.end(); ++it)
    {
       // for every resource
       pictures.push_back(&(*it).second);
@@ -296,24 +158,23 @@ PicturesArray PicLoader::getPictures()
    return pictures;
 }
 
-
-void PicLoader::loadWaitPics()
+void PictureBank::loadWaitPics()
 {
   std::string aPath = AppConfig::get( AppConfig::resourcePath ).toString() + "/pics/";
   loadArchive(aPath+"pics_wait.zip");
 
-  StringHelper::debug( 0xff, "number of images loaded: %d", _resources.size() );
+  StringHelper::debug( 0xff, "number of images loaded: %d", _d->resources.size() );
 }
 
-void PicLoader::loadAllPics()
+void PictureBank::loadAllPics()
 {
   std::string aPath = AppConfig::get( AppConfig::resourcePath ).toString() + "/pics/";
   loadArchive(aPath + "pics.zip");
   loadArchive(aPath + "pics_oc3.zip");	
-  StringHelper::debug( 0xff, "number of images loaded: %d", _resources.size() );
+  StringHelper::debug( 0xff, "number of images loaded: %d", _d->resources.size() );
 }
 
-void PicLoader::loadArchive(const std::string &filename)
+void PictureBank::loadArchive(const std::string &filename)
 {
   std::cout << "reading image archive: " << filename << std::endl;
   struct archive *a;
@@ -324,7 +185,11 @@ void PicLoader::loadArchive(const std::string &filename)
   archive_read_support_compression_all(a);
   archive_read_support_format_all(a);
   rc = archive_read_open_filename(a, filename.c_str(), 16384); // block size
-  if (rc != ARCHIVE_OK) THROW("Cannot open archive " << filename);
+  
+  if (rc != ARCHIVE_OK) 
+  {
+    THROW("Cannot open archive " << filename);
+  }
 
   SDL_Surface *surface;
   SDL_RWops *rw;
@@ -336,7 +201,7 @@ void PicLoader::loadArchive(const std::string &filename)
     THROW("Memory error, cannot allocate buffer size " << bufferSize);
 
   std::string entryname;
-  while (archive_read_next_header(a, &entry) == ARCHIVE_OK)
+  while( archive_read_next_header(a, &entry) == ARCHIVE_OK )
   {
     // for all entries in archive
     entryname = archive_entry_pathname(entry);
@@ -345,8 +210,11 @@ void PicLoader::loadArchive(const std::string &filename)
       // not a regular file (maybe a directory). skip it.
       continue;
     }
+
     if (archive_entry_stat(entry)->st_size >= bufferSize) 
+    {
       THROW("Cannot load archive: file is too big " << entryname << " in archive " << filename);
+    }
       
     int size = archive_read_data(a, buffer.get(), bufferSize);  // read data into buffer
     rw = SDL_RWFromMem(buffer.get(), size);
@@ -363,7 +231,7 @@ void PicLoader::loadArchive(const std::string &filename)
 }
 
 
-Picture PicLoader::makePicture(SDL_Surface *surface, const std::string& resource_name) const
+Picture PictureBank::makePicture(SDL_Surface *surface, const std::string& resource_name) const
 {
    Point offset( 0, 0 );
    // decode the picture name => to set the offset manually
@@ -371,7 +239,7 @@ Picture PicLoader::makePicture(SDL_Surface *surface, const std::string& resource
    int dot_pos = resource_name.find('.');
    std::string filename = resource_name.substr(0, dot_pos);
 
-   Point pic_info = PicMetaData::instance().get(filename);
+   Point pic_info = PictureInfoBank::instance().getOffset(filename);
 
    if (pic_info.getX() == -1 && pic_info.getY() == -1)
    {
@@ -395,7 +263,7 @@ Picture PicLoader::makePicture(SDL_Surface *surface, const std::string& resource
    return pic;
 }
 
-void PicLoader::createResources()
+void PictureBank::createResources()
 {
   Picture& originalPic = getPicture( ResourceGroup::utilitya, 34 );
   setPicture( std::string( ResourceGroup::waterbuildings ) + "_00001.png", *originalPic.getSurface() );
@@ -412,157 +280,154 @@ void PicLoader::createResources()
   setPicture( std::string( ResourceGroup::waterbuildings) + "_00004.png", *fullFontain->getSurface() );
 }
 
-PicLoader::PicLoader()
+PictureBank::PictureBank() : _d( new Impl )
 {
 
 }
-bool operator<(const WalkerAction &v1, const WalkerAction &v2)
+
+PictureBank::~PictureBank()
 {
-   if (v1._action!=v2._action)
-   {
-      return v1._action < v2._action;
-   }
-   else
-   {
-      return v1._direction < v2._direction;
-   }
+
 }
 
+class WalkerLoader::Impl
+{
+public:
+  typedef std::vector< WalkerLoader::WalkerAnimationMap > Animations;
+  Animations animations; // anim[WalkerGraphic][WalkerAction]
+};
 
-WalkerLoader* WalkerLoader::_instance = NULL;
 WalkerLoader& WalkerLoader::instance()
 {
-   if (_instance == NULL)
-   {
-      _instance = new WalkerLoader();
-      if (_instance == NULL) THROW("Memory error, cannot instantiate object");
-   }
-   return *_instance;
+   static WalkerLoader inst;
+   return inst;
 }
 
-WalkerLoader::WalkerLoader() { }
+WalkerLoader::WalkerLoader() : _d( new Impl )
+{ 
+}
 
 void WalkerLoader::loadAll()
 {
-   _animations.resize(30);  // number of walker types
+   _d->animations.resize(30);  // number of walker types
 
-   std::map<WalkerAction, Animation> map;
+   WalkerAnimationMap waMap;
 
-   map.clear();
-   fillWalk(map, "citizen01", 1, 12);
-   _animations[WG_POOR] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen01", 1, 12);
+   _d->animations[WG_POOR] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen01", 105, 12);
-   _animations[WG_BATH] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen01", 105, 12);
+   _d->animations[WG_BATH] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen01", 209, 12);
-   _animations[WG_PRIEST] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen01", 209, 12);
+   _d->animations[WG_PRIEST] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen01", 313, 12);
-   _animations[WG_ACTOR] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen01", 313, 12);
+   _d->animations[WG_ACTOR] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen01", 417, 12);
-   _animations[WG_TAMER] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen01", 417, 12);
+   _d->animations[WG_TAMER] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen01", 617, 12);
-   _animations[WG_TAX] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen01", 617, 12);
+   _d->animations[WG_TAX] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen01", 721, 12);
-   _animations[WG_CHILD] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen01", 721, 12);
+   _d->animations[WG_CHILD] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen01", 825, 12);
-   _animations[WG_MARKETLADY] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen01", 825, 12);
+   _d->animations[WG_MARKETLADY] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen01", 929, 12);
-   _animations[WG_PUSHER] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen01", 929, 12);
+   _d->animations[WG_PUSHER] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen01", 1033, 12);
-   _animations[WG_PUSHER2] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen01", 1033, 12);
+   _d->animations[WG_PUSHER2] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen01", 1137, 12);
-   _animations[WG_ENGINEER] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen01", 1137, 12);
+   _d->animations[WG_ENGINEER] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen02", 1, 12);
-   _animations[WG_GLADIATOR] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen02", 1, 12);
+   _d->animations[WG_GLADIATOR] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen02", 199, 12);
-   _animations[WG_GLADIATOR2] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen02", 199, 12);
+   _d->animations[WG_GLADIATOR2] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen02", 351, 12);
-   _animations[WG_RIOTER] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen02", 351, 12);
+   _d->animations[WG_RIOTER] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen02", 463, 12);
-   _animations[WG_BARBER] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen02", 463, 12);
+   _d->animations[WG_BARBER] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen02", 615, 12);
-   _animations[WG_PREFECT] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen02", 615, 12);
+   _d->animations[WG_PREFECT] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen02", 767, 12);
-   _animations[WG_PREFECT_DRAG_WATER] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen02", 767, 12);
+   _d->animations[WG_PREFECT_DRAG_WATER] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen02", 863, 6);
-   _animations[WG_PREFECT_FIGHTS_FIRE] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen02", 863, 6);
+   _d->animations[WG_PREFECT_FIGHTS_FIRE] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen02", 911, 12);
-   _animations[WG_HOMELESS] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen02", 911, 12);
+   _d->animations[WG_HOMELESS] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen03", 713, 12);
-   _animations[WG_RICH] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen03", 713, 12);
+   _d->animations[WG_RICH] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen03", 817, 12);
-   _animations[WG_DOCTOR] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen03", 817, 12);
+   _d->animations[WG_DOCTOR] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen03", 921, 12);
-   _animations[WG_RICH2] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen03", 921, 12);
+   _d->animations[WG_RICH2] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen03", 1025, 12);
-   _animations[WG_LIBRARIAN] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen03", 1025, 12);
+   _d->animations[WG_LIBRARIAN] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen03", 553, 12);
-   _animations[WG_SOLDIER] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen03", 553, 12);
+   _d->animations[WG_SOLDIER] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen03", 241, 12);
-   _animations[WG_JAVELINEER] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen03", 241, 12);
+   _d->animations[WG_JAVELINEER] = waMap;
 
-   map.clear();
-   fillWalk(map, "citizen04", 1, 12);
-   _animations[WG_HORSEMAN] = map;
+   waMap.clear();
+   fillWalk(waMap, "citizen04", 1, 12);
+   _d->animations[WG_HORSEMAN] = waMap;
 
-   map.clear();
-   fillWalk(map, ResourceGroup::carts, 145, 12);
-   _animations[WG_HORSE_CARAVAN] = map;
+   waMap.clear();
+   fillWalk(waMap, ResourceGroup::carts, 145, 12);
+   _d->animations[WG_HORSE_CARAVAN] = waMap;
 
-   map.clear();
-   fillWalk(map, ResourceGroup::carts, 273, 12);
-   _animations[WG_CAMEL_CARAVAN] = map;
+   waMap.clear();
+   fillWalk(waMap, ResourceGroup::carts, 273, 12);
+   _d->animations[WG_CAMEL_CARAVAN] = waMap;
 
-   map.clear();
-   fillWalk(map, ResourceGroup::carts, 369, 12);
-   _animations[WG_LITTLE_HELPER] = map;
+   waMap.clear();
+   fillWalk(waMap, ResourceGroup::carts, 369, 12);
+   _d->animations[WG_LITTLE_HELPER] = waMap;
 
 }
 
@@ -591,7 +456,7 @@ void WalkerLoader::fillWalk(std::map<WalkerAction, Animation> &ioMap, const std:
 
 const std::map<WalkerAction, Animation>& WalkerLoader::getAnimationMap(const WalkerGraphicType walkerGraphic)
 {
-   return _animations[walkerGraphic];
+   return _d->animations[walkerGraphic];
 }
 
 
@@ -685,7 +550,7 @@ static const Point backCartOffsetSouthWest  = Point( -20, 20 );
 
 void CartLoader::fillCart(std::vector<Picture*> &ioCart, const std::string &prefix, const int start, bool back )
 {
-   PicLoader &picLoader = PicLoader::instance();
+   PictureBank &picLoader = PictureBank::instance();
 
    ioCart.clear();
    ioCart.resize(D_MAX);

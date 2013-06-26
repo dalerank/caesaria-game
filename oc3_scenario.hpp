@@ -24,26 +24,27 @@
 #include "oc3_city.hpp"
 #include "oc3_serializer.hpp"
 
+class CityWinTargets;
 
 class Scenario : public Serializable
 {
 public:
   static Scenario& instance();
+  ~Scenario();
 
-  Scenario();
   void save( VariantMap& stream) const;
   void load( const VariantMap& stream);
 
   City& getCity();
   const City& getCity() const;
+  CityWinTargets& getWinTargets();
+
   std::string getDescription() const;
-
 private:
-
-  City _city;
-  std::string _description;
-
-  static Scenario *_instance;
+  Scenario();
+  
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 #endif

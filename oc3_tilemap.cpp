@@ -18,7 +18,6 @@
 #include "oc3_tilemap.hpp"
 
 #include "oc3_tile.hpp"
-#include "oc3_pic_loader.hpp"
 #include "oc3_building.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_positioni.hpp"

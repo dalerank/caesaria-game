@@ -21,10 +21,6 @@
 
 #include "oc3_tilemap.hpp"
 #include "oc3_walker.hpp"
-#include "oc3_building.hpp"
-#include "oc3_service_building.hpp"
-#include "oc3_factory_building.hpp"
-#include "oc3_house.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_serializer.hpp"
 #include "oc3_signals.hpp"
@@ -32,80 +28,85 @@
 #include "oc3_cityservice.hpp"
 
 class TilePos;
+class DateTime;
+class CityBuildOptions;
 
 class City : public Serializable
 {
 public:
-   City();
-   ~City();
+  City();
+  ~City();
 
-   void timeStep();  // performs one simulation step
-   void monthStep();
+  void timeStep();  // performs one simulation step
+  void monthStep();
 
   Walkers getWalkerList( const WalkerType type );
   void addWalker( WalkerPtr walker );
   void removeWalker( WalkerPtr walker );
 
   void addService( CityServicePtr service );
-  CityServicePtr findService( const std::string& name );
+  CityServicePtr findService( const std::string& name ) const;
 
   LandOverlays& getOverlayList();
   LandOverlays getBuildingList( const BuildingType buildingType );
 
-   void setRoadExit( const TilePos& pos );
-   void setBoatEntry( const TilePos& pos );
-   void setRoadEntry( const TilePos& pos );
-   void setBoatExit( const TilePos& pos );
-   
-   TilePos getRoadExit() const;
-   TilePos getBoatEntry() const;
-   TilePos getBoatExit() const;
+  void setRoadExit( const TilePos& pos );
+  void setBoatEntry( const TilePos& pos );
+  void setRoadEntry( const TilePos& pos );
+  void setBoatExit( const TilePos& pos );
+  
+  TilePos getRoadExit() const;
+  TilePos getBoatEntry() const;
+  TilePos getBoatExit() const;
 
-   TilePos getRoadEntry() const;
-   
-   void setCameraPos(const TilePos pos);
-   TilePos getCameraPos() const;
-      
-   ClimateType getClimate() const;
-   void setClimate(const ClimateType);
+  TilePos getRoadEntry() const;
+  
+  void setCameraPos(const TilePos pos);
+  TilePos getCameraPos() const;
+     
+  ClimateType getClimate() const;
+  void setClimate(const ClimateType);
 
-   int getTaxRate() const;
-   void setTaxRate(const int taxRate);
-   long getFunds() const;
-   void setFunds(const long funds);
-   long getPopulation() const;
-   unsigned long getMonth() const;
+  int getTaxRate() const;
+  void setTaxRate(const int taxRate);
+  long getFunds() const;
+  void setFunds(const long funds);
 
-   Tilemap& getTilemap();
+  int getPopulation() const;
+  int getProsperity() const;
 
-   void save( VariantMap& stream) const;
-   void load( const VariantMap& stream);
+  Tilemap& getTilemap();
 
-   // add construction
-   void build( const BuildingType type, const TilePos& pos );
-   void build( ConstructionPtr building, const TilePos& pos );
+  void save( VariantMap& stream) const;
+  void load( const VariantMap& stream);
 
-   //
-   void disaster( const TilePos& pos, DisasterType type );
-   // remove construction
-   void clearLand( const TilePos& pos );
-   // collect taxes from all houses
-   void collectTaxes();
+  // add construction
+  void build( const BuildingType type, const TilePos& pos );
+  void build( ConstructionPtr building, const TilePos& pos );
 
-   unsigned long getTime();
+  CityBuildOptions& getBuildOptions();
+
+  void disaster( const TilePos& pos, DisasterType type );
+  // remove construction
+  void clearLand( const TilePos& pos );
+  // collect taxes from all houses
+  void collectTaxes();
+
+  const DateTime& getDate() const;
+  void setDate( const DateTime& time );
    
 oc3_signals public:
-   Signal1<int>& onPopulationChanged();
-   Signal1<int>& onFundsChanged();
-   Signal1<int>& onMonthChanged();
-   Signal1<std::string>& onWarningMessage();
-   Signal2<const TilePos&, const std::string& >& onDisasterEvent();
+  Signal1<int>& onPopulationChanged();
+  Signal1<int>& onFundsChanged();
+  Signal1<const DateTime&>& onMonthChanged();
+  Signal1<std::string>& onWarningMessage();
+  Signal2<const TilePos&, const std::string& >& onDisasterEvent();
 
 private:
-   void _calculatePopulation();
+  void _calculatePopulation();
 
-   class Impl;
-   ScopedPtr< Impl > _d;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 class CityHelper

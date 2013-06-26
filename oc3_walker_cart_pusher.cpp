@@ -25,6 +25,9 @@
 #include "oc3_warehouse.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_path_finding.hpp"
+#include "oc3_picture_bank.hpp"
+#include "oc3_factory_building.hpp"
 
 class CartPusher::Impl
 {
@@ -79,9 +82,9 @@ void CartPusher::onDestination()
     }
   }
   //
-  if( !_pathWay.isReverse() )
+  if( !_getPathway().isReverse() )
   {
-    _pathWay.toggleDirection();
+    _getPathway().toggleDirection();
     _action._action=WA_MOVE;
     computeDirection();
     _d->consumerBuilding = 0;
@@ -197,7 +200,7 @@ void CartPusher::computeWalkerDestination()
       //_isDeleted = true;  // no destination!
      setConsumerBuilding( destBuilding );
      setPathWay( pathWay );
-     setIJ( _pathWay.getOrigin().getIJ() );
+     setIJ( _getPathway().getOrigin().getIJ() );
      setSpeed( 1 );
    }
    else
@@ -319,7 +322,7 @@ void CartPusher::send2City( BuildingPtr building, const GoodStock& stock )
 
 void CartPusher::timeStep( const unsigned long time )
 {
-  if( (time % 22 == 1) && (_pathWay.getLength() < 2) )
+  if( (time % 22 == 1) && (_getPathway().getLength() < 2) )
   {
     computeWalkerDestination();
   }

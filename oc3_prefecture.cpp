@@ -21,8 +21,9 @@
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_tile.hpp"
+#include "oc3_path_finding.hpp"
 
-BuildingPrefecture::BuildingPrefecture() : ServiceBuilding(S_PREFECT, B_PREFECT, Size(1))
+BuildingPrefecture::BuildingPrefecture() : ServiceBuilding(S_PREFECT, B_PREFECTURE, Size(1))
 {
   _fireDetect = TilePos( -1, -1 );
   setPicture( Picture::load( ResourceGroup::security, 1 ) );
@@ -63,6 +64,7 @@ void BuildingPrefecture::deliverService()
   {
     bool fireDetect = _fireDetect.getI() >= 0;
     WalkerPrefectPtr walker = WalkerPrefect::create( Scenario::instance().getCity() );
+    walker->setMaxDistance( 26 );
 
     bool patrol = true;
     if( fireDetect )

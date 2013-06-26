@@ -39,7 +39,8 @@
 #include "oc3_save_dialog.hpp"
 #include "oc3_advisors_window.hpp"
 #include "oc3_alarm_event_holder.hpp"
-//#include "oc3_popup_messagebox.hpp"
+#include "oc3_tilemap_renderer.hpp"
+#include "oc3_scenario.hpp"
 
 class ScreenGame::Impl
 {
@@ -65,6 +66,7 @@ public:
   void showEmpireMapWindow();
   void showAdvisorsWindow( const int advType );
   void showAdvisorsWindow();
+  void showTradeAdvisorWindow();
   void resolveCreateConstruction( int type );
   void resolveSelectOverlayView( int type );
   void resolveRemoveTool();
@@ -101,11 +103,11 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
 
   _d->topMenu = TopMenu::create( gui.getRootWidget(), topMenuHeight );
 
-  _d->menu = Menu::create( gui.getRootWidget(), -1 );
+  _d->menu = Menu::create( gui.getRootWidget(), -1, _d->scenario->getCity() );
   _d->menu->setPosition( Point( engine.getScreenWidth() - _d->menu->getWidth() - _d->rightPanel->getWidth(), 
                                  _d->topMenu->getHeight() ) );
 
-  _d->extMenu = ExtentMenu::create( gui.getRootWidget(), _d->guiTilemap, -1 );
+  _d->extMenu = ExtentMenu::create( gui.getRootWidget(), _d->guiTilemap, -1, _d->scenario->getCity() );
   _d->extMenu->setPosition( Point( engine.getScreenWidth() - _d->extMenu->getWidth() - _d->rightPanel->getWidth(), 
                                      _d->topMenu->getHeight() ) );
 
@@ -163,11 +165,6 @@ void ScreenGame::Impl::resolveGameSave( std::string filename )
   ScenarioSaver scnSaver( Scenario::instance() );
 
   scnSaver.save( filename );
-}
-
-void ScreenGame::Impl::showEmpireMapWindow()
-{  
-  EmpireMapWindow* emap = EmpireMapWindow::create( gui->getRootWidget(), -1 );
 }
 
 TilemapArea& ScreenGame::getMapArea()
@@ -320,6 +317,38 @@ void ScreenGame::Impl::showAdvisorsWindow()
 }
 
 void ScreenGame::Impl::showAdvisorsWindow( const int advType )
+{  
+  List<AdvisorsWindow*> wndList = gui->getRootWidget()->findChildren<AdvisorsWindow*>();
+
+  if( wndList.size() == 1 )
+  {
+    wndList.front()->bringToFront();
+    wndList.front()->showAdvisor( (AdvisorType)advType ); 
+  }
+  else
+  {
+    AdvisorsWindow* advWnd = AdvisorsWindow::create( gui->getRootWidget(), -1, 
+                                                     (AdvisorType)advType, scenario->getCity() );
+    CONNECT( advWnd, onEmpireMapRequest(), this, Impl::showEmpireMapWindow ); 
+  }
+}
+
+void ScreenGame::Impl::showTradeAdvisorWindow()
 {
-  AdvisorsWindow* advWnd = AdvisorsWindow::create( gui->getRootWidget(), -1, (AdvisorType)advType );
+  showAdvisorsWindow( ADV_TRADING );
+}
+
+void ScreenGame::Impl::showEmpireMapWindow()
+{  
+  List<EmpireMapWindow*> wndList = gui->getRootWidget()->findChildren<EmpireMapWindow*>();
+
+  if( wndList.size() == 1 )
+  {
+    wndList.front()->bringToFront();
+  }
+  else
+  {
+    EmpireMapWindow* emap = EmpireMapWindow::create( gui->getRootWidget(), -1 );
+    CONNECT( emap, onTradeAdvisorRequest(), this, Impl::showTradeAdvisorWindow ); 
+  }  
 }

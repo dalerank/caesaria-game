@@ -13,6 +13,9 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
+#ifndef __OPENCAESAR3_FONT_H_INCLUDED__
+#define __OPENCAESAR3_FONT_H_INCLUDED__
+
 #include <string>
 #include "oc3_size.hpp"
 #include "oc3_rectangle.hpp"
@@ -82,3 +85,5 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+#endif //__OPENCAESAR3_FONT_H_INCLUDED__

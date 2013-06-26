@@ -19,70 +19,63 @@
 #ifndef HOUSE_LEVEL_HPP
 #define HOUSE_LEVEL_HPP
 
-#include <string>
-#include <map>
-#include <list>
 #include "oc3_enums.hpp"
 #include "oc3_scopedptr.hpp"
+#include "oc3_smartptr.hpp"
 
 class House;
+
 class HouseLevelSpec
 {
    friend class HouseSpecHelper;
 
 public:
-   int getHouseLevel();
-   int getMaxHabitantsByTile();
-   int getTaxRate();
+  int getHouseLevel() const;
+  int getMaxHabitantsByTile() const;
+  int getTaxRate() const;
+  int getProsperity() const;
 
-   // return the house type "small casa, luxury villa, ..."
-   std::string& getLevelName();
+  // return the house type "small casa, luxury villa, ..."
+  const std::string& getLevelName() const;
+  const std::string& getInternalName() const;
 
-   // returns True if patrician villa
-   bool isPatrician();
+  // returns True if patrician villa
+  bool isPatrician() const;
 
-   bool checkHouse(House &house);
+  bool checkHouse(House &house);
 
-   int computeEntertainmentLevel(House &house);
-   int computeEducationLevel(House &house, std::string &oMissingRequirement);
-   int computeHealthLevel(House &house, std::string &oMissingRequirement);
-   int computeReligionLevel(House &house);
-   int computeWaterLevel(House &house, std::string &oMissingRequirement);
-   int computeFoodLevel(House &house);
-   int computeMonthlyConsumption(House &house, const GoodType goodType);
+  HouseLevelSpec next() const;
 
-   float evaluateServiceNeed(House &house, const ServiceType service);
-   float evaluateEntertainmentNeed(House &house, const ServiceType service);
-   float evaluateEducationNeed(House &house, const ServiceType service);
-   float evaluateHealthNeed(House &house, const ServiceType service);
-   float evaluateReligionNeed(House &house, const ServiceType service);
-   // float evaluateFoodNeed(House &house, const ServiceType service);
+  int computeEntertainmentLevel(House &house);
+  int computeEducationLevel(House &house, std::string &oMissingRequirement);
+  int computeHealthLevel(House &house, std::string &oMissingRequirement);
+  int computeReligionLevel(House &house);
+  int computeWaterLevel(House &house, std::string &oMissingRequirement);
+  int computeFoodLevel(House &house);
+  int computeMonthlyConsumption(House &house, const GoodType goodType);
+
+  float evaluateServiceNeed(House &house, const ServiceType service);
+  float evaluateEntertainmentNeed(House &house, const ServiceType service);
+  float evaluateEducationNeed(House &house, const ServiceType service);
+  float evaluateHealthNeed(House &house, const ServiceType service);
+  float evaluateReligionNeed(House &house, const ServiceType service);
+  // float evaluateFoodNeed(House &house, const ServiceType service);
 
 
 //    int getMinEntertainmentLevel();
 //    int getMinEducationLevel();
 //    int getMinHealthLevel();
-//    int getMinReligionLevel();
+  int getMinReligionLevel() const;
 //    int getMinWaterLevel();
 //    int getMinFoodLevel();
-  
-private:
-  int _houseLevel;
-  int _maxHabitantsByTile;
-  std::string _levelName;
-  int _taxRate;
+  ~HouseLevelSpec();
+  HouseLevelSpec();
+  HouseLevelSpec( const HouseLevelSpec& other );
+  HouseLevelSpec& operator=(const HouseLevelSpec& other );
 
-   // required services
-  int _minEntertainmentLevel;
-  int _minHealthLevel;
-  int _midDesirability, _maxDesirability;
-  int _minEducationLevel;
-  int _crime;
-  int _prosperity;
-  int _minWaterLevel;  // access to water (no water=0, well=1, fountain=2)
-  int _minReligionLevel;  // number of religions
-  int _minFoodLevel;  // number of food types
-  std::map<GoodType, int> _requiredGoods;  // rate of good usage for every good (furniture, pottery, ...)
+private:
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 class HouseSpecHelper
@@ -90,9 +83,9 @@ class HouseSpecHelper
 public:
   static HouseSpecHelper& getInstance();
 
-  HouseLevelSpec &getHouseLevelSpec(const int houseLevel);
-  void setHouseLevelSpec(HouseLevelSpec &spec);
+  HouseLevelSpec getHouseLevelSpec(const int houseLevel);
   int getHouseLevel(const int houseId);
+  int getHouseLevel( const std::string& name );
   void initialize( const std::string& filename );
 
   ~HouseSpecHelper();

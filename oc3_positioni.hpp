@@ -31,7 +31,7 @@ public:
 
     Point operator+(const Point& other) const { return Point( x + other.x, y + other.y ); }
     Point operator-(const Point& other) const { return Point( x - other.x, y - other.y ); }
-    Point operator*(int mul) { return Point( x*mul, y*mul ); }
+    Point operator*(int mul) const{ return Point( x*mul, y*mul ); }
 
     void setX( const int nx ) { x = nx; }
     void setY( const int ny ) { y = ny; }
@@ -63,6 +63,7 @@ class TilePos : Vector2<int>
 {
 public:
   TilePos( const int i, const int j ) : Vector2<int>( i, j ) {}
+  TilePos( const TilePos& other ) : Vector2<int>( other.x, other.y ) {}
   TilePos() : Vector2<int>( 0, 0 ) {}
 
   int getI() const { return x; }

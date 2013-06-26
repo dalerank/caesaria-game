@@ -30,7 +30,7 @@
 #include "oc3_gui_info_box.hpp"
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_building_data.hpp"
-
+#include "oc3_picture_bank.hpp"
 #include "oc3_screen_menu.hpp"
 #include "oc3_screen_game.hpp"
 #include "oc3_house_level.hpp"
@@ -51,7 +51,6 @@ namespace fs = boost::filesystem;
 class CaesarApp::Impl
 {
 public:
-  Scenario*  scenario;
   ScreenType nextScreen;
   GfxEngine* engine;
   GuiEnv* gui;
@@ -92,7 +91,7 @@ void CaesarApp::initSound()
 void CaesarApp::initWaitPictures()
 {
   std::cout << "load wait images begin" << std::endl;
-  PicLoader &pic_loader = PicLoader::instance();
+  PictureBank &pic_loader = PictureBank::instance();
   pic_loader.loadWaitPics();
   std::cout << "load wait images end" << std::endl;
 
@@ -109,7 +108,7 @@ void CaesarApp::initGuiEnvironment()
 void CaesarApp::Impl::initPictures(const std::string &resourcePath)
 {
   std::cout << "load images begin" << std::endl;
-  PicLoader &pic_loader = PicLoader::instance();
+  PictureBank &pic_loader = PictureBank::instance();
   pic_loader.loadAllPics();
   std::cout << "load images end" << std::endl;
 
@@ -134,19 +133,18 @@ void CaesarApp::Impl::initPictures(const std::string &resourcePath)
 bool CaesarApp::Impl::load(const std::string &gameFile)
 {
   std::cout << "load game begin" << std::endl;
-
-  scenario = new Scenario();
   
-  bool loadok = ScenarioLoader::getInstance().load(gameFile, *scenario);   
+  Scenario& scenario = Scenario::instance();
+
+  bool loadok = ScenarioLoader::getInstance().load(gameFile, scenario);   
 
   if( !loadok )
   {
-    delete scenario;
     std::cout << "LOADING ERROR: can't load game from " << gameFile << std::endl;
     return false;
   }  
 
-  City &city = scenario->getCity();
+  City &city = scenario.getCity();
   
   LandOverlays llo = city.getOverlayList();
   
@@ -161,7 +159,7 @@ bool CaesarApp::Impl::load(const std::string &gameFile)
      }
   }
 
-  Pathfinder::getInstance().update( scenario->getCity().getTilemap() );  
+  Pathfinder::getInstance().update( scenario.getCity().getTilemap() );  
   
   std::cout << "load game end" << std::endl;
   return true;
@@ -246,7 +244,7 @@ void CaesarApp::setScreenMenu()
 void CaesarApp::setScreenGame()
 {
   ScreenGame screen;
-  screen.setScenario(*_d->scenario);
+  screen.setScenario( Scenario::instance() );
   screen.initialize( *_d->engine, *_d->gui );
   int result = screen.run();
 
@@ -268,13 +266,12 @@ void CaesarApp::setScreenGame()
 
 CaesarApp::CaesarApp() : _d( new Impl )
 {
-   _d->scenario = NULL;
    _d->nextScreen = SCREEN_NONE;
 }
 
 void CaesarApp::start()
 {
-   //Create right PicLoader instance in the beginning   
+   //Create right PictureBank instance in the beginning   
    _d->initLocale();
    
    initVideo();

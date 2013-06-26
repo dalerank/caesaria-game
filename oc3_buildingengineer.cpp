@@ -14,12 +14,11 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_buildingengineer.hpp"
-#include "oc3_pic_loader.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_positioni.hpp"
 
 
-BuildingEngineer::BuildingEngineer() : ServiceBuilding(S_ENGINEER, B_ENGINEER, Size(1) )
+BuildingEngineer::BuildingEngineer() : ServiceBuilding(S_ENGINEER, B_ENGINEER_POST, Size(1) )
 {
     setWorkers( 0 );
     setPicture( Picture::load( ResourceGroup::buildingEngineer, 56 ) );

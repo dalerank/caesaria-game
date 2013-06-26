@@ -37,6 +37,11 @@ RomeDivinityPtr Temple::getDivinity() const
   return _td->divinity;
 }
 
+unsigned int Temple::getWalkerDistance() const
+{
+  return 26;
+}
+
 TempleCeres::TempleCeres() 
 : SmallTemple( DivinePantheon::ceres(), B_TEMPLE_CERES, 45 )
 {
@@ -99,4 +104,5 @@ TempleOracle::TempleOracle() : ServiceBuilding(S_TEMPLE_ORACLE, B_TEMPLE_ORACLE,
 SmallTemple::SmallTemple( RomeDivinityPtr divinity, BuildingType type, int imgId ) 
   : Temple( divinity, type, imgId, Size(2) )
 {
+  setMaxWorkers( 2 );
 }

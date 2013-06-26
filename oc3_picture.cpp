@@ -21,7 +21,8 @@
 #include "oc3_exception.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_rectangle.hpp"
-#include "oc3_pic_loader.hpp"
+#include "oc3_picture_bank.hpp"
+#include "oc3_gfx_engine.hpp"
 #include "oc3_requirements.hpp"
 #include "oc3_color.hpp"
 
@@ -122,12 +123,12 @@ bool Picture::isValid() const
 
 Picture& Picture::load( const std::string& group, const int id )
 {
-  return PicLoader::instance().getPicture( group, id );
+  return PictureBank::instance().getPicture( group, id );
 }
 
 Picture& Picture::load( const std::string& filename )
 {
-  return PicLoader::instance().getPicture( filename );
+  return PictureBank::instance().getPicture( filename );
 }
 
 Picture* Picture::copy() const
@@ -223,6 +224,10 @@ void Picture::draw( const Picture &srcpic, const Rect& srcrect, const Rect& dstr
   SDL_BlitSurface(srcimg, &src, _d->surface, &dst);
 }
 
+void Picture::draw( const Picture &srcpic, const Point& pos )
+{
+  draw( srcpic, pos.getX(), pos.getY() );
+}
 
 void Picture::lock()
 {

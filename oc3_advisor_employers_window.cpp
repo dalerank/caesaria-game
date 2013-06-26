@@ -24,10 +24,48 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_gfx_engine.hpp"
 
+static const Point employerButtonOffset = Point( 0, 25 );
+static const Size  employerButtonSize = Size( 560, 22 );
+
+class EmployerButton : public PushButton
+{
+public:
+  EmployerButton( Widget* parent, const Point& pos, int index, const std::string& caption, int need, int have )
+    : PushButton( parent, Rect( pos + employerButtonOffset * index, employerButtonSize), "", index, false, PushButton::BlackBorderUp )
+  {
+    _title = caption;
+    _needWorkers = need;
+    _haveWorkers = have;
+  }
+
+  void _updateTexture( ElementState state )
+  {
+    PushButton::_updateTexture( state );
+
+    PictureRef& pic = _getPicture( state );
+
+    Font font = Font::create( FONT_1_WHITE );
+    font.draw( *pic, _title, 130, 2 );
+
+    font.draw( *pic, StringHelper::format( 0xff, "%d", _needWorkers ), 375, 2 );
+    font.draw( *pic, StringHelper::format( 0xff, "%d", _haveWorkers ), 480, 2 );
+  }
+
+private:
+  std::string _title;
+  int _needWorkers;
+  int _haveWorkers;
+};
+
 class AdvisorEmployerWindow::Impl
 {
 public:
   PictureRef background;
+
+  void showPriorityWindow( int id )
+  {
+
+  }
 };
 
 AdvisorEmployerWindow::AdvisorEmployerWindow( Widget* parent, int id ) 
@@ -56,35 +94,27 @@ AdvisorEmployerWindow::AdvisorEmployerWindow( Widget* parent, int id )
   font.draw( *_d->background, _("##advemployer_panel_haveworkers##"), 500, 54 );
 
   startPos += Point( 8, 8 );
-  Size btnSize( 560, 22 );
-  Point btnOffset( 0, 25 );
-  PushButton* btn = new PushButton( this, Rect( startPos, btnSize ), "industry&trade", prIndustryAndTrade, false, PushButton::BlackBorderUp );
-  btn->setFont( Font::create( FONT_1 ) );
-  btn = new PushButton( this, Rect( startPos + btnOffset, btnSize ), "food", prFood, false, PushButton::BlackBorderUp );
-  btn->setFont( Font::create( FONT_1 ) );
-  btn = new PushButton( this, Rect( startPos + btnOffset * 2, btnSize ), "ingineers", prEngineers, false, PushButton::BlackBorderUp );
-  btn->setFont( Font::create( FONT_1 ) );
-  btn = new PushButton( this, Rect( startPos + btnOffset * 3, btnSize ), "water", prWater, false, PushButton::BlackBorderUp );
-  btn->setFont( Font::create( FONT_1 ) );
-  btn = new PushButton( this, Rect( startPos + btnOffset * 4, btnSize ), "prefectures", prPrefectures, false, PushButton::BlackBorderUp );
-  btn->setFont( Font::create( FONT_1 ) );
-  btn = new PushButton( this, Rect( startPos + btnOffset * 5, btnSize ), "military", prMilitary, false, PushButton::BlackBorderUp );
-  btn->setFont( Font::create( FONT_1 ) );
-  btn = new PushButton( this, Rect( startPos + btnOffset * 6, btnSize ), "entertainment", prEntertainment, false, PushButton::BlackBorderUp );
-  btn->setFont( Font::create( FONT_1 ) );
-  btn = new PushButton( this, Rect( startPos + btnOffset * 7, btnSize ), "health&education", prHealthAndEducation, false, PushButton::BlackBorderUp );
-  btn->setFont( Font::create( FONT_1 ) );
-  btn = new PushButton( this, Rect( startPos + btnOffset * 8, btnSize ), "administation&religion", prAdministrationAndReligion, false, PushButton::BlackBorderUp );
+  PushButton* btn = new EmployerButton( this, startPos, prIndustryAndTrade, "industry&trade", 0, 0 );
+  btn = new EmployerButton( this, startPos, prFood, "food", 0, 0 );
+  btn = new EmployerButton( this, startPos, prEngineers, "ingineers", 0, 0 );
+  btn = new EmployerButton( this, startPos, prWater, "water", 0, 0 );
+  btn = new EmployerButton( this, startPos, prPrefectures, "prefectures", 0, 0 );
+  btn = new EmployerButton( this, startPos, prMilitary, "military", 0, 0 );
+  btn = new EmployerButton( this, startPos, prEntertainment, "entertainment", 0, 0 );
+  btn = new EmployerButton( this, startPos, prHealthAndEducation, "health&education", 0, 0 );
+  btn = new EmployerButton( this, startPos, prAdministrationAndReligion, "administation&religion", 0, 0 );
 
+  Picture pic = Picture::load( ResourceGroup::advisorwindow, 1 );
   btn = new PushButton( this, Rect( Point( 160, 356 ), Size( 24 ) ), "", -1 );
-  btn->setPicture( &Picture::load( ResourceGroup::advisorwindow, 1 ), stNormal );
-  btn->setPicture( &Picture::load( ResourceGroup::advisorwindow, 1 ), stHovered );
-  btn->setPicture( &Picture::load( ResourceGroup::advisorwindow, 1 ), stPressed );
+  btn->setPicture( &pic, stNormal );
+  btn->setPicture( &pic, stHovered );
+  btn->setPicture( &pic, stPressed );
 
+  pic = Picture::load( ResourceGroup::advisorwindow, 2 );
   btn = new PushButton( this, Rect( Point( 160+24, 356 ), Size( 24 ) ), "", -1 );
-  btn->setPicture( &Picture::load( ResourceGroup::advisorwindow, 2 ), stNormal );
-  btn->setPicture( &Picture::load( ResourceGroup::advisorwindow, 2 ), stHovered );
-  btn->setPicture( &Picture::load( ResourceGroup::advisorwindow, 2 ), stPressed );
+  btn->setPicture( &pic, stNormal );
+  btn->setPicture( &pic, stHovered );
+  btn->setPicture( &pic, stPressed );
 
   Font font2 = Font::create( FONT_2 );
   font2.draw( *_d->background, _("##advemployer_panel_salary##"), salaryBgRect.UpperLeftCorner + Point( 4, 4) );

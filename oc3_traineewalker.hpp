@@ -18,6 +18,8 @@
 
 #include "oc3_walker.hpp"
 
+class Propagator;
+
 /** This walker goes to work */
 class TraineeWalker : public Walker
 {
@@ -25,7 +27,7 @@ public:
   static TraineeWalkerPtr create( const WalkerTraineeType traineeType );
   int getType() const;
 
-  void checkDestination(const BuildingType buildingType, Propagator &pathPropagator);
+  void checkDestination(const BuildingType buildingType, Propagator& pathPropagator);
   void send2City();
   void setOriginBuilding(Building &building);
   void computeWalkerPath();

@@ -15,44 +15,44 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
-
 #include "oc3_scenario.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_build_options.hpp"
+#include "oc3_win_targets.hpp"
 
-Scenario* Scenario::_instance = NULL;
+class Scenario::Impl
+{
+public:
+  City city;
+  std::string description;
+  CityWinTargets targets;
+};
 
 Scenario& Scenario::instance()
 {
-  if (_instance == NULL)
-  {
-    THROW("No Scenario instance!");
-  }
-  return *_instance;
+  static Scenario inst;
+  return inst;
 }
 
-
-Scenario::Scenario()
+Scenario::Scenario() : _d( new Impl )
 {
-  _instance = this;
-  _description = "";
+  _d->description = "";
 }
 
 City& Scenario::getCity()
 {
-  return _city;
+  return _d->city;
 }
-
 
 const City& Scenario::getCity() const
 {
-  return _city;
+  return _d->city;
 }
 
 std::string Scenario::getDescription() const
 {
-  return _description;
+  return _d->description;
 }
 
 void Scenario::save( VariantMap& stream ) const
@@ -64,3 +64,12 @@ void Scenario::load( const VariantMap& stream)
 {
 }
 
+CityWinTargets& Scenario::getWinTargets()
+{
+  return _d->targets;
+}
+
+Scenario::~Scenario()
+{
+
+}

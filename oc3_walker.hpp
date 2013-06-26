@@ -23,21 +23,19 @@
 #include <memory>
 
 #include "oc3_building.hpp"
+#include "oc3_walker_action.hpp"
 #include "oc3_service_building.hpp"
-#include "oc3_tilemap.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_enums.hpp"
-#include "oc3_pic_loader.hpp"
-#include "oc3_path_finding.hpp"
 #include "oc3_serializer.hpp"
 #include "oc3_referencecounted.hpp"
 #include "oc3_smartptr.hpp"
 #include "oc3_safetycast.hpp"
-#include "oc3_signals.hpp"
 #include "oc3_scopedptr.hpp"
 #include "oc3_predefinitions.hpp"
 
 typedef unsigned int UniqueId;
+class PathWay;
 
 class Walker : public Serializable, public ReferenceCounted
 {
@@ -56,7 +54,7 @@ public:
 
    Point getPosition() const;
 
-   void setPathWay(PathWay &pathWay);
+   void setPathWay(PathWay& pathWay);
    //void setDestinationIJ( const TilePos& pos );
    void setSpeed(const float speed);
    virtual void onNewTile();  // called when the walker is on a new tile
@@ -85,8 +83,9 @@ protected:
    WalkerType _walkerType;
    WalkerGraphicType _walkerGraphic;
    bool _isDeleted;
-   PathWay _pathWay;
    WalkerAction _action;
+
+   PathWay& _getPathway();
 
 private:
    /* useful method for subtile movement computation

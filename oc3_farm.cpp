@@ -169,7 +169,7 @@ void Farm::timeStep(const unsigned long time)
 }
 
 
-FarmWheat::FarmWheat() : Farm(G_WHEAT, B_WHEAT)
+FarmWheat::FarmWheat() : Farm(G_WHEAT, B_WHEAT_FARM)
 {
 }
 

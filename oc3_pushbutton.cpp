@@ -25,14 +25,14 @@
 
 struct ButtonState
 {
-    Picture* bgTexture;
-    PictureRef texture;
-    Picture* iconTexture;
-    //SDL_Color color;
-    //bool overrideColorEnabled;
-    Font font;
-    Rect rectangle;
-    //ElementStyle* style;
+  Picture* bgTexture;
+  PictureRef texture;
+  Picture* iconTexture;
+  //SDL_Color color;
+  //bool overrideColorEnabled;
+  Font font;
+  Rect rectangle;
+  //ElementStyle* style;
 };    
 
 class PushButton::Impl
@@ -237,7 +237,7 @@ bool PushButton::onEvent(const NEvent& event)
           setPressed(false);
         }
 
-        btnClicked_();
+        _btnClicked();
         return true;
       }
    break;
@@ -260,8 +260,8 @@ bool PushButton::onEvent(const NEvent& event)
   case OC3_MOUSE_EVENT:
     switch( event.MouseEvent.Event  )
     {
-    case OC3_LMOUSE_PRESSED_DOWN: return leftMouseBtnPressed_( event );
-    case OC3_LMOUSE_LEFT_UP: return btnMouseUp_( event );
+    case OC3_LMOUSE_PRESSED_DOWN: return _leftMouseBtnPressed( event );
+    case OC3_LMOUSE_LEFT_UP: return _btnMouseUp( event );
 
     default:
     break;
@@ -275,7 +275,7 @@ bool PushButton::onEvent(const NEvent& event)
 	return getParent() ? getParent()->onEvent(event) : false;
 }
 
-void PushButton::btnClicked_()
+void PushButton::_btnClicked()
 {
   getParent()->onEvent( NEvent::Gui( this, 0, OC3_BUTTON_CLICKED ) );
 
@@ -287,7 +287,7 @@ Signal0<>& PushButton::onClicked()
   return _d->onClickedSignal;
 }
 
-bool PushButton::btnMouseUp_( const NEvent& event )
+bool PushButton::_btnMouseUp( const NEvent& event )
 {
 	bool wasPressed = isPressed();
 
@@ -307,12 +307,12 @@ bool PushButton::btnMouseUp_( const NEvent& event )
 
 	if ((!isPushButton() && wasPressed ) ||
 		(isPushButton() && wasPressed != isPressed()))
-		btnClicked_();
+		_btnClicked();
 
 	return true;
 }
 
-bool PushButton::leftMouseBtnPressed_( const NEvent& event )
+bool PushButton::_leftMouseBtnPressed( const NEvent& event )
 {
 	if( _environment->hasFocus(this) &&
 		!getAbsoluteClippingRect().isPointInside( event.MouseEvent.getPosition() ) )
@@ -328,7 +328,7 @@ bool PushButton::leftMouseBtnPressed_( const NEvent& event )
 	return true;
 }
 
-ElementState PushButton::getActiveButtonState_()
+ElementState PushButton::_getActiveButtonState()
 {
   if( isEnabled() )
       return ( isPressed() 
@@ -343,7 +343,7 @@ void PushButton::beforeDraw( GfxEngine& painter )
   // todo:	move sprite up and text down if the pressed state has a sprite
   //			draw sprites for focused and mouse-over 
   //          Point spritePos = AbsoluteRect.getCenter();
-  _d->currentButtonState = getActiveButtonState_();
+  _d->currentButtonState = _getActiveButtonState();
 
   if( !_d->buttonStates[ _d->currentButtonState ].texture )
     _updateTexture( _d->currentButtonState );
@@ -439,7 +439,7 @@ void PushButton::resizeEvent_()
 {
   for( int i=0; i != StateCount; i++ )
   {
-      _updateTexture( ElementState(i) );
+    _updateTexture( ElementState(i) );
   }
 }
 

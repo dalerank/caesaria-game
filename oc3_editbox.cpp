@@ -49,6 +49,7 @@ public:
   std::string holderText;
   Picture bgPicture;
   PictureRef picture;
+  PictureRef cursorPic;
 
 	bool wordWrapEnabled, multiLine, autoScrollEnabled, isPasswordBox;
 	char passwordChar;
@@ -83,7 +84,7 @@ EditBox::EditBox( Widget* parent, const Rect& rectangle, const std::string& text
 	_d->autoScrollEnabled = true;
 	_d->isPasswordBox = false;
 	_d->passwordChar = '*';
-  _d->lastBreakFont = getActiveFont();
+  _d->lastBreakFont = getActiveFont();  
 
 	#ifdef _DEBUG
 	    setDebugName( "EditBox");
@@ -726,6 +727,12 @@ void EditBox::beforeDraw( GfxEngine& painter )
         _d->picture.reset( Picture::create( getSize() ) );
       }
 
+      if( _d->cursorPic.isNull() )
+      {
+        _d->cursorPic.reset( Picture::create( Size(1, getHeight() / 5 * 4 ) ) );
+        _d->cursorPic->fill( 0xff000000, Rect( 0, 0, 0, 0) );
+      }
+
       if( _d->bgPicture.isValid() )
       {
         _d->picture->draw( _d->bgPicture, 0, 0 );
@@ -883,13 +890,13 @@ void EditBox::beforeDraw( GfxEngine& painter )
 
 	    {
 		    wchar_t lastChar = _d->cursorPos-startPos > 0 ? txtLine->at( _d->cursorPos-startPos-1 ) : 0;
-		    charcursorpos = _d->lastBreakFont.getSize( stringBeforeCursor ).getWidth() + 4/*font.GetKerningWidth(L"_", lastChar ? &lastChar : NULL )*/ ;
+		    charcursorpos = _d->lastBreakFont.getSize( stringBeforeCursor ).getWidth() + 1/*font.GetKerningWidth(L"_", lastChar ? &lastChar : NULL )*/ ;
 	    }
 
-      setTextRect(cursorLine, "_" );
+      setTextRect(cursorLine);
       _d->cursorRect = _d->currentTextRect;
       _d->cursorRect.UpperLeftCorner += Point( charcursorpos + 1, 0 );
-      _d->cursorRect.LowerRightCorner += Point( _d->cursorRect.UpperLeftCorner.getX() + 2, 0 );
+      _d->cursorRect.LowerRightCorner = _d->cursorRect.UpperLeftCorner + Point( 1, getHeight() );
       //_d->cursorRect.UpperLeftCorner += style.GetMargin().getRect().UpperLeftCorner;
       //_d->cursorRect.LowerRightCorner -= style.GetMargin().getRect().LowerRightCorner;
   }
@@ -933,7 +940,10 @@ void EditBox::draw( GfxEngine& painter )
   if( focus )
 	{
 		unsigned int t = DateTime::getElapsedTime() % 1000;
-		//painter.drawRectangle( Color( (( t < 500 ) ? t  : ( 1000 - t )) / 2, 0, 0, 0 ), _d->cursorRect, 0 );
+    if( t < 500 )
+    {
+		  painter.drawPicture( *_d->cursorPic, _d->cursorRect.UpperLeftCorner );
+    }
 	}
 
 	// draw children
@@ -980,7 +990,7 @@ Size EditBox::getTextDimension()
 	Rect ret;
 
 	setTextRect(0);
-    ret = _d->currentTextRect;
+  ret = _d->currentTextRect;
 
 	for (unsigned int i=1; i < _d->brokenText.size(); ++i)
 	{
@@ -1092,13 +1102,17 @@ int EditBox::getCursorPos(int x, int y)
 	{
 		setTextRect(i);
     if (i == 0 && y < _d->currentTextRect.UpperLeftCorner.getY() )
-            y = _d->currentTextRect.UpperLeftCorner.getY();
+    {
+      y = _d->currentTextRect.UpperLeftCorner.getY();
+    }
  
     if (i == lineCount - 1 && y > _d->currentTextRect.LowerRightCorner.getY() )
-            y = _d->currentTextRect.LowerRightCorner.getY();
+    {
+      y = _d->currentTextRect.LowerRightCorner.getY();
+    }
 
 		// is it inside this region?
-        if (y >= _d->currentTextRect.UpperLeftCorner.getY() && y <= _d->currentTextRect.LowerRightCorner.getY() )
+    if (y >= _d->currentTextRect.UpperLeftCorner.getY() && y <= _d->currentTextRect.LowerRightCorner.getY() )
 		{
 			// we've found the clicked line
 			txtLine = (_d->wordWrapEnabled || _d->multiLine) ? &_d->brokenText[i] : &_text;
@@ -1108,10 +1122,14 @@ int EditBox::getCursorPos(int x, int y)
 	}
 
   if( x < _d->currentTextRect.UpperLeftCorner.getX() )
+  {
     x = _d->currentTextRect.UpperLeftCorner.getX();
+  }
 
 	if ( !txtLine )
+  {
 		return 0;
+  }
 
   int idx = font.getCharacterFromPos( *txtLine, x - _d->currentTextRect.UpperLeftCorner.getX() );
 
@@ -1255,12 +1273,12 @@ void EditBox::setTextRect(int line, const std::string& tempText )
 		d.setHeight( getHeight() );
 	}
 	
-    d.setHeight( d.getHeight() + font.getKerningHeight() );
+  d.setHeight( d.getHeight() + font.getKerningHeight() );
 
-    _d->currentTextRect = getAbsoluteRect();
+  _d->currentTextRect = getAbsoluteRect();
 
-    _d->currentTextRect.UpperLeftCorner += Point( -_d->horizScrollPos, d.getHeight() *line - _d->vertScrollPos );
-    _d->currentTextRect.LowerRightCorner += Point( _d->horizScrollPos, _d->currentTextRect.UpperLeftCorner.getY() + d.getHeight() );
+  _d->currentTextRect.UpperLeftCorner += Point( -_d->horizScrollPos, d.getHeight() *line - _d->vertScrollPos );
+  _d->currentTextRect.LowerRightCorner = Point( _d->currentTextRect.getRight() +_d->horizScrollPos, _d->currentTextRect.UpperLeftCorner.getY() + d.getHeight() );
 }
 
 int EditBox::getLineFromPos(int pos)
@@ -1346,7 +1364,7 @@ void EditBox::calculateScrollPos()
 		int cPos = _d->multiLine ? _d->cursorPos - _d->brokenTextPositions[cursLine] : _d->cursorPos;
 
     int cStart = _d->currentTextRect.UpperLeftCorner.getX() + _d->horizScrollPos +
-		font.getSize( txtLine->substr(0, cPos) ).getWidth();
+		                            font.getSize( txtLine->substr(0, cPos) ).getWidth();
 
 		int cEnd = cStart + font.getSize( "_ " ).getWidth();
 

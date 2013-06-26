@@ -34,7 +34,6 @@
 #include "oc3_pictureconverter.hpp"
 #include "oc3_time.hpp"
 #include "oc3_stringhelper.hpp"
-#include "oc3_pic_loader.hpp"
 #include "oc3_font.hpp"
 #include "oc3_eventconverter.hpp"
 

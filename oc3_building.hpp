@@ -47,12 +47,15 @@ public:
   TilePos getTilePos() const;
   Size getSize() const;  // size in tiles (1=1x1, 2=2x2, ...)
   void setSize( const Size& size );
+  
   bool isDeleted() const;  // returns true if the overlay should be forgotten
   void deleteLater();
+  
   virtual bool isWalkable() const;
   virtual void setTerrain( TerrainTile& terrain ) = 0;
   virtual void build( const TilePos& pos );
-  virtual void destroy();  // handles the walkers
+  virtual void destroy();  // handles the delete
+  virtual Point getOffset( const Point& subpos ) const;
 
   // graphic
   void setPicture(Picture &picture);
@@ -65,8 +68,8 @@ public:
   BuildingType getType() const;
   void setType(const BuildingType buildingType);
 
-  void save( VariantMap& stream) const;
-  void load( const VariantMap& stream );
+  virtual void save( VariantMap& stream) const;
+  virtual void load( const VariantMap& stream );
 
 protected:
   std::vector<Picture*> _fgPictures;
@@ -98,7 +101,7 @@ public:
 
   virtual void destroy();
 protected:
-  std::list<Tile*> _accessRoads;
+  PtrTilesList _accessRoads;
   
   typedef enum { duPositive=true, duNegative=false } DsbrlUpdate;
   void _updateDesirabilityInfluence( const DsbrlUpdate type );

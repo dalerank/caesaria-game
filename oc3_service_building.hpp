@@ -43,8 +43,10 @@ public:
   // called when a service man should service the neighborhood
   virtual void deliverService();
   
-  void save( VariantMap& stream) const;
-  void load( const VariantMap& stream);
+  virtual void save( VariantMap& stream) const;
+  virtual void load( const VariantMap& stream);
+
+  virtual unsigned int getWalkerDistance() const;
 
   //void removeWalker( WalkerPtr walker );
   void addWalker( WalkerPtr walker );

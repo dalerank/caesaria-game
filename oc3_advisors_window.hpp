@@ -18,13 +18,15 @@
 
 #include "oc3_widget.hpp"
 #include "oc3_enums.hpp"
+#include "oc3_signals.hpp"
 
 class PushButton;
+class City;
 
 class AdvisorsWindow : public Widget
 {
 public:
-  static AdvisorsWindow* create( Widget* parent, int id, const AdvisorType type  );
+  static AdvisorsWindow* create( Widget* parent, int id, const AdvisorType type, City& city  );
 
   // draw on screen
   void draw( GfxEngine& engine );
@@ -33,13 +35,15 @@ public:
 
   bool onEvent(const NEvent& event);
 
+oc3_signals public:
+  Signal0<>& onEmpireMapRequest();
+
 protected:
   class Impl;
   ScopedPtr< Impl > _d;
 
-  AdvisorsWindow( Widget* parent, int id );
+  AdvisorsWindow( Widget* parent, int id, City& city );
   PushButton* addButton( const int pos, const int picId );
-
 };
 
 #endif

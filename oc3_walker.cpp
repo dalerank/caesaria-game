@@ -27,6 +27,8 @@
 #include "oc3_walkermanager.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_stringhelper.hpp"
+#include "oc3_path_finding.hpp"
+#include "oc3_picture_bank.hpp"
 
 class Walker::Impl
 {
@@ -40,6 +42,7 @@ public:
   Animation animation;  // current animation
   Point posOnMap; // subtile coordinate across all tiles: 0..15*mapsize (ii=15*i+si)
   PointF remainMove;  // remaining movement
+  PathWay pathWay;
 
   float getSpeed() const
   {
@@ -127,8 +130,8 @@ Point Walker::getPosition() const
 
 void Walker::setPathWay(PathWay &pathWay)
 {
-   _pathWay = pathWay;
-   _pathWay.begin();
+   _d->pathWay = pathWay;
+   _d->pathWay.begin();
 
    onMidTile();
 }
@@ -292,7 +295,11 @@ void Walker::walk()
       // if (amount != 0) std::cout << "walker remaining step :" << amount << std::endl;
    }
 
-   _d->posOnMap = Point( _d->pos.getI(), _d->pos.getJ() )*15 + _d->tileOffset;
+   Point overlayOffset = tile.getTerrain().getOverlay().isValid() 
+                              ? tile.getTerrain().getOverlay()->getOffset( _d->tileOffset ) 
+                              : Point( 0, 0 );
+
+   _d->posOnMap = Point( _d->pos.getI(), _d->pos.getJ() )*15 + _d->tileOffset + overlayOffset;
 }
 
 
@@ -312,7 +319,7 @@ void Walker::onNewTile()
 void Walker::onMidTile()
 {
    // std::cout << "Walker is on mid tile! coord=" << _i << "," << _j << std::endl;
-   if (_pathWay.isDestination())
+   if (_d->pathWay.isDestination())
    {
       onDestination();
    }
@@ -340,7 +347,7 @@ void Walker::onNewDirection()
 void Walker::computeDirection()
 {
    DirectionType lastDirection = _action._direction;
-   _action._direction = _pathWay.getNextDirection();
+   _action._direction = _d->pathWay.getNextDirection();
 
    if (lastDirection != _action._direction)
    {
@@ -397,7 +404,7 @@ void Walker::save( VariantMap& stream ) const
   stream[ "type" ] = (int)_walkerType;
 
   VariantMap vm_path;
-  _pathWay.save( vm_path );
+  _d->pathWay.save( vm_path );
   stream[ "pathway" ] = vm_path;
 
   stream[ "action" ] = (int)_action._action;
@@ -415,7 +422,7 @@ void Walker::save( VariantMap& stream ) const
 
 void Walker::load( const VariantMap& stream)
 {
-  _pathWay.load( stream.get( "pathway" ).toMap() );
+  _d->pathWay.load( stream.get( "pathway" ).toMap() );
   _action._action = (WalkerActionType) stream.get( "action" ).toInt();
   _action._direction = (DirectionType) stream.get( "direction" ).toInt();
   _d->pos = stream.get( "pos" ).toTilePos();
@@ -441,6 +448,11 @@ void Walker::deleteLater()
 void Walker::setUniqueId( const UniqueId uid )
 {
   _d->uid = uid;
+}
+
+PathWay& Walker::_getPathway()
+{
+  return _d->pathWay;
 }
 
 Soldier::Soldier()

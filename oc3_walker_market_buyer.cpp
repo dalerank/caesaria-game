@@ -24,7 +24,7 @@
 #include "oc3_granary.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_variant.hpp"
-
+#include "oc3_path_finding.hpp"
 
 class MarketBuyer::Impl
 {
@@ -153,13 +153,13 @@ void MarketBuyer::computeWalkerDestination()
       return;
    }
 
-   setIJ(_pathWay.getOrigin().getIJ() );
+   setIJ( _getPathway().getOrigin().getIJ() );
 }
 
 void MarketBuyer::onDestination()
 {
    Walker::onDestination();
-   if (_pathWay.isReverse())
+   if (_getPathway().isReverse())
    {
       // walker is back in the market
       deleteLater();
@@ -169,7 +169,7 @@ void MarketBuyer::onDestination()
    else
    {
       // walker is near the granary/warehouse
-      _pathWay.rbegin();
+      _getPathway().rbegin();
       _action._action=WA_MOVE;
       computeDirection();
 

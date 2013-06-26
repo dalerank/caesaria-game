@@ -25,6 +25,9 @@ public:
   static std::string format( unsigned int max_size, const char* fmt, ...);
   static void debug( unsigned int max_size, const char* fmt, ...);
 
+  static unsigned int hash( unsigned int max_size, const char* fmt, ...);
+  static unsigned int hash( const std::string& text );
+
   //! Convert a simple string of base 10 digits into an unsigned 32 bit integer.
   /** \param[in] in: The string of digits to convert. No leading chars are
   allowed, only digits 0 to 9. Parsing stops at the first non-digit.

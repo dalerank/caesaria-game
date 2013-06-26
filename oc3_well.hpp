@@ -23,8 +23,9 @@ class BuildingWell : public ServiceBuilding
 public:
   BuildingWell();
 
-  char getDesirabilityInfluence() const; 
-  void deliverService();
+  virtual void deliverService();
+
+  virtual bool isNeedRoadAccess() const;
 };
 
 #endif

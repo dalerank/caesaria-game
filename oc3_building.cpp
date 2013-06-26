@@ -15,32 +15,16 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
-
 #include "oc3_building.hpp"
 
 #include "oc3_tile.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_servicewalker.hpp"
 #include "oc3_exception.hpp"
-#include "oc3_gui_info_box.hpp"
 #include "oc3_building_data.hpp"
-#include "oc3_factory_building.hpp"
-#include "oc3_service_building.hpp"
-#include "oc3_training_building.hpp"
-#include "oc3_warehouse.hpp"
-#include "oc3_gettext.hpp"
-#include "oc3_time.hpp"
-#include "oc3_burningruins.hpp"
-#include "oc3_collapsedruins.hpp"
-#include "oc3_water_buildings.hpp"
-#include "oc3_constructionmanager.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_stringhelper.hpp"
-#include "oc3_building_data.hpp"
-
-#include <algorithm>
 
 class LandOverlay::Impl
 {
@@ -191,7 +175,7 @@ bool LandOverlay::isWalkable() const
 
 TilePos LandOverlay::getTilePos() const
 {
-  _OC3_DEBUG_BREAK_IF( !_master_tile && "master tile can't be 0" );
+  _OC3_DEBUG_BREAK_IF( !_master_tile && "master tile can't be null" );
   return _master_tile ? _master_tile->getIJ() : TilePos( -1, -1 );
 }
 
@@ -203,6 +187,11 @@ void LandOverlay::setName( const std::string& name )
 void LandOverlay::setSize( const Size& size )
 {
   _d->size = size;
+}
+
+Point LandOverlay::getOffset( const Point& subpos ) const
+{
+  return Point( 0, 0 );
 }
 
 Construction::Construction( const BuildingType type, const Size& size)

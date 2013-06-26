@@ -35,7 +35,6 @@ public:
 WalkerPrefect::WalkerPrefect( City& city )
 : ServiceWalker( city, S_PREFECT ), _d( new Impl )
 {
-  setMaxDistance( 10 );
   _walkerType = WT_PREFECT;
   _d->water = 0;
   _d->action = Impl::patrol;
@@ -90,8 +89,8 @@ void WalkerPrefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
 
   if( bestPath.getLength() > 0 )
   {
-    _pathWay = bestPath;
-    _pathWay.begin();
+    setPathWay( bestPath );
+    //_pathWay.begin();
   }
 }
 
@@ -102,7 +101,7 @@ void WalkerPrefect::onDestination()
 void WalkerPrefect::_back2Prefecture()
 {
   bool pathFound = Pathfinder::getInstance().getPath( getIJ(), getBase()->getTile().getIJ(),
-    _pathWay, false, Size( 0 ) );
+                                                      _getPathway(), false, Size( 0 ) );
 
   if( !pathFound )
   {
@@ -111,7 +110,7 @@ void WalkerPrefect::_back2Prefecture()
   }
   else
   {
-    _pathWay.begin();
+    _getPathway().begin();
   }
 
   _walkerGraphic = WG_PREFECT;
@@ -123,7 +122,7 @@ void WalkerPrefect::onMidTile()
   ReachedBuildings reachedBuildings;
   TilePos firePos;
   bool haveBurningRuinsNear = _looks4Fire( reachedBuildings, firePos );  
-  bool isDestination = _pathWay.isDestination();
+  bool isDestination = _getPathway().isDestination();
 
   switch( _d->action )
   {
@@ -179,9 +178,9 @@ void WalkerPrefect::onMidTile()
 
   case Impl::gotoFire:
     {
-      if( _pathWay.getDestination().getIJ().distanceFrom( getIJ() ) < 1.5f )
+      if( _getPathway().getDestination().getIJ().distanceFrom( getIJ() ) < 1.5f )
       {
-        LandOverlayPtr overlay = _pathWay.getDestination().getTerrain().getOverlay();
+        LandOverlayPtr overlay = _getPathway().getDestination().getTerrain().getOverlay();
         BurningRuinsPtr bruins = overlay.as<BurningRuins>();
         if( bruins.isValid() )
         {
@@ -224,7 +223,7 @@ void WalkerPrefect::timeStep(const unsigned long time)
   if( _d->action == Impl::fightFire )
   {    
     setSpeed( 0 );
-    LandOverlayPtr overlay = _pathWay.getDestination().getTerrain().getOverlay();
+    LandOverlayPtr overlay = _getPathway().getDestination().getTerrain().getOverlay();
     BurningRuinsPtr bruins = overlay.as<BurningRuins>(); 
     if( bruins.isValid() )
     {

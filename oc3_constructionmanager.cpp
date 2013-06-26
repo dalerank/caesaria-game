@@ -34,6 +34,7 @@
 #include "oc3_factory_pottery.hpp"
 #include "oc3_religion_building.hpp"
 #include "oc3_low_bridge.hpp"
+#include "oc3_high_bridge.hpp"
 
 #include "oc3_factoryclay.hpp"
 #include "oc3_factorymarble.hpp"
@@ -107,7 +108,7 @@ ConstructionManager::ConstructionManager() : _d( new Impl )
   addCreator(B_AQUEDUCT, OC3_STR_EXT(B_AQUEDUCT), new BuildingCreator<Aqueduct>() );
   addCreator(B_RESERVOIR, OC3_STR_EXT(B_RESERVOIR), new BuildingCreator<Reservoir>() );
   // security
-  addCreator(B_PREFECT, OC3_STR_EXT(B_PREFECT)  , new BuildingCreator<BuildingPrefecture>() );
+  addCreator(B_PREFECTURE, OC3_STR_EXT(B_PREFECTURE)  , new BuildingCreator<BuildingPrefecture>() );
   addCreator(B_FORT_LEGIONNAIRE, OC3_STR_EXT(B_FORT_LEGIONNAIRE), new BuildingCreator<FortLegionnaire>() );
   addCreator(B_FORT_JAVELIN, OC3_STR_EXT(B_FORT_JAVELIN)   , new BuildingCreator<FortJaveline>() );
   addCreator(B_FORT_MOUNTED, OC3_STR_EXT(B_FORT_MOUNTED)  , new BuildingCreator<FortMounted>() );
@@ -118,14 +119,14 @@ ConstructionManager::ConstructionManager() : _d( new Impl )
   addCreator(B_WAREHOUSE, OC3_STR_EXT(B_WAREHOUSE), new BuildingCreator<Warehouse>() );
   addCreator(B_GRANARY, OC3_STR_EXT(B_GRANARY)  , new BuildingCreator<Granary>() );
   // farms
-  addCreator(B_WHEAT, OC3_STR_EXT(B_WHEAT)    , new BuildingCreator<FarmWheat>() );
+  addCreator(B_WHEAT_FARM, OC3_STR_EXT(B_WHEAT_FARM)    , new BuildingCreator<FarmWheat>() );
   addCreator(B_OLIVE, OC3_STR_EXT(B_OLIVE)    , new BuildingCreator<FarmOlive>() );
   addCreator(B_GRAPE, OC3_STR_EXT(B_GRAPE)    , new BuildingCreator<FarmGrape>() );
   addCreator(B_MEAT, OC3_STR_EXT(B_MEAT)     , new BuildingCreator<FarmMeat>() );
   addCreator(B_FRUIT, OC3_STR_EXT(B_FRUIT)    , new BuildingCreator<FarmFruit>() );
   addCreator(B_VEGETABLE, OC3_STR_EXT(B_VEGETABLE), new BuildingCreator<FarmVegetable>() );
   // raw materials
-  addCreator(B_IRON, OC3_STR_EXT(B_IRON)  , new BuildingCreator<FactoryIron>() );
+  addCreator(B_IRON_MINE, OC3_STR_EXT(B_IRON_MINE)  , new BuildingCreator<FactoryIron>() );
   addCreator(B_TIMBER, OC3_STR_EXT(B_TIMBER), new BuildingCreator<FactoryTimber>() );
   addCreator(B_CLAY_PIT, OC3_STR_EXT(B_CLAY_PIT)  , new BuildingCreator<FactoryClay>() );
   addCreator(B_MARBLE, OC3_STR_EXT(B_MARBLE), new BuildingCreator<FactoryMarble>() );
@@ -136,8 +137,9 @@ ConstructionManager::ConstructionManager() : _d( new Impl )
   addCreator(B_OIL, OC3_STR_EXT(B_OIL)      , new BuildingCreator<FactoryOil>() );
   addCreator(B_POTTERY, OC3_STR_EXT(B_POTTERY)  , new BuildingCreator<FactoryPottery>() );
   // utility
-  addCreator(B_ENGINEER, OC3_STR_EXT(B_ENGINEER), new BuildingCreator<BuildingEngineer>() );
+  addCreator(B_ENGINEER_POST, OC3_STR_EXT(B_ENGINEER_POST), new BuildingCreator<BuildingEngineer>() );
   addCreator(B_LOW_BRIDGE, OC3_STR_EXT(B_LOW_BRIDGE), new BuildingCreator<LowBridge>() );
+  addCreator(B_HIGH_BRIDGE, OC3_STR_EXT(B_HIGH_BRIDGE), new BuildingCreator<HighBridge>() );
   addCreator(B_DOCK, OC3_STR_EXT(B_DOCK)    , new BuildingCreator<Dock>() );
   addCreator(B_SHIPYARD, OC3_STR_EXT(B_SHIPYARD), new BuildingCreator<Shipyard>() );
   addCreator(B_WHARF, OC3_STR_EXT(B_WHARF)   , new BuildingCreator<Wharf>() );

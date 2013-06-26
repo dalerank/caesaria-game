@@ -200,3 +200,29 @@ void StringHelper::debug( unsigned int max_size, const char* fmt, ... )
 
   std::cout << ret << std::endl;
 }
+
+unsigned int StringHelper::hash( const std::string& text )
+{
+  unsigned int nHash = 0;
+  const char* key = text.c_str();
+  if( key )
+  {
+    while(*key)
+      nHash = (nHash<<5) + nHash + *key++;
+  }
+
+  return nHash;
+}
+
+unsigned int StringHelper::hash( unsigned int max_size, const char* fmt, ... )
+{
+  va_list argument_list;
+  va_start(argument_list, fmt);
+
+  std::string fmtStr;
+  int length = formatString( fmtStr, max_size, fmt, argument_list);
+
+  va_end(argument_list);
+
+  return hash( fmtStr );
+}

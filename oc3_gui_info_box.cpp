@@ -21,7 +21,6 @@
 
 #include "oc3_tile.hpp"
 #include "oc3_exception.hpp"
-#include "oc3_pic_loader.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_gui_paneling.hpp"
 #include "oc3_building_data.hpp"
@@ -37,8 +36,11 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_goodhelper.hpp"
 #include "oc3_farm.hpp"
+#include "oc3_house.hpp"
 #include "oc3_religion_building.hpp"
 #include "oc3_divinity.hpp"
+#include "oc3_warehouse.hpp"
+#include "oc3_gfx_engine.hpp"
 
 class InfoBoxHelper
 {
@@ -341,11 +343,11 @@ void InfoBoxHouse::drawGood(const GoodType &goodType, const int col, const int r
   font.draw( *_d->bgPicture, text, 61 + 100 * col, startY + 30 * row );
 }
 
-GuiInfoFactory::GuiInfoFactory( Widget* parent, Factory &building)
+GuiInfoFactory::GuiInfoFactory( Widget* parent, const Tile& tile)
     : GuiInfoBox( parent, Rect( 0, 0, 450, 220 ), -1 )
 {
-  _building = &building;
-  setTitle( BuildingDataHolder::instance().getData( building.getType() ).getPrettyName() );
+  _building = tile.getTerrain().getOverlay().as<Factory>();
+  setTitle( BuildingDataHolder::instance().getData( _building->getType() ).getPrettyName() );
   paint();
 }
 
@@ -466,7 +468,9 @@ GuiInfoGranary::GuiInfoGranary( Widget* parent, const Tile& tile )
     : GuiInfoBox( parent, Rect( 0, 0, 510, 280 ), -1 ), _gd( new Impl )
 {
    _gd->building = tile.getTerrain().getOverlay().as<Granary>();
-   _gd->btnOrders = new PushButton( this, Rect( 155, getHeight() - 39, 355, getHeight() - 15 ), _("##special_orders##") );
+   Size btnOrdersSize( 350, 20 );
+   _gd->btnOrders = new PushButton( this, Rect( Point( (getWidth() - btnOrdersSize.getWidth())/ 2, getHeight() - 34 ), btnOrdersSize), 
+                                    _("##special_orders##"), -1, false, PushButton::WhiteBorderUp );
 
    setTitle( BuildingDataHolder::instance().getData( _gd->building->getType()).getPrettyName() );
 
@@ -530,6 +534,93 @@ void GuiInfoGranary::drawGood(const GoodType &goodType, int col, int& paintY)
 
   std::string outText = StringHelper::format( 0xff, "%d %s", qty, goodName.c_str() );
   font.draw( *_d->bgPicture, outText, (col == 0 ? 61 : 280), paintY );
+  paintY += 25;
+}
+
+class InfoBoxWarehouse::Impl
+{
+public:
+  WarehousePtr building;
+  PushButton* btnOrders;
+  Point workerFramePos;
+};
+
+InfoBoxWarehouse::InfoBoxWarehouse( Widget* parent, const Tile& tile )
+: GuiInfoBox( parent, Rect( 0, 0, 510, 360 ), -1 ), _wd( new Impl )
+{
+  _wd->building = tile.getTerrain().getOverlay().as<Warehouse>();
+  Size btnOrdersSize( 350, 20 );
+  _wd->btnOrders = new PushButton( this, Rect( Point( (getWidth() - btnOrdersSize.getWidth()) / 2, getHeight() - 34 ), btnOrdersSize ), 
+                                   _("##special_orders##"), -1, false, PushButton::WhiteBorderUp );
+
+  setTitle( BuildingDataHolder::instance().getData( _wd->building->getType()).getPrettyName() );
+
+  paint();
+}
+
+void InfoBoxWarehouse::paint()
+{
+  //Font &font_red = FontCollection::instance().getFont(FONT_2_RED);
+  Font font = Font::create( FONT_2 );
+
+  // summary: total stock, free capacity
+  int _paintY = _d->lbTitle->getBottom();
+
+  int _col2PaintY = _paintY;
+  drawGood(G_WHEAT, 0, _paintY);
+  drawGood(G_VEGETABLE, 0, _paintY);
+  drawGood(G_FRUIT, 0, _paintY);
+  drawGood(G_OLIVE, 0, _paintY);
+  drawGood(G_GRAPE, 0, _paintY);
+
+  _paintY = _col2PaintY;
+  drawGood(G_MEAT, 1, _paintY);
+  drawGood(G_WINE, 1, _paintY);
+  drawGood(G_OIL, 1, _paintY);
+  drawGood(G_IRON, 1, _paintY);
+  drawGood(G_TIMBER, 1, _paintY);
+
+  _paintY = _col2PaintY;
+  drawGood(G_CLAY, 2, _paintY);
+  drawGood(G_MARBLE, 2, _paintY);
+  drawGood(G_WEAPON, 2, _paintY);
+  drawGood(G_FURNITURE, 2, _paintY);
+  drawGood(G_POTTERY, 2, _paintY);
+
+  _wd->workerFramePos = Point( 16, 170 );
+  GuiPaneling::instance().draw_black_frame(*_d->bgPicture, _wd->workerFramePos.getX(), _wd->workerFramePos.getY(), getWidth()-32, 62);
+
+  drawWorkers();
+}
+
+
+void InfoBoxWarehouse::drawWorkers()
+{
+  // picture of citizen
+  Picture& pic = Picture::load( ResourceGroup::panelBackground, 542);
+  _d->bgPicture->draw(pic, _wd->workerFramePos + Point( 20, 10 ) );
+
+  // number of workers
+  std::string text = StringHelper::format( 0xff, _("%d employers (%d requires)"), _wd->building->getWorkers(), _wd->building->getMaxWorkers());
+
+  Font font = Font::create( FONT_2 );
+  font.draw(*_d->bgPicture, text, _wd->workerFramePos + Point( 40, 10 ) );
+}
+
+
+void InfoBoxWarehouse::drawGood(const GoodType &goodType, int col, int& paintY)
+{
+  std::string goodName = GoodHelper::getInstance().getName( goodType );
+
+  Font font = Font::create( FONT_2 );
+  int qty = _wd->building->getGoodStore().getCurrentQty(goodType);
+
+  // pictures of goods
+  Picture &pic = getPictureGood(goodType);
+  _d->bgPicture->draw(pic, col * 150 + 15, paintY);
+
+  std::string outText = StringHelper::format( 0xff, "%d %s", qty, goodName.c_str() );
+  font.draw( *_d->bgPicture, outText, col * 150 + 45, paintY );
   paintY += 25;
 }
 
@@ -842,7 +933,7 @@ InfoBoxFarm::InfoBoxFarm( Widget* parent, const Tile& tile )
   GoodType goodType = G_NONE;
   switch( _fd->farm->getType() )
   {
-    case B_WHEAT:
+    case B_WHEAT_FARM:
       desc.assign( _("##farm_description_wheat##") );
       name.assign( _("##farm_title_wheat##") );
       goodType = G_WHEAT;

@@ -68,6 +68,8 @@ public:
   void drawTileWater( Tile& tile );
   void drawTileDesirability( Tile& tile );
   void drawTileFire( Tile& tile );
+  void drawTileDamage( Tile& tile );
+  void drawTileReligion( Tile& tile );
   void drawTileInSelArea( Tile& tile, Tile* master );
   void drawTileFood( Tile& tile );
   void drawAnimations( LandOverlayPtr overlay, const Point& screenPos );
@@ -203,7 +205,6 @@ void TilemapRenderer::Impl::drawTileDesirability( Tile& tile )
   }
 }
 
-
 void TilemapRenderer::Impl::drawTileFire( Tile& tile )
 {
   Point screenPos = tile.getXY() + mapOffset;
@@ -230,7 +231,7 @@ void TilemapRenderer::Impl::drawTileFire( Tile& tile )
     case B_BURNING_RUINS:
     case B_BURNED_RUINS:
     case B_COLLAPSED_RUINS:
-    case B_PREFECT:
+    case B_PREFECTURE:
       pic = &tile.getPicture();
       needDrawAnimations = true;
     break;  
@@ -264,9 +265,140 @@ void TilemapRenderer::Impl::drawTileFire( Tile& tile )
     {
       drawAnimations( overlay, screenPos );
     }
-    else
+    else if( fireLevel >= 0)
     {
       drawColumn( screenPos, 18, fireLevel );
+    }
+  }
+}
+
+void TilemapRenderer::Impl::drawTileDamage( Tile& tile )
+{
+  Point screenPos = tile.getXY() + mapOffset;
+
+  tile.setWasDrawn();
+
+  bool needDrawAnimations = false;
+  const TerrainTile& terrain = tile.getTerrain();
+  if( terrain.getOverlay().isNull() )
+  {
+    //draw background
+    engine->drawPicture( tile.getPicture(), screenPos );
+  }
+  else
+  {   
+    LandOverlayPtr overlay = terrain.getOverlay();
+    Picture* pic = 0;
+    int damageLevel = 0;
+    switch( overlay->getType() )
+    {
+      //fire buildings and roads
+    case B_ROAD:
+    case B_PLAZA:
+    case B_COLLAPSED_RUINS:
+    case B_ENGINEER_POST:
+      pic = &tile.getPicture();
+      needDrawAnimations = true;
+      break;  
+
+      //houses
+    case B_HOUSE:
+      {
+        HousePtr house = overlay.as< House >();
+        pic = &Picture::load( ResourceGroup::waterOverlay, ( overlay->getSize().getWidth() - 1 )*2 + 11 );
+        damageLevel = (int)house->getDamageLevel();
+        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() ==0);
+      }
+      break;
+
+      //other buildings
+    default:
+      {
+        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + 1 );
+        BuildingPtr building = overlay.as< Building >();
+        if( building.isValid() )
+        {
+          damageLevel = (int)building->getDamageLevel();
+        }
+      }
+      break;
+    }  
+
+    engine->drawPicture( *pic, screenPos );
+
+    if( needDrawAnimations )
+    {
+      drawAnimations( overlay, screenPos );
+    }
+    else if( damageLevel >= 0 )
+    {
+      drawColumn( screenPos, 15, damageLevel );
+    }
+  }
+}
+
+void TilemapRenderer::Impl::drawTileReligion( Tile& tile )
+{
+  Point screenPos = tile.getXY() + mapOffset;
+
+  tile.setWasDrawn();
+
+  bool needDrawAnimations = false;
+  const TerrainTile& terrain = tile.getTerrain();
+  if( terrain.getOverlay().isNull() )
+  {
+    //draw background
+    engine->drawPicture( tile.getPicture(), screenPos );
+  }
+  else
+  {   
+    LandOverlayPtr overlay = terrain.getOverlay();
+    Picture* pic = 0;
+    int religionLevel = -1;
+    switch( overlay->getType() )
+    {
+      //fire buildings and roads
+    case B_ROAD:
+    case B_PLAZA:
+    case B_TEMPLE_CERES: case B_TEMPLE_MARS: case B_TEMPLE_MERCURE: case B_TEMPLE_NEPTUNE: case B_TEMPLE_VENUS:
+    case B_TEMPLE_ORACLE:
+    case B_BIG_TEMPLE_CERES: case B_BIG_TEMPLE_MARS: case B_BIG_TEMPLE_MERCURE: case B_BIG_TEMPLE_NEPTUNE: case B_BIG_TEMPLE_VENUS:
+      pic = &tile.getPicture();
+      needDrawAnimations = true;
+    break;  
+
+      //houses
+    case B_HOUSE:
+      {
+        HousePtr house = overlay.as< House >();
+        pic = &Picture::load( ResourceGroup::waterOverlay, ( overlay->getSize().getWidth() - 1 )*2 + 11 );
+        religionLevel = house->getServiceAccess(S_TEMPLE_MERCURE);
+        religionLevel += house->getServiceAccess(S_TEMPLE_VENUS);
+        religionLevel += house->getServiceAccess(S_TEMPLE_MARS);
+        religionLevel += house->getServiceAccess(S_TEMPLE_NEPTUNE);
+        religionLevel += house->getServiceAccess(S_TEMPLE_CERES);
+        religionLevel = math::clamp( religionLevel / (house->getLevelSpec().getMinReligionLevel()+1), 0, 100 );
+        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() ==0);
+      }
+    break;
+
+      //other buildings
+    default:
+      {
+        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + 1 );
+      }
+    break;
+    }  
+
+    engine->drawPicture( *pic, screenPos );
+
+    if( needDrawAnimations )
+    {
+      drawAnimations( overlay, screenPos );
+    }
+    else if( religionLevel > 0 )
+    {
+      drawColumn( screenPos, 9, religionLevel );
     }
   }
 }
@@ -338,6 +470,7 @@ void TilemapRenderer::Impl::drawTileWater( Tile& tile )
   tile.setWasDrawn();
 
   bool needDrawAnimations = false;
+  Size areaSize(1);
   const TerrainTile& terrain = tile.getTerrain();
   if( terrain.getOverlay().isNull() )
   {
@@ -367,12 +500,14 @@ void TilemapRenderer::Impl::drawTileWater( Tile& tile )
         bool haveWater = house->hasServiceAccess( S_WELL ) || house->hasServiceAccess( S_FOUNTAIN );
 
         pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + ( haveWater ? 2 : 1 ) + 10 );
+        areaSize = overlay->getSize();
       }
     break;
       
       //other buildings
     default:
       pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + 1 );
+      areaSize = overlay->getSize();
     break;
     }  
 
@@ -384,15 +519,29 @@ void TilemapRenderer::Impl::drawTileWater( Tile& tile )
     }
   }
   
-  if( !needDrawAnimations && terrain.isWalkable(true) )
+  if( !needDrawAnimations && (terrain.isWalkable(true) || terrain.isBuilding()) )
   {
-    int reservoirWater = terrain.getWaterService( WTR_RESERVOIR );
-    int fontainWater = terrain.getWaterService( WTR_FONTAIN );
-    
-    if( fontainWater + reservoirWater > 0 )
+    PtrTilesArea area;
+    if( areaSize.getWidth() == 1 )
     {
-      int picIndex = (fontainWater > 0 ? 22 : 21);
-      engine->drawPicture( Picture::load( ResourceGroup::waterOverlay, picIndex ), screenPos );
+      area.push_back( &tile );
+    }
+    else
+    {
+      area = tilemap->getFilledRectangle( tile.getIJ(), areaSize );
+    }
+
+    for( PtrTilesArea::iterator it=area.begin(); it != area.end(); it++ )
+    {
+      TerrainTile& curTera = (*it)->getTerrain();
+      int reservoirWater = curTera.getWaterService( WTR_RESERVOIR );
+      int fontainWater = curTera.getWaterService( WTR_FONTAIN );
+      
+      if( fontainWater + reservoirWater > 0 )
+      {
+        int picIndex = (fontainWater > 0 ? 22 : 21);
+        engine->drawPicture( Picture::load( ResourceGroup::waterOverlay, picIndex ), (*it)->getXY() + mapOffset );
+      }
     }
   }
 }
@@ -1001,8 +1150,10 @@ void TilemapRenderer::setChangeCommand( const TilemapChangeCommandPtr command )
     {
     case OV_WATER: _d->setDrawFunction( _d.data(), &Impl::drawTileWater ); break;
     case OV_RISK_FIRE: _d->setDrawFunction( _d.data(), &Impl::drawTileFire ); break;
+    case OV_RISK_DAMAGE: _d->setDrawFunction( _d.data(), &Impl::drawTileDamage ); break;
     case OV_COMMERCE_PRESTIGE: _d->setDrawFunction( _d.data(), &Impl::drawTileDesirability ); break;
     case OV_COMMERCE_FOOD: _d->setDrawFunction( _d.data(), &Impl::drawTileFood ); break;
+    case OV_RELIGION: _d->setDrawFunction( _d.data(), &Impl::drawTileReligion ); break;
     default:_d->setDrawFunction( _d.data(), &Impl::drawTileBase ); break;
     }
 

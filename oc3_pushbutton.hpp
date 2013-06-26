@@ -40,55 +40,56 @@ public:
 	~PushButton();
 
 	//! called if an event happened.
-	bool onEvent(const NEvent& event);
+	virtual bool onEvent(const NEvent& event);
 
   //! prepare render state
-  void beforeDraw( GfxEngine& painter );
+  virtual void beforeDraw( GfxEngine& painter );
 
   //! override render function 
-  void draw( GfxEngine& painter );
+  virtual void draw( GfxEngine& painter );
 
-  void setText(const std::string& text );
+  virtual void setText(const std::string& text );
 
-  bool isPushButton() const;
+  virtual bool isPushButton() const;
 
-  void setPressed( bool pressed );
+  virtual void setPressed( bool pressed );
 
-  bool isPressed() const;
+  virtual bool isPressed() const;
 
-  bool isBodyVisible() const;
+  virtual bool isBodyVisible() const;
 
-  void drawIcon( GfxEngine& painter );
+  virtual void drawIcon( GfxEngine& painter );
 
-  void setPicture( Picture* picture, ElementState state );
+  virtual void setPicture( Picture* picture, ElementState state );
 
-  void setBackgroundStyle( const BackgroundStyle style );
+  virtual void setBackgroundStyle( const BackgroundStyle style );
 
-  void setFont( const Font& font, ElementState state );
+  virtual void setFont( const Font& font, ElementState state );
 
-  void setFont( const Font& font );
+  virtual void setFont( const Font& font );
 
-  Font& getFont( ElementState state );
+  virtual Font& getFont( ElementState state );
 
-  void setIsPushButton( bool value );
+  virtual void setIsPushButton( bool value );
 
-public oc3_signals:
+oc3_signals public:
   virtual Signal0<>& onClicked(); 
 
 protected:
 
-  void resizeEvent_();
+  virtual void resizeEvent_();
 
-    //! when left mouse button pressed down
-	bool leftMouseBtnPressed_( const NEvent& event );
+  //! when left mouse button pressed down
+	virtual bool _leftMouseBtnPressed( const NEvent& event );
 
-    //! when left mouse button left up
-	bool btnMouseUp_( const NEvent& event );
+  //! when left mouse button left up
+	virtual bool _btnMouseUp( const NEvent& event );
 
-    //! when some mouse button clicked
-	void btnClicked_();
+  //! when some mouse button clicked
+	virtual void _btnClicked();
 
-	virtual ElementState getActiveButtonState_();
+	virtual ElementState _getActiveButtonState();
+ 
   virtual void _updateTexture( ElementState state );
 
   PictureRef& _getPicture( ElementState state );

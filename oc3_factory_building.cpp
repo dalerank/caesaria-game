@@ -90,6 +90,11 @@ void Factory::Impl::removeIdlePushers()
 void Factory::timeStep(const unsigned long time)
 {
    Building::timeStep(time);
+
+   if( getWorkers() == 0 )
+   {
+     return;
+   }
   
    GoodStock &inStock = getInGood();
 
@@ -206,6 +211,7 @@ FactoryTimber::FactoryTimber() : Factory(G_NONE, G_TIMBER, B_TIMBER, Size(2) )
 
   _animation.load( ResourceGroup::commerce, 73, 10);
   _fgPictures.resize(2);
+  setWorkers( 0 );
 }
 
 bool FactoryTimber::canBuild(const TilePos& pos ) const
@@ -225,28 +231,31 @@ bool FactoryTimber::canBuild(const TilePos& pos ) const
 }
 
 
-FactoryIron::FactoryIron() : Factory(G_NONE, G_IRON, B_IRON, Size(2) )
+FactoryIron::FactoryIron() : Factory(G_NONE, G_IRON, B_IRON_MINE, Size(2) )
 {
-   _setProductRate( 9.6f );
-   setPicture( Picture::load(ResourceGroup::commerce, 54) );
+  _setProductRate( 9.6f );
+  setWorkers( 0 );
 
-   _animation.load( ResourceGroup::commerce, 55, 6);
-   _fgPictures.resize(2);
+  setPicture( Picture::load(ResourceGroup::commerce, 54) );
+
+  _animation.load( ResourceGroup::commerce, 55, 6 );
+  _animation.setFrameDelay( 5 );
+  _fgPictures.resize(2);
 }
 
 bool FactoryIron::canBuild(const TilePos& pos ) const
 {
-   bool is_constructible = Construction::canBuild( pos );
-   bool near_mountain = false;  // tells if the factory is next to a mountain
+  bool is_constructible = Construction::canBuild( pos );
+  bool near_mountain = false;  // tells if the factory is next to a mountain
 
-   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
-   PtrTilesArea rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size(2), Tilemap::checkCorners );
-   for( PtrTilesArea::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
-   {
-      near_mountain |= (*itTiles)->getTerrain().isRock();
-   }
+  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  PtrTilesArea rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size(2), Tilemap::checkCorners );
+  for( PtrTilesArea::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+  {
+     near_mountain |= (*itTiles)->getTerrain().isRock();
+  }
 
-   return (is_constructible && near_mountain);
+  return (is_constructible && near_mountain);
 }
 
 FactoryWeapon::FactoryWeapon() : Factory(G_IRON, G_WEAPON, B_WEAPON, Size(2) )

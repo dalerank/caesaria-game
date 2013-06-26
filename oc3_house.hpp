@@ -36,7 +36,7 @@ public:
    SimpleGoodStore& getGoodStore();
 
    // return the current house level
-   HouseLevelSpec& getLevelSpec();
+   const HouseLevelSpec& getLevelSpec() const;
 
    virtual void applyService(ServiceWalkerPtr walker);
    virtual float evaluateService(ServiceWalkerPtr walker);
@@ -49,6 +49,7 @@ public:
    char getDesirabilityInfluence() const;
    unsigned char getDesirabilityRange() const;
    char getDesirabilityStep() const;
+   int getScholars() const;
 
    void levelUp();
    void levelDown();

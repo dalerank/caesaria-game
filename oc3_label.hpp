@@ -110,10 +110,11 @@ oc3_signals public:
   virtual Signal0<>& onClicked();
 
 protected:
-  void resizeEvent_();
+  virtual void resizeEvent_();
+  virtual void _updateTexture( GfxEngine& painter );
+  Picture& getPicture();
 
 private:
-  void _updateTexture( GfxEngine& painter );
 
   class Impl;
   std::auto_ptr< Impl > _d;   

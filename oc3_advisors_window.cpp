@@ -23,12 +23,17 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_gui_paneling.hpp"
 #include "oc3_label.hpp"
+#include "oc3_city.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_advisor_employers_window.hpp"
 #include "oc3_advisor_legion_window.hpp"
 #include "oc3_advisor_emperor_window.hpp"
 #include "oc3_advisor_ratings_window.hpp"
+#include "oc3_advisor_trade_window.hpp"
+#include "oc3_advisor_education_window.hpp"
+#include "oc3_advisor_health_window.hpp"
+#include "oc3_advisor_entertainment_window.hpp"
 
 class AdvisorsWindow::Impl
 {
@@ -38,6 +43,11 @@ public:
 
   Point offset;
   PictureRef tabBg;
+
+  City* city;
+
+oc3_signals public:
+  Signal0<> onEmpireMapRequestSignal;
 };
 
 PushButton* AdvisorsWindow::addButton( const int pos, const int picId )
@@ -49,12 +59,13 @@ PushButton* AdvisorsWindow::addButton( const int pos, const int picId )
   return btn;
 }
 
-AdvisorsWindow::AdvisorsWindow( Widget* parent, int id )
+AdvisorsWindow::AdvisorsWindow( Widget* parent, int id, City& city )
 : Widget( parent, id, Rect( Point(0, 0), parent->getSize() ) ), _d( new Impl )
 {
   // use some clipping to remove the right and bottom areas
   _d->background.reset( Picture::create( getSize() ) );
   _d->advisorPanel = 0;
+  _d->city = &city;
 
   Picture& backgr = Picture::load( "senate", 1 );
 
@@ -87,6 +98,9 @@ AdvisorsWindow::AdvisorsWindow( Widget* parent, int id )
 
 void AdvisorsWindow::showAdvisor( const AdvisorType type )
 {
+  if( type >= ADV_COUNT )
+    return;
+
   const Widgets& childs = getChildren();
   for( ConstChildIterator it=childs.begin(); it != childs.end(); it++ )
   {
@@ -107,7 +121,18 @@ void AdvisorsWindow::showAdvisor( const AdvisorType type )
   case ADV_EMPLOYERS: _d->advisorPanel = new AdvisorEmployerWindow( this, ADV_EMPLOYERS ); break;
   case ADV_LEGION: _d->advisorPanel = new AdvisorLegionWindow( this, ADV_LEGION ); break;
   case ADV_EMPIRE: _d->advisorPanel = new AdvisorEmperorWindow( this, ADV_EMPIRE ); break;
-  case ADV_RATINGS: _d->advisorPanel = new AdvisorRatingsWindow( this, ADV_RATINGS ); break;
+  case ADV_RATINGS: _d->advisorPanel = new AdvisorRatingsWindow( this, ADV_RATINGS, *_d->city ); break;
+  case ADV_TRADING:
+    {
+      AdvisorTradeWindow* wnd = new AdvisorTradeWindow( this, ADV_TRADING );
+      _d->advisorPanel =  wnd;
+      CONNECT( wnd, onEmpireMapRequest(), &_d->onEmpireMapRequestSignal, Signal0<>::emit );      
+    }
+  break;
+
+  case ADV_EDUCATION: _d->advisorPanel = new AdvisorEducationWindow( *_d->city, this, -1 ); break;
+  case ADV_HEALTH: _d->advisorPanel = new AdvisorHealthWindow( *_d->city, this, -1 ); break;
+  case ADV_ENTERTAINMENT: _d->advisorPanel = new AdvisorEntertainmentWindow( *_d->city, this, -1 ); break;
 
   default:
   break;
@@ -134,29 +159,24 @@ bool AdvisorsWindow::onEvent( const NEvent& event )
 
   if( event.EventType == OC3_GUI_EVENT && event.GuiEvent.EventType == OC3_BUTTON_CLICKED )
   {
-    const Widgets& childs = getChildren();
-    for( ConstChildIterator it=childs.begin(); it != childs.end(); it++ )
+    if( event.GuiEvent.Caller->getID() < ADV_COUNT )
     {
-      if( PushButton* btn = safety_cast< PushButton* >( *it ) )
-      {
-        if( btn == event.GuiEvent.Caller )
-        {
-          showAdvisor( (AdvisorType)btn->getID() );
-          continue;
-        }
-
-        btn->setPressed( false );
-      }
+      showAdvisor( (AdvisorType)event.GuiEvent.Caller->getID() );
     }
   }
 
   return Widget::onEvent( event );
 }
 
-AdvisorsWindow* AdvisorsWindow::create( Widget* parent, int id, const AdvisorType type )
+AdvisorsWindow* AdvisorsWindow::create( Widget* parent, int id, const AdvisorType type, City& city )
 {
-  AdvisorsWindow* ret = new AdvisorsWindow( parent, id );
+  AdvisorsWindow* ret = new AdvisorsWindow( parent, id, city );
   ret->showAdvisor( type );
 
   return ret;
+}
+
+Signal0<>& AdvisorsWindow::onEmpireMapRequest()
+{
+  return _d->onEmpireMapRequestSignal;
 }

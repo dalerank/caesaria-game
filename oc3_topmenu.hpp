@@ -19,6 +19,8 @@
 #include "oc3_mainmenu.hpp"
 #include "oc3_scopedptr.hpp"
 
+class DateTime;
+
 class TopMenu : public MainMenu
 {
 public:
@@ -30,7 +32,7 @@ public:
 
   void setFunds( int value );
   void setPopulation( int value );
-  void setDate( int value );
+  void setDate( const DateTime& time );
 
 oc3_signals public:
   Signal0<>& onExit();

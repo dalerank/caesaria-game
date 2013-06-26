@@ -17,6 +17,7 @@
 #define __OPENCAESAR3_EMPIREMAP_WINDOW_H_INCLUDED__
 
 #include "oc3_widget.hpp"
+#include "oc3_signals.hpp"
 
 class EmpireMapWindow : public Widget
 {
@@ -27,6 +28,9 @@ public:
   void draw( GfxEngine& engine );
 
   bool onEvent(const NEvent& event);
+
+oc3_signals public:
+  Signal0<>& onTradeAdvisorRequest();
 
 protected:
   class Impl;

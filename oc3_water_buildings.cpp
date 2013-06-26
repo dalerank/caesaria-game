@@ -46,63 +46,25 @@ void Aqueduct::build(const TilePos& pos )
 
   // we can't build if already have aqueduct here
   SmartPtr<Aqueduct> aqueveduct = terrain.getOverlay().as<Aqueduct>();
-  if( aqueveduct.isNull() )
-        return;
+  if( aqueveduct.isValid() )
+  {
+    return;
+  }
 
   Construction::build( pos );
-  
-  updateAqueducts(); // need to rewrite as computeAccessRoads()
-}
 
-void Aqueduct::link(Aqueduct& target)
-{
-  // check target coordinates and compare with our coords
-  int i = getTile().getI();
-  int j = getTile().getJ();
-  
-  int oppi = target.getTile().getI();
-  int oppj = target.getTile().getJ();
-  
-  if ((i == oppi - 1) && (j == oppj))      { _east = &target;  target._west = this;}
-  else if ((i == oppi) && (j == oppj - 1)) { _north = &target; target._south = this;}
-  else if ((i == oppi + 1) && (j == oppj)) { _west = &target;  target._east = this;}
-  else if ((i == oppi) && (j == oppj + 1)) { _south = &target; target._north = this;}
-  
-  setPicture( computePicture() );
-}
+  CityHelper helper( Scenario::instance().getCity() );
+  std::list< AqueductPtr > aqueducts = helper.getBuildings<Aqueduct>( B_AQUEDUCT );
+  for( std::list< AqueductPtr >::iterator it = aqueducts.begin(); it!=aqueducts.end(); ++it )
+  {
+    (*it)->updatePicture();
+  }
 
-void Aqueduct::link( Reservoir& target )
-{
-  // check target coordinates and compare with our coords
-  int i = getTile().getI();
-  int j = getTile().getJ();
-  
-  int oppi = target.getTile().getI();
-  int oppj = target.getTile().getJ();
-  
-  // when we get Reservoir coords, we get master tile coords
-  // so try to calculate center of Reservoir (it will be easier after)
-  oppi++; oppj++;
-  
-  if ((i == oppi - 2) && (j == oppj))      { _east = &target;  target._west = this;}
-  else if ((i == oppi) && (j == oppj - 2)) { _north = &target; target._south = this;}
-  else if ((i == oppi + 2) && (j == oppj)) { _west = &target;  target._east = this;}
-  else if ((i == oppi) && (j == oppj + 2)) { _south = &target; target._north = this;}
-  
-  setPicture(computePicture());
+  updatePicture();
 }
 
 void Aqueduct::destroy()
 {
-//  std::cout << "Aqueduct::destroy()" << std::endl;
-  
-  // update adjacent aqueducts
-
-  if (_south != NULL) { _south->_north = NULL; Aqueduct *a = dynamic_cast<Aqueduct*>(_south); if (a!=NULL) a->setPicture(a->computePicture());}
-  if (_west  != NULL) { _west->_east = NULL;   Aqueduct *a = dynamic_cast<Aqueduct*>(_west);  if (a!=NULL) a->setPicture(a->computePicture());}
-  if (_north != NULL) { _north->_south = NULL; Aqueduct *a = dynamic_cast<Aqueduct*>(_north); if (a!=NULL) a->setPicture(a->computePicture());}
-  if (_east  != NULL) { _east->_west = NULL;   Aqueduct *a = dynamic_cast<Aqueduct*>(_east);  if (a!=NULL) a->setPicture(a->computePicture());}
-
   Construction::destroy();
 }
 
@@ -118,111 +80,7 @@ void Reservoir::destroy()
 
   
   // update adjacent aqueducts
-
-  if (_south != NULL) { _south->_north = NULL; dynamic_cast<Aqueduct*>(_south)->setPicture(dynamic_cast<Aqueduct*>(_south)->computePicture());}
-  if (_west  != NULL) { _west->_east = NULL;   dynamic_cast<Aqueduct*>(_west)->setPicture(dynamic_cast<Aqueduct*>(_west)->computePicture());}
-  if (_north != NULL) { _north->_south = NULL; dynamic_cast<Aqueduct*>(_north)->setPicture(dynamic_cast<Aqueduct*>(_north)->computePicture());}
-  if (_east  != NULL) { _east->_west = NULL;   dynamic_cast<Aqueduct*>(_east)->setPicture(dynamic_cast<Aqueduct*>(_east)->computePicture());}
-
   Construction::destroy();
-}
-
-void Reservoir::link(Aqueduct& target)
-{
-  // check target coordinates and compare with our coords
-  int i = getTile().getI() + 1;
-  int j = getTile().getJ() + 1;
-  
-  int oppi = target.getTile().getI();
-  int oppj = target.getTile().getJ();
-
-  if ((i == oppi - 2) && (j == oppj))      { _east = &target;  target._west = this;}
-  else if ((i == oppi) && (j == oppj - 2)) { _north = &target; target._south = this;}
-  else if ((i == oppi + 2) && (j == oppj)) { _west = &target;  target._east = this;}
-  else if ((i == oppi) && (j == oppj + 2)) { _south = &target; target._north = this;}  
-}
-
-void Reservoir::link(Reservoir& target)
-{
-  // nothing to do
-  // reservoirs can't be connected to each other
-}
-
-void Aqueduct::updateAqueducts()
-{
-  int i = getTile().getI();
-  int j = getTile().getJ();
-  
-  PtrTilesArea rect = Scenario::instance().getCity().getTilemap().getRectangle( TilePos( i - 1, j - 1),
-                                                TilePos( i + 1, j + 1), 
-                                                !Tilemap::checkCorners );
-  for( PtrTilesArea::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
-  {
-    SmartPtr< WaterSource > ws = (*itTiles)->getTerrain().getOverlay().as<WaterSource>();
-    if( ws.isValid() ) 
-    {
-      ws->link(*this);
-    }
-  }  
-  
-  setPicture(computePicture());
-}
-
-void Reservoir::updateAqueducts()
-{
-  // TEMPORARY!!!!
-  // find adjacent aqueducts
-  int i = getTile().getI() + 1;
-  int j = getTile().getJ() + 1;
-  
-  Tilemap& tmap = Scenario::instance().getCity().getTilemap();
-  try
-  {
-  SmartPtr< WaterSource > __west   = tmap.at(i - 2, j).getTerrain().getOverlay().as<WaterSource>();
-  if(  __west.isValid() ) 
-    __west->link(*this);
-  }
-  catch(std::out_of_range)
-  {
-    
-  }
-
-  
-  try
-  {
-  SmartPtr< WaterSource > __south  = tmap.at(i, j - 2).getTerrain().getOverlay().as<WaterSource>();
-  if (__south.isValid() )
-    __south->link(*this);
-  }
-  catch(std::out_of_range)
-  {
-    
-  }
-
-  
-  try
-  {
-  SmartPtr< WaterSource > __east   = tmap.at(i + 2, j).getTerrain().getOverlay().as<WaterSource>();
-  if (__east.isValid()) __east->link(*this);
-  }
-  catch(std::out_of_range)
-  {
-    
-  }
-
-  
-  try
-  {
-  SmartPtr< WaterSource > __north  = tmap.at(i, j + 2).getTerrain().getOverlay().as<WaterSource>();
-  if (__north.isValid()) __north->link(*this);
-  }
-  catch(std::out_of_range)
-  {
-    
-  }
-  
-  
-  
 }
 
 void Aqueduct::setTerrain(TerrainTile &terrain)
@@ -302,55 +160,79 @@ bool Aqueduct::canBuild( const TilePos& pos ) const
 Picture& Aqueduct::computePicture()
 {
   // find correct picture as for roads
+  Tilemap& tmap = Scenario::instance().getCity().getTilemap();
   
-   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
+  int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
    
-   if (_north != NULL) { directionFlags += 1; }
-   if (_east  != NULL) { directionFlags += 2; }
-   if (_south != NULL) { directionFlags += 4; }
-   if (_west  != NULL) { directionFlags += 8; }
-   
-   int index;
-   switch (directionFlags)
-   {
-   case 0:  // no neighbours!
-     index = 121; break;
-   case 1:  // N
-   case 4:  // S
-   case 5:  // N + S
-     index = 121; if (getTile().getTerrain().isRoad()) index = 119; break;
-   case 3:  // N + E
-     index = 123; break;
-   case 6:  // E + S
-     index = 124; break;
-   case 7:  // N + E + S
-     index = 129; break;
-   case 9:  // N + W
-     index = 126; break;
-   case 2:  // E
-   case 8:  // W
-   case 10: // E + W
-     index = 122; if (getTile().getTerrain().isRoad()) index = 120; break;
-   case 11: // N + E + W
-     index = 132; break;
-   case 12: // S + W
-     index = 125;  break;
-   case 13: // N + S + W
-     index = 131; break;
-   case 14: // E + S + W
-     index = 130; break;
-   case 15: // N + S + E + W (crossing)
-     index = 133; break;
-   default:
-     index = 121; // it's impossible, but ...
-   }   
-   
-   return Picture::load( ResourceGroup::aqueduct, index);
+  LandOverlayPtr northOverlay = tmap.at( getTilePos() + TilePos( 0, -1) ).getTerrain().getOverlay();
+  LandOverlayPtr eastOverlay = tmap.at( getTilePos() + TilePos( -1, 0) ).getTerrain().getOverlay();
+  LandOverlayPtr southOverlay = tmap.at( getTilePos() + TilePos( 0, 1) ).getTerrain().getOverlay();
+  LandOverlayPtr westOverlay = tmap.at( getTilePos() + TilePos( 1, 0) ).getTerrain().getOverlay();
+
+  if( northOverlay.is<Aqueduct>() || northOverlay.is<Reservoir>() ) { directionFlags += 1; }
+  if( eastOverlay.is<Aqueduct>() || eastOverlay.is<Reservoir>()) { directionFlags += 2; }
+  if( southOverlay.is<Aqueduct>() || southOverlay.is<Reservoir>() ) { directionFlags += 4; }
+  if( westOverlay.is<Aqueduct>() || westOverlay.is<Reservoir>()) { directionFlags += 8; }
+  
+  int index;
+  switch (directionFlags)
+  {
+  case 0:  // no neighbours!
+    index = 121; break;
+  case 1:  // N
+  case 4:  // S
+  case 5:  // N + S
+    index = 121; if (getTile().getTerrain().isRoad()) index = 119; break;
+  case 3:  // N + E
+    index = 123; break;
+  case 6:  // E + S
+    index = 124; break;
+  case 7:  // N + E + S
+    index = 129; break;
+  case 9:  // N + W
+    index = 126; break;
+  case 2:  // E
+  case 8:  // W
+  case 10: // E + W
+    index = 122; if (getTile().getTerrain().isRoad()) index = 120; break;
+  case 11: // N + E + W
+    index = 132; break;
+  case 12: // S + W
+    index = 125;  break;
+  case 13: // N + S + W
+    index = 131; break;
+  case 14: // E + S + W
+    index = 130; break;
+  case 15: // N + S + E + W (crossing)
+    index = 133; break;
+  default:
+    index = 121; // it's impossible, but ...
+  }   
+  
+  return Picture::load( ResourceGroup::aqueduct, index + (_water == 0 ? 15 : 0) );
 }
 
 void Aqueduct::updatePicture()
 {
   setPicture(computePicture());
+}
+
+bool Aqueduct::isNeedRoadAccess() const
+{
+  return false;
+}
+
+void Aqueduct::_waterStateChanged()
+{
+  updatePicture();
+}
+
+void Aqueduct::addWater( const WaterSource& source )
+{
+  WaterSource::addWater( source );
+
+  const TilePos offsets[4] = { TilePos( -1, 0 ), TilePos( 0, 1), TilePos( 1, 0), TilePos( 0, -1) };
+  _produceWater( offsets, 4 );
 }
 
 Reservoir::Reservoir() : WaterSource( B_RESERVOIR, Size( 3 ) )
@@ -377,15 +259,11 @@ void Reservoir::build(const TilePos& pos )
   Construction::build( pos );  
 
   setPicture( Picture::load( ResourceGroup::waterbuildings, 1 ) );
-  _mayAnimate = _isNearWater( pos );
+  _isWaterSource = _isNearWater( pos );
   
-  updateAqueducts();
+  //updateAqueducts();
   
   // update adjacent aqueducts
-  if (dynamic_cast<Aqueduct*>(_south) != NULL) dynamic_cast<Aqueduct*>(_south)->setPicture(dynamic_cast<Aqueduct*>(_south)->computePicture());
-  if (dynamic_cast<Aqueduct*>(_west) != NULL) dynamic_cast<Aqueduct*>(_west)->setPicture(dynamic_cast<Aqueduct*>(_west)->computePicture());
-  if (dynamic_cast<Aqueduct*>(_north) != NULL) dynamic_cast<Aqueduct*>(_north)->setPicture(dynamic_cast<Aqueduct*>(_north)->computePicture());
-  if (dynamic_cast<Aqueduct*>(_east) != NULL) dynamic_cast<Aqueduct*>(_east)->setPicture(dynamic_cast<Aqueduct*>(_east)->computePicture());
 }
 
 bool Reservoir::_isNearWater( const TilePos& pos ) const
@@ -413,7 +291,14 @@ void Reservoir::setTerrain(TerrainTile &terrain)
 
 void Reservoir::timeStep(const unsigned long time)
 {
-  if( !_mayAnimate )
+  WaterSource::timeStep( time );
+
+  if( _isWaterSource )
+  {
+    _water = 16;
+  }
+
+  if( !_water )
   {
     _fgPictures[ 0 ] = 0;
     return;
@@ -427,7 +312,14 @@ void Reservoir::timeStep(const unsigned long time)
     for( PtrTilesArea::iterator it=reachedTiles.begin(); it != reachedTiles.end(); it++ )
     {
       (*it)->getTerrain().fillWaterService( WTR_RESERVOIR );
-    }
+    }   
+  }
+
+  //add water to all consumer
+  if( time % 11 == 1 )
+  {
+    const TilePos offsets[4] = { TilePos( -1, 1), TilePos( 1, 3 ), TilePos( 3, 1), TilePos( 1, -1) };  
+    _produceWater(offsets, 4);
   }
 
   _animation.update( time );
@@ -446,9 +338,71 @@ bool Reservoir::canBuild( const TilePos& pos ) const
   return ret;
 }
 
-WaterSource::WaterSource( const BuildingType type, const Size& size ) : Construction( type, size )
+bool Reservoir::isNeedRoadAccess() const
 {
-  _north = NULL; _east = NULL; _south = NULL; _west = NULL;
+  return false;
+}
+
+WaterSource::WaterSource( const BuildingType type, const Size& size )
+  : Construction( type, size )
+{
+  _water = 0;
+  _lastWaterState = false;
+}
+
+void WaterSource::addWater( const WaterSource& source )
+{
+  _water = math::clamp( _water+1, 0, 16 );
+  int sourceId = source.getId();
+  _sourceMap[ sourceId ] = math::clamp( _sourceMap[ sourceId ]+1, 0, 4 );
+}
+
+bool WaterSource::haveWater() const
+{
+  return _water > 0;
+} 
+
+void WaterSource::timeStep( const unsigned long time )
+{
+  if( time % 22 == 1)
+  {
+    _water = math::clamp( _water-1, 0, 16 );
+    if( _lastWaterState != (_water > 0) )
+    {
+      _lastWaterState = _water > 0;
+      _waterStateChanged();
+    }
+
+    for( WaterSourceMap::iterator it=_sourceMap.begin(); it != _sourceMap.end(); it++ )
+    {
+      (*it).second = math::clamp( (*it).second-1, 0, 4 );
+    }
+  }
+
+  Construction::timeStep( time );
+}
+
+void WaterSource::_produceWater( const TilePos* points, const int size )
+{
+  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  for( int index=0; index < size; index++ )
+  {
+    TilePos pos = getTilePos() + points[index];
+    SmartPtr< WaterSource > ws = tilemap.at( pos ).getTerrain().getOverlay().as<WaterSource>();
+    
+    if( ws.isValid() )
+    {     
+      if( _sourceMap[ ws->getId() ] == 0 )
+      {
+        ws->addWater( *this );
+      }
+    }
+  }
+}
+
+int WaterSource::getId() const
+{
+  return getTilePos().getJ() * 10000 + getTilePos().getI();
 }
 
 BuildingFountain::BuildingFountain() : ServiceBuilding(S_FOUNTAIN, B_FOUNTAIN, Size(1))
@@ -488,7 +442,7 @@ void BuildingFountain::deliverService()
 
   if( myTile.getWaterService( WTR_RESERVOIR ) > 0 && getWorkers() > 0 )
   {
-    _mayAnimate = true;
+    _haveReservoirWater = true;
   }
   else
   {
@@ -512,7 +466,7 @@ void BuildingFountain::deliverService()
 
 void BuildingFountain::timeStep(const unsigned long time)
 {
-  if( !_mayAnimate )
+  if( !_haveReservoirWater )
   {
     _fgPictures[ 0 ] = 0;
     return;
@@ -552,4 +506,9 @@ void BuildingFountain::build( const TilePos& pos )
   ServiceBuilding::build( pos );  
 
   setPicture( Picture::load( ResourceGroup::waterbuildings, 3 ) );
+}
+
+bool BuildingFountain::isNeedRoadAccess() const
+{
+  return false;
 }
