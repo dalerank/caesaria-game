@@ -101,7 +101,7 @@ public:
 
   virtual void destroy();
 protected:
-  std::list<Tile*> _accessRoads;
+  PtrTilesList _accessRoads;
   
   typedef enum { duPositive=true, duNegative=false } DsbrlUpdate;
   void _updateDesirabilityInfluence( const DsbrlUpdate type );

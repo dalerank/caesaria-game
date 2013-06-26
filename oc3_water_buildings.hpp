@@ -27,11 +27,20 @@ class WaterSource : public Construction
 public:
   WaterSource( const BuildingType type, const Size& size );
   
-  virtual void updateAqueducts() = 0;
-  virtual void link(Aqueduct&) = 0;
-  virtual void link(Reservoir&) = 0;
+  virtual void addWater( const WaterSource& source );
+  virtual bool haveWater() const;
+  virtual void timeStep(const unsigned long time);
+  int getId() const;
 
-  WaterSource *_north, *_east, *_south, *_west; // public is bad...
+protected:
+  virtual void _waterStateChanged() {};
+  virtual void _produceWater( const TilePos* points, const int size );
+  
+
+  typedef std::map< int, int > WaterSourceMap;
+  WaterSourceMap _sourceMap;
+  int _water;
+  bool _lastWaterState;
 };
 
 class Aqueduct : public WaterSource
@@ -39,16 +48,20 @@ class Aqueduct : public WaterSource
 public:
   Aqueduct();
 
-  void build(const TilePos& pos );
+  virtual void build(const TilePos& pos );
   Picture& computePicture();
-  void setTerrain(TerrainTile &terrain);
-  bool canBuild(const TilePos& pos ) const;
-  void updateAqueducts();
+  virtual void setTerrain(TerrainTile &terrain);
+  virtual bool canBuild(const TilePos& pos ) const;
+  virtual bool isNeedRoadAccess() const;
   void updatePicture();
-  void link(Aqueduct&);
-  void link(Reservoir&);
-  void destroy();
+  void addWater( const WaterSource& source );
+  virtual void destroy();
+
+protected:
+  virtual void _waterStateChanged();
 };
+
+typedef SmartPtr< Aqueduct > AqueductPtr;
 
 class Reservoir : public WaterSource
 {
@@ -56,18 +69,15 @@ public:
   Reservoir();
   ~Reservoir();
 
-  void build(const TilePos& pos );
-  bool canBuild(const TilePos& pos ) const;
+  virtual void build(const TilePos& pos );
+  virtual bool canBuild(const TilePos& pos ) const;
+  virtual bool isNeedRoadAccess() const;
+  virtual void setTerrain(TerrainTile &terrain);
+  virtual void timeStep(const unsigned long time);
+  virtual void destroy();
 
-  void setTerrain(TerrainTile &terrain);
-  void timeStep(const unsigned long time);
-  void updateAqueducts();
-  void link(Aqueduct&);
-  void link(Reservoir&);
-  void destroy();
-  
 private:
-  bool _mayAnimate;
+  bool _isWaterSource;
   bool _isNearWater( const TilePos& pos ) const;
 };
 
@@ -76,12 +86,13 @@ class BuildingFountain : public ServiceBuilding
 public:
   BuildingFountain();
 
-  void build( const TilePos& pos );
-  bool canBuild( const TilePos& pos ) const;
-  void deliverService();
-  void timeStep(const unsigned long time);
+  virtual void build( const TilePos& pos );
+  virtual bool canBuild( const TilePos& pos ) const;
+  virtual void deliverService();
+  virtual void timeStep(const unsigned long time);
+  virtual bool isNeedRoadAccess() const;
 private:
-  bool _mayAnimate;
+  bool _haveReservoirWater;
 };
 
 #endif // __OPENCAESAR3_WATER_BUILDGINDS_INCLUDED__
