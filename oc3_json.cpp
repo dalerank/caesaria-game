@@ -179,6 +179,11 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
       TilePos pos = data.toTilePos();
       str = StringHelper::format( 0xff, "[ %d, %d ]", pos.getI(), pos.getJ() );
     }
+    else if( data.type() == Variant::NSize)
+    {
+      Size size = data.toSize();
+      str = StringHelper::format( 0xff, "[ %d, %d ]", size.getWidth(), size.getHeight() );
+    }
     else if( data.type() == Variant::NPoint)
     {
       Point pos = data.toPoint();

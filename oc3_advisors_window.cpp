@@ -45,7 +45,7 @@ public:
   Point offset;
   PictureRef tabBg;
 
-  City* city;
+  CityPtr city;
 
 oc3_signals public:
   Signal0<> onEmpireMapRequestSignal;
@@ -60,13 +60,12 @@ PushButton* AdvisorsWindow::addButton( const int pos, const int picId )
   return btn;
 }
 
-AdvisorsWindow::AdvisorsWindow( Widget* parent, int id, City& city )
+AdvisorsWindow::AdvisorsWindow( Widget* parent, int id )
 : Widget( parent, id, Rect( Point(0, 0), parent->getSize() ) ), _d( new Impl )
 {
   // use some clipping to remove the right and bottom areas
   _d->background.reset( Picture::create( getSize() ) );
   _d->advisorPanel = 0;
-  _d->city = &city;
 
   Picture& backgr = Picture::load( "senate", 1 );
 
@@ -122,7 +121,7 @@ void AdvisorsWindow::showAdvisor( const AdvisorType type )
   case ADV_EMPLOYERS: _d->advisorPanel = new AdvisorEmployerWindow( this, ADV_EMPLOYERS ); break;
   case ADV_LEGION: _d->advisorPanel = new AdvisorLegionWindow( this, ADV_LEGION ); break;
   case ADV_EMPIRE: _d->advisorPanel = new AdvisorEmperorWindow( this, ADV_EMPIRE ); break;
-  case ADV_RATINGS: _d->advisorPanel = new AdvisorRatingsWindow( this, ADV_RATINGS, *_d->city ); break;
+  case ADV_RATINGS: _d->advisorPanel = new AdvisorRatingsWindow( this, ADV_RATINGS, _d->city ); break;
   case ADV_TRADING:
     {
       AdvisorTradeWindow* wnd = new AdvisorTradeWindow( this, ADV_TRADING );
@@ -131,10 +130,10 @@ void AdvisorsWindow::showAdvisor( const AdvisorType type )
     }
   break;
 
-  case ADV_EDUCATION: _d->advisorPanel = new AdvisorEducationWindow( *_d->city, this, -1 ); break;
-  case ADV_HEALTH: _d->advisorPanel = new AdvisorHealthWindow( *_d->city, this, -1 ); break;
-  case ADV_ENTERTAINMENT: _d->advisorPanel = new AdvisorEntertainmentWindow( *_d->city, this, -1 ); break;
-  case ADV_RELIGION: _d->advisorPanel = new AdvisorReligionWindow( *_d->city, this, -1 ); break;
+  case ADV_EDUCATION: _d->advisorPanel = new AdvisorEducationWindow( _d->city, this, -1 ); break;
+  case ADV_HEALTH: _d->advisorPanel = new AdvisorHealthWindow( _d->city, this, -1 ); break;
+  case ADV_ENTERTAINMENT: _d->advisorPanel = new AdvisorEntertainmentWindow( _d->city, this, -1 ); break;
+  case ADV_RELIGION: _d->advisorPanel = new AdvisorReligionWindow( _d->city, this, -1 ); break;
 
   default:
   break;
@@ -170,9 +169,10 @@ bool AdvisorsWindow::onEvent( const NEvent& event )
   return Widget::onEvent( event );
 }
 
-AdvisorsWindow* AdvisorsWindow::create( Widget* parent, int id, const AdvisorType type, City& city )
+AdvisorsWindow* AdvisorsWindow::create( Widget* parent, int id, const AdvisorType type, CityPtr city )
 {
-  AdvisorsWindow* ret = new AdvisorsWindow( parent, id, city );
+  AdvisorsWindow* ret = new AdvisorsWindow( parent, id );
+  ret->_d->city = city;
   ret->showAdvisor( type );
 
   return ret;

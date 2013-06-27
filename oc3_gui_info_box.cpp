@@ -806,8 +806,8 @@ InfoBoxLand::InfoBoxLand( Widget* parent, const Tile& tile )
     _text->setText( _("##clear_land_text"));
   }
  
-  City& oCity = Scenario::instance().getCity();
-  Tilemap& oTilemap = Scenario::instance().getCity().getTilemap();
+  CityPtr oCity = Scenario::instance().getCity();
+  Tilemap& oTilemap = oCity->getTilemap();
   int size = oTilemap.getSize();
   int border_size = (162 - size) / 2;
   

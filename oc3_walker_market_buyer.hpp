@@ -26,15 +26,15 @@
 class MarketBuyer : public Walker
 {
 public:
-  static MarketBuyerPtr create( MarketPtr market );
+  static MarketBuyerPtr create( CityPtr city );
 
   virtual ~MarketBuyer();
 
-  void send2City();
+  void send2City( MarketPtr market );
   virtual void onDestination();
 
   // compute the destination to fetch the given good
-  void computeWalkerDestination();
+  void computeWalkerDestination( MarketPtr market );
 
   void save( VariantMap& stream) const;
   void load( const VariantMap& stream);
@@ -44,10 +44,6 @@ private:
 
   class Impl;
   ScopedPtr< Impl > _d;
-  
-  MarketPtr _market;
-  SimpleGoodStore _basket;
-  long _reservationID;
 };
 
 #endif

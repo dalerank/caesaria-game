@@ -23,6 +23,7 @@ class WorkingBuilding : public Building
 {
 public:
   WorkingBuilding(const BuildingType type, const Size& size);
+  ~WorkingBuilding();
 
   void setMaxWorkers(const int maxWorkers);
   int getMaxWorkers() const;
@@ -39,9 +40,8 @@ public:
   void load( const VariantMap& stream);
 
 private:
-  int _currentWorkers;
-  int _maxWorkers;
-  bool _isActive;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 #endif //__OPENCAESAR3_WORKINGBUILDING_H_INCLUDED__

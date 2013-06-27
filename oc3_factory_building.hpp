@@ -43,11 +43,11 @@ public:
   void load( const VariantMap& stream);
 
   void removeWalker( WalkerPtr w );
+  void addWalker( WalkerPtr );
 
 protected:
   void _setProductRate( const float rate );
   virtual bool _mayDeliverGood() const;
-  void _addWalker( WalkerPtr );
 
 protected:
   GoodType _inGoodType;

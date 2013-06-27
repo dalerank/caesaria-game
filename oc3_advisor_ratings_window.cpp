@@ -81,7 +81,7 @@ public:
 
   void drawColumn( const Point& center, const int value );
 
-  City const* city;
+  CityPtr city;
 };
 
 void AdvisorRatingsWindow::Impl::drawColumn( const Point& center, const int value )
@@ -103,10 +103,10 @@ void AdvisorRatingsWindow::Impl::drawColumn( const Point& center, const int valu
   }
 }
 
-AdvisorRatingsWindow::AdvisorRatingsWindow( Widget* parent, int id, const City& city ) 
+AdvisorRatingsWindow::AdvisorRatingsWindow( Widget* parent, int id, const CityPtr city ) 
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
-  _d->city = &city;
+  _d->city = city;
   setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),
                Size( 640, 432 ) ) );
 

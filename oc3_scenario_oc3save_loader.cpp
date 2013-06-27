@@ -39,7 +39,7 @@ bool ScenarioOc3SaveLoader::load( const std::string& filename, Scenario& oScenar
   if( Impl::currentVesion == vm[ "version" ].toInt() )
   {
     oScenario.load( vm[ "scenario" ].toMap() );
-    oScenario.getCity().load( vm[ "city" ].toMap() );
+    oScenario.getCity()->load( vm[ "city" ].toMap() );
 
     return true;
   }

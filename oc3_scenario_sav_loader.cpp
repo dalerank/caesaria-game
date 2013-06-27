@@ -161,13 +161,13 @@ bool ScenarioSavLoader::load( const std::string& filename, Scenario &oScenario )
     
     // here goes the WORK!
     
-    City& oCity = oScenario.getCity();
-    oCity.setClimate((ClimateType)climate);
-    Tilemap& oTilemap = oCity.getTilemap();
+    CityPtr oCity = oScenario.getCity();
+    oCity->setClimate((ClimateType)climate);
+    Tilemap& oTilemap = oCity->getTilemap();
     
     oTilemap.init(size);
 
-    oCity.setCameraPos( TilePos( 0, 0 ) );
+    oCity->setCameraPos( TilePos( 0, 0 ) );
     
   // loads the graphics map
   int border_size = (162 - size) / 2;

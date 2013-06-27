@@ -33,14 +33,14 @@ public:
   typedef enum { roadOnly=0, allTerrain } FindType;
   PathWay();
   PathWay( const PathWay &copy );
-  PathWay( Tilemap& tmap, const TilePos& startPos, const TilePos& stopPos, 
+  PathWay( const Tilemap& tmap, const TilePos& startPos, const TilePos& stopPos, 
            FindType type=roadOnly );
 
   void init( Tilemap &tilemap, Tile &origin );
 
   int getLength() const;
-  Tile& getOrigin() const;
-  Tile& getDestination() const;
+  const Tile& getOrigin() const;
+  const Tile& getDestination() const;
   bool isReverse() const;
   unsigned int getStep() const;
 
@@ -52,7 +52,7 @@ public:
   void setNextDirection(const DirectionType direction);
   void setNextTile( const Tile& tile);
   bool contains(Tile &tile);
-  PtrTilesList& getAllTiles();
+  ConstPtrTilesList& getAllTiles();
 
   void prettyPrint() const;
   void toggleDirection();
@@ -62,15 +62,15 @@ public:
   void load( const VariantMap& stream );
   void save( VariantMap& stream) const;
 private:
-   Tilemap *_tilemap;
-   Tile *_origin;
+   Tilemap const* _tilemap;
+   Tile const* _origin;
    TilePos _destination;
 
    typedef std::vector<DirectionType> Directions;
    Directions _directionList;
    Directions::iterator _directionIt;
    Directions::reverse_iterator _directionIt_reverse;
-   PtrTilesList _tileList;
+   ConstPtrTilesList _tileList;
    bool _isReverse;
 };
 bool operator<(const PathWay &v1, const PathWay &v2);
@@ -81,7 +81,7 @@ class Propagator
 public:
   typedef std::map<BuildingPtr, PathWay> ReachedBuldings;
   
-  Propagator();
+  Propagator( CityPtr city );
   void setAllLands(const bool value);
   void setAllDirections(const bool value);
 
@@ -91,7 +91,7 @@ public:
   */
   void init(Tile& origin);
   void init(const PtrTilesList& origin);
-  void init(const Construction& origin);
+  void init(const ConstructionPtr origin);
   void propagate(const int maxDistance);
 
   void getReachedBuildings(const BuildingType buildingType, ReachedBuldings& oPathWayList);
@@ -113,7 +113,7 @@ private:
   bool _allLands;  // true if can walk in all lands, false if limited to roads
   bool _allDirections;  // true if can walk in all directions, false if limited to North/South/East/West
 
-  City* _city;
+  CityPtr _city;
   Tile* _origin;
   Tilemap* _tilemap;
 };

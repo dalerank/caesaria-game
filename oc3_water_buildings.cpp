@@ -41,7 +41,7 @@ Aqueduct::Aqueduct() : WaterSource( B_AQUEDUCT, Size(1) )
 
 void Aqueduct::build(const TilePos& pos )
 {
-  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
   TerrainTile& terrain = tilemap.at( pos ).getTerrain();
 
   // we can't build if already have aqueduct here
@@ -71,7 +71,7 @@ void Aqueduct::destroy()
 void Reservoir::destroy()
 {
   //now remove water flag from near tiles
-  Tilemap& tmap = Scenario::instance().getCity().getTilemap();
+  Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
   PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() ); 
   for( PtrTilesArea::iterator it=reachedTiles.begin(); it != reachedTiles.end(); it++ )
   {
@@ -104,7 +104,8 @@ bool Aqueduct::canBuild( const TilePos& pos ) const
       return true; // we try to build on free tile
   
   // we can place on road
-  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  CityPtr city = Scenario::instance().getCity();
+  Tilemap& tilemap = city->getTilemap();
   TerrainTile& terrain = tilemap.at( pos ).getTerrain();
 
   // we can't build on plazas
@@ -118,9 +119,9 @@ bool Aqueduct::canBuild( const TilePos& pos ) const
   // also we can't build if next tile is road + aqueduct
   if ( terrain.isRoad() )
   {
-    std::list<Tile*> rect = Scenario::instance().getCity().getTilemap().getRectangle( pos + TilePos (-1, -1),
-                                                pos + TilePos (1, 1), 
-                                                !Tilemap::checkCorners );
+    std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos (-1, -1),
+                                                  pos + TilePos (1, 1), 
+                                                  !Tilemap::checkCorners );
     for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
     {
       Tile* tile = *itTiles;
@@ -160,7 +161,7 @@ bool Aqueduct::canBuild( const TilePos& pos ) const
 Picture& Aqueduct::computePicture()
 {
   // find correct picture as for roads
-  Tilemap& tmap = Scenario::instance().getCity().getTilemap();
+  Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
   
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
    
@@ -270,7 +271,7 @@ bool Reservoir::_isNearWater( const TilePos& pos ) const
 {
   bool near_water = false;  // tells if the factory is next to a mountain
 
-  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
   std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), !Tilemap::checkCorners );
   for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {
@@ -307,7 +308,7 @@ void Reservoir::timeStep(const unsigned long time)
   //filled area, that reservoir present
   if( time % 22 == 1 )
   {
-    Tilemap& tmap = Scenario::instance().getCity().getTilemap();
+    Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
     PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() ); 
     for( PtrTilesArea::iterator it=reachedTiles.begin(); it != reachedTiles.end(); it++ )
     {
@@ -384,7 +385,7 @@ void WaterSource::timeStep( const unsigned long time )
 
 void WaterSource::_produceWater( const TilePos* points, const int size )
 {
-  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
   for( int index=0; index < size; index++ )
   {
     TilePos pos = getTilePos() + points[index];
@@ -447,7 +448,7 @@ void BuildingFountain::deliverService()
   else
   {
     //remove fontain service from tiles
-    Tilemap& tmap = Scenario::instance().getCity().getTilemap();
+    Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
     PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() ); 
     for( PtrTilesArea::iterator it=reachedTiles.begin(); it != reachedTiles.end(); it++ )
     {
@@ -475,7 +476,7 @@ void BuildingFountain::timeStep(const unsigned long time)
   //filled area, that fontain present and work
   if( time % 22 == 1 )
   {
-    Tilemap& tmap = Scenario::instance().getCity().getTilemap();
+    Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
     PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() ); 
     for( PtrTilesArea::iterator it=reachedTiles.begin(); it != reachedTiles.end(); it++ )
     {
@@ -493,7 +494,7 @@ bool BuildingFountain::canBuild( const TilePos& pos ) const
 {
   bool ret = Construction::canBuild( pos );
 
-  Tilemap& tmap = Scenario::instance().getCity().getTilemap();
+  Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
   const TerrainTile& buildTerrain = tmap.at( pos ).getTerrain();
   bool reservoirPresent = buildTerrain.getWaterService( WTR_RESERVOIR ) > 0;
   const_cast< BuildingFountain* >( this )->setPicture( Picture::load( ResourceGroup::waterbuildings, reservoirPresent ? 4 : 3 )  );

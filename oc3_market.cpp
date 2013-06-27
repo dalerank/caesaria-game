@@ -18,6 +18,7 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_walker_market_buyer.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_scenario.hpp"
 
 class Market::Impl
 {
@@ -59,8 +60,8 @@ void Market::deliverService()
   if( getWorkers() > 0 && getWalkerList().size() == 0 )
   {
     // the marketBuyer is ready to buy something!
-    MarketBuyerPtr buyer = MarketBuyer::create( MarketPtr( this ) );
-    buyer->send2City();
+    MarketBuyerPtr buyer = MarketBuyer::create( Scenario::instance().getCity() );
+    buyer->send2City( MarketPtr( this ) );
 
     if( !buyer->isDeleted() )
     {

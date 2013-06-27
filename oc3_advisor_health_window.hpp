@@ -19,13 +19,12 @@
 #include "oc3_widget.hpp"
 #include "oc3_scopedptr.hpp"
 #include "oc3_signals.hpp"
-
-class City;
+#include "oc3_predefinitions.hpp"
 
 class AdvisorHealthWindow : public Widget
 {
 public:
-  AdvisorHealthWindow( City& city, Widget* parent, int id );
+  AdvisorHealthWindow( CityPtr city, Widget* parent, int id );
 
   void draw( GfxEngine& painter );
 

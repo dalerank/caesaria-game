@@ -71,9 +71,10 @@ int TraineeWalker::getType() const
 void TraineeWalker::computeWalkerPath()
 {
   _maxNeed = 0;  // need of this trainee in buildings
-  Propagator pathPropagator;
-  pathPropagator.init( *_originBuilding.object() );
-  pathPropagator.propagate(_maxDistance);
+ 
+  Propagator pathPropagator( _city );
+  pathPropagator.init( _originBuilding.as<Construction>() );
+  pathPropagator.propagate( _maxDistance );
 
   for (std::list<BuildingType>::iterator itType = _buildingNeed.begin(); itType != _buildingNeed.end(); ++itType)
   {
@@ -127,7 +128,7 @@ void TraineeWalker::send2City()
   if( !isDeleted() )
   {
     _destinationBuilding->reserveTrainee(_traineeType);
-    Scenario::instance().getCity().addWalker( WalkerPtr( this ) );
+    _city->addWalker( WalkerPtr( this ) );
   }
 }
 
@@ -161,9 +162,10 @@ void TraineeWalker::load( const VariantMap& stream )
 //   _maxDistance = stream.read_int(2, 0, 65535);
 }
 
-TraineeWalkerPtr TraineeWalker::create( const WalkerTraineeType traineeType )
+TraineeWalkerPtr TraineeWalker::create( CityPtr city, const WalkerTraineeType traineeType )
 {
   TraineeWalkerPtr ret( new TraineeWalker( traineeType ) );
+  ret->_city = city;
   ret->drop();
   return ret;
 }

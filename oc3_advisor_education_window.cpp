@@ -90,7 +90,7 @@ public:
     int peoplesStuding;
   };
 
-  InfrastructureInfo getInfo( City& city, const BuildingType service )
+  InfrastructureInfo getInfo( CityPtr city, const BuildingType service )
   {
     CityHelper helper( city );
 
@@ -125,7 +125,7 @@ public:
 };
 
 
-AdvisorEducationWindow::AdvisorEducationWindow( City& city, Widget* parent, int id ) 
+AdvisorEducationWindow::AdvisorEducationWindow( CityPtr city, Widget* parent, int id ) 
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),
@@ -173,7 +173,7 @@ AdvisorEducationWindow::AdvisorEducationWindow( City& city, Widget* parent, int 
     //sumStudents += (*it)->getStudents();
   }
 
-  std::string cityInfoStr = StringHelper::format( 0xff, "%d %s, %d %s, %d %s", city.getPopulation(), _("##peoples##"),
+  std::string cityInfoStr = StringHelper::format( 0xff, "%d %s, %d %s, %d %s", city->getPopulation(), _("##peoples##"),
                                                   sumScholars, _("##scholars##"), sumStudents, _("##students##") );
   _d->cityInfo = new Label( this, Rect( 65, 50, getWidth() - 65, 50 +30), cityInfoStr, false );
 }

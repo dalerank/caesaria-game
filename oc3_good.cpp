@@ -22,6 +22,7 @@
 #include "oc3_gettext.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_stringhelper.hpp"
 
 #include <iostream>
 #include <algorithm>
@@ -212,18 +213,22 @@ void GoodStock::addStock(GoodStock &stock, const int iAmount)
    }
 }
 
-void GoodStock::save( VariantMap& stream ) const
+void GoodStock::save( VariantList& stream ) const
 {
-  stream[ "type" ] = (int)_goodType;
-  stream[ "max" ] = _maxQty;
-  stream[ "current" ] = _currentQty;
+  stream.push_back( (int)_goodType );
+  stream.push_back( _maxQty );
+  stream.push_back( _currentQty );
 }
 
-void GoodStock::load( const VariantMap& stream )
+void GoodStock::load( const VariantList& stream )
 {
-//    _goodType = (GoodType) stream.read_int(1, 0, G_MAX);
-//    _maxQty = stream.read_int(2, 0, 10000);
-//    _currentQty = stream.read_int(2, 0, 10000);
+  if( stream.size() < 3 )
+    return;
+
+  VariantList::const_iterator it=stream.begin();
+  _goodType = (GoodType)(*it).toInt(); it++;
+  _maxQty = (*it).toInt(); it++;
+  _currentQty = (*it).toInt();
 }
 
 
@@ -389,49 +394,50 @@ void GoodStore::storeAll(SimpleGoodStore &goodStore)
  
 void GoodStore::save( VariantMap& stream) const 
 {
-  // HACK!!! We must to think about how we will store data on different platforms (OS + 32/64 bit mode)
   stream[ "nextReservationId" ] = static_cast<int>(_nextReservationID);
-  stream[ "storeReservationSize" ] = static_cast<int>(_storeReservations.size());
-//    for (std::map<long, GoodStock>::iterator itRes = _storeReservations.begin(); itRes != _storeReservations.end(); itRes++)
-//    {
-//       long resID = itRes->first;
-//       GoodStock &stock = itRes->second;
-//       stream.write_int(resID, 4, 0, 1000000);
-//       stock.serialize(stream);
-//    }
-// 
-//    stream.write_int(_retrieveReservations.size(), 2, 0, 1000);
-//    for (std::map<long, GoodStock>::iterator itRes = _retrieveReservations.begin(); itRes != _retrieveReservations.end(); itRes++)
-//    {
-//       long resID = itRes->first;
-//       GoodStock &stock = itRes->second;
-//       stream.write_int(resID, 4, 0, 1000000);
-//       stock.serialize(stream);
-//    }
+  
+  VariantList vm_storereservations;
+  for( std::map<long, GoodStock>::const_iterator itRes = _storeReservations.begin(); itRes != _storeReservations.end(); itRes++)
+  {
+    VariantList vm_stocksave;
+    itRes->second.save( vm_stocksave );
+    vm_storereservations.push_back( itRes->first );
+    vm_storereservations.push_back( vm_stocksave );
+  }
+  stream[ "storeReservations" ] = vm_storereservations;
+
+  VariantList vm_retrievereservations;
+  for (std::map<long, GoodStock>::const_iterator itRes = _retrieveReservations.begin(); itRes != _retrieveReservations.end(); itRes++)
+  {
+    VariantList vm_stockrtvsave;
+    itRes->second.save( vm_stockrtvsave );
+    vm_retrievereservations.push_back( itRes->first );
+    vm_retrievereservations.push_back( vm_stockrtvsave );
+  }
+  stream[ "retrieveReservation" ] = vm_retrievereservations;
 }
 
 void GoodStore::load( const VariantMap& stream )
 {
-//    _nextReservationID = stream.read_int(4, 0, 1000000);
-//    int size = stream.read_int(2, 0, 1000);
-//    for (int i=0; i<size; ++i)
-//    {
-//       long resID = stream.read_int(4, 0, 1000000);
-//       GoodStock stock;
-//       stock.unserialize(stream);
-// 
-//       _storeReservations[resID] = stock;
-//    }
-// 
-//    size = stream.read_int(2, 0, 1000);
-//    for (int i=0; i<size; ++i)
-//    {
-//       long resID = stream.read_int(4, 0, 1000000);
-//       GoodStock stock;
-//       stock.unserialize(stream);
-// 
-//       _retrieveReservations[resID] = stock;
-//    }
+   _nextReservationID = stream.get( "nextReservationId" ).toInt();
+
+   VariantList vm_storereservations = stream.get( "storeReservations" ).toList();
+   for( VariantList::iterator it=vm_storereservations.begin(); it != vm_storereservations.end(); it++ )
+   {
+     GoodStock stock;
+     int index = (*it).toInt(); it++;
+     stock.load( (*it).toList() );
+     _storeReservations[ index ] = stock;
+   }
+
+   VariantList vm_retrievereservations = stream.get( "retrieveReservation" ).toList();
+   for( VariantList::iterator it=vm_retrievereservations.begin(); it != vm_retrievereservations.end(); it++ )
+   {
+     GoodStock stock;
+     int index = (*it).toInt(); it++;
+     stock.load( (*it).toList() );
+     _retrieveReservations[ index ] = stock;
+   }
 }
 
 GoodStore::~GoodStore()
@@ -447,12 +453,7 @@ SimpleGoodStore::SimpleGoodStore()
    _goodStockList.resize(G_MAX);
    for (int n = 0; n < (int) G_MAX; ++n)
    {
-      GoodStock stock;
-      stock._goodType = (GoodType) n;
-      stock._maxQty = 0;
-      stock._currentQty = 0;
-
-      _goodStockList[n] = stock;
+      _goodStockList[n] = GoodStock((GoodType)n, 0, 0);
    }
 }
 
@@ -585,25 +586,29 @@ void SimpleGoodStore::save( VariantMap& stream ) const
   GoodStore::save( stream );
   stream[ "max" ] = _maxQty;
   stream[ "current" ] = _currentQty;
-  stream[ "size" ] = static_cast<unsigned int>(_goodStockList.size());
-//    for (std::vector<GoodStock>::iterator itStock = _goodStockList.begin(); itStock != _goodStockList.end(); itStock++)
-//    {
-//       GoodStock &stock = *itStock;
-//       stock.serialize(stream);
-//    }
+
+  VariantList stockSave;
+  for( std::vector<GoodStock>::const_iterator itStock = _goodStockList.begin(); itStock != _goodStockList.end(); itStock++)
+  {
+    VariantList currentStockSave;
+    (*itStock).save( currentStockSave );
+    stockSave.push_back( currentStockSave );
+  }
+
+  stream[ "stock" ] = stockSave;
 }
 
 void SimpleGoodStore::load( const VariantMap& stream )
 {
-//    GoodStore::unserialize(stream);
-//    _maxQty = stream.read_int(2, 0, 10000);
-//    _currentQty = stream.read_int(2, 0, 10000);
-// 
-//    int size = stream.read_int(1, 0, 50);
-//    for (int i=0; i<size; ++i)
-//    {
-//       GoodStock stock;
-//       stock.unserialize(stream);
-//       _goodStockList[stock._goodType] = stock;
-//    }
+  GoodStore::load( stream );
+  _maxQty = stream.get( "max" ).toInt();
+  _currentQty = stream.get( "current" ).toInt();
+
+  VariantList stockSave = stream.get( "stock" ).toList();
+  for( VariantList::iterator it=stockSave.begin(); it!=stockSave.end(); it++ )
+  {
+    GoodStock restored;
+    restored.load( (*it).toList() );
+    _goodStockList.push_back( restored );
+  }
 }

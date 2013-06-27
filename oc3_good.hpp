@@ -25,6 +25,8 @@
 #include <map>
 #include "oc3_serializer.hpp"
 
+class VariantList;
+
 class Good
 {
   friend class GoodHelper;
@@ -57,7 +59,7 @@ private:
 };
 
 
-class GoodStock : public Serializable
+class GoodStock 
 {
 public:
    GoodStock();
@@ -66,8 +68,8 @@ public:
    /** amount: if -1, amount=stock._currentQty */
    void addStock(GoodStock &stock, const int amount = -1);
 
-   void save( VariantMap& options ) const;
-   void load( const VariantMap& options );
+   void save( VariantList& stream ) const;
+   void load( const VariantList& options );
 
    GoodType _goodType;
    int _maxQty;

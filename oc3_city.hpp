@@ -25,16 +25,17 @@
 #include "oc3_serializer.hpp"
 #include "oc3_signals.hpp"
 #include "oc3_predefinitions.hpp"
+#include "oc3_referencecounted.hpp"
 #include "oc3_cityservice.hpp"
 
 class TilePos;
 class DateTime;
 class CityBuildOptions;
 
-class City : public Serializable
+class City : public Serializable, public ReferenceCounted
 {
 public:
-  City();
+  static CityPtr create();
   ~City();
 
   void timeStep();  // performs one simulation step
@@ -103,6 +104,7 @@ oc3_signals public:
   Signal2<const TilePos&, const std::string& >& onDisasterEvent();
 
 private:
+  City();
   void _calculatePopulation();
 
   class Impl;
@@ -112,15 +114,14 @@ private:
 class CityHelper
 {
 public:
-  CityHelper( City& city ) : _city( city ) {}
+  CityHelper( CityPtr city ) : _city( city ) {}
 
   template< class T >
   std::list< SmartPtr< T > > getBuildings( const BuildingType type )
   {
     std::list< SmartPtr< T > > ret;
-    LandOverlays buildings = _city.getBuildingList( type );
-    for( LandOverlays::iterator it = buildings.begin(); 
-          it != buildings.end(); it++  )
+    LandOverlays buildings = _city->getBuildingList( type );
+    for( LandOverlays::iterator it = buildings.begin(); it != buildings.end(); it++  )
     {
       SmartPtr< T > b = (*it).as<T>();
       if( b.isValid() )
@@ -133,7 +134,7 @@ public:
   }
 
 protected:
-  City& _city;
+  CityPtr _city;
 };
 
 #endif

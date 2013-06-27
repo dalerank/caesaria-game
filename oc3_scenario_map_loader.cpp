@@ -67,15 +67,15 @@ public:
 
   void loadMap(std::fstream& f, Scenario &oScenario);
 
-  void decodeTerrain(Tile &oTile);
+  void decodeTerrain(Tile &oTile, CityPtr city );
 
-  void initClimate(std::fstream &f, City &ioCity);
-  void initCameraStartPos(std::fstream &f, City &ioCity);
+  void initClimate(std::fstream &f, CityPtr ioCity);
+  void initCameraStartPos(std::fstream &f, CityPtr ioCity);
 
-  void initEntryExit(std::fstream &f, City &ioCity);
+  void initEntryExit(std::fstream &f, CityPtr ioCity);
 };
 
-bool ScenarioMapLoader::load(const std::string& filename, Scenario &oScenario)
+bool ScenarioMapLoader::load(const std::string& filename, Scenario& oScenario)
 {
   std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
   _d->initClimate(f, oScenario.getCity());
@@ -103,8 +103,8 @@ bool ScenarioMapLoader::isLoadableFileExtension( const std::string& filename )
 
 void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario& oScenario)
 {
-  City& oCity = oScenario.getCity();
-  Tilemap& oTilemap = oCity.getTilemap();
+  CityPtr oCity = oScenario.getCity();
+  Tilemap& oTilemap = oCity->getTilemap();
 
   /* get number of city */
 
@@ -312,12 +312,12 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario& oScenario)
 
       // Check if it is building and type of building
       //if (ttile.getMasterTile() == NULL)
-      decodeTerrain(ttile);
+      decodeTerrain(ttile, oCity );
     }
   }
 }
 
-void ScenarioMapLoader::Impl::decodeTerrain(Tile &oTile)
+void ScenarioMapLoader::Impl::decodeTerrain(Tile &oTile, CityPtr city )
 {
   if (!oTile.isMasterTile() && oTile.getMasterTile()!=NULL)
     return;
@@ -355,14 +355,14 @@ void ScenarioMapLoader::Impl::decodeTerrain(Tile &oTile)
   }
 
   //terrain.setOverlay( overlay );
-  if (overlay != NULL)
+  if( overlay != NULL )
   {
     overlay->build( oTile.getIJ() );
-    Scenario::instance().getCity().getOverlayList().push_back(overlay);
+    city->getOverlayList().push_back(overlay);
   }
 }
 
-void ScenarioMapLoader::Impl::initClimate(std::fstream &f, City &ioCity)
+void ScenarioMapLoader::Impl::initClimate(std::fstream &f, CityPtr ioCity)
 {
   // read climate
   unsigned int i = 0;
@@ -370,7 +370,7 @@ void ScenarioMapLoader::Impl::initClimate(std::fstream &f, City &ioCity)
   f.read((char*)&i, 1);
 
   ClimateType climate = (ClimateType) i;
-  ioCity.setClimate(climate);
+  ioCity->setClimate(climate);
 
   StringHelper::debug( 0xff, "Climate type is %d", climate );
 
@@ -390,9 +390,9 @@ void ScenarioMapLoader::Impl::initClimate(std::fstream &f, City &ioCity)
   //   }
 }
 
-void ScenarioMapLoader::Impl::initEntryExit(std::fstream &f, City &ioCity)
+void ScenarioMapLoader::Impl::initEntryExit(std::fstream &f, CityPtr ioCity)
 {
-  unsigned int size = ioCity.getTilemap().getSize();
+  unsigned int size = ioCity->getTilemap().getSize();
 
   // init road entry/exit point
   unsigned short int i = 0;
@@ -401,13 +401,13 @@ void ScenarioMapLoader::Impl::initEntryExit(std::fstream &f, City &ioCity)
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);
 
-  ioCity.setRoadEntry( TilePos( i, size - j - 1 ) );
+  ioCity->setRoadEntry( TilePos( i, size - j - 1 ) );
 
   i = 0;
   j = 0;
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);
-  ioCity.setRoadExit( TilePos( i, size - j - 1 ) );
+  ioCity->setRoadExit( TilePos( i, size - j - 1 ) );
 
   // init boat entry/exit point
   i = 0;
@@ -415,13 +415,13 @@ void ScenarioMapLoader::Impl::initEntryExit(std::fstream &f, City &ioCity)
   f.seekg(kBoatEntry, std::ios::beg);
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);
-  ioCity.setBoatEntry( TilePos( i, size - j - 1 ) );
+  ioCity->setBoatEntry( TilePos( i, size - j - 1 ) );
 
   i = 0;
   j = 0;
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);
-  ioCity.setBoatExit( TilePos( i, size - j - 1) );
+  ioCity->setBoatExit( TilePos( i, size - j - 1) );
 
   //std::cout << "road entry at:" << ioCity.getRoadEntryI() << "," << ioCity.getRoadEntryJ() << std::endl;
   //std::cout << "road exit at:"  << ioCity.getRoadExitI()  << "," << ioCity.getRoadExitJ()  << std::endl;
@@ -429,7 +429,7 @@ void ScenarioMapLoader::Impl::initEntryExit(std::fstream &f, City &ioCity)
   //std::cout << "boat exit at:"  << ioCity.getBoatExitI()  << "," << ioCity.getBoatExitJ()  << std::endl;
 }
 
-void ScenarioMapLoader::Impl::initCameraStartPos(std::fstream &f, City &ioCity)
+void ScenarioMapLoader::Impl::initCameraStartPos(std::fstream &f, CityPtr ioCity)
 {
   unsigned short int i = 0;
   unsigned short int j = 0;
@@ -437,5 +437,5 @@ void ScenarioMapLoader::Impl::initCameraStartPos(std::fstream &f, City &ioCity)
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);
 
-  ioCity.setCameraPos( TilePos( i, j ) );
+  ioCity->setCameraPos( TilePos( i, j ) );
 }

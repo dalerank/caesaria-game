@@ -32,7 +32,7 @@
 class CartPusher::Impl
 {
 public:
-  City* city;
+  CityPtr city;
   GoodStock stock;
   BuildingPtr producerBuilding;
   BuildingPtr consumerBuilding;
@@ -41,7 +41,7 @@ public:
   long reservationID;
 };
 
-CartPusher::CartPusher( City& city ) : _d( new Impl )
+CartPusher::CartPusher( CityPtr city ) : _d( new Impl )
 {
    _d->cartPicture = NULL;
    _walkerGraphic = WG_PUSHER;
@@ -49,7 +49,7 @@ CartPusher::CartPusher( City& city ) : _d( new Impl )
    _d->producerBuilding = NULL;
    _d->consumerBuilding = NULL;
    _d->maxDistance = 25;
-   _d->city = &city;
+   _d->city = city;
 }
 
 void CartPusher::onDestination()
@@ -171,9 +171,9 @@ void CartPusher::computeWalkerDestination()
 {
    // get the list of buildings within reach
    PathWay pathWay;
-   Propagator pathPropagator;
+   Propagator pathPropagator( _d->city );
    _d->consumerBuilding = 0;
-   pathPropagator.init( *_d->producerBuilding.object() );
+   pathPropagator.init( _d->producerBuilding.as<Construction>() );
    pathPropagator.propagate(_d->maxDistance);
 
    BuildingPtr destBuilding;
@@ -316,7 +316,9 @@ void CartPusher::send2City( BuildingPtr building, const GoodStock& stock )
   computeWalkerDestination();
 
   if( !isDeleted() )
-    _d->city->addWalker( WalkerPtr( this ) );
+  {
+    _d->city->addWalker( this );
+  }
 }
 
 void CartPusher::timeStep( const unsigned long time )
@@ -329,7 +331,7 @@ void CartPusher::timeStep( const unsigned long time )
   Walker::timeStep( time );
 }
 
-CartPusherPtr CartPusher::create( City& city )
+CartPusherPtr CartPusher::create( CityPtr city )
 {
   CartPusherPtr ret( new CartPusher( city ) );
   ret->drop(); //delete automatically
@@ -341,7 +343,7 @@ void CartPusher::save( VariantMap& stream ) const
 {
   Walker::save( stream );
   
-  VariantMap vm_stock;
+  VariantList vm_stock;
   _d->stock.save( vm_stock );
   stream[ "stock" ] = vm_stock;
 
@@ -358,11 +360,15 @@ void CartPusher::load( const VariantMap& stream )
 {
   Walker::load( stream );
 
-  _d->stock.load( stream.get( "stock" ).toMap() );
+  _d->stock.load( stream.get( "stock" ).toList() );
 
   TilePos prPos( stream.get( "producerPos" ).toTilePos() );
   Tile& prTile = _d->city->getTilemap().at( prPos );
   _d->producerBuilding = prTile.getTerrain().getOverlay().as<Building>();
+  if( _d->producerBuilding.is<Factory>() )
+  {
+    _d->producerBuilding.as<Factory>()->addWalker( this );
+  }
 
   TilePos cnsmPos( stream.get( "consumerPos" ).toTilePos() );
   Tile& cnsmTile = _d->city->getTilemap().at( cnsmPos );

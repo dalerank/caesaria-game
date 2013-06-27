@@ -17,17 +17,18 @@
 #define __OPENCAESAR3_CITYSERVICE_SHORELINE_H_INCLUDED__
 
 #include "oc3_cityservice.hpp"
+#include "oc3_predefinitions.hpp"
 #include "oc3_scopedptr.hpp"
 
 class CityServiceShoreline : public CityService
 {
 public:
-  static CityServicePtr create( City& city );
+  static CityServicePtr create( CityPtr city );
 
   void update( const unsigned int time );
 
 private:
-  CityServiceShoreline( City& city );
+  CityServiceShoreline( CityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;

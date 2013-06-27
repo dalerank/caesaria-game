@@ -54,7 +54,7 @@ public:
   TilemapArea mapArea;  // visible map area
   ExtentMenu* extMenu;
   InfoBoxManagerPtr infoBoxMgr;
-  TilemapRenderer guiTilemap;
+  TilemapRenderer mapRenderer;
   WindowMessageStack* wndStackMsgs;
   Scenario* scenario; // current game scenario
   AlarmEventHolder alarmsHolder;
@@ -107,7 +107,7 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
   _d->menu->setPosition( Point( engine.getScreenWidth() - _d->menu->getWidth() - _d->rightPanel->getWidth(), 
                                  _d->topMenu->getHeight() ) );
 
-  _d->extMenu = ExtentMenu::create( gui.getRootWidget(), _d->guiTilemap, -1, _d->scenario->getCity() );
+  _d->extMenu = ExtentMenu::create( gui.getRootWidget(), _d->mapRenderer, -1, _d->scenario->getCity() );
   _d->extMenu->setPosition( Point( engine.getScreenWidth() - _d->extMenu->getWidth() - _d->rightPanel->getWidth(), 
                                      _d->topMenu->getHeight() ) );
 
@@ -121,9 +121,10 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
   getMapArea().setViewSize( engine.getScreenSize() + Size( 180 ) );
         
   // here move camera to start position of map
-  getMapArea().setCenterIJ( _d->scenario->getCity().getCameraPos() ); 
+  getMapArea().setCenterIJ( _d->scenario->getCity()->getCameraPos() ); 
 
   //connect elements
+  CityPtr city = _d->scenario->getCity();
   CONNECT( _d->topMenu, onSave(), _d.data(), Impl::showSaveDialog );
   CONNECT( _d->topMenu, onExit(), this, ScreenGame::resolveExitGame );
   CONNECT( _d->topMenu, onEnd(), this, ScreenGame::resolveEndGame );
@@ -136,19 +137,19 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
   CONNECT( _d->extMenu, onCreateConstruction(), _d.data(), Impl::resolveCreateConstruction );
   CONNECT( _d->extMenu, onRemoveTool(), _d.data(), Impl::resolveRemoveTool );
 
-  CONNECT( &_d->scenario->getCity(), onPopulationChanged(), _d->topMenu, TopMenu::setPopulation );
-  CONNECT( &_d->scenario->getCity(), onFundsChanged(), _d->topMenu, TopMenu::setFunds );
-  CONNECT( &_d->scenario->getCity(), onMonthChanged(), _d->topMenu, TopMenu::setDate );
+  CONNECT( city, onPopulationChanged(), _d->topMenu, TopMenu::setPopulation );
+  CONNECT( city, onFundsChanged(), _d->topMenu, TopMenu::setFunds );
+  CONNECT( city, onMonthChanged(), _d->topMenu, TopMenu::setDate );
 
-  CONNECT( &_d->guiTilemap, onShowTileInfo(), _d.data(), Impl::showTileInfo );
+  CONNECT( &_d->mapRenderer, onShowTileInfo(), _d.data(), Impl::showTileInfo );
 
-  CONNECT( &_d->scenario->getCity(), onWarningMessage(), _d->wndStackMsgs, WindowMessageStack::addMessage );
-  CONNECT( &_d->guiTilemap, onWarningMessage(), _d->wndStackMsgs, WindowMessageStack::addMessage );
+  CONNECT( city, onWarningMessage(), _d->wndStackMsgs, WindowMessageStack::addMessage );
+  CONNECT( &_d->mapRenderer, onWarningMessage(), _d->wndStackMsgs, WindowMessageStack::addMessage );
   CONNECT( _d->extMenu, onSelectOverlayType(), _d.data(), Impl::resolveSelectOverlayView );
   CONNECT( _d->extMenu, onEmpireMapShow(), _d.data(), Impl::showEmpireMapWindow );
   CONNECT( _d->extMenu, onAdvisorsWindowShow(), _d.data(), Impl::showAdvisorsWindow );
 
-  CONNECT( &_d->scenario->getCity(), onDisasterEvent(), &_d->alarmsHolder, AlarmEventHolder::add );
+  CONNECT( city, onDisasterEvent(), &_d->alarmsHolder, AlarmEventHolder::add );
   CONNECT( _d->extMenu, onSwitchAlarm(), &_d->alarmsHolder, AlarmEventHolder::next );
   CONNECT( &_d->alarmsHolder, onMoveToAlarm(), &_d->mapArea, TilemapArea::setCenterIJ );
   CONNECT( &_d->alarmsHolder, onAlarmChange(), _d->extMenu, ExtentMenu::setAlarmEnabled );
@@ -172,26 +173,26 @@ TilemapArea& ScreenGame::getMapArea()
   return _d->mapArea;
 }
 
-void ScreenGame::setScenario(Scenario &scenario)
+void ScreenGame::setScenario(Scenario& scenario)
 {
   _d->scenario = &scenario;
-  City& city = scenario.getCity();
-  Tilemap& tilemap = city.getTilemap();
+  CityPtr city = scenario.getCity();
+  Tilemap& tilemap = city->getTilemap();
 
-  _d->mapArea.init(tilemap);
-  _d->guiTilemap.init(city, _d->mapArea, this);
+  _d->mapArea.init( tilemap );
+  _d->mapRenderer.init( city, _d->mapArea, this);
 }
 
 void ScreenGame::draw()
 {
-  _d->guiTilemap.drawTilemap();
+  _d->mapRenderer.drawTilemap();
   _d->gui->beforeDraw();
   _d->gui->draw();
 }
 
 void ScreenGame::afterFrame()
 {
-  _d->scenario->getCity().timeStep();
+  _d->scenario->getCity()->timeStep();
 }
 
 void ScreenGame::handleEvent( NEvent& event )
@@ -217,7 +218,7 @@ void ScreenGame::handleEvent( NEvent& event )
       else // eventresolved
       {
         _mouseEventTarget = _MET_TILES;
-        _d->guiTilemap.handleEvent( event );
+        _d->mapRenderer.handleEvent( event );
       }
       return;
     }
@@ -228,11 +229,11 @@ void ScreenGame::handleEvent( NEvent& event )
       _d->gui->handleEvent( event );
       break;
     case _MET_TILES:
-      _d->guiTilemap.handleEvent( event );
+      _d->mapRenderer.handleEvent( event );
       break;
     default:
       if (!_d->gui->handleEvent( event ))
-        _d->guiTilemap.handleEvent( event );
+        _d->mapRenderer.handleEvent( event );
       break;
     }
 
@@ -244,7 +245,7 @@ void ScreenGame::handleEvent( NEvent& event )
     eventResolved = _d->gui->handleEvent( event );      
    
     if( !eventResolved )
-      _d->guiTilemap.handleEvent( event );
+      _d->mapRenderer.handleEvent( event );
 
     if( event.EventType == OC3_KEYBOARD_EVENT )
     {
@@ -281,12 +282,12 @@ int ScreenGame::getResult() const
 
 void ScreenGame::Impl::resolveCreateConstruction( int type )
 {
-  guiTilemap.setChangeCommand( TilemapBuildCommand::create( BuildingType( type ) ) );
+  mapRenderer.setChangeCommand( TilemapBuildCommand::create( BuildingType( type ) ) );
 }
 
 void ScreenGame::Impl::resolveRemoveTool()
 {
-  guiTilemap.setChangeCommand( TilemapRemoveCommand::create() );
+  mapRenderer.setChangeCommand( TilemapRemoveCommand::create() );
 }
 
 void ScreenGame::Impl::showTileInfo( const Tile& tile )
@@ -308,7 +309,7 @@ void ScreenGame::resolveExitGame()
 
 void ScreenGame::Impl::resolveSelectOverlayView( int type )
 {
-  guiTilemap.setChangeCommand( TilemapOverlayCommand::create( OverlayType( type ) ) );
+  mapRenderer.setChangeCommand( TilemapOverlayCommand::create( OverlayType( type ) ) );
 }
 
 void ScreenGame::Impl::showAdvisorsWindow()

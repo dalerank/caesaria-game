@@ -17,8 +17,7 @@
 #define __OPENCAESAR3_SERVICEWALKER_H_INCLUDED__
 
 #include "oc3_walker.hpp"
-
-class City;
+#include "oc3_predefinitions.hpp"
 
 /** This walker gives a service to buildings along the road */
 class ServiceWalker : public Walker
@@ -26,7 +25,7 @@ class ServiceWalker : public Walker
 public:
   typedef std::set<BuildingPtr> ReachedBuildings;
 
-  static ServiceWalkerPtr create( City& city, const ServiceType service );
+  static ServiceWalkerPtr create( CityPtr city, const ServiceType service );
 
   ServiceType getService();
   BuildingPtr getBase() const;
@@ -52,9 +51,9 @@ public:
 
   ~ServiceWalker();
 protected:
-  ServiceWalker( City& city, const ServiceType service );
+  ServiceWalker( CityPtr city, const ServiceType service );
 
-  City& _getCity() const;
+  CityPtr _getCity() const;
   void init(const ServiceType service);
   void computeWalkerPath();
 

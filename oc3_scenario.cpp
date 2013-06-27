@@ -24,7 +24,7 @@
 class Scenario::Impl
 {
 public:
-  City city;
+  CityPtr city;
   std::string description;
   CityWinTargets targets;
 };
@@ -38,14 +38,15 @@ Scenario& Scenario::instance()
 Scenario::Scenario() : _d( new Impl )
 {
   _d->description = "";
+  _d->city = 0;
 }
 
-City& Scenario::getCity()
+CityPtr Scenario::getCity()
 {
   return _d->city;
 }
 
-const City& Scenario::getCity() const
+const CityPtr Scenario::getCity() const
 {
   return _d->city;
 }
@@ -72,4 +73,9 @@ CityWinTargets& Scenario::getWinTargets()
 Scenario::~Scenario()
 {
 
+}
+
+void Scenario::resetCity()
+{
+  _d->city = City::create();
 }

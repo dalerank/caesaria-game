@@ -144,9 +144,9 @@ bool CaesarApp::Impl::load(const std::string &gameFile)
     return false;
   }  
 
-  City &city = scenario.getCity();
+  CityPtr city = scenario.getCity();
   
-  LandOverlays llo = city.getOverlayList();
+  LandOverlays llo = city->getOverlayList();
   
   for ( LandOverlays::iterator itLLO = llo.begin(); itLLO!=llo.end(); ++itLLO)
   {
@@ -159,7 +159,7 @@ bool CaesarApp::Impl::load(const std::string &gameFile)
      }
   }
 
-  Pathfinder::getInstance().update( scenario.getCity().getTilemap() );  
+  Pathfinder::getInstance().update( city->getTilemap() );  
   
   std::cout << "load game end" << std::endl;
   return true;
@@ -200,12 +200,13 @@ void CaesarApp::setScreenMenu()
   ScreenMenu screen;
   screen.initialize( *_d->engine, *_d->gui );
   int result = screen.run();
+  Scenario::instance().resetCity();
 
   switch( result )
   {
     case ScreenMenu::startNewGame:
     {
-      /* temporary*/
+      /* temporary*/     
       std::vector<fs::path> filelist = _d->scanForMaps( AppConfig::get( AppConfig::resourcePath ).toString() );
       std::srand( (Uint32)std::time(0));
       std::string file = filelist.at(std::rand() % filelist.size()).string();

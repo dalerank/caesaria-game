@@ -101,7 +101,7 @@ BuildingActor::BuildingActor() : TrainingBuilding( B_ACTOR, Size(3) )
 void BuildingActor::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create(WTT_ACTOR);
+  TraineeWalkerPtr trainee = TraineeWalker::create( Scenario::instance().getCity(), WTT_ACTOR);
   trainee->setOriginBuilding(*this);
   trainee->send2City();
 }
@@ -118,7 +118,7 @@ BuildingGladiator::BuildingGladiator() : TrainingBuilding( B_GLADIATOR, Size(3))
 void BuildingGladiator::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create(WTT_GLADIATOR);
+  TraineeWalkerPtr trainee = TraineeWalker::create( Scenario::instance().getCity(), WTT_GLADIATOR);
   trainee->setOriginBuilding(*this);
   trainee->send2City();
 }
@@ -135,10 +135,10 @@ BuildingLion::BuildingLion() : TrainingBuilding( B_LION, Size(3) )
 
 void BuildingLion::deliverTrainee()
 {
-   // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create( WTT_TAMER );
-   trainee->setOriginBuilding(*this);
-   trainee->send2City();
+  // std::cout << "Deliver trainee!" << std::endl;
+  TraineeWalkerPtr trainee = TraineeWalker::create( Scenario::instance().getCity(), WTT_TAMER );
+  trainee->setOriginBuilding(*this);
+  trainee->send2City();
 }
 
 
@@ -146,15 +146,15 @@ BuildingChariot::BuildingChariot() : TrainingBuilding( B_CHARIOT, Size(3) )
 {
   setPicture( Picture::load( ResourceGroup::entertaiment, 91));
 
-   _animation.load( ResourceGroup::entertaiment, 92, 10);
-   _animation.setOffset( Point( 54, 23 ));
-   _fgPictures.resize(1);
+  _animation.load( ResourceGroup::entertaiment, 92, 10);
+  _animation.setOffset( Point( 54, 23 ));
+  _fgPictures.resize(1);
 }
 
 void BuildingChariot::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create(WTT_CHARIOT);
+  TraineeWalkerPtr trainee = TraineeWalker::create( Scenario::instance().getCity(), WTT_CHARIOT);
   trainee->setOriginBuilding(*this);
   trainee->send2City();
 }

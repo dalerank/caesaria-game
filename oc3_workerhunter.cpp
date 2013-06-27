@@ -23,7 +23,7 @@
 #include "oc3_enums.hpp"
 #include "oc3_path_finding.hpp"
 
-WorkersHunter::WorkersHunter( City& city )
+WorkersHunter::WorkersHunter( CityPtr city )
  : ServiceWalker( city, S_WORKERS_HUNTER )
 {    
     _workersNeeded = 0;
@@ -68,7 +68,7 @@ void WorkersHunter::onNewTile()
   }
 }
 
-WorkersHunterPtr WorkersHunter::create( City& city )
+WorkersHunterPtr WorkersHunter::create( CityPtr city )
 { 
   WorkersHunterPtr ret( new WorkersHunter( city ) );
   ret->drop();

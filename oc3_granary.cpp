@@ -102,6 +102,8 @@ void Granary::save( VariantMap& stream) const
 {
    WorkingBuilding::save( stream );
    VariantMap vm_goodstore;
+
+   stream[ "__debug_typeName" ] = OC3_STR_EXT(B_GRANARY);
    _d->goodStore.save( vm_goodstore );
    stream[ "goodStore" ] = vm_goodstore;
 

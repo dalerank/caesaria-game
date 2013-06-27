@@ -19,7 +19,6 @@
 
 #include "oc3_tilemap.hpp"
 #include "oc3_city.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_road.hpp"
@@ -52,10 +51,10 @@ PathWay::PathWay(const PathWay &copy)
    *this = copy;
 }
 
-PathWay::PathWay( Tilemap& tmap, const TilePos& startPos, const TilePos& stopPos, 
+PathWay::PathWay( const Tilemap& tmap, const TilePos& startPos, const TilePos& stopPos, 
                   FindType type/*=roadOnly */ )
 {
-  _OC3_DEBUG_BREAK_IF( true && "broken constructor" );
+  _tilemap = &tmap;
 }
 
 void PathWay::init(Tilemap &tilemap, Tile &origin)
@@ -76,14 +75,14 @@ int PathWay::getLength() const
    return _directionList.size();
 }
 
-Tile &PathWay::getOrigin() const
+const Tile& PathWay::getOrigin() const
 {
    return *_origin;
 }
 
-Tile &PathWay::getDestination() const
+const Tile& PathWay::getDestination() const
 {
-   Tile &res = _tilemap->at( _destination );
+   const Tile& res = _tilemap->at( _destination );
    return res;
 }
 
@@ -215,7 +214,7 @@ void PathWay::setNextDirection(const DirectionType direction)
       THROW("Destination is out of range");
    }
 
-   _tileList.push_back( &_tilemap->at( _destination ));
+   _tileList.push_back( &_tilemap->at( _destination ) );
 
    _directionList.push_back(direction);
 }
@@ -275,7 +274,7 @@ bool PathWay::contains(Tile &tile)
 {
    // search in reverse direction, because usually the last tile matches
    bool res = false;
-   for (PtrTilesList::reverse_iterator itTile = _tileList.rbegin(); itTile != _tileList.rend(); ++itTile)
+   for( ConstPtrTilesList::reverse_iterator itTile = _tileList.rbegin(); itTile != _tileList.rend(); ++itTile)
    {
       if (*itTile == &tile)
       {
@@ -287,7 +286,7 @@ bool PathWay::contains(Tile &tile)
    return res;
 }
 
-PtrTilesList& PathWay::getAllTiles()
+ConstPtrTilesList& PathWay::getAllTiles()
 {
    return _tileList;
 }
@@ -359,7 +358,6 @@ void PathWay::save( VariantMap& stream) const
 
 void PathWay::load( const VariantMap& stream )
 {
-  _tilemap = &Scenario::instance().getCity().getTilemap();
   _origin = &_tilemap->at( stream.get( "startPos" ).toTilePos() );
   _destination = _origin->getIJ();//stream.get( "stopPos" ).toTilePos();
   VariantList directions = stream.get( "directions" ).toList();
@@ -403,9 +401,9 @@ unsigned int PathWay::getStep() const
   }
 }
 
-Propagator::Propagator()
+Propagator::Propagator( CityPtr city )
 {
-   _city = &Scenario::instance().getCity();
+   _city = city;
    _tilemap = &_city->getTilemap();
    _allLands = false;
    _allDirections = true;
@@ -422,11 +420,11 @@ void Propagator::setAllDirections(const bool value)
 }
 
 
-void Propagator::init(const Construction &origin)
+void Propagator::init( ConstructionPtr origin)
 {
    // init propagation on access roads
-  _origin = &origin.getTile();
-   init(origin.getAccessRoads());
+  _origin = &origin->getTile();
+  init( origin->getAccessRoads() );
 }
 
 void Propagator::init(Tile& origin)
@@ -477,7 +475,7 @@ void Propagator::propagate(const int maxDistance)
       firstBranch = _activeBranches.begin();
 
       const PathWay &pathWay = *firstBranch;
-      Tile& tile = pathWay.getDestination();
+      const Tile& tile = pathWay.getDestination();
       //std::cout << "Propagation from tile " << tile.getI() << ", " << tile.getJ() << std::endl;
 
       int tileLength = 1;
@@ -663,7 +661,7 @@ void Propagator::getAllPaths(const int maxDistance, std::list<PathWay> &oPathWay
          // propagate branch until maxDistance is reached
          if ((nbLoops++)>100000) THROW("Infinite loop detected during propagation");
 
-         Tile& tile = pathWay.getDestination();
+         const Tile& tile = pathWay.getDestination();
          // std::cout << "Propagation from tile " << tile.getI() << ", " << tile.getJ() << std::endl;
 
          // propagate to neighbour tiles

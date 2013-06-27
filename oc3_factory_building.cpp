@@ -107,7 +107,7 @@ void Factory::timeStep(const unsigned long time)
       work = 0.0;
    }
 
-   if( _d->progress > 100.0 )
+   if( _d->progress >= 100.0 )
    {
       if (inStock._goodType != G_NONE)
       {
@@ -146,11 +146,11 @@ void Factory::deliverGood()
     _d->progress -= 100.f;
 
     if( !walker->isDeleted() )
-      _addWalker( walker.as<Walker>() );
+      addWalker( walker.as<Walker>() );
   }
 }
 
-void Factory::_addWalker( WalkerPtr walker )
+void Factory::addWalker( WalkerPtr walker )
 {
   _d->pushers.push_back( walker );
 }
@@ -166,15 +166,17 @@ void Factory::save( VariantMap& stream ) const
   VariantMap vm_goodstore;
   _d->goodStore.save( vm_goodstore );
 
+  stream[ "productionRate" ] = _d->productionRate;
   stream[ "goodStore" ] = vm_goodstore;
   stream[ "progress" ] = _d->progress; 
 }
 
 void Factory::load( const VariantMap& stream)
 {
-//    WorkingBuilding::unserialize(stream);
-//    _goodStore.unserialize(stream);
-//    _progress = (float)stream.read_int(1, 0, 100); // approximation
+  WorkingBuilding::load( stream );
+  _d->goodStore.load( stream.get( "goodStore" ).toMap() );
+  _d->progress = stream.get( "progress" ).toFloat(); // approximation
+  _d->productionRate = stream.get( "productionRate" ).toInt();
 }
 
 Factory::~Factory()
@@ -219,7 +221,7 @@ bool FactoryTimber::canBuild(const TilePos& pos ) const
    bool is_constructible = Construction::canBuild( pos );
    bool near_forest = false;  // tells if the factory is next to a forest
 
-   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+   Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
    PtrTilesArea rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), Tilemap::checkCorners );
    for( PtrTilesArea::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
@@ -248,7 +250,7 @@ bool FactoryIron::canBuild(const TilePos& pos ) const
   bool is_constructible = Construction::canBuild( pos );
   bool near_mountain = false;  // tells if the factory is next to a mountain
 
-  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
   PtrTilesArea rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size(2), Tilemap::checkCorners );
   for( PtrTilesArea::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {
@@ -314,7 +316,7 @@ bool Wharf::canBuild(const TilePos& pos ) const
   bool bWest  = true;
   bool bEast  = true;
    
-  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
    
   PtrTilesArea rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), false);
   for( PtrTilesArea::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)

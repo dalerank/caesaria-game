@@ -24,7 +24,7 @@ class Propagator;
 class TraineeWalker : public Walker
 {
 public:
-  static TraineeWalkerPtr create( const WalkerTraineeType traineeType );
+  static TraineeWalkerPtr create( CityPtr city, const WalkerTraineeType traineeType );
   int getType() const;
 
   void checkDestination(const BuildingType buildingType, Propagator& pathPropagator);
@@ -46,6 +46,7 @@ private:
   BuildingPtr _originBuilding;
   BuildingPtr _destinationBuilding;
   int _maxDistance;
+  CityPtr _city;
 
   std::list<BuildingType> _buildingNeed;  // list of buildings needing this trainee
   float _maxNeed;  // evaluates the need for that trainee

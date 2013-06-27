@@ -124,7 +124,7 @@ void House::timeStep(const unsigned long time)
      {
        _d->currentHabitants = math::clamp( _d->currentHabitants, 0, _d->maxHabitants );
 
-       City& city = Scenario::instance().getCity();
+       CityPtr city = Scenario::instance().getCity();
        ImmigrantPtr im = Immigrant::create( city );
        im->setCapacity( homeless );
        im->send2City( getTile() );
@@ -150,8 +150,8 @@ void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int start
 {       
   if( getSize() == 1 )
   {
-    City& city = Scenario::instance().getCity();
-    Tilemap& tmap = city.getTilemap();
+    CityPtr city = Scenario::instance().getCity();
+    Tilemap& tmap = city->getTilemap();
     PtrTilesList tiles = tmap.getFilledRectangle( getTile().getIJ(), Size(2) );   
     bool mayGrow = true;
 
@@ -291,8 +291,8 @@ void House::levelDown()
        _d->houseId = 1;
        _d->picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
 
-       City& city = Scenario::instance().getCity();
-       Tilemap& tmap = city.getTilemap();   
+       CityPtr city = Scenario::instance().getCity();
+       Tilemap& tmap = city->getTilemap();   
 
        if( getSize().getWidth() > 1 )
        {
@@ -557,7 +557,7 @@ void House::destroy()
 
   if( homeless > 0 )
   {
-    City& city = Scenario::instance().getCity();
+    CityPtr city = Scenario::instance().getCity();
     ImmigrantPtr im = Immigrant::create( city );
     im->setCapacity( homeless );
     im->send2City( getTile() );

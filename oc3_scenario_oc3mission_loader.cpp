@@ -46,13 +46,13 @@ bool ScenarioOc3MissionLoader::load( const std::string& filename, Scenario& oSce
     std::string mapToLoad = vm[ "map" ].toString();
 
     ScenarioLoader::getInstance().load( mapToLoad, oScenario );
-    City& city = oScenario.getCity();
-    city.setFunds( vm[ "funds" ].toInt() );
-    city.setDate( vm[ "date" ].toDateTime() );
+    CityPtr city = oScenario.getCity();
+    city->setFunds( vm[ "funds" ].toInt() );
+    city->setDate( vm[ "date" ].toDateTime() );
 
     oScenario.getWinTargets().load( vm[ "targets" ].toMap() );
 
-    CityBuildOptions& boptions = city.getBuildOptions();
+    CityBuildOptions& boptions = city->getBuildOptions();
     VariantList saveOptions = vm[ "buildoptions" ].toList();
     boptions.clear();
     boptions.setIndustryAvaible( BM_FARM, false );

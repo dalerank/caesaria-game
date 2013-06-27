@@ -22,7 +22,13 @@
 #include "oc3_house.hpp"
 #include "oc3_tile.hpp"
 
-CityServicePtr CityServiceEmigrant::create( City& city )
+class CityServiceEmigrant::Impl
+{
+public:
+  CityPtr city;
+};
+
+CityServicePtr CityServiceEmigrant::create( CityPtr city )
 {
   CityServicePtr ret( new CityServiceEmigrant( city ) );
   ret->drop();
@@ -30,10 +36,10 @@ CityServicePtr CityServiceEmigrant::create( City& city )
   return ret;
 }
 
-CityServiceEmigrant::CityServiceEmigrant( City& city )
-: CityService( city, "emigration" )
+CityServiceEmigrant::CityServiceEmigrant( CityPtr city )
+: CityService( "emigration" ), _d( new Impl )
 {
-  
+  _d->city = city;
 }
 
 void CityServiceEmigrant::update( const unsigned int time )
@@ -43,7 +49,7 @@ void CityServiceEmigrant::update( const unsigned int time )
   
   unsigned int vacantPop=0;
 
-  LandOverlays houses = _city.getBuildingList(B_HOUSE);
+  LandOverlays houses = _d->city->getBuildingList(B_HOUSE);
   for( LandOverlays::iterator itHouse = houses.begin(); itHouse != houses.end(); ++itHouse )
   {
     HousePtr house = (*itHouse).as<House>();
@@ -58,16 +64,16 @@ void CityServiceEmigrant::update( const unsigned int time )
     return;
   }
 
-  Walkers walkers = _city.getWalkerList( WT_EMIGRANT );
+  Walkers walkers = _d->city->getWalkerList( WT_EMIGRANT );
 
   if( vacantPop <= walkers.size() * 5 )
   {
     return;
   }
 
-  Tile& roadTile = _city.getTilemap().at( _city.getRoadEntry() );
+  Tile& roadTile = _d->city->getTilemap().at( _d->city->getRoadEntry() );
 
-  EmigrantPtr emigrant = Emigrant::create( _city );
+  EmigrantPtr emigrant = Emigrant::create( _d->city );
 
   if( emigrant.isValid() )
   {

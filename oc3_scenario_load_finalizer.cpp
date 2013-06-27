@@ -47,11 +47,11 @@ static void initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap, const uns
 
 void ScenarioLoadFinalizer::check()
 {
-  Tilemap& tileMap = _scenario.getCity().getTilemap();
+  Tilemap& tileMap = _scenario.getCity()->getTilemap();
 
   // exit and entry can't point to one tile or .... can!
-  initEntryExitTile( _scenario.getCity().getRoadEntry(), tileMap, 89, false );
-  initEntryExitTile( _scenario.getCity().getRoadExit(),  tileMap, 85, true  ); 
+  initEntryExitTile( _scenario.getCity()->getRoadEntry(), tileMap, 89, false );
+  initEntryExitTile( _scenario.getCity()->getRoadExit(),  tileMap, 85, true  ); 
 }
 
 ScenarioLoadFinalizer::ScenarioLoadFinalizer( Scenario& scenario )

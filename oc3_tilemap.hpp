@@ -16,8 +16,8 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#ifndef TILEMAP_HPP
-#define TILEMAP_HPP
+#ifndef __OPENCAESAR3_TILEMAP_H_INCLUDED__
+#define __OPENCAESAR3_TILEMAP_H_INCLUDED__
 
 #include "oc3_serializer.hpp"
 #include "oc3_predefinitions.hpp"
@@ -64,4 +64,4 @@ private:
 };
 
 
-#endif
+#endif //__OPENCAESAR3_TILEMAP_H_INCLUDED__

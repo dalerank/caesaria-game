@@ -24,7 +24,7 @@ typedef SmartPtr<WorkersHunter> WorkersHunterPtr;
 class WorkersHunter : public ServiceWalker
 {
 public:
-  static WorkersHunterPtr create( City& city );
+  static WorkersHunterPtr create( CityPtr city );
 
   int getWorkersNeeded() const;
   void onNewTile();
@@ -33,7 +33,7 @@ public:
   void send2City( WorkingBuildingPtr building, const int workersNeeded );
 
 private:
-  WorkersHunter( City& city );
+  WorkersHunter( CityPtr city );
 
   int _workersNeeded;
 };

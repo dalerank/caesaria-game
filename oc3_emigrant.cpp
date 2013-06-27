@@ -19,7 +19,7 @@
 #include "oc3_road.hpp"
 #include "oc3_picture_bank.hpp"
 
-Emigrant::Emigrant( City& city ) : Immigrant( city )
+Emigrant::Emigrant( CityPtr city ) : Immigrant( city )
 {
   setCapacity( 5 );
   _walkerType = WT_EMIGRANT;
@@ -71,7 +71,7 @@ void Emigrant::onNewDirection()
   setCartPicture( 0 );  // need to get the new graphic
 }
 
-EmigrantPtr Emigrant::create( City& city )
+EmigrantPtr Emigrant::create( CityPtr city )
 {
   EmigrantPtr newEmigrant( new Emigrant( city ) );
   newEmigrant->drop();

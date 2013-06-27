@@ -53,7 +53,7 @@ bool FactoryClay::canBuild(const TilePos& pos ) const
   bool is_constructible = Construction::canBuild( pos );
   bool near_water = false;
 
-  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
   PtrTilesList rect = tilemap.getRectangle( pos + TilePos( -1, -1), getSize() + Size( 2 ), Tilemap::checkCorners );
   for( PtrTilesList::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles )
   {

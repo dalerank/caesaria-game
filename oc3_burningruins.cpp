@@ -67,7 +67,7 @@ void BurningRuins::destroy()
 {
   ServiceBuilding::destroy();
 
-  Scenario::instance().getCity().build( B_BURNED_RUINS, getTilePos());
+  Scenario::instance().getCity()->build( B_BURNED_RUINS, getTilePos());
 }
 
 void BurningRuins::deliverService()

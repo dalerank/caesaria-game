@@ -18,63 +18,78 @@
 #include "oc3_picture.hpp"
 #include "oc3_variant.hpp"
 
+class WorkingBuilding::Impl
+{
+public:
+  int currentWorkers;
+  int maxWorkers;
+  bool isActive;
+};
+
 WorkingBuilding::WorkingBuilding(const BuildingType type, const Size& size)
-: Building( type, size )
+: Building( type, size ), _d( new Impl )
 {
   const BuildingData& data = BuildingDataHolder::instance().getData( type );
 
-  _maxWorkers = data.getEmployers();
+  _d->maxWorkers = data.getEmployers();
 
   if( data.getResourceIndex() > 0 )
+  {
     setPicture( Picture::load( data.getResouceGroup(), data.getResourceIndex() ) );
+  }
 
-  _currentWorkers = 0;
-  _isActive = true;
+  _d->currentWorkers = 0;
+  _d->isActive = true;
 }
 
 void WorkingBuilding::setMaxWorkers(const int maxWorkers)
 {
-  _maxWorkers = maxWorkers;
+  _d->maxWorkers = maxWorkers;
 }
 
 int WorkingBuilding::getMaxWorkers() const
 {
-  return _maxWorkers;
+  return _d->maxWorkers;
 }
 
 void WorkingBuilding::setWorkers(const int currentWorkers)
 {
-  _currentWorkers = currentWorkers;
+  _d->currentWorkers = currentWorkers;
 }
 
 int WorkingBuilding::getWorkers() const
 {
-  return _currentWorkers;
+  return _d->currentWorkers;
 }
 
 void WorkingBuilding::setActive(const bool value)
 {
-  _isActive = value;
+  _d->isActive = value;
 }
 
 bool WorkingBuilding::isActive()
 {
-  return _isActive;
+  return _d->isActive;
 }
 
 void WorkingBuilding::save( VariantMap& stream ) const
 {
   Building::save( stream );
-  stream[ "currentWorkers" ] = _currentWorkers;
+  stream[ "currentWorkers" ] = _d->currentWorkers;
 }
 
 void WorkingBuilding::load( const VariantMap& stream)
 {
-  //    Building::unserialize(stream);
-  //    _currentWorkers = stream.read_int(1, 0, 100);
+  Building::load( stream );
+  _d->currentWorkers = stream.get( "currentWorkers" ).toInt();
 }
 
 void WorkingBuilding::addWorkers( const int workers )
 {
-  _currentWorkers += workers;
+  _d->currentWorkers += workers;
+}
+
+WorkingBuilding::~WorkingBuilding()
+{
+
 }

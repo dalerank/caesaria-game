@@ -46,7 +46,7 @@ public:
   bool  lmbPressed;
   // current map offset, for private use
   Point mapOffset;
-  City* city;     // city to display
+  CityPtr city;     // city to display
   Tilemap* tilemap;
   TilemapArea* mapArea;  // visible map area
   ScreenGame* screenGame;
@@ -100,10 +100,10 @@ TilemapRenderer::TilemapRenderer() : _d( new Impl )
 
 TilemapRenderer::~TilemapRenderer() {}
 
-void TilemapRenderer::init( City &city, TilemapArea &mapArea, ScreenGame *screen)
+void TilemapRenderer::init( CityPtr city, TilemapArea &mapArea, ScreenGame *screen)
 {
-  _d->city = &city;
-  _d->tilemap = &city.getTilemap();
+  _d->city = city;
+  _d->tilemap = &city->getTilemap();
   _d->mapArea = &mapArea;
   _d->screenGame = screen;
   _d->engine = &GfxEngine::instance();

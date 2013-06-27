@@ -9,11 +9,11 @@
 class CityServiceWorkersHire : public CityService
 {
 public:
-  static CityServicePtr create( City& city );
+  static CityServicePtr create( CityPtr city );
 
   void update( const unsigned int time );
 private:
-  CityServiceWorkersHire( City& city );
+  CityServiceWorkersHire( CityPtr city );
 
   void _hireByType( const BuildingType type );
   bool _haveHr( WorkingBuildingPtr building );

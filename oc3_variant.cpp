@@ -625,19 +625,30 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
         }
         break;
     }
-    case Variant::NSize: {
+
+    case Variant::NSize: 
+      {
         Size *s = static_cast<Size*>(result);
         switch (d->type)
         {
         case Variant::NSizeF:
           *s = v_cast<SizeF>(d)->toSize();
         break;
-		           
-        default:
-            return false;
+
+        case Variant::List:
+        {
+          const VariantList *list = v_cast< VariantList >(d);
+          VariantList::const_iterator it = list->begin(); 
+          s->setWidth( it->toInt() ); it++;
+          s->setHeight( it->toInt() );
         }
         break;
-    }
+		           
+        default:
+        return false;
+        }
+        break;
+      }
 
     case Variant::NSizeF: 
     {

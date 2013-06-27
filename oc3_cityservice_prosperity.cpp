@@ -25,12 +25,13 @@
 class CityServiceProsperity::Impl
 {
 public:
+  CityPtr city;
   DateTime lastDate;
   int prosperity;
   int prosperityExtend;
 };
 
-CityServicePtr CityServiceProsperity::create( City& city )
+CityServicePtr CityServiceProsperity::create( CityPtr city )
 {
   CityServicePtr ret( new CityServiceProsperity( city ) );
   ret->drop();
@@ -38,10 +39,11 @@ CityServicePtr CityServiceProsperity::create( City& city )
   return ret;
 }
 
-CityServiceProsperity::CityServiceProsperity( City& city )
-  : CityService( city, "prosperity" ), _d( new Impl )
+CityServiceProsperity::CityServiceProsperity( CityPtr city )
+  : CityService( "prosperity" ), _d( new Impl )
 {
-  _d->lastDate = city.getDate();
+  _d->city = city;
+  _d->lastDate = city->getDate();
   _d->prosperity = 0;
   _d->prosperityExtend = 0;
 }
@@ -51,18 +53,18 @@ void CityServiceProsperity::update( const unsigned int time )
   if( time % 44 != 1 )
     return;
 
-  if( abs( _city.getDate().getYear() - _d->lastDate.getYear() ) == 1 )
+  if( abs( _d->city->getDate().getYear() - _d->lastDate.getYear() ) == 1 )
   {
-    _d->lastDate = _city.getDate();
+    _d->lastDate = _d->city->getDate();
 
-    if( _city.getPopulation() == 0 )
+    if( _d->city->getPopulation() == 0 )
     {
       _d->prosperity = 0;
       _d->prosperityExtend = 0;
       return;
     }
 
-    CityHelper helper( _city );
+    CityHelper helper( _d->city );
     std::list< HousePtr > houses = helper.getBuildings<House>( B_HOUSE );
 
     int prosperityCap = 0;
@@ -82,13 +84,13 @@ void CityServiceProsperity::update( const unsigned int time )
     bool cityMakeProfit = false;
     _d->prosperityExtend = (cityMakeProfit ? 2 : -1);
 
-    bool more10PercentIsPatrician = (patricianCount / (float)_city.getPopulation()) > 0.1;
+    bool more10PercentIsPatrician = (patricianCount / (float)_d->city->getPopulation()) > 0.1;
     _d->prosperityExtend += (more10PercentIsPatrician ? 1 : 0);
 
-    bool less30percentIsPlebs = (plebsCount / (float)_city.getPopulation()) < 0.3;
+    bool less30percentIsPlebs = (plebsCount / (float)_d->city->getPopulation()) < 0.3;
     _d->prosperityExtend += (less30percentIsPlebs ? 1 : 0);
 
-    LandOverlays hippodromes = _city.getBuildingList( B_HIPPODROME );
+    LandOverlays hippodromes = _d->city->getBuildingList( B_HIPPODROME );
     _d->prosperityExtend += (hippodromes.size() > 0 ? 1 : 0);
 
     bool unemploymentLess5percent = false;

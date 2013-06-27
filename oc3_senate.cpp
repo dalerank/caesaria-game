@@ -16,6 +16,7 @@
 #include "oc3_senate.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_picture.hpp"
+#include "oc3_resourcegroup.hpp"
 
 // govt 4  - senate
 // govt 9  - advanced senate
@@ -23,7 +24,7 @@
 
 Senate::Senate() : ServiceBuilding(S_SENATE, B_SENATE, Size(5) )
 {
-  setPicture( Picture::load("govt", 4) );
+  setPicture( Picture::load( ResourceGroup::govt, 4) );
 }
 
 bool Senate::canBuild( const TilePos& pos ) const
@@ -32,8 +33,8 @@ bool Senate::canBuild( const TilePos& pos ) const
 
   if( mayBuild )
   {
-    City& city = Scenario::instance().getCity();
-    LandOverlays senate = city.getBuildingList(B_SENATE);
+    CityPtr city = Scenario::instance().getCity();
+    LandOverlays senate = city->getBuildingList(B_SENATE);
     mayBuild &= !( senate.size() > 0 );
   }
 

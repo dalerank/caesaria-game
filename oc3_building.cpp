@@ -67,7 +67,7 @@ void LandOverlay::timeStep(const unsigned long time) { }
 
 void LandOverlay::setPicture(Picture &picture)
 {
-   Tilemap &tilemap = Scenario::instance().getCity().getTilemap();
+   Tilemap &tilemap = Scenario::instance().getCity()->getTilemap();
 
    _d->picture = picture;
 
@@ -90,8 +90,8 @@ void LandOverlay::setPicture(Picture &picture)
 
 void LandOverlay::build( const TilePos& pos )
 {
-  City &city = Scenario::instance().getCity();
-  Tilemap &tilemap = city.getTilemap();
+  CityPtr city = Scenario::instance().getCity();
+  Tilemap &tilemap = city->getTilemap();
 
   _master_tile = &tilemap.at( pos );
 
@@ -201,7 +201,7 @@ Construction::Construction( const BuildingType type, const Size& size)
 
 bool Construction::canBuild( const TilePos& pos ) const
 {
-  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
 
   bool is_constructible = true;
 
@@ -230,8 +230,8 @@ void Construction::build(const TilePos& pos )
 
 void Construction::_updateDesirabilityInfluence( const DsbrlUpdate type )
 {
-  City &city = Scenario::instance().getCity();
-  Tilemap &tilemap = city.getTilemap();
+  CityPtr city = Scenario::instance().getCity();
+  Tilemap& tilemap = city->getTilemap();
 
   int dsrblRange = getDesirabilityRange();
   int step = getDesirabilityStep();
@@ -273,7 +273,7 @@ void Construction::computeAccessRoads()
   if( !_master_tile )
       return;
 
-  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
 
   int maxDst2road = getMaxDistance2Road();
   PtrTilesList rect = tilemap.getRectangle( _master_tile->getIJ() + TilePos( -maxDst2road, -maxDst2road ),
@@ -299,13 +299,13 @@ int Construction::getMaxDistance2Road() const
 void Construction::burn()
 {
    deleteLater();
-   Scenario::instance().getCity().disaster( getTile().getIJ(), DSTR_BURN );
+   Scenario::instance().getCity()->disaster( getTile().getIJ(), DSTR_BURN );
 }
 
 void Construction::collapse()
 {
    deleteLater();
-   Scenario::instance().getCity().disaster( getTile().getIJ(), DSTR_COLLAPSE );
+   Scenario::instance().getCity()->disaster( getTile().getIJ(), DSTR_COLLAPSE );
 }
 
 char Construction::getDesirabilityInfluence() const

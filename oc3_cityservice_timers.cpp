@@ -32,7 +32,7 @@ CityServiceTimers& CityServiceTimers::getInstance()
 }
 
 CityServiceTimers::CityServiceTimers() 
-  : CityService( *(City*)0, "timers" ), _d( new Impl )
+  : CityService( "timers" ), _d( new Impl )
 { 
 }
 
@@ -40,15 +40,16 @@ void CityServiceTimers::update( const unsigned int time )
 {
   Timers::iterator it=_d->timers.begin(); 
   while( it != _d->timers.end() )
-  {
-    (*it)->update( time );
-
+  { 
     if( !(*it)->isActive() )
     {
       it = _d->timers.erase( it );      
     }
     else
+    {
+      (*it)->update( time );
       it++;
+    }
   }
 }
 
@@ -59,5 +60,4 @@ void CityServiceTimers::addTimer( TimerPtr timer )
 
 CityServiceTimers::~CityServiceTimers()
 {
-
 }

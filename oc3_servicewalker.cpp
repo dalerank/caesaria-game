@@ -22,20 +22,20 @@
 class ServiceWalker::Impl
 {
 public:
-  City* city;
+  CityPtr city;
   BuildingPtr base;
   ServiceType service;
   int maxDistance;
 };
 
-ServiceWalker::ServiceWalker( City& city, const ServiceType service) 
+ServiceWalker::ServiceWalker( CityPtr city, const ServiceType service) 
 : _d( new Impl )
 {
   _walkerType = WT_SERVICE;
   _walkerGraphic = WG_NONE;
   _d->maxDistance = 5;  // TODO: _building.getMaxDistance() ?
   _d->service = service;
-  _d->city = &city;
+  _d->city = city;
 
   init(service);
 }
@@ -113,8 +113,8 @@ void ServiceWalker::computeWalkerPath()
 {
   std::list<PathWay> pathWayList;
 
-  Propagator pathPropagator;
-  pathPropagator.init( *_d->base.object() );
+  Propagator pathPropagator( _d->city );
+  pathPropagator.init( _d->base.as<Construction>() );
   pathPropagator.getAllPaths(_d->maxDistance, pathWayList);
 
   float maxPathValue = 0.0;
@@ -174,11 +174,11 @@ float ServiceWalker::evaluatePath( PathWay& pathWay )
 {
   // evaluate all buildings along the path
   ServiceWalker::ReachedBuildings doneBuildings;  // list of evaluated building: don't do them again
-  PtrTilesList& pathTileList = pathWay.getAllTiles();
+  ConstPtrTilesList& pathTileList = pathWay.getAllTiles();
 
   int distance = 0;
   float res = 0.0;
-  for (PtrTilesList::iterator itTile = pathTileList.begin(); itTile != pathTileList.end(); ++itTile)
+  for( ConstPtrTilesList::iterator itTile = pathTileList.begin(); itTile != pathTileList.end(); ++itTile)
   {
     ServiceWalker::ReachedBuildings reachedBuildings = getReachedBuildings( (*itTile)->getIJ() );
     for (ServiceWalker::ReachedBuildings::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
@@ -204,9 +204,9 @@ void ServiceWalker::reservePath(PathWay &pathWay)
 {
   // reserve all buildings along the path
   ReachedBuildings doneBuildings;  // list of evaluated building: don't do them again
-  PtrTilesList& pathTileList = pathWay.getAllTiles();
+  ConstPtrTilesList& pathTileList = pathWay.getAllTiles();
 
-  for (PtrTilesList::iterator itTile = pathTileList.begin(); itTile != pathTileList.end(); ++itTile)
+  for( ConstPtrTilesList::iterator itTile = pathTileList.begin(); itTile != pathTileList.end(); ++itTile)
   {
     ReachedBuildings reachedBuildings = getReachedBuildings( (*itTile)->getIJ() );
     for (ReachedBuildings::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
@@ -290,7 +290,7 @@ float ServiceWalker::getServiceValue() const
   return 100;
 }
 
-ServiceWalkerPtr ServiceWalker::create( City& city, const ServiceType service )
+ServiceWalkerPtr ServiceWalker::create( CityPtr city, const ServiceType service )
 {
   ServiceWalkerPtr ret( new ServiceWalker( city, service ) );
   ret->drop();
@@ -307,12 +307,8 @@ void ServiceWalker::setBase( BuildingPtr base )
   _d->base = base;
 }
 
-City& ServiceWalker::_getCity() const
+CityPtr ServiceWalker::_getCity() const
 {
-  if( !_d->city )
-  {
-    _OC3_DEBUG_BREAK_IF( true && "city for walker is null" ); 
-  }
-
-  return *_d->city;
+  _OC3_DEBUG_BREAK_IF( _d->city.isNull() && "city for walker is null" ); 
+  return _d->city;
 }

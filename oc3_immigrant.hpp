@@ -17,8 +17,7 @@
 #define __OPENCAESAR3_IMMIGRANT_H_INCLUDED__
 
 #include "oc3_walker.hpp"
-
-class City;
+#include "oc3_predefinitions.hpp"
 
 class Immigrant;
 typedef SmartPtr< Immigrant > ImmigrantPtr;
@@ -27,7 +26,7 @@ typedef SmartPtr< Immigrant > ImmigrantPtr;
 class Immigrant : public Walker
 {
 public:
-  static ImmigrantPtr create( City& city );
+  static ImmigrantPtr create( CityPtr city );
 
   void send2City( Tile& startTile );
   void setCapacity( int value );
@@ -42,7 +41,7 @@ protected:
   void setCartPicture( Picture* pic );
   virtual Picture* getCartPicture();
   
-  Immigrant( City& city );
+  Immigrant( CityPtr city );
 
   HousePtr _findBlankHouse();
   void _findPath2blankHouse( Tile& startPoint );

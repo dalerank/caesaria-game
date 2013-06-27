@@ -64,11 +64,15 @@ typedef SmartPtr< RomeDivinity > RomeDivinityPtr;
 class Temple;
 typedef SmartPtr< Temple > TemplePtr;
 
+class City;
+typedef SmartPtr< City > CityPtr;
+
 class Tile;
 typedef std::list< const Tile* > ConstWayOnTiles;
 typedef std::list< Tile* > WayOnTiles;
 typedef std::list< Tile* > PtrTilesArea;
 typedef std::list< Tile* > PtrTilesList;
+typedef std::list< const Tile* > ConstPtrTilesList;
 
 typedef std::vector< Tile* > PtrTilesVector;
 typedef std::vector< Tile  > TilesVector;

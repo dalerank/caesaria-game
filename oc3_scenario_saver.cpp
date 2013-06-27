@@ -47,7 +47,7 @@ void ScenarioSaver::save(const std::string& filename)
   vm[ "scenario" ] = vm_scenario;
 
   VariantMap vm_city;
-  _d->scenario.getCity().save( vm_city );
+  _d->scenario.getCity()->save( vm_city );
   vm[ "city" ] = vm_city;
 
 
