@@ -132,7 +132,8 @@ bool LowBridge::canBuild( const TilePos& pos ) const
 
 LowBridge::LowBridge() : Construction( B_LOW_BRIDGE, Size(1) ), _d( new Impl )
 {
-  setPicture( Picture() );
+  Picture pic;
+  setPicture( pic );
 }
 
 void LowBridge::setTerrain( TerrainTile& terrain )

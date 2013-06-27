@@ -154,7 +154,8 @@ bool HighBridge::canBuild( const TilePos& pos ) const
 
 HighBridge::HighBridge() : Construction( B_HIGH_BRIDGE, Size(1) ), _d( new Impl )
 {
-  setPicture( Picture() );
+  Picture tmp;
+  setPicture( tmp );
 }
 
 void HighBridge::setTerrain( TerrainTile& terrain )
