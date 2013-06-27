@@ -64,8 +64,7 @@ void CityServiceWorkersHire::_hireByType( const BuildingType type )
     if( _haveHr( wb ) )
       continue;
 
-    if( wb.isValid() && wb->getAccessRoads().size() > 0 
-        && wb->getWorkers() < wb->getMaxWorkers() )
+    if( wb.isValid() && wb->getAccessRoads().size() > 0 && wb->getWorkers() < wb->getMaxWorkers() )
     {
       WorkersHunterPtr hr = WorkersHunter::create( _city );
       hr->setMaxDistance( 20 );

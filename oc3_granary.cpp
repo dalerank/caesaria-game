@@ -18,28 +18,36 @@
 #include "oc3_picture.hpp"
 #include "oc3_variant.hpp"
 
-Granary::Granary() : WorkingBuilding( B_GRANARY, Size(3) )
+class Granary::Impl
+{
+public:
+  static const int maxCapacity = 2400;
+  typedef std::map< GoodType, GoodRule > GoodRules;
+  SimpleGoodStore goodStore;
+  GoodRules goodRules;
+};
+
+Granary::Granary() : WorkingBuilding( B_GRANARY, Size(3) ), _d( new Impl )
 {
   setMaxWorkers(5);
   setWorkers(0);
 
   setPicture( Picture::load( ResourceGroup::commerce, 140));
   _fgPictures.resize(6);  // 1 upper level + 4 windows + animation
-  int maxQty = 2400;
-  _goodStore.setMaxQty(maxQty);
-  _goodStore.setMaxQty(G_WHEAT, maxQty);
-  _goodStore.setMaxQty(G_MEAT, maxQty);
-  _goodStore.setMaxQty(G_FISH, maxQty);
-  _goodStore.setMaxQty(G_FRUIT, maxQty);
-  _goodStore.setMaxQty(G_VEGETABLE, maxQty);
+  _d->goodStore.setMaxQty( Impl::maxCapacity );
+  
+  setGoodRule( G_WHEAT, accept );
+  setGoodRule( G_MEAT, accept );
+  setGoodRule( G_FISH, accept );
+  setGoodRule( G_FRUIT, accept );
+  setGoodRule( G_VEGETABLE, accept );
 
-  _goodStore.setCurrentQty(G_WHEAT, 300);
+  _d->goodStore.setCurrentQty( G_WHEAT, 300 );
 
   _animation.load(ResourceGroup::commerce, 146, 7, Animation::straight);
   // do the animation in reverse
   _animation.load(ResourceGroup::commerce, 151, 6, Animation::reverse);
   _animation.setFrameDelay( 4 );
-
 
   _fgPictures[0] = &Picture::load( ResourceGroup::commerce, 141);
   _fgPictures[5] = _animation.getCurrentPicture();
@@ -58,13 +66,13 @@ void Granary::timeStep(const unsigned long time)
 
 SimpleGoodStore& Granary::getGoodStore()
 {
-  return _goodStore;
+  return _d->goodStore;
 }
 
 void Granary::computePictures()
 {
-  int allQty = _goodStore.getCurrentQty();
-  int maxQty = _goodStore.getMaxQty();
+  int allQty = _d->goodStore.getCurrentQty();
+  int maxQty = _d->goodStore.getMaxQty();
 
   for (int n = 0; n < 4; ++n)
   {
@@ -94,12 +102,46 @@ void Granary::save( VariantMap& stream) const
 {
    WorkingBuilding::save( stream );
    VariantMap vm_goodstore;
-   _goodStore.save( vm_goodstore );
+   _d->goodStore.save( vm_goodstore );
    stream[ "goodStore" ] = vm_goodstore;
+
+   VariantList vm_goodrules;
+   for( Impl::GoodRules::iterator it=_d->goodRules.begin(); it != _d->goodRules.end(); it++ )
+   {
+     vm_goodrules.push_back( (int)(*it).first );
+     vm_goodrules.push_back( (int)(*it).second );
+   }
+
+   stream[ "goodRules" ] = vm_goodrules;
 }
 
 void Granary::load( const VariantMap& stream)
 {
-//   WorkingBuilding::unserialize(stream);
-//   _goodStore.unserialize(stream);
+   WorkingBuilding::load(stream);
+   _d->goodStore.load( stream.get( "goodStore" ).toMap() );
+
+   VariantList vm_goodrules = stream.get( "goodRules" ).toList();
+   for( VariantList::iterator it=vm_goodrules.begin(); it != vm_goodrules.end(); it++ )
+   {
+     GoodType type = (GoodType)(*it).toInt();
+     it++;
+     GoodRule rule = (GoodRule)(*it).toInt();
+     
+     _d->goodRules[ type ] = rule;
+   }
+}
+
+void Granary::setGoodRule( const GoodType type, GoodRule rule )
+{
+  _d->goodRules[ type ] = rule;
+  _d->goodStore.setMaxQty( type, (rule == Granary::reject || rule == Granary::none ) ? 0 : Impl::maxCapacity );
+}
+
+Granary::GoodRule Granary::getGoodRule( const GoodType type )
+{
+  Impl::GoodRules::iterator it = _d->goodRules.find( type );
+  if( it != _d->goodRules.end() )
+    return (*it).second;
+
+  return Granary::none;
 }

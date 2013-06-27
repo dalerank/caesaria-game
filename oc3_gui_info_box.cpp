@@ -41,39 +41,7 @@
 #include "oc3_divinity.hpp"
 #include "oc3_warehouse.hpp"
 #include "oc3_gfx_engine.hpp"
-
-class InfoBoxHelper
-{
-public:
-  std::vector<Picture*> mapPictureGood;  // index=GoodType, value=Picture
-    
-  static InfoBoxHelper& getInstance()
-  {
-    static InfoBoxHelper inst;
-    return inst;
-  }
-
-  InfoBoxHelper()
-  {
-    mapPictureGood.resize(G_MAX);
-    mapPictureGood[int(G_WHEAT)    ] = &Picture::load( ResourceGroup::panelBackground, 317);
-    mapPictureGood[int(G_VEGETABLE)] = &Picture::load( ResourceGroup::panelBackground, 318);
-    mapPictureGood[int(G_FRUIT)    ] = &Picture::load( ResourceGroup::panelBackground, 319);
-    mapPictureGood[int(G_OLIVE)    ] = &Picture::load( ResourceGroup::panelBackground, 320);
-    mapPictureGood[int(G_GRAPE)    ] = &Picture::load( ResourceGroup::panelBackground, 321);
-    mapPictureGood[int(G_MEAT)     ] = &Picture::load( ResourceGroup::panelBackground, 322);
-    mapPictureGood[int(G_WINE)     ] = &Picture::load( ResourceGroup::panelBackground, 323);
-    mapPictureGood[int(G_OIL)      ] = &Picture::load( ResourceGroup::panelBackground, 324);
-    mapPictureGood[int(G_IRON)     ] = &Picture::load( ResourceGroup::panelBackground, 325);
-    mapPictureGood[int(G_TIMBER)   ] = &Picture::load( ResourceGroup::panelBackground, 326);
-    mapPictureGood[int(G_CLAY)     ] = &Picture::load( ResourceGroup::panelBackground, 327);
-    mapPictureGood[int(G_MARBLE)   ] = &Picture::load( ResourceGroup::panelBackground, 328);
-    mapPictureGood[int(G_WEAPON)   ] = &Picture::load( ResourceGroup::panelBackground, 329);
-    mapPictureGood[int(G_FURNITURE)] = &Picture::load( ResourceGroup::panelBackground, 330);
-    mapPictureGood[int(G_POTTERY)  ] = &Picture::load( ResourceGroup::panelBackground, 331);
-    mapPictureGood[int(G_FISH)     ] = &Picture::load( ResourceGroup::panelBackground, 333);
-  }
-};
+#include "oc3_granary_special_orders_window.hpp"
 
 class GuiInfoBox::Impl
 {
@@ -148,16 +116,6 @@ bool GuiInfoBox::onEvent( const NEvent& event)
   }
 
   return Widget::onEvent( event );
-}
-
-Picture& GuiInfoBox::getPictureGood(const GoodType& goodType)
-{
-  Picture* res = InfoBoxHelper::getInstance().mapPictureGood[int(goodType)];
-  if (res == NULL)
-  {
-    THROW("No picture for good type:" << goodType);
-  }
-  return *res;
 }
 
 void GuiInfoBox::setTitle( const std::string& title )
@@ -336,7 +294,7 @@ void InfoBoxHouse::drawGood(const GoodType &goodType, const int col, const int r
   int qty = _ed->house->getGoodStore().getCurrentQty(goodType);
 
   // pictures of goods
-  Picture &pic = getPictureGood(goodType);
+  Picture& pic = GoodHelper::getPicture( goodType );
   _d->bgPicture->draw(pic, 31 + 100 * col, startY + 2 + 30 * row);
 
   std::string text = StringHelper::format( 0xff, "%d", qty);
@@ -369,15 +327,15 @@ void GuiInfoFactory::paint()
    // paint picture of in good
    if (_building->getInGood()._goodType != G_NONE)
    {
-      Picture &pic = getPictureGood(_building->getInGood()._goodType);
-      _d->bgPicture->draw(pic, 15, _paintY+2);
-      int amount = _building->getInGood()._currentQty / 100;
-      std::string goodName = GoodHelper::getInstance().getName( _building->getInGood()._goodType );
+     Picture &pic = GoodHelper::getPicture( _building->getInGood()._goodType );
+     _d->bgPicture->draw(pic, 15, _paintY+2);
+     int amount = _building->getInGood()._currentQty / 100;
+     std::string goodName = GoodHelper::getName( _building->getInGood()._goodType );
     
-      text = StringHelper::format( 0xff, _("%s en stock: %d unites"), goodName.c_str(), amount );
-      
-      font.draw( *_d->bgPicture, text, 42, _paintY);
-      _paintY+=22;
+     text = StringHelper::format( 0xff, _("%s en stock: %d unites"), goodName.c_str(), amount );
+     
+     font.draw( *_d->bgPicture, text, 42, _paintY);
+     _paintY+=22;
    }
 
    /*std::string desc = getInfoText();
@@ -414,7 +372,7 @@ void GuiInfoFactory::drawWorkers( int& paintY )
 
 std::string GuiInfoFactory::getInfoText()
 {
-   std::string textKey = GoodHelper::getInstance().getName( _building->getOutGood()._goodType );
+   std::string textKey = GoodHelper::getName( _building->getOutGood()._goodType );
    if (_building->isActive() == false)
    {
       textKey+= "- Production arretee sous ordre du gouverneur";
@@ -467,14 +425,31 @@ public:
 GuiInfoGranary::GuiInfoGranary( Widget* parent, const Tile& tile )
     : GuiInfoBox( parent, Rect( 0, 0, 510, 280 ), -1 ), _gd( new Impl )
 {
-   _gd->building = tile.getTerrain().getOverlay().as<Granary>();
-   Size btnOrdersSize( 350, 20 );
-   _gd->btnOrders = new PushButton( this, Rect( Point( (getWidth() - btnOrdersSize.getWidth())/ 2, getHeight() - 34 ), btnOrdersSize), 
-                                    _("##special_orders##"), -1, false, PushButton::WhiteBorderUp );
+  _gd->building = tile.getTerrain().getOverlay().as<Granary>();
+  Size btnOrdersSize( 350, 20 );
+  _gd->btnOrders = new PushButton( this, Rect( Point( (getWidth() - btnOrdersSize.getWidth())/ 2, getHeight() - 34 ), btnOrdersSize), 
+                                   _("##special_orders##"), -1, false, PushButton::WhiteBorderUp );
+  CONNECT( _gd->btnOrders, onClicked(), this, GuiInfoGranary::showSpecialOrdersWindow );
 
-   setTitle( BuildingDataHolder::instance().getData( _gd->building->getType()).getPrettyName() );
+  setTitle( BuildingDataHolder::instance().getData( _gd->building->getType()).getPrettyName() );
 
-   paint();
+  paint();
+}
+
+
+void GuiInfoGranary::showSpecialOrdersWindow()
+{
+  Point pos;
+  if( getTop() > getParent()->getHeight() / 2 )
+  {
+    pos = Point( getScreenLeft(), getScreenBottom() - 450 );   
+  }
+  else
+  {
+    pos = getAbsoluteRect().UpperLeftCorner;
+  }
+
+  new GranarySpecialOrdersWindow( getParent(), pos, _gd->building );
 }
 
 
@@ -523,13 +498,13 @@ void GuiInfoGranary::drawWorkers( int paintY )
 
 void GuiInfoGranary::drawGood(const GoodType &goodType, int col, int& paintY)
 {
-  std::string goodName = GoodHelper::getInstance().getName( goodType );
+  std::string goodName = GoodHelper::getName( goodType );
 
   Font font = Font::create( FONT_2 );
   int qty = _gd->building->getGoodStore().getCurrentQty(goodType);
 
   // pictures of goods
-  Picture &pic = getPictureGood(goodType);
+  Picture& pic = GoodHelper::getPicture( goodType );
   _d->bgPicture->draw(pic, (col == 0 ? 31 : 250), paintY);
 
   std::string outText = StringHelper::format( 0xff, "%d %s", qty, goodName.c_str() );
@@ -610,13 +585,13 @@ void InfoBoxWarehouse::drawWorkers()
 
 void InfoBoxWarehouse::drawGood(const GoodType &goodType, int col, int& paintY)
 {
-  std::string goodName = GoodHelper::getInstance().getName( goodType );
+  std::string goodName = GoodHelper::getName( goodType );
 
   Font font = Font::create( FONT_2 );
   int qty = _wd->building->getGoodStore().getCurrentQty(goodType);
 
   // pictures of goods
-  Picture &pic = getPictureGood(goodType);
+  Picture& pic = GoodHelper::getPicture( goodType );
   _d->bgPicture->draw(pic, col * 150 + 15, paintY);
 
   std::string outText = StringHelper::format( 0xff, "%d %s", qty, goodName.c_str() );
@@ -757,10 +732,10 @@ void GuiInfoMarket::drawGood(const GoodType &goodType, int index, int paintY )
   int startOffset = 25;
 
   int offset = ( getWidth() - startOffset * 2 ) / 5;
-  std::string goodName = GoodHelper::getInstance().getName( goodType );
+  std::string goodName = GoodHelper::getName( goodType );
 
   // pictures of goods
-  Picture &pic = getPictureGood(goodType);
+  Picture& pic = GoodHelper::getPicture( goodType );
   Point pos( index * offset + startOffset, paintY );
   _d->bgPicture->draw( pic, pos.getX(), pos.getY() );
 
@@ -972,7 +947,7 @@ InfoBoxFarm::InfoBoxFarm( Widget* parent, const Tile& tile )
   setTitle( name );
 
    // pictures of goods
-  Picture &goodIcon = getPictureGood(goodType);
+  Picture& goodIcon = GoodHelper::getPicture( goodType );
   _d->bgPicture->draw( goodIcon, 16, 16 );
 
   _fd->updateAboutText();

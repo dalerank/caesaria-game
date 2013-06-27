@@ -14,26 +14,26 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#ifndef __OPENCAESAR3_GOODHELPER_H_INCLUDED__
-#define __OPENCAESAR3_GOODHELPER_H_INCLUDED__
+#ifndef __OPENCAESAR3_GRANARY_SPECIAL_ORDERS_WINDOW_H_INCLUDED__
+#define __OPENCAESAR3_GRANARY_SPECIAL_ORDERS_WINDOW_H_INCLUDED__
 
-#include "oc3_scopedptr.hpp"
-#include "oc3_enums.hpp"
-#include "oc3_picture.hpp"
+#include "oc3_widget.hpp"
+#include "oc3_predefinitions.hpp"
 
-class GoodHelper
+class GranarySpecialOrdersWindow : public Widget
 {
 public:
-  static GoodHelper& getInstance();
+    GranarySpecialOrdersWindow( Widget* parent, const Point& pos, GranaryPtr granary );
+    ~GranarySpecialOrdersWindow();
+    
+    void draw( GfxEngine& engine );  // draw on screen
 
-  static std::string getName( GoodType type );
-  static Picture getPicture( GoodType type );
-  ~GoodHelper();
-private:
-  GoodHelper();
+    bool onEvent( const NEvent& event);
 
-  class Impl;
-  ScopedPtr< Impl > _d;
+    bool isPointInside(const Point& point) const;
+protected:
+    class Impl;
+    ScopedPtr< Impl > _d;
 };
 
-#endif
+#endif //__OPENCAESAR3_GRANARY_SPECIAL_ORDERS_WINDOW_H_INCLUDED__

@@ -15,6 +15,7 @@
 
 #include "oc3_goodhelper.hpp"
 #include "oc3_good.hpp"
+#include "oc3_resourcegroup.hpp"
 #include <vector>
 
 class GoodHelper::Impl
@@ -40,12 +41,44 @@ GoodHelper::GoodHelper() : _d( new Impl )
   }
 }
 
+Picture GoodHelper::getPicture( GoodType type )
+{
+  int picId = -1;
+  switch( type )
+  {
+  case G_WHEAT: picId = 317; break;
+  case G_VEGETABLE: picId = 318; break;
+  case G_FRUIT: picId = 319; break;
+  case G_OLIVE: picId = 320; break;
+  case G_GRAPE: picId = 321; break;
+  case G_MEAT: picId = 322; break;
+  case G_WINE: picId = 323; break;
+  case G_OIL: picId = 324; break;
+  case G_IRON: picId = 325; break;
+  case G_TIMBER: picId = 326; break; 
+  case G_CLAY: picId = 327; break;
+  case G_MARBLE: picId = 328; break;
+  case G_WEAPON: picId = 329; break;
+  case G_FURNITURE: picId = 330; break;
+  case G_POTTERY: picId = 331; break;
+    //case G_DENARIES: picId = 332; break;
+  case G_FISH: picId = 333; break;
+  }
+
+  if( picId > 0 )
+  {
+    return Picture::load( ResourceGroup::panelBackground, picId);
+  }
+
+  return Picture();
+}
+
 GoodHelper::~GoodHelper()
 {
 
 }
 
-std::string GoodHelper::getName( GoodType type ) const
+std::string GoodHelper::getName( GoodType type )
 {
-  return _d->mapGood[ type ].getName();
+  return getInstance()._d->mapGood[ type ].getName();
 }

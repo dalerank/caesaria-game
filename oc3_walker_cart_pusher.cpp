@@ -273,7 +273,6 @@ BuildingPtr CartPusher::getWalkerDestination_warehouse(Propagator &pathPropagato
    return res;
 }
 
-
 BuildingPtr CartPusher::getWalkerDestination_granary(Propagator &pathPropagator, PathWay &oPathWay)
 {
    BuildingPtr res;

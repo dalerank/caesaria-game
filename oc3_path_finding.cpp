@@ -646,6 +646,8 @@ void Propagator::getAllPaths(const int maxDistance, std::list<PathWay> &oPathWay
 
    std::set<PathWay>::iterator firstBranch;
 
+   std::set< Tile* > markTiles;
+
    // propagate all branches
    while (!_activeBranches.empty())
    {
@@ -673,11 +675,13 @@ void Propagator::getAllPaths(const int maxDistance, std::list<PathWay> &oPathWay
          for( PtrTilesList::const_iterator itTile = accessTiles.begin(); itTile!=accessTiles.end(); ++itTile)
          {
             // for every neighbour tile
-            Tile &tile2 = **itTile;
+            Tile* tile2 = *itTile;
 
-            if (tile2.getTerrain().isWalkable(_allLands) && !pathWay.contains(tile2) )
+            bool notResolved = (markTiles.find( tile2 ) == markTiles.end());
+            if (tile2->getTerrain().isWalkable(_allLands) && !pathWay.contains( *tile2 ) && notResolved)
             {
-               nextTiles.push_back(&tile2);
+               nextTiles.push_back( tile2 );
+               markTiles.insert( tile2 );
             }
          }
 

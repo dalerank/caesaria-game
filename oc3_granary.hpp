@@ -18,20 +18,25 @@
 
 #include "oc3_working_building.hpp"
 
-class Granary: public WorkingBuilding
+class Granary : public WorkingBuilding
 {
 public:
+  typedef enum { accept=0, reject, deliver, none } GoodRule;
   Granary();
 
   void timeStep(const unsigned long time);
   void computePictures();
   SimpleGoodStore& getGoodStore();
 
+  void setGoodRule( const GoodType type, GoodRule rule );
+  GoodRule getGoodRule( const GoodType type );
+
   void save( VariantMap& stream) const;
   void load( const VariantMap& stream);
 
 private:
-  SimpleGoodStore _goodStore;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 

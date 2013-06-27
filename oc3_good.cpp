@@ -81,18 +81,18 @@ void Good::init(const GoodType &goodType)
    switch (goodType)
    {
    case G_NONE:
-      _name = _("Rien");
+      _name = _("None");
       break;
    case G_WHEAT:
-      _name = _("Ble");
+      _name = _("Wheat");
       _importPrice = 28;
       _exportPrice = 22;
       break;
    case G_FISH:
-      _name = _("Poisson");  // no import/export!
+      _name = _("Fish");  // no import/export!
       break;
    case G_MEAT:
-      _name = _("Viande");
+      _name = _("Meat");
       _importPrice = 44;
       _exportPrice = 36;
       break;
@@ -102,7 +102,7 @@ void Good::init(const GoodType &goodType)
       _exportPrice = 30;
       break;
    case G_VEGETABLE:
-      _name = _("Legumes");
+      _name = _("Vegetables");
       _importPrice = 38;
       _exportPrice = 30;
       break;
@@ -112,52 +112,52 @@ void Good::init(const GoodType &goodType)
       _exportPrice = 34;
       break;
    case G_OIL:
-      _name = _("Huile");
+      _name = _("Oil");
       _importPrice = 180;
       _exportPrice = 140;
       break;
    case G_GRAPE:
-      _name = _("Raisin");
+      _name = _("Grape");
       _importPrice = 44;
       _exportPrice = 36;
       break;
    case G_WINE:
-      _name = _("Vin");
+      _name = _("Vine");
       _importPrice = 215;
       _exportPrice = 160;
       break;
    case G_TIMBER:
-      _name = _("Bois");
+      _name = _("Timber");
       _importPrice = 50;
       _exportPrice = 35;
       break;
    case G_FURNITURE:
-      _name = _("Meubles");
+      _name = _("Furniture");
       _importPrice = 200;
       _exportPrice = 150;
       break;
    case G_CLAY:
-      _name = _("Argile");
+      _name = _("Clay");
       _importPrice = 40;
       _exportPrice = 30;
       break;
    case G_POTTERY:
-      _name = _("Poterie");
+      _name = _("Pottery");
       _importPrice = 180;
       _exportPrice = 140;
       break;
    case G_IRON:
-      _name = _("Fer");
+      _name = _("Iron");
       _importPrice = 60;
       _exportPrice = 40;
       break;
    case G_WEAPON:
-      _name = _("Armes");
+      _name = _("Weapon");
       _importPrice = 250;
       _exportPrice = 180;
       break;
    case G_MARBLE:
-      _name = _("Marbre");
+      _name = _("Marble");
       _importPrice = 200;
       _exportPrice = 140;
       break;
@@ -251,19 +251,19 @@ int GoodStore::getMaxRetrieve(const GoodType goodType)
 
 long GoodStore::reserveStorage(GoodStock &stock)
 {
-   long reservationID = 0;
+  long reservationID = 0;
 
-   // current free capacity
-   if (getMaxStore(stock._goodType) >= stock._currentQty)
-   {
-      // the stock can be stored!
-      reservationID = _nextReservationID;
-      _storeReservations.insert(std::make_pair(reservationID, stock));
-      _nextReservationID++;
-   }
-   // std::cout << "GoodStore, reserve store qty=" << stock._currentQty << " resID=" << reservationID << std::endl;
+  // current free capacity
+  if( getMaxStore(stock._goodType) >= stock._currentQty )
+  {
+    // the stock can be stored!
+    reservationID = _nextReservationID;
+    _storeReservations.insert(std::make_pair(reservationID, stock));
+    _nextReservationID++;
+  }
+  // std::cout << "GoodStore, reserve store qty=" << stock._currentQty << " resID=" << reservationID << std::endl;
 
-   return reservationID;
+  return reservationID;
 }
 
 
@@ -522,16 +522,16 @@ void SimpleGoodStore::computeCurrentQty()
 int SimpleGoodStore::getMaxStore(const GoodType goodType)
 {
    // current free capacity
-   int freeRoom = _maxQty - _currentQty;
+  int freeRoom = math::clamp( _goodStockList[goodType]._maxQty - _currentQty, 0, _goodStockList[goodType]._maxQty );
 
-   // remove all storage reservations
-   for (std::map<long, GoodStock>::iterator reservationIt = _storeReservations.begin(); reservationIt != _storeReservations.end(); ++reservationIt)
-   {
-      GoodStock &reservationStock = reservationIt->second;
-      freeRoom -= reservationStock._currentQty;
-   }
+  // remove all storage reservations
+  for (std::map<long, GoodStock>::iterator reservationIt = _storeReservations.begin(); reservationIt != _storeReservations.end(); ++reservationIt)
+  {
+     GoodStock &reservationStock = reservationIt->second;
+     freeRoom -= reservationStock._currentQty;
+  }
 
-   return freeRoom;
+  return freeRoom;
 }
 
 

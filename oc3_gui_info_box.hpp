@@ -46,8 +46,6 @@ public:
 
     bool isPointInside(const Point& point) const;
 
-    Picture& getPictureGood(const GoodType& goodType);
-
     void setTitle( const std::string& title );
 
     bool isAutoPosition() const;
@@ -141,9 +139,9 @@ public:
   void paint();
   void drawWorkers( int );
   void drawGood(const GoodType &goodType, int, int&);
+  void showSpecialOrdersWindow();
 
 private:
-
   class Impl;
   ScopedPtr< Impl > _gd;
 };
