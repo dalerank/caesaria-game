@@ -21,8 +21,8 @@ FactoryPottery::FactoryPottery() : Factory(G_CLAY, G_POTTERY, B_POTTERY, Size(2)
 {
   setPicture( Picture::load(ResourceGroup::commerce, 132) );
 
-  _animation.load(ResourceGroup::commerce, 133, 7);
-  _animation.setFrameDelay( 3 );
+  _getAnimation().load(ResourceGroup::commerce, 133, 7);
+  _getAnimation().setFrameDelay( 3 );
   _fgPictures.resize(2);
 
   setMaxWorkers( 10 );

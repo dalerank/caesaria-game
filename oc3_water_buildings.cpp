@@ -243,10 +243,11 @@ Reservoir::Reservoir() : WaterSource( B_RESERVOIR, Size( 3 ) )
   // utilitya 34      - empty reservoir
   // utilitya 35 ~ 42 - full reservoir animation
  
-  _animation.load( ResourceGroup::utilitya, 35, 8);
-  _animation.load( ResourceGroup::utilitya, 42, 7, Animation::reverse);
-  _animation.setFrameDelay( 11 );
-  _animation.setOffset( Point( 47, 63 ) );
+  _getAnimation().load( ResourceGroup::utilitya, 35, 8);
+  _getAnimation().load( ResourceGroup::utilitya, 42, 7, Animation::reverse);
+  _getAnimation().setFrameDelay( 11 );
+  _getAnimation().setOffset( Point( 47, 63 ) );
+
   _fgPictures.resize(1);
   //_fgPictures[0]=;
 }
@@ -323,10 +324,10 @@ void Reservoir::timeStep(const unsigned long time)
     _produceWater(offsets, 4);
   }
 
-  _animation.update( time );
+  _getAnimation().update( time );
   
   // takes current animation frame and put it into foreground
-  _fgPictures[ 0 ] = _animation.getCurrentPicture(); 
+  _fgPictures[ 0 ] = _getAnimation().getCurrentPicture(); 
 }
 
 bool Reservoir::canBuild( const TilePos& pos ) const
@@ -415,9 +416,9 @@ BuildingFountain::BuildingFountain() : ServiceBuilding(S_FOUNTAIN, B_FOUNTAIN, S
   id = std::rand() % 4;
 
   setPicture( Picture::load( ResourceGroup::utilitya, 10));
-  _animation.load( ResourceGroup::utilitya, 11, 7);
+  _getAnimation().load( ResourceGroup::utilitya, 11, 7);
   //animLoader.fill_animation_reverse(_animation, "utilitya", 25, 7);
-  _animation.setOffset( Point( 12, 24 ) );
+  _getAnimation().setOffset( Point( 12, 24 ) );
   _fgPictures.resize(1);
 
   //2 10 18 26
@@ -484,10 +485,10 @@ void BuildingFountain::timeStep(const unsigned long time)
     }
   }
 
-  _animation.update( time );
+  _getAnimation().update( time );
 
   // takes current animation frame and put it into foreground
-  _fgPictures[ 0 ] = _animation.getCurrentPicture(); 
+  _fgPictures[ 0 ] = _getAnimation().getCurrentPicture(); 
 }
 
 bool BuildingFountain::canBuild( const TilePos& pos ) const

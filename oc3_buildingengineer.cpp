@@ -23,9 +23,9 @@ BuildingEngineer::BuildingEngineer() : ServiceBuilding(S_ENGINEER, B_ENGINEER_PO
     setWorkers( 0 );
     setPicture( Picture::load( ResourceGroup::buildingEngineer, 56 ) );
 
-    _animation.load( ResourceGroup::buildingEngineer, 57, 10);
-    _animation.setFrameDelay( 4 );
-    _animation.setOffset( Point( 10, 42 ) );
+    _getAnimation().load( ResourceGroup::buildingEngineer, 57, 10);
+    _getAnimation().setFrameDelay( 4 );
+    _getAnimation().setOffset( Point( 10, 42 ) );
     _fgPictures.resize(1);
 }
 
@@ -33,14 +33,14 @@ void BuildingEngineer::timeStep(const unsigned long time)
 {
     bool mayAnimate = getWorkers() > 0;
 
-    if( mayAnimate && _animation.isStopped() )
+    if( mayAnimate && _getAnimation().isStopped() )
     {
-        _animation.start();
+        _getAnimation().start();
     }
 
-    if( !mayAnimate && _animation.isRunning() )
+    if( !mayAnimate && _getAnimation().isRunning() )
     {
-        _animation.stop();
+        _getAnimation().stop();
     }
 
     ServiceBuilding::timeStep( time );

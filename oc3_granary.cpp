@@ -47,13 +47,13 @@ Granary::Granary() : ServiceBuilding( S_MAX, B_GRANARY, Size(3) ), _d( new Impl 
 
   _d->goodStore.setCurrentQty( G_WHEAT, 300 );
 
-  _animation.load(ResourceGroup::commerce, 146, 7, Animation::straight);
+  _getAnimation().load(ResourceGroup::commerce, 146, 7, Animation::straight);
   // do the animation in reverse
-  _animation.load(ResourceGroup::commerce, 151, 6, Animation::reverse);
-  _animation.setFrameDelay( 4 );
+  _getAnimation().load(ResourceGroup::commerce, 151, 6, Animation::reverse);
+  _getAnimation().setFrameDelay( 4 );
 
   _fgPictures[0] = &Picture::load( ResourceGroup::commerce, 141);
-  _fgPictures[5] = _animation.getCurrentPicture();
+  _fgPictures[5] = _getAnimation().getCurrentPicture();
   computePictures();
 
   _d->devastateThis = false;
@@ -63,9 +63,9 @@ void Granary::timeStep(const unsigned long time)
 {
   if( getWorkers() > 0 )
   {
-    _animation.update( time );
+    _getAnimation().update( time );
 
-    _fgPictures[5] = _animation.getCurrentPicture();    
+    _fgPictures[5] = _getAnimation().getCurrentPicture();    
   }
 }
 

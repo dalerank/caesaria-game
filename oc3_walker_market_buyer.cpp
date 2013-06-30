@@ -63,8 +63,8 @@ MarketBuyer::~MarketBuyer()
 
 template< class T >
 TilePos getWalkerDestination2( Propagator &pathPropagator, const BuildingType type, 
-                                    MarketPtr market, SimpleGoodStore& basket, const GoodType what, 
-                                    PathWay &oPathWay, long& reservId )
+                               MarketPtr market, SimpleGoodStore& basket, const GoodType what, 
+                               PathWay &oPathWay, long& reservId )
 {
   SmartPtr< T > res;
 

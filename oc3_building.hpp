@@ -76,7 +76,7 @@ protected:
   Tile* _master_tile;  // left-most tile if multi-tile, or "this" if single-tile
   bool _isDeleted;
 
-  Animation _animation;  // basic animation (if any)
+  Animation& _getAnimation();
 
   class Impl;
   ScopedPtr< Impl > _d;
@@ -85,7 +85,7 @@ protected:
 class Construction : public LandOverlay
 {
 public:
-  Construction( const BuildingType type, const Size& size);
+  Construction( const BuildingType type, const Size& size );
 
   virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
   virtual void build( const TilePos& pos );
@@ -98,8 +98,8 @@ public:
   virtual char getDesirabilityInfluence() const;
   virtual unsigned char getDesirabilityRange() const;
   virtual char getDesirabilityStep() const;
-
   virtual void destroy();
+
 protected:
   PtrTilesList _accessRoads;
   

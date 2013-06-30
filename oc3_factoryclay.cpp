@@ -23,8 +23,8 @@ FactoryClay::FactoryClay() : Factory(G_NONE, G_CLAY, B_CLAY_PIT, Size(2) )
   _setProductRate( 9.6f );
   setPicture( Picture::load( ResourceGroup::commerce, 61 ) );
 
-  _animation.load( ResourceGroup::commerce, 62, 10);
-  _animation.setFrameDelay( 3 );
+  _getAnimation().load( ResourceGroup::commerce, 62, 10);
+  _getAnimation().setFrameDelay( 3 );
   _fgPictures.resize(2);
 
   setMaxWorkers( 10 );
@@ -35,14 +35,14 @@ void FactoryClay::timeStep( const unsigned long time )
 {
   bool mayAnimate = getWorkers() > 0;
 
-  if( mayAnimate && _animation.isStopped() )
+  if( mayAnimate && _getAnimation().isStopped() )
   {
-    _animation.start();
+    _getAnimation().start();
   }
 
-  if( !mayAnimate && _animation.isRunning() )
+  if( !mayAnimate && _getAnimation().isRunning() )
   {
-    _animation.stop();
+    _getAnimation().stop();
   }
 
   Factory::timeStep( time );

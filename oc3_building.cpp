@@ -33,6 +33,7 @@ public:
   std::string name;
   Picture picture;
   Size size;  // size in tiles
+  Animation animation;  // basic animation (if any)
 };
 
 LandOverlay::LandOverlay(const BuildingType type, const Size& size)
@@ -194,6 +195,11 @@ Point LandOverlay::getOffset( const Point& subpos ) const
   return Point( 0, 0 );
 }
 
+Animation& LandOverlay::_getAnimation()
+{
+  return _d->animation;
+}
+
 Construction::Construction( const BuildingType type, const Size& size)
 : LandOverlay( type, size )
 {
@@ -221,7 +227,7 @@ bool Construction::canBuild( const TilePos& pos ) const
   return is_constructible;
 }
 
-void Construction::build(const TilePos& pos )
+void Construction::build( const TilePos& pos )
 {
   LandOverlay::build( pos );
   computeAccessRoads();
@@ -641,20 +647,20 @@ Dock::Dock() : Building( B_DOCK, Size(2) )
 {
   setPicture( Picture::load( ResourceGroup::transport, 5));  
 
-  _animation.load( ResourceGroup::transport, 6, 11);
+  _d->animation.load( ResourceGroup::transport, 6, 11);
   // now fill in reverse order
-  _animation.load( ResourceGroup::transport, 15, 10, Animation::reverse );
+  _d->animation.load( ResourceGroup::transport, 15, 10, Animation::reverse );
   
-  _animation.setOffset( Point( 107, 61 ) );
+  _d->animation.setOffset( Point( 107, 61 ) );
   _fgPictures.resize(1);  
 }
 
 void Dock::timeStep(const unsigned long time)
 {
-  _animation.update( time );
+  _d->animation.update( time );
   
   // takes current animation frame and put it into foreground
-  _fgPictures.at(0) = _animation.getCurrentPicture(); 
+  _fgPictures.at(0) = _d->animation.getCurrentPicture(); 
 }
 
 // second arch pictures is land3a 45 + 46	
@@ -663,8 +669,8 @@ TriumphalArch::TriumphalArch() : Building( B_TRIUMPHAL_ARCH, Size(3) )
 {
   setPicture( Picture::load( "land3a", 43 ) );
   getPicture().setOffset(0,116);
-  _animation.load("land3a", 44, 1);
-  _animation.setOffset( Point( 63, 97 ) );
+  _d->animation.load("land3a", 44, 1);
+  _d->animation.setOffset( Point( 63, 97 ) );
   _fgPictures.resize(1);
-  _fgPictures.at(0) = _animation.getCurrentPicture(); 
+  _fgPictures.at(0) = _d->animation.getCurrentPicture(); 
 }

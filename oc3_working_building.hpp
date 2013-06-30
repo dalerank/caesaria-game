@@ -36,8 +36,8 @@ public:
   void setActive(const bool value);  // if false then this building is stopped
   bool isActive();
 
-  void save( VariantMap& stream) const;
-  void load( const VariantMap& stream);
+  virtual void save( VariantMap& stream) const;
+  virtual void load( const VariantMap& stream);
 
 private:
   class Impl;

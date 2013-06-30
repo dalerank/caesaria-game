@@ -122,13 +122,13 @@ void Factory::timeStep(const unsigned long time)
    {
      _d->progress += work;
 
-     _animation.update( time );
-     Picture *pic = _animation.getCurrentPicture();
+     _getAnimation().update( time );
+     Picture *pic = _getAnimation().getCurrentPicture();
      if (pic != NULL)
      {
        // animation of the working factory
        int level = _fgPictures.size()-1;
-       _fgPictures[level] = _animation.getCurrentPicture();
+       _fgPictures[level] = _getAnimation().getCurrentPicture();
      }
    }  
 }
@@ -211,7 +211,7 @@ FactoryTimber::FactoryTimber() : Factory(G_NONE, G_TIMBER, B_TIMBER, Size(2) )
   _setProductRate( 9.6f );
   setPicture( Picture::load(ResourceGroup::commerce, 72) );
 
-  _animation.load( ResourceGroup::commerce, 73, 10);
+  _getAnimation().load( ResourceGroup::commerce, 73, 10);
   _fgPictures.resize(2);
   setWorkers( 0 );
 }
@@ -240,8 +240,8 @@ FactoryIron::FactoryIron() : Factory(G_NONE, G_IRON, B_IRON_MINE, Size(2) )
 
   setPicture( Picture::load(ResourceGroup::commerce, 54) );
 
-  _animation.load( ResourceGroup::commerce, 55, 6 );
-  _animation.setFrameDelay( 5 );
+  _getAnimation().load( ResourceGroup::commerce, 55, 6 );
+  _getAnimation().setFrameDelay( 5 );
   _fgPictures.resize(2);
 }
 
@@ -264,7 +264,7 @@ FactoryWeapon::FactoryWeapon() : Factory(G_IRON, G_WEAPON, B_WEAPON, Size(2) )
 {
   setPicture( Picture::load(ResourceGroup::commerce, 108) );
 
-  _animation.load( ResourceGroup::commerce, 109, 6);
+  _getAnimation().load( ResourceGroup::commerce, 109, 6);
   _fgPictures.resize(2);
 }
 
@@ -272,7 +272,7 @@ FactoryFurniture::FactoryFurniture() : Factory(G_TIMBER, G_FURNITURE, B_FURNITUR
 {
   setPicture( Picture::load(ResourceGroup::commerce, 117) );
 
-  _animation.load(ResourceGroup::commerce, 118, 14);
+  _getAnimation().load(ResourceGroup::commerce, 118, 14);
   _fgPictures.resize(2);
 }
 
@@ -280,7 +280,7 @@ FactoryWine::FactoryWine() : Factory(G_GRAPE, G_WINE, B_WINE, Size(2) )
 {
   setPicture( Picture::load(ResourceGroup::commerce, 86) );
 
-  _animation.load(ResourceGroup::commerce, 87, 12);
+  _getAnimation().load(ResourceGroup::commerce, 87, 12);
   _fgPictures.resize(2);
 }
 
@@ -288,7 +288,7 @@ FactoryOil::FactoryOil() : Factory(G_OLIVE, G_OIL, B_OIL, Size(2) )
 {
   setPicture( Picture::load(ResourceGroup::commerce, 99) );
 
-  _animation.load(ResourceGroup::commerce, 100, 8);
+  _getAnimation().load(ResourceGroup::commerce, 100, 8);
   _fgPictures.resize(2);
 }
 

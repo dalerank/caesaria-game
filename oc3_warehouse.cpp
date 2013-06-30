@@ -85,8 +85,8 @@ Warehouse::Warehouse() : ServiceBuilding( S_MAX, B_WAREHOUSE, Size( 3 )), _d( ne
   setPicture( Picture::load( ResourceGroup::warehouse, 19) );
   _fgPictures.resize(12);  // 8 tiles + 4
 
-  _animation.load( ResourceGroup::warehouse, 2, 16 );
-  _animation.setFrameDelay( 4 );
+  _getAnimation().load( ResourceGroup::warehouse, 2, 16 );
+  _getAnimation().setFrameDelay( 4 );
 
   _d->animFlag.load( ResourceGroup::warehouse, 84, 8 );
 
@@ -97,7 +97,7 @@ void Warehouse::init()
 {
   _fgPictures[0] = &Picture::load(ResourceGroup::warehouse, 1);
   _fgPictures[1] = &Picture::load(ResourceGroup::warehouse, 18);
-  _fgPictures[2] = _animation.getCurrentPicture();
+  _fgPictures[2] = _getAnimation().getCurrentPicture();
   _fgPictures[3] = _d->animFlag.getCurrentPicture();
 
   // add subTiles in Z-order (from far to near)
@@ -128,10 +128,10 @@ void Warehouse::init()
 
 void Warehouse::timeStep(const unsigned long time)
 {
-   _animation.update( time );
+   _getAnimation().update( time );
    _d->animFlag.update( time );
 
-   _fgPictures[2] = _animation.getCurrentPicture();
+   _fgPictures[2] = _getAnimation().getCurrentPicture();
    _fgPictures[3] = _d->animFlag.getCurrentPicture();
 }
 

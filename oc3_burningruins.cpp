@@ -25,8 +25,8 @@ BurningRuins::BurningRuins() : ServiceBuilding(S_BURNING_RUINS, B_BURNING_RUINS,
     _fireLevel = 99;
 
     setPicture( Picture::load( ResourceGroup::land2a, 187) );
-    _animation.load( ResourceGroup::land2a, 188, 8 );
-    _animation.setOffset( Point( 14, 26 ) );
+    _getAnimation().load( ResourceGroup::land2a, 188, 8 );
+    _getAnimation().setOffset( Point( 14, 26 ) );
     _fgPictures.resize(1);           
 }
 
@@ -42,22 +42,22 @@ void BurningRuins::timeStep(const unsigned long time)
         if( _fireLevel == 50 )
         {
           setPicture(Picture::load( ResourceGroup::land2a, 214));
-          _animation.clear();
-          _animation.load( ResourceGroup::land2a, 215, 8);
-          _animation.setOffset( Point( 14, 26 ) );
+          _getAnimation().clear();
+          _getAnimation().load( ResourceGroup::land2a, 215, 8);
+          _getAnimation().setOffset( Point( 14, 26 ) );
         }
         else if( _fireLevel == 25 )
         {
           setPicture( Picture::load( ResourceGroup::land2a, 223));
-          _animation.clear();
-          _animation.load(ResourceGroup::land2a, 224, 8);
-          _animation.setOffset( Point( 14, 18 ) );
+          _getAnimation().clear();
+          _getAnimation().load(ResourceGroup::land2a, 224, 8);
+          _getAnimation().setOffset( Point( 14, 18 ) );
         }
       }
       else
       {
         deleteLater();
-        _animation.clear();
+        _getAnimation().clear();
         _fgPictures.clear();
       }           
     }

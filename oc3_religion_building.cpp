@@ -96,8 +96,8 @@ TempleOracle::TempleOracle() : ServiceBuilding(S_TEMPLE_ORACLE, B_TEMPLE_ORACLE,
 {
   setPicture( Picture::load( ResourceGroup::security, 55));
 
-  _animation.load( ResourceGroup::security, 56, 6);
-  _animation.setOffset( Point( 9, 30 ) );
+  _getAnimation().load( ResourceGroup::security, 56, 6);
+  _getAnimation().setOffset( Point( 9, 30 ) );
   _fgPictures.resize(1);   
 }
 

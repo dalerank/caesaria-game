@@ -87,12 +87,12 @@ void ServiceBuilding::timeStep(const unsigned long time)
       _d->serviceTimer -= 1;
    }
 
-   _animation.update( time );
-   Picture *pic = _animation.getCurrentPicture();
+   _getAnimation().update( time );
+   Picture *pic = _getAnimation().getCurrentPicture();
    if (pic != NULL)
    {
       int level = _fgPictures.size()-1;
-      _fgPictures[level] = _animation.getCurrentPicture();
+      _fgPictures[level] = _getAnimation().getCurrentPicture();
    }
 }
 
@@ -214,8 +214,8 @@ BuildingTheater::BuildingTheater() : EntertainmentBuilding(S_THEATER, B_THEATER,
 {
   setPicture( Picture::load( "entertainment", 13));
 
-   _animation.load("entertainment", 14, 21);
-   _animation.setOffset( Point( 60, 36 ) );
+   _getAnimation().load("entertainment", 14, 21);
+   _getAnimation().setOffset( Point( 60, 36 ) );
   
    _fgPictures.resize(2);
    _fgPictures[0] = &Picture::load("entertainment", 35);
@@ -225,20 +225,20 @@ BuildingAmphiTheater::BuildingAmphiTheater() : EntertainmentBuilding(S_AMPHITHEA
 {
   setPicture( Picture::load("entertainment", 1));
 
-   _animation.load("entertainment", 2, 10);
-   _animation.setOffset( Point( 100, 49 ) );
-   _fgPictures.resize(2);
-   _fgPictures[0] = &Picture::load("entertainment", 12);
+  _getAnimation().load("entertainment", 2, 10);
+  _getAnimation().setOffset( Point( 100, 49 ) );
+  _fgPictures.resize(2);
+  _fgPictures[0] = &Picture::load("entertainment", 12);
 }
 
 BuildingCollosseum::BuildingCollosseum() : EntertainmentBuilding(S_COLLOSSEUM, B_COLLOSSEUM, Size(5) )
 {
   setPicture( Picture::load("entertainment", 36));
 
-   _animation.load("entertainment", 37, 13);
-   _animation.setOffset( Point( 122, 81 ) );
-   _fgPictures.resize(2);
-   _fgPictures[0] = &Picture::load("entertainment", 50);
+  _getAnimation().load("entertainment", 37, 13);
+  _getAnimation().setOffset( Point( 122, 81 ) );
+  _fgPictures.resize(2);
+  _fgPictures[0] = &Picture::load("entertainment", 50);
 }
 
 //------------
@@ -246,14 +246,14 @@ BuildingCollosseum::BuildingCollosseum() : EntertainmentBuilding(S_COLLOSSEUM, B
 BuildingHippodrome::BuildingHippodrome() : EntertainmentBuilding(S_HIPPODROME, B_HIPPODROME, Size(5) )
 {
   setPicture( Picture::load("circus", 5));
-    getPicture().setOffset(0,106);
-    Picture* logo = &Picture::load("circus", 3);
-    Picture* logo1 = &Picture::load("circus", 1);
-    logo -> setOffset(150,181);
-    logo1 -> setOffset(300,310);
-    _fgPictures.resize(5);
-    _fgPictures.at(0) = logo;
-    _fgPictures.at(1) = logo1;
+  getPicture().setOffset(0,106);
+  Picture* logo = &Picture::load("circus", 3);
+  Picture* logo1 = &Picture::load("circus", 1);
+  logo -> setOffset(150,181);
+  logo1 -> setOffset(300,310);
+  _fgPictures.resize(5);
+  _fgPictures.at(0) = logo;
+  _fgPictures.at(1) = logo1;
 }
 
 //-----------
@@ -278,9 +278,9 @@ Baths::Baths() : ServiceBuilding(S_BATHS, B_BATHS, Size(2) )
 {
   setPicture( Picture::load( ResourceGroup::security, 21));
 
-   _animation.load( ResourceGroup::security, 22, 10);
-   _animation.setOffset( Point( 23, 25 ) );
-   _fgPictures.resize(2);
+  _getAnimation().load( ResourceGroup::security, 22, 10);
+  _getAnimation().setOffset( Point( 23, 25 ) );
+  _fgPictures.resize(2);
 }
 
 Barber::Barber() : ServiceBuilding(S_BARBER, B_BARBER, Size(1))
@@ -300,5 +300,5 @@ Hospital::Hospital() : ServiceBuilding(S_HOSPITAL, B_HOSPITAL, Size(3 ) )
 
 Forum::Forum() : ServiceBuilding(S_FORUM, B_FORUM, Size(2))
 {
-  setPicture( Picture::load( "govt", 10));
+  setPicture( Picture::load( ResourceGroup::govt, 10));
 }
