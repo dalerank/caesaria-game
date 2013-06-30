@@ -12,28 +12,47 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#ifndef __OPENCAESAR3_GRANARY_SPECIAL_ORDERS_WINDOW_H_INCLUDED__
-#define __OPENCAESAR3_GRANARY_SPECIAL_ORDERS_WINDOW_H_INCLUDED__
+#ifndef CAESAR_HPP
+#define CAESAR_HPP
 
-#include "oc3_widget.hpp"
-#include "oc3_predefinitions.hpp"
+#include "oc3_scopedptr.hpp"
 
-class GranarySpecialOrdersWindow : public Widget
+#include <string>
+#include <vector>
+#include <map>
+
+#include "oc3_enums.hpp"
+
+class Menu;
+class MenuBar;
+class Scenario;
+
+class Application
 {
 public:
-    GranarySpecialOrdersWindow( Widget* parent, const Point& pos, GranaryPtr granary );
-    ~GranarySpecialOrdersWindow();
-    
-    void draw( GfxEngine& engine );  // draw on screen
+   Application();
 
-    bool onEvent( const NEvent& event);
+   void start();
 
-    bool isPointInside(const Point& point) const;
-protected:
-    class Impl;
-    ScopedPtr< Impl > _d;
+   void initVideo();
+   void initSound();
+   void initWaitPictures();
+   
+   void setScreenWait();
+   void setScreenMenu();
+   void setScreenGame();
+
+   void initGuiMain();
+   void initGuiEnvironment();
+
+private:
+   class Impl;
+   ScopedPtr< Impl > _d;
 };
 
-#endif //__OPENCAESAR3_GRANARY_SPECIAL_ORDERS_WINDOW_H_INCLUDED__
+
+#endif

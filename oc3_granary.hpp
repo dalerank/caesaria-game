@@ -16,25 +16,28 @@
 #ifndef __OPENCAESAR3_GRANARY_H_INCLUDED__
 #define __OPENCAESAR3_GRANARY_H_INCLUDED__
 
-#include "oc3_working_building.hpp"
+#include "oc3_service_building.hpp"
 
-class Granary : public WorkingBuilding
+class Granary : public ServiceBuilding
 {
 public:
-  typedef enum { accept=0, reject, deliver, none } GoodRule;
   Granary();
 
-  void timeStep(const unsigned long time);
+  virtual void timeStep(const unsigned long time);
   void computePictures();
   SimpleGoodStore& getGoodStore();
 
-  void setGoodRule( const GoodType type, GoodRule rule );
-  GoodRule getGoodRule( const GoodType type );
+  void setGoodOrder( const GoodType type, Good::Order rule );
+  Good::Order getGoodOrder( const GoodType type );
 
-  void save( VariantMap& stream) const;
-  void load( const VariantMap& stream);
+  virtual void save( VariantMap& stream) const;
+  virtual void load( const VariantMap& stream);
+
+  virtual void deliverService();
 
 private:
+  void _tryDevastateGranary();
+
   class Impl;
   ScopedPtr< Impl > _d;
 };

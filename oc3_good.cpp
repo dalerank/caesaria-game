@@ -184,33 +184,41 @@ GoodStock::GoodStock(const GoodType &goodType, const int maxQty, const int curre
 
 void GoodStock::addStock(GoodStock &stock, const int iAmount)
 {
-   if (stock._goodType == G_NONE)
-   {
-      // nothing to add => nothing to do!
-      return;
-   }
-   if (_goodType != G_NONE && _goodType != stock._goodType) THROW("GoodTypes do not match: " << _goodType << " vs " << stock._goodType);
-   int amount = iAmount;  // not const
-   if (amount == -1)
-   {
-      amount = stock._currentQty;
-   }
-   if (amount > stock._currentQty)
-   {
-      THROW("Not enough quantity in stock.");
-   }
-   if (amount+_currentQty > _maxQty)
-   {
-      THROW("Not enough free room for storage");
-   }
+  if (stock._goodType == G_NONE)
+  {
+     // nothing to add => nothing to do!
+     return;
+  }
+  if (_goodType != G_NONE && _goodType != stock._goodType) 
+  {
+    std::string errorStr = StringHelper::format( 0xff, "GoodTypes do not match: %d vs %d", _goodType, stock._goodType );
+    _OC3_DEBUG_BREAK_IF( errorStr.c_str() );
+  }
 
-   _goodType = stock._goodType;  // in case goodType was G_NONE
-   _currentQty += amount;
-   stock._currentQty -= amount;
-   if (stock._currentQty == 0)
-   {
-      stock._goodType = G_NONE;
-   }
+  int amount = iAmount;  // not const
+  if (amount == -1)
+  {
+     amount = stock._currentQty;
+  }
+  if (amount > stock._currentQty)
+  {
+    _OC3_DEBUG_BREAK_IF( "GoodStock:Not enough quantity in stock." );
+    return;
+  }
+  if (amount+_currentQty > _maxQty)
+  {
+    _OC3_DEBUG_BREAK_IF( "GoodStock:Not enough free room for storage");
+    return;
+  }
+
+  _goodType = stock._goodType;  // in case goodType was G_NONE
+  _currentQty += amount;
+  stock._currentQty -= amount;
+  
+  if (stock._currentQty == 0)
+  {
+     stock._goodType = G_NONE;
+  }
 }
 
 void GoodStock::save( VariantList& stream ) const
@@ -235,6 +243,7 @@ void GoodStock::load( const VariantList& stream )
 GoodStore::GoodStore()
 {
    _nextReservationID = 1;
+   _devastation = false;
 }
 
 
@@ -350,33 +359,33 @@ void GoodStore::applyRetrieveReservation(SimpleGoodStore &goodStore, const long 
 
 void GoodStore::store(GoodStock &stock, const int amount)
 {
-   GoodStock reservedStock;
-   reservedStock._goodType = stock._goodType;
-   reservedStock._currentQty = amount;
+  GoodStock reservedStock;
+  reservedStock._goodType = stock._goodType;
+  reservedStock._currentQty = amount;
 
-   long reservationID = reserveStorage(reservedStock);
-   if (reservationID == 0)
-   {
-      THROW("Impossible to store goods");
-   }
-   applyStorageReservation(stock, reservationID);
+  long reservationID = reserveStorage(reservedStock);
+  
+  _OC3_DEBUG_BREAK_IF( reservationID == 0 && "GoodStore:Impossible to store goods");
+  if( reservationID > 0 )
+  {
+    applyStorageReservation(stock, reservationID);
+  }
 }
-
 
 void GoodStore::retrieve(GoodStock &stock, int amount)
 {
-   GoodStock reservedStock;
-   reservedStock._goodType = stock._goodType;
-   reservedStock._currentQty = amount;
+  GoodStock reservedStock;
+  reservedStock._goodType = stock._goodType;
+  reservedStock._currentQty = amount;
 
-   long reservationID = reserveRetrieval(reservedStock);
-   if (reservationID == 0)
-   {
-      THROW("Impossible to retrieve goods");
-   }
-   applyRetrieveReservation(stock, reservationID);
+  long reservationID = reserveRetrieval(reservedStock);
+  _OC3_DEBUG_BREAK_IF( reservationID == 0 && "GoodStore:Impossible to retrieve goods");
+  
+  if( reservationID > 0 )
+  {
+    applyRetrieveReservation(stock, reservationID);
+  }
 }
-
 
 void GoodStore::storeAll(SimpleGoodStore &goodStore)
 {
@@ -405,6 +414,7 @@ void GoodStore::save( VariantMap& stream) const
     vm_storereservations.push_back( vm_stocksave );
   }
   stream[ "storeReservations" ] = vm_storereservations;
+  stream[ "devastation" ] = _devastation;
 
   VariantList vm_retrievereservations;
   for (std::map<long, GoodStock>::const_iterator itRes = _retrieveReservations.begin(); itRes != _retrieveReservations.end(); itRes++)
@@ -419,6 +429,7 @@ void GoodStore::save( VariantMap& stream) const
 
 void GoodStore::load( const VariantMap& stream )
 {
+   _devastation = stream.get( "devastation" ).toBool();
    _nextReservationID = stream.get( "nextReservationId" ).toInt();
 
    VariantList vm_storereservations = stream.get( "storeReservations" ).toList();
@@ -438,6 +449,16 @@ void GoodStore::load( const VariantMap& stream )
      stock.load( (*it).toList() );
      _retrieveReservations[ index ] = stock;
    }
+}
+
+bool GoodStore::isDevastation() const
+{
+  return _devastation;
+}
+
+void GoodStore::setDevastation( bool value )
+{
+  _devastation = value;
 }
 
 GoodStore::~GoodStore()
@@ -470,7 +491,7 @@ int SimpleGoodStore::getMaxQty()
 }
 
 
-int SimpleGoodStore::getCurrentQty()
+int SimpleGoodStore::getCurrentQty() const
 {
    return _currentQty;
 }
@@ -482,7 +503,7 @@ GoodStock& SimpleGoodStore::getStock(const GoodType &goodType)
 }
 
 
-int SimpleGoodStore::getCurrentQty(const GoodType &goodType)
+int SimpleGoodStore::getCurrentQty(const GoodType &goodType) const
 {
    return _goodStockList[goodType]._currentQty;
 }
@@ -522,19 +543,22 @@ void SimpleGoodStore::computeCurrentQty()
 
 int SimpleGoodStore::getMaxStore(const GoodType goodType)
 {
-   // current free capacity
-  int freeRoom = math::clamp( _goodStockList[goodType]._maxQty - _currentQty, 0, _goodStockList[goodType]._maxQty );
-
-  // remove all storage reservations
-  for (std::map<long, GoodStock>::iterator reservationIt = _storeReservations.begin(); reservationIt != _storeReservations.end(); ++reservationIt)
+  int freeRoom = 0;
+  if( !_devastation )
   {
-     GoodStock &reservationStock = reservationIt->second;
-     freeRoom -= reservationStock._currentQty;
+     // current free capacity
+    freeRoom = math::clamp( _goodStockList[goodType]._maxQty - _currentQty, 0, _goodStockList[goodType]._maxQty );
+
+    // remove all storage reservations
+    for (std::map<long, GoodStock>::iterator reservationIt = _storeReservations.begin(); reservationIt != _storeReservations.end(); ++reservationIt)
+    {
+       GoodStock &reservationStock = reservationIt->second;
+       freeRoom -= reservationStock._currentQty;
+    }
   }
 
   return freeRoom;
 }
-
 
 void SimpleGoodStore::applyStorageReservation(GoodStock &stock, const long reservationID)
 {
@@ -600,6 +624,8 @@ void SimpleGoodStore::save( VariantMap& stream ) const
 
 void SimpleGoodStore::load( const VariantMap& stream )
 {
+  _goodStockList.clear();
+
   GoodStore::load( stream );
   _maxQty = stream.get( "max" ).toInt();
   _currentQty = stream.get( "current" ).toInt();

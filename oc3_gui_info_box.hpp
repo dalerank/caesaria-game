@@ -170,6 +170,7 @@ public:
   void paint();
   void drawWorkers();
   void drawGood(const GoodType &goodType, int, int& );
+  void showSpecialOrdersWindow();
 
 private:
   class Impl;

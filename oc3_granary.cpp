@@ -17,30 +17,33 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_scenario.hpp"
+#include "oc3_walker_cart_pusher.hpp"
 
 class Granary::Impl
 {
 public:
   static const int maxCapacity = 2400;
-  typedef std::map< GoodType, GoodRule > GoodRules;
   SimpleGoodStore goodStore;
-  GoodRules goodRules;
+  GoodOrders goodRules;
+  bool devastateThis;
 };
 
-Granary::Granary() : WorkingBuilding( B_GRANARY, Size(3) ), _d( new Impl )
+Granary::Granary() : ServiceBuilding( S_MAX, B_GRANARY, Size(3) ), _d( new Impl )
 {
   setMaxWorkers(5);
   setWorkers(0);
+  setServiceDelay( 40 );
 
   setPicture( Picture::load( ResourceGroup::commerce, 140));
   _fgPictures.resize(6);  // 1 upper level + 4 windows + animation
   _d->goodStore.setMaxQty( Impl::maxCapacity );
   
-  setGoodRule( G_WHEAT, accept );
-  setGoodRule( G_MEAT, accept );
-  setGoodRule( G_FISH, accept );
-  setGoodRule( G_FRUIT, accept );
-  setGoodRule( G_VEGETABLE, accept );
+  setGoodOrder( G_WHEAT, Good::accept );
+  setGoodOrder( G_MEAT, Good::accept );
+  setGoodOrder( G_FISH, Good::accept );
+  setGoodOrder( G_FRUIT, Good::accept );
+  setGoodOrder( G_VEGETABLE, Good::accept );
 
   _d->goodStore.setCurrentQty( G_WHEAT, 300 );
 
@@ -52,6 +55,8 @@ Granary::Granary() : WorkingBuilding( B_GRANARY, Size(3) ), _d( new Impl )
   _fgPictures[0] = &Picture::load( ResourceGroup::commerce, 141);
   _fgPictures[5] = _animation.getCurrentPicture();
   computePictures();
+
+  _d->devastateThis = false;
 }
 
 void Granary::timeStep(const unsigned long time)
@@ -60,7 +65,7 @@ void Granary::timeStep(const unsigned long time)
   {
     _animation.update( time );
 
-    _fgPictures[5] = _animation.getCurrentPicture();
+    _fgPictures[5] = _animation.getCurrentPicture();    
   }
 }
 
@@ -100,7 +105,7 @@ void Granary::computePictures()
 
 void Granary::save( VariantMap& stream) const
 {
-   WorkingBuilding::save( stream );
+   ServiceBuilding::save( stream );
    VariantMap vm_goodstore;
 
    stream[ "__debug_typeName" ] = OC3_STR_EXT(B_GRANARY);
@@ -108,7 +113,7 @@ void Granary::save( VariantMap& stream) const
    stream[ "goodStore" ] = vm_goodstore;
 
    VariantList vm_goodrules;
-   for( Impl::GoodRules::iterator it=_d->goodRules.begin(); it != _d->goodRules.end(); it++ )
+   for( GoodOrders::iterator it=_d->goodRules.begin(); it != _d->goodRules.end(); it++ )
    {
      vm_goodrules.push_back( (int)(*it).first );
      vm_goodrules.push_back( (int)(*it).second );
@@ -119,7 +124,7 @@ void Granary::save( VariantMap& stream) const
 
 void Granary::load( const VariantMap& stream)
 {
-   WorkingBuilding::load(stream);
+   ServiceBuilding::load(stream);
    _d->goodStore.load( stream.get( "goodStore" ).toMap() );
 
    VariantList vm_goodrules = stream.get( "goodRules" ).toList();
@@ -127,23 +132,50 @@ void Granary::load( const VariantMap& stream)
    {
      GoodType type = (GoodType)(*it).toInt();
      it++;
-     GoodRule rule = (GoodRule)(*it).toInt();
+     Good::Order rule = (Good::Order)(*it).toInt();
      
      _d->goodRules[ type ] = rule;
    }
 }
 
-void Granary::setGoodRule( const GoodType type, GoodRule rule )
+void Granary::setGoodOrder( const GoodType type, Good::Order rule )
 {
   _d->goodRules[ type ] = rule;
-  _d->goodStore.setMaxQty( type, (rule == Granary::reject || rule == Granary::none ) ? 0 : Impl::maxCapacity );
+  _d->goodStore.setMaxQty( type, (rule == Good::reject || rule == Good::none ) ? 0 : Impl::maxCapacity );
 }
 
-Granary::GoodRule Granary::getGoodRule( const GoodType type )
+Good::Order Granary::getGoodOrder( const GoodType type )
 {
-  Impl::GoodRules::iterator it = _d->goodRules.find( type );
+  GoodOrders::iterator it = _d->goodRules.find( type );
   if( it != _d->goodRules.end() )
     return (*it).second;
 
-  return Granary::none;
+  return Good::none;
+}
+
+void Granary::deliverService()
+{
+  //if granary in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
+  if( _d->goodStore.isDevastation() && (_d->goodStore.getCurrentQty() > 0) && getWalkerList().empty() )
+  {
+    for( int goodType=G_WHEAT; goodType <= G_VEGETABLE; goodType++ )
+    {
+      int goodQtyMax = _d->goodStore.getCurrentQty( (GoodType)goodType );
+      int goodQty = math::clamp( goodQty, 0, 400);
+
+      if( goodQty > 0 )
+      {
+        GoodStock stock( (GoodType)goodType, goodQty, goodQty);
+        CartPusherPtr walker = CartPusher::create( Scenario::instance().getCity() );
+        walker->send2City( BuildingPtr( this ), stock );
+
+        if( !walker->isDeleted() )
+        {
+          GoodStock tmpStock( (GoodType)goodType, goodQty );
+          _d->goodStore.retrieve( tmpStock, goodQty );//setCurrentQty( (GoodType)goodType, goodQtyMax - goodQty );
+          addWalker( walker.as<Walker>() );
+        }
+      }
+    }   
+  }
 }

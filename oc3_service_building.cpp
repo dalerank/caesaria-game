@@ -109,13 +109,15 @@ void ServiceBuilding::destroy()
 
 void ServiceBuilding::deliverService()
 {
-   // make a service walker and send him to his wandering
+  // make a service walker and send him to his wandering
   ServiceWalkerPtr serviceman = ServiceWalker::create( Scenario::instance().getCity(), getService() );
   serviceman->setMaxDistance( getWalkerDistance() );
   serviceman->send2City( BuildingPtr( this ) );
 
   if( !serviceman->isDeleted() )
+  {
       addWalker( serviceman.as<Walker>() );
+  }
 }
 
 int ServiceBuilding::getServiceRange() const

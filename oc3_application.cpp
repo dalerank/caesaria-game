@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#include "oc3_caesar.hpp"
+#include "oc3_application.hpp"
 #include "oc3_screen_wait.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_stringhelper.hpp"
@@ -26,8 +26,6 @@
 #include "oc3_gfx_sdl_engine.hpp"
 #include "oc3_gfx_gl_engine.hpp"
 #include "oc3_sound_engine.hpp"
-#include "oc3_walker.hpp"
-#include "oc3_gui_info_box.hpp"
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_building_data.hpp"
 #include "oc3_picture_bank.hpp"
@@ -48,7 +46,7 @@ namespace fs = boost::filesystem;
   #undef main
 #endif
 
-class CaesarApp::Impl
+class Application::Impl
 {
 public:
   ScreenType nextScreen;
@@ -61,7 +59,7 @@ public:
   std::vector<fs::path> scanForMaps(const std::string &resourcePath) const;
 };
 
-void CaesarApp::Impl::initLocale()
+void Application::Impl::initLocale()
 {
   // init the internationalization library (gettext)
   setlocale(LC_ALL, "");
@@ -69,7 +67,7 @@ void CaesarApp::Impl::initLocale()
   textdomain( "caesar" );
 }
 
-void CaesarApp::initVideo()
+void Application::initVideo()
 {
   StringHelper::debug( 0xff, "init graphic engine" );
   _d->engine = new GfxSdlEngine();
@@ -81,14 +79,14 @@ void CaesarApp::initVideo()
   GfxEngine::instance().init();
 }
 
-void CaesarApp::initSound()
+void Application::initSound()
 {
   StringHelper::debug( 0xff, "init sound engine" );
   new SoundEngine();
   SoundEngine::instance().init();
 }
 
-void CaesarApp::initWaitPictures()
+void Application::initWaitPictures()
 {
   std::cout << "load wait images begin" << std::endl;
   PictureBank &pic_loader = PictureBank::instance();
@@ -100,12 +98,12 @@ void CaesarApp::initWaitPictures()
   std::cout << "convert images end" << std::endl;
 }
 
-void CaesarApp::initGuiEnvironment()
+void Application::initGuiEnvironment()
 {
   _d->gui = new GuiEnv( *_d->engine );
 }
 
-void CaesarApp::Impl::initPictures(const std::string &resourcePath)
+void Application::Impl::initPictures(const std::string &resourcePath)
 {
   std::cout << "load images begin" << std::endl;
   PictureBank &pic_loader = PictureBank::instance();
@@ -130,7 +128,7 @@ void CaesarApp::Impl::initPictures(const std::string &resourcePath)
   std::cout << "create pictures end" << std::endl;
 }
 
-bool CaesarApp::Impl::load(const std::string &gameFile)
+bool Application::Impl::load(const std::string &gameFile)
 {
   std::cout << "load game begin" << std::endl;
   
@@ -165,14 +163,14 @@ bool CaesarApp::Impl::load(const std::string &gameFile)
   return true;
 }
 
-void CaesarApp::setScreenWait()
+void Application::setScreenWait()
 {
    ScreenWait screen;
    screen.initialize( *_d->engine, *_d->gui);
    screen.drawFrame();
 }
 
-std::vector <fs::path> CaesarApp::Impl::scanForMaps(const std::string &resourcePath) const
+std::vector <fs::path> Application::Impl::scanForMaps(const std::string &resourcePath) const
 {
   // scan for map-files and make their list
     
@@ -195,7 +193,7 @@ std::vector <fs::path> CaesarApp::Impl::scanForMaps(const std::string &resourceP
   return filelist;
 }
 
-void CaesarApp::setScreenMenu()
+void Application::setScreenMenu()
 {
   ScreenMenu screen;
   screen.initialize( *_d->engine, *_d->gui );
@@ -242,7 +240,7 @@ void CaesarApp::setScreenMenu()
    }
 }
 
-void CaesarApp::setScreenGame()
+void Application::setScreenGame()
 {
   ScreenGame screen;
   screen.setScenario( Scenario::instance() );
@@ -265,12 +263,12 @@ void CaesarApp::setScreenGame()
 }
 
 
-CaesarApp::CaesarApp() : _d( new Impl )
+Application::Application() : _d( new Impl )
 {
    _d->nextScreen = SCREEN_NONE;
 }
 
-void CaesarApp::start()
+void Application::start()
 {
    //Create right PictureBank instance in the beginning   
    _d->initLocale();
@@ -323,7 +321,7 @@ int main(int argc, char* argv[])
 
    try
    {
-      CaesarApp app;
+      Application app;
       app.start();
    }
    catch (Exception e)

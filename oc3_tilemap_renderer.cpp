@@ -594,20 +594,33 @@ void TilemapRenderer::Impl::drawTilemapWithRemoveTools()
   int lastZ = -1000;  // dummy value
 
   const std::vector< TilePos >& tiles = mapArea->getTiles();
-  std::vector< TilePos >::const_iterator itPos;
-
-  for( itPos = tiles.begin(); itPos != tiles.end(); ++itPos )
-  {
-    tilemap->at( *itPos ).resetWasDrawn();
-  }
+  mapArea->resetWasDrawn();
 
   TilePos startPos, stopPos;
   getSelectedArea( startPos, stopPos );
+ 
+  std::set<int> hashDestroyArea;
+  PtrTilesArea destroyArea = tilemap->getFilledRectangle( startPos, stopPos );
   
-  Rect destroyArea = Rect( startPos.getI(), startPos.getJ(), stopPos.getI(), stopPos.getJ() );
+  //create list of destroy tiles add full area building if some of it tile constain in destroy area
+  for( PtrTilesArea::iterator it=destroyArea.begin(); it != destroyArea.end(); it++ )
+  {
+    hashDestroyArea.insert( (*it)->getJ() * 1000 + (*it)->getI() );
+
+    LandOverlayPtr overlay = (*it)->getTerrain().getOverlay();
+    if( overlay.isValid() )
+    {
+      PtrTilesArea overlayArea = tilemap->getFilledRectangle( overlay->getTilePos(), overlay->getSize() );
+      for( PtrTilesArea::iterator ovIt=overlayArea.begin(); ovIt != overlayArea.end(); ovIt++ )
+      {
+        hashDestroyArea.insert( (*ovIt)->getJ() * 1000 + (*ovIt)->getI() );
+      }
+    }
+  }
+  //Rect destroyArea = Rect( startPos.getI(), startPos.getJ(), stopPos.getI(), stopPos.getJ() );
 
   // FIRST PART: draw all flat land (walkable/boatable)
-  for( itPos = tiles.begin(); itPos != tiles.end(); ++itPos )
+  for( std::vector< TilePos >::const_iterator itPos = tiles.begin(); itPos != tiles.end(); ++itPos )
   {
     Tile& tile = tilemap->at( *itPos );
     Tile* master = tile.getMasterTile();
@@ -615,7 +628,8 @@ void TilemapRenderer::Impl::drawTilemapWithRemoveTools()
     if( !tile.isFlat() )
       continue;
 
-    if( destroyArea.isPointInside( Point( (*itPos).getI(), (*itPos).getJ() ) ) )
+    int tilePosHash = (*itPos).getJ() * 1000 + (*itPos).getI();
+    if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() )
     {
       drawTileInSelArea( tile, master );  
     }
@@ -635,7 +649,7 @@ void TilemapRenderer::Impl::drawTilemapWithRemoveTools()
   }  
 
   // SECOND PART: draw all sprites, impassable land and buildings
-  for( itPos = tiles.begin(); itPos != tiles.end(); ++itPos)
+  for( std::vector< TilePos >::const_iterator itPos = tiles.begin(); itPos != tiles.end(); ++itPos)
   {
     int z = itPos->getZ();
 
@@ -670,7 +684,8 @@ void TilemapRenderer::Impl::drawTilemapWithRemoveTools()
       }
     }   
 
-    if( destroyArea.isPointInside( Point( (*itPos).getI(), (*itPos).getJ() ) )  )
+    int tilePosHash = (*itPos).getJ() * 1000 + (*itPos).getI();
+    if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() )
     {
       engine->setTileDrawMask( 0x00ff0000, 0, 0, 0xff000000 );      
     }

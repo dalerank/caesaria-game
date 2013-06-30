@@ -133,6 +133,13 @@ public:
     return ret;
   }
 
+  template< class T >
+  SmartPtr< T > getBuilding( const TilePos& pos )
+  {
+    LandOverlayPtr overlay = _city->getTilemap().at( pos ).getTerrain().getOverlay();
+    return overlay.as< T >();
+  }
+
 protected:
   CityPtr _city;
 };

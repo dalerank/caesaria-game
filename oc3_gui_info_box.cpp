@@ -41,7 +41,7 @@
 #include "oc3_divinity.hpp"
 #include "oc3_warehouse.hpp"
 #include "oc3_gfx_engine.hpp"
-#include "oc3_granary_special_orders_window.hpp"
+#include "oc3_special_orders_window.hpp"
 
 class GuiInfoBox::Impl
 {
@@ -528,9 +528,26 @@ InfoBoxWarehouse::InfoBoxWarehouse( Widget* parent, const Tile& tile )
   _wd->btnOrders = new PushButton( this, Rect( Point( (getWidth() - btnOrdersSize.getWidth()) / 2, getHeight() - 34 ), btnOrdersSize ), 
                                    _("##special_orders##"), -1, false, PushButton::WhiteBorderUp );
 
+  CONNECT( _wd->btnOrders, onClicked(), this, InfoBoxWarehouse::showSpecialOrdersWindow );
+
   setTitle( BuildingDataHolder::instance().getData( _wd->building->getType()).getPrettyName() );
 
   paint();
+}
+
+void InfoBoxWarehouse::showSpecialOrdersWindow()
+{
+  Point pos;
+  if( getTop() > getParent()->getHeight() / 2 )
+  {
+    pos = Point( getScreenLeft(), getScreenBottom() - 450 );   
+  }
+  else
+  {
+    pos = getAbsoluteRect().UpperLeftCorner;
+  }
+
+  new WarehouseSpecialOrdersWindow( getParent(), pos, _wd->building );
 }
 
 void InfoBoxWarehouse::paint()

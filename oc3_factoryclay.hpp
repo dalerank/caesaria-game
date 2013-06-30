@@ -25,6 +25,8 @@ public:
   
   bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
   void timeStep(const unsigned long time);
+
+
 };
 
 #endif //__OPENCAESAR3_FACTORYCLAY_H_INCLUDED__

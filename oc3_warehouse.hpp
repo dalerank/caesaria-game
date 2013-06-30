@@ -19,7 +19,7 @@
 #ifndef WAREHOUSE_HPP
 #define WAREHOUSE_HPP
 
-#include "oc3_working_building.hpp"
+#include "oc3_service_building.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_good.hpp"
 #include "oc3_positioni.hpp"
@@ -30,58 +30,67 @@
 class WarehouseTile
 {
 public:
-   WarehouseTile(const TilePos& pos );
-   void computePicture();
+  WarehouseTile(const TilePos& pos );
+  void computePicture();
 
-   TilePos _pos;
-   GoodStock _stock;
-   Picture _picture;
+  TilePos _pos;
+  GoodStock _stock;
+  Picture _picture;
 };
 
 
 // implementation of the GoodStore for the Warehouse
 class Warehouse;
-class WarehouseStore: public GoodStore
+class WarehouseStore : public GoodStore
 {
 public:
-   using GoodStore::applyStorageReservation;
-   using GoodStore::applyRetrieveReservation;
+  using GoodStore::applyStorageReservation;
+  using GoodStore::applyRetrieveReservation;
 
-   WarehouseStore();
+  WarehouseStore();
 
-   void init(Warehouse &_warehouse);
+  void init(Warehouse &_warehouse);
 
-   int getCurrentQty(const GoodType &goodType);
+  int getCurrentQty(const GoodType &goodType) const;
+  int getCurrentQty() const;
 
-   // returns the max quantity that can be stored now
-   int getMaxStore(const GoodType goodType);
+  // returns the max quantity that can be stored now
+  virtual int getMaxStore(const GoodType goodType);
 
-   // store/retrieve
-   void applyStorageReservation(GoodStock &stock, const long reservationID);
-   void applyRetrieveReservation(GoodStock &stock, const long reservationID);
+  // store/retrieve
+  virtual void applyStorageReservation(GoodStock &stock, const long reservationID);
+  virtual void applyRetrieveReservation(GoodStock &stock, const long reservationID);
+
+  void setGoodOrder( const GoodType type, Good::Order rule );
+  Good::Order getGoodOrder( const GoodType type );
 
 private:
-   Warehouse *_warehouse;
+  Warehouse* _warehouse;
+  GoodOrders _goodRules;
 };
 
 
-class Warehouse: public WorkingBuilding
+class Warehouse: public ServiceBuilding
 {
-   friend class WarehouseStore;
+  friend class WarehouseStore;
 
 public:
-   Warehouse();
-   void init();
+  Warehouse();
+  void init();
 
-   void timeStep(const unsigned long time);
-   void computePictures();
-   WarehouseStore& getGoodStore();
+  virtual void timeStep(const unsigned long time);
+  void computePictures();
+  WarehouseStore& getGoodStore();
+  void setGoodOrder( const GoodType type, Good::Order rule );
+  Good::Order getGoodOrder( const GoodType type );
+  
+  virtual void deliverService();
+  virtual void save(VariantMap& stream) const;
+  virtual void load(const VariantMap& stream);
 
 private:
-   Animation _animFlag;  // the flag above the warehouse
-   typedef std::vector<WarehouseTile> WhTiles;
-   WhTiles _subTiles;
-   WarehouseStore _goodStore;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 

@@ -260,7 +260,7 @@ BuildingPtr CartPusher::getWalkerDestination_warehouse(Propagator &pathPropagato
       BuildingPtr building= pathWayIt->first;
       PathWay& pathWay= pathWayIt->second;
 
-      SmartPtr<Warehouse> warehouse= building.as<Warehouse>();
+      WarehousePtr warehouse= building.as<Warehouse>();
       _d->reservationID = warehouse->getGoodStore().reserveStorage(_d->stock);
       if (_d->reservationID != 0)
       {

@@ -137,16 +137,16 @@ void Factory::deliverGood()
 {
   // make a cart pusher and send him away
   if( _mayDeliverGood() )
-  {
-    StringHelper::debug( 0xff, "Good is ready!!!" );
-    
+  {  
     GoodStock stock(_outGoodType, 100, 100);
     CartPusherPtr walker = CartPusher::create( Scenario::instance().getCity() );
     walker->send2City( BuildingPtr( this ), stock );
-    _d->progress -= 100.f;
 
     if( !walker->isDeleted() )
+    {
+      _d->progress -= 100.f;
       addWalker( walker.as<Walker>() );
+    }
   }
 }
 

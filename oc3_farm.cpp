@@ -41,24 +41,12 @@ FarmTile::FarmTile(const GoodType outGood, const TilePos& pos )
   int picIdx = 0;
   switch (outGood)
   {
-  case G_WHEAT:
-    picIdx = 13;
-    break;
-  case G_VEGETABLE:
-    picIdx = 18;
-    break;
-  case G_FRUIT:
-    picIdx = 23;
-    break;
-  case G_OLIVE:
-    picIdx = 28;
-    break;
-  case G_GRAPE:
-    picIdx = 33;
-    break;
-  case G_MEAT:
-    picIdx = 38;
-    break;
+  case G_WHEAT: picIdx = 13; break;
+  case G_VEGETABLE: picIdx = 18; break;
+  case G_FRUIT: picIdx = 23; break;
+  case G_OLIVE: picIdx = 28; break;
+  case G_GRAPE: picIdx = 33; break;
+  case G_MEAT: picIdx = 38; break;
   default:
     THROW("Unexpected farmType in farm:" << outGood);
   }
