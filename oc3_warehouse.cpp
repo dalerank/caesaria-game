@@ -92,7 +92,7 @@ Warehouse::Warehouse() : ServiceBuilding( S_MAX, B_WAREHOUSE, Size( 3 )), _d( ne
 
   init();
 
-  setWorkers( 10 );
+  setWorkers( 0 );
 }
 
 void Warehouse::init()
@@ -119,11 +119,6 @@ void Warehouse::init()
   }
 
   _d->goodStore.init(*this);
-
-  GoodStock stock;
-  stock._goodType = G_CLAY;
-  stock._currentQty = 300;
-  _d->goodStore.store(stock, 300);
 
   computePictures();
 }
@@ -426,7 +421,7 @@ void WarehouseStore::applyRetrieveReservation(GoodStock &stock, const long reser
       {
          int tileAmount = std::min(amount, subTile._stock._currentQty);
          // std::cout << "retrieve from filled" << std::endl;
-         subTile._stock.addStock(stock, tileAmount);
+         subTile._stock.addStock(subTile._stock, tileAmount);
          amount -= tileAmount;
       }
    }

@@ -26,6 +26,7 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_predefinitions.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_walker_cart_supplier.hpp"
 #include "oc3_stringhelper.hpp"
 
 class Factory::Impl
@@ -77,8 +78,26 @@ void Factory::timeStep(const unsigned long time)
 {
    WorkingBuilding::timeStep(time);
 
+   //try get good from storage building for us
+   if( time % 22 == 1 && getWorkers() > 0 && getWalkerList().size() == 0 )
+   {
+     GoodStock& stock = getInGood();
+
+     //send cart supplier if stock not full
+     if( stock._currentQty < stock._maxQty )
+     {
+       CartSupplierPtr walker = CartSupplier::create( Scenario::instance().getCity() );
+       walker->send2City( this, stock._goodType, stock._maxQty - stock._currentQty );
+
+       if( !walker->isDeleted() )
+       {
+         addWalker( walker.as<Walker>() );
+       }
+     }
+   }
+
    //start/stop animation when workers found
-   bool mayAnimate = (getWorkers() > 0) && (getInGood()._currentQty > 0);
+   bool mayAnimate = (getWorkers() > 0) && (_d->inGoodType == G_NONE || getInGood()._currentQty > 0);
 
    if( mayAnimate && _getAnimation().isStopped() )
    {
@@ -90,11 +109,13 @@ void Factory::timeStep(const unsigned long time)
      _getAnimation().stop();
    }
 
+   //no workers or no good in stock... stop animate
    if( !mayAnimate )
    {
      return;
-   }
+   }  
   
+   //ok... factory is work, produce goods
    GoodStock &inStock = getInGood();
 
    float workersRatio = float(getWorkers()) / float(getMaxWorkers());  // work drops if not enough workers

@@ -39,6 +39,8 @@ CityServiceWorkersHire::CityServiceWorkersHire( CityPtr city )
   _d->priorities[ 6 ] = B_GRANARY;
   _d->priorities[ 7 ] = B_IRON_MINE;
   _d->priorities[ 8 ] = B_TEMPLE_CERES;
+  _d->priorities[ 9 ] = B_POTTERY;
+  _d->priorities[ 10 ] = B_WAREHOUSE;  
 }
 
 bool CityServiceWorkersHire::_haveHr( WorkingBuildingPtr building )
