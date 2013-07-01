@@ -26,18 +26,19 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_predefinitions.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_walker_cart_supplier.hpp"
 #include "oc3_stringhelper.hpp"
+#include "oc3_goodstore_simple.hpp"
 
 class Factory::Impl
 {
 public:
-  Walkers pushers;
   float productionRate;  // max production / year
   float progress;  // progress of the work, in percent (0-100).
   Picture* stockPicture; // stock of input good
   SimpleGoodStore goodStore;
-
-  void removeIdlePushers();
+  GoodType inGoodType;
+  GoodType outGoodType;
 };
 
 Factory::Factory( const GoodType inType, const GoodType outType,
@@ -49,65 +50,84 @@ Factory::Factory( const GoodType inType, const GoodType outType,
 
    _d->productionRate = 4.8f;
    _d->progress = 0.0f;
-   _inGoodType = inType;
-   _outGoodType = outType;
+   _d->inGoodType = inType;
+   _d->outGoodType = outType;
    _d->goodStore.setMaxQty(1000);  // quite unlimited
-   _d->goodStore.setMaxQty(_inGoodType, 200);
-   _d->goodStore.setMaxQty(_outGoodType, 200);
+   _d->goodStore.setMaxQty(_d->inGoodType, 200);
+   _d->goodStore.setMaxQty(_d->outGoodType, 200);
 }
 
 
 GoodStock& Factory::getInGood()
 {
-   return _d->goodStore.getStock(_inGoodType);
+   return _d->goodStore.getStock(_d->inGoodType);
 }
 
 
 GoodStock& Factory::getOutGood()
 {
-   return _d->goodStore.getStock(_outGoodType);
+   return _d->goodStore.getStock(_d->outGoodType);
 }
-
 
 int Factory::getProgress()
 {
-   return (int) _d->progress;
+  return math::clamp<int>( (int)_d->progress, 0, 100 );
 }
-
-void Factory::Impl::removeIdlePushers()
-{
-  // release walkers
-  std::list<WalkerPtr>::iterator i = pushers.begin();
-  while (i != pushers.end())
-  {
-    if( (*i)->isDeleted() )
-      pushers.erase( i++ );
-    else
-      ++i;
-  }
-};
 
 void Factory::timeStep(const unsigned long time)
 {
-   Building::timeStep(time);
+   WorkingBuilding::timeStep(time);
 
-   if( getWorkers() == 0 )
+   //try get good from storage building for us
+   if( time % 22 == 1 && getWorkers() > 0 && getWalkerList().size() == 0 )
+   {
+     GoodStock& stock = getInGood();
+
+     //send cart supplier if stock not full
+     if( stock._currentQty < stock._maxQty )
+     {
+       CartSupplierPtr walker = CartSupplier::create( Scenario::instance().getCity() );
+       walker->send2City( this, stock._goodType, stock._maxQty - stock._currentQty );
+
+       if( !walker->isDeleted() )
+       {
+         addWalker( walker.as<Walker>() );
+       }
+     }
+   }
+
+   //start/stop animation when workers found
+   bool mayAnimate = (getWorkers() > 0) && (_d->inGoodType == G_NONE || getInGood()._currentQty > 0);
+
+   if( mayAnimate && _getAnimation().isStopped() )
+   {
+     _getAnimation().start();
+   }
+
+   if( !mayAnimate && _getAnimation().isRunning() )
+   {
+     _getAnimation().stop();
+   }
+
+   //no workers or no good in stock... stop animate
+   if( !mayAnimate )
    {
      return;
-   }
+   }  
   
+   //ok... factory is work, produce goods
    GoodStock &inStock = getInGood();
 
    float workersRatio = float(getWorkers()) / float(getMaxWorkers());  // work drops if not enough workers
    // 1080: number of seconds in a year, 0.67: number of timeSteps per second
-   float work = 100.f / 1080.f / 0.67f * _d->productionRate * workersRatio * workersRatio;  // work is proportionnal to time and factory speed
+   float work = 100.f / 1080.f / 0.67f * _d->productionRate * workersRatio * workersRatio;  // work is proportional to time and factory speed
    if (inStock._goodType != G_NONE && inStock._currentQty == 0)
    {
       // cannot work, no input material!
       work = 0.0;
    }
 
-   if( _d->progress > 100.0 )
+   if( _d->progress >= 100.0 )
    {
       if (inStock._goodType != G_NONE)
       {
@@ -115,20 +135,19 @@ void Factory::timeStep(const unsigned long time)
          inStock._currentQty -= 100;
       }
 
-      _d->removeIdlePushers();
       deliverGood();      
    }
    else
    {
      _d->progress += work;
 
-     _animation.update( time );
-     Picture *pic = _animation.getCurrentPicture();
+     _getAnimation().update( time );
+     Picture *pic = _getAnimation().getCurrentPicture();
      if (pic != NULL)
      {
        // animation of the working factory
        int level = _fgPictures.size()-1;
-       _fgPictures[level] = _animation.getCurrentPicture();
+       _fgPictures[level] = _getAnimation().getCurrentPicture();
      }
    }  
 }
@@ -137,25 +156,22 @@ void Factory::deliverGood()
 {
   // make a cart pusher and send him away
   if( _mayDeliverGood() )
-  {
-    StringHelper::debug( 0xff, "Good is ready!!!" );
-    
-    GoodStock stock(_outGoodType, 100, 100);
+  {  
+    GoodStock stock(_d->outGoodType, 100, 100);
     CartPusherPtr walker = CartPusher::create( Scenario::instance().getCity() );
     walker->send2City( BuildingPtr( this ), stock );
-    _d->progress -= 100.f;
 
     if( !walker->isDeleted() )
-      _addWalker( walker.as<Walker>() );
+    {
+      _d->progress -= 100.f;
+      GoodStock& inStock = getInGood();
+      inStock._currentQty = math::clamp( inStock._currentQty - 100, 0, 9999 );
+      addWalker( walker.as<Walker>() );
+    }
   }
 }
 
-void Factory::_addWalker( WalkerPtr walker )
-{
-  _d->pushers.push_back( walker );
-}
-
-SimpleGoodStore& Factory::getGoodStore()
+GoodStore& Factory::getGoodStore()
 {
    return _d->goodStore;
 }
@@ -166,15 +182,17 @@ void Factory::save( VariantMap& stream ) const
   VariantMap vm_goodstore;
   _d->goodStore.save( vm_goodstore );
 
+  stream[ "productionRate" ] = _d->productionRate;
   stream[ "goodStore" ] = vm_goodstore;
   stream[ "progress" ] = _d->progress; 
 }
 
 void Factory::load( const VariantMap& stream)
 {
-//    WorkingBuilding::unserialize(stream);
-//    _goodStore.unserialize(stream);
-//    _progress = (float)stream.read_int(1, 0, 100); // approximation
+  WorkingBuilding::load( stream );
+  _d->goodStore.load( stream.get( "goodStore" ).toMap() );
+  _d->progress = stream.get( "progress" ).toFloat(); // approximation
+  _d->productionRate = stream.get( "productionRate" ).toFloat();
 }
 
 Factory::~Factory()
@@ -184,19 +202,7 @@ Factory::~Factory()
 
 bool Factory::_mayDeliverGood() const
 {
-  return ( getAccessRoads().size() > 0 ) && ( _d->pushers.size() == 0 );
-}
-
-void Factory::removeWalker( WalkerPtr w )
-{
-  for( Walkers::iterator it=_d->pushers.begin(); it != _d->pushers.end(); it++ )
-  {
-    if( *it == w )
-    {
-      _d->pushers.erase( it );  
-      return;
-    }
-  }
+  return ( getAccessRoads().size() > 0 ) && ( getWalkerList().size() == 0 );
 }
 
 void Factory::_setProductRate( const float rate )
@@ -204,22 +210,27 @@ void Factory::_setProductRate( const float rate )
   _d->productionRate = rate;
 }
 
-FactoryTimber::FactoryTimber() : Factory(G_NONE, G_TIMBER, B_TIMBER, Size(2) )
+GoodType Factory::getOutGoodType() const
+{
+  return _d->outGoodType;
+}
+
+TimberLogger::TimberLogger() : Factory(G_NONE, G_TIMBER, B_TIMBER, Size(2) )
 {
   _setProductRate( 9.6f );
   setPicture( Picture::load(ResourceGroup::commerce, 72) );
 
-  _animation.load( ResourceGroup::commerce, 73, 10);
+  _getAnimation().load( ResourceGroup::commerce, 73, 10);
   _fgPictures.resize(2);
   setWorkers( 0 );
 }
 
-bool FactoryTimber::canBuild(const TilePos& pos ) const
+bool TimberLogger::canBuild(const TilePos& pos ) const
 {
-   bool is_constructible = Construction::canBuild( pos );
+   bool is_constructible = WorkingBuilding::canBuild( pos );
    bool near_forest = false;  // tells if the factory is next to a forest
 
-   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+   Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
    PtrTilesArea rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), Tilemap::checkCorners );
    for( PtrTilesArea::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
    {
@@ -231,24 +242,24 @@ bool FactoryTimber::canBuild(const TilePos& pos ) const
 }
 
 
-FactoryIron::FactoryIron() : Factory(G_NONE, G_IRON, B_IRON_MINE, Size(2) )
+IronMine::IronMine() : Factory(G_NONE, G_IRON, B_IRON_MINE, Size(2) )
 {
   _setProductRate( 9.6f );
   setWorkers( 0 );
 
   setPicture( Picture::load(ResourceGroup::commerce, 54) );
 
-  _animation.load( ResourceGroup::commerce, 55, 6 );
-  _animation.setFrameDelay( 5 );
+  _getAnimation().load( ResourceGroup::commerce, 55, 6 );
+  _getAnimation().setFrameDelay( 5 );
   _fgPictures.resize(2);
 }
 
-bool FactoryIron::canBuild(const TilePos& pos ) const
+bool IronMine::canBuild(const TilePos& pos ) const
 {
-  bool is_constructible = Construction::canBuild( pos );
+  bool is_constructible = WorkingBuilding::canBuild( pos );
   bool near_mountain = false;  // tells if the factory is next to a mountain
 
-  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
   PtrTilesArea rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size(2), Tilemap::checkCorners );
   for( PtrTilesArea::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {
@@ -258,11 +269,11 @@ bool FactoryIron::canBuild(const TilePos& pos ) const
   return (is_constructible && near_mountain);
 }
 
-FactoryWeapon::FactoryWeapon() : Factory(G_IRON, G_WEAPON, B_WEAPON, Size(2) )
+WeaponsWorkshop::WeaponsWorkshop() : Factory(G_IRON, G_WEAPON, B_WEAPON, Size(2) )
 {
   setPicture( Picture::load(ResourceGroup::commerce, 108) );
 
-  _animation.load( ResourceGroup::commerce, 109, 6);
+  _getAnimation().load( ResourceGroup::commerce, 109, 6);
   _fgPictures.resize(2);
 }
 
@@ -270,15 +281,15 @@ FactoryFurniture::FactoryFurniture() : Factory(G_TIMBER, G_FURNITURE, B_FURNITUR
 {
   setPicture( Picture::load(ResourceGroup::commerce, 117) );
 
-  _animation.load(ResourceGroup::commerce, 118, 14);
+  _getAnimation().load(ResourceGroup::commerce, 118, 14);
   _fgPictures.resize(2);
 }
 
-FactoryWine::FactoryWine() : Factory(G_GRAPE, G_WINE, B_WINE, Size(2) )
+Winery::Winery() : Factory(G_GRAPE, G_WINE, B_WINE, Size(2) )
 {
   setPicture( Picture::load(ResourceGroup::commerce, 86) );
 
-  _animation.load(ResourceGroup::commerce, 87, 12);
+  _getAnimation().load(ResourceGroup::commerce, 87, 12);
   _fgPictures.resize(2);
 }
 
@@ -286,7 +297,7 @@ FactoryOil::FactoryOil() : Factory(G_OLIVE, G_OIL, B_OIL, Size(2) )
 {
   setPicture( Picture::load(ResourceGroup::commerce, 99) );
 
-  _animation.load(ResourceGroup::commerce, 100, 8);
+  _getAnimation().load(ResourceGroup::commerce, 100, 8);
   _fgPictures.resize(2);
 }
 
@@ -314,7 +325,7 @@ bool Wharf::canBuild(const TilePos& pos ) const
   bool bWest  = true;
   bool bEast  = true;
    
-  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
    
   PtrTilesArea rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), false);
   for( PtrTilesArea::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)

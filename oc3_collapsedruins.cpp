@@ -23,10 +23,10 @@ CollapsedRuins::CollapsedRuins() : Building(B_COLLAPSED_RUINS, Size(1) )
 {
     _damageLevel = 1;   
 
-    _animation.load( ResourceGroup::sprites, 1, 8 );
-    _animation.setOffset( Point( 14, 26 ) );
-    _animation.setFrameDelay( 4 );
-    _animation.setLoop( false );
+    _getAnimation().load( ResourceGroup::sprites, 1, 8 );
+    _getAnimation().setOffset( Point( 14, 26 ) );
+    _getAnimation().setFrameDelay( 4 );
+    _getAnimation().setLoop( false );
     _fgPictures.resize(1); 
 }
 

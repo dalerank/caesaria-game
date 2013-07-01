@@ -93,12 +93,12 @@ City::City() : _d( new Impl )
   _d->walkerIdCount = 0;
   _d->climate = C_CENTRAL;
 
-  addService( CityServiceEmigrant::create( *this ) );
-  addService( CityServiceWorkersHire::create( *this ) );
+  addService( CityServiceEmigrant::create( this ) );
+  addService( CityServiceWorkersHire::create( this ) );
   addService( CityServicePtr( &CityServiceTimers::getInstance() ) );
-  addService( CityServiceProsperity::create( *this ) );
-  addService( CityServiceShoreline::create( *this ) );
-  addService( CityServiceInfo::create( *this ) );
+  addService( CityServiceProsperity::create( this ) );
+  addService( CityServiceShoreline::create( this ) );
+  addService( CityServiceInfo::create( this ) );
 }
 
 void City::timeStep()
@@ -433,7 +433,7 @@ void City::clearLand(const TilePos& pos  )
 
 void City::collectTaxes()
 {
-  CityHelper hlp( *this );
+  CityHelper hlp( this );
   long taxes = 0;
   
   std::list<HousePtr> houseList = hlp.getBuildings< House >(B_HOUSE);
@@ -640,4 +640,12 @@ int City::getProsperity() const
 {
   CityServicePtr csPrsp = findService( "prosperity" );
   return csPrsp.isValid() ? csPrsp.as<CityServiceProsperity>()->getProsperity() : 0;
+}
+
+CityPtr City::create()
+{
+  CityPtr ret( new City );
+  ret->drop();
+
+  return ret;
 }

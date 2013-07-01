@@ -25,7 +25,7 @@ typedef SmartPtr< WalkerPrefect > WalkerPrefectPtr;
 class WalkerPrefect : public ServiceWalker
 {
 public:
-  static WalkerPrefectPtr create( City& city );
+  static WalkerPrefectPtr create( CityPtr city );
  
   void onMidTile();
   void onNewTile();
@@ -41,7 +41,7 @@ public:
   ~WalkerPrefect();
  
 protected:
-  WalkerPrefect( City& city );
+  WalkerPrefect( CityPtr city );
 
   bool _looks4Fire( ReachedBuildings& buildings, TilePos& pos );
   void _checkPath2NearestFire( const ReachedBuildings& buildings );

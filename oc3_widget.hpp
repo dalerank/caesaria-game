@@ -40,7 +40,7 @@ public:
 
 	typedef enum { RelativeGeometry=0, AbsoluteGeometry, ProportionalGeometry } GeometryType;
 
-    Widget( Widget* parent, int id, const Rect& rectangle );
+  Widget( Widget* parent, int id, const Rect& rectangle );
 
 //    virtual f32 getOpacity( u32 index=0 ) const;
 //    virtual void setOpacity( f32 nA, s32 index=0 );

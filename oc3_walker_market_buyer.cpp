@@ -25,13 +25,18 @@
 #include "oc3_tile.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_path_finding.hpp"
+#include "oc3_goodstore_simple.hpp"
 
 class MarketBuyer::Impl
 {
 public:
-  BuildingPtr destBuilding;  // granary or warehouse
+  TilePos destBuildingPos;  // granary or warehouse
   GoodType priorityGood;
   int maxDistance;
+  CityPtr city;
+  MarketPtr market;
+  SimpleGoodStore basket;
+  long reservationID;
 };
 
 MarketBuyer::MarketBuyer() : _d( new Impl )
@@ -39,18 +44,18 @@ MarketBuyer::MarketBuyer() : _d( new Impl )
    _walkerGraphic = WG_MARKETLADY;
    _walkerType = WT_MARKET_BUYER;
    _d->maxDistance = 25;
-   _basket.setMaxQty(800);  // this is a big basket!
+   _d->basket.setMaxQty(800);  // this is a big basket!
 
-   _basket.setMaxQty(G_WHEAT, 800);
-   _basket.setMaxQty(G_FRUIT, 800);
-   _basket.setMaxQty(G_VEGETABLE, 800);
-   _basket.setMaxQty(G_MEAT, 800);
-   _basket.setMaxQty(G_FISH, 800);
+   _d->basket.setMaxQty(G_WHEAT, 800);
+   _d->basket.setMaxQty(G_FRUIT, 800);
+   _d->basket.setMaxQty(G_VEGETABLE, 800);
+   _d->basket.setMaxQty(G_MEAT, 800);
+   _d->basket.setMaxQty(G_FISH, 800);
 
-   _basket.setMaxQty(G_POTTERY, 100);
-   _basket.setMaxQty(G_FURNITURE, 100);
-   _basket.setMaxQty(G_OIL, 100);
-   _basket.setMaxQty(G_WINE, 100);
+   _d->basket.setMaxQty(G_POTTERY, 100);
+   _d->basket.setMaxQty(G_FURNITURE, 100);
+   _d->basket.setMaxQty(G_OIL, 100);
+   _d->basket.setMaxQty(G_WINE, 100);
 }
 
 MarketBuyer::~MarketBuyer()
@@ -58,9 +63,9 @@ MarketBuyer::~MarketBuyer()
 }
 
 template< class T >
-BuildingPtr getWalkerDestination2( Propagator &pathPropagator, const BuildingType type, 
-                                    MarketPtr market, SimpleGoodStore& basket, const GoodType what, 
-                                    PathWay &oPathWay, long& reservId )
+TilePos getWalkerDestination2( Propagator &pathPropagator, const BuildingType type, 
+                               MarketPtr market, SimpleGoodStore& basket, const GoodType what, 
+                               PathWay &oPathWay, long& reservId )
 {
   SmartPtr< T > res;
 
@@ -98,73 +103,74 @@ BuildingPtr getWalkerDestination2( Propagator &pathPropagator, const BuildingTyp
     reservId = res->getGoodStore().reserveRetrieval( stock );
   }
 
-  return res.template as<Building>();
+  return res->getTilePos();
 }
 
-void MarketBuyer::computeWalkerDestination()
+void MarketBuyer::computeWalkerDestination( MarketPtr market )
 {
-   std::list<GoodType> priorityGoods = _market->getMostNeededGoods();
+  _d->market = market;
+  std::list<GoodType> priorityGoods = _d->market->getMostNeededGoods();
 
-   _d->destBuilding = BuildingPtr();  // no destination yet
+  _d->destBuildingPos = TilePos( -1, -1 );  // no destination yet
 
-   if( priorityGoods.size() > 0 )
-   {
-      // we have something to buy!
+  if( priorityGoods.size() > 0 )
+  {
+     // we have something to buy!
 
-      // get the list of buildings within reach
-      PathWay pathWay;
-      Propagator pathPropagator;
-      pathPropagator.init( *_market.object() );
-      pathPropagator.propagate( _d->maxDistance);
+     // get the list of buildings within reach
+     PathWay pathWay;
+     Propagator pathPropagator( _d->city );
+     pathPropagator.init( _d->market.as<Construction>() );
+     pathPropagator.propagate( _d->maxDistance);
 
-      // try to find the most needed good
-      for (std::list<GoodType>::iterator itGood = priorityGoods.begin(); itGood != priorityGoods.end(); ++itGood)
-      {
-         _d->priorityGood = *itGood;
+     // try to find the most needed good
+     for (std::list<GoodType>::iterator itGood = priorityGoods.begin(); itGood != priorityGoods.end(); ++itGood)
+     {
+        _d->priorityGood = *itGood;
 
-         if( _d->priorityGood == G_WHEAT || _d->priorityGood == G_FISH 
-             || _d->priorityGood == G_MEAT || _d->priorityGood == G_FRUIT 
-             || _d->priorityGood == G_VEGETABLE)
-         {
-            // try get that good from a granary
-            _d->destBuilding = getWalkerDestination2<Granary>( pathPropagator, B_GRANARY, _market,
-                                                            _basket, _d->priorityGood, pathWay, _reservationID );
-         }
-         else
-         {
-            // try get that good from a warehouse
-            _d->destBuilding = getWalkerDestination2<Warehouse>( pathPropagator, B_WAREHOUSE, _market, 
-                                                              _basket, _d->priorityGood, pathWay, _reservationID );
-         }
+        if( _d->priorityGood == G_WHEAT || _d->priorityGood == G_FISH 
+            || _d->priorityGood == G_MEAT || _d->priorityGood == G_FRUIT 
+            || _d->priorityGood == G_VEGETABLE)
+        {
+           // try get that good from a granary
+           _d->destBuildingPos = getWalkerDestination2<Granary>( pathPropagator, B_GRANARY, _d->market,
+                                                              _d->basket, _d->priorityGood, pathWay, _d->reservationID );
+        }
+        else
+        {
+           // try get that good from a warehouse
+           _d->destBuildingPos = getWalkerDestination2<Warehouse>( pathPropagator, B_WAREHOUSE, _d->market, 
+                                                                _d->basket, _d->priorityGood, pathWay, _d->reservationID );
+        }
 
-         if( _d->destBuilding != NULL )
-         {
-            // we found a destination!
-            setPathWay(pathWay);
-            break;
-         }
-      }
-   }
+        if( _d->destBuildingPos.getI() >= 0 )
+        {
+           // we found a destination!
+           setPathWay(pathWay);
+           break;
+        }
+     }
+  }
 
-   if( _d->destBuilding == NULL )
-   {
-      // we have nothing to buy, or cannot find what we need to buy
-      deleteLater();
-      return;
-   }
+  if( _d->destBuildingPos.getI() < 0)
+  {
+     // we have nothing to buy, or cannot find what we need to buy
+     deleteLater();
+     return;
+  }
 
-   setIJ( _getPathway().getOrigin().getIJ() );
+  setIJ( _getPathway().getOrigin().getIJ() );
 }
 
 void MarketBuyer::onDestination()
 {
    Walker::onDestination();
-   if (_getPathway().isReverse())
+   if( _getPathway().isReverse() )
    {
       // walker is back in the market
       deleteLater();
       // put the content of the basket in the market
-      _market->getGoodStore().storeAll(_basket);
+      _d->market->getGoodStore().storeAll( _d->basket );
    }
    else
    {
@@ -174,108 +180,109 @@ void MarketBuyer::onDestination()
       computeDirection();
 
       // get goods from destination building
-      GranaryPtr granary = _d->destBuilding.as<Granary>();
-      WarehousePtr warehouse = _d->destBuilding.as<Warehouse>();
+      LandOverlayPtr building = _d->city->getTilemap().at( _d->destBuildingPos ).getTerrain().getOverlay();
       
-      if( granary.isValid() )
+      if( building.is<Granary>() )
       {
-         // this is a granary!
-         // std::cout << "MarketBuyer arrives at granary, res=" << _reservationID << std::endl;
-         granary->getGoodStore().applyRetrieveReservation(_basket, _reservationID);
+        GranaryPtr granary = building.as<Granary>();
+        // this is a granary!
+        // std::cout << "MarketBuyer arrives at granary, res=" << _reservationID << std::endl;
+        granary->getGoodStore().applyRetrieveReservation(_d->basket, _d->reservationID);
 
-         // take other goods if possible
-         for (int n = 1; n<G_MAX; ++n)
-         {
-            // for all types of good (except G_NONE)
-            GoodType goodType = (GoodType) n;
-            int qty = _market->getGoodDemand(goodType) - _basket.getCurrentQty(goodType);
-            if (qty != 0)
-            {
-               qty = std::min(qty, granary->getGoodStore().getMaxRetrieve(goodType));
-               qty = std::min(qty, _basket.getMaxQty(_d->priorityGood) - _basket.getCurrentQty(_d->priorityGood));
-               if (qty != 0)
-               {
-                  // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
-                  GoodStock& stock = _basket.getStock(goodType);
-                  granary->getGoodStore().retrieve(stock, qty);
-               }
-            }
-         }
-         granary->computePictures();
+        // take other goods if possible
+        for (int n = 1; n<G_MAX; ++n)
+        {
+           // for all types of good (except G_NONE)
+           GoodType goodType = (GoodType) n;
+           int qty = _d->market->getGoodDemand(goodType) - _d->basket.getCurrentQty(goodType);
+           if (qty != 0)
+           {
+              qty = std::min(qty, granary->getGoodStore().getMaxRetrieve(goodType));
+              qty = std::min(qty, _d->basket.getMaxQty(_d->priorityGood) - _d->basket.getCurrentQty(_d->priorityGood));
+              if (qty != 0)
+              {
+                 // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
+                 GoodStock& stock = _d->basket.getStock(goodType);
+                 granary->getGoodStore().retrieve(stock, qty);
+              }
+           }
+        }
+        granary->computePictures();
       }
-      else if( warehouse.isValid() )
+      else if( building.is<Warehouse>() )
       {
-         // this is a warehouse!
-         // std::cout << "Market buyer takes IRON from warehouse" << std::endl;
-         // warehouse->retrieveGoods(_basket.getStock(G_IRON));
-         warehouse->getGoodStore().applyRetrieveReservation(_basket, _reservationID);
+        WarehousePtr warehouse = building.as<Warehouse>();
+        // this is a warehouse!
+        // std::cout << "Market buyer takes IRON from warehouse" << std::endl;
+        // warehouse->retrieveGoods(_basket.getStock(G_IRON));
+        warehouse->getGoodStore().applyRetrieveReservation(_d->basket, _d->reservationID);
 
-         // take other goods if possible
-         for (int n = 1; n<G_MAX; ++n)
-         {
-            // for all types of good (except G_NONE)
-            GoodType goodType = (GoodType) n;
-            int qty = _market->getGoodDemand(goodType) - _basket.getCurrentQty(goodType);
-            if (qty != 0)
-            {
-               qty = std::min(qty, warehouse->getGoodStore().getMaxRetrieve(goodType));
-               qty = std::min(qty, _basket.getMaxQty(_d->priorityGood) - _basket.getCurrentQty(_d->priorityGood));
-               if (qty != 0)
-               {
-                  // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
-                  GoodStock& stock = _basket.getStock(goodType);
-                  warehouse->getGoodStore().retrieve(stock, qty);
-               }
-            }
-         }
-         warehouse->computePictures();
+        // take other goods if possible
+        for (int n = 1; n<G_MAX; ++n)
+        {
+           // for all types of good (except G_NONE)
+           GoodType goodType = (GoodType) n;
+           int qty = _d->market->getGoodDemand(goodType) - _d->basket.getCurrentQty(goodType);
+           if (qty != 0)
+           {
+              qty = std::min(qty, warehouse->getGoodStore().getMaxRetrieve(goodType));
+              qty = std::min(qty, _d->basket.getMaxQty(_d->priorityGood) - _d->basket.getCurrentQty(_d->priorityGood));
+              if (qty != 0)
+              {
+                 // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
+                 GoodStock& stock = _d->basket.getStock(goodType);
+                 warehouse->getGoodStore().retrieve(stock, qty);
+              }
+           }
+        }
+        warehouse->computePictures();
       }
    }
 }
 
-
-void MarketBuyer::send2City()
+void MarketBuyer::send2City( MarketPtr market )
 {
-  computeWalkerDestination();
+  computeWalkerDestination( market );
 
   if( !isDeleted() )
-    Scenario::instance().getCity().addWalker( WalkerPtr( this ) );
+  {
+    _d->city->addWalker( WalkerPtr( this ) );
+  }
 }
-
 
 void MarketBuyer::save( VariantMap& stream ) const
 {
   Walker::save( stream );
-  stream[ "destBuildI" ] = _d->destBuilding->getTile().getI();
-  stream[ "destBuildJ" ] = _d->destBuilding->getTile().getJ();
+  stream[ "destBuildPos" ] = _d->destBuildingPos;
   stream[ "priorityGood" ] = (int)_d->priorityGood;
-  stream[ "marketI" ] = _market->getTile().getI();
+  stream[ "marketPos" ] = _d->market->getTilePos();
 
   VariantMap vm_basket;
-  _basket.save( vm_basket );
+  _d->basket.save( vm_basket );
   stream[ "basket" ] = vm_basket;
 
   stream[ "maxDistance" ] = _d->maxDistance;
-  stream[ "reservationId" ] = static_cast<unsigned int>(_reservationID);
+  stream[ "reservationId" ] = static_cast<unsigned int>(_d->reservationID);
 }
 
 void MarketBuyer::load( const VariantMap& stream)
 {
-//    Walker::unserialize(stream);
-//    //stream.read_objectID((void**)&_destBuilding);
-// 
-//    _d->priorityGood = (GoodType) stream.read_int(1, 0, G_MAX);
-//    stream.read_objectID((void**)&_market);
-//    _basket.unserialize(stream);
-//    _d->maxDistance = stream.read_int(2, 0, 65535);
-//    _reservationID = stream.read_int(4, 0, 1000000);
+  Walker::load( stream );
+  _d->destBuildingPos = stream.get( "destBuildPos" ).toTilePos();
+  _d->priorityGood = (GoodType)stream.get( "priorityGood" ).toInt();
+  TilePos tpos = stream.get( "marketPos" ).toTilePos();
+  CityHelper helper( _d->city );
+  _d->market = helper.getBuilding<Market>( tpos );
+  _d->basket.load( stream.get( "basket" ).toMap() );
+  _d->maxDistance = stream.get( "maxDistance" ).toInt();
+  _d->reservationID = stream.get( "reserationId" ).toInt();
 }
 
-MarketBuyerPtr MarketBuyer::create( MarketPtr market )
+MarketBuyerPtr MarketBuyer::create( CityPtr city )
 {
   MarketBuyerPtr ret( new MarketBuyer() );
+  ret->_d->city = city;
   ret->drop();
-  ret->_market = market;
 
   return ret;
 }

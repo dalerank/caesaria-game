@@ -32,7 +32,7 @@ public:
   PrefectAction action;
 };
 
-WalkerPrefect::WalkerPrefect( City& city )
+WalkerPrefect::WalkerPrefect( CityPtr city )
 : ServiceWalker( city, S_PREFECT ), _d( new Impl )
 {
   _walkerType = WT_PREFECT;
@@ -257,7 +257,7 @@ float WalkerPrefect::getServiceValue() const
   return 5;
 }
 
-WalkerPrefectPtr WalkerPrefect::create( City& city )
+WalkerPrefectPtr WalkerPrefect::create( CityPtr city )
 {
   WalkerPrefectPtr ret( new WalkerPrefect( city ) );
   ret->drop();
@@ -275,7 +275,7 @@ void WalkerPrefect::send2City( BuildingPrefecturePtr prefecture, int water/*=0 *
   {
     setBase( prefecture.as<Building>() );
 
-    _getCity().addWalker( WalkerPtr( this ));
+    _getCity()->addWalker( WalkerPtr( this ));
   }
   else
   {
@@ -295,7 +295,7 @@ void WalkerPrefect::load( const VariantMap& stream )
   if( prefecture.isValid() )
   {
     prefecture->addWalker( WalkerPtr( this ) );
-    _getCity().addWalker( WalkerPtr( this ) );
+    _getCity()->addWalker( WalkerPtr( this ) );
   }
   
   _OC3_DEBUG_BREAK_IF( prefecture.isNull() && "Not found prefecture on loading" );

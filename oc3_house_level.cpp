@@ -23,6 +23,7 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_saveadapter.hpp"
+#include "oc3_goodstore.hpp"
 
 #include <string>
 #include <map>

@@ -49,12 +49,8 @@ public:
   virtual unsigned int getWalkerDistance() const;
 
   //void removeWalker( WalkerPtr walker );
-  void addWalker( WalkerPtr walker );
-  const Walkers& getWalkerList() const;
-
 private:  
   int _serviceRange;
-  Walkers _walkerList;
   static std::map<ServiceType, ServiceBuilding*> _specimen;
 
   class Impl;

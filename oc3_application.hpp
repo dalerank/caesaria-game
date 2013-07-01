@@ -12,18 +12,47 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#ifndef __OPENCAESAR3_SERVICEBUILDING_MANAGER_H_INCLUDE_
-#define __OPENCAESAR3_SERVICEBUILDING_MANAGER_H_INCLUDE_
+
+#ifndef CAESAR_HPP
+#define CAESAR_HPP
+
+#include "oc3_scopedptr.hpp"
+
+#include <string>
+#include <vector>
+#include <map>
 
 #include "oc3_enums.hpp"
 
-class ServiceBuilding;
+class Menu;
+class MenuBar;
+class Scenario;
 
-class ServiceBuildingManager
+class Application
 {
 public:
-  static ServiceBuilding* getBuilding( ServiceType type );
+   Application();
+
+   void start();
+
+   void initVideo();
+   void initSound();
+   void initWaitPictures();
+   
+   void setScreenWait();
+   void setScreenMenu();
+   void setScreenGame();
+
+   void initGuiMain();
+   void initGuiEnvironment();
+
+private:
+   class Impl;
+   ScopedPtr< Impl > _d;
 };
+
 
 #endif

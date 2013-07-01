@@ -19,14 +19,14 @@
 #include "oc3_widget.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_signals.hpp"
+#include "oc3_predefinitions.hpp"
 
 class PushButton;
-class City;
 
 class AdvisorsWindow : public Widget
 {
 public:
-  static AdvisorsWindow* create( Widget* parent, int id, const AdvisorType type, City& city  );
+  static AdvisorsWindow* create( Widget* parent, int id, const AdvisorType type, CityPtr city  );
 
   // draw on screen
   void draw( GfxEngine& engine );
@@ -42,7 +42,7 @@ protected:
   class Impl;
   ScopedPtr< Impl > _d;
 
-  AdvisorsWindow( Widget* parent, int id, City& city );
+  AdvisorsWindow( Widget* parent, int id );
   PushButton* addButton( const int pos, const int picId );
 };
 

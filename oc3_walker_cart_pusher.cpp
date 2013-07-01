@@ -28,20 +28,25 @@
 #include "oc3_path_finding.hpp"
 #include "oc3_picture_bank.hpp"
 #include "oc3_factory_building.hpp"
+#include "oc3_goodstore.hpp"
 
 class CartPusher::Impl
 {
 public:
-  City* city;
+  CityPtr city;
   GoodStock stock;
   BuildingPtr producerBuilding;
   BuildingPtr consumerBuilding;
   Picture* cartPicture;
   int maxDistance;
   long reservationID;
+
+  BuildingPtr getWalkerDestination_factory(Propagator& pathPropagator, PathWay &oPathWay);
+  BuildingPtr getWalkerDestination_warehouse(Propagator& pathPropagator, PathWay &oPathWay);
+  BuildingPtr getWalkerDestination_granary(Propagator& pathPropagator, PathWay &oPathWay);
 };
 
-CartPusher::CartPusher( City& city ) : _d( new Impl )
+CartPusher::CartPusher( CityPtr city ) : _d( new Impl )
 {
    _d->cartPicture = NULL;
    _walkerGraphic = WG_PUSHER;
@@ -49,7 +54,7 @@ CartPusher::CartPusher( City& city ) : _d( new Impl )
    _d->producerBuilding = NULL;
    _d->consumerBuilding = NULL;
    _d->maxDistance = 25;
-   _d->city = &city;
+   _d->city = city;
 }
 
 void CartPusher::onDestination()
@@ -171,28 +176,28 @@ void CartPusher::computeWalkerDestination()
 {
    // get the list of buildings within reach
    PathWay pathWay;
-   Propagator pathPropagator;
+   Propagator pathPropagator( _d->city );
    _d->consumerBuilding = 0;
-   pathPropagator.init( *_d->producerBuilding.object() );
+   pathPropagator.init( _d->producerBuilding.as<Construction>() );
    pathPropagator.propagate(_d->maxDistance);
 
    BuildingPtr destBuilding;
    if (destBuilding == NULL)
    {
       // try send that good to a factory
-      destBuilding = getWalkerDestination_factory(pathPropagator, pathWay);
+      destBuilding = _d->getWalkerDestination_factory(pathPropagator, pathWay);
    }
 
    if (destBuilding == NULL)
    {
       // try send that good to a granary
-      destBuilding = getWalkerDestination_granary(pathPropagator, pathWay);
+      destBuilding = _d->getWalkerDestination_granary(pathPropagator, pathWay);
    }
 
    if (destBuilding == NULL)
    {
       // try send that good to a warehouse
-      destBuilding = getWalkerDestination_warehouse( pathPropagator, pathWay );
+      destBuilding = _d->getWalkerDestination_warehouse( pathPropagator, pathWay );
    }
 
    if( destBuilding != NULL)
@@ -213,10 +218,10 @@ void CartPusher::computeWalkerDestination()
 }
 
 
-BuildingPtr CartPusher::getWalkerDestination_factory(Propagator &pathPropagator, PathWay &oPathWay)
+BuildingPtr CartPusher::Impl::getWalkerDestination_factory(Propagator &pathPropagator, PathWay &oPathWay)
 {
    BuildingPtr res;
-   GoodType goodType = _d->stock._goodType;
+   GoodType goodType = stock._goodType;
    BuildingType buildingType = BuildingDataHolder::instance().getBuildingTypeByInGood(goodType);
 
    if (buildingType == B_NONE)
@@ -234,9 +239,9 @@ BuildingPtr CartPusher::getWalkerDestination_factory(Propagator &pathPropagator,
       BuildingPtr building= pathWayIt->first;
       PathWay& pathWay= pathWayIt->second;
 
-      SmartPtr<Factory> factory = building.as<Factory>();
-      _d->reservationID = factory->getGoodStore().reserveStorage(_d->stock);
-      if (_d->reservationID != 0)
+      FactoryPtr factory = building.as<Factory>();
+      reservationID = factory->getGoodStore().reserveStorage( stock );
+      if (reservationID != 0)
       {
          res = factory.as<Building>();
          oPathWay = pathWay;
@@ -247,7 +252,7 @@ BuildingPtr CartPusher::getWalkerDestination_factory(Propagator &pathPropagator,
    return res;
 }
 
-BuildingPtr CartPusher::getWalkerDestination_warehouse(Propagator &pathPropagator, PathWay &oPathWay)
+BuildingPtr CartPusher::Impl::getWalkerDestination_warehouse(Propagator &pathPropagator, PathWay &oPathWay)
 {
    BuildingPtr res;
 
@@ -260,9 +265,9 @@ BuildingPtr CartPusher::getWalkerDestination_warehouse(Propagator &pathPropagato
       BuildingPtr building= pathWayIt->first;
       PathWay& pathWay= pathWayIt->second;
 
-      SmartPtr<Warehouse> warehouse= building.as<Warehouse>();
-      _d->reservationID = warehouse->getGoodStore().reserveStorage(_d->stock);
-      if (_d->reservationID != 0)
+      WarehousePtr warehouse= building.as<Warehouse>();
+      reservationID = warehouse->getGoodStore().reserveStorage( stock );
+      if (reservationID != 0)
       {
          res = warehouse.as<Building>();
          oPathWay = pathWay;
@@ -273,12 +278,11 @@ BuildingPtr CartPusher::getWalkerDestination_warehouse(Propagator &pathPropagato
    return res;
 }
 
-
-BuildingPtr CartPusher::getWalkerDestination_granary(Propagator &pathPropagator, PathWay &oPathWay)
+BuildingPtr CartPusher::Impl::getWalkerDestination_granary(Propagator &pathPropagator, PathWay &oPathWay)
 {
    BuildingPtr res;
 
-   GoodType goodType = _d->stock._goodType;
+   GoodType goodType = stock._goodType;
    if (!(goodType == G_WHEAT || goodType == G_FISH || goodType == G_MEAT || goodType == G_FRUIT || goodType == G_VEGETABLE))
    {
       // this good cannot be stored in a granary
@@ -296,8 +300,8 @@ BuildingPtr CartPusher::getWalkerDestination_granary(Propagator &pathPropagator,
       PathWay& pathWay= pathWayIt->second;
 
       SmartPtr<Granary> granary= building.as<Granary>();
-      _d->reservationID = granary->getGoodStore().reserveStorage(_d->stock);
-      if (_d->reservationID != 0)
+      reservationID = granary->getGoodStore().reserveStorage( stock );
+      if (reservationID != 0)
       {
          res = granary.as<Building>();
          oPathWay = pathWay;
@@ -317,7 +321,9 @@ void CartPusher::send2City( BuildingPtr building, const GoodStock& stock )
   computeWalkerDestination();
 
   if( !isDeleted() )
-    _d->city->addWalker( WalkerPtr( this ) );
+  {
+    _d->city->addWalker( this );
+  }
 }
 
 void CartPusher::timeStep( const unsigned long time )
@@ -330,7 +336,7 @@ void CartPusher::timeStep( const unsigned long time )
   Walker::timeStep( time );
 }
 
-CartPusherPtr CartPusher::create( City& city )
+CartPusherPtr CartPusher::create( CityPtr city )
 {
   CartPusherPtr ret( new CartPusher( city ) );
   ret->drop(); //delete automatically
@@ -342,7 +348,7 @@ void CartPusher::save( VariantMap& stream ) const
 {
   Walker::save( stream );
   
-  VariantMap vm_stock;
+  VariantList vm_stock;
   _d->stock.save( vm_stock );
   stream[ "stock" ] = vm_stock;
 
@@ -359,11 +365,16 @@ void CartPusher::load( const VariantMap& stream )
 {
   Walker::load( stream );
 
-  _d->stock.load( stream.get( "stock" ).toMap() );
+  _d->stock.load( stream.get( "stock" ).toList() );
 
   TilePos prPos( stream.get( "producerPos" ).toTilePos() );
   Tile& prTile = _d->city->getTilemap().at( prPos );
   _d->producerBuilding = prTile.getTerrain().getOverlay().as<Building>();
+  
+  if( _d->producerBuilding.is<WorkingBuilding>() )
+  {
+    _d->producerBuilding.as<WorkingBuilding>()->addWalker( this );
+  }
 
   TilePos cnsmPos( stream.get( "consumerPos" ).toTilePos() );
   Tile& cnsmTile = _d->city->getTilemap().at( cnsmPos );

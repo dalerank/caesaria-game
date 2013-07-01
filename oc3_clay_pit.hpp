@@ -12,47 +12,19 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
+#ifndef __OPENCAESAR3_CLAY_PIT_H_INCLUDED__
+#define __OPENCAESAR3_CLAY_PIT_H_INCLUDED__
 
-#ifndef CAESAR_HPP
-#define CAESAR_HPP
+#include "oc3_factory_building.hpp"
 
-#include "oc3_scopedptr.hpp"
-
-#include <string>
-#include <vector>
-#include <map>
-
-#include "oc3_enums.hpp"
-
-class Menu;
-class MenuBar;
-class Scenario;
-
-class CaesarApp
+class ClayPit : public Factory
 {
 public:
-   CaesarApp();
-
-   void start();
-
-   void initVideo();
-   void initSound();
-   void initWaitPictures();
-   
-   void setScreenWait();
-   void setScreenMenu();
-   void setScreenGame();
-
-   void initGuiMain();
-   void initGuiEnvironment();
-
-private:
-   class Impl;
-   ScopedPtr< Impl > _d;
+  ClayPit();
+  
+  bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
+  void timeStep(const unsigned long time);
 };
 
-
-#endif
+#endif //__OPENCAESAR3_CLAY_PIT_H_INCLUDED__

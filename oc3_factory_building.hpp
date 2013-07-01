@@ -22,60 +22,58 @@
 #include "oc3_working_building.hpp"
 #include "oc3_predefinitions.hpp"
 
-class Factory: public WorkingBuilding
+class GoodStore;
+
+class Factory : public WorkingBuilding
 {
 public:
   Factory( const GoodType inGood, const GoodType outGood,
-            const BuildingType type, const Size& size );
+           const BuildingType type, const Size& size );
   ~Factory();
 
   GoodStock& getInGood();
   GoodStock& getOutGood();
-  SimpleGoodStore& getGoodStore();
+
+  GoodType getOutGoodType() const;
+
+  GoodStore& getGoodStore();
 
   // called when the factory has made 100 good units
-  void deliverGood();
-  int getProgress();
+  virtual void deliverGood();
+  virtual int getProgress();
 
   virtual void timeStep(const unsigned long time);
 
-  void save( VariantMap& stream) const;
-  void load( const VariantMap& stream);
-
-  void removeWalker( WalkerPtr w );
+  virtual void save( VariantMap& stream) const;
+  virtual void load( const VariantMap& stream);
 
 protected:
   void _setProductRate( const float rate );
   virtual bool _mayDeliverGood() const;
-  void _addWalker( WalkerPtr );
 
 protected:
-  GoodType _inGoodType;
-  GoodType _outGoodType;
-
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-
-class FactoryTimber : public Factory
+class TimberLogger : public Factory
 {
 public:
-   FactoryTimber();
+   TimberLogger();
    bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
 };
 
-class FactoryIron : public Factory
+class IronMine : public Factory
 {
 public:
-   FactoryIron();
+   IronMine();
    bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
 };
 
-class FactoryWeapon : public Factory
+class WeaponsWorkshop : public Factory
 {
 public:
-   FactoryWeapon();
+   WeaponsWorkshop();
 };
 
 class FactoryFurniture : public Factory
@@ -84,10 +82,10 @@ public:
    FactoryFurniture();
 };
 
-class FactoryWine : public Factory
+class Winery : public Factory
 {
 public:
-   FactoryWine();
+   Winery();
 };
 
 class FactoryOil : public Factory

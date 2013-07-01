@@ -20,15 +20,15 @@
 #define WALKER_CART_PUSHER_HPP
 
 #include "oc3_walker.hpp"
+#include "oc3_predefinitions.hpp"
 
 class Propagator;
-class City;
 
 /** This walker delivers goods */
 class CartPusher : public Walker
 {
 public:
-  static CartPusherPtr create( City& city );
+  static CartPusherPtr create( CityPtr city );
 
   void setProducerBuilding( BuildingPtr building );
   void setConsumerBuilding( BuildingPtr building );
@@ -44,17 +44,14 @@ public:
   void send2City( BuildingPtr building, const GoodStock& stock );
 
   void computeWalkerDestination();
-  BuildingPtr getWalkerDestination_factory(Propagator& pathPropagator, PathWay &oPathWay);
-  BuildingPtr getWalkerDestination_warehouse(Propagator& pathPropagator, PathWay &oPathWay);
-  BuildingPtr getWalkerDestination_granary(Propagator& pathPropagator, PathWay &oPathWay);
-  
+ 
   void timeStep(const unsigned long time);
 
-  void save(VariantMap& stream) const;
-  void load(const VariantMap& stream);
+  virtual void save(VariantMap& stream) const;
+  virtual void load(const VariantMap& stream);
 
 protected:
-   CartPusher( City& city );
+   CartPusher( CityPtr city );
 
 private:
    class Impl;

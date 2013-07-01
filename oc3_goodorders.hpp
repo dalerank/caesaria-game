@@ -13,22 +13,27 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_servicebuildingmanager.hpp"
-#include "oc3_water_buildings.hpp"
-#include "oc3_service_building.hpp"
-#include "oc3_buildingengineer.hpp"
-#include "oc3_prefecture.hpp"
-#include "oc3_well.hpp"
+#ifndef __OPENCAESAR3_GOODORDERS_H_INCLUDED__
+#define __OPENCAESAR3_GOODORDERS_H_INCLUDED__
 
-ServiceBuilding* ServiceBuildingManager::getBuilding( ServiceType type )
+#include "oc3_enums.hpp"
+#include "oc3_scopedptr.hpp"
+
+class GoodOrders 
 {
-  switch( type )
-  {
-    case S_WELL:	return new BuildingWell();
-    case S_FOUNTAIN:	return new BuildingFountain();
-    case S_ENGINEER:	return new BuildingEngineer();
-    case S_PREFECT:	return new BuildingPrefecture();
-    case S_THEATER:	return new BuildingTheater();
-    default:		return 0;
-  }
-}
+public:
+  typedef enum { accept=0, reject, deliver, none } Order;
+  
+  GoodOrders();
+  ~GoodOrders();
+
+  void set( const GoodType type, Order rule );
+  void set( Order rule );
+  Order get( const GoodType type );
+
+private:
+  class Impl;
+  ScopedPtr< Impl > _d;
+};
+
+#endif //__OPENCAESAR3_GOODORDERS_H_INCLUDED__

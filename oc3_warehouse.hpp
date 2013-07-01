@@ -19,69 +19,32 @@
 #ifndef WAREHOUSE_HPP
 #define WAREHOUSE_HPP
 
-#include "oc3_working_building.hpp"
+#include "oc3_service_building.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_good.hpp"
 #include "oc3_positioni.hpp"
 
-#include <string>
-#include <list>
+class GoodStore;
 
-class WarehouseTile
+class Warehouse: public ServiceBuilding
 {
+  friend class WarehouseStore;
+
 public:
-   WarehouseTile(const TilePos& pos );
-   void computePicture();
+  Warehouse();
+  void init();
 
-   TilePos _pos;
-   GoodStock _stock;
-   Picture _picture;
-};
-
-
-// implementation of the GoodStore for the Warehouse
-class Warehouse;
-class WarehouseStore: public GoodStore
-{
-public:
-   using GoodStore::applyStorageReservation;
-   using GoodStore::applyRetrieveReservation;
-
-   WarehouseStore();
-
-   void init(Warehouse &_warehouse);
-
-   int getCurrentQty(const GoodType &goodType);
-
-   // returns the max quantity that can be stored now
-   int getMaxStore(const GoodType goodType);
-
-   // store/retrieve
-   void applyStorageReservation(GoodStock &stock, const long reservationID);
-   void applyRetrieveReservation(GoodStock &stock, const long reservationID);
+  virtual void timeStep(const unsigned long time);
+  void computePictures();
+  GoodStore& getGoodStore();
+  
+  virtual void deliverService();
+  virtual void save(VariantMap& stream) const;
+  virtual void load(const VariantMap& stream);
 
 private:
-   Warehouse *_warehouse;
-};
-
-
-class Warehouse: public WorkingBuilding
-{
-   friend class WarehouseStore;
-
-public:
-   Warehouse();
-   void init();
-
-   void timeStep(const unsigned long time);
-   void computePictures();
-   WarehouseStore& getGoodStore();
-
-private:
-   Animation _animFlag;  // the flag above the warehouse
-   typedef std::vector<WarehouseTile> WhTiles;
-   WhTiles _subTiles;
-   WarehouseStore _goodStore;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 

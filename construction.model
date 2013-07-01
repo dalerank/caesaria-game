@@ -73,6 +73,15 @@
 	"desstep" : 1,
 	"employers" : 8
   },
+  
+  "house" : 
+  {
+	"cost" : 10,
+	"desirability" : -3,
+	"desrange" : 3,
+	"desstep" : 1,
+	"employers" : 0
+  }
 
   "lion_pit" : 
   {

@@ -17,15 +17,21 @@
 #define __OPENCAESAR3_CITYSERVICE_EMIGRANT_H_INCLUDED__
 
 #include "oc3_cityservice.hpp"
+#include "oc3_scopedptr.hpp"
+#include "oc3_predefinitions.hpp"
 
 class CityServiceEmigrant : public CityService
 {
 public:
-  static CityServicePtr create( City& city );
+  static CityServicePtr create( CityPtr city );
 
   void update( const unsigned int time );
+
 private:
-  CityServiceEmigrant( City& city );
+  CityServiceEmigrant( CityPtr city );
+
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 #endif

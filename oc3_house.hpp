@@ -23,6 +23,7 @@
 #include "oc3_scopedptr.hpp"
 
 class HouseLevelSpec;
+class GoodStore;
 
 class House : public Building
 {
@@ -33,7 +34,7 @@ public:
 
    void timeStep(const unsigned long time);
 
-   SimpleGoodStore& getGoodStore();
+   virtual GoodStore& getGoodStore();
 
    // return the current house level
    const HouseLevelSpec& getLevelSpec() const;

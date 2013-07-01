@@ -4,8 +4,6 @@
 #include "oc3_referencecounted.hpp"
 #include "oc3_smartptr.hpp"
 
-class City;
-
 class CityService : public ReferenceCounted
 {
 public:
@@ -17,14 +15,12 @@ public:
   virtual void destroy() {}
 
 protected:
-  CityService( City& city, const std::string& name ) 
-    : _name( name ), _city( city )
+  CityService( const std::string& name ) : _name( name )
   {
   }
 
 protected:
   std::string _name;
-  City& _city;
 };
 
 typedef SmartPtr<CityService> CityServicePtr;

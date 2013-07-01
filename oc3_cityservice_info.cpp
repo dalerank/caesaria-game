@@ -27,6 +27,7 @@ class CityParameters
 public:
   int population;
   int funds;
+  CityPtr city;
 
   CityParameters()
   {
@@ -38,11 +39,12 @@ public:
 class CityServiceInfo::Impl
 {
 public:
+  CityPtr city;
   DateTime lastDate;
   std::vector< CityParameters > params;
 };
 
-CityServicePtr CityServiceInfo::create( City& city )
+CityServicePtr CityServiceInfo::create( CityPtr city )
 {
   CityServicePtr ret( new CityServiceInfo( city ) );
   ret->drop();
@@ -50,10 +52,11 @@ CityServicePtr CityServiceInfo::create( City& city )
   return ret;
 }
 
-CityServiceInfo::CityServiceInfo( City& city )
-  : CityService( city, "info" ), _d( new Impl )
+CityServiceInfo::CityServiceInfo( CityPtr city )
+  : CityService( "info" ), _d( new Impl )
 {
-  _d->lastDate = city.getDate();
+  _d->city = city;
+  _d->lastDate = city->getDate();
   _d->params.resize( 12 );
 }
 
@@ -62,15 +65,15 @@ void CityServiceInfo::update( const unsigned int time )
   if( time % 44 != 1 )
     return;
 
-  if( _city.getDate().getMonth() != _d->lastDate.getMonth() )
+  if( _d->city->getDate().getMonth() != _d->lastDate.getMonth() )
   {
-    _d->lastDate = _city.getDate();
+    _d->lastDate = _d->city->getDate();
 
     _d->params.erase( _d->params.begin() );
     _d->params.push_back( CityParameters() );
 
     CityParameters& last = _d->params.back();
-    last.population = _city.getPopulation();
-    last.funds = _city.getFunds();    
+    last.population = _d->city->getPopulation();
+    last.funds = _d->city->getFunds();    
   }
 }

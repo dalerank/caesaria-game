@@ -18,15 +18,16 @@
 
 #include "oc3_cityservice.hpp"
 #include "oc3_scopedptr.hpp"
+#include "oc3_predefinitions.hpp"
 
 class CityServiceWater : public CityService
 {
 public:
-  static CityServicePtr create( City& city );
+  static CityServicePtr create( CityPtr city );
 
   void update( const unsigned int time );
 private:
-  CityServiceWater( City& city );
+  CityServiceWater( CityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;

@@ -18,20 +18,24 @@
 
 #include "oc3_working_building.hpp"
 
-class Granary: public WorkingBuilding
+class GoodStore;
+class Granary : public WorkingBuilding
 {
 public:
   Granary();
 
-  void timeStep(const unsigned long time);
+  virtual void timeStep(const unsigned long time);
   void computePictures();
-  SimpleGoodStore& getGoodStore();
+  GoodStore& getGoodStore();
 
-  void save( VariantMap& stream) const;
-  void load( const VariantMap& stream);
+  virtual void save( VariantMap& stream) const;
+  virtual void load( const VariantMap& stream);
 
 private:
-  SimpleGoodStore _goodStore;
+  void _tryDevastateGranary();
+
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 

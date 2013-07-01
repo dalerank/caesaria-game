@@ -36,7 +36,7 @@
 #include "oc3_low_bridge.hpp"
 #include "oc3_high_bridge.hpp"
 
-#include "oc3_factoryclay.hpp"
+#include "oc3_clay_pit.hpp"
 #include "oc3_factorymarble.hpp"
 #include "oc3_goverment_building.hpp"
 #include "oc3_military_building.hpp"
@@ -126,14 +126,14 @@ ConstructionManager::ConstructionManager() : _d( new Impl )
   addCreator(B_FRUIT, OC3_STR_EXT(B_FRUIT)    , new BuildingCreator<FarmFruit>() );
   addCreator(B_VEGETABLE, OC3_STR_EXT(B_VEGETABLE), new BuildingCreator<FarmVegetable>() );
   // raw materials
-  addCreator(B_IRON_MINE, OC3_STR_EXT(B_IRON_MINE)  , new BuildingCreator<FactoryIron>() );
-  addCreator(B_TIMBER, OC3_STR_EXT(B_TIMBER), new BuildingCreator<FactoryTimber>() );
-  addCreator(B_CLAY_PIT, OC3_STR_EXT(B_CLAY_PIT)  , new BuildingCreator<FactoryClay>() );
+  addCreator(B_IRON_MINE, OC3_STR_EXT(B_IRON_MINE)  , new BuildingCreator<IronMine>() );
+  addCreator(B_TIMBER, OC3_STR_EXT(B_TIMBER), new BuildingCreator<TimberLogger>() );
+  addCreator(B_CLAY_PIT, OC3_STR_EXT(B_CLAY_PIT)  , new BuildingCreator<ClayPit>() );
   addCreator(B_MARBLE, OC3_STR_EXT(B_MARBLE), new BuildingCreator<FactoryMarble>() );
   // factories
-  addCreator(B_WEAPON, OC3_STR_EXT(B_WEAPON)   , new BuildingCreator<FactoryWeapon>() );
+  addCreator(B_WEAPON, OC3_STR_EXT(B_WEAPON)   , new BuildingCreator<WeaponsWorkshop>() );
   addCreator(B_FURNITURE, OC3_STR_EXT(B_FURNITURE), new BuildingCreator<FactoryFurniture>() );
-  addCreator(B_WINE, OC3_STR_EXT(B_WINE)     , new BuildingCreator<FactoryWine>() );
+  addCreator(B_WINE, OC3_STR_EXT(B_WINE)     , new BuildingCreator<Winery>() );
   addCreator(B_OIL, OC3_STR_EXT(B_OIL)      , new BuildingCreator<FactoryOil>() );
   addCreator(B_POTTERY, OC3_STR_EXT(B_POTTERY)  , new BuildingCreator<FactoryPottery>() );
   // utility

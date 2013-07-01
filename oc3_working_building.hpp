@@ -23,6 +23,7 @@ class WorkingBuilding : public Building
 {
 public:
   WorkingBuilding(const BuildingType type, const Size& size);
+  ~WorkingBuilding();
 
   void setMaxWorkers(const int maxWorkers);
   int getMaxWorkers() const;
@@ -33,15 +34,20 @@ public:
   int getWorkers() const;
 
   void setActive(const bool value);  // if false then this building is stopped
-  bool isActive();
+  virtual bool isActive();
+  virtual void destroy();
 
-  void save( VariantMap& stream) const;
-  void load( const VariantMap& stream);
+  virtual void timeStep(const unsigned long time);
+
+  virtual void save( VariantMap& stream) const;
+  virtual void load( const VariantMap& stream);
+
+  virtual void addWalker( WalkerPtr walker );
+  virtual const Walkers& getWalkerList() const;
 
 private:
-  int _currentWorkers;
-  int _maxWorkers;
-  bool _isActive;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 #endif //__OPENCAESAR3_WORKINGBUILDING_H_INCLUDED__

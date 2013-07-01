@@ -19,12 +19,14 @@
 #include "oc3_service_building.hpp"
 #include "oc3_predefinitions.hpp"
 
+class GoodStore;
+
 class Market: public ServiceBuilding
 {
 public:
   Market();
 
-  SimpleGoodStore& getGoodStore();
+  GoodStore& getGoodStore();
   std::list<GoodType> getMostNeededGoods();  // used by the market buyer
 
   // returns the quantity of needed goods

@@ -133,6 +133,11 @@ int StringHelper::toInt( const char* in, const char** out/*=0*/ )
   }
 }
 
+int StringHelper::toInt( const std::string& number )
+{
+  return toInt( number.c_str() );
+}
+
 unsigned int StringHelper::toUint( const char* in, const char** out/*=0*/ )
 {
   if (!in)

@@ -22,6 +22,8 @@ class FactoryPottery : public Factory
 {
 public:
   FactoryPottery();
+
+  virtual void timeStep(const unsigned long time);
 };
 
 

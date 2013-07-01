@@ -25,141 +25,54 @@
 #include <map>
 #include "oc3_serializer.hpp"
 
+class VariantList;
+
 class Good
 {
   friend class GoodHelper;
 public:
-   std::string getName();
-   int getImportPrice();
-   int getExportPrice();
-   bool isAllowUsage();
-   bool isAllowStorage();
-   bool isAllowImport();
-   bool isAllowExport();
+  std::string getName();
+  int getImportPrice();
+  int getExportPrice();
+  bool isAllowUsage();
+  bool isAllowStorage();
+  bool isAllowImport();
+  bool isAllowExport();
 
 private:
-   void init(const GoodType &goodType);
+  void init(const GoodType &goodType);
 
-   GoodType _goodType;
-   BuildingType _outFactoryType;  // type of factory, if any (ex: G_IRON => B_WEAPONS)
-   std::string _name;
-   int _importPrice;
-   int _exportPrice;
+  GoodType _goodType;
+  BuildingType _outFactoryType;  // type of factory, if any (ex: G_IRON => B_WEAPONS)
+  std::string _name;
+  int _importPrice;
+  int _exportPrice;
 
-   bool _allowUsage;
-   bool _allowStorage;
-   bool _allowImport;
-   bool _allowExport;
+  bool _allowUsage;
+  bool _allowStorage;
+  bool _allowImport;
+  bool _allowExport;
 
-   int _usageQuota;   // percent of (rich) population to give access to this product
-   int _importTreshold;  // number of units in warehouses above which no import is made
-   int _exportTreshold;  // number of units in warehouses under which no export is made
+  int _usageQuota;   // percent of (rich) population to give access to this product
+  int _importTreshold;  // number of units in warehouses above which no import is made
+  int _exportTreshold;  // number of units in warehouses under which no export is made
 };
 
-
-class GoodStock : public Serializable
+class GoodStock 
 {
 public:
-   GoodStock();
-   GoodStock(const GoodType &goodType, const int maxQty, const int currentQty=0);
+  GoodStock();
+  GoodStock(const GoodType &goodType, const int maxQty, const int currentQty=0);
 
-   /** amount: if -1, amount=stock._currentQty */
-   void addStock(GoodStock &stock, const int amount = -1);
+  /** amount: if -1, amount=stock._currentQty */
+  void addStock(GoodStock &stock, const int amount = -1);
 
-   void save( VariantMap& options ) const;
-   void load( const VariantMap& options );
+  void save( VariantList& stream ) const;
+  void load( const VariantList& options );
 
-   GoodType _goodType;
-   int _maxQty;
-   int _currentQty;
+  GoodType _goodType;
+  int _maxQty;
+  int _currentQty;
 };
-
-
-class SimpleGoodStore;
-class GoodStore : public Serializable
-{
-public:
-   GoodStore();
-   virtual ~GoodStore();
-
-   virtual int getCurrentQty(const GoodType &goodType) = 0;
-
-   // returns the max quantity that can be stored now
-   virtual int getMaxStore(const GoodType goodType) = 0;
-
-   // returns the max quantity that can be retrieved now
-   int getMaxRetrieve(const GoodType goodType);
-
-   // returns the reservationID if stock can be retrieved (else 0)
-   long reserveStorage(GoodStock &stock);
-
-   // returns the reservationID if stock can be retrieved (else 0)
-   long reserveRetrieval(GoodStock &stock);
-
-   // return the reservation
-   GoodStock getStorageReservation(const long reservationID, const bool pop=false);
-   GoodStock getRetrieveReservation(const long reservationID, const bool pop=false);
-
-   // store/retrieve
-   virtual void applyStorageReservation(GoodStock &stock, const long reservationID) = 0;
-   virtual void applyRetrieveReservation(GoodStock &stock, const long reservationID) = 0;
-
-   // store/retrieve to goodStore
-   void applyStorageReservation(SimpleGoodStore &goodStore, const long reservationID);
-   void applyRetrieveReservation(SimpleGoodStore &goodStore, const long reservationID);
-
-   // immediate store/retrieve, exception if impossible
-   void store(GoodStock &stock, const int amount);
-   void retrieve(GoodStock &stock, const int amount);
-
-   // store all goods from the given goodStore
-   void storeAll(SimpleGoodStore &goodStore);
-
-   void save( VariantMap& stream ) const;
-   void load( const VariantMap& stream );
-
-protected:
-   long _nextReservationID;
-
-   std::map<long, GoodStock> _storeReservations;  // key=reservationID, value=stock
-   std::map<long, GoodStock> _retrieveReservations;  // key=reservationID, value=stock
-};
-
-
-class SimpleGoodStore : public GoodStore
-{
-public:
-   using GoodStore::applyStorageReservation;
-   using GoodStore::applyRetrieveReservation;
-
-   SimpleGoodStore();
-
-   void setMaxQty(const int maxQty);
-   int getMaxQty();
-   int getCurrentQty();
-   void computeCurrentQty();
-
-   GoodStock& getStock(const GoodType &goodType);
-   int getCurrentQty(const GoodType &goodType);
-   int getMaxQty(const GoodType &goodType);
-   void setMaxQty(const GoodType &goodType, const int maxQty);
-   void setCurrentQty(const GoodType &goodType, const int currentQty);
-
-   // returns the max quantity that can be stored now
-   int getMaxStore(const GoodType goodType);
-
-   // store/retrieve
-   void applyStorageReservation(GoodStock &stock, const long reservationID);
-   void applyRetrieveReservation(GoodStock &stock, const long reservationID);
-
-   void save( VariantMap& stream ) const;
-   void load( const VariantMap& stream );
-
-private:
-   std::vector<GoodStock> _goodStockList;
-   int _maxQty;
-   int _currentQty;
-};
-
-
+    
 #endif

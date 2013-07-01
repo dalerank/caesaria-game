@@ -69,7 +69,7 @@ public:
   OverlaysMenu* overlaysMenu; 
   PictureRef minimap;
   PictureRef fullmap;
-  City* city;
+  CityPtr city;
 
 oc3_signals public:
   Signal1< int > onCreateConstructionSignal;
@@ -396,7 +396,7 @@ bool Menu::onEvent(const NEvent& event)
     return Widget::onEvent( event );
 }
 
-Menu* Menu::create( Widget* parent, int id, City& city )
+Menu* Menu::create( Widget* parent, int id, CityPtr city )
 {
   Menu* ret = new Menu( parent, id, Rect( 0, 0, 1, 1 ) );
 
@@ -406,7 +406,7 @@ Menu* Menu::create( Widget* parent, int id, City& city )
   ret->_d->bgPicture.reset( Picture::create( Size( bground.getWidth(), bground.getHeight() + bottom.getHeight() ) ) );
   ret->_d->bgPicture->draw( bground, 0, 0);
   ret->_d->bgPicture->draw( bottom,  0, bground.getHeight() );
-  ret->_d->city = &city;
+  ret->_d->city = city;
 
   ret->setGeometry( Rect( 0, 0, bground.getWidth(), ret->_d->bgPicture->getHeight() ) );
 
@@ -454,7 +454,7 @@ Signal0<>& Menu::onMaximize()
   return _d->onMaximizeSignal;
 }
 
-ExtentMenu* ExtentMenu::create( Widget* parent, TilemapRenderer& tmap, int id, City& city )
+ExtentMenu* ExtentMenu::create( Widget* parent, TilemapRenderer& tmap, int id, CityPtr city )
 {
   ExtentMenu* ret = new ExtentMenu( parent, tmap, id, Rect( 0, 0, 1, 1 ) );
 
@@ -466,7 +466,7 @@ ExtentMenu* ExtentMenu::create( Widget* parent, TilemapRenderer& tmap, int id, C
   ret->_d->bgPicture.reset( Picture::create( Size( bground.getWidth(), bground.getHeight() + bottom.getHeight() ) ) );
   ret->_d->bgPicture->draw( bground, 0, 0);
   ret->_d->bgPicture->draw( bottom, 0, bground.getHeight() );
-  ret->_d->city = &city;
+  ret->_d->city = city;
 
   ret->setGeometry( Rect( 0, 0, bground.getWidth(), ret->_d->bgPicture->getHeight() ) );
 

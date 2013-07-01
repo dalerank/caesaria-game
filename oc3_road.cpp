@@ -26,7 +26,7 @@ Road::Road() : Construction( B_ROAD, Size(1) )
 
 void Road::build(const TilePos& pos )
 {
-  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
   LandOverlayPtr overlay = tilemap.at( pos ).getTerrain().getOverlay();
 
   Construction::build( pos );
@@ -57,7 +57,7 @@ void Road::build(const TilePos& pos )
   // NOTE: also we need to update accessRoads for adjacent building
   // how to detect them if MaxDistance2Road can be any
   // so let's recompute accessRoads for every _building_
-  LandOverlays list = Scenario::instance().getCity().getOverlayList(); // it looks terrible!!!!
+  LandOverlays list = Scenario::instance().getCity()->getOverlayList(); // it looks terrible!!!!
   for( LandOverlays::iterator itOverlay = list.begin(); itOverlay!=list.end(); ++itOverlay )
   {
     BuildingPtr construction = (*itOverlay).as<Building>();
@@ -75,7 +75,7 @@ bool Road::canBuild(const TilePos& pos ) const
   if( is_free ) 
     return true; // we try to build on free tile
 
-  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
   TerrainTile& terrain = tilemap.at( pos ).getTerrain();
 
   return ( terrain.getOverlay().is<Aqueduct>() || terrain.getOverlay().is<Road>() );
@@ -214,7 +214,7 @@ Picture& Plaza::computePicture()
 bool Plaza::canBuild(const TilePos& pos ) const
 {
   //std::cout << "Plaza::canBuild" << std::endl;
-  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
 
   bool is_constructible = true;
 

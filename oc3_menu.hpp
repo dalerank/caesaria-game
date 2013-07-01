@@ -19,15 +19,15 @@
 #include "oc3_widget.hpp"
 #include "oc3_signals.hpp"
 #include "oc3_scopedptr.hpp"
+#include "oc3_predefinitions.hpp"
 
 class PushButton;
 class TilemapRenderer;
-class City;
 
 class Menu : public Widget
 {
 public:
-    static Menu* create( Widget* parent, int id, City& city );
+    static Menu* create( Widget* parent, int id, CityPtr city );
 
     // draw on screen
     void draw( GfxEngine& engine );
@@ -55,7 +55,7 @@ protected:
 class ExtentMenu : public Menu
 {
 public:
-    static ExtentMenu* create( Widget* parent, TilemapRenderer& tilemap, int id, City& city );
+    static ExtentMenu* create( Widget* parent, TilemapRenderer& tilemap, int id, CityPtr city );
 
     void minimize();
     void maximize();

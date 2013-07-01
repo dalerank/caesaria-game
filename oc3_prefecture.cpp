@@ -29,9 +29,9 @@ BuildingPrefecture::BuildingPrefecture() : ServiceBuilding(S_PREFECT, B_PREFECTU
   setPicture( Picture::load( ResourceGroup::security, 1 ) );
   
 
-  _animation.load( ResourceGroup::security, 2, 10);
-  _animation.setFrameDelay( 4 );
-  _animation.setOffset( Point( 20, 36 ) );
+  _getAnimation().load( ResourceGroup::security, 2, 10);
+  _getAnimation().setFrameDelay( 4 );
+  _getAnimation().setOffset( Point( 20, 36 ) );
   _fgPictures.resize(1);
 }
 
@@ -45,14 +45,14 @@ void BuildingPrefecture::timeStep(const unsigned long time)
 {
   bool mayAnimate = getWorkers() > 0;
 
-  if( mayAnimate && _animation.isStopped() )
+  if( mayAnimate && _getAnimation().isStopped() )
   {
-    _animation.start();
+    _getAnimation().start();
   }
 
-  if( !mayAnimate && _animation.isRunning() )
+  if( !mayAnimate && _getAnimation().isRunning() )
   {
-    _animation.stop();
+    _getAnimation().stop();
   }
 
   ServiceBuilding::timeStep( time );

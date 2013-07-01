@@ -18,6 +18,8 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_walker_market_buyer.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_scenario.hpp"
+#include "oc3_goodstore_simple.hpp"
 
 class Market::Impl
 {
@@ -50,8 +52,8 @@ Market::Market() : ServiceBuilding(S_MARKET, B_MARKET, Size(2) ),
   _d->goodStore.setMaxQty(G_POTTERY, 300);
   _d->goodStore.setCurrentQty(G_WHEAT, 200);
 
-  _animation.load( ResourceGroup::commerce, 2, 10 );
-  _animation.setFrameDelay( 4 );
+  _getAnimation().load( ResourceGroup::commerce, 2, 10 );
+  _getAnimation().setFrameDelay( 4 );
 }
 
 void Market::deliverService()
@@ -59,8 +61,8 @@ void Market::deliverService()
   if( getWorkers() > 0 && getWalkerList().size() == 0 )
   {
     // the marketBuyer is ready to buy something!
-    MarketBuyerPtr buyer = MarketBuyer::create( MarketPtr( this ) );
-    buyer->send2City();
+    MarketBuyerPtr buyer = MarketBuyer::create( Scenario::instance().getCity() );
+    buyer->send2City( MarketPtr( this ) );
 
     if( !buyer->isDeleted() )
     {
@@ -73,7 +75,7 @@ void Market::deliverService()
   }
 }
 
-SimpleGoodStore& Market::getGoodStore()
+GoodStore& Market::getGoodStore()
 {
   return _d->goodStore;
 }

@@ -28,6 +28,7 @@
 #include "oc3_constructionmanager.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_goodstore_simple.hpp"
 
 class House::Impl
 {
@@ -84,7 +85,7 @@ House::House(const int houseId) : Building( B_HOUSE ), _d( new Impl )
 void House::timeStep(const unsigned long time)
 {
    // _goodStockList[G_WHEAT]._currentQty -= _d->currentHabitants;  // to do once every month!
-   if (time % 16 == 0)
+   if( time % 16 == 0 )
    {
       // consume services
       for (int i = 0; i < S_MAX; ++i)
@@ -92,6 +93,8 @@ void House::timeStep(const unsigned long time)
          ServiceType service = (ServiceType) i;
          _d->serviceAccessMap[service] = std::max(_d->serviceAccessMap[service] - 1, 0);
       }
+
+      cancelService( S_WORKERS_HUNTER );
 
       // consume goods
       for (int i = 0; i < G_MAX; ++i)
@@ -124,7 +127,7 @@ void House::timeStep(const unsigned long time)
      {
        _d->currentHabitants = math::clamp( _d->currentHabitants, 0, _d->maxHabitants );
 
-       City& city = Scenario::instance().getCity();
+       CityPtr city = Scenario::instance().getCity();
        ImmigrantPtr im = Immigrant::create( city );
        im->setCapacity( homeless );
        im->send2City( getTile() );
@@ -132,10 +135,12 @@ void House::timeStep(const unsigned long time)
    }
 
    if( _d->currentHabitants > 0 )
+   {
      Building::timeStep( time );
+   }
 }
 
-SimpleGoodStore& House::getGoodStore()
+GoodStore& House::getGoodStore()
 {
    return _d->goodStore;
 }
@@ -150,8 +155,8 @@ void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int start
 {       
   if( getSize() == 1 )
   {
-    City& city = Scenario::instance().getCity();
-    Tilemap& tmap = city.getTilemap();
+    CityPtr city = Scenario::instance().getCity();
+    Tilemap& tmap = city->getTilemap();
     PtrTilesList tiles = tmap.getFilledRectangle( getTile().getIJ(), Size(2) );   
     bool mayGrow = true;
 
@@ -291,8 +296,8 @@ void House::levelDown()
        _d->houseId = 1;
        _d->picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
 
-       City& city = Scenario::instance().getCity();
-       Tilemap& tmap = city.getTilemap();   
+       CityPtr city = Scenario::instance().getCity();
+       Tilemap& tmap = city->getTilemap();   
 
        if( getSize().getWidth() > 1 )
        {
@@ -357,7 +362,7 @@ void House::buyMarket( ServiceWalkerPtr walker )
    MarketPtr market = walker->getBase().as<Market>();
    GoodStore& marketStore = market->getGoodStore();
 
-   SimpleGoodStore &houseStore = getGoodStore();
+   GoodStore &houseStore = getGoodStore();
    for (int i = 0; i < G_MAX; ++i)
    {
       GoodType goodType = (GoodType) i;
@@ -417,13 +422,13 @@ void House::applyService( ServiceWalkerPtr walker )
       if( !_d->freeWorkersCount )
         break;
 
-      SmartPtr< WorkersHunter > hunter = walker.as<WorkersHunter>();
+      WorkersHunterPtr hunter = walker.as<WorkersHunter>();
       if( hunter.isValid() )
       {
           int hiredWorkers = math::clamp( _d->freeWorkersCount, 0, hunter->getWorkersNeeded() );
           _d->freeWorkersCount -= hiredWorkers;
           hunter->hireWorkers( hiredWorkers );
-      }
+      }      
     }
   break;
   }
@@ -431,64 +436,64 @@ void House::applyService( ServiceWalkerPtr walker )
 
 float House::evaluateService(ServiceWalkerPtr walker)
 {
-   float res = 0.0;
-   ServiceType service = walker->getService();
-   if (_reservedServices.count(service) == 1)
-   {
-      // service is already reserved
-      return 0.0;
-   }
+  float res = 0.0;
+  ServiceType service = walker->getService();
+  if( _reservedServices.count(service) == 1 )
+  {
+     // service is already reserved
+     return 0.0;
+  }
 
-   switch(service)
-   {
-   case S_ENGINEER:
-   {
-      res = _damageLevel;
-   }
-   break;
-   case S_PREFECT:
-     {
-       res = _fireLevel;
-     }
-   break;
+  switch(service)
+  {
+  case S_ENGINEER:
+  {
+     res = _damageLevel;
+  }
+  break;
+  
+  case S_PREFECT:
+  {
+    res = _fireLevel;
+  }
+  break;
 
-   case S_MARKET:
-     {
-       MarketPtr market = walker->getBase().as<Market>();
-       GoodStore &marketStore = market->getGoodStore();
-       SimpleGoodStore &houseStore = getGoodStore();
-       for (int i = 0; i < G_MAX; ++i)
+  case S_MARKET:
+  {
+    MarketPtr market = walker->getBase().as<Market>();
+    GoodStore &marketStore = market->getGoodStore();
+    GoodStore &houseStore = getGoodStore();
+    for (int i = 0; i < G_MAX; ++i)
+    {
+       GoodType goodType = (GoodType) i;
+       int houseQty  = houseStore.getCurrentQty(goodType);
+       int houseSafeQty = _d->houseLevelSpec.computeMonthlyConsumption(*this, goodType)
+                          + _d->nextHouseLevelSpec.computeMonthlyConsumption(*this, goodType);
+       int marketQty = marketStore.getCurrentQty(goodType);
+       if (houseQty < houseSafeQty && marketQty > 0)
        {
-          GoodType goodType = (GoodType) i;
-          int houseQty  = houseStore.getCurrentQty(goodType);
-          int houseSafeQty = _d->houseLevelSpec.computeMonthlyConsumption(*this, goodType)
-                             + _d->nextHouseLevelSpec.computeMonthlyConsumption(*this, goodType);
-          int marketQty = marketStore.getCurrentQty(goodType);
-          if (houseQty < houseSafeQty && marketQty > 0)
-          {
-             res += std::min(houseSafeQty - houseQty, marketQty);
-          }
+          res += std::min(houseSafeQty - houseQty, marketQty);
        }
-     }
-   break;
+    }
+  }
+  break;
 
-   case S_WORKERS_HUNTER:
-     {
-        res = (float)_d->freeWorkersCount;
-        _reservedServices.erase( S_WORKERS_HUNTER );
-     }
-   break;
+  case S_WORKERS_HUNTER:
+  {
+    res = (float)_d->freeWorkersCount;        
+  }
+  break;
 
-   default:
-     {
-       return _d->houseLevelSpec.evaluateServiceNeed(*this, service);
-     }
-   break;
-   }
+  default:
+  {
+    return _d->houseLevelSpec.evaluateServiceNeed(*this, service);
+  }
+  break;
+  }
 
-   // std::cout << "House evaluateService " << service << "=" << res << std::endl;
+  // std::cout << "House evaluateService " << service << "=" << res << std::endl;
 
-   return res;
+  return res;
 }
 
 bool House::hasServiceAccess(const ServiceType service)
@@ -557,7 +562,7 @@ void House::destroy()
 
   if( homeless > 0 )
   {
-    City& city = Scenario::instance().getCity();
+    CityPtr city = Scenario::instance().getCity();
     ImmigrantPtr im = Immigrant::create( city );
     im->setCapacity( homeless );
     im->send2City( getTile() );

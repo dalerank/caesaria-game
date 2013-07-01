@@ -37,7 +37,7 @@ public:
    TilemapRenderer();
    ~TilemapRenderer();
    
-   void init(City &city, TilemapArea &mapArea, ScreenGame *screen);
+   void init( CityPtr city, TilemapArea &mapArea, ScreenGame *screen);
 
    TilemapArea &getMapArea();
 

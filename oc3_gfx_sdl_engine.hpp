@@ -40,8 +40,8 @@ public:
   void unloadPicture(Picture& ioPicture);
 
   void startRenderFrame();
-  void drawPicture(const Picture &picture, const int dx, const int dy);
-  void drawPicture(const Picture &picture, const Point& pos );
+  void drawPicture(const Picture &picture, const int dx, const int dy, Rect* clipRect=0);
+  void drawPicture(const Picture &picture, const Point& pos, Rect* clipRect=0 );
   void endRenderFrame();
 
   void setFlag( int flag, int value );

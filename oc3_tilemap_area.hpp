@@ -49,6 +49,8 @@ public:
   // return tile coordinates (i, j), in order of depth
   const std::vector< TilePos >& getTiles();
 
+  void resetWasDrawn();
+
   int getCenterX() const;
   int getCenterZ() const;
   int getCenterI() const;

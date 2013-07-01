@@ -25,14 +25,15 @@ class CityServiceShoreline::Impl
 public:
   PtrTilesList slTiles;
   int lastTimeUpdate;
+  CityPtr city;
 
-  void checkMap( City& city );
+  void checkMap( CityPtr city );
 };
 
-void CityServiceShoreline::Impl::checkMap( City& city )
+void CityServiceShoreline::Impl::checkMap( CityPtr city )
 {
-  int mapSize = city.getTilemap().getSize();
-  PtrTilesList tiles = city.getTilemap().getFilledRectangle( TilePos( 0, 0), Size( mapSize ) );
+  int mapSize = city->getTilemap().getSize();
+  PtrTilesList tiles = city->getTilemap().getFilledRectangle( TilePos( 0, 0), Size( mapSize ) );
 
   for( PtrTilesList::iterator it=tiles.begin(); it != tiles.end(); it++ )
   {
@@ -44,7 +45,7 @@ void CityServiceShoreline::Impl::checkMap( City& city )
   }
 }
 
-CityServicePtr CityServiceShoreline::create( City& city )
+CityServicePtr CityServiceShoreline::create( CityPtr city )
 {
   CityServicePtr ret( new CityServiceShoreline( city ) );
   ret->drop();
@@ -52,9 +53,10 @@ CityServicePtr CityServiceShoreline::create( City& city )
   return ret;
 }
 
-CityServiceShoreline::CityServiceShoreline( City& city )
-  : CityService( city, "shoreline" ), _d( new Impl )
+CityServiceShoreline::CityServiceShoreline( CityPtr city )
+  : CityService( "shoreline" ), _d( new Impl )
 {
+  _d->city = city;
   _d->lastTimeUpdate = 0;  
 }
 
@@ -67,7 +69,7 @@ void CityServiceShoreline::update( const unsigned int time )
 
   if( _d->slTiles.empty() )
   {
-    _d->checkMap( _city );
+    _d->checkMap( _d->city );
   }
 
   for( PtrTilesList::iterator it=_d->slTiles.begin(); it != _d->slTiles.end(); it++ )

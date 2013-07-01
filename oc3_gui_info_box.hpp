@@ -46,8 +46,6 @@ public:
 
     bool isPointInside(const Point& point) const;
 
-    Picture& getPictureGood(const GoodType& goodType);
-
     void setTitle( const std::string& title );
 
     bool isAutoPosition() const;
@@ -73,10 +71,10 @@ private:
 };
 
 
-class InfoBoxFarm : public GuiInfoBox
+class InfoBoxRawMaterial : public GuiInfoBox
 {
 public:
-  InfoBoxFarm( Widget* parent, const Tile& tile );
+  InfoBoxRawMaterial( Widget* parent, const Tile& tile );
 
   void paint();
 
@@ -124,7 +122,7 @@ public:
    GuiInfoFactory( Widget* parent, const Tile& tile );
    virtual void paint();
 
-   void drawWorkers( int& );
+   void drawWorkers( int );
    std::string getInfoText();
 
 private:
@@ -141,9 +139,9 @@ public:
   void paint();
   void drawWorkers( int );
   void drawGood(const GoodType &goodType, int, int&);
+  void showSpecialOrdersWindow();
 
 private:
-
   class Impl;
   ScopedPtr< Impl > _gd;
 };
@@ -172,6 +170,7 @@ public:
   void paint();
   void drawWorkers();
   void drawGood(const GoodType &goodType, int, int& );
+  void showSpecialOrdersWindow();
 
 private:
   class Impl;

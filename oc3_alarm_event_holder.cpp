@@ -59,7 +59,7 @@ AlarmEventHolder::AlarmEventHolder() : _d( new Impl )
 
 AlarmEventHolder::~AlarmEventHolder()
 {
-
+  _d->alarmDeleter->destroy();
 }
 
 void AlarmEventHolder::add( const TilePos& pos, const std::string& message )

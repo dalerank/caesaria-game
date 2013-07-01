@@ -50,12 +50,12 @@ void TrainingBuilding::timeStep(const unsigned long time)
       _trainingTimer -= 1;
    }
 
-   _animation.update( time );
-   Picture *pic = _animation.getCurrentPicture();
+   _getAnimation().update( time );
+   Picture *pic = _getAnimation().getCurrentPicture();
    if (pic != NULL)
    {
       int level = _fgPictures.size()-1;
-      _fgPictures[level] = _animation.getCurrentPicture();
+      _fgPictures[level] = _getAnimation().getCurrentPicture();
    }
 }
 
@@ -93,15 +93,15 @@ BuildingActor::BuildingActor() : TrainingBuilding( B_ACTOR, Size(3) )
 {
   setPicture( Picture::load( ResourceGroup::entertaiment, 81));
 
-  _animation.load( ResourceGroup::entertaiment, 82, 9);
-  _animation.setOffset( Point( 68, -6 ) );
+  _getAnimation().load( ResourceGroup::entertaiment, 82, 9);
+  _getAnimation().setOffset( Point( 68, -6 ) );
   _fgPictures.resize(1);
 }
 
 void BuildingActor::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create(WTT_ACTOR);
+  TraineeWalkerPtr trainee = TraineeWalker::create( Scenario::instance().getCity(), WTT_ACTOR);
   trainee->setOriginBuilding(*this);
   trainee->send2City();
 }
@@ -110,15 +110,15 @@ BuildingGladiator::BuildingGladiator() : TrainingBuilding( B_GLADIATOR, Size(3))
 {
   setPicture( Picture::load( ResourceGroup::entertaiment, 51));
 
-   _animation.load( ResourceGroup::entertaiment, 52, 10);
-   _animation.setOffset( Point( 62, 24 ) );
-   _fgPictures.resize(1);
+  _getAnimation().load( ResourceGroup::entertaiment, 52, 10);
+  _getAnimation().setOffset( Point( 62, 24 ) );
+  _fgPictures.resize(1);
 }
 
 void BuildingGladiator::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create(WTT_GLADIATOR);
+  TraineeWalkerPtr trainee = TraineeWalker::create( Scenario::instance().getCity(), WTT_GLADIATOR);
   trainee->setOriginBuilding(*this);
   trainee->send2City();
 }
@@ -128,17 +128,17 @@ BuildingLion::BuildingLion() : TrainingBuilding( B_LION, Size(3) )
 {
   setPicture( Picture::load( ResourceGroup::entertaiment, 62));
 
-   _animation.load( ResourceGroup::entertaiment, 63, 18);
-   _animation.setOffset( Point( 78, 21) );
+   _getAnimation().load( ResourceGroup::entertaiment, 63, 18);
+   _getAnimation().setOffset( Point( 78, 21) );
    _fgPictures.resize(1);
 }
 
 void BuildingLion::deliverTrainee()
 {
-   // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create( WTT_TAMER );
-   trainee->setOriginBuilding(*this);
-   trainee->send2City();
+  // std::cout << "Deliver trainee!" << std::endl;
+  TraineeWalkerPtr trainee = TraineeWalker::create( Scenario::instance().getCity(), WTT_TAMER );
+  trainee->setOriginBuilding(*this);
+  trainee->send2City();
 }
 
 
@@ -146,15 +146,15 @@ BuildingChariot::BuildingChariot() : TrainingBuilding( B_CHARIOT, Size(3) )
 {
   setPicture( Picture::load( ResourceGroup::entertaiment, 91));
 
-   _animation.load( ResourceGroup::entertaiment, 92, 10);
-   _animation.setOffset( Point( 54, 23 ));
-   _fgPictures.resize(1);
+  _getAnimation().load( ResourceGroup::entertaiment, 92, 10);
+  _getAnimation().setOffset( Point( 54, 23 ));
+  _fgPictures.resize(1);
 }
 
 void BuildingChariot::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create(WTT_CHARIOT);
+  TraineeWalkerPtr trainee = TraineeWalker::create( Scenario::instance().getCity(), WTT_CHARIOT);
   trainee->setOriginBuilding(*this);
   trainee->send2City();
 }

@@ -29,21 +29,21 @@ public:
   TilePos destination;
   Picture* cartPicture;
   unsigned char peopleCount;
-  City* city;
+  CityPtr city;
 };
 
-Immigrant::Immigrant( City& city ) : _d( new Impl )
+Immigrant::Immigrant( CityPtr city ) : _d( new Impl )
 {
   _walkerType = WT_IMMIGRANT;
   _walkerGraphic = WG_HOMELESS;
   _d->cartPicture = 0;
   _d->peopleCount = 0;
-  _d->city = &city;
+  _d->city = city;
 }
 
 HousePtr Immigrant::_findBlankHouse()
 {
-  CityHelper hlp( *_d->city );
+  CityHelper hlp( _d->city );
   std::list< HousePtr > houses = hlp.getBuildings< House >( B_HOUSE );
   HousePtr blankHouse;
   _d->destination = TilePos( -1, -1 );
@@ -124,7 +124,7 @@ void Immigrant::onDestination()
   }
 }
 
-ImmigrantPtr Immigrant::create( City& city )
+ImmigrantPtr Immigrant::create( CityPtr city )
 {
   ImmigrantPtr newImmigrant( new Immigrant( city ) );
   newImmigrant->drop(); //delete automatically

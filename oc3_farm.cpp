@@ -20,7 +20,6 @@
 #include "oc3_scenario.hpp"
 #include "oc3_tile.hpp"
 
-
 class FarmTile
 {
 public:
@@ -42,24 +41,12 @@ FarmTile::FarmTile(const GoodType outGood, const TilePos& pos )
   int picIdx = 0;
   switch (outGood)
   {
-  case G_WHEAT:
-    picIdx = 13;
-    break;
-  case G_VEGETABLE:
-    picIdx = 18;
-    break;
-  case G_FRUIT:
-    picIdx = 23;
-    break;
-  case G_OLIVE:
-    picIdx = 28;
-    break;
-  case G_GRAPE:
-    picIdx = 33;
-    break;
-  case G_MEAT:
-    picIdx = 38;
-    break;
+  case G_WHEAT: picIdx = 13; break;
+  case G_VEGETABLE: picIdx = 18; break;
+  case G_FRUIT: picIdx = 23; break;
+  case G_OLIVE: picIdx = 28; break;
+  case G_GRAPE: picIdx = 33; break;
+  case G_MEAT: picIdx = 38; break;
   default:
     THROW("Unexpected farmType in farm:" << outGood);
   }
@@ -109,7 +96,7 @@ bool Farm::canBuild(const TilePos& pos ) const
   bool is_constructible = Construction::canBuild( pos );
   bool on_meadow = false;
 
-  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
   PtrTilesArea rect = tilemap.getFilledRectangle( pos, getSize() );
   for( PtrTilesArea::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {
@@ -122,7 +109,7 @@ bool Farm::canBuild(const TilePos& pos ) const
 
 void Farm::init()
 {
-  GoodType farmType = _outGoodType;
+  GoodType farmType = getOutGoodType();
   // add subTiles in draw order
   _d->subTiles.push_back(FarmTile(farmType, TilePos( 0, 0 ) ));
   _d->subTiles.push_back(FarmTile(farmType, TilePos( 2, 2 ) ));
@@ -168,6 +155,15 @@ void Farm::timeStep(const unsigned long time)
   computePictures();
 }
 
+void Farm::save( VariantMap& stream ) const
+{
+  Factory::save( stream );
+}
+
+void Farm::load( const VariantMap& stream )
+{
+  Factory::load( stream );
+}
 
 FarmWheat::FarmWheat() : Farm(G_WHEAT, B_WHEAT_FARM)
 {

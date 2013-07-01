@@ -33,6 +33,8 @@ public:
   std::string name;
   Picture picture;
   Size size;  // size in tiles
+  Animation animation;  // basic animation (if any)
+  bool isDeleted;
 };
 
 LandOverlay::LandOverlay(const BuildingType type, const Size& size)
@@ -40,7 +42,7 @@ LandOverlay::LandOverlay(const BuildingType type, const Size& size)
 {
   _master_tile = NULL;
   _d->size = size;
-  _isDeleted = false;
+  _d->isDeleted = false;
   _d->name = "unknown";
   setType( type );
 }
@@ -67,7 +69,7 @@ void LandOverlay::timeStep(const unsigned long time) { }
 
 void LandOverlay::setPicture(Picture &picture)
 {
-   Tilemap &tilemap = Scenario::instance().getCity().getTilemap();
+   Tilemap &tilemap = Scenario::instance().getCity()->getTilemap();
 
    _d->picture = picture;
 
@@ -90,8 +92,8 @@ void LandOverlay::setPicture(Picture &picture)
 
 void LandOverlay::build( const TilePos& pos )
 {
-  City &city = Scenario::instance().getCity();
-  Tilemap &tilemap = city.getTilemap();
+  CityPtr city = Scenario::instance().getCity();
+  Tilemap &tilemap = city->getTilemap();
 
   _master_tile = &tilemap.at( pos );
 
@@ -111,7 +113,7 @@ void LandOverlay::build( const TilePos& pos )
 
 void LandOverlay::deleteLater()
 {
-  _isDeleted  = true;
+  _d->isDeleted  = true;
 }
 
 void LandOverlay::destroy()
@@ -131,7 +133,7 @@ Size LandOverlay::getSize() const
 
 bool LandOverlay::isDeleted() const
 {
-  return _isDeleted;
+  return _d->isDeleted;
 }
 
 Picture& LandOverlay::getPicture()
@@ -155,7 +157,7 @@ void LandOverlay::save( VariantMap& stream ) const
   stream[ "buildingType" ] = (int)_d->buildingType;
   stream[ "picture" ] = Variant( _d->picture.getName() );   
   stream[ "size" ] = _d->size;
-  stream[ "isDeleted" ] = _isDeleted;
+  stream[ "isDeleted" ] = _d->isDeleted;
   stream[ "name" ] = Variant( _d->name );
 }
 
@@ -165,7 +167,7 @@ void LandOverlay::load( const VariantMap& stream )
   _d->buildingType = (BuildingType)stream.get( "buildingType" ).toInt();
   _d->picture = Picture::load( stream.get( "picture" ).toString() + ".png" );
   _d->size = stream.get( "size" ).toSize();
-  _isDeleted = stream.get( "isDeleted" ).toBool();
+  _d->isDeleted = stream.get( "isDeleted" ).toBool();
 }
 
 bool LandOverlay::isWalkable() const
@@ -194,6 +196,11 @@ Point LandOverlay::getOffset( const Point& subpos ) const
   return Point( 0, 0 );
 }
 
+Animation& LandOverlay::_getAnimation()
+{
+  return _d->animation;
+}
+
 Construction::Construction( const BuildingType type, const Size& size)
 : LandOverlay( type, size )
 {
@@ -201,7 +208,7 @@ Construction::Construction( const BuildingType type, const Size& size)
 
 bool Construction::canBuild( const TilePos& pos ) const
 {
-  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
 
   bool is_constructible = true;
 
@@ -221,7 +228,7 @@ bool Construction::canBuild( const TilePos& pos ) const
   return is_constructible;
 }
 
-void Construction::build(const TilePos& pos )
+void Construction::build( const TilePos& pos )
 {
   LandOverlay::build( pos );
   computeAccessRoads();
@@ -230,8 +237,8 @@ void Construction::build(const TilePos& pos )
 
 void Construction::_updateDesirabilityInfluence( const DsbrlUpdate type )
 {
-  City &city = Scenario::instance().getCity();
-  Tilemap &tilemap = city.getTilemap();
+  CityPtr city = Scenario::instance().getCity();
+  Tilemap& tilemap = city->getTilemap();
 
   int dsrblRange = getDesirabilityRange();
   int step = getDesirabilityStep();
@@ -273,7 +280,7 @@ void Construction::computeAccessRoads()
   if( !_master_tile )
       return;
 
-  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
 
   int maxDst2road = getMaxDistance2Road();
   PtrTilesList rect = tilemap.getRectangle( _master_tile->getIJ() + TilePos( -maxDst2road, -maxDst2road ),
@@ -299,13 +306,13 @@ int Construction::getMaxDistance2Road() const
 void Construction::burn()
 {
    deleteLater();
-   Scenario::instance().getCity().disaster( getTile().getIJ(), DSTR_BURN );
+   Scenario::instance().getCity()->disaster( getTile().getIJ(), DSTR_BURN );
 }
 
 void Construction::collapse()
 {
    deleteLater();
-   Scenario::instance().getCity().disaster( getTile().getIJ(), DSTR_COLLAPSE );
+   Scenario::instance().getCity()->disaster( getTile().getIJ(), DSTR_COLLAPSE );
 }
 
 char Construction::getDesirabilityInfluence() const
@@ -641,20 +648,20 @@ Dock::Dock() : Building( B_DOCK, Size(2) )
 {
   setPicture( Picture::load( ResourceGroup::transport, 5));  
 
-  _animation.load( ResourceGroup::transport, 6, 11);
+  _d->animation.load( ResourceGroup::transport, 6, 11);
   // now fill in reverse order
-  _animation.load( ResourceGroup::transport, 15, 10, Animation::reverse );
+  _d->animation.load( ResourceGroup::transport, 15, 10, Animation::reverse );
   
-  _animation.setOffset( Point( 107, 61 ) );
+  _d->animation.setOffset( Point( 107, 61 ) );
   _fgPictures.resize(1);  
 }
 
 void Dock::timeStep(const unsigned long time)
 {
-  _animation.update( time );
+  _d->animation.update( time );
   
   // takes current animation frame and put it into foreground
-  _fgPictures.at(0) = _animation.getCurrentPicture(); 
+  _fgPictures.at(0) = _d->animation.getCurrentPicture(); 
 }
 
 // second arch pictures is land3a 45 + 46	
@@ -663,8 +670,8 @@ TriumphalArch::TriumphalArch() : Building( B_TRIUMPHAL_ARCH, Size(3) )
 {
   setPicture( Picture::load( "land3a", 43 ) );
   getPicture().setOffset(0,116);
-  _animation.load("land3a", 44, 1);
-  _animation.setOffset( Point( 63, 97 ) );
+  _d->animation.load("land3a", 44, 1);
+  _d->animation.setOffset( Point( 63, 97 ) );
   _fgPictures.resize(1);
-  _fgPictures.at(0) = _animation.getCurrentPicture(); 
+  _fgPictures.at(0) = _d->animation.getCurrentPicture(); 
 }

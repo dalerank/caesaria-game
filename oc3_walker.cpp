@@ -203,7 +203,7 @@ void Walker::walk()
       return;
    }
 
-   Tile& tile = Scenario::instance().getCity().getTilemap().at( getIJ() );
+   Tile& tile = Scenario::instance().getCity()->getTilemap().at( getIJ() );
     
    switch (_action._direction)
    {
@@ -306,7 +306,7 @@ void Walker::walk()
 void Walker::onNewTile()
 {
    // std::cout << "Walker is on a new tile! coord=" << _i << "," << _j << std::endl;
-   Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+   Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
    Tile& currentTile = tilemap.at( _d->pos );
    _d->updateSpeedMultiplier( currentTile );
    if( !currentTile.getTerrain().isRoad() )
@@ -422,6 +422,9 @@ void Walker::save( VariantMap& stream ) const
 
 void Walker::load( const VariantMap& stream)
 {
+  Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
+
+  _d->pathWay.init( tmap, tmap.at( 0, 0 ) );
   _d->pathWay.load( stream.get( "pathway" ).toMap() );
   _action._action = (WalkerActionType) stream.get( "action" ).toInt();
   _action._direction = (DirectionType) stream.get( "direction" ).toInt();

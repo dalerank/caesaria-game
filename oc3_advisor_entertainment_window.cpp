@@ -91,7 +91,7 @@ public:
     int peoplesStuding;
   };
 
-  InfrastructureInfo getInfo( City& city, const BuildingType service )
+  InfrastructureInfo getInfo( CityPtr city, const BuildingType service )
   {
     CityHelper helper( city );
 
@@ -127,7 +127,7 @@ public:
 };
 
 
-AdvisorEntertainmentWindow::AdvisorEntertainmentWindow( City& city, Widget* parent, int id ) 
+AdvisorEntertainmentWindow::AdvisorEntertainmentWindow( CityPtr city, Widget* parent, int id ) 
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),

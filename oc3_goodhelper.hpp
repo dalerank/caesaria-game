@@ -19,13 +19,15 @@
 
 #include "oc3_scopedptr.hpp"
 #include "oc3_enums.hpp"
+#include "oc3_picture.hpp"
 
 class GoodHelper
 {
 public:
   static GoodHelper& getInstance();
 
-  std::string getName( GoodType type ) const;
+  static std::string getName( GoodType type );
+  static Picture getPicture( GoodType type );
   ~GoodHelper();
 private:
   GoodHelper();

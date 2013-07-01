@@ -18,13 +18,12 @@
 
 #include "oc3_widget.hpp"
 #include "oc3_scopedptr.hpp"
-
-class City;
+#include "oc3_predefinitions.hpp"
 
 class AdvisorEntertainmentWindow : public Widget
 {
 public:
-  AdvisorEntertainmentWindow( City& city, Widget* parent, int id );
+  AdvisorEntertainmentWindow( CityPtr city, Widget* parent, int id );
 
   void draw( GfxEngine& painter );
 

@@ -35,9 +35,11 @@ public:
   void save( VariantMap& stream) const;
   void load( const VariantMap& stream);
 
-  City& getCity();
-  const City& getCity() const;
+  CityPtr getCity();
+  const CityPtr getCity() const;
   CityWinTargets& getWinTargets();
+
+  void resetCity();
 
   std::string getDescription() const;
 private:

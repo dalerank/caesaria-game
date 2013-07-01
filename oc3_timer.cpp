@@ -48,6 +48,7 @@ TimerPtr Timer::create( unsigned int time, bool loop, int id/*=-1 */ )
   ret->_d->time = time;
   ret->_d->loop = loop;
   ret->_d->id = id;
+  ret->drop();
 
   CityServiceTimers::getInstance().addTimer( ret );
 
@@ -99,4 +100,9 @@ Signal0<>& Timer::onTimeout()
 bool Timer::isActive() const
 {
   return _d->isActive;
+}
+
+void Timer::destroy()
+{
+  _d->isActive = false; 
 }

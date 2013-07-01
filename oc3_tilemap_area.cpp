@@ -24,6 +24,7 @@
 #include "oc3_size.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_stringhelper.hpp"
+#include "oc3_tile.hpp"
 
 class TilemapArea::Impl
 {
@@ -147,4 +148,15 @@ const std::vector< TilePos >& TilemapArea::getTiles()
   }
 
   return _d->coordinates;
+}
+
+void TilemapArea::resetWasDrawn()
+{
+  const std::vector< TilePos >& tiles = getTiles();
+
+  for( std::vector< TilePos >::const_iterator itPos = tiles.begin(); itPos != tiles.end(); ++itPos )
+  {
+    _tilemap->at( *itPos ).resetWasDrawn();
+  }
+
 }

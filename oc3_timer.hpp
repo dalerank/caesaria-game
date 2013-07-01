@@ -38,6 +38,8 @@ public:
   void setLoop( bool loop );
 
   bool isActive() const;
+  
+  void destroy();
 
 oc3_signals public:
   Signal1<int>& onTimeoutA();

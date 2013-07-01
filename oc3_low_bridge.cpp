@@ -143,7 +143,7 @@ void LowBridge::setTerrain( TerrainTile& terrain )
 
 void LowBridge::_computePictures( const TilePos& startPos, const TilePos& endPos, DirectionType dir )
 {
-  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
   Picture& water = Picture::load( "land1a", 120 );
   switch( dir )
   {
@@ -233,7 +233,7 @@ void LowBridge::_checkParams( DirectionType& direction, TilePos& start, TilePos&
 {
   start = curPos;
 
-  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
   Tile& tile = tilemap.at( curPos );
 
   if( tile.getTerrain().isRoad() )
@@ -313,8 +313,8 @@ void LowBridge::build( const TilePos& pos )
   _d->subtiles.clear();
   _fgPictures.clear();
 
-  City& city = Scenario::instance().getCity();
-  Tilemap& tilemap = city.getTilemap();
+  CityPtr city = Scenario::instance().getCity();
+  Tilemap& tilemap = city->getTilemap();
 
   _checkParams( _d->direction, startPos, endPos, pos );
   int signSum = 1;
@@ -358,7 +358,7 @@ void LowBridge::build( const TilePos& pos )
       subtile->_info = tile.getTerrain().encode();
       subtile->_parent = this;
       
-      city.build( subtile.as<Construction>(), buildPos );
+      city->build( subtile.as<Construction>(), buildPos );
       index++;
     }    
   }
@@ -366,14 +366,14 @@ void LowBridge::build( const TilePos& pos )
 
 void LowBridge::destroy()
 { 
-  City& city = Scenario::instance().getCity();
+  CityPtr city = Scenario::instance().getCity();
   for( LowBridgeSubTiles::iterator it=_d->subtiles.begin(); it != _d->subtiles.end(); it++ )
   {
     (*it)->_parent = 0;
-    city.clearLand( (*it)->_pos );
+    city->clearLand( (*it)->_pos );
 
     std::string picName = TerrainTileHelper::convId2PicName( (*it)->_imgId );
-    city.getTilemap().at( (*it)->_pos ).setPicture( &Picture::load( picName ) );
-    city.getTilemap().at( (*it)->_pos ).getTerrain().decode( (*it)->_info );
+    city->getTilemap().at( (*it)->_pos ).setPicture( &Picture::load( picName ) );
+    city->getTilemap().at( (*it)->_pos ).getTerrain().decode( (*it)->_info );
   }
 }

@@ -14,22 +14,25 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_cityservice_water.hpp"
+#include "oc3_city.hpp"
 
 class CityServiceWater::Impl
 {
 public:
+  CityPtr city;
 };
 
-CityServicePtr CityServiceWater::create( City& city )
+CityServicePtr CityServiceWater::create( CityPtr city )
 {
   CityServiceWater* ret = new CityServiceWater( city );
 
   return CityServicePtr( ret );
 }
 
-CityServiceWater::CityServiceWater( City& city )
-: CityService( city, "water" ), _d( new Impl )
+CityServiceWater::CityServiceWater( CityPtr city )
+: CityService( "water" ), _d( new Impl )
 {
+  _d->city = city;
 }
 
 void CityServiceWater::update( const unsigned int time )

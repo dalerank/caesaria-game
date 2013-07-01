@@ -174,7 +174,9 @@ void Label::draw( GfxEngine& painter )
 
   // draw background
   if( _d->picture )
-    painter.drawPicture( *_d->picture, frameRect.getLeft(), frameRect.getTop() );
+  {
+    painter.drawPicture( *_d->picture, frameRect.getLeft(), frameRect.getTop(), &getAbsoluteClippingRect() );
+  }
 
   Widget::draw( painter );
 }

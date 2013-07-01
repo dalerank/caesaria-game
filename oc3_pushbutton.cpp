@@ -363,13 +363,13 @@ void PushButton::draw( GfxEngine& painter )
     return;
 
 	// todo:	move sprite up and text down if the pressed state has a sprite
-	//			draw sprites for focused and mouse-over 
+	//			  draw sprites for focused and mouse-over 
   if( isBodyVisible() )
   {
 	  const ButtonState& state = _d->buttonStates[ _d->currentButtonState ];
     if( state.texture )
     {
-      painter.drawPicture( *state.texture, getScreenLeft(), getScreenTop() );
+      painter.drawPicture( *state.texture, getScreenLeft(), getScreenTop(), &getAbsoluteClippingRect() );
 
 //             if( isEnabled() &&
 //                 ( hoverImageOpacity <= 0xff ) &&

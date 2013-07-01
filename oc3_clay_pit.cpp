@@ -13,47 +13,35 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_factoryclay.hpp"
+#include "oc3_clay_pit.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_tile.hpp"
 
-FactoryClay::FactoryClay() : Factory(G_NONE, G_CLAY, B_CLAY_PIT, Size(2) )
+ClayPit::ClayPit() : Factory(G_NONE, G_CLAY, B_CLAY_PIT, Size(2) )
 {
   _setProductRate( 9.6f );
   setPicture( Picture::load( ResourceGroup::commerce, 61 ) );
 
-  _animation.load( ResourceGroup::commerce, 62, 10);
-  _animation.setFrameDelay( 3 );
+  _getAnimation().load( ResourceGroup::commerce, 62, 10);
+  _getAnimation().setFrameDelay( 3 );
   _fgPictures.resize(2);
 
   setMaxWorkers( 10 );
   setWorkers( 0 );
 }
 
-void FactoryClay::timeStep( const unsigned long time )
+void ClayPit::timeStep( const unsigned long time )
 {
-  bool mayAnimate = getWorkers() > 0;
-
-  if( mayAnimate && _animation.isStopped() )
-  {
-    _animation.start();
-  }
-
-  if( !mayAnimate && _animation.isRunning() )
-  {
-    _animation.stop();
-  }
-
   Factory::timeStep( time );
 }
 
-bool FactoryClay::canBuild(const TilePos& pos ) const
+bool ClayPit::canBuild(const TilePos& pos ) const
 {
   bool is_constructible = Construction::canBuild( pos );
   bool near_water = false;
 
-  Tilemap& tilemap = Scenario::instance().getCity().getTilemap();
+  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
   PtrTilesList rect = tilemap.getRectangle( pos + TilePos( -1, -1), getSize() + Size( 2 ), Tilemap::checkCorners );
   for( PtrTilesList::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles )
   {
