@@ -151,23 +151,35 @@ void GfxSdlEngine::endRenderFrame()
   }
 }
 
-void GfxSdlEngine::drawPicture(const Picture &picture, const int dx, const int dy)
+void GfxSdlEngine::drawPicture(const Picture &picture, const int dx, const int dy, Rect* clipRect )
 {
   if( !picture.isValid() )
       return;
 
+  if( clipRect != 0 )
+  {
+    SDL_Rect r = { clipRect->getLeft(), clipRect->getTop(), clipRect->getWidth(), clipRect->getHeight() };
+    SDL_SetClipRect( _d->screen.getSurface(), &r );
+  }
+
   if( _d->rmask || _d->gmask || _d->bmask  )
   {
     PictureConverter::maskColor( _d->maskedPic, picture, _d->rmask, _d->gmask, _d->bmask, _d->amask );
+
     _d->screen.draw( _d->maskedPic, dx, dy );
   }
   else
   {
     _d->screen.draw( picture, dx, dy );
   }
+
+  if( clipRect != 0 )
+  {
+    SDL_SetClipRect( _d->screen.getSurface(), 0 );
+  }
 }
 
-void GfxSdlEngine::drawPicture( const Picture &picture, const Point& pos )
+void GfxSdlEngine::drawPicture( const Picture &picture, const Point& pos, Rect* clipRect )
 {
   drawPicture( picture, pos.getX(), pos.getY() );
 }

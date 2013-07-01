@@ -114,7 +114,7 @@ Widget::Widget( Widget* parent, int id, const Rect& rectangle )
   _alignLeft(alignUpperLeft), _alignRight(alignUpperLeft), _alignTop(alignUpperLeft), _alignBottom(alignUpperLeft),
   _environment( parent ? parent->getEnvironment() : NULL ), _eventHandler( NULL )
 {
-    _d->parent = parent;
+  _d->parent = parent;
 	_d->relativeRect = rectangle;
 	_d->absoluteRect = rectangle;
 	_d->absoluteClippingRect = rectangle;
@@ -127,9 +127,9 @@ Widget::Widget( Widget* parent, int id, const Rect& rectangle )
     // if we were given a parent to attach to
     if (parent)
     {
-        parent->addChild_(this);
-        recalculateAbsolutePosition(true);
-		drop();
+      parent->addChild_(this);
+      recalculateAbsolutePosition(true);
+		  drop();
     }
 
     setTextAlignment( alignUpperLeft, alignCenter );

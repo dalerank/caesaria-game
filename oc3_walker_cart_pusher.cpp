@@ -40,6 +40,10 @@ public:
   Picture* cartPicture;
   int maxDistance;
   long reservationID;
+
+  BuildingPtr getWalkerDestination_factory(Propagator& pathPropagator, PathWay &oPathWay);
+  BuildingPtr getWalkerDestination_warehouse(Propagator& pathPropagator, PathWay &oPathWay);
+  BuildingPtr getWalkerDestination_granary(Propagator& pathPropagator, PathWay &oPathWay);
 };
 
 CartPusher::CartPusher( CityPtr city ) : _d( new Impl )
@@ -181,19 +185,19 @@ void CartPusher::computeWalkerDestination()
    if (destBuilding == NULL)
    {
       // try send that good to a factory
-      destBuilding = getWalkerDestination_factory(pathPropagator, pathWay);
+      destBuilding = _d->getWalkerDestination_factory(pathPropagator, pathWay);
    }
 
    if (destBuilding == NULL)
    {
       // try send that good to a granary
-      destBuilding = getWalkerDestination_granary(pathPropagator, pathWay);
+      destBuilding = _d->getWalkerDestination_granary(pathPropagator, pathWay);
    }
 
    if (destBuilding == NULL)
    {
       // try send that good to a warehouse
-      destBuilding = getWalkerDestination_warehouse( pathPropagator, pathWay );
+      destBuilding = _d->getWalkerDestination_warehouse( pathPropagator, pathWay );
    }
 
    if( destBuilding != NULL)
@@ -214,10 +218,10 @@ void CartPusher::computeWalkerDestination()
 }
 
 
-BuildingPtr CartPusher::getWalkerDestination_factory(Propagator &pathPropagator, PathWay &oPathWay)
+BuildingPtr CartPusher::Impl::getWalkerDestination_factory(Propagator &pathPropagator, PathWay &oPathWay)
 {
    BuildingPtr res;
-   GoodType goodType = _d->stock._goodType;
+   GoodType goodType = stock._goodType;
    BuildingType buildingType = BuildingDataHolder::instance().getBuildingTypeByInGood(goodType);
 
    if (buildingType == B_NONE)
@@ -236,8 +240,8 @@ BuildingPtr CartPusher::getWalkerDestination_factory(Propagator &pathPropagator,
       PathWay& pathWay= pathWayIt->second;
 
       FactoryPtr factory = building.as<Factory>();
-      _d->reservationID = factory->getGoodStore().reserveStorage(_d->stock);
-      if (_d->reservationID != 0)
+      reservationID = factory->getGoodStore().reserveStorage( stock );
+      if (reservationID != 0)
       {
          res = factory.as<Building>();
          oPathWay = pathWay;
@@ -248,7 +252,7 @@ BuildingPtr CartPusher::getWalkerDestination_factory(Propagator &pathPropagator,
    return res;
 }
 
-BuildingPtr CartPusher::getWalkerDestination_warehouse(Propagator &pathPropagator, PathWay &oPathWay)
+BuildingPtr CartPusher::Impl::getWalkerDestination_warehouse(Propagator &pathPropagator, PathWay &oPathWay)
 {
    BuildingPtr res;
 
@@ -262,8 +266,8 @@ BuildingPtr CartPusher::getWalkerDestination_warehouse(Propagator &pathPropagato
       PathWay& pathWay= pathWayIt->second;
 
       WarehousePtr warehouse= building.as<Warehouse>();
-      _d->reservationID = warehouse->getGoodStore().reserveStorage(_d->stock);
-      if (_d->reservationID != 0)
+      reservationID = warehouse->getGoodStore().reserveStorage( stock );
+      if (reservationID != 0)
       {
          res = warehouse.as<Building>();
          oPathWay = pathWay;
@@ -274,11 +278,11 @@ BuildingPtr CartPusher::getWalkerDestination_warehouse(Propagator &pathPropagato
    return res;
 }
 
-BuildingPtr CartPusher::getWalkerDestination_granary(Propagator &pathPropagator, PathWay &oPathWay)
+BuildingPtr CartPusher::Impl::getWalkerDestination_granary(Propagator &pathPropagator, PathWay &oPathWay)
 {
    BuildingPtr res;
 
-   GoodType goodType = _d->stock._goodType;
+   GoodType goodType = stock._goodType;
    if (!(goodType == G_WHEAT || goodType == G_FISH || goodType == G_MEAT || goodType == G_FRUIT || goodType == G_VEGETABLE))
    {
       // this good cannot be stored in a granary
@@ -296,8 +300,8 @@ BuildingPtr CartPusher::getWalkerDestination_granary(Propagator &pathPropagator,
       PathWay& pathWay= pathWayIt->second;
 
       SmartPtr<Granary> granary= building.as<Granary>();
-      _d->reservationID = granary->getGoodStore().reserveStorage(_d->stock);
-      if (_d->reservationID != 0)
+      reservationID = granary->getGoodStore().reserveStorage( stock );
+      if (reservationID != 0)
       {
          res = granary.as<Building>();
          oPathWay = pathWay;

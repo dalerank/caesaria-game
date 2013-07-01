@@ -44,8 +44,8 @@ public:
    void unloadPicture(Picture &ioPicture);
 
    void init_frame();
-   void drawPicture(const Picture &picture, const int dx, const int dy);
-   void drawPicture(const Picture &picture, const Point& pos );
+   void drawPicture(const Picture &picture, const int dx, const int dy, Rect* clipRect=0);
+   void drawPicture(const Picture &picture, const Point& pos, Rect* clipRect=0 );
    void exit_frame();
 
    void setTileDrawMask( int rmask, int gmask, int bmask, int amask );

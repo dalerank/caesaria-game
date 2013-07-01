@@ -152,7 +152,7 @@ void GfxGlEngine::exit_frame()
 }
 
 
-void GfxGlEngine::drawPicture(const Picture &picture, const int dx, const int dy)
+void GfxGlEngine::drawPicture(const Picture &picture, const int dx, const int dy, Rect* clipRect)
 {
    GLuint aTextureID = picture.getGlTextureID();
    float x0 = (float)( dx+picture.getOffset().getX());
@@ -185,7 +185,7 @@ void GfxGlEngine::drawPicture(const Picture &picture, const int dx, const int dy
    glEnd();
 }
 
-void GfxGlEngine::drawPicture( const Picture &picture, const Point& pos )
+void GfxGlEngine::drawPicture( const Picture &picture, const Point& pos, Rect* clipRect )
 {
   drawPicture( picture, pos.getX(), pos.getY() );
 }

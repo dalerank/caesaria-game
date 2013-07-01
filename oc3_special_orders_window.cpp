@@ -88,6 +88,7 @@ class BaseSpecialOrdersWindow::Impl
 public:
   PictureRef bgPicture;
   GroupBox* gbOrders;
+  Widget* gbOrdersInsideArea;
   Label* lbTitle;
   PushButton* btnExit;
   PushButton* btnHelp;
@@ -97,8 +98,8 @@ public:
   void addOrderWidget( const int index, const GoodType good, T storageBuiding )
   {
     Point offset( 0, 25 );
-    Size wdgSize( gbOrders->getWidth() - 5, 25 );
-    new OrderGoodWidget<T>( gbOrders, Rect( Point( 2, 2 ) + offset * index, wdgSize), good, storageBuiding );
+    Size wdgSize( gbOrdersInsideArea->getWidth(), 25 );
+    new OrderGoodWidget<T>( gbOrdersInsideArea, Rect( offset * index, wdgSize), good, storageBuiding );
   }
 };
 
@@ -124,6 +125,7 @@ BaseSpecialOrdersWindow::BaseSpecialOrdersWindow( Widget* parent, const Point& p
   GuiPaneling::instance().draw_white_frame(*_d->bgPicture, 0, 0, getWidth(), getHeight() );
 
   _d->gbOrders = new GroupBox( this, Rect( 17, 42, getWidth() - 17, getHeight() - 70), -1, GroupBox::blackFrame );  
+  _d->gbOrdersInsideArea = new Widget( _d->gbOrders, -1, Rect( 5, 5, _d->gbOrders->getWidth() -5, _d->gbOrders->getHeight() -5 ) );
 }
 
 
@@ -174,7 +176,8 @@ GranarySpecialOrdersWindow::GranarySpecialOrdersWindow( Widget* parent, const Po
 {
   setTitle( _("##granary_orders##") );
   int index=0;
-  for( int goodType=G_WHEAT; goodType < G_OLIVE; goodType++ )
+  _granary = granary;
+  for( int goodType=G_WHEAT; goodType <= G_VEGETABLE; goodType++ )
   {
     const GoodOrders::Order rule = granary->getGoodStore().getOrder( (GoodType)goodType );
     
@@ -212,7 +215,7 @@ WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, cons
 
   _warehouse = warehouse;
   int index=0;
-  for( int goodType=G_WHEAT; goodType < G_OLIVE; goodType++ )
+  for( int goodType=G_WHEAT; goodType <= G_MARBLE; goodType++ )
   {
     const GoodOrders::Order rule = _warehouse->getGoodStore().getOrder( (GoodType)goodType );
 

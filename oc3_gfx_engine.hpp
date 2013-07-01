@@ -51,8 +51,8 @@ public:
   virtual void startRenderFrame() = 0;  // start a new frame
   virtual void endRenderFrame() = 0;  // display the frame
 
-  virtual void drawPicture(const Picture &pic, const int dx, const int dy) = 0;
-  virtual void drawPicture(const Picture &pic, const Point& pos ) = 0;
+  virtual void drawPicture(const Picture &pic, const int dx, const int dy, Rect* clipRect=0 ) = 0;
+  virtual void drawPicture(const Picture &pic, const Point& pos, Rect* clipRect=0 ) = 0;
 
   virtual void setTileDrawMask( int rmask, int gmask, int bmask, int amask ) = 0;
   virtual void resetTileDrawMask() = 0;

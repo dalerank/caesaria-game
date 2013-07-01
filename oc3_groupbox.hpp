@@ -46,7 +46,6 @@ public:
 
   virtual void beforeDraw( GfxEngine& painter );
 
-
   //! Writes attributes of the element.
   //virtual void save(VariantArray* out) const;
 
