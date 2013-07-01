@@ -234,7 +234,7 @@ BuildingPtr CartPusher::getWalkerDestination_factory(Propagator &pathPropagator,
       BuildingPtr building= pathWayIt->first;
       PathWay& pathWay= pathWayIt->second;
 
-      SmartPtr<Factory> factory = building.as<Factory>();
+      FactoryPtr factory = building.as<Factory>();
       _d->reservationID = factory->getGoodStore().reserveStorage(_d->stock);
       if (_d->reservationID != 0)
       {
@@ -365,9 +365,10 @@ void CartPusher::load( const VariantMap& stream )
   TilePos prPos( stream.get( "producerPos" ).toTilePos() );
   Tile& prTile = _d->city->getTilemap().at( prPos );
   _d->producerBuilding = prTile.getTerrain().getOverlay().as<Building>();
-  if( _d->producerBuilding.is<Factory>() )
+  
+  if( _d->producerBuilding.is<WorkingBuilding>() )
   {
-    _d->producerBuilding.as<Factory>()->addWalker( this );
+    _d->producerBuilding.as<WorkingBuilding>()->addWalker( this );
   }
 
   TilePos cnsmPos( stream.get( "consumerPos" ).toTilePos() );

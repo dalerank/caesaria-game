@@ -13,12 +13,12 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_factoryclay.hpp"
+#include "oc3_clay_pit.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_tile.hpp"
 
-FactoryClay::FactoryClay() : Factory(G_NONE, G_CLAY, B_CLAY_PIT, Size(2) )
+ClayPit::ClayPit() : Factory(G_NONE, G_CLAY, B_CLAY_PIT, Size(2) )
 {
   _setProductRate( 9.6f );
   setPicture( Picture::load( ResourceGroup::commerce, 61 ) );
@@ -31,7 +31,7 @@ FactoryClay::FactoryClay() : Factory(G_NONE, G_CLAY, B_CLAY_PIT, Size(2) )
   setWorkers( 0 );
 }
 
-void FactoryClay::timeStep( const unsigned long time )
+void ClayPit::timeStep( const unsigned long time )
 {
   bool mayAnimate = getWorkers() > 0;
 
@@ -48,7 +48,7 @@ void FactoryClay::timeStep( const unsigned long time )
   Factory::timeStep( time );
 }
 
-bool FactoryClay::canBuild(const TilePos& pos ) const
+bool ClayPit::canBuild(const TilePos& pos ) const
 {
   bool is_constructible = Construction::canBuild( pos );
   bool near_water = false;

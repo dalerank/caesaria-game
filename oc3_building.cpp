@@ -34,6 +34,7 @@ public:
   Picture picture;
   Size size;  // size in tiles
   Animation animation;  // basic animation (if any)
+  bool isDeleted;
 };
 
 LandOverlay::LandOverlay(const BuildingType type, const Size& size)
@@ -41,7 +42,7 @@ LandOverlay::LandOverlay(const BuildingType type, const Size& size)
 {
   _master_tile = NULL;
   _d->size = size;
-  _isDeleted = false;
+  _d->isDeleted = false;
   _d->name = "unknown";
   setType( type );
 }
@@ -112,7 +113,7 @@ void LandOverlay::build( const TilePos& pos )
 
 void LandOverlay::deleteLater()
 {
-  _isDeleted  = true;
+  _d->isDeleted  = true;
 }
 
 void LandOverlay::destroy()
@@ -132,7 +133,7 @@ Size LandOverlay::getSize() const
 
 bool LandOverlay::isDeleted() const
 {
-  return _isDeleted;
+  return _d->isDeleted;
 }
 
 Picture& LandOverlay::getPicture()
@@ -156,7 +157,7 @@ void LandOverlay::save( VariantMap& stream ) const
   stream[ "buildingType" ] = (int)_d->buildingType;
   stream[ "picture" ] = Variant( _d->picture.getName() );   
   stream[ "size" ] = _d->size;
-  stream[ "isDeleted" ] = _isDeleted;
+  stream[ "isDeleted" ] = _d->isDeleted;
   stream[ "name" ] = Variant( _d->name );
 }
 
@@ -166,7 +167,7 @@ void LandOverlay::load( const VariantMap& stream )
   _d->buildingType = (BuildingType)stream.get( "buildingType" ).toInt();
   _d->picture = Picture::load( stream.get( "picture" ).toString() + ".png" );
   _d->size = stream.get( "size" ).toSize();
-  _isDeleted = stream.get( "isDeleted" ).toBool();
+  _d->isDeleted = stream.get( "isDeleted" ).toBool();
 }
 
 bool LandOverlay::isWalkable() const

@@ -109,7 +109,7 @@ bool Farm::canBuild(const TilePos& pos ) const
 
 void Farm::init()
 {
-  GoodType farmType = _outGoodType;
+  GoodType farmType = getOutGoodType();
   // add subTiles in draw order
   _d->subTiles.push_back(FarmTile(farmType, TilePos( 0, 0 ) ));
   _d->subTiles.push_back(FarmTile(farmType, TilePos( 2, 2 ) ));

@@ -119,7 +119,7 @@ void Warehouse::init()
   _d->goodStore.init(*this);
 
   GoodStock stock;
-  stock._goodType = G_POTTERY;
+  stock._goodType = G_CLAY;
   stock._currentQty = 300;
   _d->goodStore.store(stock, 300);
 

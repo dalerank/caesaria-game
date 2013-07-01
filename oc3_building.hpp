@@ -41,8 +41,6 @@ public:
   LandOverlay( const BuildingType type, const Size& size=Size(1));
   virtual ~LandOverlay();
 
-  virtual void timeStep(const unsigned long time);  // perform one simulation step
-
   Tile& getTile() const;  // master tile, in case of multi-tile area
   TilePos getTilePos() const;
   Size getSize() const;  // size in tiles (1=1x1, 2=2x2, ...)
@@ -56,6 +54,7 @@ public:
   virtual void build( const TilePos& pos );
   virtual void destroy();  // handles the delete
   virtual Point getOffset( const Point& subpos ) const;
+  virtual void timeStep(const unsigned long time);  // perform one simulation step
 
   // graphic
   void setPicture(Picture &picture);
@@ -74,7 +73,6 @@ public:
 protected:
   std::vector<Picture*> _fgPictures;
   Tile* _master_tile;  // left-most tile if multi-tile, or "this" if single-tile
-  bool _isDeleted;
 
   Animation& _getAnimation();
 
@@ -139,9 +137,9 @@ public:
    void applyTrainee(const WalkerTraineeType traineeType); // trainee arrives
 
    float getDamageLevel();
-   void setDamageLevel(const float value);
+   void  setDamageLevel(const float value);
    float getFireLevel();
-   void setFireLevel(const float value);
+   void  setFireLevel(const float value);
 
    void save( VariantMap& stream) const;
    void load( const VariantMap& stream);

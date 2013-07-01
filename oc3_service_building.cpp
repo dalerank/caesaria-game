@@ -62,20 +62,7 @@ ServiceType ServiceBuilding::getService() const
 
 void ServiceBuilding::timeStep(const unsigned long time)
 {
-   Building::timeStep(time);
-
-   Walkers::iterator it=_walkerList.begin();
-   while( it != _walkerList.end() )
-   {
-     if( (*it)->isDeleted() )
-     {
-        it = _walkerList.erase( it );
-     }
-     else
-     {
-       it++;
-     }
-   }
+   Building::timeStep(time);   
 
    if (_d->serviceTimer == 0)
    {
@@ -98,12 +85,6 @@ void ServiceBuilding::timeStep(const unsigned long time)
 
 void ServiceBuilding::destroy()
 {
-   for( Walkers::iterator itWalker = _walkerList.begin(); 
-        itWalker != _walkerList.end(); ++itWalker)
-   {
-      (*itWalker)->deleteLater();
-   }
-
    WorkingBuilding::destroy();
 }
 
@@ -144,16 +125,6 @@ void ServiceBuilding::load( const VariantMap& stream )
 int ServiceBuilding::getServiceDelay() const
 {
   return _d->serviceDelay;
-}
-
-void ServiceBuilding::addWalker( WalkerPtr walker )
-{
-  _walkerList.push_back( walker );
-}
-
-const Walkers& ServiceBuilding::getWalkerList() const
-{
-  return _walkerList;
 }
 
 ServiceBuilding::~ServiceBuilding()

@@ -31,13 +31,12 @@
 class Factory::Impl
 {
 public:
-  Walkers pushers;
   float productionRate;  // max production / year
   float progress;  // progress of the work, in percent (0-100).
   Picture* stockPicture; // stock of input good
   SimpleGoodStore goodStore;
-
-  void removeIdlePushers();
+  GoodType inGoodType;
+  GoodType outGoodType;
 };
 
 Factory::Factory( const GoodType inType, const GoodType outType,
@@ -49,23 +48,23 @@ Factory::Factory( const GoodType inType, const GoodType outType,
 
    _d->productionRate = 4.8f;
    _d->progress = 0.0f;
-   _inGoodType = inType;
-   _outGoodType = outType;
+   _d->inGoodType = inType;
+   _d->outGoodType = outType;
    _d->goodStore.setMaxQty(1000);  // quite unlimited
-   _d->goodStore.setMaxQty(_inGoodType, 200);
-   _d->goodStore.setMaxQty(_outGoodType, 200);
+   _d->goodStore.setMaxQty(_d->inGoodType, 200);
+   _d->goodStore.setMaxQty(_d->outGoodType, 200);
 }
 
 
 GoodStock& Factory::getInGood()
 {
-   return _d->goodStore.getStock(_inGoodType);
+   return _d->goodStore.getStock(_d->inGoodType);
 }
 
 
 GoodStock& Factory::getOutGood()
 {
-   return _d->goodStore.getStock(_outGoodType);
+   return _d->goodStore.getStock(_d->outGoodType);
 }
 
 
@@ -74,24 +73,24 @@ int Factory::getProgress()
    return (int) _d->progress;
 }
 
-void Factory::Impl::removeIdlePushers()
-{
-  // release walkers
-  std::list<WalkerPtr>::iterator i = pushers.begin();
-  while (i != pushers.end())
-  {
-    if( (*i)->isDeleted() )
-      pushers.erase( i++ );
-    else
-      ++i;
-  }
-};
-
 void Factory::timeStep(const unsigned long time)
 {
-   Building::timeStep(time);
+   WorkingBuilding::timeStep(time);
 
-   if( getWorkers() == 0 )
+   //start/stop animation when workers found
+   bool mayAnimate = getWorkers() > 0;
+
+   if( mayAnimate && _getAnimation().isStopped() )
+   {
+     _getAnimation().start();
+   }
+
+   if( !mayAnimate && _getAnimation().isRunning() )
+   {
+     _getAnimation().stop();
+   }
+
+   if( !mayAnimate )
    {
      return;
    }
@@ -115,7 +114,6 @@ void Factory::timeStep(const unsigned long time)
          inStock._currentQty -= 100;
       }
 
-      _d->removeIdlePushers();
       deliverGood();      
    }
    else
@@ -138,7 +136,7 @@ void Factory::deliverGood()
   // make a cart pusher and send him away
   if( _mayDeliverGood() )
   {  
-    GoodStock stock(_outGoodType, 100, 100);
+    GoodStock stock(_d->outGoodType, 100, 100);
     CartPusherPtr walker = CartPusher::create( Scenario::instance().getCity() );
     walker->send2City( BuildingPtr( this ), stock );
 
@@ -148,11 +146,6 @@ void Factory::deliverGood()
       addWalker( walker.as<Walker>() );
     }
   }
-}
-
-void Factory::addWalker( WalkerPtr walker )
-{
-  _d->pushers.push_back( walker );
 }
 
 SimpleGoodStore& Factory::getGoodStore()
@@ -176,7 +169,7 @@ void Factory::load( const VariantMap& stream)
   WorkingBuilding::load( stream );
   _d->goodStore.load( stream.get( "goodStore" ).toMap() );
   _d->progress = stream.get( "progress" ).toFloat(); // approximation
-  _d->productionRate = stream.get( "productionRate" ).toInt();
+  _d->productionRate = stream.get( "productionRate" ).toFloat();
 }
 
 Factory::~Factory()
@@ -186,19 +179,7 @@ Factory::~Factory()
 
 bool Factory::_mayDeliverGood() const
 {
-  return ( getAccessRoads().size() > 0 ) && ( _d->pushers.size() == 0 );
-}
-
-void Factory::removeWalker( WalkerPtr w )
-{
-  for( Walkers::iterator it=_d->pushers.begin(); it != _d->pushers.end(); it++ )
-  {
-    if( *it == w )
-    {
-      _d->pushers.erase( it );  
-      return;
-    }
-  }
+  return ( getAccessRoads().size() > 0 ) && ( getWalkerList().size() == 0 );
 }
 
 void Factory::_setProductRate( const float rate )
@@ -206,7 +187,12 @@ void Factory::_setProductRate( const float rate )
   _d->productionRate = rate;
 }
 
-FactoryTimber::FactoryTimber() : Factory(G_NONE, G_TIMBER, B_TIMBER, Size(2) )
+GoodType Factory::getOutGoodType() const
+{
+  return _d->outGoodType;
+}
+
+TimberLogger::TimberLogger() : Factory(G_NONE, G_TIMBER, B_TIMBER, Size(2) )
 {
   _setProductRate( 9.6f );
   setPicture( Picture::load(ResourceGroup::commerce, 72) );
@@ -216,9 +202,9 @@ FactoryTimber::FactoryTimber() : Factory(G_NONE, G_TIMBER, B_TIMBER, Size(2) )
   setWorkers( 0 );
 }
 
-bool FactoryTimber::canBuild(const TilePos& pos ) const
+bool TimberLogger::canBuild(const TilePos& pos ) const
 {
-   bool is_constructible = Construction::canBuild( pos );
+   bool is_constructible = WorkingBuilding::canBuild( pos );
    bool near_forest = false;  // tells if the factory is next to a forest
 
    Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
@@ -233,7 +219,7 @@ bool FactoryTimber::canBuild(const TilePos& pos ) const
 }
 
 
-FactoryIron::FactoryIron() : Factory(G_NONE, G_IRON, B_IRON_MINE, Size(2) )
+IronMine::IronMine() : Factory(G_NONE, G_IRON, B_IRON_MINE, Size(2) )
 {
   _setProductRate( 9.6f );
   setWorkers( 0 );
@@ -245,9 +231,9 @@ FactoryIron::FactoryIron() : Factory(G_NONE, G_IRON, B_IRON_MINE, Size(2) )
   _fgPictures.resize(2);
 }
 
-bool FactoryIron::canBuild(const TilePos& pos ) const
+bool IronMine::canBuild(const TilePos& pos ) const
 {
-  bool is_constructible = Construction::canBuild( pos );
+  bool is_constructible = WorkingBuilding::canBuild( pos );
   bool near_mountain = false;  // tells if the factory is next to a mountain
 
   Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
@@ -260,7 +246,7 @@ bool FactoryIron::canBuild(const TilePos& pos ) const
   return (is_constructible && near_mountain);
 }
 
-FactoryWeapon::FactoryWeapon() : Factory(G_IRON, G_WEAPON, B_WEAPON, Size(2) )
+WeaponsWorkshop::WeaponsWorkshop() : Factory(G_IRON, G_WEAPON, B_WEAPON, Size(2) )
 {
   setPicture( Picture::load(ResourceGroup::commerce, 108) );
 
@@ -276,7 +262,7 @@ FactoryFurniture::FactoryFurniture() : Factory(G_TIMBER, G_FURNITURE, B_FURNITUR
   _fgPictures.resize(2);
 }
 
-FactoryWine::FactoryWine() : Factory(G_GRAPE, G_WINE, B_WINE, Size(2) )
+Winery::Winery() : Factory(G_GRAPE, G_WINE, B_WINE, Size(2) )
 {
   setPicture( Picture::load(ResourceGroup::commerce, 86) );
 
