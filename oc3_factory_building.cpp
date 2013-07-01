@@ -69,10 +69,9 @@ GoodStock& Factory::getOutGood()
    return _d->goodStore.getStock(_d->outGoodType);
 }
 
-
 int Factory::getProgress()
 {
-   return (int) _d->progress;
+  return math::clamp<int>( (int)_d->progress, 0, 100 );
 }
 
 void Factory::timeStep(const unsigned long time)

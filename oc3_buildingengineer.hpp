@@ -24,6 +24,8 @@ public:
     BuildingEngineer();
     void timeStep(const unsigned long time);
     void deliverService();
+
+    unsigned int getWalkerDistance() const;
 };
 
 #endif

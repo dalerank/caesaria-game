@@ -43,6 +43,7 @@
 #include "oc3_gfx_engine.hpp"
 #include "oc3_special_orders_window.hpp"
 #include "oc3_goodstore.hpp"
+#include "oc3_groupbox.hpp"
 
 class GuiInfoBox::Impl
 {
@@ -303,13 +304,12 @@ void InfoBoxHouse::drawGood(const GoodType &goodType, const int col, const int r
 }
 
 GuiInfoFactory::GuiInfoFactory( Widget* parent, const Tile& tile)
-    : GuiInfoBox( parent, Rect( 0, 0, 450, 220 ), -1 )
+    : GuiInfoBox( parent, Rect( 0, 0, 510, 256 ), -1 )
 {
   _building = tile.getTerrain().getOverlay().as<Factory>();
   setTitle( BuildingDataHolder::instance().getData( _building->getType() ).getPrettyName() );
   paint();
 }
-
 
 void GuiInfoFactory::paint()
 {
@@ -317,49 +317,42 @@ void GuiInfoFactory::paint()
    //Font &font_red = FontCollection::instance().getFont(FONT_2_RED);
   Font font = Font::create( FONT_2 );
 
-   // paint progress
-   int progress = _building->getProgress();
-   int _paintY = _d->lbTitle->getBottom();
+  // paint progress
+  int progress = _building->getProgress();
+  int _paintY = _d->lbTitle->getBottom();
 
-   std::string text = StringHelper::format( 0xff, _("Le travail est a %d%% termine."), progress );
-   font.draw(*_d->bgPicture, text, 15, _paintY);
-   _paintY+=22;
+  std::string text = StringHelper::format( 0xff, _("Le travail est a %d%% termine."), progress );
+  font.draw(*_d->bgPicture, text, 32, _paintY);
+  _paintY+=22;
 
-   // paint picture of in good
-   if (_building->getInGood()._goodType != G_NONE)
-   {
-     Picture &pic = GoodHelper::getPicture( _building->getInGood()._goodType );
-     _d->bgPicture->draw(pic, 15, _paintY+2);
-     int amount = _building->getInGood()._currentQty / 100;
-     std::string goodName = GoodHelper::getName( _building->getInGood()._goodType );
+  if( _building->getOutGoodType() != G_NONE )
+  {
+    Picture &pic = GoodHelper::getPicture( _building->getOutGoodType() );
+    _d->bgPicture->draw(pic, 10, 10);
+  }
+
+  // paint picture of in good
+  if( _building->getInGood()._goodType != G_NONE )
+  {
+    Picture &pic = GoodHelper::getPicture( _building->getInGood()._goodType );
+    _d->bgPicture->draw(pic, 32, _paintY+2);
+    int amount = _building->getInGood()._currentQty / 100;
+    std::string goodName = GoodHelper::getName( _building->getInGood()._goodType );
+   
+    text = StringHelper::format( 0xff, _("%s en stock: %d unites"), goodName.c_str(), amount );
     
-     text = StringHelper::format( 0xff, _("%s en stock: %d unites"), goodName.c_str(), amount );
-     
-     font.draw( *_d->bgPicture, text, 42, _paintY);
-     _paintY+=22;
-   }
+    font.draw( *_d->bgPicture, text, 32 + 25, _paintY);
+  }
 
-   /*std::string desc = getInfoText();
-   std::list<std::string> text_lines = font.split_text(desc, getWidth()-32);
-   for (std::list<std::string>::iterator itlines = text_lines.begin(); itlines != text_lines.end(); ++itlines)
-   {
-      std::string &line = *itlines;
-      font.draw(*_d->bgPicture, line, 15, _paintY );
-      _paintY+=19;
-   }*/
-
-   _paintY+=10;
-   GuiPaneling::instance().draw_black_frame(*_d->bgPicture, 16, _paintY, getWidth()-32, getHeight()-_paintY-16);
-   _paintY+=10;
-
-   drawWorkers( _paintY );
+  GuiPaneling::instance().draw_black_frame( *_d->bgPicture, 16, 147, getWidth()-32, 62);
+  drawWorkers( 147 + 10 );
 }
 
 
-void GuiInfoFactory::drawWorkers( int& paintY )
+void GuiInfoFactory::drawWorkers( int paintY )
 {
    // picture of citizen
-   Picture *pic = &Picture::load( ResourceGroup::panelBackground, 542);
+   Picture *pic = &Picture::load( ResourceGroup::panelBackground, 542 );
    _d->bgPicture->draw( *pic, 16+15, paintY);
 
    // number of workers
@@ -367,7 +360,6 @@ void GuiInfoFactory::drawWorkers( int& paintY )
 
    Font font = Font::create( FONT_2 );
    font.draw(*_d->bgPicture, text, 16+42, paintY+5 );
-   paintY += 20;
 }
 
 
@@ -867,10 +859,10 @@ InfoBoxFreeHouse::InfoBoxFreeHouse( Widget* parent, const Tile& tile )
     }
 }   
 
-class InfoBoxFarm::Impl
+class InfoBoxRawMaterial::Impl
 {
 public:
-  FarmPtr farm;
+  FactoryPtr rawmb;
   Label* lbProgress;
   Label* lbAbout;
   Label* lbDesc;
@@ -879,14 +871,14 @@ public:
   void updateAboutText();
 };
 
-void InfoBoxFarm::Impl::updateAboutText()
+void InfoBoxRawMaterial::Impl::updateAboutText()
 {
   std::string text = _("##farm_working_normally##");
-  if( farm->getWorkers() == 0 )
+  if( rawmb->getWorkers() == 0 )
   {
     text = _("##farm_have_no_workers##");
   }
-  else if( farm->getWorkers() <= farm->getMaxWorkers() / 2 )
+  else if( rawmb->getWorkers() <= rawmb->getMaxWorkers() / 2 )
   {
     text = _("##farm_working_bad##");
   }
@@ -894,10 +886,10 @@ void InfoBoxFarm::Impl::updateAboutText()
   lbAbout->setText( text );
 }
 
-InfoBoxFarm::InfoBoxFarm( Widget* parent, const Tile& tile )
+InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
 : GuiInfoBox( parent, Rect( 0, 0, 510, 350 ), -1 ), _fd( new Impl )
 {
-  _fd->farm = tile.getTerrain().getOverlay().as<Farm>();
+  _fd->rawmb = tile.getTerrain().getOverlay().as<Factory>();
   
   GuiPaneling::instance().draw_black_frame( *_d->bgPicture, 16, 146, getWidth() - 32, 64 );
 
@@ -905,26 +897,32 @@ InfoBoxFarm::InfoBoxFarm( Widget* parent, const Tile& tile )
   Picture& pic = Picture::load( ResourceGroup::panelBackground, 542);
   _d->bgPicture->draw( pic, 16+15, 160 );
 
+  if( _fd->rawmb->getOutGoodType() != G_NONE )
+  {
+    Picture &pic = GoodHelper::getPicture( _fd->rawmb->getOutGoodType() );
+    _d->bgPicture->draw(pic, 10, 10);
+  }
+
   // number of workers
   std::string text = StringHelper::format( 0xff, _("%d employers (%d requires)"), 
-                                           _fd->farm->getWorkers(), _fd->farm->getMaxWorkers() );
+                                           _fd->rawmb->getWorkers(), _fd->rawmb->getMaxWorkers() );
 
   Font font = Font::create( FONT_2 );
   font.draw( *_d->bgPicture, text, 16+42, 158+5 );
 
   _fd->dmgLabel = new Label( this, Rect( 50, getHeight() - 50, getWidth() - 50, getHeight() - 16 ) ); 
   text = StringHelper::format( 0xff, "%d%% damage - %d%% fire", 
-  (int)_fd->farm->getDamageLevel(), (int)_fd->farm->getFireLevel());
+  (int)_fd->rawmb->getDamageLevel(), (int)_fd->rawmb->getFireLevel());
   _fd->dmgLabel->setText( text );
 
-  text = StringHelper::format( 0xff, _("Production %d%% complete."), _fd->farm->getProgress() );
+  text = StringHelper::format( 0xff, _("Production %d%% complete."), _fd->rawmb->getProgress() );
   _fd->lbProgress = new Label( this, Rect( 32, 50, getWidth() - 16, 50 + 32 ), text );
   _fd->lbAbout = new Label( this, Rect( 32, _fd->lbProgress->getBottom() + 6, getWidth() - 16, 130 ) );
   _fd->lbAbout->setWordWrap( true );
 
   std::string desc, name;
   GoodType goodType = G_NONE;
-  switch( _fd->farm->getType() )
+  switch( _fd->rawmb->getOutGoodType() )
   {
     case B_WHEAT_FARM:
       desc.assign( _("##farm_description_wheat##") );

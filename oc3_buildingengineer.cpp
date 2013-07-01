@@ -20,34 +20,41 @@
 
 BuildingEngineer::BuildingEngineer() : ServiceBuilding(S_ENGINEER, B_ENGINEER_POST, Size(1) )
 {
-    setWorkers( 0 );
-    setPicture( Picture::load( ResourceGroup::buildingEngineer, 56 ) );
+  setWorkers( 0 );
+  setPicture( Picture::load( ResourceGroup::buildingEngineer, 56 ) );
 
-    _getAnimation().load( ResourceGroup::buildingEngineer, 57, 10);
-    _getAnimation().setFrameDelay( 4 );
-    _getAnimation().setOffset( Point( 10, 42 ) );
-    _fgPictures.resize(1);
+  _getAnimation().load( ResourceGroup::buildingEngineer, 57, 10 );
+  _getAnimation().setFrameDelay( 4 );
+  _getAnimation().setOffset( Point( 10, 42 ) );
+  _fgPictures.resize(1);
 }
 
 void BuildingEngineer::timeStep(const unsigned long time)
 {
-    bool mayAnimate = getWorkers() > 0;
+  bool mayAnimate = getWorkers() > 0;
 
-    if( mayAnimate && _getAnimation().isStopped() )
-    {
-        _getAnimation().start();
-    }
+  if( mayAnimate && _getAnimation().isStopped() )
+  {
+      _getAnimation().start();
+  }
 
-    if( !mayAnimate && _getAnimation().isRunning() )
-    {
-        _getAnimation().stop();
-    }
+  if( !mayAnimate && _getAnimation().isRunning() )
+  {
+      _getAnimation().stop();
+  }
 
-    ServiceBuilding::timeStep( time );
+  ServiceBuilding::timeStep( time );
 }
 
 void BuildingEngineer::deliverService()
 {
-    if( getWorkers() > 0 )
-        ServiceBuilding::deliverService();
+  if( getWorkers() > 0 && getWalkerList().size() == 0 )
+  {
+      ServiceBuilding::deliverService();
+  }
+}
+
+unsigned int BuildingEngineer::getWalkerDistance() const
+{
+  return 26;
 }

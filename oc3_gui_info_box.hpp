@@ -71,10 +71,10 @@ private:
 };
 
 
-class InfoBoxFarm : public GuiInfoBox
+class InfoBoxRawMaterial : public GuiInfoBox
 {
 public:
-  InfoBoxFarm( Widget* parent, const Tile& tile );
+  InfoBoxRawMaterial( Widget* parent, const Tile& tile );
 
   void paint();
 
@@ -122,7 +122,7 @@ public:
    GuiInfoFactory( Widget* parent, const Tile& tile );
    virtual void paint();
 
-   void drawWorkers( int& );
+   void drawWorkers( int );
    std::string getInfoText();
 
 private:
