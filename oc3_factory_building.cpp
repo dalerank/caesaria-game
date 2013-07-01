@@ -78,7 +78,7 @@ void Factory::timeStep(const unsigned long time)
    WorkingBuilding::timeStep(time);
 
    //start/stop animation when workers found
-   bool mayAnimate = getWorkers() > 0;
+   bool mayAnimate = (getWorkers() > 0) && (getInGood()._currentQty > 0);
 
    if( mayAnimate && _getAnimation().isStopped() )
    {
@@ -99,7 +99,7 @@ void Factory::timeStep(const unsigned long time)
 
    float workersRatio = float(getWorkers()) / float(getMaxWorkers());  // work drops if not enough workers
    // 1080: number of seconds in a year, 0.67: number of timeSteps per second
-   float work = 100.f / 1080.f / 0.67f * _d->productionRate * workersRatio * workersRatio;  // work is proportionnal to time and factory speed
+   float work = 100.f / 1080.f / 0.67f * _d->productionRate * workersRatio * workersRatio;  // work is proportional to time and factory speed
    if (inStock._goodType != G_NONE && inStock._currentQty == 0)
    {
       // cannot work, no input material!
@@ -143,6 +143,8 @@ void Factory::deliverGood()
     if( !walker->isDeleted() )
     {
       _d->progress -= 100.f;
+      GoodStock& inStock = getInGood();
+      inStock._currentQty = math::clamp( inStock._currentQty - 100, 0, 9999 );
       addWalker( walker.as<Walker>() );
     }
   }

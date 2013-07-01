@@ -54,7 +54,6 @@ protected:
   ScopedPtr< Impl > _d;
 };
 
-
 class TimberLogger : public Factory
 {
 public:

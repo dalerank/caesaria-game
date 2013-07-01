@@ -546,8 +546,10 @@ int SimpleGoodStore::getMaxStore(const GoodType goodType)
   int freeRoom = 0;
   if( !_devastation )
   {
-     // current free capacity
-    freeRoom = math::clamp( _goodStockList[goodType]._maxQty - _currentQty, 0, _goodStockList[goodType]._maxQty );
+    int globalFreeRoom = getMaxQty() - getCurrentQty();
+
+    // current free capacity
+    freeRoom = math::clamp( _goodStockList[goodType]._maxQty - _goodStockList[goodType]._currentQty, 0, globalFreeRoom );
 
     // remove all storage reservations
     for (std::map<long, GoodStock>::iterator reservationIt = _storeReservations.begin(); reservationIt != _storeReservations.end(); ++reservationIt)

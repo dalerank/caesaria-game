@@ -91,6 +91,8 @@ Warehouse::Warehouse() : ServiceBuilding( S_MAX, B_WAREHOUSE, Size( 3 )), _d( ne
   _d->animFlag.load( ResourceGroup::warehouse, 84, 8 );
 
   init();
+
+  setWorkers( 10 );
 }
 
 void Warehouse::init()

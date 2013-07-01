@@ -16,6 +16,8 @@
 #include "oc3_factory_pottery.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_resourcegroup.hpp"
+#include "oc3_walker_cart_supplier.hpp"
+#include "oc3_scenario.hpp"
 
 FactoryPottery::FactoryPottery() : Factory(G_CLAY, G_POTTERY, B_POTTERY, Size(2))
 {
@@ -26,5 +28,26 @@ FactoryPottery::FactoryPottery() : Factory(G_CLAY, G_POTTERY, B_POTTERY, Size(2)
   _fgPictures.resize(2);
 
   setMaxWorkers( 10 );
-  setWorkers( 0 );
+  setWorkers( 10 );
+}
+
+void FactoryPottery::timeStep( const unsigned long time )
+{
+  Factory::timeStep( time );
+
+  if( time % 22 == 1 && getWorkers() > 0 && getWalkerList().size() == 0 )
+  {
+    GoodStock& stock = getInGood();
+
+    if( stock._currentQty < 100 )
+    {
+      CartSupplierPtr walker = CartSupplier::create( Scenario::instance().getCity() );
+      walker->send2City( this, stock._goodType, stock._maxQty - stock._currentQty );
+
+      if( !walker->isDeleted() )
+      {
+        addWalker( walker.as<Walker>() );
+      }
+    }
+  }
 }

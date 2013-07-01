@@ -33,18 +33,6 @@ ClayPit::ClayPit() : Factory(G_NONE, G_CLAY, B_CLAY_PIT, Size(2) )
 
 void ClayPit::timeStep( const unsigned long time )
 {
-  bool mayAnimate = getWorkers() > 0;
-
-  if( mayAnimate && _getAnimation().isStopped() )
-  {
-    _getAnimation().start();
-  }
-
-  if( !mayAnimate && _getAnimation().isRunning() )
-  {
-    _getAnimation().stop();
-  }
-
   Factory::timeStep( time );
 }
 
