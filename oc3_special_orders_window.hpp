@@ -31,6 +31,8 @@ public:
 
   virtual bool isPointInside(const Point& point) const;
 
+  virtual void setTitle( const std::string& text );
+
   ~BaseSpecialOrdersWindow();
 protected:
   BaseSpecialOrdersWindow( Widget* parent, const Point& pos );

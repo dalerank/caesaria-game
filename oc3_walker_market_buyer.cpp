@@ -25,6 +25,7 @@
 #include "oc3_tile.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_path_finding.hpp"
+#include "oc3_goodstore_simple.hpp"
 
 class MarketBuyer::Impl
 {

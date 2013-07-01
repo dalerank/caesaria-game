@@ -26,6 +26,8 @@
 #include "oc3_granary.hpp"
 #include "oc3_warehouse.hpp"
 #include "oc3_goodhelper.hpp"
+#include "oc3_goodstore.hpp"
+#include "oc3_goodorders.hpp"
 
 template< class T >
 class OrderGoodWidget : public Label
@@ -63,15 +65,15 @@ public:
 
   void updateBtnText()
   {
-    Good::Order rule = _storageBuilding->getGoodOrder( _type );
+    GoodOrders::Order rule = _storageBuilding->getGoodStore().getOrder( _type );
     std::string ruleName[] = { _("##accept##"), _("##reject##"), _("##deliver##"), _("##none##") };
     _btnChangeRule->setText( ruleName[ rule ] );
   }
 
   void changeGranaryRule()
   {
-    Good::Order rule = _storageBuilding->getGoodOrder( _type );
-    _storageBuilding->setGoodOrder( _type, Good::Order( (rule+1) % (Good::none)) );
+    GoodOrders::Order rule = _storageBuilding->getGoodStore().getOrder( _type );
+    _storageBuilding->getGoodStore().setOrder( _type, GoodOrders::Order( (rule+1) % (GoodOrders::none)) );
     updateBtnText();
   }
 
@@ -104,7 +106,7 @@ BaseSpecialOrdersWindow::BaseSpecialOrdersWindow( Widget* parent, const Point& p
   : Widget( parent, -1, Rect( pos, Size( 510, 450 ) ) ), _d( new Impl )
 {
   // create the title
-  _d->lbTitle = new Label( this, Rect( 50, 10, getWidth()-50, 10 + 30 ), _("##granary_orders##"), true );
+  _d->lbTitle = new Label( this, Rect( 50, 10, getWidth()-50, 10 + 30 ), "", true );
   _d->lbTitle->setFont( Font::create( FONT_3 ) );
   _d->lbTitle->setTextAlignment( alignCenter, alignCenter );
 
@@ -162,15 +164,21 @@ bool BaseSpecialOrdersWindow::onEvent( const NEvent& event)
   return Widget::onEvent( event );
 }
 
+void BaseSpecialOrdersWindow::setTitle( const std::string& text )
+{
+  _d->lbTitle->setText( text );
+}
+
 GranarySpecialOrdersWindow::GranarySpecialOrdersWindow( Widget* parent, const Point& pos, GranaryPtr granary )
 : BaseSpecialOrdersWindow( parent, pos )
 {
+  setTitle( _("##granary_orders##") );
   int index=0;
   for( int goodType=G_WHEAT; goodType < G_OLIVE; goodType++ )
   {
-    const Good::Order rule = granary->getGoodOrder( (GoodType)goodType );
+    const GoodOrders::Order rule = granary->getGoodStore().getOrder( (GoodType)goodType );
     
-    if( rule != Good::none )
+    if( rule != GoodOrders::none )
     {
       _d->addOrderWidget<GranaryPtr>( index, (GoodType)goodType, granary );
       index++;
@@ -200,13 +208,15 @@ void GranarySpecialOrdersWindow::_updateBtnDevastation()
 WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, const Point& pos, WarehousePtr warehouse )
 : BaseSpecialOrdersWindow( parent, pos )
 {
+  setTitle( _("##warehouse_orders##") );
+
   _warehouse = warehouse;
   int index=0;
   for( int goodType=G_WHEAT; goodType < G_OLIVE; goodType++ )
   {
-    const Good::Order rule = _warehouse->getGoodOrder( (GoodType)goodType );
+    const GoodOrders::Order rule = _warehouse->getGoodStore().getOrder( (GoodType)goodType );
 
-    if( rule != Good::none )
+    if( rule != GoodOrders::none )
     {
       _d->addOrderWidget<WarehousePtr>( index, (GoodType)goodType, _warehouse );
       index++;

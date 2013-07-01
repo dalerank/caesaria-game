@@ -28,6 +28,7 @@
 #include "oc3_constructionmanager.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_goodstore_simple.hpp"
 
 class House::Impl
 {
@@ -139,7 +140,7 @@ void House::timeStep(const unsigned long time)
    }
 }
 
-SimpleGoodStore& House::getGoodStore()
+GoodStore& House::getGoodStore()
 {
    return _d->goodStore;
 }
@@ -361,7 +362,7 @@ void House::buyMarket( ServiceWalkerPtr walker )
    MarketPtr market = walker->getBase().as<Market>();
    GoodStore& marketStore = market->getGoodStore();
 
-   SimpleGoodStore &houseStore = getGoodStore();
+   GoodStore &houseStore = getGoodStore();
    for (int i = 0; i < G_MAX; ++i)
    {
       GoodType goodType = (GoodType) i;
@@ -461,7 +462,7 @@ float House::evaluateService(ServiceWalkerPtr walker)
   {
     MarketPtr market = walker->getBase().as<Market>();
     GoodStore &marketStore = market->getGoodStore();
-    SimpleGoodStore &houseStore = getGoodStore();
+    GoodStore &houseStore = getGoodStore();
     for (int i = 0; i < G_MAX; ++i)
     {
        GoodType goodType = (GoodType) i;

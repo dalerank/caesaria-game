@@ -22,6 +22,8 @@
 #include "oc3_working_building.hpp"
 #include "oc3_predefinitions.hpp"
 
+class GoodStore;
+
 class Factory : public WorkingBuilding
 {
 public:
@@ -34,7 +36,7 @@ public:
 
   GoodType getOutGoodType() const;
 
-  SimpleGoodStore& getGoodStore();
+  GoodStore& getGoodStore();
 
   // called when the factory has made 100 good units
   virtual void deliverGood();

@@ -13,33 +13,44 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_MARKET_H_INCLUDED__
-#define __OPENCAESAR3_MARKET_H_INCLUDED__
+#include "oc3_goodorders.hpp"
+#include <map>
 
-#include "oc3_service_building.hpp"
-#include "oc3_predefinitions.hpp"
-
-class GoodStore;
-
-class Market: public ServiceBuilding
+class GoodOrders::Impl
 {
 public:
-  Market();
-
-  GoodStore& getGoodStore();
-  std::list<GoodType> getMostNeededGoods();  // used by the market buyer
-
-  // returns the quantity of needed goods
-  int getGoodDemand(const GoodType &goodType);  // used by the market buyer
-
-  void save( VariantMap& stream) const;
-  void load( const VariantMap& stream);
-
-  void deliverService();
-
-private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  typedef std::map< GoodType, Order > Orders;
+  Orders orders;
 };
 
-#endif
+GoodOrders::~GoodOrders()
+{
+
+}
+
+GoodOrders::GoodOrders() : _d( new Impl )
+{
+
+}
+
+void GoodOrders::set( Order rule )
+{
+  for( Impl::Orders::iterator it=_d->orders.begin(); it != _d->orders.end(); it++ )
+  {
+    if( it->second != GoodOrders::none )
+    {
+      it->second = rule;
+    }
+  }
+}
+
+void GoodOrders::set( const GoodType type, Order rule )
+{
+  _d->orders[ type ] = rule;  
+}
+
+GoodOrders::Order GoodOrders::get( const GoodType type )
+{
+  Impl::Orders::iterator it = _d->orders.find( type );
+  return it != _d->orders.end() ? (*it).second : GoodOrders::none;
+}

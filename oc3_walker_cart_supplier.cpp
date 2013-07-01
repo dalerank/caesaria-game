@@ -26,6 +26,7 @@
 #include "oc3_path_finding.hpp"
 #include "oc3_picture_bank.hpp"
 #include "oc3_factory_building.hpp"
+#include "oc3_goodstore.hpp"
 
 class CartSupplier::Impl
 {

@@ -31,8 +31,6 @@ class Good
 {
   friend class GoodHelper;
 public:
-  typedef enum { accept=0, reject, deliver, none } Order;
-
   std::string getName();
   int getImportPrice();
   int getExportPrice();
@@ -60,7 +58,6 @@ private:
   int _exportTreshold;  // number of units in warehouses under which no export is made
 };
 
-
 class GoodStock 
 {
 public:
@@ -77,98 +74,5 @@ public:
   int _maxQty;
   int _currentQty;
 };
-
-
-class SimpleGoodStore;
-class GoodStore : public Serializable
-{
-public:
-  GoodStore();
-  virtual ~GoodStore();
-
-  virtual int getCurrentQty(const GoodType &goodType) const = 0;
-  virtual int getCurrentQty() const = 0;
-
-  // returns the max quantity that can be stored now
-  virtual int getMaxStore(const GoodType goodType) = 0;
-
-  // returns the max quantity that can be retrieved now
-  int getMaxRetrieve(const GoodType goodType);
-
-  // returns the reservationID if stock can be retrieved (else 0)
-  long reserveStorage(GoodStock &stock);
-
-  // returns the reservationID if stock can be retrieved (else 0)
-  long reserveRetrieval(GoodStock &stock);
-
-  // return the reservation
-  GoodStock getStorageReservation(const long reservationID, const bool pop=false);
-  GoodStock getRetrieveReservation(const long reservationID, const bool pop=false);
-
-  // store/retrieve
-  virtual void applyStorageReservation(GoodStock &stock, const long reservationID) = 0;
-  virtual void applyRetrieveReservation(GoodStock &stock, const long reservationID) = 0;
-
-  // store/retrieve to goodStore
-  void applyStorageReservation(SimpleGoodStore &goodStore, const long reservationID);
-  void applyRetrieveReservation(SimpleGoodStore &goodStore, const long reservationID);
-
-  // immediate store/retrieve, exception if impossible
-  void store(GoodStock &stock, const int amount);
-  void retrieve(GoodStock &stock, const int amount);
-
-  // store all goods from the given goodStore
-  void storeAll(SimpleGoodStore &goodStore);
-
-  bool isDevastation() const;
-  void setDevastation( bool value );
-
-  void save( VariantMap& stream ) const;
-  void load( const VariantMap& stream );
-
-protected:
-  long _nextReservationID;
-  bool _devastation;
-  std::map<long, GoodStock> _storeReservations;  // key=reservationID, value=stock
-  std::map<long, GoodStock> _retrieveReservations;  // key=reservationID, value=stock
-};
-
-
-class SimpleGoodStore : public GoodStore
-{
-public:
-  using GoodStore::applyStorageReservation;
-  using GoodStore::applyRetrieveReservation;
-
-  SimpleGoodStore();
-
-  void setMaxQty(const int maxQty);
-  int getMaxQty();
-  int getCurrentQty() const;
-  void computeCurrentQty();
-
-  GoodStock& getStock(const GoodType &goodType);
-  int getCurrentQty(const GoodType &goodType) const;
-  int getMaxQty(const GoodType &goodType);
-  void setMaxQty(const GoodType &goodType, const int maxQty);
-  void setCurrentQty(const GoodType &goodType, const int currentQty);
-
-  // returns the max quantity that can be stored now
-  int getMaxStore(const GoodType goodType);
-
-  // store/retrieve
-  void applyStorageReservation(GoodStock &stock, const long reservationID);
-  void applyRetrieveReservation(GoodStock &stock, const long reservationID);
-
-  void save( VariantMap& stream ) const;
-  void load( const VariantMap& stream );
-
-private:
-  std::vector<GoodStock> _goodStockList;
-  int _maxQty;
-  int _currentQty;
-};
-
-typedef std::map< GoodType, Good::Order > GoodOrders;
-
+    
 #endif

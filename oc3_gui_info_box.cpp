@@ -42,6 +42,7 @@
 #include "oc3_warehouse.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_special_orders_window.hpp"
+#include "oc3_goodstore.hpp"
 
 class GuiInfoBox::Impl
 {
@@ -687,7 +688,7 @@ void GuiInfoMarket::paint()
 {
   if( _md->market->getWorkers() > 0 )
   {
-    SimpleGoodStore& goods = _md->market->getGoodStore();
+    GoodStore& goods = _md->market->getGoodStore();
     int furageSum = 0;
     // for all furage types of good
     for (int goodType = 0; goodType<G_OLIVE; ++goodType)

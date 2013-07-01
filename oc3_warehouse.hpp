@@ -24,51 +24,7 @@
 #include "oc3_good.hpp"
 #include "oc3_positioni.hpp"
 
-#include <string>
-#include <list>
-
-class WarehouseTile
-{
-public:
-  WarehouseTile(const TilePos& pos );
-  void computePicture();
-
-  TilePos _pos;
-  GoodStock _stock;
-  Picture _picture;
-};
-
-
-// implementation of the GoodStore for the Warehouse
-class Warehouse;
-class WarehouseStore : public GoodStore
-{
-public:
-  using GoodStore::applyStorageReservation;
-  using GoodStore::applyRetrieveReservation;
-
-  WarehouseStore();
-
-  void init(Warehouse &_warehouse);
-
-  int getCurrentQty(const GoodType &goodType) const;
-  int getCurrentQty() const;
-
-  // returns the max quantity that can be stored now
-  virtual int getMaxStore(const GoodType goodType);
-
-  // store/retrieve
-  virtual void applyStorageReservation(GoodStock &stock, const long reservationID);
-  virtual void applyRetrieveReservation(GoodStock &stock, const long reservationID);
-
-  void setGoodOrder( const GoodType type, Good::Order rule );
-  Good::Order getGoodOrder( const GoodType type );
-
-private:
-  Warehouse* _warehouse;
-  GoodOrders _goodRules;
-};
-
+class GoodStore;
 
 class Warehouse: public ServiceBuilding
 {
@@ -80,9 +36,7 @@ public:
 
   virtual void timeStep(const unsigned long time);
   void computePictures();
-  WarehouseStore& getGoodStore();
-  void setGoodOrder( const GoodType type, Good::Order rule );
-  Good::Order getGoodOrder( const GoodType type );
+  GoodStore& getGoodStore();
   
   virtual void deliverService();
   virtual void save(VariantMap& stream) const;

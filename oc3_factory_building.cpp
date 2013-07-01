@@ -28,6 +28,7 @@
 #include "oc3_variant.hpp"
 #include "oc3_walker_cart_supplier.hpp"
 #include "oc3_stringhelper.hpp"
+#include "oc3_goodstore_simple.hpp"
 
 class Factory::Impl
 {
@@ -171,7 +172,7 @@ void Factory::deliverGood()
   }
 }
 
-SimpleGoodStore& Factory::getGoodStore()
+GoodStore& Factory::getGoodStore()
 {
    return _d->goodStore;
 }

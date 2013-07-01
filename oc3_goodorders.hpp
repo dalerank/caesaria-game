@@ -13,33 +13,27 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_MARKET_H_INCLUDED__
-#define __OPENCAESAR3_MARKET_H_INCLUDED__
+#ifndef __OPENCAESAR3_GOODORDERS_H_INCLUDED__
+#define __OPENCAESAR3_GOODORDERS_H_INCLUDED__
 
-#include "oc3_service_building.hpp"
-#include "oc3_predefinitions.hpp"
+#include "oc3_enums.hpp"
+#include "oc3_scopedptr.hpp"
 
-class GoodStore;
-
-class Market: public ServiceBuilding
+class GoodOrders 
 {
 public:
-  Market();
+  typedef enum { accept=0, reject, deliver, none } Order;
+  
+  GoodOrders();
+  ~GoodOrders();
 
-  GoodStore& getGoodStore();
-  std::list<GoodType> getMostNeededGoods();  // used by the market buyer
-
-  // returns the quantity of needed goods
-  int getGoodDemand(const GoodType &goodType);  // used by the market buyer
-
-  void save( VariantMap& stream) const;
-  void load( const VariantMap& stream);
-
-  void deliverService();
+  void set( const GoodType type, Order rule );
+  void set( Order rule );
+  Order get( const GoodType type );
 
 private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#endif
+#endif //__OPENCAESAR3_GOODORDERS_H_INCLUDED__

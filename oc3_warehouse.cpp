@@ -27,6 +27,45 @@
 #include "oc3_variant.hpp"
 #include "oc3_walker_cart_pusher.hpp"
 #include "oc3_scenario.hpp"
+#include "oc3_goodstore.hpp"
+
+#include <list>
+
+class WarehouseTile
+{
+public:
+  WarehouseTile(const TilePos& pos );
+  void computePicture();
+
+  TilePos _pos;
+  GoodStock _stock;
+  Picture _picture;
+};
+
+class WarehouseStore : public GoodStore
+{
+public:
+  using GoodStore::applyStorageReservation;
+  using GoodStore::applyRetrieveReservation;
+
+  WarehouseStore();
+
+  void init(Warehouse &_warehouse);
+
+  int getCurrentQty(const GoodType &goodType) const;
+  int getCurrentQty() const;
+  int getMaxQty() const;
+
+  // returns the max quantity that can be stored now
+  virtual int getMaxStore(const GoodType goodType);
+
+  // store/retrieve
+  virtual void applyStorageReservation(GoodStock &stock, const long reservationID);
+  virtual void applyRetrieveReservation(GoodStock &stock, const long reservationID);
+
+private:
+  Warehouse* _warehouse;
+};
 
 WarehouseTile::WarehouseTile( const TilePos& pos )
 {
@@ -141,33 +180,9 @@ void Warehouse::computePictures()
    }
 }
 
-void WarehouseStore::setGoodOrder( const GoodType type, Good::Order rule )
-{
-  _goodRules[ type ] = rule;
-}
-
-Good::Order WarehouseStore::getGoodOrder( const GoodType type )
-{
-  GoodOrders::iterator it = _goodRules.find( type );
-  if( it != _goodRules.end() )
-    return (*it).second;
-
-  return Good::none;
-}
-
-WarehouseStore& Warehouse::getGoodStore()
+GoodStore& Warehouse::getGoodStore()
 {
    return _d->goodStore;
-}
-
-void Warehouse::setGoodOrder( const GoodType type, Good::Order rule )
-{
-  _d->goodStore.setGoodOrder( type, rule );
-}
-
-Good::Order Warehouse::getGoodOrder( const GoodType type )
-{
-  return _d->goodStore.getGoodOrder( type );
 }
 
 void Warehouse::save( VariantMap& stream ) const
@@ -220,6 +235,11 @@ void Warehouse::deliverService()
 WarehouseStore::WarehouseStore()
 {
    _warehouse = NULL;
+
+   for( int goodType=G_WHEAT; goodType <= G_MARBLE; goodType++ )
+   {
+     setOrder( (GoodType)goodType, GoodOrders::accept );
+   }
 }
 
 
@@ -259,7 +279,7 @@ int WarehouseStore::getCurrentQty() const
 
 int WarehouseStore::getMaxStore(const GoodType goodType)
 {
-  if( getGoodOrder( goodType ) == Good::reject || _devastation )
+  if( getOrder( goodType ) == GoodOrders::reject || isDevastation() )
   { 
     return 0;
   }
@@ -283,7 +303,8 @@ int WarehouseStore::getMaxStore(const GoodType goodType)
   }
 
   // add reservations
-  for (std::map<long, GoodStock>::iterator reservationIt = _storeReservations.begin(); reservationIt != _storeReservations.end(); ++reservationIt)
+  for( _Reservations::iterator reservationIt = _getStoreReservations().begin(); 
+        reservationIt != _getStoreReservations().end(); ++reservationIt)
   {
      GoodStock &reservationStock = reservationIt->second;
      stockList[reservationStock._goodType] += reservationStock._currentQty;
@@ -427,4 +448,8 @@ void WarehouseStore::applyRetrieveReservation(GoodStock &stock, const long reser
    }
 }
 
+int WarehouseStore::getMaxQty() const
+{
+  return 400 * _warehouse->_d->subTiles.size();
+}
 

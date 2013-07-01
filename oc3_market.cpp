@@ -19,6 +19,7 @@
 #include "oc3_walker_market_buyer.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_scenario.hpp"
+#include "oc3_goodstore_simple.hpp"
 
 class Market::Impl
 {
@@ -74,7 +75,7 @@ void Market::deliverService()
   }
 }
 
-SimpleGoodStore& Market::getGoodStore()
+GoodStore& Market::getGoodStore()
 {
   return _d->goodStore;
 }
