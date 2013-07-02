@@ -41,6 +41,7 @@
 #include "oc3_goverment_building.hpp"
 #include "oc3_military_building.hpp"
 #include "oc3_academy.hpp"
+#include "oc3_garden.hpp"
 
 #include <map>
 

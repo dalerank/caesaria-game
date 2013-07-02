@@ -341,42 +341,6 @@ char Construction::getDesirabilityStep() const
   return BuildingDataHolder::instance().getData( getType() ).getDesirabilityStep();
 }
 
-Garden::Garden() : Construction(B_GARDEN, Size(1) )
-{
-  // always set picture to 110 (tree garden) here, for sake of building preview
-  // actual garden picture will be set upon building being constructed
-  setPicture( Picture::load( ResourceGroup::entertaiment, 110 ) ); // 110 111 112 113
-}
-
-void Garden::setTerrain(TerrainTile &terrain)
-{
-  bool isMeadow = terrain.isMeadow();
-  terrain.clearFlags();
-  terrain.setOverlay(this);
-  terrain.setBuilding(true); // are gardens buildings or not???? try to investigate from original game
-  terrain.setGarden(true);
-  terrain.setMeadow(isMeadow);    
-}
-
-bool Garden::isWalkable() const
-{
-  return true;
-}
-
-bool Garden::isNeedRoadAccess() const
-{
-  return false;
-}
-
-void Garden::build( const TilePos& pos )
-{
-  // this is the same arrangement of garden tiles as existed in C3
-  int theGrid[2][2] = {{113, 110}, {112, 111}};
-
-  Construction::build( pos );
-  setPicture( Picture::load( ResourceGroup::entertaiment, theGrid[pos.getI() % 2][pos.getJ() % 2] ) );
-}
-
 Building::Building(const BuildingType type, const Size& size )
 : Construction( type, size )
 {

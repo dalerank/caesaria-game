@@ -13,15 +13,21 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_PROJECT_VERSION_INCLUDE_H_
-#define __OPENCAESAR3_PROJECT_VERSION_INCLUDE_H_
 
-#define OC3_VERSION_MAJOR 0
-#define OC3_VERSION_MINOR 2
-#define OC3_VERSION_REVSN 560
+#ifndef __OPENCAESAR3_GARDEN_H_INCLUDED__
+#define __OPENCAESAR3_GARDEN_H_INCLUDED__
 
-#define OC3_STR_EXT(__A) #__A
-#define OC3_STR_A(__A) OC3_STR_EXT(__A)
-#define OC3_VERSION OC3_STR_A(OC3_VERSION_MAJOR)"."OC3_STR_A(OC3_VERSION_MINOR)"."OC3_STR_A(OC3_VERSION_REVSN)
+#include "oc3_building.hpp"
 
-#endif
+class Garden : public Construction
+{
+public:
+  Garden();
+  void setTerrain(TerrainTile &terrain);  
+  bool isWalkable() const;
+  bool isNeedRoadAccess() const;
+  void build( const TilePos& pos );
+  void update();
+};
+
+#endif //__OPENCAESAR3_GARDEN_H_INCLUDED__
