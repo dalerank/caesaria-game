@@ -462,7 +462,6 @@ void GuiInfoGranary::paint()
 
   int _col2PaintY = _paintY;
   drawGood(G_WHEAT, 0, _paintY);
-  drawGood(G_FISH, 0, _paintY);
   drawGood(G_MEAT, 0, _paintY);
   drawGood(G_FRUIT, 1, _col2PaintY);
   drawGood(G_VEGETABLE, 1, _col2PaintY);

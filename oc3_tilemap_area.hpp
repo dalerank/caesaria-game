@@ -56,8 +56,7 @@ public:
   int getCenterI() const;
   int getCenterJ() const;
   
-private:
-  
+private:  
   void setCenterXZ(const int x, const int z);
   
   int _center_i;
@@ -65,8 +64,6 @@ private:
   
   Tilemap* _tilemap;  // tile map to display
   int _map_size;      // size of the map  (in tiles)
-  int _center_x;      // horizontal center of the view (in tiles)
-  int _center_z;      // vertical center of the view (in tiles)
 
   class Impl;
   ScopedPtr< Impl > _d;

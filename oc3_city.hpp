@@ -16,10 +16,9 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#ifndef CITY_HPP
-#define CITY_HPP
+#ifndef __OPENCAESAR3_CITY_H_INCLUDED__
+#define __OPENCAESAR3_CITY_H_INCLUDED__
 
-#include "oc3_tilemap.hpp"
 #include "oc3_walker.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_serializer.hpp"
@@ -95,6 +94,8 @@ public:
 
   const DateTime& getDate() const;
   void setDate( const DateTime& time );
+
+  LandOverlayPtr getOverlay( const TilePos& pos ) const;
    
 oc3_signals public:
   Signal1<int>& onPopulationChanged();
@@ -136,7 +137,7 @@ public:
   template< class T >
   SmartPtr< T > getBuilding( const TilePos& pos )
   {
-    LandOverlayPtr overlay = _city->getTilemap().at( pos ).getTerrain().getOverlay();
+    LandOverlayPtr overlay = _city->getOverlay( pos );
     return overlay.as< T >();
   }
 
@@ -144,4 +145,4 @@ protected:
   CityPtr _city;
 };
 
-#endif
+#endif //__OPENCAESAR3_CITY_H_INCLUDED__

@@ -13,30 +13,23 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_senate.hpp"
-#include "oc3_scenario.hpp"
-#include "oc3_picture.hpp"
-#include "oc3_resourcegroup.hpp"
+#ifndef __OPENCAESAR3_SENATE_POPUP_INFO_H_INCLUDED__
+#define __OPENCAESAR3_SENATE_POPUP_INFO_H_INCLUDED__
 
-// govt 4  - senate
-// govt 9  - advanced senate
-// govt 5 ~ 8 - senate flags
+#include "oc3_widget.hpp"
+#include "oc3_scopedptr.hpp"
 
-Senate::Senate() : ServiceBuilding( S_SENATE, B_SENATE, Size(5) )
+class TilemapRenderer;
+
+class SenatePopupInfo : public Widget
 {
-  setPicture( Picture::load( ResourceGroup::govt, 4) );
-}
+public:
+  SenatePopupInfo( Widget* parent, TilemapRenderer& mapRenderer );
 
-bool Senate::canBuild( const TilePos& pos ) const
-{
-  bool mayBuild = ServiceBuilding::canBuild( pos );
+  void draw( GfxEngine& painter );
+private:
+  class Impl;
+  ScopedPtr< Impl > _d;
+};
 
-  if( mayBuild )
-  {
-    CityPtr city = Scenario::instance().getCity();
-    LandOverlays senate = city->getBuildingList(B_SENATE);
-    mayBuild &= !( senate.size() > 0 );
-  }
-
-  return mayBuild;
-}
+#endif

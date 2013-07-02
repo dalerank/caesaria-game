@@ -67,6 +67,7 @@ public:
   {
     GoodOrders::Order rule = _storageBuilding->getGoodStore().getOrder( _type );
     std::string ruleName[] = { _("##accept##"), _("##reject##"), _("##deliver##"), _("##none##") };
+    _btnChangeRule->setFont( Font::create( rule == GoodOrders::reject ? FONT_1_RED : FONT_1_WHITE ) );
     _btnChangeRule->setText( ruleName[ rule ] );
   }
 

@@ -33,7 +33,7 @@ public:
   virtual ~ServiceBuilding();
 
   ServiceType getService() const;
-  void timeStep(const unsigned long time);
+  virtual void timeStep(const unsigned long time);
   virtual void destroy();  // handles the walkers
 
   int getServiceRange() const;  // max distance from building to road for road to propose the service

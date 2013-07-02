@@ -41,6 +41,7 @@
 #include "oc3_gettext.hpp"
 #include "oc3_build_options.hpp"
 #include "oc3_house.hpp"
+#include "oc3_tilemap.hpp"
 
 #include <set>
 
@@ -648,4 +649,9 @@ CityPtr City::create()
   ret->drop();
 
   return ret;
+}
+
+LandOverlayPtr City::getOverlay( const TilePos& pos ) const
+{
+  return _d->tilemap.at( pos ).getTerrain().getOverlay();
 }

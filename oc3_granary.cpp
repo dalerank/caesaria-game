@@ -33,6 +33,7 @@ public:
       setOrder( (GoodType)type, GoodOrders::accept );
     }
 
+    setOrder( G_FISH, GoodOrders::none );
     setMaxQty( GranaryGoodStore::maxCapacity );
   }
   
@@ -52,7 +53,7 @@ public:
 
 Granary::Granary() : WorkingBuilding( B_GRANARY, Size(3) ), _d( new Impl )
 {
-  setMaxWorkers(5);
+  setMaxWorkers(6);
   setWorkers(0);
 
   setPicture( Picture::load( ResourceGroup::commerce, 140));
