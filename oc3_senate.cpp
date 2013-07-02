@@ -40,3 +40,8 @@ bool Senate::canBuild( const TilePos& pos ) const
 
   return mayBuild;
 }
+
+unsigned int Senate::getFunds() const
+{
+  return Scenario::instance().getCity()->getFunds();
+}

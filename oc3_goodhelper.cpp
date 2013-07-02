@@ -61,7 +61,7 @@ Picture GoodHelper::getPicture( GoodType type )
   case G_WEAPON: picId = 329; break;
   case G_FURNITURE: picId = 330; break;
   case G_POTTERY: picId = 331; break;
-    //case G_DENARIES: picId = 332; break;
+  case G_DENARIES: picId = 332; break;
   case G_FISH: picId = 333; break;
   }
 

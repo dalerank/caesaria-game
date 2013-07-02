@@ -44,6 +44,7 @@
 #include "oc3_special_orders_window.hpp"
 #include "oc3_goodstore.hpp"
 #include "oc3_groupbox.hpp"
+#include "oc3_senate.hpp"
 
 class GuiInfoBox::Impl
 {
@@ -187,6 +188,49 @@ void GuiInfoService::drawWorkers( int paintY )
   font.draw( *_d->bgPicture, text, 16 + 42, paintY + 5 );
 }
 
+class InfoBoxSenate::Impl
+{
+public:
+  SenatePtr senate;
+  TexturedButton* btnOpenAviser;
+  Label* lbHelp;
+};
+
+InfoBoxSenate::InfoBoxSenate( Widget* parent, const Tile& tile )
+  : GuiInfoBox( parent, Rect( 0, 0, 510, 290 ), -1 ), _sd( new Impl )
+{
+  _sd->senate = tile.getTerrain().getOverlay().as<Senate>();
+  setTitle( BuildingDataHolder::instance().getData( B_SENATE ).getPrettyName() );
+  paint(); 
+}
+
+void InfoBoxSenate::paint()
+{
+  GuiPaneling::instance().draw_black_frame( *_d->bgPicture, 16, 136, getWidth() - 32, 62 );
+
+  // picture of citizen
+  int paintY = 136;
+  Picture pic = Picture::load( ResourceGroup::panelBackground, 542);
+  _d->bgPicture->draw( pic, 16+15, paintY);
+
+  // number of workers
+  std::string text = StringHelper::format( 0xff, _("%d employers (%d requred)"), 
+                                           _sd->senate->getWorkers(), _sd->senate->getMaxWorkers() );
+
+  Font font = Font::create( FONT_2 );
+  font.draw( *_d->bgPicture, text, 16 + 42, paintY + 5 );
+  
+  pic = GoodHelper::getPicture( G_DENARIES );
+  _d->bgPicture->draw(pic, 16, 35);
+
+  std::string denariesStr = StringHelper::format( 0xff, "%s %d", _("##senate_save##"), _sd->senate->getFunds() );
+  font.draw( *_d->bgPicture, denariesStr, 16 + 42, 35 );
+
+  new Label( this, Rect( 60, 215, 60 + 300, 215 + 24 ), _("##open_rating_adviser##"), false, false, -1 );
+  
+  _sd->btnOpenAviser = new TexturedButton( this, Point( 350, 215 ), Size(24), -1, 289 );
+  _sd->lbHelp = new Label( this, Rect( 16, 70, getWidth() - 16, 70 + 60 ), _("##senate_help_text##") );
+}
 
 class InfoBoxHouse::Impl
 {

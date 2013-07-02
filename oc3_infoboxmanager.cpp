@@ -144,6 +144,7 @@ InfoBoxManager::InfoBoxManager() : _d( new Impl )
   addCreator( B_NONE, OC3_STR_EXT(B_NONE), new BaseInfoboxCreator<InfoBoxLand>() );
   addCreator( B_POTTERY, OC3_STR_EXT(B_POTTERY), new BaseInfoboxCreator<GuiInfoFactory>() );
   addCreator( B_CLAY_PIT, OC3_STR_EXT(B_CLAY_PIT), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
+  addCreator( B_SENATE, OC3_STR_EXT(B_SENATE), new BaseInfoboxCreator<InfoBoxSenate>() );
 }
 
 InfoBoxManager::~InfoBoxManager()

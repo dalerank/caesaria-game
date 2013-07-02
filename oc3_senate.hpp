@@ -22,6 +22,8 @@ class Senate : public ServiceBuilding
 {
 public:
   Senate();
+  unsigned int getFunds() const;
+
   bool canBuild( const TilePos& pos )const;
 };
 
