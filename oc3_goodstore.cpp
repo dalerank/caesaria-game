@@ -202,7 +202,7 @@ void GoodStore::save( VariantMap& stream) const
   {
     VariantList vm_stocksave;
     itRes->second.save( vm_stocksave );
-    vm_storeReservations.push_back( itRes->first );
+    vm_storeReservations.push_back( (int)itRes->first );
     vm_storeReservations.push_back( vm_stocksave );
   }
   stream[ "storeReservations" ] = vm_storeReservations;
@@ -213,7 +213,7 @@ void GoodStore::save( VariantMap& stream) const
   {
     VariantList vm_stockrtvsave;
     itRes->second.save( vm_stockrtvsave );
-    vm_retrieveReservations.push_back( itRes->first );
+    vm_retrieveReservations.push_back( (int)itRes->first );
     vm_retrieveReservations.push_back( vm_stockrtvsave );
   }
   stream[ "retrieveReservation" ] = vm_retrieveReservations;

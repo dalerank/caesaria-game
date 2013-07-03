@@ -296,7 +296,7 @@ void InfoBoxHouse::drawGood(const GoodType &goodType, const int col, const int r
   int qty = _ed->house->getGoodStore().getCurrentQty(goodType);
 
   // pictures of goods
-  Picture& pic = GoodHelper::getPicture( goodType );
+  const Picture& pic = GoodHelper::getPicture( goodType );
   _d->bgPicture->draw(pic, 31 + 100 * col, startY + 2 + 30 * row);
 
   std::string text = StringHelper::format( 0xff, "%d", qty);
@@ -327,14 +327,14 @@ void GuiInfoFactory::paint()
 
   if( _building->getOutGoodType() != G_NONE )
   {
-    Picture &pic = GoodHelper::getPicture( _building->getOutGoodType() );
+    const Picture &pic = GoodHelper::getPicture( _building->getOutGoodType() );
     _d->bgPicture->draw(pic, 10, 10);
   }
 
   // paint picture of in good
   if( _building->getInGood()._goodType != G_NONE )
   {
-    Picture &pic = GoodHelper::getPicture( _building->getInGood()._goodType );
+    const Picture &pic = GoodHelper::getPicture( _building->getInGood()._goodType );
     _d->bgPicture->draw(pic, 32, _paintY+2);
     int amount = _building->getInGood()._currentQty / 100;
     std::string goodName = GoodHelper::getName( _building->getInGood()._goodType );
@@ -497,7 +497,7 @@ void GuiInfoGranary::drawGood(const GoodType &goodType, int col, int& paintY)
   int qty = _gd->building->getGoodStore().getCurrentQty(goodType);
 
   // pictures of goods
-  Picture& pic = GoodHelper::getPicture( goodType );
+  const Picture& pic = GoodHelper::getPicture( goodType );
   _d->bgPicture->draw(pic, (col == 0 ? 31 : 250), paintY);
 
   std::string outText = StringHelper::format( 0xff, "%d %s", qty, goodName.c_str() );
@@ -601,7 +601,7 @@ void InfoBoxWarehouse::drawGood(const GoodType &goodType, int col, int& paintY)
   int qty = _wd->building->getGoodStore().getCurrentQty(goodType);
 
   // pictures of goods
-  Picture& pic = GoodHelper::getPicture( goodType );
+  const Picture& pic = GoodHelper::getPicture( goodType );
   _d->bgPicture->draw(pic, col * 150 + 15, paintY);
 
   std::string outText = StringHelper::format( 0xff, "%d %s", qty, goodName.c_str() );
@@ -745,7 +745,7 @@ void GuiInfoMarket::drawGood(const GoodType &goodType, int index, int paintY )
   std::string goodName = GoodHelper::getName( goodType );
 
   // pictures of goods
-  Picture& pic = GoodHelper::getPicture( goodType );
+  const Picture& pic = GoodHelper::getPicture( goodType );
   Point pos( index * offset + startOffset, paintY );
   _d->bgPicture->draw( pic, pos.getX(), pos.getY() );
 
@@ -899,7 +899,7 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
 
   if( _fd->rawmb->getOutGoodType() != G_NONE )
   {
-    Picture &pic = GoodHelper::getPicture( _fd->rawmb->getOutGoodType() );
+    const Picture &pic = GoodHelper::getPicture( _fd->rawmb->getOutGoodType() );
     _d->bgPicture->draw(pic, 10, 10);
   }
 
@@ -963,7 +963,7 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
   setTitle( name );
 
    // pictures of goods
-  Picture& goodIcon = GoodHelper::getPicture( goodType );
+  const Picture& goodIcon = GoodHelper::getPicture( goodType );
   _d->bgPicture->draw( goodIcon, 16, 16 );
 
   _fd->updateAboutText();
