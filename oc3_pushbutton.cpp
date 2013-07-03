@@ -369,7 +369,8 @@ void PushButton::draw( GfxEngine& painter )
 	  const ButtonState& state = _d->buttonStates[ _d->currentButtonState ];
     if( state.texture )
     {
-      painter.drawPicture( *state.texture, getScreenLeft(), getScreenTop(), &getAbsoluteClippingRect() );
+      Rect clippingRect = getAbsoluteClippingRect();
+      painter.drawPicture( *state.texture, getScreenLeft(), getScreenTop(), &clippingRect );
 
 //             if( isEnabled() &&
 //                 ( hoverImageOpacity <= 0xff ) &&
