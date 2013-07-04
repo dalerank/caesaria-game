@@ -569,10 +569,7 @@ FileList FileSystem::getFileList()
 {
   FileList ret;
   FilePath rpath = StringHelper::replace( getWorkingDirectory().toString(), "\\", "/" );
-	if( *rpath.toString().rend() != '/' )
-  {
-		rpath = rpath.toString() + "/";
-  }
+  rpath = rpath.addEndSlash();
 
 	//! Construct from native filesystem
   if ( _d->fileSystemType == fsNative )

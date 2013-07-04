@@ -16,20 +16,10 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#ifndef CAESAR_HPP
-#define CAESAR_HPP
+#ifndef __OPENCAESAR3_APPLICATION_H_INCLUDED__
+#define __OPENCAESAR3_APPLICATION_H_INCLUDED__
 
 #include "oc3_scopedptr.hpp"
-
-#include <string>
-#include <vector>
-#include <map>
-
-#include "oc3_enums.hpp"
-
-class Menu;
-class MenuBar;
-class Scenario;
 
 class Application
 {
@@ -55,4 +45,4 @@ private:
 };
 
 
-#endif
+#endif //__OPENCAESAR3_APPLICATION_H_INCLUDED__

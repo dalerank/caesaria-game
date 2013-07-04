@@ -22,7 +22,8 @@
 #include "oc3_gui_paneling.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_texturedbutton.hpp"
-#include <boost/filesystem.hpp>
+#include "oc3_filesystem.hpp"
+#include "oc3_filelist.hpp"
 
 class SaveDialog::Impl
 {
@@ -54,17 +55,13 @@ public:
 
 void SaveDialog::Impl::findFiles()
 {
-  boost::filesystem::path path ( directory );
+  io::FileList::Items files = io::FileDir( directory ).getEntries().getItems();
 
-  boost::filesystem::recursive_directory_iterator it( path );
-  boost::filesystem::recursive_directory_iterator end;
-
-  for (; it!=end; ++it)
+  for( io::FileList::ItemIterator it=files.begin(); it !=files.end(); ++it)
   {
-    if( !boost::filesystem::is_directory(*it) 
-      && boost::filesystem::path( *it ).extension().string() == extension )
+    if( !(*it).isDirectory && (*it).fullName.getExtension() == extension )
     {
-      lbxSaves->addItem( boost::filesystem::path( *it ).filename().string(), Font(), 0 );
+      lbxSaves->addItem( (*it).fullName.getBasename().toString(), Font(), 0 );
     }
   }
 }

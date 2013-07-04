@@ -62,7 +62,7 @@ public:
   FilePath flattenFilename( const FilePath& root = "/" ) const;
 
   //! Converts a relative path to an absolute (unique) path, resolving symbolic links
-  FilePath FilePath::getAbsolutePath() const;
+  FilePath getAbsolutePath() const;
 
   bool operator==(const FilePath& other) const;
   bool operator==(const std::string& other) const;

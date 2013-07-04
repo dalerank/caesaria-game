@@ -292,8 +292,7 @@ std::string StringHelper::localeLower( const std::string& str)
 {
   std::string ret = str;
 
-  int x;
-  for( int i=0; i<str.size(); ++i)
+  for( unsigned int i=0; i<str.size(); ++i)
   {
     ret[i] = localeLower( ret[ i ] );
   }

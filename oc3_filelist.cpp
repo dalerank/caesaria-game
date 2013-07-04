@@ -108,7 +108,7 @@ unsigned int FileList::addItem( const FilePath& fullPath, unsigned int offset, u
 	entry.isDirectory = isDirectory;
 
 	// remove trailing slash
-	if( *(entry.name.toString().rend()) == '/')
+	if( *(entry.name.toString().rbegin()) == '/')
 	{
 		entry.isDirectory = true;
 		entry.name = entry.name.removeEndSlash();
@@ -170,15 +170,14 @@ int FileList::findFile(const FilePath& filename, bool isDirectory) const
 	FileListItem entry;
 	// we only need fullName to be set for the search
   entry.fullName = StringHelper::replace( filename.toString(), "\\", "/" );
-	entry.isDirectory = isDirectory;
+  entry.isDirectory = isDirectory;
 
 	// remove trailing slash
-	if( *entry.fullName.toString().rend() == '/')
-	{
-		entry.isDirectory = true;
-		entry.fullName = entry.fullName.toString().substr( entry.fullName.toString().size()-1 );
-		//entry.fullName.validate();
-	}
+  if( *entry.fullName.toString().rbegin() == '/' )
+  {
+	  entry.isDirectory = true;		
+  }
+  entry.fullName = entry.fullName.removeEndSlash();
 
 	if( _d->ignoreCase )
   {
@@ -211,6 +210,11 @@ const FilePath& FileList::getPath() const
 void FileList::setIgnoreCase( bool ignore )
 {
 	_d->ignoreCase = ignore;
+}
+
+const FileList::Items& FileList::getItems() const
+{
+  return _d->files;
 }
 
 } //end namespace io

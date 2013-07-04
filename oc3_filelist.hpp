@@ -39,7 +39,7 @@ public:
 	FileList( const FileList& other );
 
 	//! Destructor
-	virtual ~FileList();
+	~FileList();
 
 	//! Add as a file or folder to the list
 	/** \param fullPath The file name including path, up to the root of the file list.
@@ -47,39 +47,41 @@ public:
 	\param offset The offset where the file is stored in an archive
 	\param size The size of the file in bytes.
 	\param id The ID of the file in the archive which owns it */
-	virtual unsigned int addItem(const FilePath& fullPath, unsigned int offset, unsigned int size, bool isDirectory, unsigned int id=0);
+	unsigned int addItem(const FilePath& fullPath, unsigned int offset, unsigned int size, bool isDirectory, unsigned int id=0);
 
 	//! Sorts the file list. You should call this after adding any items to the file list
-	virtual void sort();
+	void sort();
 
 	//! Returns the amount of files in the filelist.
-	virtual unsigned int getFileCount() const;
+	unsigned int getFileCount() const;
+
+  const Items& getItems() const;  
 
 	//! Gets the name of a file in the list, based on an index.
-	virtual const FilePath& getFileName(unsigned int index) const;
+	const FilePath& getFileName(unsigned int index) const;
 
 	//! Gets the full name of a file in the list, path included, based on an index.
-	virtual const FilePath& getFullFileName(unsigned int index) const;
+	const FilePath& getFullFileName(unsigned int index) const;
 
 	//! Returns the ID of a file in the file list, based on an index.
-	virtual unsigned int getID(unsigned int index) const;
+	unsigned int getID(unsigned int index) const;
 
 	//! Returns true if the file is a directory
-	virtual bool isDirectory(unsigned int index) const;
+	bool isDirectory(unsigned int index) const;
 
 	//! Returns the size of a file
-	virtual unsigned int getFileSize(unsigned int index) const;
+	unsigned int getFileSize(unsigned int index) const;
 
 	//! Returns the offest of a file
-	virtual unsigned int getFileOffset(unsigned int index) const;
+	unsigned int getFileOffset(unsigned int index) const;
 
 	//! Searches for a file or folder within the list, returns the index
-	virtual int findFile(const FilePath& filename, bool isFolder=false) const;
+	int findFile(const FilePath& filename, bool isFolder=false) const;
 
 	//! Returns the base path of the file list
-	virtual const FilePath& getPath() const;
+	const FilePath& getPath() const;
 
-	virtual void setIgnoreCase( bool ignore );
+	void setIgnoreCase( bool ignore );
 
 	FileList& operator=( const FileList& other );
 

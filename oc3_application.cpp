@@ -35,12 +35,12 @@
 #include "oc3_guienv.hpp"
 #include "oc3_app_config.hpp"
 #include "oc3_divinity.hpp"
+#include "oc3_filesystem.hpp"
+#include "oc3_enums.hpp"
+#include "oc3_filelist.hpp"
 
-#include <boost/filesystem.hpp>
 #include <libintl.h>
 #include <list>
-
-namespace fs = boost::filesystem;
 
 #if defined(_MSC_VER)
   #undef main
@@ -56,7 +56,7 @@ public:
   void initLocale();
   bool load(const std::string& filename);
   void initPictures(const std::string &resourcePath);
-  std::vector<fs::path> scanForMaps(const std::string &resourcePath) const;
+  io::FileList::Items scanForMaps( const std::string &resourcePath ) const;
 };
 
 void Application::Impl::initLocale()
@@ -170,27 +170,23 @@ void Application::setScreenWait()
    screen.drawFrame();
 }
 
-std::vector <fs::path> Application::Impl::scanForMaps(const std::string &resourcePath) const
+io::FileList::Items Application::Impl::scanForMaps(const std::string &resourcePath) const
 {
   // scan for map-files and make their list
     
-  fs::path path( resourcePath + "/maps/" );
-  std::vector <fs::path> filelist;
-  
-  fs::recursive_directory_iterator it (path);
-  fs::recursive_directory_iterator end;
-  
-  for (; it!=end; ++it)
+  io::FileDir mapsDir( resourcePath + "/maps/" );
+  io::FileList::Items items = mapsDir.getEntries().getItems();
+
+  io::FileList::Items ret;
+  for( io::FileList::ItemIterator it=items.begin(); it != items.end(); ++it)
   {
-    if (!fs::is_directory(*it))
-      filelist.push_back(*it);
+    if( !(*it).isDirectory )
+    {
+      ret.push_back(*it);
+    }
   }
-  
-  std::sort(filelist.begin(), filelist.end());
-  
-  std::copy(filelist.begin(), filelist.end(), std::ostream_iterator<fs::path>(std::cout, "\n"));
-  
-  return filelist;
+   
+  return ret;
 }
 
 void Application::setScreenMenu()
@@ -205,10 +201,10 @@ void Application::setScreenMenu()
     case ScreenMenu::startNewGame:
     {
       /* temporary*/     
-      std::vector<fs::path> filelist = _d->scanForMaps( AppConfig::get( AppConfig::resourcePath ).toString() );
-      std::srand( (Uint32)std::time(0));
-      std::string file = filelist.at(std::rand() % filelist.size()).string();
-      std::cout<<"Loading map:" << file << std::endl;
+      io::FileList::Items maps = _d->scanForMaps( AppConfig::get( AppConfig::resourcePath ).toString() );
+      std::srand( DateTime::getElapsedTime() );
+      std::string file = maps.at( std::rand() % maps.size() ).fullName.toString();
+      StringHelper::debug( 0xff, "Loading map:%s", file.c_str() );
       bool loadok = _d->load(file);
       _d->nextScreen = loadok ? SCREEN_GAME : SCREEN_MENU;
     }

@@ -21,7 +21,8 @@
 #include "oc3_gfx_engine.hpp"
 #include "oc3_listbox.hpp"
 #include "oc3_stringhelper.hpp"
-#include <boost/filesystem.hpp>
+#include "oc3_filesystem.hpp"
+#include "oc3_filelist.hpp"
 
 class LoadMapWindow::Impl
 {
@@ -79,17 +80,13 @@ LoadMapWindow::~LoadMapWindow()
 
 void LoadMapWindow::Impl::fillFiles()
 {
-  boost::filesystem::path path ( directory );
+  io::FileList::Items items = io::FileDir( directory ).getEntries().getItems();
 
-  boost::filesystem::recursive_directory_iterator it( path );
-  boost::filesystem::recursive_directory_iterator end;
-
-  for (; it!=end; ++it)
+  for( io::FileList::ItemIterator it=items.begin(); it != items.end(); ++it)
   {
-    if( !boost::filesystem::is_directory(*it) 
-        && boost::filesystem::path( *it ).extension().string() == fileExtension )
+    if( !(*it).isDirectory && (*it).fullName.getExtension() == fileExtension )
     {
-      files->addItem( boost::filesystem::path( *it ).filename().string(), Font(), 0 );
+      files->addItem( (*it).name.toString(), Font(), 0 );
     }
   }
 }

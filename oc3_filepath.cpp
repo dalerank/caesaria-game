@@ -98,8 +98,10 @@ FilePath FilePath::addEndSlash() const
   if( pathTo.size() == 0 )
       return FilePath( "" );
 
-  if( (*pathTo.rend()) != '/' && (*pathTo.rend()) != '\\' )
+  if( (*pathTo.rbegin()) != '/' && (*pathTo.rbegin()) != '\\' )
+  {
       pathTo.append( "/" );
+  }
 
   return pathTo;
 }
@@ -128,8 +130,10 @@ FilePath FilePath::removeEndSlash() const
   if( pathTo.size() == 0 )
       return "";
 
-  if( (*pathTo.rend()) == '/' || (*pathTo.rend()) == '\\' )
-      pathTo.erase( pathTo.rend().base() );
+  if( (*pathTo.rbegin()) == '/' || (*pathTo.rbegin()) == '\\' )
+  {
+      pathTo.erase( pathTo.rbegin().base() );
+  }
 
   return pathTo;
 }
@@ -183,7 +187,7 @@ std::string FilePath::getExtension() const
     int index = _d->path.find_last_of( '.' );
     if( index >= 0 )
     {
-        return _d->path.substr( index+1, 0xff );
+        return _d->path.substr( index, 0xff );
     }
 
     return "";
@@ -307,7 +311,7 @@ FilePath FilePath::getAbsolutePath() const
       return FilePath(fpath);
   }
 
-  if( _d->path.toString().rend()=='/')
+  if( _d->path.toString().rbegin()=='/')
     return FilePath( std::string(p) + "/" );
   else
     return FilePath( std::string(p) );
@@ -318,14 +322,9 @@ FilePath FilePath::getAbsolutePath() const
 //! flatten a path and file name for example: "/you/me/../." becomes "/you"
 FilePath FilePath::flattenFilename( const FilePath& root ) const
 {
-  std::string directory = toString();
+  std::string directory = addEndSlash().toString();
   directory = StringHelper::replace( directory, "\\", "/" );
   
-  if( *directory.rend() != '/')
-  {
-    directory += '/';
-  }
-
   FilePath dir;
   FilePath subdir;
 
