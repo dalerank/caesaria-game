@@ -45,6 +45,7 @@ if(ZLIB_FOUND)
 		~/Library/Frameworks
 		/Library/Frameworks
 		${CMAKE_CURRENT_SOURCE_DIR}/dependencies # Fink
+		${CMAKE_CURRENT_SOURCE_DIR}/dependencies/libpng/include # gecube
 		/opt/local # DarwinPorts
 		/opt/csw # Blastwave
 		/opt
