@@ -228,7 +228,7 @@ void InfoBoxSenate::paint()
 
   new Label( this, Rect( 60, 215, 60 + 300, 215 + 24 ), _("##open_rating_adviser##"), false, false, -1 );
   
-  _sd->btnOpenAviser = new TexturedButton( this, Point( 350, 215 ), Size(24), -1, 289 );
+  _sd->btnOpenAviser = new TexturedButton( this, Point( 350, 215 ), Size(28), -1, 289 );
   _sd->lbHelp = new Label( this, Rect( 16, 70, getWidth() - 16, 70 + 60 ), _("##senate_help_text##") );
 }
 
@@ -477,7 +477,7 @@ GuiInfoGranary::GuiInfoGranary( Widget* parent, const Tile& tile )
 void GuiInfoGranary::showSpecialOrdersWindow()
 {
   Point pos;
-  if( getTop() > getParent()->getHeight() / 2 )
+  if( getTop() > (int)getParent()->getHeight() / 2 )
   {
     pos = Point( getScreenLeft(), getScreenBottom() - 450 );   
   }
@@ -574,7 +574,7 @@ InfoBoxWarehouse::InfoBoxWarehouse( Widget* parent, const Tile& tile )
 void InfoBoxWarehouse::showSpecialOrdersWindow()
 {
   Point pos;
-  if( getTop() > getParent()->getHeight() / 2 )
+  if( getTop() > (int)getParent()->getHeight() / 2 )
   {
     pos = Point( getScreenLeft(), getScreenBottom() - 450 );   
   }

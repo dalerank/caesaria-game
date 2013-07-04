@@ -71,7 +71,7 @@ RomeDivinityPtr DivinePantheon::ceres()
 
 RomeDivinityPtr DivinePantheon::get( RomeDivinityType name ) const
 {
-  if( name > _d->divinties.size() )
+  if( (unsigned int)name > _d->divinties.size() )
     return RomeDivinityPtr();
 
   return _d->divinties.at( name );

@@ -231,3 +231,72 @@ unsigned int StringHelper::hash( unsigned int max_size, const char* fmt, ... )
 
   return hash( fmtStr );
 }
+
+StringArray StringHelper::split( const std::string& str, const std::string& spl, 
+                                 unsigned int count/*=1*/, bool ignoreEmptyTokens/*=true*/, bool keepSeparators/*=false*/ )
+{
+  StringArray ret;
+  if(spl.empty())
+    return ret;
+
+  const unsigned int oldSize=0;
+  unsigned int lastpos = 0;
+  bool lastWasSeparator = false;
+  for (unsigned int i=0; i<str.size(); ++i)
+  {
+    bool foundSeparator = false;
+    for (unsigned int j=0; j<count; ++j)
+    {
+      if (str[i] == spl[j])
+      {
+        if ((!ignoreEmptyTokens || i - lastpos != 0) && !lastWasSeparator)
+        {
+          ret.push_back( std::string( &str[lastpos], i - lastpos));
+        }
+        foundSeparator = true;
+        lastpos = (keepSeparators ? i : i + 1);
+        break;
+      }
+    }
+    lastWasSeparator = foundSeparator;
+  }
+
+  if ((str.size() - 1) > lastpos)
+    ret.push_back( std::string( &str[lastpos], (str.size() - 1) - lastpos ) );
+
+  return ret;
+}
+
+bool StringHelper::isEqualen( const std::string& str1, const std::string& str2, unsigned int n )
+{
+  unsigned int i;
+  for(i=0; str1[i] && str2[i] && i < n; ++i)
+  {
+    if (str1[i] != str2[i])
+    {
+      return false;
+    }
+  }
+
+  // if one (or both) of the strings was smaller then they
+  // are only equal if they have the same length
+  return (i == n) || (str1[i] == 0 && str2[i] == 0);
+}
+
+char StringHelper::localeLower( char x )
+{
+  return x >= 'A' && x <= 'Z' ? x + 0x20 : x;
+}
+
+std::string StringHelper::localeLower( const std::string& str)
+{
+  std::string ret = str;
+
+  int x;
+  for( int i=0; i<str.size(); ++i)
+  {
+    ret[i] = localeLower( ret[ i ] );
+  }
+
+  return ret;
+}

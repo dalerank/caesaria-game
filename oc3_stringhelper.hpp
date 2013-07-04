@@ -17,6 +17,7 @@
 #define __OPENCAESAR3_STRINGHELPER_H_INCLUDED__
 
 #include <string>
+#include "oc3_stringarray.hpp"
 
 class StringHelper
 {
@@ -56,6 +57,13 @@ public:
   static bool isEquale( const std::string& a, const std::string& b, equaleMode mode=equaleCase );
 
   static std::string replace(std::string text, const std::string& from, const std::string& to);
+
+  static StringArray split( const std::string& str, const std::string& spl, unsigned int count=1, bool ignoreEmptyTokens=true, bool keepSeparators=false);
+
+  static bool isEqualen(const std::string& str1, const std::string& str2, unsigned int n);
+
+  static std::string localeLower( const std::string& str );
+  static char localeLower( char x );
 };
 
 #endif

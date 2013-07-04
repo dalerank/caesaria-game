@@ -69,7 +69,7 @@ std::list<AStarPoint*> Pathfinder::getTraversingPoints( const TilePos& start, co
   return points;
 }
 
-int Pathfinder::getMaxLoopCount() const
+unsigned int Pathfinder::getMaxLoopCount() const
 {
   return 600;
 }
@@ -119,7 +119,7 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos,
   openList.push_back(start);
   start->opened = true;
 
-  while (n == 0 || (current != end && n < getMaxLoopCount() ))
+  while( n == 0 || (current != end && n < getMaxLoopCount() ))
   {
     // Look for the smallest F value in the openList and make it the current point
     for (i = openList.begin(); i != openList.end(); ++ i)
