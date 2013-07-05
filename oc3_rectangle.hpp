@@ -312,7 +312,7 @@ class Rect : public RectT<int>
 {
 public:
 
-  Rect() : RectT( 0, 0, 0, 0 ) {}
+  Rect() : RectT<int>( 0, 0, 0, 0 ) {}
   //! Constructor with upper left corner and dimension
   Rect(const Point& pos, const Size& size)
     : RectT<int>( pos, Point( pos.getX() + size.getWidth(), pos.getY() + size.getHeight() ) ) {}
@@ -337,7 +337,7 @@ public:
   }
 
   Rect( const Point& p1, const Point& p2 ) 
-    : RectT( p1, p2 ) {}
+    : RectT<int>( p1, p2 ) {}
 
   RectF toRectF() const;
 };
@@ -345,7 +345,7 @@ public:
 class RectF : public RectT<float>
 {
 public:
-  RectF() : RectT( 0, 0, 0, 0 ) {}
+  RectF() : RectT<float>( 0, 0, 0, 0 ) {}
 
   RectF( float x1, float y1, float x2, float y2 )
     : RectT<float>( x1, y1, x2, y2 ) {}

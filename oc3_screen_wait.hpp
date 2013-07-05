@@ -1,4 +1,4 @@
-﻿#ifndef SCREEN_WAIT_HPP
+#ifndef SCREEN_WAIT_HPP
 #define SCREEN_WAIT_HPP
 
 #include "oc3_screen.hpp"

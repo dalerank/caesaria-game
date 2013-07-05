@@ -26,6 +26,7 @@
 #include "oc3_predefinitions.hpp"
 #include "oc3_referencecounted.hpp"
 #include "oc3_cityservice.hpp"
+#include "oc3_tile.hpp"
 
 class TilePos;
 class DateTime;
