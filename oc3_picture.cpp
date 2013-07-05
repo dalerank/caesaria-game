@@ -359,7 +359,7 @@ void Picture::fill( const NColor& color, const Rect& rect )
   SDL_Surface* source = _d->surface;
 
   SDL_LockSurface( source );
-  SDL_Rect sdlRect = { rect.getLeft(), rect.getTop(), rect.getWidth(), rect.getHeight() };
+  SDL_Rect sdlRect = { (short)rect.getLeft(), (short)rect.getTop(), (Uint16)rect.getWidth(), (Uint16)rect.getHeight() };
 
   SDL_FillRect(source, rect.getWidth() > 0 ? &sdlRect : NULL, SDL_MapRGBA(source->format, color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha() )); 
   SDL_UnlockSurface(source);

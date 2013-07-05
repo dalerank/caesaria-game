@@ -59,6 +59,8 @@ void CityBuildOptions::setIndustryAvaible( const BuildMenuType type, bool mayBui
     _d->rules[ B_POTTERY ] = mayBuild; 
   break;
 
+  default:
+  break;
   }
 }
 

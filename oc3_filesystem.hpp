@@ -50,22 +50,20 @@ public:
 	virtual NFile loadFileFromArchive( const FilePath& filePath );
 
 	//! Adds an archive to the file system.
-	virtual bool mountArchive( const FilePath& filename,
+    virtual ArchivePtr mountArchive( const FilePath& filename,
 		                           Archive::Type archiveType=Archive::unknown,
 			                         bool ignoreCase = true, bool ignorePaths = true,
-			                         const std::string& password="",
-			                         ArchivePtr& retArchive=ArchivePtr() );
+                                     const std::string& password="" );
 
 	//! Adds an archive to the file system.
-	virtual bool mountArchive( NFile file,
+    virtual ArchivePtr mountArchive( NFile file,
 			                         Archive::Type archiveType=Archive::unknown,
 		                           bool ignoreCase=true,
 			                         bool ignorePaths=true,
-			                         const std::string& password="",
-			                         ArchivePtr& retArchive=ArchivePtr() );
+                                     const std::string& password="" );
 
 	//! Adds an archive to the file system.
-	virtual bool mountArchive( ArchivePtr archive );
+    virtual ArchivePtr mountArchive( ArchivePtr archive );
 
 	//! move the hirarchy of the filesystem. moves sourceIndex relative up or down
 	virtual bool moveFileArchive( unsigned int sourceIndex, int relative);

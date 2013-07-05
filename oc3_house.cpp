@@ -431,6 +431,9 @@ void House::applyService( ServiceWalkerPtr walker )
       }      
     }
   break;
+
+  default:
+  break;
   }
 }
 

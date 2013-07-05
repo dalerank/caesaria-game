@@ -46,8 +46,9 @@ public:
   Impl() : textMargin( Rect( 0, 0, 0, 0) ),
 		    	 OverrideBGColorEnabled(false), WordWrap(false),
 			     RestrainTextInside(true), RightToLeft(false), 
-           needUpdatePicture(false), bgPicture( 0 ), picture( 0 ),
-           lineIntervalOffset( 0 )
+                 needUpdatePicture(false), lineIntervalOffset( 0 ),
+                 bgPicture( 0 ), picture( 0 )
+
 	{
     font = Font::create( FONT_2 );
 	}
@@ -175,7 +176,7 @@ void Label::draw( GfxEngine& painter )
   // draw background
   if( _d->picture )
   {
-    painter.drawPicture( *_d->picture, frameRect.getLeft(), frameRect.getTop(), &getAbsoluteClippingRect() );
+    painter.drawPicture( *_d->picture, frameRect.getLeft(), frameRect.getTop(), &getAbsoluteClippingRectRef() );
   }
 
   Widget::draw( painter );

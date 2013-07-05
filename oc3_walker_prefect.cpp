@@ -126,6 +126,9 @@ void WalkerPrefect::onMidTile()
 
   switch( _d->action )
   {
+  case Impl::doNothing:
+  break;
+
   case Impl::patrol:
     {
       if( haveBurningRuinsNear )

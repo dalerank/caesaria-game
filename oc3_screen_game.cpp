@@ -261,6 +261,8 @@ void ScreenGame::handleEvent( NEvent& event )
       case KEY_F10:
 	      _d->makeScreenShot();
 	    break;
+
+      default: break;
       }
     }
   }

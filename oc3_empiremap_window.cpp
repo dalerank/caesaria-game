@@ -136,29 +136,30 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
 
     case OC3_MOUSE_MOVED:
       {
-        bool t = _d->dragging;
-        t;
-      
-      if ( !event.MouseEvent.isLeftPressed() )
-        _d->dragging = false;
+        //bool t = _d->dragging;
 
-      if( _d->dragging )
-      {
-        // gui window should not be dragged outside its parent
-        if( _d->offset.getX() > 0
-            || _d->offset.getX() + _d->empireMap.getWidth() < getWidth()
-            || _d->offset.getY() > 0 
-            || _d->offset.getY() + _d->empireMap.getHeight() < getHeight() )
+        if ( !event.MouseEvent.isLeftPressed() )
         {
-          break;
+          _d->dragging = false;
         }
 
-        _d->offset += (event.MouseEvent.getPosition() - _d->dragStartPosition);
-        _d->dragStartPosition = event.MouseEvent.getPosition();
+        if( _d->dragging )
+        {
+          // gui window should not be dragged outside its parent
+          if( _d->offset.getX() > 0
+              || _d->offset.getX() + _d->empireMap.getWidth() < (int)getWidth()
+              || _d->offset.getY() > 0
+              || _d->offset.getY() + _d->empireMap.getHeight() < (int)getHeight() )
+          {
+            break;
+          }
 
-        _d->offset.setX( math::clamp<int>( _d->offset.getX(), -_d->empireMap.getWidth() + getWidth(), 0 ) );
-        _d->offset.setY( math::clamp<int>( _d->offset.getY(), -_d->empireMap.getHeight() + getHeight(), 0 ) );
-      }
+          _d->offset += (event.MouseEvent.getPosition() - _d->dragStartPosition);
+          _d->dragStartPosition = event.MouseEvent.getPosition();
+
+          _d->offset.setX( math::clamp<int>( _d->offset.getX(), -_d->empireMap.getWidth() + getWidth(), 0 ) );
+          _d->offset.setY( math::clamp<int>( _d->offset.getY(), -_d->empireMap.getHeight() + getHeight(), 0 ) );
+        }
       }
     break;
     

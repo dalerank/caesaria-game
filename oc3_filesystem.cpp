@@ -52,14 +52,10 @@ public:
 
   Mode fileSystemType;
 
-  bool changeArchivePassword( const FilePath& filename,
-                              const std::string& password,
-                              ArchivePtr& archive);
+  ArchivePtr changeArchivePassword( const FilePath& filename, const std::string& password );
 };
 
-bool FileSystem::Impl::changeArchivePassword(const FilePath& filename,
-  const std::string& password,
-  ArchivePtr& archive)
+ArchivePtr FileSystem::Impl::changeArchivePassword(const FilePath& filename, const std::string& password )
 {
   for (int idx = 0; idx < (int)openArchives.size(); ++idx)
   {
@@ -69,21 +65,16 @@ bool FileSystem::Impl::changeArchivePassword(const FilePath& filename,
     const FilePath arcPath = openArchives[idx]->getFileList()->getPath();
     if( (absPath == arcPath) || (arcPath == (absPath.toString() + "/")) )
     {
-      if (password.size())
+      if( password.size() )
       {
         openArchives[idx]->Password=password;
       }
 
-      if( archive.isValid() )
-      {
-        archive = openArchives[idx];
-      }
-
-      return true;
+      return openArchives[idx];
     }
   }
 
-  return false;
+  return ArchivePtr();
 }
 
 //! constructor
@@ -183,136 +174,134 @@ bool FileSystem::moveFileArchive(unsigned int sourceIndex, int relative)
 
 
 //! Adds an archive to the file system.
-bool FileSystem::mountArchive(const FilePath& filename, 
+ArchivePtr FileSystem::mountArchive(const FilePath& filename,
 								Archive::Type archiveType,
 								bool ignoreCase,
 								bool ignorePaths, 
-                const std::string& password,
-								ArchivePtr& retArchive)
+                                const std::string& password)
 {
-	ArchivePtr archive;
-	bool ret = false;
+  ArchivePtr archive;
 
-	// see if archive is already added
-	if( _d->changeArchivePassword(filename, password, retArchive) )
+  // see if archive is already added
+  archive = _d->changeArchivePassword(filename, password );
+  if( archive.isValid() )
   {
-		return true;
+    return archive;
   }
 
-	int i;
+  int i;
 
-	// do we know what type it should be?
-	if (archiveType == Archive::unknown || archiveType == Archive::folder)
-	{
-		// try to load archive based on file name
-		for (i = _d->archiveLoaders.size()-1; i >=0 ; --i)
-		{
-			if (_d->archiveLoaders[i]->isALoadableFileFormat(filename))
-			{
-				archive = _d->archiveLoaders[i]->createArchive(filename, ignoreCase, ignorePaths);
-				if( archive.isValid() )
-        {
-					break;
-        }
-			}
-		}
-
-		// try to load archive based on content
-		if( archive.isNull() )
-		{
-			NFile file = createAndOpenFile( filename, FSEntity::fmRead );
-			if( file.isOpen() )
-			{
-				for (i = _d->archiveLoaders.size()-1; i >= 0; --i)
-				{
-					file.seek(0);
-					if (_d->archiveLoaders[i]->isALoadableFileFormat( &file ) )
-					{
-						file.seek(0);
-						archive = _d->archiveLoaders[i]->createArchive( &file, ignoreCase, ignorePaths);
-						if( archive.isValid() )
-            {
-							break;
-            }
-					}
-				}
-			}
-		}
-	}
-	else
-	{
-		// try to open archive based on archive loader type
-		NFile file;
-		for (i = _d->archiveLoaders.size()-1; i >= 0; --i)
-		{
-			if (_d->archiveLoaders[i]->isALoadableFileFormat(archiveType))
-			{
-				// attempt to open file
-				if( !file.isOpen() )
-        {
-					file = createAndOpenFile(filename, FSEntity::fmRead );
-        }
-
-				// is the file open?
-				if( file.isOpen() )
-				{
-					// attempt to open archive
-					file.seek(0);
-					if (_d->archiveLoaders[i]->isALoadableFileFormat(&file))
-					{
-						file.seek(0);
-						archive = _d->archiveLoaders[i]->createArchive(&file, ignoreCase, ignorePaths);
-						if( archive.isValid() )
-            {
-							break;
-            }
-					}
-				}
-				else
-				{
-					// couldn't open file
-					break;
-				}
-			}
-		}
-	}
-
-	if( archive.isValid() )
-	{
-		_d->openArchives.push_back( archive );
-
-		if( password.size() )
+  // do we know what type it should be?
+  if (archiveType == Archive::unknown || archiveType == Archive::folder)
+  {
+    // try to load archive based on file name
+    for (i = _d->archiveLoaders.size()-1; i >=0 ; --i)
     {
-			archive->Password=password;
+        if (_d->archiveLoaders[i]->isALoadableFileFormat(filename))
+        {
+           archive = _d->archiveLoaders[i]->createArchive(filename, ignoreCase, ignorePaths);
+           if( archive.isValid() )
+           {
+					break;
+           }
+        }
     }
 
-  	retArchive = archive;
+    // try to load archive based on content
+    if( archive.isNull() )
+    {
+        NFile file = createAndOpenFile( filename, FSEntity::fmRead );
+        if( file.isOpen() )
+        {
+            for (i = _d->archiveLoaders.size()-1; i >= 0; --i)
+            {
+                file.seek(0);
+                if (_d->archiveLoaders[i]->isALoadableFileFormat( &file ) )
+                {
+                    file.seek(0);
+                    archive = _d->archiveLoaders[i]->createArchive( &file, ignoreCase, ignorePaths);
+                    if( archive.isValid() )
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+  }
+  else
+  {
+    // try to open archive based on archive loader type
+    NFile file;
+    for (i = _d->archiveLoaders.size()-1; i >= 0; --i)
+    {
+      if (_d->archiveLoaders[i]->isALoadableFileFormat(archiveType))
+      {
+        // attempt to open file
+        if( !file.isOpen() )
+        {
+          file = createAndOpenFile(filename, FSEntity::fmRead );
+        }
 
-		ret = true;
-	}
-	else
-	{
+        // is the file open?
+        if( file.isOpen() )
+        {
+          // attempt to open archive
+          file.seek(0);
+          if (_d->archiveLoaders[i]->isALoadableFileFormat(&file))
+          {
+            file.seek(0);
+            archive = _d->archiveLoaders[i]->createArchive(&file, ignoreCase, ignorePaths);
+            if( archive.isValid() )
+            {
+                break;
+            }
+          }
+        }
+        else
+        {
+            // couldn't open file
+            break;
+        }
+      }
+    }
+  }
+
+  if( archive.isValid() )
+  {
+    _d->openArchives.push_back( archive );
+    if( password.size() )
+    {
+        archive->Password=password;
+    }
+
+    return archive;
+  }
+  else
+  {
     StringHelper::debug( 0xff, "Could not create archive for %s", filename.toString().c_str() );
-	}
+  }
 
-	return ret;
+  return ArchivePtr();
 }
 
-bool FileSystem::mountArchive( NFile file, Archive::Type archiveType,
-								 bool ignoreCase,
-								 bool ignorePaths, 
-                 const std::string& password, 
-								 ArchivePtr& retArchive)
+ArchivePtr FileSystem::mountArchive(NFile file, Archive::Type archiveType,
+                                 bool ignoreCase,
+                                 bool ignorePaths,
+                                 const std::string& password)
 {
 	if( !file.isOpen() || archiveType == Archive::folder)
-		return false;
+        return ArchivePtr();
 
 	if( file.isOpen() )
 	{
-		if( _d->changeArchivePassword( file.getFileName(), password, retArchive))
-			return true;
+        ArchivePtr archive = _d->changeArchivePassword( file.getFileName(), password );
 
-		ArchivePtr archive;
+        if( archive.isValid() )
+        {
+            return archive;
+        }
+
 		int i;
 
 		if (archiveType == Archive::unknown)
@@ -370,40 +359,40 @@ bool FileSystem::mountArchive( NFile file, Archive::Type archiveType,
 			}
 		}
 
-		if( archive.isValid() )
-		{
-			_d->openArchives.push_back(archive);
-
-      if (password.size())
+      if( archive.isValid() )
       {
-				archive->Password=password;
-      }
+        _d->openArchives.push_back(archive);
+
+        if (password.size())
+        {
+          archive->Password=password;
+        }
 			
-      retArchive = archive;
-			return true;
-		}
-		else
-		{
-      StringHelper::debug( 0xff, "Could not create archive for %s", file.getFileName() );
-		}
+        return archive;
+      }
+      else
+      {
+        StringHelper::debug( 0xff, "Could not create archive for %s", file.getFileName().toString().c_str() );
+      }
 	}
 
-	return false;
+    return ArchivePtr();
 }
 
 
 //! Adds an archive to the file system.
-bool FileSystem::mountArchive( ArchivePtr archive)
+ArchivePtr FileSystem::mountArchive( ArchivePtr archive)
 {
 	for (unsigned int i=0; i < _d->openArchives.size(); ++i)
 	{
 		if( archive == _d->openArchives[i])
 		{
-			return false;
+            return archive;
 		}
 	}
+
 	_d->openArchives.push_back(archive);
-	return true;
+    return archive;
 }
 
 
@@ -483,17 +472,17 @@ const FilePath& FileSystem::getWorkingDirectory()
 			// so try it until the call was successful
 			// Note that neither the first nor the second parameter may be 0 according to POSIX
 			unsigned int pathSize=256;
-      ScopedPtr< char > tmpPath( new char[pathSize] );
+            ScopedPtr< char > tmpPath( new char[pathSize] );
       
-      while( (pathSize < (1<<16)) && !( getcwd( tmpPath ,pathSize)))
+            while( (pathSize < (1<<16)) && !( getcwd( tmpPath.data(), pathSize)))
 			{
 				pathSize *= 2;
 				tmpPath.reset( new char[pathSize] );
 			}
 
-      if( tmpPath )
+            if( tmpPath )
 			{
-        _d->workingDirectory[fsNative] = FilePath( tmpPath );
+                _d->workingDirectory[fsNative] = FilePath( tmpPath.data() );
 			}
 		#endif
 
@@ -601,12 +590,12 @@ FileList FileSystem::getFileList()
 
 			// --------------------------------------------
 			//! Linux version
-      ret.setIgnoreCase( false );
+            ret.setIgnoreCase( false );
 
-      ret.addItem( FilePath( rpath + ".." ), 0, 0, true, 0);
+            ret.addItem( FilePath( rpath.toString() + ".." ), 0, 0, true, 0);
 
 			//! We use the POSIX compliant methods instead of scandir
-      DIR* dirHandle=opendir( rpath.toAscii().pointer());
+            DIR* dirHandle=opendir( rpath.toString().c_str());
 			if (dirHandle)
 			{
 				struct dirent *dirEntry;
@@ -634,7 +623,7 @@ FileList FileSystem::getFileList()
 					}
 					#endif*/
 					
-          ret.addItem( rpath + FilePath::fromCharArray( dirEntry->d_name ), 0, size, isDirectory, 0);
+                    ret.addItem( FilePath( rpath.toString() + dirEntry->d_name ), 0, size, isDirectory, 0);
 				}
 				closedir(dirHandle);
 			}

@@ -63,6 +63,8 @@ Picture GoodHelper::getPicture( GoodType type )
   case G_POTTERY: picId = 331; break;
   case G_DENARIES: picId = 332; break;
   case G_FISH: picId = 333; break;
+  default:
+  break;
   }
 
   if( picId > 0 )

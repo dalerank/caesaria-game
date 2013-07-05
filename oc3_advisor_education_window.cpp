@@ -52,6 +52,7 @@ public:
     case B_SCHOOL: buildingStr = _("##schools##"); peoplesStr = _("##children##"); break;
     case B_COLLEGE: buildingStr = _("##colleges##"); peoplesStr = _("##students##"); break;
     case B_LIBRARY: buildingStr = _("##libraries##"); peoplesStr = _("##peoples##"); break;
+    default: break;
     }
 
     Picture& texture = getPicture();
@@ -112,6 +113,7 @@ public:
         case B_SCHOOL: maxStuding = 75; break;
         case B_COLLEGE: maxStuding = 100; break;
         case B_LIBRARY: maxStuding = 800; break;
+        default: break;
         }
 
         ret.peoplesStuding += maxStuding * (*it)->getWorkers() / (*it)->getMaxWorkers();

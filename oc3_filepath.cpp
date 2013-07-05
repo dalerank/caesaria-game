@@ -21,6 +21,7 @@
 #include <Windows.h>
 #include <io.h>
 #else
+#include <stdio.h>
 #include <sys/io.h>
 #include <sys/stat.h>
 #endif
@@ -143,7 +144,7 @@ void FileDir::_OsCreate( const FileDir& dirName )
 #ifdef _WIN32
     CreateDirectory( removeEndSlash().toString().c_str(), NULL );
 #else
-    ::mkdir( dirName.toAscii().pointer(), S_IRWXU|S_IRWXG|S_IRWXO );
+    ::mkdir( dirName.toString().c_str(), S_IRWXU|S_IRWXG|S_IRWXO );
 #endif
 }
 
@@ -170,7 +171,7 @@ bool FilePath::isFolder() const
     return (fad.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY;
 #   else
     struct stat path_stat;
-    if ( ::stat( toAscii().pointer(), &path_stat) != 0 )
+    if ( ::stat( toString().c_str(), &path_stat) != 0 )
         return false;
 
     return S_ISDIR(path_stat.st_mode);
@@ -298,7 +299,7 @@ FilePath FilePath::getAbsolutePath() const
   char* p=0;
   char fpath[4096];
   fpath[0]=0;
-  p = realpath( _d->path.toString().c_str(), fpath);
+  p = realpath( _d->path.c_str(), fpath);
   if (!p)
   {
     // content in fpath is unclear at this point
@@ -311,7 +312,7 @@ FilePath FilePath::getAbsolutePath() const
       return FilePath(fpath);
   }
 
-  if( _d->path.toString().rbegin()=='/')
+  if( *(_d->path.rbegin())=='/')
     return FilePath( std::string(p) + "/" );
   else
     return FilePath( std::string(p) );
@@ -572,7 +573,7 @@ FileDir FileDir::getApplicationDir()
 
   return tmp;
 #else
-  return "";
+  return FilePath( "" );
 #endif
 }
 

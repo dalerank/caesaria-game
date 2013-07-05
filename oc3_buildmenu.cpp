@@ -132,7 +132,7 @@ void BuildMenu::addSubmenuButton(const BuildMenuType menuType, const std::string
 
 void BuildMenu::addBuildButton( const BuildingType buildingType )
 {
-  int t = DateTime::getElapsedTime();
+  //int t = DateTime::getElapsedTime();
   BuildingData &buildingData = BuildingDataHolder::instance().getData( buildingType );
 
   int cost = buildingData.getCost();

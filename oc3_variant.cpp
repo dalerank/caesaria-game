@@ -308,11 +308,6 @@ static void clearVariant(Variant2Impl *d)
     d->is_null = true;
 }
 
-static bool isNull(const Variant2Impl *d)
-{
-    return d->is_null;
-}
-
 template<typename T>
 inline bool compareNumericMetaType(const Variant2Impl *const a, const Variant2Impl *const b)
 {

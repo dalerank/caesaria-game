@@ -1068,7 +1068,10 @@ void TilemapRenderer::handleEvent( NEvent& event )
 
         case KEY_LEFT:
             getMapArea().moveLeft(1 + ( event.KeyboardEvent.Shift ? 4 : 0 ) );
-        break;     
+        break;
+
+        default:
+        break;
         }
     }
 }

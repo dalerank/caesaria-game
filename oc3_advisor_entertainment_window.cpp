@@ -54,6 +54,8 @@ public:
     case B_AMPHITHEATER: buildingStr = _("##amphitheatres##"); peoplesStr = _("##peoples##"); break;
     case B_COLLOSSEUM: buildingStr = _("##colloseum##"); peoplesStr = _("##peoples##"); break;
     case B_HIPPODROME: buildingStr = _("##hippodromes##"); peoplesStr = "-"; break;
+    default:
+    break;
     }
 
     Picture& texture = getPicture();
@@ -114,6 +116,8 @@ public:
         case B_THEATER: maxStuding = 500; break;
         case B_AMPHITHEATER: maxStuding = 800; break;
         case B_COLLOSSEUM: maxStuding = 1500; break;
+        default:
+        break;
         }
 
         ret.peoplesStuding += maxStuding * (*it)->getWorkers() / (*it)->getMaxWorkers();
@@ -174,7 +178,7 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow( CityPtr city, Widget* pa
   CityHelper helper( city );
 
   int sumScholars = 0;
-  int sumStudents = 0;
+  //int sumStudents = 0;
   std::list< HousePtr > houses = helper.getBuildings<House>( B_HOUSE );
   for( std::list< HousePtr >::iterator it=houses.begin(); it != houses.end(); it++ )
   {

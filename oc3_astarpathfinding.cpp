@@ -262,7 +262,7 @@ AStarPoint* Pathfinder::getPoint( const TilePos& pos )
 
 bool Pathfinder::pointExists( const TilePos& pos )
 {
-  return ( pos.getI() < grid.size() && pos.getJ() < grid[pos.getI()].size() );
+  return ( pos.getI() < (int)grid.size() && pos.getJ() < (int)grid[pos.getI()].size() );
 }
 
 bool Pathfinder::pointIsWalkable( const TilePos& pos )

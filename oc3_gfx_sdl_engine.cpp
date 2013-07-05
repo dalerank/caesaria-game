@@ -158,7 +158,7 @@ void GfxSdlEngine::drawPicture(const Picture &picture, const int dx, const int d
 
   if( clipRect != 0 )
   {
-    SDL_Rect r = { clipRect->getLeft(), clipRect->getTop(), clipRect->getWidth(), clipRect->getHeight() };
+    SDL_Rect r = { (short)clipRect->getLeft(), (short)clipRect->getTop(), (Uint16)clipRect->getWidth(), (Uint16)clipRect->getHeight() };
     SDL_SetClipRect( _d->screen.getSurface(), &r );
   }
 

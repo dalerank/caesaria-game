@@ -409,11 +409,9 @@ int WaterSource::getId() const
 
 BuildingFountain::BuildingFountain() : ServiceBuilding(S_FOUNTAIN, B_FOUNTAIN, Size(1))
 {  
-  int id;
-
   std::srand( DateTime::getElapsedTime() );
 
-  id = std::rand() % 4;
+  //id = std::rand() % 4;
 
   setPicture( Picture::load( ResourceGroup::utilitya, 10));
   _getAnimation().load( ResourceGroup::utilitya, 11, 7);

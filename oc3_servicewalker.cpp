@@ -92,8 +92,9 @@ void ServiceWalker::init(const ServiceType service)
   case S_FORUM:
     _walkerGraphic = WG_TAX;
     break;
-  case S_MAX:
-    break;
+
+  default:
+  break;
   }
 }
 

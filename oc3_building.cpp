@@ -50,7 +50,6 @@ LandOverlay::LandOverlay(const BuildingType type, const Size& size)
 LandOverlay::~LandOverlay()
 {
   // what we shall to do here?
-  int i=0;
 }
 
 
@@ -216,7 +215,7 @@ bool Construction::canBuild( const TilePos& pos ) const
   PtrTilesArea rect = tilemap.getFilledRectangle( pos, getSize() );
 
   //on over map size
-  if( rect.size() != getSize().getArea() )
+  if( (int)rect.size() != getSize().getArea() )
     return false;
 
   for( PtrTilesArea::iterator itTiles = rect.begin(); 
@@ -429,6 +428,8 @@ float Building::evaluateService(ServiceWalkerPtr walker)
    case S_PREFECT:
       res = _fireLevel;
    break;
+
+   default: break;
    }
    return res;
 }
@@ -464,6 +465,8 @@ void Building::applyService( ServiceWalkerPtr walker)
       _fireLevel = 0;
     }
    break;
+
+   default: break;
    }
 }
 

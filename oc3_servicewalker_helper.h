@@ -28,6 +28,8 @@ public:
         it++;
       }
     }
+
+    return res;
   }
 
   template< class T > 

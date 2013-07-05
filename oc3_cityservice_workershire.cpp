@@ -82,7 +82,7 @@ void CityServiceWorkersHire::update( const unsigned int time )
   if( time % 22 != 1 )
     return;
 
-  unsigned int vacantPop=0;
+  //unsigned int vacantPop=0;
 
   _d->hrInCity = _d->city->getWalkerList( WT_WORKERS_HUNTER );
 

@@ -162,6 +162,9 @@ bool BaseSpecialOrdersWindow::onEvent( const NEvent& event)
       return true;
     }
     break;
+
+  default:
+  break;
   }
 
   return Widget::onEvent( event );

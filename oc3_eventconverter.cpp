@@ -182,7 +182,7 @@ void EventConverter::Impl::createKeyMap()
 NEvent EventConverter::get( const SDL_Event& sdlEvent )
 {
     NEvent ret;
-    SDLMod modState = SDL_GetModState();
+    //SDLMod modState = SDL_GetModState();
     //Uint32 msState = SDL_GetMouseState();
 
     switch ( sdlEvent.type )

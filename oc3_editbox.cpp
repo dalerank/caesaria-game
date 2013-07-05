@@ -889,7 +889,7 @@ void EditBox::beforeDraw( GfxEngine& painter )
       std::string stringBeforeCursor = txtLine->substr(0,_d->cursorPos-startPos);
 
 	    {
-		    wchar_t lastChar = _d->cursorPos-startPos > 0 ? txtLine->at( _d->cursorPos-startPos-1 ) : 0;
+            //wchar_t lastChar = _d->cursorPos-startPos > 0 ? txtLine->at( _d->cursorPos-startPos-1 ) : 0;
 		    charcursorpos = _d->lastBreakFont.getSize( stringBeforeCursor ).getWidth() + 1/*font.GetKerningWidth(L"_", lastChar ? &lastChar : NULL )*/ ;
 	    }
 

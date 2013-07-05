@@ -54,6 +54,7 @@ public:
     case B_BARBER: buildingStr = _("##barber##"); peoplesStr = _("##peoples##"); break;
     case B_HOSPITAL: buildingStr = _("##hospital##"); peoplesStr = _("##patients##"); break;
     case B_DOCTOR: buildingStr = _("##doctor##"); peoplesStr = _("##peoples##"); break;
+    default: break;
     }
 
     Picture& texture = getPicture();

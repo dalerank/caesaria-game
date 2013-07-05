@@ -40,5 +40,5 @@ void CityServiceWater::update( const unsigned int time )
   if( time % 22 != 1 )
     return;
 
-  unsigned int vacantPop=0;
+  //unsigned int vacantPop=0;
 }

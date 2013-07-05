@@ -66,13 +66,13 @@ void BuildingPrefecture::deliverService()
     WalkerPrefectPtr walker = WalkerPrefect::create( Scenario::instance().getCity() );
     walker->setMaxDistance( 26 );
 
-    bool patrol = true;
+    //bool patrol = true;
     if( fireDetect )
     {
       PathWay pathway;
       TilePos startPos = _accessRoads.front()->getIJ();
       bool pathFounded = Pathfinder::getInstance().getPath( startPos, _fireDetect, pathway, false, Size( 0 ) );
-      patrol = !pathFounded;
+      //patrol = !pathFounded;
 
       if( pathFounded )
       {

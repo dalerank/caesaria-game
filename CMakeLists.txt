@@ -37,7 +37,6 @@ link_libraries(
   ${LIBINTL_LIBRARIES}
   ${PNG_LIBRARY}
 )
-add_definitions(-DBOOST_ALL_NO_LIB)
 
 add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST})
 set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME "caesar3")

@@ -220,13 +220,17 @@ void ListBox::_IndexChanged( unsigned int eventType )
     case OC3_LISTBOX_CHANGED:
         _d->indexSelected.emit( _d->selectedItemIndex );
         if( _d->selectedItemIndex >= 0 )
+        {
             _d->textSelected.emit( _d->items[ _d->selectedItemIndex ].getText() );
+        }
     break;
 
     case OC3_LISTBOX_SELECTED_AGAIN:
         _d->indexSelectedAgain.emit( _d->selectedItemIndex );
         if( _d->selectedItemIndex >= 0 )
+        {
             _d->onItemSelectedAgainSignal.emit( _d->items[ _d->selectedItemIndex ].getText() );
+        }
     break;
 
     default:
@@ -240,7 +244,11 @@ bool ListBox::onEvent(const NEvent& event)
     if( isEnabled() )
 	{
 		switch(event.EventType)
-		{
+        {
+        case OC3_EGUIET_FORCE_32_BIT:
+        case OC3_USER_EVENT:
+        break;
+
 		case OC3_KEYBOARD_EVENT:
 			if (event.KeyboardEvent.PressedDown &&
 				(event.KeyboardEvent.Key == KEY_DOWN ||
@@ -250,7 +258,7 @@ bool ListBox::onEvent(const NEvent& event)
 				event.KeyboardEvent.Key == KEY_NEXT ||
 				event.KeyboardEvent.Key == KEY_PRIOR ) )
 			{
-        int oldSelected = _d->selectedItemIndex;
+                int oldSelected = _d->selectedItemIndex;
 				switch (event.KeyboardEvent.Key)
 				{
 					case KEY_DOWN:
@@ -275,34 +283,36 @@ bool ListBox::onEvent(const NEvent& event)
 						break;
 				}
          
-        if (_d->selectedItemIndex >= (int)_d->items.size())
-        {
-          _d->selectedItemIndex = _d->items.size() - 1;
-        }
-				else if (_d->selectedItemIndex<0)
-        {
-          _d->selectedItemIndex = 0;
-        }
+                if (_d->selectedItemIndex >= (int)_d->items.size())
+                {
+                  _d->selectedItemIndex = _d->items.size() - 1;
+                }
+                        else if (_d->selectedItemIndex<0)
+                {
+                  _d->selectedItemIndex = 0;
+                }
         
-        _RecalculateScrollPos();
-        _d->needItemsRepackTextures = true;
+                _RecalculateScrollPos();
+                _d->needItemsRepackTextures = true;
 
 				// post the news
-        if( oldSelected != _d->selectedItemIndex && !_d->selecting && !isFlag( LBF_MOVEOVER_SELECT ) )
+                if( oldSelected != _d->selectedItemIndex && !_d->selecting && !isFlag( LBF_MOVEOVER_SELECT ) )
+                {
 				    _IndexChanged( OC3_LISTBOX_CHANGED );
+                }
 
 				return true;
 			}
 			else if (!event.KeyboardEvent.PressedDown && ( event.KeyboardEvent.Key == KEY_RETURN || event.KeyboardEvent.Key == KEY_SPACE ) )
 			{
-        _IndexChanged( OC3_LISTBOX_SELECTED_AGAIN );
+                _IndexChanged( OC3_LISTBOX_SELECTED_AGAIN );
 
 				return true;
 			}
 			else if (event.KeyboardEvent.PressedDown && event.KeyboardEvent.Char)
 			{
 				// change selection based on text as it is typed.
-        unsigned int now = DateTime::getElapsedTime();
+                unsigned int now = DateTime::getElapsedTime();
 
 				if (now - _d->lastKeyTime < 500)
 				{
@@ -321,137 +331,140 @@ bool ListBox::onEvent(const NEvent& event)
 				_d->lastKeyTime = now;
 
 				// find the selected item, starting at the current selection
-        int start = _d->selectedItemIndex;
-				// dont change selection if the key buffer matches the current item
-        if (_d->selectedItemIndex > -1 && _d->keyBuffer.size() > 1)
+                int start = _d->selectedItemIndex;
+                        // dont change selection if the key buffer matches the current item
+                if (_d->selectedItemIndex > -1 && _d->keyBuffer.size() > 1)
 				{
-            if( _d->items[ _d->selectedItemIndex ].getText().size() >= _d->keyBuffer.size() 
-              && StringHelper::isEquale( _d->keyBuffer, _d->items[_d->selectedItemIndex].getText().substr( 0,_d->keyBuffer.size() ),
-                                         StringHelper::equaleIgnoreCase ) )
-						return true;
+                    if( _d->items[ _d->selectedItemIndex ].getText().size() >= _d->keyBuffer.size()
+                      && StringHelper::isEquale( _d->keyBuffer, _d->items[_d->selectedItemIndex].getText().substr( 0,_d->keyBuffer.size() ),
+                                                 StringHelper::equaleIgnoreCase ) )
+                    {
+                            return true;
+                    }
 				}
 
 				int current;
-        for( current = start+1; current < (int)_d->items.size(); ++current)
+                for( current = start+1; current < (int)_d->items.size(); ++current)
 				{
-          if( _d->items[current].getText().size() >= _d->keyBuffer.size())
+                    if( _d->items[current].getText().size() >= _d->keyBuffer.size())
 					{
-            if( StringHelper::isEquale( _d->keyBuffer, _d->items[current].getText().substr(0,_d->keyBuffer.size()),
+                        if( StringHelper::isEquale( _d->keyBuffer, _d->items[current].getText().substr(0,_d->keyBuffer.size()),
                                         StringHelper::equaleIgnoreCase ) )
 						{
-              if ( _d->selectedItemIndex != current && !_d->selecting && !isFlag( LBF_MOVEOVER_SELECT ))
-              {
-                _IndexChanged( OC3_LISTBOX_CHANGED );
-              }
+                            if ( _d->selectedItemIndex != current && !_d->selecting && !isFlag( LBF_MOVEOVER_SELECT ))
+                            {
+                              _IndexChanged( OC3_LISTBOX_CHANGED );
+                            }
 
-              setSelected(current);
+                            setSelected(current);
 							return true;
 						}
 					}
 				}
-				for( current = 0; current <= start; ++current)
+
+                for( current = 0; current <= start; ++current)
 				{
-          if( _d->items[current].getText().size() >= _d->keyBuffer.size())
+                     if( _d->items[current].getText().size() >= _d->keyBuffer.size())
 					{
-            if( StringHelper::isEquale( _d->keyBuffer, _d->items[current].getText().substr( 0,_d->keyBuffer.size() ),
-                                        StringHelper::equaleIgnoreCase ) )
-            {
-              if ( _d->selectedItemIndex != current && !_d->selecting && !isFlag( LBF_MOVEOVER_SELECT ))
-              {
-                _IndexChanged( OC3_LISTBOX_CHANGED );
-              }
+                        if( StringHelper::isEquale( _d->keyBuffer, _d->items[current].getText().substr( 0,_d->keyBuffer.size() ),
+                                                    StringHelper::equaleIgnoreCase ) )
+                        {
+                          if ( _d->selectedItemIndex != current && !_d->selecting && !isFlag( LBF_MOVEOVER_SELECT ))
+                          {
+                            _IndexChanged( OC3_LISTBOX_CHANGED );
+                          }
 
-              setSelected(current);
-							return true;
-						}
-					}
-				}
+                          setSelected(current);
+                                        return true;
+                        }
+                    }
+                }
 
-				return true;
-			}
+                return true;
+            }
 			break;
 
 		case OC3_GUI_EVENT:
 			switch(event.GuiEvent.EventType)
 			{
 			case OC3_SCROLL_BAR_CHANGED:
-        {
-          if (event.GuiEvent.Caller == _d->scrollBar)
-          {
-            _d->needItemsRepackTextures = true;
-			      return true;
-          }
-        }
-		  break;
+            {
+              if (event.GuiEvent.Caller == _d->scrollBar)
+              {
+                _d->needItemsRepackTextures = true;
+                      return true;
+              }
+            }
+            break;
 
-      case OC3_ELEMENT_FOCUSED:
-      //          CallScriptFunction( GUI_EVENT + NRP_ELEMENT_FOCUSED, this );
-      break;
+            case OC3_ELEMENT_FOCUSED:
+            //          CallScriptFunction( GUI_EVENT + NRP_ELEMENT_FOCUSED, this );
+            break;
 
 			case OC3_ELEMENT_FOCUS_LOST:
 				{
           //CallScriptFunction( GUI_EVENT + NRP_ELEMENT_FOCUS_LOST, this );
-					if (event.GuiEvent.Caller == this)
-          {
-              _d->selecting = false;
-          }
-				}
-      break;
+                  if (event.GuiEvent.Caller == this)
+                  {
+                      _d->selecting = false;
+                  }
+                }
+            break;
 
 			default:
 			break;
 			}
 			break;
 
-		case OC3_MOUSE_EVENT:
+            case OC3_MOUSE_EVENT:
 			{
 				Point p = event.MouseEvent.getPosition();
 
 				switch(event.MouseEvent.Event)
 				{
 				case OC3_MOUSE_WHEEL:
-          {
-            _d->scrollBar->setPos(_d->scrollBar->getPos() + (event.MouseEvent.Wheel < 0 ? -1 : 1) * (-_d->itemHeight/2));
-			      return true;
-          }
-        break;
+                  {
+                    _d->scrollBar->setPos(_d->scrollBar->getPos() + (event.MouseEvent.Wheel < 0 ? -1 : 1) * (-_d->itemHeight/2));
+                          return true;
+                  }
+                break;
 
 				case OC3_LMOUSE_PRESSED_DOWN:
 				  {
-            _d->dragEventSended = false;
-            _d->selecting = true;
+                    _d->dragEventSended = false;
+                    _d->selecting = true;
 
-            if (isPointInside(p) && isFlag( LBF_SELECT_ON_MOUSE_DOWN ) )
-            {
-              _SelectNew(event.MouseEvent.Y);
-            }
+                    if (isPointInside(p) && isFlag( LBF_SELECT_ON_MOUSE_DOWN ) )
+                    {
+                      _SelectNew(event.MouseEvent.Y);
+                    }
 
-					  return true;
+                    return true;
 				  }
-        break;
+            break;
 
-        case OC3_LMOUSE_LEFT_UP:
+            case OC3_LMOUSE_LEFT_UP:
 				  {
-            _d->selecting = false;
+                    _d->selecting = false;
 
-					  if (isPointInside(p) && !isFlag( LBF_SELECT_ON_MOUSE_DOWN ) )
-            {
-                _SelectNew(event.MouseEvent.Y);
-            }
+                              if (isPointInside(p) && !isFlag( LBF_SELECT_ON_MOUSE_DOWN ) )
+                    {
+                        _SelectNew(event.MouseEvent.Y);
+                    }
 
-					  return true;
+                    return true;
 				  }
-        break;
+            break;
 
-				case OC3_MOUSE_MOVED:
-          if( _d->selecting && isFlag( LBF_SELECT_ON_MOVE )/* || isFlag( LBF_MOVEOVER_SELECT )*/ )
-					{
-						if (isPointInside(p))
-						{
-              _SelectNew(event.MouseEvent.Y);
-							return true;
-						}
-					}
+            case OC3_MOUSE_MOVED:
+                if( _d->selecting && isFlag( LBF_SELECT_ON_MOVE )/* || isFlag( LBF_MOVEOVER_SELECT )*/ )
+                {
+                    if (isPointInside(p))
+                    {
+                        _SelectNew(event.MouseEvent.Y);
+                        return true;
+                    }
+                }
 
 //           if( _d->selecting && !_d->dragEventSended && !isPointInside(p) )
 //           {
@@ -459,13 +472,13 @@ bool ListBox::onEvent(const NEvent& event)
 //               _d->dragEventSended = true;
 //               return true;
 //           }
-        break;
+            break;
 
-				default:
-				break;
-				}
-			}
-			break;
+            default:
+            break;
+            }
+          }
+          break;
 		}
 	}
 
@@ -504,7 +517,7 @@ ElementState ListBox::_GetCurrentItemState( unsigned int index, bool hl )
 {
     if( _d->items[ index ].isEnabled() )
     {
-        if( hl && index == _d->selectedItemIndex )
+        if( hl && (int)index == _d->selectedItemIndex )
             return stChecked;
 
         if( (int)index == _d->hoveredItemIndex )
@@ -562,7 +575,7 @@ void ListBox::beforeDraw( GfxEngine& painter)
       bool hl = ( isFlag( LBF_HIGHLIGHTWHEN_NOTFOCUSED ) || isFocused() || _d->scrollBar->isFocused() );
       Rect frameRect = getItemTextRect_();
 
-      TypeAlign itemTextHorizontalAlign, itemTextVerticalAlign;
+      //TypeAlign itemTextHorizontalAlign, itemTextVerticalAlign;
       Font currentFont;
 
       for (int i=0; i<(int)_d->items.size(); ++i)
@@ -574,8 +587,8 @@ void ListBox::beforeDraw( GfxEngine& painter)
          {
            refItem.setState( _GetCurrentItemState( i, hl ) );
            
-           itemTextHorizontalAlign = refItem.isAlignEnabled() ? refItem.getHorizontalAlign() : getHorizontalTextAlign();
-           itemTextVerticalAlign = refItem.isAlignEnabled() ? refItem.getVerticalAlign() : getVerticalTextAlign();
+           //itemTextHorizontalAlign = refItem.isAlignEnabled() ? refItem.getHorizontalAlign() : getHorizontalTextAlign();
+           //itemTextVerticalAlign = refItem.isAlignEnabled() ? refItem.getVerticalAlign() : getVerticalTextAlign();
 
            Rect textRect = frameRect;
            textRect.UpperLeftCorner += Point( 3, 0 );

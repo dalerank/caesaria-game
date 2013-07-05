@@ -134,7 +134,7 @@ void City::timeStep()
     }
     catch(...)
     {
-      int o=0;
+      //int o=0;
       //volatile error here... WTF
     }
   }
@@ -161,7 +161,7 @@ void City::timeStep()
     }
     catch(...)
     {
-      int i=0;
+      //int i=0;
     }
   }
 
@@ -346,7 +346,7 @@ void City::disaster( const TilePos& pos, DisasterType type )
       rPos = overlay->getTile().getIJ();
     }
 
-    bool deleteRoad = false;
+    //bool deleteRoad = false;
 
     PtrTilesArea clearedTiles = _d->tilemap.getFilledRectangle( rPos, size );
     for( PtrTilesArea::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)

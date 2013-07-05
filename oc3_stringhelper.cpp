@@ -53,7 +53,7 @@ std::string StringHelper::format( unsigned int max_size, const char* fmt, ...)
   va_start(argument_list, fmt);
 
   std::string ret;
-  int length = formatString( ret, max_size, fmt, argument_list);
+  formatString( ret, max_size, fmt, argument_list);
 
   va_end(argument_list);
 
@@ -199,7 +199,7 @@ void StringHelper::debug( unsigned int max_size, const char* fmt, ... )
   va_start(argument_list, fmt);
 
   std::string ret;
-  int length = formatString( ret, max_size, fmt, argument_list);
+  formatString( ret, max_size, fmt, argument_list);
 
   va_end(argument_list);
 
@@ -225,7 +225,7 @@ unsigned int StringHelper::hash( unsigned int max_size, const char* fmt, ... )
   va_start(argument_list, fmt);
 
   std::string fmtStr;
-  int length = formatString( fmtStr, max_size, fmt, argument_list);
+  formatString( fmtStr, max_size, fmt, argument_list);
 
   va_end(argument_list);
 
@@ -239,7 +239,7 @@ StringArray StringHelper::split( const std::string& str, const std::string& spl,
   if(spl.empty())
     return ret;
 
-  const unsigned int oldSize=0;
+  //const unsigned int oldSize=0;
   unsigned int lastpos = 0;
   bool lastWasSeparator = false;
   for (unsigned int i=0; i<str.size(); ++i)
