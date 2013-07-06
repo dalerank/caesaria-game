@@ -93,7 +93,7 @@ City::City() : _d( new Impl )
   _d->funds = 1000;
   _d->population = 0;
   _d->needRecomputeAllRoads = false;
-  _d->taxRate = 700;
+  _d->taxRate = 7;
   _d->walkerIdCount = 0;
   _d->climate = C_CENTRAL;
 

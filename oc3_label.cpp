@@ -18,6 +18,7 @@
 #include "oc3_gfx_engine.hpp"
 #include "oc3_gui_paneling.hpp"
 #include "oc3_pictureconverter.hpp"
+#include "oc3_color.hpp"
 
 using namespace std;
 
@@ -107,7 +108,8 @@ void Label::_updateTexture( GfxEngine& painter )
     // draw button background
     if( _d->bgPicture )
     {
-        _d->picture->draw( *_d->bgPicture, _d->bgOffset.getX(), _d->bgOffset.getY() );
+      _d->picture->draw( *_d->bgPicture, _d->bgOffset.getX(), _d->bgOffset.getY() );
+      //_d->picture->fill( 0xffcdcdcd, Rect( 0, 0, 0, 0) );
     }    
     else
     {

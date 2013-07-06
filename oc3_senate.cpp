@@ -28,9 +28,10 @@ public:
   int taxInLastMonth;
 };
 
-Senate::Senate() : ServiceBuilding( S_SENATE, B_SENATE, Size(5) )
+Senate::Senate() : ServiceBuilding( S_SENATE, B_SENATE, Size(5) ), _d( new Impl )
 {
   setPicture( Picture::load( ResourceGroup::govt, 4) );
+  _d->taxInLastMonth = 0;
 }
 
 bool Senate::canBuild( const TilePos& pos ) const
