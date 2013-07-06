@@ -82,18 +82,12 @@ public:
 
     bool isValid() const;
 
-    bool operator > ( const DateTime& other ) const;
-
-    bool operator >= ( const DateTime& other ) const;
-
-    bool operator < ( const DateTime& other );
-
-    bool operator <= ( const DateTime& other );
-
-    bool operator == ( const DateTime& other );
-    bool operator == ( const DateTime& other ) const;
-
-    bool operator != ( const DateTime& other );
+    bool operator>( const DateTime& other ) const;
+    bool operator>=( const DateTime& other ) const;
+    bool operator<( const DateTime& other ) const;
+    bool operator<=( const DateTime& other ) const;
+    bool operator==( const DateTime& other ) const;
+    bool operator!=( const DateTime& other ) const;
 
     static DateTime getCurrenTime();
     static unsigned int getElapsedTime();

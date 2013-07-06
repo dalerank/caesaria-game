@@ -13,27 +13,28 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_SENATE_H_INCLUDED_
-#define __OPENCAESAR3_SENATE_H_INCLUDED_
+#ifndef __OPENCAESAR3_TAXCOLLECTOR_H_INCLUDED__
+#define __OPENCAESAR3_TAXCOLLECTOR_H_INCLUDED__
 
-#include "oc3_service_building.hpp"
-#include "oc3_scopedptr.hpp"
+#include "oc3_walker_service.hpp"
 
-class Senate : public ServiceBuilding
+class TaxCollector;
+typedef SmartPtr< TaxCollector > TaxCollectorPtr;
+
+class TaxCollector : public ServiceWalker
 {
 public:
-  Senate();
-  unsigned int getFunds() const;
+  static TaxCollectorPtr create( CityPtr city );
+  void onMidTile();
 
-  int collectTaxes();
-  int getPeoplesReached() const;
+  int getMoney() const;
+  int getCitizensReachedCount() const;
 
-  void deliverService();
-
-  bool canBuild( const TilePos& pos )const;
 private:
+  TaxCollector( CityPtr city );
+
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#endif
+#endif //__OPENCAESAR3_TAXCOLLECTOR_H_INCLUDED__

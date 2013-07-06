@@ -332,7 +332,7 @@ void BuildMenu_farm::initialize()
   addBuildButton(B_WHEAT_FARM);
   addBuildButton(B_FRUIT);
   addBuildButton(B_OLIVE);
-  addBuildButton(B_GRAPE);
+  addBuildButton(B_GRAPE_FARM);
   addBuildButton(B_MEAT);
   addBuildButton(B_VEGETABLE);
 

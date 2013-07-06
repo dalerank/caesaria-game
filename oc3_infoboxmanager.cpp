@@ -127,7 +127,7 @@ InfoBoxManager::InfoBoxManager() : _d( new Impl )
   addCreator( B_FOUNTAIN, OC3_STR_EXT(B_FOUNTAIN), new ServiceBaseInfoboxCreator( "##fontaun_title##", "##fontaun_text##" ) );
   addCreator( B_MARKET, OC3_STR_EXT(B_MARKET), new BaseInfoboxCreator<GuiInfoMarket>() );
   addCreator( B_GRANARY, OC3_STR_EXT(B_GRANARY), new BaseInfoboxCreator<GuiInfoGranary>() );
-  addCreator( B_GRAPE, OC3_STR_EXT(B_GRAPE), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
+  addCreator( B_GRAPE_FARM, OC3_STR_EXT(B_GRAPE_FARM), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
   addCreator( B_WHEAT_FARM, OC3_STR_EXT(B_WHEAT_FARM), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
   addCreator( B_OLIVE, OC3_STR_EXT(B_OLIVE), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
   addCreator( B_FRUIT, OC3_STR_EXT(B_FRUIT), new BaseInfoboxCreator<InfoBoxRawMaterial>() );

@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_WALKER_PREFECT_H_INCLUDED__
 #define __OPENCAESAR3_WALKER_PREFECT_H_INCLUDED__
 
-#include "oc3_servicewalker.hpp"
+#include "oc3_walker_service.hpp"
 #include "oc3_prefecture.hpp"
 
 class WalkerPrefect;

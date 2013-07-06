@@ -22,7 +22,7 @@
 #include "oc3_gui_info_box.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_exception.hpp"
-#include "oc3_workerhunter.hpp"
+#include "oc3_walker_workerhunter.hpp"
 #include "oc3_immigrant.hpp"
 #include "oc3_market.hpp"
 #include "oc3_constructionmanager.hpp"
@@ -44,11 +44,25 @@ public:
   int currentHabitants;
   int maxHabitants;
   int freeWorkersCount;
+  DateTime lastPayDate;
+
+  bool mayPayTax()
+  {
+    DateTime currentDate = Scenario::instance().getCity()->getDate();
+
+    return lastPayDate.getMonthToDate( currentDate ) > 0;
+  }
+
+  int getAvailableTax()
+  {
+    return houseLevelSpec.getTaxRate() * currentHabitants; 
+  }
 };
 
 House::House(const int houseId) : Building( B_HOUSE ), _d( new Impl )
 {
    _d->houseId = houseId;
+   _d->lastPayDate = DateTime( -400, 1, 1 );
    _d->picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
    _d->freeWorkersCount = 0;
    HouseSpecHelper& helper = HouseSpecHelper::getInstance();
@@ -405,18 +419,24 @@ void House::applyService( ServiceWalkerPtr walker )
   case S_AMPHITHEATER:
   case S_COLLOSSEUM:
   case S_HIPPODROME:
-  case S_FORUM:
     setServiceAccess(service, 100);
-    break;
+  break;
+  
   case S_MARKET:
     buyMarket(walker);
-    break;
+  break;
+ 
   case S_SENATE:
+  case S_FORUM:
+    setServiceAccess(service, 100);
+  break;
+
   case S_TEMPLE_ORACLE:  
   case S_ENGINEER:
   case S_PREFECT:
   case S_MAX:
-    break;
+  break;
+
   case S_WORKERS_HUNTER:
     {
       if( !_d->freeWorkersCount )
@@ -449,16 +469,13 @@ float House::evaluateService(ServiceWalkerPtr walker)
 
   switch(service)
   {
-  case S_ENGINEER:
-  {
-     res = _damageLevel;
-  }
-  break;
-  
-  case S_PREFECT:
-  {
-    res = _fireLevel;
-  }
+  case S_ENGINEER: res = _damageLevel; break;
+  case S_PREFECT: res = _fireLevel; break;
+
+  // this house pays taxes
+  case S_FORUM: 
+  case S_SENATE:
+    res = _d->mayPayTax() ? _d->getAvailableTax() : 0;
   break;
 
   case S_MARKET:
@@ -524,17 +541,6 @@ int House::getNbHabitants()
 int House::getMaxHabitants()
 {
    return _d->maxHabitants;
-}
-
-int House::collectTaxes()
-{
-   int res = 0;
-   if (_d->serviceAccessMap[S_FORUM] > 0)
-   {
-      // this house pays taxes
-      res = _d->houseLevelSpec.getTaxRate() * _d->currentHabitants;
-   }
-   return res;
 }
 
 void House::_update()
@@ -685,4 +691,10 @@ int House::getScholars() const
   {
     return _d->currentHabitants / 5;
   }
+}
+
+int House::collectTaxes()
+{
+  _d->lastPayDate = Scenario::instance().getCity()->getDate();
+  return _d->getAvailableTax();
 }

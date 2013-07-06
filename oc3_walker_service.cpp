@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_servicewalker.hpp"
+#include "oc3_walker_service.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_city.hpp"
@@ -48,13 +48,13 @@ void ServiceWalker::init(const ServiceType service)
   {
   case S_WELL:
   case S_FOUNTAIN:
-  case S_SENATE:
   case S_TEMPLE_ORACLE:
     _walkerGraphic = WG_NONE;
-    break;
+  break;
+  
   case S_ENGINEER:
     _walkerGraphic = WG_ENGINEER;
-    break;
+  break;
 
   case S_TEMPLE_NEPTUNE:
   case S_TEMPLE_CERES:
@@ -62,36 +62,45 @@ void ServiceWalker::init(const ServiceType service)
   case S_TEMPLE_MARS:
   case S_TEMPLE_MERCURE:
     _walkerGraphic = WG_PRIEST;
-    break;
+  break;
+  
   case S_DOCTOR:
   case S_HOSPITAL:
     _walkerGraphic = WG_DOCTOR;
-    break;
+  break;
+  
   case S_BARBER:
     _walkerGraphic = WG_BARBER;
-    break;
+  break;
+  
   case S_BATHS:
     _walkerGraphic = WG_BATH;
-    break;
+  break;
+  
   case S_SCHOOL:
     _walkerGraphic = WG_CHILD;
-    break;
+  break;
+  
   case S_LIBRARY:
   case S_COLLEGE:
     _walkerGraphic = WG_LIBRARIAN;
-    break;
+  break;
+  
   case S_THEATER:
   case S_AMPHITHEATER:
   case S_HIPPODROME:
   case S_COLLOSSEUM:
     _walkerGraphic = WG_ACTOR;
-    break;
+  break;
+  
   case S_MARKET:
     _walkerGraphic = WG_MARKETLADY;
-    break;
+  break;
+
   case S_FORUM:
+  case S_SENATE:
     _walkerGraphic = WG_TAX;
-    break;
+  break;
 
   default:
   break;
@@ -228,7 +237,9 @@ void ServiceWalker::send2City( BuildingPtr base )
   computeWalkerPath();
 
   if( !isDeleted() )
+  {
     _d->city->addWalker( WalkerPtr( this ));
+  }
 }
 
 void ServiceWalker::onNewTile()

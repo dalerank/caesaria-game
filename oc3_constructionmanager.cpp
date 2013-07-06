@@ -41,6 +41,7 @@
 #include "oc3_goverment_building.hpp"
 #include "oc3_military_building.hpp"
 #include "oc3_academy.hpp"
+#include "oc3_forum.hpp"
 #include "oc3_garden.hpp"
 
 #include <map>
@@ -122,7 +123,7 @@ ConstructionManager::ConstructionManager() : _d( new Impl )
   // farms
   addCreator(B_WHEAT_FARM, OC3_STR_EXT(B_WHEAT_FARM)    , new BuildingCreator<FarmWheat>() );
   addCreator(B_OLIVE, OC3_STR_EXT(B_OLIVE)    , new BuildingCreator<FarmOlive>() );
-  addCreator(B_GRAPE, OC3_STR_EXT(B_GRAPE)    , new BuildingCreator<FarmGrape>() );
+  addCreator(B_GRAPE_FARM, OC3_STR_EXT(B_GRAPE_FARM)    , new BuildingCreator<FarmGrape>() );
   addCreator(B_MEAT, OC3_STR_EXT(B_MEAT)     , new BuildingCreator<FarmMeat>() );
   addCreator(B_FRUIT, OC3_STR_EXT(B_FRUIT)    , new BuildingCreator<FarmFruit>() );
   addCreator(B_VEGETABLE, OC3_STR_EXT(B_VEGETABLE), new BuildingCreator<FarmVegetable>() );

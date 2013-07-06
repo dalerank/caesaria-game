@@ -132,10 +132,4 @@ public:
    Hospital();
 };
 
-class Forum : public ServiceBuilding
-{
-public:
-   Forum();
-};
-
 #endif

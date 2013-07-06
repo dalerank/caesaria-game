@@ -36,6 +36,7 @@ public:
   int maxHabitantsByTile;
   std::string levelName;
   std::string internalName;
+ 
   int taxRate;
 
   // required services

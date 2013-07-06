@@ -45,7 +45,7 @@ void CityBuildOptions::setIndustryAvaible( const BuildMenuType type, bool mayBui
   case BM_FARM:
     _d->rules[ B_OLIVE ] = mayBuild; _d->rules[ B_WHEAT_FARM ] = mayBuild;
     _d->rules[ B_FRUIT ] = mayBuild; _d->rules[ B_VEGETABLE ] = mayBuild;
-    _d->rules[ B_GRAPE ] = mayBuild; _d->rules[ B_MEAT ] = mayBuild;
+    _d->rules[ B_GRAPE_FARM ] = mayBuild; _d->rules[ B_MEAT ] = mayBuild;
   break;
 
   case BM_RAW_MATERIAL:

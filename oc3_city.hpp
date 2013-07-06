@@ -60,6 +60,9 @@ public:
   TilePos getBoatEntry() const;
   TilePos getBoatExit() const;
 
+  int getLastMonthTax() const;
+  int getLastMonthTaxpayer() const;
+
   TilePos getRoadEntry() const;
   
   void setCameraPos(const TilePos pos);

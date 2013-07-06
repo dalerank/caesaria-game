@@ -1,7 +1,7 @@
 #ifndef __OPENCAESAR3_SERVICEWALKERHELPER_H_INCLUDED__
 #define __OPENCAESAR3_SERVICEWALKERHELPER_H_INCLUDED__
 
-#include "oc3_servicewalker.hpp"
+#include "oc3_walker_service.hpp"
 
 class ServiceWalkerHelper
 {

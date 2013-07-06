@@ -22,6 +22,12 @@
 // govt 9  - advanced senate
 // govt 5 ~ 8 - senate flags
 
+class Senate::Impl
+{
+public:
+  int taxInLastMonth;
+};
+
 Senate::Senate() : ServiceBuilding( S_SENATE, B_SENATE, Size(5) )
 {
   setPicture( Picture::load( ResourceGroup::govt, 4) );
@@ -44,4 +50,19 @@ bool Senate::canBuild( const TilePos& pos ) const
 unsigned int Senate::getFunds() const
 {
   return Scenario::instance().getCity()->getFunds();
+}
+
+int Senate::collectTaxes()
+{
+  return 0;
+}
+
+int Senate::getPeoplesReached() const
+{
+  return 0;
+}
+
+void Senate::deliverService()
+{
+  //???
 }

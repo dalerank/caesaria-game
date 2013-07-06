@@ -985,7 +985,7 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
       name.assign( _("##farm_title_olive##") );
       goodType = G_OLIVE;
       break;
-    case B_GRAPE:
+    case B_GRAPE_FARM:
       desc.assign( _("##farm_description_vine##") );
       name.assign( _("##farm_title_vine##") );
       goodType = G_GRAPE;

@@ -22,7 +22,7 @@
 
 #include "oc3_tile.hpp"
 #include "oc3_scenario.hpp"
-#include "oc3_servicewalker.hpp"
+#include "oc3_walker_service.hpp"
 #include "oc3_walker_market_buyer.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_gui_info_box.hpp"
@@ -267,9 +267,4 @@ Doctor::Doctor() : ServiceBuilding(S_DOCTOR, B_DOCTOR, Size(1))
 Hospital::Hospital() : ServiceBuilding(S_HOSPITAL, B_HOSPITAL, Size(3 ) )
 {
   setPicture( Picture::load( ResourceGroup::security, 44));
-}
-
-Forum::Forum() : ServiceBuilding(S_FORUM, B_FORUM, Size(2))
-{
-  setPicture( Picture::load( ResourceGroup::govt, 10));
 }

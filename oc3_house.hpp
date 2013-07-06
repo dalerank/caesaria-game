@@ -15,9 +15,8 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
-#ifndef HOUSE_HPP
-#define HOUSE_HPP
+#ifndef __OPENCAESAR3_HOUSE_H_INCLUDED__
+#define __OPENCAESAR3_HOUSE_H_INCLUDED__
 
 #include "oc3_building.hpp"
 #include "oc3_scopedptr.hpp"
@@ -63,7 +62,8 @@ public:
    int getNbHabitants();
    int getMaxHabitants();
    void addHabitants( const int newHabitCount );
-   int collectTaxes();  // compute the tax level for this house, called once per month
+
+   int collectTaxes();
 
    int getMaxDistance2Road() const; 
 
@@ -71,7 +71,6 @@ public:
 
 private:
 
- 
    void _update();
 
 private:
@@ -88,4 +87,4 @@ inline bool operator<(HousePtr v1, HousePtr v2)
   return v1.object() < v2.object();
 }
 
-#endif
+#endif //__OPENCAESAR3_HOUSE_H_INCLUDED__

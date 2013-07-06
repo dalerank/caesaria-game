@@ -173,7 +173,7 @@ FarmOlive::FarmOlive() : Farm(G_OLIVE, B_OLIVE)
 {
 }
 
-FarmGrape::FarmGrape() : Farm(G_GRAPE, B_GRAPE)
+FarmGrape::FarmGrape() : Farm(G_GRAPE, B_GRAPE_FARM)
 {
 }
 

@@ -42,7 +42,8 @@
 #include "oc3_build_options.hpp"
 #include "oc3_house.hpp"
 #include "oc3_tilemap.hpp"
-
+#include "oc3_forum.hpp"
+#include "oc3_senate.hpp"
 #include <set>
 
 typedef std::vector< CityServicePtr > CityServices;
@@ -60,6 +61,8 @@ public:
   CityServices services;
   bool needRecomputeAllRoads;
   int taxRate;
+  int lastMonthTax;
+  int lastMonthTaxpayer;
   DateTime date;  // number of timesteps since start
   TilePos roadExit;
   Tilemap tilemap;
@@ -435,18 +438,25 @@ void City::clearLand(const TilePos& pos  )
 void City::collectTaxes()
 {
   CityHelper hlp( this );
-  long taxes = 0;
+  _d->lastMonthTax = 0;
+  _d->lastMonthTaxpayer = 0;
   
-  std::list<HousePtr> houseList = hlp.getBuildings< House >(B_HOUSE);
-  for( std::list<HousePtr>::iterator itHouse = houseList.begin(); itHouse != houseList.end(); ++itHouse)
+  std::list<ForumPtr> forumsList = hlp.getBuildings< Forum >(B_HOUSE);
+  for( std::list<ForumPtr>::iterator it = forumsList.begin(); it != forumsList.end(); ++it)
   {
-    taxes += (*itHouse)->collectTaxes();
+    _d->lastMonthTaxpayer += (*it)->getPeoplesReached();
+    _d->lastMonthTax += (*it)->collectTaxes();
   }
 
-  _d->funds += taxes;
-  _d->onFundsChangedSignal.emit( _d->funds );
+  std::list<SenatePtr> senates = hlp.getBuildings< Senate >( B_SENATE );
+  for( std::list<SenatePtr>::iterator it = senates.begin(); it != senates.end(); ++it)
+  {
+    _d->lastMonthTaxpayer += (*it)->getPeoplesReached();
+    _d->lastMonthTax += (*it)->collectTaxes();
+  }
 
-  std::cout << "Monthly Taxes=" << taxes << std::endl;
+  _d->funds += _d->lastMonthTax;
+  _d->onFundsChangedSignal.emit( _d->funds );
 }
 
 void City::_calculatePopulation()
@@ -654,4 +664,14 @@ CityPtr City::create()
 LandOverlayPtr City::getOverlay( const TilePos& pos ) const
 {
   return _d->tilemap.at( pos ).getTerrain().getOverlay();
+}
+
+int City::getLastMonthTax() const
+{
+  return _d->lastMonthTax;
+}
+
+int City::getLastMonthTaxpayer() const
+{
+  return _d->lastMonthTaxpayer;
 }

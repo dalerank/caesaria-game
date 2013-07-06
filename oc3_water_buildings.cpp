@@ -25,7 +25,7 @@
 #include "oc3_safetycast.hpp"
 #include "oc3_road.hpp"
 #include "oc3_tile.hpp"
-#include "oc3_servicewalker.hpp"
+#include "oc3_walker_service.hpp"
 
 Aqueduct::Aqueduct() : WaterSource( B_AQUEDUCT, Size(1) )
 {

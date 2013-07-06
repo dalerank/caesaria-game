@@ -1,9 +1,24 @@
+// This file is part of openCaesar3.
+//
+// openCaesar3 is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// openCaesar3 is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+
 #include "oc3_cityservice_workershire.hpp"
 #include "oc3_city.hpp"
 #include "oc3_safetycast.hpp"
 #include "oc3_buildingengineer.hpp"
 #include "oc3_prefecture.hpp"
-#include "oc3_workerhunter.hpp"
+#include "oc3_walker_workerhunter.hpp"
 
 #include <map>
 
@@ -35,12 +50,13 @@ CityServiceWorkersHire::CityServiceWorkersHire( CityPtr city )
   _d->priorities[ 2 ] = B_ENGINEER_POST;
   _d->priorities[ 3 ] = B_CLAY_PIT;
   _d->priorities[ 4 ] = B_WHEAT_FARM;
-  _d->priorities[ 5 ] = B_GRAPE;
+  _d->priorities[ 5 ] = B_GRAPE_FARM;
   _d->priorities[ 6 ] = B_GRANARY;
   _d->priorities[ 7 ] = B_IRON_MINE;
   _d->priorities[ 8 ] = B_TEMPLE_CERES;
   _d->priorities[ 9 ] = B_POTTERY;
   _d->priorities[ 10 ] = B_WAREHOUSE;  
+  _d->priorities[ 11 ] = B_FORUM;
 }
 
 bool CityServiceWorkersHire::_haveHr( WorkingBuildingPtr building )

@@ -25,14 +25,18 @@
 class CityParameters
 {
 public:
+  DateTime date;
   int population;
   int funds;
-  CityPtr city;
+  int tax;
+  int taxpayes;
 
   CityParameters()
   {
     population = 0;
     funds = 0;
+    tax = 0;
+    taxpayes = 0;
   }
 };
 
@@ -75,5 +79,8 @@ void CityServiceInfo::update( const unsigned int time )
     CityParameters& last = _d->params.back();
     last.population = _d->city->getPopulation();
     last.funds = _d->city->getFunds();    
+    last.tax = _d->city->getLastMonthTax();
+    last.taxpayes = _d->city->getLastMonthTaxpayer();  
+
   }
 }

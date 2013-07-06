@@ -13,29 +13,26 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_WORKERSHUNTER_H_INCLUDE_
-#define __OPENCAESAR3_WORKERSHUNTER_H_INCLUDE_
+#ifndef __OPENCAESAR3_FORUM_H_INCLUDED__
+#define __OPENCAESAR3_FORUM_H_INCLUDED__
 
-#include "oc3_servicewalker.hpp"
+#include "oc3_service_building.hpp"
+#include "oc3_scopedptr.hpp"
 
-class WorkersHunter;
-typedef SmartPtr<WorkersHunter> WorkersHunterPtr;
-
-class WorkersHunter : public ServiceWalker
+class Forum : public ServiceBuilding
 {
 public:
-  static WorkersHunterPtr create( CityPtr city );
+  Forum();
 
-  int getWorkersNeeded() const;
-  void onNewTile();
-  void hireWorkers( const int workers );
-
-  void send2City( WorkingBuildingPtr building, const int workersNeeded );
+  int collectTaxes();
+  int getPeoplesReached() const;
+  
+  virtual void deliverService();
+  virtual void timeStep( const unsigned long time );
 
 private:
-  WorkersHunter( CityPtr city );
-
-  int _workersNeeded;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
-#endif//__OPENCAESAR3_WORKERSHUNTER_H_INCLUDE_
+#endif //__OPENCAESAR3_FORUM_H_INCLUDED__
