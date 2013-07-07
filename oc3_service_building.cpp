@@ -268,27 +268,3 @@ int College::getVisitorsNumber() const
 {
   return 100;
 }
-
-Baths::Baths() : ServiceBuilding(S_BATHS, B_BATHS, Size(2) )
-{
-  setPicture( Picture::load( ResourceGroup::security, 21));
-
-  _getAnimation().load( ResourceGroup::security, 22, 10);
-  _getAnimation().setOffset( Point( 23, 25 ) );
-  _fgPictures.resize(2);
-}
-
-Barber::Barber() : ServiceBuilding(S_BARBER, B_BARBER, Size(1))
-{
-  setPicture( Picture::load( ResourceGroup::security, 19));
-}
-
-Doctor::Doctor() : ServiceBuilding(S_DOCTOR, B_DOCTOR, Size(1))
-{
-  setPicture( Picture::load( ResourceGroup::security, 20));
-}
-
-Hospital::Hospital() : ServiceBuilding(S_HOSPITAL, B_HOSPITAL, Size(3 ) )
-{
-  setPicture( Picture::load( ResourceGroup::security, 44));
-}

@@ -124,6 +124,10 @@ InfoBoxManager::InfoBoxManager() : _d( new Impl )
   addCreator( B_PREFECTURE, OC3_STR_EXT(B_PREFECTURE), new ServiceBaseInfoboxCreator( "##prefecture_title##", "##prefecture_text##") );
   addCreator( B_ENGINEER_POST, OC3_STR_EXT(B_ENGINEER_POST), new ServiceBaseInfoboxCreator( "##engineering_post_title##", "##engineering_post_text##" ) ); 
   addCreator( B_WELL, OC3_STR_EXT(B_WELL), new ServiceBaseInfoboxCreator( "##well_title##", "##well_text##" ) );
+  addCreator( B_DOCTOR, OC3_STR_EXT(B_DOCTOR), new ServiceBaseInfoboxCreator( "##doctor_title##", "##doctor_text##" ) );
+  addCreator( B_BATHS, OC3_STR_EXT(B_BATHS), new ServiceBaseInfoboxCreator( "##baths_title##", "##baths_text##" ) );
+  addCreator( B_BARBER, OC3_STR_EXT(B_BARBER), new ServiceBaseInfoboxCreator( "##barber_title##", "##barber_text##" ) );
+  addCreator( B_HOSPITAL, OC3_STR_EXT(B_HOSPITAL), new ServiceBaseInfoboxCreator( "##hospital_title##", "##hospital_text##" ) );
   addCreator( B_FOUNTAIN, OC3_STR_EXT(B_FOUNTAIN), new ServiceBaseInfoboxCreator( "##fontaun_title##", "##fontaun_text##" ) );
   addCreator( B_MARKET, OC3_STR_EXT(B_MARKET), new BaseInfoboxCreator<GuiInfoMarket>() );
   addCreator( B_GRANARY, OC3_STR_EXT(B_GRANARY), new BaseInfoboxCreator<GuiInfoGranary>() );

@@ -43,6 +43,7 @@
 #include "oc3_academy.hpp"
 #include "oc3_forum.hpp"
 #include "oc3_garden.hpp"
+#include "oc3_health_buildings.hpp"
 
 #include <map>
 

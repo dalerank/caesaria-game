@@ -117,28 +117,4 @@ public:
    int getVisitorsNumber() const;
 };
 
-class Baths : public ServiceBuilding
-{
-public:
-   Baths();
-};
-
-class Barber : public ServiceBuilding
-{
-public:
-   Barber();
-};
-
-class Doctor : public ServiceBuilding
-{
-public:
-   Doctor();
-};
-
-class Hospital : public ServiceBuilding
-{
-public:
-   Hospital();
-};
-
 #endif
