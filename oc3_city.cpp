@@ -44,6 +44,7 @@
 #include "oc3_tilemap.hpp"
 #include "oc3_forum.hpp"
 #include "oc3_senate.hpp"
+#include "oc3_cityservice_culture.hpp"
 #include <set>
 
 typedef std::vector< CityServicePtr > CityServices;
@@ -103,6 +104,7 @@ City::City() : _d( new Impl )
   addService( CityServiceProsperity::create( this ) );
   addService( CityServiceShoreline::create( this ) );
   addService( CityServiceInfo::create( this ) );
+  addService( CityServiceCulture::create( this ) );
 }
 
 void City::timeStep()
@@ -650,7 +652,7 @@ CityBuildOptions& City::getBuildOptions()
 int City::getProsperity() const
 {
   CityServicePtr csPrsp = findService( "prosperity" );
-  return csPrsp.isValid() ? csPrsp.as<CityServiceProsperity>()->getProsperity() : 0;
+  return csPrsp.isValid() ? csPrsp.as<CityServiceProsperity>()->getValue() : 0;
 }
 
 CityPtr City::create()
@@ -674,4 +676,10 @@ int City::getLastMonthTax() const
 int City::getLastMonthTaxpayer() const
 {
   return _d->lastMonthTaxpayer;
+}
+
+int City::getCulture() const
+{
+  CityServicePtr csPrsp = findService( "culture" );
+  return csPrsp.isValid() ? csPrsp.as<CityServiceCulture>()->getValue() : 0;
 }

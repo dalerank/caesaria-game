@@ -162,7 +162,8 @@ bool AdvisorsWindow::onEvent( const NEvent& event )
 
   if( event.EventType == OC3_GUI_EVENT && event.GuiEvent.EventType == OC3_BUTTON_CLICKED )
   {
-    if( event.GuiEvent.Caller->getID() < ADV_COUNT )
+    int id = event.GuiEvent.Caller->getID();
+    if( id >= 0 && id < ADV_COUNT )
     {
       showAdvisor( (AdvisorType)event.GuiEvent.Caller->getID() );
     }

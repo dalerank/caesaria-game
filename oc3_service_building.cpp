@@ -180,8 +180,12 @@ void EntertainmentBuilding::deliverService()
    }
 }
 
+int EntertainmentBuilding::getVisitorsNumber() const
+{
+  return 0;
+}
 
-BuildingTheater::BuildingTheater() : EntertainmentBuilding(S_THEATER, B_THEATER, Size(2))
+Theater::Theater() : EntertainmentBuilding(S_THEATER, B_THEATER, Size(2))
 {
   setPicture( Picture::load( "entertainment", 13));
 
@@ -190,6 +194,11 @@ BuildingTheater::BuildingTheater() : EntertainmentBuilding(S_THEATER, B_THEATER,
   
    _fgPictures.resize(2);
    _fgPictures[0] = &Picture::load("entertainment", 35);
+}
+
+int Theater::getVisitorsNumber() const
+{
+  return 500;
 }
 
 BuildingAmphiTheater::BuildingAmphiTheater() : EntertainmentBuilding(S_AMPHITHEATER, B_AMPHITHEATER, Size(3))
@@ -235,14 +244,29 @@ School::School() : ServiceBuilding(S_SCHOOL, B_SCHOOL, Size(2))
   setPicture( Picture::load( ResourceGroup::commerce, 83));
 }
 
+int School::getVisitorsNumber() const
+{
+  return 75;
+}
+
 Library::Library() : ServiceBuilding(S_LIBRARY, B_LIBRARY, Size(2))
 {
   setPicture( Picture::load( ResourceGroup::commerce, 84));
 }
 
+int Library::getVisitorsNumber() const
+{
+  return 800;
+}
+
 College::College() : ServiceBuilding(S_COLLEGE, B_COLLEGE, Size(3))
 {
   setPicture( Picture::load( ResourceGroup::commerce, 85));
+}
+
+int College::getVisitorsNumber() const
+{
+  return 100;
 }
 
 Baths::Baths() : ServiceBuilding(S_BATHS, B_BATHS, Size(2) )

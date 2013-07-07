@@ -82,7 +82,7 @@ ConstructionManager& ConstructionManager::getInstance()
 ConstructionManager::ConstructionManager() : _d( new Impl )
 {
   // entertainment
-  addCreator( B_THEATER, OC3_STR_EXT(B_THEATER), new BuildingCreator<BuildingTheater>() );
+  addCreator( B_THEATER, OC3_STR_EXT(B_THEATER), new BuildingCreator<Theater>() );
   addCreator( B_AMPHITHEATER, OC3_STR_EXT(B_AMPHITHEATER), new BuildingCreator<BuildingAmphiTheater>() );
   addCreator( B_COLLOSSEUM, OC3_STR_EXT(B_COLLOSSEUM), new BuildingCreator<BuildingCollosseum>() );
   addCreator( B_ACTOR, OC3_STR_EXT(B_ACTOR), new BuildingCreator<BuildingActor>() );

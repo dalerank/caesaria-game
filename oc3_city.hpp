@@ -78,6 +78,7 @@ public:
 
   int getPopulation() const;
   int getProsperity() const;
+  int getCulture() const;
 
   Tilemap& getTilemap();
 

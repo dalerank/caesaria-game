@@ -63,12 +63,15 @@ public:
   EntertainmentBuilding( const ServiceType service, const BuildingType type,
                          const Size& size);
   virtual void deliverService();
+  virtual int getVisitorsNumber() const;
 };
 
-class BuildingTheater : public EntertainmentBuilding
+class Theater : public EntertainmentBuilding
 {
 public:
-   BuildingTheater();
+   Theater();
+
+   virtual int getVisitorsNumber() const; 
 };
 
 class BuildingAmphiTheater : public EntertainmentBuilding
@@ -94,18 +97,24 @@ class School : public ServiceBuilding
 {
 public:
    School();
+
+   int getVisitorsNumber() const;
 };
 
 class Library : public ServiceBuilding
 {
 public:
    Library();
+
+   int getVisitorsNumber() const;
 };
 
 class College : public ServiceBuilding
 {
 public:
    College();
+
+   int getVisitorsNumber() const;
 };
 
 class Baths : public ServiceBuilding

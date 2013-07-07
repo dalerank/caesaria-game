@@ -24,6 +24,8 @@ class Temple : public ServiceBuilding
 public:
   RomeDivinityPtr getDivinity() const;
 
+  virtual unsigned int getParishionerNumber() const = 0;
+
 protected:
   Temple( RomeDivinityPtr divinity, BuildingType type, int imgId, const Size& size );
 
@@ -38,12 +40,14 @@ class SmallTemple : public Temple
 {
 protected:
   SmallTemple( RomeDivinityPtr divinity, BuildingType type, int imgId );
+  virtual unsigned int getParishionerNumber() const;
 };
 
 class BigTemple : public Temple
 {
 protected:
-  BigTemple( RomeDivinityPtr divinity );
+  BigTemple( RomeDivinityPtr divinity, BuildingType type, int imgId );
+  virtual unsigned int getParishionerNumber() const;
 };
 
 class TempleCeres : public SmallTemple
@@ -52,64 +56,66 @@ public:
   TempleCeres();
 };
 
-class TempleNeptune : public ServiceBuilding
+class TempleNeptune : public SmallTemple
 {
 public:
   TempleNeptune();
 };
 
-class TempleMars : public ServiceBuilding
+class TempleMars : public SmallTemple
 {
 public:
   TempleMars();
 };
 
-class TempleVenus : public ServiceBuilding
+class TempleVenus : public SmallTemple
 {
 public:
   TempleVenus();
 };
 
-class TempleMercure : public ServiceBuilding
+class TempleMercure : public SmallTemple
 {
 public:
   TempleMercure();
 };
 
-class BigTempleCeres : public ServiceBuilding
+class BigTempleCeres : public BigTemple
 {
 public:
   BigTempleCeres();
 };
 
-class BigTempleNeptune : public ServiceBuilding
+class BigTempleNeptune : public BigTemple
 {
 public:
   BigTempleNeptune();
 };
 
-class BigTempleMars : public ServiceBuilding
+class BigTempleMars : public BigTemple
 {
 public:
   BigTempleMars();
 };
 
-class BigTempleVenus : public ServiceBuilding
+class BigTempleVenus : public BigTemple
 {
 public:
   BigTempleVenus();
 };
 
-class BigTempleMercure : public ServiceBuilding
+class BigTempleMercure : public BigTemple
 {
 public:
   BigTempleMercure();
+  virtual unsigned int getParishionerNumber() const;
 };
 
-class TempleOracle : public ServiceBuilding
+class TempleOracle : public Temple
 {
 public:
   TempleOracle();
+  virtual unsigned int getParishionerNumber() const;
 };
 
 

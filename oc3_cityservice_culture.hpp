@@ -13,14 +13,14 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_CITYSERVICE_PROSPERITY_H_INCLUDED__
-#define __OPENCAESAR3_CITYSERVICE_PROSPERITY_H_INCLUDED__
+#ifndef __OPENCAESAR3_CITYSERVICE_CULTURE_H_INCLUDED__
+#define __OPENCAESAR3_CITYSERVICE_CULTURE_H_INCLUDED__
 
 #include "oc3_cityservice.hpp"
 #include "oc3_scopedptr.hpp"
 #include "oc3_predefinitions.hpp"
 
-class CityServiceProsperity : public CityService
+class CityServiceCulture : public CityService
 {
 public:
   static CityServicePtr create( CityPtr city );
@@ -29,10 +29,10 @@ public:
   int getValue() const;
 
 private:
-  CityServiceProsperity( CityPtr city );
+  CityServiceCulture( CityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#endif //__OPENCAESAR3_CITYSERVICE_PROSPERITY_H_INCLUDED__
+#endif //__OPENCAESAR3_CITYSERVICE_CULTURE_H_INCLUDED__
