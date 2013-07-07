@@ -26,6 +26,7 @@
 #include "oc3_enums.hpp"
 #include "oc3_city.hpp"
 #include "oc3_house.hpp"
+#include "oc3_color.hpp"
 #include "oc3_texturedbutton.hpp"
 
 class AdvisorFinanceWindow::Impl
@@ -97,6 +98,8 @@ AdvisorFinanceWindow::AdvisorFinanceWindow( CityPtr city, Widget* parent, int id
   _d->drawReportRow( startPoint + offset, _("##Trade##"), 0, 0 );
   _d->drawReportRow( startPoint + offset * 2, _("##Donations"), 0, 0 );
   _d->drawReportRow( startPoint + offset * 3, _("##Debet##"), 0, 0 );
+  _d->background->fill( 0xff000000, Rect( startPoint + offset * 3 + Point( 200, 0 ), Size( 72, 1) ) );
+  _d->background->fill( 0xff000000, Rect( startPoint + offset * 3 + Point( 340, 0 ), Size( 72, 1) ) );
   
   startPoint += Point( 0, 6 );
   _d->drawReportRow( startPoint + offset * 4, _("##Import##"), 0, 0 );
@@ -106,6 +109,9 @@ AdvisorFinanceWindow::AdvisorFinanceWindow( CityPtr city, Widget* parent, int id
   _d->drawReportRow( startPoint + offset * 8, _("##Self salary##"), 0, 0 );
   _d->drawReportRow( startPoint + offset * 9, _("##Other##"), 0, 0 );
   _d->drawReportRow( startPoint + offset * 10, _("##Empire tax##"), 0, 0 );
+  _d->background->fill( 0xff000000, Rect( startPoint + offset * 10 + Point( 200, 0 ), Size( 72, 1) ) );
+  _d->background->fill( 0xff000000, Rect( startPoint + offset * 10 + Point( 340, 0 ), Size( 72, 1) ) );
+
   _d->drawReportRow( startPoint + offset * 11, _("##Credit##"), 0, 0 );
 
   startPoint += Point( 0, 6 );
