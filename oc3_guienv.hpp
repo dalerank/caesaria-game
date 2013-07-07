@@ -53,9 +53,7 @@ public:
 
   void clear();
    
-private:
-  Widget* createStandartTooltip_();
-    
+private:    
   void drawTooltip_( unsigned int time );
   void updateHoveredElement( const Point& mousePos);
   Widget* getNextWidget(bool reverse, bool group);

@@ -19,23 +19,7 @@
 
 #include "oc3_widget.hpp"
 
-//typedef core::Map< s32, f32 > OpacityMap;
-
-/*struct _OverrideColor
-{
-	Color color;
-	bool  enabled;
-
-	_OverrideColor( const Color& c, bool e)
-	{
-		color = c;
-		enabled = e;
-	}
-};*/
-
-//typedef core::Map< u32, _OverrideColor > ColorMap;
-
-class WidgetPrivate
+class Widget::Impl
 {
 public:
 	
@@ -44,8 +28,11 @@ public:
 	//ColorMap overrideColors;
 	//ElementStyle* style;
 
-    //! Pointer to the parent
-    Widget* parent;
+  //! maximum and minimum size of the element
+  Size maxSize, minSize;
+
+  //! Pointer to the parent
+  Widget* parent;
 
 	//! List of all children of this element
 	Widget::Widgets children;
@@ -71,7 +58,7 @@ public:
 
 	TypeAlign textHorzAlign, textVertAlign;
 
-    std::string internalName;
+  std::string internalName;
 };
 
 #endif

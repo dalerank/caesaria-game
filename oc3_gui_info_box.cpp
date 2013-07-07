@@ -80,8 +80,7 @@ GuiInfoBox::GuiInfoBox( Widget* parent, const Rect& rect, int id )
 }
 
 GuiInfoBox::~GuiInfoBox()
-{
-  
+{  
 }
 
 void GuiInfoBox::draw( GfxEngine& engine )

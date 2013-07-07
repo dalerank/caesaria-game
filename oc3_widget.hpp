@@ -25,11 +25,11 @@
 #include "oc3_alignment.hpp"
 #include "oc3_safetycast.hpp"
 #include "oc3_font.hpp"
+#include "oc3_smartptr.hpp"
 
 class GfxEngine;
 class GuiEnv;
 struct NEvent;
-class WidgetPrivate;
 
 class Widget : public virtual ReferenceCounted
 {
@@ -434,10 +434,8 @@ protected:
   // not virtual because needed in constructor
   void recalculateAbsolutePosition(bool recursive);	
 
-  std::auto_ptr< WidgetPrivate > _d;
-
-  //! maximum and minimum size of the element
-  Size _maxSize, _minSize;
+  class Impl;
+  ScopedPtr< Impl > _d;
 
   //! is visible?
   bool _isVisible;
@@ -477,6 +475,8 @@ protected:
      
   Widget* _eventHandler;
 };
+
+typedef SmartPtr< Widget > WidgetPtr;
 
 enum ElementState
 {

@@ -24,6 +24,7 @@ Doctor::Doctor() : ServiceBuilding(S_DOCTOR, B_DOCTOR, Size(1))
 
 Hospital::Hospital() : ServiceBuilding(S_HOSPITAL, B_HOSPITAL, Size(3 ) )
 {
+  setMaxWorkers( 30 );
   setPicture( Picture::load( ResourceGroup::security, 44));
 }
 
