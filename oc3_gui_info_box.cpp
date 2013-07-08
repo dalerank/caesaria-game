@@ -974,12 +974,12 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
       name.assign( _("##farm_title_wheat##") );
       goodType = G_WHEAT;
       break;
-    case B_FRUIT:
+    case B_FRUIT_FARM:
       desc.assign( _("##farm_description_fruit##") );
       name.assign( _("##farm_title_fruit##") );
       goodType = G_FRUIT;
       break;
-    case B_OLIVE:
+    case B_OLIVE_FARM:
       desc.assign( _("##farm_description_olive##") );
       name.assign( _("##farm_title_olive##") );
       goodType = G_OLIVE;
@@ -989,12 +989,12 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
       name.assign( _("##farm_title_vine##") );
       goodType = G_GRAPE;
       break;
-    case B_MEAT:
+    case B_PIG_FARM:
       desc.assign( _("##farm_description_meat##") );
       name.assign( _("##farm_title_meat##") );
       goodType = G_MEAT;
       break;
-    case B_VEGETABLE:
+    case B_VEGETABLE_FARM:
       desc.assign( _("##farm_description_vegetable##") );
       name.assign( _("##farm_title_vegetable##") );
       goodType = G_VEGETABLE;

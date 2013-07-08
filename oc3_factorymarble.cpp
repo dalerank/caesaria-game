@@ -18,7 +18,7 @@
 #include "oc3_scenario.hpp"
 #include "oc3_tile.hpp"
 
-FactoryMarble::FactoryMarble() : Factory(G_NONE, G_MARBLE, B_MARBLE, Size(2) )
+FactoryMarble::FactoryMarble() : Factory(G_NONE, G_MARBLE, B_MARBLE_QUARRY, Size(2) )
 {
   _setProductRate( 9.6f );
   setPicture( Picture::load( ResourceGroup::commerce, 43 ) );

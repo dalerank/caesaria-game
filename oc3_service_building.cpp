@@ -62,7 +62,7 @@ ServiceType ServiceBuilding::getService() const
 
 void ServiceBuilding::timeStep(const unsigned long time)
 {
-   Building::timeStep(time);   
+   WorkingBuilding::timeStep(time);   
 
    if (_d->serviceTimer == 0)
    {

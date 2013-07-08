@@ -25,57 +25,10 @@
 #include "oc3_predefinitions.hpp"
 #include "oc3_terraininfo.hpp"
 #include "oc3_positioni.hpp"
+#include "oc3_variant.hpp"
+#include "oc3_pathway.hpp"
 #include <list>
 
-class PathWay
-{
-public:
-  typedef enum { roadOnly=0, allTerrain } FindType;
-  PathWay();
-  PathWay( const PathWay &copy );
-  PathWay( const Tilemap& tmap, const TilePos& startPos, const TilePos& stopPos, 
-           FindType type=roadOnly );
-
-  void init( Tilemap &tilemap, Tile &origin );
-
-  int getLength() const;
-  const Tile& getOrigin() const;
-  const Tile& getDestination() const;
-  bool isReverse() const;
-  unsigned int getStep() const;
-
-  void begin();
-  void rbegin();
-  virtual DirectionType getNextDirection();
-  bool isDestination() const;
-
-  void setNextDirection(const DirectionType direction);
-  void setNextTile( const Tile& tile);
-  bool contains(Tile &tile);
-  ConstPtrTilesList& getAllTiles();
-
-  void prettyPrint() const;
-  void toggleDirection();
-
-  PathWay& operator=(const PathWay& other );
- 
-  void load( const VariantMap& stream );
-  void save( VariantMap& stream) const;
-private:
-   Tilemap const* _tilemap;
-   Tile const* _origin;
-   TilePos _destination;
-
-   typedef std::vector<DirectionType> Directions;
-   Directions _directionList;
-   Directions::iterator _directionIt;
-   Directions::reverse_iterator _directionIt_reverse;
-   ConstPtrTilesList _tileList;
-   bool _isReverse;
-};
-bool operator<(const PathWay &v1, const PathWay &v2);
-
-class City;
 class Propagator
 {
 public:

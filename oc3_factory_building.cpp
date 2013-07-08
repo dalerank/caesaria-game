@@ -215,7 +215,7 @@ GoodType Factory::getOutGoodType() const
   return _d->outGoodType;
 }
 
-TimberLogger::TimberLogger() : Factory(G_NONE, G_TIMBER, B_TIMBER, Size(2) )
+TimberLogger::TimberLogger() : Factory(G_NONE, G_TIMBER, B_TIMBER_YARD, Size(2) )
 {
   _setProductRate( 9.6f );
   setPicture( Picture::load(ResourceGroup::commerce, 72) );
@@ -269,7 +269,7 @@ bool IronMine::canBuild(const TilePos& pos ) const
   return (is_constructible && near_mountain);
 }
 
-WeaponsWorkshop::WeaponsWorkshop() : Factory(G_IRON, G_WEAPON, B_WEAPON, Size(2) )
+WeaponsWorkshop::WeaponsWorkshop() : Factory(G_IRON, G_WEAPON, B_WEAPONS_WORKSHOP, Size(2) )
 {
   setPicture( Picture::load(ResourceGroup::commerce, 108) );
 
@@ -285,7 +285,7 @@ FactoryFurniture::FactoryFurniture() : Factory(G_TIMBER, G_FURNITURE, B_FURNITUR
   _fgPictures.resize(2);
 }
 
-Winery::Winery() : Factory(G_GRAPE, G_WINE, B_WINE, Size(2) )
+Winery::Winery() : Factory(G_GRAPE, G_WINE, B_WINE_WORKSHOP, Size(2) )
 {
   setPicture( Picture::load(ResourceGroup::commerce, 86) );
 
@@ -293,7 +293,7 @@ Winery::Winery() : Factory(G_GRAPE, G_WINE, B_WINE, Size(2) )
   _fgPictures.resize(2);
 }
 
-FactoryOil::FactoryOil() : Factory(G_OLIVE, G_OIL, B_OIL, Size(2) )
+FactoryOil::FactoryOil() : Factory(G_OLIVE, G_OIL, B_OIL_WORKSHOP, Size(2) )
 {
   setPicture( Picture::load(ResourceGroup::commerce, 99) );
 

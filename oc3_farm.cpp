@@ -169,7 +169,7 @@ FarmWheat::FarmWheat() : Farm(G_WHEAT, B_WHEAT_FARM)
 {
 }
 
-FarmOlive::FarmOlive() : Farm(G_OLIVE, B_OLIVE)
+FarmOlive::FarmOlive() : Farm(G_OLIVE, B_OLIVE_FARM)
 {
 }
 
@@ -177,14 +177,14 @@ FarmGrape::FarmGrape() : Farm(G_GRAPE, B_GRAPE_FARM)
 {
 }
 
-FarmMeat::FarmMeat() : Farm(G_MEAT, B_MEAT)
+FarmMeat::FarmMeat() : Farm(G_MEAT, B_PIG_FARM)
 {
 }
 
-FarmFruit::FarmFruit() : Farm(G_FRUIT, B_FRUIT)
+FarmFruit::FarmFruit() : Farm(G_FRUIT, B_FRUIT_FARM)
 {
 }
 
-FarmVegetable::FarmVegetable() : Farm(G_VEGETABLE, B_VEGETABLE)
+FarmVegetable::FarmVegetable() : Farm(G_VEGETABLE, B_VEGETABLE_FARM)
 {
 }

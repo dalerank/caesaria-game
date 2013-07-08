@@ -97,7 +97,7 @@ void WarehouseTile::computePicture()
    case G_POTTERY: picIdx = 76; break;
    case G_FISH: picIdx = 80; break;
    default:
-      THROW("Unexpected good type: " << _stock._goodType);
+     _OC3_DEBUG_BREAK_IF( _stock._goodType && "Unexpected good type: " );
    }
    if (_stock._goodType != G_NONE)
    {

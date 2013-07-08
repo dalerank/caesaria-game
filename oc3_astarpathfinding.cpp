@@ -158,8 +158,13 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos,
         // Get this point
         child = getPoint( current->getPos() + TilePos( x, y ) );
 
+        _OC3_DEBUG_BREAK_IF( !child );
+        if( !child )
+        {
+          continue;
+        }
         // If it's closed or not walkable then pass
-        if (child->closed || !child->isWalkable() )
+        if( child->closed || !child->isWalkable() )
         {
           continue;
         }

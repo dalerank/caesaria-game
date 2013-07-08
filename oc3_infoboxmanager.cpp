@@ -134,12 +134,11 @@ InfoBoxManager::InfoBoxManager() : _d( new Impl )
   addCreator( B_GRANARY, OC3_STR_EXT(B_GRANARY), new BaseInfoboxCreator<GuiInfoGranary>() );
   addCreator( B_GRAPE_FARM, OC3_STR_EXT(B_GRAPE_FARM), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
   addCreator( B_WHEAT_FARM, OC3_STR_EXT(B_WHEAT_FARM), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
-  addCreator( B_OLIVE, OC3_STR_EXT(B_OLIVE), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
-  addCreator( B_FRUIT, OC3_STR_EXT(B_FRUIT), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
+  addCreator( B_VEGETABLE_FARM, OC3_STR_EXT(B_VEGETABLE_FARM), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
+  addCreator( B_OLIVE_FARM, OC3_STR_EXT(B_OLIVE_FARM), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
+  addCreator( B_FRUIT_FARM, OC3_STR_EXT(B_FRUIT_FARM), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
   addCreator( B_WAREHOUSE, OC3_STR_EXT(B_WAREHOUSE), new BaseInfoboxCreator<InfoBoxWarehouse>() );
-  addCreator( B_IRON_MINE, OC3_STR_EXT(B_IRON_MINE), new BaseInfoboxCreator<GuiInfoFactory>() );
-  addCreator( B_MEAT, OC3_STR_EXT(B_MEAT), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
-  addCreator( B_VEGETABLE, OC3_STR_EXT(B_VEGETABLE), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
+  addCreator( B_PIG_FARM, OC3_STR_EXT(B_PIG_FARM), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
   addCreator( B_TEMPLE_CERES, OC3_STR_EXT(B_TEMPLE_CERES), new BaseInfoboxCreator<InfoBoxTemple>() );
   addCreator( B_TEMPLE_MARS, OC3_STR_EXT(B_TEMPLE_MARS), new BaseInfoboxCreator<InfoBoxTemple>() );
   addCreator( B_TEMPLE_NEPTUNE, OC3_STR_EXT(B_TEMPLE_NEPTUNE), new BaseInfoboxCreator<InfoBoxTemple>() );
@@ -161,7 +160,13 @@ InfoBoxManager::InfoBoxManager() : _d( new Impl )
   addCreator( B_PLAZA, OC3_STR_EXT(B_PLAZA), new BaseInfoboxCreator<InfoBoxLand>() );
   addCreator( B_NONE, OC3_STR_EXT(B_NONE), new BaseInfoboxCreator<InfoBoxLand>() );
   addCreator( B_POTTERY, OC3_STR_EXT(B_POTTERY), new BaseInfoboxCreator<GuiInfoFactory>() );
+  addCreator( B_WEAPONS_WORKSHOP, OC3_STR_EXT(B_WEAPONS_WORKSHOP), new BaseInfoboxCreator<GuiInfoFactory>() );
   addCreator( B_CLAY_PIT, OC3_STR_EXT(B_CLAY_PIT), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
+  addCreator( B_TIMBER_YARD, OC3_STR_EXT(B_TIMBER_YARD), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
+  addCreator( B_MARBLE_QUARRY, OC3_STR_EXT(B_MARBLE_QUARRY), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
+  addCreator( B_IRON_MINE, OC3_STR_EXT(B_IRON_MINE), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
+  addCreator( B_WINE_WORKSHOP, OC3_STR_EXT(B_WINE_WORKSHOP), new BaseInfoboxCreator<GuiInfoFactory>() );
+  addCreator( B_OIL_WORKSHOP, OC3_STR_EXT(B_OIL_WORKSHOP), new BaseInfoboxCreator<GuiInfoFactory>() );
   addCreator( B_SENATE, OC3_STR_EXT(B_SENATE), new BaseInfoboxCreator<InfoBoxSenate>() );
   addCreator( B_THEATER, OC3_STR_EXT(B_THEATER), new ServiceBaseInfoboxCreator( _("##theater_title##"), _("##theater_text##")) );
   addCreator( B_ACTOR_COLONY, OC3_STR_EXT(B_ACTOR_COLONY), new ServiceBaseInfoboxCreator( _("##actor_colony_title##"), _("##actor_colony_text##")) );
@@ -175,6 +180,8 @@ InfoBoxManager::InfoBoxManager() : _d( new Impl )
   addCreator( B_GOVERNOR_HOUSE, OC3_STR_EXT(B_GOVERNOR_HOUSE), new ServiceBaseInfoboxCreator( _("##governor_house_title##"), _("##governonr_house_text##")) );
   addCreator( B_GOVERNOR_VILLA, OC3_STR_EXT(B_GOVERNOR_VILLA), new ServiceBaseInfoboxCreator( _("##governor_villa_title##"), _("##governonr_villa_text##")) );
   addCreator( B_GOVERNOR_PALACE, OC3_STR_EXT(B_GOVERNOR_PALACE), new ServiceBaseInfoboxCreator( _("##governor_palace_title##"), _("##governonr_palace_text##")) );
+  addCreator( B_HIGH_BRIDGE, OC3_STR_EXT(B_HIGH_BRIDGE), new InfoBoxBasicCreator( _("##high_bridge_title##"), _("##high_bridge_text##")) );
+  addCreator( B_LOW_BRIDGE, OC3_STR_EXT(B_LOW_BRIDGE), new InfoBoxBasicCreator( _("##low_bridge_title##"), _("##low_bridge_text##")) );
 }
 
 InfoBoxManager::~InfoBoxManager()

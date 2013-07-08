@@ -330,11 +330,11 @@ BuildMenu_commerce::BuildMenu_commerce( Widget* parent, const Rect& rectangle )
 void BuildMenu_farm::initialize()
 {
   addBuildButton(B_WHEAT_FARM);
-  addBuildButton(B_FRUIT);
-  addBuildButton(B_OLIVE);
+  addBuildButton(B_FRUIT_FARM);
+  addBuildButton(B_OLIVE_FARM);
   addBuildButton(B_GRAPE_FARM);
-  addBuildButton(B_MEAT);
-  addBuildButton(B_VEGETABLE);
+  addBuildButton(B_PIG_FARM);
+  addBuildButton(B_VEGETABLE_FARM);
 
   BuildMenu::initialize();
 }
@@ -347,9 +347,9 @@ BuildMenu_farm::BuildMenu_farm( Widget* parent, const Rect& rectangle )
 
 void BuildMenu_raw_factory::initialize()
 {
-  addBuildButton(B_MARBLE);
+  addBuildButton(B_MARBLE_QUARRY);
   addBuildButton(B_IRON_MINE);
-  addBuildButton(B_TIMBER);
+  addBuildButton(B_TIMBER_YARD);
   addBuildButton(B_CLAY_PIT);
 
   BuildMenu::initialize();
@@ -363,9 +363,9 @@ BuildMenu_raw_factory::BuildMenu_raw_factory( Widget* parent, const Rect& rectan
 
 void BuildMenu_factory::initialize()
 {
-  addBuildButton(B_WINE);
-  addBuildButton(B_OIL);
-  addBuildButton(B_WEAPON);
+  addBuildButton(B_WINE_WORKSHOP);
+  addBuildButton(B_OIL_WORKSHOP);
+  addBuildButton(B_WEAPONS_WORKSHOP);
   addBuildButton(B_FURNITURE);
   addBuildButton(B_POTTERY);
 

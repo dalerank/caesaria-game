@@ -646,6 +646,7 @@ void House::load( const VariantMap& stream )
     _d->serviceAccessMap[ type ] = serviceValue;
   }
 
+  Building::build( getTilePos() );
   _update();
 }
 

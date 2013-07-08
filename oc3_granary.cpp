@@ -36,23 +36,43 @@ public:
     setOrder( G_FISH, GoodOrders::none );
     setMaxQty( GranaryGoodStore::maxCapacity );
   }
+
+  // returns the reservationID if stock can be retrieved (else 0)
+  virtual long reserveStorage(GoodStock &stock)
+  {
+    return granary->getWorkers() > 0 ? SimpleGoodStore::reserveStorage( stock ) : 0;
+  }
+
+  virtual void store(GoodStock &stock, const int amount)
+  {
+    if( granary->getWorkers() == 0 )
+    {
+      return;
+    }
+    
+    SimpleGoodStore::store( stock, amount );
+  }
   
-  void setOrder( const GoodType type, const GoodOrders::Order order )
+  virtual void setOrder( const GoodType type, const GoodOrders::Order order )
   {
     SimpleGoodStore::setOrder( type, order );
     setMaxQty( type, (order == GoodOrders::reject || order == GoodOrders::none ) ? 0 : GranaryGoodStore::maxCapacity );
   }
+
+  Granary* granary;
 };
 
 class Granary::Impl
 {
 public:
-  SimpleGoodStore goodStore;
+  GranaryGoodStore goodStore;
   bool devastateThis;
 };
 
 Granary::Granary() : WorkingBuilding( B_GRANARY, Size(3) ), _d( new Impl )
 {
+  _d->goodStore.granary = this;
+
   setMaxWorkers(6);
   setWorkers(0);
 
