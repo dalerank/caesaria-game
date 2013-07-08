@@ -119,6 +119,7 @@ InfoBoxManagerPtr InfoBoxManager::create( GuiEnv* gui )
 
 InfoBoxManager::InfoBoxManager() : _d( new Impl )
 {
+
   addCreator( B_ROAD, OC3_STR_EXT(B_ROAD), new BaseInfoboxCreator<InfoBoxLand>() );
   addCreator( B_HOUSE, OC3_STR_EXT(B_HOUSE), new InfoBoxHouseCreator() );
   addCreator( B_PREFECTURE, OC3_STR_EXT(B_PREFECTURE), new ServiceBaseInfoboxCreator( "##prefecture_title##", "##prefecture_text##") );
@@ -162,6 +163,18 @@ InfoBoxManager::InfoBoxManager() : _d( new Impl )
   addCreator( B_POTTERY, OC3_STR_EXT(B_POTTERY), new BaseInfoboxCreator<GuiInfoFactory>() );
   addCreator( B_CLAY_PIT, OC3_STR_EXT(B_CLAY_PIT), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
   addCreator( B_SENATE, OC3_STR_EXT(B_SENATE), new BaseInfoboxCreator<InfoBoxSenate>() );
+  addCreator( B_THEATER, OC3_STR_EXT(B_THEATER), new ServiceBaseInfoboxCreator( _("##theater_title##"), _("##theater_text##")) );
+  addCreator( B_ACTOR_COLONY, OC3_STR_EXT(B_ACTOR_COLONY), new ServiceBaseInfoboxCreator( _("##actor_colony_title##"), _("##actor_colony_text##")) );
+  addCreator( B_AMPHITHEATER, OC3_STR_EXT(B_AMPHITHEATER), new ServiceBaseInfoboxCreator( _("##amphitheater_title##"), _("##amphitheater_text##")) );
+  addCreator( B_GLADIATOR_SCHOOL, OC3_STR_EXT(B_GLADIATOR_SCHOOL), new ServiceBaseInfoboxCreator( _("##gladiator_school_title##"), _("##gladiator_school_text##")) );
+  addCreator( B_COLLOSSEUM, OC3_STR_EXT(B_COLLOSSEUM), new ServiceBaseInfoboxCreator( _("##colloseum_title##"), _("##colloseum_text##")) );
+  addCreator( B_LION_HOUSE, OC3_STR_EXT(B_LION_HOUSE), new ServiceBaseInfoboxCreator( _("##lion_house_title##"), _("##lion_house_text##")) );
+  addCreator( B_HIPPODROME, OC3_STR_EXT(B_HIPPODROME), new ServiceBaseInfoboxCreator( _("##hippodrome_title##"), _("##hippodrome_text##")) );
+  addCreator( B_CHARIOT_MAKER, OC3_STR_EXT(B_CHARIOT_MAKER), new ServiceBaseInfoboxCreator( _("##chario_maker_title##"), _("##chario_maker_text##")) );
+  addCreator( B_FORUM, OC3_STR_EXT(B_FORUM), new ServiceBaseInfoboxCreator( _("##forum_title##"), _("##forum_text##")) );
+  addCreator( B_GOVERNOR_HOUSE, OC3_STR_EXT(B_GOVERNOR_HOUSE), new ServiceBaseInfoboxCreator( _("##governor_house_title##"), _("##governonr_house_text##")) );
+  addCreator( B_GOVERNOR_VILLA, OC3_STR_EXT(B_GOVERNOR_VILLA), new ServiceBaseInfoboxCreator( _("##governor_villa_title##"), _("##governonr_villa_text##")) );
+  addCreator( B_GOVERNOR_PALACE, OC3_STR_EXT(B_GOVERNOR_PALACE), new ServiceBaseInfoboxCreator( _("##governor_palace_title##"), _("##governonr_palace_text##")) );
 }
 
 InfoBoxManager::~InfoBoxManager()

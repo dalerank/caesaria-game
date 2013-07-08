@@ -86,10 +86,10 @@ ConstructionManager::ConstructionManager() : _d( new Impl )
   addCreator( B_THEATER, OC3_STR_EXT(B_THEATER), new BuildingCreator<Theater>() );
   addCreator( B_AMPHITHEATER, OC3_STR_EXT(B_AMPHITHEATER), new BuildingCreator<BuildingAmphiTheater>() );
   addCreator( B_COLLOSSEUM, OC3_STR_EXT(B_COLLOSSEUM), new BuildingCreator<BuildingCollosseum>() );
-  addCreator( B_ACTOR, OC3_STR_EXT(B_ACTOR), new BuildingCreator<BuildingActor>() );
-  addCreator( B_GLADIATOR, OC3_STR_EXT(B_GLADIATOR), new BuildingCreator<BuildingGladiator>() );
-  addCreator( B_LION, OC3_STR_EXT(B_LION), new BuildingCreator<BuildingLion>() );
-  addCreator( B_CHARIOT, OC3_STR_EXT(B_CHARIOT), new BuildingCreator<BuildingChariot>() );
+  addCreator( B_ACTOR_COLONY, OC3_STR_EXT(B_ACTOR_COLONY), new BuildingCreator<BuildingActor>() );
+  addCreator( B_GLADIATOR_SCHOOL, OC3_STR_EXT(B_GLADIATOR_SCHOOL), new BuildingCreator<BuildingGladiator>() );
+  addCreator( B_LION_HOUSE, OC3_STR_EXT(B_LION_HOUSE), new BuildingCreator<BuildingLion>() );
+  addCreator( B_CHARIOT_MAKER, OC3_STR_EXT(B_CHARIOT_MAKER), new BuildingCreator<BuildingChariot>() );
   addCreator( B_HIPPODROME, OC3_STR_EXT(B_HIPPODROME),new BuildingCreator<BuildingHippodrome>() );
   // road&house
   addCreator(B_HOUSE, OC3_STR_EXT(B_HOUSE), new BuildingCreator<House>() );

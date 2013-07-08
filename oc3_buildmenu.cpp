@@ -294,10 +294,10 @@ void BuildMenu_entertainment::initialize()
   addBuildButton(B_AMPHITHEATER);
   addBuildButton(B_COLLOSSEUM);
   addBuildButton(B_HIPPODROME);
-  addBuildButton(B_ACTOR);
-  addBuildButton(B_GLADIATOR);
-  addBuildButton(B_LION);
-  addBuildButton(B_CHARIOT);
+  addBuildButton(B_ACTOR_COLONY);
+  addBuildButton(B_GLADIATOR_SCHOOL);
+  addBuildButton(B_LION_HOUSE);
+  addBuildButton(B_CHARIOT_MAKER);
 
   BuildMenu::initialize();
 }
