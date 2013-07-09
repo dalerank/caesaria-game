@@ -58,7 +58,7 @@ endif()
 include(${CMAKE_ROOT}/Modules/FindPackageHandleStandardArgs.cmake)
 find_package_handle_standard_args(LibArchive
                                   REQUIRED_VARS LibArchive_LIBRARY LibArchive_INCLUDE_DIR
-                                  VERSION_VAR LibArchive_VERSION
+                                  LibArchive_VERSION
   )
 set(LibArchive_FOUND ${LIBARCHIVE_FOUND})
 unset(LIBARCHIVE_FOUND)

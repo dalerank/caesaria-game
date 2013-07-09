@@ -178,7 +178,7 @@ if(SDL_INCLUDE_DIR AND EXISTS "${SDL_INCLUDE_DIR}/SDL_version.h")
   unset(SDL_VERSION_PATCH)
 endif()
 
-include(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindPackageHandleStandardArgs.cmake)
 
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(SDL
                                   REQUIRED_VARS SDL_LIBRARY SDL_INCLUDE_DIR
