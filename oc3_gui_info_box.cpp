@@ -187,7 +187,7 @@ void GuiInfoService::drawWorkers( int paintY )
                                             _sd->building->getWorkers(), _sd->building->getMaxWorkers() );
 
   Font font = Font::create( FONT_2 );
-  font.draw( *_d->bgPicture, text, 16 + 42, paintY + 5 );
+  font.draw( *_d->bgPicture, text, 16 + 42, paintY + 5, false );
 }
 
 class InfoBoxSenate::Impl
@@ -220,13 +220,13 @@ void InfoBoxSenate::paint()
                                            _sd->senate->getWorkers(), _sd->senate->getMaxWorkers() );
 
   Font font = Font::create( FONT_2 );
-  font.draw( *_d->bgPicture, text, 16 + 42, paintY + 5 );
+  font.draw( *_d->bgPicture, text, 16 + 42, paintY + 5, false );
   
   pic = GoodHelper::getPicture( G_DENARIES );
   _d->bgPicture->draw(pic, 16, 35);
 
   std::string denariesStr = StringHelper::format( 0xff, "%s %d", _("##senate_save##"), _sd->senate->getFunds() );
-  font.draw( *_d->bgPicture, denariesStr, 16 + 42, 35 );
+  font.draw( *_d->bgPicture, denariesStr, 16 + 42, 35, false );
 
   new Label( this, Rect( 60, 215, 60 + 300, 215 + 24 ), _("##open_rating_adviser##") );
   
@@ -346,7 +346,7 @@ void InfoBoxHouse::drawGood(const GoodType &goodType, const int col, const int r
   _d->bgPicture->draw(pic, 31 + 100 * col, startY + 2 + 30 * row);
 
   std::string text = StringHelper::format( 0xff, "%d", qty);
-  font.draw( *_d->bgPicture, text, 61 + 100 * col, startY + 30 * row );
+  font.draw( *_d->bgPicture, text, 61 + 100 * col, startY + 30 * row, false );
 }
 
 GuiInfoFactory::GuiInfoFactory( Widget* parent, const Tile& tile)
@@ -368,7 +368,7 @@ void GuiInfoFactory::paint()
   int _paintY = _d->lbTitle->getBottom();
 
   std::string text = StringHelper::format( 0xff, _("Le travail est a %d%% termine."), progress );
-  font.draw(*_d->bgPicture, text, 32, _paintY);
+  font.draw(*_d->bgPicture, text, 32, _paintY, false );
   _paintY+=22;
 
   if( _building->getOutGoodType() != G_NONE )
@@ -387,7 +387,7 @@ void GuiInfoFactory::paint()
    
     text = StringHelper::format( 0xff, _("%s en stock: %d unites"), goodName.c_str(), amount );
     
-    font.draw( *_d->bgPicture, text, 32 + 25, _paintY);
+    font.draw( *_d->bgPicture, text, 32 + 25, _paintY, false);
   }
 
   GuiPaneling::instance().draw_black_frame( *_d->bgPicture, 16, 147, getWidth()-32, 62);
@@ -405,7 +405,7 @@ void GuiInfoFactory::drawWorkers( int paintY )
    std::string text = StringHelper::format( 0xff, _("%d employes (%d requis)"), _building->getWorkers(), _building->getMaxWorkers());
 
    Font font = Font::create( FONT_2 );
-   font.draw(*_d->bgPicture, text, 16+42, paintY+5 );
+   font.draw(*_d->bgPicture, text, 16+42, paintY+5, false );
 }
 
 
@@ -503,7 +503,7 @@ void GuiInfoGranary::paint()
   int maxQty = _gd->building->getGoodStore().getMaxQty();
   std::string desc = StringHelper::format( 0xff, _("%d unites en stock. Espace pour %d unites."), currentQty, maxQty-currentQty);
 
-  font.draw( *_d->bgPicture, desc, 16, _paintY+5 );
+  font.draw( *_d->bgPicture, desc, 16, _paintY+5, false );
   _paintY+=40;
 
   int _col2PaintY = _paintY;
@@ -530,7 +530,7 @@ void GuiInfoGranary::drawWorkers( int paintY )
    std::string text = StringHelper::format( 0xff, _("%d employers (%d requires)"), _gd->building->getWorkers(), _gd->building->getMaxWorkers());
 
    Font font = Font::create( FONT_2 );
-   font.draw(*_d->bgPicture, text, 16+42, paintY+5 );
+   font.draw(*_d->bgPicture, text, 16+42, paintY+5, false );
 }
 
 
@@ -546,7 +546,7 @@ void GuiInfoGranary::drawGood(const GoodType &goodType, int col, int& paintY)
   _d->bgPicture->draw(pic, (col == 0 ? 31 : 250), paintY);
 
   std::string outText = StringHelper::format( 0xff, "%d %s", qty, goodName.c_str() );
-  font.draw( *_d->bgPicture, outText, (col == 0 ? 61 : 280), paintY );
+  font.draw( *_d->bgPicture, outText, (col == 0 ? 61 : 280), paintY, false );
   paintY += 25;
 }
 
@@ -634,7 +634,7 @@ void InfoBoxWarehouse::drawWorkers()
   std::string text = StringHelper::format( 0xff, _("%d employers (%d requires)"), _wd->building->getWorkers(), _wd->building->getMaxWorkers());
 
   Font font = Font::create( FONT_2 );
-  font.draw(*_d->bgPicture, text, _wd->workerFramePos + Point( 40, 10 ) );
+  font.draw(*_d->bgPicture, text, _wd->workerFramePos + Point( 40, 10 ), false );
 }
 
 
@@ -650,7 +650,7 @@ void InfoBoxWarehouse::drawGood(const GoodType &goodType, int col, int& paintY)
   _d->bgPicture->draw(pic, col * 150 + 15, paintY);
 
   std::string outText = StringHelper::format( 0xff, "%d %s", qty, goodName.c_str() );
-  font.draw( *_d->bgPicture, outText, col * 150 + 45, paintY );
+  font.draw( *_d->bgPicture, outText, col * 150 + 45, paintY, false );
   paintY += 25;
 }
 
@@ -690,7 +690,7 @@ void InfoBoxTemple::drawWorkers()
                                                  _td->temple->getWorkers(), 
                                                  _td->temple->getMaxWorkers());
 
-  _td->font.draw( *_d->bgPicture, text, 16 + 15 + pic.getWidth() + 5, y+18 );
+  _td->font.draw( *_d->bgPicture, text, 16 + 15 + pic.getWidth() + 5, y+18, false );
 }
 
 void InfoBoxTemple::drawPicture()
@@ -778,7 +778,7 @@ void GuiInfoMarket::drawWorkers()
                                                    _md->market->getWorkers(), 
                                                    _md->market->getMaxWorkers());
 
-  _md->goodFont.draw(*_d->bgPicture, text, 16+42, y+18 );
+  _md->goodFont.draw(*_d->bgPicture, text, 16+42, y+18, false );
 }
 
 
@@ -795,7 +795,7 @@ void GuiInfoMarket::drawGood(const GoodType &goodType, int index, int paintY )
   _d->bgPicture->draw( pic, pos.getX(), pos.getY() );
 
   std::string outText = StringHelper::format( 0xff, "%d", _md->market->getGoodStore().getCurrentQty(goodType) );
-  _md->goodFont.draw(*_d->bgPicture, outText, pos.getX() + 30, pos.getY() );
+  _md->goodFont.draw(*_d->bgPicture, outText, pos.getX() + 30, pos.getY(), false );
 }
 
 class GuiBuilding::Impl
@@ -953,7 +953,7 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
                                            _fd->rawmb->getWorkers(), _fd->rawmb->getMaxWorkers() );
 
   Font font = Font::create( FONT_2 );
-  font.draw( *_d->bgPicture, text, 16+42, 158+5 );
+  font.draw( *_d->bgPicture, text, 16+42, 158+5, false );
 
   _fd->dmgLabel = new Label( this, Rect( 50, getHeight() - 50, getWidth() - 50, getHeight() - 16 ) ); 
   text = StringHelper::format( 0xff, "%d%% damage - %d%% fire", 

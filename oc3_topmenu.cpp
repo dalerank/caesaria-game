@@ -94,7 +94,6 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
   //_dateLabel.setTextPosition(20, 0);
 
   ContextMenuItem* tmp = ret->addItem( _("##gmenu_file##"), -1, true, true, false, false );
-  tmp->setBackgroundPicture( *ret->_d->bgPicture );
   ContextMenu* file = tmp->addSubMenu();
 
   ContextMenuItem* save = file->addItem( _("##gmenu_file_save##"), -1, true, false, false, false );
@@ -112,12 +111,8 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
   CONNECT( mainMenu, onClicked(), &ret->_d->onEndSignal, Signal0<>::emit );
 
   tmp = ret->addItem( _("##gmenu_options##"), -1, true, true, false, false );
-  tmp->setBackgroundPicture( *ret->_d->bgPicture, Point( -tmp->getLeft(), 0 ) );
-
   tmp = ret->addItem( _("##gmenu_help##"), -1, true, true, false, false );
-  tmp->setBackgroundPicture( *ret->_d->bgPicture, Point( -tmp->getLeft(), 0 ) );
   tmp = ret->addItem( _("##gmenu_advisors##"), -1, true, true, false, false );
-  tmp->setBackgroundPicture( *ret->_d->bgPicture, Point( -tmp->getLeft(), 0 ) );
   ContextMenu* advisersMenu = tmp->addSubMenu();
   advisersMenu->addItem( _("##adv_employments_m##"), ADV_EMPLOYERS );
   advisersMenu->addItem( _("##adv_military_m##"), ADV_LEGION );

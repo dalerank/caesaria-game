@@ -136,8 +136,6 @@ void ScreenMenu::initialize( GfxEngine& engine, GuiEnv& gui )
   _d->engine = &engine;
   _d->menu = new StartMenu( gui.getRootWidget() );
 
-  new Label( _d->menu, Rect( 200, 200, 300, 220), "Test text", false );
-
   PushButton* btn = _d->menu->addButton( _("##mainmenu_newgame##"), -1 );
   CONNECT( btn, onClicked(), _d.data(), Impl::resolveNewGame );
 

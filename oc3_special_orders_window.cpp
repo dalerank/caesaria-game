@@ -54,13 +54,14 @@ public:
     Picture goodIcon = GoodHelper::getPicture( _type );
     std::string goodName = GoodHelper::getName( _type );
     
-    Picture& texture = getPicture();
+    painter.drawPicture( goodIcon, getScreenLeft() + 15, getScreenTop() );
+    painter.drawPicture( goodIcon, getScreenLeft() + 390, getScreenTop() );
 
-    texture.draw( goodIcon, 15, 0);
-    texture.draw( goodIcon, 390, 0);
-
-    Font font = getFont();    
-    font.draw( texture, goodName, 55, 0 );   
+    if( getTextPicture() )
+    {
+      Font font = getFont();    
+      font.draw( *getTextPicture(), goodName, 55, 0 );   
+    }
   }
 
   void updateBtnText()

@@ -58,8 +58,8 @@ public:
   Rect calculateTextRect( const std::string& text, const Rect& baseRect, 
                           TypeAlign horizontalAlign, TypeAlign verticalAlign );
 
-  void draw(Picture &dstpic, const std::string &text, const int dx, const int dy);
-  void draw(Picture &dstpic, const std::string &text, const Point& pos );
+  void draw(Picture &dstpic, const std::string &text, const int dx, const int dy, bool useAlpha=true);
+  void draw(Picture &dstpic, const std::string &text, const Point& pos, bool useAlpha=true );
 
   unsigned int getWidthFromCharacter( char c ) const;
   int getCharacterFromPos(const std::string& text, int pixel_x) const;

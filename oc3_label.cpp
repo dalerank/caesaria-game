@@ -105,10 +105,13 @@ void Label::_updateTexture( GfxEngine& painter )
     _d->textPicture.reset( Picture::create( labelSize ) );  
   }
   
-
   if( !_d->textPicture )
   {
     _d->textPicture.reset( Picture::create( labelSize ) );
+  }
+
+  if( _d->textPicture )
+  {
     _d->textPicture->fill( 0x00ffffff, Rect( 0, 0, 0, 0) );
   }
 
@@ -612,7 +615,12 @@ void Label::setLineIntervalOffset( const int offset )
     _d->needUpdatePicture = true;
 }
 
-Picture& Label::getPicture()
+PictureRef& Label::getPicture()
 {
-  return *_d->background.data();
+  return _d->background;
+}
+
+PictureRef& Label::getTextPicture()
+{
+  return _d->textPicture;
 }

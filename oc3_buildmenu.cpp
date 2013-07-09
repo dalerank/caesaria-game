@@ -55,7 +55,7 @@ public:
         sprintf( buffer, "%d", _cost );
         Rect textRect = font.calculateTextRect( buffer, Rect( 0, 0, getWidth(), getHeight() ),
                                                 alignLowerRight, getVerticalTextAlign() );
-        font.draw( *_getPicture( state ), buffer, textRect.getLeft(), textRect.getTop() );
+        font.draw( *_getTextPicture( state ), buffer, textRect.getLeft(), textRect.getTop() );
     }
   }
 

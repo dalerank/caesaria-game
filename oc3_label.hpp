@@ -113,7 +113,8 @@ oc3_signals public:
 protected:
   virtual void resizeEvent_();
   virtual void _updateTexture( GfxEngine& painter );
-  Picture& getPicture();
+  PictureRef& getPicture();
+  PictureRef& getTextPicture();
 
 private:
 

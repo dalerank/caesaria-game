@@ -42,7 +42,7 @@ public:
   {
     PushButton::_updateTexture( state );
 
-    PictureRef& pic = _getPicture( state );
+    PictureRef& pic = _getBackground( state );
 
     Font font = Font::create( FONT_1_WHITE );
     font.draw( *pic, _title, 130, 2 );

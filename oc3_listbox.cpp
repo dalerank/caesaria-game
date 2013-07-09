@@ -600,7 +600,7 @@ void ListBox::beforeDraw( GfxEngine& painter)
 
            textRect.UpperLeftCorner += Point( _d->itemsIconWidth+3, 0 );
 
-           currentFont.draw( *_d->picture, refItem.getText(), textRect.getLeft(), textRect.getTop() - _d->scrollBar->getPos() );
+           currentFont.draw( *_d->picture, refItem.getText(), textRect.getLeft(), textRect.getTop() - _d->scrollBar->getPos(), false );
          }
 
          frameRect += Point( 0, _d->itemHeight );

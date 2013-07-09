@@ -203,18 +203,21 @@ void Font::setColor( const int dc )
   _d->color.unused = ( dc >> 24 ) & 0xff;
 }
 
-void Font::draw(Picture& dstpic, const std::string &text, const int dx, const int dy )
+void Font::draw(Picture& dstpic, const std::string &text, const int dx, const int dy, bool useAlpha )
 {
   if( !_d->ttfFont || !dstpic.isValid() )
     return;
 
   SDL_Surface* sText = TTF_RenderUTF8_Blended( _d->ttfFont, text.c_str(), _d->color );
   //_d->setSurfaceAlpha( sText, dstpic.getSurface(), _d->color.unused );  
+  if( sText && useAlpha )
+  {
+    SDL_SetAlpha( sText, 0, 0 );
+  }
 
   if( sText )
   {
     Picture pic;
-    SDL_SetAlpha( sText, 0, 0 );
     pic.init( sText, Point( 0, 0 ) );
     dstpic.draw( pic, dx, dy);
   }
@@ -222,9 +225,9 @@ void Font::draw(Picture& dstpic, const std::string &text, const int dx, const in
   SDL_FreeSurface( sText );
 }       
 
-void Font::draw( Picture &dstpic, const std::string &text, const Point& pos )
+void Font::draw( Picture &dstpic, const std::string &text, const Point& pos, bool useAlpha )
 {
-  draw( dstpic, text, pos.getX(), pos.getY() );
+  draw( dstpic, text, pos.getX(), pos.getY(), useAlpha );
 }
 
 Font::~Font()
