@@ -34,7 +34,7 @@ class ReligionInfoLabel : public Label
 public:
   ReligionInfoLabel( Widget* parent, const Rect& rect, RomeDivinityPtr divinity, 
                      int smallTempleCount, int bigTempleCount  )
-    : Label( parent, rect, "", false, true )
+    : Label( parent, rect )
   {
     _divinity = divinity;
     _smallTempleCount = smallTempleCount;

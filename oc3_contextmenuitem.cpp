@@ -18,7 +18,7 @@
 #include "oc3_contextmenu.hpp"
 
 ContextMenuItem::ContextMenuItem( ContextMenu* parent, const std::string& text ) 
-  : Label( parent, Rect( 0, 0, 1, 1 ), text, false, false, -1 ), _d( new Impl )
+  : Label( parent, Rect( 0, 0, 1, 1 ), text ), _d( new Impl )
 {
   _d->isSeparator = false;
   _d->subMenuAlignment = alignAuto;

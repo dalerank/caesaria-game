@@ -115,7 +115,10 @@ void GfxSdlEngine::loadPicture( Picture& ioPicture)
   SDL_Surface *newImage;
   newImage = SDL_DisplayFormatAlpha( ioPicture.getSurface() );
   SDL_FreeSurface(ioPicture.getSurface());
-  if (newImage == NULL) THROW("Cannot convert surface, maybe out of memory");
+  if (newImage == NULL) 
+  {
+    THROW("Cannot convert surface, maybe out of memory");
+  }
   ioPicture.init( newImage, ioPicture.getOffset() );
 }
 

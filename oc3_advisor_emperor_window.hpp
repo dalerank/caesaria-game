@@ -25,6 +25,7 @@ public:
   AdvisorEmperorWindow( Widget* parent, int id );
 
   void draw( GfxEngine& painter );
+  void showChangeSalaryWindow();
 
 private:
   class Impl;

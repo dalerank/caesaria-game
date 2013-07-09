@@ -18,19 +18,43 @@
 
 
 #include "oc3_player.hpp"
+#include "oc3_variant.hpp"
 
 
 Player::Player()
 {
-   _funds = 5000;
+   _funds = 0;
 }
 
 
-void Player::save( VariantMap& stream) const
+void Player::save( VariantMap& stream ) const
 {
+  stream[ "money" ] = _funds;
+  stream[ "name" ] = Variant( _name );
 }
 
 void Player::load( const VariantMap& stream )
 {
+  _funds = stream.get( "money" ).toInt();
+  _name = stream.get( "name" ).toString();
 }
 
+void Player::appendMoney( int money )
+{
+  _funds += money;
+}
+
+int Player::getMoney() const
+{
+  return _funds;
+}
+
+void Player::setName( const std::string& name )
+{
+  _name = name;
+}
+
+std::string Player::getName() const
+{
+  return _name;
+}

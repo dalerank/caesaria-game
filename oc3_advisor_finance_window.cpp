@@ -80,7 +80,7 @@ AdvisorFinanceWindow::AdvisorFinanceWindow( CityPtr city, Widget* parent, int id
   fontWhite.draw( *_d->background, moneyStr, 70, 55 );
   fontWhite.draw( *_d->background, _("##tax_rate##"), 65, 75 );
 
-  _d->lbTaxRateNow = new Label( this, Rect( 245, 75, 245 + 350, 75 + 20 ), "", false, true );
+  _d->lbTaxRateNow = new Label( this, Rect( 245, 75, 245 + 350, 75 + 20 ), "" );
   _d->lbTaxRateNow->setFont( fontWhite );
   _d->updateTaxRateNowLabel();
 

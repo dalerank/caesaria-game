@@ -34,7 +34,7 @@ class OrderGoodWidget : public Label
 {
 public:
   OrderGoodWidget( Widget* parent, const Rect& rect, GoodType good, T storageBuilding )
-    : Label( parent, rect, "", false, true )
+    : Label( parent, rect, "" )
   {
     _type = good;
     _storageBuilding = storageBuilding;

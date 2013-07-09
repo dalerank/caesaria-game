@@ -72,24 +72,21 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
   }
 
   Size lbSize( 120, 23 );
-  ret->_d->lbPopulation = new Label( ret, Rect( Point( ret->getWidth() - populationLabelOffset, 0 ), lbSize ),
-                                     "Pop 34,124", false, true, -1 );
+  ret->_d->lbPopulation = new Label( ret, Rect( Point( ret->getWidth() - populationLabelOffset, 0 ), lbSize ), "Pop 34,124" );
   ret->_d->lbPopulation->setBackgroundPicture( Picture::load( ResourceGroup::panelBackground, panelBgStatus ) );
   ret->_d->lbPopulation->setFont( Font::create(FONT_2_WHITE) );
   ret->_d->lbPopulation->setTextAlignment( alignCenter, alignCenter );
   ret->_d->lbPopulation->setTooltipText( _("##population_tooltip##") );
   //_populationLabel.setTextPosition(20, 0);
 
-  ret->_d->lbFunds = new Label( ret, Rect( Point( ret->getWidth() - fundLabelOffset, 0), lbSize ),
-      "Dn 10,000", false, true, -1 );
+  ret->_d->lbFunds = new Label( ret, Rect( Point( ret->getWidth() - fundLabelOffset, 0), lbSize ), "Dn 10,000" );
   ret->_d->lbFunds->setFont( Font::create( FONT_2_WHITE ));
   ret->_d->lbFunds->setTextAlignment( alignCenter, alignCenter );
   ret->_d->lbFunds->setBackgroundPicture( Picture::load( ResourceGroup::panelBackground, panelBgStatus ) );
   ret->_d->lbFunds->setTooltipText( _("##funds_tooltip##") );
   //_fundsLabel.setTextPosition(20, 0);
 
-  ret->_d->lbDate = new Label( ret, Rect( Point( ret->getWidth() - dateLabelOffset, 0), lbSize ),
-      "Feb 39 BC", false, true, -1 );
+  ret->_d->lbDate = new Label( ret, Rect( Point( ret->getWidth() - dateLabelOffset, 0), lbSize ), "Feb 39 BC" );
   ret->_d->lbDate->setFont( Font::create( FONT_2_YELLOW ));
   ret->_d->lbDate->setTextAlignment( alignCenter, alignCenter );
   ret->_d->lbDate->setBackgroundPicture( Picture::load( ResourceGroup::panelBackground, panelBgStatus ) );

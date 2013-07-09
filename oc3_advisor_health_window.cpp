@@ -33,7 +33,7 @@ class HealthInfoLabel : public Label
 public:
   HealthInfoLabel( Widget* parent, const Rect& rect, const BuildingType service, 
                    int workBulding, int numberBuilding, int peoplesCount  )
-    : Label( parent, rect, "", false, true )
+    : Label( parent, rect )
   {
     _service = service;
     _workingBuilding = workBulding;

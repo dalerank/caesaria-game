@@ -23,6 +23,7 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_gfx_engine.hpp"
+#include "oc3_groupbox.hpp"
 
 class AdvisorEmperorWindow::Impl
 {
@@ -36,6 +37,11 @@ public:
   PushButton* btnSend2City;
   PushButton* btnChangeSalary;
 };
+
+void AdvisorEmperorWindow::showChangeSalaryWindow()
+{
+  GroupBox* gb = new GroupBox( getParent(), Rect( Point( 256, 176 ), Size( 510, 400 )), -1, GroupBox::whiteFrame );
+}
 
 AdvisorEmperorWindow::AdvisorEmperorWindow( Widget* parent, int id ) 
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
@@ -61,8 +67,8 @@ AdvisorEmperorWindow::AdvisorEmperorWindow( Widget* parent, int id )
   _d->lbEmperorFavour = new Label( this, Rect( Point( 58, 44 ), Size( 550, 20 ) ), "Favour of the emperor 50" );
   _d->lbEmperorFavourDesc = new Label( this, _d->lbEmperorFavour->getRelativeRect() + Point( 0, 20 ), "The emperor has mixed feelings to you" );
 
-  _d->lbPost = new Label( this, Rect( Point( 70, 336 ), Size( 240, 26 ) ), "Post", false, true );
-  _d->lbPrimaryFunds = new Label( this, Rect( Point( 70, 370 ), Size( 240, 20 ) ), "PrimaryFunds 0", false, true );
+  _d->lbPost = new Label( this, Rect( Point( 70, 336 ), Size( 240, 26 ) ), "Post");
+  _d->lbPrimaryFunds = new Label( this, Rect( Point( 70, 370 ), Size( 240, 20 ) ), "PrimaryFunds 0" );
 
   _d->btnSendGift = new PushButton( this, Rect( Point( 322, 343), Size( 250, 20 ) ), "Send gift", -1, false, PushButton::BlackBorderUp );
   _d->btnSend2City = new PushButton( this, Rect( Point( 322, 370), Size( 250, 20 ) ), "Send to city", -1, false, PushButton::BlackBorderUp );

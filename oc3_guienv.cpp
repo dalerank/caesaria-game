@@ -224,7 +224,7 @@ WidgetPtr GuiEnv::Impl::createStandartTooltip( Widget* parent )
 {
   Font styleFont = Font::create( FONT_2 );
 
-  Label* elm = new Label( parent, Rect( 0, 0, 2, 2 ), hoveredNoSubelement->getTooltipText(), true, true );
+  Label* elm = new Label( parent, Rect( 0, 0, 2, 2 ), hoveredNoSubelement->getTooltipText(), true, Label::bgWhite );
   elm->setSubElement(true);
 
   Size size( elm->getTextWidth(), elm->getTextHeight() );

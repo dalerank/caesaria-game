@@ -228,7 +228,7 @@ void InfoBoxSenate::paint()
   std::string denariesStr = StringHelper::format( 0xff, "%s %d", _("##senate_save##"), _sd->senate->getFunds() );
   font.draw( *_d->bgPicture, denariesStr, 16 + 42, 35 );
 
-  new Label( this, Rect( 60, 215, 60 + 300, 215 + 24 ), _("##open_rating_adviser##"), false, false, -1 );
+  new Label( this, Rect( 60, 215, 60 + 300, 215 + 24 ), _("##open_rating_adviser##") );
   
   _sd->btnOpenAviser = new TexturedButton( this, Point( 350, 215 ), Size(28), -1, 289 );
   _sd->lbHelp = new Label( this, Rect( 16, 70, getWidth() - 16, 70 + 60 ), _("##senate_help_text##") );
@@ -263,7 +263,7 @@ void InfoBoxHouse::_paint()
     
   int taxes = -1; // _house->getMonthlyTaxes();
   Label* taxesLb = new Label( this, Rect( 16 + 15, _ed->lbHabitants->getBottom(), getWidth() - 16, 
-                                            _ed->lbHabitants->getBottom() + lbHeight ), "", false, true );
+                                            _ed->lbHabitants->getBottom() + lbHeight ) );
   char buffer[200];
   if (taxes == -1)
   {
@@ -278,7 +278,7 @@ void InfoBoxHouse::_paint()
   taxesLb->setText( buffer );
   //_paintY+=22;
   
-  _ed->lbCrime = new Label( this, taxesLb->getRelativeRect() + Point( 0, 22 ), "", false, true );
+  _ed->lbCrime = new Label( this, taxesLb->getRelativeRect() + Point( 0, 22 ) );
   sprintf(buffer, _("Inhabitants didn't report about crimes"));
   _ed->lbCrime->setText( buffer );
 
@@ -289,7 +289,7 @@ void InfoBoxHouse::_paint()
   }
   else
   {
-    Label* lb = new Label( this, _ed->lbCrime->getRelativeRect() + Point( 0, 30 ), "", false, true ); 
+    Label* lb = new Label( this, _ed->lbCrime->getRelativeRect() + Point( 0, 30 ) ); 
     lb->setHeight( 40 );
     lb->setLineIntervalOffset( -6 );
     lb->setText( _("Inabitants of tents provide food themselves, conducting a subsistence economy") );
@@ -313,7 +313,7 @@ void InfoBoxHouse::drawHabitants()
   _d->bgPicture->draw( citPic, 16+15, 157 );
 
   // number of habitants
-  _ed->lbHabitants = new Label( this, Rect( 60, 157, getWidth() - 16, 157 + citPic.getHeight() ), "", false, true );
+  _ed->lbHabitants = new Label( this, Rect( 60, 157, getWidth() - 16, 157 + citPic.getHeight() ) );
   char buffer[200];
   int freeRoom = _ed->house->getMaxHabitants() - _ed->house->getNbHabitants();
   if( freeRoom > 0 )

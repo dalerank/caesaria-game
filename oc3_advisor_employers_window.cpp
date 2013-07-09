@@ -122,7 +122,7 @@ AdvisorEmployerWindow::AdvisorEmployerWindow( Widget* parent, int id )
   int pay = 30, romePay = 30;
   std::string salaryString = StringHelper::format( 0xff, "%d %s (%s %d)", pay, _("##advemployer_panel_denaries##"),
     _("##advemployer_panel_romepay##"), romePay );
-  new Label( this, Rect( salaryBgRect.UpperLeftCorner + Point( 168, 4), Size( 340, 26 )), salaryString, true, true );
+  new Label( this, Rect( salaryBgRect.UpperLeftCorner + Point( 168, 4), Size( 340, 26 )), salaryString );
 
   int workers = 0, withoutWork = 0;
   std::string strWorkerState = StringHelper::format( 0xff, "%d %s     %d %s  ( %d%% )", workers, _("##advemployer_panel_workers##"),

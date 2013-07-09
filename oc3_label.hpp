@@ -24,9 +24,10 @@
 class Label : public Widget
 {
 public:
+  enum BackgroundMode { bgWhite=0, bgBlack, bgNone };
   //! constructor
   Label( Widget* parent, const Rect& rectangle, const std::string& text="", bool border=false,
-           bool background = false, int id=-1);
+         BackgroundMode background = bgNone, int id=-1);
 
   //! destructor
   virtual ~Label();
@@ -45,12 +46,12 @@ public:
   virtual int getBackgroundColor() const;
 
   //! Sets whether to draw the background
-  virtual void setBackgroundVisible(bool draw);
+  virtual void setBackgroundMode( BackgroundMode mode );
 
   virtual void beforeDraw( GfxEngine& painter );
 
   //! Return background draw
-  virtual bool isBackgroundVisible() const;
+  virtual BackgroundMode getBackgroundMode() const;
 
   virtual bool isBorderVisible() const;
 
