@@ -57,16 +57,16 @@ public:
     default: break;
     }
 
-    Picture& texture = getPicture();
+    PictureRef& texture = getTextPicture();
     Font font = getFont();
     std::string buildingStrT = StringHelper::format( 0xff, "%d %s", _numberBuilding, buildingStr.c_str() );
-    font.draw( texture, buildingStrT, 0, 0 );
+    font.draw( *texture, buildingStrT, 0, 0 );
 
     std::string buildingWorkT = StringHelper::format( 0xff, "%d", _workingBuilding );
-    font.draw( texture, buildingWorkT, 165, 0 );
+    font.draw( *texture, buildingWorkT, 165, 0 );
 
     std::string peoplesStrT = StringHelper::format( 0xff, "%d %s", _peoplesCount, peoplesStr.c_str() );
-    font.draw( texture, peoplesStrT, 255, 0 );
+    font.draw( *texture, peoplesStrT, 255, 0 );
   }
 
 private:
@@ -141,9 +141,9 @@ AdvisorHealthWindow::AdvisorHealthWindow( CityPtr city, Widget* parent, int id )
   GuiPaneling::instance().draw_black_frame( *_d->background, 35, 110, getWidth() - 35 * 2, 85 );
 
   Font font = Font::create( FONT_1 );
-  font.draw( *_d->background, _("##work##"), 180, 92 );
-  font.draw( *_d->background, _("##max_available##"), 290, 92 );
-  font.draw( *_d->background, _("##coverage##"), 480, 92 );
+  font.draw( *_d->background, _("##work##"), 180, 92, false );
+  font.draw( *_d->background, _("##max_available##"), 290, 92, false );
+  font.draw( *_d->background, _("##coverage##"), 480, 92, false );
 
   Point startPoint( 42, 112 );
   Size labelSize( 550, 20 );

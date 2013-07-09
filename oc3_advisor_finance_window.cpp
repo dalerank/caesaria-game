@@ -42,9 +42,9 @@ public:
   {
     Font font = Font::create( FONT_1 );
 
-    font.draw( *background, title, pos );
-    font.draw( *background, StringHelper::format( 0xff, "%d", lyvalue ), pos + Point( 215, 0) );
-    font.draw( *background, StringHelper::format( 0xff, "%d", tyvalue ), pos + Point( 355, 0) );
+    font.draw( *background, title, pos, false );
+    font.draw( *background, StringHelper::format( 0xff, "%d", lyvalue ), pos + Point( 215, 0), false );
+    font.draw( *background, StringHelper::format( 0xff, "%d", tyvalue ), pos + Point( 355, 0), false );
   }
 
   void updateTaxRateNowLabel()
@@ -77,19 +77,19 @@ AdvisorFinanceWindow::AdvisorFinanceWindow( CityPtr city, Widget* parent, int id
   Font fontWhite = Font::create( FONT_1_WHITE );
   GuiPaneling::instance().draw_black_frame( *_d->background, 70, 50, getWidth() - 86, 70 );
   std::string moneyStr = StringHelper::format( 0xff, "%s %d %s", _("##city_have##"), city->getFunds(), _("##denaries##") );
-  fontWhite.draw( *_d->background, moneyStr, 70, 55 );
-  fontWhite.draw( *_d->background, _("##tax_rate##"), 65, 75 );
+  fontWhite.draw( *_d->background, moneyStr, 70, 55, false );
+  fontWhite.draw( *_d->background, _("##tax_rate##"), 65, 75, false );
 
   _d->lbTaxRateNow = new Label( this, Rect( 245, 75, 245 + 350, 75 + 20 ), "" );
   _d->lbTaxRateNow->setFont( fontWhite );
   _d->updateTaxRateNowLabel();
 
   std::string strRegPaeyrs = StringHelper::format( 0xff, "%d%% %s", 0, _("##population_registered_as_taxpayers##") );
-  fontWhite.draw( *_d->background, strRegPaeyrs, 70, 95 );
+  fontWhite.draw( *_d->background, strRegPaeyrs, 70, 95, false );
 
   Font font = Font::create( FONT_1 );
-  font.draw( *_d->background, _("##Last year##"), 265, 130 );
-  font.draw( *_d->background, _("##This year##"), 400, 130 );
+  font.draw( *_d->background, _("##Last year##"), 265, 130, false );
+  font.draw( *_d->background, _("##This year##"), 400, 130, false );
 
   Point startPoint( 75, 145 );
   Point offset( 0, 17 );

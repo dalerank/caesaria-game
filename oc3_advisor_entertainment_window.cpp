@@ -58,12 +58,12 @@ public:
     break;
     }
 
-    Picture& texture = getPicture();
+    PictureRef& texture = getTextPicture();
     Font font = getFont();
-    font.draw( texture, StringHelper::format( 0xff, "%d %s", _numberBuilding, buildingStr.c_str() ), 0, 0 );
-    font.draw( texture, StringHelper::format( 0xff, "%d", _workingBuilding ), 165, 0 );
-    font.draw( texture, StringHelper::format( 0xff, "%d", _showBuilding ), 245, 0 );
-    font.draw( texture, StringHelper::format( 0xff, "%d %s", _peoplesCount, peoplesStr.c_str() ), 305, 0 );
+    font.draw( *texture, StringHelper::format( 0xff, "%d %s", _numberBuilding, buildingStr.c_str() ), 0, 0 );
+    font.draw( *texture, StringHelper::format( 0xff, "%d", _workingBuilding ), 165, 0 );
+    font.draw( *texture, StringHelper::format( 0xff, "%d", _showBuilding ), 245, 0 );
+    font.draw( *texture, StringHelper::format( 0xff, "%d %s", _peoplesCount, peoplesStr.c_str() ), 305, 0 );
   }
 
 private:
@@ -152,10 +152,10 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow( CityPtr city, Widget* pa
   GuiPaneling::instance().draw_black_frame( *_d->background, 32, 60, getWidth() - 32 * 2, 86 );
 
   Font font = Font::create( FONT_1 );
-  font.draw( *_d->background, _("##work##"), 180, 45 );
-  font.draw( *_d->background, _("##show##"), 260, 45 );
-  font.draw( *_d->background, _("##max_available##"), 350, 45);
-  font.draw( *_d->background, _("##coverage##"), 480, 45 );
+  font.draw( *_d->background, _("##work##"), 180, 45, false );
+  font.draw( *_d->background, _("##show##"), 260, 45, false );
+  font.draw( *_d->background, _("##max_available##"), 350, 45, false);
+  font.draw( *_d->background, _("##coverage##"), 480, 45, false );
 
   Point startPoint( 42, 64 );
   Size labelSize( 550, 20 );

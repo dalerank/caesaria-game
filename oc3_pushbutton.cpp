@@ -172,12 +172,13 @@ void PushButton::_updateTexture( ElementState state )
     }
   }
 
-  if( textTxs && _d->buttonStates[ state ].font.isValid() )
+  Font stFont = _d->buttonStates[ state ].font;
+  if( textTxs && stFont.isValid() )
   {
+    Rect textRect = stFont.calculateTextRect( getText(), Rect( 0, 0, getWidth(), getHeight() ),
+                                              getHorizontalTextAlign(), getVerticalTextAlign() );
     textTxs->fill( 0x00ffffff, Rect( 0, 0, 0, 0 ) );
-    Rect textRect = _d->buttonStates[ state ].font.calculateTextRect( getText(), Rect( 0, 0, getWidth(), getHeight() ),
-                                                                      getHorizontalTextAlign(), getVerticalTextAlign() );
-    _d->buttonStates[ state ].font.draw( *textTxs, getText(), textRect.getLeft(), textRect.getTop() );
+    stFont.draw( *textTxs, getText(), textRect.getLeft(), textRect.getTop() );
   }
 }
 
