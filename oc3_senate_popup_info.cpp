@@ -41,11 +41,11 @@ public:
     lastUpdateTime = DateTime::getElapsedTime();
 
     background->fill( 0xffffffff, Rect( ratingStartPos.getX(), ratingStartPos.getY(), background->getWidth()-2, background->getHeight()-2 ) );
-    font.draw( *background, StringHelper::format( 0xff, "%d %%", 0 ), ratingStartPos );
-    font.draw( *background, StringHelper::format( 0xff, "%d", 0 ), ratingStartPos + offset );
-    font.draw( *background, StringHelper::format( 0xff, "%d", 0 ), ratingStartPos + offset * 2 );
-    font.draw( *background, StringHelper::format( 0xff, "%d", 0 ), ratingStartPos + offset * 3 );
-    font.draw( *background, StringHelper::format( 0xff, "%d", 0 ), ratingStartPos + offset * 4 );
+    font.draw( *background, StringHelper::format( 0xff, "%d %%", 0 ), ratingStartPos, false );
+    font.draw( *background, StringHelper::format( 0xff, "%d", 0 ), ratingStartPos + offset, false );
+    font.draw( *background, StringHelper::format( 0xff, "%d", 0 ), ratingStartPos + offset * 2, false );
+    font.draw( *background, StringHelper::format( 0xff, "%d", 0 ), ratingStartPos + offset * 3, false );
+    font.draw( *background, StringHelper::format( 0xff, "%d", 0 ), ratingStartPos + offset * 4, false );
   }
 };
 
@@ -64,11 +64,11 @@ SenatePopupInfo::SenatePopupInfo( Widget* parent, TilemapRenderer& mapRenderer )
   
   _d->font = Font::create( FONT_1 );
 
-  _d->font.draw( *_d->background, _("##senatepp_unemployment##"), _d->startPos );
-  _d->font.draw( *_d->background, _("##senatepp_clt_rating##"), _d->startPos + _d->offset );
-  _d->font.draw( *_d->background, _("##senatepp_prsp_rating##"), _d->startPos + _d->offset * 2 );
-  _d->font.draw( *_d->background, _("##senatepp_peace_rating##"), _d->startPos + _d->offset * 3 );
-  _d->font.draw( *_d->background, _("##senatepp_favour_rating##"), _d->startPos + _d->offset * 4 );
+  _d->font.draw( *_d->background, _("##senatepp_unemployment##"), _d->startPos, false );
+  _d->font.draw( *_d->background, _("##senatepp_clt_rating##"), _d->startPos + _d->offset, false );
+  _d->font.draw( *_d->background, _("##senatepp_prsp_rating##"), _d->startPos + _d->offset * 2, false );
+  _d->font.draw( *_d->background, _("##senatepp_peace_rating##"), _d->startPos + _d->offset * 3, false );
+  _d->font.draw( *_d->background, _("##senatepp_favour_rating##"), _d->startPos + _d->offset * 4, false );
 
   _d->updateRatings();
 }

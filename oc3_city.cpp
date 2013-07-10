@@ -218,6 +218,11 @@ void City::monthStep()
 {
   _d->collectTaxes( this );
   _d->calculatePopulation( this );
+
+  Player& player = Scenario::instance().getPlayer();
+  _d->funds.resolveIssue( FundIssue( CityFunds::playerSalary, -player.getSalary() ) );
+  player.appendMoney( player.getSalary() );
+
   _d->onMonthChangedSignal.emit( _d->date );
 }
 
