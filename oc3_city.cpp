@@ -41,7 +41,10 @@
 #include "oc3_gettext.hpp"
 #include "oc3_build_options.hpp"
 #include "oc3_house.hpp"
-
+#include "oc3_tilemap.hpp"
+#include "oc3_forum.hpp"
+#include "oc3_senate.hpp"
+#include "oc3_cityservice_culture.hpp"
 #include <set>
 
 typedef std::vector< CityServicePtr > CityServices;
@@ -59,6 +62,8 @@ public:
   CityServices services;
   bool needRecomputeAllRoads;
   int taxRate;
+  int lastMonthTax;
+  int lastMonthTaxpayer;
   DateTime date;  // number of timesteps since start
   TilePos roadExit;
   Tilemap tilemap;
@@ -69,6 +74,10 @@ public:
 
   ClimateType climate;   
   UniqueId walkerIdCount;
+
+  // collect taxes from all houses
+  void collectTaxes( CityPtr city);
+  void calculatePopulation( CityPtr city );
 
 oc3_signals public:
   Signal1<int> onPopulationChangedSignal;
@@ -89,7 +98,7 @@ City::City() : _d( new Impl )
   _d->funds = 1000;
   _d->population = 0;
   _d->needRecomputeAllRoads = false;
-  _d->taxRate = 700;
+  _d->taxRate = 7;
   _d->walkerIdCount = 0;
   _d->climate = C_CENTRAL;
 
@@ -99,6 +108,7 @@ City::City() : _d( new Impl )
   addService( CityServiceProsperity::create( this ) );
   addService( CityServiceShoreline::create( this ) );
   addService( CityServiceInfo::create( this ) );
+  addService( CityServiceCulture::create( this ) );
 }
 
 void City::timeStep()
@@ -133,7 +143,7 @@ void City::timeStep()
     }
     catch(...)
     {
-      int o=0;
+      //int o=0;
       //volatile error here... WTF
     }
   }
@@ -160,7 +170,7 @@ void City::timeStep()
     }
     catch(...)
     {
-      int i=0;
+      //int i=0;
     }
   }
 
@@ -204,8 +214,8 @@ void City::timeStep()
 
 void City::monthStep()
 {
-  collectTaxes();
-  _calculatePopulation();
+  _d->collectTaxes( this );
+  _d->calculatePopulation( this );
   _d->onMonthChangedSignal.emit( _d->date );
 }
 
@@ -345,7 +355,7 @@ void City::disaster( const TilePos& pos, DisasterType type )
       rPos = overlay->getTile().getIJ();
     }
 
-    bool deleteRoad = false;
+    //bool deleteRoad = false;
 
     PtrTilesArea clearedTiles = _d->tilemap.getFilledRectangle( rPos, size );
     for( PtrTilesArea::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
@@ -431,28 +441,35 @@ void City::clearLand(const TilePos& pos  )
   }
 }
 
-void City::collectTaxes()
+void City::Impl::collectTaxes( CityPtr city )
 {
-  CityHelper hlp( this );
-  long taxes = 0;
+  CityHelper hlp( city );
+  lastMonthTax = 0;
+  lastMonthTaxpayer = 0;
   
-  std::list<HousePtr> houseList = hlp.getBuildings< House >(B_HOUSE);
-  for( std::list<HousePtr>::iterator itHouse = houseList.begin(); itHouse != houseList.end(); ++itHouse)
+  std::list<ForumPtr> forumsList = hlp.getBuildings< Forum >(B_HOUSE);
+  for( std::list<ForumPtr>::iterator it = forumsList.begin(); it != forumsList.end(); ++it)
   {
-    taxes += (*itHouse)->collectTaxes();
+    lastMonthTaxpayer += (*it)->getPeoplesReached();
+    lastMonthTax += (*it)->collectTaxes();
   }
 
-  _d->funds += taxes;
-  _d->onFundsChangedSignal.emit( _d->funds );
+  std::list<SenatePtr> senates = hlp.getBuildings< Senate >( B_SENATE );
+  for( std::list<SenatePtr>::iterator it = senates.begin(); it != senates.end(); ++it)
+  {
+    lastMonthTaxpayer += (*it)->getPeoplesReached();
+    lastMonthTax += (*it)->collectTaxes();
+  }
 
-  std::cout << "Monthly Taxes=" << taxes << std::endl;
+  funds += lastMonthTax;
+  onFundsChangedSignal.emit( funds );
 }
 
-void City::_calculatePopulation()
+void City::Impl::calculatePopulation( CityPtr city )
 {
   long pop = 0; /* population can't be negative - should be unsigned long long*/
   
-  LandOverlays houseList = getBuildingList(B_HOUSE);
+  LandOverlays houseList = city->getBuildingList(B_HOUSE);
   for( LandOverlays::iterator itHouse = houseList.begin(); 
        itHouse != houseList.end(); ++itHouse)
   {
@@ -463,8 +480,8 @@ void City::_calculatePopulation()
     }
   }
   
-  _d->population = pop;
-  _d->onPopulationChangedSignal.emit( pop );
+  population = pop;
+  onPopulationChangedSignal.emit( pop );
 }
 
 void City::save( VariantMap& stream) const
@@ -639,7 +656,7 @@ CityBuildOptions& City::getBuildOptions()
 int City::getProsperity() const
 {
   CityServicePtr csPrsp = findService( "prosperity" );
-  return csPrsp.isValid() ? csPrsp.as<CityServiceProsperity>()->getProsperity() : 0;
+  return csPrsp.isValid() ? csPrsp.as<CityServiceProsperity>()->getValue() : 0;
 }
 
 CityPtr City::create()
@@ -648,4 +665,25 @@ CityPtr City::create()
   ret->drop();
 
   return ret;
+}
+
+LandOverlayPtr City::getOverlay( const TilePos& pos ) const
+{
+  return _d->tilemap.at( pos ).getTerrain().getOverlay();
+}
+
+int City::getLastMonthTax() const
+{
+  return _d->lastMonthTax;
+}
+
+int City::getLastMonthTaxpayer() const
+{
+  return _d->lastMonthTaxpayer;
+}
+
+int City::getCulture() const
+{
+  CityServicePtr csPrsp = findService( "culture" );
+  return csPrsp.isValid() ? csPrsp.as<CityServiceCulture>()->getValue() : 0;
 }

@@ -101,9 +101,10 @@ TilePos getWalkerDestination2( Propagator &pathPropagator, const BuildingType ty
     // std::cout << "MarketBuyer reserves from warehouse, qty=" << qty << std::endl;
     GoodStock stock( what, qty, qty);
     reservId = res->getGoodStore().reserveRetrieval( stock );
+    return res->getTilePos();
   }
 
-  return res->getTilePos();
+  return TilePos(-1, -1);
 }
 
 void MarketBuyer::computeWalkerDestination( MarketPtr market )

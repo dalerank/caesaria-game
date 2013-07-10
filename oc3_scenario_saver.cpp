@@ -19,6 +19,7 @@
 #include "oc3_variant.hpp"
 #include "oc3_saveadapter.hpp"
 #include "oc3_scenario.hpp"
+#include "oc3_player.hpp"
 
 class ScenarioSaver::Impl
 {
@@ -45,6 +46,10 @@ void ScenarioSaver::save(const std::string& filename)
   VariantMap vm_scenario;
   _d->scenario.save( vm_scenario );
   vm[ "scenario" ] = vm_scenario;
+
+  VariantMap plm;
+  _d->scenario.getPlayer().save( plm );
+  vm[ "player" ] = plm;
 
   VariantMap vm_city;
   _d->scenario.getCity()->save( vm_city );

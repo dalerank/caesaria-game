@@ -36,6 +36,7 @@ public:
   int maxHabitantsByTile;
   std::string levelName;
   std::string internalName;
+ 
   int taxRate;
 
   // required services
@@ -400,14 +401,14 @@ float HouseLevelSpec::evaluateServiceNeed(House &house, const ServiceType servic
 
 float HouseLevelSpec::evaluateEntertainmentNeed(House &house, const ServiceType service)
 {
-   int houseLevel = house.getLevelSpec().getHouseLevel();
+   //int houseLevel = house.getLevelSpec().getHouseLevel();
    return (float)next()._d->minEntertainmentLevel;
 }
 
 float HouseLevelSpec::evaluateEducationNeed(House &house, const ServiceType service)
 {
    float res = 0;
-   int houseLevel = house.getLevelSpec().getHouseLevel();
+   //int houseLevel = house.getLevelSpec().getHouseLevel();
    int minLevel = next()._d->minEducationLevel;
    if (minLevel == 1)
    {
@@ -437,7 +438,7 @@ float HouseLevelSpec::evaluateEducationNeed(House &house, const ServiceType serv
 float HouseLevelSpec::evaluateHealthNeed(House &house, const ServiceType service)
 {
    float res = 0;
-   int houseLevel = house.getLevelSpec().getHouseLevel();
+   //int houseLevel = house.getLevelSpec().getHouseLevel();
    int minLevel = next()._d->minHealthLevel;
    if (minLevel >= 1 && service == S_BATHS)
    {
@@ -468,7 +469,7 @@ float HouseLevelSpec::evaluateHealthNeed(House &house, const ServiceType service
 
 float HouseLevelSpec::evaluateReligionNeed(House &house, const ServiceType service)
 {
-   int houseLevel = house.getLevelSpec().getHouseLevel();
+   //int houseLevel = house.getLevelSpec().getHouseLevel();
    int minLevel = next()._d->minReligionLevel;
 
    return (float)minLevel;

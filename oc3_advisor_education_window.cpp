@@ -32,7 +32,7 @@ class EducationInfoLabel : public Label
 public:
   EducationInfoLabel( Widget* parent, const Rect& rect, const BuildingType service, 
                       int workBulding, int numberBuilding, int peoplesCount  )
-    : Label( parent, rect, "", false, true )
+    : Label( parent, rect )
   {
     _service = service;
     _workingBuilding = workBulding;
@@ -52,18 +52,19 @@ public:
     case B_SCHOOL: buildingStr = _("##schools##"); peoplesStr = _("##children##"); break;
     case B_COLLEGE: buildingStr = _("##colleges##"); peoplesStr = _("##students##"); break;
     case B_LIBRARY: buildingStr = _("##libraries##"); peoplesStr = _("##peoples##"); break;
+    default: break;
     }
 
-    Picture& texture = getPicture();
+    PictureRef& texture = getTextPicture();
     Font font = getFont();
     std::string buildingStrT = StringHelper::format( 0xff, "%d %s", _numberBuilding, buildingStr.c_str() );
-    font.draw( texture, buildingStrT, 0, 0 );
+    font.draw( *texture, buildingStrT, 0, 0 );
 
     std::string buildingWorkT = StringHelper::format( 0xff, "%d", _workingBuilding );
-    font.draw( texture, buildingWorkT, 165, 0 );
+    font.draw( *texture, buildingWorkT, 165, 0 );
 
     std::string peoplesStrT = StringHelper::format( 0xff, "%d %s", _peoplesCount, peoplesStr.c_str() );
-    font.draw( texture, peoplesStrT, 255, 0 );
+    font.draw( *texture, peoplesStrT, 255, 0 );
   }
 
 private:
@@ -112,6 +113,7 @@ public:
         case B_SCHOOL: maxStuding = 75; break;
         case B_COLLEGE: maxStuding = 100; break;
         case B_LIBRARY: maxStuding = 800; break;
+        default: break;
         }
 
         ret.peoplesStuding += maxStuding * (*it)->getWorkers() / (*it)->getMaxWorkers();
@@ -144,9 +146,9 @@ AdvisorEducationWindow::AdvisorEducationWindow( CityPtr city, Widget* parent, in
   GuiPaneling::instance().draw_black_frame( *_d->background, 35, 100, getWidth() - 35 * 2, 68 );
 
   Font font = Font::create( FONT_1 );
-  font.draw( *_d->background, _("##work##"), 180, 82 );
-  font.draw( *_d->background, _("##max_available##"), 290, 82 );
-  font.draw( *_d->background, _("##coverage##"), 480, 82 );
+  font.draw( *_d->background, _("##work##"), 180, 82, false );
+  font.draw( *_d->background, _("##max_available##"), 290, 82, false );
+  font.draw( *_d->background, _("##coverage##"), 480, 82, false );
 
   Point startPoint( 42, 103 );
   Size labelSize( 550, 20 );

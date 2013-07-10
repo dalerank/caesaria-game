@@ -76,9 +76,9 @@ TilemapChangeCommandPtr TilemapBuildCommand::create( BuildingType type )
     break;
 
   case B_HOUSE:
+  case B_GARDEN:
     newCommand->_d->isMultiBuilding = true;
-    //break not needed that catch multibuild flag
-    break;
+  break;
 
   default:
     break;    

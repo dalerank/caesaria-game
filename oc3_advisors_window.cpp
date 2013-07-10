@@ -35,6 +35,7 @@
 #include "oc3_advisor_health_window.hpp"
 #include "oc3_advisor_entertainment_window.hpp"
 #include "oc3_advisor_religion_window.hpp"
+#include "oc3_advisor_finance_window.hpp"
 
 class AdvisorsWindow::Impl
 {
@@ -134,6 +135,7 @@ void AdvisorsWindow::showAdvisor( const AdvisorType type )
   case ADV_HEALTH: _d->advisorPanel = new AdvisorHealthWindow( _d->city, this, -1 ); break;
   case ADV_ENTERTAINMENT: _d->advisorPanel = new AdvisorEntertainmentWindow( _d->city, this, -1 ); break;
   case ADV_RELIGION: _d->advisorPanel = new AdvisorReligionWindow( _d->city, this, -1 ); break;
+  case ADV_FINANCE: _d->advisorPanel = new AdvisorFinanceWindow( _d->city, this, -1 ); break;
 
   default:
   break;
@@ -160,7 +162,8 @@ bool AdvisorsWindow::onEvent( const NEvent& event )
 
   if( event.EventType == OC3_GUI_EVENT && event.GuiEvent.EventType == OC3_BUTTON_CLICKED )
   {
-    if( event.GuiEvent.Caller->getID() < ADV_COUNT )
+    int id = event.GuiEvent.Caller->getID();
+    if( id >= 0 && id < ADV_COUNT )
     {
       showAdvisor( (AdvisorType)event.GuiEvent.Caller->getID() );
     }

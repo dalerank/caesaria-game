@@ -24,6 +24,8 @@
 #include "oc3_variant.hpp"
 #include "oc3_stringhelper.hpp"
 
+static Tile invalidTile = Tile( TilePos( -1, -1 ) );
+
 Tilemap::Tilemap()
 {
   _size = 0;
@@ -59,24 +61,35 @@ TilePos Tilemap::fit( const TilePos& pos ) const
   return ret;
 }
 
+Tile& Tilemap::__at( const int i, const int j )
+{
+  _OC3_DEBUG_BREAK_IF( !isInside( TilePos( i, j ) ) && "Need inside point" );
+  if( isInside( TilePos( i, j ) ) )
+  {
+    return _tile_array.at(i).at(j);
+  }
+
+  return invalidTile;
+}
+
 Tile& Tilemap::at(const int i, const int j)
 {
-  return _tile_array.at(i).at(j);
+  return __at( i, j );
 }
 
 const Tile& Tilemap::at(const int i, const int j) const
 {
-  return _tile_array.at(i).at(j);
+  return const_cast< Tilemap* >( this )->__at( i, j );
 }
 
 Tile& Tilemap::at( const TilePos& ij )
 {
-  return _tile_array.at(ij.getI()).at(ij.getJ());
+  return __at( ij.getI(), ij.getJ() );
 }
 
 const Tile& Tilemap::at( const TilePos& ij ) const
 {
-  return _tile_array.at(ij.getI()).at(ij.getJ());
+  return const_cast<Tilemap*>( this )->__at( ij.getI(), ij.getJ() );
 }
 
 int Tilemap::getSize() const

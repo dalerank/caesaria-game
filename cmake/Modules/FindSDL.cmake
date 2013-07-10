@@ -69,10 +69,14 @@
 
 find_path(SDL_INCLUDE_DIR SDL.h
   HINTS
-	${CMAKE_CURRENT_SOURCE_DIR}/dependencies/SDL
-    ENV SDLDIR
+  ENV SDLDIR
   PATH_SUFFIXES include/SDL include/SDL12 include/SDL11 include
+  PATHS
+  /usr/local/include/SDL11  #freebsd sdl1.1
+  /usr/local/include/SDL12  #freebsd sdl1.2
+  ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/SDL #windows
 )
+MESSAGE("SDL_INCLUDE_DIR is ${SDL_INCLUDE_DIR}")
 
 # SDL-1.1 is the name used by FreeBSD ports...
 # don't confuse it for the version number.
@@ -174,7 +178,7 @@ if(SDL_INCLUDE_DIR AND EXISTS "${SDL_INCLUDE_DIR}/SDL_version.h")
   unset(SDL_VERSION_PATCH)
 endif()
 
-include(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindPackageHandleStandardArgs.cmake)
 
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(SDL
                                   REQUIRED_VARS SDL_LIBRARY SDL_INCLUDE_DIR

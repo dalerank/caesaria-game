@@ -40,24 +40,6 @@ $ sudo apt-get install build-essential g++ libarchive-dev zlib1g-dev \
 libsdl1.2-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev \
 qt4-dev-tools ctags libqxt-dev git cmake p7zip-full wget
 
-1.a.2 Installing Boost: Ubuntu 12.04 and older: 
-You have to build boost from source, follow this guide:
-http://blog.jedf.com/2012/06/installing-boost-libraries-150-on.html
-
-Ubuntu 12.10: 
-$ sudo apt-get install libboost1.50-all-dev
-
-Ubuntu 13.04: 
-$ sudo apt-get install libboost1.53-all-dev
-
-Ubuntu 13.10 and newer: 
-$ sudo apt-get install libboost-all-dev
-
-Debian 7: 
-You will have to build boost 1.50 or newer from source.
-
-Debian 8, testing and sid: 
-$ sudo apt-get install libboost1.53-all-dev
 
 
 1.b Fedora:
@@ -67,33 +49,17 @@ $ sudo yum install make automake gcc gcc-c++ libarchive-devel \
 zlib-devel SDL-devel SDL_image-devel SDL_mixer-devel SDL_ttf-devel \
 qt-devel ctags cmake git p7zip wget libpng12-devel
 
-1.b.2 Installing Boost
-Fedora 17 and older:
-You will have to build boost 1.50 or newer from source.
-
-Fedora 18 and later:
-$ sudo yum install boost-devel
 
 
 1.c openSUSE 12.3
 
 $ sudo zypper install libarchive-devel libSDL-devel libSDL_ttf-devel \
 libSDL_image-devel libSDL_mixer-devel git cmake gcc-c++ libjpeg-devel \
-libpng-devel boost-devel
+libpng-devel 
 
 
 2 Building the game
 ===================
-
-2.1 For those who locally compiled boost.
-
-If you compiled boost you should add the following to your ~/.bashrc:
-   export BOOST_ROOT=/path/to/boost 
-If you followed the guide for Ubuntu 12.04 the path is /home/<username>/usr .
-Then restart your terminal to make the setting take effect or run 
-$ bash
-
-2.2 Actually compiling the game.
 
 First move your terminal to where you want openCaesar 3 to be installed, e.g: 
 $ mkdir games && cd games

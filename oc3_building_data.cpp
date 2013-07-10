@@ -35,10 +35,10 @@ BuildingTypeEquale bldTypeEquales[] = {
   { B_THEATER,        "theater" },
   { B_HIPPODROME,     "hippodrome" },
   { B_COLLOSSEUM,     "colloseum" },
-  { B_ACTOR,          "artist_colony" },
-  { B_GLADIATOR,      "gladiator_pit" },
-  { B_LION,           "lion_pit" },             
-  { B_CHARIOT,        "chatioteer_school" },
+  { B_ACTOR_COLONY,          "artist_colony" },
+  { B_GLADIATOR_SCHOOL,      "gladiator_pit" },
+  { B_LION_HOUSE,           "lion_pit" },             
+  { B_CHARIOT_MAKER,        "chatioteer_school" },
   { B_HOUSE,          "house" },               
   { B_ROAD,           "road" },
   { B_PLAZA,          "plaza" },
@@ -77,18 +77,18 @@ BuildingTypeEquale bldTypeEquales[] = {
   { B_GRANARY,        "granery"},
   { B_WAREHOUSE,      "warehouse"},
   { B_WHEAT_FARM,          "wheat_farm"},
-  { B_FRUIT,          "fig_farm"},
-  { B_VEGETABLE,      "vegetable_farm"},
-  { B_OLIVE,          "olive_farm"},
-  { B_GRAPE,          "vinard"},
-  { B_MEAT,           "meat_farm"},
-  { B_MARBLE,         "quarry"},
+  { B_FRUIT_FARM,          "fig_farm"},
+  { B_VEGETABLE_FARM,      "vegetable_farm"},
+  { B_OLIVE_FARM,          "olive_farm"},
+  { B_GRAPE_FARM,          "vinard"},
+  { B_PIG_FARM,           "meat_farm"},
+  { B_MARBLE_QUARRY,         "quarry"},
   { B_IRON_MINE,           "iron_mine"},
-  { B_TIMBER,         "lumber_mill"},
+  { B_TIMBER_YARD,         "lumber_mill"},
   { B_CLAY_PIT,       "clay_pit"},
-  { B_WINE,           "wine_workshop"},
-  { B_OIL,            "oil_workshop"},
-  { B_WEAPON,         "weapons_workshop"},
+  { B_WINE_WORKSHOP,           "wine_workshop"},
+  { B_OIL_WORKSHOP,            "oil_workshop"},
+  { B_WEAPONS_WORKSHOP,         "weapons_workshop"},
   { B_FURNITURE,      "furniture_workshop"},
   { B_POTTERY,        "pottery_workshop"},
   { B_ENGINEER_POST,       "engineering_post"},
@@ -256,11 +256,11 @@ BuildingDataHolder::BuildingDataHolder() : _d( new Impl )
 void BuildingDataHolder::initialize( const std::string& filename )
 {
   // populate _mapBuildingByInGood
-  _d->mapBuildingByInGood[G_IRON]   = B_WEAPON;
+  _d->mapBuildingByInGood[G_IRON]   = B_WEAPONS_WORKSHOP;
   _d->mapBuildingByInGood[G_TIMBER] = B_FURNITURE;
   _d->mapBuildingByInGood[G_CLAY]   = B_POTTERY;
-  _d->mapBuildingByInGood[G_OLIVE]  = B_OIL;
-  _d->mapBuildingByInGood[G_GRAPE]  = B_WINE;
+  _d->mapBuildingByInGood[G_OLIVE]  = B_OIL_WORKSHOP;
+  _d->mapBuildingByInGood[G_GRAPE]  = B_WINE_WORKSHOP;
 
   VariantMap constructions = SaveAdapter::load( filename );
 

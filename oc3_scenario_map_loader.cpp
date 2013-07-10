@@ -266,7 +266,7 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario& oScenario)
 	
 	      //Str << "probing ";
       	
-	      for (int di = 0; di < size && !bBad; ++di)
+         /* for (int di = 0; di < size && !bBad; ++di)
         {
 	        for (int dj = 0; dj < size && !bBad; ++dj)
 	        {
@@ -282,7 +282,7 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario& oScenario)
       //	    if (edge != 8 * dj + di && edge != 8 * dj + 0x40)
       //	      bBad = true;
 	        }
-        }
+        }*/
 	
 	//std::cout << std::endl;
 	

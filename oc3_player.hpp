@@ -24,8 +24,6 @@
 #include "oc3_serializer.hpp"
 #include <list>
 
-
-
 class Player : public Serializable
 {
 public:
@@ -33,9 +31,19 @@ public:
 
    void save( VariantMap& stream) const;
    void load( const VariantMap& stream);
+
+   void setName( const std::string& name );
+   std::string getName() const;
+
+   int getSalary() const;
+   void setSalary( const int value );
+
+   void appendMoney( int money );
+   int getMoney() const;
 private:
    int _funds;  // amount of money
+   std::string _name;
+   int _salary;
 };
-
 
 #endif

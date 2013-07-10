@@ -29,6 +29,7 @@
 class TilemapArea::Impl
 {
 public:
+  Point centerMapXZ;      //center of the view (in tiles)
   Size viewSize;    // width of the view (in tiles)  nb_tilesX = 1+2*_view_width
                     // height of the view (in tiles)  nb_tilesY = 1+2*_view_height
 
@@ -42,8 +43,7 @@ TilemapArea::TilemapArea() : _d( new Impl )
   _d->viewSize = Size( 0 );
   _center_i = 0;
   _center_j = 0;
-  _center_x = 0;
-  _center_z = 0;
+  _d->centerMapXZ = Point( 0, 0 );
 }
 
 TilemapArea::~TilemapArea()
@@ -79,17 +79,16 @@ void TilemapArea::setCenterIJ(const TilePos& pos )
 
 void TilemapArea::setCenterXZ(const int x, const int z)
 {
-  if (_center_x != x || _center_z != z)
+  if( _d->centerMapXZ.getX() != x || _d->centerMapXZ.getY() != z)
   {
     _d->coordinates.clear();
   }
   
-  _center_x = x;
-  _center_z = z;
+  _d->centerMapXZ = Point( x, z );
 }
 
-int TilemapArea::getCenterX() const  {   return _center_x;   }
-int TilemapArea::getCenterZ() const  {   return _center_z;   }
+int TilemapArea::getCenterX() const  {   return _d->centerMapXZ.getX();   }
+int TilemapArea::getCenterZ() const  {   return _d->centerMapXZ.getY();   }
 int TilemapArea::getCenterI() const  {   return _center_i;   }
 int TilemapArea::getCenterJ() const  {   return _center_j;   }
 
@@ -119,8 +118,9 @@ const std::vector< TilePos >& TilemapArea::getTiles()
   if( _d->coordinates.empty() )
   {
     int zm = _map_size + 1;
-    int cx = _center_x;
-    int cz = _center_z;
+    int cx = _d->centerMapXZ.getX();
+    int cz = _d->centerMapXZ.getY();
+
     Size sizeT = _d->viewSize;  // size x
 
     for (int z = cz + sizeT.getHeight(); z>=cz - sizeT.getHeight(); --z)

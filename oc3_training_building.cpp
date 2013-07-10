@@ -89,7 +89,7 @@ void TrainingBuilding::load( const VariantMap& stream )
 //}
 
 
-BuildingActor::BuildingActor() : TrainingBuilding( B_ACTOR, Size(3) )
+BuildingActor::BuildingActor() : TrainingBuilding( B_ACTOR_COLONY, Size(3) )
 {
   setPicture( Picture::load( ResourceGroup::entertaiment, 81));
 
@@ -106,7 +106,7 @@ void BuildingActor::deliverTrainee()
   trainee->send2City();
 }
 
-BuildingGladiator::BuildingGladiator() : TrainingBuilding( B_GLADIATOR, Size(3))
+BuildingGladiator::BuildingGladiator() : TrainingBuilding( B_GLADIATOR_SCHOOL, Size(3))
 {
   setPicture( Picture::load( ResourceGroup::entertaiment, 51));
 
@@ -124,7 +124,7 @@ void BuildingGladiator::deliverTrainee()
 }
 
 
-BuildingLion::BuildingLion() : TrainingBuilding( B_LION, Size(3) )
+BuildingLion::BuildingLion() : TrainingBuilding( B_LION_HOUSE, Size(3) )
 {
   setPicture( Picture::load( ResourceGroup::entertaiment, 62));
 
@@ -142,7 +142,7 @@ void BuildingLion::deliverTrainee()
 }
 
 
-BuildingChariot::BuildingChariot() : TrainingBuilding( B_CHARIOT, Size(3) )
+BuildingChariot::BuildingChariot() : TrainingBuilding( B_CHARIOT_MAKER, Size(3) )
 {
   setPicture( Picture::load( ResourceGroup::entertaiment, 91));
 

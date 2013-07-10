@@ -402,20 +402,15 @@ void Walker::save( VariantMap& stream ) const
 {
   //stream[ "id" ] = this;
   stream[ "type" ] = (int)_walkerType;
-
-  VariantMap vm_path;
-  _d->pathWay.save( vm_path );
-  stream[ "pathway" ] = vm_path;
-
+  stream[ "pathway" ] =  _d->pathWay.save();
   stream[ "action" ] = (int)_action._action;
   stream[ "direction" ] = (int)_action._direction;
-  
   stream[ "pos" ] = _d->pos;
   stream[ "tileoffset" ] = _d->tileOffset;
   stream[ "mappos" ] = _d->posOnMap;
   stream[ "speed" ] = _d->speed;
   stream[ "midTile" ] = _d->midTilePos;
-  stream[ "speedMul" ] = _d->speedMultiplier;
+  stream[ "speedMul" ] = (float)_d->speedMultiplier;
   stream[ "uid" ] = (unsigned int)_d->uid;
   stream[ "remainmove" ] = _d->remainMove;
 }
@@ -433,6 +428,13 @@ void Walker::load( const VariantMap& stream)
   _d->posOnMap = stream.get( "mappos" ).toPoint();
   _d->uid = (UniqueId)stream.get( "uid" ).toInt();
   _d->speedMultiplier = stream.get( "speedMul" ).toFloat();
+  
+  _OC3_DEBUG_BREAK_IF( _d->speedMultiplier < 0.1 );
+  if( _d->speedMultiplier < 0.1 ) //Sometime this have this error in save file
+  {
+    _d->speedMultiplier = 1;
+  }
+
   _d->speed = stream.get( "speed" ).toFloat();
   _d->midTilePos = stream.get( "midTile" ).toPoint();
   _d->remainMove = stream.get( "remainmove" ).toPointF();

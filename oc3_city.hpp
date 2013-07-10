@@ -16,10 +16,9 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#ifndef CITY_HPP
-#define CITY_HPP
+#ifndef __OPENCAESAR3_CITY_H_INCLUDED__
+#define __OPENCAESAR3_CITY_H_INCLUDED__
 
-#include "oc3_tilemap.hpp"
 #include "oc3_walker.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_serializer.hpp"
@@ -61,6 +60,9 @@ public:
   TilePos getBoatEntry() const;
   TilePos getBoatExit() const;
 
+  int getLastMonthTax() const;
+  int getLastMonthTaxpayer() const;
+
   TilePos getRoadEntry() const;
   
   void setCameraPos(const TilePos pos);
@@ -76,6 +78,7 @@ public:
 
   int getPopulation() const;
   int getProsperity() const;
+  int getCulture() const;
 
   Tilemap& getTilemap();
 
@@ -91,11 +94,11 @@ public:
   void disaster( const TilePos& pos, DisasterType type );
   // remove construction
   void clearLand( const TilePos& pos );
-  // collect taxes from all houses
-  void collectTaxes();
 
   const DateTime& getDate() const;
   void setDate( const DateTime& time );
+
+  LandOverlayPtr getOverlay( const TilePos& pos ) const;
    
 oc3_signals public:
   Signal1<int>& onPopulationChanged();
@@ -106,7 +109,6 @@ oc3_signals public:
 
 private:
   City();
-  void _calculatePopulation();
 
   class Impl;
   ScopedPtr< Impl > _d;
@@ -137,7 +139,7 @@ public:
   template< class T >
   SmartPtr< T > getBuilding( const TilePos& pos )
   {
-    LandOverlayPtr overlay = _city->getTilemap().at( pos ).getTerrain().getOverlay();
+    LandOverlayPtr overlay = _city->getOverlay( pos );
     return overlay.as< T >();
   }
 
@@ -145,4 +147,4 @@ protected:
   CityPtr _city;
 };
 
-#endif
+#endif //__OPENCAESAR3_CITY_H_INCLUDED__

@@ -22,11 +22,13 @@
 #include "oc3_guienv.hpp"
 #include "oc3_gui_paneling.hpp"
 #include "oc3_gfx_engine.hpp"
+#include "oc3_color.hpp"
 
 struct ButtonState
 {
   Picture* bgTexture;
-  PictureRef texture;
+  PictureRef background;
+  PictureRef textPicture;
   Picture* iconTexture;
   //SDL_Color color;
   //bool overrideColorEnabled;
@@ -60,7 +62,8 @@ public:
   {
     for( int i=0; i < StateCount; i++)
     {
-      buttonStates[ ElementState(i) ].texture.reset( 0 );
+      buttonStates[ ElementState(i) ].background.reset();
+      buttonStates[ ElementState(i) ].textPicture.reset();
       buttonStates[ ElementState(i) ].iconTexture = 0;
       buttonStates[ ElementState(i) ].bgTexture = 0;
       buttonStates[ ElementState(i) ].font = Font::create( FONT_2 );
@@ -75,9 +78,10 @@ public:
 
   void releaseTexture( ElementState state )
   {
-    if( buttonStates[ state ].texture )
+    if( buttonStates[ state ].background )
     {
-      buttonStates[ state ].texture.reset();
+      buttonStates[ state ].background.reset();
+      buttonStates[ state ].textPicture.reset();
     }
   }
 };
@@ -106,13 +110,23 @@ PushButton::PushButton( Widget* parent,
 void PushButton::_updateTexture( ElementState state )
 {
   Size btnSize = getSize();
-  PictureRef& curTxs = _d->buttonStates[ state ].texture;
+  PictureRef& curTxs = _d->buttonStates[ state ].background;
+  PictureRef& textTxs = _d->buttonStates[ state ].textPicture;
   
   if( !curTxs.isNull() && curTxs->getSize() != btnSize )
-      _d->releaseTexture( state );
+  {
+    _d->releaseTexture( state );
+  }
 
   if( curTxs.isNull() )
+  {
     curTxs.reset( Picture::create( btnSize ) );
+  }
+
+  if( textTxs.isNull() )
+  {
+    textTxs.reset( Picture::create( btnSize ) );
+  }
 
   // draw button background
   if( _d->buttonStates[ state ].bgTexture )
@@ -151,14 +165,20 @@ void PushButton::_updateTexture( ElementState state )
         GuiPaneling::instance().draw_white0_borders( *curTxs, 0, 0, getWidth(), getHeight() );
     }
     break;
+
+    case NoBackground:
+      curTxs->fill( 0x00ffffff, Rect( 0, 0, 0, 0 ) );
+    break;
     }
   }
 
-  if( _d->buttonStates[ state ].font.isValid() )
+  Font stFont = _d->buttonStates[ state ].font;
+  if( textTxs && stFont.isValid() )
   {
-    Rect textRect = _d->buttonStates[ state ].font.calculateTextRect( getText(), Rect( 0, 0, getWidth(), getHeight() ),
-                                                                      getHorizontalTextAlign(), getVerticalTextAlign() );
-    _d->buttonStates[ state ].font.draw( *curTxs, getText(), textRect.getLeft(), textRect.getTop() );
+    Rect textRect = stFont.calculateTextRect( getText(), Rect( 0, 0, getWidth(), getHeight() ),
+                                              getHorizontalTextAlign(), getVerticalTextAlign() );
+    textTxs->fill( 0x00ffffff, Rect( 0, 0, 0, 0 ) );
+    stFont.draw( *textTxs, getText(), textRect.getLeft(), textRect.getTop() );
   }
 }
 
@@ -341,12 +361,14 @@ ElementState PushButton::_getActiveButtonState()
 void PushButton::beforeDraw( GfxEngine& painter )
 {
   // todo:	move sprite up and text down if the pressed state has a sprite
-  //			draw sprites for focused and mouse-over 
-  //          Point spritePos = AbsoluteRect.getCenter();
+  // draw sprites for focused and mouse-over 
+  // Point spritePos = AbsoluteRect.getCenter();
   _d->currentButtonState = _getActiveButtonState();
 
-  if( !_d->buttonStates[ _d->currentButtonState ].texture )
+  if( !_d->buttonStates[ _d->currentButtonState ].background )
+  {
     _updateTexture( _d->currentButtonState );
+  }
 
 	Widget::beforeDraw( painter  );
 }
@@ -367,25 +389,29 @@ void PushButton::draw( GfxEngine& painter )
   if( isBodyVisible() )
   {
 	  const ButtonState& state = _d->buttonStates[ _d->currentButtonState ];
-    if( state.texture )
+    if( state.background )
     {
-      Rect clippingRect = getAbsoluteClippingRect();
-      painter.drawPicture( *state.texture, getScreenLeft(), getScreenTop(), &clippingRect );
+      painter.drawPicture( *state.background, getScreenLeft(), getScreenTop(), &getAbsoluteClippingRectRef() );
 
 //             if( isEnabled() &&
 //                 ( hoverImageOpacity <= 0xff ) &&
 //                 ( hoverImageOpacity >= 5 ) &&
-//                 _d->buttonStates[ stHovered ].texture.isValid() )
+//                 _d->buttonStates[ stHovered ].background.isValid() )
 //             {
 //                 Color hoverColor = resultOpacityColor_;
 //                 hoverColor.setAlpha( math::middle_<u32>( u32( hoverImageOpacity ), resultOpacityColor_.getAlpha(), 255 ) );
 // 
 //                 Color hoverOpacityColors[ 4 ] =  { hoverColor, hoverColor, hoverColor, hoverColor };
 // 
-//                 painter->drawImage( _buttonStates[ stHovered ].texture, getAbsoluteRect(),
+//                 painter->drawImage( _buttonStates[ stHovered ].background, getAbsoluteRect(),
 //                                       _buttonStates[ stHovered].rectangle, &getAbsoluteClippingRectRef(), hoverOpacityColors, true  );
 //             }			
-        }
+    }
+
+    if( state.textPicture )
+    {
+      painter.drawPicture( *state.textPicture, getScreenLeft(), getScreenTop(), &getAbsoluteClippingRectRef() );
+    }
 	}
 
   drawIcon( painter );
@@ -426,9 +452,14 @@ void PushButton::setFont( const Font& font )
   }
 }
 
-PictureRef& PushButton::_getPicture( ElementState state )
+PictureRef& PushButton::_getBackground( ElementState state )
 {
-  return _d->buttonStates[ state ].texture; 
+  return _d->buttonStates[ state ].background; 
+}
+
+PictureRef& PushButton::_getTextPicture( ElementState state )
+{
+  return _d->buttonStates[ state ].textPicture; 
 }
 
 Font& PushButton::getFont( ElementState state )

@@ -19,7 +19,7 @@
 
 #include "oc3_tile.hpp"
 #include "oc3_scenario.hpp"
-#include "oc3_servicewalker.hpp"
+#include "oc3_walker_service.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_building_data.hpp"
 #include "oc3_resourcegroup.hpp"
@@ -50,7 +50,6 @@ LandOverlay::LandOverlay(const BuildingType type, const Size& size)
 LandOverlay::~LandOverlay()
 {
   // what we shall to do here?
-  int i=0;
 }
 
 
@@ -216,7 +215,7 @@ bool Construction::canBuild( const TilePos& pos ) const
   PtrTilesArea rect = tilemap.getFilledRectangle( pos, getSize() );
 
   //on over map size
-  if( rect.size() != getSize().getArea() )
+  if( (int)rect.size() != getSize().getArea() )
     return false;
 
   for( PtrTilesArea::iterator itTiles = rect.begin(); 
@@ -341,42 +340,6 @@ char Construction::getDesirabilityStep() const
   return BuildingDataHolder::instance().getData( getType() ).getDesirabilityStep();
 }
 
-Garden::Garden() : Construction(B_GARDEN, Size(1) )
-{
-  // always set picture to 110 (tree garden) here, for sake of building preview
-  // actual garden picture will be set upon building being constructed
-  setPicture( Picture::load( ResourceGroup::entertaiment, 110 ) ); // 110 111 112 113
-}
-
-void Garden::setTerrain(TerrainTile &terrain)
-{
-  bool isMeadow = terrain.isMeadow();
-  terrain.clearFlags();
-  terrain.setOverlay(this);
-  terrain.setBuilding(true); // are gardens buildings or not???? try to investigate from original game
-  terrain.setGarden(true);
-  terrain.setMeadow(isMeadow);    
-}
-
-bool Garden::isWalkable() const
-{
-  return true;
-}
-
-bool Garden::isNeedRoadAccess() const
-{
-  return false;
-}
-
-void Garden::build( const TilePos& pos )
-{
-  // this is the same arrangement of garden tiles as existed in C3
-  int theGrid[2][2] = {{113, 110}, {112, 111}};
-
-  Construction::build( pos );
-  setPicture( Picture::load( ResourceGroup::entertaiment, theGrid[pos.getI() % 2][pos.getJ() % 2] ) );
-}
-
 Building::Building(const BuildingType type, const Size& size )
 : Construction( type, size )
 {
@@ -465,6 +428,8 @@ float Building::evaluateService(ServiceWalkerPtr walker)
    case S_PREFECT:
       res = _fireLevel;
    break;
+
+   default: break;
    }
    return res;
 }
@@ -500,6 +465,8 @@ void Building::applyService( ServiceWalkerPtr walker)
       _fireLevel = 0;
     }
    break;
+
+   default: break;
    }
 }
 

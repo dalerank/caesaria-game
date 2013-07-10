@@ -42,7 +42,7 @@ public:
   {
     PushButton::_updateTexture( state );
 
-    PictureRef& pic = _getPicture( state );
+    PictureRef& pic = _getTextPicture( state );
 
     Font font = Font::create( FONT_1_WHITE );
     font.draw( *pic, _title, 130, 2 );
@@ -88,10 +88,10 @@ AdvisorEmployerWindow::AdvisorEmployerWindow( Widget* parent, int id )
     salaryBgRect.getWidth(), salaryBgRect.getHeight() );
 
   Font font = Font::create( FONT_1 );
-  font.draw( *_d->background, _("##advemployer_panel_priority##"), 56, 54 );
-  font.draw( *_d->background, _("##advemployer_panel_sector##"), 164, 54 );
-  font.draw( *_d->background, _("##advemployer_panel_needworkers##"), 400, 54 );
-  font.draw( *_d->background, _("##advemployer_panel_haveworkers##"), 500, 54 );
+  font.draw( *_d->background, _("##advemployer_panel_priority##"), 56, 54, false );
+  font.draw( *_d->background, _("##advemployer_panel_sector##"), 164, 54, false );
+  font.draw( *_d->background, _("##advemployer_panel_needworkers##"), 400, 54, false );
+  font.draw( *_d->background, _("##advemployer_panel_haveworkers##"), 500, 54, false );
 
   startPos += Point( 8, 8 );
   PushButton* btn = new EmployerButton( this, startPos, prIndustryAndTrade, "industry&trade", 0, 0 );
@@ -117,12 +117,12 @@ AdvisorEmployerWindow::AdvisorEmployerWindow( Widget* parent, int id )
   btn->setPicture( &pic, stPressed );
 
   Font font2 = Font::create( FONT_2 );
-  font2.draw( *_d->background, _("##advemployer_panel_salary##"), salaryBgRect.UpperLeftCorner + Point( 4, 4) );
+  font2.draw( *_d->background, _("##advemployer_panel_salary##"), salaryBgRect.UpperLeftCorner + Point( 4, 4), false );
 
   int pay = 30, romePay = 30;
   std::string salaryString = StringHelper::format( 0xff, "%d %s (%s %d)", pay, _("##advemployer_panel_denaries##"),
     _("##advemployer_panel_romepay##"), romePay );
-  new Label( this, Rect( salaryBgRect.UpperLeftCorner + Point( 168, 4), Size( 340, 26 )), salaryString, true, true );
+  new Label( this, Rect( salaryBgRect.UpperLeftCorner + Point( 168, 4), Size( 340, 26 )), salaryString );
 
   int workers = 0, withoutWork = 0;
   std::string strWorkerState = StringHelper::format( 0xff, "%d %s     %d %s  ( %d%% )", workers, _("##advemployer_panel_workers##"),

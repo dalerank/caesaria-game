@@ -39,6 +39,11 @@ public:
   {
     return &(*this)[0];
   }
+
+  char* data()
+  {
+    return &(*this)[0];
+  }
 };
 
 #endif //__OPENCAESAR3_BYTEARRAY_H_INCLUDED__

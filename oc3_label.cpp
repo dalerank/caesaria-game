@@ -18,6 +18,7 @@
 #include "oc3_gfx_engine.hpp"
 #include "oc3_gui_paneling.hpp"
 #include "oc3_pictureconverter.hpp"
+#include "oc3_color.hpp"
 
 using namespace std;
 
@@ -34,38 +35,33 @@ public:
   bool OverrideBGColorEnabled;
   bool WordWrap;
   Point bgOffset;
-  bool isBackgroundVisible;
+  BackgroundMode backgroundMode;
   bool RestrainTextInside;
   bool RightToLeft;
   string prefix;
   bool needUpdatePicture;
   int lineIntervalOffset;
   Picture* bgPicture;
-  PictureRef picture;
+  PictureRef background;
+  PictureRef textPicture;
 
   Impl() : textMargin( Rect( 0, 0, 0, 0) ),
 		    	 OverrideBGColorEnabled(false), WordWrap(false),
 			     RestrainTextInside(true), RightToLeft(false), 
-           needUpdatePicture(false), bgPicture( 0 ), picture( 0 ),
-           lineIntervalOffset( 0 )
+                 needUpdatePicture(false), lineIntervalOffset( 0 ),
+                 bgPicture( 0 )
+
 	{
     font = Font::create( FONT_2 );
 	}
 
-    ~Impl()
-    {
-        releaseTexture();
-    }
+  ~Impl()
+  {
+      background.reset();
+      textPicture.reset();
+  }
 
-    void breakText( const std::string& text, const Size& size );
-
-    void releaseTexture()
-    {
-        if( picture )
-        {
-          picture.reset();
-        }
-    }
+  void breakText( const std::string& text, const Size& size );
 
 public oc3_signals:
 	Signal0<> onClickedSignal;
@@ -73,13 +69,13 @@ public oc3_signals:
 
 //! constructor
 Label::Label(Widget* parent, const Rect& rectangle, const string& text, bool border,
-						bool background, int id)
+						 BackgroundMode background, int id)
 : Widget( parent, id, rectangle),
 	_d( new Impl )
 {
   _d->bgPicture = 0;
   _d->isBorderVisible = border;
-  _d->isBackgroundVisible = background;
+  _d->backgroundMode = background;
  
 
   #ifdef _DEBUG
@@ -92,71 +88,83 @@ Label::Label(Widget* parent, const Rect& rectangle, const string& text, bool bor
 
 void Label::_updateTexture( GfxEngine& painter )
 {
-    Size btnSize = getSize();
+  Size labelSize = getSize();
 
-    if( _d->picture && _d->picture->getSize() != btnSize )
-        _d->releaseTexture();
+  if( _d->background && _d->background->getSize() != labelSize )
+  {
+    _d->background.reset();  
+  }
 
-    if( !_d->picture )
+  if( !_d->background )
+  {
+    _d->background.reset( Picture::create( labelSize ) );
+  }
+
+  if( _d->textPicture && _d->textPicture->getSize() != labelSize )
+  {
+    _d->textPicture.reset( Picture::create( labelSize ) );  
+  }
+  
+  if( !_d->textPicture )
+  {
+    _d->textPicture.reset( Picture::create( labelSize ) );
+  }
+
+  if( _d->textPicture )
+  {
+    _d->textPicture->fill( 0x00ffffff, Rect( 0, 0, 0, 0) );
+  }
+
+  // draw button background
+  if( _d->bgPicture )
+  {
+    _d->background->draw( *_d->bgPicture, _d->bgOffset.getX(), _d->bgOffset.getY() );
+  }    
+  else
+  {
+    switch( _d->backgroundMode )
     {
-      _d->picture.reset( Picture::create( btnSize ) );
-      //painter.loadPicture( *_d->picture );
+    case bgWhite: GuiPaneling::instance().draw_white_area( *_d->background, 0, 0, getSize().getWidth(), getSize().getHeight() ); break;
+    case bgBlack: GuiPaneling::instance().draw_black_area( *_d->background, 0, 0, getSize().getWidth(), getSize().getHeight() ); break;
+    case bgNone: _d->background.reset(); break;
     }
+  }
 
-    // draw button background
-    if( _d->bgPicture )
+  if( _d->font.isValid() )
+  {
+    Rect frameRect( Point( 0, 0 ), getSize() );
+    string rText = _d->prefix + _text;
+
+    if( rText.size() && _d->font.isValid() )
     {
-        _d->picture->draw( *_d->bgPicture, _d->bgOffset.getX(), _d->bgOffset.getY() );
-    }    
-    else
-    {
-        if( !_d->isBackgroundVisible )
-        {
-            GuiPaneling::instance().draw_white_area( *_d->picture, 0, 0, getSize().getWidth(), getSize().getHeight() );
+      //eColor = GetResultColor( eColor );
+      if( !_d->WordWrap )
+      {
+        Rect textRect = _d->font.calculateTextRect( rText, frameRect, getHorizontalTextAlign(), getVerticalTextAlign() );
+        _d->font.draw( *_d->textPicture, getText(), textRect.getLeft(), textRect.getTop() );
+      }
+      else
+      {
+        if( _d->font != _d->lastBreakFont )
+        {  
+            _d->breakText( getText(), getSize() );
         }
-        else
+
+        Rect r = frameRect;
+        int height = _d->font.getSize("A").getHeight();// + font.GetKerningHeight();
+
+        for (unsigned int i=0; i<_d->brokenText.size(); ++i)
         {
-            GuiPaneling::instance().draw_black_area( *_d->picture, 0, 0, getSize().getWidth(), getSize().getHeight() );
+            Rect textRect = _d->font.calculateTextRect( rText, r, 
+                                                        getHorizontalTextAlign(), getVerticalTextAlign() );
+
+            _d->font.draw( *_d->textPicture, _d->brokenText[i], textRect.getLeft(), textRect.getTop() );
+
+            r += Point( 0, height + _d->lineIntervalOffset );
         }
+      }
     }
-
-    if( _d->font.isValid() )
-    {
-        Rect frameRect( Point( 0, 0 ), getSize() );
-        string rText = _d->prefix + _text;
-
-        if( rText.size() && _d->font.isValid() )
-        {
-            //eColor = GetResultColor( eColor );
-            if( !_d->WordWrap )
-            {
-                Rect textRect = _d->font.calculateTextRect( rText, frameRect, 
-                                                            getHorizontalTextAlign(), getVerticalTextAlign() );
-
-                _d->font.draw( *_d->picture, getText(), textRect.getLeft(), textRect.getTop() );
-            }
-            else
-            {
-                if( _d->font != _d->lastBreakFont )
-                {  
-                    _d->breakText( getText(), getSize() );
-                }
-
-                Rect r = frameRect;
-                int height = _d->font.getSize("A").getHeight();// + font.GetKerningHeight();
-
-                for (unsigned int i=0; i<_d->brokenText.size(); ++i)
-                {
-                    Rect textRect = _d->font.calculateTextRect( rText, r, 
-                                                                getHorizontalTextAlign(), getVerticalTextAlign() );
-
-                    _d->font.draw( *_d->picture, _d->brokenText[i], textRect.getLeft(), textRect.getTop() );
-
-                    r += Point( 0, height + _d->lineIntervalOffset );
-                }
-            }
-        }
-    }
+  }
 }
 
 //! destructor
@@ -170,13 +178,15 @@ void Label::draw( GfxEngine& painter )
   if ( !isVisible() )
     return;
 
-  Rect frameRect( getAbsoluteRect() );
-
   // draw background
-  if( _d->picture )
+  if( _d->background )
   {
-    Rect clippingRect = getAbsoluteClippingRect();
-    painter.drawPicture( *_d->picture, frameRect.getLeft(), frameRect.getTop(), &clippingRect );
+    painter.drawPicture( *_d->background, getScreenLeft(), getScreenTop(), &getAbsoluteClippingRectRef() );
+  }
+
+  if( _d->textPicture )
+  {
+    painter.drawPicture( *_d->textPicture, getScreenLeft(), getScreenTop(), &getAbsoluteClippingRectRef() );
   }
 
   Widget::draw( painter );
@@ -205,13 +215,13 @@ Font Label::getFont() const
 // {
 // 	setColor( color, bgColor );
 // 	_d->OverrideBGColorEnabled = true;
-// 	_d->isBackgroundVisible = true;
+// 	_d->backgroundMode = true;
 // }
 
 //! Sets whether to draw the background
-void Label::setBackgroundVisible(bool draw)
+void Label::setBackgroundMode( BackgroundMode mode )
 {
-  _d->isBackgroundVisible = draw;
+  _d->backgroundMode = mode;
 }
 
 //! Sets whether to draw the border
@@ -559,9 +569,9 @@ void Label::beforeDraw( GfxEngine& painter )
   Widget::beforeDraw( painter );
 }
 
-bool Label::isBackgroundVisible() const
+Label::BackgroundMode Label::getBackgroundMode() const
 {
-  return _d->isBackgroundVisible;
+  return _d->backgroundMode;
 }
 
 bool Label::isBorderVisible() const
@@ -605,7 +615,12 @@ void Label::setLineIntervalOffset( const int offset )
     _d->needUpdatePicture = true;
 }
 
-Picture& Label::getPicture()
+PictureRef& Label::getPicture()
 {
-  return *_d->picture.data();
+  return _d->background;
+}
+
+PictureRef& Label::getTextPicture()
+{
+  return _d->textPicture;
 }

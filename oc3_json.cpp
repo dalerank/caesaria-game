@@ -394,7 +394,7 @@ void Json::parseComment(const std::string &json, int &index, bool &success)
   bool complete = false;
   while(!complete)
   {
-    if(index == json.size())
+    if(index == (int)json.size())
     {
       break;
     }
@@ -591,7 +591,7 @@ int Json::nextToken(const std::string &json, int &index)
 {
         Json::eatWhitespace(json, index);
 
-        if(index == json.size())
+        if(index == (int)json.size())
         {
                 return JsonTokenNone;
         }

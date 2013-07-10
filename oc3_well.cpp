@@ -15,7 +15,7 @@
 
 #include "oc3_well.hpp"
 #include "oc3_resourcegroup.hpp"
-#include "oc3_servicewalker.hpp"
+#include "oc3_walker_service.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_tile.hpp"
 
@@ -23,6 +23,8 @@ BuildingWell::BuildingWell() : ServiceBuilding(S_WELL, B_WELL, Size(1) )
 {
   _fireIncrement = 0;
   _damageIncrement = 0;
+
+  setWorkers( 0 );
 }
 
 void BuildingWell::deliverService()

@@ -60,7 +60,7 @@ public:
 
   void getSelectedArea( TilePos& outStartPos, TilePos& outStopPos );
   // returns the tile at the cursor position.
-  Tile* getTileXY( const Point& pos, bool overborder=false );
+
   void buildAll();
   void clearAll();
 
@@ -80,6 +80,8 @@ public:
 
   void drawTile( Tile& tile );
   void drawTileEx( Tile& tile, const int depth );
+
+  Tile* getTile( const Point& pos, bool overborder);
 
   template< class X, class Y >
   void setDrawFunction( Y* obj, void (X::*func)( Tile& ) )
@@ -802,32 +804,37 @@ void TilemapRenderer::drawTilemap()
   }
 }
 
-Tile* TilemapRenderer::Impl::getTileXY( const Point& pos, bool overborder)
+Tile* TilemapRenderer::getTile( const Point& pos, bool overborder )
 {
-   Point mOffset = pos - mapOffset;  // x relative to the left most pixel of the tilemap
-   int i = (mOffset.getX() + 2 * mOffset.getY()) / 60;
-   int j = (mOffset.getX() - 2 * mOffset.getY()) / 60;
-   
-   if( overborder )
-   {
-       i = math::clamp( i, 0, tilemap->getSize() - 1 );
-       j = math::clamp( j, 0, tilemap->getSize() - 1 );
-   }
-   // std::cout << "ij ("<<i<<","<<j<<")"<<std::endl;
-
-   if (i>=0 && j>=0 && i < tilemap->getSize() && j < tilemap->getSize())
-   {
-      // valid coordinate
-      return &tilemap->at( TilePos( i, j ) );
-   }
-   else
-   {
-      // the pixel is outside the tilemap => no tile here
-      return NULL;
-   }
+  return _d->getTile( pos, overborder );
 }
 
-TilemapArea &TilemapRenderer::getMapArea()
+Tile* TilemapRenderer::Impl::getTile( const Point& pos, bool overborder)
+{
+  Point mOffset = pos - mapOffset;  // x relative to the left most pixel of the tilemap
+  int i = (mOffset.getX() + 2 * mOffset.getY()) / 60;
+  int j = (mOffset.getX() - 2 * mOffset.getY()) / 60;
+  
+  if( overborder )
+  {
+      i = math::clamp( i, 0, tilemap->getSize() - 1 );
+      j = math::clamp( j, 0, tilemap->getSize() - 1 );
+  }
+  // std::cout << "ij ("<<i<<","<<j<<")"<<std::endl;
+
+  if (i>=0 && j>=0 && i < tilemap->getSize() && j < tilemap->getSize())
+  {
+     // valid coordinate
+     return &tilemap->at( TilePos( i, j ) );
+  }
+  else
+  {
+     // the pixel is outside the tilemap => no tile here
+     return NULL;
+  }
+}
+
+TilemapArea& TilemapRenderer::getMapArea()
 {
   return *_d->mapArea;
 }
@@ -841,7 +848,7 @@ void TilemapRenderer::updatePreviewTiles( bool force )
   if( !bldCommand->isMultiBuilding() )
     _d->startCursorPos = _d->lastCursorPos;
 
-  Tile* curTile = _d->getTileXY( _d->lastCursorPos, true );
+  Tile* curTile = getTile( _d->lastCursorPos, true );
 
   if( !curTile )
     return;
@@ -855,8 +862,8 @@ void TilemapRenderer::updatePreviewTiles( bool force )
 
   if( bldCommand->isBorderBuilding() )
   {
-    Tile* startTile = _d->getTileXY( _d->startCursorPos, true );  // tile under the cursor (or NULL)
-    Tile* stopTile  = _d->getTileXY( _d->lastCursorPos,  true );
+    Tile* startTile = getTile( _d->startCursorPos, true );  // tile under the cursor (or NULL)
+    Tile* stopTile  = getTile( _d->lastCursorPos,  true );
 
     RoadPropagator rp( *_d->tilemap, *startTile );
 
@@ -889,8 +896,8 @@ void TilemapRenderer::updatePreviewTiles( bool force )
 
 void TilemapRenderer::Impl::getSelectedArea( TilePos& outStartPos, TilePos& outStopPos )
 {
-  Tile* startTile = getTileXY( startCursorPos, true );  // tile under the cursor (or NULL)
-  Tile* stopTile  = getTileXY( lastCursorPos, true );
+  Tile* startTile = getTile( startCursorPos, true );  // tile under the cursor (or NULL)
+  Tile* stopTile  = getTile( lastCursorPos, true );
 
   TilePos startPosTmp = startTile->getIJ();
   TilePos stopPosTmp  = stopTile->getIJ();
@@ -971,7 +978,9 @@ void TilemapRenderer::handleEvent( NEvent& event )
         {
             _d->lastCursorPos = event.MouseEvent.getPosition();  
             if( !_d->lmbPressed || _d->startCursorPos.getX() < 0 )
+            {
                 _d->startCursorPos = _d->lastCursorPos;
+            }
            
             updatePreviewTiles();
         }
@@ -987,7 +996,7 @@ void TilemapRenderer::handleEvent( NEvent& event )
 
         case OC3_LMOUSE_LEFT_UP:            // left button
         {
-            Tile* tile = _d->getTileXY( event.MouseEvent.getPosition() );  // tile under the cursor (or NULL)
+            Tile* tile = _d->getTile( event.MouseEvent.getPosition(), false );  // tile under the cursor (or NULL)
             if( tile == 0 )
             {
               _d->lmbPressed = false;
@@ -1020,7 +1029,7 @@ void TilemapRenderer::handleEvent( NEvent& event )
 
         case OC3_RMOUSE_LEFT_UP:
         {
-            Tile* tile = _d->getTileXY( event.MouseEvent.getPosition() );  // tile under the cursor (or NULL)
+            Tile* tile = _d->getTile( event.MouseEvent.getPosition(), false );  // tile under the cursor (or NULL)
             if( _d->changeCommand.isValid() )
             { 
                 _d->changeCommand = TilemapChangeCommandPtr();
@@ -1059,7 +1068,10 @@ void TilemapRenderer::handleEvent( NEvent& event )
 
         case KEY_LEFT:
             getMapArea().moveLeft(1 + ( event.KeyboardEvent.Shift ? 4 : 0 ) );
-        break;     
+        break;
+
+        default:
+        break;
         }
     }
 }
@@ -1139,9 +1151,9 @@ void TilemapRenderer::checkPreviewBuild( const TilePos& pos )
   }
 }
 
-Tile& TilemapRenderer::getTile(const TilePos& pos )
+Tile* TilemapRenderer::getTile(const TilePos& pos )
 {
-  return _d->tilemap->at( pos );
+  return &_d->tilemap->at( pos );
 }
 
 Signal1< const Tile& >& TilemapRenderer::onShowTileInfo()
@@ -1149,7 +1161,7 @@ Signal1< const Tile& >& TilemapRenderer::onShowTileInfo()
   return _d->onShowTileInfoSignal;
 }
 
-void TilemapRenderer::setChangeCommand( const TilemapChangeCommandPtr command )
+void TilemapRenderer::setMode( const TilemapChangeCommandPtr command )
 {
   _d->changeCommand = command;
   _d->startCursorPos = _d->lastCursorPos;

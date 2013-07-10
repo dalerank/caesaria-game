@@ -44,6 +44,7 @@ ContextMenuItem* MainMenu::addItem(const std::string& text, int commandId, bool 
     {
       //ret->getSubMenu()->setStyle( getStyle().getSubStyle( NES_SUBMENU ).getName() );
 		  ret->setFlag( ContextMenuItem::drawSubmenuSprite, false );
+      ret->setBackgroundMode( Label::bgNone ); 
     }
     //refItem.alignEnabled = true;
     //refItem.horizontal = EGUIA_CENTER;

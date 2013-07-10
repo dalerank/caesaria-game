@@ -48,8 +48,13 @@ public:
 
    Tilemap& getTilemap();
 
-   // sets the current build tool (if any)
-   void setChangeCommand( const TilemapChangeCommandPtr command );
+   Tile* getTile( const Point& pos, bool overborder=false );
+   
+   // returns the tile at the grid position
+   Tile* getTile( const TilePos& pos );
+
+   // sets the current command
+   void setMode( const TilemapChangeCommandPtr command );
 
 oc3_signals public:
    Signal1< const Tile& >& onShowTileInfo();
@@ -61,9 +66,6 @@ protected:
 
    // used to display the future building at mouse location
    void checkPreviewBuild(const TilePos& pos );
-
-   // returns the tile at the grid position (handles priority tiles)
-   Tile& getTile( const TilePos& pos );
    
    // update preview tiles
    void updatePreviewTiles( bool force=false );

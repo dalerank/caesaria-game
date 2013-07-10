@@ -84,10 +84,10 @@ private:
 };
 
 // info box about a service building
-class GuiInfoService : public GuiInfoBox
+class InfoBoxWorkingBuilding : public GuiInfoBox
 {
 public:
-  GuiInfoService( Widget* parent, ServiceBuildingPtr building);
+  InfoBoxWorkingBuilding( Widget* parent, WorkingBuildingPtr building);
   
   void paint();
   void drawWorkers( int );
@@ -98,16 +98,28 @@ private:
   ScopedPtr< Impl > _sd;
 };
 
+class InfoBoxSenate : public GuiInfoBox
+{
+public:
+  InfoBoxSenate( Widget* parent, const Tile& tile );
+
+  void paint();
+private:
+
+  class Impl;
+  ScopedPtr< Impl > _sd;
+};
+
 class InfoBoxLand : public GuiInfoBox
 {
 public:
-    InfoBoxLand( Widget* parent, const Tile& tile );   
-    void setText( const std::string& text );
-    //bool onEvent(const NEvent& event);
+  InfoBoxLand( Widget* parent, const Tile& tile );   
+  void setText( const std::string& text );
+  //bool onEvent(const NEvent& event);
 private:
-    void _paint();
+  void _paint();
 
-    Label* _text;
+  Label* _text;
 };
 
 class InfoBoxFreeHouse : public InfoBoxLand

@@ -41,6 +41,9 @@
 #include "oc3_goverment_building.hpp"
 #include "oc3_military_building.hpp"
 #include "oc3_academy.hpp"
+#include "oc3_forum.hpp"
+#include "oc3_garden.hpp"
+#include "oc3_health_buildings.hpp"
 
 #include <map>
 
@@ -80,13 +83,13 @@ ConstructionManager& ConstructionManager::getInstance()
 ConstructionManager::ConstructionManager() : _d( new Impl )
 {
   // entertainment
-  addCreator( B_THEATER, OC3_STR_EXT(B_THEATER), new BuildingCreator<BuildingTheater>() );
+  addCreator( B_THEATER, OC3_STR_EXT(B_THEATER), new BuildingCreator<Theater>() );
   addCreator( B_AMPHITHEATER, OC3_STR_EXT(B_AMPHITHEATER), new BuildingCreator<BuildingAmphiTheater>() );
   addCreator( B_COLLOSSEUM, OC3_STR_EXT(B_COLLOSSEUM), new BuildingCreator<BuildingCollosseum>() );
-  addCreator( B_ACTOR, OC3_STR_EXT(B_ACTOR), new BuildingCreator<BuildingActor>() );
-  addCreator( B_GLADIATOR, OC3_STR_EXT(B_GLADIATOR), new BuildingCreator<BuildingGladiator>() );
-  addCreator( B_LION, OC3_STR_EXT(B_LION), new BuildingCreator<BuildingLion>() );
-  addCreator( B_CHARIOT, OC3_STR_EXT(B_CHARIOT), new BuildingCreator<BuildingChariot>() );
+  addCreator( B_ACTOR_COLONY, OC3_STR_EXT(B_ACTOR_COLONY), new BuildingCreator<BuildingActor>() );
+  addCreator( B_GLADIATOR_SCHOOL, OC3_STR_EXT(B_GLADIATOR_SCHOOL), new BuildingCreator<BuildingGladiator>() );
+  addCreator( B_LION_HOUSE, OC3_STR_EXT(B_LION_HOUSE), new BuildingCreator<BuildingLion>() );
+  addCreator( B_CHARIOT_MAKER, OC3_STR_EXT(B_CHARIOT_MAKER), new BuildingCreator<BuildingChariot>() );
   addCreator( B_HIPPODROME, OC3_STR_EXT(B_HIPPODROME),new BuildingCreator<BuildingHippodrome>() );
   // road&house
   addCreator(B_HOUSE, OC3_STR_EXT(B_HOUSE), new BuildingCreator<House>() );
@@ -120,21 +123,21 @@ ConstructionManager::ConstructionManager() : _d( new Impl )
   addCreator(B_GRANARY, OC3_STR_EXT(B_GRANARY)  , new BuildingCreator<Granary>() );
   // farms
   addCreator(B_WHEAT_FARM, OC3_STR_EXT(B_WHEAT_FARM)    , new BuildingCreator<FarmWheat>() );
-  addCreator(B_OLIVE, OC3_STR_EXT(B_OLIVE)    , new BuildingCreator<FarmOlive>() );
-  addCreator(B_GRAPE, OC3_STR_EXT(B_GRAPE)    , new BuildingCreator<FarmGrape>() );
-  addCreator(B_MEAT, OC3_STR_EXT(B_MEAT)     , new BuildingCreator<FarmMeat>() );
-  addCreator(B_FRUIT, OC3_STR_EXT(B_FRUIT)    , new BuildingCreator<FarmFruit>() );
-  addCreator(B_VEGETABLE, OC3_STR_EXT(B_VEGETABLE), new BuildingCreator<FarmVegetable>() );
+  addCreator(B_OLIVE_FARM, OC3_STR_EXT(B_OLIVE_FARM)    , new BuildingCreator<FarmOlive>() );
+  addCreator(B_GRAPE_FARM, OC3_STR_EXT(B_GRAPE_FARM)    , new BuildingCreator<FarmGrape>() );
+  addCreator(B_PIG_FARM, OC3_STR_EXT(B_PIG_FARM)     , new BuildingCreator<FarmMeat>() );
+  addCreator(B_FRUIT_FARM, OC3_STR_EXT(B_FRUIT_FARM)    , new BuildingCreator<FarmFruit>() );
+  addCreator(B_VEGETABLE_FARM, OC3_STR_EXT(B_VEGETABLE_FARM), new BuildingCreator<FarmVegetable>() );
   // raw materials
   addCreator(B_IRON_MINE, OC3_STR_EXT(B_IRON_MINE)  , new BuildingCreator<IronMine>() );
-  addCreator(B_TIMBER, OC3_STR_EXT(B_TIMBER), new BuildingCreator<TimberLogger>() );
+  addCreator(B_TIMBER_YARD, OC3_STR_EXT(B_TIMBER_YARD), new BuildingCreator<TimberLogger>() );
   addCreator(B_CLAY_PIT, OC3_STR_EXT(B_CLAY_PIT)  , new BuildingCreator<ClayPit>() );
-  addCreator(B_MARBLE, OC3_STR_EXT(B_MARBLE), new BuildingCreator<FactoryMarble>() );
+  addCreator(B_MARBLE_QUARRY, OC3_STR_EXT(B_MARBLE_QUARRY), new BuildingCreator<FactoryMarble>() );
   // factories
-  addCreator(B_WEAPON, OC3_STR_EXT(B_WEAPON)   , new BuildingCreator<WeaponsWorkshop>() );
+  addCreator(B_WEAPONS_WORKSHOP, OC3_STR_EXT(B_WEAPONS_WORKSHOP)   , new BuildingCreator<WeaponsWorkshop>() );
   addCreator(B_FURNITURE, OC3_STR_EXT(B_FURNITURE), new BuildingCreator<FactoryFurniture>() );
-  addCreator(B_WINE, OC3_STR_EXT(B_WINE)     , new BuildingCreator<Winery>() );
-  addCreator(B_OIL, OC3_STR_EXT(B_OIL)      , new BuildingCreator<FactoryOil>() );
+  addCreator(B_WINE_WORKSHOP, OC3_STR_EXT(B_WINE_WORKSHOP)     , new BuildingCreator<Winery>() );
+  addCreator(B_OIL_WORKSHOP, OC3_STR_EXT(B_OIL_WORKSHOP)      , new BuildingCreator<FactoryOil>() );
   addCreator(B_POTTERY, OC3_STR_EXT(B_POTTERY)  , new BuildingCreator<FactoryPottery>() );
   // utility
   addCreator(B_ENGINEER_POST, OC3_STR_EXT(B_ENGINEER_POST), new BuildingCreator<BuildingEngineer>() );

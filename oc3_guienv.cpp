@@ -27,7 +27,7 @@ class GuiEnv::Impl
 public:
   struct SToolTip
   {
-    Widget* Element;
+    WidgetPtr Element;
     unsigned int LastTime;
     unsigned int EnterTime;
     unsigned int LaunchTime;
@@ -37,9 +37,9 @@ public:
   SToolTip toolTip;
   bool preRenderFunctionCalled;
 
-  Widget* hovered;
-  Widget* focusedElement;
-  Widget* hoveredNoSubelement;
+  WidgetPtr hovered;
+  WidgetPtr focusedElement;
+  WidgetPtr hoveredNoSubelement;
 
   Point lastHoveredMousePos;
 
@@ -48,6 +48,8 @@ public:
   Rect _desiredRect;
   GfxEngine* engine;
   Point cursorPos;
+
+  WidgetPtr createStandartTooltip( Widget* parent );
 };
 
 GuiEnv::GuiEnv( GfxEngine& engine )
@@ -67,7 +69,7 @@ GuiEnv::GuiEnv( GfxEngine& engine )
 
     _environment = this;
 
-    _d->toolTip.Element = 0;
+    _d->toolTip.Element;
     _d->toolTip.LastTime = 0;
     _d->toolTip.EnterTime = 0;
     _d->toolTip.LaunchTime = 1000;
@@ -77,7 +79,7 @@ GuiEnv::GuiEnv( GfxEngine& engine )
 //! Returns if the element has focus
 bool GuiEnv::hasFocus( const Widget* element) const
 {
-    return (element == _d->focusedElement);
+    return ( _d->focusedElement.object() == element );
 }
 
 GuiEnv::~GuiEnv()
@@ -121,70 +123,51 @@ void GuiEnv::draw()
   drawTooltip_( DateTime::getElapsedTime() );
 
   // make sure tooltip is always on top
-  if(_d->toolTip.Element)
-     _d->toolTip.Element->draw( *_d->engine );
+  //if(_d->toolTip.Element.isValid() )
+  //{
+  //   _d->toolTip.Element->draw( *_d->engine );
+  //}
 
   _d->preRenderFunctionCalled = false;
 }
 
 bool GuiEnv::setFocus( Widget* element )
 {
-    if (_d->focusedElement == element)
+    if( _d->focusedElement == element )
     {
         return false;
     }
 
-    // GUI Environment should not get the focus
-    if (element == this)
-        element = 0;
-
-    // stop element from being deleted
-    if (element)
-        element->grab();
+    // guard element from being deleted
+    // not delete this line
+    WidgetPtr saveElement = element;
 
     // focus may change or be removed in this call
-    Widget *currentFocus = 0;
-    if (_d->focusedElement)
+    WidgetPtr currentFocus;
+    if( _d->focusedElement.isValid() )
     {
-        currentFocus = _d->focusedElement;
-        currentFocus->grab();
+      currentFocus = _d->focusedElement;
 
-        if( _d->focusedElement->onEvent( NEvent::Gui( _d->focusedElement, element, OC3_ELEMENT_FOCUS_LOST ) ) )
-        {
-            if (element)
-                element->drop();
-            currentFocus->drop();
+      if( _d->focusedElement->onEvent( NEvent::Gui( _d->focusedElement.object(), element, OC3_ELEMENT_FOCUS_LOST ) ) )
+      {
+        return false;
+      }
 
-            return false;
-        }
-
-        currentFocus->drop();
-        currentFocus = 0;
+      currentFocus = WidgetPtr();
     }
 
-    if (element)
+    if( element )
     {
-        currentFocus = _d->focusedElement;
-        if (currentFocus)
-            currentFocus->grab();
+      currentFocus = _d->focusedElement;
 
-        // send focused event
-        if( element->onEvent( NEvent::Gui( element, _d->focusedElement, OC3_ELEMENT_FOCUSED ) ))
-        {
-            if (element)
-                element->drop();
-            if (currentFocus)
-                currentFocus->drop();
+      // send focused event
+      if( element->onEvent( NEvent::Gui( element, _d->focusedElement.object(), OC3_ELEMENT_FOCUSED ) ))
+      {
+        currentFocus = WidgetPtr();
 
-            return false;
-        }
+        return false;
+      }
     }
-
-    if (currentFocus)
-        currentFocus->drop();
-
-    if (_d->focusedElement)
-        _d->focusedElement->drop();
 
     // element is the new focus so it doesn't have to be dropped
     _d->focusedElement = element;
@@ -194,39 +177,42 @@ bool GuiEnv::setFocus( Widget* element )
 
 Widget* GuiEnv::getFocus() const
 {
-  return _d->focusedElement;
+  return _d->focusedElement.object();
 }
 
 bool GuiEnv::isHovered( const Widget* element )
 {
-  return element != NULL ? (element == _d->hovered) : false;
+  return element != NULL ? (_d->hovered.object() == element) : false;
 }
 
 void GuiEnv::deleteLater( Widget* ptrElement )
 {
 	try
 	{
-        if( !ptrElement || !isMyChild( ptrElement ) )
+    if( !ptrElement || !isMyChild( ptrElement ) )
 		{
-            //std::out << L"Elm isn't my child" << core::MsgTerminator();
 			return;
 		}
 
 		if( ptrElement == getFocus() || ptrElement->isMyChild( getFocus() ) )
-			_d->focusedElement = 0;
+    {
+			_d->focusedElement = WidgetPtr();
+    }
 
-		if( _d->hovered == ptrElement || ptrElement->isMyChild( _d->hovered ) )
+		if( _d->hovered.object() == ptrElement || ptrElement->isMyChild( _d->hovered.object() ) )
 		{
-			_d->hovered = 0;
-			_d->hoveredNoSubelement = 0;
+			_d->hovered = WidgetPtr();
+			_d->hoveredNoSubelement = WidgetPtr();
 		}
 
-        Widget::ChildIterator it = _d->deletionQueue.begin();
-        for( ; it != _d->deletionQueue.end(); it++ )
-        {
+    Widget::ChildIterator it = _d->deletionQueue.begin();
+    for( ; it != _d->deletionQueue.end(); it++ )
+    {
 			if( *it == ptrElement )
+      {
 				return;
-        }
+      }
+    }
 
 		_d->deletionQueue.push_back( ptrElement );
 	}
@@ -234,16 +220,15 @@ void GuiEnv::deleteLater( Widget* ptrElement )
 	{}
 }
 
-Widget* GuiEnv::createStandartTooltip_()
+WidgetPtr GuiEnv::Impl::createStandartTooltip( Widget* parent )
 {
   Font styleFont = Font::create( FONT_2 );
 
-  Label* elm = new Label( this, Rect( 0, 0, 2, 2 ), _d->hoveredNoSubelement->getTooltipText(), true, true );
+  Label* elm = new Label( parent, Rect( 0, 0, 2, 2 ), hoveredNoSubelement->getTooltipText(), true, Label::bgWhite );
   elm->setSubElement(true);
-  elm->grab();
 
   Size size( elm->getTextWidth(), elm->getTextHeight() );
-  Rect rect( _d->cursorPos, size );
+  Rect rect( cursorPos, size );
   //rect.constrainTo( getAbsoluteRect() );
   rect -= Point( size.getWidth() + 20, -20 );
   elm->setGeometry( rect );
@@ -255,109 +240,97 @@ Widget* GuiEnv::createStandartTooltip_()
 void GuiEnv::drawTooltip_( unsigned int time )
 {
     // launch tooltip
-    if ( _d->toolTip.Element == 0
-         && _d->hoveredNoSubelement && _d->hoveredNoSubelement != getRootWidget()
-		 && (time - _d->toolTip.EnterTime >= _d->toolTip.LaunchTime
+    if ( _d->toolTip.Element.isNull()
+         && _d->hoveredNoSubelement.isValid() && _d->hoveredNoSubelement.object() != getRootWidget()
+    		 && (time - _d->toolTip.EnterTime >= _d->toolTip.LaunchTime
          || (time - _d->toolTip.LastTime >= _d->toolTip.RelaunchTime && time - _d->toolTip.LastTime < _d->toolTip.LaunchTime))
-		 && _d->hoveredNoSubelement->getTooltipText().size()
+		     && _d->hoveredNoSubelement->getTooltipText().size()
         )
     {
-        //
-		//AbstractFont* font = FontManager::instance().getFont( ElementStyleNames[ NES_TOOLTIP ] );
-        Widget* selfToolTip = NULL;
+      if( _d->hoveredNoSubelement.isValid() )
+      {
+        NEvent e;
+        _d->hoveredNoSubelement->onEvent( e );
+      }
 
-        if( _d->hoveredNoSubelement )
-        {
-            NEvent e;
-            _d->hoveredNoSubelement->onEvent( e );
-        }
-
-        //
-        if( !selfToolTip )
-            selfToolTip = createStandartTooltip_();
-
-        _d->toolTip.Element = selfToolTip;
-        selfToolTip->setGeometry( selfToolTip->getRelativeRect() + Point( 1, 1 ) );
+      _d->toolTip.Element = _d->createStandartTooltip( this );
+      _d->toolTip.Element->setGeometry( _d->toolTip.Element->getRelativeRect() + Point( 1, 1 ) );
     }
 
-    if( _d->toolTip.Element && _d->toolTip.Element->isVisible() )	// (isVisible() check only because we might use visibility for ToolTip one day)
+    if( _d->toolTip.Element.isValid() && _d->toolTip.Element->isVisible() )	// (isVisible() check only because we might use visibility for ToolTip one day)
     {
-        _d->toolTip.LastTime = time;
+      _d->toolTip.LastTime = time;
 
-        // got invisible or removed in the meantime?
-        if( !_d->hoveredNoSubelement ||
-            !_d->hoveredNoSubelement->isVisible() ||
-            !_d->hoveredNoSubelement->getParent()
-            )	// got invisible or removed in the meantime?
-        {
-            _d->toolTip.Element->deleteLater();
-            _d->toolTip.Element = 0;
-        }
+      // got invisible or removed in the meantime?
+      if( _d->hoveredNoSubelement.isNull()
+          || !_d->hoveredNoSubelement->isVisible() 
+          || !_d->hoveredNoSubelement->getParent() )
+      {
+        _d->toolTip.Element->deleteLater();
+        _d->toolTip.Element = WidgetPtr();
+      }
     }
 }
 
 void GuiEnv::updateHoveredElement( const Point& mousePos )
 {
-    Widget* lastHovered = _d->hovered;
-    Widget* lastHoveredNoSubelement = _d->hoveredNoSubelement;
-    _d->lastHoveredMousePos = mousePos;
+  WidgetPtr lastHovered = _d->hovered;
+  WidgetPtr lastHoveredNoSubelement = _d->hoveredNoSubelement;
+  _d->lastHoveredMousePos = mousePos;
 
 	// Get the real Hovered
+  _d->hovered = getRootWidget()->getElementFromPoint( mousePos );
+
+  if( _d->toolTip.Element.isValid() && _d->hovered == _d->toolTip.Element )
+  {
+    // When the mouse is over the ToolTip we remove that so it will be re-created at a new position.
+    // Note that ToolTip.EnterTime does not get changed here, so it will be re-created at once.
+    _d->toolTip.Element->deleteLater();
+    _d->toolTip.Element->hide();
+    _d->toolTip.Element = WidgetPtr();
     _d->hovered = getRootWidget()->getElementFromPoint( mousePos );
+  }
 
-    if ( _d->toolTip.Element && _d->hovered == _d->toolTip.Element )
-    {
-        // When the mouse is over the ToolTip we remove that so it will be re-created at a new position.
-        // Note that ToolTip.EnterTime does not get changed here, so it will be re-created at once.
-        _d->toolTip.Element->deleteLater();
-        _d->toolTip.Element->hide();
-        _d->toolTip.Element = 0;
-        _d->hovered = getRootWidget()->getElementFromPoint( mousePos );
-    }
-
-    // for tooltips we want the element itself and not some of it's subelements
-    if( _d->hovered != getRootWidget() )
+  // for tooltips we want the element itself and not some of it's subelements
+  if( _d->hovered != getRootWidget() )
 	{
 		_d->hoveredNoSubelement = _d->hovered;
-		while ( _d->hoveredNoSubelement && _d->hoveredNoSubelement->isSubElement() )
+		while ( _d->hoveredNoSubelement.isValid() && _d->hoveredNoSubelement->isSubElement() )
 		{
 			_d->hoveredNoSubelement = _d->hoveredNoSubelement->getParent();
 		}
 	}
-    else
+  else
 	{
-        _d->hoveredNoSubelement = 0;
-
+    _d->hoveredNoSubelement = 0;
 	}
 
-    if( _d->hovered != lastHovered )
-    {
-        if( lastHovered )
+  if( _d->hovered != lastHovered )
+  {
+    if( lastHovered.isValid() )
 		{
-            lastHovered->onEvent( NEvent::Gui( lastHovered, 0, OC3_ELEMENT_LEFT ) );
-			lastHovered->drop();
+      lastHovered->onEvent( NEvent::Gui( lastHovered.object(), 0, OC3_ELEMENT_LEFT ) );
 		}
 
-        if( _d->hovered )
+    if( _d->hovered.isValid() )
 		{
-            _d->hovered->onEvent( NEvent::Gui( _d->hovered, _d->hovered, OC3_ELEMENT_HOVERED ) );
-			_d->hovered->grab();
+      _d->hovered->onEvent( NEvent::Gui( _d->hovered.object(), _d->hovered.object(), OC3_ELEMENT_HOVERED ) );
 		}
-    }
+  }
 
-    if ( lastHoveredNoSubelement != _d->hoveredNoSubelement )
+  if ( lastHoveredNoSubelement != _d->hoveredNoSubelement )
+  {
+    if( _d->toolTip.Element.isValid() )
     {
-        if( _d->toolTip.Element )
-        {
-            _d->toolTip.Element->deleteLater();
-            _d->toolTip.Element = 0;
-        }
-
-        if( _d->hoveredNoSubelement )
-        {
-            _d->toolTip.EnterTime = DateTime::getElapsedTime();
-        }
+      _d->toolTip.Element->deleteLater();
+      _d->toolTip.Element = WidgetPtr();
     }
+
+    if( _d->hoveredNoSubelement.isValid() )
+    {
+      _d->toolTip.EnterTime = DateTime::getElapsedTime();
+    }
+  }
 }
 
 //! Returns the next element in the tab group starting at the focused element
@@ -423,9 +396,9 @@ bool GuiEnv::handleEvent( const NEvent& event )
         {
         case OC3_LMOUSE_PRESSED_DOWN:
         case OC3_RMOUSE_PRESSED_DOWN:
-            if ( (_d->hovered && _d->hovered != getFocus()) || !getFocus() )
+            if ( (_d->hovered.isValid() && _d->hovered != getFocus()) || !getFocus() )
             {
-                setFocus(_d->hovered);
+                setFocus( _d->hovered.object() );
             }
 
             // sending input to focus
@@ -433,7 +406,7 @@ bool GuiEnv::handleEvent( const NEvent& event )
                 return true;
 
             // focus could have died in last call
-            if (!getFocus() && _d->hovered)
+            if (!getFocus() && _d->hovered.isValid() )
             {
 
                 return _d->hovered->onEvent(event);
@@ -452,8 +425,10 @@ bool GuiEnv::handleEvent( const NEvent& event )
         break;
 
         default:
-            if( _d->hovered )
+            if( _d->hovered.isValid() )
+            {
                 return _d->hovered->onEvent( event );
+            }
         break;
         }
     break;
@@ -518,7 +493,7 @@ Widget* GuiEnv::_CheckParent( Widget* parent )
 
 Widget* GuiEnv::getHoveredElement() const
 {
-  return _d->hovered;
+  return _d->hovered.object();
 }
 
 void GuiEnv::beforeDraw()
@@ -539,25 +514,27 @@ void GuiEnv::beforeDraw()
   for( ConstChildIterator it = Widget::_d->children.begin(); it != Widget::_d->children.end(); ++it)
     (*it)->beforeDraw( *_d->engine );
 
-  if( _d->toolTip.Element )
+  if( _d->toolTip.Element.isValid() )
+  {
     _d->toolTip.Element->bringToFront();
+  }
 
   _d->preRenderFunctionCalled = true;
 }
 
 bool GuiEnv::removeFocus( Widget* element)
 {
-  if( _d->focusedElement && _d->focusedElement == element )
+  if( _d->focusedElement.isValid() && _d->focusedElement == element )
   {
-    if( _d->focusedElement->onEvent( NEvent::Gui( _d->focusedElement,  0, OC3_ELEMENT_FOCUS_LOST )) )
+    if( _d->focusedElement->onEvent( NEvent::Gui( _d->focusedElement.object(),  0, OC3_ELEMENT_FOCUS_LOST )) )
     {
       return false;
     }
   }
-  if (_d->focusedElement)
+
+  if( _d->focusedElement.isValid() )
   {
-    _d->focusedElement->drop();
-    _d->focusedElement = 0;
+    _d->focusedElement = WidgetPtr();
   }
 
   return true;

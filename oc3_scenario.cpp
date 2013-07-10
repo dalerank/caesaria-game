@@ -20,11 +20,13 @@
 #include "oc3_variant.hpp"
 #include "oc3_build_options.hpp"
 #include "oc3_win_targets.hpp"
+#include "oc3_player.hpp"
 
 class Scenario::Impl
 {
 public:
   CityPtr city;
+  Player player;
   std::string description;
   CityWinTargets targets;
 };
@@ -78,4 +80,9 @@ Scenario::~Scenario()
 void Scenario::resetCity()
 {
   _d->city = City::create();
+}
+
+Player& Scenario::getPlayer() const
+{
+  return _d->player;
 }

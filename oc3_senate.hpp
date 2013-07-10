@@ -17,12 +17,23 @@
 #define __OPENCAESAR3_SENATE_H_INCLUDED_
 
 #include "oc3_service_building.hpp"
+#include "oc3_scopedptr.hpp"
 
 class Senate : public ServiceBuilding
 {
 public:
   Senate();
+  unsigned int getFunds() const;
+
+  int collectTaxes();
+  int getPeoplesReached() const;
+
+  void deliverService();
+
   bool canBuild( const TilePos& pos )const;
+private:
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 #endif

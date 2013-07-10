@@ -75,14 +75,9 @@ int DateTime::getMonthToDate( const DateTime& end )
     return getMonthToDate_( end.to_time_t() );
 }
 
-bool DateTime::operator!=( const DateTime& other )
+bool DateTime::operator!=( const DateTime& other ) const
 {
     return to_time_t() != other.to_time_t();
-}
-
-bool DateTime::operator==( const DateTime& other )
-{
-    return to_time_t() == other.to_time_t();
 }
 
 bool DateTime::operator==( const DateTime& other ) const
@@ -90,12 +85,12 @@ bool DateTime::operator==( const DateTime& other ) const
     return to_time_t() == other.to_time_t();
 }
 
-bool DateTime::operator<=( const DateTime& other )
+bool DateTime::operator<=( const DateTime& other ) const
 {
     return to_time_t() <= other.to_time_t();
 }
 
-bool DateTime::operator<( const DateTime& other )
+bool DateTime::operator<( const DateTime& other ) const
 {
     return to_time_t() < other.to_time_t();
 }

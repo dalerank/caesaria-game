@@ -115,7 +115,10 @@ void GfxSdlEngine::loadPicture( Picture& ioPicture)
   SDL_Surface *newImage;
   newImage = SDL_DisplayFormatAlpha( ioPicture.getSurface() );
   SDL_FreeSurface(ioPicture.getSurface());
-  if (newImage == NULL) THROW("Cannot convert surface, maybe out of memory");
+  if (newImage == NULL) 
+  {
+    THROW("Cannot convert surface, maybe out of memory");
+  }
   ioPicture.init( newImage, ioPicture.getOffset() );
 }
 
@@ -137,7 +140,7 @@ void GfxSdlEngine::endRenderFrame()
   if( _d->showDebugInfo )
   {
     std::string debugText = StringHelper::format( 0xff, "fps: %d", _d->lastFps );
-    _d->debugFont.draw( _d->screen, debugText, 4, 22 );
+    _d->debugFont.draw( _d->screen, debugText, 4, 22, false );
   }
 
   SDL_Flip( _d->screen.getSurface() ); //Refresh the screen
@@ -158,7 +161,7 @@ void GfxSdlEngine::drawPicture(const Picture &picture, const int dx, const int d
 
   if( clipRect != 0 )
   {
-    SDL_Rect r = { clipRect->getLeft(), clipRect->getTop(), clipRect->getWidth(), clipRect->getHeight() };
+    SDL_Rect r = { (short)clipRect->getLeft(), (short)clipRect->getTop(), (Uint16)clipRect->getWidth(), (Uint16)clipRect->getHeight() };
     SDL_SetClipRect( _d->screen.getSurface(), &r );
   }
 

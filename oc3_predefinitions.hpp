@@ -1,3 +1,18 @@
+// This file is part of openCaesar3.
+//
+// openCaesar3 is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// openCaesar3 is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+
 #ifndef __OPENCAESAR3_PREDEFINITIONS_H_INCLUDED__
 #define __OPENCAESAR3_PREDEFINITIONS_H_INCLUDED__
 
@@ -6,66 +21,44 @@
 #include <list>
 #include <vector>
 
-class Walker;
-typedef SmartPtr<Walker> WalkerPtr;
+#define PREFEDINE_CLASS_SMARTPOINTER(a) class a; typedef SmartPtr<a> a##Ptr;
+
+PREFEDINE_CLASS_SMARTPOINTER(Walker)
 typedef std::list< WalkerPtr > Walkers;
 
-class CartPusher;
-typedef SmartPtr< CartPusher > CartPusherPtr;
-
-class LandOverlay;
-typedef SmartPtr< LandOverlay > LandOverlayPtr;
+PREFEDINE_CLASS_SMARTPOINTER(CartPusher)
+PREFEDINE_CLASS_SMARTPOINTER(LandOverlay)
 typedef std::list< LandOverlayPtr > LandOverlays;
 
-class Building;
-typedef SmartPtr< Building > BuildingPtr;
+PREFEDINE_CLASS_SMARTPOINTER(Building)
 typedef std::list< BuildingPtr > Buildings;
 
-class House;
-typedef SmartPtr< House > HousePtr;
-
-class Construction;
-typedef SmartPtr< Construction > ConstructionPtr;
-
-class Warehouse;
-typedef SmartPtr< Warehouse > WarehousePtr;
-
-class WorkingBuilding;
-typedef SmartPtr< WorkingBuilding > WorkingBuildingPtr;
+PREFEDINE_CLASS_SMARTPOINTER(House);
+PREFEDINE_CLASS_SMARTPOINTER(Construction)
+PREFEDINE_CLASS_SMARTPOINTER(Warehouse)
+PREFEDINE_CLASS_SMARTPOINTER(WorkingBuilding)
 typedef std::list< WorkingBuildingPtr > WorkingBuildings;
 
-class ServiceBuilding;
-typedef SmartPtr< ServiceBuilding > ServiceBuildingPtr;
-
-class ServiceWalker;
-typedef SmartPtr< ServiceWalker > ServiceWalkerPtr;
-
-class TraineeWalker;
-typedef SmartPtr< TraineeWalker > TraineeWalkerPtr;
-
-class Road;
-typedef SmartPtr< Road > RoadPtr;
-
-class Market;
-typedef SmartPtr< Market > MarketPtr;
-
-class MarketBuyer;
-typedef SmartPtr< MarketBuyer > MarketBuyerPtr;
-
-class Granary;
-typedef SmartPtr< Granary > GranaryPtr;
-
-class Factory;
-typedef SmartPtr< Factory > FactoryPtr;
-
-class RomeDivinity;
-typedef SmartPtr< RomeDivinity > RomeDivinityPtr;
-
-class Temple;
-typedef SmartPtr< Temple > TemplePtr;
-
-class City;
-typedef SmartPtr< City > CityPtr;
+PREFEDINE_CLASS_SMARTPOINTER(Garden)
+PREFEDINE_CLASS_SMARTPOINTER(ServiceBuilding)
+PREFEDINE_CLASS_SMARTPOINTER(ServiceWalker)
+PREFEDINE_CLASS_SMARTPOINTER(TraineeWalker)
+PREFEDINE_CLASS_SMARTPOINTER(Road)
+PREFEDINE_CLASS_SMARTPOINTER(Market)
+PREFEDINE_CLASS_SMARTPOINTER(MarketBuyer)
+PREFEDINE_CLASS_SMARTPOINTER(Granary)
+PREFEDINE_CLASS_SMARTPOINTER(Factory)
+PREFEDINE_CLASS_SMARTPOINTER(RomeDivinity)
+PREFEDINE_CLASS_SMARTPOINTER(Temple)
+PREFEDINE_CLASS_SMARTPOINTER(City)
+PREFEDINE_CLASS_SMARTPOINTER(Senate)
+PREFEDINE_CLASS_SMARTPOINTER(Forum)
+PREFEDINE_CLASS_SMARTPOINTER(TempleOracle)
+PREFEDINE_CLASS_SMARTPOINTER(Theater)
+PREFEDINE_CLASS_SMARTPOINTER(Library)
+PREFEDINE_CLASS_SMARTPOINTER(School)
+PREFEDINE_CLASS_SMARTPOINTER(College)
+PREFEDINE_CLASS_SMARTPOINTER(EmpireCity)
 
 class Tile;
 typedef std::list< const Tile* > ConstWayOnTiles;

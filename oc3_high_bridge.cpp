@@ -24,10 +24,10 @@
 class HighBridgeSubTile : public Construction
 {
 public:
-  typedef enum { liftingSE=73, spanSE=74, footingSE=79, descentSE=75, 
-                 liftingSW=76, spanSW=77, footingSW=80, descentSW=78,
-                 liftingSE2=173, descentSE2=175,
-                 liftingSW2=176, descentSW2=178 };
+   enum { liftingSE=73, spanSE=74, footingSE=79, descentSE=75,
+          liftingSW=76, spanSW=77, footingSW=80, descentSW=78,
+          liftingSE2=173, descentSE2=175,
+          liftingSW2=176, descentSW2=178 };
   HighBridgeSubTile( const TilePos& pos, int index )
     : Construction( B_LOW_BRIDGE, Size( 1 ) )
   {
@@ -134,7 +134,7 @@ public:
 
 bool HighBridge::canBuild( const TilePos& pos ) const
 {
-  bool is_constructible = Construction::canBuild( pos );
+  //bool is_constructible = Construction::canBuild( pos );
 
   TilePos endPos, startPos;
   _d->direction=D_NONE;
@@ -166,7 +166,7 @@ void HighBridge::setTerrain( TerrainTile& terrain )
 void HighBridge::_computePictures( const TilePos& startPos, const TilePos& endPos, DirectionType dir )
 {
   Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
-  Picture& water = Picture::load( "land1a", 120 );
+  //Picture& water = Picture::load( "land1a", 120 );
   switch( dir )
   {
   case D_NORTH_WEST:

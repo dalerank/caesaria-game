@@ -16,7 +16,7 @@
 #include "oc3_burningruins.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_positioni.hpp"
-#include "oc3_servicewalker.hpp"
+#include "oc3_walker_service.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_scenario.hpp"
 

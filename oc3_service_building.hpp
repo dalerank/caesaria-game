@@ -33,7 +33,7 @@ public:
   virtual ~ServiceBuilding();
 
   ServiceType getService() const;
-  void timeStep(const unsigned long time);
+  virtual void timeStep(const unsigned long time);
   virtual void destroy();  // handles the walkers
 
   int getServiceRange() const;  // max distance from building to road for road to propose the service
@@ -63,12 +63,15 @@ public:
   EntertainmentBuilding( const ServiceType service, const BuildingType type,
                          const Size& size);
   virtual void deliverService();
+  virtual int getVisitorsNumber() const;
 };
 
-class BuildingTheater : public EntertainmentBuilding
+class Theater : public EntertainmentBuilding
 {
 public:
-   BuildingTheater();
+   Theater();
+
+   virtual int getVisitorsNumber() const; 
 };
 
 class BuildingAmphiTheater : public EntertainmentBuilding
@@ -94,48 +97,24 @@ class School : public ServiceBuilding
 {
 public:
    School();
+
+   int getVisitorsNumber() const;
 };
 
 class Library : public ServiceBuilding
 {
 public:
    Library();
+
+   int getVisitorsNumber() const;
 };
 
 class College : public ServiceBuilding
 {
 public:
    College();
-};
 
-class Baths : public ServiceBuilding
-{
-public:
-   Baths();
-};
-
-class Barber : public ServiceBuilding
-{
-public:
-   Barber();
-};
-
-class Doctor : public ServiceBuilding
-{
-public:
-   Doctor();
-};
-
-class Hospital : public ServiceBuilding
-{
-public:
-   Hospital();
-};
-
-class Forum : public ServiceBuilding
-{
-public:
-   Forum();
+   int getVisitorsNumber() const;
 };
 
 #endif

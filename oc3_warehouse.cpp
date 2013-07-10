@@ -97,7 +97,7 @@ void WarehouseTile::computePicture()
    case G_POTTERY: picIdx = 76; break;
    case G_FISH: picIdx = 80; break;
    default:
-      THROW("Unexpected good type: " << _stock._goodType);
+     _OC3_DEBUG_BREAK_IF( _stock._goodType && "Unexpected good type: " );
    }
    if (_stock._goodType != G_NONE)
    {
@@ -210,7 +210,7 @@ void Warehouse::deliverService()
   {
     for( int goodType=G_WHEAT; goodType <= G_VEGETABLE; goodType++ )
     {
-      int goodQtyMax = _d->goodStore.getCurrentQty( (GoodType)goodType );
+      //int goodQtyMax = _d->goodStore.getCurrentQty( (GoodType)goodType );
       int goodQty = math::clamp( goodQty, 0, 400);
 
       if( goodQty > 0 )

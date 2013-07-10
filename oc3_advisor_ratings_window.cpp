@@ -45,11 +45,11 @@ public:
     PushButton::_updateTexture( state );
 
     Font digitFont = Font::create( FONT_3 );
-    PictureRef& pic = _getPicture( state );
-    digitFont.draw( *pic, StringHelper::format( 0xff, "%d", _value ), getWidth() / 2 - 10, 15 );
+    PictureRef& pic = _getBackground( state );
+    digitFont.draw( *pic, StringHelper::format( 0xff, "%d", _value ), getWidth() / 2 - 10, 15, false );
 
     Font targetFont = Font::create( FONT_1 );
-    targetFont.draw( *pic, StringHelper::format( 0xff, "%d need", _target), 10, getHeight() - 25 );
+    targetFont.draw( *pic, StringHelper::format( 0xff, "%d need", _target), 10, getHeight() - 25, false );
   }
 
   void setValue( const int value )
@@ -126,7 +126,7 @@ AdvisorRatingsWindow::AdvisorRatingsWindow( Widget* parent, int id, const CityPt
   CityWinTargets& targets = Scenario::instance().getWinTargets();
 
   Font font = Font::create( FONT_2 );
-  font.draw( *_d->background, StringHelper::format( 0xff, "(%s %d)", _("##need_population##"), targets.getPopulation() ), 225, 15);
+  font.draw( *_d->background, StringHelper::format( 0xff, "(%s %d)", _("##need_population##"), targets.getPopulation() ), 225, 15, false );
 
   _d->btnCulture    = new RatingButton( this, Point( 80,  290), "culture" );
   _d->btnCulture->setTarget( targets.getCulture() );

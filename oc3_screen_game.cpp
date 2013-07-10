@@ -41,6 +41,7 @@
 #include "oc3_alarm_event_holder.hpp"
 #include "oc3_tilemap_renderer.hpp"
 #include "oc3_scenario.hpp"
+#include "oc3_senate_popup_info.hpp"
 
 class ScreenGame::Impl
 {
@@ -122,6 +123,8 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
         
   // here move camera to start position of map
   getMapArea().setCenterIJ( _d->scenario->getCity()->getCameraPos() ); 
+
+  new SenatePopupInfo( _d->gui->getRootWidget(), _d->mapRenderer );
 
   //connect elements
   CityPtr city = _d->scenario->getCity();
@@ -258,6 +261,8 @@ void ScreenGame::handleEvent( NEvent& event )
       case KEY_F10:
 	      _d->makeScreenShot();
 	    break;
+
+      default: break;
       }
     }
   }
@@ -282,12 +287,12 @@ int ScreenGame::getResult() const
 
 void ScreenGame::Impl::resolveCreateConstruction( int type )
 {
-  mapRenderer.setChangeCommand( TilemapBuildCommand::create( BuildingType( type ) ) );
+  mapRenderer.setMode( TilemapBuildCommand::create( BuildingType( type ) ) );
 }
 
 void ScreenGame::Impl::resolveRemoveTool()
 {
-  mapRenderer.setChangeCommand( TilemapRemoveCommand::create() );
+  mapRenderer.setMode( TilemapRemoveCommand::create() );
 }
 
 void ScreenGame::Impl::showTileInfo( const Tile& tile )
@@ -309,7 +314,7 @@ void ScreenGame::resolveExitGame()
 
 void ScreenGame::Impl::resolveSelectOverlayView( int type )
 {
-  mapRenderer.setChangeCommand( TilemapOverlayCommand::create( OverlayType( type ) ) );
+  mapRenderer.setMode( TilemapOverlayCommand::create( OverlayType( type ) ) );
 }
 
 void ScreenGame::Impl::showAdvisorsWindow()

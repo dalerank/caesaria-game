@@ -21,6 +21,7 @@
 #include "oc3_walker_prefect.hpp"
 #include "oc3_emigrant.hpp"
 #include "oc3_scenario.hpp"
+#include "oc3_walker_taxcollector.hpp"
 #include <map>
 
 template< class T >
@@ -50,6 +51,7 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( WT_IMMIGRANT, OC3_STR_EXT(WT_IMMIGRANT), new WalkerPtrCreator<Immigrant>() );
   addCreator( WT_CART_PUSHER, OC3_STR_EXT(WT_CART_PUSHER), new WalkerPtrCreator<CartPusher>() );
   addCreator( WT_PREFECT, OC3_STR_EXT(WT_PREFECT), new WalkerPtrCreator<WalkerPrefect>() );
+  addCreator( WT_TAXCOLLECTOR, OC3_STR_EXT(WT_TAXCOLLECTOR), new WalkerPtrCreator<TaxCollector>() );
 }
 
 WalkerManager::~WalkerManager()

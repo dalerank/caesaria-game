@@ -39,10 +39,10 @@ public:
   int getMaxRetrieve(const GoodType goodType);
 
   // returns the reservationID if stock can be retrieved (else 0)
-  long reserveStorage(GoodStock &stock);
+  virtual long reserveStorage(GoodStock &stock);
 
   // returns the reservationID if stock can be retrieved (else 0)
-  long reserveRetrieval(GoodStock &stock);
+  virtual long reserveRetrieval(GoodStock &stock);
 
   // return the reservation
   GoodStock getStorageReservation(const long reservationID, const bool pop=false);
@@ -57,11 +57,11 @@ public:
   void applyRetrieveReservation(SimpleGoodStore &goodStore, const long reservationID);
 
   // immediate store/retrieve, exception if impossible
-  void store(GoodStock &stock, const int amount);
-  void retrieve(GoodStock &stock, const int amount);
+  virtual void store(GoodStock &stock, const int amount);
+  virtual void retrieve(GoodStock &stock, const int amount);
 
   // store all goods from the given goodStore
-  void storeAll(SimpleGoodStore &goodStore);
+  virtual void storeAll(SimpleGoodStore &goodStore);
 
   bool isDevastation() const;
   void setDevastation( bool value );

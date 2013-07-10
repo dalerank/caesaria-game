@@ -116,7 +116,10 @@ void WorkingBuilding::timeStep( const unsigned long time )
 
 void WorkingBuilding::addWalker( WalkerPtr walker )
 {
-  _d->walkerList.push_back( walker );
+  if( walker.isValid() )
+  {
+    _d->walkerList.push_back( walker );
+  }
 }
 
 const Walkers& WorkingBuilding::getWalkerList() const

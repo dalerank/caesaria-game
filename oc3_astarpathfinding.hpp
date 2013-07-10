@@ -32,7 +32,7 @@ public:
                 PathWay& oPathWay, int flags, 
                 const Size& arrivedArea );
   
-  int getMaxLoopCount() const;
+  unsigned int getMaxLoopCount() const;
 
   ~Pathfinder();
 private:

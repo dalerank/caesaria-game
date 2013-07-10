@@ -26,7 +26,7 @@ class Font;
 class PushButton : public Widget
 {
 public:
-  typedef enum { GrayBorderLine, WhiteBorderUp, BlackBorderUp } BackgroundStyle;
+  typedef enum { GrayBorderLine, WhiteBorderUp, BlackBorderUp, NoBackground } BackgroundStyle;
 
 	//! constructor
 	PushButton( Widget* parent,
@@ -92,7 +92,8 @@ protected:
  
   virtual void _updateTexture( ElementState state );
 
-  PictureRef& _getPicture( ElementState state );
+  PictureRef& _getBackground( ElementState state );
+  PictureRef& _getTextPicture( ElementState state );
 
 private:
   class Impl;

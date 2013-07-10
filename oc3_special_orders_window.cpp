@@ -34,7 +34,7 @@ class OrderGoodWidget : public Label
 {
 public:
   OrderGoodWidget( Widget* parent, const Rect& rect, GoodType good, T storageBuilding )
-    : Label( parent, rect, "", false, true )
+    : Label( parent, rect, "" )
   {
     _type = good;
     _storageBuilding = storageBuilding;
@@ -54,19 +54,21 @@ public:
     Picture goodIcon = GoodHelper::getPicture( _type );
     std::string goodName = GoodHelper::getName( _type );
     
-    Picture& texture = getPicture();
+    painter.drawPicture( goodIcon, getScreenLeft() + 15, getScreenTop() );
+    painter.drawPicture( goodIcon, getScreenLeft() + 390, getScreenTop() );
 
-    texture.draw( goodIcon, 15, 0);
-    texture.draw( goodIcon, 390, 0);
-
-    Font font = getFont();    
-    font.draw( texture, goodName, 55, 0 );   
+    if( getTextPicture() )
+    {
+      Font font = getFont();    
+      font.draw( *getTextPicture(), goodName, 55, 0 );   
+    }
   }
 
   void updateBtnText()
   {
     GoodOrders::Order rule = _storageBuilding->getGoodStore().getOrder( _type );
     std::string ruleName[] = { _("##accept##"), _("##reject##"), _("##deliver##"), _("##none##") };
+    _btnChangeRule->setFont( Font::create( rule == GoodOrders::reject ? FONT_1_RED : FONT_1_WHITE ) );
     _btnChangeRule->setText( ruleName[ rule ] );
   }
 
@@ -161,6 +163,9 @@ bool BaseSpecialOrdersWindow::onEvent( const NEvent& event)
       return true;
     }
     break;
+
+  default:
+  break;
   }
 
   return Widget::onEvent( event );
@@ -189,7 +194,7 @@ GranarySpecialOrdersWindow::GranarySpecialOrdersWindow( Widget* parent, const Po
   }
 
   _btnToggleDevastation = new PushButton( this, Rect( 80, getHeight() - 45, getWidth() - 80, getHeight() - 25 ),
-                                          "", -1, false, PushButton::BlackBorderUp );
+                                          "", -1, false, PushButton::WhiteBorderUp );
 
   CONNECT( _btnToggleDevastation, onClicked(), this, GranarySpecialOrdersWindow::toggleDevastation );
   _updateBtnDevastation();

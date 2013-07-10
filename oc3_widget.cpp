@@ -99,7 +99,7 @@ void Widget::styleChanged()
 
 void Widget::setMaxWidth( unsigned int width )
 {
-    _maxSize.setWidth( width );
+    _d->maxSize.setWidth( width );
 }
 
 unsigned int Widget::getHeight() const
@@ -108,12 +108,14 @@ unsigned int Widget::getHeight() const
 }
 
 Widget::Widget( Widget* parent, int id, const Rect& rectangle )
-: _d( new WidgetPrivate ),
-  _maxSize(0,0), _minSize(1,1), _isVisible(true), _isEnabled(true),
+: _d( new Impl ),
+  _isVisible(true), _isEnabled(true),
   _isSubElement(false), _noClip(false), _id(id), _isTabStop(false), _tabOrder(-1), _isTabGroup(false),
   _alignLeft(alignUpperLeft), _alignRight(alignUpperLeft), _alignTop(alignUpperLeft), _alignBottom(alignUpperLeft),
   _environment( parent ? parent->getEnvironment() : NULL ), _eventHandler( NULL )
 {
+  _d->maxSize = Size(0,0);
+  _d->minSize = Size(1,1);
   _d->parent = parent;
 	_d->relativeRect = rectangle;
 	_d->absoluteRect = rectangle;
@@ -223,18 +225,18 @@ void Widget::setNotClipped( bool noClip )
 
 void Widget::setMaxSize( const Size& size )
 {
-    _maxSize = size;
+    _d->maxSize = size;
     updateAbsolutePosition();
 }
 
 void Widget::setMinSize( const Size& size )
 {
-    _minSize = size;
-    if (_minSize.getWidth() < 1)
-        _minSize.setWidth( 1 );
+    _d->minSize = size;
+    if( _d->minSize.getWidth() < 1)
+        _d->minSize.setWidth( 1 );
 
-    if (_minSize.getHeight() < 1)
-        _minSize.setHeight( 1 );
+    if( _d->minSize.getHeight() < 1)
+        _d->minSize.setHeight( 1 );
 
     updateAbsolutePosition();
 }
@@ -724,14 +726,14 @@ void Widget::recalculateAbsolutePosition( bool recursive )
     const int h = _d->relativeRect.getHeight();
 
     // make sure the desired rectangle is allowed
-    if (w < (int)_minSize.getWidth() )
-        _d->relativeRect.LowerRightCorner.setX( _d->relativeRect.UpperLeftCorner.getX() + _minSize.getWidth() );
-    if (h < (int)_minSize.getHeight() )
-        _d->relativeRect.LowerRightCorner.setY( _d->relativeRect.UpperLeftCorner.getY() + _minSize.getHeight() );
-    if (_maxSize.getWidth() > 0 && w > (int)_maxSize.getWidth() )
-        _d->relativeRect.LowerRightCorner.setX( _d->relativeRect.UpperLeftCorner.getX() + _maxSize.getWidth() );
-    if (_maxSize.getHeight() > 0 && h > (int)_maxSize.getHeight() )
-        _d->relativeRect.LowerRightCorner.setY( _d->relativeRect.UpperLeftCorner.getY() + _maxSize.getHeight() );
+    if (w < (int)_d->minSize.getWidth() )
+        _d->relativeRect.LowerRightCorner.setX( _d->relativeRect.UpperLeftCorner.getX() + _d->minSize.getWidth() );
+    if (h < (int)_d->minSize.getHeight() )
+        _d->relativeRect.LowerRightCorner.setY( _d->relativeRect.UpperLeftCorner.getY() + _d->minSize.getHeight() );
+    if (_d->maxSize.getWidth() > 0 && w > (int)_d->maxSize.getWidth() )
+        _d->relativeRect.LowerRightCorner.setX( _d->relativeRect.UpperLeftCorner.getX() + _d->maxSize.getWidth() );
+    if (_d->maxSize.getHeight() > 0 && h > (int)_d->maxSize.getHeight() )
+        _d->relativeRect.LowerRightCorner.setY( _d->relativeRect.UpperLeftCorner.getY() + _d->maxSize.getHeight() );
 
     _d->relativeRect.repair();
 
@@ -891,12 +893,12 @@ bool Widget::isMyChild( Widget* child ) const
 
 Size Widget::getMaxSize() const
 {
-    return _maxSize;
+    return _d->maxSize;
 }
 
 Size Widget::getMinSize() const
 {
-    return _minSize;
+    return _d->minSize;
 }
 
 // bool Widget::isColorEnabled( u32 index ) const

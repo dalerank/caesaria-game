@@ -114,7 +114,7 @@ void CityServiceProsperity::update( const unsigned int time )
   }
 }
 
-int CityServiceProsperity::getProsperity() const
+int CityServiceProsperity::getValue() const
 {
   return _d->prosperity + _d->prosperityExtend;
 }

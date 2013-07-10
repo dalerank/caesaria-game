@@ -21,7 +21,7 @@
 class GroupBox : public Widget
 {
 public:
-  typedef enum { whiteFrame=0, blackFrame } Style;
+  typedef enum { whiteFrame=0, blackFrame, whiteWindow } Style;
 
   //! constructor
 	GroupBox( Widget* parent, const Rect& rectangle, int id, Style style );

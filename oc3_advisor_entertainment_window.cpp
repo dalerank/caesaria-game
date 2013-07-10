@@ -32,7 +32,7 @@ class EntertainmentInfoLabel : public Label
 public:
   EntertainmentInfoLabel( Widget* parent, const Rect& rect, const BuildingType service, 
                       int workBulding, int numberBuilding, int peoplesCount  )
-    : Label( parent, rect, "", false, true )
+    : Label( parent, rect )
   {
     _service = service;
     _workingBuilding = workBulding;
@@ -54,14 +54,16 @@ public:
     case B_AMPHITHEATER: buildingStr = _("##amphitheatres##"); peoplesStr = _("##peoples##"); break;
     case B_COLLOSSEUM: buildingStr = _("##colloseum##"); peoplesStr = _("##peoples##"); break;
     case B_HIPPODROME: buildingStr = _("##hippodromes##"); peoplesStr = "-"; break;
+    default:
+    break;
     }
 
-    Picture& texture = getPicture();
+    PictureRef& texture = getTextPicture();
     Font font = getFont();
-    font.draw( texture, StringHelper::format( 0xff, "%d %s", _numberBuilding, buildingStr.c_str() ), 0, 0 );
-    font.draw( texture, StringHelper::format( 0xff, "%d", _workingBuilding ), 165, 0 );
-    font.draw( texture, StringHelper::format( 0xff, "%d", _showBuilding ), 245, 0 );
-    font.draw( texture, StringHelper::format( 0xff, "%d %s", _peoplesCount, peoplesStr.c_str() ), 305, 0 );
+    font.draw( *texture, StringHelper::format( 0xff, "%d %s", _numberBuilding, buildingStr.c_str() ), 0, 0 );
+    font.draw( *texture, StringHelper::format( 0xff, "%d", _workingBuilding ), 165, 0 );
+    font.draw( *texture, StringHelper::format( 0xff, "%d", _showBuilding ), 245, 0 );
+    font.draw( *texture, StringHelper::format( 0xff, "%d %s", _peoplesCount, peoplesStr.c_str() ), 305, 0 );
   }
 
 private:
@@ -114,6 +116,8 @@ public:
         case B_THEATER: maxStuding = 500; break;
         case B_AMPHITHEATER: maxStuding = 800; break;
         case B_COLLOSSEUM: maxStuding = 1500; break;
+        default:
+        break;
         }
 
         ret.peoplesStuding += maxStuding * (*it)->getWorkers() / (*it)->getMaxWorkers();
@@ -148,10 +152,10 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow( CityPtr city, Widget* pa
   GuiPaneling::instance().draw_black_frame( *_d->background, 32, 60, getWidth() - 32 * 2, 86 );
 
   Font font = Font::create( FONT_1 );
-  font.draw( *_d->background, _("##work##"), 180, 45 );
-  font.draw( *_d->background, _("##show##"), 260, 45 );
-  font.draw( *_d->background, _("##max_available##"), 350, 45);
-  font.draw( *_d->background, _("##coverage##"), 480, 45 );
+  font.draw( *_d->background, _("##work##"), 180, 45, false );
+  font.draw( *_d->background, _("##show##"), 260, 45, false );
+  font.draw( *_d->background, _("##max_available##"), 350, 45, false);
+  font.draw( *_d->background, _("##coverage##"), 480, 45, false );
 
   Point startPoint( 42, 64 );
   Size labelSize( 550, 20 );
@@ -174,7 +178,7 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow( CityPtr city, Widget* pa
   CityHelper helper( city );
 
   int sumScholars = 0;
-  int sumStudents = 0;
+  //int sumStudents = 0;
   std::list< HousePtr > houses = helper.getBuildings<House>( B_HOUSE );
   for( std::list< HousePtr >::iterator it=houses.begin(); it != houses.end(); it++ )
   {

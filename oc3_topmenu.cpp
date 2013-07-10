@@ -72,24 +72,21 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
   }
 
   Size lbSize( 120, 23 );
-  ret->_d->lbPopulation = new Label( ret, Rect( Point( ret->getWidth() - populationLabelOffset, 0 ), lbSize ),
-                                     "Pop 34,124", false, true, -1 );
+  ret->_d->lbPopulation = new Label( ret, Rect( Point( ret->getWidth() - populationLabelOffset, 0 ), lbSize ), "Pop 34,124" );
   ret->_d->lbPopulation->setBackgroundPicture( Picture::load( ResourceGroup::panelBackground, panelBgStatus ) );
   ret->_d->lbPopulation->setFont( Font::create(FONT_2_WHITE) );
   ret->_d->lbPopulation->setTextAlignment( alignCenter, alignCenter );
   ret->_d->lbPopulation->setTooltipText( _("##population_tooltip##") );
   //_populationLabel.setTextPosition(20, 0);
 
-  ret->_d->lbFunds = new Label( ret, Rect( Point( ret->getWidth() - fundLabelOffset, 0), lbSize ),
-      "Dn 10,000", false, true, -1 );
+  ret->_d->lbFunds = new Label( ret, Rect( Point( ret->getWidth() - fundLabelOffset, 0), lbSize ), "Dn 10,000" );
   ret->_d->lbFunds->setFont( Font::create( FONT_2_WHITE ));
   ret->_d->lbFunds->setTextAlignment( alignCenter, alignCenter );
   ret->_d->lbFunds->setBackgroundPicture( Picture::load( ResourceGroup::panelBackground, panelBgStatus ) );
   ret->_d->lbFunds->setTooltipText( _("##funds_tooltip##") );
   //_fundsLabel.setTextPosition(20, 0);
 
-  ret->_d->lbDate = new Label( ret, Rect( Point( ret->getWidth() - dateLabelOffset, 0), lbSize ),
-      "Feb 39 BC", false, true, -1 );
+  ret->_d->lbDate = new Label( ret, Rect( Point( ret->getWidth() - dateLabelOffset, 0), lbSize ), "Feb 39 BC" );
   ret->_d->lbDate->setFont( Font::create( FONT_2_YELLOW ));
   ret->_d->lbDate->setTextAlignment( alignCenter, alignCenter );
   ret->_d->lbDate->setBackgroundPicture( Picture::load( ResourceGroup::panelBackground, panelBgStatus ) );
@@ -97,7 +94,6 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
   //_dateLabel.setTextPosition(20, 0);
 
   ContextMenuItem* tmp = ret->addItem( _("##gmenu_file##"), -1, true, true, false, false );
-  tmp->setBackgroundPicture( *ret->_d->bgPicture );
   ContextMenu* file = tmp->addSubMenu();
 
   ContextMenuItem* save = file->addItem( _("##gmenu_file_save##"), -1, true, false, false, false );
@@ -115,12 +111,8 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
   CONNECT( mainMenu, onClicked(), &ret->_d->onEndSignal, Signal0<>::emit );
 
   tmp = ret->addItem( _("##gmenu_options##"), -1, true, true, false, false );
-  tmp->setBackgroundPicture( *ret->_d->bgPicture, Point( -tmp->getLeft(), 0 ) );
-
   tmp = ret->addItem( _("##gmenu_help##"), -1, true, true, false, false );
-  tmp->setBackgroundPicture( *ret->_d->bgPicture, Point( -tmp->getLeft(), 0 ) );
   tmp = ret->addItem( _("##gmenu_advisors##"), -1, true, true, false, false );
-  tmp->setBackgroundPicture( *ret->_d->bgPicture, Point( -tmp->getLeft(), 0 ) );
   ContextMenu* advisersMenu = tmp->addSubMenu();
   advisersMenu->addItem( _("##adv_employments_m##"), ADV_EMPLOYERS );
   advisersMenu->addItem( _("##adv_military_m##"), ADV_LEGION );

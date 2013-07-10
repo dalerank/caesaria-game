@@ -25,8 +25,47 @@ class Font::Impl
 public:
   TTF_Font *ttfFont;
   SDL_Color color;
+
+  void setSurfaceAlpha (SDL_Surface *surface, Uint8 alpha);    
 };
 
+void Font::Impl::setSurfaceAlpha( SDL_Surface *surface, Uint8 alpha )
+{
+  SDL_PixelFormat* fmt = surface->format;
+
+  // If surface has no alpha channel, just set the surface alpha.
+  if( fmt->Amask == 0 )
+  {
+    SDL_SetAlpha( surface, SDL_SRCALPHA, alpha );
+  }
+  // Else change the alpha of each pixel.
+  else 
+  {
+    unsigned bpp = fmt->BytesPerPixel;
+    // Scaling factor to clamp alpha to [0, alpha].
+    float scale = alpha / 255.0f;
+
+    SDL_LockSurface(surface);
+
+    for (int y = 0; y < surface->h; ++y) 
+    {
+      for (int x = 0; x < surface->w; ++x) 
+      {
+        // Get a pointer to the current pixel.
+        Uint32* pixel_ptr = (Uint32 *)( (Uint8 *)surface->pixels + y * surface->pitch + x * bpp );
+
+        // Get the old pixel components.
+        Uint8 r, g, b, a;
+        SDL_GetRGBA( *pixel_ptr, fmt, &r, &g, &b, &a );
+
+        // Set the pixel with the new alpha.
+        *pixel_ptr = SDL_MapRGBA( fmt, r, g, b, (Uint8)(scale * a) );
+      }   
+    }
+    
+    SDL_UnlockSurface(surface);
+  }
+}
 Font::Font() : _d( new Impl )
 {
   _d->ttfFont = 0;
@@ -164,12 +203,17 @@ void Font::setColor( const int dc )
   _d->color.unused = ( dc >> 24 ) & 0xff;
 }
 
-void Font::draw(Picture& dstpic, const std::string &text, const int dx, const int dy )
+void Font::draw(Picture& dstpic, const std::string &text, const int dx, const int dy, bool useAlpha )
 {
   if( !_d->ttfFont || !dstpic.isValid() )
     return;
 
   SDL_Surface* sText = TTF_RenderUTF8_Blended( _d->ttfFont, text.c_str(), _d->color );
+  //_d->setSurfaceAlpha( sText, dstpic.getSurface(), _d->color.unused );  
+  if( sText && useAlpha )
+  {
+    SDL_SetAlpha( sText, 0, 0 );
+  }
 
   if( sText )
   {
@@ -179,11 +223,11 @@ void Font::draw(Picture& dstpic, const std::string &text, const int dx, const in
   }
 
   SDL_FreeSurface( sText );
-}
+}       
 
-void Font::draw( Picture &dstpic, const std::string &text, const Point& pos )
+void Font::draw( Picture &dstpic, const std::string &text, const Point& pos, bool useAlpha )
 {
-  draw( dstpic, text, pos.getX(), pos.getY() );
+  draw( dstpic, text, pos.getX(), pos.getY(), useAlpha );
 }
 
 Font::~Font()

@@ -26,7 +26,7 @@ public:
   static CityServicePtr create( CityPtr city );
 
   void update( const unsigned int time );
-  int getProsperity() const;
+  int getValue() const;
 
 private:
   CityServiceProsperity( CityPtr city );

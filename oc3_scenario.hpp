@@ -25,6 +25,7 @@
 #include "oc3_serializer.hpp"
 
 class CityWinTargets;
+class Player;
 
 class Scenario : public Serializable
 {
@@ -36,6 +37,7 @@ public:
   void load( const VariantMap& stream);
 
   CityPtr getCity();
+  Player& getPlayer() const;
   const CityPtr getCity() const;
   CityWinTargets& getWinTargets();
 

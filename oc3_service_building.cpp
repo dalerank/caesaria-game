@@ -22,7 +22,7 @@
 
 #include "oc3_tile.hpp"
 #include "oc3_scenario.hpp"
-#include "oc3_servicewalker.hpp"
+#include "oc3_walker_service.hpp"
 #include "oc3_walker_market_buyer.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_gui_info_box.hpp"
@@ -62,7 +62,7 @@ ServiceType ServiceBuilding::getService() const
 
 void ServiceBuilding::timeStep(const unsigned long time)
 {
-   Building::timeStep(time);   
+   WorkingBuilding::timeStep(time);   
 
    if (_d->serviceTimer == 0)
    {
@@ -180,8 +180,12 @@ void EntertainmentBuilding::deliverService()
    }
 }
 
+int EntertainmentBuilding::getVisitorsNumber() const
+{
+  return 0;
+}
 
-BuildingTheater::BuildingTheater() : EntertainmentBuilding(S_THEATER, B_THEATER, Size(2))
+Theater::Theater() : EntertainmentBuilding(S_THEATER, B_THEATER, Size(2))
 {
   setPicture( Picture::load( "entertainment", 13));
 
@@ -190,6 +194,11 @@ BuildingTheater::BuildingTheater() : EntertainmentBuilding(S_THEATER, B_THEATER,
   
    _fgPictures.resize(2);
    _fgPictures[0] = &Picture::load("entertainment", 35);
+}
+
+int Theater::getVisitorsNumber() const
+{
+  return 500;
 }
 
 BuildingAmphiTheater::BuildingAmphiTheater() : EntertainmentBuilding(S_AMPHITHEATER, B_AMPHITHEATER, Size(3))
@@ -235,9 +244,19 @@ School::School() : ServiceBuilding(S_SCHOOL, B_SCHOOL, Size(2))
   setPicture( Picture::load( ResourceGroup::commerce, 83));
 }
 
+int School::getVisitorsNumber() const
+{
+  return 75;
+}
+
 Library::Library() : ServiceBuilding(S_LIBRARY, B_LIBRARY, Size(2))
 {
   setPicture( Picture::load( ResourceGroup::commerce, 84));
+}
+
+int Library::getVisitorsNumber() const
+{
+  return 800;
 }
 
 College::College() : ServiceBuilding(S_COLLEGE, B_COLLEGE, Size(3))
@@ -245,31 +264,7 @@ College::College() : ServiceBuilding(S_COLLEGE, B_COLLEGE, Size(3))
   setPicture( Picture::load( ResourceGroup::commerce, 85));
 }
 
-Baths::Baths() : ServiceBuilding(S_BATHS, B_BATHS, Size(2) )
+int College::getVisitorsNumber() const
 {
-  setPicture( Picture::load( ResourceGroup::security, 21));
-
-  _getAnimation().load( ResourceGroup::security, 22, 10);
-  _getAnimation().setOffset( Point( 23, 25 ) );
-  _fgPictures.resize(2);
-}
-
-Barber::Barber() : ServiceBuilding(S_BARBER, B_BARBER, Size(1))
-{
-  setPicture( Picture::load( ResourceGroup::security, 19));
-}
-
-Doctor::Doctor() : ServiceBuilding(S_DOCTOR, B_DOCTOR, Size(1))
-{
-  setPicture( Picture::load( ResourceGroup::security, 20));
-}
-
-Hospital::Hospital() : ServiceBuilding(S_HOSPITAL, B_HOSPITAL, Size(3 ) )
-{
-  setPicture( Picture::load( ResourceGroup::security, 44));
-}
-
-Forum::Forum() : ServiceBuilding(S_FORUM, B_FORUM, Size(2))
-{
-  setPicture( Picture::load( ResourceGroup::govt, 10));
+  return 100;
 }

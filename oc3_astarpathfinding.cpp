@@ -69,7 +69,7 @@ std::list<AStarPoint*> Pathfinder::getTraversingPoints( const TilePos& start, co
   return points;
 }
 
-int Pathfinder::getMaxLoopCount() const
+unsigned int Pathfinder::getMaxLoopCount() const
 {
   return 600;
 }
@@ -119,7 +119,7 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos,
   openList.push_back(start);
   start->opened = true;
 
-  while (n == 0 || (current != end && n < getMaxLoopCount() ))
+  while( n == 0 || (current != end && n < getMaxLoopCount() ))
   {
     // Look for the smallest F value in the openList and make it the current point
     for (i = openList.begin(); i != openList.end(); ++ i)
@@ -158,8 +158,13 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos,
         // Get this point
         child = getPoint( current->getPos() + TilePos( x, y ) );
 
+        _OC3_DEBUG_BREAK_IF( !child );
+        if( !child )
+        {
+          continue;
+        }
         // If it's closed or not walkable then pass
-        if (child->closed || !child->isWalkable() )
+        if( child->closed || !child->isWalkable() )
         {
           continue;
         }
@@ -262,7 +267,7 @@ AStarPoint* Pathfinder::getPoint( const TilePos& pos )
 
 bool Pathfinder::pointExists( const TilePos& pos )
 {
-  return ( pos.getI() < grid.size() && pos.getJ() < grid[pos.getI()].size() );
+  return ( pos.getI() < (int)grid.size() && pos.getJ() < (int)grid[pos.getI()].size() );
 }
 
 bool Pathfinder::pointIsWalkable( const TilePos& pos )

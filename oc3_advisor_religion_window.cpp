@@ -34,7 +34,7 @@ class ReligionInfoLabel : public Label
 public:
   ReligionInfoLabel( Widget* parent, const Rect& rect, RomeDivinityPtr divinity, 
                      int smallTempleCount, int bigTempleCount  )
-    : Label( parent, rect, "", false, true )
+    : Label( parent, rect )
   {
     _divinity = divinity;
     _smallTempleCount = smallTempleCount;
@@ -49,23 +49,23 @@ public:
   {
     Label::_updateTexture( painter );
 
-    Picture& texture = getPicture();
+    PictureRef& texture = getTextPicture();
     Font font = getFont();
 
     if( _divinity.isValid() )
     {
-      font.draw( texture, _divinity->getName(), 0, 0 );
+      font.draw( *texture, _divinity->getName(), 0, 0 );
       Font fontBlack = Font::create( FONT_1 );
-      fontBlack.draw( texture, StringHelper::format( 0xff, "(%s)", _divinity->getShortDescription().c_str() ), 80, 0 );
-      font.draw( texture, StringHelper::format( 0xff, "%d", _smallTempleCount ), 220, 0 );
-      font.draw( texture, StringHelper::format( 0xff, "%d", _bigTempleCount ), 280, 0 );
-      font.draw( texture, StringHelper::format( 0xff, "%d", _lastFestival ), 350, 0 );
-      font.draw( texture, StringHelper::format( 0xff, "%d", _mood ), 420, 0 );
+      fontBlack.draw( *texture, StringHelper::format( 0xff, "(%s)", _divinity->getShortDescription().c_str() ), 80, 0 );
+      font.draw( *texture, StringHelper::format( 0xff, "%d", _smallTempleCount ), 220, 0 );
+      font.draw( *texture, StringHelper::format( 0xff, "%d", _bigTempleCount ), 280, 0 );
+      font.draw( *texture, StringHelper::format( 0xff, "%d", _lastFestival ), 350, 0 );
+      font.draw( *texture, StringHelper::format( 0xff, "%d", _mood ), 420, 0 );
     }
     else
     {
-      font.draw( texture, _("##Oracles_in_city##"), 0, 0 );
-      font.draw( texture, StringHelper::format( 0xff, "%d", _smallTempleCount ), 220, 0 );
+      font.draw( *texture, _("##Oracles_in_city##"), 0, 0 );
+      font.draw( *texture, StringHelper::format( 0xff, "%d", _smallTempleCount ), 220, 0 );
     }
   }
 
@@ -148,11 +148,11 @@ AdvisorReligionWindow::AdvisorReligionWindow( CityPtr city, Widget* parent, int 
   GuiPaneling::instance().draw_black_frame( *_d->background, 35, 62, getWidth() - 35 * 2, 130 );
 
   Font font = Font::create( FONT_1 );
-  font.draw( *_d->background, _("##Temples##"), 268, 32 );
-  font.draw( *_d->background, _("##small##"), 240, 47 );
-  font.draw( *_d->background, _("##large##"), 297, 47 );
-  font.draw( *_d->background, _("##Fest.##"), 370, 47 );
-  font.draw( *_d->background, _("##Divinity##"), 450, 47 );
+  font.draw( *_d->background, _("##Temples##"), 268, 32, false );
+  font.draw( *_d->background, _("##small##"), 240, 47, false );
+  font.draw( *_d->background, _("##large##"), 297, 47, false );
+  font.draw( *_d->background, _("##Fest.##"), 370, 47, false );
+  font.draw( *_d->background, _("##Divinity##"), 450, 47, false );
 
   Point startPoint( 42, 65 );
   Size labelSize( 550, 20 );

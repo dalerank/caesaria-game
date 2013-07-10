@@ -62,7 +62,7 @@ PopupMessageBox::PopupMessageBox( Widget* parent, const std::string& title,
   font2.draw( *_d->background, time, 20, 50 );
   font2.draw( *_d->background, receiver, 180, 50 );
 
-  _d->lbText = new Label( this, Rect( Point( 20, 100 ), Size( 550, 165 )), text, false, true );
+  _d->lbText = new Label( this, Rect( Point( 20, 100 ), Size( 550, 165 )), text );
 }
 
 void PopupMessageBox::draw( GfxEngine& painter )

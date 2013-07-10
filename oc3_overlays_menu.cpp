@@ -94,6 +94,8 @@ void OverlaysMenu::_addButtons( const OverlayType type )
     _addButton( OV_COMMERCE_FOOD, _("##ovrm_food##"), startPos+=offset );
     _addButton( OV_COMMERCE_PRESTIGE, _("##ovrm_prestige##"), startPos+=offset );
     break;
+
+  default: break;
   }  
 }
 

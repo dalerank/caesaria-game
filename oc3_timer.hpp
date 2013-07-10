@@ -27,7 +27,7 @@ typedef SmartPtr< Timer > TimerPtr;
 class Timer : public ReferenceCounted
 {
 public:
-  typedef enum { looped=true, singleShot=false };
+  enum { looped=true, singleShot=false };
   static TimerPtr create( unsigned int time, bool loop, int id=-1 );
 
   ~Timer();

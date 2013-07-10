@@ -24,7 +24,7 @@
 class LowBridgeSubTile : public Construction
 {
 public:
-  typedef enum { liftingSE=67, spanSE=68, descentSE=69, liftingSW=70, spanSW=71, descentSW=72 };
+  enum { liftingSE=67, spanSE=68, descentSE=69, liftingSW=70, spanSW=71, descentSW=72 };
   LowBridgeSubTile( const TilePos& pos, int index )
     : Construction( B_LOW_BRIDGE, Size( 1 ) )
   {
@@ -112,7 +112,7 @@ public:
 
 bool LowBridge::canBuild( const TilePos& pos ) const
 {
-  bool is_constructible = Construction::canBuild( pos );
+  //bool is_constructible = Construction::canBuild( pos );
 
   TilePos endPos, startPos;
   _d->direction=D_NONE;
@@ -144,7 +144,7 @@ void LowBridge::setTerrain( TerrainTile& terrain )
 void LowBridge::_computePictures( const TilePos& startPos, const TilePos& endPos, DirectionType dir )
 {
   Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
-  Picture& water = Picture::load( "land1a", 120 );
+  //Picture& water = Picture::load( "land1a", 120 );
   switch( dir )
   {
   case D_NORTH_WEST:
@@ -344,6 +344,8 @@ void LowBridge::build( const TilePos& pos )
     case D_SOUTH_EAST:     
       _computePictures( startPos, endPos, _d->direction ); 
     break;
+
+    default: break;
     }
     
     PtrTilesArea tiles = tilemap.getFilledRectangle( startPos, endPos );

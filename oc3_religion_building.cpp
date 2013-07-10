@@ -42,67 +42,81 @@ unsigned int Temple::getWalkerDistance() const
   return 26;
 }
 
-TempleCeres::TempleCeres() 
-: SmallTemple( DivinePantheon::ceres(), B_TEMPLE_CERES, 45 )
+TempleCeres::TempleCeres() : SmallTemple( DivinePantheon::ceres(), B_TEMPLE_CERES, 45 )
 {
 }
 
-BigTempleCeres::BigTempleCeres() : ServiceBuilding(S_TEMPLE_CERES, B_BIG_TEMPLE_CERES, Size(3))
+BigTempleCeres::BigTempleCeres() : BigTemple( DivinePantheon::ceres(), B_BIG_TEMPLE_CERES, 46 )
 {
-  setPicture( Picture::load( ResourceGroup::security, 46));
 }
 
-TempleNeptune::TempleNeptune() : ServiceBuilding(S_TEMPLE_NEPTUNE, B_TEMPLE_NEPTUNE, Size(2) )
+TempleNeptune::TempleNeptune() : SmallTemple( DivinePantheon::neptune(), B_TEMPLE_NEPTUNE, 47 )
 {
-  setPicture( Picture::load( ResourceGroup::security, 47));
 }
 
-BigTempleNeptune::BigTempleNeptune() : ServiceBuilding(S_TEMPLE_NEPTUNE, B_BIG_TEMPLE_NEPTUNE, Size(3))
+BigTempleNeptune::BigTempleNeptune() : BigTemple( DivinePantheon::neptune(), B_BIG_TEMPLE_NEPTUNE, 48 )
 {
-  setPicture(Picture::load( ResourceGroup::security, 48));
 }
 
-TempleMars::TempleMars() : ServiceBuilding(S_TEMPLE_MARS, B_TEMPLE_MARS, Size(2))
+TempleMars::TempleMars() : SmallTemple( DivinePantheon::mars(), B_TEMPLE_MARS, 51)
 {
-  setPicture( Picture::load( ResourceGroup::security, 51));
 }
 
-BigTempleMars::BigTempleMars() : ServiceBuilding(S_TEMPLE_MARS, B_BIG_TEMPLE_MARS, Size(3))
+BigTempleMars::BigTempleMars() : BigTemple( DivinePantheon::mars(), B_BIG_TEMPLE_MARS, 52 )
 {
-  setPicture( Picture::load( ResourceGroup::security, 52));
 }
 
-TempleVenus::TempleVenus() : ServiceBuilding(S_TEMPLE_VENUS, B_TEMPLE_VENUS, Size(2))
+TempleVenus::TempleVenus() : SmallTemple( DivinePantheon::venus(), B_TEMPLE_VENUS, 53 )
 {
-  setPicture(Picture::load(ResourceGroup::security, 53));
 }
 
-BigTempleVenus::BigTempleVenus() : ServiceBuilding(S_TEMPLE_VENUS, B_BIG_TEMPLE_VENUS, Size(3))
+BigTempleVenus::BigTempleVenus() : BigTemple( DivinePantheon::venus(), B_BIG_TEMPLE_VENUS, 54 )
 {
-  setPicture(Picture::load( ResourceGroup::security, 54));
 }
 
-TempleMercure::TempleMercure() : ServiceBuilding(S_TEMPLE_MERCURE, B_TEMPLE_MERCURE, Size(2))
+TempleMercure::TempleMercure() : SmallTemple( DivinePantheon::mercury(), B_TEMPLE_MERCURE, 49 )
 {
-  setPicture( Picture::load( ResourceGroup::security, 49));
 }
 
-BigTempleMercure::BigTempleMercure() : ServiceBuilding(S_TEMPLE_MERCURE, B_BIG_TEMPLE_MERCURE, Size(3))
+BigTempleMercure::BigTempleMercure() : BigTemple( DivinePantheon::mercury(), B_BIG_TEMPLE_MERCURE, 50 )
 {
-  setPicture(Picture::load( ResourceGroup::security, 50));
 }
 
-TempleOracle::TempleOracle() : ServiceBuilding(S_TEMPLE_ORACLE, B_TEMPLE_ORACLE, Size(2) )
+unsigned int BigTempleMercure::getParishionerNumber() const
 {
-  setPicture( Picture::load( ResourceGroup::security, 55));
+  return 300;
+}
 
+TempleOracle::TempleOracle() : Temple( RomeDivinityPtr(), B_TEMPLE_ORACLE, 55, Size(2) )
+{
   _getAnimation().load( ResourceGroup::security, 56, 6);
   _getAnimation().setOffset( Point( 9, 30 ) );
   _fgPictures.resize(1);   
+}
+
+unsigned int TempleOracle::getParishionerNumber() const
+{
+  return 500;
 }
 
 SmallTemple::SmallTemple( RomeDivinityPtr divinity, BuildingType type, int imgId ) 
   : Temple( divinity, type, imgId, Size(2) )
 {
   setMaxWorkers( 2 );
+}
+
+unsigned int SmallTemple::getParishionerNumber() const
+{
+  return 150;
+}
+
+BigTemple::BigTemple( RomeDivinityPtr divinity, BuildingType type, int imgId )
+  : Temple( divinity, type, imgId, Size(3) )
+{
+  setMaxWorkers( 8 );
+}
+
+unsigned int BigTemple::getParishionerNumber() const
+{
+  return 300;
 }

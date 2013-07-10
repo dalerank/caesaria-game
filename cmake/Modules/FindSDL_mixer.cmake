@@ -76,7 +76,7 @@ endif()
 set(SDL_MIXER_LIBRARIES ${SDL_MIXER_LIBRARY})
 set(SDL_MIXER_INCLUDE_DIRS ${SDL_MIXER_INCLUDE_DIR})
 
-include(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindPackageHandleStandardArgs.cmake)
 
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(SDL_mixer
                                   REQUIRED_VARS SDL_MIXER_LIBRARIES SDL_MIXER_INCLUDE_DIRS

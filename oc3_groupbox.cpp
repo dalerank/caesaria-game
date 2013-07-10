@@ -55,8 +55,7 @@ void GroupBox::draw( GfxEngine& painter )
     if (!isVisible())
         return;
 
-    Rect clippingRect = Widget::getAbsoluteClippingRect();
-    painter.drawPicture( *_d->texture, getScreenLeft(), getScreenTop(), &clippingRect );
+    painter.drawPicture( *_d->texture, getScreenLeft(), getScreenTop(), &getAbsoluteClippingRectRef() );
 
     Widget::draw( painter );
 }

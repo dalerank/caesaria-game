@@ -390,6 +390,8 @@ bool Menu::onEvent(const NEvent& event)
                     return true;
             }
         break;
+
+        default: break;
         }
     }
 
@@ -479,15 +481,14 @@ void ExtentMenu::minimize()
   _d->lastPressed = 0;
   _createBuildMenu( -1, this );
   Point stopPos = getRelativeRect().UpperLeftCorner + Point( getWidth(), 0 );
-  PositionAnimator* anim = new PositionAnimator( this, WidgetAnimator::removeSelf, 
-                                                 stopPos, 300 );
+  /*PositionAnimator* anim = */new PositionAnimator( this, WidgetAnimator::removeSelf, stopPos, 300 );
 }
 
 void ExtentMenu::maximize()
 {
   Point stopPos = getRelativeRect().UpperLeftCorner - Point( getWidth(), 0 );
   show();
-  PositionAnimator* anim = new PositionAnimator( this, WidgetAnimator::showParent | WidgetAnimator::removeSelf, 
+  /*PositionAnimator* anim = */new PositionAnimator( this, WidgetAnimator::showParent | WidgetAnimator::removeSelf,
                                                  stopPos, 300 );
 }
 
