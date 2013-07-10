@@ -164,11 +164,11 @@ Picture& Aqueduct::computePicture()
   Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
   
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
-   
-  LandOverlayPtr northOverlay = tmap.at( getTilePos() + TilePos( 0, -1) ).getTerrain().getOverlay();
-  LandOverlayPtr eastOverlay = tmap.at( getTilePos() + TilePos( -1, 0) ).getTerrain().getOverlay();
-  LandOverlayPtr southOverlay = tmap.at( getTilePos() + TilePos( 0, 1) ).getTerrain().getOverlay();
-  LandOverlayPtr westOverlay = tmap.at( getTilePos() + TilePos( 1, 0) ).getTerrain().getOverlay();
+
+  LandOverlayPtr northOverlay = tmap.at( getTilePos() + TilePos( 0, 1) ).getTerrain().getOverlay();
+  LandOverlayPtr eastOverlay = tmap.at( getTilePos() + TilePos( 1, 0) ).getTerrain().getOverlay();
+  LandOverlayPtr southOverlay = tmap.at( getTilePos() + TilePos( 0, -1) ).getTerrain().getOverlay();
+  LandOverlayPtr westOverlay = tmap.at( getTilePos() + TilePos( -1, 0) ).getTerrain().getOverlay();
 
   if( northOverlay.is<Aqueduct>() || northOverlay.is<Reservoir>() ) { directionFlags += 1; }
   if( eastOverlay.is<Aqueduct>() || eastOverlay.is<Reservoir>()) { directionFlags += 2; }
