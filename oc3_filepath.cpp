@@ -20,10 +20,13 @@
 #ifdef _WIN32
 #include <Windows.h>
 #include <io.h>
-#else
-#include <stdio.h>
-#include <sys/io.h>
-#include <sys/stat.h>
+#elif __GNUC__
+  #include <sys/io.h>
+  #include <sys/stat.h>
+  #include <unistd.h>
+  #include <stdio.h>
+  #include <libgen.h>
+  #include <linux/limits.h>
 #endif
 
 namespace io
@@ -572,9 +575,16 @@ FileDir FileDir::getApplicationDir()
   //delete tmpPath;
 
   return tmp;
-#else
+#elif __GNUC__
+  char exe_path[PATH_MAX] = {0};
+  char * dir_path;
+  sprintf(exe_path, "/proc/%d/exe", getpid());
+  readlink(exe_path, exe_path, sizeof(exe_path));
+  dir_path = dirname(exe_path);
+  return FilePath(dir_path);
+#endif // __GNUC__
+
   return FilePath( "" );
-#endif
 }
 
 } //end namespace io
