@@ -75,6 +75,10 @@ public:
   ClimateType climate;   
   UniqueId walkerIdCount;
 
+  // collect taxes from all houses
+  void collectTaxes( CityPtr city);
+  void calculatePopulation( CityPtr city );
+
 oc3_signals public:
   Signal1<int> onPopulationChangedSignal;
   Signal1<int> onFundsChangedSignal;
@@ -210,8 +214,8 @@ void City::timeStep()
 
 void City::monthStep()
 {
-  collectTaxes();
-  _calculatePopulation();
+  _d->collectTaxes( this );
+  _d->calculatePopulation( this );
   _d->onMonthChangedSignal.emit( _d->date );
 }
 
@@ -437,35 +441,35 @@ void City::clearLand(const TilePos& pos  )
   }
 }
 
-void City::collectTaxes()
+void City::Impl::collectTaxes( CityPtr city )
 {
-  CityHelper hlp( this );
-  _d->lastMonthTax = 0;
-  _d->lastMonthTaxpayer = 0;
+  CityHelper hlp( city );
+  lastMonthTax = 0;
+  lastMonthTaxpayer = 0;
   
   std::list<ForumPtr> forumsList = hlp.getBuildings< Forum >(B_HOUSE);
   for( std::list<ForumPtr>::iterator it = forumsList.begin(); it != forumsList.end(); ++it)
   {
-    _d->lastMonthTaxpayer += (*it)->getPeoplesReached();
-    _d->lastMonthTax += (*it)->collectTaxes();
+    lastMonthTaxpayer += (*it)->getPeoplesReached();
+    lastMonthTax += (*it)->collectTaxes();
   }
 
   std::list<SenatePtr> senates = hlp.getBuildings< Senate >( B_SENATE );
   for( std::list<SenatePtr>::iterator it = senates.begin(); it != senates.end(); ++it)
   {
-    _d->lastMonthTaxpayer += (*it)->getPeoplesReached();
-    _d->lastMonthTax += (*it)->collectTaxes();
+    lastMonthTaxpayer += (*it)->getPeoplesReached();
+    lastMonthTax += (*it)->collectTaxes();
   }
 
-  _d->funds += _d->lastMonthTax;
-  _d->onFundsChangedSignal.emit( _d->funds );
+  funds += lastMonthTax;
+  onFundsChangedSignal.emit( funds );
 }
 
-void City::_calculatePopulation()
+void City::Impl::calculatePopulation( CityPtr city )
 {
   long pop = 0; /* population can't be negative - should be unsigned long long*/
   
-  LandOverlays houseList = getBuildingList(B_HOUSE);
+  LandOverlays houseList = city->getBuildingList(B_HOUSE);
   for( LandOverlays::iterator itHouse = houseList.begin(); 
        itHouse != houseList.end(); ++itHouse)
   {
@@ -476,8 +480,8 @@ void City::_calculatePopulation()
     }
   }
   
-  _d->population = pop;
-  _d->onPopulationChangedSignal.emit( pop );
+  population = pop;
+  onPopulationChangedSignal.emit( pop );
 }
 
 void City::save( VariantMap& stream) const

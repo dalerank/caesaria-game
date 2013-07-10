@@ -138,15 +138,15 @@ void GuiInfoBox::setAutoPosition( bool value )
   _d->isAutoPosition = value;
 }
 
-class GuiInfoService::Impl
+class InfoBoxWorkingBuilding::Impl
 {
 public:
   Label* dmgLabel;
   Label* lbHelp;
-  ServiceBuildingPtr building;
+  WorkingBuildingPtr building;
 };
 
-GuiInfoService::GuiInfoService( Widget* parent, ServiceBuildingPtr building)
+InfoBoxWorkingBuilding::InfoBoxWorkingBuilding( Widget* parent, WorkingBuildingPtr building)
     : GuiInfoBox( parent, Rect( 0, 0, 510, 256 ), -1 ), _sd( new Impl )
 {
   _sd->building = building;
@@ -154,7 +154,7 @@ GuiInfoService::GuiInfoService( Widget* parent, ServiceBuildingPtr building)
   paint(); 
 }
 
-void GuiInfoService::paint()
+void InfoBoxWorkingBuilding::paint()
 {
   GuiPaneling::instance().draw_black_frame( *_d->bgPicture, 16, 136, getWidth() - 32, 62 );
   
@@ -171,12 +171,12 @@ void GuiInfoService::paint()
   _sd->lbHelp = new Label( this, Rect( 16, 50, getWidth() - 16, 130 ) );
 }
 
-void GuiInfoService::setText(const std::string& text)
+void InfoBoxWorkingBuilding::setText(const std::string& text)
 {
   _sd->lbHelp->setText( text );
 }
 
-void GuiInfoService::drawWorkers( int paintY )
+void InfoBoxWorkingBuilding::drawWorkers( int paintY )
 {
   // picture of citizen
   Picture& pic = Picture::load( ResourceGroup::panelBackground, 542);

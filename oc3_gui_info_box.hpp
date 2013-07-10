@@ -84,10 +84,10 @@ private:
 };
 
 // info box about a service building
-class GuiInfoService : public GuiInfoBox
+class InfoBoxWorkingBuilding : public GuiInfoBox
 {
 public:
-  GuiInfoService( Widget* parent, ServiceBuildingPtr building);
+  InfoBoxWorkingBuilding( Widget* parent, WorkingBuildingPtr building);
   
   void paint();
   void drawWorkers( int );

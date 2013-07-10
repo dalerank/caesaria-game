@@ -59,13 +59,18 @@ public:
   GuiInfoBox* create( Widget* parent, const Tile& tile )
   {
     Size  size = parent->getSize();
-    GuiInfoService* infoBox = new GuiInfoService( parent, tile.getTerrain().getOverlay().as<ServiceBuilding>() );
-    infoBox->setPosition( Point( (size.getWidth() - infoBox->getWidth()) / 2, 
-                                  size.getHeight() - infoBox->getHeight()) );
+    WorkingBuildingPtr building = tile.getTerrain().getOverlay().as<WorkingBuilding>();
+    if( building.isValid() )
+    {
+      InfoBoxWorkingBuilding* infoBox = new InfoBoxWorkingBuilding( parent, building );
+      infoBox->setPosition( Point( (size.getWidth() - infoBox->getWidth()) / 2, size.getHeight() - infoBox->getHeight()) );
 
-    infoBox->setTitle( title );
-    infoBox->setText( text );
-    return infoBox;
+      infoBox->setTitle( title );
+      infoBox->setText( text );
+      return infoBox;
+    }
+    
+    return 0;
   }
 
   std::string title, text;

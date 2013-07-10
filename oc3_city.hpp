@@ -94,8 +94,6 @@ public:
   void disaster( const TilePos& pos, DisasterType type );
   // remove construction
   void clearLand( const TilePos& pos );
-  // collect taxes from all houses
-  void collectTaxes();
 
   const DateTime& getDate() const;
   void setDate( const DateTime& time );
@@ -111,7 +109,6 @@ oc3_signals public:
 
 private:
   City();
-  void _calculatePopulation();
 
   class Impl;
   ScopedPtr< Impl > _d;

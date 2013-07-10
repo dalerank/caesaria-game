@@ -24,6 +24,7 @@
 Player::Player()
 {
    _funds = 0;
+   _salary = 0;
 }
 
 
@@ -31,12 +32,14 @@ void Player::save( VariantMap& stream ) const
 {
   stream[ "money" ] = _funds;
   stream[ "name" ] = Variant( _name );
+  stream[ "salary" ] = _salary;
 }
 
 void Player::load( const VariantMap& stream )
 {
   _funds = stream.get( "money" ).toInt();
   _name = stream.get( "name" ).toString();
+  _salary = stream.get( "salary" ).toInt(); 
 }
 
 void Player::appendMoney( int money )
@@ -57,4 +60,14 @@ void Player::setName( const std::string& name )
 std::string Player::getName() const
 {
   return _name;
+}
+
+int Player::getSalary() const
+{
+  return _salary;
+}
+
+void Player::setSalary( const int value )
+{
+  _salary = value;
 }
