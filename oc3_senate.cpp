@@ -17,6 +17,7 @@
 #include "oc3_scenario.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_resourcegroup.hpp"
+#include "oc3_cityfunds.hpp"
 
 // govt 4  - senate
 // govt 9  - advanced senate
@@ -50,7 +51,7 @@ bool Senate::canBuild( const TilePos& pos ) const
 
 unsigned int Senate::getFunds() const
 {
-  return Scenario::instance().getCity()->getFunds();
+  return Scenario::instance().getCity()->getFunds().getValue();
 }
 
 int Senate::collectTaxes()

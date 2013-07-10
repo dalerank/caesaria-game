@@ -21,6 +21,7 @@
 #include "oc3_house_level.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_time.hpp"
+#include "oc3_cityfunds.hpp"
 
 class CityParameters
 {
@@ -78,7 +79,7 @@ void CityServiceInfo::update( const unsigned int time )
 
     CityParameters& last = _d->params.back();
     last.population = _d->city->getPopulation();
-    last.funds = _d->city->getFunds();    
+    last.funds = _d->city->getFunds().getValue();    
     last.tax = _d->city->getLastMonthTax();
     last.taxpayes = _d->city->getLastMonthTaxpayer();  
 
