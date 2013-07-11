@@ -22,6 +22,7 @@
 class AppConfig
 {
 public:
+  static const std::string localePath;
   static const std::string resourcePath;
   static const std::string pantheonModel;
   static const std::string houseModel;
