@@ -23,7 +23,6 @@
 #include "oc3_tile.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_walker_service.hpp"
-#include "oc3_walker_market_buyer.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_gui_info_box.hpp"
 #include "oc3_gettext.hpp"

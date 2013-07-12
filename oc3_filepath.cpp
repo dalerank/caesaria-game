@@ -189,7 +189,7 @@ std::string FilePath::getExtension() const
     }
 
     int index = _d->path.find_last_of( '.' );
-    if( index >= 0 )
+    if( index != std::string::npos )
     {
         return _d->path.substr( index, 0xff );
     }
@@ -203,11 +203,11 @@ FilePath FilePath::getUpDir() const
         return "";
 
     FilePath pathToAny = removeEndSlash();
-    int index = pathToAny._d->path.find_last_of( "\\/", 2 );
+    int index = pathToAny._d->path.find_last_of( "/" );
 
-    if( index >=0 )
+    if( index != std::string::npos )
     {
-        return FilePath( pathToAny._d->path.substr( 0, index+1 ) );
+        return FilePath( pathToAny._d->path.substr( 0, index ) );
     }
 
     _OC3_DEBUG_BREAK_IF( !isExist() );
@@ -249,7 +249,7 @@ void FilePath::rename( const FilePath& pathNew )
 
 FilePath::FilePath( const std::string& nPath ) : _d( new Impl )
 {
-  _d->path = nPath;
+  _d->path = StringHelper::replace( nPath, "\\", "/" );
 }
 
 FilePath::FilePath( const FilePath& nPath ) : _d( new Impl )
@@ -259,7 +259,7 @@ FilePath::FilePath( const FilePath& nPath ) : _d( new Impl )
 
 FilePath::FilePath( const char* nPath ) : _d( new Impl )
 {
-  _d->path = nPath;
+  _d->path = StringHelper::replace( nPath, "\\", "/" );
 }
 
 FilePath::FilePath() : _d( new Impl )
@@ -275,7 +275,7 @@ const std::string& FilePath::toString() const
 std::string FilePath::removeExtension() const
 {
     int index = _d->path.find_last_of( '.' );
-    if( index >= 0 )
+    if( index != std::string::npos )
     {
         return _d->path.substr( 0, index );
     }
@@ -336,7 +336,7 @@ FilePath FilePath::flattenFilename( const FilePath& root ) const
   int pos = 0;
   bool lastWasRealDir=false;
 
-  while(( pos = directory.find( '/', lastpos)) >= 0)
+  while( ( pos = directory.find( '/', lastpos) ) != std::string::npos )
   {
     subdir = FilePath( directory.substr(lastpos, pos - lastpos + 1) );
 
@@ -452,23 +452,21 @@ FilePath FilePath::getBasename(bool keepExtension) const
 {
   // find last forward or backslash
   int lastSlash = toString().find_last_of('/');
-  const int lastBackSlash = toString().find_last_of('\\');
-  lastSlash = std::max<int>(lastSlash, lastBackSlash);
 
   // get number of chars after last dot
   int end = 0;
-  if (!keepExtension)
+  if( !keepExtension )
   {
     // take care to search only after last slash to check only for
     // dots in the filename
     end = toString().find_last_of('.');
-    if (end == -1 || end < lastSlash)
+    if( end == std::string::npos || end < lastSlash)
       end=0;
     else
       end = toString().size()-end;
   }
 
-  if ((unsigned int)lastSlash < toString().size())
+  if( lastSlash != std::string::npos )
   {
     return FilePath( toString().substr(lastSlash+1, toString().size()-lastSlash-1-end) );
   }
@@ -489,10 +487,8 @@ FilePath FilePath::getFileDir() const
 {
   // find last forward or backslash
   int lastSlash = toString().find_last_of( '/' );
-  const int lastBackSlash = toString().find_last_of('\\');
-  lastSlash = lastSlash > lastBackSlash ? lastSlash : lastBackSlash;
 
-  if ((unsigned int)lastSlash < toString().size())
+  if( lastSlash != std::string::npos )
   {
     return FilePath( toString().substr(0, lastSlash) );
   }

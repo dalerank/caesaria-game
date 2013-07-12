@@ -21,8 +21,6 @@
 #include "oc3_building_data.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_scenario.hpp"
-#include "oc3_walker_market_buyer.hpp"
-#include "oc3_walker_cart_pusher.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_walkermanager.hpp"
 #include "oc3_variant.hpp"
@@ -43,6 +41,7 @@ public:
   Point posOnMap; // subtile coordinate across all tiles: 0..15*mapsize (ii=15*i+si)
   PointF remainMove;  // remaining movement
   PathWay pathWay;
+  WalkerAction action;
 
   float getSpeed() const
   {
@@ -57,8 +56,8 @@ public:
 
 Walker::Walker() : _d( new Impl )
 {
-  _action._action = WA_MOVE;
-  _action._direction = D_NONE;
+  _d->action._action = WA_MOVE;
+  _d->action._direction = D_NONE;
   _walkerType = WT_NONE;
   _walkerGraphic = WG_NONE;
 
@@ -81,7 +80,7 @@ int Walker::getType() const
 
 void Walker::timeStep(const unsigned long time)
 {
-   switch (_action._action)
+   switch (_d->action._action)
    {
    case WA_MOVE:
       walk();
@@ -128,7 +127,7 @@ Point Walker::getPosition() const
                    _d->posOnMap.getX() - _d->posOnMap.getY() );
 } 
 
-void Walker::setPathWay(PathWay &pathWay)
+void Walker::setPathWay( const PathWay &pathWay)
 {
    _d->pathWay = pathWay;
    _d->pathWay.begin();
@@ -197,7 +196,7 @@ void Walker::dec(int &ioSI, int &ioI, int &ioAmount, const int iMidPos, bool &oN
 
 void Walker::walk()
 {
-   if (D_NONE == _action._direction )
+   if (D_NONE == _d->action._direction )
    {
       // nothing to do
       return;
@@ -205,7 +204,7 @@ void Walker::walk()
 
    Tile& tile = Scenario::instance().getCity()->getTilemap().at( getIJ() );
     
-   switch (_action._direction)
+   switch (_d->action._direction)
    {
    case D_NORTH:
    case D_SOUTH:
@@ -222,7 +221,7 @@ void Walker::walk()
       _d->remainMove += PointF( _d->getSpeed() * 0.7f, _d->getSpeed() * 0.7f );
       break;
    default:
-      THROW("Invalid move direction: " << _action._direction);
+      _OC3_DEBUG_BREAK_IF( "Invalid move direction: " ||  _d->action._direction);
       break;
    }
    
@@ -240,7 +239,7 @@ void Walker::walk()
    int tmpI = _d->pos.getI();
    while (amountI+amountJ > 0)
    {
-      switch (_action._direction)
+      switch (_d->action._direction)
       {
       case D_NORTH:
          inc(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
@@ -271,7 +270,7 @@ void Walker::walk()
          dec(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
          break;
       default:
-         THROW("Invalid move direction: " << _action._direction);
+         _OC3_DEBUG_BREAK_IF("Invalid move direction: " || _d->action._direction);
          break;
       }
 
@@ -334,7 +333,7 @@ void Walker::onMidTile()
 void Walker::onDestination()
 {
    // std::cout << "Walker arrived at destination! coord=" << _i << "," << _j << std::endl;
-   _action._action=WA_NONE;  // stop moving
+   _d->action._action=WA_NONE;  // stop moving
    _d->animation = Animation();
 }
 
@@ -346,10 +345,10 @@ void Walker::onNewDirection()
 
 void Walker::computeDirection()
 {
-   DirectionType lastDirection = _action._direction;
-   _action._direction = _d->pathWay.getNextDirection();
+   DirectionType lastDirection = _d->action._direction;
+   _d->action._direction = _d->pathWay.getNextDirection();
 
-   if (lastDirection != _action._direction)
+   if (lastDirection != _d->action._direction)
    {
       onNewDirection();
    }
@@ -358,7 +357,7 @@ void Walker::computeDirection()
 
 DirectionType Walker::getDirection()
 {
-   return _action._direction;
+   return _d->action._direction;
 }
 
 void Walker::getPictureList(std::vector<Picture*> &oPics)
@@ -373,23 +372,23 @@ Picture& Walker::getMainPicture()
    {
       const std::map<WalkerAction, Animation>& animMap = WalkerLoader::instance().getAnimationMap(getWalkerGraphic());
       std::map<WalkerAction, Animation>::const_iterator itAnimMap;
-      if (_action._action == WA_NONE || _action._direction == D_NONE)
+      if (_d->action._action == WA_NONE || _d->action._direction == D_NONE)
       {
          WalkerAction action;
          action._action = WA_MOVE;       // default action
-         if (_action._direction == D_NONE)
+         if (_d->action._direction == D_NONE)
          {
             action._direction = D_NORTH;  // default direction
          }
          else
          {
-            action._direction = _action._direction;  // last direction of the walker
+            action._direction = _d->action._direction;  // last direction of the walker
          }
          itAnimMap = animMap.find(action);
       }
       else
       {
-         itAnimMap = animMap.find(_action);
+         itAnimMap = animMap.find(_d->action);
       }
 
       _d->animation = itAnimMap->second;
@@ -403,8 +402,8 @@ void Walker::save( VariantMap& stream ) const
   //stream[ "id" ] = this;
   stream[ "type" ] = (int)_walkerType;
   stream[ "pathway" ] =  _d->pathWay.save();
-  stream[ "action" ] = (int)_action._action;
-  stream[ "direction" ] = (int)_action._direction;
+  stream[ "action" ] = (int)_d->action._action;
+  stream[ "direction" ] = (int)_d->action._direction;
   stream[ "pos" ] = _d->pos;
   stream[ "tileoffset" ] = _d->tileOffset;
   stream[ "mappos" ] = _d->posOnMap;
@@ -421,8 +420,8 @@ void Walker::load( const VariantMap& stream)
 
   _d->pathWay.init( tmap, tmap.at( 0, 0 ) );
   _d->pathWay.load( stream.get( "pathway" ).toMap() );
-  _action._action = (WalkerActionType) stream.get( "action" ).toInt();
-  _action._direction = (DirectionType) stream.get( "direction" ).toInt();
+  _d->action._action = (WalkerActionType) stream.get( "action" ).toInt();
+  _d->action._direction = (DirectionType) stream.get( "direction" ).toInt();
   _d->pos = stream.get( "pos" ).toTilePos();
   _d->tileOffset = stream.get( "tileoffset" ).toPoint();
   _d->posOnMap = stream.get( "mappos" ).toPoint();
@@ -460,6 +459,25 @@ PathWay& Walker::_getPathway()
   return _d->pathWay;
 }
 
+const PathWay& Walker::getPathway() const
+{
+  return _d->pathWay;
+}
+
+Animation& Walker::_getAnimation()
+{
+  return _d->animation;
+}
+
+void Walker::_setAction( WalkerActionType action )
+{
+  _d->action._action = action;
+}
+
+void Walker::_setDirection( DirectionType direction )
+{
+  _d->action._direction = direction;
+}
 Soldier::Soldier()
 {
    _walkerType = WT_SOLDIER;

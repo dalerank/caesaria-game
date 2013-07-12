@@ -16,7 +16,7 @@
 #include "oc3_walkermanager.hpp"
 #include "oc3_walker.hpp"
 #include "oc3_traineewalker.hpp"
-#include "oc3_walker_market_buyer.hpp"
+#include "oc3_walker_market_lady.hpp"
 #include "oc3_walker_cart_pusher.hpp"
 #include "oc3_walker_prefect.hpp"
 #include "oc3_emigrant.hpp"

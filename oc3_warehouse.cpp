@@ -52,9 +52,9 @@ public:
 
   void init(Warehouse &_warehouse);
 
-  int getCurrentQty(const GoodType &goodType) const;
-  int getCurrentQty() const;
-  int getMaxQty() const;
+  virtual int getCurrentQty(const GoodType &goodType) const;
+  virtual int getCurrentQty() const;
+  virtual int getMaxQty() const;
 
   // returns the max quantity that can be stored now
   virtual int getMaxStore(const GoodType goodType);
@@ -190,10 +190,7 @@ void Warehouse::save( VariantMap& stream ) const
   ServiceBuilding::save( stream );
 
   stream[ "__debug_typeName" ] = OC3_STR_EXT(B_WAREHOUSE);
- 
-  VariantMap vm_goodstore;
-  _d->goodStore.save( vm_goodstore );
-  stream[ "goodStore" ] = vm_goodstore;
+  stream[ "goodStore" ] = _d->goodStore.save();
 }
 
 void Warehouse::load( const VariantMap& stream )
@@ -390,6 +387,8 @@ void WarehouseStore::applyStorageReservation(GoodStock &stock, const long reserv
          amount -= tileAmount;
       }
    }
+
+   _warehouse->computePictures();
 }
 
 
@@ -446,6 +445,8 @@ void WarehouseStore::applyRetrieveReservation(GoodStock &stock, const long reser
          amount -= tileAmount;
       }
    }
+
+   _warehouse->computePictures();
 }
 
 int WarehouseStore::getMaxQty() const

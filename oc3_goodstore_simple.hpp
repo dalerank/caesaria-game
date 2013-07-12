@@ -44,7 +44,7 @@ public:
   virtual void applyStorageReservation(GoodStock &stock, const long reservationID);
   virtual void applyRetrieveReservation(GoodStock &stock, const long reservationID);
 
-  virtual void save( VariantMap& stream ) const;
+  virtual VariantMap save() const;
   virtual void load( const VariantMap& stream );
 
 private:

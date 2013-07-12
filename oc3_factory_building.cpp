@@ -178,12 +178,8 @@ GoodStore& Factory::getGoodStore()
 
 void Factory::save( VariantMap& stream ) const
 {
-  WorkingBuilding::save( stream );
-  VariantMap vm_goodstore;
-  _d->goodStore.save( vm_goodstore );
-
   stream[ "productionRate" ] = _d->productionRate;
-  stream[ "goodStore" ] = vm_goodstore;
+  stream[ "goodStore" ] = _d->goodStore.save();
   stream[ "progress" ] = _d->progress; 
 }
 

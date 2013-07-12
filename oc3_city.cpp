@@ -46,6 +46,8 @@
 #include "oc3_senate.hpp"
 #include "oc3_cityservice_culture.hpp"
 #include "oc3_cityfunds.hpp"
+#include "oc3_player.hpp"
+#include "oc3_scenario.hpp"
 
 #include <set>
 

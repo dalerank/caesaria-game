@@ -54,7 +54,9 @@ public:
 
    Point getPosition() const;
 
-   void setPathWay(PathWay& pathWay);
+   void setPathWay( const PathWay& pathWay);
+   const PathWay& getPathway() const;
+
    //void setDestinationIJ( const TilePos& pos );
    void setSpeed(const float speed);
    virtual void onNewTile();  // called when the walker is on a new tile
@@ -83,9 +85,11 @@ protected:
    WalkerType _walkerType;
    WalkerGraphicType _walkerGraphic;
    bool _isDeleted;
-   WalkerAction _action;
 
    PathWay& _getPathway();
+   Animation& _getAnimation();
+   void _setAction( WalkerActionType );
+   void _setDirection( DirectionType );
 
 private:
    /* useful method for subtile movement computation

@@ -165,21 +165,22 @@ void SimpleGoodStore::applyRetrieveReservation(GoodStock &stock, const long rese
 }
 
 
-void SimpleGoodStore::save( VariantMap& stream ) const
+VariantMap SimpleGoodStore::save() const
 {
-  GoodStore::save( stream );
+  VariantMap stream = GoodStore::save();
+
   stream[ "max" ] = _maxQty;
   stream[ "current" ] = _currentQty;
 
   VariantList stockSave;
   for( std::vector<GoodStock>::const_iterator itStock = _goodStockList.begin(); itStock != _goodStockList.end(); itStock++)
   {
-    VariantList currentStockSave;
-    (*itStock).save( currentStockSave );
-    stockSave.push_back( currentStockSave );
+    stockSave.push_back( (*itStock).save() );
   }
 
   stream[ "stock" ] = stockSave;
+
+  return stream;
 }
 
 void SimpleGoodStore::load( const VariantMap& stream )

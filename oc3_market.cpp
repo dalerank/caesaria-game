@@ -16,7 +16,7 @@
 #include "oc3_market.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_resourcegroup.hpp"
-#include "oc3_walker_market_buyer.hpp"
+#include "oc3_walker_market_lady.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_goodstore_simple.hpp"
@@ -42,7 +42,7 @@ Market::Market() : ServiceBuilding(S_MARKET, B_MARKET, Size(2) ),
   _d( new Impl )
 {
   setMaxWorkers(5);
-  setWorkers(5);
+  setWorkers(0);
 
   setPicture( Picture::load( ResourceGroup::commerce, 1) );
   _fgPictures.resize(1);  // animation
@@ -50,7 +50,7 @@ Market::Market() : ServiceBuilding(S_MARKET, B_MARKET, Size(2) ),
   _d->goodStore.setMaxQty(5000);
   _d->goodStore.setMaxQty(G_WHEAT, 400);
   _d->goodStore.setMaxQty(G_POTTERY, 300);
-  _d->goodStore.setCurrentQty(G_WHEAT, 200);
+  //_d->goodStore.setCurrentQty(G_WHEAT, 200);
 
   _getAnimation().load( ResourceGroup::commerce, 2, 10 );
   _getAnimation().setFrameDelay( 4 );
@@ -61,8 +61,8 @@ void Market::deliverService()
   if( getWorkers() > 0 && getWalkerList().size() == 0 )
   {
     // the marketBuyer is ready to buy something!
-    MarketBuyerPtr buyer = MarketBuyer::create( Scenario::instance().getCity() );
-    buyer->send2City( MarketPtr( this ) );
+    MarketLadyPtr buyer = MarketLady::create( Scenario::instance().getCity() );
+    buyer->send2City( this );
 
     if( !buyer->isDeleted() )
     {
@@ -120,17 +120,12 @@ int Market::getGoodDemand(const GoodType &goodType)
 void Market::save( VariantMap& stream) const 
 {
   ServiceBuilding::save( stream );
-  VariantMap vm_goodstore;  
-  _d->goodStore.save( vm_goodstore );
-  stream[ "goodStore" ] = vm_goodstore;
-
-  //stream.write_objectID( getWalkerList().begin().object() );
+  stream[ "goodStore" ] = _d->goodStore.save();
 }
 
 void Market::load( const VariantMap& stream)
 {
-//   ServiceBuilding::unserialize(stream);
-//   _d->goodStore.unserialize(stream);
-  //stream.read_objectID((void**)&_marketBuyer);
-  //_d->buyerDelay = stream.read_int(2, 0, 1000);
+  ServiceBuilding::load( stream );
+
+  _d->goodStore.load( stream.get( "goodStore" ).toMap() );
 }
