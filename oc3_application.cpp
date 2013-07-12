@@ -53,17 +53,17 @@ public:
   GfxEngine* engine;
   GuiEnv* gui;
   
-  void initLocale();
+  void initLocale(const std::string & localePath);
   bool load(const std::string& filename);
   void initPictures(const std::string &resourcePath);
   io::FileList::Items scanForMaps( const std::string &resourcePath ) const;
 };
 
-void Application::Impl::initLocale()
+void Application::Impl::initLocale(const std::string & localePath)
 {
   // init the internationalization library (gettext)
   setlocale(LC_ALL, "");
-  bindtextdomain( "caesar", "./locale" );
+  bindtextdomain( "caesar", localePath.data() );
   textdomain( "caesar" );
 }
 
@@ -267,7 +267,7 @@ Application::Application() : _d( new Impl )
 void Application::start()
 {
    //Create right PictureBank instance in the beginning   
-   _d->initLocale();
+   _d->initLocale(AppConfig::get( AppConfig::localePath ).toString());
    
    initVideo();
    initGuiEnvironment();
@@ -308,11 +308,12 @@ int main(int argc, char* argv[])
 {
    for (int i = 0; i < (argc - 1); i++)
    {
-	   if( !strcmp( argv[i], "-R" ) )
-	   {
+     if( !strcmp( argv[i], "-R" ) )
+     {
        AppConfig::set( AppConfig::resourcePath, Variant( std::string( argv[i+1] ) ) );
-		   break;
-	   }
+       AppConfig::set( AppConfig::localePath, Variant( std::string( argv[i+1] ) + "/locale" ) );
+       break;
+     }
    }
 
    try
