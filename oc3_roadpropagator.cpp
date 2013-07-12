@@ -44,13 +44,30 @@ RoadPropagator::RoadPropagator( const Tilemap& tileMap, const Tile& startTile )
     _d->mapSize = tileMap.getSize();
 }
 
+
+
+// comparison (for sorting list of tiles by their coordinates)
+bool
+compare_tiles_(const Tile * first, const Tile * second)
+{
+  if (first->getI() < second->getI())
+    return true;
+
+  else if (first->getI() == second->getI() &&
+           first->getJ() > second->getJ())
+    return true;
+
+  return false;
+}
+
+
+
 bool RoadPropagator::getPath( const Tile& destination, ConstWayOnTiles& oPathWay ) const
 {
   TilePos startPos = _d->startTile.getIJ();
   TilePos stopPos  = destination.getIJ();
   int iStep = (startPos.getI() < stopPos.getI()) ? 1 : -1;
   int jStep = (startPos.getJ() < stopPos.getJ()) ? 1 : -1;
-  ConstWayOnTiles tmpPathWay;
 
   std::cout << "RoadPropagator::getPath" << std::endl;
 
@@ -70,7 +87,7 @@ bool RoadPropagator::getPath( const Tile& destination, ConstWayOnTiles& oPathWay
     const Tile& curTile = _d->tilemap.at( tmp );
 
     StringHelper::debug( 0xff, "+ (%d, %d)", curTile.getI(), curTile.getJ() );
-    tmpPathWay.push_back( &curTile );
+    oPathWay.push_back( &curTile );
 
     if (tmp.getI() == stopPos.getI())
       break;
@@ -84,30 +101,14 @@ bool RoadPropagator::getPath( const Tile& destination, ConstWayOnTiles& oPathWay
     const Tile& curTile = _d->tilemap.at( startPos.getI(), j );
 
     std::cout << "+ (" << curTile.getI() << " " << curTile.getJ() << ") ";
-    tmpPathWay.push_back( &curTile );
+    oPathWay.push_back( &curTile );
 
     if( j == stopPos.getJ() )
       break;
   }
 
   // sort tiles to be drawn in the rigth order on screen
-  while (!tmpPathWay.empty()) {
-    ConstWayOnTiles::iterator it = tmpPathWay.begin();
-    ConstWayOnTiles::iterator it_next = it;
-
-    for (++it; it != tmpPathWay.end(); ++it) {
-      // if got the lowest X, then take it
-      if ((*it)->getI() < (*it_next)->getI())
-        it_next = it;
-      // if X is the same but Y is bigger, then take it
-      else if ((*it)->getI() == (*it_next)->getI() &&
-               (*it)->getJ() > (*it_next)->getJ())
-        it_next = it;
-    }
-
-    tmpPathWay.erase(it_next);
-    oPathWay.push_back(*it_next);
-  }
+  oPathWay.sort(compare_tiles_);
 
   return true;
 }
