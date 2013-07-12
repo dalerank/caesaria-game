@@ -33,6 +33,7 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_house.hpp"
 #include "oc3_house_level.hpp"
+#include "oc3_water_buildings.hpp"
 
 class TilemapRenderer::Impl
 {
@@ -775,6 +776,8 @@ void TilemapRenderer::Impl::simpleDrawTilemap()
   }
 }
 
+
+
 void TilemapRenderer::drawTilemap()
 {
   //First part: drawing city
@@ -798,8 +801,14 @@ void TilemapRenderer::drawTilemap()
       _d->engine->resetTileDrawMask();
 
       if (ptr_construction != NULL) {
-        if (ptr_construction->canBuild((*itPostTile)->getIJ()))
+        if (ptr_construction->canBuild((*itPostTile)->getIJ())) {
           _d->engine->setTileDrawMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
+
+          // aqueducts must be shown in correct form
+          AqueductPtr aqueduct = ptr_construction.as<Aqueduct>();
+          if (aqueduct != NULL)
+            aqueduct->setPicture(aqueduct->computePicture(&_d->postTiles, (*itPostTile)->getIJ()));
+        }
       }
 
       _d->drawTileEx( **itPostTile, (*itPostTile)->getIJ().getZ() );

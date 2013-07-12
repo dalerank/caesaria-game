@@ -158,23 +158,49 @@ bool Aqueduct::canBuild( const TilePos& pos ) const
   return false;
 }
 
-Picture& Aqueduct::computePicture()
+
+
+Picture&
+Aqueduct::computePicture(const PtrTilesList * tmp, const TilePos pos)
 {
   // find correct picture as for roads
   Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
-  
+
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
 
-  LandOverlayPtr northOverlay = tmap.at( getTilePos() + TilePos( 0, 1) ).getTerrain().getOverlay();
-  LandOverlayPtr eastOverlay = tmap.at( getTilePos() + TilePos( 1, 0) ).getTerrain().getOverlay();
-  LandOverlayPtr southOverlay = tmap.at( getTilePos() + TilePos( 0, -1) ).getTerrain().getOverlay();
-  LandOverlayPtr westOverlay = tmap.at( getTilePos() + TilePos( -1, 0) ).getTerrain().getOverlay();
+  const TilePos tile_pos = (tmp == NULL) ? getTilePos() : pos;
 
-  if( northOverlay.is<Aqueduct>() || northOverlay.is<Reservoir>() ) { directionFlags += 1; }
-  if( eastOverlay.is<Aqueduct>() || eastOverlay.is<Reservoir>()) { directionFlags += 2; }
-  if( southOverlay.is<Aqueduct>() || southOverlay.is<Reservoir>() ) { directionFlags += 4; }
-  if( westOverlay.is<Aqueduct>() || westOverlay.is<Reservoir>()) { directionFlags += 8; }
-  
+  LandOverlayPtr northOverlay = tmap.at( tile_pos + TilePos(  0,  1) ).getTerrain().getOverlay();
+  LandOverlayPtr eastOverlay  = tmap.at( tile_pos + TilePos(  1,  0) ).getTerrain().getOverlay();
+  LandOverlayPtr southOverlay = tmap.at( tile_pos + TilePos(  0, -1) ).getTerrain().getOverlay();
+  LandOverlayPtr westOverlay  = tmap.at( tile_pos + TilePos( -1,  0) ).getTerrain().getOverlay();
+
+  bool isNorthBusy = false;
+  bool isEastBusy  = false;
+  bool isSouthBusy = false;
+  bool isWestBusy  = false;
+
+  if (tmp != NULL)
+    for (PtrTilesList::const_iterator it = tmp->begin(); it != tmp->end(); ++it)
+    {
+      int i = (*it)->getI();
+      int j = (*it)->getJ();
+
+      if (i == pos.getI() && j == (pos.getJ() + 1))
+        isNorthBusy = true;
+      else if (i == pos.getI() && j == (pos.getJ() - 1))
+        isSouthBusy = true;
+      else if (j == pos.getJ() && i == (pos.getI() + 1))
+        isEastBusy = true;
+      else if (j == pos.getJ() && i == (pos.getI() - 1))
+        isWestBusy = true;
+    }
+
+  if( northOverlay.is<Aqueduct>() || northOverlay.is<Reservoir>() || isNorthBusy) { directionFlags += 1; }
+  if( eastOverlay.is<Aqueduct>()  || eastOverlay.is<Reservoir>()  || isEastBusy) { directionFlags += 2; }
+  if( southOverlay.is<Aqueduct>() || southOverlay.is<Reservoir>() || isSouthBusy) { directionFlags += 4; }
+  if( westOverlay.is<Aqueduct>()  || westOverlay.is<Reservoir>()  || isWestBusy) { directionFlags += 8; }
+
   int index;
   switch (directionFlags)
   {
@@ -183,7 +209,10 @@ Picture& Aqueduct::computePicture()
   case 1:  // N
   case 4:  // S
   case 5:  // N + S
-    index = 121; if (getTile().getTerrain().isRoad()) index = 119; break;
+    index = 121;
+    if (tmap.at(tile_pos).getTerrain().isRoad())
+      index = 119;
+    break;
   case 3:  // N + E
     index = 123; break;
   case 6:  // E + S
@@ -195,7 +224,10 @@ Picture& Aqueduct::computePicture()
   case 2:  // E
   case 8:  // W
   case 10: // E + W
-    index = 122; if (getTile().getTerrain().isRoad()) index = 120; break;
+    index = 122;
+    if (tmap.at(tile_pos).getTerrain().isRoad())
+      index = 120;
+    break;
   case 11: // N + E + W
     index = 132; break;
   case 12: // S + W
@@ -208,10 +240,12 @@ Picture& Aqueduct::computePicture()
     index = 133; break;
   default:
     index = 121; // it's impossible, but ...
-  }   
-  
+  }
+
   return Picture::load( ResourceGroup::aqueduct, index + (_water == 0 ? 15 : 0) );
 }
+
+
 
 void Aqueduct::updatePicture()
 {
