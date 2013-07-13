@@ -334,7 +334,7 @@ void PathWay::prettyPrint() const
 VariantMap PathWay::save() const
 {
   VariantMap stream;
-  if( getLength() ) //not save empty way
+  if( getLength() == 0 ) //not save empty way
   {
     return VariantMap();
   }

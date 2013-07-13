@@ -178,6 +178,7 @@ GoodStore& Factory::getGoodStore()
 
 void Factory::save( VariantMap& stream ) const
 {
+  WorkingBuilding::save( stream );
   stream[ "productionRate" ] = _d->productionRate;
   stream[ "goodStore" ] = _d->goodStore.save();
   stream[ "progress" ] = _d->progress; 
@@ -187,8 +188,8 @@ void Factory::load( const VariantMap& stream)
 {
   WorkingBuilding::load( stream );
   _d->goodStore.load( stream.get( "goodStore" ).toMap() );
-  _d->progress = stream.get( "progress" ).toFloat(); // approximation
-  _d->productionRate = stream.get( "productionRate" ).toFloat();
+  _d->progress = (float)stream.get( "progress" ); // approximation
+  _d->productionRate = (float)stream.get( "productionRate" );
 }
 
 Factory::~Factory()

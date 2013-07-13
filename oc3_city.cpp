@@ -505,7 +505,7 @@ void City::save( VariantMap& stream) const
   stream[ "boatEntry" ] = _d->boatEntry;
   stream[ "boatExit" ] = _d->boatExit;
   stream[ "climate" ] = _d->climate;
-  stream[ "time" ] = static_cast<unsigned long long>(_d->time);
+  stream[ "date" ] = _d->date;
   stream[ "funds" ] = _d->funds.save();
   stream[ "population" ] = _d->population;
 
@@ -528,8 +528,8 @@ void City::save( VariantMap& stream) const
   {
     VariantMap vm_overlay;
     (*itOverlay)->save( vm_overlay );
-    vm_overlays[ StringHelper::format( 0xff, "%03d%03d", (*itOverlay)->getTile().getI(),
-                                                         (*itOverlay)->getTile().getJ() ) ] = vm_overlay;
+    vm_overlays[ StringHelper::format( 0xff, "%d,%d", (*itOverlay)->getTile().getI(),
+                                                      (*itOverlay)->getTile().getJ() ) ] = vm_overlay;
   }
 
   stream[ "overlays" ] = vm_overlays;
@@ -544,7 +544,7 @@ void City::load( const VariantMap& stream )
   _d->boatEntry = TilePos( stream.get( "boatEntry" ).toTilePos() );
   _d->boatExit = TilePos( stream.get( "boatExit" ).toTilePos() );
   _d->climate = (ClimateType)stream.get( "climate" ).toInt(); 
-  _d->time = (unsigned long)stream.get( "time" ).toULongLong();
+  _d->date = stream.get( "date" ).toDateTime();
   _d->funds.load( stream.get( "funds" ).toMap() );
   _d->population = stream.get( "population" ).toInt();
   _d->cameraStart = TilePos( stream.get( "cameraStart" ).toTilePos() );

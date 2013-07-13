@@ -176,6 +176,14 @@ void CartPusher::computeWalkerDestination()
    PathWay pathWay;
    Propagator pathPropagator( _d->city );
    _d->consumerBuilding = 0;
+
+   _OC3_DEBUG_BREAK_IF( _d->producerBuilding.isNull() && "CartPusher: producerBuilding can't be NULL" );
+   if( _d->producerBuilding.isNull() )
+   {
+     deleteLater();
+     return;
+   }
+
    pathPropagator.init( _d->producerBuilding.as<Construction>() );
    pathPropagator.propagate(_d->maxDistance);
 
