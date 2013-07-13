@@ -50,7 +50,6 @@ public:
 
   //void removeWalker( WalkerPtr walker );
 private:  
-  int _serviceRange;
   static std::map<ServiceType, ServiceBuilding*> _specimen;
 
   class Impl;

@@ -28,6 +28,7 @@
 #include "oc3_house.hpp"
 #include "oc3_color.hpp"
 #include "oc3_texturedbutton.hpp"
+#include "oc3_cityfunds.hpp"
 
 class AdvisorFinanceWindow::Impl
 {

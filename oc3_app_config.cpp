@@ -14,7 +14,10 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_app_config.hpp"
+#include "oc3_filepath.hpp"
 
+
+const std::string AppConfig::localePath = "localePath";
 const std::string AppConfig::resourcePath = "resourcePath";
 const std::string AppConfig::pantheonModel = "pantheonConfig";
 const std::string AppConfig::houseModel = "houseModel";
@@ -34,7 +37,10 @@ AppConfig& AppConfig::getInstance()
 
 AppConfig::AppConfig() : _d( new Impl )
 {
-  _d->options[ resourcePath ] = Variant( std::string( "./resources" ) );
+  std::string application_path = io::FileDir::getApplicationDir().toString();
+
+  _d->options[ resourcePath ] = Variant( application_path + std::string( "/resources" ) );
+  _d->options[ localePath ] = Variant( application_path + std::string( "/resources/locale" ) );
   _d->options[ pantheonModel ] = Variant( std::string( "/pantheon.model" ) );
   _d->options[ houseModel ] = Variant( std::string( "/house.model" ) );
   _d->options[ constructionModel ] = Variant( std::string( "/construction.model" ) );

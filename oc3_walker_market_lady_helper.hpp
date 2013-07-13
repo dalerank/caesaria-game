@@ -12,42 +12,30 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
+#ifndef __OPENCAESAR3_MARKET_LADY_HELPER_H_INCLUDED__
+#define __OPENCAESAR3_MARKET_LADY_HELPER_H_INCLUDED__
 
-#ifndef WAREHOUSE_HPP
-#define WAREHOUSE_HPP
+#include "oc3_walker.hpp"
 
-#include "oc3_working_building.hpp"
-#include "oc3_enums.hpp"
-#include "oc3_good.hpp"
-#include "oc3_positioni.hpp"
-
-class GoodStore;
-
-class Warehouse: public WorkingBuilding
+class MarketLadyHelper : public Walker
 {
-  friend class WarehouseStore;
-
 public:
-  Warehouse();
-  void init();
+  static MarketLadyHelperPtr create( MarketLadyPtr lady );
 
-  virtual void timeStep(const unsigned long time);
-  void computePictures();
-  GoodStore& getGoodStore();
-  
-  virtual void save(VariantMap& stream) const;
-  virtual void load(const VariantMap& stream);
+  GoodStock& getBasket();
+  void setDelay( int delay );
 
+  void send2City( CityPtr city, MarketPtr destination );
+
+  void timeStep(const unsigned long time);
+
+  void onDestination();
 private:
-  void _resolveDevastationMode();
+  MarketLadyHelper();
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
-
 
 #endif

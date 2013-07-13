@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#include "oc3_walker_market_buyer.hpp"
+#include "oc3_walker_market_lady.hpp"
 #include "oc3_building_data.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_scenario.hpp"
@@ -25,9 +25,10 @@
 #include "oc3_tile.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_path_finding.hpp"
+#include "oc3_walker_market_lady_helper.hpp"
 #include "oc3_goodstore_simple.hpp"
 
-class MarketBuyer::Impl
+class MarketLady::Impl
 {
 public:
   TilePos destBuildingPos;  // granary or warehouse
@@ -39,10 +40,10 @@ public:
   long reservationID;
 };
 
-MarketBuyer::MarketBuyer() : _d( new Impl )
+MarketLady::MarketLady() : _d( new Impl )
 {
    _walkerGraphic = WG_MARKETLADY;
-   _walkerType = WT_MARKET_BUYER;
+   _walkerType = WT_MARKETLADY;
    _d->maxDistance = 25;
    _d->basket.setMaxQty(800);  // this is a big basket!
 
@@ -58,7 +59,7 @@ MarketBuyer::MarketBuyer() : _d( new Impl )
    _d->basket.setMaxQty(G_WINE, 100);
 }
 
-MarketBuyer::~MarketBuyer()
+MarketLady::~MarketLady()
 {
 }
 
@@ -98,7 +99,7 @@ TilePos getWalkerDestination2( Propagator &pathPropagator, const BuildingType ty
     // reserve some goods from that warehouse/granary
     int qty = std::min( max_qty, market->getGoodDemand( what ) );
     qty = std::min(qty, basket.getMaxQty( what ) - basket.getCurrentQty( what ));
-    // std::cout << "MarketBuyer reserves from warehouse, qty=" << qty << std::endl;
+    // std::cout << "MarketLady reserves from warehouse, qty=" << qty << std::endl;
     GoodStock stock( what, qty, qty);
     reservId = res->getGoodStore().reserveRetrieval( stock );
     return res->getTilePos();
@@ -107,7 +108,7 @@ TilePos getWalkerDestination2( Propagator &pathPropagator, const BuildingType ty
   return TilePos(-1, -1);
 }
 
-void MarketBuyer::computeWalkerDestination( MarketPtr market )
+void MarketLady::computeWalkerDestination( MarketPtr market )
 {
   _d->market = market;
   std::list<GoodType> priorityGoods = _d->market->getMostNeededGoods();
@@ -163,7 +164,7 @@ void MarketBuyer::computeWalkerDestination( MarketPtr market )
   setIJ( _getPathway().getOrigin().getIJ() );
 }
 
-void MarketBuyer::onDestination()
+void MarketLady::onDestination()
 {
    Walker::onDestination();
    if( _getPathway().isReverse() )
@@ -177,7 +178,7 @@ void MarketBuyer::onDestination()
    {
       // walker is near the granary/warehouse
       _getPathway().rbegin();
-      _action._action=WA_MOVE;
+      _setAction( WA_MOVE );
       computeDirection();
 
       // get goods from destination building
@@ -187,7 +188,7 @@ void MarketBuyer::onDestination()
       {
         GranaryPtr granary = building.as<Granary>();
         // this is a granary!
-        // std::cout << "MarketBuyer arrives at granary, res=" << _reservationID << std::endl;
+        // std::cout << "MarketLady arrives at granary, res=" << _reservationID << std::endl;
         granary->getGoodStore().applyRetrieveReservation(_d->basket, _d->reservationID);
 
         // take other goods if possible
@@ -208,7 +209,6 @@ void MarketBuyer::onDestination()
               }
            }
         }
-        granary->computePictures();
       }
       else if( building.is<Warehouse>() )
       {
@@ -236,37 +236,54 @@ void MarketBuyer::onDestination()
               }
            }
         }
-        warehouse->computePictures();
+      }
+
+      unsigned long delay = 20;
+
+      while( _d->basket.getCurrentQty() > 100 )
+      {
+        for( int gtype=G_WHEAT; gtype <= G_WINE; gtype++ )
+        {
+          GoodStock& currentStock = _d->basket.getStock( (GoodType)gtype );
+          if( currentStock._currentQty > 0 )
+          {
+            MarketLadyHelperPtr boy = MarketLadyHelper::create( this );
+            GoodStock& boyBasket =  boy->getBasket();
+            boyBasket._goodType = (GoodType)gtype;
+            boyBasket._maxQty = 100;
+            _d->basket.retrieve( boyBasket, math::clamp( currentStock._currentQty, 0, 100 ) );
+            boy->setDelay( delay );
+            delay += 20;
+            boy->send2City( _d->city, _d->market );
+          }
+        }
       }
    }
 }
 
-void MarketBuyer::send2City( MarketPtr market )
+void MarketLady::send2City( MarketPtr market )
 {
   computeWalkerDestination( market );
 
   if( !isDeleted() )
   {
-    _d->city->addWalker( WalkerPtr( this ) );
+    _d->city->addWalker( WalkerPtr( this ) );   
   }
 }
 
-void MarketBuyer::save( VariantMap& stream ) const
+void MarketLady::save( VariantMap& stream ) const
 {
   Walker::save( stream );
   stream[ "destBuildPos" ] = _d->destBuildingPos;
   stream[ "priorityGood" ] = (int)_d->priorityGood;
   stream[ "marketPos" ] = _d->market->getTilePos();
 
-  VariantMap vm_basket;
-  _d->basket.save( vm_basket );
-  stream[ "basket" ] = vm_basket;
-
+  stream[ "basket" ] = _d->basket.save();
   stream[ "maxDistance" ] = _d->maxDistance;
   stream[ "reservationId" ] = static_cast<unsigned int>(_d->reservationID);
 }
 
-void MarketBuyer::load( const VariantMap& stream)
+void MarketLady::load( const VariantMap& stream)
 {
   Walker::load( stream );
   _d->destBuildingPos = stream.get( "destBuildPos" ).toTilePos();
@@ -279,9 +296,9 @@ void MarketBuyer::load( const VariantMap& stream)
   _d->reservationID = stream.get( "reserationId" ).toInt();
 }
 
-MarketBuyerPtr MarketBuyer::create( CityPtr city )
+MarketLadyPtr MarketLady::create( CityPtr city )
 {
-  MarketBuyerPtr ret( new MarketBuyer() );
+  MarketLadyPtr ret( new MarketLady() );
   ret->_d->city = city;
   ret->drop();
 

@@ -40,6 +40,7 @@ public:
 
   // called when the factory has made 100 good units
   virtual void deliverGood();
+  virtual void receiveGood();
   virtual int getProgress();
 
   virtual void timeStep(const unsigned long time);
@@ -50,6 +51,7 @@ public:
 protected:
   void _setProductRate( const float rate );
   virtual bool _mayDeliverGood() const;
+  virtual bool _mayWork() const;
 
 protected:
   class Impl;

@@ -16,19 +16,19 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#ifndef WALKER_MARKET_BUYER_HPP
-#define WALKER_MARKET_BUYER_HPP
+#ifndef __OPENCAESAR3_MARKETLADY_H_INCLUDED__
+#define __OPENCAESAR3_MARKETLADY_H_INCLUDED__
 
 #include "oc3_walker.hpp"
 #include "oc3_warehouse.hpp"
 
 /** This is the market lady buying goods at granaries and warehouses */
-class MarketBuyer : public Walker
+class MarketLady : public Walker
 {
 public:
-  static MarketBuyerPtr create( CityPtr city );
+  static MarketLadyPtr create( CityPtr city );
 
-  virtual ~MarketBuyer();
+  virtual ~MarketLady();
 
   void send2City( MarketPtr market );
   virtual void onDestination();
@@ -40,10 +40,10 @@ public:
   void load( const VariantMap& stream);
 
 private:
-  MarketBuyer();
+  MarketLady();
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#endif
+#endif //__OPENCAESAR3_MARKETLADY_H_INCLUDED__

@@ -11,6 +11,7 @@
 {
   "road" : 
   {
+    "cost" : 4,
 	"desirability" : 4,
 	"desrange" : 0
   },

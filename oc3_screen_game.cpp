@@ -42,6 +42,7 @@
 #include "oc3_tilemap_renderer.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_senate_popup_info.hpp"
+#include "oc3_cityfunds.hpp"
 
 class ScreenGame::Impl
 {
@@ -88,6 +89,8 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
   _d->gui = &gui;
   _d->engine = &engine;
   _d->infoBoxMgr = InfoBoxManager::create( &gui );
+
+  CityPtr city = _d->scenario->getCity();
   // enable key repeat, 1ms delay, 100ms repeat
 
   _d->gui->clear();
@@ -103,6 +106,9 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
   _d->rightPanel = MenuRigthPanel::create( gui.getRootWidget(), rPanelRect, rPanelPic);
 
   _d->topMenu = TopMenu::create( gui.getRootWidget(), topMenuHeight );
+  _d->topMenu->setPopulation( city->getPopulation() );
+  _d->topMenu->setFunds( city->getFunds().getValue() );
+  _d->topMenu->setDate( city->getDate() );
 
   _d->menu = Menu::create( gui.getRootWidget(), -1, _d->scenario->getCity() );
   _d->menu->setPosition( Point( engine.getScreenWidth() - _d->menu->getWidth() - _d->rightPanel->getWidth(), 
@@ -127,7 +133,6 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
   new SenatePopupInfo( _d->gui->getRootWidget(), _d->mapRenderer );
 
   //connect elements
-  CityPtr city = _d->scenario->getCity();
   CONNECT( _d->topMenu, onSave(), _d.data(), Impl::showSaveDialog );
   CONNECT( _d->topMenu, onExit(), this, ScreenGame::resolveExitGame );
   CONNECT( _d->topMenu, onEnd(), this, ScreenGame::resolveEndGame );
@@ -255,7 +260,7 @@ void ScreenGame::handleEvent( NEvent& event )
       switch( event.KeyboardEvent.Key )
       {
 	    case KEY_ESCAPE:
-        stop();
+       // stop();
 	    break;
 	    
       case KEY_F10:

@@ -21,13 +21,13 @@
 #include "oc3_listboxitem.hpp"
 #include "oc3_predefinitions.hpp"
 #include "oc3_signals.hpp"
+#include "oc3_font.hpp"
 
 typedef enum { LBF_SELECT_ON_MOVE=0, LBF_SELECT_ON_MOUSE_DOWN,
                LBF_DRAWBACK, LBF_AUTOSCROLL, LBF_MOVEOVER_SELECT, 
                LBF_HIGHLIGHTWHEN_NOTFOCUSED, LBF_COUNT } LISTBOX_FLAG;
 
 class ScrollBar;
-class Font;
 
 class ListBox : public Widget, public FlagHolder<LISTBOX_FLAG>
 {
@@ -68,9 +68,6 @@ public:
 	//! get the the id of the item at the given absolute coordinates
   virtual int getItemAt( const Point& pos ) const;
 
-  //! set item action when clicked
-  virtual void SetItemAction( unsigned int index, int funcRef );
-
   //! set all item colors of specified type at given index to color
   virtual void setItemOverrideColor( unsigned int index, const int color, 
                                      ListBoxItem::ColorType colorType=ListBoxItem::LBC_ALL );
@@ -100,7 +97,12 @@ public:
 	virtual int getItemOverrideColor(unsigned int index, ListBoxItem::ColorType colorType) const;
 
 	//! return the default color which is used for the given colorType
-	virtual int getItemDefaultColor( ListBoxItem::ColorType colorType) const;
+	virtual NColor getItemDefaultColor( ListBoxItem::ColorType colorType) const;
+
+  //! set default color which will used for the given colorType
+  virtual void setItemDefaultColor( ListBoxItem::ColorType colorType, NColor color );
+
+  virtual void setItemFont( Font font );
 
 	//! set the item at the given index
   virtual void setItem( unsigned int index, const std::string &text, int icon);
@@ -118,12 +120,12 @@ public:
   //! Sets whether to draw the background
   virtual void setDrawBackground(bool draw);
 
-    //! adds an list item with an icon
-    //! \param text Text of list entry
-    //! \param icon Sprite index of the Icon within the current sprite bank. Set it to -1 if you want no icon
-    //! \return
-    //! returns the id of the new created item
-  virtual ListBoxItem& addItem( const std::string& text, const Font& font, const int color );
+  //! adds an list item with an icon
+  //! \param text Text of list entry
+  //! \param icon Sprite index of the Icon within the current sprite bank. Set it to -1 if you want no icon
+  //! \return
+  //! returns the id of the new created item
+  virtual ListBoxItem& addItem( const std::string& text, Font font=Font(), const int color=0 );
 
   virtual int getSelected();
 
@@ -131,6 +133,7 @@ public:
 
 oc3_signals public:
   Signal1<std::string>& onItemSelectedAgain();
+  Signal1<const ListBoxItem&>& onItemSelected();
 
 protected:
 	//! Update the position and size of the listbox, and update the scrollbar
@@ -147,7 +150,7 @@ private:
   void _DrawItemIcon( const ListBoxItem& item, const Rect& rectangle, bool highlighted, bool selected, Rect* clip, const int color );
   Rect getItemTextRect_();
   Font _GetCurrentItemFont( const ListBoxItem& item, bool selected );
-  int _GetCurrentItemColor( const ListBoxItem& item, bool selected );
+  NColor _GetCurrentItemColor( const ListBoxItem& item, bool selected );
   void _updateTexture();
   class Impl;
 	ScopedPtr< Impl > _d;

@@ -601,10 +601,7 @@ void House::save( VariantMap& stream ) const
   stream[ "currentHubitants" ] = _d->currentHabitants;
   stream[ "maxHubitants" ] = _d->maxHabitants;
   stream[ "freeWorkersCount" ] = _d->freeWorkersCount;
-
-  VariantMap vm_goodstore;
-  _d->goodStore.save( vm_goodstore );
-  stream[ "goodstore" ] = vm_goodstore;
+  stream[ "goodstore" ] = _d->goodStore.save();
 
   VariantList vl_services;
   for( std::map<ServiceType, int>::iterator it = _d->serviceAccessMap.begin();

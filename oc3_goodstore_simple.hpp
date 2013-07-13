@@ -29,7 +29,6 @@ public:
   void setMaxQty(const int maxQty);
   int getMaxQty() const;
   int getCurrentQty() const;
-  void computeCurrentQty();
 
   GoodStock& getStock(const GoodType &goodType);
   virtual int getCurrentQty(const GoodType &goodType) const;
@@ -44,13 +43,12 @@ public:
   virtual void applyStorageReservation(GoodStock &stock, const long reservationID);
   virtual void applyRetrieveReservation(GoodStock &stock, const long reservationID);
 
-  virtual void save( VariantMap& stream ) const;
+  virtual VariantMap save() const;
   virtual void load( const VariantMap& stream );
 
 private:
   std::vector<GoodStock> _goodStockList;
   int _maxQty;
-  int _currentQty;
 };
 
 #endif //__OPENCAESAR3_GOODSTORE_SIMPLE_H_INCLUDED__

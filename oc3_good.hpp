@@ -23,7 +23,7 @@
 #include <string>
 #include <vector>
 #include <map>
-#include "oc3_serializer.hpp"
+#include "oc3_variant.hpp"
 
 class VariantList;
 
@@ -67,7 +67,7 @@ public:
   /** amount: if -1, amount=stock._currentQty */
   void addStock(GoodStock &stock, const int amount = -1);
 
-  void save( VariantList& stream ) const;
+  VariantList save() const;
   void load( const VariantList& options );
 
   GoodType _goodType;

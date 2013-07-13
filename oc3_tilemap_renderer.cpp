@@ -562,7 +562,7 @@ void TilemapRenderer::Impl::drawTileBase( Tile& tile )
   if( overlay.isNull() )
   {
     return;
-  }  
+  }
 
   drawAnimations( overlay, screenPos );
 }
@@ -790,14 +790,18 @@ void TilemapRenderer::drawTilemap()
   //Second part: drawing build tools
   if( _d->changeCommand.isValid() && _d->changeCommand.is<TilemapBuildCommand>() )
   {
-    if( _d->changeCommand.as<TilemapBuildCommand>()->isCanBuild() )
-    {
-      _d->engine->setTileDrawMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
-    }
-
     for( PtrTilesList::iterator itPostTile = _d->postTiles.begin(); itPostTile != _d->postTiles.end(); ++itPostTile )
     {
       (*itPostTile)->resetWasDrawn();
+
+      ConstructionPtr ptr_construction = (*itPostTile)->getTerrain().getOverlay().as<Construction>();
+      _d->engine->resetTileDrawMask();
+
+      if (ptr_construction != NULL) {
+        if (ptr_construction->canBuild((*itPostTile)->getIJ()))
+          _d->engine->setTileDrawMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
+      }
+
       _d->drawTileEx( **itPostTile, (*itPostTile)->getIJ().getZ() );
     }
     _d->engine->resetTileDrawMask();
@@ -842,6 +846,7 @@ TilemapArea& TilemapRenderer::getMapArea()
 void TilemapRenderer::updatePreviewTiles( bool force )
 {
   TilemapBuildCommandPtr bldCommand = _d->changeCommand.as<TilemapBuildCommand>();
+
   if( bldCommand.isNull() )
     return;
 
@@ -854,7 +859,7 @@ void TilemapRenderer::updatePreviewTiles( bool force )
     return;
 
   if( curTile && !force && _d->lastTilePos == curTile->getIJ() )
-      return;
+    return;
 
   _d->lastTilePos = curTile->getIJ();
 
@@ -868,12 +873,13 @@ void TilemapRenderer::updatePreviewTiles( bool force )
     RoadPropagator rp( *_d->tilemap, *startTile );
 
     ConstWayOnTiles pathWay;
+
     bool havepath = rp.getPath( *stopTile, pathWay );
     if( havepath )
     {
       for( ConstWayOnTiles::iterator it=pathWay.begin(); it != pathWay.end(); it++ )
       {
-	      checkPreviewBuild( (*it)->getIJ() );
+        checkPreviewBuild( (*it)->getIJ() );
       }
     }
   }
@@ -883,12 +889,12 @@ void TilemapRenderer::updatePreviewTiles( bool force )
     _d->getSelectedArea( startPos, stopPos );
 
     std::cout << "start is" << startPos << " and stop is " << stopPos << std::endl;
-    
+
     for( int i = startPos.getI(); i <= stopPos.getI(); i++ )
     {
       for( int j = startPos.getJ(); j <=stopPos.getJ(); j++ )
       {
-	      checkPreviewBuild( TilePos( i, j ) );
+        checkPreviewBuild( TilePos( i, j ) );
       }
     }
   }
@@ -1086,70 +1092,79 @@ void TilemapRenderer::discardPreview()
   _d->postTiles.clear();
 }
 
-void TilemapRenderer::checkPreviewBuild( const TilePos& pos )
+
+
+void
+TilemapRenderer::checkPreviewBuild(const TilePos & pos)
 {
   TilemapBuildCommandPtr bldCommand = _d->changeCommand.as<TilemapBuildCommand>();
-  if( bldCommand.isNull() )
+
+  if (bldCommand.isNull())
     return;
 
   // TODO: do only when needed, when (i, j, _buildInstance) has changed
   ConstructionPtr overlay = bldCommand->getContruction();
-  if( overlay.isValid() )
+
+  if (!overlay.isValid()) {
+    return;
+  }
+
+  int size = overlay->getSize().getWidth();
+
+  if (overlay->canBuild(pos))
   {
-     int size = overlay->getSize().getWidth();
-     
-     if( overlay->canBuild( pos ) )
-     {
-       bldCommand->setCanBuild( true );        
-       Tile *masterTile=0;
-       for (int dj = 0; dj < size; ++dj)
-       {
-           for (int di = 0; di < size; ++di)
-           {
-               Tile* tile = new Tile(_d->tilemap->at( pos + TilePos( di, dj ) ));  // make a copy of tile
-               
-               if (di==0 && dj==0)
-               {
-                   // this is the masterTile
-                   masterTile = tile;
-               }
-               tile->setPicture( &overlay->getPicture() );
-               tile->setMasterTile( masterTile );
-               tile->getTerrain().setBuilding( true );
-               tile->getTerrain().setOverlay( overlay.as<LandOverlay>() );
-               _d->postTiles.push_back( tile );
-               //_priorityTiles.push_back( tile );
-           }
-       }
-     }
-     else
-     {
-       bldCommand->setCanBuild( false );   
-       Picture& grnPicture = Picture::load( "oc3_land", 1 );
-       Picture& redPicture = Picture::load( "oc3_land", 2 );
-         
-       for (int dj = 0; dj < size; ++dj)
-       {
-           for (int di = 0; di < size; ++di)
-           {
-             TilePos rPos = pos + TilePos( di, dj );
-             if( !_d->tilemap->isInside( rPos ) )
-                 continue;
+    bldCommand->setCanBuild(true);
+    Tile *masterTile=0;
+    for (int dj = 0; dj < size; ++dj)
+    {
+      for (int di = 0; di < size; ++di)
+      {
+        Tile* tile = new Tile(_d->tilemap->at( pos + TilePos( di, dj ) ));  // make a copy of tile
 
-             Tile* tile = new Tile( _d->tilemap->at( rPos ) );  // make a copy of tile
+        if (di==0 && dj==0)
+        {
+          // this is the masterTile
+          masterTile = tile;
+        }
+        tile->setPicture( &overlay->getPicture() );
+        tile->setMasterTile( masterTile );
+        tile->getTerrain().setBuilding( true );
+        tile->getTerrain().setOverlay( overlay.as<LandOverlay>() );
+        _d->postTiles.push_back( tile );
+        //_priorityTiles.push_back( tile );
+      }
+    }
+  }
+  else
+  {
+    bldCommand->setCanBuild(false);
 
-             bool isConstructible = tile->getTerrain().isConstructible();
-             tile->setPicture( isConstructible ? &grnPicture : &redPicture );
-             tile->setMasterTile( 0 );
-             tile->getTerrain().clearFlags();
-             tile->getTerrain().setBuilding( true );
-             tile->getTerrain().setOverlay( 0 );
-             _d->postTiles.push_back( tile );
-           }
-       }
-     }
+    Picture& grnPicture = Picture::load("oc3_land", 1);
+    Picture& redPicture = Picture::load("oc3_land", 2);
+
+    for (int dj = 0; dj < size; ++dj)
+    {
+      for (int di = 0; di < size; ++di)
+      {
+        TilePos rPos = pos + TilePos( di, dj );
+        if( !_d->tilemap->isInside( rPos ) )
+          continue;
+
+        Tile* tile = new Tile( _d->tilemap->at( rPos ) );  // make a copy of tile
+
+        bool isConstructible = tile->getTerrain().isConstructible();
+        tile->setPicture( isConstructible ? &grnPicture : &redPicture );
+        tile->setMasterTile( 0 );
+        tile->getTerrain().clearFlags();
+        tile->getTerrain().setBuilding( true );
+        tile->getTerrain().setOverlay( 0 );
+        _d->postTiles.push_back( tile );
+      }
+    }
   }
 }
+
+
 
 Tile* TilemapRenderer::getTile(const TilePos& pos )
 {

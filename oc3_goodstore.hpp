@@ -20,9 +20,10 @@
 #include "oc3_scopedptr.hpp"
 #include "oc3_good.hpp"
 #include "oc3_goodorders.hpp"
+#include "oc3_variant.hpp"
 
 class SimpleGoodStore;
-class GoodStore : public Serializable
+class GoodStore
 {
 public:
   GoodStore();
@@ -36,7 +37,7 @@ public:
   virtual int getMaxStore(const GoodType goodType) = 0;
 
   // returns the max quantity that can be retrieved now
-  int getMaxRetrieve(const GoodType goodType);
+  virtual int getMaxRetrieve(const GoodType goodType);
 
   // returns the reservationID if stock can be retrieved (else 0)
   virtual long reserveStorage(GoodStock &stock);
@@ -63,11 +64,11 @@ public:
   // store all goods from the given goodStore
   virtual void storeAll(SimpleGoodStore &goodStore);
 
-  bool isDevastation() const;
-  void setDevastation( bool value );
+  virtual bool isDevastation() const;
+  virtual void setDevastation( bool value );
 
-  void save( VariantMap& stream ) const;
-  void load( const VariantMap& stream );
+  virtual VariantMap save() const;
+  virtual void load( const VariantMap& stream );
 
   virtual void setOrder( const GoodType type, const GoodOrders::Order order );
   virtual GoodOrders::Order getOrder( const GoodType type ) const;

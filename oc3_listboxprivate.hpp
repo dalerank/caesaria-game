@@ -19,6 +19,7 @@
 #include "oc3_listboxitem.hpp"
 #include "oc3_signals.hpp"
 #include "oc3_scrollbar.hpp"
+#include "oc3_color.hpp"
 #include <vector>
 
 class ListBox::Impl
@@ -27,6 +28,8 @@ public:
   PictureRef background;
   PictureRef picture;
   std::vector< ListBoxItem > items;
+  NColor itemDefaultColorText;
+  NColor itemDefaultColorTextHighlight;
 	Rect clientClip;
   bool dragEventSended;
   int hoveredItemIndex;
@@ -49,6 +52,7 @@ oc3_signals public:
   Signal1<std::string> textSelected;
 	Signal1<int> indexSelectedAgain;
   Signal1<std::string> onItemSelectedAgainSignal;
+  Signal1<const ListBoxItem&> onItemSelectedSignal;
 
 	void recalculateItemHeight( const Font& defaulFont, int height )
 	{    

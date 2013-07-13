@@ -52,6 +52,20 @@ public:
     
     SimpleGoodStore::store( stock, amount );
   }
+
+  virtual void applyStorageReservation(GoodStock &stock, const long reservationID)
+  {
+    SimpleGoodStore::applyStorageReservation( stock, reservationID );
+
+    granary->computePictures();
+  }
+
+  virtual void applyRetrieveReservation(GoodStock &stock, const long reservationID)
+  {
+    SimpleGoodStore::applyRetrieveReservation( stock, reservationID );
+
+    granary->computePictures();
+  }
   
   virtual void setOrder( const GoodType type, const GoodOrders::Order order )
   {
@@ -89,6 +103,11 @@ Granary::Granary() : WorkingBuilding( B_GRANARY, Size(3) ), _d( new Impl )
   computePictures();
 
   _d->devastateThis = false;
+
+ /*
+   GoodStock stock( G_WHEAT, 800, 800 );
+    _d->goodStore.store( stock, 800 );*/
+  
 }
 
 void Granary::timeStep(const unsigned long time)
@@ -146,11 +165,8 @@ void Granary::save( VariantMap& stream) const
 {
    WorkingBuilding::save( stream );
 
-   VariantMap vm_goodstore;
-
-   stream[ "__debug_typeName" ] = OC3_STR_EXT(B_GRANARY);
-   _d->goodStore.save( vm_goodstore );
-   stream[ "goodStore" ] = vm_goodstore;
+   stream[ "__debug_typeName" ] = Variant( std::string( OC3_STR_EXT(B_GRANARY) ) );
+   stream[ "goodStore" ] = _d->goodStore.save();
 }
 
 void Granary::load( const VariantMap& stream)

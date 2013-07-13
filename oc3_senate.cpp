@@ -17,6 +17,8 @@
 #include "oc3_scenario.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_resourcegroup.hpp"
+#include "oc3_cityfunds.hpp"
+#include "oc3_walker_taxcollector.hpp"
 
 // govt 4  - senate
 // govt 9  - advanced senate
@@ -30,6 +32,7 @@ public:
 
 Senate::Senate() : ServiceBuilding( S_SENATE, B_SENATE, Size(5) ), _d( new Impl )
 {
+  setWorkers( 0 );
   setPicture( Picture::load( ResourceGroup::govt, 4) );
   _d->taxInLastMonth = 0;
 }
@@ -50,7 +53,7 @@ bool Senate::canBuild( const TilePos& pos ) const
 
 unsigned int Senate::getFunds() const
 {
-  return Scenario::instance().getCity()->getFunds();
+  return Scenario::instance().getCity()->getFunds().getValue();
 }
 
 int Senate::collectTaxes()
@@ -65,5 +68,14 @@ int Senate::getPeoplesReached() const
 
 void Senate::deliverService()
 {
-  //???
+  if( getWorkers() > 0 && getWalkerList().size() == 0 )
+  {
+    TaxCollectorPtr walker = TaxCollector::create( Scenario::instance().getCity() );
+    walker->send2City( this );
+
+    if( !walker->isDeleted() )
+    {
+      addWalker( walker.as<Walker>() );
+    }
+  }
 }

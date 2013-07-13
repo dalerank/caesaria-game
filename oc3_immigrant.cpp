@@ -89,7 +89,7 @@ void Immigrant::_findPath2blankHouse( Tile& startPoint )
   {
      setPathWay( pathWay );
      setIJ( startPoint.getIJ() );
-     _action._action=WA_MOVE;
+     _setAction( WA_MOVE );
   }
 
   _isDeleted = !pathFound;  

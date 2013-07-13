@@ -38,11 +38,29 @@ public:
     }
 };
 
-RoadPropagator::RoadPropagator( const Tilemap& tileMap, const Tile& startTile ) 
+RoadPropagator::RoadPropagator( const Tilemap& tileMap, const Tile& startTile )
     : _d( new Impl( tileMap, startTile ) )
 {
     _d->mapSize = tileMap.getSize();
 }
+
+
+
+// comparison (for sorting list of tiles by their coordinates)
+bool
+compare_tiles_(const Tile * first, const Tile * second)
+{
+  if (first->getI() < second->getI())
+    return true;
+
+  else if (first->getI() == second->getI() &&
+           first->getJ() > second->getJ())
+    return true;
+
+  return false;
+}
+
+
 
 bool RoadPropagator::getPath( const Tile& destination, ConstWayOnTiles& oPathWay ) const
 {
@@ -54,48 +72,43 @@ bool RoadPropagator::getPath( const Tile& destination, ConstWayOnTiles& oPathWay
   std::cout << "RoadPropagator::getPath" << std::endl;
 
   StringHelper::debug( 0xff, "(%d, %d) to (%d, %d)", startPos.getI(), startPos.getJ(), stopPos.getI(), stopPos.getJ() );
-  
+
   if( startPos == stopPos )
   {
     oPathWay.push_back( &_d->startTile );
     return true;
   }
-  
+
   std::cout << "propagate by I axis" << std::endl;
-  
+
   // propagate on I axis
   for( TilePos tmp( startPos.getI(), stopPos.getJ() ); ; tmp+=TilePos( iStep, 0 ) )
   {
     const Tile& curTile = _d->tilemap.at( tmp );
-         
-    if( curTile.getTerrain().isConstructible() || curTile.getTerrain().isRoad() || curTile.getTerrain().isAqueduct() )
-    {
-      StringHelper::debug( 0xff, "+ (%d, %d)", curTile.getI(), curTile.getJ() );
-      oPathWay.push_back( &curTile );
-    }
-    else
-      return false;
+
+    StringHelper::debug( 0xff, "+ (%d, %d)", curTile.getI(), curTile.getJ() );
+    oPathWay.push_back( &curTile );
+
     if (tmp.getI() == stopPos.getI())
       break;
   }
 
   std::cout << "propagate by J axis" << std::endl;
+
   // propagate on J axis
   for( int j = startPos.getJ();; j+=jStep )
   {
     const Tile& curTile = _d->tilemap.at( startPos.getI(), j );
 
-    if( curTile.getTerrain().isConstructible() || curTile.getTerrain().isRoad() || curTile.getTerrain().isAqueduct() )
-    {
-      std::cout << "+ (" << curTile.getI() << " " << curTile.getJ() << ") ";
-      oPathWay.push_back( &curTile );
-    }
-    else
-      return false;
+    std::cout << "+ (" << curTile.getI() << " " << curTile.getJ() << ") ";
+    oPathWay.push_back( &curTile );
 
     if( j == stopPos.getJ() )
       break;
   }
+
+  // sort tiles to be drawn in the rigth order on screen
+  oPathWay.sort(compare_tiles_);
 
   return true;
 }

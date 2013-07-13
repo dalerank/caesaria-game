@@ -21,6 +21,7 @@
 #include "oc3_rectangle.hpp"
 #include "oc3_alignment.hpp"
 #include "oc3_scopedptr.hpp"
+#include "oc3_color.hpp"
 
 class Picture;
 
@@ -48,6 +49,7 @@ public:
 
   int getColor() const;
   void setColor( const int color );
+  void setColor( NColor color );
 
   bool isValid() const;
 

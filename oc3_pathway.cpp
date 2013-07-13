@@ -41,10 +41,14 @@ PathWay::PathWay(const PathWay &copy)
   *this = copy;
 }
 
-PathWay::PathWay( const Tilemap& tmap, const TilePos& startPos, const TilePos& stopPos, 
-                 FindType type/*=roadOnly */ )
+PathWay PathWay::create( const Tilemap& tmap, const TilePos& startPos, const TilePos& stopPos, 
+                         FindType type/*=roadOnly */ )
 {
-  _tilemap = &tmap;
+  PathWay ret;
+  ret._tilemap = &tmap;
+  _OC3_DEBUG_BREAK_IF( "Don't work yet")
+
+  return ret;
 }
 
 void PathWay::init(Tilemap &tilemap, Tile &origin)
@@ -330,7 +334,7 @@ void PathWay::prettyPrint() const
 VariantMap PathWay::save() const
 {
   VariantMap stream;
-  if( getLength() ) //not save empty way
+  if( getLength() == 0 ) //not save empty way
   {
     return VariantMap();
   }

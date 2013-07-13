@@ -31,6 +31,7 @@
 class TilePos;
 class DateTime;
 class CityBuildOptions;
+class CityFunds;
 
 class City : public Serializable, public ReferenceCounted
 {
@@ -73,8 +74,7 @@ public:
 
   int getTaxRate() const;
   void setTaxRate(const int taxRate);
-  long getFunds() const;
-  void setFunds(const long funds);
+  CityFunds& getFunds() const;
 
   int getPopulation() const;
   int getProsperity() const;
