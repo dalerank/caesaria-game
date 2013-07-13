@@ -260,7 +260,7 @@ void ScreenGame::handleEvent( NEvent& event )
       switch( event.KeyboardEvent.Key )
       {
 	    case KEY_ESCAPE:
-        stop();
+       // stop();
 	    break;
 	    
       case KEY_F10:

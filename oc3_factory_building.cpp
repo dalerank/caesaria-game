@@ -39,6 +39,7 @@ public:
   SimpleGoodStore goodStore;
   GoodType inGoodType;
   GoodType outGoodType;
+  bool produceGood;
 };
 
 Factory::Factory( const GoodType inType, const GoodType outType,
@@ -46,10 +47,11 @@ Factory::Factory( const GoodType inType, const GoodType outType,
 : WorkingBuilding( type, size ), _d( new Impl )
 {
    setMaxWorkers(10);
-   setWorkers(8);
+   //setWorkers(8);
 
    _d->productionRate = 4.8f;
    _d->progress = 0.0f;
+   _d->produceGood = false;
    _d->inGoodType = inType;
    _d->outGoodType = outType;
    _d->goodStore.setMaxQty(1000);  // quite unlimited
@@ -74,6 +76,21 @@ int Factory::getProgress()
   return math::clamp<int>( (int)_d->progress, 0, 100 );
 }
 
+bool Factory::_mayWork() const
+{
+  if( getWorkers() == 0 )
+    return false;
+
+  GoodStock& inStock = const_cast< Factory* >( this )->getInGood();
+  if( inStock._goodType == G_NONE ) 
+    return true;
+
+  if( inStock._currentQty > 0 || _d->produceGood )
+    return true;
+
+  return false;
+}
+
 void Factory::timeStep(const unsigned long time)
 {
    WorkingBuilding::timeStep(time);
@@ -81,23 +98,12 @@ void Factory::timeStep(const unsigned long time)
    //try get good from storage building for us
    if( time % 22 == 1 && getWorkers() > 0 && getWalkerList().size() == 0 )
    {
-     GoodStock& stock = getInGood();
-
-     //send cart supplier if stock not full
-     if( stock._currentQty < stock._maxQty )
-     {
-       CartSupplierPtr walker = CartSupplier::create( Scenario::instance().getCity() );
-       walker->send2City( this, stock._goodType, stock._maxQty - stock._currentQty );
-
-       if( !walker->isDeleted() )
-       {
-         addWalker( walker.as<Walker>() );
-       }
-     }
+     receiveGood(); 
+     deliverGood();      
    }
 
    //start/stop animation when workers found
-   bool mayAnimate = (getWorkers() > 0) && (_d->inGoodType == G_NONE || getInGood()._currentQty > 0);
+   bool mayAnimate = _mayWork();
 
    if( mayAnimate && _getAnimation().isStopped() )
    {
@@ -115,30 +121,28 @@ void Factory::timeStep(const unsigned long time)
      return;
    }  
   
-   //ok... factory is work, produce goods
-   GoodStock &inStock = getInGood();
-
-   float workersRatio = float(getWorkers()) / float(getMaxWorkers());  // work drops if not enough workers
-   // 1080: number of seconds in a year, 0.67: number of timeSteps per second
-   float work = 100.f / 1080.f / 0.67f * _d->productionRate * workersRatio * workersRatio;  // work is proportional to time and factory speed
-   if (inStock._goodType != G_NONE && inStock._currentQty == 0)
-   {
-      // cannot work, no input material!
-      work = 0.0;
-   }
-
    if( _d->progress >= 100.0 )
    {
-      if (inStock._goodType != G_NONE)
-      {
-         // the input good is consumed
-         inStock._currentQty -= 100;
-      }
-
-      deliverGood();      
+     _d->produceGood = false;
+     
+     if( _d->goodStore.getCurrentQty( _d->outGoodType ) < _d->goodStore.getMaxQty( _d->outGoodType )  )
+     {
+       _d->progress -= 100.f;
+       _d->goodStore.store( GoodStock( _d->outGoodType, 100, 100 ), 100 );    
+     }
    }
    else
    {
+     //ok... factory is work, produce goods
+     float workersRatio = float(getWorkers()) / float(getMaxWorkers());  // work drops if not enough workers
+     // 1080: number of seconds in a year, 0.67: number of timeSteps per second
+     float work = 100.f / 1080.f / 0.67f * _d->productionRate * workersRatio * workersRatio;  // work is proportional to time and factory speed
+     if( _d->inGoodType != G_NONE && _d->goodStore.getCurrentQty( _d->inGoodType ) == 0 )
+     {
+       // cannot work, no input material!
+       work = 0.0;
+     }
+
      _d->progress += work;
 
      _getAnimation().update( time );
@@ -150,22 +154,34 @@ void Factory::timeStep(const unsigned long time)
        _fgPictures[level] = _getAnimation().getCurrentPicture();
      }
    }  
+
+   if( !_d->produceGood )
+   {
+     if( _d->inGoodType == G_NONE ) //raw material
+     {
+       _d->produceGood = true;
+     }
+     else if( _d->goodStore.getCurrentQty( _d->inGoodType ) >= 100 && _d->goodStore.getCurrentQty( _d->outGoodType ) < 100 )
+     {
+       _d->produceGood = true;
+       _d->goodStore.retrieve( GoodStock( _d->inGoodType, 100, 100 ), 100  );
+     }     
+   }
 }
 
 void Factory::deliverGood()
 {
   // make a cart pusher and send him away
-  if( _mayDeliverGood() )
-  {  
-    GoodStock stock(_d->outGoodType, 100, 100);
+  if( _mayDeliverGood() && _d->goodStore.getCurrentQty( _d->outGoodType ) >= 100 )
+  {      
+    GoodStock stock(_d->outGoodType, 100, 0);
+    _d->goodStore.retrieve( stock, 100 );
+
     CartPusherPtr walker = CartPusher::create( Scenario::instance().getCity() );
     walker->send2City( BuildingPtr( this ), stock );
 
     if( !walker->isDeleted() )
     {
-      _d->progress -= 100.f;
-      GoodStock& inStock = getInGood();
-      inStock._currentQty = math::clamp( inStock._currentQty - 100, 0, 9999 );
       addWalker( walker.as<Walker>() );
     }
   }
@@ -210,6 +226,23 @@ void Factory::_setProductRate( const float rate )
 GoodType Factory::getOutGoodType() const
 {
   return _d->outGoodType;
+}
+
+void Factory::receiveGood()
+{
+  GoodStock& stock = getInGood();
+
+  //send cart supplier if stock not full
+  if( _mayDeliverGood() && stock._currentQty < stock._maxQty )
+  {
+    CartSupplierPtr walker = CartSupplier::create( Scenario::instance().getCity() );
+    walker->send2City( this, stock._goodType, stock._maxQty - stock._currentQty );
+
+    if( !walker->isDeleted() )
+    {
+      addWalker( walker.as<Walker>() );
+    }
+  }
 }
 
 TimberLogger::TimberLogger() : Factory(G_NONE, G_TIMBER, B_TIMBER_YARD, Size(2) )

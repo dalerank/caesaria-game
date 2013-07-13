@@ -330,7 +330,7 @@ void WarehouseStore::applyRetrieveReservation(GoodStock &stock, const long reser
     {
       int tileAmount = std::min(amount, subTile._stock._currentQty);
       // std::cout << "retrieve from filled" << std::endl;
-      subTile._stock.addStock(subTile._stock, tileAmount);
+      stock.addStock(subTile._stock, tileAmount);
       amount -= tileAmount;
     }
   }
