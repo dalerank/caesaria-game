@@ -238,8 +238,6 @@ void MarketLady::onDestination()
         }
       }
 
-      _d->basket.computeCurrentQty();
-
       unsigned long delay = 20;
 
       while( _d->basket.getCurrentQty() > 100 )

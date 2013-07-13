@@ -20,7 +20,6 @@
 SimpleGoodStore::SimpleGoodStore()
 {
   _maxQty = 0;
-  _currentQty = 0;
 
   _goodStockList.resize(G_MAX);
   for (int n = 0; n < (int) G_MAX; ++n)
@@ -44,7 +43,13 @@ int SimpleGoodStore::getMaxQty() const
 
 int SimpleGoodStore::getCurrentQty() const
 {
-  return _currentQty;
+  int qty = 0;
+  for( std::vector<GoodStock>::const_iterator goodIt = _goodStockList.begin(); goodIt != _goodStockList.end(); ++goodIt)
+  {
+    qty += (*goodIt)._currentQty;
+  }
+
+  return qty;
 }
 
 
@@ -75,22 +80,7 @@ void SimpleGoodStore::setMaxQty(const GoodType &goodType, const int maxQty)
 void SimpleGoodStore::setCurrentQty(const GoodType &goodType, const int currentQty)
 {
   _goodStockList[goodType]._currentQty = currentQty;
-  computeCurrentQty();
 }
-
-
-void SimpleGoodStore::computeCurrentQty()
-{
-  int qty = 0;
-  for (std::vector<GoodStock>::iterator goodIt = _goodStockList.begin(); goodIt != _goodStockList.end(); ++goodIt)
-  {
-    GoodStock &stock = *goodIt;
-    qty += stock._currentQty;
-  }
-
-  _currentQty = qty;
-}
-
 
 int SimpleGoodStore::getMaxStore(const GoodType goodType)
 {
@@ -135,8 +125,6 @@ void SimpleGoodStore::applyStorageReservation(GoodStock &stock, const long reser
   GoodStock &currentStock = _goodStockList[reservedStock._goodType];
   currentStock._currentQty += amount;
   stock._currentQty -= amount;
-  _currentQty += amount;
-  // std::cout << "SimpleGoodStore, store qty=" << amount << " resID=" << reservationID << std::endl;
 }
 
 
@@ -160,7 +148,6 @@ void SimpleGoodStore::applyRetrieveReservation(GoodStock &stock, const long rese
   GoodStock &currentStock = getStock(reservedStock._goodType);
   currentStock._currentQty -= amount;
   stock._currentQty += amount;
-  _currentQty -= amount;
   // std::cout << "SimpleGoodStore, retrieve qty=" << amount << " resID=" << reservationID << std::endl;
 }
 
@@ -170,7 +157,6 @@ VariantMap SimpleGoodStore::save() const
   VariantMap stream = GoodStore::save();
 
   stream[ "max" ] = _maxQty;
-  stream[ "current" ] = _currentQty;
 
   VariantList stockSave;
   for( std::vector<GoodStock>::const_iterator itStock = _goodStockList.begin(); itStock != _goodStockList.end(); itStock++)
@@ -188,8 +174,7 @@ void SimpleGoodStore::load( const VariantMap& stream )
   _goodStockList.clear();
 
   GoodStore::load( stream );
-  _maxQty = stream.get( "max" ).toInt();
-  _currentQty = stream.get( "current" ).toInt();
+  _maxQty = (int)stream.get( "max" );
 
   VariantList stockSave = stream.get( "stock" ).toList();
   for( VariantList::iterator it=stockSave.begin(); it!=stockSave.end(); it++ )

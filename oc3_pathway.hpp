@@ -28,10 +28,7 @@ class PathWay
 public:
   typedef enum { roadOnly=0, allTerrain } FindType;
   PathWay();
-  PathWay( const PathWay &copy );
-  PathWay( const Tilemap& tmap, 
-           const TilePos& startPos, const TilePos& stopPos, 
-           FindType type=roadOnly );
+  PathWay( const PathWay &copy ); 
 
   void init( Tilemap &tilemap, Tile &origin );
 
@@ -58,6 +55,11 @@ public:
 
   void load( const VariantMap& stream );
   VariantMap save() const;
+
+  static PathWay create( const Tilemap& tmap, 
+                         const TilePos& startPos, const TilePos& stopPos, 
+                         FindType type=roadOnly );
+
 private:
   Tilemap const* _tilemap;
   Tile const* _origin;
@@ -70,6 +72,7 @@ private:
   ConstPtrTilesList _tileList;
   bool _isReverse;
 };
+
 bool operator<(const PathWay &v1, const PathWay &v2);
 
 #endif //__OPENCAESAR3_PATHWAY_H_INCLUDED__

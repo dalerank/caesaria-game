@@ -29,7 +29,6 @@ public:
   void setMaxQty(const int maxQty);
   int getMaxQty() const;
   int getCurrentQty() const;
-  void computeCurrentQty();
 
   GoodStock& getStock(const GoodType &goodType);
   virtual int getCurrentQty(const GoodType &goodType) const;
@@ -50,7 +49,6 @@ public:
 private:
   std::vector<GoodStock> _goodStockList;
   int _maxQty;
-  int _currentQty;
 };
 
 #endif //__OPENCAESAR3_GOODSTORE_SIMPLE_H_INCLUDED__

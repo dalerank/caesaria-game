@@ -28,7 +28,6 @@ FactoryMarble::FactoryMarble() : Factory(G_NONE, G_MARBLE, B_MARBLE_QUARRY, Size
   _fgPictures.resize(2);
   
   setMaxWorkers( 10 );
-  setWorkers( 10 );
 }
 
 void FactoryMarble::timeStep( const unsigned long time )

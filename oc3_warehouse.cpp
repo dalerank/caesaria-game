@@ -164,11 +164,16 @@ void Warehouse::init()
 
 void Warehouse::timeStep(const unsigned long time)
 {
+  if( getWorkers() > 0 )
+  {
    _getAnimation().update( time );
    _d->animFlag.update( time );
 
    _fgPictures[2] = _getAnimation().getCurrentPicture();
    _fgPictures[3] = _d->animFlag.getCurrentPicture();
+  }
+
+  ServiceBuilding::timeStep( time );
 }
 
 void Warehouse::computePictures()
