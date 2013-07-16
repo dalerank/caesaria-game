@@ -27,17 +27,24 @@
 #include "oc3_tile.hpp"
 #include "oc3_walker_service.hpp"
 
-class Aqueduct::Impl
+class WaterSource::Impl
 {
 public:
+  typedef std::map< int, int > WaterSourceMap;
+  WaterSourceMap sourcesMap;
+  WaterSourceMap consumersMap;
+
+  int  water;
+  bool lastWaterState;
   bool isRoad;
+  bool alsoResolved;
 };
 
-Aqueduct::Aqueduct() : WaterSource( B_AQUEDUCT, Size(1) ), 
-    _d( new Impl )
+Aqueduct::Aqueduct() : WaterSource( B_AQUEDUCT, Size(1) ) 
 {
   setPicture( Picture::load( ResourceGroup::aqueduct, 133) ); // default picture for aqueduct
   _d->isRoad = false;
+  _d->alsoResolved = false;
   // land2a 119 120         - aqueduct over road
   // land2a 121 122         - aqueduct over plain ground
   // land2a 123 124 125 126 - aqueduct corner
@@ -217,7 +224,7 @@ Picture& Aqueduct::computePicture()
     index = 121; // it's impossible, but ...
   }   
   
-  return Picture::load( ResourceGroup::aqueduct, index + (_water == 0 ? 15 : 0) );
+  return Picture::load( ResourceGroup::aqueduct, index + (_d->water == 0 ? 15 : 0) );
 }
 
 void Aqueduct::updatePicture()
@@ -237,10 +244,15 @@ void Aqueduct::_waterStateChanged()
 
 void Aqueduct::addWater( const WaterSource& source )
 {
-  WaterSource::addWater( source );
+  if( !_d->alsoResolved )
+  {
+    _d->alsoResolved = true;
+    WaterSource::addWater( source );
 
-  const TilePos offsets[4] = { TilePos( -1, 0 ), TilePos( 0, 1), TilePos( 1, 0), TilePos( 0, -1) };
-  _produceWater( offsets, 4 );
+    const TilePos offsets[4] = { TilePos( -1, 0 ), TilePos( 0, 1), TilePos( 1, 0), TilePos( 0, -1) };
+    _produceWater( offsets, 4 );
+    _d->alsoResolved = false;
+  }
 }
 
 bool Aqueduct::isWalkable() const
@@ -324,10 +336,10 @@ void Reservoir::timeStep(const unsigned long time)
 
   if( _isWaterSource )
   {
-    _water = 16;
+    _d->water = 16;
   }
 
-  if( !_water )
+  if( !_d->water )
   {
     _fgPictures[ 0 ] = 0;
     return;
@@ -373,36 +385,37 @@ bool Reservoir::isNeedRoadAccess() const
 }
 
 WaterSource::WaterSource( const BuildingType type, const Size& size )
-  : Construction( type, size )
+  : Construction( type, size ), _d( new Impl )
+
 {
-  _water = 0;
-  _lastWaterState = false;
+  _d->water = 0;
+  _d->lastWaterState = false;
 }
 
 void WaterSource::addWater( const WaterSource& source )
 {
-  _water = math::clamp( _water+1, 0, 16 );
+  _d->water = math::clamp( _d->water+1, 0, 16 );
   int sourceId = source.getId();
-  _sourceMap[ sourceId ] = math::clamp( _sourceMap[ sourceId ]+1, 0, 4 );
+  _d->sourcesMap[ sourceId ] = math::clamp( _d->sourcesMap[ sourceId ]+1, 0, 4 );
 }
 
 bool WaterSource::haveWater() const
 {
-  return _water > 0;
+  return _d->water > 0;
 } 
 
 void WaterSource::timeStep( const unsigned long time )
 {
   if( time % 22 == 1)
   {
-    _water = math::clamp( _water-1, 0, 16 );
-    if( _lastWaterState != (_water > 0) )
+    _d->water = math::clamp( _d->water-1, 0, 16 );
+    if( _d->lastWaterState != (_d->water > 0) )
     {
-      _lastWaterState = _water > 0;
+      _d->lastWaterState = _d->water > 0;
       _waterStateChanged();
     }
 
-    for( WaterSourceMap::iterator it=_sourceMap.begin(); it != _sourceMap.end(); it++ )
+    for( Impl::WaterSourceMap::iterator it=_d->sourcesMap.begin(); it != _d->sourcesMap.end(); it++ )
     {
       (*it).second = math::clamp( (*it).second-1, 0, 4 );
     }
@@ -414,6 +427,7 @@ void WaterSource::timeStep( const unsigned long time )
 void WaterSource::_produceWater( const TilePos* points, const int size )
 {
   Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
+
   for( int index=0; index < size; index++ )
   {
     TilePos pos = getTilePos() + points[index];
@@ -421,7 +435,7 @@ void WaterSource::_produceWater( const TilePos* points, const int size )
     
     if( ws.isValid() )
     {     
-      if( _sourceMap[ ws->getId() ] == 0 )
+      if( _d->sourcesMap[ ws->getId() ] == 0 )
       {
         ws->addWater( *this );
       }

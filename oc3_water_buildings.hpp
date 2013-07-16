@@ -36,10 +36,8 @@ protected:
   virtual void _waterStateChanged() {};
   virtual void _produceWater( const TilePos* points, const int size );
   
-  typedef std::map< int, int > WaterSourceMap;
-  WaterSourceMap _sourceMap;
-  int _water;
-  bool _lastWaterState;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 class Aqueduct : public WaterSource
@@ -60,9 +58,6 @@ public:
 
 protected:
   virtual void _waterStateChanged();
-
-  class Impl;
-  ScopedPtr< Impl > _d;
 };
 
 typedef SmartPtr< Aqueduct > AqueductPtr;
