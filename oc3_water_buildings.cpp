@@ -27,9 +27,17 @@
 #include "oc3_tile.hpp"
 #include "oc3_walker_service.hpp"
 
-Aqueduct::Aqueduct() : WaterSource( B_AQUEDUCT, Size(1) )
+class Aqueduct::Impl
+{
+public:
+  bool isRoad;
+};
+
+Aqueduct::Aqueduct() : WaterSource( B_AQUEDUCT, Size(1) ), 
+    _d( new Impl )
 {
   setPicture( Picture::load( ResourceGroup::aqueduct, 133) ); // default picture for aqueduct
+  _d->isRoad = false;
   // land2a 119 120         - aqueduct over road
   // land2a 121 122         - aqueduct over plain ground
   // land2a 123 124 125 126 - aqueduct corner
@@ -65,21 +73,6 @@ void Aqueduct::build(const TilePos& pos )
 
 void Aqueduct::destroy()
 {
-  Construction::destroy();
-}
-
-void Reservoir::destroy()
-{
-  //now remove water flag from near tiles
-  Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
-  PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() ); 
-  for( PtrTilesArea::iterator it=reachedTiles.begin(); it != reachedTiles.end(); it++ )
-  {
-    (*it)->getTerrain().decreaseWaterService( WTR_RESERVOIR );
-  }
-
-  
-  // update adjacent aqueducts
   Construction::destroy();
 }
 
@@ -183,7 +176,14 @@ Picture& Aqueduct::computePicture()
   case 1:  // N
   case 4:  // S
   case 5:  // N + S
-    index = 121; if (getTile().getTerrain().isRoad()) index = 119; break;
+    index = 121; 
+    if( getTile().getTerrain().isRoad() ) 
+    {
+      index = 119; 
+      _d->isRoad = true;
+    }
+    break;
+    
   case 3:  // N + E
     index = 123; break;
   case 6:  // E + S
@@ -195,7 +195,14 @@ Picture& Aqueduct::computePicture()
   case 2:  // E
   case 8:  // W
   case 10: // E + W
-    index = 122; if (getTile().getTerrain().isRoad()) index = 120; break;
+    index = 122; 
+    if( getTile().getTerrain().isRoad() )
+    {
+      index = 120; 
+      _d->isRoad = true;
+    }
+    break;
+   
   case 11: // N + E + W
     index = 132; break;
   case 12: // S + W
@@ -234,6 +241,26 @@ void Aqueduct::addWater( const WaterSource& source )
 
   const TilePos offsets[4] = { TilePos( -1, 0 ), TilePos( 0, 1), TilePos( 1, 0), TilePos( 0, -1) };
   _produceWater( offsets, 4 );
+}
+
+bool Aqueduct::isWalkable() const
+{
+  return _d->isRoad;
+}
+
+void Reservoir::destroy()
+{
+  //now remove water flag from near tiles
+  Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
+  PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() ); 
+  for( PtrTilesArea::iterator it=reachedTiles.begin(); it != reachedTiles.end(); it++ )
+  {
+    (*it)->getTerrain().decreaseWaterService( WTR_RESERVOIR );
+  }
+
+
+  // update adjacent aqueducts
+  Construction::destroy();
 }
 
 Reservoir::Reservoir() : WaterSource( B_RESERVOIR, Size( 3 ) )
