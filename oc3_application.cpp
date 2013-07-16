@@ -267,6 +267,7 @@ Application::Application() : _d( new Impl )
 void Application::start()
 {
    //Create right PictureBank instance in the beginning   
+  StringHelper::redirectCout2( "stdout.log" );
    _d->initLocale(AppConfig::get( AppConfig::localePath ).toString());
    
    initVideo();

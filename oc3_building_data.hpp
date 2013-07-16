@@ -34,6 +34,7 @@ public:
   std::string getName() const;
   std::string getPrettyName() const;
   BuildingType getType() const;
+  BuildingClass getClass() const;
   int getEmployers() const;
   // returns the building price, -1 => cannot be built
   int getCost() const;
@@ -45,6 +46,7 @@ public:
 
 private:
   BuildingType _buildingType;
+  BuildingClass _buildingClass;
   std::string _name;  // debug name  (english, ex:"iron")
   std::string _prettyName;  // pretty-print name  (i18n, ex:"Iron mine")
   std::string _resourceGroup;
@@ -70,6 +72,7 @@ public:
    BuildingType getBuildingTypeByInGood(const GoodType inGoodType);
 
    static BuildingType getType( const std::string& name );
+   static BuildingClass getClass( const std::string& name );
 
    void initialize( const std::string& filename );
 

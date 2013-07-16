@@ -24,13 +24,14 @@
 
 BuildingData BuildingData::invalid = BuildingData( B_NONE, "unknown", 0 );
 
-struct BuildingTypeEquale
+template<class T>
+struct TypeEquale
 {
-  BuildingType type; 
+  T type; 
   std::string name;
 };
 
-BuildingTypeEquale bldTypeEquales[] = { 
+TypeEquale<BuildingType> bldTypeEquales[] = { 
   { B_AMPHITHEATER,   "amphitheater"},  
   { B_THEATER,        "theater" },
   { B_HIPPODROME,     "hippodrome" },
@@ -120,6 +121,33 @@ BuildingTypeEquale bldTypeEquales[] = {
   { B_NONE, "" }
 };
 
+TypeEquale<BuildingClass> bldClassEquales[] = { 
+  { BC_INDUSTRY, "industry" },
+  { BC_RAWMATERIAL, "rawmaterial" },
+  { BC_FOOD, "food" },
+  { BC_DISASTER, "disaster" },
+  { BC_RELIGION, "religion" },
+  { BC_MILITARY, "military" },
+  { BC_NATIVE, "native" },
+  { BC_WATER, "water" },
+  { BC_ADMINISTRATION, "administration" },
+  { BC_BRIDGE, "bridge" },
+  { BC_ENGINEER, "engineer" },
+  { BC_TRADE, "trade" },
+  { BC_TOWER, "tower" },
+  { BC_GATE, "gate" },
+  { BC_SECURITY, "security" },
+  { BC_EDUCATUION, "education" },
+  { BC_HEALTH, "health" },
+  { BC_SIGHT, "sight" },
+  { BC_GARDEN, "garden" },
+  { BC_ROAD, "road" },
+  { BC_ENTERTAINMENT, "entertainment" },
+  { BC_HOUSE, "house" },
+  { BC_WALL, "wall" },
+  { BC_NONE, "" }
+};
+
 BuildingData::BuildingData(const BuildingType buildingType, const std::string &name, const int cost)
 {
   _buildingType = buildingType;
@@ -180,6 +208,11 @@ char BuildingData::getDesirbilityRange() const
 char BuildingData::getDesirabilityStep() const
 {
   return _desirabilityStep;
+}
+
+BuildingClass BuildingData::getClass() const
+{
+  return _buildingClass;
 }
 
 class BuildingDataHolder::Impl
@@ -282,17 +315,19 @@ void BuildingDataHolder::initialize( const std::string& filename )
       continue;
     }
 
-    BuildingData bData( btype, (*it).first, options[ "cost" ].toInt() );
+    BuildingData bData( btype, (*it).first, (int)options[ "cost" ] );
     const std::string pretty = options[ "pretty" ].toString();
     if( !pretty.empty() )
+    {
       bData._prettyName = pretty;
+    }
 
-    bData._baseDesirability  = options[ "desirability" ].toInt();
-    bData._desirabilityRange = options[ "desrange" ].toInt();
-    bData._desirabilityStep  = options[ "desstep" ].toInt();
-    bData._employers = options[ "employers" ].toInt();
+    bData._baseDesirability  = (int)options[ "desirability" ];
+    bData._desirabilityRange = (int)options[ "desrange" ];
+    bData._desirabilityStep  = (int)options[ "desstep" ];
+    bData._employers = (int)options[ "employers" ];
     bData._resourceGroup = options[ "resource" ].toString();
-    bData._rcIndex = options[ "rcindex" ].toInt();
+    bData._rcIndex = (int)options[ "rcindex" ];
 
     addData( bData );
   }
@@ -303,14 +338,39 @@ BuildingType BuildingDataHolder::getType( const std::string& name )
   int index=0;
   std::string typeName = bldTypeEquales[ index ].name;
 
-  while( typeName.size() > 0 )
+  while( !typeName.empty() )
   {
     if( name == typeName )
+    {
       return bldTypeEquales[ index ].type;
+    }
 
     index++;
     typeName = bldTypeEquales[ index ].name;
   }
 
+  _OC3_DEBUG_BREAK_IF( "Can't find type for typeName" );
+  StringHelper::debug( 0xff, "Can't find type for typeName %s", name.c_str() );
   return B_NONE;
+}
+
+BuildingClass BuildingDataHolder::getClass( const std::string& name )
+{
+  int index=0;
+  std::string typeName = bldTypeEquales[ index ].name;
+
+  while( !typeName.empty() )
+  {
+    if( name == typeName )
+    {
+      return bldClassEquales[ index ].type;
+    }
+
+    index++;
+    typeName = bldClassEquales[ index ].name;
+  }
+
+  _OC3_DEBUG_BREAK_IF( "Can't find building class for building className" );
+  StringHelper::debug( 0xff, "Can't find building class for building className %s", name.c_str() );
+  return BC_NONE;
 }

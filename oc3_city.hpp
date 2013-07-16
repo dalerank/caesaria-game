@@ -137,6 +137,23 @@ public:
   }
 
   template< class T >
+  std::list< SmartPtr< T > > getBuildings( const BuildingClass type )
+  {
+    std::list< SmartPtr< T > > ret;
+    LandOverlays overlays = _city->getOverlayList();
+    for( LandOverlays::iterator it = overlays.begin(); it != overlays.end(); it++  )
+    {
+      SmartPtr< T > b = (*it).as<T>();
+      if( b.isValid() && b->getClass() == type )
+      {
+        ret.push_back( b );
+      }
+    }
+
+    return ret;
+  }
+
+  template< class T >
   SmartPtr< T > getBuilding( const TilePos& pos )
   {
     LandOverlayPtr overlay = _city->getOverlay( pos );

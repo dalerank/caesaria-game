@@ -164,7 +164,7 @@ void Factory::timeStep(const unsigned long time)
      else if( _d->goodStore.getCurrentQty( _d->inGoodType ) >= 100 && _d->goodStore.getCurrentQty( _d->outGoodType ) < 100 )
      {
        _d->produceGood = true;
-       _d->goodStore.retrieve( GoodStock( _d->inGoodType, 100, 100 ), 100  );
+       _d->goodStore.retrieve( GoodStock( _d->inGoodType, 100, 0 ), 100  );
      }     
    }
 }

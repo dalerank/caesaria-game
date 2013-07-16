@@ -30,6 +30,8 @@ class LandOverlay::Impl
 {
 public:
   BuildingType buildingType;
+  BuildingClass buildingClass;
+  Tile* masterTile;  // left-most tile if multi-tile, or "this" if single-tile
   std::string name;
   Picture picture;
   Size size;  // size in tiles
@@ -40,10 +42,11 @@ public:
 LandOverlay::LandOverlay(const BuildingType type, const Size& size)
 : _d( new Impl )
 {
-  _master_tile = NULL;
+  _d->masterTile = 0;
   _d->size = size;
   _d->isDeleted = false;
   _d->name = "unknown";
+
   setType( type );
 }
 
@@ -60,8 +63,11 @@ BuildingType LandOverlay::getType() const
 
 void LandOverlay::setType(const BuildingType buildingType)
 {
+  const BuildingData& bd = BuildingDataHolder::instance().getData( buildingType );
+
    _d->buildingType = buildingType;
-   _d->name = BuildingDataHolder::instance().getData(buildingType).getName();
+   _d->buildingClass = bd.getClass();
+   _d->name = bd.getName();
 }
 
 void LandOverlay::timeStep(const unsigned long time) { }
@@ -72,17 +78,16 @@ void LandOverlay::setPicture(Picture &picture)
 
    _d->picture = picture;
 
-   if (_master_tile != NULL)
+   if (_d->masterTile != NULL)
    {
       // _master_tile == NULL is cloneable buildings
-      int i = _master_tile->getI();
-      int j = _master_tile->getJ();
+      TilePos pos = _d->masterTile->getIJ();
 
       for (int dj = 0; dj<_d->size.getWidth(); ++dj)
       {
          for (int di = 0; di<_d->size.getHeight(); ++di)
          {
-            Tile &tile = tilemap.at(i+di, j+dj);
+            Tile &tile = tilemap.at( pos + TilePos( di, dj ) );
             tile.setPicture( &_d->picture );
          }
       }
@@ -94,14 +99,14 @@ void LandOverlay::build( const TilePos& pos )
   CityPtr city = Scenario::instance().getCity();
   Tilemap &tilemap = city->getTilemap();
 
-  _master_tile = &tilemap.at( pos );
+  _d->masterTile = &tilemap.at( pos );
 
   for (int dj = 0; dj < _d->size.getWidth(); ++dj)
   {
     for (int di = 0; di < _d->size.getHeight(); ++di)
     {
       Tile& tile = tilemap.at( pos + TilePos( di, dj ) );
-      tile.setMasterTile(_master_tile);
+      tile.setMasterTile(_d->masterTile);
       tile.setPicture( &_d->picture);
       TerrainTile& terrain = tile.getTerrain();
       terrain.setOverlay(this);
@@ -121,8 +126,8 @@ void LandOverlay::destroy()
 
 Tile& LandOverlay::getTile() const
 {
-  _OC3_DEBUG_BREAK_IF( !_master_tile && "master tile must be exists" );
-  return *_master_tile;
+  _OC3_DEBUG_BREAK_IF( !_d->masterTile && "master tile must be exists" );
+  return *_d->masterTile;
 }
 
 Size LandOverlay::getSize() const
@@ -176,8 +181,8 @@ bool LandOverlay::isWalkable() const
 
 TilePos LandOverlay::getTilePos() const
 {
-  _OC3_DEBUG_BREAK_IF( !_master_tile && "master tile can't be null" );
-  return _master_tile ? _master_tile->getIJ() : TilePos( -1, -1 );
+  _OC3_DEBUG_BREAK_IF( !_d->masterTile && "master tile can't be null" );
+  return _d->masterTile ? _d->masterTile->getIJ() : TilePos( -1, -1 );
 }
 
 void LandOverlay::setName( const std::string& name )
@@ -198,6 +203,11 @@ Point LandOverlay::getOffset( const Point& subpos ) const
 Animation& LandOverlay::_getAnimation()
 {
   return _d->animation;
+}
+
+BuildingClass LandOverlay::getClass() const
+{
+  return _d->buildingClass;
 }
 
 Construction::Construction( const BuildingType type, const Size& size)
@@ -276,13 +286,13 @@ const PtrTilesList& Construction::getAccessRoads() const
 void Construction::computeAccessRoads()
 {
   _accessRoads.clear();
-  if( !_master_tile )
+  if( !_d->masterTile )
       return;
 
   Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
 
   int maxDst2road = getMaxDistance2Road();
-  PtrTilesList rect = tilemap.getRectangle( _master_tile->getIJ() + TilePos( -maxDst2road, -maxDst2road ),
+  PtrTilesList rect = tilemap.getRectangle( _d->masterTile->getIJ() + TilePos( -maxDst2road, -maxDst2road ),
                                             getSize() + Size( 2 * maxDst2road ), !Tilemap::checkCorners );
   for( PtrTilesList::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
   {

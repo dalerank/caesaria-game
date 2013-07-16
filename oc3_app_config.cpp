@@ -16,7 +16,6 @@
 #include "oc3_app_config.hpp"
 #include "oc3_filepath.hpp"
 
-
 const std::string AppConfig::localePath = "localePath";
 const std::string AppConfig::resourcePath = "resourcePath";
 const std::string AppConfig::pantheonModel = "pantheonConfig";

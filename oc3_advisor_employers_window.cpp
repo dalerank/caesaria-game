@@ -23,6 +23,8 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_gfx_engine.hpp"
+#include "oc3_enums.hpp"
+#include "oc3_city.hpp"
 
 static const Point employerButtonOffset = Point( 0, 25 );
 static const Size  employerButtonSize = Size( 560, 22 );
@@ -60,20 +62,66 @@ private:
 class AdvisorEmployerWindow::Impl
 {
 public:
-  PictureRef background;
-
-  void showPriorityWindow( int id )
+  typedef std::vector< BuildingType > BldTypes;
+  enum PriorityIndex
   {
+    prIndustryAndTrade=0,
+    prFood,
+    prEngineers,
+    prWater,
+    prPrefectures,
+    prMilitary,
+    prEntertainment,
+    prHealthAndEducation,
+    prAdministrationAndReligion,
+    prCount
+  };
 
-  }
+  PictureRef background;
+  CityPtr city;
+
+  void showPriorityWindow( int id );
+
+  struct EmployersInfo { 
+    int needWorkers;
+    int currentWorkers;
+  };
+
+  void getEmployersInfo( PriorityIndex type );
 };
 
-AdvisorEmployerWindow::AdvisorEmployerWindow( Widget* parent, int id ) 
+void AdvisorEmployerWindow::Impl::showPriorityWindow( int id )
+{
+
+}
+
+void AdvisorEmployerWindow::Impl::getEmployersInfo( PriorityIndex type )
+{
+  BldTypes types;
+  switch( type )
+  {
+  case prIndustryAndTrade: break;
+
+  case prFood: break;
+  
+  case prEngineers: types.push_back( B_ENGINEER_POST ); break;
+
+  case prWater: types.push_back( B_FOUNTAIN );  break;
+
+  case prPrefectures: types.push_back( B_PREFECTURE );  break;
+
+  case prMilitary:  break;
+
+  case prEntertainment:  break;
+  }
+}
+AdvisorEmployerWindow::AdvisorEmployerWindow( CityPtr city, Widget* parent, int id ) 
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),
     Size( 640, 416 ) ) );
 
+  _d->city = city;
   _d->background.reset( Picture::create( getSize() ) );
   //main _d->_d->background
   GuiPaneling::instance().draw_white_frame(*_d->background, 0, 0, getWidth(), getHeight() );
@@ -94,15 +142,15 @@ AdvisorEmployerWindow::AdvisorEmployerWindow( Widget* parent, int id )
   font.draw( *_d->background, _("##advemployer_panel_haveworkers##"), 500, 54, false );
 
   startPos += Point( 8, 8 );
-  PushButton* btn = new EmployerButton( this, startPos, prIndustryAndTrade, "industry&trade", 0, 0 );
-  btn = new EmployerButton( this, startPos, prFood, "food", 0, 0 );
-  btn = new EmployerButton( this, startPos, prEngineers, "ingineers", 0, 0 );
-  btn = new EmployerButton( this, startPos, prWater, "water", 0, 0 );
-  btn = new EmployerButton( this, startPos, prPrefectures, "prefectures", 0, 0 );
-  btn = new EmployerButton( this, startPos, prMilitary, "military", 0, 0 );
-  btn = new EmployerButton( this, startPos, prEntertainment, "entertainment", 0, 0 );
-  btn = new EmployerButton( this, startPos, prHealthAndEducation, "health&education", 0, 0 );
-  btn = new EmployerButton( this, startPos, prAdministrationAndReligion, "administation&religion", 0, 0 );
+  PushButton* btn = new EmployerButton( this, startPos, Impl::prIndustryAndTrade, "industry&trade", 0, 0 );
+  btn = new EmployerButton( this, startPos, Impl::prFood, "food", 0, 0 );
+  btn = new EmployerButton( this, startPos, Impl::prEngineers, "engineers", 0, 0 );
+  btn = new EmployerButton( this, startPos, Impl::prWater, "water", 0, 0 );
+  btn = new EmployerButton( this, startPos, Impl::prPrefectures, "prefectures", 0, 0 );
+  btn = new EmployerButton( this, startPos, Impl::prMilitary, "military", 0, 0 );
+  btn = new EmployerButton( this, startPos, Impl::prEntertainment, "entertainment", 0, 0 );
+  btn = new EmployerButton( this, startPos, Impl::prHealthAndEducation, "health&education", 0, 0 );
+  btn = new EmployerButton( this, startPos, Impl::prAdministrationAndReligion, "administration&religion", 0, 0 );
 
   Picture pic = Picture::load( ResourceGroup::advisorwindow, 1 );
   btn = new PushButton( this, Rect( Point( 160, 356 ), Size( 24 ) ), "", -1 );
