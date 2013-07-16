@@ -43,7 +43,7 @@ public:
     return granary->getWorkers() > 0 ? SimpleGoodStore::reserveStorage( stock ) : 0;
   }
 
-  virtual void store(GoodStock &stock, const int amount)
+  virtual void store( GoodStock &stock, const int amount)
   {
     if( granary->getWorkers() == 0 )
     {

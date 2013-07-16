@@ -58,8 +58,8 @@ public:
   void applyRetrieveReservation(SimpleGoodStore &goodStore, const long reservationID);
 
   // immediate store/retrieve, exception if impossible
-  virtual void store(GoodStock &stock, const int amount);
-  virtual void retrieve(GoodStock &stock, const int amount);
+  virtual void store( GoodStock &stock, const int amount);
+  virtual void retrieve( GoodStock &stock, const int amount);
 
   // store all goods from the given goodStore
   virtual void storeAll(SimpleGoodStore &goodStore);

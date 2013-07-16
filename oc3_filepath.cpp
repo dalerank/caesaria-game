@@ -188,7 +188,7 @@ std::string FilePath::getExtension() const
         return "";
     }
 
-    int index = _d->path.find_last_of( '.' );
+    std::string::size_type index = _d->path.find_last_of( '.' );
     if( index != std::string::npos )
     {
         return _d->path.substr( index, 0xff );
@@ -203,7 +203,7 @@ FilePath FilePath::getUpDir() const
         return "";
 
     FilePath pathToAny = removeEndSlash();
-    int index = pathToAny._d->path.find_last_of( "/" );
+    std::string::size_type index = pathToAny._d->path.find_last_of( "/" );
 
     if( index != std::string::npos )
     {
@@ -274,7 +274,7 @@ const std::string& FilePath::toString() const
 
 std::string FilePath::removeExtension() const
 {
-    int index = _d->path.find_last_of( '.' );
+    std::string::size_type index = _d->path.find_last_of( '.' );
     if( index != std::string::npos )
     {
         return _d->path.substr( 0, index );
@@ -333,7 +333,7 @@ FilePath FilePath::flattenFilename( const FilePath& root ) const
   FilePath subdir;
 
   int lastpos = 0;
-  int pos = 0;
+  std::string::size_type pos = 0;
   bool lastWasRealDir=false;
 
   while( ( pos = directory.find( '/', lastpos) ) != std::string::npos )
@@ -451,10 +451,10 @@ FilePath FilePath::getRelativePathTo( const FilePath& directory ) const
 FilePath FilePath::getBasename(bool keepExtension) const
 {
   // find last forward or backslash
-  int lastSlash = toString().find_last_of('/');
+  std::string::size_type lastSlash = toString().find_last_of('/');
 
   // get number of chars after last dot
-  int end = 0;
+  std::string::size_type end = 0;
   if( !keepExtension )
   {
     // take care to search only after last slash to check only for
@@ -486,7 +486,7 @@ FilePath FilePath::getBasename(bool keepExtension) const
 FilePath FilePath::getFileDir() const
 {
   // find last forward or backslash
-  int lastSlash = toString().find_last_of( '/' );
+  std::string::size_type lastSlash = toString().find_last_of( '/' );
 
   if( lastSlash != std::string::npos )
   {

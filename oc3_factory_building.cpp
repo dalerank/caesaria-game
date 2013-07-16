@@ -128,7 +128,9 @@ void Factory::timeStep(const unsigned long time)
      if( _d->goodStore.getCurrentQty( _d->outGoodType ) < _d->goodStore.getMaxQty( _d->outGoodType )  )
      {
        _d->progress -= 100.f;
-       _d->goodStore.store( GoodStock( _d->outGoodType, 100, 100 ), 100 );    
+       //gcc fix for temporaly ref object
+       GoodStock tmpStock( _d->outGoodType, 100, 100 );
+       _d->goodStore.store( tmpStock, 100 );
      }
    }
    else
@@ -164,7 +166,9 @@ void Factory::timeStep(const unsigned long time)
      else if( _d->goodStore.getCurrentQty( _d->inGoodType ) >= 100 && _d->goodStore.getCurrentQty( _d->outGoodType ) < 100 )
      {
        _d->produceGood = true;
-       _d->goodStore.retrieve( GoodStock( _d->inGoodType, 100, 0 ), 100  );
+       //gcc fix temporaly ref object error
+       GoodStock tmpStock( _d->inGoodType, 100, 0 );
+       _d->goodStore.retrieve( tmpStock, 100  );
      }     
    }
 }
