@@ -158,7 +158,13 @@ bool Aqueduct::canBuild( const TilePos& pos ) const
   return false;
 }
 
-
+enum DIRECTIONS {
+  DIRECTION_NORTH,
+  DIRECTION_EAST,
+  DIRECTION_SOUTH,
+  DIRECTION_WEST,
+  DIRECTION_COUNT
+};
 
 Picture&
 Aqueduct::computePicture(const PtrTilesList * tmp, const TilePos pos)
@@ -170,36 +176,63 @@ Aqueduct::computePicture(const PtrTilesList * tmp, const TilePos pos)
 
   const TilePos tile_pos = (tmp == NULL) ? getTilePos() : pos;
 
-  LandOverlayPtr northOverlay = tmap.at( tile_pos + TilePos(  0,  1) ).getTerrain().getOverlay();
-  LandOverlayPtr eastOverlay  = tmap.at( tile_pos + TilePos(  1,  0) ).getTerrain().getOverlay();
-  LandOverlayPtr southOverlay = tmap.at( tile_pos + TilePos(  0, -1) ).getTerrain().getOverlay();
-  LandOverlayPtr westOverlay  = tmap.at( tile_pos + TilePos( -1,  0) ).getTerrain().getOverlay();
+  if (!tmap.isInside(tile_pos))
+    return Picture::load( ResourceGroup::aqueduct, 121);
 
-  bool isNorthBusy = false;
-  bool isEastBusy  = false;
-  bool isSouthBusy = false;
-  bool isWestBusy  = false;
+  TilePos tile_pos_d[DIRECTION_COUNT];
+  bool is_border[DIRECTION_COUNT];
+  bool is_busy[DIRECTION_COUNT] = { false };
 
+  tile_pos_d[DIRECTION_NORTH] = tile_pos + TilePos(  0,  1);
+  tile_pos_d[DIRECTION_EAST]  = tile_pos + TilePos(  1,  0);
+  tile_pos_d[DIRECTION_SOUTH] = tile_pos + TilePos(  0, -1);
+  tile_pos_d[DIRECTION_WEST]  = tile_pos + TilePos( -1,  0);
+
+  // all tiles must be in map range
+  for (int i = 0; i < DIRECTION_COUNT; ++i) {
+    is_border[i] = !tmap.isInside(tile_pos_d[i]);
+    if (is_border[i])
+      tile_pos_d[i] = tile_pos;
+  }
+
+  // get overlays for all directions
+  LandOverlayPtr overlay_d[DIRECTION_COUNT] = {
+    tmap.at( tile_pos_d[DIRECTION_NORTH] ).getTerrain().getOverlay(),
+    tmap.at( tile_pos_d[DIRECTION_EAST]  ).getTerrain().getOverlay(),
+    tmap.at( tile_pos_d[DIRECTION_SOUTH] ).getTerrain().getOverlay(),
+    tmap.at( tile_pos_d[DIRECTION_WEST]  ).getTerrain().getOverlay()
+  };
+
+  // if we have a TMP array with aqueducts, calculate them
   if (tmp != NULL)
+  {
     for (PtrTilesList::const_iterator it = tmp->begin(); it != tmp->end(); ++it)
     {
       int i = (*it)->getI();
       int j = (*it)->getJ();
 
       if (i == pos.getI() && j == (pos.getJ() + 1))
-        isNorthBusy = true;
+        is_busy[DIRECTION_NORTH] = true;
       else if (i == pos.getI() && j == (pos.getJ() - 1))
-        isSouthBusy = true;
+        is_busy[DIRECTION_SOUTH] = true;
       else if (j == pos.getJ() && i == (pos.getI() + 1))
-        isEastBusy = true;
+        is_busy[DIRECTION_EAST] = true;
       else if (j == pos.getJ() && i == (pos.getI() - 1))
-        isWestBusy = true;
+        is_busy[DIRECTION_WEST] = true;
     }
+  }
 
-  if( northOverlay.is<Aqueduct>() || northOverlay.is<Reservoir>() || isNorthBusy) { directionFlags += 1; }
-  if( eastOverlay.is<Aqueduct>()  || eastOverlay.is<Reservoir>()  || isEastBusy) { directionFlags += 2; }
-  if( southOverlay.is<Aqueduct>() || southOverlay.is<Reservoir>() || isSouthBusy) { directionFlags += 4; }
-  if( westOverlay.is<Aqueduct>()  || westOverlay.is<Reservoir>()  || isWestBusy) { directionFlags += 8; }
+  // calculate directions
+  for (int i = 0; i < DIRECTION_COUNT; ++i) {
+    if (!is_border[i] && (overlay_d[i].is<Aqueduct>() || overlay_d[i].is<Reservoir>() || is_busy[i]))
+      switch (i) {
+      case DIRECTION_NORTH: directionFlags += 1; break;
+      case DIRECTION_EAST:  directionFlags += 2; break;
+      case DIRECTION_SOUTH: directionFlags += 4; break;
+      case DIRECTION_WEST:  directionFlags += 8; break;
+      default: break;
+      }
+  }
 
   int index;
   switch (directionFlags)

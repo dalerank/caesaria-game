@@ -557,14 +557,15 @@ void TilemapRenderer::Impl::drawTileBase( Tile& tile )
 
   LandOverlayPtr overlay = tile.getTerrain().getOverlay();
 
-  if (overlay.is<Aqueduct>() && postTiles.size() > 0) {
-    AqueductPtr ptr_aqueduct = postTiles.front()->getTerrain().getOverlay().as<Aqueduct>();
-    if (ptr_aqueduct != NULL) {
-      tile.setWasDrawn();
-      Picture& pic = ptr_aqueduct->computePicture(&postTiles, tile.getIJ());
-      engine->drawPicture( pic, screenPos );
+  if (!overlay.isNull())
+    if (overlay.is<Aqueduct>() && postTiles.size() > 0) {
+      AqueductPtr ptr_aqueduct = postTiles.front()->getTerrain().getOverlay().as<Aqueduct>();
+      if (ptr_aqueduct != NULL) {
+        tile.setWasDrawn();
+        Picture& pic = ptr_aqueduct->computePicture(&postTiles, tile.getIJ());
+        engine->drawPicture( pic, screenPos );
+      }
     }
-  }
 
   if (!tile.wasDrawn()) {
     tile.setWasDrawn();
