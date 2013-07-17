@@ -1,3 +1,4 @@
+
 // This file is part of openCaesar3.
 //
 // openCaesar3 is free software: you can redistribute it and/or modify
@@ -584,3 +585,4 @@ FileDir FileDir::getApplicationDir()
 }
 
 } //end namespace io
+
