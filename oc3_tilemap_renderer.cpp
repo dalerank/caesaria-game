@@ -549,21 +549,31 @@ void TilemapRenderer::Impl::drawTileWater( Tile& tile )
   }
 }
 
+
+
 void TilemapRenderer::Impl::drawTileBase( Tile& tile )
 {
   Point screenPos = tile.getXY() + mapOffset;
 
-  tile.setWasDrawn();
-
-  Picture& pic = tile.getPicture();
-  //draw background
-  engine->drawPicture( pic, screenPos );
-
   LandOverlayPtr overlay = tile.getTerrain().getOverlay();
-  if( overlay.isNull() )
-  {
-    return;
+
+  if (overlay.is<Aqueduct>() && postTiles.size() > 0) {
+    AqueductPtr ptr_aqueduct = postTiles.front()->getTerrain().getOverlay().as<Aqueduct>();
+    if (ptr_aqueduct != NULL) {
+      tile.setWasDrawn();
+      Picture& pic = ptr_aqueduct->computePicture(&postTiles, tile.getIJ());
+      engine->drawPicture( pic, screenPos );
+    }
   }
+
+  if (!tile.wasDrawn()) {
+    tile.setWasDrawn();
+    Picture& pic = tile.getPicture();
+    engine->drawPicture( pic, screenPos );
+  }
+
+  if (overlay.isNull())
+    return;
 
   drawAnimations( overlay, screenPos );
 }
