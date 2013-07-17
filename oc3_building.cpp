@@ -109,6 +109,12 @@ void LandOverlay::build( const TilePos& pos )
       tile.setMasterTile(_d->masterTile);
       tile.setPicture( &_d->picture);
       TerrainTile& terrain = tile.getTerrain();
+      
+      if( terrain.getOverlay().isValid() )
+      {
+        terrain.getOverlay()->deleteLater();
+      }
+
       terrain.setOverlay(this);
       setTerrain( terrain );
     }
