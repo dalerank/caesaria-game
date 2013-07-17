@@ -178,6 +178,11 @@ bool Road::isNeedRoadAccess() const
 {
   return false;
 }
+
+void Road::destroy()
+{
+  Construction::destroy();
+}
 // I didn't decide what is the best approach: make Plaza as constructions or as upgrade to roads
 Plaza::Plaza()
 {

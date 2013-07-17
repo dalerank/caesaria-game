@@ -31,6 +31,7 @@ public:
   virtual bool canBuild(const TilePos& pos ) const;
   virtual bool isWalkable() const;
   virtual bool isNeedRoadAccess() const;
+  virtual void destroy();
 };
 
 class Plaza : public Road

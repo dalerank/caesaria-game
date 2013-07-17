@@ -16,6 +16,7 @@
 #ifndef __OPENCAESAR3_WATER_BUILDGINDS_INCLUDED__
 #define __OPENCAESAR3_WATER_BUILDGINDS_INCLUDED__
 
+#include "oc3_positioni.hpp"
 #include "oc3_service_building.hpp"
 
 class WaterSource;
@@ -40,19 +41,23 @@ protected:
   ScopedPtr< Impl > _d;
 };
 
+
+
 class Aqueduct : public WaterSource
 {
 public:
   Aqueduct();
 
   virtual void build(const TilePos& pos );
+  Picture& computePicture(const PtrTilesList * tmp = NULL,
+                          const TilePos pos = TilePos(0, 0));
   virtual void setTerrain(TerrainTile &terrain);
   virtual bool canBuild(const TilePos& pos ) const;
   virtual bool isNeedRoadAccess() const;
   virtual void destroy();
   virtual bool isWalkable() const; 
+  virtual bool isRoad() const;
 
-  Picture& computePicture();
   void updatePicture();
   void addWater( const WaterSource& source );
 
