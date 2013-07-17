@@ -147,8 +147,7 @@ void GoodStore::applyRetrieveReservation(SimpleGoodStore &goodStore, const long 
   applyRetrieveReservation(stock, reservationID);
 }
 
-
-void GoodStore::store(GoodStock &stock, const int amount)
+void GoodStore::store( GoodStock &stock, const int amount)
 {
   GoodStock reservedStock;
   reservedStock._goodType = stock._goodType;

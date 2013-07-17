@@ -104,15 +104,21 @@ void AdvisorEmployerWindow::Impl::getEmployersInfo( PriorityIndex type )
 
   case prFood: break;
   
-  case prEngineers: types.push_back( B_ENGINEER_POST ); break;
+  case prEngineers: break;
 
-  case prWater: types.push_back( B_FOUNTAIN );  break;
+  case prWater: break;
 
-  case prPrefectures: types.push_back( B_PREFECTURE );  break;
+  case prPrefectures: break;
 
   case prMilitary:  break;
 
   case prEntertainment:  break;
+
+  case prHealthAndEducation: break;
+
+  case prAdministrationAndReligion: break;
+
+  default: break;
   }
 }
 AdvisorEmployerWindow::AdvisorEmployerWindow( CityPtr city, Widget* parent, int id ) 

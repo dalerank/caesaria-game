@@ -425,7 +425,7 @@ Variant Json::parseString(const std::string &json, int &index, bool &success)
         bool complete = false;
         while(!complete)
         {
-                if(index == json.size())
+                if(index == (int)json.size())
                 {
                         break;
                 }
@@ -439,7 +439,7 @@ Variant Json::parseString(const std::string &json, int &index, bool &success)
                 }
                 else if(c == '\\')
                 {
-                        if(index == json.size())
+                        if(index == (int)json.size())
                         {
                                 break;
                         }

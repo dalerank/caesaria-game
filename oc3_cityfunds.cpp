@@ -21,7 +21,7 @@ class CityFunds::Impl
 public:
   int money;
 
-  typedef std::map< IssueType, int > IssuesHistory;
+  typedef std::map< CityFunds::IssueType, int > IssuesHistory;
   IssuesHistory history;
 };
 

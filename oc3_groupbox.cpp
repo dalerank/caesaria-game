@@ -119,6 +119,7 @@ void GroupBox::beforeDraw( GfxEngine& painter )
       {
       case whiteFrame: GuiPaneling::instance().draw_white_frame( *_d->texture, 0, 0, getWidth(), getHeight() ); break;
       case blackFrame: GuiPaneling::instance().draw_black_frame( *_d->texture, 0, 0, getWidth(), getHeight() ); break;
+      default: break;
       }
     }
   }

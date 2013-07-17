@@ -77,7 +77,7 @@ AdvisorFinanceWindow::AdvisorFinanceWindow( CityPtr city, Widget* parent, int id
   //buttons _d->_d->background
   Font fontWhite = Font::create( FONT_1_WHITE );
   GuiPaneling::instance().draw_black_frame( *_d->background, 70, 50, getWidth() - 86, 70 );
-  std::string moneyStr = StringHelper::format( 0xff, "%s %d %s", _("##city_have##"), city->getFunds(), _("##denaries##") );
+  std::string moneyStr = StringHelper::format( 0xff, "%s %d %s", _("##city_have##"), city->getFunds().getValue(), _("##denaries##") );
   fontWhite.draw( *_d->background, moneyStr, 70, 55, false );
   fontWhite.draw( *_d->background, _("##tax_rate##"), 65, 75, false );
 
