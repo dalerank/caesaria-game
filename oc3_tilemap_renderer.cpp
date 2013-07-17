@@ -559,10 +559,17 @@ void TilemapRenderer::Impl::drawTileBase( Tile& tile )
 
   if (!overlay.isNull())
     if (overlay.is<Aqueduct>() && postTiles.size() > 0) {
-      AqueductPtr ptr_aqueduct = postTiles.front()->getTerrain().getOverlay().as<Aqueduct>();
-      if (ptr_aqueduct != NULL) {
+      // check, do we have any aqueducts there... there can be empty items
+      bool isAqueducts = false;
+      for (std::list<Tile*>::iterator it = postTiles.begin(); it != postTiles.end(); ++it)
+        if ((*it)->getTerrain().getOverlay().is<Aqueduct>()) {
+          isAqueducts = true;
+          break;
+        }
+
+      if (isAqueducts) {
         tile.setWasDrawn();
-        Picture& pic = ptr_aqueduct->computePicture(&postTiles, tile.getIJ());
+        Picture& pic = overlay.as<Aqueduct>()->computePicture(&postTiles, tile.getIJ());
         engine->drawPicture( pic, screenPos );
       }
     }
