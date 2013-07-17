@@ -27,6 +27,16 @@
 #include "oc3_tile.hpp"
 #include "oc3_walker_service.hpp"
 
+enum DIRECTIONS {
+  DIRECTION_NORTH,
+  DIRECTION_EAST,
+  DIRECTION_SOUTH,
+  DIRECTION_WEST,
+  DIRECTION_COUNT
+};
+
+
+
 Aqueduct::Aqueduct() : WaterSource( B_AQUEDUCT, Size(1) )
 {
   setPicture( Picture::load( ResourceGroup::aqueduct, 133) ); // default picture for aqueduct
@@ -96,13 +106,15 @@ void Aqueduct::setTerrain(TerrainTile &terrain)
   terrain.setAqueduct(true); // mandatory!
 }
 
+
+
 bool Aqueduct::canBuild( const TilePos& pos ) const
 {
   bool is_free = Construction::canBuild( pos );
-  
-  if( is_free ) 
+
+  if( is_free )
       return true; // we try to build on free tile
-  
+
   // we can place on road
   CityPtr city = Scenario::instance().getCity();
   Tilemap& tilemap = city->getTilemap();
@@ -119,30 +131,52 @@ bool Aqueduct::canBuild( const TilePos& pos ) const
   // also we can't build if next tile is road + aqueduct
   if ( terrain.isRoad() )
   {
-    std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos (-1, -1),
-                                                  pos + TilePos (1, 1), 
-                                                  !Tilemap::checkCorners );
+    TilePos tp_from = pos + TilePos (-1, -1);
+    TilePos tp_to = pos + TilePos (1, 1);
+
+    if (!tilemap.isInside(tp_from))
+      tp_from = pos;
+
+    if (!tilemap.isInside(tp_to))
+      tp_to = pos;
+
+    std::list<Tile*> rect = tilemap.getRectangle(tp_from, tp_to, !Tilemap::checkCorners);
     for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
     {
       Tile* tile = *itTiles;
+
       if (tile->getTerrain().isRoad() && tile->getTerrain().isAqueduct())
-      {
-	      return false;
-      }
-    }    
+        return false;
+    }
   }
-  
+
   // and we can't build on intersections
   if ( terrain.isRoad() )
   {
     int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
-    if (tilemap.at( pos + TilePos(  0,  1 ) ).getTerrain().isRoad()) { directionFlags += 1; } // road to the north
-    if (tilemap.at( pos + TilePos(  0, -1 ) ).getTerrain().isRoad()) { directionFlags += 4; } // road to the south
-    if (tilemap.at( pos + TilePos(  1,  0 ) ).getTerrain().isRoad()) { directionFlags += 2; } // road to the east
-    if (tilemap.at( pos + TilePos( -1,  0 ) ).getTerrain().isRoad()) { directionFlags += 8; } // road to the west
+
+    TilePos tile_pos_d[DIRECTION_COUNT];
+    bool is_border[DIRECTION_COUNT];
+
+    tile_pos_d[DIRECTION_NORTH] = pos + TilePos(  0,  1);
+    tile_pos_d[DIRECTION_EAST]  = pos + TilePos(  1,  0);
+    tile_pos_d[DIRECTION_SOUTH] = pos + TilePos(  0, -1);
+    tile_pos_d[DIRECTION_WEST]  = pos + TilePos( -1,  0);
+
+    // all tiles must be in map range
+    for (int i = 0; i < DIRECTION_COUNT; ++i) {
+      is_border[i] = !tilemap.isInside(tile_pos_d[i]);
+      if (is_border[i])
+        tile_pos_d[i] = pos;
+    }
+
+    if (tilemap.at(tile_pos_d[DIRECTION_NORTH]).getTerrain().isRoad()) { directionFlags += 1; } // road to the north
+    if (tilemap.at(tile_pos_d[DIRECTION_EAST]).getTerrain().isRoad()) { directionFlags += 2; } // road to the east
+    if (tilemap.at(tile_pos_d[DIRECTION_SOUTH]).getTerrain().isRoad()) { directionFlags += 4; } // road to the south
+    if (tilemap.at(tile_pos_d[DIRECTION_WEST]).getTerrain().isRoad()) { directionFlags += 8; } // road to the west
 
     StringHelper::debug( 0xff, "direction flags=%d", directionFlags );
-   
+
     switch (directionFlags)
     {
     case 0:  // no road!
@@ -153,18 +187,12 @@ bool Aqueduct::canBuild( const TilePos& pos ) const
     case 5:  // North+South
     case 10: // East+West
       return true;
-    }  
+    }
   }
   return false;
 }
 
-enum DIRECTIONS {
-  DIRECTION_NORTH,
-  DIRECTION_EAST,
-  DIRECTION_SOUTH,
-  DIRECTION_WEST,
-  DIRECTION_COUNT
-};
+
 
 Picture&
 Aqueduct::computePicture(const PtrTilesList * tmp, const TilePos pos)
