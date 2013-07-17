@@ -65,11 +65,11 @@ public:
    static BuildingDataHolder& instance();
 
    void addData(const BuildingData &data);
-   BuildingData& getData(const BuildingType buildingType);
-   bool hasData(const BuildingType buildingType);
+   const BuildingData& getData(const BuildingType buildingType) const;
+   bool hasData(const BuildingType buildingType) const;
 
    // return factory that consume goodType
-   BuildingType getBuildingTypeByInGood(const GoodType inGoodType);
+   BuildingType getBuildingTypeByInGood(const GoodType inGoodType) const;
 
    static BuildingType getType( const std::string& name );
    static BuildingClass getClass( const std::string& name );

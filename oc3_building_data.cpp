@@ -151,6 +151,7 @@ TypeEquale<BuildingClass> bldClassEquales[] = {
 BuildingData::BuildingData(const BuildingType buildingType, const std::string &name, const int cost)
 {
   _buildingType = buildingType;
+  _buildingClass = BC_NONE;
   _name = name;
   std::string key = "building_"+name;
   _prettyName = _(key.c_str());  // i18n translation
@@ -231,7 +232,7 @@ BuildingDataHolder& BuildingDataHolder::instance()
   return inst;
 }
 
-BuildingType BuildingDataHolder::getBuildingTypeByInGood(const GoodType inGoodType)
+BuildingType BuildingDataHolder::getBuildingTypeByInGood(const GoodType inGoodType) const
 {
   BuildingType res = B_NONE;
 
@@ -244,7 +245,7 @@ BuildingType BuildingDataHolder::getBuildingTypeByInGood(const GoodType inGoodTy
   return res;
 }
 
-BuildingData& BuildingDataHolder::getData(const BuildingType buildingType)
+const BuildingData& BuildingDataHolder::getData(const BuildingType buildingType) const
 {
   Impl::BuildingsMap::iterator mapIt;
   mapIt = _d->buildings.find(buildingType);
@@ -256,7 +257,7 @@ BuildingData& BuildingDataHolder::getData(const BuildingType buildingType)
   return mapIt->second;
 }
 
-bool BuildingDataHolder::hasData(const BuildingType buildingType)
+bool BuildingDataHolder::hasData(const BuildingType buildingType) const
 {
   bool res = true;
   Impl::BuildingsMap::iterator mapIt;
@@ -299,7 +300,7 @@ void BuildingDataHolder::initialize( const std::string& filename )
 
   for( VariantMap::iterator it=constructions.begin(); it != constructions.end(); it++ )
   {
-    VariantMap options = (*it).second.toMap();
+    VariantMap& options = (*it).second.toMap();
 
     const BuildingType btype = getType( (*it).first );
     if( btype == B_NONE )
@@ -326,6 +327,7 @@ void BuildingDataHolder::initialize( const std::string& filename )
     bData._desirabilityRange = (int)options[ "desrange" ];
     bData._desirabilityStep  = (int)options[ "desstep" ];
     bData._employers = (int)options[ "employers" ];
+    bData._buildingClass = getClass( options[ "class" ].toString() );
     bData._resourceGroup = options[ "resource" ].toString();
     bData._rcIndex = (int)options[ "rcindex" ];
 
@@ -357,7 +359,7 @@ BuildingType BuildingDataHolder::getType( const std::string& name )
 BuildingClass BuildingDataHolder::getClass( const std::string& name )
 {
   int index=0;
-  std::string typeName = bldTypeEquales[ index ].name;
+  std::string typeName = bldClassEquales[ index ].name;
 
   while( !typeName.empty() )
   {

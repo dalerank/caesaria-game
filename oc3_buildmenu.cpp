@@ -133,7 +133,7 @@ void BuildMenu::addSubmenuButton(const BuildMenuType menuType, const std::string
 void BuildMenu::addBuildButton( const BuildingType buildingType )
 {
   //int t = DateTime::getElapsedTime();
-  BuildingData &buildingData = BuildingDataHolder::instance().getData( buildingType );
+  const BuildingData &buildingData = BuildingDataHolder::instance().getData( buildingType );
 
   int cost = buildingData.getCost();
   bool mayBuildInCity = (_options ? _options->isBuildingAvailble( buildingType ) : true);

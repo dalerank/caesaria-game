@@ -282,57 +282,92 @@ Variant Json::parseObject(const std::string &json, int &index, bool &success)
     //Get the upcoming token
     token = Json::lookAhead(json, index);
 
-    if(token == JsonTokenNone)
+    switch( token )
     {
-      success = false;
-      return VariantMap();
-    }
-    else if(token == JsonTokenComma)
-    {
-      Json::nextToken(json, index);
-    }
-    else if(token == JsonTokenCurlyClose)
-    {
-      Json::nextToken(json, index);
-      return rmap;
-    }
-    else if( token == JsonTokenCommentOpen )
-    {
-      Json::parseComment(json, index, success);
-    }
-    else
-    {
-      //Parse the key/value pair's name
-      std::string name = Json::parseString(json, index, success).toString();
-
-      if(!success)
-      {
-        return VariantMap();
-      }
-
-      //Get the next token
-      token = Json::nextToken(json, index);
-
-      //If the next token is not a colon, flag the failure
-      //return an empty Variant
-      if(token != JsonTokenColon)
+    case JsonTokenNone:
       {
         success = false;
         return VariantMap();
       }
+    break;
 
-      //Parse the key/value pair's value
-      Variant value = Json::parseValue(json, index, success);
-
-      if(!success)
+    case JsonTokenComma:
       {
-        return VariantMap();
+        Json::nextToken(json, index);
       }
+    break;
 
-      //Assign the value to the key in the map
-      rmap[name] = value;
+    case JsonTokenCurlyClose:
+      {
+        Json::nextToken(json, index);
+        return rmap;
+      }
+    break;
+
+    case JsonTokenCommentOpen:
+      {
+        Json::parseComment(json, index, success);
+      }
+    break;
+
+    case JsonTokenObjectName:
+      {
+        std::string name = Json::parseObjectName( json, index, success ).toString();
+        name = StringHelper::replace( name, " ", "" );
+
+        if(!success)
+        {
+          return VariantMap();
+        }
+
+        index++;
+        Variant value = Json::parseValue(json, index, success);
+
+        if(!success)
+        {
+          return VariantMap();
+        }
+
+        //Assign the value to the key in the map
+        rmap[name] = value;
+      }
+    break;
+
+    default:
+      {
+        //Parse the key/value pair's name
+        std::string name = Json::parseString(json, index, success).toString();
+
+        if(!success)
+        {
+          return VariantMap();
+        }
+
+        //Get the next token
+        token = Json::nextToken(json, index);
+
+        //If the next token is not a colon, flag the failure
+        //return an empty Variant
+        if(token != JsonTokenColon)
+        {
+          success = false;
+          return VariantMap();
+        }
+
+        //Parse the key/value pair's value
+        Variant value = Json::parseValue(json, index, success);
+
+        if(!success)
+        {
+          return VariantMap();
+        }
+
+        //Assign the value to the key in the map
+        rmap[name] = value;
+      }
+    break;
     }
-  }
+  } //end while(!done)
 
   //Return the map successfully
   return Variant(rmap);
@@ -411,6 +446,42 @@ void Json::parseComment(const std::string &json, int &index, bool &success)
 }
 
 /**
+* parseString
+*/
+Variant Json::parseObjectName(const std::string &json, int &index, bool &success)
+{
+  std::string s;
+  char c;
+
+  Json::eatWhitespace(json, index);
+
+  bool complete = false;
+
+  for( int i=0; i < 32; i++ )
+  {
+    if( json[index+i+1] != ':' )
+    {
+      s += json[ index+i ];
+    }
+    else
+    {
+      s += json[ index+i ];
+      index += (i + 1);
+      complete = true;
+      break;
+    }
+  }
+
+  if(!complete)
+  {
+    success = false;
+    return Variant();
+  }
+
+  return Variant(s);
+}
+
+/**
  * parseString
  */
 Variant Json::parseString(const std::string &json, int &index, bool &success)
@@ -446,13 +517,9 @@ Variant Json::parseString(const std::string &json, int &index, bool &success)
 
                         c = json[index++];
 
-                        if(c == '\"')
+                        if( c == '\"' || c == '\\' )
                         {
-                                s.append("\"");
-                        }
-                        else if(c == '\\')
-                        {
-                          s.append("\\");
+                           s += c;
                         }
                         else if(c == '/')
                         {
@@ -634,8 +701,8 @@ int Json::nextToken(const std::string &json, int &index)
         //True
         if(remainingLength >= 4)
         {
-           if (json[index] == 't' && json[index + 1] == 'r' &&
-                   json[index + 2] == 'u' && json[index + 3] == 'e')
+           if( json[index] == 't' && json[index + 1] == 'r' &&
+               json[index + 2] == 'u' && json[index + 3] == 'e')
            {
                    index += 4;
                    return JsonTokenTrue;
@@ -663,6 +730,17 @@ int Json::nextToken(const std::string &json, int &index)
                    index += 4;
                    return JsonTokenNull;
            }
+        }
+
+        if( remainingLength > 1 )
+        {
+          for( int i=1; i < 32; i++ )
+          {
+            if( json[index+i] == ':' )
+            {
+              return JsonTokenObjectName;
+            }
+          }
         }
 
         return JsonTokenNone;

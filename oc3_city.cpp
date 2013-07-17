@@ -331,7 +331,7 @@ void City::build( const BuildingType type, const TilePos& pos )
 
 void City::build( ConstructionPtr building, const TilePos& pos )
 {
-  BuildingData& buildingData = BuildingDataHolder::instance().getData( building->getType() );
+  const BuildingData& buildingData = BuildingDataHolder::instance().getData( building->getType() );
   if( building.isValid() )
   {
     building->build( pos );
