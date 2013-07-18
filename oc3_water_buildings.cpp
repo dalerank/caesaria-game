@@ -27,6 +27,14 @@
 #include "oc3_tile.hpp"
 #include "oc3_walker_service.hpp"
 
+enum DIRECTIONS {
+  DIRECTION_NORTH,
+  DIRECTION_EAST,
+  DIRECTION_SOUTH,
+  DIRECTION_WEST,
+  DIRECTION_COUNT
+};
+
 class WaterSource::Impl
 {
 public:
@@ -96,13 +104,15 @@ void Aqueduct::setTerrain(TerrainTile &terrain)
   terrain.setAqueduct(true); // mandatory!
 }
 
+
+
 bool Aqueduct::canBuild( const TilePos& pos ) const
 {
   bool is_free = Construction::canBuild( pos );
-  
-  if( is_free ) 
+
+  if( is_free )
       return true; // we try to build on free tile
-  
+
   // we can place on road
   CityPtr city = Scenario::instance().getCity();
   Tilemap& tilemap = city->getTilemap();
@@ -119,30 +129,52 @@ bool Aqueduct::canBuild( const TilePos& pos ) const
   // also we can't build if next tile is road + aqueduct
   if ( terrain.isRoad() )
   {
-    std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos (-1, -1),
-                                                  pos + TilePos (1, 1), 
-                                                  !Tilemap::checkCorners );
+    TilePos tp_from = pos + TilePos (-1, -1);
+    TilePos tp_to = pos + TilePos (1, 1);
+
+    if (!tilemap.isInside(tp_from))
+      tp_from = pos;
+
+    if (!tilemap.isInside(tp_to))
+      tp_to = pos;
+
+    std::list<Tile*> rect = tilemap.getRectangle(tp_from, tp_to, !Tilemap::checkCorners);
     for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
     {
       Tile* tile = *itTiles;
+
       if (tile->getTerrain().isRoad() && tile->getTerrain().isAqueduct())
-      {
-	      return false;
-      }
-    }    
+        return false;
+    }
   }
-  
+
   // and we can't build on intersections
   if ( terrain.isRoad() )
   {
     int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
-    if (tilemap.at( pos + TilePos(  0,  1 ) ).getTerrain().isRoad()) { directionFlags += 1; } // road to the north
-    if (tilemap.at( pos + TilePos(  0, -1 ) ).getTerrain().isRoad()) { directionFlags += 4; } // road to the south
-    if (tilemap.at( pos + TilePos(  1,  0 ) ).getTerrain().isRoad()) { directionFlags += 2; } // road to the east
-    if (tilemap.at( pos + TilePos( -1,  0 ) ).getTerrain().isRoad()) { directionFlags += 8; } // road to the west
+
+    TilePos tile_pos_d[DIRECTION_COUNT];
+    bool is_border[DIRECTION_COUNT];
+
+    tile_pos_d[DIRECTION_NORTH] = pos + TilePos(  0,  1);
+    tile_pos_d[DIRECTION_EAST]  = pos + TilePos(  1,  0);
+    tile_pos_d[DIRECTION_SOUTH] = pos + TilePos(  0, -1);
+    tile_pos_d[DIRECTION_WEST]  = pos + TilePos( -1,  0);
+
+    // all tiles must be in map range
+    for (int i = 0; i < DIRECTION_COUNT; ++i) {
+      is_border[i] = !tilemap.isInside(tile_pos_d[i]);
+      if (is_border[i])
+        tile_pos_d[i] = pos;
+    }
+
+    if (tilemap.at(tile_pos_d[DIRECTION_NORTH]).getTerrain().isRoad()) { directionFlags += 1; } // road to the north
+    if (tilemap.at(tile_pos_d[DIRECTION_EAST]).getTerrain().isRoad()) { directionFlags += 2; } // road to the east
+    if (tilemap.at(tile_pos_d[DIRECTION_SOUTH]).getTerrain().isRoad()) { directionFlags += 4; } // road to the south
+    if (tilemap.at(tile_pos_d[DIRECTION_WEST]).getTerrain().isRoad()) { directionFlags += 8; } // road to the west
 
     StringHelper::debug( 0xff, "direction flags=%d", directionFlags );
-   
+
     switch (directionFlags)
     {
     case 0:  // no road!
@@ -153,7 +185,7 @@ bool Aqueduct::canBuild( const TilePos& pos ) const
     case 5:  // North+South
     case 10: // East+West
       return true;
-    }  
+    }
   }
   return false;
 }
@@ -170,36 +202,63 @@ Aqueduct::computePicture(const PtrTilesList * tmp, const TilePos pos)
 
   const TilePos tile_pos = (tmp == NULL) ? getTilePos() : pos;
 
-  LandOverlayPtr northOverlay = tmap.at( tile_pos + TilePos(  0,  1) ).getTerrain().getOverlay();
-  LandOverlayPtr eastOverlay  = tmap.at( tile_pos + TilePos(  1,  0) ).getTerrain().getOverlay();
-  LandOverlayPtr southOverlay = tmap.at( tile_pos + TilePos(  0, -1) ).getTerrain().getOverlay();
-  LandOverlayPtr westOverlay  = tmap.at( tile_pos + TilePos( -1,  0) ).getTerrain().getOverlay();
+  if (!tmap.isInside(tile_pos))
+    return Picture::load( ResourceGroup::aqueduct, 121);
 
-  bool isNorthBusy = false;
-  bool isEastBusy  = false;
-  bool isSouthBusy = false;
-  bool isWestBusy  = false;
+  TilePos tile_pos_d[DIRECTION_COUNT];
+  bool is_border[DIRECTION_COUNT];
+  bool is_busy[DIRECTION_COUNT] = { false };
 
+  tile_pos_d[DIRECTION_NORTH] = tile_pos + TilePos(  0,  1);
+  tile_pos_d[DIRECTION_EAST]  = tile_pos + TilePos(  1,  0);
+  tile_pos_d[DIRECTION_SOUTH] = tile_pos + TilePos(  0, -1);
+  tile_pos_d[DIRECTION_WEST]  = tile_pos + TilePos( -1,  0);
+
+  // all tiles must be in map range
+  for (int i = 0; i < DIRECTION_COUNT; ++i) {
+    is_border[i] = !tmap.isInside(tile_pos_d[i]);
+    if (is_border[i])
+      tile_pos_d[i] = tile_pos;
+  }
+
+  // get overlays for all directions
+  LandOverlayPtr overlay_d[DIRECTION_COUNT] = {
+    tmap.at( tile_pos_d[DIRECTION_NORTH] ).getTerrain().getOverlay(),
+    tmap.at( tile_pos_d[DIRECTION_EAST]  ).getTerrain().getOverlay(),
+    tmap.at( tile_pos_d[DIRECTION_SOUTH] ).getTerrain().getOverlay(),
+    tmap.at( tile_pos_d[DIRECTION_WEST]  ).getTerrain().getOverlay()
+  };
+
+  // if we have a TMP array with aqueducts, calculate them
   if (tmp != NULL)
+  {
     for (PtrTilesList::const_iterator it = tmp->begin(); it != tmp->end(); ++it)
     {
       int i = (*it)->getI();
       int j = (*it)->getJ();
 
       if (i == pos.getI() && j == (pos.getJ() + 1))
-        isNorthBusy = true;
+        is_busy[DIRECTION_NORTH] = true;
       else if (i == pos.getI() && j == (pos.getJ() - 1))
-        isSouthBusy = true;
+        is_busy[DIRECTION_SOUTH] = true;
       else if (j == pos.getJ() && i == (pos.getI() + 1))
-        isEastBusy = true;
+        is_busy[DIRECTION_EAST] = true;
       else if (j == pos.getJ() && i == (pos.getI() - 1))
-        isWestBusy = true;
+        is_busy[DIRECTION_WEST] = true;
     }
+  }
 
-  if( northOverlay.is<Aqueduct>() || northOverlay.is<Reservoir>() || isNorthBusy) { directionFlags += 1; }
-  if( eastOverlay.is<Aqueduct>()  || eastOverlay.is<Reservoir>()  || isEastBusy) { directionFlags += 2; }
-  if( southOverlay.is<Aqueduct>() || southOverlay.is<Reservoir>() || isSouthBusy) { directionFlags += 4; }
-  if( westOverlay.is<Aqueduct>()  || westOverlay.is<Reservoir>()  || isWestBusy) { directionFlags += 8; }
+  // calculate directions
+  for (int i = 0; i < DIRECTION_COUNT; ++i) {
+    if (!is_border[i] && (overlay_d[i].is<Aqueduct>() || overlay_d[i].is<Reservoir>() || is_busy[i]))
+      switch (i) {
+      case DIRECTION_NORTH: directionFlags += 1; break;
+      case DIRECTION_EAST:  directionFlags += 2; break;
+      case DIRECTION_SOUTH: directionFlags += 4; break;
+      case DIRECTION_WEST:  directionFlags += 8; break;
+      default: break;
+      }
+  }
 
   int index;
   switch (directionFlags)
