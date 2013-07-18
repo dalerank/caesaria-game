@@ -139,21 +139,18 @@ void Factory::timeStep(const unsigned long time)
      float workersRatio = float(getWorkers()) / float(getMaxWorkers());  // work drops if not enough workers
      // 1080: number of seconds in a year, 0.67: number of timeSteps per second
      float work = 100.f / 1080.f / 0.67f * _d->productionRate * workersRatio * workersRatio;  // work is proportional to time and factory speed
-     if( _d->inGoodType != G_NONE && _d->goodStore.getCurrentQty( _d->inGoodType ) == 0 )
+     if( _d->produceGood )
      {
-       // cannot work, no input material!
-       work = 0.0;
-     }
+       _d->progress += work;
 
-     _d->progress += work;
-
-     _getAnimation().update( time );
-     Picture *pic = _getAnimation().getCurrentPicture();
-     if (pic != NULL)
-     {
-       // animation of the working factory
-       int level = _fgPictures.size()-1;
-       _fgPictures[level] = _getAnimation().getCurrentPicture();
+       _getAnimation().update( time );
+       Picture *pic = _getAnimation().getCurrentPicture();
+       if (pic != NULL)
+       {
+         // animation of the working factory
+         int level = _fgPictures.size()-1;
+         _fgPictures[level] = _getAnimation().getCurrentPicture();
+       }
      }
    }  
 

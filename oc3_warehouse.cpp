@@ -152,6 +152,9 @@ int WarehouseStore::getCurrentQty(const GoodType &goodType) const
 
 int WarehouseStore::getCurrentQty() const
 {
+  if( _warehouse->getWorkers() == 0 )
+    return 0;
+
   int amount = 0;
 
   for( Warehouse::Impl::WhTiles::iterator subTilesIt=_warehouse->_d->subTiles.begin(); 
@@ -165,7 +168,7 @@ int WarehouseStore::getCurrentQty() const
 
 int WarehouseStore::getMaxStore(const GoodType goodType)
 {
-  if( getOrder( goodType ) == GoodOrders::reject || isDevastation() )
+  if( getOrder( goodType ) == GoodOrders::reject || isDevastation() || _warehouse->getWorkers() == 0 )
   { 
     return 0;
   }
