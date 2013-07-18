@@ -87,14 +87,13 @@ AdvisorsWindow::AdvisorsWindow( Widget* parent, int id )
   addButton( ADV_RELIGION, 264 );
   addButton( ADV_FINANCE, 265 );
   addButton( ADV_MAIN, 266 );
+
   //!!! exit button have no pressed image
   btn = addButton( ADV_COUNT, 267 );
   btn->setPicture( &Picture::load( ResourceGroup::advisorwindow, 3 ), stPressed );
   btn->setIsPushButton( false );
   CONNECT( btn, onClicked(), this, AdvisorsWindow::deleteLater );
   //!!!
-
-  showAdvisor( ADV_EMPLOYERS );
 }
 
 void AdvisorsWindow::showAdvisor( const AdvisorType type )

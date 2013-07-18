@@ -475,7 +475,7 @@ float House::evaluateService(ServiceWalkerPtr walker)
   // this house pays taxes
   case S_FORUM: 
   case S_SENATE:
-    res = _d->mayPayTax() ? _d->getAvailableTax() : 0;
+    res = _d->mayPayTax() ? (float)_d->getAvailableTax() : 0.f;
   break;
 
   case S_MARKET:

@@ -48,8 +48,13 @@ public:
 
     Font font = Font::create( FONT_1_WHITE );
     font.draw( *pic, _title, 130, 2 );
-
     font.draw( *pic, StringHelper::format( 0xff, "%d", _needWorkers ), 375, 2 );
+
+    if( _haveWorkers < _needWorkers )
+    {
+      font = Font::create( FONT_1_RED );
+    }
+
     font.draw( *pic, StringHelper::format( 0xff, "%d", _haveWorkers ), 480, 2 );
   }
 
@@ -87,7 +92,9 @@ public:
     int currentWorkers;
   };
 
-  void getEmployersInfo( PriorityIndex type );
+  EmployersInfo getEmployersInfo( PriorityIndex type );
+
+  EmployerButton* addButton( Widget* parent, const Point& startPos, PriorityIndex priority, const std::string& title );
 };
 
 void AdvisorEmployerWindow::Impl::showPriorityWindow( int id )
@@ -95,37 +102,55 @@ void AdvisorEmployerWindow::Impl::showPriorityWindow( int id )
 
 }
 
-void AdvisorEmployerWindow::Impl::getEmployersInfo( PriorityIndex type )
+AdvisorEmployerWindow::Impl::EmployersInfo AdvisorEmployerWindow::Impl::getEmployersInfo( PriorityIndex type )
 {
-  BldTypes types;
+  std::vector< BuildingClass > bldClasses;
   switch( type )
   {
-  case prIndustryAndTrade: break;
-
-  case prFood: break;
-  
-  case prEngineers: break;
-
-  case prWater: break;
-
-  case prPrefectures: break;
-
-  case prMilitary:  break;
-
-  case prEntertainment:  break;
-
-  case prHealthAndEducation: break;
-
-  case prAdministrationAndReligion: break;
-
+  case prIndustryAndTrade: bldClasses.push_back( BC_INDUSTRY ); bldClasses.push_back( BC_TRADE ); break;
+  case prFood: bldClasses.push_back( BC_FOOD ); break;
+  case prEngineers: bldClasses.push_back( BC_ENGINEERING ); break;
+  case prWater: bldClasses.push_back( BC_WATER ); break;
+  case prPrefectures: bldClasses.push_back( BC_SECURITY ); break;
+  case prMilitary: bldClasses.push_back( BC_MILITARY ); break;
+  case prEntertainment: bldClasses.push_back( BC_ENTERTAINMENT ); break;
+  case prHealthAndEducation: bldClasses.push_back( BC_HEALTH ); bldClasses.push_back( BC_EDUCATUION ); break;
+  case prAdministrationAndReligion: bldClasses.push_back( BC_ADMINISTRATION ); bldClasses.push_back( BC_RELIGION ); break;
   default: break;
   }
+
+  WorkingBuildings buildings;
+  CityHelper helper( city );
+  for( std::vector< BuildingClass >::iterator it=bldClasses.begin(); it != bldClasses.end(); it++ )
+  {
+    WorkingBuildings sectorBuildings = helper.getBuildings<WorkingBuilding>( *it );
+    buildings.insert( buildings.begin(), sectorBuildings.begin(), sectorBuildings.end() );
+  }
+
+  unsigned currentWorkers = 0;
+  unsigned needWorkers = 0;
+  for( WorkingBuildings::iterator it=buildings.begin(); it != buildings.end(); it++ )
+  {
+    currentWorkers += (*it)->getWorkers();
+    needWorkers += (*it)->getMaxWorkers();
+  }
+
+  EmployersInfo ret = { needWorkers, currentWorkers };
+  return ret;
 }
+
+EmployerButton* AdvisorEmployerWindow::Impl::addButton( Widget* parent, const Point& startPos, 
+                                                        PriorityIndex priority, const std::string& title )
+{
+  EmployersInfo info = getEmployersInfo( priority );
+
+  return new EmployerButton( parent, startPos, priority, title, info.needWorkers, info.currentWorkers );
+}
+
 AdvisorEmployerWindow::AdvisorEmployerWindow( CityPtr city, Widget* parent, int id ) 
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
-  setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),
-    Size( 640, 416 ) ) );
+  setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ), Size( 640, 416 ) ) );
 
   _d->city = city;
   _d->background.reset( Picture::create( getSize() ) );
@@ -149,14 +174,14 @@ AdvisorEmployerWindow::AdvisorEmployerWindow( CityPtr city, Widget* parent, int 
 
   startPos += Point( 8, 8 );
   PushButton* btn = new EmployerButton( this, startPos, Impl::prIndustryAndTrade, "industry&trade", 0, 0 );
-  btn = new EmployerButton( this, startPos, Impl::prFood, "food", 0, 0 );
-  btn = new EmployerButton( this, startPos, Impl::prEngineers, "engineers", 0, 0 );
-  btn = new EmployerButton( this, startPos, Impl::prWater, "water", 0, 0 );
-  btn = new EmployerButton( this, startPos, Impl::prPrefectures, "prefectures", 0, 0 );
-  btn = new EmployerButton( this, startPos, Impl::prMilitary, "military", 0, 0 );
-  btn = new EmployerButton( this, startPos, Impl::prEntertainment, "entertainment", 0, 0 );
-  btn = new EmployerButton( this, startPos, Impl::prHealthAndEducation, "health&education", 0, 0 );
-  btn = new EmployerButton( this, startPos, Impl::prAdministrationAndReligion, "administration&religion", 0, 0 );
+  btn = _d->addButton( this, startPos, Impl::prFood, "food" );
+  btn = _d->addButton( this, startPos, Impl::prEngineers, "engineers" );
+  btn = _d->addButton( this, startPos, Impl::prWater, "water" );
+  btn = _d->addButton( this, startPos, Impl::prPrefectures, "prefectures" );
+  btn = _d->addButton( this, startPos, Impl::prMilitary, "military" );
+  btn = _d->addButton( this, startPos, Impl::prEntertainment, "entertainment" );
+  btn = _d->addButton( this, startPos, Impl::prHealthAndEducation, "health&education" );
+  btn = _d->addButton( this, startPos, Impl::prAdministrationAndReligion, "administration&religion" );
 
   Picture pic = Picture::load( ResourceGroup::advisorwindow, 1 );
   btn = new PushButton( this, Rect( Point( 160, 356 ), Size( 24 ) ), "", -1 );

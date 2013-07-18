@@ -132,7 +132,7 @@ TypeEquale<BuildingClass> bldClassEquales[] = {
   { BC_WATER, "water" },
   { BC_ADMINISTRATION, "administration" },
   { BC_BRIDGE, "bridge" },
-  { BC_ENGINEER, "engineer" },
+  { BC_ENGINEERING, "engineer" },
   { BC_TRADE, "trade" },
   { BC_TOWER, "tower" },
   { BC_GATE, "gate" },
