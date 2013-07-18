@@ -27,14 +27,6 @@
 #include "oc3_tile.hpp"
 #include "oc3_walker_service.hpp"
 
-enum DIRECTIONS {
-  DIRECTION_NORTH,
-  DIRECTION_EAST,
-  DIRECTION_SOUTH,
-  DIRECTION_WEST,
-  DIRECTION_COUNT
-};
-
 class WaterSource::Impl
 {
 public:
@@ -153,25 +145,25 @@ bool Aqueduct::canBuild( const TilePos& pos ) const
   {
     int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
 
-    TilePos tile_pos_d[DIRECTION_COUNT];
-    bool is_border[DIRECTION_COUNT];
+    TilePos tile_pos_d[D_MAX];
+    bool is_border[D_MAX];
 
-    tile_pos_d[DIRECTION_NORTH] = pos + TilePos(  0,  1);
-    tile_pos_d[DIRECTION_EAST]  = pos + TilePos(  1,  0);
-    tile_pos_d[DIRECTION_SOUTH] = pos + TilePos(  0, -1);
-    tile_pos_d[DIRECTION_WEST]  = pos + TilePos( -1,  0);
+    tile_pos_d[D_NORTH] = pos + TilePos(  0,  1);
+    tile_pos_d[D_EAST]  = pos + TilePos(  1,  0);
+    tile_pos_d[D_SOUTH] = pos + TilePos(  0, -1);
+    tile_pos_d[D_WEST]  = pos + TilePos( -1,  0);
 
     // all tiles must be in map range
-    for (int i = 0; i < DIRECTION_COUNT; ++i) {
+    for (int i = 0; i < D_MAX; ++i) {
       is_border[i] = !tilemap.isInside(tile_pos_d[i]);
       if (is_border[i])
         tile_pos_d[i] = pos;
     }
 
-    if (tilemap.at(tile_pos_d[DIRECTION_NORTH]).getTerrain().isRoad()) { directionFlags += 1; } // road to the north
-    if (tilemap.at(tile_pos_d[DIRECTION_EAST]).getTerrain().isRoad()) { directionFlags += 2; } // road to the east
-    if (tilemap.at(tile_pos_d[DIRECTION_SOUTH]).getTerrain().isRoad()) { directionFlags += 4; } // road to the south
-    if (tilemap.at(tile_pos_d[DIRECTION_WEST]).getTerrain().isRoad()) { directionFlags += 8; } // road to the west
+    if (tilemap.at(tile_pos_d[D_NORTH]).getTerrain().isRoad()) { directionFlags += 1; } // road to the north
+    if (tilemap.at(tile_pos_d[D_EAST]).getTerrain().isRoad()) { directionFlags += 2; } // road to the east
+    if (tilemap.at(tile_pos_d[D_SOUTH]).getTerrain().isRoad()) { directionFlags += 4; } // road to the south
+    if (tilemap.at(tile_pos_d[D_WEST]).getTerrain().isRoad()) { directionFlags += 8; } // road to the west
 
     StringHelper::debug( 0xff, "direction flags=%d", directionFlags );
 
@@ -205,29 +197,28 @@ Aqueduct::computePicture(const PtrTilesList * tmp, const TilePos pos)
   if (!tmap.isInside(tile_pos))
     return Picture::load( ResourceGroup::aqueduct, 121);
 
-  TilePos tile_pos_d[DIRECTION_COUNT];
-  bool is_border[DIRECTION_COUNT];
-  bool is_busy[DIRECTION_COUNT] = { false };
+  TilePos tile_pos_d[D_MAX];
+  bool is_border[D_MAX];
+  bool is_busy[D_MAX] = { false };
 
-  tile_pos_d[DIRECTION_NORTH] = tile_pos + TilePos(  0,  1);
-  tile_pos_d[DIRECTION_EAST]  = tile_pos + TilePos(  1,  0);
-  tile_pos_d[DIRECTION_SOUTH] = tile_pos + TilePos(  0, -1);
-  tile_pos_d[DIRECTION_WEST]  = tile_pos + TilePos( -1,  0);
+  tile_pos_d[D_NORTH] = tile_pos + TilePos(  0,  1);
+  tile_pos_d[D_EAST]  = tile_pos + TilePos(  1,  0);
+  tile_pos_d[D_SOUTH] = tile_pos + TilePos(  0, -1);
+  tile_pos_d[D_WEST]  = tile_pos + TilePos( -1,  0);
 
   // all tiles must be in map range
-  for (int i = 0; i < DIRECTION_COUNT; ++i) {
+  for (int i = 0; i < D_MAX; ++i) {
     is_border[i] = !tmap.isInside(tile_pos_d[i]);
     if (is_border[i])
       tile_pos_d[i] = tile_pos;
   }
 
   // get overlays for all directions
-  LandOverlayPtr overlay_d[DIRECTION_COUNT] = {
-    tmap.at( tile_pos_d[DIRECTION_NORTH] ).getTerrain().getOverlay(),
-    tmap.at( tile_pos_d[DIRECTION_EAST]  ).getTerrain().getOverlay(),
-    tmap.at( tile_pos_d[DIRECTION_SOUTH] ).getTerrain().getOverlay(),
-    tmap.at( tile_pos_d[DIRECTION_WEST]  ).getTerrain().getOverlay()
-  };
+  LandOverlayPtr overlay_d[D_MAX];
+  overlay_d[D_NORTH] = tmap.at( tile_pos_d[D_NORTH] ).getTerrain().getOverlay();
+  overlay_d[D_EAST] = tmap.at( tile_pos_d[D_EAST]  ).getTerrain().getOverlay();
+  overlay_d[D_SOUTH] = tmap.at( tile_pos_d[D_SOUTH] ).getTerrain().getOverlay();
+  overlay_d[D_WEST] = tmap.at( tile_pos_d[D_WEST]  ).getTerrain().getOverlay();
 
   // if we have a TMP array with aqueducts, calculate them
   if (tmp != NULL)
@@ -238,24 +229,24 @@ Aqueduct::computePicture(const PtrTilesList * tmp, const TilePos pos)
       int j = (*it)->getJ();
 
       if (i == pos.getI() && j == (pos.getJ() + 1))
-        is_busy[DIRECTION_NORTH] = true;
+        is_busy[D_NORTH] = true;
       else if (i == pos.getI() && j == (pos.getJ() - 1))
-        is_busy[DIRECTION_SOUTH] = true;
+        is_busy[D_SOUTH] = true;
       else if (j == pos.getJ() && i == (pos.getI() + 1))
-        is_busy[DIRECTION_EAST] = true;
+        is_busy[D_EAST] = true;
       else if (j == pos.getJ() && i == (pos.getI() - 1))
-        is_busy[DIRECTION_WEST] = true;
+        is_busy[D_WEST] = true;
     }
   }
 
   // calculate directions
-  for (int i = 0; i < DIRECTION_COUNT; ++i) {
+  for (int i = 0; i < D_MAX; ++i) {
     if (!is_border[i] && (overlay_d[i].is<Aqueduct>() || overlay_d[i].is<Reservoir>() || is_busy[i]))
       switch (i) {
-      case DIRECTION_NORTH: directionFlags += 1; break;
-      case DIRECTION_EAST:  directionFlags += 2; break;
-      case DIRECTION_SOUTH: directionFlags += 4; break;
-      case DIRECTION_WEST:  directionFlags += 8; break;
+      case D_NORTH: directionFlags += 1; break;
+      case D_EAST:  directionFlags += 2; break;
+      case D_SOUTH: directionFlags += 4; break;
+      case D_WEST:  directionFlags += 8; break;
       default: break;
       }
   }
@@ -523,6 +514,11 @@ void WaterSource::_produceWater( const TilePos* points, const int size )
   for( int index=0; index < size; index++ )
   {
     TilePos pos = getTilePos() + points[index];
+    if( !tilemap.isInside( pos ) )
+    {
+      continue;
+    }
+
     SmartPtr< WaterSource > ws = tilemap.at( pos ).getTerrain().getOverlay().as<WaterSource>();
     
     if( ws.isValid() )
