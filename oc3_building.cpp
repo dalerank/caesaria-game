@@ -110,7 +110,7 @@ void LandOverlay::build( const TilePos& pos )
       tile.setPicture( &_d->picture);
       TerrainTile& terrain = tile.getTerrain();
       
-      if( terrain.getOverlay().isValid() )
+      if( terrain.getOverlay().isValid() && terrain.getOverlay() != this)
       {
         terrain.getOverlay()->deleteLater();
       }
@@ -164,6 +164,7 @@ std::string LandOverlay::getName()
 void LandOverlay::save( VariantMap& stream ) const
 {
   stream[ "pos" ] = getTile().getIJ();
+  stream[ "buildingTypeName" ] = Variant( BuildingDataHolder::instance().getData( _d->buildingType ).getName() );
   stream[ "buildingType" ] = (int)_d->buildingType;
   stream[ "picture" ] = Variant( _d->picture.getName() );   
   stream[ "size" ] = _d->size;
