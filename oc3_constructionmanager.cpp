@@ -19,9 +19,9 @@
 #include "oc3_water_buildings.hpp"
 #include "oc3_warehouse.hpp"
 #include "oc3_collapsedruins.hpp"
-#include "oc3_buildingengineer.hpp"
+#include "oc3_building_engineer_post.hpp"
 #include "oc3_factory_building.hpp"
-#include "oc3_burningruins.hpp"
+#include "oc3_building_burningruins.hpp"
 #include "oc3_house.hpp"
 #include "oc3_senate.hpp"
 #include "oc3_prefecture.hpp"
@@ -43,7 +43,7 @@
 #include "oc3_academy.hpp"
 #include "oc3_forum.hpp"
 #include "oc3_garden.hpp"
-#include "oc3_health_buildings.hpp"
+#include "oc3_building_health.hpp"
 
 #include <map>
 

@@ -132,7 +132,7 @@ protected:
   void _resolvePositionChanged();
   std::string _GetFullStyleName();
   PushButton* _CreateButton( const Rect& rectangle,
-                             TypeAlign left, TypeAlign rigth, TypeAlign top, TypeAlign bottom );
+                             TypeAlign left, TypeAlign rigth, TypeAlign top, TypeAlign bottom, int type );
 };
 
 #endif

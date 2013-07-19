@@ -19,7 +19,7 @@
 #ifndef TRAINING_BUILDING_HPP
 #define TRAINING_BUILDING_HPP
 
-#include "oc3_working_building.hpp"
+#include "oc3_building_working.hpp"
 
 class TrainingBuilding : public WorkingBuilding
 {

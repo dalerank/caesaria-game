@@ -22,7 +22,7 @@
 #include "oc3_gfx_engine.hpp"
 #include "oc3_gui_paneling.hpp"
 
-#define DEFAULT_SCROLLBAR_SIZE 19
+#define DEFAULT_SCROLLBAR_SIZE 39
 
 //! constructor
 ListBox::ListBox( Widget* parent,const Rect& rectangle,
@@ -61,7 +61,7 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
 
 	const int s = DEFAULT_SCROLLBAR_SIZE;
 
-  _d->scrollBar = new ScrollBar( this, Rect( getWidth() - s - 3, 0, getWidth()-3, getHeight()-3), false );
+  _d->scrollBar = new ScrollBar( this, Rect( getWidth() - s, 0, getWidth(), getHeight()), false );
   _d->scrollBar->setNotClipped( false );
   _d->scrollBar->setSubElement(true);
   _d->scrollBar->setVisibleFilledArea( false );
@@ -101,7 +101,8 @@ void ListBox::_updateTexture()
   {    
     _d->background.reset( Picture::create( size ) );
     _d->picture.reset( Picture::create( size ) );
-    GuiPaneling::instance().draw_black_frame( *_d->background, 0, 0, getWidth(), getHeight() );
+    GuiPaneling::instance().draw_black_frame( *_d->background, 0, 0, getWidth() - _d->scrollBar->getWidth(), getHeight() );
+    GuiPaneling::instance().draw_white_area( *_d->background, getWidth() - _d->scrollBar->getWidth(), 0, getWidth(), getHeight() );
   }
 }
 

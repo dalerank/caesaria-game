@@ -27,7 +27,7 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_guienv.hpp"
 #include "oc3_topmenu.hpp"
-#include "oc3_menu.hpp"
+#include "oc3_gui_menu.hpp"
 #include "oc3_event.hpp"
 #include "oc3_infoboxmanager.hpp"
 #include "oc3_constructionmanager.hpp"
@@ -43,6 +43,7 @@
 #include "oc3_scenario.hpp"
 #include "oc3_senate_popup_info.hpp"
 #include "oc3_cityfunds.hpp"
+#include "oc3_window_mission_target.hpp"
 
 class ScreenGame::Impl
 {
@@ -68,6 +69,7 @@ public:
   void showEmpireMapWindow();
   void showAdvisorsWindow( const int advType );
   void showAdvisorsWindow();
+  void showMissionTaretsWindow();
   void showTradeAdvisorWindow();
   void resolveCreateConstruction( int type );
   void resolveSelectOverlayView( int type );
@@ -156,6 +158,7 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
   CONNECT( _d->extMenu, onSelectOverlayType(), _d.data(), Impl::resolveSelectOverlayView );
   CONNECT( _d->extMenu, onEmpireMapShow(), _d.data(), Impl::showEmpireMapWindow );
   CONNECT( _d->extMenu, onAdvisorsWindowShow(), _d.data(), Impl::showAdvisorsWindow );
+  CONNECT( _d->extMenu, onMissionTargetsWindowShow(), _d.data(), Impl::showMissionTaretsWindow );
 
   CONNECT( city, onDisasterEvent(), &_d->alarmsHolder, AlarmEventHolder::add );
   CONNECT( _d->extMenu, onSwitchAlarm(), &_d->alarmsHolder, AlarmEventHolder::next );
@@ -362,4 +365,9 @@ void ScreenGame::Impl::showEmpireMapWindow()
     EmpireMapWindow* emap = EmpireMapWindow::create( gui->getRootWidget(), -1 );
     CONNECT( emap, onTradeAdvisorRequest(), this, Impl::showTradeAdvisorWindow ); 
   }  
+}
+
+void ScreenGame::Impl::showMissionTaretsWindow()
+{
+  MissionTargetsWindow::create( gui->getRootWidget(), -1, scenario );
 }

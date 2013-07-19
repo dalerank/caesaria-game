@@ -22,7 +22,7 @@
 #include "oc3_prefecture.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_service_building.hpp"
-#include "oc3_buildingengineer.hpp"
+#include "oc3_building_engineer_post.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_house.hpp"
 #include "oc3_gettext.hpp"

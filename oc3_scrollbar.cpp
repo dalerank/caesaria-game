@@ -35,8 +35,8 @@ ScrollBar::ScrollBar(  Widget* parent, const Rect& rectangle,
 	_d->upButton = 0;
 	_d->downButton = 0;
 
-  _d->sliderPictureUp = Picture::load( ResourceGroup::panelBackground, 59 );
-  _d->sliderPictureDown = Picture::load( ResourceGroup::panelBackground, 51 );
+  _d->sliderPictureUp = Picture::load( ResourceGroup::panelBackground, 61 );
+  _d->sliderPictureDown = Picture::load( ResourceGroup::panelBackground, 53 );
 
 #ifdef _DEBUG
    setDebugName("ScrollBar");
@@ -334,6 +334,7 @@ void ScrollBar::beforeDraw( GfxEngine& painter )
       }
       else
       {
+        _d->sliderRect.UpperLeftCorner.setX( getScreenLeft() + (getWidth() - _d->sliderTexture.getWidth()) / 2 );
         _d->sliderRect.UpperLeftCorner.setY( getScreenTop() + _lastSliderPos - _drawLenght/2 );
         if( _d->upButton && _d->upButton->isVisible() )
             _d->sliderRect.UpperLeftCorner += Point( 0, _d->upButton->getHeight() );
@@ -502,12 +503,29 @@ int ScrollBar::getPos() const
 }
 
 PushButton* ScrollBar::_CreateButton( const Rect& rectangle, 
-                                      TypeAlign left, TypeAlign rigth, TypeAlign top, TypeAlign bottom )
+                                      TypeAlign left, TypeAlign rigth, TypeAlign top, TypeAlign bottom, int type )
 {
     PushButton* btn = new PushButton( this, rectangle );
     btn->setSubElement(true);
     btn->setTabStop(false);
     btn->setAlignment(left, rigth, top, bottom );
+
+    switch( type )
+    {
+    case 0: 
+      btn->setPicture( &Picture::load( ResourceGroup::panelBackground, 247 ), stNormal );
+      btn->setPicture( &Picture::load( ResourceGroup::panelBackground, 248 ), stHovered );
+      btn->setPicture( &Picture::load( ResourceGroup::panelBackground, 249 ), stPressed );
+      btn->setPicture( &Picture::load( ResourceGroup::panelBackground, 250 ), stDisabled );
+    break;
+
+    case 1: 
+      btn->setPicture( &Picture::load( ResourceGroup::panelBackground, 251 ), stNormal );
+      btn->setPicture( &Picture::load( ResourceGroup::panelBackground, 252 ), stHovered );
+      btn->setPicture( &Picture::load( ResourceGroup::panelBackground, 253 ), stPressed );
+      btn->setPicture( &Picture::load( ResourceGroup::panelBackground, 254 ), stDisabled );
+    break;
+    }
 
     return btn;
 }
@@ -519,21 +537,25 @@ void ScrollBar::refreshControls_()
 	{
 		int h = getHeight();
 		if( !_d->upButton )
-         _d->upButton = _CreateButton( Rect(0, 0, h, h), alignUpperLeft, alignUpperLeft, alignUpperLeft, alignLowerRight );
+         _d->upButton = _CreateButton( Rect(0, 0, h, h), alignUpperLeft, alignUpperLeft, alignUpperLeft, alignLowerRight, 2 );
 
     if (!_d->downButton)
          _d->downButton = _CreateButton( Rect( getWidth()-h, 0, getWidth(), h), 
-                                         alignLowerRight, alignLowerRight, alignUpperLeft, alignLowerRight );
+                                         alignLowerRight, alignLowerRight, alignUpperLeft, alignLowerRight, 3 );
 	}
 	else
 	{
 		int w = getWidth();
 		if (!_d->upButton)
-            _d->upButton = _CreateButton( Rect(0,0, w, w), alignUpperLeft, alignLowerRight, alignUpperLeft, alignUpperLeft );
+    {
+      _d->upButton = _CreateButton( Rect(0,0, 39, 26), alignUpperLeft, alignLowerRight, alignUpperLeft, alignUpperLeft, 0 );
+    }
 
-        if (!_d->downButton)
-            _d->downButton = _CreateButton( Rect(0, getHeight()-w, w, getHeight()), 
-                                             alignUpperLeft, alignLowerRight, alignLowerRight, alignLowerRight );
+    if (!_d->downButton)
+    {
+      _d->downButton = _CreateButton( Rect(0, getHeight()-26, 39, getHeight()), 
+                                      alignUpperLeft, alignLowerRight, alignLowerRight, alignLowerRight, 1 );
+    }
 	}
 }
 

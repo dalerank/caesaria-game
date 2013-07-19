@@ -19,7 +19,7 @@
 #ifndef FACTORY_BUILDING_HPP
 #define FACTORY_BUILDING_HPP
 
-#include "oc3_working_building.hpp"
+#include "oc3_building_working.hpp"
 #include "oc3_predefinitions.hpp"
 
 class GoodStore;

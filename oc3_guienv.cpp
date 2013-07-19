@@ -19,7 +19,7 @@
 #include "oc3_rectangle.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_event.hpp"
-#include "oc3_label.hpp"
+#include "oc3_gui_label.hpp"
 #include "oc3_time.hpp"
 
 class GuiEnv::Impl

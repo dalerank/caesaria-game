@@ -25,7 +25,7 @@
 #include "oc3_startmenu.hpp"
 #include "oc3_guienv.hpp"
 #include "oc3_pushbutton.hpp"
-#include "oc3_label.hpp"
+#include "oc3_gui_label.hpp"
 
 class ScreenMenu::Impl
 {
