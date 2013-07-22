@@ -300,7 +300,7 @@ void BuildingDataHolder::initialize( const io::FilePath& filename )
 
   for( VariantMap::iterator it=constructions.begin(); it != constructions.end(); it++ )
   {
-    VariantMap& options = (*it).second.toMap();
+    VariantMap options = (*it).second.toMap();
 
     const BuildingType btype = getType( (*it).first );
     if( btype == B_NONE )
