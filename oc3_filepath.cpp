@@ -19,15 +19,17 @@
 #include "oc3_filelist.hpp"
 
 #ifdef _WIN32
-#include <Windows.h>
-#include <io.h>
+  #include <Windows.h>
+  #include <io.h>
 #elif __GNUC__
-  #include <sys/io.h>
+  #ifdef __linux__
+    #include <sys/io.h>
+    #include <linux/limits.h>
+  #endif
   #include <sys/stat.h>
   #include <unistd.h>
   #include <stdio.h>
   #include <libgen.h>
-  #include <linux/limits.h>
 #endif
 
 namespace io
@@ -572,7 +574,7 @@ FileDir FileDir::getApplicationDir()
   //delete tmpPath;
 
   return tmp;
-#elif __GNUC__
+#elif defined(__linux__)
   char exe_path[PATH_MAX] = {0};
   char * dir_path;
   sprintf(exe_path, "/proc/%d/exe", getpid());
