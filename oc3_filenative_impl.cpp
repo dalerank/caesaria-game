@@ -13,6 +13,9 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
+// Make getline declaration available on e.g. FreeBSD (see getline(3))
+// Should precede other includes
+#define _WITH_GETLINE
 
 #include "oc3_filenative_impl.hpp"
 
