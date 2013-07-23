@@ -300,7 +300,7 @@ void BuildingDataHolder::initialize( const io::FilePath& filename )
 
   for( VariantMap::iterator it=constructions.begin(); it != constructions.end(); it++ )
   {
-    VariantMap& options = (*it).second.toMap();
+    VariantMap options = (*it).second.toMap();
 
     const BuildingType btype = getType( (*it).first );
     if( btype == B_NONE )
@@ -372,7 +372,7 @@ BuildingClass BuildingDataHolder::getClass( const std::string& name )
     typeName = bldClassEquales[ index ].name;
   }
 
-  _OC3_DEBUG_BREAK_IF( "Can't find building class for building className" );
   StringHelper::debug( 0xff, "Can't find building class for building className %s", name.c_str() );
+  _OC3_DEBUG_BREAK_IF( "Can't find building class for building className" );
   return BC_NONE;
 }

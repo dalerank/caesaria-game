@@ -545,7 +545,7 @@ void ScrollBar::refreshControls_()
 	}
 	else
 	{
-		int w = getWidth();
+	  //int w = getWidth();
 		if (!_d->upButton)
     {
       _d->upButton = _CreateButton( Rect(0,0, 39, 26), alignUpperLeft, alignLowerRight, alignUpperLeft, alignUpperLeft, 0 );

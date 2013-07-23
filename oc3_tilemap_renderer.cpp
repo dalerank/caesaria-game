@@ -557,14 +557,22 @@ void TilemapRenderer::Impl::drawTileBase( Tile& tile )
 
   LandOverlayPtr overlay = tile.getTerrain().getOverlay();
 
-  if (overlay.is<Aqueduct>() && postTiles.size() > 0) {
-    AqueductPtr ptr_aqueduct = postTiles.front()->getTerrain().getOverlay().as<Aqueduct>();
-    if (ptr_aqueduct != NULL) {
-      tile.setWasDrawn();
-      Picture& pic = ptr_aqueduct->computePicture(&postTiles, tile.getIJ());
-      engine->drawPicture( pic, screenPos );
+  if (!overlay.isNull())
+    if (overlay.is<Aqueduct>() && postTiles.size() > 0) {
+      // check, do we have any aqueducts there... there can be empty items
+      bool isAqueducts = false;
+      for (std::list<Tile*>::iterator it = postTiles.begin(); it != postTiles.end(); ++it)
+        if ((*it)->getTerrain().getOverlay().is<Aqueduct>()) {
+          isAqueducts = true;
+          break;
+        }
+
+      if (isAqueducts) {
+        tile.setWasDrawn();
+        Picture& pic = overlay.as<Aqueduct>()->computePicture(&postTiles, tile.getIJ());
+        engine->drawPicture( pic, screenPos );
+      }
     }
-  }
 
   if (!tile.wasDrawn()) {
     tile.setWasDrawn();
@@ -589,13 +597,13 @@ void TilemapRenderer::Impl::drawTileInSelArea( Tile& tile, Tile* master )
   else
   {
     engine->setTileDrawMask( 0x00ff0000, 0, 0, 0xff000000 );
-    
+
     // multi-tile: draw the master tile.
     if( !master->wasDrawn() )
       drawTileFunction( *master );
-    
+
     engine->resetTileDrawMask();
-  }  
+  }
 }
 
 void TilemapRenderer::Impl::drawTilemapWithRemoveTools()
