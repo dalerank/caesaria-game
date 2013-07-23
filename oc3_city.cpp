@@ -43,7 +43,7 @@
 #include "oc3_house.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_forum.hpp"
-#include "oc3_senate.hpp"
+#include "oc3_building_senate.hpp"
 #include "oc3_cityservice_culture.hpp"
 #include "oc3_cityfunds.hpp"
 #include "oc3_player.hpp"
@@ -59,6 +59,7 @@ public:
   int population;
   CityFunds funds;  // amount of money
   int time; // number of months since start
+  std::string name;
 
   LandOverlays overlayList;
   Walkers walkerList;
@@ -331,7 +332,7 @@ void City::build( const BuildingType type, const TilePos& pos )
 
 void City::build( ConstructionPtr building, const TilePos& pos )
 {
-  BuildingData& buildingData = BuildingDataHolder::instance().getData( building->getType() );
+  const BuildingData& buildingData = BuildingDataHolder::instance().getData( building->getType() );
   if( building.isValid() )
   {
     building->build( pos );
@@ -508,6 +509,7 @@ void City::save( VariantMap& stream) const
   stream[ "date" ] = _d->date;
   stream[ "funds" ] = _d->funds.save();
   stream[ "population" ] = _d->population;
+  stream[ "name" ] = Variant( _d->name );
 
   // walkers
   VariantMap vm_walkers;
@@ -548,6 +550,7 @@ void City::load( const VariantMap& stream )
   _d->funds.load( stream.get( "funds" ).toMap() );
   _d->population = stream.get( "population" ).toInt();
   _d->cameraStart = TilePos( stream.get( "cameraStart" ).toTilePos() );
+  _d->name = stream.get( "name" ).toString();
 
   VariantMap overlays = stream.get( "overlays" ).toMap();
   for( VariantMap::iterator it=overlays.begin(); it != overlays.end(); it++ )
@@ -695,4 +698,14 @@ int City::getCulture() const
 {
   CityServicePtr csPrsp = findService( "culture" );
   return csPrsp.isValid() ? csPrsp.as<CityServiceCulture>()->getValue() : 0;
+}
+
+const std::string& City::getName() const
+{
+  return _d->name;
+}
+
+void City::setName( const std::string& name )
+{
+  _d->name = name;
 }

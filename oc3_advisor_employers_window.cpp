@@ -19,10 +19,12 @@
 #include "oc3_gui_paneling.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_pushbutton.hpp"
-#include "oc3_label.hpp"
+#include "oc3_gui_label.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_gfx_engine.hpp"
+#include "oc3_enums.hpp"
+#include "oc3_city.hpp"
 
 static const Point employerButtonOffset = Point( 0, 25 );
 static const Size  employerButtonSize = Size( 560, 22 );
@@ -46,8 +48,13 @@ public:
 
     Font font = Font::create( FONT_1_WHITE );
     font.draw( *pic, _title, 130, 2 );
-
     font.draw( *pic, StringHelper::format( 0xff, "%d", _needWorkers ), 375, 2 );
+
+    if( _haveWorkers < _needWorkers )
+    {
+      font = Font::create( FONT_1_RED );
+    }
+
     font.draw( *pic, StringHelper::format( 0xff, "%d", _haveWorkers ), 480, 2 );
   }
 
@@ -60,20 +67,92 @@ private:
 class AdvisorEmployerWindow::Impl
 {
 public:
-  PictureRef background;
-
-  void showPriorityWindow( int id )
+  typedef std::vector< BuildingType > BldTypes;
+  enum PriorityIndex
   {
+    prIndustryAndTrade=0,
+    prFood,
+    prEngineers,
+    prWater,
+    prPrefectures,
+    prMilitary,
+    prEntertainment,
+    prHealthAndEducation,
+    prAdministrationAndReligion,
+    prCount
+  };
 
-  }
+  PictureRef background;
+  CityPtr city;
+
+  void showPriorityWindow( int id );
+
+  struct EmployersInfo { 
+    int needWorkers;
+    int currentWorkers;
+  };
+
+  EmployersInfo getEmployersInfo( PriorityIndex type );
+
+  EmployerButton* addButton( Widget* parent, const Point& startPos, PriorityIndex priority, const std::string& title );
 };
 
-AdvisorEmployerWindow::AdvisorEmployerWindow( Widget* parent, int id ) 
+void AdvisorEmployerWindow::Impl::showPriorityWindow( int id )
+{
+
+}
+
+AdvisorEmployerWindow::Impl::EmployersInfo AdvisorEmployerWindow::Impl::getEmployersInfo( PriorityIndex type )
+{
+  std::vector< BuildingClass > bldClasses;
+  switch( type )
+  {
+  case prIndustryAndTrade: bldClasses.push_back( BC_INDUSTRY ); bldClasses.push_back( BC_TRADE ); break;
+  case prFood: bldClasses.push_back( BC_FOOD ); break;
+  case prEngineers: bldClasses.push_back( BC_ENGINEERING ); break;
+  case prWater: bldClasses.push_back( BC_WATER ); break;
+  case prPrefectures: bldClasses.push_back( BC_SECURITY ); break;
+  case prMilitary: bldClasses.push_back( BC_MILITARY ); break;
+  case prEntertainment: bldClasses.push_back( BC_ENTERTAINMENT ); break;
+  case prHealthAndEducation: bldClasses.push_back( BC_HEALTH ); bldClasses.push_back( BC_EDUCATUION ); break;
+  case prAdministrationAndReligion: bldClasses.push_back( BC_ADMINISTRATION ); bldClasses.push_back( BC_RELIGION ); break;
+  default: break;
+  }
+
+  WorkingBuildings buildings;
+  CityHelper helper( city );
+  for( std::vector< BuildingClass >::iterator it=bldClasses.begin(); it != bldClasses.end(); it++ )
+  {
+    WorkingBuildings sectorBuildings = helper.getBuildings<WorkingBuilding>( *it );
+    buildings.insert( buildings.begin(), sectorBuildings.begin(), sectorBuildings.end() );
+  }
+
+  unsigned currentWorkers = 0;
+  unsigned needWorkers = 0;
+  for( WorkingBuildings::iterator it=buildings.begin(); it != buildings.end(); it++ )
+  {
+    currentWorkers += (*it)->getWorkers();
+    needWorkers += (*it)->getMaxWorkers();
+  }
+
+  EmployersInfo ret = { needWorkers, currentWorkers };
+  return ret;
+}
+
+EmployerButton* AdvisorEmployerWindow::Impl::addButton( Widget* parent, const Point& startPos, 
+                                                        PriorityIndex priority, const std::string& title )
+{
+  EmployersInfo info = getEmployersInfo( priority );
+
+  return new EmployerButton( parent, startPos, priority, title, info.needWorkers, info.currentWorkers );
+}
+
+AdvisorEmployerWindow::AdvisorEmployerWindow( CityPtr city, Widget* parent, int id ) 
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
-  setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),
-    Size( 640, 416 ) ) );
+  setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ), Size( 640, 416 ) ) );
 
+  _d->city = city;
   _d->background.reset( Picture::create( getSize() ) );
   //main _d->_d->background
   GuiPaneling::instance().draw_white_frame(*_d->background, 0, 0, getWidth(), getHeight() );
@@ -94,15 +173,15 @@ AdvisorEmployerWindow::AdvisorEmployerWindow( Widget* parent, int id )
   font.draw( *_d->background, _("##advemployer_panel_haveworkers##"), 500, 54, false );
 
   startPos += Point( 8, 8 );
-  PushButton* btn = new EmployerButton( this, startPos, prIndustryAndTrade, "industry&trade", 0, 0 );
-  btn = new EmployerButton( this, startPos, prFood, "food", 0, 0 );
-  btn = new EmployerButton( this, startPos, prEngineers, "ingineers", 0, 0 );
-  btn = new EmployerButton( this, startPos, prWater, "water", 0, 0 );
-  btn = new EmployerButton( this, startPos, prPrefectures, "prefectures", 0, 0 );
-  btn = new EmployerButton( this, startPos, prMilitary, "military", 0, 0 );
-  btn = new EmployerButton( this, startPos, prEntertainment, "entertainment", 0, 0 );
-  btn = new EmployerButton( this, startPos, prHealthAndEducation, "health&education", 0, 0 );
-  btn = new EmployerButton( this, startPos, prAdministrationAndReligion, "administation&religion", 0, 0 );
+  PushButton* btn = new EmployerButton( this, startPos, Impl::prIndustryAndTrade, "industry&trade", 0, 0 );
+  btn = _d->addButton( this, startPos, Impl::prFood, "food" );
+  btn = _d->addButton( this, startPos, Impl::prEngineers, "engineers" );
+  btn = _d->addButton( this, startPos, Impl::prWater, "water" );
+  btn = _d->addButton( this, startPos, Impl::prPrefectures, "prefectures" );
+  btn = _d->addButton( this, startPos, Impl::prMilitary, "military" );
+  btn = _d->addButton( this, startPos, Impl::prEntertainment, "entertainment" );
+  btn = _d->addButton( this, startPos, Impl::prHealthAndEducation, "health&education" );
+  btn = _d->addButton( this, startPos, Impl::prAdministrationAndReligion, "administration&religion" );
 
   Picture pic = Picture::load( ResourceGroup::advisorwindow, 1 );
   btn = new PushButton( this, Rect( Point( 160, 356 ), Size( 24 ) ), "", -1 );

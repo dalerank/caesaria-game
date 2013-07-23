@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_GOVERMENT_BUILDINGS_H_INCLUDED__
 #define __OPENCAESAR3_GOVERMENT_BUILDINGS_H_INCLUDED__
 
-#include "oc3_working_building.hpp"
+#include "oc3_building_working.hpp"
 
 class GovernorsHouse  : public WorkingBuilding
 {

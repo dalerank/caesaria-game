@@ -14,7 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "oc3_menu.hpp"
+#include "oc3_gui_menu.hpp"
 #include "oc3_texturedbutton.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_color.hpp"
@@ -24,7 +24,7 @@
 #include "oc3_guienv.hpp"
 #include "oc3_gui_paneling.hpp"
 #include "oc3_widgetpositionanimator.hpp"
-#include "oc3_label.hpp"
+#include "oc3_gui_label.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_minimap_colours.hpp"
 #include "oc3_tilemap_renderer.hpp"
@@ -75,9 +75,6 @@ oc3_signals public:
   Signal1< int > onCreateConstructionSignal;
   Signal0<> onRemoveToolSignal;
   Signal0<> onMaximizeSignal;
-  //Signal0<> onEmpireMapShowSignal;
-  //Signal0<> onAdvisorsWndShowSignal;
-  //Signal0<> onSwitchAlarmSignal;
 };
 
 Signal1< int >& Menu::onCreateConstruction()
@@ -681,4 +678,9 @@ Signal0<>& ExtentMenu::onSwitchAlarm()
 void ExtentMenu::setAlarmEnabled( bool enabled )
 {
   _d->disasterButton->setEnabled( enabled );
+}
+
+Signal0<>& ExtentMenu::onMissionTargetsWindowShow()
+{
+  return _d->missionButton->onClicked();
 }

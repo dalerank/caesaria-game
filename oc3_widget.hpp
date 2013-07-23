@@ -39,6 +39,7 @@ public:
 	typedef Widgets::const_iterator ConstChildIterator;
 
 	typedef enum { RelativeGeometry=0, AbsoluteGeometry, ProportionalGeometry } GeometryType;
+  enum { noId=-1 };
 
   Widget( Widget* parent, int id, const Rect& rectangle );
 

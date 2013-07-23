@@ -36,6 +36,8 @@ public:
     void setX( const int nx ) { x = nx; }
     void setY( const int ny ) { y = ny; }
 
+    float distanceTo( const Point& other ) const { return sqrtf( pow( float(x - other.x), 2.f) + pow( float(y - other.y), 2.f) ); }
+
     PointF toPointF() const; 
 };
 

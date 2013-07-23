@@ -35,4 +35,5 @@ const char* ResourceGroup::govt            = "govt";
 const char* ResourceGroup::carts           = "carts";
 const char* ResourceGroup::waterOverlay    = "oc3_wateroverlay";
 const char* ResourceGroup::advisorwindow   = "oc3_advisorwindow";
+const char* ResourceGroup::empirebits      = "empire_bits";
 

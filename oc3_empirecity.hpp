@@ -19,16 +19,20 @@
 #include "oc3_scopedptr.hpp"
 #include "oc3_referencecounted.hpp"
 #include "oc3_positioni.hpp"
+
 #include <string>
 
 class EmpireCity : public ReferenceCounted
 {
 public:
-  EmpireCity();
+  EmpireCity( const std::string& name );
   ~EmpireCity();
 
   std::string getName() const;
-  Point getPosition() const;
+  Point getLocation() const;
+  void setLocation( const Point& location );
+
+  bool isDistantCity() const;
 
 private:
   class Impl;

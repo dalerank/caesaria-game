@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_EMIGRANT_H_INCLUDE_
 #define __OPENCAESAR3_EMIGRANT_H_INCLUDE_
 
-#include "oc3_immigrant.hpp"
+#include "oc3_walker_immigrant.hpp"
 #include "oc3_predefinitions.hpp"
 
 class Emigrant;

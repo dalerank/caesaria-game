@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_immigrant.hpp"
+#include "oc3_walker_immigrant.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_safetycast.hpp"
@@ -21,6 +21,7 @@
 #include "oc3_house.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_city.hpp"
 #include "oc3_path_finding.hpp"
 
 class Immigrant::Impl

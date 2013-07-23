@@ -26,19 +26,22 @@
 PREFEDINE_CLASS_SMARTPOINTER(Walker)
 typedef std::list< WalkerPtr > Walkers;
 
-PREFEDINE_CLASS_SMARTPOINTER(CartPusher)
 PREFEDINE_CLASS_SMARTPOINTER(LandOverlay)
 typedef std::list< LandOverlayPtr > LandOverlays;
 
 PREFEDINE_CLASS_SMARTPOINTER(Building)
 typedef std::list< BuildingPtr > Buildings;
 
-PREFEDINE_CLASS_SMARTPOINTER(House);
-PREFEDINE_CLASS_SMARTPOINTER(Construction)
-PREFEDINE_CLASS_SMARTPOINTER(Warehouse)
 PREFEDINE_CLASS_SMARTPOINTER(WorkingBuilding)
 typedef std::list< WorkingBuildingPtr > WorkingBuildings;
 
+PREFEDINE_CLASS_SMARTPOINTER(EmpireCity)
+typedef std::list< EmpireCityPtr > EmpireCities;
+
+PREFEDINE_CLASS_SMARTPOINTER(House);
+PREFEDINE_CLASS_SMARTPOINTER(Construction)
+PREFEDINE_CLASS_SMARTPOINTER(Warehouse)
+PREFEDINE_CLASS_SMARTPOINTER(CartPusher)
 PREFEDINE_CLASS_SMARTPOINTER(Garden)
 PREFEDINE_CLASS_SMARTPOINTER(ServiceBuilding)
 PREFEDINE_CLASS_SMARTPOINTER(ServiceWalker)
@@ -58,7 +61,8 @@ PREFEDINE_CLASS_SMARTPOINTER(Theater)
 PREFEDINE_CLASS_SMARTPOINTER(Library)
 PREFEDINE_CLASS_SMARTPOINTER(School)
 PREFEDINE_CLASS_SMARTPOINTER(College)
-PREFEDINE_CLASS_SMARTPOINTER(EmpireCity)
+
+PREFEDINE_CLASS_SMARTPOINTER(Empire)
 PREFEDINE_CLASS_SMARTPOINTER(MarketLadyHelper)
 
 class Tile;
@@ -81,5 +85,6 @@ class VariantMap;
 
 class Widget;
 class GuiEnv;
+class Scenario;
 
 #endif

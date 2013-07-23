@@ -25,7 +25,7 @@
 #include "oc3_widget.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_factory_building.hpp"
-#include "oc3_service_building.hpp"
+#include "oc3_building_service.hpp"
 #include "oc3_predefinitions.hpp"
 
 class PushButton;

@@ -16,7 +16,8 @@
 #ifndef __OPENCAESAR3_WATER_BUILDGINDS_INCLUDED__
 #define __OPENCAESAR3_WATER_BUILDGINDS_INCLUDED__
 
-#include "oc3_service_building.hpp"
+#include "oc3_positioni.hpp"
+#include "oc3_building_service.hpp"
 
 class WaterSource;
 class Aqueduct;
@@ -36,12 +37,11 @@ protected:
   virtual void _waterStateChanged() {};
   virtual void _produceWater( const TilePos* points, const int size );
   
-
-  typedef std::map< int, int > WaterSourceMap;
-  WaterSourceMap _sourceMap;
-  int _water;
-  bool _lastWaterState;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
+
+
 
 class Aqueduct : public WaterSource
 {
@@ -49,13 +49,17 @@ public:
   Aqueduct();
 
   virtual void build(const TilePos& pos );
-  Picture& computePicture();
+  Picture& computePicture(const PtrTilesList * tmp = NULL,
+                          const TilePos pos = TilePos(0, 0));
   virtual void setTerrain(TerrainTile &terrain);
   virtual bool canBuild(const TilePos& pos ) const;
   virtual bool isNeedRoadAccess() const;
+  virtual void destroy();
+  virtual bool isWalkable() const; 
+  virtual bool isRoad() const;
+
   void updatePicture();
   void addWater( const WaterSource& source );
-  virtual void destroy();
 
 protected:
   virtual void _waterStateChanged();

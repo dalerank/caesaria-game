@@ -21,6 +21,7 @@
 
 #include "oc3_tilemap.hpp"
 #include "oc3_scopedptr.hpp"
+#include "oc3_filepath.hpp"
 
 #include <string>
 
@@ -32,7 +33,7 @@ public:
   static ScenarioLoader& getInstance();
   ~ScenarioLoader();
 
-  bool load(const std::string& filename, Scenario& oScenario);
+  bool load(const io::FilePath& filename, Scenario& oScenario);
 
 private:
   ScenarioLoader();

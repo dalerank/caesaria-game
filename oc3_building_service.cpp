@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#include "oc3_service_building.hpp"
+#include "oc3_building_service.hpp"
 
 #include <cstdlib>
 #include <ctime>
@@ -27,6 +27,7 @@
 #include "oc3_gui_info_box.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_city.hpp"
 #include "oc3_resourcegroup.hpp"
 
 class ServiceBuilding::Impl

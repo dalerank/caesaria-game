@@ -15,8 +15,6 @@
 
 #include "oc3_water_buildings.hpp"
 
-#include <stdexcept>
-
 #include "oc3_stringhelper.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_time.hpp"
@@ -26,10 +24,26 @@
 #include "oc3_road.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_walker_service.hpp"
+#include "oc3_city.hpp"
 
-Aqueduct::Aqueduct() : WaterSource( B_AQUEDUCT, Size(1) )
+class WaterSource::Impl
+{
+public:
+  typedef std::map< int, int > WaterSourceMap;
+  WaterSourceMap sourcesMap;
+  WaterSourceMap consumersMap;
+
+  int  water;
+  bool lastWaterState;
+  bool isRoad;
+  bool alsoResolved;
+};
+
+Aqueduct::Aqueduct() : WaterSource( B_AQUEDUCT, Size(1) ) 
 {
   setPicture( Picture::load( ResourceGroup::aqueduct, 133) ); // default picture for aqueduct
+  _d->isRoad = false;
+  _d->alsoResolved = false;
   // land2a 119 120         - aqueduct over road
   // land2a 121 122         - aqueduct over plain ground
   // land2a 123 124 125 126 - aqueduct corner
@@ -68,21 +82,6 @@ void Aqueduct::destroy()
   Construction::destroy();
 }
 
-void Reservoir::destroy()
-{
-  //now remove water flag from near tiles
-  Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
-  PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() ); 
-  for( PtrTilesArea::iterator it=reachedTiles.begin(); it != reachedTiles.end(); it++ )
-  {
-    (*it)->getTerrain().decreaseWaterService( WTR_RESERVOIR );
-  }
-
-  
-  // update adjacent aqueducts
-  Construction::destroy();
-}
-
 void Aqueduct::setTerrain(TerrainTile &terrain)
 {
   bool isRoad   = terrain.isRoad();
@@ -96,13 +95,15 @@ void Aqueduct::setTerrain(TerrainTile &terrain)
   terrain.setAqueduct(true); // mandatory!
 }
 
+
+
 bool Aqueduct::canBuild( const TilePos& pos ) const
 {
   bool is_free = Construction::canBuild( pos );
-  
-  if( is_free ) 
+
+  if( is_free )
       return true; // we try to build on free tile
-  
+
   // we can place on road
   CityPtr city = Scenario::instance().getCity();
   Tilemap& tilemap = city->getTilemap();
@@ -119,30 +120,52 @@ bool Aqueduct::canBuild( const TilePos& pos ) const
   // also we can't build if next tile is road + aqueduct
   if ( terrain.isRoad() )
   {
-    std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos (-1, -1),
-                                                  pos + TilePos (1, 1), 
-                                                  !Tilemap::checkCorners );
+    TilePos tp_from = pos + TilePos (-1, -1);
+    TilePos tp_to = pos + TilePos (1, 1);
+
+    if (!tilemap.isInside(tp_from))
+      tp_from = pos;
+
+    if (!tilemap.isInside(tp_to))
+      tp_to = pos;
+
+    std::list<Tile*> rect = tilemap.getRectangle(tp_from, tp_to, !Tilemap::checkCorners);
     for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
     {
       Tile* tile = *itTiles;
+
       if (tile->getTerrain().isRoad() && tile->getTerrain().isAqueduct())
-      {
-	      return false;
-      }
-    }    
+        return false;
+    }
   }
-  
+
   // and we can't build on intersections
   if ( terrain.isRoad() )
   {
     int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
-    if (tilemap.at( pos + TilePos(  0,  1 ) ).getTerrain().isRoad()) { directionFlags += 1; } // road to the north
-    if (tilemap.at( pos + TilePos(  0, -1 ) ).getTerrain().isRoad()) { directionFlags += 4; } // road to the south
-    if (tilemap.at( pos + TilePos(  1,  0 ) ).getTerrain().isRoad()) { directionFlags += 2; } // road to the east
-    if (tilemap.at( pos + TilePos( -1,  0 ) ).getTerrain().isRoad()) { directionFlags += 8; } // road to the west
+
+    TilePos tile_pos_d[D_MAX];
+    bool is_border[D_MAX];
+
+    tile_pos_d[D_NORTH] = pos + TilePos(  0,  1);
+    tile_pos_d[D_EAST]  = pos + TilePos(  1,  0);
+    tile_pos_d[D_SOUTH] = pos + TilePos(  0, -1);
+    tile_pos_d[D_WEST]  = pos + TilePos( -1,  0);
+
+    // all tiles must be in map range
+    for (int i = 0; i < D_MAX; ++i) {
+      is_border[i] = !tilemap.isInside(tile_pos_d[i]);
+      if (is_border[i])
+        tile_pos_d[i] = pos;
+    }
+
+    if (tilemap.at(tile_pos_d[D_NORTH]).getTerrain().isRoad()) { directionFlags += 1; } // road to the north
+    if (tilemap.at(tile_pos_d[D_EAST]).getTerrain().isRoad()) { directionFlags += 2; } // road to the east
+    if (tilemap.at(tile_pos_d[D_SOUTH]).getTerrain().isRoad()) { directionFlags += 4; } // road to the south
+    if (tilemap.at(tile_pos_d[D_WEST]).getTerrain().isRoad()) { directionFlags += 8; } // road to the west
 
     StringHelper::debug( 0xff, "direction flags=%d", directionFlags );
-   
+
     switch (directionFlags)
     {
     case 0:  // no road!
@@ -153,28 +176,80 @@ bool Aqueduct::canBuild( const TilePos& pos ) const
     case 5:  // North+South
     case 10: // East+West
       return true;
-    }  
+    }
   }
   return false;
 }
 
-Picture& Aqueduct::computePicture()
+
+
+Picture&
+Aqueduct::computePicture(const PtrTilesList * tmp, const TilePos pos)
 {
   // find correct picture as for roads
   Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
-  
+
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
 
-  LandOverlayPtr northOverlay = tmap.at( getTilePos() + TilePos( 0, 1) ).getTerrain().getOverlay();
-  LandOverlayPtr eastOverlay = tmap.at( getTilePos() + TilePos( 1, 0) ).getTerrain().getOverlay();
-  LandOverlayPtr southOverlay = tmap.at( getTilePos() + TilePos( 0, -1) ).getTerrain().getOverlay();
-  LandOverlayPtr westOverlay = tmap.at( getTilePos() + TilePos( -1, 0) ).getTerrain().getOverlay();
+  const TilePos tile_pos = (tmp == NULL) ? getTilePos() : pos;
 
-  if( northOverlay.is<Aqueduct>() || northOverlay.is<Reservoir>() ) { directionFlags += 1; }
-  if( eastOverlay.is<Aqueduct>() || eastOverlay.is<Reservoir>()) { directionFlags += 2; }
-  if( southOverlay.is<Aqueduct>() || southOverlay.is<Reservoir>() ) { directionFlags += 4; }
-  if( westOverlay.is<Aqueduct>() || westOverlay.is<Reservoir>()) { directionFlags += 8; }
-  
+  if (!tmap.isInside(tile_pos))
+    return Picture::load( ResourceGroup::aqueduct, 121);
+
+  TilePos tile_pos_d[D_MAX];
+  bool is_border[D_MAX];
+  bool is_busy[D_MAX] = { false };
+
+  tile_pos_d[D_NORTH] = tile_pos + TilePos(  0,  1);
+  tile_pos_d[D_EAST]  = tile_pos + TilePos(  1,  0);
+  tile_pos_d[D_SOUTH] = tile_pos + TilePos(  0, -1);
+  tile_pos_d[D_WEST]  = tile_pos + TilePos( -1,  0);
+
+  // all tiles must be in map range
+  for (int i = 0; i < D_MAX; ++i) {
+    is_border[i] = !tmap.isInside(tile_pos_d[i]);
+    if (is_border[i])
+      tile_pos_d[i] = tile_pos;
+  }
+
+  // get overlays for all directions
+  LandOverlayPtr overlay_d[D_MAX];
+  overlay_d[D_NORTH] = tmap.at( tile_pos_d[D_NORTH] ).getTerrain().getOverlay();
+  overlay_d[D_EAST] = tmap.at( tile_pos_d[D_EAST]  ).getTerrain().getOverlay();
+  overlay_d[D_SOUTH] = tmap.at( tile_pos_d[D_SOUTH] ).getTerrain().getOverlay();
+  overlay_d[D_WEST] = tmap.at( tile_pos_d[D_WEST]  ).getTerrain().getOverlay();
+
+  // if we have a TMP array with aqueducts, calculate them
+  if (tmp != NULL)
+  {
+    for (PtrTilesList::const_iterator it = tmp->begin(); it != tmp->end(); ++it)
+    {
+      int i = (*it)->getI();
+      int j = (*it)->getJ();
+
+      if (i == pos.getI() && j == (pos.getJ() + 1))
+        is_busy[D_NORTH] = true;
+      else if (i == pos.getI() && j == (pos.getJ() - 1))
+        is_busy[D_SOUTH] = true;
+      else if (j == pos.getJ() && i == (pos.getI() + 1))
+        is_busy[D_EAST] = true;
+      else if (j == pos.getJ() && i == (pos.getI() - 1))
+        is_busy[D_WEST] = true;
+    }
+  }
+
+  // calculate directions
+  for (int i = 0; i < D_MAX; ++i) {
+    if (!is_border[i] && (overlay_d[i].is<Aqueduct>() || overlay_d[i].is<Reservoir>() || is_busy[i]))
+      switch (i) {
+      case D_NORTH: directionFlags += 1; break;
+      case D_EAST:  directionFlags += 2; break;
+      case D_SOUTH: directionFlags += 4; break;
+      case D_WEST:  directionFlags += 8; break;
+      default: break;
+      }
+  }
+
   int index;
   switch (directionFlags)
   {
@@ -183,7 +258,14 @@ Picture& Aqueduct::computePicture()
   case 1:  // N
   case 4:  // S
   case 5:  // N + S
-    index = 121; if (getTile().getTerrain().isRoad()) index = 119; break;
+    index = 121; 
+    if( tmap.at( tile_pos ).getTerrain().isRoad() ) 
+    {
+      index = 119; 
+      _d->isRoad = true;
+    }
+    break;
+    
   case 3:  // N + E
     index = 123; break;
   case 6:  // E + S
@@ -195,7 +277,14 @@ Picture& Aqueduct::computePicture()
   case 2:  // E
   case 8:  // W
   case 10: // E + W
-    index = 122; if (getTile().getTerrain().isRoad()) index = 120; break;
+    index = 122; 
+    if( tmap.at( tile_pos ).getTerrain().isRoad() )
+    {
+      index = 120; 
+      _d->isRoad = true;
+    }
+    break;
+   
   case 11: // N + E + W
     index = 132; break;
   case 12: // S + W
@@ -208,10 +297,12 @@ Picture& Aqueduct::computePicture()
     index = 133; break;
   default:
     index = 121; // it's impossible, but ...
-  }   
-  
-  return Picture::load( ResourceGroup::aqueduct, index + (_water == 0 ? 15 : 0) );
+  }
+
+  return Picture::load( ResourceGroup::aqueduct, index + (_d->water == 0 ? 15 : 0) );
 }
+
+
 
 void Aqueduct::updatePicture()
 {
@@ -230,10 +321,40 @@ void Aqueduct::_waterStateChanged()
 
 void Aqueduct::addWater( const WaterSource& source )
 {
-  WaterSource::addWater( source );
+  if( !_d->alsoResolved )
+  {
+    _d->alsoResolved = true;
+    WaterSource::addWater( source );
 
-  const TilePos offsets[4] = { TilePos( -1, 0 ), TilePos( 0, 1), TilePos( 1, 0), TilePos( 0, -1) };
-  _produceWater( offsets, 4 );
+    const TilePos offsets[4] = { TilePos( -1, 0 ), TilePos( 0, 1), TilePos( 1, 0), TilePos( 0, -1) };
+    _produceWater( offsets, 4 );
+    _d->alsoResolved = false;
+  }
+}
+
+bool Aqueduct::isWalkable() const
+{
+  return _d->isRoad;
+}
+
+bool Aqueduct::isRoad() const
+{
+  return _d->isRoad;
+}
+
+void Reservoir::destroy()
+{
+  //now remove water flag from near tiles
+  Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
+  PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() ); 
+  for( PtrTilesArea::iterator it=reachedTiles.begin(); it != reachedTiles.end(); it++ )
+  {
+    (*it)->getTerrain().decreaseWaterService( WTR_RESERVOIR );
+  }
+
+
+  // update adjacent aqueducts
+  Construction::destroy();
 }
 
 Reservoir::Reservoir() : WaterSource( B_RESERVOIR, Size( 3 ) )
@@ -297,10 +418,10 @@ void Reservoir::timeStep(const unsigned long time)
 
   if( _isWaterSource )
   {
-    _water = 16;
+    _d->water = 16;
   }
 
-  if( !_water )
+  if( !_d->water )
   {
     _fgPictures[ 0 ] = 0;
     return;
@@ -346,36 +467,37 @@ bool Reservoir::isNeedRoadAccess() const
 }
 
 WaterSource::WaterSource( const BuildingType type, const Size& size )
-  : Construction( type, size )
+  : Construction( type, size ), _d( new Impl )
+
 {
-  _water = 0;
-  _lastWaterState = false;
+  _d->water = 0;
+  _d->lastWaterState = false;
 }
 
 void WaterSource::addWater( const WaterSource& source )
 {
-  _water = math::clamp( _water+1, 0, 16 );
+  _d->water = math::clamp( _d->water+1, 0, 16 );
   int sourceId = source.getId();
-  _sourceMap[ sourceId ] = math::clamp( _sourceMap[ sourceId ]+1, 0, 4 );
+  _d->sourcesMap[ sourceId ] = math::clamp( _d->sourcesMap[ sourceId ]+1, 0, 4 );
 }
 
 bool WaterSource::haveWater() const
 {
-  return _water > 0;
+  return _d->water > 0;
 } 
 
 void WaterSource::timeStep( const unsigned long time )
 {
   if( time % 22 == 1)
   {
-    _water = math::clamp( _water-1, 0, 16 );
-    if( _lastWaterState != (_water > 0) )
+    _d->water = math::clamp( _d->water-1, 0, 16 );
+    if( _d->lastWaterState != (_d->water > 0) )
     {
-      _lastWaterState = _water > 0;
+      _d->lastWaterState = _d->water > 0;
       _waterStateChanged();
     }
 
-    for( WaterSourceMap::iterator it=_sourceMap.begin(); it != _sourceMap.end(); it++ )
+    for( Impl::WaterSourceMap::iterator it=_d->sourcesMap.begin(); it != _d->sourcesMap.end(); it++ )
     {
       (*it).second = math::clamp( (*it).second-1, 0, 4 );
     }
@@ -387,14 +509,20 @@ void WaterSource::timeStep( const unsigned long time )
 void WaterSource::_produceWater( const TilePos* points, const int size )
 {
   Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
+
   for( int index=0; index < size; index++ )
   {
     TilePos pos = getTilePos() + points[index];
+    if( !tilemap.isInside( pos ) )
+    {
+      continue;
+    }
+
     SmartPtr< WaterSource > ws = tilemap.at( pos ).getTerrain().getOverlay().as<WaterSource>();
     
     if( ws.isValid() )
     {     
-      if( _sourceMap[ ws->getId() ] == 0 )
+      if( _d->sourcesMap[ ws->getId() ] == 0 )
       {
         ws->addWater( *this );
       }

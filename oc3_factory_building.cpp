@@ -29,6 +29,7 @@
 #include "oc3_walker_cart_supplier.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_goodstore_simple.hpp"
+#include "oc3_city.hpp"
 
 class Factory::Impl
 {
@@ -128,7 +129,9 @@ void Factory::timeStep(const unsigned long time)
      if( _d->goodStore.getCurrentQty( _d->outGoodType ) < _d->goodStore.getMaxQty( _d->outGoodType )  )
      {
        _d->progress -= 100.f;
-       _d->goodStore.store( GoodStock( _d->outGoodType, 100, 100 ), 100 );    
+       //gcc fix for temporaly ref object
+       GoodStock tmpStock( _d->outGoodType, 100, 100 );
+       _d->goodStore.store( tmpStock, 100 );
      }
    }
    else
@@ -137,21 +140,18 @@ void Factory::timeStep(const unsigned long time)
      float workersRatio = float(getWorkers()) / float(getMaxWorkers());  // work drops if not enough workers
      // 1080: number of seconds in a year, 0.67: number of timeSteps per second
      float work = 100.f / 1080.f / 0.67f * _d->productionRate * workersRatio * workersRatio;  // work is proportional to time and factory speed
-     if( _d->inGoodType != G_NONE && _d->goodStore.getCurrentQty( _d->inGoodType ) == 0 )
+     if( _d->produceGood )
      {
-       // cannot work, no input material!
-       work = 0.0;
-     }
+       _d->progress += work;
 
-     _d->progress += work;
-
-     _getAnimation().update( time );
-     Picture *pic = _getAnimation().getCurrentPicture();
-     if (pic != NULL)
-     {
-       // animation of the working factory
-       int level = _fgPictures.size()-1;
-       _fgPictures[level] = _getAnimation().getCurrentPicture();
+       _getAnimation().update( time );
+       Picture *pic = _getAnimation().getCurrentPicture();
+       if (pic != NULL)
+       {
+         // animation of the working factory
+         int level = _fgPictures.size()-1;
+         _fgPictures[level] = _getAnimation().getCurrentPicture();
+       }
      }
    }  
 
@@ -164,7 +164,9 @@ void Factory::timeStep(const unsigned long time)
      else if( _d->goodStore.getCurrentQty( _d->inGoodType ) >= 100 && _d->goodStore.getCurrentQty( _d->outGoodType ) < 100 )
      {
        _d->produceGood = true;
-       _d->goodStore.retrieve( GoodStock( _d->inGoodType, 100, 100 ), 100  );
+       //gcc fix temporaly ref object error
+       GoodStock tmpStock( _d->inGoodType, 100, 0 );
+       _d->goodStore.retrieve( tmpStock, 100  );
      }     
    }
 }

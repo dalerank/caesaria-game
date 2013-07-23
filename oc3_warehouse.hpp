@@ -19,7 +19,7 @@
 #ifndef WAREHOUSE_HPP
 #define WAREHOUSE_HPP
 
-#include "oc3_working_building.hpp"
+#include "oc3_building_working.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_good.hpp"
 #include "oc3_positioni.hpp"

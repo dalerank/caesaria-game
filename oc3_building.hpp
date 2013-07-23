@@ -65,6 +65,7 @@ public:
   void setName( const std::string& name );
 
   BuildingType getType() const;
+  BuildingClass getClass() const;
   void setType(const BuildingType buildingType);
 
   virtual void save( VariantMap& stream) const;
@@ -72,7 +73,6 @@ public:
 
 protected:
   std::vector<Picture*> _fgPictures;
-  Tile* _master_tile;  // left-most tile if multi-tile, or "this" if single-tile
 
   Animation& _getAnimation();
 
@@ -92,7 +92,7 @@ public:
   virtual bool isNeedRoadAccess() const;
   virtual const PtrTilesList& getAccessRoads() const;  // return all road tiles adjacent to the construction
   virtual void computeAccessRoads();  
-  virtual int getMaxDistance2Road() const; // virtual because HOUSE has different behavior
+  virtual int  getMaxDistance2Road() const; // virtual because HOUSE has different behavior
   virtual char getDesirabilityInfluence() const;
   virtual unsigned char getDesirabilityRange() const;
   virtual char getDesirabilityStep() const;

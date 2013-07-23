@@ -20,6 +20,7 @@
 #include "oc3_scenario.hpp"
 #include "oc3_walker_cart_pusher.hpp"
 #include "oc3_goodstore_simple.hpp"
+#include "oc3_city.hpp"
 
 class GranaryGoodStore : public SimpleGoodStore
 {
@@ -43,7 +44,7 @@ public:
     return granary->getWorkers() > 0 ? SimpleGoodStore::reserveStorage( stock ) : 0;
   }
 
-  virtual void store(GoodStock &stock, const int amount)
+  virtual void store( GoodStock &stock, const int amount)
   {
     if( granary->getWorkers() == 0 )
     {

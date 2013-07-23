@@ -15,7 +15,7 @@
 
 #include "oc3_gettext.hpp"
 #include "oc3_topmenu.hpp"
-#include "oc3_label.hpp"
+#include "oc3_gui_label.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_contextmenuitem.hpp"
 #include "oc3_stringhelper.hpp"

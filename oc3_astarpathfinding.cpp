@@ -158,9 +158,9 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos,
         // Get this point
         child = getPoint( current->getPos() + TilePos( x, y ) );
 
-        _OC3_DEBUG_BREAK_IF( !child );
         if( !child )
         {
+          StringHelper::debug( 0xff, "No child for parent is (%d,%d)", current->getPos().getI() + x, current->getPos().getJ() + y );
           continue;
         }
         // If it's closed or not walkable then pass

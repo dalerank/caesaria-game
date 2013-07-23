@@ -18,6 +18,7 @@
 
 #include "oc3_scopedptr.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_filepath.hpp"
 
 class AppConfig
 {
@@ -26,12 +27,15 @@ public:
   static const std::string resourcePath;
   static const std::string pantheonModel;
   static const std::string houseModel;
+  static const std::string citiesModel;
   static const std::string constructionModel;
 
   static AppConfig& getInstance();
 
   static void set( const std::string& option, const Variant& value );
   static Variant get( const std::string& option );
+
+  static io::FilePath rcpath( const std::string& option="" );
 
 private:
   AppConfig();

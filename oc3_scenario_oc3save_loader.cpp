@@ -21,6 +21,7 @@
 #include "oc3_scenario.hpp"
 #include "oc3_saveadapter.hpp"
 #include "oc3_player.hpp"
+#include "oc3_city.hpp"
 
 class ScenarioOc3SaveLoader::Impl
 {
@@ -39,7 +40,6 @@ bool ScenarioOc3SaveLoader::load( const std::string& filename, Scenario& oScenar
   
   if( Impl::currentVesion == vm[ "version" ].toInt() )
   {
-    oScenario.load( vm[ "scenario" ].toMap() );
     oScenario.getPlayer().load( vm[ "player" ].toMap() );
     oScenario.getCity()->load( vm[ "city" ].toMap() );
 

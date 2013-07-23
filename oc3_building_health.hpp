@@ -13,19 +13,33 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_BUILDINGENGINEER_H_INCLUDE_
-#define __OPENCAESAR3_BUILDINGENGINEER_H_INCLUDE_
+#ifndef __OPENCAESAR3_HEALTHBUILDINGS_H_INCLUDED__
+#define __OPENCAESAR3_HEALTHBUILDINGS_H_INCLUDED__
 
-#include "oc3_service_building.hpp"
+#include "oc3_building_service.hpp"
 
-class BuildingEngineer : public ServiceBuilding
+class Doctor : public ServiceBuilding
 {
 public:
-    BuildingEngineer();
-    void timeStep(const unsigned long time);
-    void deliverService();
-
-    unsigned int getWalkerDistance() const;
+  Doctor();
 };
 
-#endif
+class Hospital : public ServiceBuilding
+{
+public:
+  Hospital();
+};
+
+class Baths : public ServiceBuilding
+{
+public:
+  Baths();
+};
+
+class Barber : public ServiceBuilding
+{
+public:
+  Barber();
+};
+
+#endif //__OPENCAESAR3_HEALTHBUILDINGS_H_INCLUDED__

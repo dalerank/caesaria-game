@@ -18,17 +18,23 @@
 
 #include "oc3_scopedptr.hpp"
 #include "oc3_predefinitions.hpp"
+#include "oc3_filepath.hpp"
+#include "oc3_referencecounted.hpp"
 
-typedef std::vector< EmpireCityPtr > EmpireCities;
-
-class Empire 
+class Empire : public ReferenceCounted
 {
 public:
-  Empire();
+  static EmpirePtr create();
   ~Empire();
   EmpireCities getCities() const;
 
+  void initialize( const io::FilePath& filename );
+
+  EmpireCityPtr addCity( const std::string& name );
+
 private:
+  Empire();
+
   class Impl;
   ScopedPtr< Impl > _d;
 };

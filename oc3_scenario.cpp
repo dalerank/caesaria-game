@@ -21,6 +21,12 @@
 #include "oc3_build_options.hpp"
 #include "oc3_win_targets.hpp"
 #include "oc3_player.hpp"
+#include "oc3_city.hpp"
+#include "oc3_stringhelper.hpp"
+#include "oc3_empire.hpp"
+#include "oc3_app_config.hpp"
+#include "oc3_scenario_loader.hpp"
+#include "oc3_astarpathfinding.hpp"
 
 class Scenario::Impl
 {
@@ -29,6 +35,7 @@ public:
   Player player;
   std::string description;
   CityWinTargets targets;
+  EmpirePtr empire;
 };
 
 Scenario& Scenario::instance()
@@ -40,7 +47,6 @@ Scenario& Scenario::instance()
 Scenario::Scenario() : _d( new Impl )
 {
   _d->description = "";
-  _d->city = 0;
 }
 
 CityPtr Scenario::getCity()
@@ -58,13 +64,40 @@ std::string Scenario::getDescription() const
   return _d->description;
 }
 
-void Scenario::save( VariantMap& stream ) const
+bool Scenario::save( const io::FilePath& filename ) const
 {
-  stream[ "description" ] = Variant( getDescription() );
+  
+  return true;
 }
 
-void Scenario::load( const VariantMap& stream)
+bool Scenario::load( const io::FilePath& filename )
 {
+  StringHelper::debug( 0xff, "Load game begin" );
+
+  _d->empire->initialize( AppConfig::rcpath( AppConfig::citiesModel ) );
+
+  bool loadok = ScenarioLoader::getInstance().load( filename, *this);   
+
+  if( !loadok )
+  {
+    StringHelper::debug( 0xff, "LOADING ERROR: can't load game from %s", filename.toString().c_str() );
+    return false;
+  }  
+
+  LandOverlays llo = _d->city->getOverlayList();
+  for ( LandOverlays::iterator itLLO = llo.begin(); itLLO!=llo.end(); ++itLLO)
+  {
+    ConstructionPtr construction = (*itLLO).as<Construction>();
+    if( construction.isValid() )
+    {
+      construction->computeAccessRoads();
+    }
+  }
+
+  Pathfinder::getInstance().update( _d->city->getTilemap() );  
+
+  StringHelper::debug( 0xff, "Load game end" );
+  return true;
 }
 
 CityWinTargets& Scenario::getWinTargets()
@@ -77,12 +110,18 @@ Scenario::~Scenario()
 
 }
 
-void Scenario::resetCity()
+void Scenario::reset()
 {
   _d->city = City::create();
+  _d->empire = Empire::create();
 }
 
 Player& Scenario::getPlayer() const
 {
   return _d->player;
+}
+
+EmpirePtr Scenario::getEmpire()
+{
+  return _d->empire;
 }

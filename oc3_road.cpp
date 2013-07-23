@@ -18,6 +18,7 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_water_buildings.hpp"
+#include "oc3_city.hpp"
 
 Road::Road() : Construction( B_ROAD, Size(1) )
 {
@@ -177,6 +178,11 @@ void Road::updatePicture()
 bool Road::isNeedRoadAccess() const
 {
   return false;
+}
+
+void Road::destroy()
+{
+  Construction::destroy();
 }
 // I didn't decide what is the best approach: make Plaza as constructions or as upgrade to roads
 Plaza::Plaza()

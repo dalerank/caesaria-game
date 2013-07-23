@@ -13,11 +13,12 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_traineewalker.hpp"
+#include "oc3_walker_trainee.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_path_finding.hpp"
+#include "oc3_city.hpp"
 
 TraineeWalker::TraineeWalker(const WalkerTraineeType traineeType)
 {

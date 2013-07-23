@@ -23,12 +23,13 @@
 #include "oc3_scenario.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_walker_workerhunter.hpp"
-#include "oc3_immigrant.hpp"
+#include "oc3_walker_immigrant.hpp"
 #include "oc3_market.hpp"
 #include "oc3_constructionmanager.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_goodstore_simple.hpp"
+#include "oc3_city.hpp"
 
 class House::Impl
 {
@@ -475,7 +476,7 @@ float House::evaluateService(ServiceWalkerPtr walker)
   // this house pays taxes
   case S_FORUM: 
   case S_SENATE:
-    res = _d->mayPayTax() ? _d->getAvailableTax() : 0;
+    res = _d->mayPayTax() ? (float)_d->getAvailableTax() : 0.f;
   break;
 
   case S_MARKET:

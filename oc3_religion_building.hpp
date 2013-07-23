@@ -17,7 +17,7 @@
 #ifndef __OPENCAESAR3_RELIGION_BIULDING_H_INCLUDED__
 #define __OPENCAESAR3_RELIGION_BIULDING_H_INCLUDED__
 
-#include "oc3_service_building.hpp"
+#include "oc3_building_service.hpp"
 
 class Temple : public ServiceBuilding
 {

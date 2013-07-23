@@ -33,6 +33,7 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_house.hpp"
 #include "oc3_house_level.hpp"
+#include "oc3_water_buildings.hpp"
 
 class TilemapRenderer::Impl
 {
@@ -548,21 +549,39 @@ void TilemapRenderer::Impl::drawTileWater( Tile& tile )
   }
 }
 
+
+
 void TilemapRenderer::Impl::drawTileBase( Tile& tile )
 {
   Point screenPos = tile.getXY() + mapOffset;
 
-  tile.setWasDrawn();
-
-  Picture& pic = tile.getPicture();
-  //draw background
-  engine->drawPicture( pic, screenPos );
-
   LandOverlayPtr overlay = tile.getTerrain().getOverlay();
-  if( overlay.isNull() )
-  {
-    return;
+
+  if (!overlay.isNull())
+    if (overlay.is<Aqueduct>() && postTiles.size() > 0) {
+      // check, do we have any aqueducts there... there can be empty items
+      bool isAqueducts = false;
+      for (std::list<Tile*>::iterator it = postTiles.begin(); it != postTiles.end(); ++it)
+        if ((*it)->getTerrain().getOverlay().is<Aqueduct>()) {
+          isAqueducts = true;
+          break;
+        }
+
+      if (isAqueducts) {
+        tile.setWasDrawn();
+        Picture& pic = overlay.as<Aqueduct>()->computePicture(&postTiles, tile.getIJ());
+        engine->drawPicture( pic, screenPos );
+      }
+    }
+
+  if (!tile.wasDrawn()) {
+    tile.setWasDrawn();
+    Picture& pic = tile.getPicture();
+    engine->drawPicture( pic, screenPos );
   }
+
+  if (overlay.isNull())
+    return;
 
   drawAnimations( overlay, screenPos );
 }
@@ -578,13 +597,13 @@ void TilemapRenderer::Impl::drawTileInSelArea( Tile& tile, Tile* master )
   else
   {
     engine->setTileDrawMask( 0x00ff0000, 0, 0, 0xff000000 );
-    
+
     // multi-tile: draw the master tile.
     if( !master->wasDrawn() )
       drawTileFunction( *master );
-    
+
     engine->resetTileDrawMask();
-  }  
+  }
 }
 
 void TilemapRenderer::Impl::drawTilemapWithRemoveTools()
@@ -775,6 +794,8 @@ void TilemapRenderer::Impl::simpleDrawTilemap()
   }
 }
 
+
+
 void TilemapRenderer::drawTilemap()
 {
   //First part: drawing city
@@ -798,8 +819,14 @@ void TilemapRenderer::drawTilemap()
       _d->engine->resetTileDrawMask();
 
       if (ptr_construction != NULL) {
-        if (ptr_construction->canBuild((*itPostTile)->getIJ()))
+        if (ptr_construction->canBuild((*itPostTile)->getIJ())) {
           _d->engine->setTileDrawMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
+
+          // aqueducts must be shown in correct form
+          AqueductPtr aqueduct = ptr_construction.as<Aqueduct>();
+          if (aqueduct != NULL)
+            aqueduct->setPicture(aqueduct->computePicture(&_d->postTiles, (*itPostTile)->getIJ()));
+        }
       }
 
       _d->drawTileEx( **itPostTile, (*itPostTile)->getIJ().getZ() );

@@ -17,9 +17,7 @@
 
 #include "oc3_application.hpp"
 #include "oc3_screen_wait.hpp"
-#include "oc3_exception.hpp"
 #include "oc3_stringhelper.hpp"
-#include "oc3_scenario_loader.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_city.hpp"
 #include "oc3_picture.hpp"
@@ -38,6 +36,8 @@
 #include "oc3_filesystem.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_filelist.hpp"
+#include "oc3_empire.hpp"
+#include "oc3_exception.hpp"
 
 #include <libintl.h>
 #include <list>
@@ -54,9 +54,8 @@ public:
   GuiEnv* gui;
   
   void initLocale(const std::string & localePath);
-  bool load(const std::string& filename);
-  void initPictures(const std::string &resourcePath);
-  io::FileList::Items scanForMaps( const std::string &resourcePath ) const;
+  void initPictures(const io::FilePath& resourcePath);
+  io::FileList::Items scanForMaps( const io::FilePath& resourcePath ) const;
 };
 
 void Application::Impl::initLocale(const std::string & localePath)
@@ -103,7 +102,7 @@ void Application::initGuiEnvironment()
   _d->gui = new GuiEnv( *_d->engine );
 }
 
-void Application::Impl::initPictures(const std::string &resourcePath)
+void Application::Impl::initPictures(const io::FilePath& resourcePath)
 {
   std::cout << "load images begin" << std::endl;
   PictureBank &pic_loader = PictureBank::instance();
@@ -116,7 +115,7 @@ void Application::Impl::initPictures(const std::string &resourcePath)
   std::cout << "load walking end" << std::endl;
 
   std::cout << "load fonts begin" << std::endl;
-  FontCollection::instance().initialize( resourcePath );
+  FontCollection::instance().initialize( resourcePath.toString() );
   std::cout << "load fonts end" << std::endl;
 
   std::cout << "convert images begin" << std::endl;
@@ -128,41 +127,6 @@ void Application::Impl::initPictures(const std::string &resourcePath)
   std::cout << "create pictures end" << std::endl;
 }
 
-bool Application::Impl::load(const std::string &gameFile)
-{
-  std::cout << "load game begin" << std::endl;
-  
-  Scenario& scenario = Scenario::instance();
-
-  bool loadok = ScenarioLoader::getInstance().load(gameFile, scenario);   
-
-  if( !loadok )
-  {
-    std::cout << "LOADING ERROR: can't load game from " << gameFile << std::endl;
-    return false;
-  }  
-
-  CityPtr city = scenario.getCity();
-  
-  LandOverlays llo = city->getOverlayList();
-  
-  for ( LandOverlays::iterator itLLO = llo.begin(); itLLO!=llo.end(); ++itLLO)
-  {
-     LandOverlayPtr overlay = *itLLO;
-     ConstructionPtr construction = overlay.as<Construction>();
-     if( construction.isValid() )
-     {
-        // this is a construction
-        construction->computeAccessRoads();
-     }
-  }
-
-  Pathfinder::getInstance().update( city->getTilemap() );  
-  
-  std::cout << "load game end" << std::endl;
-  return true;
-}
-
 void Application::setScreenWait()
 {
    ScreenWait screen;
@@ -170,11 +134,10 @@ void Application::setScreenWait()
    screen.drawFrame();
 }
 
-io::FileList::Items Application::Impl::scanForMaps(const std::string &resourcePath) const
+io::FileList::Items Application::Impl::scanForMaps(const io::FilePath& resourcePath) const
 {
-  // scan for map-files and make their list
-    
-  io::FileDir mapsDir( resourcePath + "/maps/" );
+  // scan for map-files and make their list    
+  io::FileDir mapsDir( resourcePath.toString() + "/maps/" );
   io::FileList::Items items = mapsDir.getEntries().getItems();
 
   io::FileList::Items ret;
@@ -193,8 +156,10 @@ void Application::setScreenMenu()
 {
   ScreenMenu screen;
   screen.initialize( *_d->engine, *_d->gui );
+
   int result = screen.run();
-  Scenario::instance().resetCity();
+  Scenario& scenario = Scenario::instance();
+  scenario.reset();
 
   switch( result )
   {
@@ -205,7 +170,7 @@ void Application::setScreenMenu()
       std::srand( DateTime::getElapsedTime() );
       std::string file = maps.at( std::rand() % maps.size() ).fullName.toString();
       StringHelper::debug( 0xff, "Loading map:%s", file.c_str() );
-      bool loadok = _d->load(file);
+      bool loadok = scenario.load(file);
       _d->nextScreen = loadok ? SCREEN_GAME : SCREEN_MENU;
     }
     break;
@@ -213,14 +178,14 @@ void Application::setScreenMenu()
     case ScreenMenu::loadSavedGame:
     {  
       std::cout<<"Loading map:" << "lepcismagna.sav" << std::endl;
-      bool loadok = _d->load(  AppConfig::get( AppConfig::resourcePath ).toString() + "/savs/" + "timgad.sav");
+      bool loadok = scenario.load(  AppConfig::rcpath( "/savs/timgad.sav" ).toString() );
       _d->nextScreen = loadok ? SCREEN_GAME : SCREEN_MENU;
     }
     break;
 
     case ScreenMenu::loadMap:
     {
-      bool loadok = _d->load( screen.getMapName() );
+      bool loadok = scenario.load( screen.getMapName() );
       _d->nextScreen = loadok ? SCREEN_GAME : SCREEN_MENU;
     }
     break;
@@ -232,7 +197,7 @@ void Application::setScreenMenu()
     break;
    
     default:
-      THROW("Unexpected result event: " << result);
+      _OC3_DEBUG_BREAK_IF( "Unexpected result event" );
    }
 }
 
@@ -267,41 +232,39 @@ Application::Application() : _d( new Impl )
 void Application::start()
 {
    //Create right PictureBank instance in the beginning   
-   _d->initLocale(AppConfig::get( AppConfig::localePath ).toString());
-   
-   initVideo();
-   initGuiEnvironment();
-   initSound();
-   //SoundEngine::instance().play_music("resources/sound/drums.wav");
-   initWaitPictures();  // init some quick pictures for screenWait
-   setScreenWait();
+  StringHelper::redirectCout2( "stdout.log" );
+  _d->initLocale(AppConfig::get( AppConfig::localePath ).toString());
+  
+  initVideo();
+  initGuiEnvironment();
+  initSound();
+  //SoundEngine::instance().play_music("resources/sound/drums.wav");
+  initWaitPictures();  // init some quick pictures for screenWait
+  setScreenWait();
 
-   const std::string rPath =  AppConfig::get( AppConfig::resourcePath ).toString();
-   _d->initPictures( rPath );
-   HouseSpecHelper::getInstance().initialize( rPath + AppConfig::get( AppConfig::houseModel ).toString() );
-   DivinePantheon::getInstance().initialize( rPath + AppConfig::get( AppConfig::pantheonModel ).toString() );
-   BuildingDataHolder::instance().initialize( rPath + AppConfig::get( AppConfig::constructionModel ).toString() );
+  _d->initPictures( AppConfig::rcpath() );
+  HouseSpecHelper::getInstance().initialize( AppConfig::rcpath( AppConfig::houseModel ) );
+  DivinePantheon::getInstance().initialize(  AppConfig::rcpath( AppConfig::pantheonModel ) );
+  BuildingDataHolder::instance().initialize( AppConfig::rcpath( AppConfig::constructionModel ) );
 
-   _d->nextScreen = SCREEN_MENU;
-   _d->engine->setFlag( 0, 1 );
+  _d->nextScreen = SCREEN_MENU;
+  _d->engine->setFlag( 0, 1 );
 
-   while(_d->nextScreen != SCREEN_QUIT)
-   {
-      switch(_d->nextScreen)
-      {
-      case SCREEN_MENU:
-         setScreenMenu();
-         break;
-      case SCREEN_GAME:
-         setScreenGame();
-         break;
-      default:
-         THROW("Unexpected screen type: " << _d->nextScreen);
-      }
-   }
-
-   //setScreenWait();
-   //SDL_Delay(1500);
+  while(_d->nextScreen != SCREEN_QUIT)
+  {
+     switch(_d->nextScreen)
+     {
+     case SCREEN_MENU:
+        setScreenMenu();
+        break;
+     case SCREEN_GAME:
+        setScreenGame();
+        break;
+     default:
+        _OC3_DEBUG_BREAK_IF( "Unexpected next screen type" );
+        StringHelper::debug( 0xff, "Unexpected next screen type %d", _d->nextScreen );
+     }
+  }
 }
 
 int main(int argc, char* argv[])
@@ -321,9 +284,9 @@ int main(int argc, char* argv[])
       Application app;
       app.start();
    }
-   catch (Exception e)
+   catch( Exception e )
    {
-      std::cout << "FATAL ERROR: " << e.getDescription() << std::endl;
+     StringHelper::debug( 0xff, "FATAL ERROR: %s", e.getDescription().c_str() );
    }
 
    return 0;
