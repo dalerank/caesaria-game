@@ -25,6 +25,8 @@
 #include "oc3_empirecity.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_city.hpp"
+#include "oc3_gui_label.hpp"
+#include "oc3_gettext.hpp"
 
 class EmpireMapWindow::Impl
 {
@@ -43,7 +45,46 @@ public:
   PushButton* btnTrade;
   std::string ourCity;
   Picture citypics[3];
+  Label* lbCityTitle;
+  Label* lbCityInfo;
+
+  void checkCityOnMap( const Point& pos );
 };
+
+void EmpireMapWindow::Impl::checkCityOnMap( const Point& pos )
+{
+  const EmpireCities& cities = scenario->getEmpire()->getCities();
+
+  EmpireCityPtr city;
+  for( EmpireCities::const_iterator it=cities.begin(); it != cities.end(); it++ )
+  {
+    Rect rect( (*it)->getLocation(), Size( 40 ) );
+    if( rect.isPointInside( pos ) )
+    {
+      city = *it;
+      break;
+    }
+  }
+
+  lbCityInfo->setVisible( city != 0 );
+  if( city != 0 )
+  {
+    lbCityTitle->setText( city->getName() );
+
+    if( city->getName() == scenario->getCity()->getName() )
+    {
+      lbCityInfo->setText( _("##empiremap_our_city##") );
+    }
+    else
+    {
+      lbCityInfo->setText( _("##empiremap_empire_city##") );
+    }
+  }
+  else
+  {
+    lbCityTitle->setText( "" );    
+  }
+}
 
 EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
  : Widget( parent, id, Rect( Point(0, 0), parent->getSize() ) ), _d( new Impl )
@@ -52,6 +93,10 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
   _d->border.reset( Picture::create( getSize() ) );
   _d->empireMap = Picture::load( "the_empire", 1 );
   _d->dragging = false;
+  _d->lbCityTitle = new Label( this, Rect( Point( (getWidth() - 240) / 2 + 60, getHeight() - 130 ), Size( 240, 32 )) );
+  _d->lbCityTitle->setFont( Font::create( FONT_3 ) );
+
+  _d->lbCityInfo = new Label( this, Rect( Point( (getWidth() - 240)/2, getHeight() - 50), Size( 240, 32)) );
 
   const Picture& backgr = Picture::load( "empire_panels", 4 );
   for( unsigned int y=getHeight() - 120; y < getHeight(); y+=backgr.getHeight() )
@@ -113,8 +158,8 @@ void EmpireMapWindow::draw( GfxEngine& engine )
 
   engine.drawPicture( _d->empireMap, _d->offset );  
 
-  EmpireCities& cities = _d->scenario->getEmpire()->getCities();
-  for( EmpireCities::iterator it=cities.begin(); it != cities.end(); it++ )
+  const EmpireCities& cities = _d->scenario->getEmpire()->getCities();
+  for( EmpireCities::const_iterator it=cities.begin(); it != cities.end(); it++ )
   {
     Point location = (*it)->getLocation();
     int index = 0; //maybe it our city
@@ -148,6 +193,8 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
       _d->dragStartPosition = event.MouseEvent.getPosition();
       _d->dragging = true;//_d->flags.isFlag( draggable );
       bringToFront();
+
+      _d->checkCityOnMap( _d->dragStartPosition - _d->offset );
     break;
 
     case OC3_RMOUSE_LEFT_UP:
@@ -174,7 +221,7 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
           if( _d->offset.getX() > 0
               || _d->offset.getX() + _d->empireMap.getWidth() < (int)getWidth()
               || _d->offset.getY() > 0
-              || _d->offset.getY() + _d->empireMap.getHeight() < (int)getHeight() )
+              || _d->offset.getY() + _d->empireMap.getHeight() < (int)getHeight()-120 )
           {
             break;
           }
@@ -183,7 +230,7 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
           _d->dragStartPosition = event.MouseEvent.getPosition();
 
           _d->offset.setX( math::clamp<int>( _d->offset.getX(), -_d->empireMap.getWidth() + getWidth(), 0 ) );
-          _d->offset.setY( math::clamp<int>( _d->offset.getY(), -_d->empireMap.getHeight() + getHeight(), 0 ) );
+          _d->offset.setY( math::clamp<int>( _d->offset.getY(), -_d->empireMap.getHeight() + getHeight() - 120, 0 ) );
         }
       }
     break;
