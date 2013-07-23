@@ -50,6 +50,7 @@ public:
   Picture bgPicture;
   PictureRef picture;
   PictureRef cursorPic;
+  PictureRef textPicture;
 
 	bool wordWrapEnabled, multiLine, autoScrollEnabled, isPasswordBox;
 	char passwordChar;
@@ -704,15 +705,17 @@ bool EditBox::processKey(const NEvent& event)
 
 void EditBox::DrawHolderText_( Font font, Rect* clip )
 {
-    if( isFocused() )
-    {
-        NColor holderColor( 0xffC0C0C0 );
-        setTextRect( 0, _d->holderText );
-        Font holderFont = font;
+  if( isFocused() )
+  {
+    NColor holderColor( 0xffC0C0C0 );
+    setTextRect( 0, _d->holderText );
+    Font holderFont = font;
 
-        if( holderFont.isValid() )
-            holderFont.draw( *_d->picture, _d->holderText, 0, 0 );
+    if( holderFont.isValid() )
+    {
+        holderFont.draw( *_d->textPicture, _d->holderText, 0, 0 );
     }
+  }
 }
 
 void EditBox::beforeDraw( GfxEngine& painter )
@@ -722,7 +725,7 @@ void EditBox::beforeDraw( GfxEngine& painter )
     if( _d->needUpdateTexture )
     {
       _d->needUpdateTexture = false;
-      if( _d->picture.isNull() || getSize() != _d->picture->getSize() )
+      if( !_d->picture || ( _d->picture && getSize() != _d->picture->getSize()) )
       {
         _d->picture.reset( Picture::create( getSize() ) );
       }
@@ -731,6 +734,11 @@ void EditBox::beforeDraw( GfxEngine& painter )
       {
         _d->cursorPic.reset( Picture::create( Size(1, getHeight() / 5 * 4 ) ) );
         _d->cursorPic->fill( 0xff000000, Rect( 0, 0, 0, 0) );
+      }
+
+      if( !_d->textPicture || ( _d->textPicture && getSize() != _d->textPicture->getSize()) )
+      {
+        _d->textPicture.reset( Picture::create( getSize() ) );
       }
 
       if( _d->bgPicture.isValid() )
@@ -774,6 +782,7 @@ void EditBox::beforeDraw( GfxEngine& painter )
 
         if( _text.size() )
         {
+          _d->textPicture->fill( 0x00000000, Rect(0, 0, 0, 0) );
           for (int i=0; i < lineCount; ++i)
           {
              setTextRect(i);
@@ -812,7 +821,7 @@ void EditBox::beforeDraw( GfxEngine& painter )
              //font->Draw(txtLine->c_str(), _d->currentTextRect_ + marginOffset, simpleTextColor,	false, true, &localClipRect);
              Rect textureRect( Point( 0, 0 ), _d->currentTextRect.getSize() );
              
-             _d->lastBreakFont.draw( *_d->picture, *txtLine, 0, 0 );
+             _d->lastBreakFont.draw( *_d->textPicture, *txtLine, 0, 0 );
 
              // draw mark and marked text
              if( isFocused() && _d->markBegin != _d->markEnd && i >= hlineStart && i < hlineStart + hlineCount)
@@ -907,7 +916,7 @@ void EditBox::beforeDraw( GfxEngine& painter )
 //! draws the element and its children
 void EditBox::draw( GfxEngine& painter )
 {
-	if (!_isVisible)
+	if (!isVisible())
 		return;
 
 	const bool focus = _environment->hasFocus(this);
@@ -915,16 +924,6 @@ void EditBox::draw( GfxEngine& painter )
   //const ElementStyle& style = getStyle().GetState( getActiveState() );
 	//const ElementStyle& markStyle = getStyle().GetState( L"Marked" );
   //core::Point marginOffset = style.GetMargin().getRect().UpperLeftCorner;
-
-	if (!_d->border && _d->drawBackground )
-	{
-		//painter.drawRectangle( 0xffc0c0c0, getAbsoluteRect(), &getAbsoluteClippingRectRef() );
-	}
-
-	if( _d->border)
-	{
-		// draw the border       
-	}
 
   if( _d->markAreaRect.isValid() )
   {
@@ -935,7 +934,15 @@ void EditBox::draw( GfxEngine& painter )
   }
 
 	// draw the text
-  painter.drawPicture( *_d->picture, getScreenLeft(), getScreenTop() );
+  if( _d->picture )
+  {
+    painter.drawPicture( *_d->picture, getScreenLeft(), getScreenTop() );
+  }
+
+  if( _d->textPicture )
+  {
+    painter.drawPicture( *_d->textPicture, getScreenLeft(), getScreenTop() );
+  }
 
   if( focus )
 	{

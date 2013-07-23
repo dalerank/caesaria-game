@@ -28,7 +28,7 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_event.hpp"
 #include "oc3_texturedbutton.hpp"
-#include "oc3_label.hpp"
+#include "oc3_gui_label.hpp"
 #include "oc3_city.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_market.hpp"
@@ -44,7 +44,7 @@
 #include "oc3_special_orders_window.hpp"
 #include "oc3_goodstore.hpp"
 #include "oc3_groupbox.hpp"
-#include "oc3_senate.hpp"
+#include "oc3_building_senate.hpp"
 
 class GuiInfoBox::Impl
 {

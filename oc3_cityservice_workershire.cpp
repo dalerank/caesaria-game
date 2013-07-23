@@ -16,8 +16,8 @@
 #include "oc3_cityservice_workershire.hpp"
 #include "oc3_city.hpp"
 #include "oc3_safetycast.hpp"
-#include "oc3_buildingengineer.hpp"
-#include "oc3_prefecture.hpp"
+#include "oc3_building_engineer_post.hpp"
+#include "oc3_building_prefecture.hpp"
 #include "oc3_walker_workerhunter.hpp"
 
 #include <map>
@@ -65,6 +65,12 @@ CityServiceWorkersHire::CityServiceWorkersHire( CityPtr city )
   _d->priorities[ 17 ] = B_OLIVE_FARM;
   _d->priorities[ 18 ] = B_VEGETABLE_FARM;
   _d->priorities[ 19 ] = B_PIG_FARM;
+  _d->priorities[ 20 ] = B_SENATE;
+  _d->priorities[ 21 ] = B_MARKET;
+  _d->priorities[ 22 ] = B_TIMBER_YARD;
+  _d->priorities[ 23 ] = B_MARBLE_QUARRY;
+  _d->priorities[ 24 ] = B_FURNITURE;
+  _d->priorities[ 25 ] = B_WEAPONS_WORKSHOP;
 }
 
 bool CityServiceWorkersHire::_haveHr( WorkingBuildingPtr building )

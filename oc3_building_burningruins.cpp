@@ -13,12 +13,13 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_burningruins.hpp"
+#include "oc3_building_burningruins.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_walker_service.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_scenario.hpp"
+#include "oc3_city.hpp"
 
 BurningRuins::BurningRuins() : ServiceBuilding(S_BURNING_RUINS, B_BURNING_RUINS, Size(1) )
 {

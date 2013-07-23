@@ -427,8 +427,7 @@ void WalkerLoader::loadAll()
 
    waMap.clear();
    fillWalk(waMap, ResourceGroup::carts, 369, 12);
-   _d->animations[WG_LITTLE_HELPER] = waMap;
-
+   _d->animations[WG_MARKETLADY_HELPER] = waMap;
 }
 
 void WalkerLoader::fillWalk(std::map<WalkerAction, Animation> &ioMap, const std::string &prefix, const int start, const int size)

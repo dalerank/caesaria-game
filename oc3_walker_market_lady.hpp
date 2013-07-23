@@ -12,28 +12,38 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#ifndef __OPENCAESAR3_SENATE_H_INCLUDED_
-#define __OPENCAESAR3_SENATE_H_INCLUDED_
 
-#include "oc3_service_building.hpp"
-#include "oc3_scopedptr.hpp"
+#ifndef __OPENCAESAR3_MARKETLADY_H_INCLUDED__
+#define __OPENCAESAR3_MARKETLADY_H_INCLUDED__
 
-class Senate : public ServiceBuilding
+#include "oc3_walker.hpp"
+#include "oc3_warehouse.hpp"
+
+/** This is the market lady buying goods at granaries and warehouses */
+class MarketLady : public Walker
 {
 public:
-  Senate();
-  unsigned int getFunds() const;
+  static MarketLadyPtr create( CityPtr city );
 
-  int collectTaxes();
-  int getPeoplesReached() const;
+  virtual ~MarketLady();
 
-  void deliverService();
+  void send2City( MarketPtr market );
+  virtual void onDestination();
 
-  bool canBuild( const TilePos& pos )const;
+  // compute the destination to fetch the given good
+  void computeWalkerDestination( MarketPtr market );
+
+  void save( VariantMap& stream) const;
+  void load( const VariantMap& stream);
+
 private:
+  MarketLady();
+
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#endif
+#endif //__OPENCAESAR3_MARKETLADY_H_INCLUDED__

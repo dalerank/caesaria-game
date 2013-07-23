@@ -19,6 +19,7 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_tile.hpp"
+#include "oc3_city.hpp"
 
 class FarmTile
 {

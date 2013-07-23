@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_COLLAPSED_RUINS_H_INCLUDE_
 #define __OPENCAESAR3_COLLAPSED_RUINS_H_INCLUDE_
 
-#include "oc3_service_building.hpp"
+#include "oc3_building_service.hpp"
 
 class CollapsedRuins : public Building
 {

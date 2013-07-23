@@ -43,8 +43,12 @@
 #include "oc3_house.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_forum.hpp"
-#include "oc3_senate.hpp"
+#include "oc3_building_senate.hpp"
 #include "oc3_cityservice_culture.hpp"
+#include "oc3_cityfunds.hpp"
+#include "oc3_player.hpp"
+#include "oc3_scenario.hpp"
+
 #include <set>
 
 typedef std::vector< CityServicePtr > CityServices;
@@ -53,8 +57,9 @@ class City::Impl
 {
 public:
   int population;
-  long funds;  // amount of money
+  CityFunds funds;  // amount of money
   int time; // number of months since start
+  std::string name;
 
   LandOverlays overlayList;
   Walkers walkerList;
@@ -95,7 +100,7 @@ City::City() : _d( new Impl )
   _d->roadExit = TilePos( 0, 0 );
   _d->boatEntry = TilePos( 0, 0 );
   _d->boatExit = TilePos( 0, 0 );
-  _d->funds = 1000;
+  _d->funds.resolveIssue( FundIssue( CityFunds::donation, 1000 ) );
   _d->population = 0;
   _d->needRecomputeAllRoads = false;
   _d->taxRate = 7;
@@ -216,6 +221,11 @@ void City::monthStep()
 {
   _d->collectTaxes( this );
   _d->calculatePopulation( this );
+
+  Player& player = Scenario::instance().getPlayer();
+  _d->funds.resolveIssue( FundIssue( CityFunds::playerSalary, -player.getSalary() ) );
+  player.appendMoney( player.getSalary() );
+
   _d->onMonthChangedSignal.emit( _d->date );
 }
 
@@ -303,8 +313,8 @@ void City::setBoatExit( const TilePos& pos )
 
 int City::getTaxRate() const                 {  return _d->taxRate;    }
 void City::setTaxRate(const int taxRate)     {  _d->taxRate = taxRate; }
-long City::getFunds() const                  {  return _d->funds;   }
-void City::setFunds(const long funds)        {  _d->funds = funds;  }
+CityFunds& City::getFunds() const                  {  return _d->funds;   }
+
 
 int City::getPopulation() const
 {
@@ -322,14 +332,14 @@ void City::build( const BuildingType type, const TilePos& pos )
 
 void City::build( ConstructionPtr building, const TilePos& pos )
 {
-  BuildingData& buildingData = BuildingDataHolder::instance().getData( building->getType() );
+  const BuildingData& buildingData = BuildingDataHolder::instance().getData( building->getType() );
   if( building.isValid() )
   {
     building->build( pos );
 
     _d->overlayList.push_back( building.as<LandOverlay>() );
-    _d->funds -= buildingData.getCost();
-    _d->onFundsChangedSignal.emit( _d->funds );
+    _d->funds.resolveIssue( FundIssue( CityFunds::buildConstruction, -buildingData.getCost() ) );
+    _d->onFundsChangedSignal.emit( _d->funds.getValue() );
 
     if( building->isNeedRoadAccess() && building->getAccessRoads().empty() )
     {
@@ -461,8 +471,8 @@ void City::Impl::collectTaxes( CityPtr city )
     lastMonthTax += (*it)->collectTaxes();
   }
 
-  funds += lastMonthTax;
-  onFundsChangedSignal.emit( funds );
+  funds.resolveIssue( FundIssue( CityFunds::taxIncome, lastMonthTax ) );
+  onFundsChangedSignal.emit( funds.getValue() );
 }
 
 void City::Impl::calculatePopulation( CityPtr city )
@@ -496,9 +506,10 @@ void City::save( VariantMap& stream) const
   stream[ "boatEntry" ] = _d->boatEntry;
   stream[ "boatExit" ] = _d->boatExit;
   stream[ "climate" ] = _d->climate;
-  stream[ "time" ] = static_cast<unsigned long long>(_d->time);
-  stream[ "funds" ] = static_cast<unsigned int>(_d->funds);
+  stream[ "date" ] = _d->date;
+  stream[ "funds" ] = _d->funds.save();
   stream[ "population" ] = _d->population;
+  stream[ "name" ] = Variant( _d->name );
 
   // walkers
   VariantMap vm_walkers;
@@ -519,8 +530,8 @@ void City::save( VariantMap& stream) const
   {
     VariantMap vm_overlay;
     (*itOverlay)->save( vm_overlay );
-    vm_overlays[ StringHelper::format( 0xff, "%03d%03d", (*itOverlay)->getTile().getI(),
-                                                         (*itOverlay)->getTile().getJ() ) ] = vm_overlay;
+    vm_overlays[ StringHelper::format( 0xff, "%d,%d", (*itOverlay)->getTile().getI(),
+                                                      (*itOverlay)->getTile().getJ() ) ] = vm_overlay;
   }
 
   stream[ "overlays" ] = vm_overlays;
@@ -535,10 +546,11 @@ void City::load( const VariantMap& stream )
   _d->boatEntry = TilePos( stream.get( "boatEntry" ).toTilePos() );
   _d->boatExit = TilePos( stream.get( "boatExit" ).toTilePos() );
   _d->climate = (ClimateType)stream.get( "climate" ).toInt(); 
-  _d->time = (unsigned long)stream.get( "time" ).toULongLong();
-  _d->funds = stream.get( "funds" ).toInt();
+  _d->date = stream.get( "date" ).toDateTime();
+  _d->funds.load( stream.get( "funds" ).toMap() );
   _d->population = stream.get( "population" ).toInt();
   _d->cameraStart = TilePos( stream.get( "cameraStart" ).toTilePos() );
+  _d->name = stream.get( "name" ).toString();
 
   VariantMap overlays = stream.get( "overlays" ).toMap();
   for( VariantMap::iterator it=overlays.begin(); it != overlays.end(); it++ )
@@ -686,4 +698,14 @@ int City::getCulture() const
 {
   CityServicePtr csPrsp = findService( "culture" );
   return csPrsp.isValid() ? csPrsp.as<CityServiceCulture>()->getValue() : 0;
+}
+
+const std::string& City::getName() const
+{
+  return _d->name;
+}
+
+void City::setName( const std::string& name )
+{
+  _d->name = name;
 }

@@ -19,7 +19,7 @@
 #ifndef SERVICE_BUILDING_HPP
 #define SERVICE_BUILDING_HPP
 
-#include "oc3_working_building.hpp"
+#include "oc3_building_working.hpp"
 #include "oc3_predefinitions.hpp"
 
 class Widget;
@@ -50,7 +50,6 @@ public:
 
   //void removeWalker( WalkerPtr walker );
 private:  
-  int _serviceRange;
   static std::map<ServiceType, ServiceBuilding*> _specimen;
 
   class Impl;

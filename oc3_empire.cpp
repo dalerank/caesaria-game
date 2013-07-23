@@ -15,23 +15,74 @@
 
 #include "oc3_empire.hpp"
 #include "oc3_empirecity.hpp"
+#include "oc3_variant.hpp"
+#include "oc3_saveadapter.hpp"
+#include "oc3_stringhelper.hpp"
 
 class Empire::Impl
 {
-
+public:
+  EmpireCities cities;
 };
 
-Empire::Empire()
+Empire::Empire() : _d( new Impl )
 {
 
 }
 
 EmpireCities Empire::getCities() const
 {
-  return EmpireCities();
+  return _d->cities;
 }
 
 Empire::~Empire()
 {
 
+}
+
+void Empire::initialize( const io::FilePath& filename )
+{
+  VariantMap cities = SaveAdapter::load( filename.toString() );
+
+  if( cities.empty() )
+  {
+    StringHelper::debug( 0xff, "Can't load cities model from %s", filename.toString().c_str() );
+    return;
+  }
+
+  for( VariantMap::iterator it=cities.begin(); it != cities.end(); it++ )
+  {
+    VariantMap cityOptions = it->second.toMap();
+    Point location = cityOptions.get( "location" ).toPoint();
+    EmpireCityPtr city = addCity( it->first );
+    city->setLocation( location );
+  }
+}
+
+EmpireCityPtr Empire::addCity( const std::string& name )
+{
+  EmpireCities::iterator it = _d->cities.begin();
+
+  for( ; it != _d->cities.end(); it++ )
+  {
+    if( (*it)->getName() == name )
+    {
+      _OC3_DEBUG_BREAK_IF( "City already exist" );
+      StringHelper::debug( 0xff, "City %s already exist", name.c_str() );
+      return *it;
+    }
+  }
+
+  EmpireCityPtr ret = new EmpireCity( name );
+  _d->cities.push_back( ret );
+
+  return ret;
+}
+
+EmpirePtr Empire::create()
+{
+  EmpirePtr ret( new Empire() );
+  ret->drop();
+
+  return ret;
 }

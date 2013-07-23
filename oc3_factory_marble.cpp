@@ -13,10 +13,11 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_factorymarble.hpp"
+#include "oc3_factory_marble.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_tile.hpp"
+#include "oc3_city.hpp"
 
 FactoryMarble::FactoryMarble() : Factory(G_NONE, G_MARBLE, B_MARBLE_QUARRY, Size(2) )
 {
@@ -28,7 +29,6 @@ FactoryMarble::FactoryMarble() : Factory(G_NONE, G_MARBLE, B_MARBLE_QUARRY, Size
   _fgPictures.resize(2);
   
   setMaxWorkers( 10 );
-  setWorkers( 10 );
 }
 
 void FactoryMarble::timeStep( const unsigned long time )

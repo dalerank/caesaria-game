@@ -17,25 +17,39 @@
 
 class EmpireCity::Impl
 {
-
+public:
+  Point location;
+  std::string name;
+  bool distantCity;
 };
 
-EmpireCity::EmpireCity()
+EmpireCity::EmpireCity( const std::string& name ) : _d( new Impl )
 {
-
+  _d->name = name;
+  _d->distantCity = false;
 }
 
 std::string EmpireCity::getName() const
 {
-  return "";
+  return _d->name;
 }
 
-Point EmpireCity::getPosition() const
+Point EmpireCity::getLocation() const
 {
-  return Point( 0, 0 );
+  return _d->location;
 }
 
 EmpireCity::~EmpireCity()
 {
 
+}
+
+void EmpireCity::setLocation( const Point& location )
+{
+  _d->location = location;
+}
+
+bool EmpireCity::isDistantCity() const
+{
+  return _d->distantCity;
 }

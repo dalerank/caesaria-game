@@ -215,6 +215,9 @@ class Variant
     //LineF toLineF() const;
     //RectF toRectF() const;
 
+    operator int() const { return toInt(); }
+    operator float() const { return toFloat(); }
+
     static std::string typeToName(Type type);
     static Type nameToType(const std::string& name);
 

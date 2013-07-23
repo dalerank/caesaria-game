@@ -20,12 +20,13 @@
 #include <iostream>
 
 #include "oc3_scenario.hpp"
-#include "oc3_traineewalker.hpp"
+#include "oc3_walker_trainee.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_gui_info_box.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_resourcegroup.hpp"
+#include "oc3_city.hpp"
 
 TrainingBuilding::TrainingBuilding( const BuildingType type, const Size& size )
   : WorkingBuilding( type, size )

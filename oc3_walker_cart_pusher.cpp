@@ -70,13 +70,11 @@ void CartPusher::onDestination()
     if( granary != NULL )
     {
        granary->getGoodStore().applyStorageReservation(_d->stock, _d->reservationID);
-       granary->computePictures();
        _d->reservationID = 0;
     }
     else if ( warehouse != NULL )
     {
        warehouse->getGoodStore().applyStorageReservation(_d->stock, _d->reservationID);
-       warehouse->computePictures();
        _d->reservationID = 0;
     }
     else if( factory != NULL )
@@ -90,7 +88,7 @@ void CartPusher::onDestination()
   if( !_getPathway().isReverse() )
   {
     _getPathway().toggleDirection();
-    _action._action=WA_MOVE;
+    _setAction( WA_MOVE );
     computeDirection();
     _d->consumerBuilding = 0;
   }
@@ -178,6 +176,14 @@ void CartPusher::computeWalkerDestination()
    PathWay pathWay;
    Propagator pathPropagator( _d->city );
    _d->consumerBuilding = 0;
+
+   _OC3_DEBUG_BREAK_IF( _d->producerBuilding.isNull() && "CartPusher: producerBuilding can't be NULL" );
+   if( _d->producerBuilding.isNull() )
+   {
+     deleteLater();
+     return;
+   }
+
    pathPropagator.init( _d->producerBuilding.as<Construction>() );
    pathPropagator.propagate(_d->maxDistance);
 
@@ -210,7 +216,7 @@ void CartPusher::computeWalkerDestination()
    }
    else
    {
-     _action._direction = D_NORTH;
+     _setDirection( D_NORTH );
      setSpeed( 0 );
      setIJ( _d->producerBuilding->getAccessRoads().front()->getIJ() );
      walk();
@@ -348,10 +354,7 @@ void CartPusher::save( VariantMap& stream ) const
 {
   Walker::save( stream );
   
-  VariantList vm_stock;
-  _d->stock.save( vm_stock );
-  stream[ "stock" ] = vm_stock;
-
+  stream[ "stock" ] = _d->stock.save();
   stream[ "producerPos" ] = _d->producerBuilding->getTile().getIJ();
   stream[ "consumerPos" ] = _d->consumerBuilding.isValid() 
                                       ? _d->consumerBuilding->getTile().getIJ()

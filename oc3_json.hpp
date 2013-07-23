@@ -37,7 +37,8 @@ enum JsonToken
         JsonTokenFalse = 10,
         JsonTokenNull = 11,
         JsonTokenCommentOpen = 12,
-        JsonTokenCommentClose = 13
+        JsonTokenCommentClose = 13,
+        JsonTokenObjectName = 14
 };
 
 /**
@@ -128,8 +129,9 @@ public:
     *
     * \return QVariant The parsed string
     */
-   static Variant parseString(const std::string &json, int &index,
-                                                           bool &success);
+   static Variant parseString(const std::string &json, int &index, bool &success);
+   
+   static Variant parseObjectName(const std::string &json, int &index, bool &success);
 
    static void parseComment(const std::string &json, int &index, bool &success);
 
@@ -180,7 +182,6 @@ public:
     * \return int The next JSON token
     */
    static int nextToken(const std::string &json, int &index);
-
 };
 
 #endif //__OPENCAESAR3_JSON_PARSER_H_INCLUDE__

@@ -13,21 +13,25 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-
 #include <memory>
 
-#include "oc3_empiremap_window.hpp"
+#include "oc3_window_empiremap.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_event.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_texturedbutton.hpp"
 #include "oc3_color.hpp"
+#include "oc3_empire.hpp"
+#include "oc3_empirecity.hpp"
+#include "oc3_scenario.hpp"
+#include "oc3_city.hpp"
 
 class EmpireMapWindow::Impl
 {
 public:
   PictureRef border;
   Picture empireMap;
+  Scenario* scenario;
   Point offset;
   bool dragging;
   Point dragStartPosition;
@@ -37,6 +41,8 @@ public:
   PushButton* btnHelp;
   PushButton* btnExit;
   PushButton* btnTrade;
+  std::string ourCity;
+  Picture citypics[3];
 };
 
 EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
@@ -47,7 +53,7 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
   _d->empireMap = Picture::load( "the_empire", 1 );
   _d->dragging = false;
 
-  Picture& backgr = Picture::load( "empire_panels", 4 );
+  const Picture& backgr = Picture::load( "empire_panels", 4 );
   for( unsigned int y=getHeight() - 120; y < getHeight(); y+=backgr.getHeight() )
   {
     for( unsigned int x=0; x < getWidth(); x += backgr.getWidth() )
@@ -56,14 +62,14 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
     }
   }
 
-  Picture& lrBorderPic = Picture::load( "empire_panels", 1 );
+  const Picture& lrBorderPic = Picture::load( "empire_panels", 1 );
   for( unsigned int y = 0; y < getHeight(); y += lrBorderPic.getHeight() )
   {
     _d->border->draw( lrBorderPic, 0, y );
     _d->border->draw( lrBorderPic, getWidth() - lrBorderPic.getWidth(), y );
   }
 
-  Picture& tdBorderPic = Picture::load( "empire_panels", 2 );
+  const Picture& tdBorderPic = Picture::load( "empire_panels", 2 );
   for( unsigned int x = 0; x < getWidth(); x += tdBorderPic.getWidth() )
   {
     _d->border->draw( tdBorderPic, x, 0 );
@@ -71,7 +77,7 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
     _d->border->draw( tdBorderPic, x, getHeight() - 120 );
   }
 
-  Picture& corner = Picture::load( "empire_panels", 3 );
+  const Picture& corner = Picture::load( "empire_panels", 3 );
   _d->border->draw( corner, 0, 0 );    //left top
   _d->border->draw( corner, 0, getHeight() - corner.getHeight() ); //top right
   _d->border->draw( corner, getWidth() - corner.getWidth(), 0 ); //left bottom
@@ -92,6 +98,10 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
   _d->btnExit = new TexturedButton( this, Point( getWidth() - 44, getHeight() - 44 ), Size( 24 ), -1, 533 );
   _d->btnTrade = new TexturedButton( this, Point( getWidth() - 48, getHeight() - 100), Size( 28 ), -1, 292 );
 
+  _d->citypics[ 0 ] = Picture::load( ResourceGroup::empirebits, 1 );
+  _d->citypics[ 1 ] = Picture::load( ResourceGroup::empirebits, 8 );
+  _d->citypics[ 2 ] = Picture::load( ResourceGroup::empirebits, 15 );
+
   CONNECT( _d->btnExit, onClicked(), this, EmpireMapWindow::deleteLater );
   CONNECT( _d->btnTrade, onClicked(), this, EmpireMapWindow::deleteLater );
 }
@@ -101,15 +111,30 @@ void EmpireMapWindow::draw( GfxEngine& engine )
   if( !isVisible() )
     return;
 
-  engine.drawPicture( _d->empireMap, _d->offset );
+  engine.drawPicture( _d->empireMap, _d->offset );  
+
+  EmpireCities cities = _d->scenario->getEmpire()->getCities();
+  for( EmpireCities::iterator it=cities.begin(); it != cities.end(); it++ )
+  {
+    Point location = (*it)->getLocation();
+    int index = 0; //maybe it our city
+    if( (*it)->getName() != _d->ourCity )   
+    {
+      index = (*it)->isDistantCity() ? 1 : 2;
+    }
+
+    engine.drawPicture( _d->citypics[ index ], _d->offset + Point( location.getX(), location.getY() ) );
+  }
+
   engine.drawPicture( *_d->border, Point( 0, 0 ) );
 
   engine.drawPicture( _d->leftEagle, _d->eagleOffset.getWidth(), getHeight() - 120 + _d->eagleOffset.getHeight() - _d->leftEagle.getHeight() - 10 );
   engine.drawPicture( _d->rightEagle, getWidth() - _d->eagleOffset.getWidth() - _d->rightEagle.getWidth(), 
-                                      getHeight() - 120 + _d->eagleOffset.getHeight() - _d->rightEagle.getHeight() - 10 );
+    getHeight() - 120 + _d->eagleOffset.getHeight() - _d->rightEagle.getHeight() - 10 );
 
   engine.drawPicture( _d->centerPicture, (getWidth() - _d->centerPicture.getWidth()) / 2, 
-                                          getHeight() - 120 - _d->centerPicture.getHeight() + 20 );
+    getHeight() - 120 - _d->centerPicture.getHeight() + 20 );
+
   Widget::draw( engine );
 }
 
@@ -173,9 +198,13 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
   return Widget::onEvent( event );
 }
 
-EmpireMapWindow* EmpireMapWindow::create( Widget* parent, int id )
+EmpireMapWindow* EmpireMapWindow::create( Scenario* scenario, Widget* parent, int id )
 {
-  return new EmpireMapWindow( parent, id );
+  EmpireMapWindow* ret = new EmpireMapWindow( parent, id );
+  ret->_d->scenario = scenario;
+  ret->_d->ourCity = scenario->getCity()->getName();
+
+  return ret;
 }
 
 Signal0<>& EmpireMapWindow::onTradeAdvisorRequest()

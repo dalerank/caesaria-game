@@ -13,33 +13,31 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_HEALTHBUILDINGS_H_INCLUDED__
-#define __OPENCAESAR3_HEALTHBUILDINGS_H_INCLUDED__
+#ifndef __OPENCAESAR3_EMPIREMAP_WINDOW_H_INCLUDED__
+#define __OPENCAESAR3_EMPIREMAP_WINDOW_H_INCLUDED__
 
-#include "oc3_service_building.hpp"
+#include "oc3_widget.hpp"
+#include "oc3_signals.hpp"
+#include "oc3_predefinitions.hpp"
 
-class Doctor : public ServiceBuilding
+class EmpireMapWindow : public Widget
 {
 public:
-  Doctor();
+  static EmpireMapWindow* create( Scenario* scenario, Widget* parent, int id );
+
+  // draw on screen
+  void draw( GfxEngine& engine );
+
+  bool onEvent(const NEvent& event);
+
+oc3_signals public:
+  Signal0<>& onTradeAdvisorRequest();
+
+protected:
+  class Impl;
+  ScopedPtr< Impl > _d;
+
+  EmpireMapWindow( Widget* parent, int id );
 };
 
-class Hospital : public ServiceBuilding
-{
-public:
-  Hospital();
-};
-
-class Baths : public ServiceBuilding
-{
-public:
-  Baths();
-};
-
-class Barber : public ServiceBuilding
-{
-public:
-  Barber();
-};
-
-#endif //__OPENCAESAR3_HEALTHBUILDINGS_H_INCLUDED__
+#endif //__OPENCAESAR3_EMPIREMAP_WINDOW_H_INCLUDED__

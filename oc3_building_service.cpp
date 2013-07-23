@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#include "oc3_service_building.hpp"
+#include "oc3_building_service.hpp"
 
 #include <cstdlib>
 #include <ctime>
@@ -23,11 +23,11 @@
 #include "oc3_tile.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_walker_service.hpp"
-#include "oc3_walker_market_buyer.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_gui_info_box.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_city.hpp"
 #include "oc3_resourcegroup.hpp"
 
 class ServiceBuilding::Impl
@@ -36,6 +36,7 @@ public:
   int serviceDelay;
   ServiceType service;
   int serviceTimer;
+  int serviceRange;
 };
 
 ServiceBuilding::ServiceBuilding(const ServiceType service,
@@ -47,7 +48,7 @@ ServiceBuilding::ServiceBuilding(const ServiceType service,
    setWorkers(0);
    setServiceDelay( 80 );
    _d->serviceTimer = 0;
-   _serviceRange = 30;
+   _d->serviceRange = 30;
 }
 
 void ServiceBuilding::setServiceDelay( const int delay )
@@ -103,7 +104,7 @@ void ServiceBuilding::deliverService()
 
 int ServiceBuilding::getServiceRange() const
 {
-   return _serviceRange;
+   return _d->serviceRange;
 }
 
 void ServiceBuilding::save( VariantMap& stream ) const 
@@ -111,15 +112,15 @@ void ServiceBuilding::save( VariantMap& stream ) const
   WorkingBuilding::save( stream );
   stream[ "timer" ] = _d->serviceTimer;
   stream[ "delay" ] = _d->serviceDelay;
-  stream[ "range" ] = _serviceRange;
+  stream[ "range" ] = _d->serviceRange;
 }
 
 void ServiceBuilding::load( const VariantMap& stream )
 {
-//    WorkingBuilding::unserialize(stream);
-//    _serviceTimer = stream.read_int(2, 0, 1000);
-//    _d->serviceDelay = stream.read_int(2, 0, 1000);
-//    _serviceRange = stream.read_int(2, 0, 65535);
+  WorkingBuilding::load( stream );
+  _d->serviceTimer = (int)stream.get( "timer" );
+  _d->serviceDelay = (int)stream.get( "delay" );
+  _d->serviceRange = (int)stream.get( "range" );
 }
 
 int ServiceBuilding::getServiceDelay() const

@@ -14,7 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_message_stack_widget.hpp"
-#include "oc3_label.hpp"
+#include "oc3_gui_label.hpp"
 #include "oc3_gui_paneling.hpp"
 #include "oc3_widget_deleter.hpp"
 #include "oc3_gfx_engine.hpp"

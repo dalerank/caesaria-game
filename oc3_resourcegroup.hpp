@@ -40,6 +40,7 @@ public:
     static const char* wharf;
     static const char* waterOverlay;
     static const char* advisorwindow;
+    static const char* empirebits;
 };
 
 class ResourceMenu

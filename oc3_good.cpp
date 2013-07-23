@@ -227,11 +227,14 @@ void GoodStock::addStock(GoodStock &stock, const int iAmount)
   }
 }
 
-void GoodStock::save( VariantList& stream ) const
+VariantList GoodStock::save() const
 {
+  VariantList stream;
   stream.push_back( (int)_goodType );
   stream.push_back( _maxQty );
   stream.push_back( _currentQty );
+
+  return stream;
 }
 
 void GoodStock::load( const VariantList& stream )

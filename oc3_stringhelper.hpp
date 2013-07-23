@@ -26,6 +26,8 @@ public:
   static std::string format( unsigned int max_size, const char* fmt, ...);
   static void debug( unsigned int max_size, const char* fmt, ...);
 
+  static void redirectCout2(const std::string& filename);
+
   static unsigned int hash( unsigned int max_size, const char* fmt, ...);
   static unsigned int hash( const std::string& text );
 

@@ -19,14 +19,14 @@
 #ifndef WAREHOUSE_HPP
 #define WAREHOUSE_HPP
 
-#include "oc3_service_building.hpp"
+#include "oc3_building_working.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_good.hpp"
 #include "oc3_positioni.hpp"
 
 class GoodStore;
 
-class Warehouse: public ServiceBuilding
+class Warehouse: public WorkingBuilding
 {
   friend class WarehouseStore;
 
@@ -38,11 +38,12 @@ public:
   void computePictures();
   GoodStore& getGoodStore();
   
-  virtual void deliverService();
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
 
 private:
+  void _resolveDevastationMode();
+
   class Impl;
   ScopedPtr< Impl > _d;
 };

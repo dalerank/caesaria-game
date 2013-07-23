@@ -597,13 +597,13 @@ void TilemapRenderer::Impl::drawTileInSelArea( Tile& tile, Tile* master )
   else
   {
     engine->setTileDrawMask( 0x00ff0000, 0, 0, 0xff000000 );
-    
+
     // multi-tile: draw the master tile.
     if( !master->wasDrawn() )
       drawTileFunction( *master );
-    
+
     engine->resetTileDrawMask();
-  }  
+  }
 }
 
 void TilemapRenderer::Impl::drawTilemapWithRemoveTools()

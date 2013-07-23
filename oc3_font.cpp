@@ -203,6 +203,14 @@ void Font::setColor( const int dc )
   _d->color.unused = ( dc >> 24 ) & 0xff;
 }
 
+void Font::setColor( NColor color )
+{
+  _d->color.b = color.getBlue();
+  _d->color.g = color.getGreen();
+  _d->color.r = color.getRed();
+  _d->color.unused = color.getAlpha();
+}
+
 void Font::draw(Picture& dstpic, const std::string &text, const int dx, const int dy, bool useAlpha )
 {
   if( !_d->ttfFont || !dstpic.isValid() )

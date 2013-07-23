@@ -13,26 +13,26 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_BUILDINGPREFECT_H_INCLUDED__
-#define __OPENCAESAR3_BUILDINGPREFECT_H_INCLUDED__
+#ifndef __OPENCAESAR3_EMPIRE_H_INCLUDED__
+#define __OPENCAESAR3_EMPIRE_H_INCLUDED__
 
-#include "oc3_service_building.hpp"
-#include "oc3_positioni.hpp"
+#include "oc3_scopedptr.hpp"
+#include "oc3_predefinitions.hpp"
+#include "oc3_widget.hpp"
 
-class BuildingPrefecture : public ServiceBuilding
+class MissionTargetsWindow : public Widget  
 {
 public:
-  BuildingPrefecture();
-  void timeStep(const unsigned long time);
-  void deliverService();
-  int getServiceDelay() const;
+  static MissionTargetsWindow* create( Widget* parent, int id, Scenario* scenario );
+  ~MissionTargetsWindow();
 
-  void fireDetect( const TilePos& pos );
+  void draw( GfxEngine& painter );
 
 private:
-  TilePos _fireDetect;
+  MissionTargetsWindow( Widget* parent, int id, const Rect& rectangle );
+
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
-typedef SmartPtr< BuildingPrefecture > BuildingPrefecturePtr;
-
-#endif
+#endif //__OPENCAESAR3_EMPIRE_H_INCLUDED__

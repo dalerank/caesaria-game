@@ -18,25 +18,12 @@
 
 #include "oc3_widget.hpp"
 #include "oc3_scopedptr.hpp"
+#include "oc3_predefinitions.hpp"
 
 class AdvisorEmployerWindow : public Widget
 {
 public:
-  typedef enum 
-  {
-    prIndustryAndTrade=0,
-    prFood,
-    prEngineers,
-    prWater,
-    prPrefectures,
-    prMilitary,
-    prEntertainment,
-    prHealthAndEducation,
-    prAdministrationAndReligion,
-    prCount
-  } PriorityIndex;
-
-  AdvisorEmployerWindow( Widget* parent, int id );
+  AdvisorEmployerWindow( CityPtr city, Widget* parent, int id );
 
   void draw( GfxEngine& painter );
 

@@ -15,7 +15,6 @@
 
 #include "oc3_goodstore.hpp"
 #include "oc3_goodstore_simple.hpp"
-#include "oc3_variant.hpp"
 #include "oc3_goodorders.hpp"
 
 class GoodStore::Impl
@@ -148,8 +147,7 @@ void GoodStore::applyRetrieveReservation(SimpleGoodStore &goodStore, const long 
   applyRetrieveReservation(stock, reservationID);
 }
 
-
-void GoodStore::store(GoodStock &stock, const int amount)
+void GoodStore::store( GoodStock &stock, const int amount)
 {
   GoodStock reservedStock;
   reservedStock._goodType = stock._goodType;
@@ -193,17 +191,17 @@ void GoodStore::storeAll(SimpleGoodStore &goodStore)
   }
 }
 
-void GoodStore::save( VariantMap& stream) const 
+VariantMap GoodStore::save() const 
 {
+  VariantMap stream;
+
   stream[ "nextReservationId" ] = static_cast<int>(_d->nextReservationID);
 
   VariantList vm_storeReservations;
   for( _Reservations::const_iterator itRes = _d->storeReservations.begin(); itRes != _d->storeReservations.end(); itRes++)
   {
-    VariantList vm_stocksave;
-    itRes->second.save( vm_stocksave );
     vm_storeReservations.push_back( (int)itRes->first );
-    vm_storeReservations.push_back( vm_stocksave );
+    vm_storeReservations.push_back( itRes->second.save() );
   }
   stream[ "storeReservations" ] = vm_storeReservations;
   stream[ "devastation" ] = _d->devastation;
@@ -211,12 +209,12 @@ void GoodStore::save( VariantMap& stream) const
   VariantList vm_retrieveReservations;
   for( _Reservations::const_iterator itRes = _d->retrieveReservations.begin(); itRes != _d->retrieveReservations.end(); itRes++)
   {
-    VariantList vm_stockrtvsave;
-    itRes->second.save( vm_stockrtvsave );
     vm_retrieveReservations.push_back( (int)itRes->first );
-    vm_retrieveReservations.push_back( vm_stockrtvsave );
+    vm_retrieveReservations.push_back( itRes->second.save() );
   }
   stream[ "retrieveReservation" ] = vm_retrieveReservations;
+
+  return stream;
 }
 
 void GoodStore::load( const VariantMap& stream )

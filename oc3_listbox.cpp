@@ -22,7 +22,7 @@
 #include "oc3_gfx_engine.hpp"
 #include "oc3_gui_paneling.hpp"
 
-#define DEFAULT_SCROLLBAR_SIZE 19
+#define DEFAULT_SCROLLBAR_SIZE 39
 
 //! constructor
 ListBox::ListBox( Widget* parent,const Rect& rectangle,
@@ -39,6 +39,8 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
   _d->font = Font();
 	_d->itemsIconWidth = 0;
 	_d->scrollBar = 0;
+  _d->itemDefaultColorText = 0xff000000;
+  _d->itemDefaultColorTextHighlight = 0xffe0e0e0;
 	_d->selectTime = 0;
 	_d->selectedItemIndex = -1;
 	_d->lastKeyTime = 0;
@@ -59,7 +61,7 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
 
 	const int s = DEFAULT_SCROLLBAR_SIZE;
 
-  _d->scrollBar = new ScrollBar( this, Rect( getWidth() - s - 3, 0, getWidth()-3, getHeight()-3), false );
+  _d->scrollBar = new ScrollBar( this, Rect( getWidth() - s, 0, getWidth(), getHeight()), false );
   _d->scrollBar->setNotClipped( false );
   _d->scrollBar->setSubElement(true);
   _d->scrollBar->setVisibleFilledArea( false );
@@ -99,7 +101,8 @@ void ListBox::_updateTexture()
   {    
     _d->background.reset( Picture::create( size ) );
     _d->picture.reset( Picture::create( size ) );
-    GuiPaneling::instance().draw_black_frame( *_d->background, 0, 0, getWidth(), getHeight() );
+    GuiPaneling::instance().draw_black_frame( *_d->background, 0, 0, getWidth() - _d->scrollBar->getWidth(), getHeight() );
+    GuiPaneling::instance().draw_white_area( *_d->background, getWidth() - _d->scrollBar->getWidth(), 0, getWidth(), getHeight() );
   }
 }
 
@@ -222,6 +225,7 @@ void ListBox::_IndexChanged( unsigned int eventType )
         if( _d->selectedItemIndex >= 0 )
         {
             _d->textSelected.emit( _d->items[ _d->selectedItemIndex ].getText() );
+            _d->onItemSelectedSignal.emit( _d->items[ _d->selectedItemIndex ] );
         }
     break;
 
@@ -539,9 +543,9 @@ Font ListBox::_GetCurrentItemFont( const ListBoxItem& item, bool selected )
 	return itemFont;
 }
 
-int ListBox::_GetCurrentItemColor( const ListBoxItem& item, bool selected )
+NColor ListBox::_GetCurrentItemColor( const ListBoxItem& item, bool selected )
 {
-  int ret = 0;
+  NColor ret = 0;
   ListBoxItem::ColorType tmpState = selected ? ListBoxItem::LBC_TEXT_HIGHLIGHT : ListBoxItem::LBC_TEXT;
 
   if( item.OverrideColors[ tmpState ].Use )
@@ -574,8 +578,9 @@ void ListBox::beforeDraw( GfxEngine& painter)
     
       bool hl = ( isFlag( LBF_HIGHLIGHTWHEN_NOTFOCUSED ) || isFocused() || _d->scrollBar->isFocused() );
       Rect frameRect = getItemTextRect_();
+      frameRect.LowerRightCorner.setY( frameRect.getTop() + _d->itemHeight );
 
-      //TypeAlign itemTextHorizontalAlign, itemTextVerticalAlign;
+      TypeAlign itemTextHorizontalAlign, itemTextVerticalAlign;
       Font currentFont;
 
       for (int i=0; i<(int)_d->items.size(); ++i)
@@ -587,14 +592,14 @@ void ListBox::beforeDraw( GfxEngine& painter)
          {
            refItem.setState( _GetCurrentItemState( i, hl ) );
            
-           //itemTextHorizontalAlign = refItem.isAlignEnabled() ? refItem.getHorizontalAlign() : getHorizontalTextAlign();
-           //itemTextVerticalAlign = refItem.isAlignEnabled() ? refItem.getVerticalAlign() : getVerticalTextAlign();
-
-           Rect textRect = frameRect;
-           textRect.UpperLeftCorner += Point( 3, 0 );
+           itemTextHorizontalAlign = refItem.isAlignEnabled() ? refItem.getHorizontalAlign() : getHorizontalTextAlign();
+           itemTextVerticalAlign = refItem.isAlignEnabled() ? refItem.getVerticalAlign() : getVerticalTextAlign();
 
            currentFont = _GetCurrentItemFont( refItem, i == _d->selectedItemIndex && hl );
            currentFont.setColor( _GetCurrentItemColor( refItem, i==_d->selectedItemIndex && hl ) );
+
+           Rect textRect = currentFont.calculateTextRect( refItem.getText(), frameRect, 
+                                                          itemTextHorizontalAlign, itemTextVerticalAlign );
 
            //_DrawItemIcon( refItem, textRect, hl, i == _d->selectedItemIndex, &_d->clientClip, fontColor );
 
@@ -867,14 +872,14 @@ int ListBox::getItemOverrideColor(unsigned int index, ListBoxItem::ColorType col
   return _d->items[index].OverrideColors[colorType].color;
 }
 
-int ListBox::getItemDefaultColor( ListBoxItem::ColorType colorType) const
+NColor ListBox::getItemDefaultColor( ListBoxItem::ColorType colorType) const
 {
 	switch ( colorType )
 	{
 		case ListBoxItem::LBC_TEXT:
-			return 0xff000000;
+			return _d->itemDefaultColorText;
 		case ListBoxItem::LBC_TEXT_HIGHLIGHT:
-			return 0xffe0e0e0;
+			return _d->itemDefaultColorTextHighlight;
 		case ListBoxItem::LBC_ICON:
 			return 0xffffffff;
 		case ListBoxItem::LBC_ICON_HIGHLIGHT:
@@ -884,6 +889,17 @@ int ListBox::getItemDefaultColor( ListBoxItem::ColorType colorType) const
 	}
 }
 
+void ListBox::setItemDefaultColor( ListBoxItem::ColorType colorType, NColor color )
+{
+  switch( colorType )
+  {
+  case ListBoxItem::LBC_TEXT:
+    _d->itemDefaultColorText = color;
+  case ListBoxItem::LBC_TEXT_HIGHLIGHT:
+    _d->itemDefaultColorTextHighlight = color;
+  default: break;
+  }
+}
 //! set global itemHeight
 void ListBox::setItemHeight( int height )
 {
@@ -898,15 +914,8 @@ void ListBox::setDrawBackground(bool draw)
     setFlag( LBF_DRAWBACK, draw );
 }
 
-void ListBox::SetItemAction( unsigned int index, int funcRef )
-{
-    if ( index >= _d->items.size() )
-        return;
 
-    //_d->items[index].luaFunction = funcRef;
-}
-
-ListBoxItem& ListBox::addItem( const std::string& text, const Font& font, const int color )
+ListBoxItem& ListBox::addItem( const std::string& text, Font font, const int color )
 {
   ListBoxItem i;
   i.setText( text );
@@ -915,6 +924,7 @@ ListBoxItem& ListBox::addItem( const std::string& text, const Font& font, const 
   //i.currentHovered = 255;
   i.OverrideColors[ ListBoxItem::LBC_TEXT ].font = font.isValid() ? font : _d->font;
   i.OverrideColors[ ListBoxItem::LBC_TEXT ].color = color;
+  i.setItemTextAlignment( getHorizontalTextAlign(), getVerticalTextAlign() );
 
   _d->needItemsRepackTextures = true;
 
@@ -933,4 +943,14 @@ int ListBox::getSelected()
 Signal1<std::string>& ListBox::onItemSelectedAgain()
 {
   return _d->onItemSelectedAgainSignal;
+}
+
+Signal1<const ListBoxItem&>& ListBox::onItemSelected()
+{
+  return _d->onItemSelectedSignal;
+}
+
+void ListBox::setItemFont( Font font )
+{
+  _d->font = font;
 }

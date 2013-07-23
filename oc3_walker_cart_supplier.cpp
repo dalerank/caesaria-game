@@ -87,7 +87,7 @@ void CartSupplier::onDestination()
   {
     // walker is near the granary/warehouse
     _getPathway().rbegin();
-    _action._action=WA_MOVE;
+    _setAction( WA_MOVE );
     computeDirection();
 
     // get goods from destination building
@@ -100,7 +100,6 @@ void CartSupplier::onDestination()
       // this is a granary!
       // std::cout << "MarketBuyer arrives at granary, res=" << _reservationID << std::endl;
       granary->getGoodStore().applyRetrieveReservation( _d->stock, _d->reservationID );      
-      granary->computePictures();
     }
     else if( building.is<Warehouse>() )
     {
@@ -109,7 +108,6 @@ void CartSupplier::onDestination()
       // std::cout << "Market buyer takes IRON from warehouse" << std::endl;
       // warehouse->retrieveGoods(_basket.getStock(G_IRON));
       warehouse->getGoodStore().applyRetrieveReservation(_d->stock, _d->reservationID);
-      warehouse->computePictures();
     }
   }
 }

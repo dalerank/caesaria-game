@@ -22,7 +22,7 @@
 #include "oc3_texturedbutton.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_gui_paneling.hpp"
-#include "oc3_label.hpp"
+#include "oc3_gui_label.hpp"
 #include "oc3_city.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_stringhelper.hpp"
@@ -87,14 +87,13 @@ AdvisorsWindow::AdvisorsWindow( Widget* parent, int id )
   addButton( ADV_RELIGION, 264 );
   addButton( ADV_FINANCE, 265 );
   addButton( ADV_MAIN, 266 );
+
   //!!! exit button have no pressed image
   btn = addButton( ADV_COUNT, 267 );
   btn->setPicture( &Picture::load( ResourceGroup::advisorwindow, 3 ), stPressed );
   btn->setIsPushButton( false );
   CONNECT( btn, onClicked(), this, AdvisorsWindow::deleteLater );
   //!!!
-
-  showAdvisor( ADV_EMPLOYERS );
 }
 
 void AdvisorsWindow::showAdvisor( const AdvisorType type )
@@ -119,7 +118,7 @@ void AdvisorsWindow::showAdvisor( const AdvisorType type )
 
   switch( type )
   {
-  case ADV_EMPLOYERS: _d->advisorPanel = new AdvisorEmployerWindow( this, ADV_EMPLOYERS ); break;
+  case ADV_EMPLOYERS: _d->advisorPanel = new AdvisorEmployerWindow( _d->city, this, ADV_EMPLOYERS ); break;
   case ADV_LEGION: _d->advisorPanel = new AdvisorLegionWindow( this, ADV_LEGION ); break;
   case ADV_EMPIRE: _d->advisorPanel = new AdvisorEmperorWindow( this, ADV_EMPIRE ); break;
   case ADV_RATINGS: _d->advisorPanel = new AdvisorRatingsWindow( this, ADV_RATINGS, _d->city ); break;

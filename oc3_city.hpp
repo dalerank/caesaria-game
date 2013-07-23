@@ -31,6 +31,7 @@
 class TilePos;
 class DateTime;
 class CityBuildOptions;
+class CityFunds;
 
 class City : public Serializable, public ReferenceCounted
 {
@@ -73,14 +74,16 @@ public:
 
   int getTaxRate() const;
   void setTaxRate(const int taxRate);
-  long getFunds() const;
-  void setFunds(const long funds);
+  CityFunds& getFunds() const;
 
   int getPopulation() const;
   int getProsperity() const;
   int getCulture() const;
 
   Tilemap& getTilemap();
+
+  const std::string& getName() const; 
+  void setName( const std::string& name );
 
   void save( VariantMap& stream) const;
   void load( const VariantMap& stream);
@@ -128,6 +131,23 @@ public:
     {
       SmartPtr< T > b = (*it).as<T>();
       if( b.isValid() )
+      {
+        ret.push_back( b );
+      }
+    }
+
+    return ret;
+  }
+
+  template< class T >
+  std::list< SmartPtr< T > > getBuildings( const BuildingClass type )
+  {
+    std::list< SmartPtr< T > > ret;
+    LandOverlays overlays = _city->getOverlayList();
+    for( LandOverlays::iterator it = overlays.begin(); it != overlays.end(); it++  )
+    {
+      SmartPtr< T > b = (*it).as<T>();
+      if( b.isValid() && b->getClass() == type )
       {
         ret.push_back( b );
       }

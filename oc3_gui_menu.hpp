@@ -73,6 +73,7 @@ oc3_signals public:
     Signal0<>& onEmpireMapShow();
     Signal0<>& onAdvisorsWindowShow();
     Signal0<>& onSwitchAlarm();
+    Signal0<>& onMissionTargetsWindowShow();
 
 protected:
     ExtentMenu( Widget* parent, TilemapRenderer&, int id, const Rect& rectangle );

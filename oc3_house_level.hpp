@@ -22,6 +22,7 @@
 #include "oc3_enums.hpp"
 #include "oc3_scopedptr.hpp"
 #include "oc3_smartptr.hpp"
+#include "oc3_filepath.hpp"
 
 class House;
 
@@ -86,7 +87,7 @@ public:
   HouseLevelSpec getHouseLevelSpec(const int houseLevel);
   int getHouseLevel(const int houseId);
   int getHouseLevel( const std::string& name );
-  void initialize( const std::string& filename );
+  void initialize( const io::FilePath& filename );
 
   ~HouseSpecHelper();
 private:

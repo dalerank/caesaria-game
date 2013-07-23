@@ -14,7 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_loadmapwindow.hpp"
-#include "oc3_label.hpp"
+#include "oc3_gui_label.hpp"
 #include "oc3_texturedbutton.hpp"
 #include "oc3_gui_paneling.hpp"
 #include "oc3_resourcegroup.hpp"
@@ -23,6 +23,7 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_filesystem.hpp"
 #include "oc3_filelist.hpp"
+#include "oc3_color.hpp"
 
 class LoadMapWindow::Impl
 {
@@ -63,6 +64,10 @@ LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect,
   CONNECT( _d->btnExit, onClicked(), this, LoadMapWindow::deleteLater );
 
   _d->files = new ListBox( this, Rect( 10, _d->lbTitle->getBottom(), getWidth() - 10, _d->btnHelp->getTop() - 5 ), -1, true, true, false ); 
+  _d->files->setItemFont( Font::create( FONT_2_WHITE ) );
+  _d->files->setItemDefaultColor( ListBoxItem::LBC_TEXT, 0xffffffff );
+  _d->files->setItemDefaultColor( ListBoxItem::LBC_TEXT_HIGHLIGHT, 0xff000000 );
+
   CONNECT( _d->files, onItemSelectedAgain(), _d.data(), Impl::resolveFileSelected );
   _d->fillFiles();
 

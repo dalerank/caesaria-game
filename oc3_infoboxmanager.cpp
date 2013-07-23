@@ -19,10 +19,10 @@
 #include "oc3_gui_info_box.hpp"
 #include "oc3_guienv.hpp"
 #include "oc3_road.hpp"
-#include "oc3_prefecture.hpp"
+#include "oc3_building_prefecture.hpp"
 #include "oc3_tile.hpp"
-#include "oc3_service_building.hpp"
-#include "oc3_buildingengineer.hpp"
+#include "oc3_building_service.hpp"
+#include "oc3_building_engineer_post.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_house.hpp"
 #include "oc3_gettext.hpp"
@@ -166,6 +166,7 @@ InfoBoxManager::InfoBoxManager() : _d( new Impl )
   addCreator( B_NONE, OC3_STR_EXT(B_NONE), new BaseInfoboxCreator<InfoBoxLand>() );
   addCreator( B_POTTERY, OC3_STR_EXT(B_POTTERY), new BaseInfoboxCreator<GuiInfoFactory>() );
   addCreator( B_WEAPONS_WORKSHOP, OC3_STR_EXT(B_WEAPONS_WORKSHOP), new BaseInfoboxCreator<GuiInfoFactory>() );
+  addCreator( B_FURNITURE, OC3_STR_EXT(B_FURNITURE), new BaseInfoboxCreator<GuiInfoFactory>() );
   addCreator( B_CLAY_PIT, OC3_STR_EXT(B_CLAY_PIT), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
   addCreator( B_TIMBER_YARD, OC3_STR_EXT(B_TIMBER_YARD), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
   addCreator( B_MARBLE_QUARRY, OC3_STR_EXT(B_MARBLE_QUARRY), new BaseInfoboxCreator<InfoBoxRawMaterial>() );

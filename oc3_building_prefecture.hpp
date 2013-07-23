@@ -13,19 +13,26 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_WELL_H_INCLUDED__
-#define __OPENCAESAR3_WELL_H_INCLUDED__
+#ifndef __OPENCAESAR3_BUILDINGPREFECT_H_INCLUDED__
+#define __OPENCAESAR3_BUILDINGPREFECT_H_INCLUDED__
 
 #include "oc3_building_service.hpp"
+#include "oc3_positioni.hpp"
 
-class BuildingWell : public ServiceBuilding
+class BuildingPrefecture : public ServiceBuilding
 {
 public:
-  BuildingWell();
+  BuildingPrefecture();
+  void timeStep(const unsigned long time);
+  void deliverService();
+  int getServiceDelay() const;
 
-  virtual void deliverService();
+  void fireDetect( const TilePos& pos );
 
-  virtual bool isNeedRoadAccess() const;
+private:
+  TilePos _fireDetect;
 };
+
+typedef SmartPtr< BuildingPrefecture > BuildingPrefecturePtr;
 
 #endif

@@ -12,38 +12,20 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
+#ifndef __OPENCAESAR3_BUILDINGENGINEER_H_INCLUDE_
+#define __OPENCAESAR3_BUILDINGENGINEER_H_INCLUDE_
 
-#ifndef WALKER_MARKET_BUYER_HPP
-#define WALKER_MARKET_BUYER_HPP
+#include "oc3_building_service.hpp"
 
-#include "oc3_walker.hpp"
-#include "oc3_warehouse.hpp"
-
-/** This is the market lady buying goods at granaries and warehouses */
-class MarketBuyer : public Walker
+class BuildingEngineer : public ServiceBuilding
 {
 public:
-  static MarketBuyerPtr create( CityPtr city );
+    BuildingEngineer();
+    void timeStep(const unsigned long time);
+    void deliverService();
 
-  virtual ~MarketBuyer();
-
-  void send2City( MarketPtr market );
-  virtual void onDestination();
-
-  // compute the destination to fetch the given good
-  void computeWalkerDestination( MarketPtr market );
-
-  void save( VariantMap& stream) const;
-  void load( const VariantMap& stream);
-
-private:
-  MarketBuyer();
-
-  class Impl;
-  ScopedPtr< Impl > _d;
+    unsigned int getWalkerDistance() const;
 };
 
 #endif

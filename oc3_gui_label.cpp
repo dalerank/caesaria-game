@@ -14,7 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "oc3_label.hpp"
+#include "oc3_gui_label.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_gui_paneling.hpp"
 #include "oc3_pictureconverter.hpp"
@@ -126,6 +126,7 @@ void Label::_updateTexture( GfxEngine& painter )
     {
     case bgWhite: GuiPaneling::instance().draw_white_area( *_d->background, 0, 0, getSize().getWidth(), getSize().getHeight() ); break;
     case bgBlack: GuiPaneling::instance().draw_black_area( *_d->background, 0, 0, getSize().getWidth(), getSize().getHeight() ); break;
+    case bgBrown: GuiPaneling::instance().draw_brown0_borders( *_d->background, 0, 0, getSize().getWidth(), getSize().getHeight() ); break;
     case bgNone: _d->background.reset(); break;
     }
   }

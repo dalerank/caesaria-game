@@ -14,14 +14,14 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_walkermanager.hpp"
-#include "oc3_walker.hpp"
-#include "oc3_traineewalker.hpp"
-#include "oc3_walker_market_buyer.hpp"
+#include "oc3_walker_trainee.hpp"
+#include "oc3_walker_market_lady.hpp"
 #include "oc3_walker_cart_pusher.hpp"
 #include "oc3_walker_prefect.hpp"
 #include "oc3_emigrant.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_walker_taxcollector.hpp"
+#include "oc3_city.hpp"
 #include <map>
 
 template< class T >
