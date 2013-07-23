@@ -1,30 +1,30 @@
 {
 	Lugdunum : {
-    location : [ 411, 440 ]
+    location : [ 905, 558 ]
 	}
 	
 	Corinthus : {
-		location : [ 280, 375 ]
+		location : [ 802, 517 ]
 	}
 	
 	Londinium : {
-		location : [ 0, 375 ]
+		location : [ 945, 543 ]
 	}
 	
 	Mediolanum : {
-		location : [ 160, 315 ]
+		location : [ 614, 310 ]
 	}
 	
 	Lindum : { 
-		location : [ 0, 535 ]
+		location : [ 225, 728 ]
 	}
 	
 	Toletum : {
-		location : [ 180, 535 ]
+		location : [ 656, 735 ]
 	}
 	
 	Valentia : {
-		location : [ 160, 360 ]
+		location : [ 382, 494 ]
 	}
 	
 	Caesarea : {
@@ -34,53 +34,73 @@
 	Carthago : {
 		location : [ 271, 260 ]
 	}
+  
+  Sarmizegetusa : {
+    location : [ 322, 67 ]
+  }
 	
 	Cyrene : {
-		location : [ 471, 215 ]
+		location : [ 835, 733 ]
 	}
 	
 	Tarraco : {
-		location : [ 260, 220 ]
+		location : [ 114, 603 ]
 	}
 	
 	Hierosolyma : {
-		location : [ 871, 455 ]
+		location : [ 1655, 732 ]
 	}
+  
+  Miletus : {
+    location : [ 370, 198 ]
+  }
 	
 	Tarsus : {
-		location : [ 371, 395 ]
+		location : [ 277, 617 ]
 	}
+  
+  Lutetia : {
+    location : [ 552, 157 ]
+  }
 	
 	Tingis : { 
-		location : [ 200, 100 ]
+		location : [ 1338, 687 ]
 	}
 	
 	"Augusta Trevorum" : {
-		location : [ 311, 535 ]
+		location : [ 1345, 722 ]
 	}
 	
 	"Carthago Nova" : {
-		location : [ 180, 60 ] 
+		location : [ 1625, 491] 
 	}
 	
 	"Leptis Magna" : {
-		location : [ 651, 200 ]
+		location : [ 1128, 883 ]
 	}
 	
 	Athenae : {
-		location : [ 100, 260 ] 
+		location : [ 1728, 753 ] 
 	}
 	
 	Brundisium : {
-		location : [ 350, 200 ]
+		location : [ 1743, 783 ]
 	}
+  
+  Damascus : {
+    location : [ 1041, 307 ]
+  }
 	
 	Capua : {
-		location : [ 200, 350 ]
+		location : [ 1735, 811 ]
 	}
+  
+  Massilia : {
+    location : [ 1380, 521 ]
+  }
 	
 	Tarentum : {
-		location : [ 411, 440 ]
+		location : [ 1695, 872 ]
 		sells : {
 				furniture : 15
 				wine : 15 
@@ -94,7 +114,7 @@
 	}
 	
 	Syracusae : {
-		location : [ 371, 395 ]
+		location : [ 115, 794 ]
 		sells : {
 				meat : 15
 				marble : 15

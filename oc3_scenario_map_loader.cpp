@@ -125,9 +125,9 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario& oScenario)
     case 8: case 35: cityName = "Caesarea"; break;
     case 9: case 30: cityName = "Carthago"; break;
     case 10: cityName = "Cyrene"; break;
-    case 11: case 14: case 25: cityName = "Tarraco"; break;
+    case 11: case 15: case 25: cityName = "Tarraco"; break;
     case 12: cityName = "Hierosolyma"; break;
-    case 15: case 26: cityName = "Syracusae"; break;
+    case 14: case 26: cityName = "Syracusae"; break;
     case 16: case 31: cityName = "Tarsus"; break;
     case 17: case 32: cityName = "Tingis"; break;
     case 18: cityName = "Augusta Trevorum"; break;
