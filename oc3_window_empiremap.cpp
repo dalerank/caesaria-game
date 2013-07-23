@@ -93,7 +93,7 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
   _d->border.reset( Picture::create( getSize() ) );
   _d->empireMap = Picture::load( "the_empire", 1 );
   _d->dragging = false;
-  _d->lbCityTitle = new Label( this, Rect( Point( (getWidth() - 240) / 2 + 60, getHeight() - 130 ), Size( 240, 32 )) );
+  _d->lbCityTitle = new Label( this, Rect( Point( (getWidth() - 240) / 2 + 60, getHeight() - 132 ), Size( 240, 32 )) );
   _d->lbCityTitle->setFont( Font::create( FONT_3 ) );
 
   _d->lbCityInfo = new Label( this, Rect( Point( (getWidth() - 240)/2, getHeight() - 50), Size( 240, 32)) );
