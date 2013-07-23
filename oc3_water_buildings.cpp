@@ -15,8 +15,6 @@
 
 #include "oc3_water_buildings.hpp"
 
-#include <stdexcept>
-
 #include "oc3_stringhelper.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_time.hpp"
@@ -26,6 +24,7 @@
 #include "oc3_road.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_walker_service.hpp"
+#include "oc3_city.hpp"
 
 class WaterSource::Impl
 {

@@ -82,6 +82,9 @@ public:
 
   Tilemap& getTilemap();
 
+  const std::string& getName() const; 
+  void setName( const std::string& name );
+
   void save( VariantMap& stream) const;
   void load( const VariantMap& stream);
 

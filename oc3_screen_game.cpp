@@ -35,7 +35,7 @@
 #include "oc3_message_stack_widget.hpp"
 #include "oc3_time.hpp"
 #include "oc3_stringhelper.hpp"
-#include "oc3_empiremap_window.hpp"
+#include "oc3_window_empiremap.hpp"
 #include "oc3_save_dialog.hpp"
 #include "oc3_advisors_window.hpp"
 #include "oc3_alarm_event_holder.hpp"
@@ -362,7 +362,7 @@ void ScreenGame::Impl::showEmpireMapWindow()
   }
   else
   {
-    EmpireMapWindow* emap = EmpireMapWindow::create( gui->getRootWidget(), -1 );
+    EmpireMapWindow* emap = EmpireMapWindow::create( scenario, gui->getRootWidget(), -1 );
     CONNECT( emap, onTradeAdvisorRequest(), this, Impl::showTradeAdvisorWindow ); 
   }  
 }

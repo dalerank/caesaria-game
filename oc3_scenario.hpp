@@ -21,27 +21,29 @@
 
 #include <string>
 
-#include "oc3_city.hpp"
-#include "oc3_serializer.hpp"
+#include "oc3_predefinitions.hpp"
+#include "oc3_scopedptr.hpp"
+#include "oc3_filepath.hpp"
 
 class CityWinTargets;
 class Player;
 
-class Scenario : public Serializable
+class Scenario
 {
 public:
   static Scenario& instance();
   ~Scenario();
 
-  void save( VariantMap& stream) const;
-  void load( const VariantMap& stream);
+  bool save( const io::FilePath& filename ) const;
+  bool load( const io::FilePath& filename );
 
+  EmpirePtr getEmpire();
   CityPtr getCity();
   Player& getPlayer() const;
   const CityPtr getCity() const;
   CityWinTargets& getWinTargets();
 
-  void resetCity();
+  void reset();
 
   std::string getDescription() const;
 private:

@@ -24,7 +24,7 @@
 
 #include "oc3_building.hpp"
 #include "oc3_walker_action.hpp"
-#include "oc3_service_building.hpp"
+#include "oc3_building_service.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_serializer.hpp"

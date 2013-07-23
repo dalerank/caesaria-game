@@ -20,6 +20,7 @@ const std::string AppConfig::localePath = "localePath";
 const std::string AppConfig::resourcePath = "resourcePath";
 const std::string AppConfig::pantheonModel = "pantheonConfig";
 const std::string AppConfig::houseModel = "houseModel";
+const std::string AppConfig::citiesModel = "citiesModel";
 const std::string AppConfig::constructionModel = "constructionModel";
 
 class AppConfig::Impl
@@ -43,6 +44,7 @@ AppConfig::AppConfig() : _d( new Impl )
   _d->options[ pantheonModel ] = Variant( std::string( "/pantheon.model" ) );
   _d->options[ houseModel ] = Variant( std::string( "/house.model" ) );
   _d->options[ constructionModel ] = Variant( std::string( "/construction.model" ) );
+  _d->options[ citiesModel ] = Variant( std::string( "/cities.model" ) );
 }
 
 void AppConfig::set( const std::string& option, const Variant& value )
@@ -53,4 +55,17 @@ void AppConfig::set( const std::string& option, const Variant& value )
 Variant AppConfig::get( const std::string& option )
 {
   return getInstance()._d->options[ option ];
+}
+
+io::FilePath AppConfig::rcpath( const std::string& option )
+{
+  std::string rc = getInstance()._d->options[ resourcePath ].toString();
+
+  VariantMap::iterator it = getInstance()._d->options.find( option );
+  if( it == getInstance()._d->options.end() )
+  {
+    return io::FilePath(rc + option);
+  }
+
+  return io::FilePath(rc + getInstance()._d->options[ option ].toString());
 }

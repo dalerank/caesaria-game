@@ -19,6 +19,8 @@
 #include "oc3_tile.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_scenario.hpp"
+#include "oc3_tilemap.hpp"
+#include "oc3_city.hpp"
 
 static void initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap, const unsigned int picIdStart, bool exit )
 {

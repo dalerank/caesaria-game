@@ -19,6 +19,7 @@
 #include "oc3_walker_service.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_scenario.hpp"
+#include "oc3_city.hpp"
 
 BurningRuins::BurningRuins() : ServiceBuilding(S_BURNING_RUINS, B_BURNING_RUINS, Size(1) )
 {

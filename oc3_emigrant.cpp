@@ -18,6 +18,7 @@
 #include "oc3_scenario.hpp"
 #include "oc3_road.hpp"
 #include "oc3_picture_bank.hpp"
+#include "oc3_city.hpp"
 
 Emigrant::Emigrant( CityPtr city ) : Immigrant( city )
 {

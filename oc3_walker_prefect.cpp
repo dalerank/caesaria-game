@@ -16,7 +16,7 @@
 #include "oc3_walker_prefect.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_building_burningruins.hpp"
-#include "oc3_prefecture.hpp"
+#include "oc3_building_prefecture.hpp"
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_path_finding.hpp"
 #include "oc3_tile.hpp"

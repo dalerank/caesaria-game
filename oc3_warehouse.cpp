@@ -28,6 +28,7 @@
 #include "oc3_walker_cart_pusher.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_goodstore.hpp"
+#include "oc3_city.hpp"
 
 #include <list>
 

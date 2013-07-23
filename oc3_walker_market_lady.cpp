@@ -27,6 +27,7 @@
 #include "oc3_path_finding.hpp"
 #include "oc3_walker_market_lady_helper.hpp"
 #include "oc3_goodstore_simple.hpp"
+#include "oc3_city.hpp"
 
 class MarketLady::Impl
 {

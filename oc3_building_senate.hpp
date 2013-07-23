@@ -13,30 +13,27 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_EMPIREMAP_WINDOW_H_INCLUDED__
-#define __OPENCAESAR3_EMPIREMAP_WINDOW_H_INCLUDED__
+#ifndef __OPENCAESAR3_SENATE_H_INCLUDED_
+#define __OPENCAESAR3_SENATE_H_INCLUDED_
 
-#include "oc3_widget.hpp"
-#include "oc3_signals.hpp"
+#include "oc3_building_service.hpp"
+#include "oc3_scopedptr.hpp"
 
-class EmpireMapWindow : public Widget
+class Senate : public ServiceBuilding
 {
 public:
-  static EmpireMapWindow* create( Widget* parent, int id );
+  Senate();
+  unsigned int getFunds() const;
 
-  // draw on screen
-  void draw( GfxEngine& engine );
+  int collectTaxes();
+  int getPeoplesReached() const;
 
-  bool onEvent(const NEvent& event);
+  void deliverService();
 
-oc3_signals public:
-  Signal0<>& onTradeAdvisorRequest();
-
-protected:
+  bool canBuild( const TilePos& pos )const;
+private:
   class Impl;
   ScopedPtr< Impl > _d;
-
-  EmpireMapWindow( Widget* parent, int id );
 };
 
-#endif //__OPENCAESAR3_EMPIREMAP_WINDOW_H_INCLUDED__
+#endif

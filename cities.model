@@ -1,31 +1,110 @@
 {
-	"Tarentum" : {
-		"location" : [ 30, 30 ]
-		"sells" : {
-				"furniture" : 15
-				"wine" : 15 
-			}
-			
-			"buys" : {
-				"pottery" : 25
-			}
-		}
-		type : "sea"
+	Lugdunum : {
+    location : [ 411, 440 ]
 	}
 	
-	"Syracusae" : {
-		"location" : [ 80, 80 ]
-		"sells" : {
-				"meat" : 15
-				"marble" : 15
+	Corinthus : {
+		location : [ 280, 375 ]
+	}
+	
+	Londinium : {
+		location : [ 0, 375 ]
+	}
+	
+	Mediolanum : {
+		location : [ 160, 315 ]
+	}
+	
+	Lindum : { 
+		location : [ 0, 535 ]
+	}
+	
+	Toletum : {
+		location : [ 180, 535 ]
+	}
+	
+	Valentia : {
+		location : [ 160, 360 ]
+	}
+	
+	Caesarea : {
+		location : [ 1231, 535 ] 
+	}
+	
+	Carthago : {
+		location : [ 271, 260 ]
+	}
+	
+	Cyrene : {
+		location : [ 471, 215 ]
+	}
+	
+	Tarraco : {
+		location : [ 260, 220 ]
+	}
+	
+	Hierosolyma : {
+		location : [ 871, 455 ]
+	}
+	
+	Tarsus : {
+		location : [ 371, 395 ]
+	}
+	
+	Tingis : { 
+		location : [ 200, 100 ]
+	}
+	
+	"Augusta Trevorum" : {
+		location : [ 311, 535 ]
+	}
+	
+	"Carthago Nova" : {
+		location : [ 180, 60 ] 
+	}
+	
+	"Leptis Magna" : {
+		location : [ 651, 200 ]
+	}
+	
+	Athenae : {
+		location : [ 100, 260 ] 
+	}
+	
+	Brundisium : {
+		location : [ 350, 200 ]
+	}
+	
+	Capua : {
+		location : [ 200, 350 ]
+	}
+	
+	Tarentum : {
+		location : [ 411, 440 ]
+		sells : {
+				furniture : 15
+				wine : 15 
 			}
 			
-			"buys" : {
-				"olives" : 15
-				"oil" : 25
-				"furniture" : 15
-			}
+		buys : {
+			pottery : 25
 		}
-		"type" : "land"
+		
+		seaTrade : true
+	}
+	
+	Syracusae : {
+		location : [ 371, 395 ]
+		sells : {
+				meat : 15
+				marble : 15
+		}
+			
+		buys : {
+			olives : 15
+			oil : 25
+			furniture : 15
+		}
+		landTrade : false
 	}
 }

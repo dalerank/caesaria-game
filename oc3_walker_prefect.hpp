@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_WALKER_PREFECT_H_INCLUDED__
 
 #include "oc3_walker_service.hpp"
-#include "oc3_prefecture.hpp"
+#include "oc3_building_prefecture.hpp"
 
 class WalkerPrefect;
 typedef SmartPtr< WalkerPrefect > WalkerPrefectPtr;

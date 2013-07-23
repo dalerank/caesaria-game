@@ -109,51 +109,42 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario& oScenario)
   /* get number of city */
 
   f.seekg(kLocation, std::ios::beg);
-  unsigned int location;
+  unsigned int location=0;
   f.read((char*)&location, 1);
   StringHelper::debug( 0xff, "Location of city is %d", (int)(location+1) );
 
-  /* 1 - Lugdunum
-  2 - Corinthus
-  3 - Londinium
-  4 - Mediolanum
-  5 - Lindum
-  6 - Toletum
-  7 - Valentia
-  8 - Caesarea
-  9 - Carthago
-  10 - Cyrene
-  11 - Tarraco
-  12 - Hierosolyma
-  13 - Mediolanum II
-  14 - Syracusae
-  15 - Tarraco II
-  16 - Tarsus
-  17 - Tingis
-  18 - Augusta Trevorum
-  19 - Carthago Nova
-  20 - Leptis Magna
-  21 - Athenae
-  22 - Brundisium
-  23 - Capua
-  24 - Tarentum
-  25 - Tarraco II
-  26 - Syracusae II
-  27 - Miletus
-  28 - Mediolanum III
-  29 - Lugdunum II
-  30 - Carthago II
-  31 - Tarsus II
-  32 - Tingis II
-  33 - Valentia II
-  34 - Lutetia
-  35 - Caesarea II
-  36 - Sarmizegetusa
-  37 - Londinium II
-  38 - Damascus
-  39 - Massilia
-  40 - Lindum II
-  */
+  std::string cityName = "";
+  switch( location+1 ) {
+    case 1: case 29: cityName = "Lugdunum"; break;
+    case 2: cityName = "Corinthus"; break;
+    case 3: case 37: cityName = "Londinium"; break;
+    case 4: case 13: case 28: cityName = "Mediolanum"; break;
+    case 5: case 40: cityName = "Lindum"; break;
+    case 6: cityName = "Toletum"; break;
+    case 7: case 33: cityName = "Valentia"; break;
+    case 8: case 35: cityName = "Caesarea"; break;
+    case 9: case 30: cityName = "Carthago"; break;
+    case 10: cityName = "Cyrene"; break;
+    case 11: case 14: case 25: cityName = "Tarraco"; break;
+    case 12: cityName = "Hierosolyma"; break;
+    case 15: case 26: cityName = "Syracusae"; break;
+    case 16: case 31: cityName = "Tarsus"; break;
+    case 17: case 32: cityName = "Tingis"; break;
+    case 18: cityName = "Augusta Trevorum"; break;
+    case 19: cityName = "Carthago Nova"; break;
+    case 20: cityName = "Leptis Magna"; break;
+    case 21: cityName = "Athenae"; break;
+    case 22: cityName = "Brundisium"; break;
+    case 23: cityName = "Capua"; break;
+    case 24: cityName = "Tarentum"; break;
+    case 27: cityName = "Miletus"; break;
+    case 34: cityName = "Lutetia"; break;
+    case 36: cityName = "Sarmizegetusa"; break;
+    case 38: cityName = "Damascus"; break;
+    case 39: cityName = "Massilia"; break;
+  }
+
+  oCity->setName( cityName );
 
   f.seekg(kSize, std::ios::beg);
 

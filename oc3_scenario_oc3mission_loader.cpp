@@ -26,6 +26,7 @@
 #include "oc3_build_options.hpp"
 #include "oc3_building_data.hpp"
 #include "oc3_cityfunds.hpp"
+#include "oc3_city.hpp"
 
 class ScenarioOc3MissionLoader::Impl
 {

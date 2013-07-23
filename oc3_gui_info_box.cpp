@@ -44,7 +44,7 @@
 #include "oc3_special_orders_window.hpp"
 #include "oc3_goodstore.hpp"
 #include "oc3_groupbox.hpp"
-#include "oc3_senate.hpp"
+#include "oc3_building_senate.hpp"
 
 class GuiInfoBox::Impl
 {

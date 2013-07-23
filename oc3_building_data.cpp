@@ -287,7 +287,7 @@ BuildingDataHolder::BuildingDataHolder() : _d( new Impl )
 {
 }
 
-void BuildingDataHolder::initialize( const std::string& filename )
+void BuildingDataHolder::initialize( const io::FilePath& filename )
 {
   // populate _mapBuildingByInGood
   _d->mapBuildingByInGood[G_IRON]   = B_WEAPONS_WORKSHOP;
@@ -296,7 +296,7 @@ void BuildingDataHolder::initialize( const std::string& filename )
   _d->mapBuildingByInGood[G_OLIVE]  = B_OIL_WORKSHOP;
   _d->mapBuildingByInGood[G_GRAPE]  = B_WINE_WORKSHOP;
 
-  VariantMap constructions = SaveAdapter::load( filename );
+  VariantMap constructions = SaveAdapter::load( filename.toString() );
 
   for( VariantMap::iterator it=constructions.begin(); it != constructions.end(); it++ )
   {

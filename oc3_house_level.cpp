@@ -647,13 +647,13 @@ HouseSpecHelper::~HouseSpecHelper()
 
 }
 
-void HouseSpecHelper::initialize( const std::string& filename )
+void HouseSpecHelper::initialize( const io::FilePath& filename )
 {
-  VariantMap houses = SaveAdapter::load( filename );
+  VariantMap houses = SaveAdapter::load( filename.toString() );
 
   if( houses.empty() )
   {
-    StringHelper::debug( 0xff, "Can't load house model from %s", filename.c_str() );
+    StringHelper::debug( 0xff, "Can't load house model from %s", filename.toString().c_str() );
     return;
   }
 

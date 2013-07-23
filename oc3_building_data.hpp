@@ -21,6 +21,7 @@
 
 #include "oc3_enums.hpp"
 #include "oc3_scopedptr.hpp"
+#include "oc3_filepath.hpp"
 
 // contains some metaData for a building type
 class BuildingData
@@ -74,7 +75,7 @@ public:
    static BuildingType getType( const std::string& name );
    static BuildingClass getClass( const std::string& name );
 
-   void initialize( const std::string& filename );
+   void initialize( const io::FilePath& filename );
 
 private:
    BuildingDataHolder();

@@ -17,7 +17,7 @@
 #include "oc3_city.hpp"
 #include "oc3_safetycast.hpp"
 #include "oc3_building_engineer_post.hpp"
-#include "oc3_prefecture.hpp"
+#include "oc3_building_prefecture.hpp"
 #include "oc3_walker_workerhunter.hpp"
 
 #include <map>

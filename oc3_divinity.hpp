@@ -20,6 +20,7 @@
 #include "oc3_enums.hpp"
 #include "oc3_scopedptr.hpp"
 #include "oc3_predefinitions.hpp"
+#include "oc3_filepath.hpp"
 
 typedef enum
 {
@@ -47,7 +48,7 @@ public:
   static DivinePantheon& getInstance();
   RomeDivinityPtr get( RomeDivinityType name ) const;
 
-  void initialize( const std::string& filename );
+  void initialize( const io::FilePath& filename );
 
   static RomeDivinityPtr ceres();
   static RomeDivinityPtr mars();

@@ -20,6 +20,7 @@
 #include "oc3_scenario.hpp"
 #include "oc3_walker_cart_pusher.hpp"
 #include "oc3_goodstore_simple.hpp"
+#include "oc3_city.hpp"
 
 class GranaryGoodStore : public SimpleGoodStore
 {

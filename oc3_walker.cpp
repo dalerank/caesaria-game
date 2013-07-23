@@ -27,6 +27,7 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_path_finding.hpp"
 #include "oc3_picture_bank.hpp"
+#include "oc3_city.hpp"
 
 class Walker::Impl
 {

@@ -60,16 +60,16 @@ ScenarioLoader::~ScenarioLoader(void)
 {
 }
 
-bool ScenarioLoader::load( const std::string& filename, Scenario& scenario )
+bool ScenarioLoader::load( const io::FilePath& filename, Scenario& scenario )
 {
   // try to load file based on file extension
   Impl::LoaderIterator it = _d->loaders.begin();
   for( ; it != _d->loaders.end(); ++it)
   {
-    if( (*it)->isLoadableFileExtension( filename ) /*||
+    if( (*it)->isLoadableFileExtension( filename.toString() ) /*||
         (*it)->isLoadableFileFormat(file) */ )
     {
-      bool loadok = (*it)->load( filename, scenario );
+      bool loadok = (*it)->load( filename.toString(), scenario );
       
       if( loadok )
       {

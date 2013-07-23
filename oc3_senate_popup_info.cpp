@@ -15,7 +15,7 @@
 
 #include "oc3_senate_popup_info.hpp"
 #include "oc3_tilemap_renderer.hpp"
-#include "oc3_senate.hpp"
+#include "oc3_building_senate.hpp"
 #include "oc3_gui_paneling.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_guienv.hpp"

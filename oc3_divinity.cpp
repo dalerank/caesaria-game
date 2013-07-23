@@ -97,9 +97,9 @@ RomeDivinityPtr DivinePantheon::mercury()
   return getInstance().get( romeDivMercury );
 }
 
-void DivinePantheon::initialize( const std::string& filename )
+void DivinePantheon::initialize( const io::FilePath& filename )
 {
-  VariantMap pantheon = SaveAdapter::load( filename );
+  VariantMap pantheon = SaveAdapter::load( filename.toString() );
 
   _d->divinties.push_back( RomeDivinityBase::create( pantheon.get( "ceres" ).toMap() ) );
   _d->divinties.push_back( RomeDivinityBase::create( pantheon.get( "mars" ).toMap() ) );
