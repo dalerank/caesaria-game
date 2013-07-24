@@ -42,6 +42,7 @@ Empire::~Empire()
 
 void Empire::initialize( const io::FilePath& filename )
 {
+  _d->cities.clear();
   VariantMap cities = SaveAdapter::load( filename.toString() );
 
   if( cities.empty() )
@@ -52,10 +53,8 @@ void Empire::initialize( const io::FilePath& filename )
 
   for( VariantMap::iterator it=cities.begin(); it != cities.end(); it++ )
   {
-    VariantMap cityOptions = it->second.toMap();
-    Point location = cityOptions.get( "location" ).toPoint();
     EmpireCityPtr city = addCity( it->first );
-    city->setLocation( location );
+    city->load( it->second.toMap() );
   }
 }
 
@@ -67,8 +66,8 @@ EmpireCityPtr Empire::addCity( const std::string& name )
   {
     if( (*it)->getName() == name )
     {
-      _OC3_DEBUG_BREAK_IF( "City already exist" );
       StringHelper::debug( 0xff, "City %s already exist", name.c_str() );
+      _OC3_DEBUG_BREAK_IF( "City already exist" );
       return *it;
     }
   }

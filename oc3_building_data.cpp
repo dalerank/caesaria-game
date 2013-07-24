@@ -24,13 +24,6 @@
 
 BuildingData BuildingData::invalid = BuildingData( B_NONE, "unknown", 0 );
 
-template<class T>
-struct TypeEquale
-{
-  T type; 
-  std::string name;
-};
-
 TypeEquale<BuildingType> bldTypeEquales[] = { 
   { B_AMPHITHEATER,   "amphitheater"},  
   { B_THEATER,        "theater" },
@@ -351,8 +344,8 @@ BuildingType BuildingDataHolder::getType( const std::string& name )
     typeName = bldTypeEquales[ index ].name;
   }
 
-  _OC3_DEBUG_BREAK_IF( "Can't find type for typeName" );
   StringHelper::debug( 0xff, "Can't find type for typeName %s", name.c_str() );
+  _OC3_DEBUG_BREAK_IF( "Can't find type for typeName" );
   return B_NONE;
 }
 

@@ -15,6 +15,7 @@
 
 #include "oc3_empirecity.hpp"
 #include "oc3_goodstore_simple.hpp"
+#include "oc3_goodhelper.hpp"
 
 class EmpireCity::Impl
 {
@@ -71,7 +72,21 @@ void EmpireCity::save( VariantMap& options ) const
 
 void EmpireCity::load( const VariantMap& options )
 {
+  setLocation( options.get( "location" ).toPoint() );
 
+  const VariantMap& sells_vm = options.get( "sells" ).toMap();
+  for( VariantMap::const_iterator it=sells_vm.begin(); it != sells_vm.end(); it++ )
+  {
+    GoodType gtype = GoodHelper::getType( it->first );
+    _d->sellStore.setMaxQty( gtype, it->second.toInt() );
+  }
+
+  const VariantMap& buys_vm = options.get( "buys" ).toMap();
+  for( VariantMap::const_iterator it=buys_vm.begin(); it != buys_vm.end(); it++ )
+  {
+    GoodType gtype = GoodHelper::getType( it->first );
+    _d->buyStore.setMaxQty( gtype, it->second.toInt() );
+  }
 }
 
 GoodStore& EmpireCity::getSells()

@@ -16,7 +16,30 @@
 #include "oc3_goodhelper.hpp"
 #include "oc3_good.hpp"
 #include "oc3_resourcegroup.hpp"
+#include "oc3_stringhelper.hpp"
 #include <vector>
+
+TypeEquale<GoodType> goodTypeEquales[] = { 
+  { G_NONE, "none" },
+  { G_WHEAT, "wheat" },
+  { G_FISH, "fish" },
+  { G_MEAT, "meat" },
+  { G_FRUIT, "fruit" }, 
+  { G_VEGETABLE, "vegetable" }, { G_VEGETABLE, "vegetables" },
+  { G_OLIVE, "olive" }, { G_OLIVE, "olives" },
+  { G_OIL, "oil" },
+  { G_GRAPE, "grape" }, { G_GRAPE, "vines" },
+  { G_WINE, "wine" }, 
+  { G_TIMBER, "timber" },
+  { G_FURNITURE, "furniture" },
+  { G_CLAY, "clay" }, 
+  { G_POTTERY, "pottery" }, 
+  { G_IRON, "iron" }, 
+  { G_WEAPON, "weapon" }, { G_WEAPON, "weapons" },
+  { G_MARBLE, "marble" }, 
+  { G_DENARIES, "denaries" },
+  { G_MAX, "" }
+};
 
 class GoodHelper::Impl
 {
@@ -83,4 +106,25 @@ GoodHelper::~GoodHelper()
 std::string GoodHelper::getName( GoodType type )
 {
   return getInstance()._d->mapGood[ type ].getName();
+}
+
+GoodType GoodHelper::getType( const std::string& name )
+{
+  int index=0;
+  std::string typeName = goodTypeEquales[ index ].name;
+
+  while( !typeName.empty() )
+  {
+    if( name == typeName )
+    {
+      return goodTypeEquales[ index ].type;
+    }
+
+    index++;
+    typeName = goodTypeEquales[ index ].name;
+  }
+
+  StringHelper::debug( 0xff, "Can't find type for goodName %s", name.c_str() );
+  _OC3_DEBUG_BREAK_IF( "Can't find type for goodName" );
+  return G_NONE;
 }

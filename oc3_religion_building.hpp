@@ -22,6 +22,8 @@
 class Temple : public ServiceBuilding
 {
 public:
+  virtual ~Temple();
+
   RomeDivinityPtr getDivinity() const;
 
   virtual unsigned int getParishionerNumber() const = 0;

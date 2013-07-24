@@ -131,7 +131,7 @@ public:
     */
    static Variant parseString(const std::string &json, int &index, bool &success);
    
-   static Variant parseObjectName(const std::string &json, int &index, bool &success);
+   static Variant parseObjectName(const std::string &json, int &index, bool &success, char limiters=':' );
 
    static void parseComment(const std::string &json, int &index, bool &success);
 

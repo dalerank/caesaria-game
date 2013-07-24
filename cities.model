@@ -2,19 +2,19 @@
 	Lugdunum : {
     location : [ 905, 558 ]
     
-    sells : { vegatables : 40, marble : 40 }
+    sells : { vegetables : 40, marble : 40 }
     buys : { wine : 25, oil : 15, pottery : 25 }    
     
     resources : [ "wheat", "vegetables", "fish", "iron", "timber", "marble" ] 
 	}
-	
-	Corinthus : {
+  
+  Corinthus : {
 		location : [ 802, 517 ]
     
     resources : [ "wheat", "fruit", "olive", "fish", "clay" ] 
 	}
-	
-	Londinium : {
+  
+  Londinium : {
 		location : [ 945, 543 ]
     
     resources : [ "wheat", "vegetables", "vines", "fish",
@@ -23,8 +23,8 @@
     sells : { wheat : 40, clay : 40 }
     buys : { wine : 25, oil : 15, furniture : 25 }               
 	}
-	
-	Mediolanum : {
+  
+  Mediolanum : {
 		location : [ 614, 310 ]
     
     resources : [ "wheat", "pigs", "timber", "clay" ]
@@ -42,8 +42,8 @@
     resources : [ "wheat", "vegetables", "vines", "fish",
                   "timber", "clay", "marble" ]
 	}
-	
-	Toletum : {
+  
+  Toletum : {
 		location : [ 656, 735 ]
     
     resources : [ "wheat", "vegetables", "fish",
@@ -66,8 +66,8 @@
     resources : [ "wheat", "fruit", "olives", "vines", "fish",
                   "timber", "clay", "marble" ]
 	}
-	
-	Carthago : {
+  
+  Carthago : {
 		location : [ 271, 260 ]
     
     resources : [ "wheat", "olives", "vines", "fish",
@@ -93,8 +93,8 @@
     resources : [ "wheat", "vegetables", "olives", "vines", "fish",
                   "timber", "clay", "marble", "iron" ]
 	}
-	
-	Hierosolyma : {
+  
+  Hierosolyma : {
 		location : [ 1655, 732 ]
     
     sells : { olives : 40, furniture : 25, pottery : 25 }
@@ -119,8 +119,8 @@
   Lutetia : {
     location : [ 552, 157 ]
   }
-	
-	Tingis : { 
+  
+  Tingis : { 
 		location : [ 1338, 687 ]
     
     sells : { fruit : 25, clay : 40 }
@@ -149,8 +149,8 @@
     resources : [ "wheat", "vegetables", "olives", "fish", 
                   "clay", "marble", "timber", "iron" ]
 	}
-	
-	Athenae : {
+  
+  Athenae : {
 		location : [ 1728, 753 ] 
 	}
 	
@@ -161,7 +161,7 @@
   Damascus : {
     location : [ 1041, 307 ]
     
-    sells : { olives : 25, wines : 25 }
+    sells : { olives : 25, wine : 25 }
     buys : { weapons : 25, pottery : 25 }
   }
 	
@@ -175,8 +175,8 @@
   Massilia : {
     location : [ 1380, 521 ]
   }
-	
-	Tarentum : {
+  
+  Tarentum : {
 		location : [ 1695, 872 ]
 		sells : {	fruit : 25, olives : 25, timber : 25 }	
 		buys : { pottery : 25, vegetables : 25, wheat : 40 }
@@ -186,7 +186,7 @@
 	
 	Syracusae : {
 		location : [ 115, 794 ]
-		sells : { fruit : 25, olives : 40, clay }
+		sells : { fruit : 25, olives : 40, clay : 25 }
 		buys : { wine : 40, marble : 15, furniture : 25 }
 		landTrade : false
     resources : [ "wheat", "vegetables", "fruit", "vines", 

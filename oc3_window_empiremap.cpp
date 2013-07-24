@@ -128,7 +128,7 @@ void EmpireMapWindow::Impl::drawCityInfo()
 
 void EmpireMapWindow::Impl::drawCityGoodsInfo()
 {
-  Point startDraw( (tradeInfo->getWidth() - 400) / 2, tradeInfo->getHeight() - 70 );
+  Point startDraw( (tradeInfo->getWidth() - 400) / 2, tradeInfo->getHeight() - 90 );
   new Label( tradeInfo, Rect( startDraw, Size( 70, 30 )), _("##emw_sell##") );
 
   const GoodStore& sellgoods = currentCity->getSells();
@@ -136,7 +136,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   {
     if( sellgoods.getMaxQty( (GoodType)i ) > 0  )
     {
-      Label* lb = new Label( tradeInfo, Rect( startDraw + Point( 70 + 30 * k, 0 ), Size( 70, 30 ) ) );
+      Label* lb = new Label( tradeInfo, Rect( startDraw + Point( 70 + 30 * k, 0 ), Size( 24, 24 ) ) );
       lb->setBackgroundPicture( Picture::load( ResourceGroup::empirepnls, 11 + i ) );
       k++;
     }
@@ -150,13 +150,13 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   {
     if( buygoods.getMaxQty( (GoodType)i ) > 0  )
     {
-      Label* lb = new Label( tradeInfo, Rect( startDraw + Point( 70 + 30 * k, 0 ), Size( 70, 30 ) ) );
+      Label* lb = new Label( tradeInfo, Rect( buyPoint + Point( 70 + 30 * k, 0 ), Size( 24, 24 ) ) );
       lb->setBackgroundPicture( Picture::load( ResourceGroup::empirepnls, 11 + i ) );
       k++;
     }
   }
 
-  PushButton* btnOpenTrade = new PushButton( tradeInfo, Rect( startDraw, Size( 400, 20 ) ),
+  PushButton* btnOpenTrade = new PushButton( tradeInfo, Rect( startDraw + Point( 0, 40 ), Size( 400, 20 ) ),
                                              "", -1, false, PushButton::BlackBorderUp );
   btnOpenTrade->setVisible( false );
   btnOpenTrade->setText( StringHelper::format( 0xff, "%d %s", 1000, _("##dn_for_open_trade##")));

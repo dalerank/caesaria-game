@@ -58,28 +58,27 @@ Variant Json::parse(const std::string &json)
 /**
  * parse
  */
-Variant Json::parse(const std::string& json, bool &success)
+Variant Json::parse(const std::string& json, bool &success )
 {
-        success = true;
+  success = true;
+  int index = 0;
+  //Return an empty Variant if the JSON data is either null or empty
+  if( !json.empty() )
+  {
+    std::string data = json;
+    //We'll start from index 0
 
-        //Return an empty Variant if the JSON data is either null or empty
-        if( !json.empty() )
-        {
-                std::string data = json;
-                //We'll start from index 0
-                int index = 0;
+    //Parse the first value
+    Variant value = Json::parseValue(data, index, success);
 
-                //Parse the first value
-                Variant value = Json::parseValue(data, index, success);
-
-                //Return the parsed value
-                return value;
-        }
-        else
-        {
-                //Return the empty Variant
-                return Variant();
-        }
+    //Return the parsed value
+    return value;
+  }
+  else
+  {
+    //Return the empty Variant
+    return Variant();
+  }
 }
 
 std::string Json::serialize(const Variant &data, const std::string& tab)
@@ -240,15 +239,20 @@ Variant Json::parseValue(const std::string &json, int &index, bool &success)
   bool done = false;
   while(!done)
   {
-    switch(Json::lookAhead(json, index))
+    int token = Json::lookAhead(json, index);
+    switch( token )
     {
       case JsonTokenString:      return Json::parseString(json, index, success);
       case JsonTokenNumber:      return Json::parseNumber(json, index);
       
-      case JsonTokenCommentOpen: Json::parseComment(json, index, success); 
+      case JsonTokenCommentOpen:
+        Json::parseComment(json, index, success); 
       break;
       
-      case JsonTokenCurlyOpen:   return Json::parseObject(json, index, success);
+      case JsonTokenCurlyOpen: 
+      case JsonTokenObjectName: 
+          return Json::parseObject(json, index, success);
+      
       case JsonTokenSquaredOpen: return Json::parseArray(json, index, success);
       case JsonTokenTrue:  Json::nextToken(json, index); return Variant(true);
       case JsonTokenFalse: Json::nextToken(json, index); return Variant(false);
@@ -261,7 +265,7 @@ Variant Json::parseValue(const std::string &json, int &index, bool &success)
 
   //If there were no tokens, flag the failure and return an empty Variant
   success = false;
-  return Variant();
+  return Variant( std::string( json.c_str() + index ));
 }
 
 /**
@@ -271,7 +275,6 @@ Variant Json::parseObject(const std::string &json, int &index, bool &success)
 {
   VariantMap rmap;
   int token;
-
   //Get rid of the whitespace and increment index
   Json::nextToken(json, index);
 
@@ -287,7 +290,9 @@ Variant Json::parseObject(const std::string &json, int &index, bool &success)
     case JsonTokenNone:
       {
         success = false;
-        return VariantMap();
+        bool sc;
+        std::string errText = Json::parseObjectName( json, index, sc ).toString();
+        return Variant( errText );
       }
     break;
 
@@ -300,7 +305,7 @@ Variant Json::parseObject(const std::string &json, int &index, bool &success)
     case JsonTokenCurlyClose:
       {
         Json::nextToken(json, index);
-        return rmap;
+        return Variant( rmap );
       }
     break;
 
@@ -312,20 +317,21 @@ Variant Json::parseObject(const std::string &json, int &index, bool &success)
 
     case JsonTokenObjectName:
       {
-        std::string name = Json::parseObjectName( json, index, success ).toString();
-        name = StringHelper::replace( name, " ", "" );
+        std::string name = Json::parseObjectName( json, index, success ).toString();        
 
         if(!success)
         {
-          return VariantMap();
+          return Variant(name);
         }
+
+        name = StringHelper::replace( name, " ", "" );
 
         index++;
         Variant value = Json::parseValue(json, index, success);
 
         if(!success)
         {
-          return VariantMap();
+          return Variant( value.toString() );
         }
 
         //Assign the value to the key in the map
@@ -340,7 +346,7 @@ Variant Json::parseObject(const std::string &json, int &index, bool &success)
 
         if(!success)
         {
-          return VariantMap();
+          return Variant();
         }
 
         //Get the next token
@@ -351,7 +357,7 @@ Variant Json::parseObject(const std::string &json, int &index, bool &success)
         if(token != JsonTokenColon)
         {
           success = false;
-          return VariantMap();
+          return Variant();
         }
 
         //Parse the key/value pair's value
@@ -359,7 +365,7 @@ Variant Json::parseObject(const std::string &json, int &index, bool &success)
 
         if(!success)
         {
-          return VariantMap();
+          return Variant();
         }
 
         //Assign the value to the key in the map
@@ -448,34 +454,45 @@ void Json::parseComment(const std::string &json, int &index, bool &success)
 /**
 * parseString
 */
-Variant Json::parseObjectName(const std::string &json, int &index, bool &success)
+Variant Json::parseObjectName(const std::string &json, int &index, bool &success, char limiter )
 {
   std::string s;
-  char c;
 
-  Json::eatWhitespace(json, index);
+  eatWhitespace(json, index);
 
   bool complete = false;
 
-  for( int i=0; i < 32; i++ )
-  {
-    if( json[index+i+1] != ':' )
+  int lastIndex = math::clamp<int>( index + 32, 0, json.size() );
+  for( int i=index; i < lastIndex; i++ )
+  {    
+    if( json[i+1] != limiter )
     {
-      s += json[ index+i ];
+      s += json[ i ];
     }
     else
     {
-      s += json[ index+i ];
-      index += (i + 1);
+      s += json[ i ];
+      index = (i + 1);
       complete = true;
       break;
     }
   }
 
-  if(!complete)
+  for( int i=0; i < s.size(); i++ )
+  {
+    if( std::string("{}[],").find( s[i] ) != std::string::npos )
+    {
+      s = json.substr( std::max( 0, index-20 ), lastIndex );
+      complete = false;
+      break;
+    }
+  }
+
+  if( !complete )
   {
     success = false;
-    return Variant();
+    std::string errText = StringHelper::format( 0xff, "Wrong symbol in object name \"%s\"", s.c_str() );
+    return Variant( errText );
   }
 
   return Variant(s);
@@ -647,8 +664,8 @@ void Json::eatWhitespace(const std::string &json, int &index)
  */
 int Json::lookAhead(const std::string &json, int index)
 {
-        int saveIndex = index;
-        return Json::nextToken(json, saveIndex);
+  int saveIndex = index;
+  return Json::nextToken(json, saveIndex);
 }
 
 /**
@@ -656,92 +673,94 @@ int Json::lookAhead(const std::string &json, int index)
  */
 int Json::nextToken(const std::string &json, int &index)
 {
-        Json::eatWhitespace(json, index);
+  int saveIndex = index;
+  Json::eatWhitespace(json, index);
 
-        if(index == (int)json.size())
-        {
-                return JsonTokenNone;
-        }
+  if(index == (int)json.size())
+  {
+     return JsonTokenNone;
+  }
 
-        char c = json[index];
-        index++;
-        switch( c )
-        {
-                case '{': return JsonTokenCurlyOpen;
-                case '}': return JsonTokenCurlyClose;
-                case '[': return JsonTokenSquaredOpen;
-                case ']': return JsonTokenSquaredClose;
-                case ',': return JsonTokenComma;
-                case '"': return JsonTokenString;
-                case '0': case '1': case '2': case '3': case '4':
-                case '5': case '6': case '7': case '8': case '9':
-                case '-': return JsonTokenNumber;
-                case ':': return JsonTokenColon;
-        }
+  char c = json[index];
+  index++;
+  switch( c )
+  {
+          case '{': return JsonTokenCurlyOpen;
+          case '}': return JsonTokenCurlyClose;
+          case '[': return JsonTokenSquaredOpen;
+          case ']': return JsonTokenSquaredClose;
+          case ',': return JsonTokenComma;
+          case '"': return JsonTokenString;
+          case '0': case '1': case '2': case '3': case '4':
+          case '5': case '6': case '7': case '8': case '9':
+          case '-': return JsonTokenNumber;
+          case ':': return JsonTokenColon;
+  }
 
-        index--;
+  index--;
 
-        int remainingLength = json.size() - index;
+  int remainingLength = json.size() - index;
 
-        if( remainingLength > 2 )
-        {
-           if( json[index] == '/' && json[index + 1] == '*' )
-           {
-             index += 2;
-             return JsonTokenCommentOpen;
-           }
+  if( remainingLength > 2 )
+  {
+     if( json[index] == '/' && json[index + 1] == '*' )
+     {
+       index += 2;
+       return JsonTokenCommentOpen;
+     }
 
-           if(  json[index] == '*' && json[index + 1] == '/' )
-           {
-             index += 2;
-             return JsonTokenCommentClose;
-           }
-        }
+     if(  json[index] == '*' && json[index + 1] == '/' )
+     {
+       index += 2;
+       return JsonTokenCommentClose;
+     }
+  }
 
-        //True
-        if(remainingLength >= 4)
-        {
-           if( json[index] == 't' && json[index + 1] == 'r' &&
-               json[index + 2] == 'u' && json[index + 3] == 'e')
-           {
-                   index += 4;
-                   return JsonTokenTrue;
-           }
-        }
+  //True
+  if(remainingLength >= 4)
+  {
+     if( json[index] == 't' && json[index + 1] == 'r' &&
+         json[index + 2] == 'u' && json[index + 3] == 'e')
+     {
+             index += 4;
+             return JsonTokenTrue;
+     }
+  }
 
-        //False
-        if (remainingLength >= 5)
-        {
-           if (json[index] == 'f' && json[index + 1] == 'a' &&
-                   json[index + 2] == 'l' && json[index + 3] == 's' &&
-                   json[index + 4] == 'e')
-           {
-                   index += 5;
-                   return JsonTokenFalse;
-           }
-        }
+  //False
+  if (remainingLength >= 5)
+  {
+     if( json[index] == 'f' && json[index + 1] == 'a' &&
+         json[index + 2] == 'l' && json[index + 3] == 's' &&
+         json[index + 4] == 'e')
+     {
+         index += 5;
+         return JsonTokenFalse;
+     }
+  }
 
-        //Null
-        if (remainingLength >= 4)
-        {
-           if (json[index] == 'n' && json[index + 1] == 'u' &&
-                   json[index + 2] == 'l' && json[index + 3] == 'l')
-           {
-                   index += 4;
-                   return JsonTokenNull;
-           }
-        }
+  //Null
+  if (remainingLength >= 4)
+  {
+     if (json[index] == 'n' && json[index + 1] == 'u' &&
+             json[index + 2] == 'l' && json[index + 3] == 'l')
+     {
+             index += 4;
+             return JsonTokenNull;
+     }
+  }
 
-        if( remainingLength > 1 )
-        {
-          for( int i=1; i < 32; i++ )
-          {
-            if( json[index+i] == ':' )
-            {
-              return JsonTokenObjectName;
-            }
-          }
-        }
+  if( remainingLength > 1 )
+  {
+    int lastIndex = math::clamp<int>( index + 32, 0, json.size() );
+    for( int i=index+1; i < lastIndex ; i++ )
+    {
+      if( json[i] == ':' )
+      {
+        return JsonTokenObjectName;
+      }
+    }
+  }
 
-        return JsonTokenNone;
+  return JsonTokenNone;
 }
