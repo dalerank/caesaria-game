@@ -166,6 +166,11 @@ void Farm::load( const VariantMap& stream )
   Factory::load( stream );
 }
 
+Farm::~Farm()
+{
+
+}
+
 FarmWheat::FarmWheat() : Farm(G_WHEAT, B_WHEAT_FARM)
 {
 }

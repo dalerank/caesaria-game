@@ -32,7 +32,7 @@ public:
 
   GoodStock& getStock(const GoodType &goodType);
   virtual int getCurrentQty(const GoodType &goodType) const;
-  int getMaxQty(const GoodType &goodType);
+  int getMaxQty(const GoodType &goodType) const;
   void setMaxQty(const GoodType &goodType, const int maxQty);
   void setCurrentQty(const GoodType &goodType, const int currentQty);
 

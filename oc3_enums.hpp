@@ -246,6 +246,14 @@ enum AdvisorType
   ADV_FINANCE,
   ADV_MAIN,
   ADV_COUNT
-} ;
+};
+
+template<class T>
+struct TypeEquale
+{
+  T type; 
+  std::string name;
+};
+
 
 #endif

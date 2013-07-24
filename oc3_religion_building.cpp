@@ -42,6 +42,11 @@ unsigned int Temple::getWalkerDistance() const
   return 26;
 }
 
+Temple::~Temple()
+{
+
+}
+
 TempleCeres::TempleCeres() : SmallTemple( DivinePantheon::ceres(), B_TEMPLE_CERES, 45 )
 {
 }
@@ -58,7 +63,7 @@ BigTempleNeptune::BigTempleNeptune() : BigTemple( DivinePantheon::neptune(), B_B
 {
 }
 
-TempleMars::TempleMars() : SmallTemple( DivinePantheon::mars(), B_TEMPLE_MARS, 51)
+TempleMars::TempleMars() : SmallTemple( DivinePantheon::mars(), B_TEMPLE_MARS, 51 )
 {
 }
 

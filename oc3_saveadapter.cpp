@@ -16,6 +16,7 @@
 #include "oc3_saveadapter.hpp"
 #include "oc3_scopedptr.hpp"
 #include "oc3_json.hpp"
+#include "oc3_stringhelper.hpp"
 
 #include <fstream>
 
@@ -37,13 +38,19 @@ VariantMap SaveAdapter::load( const std::string& fileName )
     f.close();
 
     bool jsonParsingOk;
-    VariantMap ret = Json::parse( data.data(), jsonParsingOk ).toMap();
+    Variant ret = Json::parse( data.data(), jsonParsingOk );
     if( jsonParsingOk )
-      return ret;
+    {
+      return ret.toMap();
+    }
+    else
+    {
+      StringHelper::debug( 0xff, "Can't parse file %s: %s", fileName.c_str(), ret.toString().c_str() );
+    }
   }
   else
   {
-    std::cout << "Can't find file " << fileName << std::endl;
+    StringHelper::debug( 0xff, "Can't find file %s", fileName.c_str() );
   }
 
   return VariantMap();

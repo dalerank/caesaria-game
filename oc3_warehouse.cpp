@@ -98,6 +98,7 @@ public:
   virtual int getCurrentQty(const GoodType &goodType) const;
   virtual int getCurrentQty() const;
   virtual int getMaxQty() const;
+  virtual int getMaxQty(const GoodType& goodType ) const;
 
   // returns the max quantity that can be stored now
   virtual int getMaxStore(const GoodType goodType);
@@ -291,11 +292,13 @@ void WarehouseStore::applyRetrieveReservation(GoodStock &stock, const long reser
 
   if (stock._goodType != reservedStock._goodType)
   {
-    THROW("GoodType does not match reservation");
+    _OC3_DEBUG_BREAK_IF("GoodType does not match reservation");
+    return;
   }
   if (stock._maxQty < stock._currentQty + reservedStock._currentQty)
   {
-    THROW("Quantity does not match reservation");
+    _OC3_DEBUG_BREAK_IF("Quantity does not match reservation");
+    return;
   }
 
   int amount = reservedStock._currentQty;
@@ -347,6 +350,10 @@ int WarehouseStore::getMaxQty() const
   return 400 * _warehouse->_d->subTiles.size();
 }
 
+int WarehouseStore::getMaxQty( const GoodType& goodType ) const
+{
+  return getMaxQty();
+}
 
 Warehouse::Warehouse() : WorkingBuilding( B_WAREHOUSE, Size( 3 )), _d( new Impl )
 {

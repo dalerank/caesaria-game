@@ -22,6 +22,7 @@ class Farm : public Factory
 {
 public:
   Farm(const GoodType outGood, const BuildingType type );
+  virtual ~Farm();
   void init();
 
   void computePictures();

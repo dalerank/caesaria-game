@@ -28,6 +28,7 @@ public:
   // draw on screen
   void draw( GfxEngine& engine );
 
+  //resolve event
   bool onEvent(const NEvent& event);
 
 oc3_signals public:

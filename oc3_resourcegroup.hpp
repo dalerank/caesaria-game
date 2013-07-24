@@ -41,6 +41,7 @@ public:
     static const char* waterOverlay;
     static const char* advisorwindow;
     static const char* empirebits;
+    static const char* empirepnls;
 };
 
 class ResourceMenu
