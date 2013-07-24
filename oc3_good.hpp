@@ -23,7 +23,6 @@
 #include <string>
 #include <vector>
 #include <map>
-#include "oc3_variant.hpp"
 
 class VariantList;
 

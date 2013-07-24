@@ -65,7 +65,7 @@ int SimpleGoodStore::getCurrentQty(const GoodType &goodType) const
 }
 
 
-int SimpleGoodStore::getMaxQty(const GoodType &goodType)
+int SimpleGoodStore::getMaxQty(const GoodType &goodType) const
 {
   return _goodStockList[goodType]._maxQty;
 }

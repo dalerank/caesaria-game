@@ -26,6 +26,8 @@ typedef SmartPtr< Emigrant > EmigrantPtr;
 class Emigrant : public Immigrant
 {
 public:
+  static const unsigned int defaultPeoples=4;
+
   static EmigrantPtr create( CityPtr city);
   
 	void getPictureList(std::vector<Picture*> &oPics);

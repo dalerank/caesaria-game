@@ -26,7 +26,9 @@
 #include "oc3_scenario.hpp"
 #include "oc3_city.hpp"
 #include "oc3_gui_label.hpp"
+#include "oc3_stringhelper.hpp"
 #include "oc3_gettext.hpp"
+#include "oc3_goodstore.hpp"
 
 class EmpireMapWindow::Impl
 {
@@ -34,6 +36,7 @@ public:
   PictureRef border;
   Picture empireMap;
   Scenario* scenario;
+  EmpireCityPtr currentCity;
   Point offset;
   bool dragging;
   Point dragStartPosition;
@@ -46,43 +49,175 @@ public:
   std::string ourCity;
   Picture citypics[3];
   Label* lbCityTitle;
-  Label* lbCityInfo;
+  Widget* tradeInfo;
 
   void checkCityOnMap( const Point& pos );
+  void createTradeRoute();
+  void drawCityGoodsInfo();
+  void drawTradeRouteInfo();
+  void drawCityInfo();
+  void resetInfoPanel();
 };
 
 void EmpireMapWindow::Impl::checkCityOnMap( const Point& pos )
 {
   const EmpireCities& cities = scenario->getEmpire()->getCities();
 
-  EmpireCityPtr city;
+  currentCity = 0;
   for( EmpireCities::const_iterator it=cities.begin(); it != cities.end(); it++ )
   {
     Rect rect( (*it)->getLocation(), Size( 40 ) );
     if( rect.isPointInside( pos ) )
     {
-      city = *it;
+      currentCity = *it;
       break;
     }
   }
 
-  lbCityInfo->setVisible( city != 0 );
-  if( city != 0 )
+  resetInfoPanel();
+  if( currentCity != 0 )
   {
-    lbCityTitle->setText( city->getName() );
+    lbCityTitle->setText( currentCity->getName() );
 
-    if( city->getName() == scenario->getCity()->getName() )
+    if( currentCity->getName() == scenario->getCity()->getName() 
+        || currentCity->isDistantCity() /* || currentCity->isRomeCity()*/ )
     {
-      lbCityInfo->setText( _("##empiremap_our_city##") );
+      drawCityInfo();
     }
     else
     {
-      lbCityInfo->setText( _("##empiremap_empire_city##") );
+      if( currentCity->isTradeActive() )
+      {
+        drawTradeRouteInfo();
+      }
+      else
+      {
+        drawCityGoodsInfo();
+      }
     }
   }
   else
   {
     lbCityTitle->setText( "" );    
+  }
+}
+
+void EmpireMapWindow::Impl::createTradeRoute()
+{
+
+}
+
+void EmpireMapWindow::Impl::drawCityInfo()
+{
+  Label* lb = new Label( tradeInfo, Rect( Point( 0, tradeInfo->getHeight() - 70), Size( tradeInfo->getWidth(), 30) ) );
+  lb->setTextAlignment( alignCenter, alignUpperLeft );
+  if( currentCity->getName() == scenario->getCity()->getName() )
+  {
+    lb->setText( _("##empiremap_our_city##") );
+  }
+  else if( currentCity->isDistantCity() )
+  {
+    lb->setText( _("##empiremap_distant_city##") );
+  }
+  /*else if( currentCity->isRomeCity() )
+  {
+    lb->setText( _("##empiremap_rome_city##") );
+  }
+  */
+}
+
+void EmpireMapWindow::Impl::drawCityGoodsInfo()
+{
+  Point startDraw( (tradeInfo->getWidth() - 400) / 2, tradeInfo->getHeight() - 70 );
+  new Label( tradeInfo, Rect( startDraw, Size( 70, 30 )), _("##emw_sell##") );
+
+  const GoodStore& sellgoods = currentCity->getSells();
+  for( int i=0, k=0; i < G_MAX; i++ )
+  {
+    if( sellgoods.getMaxQty( (GoodType)i ) > 0  )
+    {
+      Label* lb = new Label( tradeInfo, Rect( startDraw + Point( 70 + 30 * k, 0 ), Size( 70, 30 ) ) );
+      lb->setBackgroundPicture( Picture::load( ResourceGroup::empirepnls, 11 + i ) );
+      k++;
+    }
+  }
+
+  Point buyPoint = startDraw + Point( 200, 0 );
+  new Label( tradeInfo, Rect( buyPoint, Size( 70, 30 )), _("##emw_buy##") );
+
+  const GoodStore& buygoods = currentCity->getBuys();
+  for( int i=0, k=0; i < G_MAX; i++ )
+  {
+    if( buygoods.getMaxQty( (GoodType)i ) > 0  )
+    {
+      Label* lb = new Label( tradeInfo, Rect( startDraw + Point( 70 + 30 * k, 0 ), Size( 70, 30 ) ) );
+      lb->setBackgroundPicture( Picture::load( ResourceGroup::empirepnls, 11 + i ) );
+      k++;
+    }
+  }
+
+  PushButton* btnOpenTrade = new PushButton( tradeInfo, Rect( startDraw, Size( 400, 20 ) ),
+                                             "", -1, false, PushButton::BlackBorderUp );
+  btnOpenTrade->setVisible( false );
+  btnOpenTrade->setText( StringHelper::format( 0xff, "%d %s", 1000, _("##dn_for_open_trade##")));
+  btnOpenTrade->setVisible( !currentCity->isTradeActive() );
+
+  CONNECT( btnOpenTrade, onClicked(), this, Impl::createTradeRoute );
+}
+
+void EmpireMapWindow::Impl::drawTradeRouteInfo()
+{
+  Point startDraw( (tradeInfo->getWidth() - 400) / 2, tradeInfo->getHeight() - 80 );
+  new Label( tradeInfo, Rect( startDraw, Size( 80, 30 )), _("##emw_sold##") );
+
+  const GoodStore& sellgoods = currentCity->getSells();
+  for( int i=0, k=0; i < G_MAX; i++ )
+  {
+    int maxsell = sellgoods.getMaxQty( (GoodType)i );
+    int cursell = sellgoods.getCurrentQty( (GoodType)i );
+    if( maxsell > 0  )
+    {
+      Label* lb = new Label( tradeInfo, Rect( startDraw + Point( 80 + 100 * k, 0 ), Size( 80, 30 ) ) );
+      lb->setBackgroundPicture( Picture::load( ResourceGroup::empirepnls, 11 + i ) );
+
+      std::string text = StringHelper::format( 0xff, "%d from %d", cursell, maxsell );
+      new Label( tradeInfo, Rect( startDraw + Point( 110 + 100 * k, 0), Size( 70, 30 ) ), text );
+      k++;
+    }
+  }
+
+  Point buyPoint = startDraw + Point( 0, 30 );
+  new Label( tradeInfo, Rect( buyPoint, Size( 80, 30 )), _("##emw_bought##") );
+
+  const GoodStore& buygoods = currentCity->getBuys();
+  for( int i=0, k=0; i < G_MAX; i++ )
+  {
+    int maxbuy = buygoods.getMaxQty( (GoodType)i );
+    int curbuy = buygoods.getCurrentQty( (GoodType)i );
+    if( maxbuy > 0  )
+    {
+      Label* lb = new Label( tradeInfo, Rect( startDraw + Point( 80 + 100 * k, 0 ), Size( 70, 30 ) ) );
+      lb->setBackgroundPicture( Picture::load( ResourceGroup::empirepnls, 11 + i ) );
+
+      std::string text = StringHelper::format( 0xff, "%d from %d", curbuy, maxbuy );
+      new Label( tradeInfo, Rect( startDraw + Point( 110 + 100 * k, 0), Size( 70, 30 ) ), text );
+      k++;
+    }
+  }
+
+  PushButton* btnOpenTrade = new PushButton( tradeInfo, Rect( startDraw, Size( 400, 20 ) ),
+    "", -1, false, PushButton::BlackBorderUp );
+  btnOpenTrade->setVisible( false );
+  btnOpenTrade->setText( StringHelper::format( 0xff, "%d %s", 1000, _("##dn_for_open_trade##")));
+  btnOpenTrade->setVisible( !currentCity->isTradeActive() );
+}
+
+void EmpireMapWindow::Impl::resetInfoPanel()
+{
+  Widget::Widgets childs = tradeInfo->getChildren();
+  for( Widget::ConstChildIterator it=childs.begin(); it != childs.end(); it++ )
+  {
+    (*it)->deleteLater();
   }
 }
 
@@ -96,7 +231,7 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
   _d->lbCityTitle = new Label( this, Rect( Point( (getWidth() - 240) / 2 + 60, getHeight() - 132 ), Size( 240, 32 )) );
   _d->lbCityTitle->setFont( Font::create( FONT_3 ) );
 
-  _d->lbCityInfo = new Label( this, Rect( Point( (getWidth() - 240)/2, getHeight() - 50), Size( 240, 32)) );
+  _d->tradeInfo = new Widget( this, -1, Rect( 0, getHeight() - 120, getWidth(), getHeight() ) );
 
   const Picture& backgr = Picture::load( "empire_panels", 4 );
   for( unsigned int y=getHeight() - 120; y < getHeight(); y+=backgr.getHeight() )

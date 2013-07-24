@@ -22,7 +22,8 @@
 
 Emigrant::Emigrant( CityPtr city ) : Immigrant( city )
 {
-  setCapacity( 5 );
+  setCapacity( defaultPeoples );
+
   _walkerType = WT_EMIGRANT;
   _walkerGraphic = WG_PUSHER2;
 }

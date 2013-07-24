@@ -19,10 +19,13 @@
 #include "oc3_scopedptr.hpp"
 #include "oc3_referencecounted.hpp"
 #include "oc3_positioni.hpp"
+#include "oc3_serializer.hpp"
 
 #include <string>
 
-class EmpireCity : public ReferenceCounted
+class GoodStore;
+
+class EmpireCity : public ReferenceCounted, public Serializable
 {
 public:
   EmpireCity( const std::string& name );
@@ -31,8 +34,15 @@ public:
   std::string getName() const;
   Point getLocation() const;
   void setLocation( const Point& location );
-
+  
+  bool isTradeActive() const;
   bool isDistantCity() const;
+
+  void save( VariantMap& options ) const;
+  void load( const VariantMap& options );
+
+  GoodStore& getSells();
+  GoodStore& getBuys();
 
 private:
   class Impl;
