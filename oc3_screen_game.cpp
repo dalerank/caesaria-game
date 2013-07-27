@@ -22,7 +22,6 @@
 #include "oc3_gfx_engine.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_warehouse.hpp"
-#include "oc3_scenario_saver.hpp"
 #include "oc3_menurgihtpanel.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_guienv.hpp"
@@ -174,9 +173,7 @@ void ScreenGame::Impl::showSaveDialog()
 
 void ScreenGame::Impl::resolveGameSave( std::string filename )
 {
-  ScenarioSaver scnSaver( Scenario::instance() );
-
-  scnSaver.save( filename );
+  Scenario::instance().save( filename );
 }
 
 TilemapArea& ScreenGame::getMapArea()

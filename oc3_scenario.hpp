@@ -37,7 +37,7 @@ public:
   bool save( const io::FilePath& filename ) const;
   bool load( const io::FilePath& filename );
 
-  EmpirePtr getEmpire();
+  EmpirePtr getEmpire() const;
   CityPtr getCity();
   Player& getPlayer() const;
   const CityPtr getCity() const;

@@ -36,6 +36,7 @@ public:
   void setLocation( const Point& location );
   
   bool isTradeActive() const;
+  void openTrade();
   bool isDistantCity() const;
 
   void save( VariantMap& options ) const;

@@ -17,13 +17,14 @@
 #define __OPENCAESAR3_SAVEADAPTER_H_INCLUDED__
 
 #include "oc3_variant.hpp"
+#include "oc3_filepath.hpp"
 
 class SaveAdapter
 {
 public:
-  static VariantMap load( const std::string& fileName );
+  static VariantMap load( const io::FilePath& fileName );
 
-  static bool save( const VariantMap& options, const std::string& filename );
+  static bool save( const VariantMap& options, const io::FilePath& filename );
 private:
   SaveAdapter();
 };

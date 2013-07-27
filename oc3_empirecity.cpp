@@ -67,7 +67,45 @@ bool EmpireCity::isTradeActive() const
 
 void EmpireCity::save( VariantMap& options ) const
 {
+  options[ "location" ] = _d->location;
 
+  VariantMap vm_sells;
+  VariantMap vm_sold;
+  VariantMap vm_buys;
+  VariantMap vm_bought;
+  for( int i=G_NONE; i < G_MAX; i ++ )
+  {
+    GoodType gtype = GoodType ( i );
+    std::string tname = GoodHelper::getTypeName( gtype );
+    int maxSellStock = _d->sellStore.getMaxQty( gtype );
+    if( maxSellStock > 0 )
+    {
+      vm_sells[ tname ] = maxSellStock;
+    }
+
+    int sold = _d->sellStore.getCurrentQty( gtype );
+    if( sold > 0 )
+    {
+      vm_sold[ tname ] = sold;
+    }
+
+    int maxBuyStock = _d->buyStore.getMaxQty( gtype );
+    if( maxBuyStock > 0 )
+    {
+      vm_buys[ tname ] = maxBuyStock;
+    }
+
+    int bought = _d->buyStore.getCurrentQty( gtype );
+    if( bought > 0 )
+    {
+      vm_bought[ tname ] = bought;
+    }
+  }
+
+  options[ "sells" ] = vm_sells;
+  options[ "buys" ] = vm_buys;
+  options[ "sold" ] = vm_sold;
+  options[ "bought" ] = vm_bought;
 }
 
 void EmpireCity::load( const VariantMap& options )
@@ -81,12 +119,27 @@ void EmpireCity::load( const VariantMap& options )
     _d->sellStore.setMaxQty( gtype, it->second.toInt() );
   }
 
+  const VariantMap& sold_vm = options.get( "sold" ).toMap();
+  for( VariantMap::const_iterator it=sold_vm.begin(); it != sold_vm.end(); it++ )
+  {
+    GoodType gtype = GoodHelper::getType( it->first );
+    _d->sellStore.setCurrentQty( gtype, it->second.toInt() );
+  }
+
   const VariantMap& buys_vm = options.get( "buys" ).toMap();
   for( VariantMap::const_iterator it=buys_vm.begin(); it != buys_vm.end(); it++ )
   {
     GoodType gtype = GoodHelper::getType( it->first );
     _d->buyStore.setMaxQty( gtype, it->second.toInt() );
   }
+
+  const VariantMap& bought_vm = options.get( "bought" ).toMap();
+  for( VariantMap::const_iterator it=bought_vm.begin(); it != bought_vm.end(); it++ )
+  {
+    GoodType gtype = GoodHelper::getType( it->first );
+    _d->buyStore.setCurrentQty( gtype, it->second.toInt() );
+  }
+
 }
 
 GoodStore& EmpireCity::getSells()
@@ -97,4 +150,9 @@ GoodStore& EmpireCity::getSells()
 GoodStore& EmpireCity::getBuys()
 {
   return _d->buyStore;
+}
+
+void EmpireCity::openTrade()
+{
+  _d->isTradeActive = true;
 }

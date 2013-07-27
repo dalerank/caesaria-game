@@ -48,6 +48,8 @@
 #include "oc3_cityfunds.hpp"
 #include "oc3_player.hpp"
 #include "oc3_scenario.hpp"
+#include "oc3_empirecity.hpp"
+#include "oc3_empire.hpp"
 
 #include <set>
 
@@ -708,4 +710,12 @@ const std::string& City::getName() const
 void City::setName( const std::string& name )
 {
   _d->name = name;
+}
+
+void City::createTradeRoute( EmpireCityPtr empireCity )
+{
+  empireCity->openTrade();
+
+  int cost = (int)Scenario::instance().getEmpire()->openTradeRouteCost( _d->name, empireCity->getName() ); 
+  _d->funds.resolveIssue( FundIssue( CityFunds::otherExpenditure, -cost ) );
 }

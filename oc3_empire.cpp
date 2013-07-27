@@ -60,19 +60,16 @@ void Empire::initialize( const io::FilePath& filename )
 
 EmpireCityPtr Empire::addCity( const std::string& name )
 {
-  EmpireCities::iterator it = _d->cities.begin();
+  EmpireCityPtr ret = getCity( name );
 
-  for( ; it != _d->cities.end(); it++ )
+  if( ret.isValid() )
   {
-    if( (*it)->getName() == name )
-    {
-      StringHelper::debug( 0xff, "City %s already exist", name.c_str() );
-      _OC3_DEBUG_BREAK_IF( "City already exist" );
-      return *it;
-    }
+    StringHelper::debug( 0xff, "City %s already exist", name.c_str() );
+    _OC3_DEBUG_BREAK_IF( "City already exist" );
+    return ret;
   }
 
-  EmpireCityPtr ret = new EmpireCity( name );
+  ret = new EmpireCity( name );
   _d->cities.push_back( ret );
 
   return ret;
@@ -84,4 +81,61 @@ EmpirePtr Empire::create()
   ret->drop();
 
   return ret;
+}
+
+EmpireCityPtr Empire::getCity( const std::string& name ) const
+{
+  EmpireCities::iterator it = _d->cities.begin();
+
+  for( ; it != _d->cities.end(); it++ )
+  {
+    if( (*it)->getName() == name )
+    {
+      return *it;
+    }
+  }
+
+  return 0;
+}
+
+unsigned int Empire::openTradeRouteCost( const std::string& start, const std::string& stop ) const
+{
+  EmpireCityPtr startCity = getCity( start );
+  EmpireCityPtr stopCity = getCity( stop );
+
+  if( startCity != 0 && stopCity != 0 )
+  {
+    int distance2City = (int)startCity->getLocation().getDistanceFrom( stopCity->getLocation() ); 
+    distance2City = (distance2City / 100 + 1 ) * 100;
+
+    return distance2City;
+  }
+
+  return 0;
+}
+
+void Empire::save( VariantMap& stream ) const
+{
+  VariantMap vm_cities;
+  for( EmpireCities::iterator it = _d->cities.begin(); it != _d->cities.end(); it++ )
+  {
+    VariantMap vm_city;
+    (*it)->save( vm_city );
+    vm_cities[ (*it)->getName() ] = vm_city; 
+  }
+
+  stream[ "cities" ] = vm_cities;
+}
+
+void Empire::load( const VariantMap& stream )
+{
+  const VariantMap& cities = stream.get( "cities" ).toMap();
+  for( VariantMap::const_iterator it=cities.begin(); it != stream.end(); it++ )
+  {
+    EmpireCityPtr city = getCity( it->first );
+    if( city != 0 )
+    {
+      city->load( it->second.toMap() );
+    }
+  }
 }

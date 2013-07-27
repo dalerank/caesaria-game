@@ -57,6 +57,7 @@ public:
   void drawTradeRouteInfo();
   void drawCityInfo();
   void resetInfoPanel();
+  void updateCityInfo();
 };
 
 void EmpireMapWindow::Impl::checkCityOnMap( const Point& pos )
@@ -74,13 +75,18 @@ void EmpireMapWindow::Impl::checkCityOnMap( const Point& pos )
     }
   }
 
+  updateCityInfo();
+}
+
+void EmpireMapWindow::Impl::updateCityInfo()
+{
   resetInfoPanel();
   if( currentCity != 0 )
   {
     lbCityTitle->setText( currentCity->getName() );
 
     if( currentCity->getName() == scenario->getCity()->getName() 
-        || currentCity->isDistantCity() /* || currentCity->isRomeCity()*/ )
+      || currentCity->isDistantCity() /* || currentCity->isRomeCity()*/ )
     {
       drawCityInfo();
     }
@@ -104,7 +110,12 @@ void EmpireMapWindow::Impl::checkCityOnMap( const Point& pos )
 
 void EmpireMapWindow::Impl::createTradeRoute()
 {
+  if( currentCity != 0 )
+  {
+    scenario->getCity()->createTradeRoute( currentCity );
+  }
 
+  updateCityInfo();
 }
 
 void EmpireMapWindow::Impl::drawCityInfo()
@@ -159,7 +170,11 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   PushButton* btnOpenTrade = new PushButton( tradeInfo, Rect( startDraw + Point( 0, 40 ), Size( 400, 20 ) ),
                                              "", -1, false, PushButton::BlackBorderUp );
   btnOpenTrade->setVisible( false );
-  btnOpenTrade->setText( StringHelper::format( 0xff, "%d %s", 1000, _("##dn_for_open_trade##")));
+
+  const std::string& playerCityName = scenario->getCity()->getName();
+  unsigned int routeOpenCost = scenario->getEmpire()->openTradeRouteCost( playerCityName, currentCity->getName() );
+
+  btnOpenTrade->setText( StringHelper::format( 0xff, "%d %s", routeOpenCost, _("##dn_for_open_trade##")));
   btnOpenTrade->setVisible( !currentCity->isTradeActive() );
 
   CONNECT( btnOpenTrade, onClicked(), this, Impl::createTradeRoute );
@@ -177,10 +192,10 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
     int cursell = sellgoods.getCurrentQty( (GoodType)i );
     if( maxsell > 0  )
     {
-      Label* lb = new Label( tradeInfo, Rect( startDraw + Point( 80 + 100 * k, 0 ), Size( 80, 30 ) ) );
+      Label* lb = new Label( tradeInfo, Rect( startDraw + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );
       lb->setBackgroundPicture( Picture::load( ResourceGroup::empirepnls, 11 + i ) );
 
-      std::string text = StringHelper::format( 0xff, "%d from %d", cursell, maxsell );
+      std::string text = StringHelper::format( 0xff, "%d/%d", cursell, maxsell );
       new Label( tradeInfo, Rect( startDraw + Point( 110 + 100 * k, 0), Size( 70, 30 ) ), text );
       k++;
     }
@@ -196,11 +211,11 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
     int curbuy = buygoods.getCurrentQty( (GoodType)i );
     if( maxbuy > 0  )
     {
-      Label* lb = new Label( tradeInfo, Rect( startDraw + Point( 80 + 100 * k, 0 ), Size( 70, 30 ) ) );
+      Label* lb = new Label( tradeInfo, Rect( buyPoint + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );
       lb->setBackgroundPicture( Picture::load( ResourceGroup::empirepnls, 11 + i ) );
 
-      std::string text = StringHelper::format( 0xff, "%d from %d", curbuy, maxbuy );
-      new Label( tradeInfo, Rect( startDraw + Point( 110 + 100 * k, 0), Size( 70, 30 ) ), text );
+      std::string text = StringHelper::format( 0xff, "%d/%d", curbuy, maxbuy );
+      new Label( tradeInfo, Rect( buyPoint + Point( 110 + 100 * k, 0), Size( 70, 30 ) ), text );
       k++;
     }
   }

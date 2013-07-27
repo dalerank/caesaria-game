@@ -20,17 +20,23 @@
 #include "oc3_predefinitions.hpp"
 #include "oc3_filepath.hpp"
 #include "oc3_referencecounted.hpp"
+#include "oc3_serializer.hpp"
 
-class Empire : public ReferenceCounted
+class Empire : public ReferenceCounted, public Serializable
 {
 public:
   static EmpirePtr create();
   ~Empire();
   EmpireCities getCities() const;
+  EmpireCityPtr getCity( const std::string& name ) const;
 
   void initialize( const io::FilePath& filename );
 
   EmpireCityPtr addCity( const std::string& name );
+
+  unsigned int openTradeRouteCost( const std::string& start, const std::string& stop ) const;
+  void save( VariantMap& stream ) const;
+  void load( const VariantMap& stream );
 
 private:
   Empire();

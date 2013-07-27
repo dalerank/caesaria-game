@@ -16,25 +16,25 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#ifndef SCENARIO_SAVER_HPP
-#define SCENARIO_SAVER_HPP
+#ifndef _OPENCAESAR3_SCENARIO_OC3SAVE_SAVER_H_INCLUDE_
+#define _OPENCAESAR3_SCENARIO_OC3SAVE_SAVER_H_INCLUDE_
 
-#include <string>
+#include "oc3_filepath.hpp"
 #include "oc3_scopedptr.hpp"
 
 class Scenario;
 
-class ScenarioSaver
+class ScenarioOc3Saver
 {
 public:
-   ScenarioSaver( const Scenario& scenario );
-   ~ScenarioSaver();
+   ScenarioOc3Saver( const Scenario& scenario );
+   ~ScenarioOc3Saver();
 
-   void save( const std::string& filename );
+   void save( const io::FilePath& filename );
 private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
 
-#endif
+#endif //_OPENCAESAR3_SCENARIO_OC3SAVE_SAVER_H_INCLUDE_
