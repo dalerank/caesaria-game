@@ -51,6 +51,8 @@ public:
     static const int houseBtnPicId = 123;
     static const int helpInfBtnPicId = 528;
     static const int exitInfBtnPicId = 532;
+    static const int okBtnPicId = 239;
+    static const int cancelBtnPicId = 243;
 
     static const int houseMidPicId = 1;
     static const int clearMidPicId = 12;

@@ -28,6 +28,7 @@
 #include "oc3_gui_label.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_gettext.hpp"
+#include "oc3_gui_dialogbox.hpp"
 #include "oc3_goodstore.hpp"
 
 class EmpireMapWindow::Impl
@@ -52,6 +53,7 @@ public:
   Widget* tradeInfo;
 
   void checkCityOnMap( const Point& pos );
+  void showOpenRouteRequestWindow();
   void createTradeRoute();
   void drawCityGoodsInfo();
   void drawTradeRouteInfo();
@@ -177,7 +179,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   btnOpenTrade->setText( StringHelper::format( 0xff, "%d %s", routeOpenCost, _("##dn_for_open_trade##")));
   btnOpenTrade->setVisible( !currentCity->isTradeActive() );
 
-  CONNECT( btnOpenTrade, onClicked(), this, Impl::createTradeRoute );
+  CONNECT( btnOpenTrade, onClicked(), this, Impl::showOpenRouteRequestWindow );
 }
 
 void EmpireMapWindow::Impl::drawTradeRouteInfo()
@@ -234,6 +236,16 @@ void EmpireMapWindow::Impl::resetInfoPanel()
   {
     (*it)->deleteLater();
   }
+}
+
+void EmpireMapWindow::Impl::showOpenRouteRequestWindow()
+{
+  DialogBox* dialog = new DialogBox( tradeInfo->getParent(), Rect( 0, 0, 0, 0 ), 
+                                     _("##emp_open_trade_route##"), _("##emp_pay_open_this_route_question##"), 
+                                     DialogBox::btnOk | DialogBox::btnCancel  );
+
+  CONNECT( dialog, onOk(), this, Impl::createTradeRoute );
+  CONNECT( dialog, onCancel(), dialog, DialogBox::deleteLater );
 }
 
 EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )

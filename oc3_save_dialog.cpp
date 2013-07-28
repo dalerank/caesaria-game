@@ -88,11 +88,11 @@ SaveDialog::SaveDialog( Widget* parent, const std::string& dir, const std::strin
   CONNECT( _d->lbxSaves, onItemSelectedAgain(), _d.data(), Impl::resolveListboxChange );
  
   new Label( this, Rect( 18, 296, getWidth() / 2, 297 + 30 ), "Continue?" );
-  _d->btnOk = new TexturedButton( this, Point( 217, 297 ), Size( 39, 26), -1, 239 );
+  _d->btnOk = new TexturedButton( this, Point( 217, 297 ), Size( 39, 26), -1, ResourceMenu::okBtnPicId );
   CONNECT( _d->btnOk, onClicked(), _d.data(), Impl::resolveButtonOkClick );
   CONNECT( _d->btnOk, onClicked(), this, SaveDialog::deleteLater );
 
-  _d->btnCancel = new TexturedButton( this, Point( 265, 297), Size( 39, 26 ), -1, 243 );
+  _d->btnCancel = new TexturedButton( this, Point( 265, 297), Size( 39, 26 ), -1, ResourceMenu::cancelBtnPicId );
   CONNECT( _d->btnCancel, onClicked(), this, SaveDialog::deleteLater );
 
   _d->findFiles();
