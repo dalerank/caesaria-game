@@ -226,6 +226,8 @@ void City::monthStep()
 
   Player& player = Scenario::instance().getPlayer();
   _d->funds.resolveIssue( FundIssue( CityFunds::playerSalary, -player.getSalary() ) );
+  _d->funds.updateHistory( _d->date );
+
   player.appendMoney( player.getSalary() );
 
   _d->onMonthChangedSignal.emit( _d->date );

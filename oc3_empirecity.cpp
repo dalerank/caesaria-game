@@ -139,7 +139,6 @@ void EmpireCity::load( const VariantMap& options )
     GoodType gtype = GoodHelper::getType( it->first );
     _d->buyStore.setCurrentQty( gtype, it->second.toInt() );
   }
-
 }
 
 GoodStore& EmpireCity::getSells()

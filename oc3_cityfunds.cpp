@@ -20,14 +20,18 @@ class CityFunds::Impl
 {
 public:
   int money;
+  int lastYeapUpdate;
 
-  typedef std::map< CityFunds::IssueType, int > IssuesHistory;
+  typedef std::map< CityFunds::IssueType, int > IssuesValue;
+  typedef std::vector< IssuesValue > IssuesHistory;
   IssuesHistory history;
 };
 
 CityFunds::CityFunds() : _d( new Impl )
 {
   _d->money = 0;
+  _d->lastYeapUpdate = 0;
+  _d->history.push_back( Impl::IssuesValue() );
 }
 
 void CityFunds::resolveIssue( FundIssue issue )
@@ -36,13 +40,16 @@ void CityFunds::resolveIssue( FundIssue issue )
   {
   case unknown: _OC3_DEBUG_BREAK_IF( "wrong issue" ); break;
   default:
-    if( _d->history.find( (IssueType)issue.type ) == _d->history.end() )
     {
-      _d->history[ (IssueType)issue.type ] = 0;
-    }
+      Impl::IssuesValue& step = _d->history.front();
+      if( step.find( (IssueType)issue.type ) == step.end() )
+      {
+        step[ (IssueType)issue.type ] = 0;
+      }
 
-    _d->history[ (IssueType)issue.type ] += issue.money;
-    _d->money += issue.money;
+      step[ (IssueType)issue.type ] += abs( issue.money );
+      _d->money += issue.money;
+    }
   break;
   }
 }
@@ -52,15 +59,31 @@ int CityFunds::getValue() const
   return _d->money;
 }
 
-void CityFunds::clearHistory()
+void CityFunds::updateHistory( const DateTime& date )
 {
-  _d->history.clear();
+  if( _d->lastYeapUpdate >= date.getYear() )
+  {
+    return;
+  }
+
+  _d->lastYeapUpdate = date.getYear();
+  _d->history.insert( _d->history.begin(), Impl::IssuesValue() );
+
+  if( _d->history.size() > 2 )
+  {
+    _d->history.pop_back();
+  }
 }
 
-int CityFunds::getIssueValue( IssueType type ) const
+int CityFunds::getIssueValue( IssueType type, int age ) const
 {
-  Impl::IssuesHistory::iterator it = _d->history.find( type );
-  return ( it == _d->history.end() ) ? 0 : it->second;
+  if( (unsigned int)age >= _d->history.size() )
+    return 0;
+
+  Impl::IssuesValue step = _d->history[ age ];
+     
+  Impl::IssuesValue::iterator it = step.find( type );
+  return ( it == step.end() ) ? 0 : it->second;
 }
 
 VariantMap CityFunds::save() const
@@ -70,10 +93,16 @@ VariantMap CityFunds::save() const
   ret[ "money" ] = _d->money;
   
   VariantList history;
-  for( Impl::IssuesHistory::iterator it = _d->history.begin(); it != _d->history.end(); it++ )
+  for( Impl::IssuesHistory::iterator stepIt=_d->history.begin(); stepIt != _d->history.end(); stepIt++ )
   {
-    history.push_back( it->first );
-    history.push_back( it->second );
+    VariantList stepHistory;
+    for( Impl::IssuesValue::iterator it = (*stepIt).begin(); it != (*stepIt).end(); it++ )
+    {
+      stepHistory.push_back( it->first );
+      stepHistory.push_back( it->second );
+    }
+
+    history.push_back( stepHistory );
   }
 
   ret[ "history" ] = history;
@@ -86,14 +115,18 @@ void CityFunds::load( const VariantMap& stream )
   _d->money = stream.get( "money" ).toInt();
 
   VariantList history = stream.get( "history" ).toList();
-
-  VariantList::iterator it = history.begin();
-  while( it != history.end() )
+  for( VariantList::iterator it = history.begin(); it != history.end(); it++ )
   {
-    IssueType type = (IssueType)it->toInt(); it++;
-    int value = it->toInt(); it++;
-    
-    _d->history[ type ] = value;
+    _d->history.push_back( Impl::IssuesValue() );
+    Impl::IssuesValue& last = _d->history.back();
+    const VariantList& historyStep = (*it).toList();
+    for( VariantList::const_iterator stepIt=historyStep.begin(); stepIt != historyStep.end(); stepIt++ )
+    {
+      IssueType type = (IssueType)it->toInt(); it++;
+      int value = it->toInt(); it++;
+      
+      last[ type ] = value;
+    }
   }
 }
 
