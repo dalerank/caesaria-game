@@ -361,7 +361,8 @@ void Picture::fill( const NColor& color, const Rect& rect )
   SDL_LockSurface( source );
   SDL_Rect sdlRect = { (short)rect.getLeft(), (short)rect.getTop(), (Uint16)rect.getWidth(), (Uint16)rect.getHeight() };
 
-  SDL_FillRect(source, rect.getWidth() > 0 ? &sdlRect : NULL, SDL_MapRGBA(source->format, color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha() )); 
+  SDL_FillRect(source, rect.getWidth() > 0 ? &sdlRect : NULL, SDL_MapRGBA( source->format, color.getRed(), color.getGreen(), 
+                                                                                           color.getBlue(), color.getAlpha() )); 
   SDL_UnlockSurface(source);
 }
 
@@ -371,4 +372,9 @@ Picture* Picture::create( const Size& size )
   GfxEngine::instance().loadPicture( *ret );
 
   return ret;
+}
+
+void Picture::setAlpha( int alpha )
+{
+  SDL_SetAlpha( _d->surface, SDL_SRCALPHA, alpha );
 }

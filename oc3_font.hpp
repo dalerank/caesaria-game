@@ -48,8 +48,7 @@ public:
   Font& operator=(const Font& other);
 
   int getColor() const;
-  void setColor( const int color );
-  void setColor( NColor color );
+  void setColor( const NColor& color );
 
   bool isValid() const;
 

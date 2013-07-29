@@ -34,6 +34,7 @@
 class Factory::Impl
 {
 public:
+  bool isActive;
   float productionRate;  // max production / year
   float progress;  // progress of the work, in percent (0-100).
   Picture* stockPicture; // stock of input good
@@ -52,6 +53,7 @@ Factory::Factory( const GoodType inType, const GoodType outType,
 
    _d->productionRate = 4.8f;
    _d->progress = 0.0f;
+   _d->isActive = true;
    _d->produceGood = false;
    _d->inGoodType = inType;
    _d->outGoodType = outType;
@@ -79,7 +81,7 @@ int Factory::getProgress()
 
 bool Factory::_mayWork() const
 {
-  if( getWorkers() == 0 )
+  if( getWorkers() == 0 || !_d->isActive )
     return false;
 
   GoodStock& inStock = const_cast< Factory* >( this )->getInGood();
@@ -245,6 +247,16 @@ void Factory::receiveGood()
       addWalker( walker.as<Walker>() );
     }
   }
+}
+
+bool Factory::isActive() const
+{
+  return _d->isActive;
+}
+
+void Factory::setActive( bool active )
+{
+  _d->isActive = active;
 }
 
 TimberLogger::TimberLogger() : Factory(G_NONE, G_TIMBER, B_TIMBER_YARD, Size(2) )

@@ -20,7 +20,7 @@
 #include "oc3_exception.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_positioni.hpp"
-#include "oc3_market.hpp"
+#include "oc3_building_market.hpp"
 #include "oc3_granary.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_variant.hpp"

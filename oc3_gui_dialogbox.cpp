@@ -20,6 +20,7 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_texturedbutton.hpp"
 #include "oc3_event.hpp"
+#include "oc3_gfx_engine.hpp"
 
 class DialogBox::Impl
 {
@@ -102,7 +103,7 @@ void DialogBox::draw( GfxEngine& painter )
 
   if( _d->background )
   {
-    painter->drawPicture( *_d->background, getScreenLeft(), getScreenTop() );
+    painter.drawPicture( *_d->background, getScreenLeft(), getScreenTop() );
   }
 
   Widget::draw( painter );

@@ -15,7 +15,7 @@
 
 #include "oc3_walker_market_lady_helper.hpp"
 #include "oc3_walker_market_lady.hpp"
-#include "oc3_market.hpp"
+#include "oc3_building_market.hpp"
 #include "oc3_city.hpp"
 #include "oc3_pathway.hpp"
 #include "oc3_goodstore.hpp"

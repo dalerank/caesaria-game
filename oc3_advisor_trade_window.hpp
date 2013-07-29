@@ -19,11 +19,12 @@
 #include "oc3_widget.hpp"
 #include "oc3_scopedptr.hpp"
 #include "oc3_signals.hpp"
+#include "oc3_predefinitions.hpp"
 
 class AdvisorTradeWindow : public Widget
 {
 public:
-  AdvisorTradeWindow( Widget* parent, int id );
+  AdvisorTradeWindow( CityPtr city, Widget* parent, int id );
 
   void draw( GfxEngine& painter );
 

@@ -124,7 +124,7 @@ void AdvisorsWindow::showAdvisor( const AdvisorType type )
   case ADV_RATINGS: _d->advisorPanel = new AdvisorRatingsWindow( this, ADV_RATINGS, _d->city ); break;
   case ADV_TRADING:
     {
-      AdvisorTradeWindow* wnd = new AdvisorTradeWindow( this, ADV_TRADING );
+      AdvisorTradeWindow* wnd = new AdvisorTradeWindow( _d->city, this, ADV_TRADING );
       _d->advisorPanel =  wnd;
       CONNECT( wnd, onEmpireMapRequest(), &_d->onEmpireMapRequestSignal, Signal0<>::emit );      
     }

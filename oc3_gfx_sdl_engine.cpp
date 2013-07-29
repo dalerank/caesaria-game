@@ -112,13 +112,14 @@ void GfxSdlEngine::exit()
 void GfxSdlEngine::loadPicture( Picture& ioPicture)
 {
   // convert pixel format
-  SDL_Surface *newImage;
-  newImage = SDL_DisplayFormatAlpha( ioPicture.getSurface() );
-  SDL_FreeSurface(ioPicture.getSurface());
-  if (newImage == NULL) 
+  SDL_Surface* newImage = SDL_DisplayFormatAlpha( ioPicture.getSurface() );
+  
+  if( newImage == NULL ) 
   {
     THROW("Cannot convert surface, maybe out of memory");
   }
+  SDL_FreeSurface(ioPicture.getSurface());
+
   ioPicture.init( newImage, ioPicture.getOffset() );
 }
 
@@ -128,12 +129,10 @@ void GfxSdlEngine::unloadPicture( Picture& ioPicture )
   ioPicture = Picture();
 }
 
-
 void GfxSdlEngine::startRenderFrame()
 {
-  SDL_FillRect( _d->screen.getSurface(), NULL, 0);  // black background for a complete redraw
+  SDL_FillRect( _d->screen.getSurface(), NULL, 0 );  // black background for a complete redraw
 }
-
 
 void GfxSdlEngine::endRenderFrame()
 {
@@ -203,8 +202,14 @@ void GfxSdlEngine::resetTileDrawMask()
 Picture* GfxSdlEngine::createPicture(const Size& size )
 {
   SDL_Surface* img;
-  const Uint32 flags = 0;
-  img = SDL_CreateRGBSurface(flags, size.getWidth(), size.getHeight(), 32, 0, 0, 0, 0 );  // opaque picture with default mask
+  const Uint32 flags = SDL_SWSURFACE | SDL_SRCALPHA;
+  img = SDL_CreateRGBSurface( flags, size.getWidth(), size.getHeight(), 32, 
+                              0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000 );
+  
+  //img = SDL_CreateRGBSurface( flags, size.getWidth(), size.getHeight(), 32, 
+  //                            0, 0, 0, 0 );
+
+  
   if (img == NULL)
   {
     THROW( "Cannot make surface, size=" << size.getWidth() << "x" << size.getHeight() );

@@ -24,7 +24,7 @@
 #include "oc3_exception.hpp"
 #include "oc3_walker_workerhunter.hpp"
 #include "oc3_walker_immigrant.hpp"
-#include "oc3_market.hpp"
+#include "oc3_building_market.hpp"
 #include "oc3_constructionmanager.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_variant.hpp"

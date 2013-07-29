@@ -43,6 +43,9 @@ public:
   virtual void receiveGood();
   virtual int getProgress();
 
+  virtual bool isActive() const;
+  virtual void setActive( bool active );
+
   virtual void timeStep(const unsigned long time);
 
   virtual void save( VariantMap& stream) const;
