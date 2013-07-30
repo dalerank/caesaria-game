@@ -155,7 +155,7 @@ bool AdvisorTradeWindow::Impl::getWorkState( GoodType gtype )
     industryActive |= (*it)->isActive();
   }
 
-  return industryActive;
+  return producers.empty() ? true : industryActive;
 }
 
 int AdvisorTradeWindow::Impl::getStackedGoodsQty( GoodType gtype )

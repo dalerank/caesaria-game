@@ -42,9 +42,6 @@ public:
   // show resource
   Picture& getPicture(const std::string &prefix, const int idx);
 
-  // returns the picture of the given good type
-  Picture& getPicture(const GoodType goodType);
-
   // show all resources
   PicturesArray getPictures();
 

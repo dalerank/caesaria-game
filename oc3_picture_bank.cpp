@@ -86,67 +86,6 @@ Picture& PictureBank::getPicture(const std::string &prefix, const int idx)
    return getPicture(resource_name);
 }
 
-
-Picture& PictureBank::getPicture(const GoodType goodType)
-{
-   int pic_index;
-   switch (goodType)
-   {
-   case G_WHEAT:
-      pic_index = 317;
-      break;
-   case G_VEGETABLE:
-      pic_index = 318;
-      break;
-   case G_FRUIT:
-      pic_index = 319;
-      break;
-   case G_OLIVE:
-      pic_index = 320;
-      break;
-   case G_GRAPE:
-      pic_index = 321;
-      break;
-   case G_MEAT:
-      pic_index = 322;
-      break;
-   case G_WINE:
-      pic_index = 323;
-      break;
-   case G_OIL:
-      pic_index = 324;
-      break;
-   case G_IRON:
-      pic_index = 325;
-      break;
-   case G_TIMBER:
-      pic_index = 326;
-      break;
-   case G_CLAY:
-      pic_index = 327;
-      break;
-   case G_MARBLE:
-      pic_index = 328;
-      break;
-   case G_WEAPON:
-      pic_index = 329;
-      break;
-   case G_FURNITURE:
-      pic_index = 330;
-      break;
-   case G_POTTERY:
-      pic_index = 331;
-      break;
-   case G_FISH:
-      pic_index = 333;
-      break;
-   default:
-      THROW("This good type has no picture:" << goodType);
-   }
-
-   return getPicture( ResourceGroup::panelBackground, pic_index);
-}
-
 PicturesArray PictureBank::getPictures()
 {
    PicturesArray pictures;
