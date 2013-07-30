@@ -55,6 +55,7 @@ public:
 
   // create runtime resources
   void createResources();
+  void finalizeResources();
 
   // loads all resources of the given archive file
   void loadArchive(const std::string &filename);

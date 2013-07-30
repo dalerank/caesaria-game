@@ -62,14 +62,14 @@ public:
    // draws a text button background  offset=22(lightgray), 25(gray), 62(small_green), 65(small_brown), 68(small_grey)
    void draw_basic_text_button(Picture &dstpic, const int x, const int y, const int width, const int offset);
 
-protected:
-   static GuiPaneling *_instance;
-
    // draws a rectangular area
    void draw_basic_frame(Picture &dstpic, const int x, const int y, const int width, const int height, const int offset);
 
    // draws a rectangular perimeter
    void draw_basic0_borders(Picture &dstpic, const int x, const int y, const int width, const int height, const int offset);
+
+private:
+   GuiPaneling();
 };
 
 #endif

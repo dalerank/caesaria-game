@@ -61,7 +61,7 @@ public:
 
    void fill( const NColor& color, const Rect& rect );
 
-   void setAlpha( int alpha );
+   void resetAlpha();
 
    // lock/unlock the given surface for pixel access
    void lock();

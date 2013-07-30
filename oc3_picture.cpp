@@ -374,7 +374,7 @@ Picture* Picture::create( const Size& size )
   return ret;
 }
 
-void Picture::setAlpha( int alpha )
+void Picture::resetAlpha()
 {
-  SDL_SetAlpha( _d->surface, SDL_SRCALPHA, alpha );
+  SDL_SetAlpha( _d->surface, 0, 0 );
 }

@@ -53,7 +53,6 @@ public:
     PushButton::_updateTexture( state );
 
     PictureRef& background = _getBackground( state );
-    //background->setAlpha( 255 );
     background->fill( 0x00ffffff, Rect( 0, 0, 0, 0) );
     background->draw( _goodPicture, 15, 0 );
     background->draw( _goodPicture, getWidth() - 20 - _goodPicture.getWidth(), 0 );

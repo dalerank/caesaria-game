@@ -23,16 +23,10 @@
 #include "oc3_pushbutton.hpp"
 #include "oc3_resourcegroup.hpp"
 
-GuiPaneling* GuiPaneling::_instance = NULL;
-
 GuiPaneling& GuiPaneling::instance()
 {
-   if (_instance == NULL)
-   {
-      _instance = new GuiPaneling();
-      if (_instance == NULL) THROW("Memory error, cannot instantiate object");
-   }
-   return *_instance;
+   static GuiPaneling inst;
+   return inst;
 }
 
 void GuiPaneling::draw_white_area(Picture &dstpic, const int x, const int y, const int width, const int height)
@@ -42,7 +36,7 @@ void GuiPaneling::draw_white_area(Picture &dstpic, const int x, const int y, con
       for (int i = 0; i<(width/16+1); ++i)
       {
          // use some clipping to remove the right and bottom areas
-        Picture &srcpic = Picture::load( ResourceGroup::panelBackground, 348+i%10 + 12*(j%10));
+        const Picture &srcpic = Picture::load( ResourceGroup::panelBackground, 348 + (i%10) + 12*(j%10) );
 
         int dx = 16*i;
         int dy = 16*j;
@@ -162,40 +156,41 @@ void GuiPaneling::draw_basic_frame(Picture &dstpic, const int x, const int y, co
    // pics are: 0TopLeft, 1Top, 2TopRight, 3Left, 4Center, 5Right, 6BottomLeft, 7Bottom, 8BottomRight
 
    // draws the inside of the box
-   for (int j = 0; j<(height/16-1); ++j)
-   {
-      for (int i = 0; i<(width/16-1); ++i)
-      {
-         dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+4), x+16+16*i, y+16+16*j);
-      }
-   }
+  const Picture& bg = Picture::load( ResourceGroup::panelBackground, offset+4);
+  for (int j = 0; j<(height/16-1); ++j)
+  {
+     for (int i = 0; i<(width/16-1); ++i)
+     {
+        dstpic.draw( bg, x+16+16*i, y+16+16*j);
+     }
+  }
 
-   // draws horizontal borders
-   for (int i = 0; i<(width/16-1); ++i)
-   {
-      // top border
-      dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+1), x+16+16*i, y);
-      // bottom border
-      dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+7), x+16+16*i, y+height-16);
-   }
+  // draws horizontal borders
+  const Picture& topBorder = Picture::load( ResourceGroup::panelBackground, offset+1);
+  const Picture& bottomBorder = Picture::load( ResourceGroup::panelBackground, offset+7);
+  for (int i = 0; i<(width/16-1); ++i)
+  {
+     dstpic.draw( topBorder, x+16+16*i, y);
+     dstpic.draw( bottomBorder, x+16+16*i, y+height-16);
+  }
 
-   // draws vertical borders
-   for (int i = 0; i<(height/16-1); ++i)
-   {
-      // left border
-      dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+3), x, y+16+16*i);
-      // right border
-      dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+5), x+width-16, y+16+16*i);
-   }
+  // draws vertical borders
+  const Picture& leftBorder = Picture::load( ResourceGroup::panelBackground, offset+3);
+  const Picture& rightBorder = Picture::load( ResourceGroup::panelBackground, offset+5);
+  for (int i = 0; i<(height/16-1); ++i)
+  {
+     dstpic.draw( leftBorder, x, y+16+16*i);
+     dstpic.draw( rightBorder, x+width-16, y+16+16*i);
+  }
 
-   // topLeft corner
-   dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+0), x, y);
-   // topRight corner
-   dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+2), x+width-16, y);
-   // bottomLeft corner
-   dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+6), x, y+height-16);
-   // bottomRight corner
-   dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+8), x+width-16, y+height-16);
+  // topLeft corner
+  dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+0), x, y);
+  // topRight corner
+  dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+2), x+width-16, y);
+  // bottomLeft corner
+  dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+6), x, y+height-16);
+  // bottomRight corner
+  dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+8), x+width-16, y+height-16);
 }
 
 
@@ -212,33 +207,34 @@ void GuiPaneling::draw_grey_frame(Picture &dstpic, const int x, const int y, con
 
 void GuiPaneling::draw_basic0_borders(Picture &dstpic, const int x, const int y, const int width, const int height, const int offset)
 {
-   // pics are: 0TopLeft, 1Top, 2TopRight, 3Right, 4BottomRight, 5Bottom, 6BottomLeft, 7Left
-   // draws horizontal borders
-   for (int i = 0; i<(width/16-1); ++i)
-   {
-      // top border
-      dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+1),x+16+16*i, y);
-      // bottom border
-      dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+5),x+16+16*i, y+height-16);
-   }
+  // pics are: 0TopLeft, 1Top, 2TopRight, 3Right, 4BottomRight, 5Bottom, 6BottomLeft, 7Left
+  // draws horizontal borders
+  const Picture& topborder = Picture::load( ResourceGroup::panelBackground, offset+1);
+  const Picture& bottomBorder = Picture::load( ResourceGroup::panelBackground, offset+5);
+  for (int i = 0; i<(width/16-1); ++i)
+  {
+     dstpic.draw( topborder, x+16+16*i, y);
+     dstpic.draw( bottomBorder, x+16+16*i, y+height-16);
+  }
 
-   // draws vertical borders
-   for (int i = 0; i<(height/16-1); ++i)
-   {
-      // left border
-      dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+7), x, y+16+16*i);
-      // right border
-      dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+3), x+width-16, y+16+16*i);
-   }
+  // draws vertical borders
+  const Picture& leftborder = Picture::load( ResourceGroup::panelBackground, offset+7);
+  const Picture& rightborder = Picture::load( ResourceGroup::panelBackground, offset+3);
+  for (int i = 0; i<(height/16-1); ++i)
+  {
+     dstpic.draw( leftborder, x, y+16+16*i);
+     dstpic.draw( rightborder, x+width-16, y+16+16*i);
+  }
 
-   // topLeft corner
-   dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+0), x, y);
-   // topRight corner
-   dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+2), x+width-16, y);
-   // bottomLeft corner
-   dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+6), x, y+height-16);
-   // bottomRight corner
-   dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+4), x+width-16, y+height-16);
+  // topLeft corner
+  Picture& pic = Picture::load( ResourceGroup::panelBackground, offset+0 );
+  dstpic.draw( pic, x, y);
+  // topRight corner
+  dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+2), x+width-16, y);
+  // bottomLeft corner
+  dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+6), x, y+height-16);
+  // bottomRight corner
+  dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+4), x+width-16, y+height-16);
 }
 
 void GuiPaneling::draw_brown0_borders(Picture &dstpic, const int x, const int y, const int width, const int height)
@@ -253,16 +249,20 @@ void GuiPaneling::draw_white0_borders(Picture &dstpic, const int x, const int y,
 
 void GuiPaneling::draw_basic_text_button(Picture &dstpic, const int x, const int y, const int width, const int offset)
 {
-   // draws the inside
-   for (int i = 0; i<(width/16-1); ++i)
-   {
-     dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+1), x+16+16*i, y);
-   }
+  // draws the inside
+  const Picture& centerPic = Picture::load( ResourceGroup::panelBackground, offset+1);
+  for (int i = 0; i<(width/16-1); ++i)
+  {
+    dstpic.draw( centerPic, x+16+16*i, y);
+  }
 
-   // left side
-   dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset), x, y);
+  // left side
+  dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset), x, y);
 
-   // right side
-   dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+2), x+width-16, y);
+  // right side
+  dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+2), x+width-16, y);
 }
 
+GuiPaneling::GuiPaneling()
+{
+}

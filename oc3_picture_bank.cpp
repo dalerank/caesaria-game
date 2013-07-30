@@ -73,7 +73,7 @@ Picture& PictureBank::getPicture(const std::string &name)
   Impl::ItPicture it = _d->resources.find( StringHelper::hash( name ) );
   if (it == _d->resources.end()) 
   {
-    THROW("Unknown resource " << name);
+    StringHelper::debug( 0xff, "Unknown resource %s", name.c_str() );
   }
 
   return it->second;
@@ -219,6 +219,8 @@ void PictureBank::loadArchive(const std::string &filename)
     int size = archive_read_data(a, buffer.get(), bufferSize);  // read data into buffer
     rw = SDL_RWFromMem(buffer.get(), size);
     surface = IMG_Load_RW(rw, 0);
+    SDL_SetAlpha( surface, 0, 0 );
+
     setPicture(entryname, *surface);
     SDL_FreeRW(rw);
   }
@@ -288,6 +290,15 @@ PictureBank::PictureBank() : _d( new Impl )
 PictureBank::~PictureBank()
 {
 
+}
+
+void PictureBank::finalizeResources()
+{
+  for( int i=0; i < 567; i++ )
+  {
+    Picture& rstPic = getPicture( ResourceGroup::panelBackground, i+1 );
+    rstPic.resetAlpha();
+  }
 }
 
 class WalkerLoader::Impl
