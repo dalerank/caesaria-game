@@ -17,59 +17,20 @@
 
 #include <memory>
 
-#include "oc3_gui_paneling.hpp"
+#include "oc3_picture_decorator.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_pushbutton.hpp"
 #include "oc3_resourcegroup.hpp"
 
-GuiPaneling& GuiPaneling::instance()
+PictureDecorator& PictureDecorator::instance()
 {
-   static GuiPaneling inst;
+   static PictureDecorator inst;
    return inst;
 }
 
-void GuiPaneling::draw_white_area(Picture &dstpic, const int x, const int y, const int width, const int height)
-{
-   for (int j = 0; j<(height/16+1); ++j)
-   {
-      for (int i = 0; i<(width/16+1); ++i)
-      {
-         // use some clipping to remove the right and bottom areas
-        const Picture &srcpic = Picture::load( ResourceGroup::panelBackground, 348 + (i%10) + 12*(j%10) );
 
-        int dx = 16*i;
-        int dy = 16*j;
-        int sw = std::min(16, width-dx);
-        int sh = std::min(16, height-dy);
-
-        dstpic.draw( srcpic, Rect( 0, 0, sw, sh), Point( x+dx, y+dy ) );
-      }
-   }
-}
-
-
-void GuiPaneling::draw_black_area(Picture &dstpic, const int x, const int y, const int width, const int height)
-{
-   for (int j = 0; j<(height/16+1); ++j)
-   {
-      for (int i = 0; i<(width/16+1); ++i)
-      {
-         // use some clipping to remove the right and bottom areas
-        Picture &srcpic = Picture::load( ResourceGroup::panelBackground, 487+i%5 + 7*(j%5));
-
-        int dx = 16*i;
-        int dy = 16*j;
-        int sw = std::min(16, width-dx);
-        int sh = std::min(16, height-dy);
-        
-        dstpic.draw( srcpic, Rect( 0, 0, sw, sh ), Point( x+dx, y+dy ) );
-      }
-   }
-}
-
-
-void GuiPaneling::draw_white_borders(Picture &dstpic, const int x, const int y, const int width, const int height)
+void PictureDecorator::draw_white_borders(Picture &dstpic, const int x, const int y, const int width, const int height)
 {
    // draws horizontal borders
    for (int i = 0; i<(width/16-1); ++i)
@@ -100,7 +61,7 @@ void GuiPaneling::draw_white_borders(Picture &dstpic, const int x, const int y, 
 }
 
 
-void GuiPaneling::draw_black_borders(Picture &dstpic, const int x, const int y, const int width, const int height)
+void PictureDecorator::draw_black_borders(Picture &dstpic, const int x, const int y, const int width, const int height)
 {
    // draws horizontal borders
    for (int i = 0; i<(width/16-1); ++i)
@@ -131,27 +92,27 @@ void GuiPaneling::draw_black_borders(Picture &dstpic, const int x, const int y, 
 }
 
 
-void GuiPaneling::draw_white_frame(Picture &dstpic, const int x, const int y, const int width, const int height)
+void PictureDecorator::draw_white_frame(Picture &dstpic, const int x, const int y, const int width, const int height)
 {
    // draws the inside of the box
-   draw_white_area(dstpic, x+16, y+16, width-32, height-32);
+   draw( dstpic, Rect( Point( x+16, y+16 ), Size( width-16, height-16 ) ), whiteArea );
 
    // draws borders
    draw_white_borders(dstpic, x, y, width, height);
 }
 
 
-void GuiPaneling::draw_black_frame(Picture &dstpic, const int x, const int y, const int width, const int height)
+void PictureDecorator::draw_black_frame(Picture &dstpic, const int x, const int y, const int width, const int height)
 {
    // draws the inside of the box
-   draw_black_area(dstpic, x+16, y+16, width-32, height-32);
+   draw(dstpic, Rect( Point( x+16, y+16 ), Size( width-16, height-16 ) ), blackArea );
 
    // draws borders
    draw_black_borders(dstpic, x, y, width, height);
 }
 
 
-void GuiPaneling::draw_basic_frame(Picture &dstpic, const int x, const int y, const int width, const int height, const int offset)
+void PictureDecorator::draw_basic_frame(Picture &dstpic, const int x, const int y, const int width, const int height, const int offset)
 {
    // pics are: 0TopLeft, 1Top, 2TopRight, 3Left, 4Center, 5Right, 6BottomLeft, 7Bottom, 8BottomRight
 
@@ -194,18 +155,18 @@ void GuiPaneling::draw_basic_frame(Picture &dstpic, const int x, const int y, co
 }
 
 
-void GuiPaneling::draw_brown_frame(Picture &dstpic, const int x, const int y, const int width, const int height)
+void PictureDecorator::draw_brown_frame(Picture &dstpic, const int x, const int y, const int width, const int height)
 {
    draw_basic_frame(dstpic, x, y, width, height, 28);
 }
 
-void GuiPaneling::draw_grey_frame(Picture &dstpic, const int x, const int y, const int width, const int height)
+void PictureDecorator::draw_grey_frame(Picture &dstpic, const int x, const int y, const int width, const int height)
 {
    draw_basic_frame(dstpic, x, y, width, height, 37);
 }
 
 
-void GuiPaneling::draw_basic0_borders(Picture &dstpic, const int x, const int y, const int width, const int height, const int offset)
+void PictureDecorator::draw_basic0_borders(Picture &dstpic, const int x, const int y, const int width, const int height, const int offset)
 {
   // pics are: 0TopLeft, 1Top, 2TopRight, 3Right, 4BottomRight, 5Bottom, 6BottomLeft, 7Left
   // draws horizontal borders
@@ -237,17 +198,17 @@ void GuiPaneling::draw_basic0_borders(Picture &dstpic, const int x, const int y,
   dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+4), x+width-16, y+height-16);
 }
 
-void GuiPaneling::draw_brown0_borders(Picture &dstpic, const int x, const int y, const int width, const int height)
+void PictureDecorator::draw_brown0_borders(Picture &dstpic, const int x, const int y, const int width, const int height)
 {
-   GuiPaneling::instance().draw_basic0_borders(dstpic, x, y, width, height, 555);
+   PictureDecorator::instance().draw_basic0_borders(dstpic, x, y, width, height, 555);
 }
 
-void GuiPaneling::draw_white0_borders(Picture &dstpic, const int x, const int y, const int width, const int height)
+void PictureDecorator::draw_white0_borders(Picture &dstpic, const int x, const int y, const int width, const int height)
 {
-   GuiPaneling::instance().draw_basic0_borders(dstpic, x, y, width, height, 547);
+   PictureDecorator::instance().draw_basic0_borders(dstpic, x, y, width, height, 547);
 }
 
-void GuiPaneling::draw_basic_text_button(Picture &dstpic, const int x, const int y, const int width, const int offset)
+void PictureDecorator::draw_basic_text_button(Picture &dstpic, const int x, const int y, const int width, const int offset)
 {
   // draws the inside
   const Picture& centerPic = Picture::load( ResourceGroup::panelBackground, offset+1);
@@ -263,6 +224,34 @@ void GuiPaneling::draw_basic_text_button(Picture &dstpic, const int x, const int
   dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+2), x+width-16, y);
 }
 
-GuiPaneling::GuiPaneling()
+PictureDecorator::PictureDecorator()
 {
+}
+
+void PictureDecorator::draw( Picture& dstpic, const Rect& rectangle, Mode mode, bool useAlpha )
+{
+  switch( mode )
+  {
+  case whiteArea: drawArea( dstpic, rectangle, 348, 10, 12, useAlpha ); break;
+  case blackArea: drawArea( dstpic, rectangle, 487, 5, 7, useAlpha ); break;
+  }
+}
+
+void PictureDecorator::drawArea(Picture &dstpic, const Rect& rectangle, int picId, int picCount, int offset, bool useAlpha)
+{
+  for (int j = 0; j<(rectangle.getHeight()/16+1); ++j)
+  {
+    for (int i = 0; i<(rectangle.getWidth()/16+1); ++i)
+    {
+      // use some clipping to remove the right and bottom areas
+      const Picture &srcpic = Picture::load( ResourceGroup::panelBackground, picId + (i%picCount) + offset*(j%picCount) );
+
+      int dx = 16*i;
+      int dy = 16*j;
+      int sw = std::min(16, rectangle.getWidth()-dx);
+      int sh = std::min(16, rectangle.getHeight()-dy);
+
+      dstpic.draw( srcpic, Rect( 0, 0, sw, sh), rectangle.UpperLeftCorner + Point( dx, dy ) );
+    }
+  }
 }

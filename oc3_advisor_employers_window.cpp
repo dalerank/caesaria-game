@@ -15,8 +15,7 @@
 
 
 #include "oc3_advisor_employers_window.hpp"
-#include "oc3_picture.hpp"
-#include "oc3_gui_paneling.hpp"
+#include "oc3_picture_decorator.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_pushbutton.hpp"
 #include "oc3_gui_label.hpp"
@@ -155,15 +154,15 @@ AdvisorEmployerWindow::AdvisorEmployerWindow( CityPtr city, Widget* parent, int 
   _d->city = city;
   _d->background.reset( Picture::create( getSize() ) );
   //main _d->_d->background
-  GuiPaneling::instance().draw_white_frame(*_d->background, 0, 0, getWidth(), getHeight() );
+  PictureDecorator::instance().draw_white_frame(*_d->background, 0, 0, getWidth(), getHeight() );
 
   //buttons _d->_d->background
   Point startPos( 32, 70 );
-  GuiPaneling::instance().draw_black_frame(*_d->background, startPos.getX(), startPos.getY(), 576, 238 );
+  PictureDecorator::instance().draw_black_frame(*_d->background, startPos.getX(), startPos.getY(), 576, 238 );
 
   //salary _d->_d->background
   Rect salaryBgRect( Point( 64, 352 ), Size( 510, 32 ) );
-  GuiPaneling::instance().draw_black_frame(*_d->background, salaryBgRect.getLeft(), salaryBgRect.getTop(),
+  PictureDecorator::instance().draw_black_frame(*_d->background, salaryBgRect.getLeft(), salaryBgRect.getTop(),
     salaryBgRect.getWidth(), salaryBgRect.getHeight() );
 
   Font font = Font::create( FONT_1 );

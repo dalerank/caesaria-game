@@ -10,7 +10,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a createCopy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
@@ -209,14 +209,14 @@ void PictureBank::createResources()
   Picture& originalPic = getPicture( ResourceGroup::utilitya, 34 );
   setPicture( std::string( ResourceGroup::waterbuildings ) + "_00001.png", *originalPic.getSurface() );
 
-  Picture* fullReservoir = originalPic.copy(); //mem leak on destroy picloader
+  Picture* fullReservoir = originalPic.createCopy(); //mem leak on destroy picloader
   fullReservoir->draw( getPicture( ResourceGroup::utilitya, 35 ), 47, 37 );
   setPicture( std::string( ResourceGroup::waterbuildings ) + "_00002.png", *fullReservoir->getSurface() );
 
   Picture& emptyFontainOrig = getPicture( ResourceGroup::utilitya, 10 );
   setPicture( std::string( ResourceGroup::waterbuildings ) + "_00003.png", *emptyFontainOrig.getSurface() );
 
-  Picture* fullFontain = emptyFontainOrig.copy();  //mem leak on destroy picloader
+  Picture* fullFontain = emptyFontainOrig.createCopy();  //mem leak on destroy picloader
   fullFontain->draw( getPicture( ResourceGroup::utilitya, 11 ), 12, 25 );
   setPicture( std::string( ResourceGroup::waterbuildings) + "_00004.png", *fullFontain->getSurface() );
 }
@@ -229,15 +229,6 @@ PictureBank::PictureBank() : _d( new Impl )
 PictureBank::~PictureBank()
 {
 
-}
-
-void PictureBank::finalizeResources()
-{
-  for( int i=0; i < 567; i++ )
-  {
-    Picture& rstPic = getPicture( ResourceGroup::panelBackground, i+1 );
-    rstPic.resetAlpha();
-  }
 }
 
 class WalkerLoader::Impl

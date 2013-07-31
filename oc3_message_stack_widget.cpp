@@ -15,7 +15,7 @@
 
 #include "oc3_message_stack_widget.hpp"
 #include "oc3_gui_label.hpp"
-#include "oc3_gui_paneling.hpp"
+#include "oc3_picture_decorator.hpp"
 #include "oc3_widget_deleter.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_resourcegroup.hpp"
@@ -42,7 +42,7 @@ WindowMessageStack::WindowMessageStack( Widget* parent, int id, const Rect& rect
   : Widget( parent, id, rectangle ), _d( new Impl )
 {
   _d->lbBackgorund.reset( Picture::create( Size( rectangle.getWidth(), 20 ) ) );
-  GuiPaneling::instance().draw_basic_text_button( *_d->lbBackgorund, 0, 0, rectangle.getWidth(), 65 );
+  PictureDecorator::instance().draw_basic_text_button( *_d->lbBackgorund, 0, 0, rectangle.getWidth(), 65 );
   Picture& emlbPic = Picture::load( ResourceGroup::panelBackground, 543 );
   _d->lbBackgorund->draw( emlbPic, 4, 2 );
   _d->lbBackgorund->draw( emlbPic, getWidth() - emlbPic.getWidth()-4, 2 );

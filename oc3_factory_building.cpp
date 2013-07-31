@@ -79,7 +79,7 @@ int Factory::getProgress()
   return math::clamp<int>( (int)_d->progress, 0, 100 );
 }
 
-bool Factory::_mayWork() const
+bool Factory::mayWork() const
 {
   if( getWorkers() == 0 || !_d->isActive )
     return false;
@@ -106,7 +106,7 @@ void Factory::timeStep(const unsigned long time)
    }
 
    //start/stop animation when workers found
-   bool mayAnimate = _mayWork();
+   bool mayAnimate = mayWork();
 
    if( mayAnimate && _getAnimation().isStopped() )
    {
@@ -257,6 +257,11 @@ bool Factory::isActive() const
 void Factory::setActive( bool active )
 {
   _d->isActive = active;
+}
+
+bool Factory::standIdle() const
+{
+  return !mayWork();
 }
 
 TimberLogger::TimberLogger() : Factory(G_NONE, G_TIMBER, B_TIMBER_YARD, Size(2) )

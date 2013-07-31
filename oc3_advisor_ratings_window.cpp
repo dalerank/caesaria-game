@@ -16,7 +16,7 @@
 
 #include "oc3_advisor_ratings_window.hpp"
 #include "oc3_picture.hpp"
-#include "oc3_gui_paneling.hpp"
+#include "oc3_picture_decorator.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_pushbutton.hpp"
 #include "oc3_gui_label.hpp"
@@ -116,10 +116,10 @@ AdvisorRatingsWindow::AdvisorRatingsWindow( Widget* parent, int id, const CityPt
   title->setTextAlignment( alignUpperLeft, alignCenter );
 
   _d->background.reset( Picture::create( getSize() ) );
-  GuiPaneling::instance().draw_white_frame(*_d->background, 0, 0, getWidth(), getHeight() );
+  PictureDecorator::instance().draw_white_frame(*_d->background, 0, 0, getWidth(), getHeight() );
 
   //buttons _d->_d->background
-  GuiPaneling::instance().draw_black_frame( *_d->background, 66, 360, 510, 60 );
+  PictureDecorator::instance().draw_black_frame( *_d->background, 66, 360, 510, 60 );
 
   _d->background->draw( Picture::load( ResourceGroup::menuMiddleIcons, 27), 60, 50 );
 

@@ -22,7 +22,7 @@
 #include "oc3_tile.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_gettext.hpp"
-#include "oc3_gui_paneling.hpp"
+#include "oc3_picture_decorator.hpp"
 #include "oc3_building_data.hpp"
 #include "oc3_house_level.hpp"
 #include "oc3_resourcegroup.hpp"
@@ -76,7 +76,7 @@ GuiInfoBox::GuiInfoBox( Widget* parent, const Rect& rect, int id )
   _d->bgPicture.reset( Picture::create( getSize() ) );
 
   // draws the box and the inner black box
-  GuiPaneling::instance().draw_white_frame(*_d->bgPicture, 0, 0, getWidth(), getHeight() );
+  PictureDecorator::instance().draw_white_frame(*_d->bgPicture, 0, 0, getWidth(), getHeight() );
 }
 
 GuiInfoBox::~GuiInfoBox()
@@ -156,7 +156,7 @@ InfoBoxWorkingBuilding::InfoBoxWorkingBuilding( Widget* parent, WorkingBuildingP
 
 void InfoBoxWorkingBuilding::paint()
 {
-  GuiPaneling::instance().draw_black_frame( *_d->bgPicture, 16, 136, getWidth() - 32, 62 );
+  PictureDecorator::instance().draw_black_frame( *_d->bgPicture, 16, 136, getWidth() - 32, 62 );
   
   if( _sd->building->getMaxWorkers() > 0 )
   {
@@ -208,7 +208,7 @@ InfoBoxSenate::InfoBoxSenate( Widget* parent, const Tile& tile )
 
 void InfoBoxSenate::paint()
 {
-  GuiPaneling::instance().draw_black_frame( *_d->bgPicture, 16, 136, getWidth() - 32, 62 );
+  PictureDecorator::instance().draw_black_frame( *_d->bgPicture, 16, 136, getWidth() - 32, 62 );
 
   // picture of citizen
   int paintY = 136;
@@ -255,7 +255,7 @@ InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
 void InfoBoxHouse::_paint()
 {
   int lbHeight = 20;
-  GuiPaneling::instance().draw_black_frame( *_d->bgPicture, 16, 150, 
+  PictureDecorator::instance().draw_black_frame( *_d->bgPicture, 16, 150, 
                                                _d->btnExit->getRight() - _d->btnHelp->getLeft(), 
                                                _d->btnExit->getTop() - 150 - 5 );
 
@@ -390,7 +390,7 @@ void GuiInfoFactory::paint()
     font.draw( *_d->bgPicture, text, 32 + 25, _paintY, false);
   }
 
-  GuiPaneling::instance().draw_black_frame( *_d->bgPicture, 16, 147, getWidth()-32, 62);
+  PictureDecorator::instance().draw_black_frame( *_d->bgPicture, 16, 147, getWidth()-32, 62);
   drawWorkers( 147 + 10 );
 }
 
@@ -513,7 +513,7 @@ void GuiInfoGranary::paint()
   drawGood(G_VEGETABLE, 1, _col2PaintY);
 
   _paintY+=12;
-  GuiPaneling::instance().draw_black_frame(*_d->bgPicture, 16, _paintY, getWidth()-32, 62);
+  PictureDecorator::instance().draw_black_frame(*_d->bgPicture, 16, _paintY, getWidth()-32, 62);
   _paintY+=12;
 
   drawWorkers( _paintY );
@@ -618,7 +618,7 @@ void InfoBoxWarehouse::paint()
   drawGood(G_POTTERY, 2, _paintY);
 
   _wd->workerFramePos = Point( 16, 170 );
-  GuiPaneling::instance().draw_black_frame(*_d->bgPicture, _wd->workerFramePos.getX(), _wd->workerFramePos.getY(), getWidth()-32, 62);
+  PictureDecorator::instance().draw_black_frame(*_d->bgPicture, _wd->workerFramePos.getX(), _wd->workerFramePos.getY(), getWidth()-32, 62);
 
   drawWorkers();
 }
@@ -680,7 +680,7 @@ InfoBoxTemple::InfoBoxTemple( Widget* parent, const Tile& tile )
 void InfoBoxTemple::drawWorkers()
 {
   int y = 56;
-  GuiPaneling::instance().draw_black_frame(*_d->bgPicture, 16, y, getWidth() - 32, 62 );
+  PictureDecorator::instance().draw_black_frame(*_d->bgPicture, 16, y, getWidth() - 32, 62 );
   // picture of citizen
   Picture& pic = Picture::load( ResourceGroup::panelBackground, 542 );
   _d->bgPicture->draw( pic, 16+15, y + 12);
@@ -768,7 +768,7 @@ void GuiInfoMarket::paint()
 void GuiInfoMarket::drawWorkers()
 {
   int y = 136;
-  GuiPaneling::instance().draw_black_frame(*_d->bgPicture, 16, y, getWidth() - 32, 62 );
+  PictureDecorator::instance().draw_black_frame(*_d->bgPicture, 16, y, getWidth() - 32, 62 );
   // picture of citizen
   Picture& pic = Picture::load( ResourceGroup::panelBackground, 542);
   _d->bgPicture->draw( pic, 16+15, y + 12);
@@ -816,7 +816,7 @@ GuiBuilding::GuiBuilding( Widget* parent, const Tile& tile )
 void GuiBuilding::paint()
 {
    int paintY = _d->lbTitle->getBottom() + 10;
-   GuiPaneling::instance().draw_black_frame(*_d->bgPicture, 16, paintY, getWidth()-32, getHeight()-paintY-16);
+   PictureDecorator::instance().draw_black_frame(*_d->bgPicture, 16, paintY, getWidth()-32, getHeight()-paintY-16);
    paintY+=10;  
 }
 
@@ -881,7 +881,7 @@ InfoBoxLand::InfoBoxLand( Widget* parent, const Tile& tile )
   
   _text->setText( text );
   
-  GuiPaneling::instance().draw_black_frame( *_d->bgPicture, 16, _d->lbTitle->getBottom() + 10, getWidth()-32, 180 );
+  PictureDecorator::instance().draw_black_frame( *_d->bgPicture, 16, _d->lbTitle->getBottom() + 10, getWidth()-32, 180 );
 }
 
 void InfoBoxLand::setText( const std::string& text )
@@ -936,7 +936,7 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
 {
   _fd->rawmb = tile.getTerrain().getOverlay().as<Factory>();
   
-  GuiPaneling::instance().draw_black_frame( *_d->bgPicture, 16, 146, getWidth() - 32, 64 );
+  PictureDecorator::instance().draw_black_frame( *_d->bgPicture, 16, 146, getWidth() - 32, 64 );
 
   // picture of citizen
   Picture& pic = Picture::load( ResourceGroup::panelBackground, 542);
@@ -945,7 +945,7 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
   if( _fd->rawmb->getOutGoodType() != G_NONE )
   {
     Picture pic = GoodHelper::getPicture( _fd->rawmb->getOutGoodType() );
-    _d->bgPicture->draw(pic, 10, 10);
+    _d->bgPicture->draw( pic, 10, 10 );
   }
 
   // number of workers
@@ -1006,10 +1006,6 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
   _fd->lbDesc->setWordWrap( true );
 
   setTitle( name );
-
-   // pictures of goods
-  Picture goodIcon = GoodHelper::getPicture( goodType );
-  _d->bgPicture->draw( goodIcon, 16, 16 );
 
   _fd->updateAboutText();
 }

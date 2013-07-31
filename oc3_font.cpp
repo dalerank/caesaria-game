@@ -209,7 +209,6 @@ void Font::draw(Picture& dstpic, const std::string &text, const int dx, const in
     return;
 
   SDL_Surface* sText = TTF_RenderUTF8_Blended( _d->ttfFont, text.c_str(), _d->color );
-  //_d->setSurfaceAlpha( sText, dstpic.getSurface(), _d->color.unused );  
   if( sText && useAlpha )
   {
     SDL_SetAlpha( sText, 0, 0 );

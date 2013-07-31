@@ -15,7 +15,7 @@
 
 #include "oc3_gui_dialogbox.hpp"
 #include "oc3_picture.hpp"
-#include "oc3_gui_paneling.hpp"
+#include "oc3_picture_decorator.hpp"
 #include "oc3_gui_label.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_texturedbutton.hpp"
@@ -46,7 +46,7 @@ DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& 
   }
 
   _d->background.reset( Picture::create( getSize() ) );
-  GuiPaneling::instance().draw_white_frame( *_d->background, 0, 0, getWidth(), getHeight() );
+  PictureDecorator::instance().draw_white_frame( *_d->background, 0, 0, getWidth(), getHeight() );
   Label* lbTitle = new Label( this, Rect( 10, 10, getWidth() - 10, 10 + 40), title );
   lbTitle->setFont( Font::create( FONT_3 ) );
   lbTitle->setTextAlignment( alignCenter, alignCenter );

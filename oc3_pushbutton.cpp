@@ -20,7 +20,7 @@
 #include "oc3_event.hpp"
 #include "oc3_time.hpp"
 #include "oc3_guienv.hpp"
-#include "oc3_gui_paneling.hpp"
+#include "oc3_picture_decorator.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_color.hpp"
 
@@ -140,29 +140,29 @@ void PushButton::_updateTexture( ElementState state )
     case GrayBorderLine:
     {
       const int picId[StateCount] = { 22, 25, 25, 22, 25 };
-      GuiPaneling::instance().draw_basic_text_button( *curTxs, 0, 0, getWidth(), picId[ state ] );
+      PictureDecorator::instance().draw_basic_text_button( *curTxs, 0, 0, getWidth(), picId[ state ] );
     }
     break;
 
     case WhiteBorderUp:
     {
-      GuiPaneling::instance().draw_white_area( *curTxs, 0, 0, getWidth(), getHeight() );
+      PictureDecorator::instance().draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteArea );
       
       if( state == stHovered )
-        GuiPaneling::instance().draw_brown0_borders( *curTxs, 0, 0, getWidth(), getHeight() );
+        PictureDecorator::instance().draw_brown0_borders( *curTxs, 0, 0, getWidth(), getHeight() );
       else
-        GuiPaneling::instance().draw_white0_borders( *curTxs, 0, 0, getWidth(), getHeight() );
+        PictureDecorator::instance().draw_white0_borders( *curTxs, 0, 0, getWidth(), getHeight() );
     }
     break;
 
     case BlackBorderUp:
     {
-      GuiPaneling::instance().draw_black_area( *curTxs, 0, 0, getWidth(), getHeight() );
+      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::blackArea );
 
       if( state == stHovered )
-        GuiPaneling::instance().draw_brown0_borders( *curTxs, 0, 0, getWidth(), getHeight() );
+        PictureDecorator::instance().draw_brown0_borders( *curTxs, 0, 0, getWidth(), getHeight() );
       else
-        GuiPaneling::instance().draw_white0_borders( *curTxs, 0, 0, getWidth(), getHeight() );
+        PictureDecorator::instance().draw_white0_borders( *curTxs, 0, 0, getWidth(), getHeight() );
     }
     break;
 

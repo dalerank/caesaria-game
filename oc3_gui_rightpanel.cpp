@@ -45,7 +45,7 @@ MenuRigthPanel* MenuRigthPanel::create( Widget* parent, const Rect& rectangle, c
     int y = 0;
     while( y <  ret->_d->picture->getHeight() )
     {
-        ret->_d->picture->draw( tilePic, 0, y);
+        ret->_d->picture->draw( tilePic, Point( 0, y ) );
         y += tilePic.getHeight();
     }
 

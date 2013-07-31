@@ -14,8 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_advisor_finance_window.hpp"
-#include "oc3_picture.hpp"
-#include "oc3_gui_paneling.hpp"
+#include "oc3_picture_decorator.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_pushbutton.hpp"
 #include "oc3_gui_label.hpp"
@@ -73,13 +72,13 @@ AdvisorFinanceWindow::AdvisorFinanceWindow( CityPtr city, Widget* parent, int id
   _d->background.reset( Picture::create( getSize() ) );
 
   //main _d->_d->background
-  GuiPaneling::instance().draw_white_frame(*_d->background, 0, 0, getWidth(), getHeight() );
+  PictureDecorator::instance().draw_white_frame(*_d->background, 0, 0, getWidth(), getHeight() );
   Picture& icon = Picture::load( ResourceGroup::panelBackground, 265 );
   _d->background->draw( icon, Point( 11, 11 ) );
 
   //buttons _d->_d->background
   Font fontWhite = Font::create( FONT_1_WHITE );
-  GuiPaneling::instance().draw_black_frame( *_d->background, 70, 50, getWidth() - 86, 70 );
+  PictureDecorator::instance().draw_black_frame( *_d->background, 70, 50, getWidth() - 86, 70 );
   std::string moneyStr = StringHelper::format( 0xff, "%s %d %s", _("##city_have##"), city->getFunds().getValue(), _("##denaries##") );
   fontWhite.draw( *_d->background, moneyStr, 70, 55, false );
   fontWhite.draw( *_d->background, _("##tax_rate##"), 65, 75, false );

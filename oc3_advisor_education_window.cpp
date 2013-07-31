@@ -14,8 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_advisor_education_window.hpp"
-#include "oc3_picture.hpp"
-#include "oc3_gui_paneling.hpp"
+#include "oc3_picture_decorator.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_pushbutton.hpp"
 #include "oc3_gui_label.hpp"
@@ -140,10 +139,10 @@ AdvisorEducationWindow::AdvisorEducationWindow( CityPtr city, Widget* parent, in
 
   _d->background.reset( Picture::create( getSize() ) );
   //main _d->_d->background
-  GuiPaneling::instance().draw_white_frame(*_d->background, 0, 0, getWidth(), getHeight() );
+  PictureDecorator::instance().draw_white_frame(*_d->background, 0, 0, getWidth(), getHeight() );
 
   //buttons _d->_d->background
-  GuiPaneling::instance().draw_black_frame( *_d->background, 35, 100, getWidth() - 35 * 2, 68 );
+  PictureDecorator::instance().draw_black_frame( *_d->background, 35, 100, getWidth() - 35 * 2, 68 );
 
   Font font = Font::create( FONT_1 );
   font.draw( *_d->background, _("##work##"), 180, 82, false );

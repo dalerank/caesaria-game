@@ -16,7 +16,7 @@
 #include "oc3_loadmapwindow.hpp"
 #include "oc3_gui_label.hpp"
 #include "oc3_texturedbutton.hpp"
-#include "oc3_gui_paneling.hpp"
+#include "oc3_picture_decorator.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_listbox.hpp"
@@ -74,7 +74,7 @@ LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect,
   _d->bgPicture.reset( Picture::create( getSize() ) );
 
   // draws the box and the inner black box
-  GuiPaneling::instance().draw_white_frame(*_d->bgPicture, 0, 0, getWidth(), getHeight() );
+  PictureDecorator::instance().draw_white_frame(*_d->bgPicture, 0, 0, getWidth(), getHeight() );
   GfxEngine::instance().loadPicture(*_d->bgPicture);
 }
 

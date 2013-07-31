@@ -46,6 +46,9 @@ public:
   virtual bool isActive() const;
   virtual void setActive( bool active );
 
+  virtual bool mayWork() const;
+  virtual bool standIdle() const;
+
   virtual void timeStep(const unsigned long time);
 
   virtual void save( VariantMap& stream) const;
@@ -54,7 +57,6 @@ public:
 protected:
   void _setProductRate( const float rate );
   virtual bool _mayDeliverGood() const;
-  virtual bool _mayWork() const;
 
 protected:
   class Impl;

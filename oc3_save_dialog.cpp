@@ -19,7 +19,7 @@
 #include "oc3_listbox.hpp"
 #include "oc3_editbox.hpp"
 #include "oc3_gui_label.hpp"
-#include "oc3_gui_paneling.hpp"
+#include "oc3_picture_decorator.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_texturedbutton.hpp"
 #include "oc3_filesystem.hpp"
@@ -78,7 +78,7 @@ SaveDialog::SaveDialog( Widget* parent, const std::string& dir, const std::strin
 
   _d->background.reset( Picture::create( getSize() ) );
   //main _d->_d->background
-  GuiPaneling::instance().draw_white_frame(*_d->background, 0, 0, getWidth(), getHeight() );
+  PictureDecorator::instance().draw_white_frame(*_d->background, 0, 0, getWidth(), getHeight() );
 
   _d->edFilename = new EditBox( this, Rect( 18, 40, 18 + 320, 40 + 30 ), "Savecity" );
   _d->directory = dir;

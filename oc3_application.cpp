@@ -120,9 +120,6 @@ void Application::Impl::initPictures(const io::FilePath& resourcePath)
 
   StringHelper::debug( 0xff, "Create runtime pictures" );
   pic_loader.createResources();
-
-  StringHelper::debug( 0xff, "Finalize gui pictures" );
-  pic_loader.finalizeResources();
 }
 
 void Application::setScreenWait()

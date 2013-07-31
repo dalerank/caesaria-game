@@ -20,7 +20,7 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_event.hpp"
 #include "oc3_gfx_engine.hpp"
-#include "oc3_gui_paneling.hpp"
+#include "oc3_picture_decorator.hpp"
 
 #define DEFAULT_SCROLLBAR_SIZE 39
 
@@ -101,8 +101,10 @@ void ListBox::_updateTexture()
   {    
     _d->background.reset( Picture::create( size ) );
     _d->picture.reset( Picture::create( size ) );
-    GuiPaneling::instance().draw_black_frame( *_d->background, 0, 0, getWidth() - _d->scrollBar->getWidth(), getHeight() );
-    GuiPaneling::instance().draw_white_area( *_d->background, getWidth() - _d->scrollBar->getWidth(), 0, getWidth(), getHeight() );
+    PictureDecorator::instance().draw_black_frame( *_d->background, 0, 0, getWidth() - _d->scrollBar->getWidth(), getHeight() );
+    PictureDecorator::draw( *_d->background,
+                            Rect( getWidth() - _d->scrollBar->getWidth(), 0, getWidth(), getHeight() ), 
+                            PictureDecorator::whiteArea  );
   }
 }
 

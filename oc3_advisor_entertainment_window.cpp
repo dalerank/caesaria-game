@@ -14,8 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_advisor_entertainment_window.hpp"
-#include "oc3_picture.hpp"
-#include "oc3_gui_paneling.hpp"
+#include "oc3_picture_decorator.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_texturedbutton.hpp"
 #include "oc3_gui_label.hpp"
@@ -144,12 +143,12 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow( CityPtr city, Widget* pa
 
   _d->background.reset( Picture::create( getSize() ) );
   //main _d->_d->background
-  GuiPaneling::instance().draw_white_frame(*_d->background, 0, 0, getWidth(), getHeight() );
+  PictureDecorator::instance().draw_white_frame(*_d->background, 0, 0, getWidth(), getHeight() );
   Picture& icon = Picture::load( ResourceGroup::panelBackground, 263 );
   _d->background->draw( icon, Point( 11, 11 ) );
 
   //buttons _d->_d->background
-  GuiPaneling::instance().draw_black_frame( *_d->background, 32, 60, getWidth() - 32 * 2, 86 );
+  PictureDecorator::instance().draw_black_frame( *_d->background, 32, 60, getWidth() - 32 * 2, 86 );
 
   Font font = Font::create( FONT_1 );
   font.draw( *_d->background, _("##work##"), 180, 45, false );
@@ -187,7 +186,7 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow( CityPtr city, Widget* pa
   }
 
   //festival
-  GuiPaneling::instance().draw_black_frame( *_d->background, 50, 247, getWidth() - 50 * 2, 110 );
+  PictureDecorator::instance().draw_black_frame( *_d->background, 50, 247, getWidth() - 50 * 2, 110 );
 
   Label* festivalTitle = new Label( this, Rect( 50, 218, getWidth() - 50, 218 + 35) );
   festivalTitle->setText( _("##Festivals##") );
