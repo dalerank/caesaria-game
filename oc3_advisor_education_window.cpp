@@ -139,10 +139,10 @@ AdvisorEducationWindow::AdvisorEducationWindow( CityPtr city, Widget* parent, in
 
   _d->background.reset( Picture::create( getSize() ) );
   //main _d->_d->background
-  PictureDecorator::instance().draw_white_frame(*_d->background, 0, 0, getWidth(), getHeight() );
+  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
 
   //buttons _d->_d->background
-  PictureDecorator::instance().draw_black_frame( *_d->background, 35, 100, getWidth() - 35 * 2, 68 );
+  PictureDecorator::draw( *_d->background, Rect( 35, 100, getWidth() - 32, 100 + 68 ), PictureDecorator::blackFrame );
 
   Font font = Font::create( FONT_1 );
   font.draw( *_d->background, _("##work##"), 180, 82, false );

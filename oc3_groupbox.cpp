@@ -115,12 +115,8 @@ void GroupBox::beforeDraw( GfxEngine& painter )
     }
     else
     {
-      switch( _d->style )
-      {
-      case whiteFrame: PictureDecorator::instance().draw_white_frame( *_d->texture, 0, 0, getWidth(), getHeight() ); break;
-      case blackFrame: PictureDecorator::instance().draw_black_frame( *_d->texture, 0, 0, getWidth(), getHeight() ); break;
-      default: break;
-      }
+      PictureDecorator::draw( *_d->texture, Rect( Point( 0, 0 ), getSize() ), 
+                              _d->style == whiteFrame ? PictureDecorator::whiteFrame : PictureDecorator::blackFrame );
     }
   }
 

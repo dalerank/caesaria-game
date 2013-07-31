@@ -126,7 +126,7 @@ void Label::_updateTexture( GfxEngine& painter )
     {
     case bgWhite: PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteArea); break;
     case bgBlack: PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::blackArea ); break;
-    case bgBrown: PictureDecorator::instance().draw_brown0_borders( *_d->background, 0, 0, getSize().getWidth(), getSize().getHeight() ); break;
+    case bgBrown: PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::brownBorder ); break;
     case bgNone: _d->background.reset(); break;
     }
   }

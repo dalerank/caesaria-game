@@ -74,8 +74,7 @@ LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect,
   _d->bgPicture.reset( Picture::create( getSize() ) );
 
   // draws the box and the inner black box
-  PictureDecorator::instance().draw_white_frame(*_d->bgPicture, 0, 0, getWidth(), getHeight() );
-  GfxEngine::instance().loadPicture(*_d->bgPicture);
+  PictureDecorator::draw( *_d->bgPicture, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
 }
 
 LoadMapWindow::~LoadMapWindow()

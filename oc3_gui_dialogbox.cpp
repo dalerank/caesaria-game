@@ -46,7 +46,8 @@ DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& 
   }
 
   _d->background.reset( Picture::create( getSize() ) );
-  PictureDecorator::instance().draw_white_frame( *_d->background, 0, 0, getWidth(), getHeight() );
+  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
+  
   Label* lbTitle = new Label( this, Rect( 10, 10, getWidth() - 10, 10 + 40), title );
   lbTitle->setFont( Font::create( FONT_3 ) );
   lbTitle->setTextAlignment( alignCenter, alignCenter );

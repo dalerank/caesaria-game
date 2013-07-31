@@ -47,7 +47,7 @@ public:
 class ResourceMenu
 {
 public:
-    static const int maximizeBtnPicId = 101;
+    static const int maximizeBtn = 101;
     static const int houseBtnPicId = 123;
     static const int helpInfBtnPicId = 528;
     static const int exitInfBtnPicId = 532;
@@ -67,6 +67,12 @@ public:
     static const int securityMidPicId = 9;
     static const int comerceMidPicId = 10;
     static const int emptyMidPicId = 13;
+};
+
+class PicID
+{
+public:
+    static const int empireStamp = 543;
 };
 
 #endif

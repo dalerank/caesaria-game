@@ -116,10 +116,10 @@ AdvisorRatingsWindow::AdvisorRatingsWindow( Widget* parent, int id, const CityPt
   title->setTextAlignment( alignUpperLeft, alignCenter );
 
   _d->background.reset( Picture::create( getSize() ) );
-  PictureDecorator::instance().draw_white_frame(*_d->background, 0, 0, getWidth(), getHeight() );
+  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
 
   //buttons _d->_d->background
-  PictureDecorator::instance().draw_black_frame( *_d->background, 66, 360, 510, 60 );
+  PictureDecorator::draw( *_d->background, Rect( Point( 66, 360 ), Size( 510, 60 ) ), PictureDecorator::blackFrame );
 
   _d->background->draw( Picture::load( ResourceGroup::menuMiddleIcons, 27), 60, 50 );
 

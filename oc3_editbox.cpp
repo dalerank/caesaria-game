@@ -747,7 +747,7 @@ void EditBox::beforeDraw( GfxEngine& painter )
       }
       else
       {
-        PictureDecorator::instance().draw_black_frame( *_d->picture, 0, 0, getWidth(), getHeight() );
+        PictureDecorator::draw( *_d->picture, Rect( 0, 0, getWidth(), getHeight() ), PictureDecorator::blackFrame );
       }
 
       Rect localClipRect = getAbsoluteRect();

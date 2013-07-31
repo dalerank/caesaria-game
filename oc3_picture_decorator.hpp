@@ -28,7 +28,18 @@ class PictureDecorator
 {
 public:
   typedef enum { whiteArea=0,   //white marble
-                 blackArea      //black marble rectangular area
+                 blackArea,      //black marble rectangular area
+                 lightgreyPanel, //lightgray text button background
+                 greyPanel,        //gray text button background
+                 smallBrownPanel,   //
+                 whiteBorder,       //white marble border
+                 blackBorder,      //black marble border
+                 brownBorder,      // draws brown borders
+                 whiteBorderA,      // draws white borders
+                 whiteFrame,       //white marble rectangular area with borders
+                 blackFrame,         //black marble rectangular area with borders
+                 brownFrame,        //brown rectangular area with borders
+                 greyFrame          //grey rectangular area with borders
                } Mode;
   static PictureDecorator& instance();
 
@@ -36,41 +47,19 @@ public:
 
   static void drawArea( Picture& dstpic, const Rect& rectangle,  int picId, int picCount, int offset, bool useAlpha );
 
-  // draws a white marble border
-  void draw_white_borders(Picture &dstpic, const int x, const int y, const int width, const int height);
-
-  // draws a black marble border
-  void draw_black_borders(Picture &dstpic, const int x, const int y, const int width, const int height);
-
-  // draws a white marble rectangular area with borders
-  void draw_white_frame(Picture &dstpic, const int x, const int y, const int width, const int height);
-
-  // draws a black marble rectangular area with borders
-  void draw_black_frame(Picture &dstpic, const int x, const int y, const int width, const int height);
-
-  // draws a brown rectangular area with borders
-  void draw_brown_frame(Picture &dstpic, const int x, const int y, const int width, const int height);
-
-  // draws a grey rectangular area with borders
-  void draw_grey_frame(Picture &dstpic, const int x, const int y, const int width, const int height);
-
-  // draws brown borders
-  void draw_brown0_borders(Picture &dstpic, const int x, const int y, const int width, const int height);
-
-  // draws white borders
-  void draw_white0_borders(Picture &dstpic, const int x, const int y, const int width, const int height);
-
   // draws a text button background  offset=22(lightgray), 25(gray), 62(small_green), 65(small_brown), 68(small_grey)
-  void draw_basic_text_button(Picture &dstpic, const int x, const int y, const int width, const int offset);
+  static void drawPanel( Picture &dstpic, const Rect& rectangle, int picId, bool useAlpha );
 
+  static void drawBorder( Picture &dstpic, const Rect& rectangle, int tp, int bp, int lp, int rp, 
+                          int pCount, int hCount, int ltc, int lbc, int rtc, int rbc, bool useAlpha );
   // draws a rectangular area
-  void draw_basic_frame(Picture &dstpic, const int x, const int y, const int width, const int height, const int offset);
+  static void drawFrame(Picture &dstpic, const Rect& rectangle, const int picId, bool useAlpha);
 
   // draws a rectangular perimeter
-  void draw_basic0_borders(Picture &dstpic, const int x, const int y, const int width, const int height, const int offset);
+  static void drawBorder(Picture &dstpic, const Rect& rectangle, const int picId, bool useAlpha);
 
 private:
-   PictureDecorator();
+  PictureDecorator();
 };
 
 #endif //_OPENCAESAR3_PICTURE_DECORATOR_INCLUDE_H_

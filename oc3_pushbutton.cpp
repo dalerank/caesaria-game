@@ -139,30 +139,26 @@ void PushButton::_updateTexture( ElementState state )
     {
     case GrayBorderLine:
     {
-      const int picId[StateCount] = { 22, 25, 25, 22, 25 };
-      PictureDecorator::instance().draw_basic_text_button( *curTxs, 0, 0, getWidth(), picId[ state ] );
+      PictureDecorator::Mode mode = (state == stNormal || state == stDisabled) 
+                                        ? PictureDecorator::lightgreyPanel 
+                                        : PictureDecorator::greyPanel;
+      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), mode );
     }
     break;
 
     case WhiteBorderUp:
     {
-      PictureDecorator::instance().draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteArea );
-      
-      if( state == stHovered )
-        PictureDecorator::instance().draw_brown0_borders( *curTxs, 0, 0, getWidth(), getHeight() );
-      else
-        PictureDecorator::instance().draw_white0_borders( *curTxs, 0, 0, getWidth(), getHeight() );
+      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteArea );
+      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), 
+                              state == stHovered ? PictureDecorator::brownBorder : PictureDecorator::whiteBorderA );
     }
     break;
 
     case BlackBorderUp:
     {
       PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::blackArea );
-
-      if( state == stHovered )
-        PictureDecorator::instance().draw_brown0_borders( *curTxs, 0, 0, getWidth(), getHeight() );
-      else
-        PictureDecorator::instance().draw_white0_borders( *curTxs, 0, 0, getWidth(), getHeight() );
+      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), 
+                              state == stHovered ? PictureDecorator::brownBorder : PictureDecorator::whiteBorderA );
     }
     break;
 

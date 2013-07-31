@@ -154,16 +154,15 @@ AdvisorEmployerWindow::AdvisorEmployerWindow( CityPtr city, Widget* parent, int 
   _d->city = city;
   _d->background.reset( Picture::create( getSize() ) );
   //main _d->_d->background
-  PictureDecorator::instance().draw_white_frame(*_d->background, 0, 0, getWidth(), getHeight() );
+  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
 
   //buttons _d->_d->background
   Point startPos( 32, 70 );
-  PictureDecorator::instance().draw_black_frame(*_d->background, startPos.getX(), startPos.getY(), 576, 238 );
+  PictureDecorator::draw( *_d->background, Rect( startPos, Size( 576, 238 ) ), PictureDecorator::blackFrame );
 
   //salary _d->_d->background
   Rect salaryBgRect( Point( 64, 352 ), Size( 510, 32 ) );
-  PictureDecorator::instance().draw_black_frame(*_d->background, salaryBgRect.getLeft(), salaryBgRect.getTop(),
-    salaryBgRect.getWidth(), salaryBgRect.getHeight() );
+  PictureDecorator::draw( *_d->background, salaryBgRect, PictureDecorator::blackFrame );
 
   Font font = Font::create( FONT_1 );
   font.draw( *_d->background, _("##advemployer_panel_priority##"), 56, 54, false );

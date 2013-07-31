@@ -78,7 +78,7 @@ SaveDialog::SaveDialog( Widget* parent, const std::string& dir, const std::strin
 
   _d->background.reset( Picture::create( getSize() ) );
   //main _d->_d->background
-  PictureDecorator::instance().draw_white_frame(*_d->background, 0, 0, getWidth(), getHeight() );
+  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
 
   _d->edFilename = new EditBox( this, Rect( 18, 40, 18 + 320, 40 + 30 ), "Savecity" );
   _d->directory = dir;

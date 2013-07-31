@@ -38,11 +38,10 @@ AdvisorLegionWindow::AdvisorLegionWindow( Widget* parent, int id )
 
   _d->background.reset( Picture::create( getSize() ) );
   //main background
-  PictureDecorator::instance().draw_white_frame(*_d->background, 0, 0, getWidth(), getHeight() );
+  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
 
   //buttons background
-  Point startPos( 32, 70 );
-  PictureDecorator::instance().draw_black_frame(*_d->background, startPos.getX(), startPos.getY(), 574, 270 );
+  PictureDecorator::draw( *_d->background, Rect( Point( 32, 70 ), Size( 574, 270 )), PictureDecorator::blackFrame );
 
   Label* title = new Label( this, Rect( 10, 10, getWidth() - 10, 10 + 40) );
   title->setText( _("##advlegion_window_title##") );

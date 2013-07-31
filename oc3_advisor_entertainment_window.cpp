@@ -143,12 +143,13 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow( CityPtr city, Widget* pa
 
   _d->background.reset( Picture::create( getSize() ) );
   //main _d->_d->background
-  PictureDecorator::instance().draw_white_frame(*_d->background, 0, 0, getWidth(), getHeight() );
-  Picture& icon = Picture::load( ResourceGroup::panelBackground, 263 );
-  _d->background->draw( icon, Point( 11, 11 ) );
+  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
 
   //buttons _d->_d->background
-  PictureDecorator::instance().draw_black_frame( *_d->background, 32, 60, getWidth() - 32 * 2, 86 );
+  PictureDecorator::draw( *_d->background, Rect( 32, 60, getWidth() - 32, 60 + 86 ), PictureDecorator::blackFrame );
+
+  Picture& icon = Picture::load( ResourceGroup::panelBackground, 263 );
+  _d->background->draw( icon, Point( 11, 11 ) );
 
   Font font = Font::create( FONT_1 );
   font.draw( *_d->background, _("##work##"), 180, 45, false );
@@ -186,7 +187,7 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow( CityPtr city, Widget* pa
   }
 
   //festival
-  PictureDecorator::instance().draw_black_frame( *_d->background, 50, 247, getWidth() - 50 * 2, 110 );
+  PictureDecorator::draw( *_d->background, Rect( 50, 247, getWidth() - 50, 247 + 110 ), PictureDecorator::blackFrame );
 
   Label* festivalTitle = new Label( this, Rect( 50, 218, getWidth() - 50, 218 + 35) );
   festivalTitle->setText( _("##Festivals##") );

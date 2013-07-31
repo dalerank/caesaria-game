@@ -72,13 +72,15 @@ AdvisorFinanceWindow::AdvisorFinanceWindow( CityPtr city, Widget* parent, int id
   _d->background.reset( Picture::create( getSize() ) );
 
   //main _d->_d->background
-  PictureDecorator::instance().draw_white_frame(*_d->background, 0, 0, getWidth(), getHeight() );
+  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
+  //buttons _d->_d->background
+  PictureDecorator::draw( *_d->background, Rect( Point( 70, 50 ), Size( getWidth() - 86, 70 ) ), PictureDecorator::blackFrame);
+
   Picture& icon = Picture::load( ResourceGroup::panelBackground, 265 );
   _d->background->draw( icon, Point( 11, 11 ) );
 
-  //buttons _d->_d->background
   Font fontWhite = Font::create( FONT_1_WHITE );
-  PictureDecorator::instance().draw_black_frame( *_d->background, 70, 50, getWidth() - 86, 70 );
+
   std::string moneyStr = StringHelper::format( 0xff, "%s %d %s", _("##city_have##"), city->getFunds().getValue(), _("##denaries##") );
   fontWhite.draw( *_d->background, moneyStr, 70, 55, false );
   fontWhite.draw( *_d->background, _("##tax_rate##"), 65, 75, false );

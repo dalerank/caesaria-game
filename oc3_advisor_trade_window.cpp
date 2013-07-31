@@ -84,7 +84,7 @@ public:
 
       if( state == stHovered ) 
       {
-        PictureDecorator::instance().draw_brown0_borders( *background, 50, 0, getWidth() - 50*2, getHeight() );
+        PictureDecorator::draw( *background, Rect( 50, 0, getWidth() - 50, getHeight() ), PictureDecorator::brownBorder, false );
       }
     }
   }
@@ -138,7 +138,7 @@ public:
     : Widget( parent, -1, rectangle )
   {
     _background.reset( Picture::create( getSize() ) );
-    PictureDecorator::instance().draw_white_frame( *_background, 0, 0, getWidth(), getHeight() );
+    PictureDecorator::draw( *_background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
 
     const Picture& iconGood = GoodHelper::getPicture( type );
     _background->draw( iconGood, Point( 10, 10 ) );
@@ -284,7 +284,7 @@ AdvisorTradeWindow::AdvisorTradeWindow( CityPtr city, Widget* parent, int id )
   _d->background.reset( Picture::create( getSize() ) );
   _d->city = city;
   //main _d->_d->background
-  PictureDecorator::instance().draw_white_frame(*_d->background, 0, 0, getWidth(), getHeight() );
+  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
 
   _d->btnEmpireMap = new PushButton( this, Rect( Point( 100, 398), Size( 200, 24 ) ), _("##empire_map##"), -1, false, PushButton::WhiteBorderUp );
   _d->btnPrices = new PushButton( this, Rect( Point( 400, 398), Size( 200, 24 ) ), _("##show_prices##"), -1, false, PushButton::WhiteBorderUp );

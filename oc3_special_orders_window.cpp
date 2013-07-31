@@ -124,7 +124,7 @@ BaseSpecialOrdersWindow::BaseSpecialOrdersWindow( Widget* parent, const Point& p
   _d->bgPicture.reset( Picture::create( getSize() ) );
 
   // draws the box and the inner black box
-  PictureDecorator::instance().draw_white_frame(*_d->bgPicture, 0, 0, getWidth(), getHeight() );
+  PictureDecorator::draw( *_d->bgPicture, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
 
   _d->gbOrders = new GroupBox( this, Rect( 17, 42, getWidth() - 17, getHeight() - 70), -1, GroupBox::blackFrame );  
   _d->gbOrdersInsideArea = new Widget( _d->gbOrders, -1, Rect( 5, 5, _d->gbOrders->getWidth() -5, _d->gbOrders->getHeight() -5 ) );
