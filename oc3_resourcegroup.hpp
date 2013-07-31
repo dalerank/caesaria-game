@@ -75,4 +75,15 @@ public:
     static const int empireStamp = 543;
 };
 
+class WaterOverlay
+{
+public:
+    static const int base = 1;
+    static const int skipRightBorder = 1;
+    static const int skipLeftBorder = 2;
+    static const int inHouse = 4;
+    static const int reservoirRange = 8;
+    static const int haveWater = 16;
+};
+
 #endif

@@ -77,7 +77,7 @@ public:
       break;
       
       case exportGoods:
-        tradeStateText = StringHelper::format( 0xff, "%s %d", ruleName[ _trade ], _tradeQty );
+        tradeStateText = StringHelper::format( 0xff, "%s %d", ruleName[ _trade ].c_str(), _tradeQty );
       break;
       }
       font.draw( *textPic, tradeStateText, 340, 0 );
