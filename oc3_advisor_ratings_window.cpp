@@ -33,7 +33,7 @@ class RatingButton : public PushButton
 {
 public:
   RatingButton( Widget* parent, const Point& pos, const std::string& title )
-    : PushButton( parent, Rect( pos, Size( 108, 65 )), title, -1, false, PushButton::WhiteBorderUp )
+    : PushButton( parent, Rect( pos, Size( 108, 65 )), title, -1, false, PushButton::whiteBorderUp )
   {
     setTextAlignment( alignCenter, alignUpperLeft );
     _value = 0;

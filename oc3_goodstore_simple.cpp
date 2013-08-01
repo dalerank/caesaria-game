@@ -22,7 +22,7 @@ SimpleGoodStore::SimpleGoodStore()
   _maxQty = 0;
 
   _goodStockList.resize(G_MAX);
-  for (int n = 0; n < (int) G_MAX; ++n)
+  for (int n = 0; n < (int)G_MAX; ++n)
   {
     _goodStockList[n] = GoodStock((GoodType)n, 0, 0);
   }

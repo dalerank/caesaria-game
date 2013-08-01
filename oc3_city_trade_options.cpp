@@ -14,8 +14,50 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_city_trade_options.hpp"
+#include "oc3_goodstore_simple.hpp"
 
-CityTradeOptions::CityTradeOptions()
+class CityTradeOptions::Impl
+{
+public:
+  SimpleGoodStore trading;
+};
+
+CityTradeOptions::CityTradeOptions() : _d( new Impl )
 {
 
+}
+
+int CityTradeOptions::getExportLimit( GoodType type ) const
+{
+  return _d->trading.getMaxQty( type );
+}
+
+CityTradeOptions::Order CityTradeOptions::getOrder( GoodType type ) const
+{
+  return noTrade;
+}
+
+CityTradeOptions::~CityTradeOptions()
+{
+
+}
+
+CityTradeOptions::Order CityTradeOptions::switchOrder( GoodType type )
+{
+  return noTrade;
+}
+
+void CityTradeOptions::setExportLimit( GoodType type, int qty )
+{
+  _d->trading.setMaxQty( type, qty );
+}
+
+bool CityTradeOptions::isGoodsStacking( GoodType type )
+{
+  return false;
+}
+
+void CityTradeOptions::setStackMode( GoodType type, bool stackGoods )
+{
+  
 }

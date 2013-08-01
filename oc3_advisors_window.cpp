@@ -75,7 +75,7 @@ AdvisorsWindow::AdvisorsWindow( Widget* parent, int id )
   Point tabButtonPos( (getWidth() - 636) / 2, getHeight() / 2 + 192);
 
   _d->background->draw( Picture::load( ResourceGroup::menuMiddleIcons, 14 ), tabButtonPos.getX(), tabButtonPos.getY() );
-  PushButton* btn = addButton( ADV_EMPLOYERS, 255 );
+  addButton( ADV_EMPLOYERS, 255 );
   addButton( ADV_LEGION, 256 );
   addButton( ADV_EMPIRE, 257 );
   addButton( ADV_RATINGS, 258 );
@@ -88,12 +88,10 @@ AdvisorsWindow::AdvisorsWindow( Widget* parent, int id )
   addButton( ADV_FINANCE, 265 );
   addButton( ADV_MAIN, 266 );
 
-  //!!! exit button have no pressed image
-  btn = addButton( ADV_COUNT, 267 );
-  btn->setPicture( &Picture::load( ResourceGroup::advisorwindow, 3 ), stPressed );
+  PushButton* btn = addButton( ADV_COUNT, 609 );
   btn->setIsPushButton( false );
+
   CONNECT( btn, onClicked(), this, AdvisorsWindow::deleteLater );
-  //!!!
 }
 
 void AdvisorsWindow::showAdvisor( const AdvisorType type )

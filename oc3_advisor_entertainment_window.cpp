@@ -195,7 +195,7 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow( CityPtr city, Widget* pa
   festivalTitle->setTextAlignment( alignUpperLeft, alignCenter );
 
   PushButton* festivalBtn = new PushButton( this, Rect( Point( 104, 278 ), Size( 300, 20) ), 
-                                            _("##new_festival##"), -1, false, PushButton::BlackBorderUp );
+                                            _("##new_festival##"), -1, false, PushButton::blackBorderUp );
 
   Picture& pic = Picture::load( ResourceGroup::menuMiddleIcons, 16 );
   _d->background->draw( pic, 460, 260 );

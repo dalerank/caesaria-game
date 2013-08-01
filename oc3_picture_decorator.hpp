@@ -32,6 +32,7 @@ public:
                  lightgreyPanel, //lightgray text button background
                  greyPanel,        //gray text button background
                  smallBrownPanel,   //
+                 smallGreyPanel,
                  whiteBorder,       //white marble border
                  blackBorder,      //black marble border
                  brownBorder,      // draws brown borders

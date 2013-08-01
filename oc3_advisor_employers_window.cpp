@@ -17,7 +17,7 @@
 #include "oc3_advisor_employers_window.hpp"
 #include "oc3_picture_decorator.hpp"
 #include "oc3_gettext.hpp"
-#include "oc3_pushbutton.hpp"
+#include "oc3_texturedbutton.hpp"
 #include "oc3_gui_label.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_stringhelper.hpp"
@@ -32,7 +32,7 @@ class EmployerButton : public PushButton
 {
 public:
   EmployerButton( Widget* parent, const Point& pos, int index, const std::string& caption, int need, int have )
-    : PushButton( parent, Rect( pos + employerButtonOffset * index, employerButtonSize), "", index, false, PushButton::BlackBorderUp )
+    : PushButton( parent, Rect( pos + employerButtonOffset * index, employerButtonSize), "", index, false, PushButton::blackBorderUp )
   {
     _title = caption;
     _needWorkers = need;
@@ -181,17 +181,8 @@ AdvisorEmployerWindow::AdvisorEmployerWindow( CityPtr city, Widget* parent, int 
   btn = _d->addButton( this, startPos, Impl::prHealthAndEducation, "health&education" );
   btn = _d->addButton( this, startPos, Impl::prAdministrationAndReligion, "administration&religion" );
 
-  Picture pic = Picture::load( ResourceGroup::advisorwindow, 1 );
-  btn = new PushButton( this, Rect( Point( 160, 356 ), Size( 24 ) ), "", -1 );
-  btn->setPicture( &pic, stNormal );
-  btn->setPicture( &pic, stHovered );
-  btn->setPicture( &pic, stPressed );
-
-  pic = Picture::load( ResourceGroup::advisorwindow, 2 );
-  btn = new PushButton( this, Rect( Point( 160+24, 356 ), Size( 24 ) ), "", -1 );
-  btn->setPicture( &pic, stNormal );
-  btn->setPicture( &pic, stHovered );
-  btn->setPicture( &pic, stPressed );
+  btn = new TexturedButton( this, Point( 160, 356 ), Size( 24 ), -1, 601 );
+  btn = new TexturedButton( this, Point( 160+24, 356 ), Size( 24 ), -1, 605 );
 
   Font font2 = Font::create( FONT_2 );
   font2.draw( *_d->background, _("##advemployer_panel_salary##"), salaryBgRect.UpperLeftCorner + Point( 4, 4), false );

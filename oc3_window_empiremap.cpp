@@ -170,7 +170,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   }
 
   PushButton* btnOpenTrade = new PushButton( tradeInfo, Rect( startDraw + Point( 0, 40 ), Size( 400, 20 ) ),
-                                             "", -1, false, PushButton::BlackBorderUp );
+                                             "", -1, false, PushButton::blackBorderUp );
   btnOpenTrade->setVisible( false );
 
   const std::string& playerCityName = scenario->getCity()->getName();
@@ -223,7 +223,7 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
   }
 
   PushButton* btnOpenTrade = new PushButton( tradeInfo, Rect( startDraw, Size( 400, 20 ) ),
-    "", -1, false, PushButton::BlackBorderUp );
+    "", -1, false, PushButton::blackBorderUp );
   btnOpenTrade->setVisible( false );
   btnOpenTrade->setText( StringHelper::format( 0xff, "%d %s", 1000, _("##dn_for_open_trade##")));
   btnOpenTrade->setVisible( !currentCity->isTradeActive() );

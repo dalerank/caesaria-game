@@ -70,7 +70,7 @@ void AdvisorEmperorWindow::showChangeSalaryWindow()
 
   CONNECT( lbx, onItemSelected(), _d.data(), Impl::changePlayerSalary );
 
-  PushButton* btn = new PushButton( gb, Rect( Point( 176, gb->getHeight() - 32 ), Size( 160, 20) ), _("##cancel##"), -1, false, PushButton::WhiteBorderUp );
+  PushButton* btn = new PushButton( gb, Rect( Point( 176, gb->getHeight() - 32 ), Size( 160, 20) ), _("##cancel##"), -1, false, PushButton::whiteBorderUp );
   CONNECT( btn, onClicked(), gb, GroupBox::deleteLater );
 }
 
@@ -100,9 +100,9 @@ AdvisorEmperorWindow::AdvisorEmperorWindow( Widget* parent, int id )
   _d->lbPost = new Label( this, Rect( Point( 70, 336 ), Size( 240, 26 ) ), "Post");
   _d->lbPrimaryFunds = new Label( this, Rect( Point( 70, 370 ), Size( 240, 20 ) ), "PrimaryFunds 0" );
 
-  _d->btnSendGift = new PushButton( this, Rect( Point( 322, 343), Size( 250, 20 ) ), "Send gift", -1, false, PushButton::BlackBorderUp );
-  _d->btnSend2City = new PushButton( this, Rect( Point( 322, 370), Size( 250, 20 ) ), "Send to city", -1, false, PushButton::BlackBorderUp );
-  _d->btnChangeSalary = new PushButton( this, Rect( Point( 70, 395), Size( 500, 20 ) ), "Change salary", -1, false, PushButton::BlackBorderUp );  
+  _d->btnSendGift = new PushButton( this, Rect( Point( 322, 343), Size( 250, 20 ) ), "Send gift", -1, false, PushButton::blackBorderUp );
+  _d->btnSend2City = new PushButton( this, Rect( Point( 322, 370), Size( 250, 20 ) ), "Send to city", -1, false, PushButton::blackBorderUp );
+  _d->btnChangeSalary = new PushButton( this, Rect( Point( 70, 395), Size( 500, 20 ) ), "Change salary", -1, false, PushButton::blackBorderUp );  
   CONNECT( _d->btnChangeSalary, onClicked(), this, AdvisorEmperorWindow::showChangeSalaryWindow );
 }
 
