@@ -10,7 +10,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a createCopy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
@@ -131,19 +131,18 @@ Picture& Picture::load( const std::string& filename )
   return PictureBank::instance().getPicture( filename );
 }
 
-Picture* Picture::copy() const
+Picture* Picture::createCopy() const
 {
   if( !_d->surface )
   {
-    _OC3_DEBUG_BREAK_IF( true && "No surface" );
+    _OC3_DEBUG_BREAK_IF( "No surface for duplicate" );
     return GfxEngine::instance().createPicture( Size( 100 ) );
   }
 
   int width = _d->surface->w;
   int height = _d->surface->h;
 
-  SDL_Surface* img = 0;
-  img = SDL_ConvertSurface( _d->surface, _d->surface->format, SDL_SWSURFACE);
+  SDL_Surface* img = SDL_ConvertSurface( _d->surface, _d->surface->format, SDL_SWSURFACE);
   if (img == NULL) 
   {
     THROW("Cannot make surface, size=" << width << "x" << height);
@@ -155,78 +154,55 @@ Picture* Picture::copy() const
   return newpic;
 }
 
-void Picture::draw( const Picture &srcpic, const int dx, const int dy )
+void Picture::draw( const Picture &srcpic, const Rect& srcrect, const Point& pos, bool useAlpha )
+{
+  draw( srcpic, srcrect, Rect( pos, srcrect.getSize() ), useAlpha );
+}
+
+void Picture::draw( const Picture &srcpic, const Rect& srcrect, const Rect& dstrect, bool useAlpha )
 {
   SDL_Surface *srcimg = srcpic.getSurface();
 
-  if( !srcimg || !_d->surface )
+  if( !(srcimg && _d->surface) )
   {
     return;
   }
 
-  SDL_Rect src, dst;
+  SDL_Rect srcRect, dstRect;
 
-  src.x = 0;
-  src.y = 0;
-  src.w = srcimg->w;
-  src.h = srcimg->h;
-  dst.x = dx + srcpic._d->offset.getX();
-  dst.y = dy - srcpic._d->offset.getY();
-  dst.w = src.w;
-  dst.h = src.h;
+  srcRect.x = srcrect.getLeft();
+  srcRect.y = srcrect.getTop();
+  srcRect.w = srcrect.getWidth();
+  srcRect.h = srcrect.getHeight();
+  dstRect.x = dstrect.getLeft();
+  dstRect.y = dstrect.getTop();
+  dstRect.w = dstrect.getWidth();
+  dstRect.h = dstrect.getHeight();
 
-  SDL_BlitSurface(srcimg, &src, _d->surface, &dst);
-}
-
-void Picture::draw( const Picture &srcpic, const Rect& srcrect, const Point& pos )
-{
-  SDL_Surface *srcimg = srcpic.getSurface();
-
-  if( !srcimg || !_d->surface )
+  if( useAlpha )
   {
-    return;
+    SDL_BlitSurface(srcimg, &srcRect, _d->surface, &dstRect);
   }
-
-  SDL_Rect src, dst;
-
-  src.x = srcrect.UpperLeftCorner.getX();
-  src.y = srcrect.UpperLeftCorner.getY();
-  src.w = srcrect.getWidth();
-  src.h = srcrect.getHeight();
-  dst.x = pos.getX();
-  dst.y = pos.getY();
-  dst.w = src.w;
-  dst.h = src.h;
-
-  SDL_BlitSurface(srcimg, &src, _d->surface, &dst);
-}
-
-void Picture::draw( const Picture &srcpic, const Rect& srcrect, const Rect& dstrect )
-{
-  SDL_Surface *srcimg = srcpic.getSurface();
-
-  if( !srcimg || !_d->surface )
+  else
   {
-    return;
+    SDL_Surface* tmpSurface = SDL_ConvertSurface( srcimg, _d->surface->format, SDL_SWSURFACE);
+    SDL_SetAlpha( tmpSurface, 0, 0 );
+
+    SDL_BlitSurface(tmpSurface, &srcRect, _d->surface, &dstRect);
+    SDL_FreeSurface( tmpSurface );
   }
-
-  SDL_Rect src, dst;
-
-  src.x = srcrect.getLeft();
-  src.y = srcrect.getTop();
-  src.w = srcrect.getWidth();
-  src.h = srcrect.getHeight();
-  dst.x = dstrect.getLeft();
-  dst.y = dstrect.getTop();
-  dst.w = dstrect.getWidth();
-  dst.h = dstrect.getHeight();
-
-  SDL_BlitSurface(srcimg, &src, _d->surface, &dst);
 }
 
-void Picture::draw( const Picture &srcpic, const Point& pos )
+void Picture::draw( const Picture &srcpic, const Point& pos, bool useAlpha )
 {
-  draw( srcpic, pos.getX(), pos.getY() );
+  draw( srcpic, Rect( Point( 0, 0 ), srcpic.getSize() ), 
+                Rect( pos + Point( srcpic._d->offset.getX(), -srcpic._d->offset.getY() ), srcpic.getSize() ), useAlpha );
+
+}
+
+void Picture::draw( const Picture &srcpic, int x, int y, bool useAlpha/*=true */ )
+{
+  draw( srcpic, Point( x, y ), useAlpha );
 }
 
 void Picture::lock()
@@ -361,7 +337,8 @@ void Picture::fill( const NColor& color, const Rect& rect )
   SDL_LockSurface( source );
   SDL_Rect sdlRect = { (short)rect.getLeft(), (short)rect.getTop(), (Uint16)rect.getWidth(), (Uint16)rect.getHeight() };
 
-  SDL_FillRect(source, rect.getWidth() > 0 ? &sdlRect : NULL, SDL_MapRGBA(source->format, color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha() )); 
+  SDL_FillRect(source, rect.getWidth() > 0 ? &sdlRect : NULL, SDL_MapRGBA( source->format, color.getRed(), color.getGreen(), 
+                                                                                           color.getBlue(), color.getAlpha() )); 
   SDL_UnlockSurface(source);
 }
 

@@ -23,7 +23,7 @@
 #include <iterator>
 
 #include "oc3_exception.hpp"
-#include "oc3_gui_paneling.hpp"
+#include "oc3_picture_decorator.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_building.hpp"
 #include "oc3_building_data.hpp"

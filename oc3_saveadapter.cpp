@@ -20,9 +20,9 @@
 
 #include <fstream>
 
-VariantMap SaveAdapter::load( const std::string& fileName )
+VariantMap SaveAdapter::load( const io::FilePath& fileName )
 {
-  std::fstream f(fileName.c_str(), std::ios::in | std::ios::binary);
+  std::fstream f( fileName.toString().c_str(), std::ios::in | std::ios::binary);
 
   f.seekg( 0, std::ios::end);
   std::ios::pos_type lastPos = f.tellp();
@@ -45,12 +45,12 @@ VariantMap SaveAdapter::load( const std::string& fileName )
     }
     else
     {
-      StringHelper::debug( 0xff, "Can't parse file %s: %s", fileName.c_str(), ret.toString().c_str() );
+      StringHelper::debug( 0xff, "Can't parse file %s: %s", fileName.toString().c_str(), ret.toString().c_str() );
     }
   }
   else
   {
-    StringHelper::debug( 0xff, "Can't find file %s", fileName.c_str() );
+    StringHelper::debug( 0xff, "Can't find file %s", fileName.toString().c_str() );
   }
 
   return VariantMap();
@@ -61,12 +61,12 @@ SaveAdapter::SaveAdapter()
 
 }
 
-bool SaveAdapter::save( const VariantMap& options, const std::string& filename )
+bool SaveAdapter::save( const VariantMap& options, const io::FilePath& filename )
 {
   std::string data = Json::serialize( options.toVariant(), " " );
   if( !data.empty() )
   {
-    std::fstream f(filename.c_str(), std::ios::out | std::ios::binary);
+    std::fstream f( filename.toString().c_str(), std::ios::out | std::ios::binary);
     f.write( data.c_str(), data.size() ); 
     f.close();
   }

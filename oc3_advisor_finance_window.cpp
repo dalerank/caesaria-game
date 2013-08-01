@@ -14,8 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_advisor_finance_window.hpp"
-#include "oc3_picture.hpp"
-#include "oc3_gui_paneling.hpp"
+#include "oc3_picture_decorator.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_pushbutton.hpp"
 #include "oc3_gui_label.hpp"
@@ -39,9 +38,12 @@ public:
   Label* lbTaxRateNow;
   TexturedButton* btnHelp;
 
-  void drawReportRow( const Point& pos, const std::string& title, int lyvalue, int tyvalue )
+  void drawReportRow( const Point& pos, const std::string& title, CityFunds::IssueType type )
   {
     Font font = Font::create( FONT_1 );
+
+    int lyvalue = city->getFunds().getIssueValue( type, CityFunds::lastYear );
+    int tyvalue = city->getFunds().getIssueValue( type, CityFunds::thisYear );
 
     font.draw( *background, title, pos, false );
     font.draw( *background, StringHelper::format( 0xff, "%d", lyvalue ), pos + Point( 215, 0), false );
@@ -70,13 +72,15 @@ AdvisorFinanceWindow::AdvisorFinanceWindow( CityPtr city, Widget* parent, int id
   _d->background.reset( Picture::create( getSize() ) );
 
   //main _d->_d->background
-  GuiPaneling::instance().draw_white_frame(*_d->background, 0, 0, getWidth(), getHeight() );
+  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
+  //buttons _d->_d->background
+  PictureDecorator::draw( *_d->background, Rect( Point( 70, 50 ), Size( getWidth() - 86, 70 ) ), PictureDecorator::blackFrame);
+
   Picture& icon = Picture::load( ResourceGroup::panelBackground, 265 );
   _d->background->draw( icon, Point( 11, 11 ) );
 
-  //buttons _d->_d->background
   Font fontWhite = Font::create( FONT_1_WHITE );
-  GuiPaneling::instance().draw_black_frame( *_d->background, 70, 50, getWidth() - 86, 70 );
+
   std::string moneyStr = StringHelper::format( 0xff, "%s %d %s", _("##city_have##"), city->getFunds().getValue(), _("##denaries##") );
   fontWhite.draw( *_d->background, moneyStr, 70, 55, false );
   fontWhite.draw( *_d->background, _("##tax_rate##"), 65, 75, false );
@@ -95,31 +99,32 @@ AdvisorFinanceWindow::AdvisorFinanceWindow( CityPtr city, Widget* parent, int id
   Point startPoint( 75, 145 );
   Point offset( 0, 17 );
 
-  _d->drawReportRow( startPoint, _("##Taxes##"), 0, 0 );
-  _d->drawReportRow( startPoint + offset, _("##Trade##"), 0, 0 );
-  _d->drawReportRow( startPoint + offset * 2, _("##Donations"), 0, 0 );
-  _d->drawReportRow( startPoint + offset * 3, _("##Debet##"), 0, 0 );
+  _d->drawReportRow( startPoint, _("##Taxes##"), CityFunds::taxIncome );
+  _d->drawReportRow( startPoint + offset, _("##Trade##"), CityFunds::exportGoods );
+  _d->drawReportRow( startPoint + offset * 2, _("##Donations##"), CityFunds::donation );
+  _d->drawReportRow( startPoint + offset * 3, _("##Debet##"), CityFunds::debet );
   _d->background->fill( 0xff000000, Rect( startPoint + offset * 3 + Point( 200, 0 ), Size( 72, 1) ) );
   _d->background->fill( 0xff000000, Rect( startPoint + offset * 3 + Point( 340, 0 ), Size( 72, 1) ) );
   
   startPoint += Point( 0, 6 );
-  _d->drawReportRow( startPoint + offset * 4, _("##Import##"), 0, 0 );
-  _d->drawReportRow( startPoint + offset * 5, _("##Salaries##"), 0, 0 );
-  _d->drawReportRow( startPoint + offset * 6, _("##Buildings##"), 0, 0 );
-  _d->drawReportRow( startPoint + offset * 7, _("##Percents##"), 0, 0 );
-  _d->drawReportRow( startPoint + offset * 8, _("##Self salary##"), 0, 0 );
-  _d->drawReportRow( startPoint + offset * 9, _("##Other##"), 0, 0 );
-  _d->drawReportRow( startPoint + offset * 10, _("##Empire tax##"), 0, 0 );
+  _d->drawReportRow( startPoint + offset * 4, _("##Import##"), CityFunds::importGoods );
+  _d->drawReportRow( startPoint + offset * 5, _("##Wages##"), CityFunds::workersWages );
+  _d->drawReportRow( startPoint + offset * 6, _("##Buildings##"), CityFunds::buildConstruction );
+  _d->drawReportRow( startPoint + offset * 7, _("##Percents##"), CityFunds::creditPercents );
+  _d->drawReportRow( startPoint + offset * 8, _("##Salary##"), CityFunds::playerSalary );
+   
+  _d->drawReportRow( startPoint + offset * 9, _("##Other##"), CityFunds::otherExpenditure );
+  _d->drawReportRow( startPoint + offset * 10, _("##Empire tax##"), CityFunds::empireTax );
   _d->background->fill( 0xff000000, Rect( startPoint + offset * 10 + Point( 200, 0 ), Size( 72, 1) ) );
   _d->background->fill( 0xff000000, Rect( startPoint + offset * 10 + Point( 340, 0 ), Size( 72, 1) ) );
 
-  _d->drawReportRow( startPoint + offset * 11, _("##Credit##"), 0, 0 );
+  _d->drawReportRow( startPoint + offset * 11, _("##Credit##"), CityFunds::credit );
 
   startPoint += Point( 0, 6 );
-  _d->drawReportRow( startPoint + offset * 12, _("##Profit##"), 0, 0 );
+  _d->drawReportRow( startPoint + offset * 12, _("##Profit##"), CityFunds::profit );
   
   startPoint += Point( 0, 6 );
-  _d->drawReportRow( startPoint + offset * 13, _("##Balance##"), 0, 0 );
+  _d->drawReportRow( startPoint + offset * 13, _("##Balance##"), CityFunds::balance );
 
   _d->btnHelp = new TexturedButton( this, Point( 12, getHeight() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 

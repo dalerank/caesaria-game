@@ -23,7 +23,7 @@
 #include "oc3_saveadapter.hpp"
 #include "oc3_scenario_loader.hpp"
 #include "oc3_win_targets.hpp"
-#include "oc3_build_options.hpp"
+#include "oc3_city_build_options.hpp"
 #include "oc3_building_data.hpp"
 #include "oc3_cityfunds.hpp"
 #include "oc3_city.hpp"

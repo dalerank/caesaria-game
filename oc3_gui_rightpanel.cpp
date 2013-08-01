@@ -14,7 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "oc3_menurgihtpanel.hpp"
+#include "oc3_gui_rightpanel.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_gfx_engine.hpp"
 
@@ -45,7 +45,7 @@ MenuRigthPanel* MenuRigthPanel::create( Widget* parent, const Rect& rectangle, c
     int y = 0;
     while( y <  ret->_d->picture->getHeight() )
     {
-        ret->_d->picture->draw( tilePic, 0, y);
+        ret->_d->picture->draw( tilePic, Point( 0, y ) );
         y += tilePic.getHeight();
     }
 

@@ -10,7 +10,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a createCopy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
@@ -48,16 +48,16 @@ public:
    void addOffset(const int dx, const int dy);
    void setName(std::string &name);  // for save game
    std::string getName();
-   Picture* copy() const;
+   Picture* createCopy() const;
    SDL_Surface* getSurface() const;
    Point getOffset() const;
    int getWidth() const;
    int getHeight() const;
 
-   void draw( const Picture &srcpic, const int dx, const int dy );
-   void draw( const Picture &srcpic, const Point& pos );
-   void draw( const Picture &srcpic, const Rect& srcrect, const Point& pos );
-   void draw( const Picture &srcpic, const Rect& srcrect, const Rect& dstrect );
+   void draw( const Picture &srcpic, int x, int y, bool useAlpha=true );
+   void draw( const Picture &srcpic, const Point& pos, bool useAlpha=true );
+   void draw( const Picture &srcpic, const Rect& srcrect, const Point& pos, bool useAlpha=true );
+   void draw( const Picture &srcpic, const Rect& srcrect, const Rect& dstrect, bool useAlpha=true );
 
    void fill( const NColor& color, const Rect& rect );
 

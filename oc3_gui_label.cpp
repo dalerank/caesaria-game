@@ -16,7 +16,7 @@
 
 #include "oc3_gui_label.hpp"
 #include "oc3_gfx_engine.hpp"
-#include "oc3_gui_paneling.hpp"
+#include "oc3_picture_decorator.hpp"
 #include "oc3_pictureconverter.hpp"
 #include "oc3_color.hpp"
 
@@ -124,9 +124,9 @@ void Label::_updateTexture( GfxEngine& painter )
   {
     switch( _d->backgroundMode )
     {
-    case bgWhite: GuiPaneling::instance().draw_white_area( *_d->background, 0, 0, getSize().getWidth(), getSize().getHeight() ); break;
-    case bgBlack: GuiPaneling::instance().draw_black_area( *_d->background, 0, 0, getSize().getWidth(), getSize().getHeight() ); break;
-    case bgBrown: GuiPaneling::instance().draw_brown0_borders( *_d->background, 0, 0, getSize().getWidth(), getSize().getHeight() ); break;
+    case bgWhite: PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteArea); break;
+    case bgBlack: PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::blackArea ); break;
+    case bgBrown: PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::brownBorder ); break;
     case bgNone: _d->background.reset(); break;
     }
   }

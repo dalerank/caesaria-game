@@ -26,7 +26,7 @@
 #include "oc3_building_senate.hpp"
 #include "oc3_building_prefecture.hpp"
 #include "oc3_road.hpp"
-#include "oc3_market.hpp"
+#include "oc3_building_market.hpp"
 #include "oc3_granary.hpp"
 #include "oc3_well.hpp"
 #include "oc3_nativebuildings.hpp"

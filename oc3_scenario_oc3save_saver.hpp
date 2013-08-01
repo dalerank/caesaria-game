@@ -12,37 +12,29 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#ifndef __OPENCAESAR3_EMPIRE_H_INCLUDED__
-#define __OPENCAESAR3_EMPIRE_H_INCLUDED__
 
-#include "oc3_scopedptr.hpp"
-#include "oc3_predefinitions.hpp"
+#ifndef _OPENCAESAR3_SCENARIO_OC3SAVE_SAVER_H_INCLUDE_
+#define _OPENCAESAR3_SCENARIO_OC3SAVE_SAVER_H_INCLUDE_
+
 #include "oc3_filepath.hpp"
-#include "oc3_referencecounted.hpp"
-#include "oc3_serializer.hpp"
+#include "oc3_scopedptr.hpp"
 
-class Empire : public ReferenceCounted, public Serializable
+class Scenario;
+
+class ScenarioOc3Saver
 {
 public:
-  static EmpirePtr create();
-  ~Empire();
-  EmpireCities getCities() const;
-  EmpireCityPtr getCity( const std::string& name ) const;
+   ScenarioOc3Saver( const Scenario& scenario );
+   ~ScenarioOc3Saver();
 
-  void initialize( const io::FilePath& filename );
-
-  EmpireCityPtr addCity( const std::string& name );
-
-  unsigned int openTradeRouteCost( const std::string& start, const std::string& stop ) const;
-  void save( VariantMap& stream ) const;
-  void load( const VariantMap& stream );
-
+   void save( const io::FilePath& filename );
 private:
-  Empire();
-
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#endif //__OPENCAESAR3_EMPIRE_H_INCLUDED__
+
+#endif //_OPENCAESAR3_SCENARIO_OC3SAVE_SAVER_H_INCLUDE_

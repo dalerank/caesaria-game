@@ -14,7 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_groupbox.hpp"
-#include "oc3_gui_paneling.hpp"
+#include "oc3_picture_decorator.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_gfx_engine.hpp"
 
@@ -115,12 +115,8 @@ void GroupBox::beforeDraw( GfxEngine& painter )
     }
     else
     {
-      switch( _d->style )
-      {
-      case whiteFrame: GuiPaneling::instance().draw_white_frame( *_d->texture, 0, 0, getWidth(), getHeight() ); break;
-      case blackFrame: GuiPaneling::instance().draw_black_frame( *_d->texture, 0, 0, getWidth(), getHeight() ); break;
-      default: break;
-      }
+      PictureDecorator::draw( *_d->texture, Rect( Point( 0, 0 ), getSize() ), 
+                              _d->style == whiteFrame ? PictureDecorator::whiteFrame : PictureDecorator::blackFrame );
     }
   }
 

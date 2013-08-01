@@ -12,29 +12,33 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
+#ifndef _OPENCAESAR3_GUI_DIALOGBOX_INCLUDE_H_
+#define _OPENCAESAR3_GUI_DIALOGBOX_INCLUDE_H_
 
-#ifndef SCENARIO_SAVER_HPP
-#define SCENARIO_SAVER_HPP
-
-#include <string>
+#include "oc3_widget.hpp"
+#include "oc3_signals.hpp"
 #include "oc3_scopedptr.hpp"
 
-class Scenario;
-
-class ScenarioSaver
+class DialogBox : public Widget 
 {
 public:
-   ScenarioSaver( const Scenario& scenario );
-   ~ScenarioSaver();
+  enum { btnYes=1, btnNo=2, btnOk=4, btnCancel=8 };
+  DialogBox( Widget* parent, const Rect& rectangle, const std::string& title, 
+             const std::string& text, int buttons );
 
-   void save( const std::string& filename );
+  bool onEvent(const NEvent& event);
+
+  void draw( GfxEngine& painter );
+
+oc3_signals public:  
+  Signal1<int>& onResult();
+  Signal0<>& onOk();
+  Signal0<>& onCancel();
+
 private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
 
 #endif

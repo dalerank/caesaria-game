@@ -20,7 +20,7 @@
 #include "oc3_gfx_engine.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_time.hpp"
-#include "oc3_gui_paneling.hpp"
+#include "oc3_picture_decorator.hpp"
 
 class EditBox::Impl
 {
@@ -747,7 +747,7 @@ void EditBox::beforeDraw( GfxEngine& painter )
       }
       else
       {
-        GuiPaneling::instance().draw_black_frame( *_d->picture, 0, 0, getWidth(), getHeight() );
+        PictureDecorator::draw( *_d->picture, Rect( 0, 0, getWidth(), getHeight() ), PictureDecorator::blackFrame );
       }
 
       Rect localClipRect = getAbsoluteRect();

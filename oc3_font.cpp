@@ -195,15 +195,7 @@ Rect Font::calculateTextRect( const std::string& text, const Rect& baseRect,
   return resultRect;
 }
 
-void Font::setColor( const int dc )
-{
-  _d->color.b = (dc & 0xff);
-  _d->color.g = (dc >> 8) & 0xff;
-  _d->color.r = (dc >> 16) & 0xff;
-  _d->color.unused = ( dc >> 24 ) & 0xff;
-}
-
-void Font::setColor( NColor color )
+void Font::setColor( const NColor& color )
 {
   _d->color.b = color.getBlue();
   _d->color.g = color.getGreen();
@@ -217,7 +209,6 @@ void Font::draw(Picture& dstpic, const std::string &text, const int dx, const in
     return;
 
   SDL_Surface* sText = TTF_RenderUTF8_Blended( _d->ttfFont, text.c_str(), _d->color );
-  //_d->setSurfaceAlpha( sText, dstpic.getSurface(), _d->color.unused );  
   if( sText && useAlpha )
   {
     SDL_SetAlpha( sText, 0, 0 );

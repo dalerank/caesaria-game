@@ -47,10 +47,12 @@ public:
 class ResourceMenu
 {
 public:
-    static const int maximizeBtnPicId = 101;
+    static const int maximizeBtn = 101;
     static const int houseBtnPicId = 123;
     static const int helpInfBtnPicId = 528;
     static const int exitInfBtnPicId = 532;
+    static const int okBtnPicId = 239;
+    static const int cancelBtnPicId = 243;
 
     static const int houseMidPicId = 1;
     static const int clearMidPicId = 12;
@@ -65,6 +67,23 @@ public:
     static const int securityMidPicId = 9;
     static const int comerceMidPicId = 10;
     static const int emptyMidPicId = 13;
+};
+
+class PicID
+{
+public:
+    static const int empireStamp = 543;
+};
+
+class WaterOverlay
+{
+public:
+    static const int base = 1;
+    static const int skipRightBorder = 1;
+    static const int skipLeftBorder = 2;
+    static const int inHouse = 4;
+    static const int reservoirRange = 8;
+    static const int haveWater = 16;
 };
 
 #endif

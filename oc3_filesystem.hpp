@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_FILE_SYSTEM_H_INCLUDED__
 
 #include "oc3_scopedptr.hpp"
-#include "oc3_nfile.hpp"
+#include "oc3_filesystem_file.hpp"
 #include "oc3_filesystem_archive.hpp"
 #include "oc3_filepath.hpp"
 

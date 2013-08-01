@@ -10,7 +10,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a createCopy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
@@ -73,7 +73,7 @@ Picture& PictureBank::getPicture(const std::string &name)
   Impl::ItPicture it = _d->resources.find( StringHelper::hash( name ) );
   if (it == _d->resources.end()) 
   {
-    THROW("Unknown resource " << name);
+    StringHelper::debug( 0xff, "Unknown resource %s", name.c_str() );
   }
 
   return it->second;
@@ -84,67 +84,6 @@ Picture& PictureBank::getPicture(const std::string &prefix, const int idx)
    std::string resource_name = StringHelper::format( 0xff, "%s_%05d.png", prefix.c_str(),idx );
 
    return getPicture(resource_name);
-}
-
-
-Picture& PictureBank::getPicture(const GoodType goodType)
-{
-   int pic_index;
-   switch (goodType)
-   {
-   case G_WHEAT:
-      pic_index = 317;
-      break;
-   case G_VEGETABLE:
-      pic_index = 318;
-      break;
-   case G_FRUIT:
-      pic_index = 319;
-      break;
-   case G_OLIVE:
-      pic_index = 320;
-      break;
-   case G_GRAPE:
-      pic_index = 321;
-      break;
-   case G_MEAT:
-      pic_index = 322;
-      break;
-   case G_WINE:
-      pic_index = 323;
-      break;
-   case G_OIL:
-      pic_index = 324;
-      break;
-   case G_IRON:
-      pic_index = 325;
-      break;
-   case G_TIMBER:
-      pic_index = 326;
-      break;
-   case G_CLAY:
-      pic_index = 327;
-      break;
-   case G_MARBLE:
-      pic_index = 328;
-      break;
-   case G_WEAPON:
-      pic_index = 329;
-      break;
-   case G_FURNITURE:
-      pic_index = 330;
-      break;
-   case G_POTTERY:
-      pic_index = 331;
-      break;
-   case G_FISH:
-      pic_index = 333;
-      break;
-   default:
-      THROW("This good type has no picture:" << goodType);
-   }
-
-   return getPicture( ResourceGroup::panelBackground, pic_index);
 }
 
 PicturesArray PictureBank::getPictures()
@@ -219,6 +158,8 @@ void PictureBank::loadArchive(const std::string &filename)
     int size = archive_read_data(a, buffer.get(), bufferSize);  // read data into buffer
     rw = SDL_RWFromMem(buffer.get(), size);
     surface = IMG_Load_RW(rw, 0);
+    SDL_SetAlpha( surface, 0, 0 );
+
     setPicture(entryname, *surface);
     SDL_FreeRW(rw);
   }
@@ -268,14 +209,14 @@ void PictureBank::createResources()
   Picture& originalPic = getPicture( ResourceGroup::utilitya, 34 );
   setPicture( std::string( ResourceGroup::waterbuildings ) + "_00001.png", *originalPic.getSurface() );
 
-  Picture* fullReservoir = originalPic.copy(); //mem leak on destroy picloader
+  Picture* fullReservoir = originalPic.createCopy(); //mem leak on destroy picloader
   fullReservoir->draw( getPicture( ResourceGroup::utilitya, 35 ), 47, 37 );
   setPicture( std::string( ResourceGroup::waterbuildings ) + "_00002.png", *fullReservoir->getSurface() );
 
   Picture& emptyFontainOrig = getPicture( ResourceGroup::utilitya, 10 );
   setPicture( std::string( ResourceGroup::waterbuildings ) + "_00003.png", *emptyFontainOrig.getSurface() );
 
-  Picture* fullFontain = emptyFontainOrig.copy();  //mem leak on destroy picloader
+  Picture* fullFontain = emptyFontainOrig.createCopy();  //mem leak on destroy picloader
   fullFontain->draw( getPicture( ResourceGroup::utilitya, 11 ), 12, 25 );
   setPicture( std::string( ResourceGroup::waterbuildings) + "_00004.png", *fullFontain->getSurface() );
 }

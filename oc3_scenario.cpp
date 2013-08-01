@@ -18,7 +18,8 @@
 #include "oc3_scenario.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_variant.hpp"
-#include "oc3_build_options.hpp"
+#include "oc3_scenario_oc3save_saver.hpp"
+#include "oc3_city_build_options.hpp"
 #include "oc3_win_targets.hpp"
 #include "oc3_player.hpp"
 #include "oc3_city.hpp"
@@ -65,8 +66,9 @@ std::string Scenario::getDescription() const
 }
 
 bool Scenario::save( const io::FilePath& filename ) const
-{
-  
+{  
+  ScenarioOc3Saver saver( *this );
+  saver.save( filename );
   return true;
 }
 
@@ -121,7 +123,7 @@ Player& Scenario::getPlayer() const
   return _d->player;
 }
 
-EmpirePtr Scenario::getEmpire()
+EmpirePtr Scenario::getEmpire() const
 {
   return _d->empire;
 }

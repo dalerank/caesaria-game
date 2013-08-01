@@ -15,7 +15,7 @@
 
 #include "oc3_advisor_religion_window.hpp"
 #include "oc3_picture.hpp"
-#include "oc3_gui_paneling.hpp"
+#include "oc3_picture_decorator.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_pushbutton.hpp"
 #include "oc3_gui_label.hpp"
@@ -140,12 +140,12 @@ AdvisorReligionWindow::AdvisorReligionWindow( CityPtr city, Widget* parent, int 
   _d->background.reset( Picture::create( getSize() ) );
 
   //main _d->_d->background
-  GuiPaneling::instance().draw_white_frame(*_d->background, 0, 0, getWidth(), getHeight() );
+  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
+  //buttons _d->_d->background
+  PictureDecorator::draw( *_d->background, Rect( 35, 62, getWidth() - 35, 62 + 130 ), PictureDecorator::blackFrame );
+
   Picture& icon = Picture::load( ResourceGroup::panelBackground, 264 );
   _d->background->draw( icon, Point( 11, 11 ) );
-
-  //buttons _d->_d->background
-  GuiPaneling::instance().draw_black_frame( *_d->background, 35, 62, getWidth() - 35 * 2, 130 );
 
   Font font = Font::create( FONT_1 );
   font.draw( *_d->background, _("##Temples##"), 268, 32, false );

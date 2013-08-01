@@ -12,45 +12,14 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
+#ifndef _OPENCAESAR3_CITYTRADEOPTIONS_INCLUDE_H_
+#define _OPENCAESAR3_CITYTRADEOPTIONS_INCLUDE_H_
 
-#ifndef SCENARIO_HPP
-#define SCENARIO_HPP
-
-#include <string>
-
-#include "oc3_predefinitions.hpp"
-#include "oc3_scopedptr.hpp"
-#include "oc3_filepath.hpp"
-
-class CityWinTargets;
-class Player;
-
-class Scenario
+class CityTradeOptions
 {
 public:
-  static Scenario& instance();
-  ~Scenario();
-
-  bool save( const io::FilePath& filename ) const;
-  bool load( const io::FilePath& filename );
-
-  EmpirePtr getEmpire() const;
-  CityPtr getCity();
-  Player& getPlayer() const;
-  const CityPtr getCity() const;
-  CityWinTargets& getWinTargets();
-
-  void reset();
-
-  std::string getDescription() const;
-private:
-  Scenario();
-  
-  class Impl;
-  ScopedPtr< Impl > _d;
+  CityTradeOptions();
 };
 
-#endif
+#endif //_OPENCAESAR3_CITYTRADINGOPTIONS_INCLUDE_H_

@@ -128,3 +128,16 @@ GoodType GoodHelper::getType( const std::string& name )
   _OC3_DEBUG_BREAK_IF( "Can't find type for goodName" );
   return G_NONE;
 }
+
+std::string GoodHelper::getTypeName( GoodType type )
+{
+  for( int i=G_NONE; i < G_MAX; i++ )
+  {
+    if( goodTypeEquales[ i ].type == type )
+    {
+      return goodTypeEquales[ i ].name;
+    }
+  } 
+
+  return "unknown";
+}

@@ -16,10 +16,10 @@
 #include "oc3_window_mission_target.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_resourcegroup.hpp"
-#include "oc3_gui_paneling.hpp"
+#include "oc3_picture_decorator.hpp"
 #include "oc3_gui_label.hpp"
 #include "oc3_listbox.hpp"
-#include "oc3_gui_paneling.hpp"
+#include "oc3_picture_decorator.hpp"
 #include "oc3_texturedbutton.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_gfx_engine.hpp"
@@ -57,7 +57,7 @@ MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& 
 {
   _d->background.reset( Picture::create( getSize() ) );
 
-  GuiPaneling::instance().draw_white_frame( *_d->background, 0, 0, getWidth(), getHeight() );
+  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
 
   TexturedButton* btnExit = new TexturedButton( this, Point( getWidth() - 110, getHeight() - 40), Size( 27 ), -1, 179 );
   CONNECT( btnExit, onClicked(), this, MissionTargetsWindow::deleteLater );

@@ -13,20 +13,9 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_SAVEADAPTER_H_INCLUDED__
-#define __OPENCAESAR3_SAVEADAPTER_H_INCLUDED__
+#include "oc3_city_trade_options.hpp"
 
-#include "oc3_variant.hpp"
-#include "oc3_filepath.hpp"
-
-class SaveAdapter
+CityTradeOptions::CityTradeOptions()
 {
-public:
-  static VariantMap load( const io::FilePath& fileName );
 
-  static bool save( const VariantMap& options, const io::FilePath& filename );
-private:
-  SaveAdapter();
-};
-
-#endif //__OPENCAESAR3_SAVEADAPTER_H_INCLUDED__
+}

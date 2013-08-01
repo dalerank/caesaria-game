@@ -15,14 +15,15 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#include "oc3_scenario_saver.hpp"
+#include "oc3_scenario_oc3save_saver.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_saveadapter.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_player.hpp"
+#include "oc3_empire.hpp"
 #include "oc3_city.hpp"
 
-class ScenarioSaver::Impl
+class ScenarioOc3Saver::Impl
 {
 public:
   const Scenario& scenario;
@@ -33,19 +34,23 @@ public:
   }
 };
 
-ScenarioSaver::ScenarioSaver( const Scenario& scenario )
+ScenarioOc3Saver::ScenarioOc3Saver( const Scenario& scenario )
   : _d( new Impl( scenario ) )
 {
 }
 
 
-void ScenarioSaver::save(const std::string& filename)
+void ScenarioOc3Saver::save(const io::FilePath& filename)
 {
   VariantMap vm;
   vm[ "version" ] = Variant( 1 );
 
   VariantMap vm_scenario;
   vm[ "scenario" ] = vm_scenario;
+
+  VariantMap vm_empire;
+  _d->scenario.getEmpire()->save( vm_empire );
+  vm[ "empire" ] = vm_empire;
 
   VariantMap plm;
   _d->scenario.getPlayer().save( plm );
@@ -59,7 +64,7 @@ void ScenarioSaver::save(const std::string& filename)
   SaveAdapter::save( vm, filename );
 }
 
-ScenarioSaver::~ScenarioSaver()
+ScenarioOc3Saver::~ScenarioOc3Saver()
 {
 
 }

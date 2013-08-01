@@ -104,27 +104,22 @@ void Application::initGuiEnvironment()
 
 void Application::Impl::initPictures(const io::FilePath& resourcePath)
 {
-  std::cout << "load images begin" << std::endl;
   PictureBank &pic_loader = PictureBank::instance();
+  
+  StringHelper::debug( 0xff, "Load images from archives" );
   pic_loader.loadAllPics();
-  std::cout << "load images end" << std::endl;
 
-  std::cout << "load walking begin" << std::endl;
-  WalkerLoader &walker_loader = WalkerLoader::instance();
-  walker_loader.loadAll();
-  std::cout << "load walking end" << std::endl;
+  StringHelper::debug( 0xff, "Create animations for walkers" );
+  WalkerLoader::instance().loadAll();
 
-  std::cout << "load fonts begin" << std::endl;
+  StringHelper::debug( 0xff, "Load fonts" );
   FontCollection::instance().initialize( resourcePath.toString() );
-  std::cout << "load fonts end" << std::endl;
 
-  std::cout << "convert images begin" << std::endl;
+  StringHelper::debug( 0xff, "Convert pictures to display format" );
   GfxEngine::instance().loadPictures( pic_loader.getPictures() );
-  std::cout << "convert images end" << std::endl;
 
-  std::cout << "create pictures begin" << std::endl;
+  StringHelper::debug( 0xff, "Create runtime pictures" );
   pic_loader.createResources();
-  std::cout << "create pictures end" << std::endl;
 }
 
 void Application::setScreenWait()

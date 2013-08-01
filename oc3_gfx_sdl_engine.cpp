@@ -82,11 +82,7 @@ void GfxSdlEngine::init()
   rc = TTF_Init();
   if (rc != 0) THROW("Unable to initialize SDL: " << SDL_GetError());
 
-  Uint32 aFlags = 0;
-  aFlags |= SDL_DOUBLEBUF;
-  aFlags |= SDL_SWSURFACE;
-
-  SDL_Surface* scr = SDL_SetVideoMode(_screen_width, _screen_height, 32, aFlags);  // 32bpp
+  SDL_Surface* scr = SDL_SetVideoMode(_screen_width, _screen_height, 32, SDL_DOUBLEBUF | SDL_SWSURFACE);  // 32bpp
   _d->screen.init( scr, Point( 0, 0 ) );
   
   if( !_d->screen.isValid() ) 
@@ -94,7 +90,7 @@ void GfxSdlEngine::init()
     THROW("Unable to set video mode: " << SDL_GetError());
   }
 
-  SDL_WM_SetCaption( "OpenCaesar 3:"OC3_VERSION, 0 );    
+  SDL_WM_SetCaption( "OpenCaesar 3: "OC3_VERSION, 0 );    
 
   SDL_EnableKeyRepeat(1, 100);
 }
@@ -109,16 +105,17 @@ void GfxSdlEngine::exit()
 /* Convert picture to SDL surface and then put surface into Picture class
  */
 
-void GfxSdlEngine::loadPicture( Picture& ioPicture)
+void GfxSdlEngine::loadPicture( Picture& ioPicture )
 {
   // convert pixel format
-  SDL_Surface *newImage;
-  newImage = SDL_DisplayFormatAlpha( ioPicture.getSurface() );
-  SDL_FreeSurface(ioPicture.getSurface());
-  if (newImage == NULL) 
+  SDL_Surface* newImage = SDL_DisplayFormatAlpha( ioPicture.getSurface() );
+  
+  if( newImage == NULL ) 
   {
     THROW("Cannot convert surface, maybe out of memory");
   }
+  SDL_FreeSurface(ioPicture.getSurface());
+
   ioPicture.init( newImage, ioPicture.getOffset() );
 }
 
@@ -128,12 +125,10 @@ void GfxSdlEngine::unloadPicture( Picture& ioPicture )
   ioPicture = Picture();
 }
 
-
 void GfxSdlEngine::startRenderFrame()
 {
-  SDL_FillRect( _d->screen.getSurface(), NULL, 0);  // black background for a complete redraw
+  SDL_FillRect( _d->screen.getSurface(), NULL, 0 );  // black background for a complete redraw
 }
-
 
 void GfxSdlEngine::endRenderFrame()
 {
@@ -203,8 +198,12 @@ void GfxSdlEngine::resetTileDrawMask()
 Picture* GfxSdlEngine::createPicture(const Size& size )
 {
   SDL_Surface* img;
-  const Uint32 flags = 0;
-  img = SDL_CreateRGBSurface(flags, size.getWidth(), size.getHeight(), 32, 0, 0, 0, 0 );  // opaque picture with default mask
+  //img = SDL_CreateRGBSurface( 0, size.getWidth(), size.getHeight(), 32, 
+  //                            0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF );
+  img = SDL_CreateRGBSurface( 0, size.getWidth(), size.getHeight(), 32, 
+                              0, 0, 0, 0 );
+
+  
   if (img == NULL)
   {
     THROW( "Cannot make surface, size=" << size.getWidth() << "x" << size.getHeight() );

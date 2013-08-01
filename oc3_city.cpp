@@ -39,7 +39,7 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_walkermanager.hpp"
 #include "oc3_gettext.hpp"
-#include "oc3_build_options.hpp"
+#include "oc3_city_build_options.hpp"
 #include "oc3_house.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_forum.hpp"
@@ -48,6 +48,9 @@
 #include "oc3_cityfunds.hpp"
 #include "oc3_player.hpp"
 #include "oc3_scenario.hpp"
+#include "oc3_empirecity.hpp"
+#include "oc3_empire.hpp"
+#include "oc3_city_trade_options.hpp"
 
 #include <set>
 
@@ -76,6 +79,7 @@ public:
   TilePos boatExit;
   TilePos cameraStart;
   CityBuildOptions buildOptions;
+  CityTradeOptions tradeOptions;
 
   ClimateType climate;   
   UniqueId walkerIdCount;
@@ -224,6 +228,8 @@ void City::monthStep()
 
   Player& player = Scenario::instance().getPlayer();
   _d->funds.resolveIssue( FundIssue( CityFunds::playerSalary, -player.getSalary() ) );
+  _d->funds.updateHistory( _d->date );
+
   player.appendMoney( player.getSalary() );
 
   _d->onMonthChangedSignal.emit( _d->date );
@@ -708,4 +714,17 @@ const std::string& City::getName() const
 void City::setName( const std::string& name )
 {
   _d->name = name;
+}
+
+void City::createTradeRoute( EmpireCityPtr empireCity )
+{
+  empireCity->openTrade();
+
+  int cost = (int)Scenario::instance().getEmpire()->openTradeRouteCost( _d->name, empireCity->getName() ); 
+  _d->funds.resolveIssue( FundIssue( CityFunds::otherExpenditure, -cost ) );
+}
+
+CityTradeOptions& City::getTradeOptions()
+{
+  return _d->tradeOptions;
 }

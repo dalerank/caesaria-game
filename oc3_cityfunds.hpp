@@ -36,17 +36,19 @@ public:
                    importGoods, workersWages, 
                    buildConstruction, creditPercents, 
                    playerSalary, otherExpenditure,
-                   empireTax, 
+                   empireTax, debet, credit, profit,
+                   balance,
                    issueTypeCount };
+  enum { thisYear=0, lastYear=1 };
 
   CityFunds();
   ~CityFunds();
 
   void resolveIssue( FundIssue issue );
 
-  void clearHistory();
+  void updateHistory( const DateTime& date );
 
-  int getIssueValue( IssueType type ) const;
+  int getIssueValue( IssueType type, int age=thisYear ) const;
 
   int getValue() const;
 

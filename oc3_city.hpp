@@ -31,6 +31,7 @@
 class TilePos;
 class DateTime;
 class CityBuildOptions;
+class CityTradeOptions;
 class CityFunds;
 
 class City : public Serializable, public ReferenceCounted
@@ -93,6 +94,9 @@ public:
   void build( ConstructionPtr building, const TilePos& pos );
 
   CityBuildOptions& getBuildOptions();
+  CityTradeOptions& getTradeOptions();
+
+  void createTradeRoute( EmpireCityPtr empireCity );
 
   void disaster( const TilePos& pos, DisasterType type );
   // remove construction
@@ -161,6 +165,23 @@ public:
   {
     LandOverlayPtr overlay = _city->getOverlay( pos );
     return overlay.as< T >();
+  }
+
+  template< class T >
+  std::list< SmartPtr< T > > getProducers( const GoodType goodtype )
+  {
+    std::list< SmartPtr< T > > ret;
+    LandOverlays overlays = _city->getOverlayList();
+    for( LandOverlays::iterator it = overlays.begin(); it != overlays.end(); it++  )
+    {
+      SmartPtr< T > b = (*it).as<T>();
+      if( b.isValid() && b->getOutGoodType() == goodtype )
+      {
+        ret.push_back( b );
+      }
+    }
+
+    return ret;
   }
 
 protected:

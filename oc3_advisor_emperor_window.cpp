@@ -15,8 +15,7 @@
 
 
 #include "oc3_advisor_emperor_window.hpp"
-#include "oc3_picture.hpp"
-#include "oc3_gui_paneling.hpp"
+#include "oc3_picture_decorator.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_pushbutton.hpp"
 #include "oc3_gui_label.hpp"
@@ -88,13 +87,12 @@ AdvisorEmperorWindow::AdvisorEmperorWindow( Widget* parent, int id )
 
   _d->background.reset( Picture::create( getSize() ) );
   //main _d->_d->background
-  GuiPaneling::instance().draw_white_frame(*_d->background, 0, 0, getWidth(), getHeight() );
+  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
 
   //buttons _d->_d->background
   Point startPos( 32, 91 );
-  GuiPaneling::instance().draw_black_frame(*_d->background, startPos.getX(), startPos.getY(), 570, 220 );
-
-  GuiPaneling::instance().draw_black_frame( *_d->background, 66, 325, 510, 94 );
+  PictureDecorator::draw( *_d->background, Rect( startPos, Size( 570, 220 ) ), PictureDecorator::blackFrame );
+  PictureDecorator::draw( *_d->background, Rect( 66, 325, 66 + 510, 325 + 94 ), PictureDecorator::blackFrame );
   
   _d->lbEmperorFavour = new Label( this, Rect( Point( 58, 44 ), Size( 550, 20 ) ), "Favour of the emperor 50" );
   _d->lbEmperorFavourDesc = new Label( this, _d->lbEmperorFavour->getRelativeRect() + Point( 0, 20 ), "The emperor has mixed feelings to you" );

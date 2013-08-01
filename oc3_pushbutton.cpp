@@ -20,7 +20,7 @@
 #include "oc3_event.hpp"
 #include "oc3_time.hpp"
 #include "oc3_guienv.hpp"
-#include "oc3_gui_paneling.hpp"
+#include "oc3_picture_decorator.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_color.hpp"
 
@@ -139,30 +139,26 @@ void PushButton::_updateTexture( ElementState state )
     {
     case GrayBorderLine:
     {
-      const int picId[StateCount] = { 22, 25, 25, 22, 25 };
-      GuiPaneling::instance().draw_basic_text_button( *curTxs, 0, 0, getWidth(), picId[ state ] );
+      PictureDecorator::Mode mode = (state == stNormal || state == stDisabled) 
+                                        ? PictureDecorator::lightgreyPanel 
+                                        : PictureDecorator::greyPanel;
+      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), mode );
     }
     break;
 
     case WhiteBorderUp:
     {
-      GuiPaneling::instance().draw_white_area( *curTxs, 0, 0, getWidth(), getHeight() );
-      
-      if( state == stHovered )
-        GuiPaneling::instance().draw_brown0_borders( *curTxs, 0, 0, getWidth(), getHeight() );
-      else
-        GuiPaneling::instance().draw_white0_borders( *curTxs, 0, 0, getWidth(), getHeight() );
+      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteArea );
+      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), 
+                              state == stHovered ? PictureDecorator::brownBorder : PictureDecorator::whiteBorderA );
     }
     break;
 
     case BlackBorderUp:
     {
-      GuiPaneling::instance().draw_black_area( *curTxs, 0, 0, getWidth(), getHeight() );
-
-      if( state == stHovered )
-        GuiPaneling::instance().draw_brown0_borders( *curTxs, 0, 0, getWidth(), getHeight() );
-      else
-        GuiPaneling::instance().draw_white0_borders( *curTxs, 0, 0, getWidth(), getHeight() );
+      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::blackArea );
+      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), 
+                              state == stHovered ? PictureDecorator::brownBorder : PictureDecorator::whiteBorderA );
     }
     break;
 
@@ -386,9 +382,10 @@ void PushButton::draw( GfxEngine& painter )
 
 	// todo:	move sprite up and text down if the pressed state has a sprite
 	//			  draw sprites for focused and mouse-over 
+  const ButtonState& state = _d->buttonStates[ _d->currentButtonState ];
+
   if( isBodyVisible() )
   {
-	  const ButtonState& state = _d->buttonStates[ _d->currentButtonState ];
     if( state.background )
     {
       painter.drawPicture( *state.background, getScreenLeft(), getScreenTop(), &getAbsoluteClippingRectRef() );
@@ -407,12 +404,12 @@ void PushButton::draw( GfxEngine& painter )
 //                                       _buttonStates[ stHovered].rectangle, &getAbsoluteClippingRectRef(), hoverOpacityColors, true  );
 //             }			
     }
-
-    if( state.textPicture )
-    {
-      painter.drawPicture( *state.textPicture, getScreenLeft(), getScreenTop(), &getAbsoluteClippingRectRef() );
-    }
 	}
+
+  if( state.textPicture )
+  {
+    painter.drawPicture( *state.textPicture, getScreenLeft(), getScreenTop(), &getAbsoluteClippingRectRef() );
+  }
 
   drawIcon( painter );
  

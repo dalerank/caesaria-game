@@ -469,7 +469,7 @@ void TilemapRenderer::Impl::drawTileFood( Tile& tile )
 void TilemapRenderer::Impl::drawTileWater( Tile& tile )
 {
   Point screenPos = tile.getXY() + mapOffset;
-  
+
   tile.setWasDrawn();
 
   bool needDrawAnimations = false;
@@ -481,7 +481,7 @@ void TilemapRenderer::Impl::drawTileWater( Tile& tile )
     engine->drawPicture( tile.getPicture(), screenPos );
   }
   else
-  {   
+  {
     LandOverlayPtr overlay = terrain.getOverlay();
     Picture* pic = 0;
     switch( overlay->getType() )
@@ -492,36 +492,63 @@ void TilemapRenderer::Impl::drawTileWater( Tile& tile )
     case B_RESERVOIR:
     case B_FOUNTAIN:
     case B_WELL:
+    case B_AQUEDUCT:
       pic = &tile.getPicture();
       needDrawAnimations = true;
-    break;  
-
-      //houses
-    case B_HOUSE:
-      {
-        HousePtr house = overlay.as< House >();
-        bool haveWater = house->hasServiceAccess( S_WELL ) || house->hasServiceAccess( S_FOUNTAIN );
-
-        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + ( haveWater ? 2 : 1 ) + 10 );
-        areaSize = overlay->getSize();
-      }
-    break;
-      
-      //other buildings
-    default:
-      pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + 1 );
       areaSize = overlay->getSize();
     break;
-    }  
 
-    engine->drawPicture( *pic, screenPos );
+    default:
+    {
+      int tileNumber = 0;
+      bool haveWater = terrain.getWaterService( WTR_FONTAIN ) > 0 || terrain.getWaterService( WTR_WELL ) > 0;
+      if ( overlay->getType() == B_HOUSE )
+      {
+        HousePtr h = overlay.as<House>();
+        tileNumber = WaterOverlay::inHouse;
+        haveWater = haveWater || h->hasServiceAccess(S_FOUNTAIN) || h->hasServiceAccess(S_WELL);
+      }
+      tileNumber += (haveWater ? WaterOverlay::haveWater : 0);
+      tileNumber += terrain.getWaterService( WTR_RESERVOIR ) > 0 ? WaterOverlay::reservoirRange : 0;
+
+      areaSize = overlay->getSize();
+      PtrTilesArea area;
+      if( areaSize.getWidth() == 1 )
+      {
+        area.push_back( &tile );
+      }
+      else
+      {
+        area = tilemap->getFilledRectangle( tile.getIJ(), areaSize );
+      }
+      int leftBorderAtI = tile.getI();
+      int rightBorderAtJ = areaSize.getHeight() - 1 + tile.getJ();
+      for( PtrTilesArea::iterator it=area.begin(); it != area.end(); it++ )
+      {
+        int tileBorders = ( (*it)->getI() == leftBorderAtI ? 0 : WaterOverlay::skipLeftBorder )
+            + ( (*it)->getJ() == rightBorderAtJ ? 0 : WaterOverlay::skipRightBorder );
+        pic = &Picture::load(ResourceGroup::waterOverlay, WaterOverlay::base + tileBorders + tileNumber);
+        engine->drawPicture( *pic, (*it)->getXY() + mapOffset );
+      }
+
+      pic = NULL;
+      areaSize = 0;
+      needDrawAnimations = false;
+    }
+    break;
+    }
+
+    if ( pic != NULL )
+    {
+      engine->drawPicture( *pic, screenPos );
+    }
 
     if( needDrawAnimations )
     {
       drawAnimations( overlay, screenPos );
     }
   }
-  
+
   if( !needDrawAnimations && (terrain.isWalkable(true) || terrain.isBuilding()) )
   {
     PtrTilesArea area;
@@ -539,16 +566,17 @@ void TilemapRenderer::Impl::drawTileWater( Tile& tile )
       TerrainTile& curTera = (*it)->getTerrain();
       int reservoirWater = curTera.getWaterService( WTR_RESERVOIR );
       int fontainWater = curTera.getWaterService( WTR_FONTAIN );
-      
-      if( fontainWater + reservoirWater > 0 )
+
+      if( (reservoirWater + fontainWater > 0) && !curTera.isWater() && curTera.getOverlay().isNull() )
       {
-        int picIndex = (fontainWater > 0 ? 22 : 21);
-        engine->drawPicture( Picture::load( ResourceGroup::waterOverlay, picIndex ), (*it)->getXY() + mapOffset );
+        int picIndex = reservoirWater ? WaterOverlay::reservoirRange : 0;
+        picIndex |= fontainWater > 0 ? WaterOverlay::haveWater : 0;
+        picIndex |= WaterOverlay::skipLeftBorder | WaterOverlay::skipRightBorder;
+        engine->drawPicture( Picture::load( ResourceGroup::waterOverlay, picIndex + WaterOverlay::base ), (*it)->getXY() + mapOffset );
       }
     }
   }
 }
-
 
 
 void TilemapRenderer::Impl::drawTileBase( Tile& tile )

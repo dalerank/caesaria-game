@@ -21,7 +21,7 @@
 #include "oc3_gui_label.hpp"
 #include "oc3_texturedbutton.hpp"
 #include "oc3_gettext.hpp"
-#include "oc3_gui_paneling.hpp"
+#include "oc3_picture_decorator.hpp"
 #include "oc3_event.hpp"
 #include "oc3_granary.hpp"
 #include "oc3_warehouse.hpp"
@@ -53,12 +53,12 @@ public:
 
     Picture goodIcon = GoodHelper::getPicture( _type );
     std::string goodName = GoodHelper::getName( _type );
-    
-    painter.drawPicture( goodIcon, getScreenLeft() + 15, getScreenTop() );
-    painter.drawPicture( goodIcon, getScreenLeft() + 390, getScreenTop() );
 
     if( getTextPicture() )
     {
+      getTextPicture()->draw( goodIcon, 15, 0, false );
+      getTextPicture()->draw( goodIcon, 390, 0, false );
+
       Font font = getFont();    
       font.draw( *getTextPicture(), goodName, 55, 0 );   
     }
@@ -124,7 +124,7 @@ BaseSpecialOrdersWindow::BaseSpecialOrdersWindow( Widget* parent, const Point& p
   _d->bgPicture.reset( Picture::create( getSize() ) );
 
   // draws the box and the inner black box
-  GuiPaneling::instance().draw_white_frame(*_d->bgPicture, 0, 0, getWidth(), getHeight() );
+  PictureDecorator::draw( *_d->bgPicture, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
 
   _d->gbOrders = new GroupBox( this, Rect( 17, 42, getWidth() - 17, getHeight() - 70), -1, GroupBox::blackFrame );  
   _d->gbOrdersInsideArea = new Widget( _d->gbOrders, -1, Rect( 5, 5, _d->gbOrders->getWidth() -5, _d->gbOrders->getHeight() -5 ) );

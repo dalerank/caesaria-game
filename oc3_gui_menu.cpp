@@ -22,7 +22,7 @@
 #include "oc3_event.hpp"
 #include "oc3_buildmenu.hpp"
 #include "oc3_guienv.hpp"
-#include "oc3_gui_paneling.hpp"
+#include "oc3_picture_decorator.hpp"
 #include "oc3_widgetpositionanimator.hpp"
 #include "oc3_gui_label.hpp"
 #include "oc3_gettext.hpp"
@@ -109,7 +109,7 @@ Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id
     _d->overlaysMenu = 0;
 
     const bool haveSubMenu = true;
-    _d->minimizeButton = _addButton( ResourceMenu::maximizeBtnPicId, false, 0, MAXIMIZE_ID,
+    _d->minimizeButton = _addButton( ResourceMenu::maximizeBtn, false, 0, MAXIMIZE_ID,
                                      !haveSubMenu, ResourceMenu::emptyMidPicId, _("##minimizeBtnTooltip") );
     _d->minimizeButton->setGeometry( Rect( Point( 6, 4 ), Size( 31, 20 ) ) );
 
