@@ -39,7 +39,7 @@
 #include "oc3_house.hpp"
 #include "oc3_religion_building.hpp"
 #include "oc3_divinity.hpp"
-#include "oc3_warehouse.hpp"
+#include "oc3_building_warehouse.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_special_orders_window.hpp"
 #include "oc3_goodstore.hpp"

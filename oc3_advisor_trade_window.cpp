@@ -28,9 +28,10 @@
 #include "oc3_factory_building.hpp"
 #include "oc3_city.hpp"
 #include "oc3_city_trade_options.hpp"
-#include "oc3_warehouse.hpp"
+#include "oc3_building_warehouse.hpp"
 #include "oc3_goodstore.hpp"
 #include "oc3_texturedbutton.hpp"
+#include "oc3_event.hpp"
 
 class TradeGoodInfo : public PushButton
 {
@@ -114,6 +115,72 @@ oc3_signals private:
   Signal1<GoodType> _onClickedASignal;
 };
 
+class EmpirePricesWindow : public Widget
+{
+public:
+  EmpirePricesWindow( Widget* parent, int id, const Rect& rectangle, CityPtr city  ) 
+    : Widget( parent, id, rectangle )
+  {
+    background.reset( Picture::create( getSize() ) );
+    PictureDecorator::draw( *background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
+
+    Font font = Font::create( FONT_3 );
+    font.draw( *background, _("##rome_prices##"), Point( 10, 10 ), false );
+
+    CityTradeOptions& ctrade = city->getTradeOptions();
+    font = Font::create( FONT_1 );
+    Point startPos( 140, 50 );
+    for( int i=G_WHEAT; i < G_MAX; i++ )
+    {
+      if( i == G_FISH || i == G_DENARIES)
+      {
+        continue;
+      }
+
+      GoodType gtype = (GoodType)i;
+      const Picture& goodIcon = GoodHelper::getPicture( gtype );
+      background->draw( goodIcon, startPos );
+      
+      std::string priceStr = StringHelper::format( 0xff, "%d", ctrade.getBuyPrice( gtype ) );      
+      font.draw( *background, priceStr, startPos + Point( 0, 34 ), false );
+
+      priceStr = StringHelper::format( 0xff, "%d", ctrade.getSellPrice( gtype ) );
+      font.draw( *background, priceStr, startPos + Point( 0, 58 ), false );
+
+      startPos += Point( 30, 0 );
+    }
+
+    font = Font::create( FONT_2 );
+    font.draw( *background, _("##buy_price##"), Point( 10, 84 ), false );
+    font.draw( *background, _("##sell_price##"), Point( 10, 108 ), false );
+
+    font.draw( *background, _("##click_rmb_for_exit##"), Point( 140, getHeight() - 30 ), false ); 
+  }
+
+  virtual void draw( GfxEngine& painter )
+  {
+    if( !isVisible() )
+      return;
+
+    painter.drawPicture( *background, getAbsoluteRect().UpperLeftCorner );
+
+    Widget::draw( painter );
+  }
+
+  virtual bool onEvent(const NEvent& event)
+  {
+    if( event.EventType == OC3_MOUSE_EVENT && event.MouseEvent.isRightPressed() )
+    {
+      deleteLater();
+      return true;
+    }
+
+    return Widget::onEvent( event );
+  }
+
+  PictureRef background;
+};
+
 class AdvisorTradeWindow::Impl
 {
 public:
@@ -127,6 +194,7 @@ public:
   int  getStackedGoodsQty( GoodType gtype );
   void updateGoodsInfo();
   void showGoodOrderManageWindow( GoodType type );
+  void showGoodsPriceWindow();
 };
 
 class TradeStateButton : public PushButton
@@ -137,6 +205,8 @@ public:
   {
     btnDecrease = new TexturedButton( this, Point( 220, 0 ), Size( 24 ), -1, 601 );
     btnIncrease = new TexturedButton( this, Point( 220 + 24, 0 ), Size( 24 ), -1, 605 );
+    btnDecrease->hide();
+    btnIncrease->hide();
   }
 
   virtual void _updateTexture( ElementState state )
@@ -170,7 +240,7 @@ public:
 
           text = StringHelper::format( 0xff, "%d %s", goodsQty, _("##trade_btn_qty##") );
           textRect = font.calculateTextRect( text, Rect( getWidth() / 2 + 24 * 2, 0, getWidth(), getHeight() ), getHorizontalTextAlign(), getVerticalTextAlign() );
-          font.draw( *_getTextPicture( state ), text, textRect.UpperLeftCorner );
+          font.draw( *_getTextPicture( state ), text, textRect.UpperLeftCorner, false );
         }
       break;
     }
@@ -332,11 +402,11 @@ public:
     std::string text;
     if( isStacking )
     {
-      text = StringHelper::format( 0xff, "%s\r\n%s", _("##use_and_trade_resource##"), _("##click_here_that_stacking##") );
+      text = StringHelper::format( 0xff, "%s %s", _("##use_and_trade_resource##"), _("##click_here_that_stacking##") );
     }
     else
     {
-      text = StringHelper::format( 0xff, "%s\r\n%s", _("##stacking_resource##"), _("##click_here_that_use_it##") );
+      text = StringHelper::format( 0xff, "%s %s", _("##stacking_resource##"), _("##click_here_that_use_it##") );
     }
 
     _btnStackingState->setText( text );
@@ -422,6 +492,14 @@ void AdvisorTradeWindow::Impl::showGoodOrderManageWindow( GoodType type )
   CONNECT( wnd, onOrderChanged(), this, Impl::updateGoodsInfo );
 }
 
+void AdvisorTradeWindow::Impl::showGoodsPriceWindow()
+{
+  Widget* parent = gbInfo->getParent();
+  Size size( 610, 180 );
+  new EmpirePricesWindow( parent, -1, Rect( Point( ( parent->getWidth() - size.getWidth() ) / 2,
+                                                   ( parent->getHeight() - size.getHeight() ) / 2), size ), city );
+}
+
 AdvisorTradeWindow::AdvisorTradeWindow( CityPtr city, Widget* parent, int id ) 
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
@@ -442,6 +520,7 @@ AdvisorTradeWindow::AdvisorTradeWindow( CityPtr city, Widget* parent, int id )
   _d->btnPrices = new PushButton( this, Rect( Point( 400, 398), Size( 200, 24 ) ), _("##show_prices##"), -1, false, PushButton::whiteBorderUp );
 
   CONNECT( _d->btnEmpireMap, onClicked(), this, AdvisorTradeWindow::deleteLater );
+  CONNECT( _d->btnPrices, onClicked(), _d.data(), Impl::showGoodsPriceWindow );
 
   _d->gbInfo = new GroupBox( this, Rect( 35, 55, getWidth() - 33, getHeight() - 45 ), -1, GroupBox::blackFrame );
 

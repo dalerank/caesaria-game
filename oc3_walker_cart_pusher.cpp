@@ -22,7 +22,7 @@
 #include "oc3_city.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_granary.hpp"
-#include "oc3_warehouse.hpp"
+#include "oc3_building_warehouse.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_path_finding.hpp"

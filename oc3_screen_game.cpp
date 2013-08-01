@@ -21,7 +21,6 @@
 
 #include "oc3_gfx_engine.hpp"
 #include "oc3_exception.hpp"
-#include "oc3_warehouse.hpp"
 #include "oc3_gui_rightpanel.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_guienv.hpp"

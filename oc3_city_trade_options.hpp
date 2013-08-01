@@ -32,6 +32,12 @@ public:
   void setStackMode( GoodType type, bool stackGoods );
   bool isGoodsStacking( GoodType type );
 
+  unsigned int getSellPrice( GoodType type ) const;
+  void setSellPrice( GoodType type, unsigned int price );
+
+  unsigned int getBuyPrice( GoodType type ) const;
+  void setBuyPrice( GoodType type, unsigned int price );
+
   Order getOrder( GoodType type ) const;
   Order switchOrder( GoodType type );
 

@@ -33,7 +33,7 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_house.hpp"
 #include "oc3_house_level.hpp"
-#include "oc3_water_buildings.hpp"
+#include "oc3_building_watersupply.hpp"
 
 class TilemapRenderer::Impl
 {

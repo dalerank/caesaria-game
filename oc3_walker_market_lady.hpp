@@ -20,7 +20,7 @@
 #define __OPENCAESAR3_MARKETLADY_H_INCLUDED__
 
 #include "oc3_walker.hpp"
-#include "oc3_warehouse.hpp"
+#include "oc3_building_warehouse.hpp"
 
 /** This is the market lady buying goods at granaries and warehouses */
 class MarketLady : public Walker
