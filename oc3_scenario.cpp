@@ -19,7 +19,7 @@
 #include "oc3_exception.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_scenario_oc3save_saver.hpp"
-#include "oc3_build_options.hpp"
+#include "oc3_city_build_options.hpp"
 #include "oc3_win_targets.hpp"
 #include "oc3_player.hpp"
 #include "oc3_city.hpp"

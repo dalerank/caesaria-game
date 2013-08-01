@@ -39,7 +39,7 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_walkermanager.hpp"
 #include "oc3_gettext.hpp"
-#include "oc3_build_options.hpp"
+#include "oc3_city_build_options.hpp"
 #include "oc3_house.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_forum.hpp"
@@ -50,6 +50,7 @@
 #include "oc3_scenario.hpp"
 #include "oc3_empirecity.hpp"
 #include "oc3_empire.hpp"
+#include "oc3_city_trade_options.hpp"
 
 #include <set>
 
@@ -78,6 +79,7 @@ public:
   TilePos boatExit;
   TilePos cameraStart;
   CityBuildOptions buildOptions;
+  CityTradeOptions tradeOptions;
 
   ClimateType climate;   
   UniqueId walkerIdCount;
@@ -720,4 +722,9 @@ void City::createTradeRoute( EmpireCityPtr empireCity )
 
   int cost = (int)Scenario::instance().getEmpire()->openTradeRouteCost( _d->name, empireCity->getName() ); 
   _d->funds.resolveIssue( FundIssue( CityFunds::otherExpenditure, -cost ) );
+}
+
+CityTradeOptions& City::getTradeOptions()
+{
+  return _d->tradeOptions;
 }

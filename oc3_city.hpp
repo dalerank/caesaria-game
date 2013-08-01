@@ -31,6 +31,7 @@
 class TilePos;
 class DateTime;
 class CityBuildOptions;
+class CityTradeOptions;
 class CityFunds;
 
 class City : public Serializable, public ReferenceCounted
@@ -93,6 +94,7 @@ public:
   void build( ConstructionPtr building, const TilePos& pos );
 
   CityBuildOptions& getBuildOptions();
+  CityTradeOptions& getTradeOptions();
 
   void createTradeRoute( EmpireCityPtr empireCity );
 

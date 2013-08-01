@@ -160,18 +160,15 @@ public:
     text = StringHelper::format( 0xff, "%d %s", stackedGoods, _("##qty_stacked_in_city_warehouse##") );
     Label* lbStacked = new Label( this, Rect( 40, 60, getWidth() - 10, 60 + 20 ), text );
 
-    PushButton* btnTradeState = new PushButton( this, Rect( 50, 85, getWidth() - 60, 85 + 30), "trade_state", -1, false, PushButton::WhiteBorderUp );
+    _btnTradeState = new PushButton( this, Rect( 50, 85, getWidth() - 60, 85 + 30), "trade_state", -1, false, PushButton::WhiteBorderUp );
     PushButton* btnIndustryEnable = new PushButton( this, Rect( 50, 125, getWidth() - 60, 125 + 30), "industry_state", -1, false, PushButton::WhiteBorderUp );
-
     PushButton* btnStackingState = new PushButton( this, Rect( 50, 160, getWidth() - 60, 160 + 50), "stacking_state", -1, false, PushButton::WhiteBorderUp );
 
     TexturedButton* btnExit = new TexturedButton( this, Point( getWidth() - 34, getHeight() - 34 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
-    btnExit->setTooltipText( _("##infobox_tooltip_exit##") );
-
     TexturedButton* btnHelp = new TexturedButton( this, Point( 11, getHeight() - 34 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
-    btnHelp->setTooltipText( _("##infobox_tooltip_help##") );
 
     CONNECT( btnExit, onClicked(), this, GoodOrderManageWindow::deleteLater );
+    CONNECT( _btnTradeState, onClicked(), this, GoodOrderManageWindow::changeTradeState );
   }
 
   void draw( GfxEngine& painter )
@@ -184,6 +181,11 @@ public:
     Widget::draw( painter );
   }
 
+  void changeTradeState()
+  {
+    CityTradeOptions& ctrading = _city->getTradeOptions();
+  }
+
 oc3_signals public:
   Signal0<>& onOrderChanged() { return _onOrderChangedSignal; }
 
@@ -191,6 +193,7 @@ private:
   CityPtr _city;
   GoodType _type;
   PictureRef _background;
+  PushButton* _btnTradeState;
 
 oc3_signals private:
   Signal0<> _onOrderChangedSignal;

@@ -13,12 +13,13 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _OPENCAESAR3_CITYTRADING_INCLUDE_H_
-#define _OPENCAESAR3_CITYTRADING_INCLUDE_H_
+#ifndef _OPENCAESAR3_CITYTRADEOPTIONS_INCLUDE_H_
+#define _OPENCAESAR3_CITYTRADEOPTIONS_INCLUDE_H_
 
-class CityTrading
+class CityTradeOptions
 {
-
+public:
+  CityTradeOptions();
 };
 
-#endif //_OPENCAESAR3_CITYTRADING_INCLUDE_H_
+#endif //_OPENCAESAR3_CITYTRADINGOPTIONS_INCLUDE_H_
