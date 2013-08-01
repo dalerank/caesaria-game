@@ -71,16 +71,15 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   _d->setRange( ResourceGroup::waterOverlay, 3, 4, offset ); //wateroverlay building 2x2
   _d->setRange( ResourceGroup::waterOverlay, 13, 14, offset ); //wateroverlay houses 2x2 
 
-  offset = Point( 0, 60 );
-
+  offset = Point( 0, 45 );
   _d->setRange( ResourceGroup::waterOverlay, 5, 6, offset ); //wateroverlay building 3x3
   _d->setRange( ResourceGroup::waterOverlay, 15, 16, offset ); //wateroverlay houses 3x3 
 
-  offset = Point( 0, 90 );
+  offset = Point( 0, 60 );
   _d->setRange( ResourceGroup::waterOverlay, 7, 8, offset ); //wateroverlay building 4x4
   _d->setRange( ResourceGroup::waterOverlay, 17, 18, offset ); //wateroverlay houses 4x4 
 
-  offset = Point( 0, 120 );
+  offset = Point( 0, 75 );
   _d->setRange( ResourceGroup::waterOverlay, 9, 10, offset ); //wateroverlay building 5x5
 
   _d->setOne( ResourceGroup::entertaiment, 12, 37, 62); // amphitheater
