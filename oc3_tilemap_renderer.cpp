@@ -107,8 +107,10 @@ public:
 
 private:
   std::vector<WalkerType> visibleWalkers;
-  void drawWalkersBetweenZ(Walkers walkerList, int minZ, int maxZ);
+
   Walkers getVisibleWalkerList();
+  void drawWalkersBetweenZ( Walkers walkerList, int minZ, int maxZ );
+  void drawBuildingAreaTiles( Tile& baseTile, LandOverlayPtr overlay, std::string resourceGroup, int tileId );
 
 oc3_signals public:
   Signal1< const Tile& > onShowTileInfoSignal;
@@ -458,22 +460,25 @@ void TilemapRenderer::Impl::drawTileFood( Tile& tile )
       //houses
     case B_HOUSE:
       {
+        drawBuildingAreaTiles(tile, overlay, ResourceGroup::foodOverlay, WaterOverlay::base);
         HousePtr house = overlay.as< House >();
-        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + 11 );
         foodLevel = house->getFoodLevel();
-        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() ==0);
+        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() == 0);
       }
       break;
 
       //other buildings
     default:
       {
-        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + 1 );
+        drawBuildingAreaTiles(tile, overlay, ResourceGroup::foodOverlay, WaterOverlay::base);
       }
       break;
     }  
 
-    engine->drawPicture( *pic, screenPos );
+    if ( pic != NULL )
+    {
+      engine->drawPicture( *pic, screenPos );
+    }
 
     if( needDrawAnimations )
     {
@@ -531,25 +536,7 @@ void TilemapRenderer::Impl::drawTileWater( Tile& tile )
       tileNumber += (haveWater ? WaterOverlay::haveWater : 0);
       tileNumber += terrain.getWaterService( WTR_RESERVOIR ) > 0 ? WaterOverlay::reservoirRange : 0;
 
-      areaSize = overlay->getSize();
-      PtrTilesArea area;
-      if( areaSize.getWidth() == 1 )
-      {
-        area.push_back( &tile );
-      }
-      else
-      {
-        area = tilemap->getFilledRectangle( tile.getIJ(), areaSize );
-      }
-      int leftBorderAtI = tile.getI();
-      int rightBorderAtJ = areaSize.getHeight() - 1 + tile.getJ();
-      for( PtrTilesArea::iterator it=area.begin(); it != area.end(); it++ )
-      {
-        int tileBorders = ( (*it)->getI() == leftBorderAtI ? 0 : WaterOverlay::skipLeftBorder )
-            + ( (*it)->getJ() == rightBorderAtJ ? 0 : WaterOverlay::skipRightBorder );
-        pic = &Picture::load(ResourceGroup::waterOverlay, WaterOverlay::base + tileBorders + tileNumber);
-        engine->drawPicture( *pic, (*it)->getXY() + mapOffset );
-      }
+      drawBuildingAreaTiles( tile, overlay, ResourceGroup::waterOverlay, WaterOverlay::base + tileNumber );
 
       pic = NULL;
       areaSize = 0;
@@ -1029,6 +1016,31 @@ void TilemapRenderer::Impl::drawWalkersBetweenZ(Walkers walkerList, int minZ, in
         engine->drawPicture( **picIt, walker->getPosition() + mapOffset );
       }
     }
+  }
+}
+
+void TilemapRenderer::Impl::drawBuildingAreaTiles(Tile& baseTile, LandOverlayPtr overlay, std::string resourceGroup, int tileId)
+{
+  PtrTilesArea area;
+  Size areaSize = overlay->getSize();
+  if( areaSize.getWidth() == 1 )
+  {
+    area.push_back( &baseTile );
+  }
+  else
+  {
+    area = tilemap->getFilledRectangle( baseTile.getIJ(), areaSize );
+  }
+
+  Picture *pic = NULL;
+  int leftBorderAtI = baseTile.getI();
+  int rightBorderAtJ = areaSize.getHeight() - 1 + baseTile.getJ();
+  for( PtrTilesArea::iterator it=area.begin(); it != area.end(); it++ )
+  {
+    int tileBorders = ( (*it)->getI() == leftBorderAtI ? 0 : WaterOverlay::skipLeftBorder )
+        + ( (*it)->getJ() == rightBorderAtJ ? 0 : WaterOverlay::skipRightBorder );
+    pic = &Picture::load(resourceGroup, tileBorders + tileId);
+    engine->drawPicture( *pic, (*it)->getXY() + mapOffset );
   }
 }
 
