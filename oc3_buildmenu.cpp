@@ -25,7 +25,7 @@
 #include "oc3_time.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_building_data.hpp"
-#include "oc3_build_options.hpp"
+#include "oc3_city_build_options.hpp"
 
 // used to display the building name and its cost
 class BuildButton : public PushButton
