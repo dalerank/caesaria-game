@@ -14,6 +14,8 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_city_trade_options.hpp"
+#include "oc3_stringhelper.hpp"
+#include "oc3_goodhelper.hpp"
 
 class CityTradeOptions::Impl
 {
@@ -29,6 +31,42 @@ public:
     bool stacking;
     CityTradeOptions::Order order;
     bool vendor;
+
+    VariantList save() 
+    {
+      VariantList ret;
+      ret.push_back( sellPrice );
+      ret.push_back( buyPrice );
+      ret.push_back( exportLimit );
+      ret.push_back( importLimit );
+      ret.push_back( soldGoods );
+      ret.push_back( bougthGoods );
+      ret.push_back( stacking );
+      ret.push_back( order );
+      ret.push_back( vendor );
+
+      return ret;
+    }
+
+    void load( const VariantList& stream )
+    {
+      if( stream.size() != 9 )
+      {
+        StringHelper::debug( 0xff, "%s [%s %d]", "Incorrect argument number in ", __FILE__, __LINE__ );
+        return;
+      }
+
+      VariantList::const_iterator it=stream.begin();
+      sellPrice = it->toUInt(); it++;
+      buyPrice = it->toUInt(); it++;
+      exportLimit = it->toUInt(); it++;
+      importLimit = it->toUInt(); it++;
+      soldGoods = it->toUInt(); it++;
+      bougthGoods = it->toUInt(); it++;
+      stacking = it->toBool(); it++;
+      order = (CityTradeOptions::Order)it->toInt(); it++;
+      vendor = it->toBool();
+    }
   };
 
   Impl()
@@ -165,4 +203,33 @@ void CityTradeOptions::setVendor( GoodType type, bool available )
 void CityTradeOptions::setOrder( GoodType type, Order order )
 {
   _d->goods[ type ].order = order;
+}
+
+void CityTradeOptions::load( const VariantMap& stream )
+{
+  for( VariantMap::const_iterator it=stream.begin(); it != stream.end(); it++ )
+  {
+    GoodType gtype = GoodHelper::getType( it->first );
+
+    if( gtype == G_NONE )
+    {
+      StringHelper::debug( 0xff, "%s %s [%s %d]", "Can't convert type from ", 
+                           it->first.c_str(), __FILE__, __LINE__ );
+      return;
+    }
+
+    _d->goods[ gtype ].load( it->second.toList() );
+  }
+}
+
+VariantMap CityTradeOptions::save() const
+{
+  VariantMap ret;
+
+  for( Impl::GoodsInfo::iterator it=_d->goods.begin(); it != _d->goods.end(); it++ )
+  {
+    ret[ GoodHelper::getTypeName( it->first ) ] = it->second.save();
+  }
+
+  return ret;
 }

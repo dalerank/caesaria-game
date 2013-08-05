@@ -18,6 +18,7 @@
 
 #include "oc3_scopedptr.hpp"
 #include "oc3_good.hpp"
+#include "oc3_variant.hpp"
 
 class CityTradeOptions
 {
@@ -44,6 +45,9 @@ public:
   Order getOrder( GoodType type ) const;
   void setOrder( GoodType type, Order order );
   Order switchOrder( GoodType type );
+
+  VariantMap save() const;
+  void load( const VariantMap& stream );
 
 public:
   class Impl;
