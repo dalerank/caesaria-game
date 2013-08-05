@@ -68,7 +68,7 @@ public:
       font.draw( *textPic, StringHelper::format( 0xff, "%d", _qty), 190, 0 );
       font.draw( *textPic, _enable ? "" : _("##disable##"), 260, 0 );
 
-      std::string ruleName[] = { _("##import##"), "", _("##stacking##"), _("##export##") };
+      std::string ruleName[] = { _("##import##"), "", _("##export##"), _("##stacking##") };
       std::string tradeStateText = ruleName[ _tradeOrder ];
       switch( _tradeOrder )
       {
@@ -203,8 +203,8 @@ public:
   TradeStateButton( Widget* parent, const Rect& rectangle, int id ) 
     : PushButton( parent, rectangle, "", id, false, PushButton::whiteBorderUp )
   {
-    btnDecrease = new TexturedButton( this, Point( 220, 0 ), Size( 24 ), -1, 601 );
-    btnIncrease = new TexturedButton( this, Point( 220 + 24, 0 ), Size( 24 ), -1, 605 );
+    btnDecrease = new TexturedButton( this, Point( 220, 3 ), Size( 24 ), -1, 601 );
+    btnIncrease = new TexturedButton( this, Point( 220 + 24, 3 ), Size( 24 ), -1, 605 );
     btnDecrease->hide();
     btnIncrease->hide();
   }
@@ -218,7 +218,7 @@ public:
       case CityTradeOptions::importing:
       case CityTradeOptions::noTrade:
       {
-        btnIncrease->hide();
+        btnDecrease->hide();
         btnIncrease->hide();
 
         Font font = getFont( state );        
@@ -230,17 +230,17 @@ public:
 
       case CityTradeOptions::exporting:
         {
-          btnIncrease->show();
+          btnDecrease->show();
           btnIncrease->show();
 
           Font font = getFont( state );
           std::string text = _("##trade_btn_export_text##");
           Rect textRect = font.calculateTextRect( text, Rect( 0, 0, getWidth() / 2, getHeight() ), getHorizontalTextAlign(), getVerticalTextAlign() );
-          font.draw( *_getTextPicture( state ), text, textRect.UpperLeftCorner, false );
+          font.draw( *_getTextPicture( state ), text, textRect.UpperLeftCorner, true );
 
           text = StringHelper::format( 0xff, "%d %s", goodsQty, _("##trade_btn_qty##") );
           textRect = font.calculateTextRect( text, Rect( getWidth() / 2 + 24 * 2, 0, getWidth(), getHeight() ), getHorizontalTextAlign(), getVerticalTextAlign() );
-          font.draw( *_getTextPicture( state ), text, textRect.UpperLeftCorner, false );
+          font.draw( *_getTextPicture( state ), text, textRect.UpperLeftCorner, true );
         }
       break;
     }
@@ -335,6 +335,7 @@ public:
   void changeTradeState()
   {
     _city->getTradeOptions().switchOrder( _type );
+    updateTradeState();
     _onOrderChangedSignal.emit();
   }
 
@@ -354,6 +355,14 @@ public:
 
   void updateIndustryState()
   {
+    bool industryActive = _city->getTradeOptions().isVendor( _type );
+    _btnIndustryState->setVisible( industryActive );
+
+    if( !industryActive )
+    {
+      return;
+    }
+
     CityHelper helper( _city );
     int workFactoryCount=0, idleFactoryCount=0;
 
@@ -438,18 +447,24 @@ void AdvisorTradeWindow::Impl::updateGoodsInfo()
 
   Point startDraw( 0, 5 );
   Size btnSize( gbInfo->getWidth(), 20 );
-  for( int i=G_WHEAT, indexOffset=0; i < G_MAX; i++, indexOffset++ )
+  CityTradeOptions& copt = city->getTradeOptions();
+  for( int i=G_WHEAT, indexOffset=0; i < G_MAX; i++ )
   {
     GoodType gtype = GoodType( i );
 
+    CityTradeOptions::Order tradeState = copt.getOrder( gtype );
+    if( tradeState == CityTradeOptions::disabled )
+    {
+      continue;
+    }
+
     int stackedQty = getStackedGoodsQty( gtype );
     bool workState = getWorkState( gtype );
-    int tradeQty = city->getTradeOptions().getExportLimit( gtype );
-    CityTradeOptions::Order tradeState = city->getTradeOptions().getOrder( gtype );
-
+    int tradeQty = copt.getExportLimit( gtype );
+    
     TradeGoodInfo* btn = new TradeGoodInfo( gbInfo, Rect( startDraw + Point( 0, btnSize.getHeight()) * indexOffset, btnSize ),
                                             gtype, stackedQty, workState, tradeState, tradeQty );
-
+    indexOffset++;
     CONNECT( btn, onClickedA(), this, Impl::showGoodOrderManageWindow );
   }
 }

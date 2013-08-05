@@ -22,7 +22,7 @@
 class CityTradeOptions
 {
 public:
-  typedef enum { importing=0, noTrade, stacking, exporting } Order;
+  typedef enum { importing=0, noTrade, exporting, stacking, disabled } Order;
   CityTradeOptions();
   ~CityTradeOptions();
 
@@ -35,10 +35,14 @@ public:
   unsigned int getSellPrice( GoodType type ) const;
   void setSellPrice( GoodType type, unsigned int price );
 
+  bool isVendor( GoodType type ) const;
+  void setVendor( GoodType type, bool available );
+
   unsigned int getBuyPrice( GoodType type ) const;
   void setBuyPrice( GoodType type, unsigned int price );
 
   Order getOrder( GoodType type ) const;
+  void setOrder( GoodType type, Order order );
   Order switchOrder( GoodType type );
 
 public:

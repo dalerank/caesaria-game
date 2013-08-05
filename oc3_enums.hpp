@@ -16,8 +16,8 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#ifndef ENUMS_HPP
-#define ENUMS_HPP
+#ifndef _OPENCAESAR3_ENUMS_INCLUDE_H_
+#define _OPENCAESAR3_ENUMS_INCLUDE_H_
 
 #include <string>
 
@@ -256,4 +256,4 @@ struct TypeEquale
 };
 
 
-#endif
+#endif  //_OPENCAESAR3_ENUMS_INCLUDE_H_
