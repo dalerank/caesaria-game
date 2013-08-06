@@ -165,7 +165,7 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
     {
             str = sanitizeString( data.toString() );
     }
-    else if(data.type() == Variant::Double) // double?
+    else if(data.type() == Variant::Double || data.type() == Variant::Float) // double?
     {
       str = StringHelper::format( 0xff, "\"%f\"", data.toDouble() );
       if( str.find(".") == std::string::npos && str.find("e") == std::string::npos )
