@@ -33,4 +33,4 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-#endif
+#endif //__OPENCAESAR3_CITYSERVICE_WATER_H_INCLUDED__

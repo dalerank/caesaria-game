@@ -720,7 +720,7 @@ void City::createTradeRoute( EmpireCityPtr empireCity )
 {
   empireCity->openTrade();
 
-  int cost = (int)Scenario::instance().getEmpire()->openTradeRouteCost( _d->name, empireCity->getName() ); 
+  unsigned int cost = EmpireHelper::getTradeRouteOpenCost( Scenario::instance().getEmpire(), _d->name, empireCity->getName() ); 
   _d->funds.resolveIssue( FundIssue( CityFunds::otherExpenditure, -cost ) );
 }
 

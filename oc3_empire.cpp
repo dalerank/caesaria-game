@@ -18,16 +18,18 @@
 #include "oc3_variant.hpp"
 #include "oc3_saveadapter.hpp"
 #include "oc3_stringhelper.hpp"
+#include "oc3_empire_trading.hpp"
 
 class Empire::Impl
 {
 public:
   EmpireCities cities;
+  EmpireTrading trading;
 };
 
 Empire::Empire() : _d( new Impl )
 {
-
+  _d->trading.init( this );
 }
 
 EmpireCities Empire::getCities() const
@@ -98,22 +100,6 @@ EmpireCityPtr Empire::getCity( const std::string& name ) const
   return 0;
 }
 
-unsigned int Empire::openTradeRouteCost( const std::string& start, const std::string& stop ) const
-{
-  EmpireCityPtr startCity = getCity( start );
-  EmpireCityPtr stopCity = getCity( stop );
-
-  if( startCity != 0 && stopCity != 0 )
-  {
-    int distance2City = (int)startCity->getLocation().getDistanceFrom( stopCity->getLocation() ); 
-    distance2City = (distance2City / 100 + 1 ) * 100;
-
-    return distance2City;
-  }
-
-  return 0;
-}
-
 void Empire::save( VariantMap& stream ) const
 {
   VariantMap vm_cities;
@@ -138,4 +124,36 @@ void Empire::load( const VariantMap& stream )
       city->load( it->second.toMap() );
     }
   }
+}
+
+void Empire::createTradeRoute( const std::string& start, const std::string& stop )
+{
+  EmpireCityPtr startCity = getCity( start );
+  EmpireCityPtr stopCity = getCity( stop );
+
+  if( startCity != 0 && stopCity != 0 )
+  {
+    _d->trading.createRoute( start, stop );
+  }
+}
+
+EmpireTradeRoutePtr Empire::getTradeRoute( unsigned int index )
+{
+  return _d->trading.getRoute( index );
+}
+
+unsigned int EmpireHelper::getTradeRouteOpenCost( EmpirePtr empire, const std::string& start, const std::string& stop )
+{
+  EmpireCityPtr startCity = empire->getCity( start );
+  EmpireCityPtr stopCity = empire->getCity( stop );
+
+  if( startCity != 0 && stopCity != 0 )
+  {
+    int distance2City = (int)startCity->getLocation().getDistanceFrom( stopCity->getLocation() ); 
+    distance2City = (distance2City / 100 + 1 ) * 200;
+
+    return distance2City;
+  }
+
+  return 0;
 }

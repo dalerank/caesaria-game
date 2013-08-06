@@ -174,7 +174,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   btnOpenTrade->setVisible( false );
 
   const std::string& playerCityName = scenario->getCity()->getName();
-  unsigned int routeOpenCost = scenario->getEmpire()->openTradeRouteCost( playerCityName, currentCity->getName() );
+  unsigned int routeOpenCost = EmpireHelper::getTradeRouteOpenCost( scenario->getEmpire(), playerCityName, currentCity->getName() );
 
   btnOpenTrade->setText( StringHelper::format( 0xff, "%d %s", routeOpenCost, _("##dn_for_open_trade##")));
   btnOpenTrade->setVisible( !currentCity->isTradeActive() );

@@ -34,7 +34,9 @@ public:
 
   EmpireCityPtr addCity( const std::string& name );
 
-  unsigned int openTradeRouteCost( const std::string& start, const std::string& stop ) const;
+  void createTradeRoute( const std::string& start, const std::string& stop );
+  EmpireTradeRoutePtr getTradeRoute( unsigned int index ); 
+
   void save( VariantMap& stream ) const;
   void load( const VariantMap& stream );
 
@@ -43,6 +45,12 @@ private:
 
   class Impl;
   ScopedPtr< Impl > _d;
+};
+
+class EmpireHelper 
+{
+public:
+  static unsigned int getTradeRouteOpenCost( EmpirePtr empire, const std::string& start, const std::string& stop );
 };
 
 #endif //__OPENCAESAR3_EMPIRE_H_INCLUDED__
