@@ -30,23 +30,23 @@
       wait until done
       you will have 3 folders created: C3, C3_North and C3_South
 
-4. Rename all *.png files to lowercase in all 3 folders (C3, C3_North and C3_South)
+3-1. Rename all *.png files to lowercase in all 3 folders (C3, C3_North and C3_South)
       Several tools are available on the internet for this, for example:
       * BulkReaderUtility, http://www.bulkrenameutility.co.uk/
       * TotalCommander, http://www.ghisler.com/
 
-5. Pack all files from C3 folder into pics.zip, from C3_North to pics_north.zip, from C3_South to pics_south.zip
-   Pack c3title_00001.png into pics_wait.zip
-      move these zip files to openCaesar3/pics
-      Several tools are available on the internet for this, for example:
+3-2. From your Caesar3 install dir, copy *.map to resources/maps/
+
+3-3. Download runtime resources from https://www.dropbox.com/s/xp3101bw5i4ltq1/resources.7z (contain models and configs)
+   After archive has been downloaded extract its content into *resources* folder of *openCaesar3 binary*.
+   Several tools are available on the internet for this, for example:
       * 7zip, http://www.7-zip.org/. You may need to use the ".bzip2" compression.
 
-6. From your Caesar3 install dir, copy *.map to resources/maps/
 
-7. Binary dependencies for Visual Studio can be downloaded from http://opencaesar3.org/files/dependencies.7z .
+4. Binary dependencies for Visual Studio can be downloaded from https://www.dropbox.com/s/dd5rhbju8e0v1s0/dependencies.7z
    After archive has been downloaded extract its content into *dependencies* folder of *openCaesar3 source root*.
 
-7. Run caesar.exe
+5. Run caesar3.exe
       in case of error, check the stdout.txt file in the openCaesar3 directory for clues.
 
 
