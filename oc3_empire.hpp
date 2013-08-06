@@ -34,6 +34,8 @@ public:
 
   EmpireCityPtr addCity( const std::string& name );
 
+  void timeStep( unsigned int time );
+
   void createTradeRoute( const std::string& start, const std::string& stop );
   EmpireTradeRoutePtr getTradeRoute( unsigned int index ); 
 

@@ -45,6 +45,8 @@ public:
 
   void reset();
 
+  void timeStep();
+
   std::string getDescription() const;
 private:
   Scenario();

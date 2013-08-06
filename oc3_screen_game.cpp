@@ -199,7 +199,7 @@ void ScreenGame::draw()
 
 void ScreenGame::afterFrame()
 {
-  _d->scenario->getCity()->timeStep();
+  _d->scenario->timeStep();
 }
 
 void ScreenGame::handleEvent( NEvent& event )

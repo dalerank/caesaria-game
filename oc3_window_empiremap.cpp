@@ -30,6 +30,7 @@
 #include "oc3_gettext.hpp"
 #include "oc3_gui_dialogbox.hpp"
 #include "oc3_goodstore.hpp"
+#include "oc3_empire_trading.hpp"
 
 class EmpireMapWindow::Impl
 {
@@ -340,7 +341,25 @@ void EmpireMapWindow::draw( GfxEngine& engine )
     getHeight() - 120 + _d->eagleOffset.getHeight() - _d->rightEagle.getHeight() - 10 );
 
   engine.drawPicture( _d->centerPicture, (getWidth() - _d->centerPicture.getWidth()) / 2, 
-    getHeight() - 120 - _d->centerPicture.getHeight() + 20 );
+                      getHeight() - 120 - _d->centerPicture.getHeight() + 20 );
+
+  EmpirePtr empire = Scenario::instance().getEmpire();
+
+  int index=0;
+  EmpireTradeRoutePtr route = empire->getTradeRoute( index );
+  while( route != 0 )
+  {
+    const Picture& picture = Picture::load( ResourceGroup::empirebits, PicID::seaTradeRoute );
+
+    EmpireMerchantPtr merchant = route->getMerchant( 0 );
+    if( merchant != 0 )
+    {
+      engine.drawPicture( picture, _d->offset + merchant->getLocation() );
+    }
+      
+    index++;
+    route = empire->getTradeRoute( index );
+  }
 
   Widget::draw( engine );
 }

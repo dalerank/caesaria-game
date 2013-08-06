@@ -40,7 +40,7 @@ public:
   static CityPtr create();
   ~City();
 
-  void timeStep();  // performs one simulation step
+  void timeStep( unsigned int time );  // performs one simulation step
   void monthStep();
 
   Walkers getWalkerList( const WalkerType type );

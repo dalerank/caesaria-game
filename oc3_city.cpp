@@ -120,12 +120,10 @@ City::City() : _d( new Impl )
   addService( CityServiceCulture::create( this ) );
 }
 
-void City::timeStep()
+void City::timeStep( unsigned int time )
 {
   // CALLED 11 time/second
-  _d->time += 1;
-
-  if( _d->time % 110 == 1 )
+  if( time % 110 == 1 )
   {
      // every X seconds
      _d->date.appendMonth( 1 );
@@ -721,7 +719,7 @@ void City::createTradeRoute( EmpireCityPtr empireCity )
   empireCity->openTrade();
 
   unsigned int cost = EmpireHelper::getTradeRouteOpenCost( Scenario::instance().getEmpire(), _d->name, empireCity->getName() ); 
-  _d->funds.resolveIssue( FundIssue( CityFunds::otherExpenditure, -cost ) );
+  _d->funds.resolveIssue( FundIssue( CityFunds::otherExpenditure, -(int)cost ) );
 }
 
 CityTradeOptions& City::getTradeOptions()

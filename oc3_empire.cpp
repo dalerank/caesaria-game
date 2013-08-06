@@ -142,6 +142,11 @@ EmpireTradeRoutePtr Empire::getTradeRoute( unsigned int index )
   return _d->trading.getRoute( index );
 }
 
+void Empire::timeStep( unsigned int time )
+{
+  _d->trading.update( time );
+}
+
 unsigned int EmpireHelper::getTradeRouteOpenCost( EmpirePtr empire, const std::string& start, const std::string& stop )
 {
   EmpireCityPtr startCity = empire->getCity( start );
