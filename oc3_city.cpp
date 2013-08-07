@@ -714,14 +714,6 @@ void City::setName( const std::string& name )
   _d->name = name;
 }
 
-void City::createTradeRoute( EmpireCityPtr empireCity )
-{
-  empireCity->openTrade();
-
-  unsigned int cost = EmpireHelper::getTradeRouteOpenCost( Scenario::instance().getEmpire(), _d->name, empireCity->getName() ); 
-  _d->funds.resolveIssue( FundIssue( CityFunds::otherExpenditure, -(int)cost ) );
-}
-
 CityTradeOptions& City::getTradeOptions()
 {
   return _d->tradeOptions;

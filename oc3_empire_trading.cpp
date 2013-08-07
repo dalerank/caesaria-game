@@ -21,11 +21,27 @@
 
 class EmpireTradeRoute::Impl
 {
+oc3_signals public:
+  Signal1<EmpireMerchantPtr> onMerchantArrivedSignal;
 public:
   EmpireCityPtr begin;
   EmpireCityPtr end;
   typedef std::vector< EmpireMerchantPtr > MerchantList;
   MerchantList merchants;
+
+  void resolveMerchantArrived( EmpireMerchantPtr merchant )
+  {
+    for( MerchantList::iterator it=merchants.begin(); it != merchants.end(); it++ )
+    {
+      if( *it == merchant )
+      {
+        (*it)->deleteLater();
+        break;
+      }
+    }
+
+    onMerchantArrivedSignal.emit( merchant );
+  }
 };
 
 EmpireCityPtr EmpireTradeRoute::getBeginCity() const
@@ -43,12 +59,21 @@ void EmpireTradeRoute::update( unsigned int time )
   if( _d->merchants.size() == 0 )
   {
     SimpleGoodStore store;
-    addMerchant( _d->begin->getName(), store );
+    addMerchant( ((rand() % 2 == 1) ? _d->begin : _d->end )->getName(), store );
   }
 
-  for( Impl::MerchantList::iterator it=_d->merchants.begin(); it != _d->merchants.end(); it++ )
+  Impl::MerchantList::iterator it=_d->merchants.begin();
+  while( it != _d->merchants.end() )
   {
-    (*it)->update( time );
+    if( (*it)->isDeleted() )
+    {
+      it = _d->merchants.erase( it );
+    }
+    else
+    {
+      (*it)->update( time );
+      it++;
+    }
   }
 }
 
@@ -56,6 +81,7 @@ void EmpireTradeRoute::addMerchant( const std::string& begin, GoodStore& store )
 {
   EmpireMerchantPtr merchant = EmpireMerchant::create( *this, begin );
   _d->merchants.push_back( merchant );  
+  CONNECT( merchant, onDestination(), _d.data(), Impl::resolveMerchantArrived );
 }
 
 EmpireTradeRoute::EmpireTradeRoute( EmpireCityPtr begin, EmpireCityPtr end )
@@ -80,15 +106,25 @@ EmpireMerchantPtr EmpireTradeRoute::getMerchant( unsigned int index )
   return *it;
 }
 
+Signal1<EmpireMerchantPtr>& EmpireTradeRoute::onMerchantArrived()
+{
+  return _d->onMerchantArrivedSignal;
+}
+
 class EmpireTrading::Impl
 {
+oc3_signals public:
+  Signal1<EmpireMerchantPtr> onMerchantArrivedSignal;
+
 public:
   EmpirePtr empire;
   typedef std::map< unsigned int, EmpireTradeRoutePtr > TradeRoutes;
   TradeRoutes routes;
 
-oc3_signals public:
-  Signal1<EmpireMerchantPtr> onMerchantArrivedSignal;
+  void resolveMerchantArrived( EmpireMerchantPtr merchant )
+  {
+    onMerchantArrivedSignal.emit( merchant );
+  }
 };
 
 EmpireTrading::EmpireTrading() : _d( new Impl )
@@ -169,6 +205,8 @@ EmpireTradeRoutePtr EmpireTrading::createRoute( const std::string& begin, const 
   route->drop();
   _d->routes[ routeId ] = route;
 
+  CONNECT( route, onMerchantArrived(), _d.data(), Impl::resolveMerchantArrived );
+
   return route;
 }
 
@@ -183,7 +221,9 @@ public:
   EmpireTradeRoute* route;
   SimpleGoodStore store;
   Point location;
+  Point step;
   Point destination;
+  bool isDeleted;
 
 oc3_signals public:
   Signal1<EmpireMerchantPtr> onDestinationSignal;
@@ -196,6 +236,7 @@ EmpireMerchant::~EmpireMerchant()
 
 EmpireMerchant::EmpireMerchant() : _d( new Impl )
 {
+  _d->isDeleted = false;
 }
 
 EmpireMerchantPtr EmpireMerchant::create( EmpireTradeRoute& route, const std::string& start )
@@ -205,6 +246,7 @@ EmpireMerchantPtr EmpireMerchant::create( EmpireTradeRoute& route, const std::st
   bool startCity = route.getBeginCity()->getName() == start;
   ret->_d->destination = (  startCity ? route.getBeginCity() : route.getEndCity() )->getLocation();
   ret->_d->location = ( startCity ? route.getEndCity() : route.getBeginCity() )->getLocation();
+  ret->_d->step = ( ret->_d->destination - ret->_d->location ) / 30;
   ret->drop();
 
   return ret;
@@ -217,8 +259,7 @@ Signal1<EmpireMerchantPtr>& EmpireMerchant::onDestination()
 
 void EmpireMerchant::update( unsigned int time )
 {
-  Point delta = ( _d->destination - _d->location ) / 30;
-  _d->location += delta;
+  _d->location += _d->step;
 
   if( _d->destination.distanceTo( _d->location ) < 5 )
   {
@@ -229,4 +270,14 @@ void EmpireMerchant::update( unsigned int time )
 Point EmpireMerchant::getLocation() const
 {
   return _d->location;
+}
+
+bool EmpireMerchant::isDeleted() const
+{
+  return _d->isDeleted;
+}
+
+void EmpireMerchant::deleteLater()
+{
+  _d->isDeleted = true;
 }

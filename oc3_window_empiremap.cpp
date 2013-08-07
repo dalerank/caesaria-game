@@ -31,6 +31,7 @@
 #include "oc3_gui_dialogbox.hpp"
 #include "oc3_goodstore.hpp"
 #include "oc3_empire_trading.hpp"
+#include "oc3_cityfunds.hpp"
 
 class EmpireMapWindow::Impl
 {
@@ -115,7 +116,13 @@ void EmpireMapWindow::Impl::createTradeRoute()
 {
   if( currentCity != 0 )
   {
-    scenario->getCity()->createTradeRoute( currentCity );
+    currentCity->openTrade();
+
+    CityPtr city = scenario->getCity();
+    unsigned int cost = EmpireHelper::getTradeRouteOpenCost( Scenario::instance().getEmpire(), 
+                                                             city->getName(), currentCity->getName() ); 
+    city->getFunds().resolveIssue( FundIssue( CityFunds::otherExpenditure, -(int)cost ) );
+    scenario->getEmpire()->createTradeRoute( city->getName(), currentCity->getName() );
   }
 
   updateCityInfo();
@@ -246,6 +253,7 @@ void EmpireMapWindow::Impl::showOpenRouteRequestWindow()
                                      DialogBox::btnOk | DialogBox::btnCancel  );
 
   CONNECT( dialog, onOk(), this, Impl::createTradeRoute );
+  CONNECT( dialog, onOk(), dialog, DialogBox::deleteLater );
   CONNECT( dialog, onCancel(), dialog, DialogBox::deleteLater );
 }
 

@@ -39,6 +39,9 @@ public:
   void addMerchant( const std::string& begin, GoodStore& store );
   EmpireMerchantPtr getMerchant( unsigned int index );
 
+oc3_signals public:
+  Signal1<EmpireMerchantPtr>& onMerchantArrived();
+
 private:
   class Impl;
   ScopedPtr< Impl > _d;
@@ -53,6 +56,9 @@ public:
   void setGoods( GoodStore& goods );
   Point getLocation() const;
   void update( unsigned int time );
+
+  bool isDeleted() const;
+  void deleteLater();
 
 oc3_signals public:
   Signal1<EmpireMerchantPtr>& onDestination();
