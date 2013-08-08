@@ -68,6 +68,7 @@ enum WalkerType
   WT_SERVICE,                     //unknown service
   WT_TRAINEE, WT_WORKERS_HUNTER,
   WT_PREFECT, WT_TAXCOLLECTOR,
+  WT_MERCHANT,
   WT_MAX, WT_ALL=WT_MAX 
 };
 

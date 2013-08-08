@@ -14,7 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "oc3_military_building.hpp"
+#include "oc3_building_military.hpp"
 #include "oc3_resourcegroup.hpp"
 
 Barracks::Barracks() : WorkingBuilding( B_BARRACKS, Size( 3 ) )

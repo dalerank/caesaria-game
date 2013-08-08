@@ -57,6 +57,9 @@ public:
   Point getLocation() const;
   void update( unsigned int time );
 
+  EmpireCityPtr getBaseCity() const;
+  GoodStore& getGoods();
+
   bool isDeleted() const;
   void deleteLater();
 

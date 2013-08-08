@@ -248,3 +248,7 @@ void GoodStock::load( const VariantList& stream )
   _currentQty = (*it).toInt();
 }
 
+bool GoodStock::empty() const
+{
+  return _currentQty == 0;
+}

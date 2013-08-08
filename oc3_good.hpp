@@ -69,6 +69,8 @@ public:
   VariantList save() const;
   void load( const VariantList& options );
 
+  bool empty() const;
+
   GoodType _goodType;
   int _maxQty;
   int _currentQty;

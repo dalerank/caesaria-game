@@ -208,7 +208,7 @@ public:
   SimpleGoodStore store;
   Point location;
   Point step;
-  EmpireCityPtr destCity;
+  EmpireCityPtr destCity, baseCity;
   bool isDeleted;
 
 oc3_signals public:
@@ -231,7 +231,8 @@ EmpireMerchantPtr EmpireMerchant::create( EmpireTradeRoute& route, const std::st
   ret->_d->route = &route;
   bool startCity = route.getBeginCity()->getName() == start;
   ret->_d->destCity = startCity ? route.getBeginCity() : route.getEndCity();
-  ret->_d->location = ( startCity ? route.getEndCity() : route.getBeginCity() )->getLocation();
+  ret->_d->baseCity = startCity ? route.getEndCity() : route.getBeginCity();
+  ret->_d->location = ret->_d->baseCity->getLocation();
   ret->_d->step = ( ret->_d->destCity->getLocation() - ret->_d->location ) / 30;
   ret->drop();
 
@@ -268,4 +269,14 @@ bool EmpireMerchant::isDeleted() const
 void EmpireMerchant::deleteLater()
 {
   _d->isDeleted = true;
+}
+
+EmpireCityPtr EmpireMerchant::getBaseCity() const
+{
+  return _d->baseCity;
+}
+
+GoodStore& EmpireMerchant::getGoods()
+{
+  return _d->store;
 }

@@ -39,7 +39,7 @@
 #include "oc3_clay_pit.hpp"
 #include "oc3_factory_marble.hpp"
 #include "oc3_goverment_building.hpp"
-#include "oc3_military_building.hpp"
+#include "oc3_building_military.hpp"
 #include "oc3_academy.hpp"
 #include "oc3_forum.hpp"
 #include "oc3_garden.hpp"
