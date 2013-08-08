@@ -48,9 +48,11 @@
 #include "oc3_cityfunds.hpp"
 #include "oc3_player.hpp"
 #include "oc3_scenario.hpp"
-#include "oc3_empirecity.hpp"
+#include "oc3_empire_city.hpp"
 #include "oc3_empire.hpp"
 #include "oc3_city_trade_options.hpp"
+#include "oc3_goodstore_simple.hpp"
+#include "oc3_empire_trading.hpp"
 
 #include <set>
 
@@ -78,8 +80,11 @@ public:
   TilePos boatEntry;
   TilePos boatExit;
   TilePos cameraStart;
+  Point location;
   CityBuildOptions buildOptions;
   CityTradeOptions tradeOptions;
+
+  SimpleGoodStore buys, sells;
 
   ClimateType climate;   
   UniqueId walkerIdCount;
@@ -704,7 +709,7 @@ int City::getCulture() const
   return csPrsp.isValid() ? csPrsp.as<CityServiceCulture>()->getValue() : 0;
 }
 
-const std::string& City::getName() const
+std::string City::getName() const
 {
   return _d->name;
 }
@@ -717,4 +722,29 @@ void City::setName( const std::string& name )
 CityTradeOptions& City::getTradeOptions()
 {
   return _d->tradeOptions;
+}
+
+void City::setLocation( const Point& location )
+{
+  _d->location = location;
+}
+
+Point City::getLocation() const
+{
+  return _d->location;
+}
+
+void City::resolveMerchantArrived( EmpireMerchantPtr merchant )
+{
+
+}
+
+const GoodStore& City::getSells() const
+{
+  return _d->sells;
+}
+
+const GoodStore& City::getBuys() const
+{
+  return _d->buys;
 }

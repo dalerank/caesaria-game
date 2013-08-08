@@ -55,6 +55,7 @@ public:
 
   void setGoods( GoodStore& goods );
   Point getLocation() const;
+  EmpireCityPtr getCurrentCity() const;
   void update( unsigned int time );
 
   bool isDeleted() const;

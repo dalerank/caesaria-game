@@ -14,7 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_empire.hpp"
-#include "oc3_empirecity.hpp"
+#include "oc3_empire_city_computer.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_saveadapter.hpp"
 #include "oc3_stringhelper.hpp"
@@ -55,23 +55,23 @@ void Empire::initialize( const io::FilePath& filename )
 
   for( VariantMap::iterator it=cities.begin(); it != cities.end(); it++ )
   {
-    EmpireCityPtr city = addCity( it->first );
+    EmpireCityPtr city = ComputerCity::create( this, it->first );
+    addCity( city );
     city->load( it->second.toMap() );
   }
 }
 
-EmpireCityPtr Empire::addCity( const std::string& name )
+EmpireCityPtr Empire::addCity( EmpireCityPtr city )
 {
-  EmpireCityPtr ret = getCity( name );
+  EmpireCityPtr ret = getCity( city->getName() );
 
   if( ret.isValid() )
   {
-    StringHelper::debug( 0xff, "City %s already exist", name.c_str() );
+    StringHelper::debug( 0xff, "City %s already exist", city->getName().c_str() );
     _OC3_DEBUG_BREAK_IF( "City already exist" );
     return ret;
   }
 
-  ret = new EmpireCity( name );
   _d->cities.push_back( ret );
 
   return ret;
@@ -142,9 +142,32 @@ EmpireTradeRoutePtr Empire::getTradeRoute( unsigned int index )
   return _d->trading.getRoute( index );
 }
 
+EmpireTradeRoutePtr Empire::getTradeRoute( const std::string& start, const std::string& stop )
+{
+  return _d->trading.getRoute( start, stop ); 
+}
+
 void Empire::timeStep( unsigned int time )
 {
   _d->trading.update( time );
+}
+
+EmpireCityPtr Empire::initPlayerCity( EmpireCityPtr city )
+{
+  EmpireCityPtr ret = getCity( city->getName() );
+
+  if( ret.isNull() )
+  {
+    StringHelper::debug( 0xff, "Can't init player city, that empire city with name %s no exist", city->getName().c_str() );
+    _OC3_DEBUG_BREAK_IF( "City already exist" );
+    return ret;
+  }
+
+  city->setLocation( ret->getLocation() );
+  _d->cities.remove( ret );
+  _d->cities.push_back( city );
+
+  return ret;
 }
 
 unsigned int EmpireHelper::getTradeRouteOpenCost( EmpirePtr empire, const std::string& start, const std::string& stop )

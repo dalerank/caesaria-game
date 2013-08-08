@@ -29,15 +29,15 @@ public:
   ~Empire();
   EmpireCities getCities() const;
   EmpireCityPtr getCity( const std::string& name ) const;
+  EmpireCityPtr addCity( EmpireCityPtr city );
+  EmpireCityPtr initPlayerCity( EmpireCityPtr city );
 
   void initialize( const io::FilePath& filename );
-
-  EmpireCityPtr addCity( const std::string& name );
-
   void timeStep( unsigned int time );
 
   void createTradeRoute( const std::string& start, const std::string& stop );
   EmpireTradeRoutePtr getTradeRoute( unsigned int index ); 
+  EmpireTradeRoutePtr getTradeRoute( const std::string& start, const std::string& stop );
 
   void save( VariantMap& stream ) const;
   void load( const VariantMap& stream );

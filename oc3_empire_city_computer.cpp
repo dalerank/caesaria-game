@@ -13,59 +13,51 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_empirecity.hpp"
+#include "oc3_empire_city_computer.hpp"
+#include "oc3_empire.hpp"
+#include "oc3_empire_trading.hpp"
 #include "oc3_goodstore_simple.hpp"
 #include "oc3_goodhelper.hpp"
 
-class EmpireCity::Impl
+class ComputerCity::Impl
 {
 public:
   Point location;
   std::string name;
+  EmpirePtr empire;
   bool distantCity;
-  bool isTradeActive;
   SimpleGoodStore sellStore;
   SimpleGoodStore buyStore;
 };
 
-EmpireCity::EmpireCity( const std::string& name ) : _d( new Impl )
+ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name ) : _d( new Impl )
 {
   _d->name = name;
   _d->distantCity = false;
-  _d->isTradeActive = false;
+  _d->empire = empire;
 }
 
-std::string EmpireCity::getName() const
+std::string ComputerCity::getName() const
 {
   return _d->name;
 }
 
-Point EmpireCity::getLocation() const
+Point ComputerCity::getLocation() const
 {
   return _d->location;
 }
 
-EmpireCity::~EmpireCity()
-{
-
-}
-
-void EmpireCity::setLocation( const Point& location )
+void ComputerCity::setLocation( const Point& location )
 {
   _d->location = location;
 }
 
-bool EmpireCity::isDistantCity() const
+bool ComputerCity::isDistantCity() const
 {
   return _d->distantCity;
 }
 
-bool EmpireCity::isTradeActive() const
-{
-  return _d->isTradeActive;
-}
-
-void EmpireCity::save( VariantMap& options ) const
+void ComputerCity::save( VariantMap& options ) const
 {
   options[ "location" ] = _d->location;
 
@@ -108,7 +100,7 @@ void EmpireCity::save( VariantMap& options ) const
   options[ "bought" ] = vm_bought;
 }
 
-void EmpireCity::load( const VariantMap& options )
+void ComputerCity::load( const VariantMap& options )
 {
   setLocation( options.get( "location" ).toPoint() );
 
@@ -141,17 +133,30 @@ void EmpireCity::load( const VariantMap& options )
   }
 }
 
-GoodStore& EmpireCity::getSells()
+const GoodStore& ComputerCity::getSells() const
 {
   return _d->sellStore;
 }
 
-GoodStore& EmpireCity::getBuys()
+const GoodStore& ComputerCity::getBuys() const
 {
   return _d->buyStore;
 }
 
-void EmpireCity::openTrade()
+EmpireCityPtr ComputerCity::create( EmpirePtr empire, const std::string& name )
 {
-  _d->isTradeActive = true;
+  EmpireCityPtr ret( new ComputerCity( empire, name ) );
+  ret->drop();
+
+  return ret;
+}
+
+void ComputerCity::resolveMerchantArrived( EmpireMerchantPtr )
+{
+
+}
+
+ComputerCity::~ComputerCity()
+{
+
 }

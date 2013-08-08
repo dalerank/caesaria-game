@@ -27,14 +27,15 @@
 #include "oc3_referencecounted.hpp"
 #include "oc3_cityservice.hpp"
 #include "oc3_tile.hpp"
+#include "oc3_empire_city.hpp"
+#include "oc3_positioni.hpp"
 
-class TilePos;
 class DateTime;
 class CityBuildOptions;
 class CityTradeOptions;
 class CityFunds;
 
-class City : public Serializable, public ReferenceCounted
+class City : public EmpireCity
 {
 public:
   static CityPtr create();
@@ -42,6 +43,9 @@ public:
 
   void timeStep( unsigned int time );  // performs one simulation step
   void monthStep();
+
+  void setLocation( const Point& location );
+  Point getLocation() const;
 
   Walkers getWalkerList( const WalkerType type );
   void addWalker( WalkerPtr walker );
@@ -83,7 +87,7 @@ public:
 
   Tilemap& getTilemap();
 
-  const std::string& getName() const; 
+  std::string getName() const; 
   void setName( const std::string& name );
 
   void save( VariantMap& stream) const;
@@ -104,6 +108,11 @@ public:
   void setDate( const DateTime& time );
 
   LandOverlayPtr getOverlay( const TilePos& pos ) const;
+
+  void resolveMerchantArrived( EmpireMerchantPtr merchant );
+
+  const GoodStore& getSells() const;
+  const GoodStore& getBuys() const;
    
 oc3_signals public:
   Signal1<int>& onPopulationChanged();

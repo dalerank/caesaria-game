@@ -87,6 +87,8 @@ bool Scenario::load( const io::FilePath& filename )
     return false;
   }  
 
+  _d->empire->initPlayerCity( _d->city.as<EmpireCity>() );
+
   LandOverlays llo = _d->city->getOverlayList();
   for ( LandOverlays::iterator itLLO = llo.begin(); itLLO!=llo.end(); ++itLLO)
   {

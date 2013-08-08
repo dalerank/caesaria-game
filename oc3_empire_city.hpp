@@ -19,35 +19,22 @@
 #include "oc3_scopedptr.hpp"
 #include "oc3_referencecounted.hpp"
 #include "oc3_positioni.hpp"
+#include "oc3_predefinitions.hpp"
 #include "oc3_serializer.hpp"
-
-#include <string>
 
 class GoodStore;
 
 class EmpireCity : public ReferenceCounted, public Serializable
 {
 public:
-  EmpireCity( const std::string& name );
-  ~EmpireCity();
+  virtual std::string getName() const = 0;
+  virtual Point getLocation() const = 0;
+  virtual void setLocation( const Point& location ) = 0;
 
-  std::string getName() const;
-  Point getLocation() const;
-  void setLocation( const Point& location );
-  
-  bool isTradeActive() const;
-  void openTrade();
-  bool isDistantCity() const;
+  virtual void resolveMerchantArrived( EmpireMerchantPtr ) = 0;
 
-  void save( VariantMap& options ) const;
-  void load( const VariantMap& options );
-
-  GoodStore& getSells();
-  GoodStore& getBuys();
-
-private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  virtual const GoodStore& getSells() const = 0;
+  virtual const GoodStore& getBuys() const = 0;
 };
 
 #endif //__OPENCAESAR3_EMPIRECITY_H_INCLUDED__

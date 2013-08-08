@@ -15,7 +15,7 @@
 
 #include "oc3_empire_trading.hpp"
 #include "oc3_empire.hpp"
-#include "oc3_empirecity.hpp"
+#include "oc3_empire_city.hpp"
 #include "oc3_goodstore_simple.hpp"
 #include "oc3_stringhelper.hpp"
 
@@ -81,6 +81,7 @@ void EmpireTradeRoute::addMerchant( const std::string& begin, GoodStore& store )
 {
   EmpireMerchantPtr merchant = EmpireMerchant::create( *this, begin );
   _d->merchants.push_back( merchant );  
+
   CONNECT( merchant, onDestination(), _d.data(), Impl::resolveMerchantArrived );
 }
 
@@ -280,4 +281,20 @@ bool EmpireMerchant::isDeleted() const
 void EmpireMerchant::deleteLater()
 {
   _d->isDeleted = true;
+}
+
+EmpireCityPtr EmpireMerchant::getCurrentCity() const
+{
+  if( _d->route->getBeginCity()->getLocation().distanceTo( _d->location ) < 10 )
+  {
+    return _d->route->getBeginCity();
+  }
+  else if( _d->route->getEndCity()->getLocation().distanceTo( _d->location ) < 10 )
+  {
+    return _d->route->getEndCity();
+  }
+  else 
+  {
+    return 0;
+  }
 }
