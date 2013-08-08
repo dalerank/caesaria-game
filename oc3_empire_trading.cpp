@@ -114,18 +114,10 @@ Signal1<EmpireMerchantPtr>& EmpireTradeRoute::onMerchantArrived()
 
 class EmpireTrading::Impl
 {
-oc3_signals public:
-  Signal1<EmpireMerchantPtr> onMerchantArrivedSignal;
-
 public:
   EmpirePtr empire;
   typedef std::map< unsigned int, EmpireTradeRoutePtr > TradeRoutes;
   TradeRoutes routes;
-
-  void resolveMerchantArrived( EmpireMerchantPtr merchant )
-  {
-    onMerchantArrivedSignal.emit( merchant );
-  }
 };
 
 EmpireTrading::EmpireTrading() : _d( new Impl )
@@ -206,14 +198,7 @@ EmpireTradeRoutePtr EmpireTrading::createRoute( const std::string& begin, const 
   route->drop();
   _d->routes[ routeId ] = route;
 
-  CONNECT( route, onMerchantArrived(), _d.data(), Impl::resolveMerchantArrived );
-
   return route;
-}
-
-Signal1<EmpireMerchantPtr>& EmpireTrading::onMerchantArrived()
-{
-  return _d->onMerchantArrivedSignal;
 }
 
 class EmpireMerchant::Impl
@@ -223,7 +208,7 @@ public:
   SimpleGoodStore store;
   Point location;
   Point step;
-  Point destination;
+  EmpireCityPtr destCity;
   bool isDeleted;
 
 oc3_signals public:
@@ -245,9 +230,9 @@ EmpireMerchantPtr EmpireMerchant::create( EmpireTradeRoute& route, const std::st
   EmpireMerchantPtr ret( new EmpireMerchant() );
   ret->_d->route = &route;
   bool startCity = route.getBeginCity()->getName() == start;
-  ret->_d->destination = (  startCity ? route.getBeginCity() : route.getEndCity() )->getLocation();
+  ret->_d->destCity = startCity ? route.getBeginCity() : route.getEndCity();
   ret->_d->location = ( startCity ? route.getEndCity() : route.getBeginCity() )->getLocation();
-  ret->_d->step = ( ret->_d->destination - ret->_d->location ) / 30;
+  ret->_d->step = ( ret->_d->destCity->getLocation() - ret->_d->location ) / 30;
   ret->drop();
 
   return ret;
@@ -262,9 +247,11 @@ void EmpireMerchant::update( unsigned int time )
 {
   _d->location += _d->step;
 
-  if( _d->destination.distanceTo( _d->location ) < 5 )
+  if( _d->destCity->getLocation().distanceTo( _d->location ) < 5 )
   {
     _d->onDestinationSignal.emit( this );
+
+    _d->destCity->resolveMerchantArrived( this );
   }
 }
 
@@ -281,20 +268,4 @@ bool EmpireMerchant::isDeleted() const
 void EmpireMerchant::deleteLater()
 {
   _d->isDeleted = true;
-}
-
-EmpireCityPtr EmpireMerchant::getCurrentCity() const
-{
-  if( _d->route->getBeginCity()->getLocation().distanceTo( _d->location ) < 10 )
-  {
-    return _d->route->getBeginCity();
-  }
-  else if( _d->route->getEndCity()->getLocation().distanceTo( _d->location ) < 10 )
-  {
-    return _d->route->getEndCity();
-  }
-  else 
-  {
-    return 0;
-  }
 }

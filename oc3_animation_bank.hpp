@@ -12,33 +12,32 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
+#ifndef __OPENCAESAR3_ANIMATION_BANK_H_INCLUDED__
+#define __OPENCAESAR3_ANIMATION_BANK_H_INCLUDED__
 
-#ifndef __OPENCAESAR3_GOODHELPER_H_INCLUDED__
-#define __OPENCAESAR3_GOODHELPER_H_INCLUDED__
-
-#include "oc3_scopedptr.hpp"
-#include "oc3_enums.hpp"
 #include "oc3_picture.hpp"
+#include "oc3_enums.hpp"
 
-class GoodStock;
-
-class GoodHelper
+class AnimationBank
 {
 public:
-  static GoodHelper& getInstance();
+  static AnimationBank& instance();
 
-  static std::string getName( GoodType type );
-  static Picture getPicture( GoodType type );
-  static GoodType getType( const std::string& name );
-  static std::string getTypeName( GoodType type );
-  static Picture& getPicture( const GoodStock &stock, const DirectionType &direction);
-  ~GoodHelper();
+  // loads all cart graphics
+  void loadAll();
+
+  Picture& getCart(GoodType cart, const DirectionType &direction );
+  // for emmigration & immigration
+  Picture& getCart(CartTypes cart, const DirectionType &direction);
+
 private:
-  GoodHelper();
+  AnimationBank();
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#endif
+#endif  //__OPENCAESAR3_ANIMATION_BANK_H_INCLUDED__

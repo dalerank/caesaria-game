@@ -17,6 +17,7 @@
 #include "oc3_good.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_stringhelper.hpp"
+#include "oc3_animation_bank.hpp"
 #include <vector>
 
 TypeEquale<GoodType> goodTypeEquales[] = { 
@@ -140,4 +141,9 @@ std::string GoodHelper::getTypeName( GoodType type )
   } 
 
   return "unknown";
+}
+
+Picture& GoodHelper::getPicture(const GoodStock &stock, const DirectionType &direction)
+{
+  return AnimationBank::instance().getCart( stock._currentQty == 0 ? G_NONE :  stock._goodType, direction );
 }

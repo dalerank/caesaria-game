@@ -13,11 +13,11 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_emigrant.hpp"
+#include "oc3_walker_emigrant.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_road.hpp"
-#include "oc3_picture_bank.hpp"
+#include "oc3_animation_bank.hpp"
 #include "oc3_city.hpp"
 
 Emigrant::Emigrant( CityPtr city ) : Immigrant( city )
@@ -32,7 +32,7 @@ Picture* Emigrant::getCartPicture()
 {
   if( Immigrant::getCartPicture() == NULL )
   {
-    setCartPicture( &CartLoader::instance().getCart( G_SCARB1, getDirection()) );
+    setCartPicture( &AnimationBank::instance().getCart( G_EMIGRANT_CART1, getDirection()) );
   }
 
   return Immigrant::getCartPicture();

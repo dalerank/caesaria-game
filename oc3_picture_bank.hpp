@@ -93,30 +93,4 @@ private:
    ScopedPtr< Impl > _d;
 };
 
-
-class CartLoader
-{
-public:
-  static CartLoader& instance();
-
-  // loads all cart graphics
-  void loadAll();
-
-  // fills the cart pictures
-  // prefix: image prefix
-  // start: index of the first frame
-  void fillCart(std::vector<Picture*> &ioCart, const std::string &prefix, const int start, bool back );
-
-  Picture& getCart(const GoodStock &stock, const DirectionType &direction);
-  Picture& getCart(GoodType cart, const DirectionType &direction );
-  // for emmigration & immigration
-  Picture& getCart(CartTypes cart, const DirectionType &direction);
-
-private:
-  CartLoader();
-
-  class Impl;
-  ScopedPtr< Impl > _d;
-};
-
 #endif //__OPENCAESAR3_PICLOADER_H_INCLUDED__

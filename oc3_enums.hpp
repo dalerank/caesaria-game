@@ -83,7 +83,7 @@ enum GoodType
   G_MAX 
 };
 
-enum CartTypes {G_SCARB1 = G_MAX, G_SCARB2, CT_MAX };
+enum CartTypes {G_EMIGRANT_CART1 = G_MAX, G_ENIGRANT_CART2, CT_MAX };
   
 enum ServiceType 
 { 

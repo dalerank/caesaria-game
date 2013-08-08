@@ -24,7 +24,7 @@
 #include "oc3_tile.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_path_finding.hpp"
-#include "oc3_picture_bank.hpp"
+#include "oc3_animation_bank.hpp"
 #include "oc3_factory_building.hpp"
 #include "oc3_goodstore.hpp"
 
@@ -115,12 +115,12 @@ void CartSupplier::onDestination()
 
 Picture& CartSupplier::getCartPicture()
 {
-   if( !_d->cartPicture.isValid() )
-   {
-      _d->cartPicture = CartLoader::instance().getCart(_d->stock, getDirection());
-   }
+  if( !_d->cartPicture.isValid() )
+  {
+    _d->cartPicture = AnimationBank::instance().getCart(  _d->stock._currentQty == 0 ? G_NONE : _d->stock._goodType, getDirection() );
+  }
 
-   return _d->cartPicture;
+  return _d->cartPicture;
 }
 
 void CartSupplier::onNewDirection()

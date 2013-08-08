@@ -18,7 +18,7 @@
 #include "oc3_walker_market_lady.hpp"
 #include "oc3_walker_cart_pusher.hpp"
 #include "oc3_walker_prefect.hpp"
-#include "oc3_emigrant.hpp"
+#include "oc3_walker_emigrant.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_walker_taxcollector.hpp"
 #include "oc3_city.hpp"

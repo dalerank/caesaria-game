@@ -21,7 +21,6 @@
 
 #include <vector>
 #include <string>
-#include "oc3_alignment.hpp"
 #include "oc3_size.hpp"
 #include "oc3_scopedptr.hpp"
 #include "oc3_referencecounted.hpp"

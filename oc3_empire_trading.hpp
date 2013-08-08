@@ -55,7 +55,6 @@ public:
 
   void setGoods( GoodStore& goods );
   Point getLocation() const;
-  EmpireCityPtr getCurrentCity() const;
   void update( unsigned int time );
 
   bool isDeleted() const;
@@ -85,9 +84,6 @@ public:
   EmpireTradeRoutePtr createRoute( const std::string& begin, const std::string& end );
 
   void sendMerchant( const std::string& begin, const std::string& end, GoodStore& goods );
-
-oc3_signals public:
-  Signal1<EmpireMerchantPtr>& onMerchantArrived();
 
 private:
   class Impl;
