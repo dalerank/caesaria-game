@@ -26,8 +26,8 @@
 #include "oc3_variant.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_path_finding.hpp"
-#include "oc3_picture_bank.hpp"
 #include "oc3_city.hpp"
+#include "oc3_animation_bank.hpp"
 
 class Walker::Impl
 {
@@ -361,41 +361,41 @@ DirectionType Walker::getDirection()
    return _d->action._direction;
 }
 
-void Walker::getPictureList(std::vector<Picture*> &oPics)
+void Walker::getPictureList(std::vector<Picture> &oPics)
 {
    oPics.clear();
-   oPics.push_back(&getMainPicture());
+   oPics.push_back( getMainPicture() );
 }
 
-Picture& Walker::getMainPicture()
+const Picture& Walker::getMainPicture()
 {
    if( !_d->animation.isValid() )
    {
-      const std::map<WalkerAction, Animation>& animMap = WalkerLoader::instance().getAnimationMap(getWalkerGraphic());
-      std::map<WalkerAction, Animation>::const_iterator itAnimMap;
-      if (_d->action._action == WA_NONE || _d->action._direction == D_NONE)
-      {
-         WalkerAction action;
-         action._action = WA_MOVE;       // default action
-         if (_d->action._direction == D_NONE)
-         {
-            action._direction = D_NORTH;  // default direction
-         }
-         else
-         {
-            action._direction = _d->action._direction;  // last direction of the walker
-         }
-         itAnimMap = animMap.find(action);
-      }
-      else
-      {
-         itAnimMap = animMap.find(_d->action);
-      }
+     const AnimationBank::WalkerAnimationMap& animMap = AnimationBank::getWalker( getWalkerGraphic() );
+     std::map<WalkerAction, Animation>::const_iterator itAnimMap;
+     if (_d->action._action == WA_NONE || _d->action._direction == D_NONE)
+     {
+        WalkerAction action;
+        action._action = WA_MOVE;       // default action
+        if (_d->action._direction == D_NONE)
+        {
+           action._direction = D_NORTH;  // default direction
+        }
+        else
+        {
+           action._direction = _d->action._direction;  // last direction of the walker
+        }
+        itAnimMap = animMap.find(action);
+     }
+     else
+     {
+        itAnimMap = animMap.find(_d->action);
+     }
 
-      _d->animation = itAnimMap->second;
+     _d->animation = itAnimMap->second;
    }
 
-   return *_d->animation.getCurrentPicture();
+   return _d->animation.getCurrentPicture();
 }
 
 void Walker::save( VariantMap& stream ) const

@@ -72,7 +72,7 @@ EmpireCityPtr Empire::addCity( EmpireCityPtr city )
     return ret;
   }
 
-  _d->cities.push_back( ret );
+  _d->cities.push_back( city );
 
   return ret;
 }

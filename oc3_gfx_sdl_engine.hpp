@@ -36,8 +36,8 @@ public:
   void delay( const unsigned int msec );
   bool haveEvent( NEvent& event );
 
-  void loadPicture(Picture &ioPicture);
-  void unloadPicture(Picture& ioPicture);
+  virtual void loadPicture(Picture &ioPicture);
+  virtual void unloadPicture(Picture& ioPicture);
 
   void startRenderFrame();
   void drawPicture(const Picture &picture, const int dx, const int dy, Rect* clipRect=0);

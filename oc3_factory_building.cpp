@@ -147,8 +147,8 @@ void Factory::timeStep(const unsigned long time)
        _d->progress += work;
 
        _getAnimation().update( time );
-       Picture *pic = _getAnimation().getCurrentPicture();
-       if (pic != NULL)
+       const Picture& pic = _getAnimation().getCurrentPicture();
+       if( pic.isValid() )
        {
          // animation of the working factory
          int level = _fgPictures.size()-1;

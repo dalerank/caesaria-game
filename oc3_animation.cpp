@@ -37,7 +37,7 @@ void Animation::setOffset( const Point& offset )
 {
     for( PicturesArray::iterator it = _pictures.begin(); it != _pictures.end(); ++it)
     {
-        (*it)->setOffset(offset.getX(), offset.getY() );
+        (*it).setOffset( offset );
     }
 }
 
@@ -61,9 +61,11 @@ void Animation::update( unsigned int time )
   }
 }
 
-Picture* Animation::getCurrentPicture()
+const Picture& Animation::getCurrentPicture()
 {
-    return (_pictures.size() > 0 && _animIndex >= 0) ? _pictures[_animIndex] : 0;
+  return (_pictures.size() > 0 && _animIndex >= 0) 
+                  ? _pictures[_animIndex] 
+                  : Picture::getInvalid();
 }
 
 int Animation::getCurrentIndex() const
@@ -93,8 +95,8 @@ void Animation::load( const std::string &prefix, const int start, const int numb
     int revMul = reverse ? -1 : 1;
     for( int i = 0; i < number; ++i)
     {
-      Picture& pic = Picture::load(prefix, start + revMul*i*step);
-      _pictures.push_back( &pic );
+      const Picture& pic = Picture::load(prefix, start + revMul*i*step);
+      _pictures.push_back( pic );
     }
 }
 

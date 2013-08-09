@@ -18,20 +18,28 @@
 #ifndef __OPENCAESAR3_ANIMATION_BANK_H_INCLUDED__
 #define __OPENCAESAR3_ANIMATION_BANK_H_INCLUDED__
 
-#include "oc3_picture.hpp"
 #include "oc3_enums.hpp"
+#include "oc3_animation.hpp"
+#include "oc3_walker_action.hpp"
+
+#include <map>
 
 class AnimationBank
 {
 public:
+  typedef std::map<WalkerAction, Animation> WalkerAnimationMap;
+
   static AnimationBank& instance();
 
   // loads all cart graphics
-  void loadAll();
+  static void loadCarts();
+  static void loadWalkers();
 
-  Picture& getCart(GoodType cart, const DirectionType &direction );
+  static const Picture& getCart(GoodType cart, const DirectionType &direction );
   // for emmigration & immigration
-  Picture& getCart(CartTypes cart, const DirectionType &direction);
+  static const Picture& getCart(CartTypes cart, const DirectionType &direction);
+
+  static const WalkerAnimationMap& getWalker( const WalkerGraphicType walkerGraphic );
 
 private:
   AnimationBank();

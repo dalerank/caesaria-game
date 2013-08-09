@@ -34,57 +34,58 @@ struct SDL_Surface;
 class Picture : public ReferenceCounted
 {
 public:
-   Picture();
-   ~Picture();
+  Picture();
+  ~Picture();
 
-   Picture( const Picture& other );
-   Picture& operator=(const Picture& other);
-   
-   void init(SDL_Surface* surface, const Point& offset );
+  Picture( const Picture& other );
+  Picture& operator=(const Picture& other);
+  
+  void init(SDL_Surface* surface, const Point& offset );
 
-   void setOffset(const int xoffset, const int yoffset);
-   void setOffset( const Point& xoffset );
-   void addOffset(const int dx, const int dy);
-   void setName(std::string &name);  // for save game
-   std::string getName();
-   Picture* createCopy() const;
-   SDL_Surface* getSurface() const;
-   Point getOffset() const;
-   int getWidth() const;
-   int getHeight() const;
+  void setOffset(const int xoffset, const int yoffset);
+  void setOffset( const Point& xoffset );
+  void addOffset(const int dx, const int dy);
+  void setName(std::string &name);  // for save game
+  std::string getName();
+  Picture* createCopy() const;
+  SDL_Surface* getSurface() const;
+  Point getOffset() const;
+  int getWidth() const;
+  int getHeight() const;
 
-   void draw( const Picture &srcpic, int x, int y, bool useAlpha=true );
-   void draw( const Picture &srcpic, const Point& pos, bool useAlpha=true );
-   void draw( const Picture &srcpic, const Rect& srcrect, const Point& pos, bool useAlpha=true );
-   void draw( const Picture &srcpic, const Rect& srcrect, const Rect& dstrect, bool useAlpha=true );
+  void draw( const Picture &srcpic, int x, int y, bool useAlpha=true );
+  void draw( const Picture &srcpic, const Point& pos, bool useAlpha=true );
+  void draw( const Picture &srcpic, const Rect& srcrect, const Point& pos, bool useAlpha=true );
+  void draw( const Picture &srcpic, const Rect& srcrect, const Rect& dstrect, bool useAlpha=true );
 
-   void fill( const NColor& color, const Rect& rect );
+  void fill( const NColor& color, const Rect& rect );
 
-   // lock/unlock the given surface for pixel access
-   void lock();
-   void unlock();
+  // lock/unlock the given surface for pixel access
+  void lock();
+  void unlock();
 
-   // Uint32 is the pixel color in the surface format. The surface must be locked!!!
-   int getPixel( const Point& pos );
-   void setPixel(const Point& pos, const int color);
+  // Uint32 is the pixel color in the surface format. The surface must be locked!!!
+  int getPixel( const Point& pos );
+  void setPixel(const Point& pos, const int color);
 
-   Size getSize() const;
+  Size getSize() const;
 
-   bool isValid() const;
+  bool isValid() const;
 
-   static Picture& load( const std::string& group, const int id );
-   static Picture& load( const std::string& filename ); 
+  static Picture& load( const std::string& group, const int id );
+  static Picture& load( const std::string& filename ); 
 
-   static Picture* create( const Size& size );
-   static void destroy( Picture* ptr );
+  static Picture* create( const Size& size );
+  static const Picture& getInvalid();
+  static void destroy( Picture* ptr );
 
-   unsigned int& getGlTextureID() const;
+  unsigned int& getGlTextureID() const;
 private:
-   class Impl;
-   ScopedPtr< Impl > _d;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
-typedef std::vector<Picture*> PicturesArray;
+typedef std::vector<Picture> PicturesArray;
 
 struct PictureRefDeleter
 {

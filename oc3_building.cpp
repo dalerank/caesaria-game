@@ -152,7 +152,7 @@ Picture& LandOverlay::getPicture()
   return _d->picture;
 }
 
-std::vector<Picture*>& LandOverlay::getForegroundPictures()
+std::vector<Picture>& LandOverlay::getForegroundPictures()
 {
   return _fgPictures;
 }
@@ -646,7 +646,7 @@ void Dock::timeStep(const unsigned long time)
   _d->animation.update( time );
   
   // takes current animation frame and put it into foreground
-  _fgPictures.at(0) = _d->animation.getCurrentPicture(); 
+  _fgPictures[ 0 ] = _d->animation.getCurrentPicture(); 
 }
 
 // second arch pictures is land3a 45 + 46	

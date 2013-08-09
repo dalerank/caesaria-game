@@ -53,6 +53,7 @@
 #include "oc3_city_trade_options.hpp"
 #include "oc3_goodstore_simple.hpp"
 #include "oc3_empire_trading.hpp"
+#include "oc3_walker_merchant.hpp"
 
 #include <set>
 
@@ -736,7 +737,8 @@ Point City::getLocation() const
 
 void City::resolveMerchantArrived( EmpireMerchantPtr merchant )
 {
-
+  WalkerPtr cityMerchant = Merchant::create( merchant );
+  cityMerchant.as<Merchant>()->send2City( this );
 }
 
 const GoodStore& City::getSells() const

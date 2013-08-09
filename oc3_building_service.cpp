@@ -76,8 +76,8 @@ void ServiceBuilding::timeStep(const unsigned long time)
    }
 
    _getAnimation().update( time );
-   Picture *pic = _getAnimation().getCurrentPicture();
-   if (pic != NULL)
+   const Picture& pic = _getAnimation().getCurrentPicture();
+   if( pic.isValid() )
    {
       int level = _fgPictures.size()-1;
       _fgPictures[level] = _getAnimation().getCurrentPicture();
@@ -194,7 +194,7 @@ Theater::Theater() : EntertainmentBuilding(S_THEATER, B_THEATER, Size(2))
    _getAnimation().setOffset( Point( 60, 36 ) );
   
    _fgPictures.resize(2);
-   _fgPictures[0] = &Picture::load("entertainment", 35);
+   _fgPictures[0] = Picture::load("entertainment", 35);
 }
 
 int Theater::getVisitorsNumber() const
@@ -209,17 +209,17 @@ BuildingAmphiTheater::BuildingAmphiTheater() : EntertainmentBuilding(S_AMPHITHEA
   _getAnimation().load("entertainment", 2, 10);
   _getAnimation().setOffset( Point( 100, 49 ) );
   _fgPictures.resize(2);
-  _fgPictures[0] = &Picture::load("entertainment", 12);
+  _fgPictures[0] = Picture::load("entertainment", 12);
 }
 
 BuildingCollosseum::BuildingCollosseum() : EntertainmentBuilding(S_COLLOSSEUM, B_COLLOSSEUM, Size(5) )
 {
-  setPicture( Picture::load("entertainment", 36));
+  setPicture( Picture::load( ResourceGroup::entertaiment, 36));
 
   _getAnimation().load("entertainment", 37, 13);
   _getAnimation().setOffset( Point( 122, 81 ) );
   _fgPictures.resize(2);
-  _fgPictures[0] = &Picture::load("entertainment", 50);
+  _fgPictures[0] = Picture::load( ResourceGroup::entertaiment, 50);
 }
 
 //------------
@@ -228,13 +228,13 @@ BuildingHippodrome::BuildingHippodrome() : EntertainmentBuilding(S_HIPPODROME, B
 {
   setPicture( Picture::load("circus", 5));
   getPicture().setOffset(0,106);
-  Picture* logo = &Picture::load("circus", 3);
-  Picture* logo1 = &Picture::load("circus", 1);
-  logo -> setOffset(150,181);
-  logo1 -> setOffset(300,310);
+  Picture logo = Picture::load("circus", 3);
+  Picture logo1 = Picture::load("circus", 1);
+  logo.setOffset(150,181);
+  logo1.setOffset(300,310);
   _fgPictures.resize(5);
-  _fgPictures.at(0) = logo;
-  _fgPictures.at(1) = logo1;
+  _fgPictures[ 0 ] = logo;
+  _fgPictures[ 1 ] = logo1;
 }
 
 //-----------

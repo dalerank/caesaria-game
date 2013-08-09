@@ -34,6 +34,7 @@
 #include "oc3_app_config.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_picture_info_bank.hpp"
+#include "oc3_gfx_engine.hpp"
 
 class PictureBank::Impl
 {
@@ -55,7 +56,7 @@ void PictureBank::setPicture(const std::string &name, SDL_Surface &surface)
   // first: we deallocate the current picture, if any
   unsigned int picId = StringHelper::hash( name );
   Impl::ItPicture it = _d->resources.find( picId );
-  if (it != _d->resources.end())
+  if( it != _d->resources.end() )
   {
      SDL_FreeSurface( it->second.getSurface());
   }
@@ -92,28 +93,28 @@ PicturesArray PictureBank::getPictures()
    for( Impl::ItPicture it = _d->resources.begin(); it != _d->resources.end(); ++it)
    {
       // for every resource
-      pictures.push_back(&(*it).second);
+      pictures.push_back( it->second );
    }
    return pictures;
 }
 
-void PictureBank::loadWaitPics()
+void PictureBank::loadWaitPics( GfxEngine& engine )
 {
   std::string aPath = AppConfig::get( AppConfig::resourcePath ).toString() + "/pics/";
-  loadArchive(aPath+"pics_wait.zip");
+  loadArchive( aPath+"pics_wait.zip", engine );
 
   StringHelper::debug( 0xff, "number of images loaded: %d", _d->resources.size() );
 }
 
-void PictureBank::loadAllPics()
+void PictureBank::loadAllPics( GfxEngine& engine )
 {
   std::string aPath = AppConfig::get( AppConfig::resourcePath ).toString() + "/pics/";
-  loadArchive(aPath + "pics.zip");
-  loadArchive(aPath + "pics_oc3.zip");	
+  loadArchive(aPath + "pics.zip", engine );
+  loadArchive(aPath + "pics_oc3.zip", engine);	
   StringHelper::debug( 0xff, "number of images loaded: %d", _d->resources.size() );
 }
 
-void PictureBank::loadArchive(const std::string &filename)
+void PictureBank::loadArchive( const std::string &filename, GfxEngine& engine )
 {
   std::cout << "reading image archive: " << filename << std::endl;
   struct archive *a;
@@ -140,6 +141,7 @@ void PictureBank::loadArchive(const std::string &filename)
     THROW("Memory error, cannot allocate buffer size " << bufferSize);
 
   std::string entryname;
+  Picture tmpPicture;
   while( archive_read_next_header(a, &entry) == ARCHIVE_OK )
   {
     // for all entries in archive
@@ -160,7 +162,12 @@ void PictureBank::loadArchive(const std::string &filename)
     surface = IMG_Load_RW(rw, 0);
     SDL_SetAlpha( surface, 0, 0 );
 
-    setPicture(entryname, *surface);
+    tmpPicture.init( surface, Point() );
+
+    engine.loadPicture( tmpPicture );
+
+    setPicture( entryname, tmpPicture );
+
     SDL_FreeRW(rw);
   }
 
@@ -230,175 +237,3 @@ PictureBank::~PictureBank()
 {
 
 }
-
-class WalkerLoader::Impl
-{
-public:
-  typedef std::vector< WalkerLoader::WalkerAnimationMap > Animations;
-  Animations animations; // anim[WalkerGraphic][WalkerAction]
-};
-
-WalkerLoader& WalkerLoader::instance()
-{
-   static WalkerLoader inst;
-   return inst;
-}
-
-WalkerLoader::WalkerLoader() : _d( new Impl )
-{ 
-}
-
-void WalkerLoader::loadAll()
-{
-   _d->animations.resize(30);  // number of walker types
-
-   WalkerAnimationMap waMap;
-
-   waMap.clear();
-   fillWalk(waMap, "citizen01", 1, 12);
-   _d->animations[WG_POOR] = waMap;
-
-   waMap.clear();
-   fillWalk(waMap, "citizen01", 105, 12);
-   _d->animations[WG_BATH] = waMap;
-
-   waMap.clear();
-   fillWalk(waMap, "citizen01", 209, 12);
-   _d->animations[WG_PRIEST] = waMap;
-
-   waMap.clear();
-   fillWalk(waMap, "citizen01", 313, 12);
-   _d->animations[WG_ACTOR] = waMap;
-
-   waMap.clear();
-   fillWalk(waMap, "citizen01", 417, 12);
-   _d->animations[WG_TAMER] = waMap;
-
-   waMap.clear();
-   fillWalk(waMap, "citizen01", 617, 12);
-   _d->animations[WG_TAX] = waMap;
-
-   waMap.clear();
-   fillWalk(waMap, "citizen01", 721, 12);
-   _d->animations[WG_CHILD] = waMap;
-
-   waMap.clear();
-   fillWalk(waMap, "citizen01", 825, 12);
-   _d->animations[WG_MARKETLADY] = waMap;
-
-   waMap.clear();
-   fillWalk(waMap, "citizen01", 929, 12);
-   _d->animations[WG_PUSHER] = waMap;
-
-   waMap.clear();
-   fillWalk(waMap, "citizen01", 1033, 12);
-   _d->animations[WG_PUSHER2] = waMap;
-
-   waMap.clear();
-   fillWalk(waMap, "citizen01", 1137, 12);
-   _d->animations[WG_ENGINEER] = waMap;
-
-   waMap.clear();
-   fillWalk(waMap, "citizen02", 1, 12);
-   _d->animations[WG_GLADIATOR] = waMap;
-
-   waMap.clear();
-   fillWalk(waMap, "citizen02", 199, 12);
-   _d->animations[WG_GLADIATOR2] = waMap;
-
-   waMap.clear();
-   fillWalk(waMap, "citizen02", 351, 12);
-   _d->animations[WG_RIOTER] = waMap;
-
-   waMap.clear();
-   fillWalk(waMap, "citizen02", 463, 12);
-   _d->animations[WG_BARBER] = waMap;
-
-   waMap.clear();
-   fillWalk(waMap, "citizen02", 615, 12);
-   _d->animations[WG_PREFECT] = waMap;
-
-   waMap.clear();
-   fillWalk(waMap, "citizen02", 767, 12);
-   _d->animations[WG_PREFECT_DRAG_WATER] = waMap;
-
-   waMap.clear();
-   fillWalk(waMap, "citizen02", 863, 6);
-   _d->animations[WG_PREFECT_FIGHTS_FIRE] = waMap;
-
-   waMap.clear();
-   fillWalk(waMap, "citizen02", 911, 12);
-   _d->animations[WG_HOMELESS] = waMap;
-
-   waMap.clear();
-   fillWalk(waMap, "citizen03", 713, 12);
-   _d->animations[WG_RICH] = waMap;
-
-   waMap.clear();
-   fillWalk(waMap, "citizen03", 817, 12);
-   _d->animations[WG_DOCTOR] = waMap;
-
-   waMap.clear();
-   fillWalk(waMap, "citizen03", 921, 12);
-   _d->animations[WG_RICH2] = waMap;
-
-   waMap.clear();
-   fillWalk(waMap, "citizen03", 1025, 12);
-   _d->animations[WG_LIBRARIAN] = waMap;
-
-   waMap.clear();
-   fillWalk(waMap, "citizen03", 553, 12);
-   _d->animations[WG_SOLDIER] = waMap;
-
-   waMap.clear();
-   fillWalk(waMap, "citizen03", 241, 12);
-   _d->animations[WG_JAVELINEER] = waMap;
-
-   waMap.clear();
-   fillWalk(waMap, "citizen04", 1, 12);
-   _d->animations[WG_HORSEMAN] = waMap;
-
-   waMap.clear();
-   fillWalk(waMap, ResourceGroup::carts, 145, 12);
-   _d->animations[WG_HORSE_CARAVAN] = waMap;
-
-   waMap.clear();
-   fillWalk(waMap, ResourceGroup::carts, 273, 12);
-   _d->animations[WG_CAMEL_CARAVAN] = waMap;
-
-   waMap.clear();
-   fillWalk(waMap, ResourceGroup::carts, 369, 12);
-   _d->animations[WG_MARKETLADY_HELPER] = waMap;
-}
-
-void WalkerLoader::fillWalk(std::map<WalkerAction, Animation> &ioMap, const std::string &prefix, const int start, const int size)
-{
-   WalkerAction action;
-   action._action = WA_MOVE;
-
-   action._direction = D_NORTH;
-   ioMap[action].load( prefix, start, size, Animation::straight, 8);
-   action._direction = D_NORTH_EAST;
-   ioMap[action].load( prefix, start+1, size, Animation::straight, 8);
-   action._direction = D_EAST;
-   ioMap[action].load( prefix, start+2, size, Animation::straight, 8);
-   action._direction = D_SOUTH_EAST;
-   ioMap[action].load( prefix, start+3, size, Animation::straight, 8);
-   action._direction = D_SOUTH;
-   ioMap[action].load( prefix, start+4, size, Animation::straight, 8);
-   action._direction = D_SOUTH_WEST;
-   ioMap[action].load( prefix, start+5, size, Animation::straight, 8);
-   action._direction = D_WEST;
-   ioMap[action].load( prefix, start+6, size, Animation::straight, 8);
-   action._direction = D_NORTH_WEST;
-   ioMap[action].load( prefix, start+7, size, Animation::straight, 8);
-}
-
-const std::map<WalkerAction, Animation>& WalkerLoader::getAnimationMap(const WalkerGraphicType walkerGraphic)
-{
-   return _d->animations[walkerGraphic];
-}
-
-
-
-

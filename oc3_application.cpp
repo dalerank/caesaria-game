@@ -35,6 +35,7 @@
 #include "oc3_divinity.hpp"
 #include "oc3_filesystem.hpp"
 #include "oc3_enums.hpp"
+#include "oc3_animation_bank.hpp"
 #include "oc3_filelist.hpp"
 #include "oc3_empire.hpp"
 #include "oc3_exception.hpp"
@@ -88,13 +89,10 @@ void Application::initSound()
 void Application::initWaitPictures()
 {
   std::cout << "load wait images begin" << std::endl;
-  PictureBank &pic_loader = PictureBank::instance();
-  pic_loader.loadWaitPics();
-  std::cout << "load wait images end" << std::endl;
 
-  std::cout << "convert images begin" << std::endl;
-  GfxEngine::instance().loadPictures( pic_loader.getPictures() );
-  std::cout << "convert images end" << std::endl;
+  PictureBank::instance().loadWaitPics( GfxEngine::instance() );
+  
+  std::cout << "load wait images end" << std::endl;
 }
 
 void Application::initGuiEnvironment()
@@ -107,16 +105,16 @@ void Application::Impl::initPictures(const io::FilePath& resourcePath)
   PictureBank &pic_loader = PictureBank::instance();
   
   StringHelper::debug( 0xff, "Load images from archives" );
-  pic_loader.loadAllPics();
+  pic_loader.loadAllPics( GfxEngine::instance() );
+
+  StringHelper::debug( 0xff, "Create animations for carts" );
+  AnimationBank::loadCarts();
 
   StringHelper::debug( 0xff, "Create animations for walkers" );
-  WalkerLoader::instance().loadAll();
-
+  AnimationBank::loadWalkers();
+  
   StringHelper::debug( 0xff, "Load fonts" );
   FontCollection::instance().initialize( resourcePath.toString() );
-
-  StringHelper::debug( 0xff, "Convert pictures to display format" );
-  GfxEngine::instance().loadPictures( pic_loader.getPictures() );
 
   StringHelper::debug( 0xff, "Create runtime pictures" );
   pic_loader.createResources();

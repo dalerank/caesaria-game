@@ -423,7 +423,7 @@ void Reservoir::timeStep(const unsigned long time)
 
   if( !_d->water )
   {
-    _fgPictures[ 0 ] = 0;
+    _fgPictures[ 0 ] = Picture::getInvalid();
     return;
   }
 
@@ -596,7 +596,7 @@ void BuildingFountain::timeStep(const unsigned long time)
 {
   if( !_haveReservoirWater )
   {
-    _fgPictures[ 0 ] = 0;
+    _fgPictures[ 0 ] = Picture::getInvalid();
     return;
   }
 

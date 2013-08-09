@@ -74,8 +74,8 @@ public:
 
    // graphic
    WalkerGraphicType getWalkerGraphic() const;
-   virtual void getPictureList(std::vector<Picture*> &oPics);
-   Picture& getMainPicture();
+   virtual void getPictureList(std::vector<Picture> &oPics);
+   virtual const Picture& getMainPicture();
 
    // state
    bool isDeleted() const;  // returns true if the walker should be forgotten

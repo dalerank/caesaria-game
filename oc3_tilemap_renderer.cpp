@@ -38,7 +38,7 @@
 class TilemapRenderer::Impl
 {
 public:
-  typedef std::vector< Picture* > Pictures;
+  typedef std::vector< Picture > Pictures;
   
   Picture* clearPic;
   PtrTilesList postTiles;  // these tiles have draw over "normal" tilemap tiles!
@@ -170,14 +170,11 @@ void TilemapRenderer::Impl::drawAnimations( LandOverlayPtr overlay, const Point&
   Impl::Pictures& fgPictures = overlay->getForegroundPictures();
   for( Impl::Pictures::iterator itPic = fgPictures.begin(); itPic != fgPictures.end(); ++itPic )
   {
-    // for each foreground picture
-    if( 0 == *itPic )
+    // skip void picture
+    if( (*itPic).isValid() )
     {
-      // skip void picture
-      continue;
+      engine->drawPicture( *itPic, screenPos);
     }
-
-    engine->drawPicture( **itPic, screenPos);
   }
 }
 
@@ -1008,12 +1005,10 @@ void TilemapRenderer::Impl::drawWalkersBetweenZ(Walkers walkerList, int minZ, in
       walker->getPictureList( pictureList );
       for( Impl::Pictures::iterator picIt = pictureList.begin(); picIt != pictureList.end(); ++picIt )
       {
-        if( *picIt == NULL )
+        if( (*picIt).isValid() )
         {
-          continue;
+          engine->drawPicture( *picIt, walker->getPosition() + mapOffset );
         }
-
-        engine->drawPicture( **picIt, walker->getPosition() + mapOffset );
       }
     }
   }

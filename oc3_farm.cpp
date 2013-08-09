@@ -61,7 +61,7 @@ void FarmTile::computePicture(const int percent)
   PicturesArray& pictures = _animation.getPictures();
 
   int picIdx = (percent * (pictures.size()-1)) / 100;
-  _picture = *pictures[picIdx];
+  _picture = pictures[picIdx];
   _picture.addOffset(30*(_pos.getI()+_pos.getJ()), 15*(_pos.getJ()-_pos.getI() ));
 }
 
@@ -121,7 +121,7 @@ void Farm::init()
   _fgPictures.resize(5);
   for (int n = 0; n<5; ++n)
   {
-    _fgPictures[n] = &_d->subTiles[n].getPicture();
+    _fgPictures[n] = _d->subTiles[n].getPicture();
   }
 }
 

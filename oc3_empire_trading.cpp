@@ -233,7 +233,7 @@ EmpireMerchantPtr EmpireMerchant::create( EmpireTradeRoute& route, const std::st
   ret->_d->destCity = startCity ? route.getBeginCity() : route.getEndCity();
   ret->_d->baseCity = startCity ? route.getEndCity() : route.getBeginCity();
   ret->_d->location = ret->_d->baseCity->getLocation();
-  ret->_d->step = ( ret->_d->destCity->getLocation() - ret->_d->location ) / 30;
+  ret->_d->step = ( ret->_d->destCity->getLocation() - ret->_d->location ) / 3;
   ret->drop();
 
   return ret;

@@ -19,6 +19,7 @@
 #include "oc3_positioni.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_picture.hpp"
+#include "oc3_stringhelper.hpp"
 
 namespace{
   static const Point frontCartOffsetSouth = Point( -33, 22 );
@@ -46,12 +47,81 @@ class AnimationBank::Impl
 {
 public:
   std::vector< PicturesArray > carts; // pictures[GoodType][Direction]
+  
+  typedef std::vector< AnimationBank::WalkerAnimationMap > Animations;
+  Animations animations; // anim[WalkerGraphic][WalkerAction]
 
   // fills the cart pictures
   // prefix: image prefix
   // start: index of the first frame
   PicturesArray fillCart( const std::string &prefix, const int start, bool back );
+  AnimationBank::WalkerAnimationMap fillWalker( const std::string& prefix, const int start, const int size);
+
+  void loadCarts();
+  void loadWalkers();
 };
+
+void AnimationBank::Impl::loadCarts()
+{
+  //number of animations with goods + emmigrants + immigrants
+  carts.resize(CT_MAX);
+  bool frontCart = false;
+
+  carts[G_NONE] = fillCart(ResourceGroup::carts, noneGoodsPicId, frontCart);
+  carts[G_WHEAT] = fillCart(ResourceGroup::carts, 9, frontCart);
+  carts[G_VEGETABLE] = fillCart(ResourceGroup::carts, 17, frontCart);
+  carts[G_FRUIT] = fillCart( ResourceGroup::carts, 25, frontCart);
+  carts[G_OLIVE] = fillCart( ResourceGroup::carts, 33, frontCart);
+  carts[G_GRAPE] = fillCart( ResourceGroup::carts, 41, frontCart);
+  carts[G_MEAT] = fillCart( ResourceGroup::carts, 49, frontCart);
+  carts[G_WINE] = fillCart( ResourceGroup::carts, 57, frontCart);
+  carts[G_OIL] = fillCart( ResourceGroup::carts, 65, frontCart);
+  carts[G_IRON] = fillCart( ResourceGroup::carts, 73, frontCart);
+  carts[G_TIMBER] = fillCart( ResourceGroup::carts, 81, frontCart);
+  carts[G_CLAY] =  fillCart( ResourceGroup::carts, 89, frontCart);
+  carts[G_MARBLE] = fillCart( ResourceGroup::carts, 97, frontCart);
+  carts[G_WEAPON] = fillCart( ResourceGroup::carts, 105, frontCart);
+  carts[G_FURNITURE] = fillCart( ResourceGroup::carts, 113, frontCart);
+  carts[G_POTTERY] = fillCart( ResourceGroup::carts, 121, frontCart);
+  carts[G_EMIGRANT_CART1] = fillCart( ResourceGroup::carts, 129, !frontCart);
+  carts[G_ENIGRANT_CART2] = fillCart( ResourceGroup::carts, 137, !frontCart);
+  carts[G_FISH] = fillCart( ResourceGroup::carts, 697, frontCart);
+}
+
+void AnimationBank::Impl::loadWalkers()
+{
+  animations.resize(30);  // number of walker types
+
+  animations[WG_POOR] = fillWalker( "citizen01", 1, 12 );
+  animations[WG_BATH] = fillWalker( "citizen01", 105, 12);
+  animations[WG_PRIEST] = fillWalker( "citizen01", 209, 12);
+  animations[WG_ACTOR] = fillWalker( "citizen01", 313, 12);
+  animations[WG_TAMER] = fillWalker( "citizen01", 417, 12);
+  animations[WG_TAX] =   fillWalker( "citizen01", 617, 12);
+  animations[WG_CHILD] =   fillWalker("citizen01", 721, 12);
+  animations[WG_MARKETLADY] =   fillWalker( "citizen01", 825, 12);
+  animations[WG_PUSHER] =   fillWalker( "citizen01", 929, 12);
+  animations[WG_PUSHER2] =   fillWalker( "citizen01", 1033, 12);
+  animations[WG_ENGINEER] =   fillWalker( "citizen01", 1137, 12);
+  animations[WG_GLADIATOR] =  fillWalker( "citizen02", 1, 12);
+  animations[WG_GLADIATOR2] =   fillWalker( "citizen02", 199, 12);
+  animations[WG_RIOTER] =   fillWalker( "citizen02", 351, 12);
+  animations[WG_BARBER] =   fillWalker( "citizen02", 463, 12);
+  animations[WG_PREFECT] =   fillWalker( "citizen02", 615, 12);
+  animations[WG_PREFECT_DRAG_WATER] = fillWalker( "citizen02", 767, 12);
+  animations[WG_PREFECT_FIGHTS_FIRE] =   fillWalker( "citizen02", 863, 6);
+  animations[WG_HOMELESS] =   fillWalker( "citizen02", 911, 12);
+  animations[WG_RICH] =   fillWalker( "citizen03", 713, 12);
+  animations[WG_DOCTOR] =    fillWalker( "citizen03", 817, 12);
+  animations[WG_RICH2] =    fillWalker( "citizen03", 921, 12);
+  animations[WG_LIBRARIAN] =   fillWalker( "citizen03", 1025, 12);
+  animations[WG_SOLDIER] =    fillWalker("citizen03", 553, 12);
+  animations[WG_JAVELINEER] =    fillWalker( "citizen03", 241, 12);
+  animations[WG_HORSEMAN] =    fillWalker( "citizen04", 1, 12);
+  animations[WG_HORSE_CARAVAN] =    fillWalker( ResourceGroup::carts, 145, 12);
+  animations[WG_CAMEL_CARAVAN] =    fillWalker( ResourceGroup::carts, 273, 12);
+  animations[WG_MARKETLADY_HELPER] =    fillWalker( ResourceGroup::carts, 369, 12);
+}
 
 AnimationBank& AnimationBank::instance()
 {
@@ -61,37 +131,51 @@ AnimationBank& AnimationBank::instance()
 
 AnimationBank::AnimationBank() : _d( new Impl )
 {
-  loadAll();
 }
 
-void AnimationBank::loadAll()
+void AnimationBank::loadCarts()
 {
-  std::cout << "Loading cart graphics" << std::endl;
+  StringHelper::debug( 0xff, "Loading cart graphics" );
 
-  //number of animations with goods + emmigrants + immigrants
-  _d->carts.resize(CT_MAX);
+  instance()._d->loadCarts();  
+}
 
-  bool frontCart = false;
+AnimationBank::WalkerAnimationMap AnimationBank::Impl::fillWalker( const std::string& prefix, const int start, const int size)
+{
+  WalkerAnimationMap ioMap;
+  WalkerAction action;
+  action._action = WA_MOVE;
 
-  _d->carts[G_NONE] = _d->fillCart(ResourceGroup::carts, noneGoodsPicId, frontCart);
-  _d->carts[G_WHEAT] = _d->fillCart(ResourceGroup::carts, 9, frontCart);
-  _d->carts[G_VEGETABLE] = _d->fillCart(ResourceGroup::carts, 17, frontCart);
-  _d->carts[G_FRUIT] = _d->fillCart( ResourceGroup::carts, 25, frontCart);
-  _d->carts[G_OLIVE] = _d->fillCart( ResourceGroup::carts, 33, frontCart);
-  _d->carts[G_GRAPE] = _d->fillCart( ResourceGroup::carts, 41, frontCart);
-  _d->carts[G_MEAT] = _d->fillCart( ResourceGroup::carts, 49, frontCart);
-  _d->carts[G_WINE] = _d->fillCart( ResourceGroup::carts, 57, frontCart);
-  _d->carts[G_OIL] = _d->fillCart( ResourceGroup::carts, 65, frontCart);
-  _d->carts[G_IRON] = _d->fillCart( ResourceGroup::carts, 73, frontCart);
-  _d->carts[G_TIMBER] = _d->fillCart( ResourceGroup::carts, 81, frontCart);
-  _d->carts[G_CLAY] =  _d->fillCart( ResourceGroup::carts, 89, frontCart);
-  _d->carts[G_MARBLE] = _d->fillCart( ResourceGroup::carts, 97, frontCart);
-  _d->carts[G_WEAPON] = _d->fillCart( ResourceGroup::carts, 105, frontCart);
-  _d->carts[G_FURNITURE] = _d->fillCart( ResourceGroup::carts, 113, frontCart);
-  _d->carts[G_POTTERY] = _d->fillCart( ResourceGroup::carts, 121, frontCart);
-  _d->carts[G_EMIGRANT_CART1] = _d->fillCart( ResourceGroup::carts, 129, !frontCart);
-  _d->carts[G_ENIGRANT_CART2] = _d->fillCart( ResourceGroup::carts, 137, !frontCart);
-  _d->carts[G_FISH] = _d->fillCart( ResourceGroup::carts, 697, frontCart);
+  action._direction = D_NORTH;
+  ioMap[action].load( prefix, start, size, Animation::straight, 8);
+  action._direction = D_NORTH_EAST;
+  ioMap[action].load( prefix, start+1, size, Animation::straight, 8);
+  action._direction = D_EAST;
+  ioMap[action].load( prefix, start+2, size, Animation::straight, 8);
+  action._direction = D_SOUTH_EAST;
+  ioMap[action].load( prefix, start+3, size, Animation::straight, 8);
+  action._direction = D_SOUTH;
+  ioMap[action].load( prefix, start+4, size, Animation::straight, 8);
+  action._direction = D_SOUTH_WEST;
+  ioMap[action].load( prefix, start+5, size, Animation::straight, 8);
+  action._direction = D_WEST;
+  ioMap[action].load( prefix, start+6, size, Animation::straight, 8);
+  action._direction = D_NORTH_WEST;
+  ioMap[action].load( prefix, start+7, size, Animation::straight, 8);
+
+  return ioMap;
+}
+
+const AnimationBank::WalkerAnimationMap& AnimationBank::getWalker(const WalkerGraphicType walkerGraphic)
+{
+  return instance()._d->animations[walkerGraphic];
+}
+
+void AnimationBank::loadWalkers()
+{
+  StringHelper::debug( 0xff, "Loading cart graphics" );
+
+  instance()._d->loadWalkers();
 }
 
 PicturesArray AnimationBank::Impl::fillCart( const std::string &prefix, const int start, bool back )
@@ -100,38 +184,34 @@ PicturesArray AnimationBank::Impl::fillCart( const std::string &prefix, const in
 
   ioCart.resize(D_MAX);
 
-  ioCart[D_NORTH]      = &Picture::load(ResourceGroup::carts, start);
-  ioCart[D_NORTH_EAST] = &Picture::load(ResourceGroup::carts, start + 1);
-  ioCart[D_EAST]       = &Picture::load(ResourceGroup::carts, start + 2);
-  ioCart[D_SOUTH_EAST] = &Picture::load(ResourceGroup::carts, start + 3);
-  ioCart[D_SOUTH]      = &Picture::load(ResourceGroup::carts, start + 4);
-  ioCart[D_SOUTH_WEST] = &Picture::load(ResourceGroup::carts, start + 5);
-  ioCart[D_WEST]       = &Picture::load(ResourceGroup::carts, start + 6);
-  ioCart[D_NORTH_WEST] = &Picture::load(ResourceGroup::carts, start + 7);
+  ioCart[D_NORTH]      = Picture::load(ResourceGroup::carts, start);
+  ioCart[D_NORTH_EAST] = Picture::load(ResourceGroup::carts, start + 1);
+  ioCart[D_EAST]       = Picture::load(ResourceGroup::carts, start + 2);
+  ioCart[D_SOUTH_EAST] = Picture::load(ResourceGroup::carts, start + 3);
+  ioCart[D_SOUTH]      = Picture::load(ResourceGroup::carts, start + 4);
+  ioCart[D_SOUTH_WEST] = Picture::load(ResourceGroup::carts, start + 5);
+  ioCart[D_WEST]       = Picture::load(ResourceGroup::carts, start + 6);
+  ioCart[D_NORTH_WEST] = Picture::load(ResourceGroup::carts, start + 7);
 
-  ioCart[D_SOUTH]->setOffset( back ? backCartOffsetSouth : frontCartOffsetSouth);
-  ioCart[D_WEST]->setOffset ( back ? backCartOffsetWest  : frontCartOffsetWest );
-  ioCart[D_NORTH]->setOffset( back ? backCartOffsetNorth : frontCartOffsetNorth);
-  ioCart[D_EAST]->setOffset ( back ? backCartOffsetEast  : frontCartOffsetEast );
+  ioCart[D_SOUTH].setOffset( back ? backCartOffsetSouth : frontCartOffsetSouth);
+  ioCart[D_WEST].setOffset ( back ? backCartOffsetWest  : frontCartOffsetWest );
+  ioCart[D_NORTH].setOffset( back ? backCartOffsetNorth : frontCartOffsetNorth);
+  ioCart[D_EAST].setOffset ( back ? backCartOffsetEast  : frontCartOffsetEast );
 
-  ioCart[D_SOUTH_EAST]->setOffset ( back ? backCartOffsetSouthEast  : frontCartOffsetSouthEast );
-  ioCart[D_NORTH_WEST]->setOffset ( back ? backCartOffsetNorthWest  : frontCartOffsetNorthWest );
-  ioCart[D_NORTH_EAST]->setOffset ( back ? backCartOffsetNorthEast  : frontCartOffsetNorthEast );
-  ioCart[D_SOUTH_WEST]->setOffset ( back ? backCartOffsetSouthWest  : frontCartOffsetSouthWest );
+  ioCart[D_SOUTH_EAST].setOffset ( back ? backCartOffsetSouthEast  : frontCartOffsetSouthEast );
+  ioCart[D_NORTH_WEST].setOffset ( back ? backCartOffsetNorthWest  : frontCartOffsetNorthWest );
+  ioCart[D_NORTH_EAST].setOffset ( back ? backCartOffsetNorthEast  : frontCartOffsetNorthEast );
+  ioCart[D_SOUTH_WEST].setOffset ( back ? backCartOffsetSouthWest  : frontCartOffsetSouthWest );
 
   return ioCart;
 }
 
-Picture& AnimationBank::getCart(GoodType cart, const DirectionType &direction)
+const Picture& AnimationBank::getCart(GoodType cart, const DirectionType &direction)
 {
-  Picture *res = NULL;
-  res = _d->carts.at( cart ).at( direction );
-  return *res;
+  return instance()._d->carts.at( cart ).at( direction );
 }
 
-Picture& AnimationBank::getCart(CartTypes cart, const DirectionType &direction)
+const Picture& AnimationBank::getCart(CartTypes cart, const DirectionType &direction)
 {
-  Picture *res = NULL;
-  res = _d->carts.at( cart ).at( direction );
-  return *res;
+  return instance()._d->carts.at( cart ).at( direction );
 }

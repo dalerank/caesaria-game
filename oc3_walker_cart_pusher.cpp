@@ -132,7 +132,7 @@ Picture& CartPusher::getCartPicture()
 {
    if( !_d->cartPicture.isValid() )
    {
-     _d->cartPicture = GoodHelper::getPicture(_d->stock, getDirection());
+     _d->cartPicture = GoodHelper::getCartPicture(_d->stock, getDirection());
    }
 
    return _d->cartPicture;
@@ -144,7 +144,7 @@ void CartPusher::onNewDirection()
    _d->cartPicture = Picture();  // need to get the new graphic
 }
 
-void CartPusher::getPictureList(std::vector<Picture*> &oPics)
+void CartPusher::getPictureList(std::vector<Picture> &oPics)
 {
    oPics.clear();
 
@@ -155,15 +155,15 @@ void CartPusher::getPictureList(std::vector<Picture*> &oPics)
    case D_NORTH_WEST:
    case D_NORTH:
    case D_NORTH_EAST:
-      oPics.push_back(&getCartPicture());
-      oPics.push_back(&getMainPicture());
+      oPics.push_back( getCartPicture() );
+      oPics.push_back( getMainPicture() );
       break;
    case D_EAST:
    case D_SOUTH_EAST:
    case D_SOUTH:
    case D_SOUTH_WEST:
-      oPics.push_back(&getMainPicture());
-      oPics.push_back(&getCartPicture());
+      oPics.push_back( getMainPicture() );
+      oPics.push_back( getCartPicture() );
       break;
    default:
       break;

@@ -52,7 +52,7 @@ public:
     _pos = pos;
     _picture = Picture::load( ResourceGroup::transport, _index );
     _picture.addOffset( 10, -10 );
-    _fgPictures.push_back( &_picture );
+    _fgPictures.push_back( _picture );
   }
 
   void setTerrain( TerrainTile& terrain )
@@ -226,7 +226,7 @@ void LowBridge::_computePictures( const TilePos& startPos, const TilePos& endPos
 
   for( LowBridgeSubTiles::iterator it=_d->subtiles.begin(); it != _d->subtiles.end(); it++ )
   {
-    _fgPictures.push_back( &(*it)->_picture );
+    _fgPictures.push_back( (*it)->_picture );
   }
 }
 

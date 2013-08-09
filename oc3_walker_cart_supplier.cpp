@@ -22,6 +22,7 @@
 #include "oc3_granary.hpp"
 #include "oc3_building_warehouse.hpp"
 #include "oc3_tile.hpp"
+#include "oc3_goodhelper.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_path_finding.hpp"
 #include "oc3_animation_bank.hpp"
@@ -113,11 +114,11 @@ void CartSupplier::onDestination()
 }
 
 
-Picture& CartSupplier::getCartPicture()
+const Picture& CartSupplier::getCartPicture()
 {
   if( !_d->cartPicture.isValid() )
   {
-    _d->cartPicture = AnimationBank::instance().getCart(  _d->stock._currentQty == 0 ? G_NONE : _d->stock._goodType, getDirection() );
+    _d->cartPicture = GoodHelper::getCartPicture( _d->stock, getDirection() );
   }
 
   return _d->cartPicture;
@@ -129,7 +130,7 @@ void CartSupplier::onNewDirection()
    _d->cartPicture = Picture();  // need to get the new graphic
 }
 
-void CartSupplier::getPictureList(std::vector<Picture*> &oPics)
+void CartSupplier::getPictureList(std::vector<Picture> &oPics)
 {
    oPics.clear();
 
@@ -140,15 +141,15 @@ void CartSupplier::getPictureList(std::vector<Picture*> &oPics)
    case D_NORTH_WEST:
    case D_NORTH:
    case D_NORTH_EAST:
-      oPics.push_back(&getCartPicture());
-      oPics.push_back(&getMainPicture());
+      oPics.push_back( getCartPicture() );
+      oPics.push_back( getMainPicture() );
       break;
    case D_EAST:
    case D_SOUTH_EAST:
    case D_SOUTH:
    case D_SOUTH_WEST:
-      oPics.push_back(&getMainPicture());
-      oPics.push_back(&getCartPicture());
+      oPics.push_back( getMainPicture() );
+      oPics.push_back( getCartPicture() );
       break;
    default:
       break;

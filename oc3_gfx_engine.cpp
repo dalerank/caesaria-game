@@ -62,15 +62,6 @@ int GfxEngine::getScreenHeight() const
   return _screen_height;
 }
 
-void GfxEngine::loadPictures(const PicturesArray& ioPictures)
-{
-  for( PicturesArray::const_iterator it = ioPictures.begin(); it!= ioPictures.end(); ++it)
-  {
-    // for every picture
-    loadPicture( *(*it) );
-  }
-}
-
 Size GfxEngine::getScreenSize() const
 {
   return Size( _screen_width, _screen_height );

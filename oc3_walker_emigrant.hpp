@@ -30,12 +30,12 @@ public:
 
   static EmigrantPtr create( CityPtr city);
   
-	void getPictureList(std::vector<Picture*> &oPics);
+	void getPictureList(std::vector<Picture> &oPics);
 	void onNewDirection();
 
 	~Emigrant();
 protected:
-  Picture* getCartPicture();
+  const Picture& getCartPicture();
 
   Emigrant( CityPtr city );
 };

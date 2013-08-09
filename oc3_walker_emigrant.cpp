@@ -28,17 +28,17 @@ Emigrant::Emigrant( CityPtr city ) : Immigrant( city )
   _walkerGraphic = WG_PUSHER2;
 }
 
-Picture* Emigrant::getCartPicture()
+const Picture& Emigrant::getCartPicture()
 {
-  if( Immigrant::getCartPicture() == NULL )
+  if( !Immigrant::getCartPicture().isValid() )
   {
-    setCartPicture( &AnimationBank::instance().getCart( G_EMIGRANT_CART1, getDirection()) );
+    setCartPicture( AnimationBank::getCart( G_EMIGRANT_CART1, getDirection()) );
   }
 
   return Immigrant::getCartPicture();
 }
 
-void Emigrant::getPictureList(std::vector<Picture*> &oPics)
+void Emigrant::getPictureList(std::vector<Picture> &oPics)
 {
   oPics.clear();
 
@@ -49,18 +49,18 @@ void Emigrant::getPictureList(std::vector<Picture*> &oPics)
   case D_NORTH_WEST:
   case D_NORTH:
   case D_NORTH_EAST:
-    oPics.push_back( getCartPicture());
-    oPics.push_back(&getMainPicture());
+    oPics.push_back( getCartPicture() );
+    oPics.push_back( getMainPicture() );
     break;
   case D_EAST:
   case D_SOUTH_EAST:
-    oPics.push_back( getCartPicture());
-    oPics.push_back(&getMainPicture());
+    oPics.push_back( getCartPicture() );
+    oPics.push_back( getMainPicture() );
     break;
   case D_SOUTH:
   case D_SOUTH_WEST:
-    oPics.push_back(&getMainPicture());
-    oPics.push_back( getCartPicture());
+    oPics.push_back( getMainPicture() );
+    oPics.push_back( getCartPicture() );
     break;
   default:
     break;
@@ -70,7 +70,7 @@ void Emigrant::getPictureList(std::vector<Picture*> &oPics)
 void Emigrant::onNewDirection()
 {
   Immigrant::onNewDirection();
-  setCartPicture( 0 );  // need to get the new graphic
+  setCartPicture( Picture() );  // need to get the new graphic
 }
 
 EmigrantPtr Emigrant::create( CityPtr city )

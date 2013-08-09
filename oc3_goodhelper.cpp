@@ -143,7 +143,7 @@ std::string GoodHelper::getTypeName( GoodType type )
   return "unknown";
 }
 
-Picture& GoodHelper::getPicture(const GoodStock &stock, const DirectionType &direction)
+const Picture& GoodHelper::getCartPicture(const GoodStock &stock, const DirectionType &direction)
 {
-  return AnimationBank::instance().getCart( stock._currentQty == 0 ? G_NONE :  stock._goodType, direction );
+  return AnimationBank::getCart( stock.empty() ? G_NONE :  stock._goodType, direction );
 }

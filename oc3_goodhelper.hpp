@@ -32,7 +32,7 @@ public:
   static Picture getPicture( GoodType type );
   static GoodType getType( const std::string& name );
   static std::string getTypeName( GoodType type );
-  static Picture& getPicture( const GoodStock &stock, const DirectionType &direction);
+  static const Picture& getCartPicture( const GoodStock& stock, const DirectionType& direction );
   ~GoodHelper();
 private:
   GoodHelper();

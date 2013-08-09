@@ -28,6 +28,8 @@
 
 // Picture class functions
 
+static const Picture _invalidPicture = Picture();
+
 class Picture::Impl
 {
 public:
@@ -348,4 +350,9 @@ Picture* Picture::create( const Size& size )
   GfxEngine::instance().loadPicture( *ret );
 
   return ret;
+}
+
+const Picture& Picture::getInvalid()
+{
+  return _invalidPicture;
 }

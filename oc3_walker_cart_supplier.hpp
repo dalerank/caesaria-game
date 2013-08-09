@@ -33,9 +33,9 @@ public:
   void setDestinationBuilding( BuildingPtr building );
   void setBaseBuilding( BuildingPtr building );
   
-  Picture& getCartPicture();
+  const Picture& getCartPicture();
   
-  virtual void getPictureList(std::vector<Picture*> &oPics);
+  virtual void getPictureList(std::vector<Picture> &oPics);
   virtual void onNewDirection();
   virtual void onDestination();
 

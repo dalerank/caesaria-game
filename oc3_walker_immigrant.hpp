@@ -38,8 +38,8 @@ public:
   void load(const VariantMap& stream);
 
 protected:
-  void setCartPicture( Picture* pic );
-  virtual Picture* getCartPicture();
+  void setCartPicture( const Picture& pic );
+  virtual const Picture& getCartPicture();
   
   Immigrant( CityPtr city );
 

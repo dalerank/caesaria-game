@@ -198,6 +198,7 @@ void Merchant::onDestination()
 
 void Merchant::send2City( CityPtr city )
 {
+  _d->city = city;
   _d->computeDestination( this, city->getRoadEntry() );
 
   if( !isDeleted() )

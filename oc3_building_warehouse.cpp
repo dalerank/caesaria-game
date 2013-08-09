@@ -373,8 +373,8 @@ Warehouse::Warehouse() : WorkingBuilding( B_WAREHOUSE, Size( 3 )), _d( new Impl 
 
 void Warehouse::init()
 {
-  _fgPictures[0] = &Picture::load(ResourceGroup::warehouse, 1);
-  _fgPictures[1] = &Picture::load(ResourceGroup::warehouse, 18);
+  _fgPictures[0] = Picture::load(ResourceGroup::warehouse, 1);
+  _fgPictures[1] = Picture::load(ResourceGroup::warehouse, 18);
   _fgPictures[2] = _getAnimation().getCurrentPicture();
   _fgPictures[3] = _d->animFlag.getCurrentPicture();
 
@@ -391,7 +391,7 @@ void Warehouse::init()
 
   for (unsigned int n = 0; n<_d->subTiles.size(); ++n)
   {
-     _fgPictures[n+4] = &_d->subTiles[n]._picture;
+     _fgPictures[n+4] = _d->subTiles[n]._picture;
   }
 
   _d->goodStore.init(*this);

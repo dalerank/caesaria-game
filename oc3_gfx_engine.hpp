@@ -44,7 +44,6 @@ public:
 
   virtual void setFlag( int flag, int value );
 
-  virtual void loadPictures( const PicturesArray& ioPictures);
   virtual void loadPicture( Picture& ioPicture) = 0;
   virtual void unloadPicture( Picture& ioPicture) = 0;
 
