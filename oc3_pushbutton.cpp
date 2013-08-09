@@ -26,10 +26,10 @@
 
 struct ButtonState
 {
-  Picture* bgTexture;
+  Picture bgTexture;
   PictureRef background;
   PictureRef textPicture;
-  Picture* iconTexture;
+  Picture iconTexture;
   //SDL_Color color;
   //bool overrideColorEnabled;
   Font font;
@@ -64,8 +64,8 @@ public:
     {
       buttonStates[ ElementState(i) ].background.reset();
       buttonStates[ ElementState(i) ].textPicture.reset();
-      buttonStates[ ElementState(i) ].iconTexture = 0;
-      buttonStates[ ElementState(i) ].bgTexture = 0;
+      buttonStates[ ElementState(i) ].iconTexture = Picture::getInvalid();
+      buttonStates[ ElementState(i) ].bgTexture = Picture::getInvalid();
       buttonStates[ ElementState(i) ].font = Font::create( FONT_2 );
     }
   }    
@@ -129,9 +129,9 @@ void PushButton::_updateTexture( ElementState state )
   }
 
   // draw button background
-  if( _d->buttonStates[ state ].bgTexture )
+  if( _d->buttonStates[ state ].bgTexture.isValid() )
   {
-    curTxs->draw( *_d->buttonStates[ state ].bgTexture, 0, 0 );
+    curTxs->draw( _d->buttonStates[ state ].bgTexture, 0, 0 );
   }    
   else
   {
@@ -202,9 +202,9 @@ bool PushButton::isPushButton() const
   return _d->isPushButton;
 }
 
-void PushButton::setPicture( Picture* picture, ElementState state )
+void PushButton::setPicture( const Picture& picture, ElementState state )
 {
-  Rect rectangle( Point(0,0), picture ? picture->getSize() : Size( 0, 0 ) );
+  Rect rectangle( Point(0,0), picture.isValid() ? picture.getSize() : Size( 0, 0 ) );
 
   _d->buttonStates[ state ].bgTexture = picture;
   _d->buttonStates[ state ].rectangle = rectangle;
@@ -427,13 +427,13 @@ void PushButton::draw( GfxEngine& painter )
 
 void PushButton::drawIcon( GfxEngine& painter )
 {
-  Picture* iconTexture = _d->buttonStates[ _d->currentButtonState ].iconTexture;	
+  const Picture& iconTexture = _d->buttonStates[ _d->currentButtonState ].iconTexture;	
 
-  if( !iconTexture )
+  if( !iconTexture.isValid() )
       return;
 
   Point pos = convertLocalToScreen( _d->iconRect ).UpperLeftCorner;
-  painter.drawPicture( *iconTexture, pos.getX(), pos.getY() );
+  painter.drawPicture( iconTexture, pos.getX(), pos.getY() );
 }
 
 void PushButton::setText( const std::string& text )

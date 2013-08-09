@@ -30,7 +30,7 @@
 class ScreenMenu::Impl
 {
 public:
-  Picture* bgPicture;
+  Picture bgPicture;
   StartMenu* menu;         // menu to display
   GfxEngine* engine;
   GuiEnv* gui;
@@ -103,7 +103,7 @@ void ScreenMenu::Impl::resolveShowLoadMapWnd()
 
 ScreenMenu::ScreenMenu() : _d( new Impl )
 {
-  _d->bgPicture = NULL;
+  _d->bgPicture = Picture::getInvalid();
   _d->isStopped = false;
 }
 
@@ -113,7 +113,7 @@ void ScreenMenu::draw()
 {
   _d->gui->beforeDraw();
 
-  _d->engine->drawPicture(*_d->bgPicture, 0, 0);
+  _d->engine->drawPicture(_d->bgPicture, 0, 0);
   _d->gui->draw();
 }
 
@@ -124,11 +124,11 @@ void ScreenMenu::handleEvent( NEvent& event )
 
 void ScreenMenu::initialize( GfxEngine& engine, GuiEnv& gui )
 {
-  _d->bgPicture = &Picture::load("title", 1);
+  _d->bgPicture = Picture::load("title", 1);
 
   // center the bgPicture on the screen
-  _d->bgPicture->setOffset( (engine.getScreenWidth() - _d->bgPicture->getWidth()) / 2,
-                             -( engine.getScreenHeight() - _d->bgPicture->getHeight() ) / 2 );
+  _d->bgPicture.setOffset( (engine.getScreenWidth() - _d->bgPicture.getWidth()) / 2,
+                             -( engine.getScreenHeight() - _d->bgPicture.getHeight() ) / 2 );
 
   _d->gui = &gui;
   _d->gui->clear();

@@ -513,17 +513,17 @@ PushButton* ScrollBar::_CreateButton( const Rect& rectangle,
     switch( type )
     {
     case 0: 
-      btn->setPicture( &Picture::load( ResourceGroup::panelBackground, 247 ), stNormal );
-      btn->setPicture( &Picture::load( ResourceGroup::panelBackground, 248 ), stHovered );
-      btn->setPicture( &Picture::load( ResourceGroup::panelBackground, 249 ), stPressed );
-      btn->setPicture( &Picture::load( ResourceGroup::panelBackground, 250 ), stDisabled );
+      btn->setPicture( Picture::load( ResourceGroup::panelBackground, 247 ), stNormal );
+      btn->setPicture( Picture::load( ResourceGroup::panelBackground, 248 ), stHovered );
+      btn->setPicture( Picture::load( ResourceGroup::panelBackground, 249 ), stPressed );
+      btn->setPicture( Picture::load( ResourceGroup::panelBackground, 250 ), stDisabled );
     break;
 
     case 1: 
-      btn->setPicture( &Picture::load( ResourceGroup::panelBackground, 251 ), stNormal );
-      btn->setPicture( &Picture::load( ResourceGroup::panelBackground, 252 ), stHovered );
-      btn->setPicture( &Picture::load( ResourceGroup::panelBackground, 253 ), stPressed );
-      btn->setPicture( &Picture::load( ResourceGroup::panelBackground, 254 ), stDisabled );
+      btn->setPicture( Picture::load( ResourceGroup::panelBackground, 251 ), stNormal );
+      btn->setPicture( Picture::load( ResourceGroup::panelBackground, 252 ), stHovered );
+      btn->setPicture( Picture::load( ResourceGroup::panelBackground, 253 ), stPressed );
+      btn->setPicture( Picture::load( ResourceGroup::panelBackground, 254 ), stDisabled );
     break;
     }
 

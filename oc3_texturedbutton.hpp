@@ -27,10 +27,10 @@ public:
                   int normalTxIndex, int hovTxIndex=-1, int prsTxIndex=-1, int dsbTxIndex=-1 ) 
     : PushButton( parent, Rect( pos, size ), "", id )
   {
-    setPicture( &Picture::load( ResourceGroup::panelBackground, normalTxIndex ), stNormal );
-    setPicture( &Picture::load( ResourceGroup::panelBackground, (hovTxIndex == -1) ? normalTxIndex+1 : hovTxIndex ), stHovered );
-    setPicture( &Picture::load( ResourceGroup::panelBackground, (prsTxIndex == -1) ? normalTxIndex+2 : prsTxIndex ), stPressed );
-    setPicture( &Picture::load( ResourceGroup::panelBackground, (dsbTxIndex == -1) ? normalTxIndex+3 : dsbTxIndex ), stDisabled );
+    setPicture( Picture::load( ResourceGroup::panelBackground, normalTxIndex ), stNormal );
+    setPicture( Picture::load( ResourceGroup::panelBackground, (hovTxIndex == -1) ? normalTxIndex+1 : hovTxIndex ), stHovered );
+    setPicture( Picture::load( ResourceGroup::panelBackground, (prsTxIndex == -1) ? normalTxIndex+2 : prsTxIndex ), stPressed );
+    setPicture( Picture::load( ResourceGroup::panelBackground, (dsbTxIndex == -1) ? normalTxIndex+3 : dsbTxIndex ), stDisabled );
   }
 };
 

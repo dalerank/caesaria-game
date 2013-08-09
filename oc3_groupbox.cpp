@@ -22,7 +22,7 @@ class GroupBox::Impl
 {
 public:
 	PictureRef texture;
-  Picture* backgroundImage;
+  Picture backgroundImage;
 	bool scaleImage;
   GroupBox::Style style;
   bool needUpdateTexture;
@@ -37,7 +37,6 @@ GroupBox::GroupBox( Widget* parent, const Rect& rectangle, int id, Style style)
 	#endif
 
   _d->scaleImage = true;	
-  _d->backgroundImage = 0;
   _d->needUpdateTexture = true;
   _d->style = style;
 }
@@ -66,13 +65,13 @@ bool GroupBox::isBackgroundImageScaled() const
 	return _d->scaleImage;
 }
 
-void GroupBox::setBackgroundImage( Picture* image )
+void GroupBox::setBackgroundImage( const Picture& image )
 {
   _d->backgroundImage = image;
   _d->needUpdateTexture = true;
 }
 
-Picture* GroupBox::getBackgroundImage() const
+const Picture& GroupBox::getBackgroundImage() const
 {
   return _d->backgroundImage;
 }
@@ -102,15 +101,15 @@ void GroupBox::beforeDraw( GfxEngine& painter )
     if( _d->texture.isNull() )
       _d->texture.reset( Picture::create( mySize ) );
 
-    if( _d->backgroundImage != 0 )
+    if( _d->backgroundImage.isValid() )
     {
       if( _d->scaleImage )
       {
-        _d->texture->draw( *_d->backgroundImage, Rect( Point( 0, 0 ), _d->backgroundImage->getSize()), Rect( Point(0, 0), mySize) );
+        _d->texture->draw( _d->backgroundImage, Rect( Point( 0, 0 ), _d->backgroundImage.getSize()), Rect( Point(0, 0), mySize) );
       }
       else
       {
-        _d->texture->draw( *_d->backgroundImage, Point(0, 0) );
+        _d->texture->draw( _d->backgroundImage, Point(0, 0) );
       }
     }
     else

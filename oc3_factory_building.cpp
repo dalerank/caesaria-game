@@ -37,7 +37,7 @@ public:
   bool isActive;
   float productionRate;  // max production / year
   float progress;  // progress of the work, in percent (0-100).
-  Picture* stockPicture; // stock of input good
+  Picture stockPicture; // stock of input good
   SimpleGoodStore goodStore;
   GoodType inGoodType;
   GoodType outGoodType;

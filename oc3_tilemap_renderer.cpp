@@ -40,7 +40,7 @@ class TilemapRenderer::Impl
 public:
   typedef std::vector< Picture > Pictures;
   
-  Picture* clearPic;
+  Picture clearPic;
   PtrTilesList postTiles;  // these tiles have draw over "normal" tilemap tiles!
   Point lastCursorPos;
   Point startCursorPos;
@@ -132,7 +132,7 @@ void TilemapRenderer::init( CityPtr city, TilemapArea &mapArea, ScreenGame *scre
   _d->mapArea = &mapArea;
   _d->screenGame = screen;
   _d->engine = &GfxEngine::instance();
-  _d->clearPic = &Picture::load( "oc3_land", 2 );
+  _d->clearPic = Picture::load( "oc3_land", 2 );
   _d->setDrawFunction( _d.data(), &Impl::drawTileBase );
 }
 
@@ -624,7 +624,7 @@ void TilemapRenderer::Impl::drawTileInSelArea( Tile& tile, Tile* master )
   {
     // single-tile
     drawTileFunction( tile );
-    engine->drawPicture( *clearPic, tile.getXY() + mapOffset );
+    engine->drawPicture( clearPic, tile.getXY() + mapOffset );
   }
   else
   {
