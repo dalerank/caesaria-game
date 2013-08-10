@@ -128,17 +128,8 @@ AdvisorFinanceWindow::AdvisorFinanceWindow( CityPtr city, Widget* parent, int id
 
   _d->btnHelp = new TexturedButton( this, Point( 12, getHeight() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 
-  Picture pic = Picture::load( ResourceGroup::advisorwindow, 1 );
-  PushButton* btn = new PushButton( this, Rect( Point( 185, 70 ), Size( 24 ) ), "", -1 );
-  btn->setPicture( &pic, stNormal );
-  btn->setPicture( &pic, stHovered );
-  btn->setPicture( &pic, stPressed );
-
-  pic = Picture::load( ResourceGroup::advisorwindow, 2 );
-  btn = new PushButton( this, Rect( Point( 185+24, 70 ), Size( 24 ) ), "", -1 );
-  btn->setPicture( &pic, stNormal );
-  btn->setPicture( &pic, stHovered );
-  btn->setPicture( &pic, stPressed );
+  new TexturedButton( this, Point( 185, 70 ), Size( 24 ), -1, 601 );
+  new TexturedButton( this, Point( 185+24, 70 ), Size( 24 ), -1, 605 );
 }
 
 void AdvisorFinanceWindow::draw( GfxEngine& painter )

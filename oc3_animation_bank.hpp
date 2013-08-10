@@ -15,35 +15,37 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
+#ifndef __OPENCAESAR3_ANIMATION_BANK_H_INCLUDED__
+#define __OPENCAESAR3_ANIMATION_BANK_H_INCLUDED__
 
-#ifndef __OPENCAESAR3_MARKETLADY_H_INCLUDED__
-#define __OPENCAESAR3_MARKETLADY_H_INCLUDED__
+#include "oc3_enums.hpp"
+#include "oc3_animation.hpp"
+#include "oc3_walker_action.hpp"
 
-#include "oc3_walker.hpp"
-#include "oc3_building_warehouse.hpp"
+#include <map>
 
-/** This is the market lady buying goods at granaries and warehouses */
-class MarketLady : public Walker
+class AnimationBank
 {
 public:
-  static MarketLadyPtr create( CityPtr city );
+  typedef std::map<WalkerAction, Animation> WalkerAnimationMap;
 
-  virtual ~MarketLady();
+  static AnimationBank& instance();
 
-  void send2City( MarketPtr market );
-  virtual void onDestination();
+  // loads all cart graphics
+  static void loadCarts();
+  static void loadWalkers();
 
-  // compute the destination to fetch the given good
-  void computeWalkerDestination( MarketPtr market );
+  static const Picture& getCart(GoodType cart, const DirectionType &direction );
+  // for emmigration & immigration
+  static const Picture& getCart(CartTypes cart, const DirectionType &direction);
 
-  void save( VariantMap& stream) const;
-  void load( const VariantMap& stream);
+  static const WalkerAnimationMap& getWalker( const WalkerGraphicType walkerGraphic );
 
 private:
-  MarketLady();
+  AnimationBank();
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#endif //__OPENCAESAR3_MARKETLADY_H_INCLUDED__
+#endif  //__OPENCAESAR3_ANIMATION_BANK_H_INCLUDED__

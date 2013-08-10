@@ -137,7 +137,16 @@ void PushButton::_updateTexture( ElementState state )
   {
     switch( _d->bgStyle )
     {
-    case GrayBorderLine:
+    case smallGrayBorderLine:
+      {
+        PictureDecorator::Mode mode = (state == stNormal || state == stDisabled) 
+                                        ? PictureDecorator::smallGreyPanel 
+                                        : PictureDecorator::smallBrownPanel;
+        PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), mode );
+      }
+    break;
+
+    case grayBorderLine:
     {
       PictureDecorator::Mode mode = (state == stNormal || state == stDisabled) 
                                         ? PictureDecorator::lightgreyPanel 
@@ -146,7 +155,7 @@ void PushButton::_updateTexture( ElementState state )
     }
     break;
 
-    case WhiteBorderUp:
+    case whiteBorderUp:
     {
       PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteArea );
       PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), 
@@ -154,7 +163,7 @@ void PushButton::_updateTexture( ElementState state )
     }
     break;
 
-    case BlackBorderUp:
+    case blackBorderUp:
     {
       PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::blackArea );
       PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), 
@@ -162,7 +171,7 @@ void PushButton::_updateTexture( ElementState state )
     }
     break;
 
-    case NoBackground:
+    case noBackground:
       curTxs->fill( 0x00ffffff, Rect( 0, 0, 0, 0 ) );
     break;
     }

@@ -177,14 +177,15 @@ void GoodStore::retrieve(GoodStock &stock, int amount)
   }
 }
 
-void GoodStore::storeAll(SimpleGoodStore &goodStore)
+void GoodStore::storeAll( GoodStore& goodStore)
 {
   for (int n = 1; n<G_MAX; ++n)
   {
     // for all types of good (except G_NONE)
     GoodType goodType = (GoodType) n;
-    GoodStock stock = goodStore.getStock(goodType);
-    if (stock._currentQty != 0)
+    GoodStock stock( goodType, 9999, 0 );
+    goodStore.retrieve( stock, goodStore.getCurrentQty( goodType ) );
+    if( !stock.empty() )
     {
       store(stock, stock._currentQty);
     }
@@ -274,4 +275,9 @@ GoodStore::_Reservations& GoodStore::_getStoreReservations()
 GoodStore::_Reservations& GoodStore::_getRetrieveReservations()
 {
   return _d->retrieveReservations;
+}
+
+int GoodStore::getLeftQty( const GoodType& goodType ) const
+{
+  return getMaxQty( goodType ) - getCurrentQty( goodType );
 }

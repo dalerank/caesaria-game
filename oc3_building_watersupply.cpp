@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_water_buildings.hpp"
+#include "oc3_building_watersupply.hpp"
 
 #include "oc3_stringhelper.hpp"
 #include "oc3_scenario.hpp"
@@ -423,7 +423,7 @@ void Reservoir::timeStep(const unsigned long time)
 
   if( !_d->water )
   {
-    _fgPictures[ 0 ] = 0;
+    _fgPictures[ 0 ] = Picture::getInvalid();
     return;
   }
 
@@ -596,7 +596,7 @@ void BuildingFountain::timeStep(const unsigned long time)
 {
   if( !_haveReservoirWater )
   {
-    _fgPictures[ 0 ] = 0;
+    _fgPictures[ 0 ] = Picture::getInvalid();
     return;
   }
 

@@ -13,41 +13,39 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_EMPIRECITY_H_INCLUDED__
-#define __OPENCAESAR3_EMPIRECITY_H_INCLUDED__
+#ifndef __OPENCAESAR3_EMPIRE_CITY_COMPUTER_H_INCLUDED__
+#define __OPENCAESAR3_EMPIRE_CITY_COMPUTER_H_INCLUDED__
 
-#include "oc3_scopedptr.hpp"
-#include "oc3_referencecounted.hpp"
-#include "oc3_positioni.hpp"
-#include "oc3_serializer.hpp"
+#include "oc3_empire_city.hpp"
 
-#include <string>
-
-class GoodStore;
-
-class EmpireCity : public ReferenceCounted, public Serializable
+class ComputerCity : public EmpireCity
 {
 public:
-  EmpireCity( const std::string& name );
-  ~EmpireCity();
+  static EmpireCityPtr create( EmpirePtr empire, const std::string& name );
+
+  ~ComputerCity();
 
   std::string getName() const;
   Point getLocation() const;
   void setLocation( const Point& location );
-  
-  bool isTradeActive() const;
-  void openTrade();
+
   bool isDistantCity() const;
 
   void save( VariantMap& options ) const;
   void load( const VariantMap& options );
 
-  GoodStore& getSells();
-  GoodStore& getBuys();
+  const GoodStore& getSells() const;
+  const GoodStore& getBuys() const;
+
+  void resolveMerchantArrived( EmpireMerchantPtr );
+
+protected:
+  ComputerCity( EmpirePtr empire, const std::string& name );
 
 private:
   class Impl;
   ScopedPtr< Impl > _d;
+
 };
 
-#endif //__OPENCAESAR3_EMPIRECITY_H_INCLUDED__
+#endif //__OPENCAESAR3_EMPIRE_CITY_COMPUTER_H_INCLUDED__

@@ -70,7 +70,7 @@ void Garden::update()
 {
   PtrTilesArea nearTiles = Scenario::instance().getCity()->getTilemap().getFilledRectangle( getTilePos(), Size(2) );
 
-  bool canGrow2squareGarden = true;
+  bool canGrow2squareGarden = ( nearTiles.size() == 4 ); // be carefull on map edges
   for( PtrTilesArea::iterator it=nearTiles.begin(); it != nearTiles.end(); it++ )
   {
     GardenPtr garden = (*it)->getTerrain().getOverlay().as<Garden>();

@@ -13,31 +13,28 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_EMIGRANT_H_INCLUDE_
-#define __OPENCAESAR3_EMIGRANT_H_INCLUDE_
+#ifndef __OPENCAESAR3_EMPIRECITY_H_INCLUDED__
+#define __OPENCAESAR3_EMPIRECITY_H_INCLUDED__
 
-#include "oc3_walker_immigrant.hpp"
+#include "oc3_scopedptr.hpp"
+#include "oc3_referencecounted.hpp"
+#include "oc3_positioni.hpp"
 #include "oc3_predefinitions.hpp"
+#include "oc3_serializer.hpp"
 
-class Emigrant;
-typedef SmartPtr< Emigrant > EmigrantPtr;
+class GoodStore;
 
-/** This is an immigrant coming with his stuff */
-class Emigrant : public Immigrant
+class EmpireCity : public ReferenceCounted, public Serializable
 {
 public:
-  static const unsigned int defaultPeoples=4;
+  virtual std::string getName() const = 0;
+  virtual Point getLocation() const = 0;
+  virtual void setLocation( const Point& location ) = 0;
 
-  static EmigrantPtr create( CityPtr city);
-  
-	void getPictureList(std::vector<Picture*> &oPics);
-	void onNewDirection();
+  virtual void resolveMerchantArrived( EmpireMerchantPtr ) = 0;
 
-	~Emigrant();
-protected:
-  Picture* getCartPicture();
-
-  Emigrant( CityPtr city );
+  virtual const GoodStore& getSells() const = 0;
+  virtual const GoodStore& getBuys() const = 0;
 };
 
-#endif
+#endif //__OPENCAESAR3_EMPIRECITY_H_INCLUDED__

@@ -28,7 +28,7 @@ class Immigrant::Impl
 {
 public:
   TilePos destination;
-  Picture* cartPicture;
+  Picture cartPicture;
   unsigned char peopleCount;
   CityPtr city;
 };
@@ -37,7 +37,6 @@ Immigrant::Immigrant( CityPtr city ) : _d( new Impl )
 {
   _walkerType = WT_IMMIGRANT;
   _walkerGraphic = WG_HOMELESS;
-  _d->cartPicture = 0;
   _d->peopleCount = 0;
   _d->city = city;
 }
@@ -143,12 +142,12 @@ Immigrant::~Immigrant()
 
 }
 
-void Immigrant::setCartPicture( Picture* pic )
+void Immigrant::setCartPicture( const Picture& pic )
 {
   _d->cartPicture = pic;
 }
 
-Picture* Immigrant::getCartPicture()
+const Picture& Immigrant::getCartPicture()
 {
   return _d->cartPicture;
 }

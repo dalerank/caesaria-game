@@ -16,7 +16,7 @@
 #include "oc3_cityservice_emigrant.hpp"
 #include "oc3_city.hpp"
 #include "oc3_safetycast.hpp"
-#include "oc3_emigrant.hpp"
+#include "oc3_walker_emigrant.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_road.hpp"
 #include "oc3_house.hpp"

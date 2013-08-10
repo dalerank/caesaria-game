@@ -22,7 +22,7 @@
 #include "oc3_texturedbutton.hpp"
 #include "oc3_color.hpp"
 #include "oc3_empire.hpp"
-#include "oc3_empirecity.hpp"
+#include "oc3_empire_city_computer.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_city.hpp"
 #include "oc3_gui_label.hpp"
@@ -30,6 +30,8 @@
 #include "oc3_gettext.hpp"
 #include "oc3_gui_dialogbox.hpp"
 #include "oc3_goodstore.hpp"
+#include "oc3_empire_trading.hpp"
+#include "oc3_cityfunds.hpp"
 
 class EmpireMapWindow::Impl
 {
@@ -87,14 +89,15 @@ void EmpireMapWindow::Impl::updateCityInfo()
   {
     lbCityTitle->setText( currentCity->getName() );
 
-    if( currentCity->getName() == scenario->getCity()->getName() 
-      || currentCity->isDistantCity() /* || currentCity->isRomeCity()*/ )
+    if( currentCity.is<City>() )
     {
       drawCityInfo();
     }
     else
     {
-      if( currentCity->isTradeActive() )
+      EmpirePtr empire = scenario->getEmpire();
+      EmpireTradeRoutePtr route = empire->getTradeRoute( currentCity->getName(), scenario->getCity()->getName() );
+      if( route != 0 )
       {
         drawTradeRouteInfo();
       }
@@ -114,7 +117,11 @@ void EmpireMapWindow::Impl::createTradeRoute()
 {
   if( currentCity != 0 )
   {
-    scenario->getCity()->createTradeRoute( currentCity );
+    CityPtr city = scenario->getCity();
+    unsigned int cost = EmpireHelper::getTradeRouteOpenCost( Scenario::instance().getEmpire(), 
+                                                             city->getName(), currentCity->getName() ); 
+    city->getFunds().resolveIssue( FundIssue( CityFunds::otherExpenditure, -(int)cost ) );
+    scenario->getEmpire()->createTradeRoute( city->getName(), currentCity->getName() );
   }
 
   updateCityInfo();
@@ -124,11 +131,11 @@ void EmpireMapWindow::Impl::drawCityInfo()
 {
   Label* lb = new Label( tradeInfo, Rect( Point( 0, tradeInfo->getHeight() - 70), Size( tradeInfo->getWidth(), 30) ) );
   lb->setTextAlignment( alignCenter, alignUpperLeft );
-  if( currentCity->getName() == scenario->getCity()->getName() )
+  if( currentCity.is<City>() )
   {
     lb->setText( _("##empiremap_our_city##") );
   }
-  else if( currentCity->isDistantCity() )
+  else if( currentCity.as<ComputerCity>()->isDistantCity() )
   {
     lb->setText( _("##empiremap_distant_city##") );
   }
@@ -170,14 +177,12 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   }
 
   PushButton* btnOpenTrade = new PushButton( tradeInfo, Rect( startDraw + Point( 0, 40 ), Size( 400, 20 ) ),
-                                             "", -1, false, PushButton::BlackBorderUp );
-  btnOpenTrade->setVisible( false );
+                                             "", -1, false, PushButton::blackBorderUp );
 
   const std::string& playerCityName = scenario->getCity()->getName();
-  unsigned int routeOpenCost = scenario->getEmpire()->openTradeRouteCost( playerCityName, currentCity->getName() );
+  unsigned int routeOpenCost = EmpireHelper::getTradeRouteOpenCost( scenario->getEmpire(), playerCityName, currentCity->getName() );
 
   btnOpenTrade->setText( StringHelper::format( 0xff, "%d %s", routeOpenCost, _("##dn_for_open_trade##")));
-  btnOpenTrade->setVisible( !currentCity->isTradeActive() );
 
   CONNECT( btnOpenTrade, onClicked(), this, Impl::showOpenRouteRequestWindow );
 }
@@ -222,11 +227,10 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
     }
   }
 
-  PushButton* btnOpenTrade = new PushButton( tradeInfo, Rect( startDraw, Size( 400, 20 ) ),
-    "", -1, false, PushButton::BlackBorderUp );
-  btnOpenTrade->setVisible( false );
+/*  PushButton* btnOpenTrade = new PushButton( tradeInfo, Rect( startDraw, Size( 400, 20 ) ),
+    "", -1, false, PushButton::blackBorderUp );
   btnOpenTrade->setText( StringHelper::format( 0xff, "%d %s", 1000, _("##dn_for_open_trade##")));
-  btnOpenTrade->setVisible( !currentCity->isTradeActive() );
+  */
 }
 
 void EmpireMapWindow::Impl::resetInfoPanel()
@@ -245,6 +249,7 @@ void EmpireMapWindow::Impl::showOpenRouteRequestWindow()
                                      DialogBox::btnOk | DialogBox::btnCancel  );
 
   CONNECT( dialog, onOk(), this, Impl::createTradeRoute );
+  CONNECT( dialog, onOk(), dialog, DialogBox::deleteLater );
   CONNECT( dialog, onCancel(), dialog, DialogBox::deleteLater );
 }
 
@@ -324,11 +329,7 @@ void EmpireMapWindow::draw( GfxEngine& engine )
   for( EmpireCities::const_iterator it=cities.begin(); it != cities.end(); it++ )
   {
     Point location = (*it)->getLocation();
-    int index = 0; //maybe it our city
-    if( (*it)->getName() != _d->ourCity )   
-    {
-      index = (*it)->isDistantCity() ? 1 : 2;
-    }
+    int index = (*it).is<City>() ? 0 : 2; //maybe it our city
 
     engine.drawPicture( _d->citypics[ index ], _d->offset + Point( location.getX(), location.getY() ) );
   }
@@ -340,7 +341,25 @@ void EmpireMapWindow::draw( GfxEngine& engine )
     getHeight() - 120 + _d->eagleOffset.getHeight() - _d->rightEagle.getHeight() - 10 );
 
   engine.drawPicture( _d->centerPicture, (getWidth() - _d->centerPicture.getWidth()) / 2, 
-    getHeight() - 120 - _d->centerPicture.getHeight() + 20 );
+                      getHeight() - 120 - _d->centerPicture.getHeight() + 20 );
+
+  EmpirePtr empire = Scenario::instance().getEmpire();
+
+  int index=0;
+  EmpireTradeRoutePtr route = empire->getTradeRoute( index );
+  while( route != 0 )
+  {
+    const Picture& picture = Picture::load( ResourceGroup::empirebits, PicID::seaTradeRoute );
+
+    EmpireMerchantPtr merchant = route->getMerchant( 0 );
+    if( merchant != 0 )
+    {
+      engine.drawPicture( picture, _d->offset + merchant->getLocation() );
+    }
+      
+    index++;
+    route = empire->getTradeRoute( index );
+  }
 
   Widget::draw( engine );
 }

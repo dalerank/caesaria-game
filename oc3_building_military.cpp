@@ -14,7 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "oc3_military_building.hpp"
+#include "oc3_building_military.hpp"
 #include "oc3_resourcegroup.hpp"
 
 Barracks::Barracks() : WorkingBuilding( B_BARRACKS, Size( 3 ) )
@@ -28,29 +28,29 @@ FortLegionnaire::FortLegionnaire() : Building( B_FORT_LEGIONNAIRE, Size(3) )
 {
   setPicture( Picture::load(ResourceGroup::security, 12));
 
-  Picture* logo = &Picture::load(ResourceGroup::security, 16);
-  logo -> setOffset(80,10);
+  Picture logo = Picture::load(ResourceGroup::security, 16);
+  logo.setOffset(80,10);
   _fgPictures.resize(1);
-  _fgPictures.at(0) = logo;  
+  _fgPictures[ 0 ] = logo;  
 }
 
 FortMounted::FortMounted() : Building( B_FORT_MOUNTED, Size(3) )
 {
   setPicture( Picture::load(ResourceGroup::security, 12));
 
-  Picture* logo = &Picture::load(ResourceGroup::security, 15);
-  logo -> setOffset(80,10);
+  Picture logo = Picture::load(ResourceGroup::security, 15);
+  logo.setOffset(80,10);
   _fgPictures.resize(1);
-  _fgPictures.at(0) = logo;
+  _fgPictures[ 0 ] = logo;
 }
 
 FortJaveline::FortJaveline() : Building( B_FORT_JAVELIN, Size(3) )
 {
   setPicture( Picture::load(ResourceGroup::security, 12));
 
-  Picture* logo = &Picture::load(ResourceGroup::security, 14);
+  Picture logo = Picture::load(ResourceGroup::security, 14);
   //std::cout << logo->get_xoffset() << " " << logo->get_yoffset() << " " << logo->get_width() << " " << logo->get_height() << std::endl;
-  logo -> setOffset(80,10);
+  logo.setOffset(80,10);
   _fgPictures.resize(1);
-  _fgPictures.at(0) = logo;  
+  _fgPictures[ 0 ] = logo;  
 }

@@ -22,8 +22,9 @@
 #include "oc3_city.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_granary.hpp"
-#include "oc3_warehouse.hpp"
+#include "oc3_building_warehouse.hpp"
 #include "oc3_tile.hpp"
+#include "oc3_goodhelper.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_path_finding.hpp"
 #include "oc3_picture_bank.hpp"
@@ -37,7 +38,7 @@ public:
   GoodStock stock;
   BuildingPtr producerBuilding;
   BuildingPtr consumerBuilding;
-  Picture* cartPicture;
+  Picture cartPicture;
   int maxDistance;
   long reservationID;
 
@@ -48,7 +49,6 @@ public:
 
 CartPusher::CartPusher( CityPtr city ) : _d( new Impl )
 {
-   _d->cartPicture = NULL;
    _walkerGraphic = WG_PUSHER;
    _walkerType = WT_CART_PUSHER;
    _d->producerBuilding = NULL;
@@ -60,7 +60,7 @@ CartPusher::CartPusher( CityPtr city ) : _d( new Impl )
 void CartPusher::onDestination()
 {
   Walker::onDestination();
-  _d->cartPicture = NULL;
+  _d->cartPicture = Picture();
 
   if( _d->consumerBuilding != NULL )
   {
@@ -130,21 +130,21 @@ BuildingPtr CartPusher::getConsumerBuilding()
 
 Picture& CartPusher::getCartPicture()
 {
-   if( _d->cartPicture == NULL )
+   if( !_d->cartPicture.isValid() )
    {
-      _d->cartPicture = &CartLoader::instance().getCart(_d->stock, getDirection());
+     _d->cartPicture = GoodHelper::getCartPicture(_d->stock, getDirection());
    }
 
-   return *_d->cartPicture;
+   return _d->cartPicture;
 }
 
 void CartPusher::onNewDirection()
 {
    Walker::onNewDirection();
-   _d->cartPicture = NULL;  // need to get the new graphic
+   _d->cartPicture = Picture();  // need to get the new graphic
 }
 
-void CartPusher::getPictureList(std::vector<Picture*> &oPics)
+void CartPusher::getPictureList(std::vector<Picture> &oPics)
 {
    oPics.clear();
 
@@ -155,15 +155,15 @@ void CartPusher::getPictureList(std::vector<Picture*> &oPics)
    case D_NORTH_WEST:
    case D_NORTH:
    case D_NORTH_EAST:
-      oPics.push_back(&getCartPicture());
-      oPics.push_back(&getMainPicture());
+      oPics.push_back( getCartPicture() );
+      oPics.push_back( getMainPicture() );
       break;
    case D_EAST:
    case D_SOUTH_EAST:
    case D_SOUTH:
    case D_SOUTH_WEST:
-      oPics.push_back(&getMainPicture());
-      oPics.push_back(&getCartPicture());
+      oPics.push_back( getMainPicture() );
+      oPics.push_back( getCartPicture() );
       break;
    default:
       break;

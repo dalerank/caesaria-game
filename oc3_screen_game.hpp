@@ -19,8 +19,8 @@
 #ifndef SCREEN_GAME_HPP
 #define SCREEN_GAME_HPP
 
-#include "oc3_picture.hpp"
 #include "oc3_screen.hpp"
+#include "oc3_predefinitions.hpp"
 #include "oc3_scopedptr.hpp"
 
 class Scenario;

@@ -34,7 +34,7 @@ const char* ResourceGroup::housing         = "housng1a";
 const char* ResourceGroup::govt            = "govt";
 const char* ResourceGroup::carts           = "carts";
 const char* ResourceGroup::waterOverlay    = "land2a";
-const char* ResourceGroup::advisorwindow   = "oc3_advisorwindow";
+const char* ResourceGroup::foodOverlay     = "land2a";
 const char* ResourceGroup::empirebits      = "empire_bits";
 const char* ResourceGroup::empirepnls      = "empire_panels";
 

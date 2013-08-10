@@ -99,7 +99,7 @@ Granary::Granary() : WorkingBuilding( B_GRANARY, Size(3) ), _d( new Impl )
   _getAnimation().load(ResourceGroup::commerce, 151, 6, Animation::reverse);
   _getAnimation().setFrameDelay( 4 );
 
-  _fgPictures[0] = &Picture::load( ResourceGroup::commerce, 141);
+  _fgPictures[0] = Picture::load( ResourceGroup::commerce, 141);
   _fgPictures[5] = _getAnimation().getCurrentPicture();
   computePictures();
 
@@ -141,24 +141,24 @@ void Granary::computePictures()
   for (int n = 0; n < 4; ++n)
   {
     // reset all window pictures
-    _fgPictures[n+1] = NULL;
+    _fgPictures[n+1] = Picture();
   }
 
   if (allQty > 0)
   {
-    _fgPictures[1] = &Picture::load( ResourceGroup::commerce, 142);
+    _fgPictures[1] = Picture::load( ResourceGroup::commerce, 142);
   }
   if( allQty > maxQty * 0.25)
   {
-    _fgPictures[2] = &Picture::load( ResourceGroup::commerce, 143);
+    _fgPictures[2] = Picture::load( ResourceGroup::commerce, 143);
   }
   if (allQty > maxQty * 0.5)
   {
-    _fgPictures[3] = &Picture::load( ResourceGroup::commerce, 144);
+    _fgPictures[3] = Picture::load( ResourceGroup::commerce, 144);
   }
   if (allQty > maxQty * 0.9)
   {
-    _fgPictures[4] = &Picture::load( ResourceGroup::commerce, 145);
+    _fgPictures[4] = Picture::load( ResourceGroup::commerce, 145);
   }
 }
 

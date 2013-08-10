@@ -16,10 +16,42 @@
 #ifndef _OPENCAESAR3_CITYTRADEOPTIONS_INCLUDE_H_
 #define _OPENCAESAR3_CITYTRADEOPTIONS_INCLUDE_H_
 
+#include "oc3_scopedptr.hpp"
+#include "oc3_good.hpp"
+#include "oc3_variant.hpp"
+
 class CityTradeOptions
 {
 public:
+  typedef enum { importing=0, noTrade, exporting, stacking, disabled } Order;
   CityTradeOptions();
+  ~CityTradeOptions();
+
+  int getExportLimit( GoodType type ) const;
+  void setExportLimit( GoodType type, int qty );
+  
+  void setStackMode( GoodType type, bool stackGoods );
+  bool isGoodsStacking( GoodType type );
+
+  unsigned int getSellPrice( GoodType type ) const;
+  void setSellPrice( GoodType type, unsigned int price );
+
+  bool isVendor( GoodType type ) const;
+  void setVendor( GoodType type, bool available );
+
+  unsigned int getBuyPrice( GoodType type ) const;
+  void setBuyPrice( GoodType type, unsigned int price );
+
+  Order getOrder( GoodType type ) const;
+  void setOrder( GoodType type, Order order );
+  Order switchOrder( GoodType type );
+
+  VariantMap save() const;
+  void load( const VariantMap& stream );
+
+public:
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 #endif //_OPENCAESAR3_CITYTRADINGOPTIONS_INCLUDE_H_

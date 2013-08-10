@@ -43,7 +43,7 @@ public:
     int getPicturesCount() const;
 
     void update( unsigned int time );
-    Picture* getCurrentPicture();
+    const Picture& getCurrentPicture();
 
     void setFrameDelay( const unsigned int delay );
     void setLoop( bool loop );

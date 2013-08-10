@@ -24,7 +24,7 @@
 #include "oc3_picture_decorator.hpp"
 #include "oc3_event.hpp"
 #include "oc3_granary.hpp"
-#include "oc3_warehouse.hpp"
+#include "oc3_building_warehouse.hpp"
 #include "oc3_goodhelper.hpp"
 #include "oc3_goodstore.hpp"
 #include "oc3_goodorders.hpp"
@@ -40,7 +40,7 @@ public:
     _storageBuilding = storageBuilding;
     setFont( Font::create( FONT_1_WHITE ) );
 
-    _btnChangeRule = new PushButton( this, Rect( 140, 0, 140 + 240, getHeight() ), "", -1, false, PushButton::BlackBorderUp );
+    _btnChangeRule = new PushButton( this, Rect( 140, 0, 140 + 240, getHeight() ), "", -1, false, PushButton::blackBorderUp );
     _btnChangeRule->setFont( Font::create( FONT_1_WHITE ) );
     updateBtnText();
 
@@ -194,7 +194,7 @@ GranarySpecialOrdersWindow::GranarySpecialOrdersWindow( Widget* parent, const Po
   }
 
   _btnToggleDevastation = new PushButton( this, Rect( 80, getHeight() - 45, getWidth() - 80, getHeight() - 25 ),
-                                          "", -1, false, PushButton::WhiteBorderUp );
+                                          "", -1, false, PushButton::whiteBorderUp );
 
   CONNECT( _btnToggleDevastation, onClicked(), this, GranarySpecialOrdersWindow::toggleDevastation );
   _updateBtnDevastation();
@@ -232,10 +232,10 @@ WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, cons
   }
 
   _btnToggleDevastation = new PushButton( this, Rect( 80, getHeight() - 45, getWidth() - 80, getHeight() - 25 ),
-                                          "", -1, false, PushButton::WhiteBorderUp );
+                                          "", -1, false, PushButton::whiteBorderUp );
 
   _btnTradeCenter = new PushButton( this, Rect( 80, getHeight() - 70, getWidth() - 80, getHeight() - 50 ),
-                                   _("##Trace center##"), -1, false, PushButton::WhiteBorderUp );
+                                   _("##Trace center##"), -1, false, PushButton::whiteBorderUp );
 
   CONNECT( _btnToggleDevastation, onClicked(), this, WarehouseSpecialOrdersWindow::toggleDevastation );
   _updateBtnDevastation();

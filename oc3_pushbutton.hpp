@@ -26,7 +26,7 @@ class Font;
 class PushButton : public Widget
 {
 public:
-  typedef enum { GrayBorderLine, WhiteBorderUp, BlackBorderUp, NoBackground } BackgroundStyle;
+  typedef enum { grayBorderLine, smallGrayBorderLine, whiteBorderUp, blackBorderUp, noBackground } BackgroundStyle;
 
 	//! constructor
 	PushButton( Widget* parent,
@@ -34,7 +34,7 @@ public:
               const std::string& caption="",
               int id=-1, 
 			        bool noclip=false,
-              const BackgroundStyle bgtyle=GrayBorderLine);
+              const BackgroundStyle bgtyle=grayBorderLine);
 
 	//! destructor
 	~PushButton();

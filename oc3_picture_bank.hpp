@@ -26,6 +26,8 @@
 #include "oc3_good.hpp"
 #include "oc3_scopedptr.hpp"
 
+class GfxEngine;
+
 // loads pictures from files
 class PictureBank
 {
@@ -46,74 +48,21 @@ public:
   PicturesArray getPictures();
 
   // loads all resources during load
-  void loadWaitPics();
+  void loadWaitPics( GfxEngine& engine );
   // loads all resources
-  void loadAllPics();
+  void loadAllPics( GfxEngine& engine );
 
   // create runtime resources
   void createResources();
 
   // loads all resources of the given archive file
-  void loadArchive(const std::string &filename);
+  void loadArchive(const std::string &filename, GfxEngine& engine );
   ~PictureBank();
 
 private:
   PictureBank();
 
   Picture makePicture(SDL_Surface *surface, const std::string& resource_name) const;
-
-  class Impl;
-  ScopedPtr< Impl > _d;
-};
-
-class Animation;
-
-class WalkerLoader
-{
-public:
-   typedef std::map<WalkerAction, Animation> WalkerAnimationMap;
-   
-   static WalkerLoader& instance();
-
-   // loads all walker animations
-   void loadAll();
-
-   // fills the walking animations
-   // prefix: image prefix
-   // start: index of the first frame
-   // size: number of frames for the walking movement
-   void fillWalk( WalkerAnimationMap& ioMap, const std::string &prefix, const int start, const int size);
-
-   const WalkerAnimationMap& getAnimationMap(const WalkerGraphicType walkerGraphic);
-
-private:
-   WalkerLoader();
-
-   class Impl;
-   ScopedPtr< Impl > _d;
-};
-
-
-class CartLoader
-{
-public:
-  static CartLoader& instance();
-
-  // loads all cart graphics
-  void loadAll();
-
-  // fills the cart pictures
-  // prefix: image prefix
-  // start: index of the first frame
-  void fillCart(std::vector<Picture*> &ioCart, const std::string &prefix, const int start, bool back );
-
-  Picture& getCart(const GoodStock &stock, const DirectionType &direction);
-  Picture& getCart(GoodType cart, const DirectionType &direction );
-  // for emmigration & immigration
-  Picture& getCart(CartTypes cart, const DirectionType &direction);
-
-private:
-  CartLoader();
 
   class Impl;
   ScopedPtr< Impl > _d;

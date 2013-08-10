@@ -71,7 +71,7 @@ public:
     Construction::build( pos );
     _fgPictures.clear();
     _pos = pos;
-    _fgPictures.push_back( &_picture );
+    _fgPictures.push_back( _picture );
   }
 
   void setTerrain( TerrainTile& terrain )
@@ -261,7 +261,7 @@ void HighBridge::_computePictures( const TilePos& startPos, const TilePos& endPo
 
   for( HighBridgeSubTiles::iterator it=_d->subtiles.begin(); it != _d->subtiles.end(); it++ )
   {
-    _fgPictures.push_back( &(*it)->_picture );
+    _fgPictures.push_back( (*it)->_picture );
   }
 }
 

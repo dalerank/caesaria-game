@@ -52,8 +52,8 @@ void TrainingBuilding::timeStep(const unsigned long time)
    }
 
    _getAnimation().update( time );
-   Picture *pic = _getAnimation().getCurrentPicture();
-   if (pic != NULL)
+   const Picture& pic = _getAnimation().getCurrentPicture();
+   if( pic.isValid() )
    {
       int level = _fgPictures.size()-1;
       _fgPictures[level] = _getAnimation().getCurrentPicture();

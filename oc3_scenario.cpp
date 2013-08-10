@@ -37,6 +37,7 @@ public:
   std::string description;
   CityWinTargets targets;
   EmpirePtr empire;
+  unsigned int time;
 };
 
 Scenario& Scenario::instance()
@@ -86,6 +87,8 @@ bool Scenario::load( const io::FilePath& filename )
     return false;
   }  
 
+  _d->empire->initPlayerCity( _d->city.as<EmpireCity>() );
+
   LandOverlays llo = _d->city->getOverlayList();
   for ( LandOverlays::iterator itLLO = llo.begin(); itLLO!=llo.end(); ++itLLO)
   {
@@ -126,4 +129,12 @@ Player& Scenario::getPlayer() const
 EmpirePtr Scenario::getEmpire() const
 {
   return _d->empire;
+}
+
+void Scenario::timeStep()
+{
+  _d->time += 1;
+
+  _d->city->timeStep( _d->time );
+  _d->empire->timeStep( _d->time );
 }

@@ -13,15 +13,30 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_PROJECT_VERSION_INCLUDE_H_
-#define __OPENCAESAR3_PROJECT_VERSION_INCLUDE_H_
+#ifndef _OPENCAESAR3_WALKER_MERCHANT_INCLUDE_H_
+#define _OPENCAESAR3_WALKER_MERCHANT_INCLUDE_H_
 
-#define OC3_VERSION_MAJOR 0
-#define OC3_VERSION_MINOR 2
-#define OC3_VERSION_REVSN 665
+#include "oc3_walker.hpp"
+#include "oc3_empire_trading.hpp"
 
-#define OC3_STR_EXT(__A) #__A
-#define OC3_STR_A(__A) OC3_STR_EXT(__A)
-#define OC3_VERSION OC3_STR_A(OC3_VERSION_MAJOR)"."OC3_STR_A(OC3_VERSION_MINOR)"."OC3_STR_A(OC3_VERSION_REVSN)
+/** This is the empire merchant which buy/sell goods at warehouses */
+class Merchant : public Walker
+{
+public:
+  static WalkerPtr create( EmpireMerchantPtr merchant );
 
-#endif
+  virtual ~Merchant();
+
+  void send2City( CityPtr city );
+  virtual void onDestination();
+
+  void save( VariantMap& stream) const;
+  void load( const VariantMap& stream);
+private:
+  Merchant();
+
+  class Impl;
+  ScopedPtr< Impl > _d;
+};
+
+#endif //_OPENCAESAR3_WALKER_MERCHANT_INCLUDE_H_

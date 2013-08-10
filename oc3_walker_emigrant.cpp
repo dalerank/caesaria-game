@@ -13,11 +13,11 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_emigrant.hpp"
+#include "oc3_walker_emigrant.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_road.hpp"
-#include "oc3_picture_bank.hpp"
+#include "oc3_animation_bank.hpp"
 #include "oc3_city.hpp"
 
 Emigrant::Emigrant( CityPtr city ) : Immigrant( city )
@@ -28,17 +28,17 @@ Emigrant::Emigrant( CityPtr city ) : Immigrant( city )
   _walkerGraphic = WG_PUSHER2;
 }
 
-Picture* Emigrant::getCartPicture()
+const Picture& Emigrant::getCartPicture()
 {
-  if( Immigrant::getCartPicture() == NULL )
+  if( !Immigrant::getCartPicture().isValid() )
   {
-    setCartPicture( &CartLoader::instance().getCart( G_SCARB1, getDirection()) );
+    setCartPicture( AnimationBank::getCart( G_EMIGRANT_CART1, getDirection()) );
   }
 
   return Immigrant::getCartPicture();
 }
 
-void Emigrant::getPictureList(std::vector<Picture*> &oPics)
+void Emigrant::getPictureList(std::vector<Picture> &oPics)
 {
   oPics.clear();
 
@@ -49,18 +49,18 @@ void Emigrant::getPictureList(std::vector<Picture*> &oPics)
   case D_NORTH_WEST:
   case D_NORTH:
   case D_NORTH_EAST:
-    oPics.push_back( getCartPicture());
-    oPics.push_back(&getMainPicture());
+    oPics.push_back( getCartPicture() );
+    oPics.push_back( getMainPicture() );
     break;
   case D_EAST:
   case D_SOUTH_EAST:
-    oPics.push_back( getCartPicture());
-    oPics.push_back(&getMainPicture());
+    oPics.push_back( getCartPicture() );
+    oPics.push_back( getMainPicture() );
     break;
   case D_SOUTH:
   case D_SOUTH_WEST:
-    oPics.push_back(&getMainPicture());
-    oPics.push_back( getCartPicture());
+    oPics.push_back( getMainPicture() );
+    oPics.push_back( getCartPicture() );
     break;
   default:
     break;
@@ -70,7 +70,7 @@ void Emigrant::getPictureList(std::vector<Picture*> &oPics)
 void Emigrant::onNewDirection()
 {
   Immigrant::onNewDirection();
-  setCartPicture( 0 );  // need to get the new graphic
+  setCartPicture( Picture() );  // need to get the new graphic
 }
 
 EmigrantPtr Emigrant::create( CityPtr city )

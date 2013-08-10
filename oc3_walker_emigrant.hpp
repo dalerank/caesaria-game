@@ -13,46 +13,31 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_IMMIGRANT_H_INCLUDED__
-#define __OPENCAESAR3_IMMIGRANT_H_INCLUDED__
+#ifndef __OPENCAESAR3_EMIGRANT_H_INCLUDE_
+#define __OPENCAESAR3_EMIGRANT_H_INCLUDE_
 
-#include "oc3_walker.hpp"
+#include "oc3_walker_immigrant.hpp"
 #include "oc3_predefinitions.hpp"
 
-class Immigrant;
-typedef SmartPtr< Immigrant > ImmigrantPtr;
+class Emigrant;
+typedef SmartPtr< Emigrant > EmigrantPtr;
 
 /** This is an immigrant coming with his stuff */
-class Immigrant : public Walker
+class Emigrant : public Immigrant
 {
 public:
-  static ImmigrantPtr create( CityPtr city );
+  static const unsigned int defaultPeoples=4;
 
-  void send2City( Tile& startTile );
-  void setCapacity( int value );
-
-  void onDestination();
-  ~Immigrant();
-
-  void save(VariantMap& stream) const;
-  void load(const VariantMap& stream);
-
-protected:
-  void setCartPicture( const Picture& pic );
-  virtual const Picture& getCartPicture();
+  static EmigrantPtr create( CityPtr city);
   
-  Immigrant( CityPtr city );
+	void getPictureList(std::vector<Picture> &oPics);
+	void onNewDirection();
 
-  HousePtr _findBlankHouse();
-  void _findPath2blankHouse( Tile& startPoint );
-
+	~Emigrant();
 protected:
-  void _setPeoplesCount( const unsigned char num );
-  unsigned char _getPeoplesCount() const;
+  const Picture& getCartPicture();
 
-private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  Emigrant( CityPtr city );
 };
 
 #endif

@@ -16,8 +16,8 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#ifndef ENUMS_HPP
-#define ENUMS_HPP
+#ifndef _OPENCAESAR3_ENUMS_INCLUDE_H_
+#define _OPENCAESAR3_ENUMS_INCLUDE_H_
 
 #include <string>
 
@@ -68,6 +68,7 @@ enum WalkerType
   WT_SERVICE,                     //unknown service
   WT_TRAINEE, WT_WORKERS_HUNTER,
   WT_PREFECT, WT_TAXCOLLECTOR,
+  WT_MERCHANT,
   WT_MAX, WT_ALL=WT_MAX 
 };
 
@@ -83,7 +84,7 @@ enum GoodType
   G_MAX 
 };
 
-enum CartTypes {G_SCARB1 = G_MAX, G_SCARB2, CT_MAX };
+enum CartTypes {G_EMIGRANT_CART1 = G_MAX, G_ENIGRANT_CART2, CT_MAX };
   
 enum ServiceType 
 { 
@@ -256,4 +257,4 @@ struct TypeEquale
 };
 
 
-#endif
+#endif  //_OPENCAESAR3_ENUMS_INCLUDE_H_

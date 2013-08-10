@@ -59,7 +59,7 @@ public:
   // graphic
   void setPicture(Picture &picture);
   Picture& getPicture();
-  std::vector<Picture*>& getForegroundPictures();
+  std::vector<Picture>& getForegroundPictures();
 
   std::string getName();  // landoverlay debug name
   void setName( const std::string& name );
@@ -72,7 +72,7 @@ public:
   virtual void load( const VariantMap& stream );
 
 protected:
-  std::vector<Picture*> _fgPictures;
+  std::vector<Picture> _fgPictures;
 
   Animation& _getAnimation();
 

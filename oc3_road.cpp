@@ -17,7 +17,7 @@
 #include "oc3_tile.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_scenario.hpp"
-#include "oc3_water_buildings.hpp"
+#include "oc3_building_watersupply.hpp"
 #include "oc3_city.hpp"
 
 Road::Road() : Construction( B_ROAD, Size(1) )

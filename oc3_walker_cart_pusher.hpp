@@ -37,7 +37,7 @@ public:
   void setStock(const GoodStock &stock);
 
   Picture& getCartPicture();
-  virtual void getPictureList(std::vector<Picture*> &oPics);
+  virtual void getPictureList(std::vector<Picture> &oPics);
   virtual void onNewDirection();
   virtual void onDestination();
 

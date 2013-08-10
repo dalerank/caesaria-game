@@ -21,7 +21,6 @@
 
 #include "oc3_gfx_engine.hpp"
 #include "oc3_exception.hpp"
-#include "oc3_warehouse.hpp"
 #include "oc3_gui_rightpanel.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_guienv.hpp"
@@ -200,7 +199,7 @@ void ScreenGame::draw()
 
 void ScreenGame::afterFrame()
 {
-  _d->scenario->getCity()->timeStep();
+  _d->scenario->timeStep();
 }
 
 void ScreenGame::handleEvent( NEvent& event )

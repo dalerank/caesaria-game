@@ -39,7 +39,7 @@ public:
     static const char* carts;
     static const char* wharf;
     static const char* waterOverlay;
-    static const char* advisorwindow;
+    static const char* foodOverlay;
     static const char* empirebits;
     static const char* empirepnls;
 };
@@ -73,6 +73,8 @@ class PicID
 {
 public:
     static const int empireStamp = 543;
+    static const int seaTradeRoute = 69;
+    static const int landTradeRoute = 70;
 };
 
 class WaterOverlay

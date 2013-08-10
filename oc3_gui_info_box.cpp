@@ -39,7 +39,7 @@
 #include "oc3_house.hpp"
 #include "oc3_religion_building.hpp"
 #include "oc3_divinity.hpp"
-#include "oc3_warehouse.hpp"
+#include "oc3_building_warehouse.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_special_orders_window.hpp"
 #include "oc3_goodstore.hpp"
@@ -467,7 +467,7 @@ GuiInfoGranary::GuiInfoGranary( Widget* parent, const Tile& tile )
   _gd->building = tile.getTerrain().getOverlay().as<Granary>();
   Size btnOrdersSize( 350, 20 );
   _gd->btnOrders = new PushButton( this, Rect( Point( (getWidth() - btnOrdersSize.getWidth())/ 2, getHeight() - 34 ), btnOrdersSize), 
-                                   _("##special_orders##"), -1, false, PushButton::WhiteBorderUp );
+                                   _("##special_orders##"), -1, false, PushButton::whiteBorderUp );
   CONNECT( _gd->btnOrders, onClicked(), this, GuiInfoGranary::showSpecialOrdersWindow );
 
   setTitle( BuildingDataHolder::instance().getData( _gd->building->getType()).getPrettyName() );
@@ -561,7 +561,7 @@ InfoBoxWarehouse::InfoBoxWarehouse( Widget* parent, const Tile& tile )
   _wd->building = tile.getTerrain().getOverlay().as<Warehouse>();
   Size btnOrdersSize( 350, 20 );
   _wd->btnOrders = new PushButton( this, Rect( Point( (getWidth() - btnOrdersSize.getWidth()) / 2, getHeight() - 34 ), btnOrdersSize ), 
-                                   _("##special_orders##"), -1, false, PushButton::WhiteBorderUp );
+                                   _("##special_orders##"), -1, false, PushButton::whiteBorderUp );
 
   CONNECT( _wd->btnOrders, onClicked(), this, InfoBoxWarehouse::showSpecialOrdersWindow );
 

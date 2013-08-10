@@ -33,12 +33,12 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_house.hpp"
 #include "oc3_house_level.hpp"
-#include "oc3_water_buildings.hpp"
+#include "oc3_building_watersupply.hpp"
 
 class TilemapRenderer::Impl
 {
 public:
-  typedef std::vector< Picture* > Pictures;
+  typedef std::vector< Picture > Pictures;
   
   Picture* clearPic;
   PtrTilesList postTiles;  // these tiles have draw over "normal" tilemap tiles!
@@ -58,6 +58,11 @@ public:
 
   typedef Delegate1< Tile& > DrawTileSignature;
   DrawTileSignature drawTileFunction;
+
+  Impl()
+  {
+    visibleWalkers.push_back(WT_ALL);
+  }
 
   void getSelectedArea( TilePos& outStartPos, TilePos& outStopPos );
   // returns the tile at the cursor position.
@@ -89,6 +94,23 @@ public:
   {
     drawTileFunction = makeDelegate( obj, func );
   }
+
+  void setVisibleWalkers(const WalkerType walkersTypes[])
+  {
+    visibleWalkers.clear();
+    int i=0;
+    while (walkersTypes[i] != WT_NONE)
+    {
+      visibleWalkers.push_back(walkersTypes[i++]);
+    }
+  }
+
+private:
+  std::vector<WalkerType> visibleWalkers;
+
+  Walkers getVisibleWalkerList();
+  void drawWalkersBetweenZ( Walkers walkerList, int minZ, int maxZ );
+  void drawBuildingAreaTiles( Tile& baseTile, LandOverlayPtr overlay, std::string resourceGroup, int tileId );
 
 oc3_signals public:
   Signal1< const Tile& > onShowTileInfoSignal;
@@ -148,14 +170,11 @@ void TilemapRenderer::Impl::drawAnimations( LandOverlayPtr overlay, const Point&
   Impl::Pictures& fgPictures = overlay->getForegroundPictures();
   for( Impl::Pictures::iterator itPic = fgPictures.begin(); itPic != fgPictures.end(); ++itPic )
   {
-    // for each foreground picture
-    if( 0 == *itPic )
+    // skip void picture
+    if( (*itPic).isValid() )
     {
-      // skip void picture
-      continue;
+      engine->drawPicture( *itPic, screenPos);
     }
-
-    engine->drawPicture( **itPic, screenPos);
   }
 }
 
@@ -438,22 +457,25 @@ void TilemapRenderer::Impl::drawTileFood( Tile& tile )
       //houses
     case B_HOUSE:
       {
+        drawBuildingAreaTiles(tile, overlay, ResourceGroup::foodOverlay, WaterOverlay::base);
         HousePtr house = overlay.as< House >();
-        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + 11 );
         foodLevel = house->getFoodLevel();
-        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() ==0);
+        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() == 0);
       }
       break;
 
       //other buildings
     default:
       {
-        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + 1 );
+        drawBuildingAreaTiles(tile, overlay, ResourceGroup::foodOverlay, WaterOverlay::base);
       }
       break;
     }  
 
-    engine->drawPicture( *pic, screenPos );
+    if ( pic != NULL )
+    {
+      engine->drawPicture( *pic, screenPos );
+    }
 
     if( needDrawAnimations )
     {
@@ -511,25 +533,7 @@ void TilemapRenderer::Impl::drawTileWater( Tile& tile )
       tileNumber += (haveWater ? WaterOverlay::haveWater : 0);
       tileNumber += terrain.getWaterService( WTR_RESERVOIR ) > 0 ? WaterOverlay::reservoirRange : 0;
 
-      areaSize = overlay->getSize();
-      PtrTilesArea area;
-      if( areaSize.getWidth() == 1 )
-      {
-        area.push_back( &tile );
-      }
-      else
-      {
-        area = tilemap->getFilledRectangle( tile.getIJ(), areaSize );
-      }
-      int leftBorderAtI = tile.getI();
-      int rightBorderAtJ = areaSize.getHeight() - 1 + tile.getJ();
-      for( PtrTilesArea::iterator it=area.begin(); it != area.end(); it++ )
-      {
-        int tileBorders = ( (*it)->getI() == leftBorderAtI ? 0 : WaterOverlay::skipLeftBorder )
-            + ( (*it)->getJ() == rightBorderAtJ ? 0 : WaterOverlay::skipRightBorder );
-        pic = &Picture::load(ResourceGroup::waterOverlay, WaterOverlay::base + tileBorders + tileNumber);
-        engine->drawPicture( *pic, (*it)->getXY() + mapOffset );
-      }
+      drawBuildingAreaTiles( tile, overlay, ResourceGroup::waterOverlay, WaterOverlay::base + tileNumber );
 
       pic = NULL;
       areaSize = 0;
@@ -698,6 +702,7 @@ void TilemapRenderer::Impl::drawTilemapWithRemoveTools()
   }  
 
   // SECOND PART: draw all sprites, impassable land and buildings
+  Walkers walkerList = getVisibleWalkerList();
   for( std::vector< TilePos >::const_iterator itPos = tiles.begin(); itPos != tiles.end(); ++itPos)
   {
     int z = itPos->getZ();
@@ -706,31 +711,7 @@ void TilemapRenderer::Impl::drawTilemapWithRemoveTools()
     {
       // TODO: pre-sort all animations
       lastZ = z;
-
-      Impl::Pictures pictureList;
-
-      Walkers walkerList = city->getWalkerList( WT_ALL );
-      for( Walkers::iterator itWalker =  walkerList.begin();
-        itWalker != walkerList.end(); ++itWalker)
-      {
-        // for each walker
-        WalkerPtr walker = *itWalker;
-        int zAnim = walker->getIJ().getZ();// getJ() - walker.getI();
-        if( zAnim > z && zAnim <= z+1 )
-        {
-          pictureList.clear();
-          walker->getPictureList( pictureList );
-          for( Impl::Pictures::iterator picIt = pictureList.begin(); picIt != pictureList.end(); ++picIt )
-          {
-            if( *picIt == NULL )
-            {
-              continue;
-            }
-
-            engine->drawPicture( **picIt, walker->getPosition() + mapOffset );
-          }
-        }
-      }
+      this->drawWalkersBetweenZ(walkerList, z, z+1);
     }   
 
     int tilePosHash = (*itPos).getJ() * 1000 + (*itPos).getI();
@@ -783,6 +764,8 @@ void TilemapRenderer::Impl::simpleDrawTilemap()
   }  
 
   // SECOND PART: draw all sprites, impassable land and buildings
+  Walkers walkerList = getVisibleWalkerList();
+
   for( itPos = tiles.begin(); itPos != tiles.end(); ++itPos)
   {
     int z = itPos->getZ();
@@ -791,31 +774,7 @@ void TilemapRenderer::Impl::simpleDrawTilemap()
     {
       // TODO: pre-sort all animations
       lastZ = z;
-
-      Impl::Pictures pictureList;
-
-      Walkers walkerList = city->getWalkerList( WT_ALL );
-      for( Walkers::iterator itWalker =  walkerList.begin();
-        itWalker != walkerList.end(); ++itWalker)
-      {
-        // for each walker
-        WalkerPtr walker = *itWalker;
-        int zAnim = walker->getIJ().getZ();// getJ() - walker.getI();
-        if( zAnim > z && zAnim <= z+1 )
-        {
-          pictureList.clear();
-          walker->getPictureList( pictureList );
-          for( Impl::Pictures::iterator picIt = pictureList.begin(); picIt != pictureList.end(); ++picIt )
-          {
-            if( *picIt == NULL )
-            {
-              continue;
-            }
-
-            engine->drawPicture( **picIt, walker->getPosition() + mapOffset );
-          }
-        }
-      }
+      drawWalkersBetweenZ(walkerList, z, z+1);
     }   
 
     drawTileEx( tilemap->at( *itPos ), z );
@@ -1027,6 +986,69 @@ void TilemapRenderer::Impl::drawColumn( const Point& pos, const int startPicId, 
   {
     engine->drawPicture( Picture::load( ResourceGroup::sprites, startPicId ), pos - Point( -1, -6 + roundPercent ) );
   }
+}
+
+void TilemapRenderer::Impl::drawWalkersBetweenZ(Walkers walkerList, int minZ, int maxZ)
+{
+  Impl::Pictures pictureList;
+
+  for( Walkers::iterator itWalker =  walkerList.begin();
+       itWalker != walkerList.end(); ++itWalker)
+  {
+    // for each walker
+    WalkerPtr walker = *itWalker;
+    // TODO: calculate once && sort
+    int zAnim = walker->getIJ().getZ();// getJ() - walker.getI();
+    if( zAnim > minZ && zAnim <= maxZ )
+    {
+      pictureList.clear();
+      walker->getPictureList( pictureList );
+      for( Impl::Pictures::iterator picIt = pictureList.begin(); picIt != pictureList.end(); ++picIt )
+      {
+        if( (*picIt).isValid() )
+        {
+          engine->drawPicture( *picIt, walker->getPosition() + mapOffset );
+        }
+      }
+    }
+  }
+}
+
+void TilemapRenderer::Impl::drawBuildingAreaTiles(Tile& baseTile, LandOverlayPtr overlay, std::string resourceGroup, int tileId)
+{
+  PtrTilesArea area;
+  Size areaSize = overlay->getSize();
+  if( areaSize.getWidth() == 1 )
+  {
+    area.push_back( &baseTile );
+  }
+  else
+  {
+    area = tilemap->getFilledRectangle( baseTile.getIJ(), areaSize );
+  }
+
+  Picture *pic = NULL;
+  int leftBorderAtI = baseTile.getI();
+  int rightBorderAtJ = areaSize.getHeight() - 1 + baseTile.getJ();
+  for( PtrTilesArea::iterator it=area.begin(); it != area.end(); it++ )
+  {
+    int tileBorders = ( (*it)->getI() == leftBorderAtI ? 0 : WaterOverlay::skipLeftBorder )
+        + ( (*it)->getJ() == rightBorderAtJ ? 0 : WaterOverlay::skipRightBorder );
+    pic = &Picture::load(resourceGroup, tileBorders + tileId);
+    engine->drawPicture( *pic, (*it)->getXY() + mapOffset );
+  }
+}
+
+Walkers TilemapRenderer::Impl::getVisibleWalkerList()
+{
+  Walkers walkerList;
+  for( std::vector< WalkerType >::const_iterator wtAct = visibleWalkers.begin(); wtAct != visibleWalkers.end(); ++wtAct )
+  {
+    Walkers foundWalkers = city->getWalkerList( *wtAct );
+    walkerList.insert(walkerList.end(), foundWalkers.begin(), foundWalkers.end());
+  }
+
+  return walkerList;
 }
 
 void TilemapRenderer::handleEvent( NEvent& event )
@@ -1252,6 +1274,26 @@ void TilemapRenderer::setMode( const TilemapChangeCommandPtr command )
     case OV_COMMERCE_FOOD: _d->setDrawFunction( _d.data(), &Impl::drawTileFood ); break;
     case OV_RELIGION: _d->setDrawFunction( _d.data(), &Impl::drawTileReligion ); break;
     default:_d->setDrawFunction( _d.data(), &Impl::drawTileBase ); break;
+    }
+
+    static const WalkerType OV_DEFAULT_WALKERS[] = { WT_ALL, WT_NONE };
+    static const WalkerType OV_WATER_WALKERS[] = { WT_NONE };
+    static const WalkerType OV_RISK_FIRE_WALKERS[] = { WT_PREFECT, WT_NONE };
+    static const WalkerType OV_COMMERCE_PRESTIGE_WALKERS[] = { WT_ALL, WT_NONE };
+    static const WalkerType OV_COMMERCE_FOOD_WALKERS[] = { WT_CART_PUSHER, WT_MARKETLADY, WT_MARKETLADY_HELPER, WT_NONE };
+    static const WalkerType OV_RELIGION_WALKERS[] = { WT_ALL, WT_NONE };
+
+    switch( ovCmd->getType() )
+    {
+    case OV_WATER: _d->setVisibleWalkers(OV_WATER_WALKERS); break;
+    case OV_RISK_FIRE: _d->setVisibleWalkers(OV_RISK_FIRE_WALKERS); break;
+    case OV_RISK_DAMAGE: _d->setVisibleWalkers(OV_WATER_WALKERS); break;
+    case OV_COMMERCE_PRESTIGE: _d->setVisibleWalkers(OV_COMMERCE_PRESTIGE_WALKERS); break;
+    case OV_COMMERCE_FOOD: _d->setVisibleWalkers(OV_COMMERCE_FOOD_WALKERS); break;
+    case OV_RELIGION: _d->setVisibleWalkers(OV_RELIGION_WALKERS); break;
+    default:
+      _d->setVisibleWalkers(OV_DEFAULT_WALKERS);
+      break;
     }
 
     _d->changeCommand = TilemapChangeCommandPtr();

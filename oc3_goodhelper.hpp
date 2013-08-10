@@ -21,6 +21,8 @@
 #include "oc3_enums.hpp"
 #include "oc3_picture.hpp"
 
+class GoodStock;
+
 class GoodHelper
 {
 public:
@@ -30,6 +32,7 @@ public:
   static Picture getPicture( GoodType type );
   static GoodType getType( const std::string& name );
   static std::string getTypeName( GoodType type );
+  static const Picture& getCartPicture( const GoodStock& stock, const DirectionType& direction );
   ~GoodHelper();
 private:
   GoodHelper();

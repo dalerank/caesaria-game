@@ -18,11 +18,42 @@
 #ifndef __OPENCAESAR3_REQUIREMENTS_INCLUDE_
 #define __OPENCAESAR3_REQUIREMENTS_INCLUDE_
 
+#if defined(__WIN32__) || defined(_WIN32)
+  #define OC3_PLATFORM_WIN
+  #define OC3_PLATFORM_WIN32
+  #define OC3_PLATFORM_NAME "win32"
+#elif defined(WIN64) || defined(_WIN64)
+  #define OC3_PLATFORM_WIN
+  #define OC3_PLATFORM_WIN64
+  #define OC3_PLATFORM_NAME "win64"
+#elif defined __APPLE_CC__
+  #define OC3_PLATFORM_UNIX
+  #define OC3_PLATFORM_MACOSX
+  #define OC3_PLATFORM_NAME "macosx"
+#else
+  #define OC3_PLATFORM_UNIX
+  #define OC3_PLATFORM_LINUX
+  #define OC3_PLATFORM_NAME "linux"
+#endif
+
+#if defined OC3_PLATFORM_WIN
+  // alignment of a member was sensitive to packing
+  //#pragma warning(disable : 4121)
+
+  // assignment operator could not be generated
+  //#pragma warning(disable : 4512)
+
+  #if !defined _CRT_SECURE_NO_DEPRECATE
+    #define _CRT_SECURE_NO_DEPRECATE
+  #endif
+#endif
+
+
 #define _USE_ASSERT_4_DEBUG
 
 #if defined(_USE_ASSERT_4_DEBUG)
-  #if defined(_MSC_VER) && !defined (_WIN32_WCE)
-    #if defined(WIN64) || defined(_WIN64) // using portable common solution for x64 configuration
+  #if defined(_MSC_VER) 
+    #if defined(OC3_PLATFORM_WIN64) // using portable common solution for x64 configuration
       #include <crtdbg.h>
       #define _OC3_DEBUG_BREAK_IF( _CONDITION_ ) if (_CONDITION_) {_CrtDbgBreak();}
     #else
