@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "oc3_exception.hpp"
 #include "oc3_filepath.hpp"
 #include "oc3_filesystem.hpp"
 #include "oc3_filelist.hpp"
@@ -25,6 +26,8 @@
   #ifdef __linux__
     #include <sys/io.h>
     #include <linux/limits.h>
+  #elif __APPLE__
+    #include <libproc.h>
   #endif
   #include <sys/stat.h>
   #include <unistd.h>
@@ -581,7 +584,15 @@ FileDir FileDir::getApplicationDir()
   readlink(exe_path, exe_path, sizeof(exe_path));
   dir_path = dirname(exe_path);
   return FilePath(dir_path);
-#endif // __GNUC__
+#elif defined(__APPLE__)
+  char exe_path[PROC_PIDPATHINFO_MAXSIZE];
+  int ret = proc_pidpath(getpid(), exe_path, sizeof(exe_path));
+  if (ret <= 0)
+  {
+    THROW("Cannot get application executable file path");
+  }
+  return FilePath(dirname(exe_path));
+#endif
 
   return FilePath( "" );
 }
