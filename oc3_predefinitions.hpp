@@ -87,5 +87,6 @@ class VariantMap;
 class Widget;
 class GuiEnv;
 class Scenario;
+class DateTime;
 
 #endif

@@ -28,6 +28,7 @@ public:
   bool distantCity;
   SimpleGoodStore sellStore;
   SimpleGoodStore buyStore;
+  DateTime lastTimeUpdate;
 };
 
 ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name ) : _d( new Impl )
@@ -35,6 +36,7 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name ) : _d( ne
   _d->name = name;
   _d->distantCity = false;
   _d->empire = empire;
+  _d->lastTimeUpdate = GameDate::current();
 }
 
 std::string ComputerCity::getName() const
@@ -151,7 +153,7 @@ EmpireCityPtr ComputerCity::create( EmpirePtr empire, const std::string& name )
   return ret;
 }
 
-void ComputerCity::resolveMerchantArrived( EmpireMerchantPtr )
+void ComputerCity::resolveMerchantArrived( EmpireMerchantPtr merchant )
 {
 
 }
@@ -159,4 +161,32 @@ void ComputerCity::resolveMerchantArrived( EmpireMerchantPtr )
 ComputerCity::~ComputerCity()
 {
 
+}
+
+void ComputerCity::timeStep( unsigned int time )
+{
+  if( _d->lastTimeUpdate.getMonthToDate( GameDate::current() ) > 0 )
+  {
+    _d->lastTimeUpdate = GameDate::current();
+
+    for( int i=G_NONE; i < G_MAX; i ++ )
+    {
+      GoodType gtype = GoodType( i );
+
+      int maxSellStock = _d->sellStore.getMaxQty( gtype );
+      int stepIncrease = int( maxSellStock / 12. );
+
+     
+      int sold = _d->sellStore.getCurrentQty( gtype );
+     
+      int maxBuyStock = _d->buyStore.getMaxQty( gtype );
+     
+      int bought = _d->buyStore.getCurrentQty( gtype );
+    }
+  }
+}
+
+EmpirePtr ComputerCity::getEmpire() const
+{
+  return _d->empire;
 }

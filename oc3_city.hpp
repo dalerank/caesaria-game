@@ -38,11 +38,10 @@ class CityFunds;
 class City : public EmpireCity
 {
 public:
-  static CityPtr create();
+  static CityPtr create( EmpirePtr empire );
   ~City();
 
-  void timeStep( unsigned int time );  // performs one simulation step
-  void monthStep();
+  virtual void timeStep( unsigned int time );  // performs one simulation step
 
   void setLocation( const Point& location );
   Point getLocation() const;
@@ -104,22 +103,23 @@ public:
   // remove construction
   void clearLand( const TilePos& pos );
 
-  const DateTime& getDate() const;
-  void setDate( const DateTime& time );
-
   LandOverlayPtr getOverlay( const TilePos& pos ) const;
 
   void resolveMerchantArrived( EmpireMerchantPtr merchant );
 
-  const GoodStore& getSells() const;
-  const GoodStore& getBuys() const;
+  virtual const GoodStore& getSells() const;
+  virtual const GoodStore& getBuys() const;
+
+  virtual EmpirePtr getEmpire() const;
    
 oc3_signals public:
   Signal1<int>& onPopulationChanged();
   Signal1<int>& onFundsChanged();
-  Signal1<const DateTime&>& onMonthChanged();
   Signal1<std::string>& onWarningMessage();
   Signal2<const TilePos&, const std::string& >& onDisasterEvent();
+
+protected:
+  void monthStep( const DateTime& time );
 
 private:
   City();

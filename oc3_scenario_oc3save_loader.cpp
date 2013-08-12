@@ -22,6 +22,7 @@
 #include "oc3_saveadapter.hpp"
 #include "oc3_player.hpp"
 #include "oc3_city.hpp"
+#include "oc3_gamedate.hpp"
 
 class ScenarioOc3SaveLoader::Impl
 {
@@ -40,6 +41,10 @@ bool ScenarioOc3SaveLoader::load( const std::string& filename, Scenario& oScenar
   
   if( Impl::currentVesion == vm[ "version" ].toInt() )
   {
+    VariantMap scenario_vm = vm[ "scenario" ].toMap();
+
+    GameDate::init( scenario_vm[ "date" ].toDateTime() );
+
     oScenario.getPlayer().load( vm[ "player" ].toMap() );
     oScenario.getCity()->load( vm[ "city" ].toMap() );
 

@@ -22,6 +22,7 @@
 #include "oc3_player.hpp"
 #include "oc3_empire.hpp"
 #include "oc3_city.hpp"
+#include "oc3_gamedate.hpp"
 
 class ScenarioOc3Saver::Impl
 {
@@ -46,6 +47,7 @@ void ScenarioOc3Saver::save(const io::FilePath& filename)
   vm[ "version" ] = Variant( 1 );
 
   VariantMap vm_scenario;
+  vm_scenario[ "date" ] = GameDate::current();
   vm[ "scenario" ] = vm_scenario;
 
   VariantMap vm_empire;

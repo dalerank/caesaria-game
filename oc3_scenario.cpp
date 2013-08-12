@@ -28,6 +28,8 @@
 #include "oc3_app_config.hpp"
 #include "oc3_scenario_loader.hpp"
 #include "oc3_astarpathfinding.hpp"
+#include "oc3_cityfunds.hpp"
+#include "oc3_gamedate.hpp"
 
 class Scenario::Impl
 {
@@ -38,6 +40,12 @@ public:
   CityWinTargets targets;
   EmpirePtr empire;
   unsigned int time;
+
+  void resolveMonthChange( const DateTime& time )
+  {
+    city->getFunds().resolveIssue( FundIssue( CityFunds::playerSalary, -player.getSalary() ) );
+    player.appendMoney( player.getSalary() );
+  }
 };
 
 Scenario& Scenario::instance()
@@ -117,8 +125,12 @@ Scenario::~Scenario()
 
 void Scenario::reset()
 {
-  _d->city = City::create();
   _d->empire = Empire::create();
+  _d->city = City::create( _d->empire );
+
+  GameDate::instance().onMonthChanged().disconnectAll();
+
+  CONNECT( &GameDate::instance(), onMonthChanged(), _d.data(), Impl::resolveMonthChange );
 }
 
 Player& Scenario::getPlayer() const
@@ -134,7 +146,7 @@ EmpirePtr Scenario::getEmpire() const
 void Scenario::timeStep()
 {
   _d->time += 1;
-
-  _d->city->timeStep( _d->time );
   _d->empire->timeStep( _d->time );
+
+  GameDate::timeStep( _d->time );  
 }

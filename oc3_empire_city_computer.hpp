@@ -25,17 +25,21 @@ public:
 
   ~ComputerCity();
 
-  std::string getName() const;
-  Point getLocation() const;
-  void setLocation( const Point& location );
+  virtual std::string getName() const;
+  virtual Point getLocation() const;
+  virtual void setLocation( const Point& location );
 
   bool isDistantCity() const;
 
-  void save( VariantMap& options ) const;
-  void load( const VariantMap& options );
+  virtual void timeStep( unsigned int time );
 
-  const GoodStore& getSells() const;
-  const GoodStore& getBuys() const;
+  virtual void save( VariantMap& options ) const;
+  virtual void load( const VariantMap& options );
+
+  virtual const GoodStore& getSells() const;
+  virtual const GoodStore& getBuys() const;
+
+  virtual EmpirePtr getEmpire() const;
 
   void resolveMerchantArrived( EmpireMerchantPtr );
 

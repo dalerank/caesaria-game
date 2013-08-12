@@ -281,6 +281,17 @@ DateTime& DateTime::operator= ( time_t t)
     return *this;
 }
 
+DateTime& DateTime::operator=( const DateTime& val )
+{ 
+  seconds = val.seconds;
+  minutes = val.minutes;
+  hour = val.hour;
+  day = val.day;
+  month = val.month;
+  year = val.year;
+
+  return *this;
+}
 
 DateTime::DateTime( time_t time )
 {

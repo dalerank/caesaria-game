@@ -16,6 +16,7 @@
 #include "oc3_empire.hpp"
 #include "oc3_empire_city_computer.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_time.hpp"
 #include "oc3_saveadapter.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_empire_trading.hpp"
@@ -150,6 +151,11 @@ EmpireTradeRoutePtr Empire::getTradeRoute( const std::string& start, const std::
 void Empire::timeStep( unsigned int time )
 {
   _d->trading.update( time );
+
+  for( EmpireCities::iterator it = _d->cities.begin(); it != _d->cities.end(); it++ )
+  {
+    (*it)->timeStep( time );
+  }
 }
 
 EmpireCityPtr Empire::initPlayerCity( EmpireCityPtr city )

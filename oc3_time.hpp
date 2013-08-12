@@ -73,6 +73,7 @@ public:
     DateTime& appendHour( int hour );
 
     DateTime& operator=( time_t t );
+    DateTime& operator=( const DateTime& t );
 
     static const char* getDayName( unsigned char d );
     static const char* getMonthName( unsigned char d );

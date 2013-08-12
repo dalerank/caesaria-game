@@ -46,7 +46,6 @@
 #include "oc3_building_senate.hpp"
 #include "oc3_cityservice_culture.hpp"
 #include "oc3_cityfunds.hpp"
-#include "oc3_player.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_empire_city.hpp"
 #include "oc3_empire.hpp"
@@ -54,6 +53,7 @@
 #include "oc3_goodstore_simple.hpp"
 #include "oc3_empire_trading.hpp"
 #include "oc3_walker_merchant.hpp"
+#include "oc3_gamedate.hpp"
 
 #include <set>
 
@@ -66,6 +66,7 @@ public:
   CityFunds funds;  // amount of money
   int time; // number of months since start
   std::string name;
+  EmpirePtr empire;
 
   LandOverlays overlayList;
   Walkers walkerList;
@@ -75,7 +76,6 @@ public:
   int taxRate;
   int lastMonthTax;
   int lastMonthTaxpayer;
-  DateTime date;  // number of timesteps since start
   TilePos roadExit;
   Tilemap tilemap;
   TilePos boatEntry;
@@ -97,14 +97,12 @@ public:
 oc3_signals public:
   Signal1<int> onPopulationChangedSignal;
   Signal1<int> onFundsChangedSignal;
-  Signal1<const DateTime&> onMonthChangedSignal;
   Signal1<std::string> onWarningMessageSignal;
   Signal2<const TilePos&, const std::string&> onDisasterEventSignal;
 };
 
 City::City() : _d( new Impl )
 {
-  _d->date = DateTime( -350, 0, 0 ) ;
   _d->time = 0;
   _d->roadEntry = TilePos( 0, 0 );
   _d->roadExit = TilePos( 0, 0 );
@@ -124,18 +122,12 @@ City::City() : _d( new Impl )
   addService( CityServiceShoreline::create( this ) );
   addService( CityServiceInfo::create( this ) );
   addService( CityServiceCulture::create( this ) );
+
+  CONNECT( &GameDate::instance(), onMonthChanged(), this, City::monthStep );
 }
 
 void City::timeStep( unsigned int time )
 {
-  // CALLED 11 time/second
-  if( time % 110 == 1 )
-  {
-     // every X seconds
-     _d->date.appendMonth( 1 );
-     monthStep();
-  }
-
   Walkers::iterator walkerIt = _d->walkerList.begin();
   while (walkerIt != _d->walkerList.end())
   {
@@ -225,18 +217,12 @@ void City::timeStep( unsigned int time )
   }
 }
 
-void City::monthStep()
+void City::monthStep( const DateTime& time )
 {
   _d->collectTaxes( this );
   _d->calculatePopulation( this );
 
-  Player& player = Scenario::instance().getPlayer();
-  _d->funds.resolveIssue( FundIssue( CityFunds::playerSalary, -player.getSalary() ) );
-  _d->funds.updateHistory( _d->date );
-
-  player.appendMoney( player.getSalary() );
-
-  _d->onMonthChangedSignal.emit( _d->date );
+  _d->funds.updateHistory( GameDate::current() );
 }
 
 Walkers City::getWalkerList( const WalkerType type )
@@ -516,7 +502,6 @@ void City::save( VariantMap& stream) const
   stream[ "boatEntry" ] = _d->boatEntry;
   stream[ "boatExit" ] = _d->boatExit;
   stream[ "climate" ] = _d->climate;
-  stream[ "date" ] = _d->date;
   stream[ "funds" ] = _d->funds.save();
   stream[ "population" ] = _d->population;
   stream[ "name" ] = Variant( _d->name );
@@ -556,7 +541,6 @@ void City::load( const VariantMap& stream )
   _d->boatEntry = TilePos( stream.get( "boatEntry" ).toTilePos() );
   _d->boatExit = TilePos( stream.get( "boatExit" ).toTilePos() );
   _d->climate = (ClimateType)stream.get( "climate" ).toInt(); 
-  _d->date = stream.get( "date" ).toDateTime();
   _d->funds.load( stream.get( "funds" ).toMap() );
   _d->population = stream.get( "population" ).toInt();
   _d->cameraStart = TilePos( stream.get( "cameraStart" ).toTilePos() );
@@ -617,16 +601,6 @@ Signal1<int>& City::onFundsChanged()
   return _d->onFundsChangedSignal;
 }
 
-const DateTime& City::getDate() const
-{
-  return _d->date;
-}
-
-Signal1<const DateTime&>& City::onMonthChanged()
-{
-  return _d->onMonthChangedSignal;
-}
-
 void City::addWalker( WalkerPtr walker )
 {
   walker->setUniqueId( ++_d->walkerIdCount );
@@ -665,11 +639,6 @@ Signal2<const TilePos&, const std::string& >& City::onDisasterEvent()
   return _d->onDisasterEventSignal;
 }
 
-void City::setDate( const DateTime& date )
-{
-  _d->date = date; 
-}
-
 CityBuildOptions& City::getBuildOptions()
 {
   return _d->buildOptions;
@@ -681,9 +650,10 @@ int City::getProsperity() const
   return csPrsp.isValid() ? csPrsp.as<CityServiceProsperity>()->getValue() : 0;
 }
 
-CityPtr City::create()
+CityPtr City::create( EmpirePtr empire )
 {
   CityPtr ret( new City );
+  ret->_d->empire = empire;
   ret->drop();
 
   return ret;
@@ -749,4 +719,9 @@ const GoodStore& City::getSells() const
 const GoodStore& City::getBuys() const
 {
   return _d->buys;
+}
+
+EmpirePtr City::getEmpire() const
+{
+  return _d->empire;
 }

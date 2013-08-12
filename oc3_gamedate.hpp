@@ -13,26 +13,34 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_MISSION_TARGETS_WINDOW_H_INCLUDED__
-#define __OPENCAESAR3_MISSION_TARGETS_WINDOW_H_INCLUDED__
-
+#ifndef __OPENCAESAR3_GAMEDATE_H_INCLUDED__
+#define __OPENCAESAR3_GAMEDATE_H_INCLUDED__
+  
+#include "oc3_time.hpp"
 #include "oc3_scopedptr.hpp"
-#include "oc3_predefinitions.hpp"
-#include "oc3_widget.hpp"
+#include "oc3_signals.hpp"
 
-class MissionTargetsWindow : public Widget  
+class GameDate : public DateTime
 {
 public:
-  static MissionTargetsWindow* create( Widget* parent, int id, Scenario* scenario );
-  ~MissionTargetsWindow();
+  static DateTime current();
 
-  void draw( GfxEngine& painter );
+  static void timeStep( unsigned int time );
+
+  static void init( const DateTime& date );
+
+  static GameDate& instance();
+
+  ~GameDate();
+
+oc3_signals public:
+  Signal1<const DateTime&>& onMonthChanged();
 
 private:
-  MissionTargetsWindow( Widget* parent, int id, const Rect& rectangle );
+  GameDate();
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#endif //__OPENCAESAR3_EMPIRE_H_INCLUDED__
+#endif

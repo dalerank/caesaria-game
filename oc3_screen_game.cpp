@@ -41,6 +41,8 @@
 #include "oc3_scenario.hpp"
 #include "oc3_senate_popup_info.hpp"
 #include "oc3_cityfunds.hpp"
+#include "oc3_gamedate.hpp"
+#include "oc3_empire.hpp"
 #include "oc3_window_mission_target.hpp"
 
 class ScreenGame::Impl
@@ -91,7 +93,6 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
   _d->infoBoxMgr = InfoBoxManager::create( &gui );
 
   CityPtr city = _d->scenario->getCity();
-  // enable key repeat, 1ms delay, 100ms repeat
 
   _d->gui->clear();
 
@@ -108,7 +109,7 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
   _d->topMenu = TopMenu::create( gui.getRootWidget(), topMenuHeight );
   _d->topMenu->setPopulation( city->getPopulation() );
   _d->topMenu->setFunds( city->getFunds().getValue() );
-  _d->topMenu->setDate( city->getDate() );
+  _d->topMenu->setDate( GameDate::current() );
 
   _d->menu = Menu::create( gui.getRootWidget(), -1, _d->scenario->getCity() );
   _d->menu->setPosition( Point( engine.getScreenWidth() - _d->menu->getWidth() - _d->rightPanel->getWidth(), 
@@ -147,7 +148,7 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
 
   CONNECT( city, onPopulationChanged(), _d->topMenu, TopMenu::setPopulation );
   CONNECT( city, onFundsChanged(), _d->topMenu, TopMenu::setFunds );
-  CONNECT( city, onMonthChanged(), _d->topMenu, TopMenu::setDate );
+  CONNECT( &GameDate::instance(), onMonthChanged(), _d->topMenu, TopMenu::setDate );
 
   CONNECT( &_d->mapRenderer, onShowTileInfo(), _d.data(), Impl::showTileInfo );
 

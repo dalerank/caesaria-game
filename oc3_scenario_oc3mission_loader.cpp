@@ -26,6 +26,7 @@
 #include "oc3_city_build_options.hpp"
 #include "oc3_building_data.hpp"
 #include "oc3_cityfunds.hpp"
+#include "oc3_empire.hpp"
 #include "oc3_city.hpp"
 
 class ScenarioOc3MissionLoader::Impl
@@ -50,7 +51,8 @@ bool ScenarioOc3MissionLoader::load( const std::string& filename, Scenario& oSce
     ScenarioLoader::getInstance().load( mapToLoad, oScenario );
     CityPtr city = oScenario.getCity();
     city->getFunds().resolveIssue( FundIssue( CityFunds::donation, vm[ "funds" ].toInt() ) );
-    city->setDate( vm[ "date" ].toDateTime() );
+
+    oScenario.getEmpire()->load( vm[ "empire" ].toMap() );
 
     oScenario.getWinTargets().load( vm[ "targets" ].toMap() );
 
