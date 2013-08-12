@@ -84,6 +84,7 @@ public:
 
   EmpireTradeRoutePtr getRoute( const std::string& begin, const std::string& end );
   EmpireTradeRoutePtr getRoute( unsigned int index );
+  TradeRoutesList getRoutes( const std::string& begin );
   EmpireTradeRoutePtr createRoute( const std::string& begin, const std::string& end );
 
   void sendMerchant( const std::string& begin, const std::string& end, GoodStore& goods );

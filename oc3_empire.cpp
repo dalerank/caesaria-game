@@ -176,6 +176,11 @@ EmpireCityPtr Empire::initPlayerCity( EmpireCityPtr city )
   return ret;
 }
 
+TradeRoutesList Empire::getTradeRoutes( const std::string& startCity )
+{
+  return _d->trading.getRoutes( startCity );
+}
+
 unsigned int EmpireHelper::getTradeRouteOpenCost( EmpirePtr empire, const std::string& start, const std::string& stop )
 {
   EmpireCityPtr startCity = empire->getCity( start );

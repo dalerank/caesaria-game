@@ -56,12 +56,6 @@ EmpireCityPtr EmpireTradeRoute::getEndCity() const
 
 void EmpireTradeRoute::update( unsigned int time )
 {
-  if( _d->merchants.size() == 0 )
-  {
-    SimpleGoodStore store;
-    addMerchant( ((rand() % 2 == 1) ? _d->begin : _d->end )->getName(), store );
-  }
-
   Impl::MerchantList::iterator it=_d->merchants.begin();
   while( it != _d->merchants.end() )
   {
@@ -199,6 +193,23 @@ EmpireTradeRoutePtr EmpireTrading::createRoute( const std::string& begin, const 
   _d->routes[ routeId ] = route;
 
   return route;
+}
+
+TradeRoutesList EmpireTrading::getRoutes( const std::string& begin )
+{
+  TradeRoutesList ret;
+
+  EmpireCityPtr city = _d->empire->getCity( begin );
+
+  for( Impl::TradeRoutes::iterator it = _d->routes.begin(); it != _d->routes.end(); it++ )
+  {
+    if( it->second->getBeginCity() == city )
+    {
+      ret.push_back( it->second );
+    }
+  }
+
+  return ret;
 }
 
 class EmpireMerchant::Impl
