@@ -236,10 +236,10 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_factory(Propagator &pathPropa
       return NULL;
    }
 
-   Propagator::ReachedBuldings pathWayList;
+   Propagator::Ways pathWayList;
    pathPropagator.getReachedBuildings(buildingType, pathWayList);
 
-   for( Propagator::ReachedBuldings::iterator pathWayIt= pathWayList.begin(); pathWayIt != pathWayList.end(); ++pathWayIt)
+   for( Propagator::Ways::iterator pathWayIt= pathWayList.begin(); pathWayIt != pathWayList.end(); ++pathWayIt)
    {
       // for every factory within range
       BuildingPtr building= pathWayIt->first;
@@ -262,10 +262,10 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_warehouse(Propagator &pathPro
 {
    BuildingPtr res;
 
-   Propagator::ReachedBuldings pathWayList;
+   Propagator::Ways pathWayList;
    pathPropagator.getReachedBuildings(B_WAREHOUSE, pathWayList);
 
-   for( Propagator::ReachedBuldings::iterator pathWayIt= pathWayList.begin(); pathWayIt != pathWayList.end(); ++pathWayIt)
+   for( Propagator::Ways::iterator pathWayIt= pathWayList.begin(); pathWayIt != pathWayList.end(); ++pathWayIt)
    {
       // for every warehouse within range
       BuildingPtr building= pathWayIt->first;
@@ -295,11 +295,11 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_granary(Propagator &pathPropa
       return NULL;
    }
 
-   Propagator::ReachedBuldings pathWayList;
+   Propagator::Ways pathWayList;
    pathPropagator.getReachedBuildings( B_GRANARY, pathWayList);
 
    // find a granary with enough storage
-   for( Propagator::ReachedBuldings::iterator pathWayIt= pathWayList.begin(); pathWayIt != pathWayList.end(); ++pathWayIt)
+   for( Propagator::Ways::iterator pathWayIt= pathWayList.begin(); pathWayIt != pathWayList.end(); ++pathWayIt)
    {
       // for every granary within range
       BuildingPtr building= pathWayIt->first;

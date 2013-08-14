@@ -50,7 +50,7 @@ private:
 class EmpireMerchant : public ReferenceCounted
 {
 public:
-  static EmpireMerchantPtr create( EmpireTradeRoute& route, const std::string& start );
+  static EmpireMerchantPtr create( EmpireTradeRoute& route, const std::string& start, GoodStore& store );
   ~EmpireMerchant();
 
   void setGoods( GoodStore& goods );

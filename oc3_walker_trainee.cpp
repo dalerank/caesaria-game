@@ -103,10 +103,10 @@ void TraineeWalker::computeWalkerPath()
 
 void TraineeWalker::checkDestination(const BuildingType buildingType, Propagator &pathPropagator)
 {
-  Propagator::ReachedBuldings pathWayList;
+  Propagator::Ways pathWayList;
   pathPropagator.getReachedBuildings(buildingType, pathWayList);
 
-  for( Propagator::ReachedBuldings::iterator pathWayIt= pathWayList.begin(); 
+  for( Propagator::Ways::iterator pathWayIt= pathWayList.begin(); 
     pathWayIt != pathWayList.end(); ++pathWayIt)
   {
     // for every building within range

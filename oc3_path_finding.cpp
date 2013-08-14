@@ -217,7 +217,7 @@ bool Propagator::getPath( BuildingPtr destination, PathWay &oPathWay)
    }
 }
 
-void Propagator::getReachedBuildings(const BuildingType buildingType, ReachedBuldings& oPathWayList)
+void Propagator::getReachedBuildings(const BuildingType buildingType, Ways& oPathWayList)
 {
    // init the building list
    Buildings buildingList;

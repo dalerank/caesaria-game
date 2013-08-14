@@ -32,7 +32,7 @@
 class Propagator
 {
 public:
-  typedef std::map<BuildingPtr, PathWay> ReachedBuldings;
+  typedef std::map<BuildingPtr, PathWay> Ways;
   
   Propagator( CityPtr city );
   void setAllLands(const bool value);
@@ -47,7 +47,7 @@ public:
   void init(const ConstructionPtr origin);
   void propagate(const int maxDistance);
 
-  void getReachedBuildings(const BuildingType buildingType, ReachedBuldings& oPathWayList);
+  void getReachedBuildings(const BuildingType buildingType, Ways& oPathWayList);
 
   /** finds the shortest path between origin and destination
    * returns True if a path exists

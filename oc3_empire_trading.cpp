@@ -73,7 +73,7 @@ void EmpireTradeRoute::update( unsigned int time )
 
 void EmpireTradeRoute::addMerchant( const std::string& begin, GoodStore& store )
 {
-  EmpireMerchantPtr merchant = EmpireMerchant::create( *this, begin );
+  EmpireMerchantPtr merchant = EmpireMerchant::create( *this, begin, store );
   _d->merchants.push_back( merchant );  
 
   CONNECT( merchant, onDestination(), _d.data(), Impl::resolveMerchantArrived );
@@ -236,11 +236,12 @@ EmpireMerchant::EmpireMerchant() : _d( new Impl )
   _d->isDeleted = false;
 }
 
-EmpireMerchantPtr EmpireMerchant::create( EmpireTradeRoute& route, const std::string& start )
+EmpireMerchantPtr EmpireMerchant::create( EmpireTradeRoute& route, const std::string& start,  GoodStore& store )
 {
   EmpireMerchantPtr ret( new EmpireMerchant() );
   ret->_d->route = &route;
   bool startCity = route.getBeginCity()->getName() == start;
+  ret->_d->store.storeAll( store );
   ret->_d->destCity = startCity ? route.getBeginCity() : route.getEndCity();
   ret->_d->baseCity = startCity ? route.getEndCity() : route.getBeginCity();
   ret->_d->location = ret->_d->baseCity->getLocation();
