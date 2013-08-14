@@ -52,7 +52,7 @@ void GameDate::init( const DateTime& date )
   instance()._d->lastDateUpdate = date;
 }
 
-GameDate::GameDate()
+GameDate::GameDate() : _d( new Impl )
 {
   init( DateTime( -350, 0, 0 ) );
 }

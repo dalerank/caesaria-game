@@ -32,6 +32,9 @@
 #include "oc3_goodstore.hpp"
 #include "oc3_empire_trading.hpp"
 #include "oc3_cityfunds.hpp"
+#include "oc3_app_config.hpp"
+
+static const char* empMapOffset = "EmpireMapWindowOffset";
 
 class EmpireMapWindow::Impl
 {
@@ -262,6 +265,7 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
   _d->dragging = false;
   _d->lbCityTitle = new Label( this, Rect( Point( (getWidth() - 240) / 2 + 60, getHeight() - 132 ), Size( 240, 32 )) );
   _d->lbCityTitle->setFont( Font::create( FONT_3 ) );
+  _d->offset = AppConfig::get( empMapOffset ).toPoint();
 
   _d->tradeInfo = new Widget( this, -1, Rect( 0, getHeight() - 120, getWidth(), getHeight() ) );
 
@@ -438,4 +442,9 @@ EmpireMapWindow* EmpireMapWindow::create( Scenario* scenario, Widget* parent, in
 Signal0<>& EmpireMapWindow::onTradeAdvisorRequest()
 {
   return _d->btnTrade->onClicked(); 
+}
+
+EmpireMapWindow::~EmpireMapWindow()
+{
+  AppConfig::set( empMapOffset, _d->offset );
 }

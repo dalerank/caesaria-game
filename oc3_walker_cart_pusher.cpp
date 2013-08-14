@@ -55,6 +55,7 @@ CartPusher::CartPusher( CityPtr city ) : _d( new Impl )
    _d->consumerBuilding = NULL;
    _d->maxDistance = 25;
    _d->city = city;
+   _d->stock._maxQty = 400;
 }
 
 void CartPusher::onDestination()
@@ -98,9 +99,9 @@ void CartPusher::onDestination()
   }
 }
 
-void CartPusher::setStock(const GoodStock &stock)
+GoodStock& CartPusher::getStock()
 {
-   _d->stock = stock;
+   return _d->stock;
 }
 
 void CartPusher::setProducerBuilding(BuildingPtr building)
@@ -223,65 +224,83 @@ void CartPusher::computeWalkerDestination()
    }
 }
 
+template< class T >
+BuildingPtr reserveShortestPath( const BuildingType buildingType, 
+                                 GoodStock& stock, long& reservationID,
+                                 Propagator &pathPropagator, PathWay &oPathWay )
+{
+  BuildingPtr res;
+  Propagator::Routes pathWayList;
+  pathPropagator.getRoutes(buildingType, pathWayList);
+
+  //remove factories with improrer storage
+  Propagator::Routes::iterator pathWayIt= pathWayList.begin();
+  while( pathWayIt != pathWayList.end() )
+  {
+    // for every factory within range
+    SmartPtr<T> building = pathWayIt->first.as<T>();
+
+    if( stock._currentQty >  building->getGoodStore().getMaxStore( stock._goodType ) )
+    {
+      pathWayList.erase( pathWayIt++ );
+    }
+    else
+    {
+      pathWayIt++;
+    }
+  }
+
+  //find shortest path
+  int maxLength = 999;
+  PathWay* shortestPath = 0;
+  for( Propagator::Routes::iterator pathIt = pathWayList.begin(); 
+    pathIt != pathWayList.end(); pathIt++ )
+  {
+    if( pathIt->second.getLength() < maxLength )
+    {
+      shortestPath = &pathIt->second;
+      maxLength = pathIt->second.getLength();
+      res = pathIt->first;
+    }
+  }
+
+  if( res.isValid() )
+  {
+    reservationID = res.as<T>()->getGoodStore().reserveStorage( stock );
+    if (reservationID != 0)
+    {
+      oPathWay = *shortestPath;
+    }
+  }
+
+
+  return res;
+}
 
 BuildingPtr CartPusher::Impl::getWalkerDestination_factory(Propagator &pathPropagator, PathWay &oPathWay)
 {
-   BuildingPtr res;
-   GoodType goodType = stock._goodType;
-   BuildingType buildingType = BuildingDataHolder::instance().getBuildingTypeByInGood(goodType);
+  BuildingPtr res;
+  GoodType goodType = stock._goodType;
+  BuildingType buildingType = BuildingDataHolder::instance().getBuildingTypeByInGood(goodType);
 
-   if (buildingType == B_NONE)
-   {
-      // no factory can use this good
-      return NULL;
-   }
+  if (buildingType == B_NONE)
+  {
+     // no factory can use this good
+     return 0;
+  }
 
-   Propagator::Ways pathWayList;
-   pathPropagator.getReachedBuildings(buildingType, pathWayList);
+  res = reserveShortestPath<Factory>( buildingType, stock, reservationID, pathPropagator, oPathWay );
 
-   for( Propagator::Ways::iterator pathWayIt= pathWayList.begin(); pathWayIt != pathWayList.end(); ++pathWayIt)
-   {
-      // for every factory within range
-      BuildingPtr building= pathWayIt->first;
-      PathWay& pathWay= pathWayIt->second;
-
-      FactoryPtr factory = building.as<Factory>();
-      reservationID = factory->getGoodStore().reserveStorage( stock );
-      if (reservationID != 0)
-      {
-         res = factory.as<Building>();
-         oPathWay = pathWay;
-         break;
-      }
-   }
-
-   return res;
+  return res;
 }
 
 BuildingPtr CartPusher::Impl::getWalkerDestination_warehouse(Propagator &pathPropagator, PathWay &oPathWay)
 {
-   BuildingPtr res;
+  BuildingPtr res;
 
-   Propagator::Ways pathWayList;
-   pathPropagator.getReachedBuildings(B_WAREHOUSE, pathWayList);
+  res = reserveShortestPath<Warehouse>( B_WAREHOUSE, stock, reservationID, pathPropagator, oPathWay );
 
-   for( Propagator::Ways::iterator pathWayIt= pathWayList.begin(); pathWayIt != pathWayList.end(); ++pathWayIt)
-   {
-      // for every warehouse within range
-      BuildingPtr building= pathWayIt->first;
-      PathWay& pathWay= pathWayIt->second;
-
-      WarehousePtr warehouse= building.as<Warehouse>();
-      reservationID = warehouse->getGoodStore().reserveStorage( stock );
-      if (reservationID != 0)
-      {
-         res = warehouse.as<Building>();
-         oPathWay = pathWay;
-         break;
-      }
-   }
-
-   return res;
+  return res;
 }
 
 BuildingPtr CartPusher::Impl::getWalkerDestination_granary(Propagator &pathPropagator, PathWay &oPathWay)
@@ -292,36 +311,17 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_granary(Propagator &pathPropa
    if (!(goodType == G_WHEAT || goodType == G_FISH || goodType == G_MEAT || goodType == G_FRUIT || goodType == G_VEGETABLE))
    {
       // this good cannot be stored in a granary
-      return NULL;
+      return 0;
    }
 
-   Propagator::Ways pathWayList;
-   pathPropagator.getReachedBuildings( B_GRANARY, pathWayList);
-
-   // find a granary with enough storage
-   for( Propagator::Ways::iterator pathWayIt= pathWayList.begin(); pathWayIt != pathWayList.end(); ++pathWayIt)
-   {
-      // for every granary within range
-      BuildingPtr building= pathWayIt->first;
-      PathWay& pathWay= pathWayIt->second;
-
-      SmartPtr<Granary> granary= building.as<Granary>();
-      reservationID = granary->getGoodStore().reserveStorage( stock );
-      if (reservationID != 0)
-      {
-         res = granary.as<Building>();
-         oPathWay = pathWay;
-         break;
-      }
-   }
+   res = reserveShortestPath<Granary>( B_GRANARY, stock, reservationID, pathPropagator, oPathWay );
 
    return res;
 }
 
-
-void CartPusher::send2City( BuildingPtr building, const GoodStock& stock )
+void CartPusher::send2City( BuildingPtr building, GoodStock& carry )
 {
-  setStock(stock);
+  _d->stock.append( carry );
   setProducerBuilding( building  );
 
   computeWalkerDestination();

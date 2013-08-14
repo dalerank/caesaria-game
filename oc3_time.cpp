@@ -45,85 +45,90 @@ void _convertToDateTime( DateTime& dateTime, const tm& val )
     dateTime.setYear(val.tm_year + 1900);
 }
 
-int DateTime::getDaysToDate_( const time_t& future ) const
+int DateTime::_getDaysToDate( const long other ) const
 {
-    return abs( (int)(to_time_t() - future) );
+    return abs( (int)(_toJd() - other ) );
 }
 
 int DateTime::getDaysToDate( const DateTime& future ) const
 {
-    return getDaysToDate_( future.to_time_t() );
+    return _getDaysToDate( future._toJd() );
 }
 
-int DateTime::isEquale_( const time_t& b )
+int DateTime::_isEquale( const long b )
 {
-    return to_time_t() == b ? dateEquale : (to_time_t() < b ? dateLess : dateMore ) ;
+    return _toJd() == b ? dateEquale : (_toJd() < b ? dateLess : dateMore ) ;
 }
 
 int DateTime::equale( const DateTime& b )
 {
-    return isEquale_( b.to_time_t() );
+    return _isEquale( b._toJd() );
 }
 
-int DateTime::getMonthToDate_( const time_t& end )
+int DateTime::_getMonthToDate( const long end )
 {
-    return getDaysToDate_( end ) / 30;
+    return _getDaysToDate( end ) / 30;
 }
 
 int DateTime::getMonthToDate( const DateTime& end )
 {
-    return getMonthToDate_( end.to_time_t() );
+    return _getMonthToDate( end._toJd() );
 }
 
 bool DateTime::operator!=( const DateTime& other ) const
 {
-    return to_time_t() != other.to_time_t();
+    return _toJd() != other._toJd();
 }
 
 bool DateTime::operator==( const DateTime& other ) const
 {
-    return to_time_t() == other.to_time_t();
+    return _toJd() == other._toJd();
 }
 
 bool DateTime::operator<=( const DateTime& other ) const
 {
-    return to_time_t() <= other.to_time_t();
+    return _toJd() <= other._toJd();
 }
 
 bool DateTime::operator<( const DateTime& other ) const
 {
-    return to_time_t() < other.to_time_t();
+    return _toJd() < other._toJd();
 }
 
 bool DateTime::operator>=( const DateTime& other ) const
 {
-    return to_time_t() >= other.to_time_t();
+    return _toJd() >= other._toJd();
 }
 
 bool DateTime::operator>( const DateTime& other ) const
 {
-    return to_time_t() > other.to_time_t();
+    return _toJd() > other._toJd();
 }
 
 bool DateTime::isValid() const
 {   
-    return to_time_t() >= 0;
+    return (year > -4573 && year < 9999)
+            && (month >=0 && month<12)
+            && (day >= 0 && day<31)
+            && (hour >= 0 && hour < 24)
+            && (minutes >= 0 && minutes < 60)
+            && (seconds >= 0 && seconds < 60);
 }
 
-DateTime& DateTime::appendHour( int hour )
+/*DateTime& DateTime::appendHour( int hour )
 {
     return appendMinutes( 60 * hour );
-}
+}*/
 
-DateTime& DateTime::appendMinutes( int minute )
+/*DateTime& DateTime::appendMinutes( int minute )
 {
     *this = (time_t)( to_time_t() + minute * 60 );
     return *this;
-}
+}*/
 
 DateTime& DateTime::appendDay( int dayNumber/*=1 */ )
 {
-    *this = (time_t)( to_time_t() + dayNumber * 24 * 60 * 60 );
+    *this = _JulDayToDate( _toJd() + dayNumber );
     return *this;
 }
 
@@ -185,8 +190,7 @@ DateTime::DateTime( int y, unsigned char m, unsigned char d,
 DateTime::DateTime()
 {
     seconds = minutes = hour = 0;
-    day = month = 0;
-    year = 1900;
+    year = day = month = 0;
 }
 
 unsigned char DateTime::getHour() const {    return hour;}
@@ -220,8 +224,7 @@ DateTime DateTime::getCurrenTime()
 
 unsigned char DateTime::getDayOfWeek() const
 {
-    tm d = _getOsLocalTime( to_time_t() );
-    return d.tm_wday;
+  return ( (int) ( _toJd() % 7L ) );
 }
 
 const char* DateTime::getDayName( unsigned char d )
@@ -234,7 +237,7 @@ const char* DateTime::getMonthName( unsigned char d )
     return monthNames[ d ];
 }
 
-unsigned char DateTime::getMonthLength() const
+/*unsigned char DateTime::getMonthLength() const
 {
     tm d = _getOsLocalTime( to_time_t() );
     int month = d.tm_mon+1;
@@ -242,9 +245,9 @@ unsigned char DateTime::getMonthLength() const
                 ?( (month%2) ^ (month>7) )+30
                 :( ((!(d.tm_year % 400) || !( d.tm_year % 4 )) && ( d.tm_year % 25 )) ? 29 : 28 )
            );
-}
+}*/
 
-unsigned char DateTime::getWeekNumber() const
+/*unsigned char DateTime::getWeekNumber() const
 {
     tm beginTime;
     beginTime.tm_hour = beginTime.tm_min = beginTime.tm_sec = 0;
@@ -255,7 +258,7 @@ unsigned char DateTime::getWeekNumber() const
     tm d = _getOsLocalTime( crtDay );
     int _1_jan_day_of_week = (d.tm_wday+5)%7; //
     return (int)((to_time_t()-crtDay)/(24*60*60) + _1_jan_day_of_week)/7; //
-}
+}*/
 
 DateTime DateTime::getTime() const
 {
@@ -298,15 +301,48 @@ DateTime::DateTime( time_t time )
     *this = time;
 }
 
-time_t DateTime::to_time_t() const
+DateTime DateTime::_JulDayToDate( const long lJD )
 {
-    tm val;
-    val.tm_sec = getSeconds();
-    val.tm_min = getMinutes();
-    val.tm_hour = getHour();
-    val.tm_mday = getDay();
-    val.tm_mon = getMonth();
-    val.tm_year = getYear() - 1900;
+  DateTime ret;
 
-    return mktime( &val );
+  long t1, t2, yr, mo;
+
+  t1 = lJD + 68569L;
+  t2 = 4L * t1 / 146097L;
+  t1 = t1 - ( 146097L * t2 + 3L ) / 4L;
+  yr = 4000L * ( t1 + 1L ) / 1461001L;
+  t1 = t1 - 1461L * yr / 4L + 31L;
+  mo = 80L * t1 / 2447L;
+  ret.day = (int) ( t1 - 2447L * mo / 80L );
+  t1 = mo / 11L;
+  ret.month = (int) ( mo + 2L - 12L * t1 );
+  ret.year = (int) ( 100L * ( t2 - 49L ) + yr + t1 );
+
+  // Correct for BC years
+  if ( ret.year <= 0 )
+  {
+    ret.year -= 1;
+  }
+
+  return ret;
+}
+
+long DateTime::_toJd() const
+{
+  long jul_day;
+
+  long lmonth = (long)month, lday = (long)day, lyear = (long)year;
+
+  // Adjust BC years
+  if ( lyear < 0 )
+  {
+    lyear++;
+  }
+
+  jul_day = lday - 32075L +
+    1461L * ( lyear + 4800L + ( lmonth - 14L ) / 12L ) / 4L +
+    367L * ( lmonth - 2L - ( lmonth - 14L ) / 12L * 12L ) / 12L -
+    3L * ( ( lyear + 4900L + ( lmonth - 14L ) / 12L ) / 100L ) / 4L;
+
+  return jul_day;
 }

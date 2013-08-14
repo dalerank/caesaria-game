@@ -185,7 +185,7 @@ GoodStock::GoodStock(const GoodType &goodType, const int maxQty, const int curre
    _currentQty = currentQty;
 }
 
-void GoodStock::addStock(GoodStock &stock, const int iAmount)
+void GoodStock::append(GoodStock &stock, const int iAmount)
 {
   if (stock._goodType == G_NONE)
   {
@@ -251,4 +251,14 @@ void GoodStock::load( const VariantList& stream )
 bool GoodStock::empty() const
 {
   return _currentQty == 0;
+}
+
+void GoodStock::setType( const GoodType& goodType )
+{
+  _goodType = goodType;
+}
+
+void GoodStock::setMax( const int maxQty )
+{
+  _maxQty = maxQty;
 }

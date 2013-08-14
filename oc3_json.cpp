@@ -143,23 +143,30 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
     {
       VariantMap vmap = data.toMap();
       
-      str = "{ \n";
-      StringArray pairs;
-      for( VariantMap::iterator it = vmap.begin(); it != vmap.end(); it++ )
-      {        
-        std::string serializedValue = serialize( it->second, tab + "  ");
-        if( serializedValue.empty())
-        {
-                //success = false;
-          pairs.push_back( tab + sanitizeString( it->first ) + std::string( " : \"nonSerializableValue\"" ) );
-          continue;
-        }
-        pairs.push_back( tab + sanitizeString( it->first ) + " : " + serializedValue );
+      if( vmap.empty() )
+      {
+        str = "{}";
       }
-      str += join(pairs, ",\n");
-      std::string rtab( tab );
-      rtab.resize( std::max<int>( 0, tab.size() - 2 ) );
-      str += std::string( "\n" ) + rtab + "}";
+      else
+      {
+        str = "{ \n";
+        StringArray pairs;
+        for( VariantMap::iterator it = vmap.begin(); it != vmap.end(); it++ )
+        {        
+          std::string serializedValue = serialize( it->second, tab + "  ");
+          if( serializedValue.empty())
+          {
+                  //success = false;
+            pairs.push_back( tab + sanitizeString( it->first ) + std::string( " : \"nonSerializableValue\"" ) );
+            continue;
+          }
+          pairs.push_back( tab + sanitizeString( it->first ) + " : " + serializedValue );
+        }
+        str += join(pairs, ",\n");
+        std::string rtab( tab );
+        rtab.resize( std::max<int>( 0, tab.size() - 2 ) );
+        str += std::string( "\n" ) + rtab + "}";
+      }
     }
     else if((data.type() == Variant::String) || (data.type() == Variant::NByteArray)) // a string or a byte array?
     {

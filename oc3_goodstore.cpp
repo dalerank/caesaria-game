@@ -226,19 +226,15 @@ void GoodStore::load( const VariantMap& stream )
   VariantList vm_storeReservations = stream.get( "storeReservations" ).toList();
   for( VariantList::iterator it=vm_storeReservations.begin(); it != vm_storeReservations.end(); it++ )
   {
-    GoodStock stock;
     int index = (*it).toInt(); it++;
-    stock.load( (*it).toList() );
-    _d->storeReservations[ index ] = stock;
+    _d->storeReservations[ index ].load( (*it).toList() );
   }
 
   VariantList vm_retrieveReservations = stream.get( "retrieveReservation" ).toList();
   for( VariantList::iterator it=vm_retrieveReservations.begin(); it != vm_retrieveReservations.end(); it++ )
   {
-    GoodStock stock;
     int index = (*it).toInt(); it++;
-    stock.load( (*it).toList() );
-    _d->retrieveReservations[ index ] = stock;
+    _d->retrieveReservations[ index ].load( (*it).toList() );
   }
 }
 
@@ -277,7 +273,12 @@ GoodStore::_Reservations& GoodStore::_getRetrieveReservations()
   return _d->retrieveReservations;
 }
 
-int GoodStore::getLeftQty( const GoodType& goodType ) const
+int GoodStore::getFreeQty( const GoodType& goodType ) const
 {
   return getMaxQty( goodType ) - getCurrentQty( goodType );
+}
+
+int GoodStore::getFreeQty() const
+{
+  return getMaxQty() - getCurrentQty();
 }

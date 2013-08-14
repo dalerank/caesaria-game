@@ -32,9 +32,12 @@
 class Propagator
 {
 public:
-  typedef std::map<BuildingPtr, PathWay> Ways;
+  typedef std::map<BuildingPtr, PathWay> Routes;
+  //typedef std::list<PathWay> Ways;
   
   Propagator( CityPtr city );
+  ~Propagator();
+
   void setAllLands(const bool value);
   void setAllDirections(const bool value);
 
@@ -47,7 +50,9 @@ public:
   void init(const ConstructionPtr origin);
   void propagate(const int maxDistance);
 
-  void getReachedBuildings(const BuildingType buildingType, Ways& oPathWayList);
+  /** returns all paths starting at origin */
+  void getWays(const int maxDistance, std::list<PathWay> &oPathWayList);
+  void getRoutes(const BuildingType buildingType, Routes& oPathWayList);
 
   /** finds the shortest path between origin and destination
    * returns True if a path exists
@@ -56,8 +61,7 @@ public:
   bool getPath( RoadPtr destination, PathWay& oPathWay );
   bool getPath( BuildingPtr destination, PathWay& oPathWay );
 
-  /** returns all paths starting at origin */
-  void getAllPaths(const int maxDistance, std::list<PathWay> &oPathWayList);
+
 
 private:
   std::set<PathWay> _activeBranches;
@@ -66,9 +70,11 @@ private:
   bool _allLands;  // true if can walk in all lands, false if limited to roads
   bool _allDirections;  // true if can walk in all directions, false if limited to North/South/East/West
 
-  CityPtr _city;
   Tile* _origin;
   Tilemap* _tilemap;
+
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 

@@ -64,7 +64,6 @@ class City::Impl
 public:
   int population;
   CityFunds funds;  // amount of money
-  int time; // number of months since start
   std::string name;
   EmpirePtr empire;
 
@@ -103,7 +102,6 @@ oc3_signals public:
 
 City::City() : _d( new Impl )
 {
-  _d->time = 0;
   _d->roadEntry = TilePos( 0, 0 );
   _d->roadExit = TilePos( 0, 0 );
   _d->boatEntry = TilePos( 0, 0 );
@@ -134,7 +132,7 @@ void City::timeStep( unsigned int time )
     try
     {
       WalkerPtr walker = *walkerIt;
-      walker->timeStep( _d->time );
+      walker->timeStep( time );
 
       if( walker->isDeleted() )
       {
@@ -158,7 +156,7 @@ void City::timeStep( unsigned int time )
   {
     try
     {   
-      (*overlayIt)->timeStep( _d->time );
+      (*overlayIt)->timeStep( time );
 
       if( (*overlayIt)->isDeleted() )
       {
@@ -182,7 +180,7 @@ void City::timeStep( unsigned int time )
   CityServices::iterator serviceIt=_d->services.begin();
   while( serviceIt != _d->services.end() )
   {
-    (*serviceIt)->update( _d->time );
+    (*serviceIt)->update( time );
 
     if( (*serviceIt)->isDeleted() )
     {

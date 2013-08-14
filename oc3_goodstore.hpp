@@ -33,7 +33,8 @@ public:
   virtual int getCurrentQty() const = 0;
   virtual int getMaxQty() const = 0;
   virtual int getMaxQty(const GoodType& goodType ) const = 0;
-  virtual int getLeftQty( const GoodType& goodType ) const;
+  virtual int getFreeQty( const GoodType& goodType ) const;
+  virtual int getFreeQty() const;
 
   // returns the max quantity that can be stored now
   virtual int getMaxStore(const GoodType goodType) = 0;

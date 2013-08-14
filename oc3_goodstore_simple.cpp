@@ -17,6 +17,11 @@
 #include "oc3_math.hpp"
 #include "oc3_variant.hpp"
 
+class SimpleGoodStore::Impl
+{
+public:
+};
+
 SimpleGoodStore::SimpleGoodStore()
 {
   _maxQty = 0;
@@ -24,7 +29,7 @@ SimpleGoodStore::SimpleGoodStore()
   _goodStockList.resize(G_MAX);
   for (int n = 0; n < (int)G_MAX; ++n)
   {
-    _goodStockList[n] = GoodStock((GoodType)n, 0, 0);
+    _goodStockList[n].setType( (GoodType)n );
   }
 }
 
@@ -182,5 +187,21 @@ void SimpleGoodStore::load( const VariantMap& stream )
     GoodStock restored;
     restored.load( (*it).toList() );
     _goodStockList.push_back( restored );
+  }
+}
+
+SimpleGoodStore::~SimpleGoodStore()
+{
+
+}
+
+void SimpleGoodStore::resize( const GoodStore& other )
+{
+  setMaxQty( other.getMaxQty() );
+
+  for( int i=G_WHEAT; i < G_MAX; i++ )
+  {
+    GoodType gtype =  GoodType( i );
+    setMaxQty( gtype, other.getMaxQty( gtype ) );
   }
 }

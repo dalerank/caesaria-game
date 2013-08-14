@@ -38,7 +38,6 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name ) : _d( ne
   _d->name = name;
   _d->distantCity = false;
   _d->empire = empire;
-  _d->lastTimeUpdate = GameDate::current();
 }
 
 std::string ComputerCity::getName() const
@@ -111,8 +110,11 @@ void ComputerCity::load( const VariantMap& options )
 {
   setLocation( options.get( "location" ).toPoint() );
 
-  _d->lastTimeUpdate = options.get( "lastTimeUpdate" ).toDateTime();
-  _d->lastTimeMerchantSend = options.get( "lastTimeMerchantSend" ).toDateTime();
+  Variant vTime = options.get( "lastTimeUpdate" );
+  _d->lastTimeUpdate = vTime.isNull() ? GameDate::current() : vTime.toDateTime();
+
+  vTime = options.get( "lastTimeMerchantSend" );
+  _d->lastTimeMerchantSend = vTime.isNull() ? GameDate::current() : vTime.toDateTime();
 
   const VariantMap& sells_vm = options.get( "sells" ).toMap();
   for( VariantMap::const_iterator it=sells_vm.begin(); it != sells_vm.end(); it++ )
@@ -186,20 +188,24 @@ void ComputerCity::timeStep( unsigned int time )
     }
   }
 
-  if( _d->lastTimeMerchantSend.getMonthToDate( GameDate::current() ) > 3 ) 
+  if( _d->lastTimeMerchantSend.getMonthToDate( GameDate::current() ) > 2 ) 
   {
     TradeRoutesList routes = _d->empire->getTradeRoutes( getName() );
+    _d->lastTimeMerchantSend = GameDate::current();
 
     if( !routes.empty() )
     {
-      SimpleGoodStore merchantGoods;
-      merchantGoods.setMaxQty( 2000 );
+      SimpleGoodStore sellGoods, buyGoods;
+      sellGoods.setMaxQty( 20 );
+      buyGoods.setMaxQty( 20 );
       for( int i=G_NONE; i < G_MAX; i ++ )
       {
         GoodType gtype = GoodType( i );
 
+        buyGoods.setMaxQty( gtype, _d->buyStore.getMaxQty( gtype ) );
+
         //how much space left
-        int maxQty = (std::min)( _d->sellStore.getMaxQty( gtype ) / 4, _d->sellStore.getMaxQty() );
+        int maxQty = (std::min)( _d->sellStore.getMaxQty( gtype ) / 4, sellGoods.getFreeQty() );
         
         //we want send merchants to all routes
         maxQty /= routes.size();
@@ -210,17 +216,26 @@ void ComputerCity::timeStep( unsigned int time )
         if( qty == 0 )
           continue;
 
-        GoodStock stock = merchantGoods.getStock( gtype );  
+        GoodStock& stock = sellGoods.getStock( gtype );  
         stock._maxQty = qty;
-
+        
         //move goods to merchant's storage
         _d->sellStore.retrieve( stock, qty );
+      }
+
+      //correct goods qty for world trade
+      sellGoods.setMaxQty( sellGoods.getMaxQty() * 100 );
+      for( int i=G_NONE; i < G_MAX; i ++ )
+      {
+        GoodStock& stock = sellGoods.getStock( GoodType( i ) );  
+        stock._maxQty *= 100;
+        stock._currentQty  *= 100;
       }
 
       //send merchants to all routes
       for( TradeRoutesList::iterator it=routes.begin(); it != routes.end(); it++ )
       {
-        (*it)->addMerchant( getName(), merchantGoods );
+        (*it)->addMerchant( getName(), sellGoods, buyGoods );
       }
     }
   }

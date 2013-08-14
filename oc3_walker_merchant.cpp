@@ -27,7 +27,9 @@ class Merchant::Impl
 public:
   TilePos destBuildingPos;  // warehouse
   CityPtr city;
-  SimpleGoodStore basket;
+  SimpleGoodStore sell;
+  SimpleGoodStore buy;
+  int attemptCount;
   std::string baseCityName;
   long reservationID;
   int maxDistance;
@@ -40,17 +42,7 @@ Merchant::Merchant() : _d( new Impl )
   _walkerGraphic = WG_HORSE_CARAVAN;
   _walkerType = WT_MERCHANT;
   _d->maxDistance = 60;
-  _d->basket.setMaxQty(800);  // this is a big basket!
-
-  _d->basket.setMaxQty(G_WHEAT, 800);
-  _d->basket.setMaxQty(G_FRUIT, 800);
-  _d->basket.setMaxQty(G_VEGETABLE, 800);
-  _d->basket.setMaxQty(G_MEAT, 800);
-
-  _d->basket.setMaxQty(G_POTTERY, 100);
-  _d->basket.setMaxQty(G_FURNITURE, 100);
-  _d->basket.setMaxQty(G_OIL, 100);
-  _d->basket.setMaxQty(G_WINE, 100);
+  _d->attemptCount = 0;
 }
 
 Merchant::~Merchant()
@@ -63,13 +55,13 @@ WarehousePtr getAvailableWarehouse( Propagator &pathPropagator,
 {
   WarehousePtr ret;
 
-  Propagator::Ways pathWayList;
-  pathPropagator.getReachedBuildings( B_WAREHOUSE, pathWayList);
+  Propagator::Routes pathWayList;
+  pathPropagator.getRoutes( B_WAREHOUSE, pathWayList);
 
   // select the warehouse with the max quantity of requested goods
   if( what != G_MAX )
   {
-    Propagator::Ways::iterator pathWayIt = pathWayList.begin(); 
+    Propagator::Routes::iterator pathWayIt = pathWayList.begin(); 
     while( pathWayIt != pathWayList.end() )
     {
       // for every warehouse within range
@@ -90,7 +82,7 @@ WarehousePtr getAvailableWarehouse( Propagator &pathPropagator,
   //have only available warehouses, find nearest of it
   PathWay* retWay = 0;
   int minLength = 999;
-  for( Propagator::Ways::iterator pathWayIt= pathWayList.begin(); 
+  for( Propagator::Routes::iterator pathWayIt= pathWayList.begin(); 
        pathWayIt != pathWayList.end(); ++pathWayIt)
   {
     // for every warehouse within range
@@ -98,6 +90,7 @@ WarehousePtr getAvailableWarehouse( Propagator &pathPropagator,
     PathWay& pathWay= pathWayIt->second;
 
     WarehousePtr destBuilding = building.as< Warehouse >();
+
     if( pathWay.getLength() < minLength )
     {
       minLength = pathWay.getLength();
@@ -109,11 +102,15 @@ WarehousePtr getAvailableWarehouse( Propagator &pathPropagator,
   if( ret.isValid() )
   {
     // a warehouse has been found!
-    // reserve some goods from that warehouse
-    int qty = std::min(qty, basket.getMaxQty( what ) - basket.getCurrentQty( what ));
-    GoodStock stock( what, qty, qty);
+    // reserve some goods from that warehouse for merchant
+    if( what != G_MAX )
+    {
+      int qty = std::min(qty, basket.getMaxQty( what ) - basket.getCurrentQty( what ));
+      GoodStock stock( what, qty, qty);
+      reservId = ret->getGoodStore().reserveRetrieval( stock );
+    }
+
     oPathWay = *retWay;
-    reservId = ret->getGoodStore().reserveRetrieval( stock );
   }
 
   return ret;
@@ -122,73 +119,77 @@ WarehousePtr getAvailableWarehouse( Propagator &pathPropagator,
 void Merchant::Impl::computeDestination( WalkerPtr wlk, const TilePos& position )
 {
   destBuildingPos = TilePos( -1, -1 );  // no destination yet
-
-  // get the list of buildings within reach
-  PathWay pathWay;
-  Propagator pathPropagator( city );
-  Tilemap& tmap = city->getTilemap();
-  pathPropagator.init( tmap.at( position ) );
-  pathPropagator.propagate( maxDistance );
   bool pathFound = false;
+  PathWay pathWay;
+  attemptCount++;
 
-  WarehousePtr warehouse;
-
-  // try to find goods for city export 
-  for( int i = G_WHEAT; i < G_MAX; i++ )
+  //attemptCount - check that metchant not loop in city
+  if( attemptCount < 3 )
   {
-    GoodType gtype = (GoodType)i;
+    // get the list of buildings within reach
+    Propagator pathPropagator( city );
+    Tilemap& tmap = city->getTilemap();
+    pathPropagator.init( tmap.at( position ) );
+    pathPropagator.propagate( maxDistance );
+    WarehousePtr warehouse;
 
-    int qty =  basket.getCurrentQty( gtype );
-    if( qty == 0 && qty < basket.getMaxQty( gtype ) )
+    // try to find goods for city export 
+    for( int i = G_WHEAT; i < G_MAX; i++ )
     {
-      // try get that good from a warehouse
-      warehouse = getAvailableWarehouse( pathPropagator, basket, gtype, 
-                                         pathWay, qty, reservationID );
-    }
+      GoodType gtype = (GoodType)i;
 
-    if( warehouse.isValid() )
-    {
-      // we found a destination!
-      wlk->setPathWay(pathWay);
-      pathFound = true;
-      destBuildingPos = warehouse->getTilePos();
-      break;
-    }
-  }  
-
-  // city have no goods to sell, may be out city want buy some import goods
-  if( !pathFound )
-  {
-    const GoodStore& buyOrders = city->getBuys();
-
-    if( buyOrders.getMaxQty() > 0 )
-    {
-      for( int i = G_WHEAT; i < G_MAX; i++ )
+      int qty = sell.getCurrentQty( gtype );
+      int maxQty = sell.getMaxQty( gtype );
+      if( qty == 0 && qty < maxQty)
       {
-        GoodType gtype = (GoodType)i;
-  
-        if( buyOrders.getMaxQty( gtype ) > 0 && basket.getCurrentQty( gtype ) > 0 )
+        // try get that good from a warehouse
+        warehouse = getAvailableWarehouse( pathPropagator, buy, gtype, 
+                                           pathWay, maxQty, reservationID );
+      }
+
+      if( warehouse.isValid() )
+      {
+        // we found a destination!
+        wlk->setPathWay(pathWay);
+        pathFound = true;
+        destBuildingPos = warehouse->getTilePos();
+        break;
+      }
+    }  
+
+    // city have no goods to sell, may be out city want buy some import goods
+    if( !pathFound )
+    {
+      const GoodStore& buyOrders = city->getBuys();
+
+      if( buyOrders.getMaxQty() > 0 )
+      {
+        for( int i = G_WHEAT; i < G_MAX; i++ )
         {
-          warehouse = getAvailableWarehouse( pathPropagator, basket, G_MAX, pathWay, 0, reservationID );
-          break;
+          GoodType gtype = (GoodType)i;
+    
+          if( buyOrders.getMaxQty( gtype ) > 0 && sell.getCurrentQty( gtype ) > 0 )
+          {
+            warehouse = getAvailableWarehouse( pathPropagator, sell, G_MAX, pathWay, 0, reservationID );
+            break;
+          }
         }
       }
-    }
 
-    if( warehouse.isValid() )
-    {
-      // we found a warehouse!
-      wlk->setPathWay(pathWay);
-      destBuildingPos = warehouse->getTilePos();
-      pathFound = true;
+      if( warehouse.isValid() )
+      {
+        // we found a warehouse!
+        wlk->setPathWay(pathWay);
+        destBuildingPos = warehouse->getTilePos();
+        pathFound = true;
+      }
     }
   }
 
-  // we have nothing to buy, or cannot find warehouse
+  // we have nothing to buy/sell with city, or cannot find available warehouse -> go out
   if( !pathFound )
   {
-    pathFound = Pathfinder::getInstance().getPath( position, city->getRoadExit(), pathWay, 
-                                                   false, 1 );
+    pathFound = Pathfinder::getInstance().getPath( position, city->getRoadExit(), pathWay, false, 1 );
     if( pathFound )
     {
       wlk->setPathWay( pathWay );
@@ -217,7 +218,7 @@ void Merchant::onDestination()
     EmpireTradeRoutePtr route = empire->getTradeRoute( ourCityName, _d->baseCityName );
     if( route.isValid() )
     {
-      route->addMerchant( ourCityName, _d->basket );
+      route->addMerchant( ourCityName, _d->sell, _d->buy );
     }
 
     deleteLater();
@@ -230,30 +231,44 @@ void Merchant::onDestination()
 
     if( warehouse.isValid() )
     {
-      // this is a warehouse!
-      warehouse->getGoodStore().applyRetrieveReservation(_d->basket, _d->reservationID);
+      //work with warehouse
+      warehouse->getGoodStore().applyRetrieveReservation(_d->sell, _d->reservationID);
 
-      // take other goods if possible
+      //try buy goods
       for (int n = G_WHEAT; n<G_MAX; ++n)
       {
-        // for all types of good (except G_NONE)
         GoodType goodType = (GoodType) n;
-        int qty = _d->basket.getLeftQty( goodType );
+        int qty = _d->buy.getFreeQty( goodType );
         if( qty > 0 )
         {
           int qty = std::min( qty, warehouse->getGoodStore().getMaxRetrieve( goodType ) );
           if (qty != 0)
           {
             // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
-            GoodStock& stock = _d->basket.getStock( goodType );
+            GoodStock& stock = _d->buy.getStock( goodType );
             warehouse->getGoodStore().retrieve( stock, qty );
-
-            _d->basket.store( stock, -1 );
           }
         }
       }
 
-      // walker is near the warehouse
+      //try sell goods
+      for (int n = G_WHEAT; n<G_MAX; ++n)
+      {
+        GoodType goodType = (GoodType)n;
+        int qty = _d->sell.getCurrentQty( goodType );
+        if( qty > 0 )
+        {
+          int qty = std::min( qty, warehouse->getGoodStore().getMaxStore( goodType ) );
+          if (qty != 0)
+          {
+            // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
+            GoodStock& stock = _d->sell.getStock( goodType );
+            warehouse->getGoodStore().store( stock, qty );
+          }
+        }
+      }
+
+      //walker is near the warehouse
       _d->computeDestination( this, getIJ() );
     }
   }
@@ -274,7 +289,7 @@ void Merchant::save( VariantMap& stream ) const
 {
   Walker::save( stream );
   stream[ "destBuildPos" ] = _d->destBuildingPos;
-  stream[ "basket" ] = _d->basket.save();
+  stream[ "sell" ] = _d->sell.save();
   stream[ "maxDistance" ] = _d->maxDistance;
   stream[ "reservationId" ] = static_cast<unsigned int>(_d->reservationID);
   stream[ "baseCity" ] = Variant( _d->baseCityName );
@@ -284,7 +299,7 @@ void Merchant::load( const VariantMap& stream)
 {
   Walker::load( stream );
   _d->destBuildingPos = stream.get( "destBuildPos" ).toTilePos();
-  _d->basket.load( stream.get( "basket" ).toMap() );
+  _d->sell.load( stream.get( "sell" ).toMap() );
   _d->maxDistance = stream.get( "maxDistance" ).toInt();
   _d->reservationID = stream.get( "reserationId" ).toInt();
   _d->baseCityName = stream.get( "baseCity" ).toString();
@@ -293,7 +308,11 @@ void Merchant::load( const VariantMap& stream)
 WalkerPtr Merchant::create( EmpireMerchantPtr merchant )
 {
   Merchant* cityMerchant( new Merchant() );
-  cityMerchant->_d->basket.storeAll( merchant->getGoods() );
+  cityMerchant->_d->sell.resize( merchant->getSellGoods() );
+  cityMerchant->_d->sell.storeAll( merchant->getSellGoods() );
+  cityMerchant->_d->buy.resize( merchant->getBuyGoods() );
+  cityMerchant->_d->buy.storeAll( merchant->getBuyGoods() );
+
   cityMerchant->_d->baseCityName = merchant->getBaseCity()->getName();
   
   WalkerPtr ret( cityMerchant );
