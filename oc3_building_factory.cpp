@@ -176,17 +176,24 @@ void Factory::timeStep(const unsigned long time)
 void Factory::deliverGood()
 {
   // make a cart pusher and send him away
-  if( _mayDeliverGood() && _d->goodStore.getCurrentQty( _d->outGoodType ) >= 100 )
+  int qty = _d->goodStore.getCurrentQty( _d->outGoodType );
+  if( _mayDeliverGood() && qty >= 100 )
   {      
-    GoodStock stock(_d->outGoodType, 100, 0);
-    _d->goodStore.retrieve( stock, 100 );
-
     CartPusherPtr walker = CartPusher::create( Scenario::instance().getCity() );
-    walker->send2City( BuildingPtr( this ), stock );
 
+    GoodStock pusherStock( _d->outGoodType, qty, 0 ); 
+    _d->goodStore.retrieve( pusherStock, math::clamp( qty, 0, 400 ) );
+
+    walker->send2City( BuildingPtr( this ), pusherStock );
+
+    //success to send cartpusher
     if( !walker->isDeleted() )
     {
       addWalker( walker.as<Walker>() );
+    }
+    else
+    {
+      _d->goodStore.store( walker->getStock(), walker->getStock()._currentQty );
     }
   }
 }

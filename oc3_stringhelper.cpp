@@ -96,7 +96,7 @@ float StringHelper::toFloat( const char* in, const char** out /*= 0*/ )
   {
     floatValue += (float)(*in - '0') / limiter;
     ++in;
-    limiter /= 10.f;
+    limiter *= 10.f;
     if (floatValue > FLT_MAX) // Just give up.
       break;
   }
