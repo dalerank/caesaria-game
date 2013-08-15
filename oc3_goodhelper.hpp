@@ -29,7 +29,7 @@ public:
   static GoodHelper& getInstance();
 
   static std::string getName( GoodType type );
-  static Picture getPicture( GoodType type );
+  static Picture getPicture( GoodType type, bool emp=false );
   static GoodType getType( const std::string& name );
   static std::string getTypeName( GoodType type );
   static const Picture& getCartPicture( const GoodStock& stock, const DirectionType& direction );

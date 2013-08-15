@@ -84,8 +84,6 @@ public:
   CityBuildOptions buildOptions;
   CityTradeOptions tradeOptions;
 
-  SimpleGoodStore buys, sells;
-
   ClimateType climate;   
   UniqueId walkerIdCount;
 
@@ -711,12 +709,12 @@ void City::resolveMerchantArrived( EmpireMerchantPtr merchant )
 
 const GoodStore& City::getSells() const
 {
-  return _d->sells;
+  return _d->tradeOptions.getSells();
 }
 
 const GoodStore& City::getBuys() const
 {
-  return _d->buys;
+  return _d->tradeOptions.getBuys();
 }
 
 EmpirePtr City::getEmpire() const

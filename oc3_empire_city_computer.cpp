@@ -227,9 +227,13 @@ void ComputerCity::timeStep( unsigned int time )
       sellGoods.setMaxQty( sellGoods.getMaxQty() * 100 );
       for( int i=G_NONE; i < G_MAX; i ++ )
       {
-        GoodStock& stock = sellGoods.getStock( GoodType( i ) );  
-        stock._maxQty *= 100;
-        stock._currentQty  *= 100;
+        GoodStock& sellStock = sellGoods.getStock( GoodType( i ) );  
+        sellStock._maxQty *= 100;
+        sellStock._currentQty  *= 100;
+
+        GoodStock& buyStock = buyGoods.getStock( GoodType( i ) );  
+        buyStock._maxQty *= 100;
+        buyStock._currentQty  *= 100;
       }
 
       //send merchants to all routes

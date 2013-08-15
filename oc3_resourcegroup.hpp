@@ -72,9 +72,12 @@ public:
 class PicID
 {
 public:
+    static const int bad = 0;
     static const int empireStamp = 543;
     static const int seaTradeRoute = 69;
     static const int landTradeRoute = 70;
+    static const int baseLocalGoodId = 316;
+    static const int baseEmpireGoodId = 10;
 };
 
 class WaterOverlay

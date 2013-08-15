@@ -120,10 +120,11 @@ void CityFunds::load( const VariantMap& stream )
     _d->history.push_back( Impl::IssuesValue() );
     Impl::IssuesValue& last = _d->history.back();
     const VariantList& historyStep = (*it).toList();
-    for( VariantList::const_iterator stepIt=historyStep.begin(); stepIt != historyStep.end(); stepIt++ )
+    VariantList::const_iterator stepIt=historyStep.begin(); 
+    while( stepIt != historyStep.end() )
     {
-      IssueType type = (IssueType)it->toInt(); it++;
-      int value = it->toInt(); it++;
+      IssueType type = (IssueType)stepIt->toInt(); stepIt++;
+      int value = it->toInt(); stepIt++;
       
       last[ type ] = value;
     }

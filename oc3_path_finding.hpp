@@ -32,6 +32,7 @@
 class Propagator
 {
 public:
+  typedef std::pair< BuildingPtr,  PathWay > DirectRoute;
   typedef std::map<BuildingPtr, PathWay> Routes;
   //typedef std::list<PathWay> Ways;
   
@@ -61,7 +62,8 @@ public:
   bool getPath( RoadPtr destination, PathWay& oPathWay );
   bool getPath( BuildingPtr destination, PathWay& oPathWay );
 
-
+  DirectRoute getShortestRoute( const Routes& routes );
+  DirectRoute getShortestRoute( const BuildingType buildingType );
 
 private:
   std::set<PathWay> _activeBranches;

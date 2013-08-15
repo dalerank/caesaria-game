@@ -20,6 +20,8 @@
 #include "oc3_good.hpp"
 #include "oc3_variant.hpp"
 
+class GoodStore;
+
 class CityTradeOptions
 {
 public:
@@ -48,6 +50,9 @@ public:
 
   VariantMap save() const;
   void load( const VariantMap& stream );
+
+  const GoodStore& getBuys();
+  const GoodStore& getSells();
 
 public:
   class Impl;

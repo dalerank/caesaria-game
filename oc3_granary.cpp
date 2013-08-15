@@ -103,12 +103,7 @@ Granary::Granary() : WorkingBuilding( B_GRANARY, Size(3) ), _d( new Impl )
   _fgPictures[5] = _getAnimation().getCurrentPicture();
   computePictures();
 
-  _d->devastateThis = false;
-
- /*
-   GoodStock stock( G_WHEAT, 800, 800 );
-    _d->goodStore.store( stock, 800 );*/
-  
+  _d->devastateThis = false;  
 }
 
 void Granary::timeStep(const unsigned long time)
@@ -141,7 +136,7 @@ void Granary::computePictures()
   for (int n = 0; n < 4; ++n)
   {
     // reset all window pictures
-    _fgPictures[n+1] = Picture();
+    _fgPictures[n+1] = Picture::getInvalid();
   }
 
   if (allQty > 0)

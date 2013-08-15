@@ -16,6 +16,7 @@
 #include "oc3_city_trade_options.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_goodhelper.hpp"
+#include "oc3_goodstore_simple.hpp"
 
 class CityTradeOptions::Impl
 {
@@ -69,8 +70,41 @@ public:
     }
   };
 
+  typedef std::map< GoodType, GoodInfo > GoodsInfo;
+  GoodsInfo goods;
+  SimpleGoodStore buys, sells;
+
+  void updateLists()
+  {
+    for( int i=G_WHEAT; i < G_MAX; i++ )
+    {
+      GoodType gtype = (GoodType)i;
+      const GoodInfo& info = goods[ gtype ];
+
+      switch( info.order )
+      {
+      case CityTradeOptions::importing:
+        buys.setMaxQty( gtype, 9999 );
+        sells.setMaxQty( gtype, 0 );
+      break;
+
+      case CityTradeOptions::exporting:
+        buys.setMaxQty( gtype, 0 );
+        sells.setMaxQty( gtype, 9999 );
+      break;
+
+      case CityTradeOptions::noTrade:
+        buys.setMaxQty( gtype, 0 );
+        buys.setMaxQty( gtype, 0 );
+      break;
+      }
+    }
+  }
+
   Impl()
   {
+    buys.setMaxQty( 9999 );
+    sells.setMaxQty( 9999 );
     for( int i=G_WHEAT; i < G_MAX; i++ )
     {
       GoodType gtype = (GoodType)i;
@@ -102,9 +136,6 @@ public:
     goods[ G_FURNITURE ].buyPrice = 200; goods[ G_FURNITURE ].sellPrice = 150;
     goods[ G_POTTERY ].buyPrice = 180; goods[ G_POTTERY ].sellPrice = 140;
   }
-
-  typedef std::map< GoodType, GoodInfo > GoodsInfo;
-  GoodsInfo goods;
 };
 
 CityTradeOptions::CityTradeOptions() : _d( new Impl )
@@ -148,12 +179,16 @@ CityTradeOptions::Order CityTradeOptions::switchOrder( GoodType type )
     }
   }
 
+  _d->updateLists();
+
   return getOrder( type );
 }
 
 void CityTradeOptions::setExportLimit( GoodType type, int qty )
 {
   _d->goods[ type ].exportLimit = qty;
+
+  _d->updateLists();
 }
 
 bool CityTradeOptions::isGoodsStacking( GoodType type )
@@ -165,6 +200,8 @@ bool CityTradeOptions::isGoodsStacking( GoodType type )
 void CityTradeOptions::setStackMode( GoodType type, bool stackGoods )
 {
   _d->goods[ type ].stacking = stackGoods;
+
+  _d->updateLists();
 }
 
 unsigned int CityTradeOptions::getSellPrice( GoodType type ) const
@@ -198,11 +235,15 @@ bool CityTradeOptions::isVendor( GoodType type ) const
 void CityTradeOptions::setVendor( GoodType type, bool available )
 {
   _d->goods[ type ].vendor = available;
+
+  _d->updateLists();
 }
 
 void CityTradeOptions::setOrder( GoodType type, Order order )
 {
   _d->goods[ type ].order = order;
+
+  _d->updateLists();
 }
 
 void CityTradeOptions::load( const VariantMap& stream )
@@ -220,6 +261,8 @@ void CityTradeOptions::load( const VariantMap& stream )
 
     _d->goods[ gtype ].load( it->second.toList() );
   }
+
+  _d->updateLists();
 }
 
 VariantMap CityTradeOptions::save() const
@@ -232,4 +275,14 @@ VariantMap CityTradeOptions::save() const
   }
 
   return ret;
+}
+
+const GoodStore& CityTradeOptions::getBuys()
+{
+  return _d->buys;
+}
+
+const GoodStore& CityTradeOptions::getSells()
+{
+  return _d->sells;
 }

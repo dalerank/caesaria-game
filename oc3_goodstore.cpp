@@ -16,6 +16,7 @@
 #include "oc3_goodstore.hpp"
 #include "oc3_goodstore_simple.hpp"
 #include "oc3_goodorders.hpp"
+#include "oc3_stringhelper.hpp"
 
 class GoodStore::Impl
 {
@@ -155,10 +156,13 @@ void GoodStore::store( GoodStock &stock, const int amount)
 
   long reservationID = reserveStorage(reservedStock);
 
-  _OC3_DEBUG_BREAK_IF( reservationID == 0 && "GoodStore:Impossible to store goods");
   if( reservationID > 0 )
   {
     applyStorageReservation(stock, reservationID);
+  }
+  else
+  {
+    StringHelper::debug( 0xff, "GoodStore:Impossible to store goods RID=%d", reservationID );
   }
 }
 
@@ -169,11 +173,13 @@ void GoodStore::retrieve(GoodStock &stock, int amount)
   reservedStock._currentQty = amount;
 
   long reservationID = reserveRetrieval(reservedStock);
-  _OC3_DEBUG_BREAK_IF( reservationID == 0 && "GoodStore:Impossible to retrieve goods");
-
   if( reservationID > 0 )
   {
     applyRetrieveReservation(stock, reservationID);
+  }
+  else
+  {
+    StringHelper::debug( 0xff, "GoodStore:Impossible to retrieve goods RID=%d", reservationID );
   }
 }
 

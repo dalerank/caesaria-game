@@ -32,6 +32,7 @@
 #include "oc3_goodstore.hpp"
 #include "oc3_empire_trading.hpp"
 #include "oc3_cityfunds.hpp"
+#include "oc3_goodhelper.hpp"
 #include "oc3_app_config.hpp"
 
 static const char* empMapOffset = "EmpireMapWindowOffset";
@@ -160,7 +161,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
     if( sellgoods.getMaxQty( (GoodType)i ) > 0  )
     {
       Label* lb = new Label( tradeInfo, Rect( startDraw + Point( 70 + 30 * k, 0 ), Size( 24, 24 ) ) );
-      lb->setBackgroundPicture( Picture::load( ResourceGroup::empirepnls, 11 + i ) );
+      lb->setBackgroundPicture( GoodHelper::getPicture( GoodType(i), true) );
       k++;
     }
   }
@@ -174,7 +175,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
     if( buygoods.getMaxQty( (GoodType)i ) > 0  )
     {
       Label* lb = new Label( tradeInfo, Rect( buyPoint + Point( 70 + 30 * k, 0 ), Size( 24, 24 ) ) );
-      lb->setBackgroundPicture( Picture::load( ResourceGroup::empirepnls, 11 + i ) );
+      lb->setBackgroundPicture(  GoodHelper::getPicture( GoodType(i), true) );
       k++;
     }
   }
@@ -203,7 +204,7 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
     if( maxsell > 0  )
     {
       Label* lb = new Label( tradeInfo, Rect( startDraw + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );
-      lb->setBackgroundPicture( Picture::load( ResourceGroup::empirepnls, 11 + i ) );
+      lb->setBackgroundPicture(  GoodHelper::getPicture( GoodType(i), true) );
 
       std::string text = StringHelper::format( 0xff, "%d/%d", cursell, maxsell );
       new Label( tradeInfo, Rect( startDraw + Point( 110 + 100 * k, 0), Size( 70, 30 ) ), text );
@@ -222,7 +223,7 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
     if( maxbuy > 0  )
     {
       Label* lb = new Label( tradeInfo, Rect( buyPoint + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );
-      lb->setBackgroundPicture( Picture::load( ResourceGroup::empirepnls, 11 + i ) );
+      lb->setBackgroundPicture( GoodHelper::getPicture( GoodType(i), true) );
 
       std::string text = StringHelper::format( 0xff, "%d/%d", curbuy, maxbuy );
       new Label( tradeInfo, Rect( buyPoint + Point( 110 + 100 * k, 0), Size( 70, 30 ) ), text );

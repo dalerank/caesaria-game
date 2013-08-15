@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#include "oc3_factory_building.hpp"
+#include "oc3_building_factory.hpp"
 
 #include "oc3_tile.hpp"
 #include "oc3_scenario.hpp"

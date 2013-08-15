@@ -351,3 +351,33 @@ Propagator::~Propagator()
 {
 
 }
+
+Propagator::DirectRoute Propagator::getShortestRoute( const Routes& routes )
+{
+  DirectRoute ret;
+  int minLength = 999;
+
+  for( Propagator::Routes::const_iterator pathWayIt= routes.begin(); 
+       pathWayIt != routes.end(); ++pathWayIt)
+  {
+    // for every warehouse within range
+    const PathWay& pathWay= pathWayIt->second;
+
+    if( pathWay.getLength() < minLength )
+    {
+      minLength = pathWay.getLength();
+      ret.first = pathWayIt->first;
+      ret.second = pathWay;
+    }
+  }
+
+  return ret;
+}
+
+Propagator::DirectRoute Propagator::getShortestRoute( const BuildingType buildingType )
+{
+  Routes routes;
+  getRoutes( buildingType, routes );
+
+  return getShortestRoute( routes );
+}

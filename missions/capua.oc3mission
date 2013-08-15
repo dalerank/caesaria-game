@@ -4,9 +4,9 @@
 	nextMission : "capua2.oc3mission"
 	funds : 8000	
 	overview : [ "This is the 1st peaceful mission. After the two training levels,",
-				   "the shackles are removed and you are given plenty of freedom to build what you want,",
-				   "right from the start. This level is quite forgiving, so go ahead and experiment, ",
-				   "you can even afford to make a few mistakes. Don't run out of money, and everything will work out in the end" ]
+               "the shackles are removed and you are given plenty of freedom to build what you want,",
+               "right from the start. This level is quite forgiving, so go ahead and experiment, ",
+               "you can even afford to make a few mistakes. Don't run out of money, and everything will work out in the end" ]
 	
 	targets : {
 		population : 2500

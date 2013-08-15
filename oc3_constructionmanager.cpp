@@ -20,7 +20,7 @@
 #include "oc3_building_warehouse.hpp"
 #include "oc3_collapsedruins.hpp"
 #include "oc3_building_engineer_post.hpp"
-#include "oc3_factory_building.hpp"
+#include "oc3_building_factory.hpp"
 #include "oc3_building_burningruins.hpp"
 #include "oc3_house.hpp"
 #include "oc3_building_senate.hpp"
