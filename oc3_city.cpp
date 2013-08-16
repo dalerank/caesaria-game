@@ -93,7 +93,6 @@ public:
 
 oc3_signals public:
   Signal1<int> onPopulationChangedSignal;
-  Signal1<int> onFundsChangedSignal;
   Signal1<std::string> onWarningMessageSignal;
   Signal2<const TilePos&, const std::string&> onDisasterEventSignal;
 };
@@ -331,7 +330,6 @@ void City::build( ConstructionPtr building, const TilePos& pos )
 
     _d->overlayList.push_back( building.as<LandOverlay>() );
     _d->funds.resolveIssue( FundIssue( CityFunds::buildConstruction, -buildingData.getCost() ) );
-    _d->onFundsChangedSignal.emit( _d->funds.getValue() );
 
     if( building->isNeedRoadAccess() && building->getAccessRoads().empty() )
     {
@@ -464,7 +462,6 @@ void City::Impl::collectTaxes( CityPtr city )
   }
 
   funds.resolveIssue( FundIssue( CityFunds::taxIncome, lastMonthTax ) );
-  onFundsChangedSignal.emit( funds.getValue() );
 }
 
 void City::Impl::calculatePopulation( CityPtr city )
@@ -594,7 +591,7 @@ Signal1<int>& City::onPopulationChanged()
 
 Signal1<int>& City::onFundsChanged()
 {
-  return _d->onFundsChangedSignal;
+  return _d->funds.onChange();
 }
 
 void City::addWalker( WalkerPtr walker )

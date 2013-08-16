@@ -21,6 +21,7 @@
 #include "oc3_tile.hpp"
 #include "oc3_empire.hpp"
 #include "oc3_astarpathfinding.hpp"
+#include "oc3_cityfunds.hpp"
 
 class Merchant::Impl
 {
@@ -197,23 +198,41 @@ void Merchant::Impl::resolveState( WalkerPtr& wlk, const TilePos& position )
   case stBuyGoods:
     {
       CityHelper helper( city );
-      WarehousePtr warehouse = helper.getBuilding<Warehouse>( destBuildingPos );
+      WarehousePtr warehouse = helper.getBuilding<Warehouse>( destBuildingPos );   
 
       if( warehouse.isValid() )
       {
+
+        std::map< GoodType, int > cityGoodsAvailable;
+        std::list< WarehousePtr > warehouses = helper.getBuildings<Warehouse>( B_WAREHOUSE );
+        for( std::list< WarehousePtr >::iterator it=warehouses.begin(); it != warehouses.end(); it++ )
+        {
+          for( int i=G_WHEAT; i < G_MAX; i++ )
+          {
+            GoodType goodType = (GoodType)i;
+            cityGoodsAvailable[ goodType ] += (*it)->getGoodStore().getCurrentQty( goodType );
+          }
+        }
+        
+        const GoodStore& cityOrders = city->getSells();
         //try buy goods
-        for (int n = G_WHEAT; n<G_MAX; ++n)
+        for( int n = G_WHEAT; n<G_MAX; ++n )
         {
           GoodType goodType = (GoodType) n;
           int needQty = buy.getFreeQty( goodType );
-          if( needQty > 0 )
+          int maySell = math::clamp( cityOrders.getMaxQty( goodType ) - cityGoodsAvailable[ goodType ], 0, 9999 );
+          
+          if( needQty > 0 && maySell > 0)
           {
             int mayBuy = std::min( needQty, warehouse->getGoodStore().getMaxRetrieve( goodType ) );
-            if (mayBuy != 0)
+            int mayBuy = std::min( mayBuy, maySell );
+            if( mayBuy > 0 )
             {
               // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
               GoodStock& stock = buy.getStock( goodType );
               warehouse->getGoodStore().retrieve( stock, mayBuy );
+
+              FundIssue::exportGoods( city, goodType, mayBuy );
             }
           }
         }
@@ -249,6 +268,8 @@ void Merchant::Impl::resolveState( WalkerPtr& wlk, const TilePos& position )
       CityHelper helper( city );
       WarehousePtr warehouse = helper.getBuilding<Warehouse>( destBuildingPos );
 
+      const GoodStore& cityOrders = city->getBuys();
+
       if( warehouse.isValid() )
       {
         //try sell goods
@@ -256,7 +277,7 @@ void Merchant::Impl::resolveState( WalkerPtr& wlk, const TilePos& position )
         {
           GoodType goodType = (GoodType)n;
           int qty4sell = sell.getCurrentQty( goodType );
-          if( qty4sell > 0 )
+          if( qty4sell > 0 && cityOrders.getMaxQty( goodType ) > 0 )
           {
             int maySells = std::min( qty4sell, warehouse->getGoodStore().getMaxStore( goodType ) );
             if( maySells != 0 )
@@ -264,6 +285,8 @@ void Merchant::Impl::resolveState( WalkerPtr& wlk, const TilePos& position )
               // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
               GoodStock& stock = sell.getStock( goodType );
               warehouse->getGoodStore().store( stock, maySells );
+              
+              FundIssue::importGoods( city, goodType, maySells );
             }
           }
         }        

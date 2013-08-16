@@ -199,8 +199,8 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
   const GoodStore& sellgoods = currentCity->getSells();
   for( int i=0, k=0; i < G_MAX; i++ )
   {
-    int maxsell = sellgoods.getMaxQty( (GoodType)i );
-    int cursell = sellgoods.getCurrentQty( (GoodType)i );
+    int maxsell = sellgoods.getMaxQty( (GoodType)i ) / 100;
+    int cursell = sellgoods.getCurrentQty( (GoodType)i ) / 100;
     if( maxsell > 0  )
     {
       Label* lb = new Label( tradeInfo, Rect( startDraw + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );
@@ -218,8 +218,8 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
   const GoodStore& buygoods = currentCity->getBuys();
   for( int i=0, k=0; i < G_MAX; i++ )
   {
-    int maxbuy = buygoods.getMaxQty( (GoodType)i );
-    int curbuy = buygoods.getCurrentQty( (GoodType)i );
+    int maxbuy = buygoods.getMaxQty( (GoodType)i ) / 100;
+    int curbuy = buygoods.getCurrentQty( (GoodType)i ) / 100;
     if( maxbuy > 0  )
     {
       Label* lb = new Label( tradeInfo, Rect( buyPoint + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );

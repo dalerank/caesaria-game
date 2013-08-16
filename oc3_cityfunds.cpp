@@ -14,6 +14,9 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_cityfunds.hpp"
+#include "oc3_city.hpp"
+#include "oc3_city_trade_options.hpp"
+
 #include <map>
 
 class CityFunds::Impl
@@ -25,6 +28,9 @@ public:
   typedef std::map< CityFunds::IssueType, int > IssuesValue;
   typedef std::vector< IssuesValue > IssuesHistory;
   IssuesHistory history;
+
+oc3_signals public:
+  Signal1<int> onChangeSignal;
 };
 
 CityFunds::CityFunds() : _d( new Impl )
@@ -52,6 +58,8 @@ void CityFunds::resolveIssue( FundIssue issue )
     }
   break;
   }
+
+  _d->onChangeSignal.emit( _d->money );
 }
 
 int CityFunds::getValue() const
@@ -134,4 +142,33 @@ void CityFunds::load( const VariantMap& stream )
 CityFunds::~CityFunds()
 {
 
+}
+
+Signal1<int>& CityFunds::onChange()
+{
+  return _d->onChangeSignal;
+}
+
+void FundIssue::importGoods( CityPtr city, GoodType type, int qty )
+{
+  CityTradeOptions& options = city->getTradeOptions();
+  int price = options.getSellPrice( type );
+
+  FundIssue issue( CityFunds::importGoods, -price * qty / 100 );
+  city->getFunds().resolveIssue( issue );
+}
+
+void FundIssue::exportGoods( CityPtr city, GoodType type, int qty )
+{
+  CityTradeOptions& options = city->getTradeOptions();
+  int price = options.getBuyPrice( type );
+
+  FundIssue issue( CityFunds::exportGoods, price * qty / 100 );
+  city->getFunds().resolveIssue( issue );
+}
+
+void FundIssue::resolve( CityPtr city, int type, int money )
+{
+  FundIssue issue( type, money );
+  city->getFunds().resolveIssue( issue );
 }
