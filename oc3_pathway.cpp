@@ -155,12 +155,12 @@ bool PathWay::isDestination() const
   bool res;
   if (_isReverse)
   {
-#if defined(_WIN32)
+#if defined(OC3_PLATFORM_WIN)
     std::vector<DirectionType>::const_reverse_iterator convItReverse = _directionIt_reverse;
     res = (convItReverse == _directionList.rend());
-#else
+#elif defined(OC3_PLATFORM_UNIX)
     res = (_directionIt_reverse == _directionList.rend());
-#endif
+#endif //OC3_PLATFORM_UNIX
   }
   else
   {

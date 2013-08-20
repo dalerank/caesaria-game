@@ -490,7 +490,7 @@ Variant Json::parseObjectName(const std::string &json, int &index, bool &success
     }
   }
 
-  for( int i=0; i < s.size(); i++ )
+  for( unsigned int i=0; i < s.size(); i++ )
   {
     if( std::string("{}[],").find( s[i] ) != std::string::npos )
     {
@@ -685,7 +685,7 @@ int Json::lookAhead(const std::string &json, int index)
  */
 int Json::nextToken(const std::string &json, int &index)
 {
-  int saveIndex = index;
+  //int saveIndex = index;
   Json::eatWhitespace(json, index);
 
   if(index == (int)json.size())

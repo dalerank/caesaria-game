@@ -17,11 +17,11 @@
 #include "oc3_filesystem.hpp"
 #include "oc3_filepath.hpp"
 
-#ifdef _WIN32
+#if defined(OC3_PLATFORM_WIN)
 #define getline_def getline_win
-#else
+#elif defined(OC3_PLATFORM_UNIX)
 #define getline_def getline
-#endif
+#endif //OC3_PLATFORM_UNIX
 
 namespace io
 {

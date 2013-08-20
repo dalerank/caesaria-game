@@ -13,9 +13,9 @@ class FilePath;
 class FSEntity : public ReferenceCounted
 {
 public:
-	typedef enum { fmRead=0x0, fmWrite=0x1, fmAppend=0x2 } Mode;
+  typedef enum { fmRead=0x0, fmWrite=0x1, fmAppend=0x2 } Mode;
 	
-	virtual ~FSEntity() {}
+  virtual ~FSEntity() {}
 
   //! returns how much was read
   virtual int read(void* buffer, unsigned int sizeToRead) = 0;

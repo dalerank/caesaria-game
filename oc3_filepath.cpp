@@ -17,16 +17,16 @@
 #include "oc3_exception.hpp"
 #include "oc3_filepath.hpp"
 #include "oc3_filesystem.hpp"
-#include "oc3_filelist.hpp"
+#include "oc3_filesystem_filelist.hpp"
 
-#ifdef _WIN32
+#ifdef OC3_PLATFORM_WIN
   #include <Windows.h>
   #include <io.h>
-#elif __GNUC__
-  #ifdef __linux__
+#elif defined(OC3_PLATFORM_UNIX)
+  #ifdef OC3_PLATFORM_LINUX
     #include <sys/io.h>
     #include <linux/limits.h>
-  #elif __APPLE__
+  #elif defined(OC3_PLATFORM_MACOSX)
     #include <libproc.h>
   #endif
   #include <sys/stat.h>
@@ -94,9 +94,9 @@ void FilePath::splitToDirPathExt( FilePath* path,
 
 void FilePath::_OsDelete( const FilePath& pathToDelete )
 {
-#ifdef _WIN32
+#ifdef OC3_PLATFORM_WIN
     DeleteFile( pathToDelete._d->path.c_str() );
-#else
+#elif defined(OC3_PLATFORM_UNIX)
     ::remove( pathToDelete._d->path.c_str() );
 #endif
 }
@@ -150,9 +150,9 @@ FilePath FilePath::removeEndSlash() const
 
 void FileDir::_OsCreate( const FileDir& dirName )
 {
-#ifdef _WIN32
+#ifdef OC3_PLATFORM_WIN
     CreateDirectory( removeEndSlash().toString().c_str(), NULL );
-#else
+#elif defined(OC3_PLATFORM_UNIX)
     ::mkdir( dirName.toString().c_str(), S_IRWXU|S_IRWXG|S_IRWXO );
 #endif
 }
@@ -172,19 +172,19 @@ bool FilePath::isExist() const
 
 bool FilePath::isFolder() const
 {
-#   ifdef _WIN32
-    WIN32_FILE_ATTRIBUTE_DATA fad;
-    if( ::GetFileAttributesEx( _d->path.c_str(), ::GetFileExInfoStandard, &fad )== 0 )
-        return false;
+#ifdef OC3_PLATFORM_WIN
+  WIN32_FILE_ATTRIBUTE_DATA fad;
+  if( ::GetFileAttributesEx( _d->path.c_str(), ::GetFileExInfoStandard, &fad )== 0 )
+      return false;
 
-    return (fad.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY;
-#   else
-    struct stat path_stat;
-    if ( ::stat( toString().c_str(), &path_stat) != 0 )
-        return false;
+  return (fad.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY;
+#elif defined(OC3_PLATFORM_UNIX)
+  struct stat path_stat;
+  if ( ::stat( toString().c_str(), &path_stat) != 0 )
+      return false;
 
-    return S_ISDIR(path_stat.st_mode);
-#   endif
+  return S_ISDIR(path_stat.st_mode);
+#endif //OC3_PLATFORM_UNIX
 }
 
 std::string FilePath::getExtension() const 
@@ -296,7 +296,7 @@ FilePath::~FilePath()
 
 FilePath FilePath::getAbsolutePath() const
 {
-#if defined(_WIN32)
+#if defined(OC3_PLATFORM_WIN)
   char *p=0;
   char fpath[_MAX_PATH];
 
@@ -304,7 +304,7 @@ FilePath FilePath::getAbsolutePath() const
   std::string tmp(p);
   StringHelper::replace( tmp, "\\", "/");
   return tmp;
-#else
+#elif defined(OC3_PLATFORM_UNIX)
   char* p=0;
   char fpath[4096];
   fpath[0]=0;
@@ -325,7 +325,7 @@ FilePath FilePath::getAbsolutePath() const
     return FilePath( std::string(p) + "/" );
   else
     return FilePath( std::string(p) );
-#endif
+#endif // OC3_PLATFORM_UNIX
 }
 
 
@@ -394,7 +394,7 @@ FilePath FilePath::getRelativePathTo( const FilePath& directory ) const
   unsigned int it1=0;
   unsigned int it2=0;
 
-#if defined (_WIN32)
+#if defined (OC3_PLATFORM_WIN)
   char partition1 = 0, partition2 = 0;
   FilePath prefix1, prefix2;
   if ( it1 > 0 )
@@ -417,15 +417,15 @@ FilePath FilePath::getRelativePathTo( const FilePath& directory ) const
   {
     return *this;
   }
-#endif
+#endif //OC3_PLATFORM_WIN
 
 
   for (; i<list1.size() && i<list2.size() 
-#if defined (_WIN32)
+#if defined (OC3_PLATFORM_WIN)
     && ( StringHelper::isEquale( list1[ it1 ], list2[ it2 ], StringHelper::equaleIgnoreCase ) )
-#else
+#elif defined(OC3_PLATFORM_UNIX)
     && ( list1[ it1 ]== list2[ it2 ] )	
-#endif
+#endif //OC3_PLATFORM_UNIX
     ; ++i)
   {
     ++it1;
@@ -509,12 +509,28 @@ bool FilePath::operator==( const FilePath& other ) const
 
 bool FilePath::operator==( const std::string& other ) const
 {
-  return toString() == other;
+    return toString() == other;
+}
+
+char &FilePath::operator [](const unsigned int index)
+{
+    return _d->path[index];
+}
+
+bool FilePath::isExtension(const std::string &ext, bool checkCase) const
+{
+    return StringHelper::isEquale( getExtension(), ext, checkCase ? StringHelper::equaleCase : StringHelper::equaleIgnoreCase );
 }
 
 FilePath& FilePath::operator=( const FilePath& other )
 {
   _d->path = other._d->path;
+  return *this;
+}
+
+FilePath &FilePath::operator +=(char c)
+{
+  _d->path += c;
   return *this;
 }
 
@@ -525,8 +541,8 @@ FileList FileDir::getEntries() const
   FileDir changeDd = *this;
   fs.changeWorkingDirectoryTo( changeDd );
     
-	FileList fList( changeDd.toString(), false, false );
-	fList = fs.getFileList();
+  FileList fList( changeDd.toString(), false, false );
+  fList = fs.getFileList();
 
   fs.changeWorkingDirectoryTo( saveDir );
   return fList;

@@ -20,7 +20,7 @@
 #include "oc3_scopedptr.hpp"
 #include "oc3_signals.hpp"
 
-class GameDate : public DateTime
+class GameDate
 {
 public:
   static DateTime current();

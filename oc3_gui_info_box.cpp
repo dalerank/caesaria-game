@@ -968,38 +968,38 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
   _fd->lbAbout->setWordWrap( true );
 
   std::string desc, name;
-  GoodType goodType = G_NONE;
+  //GoodType goodType = G_NONE;
   switch( _fd->rawmb->getType() )
   {
     case B_WHEAT_FARM:
       desc.assign( _("##farm_description_wheat##") );
       name.assign( _("##farm_title_wheat##") );
-      goodType = G_WHEAT;
+      //goodType = G_WHEAT;
       break;
     case B_FRUIT_FARM:
       desc.assign( _("##farm_description_fruit##") );
       name.assign( _("##farm_title_fruit##") );
-      goodType = G_FRUIT;
+      //goodType = G_FRUIT;
       break;
     case B_OLIVE_FARM:
       desc.assign( _("##farm_description_olive##") );
       name.assign( _("##farm_title_olive##") );
-      goodType = G_OLIVE;
+      //goodType = G_OLIVE;
       break;
     case B_GRAPE_FARM:
       desc.assign( _("##farm_description_vine##") );
       name.assign( _("##farm_title_vine##") );
-      goodType = G_GRAPE;
+      //goodType = G_GRAPE;
       break;
     case B_PIG_FARM:
       desc.assign( _("##farm_description_meat##") );
       name.assign( _("##farm_title_meat##") );
-      goodType = G_MEAT;
+      //goodType = G_MEAT;
       break;
     case B_VEGETABLE_FARM:
       desc.assign( _("##farm_description_vegetable##") );
       name.assign( _("##farm_title_vegetable##") );
-      goodType = G_VEGETABLE;
+      //goodType = G_VEGETABLE;
       break;
     default:
     break;

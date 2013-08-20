@@ -152,7 +152,8 @@ void PictureBank::loadArchive( const std::string &filename, GfxEngine& engine )
       continue;
     }
 
-    if (archive_entry_stat(entry)->st_size >= bufferSize) 
+    //int rt = archive_entry_stat(entry)->st_size;
+    if(archive_entry_stat(entry)->st_size >= bufferSize)
     {
       THROW("Cannot load archive: file is too big " << entryname << " in archive " << filename);
     }

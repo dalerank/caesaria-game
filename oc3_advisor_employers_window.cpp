@@ -87,8 +87,8 @@ public:
   void showPriorityWindow( int id );
 
   struct EmployersInfo { 
-    int needWorkers;
-    int currentWorkers;
+    unsigned int needWorkers;
+    unsigned int currentWorkers;
   };
 
   EmployersInfo getEmployersInfo( PriorityIndex type );
@@ -126,8 +126,8 @@ AdvisorEmployerWindow::Impl::EmployersInfo AdvisorEmployerWindow::Impl::getEmplo
     buildings.insert( buildings.begin(), sectorBuildings.begin(), sectorBuildings.end() );
   }
 
-  unsigned currentWorkers = 0;
-  unsigned needWorkers = 0;
+  unsigned int currentWorkers = 0;
+  unsigned int needWorkers = 0;
   for( WorkingBuildings::iterator it=buildings.begin(); it != buildings.end(); it++ )
   {
     currentWorkers += (*it)->getWorkers();

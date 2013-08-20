@@ -31,7 +31,7 @@ public:
   SimpleGoodStore buyStore;
   DateTime lastTimeUpdate;
   DateTime lastTimeMerchantSend;
-  int merchantsNumber;
+  unsigned int merchantsNumber;
 };
 
 ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name ) : _d( new Impl )
@@ -173,7 +173,7 @@ void ComputerCity::resolveMerchantArrived( EmpireMerchantPtr merchant )
   _d->buyStore.storeAll( buyGoods );
   _d->sellStore.storeAll( sellGoods );
 
-  _d->merchantsNumber = (std::max)( 0, _d->merchantsNumber-1);
+  _d->merchantsNumber = (std::max<int>)( 0, _d->merchantsNumber-1);
 }
 
 ComputerCity::~ComputerCity()

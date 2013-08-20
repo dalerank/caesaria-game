@@ -97,6 +97,8 @@ public:
         buys.setMaxQty( gtype, 0 );
         buys.setMaxQty( gtype, 0 );
       break;
+
+      default: break;
       }
     }
   }
@@ -168,6 +170,7 @@ CityTradeOptions::Order CityTradeOptions::switchOrder( GoodType type )
     {
     case noTrade: setOrder( type, importing ); break;
     case importing: setOrder( type, noTrade ); break;
+    default: break;
     }
   }
   {
@@ -176,6 +179,7 @@ CityTradeOptions::Order CityTradeOptions::switchOrder( GoodType type )
     case noTrade: setOrder( type, exporting ); break;
     case exporting: setOrder( type, importing ); break;
     case importing: setOrder( type, noTrade ); break;
+    default: break;
     }
   }
 

@@ -23,7 +23,7 @@
 #include "oc3_gfx_engine.hpp"
 #include "oc3_texturedbutton.hpp"
 #include "oc3_filesystem.hpp"
-#include "oc3_filelist.hpp"
+#include "oc3_filesystem_filelist.hpp"
 
 class SaveDialog::Impl
 {
@@ -57,7 +57,7 @@ void SaveDialog::Impl::findFiles()
 {
   io::FileList::Items files = io::FileDir( directory ).getEntries().getItems();
 
-  for( io::FileList::ItemIterator it=files.begin(); it !=files.end(); ++it)
+  for( io::FileList::ItemIt it=files.begin(); it !=files.end(); ++it)
   {
     if( !(*it).isDirectory && (*it).fullName.getExtension() == extension )
     {

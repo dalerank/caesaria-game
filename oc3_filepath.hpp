@@ -30,13 +30,13 @@ class FilePath
 {
 public:
   static const char* anyFile;
-	static const char* firstEntry;
-	static const char* secondEntry;
+  static const char* firstEntry;
+  static const char* secondEntry;
 
   FilePath( const char* nPath );
-	FilePath();
+  FilePath();
   FilePath( const std::string& nPath );
-	FilePath( const FilePath& );
+  FilePath( const FilePath& );
   virtual ~FilePath();
 
   bool isExist() const;
@@ -57,6 +57,7 @@ public:
   void splitToDirPathExt( FilePath* path, FilePath* filename=0, FilePath* extension=0 );
 
   FilePath& operator=(const FilePath& other );
+  FilePath& operator+=(char c);
 
   //! flatten a path and file name for example: "/you/me/../." becomes "/you"
   FilePath flattenFilename( const FilePath& root = "/" ) const;
@@ -66,6 +67,10 @@ public:
 
   bool operator==(const FilePath& other) const;
   bool operator==(const std::string& other) const;
+
+  char& operator[](const unsigned int index);
+
+  bool isExtension( const std::string& ext, bool checkCase=true ) const;
 
   //! Returns the base part of a filename, i.e. the name without the directory
   //! part. If no directory is prefixed, the full name is returned.

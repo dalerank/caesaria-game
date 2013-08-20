@@ -22,6 +22,7 @@
 #include "oc3_empire.hpp"
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_cityfunds.hpp"
+#include "oc3_city_trade_options.hpp"
 
 class Merchant::Impl
 {
@@ -43,7 +44,7 @@ public:
   int maxDistance;
   State nextState;
 
-  void resolveState( WalkerPtr& wlk, const TilePos& position );
+  void resolveState(WalkerPtr wlk, const TilePos& position );
 };
 
 Merchant::Merchant() : _d( new Impl )
@@ -116,7 +117,7 @@ Propagator::DirectRoute getWarehouse4Sells( Propagator &pathPropagator,
 }
 
 
-void Merchant::Impl::resolveState( WalkerPtr& wlk, const TilePos& position )
+void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
 {
   switch( nextState )
   {
@@ -202,7 +203,6 @@ void Merchant::Impl::resolveState( WalkerPtr& wlk, const TilePos& position )
 
       if( warehouse.isValid() )
       {
-
         std::map< GoodType, int > cityGoodsAvailable;
         std::list< WarehousePtr > warehouses = helper.getBuildings<Warehouse>( B_WAREHOUSE );
         for( std::list< WarehousePtr >::iterator it=warehouses.begin(); it != warehouses.end(); it++ )
@@ -214,18 +214,19 @@ void Merchant::Impl::resolveState( WalkerPtr& wlk, const TilePos& position )
           }
         }
         
-        const GoodStore& cityOrders = city->getSells();
+        //const GoodStore& cityOrders = city->getSells();
+        CityTradeOptions& options = city->getTradeOptions();
         //try buy goods
         for( int n = G_WHEAT; n<G_MAX; ++n )
         {
           GoodType goodType = (GoodType) n;
           int needQty = buy.getFreeQty( goodType );
-          int maySell = math::clamp( cityOrders.getMaxQty( goodType ) - cityGoodsAvailable[ goodType ], 0, 9999 );
+          int maySell = math::clamp( cityGoodsAvailable[ goodType ] - options.getExportLimit( goodType ) * 100, 0, 9999 );
           
           if( needQty > 0 && maySell > 0)
           {
             int mayBuy = std::min( needQty, warehouse->getGoodStore().getMaxRetrieve( goodType ) );
-            int mayBuy = std::min( mayBuy, maySell );
+            mayBuy = std::min( mayBuy, maySell );
             if( mayBuy > 0 )
             {
               // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
@@ -319,18 +320,18 @@ void Merchant::Impl::resolveState( WalkerPtr& wlk, const TilePos& position )
 void Merchant::onDestination()
 {
   Walker::onDestination();
-  _d->resolveState( WalkerPtr( this ), getIJ() );
+  _d->resolveState( this, getIJ() );
 }
 
 void Merchant::send2City( CityPtr city )
 {
   _d->city = city;
   _d->nextState = Impl::stFindWarehouseForSelling;
-  _d->resolveState(  WalkerPtr( this ), city->getRoadEntry() );
+  _d->resolveState( this, city->getRoadEntry() );
 
   if( !isDeleted() )
   {
-    _d->city->addWalker( WalkerPtr( this ) );   
+    _d->city->addWalker( this );
   }
 }
 

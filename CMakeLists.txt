@@ -3,6 +3,7 @@ project(opencaesar3)
 cmake_minimum_required(VERSION 2.6)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/" ${CMAKE_MODULE_PATH})
+#set(NO_USE_SYSTEM_ZLIB ON)
 
 aux_source_directory(. SRC_LIST)
 file(GLOB INC_LIST "*.hpp")
@@ -15,6 +16,7 @@ find_package(OpenGL REQUIRED)
 find_package(LibArchive REQUIRED)
 find_package(Libintl REQUIRED)
 find_package(PNG REQUIRED)
+find_package(zlib REQUIRED)
 
 include_directories(
   ${SDL_INCLUDE_DIR}
@@ -38,29 +40,65 @@ link_libraries(
   ${PNG_LIBRARY}
 )
 
-add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST})
+set(UTILS_SRC_LIST)
+if(NO_USE_SYSTEM_ZLIB)
+  add_definitions(-DNO_USE_SYSTEM_ZLIB)
+  file(GLOB ZLIB_SRC_LIST "${CMAKE_CURRENT_SOURCE_DIR}/utils/zlib/*.c")
+
+  foreach( name ${ZLIB_SRC_LIST} )
+    list( APPEND UTILS_SRC_LIST ${name} )
+  endforeach()
+else(NO_USE_SYSTEM_ZLIB)
+  link_libraries(${ZLIB_LIBRARY})
+endif(NO_USE_SYSTEM_ZLIB)
+
+file(GLOB GLDM_SRC_LIST "${CMAKE_CURRENT_SOURCE_DIR}/utils/aesGladman/*.cpp")
+foreach( name ${GLDM_SRC_LIST} )
+  list( APPEND UTILS_SRC_LIST ${name} )
+endforeach()
+
+file(GLOB BZIP2_SRC_LIST "${CMAKE_CURRENT_SOURCE_DIR}/utils/bzip2/*.c")
+foreach( name ${BZIP2_SRC_LIST} )
+  list( APPEND UTILS_SRC_LIST ${name} )
+endforeach()
+
+file(GLOB LZMA_SRC_LIST "${CMAKE_CURRENT_SOURCE_DIR}/utils/lzma/*.c")
+foreach( name ${LZMA_SRC_LIST} )
+  list( APPEND UTILS_SRC_LIST ${name} )
+endforeach()
+
+add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST} ${UTILS_SRC_LIST})
+
 set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME "caesar3")
 
 # set compiler options
-if(MSVC)
-  #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} /Wall")
-endif(MSVC)
-
 if(CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wall -g")
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
 # Copy DLL to build output directory
 if(WIN32)
+  if(MSVC)
+    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} /Wall")
+    include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/dependecies/msvc-include/" )
+  endif(MSVC)
+
   set(_LIBS_FOR_DLL_SOURCE
     ${SDL_LIBRARY}
     ${SDL_IMAGE_LIBRARY}
     ${SDL_MIXER_LIBRARY}
-    ${SDL_TTF_LIBRARY}
-    ${LibArchive_LIBRARY}
+    ${SDL_TTF_LIBRARY}    
     ${LIBINTL_LIBRARIES}
     ${PNG_LIBRARY}
+    ${LibArchive_LIBRARY}
   )
+
+  if(NO_USE_SYSTEM_ZLIB)
+    #
+  else(NO_USE_SYSTEM_ZLIB)
+    list( APPEND _LIBS_FOR_DLL_SOURCE ${ZLIB_LIBRARY} )
+  endif(NO_USE_SYSTEM_ZLIB)
+
   foreach(_lib ${_LIBS_FOR_DLL_SOURCE})
     GET_FILENAME_COMPONENT(_lib_abs ${_lib} ABSOLUTE)
     GET_FILENAME_COMPONENT(_lib_path ${_lib} PATH)

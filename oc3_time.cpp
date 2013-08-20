@@ -19,12 +19,13 @@
 #include <cstdlib>
 #include <cstdio>
 #include <stdint.h>
+#include "oc3_requirements.hpp"
 
-#ifdef _WIN32
+#if defined(OC3_PLATFORM_WIN)
     #include "windows.h"
-#else
+#elif defined(OC3_PLATFORM_UNIX)
     #include <sys/time.h>
-#endif
+#endif //OC3_PLATFORM_UNIX
 
 using namespace std;
 
@@ -134,14 +135,16 @@ DateTime& DateTime::appendDay( int dayNumber/*=1 */ )
 
 tm _getOsLocalTime( time_t date )
 {
-#ifdef _WIN32
-    tm ret;
-    localtime_s( &ret, &date );
-    return ret;
-#else
-    //time(&date);
-    return *localtime( &date );
-#endif
+#if defined(OC3_PLATFORM_WIN)
+  tm ret;
+  localtime_s( &ret, &date );
+  return ret;
+#elif defined(OC3_PLATFORM_UNIX)
+  //time(&date);
+  return *localtime( &date );
+#endif //OC3_PLATFORM_UNIX
+
+  return tm();
 }
 
 DateTime& DateTime::appendMonth( int m/*=1 */ )
@@ -210,16 +213,16 @@ DateTime DateTime::getCurrenTime()
 {
 	tm d;
 
-#ifdef _WIN32
+#if defined(OC3_PLATFORM_WIN)
     _getsystime( &d );
-#else
+#elif defined(OC3_PLATFORM_UNIX)
     time_t rawtime;
     time ( &rawtime );
 
     d = *localtime( &rawtime );
-#endif
+#endif //OC3_PLATFORM_UNIX
 
-    return DateTime( d.tm_year+1900, d.tm_mon, d.tm_mday, d.tm_hour, d.tm_min, d.tm_sec );
+  return DateTime( d.tm_year+1900, d.tm_mon, d.tm_mday, d.tm_hour, d.tm_min, d.tm_sec );
 }
 
 unsigned char DateTime::getDayOfWeek() const
@@ -269,13 +272,15 @@ DateTime DateTime::getTime() const
 
 unsigned int DateTime::getElapsedTime()
 {
-#ifdef _WIN32
+#if defined(OC3_PLATFORM_WIN)
   return ::GetTickCount();
-#else
+#elif defined(OC3_PLATFORM_UNIX)
   timeval tv;
   gettimeofday(&tv, 0);
   return (uint32_t)(tv.tv_sec * 1000) + (tv.tv_usec / 1000);
-#endif
+#endif //OC3_PLATFORM_UNIX
+
+  return 0;
 }
 
 DateTime& DateTime::operator= ( time_t t)

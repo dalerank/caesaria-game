@@ -26,7 +26,7 @@ inline T safety_cast( B object ) throw()
     {
         return dynamic_cast<T>(object);
     }
-#if defined _WIN32 && !USE_MINGW_COMPILER
+#if defined(OC3_PLATFORM_WIN) && !defined(OC3_USE_MINGW_COMPILER)
     catch(std::__non_rtti_object )
     {
         //LOGIT(pfEmerg, "cast(0x%p): __non_rtti_object exception has caught: '%s'\n", object, e.what());

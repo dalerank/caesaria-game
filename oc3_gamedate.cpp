@@ -19,6 +19,7 @@ class GameDate::Impl
 {
 public:
   DateTime lastDateUpdate;
+  DateTime current;
 
 oc3_signals public:
   Signal1<const DateTime&> onMonthChangeSignal;
@@ -27,7 +28,7 @@ oc3_signals public:
 
 DateTime GameDate::current()
 {
-  return instance();
+  return instance()._d->current;
 }
 
 GameDate& GameDate::instance()
@@ -41,20 +42,21 @@ void GameDate::timeStep( unsigned int time )
   if( time % 110 == 1 )
   {
     // every X seconds
-    instance().appendMonth( 1 );
-    instance()._d->onMonthChangeSignal.emit( current() );
+    GameDate& inst = instance();
+    inst._d->current.appendMonth( 1 );
+    inst._d->onMonthChangeSignal.emit( inst._d->current );
   }
 }
 
 void GameDate::init( const DateTime& date )
 {
-  (DateTime&)instance() = date;
+  instance()._d->current = date;
   instance()._d->lastDateUpdate = date;
 }
 
 GameDate::GameDate() : _d( new Impl )
 {
-  init( DateTime( -350, 0, 0 ) );
+  _d->current = DateTime( -350, 0, 0 );
 }
 
 GameDate::~GameDate()

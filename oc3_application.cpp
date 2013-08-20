@@ -36,14 +36,14 @@
 #include "oc3_filesystem.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_animation_bank.hpp"
-#include "oc3_filelist.hpp"
+#include "oc3_filesystem_filelist.hpp"
 #include "oc3_empire.hpp"
 #include "oc3_exception.hpp"
 
 #include <libintl.h>
 #include <list>
 
-#if defined(_MSC_VER)
+#if defined(OC3_PLATFORM_WIN)
   #undef main
 #endif
 
@@ -131,10 +131,10 @@ io::FileList::Items Application::Impl::scanForMaps(const io::FilePath& resourceP
 {
   // scan for map-files and make their list    
   io::FileDir mapsDir( resourcePath.toString() + "/maps/" );
-  io::FileList::Items items = mapsDir.getEntries().getItems();
+  const io::FileList::Items& items = mapsDir.getEntries().getItems();
 
   io::FileList::Items ret;
-  for( io::FileList::ItemIterator it=items.begin(); it != items.end(); ++it)
+  for( io::FileList::ConstItemIt it=items.begin(); it != items.end(); ++it)
   {
     if( !(*it).isDirectory )
     {
