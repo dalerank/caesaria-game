@@ -25,11 +25,13 @@ class EmpireMapWindow : public Widget
 public:
   static EmpireMapWindow* create( Scenario* scenario, Widget* parent, int id );
 
+  virtual ~EmpireMapWindow();
+
   // draw on screen
-  void draw( GfxEngine& engine );
+  virtual void draw( GfxEngine& engine );
 
   //resolve event
-  bool onEvent(const NEvent& event);
+  virtual bool onEvent(const NEvent& event);
 
 oc3_signals public:
   Signal0<>& onTradeAdvisorRequest();

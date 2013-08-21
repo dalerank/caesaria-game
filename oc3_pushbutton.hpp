@@ -60,7 +60,7 @@ public:
 
   virtual void drawIcon( GfxEngine& painter );
 
-  virtual void setPicture( Picture* picture, ElementState state );
+  virtual void setPicture( const Picture& picture, ElementState state );
 
   virtual void setBackgroundStyle( const BackgroundStyle style );
 

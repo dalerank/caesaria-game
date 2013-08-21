@@ -26,7 +26,7 @@
 #include "oc3_variant.hpp"
 #include "oc3_path_finding.hpp"
 #include "oc3_animation_bank.hpp"
-#include "oc3_factory_building.hpp"
+#include "oc3_building_factory.hpp"
 #include "oc3_goodstore.hpp"
 
 class CartSupplier::Impl
@@ -163,13 +163,13 @@ TilePos getSupplierDestination2( Propagator &pathPropagator, const BuildingType 
 {
   SmartPtr< T > res;
 
-  Propagator::ReachedBuldings pathWayList;
-  pathPropagator.getReachedBuildings(type, pathWayList);
+  Propagator::Routes pathWayList;
+  pathPropagator.getRoutes(type, pathWayList);
 
   int max_qty = 0;
 
   // select the warehouse with the max quantity of requested goods
-  for( Propagator::ReachedBuldings::iterator pathWayIt= pathWayList.begin(); 
+  for( Propagator::Routes::iterator pathWayIt= pathWayList.begin(); 
        pathWayIt != pathWayList.end(); ++pathWayIt)
   {
     // for every warehouse within range

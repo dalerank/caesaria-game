@@ -36,8 +36,11 @@ public:
 
   void update( unsigned int time );
 
-  void addMerchant( const std::string& begin, GoodStore& store );
+  void addMerchant( const std::string& begin, GoodStore& sell, GoodStore& buy );
   EmpireMerchantPtr getMerchant( unsigned int index );
+
+  VariantMap save() const;
+  void load( const VariantMap& stream );
 
 oc3_signals public:
   Signal1<EmpireMerchantPtr>& onMerchantArrived();
@@ -50,18 +53,22 @@ private:
 class EmpireMerchant : public ReferenceCounted
 {
 public:
-  static EmpireMerchantPtr create( EmpireTradeRoute& route, const std::string& start );
+  static EmpireMerchantPtr create( EmpireTradeRoute& route, const std::string& start,
+                                   GoodStore& sell, GoodStore& buy );
   ~EmpireMerchant();
 
-  void setGoods( GoodStore& goods );
   Point getLocation() const;
   void update( unsigned int time );
 
   EmpireCityPtr getBaseCity() const;
-  GoodStore& getGoods();
+  GoodStore& getSellGoods();
+  GoodStore& getBuyGoods();
 
   bool isDeleted() const;
   void deleteLater();
+
+  VariantMap save() const;
+  void load( const VariantMap& stream );
 
 oc3_signals public:
   Signal1<EmpireMerchantPtr>& onDestination();
@@ -84,9 +91,11 @@ public:
 
   EmpireTradeRoutePtr getRoute( const std::string& begin, const std::string& end );
   EmpireTradeRoutePtr getRoute( unsigned int index );
+  TradeRoutesList getRoutes( const std::string& begin );
   EmpireTradeRoutePtr createRoute( const std::string& begin, const std::string& end );
 
-  void sendMerchant( const std::string& begin, const std::string& end, GoodStore& goods );
+  void sendMerchant( const std::string& begin, const std::string& end, 
+                     GoodStore& sell, GoodStore& buy );
 
 private:
   class Impl;

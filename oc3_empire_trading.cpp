@@ -56,12 +56,6 @@ EmpireCityPtr EmpireTradeRoute::getEndCity() const
 
 void EmpireTradeRoute::update( unsigned int time )
 {
-  if( _d->merchants.size() == 0 )
-  {
-    SimpleGoodStore store;
-    addMerchant( ((rand() % 2 == 1) ? _d->begin : _d->end )->getName(), store );
-  }
-
   Impl::MerchantList::iterator it=_d->merchants.begin();
   while( it != _d->merchants.end() )
   {
@@ -77,9 +71,9 @@ void EmpireTradeRoute::update( unsigned int time )
   }
 }
 
-void EmpireTradeRoute::addMerchant( const std::string& begin, GoodStore& store )
+void EmpireTradeRoute::addMerchant( const std::string& begin, GoodStore& sell, GoodStore& buy )
 {
-  EmpireMerchantPtr merchant = EmpireMerchant::create( *this, begin );
+  EmpireMerchantPtr merchant = EmpireMerchant::create( *this, begin, sell, buy );
   _d->merchants.push_back( merchant );  
 
   CONNECT( merchant, onDestination(), _d.data(), Impl::resolveMerchantArrived );
@@ -146,7 +140,8 @@ EmpireTrading::~EmpireTrading()
 
 }
 
-void EmpireTrading::sendMerchant( const std::string& begin, const std::string& end, GoodStore& goods )
+void EmpireTrading::sendMerchant( const std::string& begin, const std::string& end, 
+                                  GoodStore& sell, GoodStore& buy )
 {
   EmpireTradeRoutePtr route = getRoute( begin, end );
   if( route != 0 )
@@ -155,7 +150,7 @@ void EmpireTrading::sendMerchant( const std::string& begin, const std::string& e
     return;
   }
 
-  route->addMerchant( begin, goods );
+  route->addMerchant( begin, sell, buy );
 }
 
 EmpireTradeRoutePtr EmpireTrading::getRoute( const std::string& begin, const std::string& end )
@@ -201,11 +196,29 @@ EmpireTradeRoutePtr EmpireTrading::createRoute( const std::string& begin, const 
   return route;
 }
 
+TradeRoutesList EmpireTrading::getRoutes( const std::string& begin )
+{
+  TradeRoutesList ret;
+
+  EmpireCityPtr city = _d->empire->getCity( begin );
+
+  for( Impl::TradeRoutes::iterator it = _d->routes.begin(); it != _d->routes.end(); it++ )
+  {
+    if( it->second->getBeginCity() == city || it->second->getEndCity() == city )
+    {
+      ret.push_back( it->second );
+    }
+  }
+
+  return ret;
+}
+
 class EmpireMerchant::Impl
 {
 public:
   EmpireTradeRoute* route;
-  SimpleGoodStore store;
+  SimpleGoodStore sells;
+  SimpleGoodStore buys;
   Point location;
   Point step;
   EmpireCityPtr destCity, baseCity;
@@ -225,13 +238,21 @@ EmpireMerchant::EmpireMerchant() : _d( new Impl )
   _d->isDeleted = false;
 }
 
-EmpireMerchantPtr EmpireMerchant::create( EmpireTradeRoute& route, const std::string& start )
+EmpireMerchantPtr EmpireMerchant::create( EmpireTradeRoute& route, const std::string& start, 
+                                          GoodStore& sell, GoodStore& buy )
 {
   EmpireMerchantPtr ret( new EmpireMerchant() );
   ret->_d->route = &route;
-  bool startCity = route.getBeginCity()->getName() == start;
-  ret->_d->destCity = startCity ? route.getBeginCity() : route.getEndCity();
-  ret->_d->baseCity = startCity ? route.getEndCity() : route.getBeginCity();
+  bool startCity = (route.getBeginCity()->getName() == start);
+  
+  ret->_d->sells.resize( sell );
+  ret->_d->sells.storeAll( sell );
+
+  ret->_d->buys.resize( buy );
+  ret->_d->buys.storeAll( buy );
+
+  ret->_d->baseCity = startCity ? route.getBeginCity() : route.getEndCity();
+  ret->_d->destCity = startCity ? route.getEndCity() : route.getBeginCity();
   ret->_d->location = ret->_d->baseCity->getLocation();
   ret->_d->step = ( ret->_d->destCity->getLocation() - ret->_d->location ) / 3;
   ret->drop();
@@ -276,7 +297,12 @@ EmpireCityPtr EmpireMerchant::getBaseCity() const
   return _d->baseCity;
 }
 
-GoodStore& EmpireMerchant::getGoods()
+GoodStore& EmpireMerchant::getSellGoods()
 {
-  return _d->store;
+  return _d->sells;
+}
+
+GoodStore& EmpireMerchant::getBuyGoods()
+{
+  return _d->buys;
 }

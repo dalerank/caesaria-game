@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_filelist.hpp"
+#include "oc3_filesystem_filelist.hpp"
 
 namespace io
 {
@@ -39,7 +39,7 @@ FileList::FileList( const FilePath& path, bool ignoreCase, bool ignorePaths )
 	#endif
   _d->ignorePaths = ignorePaths;
   _d->path = StringHelper::replace( path.toString(), "\\", "/" );
-	_d->ignoreCase = ignoreCase;
+  _d->ignoreCase = ignoreCase;
 }
 
 FileList::FileList( const FileList& other ) : _d( new Impl )
@@ -55,13 +55,18 @@ FileList& FileList::operator=( const FileList& other )
 
 	_d->files.clear();
 
-	ItemIterator it = other._d->files.begin();
+    ItemIt it = other._d->files.begin();
 	for( ; it != other._d->files.end(); it++ )
   {
 		_d->files.push_back( *it );
   }
 
-	return *this;
+    return *this;
+}
+
+FileList::Items &FileList::_getItems()
+{
+    return _d->files;
 }
 
 FileList::~FileList()

@@ -39,75 +39,75 @@ public:
 
   static FileSystem& instance();
 
-	//! destructor
-	virtual ~FileSystem();
+  //! destructor
+  virtual ~FileSystem();
 
-	//! opens a file for read access
-	virtual NFile createAndOpenFile( const FilePath& filename,
-							                     NFile::Mode mode );
+  //! opens a file for read access
+  virtual NFile createAndOpenFile( const FilePath& filename,
+                                                                       NFile::Mode mode );
 
-	//! opens a file in archive, if not exists return 0
-	virtual NFile loadFileFromArchive( const FilePath& filePath );
+  //! opens a file in archive, if not exists return 0
+  virtual NFile loadFileFromArchive( const FilePath& filePath );
 
-	//! Adds an archive to the file system.
-    virtual ArchivePtr mountArchive( const FilePath& filename,
-		                           Archive::Type archiveType=Archive::unknown,
-			                         bool ignoreCase = true, bool ignorePaths = true,
-                                     const std::string& password="" );
+  //! Adds an archive to the file system.
+  virtual ArchivePtr mountArchive( const FilePath& filename,
+                                   Archive::Type archiveType=Archive::unknown,
+                                   bool ignoreCase = true, bool ignorePaths = true,
+                                   const std::string& password="" );
 
-	//! Adds an archive to the file system.
-    virtual ArchivePtr mountArchive( NFile file,
-			                         Archive::Type archiveType=Archive::unknown,
-		                           bool ignoreCase=true,
-			                         bool ignorePaths=true,
-                                     const std::string& password="" );
+  //! Adds an archive to the file system.
+  virtual ArchivePtr mountArchive( NFile file,
+                                   Archive::Type archiveType=Archive::unknown,
+                                   bool ignoreCase=true,
+                                   bool ignorePaths=true,
+                                   const std::string& password="" );
 
-	//! Adds an archive to the file system.
-    virtual ArchivePtr mountArchive( ArchivePtr archive );
+  //! Adds an archive to the file system.
+  virtual ArchivePtr mountArchive( ArchivePtr archive );
 
-	//! move the hirarchy of the filesystem. moves sourceIndex relative up or down
-	virtual bool moveFileArchive( unsigned int sourceIndex, int relative);
+  //! move the hirarchy of the filesystem. moves sourceIndex relative up or down
+  virtual bool moveFileArchive( unsigned int sourceIndex, int relative);
 
-	//! Adds an external archive loader to the engine.
-	virtual void addArchiveLoader( ArchiveLoaderPtr loader);
+  //! Adds an external archive loader to the engine.
+  virtual void addArchiveLoader( ArchiveLoaderPtr loader);
 
-	//! Returns the total number of archive loaders added.
-	virtual unsigned int getArchiveLoaderCount() const;
+  //! Returns the total number of archive loaders added.
+  virtual unsigned int getArchiveLoaderCount() const;
 
-	//! Gets the archive loader by index.
-	virtual ArchiveLoaderPtr getArchiveLoader( unsigned int index) const;
+  //! Gets the archive loader by index.
+  virtual ArchiveLoaderPtr getArchiveLoader( unsigned int index) const;
 
-	//! gets the file archive count
-	virtual unsigned int getFileArchiveCount() const;
+  //! gets the file archive count
+  virtual unsigned int getFileArchiveCount() const;
 
-	//! gets an archive
-	virtual ArchivePtr getFileArchive( unsigned int index);
+  //! gets an archive
+  virtual ArchivePtr getFileArchive( unsigned int index);
 
-	//! removes an archive from the file system.
-	virtual bool unmountArchive( unsigned int index);
+  //! removes an archive from the file system.
+  virtual bool unmountArchive( unsigned int index);
 
-	//! removes an archive from the file system.
-	virtual bool unmountArchive(const FilePath& filename);
+  //! removes an archive from the file system.
+  virtual bool unmountArchive(const FilePath& filename);
 
-	//! Removes an archive from the file system.
+  //! Removes an archive from the file system.
   virtual bool unmountArchive( ArchivePtr archive);
 
-	//! Returns the string of the current working directory
-	virtual const FilePath& getWorkingDirectory();
+  //! Returns the string of the current working directory
+  virtual const FilePath& getWorkingDirectory();
 
-	//! Changes the current Working Directory to the string given.
-	//! The string is operating system dependent. Under Windows it will look
-	//! like this: "drive:\directory\sudirectory\"
-	virtual bool changeWorkingDirectoryTo(const FilePath& newDirectory);
+  //! Changes the current Working Directory to the string given.
+  //! The string is operating system dependent. Under Windows it will look
+  //! like this: "drive:\directory\sudirectory\"
+  virtual bool changeWorkingDirectoryTo(const FilePath& newDirectory);
 
-	//! Creates a list of files and directories in the current working directory
-	//! and returns it.
-	virtual FileList getFileList();
+  //! Creates a list of files and directories in the current working directory
+  //! and returns it.
+  virtual FileList getFileList();
 
-	//! determines if a file exists and would be able to be opened.
-	virtual bool existFile(const FilePath& filename) const;
+  //! determines if a file exists and would be able to be opened.
+  virtual bool existFile(const FilePath& filename) const;
 
-	Mode setFileListSystem( Mode listType);
+  Mode setFileListSystem( Mode listType);
 
 private:
   //! constructor

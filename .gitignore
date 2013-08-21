@@ -27,3 +27,5 @@ en/*
 
 # Compiled translation files
 *.mo
+
+/*.7pre1

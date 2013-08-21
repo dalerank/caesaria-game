@@ -27,12 +27,17 @@
 
 #include <iterator>
 
-
-
-Propagator::Propagator( CityPtr city )
+class Propagator::Impl
 {
-   _city = city;
-   _tilemap = &_city->getTilemap();
+public:
+  CityPtr city;
+};
+
+
+Propagator::Propagator( CityPtr city ) : _d( new Impl )
+{
+   _d->city = city;
+   _tilemap = &city->getTilemap();
    _allLands = false;
    _allDirections = true;
 }
@@ -217,53 +222,45 @@ bool Propagator::getPath( BuildingPtr destination, PathWay &oPathWay)
    }
 }
 
-void Propagator::getReachedBuildings(const BuildingType buildingType, ReachedBuldings& oPathWayList)
+void Propagator::getRoutes( const BuildingType buildingType, Routes& oPathWayList)
 {
-   // init the building list
-   Buildings buildingList;
-   LandOverlays overlayList = _city->getBuildingList(buildingType);
-   for ( LandOverlays::iterator overlayIt= overlayList.begin(); overlayIt!= overlayList.end(); ++overlayIt)
-   {
-      LandOverlayPtr overlay= *overlayIt;
-      BuildingPtr building= overlay.as<Building>();
-      if( building.isValid() )
-        buildingList.push_back(building);
-   }
+  // init the building list
+  CityHelper helper( _d->city );
+  Buildings buildingList = helper.getBuildings<Building>( buildingType );
 
-   for ( Buildings::iterator itDest = buildingList.begin(); itDest != buildingList.end(); ++itDest)
-   {
-      // for each destination building
-      BuildingPtr destination = *itDest;
+  for( Buildings::iterator itDest = buildingList.begin(); itDest != buildingList.end(); ++itDest )
+  {
+     // for each destination building
+     BuildingPtr destination = *itDest;
 
-      std::set<PathWay> destPath;  // paths to the current building, ordered by distance
+     std::set<PathWay> destPath;  // paths to the current building, ordered by distance
 
-      PtrTilesList destTiles= destination->getAccessRoads();
-      for( PtrTilesList::iterator itTile= destTiles.begin(); itTile != destTiles.end(); ++itTile)
-      {
-         // for each destination tile
-         Tile &tile= **itTile;
+     PtrTilesList destTiles= destination->getAccessRoads();
+     for( PtrTilesList::iterator itTile= destTiles.begin(); itTile != destTiles.end(); ++itTile)
+     {
+        // for each destination tile
+        Tile &tile= **itTile;
 
-         // searches path to that given tile
-         std::map<Tile*, PathWay>::iterator pathWayIt= _completedBranches.find(&tile);
+        // searches path to that given tile
+        std::map<Tile*, PathWay>::iterator pathWayIt= _completedBranches.find(&tile);
 
-         if (pathWayIt != _completedBranches.end())
-         {
-            // we found a path!
-            PathWay &path= (*pathWayIt).second;
-            destPath.insert(path);
-         }
-      }
+        if (pathWayIt != _completedBranches.end())
+        {
+           // we found a path!
+           PathWay &path= (*pathWayIt).second;
+           destPath.insert(path);
+        }
+     }
 
-      if (! destPath.empty())
-      {
-         // there is a path to that destination
-         const PathWay& bestPath = *destPath.begin();
-         oPathWayList.insert( std::make_pair( destination, bestPath) );
-      }
-   }
+     if (!destPath.empty())
+     {
+        // there is a path to that destination
+        oPathWayList[ destination ] = *destPath.begin();
+     }
+  }
 }
 
-void Propagator::getAllPaths(const int maxDistance, std::list<PathWay> &oPathWayList)
+void Propagator::getWays(const int maxDistance, std::list<PathWay> &oPathWayList)
 {
    // cannot use propagate function
    oPathWayList.clear();
@@ -348,4 +345,39 @@ void Propagator::getAllPaths(const int maxDistance, std::list<PathWay> &oPathWay
       // this branch is no longer active
       _activeBranches.erase(firstBranch);
    }
+}
+
+Propagator::~Propagator()
+{
+
+}
+
+Propagator::DirectRoute Propagator::getShortestRoute( const Routes& routes )
+{
+  DirectRoute ret;
+  int minLength = 999;
+
+  for( Propagator::Routes::const_iterator pathWayIt= routes.begin(); 
+       pathWayIt != routes.end(); ++pathWayIt)
+  {
+    // for every warehouse within range
+    const PathWay& pathWay= pathWayIt->second;
+
+    if( pathWay.getLength() < minLength )
+    {
+      minLength = pathWay.getLength();
+      ret.first = pathWayIt->first;
+      ret.second = pathWay;
+    }
+  }
+
+  return ret;
+}
+
+Propagator::DirectRoute Propagator::getShortestRoute( const BuildingType buildingType )
+{
+  Routes routes;
+  getRoutes( buildingType, routes );
+
+  return getShortestRoute( routes );
 }

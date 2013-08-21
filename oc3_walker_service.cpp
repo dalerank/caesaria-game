@@ -125,7 +125,7 @@ void ServiceWalker::computeWalkerPath()
 
   Propagator pathPropagator( _d->city );
   pathPropagator.init( _d->base.as<Construction>() );
-  pathPropagator.getAllPaths(_d->maxDistance, pathWayList);
+  pathPropagator.getWays(_d->maxDistance, pathWayList);
 
   float maxPathValue = 0.0;
   PathWay* bestPath = NULL;

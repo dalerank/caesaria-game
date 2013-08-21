@@ -31,7 +31,11 @@ public:
   virtual Point getLocation() const = 0;
   virtual void setLocation( const Point& location ) = 0;
 
+  // performs one simulation step
+  virtual void timeStep( unsigned int time ) = 0;  
   virtual void resolveMerchantArrived( EmpireMerchantPtr ) = 0;
+
+  virtual EmpirePtr getEmpire() const = 0;
 
   virtual const GoodStore& getSells() const = 0;
   virtual const GoodStore& getBuys() const = 0;

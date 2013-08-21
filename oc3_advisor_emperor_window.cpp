@@ -50,7 +50,7 @@ void AdvisorEmperorWindow::showChangeSalaryWindow()
 {
   GroupBox* gb = new GroupBox( getParent(), Rect( Point( 256, 176 ), Size( 510, 400 )), -1, GroupBox::whiteFrame );
 
-  Label* title = new Label( gb, Rect( 15, 15, gb->getWidth() - 15, 35), _("##set_mayor_salary##"),  false, Label::bgNone );
+  new Label( gb, Rect( 15, 15, gb->getWidth() - 15, 35), _("##set_mayor_salary##"),  false, Label::bgNone );
   ListBox* lbx = new ListBox( gb, Rect( 16, 50, gb->getWidth() - 16, gb->getHeight() - 100 ) );
   lbx->setItemHeight( 22 );
   lbx->setTextAlignment( alignCenter, alignCenter );

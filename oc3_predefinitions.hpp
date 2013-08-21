@@ -38,6 +38,9 @@ typedef std::list< WorkingBuildingPtr > WorkingBuildings;
 PREFEDINE_CLASS_SMARTPOINTER(EmpireCity)
 typedef std::list< EmpireCityPtr > EmpireCities;
 
+PREFEDINE_CLASS_SMARTPOINTER(EmpireTradeRoute)
+typedef std::list< EmpireTradeRoutePtr > TradeRoutesList;
+
 PREFEDINE_CLASS_SMARTPOINTER(House);
 PREFEDINE_CLASS_SMARTPOINTER(Construction)
 PREFEDINE_CLASS_SMARTPOINTER(Warehouse)
@@ -63,7 +66,6 @@ PREFEDINE_CLASS_SMARTPOINTER(School)
 PREFEDINE_CLASS_SMARTPOINTER(College)
 PREFEDINE_CLASS_SMARTPOINTER(EmpireMerchant)
 PREFEDINE_CLASS_SMARTPOINTER(Empire)
-PREFEDINE_CLASS_SMARTPOINTER(EmpireTradeRoute)
 PREFEDINE_CLASS_SMARTPOINTER(MarketLadyHelper)
 
 class Tile;
@@ -87,5 +89,6 @@ class VariantMap;
 class Widget;
 class GuiEnv;
 class Scenario;
+class DateTime;
 
 #endif

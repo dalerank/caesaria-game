@@ -151,6 +151,11 @@ struct Variant2Handler
 
 static Variant2Handler* varHandler = new Variant2Handler();
 
+static bool checkVariantNull( const Variant2Impl *x )
+{
+  return x->is_null;
+}
+
 static void constructNewVariant( Variant2Impl *x, const void *copy)
 {
 	switch (x->type) 
@@ -227,7 +232,7 @@ static void constructNewVariant( Variant2Impl *x, const void *copy)
 
 static void clearVariant(Variant2Impl *d)
 {
-    switch (d->type) 
+  switch( d->type ) 
 	{
     case Variant::String:
       v_clear<std::string>(d);
@@ -1942,4 +1947,5 @@ Variant2Handler::Variant2Handler()
 	construct = constructNewVariant;
 	convert = convertVariantType2Type;
 	clear = clearVariant;
+  isNull = checkVariantNull;
 }

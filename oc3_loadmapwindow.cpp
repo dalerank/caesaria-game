@@ -22,7 +22,7 @@
 #include "oc3_listbox.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_filesystem.hpp"
-#include "oc3_filelist.hpp"
+#include "oc3_filesystem_filelist.hpp"
 #include "oc3_color.hpp"
 
 class LoadMapWindow::Impl
@@ -86,7 +86,7 @@ void LoadMapWindow::Impl::fillFiles()
 {
   io::FileList::Items items = io::FileDir( directory ).getEntries().getItems();
 
-  for( io::FileList::ItemIterator it=items.begin(); it != items.end(); ++it)
+  for( io::FileList::ItemIt it=items.begin(); it != items.end(); ++it)
   {
     if( !(*it).isDirectory && (*it).fullName.getExtension() == fileExtension )
     {

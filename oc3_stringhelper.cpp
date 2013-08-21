@@ -86,14 +86,17 @@ float StringHelper::toFloat( const char* in, const char** out /*= 0*/ )
     ++in;
   }
 
+  ++in; //this char need colon or point
   float floatValue = (float)intValue;
 
   // If there are any digits left to parse, then we need to use
   // floating point arithmetic from here.
+  float limiter=10;
   while ( ( *in >= '0') && ( *in <= '9' ) )
   {
-    floatValue = (floatValue * 10.f) + (float)(*in - '0');
+    floatValue += (float)(*in - '0') / limiter;
     ++in;
+    limiter *= 10.f;
     if (floatValue > FLT_MAX) // Just give up.
       break;
   }

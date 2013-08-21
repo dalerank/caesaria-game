@@ -111,8 +111,6 @@ inline bool isEqual(const T a, const T b)
     return (a + ROUNDING_ERROR_f32 >= b) && (a - ROUNDING_ERROR_f32 <= b);
 }
 
-
-
 }
 
 #endif

@@ -116,7 +116,7 @@ class ColorHelper
 
 
 	//! Returns the alpha component from A1R5G5B5 color
-	/** In Irrlicht, alpha refers to opacity.
+    /** alpha refers to opacity.
 	\return The alpha value of the color. 0 is transparent, 1 is opaque. */
 	static inline unsigned int getAlpha(unsigned short color)
 	{
@@ -167,8 +167,7 @@ public:
   enum Format
   {
     //! 16 bit color format used by the software driver.
-    /** It is thus preferred by all other irrlicht engine video drivers.
-    There are 5 bits for every color component, and a single bit is left
+    /** There are 5 bits for every color component, and a single bit is left
     for alpha information. */
     colorA1R5G5B5 = 0,
 

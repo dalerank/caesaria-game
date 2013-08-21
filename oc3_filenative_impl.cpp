@@ -18,10 +18,11 @@
 #define _WITH_GETLINE
 
 #include "oc3_filenative_impl.hpp"
+#include "oc3_stringhelper.hpp"
 
-#ifdef _WIN32
+#ifdef OC3_PLATFORM_WIN
 #define getline_def getline_win
-#else
+#elif defined(OC3_PLATFORM_UNIX)
 #define getline_def getline
 #endif
 
@@ -94,14 +95,14 @@ long FileNative::getPos() const
 	return ftell(_file);
 }
 
-#ifdef _WIN32
+#ifdef OC3_PLATFORM_WIN
 size_t getline_win(char **linebuf, size_t *linebufsz, FILE *file)
 {
     int delimiter = '\n';
-    static const int GROWBY = 80; /* how large we will grow strings by */
+    //static const int GROWBY = 80; /* how large we will grow strings by */
     
     int ch;
-    int idx = 0;
+    unsigned int idx = 0;
     
     if (file == NULL || linebuf==NULL || linebufsz == NULL || *linebuf == NULL || *linebufsz < 2) 
     {
@@ -126,7 +127,7 @@ size_t getline_win(char **linebuf, size_t *linebufsz, FILE *file)
 
 	return idx;
 }
-#endif
+#endif //OC3_PLATFORM_WIN
 
 ByteArray FileNative::readLine()
 {
@@ -153,7 +154,7 @@ ByteArray FileNative::readLine()
 
         if( readOneLineCounter > 1000 )
         {
-            _OC3_DEBUG_BREAK_IF( readOneLineCounter > 1000 && "too many iteration for read one line" );
+            StringHelper::debug( 0xff, "Too many iteration for read one line" );
             return ByteArray();
         }
 
@@ -189,22 +190,31 @@ ByteArray FileNative::read(unsigned int sizeToRead)
 //! opens the file
 void FileNative::openFile()
 {
-  if( _name.toString().size() == 0) // bugfix posted by rt
+  if( _name.toString().empty() ) // bugfix posted by rt
   {
     _file = 0;
     return;
   }
 
   const char* modeStr[] = { "rb", "wb", "ab" };
-	_OC3_DEBUG_BREAK_IF( (unsigned int)_mode > FSEntity::fmAppend && "unsupported file open mode" );
-    _file = fopen( _name.toString().c_str(), modeStr[ _mode ] );
-
-  if (_file)
+  if( (unsigned int)_mode > FSEntity::fmAppend )
   {
-     // get FileSize
-     fseek(_file, 0, SEEK_END);
-     _size = getPos();
-     fseek(_file, 0, SEEK_SET);
+    StringHelper::debug( 0xff, "Unsupported file open mode for %s", _name.toString().c_str() );
+    _mode = FSEntity::fmRead;
+  }
+
+  _file = fopen( _name.toString().c_str(), modeStr[ _mode ] );
+
+  if( _file )
+  {
+   // get FileSize
+   fseek(_file, 0, SEEK_END);
+   _size = getPos();
+   fseek(_file, 0, SEEK_SET);
+  }
+  else
+  {
+    StringHelper::debug( 0xff, "FileNative: Can't open file %s", _name.toString().c_str() );
   }
 }
 

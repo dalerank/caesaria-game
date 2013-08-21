@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_FARM_H_INCLUDED__
 #define __OPENCAESAR3_FARM_H_INCLUDED__
 
-#include "oc3_factory_building.hpp"
+#include "oc3_building_factory.hpp"
 
 class Farm : public Factory
 {

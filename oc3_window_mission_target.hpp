@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_EMPIRE_H_INCLUDED__
-#define __OPENCAESAR3_EMPIRE_H_INCLUDED__
+#ifndef __OPENCAESAR3_MISSION_TARGETS_WINDOW_H_INCLUDED__
+#define __OPENCAESAR3_MISSION_TARGETS_WINDOW_H_INCLUDED__
 
 #include "oc3_scopedptr.hpp"
 #include "oc3_predefinitions.hpp"

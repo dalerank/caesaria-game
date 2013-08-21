@@ -30,10 +30,10 @@ public:
   virtual ~GroupBox();
 
   //! sets an background image
-  virtual void setBackgroundImage( Picture* image);
+  virtual void setBackgroundImage( const Picture& image);
 
   //! Gets the background image
-  virtual Picture* getBackgroundImage() const;
+  virtual const Picture& getBackgroundImage() const;
 
   //! sets if the image should scale to fit the element
   virtual void setScaleBackgroundImage(bool scale);

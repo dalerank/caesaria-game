@@ -36,14 +36,14 @@
 #include "oc3_filesystem.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_animation_bank.hpp"
-#include "oc3_filelist.hpp"
+#include "oc3_filesystem_filelist.hpp"
 #include "oc3_empire.hpp"
 #include "oc3_exception.hpp"
 
 #include <libintl.h>
 #include <list>
 
-#if defined(_MSC_VER)
+#if defined(OC3_PLATFORM_WIN)
   #undef main
 #endif
 
@@ -86,13 +86,15 @@ void Application::initSound()
   SoundEngine::instance().init();
 }
 
-void Application::initWaitPictures()
+void Application::mountArchives()
 {
-  std::cout << "load wait images begin" << std::endl;
+  StringHelper::debug( 0xff, "mount archives begin" );
 
-  PictureBank::instance().loadWaitPics( GfxEngine::instance() );
-  
-  std::cout << "load wait images end" << std::endl;
+  io::FileSystem& fs = io::FileSystem::instance();
+
+  fs.mountArchive( AppConfig::rcpath( "/pics/pics_wait.zip" ) );
+  fs.mountArchive( AppConfig::rcpath( "/pics/pics.zip" ) );
+  fs.mountArchive( AppConfig::rcpath( "/pics/pics_oc3.zip" ) );
 }
 
 void Application::initGuiEnvironment()
@@ -102,11 +104,6 @@ void Application::initGuiEnvironment()
 
 void Application::Impl::initPictures(const io::FilePath& resourcePath)
 {
-  PictureBank &pic_loader = PictureBank::instance();
-  
-  StringHelper::debug( 0xff, "Load images from archives" );
-  pic_loader.loadAllPics( GfxEngine::instance() );
-
   StringHelper::debug( 0xff, "Create animations for carts" );
   AnimationBank::loadCarts();
 
@@ -117,7 +114,7 @@ void Application::Impl::initPictures(const io::FilePath& resourcePath)
   FontCollection::instance().initialize( resourcePath.toString() );
 
   StringHelper::debug( 0xff, "Create runtime pictures" );
-  pic_loader.createResources();
+  PictureBank::instance().createResources();
 }
 
 void Application::setScreenWait()
@@ -131,10 +128,10 @@ io::FileList::Items Application::Impl::scanForMaps(const io::FilePath& resourceP
 {
   // scan for map-files and make their list    
   io::FileDir mapsDir( resourcePath.toString() + "/maps/" );
-  io::FileList::Items items = mapsDir.getEntries().getItems();
+  const io::FileList::Items& items = mapsDir.getEntries().getItems();
 
   io::FileList::Items ret;
-  for( io::FileList::ItemIterator it=items.begin(); it != items.end(); ++it)
+  for( io::FileList::ConstItemIt it=items.begin(); it != items.end(); ++it)
   {
     if( !(*it).isDirectory )
     {
@@ -232,7 +229,7 @@ void Application::start()
   initGuiEnvironment();
   initSound();
   //SoundEngine::instance().play_music("resources/sound/drums.wav");
-  initWaitPictures();  // init some quick pictures for screenWait
+  mountArchives();  // init some quick pictures for screenWait
   setScreenWait();
 
   _d->initPictures( AppConfig::rcpath() );

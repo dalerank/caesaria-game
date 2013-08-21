@@ -34,14 +34,14 @@ public:
   void setConsumerBuilding( BuildingPtr building );
   BuildingPtr getProducerBuilding();
   BuildingPtr getConsumerBuilding();
-  void setStock(const GoodStock &stock);
+  GoodStock& getStock();
 
   Picture& getCartPicture();
   virtual void getPictureList(std::vector<Picture> &oPics);
   virtual void onNewDirection();
   virtual void onDestination();
 
-  void send2City( BuildingPtr building, const GoodStock& stock );
+  void send2City( BuildingPtr building, GoodStock& carry );
 
   void computeWalkerDestination();
  

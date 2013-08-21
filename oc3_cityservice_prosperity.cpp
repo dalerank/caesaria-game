@@ -20,7 +20,7 @@
 #include "oc3_house.hpp"
 #include "oc3_house_level.hpp"
 #include "oc3_tile.hpp"
-#include "oc3_time.hpp"
+#include "oc3_gamedate.hpp"
 
 class CityServiceProsperity::Impl
 {
@@ -43,7 +43,7 @@ CityServiceProsperity::CityServiceProsperity( CityPtr city )
   : CityService( "prosperity" ), _d( new Impl )
 {
   _d->city = city;
-  _d->lastDate = city->getDate();
+  _d->lastDate = GameDate::current();
   _d->prosperity = 0;
   _d->prosperityExtend = 0;
 }
@@ -53,9 +53,9 @@ void CityServiceProsperity::update( const unsigned int time )
   if( time % 44 != 1 )
     return;
 
-  if( abs( _d->city->getDate().getYear() - _d->lastDate.getYear() ) == 1 )
+  if( abs( GameDate::current().getYear() - _d->lastDate.getYear() ) == 1 )
   {
-    _d->lastDate = _d->city->getDate();
+    _d->lastDate = GameDate::current();
 
     if( _d->city->getPopulation() == 0 )
     {

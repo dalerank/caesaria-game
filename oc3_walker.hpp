@@ -72,6 +72,8 @@ public:
    void save( VariantMap& stream) const;
    void load( const VariantMap& stream);
 
+   void go();
+
    // graphic
    WalkerGraphicType getWalkerGraphic() const;
    virtual void getPictureList(std::vector<Picture> &oPics);

@@ -32,6 +32,10 @@
 #include "oc3_goodstore.hpp"
 #include "oc3_empire_trading.hpp"
 #include "oc3_cityfunds.hpp"
+#include "oc3_goodhelper.hpp"
+#include "oc3_app_config.hpp"
+
+static const char* empMapOffset = "EmpireMapWindowOffset";
 
 class EmpireMapWindow::Impl
 {
@@ -157,7 +161,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
     if( sellgoods.getMaxQty( (GoodType)i ) > 0  )
     {
       Label* lb = new Label( tradeInfo, Rect( startDraw + Point( 70 + 30 * k, 0 ), Size( 24, 24 ) ) );
-      lb->setBackgroundPicture( Picture::load( ResourceGroup::empirepnls, 11 + i ) );
+      lb->setBackgroundPicture( GoodHelper::getPicture( GoodType(i), true) );
       k++;
     }
   }
@@ -171,7 +175,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
     if( buygoods.getMaxQty( (GoodType)i ) > 0  )
     {
       Label* lb = new Label( tradeInfo, Rect( buyPoint + Point( 70 + 30 * k, 0 ), Size( 24, 24 ) ) );
-      lb->setBackgroundPicture( Picture::load( ResourceGroup::empirepnls, 11 + i ) );
+      lb->setBackgroundPicture(  GoodHelper::getPicture( GoodType(i), true) );
       k++;
     }
   }
@@ -195,12 +199,12 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
   const GoodStore& sellgoods = currentCity->getSells();
   for( int i=0, k=0; i < G_MAX; i++ )
   {
-    int maxsell = sellgoods.getMaxQty( (GoodType)i );
-    int cursell = sellgoods.getCurrentQty( (GoodType)i );
+    int maxsell = sellgoods.getMaxQty( (GoodType)i ) / 100;
+    int cursell = sellgoods.getCurrentQty( (GoodType)i ) / 100;
     if( maxsell > 0  )
     {
       Label* lb = new Label( tradeInfo, Rect( startDraw + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );
-      lb->setBackgroundPicture( Picture::load( ResourceGroup::empirepnls, 11 + i ) );
+      lb->setBackgroundPicture(  GoodHelper::getPicture( GoodType(i), true) );
 
       std::string text = StringHelper::format( 0xff, "%d/%d", cursell, maxsell );
       new Label( tradeInfo, Rect( startDraw + Point( 110 + 100 * k, 0), Size( 70, 30 ) ), text );
@@ -214,12 +218,12 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
   const GoodStore& buygoods = currentCity->getBuys();
   for( int i=0, k=0; i < G_MAX; i++ )
   {
-    int maxbuy = buygoods.getMaxQty( (GoodType)i );
-    int curbuy = buygoods.getCurrentQty( (GoodType)i );
+    int maxbuy = buygoods.getMaxQty( (GoodType)i ) / 100;
+    int curbuy = buygoods.getCurrentQty( (GoodType)i ) / 100;
     if( maxbuy > 0  )
     {
       Label* lb = new Label( tradeInfo, Rect( buyPoint + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );
-      lb->setBackgroundPicture( Picture::load( ResourceGroup::empirepnls, 11 + i ) );
+      lb->setBackgroundPicture( GoodHelper::getPicture( GoodType(i), true) );
 
       std::string text = StringHelper::format( 0xff, "%d/%d", curbuy, maxbuy );
       new Label( tradeInfo, Rect( buyPoint + Point( 110 + 100 * k, 0), Size( 70, 30 ) ), text );
@@ -262,6 +266,7 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
   _d->dragging = false;
   _d->lbCityTitle = new Label( this, Rect( Point( (getWidth() - 240) / 2 + 60, getHeight() - 132 ), Size( 240, 32 )) );
   _d->lbCityTitle->setFont( Font::create( FONT_3 ) );
+  _d->offset = AppConfig::get( empMapOffset ).toPoint();
 
   _d->tradeInfo = new Widget( this, -1, Rect( 0, getHeight() - 120, getWidth(), getHeight() ) );
 
@@ -438,4 +443,9 @@ EmpireMapWindow* EmpireMapWindow::create( Scenario* scenario, Widget* parent, in
 Signal0<>& EmpireMapWindow::onTradeAdvisorRequest()
 {
   return _d->btnTrade->onClicked(); 
+}
+
+EmpireMapWindow::~EmpireMapWindow()
+{
+  AppConfig::set( empMapOffset, _d->offset );
 }

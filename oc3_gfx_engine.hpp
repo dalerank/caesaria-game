@@ -39,6 +39,7 @@ public:
   
   void setScreenSize(const int width, const int height);
   Size getScreenSize() const;
+
   int getScreenWidth() const;
   int getScreenHeight() const;
 
@@ -66,8 +67,7 @@ public:
 protected:
   static GfxEngine* _instance;
 
-  int _screen_width;   // screen width
-  int _screen_height;  // screen height
+  Size _srcSize;
 };
 
 #endif

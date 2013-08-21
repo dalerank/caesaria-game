@@ -18,7 +18,6 @@
 #define __OPENCAESAR3_FILE_H_INCLUDED__
 
 #include "oc3_filesystem_entity.hpp"
-#include "oc3_scopedptr.hpp"
 
 namespace io
 {
@@ -26,9 +25,9 @@ namespace io
 class NFile : public FSEntity
 {
 public:	
-	NFile( FSEntityPtr file );
+  NFile( FSEntityPtr file );
 
-	NFile();
+  NFile();
 
   ~NFile();
 
@@ -38,6 +37,8 @@ public:
   ByteArray readLine();
 
   ByteArray read( unsigned int sizeToRead );
+
+  ByteArray readAll();
 
   int write(const void* buffer, unsigned int sizeToWrite);
 
@@ -67,7 +68,7 @@ public:
   static NFile open( const FilePath& fileName, FSEntity::Mode mode=FSEntity::fmRead );
 
 private:
-	FSEntityPtr _entity;
+  FSEntityPtr _entity;
 };
 
 } //end namesapce io

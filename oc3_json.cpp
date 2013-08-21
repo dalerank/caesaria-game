@@ -143,23 +143,30 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
     {
       VariantMap vmap = data.toMap();
       
-      str = "{ \n";
-      StringArray pairs;
-      for( VariantMap::iterator it = vmap.begin(); it != vmap.end(); it++ )
-      {        
-        std::string serializedValue = serialize( it->second, tab + "  ");
-        if( serializedValue.empty())
-        {
-                //success = false;
-          pairs.push_back( tab + sanitizeString( it->first ) + std::string( " : \"nonSerializableValue\"" ) );
-          continue;
-        }
-        pairs.push_back( tab + sanitizeString( it->first ) + " : " + serializedValue );
+      if( vmap.empty() )
+      {
+        str = "{}";
       }
-      str += join(pairs, ",\n");
-      std::string rtab( tab );
-      rtab.resize( std::max<int>( 0, tab.size() - 2 ) );
-      str += std::string( "\n" ) + rtab + "}";
+      else
+      {
+        str = "{ \n";
+        StringArray pairs;
+        for( VariantMap::iterator it = vmap.begin(); it != vmap.end(); it++ )
+        {        
+          std::string serializedValue = serialize( it->second, tab + "  ");
+          if( serializedValue.empty())
+          {
+                  //success = false;
+            pairs.push_back( tab + sanitizeString( it->first ) + std::string( " : \"nonSerializableValue\"" ) );
+            continue;
+          }
+          pairs.push_back( tab + sanitizeString( it->first ) + " : " + serializedValue );
+        }
+        str += join(pairs, ",\n");
+        std::string rtab( tab );
+        rtab.resize( std::max<int>( 0, tab.size() - 2 ) );
+        str += std::string( "\n" ) + rtab + "}";
+      }
     }
     else if((data.type() == Variant::String) || (data.type() == Variant::NByteArray)) // a string or a byte array?
     {
@@ -167,7 +174,9 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
     }
     else if(data.type() == Variant::Double || data.type() == Variant::Float) // double?
     {
+      // TODO: cheap hack - almost locale independent double formatting
       str = StringHelper::format( 0xff, "\"%f\"", data.toDouble() );
+      str = StringHelper::replace(str, ",", ".");
       if( str.find(".") == std::string::npos && str.find("e") == std::string::npos )
       {
          str += ".0";
@@ -191,7 +200,10 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
     else if( data.type() == Variant::NPointF)
     {
       PointF pos = data.toPointF();
-      str = StringHelper::format( 0xff, "[ \"%f\", \"%f\" ]", pos.getX(), pos.getY() );
+      // TODO: cheap hack - almost locale independent double formatting
+      std::string posX = StringHelper::replace(StringHelper::format( 0xff, "%f", pos.getX()), ",", ".");
+      std::string posY = StringHelper::replace(StringHelper::format( 0xff, "%f", pos.getY()), ",", ".");
+      str = StringHelper::format( 0xff, "[ \"%s\", \"%s\" ]", posX.c_str(), posY.c_str() );
     }
     else if (data.type() == Variant::Bool) // boolean value?
     {
@@ -478,7 +490,7 @@ Variant Json::parseObjectName(const std::string &json, int &index, bool &success
     }
   }
 
-  for( int i=0; i < s.size(); i++ )
+  for( unsigned int i=0; i < s.size(); i++ )
   {
     if( std::string("{}[],").find( s[i] ) != std::string::npos )
     {
@@ -673,7 +685,7 @@ int Json::lookAhead(const std::string &json, int index)
  */
 int Json::nextToken(const std::string &json, int &index)
 {
-  int saveIndex = index;
+  //int saveIndex = index;
   Json::eatWhitespace(json, index);
 
   if(index == (int)json.size())

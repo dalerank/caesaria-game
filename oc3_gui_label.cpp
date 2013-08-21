@@ -41,16 +41,14 @@ public:
   string prefix;
   bool needUpdatePicture;
   int lineIntervalOffset;
-  Picture* bgPicture;
+  Picture bgPicture;
   PictureRef background;
   PictureRef textPicture;
 
   Impl() : textMargin( Rect( 0, 0, 0, 0) ),
 		    	 OverrideBGColorEnabled(false), WordWrap(false),
 			     RestrainTextInside(true), RightToLeft(false), 
-                 needUpdatePicture(false), lineIntervalOffset( 0 ),
-                 bgPicture( 0 )
-
+           needUpdatePicture(false), lineIntervalOffset( 0 )
 	{
     font = Font::create( FONT_2 );
 	}
@@ -73,7 +71,6 @@ Label::Label(Widget* parent, const Rect& rectangle, const string& text, bool bor
 : Widget( parent, id, rectangle),
 	_d( new Impl )
 {
-  _d->bgPicture = 0;
   _d->isBorderVisible = border;
   _d->backgroundMode = background;
  
@@ -116,9 +113,9 @@ void Label::_updateTexture( GfxEngine& painter )
   }
 
   // draw button background
-  if( _d->bgPicture )
+  if( _d->bgPicture.isValid() )
   {
-    _d->background->draw( *_d->bgPicture, _d->bgOffset.getX(), _d->bgOffset.getY() );
+    _d->background->draw( _d->bgPicture, _d->bgOffset );
   }    
   else
   {
@@ -588,7 +585,7 @@ void Label::setPrefixText( const string& prefix )
 
 void Label::setBackgroundPicture( const Picture& picture, const Point& offset )
 {
-    _d->bgPicture = const_cast< Picture* >( &picture );
+    _d->bgPicture = picture;
     _d->bgOffset = offset;
     _d->needUpdatePicture = true;
 }

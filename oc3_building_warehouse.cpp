@@ -258,7 +258,7 @@ void WarehouseStore::applyStorageReservation(GoodStock &stock, const long reserv
     {
       int tileAmount = std::min(amount, subTile._stock._maxQty - subTile._stock._currentQty);
       // std::cout << "put in half filled" << std::endl;
-      subTile._stock.addStock(stock, tileAmount);
+      subTile._stock.append(stock, tileAmount);
       amount -= tileAmount;
     }
   }
@@ -277,7 +277,7 @@ void WarehouseStore::applyStorageReservation(GoodStock &stock, const long reserv
     {
       int tileAmount = std::min(amount, subTile._stock._maxQty);
       // std::cout << "put in empty tile" << std::endl;
-      subTile._stock.addStock(stock, tileAmount);
+      subTile._stock.append(stock, tileAmount);
       amount -= tileAmount;
     }
   }
@@ -318,7 +318,7 @@ void WarehouseStore::applyRetrieveReservation(GoodStock &stock, const long reser
     {
       int tileAmount = std::min(amount, subTile._stock._currentQty);
       // std::cout << "retrieve from half filled" << std::endl;
-      stock.addStock(subTile._stock, tileAmount);
+      stock.append(subTile._stock, tileAmount);
       amount -= tileAmount;
     }
   }
@@ -337,7 +337,7 @@ void WarehouseStore::applyRetrieveReservation(GoodStock &stock, const long reser
     {
       int tileAmount = std::min(amount, subTile._stock._currentQty);
       // std::cout << "retrieve from filled" << std::endl;
-      stock.addStock(subTile._stock, tileAmount);
+      stock.append(subTile._stock, tileAmount);
       amount -= tileAmount;
     }
   }
@@ -389,11 +389,6 @@ void Warehouse::init()
   _d->subTiles.push_back( WarehouseTile( TilePos( 1, 0 ) ));
   _d->subTiles.push_back( WarehouseTile( TilePos( 2, 0 ) ));
 
-  for (unsigned int n = 0; n<_d->subTiles.size(); ++n)
-  {
-     _fgPictures[n+4] = _d->subTiles[n]._picture;
-  }
-
   _d->goodStore.init(*this);
 
   computePictures();
@@ -418,10 +413,11 @@ void Warehouse::timeStep(const unsigned long time)
 
 void Warehouse::computePictures()
 {
-  for (Impl::WhTiles::iterator subTilesIt=_d->subTiles.begin(); subTilesIt!=_d->subTiles.end(); ++subTilesIt)
+  int index = 4;
+  for (Impl::WhTiles::iterator subTilesIt=_d->subTiles.begin(); subTilesIt!=_d->subTiles.end(); ++subTilesIt, index++)
   {
-     WarehouseTile &subTile = *subTilesIt;
-     subTile.computePicture();
+     (*subTilesIt).computePicture();
+     _fgPictures[index] = (*subTilesIt)._picture;
   }
 }
 

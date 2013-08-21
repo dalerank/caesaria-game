@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#include "oc3_factory_building.hpp"
+#include "oc3_building_factory.hpp"
 
 #include "oc3_tile.hpp"
 #include "oc3_scenario.hpp"
@@ -37,7 +37,7 @@ public:
   bool isActive;
   float productionRate;  // max production / year
   float progress;  // progress of the work, in percent (0-100).
-  Picture* stockPicture; // stock of input good
+  Picture stockPicture; // stock of input good
   SimpleGoodStore goodStore;
   GoodType inGoodType;
   GoodType outGoodType;
@@ -176,17 +176,24 @@ void Factory::timeStep(const unsigned long time)
 void Factory::deliverGood()
 {
   // make a cart pusher and send him away
-  if( _mayDeliverGood() && _d->goodStore.getCurrentQty( _d->outGoodType ) >= 100 )
+  int qty = _d->goodStore.getCurrentQty( _d->outGoodType );
+  if( _mayDeliverGood() && qty >= 100 )
   {      
-    GoodStock stock(_d->outGoodType, 100, 0);
-    _d->goodStore.retrieve( stock, 100 );
-
     CartPusherPtr walker = CartPusher::create( Scenario::instance().getCity() );
-    walker->send2City( BuildingPtr( this ), stock );
 
+    GoodStock pusherStock( _d->outGoodType, qty, 0 ); 
+    _d->goodStore.retrieve( pusherStock, math::clamp( qty, 0, 400 ) );
+
+    walker->send2City( BuildingPtr( this ), pusherStock );
+
+    //success to send cartpusher
     if( !walker->isDeleted() )
     {
       addWalker( walker.as<Walker>() );
+    }
+    else
+    {
+      _d->goodStore.store( walker->getStock(), walker->getStock()._currentQty );
     }
   }
 }

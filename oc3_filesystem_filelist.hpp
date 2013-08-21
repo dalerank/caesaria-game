@@ -30,7 +30,8 @@ class FileList : public ReferenceCounted
 {
 public:
   typedef std::vector< FileListItem > Items;
-	typedef Items::iterator ItemIterator;
+  typedef Items::iterator ItemIt;
+  typedef Items::const_iterator ConstItemIt;
 
 	//! Constructor
 	/** \param path The path of this file archive */
@@ -55,7 +56,7 @@ public:
 	//! Returns the amount of files in the filelist.
 	unsigned int getFileCount() const;
 
-  const Items& getItems() const;  
+    const Items& getItems() const;
 
 	//! Gets the name of a file in the list, based on an index.
 	const FilePath& getFileName(unsigned int index) const;
@@ -86,8 +87,10 @@ public:
 	FileList& operator=( const FileList& other );
 
 protected:
+    Items& _getItems();
 
-	class Impl;
+private:
+    class Impl;
 	Impl* _d;
 };
 

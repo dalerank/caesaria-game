@@ -18,6 +18,9 @@
 
 #include "oc3_scopedptr.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_signals.hpp"
+#include "oc3_enums.hpp"
+#include "oc3_predefinitions.hpp"
 
 struct FundIssue
 {
@@ -26,6 +29,10 @@ struct FundIssue
 
   FundIssue() : type( 0 ), money( 0 ) {}
   FundIssue( int t, int m ) : type( t ), money( m ) {}
+
+  static void resolve( CityPtr city, int type, int money );
+  static void importGoods( CityPtr city, GoodType type, int qty );
+  static void exportGoods( CityPtr city, GoodType type, int qty );
 };
 
 class CityFunds
@@ -54,6 +61,9 @@ public:
 
   VariantMap save() const;
   void load( const VariantMap& stream );
+
+oc3_signals public:
+  Signal1<int>& onChange();
 
 private:
   class Impl;

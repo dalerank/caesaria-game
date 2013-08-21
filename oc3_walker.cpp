@@ -479,6 +479,12 @@ void Walker::_setDirection( DirectionType direction )
 {
   _d->action._direction = direction;
 }
+
+void Walker::go()
+{
+  _d->action._action = WA_MOVE;       // default action
+}
+
 Soldier::Soldier()
 {
    _walkerType = WT_SOLDIER;

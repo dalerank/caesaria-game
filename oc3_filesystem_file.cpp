@@ -17,11 +17,11 @@
 #include "oc3_filesystem.hpp"
 #include "oc3_filepath.hpp"
 
-#ifdef _WIN32
+#if defined(OC3_PLATFORM_WIN)
 #define getline_def getline_win
-#else
+#elif defined(OC3_PLATFORM_UNIX)
 #define getline_def getline
-#endif
+#endif //OC3_PLATFORM_UNIX
 
 namespace io
 {
@@ -30,7 +30,7 @@ static const FilePath purePath = "";
 
 NFile NFile::open(const FilePath& fileName, FSEntity::Mode mode)
 {
-	return FileSystem::instance().createAndOpenFile( fileName, mode );
+  return FileSystem::instance().createAndOpenFile( fileName, mode );
 }
 
 NFile::NFile()
@@ -95,6 +95,12 @@ ByteArray NFile::readLine()
 ByteArray NFile::read( unsigned int sizeToRead)
 {
   return _entity.isValid() ? _entity->read( sizeToRead ) : ByteArray();
+}
+
+ByteArray NFile::readAll()
+{
+  seek( 0 );
+  return read( getSize() );
 }
 
 //! returns name of file

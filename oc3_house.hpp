@@ -27,53 +27,51 @@ class GoodStore;
 class House : public Building
 {
 public:
-   enum { smallHovel=1, bigTent, smallHut, bigHut } Level;
+  enum { smallHovel=1, bigTent, smallHut, bigHut } Level;
 
-   House( const int houseId=smallHovel );
+  House( const int houseId=smallHovel );
 
-   void timeStep(const unsigned long time);
+  void timeStep(const unsigned long time);
 
-   virtual GoodStore& getGoodStore();
+  virtual GoodStore& getGoodStore();
 
-   // return the current house level
-   const HouseLevelSpec& getLevelSpec() const;
+  // return the current house level
+  const HouseLevelSpec& getLevelSpec() const;
 
-   virtual void applyService(ServiceWalkerPtr walker);
-   virtual float evaluateService(ServiceWalkerPtr walker);
-   virtual void buyMarket(ServiceWalkerPtr walker);
+  virtual void applyService(ServiceWalkerPtr walker);
+  virtual float evaluateService(ServiceWalkerPtr walker);
+  virtual void buyMarket(ServiceWalkerPtr walker);
 
-   bool hasServiceAccess(const ServiceType service);
-   int getServiceAccess(const ServiceType service);
-   int getFoodLevel();
-   void setServiceAccess(const ServiceType service, const int access);
-   char getDesirabilityInfluence() const;
-   unsigned char getDesirabilityRange() const;
-   char getDesirabilityStep() const;
-   int getScholars() const;
+  bool hasServiceAccess(const ServiceType service);
+  int getServiceAccess(const ServiceType service);
+  int getFoodLevel();
+  void setServiceAccess(const ServiceType service, const int access);
+  char getDesirabilityInfluence() const;
+  unsigned char getDesirabilityRange() const;
+  char getDesirabilityStep() const;
+  int getScholars() const;
 
-   void levelUp();
-   void levelDown();
+  void levelUp();
+  void levelDown();
 
-   void destroy();
+  void destroy();
 
-   void save(VariantMap& stream) const;
-   void load(const VariantMap& stream);
+  void save(VariantMap& stream) const;
+  void load(const VariantMap& stream);
 
-   int getNbHabitants();
-   int getMaxHabitants();
-   void addHabitants( const int newHabitCount );
+  int getNbHabitants();
+  int getMaxHabitants();
+  void addHabitants( const int newHabitCount );
 
-   int collectTaxes();
+  int collectTaxes();
 
-   int getMaxDistance2Road() const; 
+  int getMaxDistance2Road() const; 
 
-   bool isWalkable() const;
-
-private:
-
-   void _update();
+  bool isWalkable() const;
 
 private:
+
+  void _update();
   void _tryUpdate_1_to_11_lvl( int level, int startSmallPic, int startBigPic, const char desirability );
   void _tryDegrage_11_to_2_lvl( int smallPic, int bigPic, const char desirability );
 

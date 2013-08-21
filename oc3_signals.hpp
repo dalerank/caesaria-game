@@ -129,6 +129,11 @@ public:
 		delegateList.push_back( makeDelegate( obj, func ) );
 	}
 
+  void disconnectAll()
+  {
+    delegateList.clear();
+  }
+
 	void disconnect( _Delegate delegate )
 	{
 		for (DelegateIterator it = delegateList.begin(); it != delegateList.end(); ++it)
@@ -136,7 +141,8 @@ public:
 			{
 				delegateList.erase( it );
 				return;
-			}	}
+			}	
+  }
 
 	template< class X, class Y >
 	void disconnect( Y * obj, void (X::*func)( Param1 p1 ) )

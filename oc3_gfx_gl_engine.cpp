@@ -51,17 +51,20 @@ void GfxGlEngine::init()
 
    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
 
-   _screen = SDL_SetVideoMode(_screen_width, _screen_height, 32, SDL_OPENGL | SDL_FULLSCREEN);
-   if (_screen == NULL) THROW("Unable to set video mode: " << SDL_GetError());
+   _screen = SDL_SetVideoMode( _srcSize.getWidth(), _srcSize.getHeight(), 32, SDL_OPENGL | SDL_FULLSCREEN);
+   if( _screen == NULL )
+   {
+       THROW("Unable to set video mode: " << SDL_GetError());
+   }
 
    glEnable( GL_TEXTURE_2D );
    glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-   glViewport( 0, 0, _screen_width, _screen_height);
+   glViewport( 0, 0, _srcSize.getWidth(), _srcSize.getHeight() );
    glClear(GL_COLOR_BUFFER_BIT);  // black screen
    glDisable(GL_DEPTH_TEST);      // no depth test
    glMatrixMode(GL_PROJECTION);
    glLoadIdentity();
-   glOrtho(0, _screen_width, _screen_height, 0, 0, 1);
+   glOrtho(0, _srcSize.getWidth(), _srcSize.getHeight(), 0, 0, 1);
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
 

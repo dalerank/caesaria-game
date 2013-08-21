@@ -63,8 +63,11 @@ public:
   GoodStock();
   GoodStock(const GoodType &goodType, const int maxQty, const int currentQty=0);
 
+  void setType( const GoodType &goodType );
+  void setMax( const int maxQty );
+
   /** amount: if -1, amount=stock._currentQty */
-  void addStock(GoodStock &stock, const int amount = -1);
+  void append(GoodStock &stock, const int amount = -1);
 
   VariantList save() const;
   void load( const VariantList& options );

@@ -21,6 +21,7 @@
 #include "oc3_house_level.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_time.hpp"
+#include "oc3_gamedate.hpp"
 #include "oc3_cityfunds.hpp"
 
 class CityParameters
@@ -61,7 +62,7 @@ CityServiceInfo::CityServiceInfo( CityPtr city )
   : CityService( "info" ), _d( new Impl )
 {
   _d->city = city;
-  _d->lastDate = city->getDate();
+  _d->lastDate = GameDate::current();
   _d->params.resize( 12 );
 }
 
@@ -70,9 +71,9 @@ void CityServiceInfo::update( const unsigned int time )
   if( time % 44 != 1 )
     return;
 
-  if( _d->city->getDate().getMonth() != _d->lastDate.getMonth() )
+  if( GameDate::current().getMonth() != _d->lastDate.getMonth() )
   {
-    _d->lastDate = _d->city->getDate();
+    _d->lastDate = GameDate::current();
 
     _d->params.erase( _d->params.begin() );
     _d->params.push_back( CityParameters() );

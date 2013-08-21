@@ -103,12 +103,7 @@ Granary::Granary() : WorkingBuilding( B_GRANARY, Size(3) ), _d( new Impl )
   _fgPictures[5] = _getAnimation().getCurrentPicture();
   computePictures();
 
-  _d->devastateThis = false;
-
- /*
-   GoodStock stock( G_WHEAT, 800, 800 );
-    _d->goodStore.store( stock, 800 );*/
-  
+  _d->devastateThis = false;  
 }
 
 void Granary::timeStep(const unsigned long time)
@@ -141,7 +136,7 @@ void Granary::computePictures()
   for (int n = 0; n < 4; ++n)
   {
     // reset all window pictures
-    _fgPictures[n+1] = Picture();
+    _fgPictures[n+1] = Picture::getInvalid();
   }
 
   if (allQty > 0)
@@ -181,7 +176,6 @@ void Granary::_tryDevastateGranary()
   //if granary in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
   for( int goodType=G_WHEAT; goodType <= G_VEGETABLE; goodType++ )
   {
-    //int goodQtyMax = _d->goodStore.getCurrentQty( (GoodType)goodType );
     int goodQty = math::clamp( goodQty, 0, 400);
 
     if( goodQty > 0 )
@@ -192,8 +186,8 @@ void Granary::_tryDevastateGranary()
 
       if( !walker->isDeleted() )
       {
-        GoodStock tmpStock( (GoodType)goodType, goodQty );
-        _d->goodStore.retrieve( tmpStock, goodQty );//setCurrentQty( (GoodType)goodType, goodQtyMax - goodQty );
+        stock._currentQty = 0;
+        _d->goodStore.retrieve( stock, goodQty );//setCurrentQty( (GoodType)goodType, goodQtyMax - goodQty );
         addWalker( walker.as<Walker>() );
         break;
       }

@@ -20,6 +20,47 @@
 #include "oc3_animation_bank.hpp"
 #include <vector>
 
+static const int empPicId[ G_MAX+1 ] = { PicID::bad, 
+                                       /*G_WHEAT*/11, 
+                                       /*G_FISH*/27,
+                                       /*G_MEAT*/16, 
+                                       /*G_FRUIT*/13, 
+                                       /*G_VEGETABLE*/12,                           
+                                       /*G_OLIVE*/14, 
+                                       /*G_OIL*/18,
+                                       /*G_GRAPE*/15,                           
+                                       /*G_WINE*/17, 
+                                       /*G_TIMBER*/20, 
+                                       /*G_FURNITURE*/24,
+                                       /*G_CLAY*/21,
+                                       /*G_POTTERY*/25, 
+                                       /*G_IRON*/19, 
+                                       /*G_WEAPON*/23,                                                   
+                                       /*G_MARBLE*/22,                                                    
+                                       /*G_DENARIES*/26,                            
+                                       PicID::bad };
+
+ static const int localPicId[ G_MAX+1 ] = { PicID::bad, 
+                                          /*G_WHEAT*/317, 
+                                          /*G_FISH*/333,
+                                          /*G_MEAT*/322,
+                                          /*G_FRUIT*/319,
+                                          /*G_VEGETABLE*/318,
+                                          /*G_OLIVE*/320,
+                                          /*G_OIL*/324,
+                                          /*G_GRAPE*/321,   
+                                          /*G_WINE*/323, 
+                                          /*G_TIMBER*/326,
+                                          /*G_FURNITURE*/330,
+                                          /*G_CLAY*/327,
+                                          /*G_POTTERY*/331,
+                                          /*G_IRON*/325,  
+                                          /*G_WEAPON*/329, 
+                                          /*G_MARBLE*/328, 
+                                          /*G_DENARIES*/332,
+                                          PicID::bad };
+
+
 TypeEquale<GoodType> goodTypeEquales[] = { 
   { G_NONE, "none" },
   { G_WHEAT, "wheat" },
@@ -65,35 +106,22 @@ GoodHelper::GoodHelper() : _d( new Impl )
   }
 }
 
-Picture GoodHelper::getPicture( GoodType type )
+Picture GoodHelper::getPicture( GoodType type, bool emp )
 {
   int picId = -1;
-  switch( type )
-  {
-  case G_WHEAT: picId = 317; break;
-  case G_VEGETABLE: picId = 318; break;
-  case G_FRUIT: picId = 319; break;
-  case G_OLIVE: picId = 320; break;
-  case G_GRAPE: picId = 321; break;
-  case G_MEAT: picId = 322; break;
-  case G_WINE: picId = 323; break;
-  case G_OIL: picId = 324; break;
-  case G_IRON: picId = 325; break;
-  case G_TIMBER: picId = 326; break; 
-  case G_CLAY: picId = 327; break;
-  case G_MARBLE: picId = 328; break;
-  case G_WEAPON: picId = 329; break;
-  case G_FURNITURE: picId = 330; break;
-  case G_POTTERY: picId = 331; break;
-  case G_DENARIES: picId = 332; break;
-  case G_FISH: picId = 333; break;
-  default:
-  break;
-  }
 
+  if( emp )
+  {
+    picId = empPicId[ type ];
+  }
+  else
+  {
+    picId = localPicId[ type ];
+  }
+  
   if( picId > 0 )
   {
-    return Picture::load( ResourceGroup::panelBackground, picId);
+    return Picture::load( emp ? ResourceGroup::empirepnls : ResourceGroup::panelBackground, picId );
   }
 
   return Picture();
@@ -132,11 +160,12 @@ GoodType GoodHelper::getType( const std::string& name )
 
 std::string GoodHelper::getTypeName( GoodType type )
 {
-  for( int i=G_NONE; i < G_MAX; i++ )
+ 
+  for( int index=0; goodTypeEquales[ index ].type != G_MAX; index++ )
   {
-    if( goodTypeEquales[ i ].type == type )
+    if( goodTypeEquales[ index ].type == type )
     {
-      return goodTypeEquales[ i ].name;
+      return goodTypeEquales[ index ].name;
     }
   } 
 

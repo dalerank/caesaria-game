@@ -68,17 +68,18 @@ public:
 
     DateTime& appendDay( int dayNumber=1 );
 
-    DateTime& appendMinutes( int minute );
+    //DateTime& appendMinutes( int minute );
 
-    DateTime& appendHour( int hour );
+    //DateTime& appendHour( int hour );
 
     DateTime& operator=( time_t t );
+    DateTime& operator=( const DateTime& t );
 
     static const char* getDayName( unsigned char d );
     static const char* getMonthName( unsigned char d );
 
-    unsigned char getMonthLength() const;
-    unsigned char getWeekNumber() const;
+    //unsigned char getMonthLength() const;
+    //unsigned char getWeekNumber() const;
 
     bool isValid() const;
 
@@ -100,13 +101,14 @@ private:
     unsigned int month;
     int year;
 
-    time_t to_time_t() const;
+    long _toJd() const;
 
-    int getMonthToDate_( const time_t& end );
+    int _getMonthToDate( const long end );
 
-    int isEquale_( const time_t& b );
+    int _isEquale( const long b );
 
-    int getDaysToDate_( const time_t& future ) const;
+    int _getDaysToDate( const long other ) const;
+    DateTime _JulDayToDate( const long lJD );
 };
 
 #endif

@@ -25,7 +25,7 @@
 #include "oc3_gfx_engine.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_groupbox.hpp"
-#include "oc3_factory_building.hpp"
+#include "oc3_building_factory.hpp"
 #include "oc3_city.hpp"
 #include "oc3_city_trade_options.hpp"
 #include "oc3_building_warehouse.hpp"
@@ -81,6 +81,8 @@ public:
       case CityTradeOptions::exporting:
         tradeStateText = StringHelper::format( 0xff, "%s %d", ruleName[ _tradeOrder ].c_str(), _tradeQty );
       break;
+
+      default: break;
       }
       font.draw( *textPic, tradeStateText, 340, 0 );
 
@@ -243,6 +245,8 @@ public:
           font.draw( *_getTextPicture( state ), text, textRect.UpperLeftCorner, true );
         }
       break;
+
+      default: break;
     }
   }
 

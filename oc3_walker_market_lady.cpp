@@ -71,13 +71,13 @@ TilePos getWalkerDestination2( Propagator &pathPropagator, const BuildingType ty
 {
   SmartPtr< T > res;
 
-  Propagator::ReachedBuldings pathWayList;
-  pathPropagator.getReachedBuildings(type, pathWayList);
+  Propagator::Routes pathWayList;
+  pathPropagator.getRoutes(type, pathWayList);
 
   int max_qty = 0;
 
   // select the warehouse with the max quantity of requested goods
-  for( Propagator::ReachedBuldings::iterator pathWayIt= pathWayList.begin(); 
+  for( Propagator::Routes::iterator pathWayIt= pathWayList.begin(); 
     pathWayIt != pathWayList.end(); ++pathWayIt)
   {
     // for every warehouse within range

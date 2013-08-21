@@ -21,6 +21,7 @@
 #include "oc3_house_level.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_time.hpp"
+#include "oc3_gamedate.hpp"
 #include "oc3_religion_building.hpp"
 
 struct Coverage2Point{
@@ -83,7 +84,7 @@ CityServiceCulture::CityServiceCulture( CityPtr city )
   : CityService( "culture" ), _d( new Impl )
 {
   _d->city = city;
-  _d->lastDate = city->getDate();
+  _d->lastDate = GameDate::current();
   _d->culture = 0;
 }
 
@@ -92,9 +93,9 @@ void CityServiceCulture::update( const unsigned int time )
   if( time % 44 != 1 )
     return;
 
-  if( _d->lastDate.getMonthToDate( _d->city->getDate() ) > 0 )
+  if( _d->lastDate.getMonthToDate( GameDate::current() ) > 0 )
   {
-    _d->lastDate = _d->city->getDate();
+    _d->lastDate = GameDate::current();
     _d->parishionersCount = 0;
     _d->theaterVisitors = 0;
     int cityPopulation = _d->city->getPopulation();
