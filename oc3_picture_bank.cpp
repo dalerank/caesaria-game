@@ -23,7 +23,6 @@
 #include <sys/stat.h>
 #include <map>
 #include <SDL.h>
-#include <SDL_image.h>
 
 #include "oc3_positioni.hpp"
 #include "oc3_exception.hpp"
@@ -33,6 +32,7 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_picture_info_bank.hpp"
 #include "oc3_gfx_engine.hpp"
+#include "oc3_picture_loader.hpp"
 #include "oc3_filesystem_file.hpp"
 
 class PictureBank::Impl
@@ -79,20 +79,8 @@ Picture& PictureBank::getPicture(const std::string &name)
 
     if( file.isOpen() )
     {
-      SDL_Surface *surface;
-      Picture tmpPicture;
-
-      const ByteArray& buffer = file.readAll();
-      SDL_RWops *rw = SDL_RWFromMem( (void*)buffer.data(), buffer.size() );
-      surface = IMG_Load_RW(rw, 0);
-      SDL_SetAlpha( surface, 0, 0 );
-
-      tmpPicture.init( surface, Point() );
-      GfxEngine::instance().loadPicture( tmpPicture );
-
+      Picture tmpPicture = PictureLoader::instance().load( file );
       setPicture( name, tmpPicture );
-
-      SDL_FreeRW(rw);
 
       return _d->resources[ hash ];
     }
@@ -124,71 +112,6 @@ PicturesArray PictureBank::getPictures()
    }
    return pictures;
 }
-
-/*void PictureBank::loadArchive( const std::string &filename, GfxEngine& engine )
-{
-  std::cout << "reading image archive: " << filename << std::endl;
-  struct archive *a;
-  struct archive_entry *entry;
-  int rc;
-
-  a = archive_read_new();
-  archive_read_support_compression_all(a);
-  archive_read_support_format_all(a);
-  rc = archive_read_open_filename(a, filename.c_str(), 16384); // block size
-  
-  if (rc != ARCHIVE_OK) 
-  {
-    THROW("Cannot open archive " << filename);
-  }
-
-  SDL_Surface *surface;
-  SDL_RWops *rw;
-
-  const Uint32 bufferSize = 10000000;  // allocated buffer
-  std::auto_ptr< Uint8 > buffer( new Uint8[ bufferSize ] );
-   
-  if( buffer.get() == 0 ) 
-    THROW("Memory error, cannot allocate buffer size " << bufferSize);
-
-  std::string entryname;
-  Picture tmpPicture;
-  while( archive_read_next_header(a, &entry) == ARCHIVE_OK )
-  {
-    // for all entries in archive
-    entryname = archive_entry_pathname(entry);
-    if ((archive_entry_stat(entry)->st_mode & S_IFREG) == 0)
-    {
-      // not a regular file (maybe a directory). skip it.
-      continue;
-    }
-
-    //int rt = archive_entry_stat(entry)->st_size;
-    if(archive_entry_stat(entry)->st_size >= bufferSize)
-    {
-      THROW("Cannot load archive: file is too big " << entryname << " in archive " << filename);
-    }
-      
-    int size = archive_read_data(a, buffer.get(), bufferSize);  // read data into buffer
-    rw = SDL_RWFromMem(buffer.get(), size);
-    surface = IMG_Load_RW(rw, 0);
-    SDL_SetAlpha( surface, 0, 0 );
-
-    tmpPicture.init( surface, Point() );
-
-    engine.loadPicture( tmpPicture );
-
-    setPicture( entryname, tmpPicture );
-
-    SDL_FreeRW(rw);
-  }
-
-  rc = archive_read_finish(a);
-  if (rc != ARCHIVE_OK)
-  {
-    THROW("Error while reading archive " << filename);
-  }
-}*/
 
 Picture PictureBank::makePicture(SDL_Surface *surface, const std::string& resource_name) const
 {

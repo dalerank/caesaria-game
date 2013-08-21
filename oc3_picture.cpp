@@ -16,7 +16,6 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 #include "oc3_picture.hpp"
-#include <SDL_image.h>
 
 #include "oc3_exception.hpp"
 #include "oc3_positioni.hpp"
@@ -25,6 +24,7 @@
 #include "oc3_gfx_engine.hpp"
 #include "oc3_requirements.hpp"
 #include "oc3_color.hpp"
+#include <SDL.h>
 
 // Picture class functions
 

@@ -15,11 +15,11 @@
 
 #include "oc3_pictureconverter.hpp"
 
-#include <SDL_image.h>
-
 #include "oc3_picture.hpp"
 #include "oc3_math.hpp"
 #include "oc3_positioni.hpp"
+
+#include <SDL.h>
 
 void PictureConverter::rgbBalance( Picture& dst, const Picture& src, int lROffset, int lGOffset, int lBOffset )
 {

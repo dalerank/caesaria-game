@@ -9,7 +9,6 @@ aux_source_directory(. SRC_LIST)
 file(GLOB INC_LIST "*.hpp")
 
 find_package(SDL REQUIRED)
-find_package(SDL_image REQUIRED)
 find_package(SDL_mixer REQUIRED)
 find_package(SDL_ttf REQUIRED)
 find_package(OpenGL REQUIRED)
@@ -19,7 +18,6 @@ find_package(zlib REQUIRED)
 
 include_directories(
   ${SDL_INCLUDE_DIR}
-  ${SDL_IMAGE_INCLUDE_DIR}
   ${SDL_MIXER_INCLUDE_DIR}
   ${SDL_TTF_INCLUDE_DIR}
   ${OPENGL_INCLUDE_DIR}
@@ -29,7 +27,6 @@ include_directories(
 
 link_libraries(
   ${SDL_LIBRARY}
-  ${SDL_IMAGE_LIBRARY}
   ${SDL_MIXER_LIBRARY}
   ${SDL_TTF_LIBRARY}
   ${OPENGL_gl_LIBRARY}
@@ -82,7 +79,6 @@ if(WIN32)
 
   set(_LIBS_FOR_DLL_SOURCE
     ${SDL_LIBRARY}
-    ${SDL_IMAGE_LIBRARY}
     ${SDL_MIXER_LIBRARY}
     ${SDL_TTF_LIBRARY}    
     ${LIBINTL_LIBRARIES}
