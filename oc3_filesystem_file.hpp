@@ -38,6 +38,8 @@ public:
 
   ByteArray read( unsigned int sizeToRead );
 
+  ByteArray readAll();
+
   int write(const void* buffer, unsigned int sizeToWrite);
 
   int write( const ByteArray& bArray );

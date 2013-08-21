@@ -37,7 +37,7 @@ namespace io
 // -----------------------------------------------------------------------------
 
 //! Constructor
-NrpZipLoader::NrpZipLoader(io::FileSystem* fs)
+ZipArchiveLoader::ZipArchiveLoader(io::FileSystem* fs)
 : _fileSystem(fs)
 {
 	#ifdef _DEBUG
@@ -46,17 +46,17 @@ NrpZipLoader::NrpZipLoader(io::FileSystem* fs)
 }
 
 //! returns true if the file maybe is able to be loaded by this class
-bool NrpZipLoader::isALoadableFileFormat(const FilePath& filename) const
+bool ZipArchiveLoader::isALoadableFileFormat(const FilePath& filename) const
 {
     std::string fileExtension = filename.getExtension();
-    return StringHelper::isEquale( fileExtension, "zip", StringHelper::equaleIgnoreCase )
-           || StringHelper::isEquale( fileExtension, "pk3", StringHelper::equaleIgnoreCase )
-           || StringHelper::isEquale( fileExtension, "gz", StringHelper::equaleIgnoreCase )
-           || StringHelper::isEquale( fileExtension, "tgz", StringHelper::equaleIgnoreCase );
+    return StringHelper::isEquale( fileExtension, ".zip", StringHelper::equaleIgnoreCase )
+           || StringHelper::isEquale( fileExtension, ".pk3", StringHelper::equaleIgnoreCase )
+           || StringHelper::isEquale( fileExtension, ".gz", StringHelper::equaleIgnoreCase )
+           || StringHelper::isEquale( fileExtension, ".tgz", StringHelper::equaleIgnoreCase );
 }
 
 //! Check to see if the loader can create archives of this type.
-bool NrpZipLoader::isALoadableFileFormat( Archive::Type fileType) const
+bool ZipArchiveLoader::isALoadableFileFormat( Archive::Type fileType) const
 {
     return (fileType == Archive::zip || fileType == Archive::gzip );
 }
@@ -65,63 +65,64 @@ bool NrpZipLoader::isALoadableFileFormat( Archive::Type fileType) const
 //! Creates an archive from the filename
 /** \param file File handle to check.
 \return Pointer to newly created archive, or 0 upon error. */
-ArchivePtr NrpZipLoader::createArchive(const FilePath& filename, bool ignoreCase, bool ignorePaths) const
+ArchivePtr ZipArchiveLoader::createArchive(const FilePath& filename, bool ignoreCase, bool ignorePaths) const
 {
-    ArchivePtr archive;
-    NFile file = _fileSystem->createAndOpenFile(filename, FSEntity::fmRead );
+  ArchivePtr archive;
+  NFile file = _fileSystem->createAndOpenFile(filename, FSEntity::fmRead );
 
-    if( file.isOpen() )
-	{
-		archive = createArchive(file, ignoreCase, ignorePaths);
-	}
+  if( file.isOpen() )
+  {
+    archive = createArchive(file, ignoreCase, ignorePaths);
+  }
 
-	return archive;
+  return archive;
 }
 
 //! creates/loads an archive from the file.
 //! \return Pointer to the created archive. Returns 0 if loading failed.
-ArchivePtr NrpZipLoader::createArchive( NFile file, bool ignoreCase, bool ignorePaths) const
+ArchivePtr ZipArchiveLoader::createArchive( NFile file, bool ignoreCase, bool ignorePaths) const
 {
     ArchivePtr archive;
     if( file.isOpen() )
-	{
-        file.seek(0);
+    {
+      file.seek(0);
 
-        unsigned short sig;
-        file.read( &sig, 2);
+      unsigned short sig;
+      file.read( &sig, 2);
 
 /*#ifdef __BIG_ENDIAN__
 		sig = os::Byteswap::byteswap(sig);
 #endif*/
 
-        file.seek(0);
+      file.seek(0);
 
-		bool isGZip = (sig == 0x8b1f);
+              bool isGZip = (sig == 0x8b1f);
 
-        archive = new ZipReader( file, ignoreCase, ignorePaths, isGZip);
-	}
-	return archive;
+      archive = new ZipArchiveReader( file, ignoreCase, ignorePaths, isGZip);
+      archive->drop();
+    }
+    return archive;
 }
 
 //! Check if the file might be loaded by this class
 /** Check might look into the file.
 \param file File handle to check.
 \return True if file seems to be loadable. */
-bool NrpZipLoader::isALoadableFileFormat( NFile file ) const
+bool ZipArchiveLoader::isALoadableFileFormat( NFile file ) const
 {
-	SZIPFileHeader header;
+  SZIPFileHeader header;
 
-    file.read( &header.Sig, 4 );
+  file.read( &header.Sig, 4 );
 
-	return header.Sig == 0x04034b50 || // ZIP
-		   (header.Sig&0xffff) == 0x8b1f; // gzip
+  return header.Sig == 0x04034b50 || // ZIP
+         (header.Sig&0xffff) == 0x8b1f; // gzip
 }
 
 // -----------------------------------------------------------------------------
 // zip archive
 // -----------------------------------------------------------------------------
 
-ZipReader::ZipReader( NFile file, bool ignoreCase, bool ignorePaths, bool isGZip)
+ZipArchiveReader::ZipArchiveReader( NFile file, bool ignoreCase, bool ignorePaths, bool isGZip)
  : FileList( (file.isOpen() ? file.getFileName() : FilePath("") ), ignoreCase, ignorePaths),
    File(file), IsGZip(isGZip)
 {
@@ -141,20 +142,20 @@ ZipReader::ZipReader( NFile file, bool ignoreCase, bool ignorePaths, bool isGZip
 	}
 }
 
-ZipReader::~ZipReader()
+ZipArchiveReader::~ZipArchiveReader()
 {
 }
 
 
 //! get the archive type
-Archive::Type ZipReader::getType() const
+Archive::Type ZipArchiveReader::getType() const
 {
 	return IsGZip 
             ? Archive::gzip
             : Archive::zip;
 }
 
-const FileList* ZipReader::getFileList() const
+const FileList* ZipArchiveReader::getFileList() const
 {
 	return this;
 }
@@ -163,7 +164,7 @@ const FileList* ZipReader::getFileList() const
 //! scans for a local header, returns false if there is no more local file header.
 //! The gzip file format seems to think that there can be multiple files in a gzip file
 //! but none
-bool ZipReader::scanGZipHeader()
+bool ZipArchiveReader::scanGZipHeader()
 {
 	SZipFileEntry entry;
 	entry.Offset = 0;
@@ -262,7 +263,7 @@ bool ZipReader::scanGZipHeader()
 }
 
 //! scans for a local header, returns false if there is no more local file header.
-bool ZipReader::scanZipHeader(bool ignoreGPBits)
+bool ZipArchiveReader::scanZipHeader(bool ignoreGPBits)
 {
     FilePath ZipFileName = "";
 	SZipFileEntry entry;
@@ -382,7 +383,7 @@ bool ZipReader::scanZipHeader(bool ignoreGPBits)
 
 
 //! scans for a local header, returns false if there is no more local file header.
-bool ZipReader::scanCentralDirectoryHeader()
+bool ZipArchiveReader::scanCentralDirectoryHeader()
 {
     FilePath ZipFileName = "";
 	SZIPFileCentralDirFileHeader entry;
@@ -406,7 +407,7 @@ bool ZipReader::scanCentralDirectoryHeader()
 
 
 //! opens a file by file name
-NFile ZipReader::createAndOpenFile(const FilePath& filename)
+NFile ZipArchiveReader::createAndOpenFile(const FilePath& filename)
 {
     int index = findFile( filename, false );
 
@@ -421,272 +422,293 @@ NFile ZipReader::createAndOpenFile(const FilePath& filename)
 //! Used for LZMA decompression. The lib has no default memory management
 namespace
 {
-	void *SzAlloc(void *p, size_t size) { p = p; return malloc(size); }
-	void SzFree(void *p, void *address) { p = p; free(address); }
-	ISzAlloc lzmaAlloc = { SzAlloc, SzFree };
+  void *SzAlloc(void *p, size_t size) { p = p; return malloc(size); }
+  void SzFree(void *p, void *address) { p = p; free(address); }
+  ISzAlloc lzmaAlloc = { SzAlloc, SzFree };
 }
 
 //! opens a file by index
-NFile ZipReader::createAndOpenFile(unsigned int index)
+NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 {
-    //Supports 0, 8, 12, 14, 99
-	//0 - The file is stored (no compression)
-	//1 - The file is Shrunk
-	//2 - The file is Reduced with compression factor 1
-	//3 - The file is Reduced with compression factor 2
-	//4 - The file is Reduced with compression factor 3
-	//5 - The file is Reduced with compression factor 4
-	//6 - The file is Imploded
-	//7 - Reserved for Tokenizing compression algorithm
-	//8 - The file is Deflated
-	//9 - Reserved for enhanced Deflating
-	//10 - PKWARE Date Compression Library Imploding
-	//12 - bzip2 - Compression Method from libbz2, WinZip 10
-	//14 - LZMA - Compression Method, WinZip 12
-	//96 - Jpeg compression - Compression Method, WinZip 12
-	//97 - WavPack - Compression Method, WinZip 11
-	//98 - PPMd - Compression Method, WinZip 10
-	//99 - AES encryption, WinZip 9
+  //Supports 0, 8, 12, 14, 99
+  //0 - The file is stored (no compression)
+  //1 - The file is Shrunk
+  //2 - The file is Reduced with compression factor 1
+  //3 - The file is Reduced with compression factor 2
+  //4 - The file is Reduced with compression factor 3
+  //5 - The file is Reduced with compression factor 4
+  //6 - The file is Imploded
+  //7 - Reserved for Tokenizing compression algorithm
+  //8 - The file is Deflated
+  //9 - Reserved for enhanced Deflating
+  //10 - PKWARE Date Compression Library Imploding
+  //12 - bzip2 - Compression Method from libbz2, WinZip 10
+  //14 - LZMA - Compression Method, WinZip 12
+  //96 - Jpeg compression - Compression Method, WinZip 12
+  //97 - WavPack - Compression Method, WinZip 11
+  //98 - PPMd - Compression Method, WinZip 10
+  //99 - AES encryption, WinZip 9
 
-    const SZipFileEntry &e = FileInfo[ _getItems()[index].iD ];
+  const SZipFileEntry &e = FileInfo[ _getItems()[index].iD ];
 
-    short actualCompressionMethod=e.header.CompressionMethod;
-    NFile decrypted;
-    ByteArray decryptedBuf;
-    unsigned int decryptedSize=e.header.DataDescriptor.CompressedSize;
+  short actualCompressionMethod=e.header.CompressionMethod;
+  NFile decrypted;
+  ByteArray decryptedBuf;
+  unsigned int decryptedSize=e.header.DataDescriptor.CompressedSize;
 
-	if ((e.header.GeneralBitFlag & ZIP_FILE_ENCRYPTED) && (e.header.CompressionMethod == 99))
-	{
-        StringHelper::debug( 0xff, "Reading encrypted file." );
-        unsigned char salt[16]={0};
-        const unsigned short saltSize = (((e.header.Sig & 0x00ff0000) >>16)+1)*4;
-        File.seek(e.Offset);
-        File.read(salt, saltSize);
-		char pwVerification[2];
-		char pwVerificationFile[2];
-        File.read(pwVerification, 2);
-		fcrypt_ctx zctx; // the encryption context
-		int rc = fcrypt_init(
-			(e.header.Sig & 0x00ff0000) >>16,
-			(const unsigned char*)Password.c_str(), // the password
-			Password.size(), // number of bytes in password
-			salt, // the salt
-			(unsigned char*)pwVerificationFile, // on return contains password verifier
-			&zctx); // encryption context
-		if (strncmp(pwVerificationFile, pwVerification, 2))
-		{
-            StringHelper::debug( 0xff, "Wrong password" );
-            return NFile();
-		}
-		decryptedSize= e.header.DataDescriptor.CompressedSize-saltSize-12;
-        decryptedBuf.resize( decryptedSize );
-        unsigned int c = 0;
-		while ((c+32768)<=decryptedSize)
-		{
-            File.read(decryptedBuf.data()+c, 32768);
-            fcrypt_decrypt( (unsigned char*)decryptedBuf.data()+c, // pointer to the data to decrypt
-                            32768,   // how many bytes to decrypt
-                            &zctx); // decryption context
-			c+=32768;
-		}
-        File.read(decryptedBuf.data()+c, decryptedSize-c);
-        fcrypt_decrypt( (unsigned char*)decryptedBuf.data()+c, // pointer to the data to decrypt
-                        decryptedSize-c,   // how many bytes to decrypt
-                        &zctx); // decryption context
+  if ((e.header.GeneralBitFlag & ZIP_FILE_ENCRYPTED) && (e.header.CompressionMethod == 99))
+  {
+    StringHelper::debug( 0xff, "Reading encrypted file." );
+    unsigned char salt[16]={0};
+    const unsigned short saltSize = (((e.header.Sig & 0x00ff0000) >>16)+1)*4;
+    File.seek(e.Offset);
+    File.read(salt, saltSize);
+    char pwVerification[2];
+    char pwVerificationFile[2];
 
-		char fileMAC[10];
-		char resMAC[10];
-        rc = fcrypt_end( (unsigned char*)resMAC, // on return contains the authentication code
-                         &zctx); // encryption context
-		if (rc != 10)
-		{
-            StringHelper::debug( 0xff, "Error on encryption closing" );
-            return NFile();
-		}
-        File.read(fileMAC, 10);
-		if (strncmp(fileMAC, resMAC, 10))
-		{
-            StringHelper::debug( 0xff, "Error on encryption check" );
-            return NFile();
-		}
-        
-        decrypted = MemoryFile::create( decryptedBuf, _getItems()[ index ].fullName );
-		actualCompressionMethod = (e.header.Sig & 0xffff);
+    File.read(pwVerification, 2);
+    fcrypt_ctx zctx; // the encryption context
+    int rc = fcrypt_init( (e.header.Sig & 0x00ff0000) >>16,
+                          (const unsigned char*)Password.c_str(), // the password
+                          Password.size(), // number of bytes in password
+                          salt, // the salt
+                          (unsigned char*)pwVerificationFile, // on return contains password verifier
+                          &zctx); // encryption context
+    if (strncmp(pwVerificationFile, pwVerification, 2))
+    {
+      StringHelper::debug( 0xff, "Wrong password" );
+      return NFile();
+    }
+    decryptedSize= e.header.DataDescriptor.CompressedSize-saltSize-12;
+    decryptedBuf.resize( decryptedSize );
+    unsigned int c = 0;
+    while ((c+32768)<=decryptedSize)
+    {
+      File.read(decryptedBuf.data()+c, 32768);
+      fcrypt_decrypt( (unsigned char*)decryptedBuf.data()+c, // pointer to the data to decrypt
+                      32768,   // how many bytes to decrypt
+                      &zctx); // decryption context
+                      c+=32768;
+    }
+
+    File.read(decryptedBuf.data()+c, decryptedSize-c);
+    fcrypt_decrypt( (unsigned char*)decryptedBuf.data()+c, // pointer to the data to decrypt
+                    decryptedSize-c,   // how many bytes to decrypt
+                    &zctx); // decryption context
+
+    char fileMAC[10];
+    char resMAC[10];
+    rc = fcrypt_end( (unsigned char*)resMAC, // on return contains the authentication code
+                    &zctx); // encryption context
+    if (rc != 10)
+    {
+      StringHelper::debug( 0xff, "Error on encryption closing" );
+      return NFile();
+    }
+
+    File.read(fileMAC, 10);
+    if (strncmp(fileMAC, resMAC, 10))
+    {
+      StringHelper::debug( 0xff, "Error on encryption check" );
+      return NFile();
+    }
+
+    decrypted = MemoryFile::create( decryptedBuf, _getItems()[ index ].fullName );
+    actualCompressionMethod = (e.header.Sig & 0xffff);
 #if 0
-		if ((e.header.Sig & 0xff000000)==0x01000000)
-		{
-		}
-		else if ((e.header.Sig & 0xff000000)==0x02000000)
-		{
-		}
-		else
-		{
-			os::Printer::log("Unknown encryption method");
-			return 0;
-		}
+    if ((e.header.Sig & 0xff000000)==0x01000000)
+    {
+    }
+    else if ((e.header.Sig & 0xff000000)==0x02000000)
+    {
+    }
+    else
+    {
+            os::Printer::log("Unknown encryption method");
+            return 0;
+    }
 #endif
-	}
+  }
 
-	switch(actualCompressionMethod)
-	{
-	case 0: // no compression
-		{
-            return NFile();
-           /* if( decrypted.isOpen() )
-				return decrypted;
-			else
-                return new LimitFile(File, e.Offset, decryptedSize, _d->files[ index ].FullName ); */
-		}
-	case 8:
-		{
-            const unsigned int uncompressedSize = e.header.DataDescriptor.UncompressedSize;
-            ByteArray pBuf;
-            pBuf.resize( uncompressedSize );
+  switch(actualCompressionMethod)
+  {
+    case 0: // no compression
+    {
+      if( decrypted.isOpen() )
+          return decrypted;
+      else
+      {
+          File.seek( e.Offset );
+          ByteArray data = File.read( decryptedSize );
+          return MemoryFile::create( data, _getItems()[ index ].fullName );
+      }
+    }
+    break;
 
-            ByteArray pcData;
-            pcData.resize( decryptedSize );
+    case 8:
+    {
+      const unsigned int uncompressedSize = e.header.DataDescriptor.UncompressedSize;
+      ByteArray pBuf;
+      pBuf.resize( uncompressedSize );
 
-            if( pBuf.empty() || pcData.empty() )
-			{
-                StringHelper::debug( 0xff, "Not enough memory for decompressing %s", _getItems()[ index ].fullName.toString().c_str() );
-                return NFile();
-			}
+      ByteArray pcData;
+      pcData.resize( decryptedSize );
 
-            File.seek(e.Offset);
-            pcData = File.read(decryptedSize);
+      if( pBuf.empty() || pcData.empty() )
+      {
+        StringHelper::debug( 0xff, "Not enough memory for decompressing %s", _getItems()[ index ].fullName.toString().c_str() );
+        return NFile();
+      }
 
-			// Setup the inflate stream.
-			z_stream stream;
-            int err;
+      File.seek(e.Offset);
+      pcData = File.read(decryptedSize);
 
-            stream.next_in = (Bytef*)pcData.data();
-			stream.avail_in = (uInt)decryptedSize;
-            stream.next_out = (Bytef*)pBuf.data();
+      // Setup the inflate stream.
+      z_stream stream;
+      int err;
+
+      stream.next_in = (Bytef*)pcData.data();
+                        stream.avail_in = (uInt)decryptedSize;
+      stream.next_out = (Bytef*)pBuf.data();
 			stream.avail_out = uncompressedSize;
 			stream.zalloc = (alloc_func)0;
 			stream.zfree = (free_func)0;
 
-			// Perform inflation. wbits < 0 indicates no zlib header inside the data.
-			err = inflateInit2(&stream, -MAX_WBITS);
-			if (err == Z_OK)
-			{
-				err = inflate(&stream, Z_FINISH);
-				inflateEnd(&stream);
-				if (err == Z_STREAM_END)
-					err = Z_OK;
-				err = Z_OK;
-				inflateEnd(&stream);
-			}
+      // Perform inflation. wbits < 0 indicates no zlib header inside the data.
+      err = inflateInit2(&stream, -MAX_WBITS);
+      if (err == Z_OK)
+      {
+        err = inflate(&stream, Z_FINISH);
+        inflateEnd(&stream);
 
-			if (err != Z_OK)
-			{
-                StringHelper::debug( 0xff, "Error decompressing %s", _getItems()[index].fullName.toString().c_str() );
-                return NFile();
-			}
-			else
-            {
-                return MemoryFile::create( pBuf, _getItems()[index].fullName );
-            }
-		}
-	case 12:
-		{
-            const unsigned int uncompressedSize = e.header.DataDescriptor.UncompressedSize;
-            ByteArray pBuf;
-            pBuf.resize( uncompressedSize );
+	if (err == Z_STREAM_END)
+			err = Z_OK;
+	err = Z_OK;
+	inflateEnd(&stream);
+      }
 
-            ByteArray pcData;
-            pcData.resize( decryptedSize );
+      if (err != Z_OK)
+      {
+        StringHelper::debug( 0xff, "Error decompressing %s", _getItems()[index].fullName.toString().c_str() );
+        return NFile();
+      }
+      else
+      {
+        return MemoryFile::create( pBuf, _getItems()[index].fullName );
+      }
+    }
+    break;
 
-            if( pBuf.empty() || pcData.empty() )
-			{
-                StringHelper::debug( 0xff, "Not enough memory for decompressing %s", _getItems()[index].fullName.toString().c_str() );
-                return NFile();
-			}
+    case 12:
+    {
+      const unsigned int uncompressedSize = e.header.DataDescriptor.UncompressedSize;
+      ByteArray pBuf;
+      pBuf.resize( uncompressedSize );
 
-            File.seek(e.Offset);
-            pcData = File.read(decryptedSize);
+      ByteArray pcData;
+      pcData.resize( decryptedSize );
 
-			bz_stream bz_ctx={0};
+      if( pBuf.empty() || pcData.empty() )
+      {
+        StringHelper::debug( 0xff, "Not enough memory for decompressing %s", _getItems()[index].fullName.toString().c_str() );
+        return NFile();
+      }
+
+      File.seek(e.Offset);
+      pcData = File.read(decryptedSize);
+
+      bz_stream bz_ctx={0};
 			/* use BZIP2's default memory allocation
 			bz_ctx->bzalloc = NULL;
 			bz_ctx->bzfree  = NULL;
 			bz_ctx->opaque  = NULL;
 			*/
-			int err = BZ2_bzDecompressInit(&bz_ctx, 0, 0); /* decompression */
-			if(err != BZ_OK)
-			{
-                StringHelper::debug( 0xff, "bzip2 decompression failed. File cannot be read." );
-                return NFile();
-			}
-            bz_ctx.next_in = (char*)pcData.data();
+      int err = BZ2_bzDecompressInit(&bz_ctx, 0, 0); /* decompression */
+      if(err != BZ_OK)
+      {
+        StringHelper::debug( 0xff, "bzip2 decompression failed. File cannot be read." );
+        return NFile();
+      }
+
+      bz_ctx.next_in = (char*)pcData.data();
 			bz_ctx.avail_in = decryptedSize;
 			/* pass all input to decompressor */
-            bz_ctx.next_out = pBuf.data();
+      bz_ctx.next_out = pBuf.data();
 			bz_ctx.avail_out = uncompressedSize;
 			err = BZ2_bzDecompress(&bz_ctx);
 			err = BZ2_bzDecompressEnd(&bz_ctx);
 
-			if (err != BZ_OK)
-			{
-                StringHelper::debug( 0xff, "Error decompressing %s", _getItems()[index].fullName.toString().c_str() );
-                return NFile();
-			}
-			else
-            {
-                return MemoryFile::create( pBuf, _getItems()[index].fullName );
-            }
-		}
-	case 14:
-		{
-            unsigned int uncompressedSize = e.header.DataDescriptor.UncompressedSize;
-            ByteArray pBuf;
-            pBuf.resize( uncompressedSize );
-            ByteArray pcData;
-            pcData.resize( decryptedSize );
-            if( pBuf.empty() || pcData.empty() )
-			{
-                StringHelper::debug( 0xff, "Not enough memory for decompressing %s", _getItems()[index].fullName.toString().c_str() );
-                return NFile();
-			}
-
-            File.seek(e.Offset);
-            pcData = File.read(decryptedSize);
-
-			ELzmaStatus status;
-			SizeT tmpDstSize = uncompressedSize;
-			SizeT tmpSrcSize = decryptedSize;
-
-            unsigned int propSize = (pcData[3]<<8)+pcData[2];
-            int err = LzmaDecode((Byte*)pBuf.data(), &tmpDstSize,
-                    (Byte*)pcData.data()+4+propSize, &tmpSrcSize,
-                    (Byte*)pcData.data()+4, propSize,
-					e.header.GeneralBitFlag&0x1?LZMA_FINISH_END:LZMA_FINISH_ANY, &status,
-					&lzmaAlloc);
-			uncompressedSize = tmpDstSize; // may be different to expected value
-
-            if (err != SZ_OK)
-			{
-                StringHelper::debug( 0xff, "Error decompressing %s", _getItems()[index].fullName.toString().c_str() );
-                return NFile();
-			}
-			else
-            {
-                return MemoryFile::create( pBuf, _getItems()[index].fullName );
-            }
-		}
-	case 99:
-		// If we come here with an encrypted file, decryption support is missing
-                //os::Printer::log("Decryption support not enabled. File cannot be read.", ELL_ERROR);
+      if (err != BZ_OK)
+      {
+        StringHelper::debug( 0xff, "Error decompressing %s", _getItems()[index].fullName.toString().c_str() );
         return NFile();
-	default:
-        StringHelper::debug( 0xff, "file %s has unsupported compression method", _getItems()[index].fullName.toString().c_str() );
-            
-        return NFile();
-	};
+      }
+      else
+      {
+        return MemoryFile::create( pBuf, _getItems()[index].fullName );
+      }
+    }
+    break;
 
+    case 14:
+    {
+      unsigned int uncompressedSize = e.header.DataDescriptor.UncompressedSize;
+      ByteArray pBuf;
+      pBuf.resize( uncompressedSize );
+      ByteArray pcData;
+      pcData.resize( decryptedSize );
+      if( pBuf.empty() || pcData.empty() )
+                          {
+          StringHelper::debug( 0xff, "Not enough memory for decompressing %s", _getItems()[index].fullName.toString().c_str() );
+          return NFile();
+                          }
+
+      File.seek(e.Offset);
+      pcData = File.read(decryptedSize);
+
+                          ELzmaStatus status;
+                          SizeT tmpDstSize = uncompressedSize;
+                          SizeT tmpSrcSize = decryptedSize;
+
+      unsigned int propSize = (pcData[3]<<8)+pcData[2];
+      int err = LzmaDecode((Byte*)pBuf.data(), &tmpDstSize,
+              (Byte*)pcData.data()+4+propSize, &tmpSrcSize,
+              (Byte*)pcData.data()+4, propSize,
+                                          e.header.GeneralBitFlag&0x1?LZMA_FINISH_END:LZMA_FINISH_ANY, &status,
+                                          &lzmaAlloc);
+                          uncompressedSize = tmpDstSize; // may be different to expected value
+
+      if (err != SZ_OK)
+      {
+        StringHelper::debug( 0xff, "Error decompressing %s", _getItems()[index].fullName.toString().c_str() );
+        return NFile();
+      }
+      else
+      {
+        return MemoryFile::create( pBuf, _getItems()[index].fullName );
+      }
+    }
+    break;
+
+    case 99:
+    {
+                // If we come here with an encrypted file, decryption support is missing
+            //os::Printer::log("Decryption support not enabled. File cannot be read.", ELL_ERROR);
+      return NFile();
+    }
+
+    default:
+    {
+      StringHelper::debug( 0xff, "file %s has unsupported compression method", _getItems()[index].fullName.toString().c_str() );
+      return NFile();
+    }
+  }
+
+  StringHelper::debug( 0xff, "Can't read file %s ", _getItems()[index].fullName.toString().c_str() );
+  return NFile();
 }
 
-std::string ZipReader::getTypeName() const
+std::string ZipArchiveReader::getTypeName() const
 {
     return "ZipReader";
 }

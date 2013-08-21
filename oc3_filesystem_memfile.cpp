@@ -58,19 +58,22 @@ MemoryFile::~MemoryFile()
 //! returns how much was read
 int MemoryFile::read(void* buffer, unsigned int sizeToRead)
 {
-    int amount = static_cast<int>(sizeToRead);
-	if (Pos + amount > Len)
-		amount -= Pos + amount - Len;
+  int amount = static_cast<int>(sizeToRead);
+  if( Pos + amount > Len )
+  {
+    amount -= Pos + amount - Len;
+  }
 
-	if (amount <= 0)
-		return 0;
+  if( amount <= 0 )
+  {
+    return 0;
+  }
 
-    char* p = (char*)Buffer;
-	memcpy(buffer, p + Pos, amount);
+  char* p = (char*)Buffer;
+  memcpy(buffer, p + Pos, amount);
 
-	Pos += amount;
-
-    return amount;
+  Pos += amount;
+  return amount;
 }
 
 ByteArray MemoryFile::readLine()
@@ -181,7 +184,10 @@ int MemoryFile::write(const ByteArray &array )
 ByteArray MemoryFile::read(unsigned int sizeToRead)
 {
     ByteArray ret;
-    read( ret.data(), sizeToRead );
+    ret.resize( sizeToRead );
+    int bytesRead = read( ret.data(), sizeToRead );
+
+    ret.resize( bytesRead );
 
     return ret;
 }

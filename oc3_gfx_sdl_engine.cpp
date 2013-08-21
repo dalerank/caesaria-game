@@ -82,7 +82,7 @@ void GfxSdlEngine::init()
   rc = TTF_Init();
   if (rc != 0) THROW("Unable to initialize SDL: " << SDL_GetError());
 
-  SDL_Surface* scr = SDL_SetVideoMode(_screen_width, _screen_height, 32, SDL_DOUBLEBUF | SDL_SWSURFACE);  // 32bpp
+  SDL_Surface* scr = SDL_SetVideoMode(_srcSize.getWidth(), _srcSize.getHeight(), 32, SDL_DOUBLEBUF | SDL_SWSURFACE);  // 32bpp
   _d->screen.init( scr, Point( 0, 0 ) );
   
   if( !_d->screen.isValid() ) 

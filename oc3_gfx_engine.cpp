@@ -35,8 +35,7 @@ GfxEngine& GfxEngine::instance()
 
 GfxEngine::GfxEngine()
 {
-  _screen_width = 0;
-  _screen_height = 0;
+  _srcSize = Size( 0 );
   _instance = this;
 }
 
@@ -48,23 +47,22 @@ GfxEngine::~GfxEngine()
 
 void GfxEngine::setScreenSize(const int width, const int height)
 {
-  _screen_width = width;
-  _screen_height = height;
+  _srcSize = Size( width, height );
 }
 
 int GfxEngine::getScreenWidth() const
 {
-  return _screen_width;
+  return _srcSize.getWidth();
 }
 
 int GfxEngine::getScreenHeight() const
 {
-  return _screen_height;
+  return _srcSize.getHeight();
 }
 
 Size GfxEngine::getScreenSize() const
 {
-  return Size( _screen_width, _screen_height );
+  return _srcSize;
 }
 
 void GfxEngine::setFlag( int flag, int value )

@@ -13,7 +13,6 @@ find_package(SDL_image REQUIRED)
 find_package(SDL_mixer REQUIRED)
 find_package(SDL_ttf REQUIRED)
 find_package(OpenGL REQUIRED)
-find_package(LibArchive REQUIRED)
 find_package(Libintl REQUIRED)
 find_package(PNG REQUIRED)
 find_package(zlib REQUIRED)
@@ -24,7 +23,6 @@ include_directories(
   ${SDL_MIXER_INCLUDE_DIR}
   ${SDL_TTF_INCLUDE_DIR}
   ${OPENGL_INCLUDE_DIR}
-  ${LibArchive_INCLUDE_DIR}
   ${LIBINTL_INCLUDE_DIR}
   ${PNG_INCLUDE_DIR}
 )
@@ -35,7 +33,6 @@ link_libraries(
   ${SDL_MIXER_LIBRARY}
   ${SDL_TTF_LIBRARY}
   ${OPENGL_gl_LIBRARY}
-  ${LibArchive_LIBRARY}
   ${LIBINTL_LIBRARIES}
   ${PNG_LIBRARY}
 )
@@ -90,7 +87,6 @@ if(WIN32)
     ${SDL_TTF_LIBRARY}    
     ${LIBINTL_LIBRARIES}
     ${PNG_LIBRARY}
-    ${LibArchive_LIBRARY}
   )
 
   if(NO_USE_SYSTEM_ZLIB)

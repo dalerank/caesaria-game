@@ -30,7 +30,7 @@ static const FilePath purePath = "";
 
 NFile NFile::open(const FilePath& fileName, FSEntity::Mode mode)
 {
-	return FileSystem::instance().createAndOpenFile( fileName, mode );
+  return FileSystem::instance().createAndOpenFile( fileName, mode );
 }
 
 NFile::NFile()
@@ -95,6 +95,12 @@ ByteArray NFile::readLine()
 ByteArray NFile::read( unsigned int sizeToRead)
 {
   return _entity.isValid() ? _entity->read( sizeToRead ) : ByteArray();
+}
+
+ByteArray NFile::readAll()
+{
+  seek( 0 );
+  return read( getSize() );
 }
 
 //! returns name of file

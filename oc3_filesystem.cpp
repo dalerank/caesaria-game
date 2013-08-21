@@ -18,6 +18,7 @@
 #include "oc3_filenative_impl.hpp"
 #include "oc3_filesystem_archive.hpp"
 #include "oc3_filesystem_filelist.hpp"
+#include "oc3_filesystem_archive_zip.hpp"
 #include "oc3_stringhelper.hpp"
 
 #if defined (OC3_PLATFORM_WIN)
@@ -39,7 +40,7 @@
 namespace io
 {
 
-  class FileSystem::Impl
+class FileSystem::Impl
 {
 public:
   //! currently attached ArchiveLoaders
@@ -80,11 +81,12 @@ ArchivePtr FileSystem::Impl::changeArchivePassword(const FilePath& filename, con
 //! constructor
 FileSystem::FileSystem() : _d( new Impl )
 {
-	setFileListSystem( fsNative );
-	//! reset current working directory
-	getWorkingDirectory();
+  setFileListSystem( fsNative );
+  //! reset current working directory
 
-	//_d->archiveLoaders.push_back(new NrpZipLoader(this));
+  getWorkingDirectory();
+
+  _d->archiveLoaders.push_back(new ZipArchiveLoader(this));
 }
 
 
@@ -95,41 +97,41 @@ FileSystem::~FileSystem()
 
 NFile FileSystem::loadFileFromArchive( const FilePath& filePath )
 {
-	for( unsigned int i=0; i< _d->openArchives.size(); ++i)
-	{
-		NFile file = _d->openArchives[i]->createAndOpenFile( filePath );
-		if( file.isOpen() )
+  for( unsigned int i=0; i< _d->openArchives.size(); ++i)
+  {
+    NFile file = _d->openArchives[i]->createAndOpenFile( filePath );
+    if( file.isOpen() )
     {
-			return file;
+      return file;
     }
-	}
+  }
 
-	return NFile();
+  return NFile();
 }
 
 //! opens a file for read access
 NFile FileSystem::createAndOpenFile(const FilePath& filename, FSEntity::Mode mode)
 {
-	NFile file = loadFileFromArchive( filename );
+  NFile file = loadFileFromArchive( filename );
 
-	if( file.isOpen() )
+  if( file.isOpen() )
   {
-		return file;
+    return file;
   }
 	
-	// Create the file using an absolute path so that it matches
-	return NFile( new FileNative( filename.getAbsolutePath(), mode ) );
+  // Create the file using an absolute path so that it matches
+  return NFile( new FileNative( filename.getAbsolutePath(), mode ) );
 }
 
 //! Adds an external archive loader to the engine.
 void FileSystem::addArchiveLoader( ArchiveLoaderPtr loader)
 {
-	if( loader.isNull() )
+  if( loader.isNull() )
   {
-		return;
+    return;
   }
 
-	_d->archiveLoaders.push_back(loader);
+  _d->archiveLoaders.push_back(loader);
 }
 
 //! Returns the total number of archive loaders added.
@@ -174,11 +176,11 @@ bool FileSystem::moveFileArchive(unsigned int sourceIndex, int relative)
 
 
 //! Adds an archive to the file system.
-ArchivePtr FileSystem::mountArchive(const FilePath& filename,
-								Archive::Type archiveType,
-								bool ignoreCase,
-								bool ignorePaths, 
-                                const std::string& password)
+ArchivePtr FileSystem::mountArchive(  const FilePath& filename,
+				      Archive::Type archiveType,
+				      bool ignoreCase,
+				      bool ignorePaths,
+				      const std::string& password)
 {
   ArchivePtr archive;
 
@@ -197,36 +199,36 @@ ArchivePtr FileSystem::mountArchive(const FilePath& filename,
     // try to load archive based on file name
     for (i = _d->archiveLoaders.size()-1; i >=0 ; --i)
     {
-        if (_d->archiveLoaders[i]->isALoadableFileFormat(filename))
+      if (_d->archiveLoaders[i]->isALoadableFileFormat(filename))
+      {
+        archive = _d->archiveLoaders[i]->createArchive(filename, ignoreCase, ignorePaths);
+        if( archive.isValid() )
         {
-           archive = _d->archiveLoaders[i]->createArchive(filename, ignoreCase, ignorePaths);
-           if( archive.isValid() )
-           {
-					break;
-           }
+          break;
         }
+      }
     }
 
     // try to load archive based on content
     if( archive.isNull() )
     {
-        NFile file = createAndOpenFile( filename, FSEntity::fmRead );
-        if( file.isOpen() )
+      NFile file = createAndOpenFile( filename, FSEntity::fmRead );
+      if( file.isOpen() )
+      {
+        for (i = _d->archiveLoaders.size()-1; i >= 0; --i)
         {
-            for (i = _d->archiveLoaders.size()-1; i >= 0; --i)
+          file.seek(0);
+          if (_d->archiveLoaders[i]->isALoadableFileFormat( file ) )
+          {
+            file.seek(0);
+            archive = _d->archiveLoaders[i]->createArchive( file, ignoreCase, ignorePaths);
+            if( archive.isValid() )
             {
-                file.seek(0);
-                if (_d->archiveLoaders[i]->isALoadableFileFormat( file ) )
-                {
-                    file.seek(0);
-                    archive = _d->archiveLoaders[i]->createArchive( file, ignoreCase, ignorePaths);
-                    if( archive.isValid() )
-                    {
-                        break;
-                    }
-                }
+                break;
             }
+          }
         }
+      }
     }
   }
   else
@@ -290,93 +292,96 @@ ArchivePtr FileSystem::mountArchive(NFile file, Archive::Type archiveType,
                                  bool ignorePaths,
                                  const std::string& password)
 {
-	if( !file.isOpen() || archiveType == Archive::folder)
-        return ArchivePtr();
+  if( !file.isOpen() || archiveType == Archive::folder)
+  return ArchivePtr();
 
-	if( file.isOpen() )
-	{
-        ArchivePtr archive = _d->changeArchivePassword( file.getFileName(), password );
+  if( file.isOpen() )
+  {
+    ArchivePtr archive = _d->changeArchivePassword( file.getFileName(), password );
 
-        if( archive.isValid() )
-        {
-            return archive;
-        }
-
-		int i;
-
-		if (archiveType == Archive::unknown)
-		{
-			// try to load archive based on file name
-			for (i = _d->archiveLoaders.size()-1; i >=0 ; --i)
-			{
-				if (_d->archiveLoaders[i]->isALoadableFileFormat( file.getFileName() ) )
-				{
-                    archive = _d->archiveLoaders[i]->createArchive( file, ignoreCase, ignorePaths );
-					if (archive.isValid())
-          {
-						break;
-          }
-				}
-			}
-
-			// try to load archive based on content
-			if( archive.isNull() )
-			{
-				for (i = _d->archiveLoaders.size()-1; i >= 0; --i)
-				{
-					file.seek(0);
-                    if (_d->archiveLoaders[i]->isALoadableFileFormat( file ) )
-					{
-						file.seek(0);
-                        archive = _d->archiveLoaders[i]->createArchive( file, ignoreCase, ignorePaths);
-						if( archive.isValid() )
-                        {
-							break;
-                        }
-					}
-				}
-			}
-		}
-		else
-		{
-			// try to open archive based on archive loader type
-			for (i = _d->archiveLoaders.size()-1; i >= 0; --i)
-			{
-				if (_d->archiveLoaders[i]->isALoadableFileFormat(archiveType))
-				{
-					// attempt to open archive
-					file.seek(0);
-                    if (_d->archiveLoaders[i]->isALoadableFileFormat( file))
-					{
-						file.seek(0);
-                        archive = _d->archiveLoaders[i]->createArchive( file, ignoreCase, ignorePaths);
-						if( archive.isValid() )
-                        {
-							break;
-                        }
-					}
-				}
-			}
-		}
-
-      if( archive.isValid() )
-      {
-        _d->openArchives.push_back(archive);
-
-        if (password.size())
-        {
-          archive->Password=password;
-        }
-			
+    if( archive.isValid() )
+    {
         return archive;
-      }
-      else
-      {
-        StringHelper::debug( 0xff, "Could not create archive for %s", file.getFileName().toString().c_str() );
-      }
-	}
+    }
 
-    return ArchivePtr();
+    int i;
+
+    if (archiveType == Archive::unknown)
+    {
+      // try to load archive based on file name
+      for (i = _d->archiveLoaders.size()-1; i >=0 ; --i)
+      {
+        if (_d->archiveLoaders[i]->isALoadableFileFormat( file.getFileName() ) )
+        {
+          archive = _d->archiveLoaders[i]->createArchive( file, ignoreCase, ignorePaths );
+          if (archive.isValid())
+          {
+            break;
+          }
+        }
+      }
+
+      // try to load archive based on content
+      if( archive.isNull() )
+      {
+        for (i = _d->archiveLoaders.size()-1; i >= 0; --i)
+        {
+          file.seek(0);
+          if (_d->archiveLoaders[i]->isALoadableFileFormat( file ) )
+          {
+            file.seek(0);
+            archive = _d->archiveLoaders[i]->createArchive( file, ignoreCase, ignorePaths);
+
+            if( archive.isValid() )
+            {
+              break;
+            }
+          }
+        }
+      }
+    }
+    else
+    {
+      // try to open archive based on archive loader type
+      for (i = _d->archiveLoaders.size()-1; i >= 0; --i)
+      {
+        if (_d->archiveLoaders[i]->isALoadableFileFormat(archiveType))
+        {
+          // attempt to open archive
+          file.seek(0);
+
+          if (_d->archiveLoaders[i]->isALoadableFileFormat( file))
+          {
+            file.seek(0);
+            archive = _d->archiveLoaders[i]->createArchive( file, ignoreCase, ignorePaths);
+            if( archive.isValid() )
+            {
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    if( archive.isValid() )
+    {
+      StringHelper::debug( 0xff, "Mount archive %s", file.getFileName().toString().c_str() );
+      _d->openArchives.push_back(archive);
+
+      if (password.size())
+      {
+        archive->Password=password;
+      }
+
+      return archive;
+    }
+    else
+    {
+      StringHelper::debug( 0xff, "Could not create archive for %s", file.getFileName().toString().c_str() );
+    }
+  }
+
+  return ArchivePtr();
 }
 
 

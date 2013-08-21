@@ -301,8 +301,7 @@ FilePath FilePath::getAbsolutePath() const
   char fpath[_MAX_PATH];
 
   p = _fullpath(fpath, _d->path.c_str(), _MAX_PATH);
-  std::string tmp(p);
-  StringHelper::replace( tmp, "\\", "/");
+  std::string tmp = StringHelper::replace( p, "\\", "/");
   return tmp;
 #elif defined(OC3_PLATFORM_UNIX)
   char* p=0;

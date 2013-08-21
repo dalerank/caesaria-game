@@ -20,8 +20,6 @@
 #include <cstdlib>
 #include <string>
 #include <memory>
-#include <archive.h>
-#include <archive_entry.h>
 #include <sys/stat.h>
 #include <map>
 #include <SDL.h>
@@ -35,6 +33,7 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_picture_info_bank.hpp"
 #include "oc3_gfx_engine.hpp"
+#include "oc3_filesystem_file.hpp"
 
 class PictureBank::Impl
 {
@@ -71,10 +70,38 @@ void PictureBank::setPicture( const std::string &name, const Picture& pic )
 
 Picture& PictureBank::getPicture(const std::string &name)
 {
-  Impl::ItPicture it = _d->resources.find( StringHelper::hash( name ) );
-  if (it == _d->resources.end()) 
+  const unsigned int hash = StringHelper::hash( name );
+  Impl::ItPicture it = _d->resources.find( hash );
+  if( it == _d->resources.end() )
   {
-    StringHelper::debug( 0xff, "Unknown resource %s", name.c_str() );
+    //can't find image in valid resources, try load from hdd
+    io::NFile file = io::NFile::open( name );
+
+    if( file.isOpen() )
+    {
+      SDL_Surface *surface;
+      Picture tmpPicture;
+
+      const ByteArray& buffer = file.readAll();
+      SDL_RWops *rw = SDL_RWFromMem( (void*)buffer.data(), buffer.size() );
+      surface = IMG_Load_RW(rw, 0);
+      SDL_SetAlpha( surface, 0, 0 );
+
+      tmpPicture.init( surface, Point() );
+      GfxEngine::instance().loadPicture( tmpPicture );
+
+      setPicture( name, tmpPicture );
+
+      SDL_FreeRW(rw);
+
+      return _d->resources[ hash ];
+    }
+    else
+    {
+      StringHelper::debug( 0xff, "Unknown resource %s", name.c_str() );
+      _d->resources[ hash ] = Picture::getInvalid();
+      return _d->resources[ hash ];
+    }
   }
 
   return it->second;
@@ -98,23 +125,7 @@ PicturesArray PictureBank::getPictures()
    return pictures;
 }
 
-void PictureBank::loadWaitPics( GfxEngine& engine )
-{
-  std::string aPath = AppConfig::get( AppConfig::resourcePath ).toString() + "/pics/";
-  loadArchive( aPath+"pics_wait.zip", engine );
-
-  StringHelper::debug( 0xff, "number of images loaded: %d", _d->resources.size() );
-}
-
-void PictureBank::loadAllPics( GfxEngine& engine )
-{
-  std::string aPath = AppConfig::get( AppConfig::resourcePath ).toString() + "/pics/";
-  loadArchive(aPath + "pics.zip", engine );
-  loadArchive(aPath + "pics_oc3.zip", engine);	
-  StringHelper::debug( 0xff, "number of images loaded: %d", _d->resources.size() );
-}
-
-void PictureBank::loadArchive( const std::string &filename, GfxEngine& engine )
+/*void PictureBank::loadArchive( const std::string &filename, GfxEngine& engine )
 {
   std::cout << "reading image archive: " << filename << std::endl;
   struct archive *a;
@@ -177,8 +188,7 @@ void PictureBank::loadArchive( const std::string &filename, GfxEngine& engine )
   {
     THROW("Error while reading archive " << filename);
   }
-}
-
+}*/
 
 Picture PictureBank::makePicture(SDL_Surface *surface, const std::string& resource_name) const
 {

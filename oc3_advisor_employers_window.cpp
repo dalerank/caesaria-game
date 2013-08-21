@@ -171,18 +171,18 @@ AdvisorEmployerWindow::AdvisorEmployerWindow( CityPtr city, Widget* parent, int 
   font.draw( *_d->background, _("##advemployer_panel_haveworkers##"), 500, 54, false );
 
   startPos += Point( 8, 8 );
-  PushButton* btn = new EmployerButton( this, startPos, Impl::prIndustryAndTrade, "industry&trade", 0, 0 );
-  btn = _d->addButton( this, startPos, Impl::prFood, "food" );
-  btn = _d->addButton( this, startPos, Impl::prEngineers, "engineers" );
-  btn = _d->addButton( this, startPos, Impl::prWater, "water" );
-  btn = _d->addButton( this, startPos, Impl::prPrefectures, "prefectures" );
-  btn = _d->addButton( this, startPos, Impl::prMilitary, "military" );
-  btn = _d->addButton( this, startPos, Impl::prEntertainment, "entertainment" );
-  btn = _d->addButton( this, startPos, Impl::prHealthAndEducation, "health&education" );
-  btn = _d->addButton( this, startPos, Impl::prAdministrationAndReligion, "administration&religion" );
+  _d->addButton( this, startPos, Impl::prIndustryAndTrade, "industry&trade" );
+  _d->addButton( this, startPos, Impl::prFood, "food" );
+  _d->addButton( this, startPos, Impl::prEngineers, "engineers" );
+  _d->addButton( this, startPos, Impl::prWater, "water" );
+  _d->addButton( this, startPos, Impl::prPrefectures, "prefectures" );
+  _d->addButton( this, startPos, Impl::prMilitary, "military" );
+  _d->addButton( this, startPos, Impl::prEntertainment, "entertainment" );
+  _d->addButton( this, startPos, Impl::prHealthAndEducation, "health&education" );
+  _d->addButton( this, startPos, Impl::prAdministrationAndReligion, "administration&religion" );
 
-  btn = new TexturedButton( this, Point( 160, 356 ), Size( 24 ), -1, 601 );
-  btn = new TexturedButton( this, Point( 160+24, 356 ), Size( 24 ), -1, 605 );
+  new TexturedButton( this, Point( 160, 356 ), Size( 24 ), -1, 601 );
+  new TexturedButton( this, Point( 160+24, 356 ), Size( 24 ), -1, 605 );
 
   Font font2 = Font::create( FONT_2 );
   font2.draw( *_d->background, _("##advemployer_panel_salary##"), salaryBgRect.UpperLeftCorner + Point( 4, 4), false );

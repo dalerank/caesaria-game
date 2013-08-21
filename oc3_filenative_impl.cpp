@@ -190,22 +190,31 @@ ByteArray FileNative::read(unsigned int sizeToRead)
 //! opens the file
 void FileNative::openFile()
 {
-  if( _name.toString().size() == 0) // bugfix posted by rt
+  if( _name.toString().empty() ) // bugfix posted by rt
   {
     _file = 0;
     return;
   }
 
   const char* modeStr[] = { "rb", "wb", "ab" };
-	_OC3_DEBUG_BREAK_IF( (unsigned int)_mode > FSEntity::fmAppend && "unsupported file open mode" );
-    _file = fopen( _name.toString().c_str(), modeStr[ _mode ] );
-
-  if (_file)
+  if( (unsigned int)_mode > FSEntity::fmAppend )
   {
-     // get FileSize
-     fseek(_file, 0, SEEK_END);
-     _size = getPos();
-     fseek(_file, 0, SEEK_SET);
+    StringHelper::debug( 0xff, "Unsupported file open mode for %s", _name.toString().c_str() );
+    _mode = FSEntity::fmRead;
+  }
+
+  _file = fopen( _name.toString().c_str(), modeStr[ _mode ] );
+
+  if( _file )
+  {
+   // get FileSize
+   fseek(_file, 0, SEEK_END);
+   _size = getPos();
+   fseek(_file, 0, SEEK_SET);
+  }
+  else
+  {
+    StringHelper::debug( 0xff, "FileNative: Can't open file %s", _name.toString().c_str() );
   }
 }
 

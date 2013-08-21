@@ -50,6 +50,7 @@
   typedef   unsigned long    sha2_32t;
   #define s_u32   ul
 #else
+  typedef unsigned int sha2_32t;
   #define s_u32
 #endif
 
@@ -71,12 +72,10 @@
 #else
   #include <stdint.h>
   typedef int64_t sha2_64t;
-  typedef int32_t sha2_32t;
   #if __WORDSIZE==64
     #define s_u64 ul
   #else
     #define s_u64 ull
-
   #endif
 #endif
 

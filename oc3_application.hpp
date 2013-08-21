@@ -30,7 +30,7 @@ public:
 
    void initVideo();
    void initSound();
-   void initWaitPictures();
+   void mountArchives();
    
    void setScreenWait();
    void setScreenMenu();

@@ -38,15 +38,14 @@ ScreenWait::~ScreenWait() {}
 
 void ScreenWait::initialize( GfxEngine& engine, GuiEnv& gui )
 {
-	_d->engine = &engine;
-	_d->gui = &gui;
+  _d->engine = &engine;
+  _d->gui = &gui;
 
   _d->bgPicture = Picture::load("c3title", 1);
 
-	// center the bgPicture on the screen
-	int x = (engine.getScreenWidth() - _d->bgPicture.getWidth()) / 2;
-	int y = (engine.getScreenHeight() - _d->bgPicture.getHeight()) / 2;
-	_d->bgPicture.setOffset(x, -y);
+  // center the bgPicture on the screen
+  Size s = (engine.getScreenSize() - _d->bgPicture.getSize()) / 2;
+  _d->bgPicture.setOffset( s.getWidth(), -s.getHeight() );
 }
 
 void ScreenWait::draw()

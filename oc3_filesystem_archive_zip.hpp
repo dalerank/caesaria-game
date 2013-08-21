@@ -144,92 +144,91 @@ struct SGZIPMemberHeader
 //! Contains extended info about zip files in the archive
 struct SZipFileEntry
 {
-	//! Position of data in the archive file
-    int Offset;
+  //! Position of data in the archive file
+  int Offset;
 
-	//! The header for this file containing compression info etc
-	SZIPFileHeader header;
+  //! The header for this file containing compression info etc
+  SZIPFileHeader header;
 };
 
 //! Archiveloader capable of loading ZIP Archives
-class NrpZipLoader : public ArchiveLoader
+class ZipArchiveLoader : public ArchiveLoader
 {
 public:
 
-	//! Constructor
-    NrpZipLoader( io::FileSystem* fs );
+      //! Constructor
+  ZipArchiveLoader( io::FileSystem* fs );
 
-	//! returns true if the file maybe is able to be loaded by this class
-	//! based on the file extension (e.g. ".zip")
-	virtual bool isALoadableFileFormat(const FilePath& filename) const;
+      //! returns true if the file maybe is able to be loaded by this class
+      //! based on the file extension (e.g. ".zip")
+      virtual bool isALoadableFileFormat(const FilePath& filename) const;
 
-	//! Check if the file might be loaded by this class
-	/** Check might look into the file.
-	\param file File handle to check.
-	\return True if file seems to be loadable. */
-    virtual bool isALoadableFileFormat( NFile file ) const;
+      //! Check if the file might be loaded by this class
+      /** Check might look into the file.
+      \param file File handle to check.
+      \return True if file seems to be loadable. */
+  virtual bool isALoadableFileFormat( NFile file ) const;
 
-	//! Check to see if the loader can create archives of this type.
-	/** Check based on the archive type.
-	\param fileType The archive type to check.
-	\return True if the archile loader supports this type, false if not */
-    virtual bool isALoadableFileFormat( Archive::Type fileType) const;
+      //! Check to see if the loader can create archives of this type.
+      /** Check based on the archive type.
+      \param fileType The archive type to check.
+      \return True if the archile loader supports this type, false if not */
+  virtual bool isALoadableFileFormat( Archive::Type fileType) const;
 
-	//! Creates an archive from the filename
-	/** \param file File handle to check.
-	\return Pointer to newly created archive, or 0 upon error. */
-    virtual ArchivePtr createArchive(const FilePath& filename, bool ignoreCase, bool ignorePaths) const;
+      //! Creates an archive from the filename
+      /** \param file File handle to check.
+      \return Pointer to newly created archive, or 0 upon error. */
+  virtual ArchivePtr createArchive(const FilePath& filename, bool ignoreCase, bool ignorePaths) const;
 
-	//! creates/loads an archive from the file.
-	//! \return Pointer to the created archive. Returns 0 if loading failed.
-    virtual ArchivePtr createArchive(NFile file, bool ignoreCase, bool ignorePaths) const;
+      //! creates/loads an archive from the file.
+      //! \return Pointer to the created archive. Returns 0 if loading failed.
+  virtual ArchivePtr createArchive(NFile file, bool ignoreCase, bool ignorePaths) const;
 
 private:
-    io::FileSystem* _fileSystem;
+  io::FileSystem* _fileSystem;
 };
 
-class ZipReader : public virtual Archive, virtual FileList
+class ZipArchiveReader : public virtual Archive, virtual FileList
 {
 public:
+  //! constructor
+  ZipArchiveReader( NFile file, bool ignoreCase, bool ignorePaths, bool isGZip=false);
 
-	//! constructor
-    ZipReader( NFile file, bool ignoreCase, bool ignorePaths, bool isGZip=false);
+  //! destructor
+  virtual ~ZipArchiveReader();
 
-	//! destructor
-	virtual ~ZipReader();
+  //! opens a file by file name
+  virtual NFile createAndOpenFile(const FilePath& filename);
 
-	//! opens a file by file name
-    virtual NFile createAndOpenFile(const FilePath& filename);
+  //! opens a file by index
+  virtual NFile createAndOpenFile(unsigned int index);
 
-	//! opens a file by index
-    virtual NFile createAndOpenFile(unsigned int index);
+  //! returns the list of files
+  virtual const FileList* getFileList() const;
 
-	//! returns the list of files
-	virtual const FileList* getFileList() const;
+  //! get the archive type
+  virtual std::string getTypeName() const;
 
-	//! get the archive type
-    virtual std::string getTypeName() const;
-
-    Archive::Type getType() const;
+  Archive::Type getType() const;
 protected:
 
-	//! reads the next file header from a ZIP file, returns false if there are no more headers.
-	/* if ignoreGPBits is set, the item will be read despite missing
-	file information. This is used when reading items from the central
-	directory. */
-	bool scanZipHeader(bool ignoreGPBits=false);
+  //! reads the next file header from a ZIP file, returns false if there are no more headers.
+  /* if ignoreGPBits is set, the item will be read despite missing
+     file information. This is used when reading items from the central
+     directory. */
+  bool scanZipHeader(bool ignoreGPBits=false);
 
-	//! the same but for gzip files
-	bool scanGZipHeader();
+  //! the same but for gzip files
+  bool scanGZipHeader();
 
-	bool scanCentralDirectoryHeader();
+  bool scanCentralDirectoryHeader();
 
-    NFile File;
+  NFile File;
 
-	// holds extended info about files
-    std::vector< SZipFileEntry > FileInfo;
+  // holds extended info about files
+  std::vector< SZipFileEntry > FileInfo;
 
-	bool IsGZip;
+  bool IsGZip;
 };
 
 }

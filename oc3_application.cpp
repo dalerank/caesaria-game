@@ -86,13 +86,15 @@ void Application::initSound()
   SoundEngine::instance().init();
 }
 
-void Application::initWaitPictures()
+void Application::mountArchives()
 {
-  std::cout << "load wait images begin" << std::endl;
+  StringHelper::debug( 0xff, "mount archives begin" );
 
-  PictureBank::instance().loadWaitPics( GfxEngine::instance() );
-  
-  std::cout << "load wait images end" << std::endl;
+  io::FileSystem& fs = io::FileSystem::instance();
+
+  fs.mountArchive( AppConfig::rcpath( "/pics/pics_wait.zip" ) );
+  fs.mountArchive( AppConfig::rcpath( "/pics/pics.zip" ) );
+  fs.mountArchive( AppConfig::rcpath( "/pics/pics_oc3.zip" ) );
 }
 
 void Application::initGuiEnvironment()
@@ -102,11 +104,6 @@ void Application::initGuiEnvironment()
 
 void Application::Impl::initPictures(const io::FilePath& resourcePath)
 {
-  PictureBank &pic_loader = PictureBank::instance();
-  
-  StringHelper::debug( 0xff, "Load images from archives" );
-  pic_loader.loadAllPics( GfxEngine::instance() );
-
   StringHelper::debug( 0xff, "Create animations for carts" );
   AnimationBank::loadCarts();
 
@@ -117,7 +114,7 @@ void Application::Impl::initPictures(const io::FilePath& resourcePath)
   FontCollection::instance().initialize( resourcePath.toString() );
 
   StringHelper::debug( 0xff, "Create runtime pictures" );
-  pic_loader.createResources();
+  PictureBank::instance().createResources();
 }
 
 void Application::setScreenWait()
@@ -232,7 +229,7 @@ void Application::start()
   initGuiEnvironment();
   initSound();
   //SoundEngine::instance().play_music("resources/sound/drums.wav");
-  initWaitPictures();  // init some quick pictures for screenWait
+  mountArchives();  // init some quick pictures for screenWait
   setScreenWait();
 
   _d->initPictures( AppConfig::rcpath() );
