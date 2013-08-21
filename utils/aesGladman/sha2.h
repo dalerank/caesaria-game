@@ -50,7 +50,7 @@
   typedef   unsigned long    sha2_32t;
   #define s_u32   ul
 #else
-#error Please define sha2_32t as an unsigned 32 bit type in sha2.h
+  #define s_u32
 #endif
 
 /* define an unsigned 64-bit type */
@@ -69,17 +69,15 @@
 #error Please define sha2_64t as an unsigned 64 bit type in sha2.h
 #endif
 #else
-#ifdef _IRR_SOLARIS_PLATFORM_
-#include <sys/int_types.h>
-#else
-#include <stdint.h>
-#endif
-    typedef int64_t sha2_64t;
-#if __WORDSIZE==64
-#define s_u64 ul
-#else
-#define s_u64 ull
-#endif
+  #include <stdint.h>
+  typedef int64_t sha2_64t;
+  typedef int32_t sha2_32t;
+  #if __WORDSIZE==64
+    #define s_u64 ul
+  #else
+    #define s_u64 ull
+
+  #endif
 #endif
 
 #define SHA256_DIGEST_SIZE  32

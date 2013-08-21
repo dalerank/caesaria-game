@@ -84,7 +84,12 @@
         #endif
         #define _OC3_DEBUG_BREAK_IF( _CONDITION_ ) assert( !(_CONDITION_) );
     #endif // _MSC_VER
-  #endif //OC3_PLATFORM_WIN
+  #else //OC3_PLATFORM_WIN
+    #if defined (__GNUC__)
+      #include <cassert>
+    #endif
+    #define _OC3_DEBUG_BREAK_IF( _CONDITION_ ) assert( !(_CONDITION_) );
+  #endif
 #else
   #define _OC3_DEBUG_BREAK_IF( _CONDITION_ )
 #endif
