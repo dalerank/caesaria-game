@@ -45,6 +45,8 @@ public:
 
   void reset();
 
+  void changeTimeMultiplier( int percent );
+
   void timeStep();
 
   std::string getDescription() const;

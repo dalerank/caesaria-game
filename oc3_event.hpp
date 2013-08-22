@@ -326,107 +326,107 @@ enum OC3_MOUSE_BUTTON_STATE_MASK
 //! NEvent hold information about an event
 struct NEvent
 {
-	//! Any kind of GUI event.
-	struct _GuiEvent
-	{      
-		//! IGUIElement who called the event
-		Widget* Caller;
+  //! Any kind of GUI event.
+  struct _GuiEvent
+  {
+    //! IGUIElement who called the event
+    Widget* Caller;
 
-		//! If the event has something to do with another element, it will be held here.
-		Widget* Element;
+    //! If the event has something to do with another element, it will be held here.
+    Widget* Element;
 
-		//! Type of GUI Event
-		OC3_GUI_EVENT_TYPE EventType;
-	};
-    
-	//! Any kind of mouse event.
-	struct _MouseEvent
-	{
-		//! X position of mouse cursor
-		unsigned int X;
+    //! Type of GUI Event
+    OC3_GUI_EVENT_TYPE EventType;
+  };
 
-		//! Y position of mouse cursor
-		int Y;
+  //! Any kind of mouse event.
+  struct _MouseEvent
+  {
+    //! X position of mouse cursor
+    unsigned int X;
 
-		//! mouse wheel delta, usually 1.0 or -1.0.
-		/** Only valid if event was OC3_MOUSE_WHEEL */
-		float Wheel;
+    //! Y position of mouse cursor
+    int Y;
 
-		//! True if shift was also pressed
-		bool Shift:1;
+    //! mouse wheel delta, usually 1.0 or -1.0.
+    /** Only valid if event was OC3_MOUSE_WHEEL */
+    float Wheel;
 
-		//! True if ctrl was also pressed
-		bool Control:1;
+    //! True if shift was also pressed
+    bool Shift:1;
 
-		//! A bitmap of button states. You can use isButtonPressed() to determine
-		//! if a button is pressed or not.
-		//! Currently only valid if the event was EMIE_MOUSE_MOVED
-		unsigned int ButtonStates;
+    //! True if ctrl was also pressed
+    bool Control:1;
 
-        const Point getPosition() { return Point( X, Y ); }
-		const Point getPosition() const { return Point( X, Y ); }
+    //! A bitmap of button states. You can use isButtonPressed() to determine
+    //! if a button is pressed or not.
+    //! Currently only valid if the event was EMIE_MOUSE_MOVED
+    unsigned int ButtonStates;
 
-		//! Is the left button pressed down?
-		bool isLeftPressed() const { return 0 != ( ButtonStates & OC3_EMBSM_LEFT ); }
+    const Point getPosition() { return Point( X, Y ); }
+    const Point getPosition() const { return Point( X, Y ); }
 
-		//! Is the right button pressed down?
-		bool isRightPressed() const { return 0 != ( ButtonStates & OC3_EMBSM_RIGHT ); }
+    //! Is the left button pressed down?
+    bool isLeftPressed() const { return 0 != ( ButtonStates & OC3_EMBSM_LEFT ); }
 
-		//! Is the middle button pressed down?
-		bool isMiddlePressed() const { return 0 != ( ButtonStates & OC3_EMBSM_MIDDLE ); }
+    //! Is the right button pressed down?
+    bool isRightPressed() const { return 0 != ( ButtonStates & OC3_EMBSM_RIGHT ); }
 
-		//! Type of mouse event
-        OC3_MOUSE_INPUT_EVENT Event;
-	};
+    //! Is the middle button pressed down?
+    bool isMiddlePressed() const { return 0 != ( ButtonStates & OC3_EMBSM_MIDDLE ); }
 
-	//! Any kind of keyboard event.
-	struct _KeyboardEvent
-	{
-		//! Character corresponding to the key (0, if not a character)
-		char Char;
+    //! Type of mouse event
+    OC3_MOUSE_INPUT_EVENT Event;
+  };
 
-		//! Key which has been pressed or released
-		OC3_KEY_CODE Key;
+  //! Any kind of keyboard event.
+  struct _KeyboardEvent
+  {
+    //! Character corresponding to the key (0, if not a character)
+    char Char;
 
-		//! If not true, then the key was left up
-		bool PressedDown:1;
+    //! Key which has been pressed or released
+    OC3_KEY_CODE Key;
 
-		//! True if shift was also pressed
-		bool Shift:1;
+    //! If not true, then the key was left up
+    bool PressedDown:1;
 
-		//! True if ctrl was also pressed
-		bool Control:1;
-	};
+    //! True if shift was also pressed
+    bool Shift:1;
 
-	//! Any kind of user event.
-	struct _UserEvent
-	{
-		//! Some user specified data as int
-		unsigned int UserData1;
+    //! True if ctrl was also pressed
+    bool Control:1;
+  };
 
-		//! Another user specified data as int
-		unsigned int UserData2;
-	};
+  //! Any kind of user event.
+  struct _UserEvent
+  {
+    //! Some user specified data as int
+    unsigned int UserData1;
 
-	OC3_EVENT_TYPE EventType;
-	union
-	{
-		struct _GuiEvent GuiEvent;
-		struct _MouseEvent MouseEvent;
-		struct _KeyboardEvent KeyboardEvent;
-		struct _UserEvent UserEvent;
-	};
+    //! Another user specified data as int
+    unsigned int UserData2;
+  };
 
-    static NEvent Gui( Widget* caller, Widget* elm, OC3_GUI_EVENT_TYPE type )
-    {
-        NEvent ret;
-        ret.GuiEvent.Caller = caller;
-        ret.GuiEvent.Element = elm;
-        ret.GuiEvent.EventType = type;
-        ret.EventType = OC3_GUI_EVENT;
+  OC3_EVENT_TYPE EventType;
+  union
+  {
+    struct _GuiEvent GuiEvent;
+    struct _MouseEvent MouseEvent;
+    struct _KeyboardEvent KeyboardEvent;
+    struct _UserEvent UserEvent;
+  };
 
-        return ret;
-    }
+  static NEvent Gui( Widget* caller, Widget* elm, OC3_GUI_EVENT_TYPE type )
+  {
+    NEvent ret;
+    ret.GuiEvent.Caller = caller;
+    ret.GuiEvent.Element = elm;
+    ret.GuiEvent.EventType = type;
+    ret.EventType = OC3_GUI_EVENT;
+
+    return ret;
+  }
 };
 
 #endif //__OPENCAESAR3_EVENT_H_INCLUDED__

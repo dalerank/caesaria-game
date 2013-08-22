@@ -213,6 +213,23 @@ void ScreenGame::handleEvent( NEvent& event )
     _MET_TILES
   } _mouseEventTarget = _MET_NONE;
 
+  if( event.EventType == OC3_KEYBOARD_EVENT )
+  {
+    switch( event.KeyboardEvent.Key )
+    {
+    case KEY_MINUS:
+    case KEY_PLUS:
+    case KEY_SUBTRACT:
+    case KEY_ADD:
+      _d->scenario->changeTimeMultiplier( (event.KeyboardEvent.Key == KEY_MINUS || event.KeyboardEvent.Key == KEY_SUBTRACT)
+                                           ? -10 : +10 );
+    break;
+
+    default:
+    break;
+    }
+  }
+
   bool eventResolved = false;
   if (event.EventType == OC3_MOUSE_EVENT)
   {

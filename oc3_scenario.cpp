@@ -34,12 +34,14 @@
 class Scenario::Impl
 {
 public:
+  float timeMultiplier;
+
   CityPtr city;
   Player player;
   std::string description;
   CityWinTargets targets;
   EmpirePtr empire;
-  unsigned int time;
+  double time, saveTime;
 
   void resolveMonthChange( const DateTime& time )
   {
@@ -57,6 +59,9 @@ Scenario& Scenario::instance()
 Scenario::Scenario() : _d( new Impl )
 {
   _d->description = "";
+  _d->time = 0;
+  _d->saveTime = 0;
+  _d->timeMultiplier = 100;
 }
 
 CityPtr Scenario::getCity()
@@ -133,6 +138,11 @@ void Scenario::reset()
   CONNECT( &GameDate::instance(), onMonthChanged(), _d.data(), Impl::resolveMonthChange );
 }
 
+void Scenario::changeTimeMultiplier(int percent)
+{
+  _d->timeMultiplier = math::clamp<int>( _d->timeMultiplier + percent, 10, 300 );
+}
+
 Player& Scenario::getPlayer() const
 {
   return _d->player;
@@ -145,8 +155,14 @@ EmpirePtr Scenario::getEmpire() const
 
 void Scenario::timeStep()
 {
-  _d->time += 1;
-  _d->empire->timeStep( _d->time );
+  _d->time += _d->timeMultiplier / 100.f;
 
-  GameDate::timeStep( _d->time );  
+  while( (_d->time - _d->saveTime) > 1 )
+  {
+    _d->empire->timeStep( _d->time );
+
+    GameDate::timeStep( _d->time );
+
+    _d->saveTime += 1;
+  }
 }

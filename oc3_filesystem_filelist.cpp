@@ -34,9 +34,9 @@ public:
 FileList::FileList( const FilePath& path, bool ignoreCase, bool ignorePaths )
  : _d( new Impl )
 {
-	#ifdef _DEBUG
-	  setDebugName( "FileList" );
-	#endif
+#ifdef _DEBUG
+  setDebugName( "FileList" );
+#endif
   _d->ignorePaths = ignorePaths;
   _d->path = StringHelper::replace( path.toString(), "\\", "/" );
   _d->ignoreCase = ignoreCase;
@@ -44,39 +44,48 @@ FileList::FileList( const FilePath& path, bool ignoreCase, bool ignorePaths )
 
 FileList::FileList( const FileList& other ) : _d( new Impl )
 {
-	*this = other;
+  *this = other;
 }
 
 FileList& FileList::operator=( const FileList& other )
 {
-	_d->ignoreCase = other._d->ignoreCase;
-	_d->ignorePaths = other._d->ignorePaths;
-	_d->path = other._d->path;
+  _d->ignoreCase = other._d->ignoreCase;
+  _d->ignorePaths = other._d->ignorePaths;
+  _d->path = other._d->path;
 
-	_d->files.clear();
+  _d->files.clear();
 
-    ItemIt it = other._d->files.begin();
-	for( ; it != other._d->files.end(); it++ )
+  ItemIt it = other._d->files.begin();
+  for( ; it != other._d->files.end(); it++ )
   {
-		_d->files.push_back( *it );
+    _d->files.push_back( *it );
   }
 
-    return *this;
+  return *this;
+}
+
+FileList::ConstItemIt FileList::begin() const
+{
+  return _d->files.begin();
+}
+
+FileList::ConstItemIt FileList::end() const
+{
+  return _d->files.end();
 }
 
 FileList::Items &FileList::_getItems()
 {
-    return _d->files;
+  return _d->files;
 }
 
 FileList::~FileList()
 {
-	delete _d;
 }
 
 unsigned int FileList::getFileCount() const
 {
-	return _d->files.size();
+  return _d->files.size();
 }
 
 void FileList::sort()
@@ -86,117 +95,114 @@ void FileList::sort()
 
 const FilePath& FileList::getFileName(unsigned int index) const
 {
-	if (index >= _d->files.size())
-		return emptyFileListEntry;
+  if (index >= _d->files.size())
+    return emptyFileListEntry;
 
-	return _d->files[index].name;
+  return _d->files[index].name;
 }
 
 
 //! Gets the full name of a file in the list, path included, based on an index.
 const FilePath& FileList::getFullFileName(unsigned int index) const
 {
-	if (index >= _d->files.size())
-		return emptyFileListEntry;
+  if (index >= _d->files.size())
+    return emptyFileListEntry;
 
-	return _d->files[index].fullName;
+  return _d->files[index].fullName;
 }
 
 //! adds a file or folder
 unsigned int FileList::addItem( const FilePath& fullPath, unsigned int offset, unsigned int size, bool isDirectory, unsigned int id )
 {
-	FileListItem entry;
-	entry.iD   = id ? id : _d->files.size();
-	entry.Offset = offset;
-	entry.size = size;
+  FileListItem entry;
+  entry.iD   = id ? id : _d->files.size();
+  entry.Offset = offset;
+  entry.size = size;
   entry.name = StringHelper::replace( fullPath.toString(), "\\", "/" );
-	entry.isDirectory = isDirectory;
+  entry.isDirectory = isDirectory;
 
-	// remove trailing slash
-	if( *(entry.name.toString().rbegin()) == '/')
-	{
-		entry.isDirectory = true;
-		entry.name = entry.name.removeEndSlash();
-		//entry.name.validate();
-	}
+  // remove trailing slash
+  if( *(entry.name.toString().rbegin()) == '/')
+  {
+    entry.isDirectory = true;
+    entry.name = entry.name.removeEndSlash();
+    //entry.name.validate();
+  }
 
-	if( _d->ignoreCase)
+  if( _d->ignoreCase)
   {
     entry.name = StringHelper::localeLower( entry.name.toString() );
   }
 
-	entry.fullName = entry.name;
+  entry.fullName = entry.name;
 
-	entry.name = entry.name.getBasename();
+  entry.name = entry.name.getBasename();
 
-	if(_d->ignorePaths )
+  if(_d->ignorePaths )
   {
-		entry.fullName = entry.name;
+    entry.fullName = entry.name;
   }
 
-	//os::Printer::log(Path.c_str(), entry.fullName);
+  _d->files.push_back(entry);
 
-	_d->files.push_back(entry);
-
-	return _d->files.size() - 1;
+  return _d->files.size() - 1;
 }
 
 //! Returns the iD of a file in the file list, based on an index.
 unsigned int FileList::getID(unsigned int index) const
 {
-	return index < _d->files.size() ? _d->files[index].iD : 0;	
+  return index < _d->files.size() ? _d->files[index].iD : 0;
 }
 
 bool FileList::isDirectory(unsigned int index) const
 {
-	bool ret = false;
-	if (index < _d->files.size())
-		ret = _d->files[index].isDirectory;
+  bool ret = false;
+  if (index < _d->files.size())
+    ret = _d->files[index].isDirectory;
 
-	return ret;
+  return ret;
 }
 
 //! Returns the size of a file
 unsigned int FileList::getFileSize(unsigned int index) const
 {
-	return index < _d->files.size() ? _d->files[index].size : 0;
+  return index < _d->files.size() ? _d->files[index].size : 0;
 }
 
 //! Returns the size of a file
 unsigned int FileList::getFileOffset(unsigned int index) const
 {
-	return index < _d->files.size() ? _d->files[index].Offset : 0;
+  return index < _d->files.size() ? _d->files[index].Offset : 0;
 }
-
 
 //! Searches for a file or folder within the list, returns the index
 int FileList::findFile(const FilePath& filename, bool isDirectory) const
 {
-	FileListItem entry;
-	// we only need fullName to be set for the search
+  FileListItem entry;
+  // we only need fullName to be set for the search
   entry.fullName = StringHelper::replace( filename.toString(), "\\", "/" );
   entry.isDirectory = isDirectory;
 
-	// remove trailing slash
+  // remove trailing slash
   if( *entry.fullName.toString().rbegin() == '/' )
   {
-	  entry.isDirectory = true;		
+    entry.isDirectory = true;
   }
   entry.fullName = entry.fullName.removeEndSlash();
 
-	if( _d->ignoreCase )
+  if( _d->ignoreCase )
   {
     entry.fullName = StringHelper::localeLower( entry.fullName.toString() );
   }
 
-	if( _d->ignorePaths )
-	{
-		entry.fullName = entry.fullName.getBasename();
-	}
+  if( _d->ignorePaths )
+  {
+    entry.fullName = entry.fullName.getBasename();
+  }
 
   for( Items::iterator it=_d->files.begin(); it != _d->files.end(); it++ )
   {
-	  if( (*it).fullName == entry.fullName )
+    if( (*it).fullName == entry.fullName )
     {
       return std::distance( _d->files.begin(), it );
     }
@@ -209,12 +215,12 @@ int FileList::findFile(const FilePath& filename, bool isDirectory) const
 //! Returns the base path of the file list
 const FilePath& FileList::getPath() const
 {
-	return _d->path;
+  return _d->path;
 }
 
 void FileList::setIgnoreCase( bool ignore )
 {
-	_d->ignoreCase = ignore;
+  _d->ignoreCase = ignore;
 }
 
 const FileList::Items& FileList::getItems() const
