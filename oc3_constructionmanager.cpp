@@ -44,6 +44,7 @@
 #include "oc3_forum.hpp"
 #include "oc3_garden.hpp"
 #include "oc3_building_health.hpp"
+#include "oc3_building_data.hpp"
 
 #include <map>
 
@@ -62,6 +63,13 @@ ConstructionPtr ConstructionManager::create(const BuildingType buildingType) con
   if( findConstructor != _d->constructors.end() )
   {
     ConstructionPtr ret( findConstructor->second->create() );
+    const BuildingData& info = BuildingDataHolder::instance().getData( buildingType );
+
+    if( info.getBasePicture().isValid() )
+    {
+      ret->setPicture( info.getBasePicture() );  // default picture for build tool
+    }
+
     ret->drop();
     return ret;
   }

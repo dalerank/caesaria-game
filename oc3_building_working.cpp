@@ -34,12 +34,6 @@ WorkingBuilding::WorkingBuilding(const BuildingType type, const Size& size)
   const BuildingData& data = BuildingDataHolder::instance().getData( type );
 
   _d->maxWorkers = data.getEmployers();
-
-  if( data.getResourceIndex() > 0 )
-  {
-    setPicture( Picture::load( data.getResouceGroup(), data.getResourceIndex() ) );
-  }
-
   _d->currentWorkers = 0;
   _d->isActive = true;
 }

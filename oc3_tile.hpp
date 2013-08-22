@@ -35,8 +35,8 @@ public:
   Point getXY() const;
 
   // displayed picture
-  void setPicture(Picture *picture);
-  Picture& getPicture() const;
+  void setPicture( const Picture* picture);
+  const Picture& getPicture() const;
 
   // used for multi-tile graphics: current displayed picture
   // background of constructible tiles is 1x1 => master used for foreground
@@ -58,7 +58,7 @@ private:
   Tile* _master_tile;  // left-most tile if multi-tile, or "this" if single-tile
   TerrainTile _terrain;    // infos about the tile (building, tree, road, water, rock...)
 
-  Picture* _picture; // displayed picture  
+  Picture const* _picture; // displayed picture
   bool _wasDrawn;
 };
 

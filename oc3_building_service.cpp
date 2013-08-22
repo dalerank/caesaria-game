@@ -190,11 +190,11 @@ Theater::Theater() : EntertainmentBuilding(S_THEATER, B_THEATER, Size(2))
 {
   setPicture( Picture::load( "entertainment", 13));
 
-   _getAnimation().load("entertainment", 14, 21);
-   _getAnimation().setOffset( Point( 60, 36 ) );
+  _getAnimation().load("entertainment", 14, 21);
+  _getAnimation().setOffset( Point( 60, 36 ) );
   
-   _fgPictures.resize(2);
-   _fgPictures[0] = Picture::load("entertainment", 35);
+  _fgPictures.resize(2);
+  _fgPictures[0] = Picture::load("entertainment", 35);
 }
 
 int Theater::getVisitorsNumber() const
@@ -227,7 +227,6 @@ BuildingCollosseum::BuildingCollosseum() : EntertainmentBuilding(S_COLLOSSEUM, B
 BuildingHippodrome::BuildingHippodrome() : EntertainmentBuilding(S_HIPPODROME, B_HIPPODROME, Size(5) )
 {
   setPicture( Picture::load("circus", 5));
-  getPicture().setOffset(0,106);
   Picture logo = Picture::load("circus", 3);
   Picture logo1 = Picture::load("circus", 1);
   logo.setOffset(150,181);

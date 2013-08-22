@@ -179,14 +179,9 @@ int BuildingData::getEmployers() const
   return _employers;
 }
 
-std::string BuildingData::getResouceGroup() const
+const Picture &BuildingData::getBasePicture() const
 {
-  return _resourceGroup;
-}
-
-int BuildingData::getResourceIndex() const
-{
-  return _rcIndex;
+  return _basePicture;
 }
 
 char BuildingData::getDesirbilityInfluence() const
@@ -321,8 +316,17 @@ void BuildingDataHolder::initialize( const io::FilePath& filename )
     bData._desirabilityStep  = (int)options[ "desstep" ];
     bData._employers = (int)options[ "employers" ];
     bData._buildingClass = getClass( options[ "class" ].toString() );
-    bData._resourceGroup = options[ "resource" ].toString();
-    bData._rcIndex = (int)options[ "rcindex" ];
+
+    VariantList basePic = options[ "image" ].toList();
+    if( basePic.size() == 2 && basePic.back().toInt() > 0 )
+    {
+      std::string resourceGroup = basePic.front().toString();
+      int rcIndex = basePic.back().toInt();
+      if( rcIndex > 0 )
+      {
+        bData._basePicture = Picture::load( resourceGroup, rcIndex );
+      }
+    }
 
     addData( bData );
   }

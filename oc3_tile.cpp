@@ -40,17 +40,14 @@ int Tile::getI() const    {   return _pos.getI();   }
 int Tile::getJ() const    {   return _pos.getJ();   }
 
 
-void Tile::setPicture(Picture *picture)
+void Tile::setPicture(const Picture *picture)
 {
   _picture = picture;
 }
 
-Picture& Tile::getPicture() const
+const Picture& Tile::getPicture() const
 {
-  if( _picture==NULL ) 
-  {
-    THROW("error: picture is null");
-  }
+  _OC3_DEBUG_BREAK_IF( !_picture && "error: picture is null");
 
   return *_picture;
 }

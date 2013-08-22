@@ -84,6 +84,9 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   _d->setRange(ResourceGroup::commerce, 133, 139, Point( 65, 42 ) );  // pottery
   _d->setRange(ResourceGroup::commerce, 159, 167, Point( 62, 42 ) );  // market rich
 
+  _d->setOne( ResourceGroup::land3a, 43, Point( 0, 116 ) );
+  _d->setOne( "circus", 5, 0, 106 );
+
   // stock of input good
   _d->setOne(ResourceGroup::commerce, 153, 45, -8);  // grapes
   _d->setOne(ResourceGroup::commerce, 154, 37, -2);  // olive

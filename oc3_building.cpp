@@ -73,7 +73,7 @@ void LandOverlay::setType(const BuildingType buildingType)
 
 void LandOverlay::timeStep(const unsigned long time) { }
 
-void LandOverlay::setPicture(Picture &picture)
+void LandOverlay::setPicture(const Picture &picture)
 {
    Tilemap &tilemap = Scenario::instance().getCity()->getTilemap();
 
@@ -147,7 +147,7 @@ bool LandOverlay::isDeleted() const
   return _d->isDeleted;
 }
 
-Picture& LandOverlay::getPicture()
+const Picture &LandOverlay::getPicture() const
 {
   return _d->picture;
 }
@@ -654,7 +654,6 @@ void Dock::timeStep(const unsigned long time)
 TriumphalArch::TriumphalArch() : Building( B_TRIUMPHAL_ARCH, Size(3) )
 {
   setPicture( Picture::load( "land3a", 43 ) );
-  getPicture().setOffset(0,116);
   _d->animation.load("land3a", 44, 1);
   _d->animation.setOffset( Point( 63, 97 ) );
   _fgPictures.resize(1);

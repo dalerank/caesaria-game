@@ -57,8 +57,8 @@ public:
   virtual void timeStep(const unsigned long time);  // perform one simulation step
 
   // graphic
-  void setPicture(Picture &picture);
-  Picture& getPicture();
+  void setPicture(const Picture &picture);
+  const Picture& getPicture() const;
   std::vector<Picture>& getForegroundPictures();
 
   std::string getName();  // landoverlay debug name

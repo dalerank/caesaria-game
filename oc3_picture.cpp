@@ -108,7 +108,7 @@ void Picture::setName(std::string &name)
   _d->name = name;
 }
 
-std::string Picture::getName()
+std::string Picture::getName() const
 {
   return _d->name;
 }
