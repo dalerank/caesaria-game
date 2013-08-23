@@ -16,13 +16,13 @@
 #include "oc3_app_config.hpp"
 #include "oc3_filepath.hpp"
 
-const std::string AppConfig::localePath = "localePath";
-const std::string AppConfig::resourcePath = "resourcePath";
-const std::string AppConfig::pantheonModel = "pantheonConfig";
-const std::string AppConfig::houseModel = "houseModel";
-const std::string AppConfig::citiesModel = "citiesModel";
-const std::string AppConfig::constructionModel = "constructionModel";
-
+const char* AppConfig::localePath = "localePath";
+const char* AppConfig::resourcePath = "resourcePath";
+const char* AppConfig::pantheonModel = "pantheonConfig";
+const char* AppConfig::houseModel = "houseModel";
+const char* AppConfig::citiesModel = "citiesModel";
+const char* AppConfig::constructionModel = "constructionModel";
+const char* AppConfig::ctNamesModel = "ctNamesModel";
 class AppConfig::Impl
 {
 public:
@@ -45,6 +45,7 @@ AppConfig::AppConfig() : _d( new Impl )
   _d->options[ houseModel ] = Variant( std::string( "/house.model" ) );
   _d->options[ constructionModel ] = Variant( std::string( "/construction.model" ) );
   _d->options[ citiesModel ] = Variant( std::string( "/cities.model" ) );
+  _d->options[ ctNamesModel ] = Variant( std::string( "/citizens_names.model" ) );
 }
 
 void AppConfig::set( const std::string& option, const Variant& value )

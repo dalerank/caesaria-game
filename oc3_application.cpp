@@ -39,6 +39,7 @@
 #include "oc3_filesystem_filelist.hpp"
 #include "oc3_empire.hpp"
 #include "oc3_exception.hpp"
+#include "oc3_name_generator.hpp"
 
 #include <libintl.h>
 #include <list>
@@ -233,6 +234,7 @@ void Application::start()
   setScreenWait();
 
   _d->initPictures( AppConfig::rcpath() );
+  NameGenerator::initialize( AppConfig::rcpath( AppConfig::ctNamesModel ) );
   HouseSpecHelper::getInstance().initialize( AppConfig::rcpath( AppConfig::houseModel ) );
   DivinePantheon::getInstance().initialize(  AppConfig::rcpath( AppConfig::pantheonModel ) );
   BuildingDataHolder::instance().initialize( AppConfig::rcpath( AppConfig::constructionModel ) );

@@ -1949,3 +1949,14 @@ Variant2Handler::Variant2Handler()
 	clear = clearVariant;
   isNull = checkVariantNull;
 }
+
+
+StringArray &operator<<(StringArray &strlist, const VariantList &vars)
+{
+  for( VariantList::const_iterator it=vars.begin(); it != vars.end(); it++ )
+    {
+      strlist.push_back( (*it).toString() );
+    }
+
+  return strlist;
+}

@@ -13,36 +13,28 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_APPCONFIG_H_INCLUDED__
-#define __OPENCAESAR3_APPCONFIG_H_INCLUDED__
+#ifndef __OPENCAESAR3_NAME_GENERATOR_H_INCLUDED__
+#define __OPENCAESAR3_NAME_GENERATOR_H_INCLUDED__
 
 #include "oc3_scopedptr.hpp"
-#include "oc3_variant.hpp"
 #include "oc3_filepath.hpp"
 
-class AppConfig
+class NameGenerator
 {
 public:
-  static const char* ctNamesModel;
-  static const char* localePath;
-  static const char* resourcePath;
-  static const char* pantheonModel;
-  static const char* houseModel;
-  static const char* citiesModel;
-  static const char* constructionModel;
+  typedef enum { male=0, female } NameType;
+  static NameGenerator& instance();
 
-  static AppConfig& getInstance();
+  ~NameGenerator();
 
-  static void set( const std::string& option, const Variant& value );
-  static Variant get( const std::string& option );
-
-  static io::FilePath rcpath( const std::string& option="" );
+  static std::string rand( NameType type );
+  static void initialize( const io::FilePath& filename );
 
 private:
-  AppConfig();
+  NameGenerator();
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#endif //__OPENCAESAR3_APPCONFIG_H_INCLUDED__
+#endif //__OPENCAESAR3_NAME_GENERATOR_H_INCLUDED__
