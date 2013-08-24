@@ -36,7 +36,7 @@ class GuiInfoBox : public Widget
 {
 public:
     GuiInfoBox( Widget* parent, const Rect& rect, int id );
-    ~GuiInfoBox();
+    virtual ~GuiInfoBox();
     
     void draw( GfxEngine& engine );  // draw on screen
 
@@ -75,6 +75,7 @@ class InfoBoxRawMaterial : public GuiInfoBox
 {
 public:
   InfoBoxRawMaterial( Widget* parent, const Tile& tile );
+  virtual ~InfoBoxRawMaterial();
 
   void paint();
 
@@ -102,6 +103,7 @@ class InfoBoxSenate : public GuiInfoBox
 {
 public:
   InfoBoxSenate( Widget* parent, const Tile& tile );
+  virtual ~InfoBoxSenate();
 
   void paint();
 private:
@@ -147,6 +149,7 @@ class GuiInfoGranary : public GuiInfoBox
 {
 public:
   GuiInfoGranary( Widget* parent, const Tile& tile );
+  virtual ~GuiInfoGranary();
   
   void paint();
   void drawWorkers( int );
@@ -164,6 +167,7 @@ class GuiInfoMarket : public GuiInfoBox
 {
 public:
    GuiInfoMarket( Widget* parent, const Tile& tile );
+   virtual ~GuiInfoMarket();
    
    void paint();
    void drawWorkers();
@@ -178,6 +182,7 @@ class InfoBoxWarehouse : public GuiInfoBox
 {
 public:
   InfoBoxWarehouse( Widget* parent, const Tile& tile );
+  virtual ~InfoBoxWarehouse();
 
   void paint();
   void drawWorkers();
@@ -194,6 +199,7 @@ class InfoBoxTemple : public GuiInfoBox
 {
 public:
   InfoBoxTemple( Widget* parent, const Tile& tile );
+  virtual ~InfoBoxTemple();
 
   void drawWorkers();
   void drawPicture();
@@ -207,6 +213,7 @@ class InfoBoxHouse : public GuiInfoBox
 {
 public:
    InfoBoxHouse( Widget* paarent, const Tile& tile);
+   virtual ~InfoBoxHouse();
 
    void drawHabitants();
    void drawGood(const GoodType &goodType, const int col, const int row, const int startY );
