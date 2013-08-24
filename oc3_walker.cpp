@@ -491,3 +491,24 @@ Soldier::Soldier()
    _walkerGraphic = WG_HORSEMAN;
 }
 
+TypeEquale<WalkerType> wlkTypeEquales[] = {
+  { WT_NONE,   "none"},
+  { WT_IMMIGRANT, "immigrant" },
+  { WT_EMIGRANT, "emmigrant" },
+  { WT_SOLDIER, "soldier" },
+  { WT_CART_PUSHER, "cart_pusher" },
+  { WT_MARKETLADY, "market_lady" },
+  { WT_MARKETLADY_HELPER, "market_lady_helper" },
+  { WT_SERVICE, "serviceman" },
+  { WT_TRAINEE, "trainee" },
+  { WT_WORKERS_HUNTER, "workers_hunter" },
+  { WT_PREFECT, "prefect" },
+  { WT_TAXCOLLECTOR, "tax_collector" },
+  { WT_MERCHANT, "merchant" },
+  { WT_MAX, "unknown" }
+};
+
+std::string WalkerHelper::getTypeName()
+{
+
+}

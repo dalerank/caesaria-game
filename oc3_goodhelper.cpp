@@ -60,29 +60,6 @@ static const int empPicId[ G_MAX+1 ] = { PicID::bad,
                                           /*G_DENARIES*/332,
                                           PicID::bad };
 
-
-TypeEquale<GoodType> goodTypeEquales[] = { 
-  { G_NONE, "none" },
-  { G_WHEAT, "wheat" },
-  { G_FISH, "fish" },
-  { G_MEAT, "meat" },
-  { G_FRUIT, "fruit" }, 
-  { G_VEGETABLE, "vegetable" }, { G_VEGETABLE, "vegetables" },
-  { G_OLIVE, "olive" }, { G_OLIVE, "olives" },
-  { G_OIL, "oil" },
-  { G_GRAPE, "grape" }, { G_GRAPE, "vines" },
-  { G_WINE, "wine" }, 
-  { G_TIMBER, "timber" },
-  { G_FURNITURE, "furniture" },
-  { G_CLAY, "clay" }, 
-  { G_POTTERY, "pottery" }, 
-  { G_IRON, "iron" }, 
-  { G_WEAPON, "weapon" }, { G_WEAPON, "weapons" },
-  { G_MARBLE, "marble" }, 
-  { G_DENARIES, "denaries" },
-  { G_MAX, "" }
-};
-
 class GoodHelper::Impl
 {
 public:
@@ -104,6 +81,30 @@ GoodHelper::GoodHelper() : _d( new Impl )
     GoodType goodType = GoodType(n);
     _d->mapGood[n].init( goodType );
   }
+
+  TypeEquale goodTypeEquales[] = {
+    { G_NONE, "none" },
+    { G_WHEAT, "wheat" },
+    { G_FISH, "fish" },
+    { G_MEAT, "meat" },
+    { G_FRUIT, "fruit" },
+    { G_VEGETABLE, "vegetable" }, { G_VEGETABLE, "vegetables" },
+    { G_OLIVE, "olive" }, { G_OLIVE, "olives" },
+    { G_OIL, "oil" },
+    { G_GRAPE, "grape" }, { G_GRAPE, "vines" },
+    { G_WINE, "wine" },
+    { G_TIMBER, "timber" },
+    { G_FURNITURE, "furniture" },
+    { G_CLAY, "clay" },
+    { G_POTTERY, "pottery" },
+    { G_IRON, "iron" },
+    { G_WEAPON, "weapon" }, { G_WEAPON, "weapons" },
+    { G_MARBLE, "marble" },
+    { G_DENARIES, "denaries" },
+    { G_MAX, "" }
+  };
+
+  _init( goodTypeEquales, G_MAX );
 }
 
 Picture GoodHelper::getPicture( GoodType type, bool emp )

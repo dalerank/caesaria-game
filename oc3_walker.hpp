@@ -119,4 +119,12 @@ private:
 
 };
 
+class WalkerHelper
+{
+public:
+  static std::string getTypeName();
+
+private:
+  WalkerHelper();
+};
 #endif

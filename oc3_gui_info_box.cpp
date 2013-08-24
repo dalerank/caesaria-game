@@ -1029,3 +1029,28 @@ void InfoBoxBasic::setText( const std::string& text )
 {
   _bd->lbText->setText( text );
 }
+
+class InfoBoxCitizen::Impl
+{
+public:
+  Label* lbName;
+  Label* lbType;
+  Label* lbThinks;
+  Label* lbCitizenPic;
+};
+
+
+InfoBoxCitizen::InfoBoxCitizen( Widget* parent, const Tile& tile )
+: GuiInfoBox( parent, Rect( 0, 0, 460, 350 ), -1 ), _cd( new Impl )
+{
+  Picture& bg = getBgPicture();
+  PictureDecorator::draw( bg, Rect( 18, 40, getWidth() - 18, getHeight() - 120), PictureDecorator::blackFrame );
+  PictureDecorator::draw( bg, Rect( 25, 100, getWidth() - 25, getHeight() - 130), PictureDecorator::whiteBorder );
+  //mini screenshot from citizen pos need here
+  PictureDecorator::draw( bg, Rect( 25, 45, 25 + 52, 45 + 52), PictureDecorator::blackArea );
+
+  _cd->lbName = new Label( this, Rect( 85, 108, getWidth() - 30, 108 + 30) );
+  _cd->lbType = new Label( this, Rect( 85, 138, getWidth() - 30, 138 + 20) );
+  _cd->lbThinks = new Label( this, Rect( 85, 160, getWidth() - 30, getHeight() - 140) );
+  _cd->lbCitizenPic = new Label( this, Rect( 25, 115, 25 + 55, 115 + 80) );
+}

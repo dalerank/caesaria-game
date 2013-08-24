@@ -1,36 +1,34 @@
 {
-  "road" : 
-  {
-    "cost" : 4,
-	"desirability" : 4,
-	"desrange" : 0
-	"class" : "road"
+  road : {
+    cost : 4,
+    desirability : 4,
+    desrange : 0,
+    class : "road"
+    image : [ "land2a", 44 ]
   },
   
-  "wall" :
-  {
-    "desirability" : 12,
-	"desrange" : 0
-	"class" : "wall"
+  wall : {
+    desirability : 12,
+    desrange : 0,
+    class : "wall"
   },
   
-  "aqueduct" : 
-  {
-    "cost" : 8,
-    "desirability" : -2,
-	"desrange" : 2,
-	"desstep" : 1
-	"class" : "water"
+  aqueduct : {
+    cost : 8,
+    desirability : -2,
+    desrange : 2,
+    desstep : 1
+    class : "water"
   },
 
-  "amphitheater" :
+  amphitheater :
   {
-	"cost" : 100,
-	"desirability" : 4,
-	"desrange" : 4,
-	"desstep" : -1,
-	"employers" : 12
-	"class" : "entertainment"
+    cost : 100,
+    desirability : 4,
+    desrange : 4,
+    desstep : -1,
+    employers : 12
+    class : "entertainment"
   },
 
   "theater" : 
@@ -595,25 +593,24 @@
 
   "fountain" : 
   {
-    "cost" : 15,
-	"desirability" : 0,
-	"desrange" : 0,
-	"desstep" : 0,
-	"employers" : 4
-	"class" : "water"
+    cost : 15,
+	  desirability : 0,
+	  desrange : 0,
+	  desstep : 0,
+	  employers : 4
+	  class : "water"
   }, 
   
   "well" : 
   {
-    "cost" : 5,
-	"desirability" : -1,
-	"desrange" : 1,
-	"desstep" : 1,
-	"employers" : 1,
-	"pretty" : "Well",
-	"resource" : "utilitya",
-	"rcindex" : 1
-	"class" : "water"
+    cost : 5,
+    desirability : -1,
+    desrange : 1,
+    desstep : 1,
+    employers : 1,
+    pretty : "Well",
+    image : [ "utilitya", 1 ]
+    class : "water"
   }, 
  
   "native_field" : 

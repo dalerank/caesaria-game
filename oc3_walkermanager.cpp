@@ -68,8 +68,8 @@ WalkerPtr WalkerManager::create( const WalkerType walkerType )
     WalkerPtr ret( findConstructor->second->create() );
     ret->drop();
     return ret;
-  }
 
+  StringHelper::debug( 0xff, "Can't create walker from type %s",  )
   return WalkerPtr();
 }
 

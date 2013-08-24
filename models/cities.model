@@ -181,15 +181,15 @@
 		sells : {	fruit : 25, olives : 25, timber : 25 }	
 		buys : { pottery : 25, vegetables : 25, wheat : 40 }
 		
-		seaTrade : true
+		sea : false
 	}
 	
 	Syracusae : {
 		location : [ 843, 723 ]
 		sells : { fruit : 25, olives : 40, clay : 25 }
 		buys : { wine : 40, marble : 15, furniture : 25 }
-		landTrade : false
-    resources : [ "wheat", "vegetables", "fruit", "vines", 
+		land : false
+		resources : [ "wheat", "vegetables", "fruit", "vines", 
                   "fish", "timber", "clay" ]
 	}
 }

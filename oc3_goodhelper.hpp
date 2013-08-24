@@ -19,11 +19,12 @@
 
 #include "oc3_scopedptr.hpp"
 #include "oc3_enums.hpp"
+#include "oc3_enums_helper.hpp"
 #include "oc3_picture.hpp"
 
 class GoodStock;
 
-class GoodHelper
+class GoodHelper : public EnumsHelper<GoodType>
 {
 public:
   static GoodHelper& getInstance();

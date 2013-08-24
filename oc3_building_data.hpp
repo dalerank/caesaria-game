@@ -71,11 +71,10 @@ public:
    // return factory that consume goodType
    BuildingType getBuildingTypeByInGood(const GoodType inGoodType) const;
 
-   static BuildingType getType( const std::string& name );
+   virtual BuildingType getType( const std::string& name ) const;
    static BuildingClass getClass( const std::string& name );
 
    void initialize( const io::FilePath& filename );
-
 private:
    BuildingDataHolder();
 

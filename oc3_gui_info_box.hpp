@@ -230,4 +230,16 @@ private:
    ScopedPtr< Impl > _bd;
 };
 
+// Simple info box with static text on plain background
+class InfoBoxCitizen : public GuiInfoBox
+{
+public:
+  InfoBoxCitizen( Widget* parent, const Tile& tile );
+
+private:
+  class Impl;
+  ScopedPtr< Impl > _cd;
+};
+
+
 #endif
