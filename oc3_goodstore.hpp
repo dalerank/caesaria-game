@@ -29,18 +29,18 @@ public:
   GoodStore();
   virtual ~GoodStore();
 
-  virtual int getCurrentQty(const GoodType &goodType) const = 0;
+  virtual int getCurrentQty(const Good::Type &goodType) const = 0;
   virtual int getCurrentQty() const = 0;
   virtual int getMaxQty() const = 0;
-  virtual int getMaxQty(const GoodType& goodType ) const = 0;
-  virtual int getFreeQty( const GoodType& goodType ) const;
+  virtual int getMaxQty(const Good::Type& goodType ) const = 0;
+  virtual int getFreeQty( const Good::Type& goodType ) const;
   virtual int getFreeQty() const;
 
   // returns the max quantity that can be stored now
-  virtual int getMaxStore(const GoodType goodType) = 0;
+  virtual int getMaxStore(const Good::Type goodType) = 0;
 
   // returns the max quantity that can be retrieved now
-  virtual int getMaxRetrieve(const GoodType goodType);
+  virtual int getMaxRetrieve(const Good::Type goodType);
 
   // returns the reservationID if stock can be retrieved (else 0)
   virtual long reserveStorage(GoodStock &stock);
@@ -73,8 +73,8 @@ public:
   virtual VariantMap save() const;
   virtual void load( const VariantMap& stream );
 
-  virtual void setOrder( const GoodType type, const GoodOrders::Order order );
-  virtual GoodOrders::Order getOrder( const GoodType type ) const;
+  virtual void setOrder( const Good::Type type, const GoodOrders::Order order );
+  virtual GoodOrders::Order getOrder( const Good::Type type ) const;
 
 protected:
   typedef std::map<long, GoodStock> _Reservations;

@@ -71,20 +71,6 @@ enum WalkerType
   WT_MERCHANT,
   WT_MAX, WT_ALL=WT_MAX 
 };
-
-enum GoodType 
-{ 
-  G_NONE, 
-  G_WHEAT, 
-  G_FISH, 
-  G_MEAT, 
-  G_FRUIT, G_VEGETABLE, G_OLIVE, G_OIL, G_GRAPE, G_WINE,
-  G_TIMBER, G_FURNITURE, G_CLAY, G_POTTERY, G_IRON, G_WEAPON, G_MARBLE, 
-  G_DENARIES,
-  G_MAX 
-};
-
-enum CartTypes {G_EMIGRANT_CART1 = G_MAX, G_ENIGRANT_CART2, CT_MAX };
   
 enum ServiceType 
 { 
@@ -106,9 +92,6 @@ enum ServiceType
 enum WaterService { WTR_WELL=0, WTR_FONTAIN, WTR_RESERVOIR, WTR_COUNT };
 
 enum ClimateType { C_CENTRAL, C_NORTHERN, C_DESERT, C_MAX };
-
-// Climate types changes:
-// farms productivity, fire rates, fountain radius
 
 enum ScreenType { SCREEN_NONE, SCREEN_MENU, SCREEN_GAME, SCREEN_QUIT, SCREEN_MAX };
 

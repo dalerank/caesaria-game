@@ -19,20 +19,20 @@
 
 #include "oc3_scopedptr.hpp"
 #include "oc3_enums.hpp"
-#include "oc3_enums_helper.hpp"
 #include "oc3_picture.hpp"
+#include "oc3_good.hpp"
 
 class GoodStock;
 
-class GoodHelper : public EnumsHelper<GoodType>
+class GoodHelper
 {
 public:
   static GoodHelper& getInstance();
 
-  static std::string getName( GoodType type );
-  static Picture getPicture( GoodType type, bool emp=false );
-  static GoodType getType( const std::string& name );
-  static std::string getTypeName( GoodType type );
+  static std::string getName( Good::Type type );
+  static Picture getPicture( Good::Type type, bool emp=false );
+  static Good::Type getType( const std::string& name );
+  static std::string getTypeName( Good::Type type );
   static const Picture& getCartPicture( const GoodStock& stock, const DirectionType& direction );
   ~GoodHelper();
 private:

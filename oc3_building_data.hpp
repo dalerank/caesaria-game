@@ -19,7 +19,7 @@
 #ifndef BUILDING_DATA_HPP
 #define BUILDING_DATA_HPP
 
-#include "oc3_enums.hpp"
+#include "oc3_good.hpp"
 #include "oc3_scopedptr.hpp"
 #include "oc3_filepath.hpp"
 #include "oc3_picture.hpp"
@@ -69,9 +69,9 @@ public:
    bool hasData(const BuildingType buildingType) const;
 
    // return factory that consume goodType
-   BuildingType getBuildingTypeByInGood(const GoodType inGoodType) const;
+   BuildingType getConsumerType(const Good::Type inGoodType) const;
 
-   virtual BuildingType getType( const std::string& name ) const;
+   static BuildingType getType( const std::string& name );
    static BuildingClass getClass( const std::string& name );
 
    void initialize( const io::FilePath& filename );

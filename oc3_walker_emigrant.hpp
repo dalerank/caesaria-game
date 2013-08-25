@@ -26,6 +26,7 @@ typedef SmartPtr< Emigrant > EmigrantPtr;
 class Emigrant : public Immigrant
 {
 public:
+  typedef enum { G_EMIGRANT_CART1 = Good::G_MAX, G_EMIGRANT_CART2, CT_MAX } CartType;
   static const unsigned int defaultPeoples=4;
 
   static EmigrantPtr create( CityPtr city);

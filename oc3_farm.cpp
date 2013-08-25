@@ -19,12 +19,14 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_tile.hpp"
+#include "oc3_goodhelper.hpp"
 #include "oc3_city.hpp"
+#include "oc3_stringhelper.hpp"
 
 class FarmTile
 {
 public:
-  FarmTile(const GoodType outGood, const TilePos& pos );
+  FarmTile(const Good::Type outGood, const TilePos& pos );
   virtual ~FarmTile();
   void computePicture(const int percent);
   Picture& getPicture();
@@ -35,21 +37,22 @@ private:
   Animation _animation;
 };
 
-FarmTile::FarmTile(const GoodType outGood, const TilePos& pos )
+FarmTile::FarmTile(const Good::Type outGood, const TilePos& pos )
 {
   _pos = pos;
 
   int picIdx = 0;
   switch (outGood)
   {
-  case G_WHEAT: picIdx = 13; break;
-  case G_VEGETABLE: picIdx = 18; break;
-  case G_FRUIT: picIdx = 23; break;
-  case G_OLIVE: picIdx = 28; break;
-  case G_GRAPE: picIdx = 33; break;
-  case G_MEAT: picIdx = 38; break;
+  case Good::G_WHEAT: picIdx = 13; break;
+  case Good::G_VEGETABLE: picIdx = 18; break;
+  case Good::G_FRUIT: picIdx = 23; break;
+  case Good::G_OLIVE: picIdx = 28; break;
+  case Good::G_GRAPE: picIdx = 33; break;
+  case Good::G_MEAT: picIdx = 38; break;
   default:
-    THROW("Unexpected farmType in farm:" << outGood);
+    StringHelper::debug( 0xff, "Unexpected farmType in farm %s", GoodHelper::getName( outGood ).c_str() );
+    _OC3_DEBUG_BREAK_IF( "Unexpected farmType in farm ");
   }
 
   _animation.load( ResourceGroup::commerce, picIdx, 5);
@@ -81,13 +84,15 @@ public:
   Picture pictureBuilding;  // we need to change its offset
 };
 
-Farm::Farm(const GoodType outGood, const BuildingType type ) 
-: Factory(G_NONE, outGood, type, Size(3) ), _d( new Impl )
+Farm::Farm(const Good::Type outGood, const BuildingType type )
+  : Factory( Good::G_NONE, outGood, type, Size(3) ), _d( new Impl )
 {
   _d->pictureBuilding = Picture::load( ResourceGroup::commerce, 12);  // farm building
   _d->pictureBuilding.addOffset(30, 15);
 
   setPicture( _d->pictureBuilding );
+  getOutGood().setMax( 100 );
+
   init();
   setWorkers( 0 );
 }
@@ -110,7 +115,7 @@ bool Farm::canBuild(const TilePos& pos ) const
 
 void Farm::init()
 {
-  GoodType farmType = getOutGoodType();
+  Good::Type farmType = getOutGoodType();
   // add subTiles in draw order
   _d->subTiles.push_back(FarmTile(farmType, TilePos( 0, 0 ) ));
   _d->subTiles.push_back(FarmTile(farmType, TilePos( 2, 2 ) ));
@@ -119,10 +124,7 @@ void Farm::init()
   _d->subTiles.push_back(FarmTile(farmType, TilePos( 2, 0 ) ));
 
   _fgPictures.resize(5);
-  for (int n = 0; n<5; ++n)
-  {
-    _fgPictures[n] = _d->subTiles[n].getPicture();
-  }
+  computePictures();
 }
 
 void Farm::computePictures()
@@ -146,14 +148,21 @@ void Farm::computePictures()
     }
     _d->subTiles[n].computePicture(percentTile);
   }
-}
 
+  for (int n = 0; n<5; ++n)
+  {
+    _fgPictures[n] = _d->subTiles[n].getPicture();
+  }
+}
 
 void Farm::timeStep(const unsigned long time)
 {
   Factory::timeStep(time);
 
-  computePictures();
+  if( mayWork() && getProgress() < 100 )
+  {
+    computePictures();
+  }
 }
 
 void Farm::save( VariantMap& stream ) const
@@ -171,26 +180,26 @@ Farm::~Farm()
 
 }
 
-FarmWheat::FarmWheat() : Farm(G_WHEAT, B_WHEAT_FARM)
+FarmWheat::FarmWheat() : Farm(Good::G_WHEAT, B_WHEAT_FARM)
 {
 }
 
-FarmOlive::FarmOlive() : Farm(G_OLIVE, B_OLIVE_FARM)
+FarmOlive::FarmOlive() : Farm(Good::G_OLIVE, B_OLIVE_FARM)
 {
 }
 
-FarmGrape::FarmGrape() : Farm(G_GRAPE, B_GRAPE_FARM)
+FarmGrape::FarmGrape() : Farm(Good::G_GRAPE, B_GRAPE_FARM)
 {
 }
 
-FarmMeat::FarmMeat() : Farm(G_MEAT, B_PIG_FARM)
+FarmMeat::FarmMeat() : Farm(Good::G_MEAT, B_PIG_FARM)
 {
 }
 
-FarmFruit::FarmFruit() : Farm(G_FRUIT, B_FRUIT_FARM)
+FarmFruit::FarmFruit() : Farm(Good::G_FRUIT, B_FRUIT_FARM)
 {
 }
 
-FarmVegetable::FarmVegetable() : Farm(G_VEGETABLE, B_VEGETABLE_FARM)
+FarmVegetable::FarmVegetable() : Farm(Good::G_VEGETABLE, B_VEGETABLE_FARM)
 {
 }

@@ -34,14 +34,14 @@ public:
 
   void resize( const GoodStore& other );
 
-  GoodStock& getStock(const GoodType &goodType);
-  virtual int getCurrentQty(const GoodType &goodType) const;
-  int getMaxQty(const GoodType &goodType) const;
-  void setMaxQty(const GoodType &goodType, const int maxQty);
-  void setCurrentQty(const GoodType &goodType, const int currentQty);
+  GoodStock& getStock(const Good::Type &goodType);
+  virtual int getCurrentQty(const Good::Type &goodType) const;
+  int getMaxQty(const Good::Type &goodType) const;
+  void setMaxQty(const Good::Type &goodType, const int maxQty);
+  void setCurrentQty(const Good::Type &goodType, const int currentQty);
 
   // returns the max quantity that can be stored now
-  int getMaxStore(const GoodType goodType);
+  int getMaxStore(const Good::Type goodType);
 
   // store/retrieve
   virtual void applyStorageReservation(GoodStock &stock, const long reservationID);

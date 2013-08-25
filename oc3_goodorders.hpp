@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_GOODORDERS_H_INCLUDED__
 #define __OPENCAESAR3_GOODORDERS_H_INCLUDED__
 
-#include "oc3_enums.hpp"
+#include "oc3_good.hpp"
 #include "oc3_scopedptr.hpp"
 
 class GoodOrders 
@@ -27,9 +27,9 @@ public:
   GoodOrders();
   ~GoodOrders();
 
-  void set( const GoodType type, Order rule );
+  void set( const Good::Type type, Order rule );
   void set( Order rule );
-  Order get( const GoodType type );
+  Order get( const Good::Type type );
 
 private:
   class Impl;

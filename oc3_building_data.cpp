@@ -28,123 +28,104 @@ BuildingData BuildingData::invalid = BuildingData( B_NONE, "unknown", 0 );
 class BuildingTypeHelper : public EnumsHelper<BuildingType>
 {
 public:
-  static BuildingTypeHelper& instance()
-  {
-    static BuildingTypeHelper inst;
-    return inst;
-  }
-
   virtual BuildingType getInvalid() const { return B_NONE; }
 
-private:
   BuildingTypeHelper()
   {
-    TypeEquale bldTypeEquales[] = {
-      { B_AMPHITHEATER,   "amphitheater"},
-      { B_THEATER,        "theater" },
-      { B_HIPPODROME,     "hippodrome" },
-      { B_COLLOSSEUM,     "colloseum" },
-      { B_ACTOR_COLONY,          "artist_colony" },
-      { B_GLADIATOR_SCHOOL,      "gladiator_pit" },
-      { B_LION_HOUSE,           "lion_pit" },
-      { B_CHARIOT_MAKER,        "chatioteer_school" },
-      { B_HOUSE,          "house" },
-      { B_ROAD,           "road" },
-      { B_PLAZA,          "plaza" },
-      { B_GARDEN,         "garden" },
-      { B_SENATE,         "senate_1" },
-      { B_FORUM,          "forum_1" },
-      { B_GOVERNOR_HOUSE, "governor_palace_1" },
-      { B_GOVERNOR_VILLA, "governor_palace_2" },
-      { B_GOVERNOR_PALACE,"governor_palace_3" },
-      { B_FORT_LEGIONNAIRE, "fort_legionaries" },
-      { B_FORT_JAVELIN,   "fort_javelin" },
-      { B_FORT_MOUNTED,   "fort_horse" },
-      { B_PREFECTURE,        "prefecture" },
-      { B_BARRACKS,       "barracks" },
-      { B_MILITARY_ACADEMY, "military_academy" },
-      { B_DOCTOR,         "clinic" },
-      { B_HOSPITAL,       "hospital" },
-      { B_BATHS,          "baths" },
-      { B_BARBER,         "barber" },
-      { B_SCHOOL,         "school" },
-      { B_COLLEGE,        "academy" },
-      { B_LIBRARY,        "library" },
-      { B_MISSION_POST,   "mission post" },
-      { B_TEMPLE_CERES,   "small_ceres_temple" },
-      { B_TEMPLE_NEPTUNE, "small_neptune_temple" },
-      { B_TEMPLE_MARS,    "small_mars_temple" },
-      { B_TEMPLE_MERCURE, "small_mercury_temple" },
-      { B_TEMPLE_VENUS,   "small_venus_temple" },
-      { B_BIG_TEMPLE_CERES,  "big_ceres_temple" },
-      { B_BIG_TEMPLE_NEPTUNE,"big_neptune_temple" },
-      { B_BIG_TEMPLE_MARS,   "big_mars_temple"},
-      { B_BIG_TEMPLE_MERCURE,"big_mercury_temple"},
-      { B_BIG_TEMPLE_VENUS,  "big_venus_temple"},
-      { B_TEMPLE_ORACLE,     "oracle"},
-      { B_MARKET,            "market"},
-      { B_GRANARY,        "granery"},
-      { B_WAREHOUSE,      "warehouse"},
-      { B_WHEAT_FARM,          "wheat_farm"},
-      { B_FRUIT_FARM,          "fig_farm"},
-      { B_VEGETABLE_FARM,      "vegetable_farm"},
-      { B_OLIVE_FARM,          "olive_farm"},
-      { B_GRAPE_FARM,          "vinard"},
-      { B_PIG_FARM,           "meat_farm"},
-      { B_MARBLE_QUARRY,         "quarry"},
-      { B_IRON_MINE,           "iron_mine"},
-      { B_TIMBER_YARD,         "lumber_mill"},
-      { B_CLAY_PIT,       "clay_pit"},
-      { B_WINE_WORKSHOP,           "wine_workshop"},
-      { B_OIL_WORKSHOP,            "oil_workshop"},
-      { B_WEAPONS_WORKSHOP,         "weapons_workshop"},
-      { B_FURNITURE,      "furniture_workshop"},
-      { B_POTTERY,        "pottery_workshop"},
-      { B_ENGINEER_POST,       "engineering_post"},
-      { B_STATUE1,        "statue_small"},
-      { B_STATUE2,        "statue_middle"},
-      { B_STATUE3,        "statue_big"},
-      { B_LOW_BRIDGE,     "low_bridge"},
-      { B_HIGH_BRIDGE,    "high_bridge"},
-      { B_DOCK,           "dock"},
-      { B_SHIPYARD,       "shipyard"},
-      { B_WHARF,          "wharf"},
-      { B_TRIUMPHAL_ARCH, "triumphal_arch"},
-      { B_WELL,           "well"},
-      { B_FOUNTAIN,       "fountain"},
-      { B_AQUEDUCT,       "aqueduct"},
-      { B_RESERVOIR,      "reservoir"},
-      { B_NATIVE_HUT,     "native_hut"},
-      { B_NATIVE_CENTER,  "native_center"},
-      { B_NATIVE_FIELD,   "native_field"},
-      { B_BURNING_RUINS,  "burning_ruins"},
-      { B_BURNED_RUINS,   "burned_ruins"},
-      { B_COLLAPSED_RUINS,"collapsed_ruins"},
-      { B_FORUM_2, "forum_2" },
-      { B_GATEHOUSE, "gatehouse" },
-      { B_SENATE_2, "senate_2" },
-      { B_TOWER, "tower" },
-      { B_WALL, "wall"  },
-
-      { B_NONE, "" }
-    };
-
-    _init( bldTypeEquales, B_NONE );
-  }
+    append( B_AMPHITHEATER,   "amphitheater");
+    append( B_THEATER,        "theater" );
+    append( B_HIPPODROME,     "hippodrome" );
+    append( B_COLLOSSEUM,     "colloseum" );
+    append( B_ACTOR_COLONY,          "artist_colony" );
+    append( B_GLADIATOR_SCHOOL,      "gladiator_pit" );
+    append( B_LION_HOUSE,           "lion_pit" );
+    append( B_CHARIOT_MAKER,        "chatioteer_school" );
+    append( B_HOUSE,          "house" );
+    append( B_ROAD,           "road" );
+    append( B_PLAZA,          "plaza" );
+    append( B_GARDEN,         "garden" );
+    append( B_SENATE,         "senate_1" );
+    append( B_FORUM,          "forum_1" );
+    append( B_GOVERNOR_HOUSE, "governor_palace_1" );
+    append( B_GOVERNOR_VILLA, "governor_palace_2" );
+    append( B_GOVERNOR_PALACE,"governor_palace_3" );
+    append( B_FORT_LEGIONNAIRE, "fort_legionaries" );
+    append( B_FORT_JAVELIN,   "fort_javelin" );
+    append( B_FORT_MOUNTED,   "fort_horse" );
+    append( B_PREFECTURE,        "prefecture" );
+    append( B_BARRACKS,       "barracks" );
+    append( B_MILITARY_ACADEMY, "military_academy" );
+    append( B_DOCTOR,         "clinic" );
+    append( B_HOSPITAL,       "hospital" );
+    append( B_BATHS,          "baths" );
+    append( B_BARBER,         "barber" );
+    append( B_SCHOOL,         "school" );
+    append( B_COLLEGE,        "academy" );
+    append( B_LIBRARY,        "library" );
+    append( B_MISSION_POST,   "mission post" );
+    append( B_TEMPLE_CERES,   "small_ceres_temple" );
+    append( B_TEMPLE_NEPTUNE, "small_neptune_temple" );
+    append( B_TEMPLE_MARS,    "small_mars_temple" );
+    append( B_TEMPLE_MERCURE, "small_mercury_temple" );
+    append( B_TEMPLE_VENUS,   "small_venus_temple" );
+    append( B_BIG_TEMPLE_CERES,  "big_ceres_temple" );
+    append( B_BIG_TEMPLE_NEPTUNE,"big_neptune_temple" );
+    append( B_BIG_TEMPLE_MARS,   "big_mars_temple");
+    append( B_BIG_TEMPLE_MERCURE,"big_mercury_temple");
+    append( B_BIG_TEMPLE_VENUS,  "big_venus_temple");
+    append( B_TEMPLE_ORACLE,     "oracle");
+    append( B_MARKET,            "market");
+    append( B_GRANARY,        "granery");
+    append( B_WAREHOUSE,      "warehouse");
+    append( B_WHEAT_FARM,          "wheat_farm");
+    append( B_FRUIT_FARM,          "fig_farm");
+    append( B_VEGETABLE_FARM,      "vegetable_farm");
+    append( B_OLIVE_FARM,          "olive_farm");
+    append( B_GRAPE_FARM,          "vinard");
+    append( B_PIG_FARM,           "meat_farm");
+    append( B_MARBLE_QUARRY,         "quarry");
+    append( B_IRON_MINE,           "iron_mine");
+    append( B_TIMBER_YARD,         "lumber_mill");
+    append( B_CLAY_PIT,       "clay_pit");
+    append( B_WINE_WORKSHOP,           "wine_workshop");
+    append( B_OIL_WORKSHOP,            "oil_workshop");
+    append( B_WEAPONS_WORKSHOP,         "weapons_workshop");
+    append( B_FURNITURE,      "furniture_workshop");
+    append( B_POTTERY,        "pottery_workshop");
+    append( B_ENGINEER_POST,       "engineering_post");
+    append( B_STATUE1,        "statue_small");
+    append( B_STATUE2,        "statue_middle");
+    append( B_STATUE3,        "statue_big");
+    append( B_LOW_BRIDGE,     "low_bridge");
+    append( B_HIGH_BRIDGE,    "high_bridge");
+    append( B_DOCK,           "dock");
+    append( B_SHIPYARD,       "shipyard");
+    append( B_WHARF,          "wharf");
+    append( B_TRIUMPHAL_ARCH, "triumphal_arch");
+    append( B_WELL,           "well");
+    append( B_FOUNTAIN,       "fountain");
+    append( B_AQUEDUCT,       "aqueduct");
+    append( B_RESERVOIR,      "reservoir");
+    append( B_NATIVE_HUT,     "native_hut");
+    append( B_NATIVE_CENTER,  "native_center");
+    append( B_NATIVE_FIELD,   "native_field");
+    append( B_BURNING_RUINS,  "burning_ruins");
+    append( B_BURNED_RUINS,   "burned_ruins");
+    append( B_COLLAPSED_RUINS,"collapsed_ruins");
+    append( B_FORUM_2, "forum_2" );
+    append( B_GATEHOUSE, "gatehouse" );
+    append( B_SENATE_2, "senate_2" );
+    append( B_TOWER, "tower" );
+    append( B_WALL, "wall"  );
+    append( B_NONE, "" );
+ }
 };
 
 class BuildingClassHelper : public EnumsHelper<BuildingClass>
 {
 public:
-  static BuildingClassHelper& instance()
-  {
-    static BuildingClassHelper inst;
-    return inst;
-  }
-
   virtual BuildingClass getInvalid() const { return BC_NONE; }
 
-private:
   BuildingClassHelper()
   {
     append( BC_INDUSTRY, "industry" );
@@ -171,7 +152,6 @@ private:
     append( BC_HOUSE, "house" );
     append( BC_WALL, "wall" );
     append( BC_NONE, "" );
-    };
   }
 };
 
@@ -242,8 +222,11 @@ BuildingClass BuildingData::getClass() const
 class BuildingDataHolder::Impl
 {
 public:
+  BuildingTypeHelper typeHelper;
+  BuildingClassHelper classHelper;
+
   typedef std::map<BuildingType, BuildingData> BuildingsMap; 
-  typedef std::map<GoodType, BuildingType> FactoryInMap;
+  typedef std::map<Good::Type, BuildingType> FactoryInMap;
 
   BuildingsMap buildings;// key=building_type, value=data
   FactoryInMap mapBuildingByInGood;
@@ -255,7 +238,7 @@ BuildingDataHolder& BuildingDataHolder::instance()
   return inst;
 }
 
-BuildingType BuildingDataHolder::getBuildingTypeByInGood(const GoodType inGoodType) const
+BuildingType BuildingDataHolder::getConsumerType(const Good::Type inGoodType) const
 {
   BuildingType res = B_NONE;
 
@@ -313,11 +296,11 @@ BuildingDataHolder::BuildingDataHolder() : _d( new Impl )
 void BuildingDataHolder::initialize( const io::FilePath& filename )
 {
   // populate _mapBuildingByInGood
-  _d->mapBuildingByInGood[G_IRON]   = B_WEAPONS_WORKSHOP;
-  _d->mapBuildingByInGood[G_TIMBER] = B_FURNITURE;
-  _d->mapBuildingByInGood[G_CLAY]   = B_POTTERY;
-  _d->mapBuildingByInGood[G_OLIVE]  = B_OIL_WORKSHOP;
-  _d->mapBuildingByInGood[G_GRAPE]  = B_WINE_WORKSHOP;
+  _d->mapBuildingByInGood[Good::G_IRON]   = B_WEAPONS_WORKSHOP;
+  _d->mapBuildingByInGood[Good::G_TIMBER] = B_FURNITURE;
+  _d->mapBuildingByInGood[Good::G_CLAY]   = B_POTTERY;
+  _d->mapBuildingByInGood[Good::G_OLIVE]  = B_OIL_WORKSHOP;
+  _d->mapBuildingByInGood[Good::G_GRAPE]  = B_WINE_WORKSHOP;
 
   VariantMap constructions = SaveAdapter::load( filename.toString() );
 
@@ -367,11 +350,11 @@ void BuildingDataHolder::initialize( const io::FilePath& filename )
     }
 }
 
-BuildingType BuildingDataHolder::getType( const std::string& name ) const
+BuildingType BuildingDataHolder::getType( const std::string& name )
 {
-  BuildingType type = findEqualeType( name );
+  BuildingType type = instance()._d->typeHelper.findType( name );
 
-  if( type == getInvalid() )
+  if( type == instance()._d->typeHelper.getInvalid() )
   {
     StringHelper::debug( 0xff, "Can't find type for typeName %s", name.c_str() );
     _OC3_DEBUG_BREAK_IF( "Can't find type for typeName" );
@@ -382,21 +365,13 @@ BuildingType BuildingDataHolder::getType( const std::string& name ) const
 
 BuildingClass BuildingDataHolder::getClass( const std::string& name )
 {
-  int index=0;
-  std::string typeName = bldClassEquales[ index ].name;
+  BuildingClass type = instance()._d->classHelper.findType( name );
 
-  while( !typeName.empty() )
+  if( type == instance()._d->classHelper.getInvalid() )
   {
-    if( name == typeName )
-    {
-      return bldClassEquales[ index ].type;
-    }
-
-    index++;
-    typeName = bldClassEquales[ index ].name;
+    StringHelper::debug( 0xff, "Can't find building class for building className %s", name.c_str() );
+    _OC3_DEBUG_BREAK_IF( "Can't find building class for building className" );
   }
 
-  StringHelper::debug( 0xff, "Can't find building class for building className %s", name.c_str() );
-  _OC3_DEBUG_BREAK_IF( "Can't find building class for building className" );
   return BC_NONE;
 }

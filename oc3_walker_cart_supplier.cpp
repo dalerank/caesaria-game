@@ -158,7 +158,7 @@ void CartSupplier::getPictureList(std::vector<Picture> &oPics)
 
 template< class T >
 TilePos getSupplierDestination2( Propagator &pathPropagator, const BuildingType type, 
-                                 const GoodType what, const int needQty,
+                                 const Good::Type what, const int needQty,
                                  PathWay &oPathWay, long& reservId )
 {
   SmartPtr< T > res;
@@ -201,7 +201,7 @@ TilePos getSupplierDestination2( Propagator &pathPropagator, const BuildingType 
   }
 }
 
-void CartSupplier::computeWalkerDestination( BuildingPtr building, const GoodType type, const int qty )
+void CartSupplier::computeWalkerDestination(BuildingPtr building, const Good::Type type, const int qty )
 {
   _d->baseBuildingPos = building->getTilePos();
   _d->storageBuildingPos = TilePos( -1, -1 );  // no destination yet
@@ -239,7 +239,7 @@ void CartSupplier::computeWalkerDestination( BuildingPtr building, const GoodTyp
   setIJ( _getPathway().getOrigin().getIJ() );
 }
 
-void CartSupplier::send2City( BuildingPtr building, const GoodType type, const int qty )
+void CartSupplier::send2City( BuildingPtr building, const Good::Type type, const int qty )
 {
   computeWalkerDestination( building, type, qty );
 
@@ -259,7 +259,7 @@ void CartSupplier::send2City( BuildingPtr building, const GoodType type, const i
 
   if( !isDeleted() && storage )
   {   
-    _d->stock._goodType = type;
+    _d->stock.setType( type );
     _d->stock._maxQty = qty;
     _d->rcvReservationID = storage->reserveStorage( _d->stock );
     _d->city->addWalker( WalkerPtr( this ) );

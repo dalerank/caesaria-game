@@ -26,10 +26,10 @@ SimpleGoodStore::SimpleGoodStore()
 {
   _maxQty = 0;
 
-  _goodStockList.resize(G_MAX);
-  for (int n = 0; n < (int)G_MAX; ++n)
+  _goodStockList.resize(Good::G_MAX);
+  for (int n = 0; n < (int)Good::G_MAX; ++n)
   {
-    _goodStockList[n].setType( (GoodType)n );
+    _goodStockList[n].setType( (Good::Type)n );
   }
 }
 
@@ -58,36 +58,36 @@ int SimpleGoodStore::getCurrentQty() const
 }
 
 
-GoodStock& SimpleGoodStore::getStock(const GoodType &goodType)
+GoodStock& SimpleGoodStore::getStock(const Good::Type &goodType)
 {
   return _goodStockList[goodType];
 }
 
 
-int SimpleGoodStore::getCurrentQty(const GoodType &goodType) const
+int SimpleGoodStore::getCurrentQty(const Good::Type &goodType) const
 {
   return _goodStockList[goodType]._currentQty;
 }
 
 
-int SimpleGoodStore::getMaxQty(const GoodType &goodType) const
+int SimpleGoodStore::getMaxQty(const Good::Type &goodType) const
 {
   return _goodStockList[goodType]._maxQty;
 }
 
 
-void SimpleGoodStore::setMaxQty(const GoodType &goodType, const int maxQty)
+void SimpleGoodStore::setMaxQty(const Good::Type &goodType, const int maxQty)
 {
   _goodStockList[goodType]._maxQty = maxQty;
 }
 
 
-void SimpleGoodStore::setCurrentQty(const GoodType &goodType, const int currentQty)
+void SimpleGoodStore::setCurrentQty(const Good::Type &goodType, const int currentQty)
 {
   _goodStockList[goodType]._currentQty = currentQty;
 }
 
-int SimpleGoodStore::getMaxStore(const GoodType goodType)
+int SimpleGoodStore::getMaxStore(const Good::Type goodType)
 {
   int freeRoom = 0;
   if( !isDevastation() )
@@ -113,7 +113,7 @@ void SimpleGoodStore::applyStorageReservation(GoodStock &stock, const long reser
 {
   GoodStock reservedStock = getStorageReservation(reservationID, true);
 
-  if (stock._goodType != reservedStock._goodType)
+  if (stock.type() != reservedStock.type())
   {
     _OC3_DEBUG_BREAK_IF( "SimpleGoodStore:GoodType does not match reservation");
     return;
@@ -127,7 +127,7 @@ void SimpleGoodStore::applyStorageReservation(GoodStock &stock, const long reser
 
 
   int amount = reservedStock._currentQty;
-  GoodStock &currentStock = _goodStockList[reservedStock._goodType];
+  GoodStock &currentStock = _goodStockList[reservedStock.type()];
   currentStock._currentQty += amount;
   stock._currentQty -= amount;
 }
@@ -137,7 +137,7 @@ void SimpleGoodStore::applyRetrieveReservation(GoodStock &stock, const long rese
 {
   GoodStock reservedStock = getRetrieveReservation(reservationID, true);
 
-  if (stock._goodType != reservedStock._goodType)
+  if (stock.type() != reservedStock.type())
   {
     _OC3_DEBUG_BREAK_IF("SimpleGoodStore:GoodType does not match reservation");
     return;
@@ -150,7 +150,7 @@ void SimpleGoodStore::applyRetrieveReservation(GoodStock &stock, const long rese
   }
 
   int amount = reservedStock._currentQty;
-  GoodStock &currentStock = getStock(reservedStock._goodType);
+  GoodStock &currentStock = getStock(reservedStock.type());
   currentStock._currentQty -= amount;
   stock._currentQty += amount;
   // std::cout << "SimpleGoodStore, retrieve qty=" << amount << " resID=" << reservationID << std::endl;
@@ -199,9 +199,9 @@ void SimpleGoodStore::resize( const GoodStore& other )
 {
   setMaxQty( other.getMaxQty() );
 
-  for( int i=G_WHEAT; i < G_MAX; i++ )
+  for( int i=Good::G_WHEAT; i < Good::G_MAX; i++ )
   {
-    GoodType gtype =  GoodType( i );
+    Good::Type gtype = Good::Type( i );
     setMaxQty( gtype, other.getMaxQty( gtype ) );
   }
 }

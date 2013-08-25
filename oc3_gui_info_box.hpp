@@ -150,7 +150,7 @@ public:
   
   void paint();
   void drawWorkers( int );
-  void drawGood(const GoodType &goodType, int, int&);
+  void drawGood(const Good::Type &goodType, int, int&);
   void showSpecialOrdersWindow();
 
 private:
@@ -167,7 +167,7 @@ public:
    
    void paint();
    void drawWorkers();
-   void drawGood(const GoodType &goodType, int, int );
+   void drawGood(const Good::Type &goodType, int, int );
 
 private:
    class Impl;
@@ -181,7 +181,7 @@ public:
 
   void paint();
   void drawWorkers();
-  void drawGood(const GoodType &goodType, int, int& );
+  void drawGood(const Good::Type &goodType, int, int& );
   void showSpecialOrdersWindow();
 
 private:
@@ -209,7 +209,7 @@ public:
    InfoBoxHouse( Widget* paarent, const Tile& tile);
 
    void drawHabitants();
-   void drawGood(const GoodType &goodType, const int col, const int row, const int startY );
+   void drawGood(const Good::Type &goodType, const int col, const int row, const int startY );
 
 private:
    void _paint();

@@ -20,6 +20,7 @@
 #include "oc3_city.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_empire.hpp"
+#include "oc3_stringhelper.hpp"
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_cityfunds.hpp"
 #include "oc3_city_trade_options.hpp"
@@ -75,9 +76,9 @@ Propagator::DirectRoute getWarehouse4Buys( Propagator &pathPropagator,
     WarehousePtr warehouse= pathWayIt->first.as< Warehouse >();
 
     int rating = 0;
-    for( int i=G_WHEAT; i<G_MAX; i++ )
+    for( int i=Good::G_WHEAT; i<Good::G_MAX; i++ )
     {
-      GoodType gtype = GoodType(i);
+      Good::Type gtype = Good::Type(i);
       int qty = warehouse->getGoodStore().getMaxRetrieve( gtype );
       int need = basket.getFreeQty( gtype );
       rating = need > 0 ? ( qty ) : 0;
@@ -203,13 +204,13 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
 
       if( warehouse.isValid() )
       {
-        std::map< GoodType, int > cityGoodsAvailable;
+        std::map< Good::Type, int > cityGoodsAvailable;
         std::list< WarehousePtr > warehouses = helper.getBuildings<Warehouse>( B_WAREHOUSE );
         for( std::list< WarehousePtr >::iterator it=warehouses.begin(); it != warehouses.end(); it++ )
         {
-          for( int i=G_WHEAT; i < G_MAX; i++ )
+          for( int i=Good::G_WHEAT; i < Good::G_MAX; i++ )
           {
-            GoodType goodType = (GoodType)i;
+            Good::Type goodType = (Good::Type)i;
             cityGoodsAvailable[ goodType ] += (*it)->getGoodStore().getCurrentQty( goodType );
           }
         }
@@ -217,9 +218,9 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
         //const GoodStore& cityOrders = city->getSells();
         CityTradeOptions& options = city->getTradeOptions();
         //try buy goods
-        for( int n = G_WHEAT; n<G_MAX; ++n )
+        for( int n = Good::G_WHEAT; n<Good::G_MAX; ++n )
         {
-          GoodType goodType = (GoodType) n;
+          Good::Type goodType = (Good::Type) n;
           int needQty = buy.getFreeQty( goodType );
           int maySell = math::clamp( cityGoodsAvailable[ goodType ] - options.getExportLimit( goodType ) * 100, 0, 9999 );
           
@@ -274,9 +275,9 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
       if( warehouse.isValid() )
       {
         //try sell goods
-        for (int n = G_WHEAT; n<G_MAX; ++n)
+        for (int n = Good::G_WHEAT; n<Good::G_MAX; ++n)
         {
-          GoodType goodType = (GoodType)n;
+          Good::Type goodType = (Good::Type)n;
           int qty4sell = sell.getCurrentQty( goodType );
           if( qty4sell > 0 && cityOrders.getMaxQty( goodType ) > 0 )
           {
@@ -299,21 +300,23 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
   break;
 
   case stBackToBaseCity:
+  {
+    // walker on exit from city
+    wlk->deleteLater();
+    EmpirePtr empire = city->getEmpire();
+    const std::string& ourCityName = city->getName();
+    EmpireTradeRoutePtr route = empire->getTradeRoute( ourCityName, baseCityName );
+    if( route.isValid() )
     {
-      // walker on exit from city
-      wlk->deleteLater();
-
-      EmpirePtr empire = city->getEmpire();
-      const std::string& ourCityName = city->getName();
-      EmpireTradeRoutePtr route = empire->getTradeRoute( ourCityName, baseCityName );
-      if( route.isValid() )
-      {
-        route->addMerchant( ourCityName, sell, buy );
-      }
-
-      nextState = stNothing;
+      route->addMerchant( ourCityName, sell, buy );
     }
+
+    nextState = stNothing;
+  }
   break;
+
+  default:
+    StringHelper::debug( 0xff, "Merchant: unknown state resolved" );
   }
 }
 

@@ -21,6 +21,7 @@
 #include "oc3_enums.hpp"
 #include "oc3_animation.hpp"
 #include "oc3_walker_action.hpp"
+#include "oc3_good.hpp"
 
 #include <map>
 
@@ -35,9 +36,7 @@ public:
   static void loadCarts();
   static void loadWalkers();
 
-  static const Picture& getCart(GoodType cart, const DirectionType &direction );
-  // for emmigration & immigration
-  static const Picture& getCart(CartTypes cart, const DirectionType &direction);
+  static const Picture& getCart( int cartID, const DirectionType& direction );
 
   static const WalkerAnimationMap& getWalker( const WalkerGraphicType walkerGraphic );
 

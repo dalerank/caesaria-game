@@ -30,9 +30,9 @@ public:
   bool isAnyGoodStored()
   {
     bool anyGoodStored = false;
-    for( int i = 0; i < G_MAX; ++i)
+    for( int i = 0; i < Good::G_MAX; ++i)
     {
-      anyGoodStored |= ( goodStore.getCurrentQty( GoodType(i) ) >= 100 );
+      anyGoodStored |= ( goodStore.getCurrentQty( Good::Type(i) ) >= 100 );
     }
 
     return anyGoodStored;
@@ -49,8 +49,8 @@ Market::Market() : ServiceBuilding(S_MARKET, B_MARKET, Size(2) ),
   _fgPictures.resize(1);  // animation
 
   _d->goodStore.setMaxQty(5000);
-  _d->goodStore.setMaxQty(G_WHEAT, 400);
-  _d->goodStore.setMaxQty(G_POTTERY, 300);
+  _d->goodStore.setMaxQty(Good::G_WHEAT, 400);
+  _d->goodStore.setMaxQty(Good::G_POTTERY, 300);
   //_d->goodStore.setCurrentQty(G_WHEAT, 200);
 
   _getAnimation().load( ResourceGroup::commerce, 2, 10 );
@@ -81,16 +81,16 @@ GoodStore& Market::getGoodStore()
   return _d->goodStore;
 }
 
-std::list<GoodType> Market::getMostNeededGoods()
+std::list<Good::Type> Market::getMostNeededGoods()
 {
-  std::list<GoodType> res;
+  std::list<Good::Type> res;
 
-  std::multimap<float, GoodType> mapGoods;  // ordered by demand
+  std::multimap<float, Good::Type> mapGoods;  // ordered by demand
 
-  for (int n = 0; n<G_MAX; ++n)
+  for (int n = 0; n < Good::G_MAX; ++n)
   {
     // for all types of good
-    GoodType goodType = (GoodType) n;
+    Good::Type goodType = (Good::Type) n;
     GoodStock &stock = _d->goodStore.getStock(goodType);
     int demand = stock._maxQty - stock._currentQty;
     if (demand > 99)
@@ -99,9 +99,9 @@ std::list<GoodType> Market::getMostNeededGoods()
     }
   }
 
-  for (std::multimap<float, GoodType>::iterator itMap = mapGoods.begin(); itMap != mapGoods.end(); ++itMap)
+  for (std::multimap<float, Good::Type>::iterator itMap = mapGoods.begin(); itMap != mapGoods.end(); ++itMap)
   {
-    GoodType goodType = itMap->second;
+    Good::Type goodType = itMap->second;
     res.push_back(goodType);
   }
 
@@ -109,7 +109,7 @@ std::list<GoodType> Market::getMostNeededGoods()
 }
 
 
-int Market::getGoodDemand(const GoodType &goodType)
+int Market::getGoodDemand(const Good::Type &goodType)
 {
   int res = 0;
   GoodStock &stock = _d->goodStore.getStock(goodType);

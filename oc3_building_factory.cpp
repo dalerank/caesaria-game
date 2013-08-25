@@ -39,18 +39,15 @@ public:
   float progress;  // progress of the work, in percent (0-100).
   Picture stockPicture; // stock of input good
   SimpleGoodStore goodStore;
-  GoodType inGoodType;
-  GoodType outGoodType;
+  Good::Type inGoodType;
+  Good::Type outGoodType;
   bool produceGood;
 };
 
-Factory::Factory( const GoodType inType, const GoodType outType,
+Factory::Factory(const Good::Type inType, const Good::Type outType,
                   const BuildingType type, const Size& size )
 : WorkingBuilding( type, size ), _d( new Impl )
 {
-   setMaxWorkers(10);
-   //setWorkers(8);
-
    _d->productionRate = 4.8f;
    _d->progress = 0.0f;
    _d->isActive = true;
@@ -85,7 +82,7 @@ bool Factory::mayWork() const
     return false;
 
   GoodStock& inStock = const_cast< Factory* >( this )->getInGood();
-  if( inStock._goodType == G_NONE ) 
+  if( inStock.type() == Good::G_NONE )
     return true;
 
   if( inStock._currentQty > 0 || _d->produceGood )
@@ -159,7 +156,7 @@ void Factory::timeStep(const unsigned long time)
 
    if( !_d->produceGood )
    {
-     if( _d->inGoodType == G_NONE ) //raw material
+     if( _d->inGoodType == Good::G_NONE ) //raw material
      {
        _d->produceGood = true;
      }
@@ -234,7 +231,7 @@ void Factory::_setProductRate( const float rate )
   _d->productionRate = rate;
 }
 
-GoodType Factory::getOutGoodType() const
+Good::Type Factory::getOutGoodType() const
 {
   return _d->outGoodType;
 }
@@ -247,7 +244,7 @@ void Factory::receiveGood()
   if( _mayDeliverGood() && stock._currentQty < stock._maxQty )
   {
     CartSupplierPtr walker = CartSupplier::create( Scenario::instance().getCity() );
-    walker->send2City( this, stock._goodType, stock._maxQty - stock._currentQty );
+    walker->send2City( this, stock.type(), stock._maxQty - stock._currentQty );
 
     if( !walker->isDeleted() )
     {
@@ -271,14 +268,13 @@ bool Factory::standIdle() const
   return !mayWork();
 }
 
-TimberLogger::TimberLogger() : Factory(G_NONE, G_TIMBER, B_TIMBER_YARD, Size(2) )
+TimberLogger::TimberLogger() : Factory(Good::G_NONE, Good::G_TIMBER, B_TIMBER_YARD, Size(2) )
 {
   _setProductRate( 9.6f );
   setPicture( Picture::load(ResourceGroup::commerce, 72) );
 
   _getAnimation().load( ResourceGroup::commerce, 73, 10);
   _fgPictures.resize(2);
-  setWorkers( 0 );
 }
 
 bool TimberLogger::canBuild(const TilePos& pos ) const
@@ -298,10 +294,9 @@ bool TimberLogger::canBuild(const TilePos& pos ) const
 }
 
 
-IronMine::IronMine() : Factory(G_NONE, G_IRON, B_IRON_MINE, Size(2) )
+IronMine::IronMine() : Factory(Good::G_NONE, Good::G_IRON, B_IRON_MINE, Size(2) )
 {
   _setProductRate( 9.6f );
-  setWorkers( 0 );
 
   setPicture( Picture::load(ResourceGroup::commerce, 54) );
 
@@ -325,7 +320,7 @@ bool IronMine::canBuild(const TilePos& pos ) const
   return (is_constructible && near_mountain);
 }
 
-WeaponsWorkshop::WeaponsWorkshop() : Factory(G_IRON, G_WEAPON, B_WEAPONS_WORKSHOP, Size(2) )
+WeaponsWorkshop::WeaponsWorkshop() : Factory(Good::G_IRON, Good::G_WEAPON, B_WEAPONS_WORKSHOP, Size(2) )
 {
   setPicture( Picture::load(ResourceGroup::commerce, 108) );
 
@@ -333,7 +328,7 @@ WeaponsWorkshop::WeaponsWorkshop() : Factory(G_IRON, G_WEAPON, B_WEAPONS_WORKSHO
   _fgPictures.resize(2);
 }
 
-FactoryFurniture::FactoryFurniture() : Factory(G_TIMBER, G_FURNITURE, B_FURNITURE, Size(2) )
+FactoryFurniture::FactoryFurniture() : Factory(Good::G_TIMBER, Good::G_FURNITURE, B_FURNITURE, Size(2) )
 {
   setPicture( Picture::load(ResourceGroup::commerce, 117) );
 
@@ -341,7 +336,7 @@ FactoryFurniture::FactoryFurniture() : Factory(G_TIMBER, G_FURNITURE, B_FURNITUR
   _fgPictures.resize(2);
 }
 
-Winery::Winery() : Factory(G_GRAPE, G_WINE, B_WINE_WORKSHOP, Size(2) )
+Winery::Winery() : Factory(Good::G_GRAPE, Good::G_WINE, B_WINE_WORKSHOP, Size(2) )
 {
   setPicture( Picture::load(ResourceGroup::commerce, 86) );
 
@@ -349,7 +344,7 @@ Winery::Winery() : Factory(G_GRAPE, G_WINE, B_WINE_WORKSHOP, Size(2) )
   _fgPictures.resize(2);
 }
 
-FactoryOil::FactoryOil() : Factory(G_OLIVE, G_OIL, B_OIL_WORKSHOP, Size(2) )
+FactoryOil::FactoryOil() : Factory(Good::G_OLIVE, Good::G_OIL, B_OIL_WORKSHOP, Size(2) )
 {
   setPicture( Picture::load(ResourceGroup::commerce, 99) );
 
@@ -357,7 +352,7 @@ FactoryOil::FactoryOil() : Factory(G_OLIVE, G_OIL, B_OIL_WORKSHOP, Size(2) )
   _fgPictures.resize(2);
 }
 
-Wharf::Wharf() : Factory(G_NONE, G_FISH, B_WHARF, Size(2))
+Wharf::Wharf() : Factory(Good::G_NONE, Good::G_FISH, B_WHARF, Size(2))
 {
   // transport 52 53 54 55
   setPicture( Picture::load( ResourceGroup::wharf, 52));

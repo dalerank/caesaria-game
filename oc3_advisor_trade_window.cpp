@@ -36,7 +36,7 @@
 class TradeGoodInfo : public PushButton
 {
 public:
-  TradeGoodInfo( Widget* parent, const Rect& rect, GoodType good, int qty, bool enable,
+  TradeGoodInfo( Widget* parent, const Rect& rect, Good::Type good, int qty, bool enable,
                  CityTradeOptions::Order trade, int tradeQty )
     : PushButton( parent, rect, "" )
   {
@@ -93,7 +93,7 @@ public:
     }
   }
 
-  Signal1<GoodType>& onClickedA() { return _onClickedASignal; }
+  Signal1<Good::Type>& onClickedA() { return _onClickedASignal; }
 
 protected:
   void _btnClicked()
@@ -109,12 +109,12 @@ private:
   bool _stacking;
   CityTradeOptions::Order _tradeOrder;
   int _tradeQty;
-  GoodType _type;
+  Good::Type _type;
   std::string _goodName;
   Picture _goodPicture;
 
 oc3_signals private:
-  Signal1<GoodType> _onClickedASignal;
+  Signal1<Good::Type> _onClickedASignal;
 };
 
 class EmpirePricesWindow : public Widget
@@ -132,14 +132,14 @@ public:
     CityTradeOptions& ctrade = city->getTradeOptions();
     font = Font::create( FONT_1 );
     Point startPos( 140, 50 );
-    for( int i=G_WHEAT; i < G_MAX; i++ )
+    for( int i=Good::G_WHEAT; i < Good::G_MAX; i++ )
     {
-      if( i == G_FISH || i == G_DENARIES)
+      if( i == Good::G_FISH || i == Good::G_DENARIES)
       {
         continue;
       }
 
-      GoodType gtype = (GoodType)i;
+      Good::Type gtype = (Good::Type)i;
       const Picture& goodIcon = GoodHelper::getPicture( gtype );
       background->draw( goodIcon, startPos );
       
@@ -192,10 +192,10 @@ public:
   GroupBox* gbInfo;
   CityPtr city;
 
-  bool getWorkState( GoodType gtype );
-  int  getStackedGoodsQty( GoodType gtype );
+  bool getWorkState( Good::Type gtype );
+  int  getStackedGoodsQty( Good::Type gtype );
   void updateGoodsInfo();
-  void showGoodOrderManageWindow( GoodType type );
+  void showGoodOrderManageWindow( Good::Type type );
   void showGoodsPriceWindow();
 };
 
@@ -266,7 +266,7 @@ public:
 class GoodOrderManageWindow : public Widget
 {
 public:
-  GoodOrderManageWindow( Widget* parent, const Rect& rectangle, CityPtr city, GoodType type, int stackedGoods )
+  GoodOrderManageWindow( Widget* parent, const Rect& rectangle, CityPtr city, Good::Type type, int stackedGoods )
     : Widget( parent, -1, rectangle )
   {
     _city = city;
@@ -430,7 +430,7 @@ oc3_signals public:
 
 private:
   CityPtr _city;
-  GoodType _type;
+  Good::Type _type;
   PictureRef _background;
   TradeStateButton* _btnTradeState;
   PushButton* _btnIndustryState;
@@ -452,9 +452,9 @@ void AdvisorTradeWindow::Impl::updateGoodsInfo()
   Point startDraw( 0, 5 );
   Size btnSize( gbInfo->getWidth(), 20 );
   CityTradeOptions& copt = city->getTradeOptions();
-  for( int i=G_WHEAT, indexOffset=0; i < G_MAX; i++ )
+  for( int i=Good::G_WHEAT, indexOffset=0; i < Good::G_MAX; i++ )
   {
-    GoodType gtype = GoodType( i );
+    Good::Type gtype = Good::Type( i );
 
     CityTradeOptions::Order tradeState = copt.getOrder( gtype );
     if( tradeState == CityTradeOptions::disabled )
@@ -473,7 +473,7 @@ void AdvisorTradeWindow::Impl::updateGoodsInfo()
   }
 }
 
-bool AdvisorTradeWindow::Impl::getWorkState( GoodType gtype )
+bool AdvisorTradeWindow::Impl::getWorkState(Good::Type gtype )
 {
   CityHelper helper( city );
 
@@ -487,7 +487,7 @@ bool AdvisorTradeWindow::Impl::getWorkState( GoodType gtype )
   return producers.empty() ? true : industryActive;
 }
 
-int AdvisorTradeWindow::Impl::getStackedGoodsQty( GoodType gtype )
+int AdvisorTradeWindow::Impl::getStackedGoodsQty( Good::Type gtype )
 {
   CityHelper helper( city );
 
@@ -501,7 +501,7 @@ int AdvisorTradeWindow::Impl::getStackedGoodsQty( GoodType gtype )
   return goodsQty;
 }
 
-void AdvisorTradeWindow::Impl::showGoodOrderManageWindow( GoodType type )
+void AdvisorTradeWindow::Impl::showGoodOrderManageWindow(Good::Type type )
 {
   Widget* parent = gbInfo->getParent();
   int stackedGoods = getStackedGoodsQty( type ) ;

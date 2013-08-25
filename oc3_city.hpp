@@ -175,7 +175,7 @@ public:
   }
 
   template< class T >
-  std::list< SmartPtr< T > > getProducers( const GoodType goodtype )
+  std::list< SmartPtr< T > > getProducers( const Good::Type goodtype )
   {
     std::list< SmartPtr< T > > ret;
     LandOverlays overlays = _city->getOverlayList();

@@ -43,7 +43,7 @@ public:
   std::string findName( T type ) const
   {
     typename Equales::const_iterator it = _equales.find( type );
-    return it != _equales.empty() ? it->second : "";
+    return it != _equales.end() ? it->second : "";
   }
 
   void append( T key, const std::string name )
@@ -53,6 +53,7 @@ public:
 
   virtual T getInvalid() const = 0;
 
+  virtual ~EnumsHelper() {}
 protected:
   EnumsHelper() {}
 

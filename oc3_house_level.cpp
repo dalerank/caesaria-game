@@ -49,7 +49,7 @@ public:
   int minWaterLevel;  // access to water (no water=0, well=1, fountain=2)
   int minReligionLevel;  // number of religions
   int minFoodLevel;  // number of food types
-  std::map<GoodType, int> requiredGoods;  // rate of good usage for every good (furniture, pottery, ...)
+  std::map<Good::Type, int> requiredGoods;  // rate of good usage for every good (furniture, pottery, ...)
 };
 
 int HouseLevelSpec::getHouseLevel() const
@@ -162,19 +162,19 @@ bool HouseLevelSpec::checkHouse(House &house)
       StringHelper::debug( 0xff, "missing food" );
    }
 
-   if (_d->requiredGoods[G_POTTERY] != 0 && house.getGoodStore().getCurrentQty(G_POTTERY) == 0)
+   if (_d->requiredGoods[Good::G_POTTERY] != 0 && house.getGoodStore().getCurrentQty(Good::G_POTTERY) == 0)
    {
       res = false;
       StringHelper::debug( 0xff, "missing pottery" );
    }
 
-   if (_d->requiredGoods[G_FURNITURE] != 0 && house.getGoodStore().getCurrentQty(G_FURNITURE) == 0)
+   if (_d->requiredGoods[Good::G_FURNITURE] != 0 && house.getGoodStore().getCurrentQty(Good::G_FURNITURE) == 0)
    {
       res = false;
       StringHelper::debug( 0xff, "missing furniture" );
    }
 
-   if (_d->requiredGoods[G_OIL] != 0 && house.getGoodStore().getCurrentQty(G_OIL) == 0)
+   if (_d->requiredGoods[Good::G_OIL] != 0 && house.getGoodStore().getCurrentQty(Good::G_OIL) == 0)
    {
       res = false;
       StringHelper::debug( 0xff, "missing oil" );
@@ -210,23 +210,23 @@ int HouseLevelSpec::computeFoodLevel(House &house)
    int res = 0;
 
    GoodStore& goodStore = house.getGoodStore();
-   if (goodStore.getCurrentQty(G_WHEAT) > 0)
+   if (goodStore.getCurrentQty(Good::G_WHEAT) > 0)
    {
       res++;
    }
-   if (goodStore.getCurrentQty(G_FISH) > 0)
+   if (goodStore.getCurrentQty(Good::G_FISH) > 0)
    {
       res++;
    }
-   if (goodStore.getCurrentQty(G_MEAT) > 0)
+   if (goodStore.getCurrentQty(Good::G_MEAT) > 0)
    {
       res++;
    }
-   if (goodStore.getCurrentQty(G_FRUIT) > 0)
+   if (goodStore.getCurrentQty(Good::G_FRUIT) > 0)
    {
       res++;
    }
-   if (goodStore.getCurrentQty(G_VEGETABLE) > 0)
+   if (goodStore.getCurrentQty(Good::G_VEGETABLE) > 0)
    {
       res++;
    }
@@ -481,7 +481,7 @@ float HouseLevelSpec::evaluateReligionNeed(House &house, const ServiceType servi
 //    return getHouseLevelSpec(houseLevel+1)._minFoodLevel;
 // }
 
-int HouseLevelSpec::computeMonthlyConsumption(House &house, const GoodType goodType)
+int HouseLevelSpec::computeMonthlyConsumption(House &house, const Good::Type goodType)
 {
    int res = 0;
    if (_d->requiredGoods[goodType] != 0)
@@ -541,7 +541,7 @@ HouseLevelSpec& HouseLevelSpec::operator=( const HouseLevelSpec& other )
   _d->minWaterLevel = other._d->minWaterLevel;  // access to water (no water=0, well=1, fountain=2)
   _d->minReligionLevel = other._d->minReligionLevel;  // number of religions
   _d->minFoodLevel = other._d->minFoodLevel;  // number of food types
-  for( std::map<GoodType, int>::iterator it=other._d->requiredGoods.begin(); it != other._d->requiredGoods.end(); it++ )
+  for( std::map<Good::Type, int>::iterator it=other._d->requiredGoods.begin(); it != other._d->requiredGoods.end(); it++ )
   {
     _d->requiredGoods[ (*it).first ] = (*it).second;
   }
@@ -677,11 +677,11 @@ void HouseSpecHelper::initialize( const io::FilePath& filename )
     spec._d->minHealthLevel = hSpec.get( "health" ).toInt();
     spec._d->minFoodLevel = hSpec.get( "food" ).toInt();
     
-    spec._d->requiredGoods[G_WHEAT] = 1;  // hard coded ... to be changed!
-    spec._d->requiredGoods[G_POTTERY] = hSpec.get( "pottery" ).toInt();  // pottery
-    spec._d->requiredGoods[G_OIL] = hSpec.get( "oil" ).toInt();  // oil
-    spec._d->requiredGoods[G_FURNITURE] = hSpec.get( "furniture").toInt();// furniture
-    spec._d->requiredGoods[G_WINE] = hSpec.get( "wine" ).toInt();  // wine
+    spec._d->requiredGoods[Good::G_WHEAT] = 1;  // hard coded ... to be changed!
+    spec._d->requiredGoods[Good::G_POTTERY] = hSpec.get( "pottery" ).toInt();  // pottery
+    spec._d->requiredGoods[Good::G_OIL] = hSpec.get( "oil" ).toInt();  // oil
+    spec._d->requiredGoods[Good::G_FURNITURE] = hSpec.get( "furniture").toInt();// furniture
+    spec._d->requiredGoods[Good::G_WINE] = hSpec.get( "wine" ).toInt();  // wine
     spec._d->crime = hSpec.get( "crime" ).toInt();;  // crime
     spec._d->prosperity = hSpec.get( "prosperity" ).toInt();  // prosperity
     spec._d->taxRate = hSpec.get( "tax" ).toInt();// tax_rate

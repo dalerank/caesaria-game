@@ -743,14 +743,14 @@
 	"class" : "food"
   },
 
-  "quarry" : 
+  quarry : 
   {
-    "cost" : 50,
-	"desirability" : -6,
-	"desrange" : 6,
-	"desstep" : 1,
-	"employers" : 10
-	"class" : "rawmaterial"
+  cost : 50,
+	desirability : -6,
+	desrange : 6,
+	desstep : 1,
+	employers : 10
+	class : "rawmaterial"
   },
 
   "iron_mine" :

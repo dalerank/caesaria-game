@@ -22,6 +22,7 @@
 #include "oc3_scenario.hpp"
 #include "oc3_walker_taxcollector.hpp"
 #include "oc3_city.hpp"
+#include "oc3_stringhelper.hpp"
 #include <map>
 
 template< class T >
@@ -41,17 +42,16 @@ class WalkerManager::Impl
 {
 public:
   typedef std::map< WalkerType, AbstractWalkerCreator* > WalkerCreators;
-  std::map< std::string, WalkerType > name2typeMap;
   WalkerCreators constructors;
 };
 
 WalkerManager::WalkerManager() : _d( new Impl )
 {
-  addCreator( WT_EMIGRANT, OC3_STR_EXT(WT_EMIGRANT), new WalkerPtrCreator<Emigrant>() );
-  addCreator( WT_IMMIGRANT, OC3_STR_EXT(WT_IMMIGRANT), new WalkerPtrCreator<Immigrant>() );
-  addCreator( WT_CART_PUSHER, OC3_STR_EXT(WT_CART_PUSHER), new WalkerPtrCreator<CartPusher>() );
-  addCreator( WT_PREFECT, OC3_STR_EXT(WT_PREFECT), new WalkerPtrCreator<WalkerPrefect>() );
-  addCreator( WT_TAXCOLLECTOR, OC3_STR_EXT(WT_TAXCOLLECTOR), new WalkerPtrCreator<TaxCollector>() );
+  addCreator( WT_EMIGRANT, new WalkerPtrCreator<Emigrant>() );
+  addCreator( WT_IMMIGRANT, new WalkerPtrCreator<Immigrant>() );
+  addCreator( WT_CART_PUSHER, new WalkerPtrCreator<CartPusher>() );
+  addCreator( WT_PREFECT, new WalkerPtrCreator<WalkerPrefect>() );
+  addCreator( WT_TAXCOLLECTOR, new WalkerPtrCreator<TaxCollector>() );
 }
 
 WalkerManager::~WalkerManager()
@@ -68,8 +68,9 @@ WalkerPtr WalkerManager::create( const WalkerType walkerType )
     WalkerPtr ret( findConstructor->second->create() );
     ret->drop();
     return ret;
+  }
 
-  StringHelper::debug( 0xff, "Can't create walker from type %s",  )
+  StringHelper::debug( 0xff, "Can't create walker from type %d", walkerType );
   return WalkerPtr();
 }
 
@@ -79,14 +80,18 @@ WalkerManager& WalkerManager::getInstance()
   return inst;
 }
 
-void WalkerManager::addCreator( const WalkerType type, const std::string& typeName, AbstractWalkerCreator* ctor )
+void WalkerManager::addCreator( const WalkerType type, AbstractWalkerCreator* ctor )
 {
-  bool alreadyHaveConstructor = _d->name2typeMap.find( typeName ) != _d->name2typeMap.end();
-  _OC3_DEBUG_BREAK_IF( alreadyHaveConstructor && "already have constructor for this type");
+  std::string typeName = WalkerHelper::getName( type );
 
-  if( !alreadyHaveConstructor )
+  bool alreadyHaveConstructor = _d->constructors.find( type ) != _d->constructors.end();
+  if( alreadyHaveConstructor )
   {
-    _d->name2typeMap[ typeName ] = type;
+    StringHelper::debug( 0xff, "Already have constructor for type %s", typeName.c_str() );
+    return;
+  }
+  else
+  {
     _d->constructors[ type ] = ctor;
   }
 }

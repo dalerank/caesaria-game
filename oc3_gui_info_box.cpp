@@ -222,7 +222,7 @@ void InfoBoxSenate::paint()
   Font font = Font::create( FONT_2 );
   font.draw( *_d->bgPicture, text, 16 + 42, paintY + 5, false );
   
-  pic = GoodHelper::getPicture( G_DENARIES );
+  pic = GoodHelper::getPicture( Good::G_DENARIES );
   _d->bgPicture->draw(pic, 16, 35);
 
   std::string denariesStr = StringHelper::format( 0xff, "%s %d", _("##senate_save##"), _sd->senate->getFunds() );
@@ -285,7 +285,7 @@ void InfoBoxHouse::_paint()
   int startY = _ed->lbCrime->getBottom() + 10;
   if( _ed->house->getLevelSpec().getHouseLevel() > 2 )
   {
-    drawGood(G_WHEAT, 0, 0, startY );
+    drawGood(Good::G_WHEAT, 0, 0, startY );
   }
   else
   {
@@ -297,10 +297,10 @@ void InfoBoxHouse::_paint()
     startY = lb->getTop();
   }
 
-  drawGood(G_POTTERY, 0, 1, startY);
-  drawGood(G_FURNITURE, 1, 1, startY);
-  drawGood(G_OIL, 2, 1, startY);
-  drawGood(G_WINE, 3, 1, startY);
+  drawGood(Good::G_POTTERY, 0, 1, startY);
+  drawGood(Good::G_FURNITURE, 1, 1, startY);
+  drawGood(Good::G_OIL, 2, 1, startY);
+  drawGood(Good::G_WINE, 3, 1, startY);
 }
 
 
@@ -336,7 +336,7 @@ void InfoBoxHouse::drawHabitants()
   _ed->lbHabitants->setText( buffer );
 }
 
-void InfoBoxHouse::drawGood(const GoodType &goodType, const int col, const int row, const int startY )
+void InfoBoxHouse::drawGood(const Good::Type &goodType, const int col, const int row, const int startY )
 {
   Font font = Font::create( FONT_2 );
   int qty = _ed->house->getGoodStore().getCurrentQty(goodType);
@@ -371,19 +371,19 @@ void GuiInfoFactory::paint()
   font.draw(*_d->bgPicture, text, 32, _paintY, false );
   _paintY+=22;
 
-  if( _building->getOutGoodType() != G_NONE )
+  if( _building->getOutGoodType() != Good::G_NONE )
   {
     const Picture &pic = GoodHelper::getPicture( _building->getOutGoodType() );
     _d->bgPicture->draw(pic, 10, 10);
   }
 
   // paint picture of in good
-  if( _building->getInGood()._goodType != G_NONE )
+  if( _building->getInGood().type() != Good::G_NONE )
   {
-    const Picture &pic = GoodHelper::getPicture( _building->getInGood()._goodType );
+    const Picture &pic = GoodHelper::getPicture( _building->getInGood().type() );
     _d->bgPicture->draw(pic, 32, _paintY+2);
     int amount = _building->getInGood()._currentQty / 100;
-    std::string goodName = GoodHelper::getName( _building->getInGood()._goodType );
+    std::string goodName = GoodHelper::getName( _building->getInGood().type() );
    
     text = StringHelper::format( 0xff, _("%s en stock: %d unites"), goodName.c_str(), amount );
     
@@ -411,47 +411,45 @@ void GuiInfoFactory::drawWorkers( int paintY )
 
 std::string GuiInfoFactory::getInfoText()
 {
-   std::string textKey = GoodHelper::getName( _building->getOutGood()._goodType );
-   if (_building->isActive() == false)
-   {
-      textKey+= "- Production arretee sous ordre du gouverneur";
-   }
-   else if (_building->getInGood()._goodType != G_NONE && _building->getInGood()._currentQty == 0)
-   {
-      textKey+= "- Production arretee par manque de matiere premiere";
-   }
-   else
-   {
-      int nbWorkers = _building->getWorkers();
+  std::string textKey = GoodHelper::getName( _building->getOutGood().type() );
+  if (_building->isActive() == false)
+  {
+    textKey+= "- Production arretee sous ordre du gouverneur";
+  }
+  else if (_building->getInGood().type() != Good::G_NONE && _building->getInGood()._currentQty == 0)
+  {
+    textKey+= "- Production arretee par manque de matiere premiere";
+  }
+  else
+  {
+    int nbWorkers = _building->getWorkers();
+    if (nbWorkers == 0)
+    {
+       textKey+= "- Production arretee par manque de personnel";
+    }
+    else if (nbWorkers < 5)
+    {
+       textKey+= "- Production quasimment a l'arret par manque de main-d'oeuvre";
+    }
+    else if (nbWorkers < 7)
+    {
+       textKey+= "- Production tres ralentie par manque d'employes";
+    }
+    else if (nbWorkers < 9)
+    {
+       textKey+= "- Production limitee par manque de personnel";
+    }
+    else if (nbWorkers < 10)
+    {
+       textKey+= "- Production legerement ralentie par manque d'employes";
+    }
+    else
+    {
+       textKey+= "- Production a son maximum";
+    }
+  }
 
-      if (nbWorkers == 0)
-      {
-         textKey+= "- Production arretee par manque de personnel";
-      }
-      else if (nbWorkers < 5)
-      {
-         textKey+= "- Production quasimment a l'arret par manque de main-d'oeuvre";
-      }
-      else if (nbWorkers < 7)
-      {
-         textKey+= "- Production tres ralentie par manque d'employes";
-      }
-      else if (nbWorkers < 9)
-      {
-         textKey+= "- Production limitee par manque de personnel";
-      }
-      else if (nbWorkers < 10)
-      {
-         textKey+= "- Production legerement ralentie par manque d'employes";
-      }
-      else
-      {
-         textKey+= "- Production a son maximum";
-      }
-
-   }
-
-   return _(textKey.c_str());
+  return _(textKey.c_str());
 }
 
 class GuiInfoGranary::Impl
@@ -507,10 +505,10 @@ void GuiInfoGranary::paint()
   _paintY+=40;
 
   int _col2PaintY = _paintY;
-  drawGood(G_WHEAT, 0, _paintY);
-  drawGood(G_MEAT, 0, _paintY);
-  drawGood(G_FRUIT, 1, _col2PaintY);
-  drawGood(G_VEGETABLE, 1, _col2PaintY);
+  drawGood(Good::G_WHEAT, 0, _paintY);
+  drawGood(Good::G_MEAT, 0, _paintY);
+  drawGood(Good::G_FRUIT, 1, _col2PaintY);
+  drawGood(Good::G_VEGETABLE, 1, _col2PaintY);
 
   PictureDecorator::draw( *_d->bgPicture, Rect( Point( 16, _paintY+12 ), Size( getWidth()-32, 62 ) ), PictureDecorator::blackFrame );
   drawWorkers( _paintY+24 );
@@ -531,7 +529,7 @@ void GuiInfoGranary::drawWorkers( int paintY )
 }
 
 
-void GuiInfoGranary::drawGood(const GoodType &goodType, int col, int& paintY)
+void GuiInfoGranary::drawGood(const Good::Type &goodType, int col, int& paintY)
 {
   std::string goodName = GoodHelper::getName( goodType );
 
@@ -594,25 +592,25 @@ void InfoBoxWarehouse::paint()
   int _paintY = _d->lbTitle->getBottom();
 
   int _col2PaintY = _paintY;
-  drawGood(G_WHEAT, 0, _paintY);
-  drawGood(G_VEGETABLE, 0, _paintY);
-  drawGood(G_FRUIT, 0, _paintY);
-  drawGood(G_OLIVE, 0, _paintY);
-  drawGood(G_GRAPE, 0, _paintY);
+  drawGood(Good::G_WHEAT, 0, _paintY);
+  drawGood(Good::G_VEGETABLE, 0, _paintY);
+  drawGood(Good::G_FRUIT, 0, _paintY);
+  drawGood(Good::G_OLIVE, 0, _paintY);
+  drawGood(Good::G_GRAPE, 0, _paintY);
 
   _paintY = _col2PaintY;
-  drawGood(G_MEAT, 1, _paintY);
-  drawGood(G_WINE, 1, _paintY);
-  drawGood(G_OIL, 1, _paintY);
-  drawGood(G_IRON, 1, _paintY);
-  drawGood(G_TIMBER, 1, _paintY);
+  drawGood(Good::G_MEAT, 1, _paintY);
+  drawGood(Good::G_WINE, 1, _paintY);
+  drawGood(Good::G_OIL, 1, _paintY);
+  drawGood(Good::G_IRON, 1, _paintY);
+  drawGood(Good::G_TIMBER, 1, _paintY);
 
   _paintY = _col2PaintY;
-  drawGood(G_CLAY, 2, _paintY);
-  drawGood(G_MARBLE, 2, _paintY);
-  drawGood(G_WEAPON, 2, _paintY);
-  drawGood(G_FURNITURE, 2, _paintY);
-  drawGood(G_POTTERY, 2, _paintY);
+  drawGood(Good::G_CLAY, 2, _paintY);
+  drawGood(Good::G_MARBLE, 2, _paintY);
+  drawGood(Good::G_WEAPON, 2, _paintY);
+  drawGood(Good::G_FURNITURE, 2, _paintY);
+  drawGood(Good::G_POTTERY, 2, _paintY);
 
   _wd->workerFramePos = Point( 16, 170 );
   PictureDecorator::draw( *_d->bgPicture, 
@@ -637,7 +635,7 @@ void InfoBoxWarehouse::drawWorkers()
 }
 
 
-void InfoBoxWarehouse::drawGood(const GoodType &goodType, int col, int& paintY)
+void InfoBoxWarehouse::drawGood(const Good::Type &goodType, int col, int& paintY)
 {
   std::string goodName = GoodHelper::getName( goodType );
 
@@ -727,19 +725,19 @@ void GuiInfoMarket::paint()
     GoodStore& goods = _md->market->getGoodStore();
     int furageSum = 0;
     // for all furage types of good
-    for (int goodType = 0; goodType<G_OLIVE; ++goodType)
+    for (int goodType = 0; goodType<Good::G_OLIVE; ++goodType)
     {
-      furageSum += goods.getCurrentQty( (GoodType)goodType );     
+      furageSum += goods.getCurrentQty( (Good::Type)goodType );
     }
 
     int paintY = 78;
     if( 0 < furageSum )
     {
-      drawGood(G_WHEAT, 0, paintY );
-      drawGood(G_FISH, 1, paintY);
-      drawGood(G_MEAT, 2, paintY);
-      drawGood(G_FRUIT, 3, paintY);
-      drawGood(G_VEGETABLE, 4, paintY);
+      drawGood(Good::G_WHEAT, 0, paintY );
+      drawGood(Good::G_FISH, 1, paintY);
+      drawGood(Good::G_MEAT, 2, paintY);
+      drawGood(Good::G_FRUIT, 3, paintY);
+      drawGood(Good::G_VEGETABLE, 4, paintY);
       _md->lbAbout->setHeight( 25 );
     }
     else
@@ -748,10 +746,10 @@ void GuiInfoMarket::paint()
     }
 
     paintY += 24;
-    drawGood(G_POTTERY, 0, paintY);
-    drawGood(G_FURNITURE, 1, paintY);
-    drawGood(G_OIL, 2, paintY);
-    drawGood(G_WINE, 3, paintY); 
+    drawGood(Good::G_POTTERY, 0, paintY);
+    drawGood(Good::G_FURNITURE, 1, paintY);
+    drawGood(Good::G_OIL, 2, paintY);
+    drawGood(Good::G_WINE, 3, paintY);
 
     _md->lbAbout->setText( 0 == furageSum ? _("##market_search_food_source##") : _("##market_about##"));
   }
@@ -781,7 +779,7 @@ void GuiInfoMarket::drawWorkers()
 }
 
 
-void GuiInfoMarket::drawGood(const GoodType &goodType, int index, int paintY )
+void GuiInfoMarket::drawGood(const Good::Type &goodType, int index, int paintY )
 {
   int startOffset = 25;
 
@@ -944,7 +942,7 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
   Picture& pic = Picture::load( ResourceGroup::panelBackground, 542);
   _d->bgPicture->draw( pic, 16+15, 160 );
 
-  if( _fd->rawmb->getOutGoodType() != G_NONE )
+  if( _fd->rawmb->getOutGoodType() != Good::G_NONE )
   {
     Picture pic = GoodHelper::getPicture( _fd->rawmb->getOutGoodType() );
     _d->bgPicture->draw( pic, 10, 10 );

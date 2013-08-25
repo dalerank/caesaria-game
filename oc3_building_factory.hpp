@@ -21,20 +21,21 @@
 
 #include "oc3_building_working.hpp"
 #include "oc3_predefinitions.hpp"
+#include "oc3_good.hpp"
 
 class GoodStore;
 
 class Factory : public WorkingBuilding
 {
 public:
-  Factory( const GoodType inGood, const GoodType outGood,
+  Factory( const Good::Type inGood, const Good::Type outGood,
            const BuildingType type, const Size& size );
   ~Factory();
 
   GoodStock& getInGood();
   GoodStock& getOutGood();
 
-  GoodType getOutGoodType() const;
+  Good::Type getOutGoodType() const;
 
   GoodStore& getGoodStore();
 

@@ -18,6 +18,7 @@
 #include "oc3_walker.hpp"
 
 #include "oc3_tile.hpp"
+#include "oc3_enums_helper.hpp"
 #include "oc3_building_data.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_scenario.hpp"
@@ -491,24 +492,67 @@ Soldier::Soldier()
    _walkerGraphic = WG_HORSEMAN;
 }
 
-TypeEquale<WalkerType> wlkTypeEquales[] = {
-  { WT_NONE,   "none"},
-  { WT_IMMIGRANT, "immigrant" },
-  { WT_EMIGRANT, "emmigrant" },
-  { WT_SOLDIER, "soldier" },
-  { WT_CART_PUSHER, "cart_pusher" },
-  { WT_MARKETLADY, "market_lady" },
-  { WT_MARKETLADY_HELPER, "market_lady_helper" },
-  { WT_SERVICE, "serviceman" },
-  { WT_TRAINEE, "trainee" },
-  { WT_WORKERS_HUNTER, "workers_hunter" },
-  { WT_PREFECT, "prefect" },
-  { WT_TAXCOLLECTOR, "tax_collector" },
-  { WT_MERCHANT, "merchant" },
-  { WT_MAX, "unknown" }
+class WalkerHelper::Impl : public EnumsHelper<WalkerType>
+{
+public:
+  WalkerType getInvalid() const { return WT_NONE; }
+
+  Impl()
+  {
+    append( WT_NONE,   "none");
+    append( WT_IMMIGRANT, "immigrant" );
+    append( WT_EMIGRANT, "emmigrant" );
+    append( WT_SOLDIER, "soldier" );
+    append( WT_CART_PUSHER, "cart_pusher" );
+    append( WT_MARKETLADY, "market_lady" );
+    append( WT_MARKETLADY_HELPER, "market_lady_helper" );
+    append( WT_SERVICE, "serviceman" );
+    append( WT_TRAINEE, "trainee" );
+    append( WT_WORKERS_HUNTER, "workers_hunter" );
+    append( WT_PREFECT, "prefect" );
+    append( WT_TAXCOLLECTOR, "tax_collector" );
+    append( WT_MERCHANT, "merchant" );
+    append( WT_MAX, "unknown" );
+  }
 };
 
-std::string WalkerHelper::getTypeName()
+WalkerHelper& WalkerHelper::instance()
+{
+  static WalkerHelper inst;
+  return inst;
+}
+
+std::string WalkerHelper::getName( WalkerType type )
+{
+  std::string name = instance()._d->findName( type );
+
+  if( type == instance()._d->getInvalid() )
+  {
+    StringHelper::debug( 0xff, "Can't find walker typeName for %d", type );
+    _OC3_DEBUG_BREAK_IF( "Can't find walker typeName by WalkerType" );
+  }
+
+  return name;
+}
+
+WalkerType WalkerHelper::getType(const std::string &name)
+{
+  WalkerType type = instance()._d->findType( name );
+
+  if( type == instance()._d->getInvalid() )
+  {
+    StringHelper::debug( 0xff, "Can't find walker type for %s", name.c_str() );
+    _OC3_DEBUG_BREAK_IF( "Can't find walker type by typeName" );
+  }
+
+  return type;
+}
+
+WalkerHelper::~WalkerHelper()
+{
+}
+
+WalkerHelper::WalkerHelper() : _d( new Impl )
 {
 
 }

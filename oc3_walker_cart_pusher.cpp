@@ -240,7 +240,7 @@ BuildingPtr reserveShortestPath( const BuildingType buildingType,
     // for every factory within range
     SmartPtr<T> building = pathWayIt->first.as<T>();
 
-    if( stock._currentQty >  building->getGoodStore().getMaxStore( stock._goodType ) )
+    if( stock._currentQty >  building->getGoodStore().getMaxStore( stock.type() ) )
     {
       pathWayList.erase( pathWayIt++ );
     }
@@ -280,8 +280,8 @@ BuildingPtr reserveShortestPath( const BuildingType buildingType,
 BuildingPtr CartPusher::Impl::getWalkerDestination_factory(Propagator &pathPropagator, PathWay &oPathWay)
 {
   BuildingPtr res;
-  GoodType goodType = stock._goodType;
-  BuildingType buildingType = BuildingDataHolder::instance().getBuildingTypeByInGood(goodType);
+  Good::Type goodType = stock.type();
+  BuildingType buildingType = BuildingDataHolder::instance().getConsumerType( goodType );
 
   if (buildingType == B_NONE)
   {
@@ -307,8 +307,9 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_granary(Propagator &pathPropa
 {
    BuildingPtr res;
 
-   GoodType goodType = stock._goodType;
-   if (!(goodType == G_WHEAT || goodType == G_FISH || goodType == G_MEAT || goodType == G_FRUIT || goodType == G_VEGETABLE))
+   Good::Type goodType = stock.type();
+   if (!(goodType == Good::G_WHEAT || goodType == Good::G_FISH
+         || goodType == Good::G_MEAT || goodType == Good::G_FRUIT || goodType == Good::G_VEGETABLE))
    {
       // this good cannot be stored in a granary
       return 0;

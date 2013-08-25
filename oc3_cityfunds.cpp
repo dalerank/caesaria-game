@@ -149,7 +149,7 @@ Signal1<int>& CityFunds::onChange()
   return _d->onChangeSignal;
 }
 
-void FundIssue::importGoods( CityPtr city, GoodType type, int qty )
+void FundIssue::importGoods( CityPtr city, Good::Type type, int qty )
 {
   CityTradeOptions& options = city->getTradeOptions();
   int price = options.getSellPrice( type );
@@ -158,7 +158,7 @@ void FundIssue::importGoods( CityPtr city, GoodType type, int qty )
   city->getFunds().resolveIssue( issue );
 }
 
-void FundIssue::exportGoods( CityPtr city, GoodType type, int qty )
+void FundIssue::exportGoods( CityPtr city, Good::Type type, int qty )
 {
   CityTradeOptions& options = city->getTradeOptions();
   int price = options.getBuyPrice( type );

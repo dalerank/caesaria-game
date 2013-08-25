@@ -42,7 +42,7 @@ public:
 
   bool canCreate( const WalkerType type ) const;
 
-  void addCreator( const WalkerType type, const std::string& typeName, AbstractWalkerCreator* ctor );
+  void addCreator( const WalkerType type, AbstractWalkerCreator* ctor );
 
   WalkerPtr create( const WalkerType walkerType );  // get an instance of the given type
 

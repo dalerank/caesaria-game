@@ -122,9 +122,16 @@ private:
 class WalkerHelper
 {
 public:
-  static std::string getTypeName();
+  static WalkerHelper& instance();
 
+  static std::string getName( WalkerType type );
+  static WalkerType getType( const std::string& name );
+
+  virtual ~WalkerHelper();
 private:
   WalkerHelper();
+
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 #endif

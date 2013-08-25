@@ -76,15 +76,15 @@ House::House(const int houseId) : Building( B_HOUSE ), _d( new Impl )
    _fireLevel = 0;
 
    _d->goodStore.setMaxQty(10000);  // no limit
-   _d->goodStore.setMaxQty(G_WHEAT, 100);
-   _d->goodStore.setMaxQty(G_FISH, 0);
-   _d->goodStore.setMaxQty(G_MEAT, 0);
-   _d->goodStore.setMaxQty(G_FRUIT, 0);
-   _d->goodStore.setMaxQty(G_VEGETABLE, 0);
-   _d->goodStore.setMaxQty(G_POTTERY, 0);
-   _d->goodStore.setMaxQty(G_FURNITURE, 0);
-   _d->goodStore.setMaxQty(G_OIL, 0);
-   _d->goodStore.setMaxQty(G_WINE, 0);
+   _d->goodStore.setMaxQty(Good::G_WHEAT, 100);
+   _d->goodStore.setMaxQty(Good::G_FISH, 0);
+   _d->goodStore.setMaxQty(Good::G_MEAT, 0);
+   _d->goodStore.setMaxQty(Good::G_FRUIT, 0);
+   _d->goodStore.setMaxQty(Good::G_VEGETABLE, 0);
+   _d->goodStore.setMaxQty(Good::G_POTTERY, 0);
+   _d->goodStore.setMaxQty(Good::G_FURNITURE, 0);
+   _d->goodStore.setMaxQty(Good::G_OIL, 0);
+   _d->goodStore.setMaxQty(Good::G_WINE, 0);
 
    // init the service access
    for (int i = 0; i<S_MAX; ++i)
@@ -112,9 +112,9 @@ void House::timeStep(const unsigned long time)
       cancelService( S_WORKERS_HUNTER );
 
       // consume goods
-      for (int i = 0; i < G_MAX; ++i)
+      for (int i = 0; i < Good::G_MAX; ++i)
       {
-         GoodType goodType = (GoodType) i;
+         Good::Type goodType = (Good::Type) i;
          int qty = std::max(_d->goodStore.getCurrentQty(goodType) - 1, 0);
          _d->goodStore.setCurrentQty(goodType, qty);
       }
@@ -378,9 +378,9 @@ void House::buyMarket( ServiceWalkerPtr walker )
    GoodStore& marketStore = market->getGoodStore();
 
    GoodStore &houseStore = getGoodStore();
-   for (int i = 0; i < G_MAX; ++i)
+   for (int i = 0; i < Good::G_MAX; ++i)
    {
-      GoodType goodType = (GoodType) i;
+      Good::Type goodType = (Good::Type) i;
       int houseQty = houseStore.getCurrentQty(goodType);
       int houseSafeQty = _d->houseLevelSpec.computeMonthlyConsumption(*this, goodType)
                          + _d->nextHouseLevelSpec.computeMonthlyConsumption(*this, goodType);
@@ -484,9 +484,9 @@ float House::evaluateService(ServiceWalkerPtr walker)
     MarketPtr market = walker->getBase().as<Market>();
     GoodStore &marketStore = market->getGoodStore();
     GoodStore &houseStore = getGoodStore();
-    for (int i = 0; i < G_MAX; ++i)
+    for (int i = 0; i < Good::G_MAX; ++i)
     {
-       GoodType goodType = (GoodType) i;
+       Good::Type goodType = (Good::Type) i;
        int houseQty  = houseStore.getCurrentQty(goodType);
        int houseSafeQty = _d->houseLevelSpec.computeMonthlyConsumption(*this, goodType)
                           + _d->nextHouseLevelSpec.computeMonthlyConsumption(*this, goodType);
@@ -668,7 +668,7 @@ int House::getFoodLevel()
   
   case smallHut:
   case bigHut: 
-    return getGoodStore().getCurrentQty(G_WHEAT);
+    return getGoodStore().getCurrentQty(Good::G_WHEAT);
   
   default: 
     return -1;
