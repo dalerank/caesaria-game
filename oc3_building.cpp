@@ -488,7 +488,7 @@ void Building::applyService( ServiceWalkerPtr walker)
    }
 }
 
-float Building::evaluateTrainee(const WalkerTraineeType traineeType)
+float Building::evaluateTrainee(const WalkerType traineeType)
 {
    float res = 0.0;
 
@@ -507,17 +507,17 @@ float Building::evaluateTrainee(const WalkerTraineeType traineeType)
    return res;
 }
 
-void Building::reserveTrainee(const WalkerTraineeType traineeType)
+void Building::reserveTrainee(const WalkerType traineeType)
 {
    _reservedTrainees.insert(traineeType);
 }
 
-void Building::cancelTrainee(const WalkerTraineeType traineeType)
+void Building::cancelTrainee(const WalkerType traineeType)
 {
    _reservedTrainees.erase(traineeType);
 }
 
-void Building::applyTrainee(const WalkerTraineeType traineeType)
+void Building::applyTrainee(const WalkerType traineeType)
 {
    _reservedTrainees.erase(traineeType);
    _traineeMap[traineeType] += 100;

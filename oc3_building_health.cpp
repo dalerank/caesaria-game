@@ -22,6 +22,16 @@ Doctor::Doctor() : ServiceBuilding(S_DOCTOR, B_DOCTOR, Size(1))
   setPicture( Picture::load( ResourceGroup::security, 20));
 }
 
+unsigned int Doctor::getWalkerDistance() const
+{
+  return 26;
+}
+
+void Doctor::deliverService()
+{
+  ServiceBuilding::deliverService();
+}
+
 Hospital::Hospital() : ServiceBuilding(S_HOSPITAL, B_HOSPITAL, Size(3 ) )
 {
   setMaxWorkers( 30 );

@@ -146,15 +146,15 @@ EntertainmentBuilding::EntertainmentBuilding(const ServiceType service,
    switch (service)
    {
    case S_THEATER:
-      _traineeMap[WTT_ACTOR] = 0;
+      _traineeMap[WT_ACTOR] = 0;
       break;
    case S_AMPHITHEATER:
-      _traineeMap[WTT_ACTOR] = 0;
-      _traineeMap[WTT_GLADIATOR] = 0;
+      _traineeMap[WT_ACTOR] = 0;
+      _traineeMap[WT_GLADIATOR] = 0;
       break;
    case S_COLLOSSEUM:
-      _traineeMap[WTT_GLADIATOR] = 0;
-      _traineeMap[WTT_TAMER] = 0;
+      _traineeMap[WT_GLADIATOR] = 0;
+      _traineeMap[WT_TAMER] = 0;
       break;
    default:
       break;
@@ -165,7 +165,7 @@ void EntertainmentBuilding::deliverService()
 {
    // we need all trainees types for the show
    int minLevel = 100;
-   for (std::map<WalkerTraineeType, int>::iterator itLevel = _traineeMap.begin(); itLevel != _traineeMap.end(); ++itLevel)
+   for (std::map<WalkerType, int>::iterator itLevel = _traineeMap.begin(); itLevel != _traineeMap.end(); ++itLevel)
    {
       minLevel = std::min(minLevel, itLevel->second);
    }
@@ -173,7 +173,7 @@ void EntertainmentBuilding::deliverService()
    if (minLevel > 10)
    {
       // all trainees are there for the show!
-      for (std::map<WalkerTraineeType, int>::iterator itLevel = _traineeMap.begin(); itLevel != _traineeMap.end(); ++itLevel)
+      for (std::map<WalkerType, int>::iterator itLevel = _traineeMap.begin(); itLevel != _traineeMap.end(); ++itLevel)
       {
          itLevel->second = itLevel->second - 10;
       }
