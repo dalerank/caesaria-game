@@ -28,6 +28,7 @@
 #include "oc3_walker_market_lady_helper.hpp"
 #include "oc3_goodstore_simple.hpp"
 #include "oc3_city.hpp"
+#include "oc3_name_generator.hpp"
 
 class MarketLady::Impl
 {
@@ -43,8 +44,8 @@ public:
 
 MarketLady::MarketLady() : _d( new Impl )
 {
-   _walkerGraphic = WG_MARKETLADY;
-   _walkerType = WT_MARKETLADY;
+   _setGraphic( WG_MARKETLADY );
+   _setType( WT_MARKETLADY );
    _d->maxDistance = 25;
    _d->basket.setMaxQty(800);  // this is a big basket!
 
@@ -58,6 +59,8 @@ MarketLady::MarketLady() : _d( new Impl )
    _d->basket.setMaxQty(Good::G_FURNITURE, 100);
    _d->basket.setMaxQty(Good::G_OIL, 100);
    _d->basket.setMaxQty(Good::G_WINE, 100);
+
+   setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
 MarketLady::~MarketLady()

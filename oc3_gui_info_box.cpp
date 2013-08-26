@@ -44,6 +44,7 @@
 #include "oc3_special_orders_window.hpp"
 #include "oc3_goodstore.hpp"
 #include "oc3_groupbox.hpp"
+#include "oc3_walker.hpp"
 #include "oc3_building_senate.hpp"
 
 class GuiInfoBox::Impl
@@ -65,7 +66,7 @@ GuiInfoBox::GuiInfoBox( Widget* parent, const Rect& rect, int id )
   _d->lbTitle->setTextAlignment( alignCenter, alignCenter );
   _d->isAutoPosition = true;
 
-  _d->btnExit = new TexturedButton( this, Point( 472, getHeight() - 39 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
+  _d->btnExit = new TexturedButton( this, Point( getWidth() - 39, getHeight() - 39 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
   _d->btnExit->setTooltipText( _("##infobox_tooltip_exit##") );
 
   _d->btnHelp = new TexturedButton( this, Point( 14, getHeight() - 39 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
@@ -1031,24 +1032,36 @@ void InfoBoxBasic::setText( const std::string& text )
 class InfoBoxCitizen::Impl
 {
 public:
+  Walkers walkers;
   Label* lbName;
   Label* lbType;
   Label* lbThinks;
   Label* lbCitizenPic;
 };
 
-
-InfoBoxCitizen::InfoBoxCitizen( Widget* parent, const Tile& tile )
+InfoBoxCitizen::InfoBoxCitizen( Widget* parent, const Walkers& walkers )
 : GuiInfoBox( parent, Rect( 0, 0, 460, 350 ), -1 ), _cd( new Impl )
 {
+  _cd->walkers = walkers;
+
   Picture& bg = getBgPicture();
   PictureDecorator::draw( bg, Rect( 18, 40, getWidth() - 18, getHeight() - 120), PictureDecorator::blackFrame );
-  PictureDecorator::draw( bg, Rect( 25, 100, getWidth() - 25, getHeight() - 130), PictureDecorator::whiteBorder );
+  PictureDecorator::draw( bg, Rect( 25, 100, getWidth() - 25, getHeight() - 130), PictureDecorator::whiteBorderA );
   //mini screenshot from citizen pos need here
   PictureDecorator::draw( bg, Rect( 25, 45, 25 + 52, 45 + 52), PictureDecorator::blackArea );
 
-  _cd->lbName = new Label( this, Rect( 85, 108, getWidth() - 30, 108 + 30) );
-  _cd->lbType = new Label( this, Rect( 85, 138, getWidth() - 30, 138 + 20) );
-  _cd->lbThinks = new Label( this, Rect( 85, 160, getWidth() - 30, getHeight() - 140) );
-  _cd->lbCitizenPic = new Label( this, Rect( 25, 115, 25 + 55, 115 + 80) );
+  _cd->lbName = new Label( this, Rect( 90, 108, getWidth() - 30, 108 + 35) );
+  _cd->lbName->setFont( Font::create( FONT_3 ));
+  _cd->lbType = new Label( this, Rect( 90, 145, getWidth() - 30, 145 + 25) );
+  _cd->lbThinks = new Label( this, Rect( 90, 170, getWidth() - 30, getHeight() - 140), "Citizen's thoughts will be placed here" );
+  _cd->lbCitizenPic = new Label( this, Rect( 30, 112, 30 + 55, 112 + 80) );
+
+  if( !_cd->walkers.empty() )
+  {
+    WalkerPtr walker = _cd->walkers.front();
+    _cd->lbName->setText( walker->getName() );
+    _cd->lbType->setText( WalkerHelper::getPrettyTypeName( (WalkerType)walker->getType() ) );
+    _cd->lbThinks->setText( walker->getThinks() );
+    _cd->lbCitizenPic->setBackgroundPicture( WalkerHelper::getBigPicture( (WalkerType)walker->getType() ) );
+  }
 }

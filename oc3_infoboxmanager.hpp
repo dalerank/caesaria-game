@@ -18,7 +18,8 @@ public:
   virtual GuiInfoBox* create( Widget*, const Tile& ) = 0;
 };
 
-template< class T > class BaseInfoboxCreator : public InfoboxCreator
+template< class T >
+class BaseInfoboxCreator : public InfoboxCreator
 {
 public:
   GuiInfoBox* create( Widget* parent, const Tile& tile ) 
@@ -26,7 +27,6 @@ public:
     return new T( parent, tile ); 
   }
 };
-
 
 class InfoBoxManager : public ReferenceCounted
 {

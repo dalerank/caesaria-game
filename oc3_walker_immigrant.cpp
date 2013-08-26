@@ -23,6 +23,7 @@
 #include "oc3_variant.hpp"
 #include "oc3_city.hpp"
 #include "oc3_path_finding.hpp"
+#include "oc3_name_generator.hpp"
 
 class Immigrant::Impl
 {
@@ -35,10 +36,12 @@ public:
 
 Immigrant::Immigrant( CityPtr city ) : _d( new Impl )
 {
-  _walkerType = WT_IMMIGRANT;
-  _walkerGraphic = WG_HOMELESS;
+  _setType( WT_IMMIGRANT );
+  _setGraphic( WG_HOMELESS );
   _d->peopleCount = 0;
   _d->city = city;
+
+  setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
 HousePtr Immigrant::_findBlankHouse()
@@ -92,12 +95,14 @@ void Immigrant::_findPath2blankHouse( Tile& startPoint )
      _setAction( WA_MOVE );
   }
 
-  _isDeleted = !pathFound;  
+  if( !pathFound )
+  {
+    deleteLater();
+  }
 }
 
 void Immigrant::onDestination()
 {  
-  _isDeleted = true;
   bool gooutCity = true;
   if( _d->destination.getI() > 0 && _d->destination.getJ() > 0 )  //have destination
   {
@@ -121,6 +126,10 @@ void Immigrant::onDestination()
   if( gooutCity )
   {
     _findPath2blankHouse( _d->city->getTilemap().at( getIJ() ) );
+  }
+  else
+  {
+    deleteLater();
   }
 }
 

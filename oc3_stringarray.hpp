@@ -18,10 +18,15 @@
 
 #include <vector>
 #include <string>
+#include <algorithm>
 
 class StringArray : public std::vector< std::string >
 {
 public:
+  std::string rand() const
+  {
+    return empty() ? "" : at( std::rand() % size() );
+  }
 };
 
 #endif //__OPENCAESAR3_STRINGARRAY_H_INCLUDED__

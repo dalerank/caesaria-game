@@ -19,6 +19,7 @@
 #include "oc3_city.hpp"
 #include "oc3_pathway.hpp"
 #include "oc3_goodstore.hpp"
+#include "oc3_name_generator.hpp"
 
 class MarketLadyHelper::Impl
 {
@@ -47,8 +48,10 @@ MarketLadyHelper::MarketLadyHelper() : _d( new Impl )
   _d->delay = 0;
   _d->birthTime = 0;
   _d->basket._maxQty = 100;
-  _walkerGraphic = WG_MARKETLADY_HELPER;
-  _walkerType = WT_MARKETLADY_HELPER;
+  _setGraphic( WG_MARKETLADY_HELPER );
+  _setType( WT_MARKETLADY_HELPER );
+
+  setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
 void MarketLadyHelper::setDelay( int delay )

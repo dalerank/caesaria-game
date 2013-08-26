@@ -30,11 +30,11 @@ public:
   static const unsigned int defaultPeoples=4;
 
   static EmigrantPtr create( CityPtr city);
-  
-	void getPictureList(std::vector<Picture> &oPics);
-	void onNewDirection();
 
-	~Emigrant();
+  void getPictureList(std::vector<Picture> &oPics);
+  void onNewDirection();
+
+  ~Emigrant();
 protected:
   const Picture& getCartPicture();
 

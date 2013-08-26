@@ -464,7 +464,7 @@ void Json::parseComment(const std::string &json, int &index, bool &success)
 }
 
 /**
-* parseString
+* parse object name without colons
 */
 Variant Json::parseObjectName(const std::string &json, int &index, bool &success, char limiter )
 {
@@ -511,7 +511,7 @@ Variant Json::parseObjectName(const std::string &json, int &index, bool &success
 }
 
 /**
- * parseString
+ * parse string with colons
  */
 Variant Json::parseString(const std::string &json, int &index, bool &success)
 {

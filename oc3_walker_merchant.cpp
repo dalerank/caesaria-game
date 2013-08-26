@@ -24,6 +24,7 @@
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_cityfunds.hpp"
 #include "oc3_city_trade_options.hpp"
+#include "oc3_name_generator.hpp"
 
 class Merchant::Impl
 {
@@ -50,10 +51,12 @@ public:
 
 Merchant::Merchant() : _d( new Impl )
 {
-  _walkerGraphic = WG_HORSE_CARAVAN;
-  _walkerType = WT_MERCHANT;
+  _setGraphic( WG_HORSE_CARAVAN );
+  _setType( WT_MERCHANT );
   _d->maxDistance = 60;
   _d->attemptCount = 0;
+
+  setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
 Merchant::~Merchant()

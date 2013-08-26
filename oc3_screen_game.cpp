@@ -88,16 +88,12 @@ ScreenGame::~ScreenGame() {}
 
 void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
 {
+  CityPtr city = _d->scenario->getCity();
+
   _d->gui = &gui;
   _d->engine = &engine;
   _d->infoBoxMgr = InfoBoxManager::create( &gui );
-
-  CityPtr city = _d->scenario->getCity();
-
   _d->gui->clear();
-
-  /*new PopupMessageBox( _d->gui->getRootWidget(), "Test title", "This is test string for popup message box", 
-                       "Sen 351 BC", "For New player" ); */
 
   const int topMenuHeight = 23;
   const Picture& rPanelPic = Picture::load( ResourceGroup::panelBackground, 14 );

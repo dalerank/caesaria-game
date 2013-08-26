@@ -27,8 +27,8 @@ WorkersHunter::WorkersHunter( CityPtr city )
  : ServiceWalker( city, S_WORKERS_HUNTER )
 {    
     _workersNeeded = 0;
-    _walkerGraphic = WG_POOR;
-    _walkerType = WT_WORKERS_HUNTER;
+    _setGraphic( WG_POOR );
+    _setType( WT_WORKERS_HUNTER );
 }
 
 void WorkersHunter::hireWorkers( const int workers )

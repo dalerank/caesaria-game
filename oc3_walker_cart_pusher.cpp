@@ -30,6 +30,7 @@
 #include "oc3_picture_bank.hpp"
 #include "oc3_building_factory.hpp"
 #include "oc3_goodstore.hpp"
+#include "oc3_name_generator.hpp"
 
 class CartPusher::Impl
 {
@@ -49,13 +50,15 @@ public:
 
 CartPusher::CartPusher( CityPtr city ) : _d( new Impl )
 {
-   _walkerGraphic = WG_PUSHER;
-   _walkerType = WT_CART_PUSHER;
-   _d->producerBuilding = NULL;
-   _d->consumerBuilding = NULL;
-   _d->maxDistance = 25;
-   _d->city = city;
-   _d->stock._maxQty = 400;
+  _setGraphic( WG_PUSHER );
+  _setType( WT_CART_PUSHER );
+  _d->producerBuilding = NULL;
+  _d->consumerBuilding = NULL;
+  _d->maxDistance = 25;
+  _d->city = city;
+  _d->stock._maxQty = 400;
+
+  setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
 void CartPusher::onDestination()

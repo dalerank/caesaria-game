@@ -191,6 +191,27 @@ public:
     return ret;
   }
 
+  template< class T >
+  std::list< SmartPtr< T > > getWalkers( const TilePos& pos )
+  {
+    std::list< SmartPtr< T > > ret;
+    Walkers walkers = _city->getWalkerList( WT_ALL );
+    for( Walkers::iterator it = walkers.begin(); it != walkers.end(); it++  )
+    {
+      if( (*it)->getIJ() == pos )
+      {
+        SmartPtr< T > b = (*it).as<T>();
+
+        if( b.isValid() )
+        {
+          ret.push_back( b );
+        }
+      }
+    }
+
+    return ret;
+  }
+
 protected:
   CityPtr _city;
 };

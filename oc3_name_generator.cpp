@@ -42,11 +42,16 @@ std::string NameGenerator::rand( NameType type )
 {
   const NameGenerator& ng = instance();
 
-  const StringArray& names = type == male ? ng._d->male : ng._d->female;
-  int nameIndex = std::rand() % names.size();
-  int surIndex = std::rand() % ng._d->surname.size();
+  StringArray* names;
+  switch( type )
+  {
+  case male: names = &ng._d->male; break;
+  case female: names = &ng._d->female; break;
+  case patricianMale: names = &ng._d->male; break;
+  case patricianFemale: names = &ng._d->female; break;
+  }
 
-  return names[ nameIndex ] + " " + ng._d->surname[ surIndex ];
+  return names->rand() + " " + ng._d->surname.rand();
 }
 
 void NameGenerator::initialize(const io::FilePath &filename)

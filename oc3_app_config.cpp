@@ -45,7 +45,7 @@ AppConfig::AppConfig() : _d( new Impl )
   _d->options[ houseModel ] = Variant( std::string( "/house.model" ) );
   _d->options[ constructionModel ] = Variant( std::string( "/construction.model" ) );
   _d->options[ citiesModel ] = Variant( std::string( "/cities.model" ) );
-  _d->options[ ctNamesModel ] = Variant( std::string( "/citizens_names.model" ) );
+  _d->options[ ctNamesModel ] = Variant( std::string( "/names.model" ) );
 }
 
 void AppConfig::set( const std::string& option, const Variant& value )

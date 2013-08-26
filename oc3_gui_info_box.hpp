@@ -206,7 +206,7 @@ private:
 class InfoBoxHouse : public GuiInfoBox
 {
 public:
-   InfoBoxHouse( Widget* paarent, const Tile& tile);
+   InfoBoxHouse( Widget* parent, const Tile& tile);
 
    void drawHabitants();
    void drawGood(const Good::Type &goodType, const int col, const int row, const int startY );
@@ -234,7 +234,7 @@ private:
 class InfoBoxCitizen : public GuiInfoBox
 {
 public:
-  InfoBoxCitizen( Widget* parent, const Tile& tile );
+  InfoBoxCitizen(Widget* parent, const Walkers &walkers );
 
 private:
   class Impl;

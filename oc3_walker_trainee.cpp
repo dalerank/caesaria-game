@@ -19,10 +19,11 @@
 #include "oc3_variant.hpp"
 #include "oc3_path_finding.hpp"
 #include "oc3_city.hpp"
+#include "oc3_name_generator.hpp"
 
 TraineeWalker::TraineeWalker(const WalkerTraineeType traineeType)
 {
-  _walkerType = WT_TRAINEE;
+  _setType( WT_TRAINEE );
   _originBuilding = NULL;
   _destinationBuilding = NULL;
   _maxDistance = 30;
@@ -37,26 +38,32 @@ void TraineeWalker::init(const WalkerTraineeType traineeType)
   switch (_traineeType)
   {
   case WTT_ACTOR:
-    _walkerGraphic = WG_ACTOR;
+    _setGraphic( WG_ACTOR );
     _buildingNeed.push_back(B_THEATER);
     _buildingNeed.push_back(B_AMPHITHEATER);
-    break;
+  break;
+
   case WTT_GLADIATOR:
-    _walkerGraphic = WG_GLADIATOR;
+    _setGraphic( WG_GLADIATOR );
     _buildingNeed.push_back(B_AMPHITHEATER);
     _buildingNeed.push_back(B_COLLOSSEUM);
-    break;
-  case WTT_TAMER:
-    _walkerGraphic = WG_TAMER;
+  break;
+
+    case WTT_TAMER:
+    _setGraphic( WG_TAMER );
     _buildingNeed.push_back(B_COLLOSSEUM);
-    break;
-  case WTT_CHARIOT:
-    _walkerGraphic = WG_NONE;  // TODO
-    break;
-  case WTT_NONE:
+  break;
+
+    case WTT_CHARIOT:
+    _setGraphic( WG_NONE );  // TODO
+  break;
+
+    case WTT_NONE:
   case WTT_MAX:
     break;
   }
+
+  setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
 void TraineeWalker::setOriginBuilding(Building &originBuilding)
@@ -136,7 +143,7 @@ void TraineeWalker::send2City()
 void TraineeWalker::onDestination()
 {
   Walker::onDestination();
-  _isDeleted= true;
+  deleteLater();
   _destinationBuilding->applyTrainee(_traineeType);
 }
 
@@ -144,23 +151,21 @@ void TraineeWalker::save( VariantMap& stream ) const
 {
   Walker::save( stream );
   stream[ "traineeType" ] = (int)_traineeType;
-  stream[ "originBldI" ] = _originBuilding->getTile().getI();
-  stream[ "originBldJ" ] = _originBuilding->getTile().getJ();
-  stream[ "destBldI" ] = _destinationBuilding->getTile().getI();
-  stream[ "destBldJ" ] = _destinationBuilding->getTile().getJ();
+  stream[ "originBldPos" ] = _originBuilding->getTile().getIJ();
+  stream[ "destBldPos" ] = _destinationBuilding->getTile().getIJ();
   stream[ "maxDistance" ] = _maxDistance;
 }
 
 void TraineeWalker::load( const VariantMap& stream )
 {
-//   Walker::unserialize(stream);
-//   _traineeType = (WalkerTraineeType) stream.read_int(1, 0, WTT_MAX);
-//   init(_traineeType);
-// 
-//   stream.read_objectID( (void**)_originBuilding.object() );
-//   stream.read_objectID( (void**)_destinationBuilding.object() );
-// 
-//   _maxDistance = stream.read_int(2, 0, 65535);
+  Walker::load(stream);
+
+  init( (WalkerTraineeType)stream.get( "traineeType" ).toInt() );
+
+  CityHelper helper( _city );
+  _originBuilding = helper.getBuilding<Building>( stream.get( "originBldPos" ).toTilePos() );
+  _destinationBuilding = helper.getBuilding<Building>( stream.get( "destBldPos" ).toTilePos() );
+  _maxDistance = (int)stream.get( "maxDistance" );
 }
 
 TraineeWalkerPtr TraineeWalker::create( CityPtr city, const WalkerTraineeType traineeType )

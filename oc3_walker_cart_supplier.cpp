@@ -27,6 +27,7 @@
 #include "oc3_path_finding.hpp"
 #include "oc3_animation_bank.hpp"
 #include "oc3_building_factory.hpp"
+#include "oc3_name_generator.hpp"
 #include "oc3_goodstore.hpp"
 
 class CartSupplier::Impl
@@ -44,12 +45,15 @@ public:
 
 CartSupplier::CartSupplier( CityPtr city ) : _d( new Impl )
 {
-   _walkerGraphic = WG_PUSHER;
-   _walkerType = WT_CART_PUSHER;
-   _d->storageBuildingPos = TilePos( -1, -1 );
-   _d->baseBuildingPos = TilePos( -1, -1 );
-   _d->maxDistance = 25;
-   _d->city = city;
+  _setGraphic( WG_PUSHER );
+  _setType( WT_CART_PUSHER );
+
+  _d->storageBuildingPos = TilePos( -1, -1 );
+  _d->baseBuildingPos = TilePos( -1, -1 );
+  _d->maxDistance = 25;
+  _d->city = city;
+
+  setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
 void CartSupplier::onDestination()

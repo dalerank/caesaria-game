@@ -22,6 +22,7 @@
 #include "oc3_scenario.hpp"
 #include "oc3_walker_taxcollector.hpp"
 #include "oc3_city.hpp"
+#include "oc3_name_generator.hpp"
 #include "oc3_stringhelper.hpp"
 #include <map>
 

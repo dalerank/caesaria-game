@@ -22,6 +22,7 @@
 #include "oc3_tile.hpp"
 #include "oc3_city.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_name_generator.hpp"
 
 class WalkerPrefect::Impl
 {
@@ -35,10 +36,12 @@ public:
 WalkerPrefect::WalkerPrefect( CityPtr city )
 : ServiceWalker( city, S_PREFECT ), _d( new Impl )
 {
-  _walkerType = WT_PREFECT;
+  _setType( WT_PREFECT );
   _d->water = 0;
   _d->action = Impl::patrol;
-  _walkerGraphic = WG_PREFECT;
+  _setGraphic( WG_PREFECT );
+
+  setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
 void WalkerPrefect::onNewTile()
@@ -113,7 +116,7 @@ void WalkerPrefect::_back2Prefecture()
     _getPathway().begin();
   }
 
-  _walkerGraphic = WG_PREFECT;
+  _setGraphic( WG_PREFECT );
   _d->action = Impl::back2Prefecture;
 }
 
@@ -188,7 +191,7 @@ void WalkerPrefect::onMidTile()
         if( bruins.isValid() )
         {
           _d->action = Impl::fightFire;     
-          _walkerGraphic = WG_PREFECT_FIGHTS_FIRE;
+          _setGraphic( WG_PREFECT_FIGHTS_FIRE );
           Walker::onNewDirection();
           isDestination = false;
         }
@@ -202,7 +205,7 @@ void WalkerPrefect::onMidTile()
         }
         else
         {
-          _walkerGraphic = WG_PREFECT_DRAG_WATER;
+          _setGraphic( WG_PREFECT_DRAG_WATER );
           _d->action = Impl::gotoFire;
 
           _checkPath2NearestFire( reachedBuildings );
@@ -243,7 +246,7 @@ void WalkerPrefect::timeStep(const unsigned long time)
     //we catch fire, check near tiles for other burning ruins
     if( bruins.isNull() || 0 == _d->water )
     {
-      _walkerGraphic = WG_PREFECT_DRAG_WATER;
+      _setGraphic( WG_PREFECT_DRAG_WATER );
       _d->action = Impl::gotoFire;  
       setSpeed( 1 );
     }      
@@ -272,7 +275,7 @@ void WalkerPrefect::send2City( BuildingPrefecturePtr prefecture, int water/*=0 *
 {
   _d->action = water > 0 ? Impl::gotoFire : Impl::patrol;
   _d->water = water;
-  _walkerGraphic = water > 0 ? WG_PREFECT_DRAG_WATER : WG_PREFECT;
+  _setGraphic( water > 0 ? WG_PREFECT_DRAG_WATER : WG_PREFECT );
 
   if( water > 0 )
   {
@@ -292,7 +295,7 @@ void WalkerPrefect::load( const VariantMap& stream )
  
   _d->action = (Impl::PrefectAction)stream.get( "prefectAction" ).toInt();
   _d->water = stream.get( "water" ).toInt();
-  _walkerGraphic = _d->water > 0 ? WG_PREFECT_DRAG_WATER : WG_PREFECT;
+  _setGraphic( _d->water > 0 ? WG_PREFECT_DRAG_WATER : WG_PREFECT );
 
   BuildingPrefecturePtr prefecture = getBase().as<BuildingPrefecture>(); 
   if( prefecture.isValid() )

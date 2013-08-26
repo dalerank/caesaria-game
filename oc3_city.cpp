@@ -222,12 +222,15 @@ void City::monthStep( const DateTime& time )
 
 Walkers City::getWalkerList( const WalkerType type )
 {
-  Walkers res;
+  if( type == WT_ALL )
+  {
+    return _d->walkerList;
+  }
 
-  WalkerPtr walker;
+  Walkers res;
   for (Walkers::iterator itWalker = _d->walkerList.begin(); itWalker != _d->walkerList.end(); ++itWalker )
   {
-    if( (*itWalker)->getType() == type || WT_ALL == type )
+    if( (*itWalker)->getType() == type  )
     {
       res.push_back( *itWalker );
     }
