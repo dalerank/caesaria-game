@@ -120,7 +120,7 @@ enum BuildingType
    B_TEMPLE_ORACLE, // religion: others
    B_NATIVE_HUT, B_NATIVE_CENTER, B_NATIVE_FIELD, // building of natives
    B_TRIUMPHAL_ARCH, 
-   B_BURNING_RUINS, B_BURNED_RUINS, B_COLLAPSED_RUINS,
+   B_BURNING_RUINS, B_BURNED_RUINS, B_COLLAPSED_RUINS, B_PLAGUE_RUINS,
    B_FORUM_2, B_SENATE_2,
    B_MAX
 };
@@ -210,9 +210,10 @@ enum BuildMenuType
 
 enum DisasterType
 {
-    DSTR_BURN,
-    DSTR_COLLAPSE,
-    DSTR_COUNT
+  DSTR_BURN,
+  DSTR_COLLAPSE,
+  DSTR_PLAGUE,
+  DSTR_COUNT
 };
 
 enum AdvisorType

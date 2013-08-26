@@ -111,6 +111,7 @@ public:
     append( B_NATIVE_FIELD,   "native_field");
     append( B_BURNING_RUINS,  "burning_ruins");
     append( B_BURNED_RUINS,   "burned_ruins");
+    append( B_PLAGUE_RUINS,   "plague_ruins");
     append( B_COLLAPSED_RUINS,"collapsed_ruins");
     append( B_FORUM_2, "forum_2" );
     append( B_GATEHOUSE, "gatehouse" );

@@ -363,7 +363,7 @@ void City::disaster( const TilePos& pos, DisasterType type )
     PtrTilesArea clearedTiles = _d->tilemap.getFilledRectangle( rPos, size );
     for( PtrTilesArea::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
     {
-      BuildingType dstr2constr[] = { B_BURNING_RUINS, B_COLLAPSED_RUINS };
+      BuildingType dstr2constr[] = { B_BURNING_RUINS, B_COLLAPSED_RUINS, B_PLAGUE_RUINS };
       bool canCreate = ConstructionManager::getInstance().canCreate( dstr2constr[type] );
       if( canCreate )
       {
@@ -371,7 +371,8 @@ void City::disaster( const TilePos& pos, DisasterType type )
       }
     }
 
-    std::string dstr2string[] = { _("##alarm_fire_in_city##"), _("##alarm_building_collapsed##") };
+    std::string dstr2string[] = { _("##alarm_fire_in_city##"), _("##alarm_building_collapsed##"),
+                                  _("##alarm_plague_in_city##") };
     _d->onDisasterEventSignal.emit( pos, dstr2string[type] );
   }
 }

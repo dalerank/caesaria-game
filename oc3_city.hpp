@@ -212,6 +212,11 @@ public:
     return ret;
   }
 
+  PtrTilesArea getArea( BuildingPtr building )
+  {
+    return _city->getTilemap().getFilledRectangle( building->getTilePos(), building->getSize() );
+  }
+
 protected:
   CityPtr _city;
 };

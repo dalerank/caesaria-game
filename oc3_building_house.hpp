@@ -44,7 +44,8 @@ public:
 
   bool hasServiceAccess(const ServiceType service);
   int getServiceAccess(const ServiceType service);
-  int getFoodLevel();
+  int getFoodLevel() const;
+  int getHealthLevel() const;
   void setServiceAccess(const ServiceType service, const int access);
   char getDesirabilityInfluence() const;
   unsigned char getDesirabilityRange() const;

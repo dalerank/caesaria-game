@@ -405,7 +405,7 @@ float HouseLevelSpec::evaluateEntertainmentNeed(House &house, const ServiceType 
    return (float)next()._d->minEntertainmentLevel;
 }
 
-float HouseLevelSpec::evaluateEducationNeed(House &house, const ServiceType service)
+float HouseLevelSpec::evaluateEducationNeed(House& house, const ServiceType service)
 {
    float res = 0;
    //int houseLevel = house.getLevelSpec().getHouseLevel();
@@ -445,6 +445,7 @@ float HouseLevelSpec::evaluateHealthNeed(House &house, const ServiceType service
       // minLevel>=1  => need baths
       res = (float)( 100 - house.getServiceAccess(service) );
    }
+
    if (minLevel >= 2 && (service == S_DOCTOR || service == S_HOSPITAL))
    {
       if (minLevel == 4)
@@ -458,13 +459,14 @@ float HouseLevelSpec::evaluateHealthNeed(House &house, const ServiceType service
          res = (float)( 100 - std::max(house.getServiceAccess(S_DOCTOR), house.getServiceAccess(S_HOSPITAL)) );
       }
    }
+
    if (minLevel >= 3 && service == S_BARBER)
    {
       // minLevel>=3  => need barber
       res = (float)( 100 - house.getServiceAccess(service) );
    }
 
-   return res;
+   return (std::max<float>)( res, 100 - house.getHealthLevel() );
 }
 
 float HouseLevelSpec::evaluateReligionNeed(House &house, const ServiceType service)
