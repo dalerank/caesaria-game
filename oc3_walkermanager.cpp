@@ -30,9 +30,9 @@ template< class T >
 class WalkerCreator : public AbstractWalkerCreator
 {
 public:
-  WalkerPtr create()
+  virtual WalkerPtr create()
   {
-    return T::create( Scenario::instance().getCity() );
+    return T::create( Scenario::instance().getCity() ).object();
   }
 };
 
@@ -41,7 +41,7 @@ class ServiceWalkerCreator : public AbstractWalkerCreator
 public:
   WalkerPtr create()
   {
-    return ServiceWalker::create( Scenario::instance().getCity(), serviceType );
+    return ServiceWalker::create( Scenario::instance().getCity(), serviceType ).object();
   }
 
   ServiceWalkerCreator( const ServiceType type )

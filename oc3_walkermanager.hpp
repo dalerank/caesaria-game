@@ -26,7 +26,6 @@ public:
   virtual WalkerPtr create() = 0;
 };
 
-
 class WalkerManager
 {
 public:
