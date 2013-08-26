@@ -19,7 +19,7 @@
 #include "oc3_walker_emigrant.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_road.hpp"
-#include "oc3_house.hpp"
+#include "oc3_building_house.hpp"
 #include "oc3_tile.hpp"
 
 class CityServiceEmigrant::Impl

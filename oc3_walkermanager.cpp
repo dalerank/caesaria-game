@@ -67,6 +67,7 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( WT_PREFECT, new WalkerCreator<WalkerPrefect>() );
   addCreator( WT_TAXCOLLECTOR, new WalkerCreator<TaxCollector>() );
   addCreator( WT_ENGINEER, new ServiceWalkerCreator( S_ENGINEER ));
+  addCreator( WT_DOCTOR, new ServiceWalkerCreator( S_DOCTOR ) );
 }
 
 WalkerManager::~WalkerManager()

@@ -40,7 +40,7 @@
 #include "oc3_walkermanager.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_city_build_options.hpp"
-#include "oc3_house.hpp"
+#include "oc3_building_house.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_forum.hpp"
 #include "oc3_building_senate.hpp"

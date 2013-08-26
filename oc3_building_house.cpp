@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#include "oc3_house.hpp"
+#include "oc3_building_house.hpp"
 
 #include "oc3_tile.hpp"
 #include "oc3_house_level.hpp"
@@ -46,6 +46,7 @@ public:
   std::map<ServiceType, int> serviceAccessMap;  // value=access to the service (0=no access, 100=good access)
   int currentHabitants;
   int maxHabitants;
+  float health;
   int freeWorkersCount;
   DateTime lastPayDate;
 
@@ -63,6 +64,7 @@ public:
 House::House(const int houseId) : Building( B_HOUSE ), _d( new Impl )
 {
    _d->houseId = houseId;
+   _d->health = 100;
    _d->lastPayDate = DateTime( -400, 1, 1 );
    _d->picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
    _d->freeWorkersCount = 0;
@@ -603,6 +605,7 @@ void House::save( VariantMap& stream ) const
   stream[ "maxHubitants" ] = _d->maxHabitants;
   stream[ "freeWorkersCount" ] = _d->freeWorkersCount;
   stream[ "goodstore" ] = _d->goodStore.save();
+  stream[ "health" ] = _d->health;
 
   VariantList vl_services;
   for( std::map<ServiceType, int>::iterator it = _d->serviceAccessMap.begin();
@@ -619,17 +622,18 @@ void House::load( const VariantMap& stream )
 {
   Building::load( stream );
 
-  _d->picIdOffset = stream.get( "picIdOffset" ).toInt();
-  _d->houseId = stream.get( "houseId" ).toInt();
-  _d->houseLevel = stream.get( "houseLevel" ).toInt();
+  _d->picIdOffset = (int)stream.get( "picIdOffset" );
+  _d->houseId = (int)stream.get( "houseId" );
+  _d->houseLevel = (int)stream.get( "houseLevel" );
 
   _d->houseLevelSpec = HouseSpecHelper::getInstance().getHouseLevelSpec(_d->houseLevel);
   _d->nextHouseLevelSpec = _d->houseLevelSpec.next();
 
-  _d->desirability = stream.get( "desirability" ).toInt();
-  _d->currentHabitants = stream.get( "currentHubitants" ).toInt();
-  _d->maxHabitants = stream.get( "maxHubitants" ).toInt();
-  _d->freeWorkersCount = stream.get( "freeWorkersCount" ).toInt();
+  _d->health = (float)stream.get( "health" );
+  _d->desirability = (int)stream.get( "desirability" );
+  _d->currentHabitants = (int)stream.get( "currentHubitants" );
+  _d->maxHabitants = (int)stream.get( "maxHubitants" );
+  _d->freeWorkersCount = (int)stream.get( "freeWorkersCount" );
 
   _d->goodStore.load( stream.get( "goodstore" ).toMap() );
 

@@ -17,7 +17,7 @@
 
 #include "oc3_house_level.hpp"
 
-#include "oc3_house.hpp"
+#include "oc3_building_house.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_stringhelper.hpp"

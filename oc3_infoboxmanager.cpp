@@ -24,7 +24,7 @@
 #include "oc3_building_service.hpp"
 #include "oc3_building_engineer_post.hpp"
 #include "oc3_stringhelper.hpp"
-#include "oc3_house.hpp"
+#include "oc3_building_house.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_city.hpp"

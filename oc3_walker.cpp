@@ -551,6 +551,7 @@ public:
     append( WT_PREFECT, "prefect", _("##wt_prefect##") );
     append( WT_TAXCOLLECTOR, "tax_collector", _("##wt_tax_collector##") );
     append( WT_MERCHANT, "merchant", _("##wt_merchant##") );
+    append( WT_ENGINEER, "engineer", _("##wt_engineer##") );
     append( WT_MAX, "unknown", _("##wt_unknown##") );
   }
 };
@@ -605,6 +606,7 @@ Picture WalkerHelper::getBigPicture(WalkerType type)
   case WT_MARKETLADY_HELPER: index=38; break;
   case WT_MERCHANT: index=25; break;
   case WT_PREFECT: index=19; break;
+  case WT_ENGINEER: index=7; break;
   case WT_TAXCOLLECTOR: index=6; break;
   case WT_WORKERS_HUNTER: index=13; break;
 

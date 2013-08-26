@@ -29,7 +29,10 @@ unsigned int Doctor::getWalkerDistance() const
 
 void Doctor::deliverService()
 {
-  ServiceBuilding::deliverService();
+  if( getWorkers() > 0 && getWalkerList().size() == 0 )
+  {
+    ServiceBuilding::deliverService();
+  }
 }
 
 Hospital::Hospital() : ServiceBuilding(S_HOSPITAL, B_HOSPITAL, Size(3 ) )

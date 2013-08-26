@@ -19,6 +19,7 @@
 #include "oc3_city.hpp"
 #include "oc3_path_finding.hpp"
 #include "oc3_name_generator.hpp"
+#include "oc3_stringhelper.hpp"
 
 class ServiceWalker::Impl
 {

@@ -15,7 +15,7 @@
 
 #include "oc3_walker_taxcollector.hpp"
 #include "oc3_city.hpp"
-#include "oc3_house.hpp"
+#include "oc3_building_house.hpp"
 #include "oc3_name_generator.hpp"
 
 class TaxCollector::Impl

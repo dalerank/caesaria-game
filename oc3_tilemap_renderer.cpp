@@ -31,7 +31,7 @@
 #include "oc3_tilemapchangecommand.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_stringhelper.hpp"
-#include "oc3_house.hpp"
+#include "oc3_building_house.hpp"
 #include "oc3_house_level.hpp"
 #include "oc3_building_watersupply.hpp"
 

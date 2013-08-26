@@ -22,7 +22,7 @@
 #include "oc3_building_engineer_post.hpp"
 #include "oc3_building_factory.hpp"
 #include "oc3_building_burningruins.hpp"
-#include "oc3_house.hpp"
+#include "oc3_building_house.hpp"
 #include "oc3_building_senate.hpp"
 #include "oc3_building_prefecture.hpp"
 #include "oc3_road.hpp"
