@@ -609,7 +609,7 @@ FileDir FileDir::getApplicationDir()
   return FilePath(dirname(exe_path));
 #endif
 
-  return FilePath( "" );
+  return FilePath( "." );
 }
 
 } //end namespace io

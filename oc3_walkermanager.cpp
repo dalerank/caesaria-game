@@ -27,16 +27,29 @@
 #include <map>
 
 template< class T >
-class WalkerPtrCreator : public AbstractWalkerCreator
+class WalkerCreator : public AbstractWalkerCreator
 {
 public:
-  T* create()
+  WalkerPtr create()
   {
-    SmartPtr<T> ret = T::create( Scenario::instance().getCity() ); 
-    ret->grab(); //but T::create also drop it, and WalkerManager::create yet call drop
-
-    return ret.object();
+    return T::create( Scenario::instance().getCity() );
   }
+};
+
+class ServiceWalkerCreator : public AbstractWalkerCreator
+{
+public:
+  WalkerPtr create()
+  {
+    return ServiceWalker::create( Scenario::instance().getCity(), serviceType );
+  }
+
+  ServiceWalkerCreator( const ServiceType type )
+  {
+    serviceType = type;
+  }
+
+  ServiceType serviceType;
 };
 
 class WalkerManager::Impl
@@ -48,11 +61,12 @@ public:
 
 WalkerManager::WalkerManager() : _d( new Impl )
 {
-  addCreator( WT_EMIGRANT, new WalkerPtrCreator<Emigrant>() );
-  addCreator( WT_IMMIGRANT, new WalkerPtrCreator<Immigrant>() );
-  addCreator( WT_CART_PUSHER, new WalkerPtrCreator<CartPusher>() );
-  addCreator( WT_PREFECT, new WalkerPtrCreator<WalkerPrefect>() );
-  addCreator( WT_TAXCOLLECTOR, new WalkerPtrCreator<TaxCollector>() );
+  addCreator( WT_EMIGRANT, new WalkerCreator<Emigrant>() );
+  addCreator( WT_IMMIGRANT, new WalkerCreator<Immigrant>() );
+  addCreator( WT_CART_PUSHER, new WalkerCreator<CartPusher>() );
+  addCreator( WT_PREFECT, new WalkerCreator<WalkerPrefect>() );
+  addCreator( WT_TAXCOLLECTOR, new WalkerCreator<TaxCollector>() );
+  addCreator( WT_ENGINEER, new ServiceWalkerCreator( S_ENGINEER ));
 }
 
 WalkerManager::~WalkerManager()
@@ -66,9 +80,7 @@ WalkerPtr WalkerManager::create( const WalkerType walkerType )
 
   if( findConstructor != _d->constructors.end() )
   {
-    WalkerPtr ret( findConstructor->second->create() );
-    ret->drop();
-    return ret;
+    return findConstructor->second->create().as<Walker>();
   }
 
   StringHelper::debug( 0xff, "Can't create walker from type %d", walkerType );

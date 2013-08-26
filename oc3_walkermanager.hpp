@@ -23,17 +23,9 @@
 class AbstractWalkerCreator
 {
 public:
-  virtual Walker* create() = 0;
+  virtual WalkerPtr create() = 0;
 };
 
-template< class T > class WalkerCreator : public AbstractWalkerCreator
-{
-public:
-  Walker* create() 
-  {
-    return new T(); 
-  }
-};
 
 class WalkerManager
 {

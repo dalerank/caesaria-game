@@ -56,6 +56,7 @@ void ServiceWalker::init(const ServiceType service)
   
   case S_ENGINEER:
      _setGraphic( WG_ENGINEER );
+     _setType( WT_ENGINEER );
   break;
 
   case S_TEMPLE_NEPTUNE:
@@ -69,6 +70,7 @@ void ServiceWalker::init(const ServiceType service)
   case S_DOCTOR:
   case S_HOSPITAL:
     _setGraphic( WG_DOCTOR );
+    _setType( WT_DOCTOR );
   break;
   
   case S_BARBER:

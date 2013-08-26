@@ -81,7 +81,7 @@ GuiInfoBox::GuiInfoBox( Widget* parent, const Rect& rect, int id )
 }
 
 GuiInfoBox::~GuiInfoBox()
-{  
+{
 }
 
 void GuiInfoBox::draw( GfxEngine& engine )
@@ -207,6 +207,10 @@ InfoBoxSenate::InfoBoxSenate( Widget* parent, const Tile& tile )
   paint(); 
 }
 
+InfoBoxSenate::~InfoBoxSenate()
+{
+}
+
 void InfoBoxSenate::paint()
 {
   PictureDecorator::draw( *_d->bgPicture, Rect( Point( 16, 136 ), Size( getWidth() - 32, 62 ) ), PictureDecorator::blackFrame );
@@ -252,6 +256,9 @@ InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
   _paint();
 }
 
+InfoBoxHouse::~InfoBoxHouse()
+{
+}
 
 void InfoBoxHouse::_paint()
 {
@@ -474,6 +481,10 @@ GuiInfoGranary::GuiInfoGranary( Widget* parent, const Tile& tile )
   paint();
 }
 
+GuiInfoGranary::~GuiInfoGranary()
+{
+}
+
 
 void GuiInfoGranary::showSpecialOrdersWindow()
 {
@@ -567,6 +578,10 @@ InfoBoxWarehouse::InfoBoxWarehouse( Widget* parent, const Tile& tile )
   setTitle( BuildingDataHolder::instance().getData( _wd->building->getType()).getPrettyName() );
 
   paint();
+}
+
+InfoBoxWarehouse::~InfoBoxWarehouse()
+{
 }
 
 void InfoBoxWarehouse::showSpecialOrdersWindow()
@@ -675,6 +690,10 @@ InfoBoxTemple::InfoBoxTemple( Widget* parent, const Tile& tile )
   drawPicture();
 }
 
+InfoBoxTemple::~InfoBoxTemple()
+{
+}
+
 void InfoBoxTemple::drawWorkers()
 {
   int y = 56;
@@ -718,6 +737,9 @@ GuiInfoMarket::GuiInfoMarket( Widget* parent, const Tile& tile )
    paint();
 }
 
+GuiInfoMarket::~GuiInfoMarket()
+{
+}
 
 void GuiInfoMarket::paint()
 {
@@ -1009,6 +1031,10 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
   setTitle( name );
 
   _fd->updateAboutText();
+}
+
+InfoBoxRawMaterial::~InfoBoxRawMaterial()
+{
 }
 
 class InfoBoxBasic::Impl
