@@ -296,7 +296,18 @@ void ServiceWalker::load( const VariantMap& stream )
   LandOverlayPtr overlay = _d->city->getTilemap().at( basePos ).getTerrain().getOverlay();
 
   _d->base = overlay.as<Building>();
-  _OC3_DEBUG_BREAK_IF( _d->base.isNull() && "Not found base building for service walker" );
+  if( _d->base.isNull() )
+  {
+    StringHelper::debug(  0xff, "Not found base building[%d,%d] for service walker", basePos.getI(), basePos.getJ() );
+  }
+  else
+  {
+    WorkingBuildingPtr wrk = _d->base.as<WorkingBuilding>();
+    if( wrk.isValid() )
+    {
+      wrk->addWalker( this );
+    }
+  }
 }
 
 void ServiceWalker::setMaxDistance( const int distance )
