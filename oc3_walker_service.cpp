@@ -18,6 +18,8 @@
 #include "oc3_variant.hpp"
 #include "oc3_city.hpp"
 #include "oc3_path_finding.hpp"
+#include "oc3_name_generator.hpp"
+#include "oc3_stringhelper.hpp"
 
 class ServiceWalker::Impl
 {
@@ -31,8 +33,8 @@ public:
 ServiceWalker::ServiceWalker( CityPtr city, const ServiceType service) 
 : _d( new Impl )
 {
-  _walkerType = WT_SERVICE;
-  _walkerGraphic = WG_NONE;
+  _setType( WT_SERVICE );
+  _setGraphic( WG_NONE );
   _d->maxDistance = 5;  // TODO: _building.getMaxDistance() ?
   _d->service = service;
   _d->city = city;
@@ -43,17 +45,19 @@ ServiceWalker::ServiceWalker( CityPtr city, const ServiceType service)
 void ServiceWalker::init(const ServiceType service)
 {
   _d->service = service;
+  NameGenerator::NameType nameType = NameGenerator::male;
 
   switch (_d->service)
   {
   case S_WELL:
   case S_FOUNTAIN:
   case S_TEMPLE_ORACLE:
-    _walkerGraphic = WG_NONE;
+    _setGraphic( WG_NONE );
   break;
   
   case S_ENGINEER:
-    _walkerGraphic = WG_ENGINEER;
+     _setGraphic( WG_ENGINEER );
+     _setType( WT_ENGINEER );
   break;
 
   case S_TEMPLE_NEPTUNE:
@@ -61,50 +65,54 @@ void ServiceWalker::init(const ServiceType service)
   case S_TEMPLE_VENUS:
   case S_TEMPLE_MARS:
   case S_TEMPLE_MERCURE:
-    _walkerGraphic = WG_PRIEST;
+    _setGraphic( WG_PRIEST );
   break;
   
   case S_DOCTOR:
   case S_HOSPITAL:
-    _walkerGraphic = WG_DOCTOR;
+    _setGraphic( WG_DOCTOR );
+    _setType( WT_DOCTOR );
   break;
   
   case S_BARBER:
-    _walkerGraphic = WG_BARBER;
+    _setGraphic( WG_BARBER );
   break;
   
   case S_BATHS:
-    _walkerGraphic = WG_BATH;
+    _setGraphic( WG_BATH );
   break;
   
   case S_SCHOOL:
-    _walkerGraphic = WG_CHILD;
+    _setGraphic( WG_CHILD );
   break;
   
   case S_LIBRARY:
   case S_COLLEGE:
-    _walkerGraphic = WG_LIBRARIAN;
+    _setGraphic( WG_LIBRARIAN );
   break;
   
   case S_THEATER:
   case S_AMPHITHEATER:
   case S_HIPPODROME:
   case S_COLLOSSEUM:
-    _walkerGraphic = WG_ACTOR;
+    _setGraphic( WG_ACTOR );
   break;
   
   case S_MARKET:
-    _walkerGraphic = WG_MARKETLADY;
+    _setGraphic( WG_MARKETLADY );
+    nameType = NameGenerator::female;
   break;
 
   case S_FORUM:
   case S_SENATE:
-    _walkerGraphic = WG_TAX;
+    _setGraphic( WG_TAX );
   break;
 
   default:
   break;
   }
+
+  setName( NameGenerator::rand( nameType ));
 }
 
 BuildingPtr ServiceWalker::getBase() const
@@ -259,7 +267,7 @@ void ServiceWalker::onDestination()
   if (_getPathway().isReverse())
   {
     // walker is back in the market
-    _isDeleted= true;
+    deleteLater();
   }
   else
   {
@@ -289,7 +297,18 @@ void ServiceWalker::load( const VariantMap& stream )
   LandOverlayPtr overlay = _d->city->getTilemap().at( basePos ).getTerrain().getOverlay();
 
   _d->base = overlay.as<Building>();
-  _OC3_DEBUG_BREAK_IF( _d->base.isNull() && "Not found base building for service walker" );
+  if( _d->base.isNull() )
+  {
+    StringHelper::debug(  0xff, "Not found base building[%d,%d] for service walker", basePos.getI(), basePos.getJ() );
+  }
+  else
+  {
+    WorkingBuildingPtr wrk = _d->base.as<WorkingBuilding>();
+    if( wrk.isValid() )
+    {
+      wrk->addWalker( this );
+    }
+  }
 }
 
 void ServiceWalker::setMaxDistance( const int distance )

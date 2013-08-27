@@ -53,29 +53,30 @@ WarehouseTile::WarehouseTile( const TilePos& pos )
 void WarehouseTile::computePicture()
 {
   int picIdx = 0;
-  switch (_stock._goodType)
+  switch (_stock.type() )
   {
-  case G_NONE: picIdx = 19; break;
-  case G_WHEAT: picIdx = 20; break;
-  case G_VEGETABLE: picIdx = 24; break;
-  case G_FRUIT: picIdx = 28; break;
-  case G_OLIVE: picIdx = 32; break;
-  case G_GRAPE: picIdx = 36; break;
-  case G_MEAT: picIdx = 40; break;
-  case G_WINE: picIdx = 44; break;
-  case G_OIL: picIdx = 48; break;
-  case G_IRON: picIdx = 52; break;
-  case G_TIMBER: picIdx = 56; break;
-  case G_CLAY: picIdx = 60; break;
-  case G_MARBLE: picIdx = 64; break;
-  case G_WEAPON: picIdx = 68; break;
-  case G_FURNITURE: picIdx = 72; break;
-  case G_POTTERY: picIdx = 76; break;
-  case G_FISH: picIdx = 80; break;
+  case Good::G_NONE: picIdx = 19; break;
+  case Good::G_WHEAT: picIdx = 20; break;
+  case Good::G_VEGETABLE: picIdx = 24; break;
+  case Good::G_FRUIT: picIdx = 28; break;
+  case Good::G_OLIVE: picIdx = 32; break;
+  case Good::G_GRAPE: picIdx = 36; break;
+  case Good::G_MEAT: picIdx = 40; break;
+  case Good::G_WINE: picIdx = 44; break;
+  case Good::G_OIL: picIdx = 48; break;
+  case Good::G_IRON: picIdx = 52; break;
+  case Good::G_TIMBER: picIdx = 56; break;
+  case Good::G_CLAY: picIdx = 60; break;
+  case Good::G_MARBLE: picIdx = 64; break;
+  case Good::G_WEAPON: picIdx = 68; break;
+  case Good::G_FURNITURE: picIdx = 72; break;
+  case Good::G_POTTERY: picIdx = 76; break;
+  case Good::G_FISH: picIdx = 80; break;
   default:
-    _OC3_DEBUG_BREAK_IF( _stock._goodType && "Unexpected good type: " );
+      _OC3_DEBUG_BREAK_IF( "Unexpected good type: " );
   }
-  if (_stock._goodType != G_NONE)
+
+  if (_stock.type() != Good::G_NONE)
   {
     picIdx += _stock._currentQty/100 -1;
   }
@@ -95,13 +96,13 @@ public:
 
   void init(Warehouse &_warehouse);
 
-  virtual int getCurrentQty(const GoodType &goodType) const;
+  virtual int getCurrentQty(const Good::Type &goodType) const;
   virtual int getCurrentQty() const;
   virtual int getMaxQty() const;
-  virtual int getMaxQty(const GoodType& goodType ) const;
+  virtual int getMaxQty(const Good::Type& goodType ) const;
 
   // returns the max quantity that can be stored now
-  virtual int getMaxStore(const GoodType goodType);
+  virtual int getMaxStore(const Good::Type goodType);
 
   // store/retrieve
   virtual void applyStorageReservation(GoodStock &stock, const long reservationID);
@@ -124,9 +125,9 @@ WarehouseStore::WarehouseStore()
 {
   _warehouse = NULL;
 
-  for( int goodType=G_WHEAT; goodType <= G_MARBLE; goodType++ )
+  for( int goodType=Good::G_WHEAT; goodType <= Good::G_MARBLE; goodType++ )
   {
-    setOrder( (GoodType)goodType, GoodOrders::accept );
+    setOrder( (Good::Type)goodType, GoodOrders::accept );
   }
 }
 
@@ -136,14 +137,14 @@ void WarehouseStore::init(Warehouse &warehouse)
   _warehouse = &warehouse;
 }
 
-int WarehouseStore::getCurrentQty(const GoodType &goodType) const
+int WarehouseStore::getCurrentQty(const Good::Type &goodType) const
 {
   int amount = 0;
 
   for( Warehouse::Impl::WhTiles::iterator subTilesIt=_warehouse->_d->subTiles.begin(); 
     subTilesIt!=_warehouse->_d->subTiles.end(); ++subTilesIt)
   {
-    if ( (*subTilesIt)._stock._goodType == goodType)
+    if ( (*subTilesIt)._stock.type() == goodType)
     {
       amount += (*subTilesIt)._stock._currentQty;
     }
@@ -168,7 +169,7 @@ int WarehouseStore::getCurrentQty() const
   return amount;
 }
 
-int WarehouseStore::getMaxStore(const GoodType goodType)
+int WarehouseStore::getMaxStore(const Good::Type goodType)
 {
   if( getOrder( goodType ) == GoodOrders::reject || isDevastation() || _warehouse->getWorkers() == 0 )
   { 
@@ -176,12 +177,12 @@ int WarehouseStore::getMaxStore(const GoodType goodType)
   }
 
   // compute the quantity of each goodType in the warehouse, taking in account all reservations
-  std::map<GoodType, int> stockList;
+  std::map<Good::Type, int> stockList;
 
   // init the map
-  for (int i = G_NONE; i != G_MAX; ++i)
+  for (int i = Good::G_NONE; i != Good::G_MAX; ++i)
   {
-    GoodType goodType = (GoodType) i;
+    Good::Type goodType = (Good::Type) i;
     stockList[goodType] = 0;
   }
   // put current stock in the map
@@ -190,7 +191,7 @@ int WarehouseStore::getMaxStore(const GoodType goodType)
   {
     WarehouseTile &subTile = *subTilesIt;
     GoodStock &subTileStock = subTile._stock;
-    stockList[subTileStock._goodType] += subTileStock._currentQty;
+    stockList[subTileStock.type()] += subTileStock._currentQty;
   }
 
   // add reservations
@@ -198,14 +199,14 @@ int WarehouseStore::getMaxStore(const GoodType goodType)
     reservationIt != _getStoreReservations().end(); ++reservationIt)
   {
     GoodStock &reservationStock = reservationIt->second;
-    stockList[reservationStock._goodType] += reservationStock._currentQty;
+    stockList[reservationStock.type()] += reservationStock._currentQty;
   }
 
   // compute number of free tiles
   int nbFreeTiles = _warehouse->_d->subTiles.size();
-  for (std::map<GoodType, int>::iterator stockListIt=stockList.begin(); stockListIt!=stockList.end(); ++stockListIt)
+  for (std::map<Good::Type, int>::iterator stockListIt=stockList.begin(); stockListIt!=stockList.end(); ++stockListIt)
   {
-    GoodType otherGoodType = stockListIt->first;
+    Good::Type otherGoodType = stockListIt->first;
     if (otherGoodType == goodType)
     {
       // don't count this goodType
@@ -228,7 +229,7 @@ void WarehouseStore::applyStorageReservation(GoodStock &stock, const long reserv
 {
   GoodStock reservedStock = getStorageReservation(reservationID, true);
 
-  if (stock._goodType != reservedStock._goodType)
+  if (stock.type() != reservedStock.type())
   {
     _OC3_DEBUG_BREAK_IF( "GoodType does not match reservation" );
     return;
@@ -254,7 +255,7 @@ void WarehouseStore::applyStorageReservation(GoodStock &stock, const long reserv
     }
 
     WarehouseTile &subTile = *subTilesIt;
-    if (subTile._stock._goodType == stock._goodType && subTile._stock._currentQty < subTile._stock._maxQty)
+    if (subTile._stock.type() == stock.type() && subTile._stock._currentQty < subTile._stock._maxQty)
     {
       int tileAmount = std::min(amount, subTile._stock._maxQty - subTile._stock._currentQty);
       // std::cout << "put in half filled" << std::endl;
@@ -273,7 +274,7 @@ void WarehouseStore::applyStorageReservation(GoodStock &stock, const long reserv
     }
 
     WarehouseTile& subTile = *subTilesIt;
-    if (subTile._stock._goodType == G_NONE)
+    if (subTile._stock.type() == Good::G_NONE)
     {
       int tileAmount = std::min(amount, subTile._stock._maxQty);
       // std::cout << "put in empty tile" << std::endl;
@@ -290,7 +291,7 @@ void WarehouseStore::applyRetrieveReservation(GoodStock &stock, const long reser
 {
   GoodStock reservedStock = getRetrieveReservation(reservationID, true);
 
-  if (stock._goodType != reservedStock._goodType)
+  if (stock.type() != reservedStock.type())
   {
     _OC3_DEBUG_BREAK_IF("GoodType does not match reservation");
     return;
@@ -314,7 +315,7 @@ void WarehouseStore::applyRetrieveReservation(GoodStock &stock, const long reser
     }
 
     WarehouseTile &subTile = *subTilesIt;
-    if( subTile._stock._goodType == stock._goodType && subTile._stock._currentQty < subTile._stock._maxQty)
+    if( subTile._stock.type() == stock.type() && subTile._stock._currentQty < subTile._stock._maxQty)
     {
       int tileAmount = std::min(amount, subTile._stock._currentQty);
       // std::cout << "retrieve from half filled" << std::endl;
@@ -333,7 +334,7 @@ void WarehouseStore::applyRetrieveReservation(GoodStock &stock, const long reser
     }
 
     WarehouseTile& subTile = *subTilesIt;
-    if (subTile._stock._goodType == stock._goodType)
+    if (subTile._stock.type() == stock.type())
     {
       int tileAmount = std::min(amount, subTile._stock._currentQty);
       // std::cout << "retrieve from filled" << std::endl;
@@ -350,7 +351,7 @@ int WarehouseStore::getMaxQty() const
   return 400 * _warehouse->_d->subTiles.size();
 }
 
-int WarehouseStore::getMaxQty( const GoodType& goodType ) const
+int WarehouseStore::getMaxQty( const Good::Type& goodType ) const
 {
   return getMaxQty();
 }
@@ -462,20 +463,20 @@ void Warehouse::_resolveDevastationMode()
   //if warehouse in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
   if( (_d->goodStore.getCurrentQty() > 0) && getWalkerList().empty() )
   {
-    for( int goodType=G_WHEAT; goodType <= G_VEGETABLE; goodType++ )
+    for( int goodType=Good::G_WHEAT; goodType <= Good::G_VEGETABLE; goodType++ )
     {
       //int goodQtyMax = _d->goodStore.getCurrentQty( (GoodType)goodType );
       int goodQty = math::clamp( goodQty, 0, 400);
 
       if( goodQty > 0 )
       {
-        GoodStock stock( (GoodType)goodType, goodQty, goodQty);
+        GoodStock stock( (Good::Type)goodType, goodQty, goodQty);
         CartPusherPtr walker = CartPusher::create( Scenario::instance().getCity() );
         walker->send2City( BuildingPtr( this ), stock );
 
         if( !walker->isDeleted() )
         {
-          GoodStock tmpStock( (GoodType)goodType, goodQty );;
+          GoodStock tmpStock( (Good::Type)goodType, goodQty );;
           _d->goodStore.retrieve( tmpStock, goodQty );
           addWalker( walker.as<Walker>() );
         }

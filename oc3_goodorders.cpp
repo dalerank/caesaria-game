@@ -19,7 +19,7 @@
 class GoodOrders::Impl
 {
 public:
-  typedef std::map< GoodType, Order > Orders;
+  typedef std::map< Good::Type, Order > Orders;
   Orders orders;
 };
 
@@ -44,12 +44,12 @@ void GoodOrders::set( Order rule )
   }
 }
 
-void GoodOrders::set( const GoodType type, Order rule )
+void GoodOrders::set(const Good::Type type, Order rule )
 {
   _d->orders[ type ] = rule;  
 }
 
-GoodOrders::Order GoodOrders::get( const GoodType type )
+GoodOrders::Order GoodOrders::get( const Good::Type type )
 {
   Impl::Orders::iterator it = _d->orders.find( type );
   return it != _d->orders.end() ? (*it).second : GoodOrders::none;

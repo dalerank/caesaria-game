@@ -19,54 +19,55 @@
 #include "oc3_variant.hpp"
 #include "oc3_path_finding.hpp"
 #include "oc3_city.hpp"
+#include "oc3_name_generator.hpp"
 
-TraineeWalker::TraineeWalker(const WalkerTraineeType traineeType)
+TraineeWalker::TraineeWalker(const WalkerType traineeType)
 {
-  _walkerType = WT_TRAINEE;
+  _setType( traineeType );
   _originBuilding = NULL;
   _destinationBuilding = NULL;
   _maxDistance = 30;
 
-  init(traineeType);
+  init( traineeType );
 }
 
-void TraineeWalker::init(const WalkerTraineeType traineeType)
+void TraineeWalker::init(const WalkerType traineeType)
 {
-  _traineeType = traineeType;
-
-  switch (_traineeType)
+  switch (traineeType)
   {
-  case WTT_ACTOR:
-    _walkerGraphic = WG_ACTOR;
+  case WT_ACTOR:
+    _setGraphic( WG_ACTOR );
     _buildingNeed.push_back(B_THEATER);
     _buildingNeed.push_back(B_AMPHITHEATER);
-    break;
-  case WTT_GLADIATOR:
-    _walkerGraphic = WG_GLADIATOR;
+  break;
+
+  case WT_GLADIATOR:
+    _setGraphic( WG_GLADIATOR );
     _buildingNeed.push_back(B_AMPHITHEATER);
     _buildingNeed.push_back(B_COLLOSSEUM);
-    break;
-  case WTT_TAMER:
-    _walkerGraphic = WG_TAMER;
+  break;
+
+  case WT_TAMER:
+    _setGraphic( WG_TAMER );
     _buildingNeed.push_back(B_COLLOSSEUM);
-    break;
-  case WTT_CHARIOT:
-    _walkerGraphic = WG_NONE;  // TODO
-    break;
-  case WTT_NONE:
-  case WTT_MAX:
+  break;
+
+  case WT_CHARIOT:
+    _setGraphic( WG_NONE );  // TODO
+  break;
+
+  default:
+  case WT_NONE:
+  case WT_MAX:
     break;
   }
+
+  setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
 void TraineeWalker::setOriginBuilding(Building &originBuilding)
 {
   _originBuilding = &originBuilding;
-}
-
-int TraineeWalker::getType() const
-{
-  return _traineeType;
 }
 
 void TraineeWalker::computeWalkerPath()
@@ -112,7 +113,7 @@ void TraineeWalker::checkDestination(const BuildingType buildingType, Propagator
     // for every building within range
     BuildingPtr building = pathWayIt->first;
 
-    float need = building->evaluateTrainee(_traineeType);
+    float need = building->evaluateTrainee( (WalkerType)getType() );
     if (need > _maxNeed)
     {
       _maxNeed = need;
@@ -128,7 +129,7 @@ void TraineeWalker::send2City()
 
   if( !isDeleted() )
   {
-    _destinationBuilding->reserveTrainee(_traineeType);
+    _destinationBuilding->reserveTrainee( (WalkerType)getType() );
     _city->addWalker( WalkerPtr( this ) );
   }
 }
@@ -136,34 +137,31 @@ void TraineeWalker::send2City()
 void TraineeWalker::onDestination()
 {
   Walker::onDestination();
-  _isDeleted= true;
-  _destinationBuilding->applyTrainee(_traineeType);
+  deleteLater();
+  _destinationBuilding->applyTrainee( (WalkerType)getType() );
 }
 
 void TraineeWalker::save( VariantMap& stream ) const
 {
   Walker::save( stream );
-  stream[ "traineeType" ] = (int)_traineeType;
-  stream[ "originBldI" ] = _originBuilding->getTile().getI();
-  stream[ "originBldJ" ] = _originBuilding->getTile().getJ();
-  stream[ "destBldI" ] = _destinationBuilding->getTile().getI();
-  stream[ "destBldJ" ] = _destinationBuilding->getTile().getJ();
+  stream[ "originBldPos" ] = _originBuilding->getTile().getIJ();
+  stream[ "destBldPos" ] = _destinationBuilding->getTile().getIJ();
   stream[ "maxDistance" ] = _maxDistance;
 }
 
 void TraineeWalker::load( const VariantMap& stream )
 {
-//   Walker::unserialize(stream);
-//   _traineeType = (WalkerTraineeType) stream.read_int(1, 0, WTT_MAX);
-//   init(_traineeType);
-// 
-//   stream.read_objectID( (void**)_originBuilding.object() );
-//   stream.read_objectID( (void**)_destinationBuilding.object() );
-// 
-//   _maxDistance = stream.read_int(2, 0, 65535);
+  Walker::load(stream);
+
+  init( (WalkerType)getType() );
+
+  CityHelper helper( _city );
+  _originBuilding = helper.getBuilding<Building>( stream.get( "originBldPos" ).toTilePos() );
+  _destinationBuilding = helper.getBuilding<Building>( stream.get( "destBldPos" ).toTilePos() );
+  _maxDistance = (int)stream.get( "maxDistance" );
 }
 
-TraineeWalkerPtr TraineeWalker::create( CityPtr city, const WalkerTraineeType traineeType )
+TraineeWalkerPtr TraineeWalker::create(CityPtr city, const WalkerType traineeType )
 {
   TraineeWalkerPtr ret( new TraineeWalker( traineeType ) );
   ret->_city = city;

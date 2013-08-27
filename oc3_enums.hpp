@@ -67,24 +67,12 @@ enum WalkerType
   WT_MARKETLADY, WT_MARKETLADY_HELPER,
   WT_SERVICE,                     //unknown service
   WT_TRAINEE, WT_WORKERS_HUNTER,
-  WT_PREFECT, WT_TAXCOLLECTOR,
+  WT_PREFECT, WT_TAXCOLLECTOR, WT_ENGINEER,
+  WT_DOCTOR,
   WT_MERCHANT,
+  WT_ACTOR, WT_GLADIATOR, WT_TAMER, WT_CHARIOT,
   WT_MAX, WT_ALL=WT_MAX 
 };
-
-enum GoodType 
-{ 
-  G_NONE, 
-  G_WHEAT, 
-  G_FISH, 
-  G_MEAT, 
-  G_FRUIT, G_VEGETABLE, G_OLIVE, G_OIL, G_GRAPE, G_WINE,
-  G_TIMBER, G_FURNITURE, G_CLAY, G_POTTERY, G_IRON, G_WEAPON, G_MARBLE, 
-  G_DENARIES,
-  G_MAX 
-};
-
-enum CartTypes {G_EMIGRANT_CART1 = G_MAX, G_ENIGRANT_CART2, CT_MAX };
   
 enum ServiceType 
 { 
@@ -107,12 +95,7 @@ enum WaterService { WTR_WELL=0, WTR_FONTAIN, WTR_RESERVOIR, WTR_COUNT };
 
 enum ClimateType { C_CENTRAL, C_NORTHERN, C_DESERT, C_MAX };
 
-// Climate types changes:
-// farms productivity, fire rates, fountain radius
-
 enum ScreenType { SCREEN_NONE, SCREEN_MENU, SCREEN_GAME, SCREEN_QUIT, SCREEN_MAX };
-
-enum WalkerTraineeType { WTT_NONE, WTT_ACTOR, WTT_GLADIATOR, WTT_TAMER, WTT_CHARIOT, WTT_MAX };
 
 enum BuildingType
 {
@@ -137,7 +120,7 @@ enum BuildingType
    B_TEMPLE_ORACLE, // religion: others
    B_NATIVE_HUT, B_NATIVE_CENTER, B_NATIVE_FIELD, // building of natives
    B_TRIUMPHAL_ARCH, 
-   B_BURNING_RUINS, B_BURNED_RUINS, B_COLLAPSED_RUINS,
+   B_BURNING_RUINS, B_BURNED_RUINS, B_COLLAPSED_RUINS, B_PLAGUE_RUINS,
    B_FORUM_2, B_SENATE_2,
    B_MAX
 };
@@ -227,9 +210,10 @@ enum BuildMenuType
 
 enum DisasterType
 {
-    DSTR_BURN,
-    DSTR_COLLAPSE,
-    DSTR_COUNT
+  DSTR_BURN,
+  DSTR_COLLAPSE,
+  DSTR_PLAGUE,
+  DSTR_COUNT
 };
 
 enum AdvisorType
@@ -248,13 +232,5 @@ enum AdvisorType
   ADV_MAIN,
   ADV_COUNT
 };
-
-template<class T>
-struct TypeEquale
-{
-  T type; 
-  std::string name;
-};
-
 
 #endif  //_OPENCAESAR3_ENUMS_INCLUDE_H_

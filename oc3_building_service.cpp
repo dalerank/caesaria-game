@@ -146,15 +146,15 @@ EntertainmentBuilding::EntertainmentBuilding(const ServiceType service,
    switch (service)
    {
    case S_THEATER:
-      _traineeMap[WTT_ACTOR] = 0;
+      _traineeMap[WT_ACTOR] = 0;
       break;
    case S_AMPHITHEATER:
-      _traineeMap[WTT_ACTOR] = 0;
-      _traineeMap[WTT_GLADIATOR] = 0;
+      _traineeMap[WT_ACTOR] = 0;
+      _traineeMap[WT_GLADIATOR] = 0;
       break;
    case S_COLLOSSEUM:
-      _traineeMap[WTT_GLADIATOR] = 0;
-      _traineeMap[WTT_TAMER] = 0;
+      _traineeMap[WT_GLADIATOR] = 0;
+      _traineeMap[WT_TAMER] = 0;
       break;
    default:
       break;
@@ -165,7 +165,7 @@ void EntertainmentBuilding::deliverService()
 {
    // we need all trainees types for the show
    int minLevel = 100;
-   for (std::map<WalkerTraineeType, int>::iterator itLevel = _traineeMap.begin(); itLevel != _traineeMap.end(); ++itLevel)
+   for (std::map<WalkerType, int>::iterator itLevel = _traineeMap.begin(); itLevel != _traineeMap.end(); ++itLevel)
    {
       minLevel = std::min(minLevel, itLevel->second);
    }
@@ -173,7 +173,7 @@ void EntertainmentBuilding::deliverService()
    if (minLevel > 10)
    {
       // all trainees are there for the show!
-      for (std::map<WalkerTraineeType, int>::iterator itLevel = _traineeMap.begin(); itLevel != _traineeMap.end(); ++itLevel)
+      for (std::map<WalkerType, int>::iterator itLevel = _traineeMap.begin(); itLevel != _traineeMap.end(); ++itLevel)
       {
          itLevel->second = itLevel->second - 10;
       }
@@ -190,11 +190,11 @@ Theater::Theater() : EntertainmentBuilding(S_THEATER, B_THEATER, Size(2))
 {
   setPicture( Picture::load( "entertainment", 13));
 
-   _getAnimation().load("entertainment", 14, 21);
-   _getAnimation().setOffset( Point( 60, 36 ) );
+  _getAnimation().load("entertainment", 14, 21);
+  _getAnimation().setOffset( Point( 60, 36 ) );
   
-   _fgPictures.resize(2);
-   _fgPictures[0] = Picture::load("entertainment", 35);
+  _fgPictures.resize(2);
+  _fgPictures[0] = Picture::load("entertainment", 35);
 }
 
 int Theater::getVisitorsNumber() const
@@ -227,7 +227,6 @@ BuildingCollosseum::BuildingCollosseum() : EntertainmentBuilding(S_COLLOSSEUM, B
 BuildingHippodrome::BuildingHippodrome() : EntertainmentBuilding(S_HIPPODROME, B_HIPPODROME, Size(5) )
 {
   setPicture( Picture::load("circus", 5));
-  getPicture().setOffset(0,106);
   Picture logo = Picture::load("circus", 3);
   Picture logo1 = Picture::load("circus", 1);
   logo.setOffset(150,181);

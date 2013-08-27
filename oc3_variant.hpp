@@ -256,6 +256,8 @@ class VariantList : public std::list<Variant>
 public:
 };
 
+StringArray& operator<<(StringArray& strlist, const VariantList& vars );
+
 class VariantMap : public std::map<std::string, Variant>
 {
 public:

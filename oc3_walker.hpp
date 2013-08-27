@@ -69,6 +69,11 @@ public:
 
    DirectionType getDirection();
 
+   void setName( const std::string& name );
+   const std::string& getName() const;
+
+   std::string getThinks() const;
+
    void save( VariantMap& stream) const;
    void load( const VariantMap& stream);
 
@@ -84,14 +89,12 @@ public:
    void deleteLater();
 
 protected:
-   WalkerType _walkerType;
-   WalkerGraphicType _walkerGraphic;
-   bool _isDeleted;
-
    PathWay& _getPathway();
    Animation& _getAnimation();
    void _setAction( WalkerActionType );
    void _setDirection( DirectionType );
+   void _setGraphic( WalkerGraphicType type );
+   void _setType( WalkerType type );
 
 private:
    /* useful method for subtile movement computation
@@ -102,12 +105,12 @@ private:
       newTile = return true if we are now on a new tile
       midTile = return true if we got above the treshold
     */
-   void inc(int &ioSI, int &ioI, int &ioAmount, const int iMidPos, bool &oNewTile, bool &oMidTile);
-   void dec(int &ioSI, int &ioI, int &ioAmount, const int iMidPos, bool &oNewTile, bool &oMidTile);
+  void inc(int &ioSI, int &ioI, int &ioAmount, const int iMidPos, bool &oNewTile, bool &oMidTile);
+  void dec(int &ioSI, int &ioI, int &ioAmount, const int iMidPos, bool &oNewTile, bool &oMidTile);
 
 private:   
-   class Impl;
-   ScopedPtr< Impl > _d;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 /** Soldier, friend or enemy */
@@ -119,4 +122,23 @@ private:
 
 };
 
+class WalkerHelper
+{
+public:
+  static WalkerHelper& instance();
+
+  static std::string getName( WalkerType type );
+  static WalkerType getType( const std::string& name );
+
+  static std::string getPrettyTypeName( WalkerType type );
+
+  static Picture getBigPicture( WalkerType type );
+
+  virtual ~WalkerHelper();
+private:
+  WalkerHelper();
+
+  class Impl;
+  ScopedPtr< Impl > _d;
+};
 #endif

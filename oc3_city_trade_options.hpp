@@ -29,24 +29,24 @@ public:
   CityTradeOptions();
   ~CityTradeOptions();
 
-  int getExportLimit( GoodType type ) const;
-  void setExportLimit( GoodType type, int qty );
+  int getExportLimit( Good::Type type ) const;
+  void setExportLimit( Good::Type type, int qty );
   
-  void setStackMode( GoodType type, bool stackGoods );
-  bool isGoodsStacking( GoodType type );
+  void setStackMode( Good::Type type, bool stackGoods );
+  bool isGoodsStacking( Good::Type type );
 
-  unsigned int getSellPrice( GoodType type ) const;
-  void setSellPrice( GoodType type, unsigned int price );
+  unsigned int getSellPrice( Good::Type type ) const;
+  void setSellPrice( Good::Type type, unsigned int price );
 
-  bool isVendor( GoodType type ) const;
-  void setVendor( GoodType type, bool available );
+  bool isVendor( Good::Type type ) const;
+  void setVendor( Good::Type type, bool available );
 
-  unsigned int getBuyPrice( GoodType type ) const;
-  void setBuyPrice( GoodType type, unsigned int price );
+  unsigned int getBuyPrice( Good::Type type ) const;
+  void setBuyPrice( Good::Type type, unsigned int price );
 
-  Order getOrder( GoodType type ) const;
-  void setOrder( GoodType type, Order order );
-  Order switchOrder( GoodType type );
+  Order getOrder( Good::Type type ) const;
+  void setOrder( Good::Type type, Order order );
+  Order switchOrder( Good::Type type );
 
   VariantMap save() const;
   void load( const VariantMap& stream );

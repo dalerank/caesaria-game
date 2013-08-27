@@ -24,8 +24,8 @@ Emigrant::Emigrant( CityPtr city ) : Immigrant( city )
 {
   setCapacity( defaultPeoples );
 
-  _walkerType = WT_EMIGRANT;
-  _walkerGraphic = WG_PUSHER2;
+  _setType( WT_EMIGRANT );
+  _setGraphic( WG_PUSHER2 );
 }
 
 const Picture& Emigrant::getCartPicture()

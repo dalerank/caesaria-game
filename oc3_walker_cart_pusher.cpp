@@ -30,6 +30,7 @@
 #include "oc3_picture_bank.hpp"
 #include "oc3_building_factory.hpp"
 #include "oc3_goodstore.hpp"
+#include "oc3_name_generator.hpp"
 
 class CartPusher::Impl
 {
@@ -49,13 +50,15 @@ public:
 
 CartPusher::CartPusher( CityPtr city ) : _d( new Impl )
 {
-   _walkerGraphic = WG_PUSHER;
-   _walkerType = WT_CART_PUSHER;
-   _d->producerBuilding = NULL;
-   _d->consumerBuilding = NULL;
-   _d->maxDistance = 25;
-   _d->city = city;
-   _d->stock._maxQty = 400;
+  _setGraphic( WG_PUSHER );
+  _setType( WT_CART_PUSHER );
+  _d->producerBuilding = NULL;
+  _d->consumerBuilding = NULL;
+  _d->maxDistance = 25;
+  _d->city = city;
+  _d->stock._maxQty = 400;
+
+  setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
 void CartPusher::onDestination()
@@ -240,7 +243,7 @@ BuildingPtr reserveShortestPath( const BuildingType buildingType,
     // for every factory within range
     SmartPtr<T> building = pathWayIt->first.as<T>();
 
-    if( stock._currentQty >  building->getGoodStore().getMaxStore( stock._goodType ) )
+    if( stock._currentQty >  building->getGoodStore().getMaxStore( stock.type() ) )
     {
       pathWayList.erase( pathWayIt++ );
     }
@@ -280,8 +283,8 @@ BuildingPtr reserveShortestPath( const BuildingType buildingType,
 BuildingPtr CartPusher::Impl::getWalkerDestination_factory(Propagator &pathPropagator, PathWay &oPathWay)
 {
   BuildingPtr res;
-  GoodType goodType = stock._goodType;
-  BuildingType buildingType = BuildingDataHolder::instance().getBuildingTypeByInGood(goodType);
+  Good::Type goodType = stock.type();
+  BuildingType buildingType = BuildingDataHolder::instance().getConsumerType( goodType );
 
   if (buildingType == B_NONE)
   {
@@ -307,8 +310,9 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_granary(Propagator &pathPropa
 {
    BuildingPtr res;
 
-   GoodType goodType = stock._goodType;
-   if (!(goodType == G_WHEAT || goodType == G_FISH || goodType == G_MEAT || goodType == G_FRUIT || goodType == G_VEGETABLE))
+   Good::Type goodType = stock.type();
+   if (!(goodType == Good::G_WHEAT || goodType == Good::G_FISH
+         || goodType == Good::G_MEAT || goodType == Good::G_FRUIT || goodType == Good::G_VEGETABLE))
    {
       // this good cannot be stored in a granary
       return 0;

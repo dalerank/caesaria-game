@@ -22,7 +22,6 @@
 
 Road::Road() : Construction( B_ROAD, Size(1) )
 {
-  setPicture( Picture::load( ResourceGroup::road, 44));  // default picture for build tool
 }
 
 void Road::build(const TilePos& pos )

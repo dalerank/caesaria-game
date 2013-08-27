@@ -19,7 +19,7 @@
 #include "oc3_tile.hpp"
 #include "oc3_city.hpp"
 
-FactoryMarble::FactoryMarble() : Factory(G_NONE, G_MARBLE, B_MARBLE_QUARRY, Size(2) )
+FactoryMarble::FactoryMarble() : Factory(Good::G_NONE, Good::G_MARBLE, B_MARBLE_QUARRY, Size(2) )
 {
   _setProductRate( 9.6f );
   setPicture( Picture::load( ResourceGroup::commerce, 43 ) );
@@ -27,8 +27,6 @@ FactoryMarble::FactoryMarble() : Factory(G_NONE, G_MARBLE, B_MARBLE_QUARRY, Size
   _getAnimation().load( ResourceGroup::commerce, 44, 10);
   _getAnimation().setFrameDelay( 4 );
   _fgPictures.resize(2);
-  
-  setMaxWorkers( 10 );
 }
 
 void FactoryMarble::timeStep( const unsigned long time )

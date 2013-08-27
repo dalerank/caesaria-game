@@ -19,7 +19,7 @@
 #include "oc3_tile.hpp"
 #include "oc3_city.hpp"
 
-ClayPit::ClayPit() : Factory(G_NONE, G_CLAY, B_CLAY_PIT, Size(2) )
+ClayPit::ClayPit() : Factory( Good::G_NONE, Good::G_CLAY, B_CLAY_PIT, Size(2) )
 {
   _setProductRate( 9.6f );
   setPicture( Picture::load( ResourceGroup::commerce, 61 ) );

@@ -25,7 +25,7 @@
 #include "oc3_gettext.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_city.hpp"
-#include "oc3_house.hpp"
+#include "oc3_building_house.hpp"
 #include "oc3_texturedbutton.hpp"
 #include "oc3_divinity.hpp"
 

@@ -22,36 +22,52 @@
 #include "oc3_scenario.hpp"
 #include "oc3_walker_taxcollector.hpp"
 #include "oc3_city.hpp"
+#include "oc3_name_generator.hpp"
+#include "oc3_stringhelper.hpp"
 #include <map>
 
 template< class T >
-class WalkerPtrCreator : public AbstractWalkerCreator
+class WalkerCreator : public AbstractWalkerCreator
 {
 public:
-  T* create()
+  virtual WalkerPtr create()
   {
-    SmartPtr<T> ret = T::create( Scenario::instance().getCity() ); 
-    ret->grab(); //but T::create also drop it, and WalkerManager::create yet call drop
-
-    return ret.object();
+    return T::create( Scenario::instance().getCity() ).object();
   }
+};
+
+class ServiceWalkerCreator : public AbstractWalkerCreator
+{
+public:
+  WalkerPtr create()
+  {
+    return ServiceWalker::create( Scenario::instance().getCity(), serviceType ).object();
+  }
+
+  ServiceWalkerCreator( const ServiceType type )
+  {
+    serviceType = type;
+  }
+
+  ServiceType serviceType;
 };
 
 class WalkerManager::Impl
 {
 public:
   typedef std::map< WalkerType, AbstractWalkerCreator* > WalkerCreators;
-  std::map< std::string, WalkerType > name2typeMap;
   WalkerCreators constructors;
 };
 
 WalkerManager::WalkerManager() : _d( new Impl )
 {
-  addCreator( WT_EMIGRANT, OC3_STR_EXT(WT_EMIGRANT), new WalkerPtrCreator<Emigrant>() );
-  addCreator( WT_IMMIGRANT, OC3_STR_EXT(WT_IMMIGRANT), new WalkerPtrCreator<Immigrant>() );
-  addCreator( WT_CART_PUSHER, OC3_STR_EXT(WT_CART_PUSHER), new WalkerPtrCreator<CartPusher>() );
-  addCreator( WT_PREFECT, OC3_STR_EXT(WT_PREFECT), new WalkerPtrCreator<WalkerPrefect>() );
-  addCreator( WT_TAXCOLLECTOR, OC3_STR_EXT(WT_TAXCOLLECTOR), new WalkerPtrCreator<TaxCollector>() );
+  addCreator( WT_EMIGRANT, new WalkerCreator<Emigrant>() );
+  addCreator( WT_IMMIGRANT, new WalkerCreator<Immigrant>() );
+  addCreator( WT_CART_PUSHER, new WalkerCreator<CartPusher>() );
+  addCreator( WT_PREFECT, new WalkerCreator<WalkerPrefect>() );
+  addCreator( WT_TAXCOLLECTOR, new WalkerCreator<TaxCollector>() );
+  addCreator( WT_ENGINEER, new ServiceWalkerCreator( S_ENGINEER ));
+  addCreator( WT_DOCTOR, new ServiceWalkerCreator( S_DOCTOR ) );
 }
 
 WalkerManager::~WalkerManager()
@@ -65,11 +81,10 @@ WalkerPtr WalkerManager::create( const WalkerType walkerType )
 
   if( findConstructor != _d->constructors.end() )
   {
-    WalkerPtr ret( findConstructor->second->create() );
-    ret->drop();
-    return ret;
+    return findConstructor->second->create().as<Walker>();
   }
 
+  StringHelper::debug( 0xff, "Can't create walker from type %d", walkerType );
   return WalkerPtr();
 }
 
@@ -79,14 +94,18 @@ WalkerManager& WalkerManager::getInstance()
   return inst;
 }
 
-void WalkerManager::addCreator( const WalkerType type, const std::string& typeName, AbstractWalkerCreator* ctor )
+void WalkerManager::addCreator( const WalkerType type, AbstractWalkerCreator* ctor )
 {
-  bool alreadyHaveConstructor = _d->name2typeMap.find( typeName ) != _d->name2typeMap.end();
-  _OC3_DEBUG_BREAK_IF( alreadyHaveConstructor && "already have constructor for this type");
+  std::string typeName = WalkerHelper::getName( type );
 
-  if( !alreadyHaveConstructor )
+  bool alreadyHaveConstructor = _d->constructors.find( type ) != _d->constructors.end();
+  if( alreadyHaveConstructor )
   {
-    _d->name2typeMap[ typeName ] = type;
+    StringHelper::debug( 0xff, "Already have constructor for type %s", typeName.c_str() );
+    return;
+  }
+  else
+  {
     _d->constructors[ type ] = ctor;
   }
 }

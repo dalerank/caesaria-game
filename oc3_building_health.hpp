@@ -22,6 +22,9 @@ class Doctor : public ServiceBuilding
 {
 public:
   Doctor();
+
+  virtual unsigned int getWalkerDistance() const;
+  virtual void deliverService();
 };
 
 class Hospital : public ServiceBuilding

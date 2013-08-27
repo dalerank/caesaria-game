@@ -13,21 +13,29 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_COLLAPSED_RUINS_H_INCLUDE_
-#define __OPENCAESAR3_COLLAPSED_RUINS_H_INCLUDE_
+#ifndef __OPENCAESAR3_NAME_GENERATOR_H_INCLUDED__
+#define __OPENCAESAR3_NAME_GENERATOR_H_INCLUDED__
 
-#include "oc3_building_service.hpp"
+#include "oc3_scopedptr.hpp"
+#include "oc3_filepath.hpp"
 
-class CollapsedRuins : public Building
+class NameGenerator
 {
 public:
-    CollapsedRuins();
+  typedef enum { male=0, female,
+                 patricianMale, patricianFemale } NameType;
+  static NameGenerator& instance();
 
-    void burn();
-    void build(const TilePos& pos );
+  ~NameGenerator();
 
-    bool isWalkable() const;
-    bool isNeedRoadAccess() const;
+  static std::string rand( NameType type );
+  static void initialize( const io::FilePath& filename );
+
+private:
+  NameGenerator();
+
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
-#endif
+#endif //__OPENCAESAR3_NAME_GENERATOR_H_INCLUDED__

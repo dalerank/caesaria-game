@@ -46,7 +46,7 @@ public:
   void setOffset( const Point& xoffset );
   void addOffset(const int dx, const int dy);
   void setName(std::string &name);  // for save game
-  std::string getName();
+  std::string getName() const;
   Picture* createCopy() const;
   SDL_Surface* getSurface() const;
   Point getOffset() const;

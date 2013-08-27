@@ -19,7 +19,7 @@
 #ifndef HOUSE_LEVEL_HPP
 #define HOUSE_LEVEL_HPP
 
-#include "oc3_enums.hpp"
+#include "oc3_good.hpp"
 #include "oc3_scopedptr.hpp"
 #include "oc3_smartptr.hpp"
 #include "oc3_filepath.hpp"
@@ -53,7 +53,7 @@ public:
   int computeReligionLevel(House &house);
   int computeWaterLevel(House &house, std::string &oMissingRequirement);
   int computeFoodLevel(House &house);
-  int computeMonthlyConsumption(House &house, const GoodType goodType);
+  int computeMonthlyConsumption(House &house, const Good::Type goodType);
 
   float evaluateServiceNeed(House &house, const ServiceType service);
   float evaluateEntertainmentNeed(House &house, const ServiceType service);

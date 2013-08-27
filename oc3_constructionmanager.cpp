@@ -18,11 +18,10 @@
 #include "oc3_training_building.hpp"
 #include "oc3_building_watersupply.hpp"
 #include "oc3_building_warehouse.hpp"
-#include "oc3_collapsedruins.hpp"
+#include "oc3_building_ruins.hpp"
 #include "oc3_building_engineer_post.hpp"
 #include "oc3_building_factory.hpp"
-#include "oc3_building_burningruins.hpp"
-#include "oc3_house.hpp"
+#include "oc3_building_house.hpp"
 #include "oc3_building_senate.hpp"
 #include "oc3_building_prefecture.hpp"
 #include "oc3_road.hpp"
@@ -44,6 +43,7 @@
 #include "oc3_forum.hpp"
 #include "oc3_garden.hpp"
 #include "oc3_building_health.hpp"
+#include "oc3_building_data.hpp"
 
 #include <map>
 
@@ -62,6 +62,13 @@ ConstructionPtr ConstructionManager::create(const BuildingType buildingType) con
   if( findConstructor != _d->constructors.end() )
   {
     ConstructionPtr ret( findConstructor->second->create() );
+    const BuildingData& info = BuildingDataHolder::instance().getData( buildingType );
+
+    if( info.getBasePicture().isValid() )
+    {
+      ret->setPicture( info.getBasePicture() );  // default picture for build tool
+    }
+
     ret->drop();
     return ret;
   }
@@ -178,6 +185,7 @@ ConstructionManager::ConstructionManager() : _d( new Impl )
   addCreator(B_BURNING_RUINS , OC3_STR_EXT(B_BURNING_RUINS), new BuildingCreator<BurningRuins>() );
   addCreator(B_BURNED_RUINS , OC3_STR_EXT(B_BURNED_RUINS), new BuildingCreator<BurnedRuins>() );
   addCreator(B_COLLAPSED_RUINS , OC3_STR_EXT(B_COLLAPSED_RUINS), new BuildingCreator<CollapsedRuins>() );
+  addCreator(B_PLAGUE_RUINS , OC3_STR_EXT(B_PLAGUE_RUINS), new BuildingCreator<PlagueRuins>() );
 }
 
 void ConstructionManager::addCreator( const BuildingType type, const std::string& typeName, AbstractBuildingCreator* ctor )

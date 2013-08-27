@@ -24,8 +24,7 @@ class Propagator;
 class TraineeWalker : public Walker
 {
 public:
-  static TraineeWalkerPtr create( CityPtr city, const WalkerTraineeType traineeType );
-  int getType() const;
+  static TraineeWalkerPtr create( CityPtr city, const WalkerType traineeType );
 
   void checkDestination(const BuildingType buildingType, Propagator& pathPropagator);
   void send2City();
@@ -38,11 +37,10 @@ public:
   void load( const VariantMap& stream);
 
 protected:
-  TraineeWalker(const WalkerTraineeType traineeType);
-  void init(const WalkerTraineeType traineeType);
+  TraineeWalker(const WalkerType traineeType);
+  void init(const WalkerType traineeType);
 
 private:
-  WalkerTraineeType _traineeType;
   BuildingPtr _originBuilding;
   BuildingPtr _destinationBuilding;
   int _maxDistance;

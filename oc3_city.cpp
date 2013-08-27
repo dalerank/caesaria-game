@@ -40,7 +40,7 @@
 #include "oc3_walkermanager.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_city_build_options.hpp"
-#include "oc3_house.hpp"
+#include "oc3_building_house.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_forum.hpp"
 #include "oc3_building_senate.hpp"
@@ -222,12 +222,15 @@ void City::monthStep( const DateTime& time )
 
 Walkers City::getWalkerList( const WalkerType type )
 {
-  Walkers res;
+  if( type == WT_ALL )
+  {
+    return _d->walkerList;
+  }
 
-  WalkerPtr walker;
+  Walkers res;
   for (Walkers::iterator itWalker = _d->walkerList.begin(); itWalker != _d->walkerList.end(); ++itWalker )
   {
-    if( (*itWalker)->getType() == type || WT_ALL == type )
+    if( (*itWalker)->getType() == type  )
     {
       res.push_back( *itWalker );
     }
@@ -360,7 +363,7 @@ void City::disaster( const TilePos& pos, DisasterType type )
     PtrTilesArea clearedTiles = _d->tilemap.getFilledRectangle( rPos, size );
     for( PtrTilesArea::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
     {
-      BuildingType dstr2constr[] = { B_BURNING_RUINS, B_COLLAPSED_RUINS };
+      BuildingType dstr2constr[] = { B_BURNING_RUINS, B_COLLAPSED_RUINS, B_PLAGUE_RUINS };
       bool canCreate = ConstructionManager::getInstance().canCreate( dstr2constr[type] );
       if( canCreate )
       {
@@ -368,7 +371,8 @@ void City::disaster( const TilePos& pos, DisasterType type )
       }
     }
 
-    std::string dstr2string[] = { _("##alarm_fire_in_city##"), _("##alarm_building_collapsed##") };
+    std::string dstr2string[] = { _("##alarm_fire_in_city##"), _("##alarm_building_collapsed##"),
+                                  _("##alarm_plague_in_city##") };
     _d->onDisasterEventSignal.emit( pos, dstr2string[type] );
   }
 }

@@ -15,12 +15,14 @@
 
 #include "oc3_goodhelper.hpp"
 #include "oc3_good.hpp"
+#include "oc3_enums_helper.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_animation_bank.hpp"
+#include "oc3_gettext.hpp"
 #include <vector>
 
-static const int empPicId[ G_MAX+1 ] = { PicID::bad, 
+static const int empPicId[ Good::G_MAX+1 ] = { PicID::bad,
                                        /*G_WHEAT*/11, 
                                        /*G_FISH*/27,
                                        /*G_MEAT*/16, 
@@ -40,7 +42,7 @@ static const int empPicId[ G_MAX+1 ] = { PicID::bad,
                                        /*G_DENARIES*/26,                            
                                        PicID::bad };
 
- static const int localPicId[ G_MAX+1 ] = { PicID::bad, 
+ static const int localPicId[ Good::G_MAX+1 ] = { PicID::bad,
                                           /*G_WHEAT*/317, 
                                           /*G_FISH*/333,
                                           /*G_MEAT*/322,
@@ -60,33 +62,42 @@ static const int empPicId[ G_MAX+1 ] = { PicID::bad,
                                           /*G_DENARIES*/332,
                                           PicID::bad };
 
-
-TypeEquale<GoodType> goodTypeEquales[] = { 
-  { G_NONE, "none" },
-  { G_WHEAT, "wheat" },
-  { G_FISH, "fish" },
-  { G_MEAT, "meat" },
-  { G_FRUIT, "fruit" }, 
-  { G_VEGETABLE, "vegetable" }, { G_VEGETABLE, "vegetables" },
-  { G_OLIVE, "olive" }, { G_OLIVE, "olives" },
-  { G_OIL, "oil" },
-  { G_GRAPE, "grape" }, { G_GRAPE, "vines" },
-  { G_WINE, "wine" }, 
-  { G_TIMBER, "timber" },
-  { G_FURNITURE, "furniture" },
-  { G_CLAY, "clay" }, 
-  { G_POTTERY, "pottery" }, 
-  { G_IRON, "iron" }, 
-  { G_WEAPON, "weapon" }, { G_WEAPON, "weapons" },
-  { G_MARBLE, "marble" }, 
-  { G_DENARIES, "denaries" },
-  { G_MAX, "" }
-};
-
-class GoodHelper::Impl
+class GoodHelper::Impl : public EnumsHelper<Good::Type>
 {
 public:
-  std::vector<Good> mapGood;  // index=GoodType, value=Good
+  typedef std::map<Good::Type, std::string > GoodNames;
+  GoodNames goodName;  // index=GoodType, value=Good
+
+  virtual Good::Type getInvalid() const { return Good::G_NONE; }
+
+  void append( Good::Type type, const std::string& name, const std::string prName )
+  {
+    EnumsHelper<Good::Type>::append( type, name );
+    goodName[ type ] = prName;
+  }
+
+  Impl()
+  {
+    append( Good::G_NONE, "none", _("None") );
+    append( Good::G_WHEAT, "wheat", _("Wheat") );
+    append( Good::G_FISH, "fish", _("Fish") );
+    append( Good::G_MEAT, "meat", _("Meat") );
+    append( Good::G_FRUIT, "fruit", _("Fruits"));
+    append( Good::G_VEGETABLE, "vegetable", _("Vegetables") );
+    append( Good::G_OLIVE, "olive", _("Olives") );
+    append( Good::G_OIL, "oil", _("Oil") );
+    append( Good::G_GRAPE, "grape", _("Grape") );
+    append( Good::G_WINE, "wine", _("Wine") );
+    append( Good::G_TIMBER, "timber", _("Timber") );
+    append( Good::G_FURNITURE, "furniture", _("Furniture") );
+    append( Good::G_CLAY, "clay", _("Clay") );
+    append( Good::G_POTTERY, "pottery", _("Pottery") );
+    append( Good::G_IRON, "iron", _("Iron") );
+    append( Good::G_WEAPON, "weapon", _("Weapon") );
+    append( Good::G_MARBLE, "marble", _("Marble") );
+    append( Good::G_DENARIES, "denaries", _("##Denaries##") );
+    append( Good::G_MAX, "", "unknown" );
+  }
 };
 
 GoodHelper& GoodHelper::getInstance()
@@ -96,17 +107,10 @@ GoodHelper& GoodHelper::getInstance()
 }
 
 GoodHelper::GoodHelper() : _d( new Impl )
-{
-  _d->mapGood.resize(G_MAX);
-
-  for (int n = 0; n < G_MAX; ++n)
-  {
-    GoodType goodType = GoodType(n);
-    _d->mapGood[n].init( goodType );
-  }
+{  
 }
 
-Picture GoodHelper::getPicture( GoodType type, bool emp )
+Picture GoodHelper::getPicture( Good::Type type, bool emp )
 {
   int picId = -1;
 
@@ -132,47 +136,31 @@ GoodHelper::~GoodHelper()
 
 }
 
-std::string GoodHelper::getName( GoodType type )
+std::string GoodHelper::getName( Good::Type type )
 {
-  return getInstance()._d->mapGood[ type ].getName();
+  Impl::GoodNames::iterator it = getInstance()._d->goodName.find( type );
+  return it != getInstance()._d->goodName.end() ? it->second : "";
 }
 
-GoodType GoodHelper::getType( const std::string& name )
+Good::Type GoodHelper::getType( const std::string& name )
 {
-  int index=0;
-  std::string typeName = goodTypeEquales[ index ].name;
+  Good::Type type = getInstance()._d->findType( name );
 
-  while( !typeName.empty() )
+  if( type == getInstance()._d->getInvalid() )
   {
-    if( name == typeName )
-    {
-      return goodTypeEquales[ index ].type;
-    }
-
-    index++;
-    typeName = goodTypeEquales[ index ].name;
+    StringHelper::debug( 0xff, "Can't find type for goodName %s", name.c_str() );
+    _OC3_DEBUG_BREAK_IF( "Can't find type for goodName" );
   }
 
-  StringHelper::debug( 0xff, "Can't find type for goodName %s", name.c_str() );
-  _OC3_DEBUG_BREAK_IF( "Can't find type for goodName" );
-  return G_NONE;
+  return type;
 }
 
-std::string GoodHelper::getTypeName( GoodType type )
+std::string GoodHelper::getTypeName( Good::Type type )
 {
- 
-  for( int index=0; goodTypeEquales[ index ].type != G_MAX; index++ )
-  {
-    if( goodTypeEquales[ index ].type == type )
-    {
-      return goodTypeEquales[ index ].name;
-    }
-  } 
-
-  return "unknown";
+  return getInstance()._d->findName( type );
 }
 
 const Picture& GoodHelper::getCartPicture(const GoodStock &stock, const DirectionType &direction)
 {
-  return AnimationBank::getCart( stock.empty() ? G_NONE :  stock._goodType, direction );
+  return AnimationBank::getCart( stock.empty() ? Good::G_NONE :  stock._type, direction );
 }

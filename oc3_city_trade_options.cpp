@@ -70,15 +70,15 @@ public:
     }
   };
 
-  typedef std::map< GoodType, GoodInfo > GoodsInfo;
+  typedef std::map< Good::Type, GoodInfo > GoodsInfo;
   GoodsInfo goods;
   SimpleGoodStore buys, sells;
 
   void updateLists()
   {
-    for( int i=G_WHEAT; i < G_MAX; i++ )
+    for( int i=Good::G_WHEAT; i < Good::G_MAX; i++ )
     {
-      GoodType gtype = (GoodType)i;
+      Good::Type gtype = (Good::Type)i;
       const GoodInfo& info = goods[ gtype ];
 
       switch( info.order )
@@ -107,36 +107,41 @@ public:
   {
     buys.setMaxQty( 9999 );
     sells.setMaxQty( 9999 );
-    for( int i=G_WHEAT; i < G_MAX; i++ )
+    for( int i=Good::G_WHEAT; i < Good::G_MAX; i++ )
     {
-      GoodType gtype = (GoodType)i;
+      Good::Type gtype = (Good::Type)i;
       goods[ gtype ].stacking = false;
       goods[ gtype ].order = CityTradeOptions::noTrade;
       goods[ gtype ].vendor = true;
       goods[ gtype ].exportLimit = 0;
     }
 
-    goods[ G_FISH ].order = CityTradeOptions::disabled;
-    goods[ G_DENARIES ].order = CityTradeOptions::disabled;
+    goods[ Good::G_FISH ].order = CityTradeOptions::disabled;
+    goods[ Good::G_DENARIES ].order = CityTradeOptions::disabled;
+  }
+
+  void initStandartPrice( Good::Type type, int buy, int sell )
+  {
+    goods[ type ].buyPrice = buy; goods[ type ].sellPrice = sell;
   }
 
   void initStandartPrice()
   {
-    goods[ G_WHEAT ].buyPrice = 28; goods[ G_WHEAT ].sellPrice = 22;
-    goods[ G_VEGETABLE ].buyPrice = 38; goods[ G_VEGETABLE ].sellPrice = 30;
-    goods[ G_FRUIT ].buyPrice = 38; goods[ G_FRUIT ].sellPrice = 30;
-    goods[ G_OLIVE ].buyPrice = 42; goods[ G_OLIVE ].sellPrice = 34;
-    goods[ G_GRAPE ].buyPrice = 44; goods[ G_GRAPE ].sellPrice = 36;
-    goods[ G_MEAT ].buyPrice = 44; goods[ G_MEAT ].sellPrice = 36;
-    goods[ G_WINE ].buyPrice = 215; goods[ G_WINE ].sellPrice = 160;
-    goods[ G_OIL ].buyPrice = 180; goods[ G_OIL ].sellPrice = 140;
-    goods[ G_IRON ].buyPrice = 60; goods[ G_IRON ].sellPrice = 40;
-    goods[ G_TIMBER ].buyPrice = 50; goods[ G_TIMBER ].sellPrice = 35;
-    goods[ G_CLAY ].buyPrice = 40; goods[ G_CLAY ].sellPrice = 30;
-    goods[ G_MARBLE ].buyPrice = 200; goods[ G_MARBLE ].sellPrice = 140;
-    goods[ G_WEAPON ].buyPrice = 250; goods[ G_WEAPON ].sellPrice = 180;
-    goods[ G_FURNITURE ].buyPrice = 200; goods[ G_FURNITURE ].sellPrice = 150;
-    goods[ G_POTTERY ].buyPrice = 180; goods[ G_POTTERY ].sellPrice = 140;
+    initStandartPrice( Good::G_WHEAT, 28, 22 );
+    initStandartPrice( Good::G_VEGETABLE, 38, 30 );
+    initStandartPrice( Good::G_FRUIT, 38, 30 );
+    initStandartPrice( Good::G_OLIVE, 42, 34 );
+    initStandartPrice( Good::G_GRAPE, 44, 36 );
+    initStandartPrice( Good::G_MEAT, 44, 36 );
+    initStandartPrice( Good::G_WINE, 215, 160 );
+    initStandartPrice( Good::G_OIL, 180, 140 );
+    initStandartPrice( Good::G_IRON, 60, 40 );
+    initStandartPrice( Good::G_TIMBER, 50, 35 );
+    initStandartPrice( Good::G_CLAY, 40, 30 );
+    initStandartPrice( Good::G_MARBLE, 200, 140 );
+    initStandartPrice( Good::G_WEAPON, 250, 180 );
+    initStandartPrice( Good::G_FURNITURE, 200, 150 );
+    initStandartPrice( Good::G_POTTERY, 180, 140 );
   }
 };
 
@@ -145,13 +150,13 @@ CityTradeOptions::CityTradeOptions() : _d( new Impl )
   _d->initStandartPrice();
 }
 
-int CityTradeOptions::getExportLimit( GoodType type ) const
+int CityTradeOptions::getExportLimit(Good::Type type ) const
 {
   Impl::GoodsInfo::const_iterator it = _d->goods.find( type );
   return ( it == _d->goods.end() ? 0 : it->second.exportLimit );
 }
 
-CityTradeOptions::Order CityTradeOptions::getOrder( GoodType type ) const
+CityTradeOptions::Order CityTradeOptions::getOrder( Good::Type type ) const
 {
   Impl::GoodsInfo::const_iterator it = _d->goods.find( type );
   return ( it == _d->goods.end() ? CityTradeOptions::noTrade : it->second.order);
@@ -162,7 +167,7 @@ CityTradeOptions::~CityTradeOptions()
 
 }
 
-CityTradeOptions::Order CityTradeOptions::switchOrder( GoodType type )
+CityTradeOptions::Order CityTradeOptions::switchOrder( Good::Type type )
 {
   if( !isVendor( type ) )
   {
@@ -188,62 +193,62 @@ CityTradeOptions::Order CityTradeOptions::switchOrder( GoodType type )
   return getOrder( type );
 }
 
-void CityTradeOptions::setExportLimit( GoodType type, int qty )
+void CityTradeOptions::setExportLimit( Good::Type type, int qty )
 {
   _d->goods[ type ].exportLimit = qty;
 
   _d->updateLists();
 }
 
-bool CityTradeOptions::isGoodsStacking( GoodType type )
+bool CityTradeOptions::isGoodsStacking( Good::Type type )
 {
   Impl::GoodsInfo::const_iterator it = _d->goods.find( type );
   return ( it == _d->goods.end() ? false : it->second.stacking );
 }
 
-void CityTradeOptions::setStackMode( GoodType type, bool stackGoods )
+void CityTradeOptions::setStackMode( Good::Type type, bool stackGoods )
 {
   _d->goods[ type ].stacking = stackGoods;
 
   _d->updateLists();
 }
 
-unsigned int CityTradeOptions::getSellPrice( GoodType type ) const
+unsigned int CityTradeOptions::getSellPrice( Good::Type type ) const
 {
   Impl::GoodsInfo::const_iterator it = _d->goods.find( type );
   return ( it == _d->goods.end() ? 0 : it->second.sellPrice );
 }
 
-void CityTradeOptions::setSellPrice( GoodType type, unsigned int price )
+void CityTradeOptions::setSellPrice( Good::Type type, unsigned int price )
 {
    _d->goods[ type ].sellPrice = price;
 }
 
-unsigned int CityTradeOptions::getBuyPrice( GoodType type ) const
+unsigned int CityTradeOptions::getBuyPrice( Good::Type type ) const
 {
   Impl::GoodsInfo::const_iterator it = _d->goods.find( type );
   return ( it == _d->goods.end() ? 0 : it->second.buyPrice );
 }
 
-void CityTradeOptions::setBuyPrice( GoodType type, unsigned int price )
+void CityTradeOptions::setBuyPrice( Good::Type type, unsigned int price )
 {
   _d->goods[ type ].buyPrice = price;
 }
 
-bool CityTradeOptions::isVendor( GoodType type ) const
+bool CityTradeOptions::isVendor( Good::Type type ) const
 {
   Impl::GoodsInfo::const_iterator it = _d->goods.find( type );
   return ( it == _d->goods.end() ? false : it->second.vendor );
 }
 
-void CityTradeOptions::setVendor( GoodType type, bool available )
+void CityTradeOptions::setVendor( Good::Type type, bool available )
 {
   _d->goods[ type ].vendor = available;
 
   _d->updateLists();
 }
 
-void CityTradeOptions::setOrder( GoodType type, Order order )
+void CityTradeOptions::setOrder( Good::Type type, Order order )
 {
   _d->goods[ type ].order = order;
 
@@ -254,9 +259,9 @@ void CityTradeOptions::load( const VariantMap& stream )
 {
   for( VariantMap::const_iterator it=stream.begin(); it != stream.end(); it++ )
   {
-    GoodType gtype = GoodHelper::getType( it->first );
+    Good::Type gtype = GoodHelper::getType( it->first );
 
-    if( gtype == G_NONE )
+    if( gtype == Good::G_NONE )
     {
       StringHelper::debug( 0xff, "%s %s [%s %d]", "Can't convert type from ", 
                            it->first.c_str(), __FILE__, __LINE__ );

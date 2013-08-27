@@ -71,9 +71,9 @@ void ComputerCity::save( VariantMap& options ) const
   VariantMap vm_buys;
   VariantMap vm_bought;
 
-  for( int i=G_NONE; i < G_MAX; i ++ )
+  for( int i=Good::G_NONE; i < Good::G_MAX; i ++ )
   {
-    GoodType gtype = GoodType ( i );
+    Good::Type gtype = Good::Type ( i );
     std::string tname = GoodHelper::getTypeName( gtype );
     int maxSellStock = _d->sellStore.getMaxQty( gtype );
     if( maxSellStock > 0 )
@@ -121,28 +121,28 @@ void ComputerCity::load( const VariantMap& options )
   const VariantMap& sells_vm = options.get( "sells" ).toMap();
   for( VariantMap::const_iterator it=sells_vm.begin(); it != sells_vm.end(); it++ )
   {
-    GoodType gtype = GoodHelper::getType( it->first );
+    Good::Type gtype = GoodHelper::getType( it->first );
     _d->sellStore.setMaxQty( gtype, it->second.toInt() * 100 );
   }
 
   const VariantMap& sold_vm = options.get( "sold" ).toMap();
   for( VariantMap::const_iterator it=sold_vm.begin(); it != sold_vm.end(); it++ )
   {
-    GoodType gtype = GoodHelper::getType( it->first );
+    Good::Type gtype = GoodHelper::getType( it->first );
     _d->sellStore.setCurrentQty( gtype, it->second.toInt() * 100 );
   }
 
   const VariantMap& buys_vm = options.get( "buys" ).toMap();
   for( VariantMap::const_iterator it=buys_vm.begin(); it != buys_vm.end(); it++ )
   {
-    GoodType gtype = GoodHelper::getType( it->first );
+    Good::Type gtype = GoodHelper::getType( it->first );
     _d->buyStore.setMaxQty( gtype, it->second.toInt() * 100 );
   }
 
   const VariantMap& bought_vm = options.get( "bought" ).toMap();
   for( VariantMap::const_iterator it=bought_vm.begin(); it != bought_vm.end(); it++ )
   {
-    GoodType gtype = GoodHelper::getType( it->first );
+    Good::Type gtype = GoodHelper::getType( it->first );
     _d->buyStore.setCurrentQty( gtype, it->second.toInt() * 100 );
   }
 }
@@ -188,9 +188,9 @@ void ComputerCity::timeStep( unsigned int time )
   {
     _d->lastTimeUpdate = GameDate::current();
 
-    for( int i=G_NONE; i < G_MAX; i ++ )
+    for( int i=Good::G_NONE; i < Good::G_MAX; i ++ )
     {
-      GoodType gtype = GoodType( i );
+      Good::Type gtype = Good::Type( i );
       _d->sellStore.setCurrentQty( gtype, _d->sellStore.getMaxQty( gtype ) );     
       _d->buyStore.setCurrentQty( gtype, 0  );
       _d->merchantsNumber = 0;
@@ -212,9 +212,9 @@ void ComputerCity::timeStep( unsigned int time )
       SimpleGoodStore sellGoods, buyGoods;
       sellGoods.setMaxQty( 2000 );
       buyGoods.setMaxQty( 2000 );
-      for( int i=G_NONE; i < G_MAX; i ++ )
+      for( int i=Good::G_NONE; i < Good::G_MAX; i ++ )
       {
-        GoodType gtype = GoodType( i );
+        Good::Type gtype = Good::Type( i );
 
         buyGoods.setMaxQty( gtype, _d->buyStore.getMaxQty( gtype ) );
 

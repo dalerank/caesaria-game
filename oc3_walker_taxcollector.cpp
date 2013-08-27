@@ -15,7 +15,8 @@
 
 #include "oc3_walker_taxcollector.hpp"
 #include "oc3_city.hpp"
-#include "oc3_house.hpp"
+#include "oc3_building_house.hpp"
+#include "oc3_name_generator.hpp"
 
 class TaxCollector::Impl
 {
@@ -52,7 +53,9 @@ TaxCollectorPtr TaxCollector::create( CityPtr city )
 TaxCollector::TaxCollector( CityPtr city ) : ServiceWalker( city, S_FORUM ), _d( new Impl )
 {
   _d->money = 0;
-  _walkerType = WT_TAXCOLLECTOR;
+  _setType( WT_TAXCOLLECTOR );
+
+  setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
 int TaxCollector::getMoney() const

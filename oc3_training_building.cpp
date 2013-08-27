@@ -102,7 +102,7 @@ BuildingActor::BuildingActor() : TrainingBuilding( B_ACTOR_COLONY, Size(3) )
 void BuildingActor::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create( Scenario::instance().getCity(), WTT_ACTOR);
+  TraineeWalkerPtr trainee = TraineeWalker::create( Scenario::instance().getCity(), WT_ACTOR);
   trainee->setOriginBuilding(*this);
   trainee->send2City();
 }
@@ -119,7 +119,7 @@ BuildingGladiator::BuildingGladiator() : TrainingBuilding( B_GLADIATOR_SCHOOL, S
 void BuildingGladiator::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create( Scenario::instance().getCity(), WTT_GLADIATOR);
+  TraineeWalkerPtr trainee = TraineeWalker::create( Scenario::instance().getCity(), WT_GLADIATOR);
   trainee->setOriginBuilding(*this);
   trainee->send2City();
 }
@@ -137,7 +137,7 @@ BuildingLion::BuildingLion() : TrainingBuilding( B_LION_HOUSE, Size(3) )
 void BuildingLion::deliverTrainee()
 {
   // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create( Scenario::instance().getCity(), WTT_TAMER );
+  TraineeWalkerPtr trainee = TraineeWalker::create( Scenario::instance().getCity(), WT_TAMER );
   trainee->setOriginBuilding(*this);
   trainee->send2City();
 }
@@ -155,7 +155,7 @@ BuildingChariot::BuildingChariot() : TrainingBuilding( B_CHARIOT_MAKER, Size(3) 
 void BuildingChariot::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create( Scenario::instance().getCity(), WTT_CHARIOT);
+  TraineeWalkerPtr trainee = TraineeWalker::create( Scenario::instance().getCity(), WT_CHARIOT);
   trainee->setOriginBuilding(*this);
   trainee->send2City();
 }

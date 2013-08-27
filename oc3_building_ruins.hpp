@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_BURNINGRUINS_H_INCLUDE_
-#define __OPENCAESAR3_BURNINGRUINS_H_INCLUDE_
+#ifndef __OPENCAESAR3_RUINS_H_INCLUDE_
+#define __OPENCAESAR3_RUINS_H_INCLUDE_
 
 #include "oc3_building_service.hpp"
 
@@ -48,5 +48,33 @@ public:
 };
 
 typedef SmartPtr< BurningRuins > BurningRuinsPtr;
+
+class CollapsedRuins : public Building
+{
+public:
+    CollapsedRuins();
+
+    void burn();
+    void build(const TilePos& pos );
+
+    bool isWalkable() const;
+    bool isNeedRoadAccess() const;
+};
+
+class PlagueRuins : public Building
+{
+public:
+  PlagueRuins();
+
+  void timeStep(const unsigned long time);
+  void burn();
+  void build(const TilePos& pos );
+  bool isWalkable() const;
+  void destroy();
+
+  void applyService(ServiceWalkerPtr walker);
+
+  bool isNeedRoadAccess() const;
+};
 
 #endif

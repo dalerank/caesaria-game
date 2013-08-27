@@ -175,7 +175,7 @@ public:
   }
 
   template< class T >
-  std::list< SmartPtr< T > > getProducers( const GoodType goodtype )
+  std::list< SmartPtr< T > > getProducers( const Good::Type goodtype )
   {
     std::list< SmartPtr< T > > ret;
     LandOverlays overlays = _city->getOverlayList();
@@ -189,6 +189,32 @@ public:
     }
 
     return ret;
+  }
+
+  template< class T >
+  std::list< SmartPtr< T > > getWalkers( const TilePos& pos )
+  {
+    std::list< SmartPtr< T > > ret;
+    Walkers walkers = _city->getWalkerList( WT_ALL );
+    for( Walkers::iterator it = walkers.begin(); it != walkers.end(); it++  )
+    {
+      if( (*it)->getIJ() == pos )
+      {
+        SmartPtr< T > b = (*it).as<T>();
+
+        if( b.isValid() )
+        {
+          ret.push_back( b );
+        }
+      }
+    }
+
+    return ret;
+  }
+
+  PtrTilesArea getArea( BuildingPtr building )
+  {
+    return _city->getTilemap().getFilledRectangle( building->getTilePos(), building->getSize() );
   }
 
 protected:

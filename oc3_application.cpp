@@ -39,6 +39,7 @@
 #include "oc3_filesystem_filelist.hpp"
 #include "oc3_empire.hpp"
 #include "oc3_exception.hpp"
+#include "oc3_name_generator.hpp"
 
 #include <libintl.h>
 #include <list>
@@ -56,7 +57,7 @@ public:
   
   void initLocale(const std::string & localePath);
   void initPictures(const io::FilePath& resourcePath);
-  io::FileList::Items scanForMaps( const io::FilePath& resourcePath ) const;
+  io::FileList::Items scanForMaps( const io::FilePath& mapDirName ) const;
 };
 
 void Application::Impl::initLocale(const std::string & localePath)
@@ -124,11 +125,11 @@ void Application::setScreenWait()
    screen.drawFrame();
 }
 
-io::FileList::Items Application::Impl::scanForMaps(const io::FilePath& resourcePath) const
+io::FileList::Items Application::Impl::scanForMaps(const io::FilePath& mapDirName ) const
 {
   // scan for map-files and make their list    
-  io::FileDir mapsDir( resourcePath.toString() + "/maps/" );
-  const io::FileList::Items& items = mapsDir.getEntries().getItems();
+  const io::FileDir mapsDir = AppConfig::rcpath( mapDirName.toString() );
+  io::FileList items = mapsDir.getEntries();
 
   io::FileList::Items ret;
   for( io::FileList::ConstItemIt it=items.begin(); it != items.end(); ++it)
@@ -156,7 +157,7 @@ void Application::setScreenMenu()
     case ScreenMenu::startNewGame:
     {
       /* temporary*/     
-      io::FileList::Items maps = _d->scanForMaps( AppConfig::get( AppConfig::resourcePath ).toString() );
+      io::FileList::Items maps = _d->scanForMaps( "/maps/" );
       std::srand( DateTime::getElapsedTime() );
       std::string file = maps.at( std::rand() % maps.size() ).fullName.toString();
       StringHelper::debug( 0xff, "Loading map:%s", file.c_str() );
@@ -233,6 +234,7 @@ void Application::start()
   setScreenWait();
 
   _d->initPictures( AppConfig::rcpath() );
+  NameGenerator::initialize( AppConfig::rcpath( AppConfig::ctNamesModel ) );
   HouseSpecHelper::getInstance().initialize( AppConfig::rcpath( AppConfig::houseModel ) );
   DivinePantheon::getInstance().initialize(  AppConfig::rcpath( AppConfig::pantheonModel ) );
   BuildingDataHolder::instance().initialize( AppConfig::rcpath( AppConfig::constructionModel ) );

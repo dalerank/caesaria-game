@@ -23,12 +23,13 @@
 class AppConfig
 {
 public:
-  static const std::string localePath;
-  static const std::string resourcePath;
-  static const std::string pantheonModel;
-  static const std::string houseModel;
-  static const std::string citiesModel;
-  static const std::string constructionModel;
+  static const char* ctNamesModel;
+  static const char* localePath;
+  static const char* resourcePath;
+  static const char* pantheonModel;
+  static const char* houseModel;
+  static const char* citiesModel;
+  static const char* constructionModel;
 
   static AppConfig& getInstance();
 

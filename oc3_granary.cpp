@@ -29,12 +29,12 @@ public:
 
   GranaryGoodStore()
   {
-    for( int type=G_WHEAT; type <= G_VEGETABLE; type++ )
+    for( int type=Good::G_WHEAT; type <= Good::G_VEGETABLE; type++ )
     {
-      setOrder( (GoodType)type, GoodOrders::accept );
+      setOrder( (Good::Type)type, GoodOrders::accept );
     }
 
-    setOrder( G_FISH, GoodOrders::none );
+    setOrder( Good::G_FISH, GoodOrders::none );
     setMaxQty( GranaryGoodStore::maxCapacity );
   }
 
@@ -68,7 +68,7 @@ public:
     granary->computePictures();
   }
   
-  virtual void setOrder( const GoodType type, const GoodOrders::Order order )
+  virtual void setOrder( const Good::Type type, const GoodOrders::Order order )
   {
     SimpleGoodStore::setOrder( type, order );
     setMaxQty( type, (order == GoodOrders::reject || order == GoodOrders::none ) ? 0 : GranaryGoodStore::maxCapacity );
@@ -174,13 +174,13 @@ void Granary::load( const VariantMap& stream)
 void Granary::_tryDevastateGranary()
 {
   //if granary in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
-  for( int goodType=G_WHEAT; goodType <= G_VEGETABLE; goodType++ )
+  for( int goodType=Good::G_WHEAT; goodType <= Good::G_VEGETABLE; goodType++ )
   {
     int goodQty = math::clamp( goodQty, 0, 400);
 
     if( goodQty > 0 )
     {
-      GoodStock stock( (GoodType)goodType, goodQty, goodQty);
+      GoodStock stock( (Good::Type)goodType, goodQty, goodQty);
       CartPusherPtr walker = CartPusher::create( Scenario::instance().getCity() );
       walker->send2City( BuildingPtr( this ), stock );
 

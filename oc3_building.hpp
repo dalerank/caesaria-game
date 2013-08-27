@@ -57,8 +57,8 @@ public:
   virtual void timeStep(const unsigned long time);  // perform one simulation step
 
   // graphic
-  void setPicture(Picture &picture);
-  Picture& getPicture();
+  void setPicture(const Picture &picture);
+  const Picture& getPicture() const;
   std::vector<Picture>& getForegroundPictures();
 
   std::string getName();  // landoverlay debug name
@@ -121,10 +121,10 @@ public:
    void cancelService(const ServiceType service);
    virtual void applyService( ServiceWalkerPtr walker);
    // evaluate the need for the given trainee
-   virtual float evaluateTrainee(const WalkerTraineeType traineeType);  // returns >0 if trainee is needed
-   void reserveTrainee(const WalkerTraineeType traineeType); // trainee will come
-   void cancelTrainee(const WalkerTraineeType traineeType);  // trainee will not come
-   void applyTrainee(const WalkerTraineeType traineeType); // trainee arrives
+   virtual float evaluateTrainee(const WalkerType traineeType);  // returns >0 if trainee is needed
+   void reserveTrainee(const WalkerType traineeType); // trainee will come
+   void cancelTrainee(const WalkerType traineeType);  // trainee will not come
+   void applyTrainee(const WalkerType traineeType); // trainee arrives
 
    float getDamageLevel();
    void  setDamageLevel(const float value);
@@ -140,8 +140,8 @@ protected:
    float _damageIncrement;
    float _fireIncrement;
    std::set<ServiceType> _reservedServices;  // a serviceWalker is on the way
-   std::map<WalkerTraineeType, int> _traineeMap;  // current level of trainees working in the building (0..200)
-   std::set<WalkerTraineeType> _reservedTrainees;  // a trainee is on the way
+   std::map<WalkerType, int> _traineeMap;  // current level of trainees working in the building (0..200)
+   std::set<WalkerType> _reservedTrainees;  // a trainee is on the way
 };
 
 //operator need for std::reset

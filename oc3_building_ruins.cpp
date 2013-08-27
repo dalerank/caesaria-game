@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_building_burningruins.hpp"
+#include "oc3_building_ruins.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_walker_service.hpp"
@@ -105,7 +105,10 @@ bool BurningRuins::isWalkable() const
 
 float BurningRuins::evaluateService( ServiceWalkerPtr walker )
 {
-  return _fireLevel;
+  if ( S_PREFECT == walker->getService() )
+  {
+    return _fireLevel;
+  }
 }
 
 void BurningRuins::applyService(ServiceWalkerPtr walker)
@@ -152,4 +155,124 @@ bool BurnedRuins::isNeedRoadAccess() const
 void BurnedRuins::destroy()
 {
   Building::destroy();
+}
+
+CollapsedRuins::CollapsedRuins() : Building(B_COLLAPSED_RUINS, Size(1) )
+{
+    _damageLevel = 1;
+
+    _getAnimation().load( ResourceGroup::sprites, 1, 8 );
+    _getAnimation().setOffset( Point( 14, 26 ) );
+    _getAnimation().setFrameDelay( 4 );
+    _getAnimation().setLoop( false );
+    _fgPictures.resize(1);
+}
+
+void CollapsedRuins::burn()
+{
+
+}
+
+void CollapsedRuins::build( const TilePos& pos )
+{
+    Building::build( pos );
+    //while burning can't remove it
+    getTile().getTerrain().setTree( false );
+    getTile().getTerrain().setBuilding( true );
+    getTile().getTerrain().setRoad( false );
+    setPicture( Picture::load( ResourceGroup::land2a, 111 + rand() % 8 ) );
+}
+
+bool CollapsedRuins::isWalkable() const
+{
+  return true;
+}
+
+bool CollapsedRuins::isNeedRoadAccess() const
+{
+  return false;
+}
+
+
+PlagueRuins::PlagueRuins() : Building( B_PLAGUE_RUINS, Size(1) )
+{
+  _fireLevel = 99;
+
+  setPicture( Picture::load( ResourceGroup::land2a, 187) );
+  _getAnimation().load( ResourceGroup::land2a, 188, 8 );
+  _getAnimation().setOffset( Point( 14, 26 ) );
+  _fgPictures.resize(2);
+  _fgPictures[ 1 ] = Picture::load( ResourceGroup::sprites, 218 );
+  _fgPictures[ 1 ].setOffset( 16, 32 );
+}
+
+void PlagueRuins::timeStep(const unsigned long time)
+{
+  _getAnimation().update( time );
+  _fgPictures[ 0 ] = _getAnimation().getCurrentPicture();
+
+  if (time % 16 == 0 )
+  {
+    if( _fireLevel > 0 )
+    {
+      _fireLevel -= 1;
+      if( _fireLevel == 50 )
+      {
+        setPicture(Picture::load( ResourceGroup::land2a, 214));
+        _getAnimation().clear();
+        _getAnimation().load( ResourceGroup::land2a, 215, 8);
+        _getAnimation().setOffset( Point( 14, 26 ) );
+      }
+      else if( _fireLevel == 25 )
+      {
+        setPicture( Picture::load( ResourceGroup::land2a, 223));
+        _getAnimation().clear();
+        _getAnimation().load(ResourceGroup::land2a, 224, 8);
+        _getAnimation().setOffset( Point( 14, 18 ) );
+      }
+    }
+    else
+    {
+      deleteLater();
+      _getAnimation().clear();
+      _fgPictures.clear();
+    }
+  }
+}
+
+void PlagueRuins::destroy()
+{
+  Building::destroy();
+
+  Scenario::instance().getCity()->build( B_BURNED_RUINS, getTilePos());
+}
+
+void PlagueRuins::applyService(ServiceWalkerPtr walker)
+{
+
+}
+
+void PlagueRuins::burn()
+{
+
+}
+
+void PlagueRuins::build( const TilePos& pos )
+{
+  Building::build( pos );
+  //while burning can't remove it
+  getTile().getTerrain().setTree( false );
+  getTile().getTerrain().setBuilding( false );
+  getTile().getTerrain().setRoad( false );
+  getTile().getTerrain().setRock( true );
+}
+
+bool PlagueRuins::isWalkable() const
+{
+  return (_fireLevel == 0);
+}
+
+bool PlagueRuins::isNeedRoadAccess() const
+{
+  return false;
 }

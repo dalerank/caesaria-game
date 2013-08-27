@@ -153,7 +153,7 @@ public:
   
   void paint();
   void drawWorkers( int );
-  void drawGood(const GoodType &goodType, int, int&);
+  void drawGood(const Good::Type &goodType, int, int&);
   void showSpecialOrdersWindow();
 
 private:
@@ -171,7 +171,7 @@ public:
    
    void paint();
    void drawWorkers();
-   void drawGood(const GoodType &goodType, int, int );
+   void drawGood(const Good::Type &goodType, int, int );
 
 private:
    class Impl;
@@ -186,7 +186,7 @@ public:
 
   void paint();
   void drawWorkers();
-  void drawGood(const GoodType &goodType, int, int& );
+  void drawGood(const Good::Type &goodType, int, int& );
   void showSpecialOrdersWindow();
 
 private:
@@ -212,11 +212,11 @@ private:
 class InfoBoxHouse : public GuiInfoBox
 {
 public:
-   InfoBoxHouse( Widget* paarent, const Tile& tile);
+   InfoBoxHouse( Widget* parent, const Tile& tile);
    virtual ~InfoBoxHouse();
 
    void drawHabitants();
-   void drawGood(const GoodType &goodType, const int col, const int row, const int startY );
+   void drawGood(const Good::Type &goodType, const int col, const int row, const int startY );
 
 private:
    void _paint();
@@ -236,5 +236,17 @@ private:
    class Impl;
    ScopedPtr< Impl > _bd;
 };
+
+// Simple info box with static text on plain background
+class InfoBoxCitizen : public GuiInfoBox
+{
+public:
+  InfoBoxCitizen(Widget* parent, const Walkers &walkers );
+
+private:
+  class Impl;
+  ScopedPtr< Impl > _cd;
+};
+
 
 #endif

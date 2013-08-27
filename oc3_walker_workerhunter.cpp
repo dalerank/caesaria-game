@@ -14,7 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_walker_workerhunter.hpp"
-#include "oc3_house.hpp"
+#include "oc3_building_house.hpp"
 #include "oc3_predefinitions.hpp"
 #include "oc3_safetycast.hpp"
 #include "oc3_positioni.hpp"
@@ -27,8 +27,8 @@ WorkersHunter::WorkersHunter( CityPtr city )
  : ServiceWalker( city, S_WORKERS_HUNTER )
 {    
     _workersNeeded = 0;
-    _walkerGraphic = WG_POOR;
-    _walkerType = WT_WORKERS_HUNTER;
+    _setGraphic( WG_POOR );
+    _setType( WT_WORKERS_HUNTER );
 }
 
 void WorkersHunter::hireWorkers( const int workers )

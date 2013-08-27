@@ -39,9 +39,9 @@ public:
   virtual void onNewDirection();
   virtual void onDestination();
 
-  void send2City( BuildingPtr building, const GoodType type, const int qty );
+  void send2City( BuildingPtr building, const Good::Type type, const int qty );
 
-  void computeWalkerDestination( BuildingPtr building, const GoodType type, const int qty );
+  void computeWalkerDestination( BuildingPtr building, const Good::Type type, const int qty );
  
   void save(VariantMap& stream) const;
   void load(const VariantMap& stream);

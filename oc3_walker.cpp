@@ -18,6 +18,7 @@
 #include "oc3_walker.hpp"
 
 #include "oc3_tile.hpp"
+#include "oc3_enums_helper.hpp"
 #include "oc3_building_data.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_scenario.hpp"
@@ -28,10 +29,14 @@
 #include "oc3_path_finding.hpp"
 #include "oc3_city.hpp"
 #include "oc3_animation_bank.hpp"
+#include "oc3_gettext.hpp"
 
 class Walker::Impl
 {
 public:
+  WalkerType walkerType;
+  WalkerGraphicType walkerGraphic;
+  bool isDeleted;
   float speed;
   TilePos pos;
   UniqueId uid;
@@ -43,6 +48,7 @@ public:
   PointF remainMove;  // remaining movement
   PathWay pathWay;
   WalkerAction action;
+  std::string name;
 
   float getSpeed() const
   {
@@ -59,12 +65,12 @@ Walker::Walker() : _d( new Impl )
 {
   _d->action._action = WA_MOVE;
   _d->action._direction = D_NONE;
-  _walkerType = WT_NONE;
-  _walkerGraphic = WG_NONE;
+  _d->walkerType = WT_NONE;
+  _d->walkerGraphic = WG_NONE;
 
   _d->speed = 1.f;  // default speed
   _d->speedMultiplier = 1.f;
-  _isDeleted = false;
+  _d->isDeleted = false;
 
   _d->midTilePos = Point( 7, 7 );
   _d->remainMove = PointF( 0, 0 );
@@ -76,7 +82,7 @@ Walker::~Walker()
 
 int Walker::getType() const
 {
-   return _walkerType;
+   return _d->walkerType;
 }
 
 void Walker::timeStep(const unsigned long time)
@@ -100,7 +106,7 @@ void Walker::timeStep(const unsigned long time)
 
 bool Walker::isDeleted() const
 {
-   return _isDeleted;
+   return _d->isDeleted;
 }
 
 void Walker::setIJ( const TilePos& pos )
@@ -143,7 +149,7 @@ void Walker::setSpeed(const float speed)
 
 WalkerGraphicType Walker::getWalkerGraphic() const
 {
-   return _walkerGraphic;
+   return _d->walkerGraphic;
 }
 
 
@@ -358,7 +364,22 @@ void Walker::computeDirection()
 
 DirectionType Walker::getDirection()
 {
-   return _d->action._direction;
+  return _d->action._direction;
+}
+
+void Walker::setName(const std::string &name)
+{
+  _d->name = name;
+}
+
+const std::string &Walker::getName() const
+{
+  return _d->name;
+}
+
+std::string Walker::getThinks() const
+{
+  return "";
 }
 
 void Walker::getPictureList(std::vector<Picture> &oPics)
@@ -400,8 +421,8 @@ const Picture& Walker::getMainPicture()
 
 void Walker::save( VariantMap& stream ) const
 {
-  //stream[ "id" ] = this;
-  stream[ "type" ] = (int)_walkerType;
+  stream[ "name" ] = Variant( _d->name );
+  stream[ "type" ] = (int)_d->walkerType;
   stream[ "pathway" ] =  _d->pathWay.save();
   stream[ "action" ] = (int)_d->action._action;
   stream[ "direction" ] = (int)_d->action._direction;
@@ -428,6 +449,7 @@ void Walker::load( const VariantMap& stream)
   _d->posOnMap = stream.get( "mappos" ).toPoint();
   _d->uid = (UniqueId)stream.get( "uid" ).toInt();
   _d->speedMultiplier = stream.get( "speedMul" ).toFloat();
+  _d->name = stream.get( "name" ).toString();
   
   _OC3_DEBUG_BREAK_IF( _d->speedMultiplier < 0.1 );
   if( _d->speedMultiplier < 0.1 ) //Sometime this have this error in save file
@@ -447,7 +469,7 @@ TilePos Walker::getIJ() const
 
 void Walker::deleteLater()
 {
-   _isDeleted = true;
+   _d->isDeleted = true;
 }
 
 void Walker::setUniqueId( const UniqueId uid )
@@ -480,6 +502,16 @@ void Walker::_setDirection( DirectionType direction )
   _d->action._direction = direction;
 }
 
+void Walker::_setGraphic(WalkerGraphicType type)
+{
+  _d->walkerGraphic = type;
+}
+
+void Walker::_setType(WalkerType type)
+{
+  _d->walkerType = type;
+}
+
 void Walker::go()
 {
   _d->action._action = WA_MOVE;       // default action
@@ -487,7 +519,109 @@ void Walker::go()
 
 Soldier::Soldier()
 {
-   _walkerType = WT_SOLDIER;
-   _walkerGraphic = WG_HORSEMAN;
+  _setType( WT_SOLDIER );
+  _setGraphic( WG_HORSEMAN );
 }
 
+class WalkerHelper::Impl : public EnumsHelper<WalkerType>
+{
+public:
+  WalkerType getInvalid() const { return WT_NONE; }
+  typedef std::map< WalkerType, std::string > PrettyNames;
+  PrettyNames prettyTypenames;
+
+  void append( WalkerType type, const std::string& typeName, const std::string& prettyTypename )
+  {
+    EnumsHelper<WalkerType>::append( type, typeName );
+    prettyTypenames[ type ] = prettyTypename;
+  }
+
+  Impl()
+  {
+    append( WT_NONE, "none", _("##wt_none##"));
+    append( WT_IMMIGRANT, "immigrant", _("##wt_immigrant##") );
+    append( WT_EMIGRANT, "emmigrant", _("##wt_emmigrant##") );
+    append( WT_SOLDIER, "soldier", _("##wt_soldier##") );
+    append( WT_CART_PUSHER, "cart_pusher", _("##wt_cart_pushher##") );
+    append( WT_MARKETLADY, "market_lady", _("##wt_market_lady##") );
+    append( WT_MARKETLADY_HELPER, "market_lady_helper", _("##wt_market_lady_helper##") );
+    append( WT_SERVICE, "serviceman", _("##wt_serviceman##") );
+    append( WT_TRAINEE, "trainee", _("##wt_trainee##") );
+    append( WT_WORKERS_HUNTER, "workers_hunter", _("##wt_workers_hunter##") );
+    append( WT_PREFECT, "prefect", _("##wt_prefect##") );
+    append( WT_TAXCOLLECTOR, "tax_collector", _("##wt_tax_collector##") );
+    append( WT_MERCHANT, "merchant", _("##wt_merchant##") );
+    append( WT_ENGINEER, "engineer", _("##wt_engineer##") );
+    append( WT_MAX, "unknown", _("##wt_unknown##") );
+  }
+};
+
+WalkerHelper& WalkerHelper::instance()
+{
+  static WalkerHelper inst;
+  return inst;
+}
+
+std::string WalkerHelper::getName( WalkerType type )
+{
+  std::string name = instance()._d->findName( type );
+
+  if( type == instance()._d->getInvalid() )
+  {
+    StringHelper::debug( 0xff, "Can't find walker typeName for %d", type );
+    _OC3_DEBUG_BREAK_IF( "Can't find walker typeName by WalkerType" );
+  }
+
+  return name;
+}
+
+WalkerType WalkerHelper::getType(const std::string &name)
+{
+  WalkerType type = instance()._d->findType( name );
+
+  if( type == instance()._d->getInvalid() )
+  {
+    StringHelper::debug( 0xff, "Can't find walker type for %s", name.c_str() );
+    _OC3_DEBUG_BREAK_IF( "Can't find walker type by typeName" );
+  }
+
+  return type;
+}
+
+std::string WalkerHelper::getPrettyTypeName(WalkerType type)
+{
+  Impl::PrettyNames::iterator it = instance()._d->prettyTypenames.find( type );
+  return it != instance()._d->prettyTypenames.end() ? it->second : "";
+}
+
+Picture WalkerHelper::getBigPicture(WalkerType type)
+{
+  int index = -1;
+  switch( type )
+  {
+  case WT_IMMIGRANT: index=9; break;
+  case WT_EMIGRANT: index=13; break;
+  case WT_CART_PUSHER: index=51; break;
+  case WT_MARKETLADY: index=12; break;
+  case WT_MARKETLADY_HELPER: index=38; break;
+  case WT_MERCHANT: index=25; break;
+  case WT_PREFECT: index=19; break;
+  case WT_ENGINEER: index=7; break;
+  case WT_TAXCOLLECTOR: index=6; break;
+  case WT_WORKERS_HUNTER: index=13; break;
+
+  default: index=8; break;
+  break;
+  }
+
+  return index >= 0 ? Picture::load( "bigpeople", index ) : Picture::getInvalid();
+}
+
+WalkerHelper::~WalkerHelper()
+{
+}
+
+WalkerHelper::WalkerHelper() : _d( new Impl )
+{
+
+}

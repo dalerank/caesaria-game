@@ -30,40 +30,31 @@ class Good
 {
   friend class GoodHelper;
 public:
-  std::string getName();
-  int getImportPrice();
-  int getExportPrice();
-  bool isAllowUsage();
-  bool isAllowStorage();
-  bool isAllowImport();
-  bool isAllowExport();
+  typedef enum
+  {
+    G_NONE,
+    G_WHEAT,
+    G_FISH,
+    G_MEAT,
+    G_FRUIT, G_VEGETABLE, G_OLIVE, G_OIL, G_GRAPE, G_WINE,
+    G_TIMBER, G_FURNITURE, G_CLAY, G_POTTERY, G_IRON, G_WEAPON, G_MARBLE,
+    G_DENARIES,
+    G_MAX
+  } Type;
 
-private:
-  void init(const GoodType &goodType);
+  virtual Type type() const { return _type; }
 
-  GoodType _goodType;
-  BuildingType _outFactoryType;  // type of factory, if any (ex: G_IRON => B_WEAPONS)
-  std::string _name;
-  int _importPrice;
-  int _exportPrice;
-
-  bool _allowUsage;
-  bool _allowStorage;
-  bool _allowImport;
-  bool _allowExport;
-
-  int _usageQuota;   // percent of (rich) population to give access to this product
-  int _importTreshold;  // number of units in warehouses above which no import is made
-  int _exportTreshold;  // number of units in warehouses under which no export is made
+protected:
+  Type _type;
 };
 
-class GoodStock 
+class GoodStock : public Good
 {
 public:
   GoodStock();
-  GoodStock(const GoodType &goodType, const int maxQty, const int currentQty=0);
+  GoodStock(const Good::Type &goodType, const int maxQty, const int currentQty=0);
 
-  void setType( const GoodType &goodType );
+  void setType( const Good::Type &goodType );
   void setMax( const int maxQty );
 
   /** amount: if -1, amount=stock._currentQty */
@@ -74,7 +65,6 @@ public:
 
   bool empty() const;
 
-  GoodType _goodType;
   int _maxQty;
   int _currentQty;
 };

@@ -19,9 +19,10 @@
 #ifndef BUILDING_DATA_HPP
 #define BUILDING_DATA_HPP
 
-#include "oc3_enums.hpp"
+#include "oc3_good.hpp"
 #include "oc3_scopedptr.hpp"
 #include "oc3_filepath.hpp"
+#include "oc3_picture.hpp"
 
 // contains some metaData for a building type
 class BuildingData
@@ -37,10 +38,9 @@ public:
   BuildingType getType() const;
   BuildingClass getClass() const;
   int getEmployers() const;
+  const Picture& getBasePicture() const;
   // returns the building price, -1 => cannot be built
   int getCost() const;
-  std::string getResouceGroup() const;
-  int getResourceIndex() const;
   char getDesirbilityInfluence() const;
   char getDesirabilityStep() const;
   char getDesirbilityRange() const;
@@ -50,8 +50,7 @@ private:
   BuildingClass _buildingClass;
   std::string _name;  // debug name  (english, ex:"iron")
   std::string _prettyName;  // pretty-print name  (i18n, ex:"Iron mine")
-  std::string _resourceGroup;
-  int _rcIndex;
+  Picture _basePicture;
   int _baseDesirability;
   int _desirabilityRange;
   int _desirabilityStep;
@@ -70,13 +69,12 @@ public:
    bool hasData(const BuildingType buildingType) const;
 
    // return factory that consume goodType
-   BuildingType getBuildingTypeByInGood(const GoodType inGoodType) const;
+   BuildingType getConsumerType(const Good::Type inGoodType) const;
 
    static BuildingType getType( const std::string& name );
    static BuildingClass getClass( const std::string& name );
 
    void initialize( const io::FilePath& filename );
-
 private:
    BuildingDataHolder();
 

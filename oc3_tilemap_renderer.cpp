@@ -31,7 +31,7 @@
 #include "oc3_tilemapchangecommand.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_stringhelper.hpp"
-#include "oc3_house.hpp"
+#include "oc3_building_house.hpp"
 #include "oc3_house_level.hpp"
 #include "oc3_building_watersupply.hpp"
 
@@ -243,7 +243,7 @@ void TilemapRenderer::Impl::drawTileFire( Tile& tile )
   else
   {   
     LandOverlayPtr overlay = terrain.getOverlay();
-    Picture* pic = 0;
+    Picture pic;
     int fireLevel = 0;
     switch( overlay->getType() )
     {
@@ -254,7 +254,7 @@ void TilemapRenderer::Impl::drawTileFire( Tile& tile )
     case B_BURNED_RUINS:
     case B_COLLAPSED_RUINS:
     case B_PREFECTURE:
-      pic = &tile.getPicture();
+      pic = tile.getPicture();
       needDrawAnimations = true;
     break;  
 
@@ -262,7 +262,7 @@ void TilemapRenderer::Impl::drawTileFire( Tile& tile )
     case B_HOUSE:
       {
         HousePtr house = overlay.as< House >();
-        pic = &Picture::load( ResourceGroup::waterOverlay, ( overlay->getSize().getWidth() - 1 )*2 + 11 );
+        pic = Picture::load( ResourceGroup::waterOverlay, ( overlay->getSize().getWidth() - 1 )*2 + 11 );
         fireLevel = (int)house->getFireLevel();
         needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() ==0);
       }
@@ -271,7 +271,7 @@ void TilemapRenderer::Impl::drawTileFire( Tile& tile )
       //other buildings
     default:
       {
-        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + 1 );
+        pic = Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + 1 );
         BuildingPtr building = overlay.as< Building >();
         if( building.isValid() )
         {
@@ -281,7 +281,7 @@ void TilemapRenderer::Impl::drawTileFire( Tile& tile )
     break;
     }  
 
-    engine->drawPicture( *pic, screenPos );
+    engine->drawPicture( pic, screenPos );
 
     if( needDrawAnimations )
     {
@@ -310,7 +310,7 @@ void TilemapRenderer::Impl::drawTileDamage( Tile& tile )
   else
   {   
     LandOverlayPtr overlay = terrain.getOverlay();
-    Picture* pic = 0;
+    Picture pic;
     int damageLevel = 0;
     switch( overlay->getType() )
     {
@@ -319,7 +319,7 @@ void TilemapRenderer::Impl::drawTileDamage( Tile& tile )
     case B_PLAZA:
     case B_COLLAPSED_RUINS:
     case B_ENGINEER_POST:
-      pic = &tile.getPicture();
+      pic = tile.getPicture();
       needDrawAnimations = true;
       break;  
 
@@ -327,7 +327,7 @@ void TilemapRenderer::Impl::drawTileDamage( Tile& tile )
     case B_HOUSE:
       {
         HousePtr house = overlay.as< House >();
-        pic = &Picture::load( ResourceGroup::waterOverlay, ( overlay->getSize().getWidth() - 1 )*2 + 11 );
+        pic = Picture::load( ResourceGroup::waterOverlay, ( overlay->getSize().getWidth() - 1 )*2 + 11 );
         damageLevel = (int)house->getDamageLevel();
         needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() ==0);
       }
@@ -336,7 +336,7 @@ void TilemapRenderer::Impl::drawTileDamage( Tile& tile )
       //other buildings
     default:
       {
-        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + 1 );
+        pic = Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + 1 );
         BuildingPtr building = overlay.as< Building >();
         if( building.isValid() )
         {
@@ -346,7 +346,7 @@ void TilemapRenderer::Impl::drawTileDamage( Tile& tile )
       break;
     }  
 
-    engine->drawPicture( *pic, screenPos );
+    engine->drawPicture( pic, screenPos );
 
     if( needDrawAnimations )
     {
@@ -375,7 +375,7 @@ void TilemapRenderer::Impl::drawTileReligion( Tile& tile )
   else
   {   
     LandOverlayPtr overlay = terrain.getOverlay();
-    Picture* pic = 0;
+    Picture pic;
     int religionLevel = -1;
     switch( overlay->getType() )
     {
@@ -385,7 +385,7 @@ void TilemapRenderer::Impl::drawTileReligion( Tile& tile )
     case B_TEMPLE_CERES: case B_TEMPLE_MARS: case B_TEMPLE_MERCURE: case B_TEMPLE_NEPTUNE: case B_TEMPLE_VENUS:
     case B_TEMPLE_ORACLE:
     case B_BIG_TEMPLE_CERES: case B_BIG_TEMPLE_MARS: case B_BIG_TEMPLE_MERCURE: case B_BIG_TEMPLE_NEPTUNE: case B_BIG_TEMPLE_VENUS:
-      pic = &tile.getPicture();
+      pic = tile.getPicture();
       needDrawAnimations = true;
     break;  
 
@@ -393,7 +393,7 @@ void TilemapRenderer::Impl::drawTileReligion( Tile& tile )
     case B_HOUSE:
       {
         HousePtr house = overlay.as< House >();
-        pic = &Picture::load( ResourceGroup::waterOverlay, ( overlay->getSize().getWidth() - 1 )*2 + 11 );
+        pic = Picture::load( ResourceGroup::waterOverlay, ( overlay->getSize().getWidth() - 1 )*2 + 11 );
         religionLevel = house->getServiceAccess(S_TEMPLE_MERCURE);
         religionLevel += house->getServiceAccess(S_TEMPLE_VENUS);
         religionLevel += house->getServiceAccess(S_TEMPLE_MARS);
@@ -407,12 +407,12 @@ void TilemapRenderer::Impl::drawTileReligion( Tile& tile )
       //other buildings
     default:
       {
-        pic = &Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + 1 );
+        pic = Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + 1 );
       }
     break;
     }  
 
-    engine->drawPicture( *pic, screenPos );
+    engine->drawPicture( pic, screenPos );
 
     if( needDrawAnimations )
     {
@@ -441,7 +441,7 @@ void TilemapRenderer::Impl::drawTileFood( Tile& tile )
   else
   {   
     LandOverlayPtr overlay = terrain.getOverlay();
-    Picture* pic = 0;
+    Picture pic;
     int foodLevel = -1;
     switch( overlay->getType() )
     {
@@ -450,7 +450,7 @@ void TilemapRenderer::Impl::drawTileFood( Tile& tile )
     case B_PLAZA:
     case B_MARKET:
     case B_GRANARY:
-      pic = &tile.getPicture();
+      pic = tile.getPicture();
       needDrawAnimations = true;
     break;  
 
@@ -472,9 +472,9 @@ void TilemapRenderer::Impl::drawTileFood( Tile& tile )
       break;
     }  
 
-    if ( pic != NULL )
+    if ( pic.isValid())
     {
-      engine->drawPicture( *pic, screenPos );
+      engine->drawPicture( pic, screenPos );
     }
 
     if( needDrawAnimations )
@@ -505,7 +505,7 @@ void TilemapRenderer::Impl::drawTileWater( Tile& tile )
   else
   {
     LandOverlayPtr overlay = terrain.getOverlay();
-    Picture* pic = 0;
+    Picture pic;
     switch( overlay->getType() )
     {
       //water buildings
@@ -515,7 +515,7 @@ void TilemapRenderer::Impl::drawTileWater( Tile& tile )
     case B_FOUNTAIN:
     case B_WELL:
     case B_AQUEDUCT:
-      pic = &tile.getPicture();
+      pic = tile.getPicture();
       needDrawAnimations = true;
       areaSize = overlay->getSize();
     break;
@@ -535,16 +535,16 @@ void TilemapRenderer::Impl::drawTileWater( Tile& tile )
 
       drawBuildingAreaTiles( tile, overlay, ResourceGroup::waterOverlay, WaterOverlay::base + tileNumber );
 
-      pic = NULL;
+      pic = Picture::getInvalid();
       areaSize = 0;
       needDrawAnimations = false;
     }
     break;
     }
 
-    if ( pic != NULL )
+    if ( pic.isValid() )
     {
-      engine->drawPicture( *pic, screenPos );
+      engine->drawPicture( pic, screenPos );
     }
 
     if( needDrawAnimations )
@@ -606,10 +606,10 @@ void TilemapRenderer::Impl::drawTileBase( Tile& tile )
       }
     }
 
-  if (!tile.wasDrawn()) {
+  if (!tile.wasDrawn())
+  {
     tile.setWasDrawn();
-    Picture& pic = tile.getPicture();
-    engine->drawPicture( pic, screenPos );
+    engine->drawPicture( tile.getPicture(), screenPos );
   }
 
   if (overlay.isNull())

@@ -17,7 +17,7 @@
 #include "oc3_city.hpp"
 #include "oc3_safetycast.hpp"
 #include "oc3_positioni.hpp"
-#include "oc3_house.hpp"
+#include "oc3_building_house.hpp"
 #include "oc3_house_level.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_time.hpp"

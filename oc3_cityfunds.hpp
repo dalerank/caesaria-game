@@ -19,7 +19,7 @@
 #include "oc3_scopedptr.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_signals.hpp"
-#include "oc3_enums.hpp"
+#include "oc3_good.hpp"
 #include "oc3_predefinitions.hpp"
 
 struct FundIssue
@@ -31,8 +31,8 @@ struct FundIssue
   FundIssue( int t, int m ) : type( t ), money( m ) {}
 
   static void resolve( CityPtr city, int type, int money );
-  static void importGoods( CityPtr city, GoodType type, int qty );
-  static void exportGoods( CityPtr city, GoodType type, int qty );
+  static void importGoods( CityPtr city, Good::Type type, int qty );
+  static void exportGoods( CityPtr city, Good::Type type, int qty );
 };
 
 class CityFunds

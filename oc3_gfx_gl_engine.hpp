@@ -24,7 +24,6 @@
 #include <list>
 #include <vector>
 #include <SDL.h>
-#include <SDL_image.h>
 #include <SDL_opengl.h>
 
 #include "oc3_picture.hpp"

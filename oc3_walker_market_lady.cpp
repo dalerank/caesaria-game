@@ -28,12 +28,13 @@
 #include "oc3_walker_market_lady_helper.hpp"
 #include "oc3_goodstore_simple.hpp"
 #include "oc3_city.hpp"
+#include "oc3_name_generator.hpp"
 
 class MarketLady::Impl
 {
 public:
   TilePos destBuildingPos;  // granary or warehouse
-  GoodType priorityGood;
+  Good::Type priorityGood;
   int maxDistance;
   CityPtr city;
   MarketPtr market;
@@ -43,21 +44,23 @@ public:
 
 MarketLady::MarketLady() : _d( new Impl )
 {
-   _walkerGraphic = WG_MARKETLADY;
-   _walkerType = WT_MARKETLADY;
+   _setGraphic( WG_MARKETLADY );
+   _setType( WT_MARKETLADY );
    _d->maxDistance = 25;
    _d->basket.setMaxQty(800);  // this is a big basket!
 
-   _d->basket.setMaxQty(G_WHEAT, 800);
-   _d->basket.setMaxQty(G_FRUIT, 800);
-   _d->basket.setMaxQty(G_VEGETABLE, 800);
-   _d->basket.setMaxQty(G_MEAT, 800);
-   _d->basket.setMaxQty(G_FISH, 800);
+   _d->basket.setMaxQty(Good::G_WHEAT, 800);
+   _d->basket.setMaxQty(Good::G_FRUIT, 800);
+   _d->basket.setMaxQty(Good::G_VEGETABLE, 800);
+   _d->basket.setMaxQty(Good::G_MEAT, 800);
+   _d->basket.setMaxQty(Good::G_FISH, 800);
 
-   _d->basket.setMaxQty(G_POTTERY, 100);
-   _d->basket.setMaxQty(G_FURNITURE, 100);
-   _d->basket.setMaxQty(G_OIL, 100);
-   _d->basket.setMaxQty(G_WINE, 100);
+   _d->basket.setMaxQty(Good::G_POTTERY, 100);
+   _d->basket.setMaxQty(Good::G_FURNITURE, 100);
+   _d->basket.setMaxQty(Good::G_OIL, 100);
+   _d->basket.setMaxQty(Good::G_WINE, 100);
+
+   setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
 MarketLady::~MarketLady()
@@ -66,7 +69,7 @@ MarketLady::~MarketLady()
 
 template< class T >
 TilePos getWalkerDestination2( Propagator &pathPropagator, const BuildingType type, 
-                               MarketPtr market, SimpleGoodStore& basket, const GoodType what, 
+                               MarketPtr market, SimpleGoodStore& basket, const Good::Type what,
                                PathWay &oPathWay, long& reservId )
 {
   SmartPtr< T > res;
@@ -112,7 +115,7 @@ TilePos getWalkerDestination2( Propagator &pathPropagator, const BuildingType ty
 void MarketLady::computeWalkerDestination( MarketPtr market )
 {
   _d->market = market;
-  std::list<GoodType> priorityGoods = _d->market->getMostNeededGoods();
+  std::list<Good::Type> priorityGoods = _d->market->getMostNeededGoods();
 
   _d->destBuildingPos = TilePos( -1, -1 );  // no destination yet
 
@@ -127,13 +130,13 @@ void MarketLady::computeWalkerDestination( MarketPtr market )
      pathPropagator.propagate( _d->maxDistance);
 
      // try to find the most needed good
-     for (std::list<GoodType>::iterator itGood = priorityGoods.begin(); itGood != priorityGoods.end(); ++itGood)
+     for (std::list<Good::Type>::iterator itGood = priorityGoods.begin(); itGood != priorityGoods.end(); ++itGood)
      {
         _d->priorityGood = *itGood;
 
-        if( _d->priorityGood == G_WHEAT || _d->priorityGood == G_FISH 
-            || _d->priorityGood == G_MEAT || _d->priorityGood == G_FRUIT 
-            || _d->priorityGood == G_VEGETABLE)
+        if( _d->priorityGood == Good::G_WHEAT || _d->priorityGood == Good::G_FISH
+            || _d->priorityGood == Good::G_MEAT || _d->priorityGood == Good::G_FRUIT
+            || _d->priorityGood == Good::G_VEGETABLE)
         {
            // try get that good from a granary
            _d->destBuildingPos = getWalkerDestination2<Granary>( pathPropagator, B_GRANARY, _d->market,
@@ -193,10 +196,10 @@ void MarketLady::onDestination()
         granary->getGoodStore().applyRetrieveReservation(_d->basket, _d->reservationID);
 
         // take other goods if possible
-        for (int n = 1; n<G_MAX; ++n)
+        for (int n = 1; n<Good::G_MAX; ++n)
         {
            // for all types of good (except G_NONE)
-           GoodType goodType = (GoodType) n;
+           Good::Type goodType = (Good::Type) n;
            int qty = _d->market->getGoodDemand(goodType) - _d->basket.getCurrentQty(goodType);
            if (qty != 0)
            {
@@ -220,10 +223,10 @@ void MarketLady::onDestination()
         warehouse->getGoodStore().applyRetrieveReservation(_d->basket, _d->reservationID);
 
         // take other goods if possible
-        for (int n = 1; n<G_MAX; ++n)
+        for (int n = 1; n<Good::G_MAX; ++n)
         {
            // for all types of good (except G_NONE)
-           GoodType goodType = (GoodType) n;
+           Good::Type goodType = (Good::Type) n;
            int qty = _d->market->getGoodDemand(goodType) - _d->basket.getCurrentQty(goodType);
            if (qty != 0)
            {
@@ -243,14 +246,14 @@ void MarketLady::onDestination()
 
       while( _d->basket.getCurrentQty() > 100 )
       {
-        for( int gtype=G_WHEAT; gtype <= G_WINE; gtype++ )
+        for( int gtype=Good::G_WHEAT; gtype <= Good::G_WINE; gtype++ )
         {
-          GoodStock& currentStock = _d->basket.getStock( (GoodType)gtype );
+          GoodStock& currentStock = _d->basket.getStock( (Good::Type)gtype );
           if( currentStock._currentQty > 0 )
           {
             MarketLadyHelperPtr boy = MarketLadyHelper::create( this );
             GoodStock& boyBasket =  boy->getBasket();
-            boyBasket._goodType = (GoodType)gtype;
+            boyBasket.setType( (Good::Type)gtype );
             boyBasket._maxQty = 100;
             _d->basket.retrieve( boyBasket, math::clamp( currentStock._currentQty, 0, 100 ) );
             boy->setDelay( delay );
@@ -288,7 +291,7 @@ void MarketLady::load( const VariantMap& stream)
 {
   Walker::load( stream );
   _d->destBuildingPos = stream.get( "destBuildPos" ).toTilePos();
-  _d->priorityGood = (GoodType)stream.get( "priorityGood" ).toInt();
+  _d->priorityGood = (Good::Type)stream.get( "priorityGood" ).toInt();
   TilePos tpos = stream.get( "marketPos" ).toTilePos();
   CityHelper helper( _d->city );
   _d->market = helper.getBuilding<Market>( tpos );

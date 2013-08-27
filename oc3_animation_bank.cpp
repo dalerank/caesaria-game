@@ -20,6 +20,7 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_stringhelper.hpp"
+#include "oc3_walker_emigrant.hpp"
 
 namespace{
   static const Point frontCartOffsetSouth = Point( -33, 22 );
@@ -46,7 +47,7 @@ namespace{
 class AnimationBank::Impl
 {
 public:
-  std::vector< PicturesArray > carts; // pictures[GoodType][Direction]
+  std::map< int, PicturesArray > carts;
   
   typedef std::vector< AnimationBank::WalkerAnimationMap > Animations;
   Animations animations; // anim[WalkerGraphic][WalkerAction]
@@ -64,28 +65,27 @@ public:
 void AnimationBank::Impl::loadCarts()
 {
   //number of animations with goods + emmigrants + immigrants
-  carts.resize(CT_MAX);
   bool frontCart = false;
 
-  carts[G_NONE] = fillCart(ResourceGroup::carts, noneGoodsPicId, frontCart);
-  carts[G_WHEAT] = fillCart(ResourceGroup::carts, 9, frontCart);
-  carts[G_VEGETABLE] = fillCart(ResourceGroup::carts, 17, frontCart);
-  carts[G_FRUIT] = fillCart( ResourceGroup::carts, 25, frontCart);
-  carts[G_OLIVE] = fillCart( ResourceGroup::carts, 33, frontCart);
-  carts[G_GRAPE] = fillCart( ResourceGroup::carts, 41, frontCart);
-  carts[G_MEAT] = fillCart( ResourceGroup::carts, 49, frontCart);
-  carts[G_WINE] = fillCart( ResourceGroup::carts, 57, frontCart);
-  carts[G_OIL] = fillCart( ResourceGroup::carts, 65, frontCart);
-  carts[G_IRON] = fillCart( ResourceGroup::carts, 73, frontCart);
-  carts[G_TIMBER] = fillCart( ResourceGroup::carts, 81, frontCart);
-  carts[G_CLAY] =  fillCart( ResourceGroup::carts, 89, frontCart);
-  carts[G_MARBLE] = fillCart( ResourceGroup::carts, 97, frontCart);
-  carts[G_WEAPON] = fillCart( ResourceGroup::carts, 105, frontCart);
-  carts[G_FURNITURE] = fillCart( ResourceGroup::carts, 113, frontCart);
-  carts[G_POTTERY] = fillCart( ResourceGroup::carts, 121, frontCart);
-  carts[G_EMIGRANT_CART1] = fillCart( ResourceGroup::carts, 129, !frontCart);
-  carts[G_ENIGRANT_CART2] = fillCart( ResourceGroup::carts, 137, !frontCart);
-  carts[G_FISH] = fillCart( ResourceGroup::carts, 697, frontCart);
+  carts[Good::G_NONE] = fillCart(ResourceGroup::carts, noneGoodsPicId, frontCart);
+  carts[Good::G_WHEAT] = fillCart(ResourceGroup::carts, 9, frontCart);
+  carts[Good::G_VEGETABLE] = fillCart(ResourceGroup::carts, 17, frontCart);
+  carts[Good::G_FRUIT] = fillCart( ResourceGroup::carts, 25, frontCart);
+  carts[Good::G_OLIVE] = fillCart( ResourceGroup::carts, 33, frontCart);
+  carts[Good::G_GRAPE] = fillCart( ResourceGroup::carts, 41, frontCart);
+  carts[Good::G_MEAT] = fillCart( ResourceGroup::carts, 49, frontCart);
+  carts[Good::G_WINE] = fillCart( ResourceGroup::carts, 57, frontCart);
+  carts[Good::G_OIL] = fillCart( ResourceGroup::carts, 65, frontCart);
+  carts[Good::G_IRON] = fillCart( ResourceGroup::carts, 73, frontCart);
+  carts[Good::G_TIMBER] = fillCart( ResourceGroup::carts, 81, frontCart);
+  carts[Good::G_CLAY] =  fillCart( ResourceGroup::carts, 89, frontCart);
+  carts[Good::G_MARBLE] = fillCart( ResourceGroup::carts, 97, frontCart);
+  carts[Good::G_WEAPON] = fillCart( ResourceGroup::carts, 105, frontCart);
+  carts[Good::G_FURNITURE] = fillCart( ResourceGroup::carts, 113, frontCart);
+  carts[Good::G_POTTERY] = fillCart( ResourceGroup::carts, 121, frontCart);
+  carts[Emigrant::G_EMIGRANT_CART1] = fillCart( ResourceGroup::carts, 129, !frontCart);
+  carts[Emigrant::G_EMIGRANT_CART2] = fillCart( ResourceGroup::carts, 137, !frontCart);
+  carts[Good::G_FISH] = fillCart( ResourceGroup::carts, 697, frontCart);
 }
 
 void AnimationBank::Impl::loadWalkers()
@@ -206,12 +206,7 @@ PicturesArray AnimationBank::Impl::fillCart( const std::string &prefix, const in
   return ioCart;
 }
 
-const Picture& AnimationBank::getCart(GoodType cart, const DirectionType &direction)
+const Picture& AnimationBank::getCart( int cartId, const DirectionType &direction)
 {
-  return instance()._d->carts.at( cart ).at( direction );
-}
-
-const Picture& AnimationBank::getCart(CartTypes cart, const DirectionType &direction)
-{
-  return instance()._d->carts.at( cart ).at( direction );
+  return instance()._d->carts.at( cartId ).at( direction );
 }
