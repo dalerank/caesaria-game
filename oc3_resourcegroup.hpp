@@ -24,6 +24,7 @@ public:
     static const char* menuMiddleIcons;
     static const char* land2a;
     static const char* land3a;
+    static const char* animals;
     static const char* sprites;
     static const char* buildingEngineer;
     static const char* utilitya;

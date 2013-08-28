@@ -13,41 +13,37 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-
-#ifndef __OPENCAESAR3_WALKER_CART_SUPPLIER_H_INCLUDED__
-#define __OPENCAESAR3_WALKER_CART_SUPPLIER_H_INCLUDED__
+#ifndef __OPENCAESAR3_ANIMAL_H_INCLUDED__
+#define __OPENCAESAR3_ANIMAL_H_INCLUDED__
 
 #include "oc3_walker.hpp"
 #include "oc3_predefinitions.hpp"
 
-/** This walker delivers goods */
-class CartSupplier : public Walker
+/** This is an immigrant coming with his stuff */
+class Animal : public Walker
 {
 public:
-  static CartSupplierPtr create( CityPtr city );
+  Animal( CityPtr city );
+  ~Animal();
 
-  void setDestinationBuilding( BuildingPtr building );
-  void setBaseBuilding( BuildingPtr building );
-  
-  const Picture& getCartPicture();
-  
-  virtual void getPictureList(std::vector<Picture> &oPics);
-  virtual void onNewDirection();
-  virtual void onDestination();
+  virtual void send2City( const Tile& startTile );
 
-  void send2City( BuildingPtr building, const Good::Type type, const int qty );
-
-  void computeWalkerDestination( BuildingPtr building, const Good::Type type, const int qty );
- 
   void save(VariantMap& stream) const;
   void load(const VariantMap& stream);
 
 protected:
-  CartSupplier( CityPtr city );
-
-private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#endif //__OPENCAESAR3_WALKER_CART_SUPPLIER_H_INCLUDED__
+class Sheep : public Animal
+{
+public: \
+  static WalkerPtr create( CityPtr city );
+
+  virtual void send2City( const Tile &startTile);
+private:
+  Sheep( CityPtr city );
+};
+
+#endif //__OPENCAESAR3_ANIMAL_H_INCLUDED__

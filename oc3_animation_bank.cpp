@@ -92,35 +92,36 @@ void AnimationBank::Impl::loadWalkers()
 {
   animations.resize(30);  // number of walker types
 
-  animations[WG_POOR] = fillWalker( "citizen01", 1, 12 );
-  animations[WG_BATH] = fillWalker( "citizen01", 105, 12);
-  animations[WG_PRIEST] = fillWalker( "citizen01", 209, 12);
-  animations[WG_ACTOR] = fillWalker( "citizen01", 313, 12);
-  animations[WG_TAMER] = fillWalker( "citizen01", 417, 12);
-  animations[WG_TAX] =   fillWalker( "citizen01", 617, 12);
-  animations[WG_CHILD] =   fillWalker("citizen01", 721, 12);
-  animations[WG_MARKETLADY] =   fillWalker( "citizen01", 825, 12);
-  animations[WG_PUSHER] =   fillWalker( "citizen01", 929, 12);
-  animations[WG_PUSHER2] =   fillWalker( "citizen01", 1033, 12);
+  animations[WG_POOR] =     fillWalker( "citizen01", 1, 12 );
+  animations[WG_BATH] =     fillWalker( "citizen01", 105, 12);
+  animations[WG_PRIEST] =   fillWalker( "citizen01", 209, 12);
+  animations[WG_ACTOR] =    fillWalker( "citizen01", 313, 12);
+  animations[WG_TAMER] =    fillWalker( "citizen01", 417, 12);
+  animations[WG_TAX] =      fillWalker( "citizen01", 617, 12);
+  animations[WG_CHILD] =    fillWalker("citizen01", 721, 12);
+  animations[WG_MARKETLADY] = fillWalker( "citizen01", 825, 12);
+  animations[WG_PUSHER] =     fillWalker( "citizen01", 929, 12);
+  animations[WG_PUSHER2] =    fillWalker( "citizen01", 1033, 12);
   animations[WG_ENGINEER] =   fillWalker( "citizen01", 1137, 12);
   animations[WG_GLADIATOR] =  fillWalker( "citizen02", 1, 12);
-  animations[WG_GLADIATOR2] =   fillWalker( "citizen02", 199, 12);
-  animations[WG_RIOTER] =   fillWalker( "citizen02", 351, 12);
-  animations[WG_BARBER] =   fillWalker( "citizen02", 463, 12);
-  animations[WG_PREFECT] =   fillWalker( "citizen02", 615, 12);
+  animations[WG_GLADIATOR2] =         fillWalker( "citizen02", 199, 12);
+  animations[WG_RIOTER] =             fillWalker( "citizen02", 351, 12);
+  animations[WG_BARBER] =             fillWalker( "citizen02", 463, 12);
+  animations[WG_PREFECT] =            fillWalker( "citizen02", 615, 12);
   animations[WG_PREFECT_DRAG_WATER] = fillWalker( "citizen02", 767, 12);
-  animations[WG_PREFECT_FIGHTS_FIRE] =   fillWalker( "citizen02", 863, 6);
-  animations[WG_HOMELESS] =   fillWalker( "citizen02", 911, 12);
-  animations[WG_RICH] =   fillWalker( "citizen03", 713, 12);
-  animations[WG_DOCTOR] =    fillWalker( "citizen03", 817, 12);
-  animations[WG_RICH2] =    fillWalker( "citizen03", 921, 12);
-  animations[WG_LIBRARIAN] =   fillWalker( "citizen03", 1025, 12);
-  animations[WG_SOLDIER] =    fillWalker("citizen03", 553, 12);
-  animations[WG_JAVELINEER] =    fillWalker( "citizen03", 241, 12);
-  animations[WG_HORSEMAN] =    fillWalker( "citizen04", 1, 12);
+  animations[WG_PREFECT_FIGHTS_FIRE] =fillWalker( "citizen02", 863, 6);
+  animations[WG_HOMELESS] =         fillWalker( "citizen02", 911, 12);
+  animations[WG_RICH] =             fillWalker( "citizen03", 713, 12);
+  animations[WG_DOCTOR] =           fillWalker( "citizen03", 817, 12);
+  animations[WG_RICH2] =            fillWalker( "citizen03", 921, 12);
+  animations[WG_LIBRARIAN] =        fillWalker( "citizen03", 1025, 12);
+  animations[WG_SOLDIER] =          fillWalker( "citizen03", 553, 12);
+  animations[WG_JAVELINEER] =       fillWalker( "citizen03", 241, 12);
+  animations[WG_HORSEMAN] =         fillWalker( "citizen04", 1, 12);
   animations[WG_HORSE_CARAVAN] =    fillWalker( ResourceGroup::carts, 145, 12);
   animations[WG_CAMEL_CARAVAN] =    fillWalker( ResourceGroup::carts, 273, 12);
-  animations[WG_MARKETLADY_HELPER] =    fillWalker( ResourceGroup::carts, 369, 12);
+  animations[WG_MARKETLADY_HELPER] =fillWalker( ResourceGroup::carts, 369, 12);
+  animations[WG_ANIMAL_SHEEP] =     fillWalker( ResourceGroup::animals, 153, 12 );
 }
 
 AnimationBank& AnimationBank::instance()

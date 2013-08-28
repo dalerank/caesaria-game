@@ -35,7 +35,7 @@
 #include "oc3_low_bridge.hpp"
 #include "oc3_high_bridge.hpp"
 
-#include "oc3_clay_pit.hpp"
+#include "oc3_building_clay_pit.hpp"
 #include "oc3_factory_marble.hpp"
 #include "oc3_goverment_building.hpp"
 #include "oc3_building_military.hpp"

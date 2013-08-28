@@ -20,7 +20,7 @@
 #include "oc3_filesystem_filelist.hpp"
 
 #ifdef OC3_PLATFORM_WIN
-  #include <Windows.h>
+  #include <windows.h>
   #include <io.h>
 #elif defined(OC3_PLATFORM_UNIX)
   #ifdef OC3_PLATFORM_LINUX

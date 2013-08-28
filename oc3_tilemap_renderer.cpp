@@ -884,17 +884,10 @@ void TilemapRenderer::updatePreviewTiles( bool force )
     Tile* startTile = getTile( _d->startCursorPos, true );  // tile under the cursor (or NULL)
     Tile* stopTile  = getTile( _d->lastCursorPos,  true );
 
-    RoadPropagator rp( *_d->tilemap, *startTile );
-
-    ConstWayOnTiles pathWay;
-
-    bool havepath = rp.getPath( *stopTile, pathWay );
-    if( havepath )
+    ConstWayOnTiles pathWay = RoadPropagator::createPath( *_d->tilemap, *startTile, *stopTile );
+    for( ConstWayOnTiles::iterator it=pathWay.begin(); it != pathWay.end(); it++ )
     {
-      for( ConstWayOnTiles::iterator it=pathWay.begin(); it != pathWay.end(); it++ )
-      {
-        checkPreviewBuild( (*it)->getIJ() );
-      }
+      checkPreviewBuild( (*it)->getIJ() );
     }
   }
   else

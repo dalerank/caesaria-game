@@ -8,6 +8,21 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/" ${CMAKE_MODUL
 aux_source_directory(. SRC_LIST)
 file(GLOB INC_LIST "*.hpp")
 
+if(OPENCAESAR3_CROSSCOMPILING)
+  MESSAGE("Prepare wintoolchain for cross compilation")
+  set(DEP_URL "https://www.dropbox.com/s/4ozo2q3yewga64n/dependencies-mingw.7z" )
+  set(DEP_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dependencies")
+  set(DEP_DOWNLOAD_PATH "${DEP_DIR}/dependencies-mingw.7z")
+
+  if(NOT EXISTS "${DEP_DOWNLOAD_PATH}")
+    MESSAGE("Can't find ${DEP_DOWNLOAD_PATH}")
+    MESSAGE("Try download dependencies-mingw.7z from ${DEP_URL}")
+    file( DOWNLOAD ${DEP_URL} ${DEP_DOWNLOAD_PATH} )
+  endif()
+
+  execute_process( COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/cmake/xcompile/getdeps.sh )
+endif(OPENCAESAR3_CROSSCOMPILING)
+
 find_package(SDL REQUIRED)
 find_package(SDL_mixer REQUIRED)
 find_package(SDL_ttf REQUIRED)

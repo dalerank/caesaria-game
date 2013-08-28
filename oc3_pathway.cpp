@@ -28,6 +28,10 @@ bool operator<(const PathWay &v1, const PathWay &v2)
   return (&v1 < &v2);
 }
 
+class PathWay::Impl
+{
+public:
+};
 
 PathWay::PathWay()
 {
@@ -36,19 +40,14 @@ PathWay::PathWay()
   _isReverse = false;
 }
 
+PathWay::~PathWay()
+{
+
+}
+
 PathWay::PathWay(const PathWay &copy)
 {
   *this = copy;
-}
-
-PathWay PathWay::create( const Tilemap& tmap, const TilePos& startPos, const TilePos& stopPos, 
-                         FindType type/*=roadOnly */ )
-{
-  PathWay ret;
-  ret._tilemap = &tmap;
-  _OC3_DEBUG_BREAK_IF( "Don't work yet")
-
-  return ret;
 }
 
 void PathWay::init(Tilemap &tilemap, Tile &origin)
@@ -353,6 +352,11 @@ VariantMap PathWay::save() const
   stream[ "step" ] = getStep();
 
   return stream;
+}
+
+bool PathWay::isValid() const
+{
+  return getLength() != 0;
 }
 
 void PathWay::load( const VariantMap& stream )

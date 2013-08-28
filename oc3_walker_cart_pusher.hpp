@@ -22,8 +22,6 @@
 #include "oc3_walker.hpp"
 #include "oc3_predefinitions.hpp"
 
-class Propagator;
-
 /** This walker delivers goods */
 class CartPusher : public Walker
 {

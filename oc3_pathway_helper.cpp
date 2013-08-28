@@ -13,23 +13,12 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "oc3_pathway_helper.hpp"
+#include "oc3_roadpropagator.hpp"
+#include "oc3_astarpathfinding.hpp"
 
-#ifndef __OPENCAESAR3_ROADPROPAGATOR_H_INCLUDE_
-#define __OPENCAESAR3_ROADPROPAGATOR_H_INCLUDE_
-
-#include "oc3_scopedptr.hpp"
-#include "oc3_tilemap.hpp"
-
-class Tilemap;
-
-class RoadPropagator
+PathWay PathwayHelper::create( CityPtr tmap, const TilePos& startPos, const TilePos& stopPos,
+                               WayType type/*=roadOnly */ )
 {
-public:
-  /** finds the shortest path between origin and destination
-  * returns True if a path exists
-  * the path is returned in oPathWay
-  */
-  static ConstWayOnTiles createPath( const Tilemap& tileMap, const Tile& startTile, const Tile& destination );
-};
-
-#endif //__OPENCAESAR3_ROADPROPAGATOR_H_INCLUDE_
+  return PathWay();
+}

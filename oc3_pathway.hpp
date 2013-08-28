@@ -20,14 +20,15 @@
 #include "oc3_enums.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_scopedptr.hpp"
 
 class Tilemap;
 
 class PathWay
 {
 public:
-  typedef enum { roadOnly=0, allTerrain } FindType;
   PathWay();
+  virtual ~PathWay();
   PathWay( const PathWay &copy ); 
 
   void init( Tilemap &tilemap, Tile &origin );
@@ -56,10 +57,7 @@ public:
   void load( const VariantMap& stream );
   VariantMap save() const;
 
-  static PathWay create( const Tilemap& tmap, 
-                         const TilePos& startPos, const TilePos& stopPos, 
-                         FindType type=roadOnly );
-
+  bool isValid() const;
 private:
   Tilemap const* _tilemap;
   Tile const* _origin;
@@ -71,6 +69,9 @@ private:
   Directions::reverse_iterator _directionIt_reverse;
   ConstPtrTilesList _tileList;
   bool _isReverse;
+
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 bool operator<(const PathWay &v1, const PathWay &v2);
