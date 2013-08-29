@@ -61,7 +61,7 @@ void CityServiceAnimals::update(const unsigned int time)
     }
 
     Walkers sheeps = _d->city->getWalkerList( WT_ANIMAL_SHEEP );
-    if( sheeps.size() < _d->maxSheeps )
+    if( sheeps.size() < Impl::maxSheeps )
     {
       WalkerPtr sheep = Sheep::create( _d->city );
       if( sheep.isValid() )
