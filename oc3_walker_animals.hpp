@@ -26,22 +26,27 @@ public:
   Animal( CityPtr city );
   ~Animal();
 
-  virtual void send2City( const Tile& startTile );
+  virtual void send2City(const TilePos& start );
 
   void save(VariantMap& stream) const;
   void load(const VariantMap& stream);
 
 protected:
+  void _findNewWay(const TilePos &start);
+
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
 class Sheep : public Animal
 {
-public: \
+public:
   static WalkerPtr create( CityPtr city );
 
-  virtual void send2City( const Tile &startTile);
+  virtual void send2City(const TilePos& start);
+  virtual void onDestination();
+  virtual void onNewTile();
+
 private:
   Sheep( CityPtr city );
 };

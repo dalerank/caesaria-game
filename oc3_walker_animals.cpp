@@ -16,7 +16,8 @@
 #include "oc3_walker_animals.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_city.hpp"
-#include "oc3_astarpathfinding.hpp"
+#include "oc3_pathway_helper.hpp"
+#include "oc3_gettext.hpp"
 
 class Animal::Impl
 {
@@ -31,10 +32,10 @@ Animal::Animal( CityPtr city ) : _d( new Impl )
   _setGraphic( WG_NONE );
   _d->city = city;
 
-  setName( "Animal" );
+  setName( _("##Animal##") );
 }
 
-void Animal::send2City( const Tile& startTile )
+void Animal::send2City(const TilePos &start )
 {
   _d->city->addWalker( WalkerPtr( this ) );
 }
@@ -56,14 +57,7 @@ void Animal::load( const VariantMap& stream )
   _d->destination = stream.get( "destination" ).toTilePos();
 }
 
-
-Sheep::Sheep( CityPtr city ) : Animal( city )
-{
-  _setGraphic( WG_ANIMAL_SHEEP );
-  _setType( WT_ANIMAL_SHEEP );
-}
-
-void Sheep::send2City(const Tile &startTile)
+void Animal::_findNewWay( const TilePos& start )
 {
   int loopIndex = 0;
   bool foundPath = false;
@@ -71,15 +65,66 @@ void Sheep::send2City(const Tile &startTile)
   {
     const Tilemap& tmap = _d->city->getTilemap();
     int range = 10;
-    TilePos dest( std::rand() % range, std::rand() % range );
+    TilePos dest( std::rand() % range- range / 2, std::rand() % range - range / 2 );
+    dest = (start+dest).fit( TilePos( 0, 0 ), TilePos( tmap.getSize()-1, tmap.getSize()-1 ) );
 
+    if( tmap.at( dest ).getTerrain().isWalkable(true) )
+    {
+      PathWay pathway = PathwayHelper::create( _d->city, start, dest, PathwayHelper::allTerrain );
 
+      if( pathway.isValid() )
+      {
+        foundPath = true;
+        setPathWay( pathway );
+        setIJ( start );
+        go();
+      }
+    }
   }
-  while( !foundPath && loopIndex < 20 );
+  while( !foundPath && ++loopIndex < 20 );
 
   if( !foundPath )
   {
     deleteLater();
+  }
+}
 
+
+
+Sheep::Sheep( CityPtr city ) : Animal( city )
+{
+  _setGraphic( WG_ANIMAL_SHEEP_WALK );
+  _setType( WT_ANIMAL_SHEEP );
+  setName( _("##Sheep##") );
+}
+
+WalkerPtr Sheep::create(CityPtr city)
+{
+  WalkerPtr ret( new Sheep( city ) );
+  ret->drop();
+
+  return ret;
+}
+
+void Sheep::onDestination()
+{
+  Walker::onDestination();
+
+  _findNewWay( getIJ() );
+}
+
+void Sheep::onNewTile()
+{
+  Walker::onNewTile();
+  _getAnimation().setFrameDelay( 3 );
+}
+
+void Sheep::send2City(const TilePos &start )
+{
+  _findNewWay( start );
+
+  if( !isDeleted() )
+  {
+    _d->city->addWalker( this );
   }
 }

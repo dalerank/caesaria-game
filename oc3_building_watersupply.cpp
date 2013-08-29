@@ -346,7 +346,7 @@ void Reservoir::destroy()
 {
   //now remove water flag from near tiles
   Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
-  PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() ); 
+  PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
   for( PtrTilesArea::iterator it=reachedTiles.begin(); it != reachedTiles.end(); it++ )
   {
     (*it)->getTerrain().decreaseWaterService( WTR_RESERVOIR );

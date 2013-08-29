@@ -311,14 +311,9 @@ void Walker::walk()
 
 void Walker::onNewTile()
 {
-   // std::cout << "Walker is on a new tile! coord=" << _i << "," << _j << std::endl;
    Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
    Tile& currentTile = tilemap.at( _d->pos );
    _d->updateSpeedMultiplier( currentTile );
-   if( !currentTile.getTerrain().isRoad() )
-   {
-     StringHelper::debug( 0xff, "Walker at (%d, %d) is not on a road!!!", _d->pos.getI(), _d->pos.getJ() );
-   }
 }
 
 

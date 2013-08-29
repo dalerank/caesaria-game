@@ -43,7 +43,7 @@ public:
   // non-constructible tiles have no foreground => master used for background
   Tile* getMasterTile() const;
   void setMasterTile(Tile* master);
-  bool isMasterTile() const;;
+  bool isMasterTile() const;
 
   const TerrainTile& getTerrain() const;
   TerrainTile& getTerrain();

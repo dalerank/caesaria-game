@@ -31,7 +31,7 @@ public:
   virtual ~PathWay();
   PathWay( const PathWay &copy ); 
 
-  void init( Tilemap &tilemap, Tile &origin );
+  void init(const Tilemap &tilemap, const Tile &origin );
 
   int getLength() const;
   const Tile& getOrigin() const;

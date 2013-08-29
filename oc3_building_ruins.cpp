@@ -109,6 +109,8 @@ float BurningRuins::evaluateService( ServiceWalkerPtr walker )
   {
     return _fireLevel;
   }
+
+  return 0;
 }
 
 void BurningRuins::applyService(ServiceWalkerPtr walker)

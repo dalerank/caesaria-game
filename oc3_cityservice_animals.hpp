@@ -13,28 +13,25 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_pathway_helper.hpp"
-#include "oc3_roadpropagator.hpp"
-#include "oc3_astarpathfinding.hpp"
-#include "oc3_astarpathfinding.hpp"
-#include "oc3_city.hpp"
+#ifndef __OPENCAESAR3_CITYSERVICE_ANIMALS_H_INCLUDED__
+#define __OPENCAESAR3_CITYSERVICE_ANIMALS_H_INCLUDED__
 
-PathWay PathwayHelper::create( CityPtr city, const TilePos& startPos, const TilePos& stopPos,
-                               WayType type/*=roadOnly */ )
+#include "oc3_cityservice.hpp"
+#include "oc3_scopedptr.hpp"
+#include "oc3_predefinitions.hpp"
+
+class CityServiceAnimals : public CityService
 {
-  switch( type )
-  {
-  case allTerrain:
-  {
-    const Tilemap& tmap = city->getTilemap();
-    PathWay ret;
-    bool pathfound = Pathfinder::getInstance().getPath( tmap.at( startPos ), tmap.at( stopPos ), ret, 0, Size(1) );
+public:
+  static CityServicePtr create( CityPtr city );
 
-    return ret;
-  }
-  break;
+  void update( const unsigned int time );
 
-  default:
-  break;
-  }
-}
+private:
+  CityServiceAnimals();
+
+  class Impl;
+  ScopedPtr< Impl > _d;
+};
+
+#endif //__OPENCAESAR3_CITYSERVICE_ANIMALS_H_INCLUDED__

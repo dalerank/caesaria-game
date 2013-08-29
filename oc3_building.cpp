@@ -236,7 +236,7 @@ bool Construction::canBuild( const TilePos& pos ) const
   if( (int)rect.size() != getSize().getArea() )
     return false;
 
-  for( PtrTilesArea::iterator itTiles = rect.begin(); 
+  for( PtrTilesArea::iterator itTiles = rect.begin();
        itTiles != rect.end(); ++itTiles )
   {
      is_constructible &= (*itTiles)->getTerrain().isConstructible();

@@ -50,7 +50,7 @@ PathWay::PathWay(const PathWay &copy)
   *this = copy;
 }
 
-void PathWay::init(Tilemap &tilemap, Tile &origin)
+void PathWay::init( const Tilemap &tilemap, const Tile &origin)
 {
   _tilemap = &tilemap;
   _origin = &origin;

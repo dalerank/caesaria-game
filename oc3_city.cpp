@@ -32,6 +32,7 @@
 #include "oc3_cityservice_prosperity.hpp"
 #include "oc3_cityservice_shoreline.hpp"
 #include "oc3_cityservice_info.hpp"
+#include "oc3_cityservice_animals.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_road.hpp"
 #include "oc3_time.hpp"
@@ -117,6 +118,7 @@ City::City() : _d( new Impl )
   addService( CityServiceShoreline::create( this ) );
   addService( CityServiceInfo::create( this ) );
   addService( CityServiceCulture::create( this ) );
+  addService( CityServiceAnimals::create( this ) );
 
   CONNECT( &GameDate::instance(), onMonthChanged(), this, City::monthStep );
 }
@@ -401,7 +403,7 @@ void City::clearLand(const TilePos& pos  )
     }
 
     PtrTilesArea clearedTiles = _d->tilemap.getFilledRectangle( rPos, size );
-    for (PtrTilesArea::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
+    for( PtrTilesArea::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
     {
       (*itTile)->setMasterTile(NULL);
       TerrainTile &terrain = (*itTile)->getTerrain();

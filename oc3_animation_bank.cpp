@@ -56,7 +56,7 @@ public:
   // prefix: image prefix
   // start: index of the first frame
   PicturesArray fillCart( const std::string &prefix, const int start, bool back );
-  AnimationBank::WalkerAnimationMap fillWalker( const std::string& prefix, const int start, const int size);
+  AnimationBank::WalkerAnimationMap loadAnimation( const std::string& prefix, const int start, const int size);
 
   void loadCarts();
   void loadWalkers();
@@ -92,36 +92,36 @@ void AnimationBank::Impl::loadWalkers()
 {
   animations.resize(30);  // number of walker types
 
-  animations[WG_POOR] =     fillWalker( "citizen01", 1, 12 );
-  animations[WG_BATH] =     fillWalker( "citizen01", 105, 12);
-  animations[WG_PRIEST] =   fillWalker( "citizen01", 209, 12);
-  animations[WG_ACTOR] =    fillWalker( "citizen01", 313, 12);
-  animations[WG_TAMER] =    fillWalker( "citizen01", 417, 12);
-  animations[WG_TAX] =      fillWalker( "citizen01", 617, 12);
-  animations[WG_CHILD] =    fillWalker("citizen01", 721, 12);
-  animations[WG_MARKETLADY] = fillWalker( "citizen01", 825, 12);
-  animations[WG_PUSHER] =     fillWalker( "citizen01", 929, 12);
-  animations[WG_PUSHER2] =    fillWalker( "citizen01", 1033, 12);
-  animations[WG_ENGINEER] =   fillWalker( "citizen01", 1137, 12);
-  animations[WG_GLADIATOR] =  fillWalker( "citizen02", 1, 12);
-  animations[WG_GLADIATOR2] =         fillWalker( "citizen02", 199, 12);
-  animations[WG_RIOTER] =             fillWalker( "citizen02", 351, 12);
-  animations[WG_BARBER] =             fillWalker( "citizen02", 463, 12);
-  animations[WG_PREFECT] =            fillWalker( "citizen02", 615, 12);
-  animations[WG_PREFECT_DRAG_WATER] = fillWalker( "citizen02", 767, 12);
-  animations[WG_PREFECT_FIGHTS_FIRE] =fillWalker( "citizen02", 863, 6);
-  animations[WG_HOMELESS] =         fillWalker( "citizen02", 911, 12);
-  animations[WG_RICH] =             fillWalker( "citizen03", 713, 12);
-  animations[WG_DOCTOR] =           fillWalker( "citizen03", 817, 12);
-  animations[WG_RICH2] =            fillWalker( "citizen03", 921, 12);
-  animations[WG_LIBRARIAN] =        fillWalker( "citizen03", 1025, 12);
-  animations[WG_SOLDIER] =          fillWalker( "citizen03", 553, 12);
-  animations[WG_JAVELINEER] =       fillWalker( "citizen03", 241, 12);
-  animations[WG_HORSEMAN] =         fillWalker( "citizen04", 1, 12);
-  animations[WG_HORSE_CARAVAN] =    fillWalker( ResourceGroup::carts, 145, 12);
-  animations[WG_CAMEL_CARAVAN] =    fillWalker( ResourceGroup::carts, 273, 12);
-  animations[WG_MARKETLADY_HELPER] =fillWalker( ResourceGroup::carts, 369, 12);
-  animations[WG_ANIMAL_SHEEP] =     fillWalker( ResourceGroup::animals, 153, 12 );
+  animations[WG_POOR] =     loadAnimation( "citizen01", 1, 12 );
+  animations[WG_BATH] =     loadAnimation( "citizen01", 105, 12);
+  animations[WG_PRIEST] =   loadAnimation( "citizen01", 209, 12);
+  animations[WG_ACTOR] =    loadAnimation( "citizen01", 313, 12);
+  animations[WG_TAMER] =    loadAnimation( "citizen01", 417, 12);
+  animations[WG_TAX] =      loadAnimation( "citizen01", 617, 12);
+  animations[WG_CHILD] =    loadAnimation( "citizen01", 721, 12);
+  animations[WG_MARKETLADY] = loadAnimation( "citizen01", 825, 12);
+  animations[WG_PUSHER] =     loadAnimation( "citizen01", 929, 12);
+  animations[WG_PUSHER2] =    loadAnimation( "citizen01", 1033, 12);
+  animations[WG_ENGINEER] =   loadAnimation( "citizen01", 1137, 12);
+  animations[WG_GLADIATOR] =  loadAnimation( "citizen02", 1, 12);
+  animations[WG_GLADIATOR2] =         loadAnimation( "citizen02", 199, 12);
+  animations[WG_RIOTER] =             loadAnimation( "citizen02", 351, 12);
+  animations[WG_BARBER] =             loadAnimation( "citizen02", 463, 12);
+  animations[WG_PREFECT] =            loadAnimation( "citizen02", 615, 12);
+  animations[WG_PREFECT_DRAG_WATER] = loadAnimation( "citizen02", 767, 12);
+  animations[WG_PREFECT_FIGHTS_FIRE]= loadAnimation( "citizen02", 863, 6);
+  animations[WG_HOMELESS] =         loadAnimation( "citizen02", 911, 12);
+  animations[WG_RICH] =             loadAnimation( "citizen03", 713, 12);
+  animations[WG_DOCTOR] =           loadAnimation( "citizen03", 817, 12);
+  animations[WG_RICH2] =            loadAnimation( "citizen03", 921, 12);
+  animations[WG_LIBRARIAN] =        loadAnimation( "citizen03", 1025, 12);
+  animations[WG_SOLDIER] =          loadAnimation( "citizen03", 553, 12);
+  animations[WG_JAVELINEER] =       loadAnimation( "citizen03", 241, 12);
+  animations[WG_HORSEMAN] =         loadAnimation( "citizen04", 1, 12);
+  animations[WG_HORSE_CARAVAN] =    loadAnimation( ResourceGroup::carts, 145, 12);
+  animations[WG_CAMEL_CARAVAN] =    loadAnimation( ResourceGroup::carts, 273, 12);
+  animations[WG_MARKETLADY_HELPER] =loadAnimation( ResourceGroup::carts, 369, 12);
+  animations[WG_ANIMAL_SHEEP_WALK] =loadAnimation( ResourceGroup::animals, 153, 5 );
 }
 
 AnimationBank& AnimationBank::instance()
@@ -141,7 +141,7 @@ void AnimationBank::loadCarts()
   instance()._d->loadCarts();  
 }
 
-AnimationBank::WalkerAnimationMap AnimationBank::Impl::fillWalker( const std::string& prefix, const int start, const int size)
+AnimationBank::WalkerAnimationMap AnimationBank::Impl::loadAnimation( const std::string& prefix, const int start, const int size)
 {
   WalkerAnimationMap ioMap;
   WalkerAction action;

@@ -63,12 +63,12 @@ TilePos Tilemap::fit( const TilePos& pos ) const
 
 Tile& Tilemap::__at( const int i, const int j )
 {
-  _OC3_DEBUG_BREAK_IF( !isInside( TilePos( i, j ) ) && "Need inside point" );
   if( isInside( TilePos( i, j ) ) )
   {
     return _tile_array.at(i).at(j);
   }
 
+  StringHelper::debug( 0xff, "Need inside point current=[%d, %d]", i, j );
   return invalidTile;
 }
 
@@ -152,7 +152,7 @@ PtrTilesList Tilemap::getFilledRectangle(const TilePos& start, const TilePos& st
       {
          if( isInside( TilePos( i, j ) ))
          {
-            res.push_back(&at( TilePos( i, j ) ) );
+            res.push_back( &at( TilePos( i, j ) ) );
          }
       }
    }
