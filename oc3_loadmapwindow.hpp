@@ -19,6 +19,7 @@
 
 #include "oc3_widget.hpp"
 #include "oc3_scopedptr.hpp"
+#include "oc3_filepath.hpp"
 #include "oc3_signals.hpp"
 
 class Picture;
@@ -27,7 +28,7 @@ class LoadMapWindow : public Widget
 {
 public:
   LoadMapWindow( Widget* parent, const Rect& rect, 
-    const std::string& dir, const std::string& ext,
+    const io::FilePath& dir, const std::string& ext,
     int id );
   
   ~LoadMapWindow();

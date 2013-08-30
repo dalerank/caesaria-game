@@ -33,14 +33,14 @@ public:
   ListBox* files;
   PushButton* btnExit;
   PushButton* btnHelp;
-  std::string directory;
+  io::FilePath directory;
   std::string fileExtension;
 
   void fillFiles();
 
   void resolveFileSelected( std::string fileName )
   {
-    onSelecteFileSignal.emit( directory + fileName );
+    onSelecteFileSignal.emit( directory.toString() + fileName );
   }
 
 oc3_signals public:
@@ -48,7 +48,7 @@ oc3_signals public:
 };
 
 LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect,
-                              const std::string& dir, const std::string& ext, 
+                              const io::FilePath& dir, const std::string& ext,
                               int id )
 : Widget( parent, id, rect ), _d( new Impl )
 {

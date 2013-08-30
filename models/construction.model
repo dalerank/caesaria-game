@@ -2,834 +2,673 @@
   road : {
     cost : 4,
     desirability : 4,
-    desrange : 0,
+    range : 0,
     class : "road"
     image : [ "land2a", 44 ]
   },
   
   wall : {
     desirability : 12,
-    desrange : 0,
+    range : 0,
     class : "wall"
   },
   
   aqueduct : {
     cost : 8,
-    desirability : -2,
-    desrange : 2,
-    desstep : 1
+    desirability : { base: -2, range : 2, step : 1 }
     class : "water"
   },
 
   amphitheater :
   {
     cost : 100,
-    desirability : 4,
-    desrange : 4,
-    desstep : -1,
+    desirability : { base : 4, range : 4, step : -1 }
     employers : 12
     class : "entertainment"
   },
 
-  "theater" : 
+  theater : 
   {
-    "cost" : 50,
-	"desirability" : 2,
-	"desrange" : 2,
-	"desstep" : -1,
-	"employers" : 8
-	"class" : "entertainment"
+  cost : 50,
+	desirability : { base : 2, range : 2, step : -1 }
+	employers : 8
+	class : "entertainment"
+  image : [ "entertainment", 13 ]
   },
 
-  "hippodrome" : 
+  hippodrome : 
   {
-    "cost" : 2500,
-	"desirability" : -3,
-	"desrange" : 3,
-	"desstep" : 1,
-	"employers" : 150
-	"class" : "entertainment"
+  cost : 2500,
+	desirability : { base : -3, range : 3, step : 1 }
+	employers : 150
+	class : "entertainment"
   },
   
-  "colloseum" : 
+  colloseum : 
   {
-    "cost" : 500,
-	"desirability" : -3,
-	"desrange" : 3,
-	"desstep" : 1,
-	"employers" : 25
-	"class" : "entertainment"
+  cost : 500,
+	desirability : { base : -3, range : 3, step : 1 }
+	employers : 25
+	class : "entertainment"
   },
   
   "gladiator_pit" : 
   {
-    "cost" : 75,
-	"desirability" : -3,
-	"desrange" : 3,
-	"desstep" : 1,
-	"employers" : 8
-	"class" : "entertainment"
+  cost : 75,
+	desirability : { base : -3, range : 3, step : 1 }
+	employers : 8
+	class : "entertainment"
   },
   
-  "house" : 
+  house : 
   {
-	"cost" : 10,
-	"desirability" : -3,
-	"desrange" : 3,
-	"desstep" : 1,
-	"employers" : 0
-	"class" : "house"
+	cost : 10,
+	desirability : { base : -3, range : 3, step : 1 }
+	employers : 0
+	class : "house"
   }
 
-  "lion_pit" : 
+  lion_pit : 
   {
-	"cost" : 75,
-	"desirability" : -3,
-	"desrange" : 3,
-	"desstep" : 1,
-	"employers" : 8
-	"class" : "entertainment"
+	cost : 75,
+	desirability : { base : -3, range : 3, step : 1 }
+	employers : 8
+	class : "entertainment"
   },
   
-  "artist_colony" : 
+  artist_colony : 
   {
-	"cost" : 50,
-	"desirability" : -2,
-	"desrange" : 3,
-	"desstep" : 1,
-	"employers" : 5
-	"class" : "entertainment"
+	cost : 50,
+	desirability : { base : -2, range : 3, step : 1 }
+	employers : 5
+	class : "entertainment"
   },
 
-  "chatioteer_school" :
+  chatioteer_school :
   {
-	"cost" : 75,
-	"desirability" : -3,
-	"desrange" : 3,
-	"desstep" : 1,
-	"employers" : 10
-	"class" : "entertainment"
+	cost : 75,
+	desirability : { base : -3, range : 3, step : 1 }
+	employers : 10
+	class : "entertainment"
   },
   
-  "plaza" :
+  plaza :
   {
-    "cost" : 15,
-	"desirability" : 4,
-	"desrange" : 2,
-	"desstep" : -2,
-	"employers" : 0
-	"class" : "road"
+  cost : 15,
+	desirability : { base : 4, range : 2,	step : -2 }
+	employers : 0
+	class : "road"
   },  
 
-  "garden" : 
+  garden : 
   {
-    "cost" : 12,
-	"desirability" : 3,
-	"desrange" : 3,
-	"desstep" : -1,
-	"employers" : 0
-	"class" : "garden"
+  cost : 12,
+	desirability : { base :3,	range : 3,	step : -1 }
+	employers : 0
+	class : "garden"
   },
   
-  "fort_legionaries" :
-   {
-    "cost" : 1000,
-	"desirability" : -20,
-	"desrange" : 10,
-	"desstep" : 2,
-	"employers" : 16
-	"class" : "military"
+  fort_legionaries :
+  {
+  cost : 1000,
+	desirability : { base :-20,	range : 10,	step : 2 }
+	employers : 16
+	class : "military"
   },
 
-  "statue_small" : 
-   {
-    "cost" : 12,
-	"desirability" : 3,
-	"desrange" : 3,
-	"desstep" : -1,
-	"employers" : 0
-	"class" : "sight"
+  statue_small : 
+  {
+  cost : 12,
+	desirability : { base :3,	range : 3,	step : -1}
+	employers : 0
+	class : "sight"
   },
   
-  "statue_middle" :
-   {
-    "cost" : 60,
-	"desirability" : 10,
-	"desrange" : 5,
-	"desstep" : -2,
-	"employers" : 0
-	"class" : "sight"
+  statue_middle :
+  {
+  cost : 60,
+	desirability : { base :10,	range : 5,	step : -2 }
+	employers : 0
+	class : "sight"
   },  
 
-  "statue_big" : 
-   {
-    "cost" : 150,
-	"desirability" : 15,
-	"desrange" : 5,
-	"desstep" : -3,
-	"employers" : 0
-	"class" : "sight"
+  statue_big : 
+  {
+  cost : 150,
+	desirability : { base :15,	range : 5,	step : -3 }
+	employers : 0
+	class : "sight"
   },  
 
-  "fort_javelin" :
+  fort_javelin :
   {
-    "cost" : 1000,
-	"desirability" : -20,
-	"desrange" : 10,
-	"desstep" : 2,
-	"employers" : 16
-	"class" : "military"
+  cost : 1000,
+	desirability : { base :-20,	range : 10,	step : 2 }
+	employers : 16
+	class : "military"
   }, 
 
-  "fort_horse" :
+  fort_horse :
   {
-    "cost" : 1000,
-	"desirability" : -20,
-	"desrange" : 10,
-	"desstep" : 2,
-	"employers" : 16
-	"class" : "military"
+  cost : 1000,
+	desirability : { base :-20,	range : 10,	step : 2 }
+	employers : 16
+	class : "military"
   }, 
 
-  "clinic" :
+  clinic :
   {
-    "cost" : 30,
-	"desirability" : 0,
-	"desrange" : 0,
-	"desstep" : 0,
-	"employers" : 5
-	"class" : "health"
+  cost : 30,
+	desirability : { base :0,	range : 0,	step : 0 }
+	employers : 5
+	class : "health"
   },  
   
-  "hospital" :
+  hospital :
   {
-    "cost" : 300,
-	"desirability" : 2,
-	"desrange" : 2,
-	"desstep" : -1,
-	"employers" : 30
-	"class" : "health"
+  cost : 300,
+	desirability : { base :2,	range : 2,	step : -1 }
+	employers : 30
+	class : "health"
   },
   
-  "baths" :
+  baths :
   {
-    "cost" : 50,
-	"desirability" : 4,
-	"desrange" : 4,
-	"desstep" : -1,
-	"employers" : 10
-	"class" : "health"
+  cost : 50,
+	desirability : { base :4,	range : 4,	step : -1 }
+	employers : 10
+	class : "health"
   }, 
 
-  "barber" :
+  barber :
   {
-    "cost" : 25,
-	"desirability" : 2,
-	"desrange" : 2,
-	"desstep" : -1,
-	"employers" : 2
-	"class" : "health"
+  cost : 25,
+	desirability : { base :2,	range : 2,	step : -1 }
+	employers : 2
+	class : "health"
   }, 
   
-  "school" :
+  school :
   {
-    "cost" : 50,
-	"desirability" : -2,
-	"desrange" : 2,
-	"desstep" : 1,
-	"employers" : 10
-	"class" : "education"
+  cost : 50,
+	desirability : { base :-2,	range : 2,	step : 1 }
+	employers : 10
+	class : "education"
   },    
   
-  "academy" :
+  academy :
   {
-    "cost" : 100,
-	"desirability" : 4,
-	"desrange" : 4,
-	"desstep" : -1,
-	"employers" : 30
-	"class" : "education"
+  cost : 100,
+	desirability : { base :4,	range : 4,	step : -1 }
+	employers : 30
+	class : "education"
   },  
   
-  "library" : 
+  library : 
   {
-    "cost" : 75,
-	"desirability" : 4,
-	"desrange" : 4,
-	"desstep" : -1,
-	"employers" : 20
-	"class" : "education"
+  cost : 75,
+	desirability : { base : 4,	range : 4,	step : -1 }
+	employers : 20
+	class : "education"
   }, 
 
-  "prefecture" : 
+  prefecture : 
   {
-    "cost" : 30,
-	"desirability" : -2,
-	"desrange" : 2,
-	"desstep" : 1,
-	"employers" : 6
-	"class" : "security"
+  cost : 30,
+	desirability : { base :-2,	range : 2,	step : 1 }
+	employers : 6
+	class : "security"
   },  
  
-  "triumphal_arch" : 
+  triumphal_arch : 
   {
-    "cost" : 0,
-	"desirability" : 18,
-	"desrange" : 6,
-	"desstep" : -3,
-	"employers" : 0
-	"class" : "sight"
+  cost : 0,
+	desirability : { base :18,	range : 6,	step : -3 }
+	employers : 0
+	class : "sight"
   }, 
   
-  "gatehouse" : 
+  gatehouse : 
   {
-    "cost" : 100,
-	"desirability" : -4,
-	"desrange" : 4,
-	"desstep" : -1,
-	"employers" : 3
-	"class" : "gate"
+  cost : 100,
+	desirability : -4,
+	range : 4,
+	step : -1,
+	employers : 3
+	class : "gate"
   },  
 
-  "tower" :
+  tower :
   {
-    "cost" : 150,
-	"desirability" : -8,
-	"desrange" : 4,
-	"desstep" : -2,
-	"employers" : 6
-	"class" : "tower"
+  cost : 150,
+	desirability : { base :-8,	range : 4,	step : -2 }
+	employers : 6
+	class : "tower"
   },  
   
-  "small_ceres_temple" :
+  small_ceres_temple :
   {
-    "cost" : 50,
-	"desirability" : 4,
-	"desrange" : 4,
-	"desstep" : -1,
-	"employers" : 2
-	"class" : "religion"
+  cost : 50,
+	desirability : { base :4,	range : 4,	step : -1 }
+	employers : 2
+	class : "religion"
   },  
   
-  "small_neptune_temple" : 
+  small_neptune_temple : 
   {
-    "cost" : 50,
-	"desirability" : 4,
-	"desrange" : 4,
-	"desstep" : -1,
-	"employers" : 2
-	"class" : "religion"
+  cost : 50,
+	desirability : { base :4,	range : 4,	step : -1 }
+	employers : 2
+	class : "religion"
   }, 
   
-  "small_mercury_temple" : 
+  small_mercury_temple : 
   {
-    "cost" : 50,
-	"desirability" : 4,
-	"desrange" : 4,
-	"desstep" : -1,
-	"employers" : 2
-	"class" : "religion"
+  cost : 50,
+	desirability : { base : 4, 	range : 4,	step : -1 }
+	employers : 2
+	class : "religion"
   },
  
-  "small_mars_temple" : 
+  small_mars_temple : 
   {
-    "cost" : 50,
-	"desirability" : 4,
-	"desrange" : 4,
-	"desstep" : -1,
-	"employers" : 2
-	"class" : "religion"
+  cost : 50,
+	desirability : { base : 4,	range : 4,	step : -1 }
+	employers : 2
+	class : "religion"
   },
 
-  "small_venus_temple" : 
+  small_venus_temple : 
   {
-    "cost" : 50,
-	"desirability" : 4,
-	"desrange" : 4,
-	"desstep" : -1,
-	"employers" : 2
-	"class" : "religion"
+  cost : 50,
+	desirability : { base : 4,	range : 4,	step : -1 }
+	employers : 2
+	class : "religion"
   },
  
-  "big_ceres_temple" :
+  big_ceres_temple :
   {
-    "cost" : 150,
-	"desirability" : 8,
-	"desrange" : 8,
-	"desstep" : -1,
-	"employers" : 5
-	"class" : "religion"
+  cost : 150,
+	desirability : { base : 8,	range : 8,	step : -1 }
+	employers : 5
+	class : "religion"
   }, 
   
-  "big_neptune_temple" : 
+  big_neptune_temple : 
   {
-    "cost" : 150,
-	"desirability" : 8,
-	"desrange" : 8,
-	"desstep" : -1,
-	"employers" : 5
-	"class" : "religion"
+  cost : 150,
+	desirability : { base : 8,	range : 8,	step : -1 }
+	employers : 5
+	class : "religion"
   }, 
   
-  "big_mercury_temple" :
+  big_mercury_temple :
   {
-    "cost" : 150,
-	"desirability" : 8,
-	"desrange" : 8,
-	"desstep" : -1,
-	"employers" : 5
-	"class" : "religion"
+  cost : 150,
+	desirability : { base : 8, 	range : 8,	step : -1 }
+	employers : 5
+	class : "religion"
   },
   
-  "big_mars_temple" : 
+  big_mars_temple : 
   {
-    "cost" : 150,
-	"desirability" : 8,
-	"desrange" : 8,
-	"desstep" : -1,
-	"employers" : 5
-	"class" : "religion"
+  cost : 150,
+	desirability : { base : 8, 	range : 8,	step : -1 }
+	employers : 5
+	class : "religion"
   },
   
-  "big_venus_temple" : 
+  big_venus_temple : 
   {
-    "cost" : 150,
-	"desirability" : 8,
-	"desrange" : 8,
-	"desstep" : -1,
-	"employers" : 5
-	"class" : "religion"
+  cost : 150,
+	desirability : { base : 8, 	range : 8,	step : -1 }
+	employers : 5
+	class : "religion"
   }, 
 
-  "market" :
+  market :
   {
-    "cost" : 40,
-	"desirability" : -2,
-	"desrange" : 2,
-	"desstep" : 1,
-	"employers" : 5
-	"class" : "food"
+  cost : 40,
+	desirability : { base : -2, 	range : 2, 	step : 1 }
+	employers : 5
+	class : "food"
   }, 
 
-  "granery" :
+  granery :
   {
-    "cost" : 100,
-	"desirability" : -4,
-	"desrange" : 2,
-	"desstep" : 2,
-	"employers" : 6
-	"class" : "food"
+  cost : 100,
+	desirability : { base : -4,	range : 2,	step : 2 }
+	employers : 6
+	class : "food"
   }, 
 
-  "warehouse" : 
+  warehouse : 
   {
-    "cost" : 70,
-	"desirability" : -6,
-	"desrange" : 3,
-	"desstep" : 2,
-	"employers" : 6
-	"class" : "trade"
+  cost : 70,
+	desirability : { base : -6,	range : 3,	step : 2 }
+	employers : 6
+	class : "trade"
   }, 
 
-  "shipyard" : 
+  shipyard : 
   {
-    "cost" : 100,
-	"desirability" : 8,
-	"desrange" : 4,
-	"desstep" : -2,
-	"employers" : 10
-	"class" : "trade"
+  cost : 100,
+	desirability : { base : 8,	range : 4,	step : -2 }
+	employers : 10
+	class : "trade"
   }, 
   
-  "dock" : 
+  dock : 
   {
-    "cost" : 100,
-	"desirability" : 8,
-	"desrange" : 4,
-	"desstep" : -2,
-	"employers" : 12
-	"class" : "trade"
+  cost : 100,
+	desirability : { base : 8, 	range : 4,	step : -2 }
+	employers : 12
+	class : "trade"
   }, 
 
-  "wharf" : 
+  wharf : 
   {
-    "cost" : 60,
-	"desirability" : 8,
-	"desrange" : 4,
-	"desstep" : -2,
-	"employers" : 6
-	"class" : "food"
+  cost : 60,
+	desirability : { base : 8,	range : 4, 	step : -2 }
+	employers : 6
+	class : "food"
   }, 
   
-  "governor_palace_1" :
+  governor_palace_1 :
   {
-    "cost" : 150,
-	"desirability" : 12,
-	"desrange" : 6,
-	"desstep" : -2,
-	"employers" : 5
-	"class" : "administration"
+  cost : 150,
+	desirability : { base : 12, 	range : 6,	step : -2 }
+	employers : 5
+	class : "administration"
   }, 
   
-  "governor_palace_2" :
+  governor_palace_2 :
   {
-    "cost" : 400,
-	"desirability" : 20,
-	"desrange" : 4,
-	"desstep" : -4,
-	"employers" : 20
-	"class" : "administration"
+  cost : 400,
+	desirability : { base : 20, 	range : 4,	step : -4 }
+	employers : 20
+	class : "administration"
   }, 
 
-  "governor_palace_3" :
+  governor_palace_3 :
   {
-    "cost" : 700,
-	"desirability" : 28,
-	"desrange" : 7,
-	"desstep" : -4,
-	"employers" : 50
-	"class" : "administration"
+  cost : 700,
+	desirability : { base : 28, 	range : 7,	step : -4 }
+	employers : 50
+	class : "administration"
   },
   
-  "engineering_post" : 
+  engineering_post : 
   {
-    "cost" : 30,
-	"desirability" : 0,
-	"desrange" : 0,
-	"desstep" : 0,
-	"employers" : 5
-	"class" : "engineer"
+  cost : 30,
+	desirability : { base : 0, 	range : 0,	step : 0 }
+	employers : 5
+	class : "engineer"
   },
 
-  "low_bridge" : 
+  low_bridge : 
   {
-    "cost" : 40,
-	"desirability" : 0,
-	"desrange" : 0,
-	"desstep" : 0,
-	"employers" : 0
-	"class" : "bridge"
+  cost : 40,
+	desirability : { base : 0,	range : 0,	step : 0 }
+	employers : 0
+	class : "bridge"
   }, 
   
-  "high_bridge" :
+  high_bridge :
   {
-    "cost" : 100,
-	"desirability" : 0,
-	"desrange" : 0,
-	"desstep" : 0,
-	"employers" : 0
-	"class" : "bridge"
+  cost : 100,
+	desirability : { base : 0,	range : 0,	step : 0 }
+	employers : 0
+	class : "bridge"
   },
 
-  "senate_1" : 
+  senate_1 : 
   {
-    "cost" : 250,
-	"desirability" : 8,
-	"desrange" : 4,
-	"desstep" : -2,
-	"employers" : 20
-	"class" : "administration"
+  cost : 250,
+	desirability : { base : 8,	range : 4,	step : -2 }
+	employers : 20
+	class : "administration"
   }, 
  
-  "senate_2" : 
+  senate_2 : 
   {
-    "cost" : 400,
-	"desirability" : 8,
-	"desrange" : 8,
-	"desstep" : -1,
-	"employers" : 30
-	"class" : "administration"
+  cost : 400,
+	desirability : { base : 8,	range : 8,	step : -1 }
+	employers : 30
+	class : "administration"
   }, 
   
-  "forum_1" : 
+  forum_1 : 
   {
-    "cost" : 75,
-	"desirability" : 3,
-	"desrange" : 3,
-	"desstep" : -1,
-	"employers" : 6
-	"class" : "administration"
+  cost : 75,
+	desirability : { base : 3,	range : 3,	step : -1 }
+	employers : 6
+	class : "administration"
   }, 
   
-  "forum_2" : 
+  forum_2 : 
   {
-    "cost" : 125,
-	"desirability" : 3,
-	"desrange" : 3,
-	"desstep" : -1,
-	"employers" : 8
-	"class" : "administration"
+  cost : 125,
+	desirability : { base : 3, 	range : 3,	step : -1 }
+	employers : 8
+	class : "administration"
   },
   
-  "native_hut" : 
+  native_hut : 
   {
-    "cost" : 50,
-	"desirability" : 0,
-	"desrange" : 0,
-	"desstep" : 0,
-	"employers" : 0
-	"class" : "native"
+  cost : 50,
+	desirability : { base : 0, 	range : 0,	step : 0 }
+	employers : 0
+	class : "native"
   }, 
   
-  "native_center" :
+  native_center :
   {
-    "cost" : 50,
-	"desirability" : 0,
-	"desrange" : 0,
-	"desstep" : 0,
-	"employers" : 0
-	"class" : "native"
+  cost : 50,
+	desirability : { base : 0,	range : 0,	step : 0 }
+	employers : 0
+	class : "native"
   }, 
   
-  "reservoir" : 
+  reservoir : 
   {
-    "cost" : 80,
-	"desirability" : -6,
-	"desrange" : 3,
-	"desstep" : -2,
-	"employers" : 0
-	"class" : "water"
+  cost : 80,
+	desirability : { base : -6,	range : 3,	step : -2 }
+	employers : 0
+	class : "water"
   }, 
 
-  "fountain" : 
+  fountain : 
   {
     cost : 15,
-	  desirability : 0,
-	  desrange : 0,
-	  desstep : 0,
+	  desirability : { base : 0,	  range : 0,	  step : 0 }
 	  employers : 4
 	  class : "water"
   }, 
   
-  "well" : 
+  well : 
   {
     cost : 5,
-    desirability : -1,
-    desrange : 1,
-    desstep : 1,
+    desirability : { base : -1,    range : 1,    step : 1 }
     employers : 1,
     pretty : "Well",
     image : [ "utilitya", 1 ]
     class : "water"
   }, 
  
-  "native_field" : 
+  native_field :  
   {
-    "cost" : 0,
-	"desirability" : 0,
-	"desrange" : 0,
-	"desstep" : 0,
-	"employers" : 0
-	"class" : "native"
+  cost : 0,
+	desirability : { base : 0,	range : 0,	step : 0 }
+	employers : 0
+	class : "native"
   },
   
-  "military_academy" : 
+  military_academy : 
   {
-    "cost" : 1000,
-	"desirability" : -3,
-	"desrange" : 3,
-	"desstep" : 1,
-	"employers" : 20
-	"class" : "military"
+  cost : 1000,
+	desirability : { base : -3,	range : 3,	step : 1 }
+	employers : 20
+	class : "military"
   },
   
   "barracks" : 
   {
-    "cost" : 150,
-	"desirability" : -6,
-	"desrange" : 3,
-	"desstep" : 2,
-	"employers" : 10
-	"class" : "military"
+  cost : 150,
+	desirability : { base : -6,	range : 3,	step : 2 }
+	employers : 10
+	class : "military"
   }, 
 
-  "oracle" : 
+  oracle : 
   {
-    "cost" : 20,
-	"desirability" : 8,
-	"desrange" : 7,
-	"desstep" : -1,
-	"employers" : 6
-	"class" : "religion"
+  cost : 20,
+	desirability : { base : 8,	range : 7,	step : -1 }
+	employers : 6
+	class : "religion"
   }, 
 
-  "burning_ruins" :
+  burning_ruins :
   {
-    "cost" : 0,
-	"desirability" : -2,
-	"desrange" : 2,
-	"desstep" : 1,
-	"employers" : 0
-	"class" : "disaster"
+  cost : 0,
+	desirability : { base : -2,	range : 2,	step : 1 }
+	employers : 0
+	class : "disaster"
   }, 
   
-  "burned_ruins" :
+  burned_ruins :
   {
-    "cost" : 0,
-	"desirability" : -2,
-	"desrange" : 2,
-	"desstep" : 1,
-	"employers" : 0
-	"class" : "disaster"
+  cost : 0,
+	desirability : { base : -2,	range : 2,	step : 1 }
+	employers : 0
+	class : "disaster"
   }, 
   
-  "collapsed_ruins" :
+  collapsed_ruins :
   {
-    "cost" : 0,
-	"desirability" : -2,
-	"desrange" : 2,
-	"desstep" : 1,
-	"employers" : 0
-	"class" : "disaster"
+  cost : 0,
+	desirability : { base : -2,	range : 2,	step : 1 }
+	employers : 0
+	class : "disaster"
   },
   
-  "wheat_farm" : 
+  wheat_farm : 
   {
-    "cost" : 40,
-	"desirability" : -2,
-	"desrange" : 2,
-	"desstep" : 1,
-	"employers" : 10
-	"class" : "food"
+  cost : 40,
+	desirability : { base : -2,	range : 2,	step : 1 }
+	employers : 10
+	class : "food"
   }, 
 
-  "vegetable_farm" :
+  vegetable_farm :
   {
-    "cost" : 40,
-	"desirability" : -2,
-	"desrange" : 2,
-	"desstep" : 1,
-	"employers" : 10
-	"class" : "food"
+  cost : 40,
+	desirability : { base : -2, 	range : 2,	step : 1 }
+	employers : 10
+	class : "food"
   },
  
-  "fig_farm" : 
+  fig_farm : 
   {
-    "cost" : 40,
-	"desirability" : -2,
-	"desrange" : 2,
-	"desstep" : 1,
-	"employers" : 10
-	"class" : "food"
+  cost : 40,
+	desirability : { base : -2,	range : 2,	step : 1 }
+	employers : 10
+	class : "food"
   },
   
-  "olive_farm" : 
+  olive_farm : 
   {
-    "cost" : 40,
-	"desirability" : -2,
-	"desrange" : 2,
-	"desstep" : 1,
-	"employers" : 10
-	"class" : "food"
+  cost : 40,
+	desirability : { base : -2,	range : 2,	step : 1 }
+	employers : 10
+	class : "food"
   },
 
-  "vinard" :
+  vinard :
   {
-    "cost" : 40,
-	"desirability" : -2,
-	"desrange" : 2,
-	"desstep" : 1,
-	"employers" : 10
-	"class" : "food"
+  cost : 40,
+	desirability : { base : -2,	range : 2,	step : 1 }
+	employers : 10
+	class : "food"
   },
 
-  "meat_farm" : 
+  meat_farm : 
   {
-    "cost" : 40,
-	"desirability" : -2,
-	"desrange" : 2,
-	"desstep" : 1,
-	"employers" : 10
-	"class" : "food"
+  cost : 40,
+	desirability : { base : -2,	range : 2,	step : 1 }
+	employers : 10
+	class : "food"
   },
 
   quarry : 
   {
   cost : 50,
-	desirability : -6,
-	desrange : 6,
-	desstep : 1,
+	desirability : { base : -6,	range : 6,	step : 1 }
 	employers : 10
 	class : "rawmaterial"
   },
 
-  "iron_mine" :
+  iron_mine :
   {
-    "cost" : 50,
-	"desirability" : -6,
-	"desrange" : 6,
-	"desstep" : 1,
-	"employers" : 10
-	"class" : "rawmaterial"
+  cost : 50,
+	desirability : { base : -6,	range : 6,	step : 1 }
+	employers : 10
+	class : "rawmaterial"
   },
   
-  "lumber_mill" : 
+  lumber_mill : 
   {
-    "cost" : 40,
-	"desirability" : -4,
-	"desrange" : 4,
-	"desstep" : 1,
-	"employers" : 10
-	"class" : "rawmaterial"
+  cost : 40,
+	desirability : { base : -4,	range : 4,	step : 1 }
+	employers : 10
+	class : "rawmaterial"
   },
 
-  "clay_pit" : 
+  clay_pit : 
   {
-    "cost" : 40,
-	"desirability" : -3,
-	"desrange" : 3,
-	"desstep" : 1,
-	"employers" : 10
-	"class" : "rawmaterial"
+  cost : 40,
+	desirability : { base : -3,	range : 3,	step : 1 }
+	employers : 10
+	class : "rawmaterial"
   },
   
-  "wine_workshop" :
+  wine_workshop :
   {
-    "cost" : 45,
-	"desirability" : -1,
-	"desrange" : 1,
-	"desstep" : 1,
-	"employers" : 10
-	"class" : "industry"
+  cost : 45,
+	desirability : { base : -1,	range : 1,	step : 1 }
+	employers : 10
+	class : "industry"
   },
 
-  "oil_workshop" :
+  oil_workshop :
   {
-    "cost" : 50,
-	"desirability" : -4,
-	"desrange" : 2,
-	"desstep" : 2,
-	"employers" : 10
-	"class" : "industry"
+  cost : 50,
+	desirability : { base : -4,	range : 2,	step : 2 }
+	employers : 10
+	class : "industry"
   },
   
-  "weapons_workshop" :
+  weapons_workshop :
   {
-    "cost" : 50,
-	"desirability" : -4,
-	"desrange" : 2,
-	"desstep" : 2,
-	"employers" : 10
-	"class" : "industry"
+  cost : 50,
+	desirability : { base : -4,	range : 2,	step : 2 }
+	employers : 10
+	class : "industry"
   },
   
-  "furniture_workshop" :
+  furniture_workshop :
   {
-    "cost" : 40,
-	"desirability" : -4,
-	"desrange" : 2,
-	"desstep" : 2,
-	"employers" : 10
-	"class" : "industry"
+  cost : 40,
+	desirability : { base : -4,	range : 2,	step : 2 }
+	employers : 10
+	class : "industry"
   },
   
-  "pottery_workshop" :
+  pottery_workshop :
   {
-    "cost" : 40,
-	"desirability" : -4,
-	"desrange" : 2,
-	"desstep" : 2,
-	"employers" : 10
-	"class" : "industry"
+  cost : 40,
+	desirability : { base : -4,	range : 2,	step : 2 }
+	employers : 10
+	class : "industry"
   }
 }

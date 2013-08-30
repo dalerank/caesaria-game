@@ -26,6 +26,7 @@
 #include "oc3_guienv.hpp"
 #include "oc3_pushbutton.hpp"
 #include "oc3_gui_label.hpp"
+#include "oc3_app_config.hpp"
 
 class ScreenMenu::Impl
 {
@@ -67,7 +68,7 @@ void ScreenMenu::Impl::resolveShowLoadGameWnd()
               0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() );
   LoadMapWindow* wnd = new LoadMapWindow( gui->getRootWidget(), 
                                           rect.toRect(), 
-                                          "./saves/", ".oc3save",
+                                          AppConfig::rcpath( "/saves/" ), ".oc3save",
                                           -1 );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
@@ -81,7 +82,7 @@ void ScreenMenu::Impl::resolvePlayMission()
     0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() );
   LoadMapWindow* wnd = new LoadMapWindow( gui->getRootWidget(), 
                                           rect.toRect(), 
-                                          "./resources/missions/", ".oc3mission",
+                                          AppConfig::rcpath( "/missions/" ), ".oc3mission",
                                           -1 );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
@@ -94,7 +95,7 @@ void ScreenMenu::Impl::resolveShowLoadMapWnd()
   LoadMapWindow* wnd = new LoadMapWindow( gui->getRootWidget(), 
                                           RectF( 0.25f * rootSize.getWidth(), 0.25f * rootSize.getHeight(), 
                                                 0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() ).toRect(), 
-                                                "./resources/maps/", ".map",
+                                                AppConfig::rcpath( "/maps/" ), ".map",
                                                 -1 );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );

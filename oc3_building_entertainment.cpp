@@ -68,13 +68,11 @@ int EntertainmentBuilding::getVisitorsNumber() const
 
 Theater::Theater() : EntertainmentBuilding(S_THEATER, B_THEATER, Size(2))
 {
-  setPicture( Picture::load( "entertainment", 13));
-
-  _getAnimation().load("entertainment", 14, 21);
+  _getAnimation().load( ResourceGroup::entertaiment, 14, 21);
   _getAnimation().setOffset( Point( 60, 36 ) );
 
   _fgPictures.resize(2);
-  _fgPictures[0] = Picture::load("entertainment", 35);
+  _fgPictures[0] = Picture::load( ResourceGroup::entertaiment, 35);
 }
 
 int Theater::getVisitorsNumber() const
@@ -84,19 +82,19 @@ int Theater::getVisitorsNumber() const
 
 BuildingAmphiTheater::BuildingAmphiTheater() : EntertainmentBuilding(S_AMPHITHEATER, B_AMPHITHEATER, Size(3))
 {
-  setPicture( Picture::load("entertainment", 1));
+  setPicture( Picture::load( ResourceGroup::entertaiment, 1));
 
-  _getAnimation().load("entertainment", 2, 10);
+  _getAnimation().load( ResourceGroup::entertaiment, 2, 10);
   _getAnimation().setOffset( Point( 100, 49 ) );
   _fgPictures.resize(2);
-  _fgPictures[0] = Picture::load("entertainment", 12);
+  _fgPictures[0] = Picture::load( ResourceGroup::entertaiment, 12);
 }
 
 Collosseum::Collosseum() : EntertainmentBuilding(S_COLLOSSEUM, B_COLLOSSEUM, Size(5) )
 {
   setPicture( Picture::load( ResourceGroup::entertaiment, 36));
 
-  _getAnimation().load("entertainment", 37, 13);
+  _getAnimation().load( ResourceGroup::entertaiment, 37, 13);
   _getAnimation().setOffset( Point( 122, 81 ) );
   _fgPictures.resize(2);
   _fgPictures[0] = Picture::load( ResourceGroup::entertaiment, 50);

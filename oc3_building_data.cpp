@@ -156,18 +156,43 @@ public:
   }
 };
 
+class BuildingData::Impl
+{
+public:
+  struct DeisrabilityInfo
+  {
+    int base;
+    int range;
+    int step;
+  };
+
+  BuildingType buildingType;
+  VariantMap options;
+  DeisrabilityInfo desirability;
+};
 
 BuildingData::BuildingData(const BuildingType buildingType, const std::string &name, const int cost)
+  : _d( new Impl )
 {
-  _buildingType = buildingType;
+  _d->buildingType = buildingType;
   _buildingClass = BC_NONE;
   _name = name;
   std::string key = "building_"+name;
   _prettyName = _(key.c_str());  // i18n translation
   _cost = cost;
-  _baseDesirability = 0;
-  _desirabilityRange = 0;
-  _desirabilityStep = 0;
+  _d->desirability.base = 0;
+  _d->desirability.range = 0;
+  _d->desirability.step = 0;
+}
+
+BuildingData::BuildingData(const BuildingData &a) : _d( new Impl )
+{
+  *this = a;
+}
+
+BuildingData::~BuildingData()
+{
+
 }
 
 std::string BuildingData::getName() const
@@ -182,7 +207,7 @@ std::string BuildingData::getPrettyName() const
 
 BuildingType BuildingData::getType() const
 {
-  return _buildingType;
+  return _d->buildingType;
 }
 
 int BuildingData::getCost() const
@@ -202,17 +227,36 @@ const Picture &BuildingData::getBasePicture() const
 
 char BuildingData::getDesirbilityInfluence() const
 {
-  return _baseDesirability;
+  return _d->desirability.base;
 }
 
 char BuildingData::getDesirbilityRange() const
 {
-  return _desirabilityRange;
+  return _d->desirability.range;
+}
+
+Variant BuildingData::getOption(const std::string &name) const
+{
+  VariantMap::iterator it = _d->options.find( name );
+  return it != _d->options.end() ? it->second : Variant();
+}
+
+BuildingData &BuildingData::operator=(const BuildingData &a)
+{
+  _d->buildingType = a._d->buildingType;
+  _name = a._name;
+  _prettyName = a._prettyName;
+  _basePicture = a._basePicture;
+  _d->desirability = a._d->desirability;
+  _employers = a._employers;
+  _cost = a._cost;
+
+  _d->options = a._d->options;
 }
 
 char BuildingData::getDesirabilityStep() const
 {
-  return _desirabilityStep;
+  return _d->desirability.step;
 }
 
 BuildingClass BuildingData::getClass() const
@@ -330,9 +374,11 @@ void BuildingDataHolder::initialize( const io::FilePath& filename )
       bData._prettyName = pretty;
     }
 
-    bData._baseDesirability  = (int)options[ "desirability" ];
-    bData._desirabilityRange = (int)options[ "desrange" ];
-    bData._desirabilityStep  = (int)options[ "desstep" ];
+    bData._d->options = options;
+    VariantMap desMap = options[ "desirability" ].toMap();
+    bData._d->desirability.base = (int)desMap[ "base" ];
+    bData._d->desirability.range = (int)desMap[ "range" ];
+    bData._d->desirability.step  = (int)desMap[ "step" ];
     bData._employers = (int)options[ "employers" ];
     bData._buildingClass = getClass( options[ "class" ].toString() );
 

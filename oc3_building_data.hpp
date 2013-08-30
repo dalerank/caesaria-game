@@ -23,6 +23,7 @@
 #include "oc3_scopedptr.hpp"
 #include "oc3_filepath.hpp"
 #include "oc3_picture.hpp"
+#include "oc3_variant.hpp"
 
 // contains some metaData for a building type
 class BuildingData
@@ -32,6 +33,9 @@ class BuildingData
   static BuildingData invalid;
 public:
   BuildingData( const BuildingType buildingType, const std::string &name, const int cost );
+  BuildingData( const BuildingData& a );
+
+  ~BuildingData();
 
   std::string getName() const;
   std::string getPrettyName() const;
@@ -45,17 +49,20 @@ public:
   char getDesirabilityStep() const;
   char getDesirbilityRange() const;
 
+  Variant getOption( const std::string& name ) const;
+
+  BuildingData& operator=( const BuildingData& a );
+
 private:
-  BuildingType _buildingType;
   BuildingClass _buildingClass;
   std::string _name;  // debug name  (english, ex:"iron")
   std::string _prettyName;  // pretty-print name  (i18n, ex:"Iron mine")
   Picture _basePicture;
-  int _baseDesirability;
-  int _desirabilityRange;
-  int _desirabilityStep;
   int _employers;
   int _cost;
+
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 // contains some metaData for each building type
