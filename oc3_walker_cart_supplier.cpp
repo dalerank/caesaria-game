@@ -92,8 +92,8 @@ void CartSupplier::onDestination()
   {
     // walker is near the granary/warehouse
     _getPathway().rbegin();
-    _setAction( WA_MOVE );
     computeDirection();
+    go();
 
     // get goods from destination building
     

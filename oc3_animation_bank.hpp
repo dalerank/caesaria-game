@@ -28,7 +28,7 @@
 class AnimationBank
 {
 public:
-  typedef std::map<WalkerAction, Animation> WalkerAnimationMap;
+  typedef std::map<DirectedAction, Animation> WalkerAnimationMap;
 
   static AnimationBank& instance();
 

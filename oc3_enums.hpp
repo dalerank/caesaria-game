@@ -35,15 +35,6 @@ enum DirectionType
   D_MAX 
 };
 
-enum WalkerActionType 
-{ 
-  WA_NONE, 
-  WA_MOVE, 
-  WA_FIGHT, 
-  WA_DIE, 
-  WA_MAX 
-};
-
 enum WalkerGraphicType 
 {
   WG_NONE, WG_POOR, WG_BATH, WG_PRIEST, WG_ACTOR, WG_TAMER, WG_TAX, WG_CHILD, WG_MARKETLADY, 

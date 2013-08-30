@@ -18,11 +18,12 @@
 #include "oc3_safetycast.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_building_house.hpp"
+#include "oc3_building_entertainment.hpp"
 #include "oc3_house_level.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_time.hpp"
 #include "oc3_gamedate.hpp"
-#include "oc3_religion_building.hpp"
+#include "oc3_building_religion.hpp"
 
 struct Coverage2Point{
   double coverage;

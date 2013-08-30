@@ -92,8 +92,8 @@ void CartPusher::onDestination()
   if( !_getPathway().isReverse() )
   {
     _getPathway().toggleDirection();
-    _setAction( WA_MOVE );
     computeDirection();
+    go();
     _d->consumerBuilding = 0;
   }
   else

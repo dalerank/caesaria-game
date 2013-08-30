@@ -144,25 +144,16 @@ void AnimationBank::loadCarts()
 AnimationBank::WalkerAnimationMap AnimationBank::Impl::loadAnimation( const std::string& prefix, const int start, const int size)
 {
   WalkerAnimationMap ioMap;
-  WalkerAction action;
-  action._action = WA_MOVE;
+  DirectedAction action= { Walker::acMove, D_NORTH };
 
-  action._direction = D_NORTH;
-  ioMap[action].load( prefix, start, size, Animation::straight, 8);
-  action._direction = D_NORTH_EAST;
-  ioMap[action].load( prefix, start+1, size, Animation::straight, 8);
-  action._direction = D_EAST;
-  ioMap[action].load( prefix, start+2, size, Animation::straight, 8);
-  action._direction = D_SOUTH_EAST;
-  ioMap[action].load( prefix, start+3, size, Animation::straight, 8);
-  action._direction = D_SOUTH;
-  ioMap[action].load( prefix, start+4, size, Animation::straight, 8);
-  action._direction = D_SOUTH_WEST;
-  ioMap[action].load( prefix, start+5, size, Animation::straight, 8);
-  action._direction = D_WEST;
-  ioMap[action].load( prefix, start+6, size, Animation::straight, 8);
-  action._direction = D_NORTH_WEST;
-  ioMap[action].load( prefix, start+7, size, Animation::straight, 8);
+  action.direction = D_NORTH;      ioMap[action].load( prefix, start,   size, Animation::straight, 8);
+  action.direction = D_NORTH_EAST; ioMap[action].load( prefix, start+1, size, Animation::straight, 8);
+  action.direction = D_EAST;       ioMap[action].load( prefix, start+2, size, Animation::straight, 8);
+  action.direction = D_SOUTH_EAST; ioMap[action].load( prefix, start+3, size, Animation::straight, 8);
+  action.direction = D_SOUTH;      ioMap[action].load( prefix, start+4, size, Animation::straight, 8);
+  action.direction = D_SOUTH_WEST; ioMap[action].load( prefix, start+5, size, Animation::straight, 8);
+  action.direction = D_WEST;       ioMap[action].load( prefix, start+6, size, Animation::straight, 8);
+  action.direction = D_NORTH_WEST; ioMap[action].load( prefix, start+7, size, Animation::straight, 8);
 
   return ioMap;
 }

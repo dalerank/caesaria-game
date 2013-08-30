@@ -14,7 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "oc3_religion_building.hpp"
+#include "oc3_building_religion.hpp"
 #include "oc3_divinity.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_positioni.hpp"

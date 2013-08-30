@@ -14,7 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "oc3_academy.hpp"
+#include "oc3_building_academy.hpp"
 #include "oc3_resourcegroup.hpp"
 
 Academy::Academy() : WorkingBuilding( B_MILITARY_ACADEMY, Size(3) )

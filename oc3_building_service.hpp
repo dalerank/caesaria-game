@@ -56,42 +56,6 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-class EntertainmentBuilding : public ServiceBuilding
-{
-public:
-  EntertainmentBuilding( const ServiceType service, const BuildingType type,
-                         const Size& size);
-  virtual void deliverService();
-  virtual int getVisitorsNumber() const;
-};
-
-class Theater : public EntertainmentBuilding
-{
-public:
-   Theater();
-
-   virtual int getVisitorsNumber() const; 
-};
-
-class BuildingAmphiTheater : public EntertainmentBuilding
-{
-public:
-   BuildingAmphiTheater();
-};
-
-class BuildingCollosseum : public EntertainmentBuilding
-{
-public:
-   BuildingCollosseum();
-};
-
-
-class BuildingHippodrome : public EntertainmentBuilding
-{
-public:
-   BuildingHippodrome();
-};
-
 class School : public ServiceBuilding
 {
 public:

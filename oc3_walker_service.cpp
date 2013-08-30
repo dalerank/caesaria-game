@@ -273,8 +273,8 @@ void ServiceWalker::onDestination()
   {
     // walker finished service => get back to service building
     _getPathway().rbegin();
-    _setAction( WA_MOVE );
     computeDirection();
+    go();
   }
 }
 

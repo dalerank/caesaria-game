@@ -37,7 +37,7 @@
 #include "oc3_goodhelper.hpp"
 #include "oc3_farm.hpp"
 #include "oc3_building_house.hpp"
-#include "oc3_religion_building.hpp"
+#include "oc3_building_religion.hpp"
 #include "oc3_divinity.hpp"
 #include "oc3_building_warehouse.hpp"
 #include "oc3_gfx_engine.hpp"
