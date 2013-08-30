@@ -55,15 +55,10 @@ public:
 
 void SaveDialog::Impl::findFiles()
 {
-  io::FileList::Items files = io::FileDir( directory ).getEntries().getItems();
-
-  for( io::FileList::ItemIt it=files.begin(); it !=files.end(); ++it)
-  {
-    if( !(*it).isDirectory && (*it).fullName.getExtension() == extension )
-    {
-      lbxSaves->addItem( (*it).fullName.getBasename().toString(), Font(), 0 );
-    }
-  }
+  io::FileList flist = io::FileDir( directory ).getEntries();
+  StringArray names;
+  names << flist.filter( io::FileList::file | io::FileList::extFilter, extension );
+  lbxSaves->addItems( names );
 }
 
 SaveDialog::SaveDialog( Widget* parent, const std::string& dir, const std::string& fileExt, int id ) 

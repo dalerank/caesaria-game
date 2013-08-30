@@ -68,7 +68,7 @@ void ScreenMenu::Impl::resolveShowLoadGameWnd()
               0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() );
   LoadMapWindow* wnd = new LoadMapWindow( gui->getRootWidget(), 
                                           rect.toRect(), 
-                                          AppConfig::rcpath( "/saves/" ), ".oc3save",
+                                          AppConfig::rcpath( "/../saves/" ), ".oc3save",
                                           -1 );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );

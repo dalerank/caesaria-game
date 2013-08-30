@@ -84,15 +84,10 @@ LoadMapWindow::~LoadMapWindow()
 
 void LoadMapWindow::Impl::fillFiles()
 {
-  io::FileList::Items items = io::FileDir( directory ).getEntries().getItems();
-
-  for( io::FileList::ItemIt it=items.begin(); it != items.end(); ++it)
-  {
-    if( !(*it).isDirectory && (*it).fullName.getExtension() == fileExtension )
-    {
-      files->addItem( (*it).name.toString(), Font(), 0 );
-    }
-  }
+  io::FileList flist = io::FileDir( directory ).getEntries();
+  StringArray names;
+  names << flist.filter( io::FileList::file | io::FileList::extFilter, fileExtension );
+  files->addItems( names );
 }
 
 void LoadMapWindow::draw( GfxEngine& engine )

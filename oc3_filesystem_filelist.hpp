@@ -19,6 +19,7 @@
 
 #include "oc3_filepath.hpp"
 #include "oc3_filelist_item.hpp"
+#include "oc3_stringarray.hpp"
 #include "oc3_scopedptr.hpp"
 #include "oc3_referencecounted.hpp"
 #include <vector>
@@ -30,6 +31,8 @@ namespace io
 class FileList : public ReferenceCounted
 {
 public:
+  typedef enum { file=0x1, directory=0x2, extFilter=0x4 } FilterFlag;
+
   typedef std::vector< FileListItem > Items;
   typedef Items::iterator ItemIt;
   typedef Items::const_iterator ConstItemIt;
@@ -85,6 +88,8 @@ public:
 
   void setIgnoreCase( bool ignore );
 
+  FileList filter( int flags, const std::string& options );
+
   FileList& operator=( const FileList& other );
 
   ConstItemIt begin() const;
@@ -99,6 +104,17 @@ private:
 };
 
 }//end namespace io
+
+inline StringArray& operator<<( StringArray& array, const io::FileList& flist )
+{
+  const io::FileList::Items& items = flist.getItems();
+  for( io::FileList::ConstItemIt it=items.begin(); it != items.end(); ++it)
+  {
+    array.push_back( (*it).name.toString() );
+  }
+
+  return array;
+}
 
 #endif
 

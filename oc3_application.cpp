@@ -57,7 +57,6 @@ public:
   
   void initLocale(const std::string & localePath);
   void initPictures(const io::FilePath& resourcePath);
-  io::FileList::Items scanForMaps( const io::FilePath& mapDirName ) const;
 };
 
 void Application::Impl::initLocale(const std::string & localePath)
@@ -125,24 +124,6 @@ void Application::setScreenWait()
    screen.drawFrame();
 }
 
-io::FileList::Items Application::Impl::scanForMaps(const io::FilePath& mapDirName ) const
-{
-  // scan for map-files and make their list    
-  const io::FileDir mapsDir = AppConfig::rcpath( mapDirName.toString() );
-  io::FileList items = mapsDir.getEntries();
-
-  io::FileList::Items ret;
-  for( io::FileList::ConstItemIt it=items.begin(); it != items.end(); ++it)
-  {
-    if( !(*it).isDirectory )
-    {
-      ret.push_back(*it);
-    }
-  }
-   
-  return ret;
-}
-
 void Application::setScreenMenu()
 {
   ScreenMenu screen;
@@ -157,7 +138,7 @@ void Application::setScreenMenu()
     case ScreenMenu::startNewGame:
     {
       /* temporary*/     
-      io::FileList::Items maps = _d->scanForMaps( "/maps/" );
+      io::FileList::Items maps = io::FileDir( AppConfig::rcpath( "/maps/" ) ).getEntries().filter( io::FileList::file, "" ).getItems();
       std::srand( DateTime::getElapsedTime() );
       std::string file = maps.at( std::rand() % maps.size() ).fullName.toString();
       StringHelper::debug( 0xff, "Loading map:%s", file.c_str() );

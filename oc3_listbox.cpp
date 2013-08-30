@@ -937,6 +937,14 @@ ListBoxItem& ListBox::addItem( const std::string& text, Font font, const int col
   return _d->items.back();
 }
 
+void ListBox::addItems(const StringArray &strings)
+{
+  for( StringArray::const_iterator it=strings.begin(); it != strings.end(); it++ )
+  {
+    addItem( *it );
+  }
+}
+
 int ListBox::getSelected()
 {
     return _d->selectedItemIndex;
