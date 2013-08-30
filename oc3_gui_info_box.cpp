@@ -1091,3 +1091,6 @@ InfoBoxCitizen::InfoBoxCitizen( Widget* parent, const Walkers& walkers )
     _cd->lbCitizenPic->setBackgroundPicture( WalkerHelper::getBigPicture( (WalkerType)walker->getType() ) );
   }
 }
+
+InfoBoxCitizen::~InfoBoxCitizen() {
+}

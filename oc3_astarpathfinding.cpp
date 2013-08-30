@@ -83,8 +83,8 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos,
   // Define points to work with
   AStarPoint* start = getPoint( startPos );
   AStarPoint* end = getPoint( stopPos );
-  AStarPoint* current;
-  AStarPoint* child;
+  AStarPoint* current = NULL;
+  AStarPoint* child = NULL;
 
   // Define the open and the close list
   list<AStarPoint*> openList;
