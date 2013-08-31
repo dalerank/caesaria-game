@@ -242,6 +242,7 @@ class InfoBoxCitizen : public GuiInfoBox
 {
 public:
   InfoBoxCitizen(Widget* parent, const Walkers &walkers );
+  virtual ~InfoBoxCitizen();
 
 private:
   class Impl;
