@@ -133,7 +133,7 @@ oc3_signals public:
 
 protected:
   //! Updates the position, splits text if required
-  virtual void resizeEvent_();
+  virtual void _resizeEvent();
 
   //! Breaks the single text line.
   void breakText();

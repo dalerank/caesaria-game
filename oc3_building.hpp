@@ -33,7 +33,6 @@
 #include "oc3_predefinitions.hpp"
 
 class Widget;
-class GuiInfoBox;
 
 class LandOverlay : public Serializable, public ReferenceCounted
 {

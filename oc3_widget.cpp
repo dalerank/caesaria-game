@@ -117,24 +117,24 @@ Widget::Widget( Widget* parent, int id, const Rect& rectangle )
   _d->maxSize = Size(0,0);
   _d->minSize = Size(1,1);
   _d->parent = parent;
-	_d->relativeRect = rectangle;
-	_d->absoluteRect = rectangle;
-	_d->absoluteClippingRect = rectangle;
-	_d->desiredRect = rectangle;
+  _d->relativeRect = rectangle;
+  _d->absoluteRect = rectangle;
+  _d->absoluteClippingRect = rectangle;
+  _d->desiredRect = rectangle;
 
 #ifdef _DEBUG
-    setDebugName( "AbstractWidget" );
+  setDebugName( "AbstractWidget" );
 #endif
 
-    // if we were given a parent to attach to
-    if (parent)
-    {
-      parent->addChild_(this);
-      recalculateAbsolutePosition(true);
-		  drop();
-    }
+  // if we were given a parent to attach to
+  if (parent)
+  {
+    parent->addChild_(this);
+    recalculateAbsolutePosition(true);
+    drop();
+  }
 
-    setTextAlignment( alignUpperLeft, alignCenter );
+  setTextAlignment( alignUpperLeft, alignCenter );
 }
 
 Widget::~Widget()
@@ -171,7 +171,7 @@ void Widget::setGeometry( const Rect& r, GeometryType mode )
 	updateAbsolutePosition();
 }
 
-void Widget::resizeEvent_()
+void Widget::_resizeEvent()
 {
 }
 
@@ -273,7 +273,7 @@ void Widget::updateAbsolutePosition()
     recalculateAbsolutePosition(false);
 
     if( oldRect != _d->absoluteRect )
-        resizeEvent_();
+        _resizeEvent();
 
     // update all children
     ChildIterator it = _d->children.begin();
@@ -969,8 +969,9 @@ int Widget::getScreenBottom() const { return getAbsoluteRect().getBottom(); }
 
 int Widget::getScreenRight() const { return getAbsoluteRect().getRight(); }
 
-unsigned int Widget::getArea() const { return getAbsoluteRect().getArea(); }
+Point Widget::getLeftdownCorner() const { return Point( getLeft(), getBottom() ); }
 
+unsigned int Widget::getArea() const { return getAbsoluteRect().getArea(); }
 
 Point Widget::convertLocalToScreen( const Point& localPoint ) const
 {

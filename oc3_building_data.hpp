@@ -81,6 +81,8 @@ public:
    static BuildingType getType( const std::string& name );
    static BuildingClass getClass( const std::string& name );
 
+   static std::string getPrettyName( BuildingType bType );
+
    void initialize( const io::FilePath& filename );
 private:
    BuildingDataHolder();

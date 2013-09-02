@@ -32,221 +32,166 @@ class PushButton;
 class Label;
 
 // base class for info boxes
-class GuiInfoBox : public Widget
+class InfoBoxSimple : public Widget
 {
 public:
-    GuiInfoBox( Widget* parent, const Rect& rect, int id );
-    virtual ~GuiInfoBox();
-    
-    void draw( GfxEngine& engine );  // draw on screen
+  InfoBoxSimple( Widget* parent, const Rect& rect, const Rect& blackArea=Rect(), int id=-1 );
+  virtual ~InfoBoxSimple();
 
-    Picture& getBgPicture();
+  virtual void draw( GfxEngine& engine );  // draw on screen
 
-    bool onEvent( const NEvent& event);
+  Picture& getBgPicture();
 
-    bool isPointInside(const Point& point) const;
+  virtual bool onEvent( const NEvent& event);
 
-    void setTitle( const std::string& title );
+  bool isPointInside(const Point& point) const;
 
-    bool isAutoPosition() const;
-    void setAutoPosition( bool value );
+  void setTitle( const std::string& title );
+  virtual void setText( const std::string& text );
+
+  bool isAutoPosition() const;
+  void setAutoPosition( bool value );
+
 protected:
-    void _resizeEvent();
+  virtual void _afterCreate() {}
 
-    class Impl;
-    ScopedPtr< Impl > _d;
-};
+  virtual void _drawWorkers( const Point& pos, int picId, int need, int have );
 
-// Simple info box with static text on plain background
-class InfoBoxBasic : public GuiInfoBox
-{
-public:
-  InfoBoxBasic( Widget* parent, const Tile& tile );
-
-  void setText( const std::string& text );
-
-private:
   class Impl;
-  ScopedPtr< Impl > _bd;
+  ScopedPtr< Impl > _d;
 };
 
-
-class InfoBoxRawMaterial : public GuiInfoBox
+class InfoBoxRawMaterial : public InfoBoxSimple
 {
 public:
   InfoBoxRawMaterial( Widget* parent, const Tile& tile );
   virtual ~InfoBoxRawMaterial();
-
-  void paint();
-
-private:
-  class Impl;
-  ScopedPtr< Impl > _fd;
 };
 
 // info box about a service building
-class InfoBoxWorkingBuilding : public GuiInfoBox
+class InfoBoxWorkingBuilding : public InfoBoxSimple
 {
+  static const int lbHelpId=2;
 public:
-  InfoBoxWorkingBuilding( Widget* parent, WorkingBuildingPtr building);
+  InfoBoxWorkingBuilding( Widget* parent, WorkingBuildingPtr building );
   
-  void paint();
   void drawWorkers( int );
   void setText(const std::string& text);
-private:
-
-  class Impl;
-  ScopedPtr< Impl > _sd;
 };
 
-class InfoBoxSenate : public GuiInfoBox
+class InfoBoxSenate : public InfoBoxSimple
 {
 public:
   InfoBoxSenate( Widget* parent, const Tile& tile );
   virtual ~InfoBoxSenate();
 
   void paint();
-private:
-
-  class Impl;
-  ScopedPtr< Impl > _sd;
 };
 
-class InfoBoxLand : public GuiInfoBox
+class InfoBoxLand : public InfoBoxSimple
 {
+  static const int lbTextId=2;
 public:
   InfoBoxLand( Widget* parent, const Tile& tile );   
-  void setText( const std::string& text );
-  //bool onEvent(const NEvent& event);
-private:
-  void _paint();
 
-  Label* _text;
+  void setText( const std::string& text );
 };
 
 class InfoBoxFreeHouse : public InfoBoxLand
 {
 public:
-    InfoBoxFreeHouse( Widget* parent, const Tile& tile );   
+  InfoBoxFreeHouse( Widget* parent, const Tile& tile );
 };
 // info box about a factory building
-class GuiInfoFactory : public GuiInfoBox
+class GuiInfoFactory : public InfoBoxSimple
 {
 public:
    GuiInfoFactory( Widget* parent, const Tile& tile );
-   virtual void paint();
-
-   void drawWorkers( int );
    std::string getInfoText();
-
-private:
-   FactoryPtr _building;
 };
 
-
 // info box about a granary
-class GuiInfoGranary : public GuiInfoBox
+class InfoBoxGranary : public InfoBoxSimple
 {
 public:
-  GuiInfoGranary( Widget* parent, const Tile& tile );
-  virtual ~GuiInfoGranary();
+  InfoBoxGranary( Widget* parent, const Tile& tile );
+  virtual ~InfoBoxGranary();
   
   void paint();
   void drawWorkers( int );
-  void drawGood(const Good::Type &goodType, int, int&);
+  void drawGood(const Good::Type &goodType, int, int);
   void showSpecialOrdersWindow();
 
 private:
-  class Impl;
-  ScopedPtr< Impl > _gd;
+  GranaryPtr _granary;
 };
 
 
 // info box about a market
-class GuiInfoMarket : public GuiInfoBox
+class InfoBoxMarket : public InfoBoxSimple
 {
 public:
-   GuiInfoMarket( Widget* parent, const Tile& tile );
-   virtual ~GuiInfoMarket();
+   InfoBoxMarket( Widget* parent, const Tile& tile );
+   virtual ~InfoBoxMarket();
    
    void paint();
    void drawWorkers();
-   void drawGood(const Good::Type &goodType, int, int );
-
-private:
-   class Impl;
-   ScopedPtr< Impl > _md;
+   void drawGood( MarketPtr market, const Good::Type &goodType, int, int );
 };
 
-class InfoBoxWarehouse : public GuiInfoBox
+class InfoBoxWarehouse : public InfoBoxSimple
 {
 public:
   InfoBoxWarehouse( Widget* parent, const Tile& tile );
   virtual ~InfoBoxWarehouse();
 
-  void paint();
-  void drawWorkers();
-  void drawGood(const Good::Type &goodType, int, int& );
+  void drawGood( const Good::Type &goodType, int col, int paintY);
   void showSpecialOrdersWindow();
-
 private:
-  class Impl;
-  ScopedPtr< Impl > _wd;
+  WarehousePtr _warehouse;
 };
 
-
-class InfoBoxTemple : public GuiInfoBox
+class InfoBoxTemple : public InfoBoxSimple
 {
 public:
   InfoBoxTemple( Widget* parent, const Tile& tile );
   virtual ~InfoBoxTemple();
+};
+
+class InfoBoxColosseum : public InfoBoxSimple
+{
+public:
+  InfoBoxColosseum( Widget* parent, const Tile& tile );
+  virtual ~InfoBoxColosseum();
 
   void drawWorkers();
   void drawPicture();
-private:
-  class Impl;
-  ScopedPtr< Impl > _td;
 };
 
+
 // info box about a house
-class InfoBoxHouse : public GuiInfoBox
+class InfoBoxHouse : public InfoBoxSimple
 {
 public:
    InfoBoxHouse( Widget* parent, const Tile& tile);
    virtual ~InfoBoxHouse();
 
-   void drawHabitants();
-   void drawGood(const Good::Type &goodType, const int col, const int row, const int startY );
-
-private:
-   void _paint();
-   
-   class Impl;
-   ScopedPtr< Impl > _ed;
+   void drawHabitants(HousePtr house);
+   void drawGood(HousePtr house, const Good::Type &goodType, const int col, const int row, const int startY );
 };
 
-class GuiBuilding : public GuiInfoBox
+class GuiBuilding : public InfoBoxSimple
 {
 public:
    GuiBuilding( Widget* parent, const Tile& tile );
-   virtual void paint();
-
-private:
-
-   class Impl;
-   ScopedPtr< Impl > _bd;
 };
 
 // Simple info box with static text on plain background
-class InfoBoxCitizen : public GuiInfoBox
+class InfoBoxCitizen : public InfoBoxSimple
 {
 public:
   InfoBoxCitizen(Widget* parent, const Walkers &walkers );
-
-private:
-  class Impl;
-  ScopedPtr< Impl > _cd;
+  virtual ~InfoBoxCitizen();
 };
-
 
 #endif

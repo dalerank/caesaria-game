@@ -64,7 +64,7 @@ public:
     _cost = cost;
   }
 
-  void resizeEvent_()
+  void _resizeEvent()
   {
     for( int i=0; i < StateCount; i++ )
         _updateTexture( ElementState(i) );

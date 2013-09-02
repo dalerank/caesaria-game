@@ -254,7 +254,7 @@ public:
   {
     order = o;
     goodsQty = qty;
-    resizeEvent_();
+    _resizeEvent();
   }
   
   CityTradeOptions::Order order;

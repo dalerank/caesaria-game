@@ -422,3 +422,8 @@ BuildingClass BuildingDataHolder::getClass( const std::string& name )
 
   return BC_NONE;
 }
+
+std::string BuildingDataHolder::getPrettyName(BuildingType bType)
+{
+  return instance().getData( bType ).getPrettyName();
+}

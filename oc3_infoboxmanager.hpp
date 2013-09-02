@@ -7,7 +7,7 @@
 #include "oc3_predefinitions.hpp"
 #include "oc3_enums.hpp"
 
-class GuiInfoBox;
+class InfoBoxSimple;
 
 class InfoBoxManager;
 typedef SmartPtr< InfoBoxManager > InfoBoxManagerPtr;
@@ -15,14 +15,14 @@ typedef SmartPtr< InfoBoxManager > InfoBoxManagerPtr;
 class InfoboxCreator
 {
 public:
-  virtual GuiInfoBox* create( Widget*, const Tile& ) = 0;
+  virtual InfoBoxSimple* create( Widget*, const Tile& ) = 0;
 };
 
 template< class T >
 class BaseInfoboxCreator : public InfoboxCreator
 {
 public:
-  GuiInfoBox* create( Widget* parent, const Tile& tile ) 
+  InfoBoxSimple* create( Widget* parent, const Tile& tile )
   {
     return new T( parent, tile ); 
   }

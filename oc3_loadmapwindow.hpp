@@ -47,7 +47,7 @@ oc3_signals public:
   Signal1<std::string>& onSelectFile();
 
 protected:
-  void _resizeEvent();
+  //void _resizeEvent();
 
   class Impl;
   ScopedPtr< Impl > _d;

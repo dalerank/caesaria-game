@@ -100,6 +100,13 @@ struct PictureRefDeleter
   }
 };
 
-typedef ScopedPtr< Picture, PictureRefDeleter > PictureRef;
+class PictureRef : public ScopedPtr< Picture, PictureRefDeleter >
+{
+public:
+  void init( const Size& size )
+  {
+    reset( Picture::create( size ) );
+  }
+};
 
 #endif

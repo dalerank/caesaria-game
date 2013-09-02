@@ -55,13 +55,13 @@ public:
   void setValue( const int value )
   {
     _value = value;
-    resizeEvent_();
+    _resizeEvent();
   }
 
   void setTarget( const int value )
   {
     _target = value;
-    resizeEvent_();
+    _resizeEvent();
   }
 
 private:

@@ -139,7 +139,7 @@ oc3_signals public:
 
 protected:
   //! Update the position and size of the listbox, and update the scrollbar
-  virtual void resizeEvent_();
+  virtual void _resizeEvent();
 
 private:
   void _SelectNew(int ypos);

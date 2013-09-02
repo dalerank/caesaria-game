@@ -440,7 +440,7 @@ void PushButton::setText( const std::string& text )
 {
 	Widget::setText( text );
 
-  resizeEvent_();
+  _resizeEvent();
 }
 
 void PushButton::setFont( const Font& font, ElementState state )
@@ -473,7 +473,7 @@ Font& PushButton::getFont( ElementState state )
   return _d->buttonStates[ state ].font;
 }
 
-void PushButton::resizeEvent_()
+void PushButton::_resizeEvent()
 {
   for( int i=0; i != StateCount; i++ )
   {
@@ -484,5 +484,5 @@ void PushButton::resizeEvent_()
 void PushButton::setBackgroundStyle( const BackgroundStyle style )
 {
   _d->bgStyle = style;
-  resizeEvent_();
+  _resizeEvent();
 }

@@ -101,7 +101,7 @@ oc3_signals public:
     Signal1<int>& onPositionChanged();
 
 protected:
-	void resizeEvent_();
+	void _resizeEvent();
   void refreshControls_();
 
   virtual int _getPosFromMousePos(const Point& p) const;

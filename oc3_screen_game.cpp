@@ -53,7 +53,6 @@ public:
   GfxEngine* engine;
   TopMenu* topMenu;
   Menu* menu;
-  GuiInfoBox* infoBox;   // info box to display, if any
   TilemapArea mapArea;  // visible map area
   ExtentMenu* extMenu;
   InfoBoxManagerPtr infoBoxMgr;
