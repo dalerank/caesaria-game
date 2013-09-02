@@ -163,9 +163,6 @@ class InfoBoxColosseum : public InfoBoxSimple
 public:
   InfoBoxColosseum( Widget* parent, const Tile& tile );
   virtual ~InfoBoxColosseum();
-
-  void drawWorkers();
-  void drawPicture();
 };
 
 

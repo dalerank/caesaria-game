@@ -36,6 +36,7 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_goodhelper.hpp"
 #include "oc3_farm.hpp"
+#include "oc3_building_entertainment.hpp"
 #include "oc3_building_house.hpp"
 #include "oc3_building_religion.hpp"
 #include "oc3_divinity.hpp"
@@ -163,7 +164,7 @@ void InfoBoxSimple::_drawWorkers(const Point &pos, int picId, int need, int have
 
   // number of workers
   std::string text = StringHelper::format( 0xff, "%d %s (%d %s)", have, _("employers"), need, _("requierd") );
-  Font::create( FONT_2 ).draw( *_d->bgPicture, text, pos + Point( 10, 5), false );
+  Font::create( FONT_2 ).draw( *_d->bgPicture, text, pos + Point( 20, 5), false );
 }
 
 InfoBoxWorkingBuilding::InfoBoxWorkingBuilding( Widget* parent, WorkingBuildingPtr building)
@@ -468,7 +469,7 @@ InfoBoxWarehouse::InfoBoxWarehouse( Widget* parent, const Tile& tile )
                           Rect( workerFramePos, Size( getWidth()-32, 62 ) ),
                           PictureDecorator::blackFrame );
 
-  _drawWorkers( workerFramePos + Point( 20, 10 ), 542, _warehouse->getWorkers(), _warehouse->getMaxWorkers() );
+  _drawWorkers( workerFramePos + Point( 20, 10 ), 542, _warehouse->getMaxWorkers(), _warehouse->getWorkers() );
 }
 
 InfoBoxWarehouse::~InfoBoxWarehouse()
@@ -516,7 +517,7 @@ InfoBoxTemple::InfoBoxTemple( Widget* parent, const Tile& tile )
                                                  divn->getShortDescription().c_str() );
   setTitle( text );
 
-  _drawWorkers( Point( 32, 56 + 12), 542, temple->getWorkers(), temple->getMaxWorkers() );
+  _drawWorkers( Point( 32, 56 + 12), 542, temple->getMaxWorkers(), temple->getWorkers() );
   _d->bgPicture->draw( temple->getDivinity()->getPicture(), 192, 140 );
 }
 
@@ -572,7 +573,7 @@ InfoBoxMarket::InfoBoxMarket( Widget* parent, const Tile& tile )
      lbAbout->setText( _("##market_not_work##") );
    }
 
-   _drawWorkers( Point( 32, 138 ), 542, market->getWorkers(), market->getMaxWorkers() );
+   _drawWorkers( Point( 32, 138 ), 542, market->getMaxWorkers(), market->getWorkers() );
 }
 
 InfoBoxMarket::~InfoBoxMarket()
@@ -697,7 +698,7 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
     _d->bgPicture->draw( pic, 10, 10 );
   }
 
-  _drawWorkers( Point( 32, 160 ), 542, rawmb->getWorkers(), rawmb->getMaxWorkers() );
+  _drawWorkers( Point( 32, 160 ), 542, rawmb->getMaxWorkers(), rawmb->getWorkers() );
 
   std::string text = StringHelper::format( 0xff, "%d%% damage - %d%% fire",
                                           (int)rawmb->getDamageLevel(), (int)rawmb->getFireLevel());
@@ -791,4 +792,25 @@ InfoBoxCitizen::InfoBoxCitizen( Widget* parent, const Walkers& walkers )
 }
 
 InfoBoxCitizen::~InfoBoxCitizen() {
+}
+
+
+InfoBoxColosseum::InfoBoxColosseum(Widget *parent, const Tile &tile)
+  : InfoBoxSimple( parent, Rect( 0, 0, 470, 300), Rect( 16, 145, 470 - 16, 145 + 100 ) )
+{
+  CollosseumPtr colloseum = tile.getTerrain().getOverlay().as<Collosseum>();
+  setTitle( BuildingDataHolder::getPrettyName( B_COLLOSSEUM ) );
+
+  _drawWorkers( Point( 40, 150), 542, colloseum->getMaxWorkers(), colloseum->getWorkers() );
+
+  std::string text = StringHelper::format( 0xff, "Animal contest runs for another %d days", 0 );
+  new Label( this, Rect( 35, 190, getWidth() - 35, 190 + 20 ), text );
+
+  text = StringHelper::format( 0xff, "Gladiator bouts runs for another %d days", 0 );
+  new Label( this, Rect( 35, 210, getWidth() - 35, 210 + 20 ), text );
+}
+
+InfoBoxColosseum::~InfoBoxColosseum()
+{
+
 }
