@@ -247,6 +247,7 @@ BuildingData &BuildingData::operator=(const BuildingData &a)
   _name = a._name;
   _prettyName = a._prettyName;
   _basePicture = a._basePicture;
+  _buildingClass = a._buildingClass;
   _d->desirability = a._d->desirability;
   _employers = a._employers;
   _cost = a._cost;
@@ -420,7 +421,7 @@ BuildingClass BuildingDataHolder::getClass( const std::string& name )
     _OC3_DEBUG_BREAK_IF( "Can't find building class for building className" );
   }
 
-  return BC_NONE;
+  return type;
 }
 
 std::string BuildingDataHolder::getPrettyName(BuildingType bType)

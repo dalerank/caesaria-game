@@ -25,6 +25,7 @@
 #include "oc3_enums.hpp"
 #include "oc3_city.hpp"
 #include "oc3_building_house.hpp"
+#include "oc3_foreach.hpp"
 
 class EducationInfoLabel : public Label
 {
@@ -99,10 +100,9 @@ public:
     ret.buildingWork = 0;
     ret.peoplesStuding = 0;
 
-    std::list< ServiceBuildingPtr > buildings = helper.getBuildings<ServiceBuilding>( service );
-    for( std::list< ServiceBuildingPtr >::iterator it=buildings.begin(); it != buildings.end(); it++ )
+    foreach( ServiceBuildingPtr serv, helper.getBuildings<ServiceBuilding>( service ) )
     {
-      if( (*it)->getWorkers() > 0 )
+      if( serv->getWorkers() > 0 )
       {
         ret.buildingWork++;
 
@@ -115,11 +115,10 @@ public:
         default: break;
         }
 
-        ret.peoplesStuding += maxStuding * (*it)->getWorkers() / (*it)->getMaxWorkers();
+        ret.buildingCount++;
+        ret.peoplesStuding += maxStuding * serv->getWorkers() / serv->getMaxWorkers();
       }
     }
-
-    ret.buildingCount = buildings.size();
 
     return ret;
   }
@@ -167,10 +166,9 @@ AdvisorEducationWindow::AdvisorEducationWindow( CityPtr city, Widget* parent, in
 
   int sumScholars = 0;
   int sumStudents = 0;
-  std::list< HousePtr > houses = helper.getBuildings<House>( B_HOUSE );
-  for( std::list< HousePtr >::iterator it=houses.begin(); it != houses.end(); it++ )
+  foreach( HousePtr house, helper.getBuildings<House>( B_HOUSE ) )
   {
-    sumScholars += (*it)->getScholars();
+    sumScholars += house->getScholars();
     //sumStudents += (*it)->getStudents();
   }
 
