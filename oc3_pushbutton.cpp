@@ -215,8 +215,8 @@ void PushButton::setPressed( bool pressed )
 {
   if( _d->pressed != pressed)
   {
-      _d->clickTime = DateTime::getElapsedTime();
-      _d->pressed = pressed;
+    _d->clickTime = DateTime::getElapsedTime();
+    _d->pressed = pressed;
   }
 }
 
