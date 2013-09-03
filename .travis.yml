@@ -4,10 +4,10 @@ compiler:
   - gcc
   - clang
   
-matrix:
- include:
-   - compiler: i686-w64-mingw32
-     env: OPTIONS="-DCMAKE_TOOLCHAIN_FILE=cmake/xcompile/win32.cmake"
+#matrix:
+# include:
+#   - compiler: i686-w64-mingw32
+#     env: OPTIONS="-DCMAKE_TOOLCHAIN_FILE=cmake/xcompile/win32.cmake"
 
 before_install:
   - sudo apt-get install -qq libsdl1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev
