@@ -24,6 +24,7 @@
 #include "oc3_gettext.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_city.hpp"
+#include "oc3_foreach.hpp"
 #include "oc3_building_house.hpp"
 
 class EntertainmentInfoLabel : public Label
@@ -101,11 +102,11 @@ public:
     ret.buildingWork = 0;
     ret.peoplesStuding = 0;
     ret.buildingShow = 0;
+    ret.buildingCount = 0;
 
-    std::list< ServiceBuildingPtr > buildings = helper.getBuildings<ServiceBuilding>( service );
-    for( std::list< ServiceBuildingPtr >::iterator it=buildings.begin(); it != buildings.end(); it++ )
+    foreach( ServiceBuildingPtr building, helper.getBuildings<ServiceBuilding>( service ) )
     {
-      if( (*it)->getWorkers() > 0 )
+      if( building->getWorkers() > 0 )
       {
         ret.buildingWork++;
 
@@ -119,11 +120,10 @@ public:
         break;
         }
 
-        ret.peoplesStuding += maxStuding * (*it)->getWorkers() / (*it)->getMaxWorkers();
+        ret.peoplesStuding += maxStuding * building->getWorkers() / building->getMaxWorkers();
       }
+      ret.buildingCount++;
     }
-
-    ret.buildingCount = buildings.size();
 
     return ret;
   }
@@ -179,10 +179,9 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow( CityPtr city, Widget* pa
 
   int sumScholars = 0;
   //int sumStudents = 0;
-  std::list< HousePtr > houses = helper.getBuildings<House>( B_HOUSE );
-  for( std::list< HousePtr >::iterator it=houses.begin(); it != houses.end(); it++ )
+  foreach( HousePtr house,  helper.getBuildings<House>( B_HOUSE ) )
   {
-    sumScholars += (*it)->getScholars();
+    sumScholars += house->getScholars();
     //sumStudents += (*it)->getStudents();
   }
 

@@ -32,6 +32,7 @@
 #include "oc3_goodstore.hpp"
 #include "oc3_texturedbutton.hpp"
 #include "oc3_event.hpp"
+#include "oc3_foreach.hpp"
 
 class TradeGoodInfo : public PushButton
 {
@@ -348,10 +349,10 @@ public:
     CityHelper helper( _city );
     //if any factory work in city, that industry work too
     bool anyFactoryWork = false;
-    std::list< FactoryPtr > factories = helper.getProducers<Factory>( _type );
-    for( std::list< FactoryPtr >::const_iterator it=factories.begin(); it != factories.end(); it++ )
+    Factories factories = helper.getProducers<Factory>( _type );
+    foreach( FactoryPtr factory, factories )
     {
-      anyFactoryWork |= (*it)->isActive();
+      anyFactoryWork |= factory->isActive();
     }
 
     return factories.empty() ? true : anyFactoryWork;
@@ -370,10 +371,10 @@ public:
     CityHelper helper( _city );
     int workFactoryCount=0, idleFactoryCount=0;
 
-    std::list< FactoryPtr > factories = helper.getProducers<Factory>( _type );
-    for( std::list< FactoryPtr >::const_iterator it=factories.begin(); it != factories.end(); it++ )
+    Factories factories = helper.getProducers<Factory>( _type );
+    foreach( FactoryPtr factory, factories )
     {
-      ((*it)->standIdle() ? idleFactoryCount : workFactoryCount ) += 1;
+      ( factory->standIdle() ? idleFactoryCount : workFactoryCount ) += 1;
     }
 
     std::string text = StringHelper::format( 0xff, "%d %s, %d %s", workFactoryCount, _("##work##"), 
@@ -390,10 +391,9 @@ public:
 
     bool industryEnabled = isIndustryEnabled();
     //up or down all factory for this industry
-    std::list< FactoryPtr > factories = helper.getProducers<Factory>( _type );
-    for( std::list< FactoryPtr >::const_iterator it=factories.begin(); it != factories.end(); it++ )
+    foreach( FactoryPtr factory, helper.getProducers<Factory>( _type ) )
     {
-      (*it)->setActive( !industryEnabled );
+      factory->setActive( !industryEnabled );
     }
 
     updateIndustryState();
@@ -443,10 +443,9 @@ oc3_signals private:
 
 void AdvisorTradeWindow::Impl::updateGoodsInfo()
 {
-  Widget::Widgets children = gbInfo->getChildren();
-  for( Widget::ChildIterator it=children.begin(); it != children.end(); it++ )
+  foreach( Widget* child, gbInfo->getChildren() )
   {
-    (*it)->deleteLater();
+    child->deleteLater();
   }
 
   Point startDraw( 0, 5 );
@@ -478,10 +477,10 @@ bool AdvisorTradeWindow::Impl::getWorkState(Good::Type gtype )
   CityHelper helper( city );
 
   bool industryActive = false;
-  const std::list< FactoryPtr > producers = helper.getProducers< Factory >( gtype );
-  for( std::list< FactoryPtr >::const_iterator it=producers.begin(); it != producers.end(); it++ )
+  Factories producers = helper.getProducers<Factory>( gtype );
+  foreach( FactoryPtr factory, producers )
   {
-    industryActive |= (*it)->isActive();
+    industryActive |= factory->isActive();
   }
 
   return producers.empty() ? true : industryActive;
@@ -492,10 +491,9 @@ int AdvisorTradeWindow::Impl::getStackedGoodsQty( Good::Type gtype )
   CityHelper helper( city );
 
   int goodsQty = 0;
-  const std::list< WarehousePtr > warehouses = helper.getBuildings< Warehouse >( B_WAREHOUSE );
-  for( std::list< WarehousePtr >::const_iterator it=warehouses.begin(); it != warehouses.end(); it++ )
+  foreach( WarehousePtr warehouse, helper.getBuildings< Warehouse >( B_WAREHOUSE ) )
   {
-    goodsQty += (*it)->getGoodStore().getCurrentQty( gtype );
+    goodsQty += warehouse->getGoodStore().getCurrentQty( gtype );
   }
 
   return goodsQty;

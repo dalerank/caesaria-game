@@ -15,6 +15,7 @@
 
 #include "oc3_animation.hpp"
 #include "oc3_positioni.hpp"
+#include "oc3_foreach.hpp"
 
 void Animation::start(bool loop)
 {
@@ -35,9 +36,9 @@ const PicturesArray& Animation::getPictures() const
 
 void Animation::setOffset( const Point& offset )
 {
-    for( PicturesArray::iterator it = _pictures.begin(); it != _pictures.end(); ++it)
+    foreach( Picture pic, _pictures )
     {
-        (*it).setOffset( offset );
+        pic.setOffset( offset );
     }
 }
 

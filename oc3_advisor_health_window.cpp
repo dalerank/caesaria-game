@@ -24,6 +24,7 @@
 #include "oc3_gettext.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_city.hpp"
+#include "oc3_foreach.hpp"
 #include "oc3_building_house.hpp"
 #include "oc3_texturedbutton.hpp"
 
@@ -101,17 +102,13 @@ public:
 
     ret.buildingWork = 0;
     ret.peoplesServed = 0;
+    ret.buildingCount = 0;
 
-    std::list< ServiceBuildingPtr > buildings = helper.getBuildings<ServiceBuilding>( service );
-    for( std::list< ServiceBuildingPtr >::iterator it=buildings.begin(); it != buildings.end(); it++ )
+    foreach( ServiceBuildingPtr building, helper.getBuildings<ServiceBuilding>( service ) )
     {
-      if( (*it)->getWorkers() > 0 )
-      {
-        ret.buildingWork++;
-      }
+      ret.buildingWork += building->getWorkers() > 0 ? 1 : 0;
+      ret.buildingCount++;
     }
-
-    ret.buildingCount = buildings.size();
 
     return ret;
   }

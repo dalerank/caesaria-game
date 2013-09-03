@@ -138,12 +138,12 @@ void PushButton::_updateTexture( ElementState state )
     switch( _d->bgStyle )
     {
     case smallGrayBorderLine:
-      {
-        PictureDecorator::Mode mode = (state == stNormal || state == stDisabled) 
-                                        ? PictureDecorator::smallGreyPanel 
-                                        : PictureDecorator::smallBrownPanel;
-        PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), mode );
-      }
+    {
+      PictureDecorator::Mode mode = (state == stNormal || state == stDisabled)
+                                      ? PictureDecorator::smallGreyPanel
+                                      : PictureDecorator::smallBrownPanel;
+      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), mode );
+    }
     break;
 
     case grayBorderLine:

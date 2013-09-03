@@ -99,6 +99,7 @@ public:
 
     ret.buildingWork = 0;
     ret.peoplesStuding = 0;
+    ret.buildingCount = 0;
 
     foreach( ServiceBuildingPtr serv, helper.getBuildings<ServiceBuilding>( service ) )
     {
@@ -115,9 +116,9 @@ public:
         default: break;
         }
 
-        ret.buildingCount++;
         ret.peoplesStuding += maxStuding * serv->getWorkers() / serv->getMaxWorkers();
       }
+      ret.buildingCount++;
     }
 
     return ret;
