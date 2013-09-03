@@ -24,6 +24,7 @@
 #include "oc3_variant.hpp"
 #include "oc3_saveadapter.hpp"
 #include "oc3_goodstore.hpp"
+#include "oc3_foreach.hpp"
 
 #include <string>
 #include <map>
@@ -49,7 +50,9 @@ public:
   int minWaterLevel;  // access to water (no water=0, well=1, fountain=2)
   int minReligionLevel;  // number of religions
   int minFoodLevel;  // number of food types
-  std::map<Good::Type, int> requiredGoods;  // rate of good usage for every good (furniture, pottery, ...)
+
+  typedef std::map<Good::Type, int> RequiredGoods;
+  RequiredGoods requiredGoods;  // rate of good usage for every good (furniture, pottery, ...)
 };
 
 int HouseLevelSpec::getHouseLevel() const
@@ -543,9 +546,9 @@ HouseLevelSpec& HouseLevelSpec::operator=( const HouseLevelSpec& other )
   _d->minWaterLevel = other._d->minWaterLevel;  // access to water (no water=0, well=1, fountain=2)
   _d->minReligionLevel = other._d->minReligionLevel;  // number of religions
   _d->minFoodLevel = other._d->minFoodLevel;  // number of food types
-  for( std::map<Good::Type, int>::iterator it=other._d->requiredGoods.begin(); it != other._d->requiredGoods.end(); it++ )
+  foreach( Impl::RequiredGoods::value_type& item, other._d->requiredGoods )
   {
-    _d->requiredGoods[ (*it).first ] = (*it).second;
+    _d->requiredGoods[ item.first ] = item.second;
   }
 
   return *this;
@@ -633,11 +636,11 @@ int HouseSpecHelper::getHouseLevel(const int houseId)
 
 int HouseSpecHelper::getHouseLevel( const std::string& name )
 {
-  for( Impl::HouseLevels::iterator it=_d->spec_by_level.begin(); it != _d->spec_by_level.end(); it++ )
+  foreach( Impl::HouseLevels::value_type& item, _d->spec_by_level )
   {
-    if( (*it).second.getInternalName() == name )
+    if( item.second.getInternalName() == name )
     {
-      return (*it).second.getHouseLevel();
+      return item.second.getHouseLevel();
     }
   }
 
@@ -659,15 +662,16 @@ void HouseSpecHelper::initialize( const io::FilePath& filename )
     return;
   }
 
-  for( VariantMap::iterator it = houses.begin(); it != houses.end(); it++ )
+
+  foreach( VariantMap::value_type& item, houses )
   {
     // this is not a comment (comments start by #)
     // std::cout << "Line #" << linenum << ":" << line << std::endl;
-    VariantMap hSpec = (*it).second.toMap();
+    VariantMap hSpec = item.second.toMap();
 
     HouseLevelSpec spec;
     spec._d->houseLevel = hSpec[ "level" ].toInt();
-    spec._d->internalName = (*it).first;
+    spec._d->internalName = item.first;
     spec._d->levelName = hSpec[ "title" ].toString();
     spec._d->maxHabitantsByTile = hSpec.get( "habitants" ).toInt();
     spec._d->midDesirability = hSpec.get( "minDesirability" ).toInt();  // min desirability

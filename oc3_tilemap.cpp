@@ -23,6 +23,7 @@
 #include "oc3_positioni.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_stringhelper.hpp"
+#include "oc3_foreach.hpp"
 
 static Tile invalidTile = Tile( TilePos( -1, -1 ) );
 
@@ -173,11 +174,11 @@ void Tilemap::save( VariantMap& stream ) const
   VariantList idInfo;
 
   PtrTilesArea tiles = const_cast< Tilemap* >( this )->getFilledRectangle( TilePos( 0, 0 ), Size( _size ) );
-  for( PtrTilesArea::iterator it = tiles.begin(); it != tiles.end(); it++ )
+  foreach( Tile* tile, tiles )
   {
-    bitsetInfo.push_back( (*it)->getTerrain().encode() );
-    desInfo.push_back( (*it)->getTerrain().getDesirability() );
-    idInfo.push_back( (*it)->getTerrain().getOriginalImgId() );
+    bitsetInfo.push_back( tile->getTerrain().encode() );
+    desInfo.push_back( tile->getTerrain().getDesirability() );
+    idInfo.push_back( tile->getTerrain().getOriginalImgId() );
   }
 
   stream[ "bitset" ]       = bitsetInfo;

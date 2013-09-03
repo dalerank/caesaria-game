@@ -344,7 +344,7 @@ VariantMap PathWay::save() const
   VariantList directions;
   for( Directions::const_iterator itDir = _directionList.begin(); itDir != _directionList.end(); ++itDir)
   {
-    directions.push_back( (int)*itDir);
+    directions.push_back( (int)*itDir );
   }
 
   stream[ "directions" ] = directions;

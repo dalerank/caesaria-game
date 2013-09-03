@@ -19,6 +19,7 @@
 #include "oc3_goodstore_simple.hpp"
 #include "oc3_goodhelper.hpp"
 #include "oc3_gamedate.hpp"
+#include "oc3_foreach.hpp"
 
 class ComputerCity::Impl
 {
@@ -199,7 +200,7 @@ void ComputerCity::timeStep( unsigned int time )
 
   if( _d->lastTimeMerchantSend.getMonthToDate( GameDate::current() ) > 2 ) 
   {
-    TradeRoutesList routes = _d->empire->getTradeRoutes( getName() );
+    EmpireTradeRouteList routes = _d->empire->getTradeRoutes( getName() );
     _d->lastTimeMerchantSend = GameDate::current();
 
     if( _d->merchantsNumber >= routes.size() )
@@ -238,10 +239,10 @@ void ComputerCity::timeStep( unsigned int time )
       }
 
       //send merchants to all routes
-      for( TradeRoutesList::iterator it=routes.begin(); it != routes.end(); it++ )
+      foreach( EmpireTradeRoutePtr route, routes )
       {
         _d->merchantsNumber++;
-        (*it)->addMerchant( getName(), sellGoods, buyGoods );
+        route->addMerchant( getName(), sellGoods, buyGoods );
       }
     }
   }

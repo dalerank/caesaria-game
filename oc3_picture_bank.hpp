@@ -44,9 +44,6 @@ public:
   // show resource
   Picture& getPicture(const std::string &prefix, const int idx);
 
-  // show all resources
-  PicturesArray getPictures();
-
   // create runtime resources
   void createResources();
 

@@ -21,6 +21,7 @@
 #include "oc3_event.hpp"
 #include "oc3_gui_label.hpp"
 #include "oc3_time.hpp"
+#include "oc3_foreach.hpp"
 
 class GuiEnv::Impl
 {
@@ -93,10 +94,9 @@ Widget* GuiEnv::getRootWidget()
 
 void GuiEnv::threatDeletionQueue_()
 {
-  Widget::ChildIterator it = _d->deletionQueue.begin();
-  for( ; it != _d->deletionQueue.end(); it++ )
+  foreach( Widget* widget, _d->deletionQueue )
   {
-    try{ (*it)->remove(); }
+    try{ widget->remove(); }
     catch(...){}
   }
 
@@ -205,10 +205,9 @@ void GuiEnv::deleteLater( Widget* ptrElement )
 			_d->hoveredNoSubelement = WidgetPtr();
 		}
 
-    Widget::ChildIterator it = _d->deletionQueue.begin();
-    for( ; it != _d->deletionQueue.end(); it++ )
+    foreach( Widget* widget, _d->deletionQueue )
     {
-			if( *it == ptrElement )
+      if( widget == ptrElement )
       {
 				return;
       }
@@ -511,8 +510,10 @@ void GuiEnv::beforeDraw()
 
   updateHoveredElement( _d->cursorPos );
 
-  for( ConstChildIterator it = Widget::_d->children.begin(); it != Widget::_d->children.end(); ++it)
-    (*it)->beforeDraw( *_d->engine );
+  foreach( Widget* widget, Widget::_d->children )
+  {
+    widget->beforeDraw( *_d->engine );
+  }
 
   if( _d->toolTip.Element.isValid() )
   {

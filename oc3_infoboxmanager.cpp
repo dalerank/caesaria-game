@@ -54,7 +54,7 @@ public:
   InfoBoxSimple* create( Widget* parent, const Tile& tile )
   {
     CityHelper helper( Scenario::instance().getCity() );
-    Walkers walkers = helper.getWalkers<Walker>( tile.getIJ() );
+    WalkerList walkers = helper.getWalkers<Walker>( tile.getIJ() );
 
     if( walkers.empty() )
     {

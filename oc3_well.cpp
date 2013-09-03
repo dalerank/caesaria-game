@@ -34,10 +34,9 @@ void BuildingWell::deliverService()
   walker->setBase( BuildingPtr( this ) );
 
   ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( getTile().getIJ() );
-  for( ServiceWalker::ReachedBuildings::iterator itBuilding = reachedBuildings.begin(); 
-    itBuilding != reachedBuildings.end(); ++itBuilding)
+  foreach( BuildingPtr building, reachedBuildings)
   {
-    (*itBuilding)->applyService( walker );
+    building->applyService( walker );
   }
 }
 

@@ -119,11 +119,11 @@ AdvisorEmployerWindow::Impl::EmployersInfo AdvisorEmployerWindow::Impl::getEmplo
   default: break;
   }
 
-  WorkingBuildings buildings;
+  WorkingBuildingList buildings;
   CityHelper helper( city );
   foreach( BuildingClass cl, bldClasses )
   {
-    WorkingBuildings sectorBuildings = helper.getBuildings<WorkingBuilding>( cl );
+    WorkingBuildingList sectorBuildings = helper.getBuildings<WorkingBuilding>( cl );
     buildings.insert( buildings.begin(), sectorBuildings.begin(), sectorBuildings.end() );
   }
 

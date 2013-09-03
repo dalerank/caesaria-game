@@ -187,7 +187,7 @@ public:
 class InfoBoxCitizen : public InfoBoxSimple
 {
 public:
-  InfoBoxCitizen(Widget* parent, const Walkers &walkers );
+  InfoBoxCitizen(Widget* parent, const WalkerList& walkers );
   virtual ~InfoBoxCitizen();
 };
 

@@ -17,6 +17,7 @@
 #include "oc3_goodstore_simple.hpp"
 #include "oc3_goodorders.hpp"
 #include "oc3_stringhelper.hpp"
+#include "oc3_foreach.hpp"
 
 class GoodStore::Impl
 {
@@ -42,11 +43,9 @@ int GoodStore::getMaxRetrieve(const Good::Type goodType)
   int qty = getCurrentQty(goodType);
 
   // remove all retrieval reservations
-  for( _Reservations::iterator reservationIt = _d->retrieveReservations.begin(); 
-        reservationIt != _d->retrieveReservations.end(); ++reservationIt)
+  foreach( _Reservations::value_type& item, _d->retrieveReservations )
   {
-    GoodStock &reservationStock = reservationIt->second;
-    qty -= reservationStock._currentQty;
+    qty -= item.second._currentQty;
   }
 
   return qty;
@@ -205,19 +204,19 @@ VariantMap GoodStore::save() const
   stream[ "nextReservationId" ] = static_cast<int>(_d->nextReservationID);
 
   VariantList vm_storeReservations;
-  for( _Reservations::const_iterator itRes = _d->storeReservations.begin(); itRes != _d->storeReservations.end(); itRes++)
+  foreach( _Reservations::value_type& item, _d->storeReservations )
   {
-    vm_storeReservations.push_back( (int)itRes->first );
-    vm_storeReservations.push_back( itRes->second.save() );
+    vm_storeReservations.push_back( (int)item.first );
+    vm_storeReservations.push_back( item.second.save() );
   }
   stream[ "storeReservations" ] = vm_storeReservations;
   stream[ "devastation" ] = _d->devastation;
 
   VariantList vm_retrieveReservations;
-  for( _Reservations::const_iterator itRes = _d->retrieveReservations.begin(); itRes != _d->retrieveReservations.end(); itRes++)
+  foreach( _Reservations::value_type& item, _d->retrieveReservations)
   {
-    vm_retrieveReservations.push_back( (int)itRes->first );
-    vm_retrieveReservations.push_back( itRes->second.save() );
+    vm_retrieveReservations.push_back( (int)item.first );
+    vm_retrieveReservations.push_back( item.second.save() );
   }
   stream[ "retrieveReservation" ] = vm_retrieveReservations;
 

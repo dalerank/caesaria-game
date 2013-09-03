@@ -18,6 +18,7 @@
 #include "oc3_picture.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_walker.hpp"
+#include "oc3_foreach.hpp"
 
 class WorkingBuilding::Impl
 {
@@ -25,7 +26,7 @@ public:
   int currentWorkers;
   int maxWorkers;
   bool isActive;
-  Walkers walkerList;
+  WalkerList walkerList;
 };
 
 WorkingBuilding::WorkingBuilding(const BuildingType type, const Size& size)
@@ -94,7 +95,7 @@ void WorkingBuilding::timeStep( const unsigned long time )
 {
   Building::timeStep( time );
 
-  Walkers::iterator it=_d->walkerList.begin();
+  WalkerList::iterator it=_d->walkerList.begin();
   while( it != _d->walkerList.end() )
   {
     if( (*it)->isDeleted() )
@@ -116,7 +117,7 @@ void WorkingBuilding::addWalker( WalkerPtr walker )
   }
 }
 
-const Walkers& WorkingBuilding::getWalkerList() const
+const WalkerList& WorkingBuilding::getWalkerList() const
 {
   return _d->walkerList;
 }
@@ -125,8 +126,8 @@ void WorkingBuilding::destroy()
 {
   Building::destroy();
 
-  for( Walkers::iterator itWalker = _d->walkerList.begin(); itWalker != _d->walkerList.end(); ++itWalker)
+  foreach( WalkerPtr walker, _d->walkerList )
   {
-    (*itWalker)->deleteLater();
+    walker->deleteLater();
   }
 }

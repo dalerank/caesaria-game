@@ -22,9 +22,19 @@
 #include <vector>
 
 #define PREFEDINE_CLASS_SMARTPOINTER(a) class a; typedef SmartPtr<a> a##Ptr;
+#define PREFEDINE_CLASS_SMARTPOINTER_LIST(a,b) PREFEDINE_CLASS_SMARTPOINTER(a); typedef std::list< a##Ptr > a##b;
 
-PREFEDINE_CLASS_SMARTPOINTER(Walker)
-typedef std::list< WalkerPtr > Walkers;
+PREFEDINE_CLASS_SMARTPOINTER_LIST(Walker,List)
+PREFEDINE_CLASS_SMARTPOINTER_LIST(Forum,List)
+PREFEDINE_CLASS_SMARTPOINTER_LIST(House,List)
+PREFEDINE_CLASS_SMARTPOINTER_LIST(Temple,List)
+PREFEDINE_CLASS_SMARTPOINTER_LIST(Theater,List)
+PREFEDINE_CLASS_SMARTPOINTER_LIST(Library,List)
+PREFEDINE_CLASS_SMARTPOINTER_LIST(School,List)
+PREFEDINE_CLASS_SMARTPOINTER_LIST(College,List)
+PREFEDINE_CLASS_SMARTPOINTER_LIST(WorkingBuilding,List)
+PREFEDINE_CLASS_SMARTPOINTER_LIST(EmpireTradeRoute,List)
+PREFEDINE_CLASS_SMARTPOINTER_LIST(Warehouse,List)
 
 PREFEDINE_CLASS_SMARTPOINTER(LandOverlay)
 typedef std::list< LandOverlayPtr > LandOverlays;
@@ -32,29 +42,18 @@ typedef std::list< LandOverlayPtr > LandOverlays;
 PREFEDINE_CLASS_SMARTPOINTER(Building)
 typedef std::list< BuildingPtr > Buildings;
 
-PREFEDINE_CLASS_SMARTPOINTER(WorkingBuilding)
-typedef std::list< WorkingBuildingPtr > WorkingBuildings;
-
 PREFEDINE_CLASS_SMARTPOINTER(EmpireCity)
 typedef std::list< EmpireCityPtr > EmpireCities;
-
-PREFEDINE_CLASS_SMARTPOINTER(EmpireTradeRoute)
-typedef std::list< EmpireTradeRoutePtr > TradeRoutesList;
 
 PREFEDINE_CLASS_SMARTPOINTER(Factory)
 typedef std::list< FactoryPtr > Factories;
 
-PREFEDINE_CLASS_SMARTPOINTER(Temple)
-typedef std::list< TemplePtr > Temples;
-
 PREFEDINE_CLASS_SMARTPOINTER(ServiceBuilding)
 typedef std::list< ServiceBuildingPtr > ServiceBuildings;
 
-PREFEDINE_CLASS_SMARTPOINTER(House)
-typedef std::list< HousePtr > Houses;
+PREFEDINE_CLASS_SMARTPOINTER( Aqueduct )
+typedef std::list< AqueductPtr > Aqueducts;
 
-PREFEDINE_CLASS_SMARTPOINTER(Warehouse)
-typedef std::list< WarehousePtr > Warehouses;
 
 PREFEDINE_CLASS_SMARTPOINTER(Collosseum)
 PREFEDINE_CLASS_SMARTPOINTER(Construction)
@@ -69,12 +68,7 @@ PREFEDINE_CLASS_SMARTPOINTER(Granary)
 PREFEDINE_CLASS_SMARTPOINTER(RomeDivinity)
 PREFEDINE_CLASS_SMARTPOINTER(City)
 PREFEDINE_CLASS_SMARTPOINTER(Senate)
-PREFEDINE_CLASS_SMARTPOINTER(Forum)
 PREFEDINE_CLASS_SMARTPOINTER(TempleOracle)
-PREFEDINE_CLASS_SMARTPOINTER(Theater)
-PREFEDINE_CLASS_SMARTPOINTER(Library)
-PREFEDINE_CLASS_SMARTPOINTER(School)
-PREFEDINE_CLASS_SMARTPOINTER(College)
 PREFEDINE_CLASS_SMARTPOINTER(EmpireMerchant)
 PREFEDINE_CLASS_SMARTPOINTER(Empire)
 PREFEDINE_CLASS_SMARTPOINTER(MarketLadyHelper)

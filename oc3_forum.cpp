@@ -19,6 +19,7 @@
 #include "oc3_scenario.hpp"
 #include "oc3_walker_taxcollector.hpp"
 #include "oc3_city.hpp"
+#include "oc3_foreach.hpp"
 
 class Forum::Impl
 {
@@ -52,12 +53,12 @@ void Forum::deliverService()
 
 void Forum::timeStep( const unsigned long time )
 {
-  const Walkers& walkers = getWalkerList();
-  for( Walkers::const_iterator it=walkers.begin(); it != walkers.end(); it++ )
+  WalkerList walkers = getWalkerList();
+  foreach( WalkerPtr walker, walkers )
   {
-    if( (*it)->isDeleted() )
+    if( walker->isDeleted() )
     {
-      SmartPtr< TaxCollector > collector = (*it).as< TaxCollector >();
+      TaxCollectorPtr collector = walker.as< TaxCollector >();
       if( collector.isValid() )
       {
         _d->taxInThisMonth += collector->getMoney();

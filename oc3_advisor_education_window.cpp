@@ -168,7 +168,7 @@ AdvisorEducationWindow::AdvisorEducationWindow( CityPtr city, Widget* parent, in
 
   int sumScholars = 0;
   int sumStudents = 0;
-  Houses houses = helper.getBuildings<House>( B_HOUSE );
+  HouseList houses = helper.getBuildings<House>( B_HOUSE );
   foreach( HousePtr house, houses )
   {
     sumScholars += house->getScholars();

@@ -15,6 +15,7 @@
 
 #include "oc3_goodstore_simple.hpp"
 #include "oc3_math.hpp"
+#include "oc3_foreach.hpp"
 #include "oc3_variant.hpp"
 
 class SimpleGoodStore::Impl
@@ -98,11 +99,9 @@ int SimpleGoodStore::getMaxStore(const Good::Type goodType)
     freeRoom = math::clamp( _goodStockList[goodType]._maxQty - _goodStockList[goodType]._currentQty, 0, globalFreeRoom );
 
     // remove all storage reservations
-    for( _Reservations::iterator reservationIt = _getStoreReservations().begin(); \
-        reservationIt != _getStoreReservations().end(); ++reservationIt)
+    foreach( _Reservations::value_type& item, _getStoreReservations() )
     {
-      GoodStock &reservationStock = reservationIt->second;
-      freeRoom -= reservationStock._currentQty;
+      freeRoom -= item.second._currentQty;
     }
   }
 
@@ -164,7 +163,8 @@ VariantMap SimpleGoodStore::save() const
   stream[ "max" ] = _maxQty;
 
   VariantList stockSave;
-  for( std::vector<GoodStock>::const_iterator itStock = _goodStockList.begin(); itStock != _goodStockList.end(); itStock++)
+  for( std::vector<GoodStock>::const_iterator itStock = _goodStockList.begin();
+       itStock != _goodStockList.end(); itStock++)
   {
     stockSave.push_back( (*itStock).save() );
   }

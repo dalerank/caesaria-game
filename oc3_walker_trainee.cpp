@@ -107,11 +107,10 @@ void TraineeWalker::checkDestination(const BuildingType buildingType, Propagator
   Propagator::Routes pathWayList;
   pathPropagator.getRoutes(buildingType, pathWayList);
 
-  for( Propagator::Routes::iterator pathWayIt= pathWayList.begin(); 
-    pathWayIt != pathWayList.end(); ++pathWayIt)
+  foreach( Propagator::Routes::value_type& item, pathWayList )
   {
     // for every building within range
-    BuildingPtr building = pathWayIt->first;
+    BuildingPtr building = item.first;
 
     float need = building->evaluateTrainee( (WalkerType)getType() );
     if (need > _maxNeed)

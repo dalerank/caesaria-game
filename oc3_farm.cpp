@@ -103,10 +103,11 @@ bool Farm::canBuild(const TilePos& pos ) const
   bool on_meadow = false;
 
   Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
-  PtrTilesArea rect = tilemap.getFilledRectangle( pos, getSize() );
-  for( PtrTilesArea::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+  PtrTilesArea area = tilemap.getFilledRectangle( pos, getSize() );
+
+  foreach( Tile* tile, area )
   {
-    on_meadow |= (*itTiles)->getTerrain().isMeadow();
+    on_meadow |= tile->getTerrain().isMeadow();
   }
 
   return (is_constructible && on_meadow);  

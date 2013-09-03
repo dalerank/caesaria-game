@@ -64,7 +64,7 @@ void CityServiceReligion::Impl::updateRelation(RomeDivinityPtr divn)
 {
   CityHelper helper( city );
   int peopleReached = 0;
-  Temples temples =  helper.getBuildings<Temple>( BC_RELIGION );
+  TempleList temples = helper.getBuildings<Temple>( BC_RELIGION );
   foreach( TemplePtr temple, temples )
   {
     if( temple->getDivinity() == divn )

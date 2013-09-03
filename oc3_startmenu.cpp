@@ -33,6 +33,7 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_pushbutton.hpp"
 #include "oc3_gui_label.hpp"
+#include "oc3_foreach.hpp"
 
 StartMenu::StartMenu( Widget* parent ) 
 	: Widget( parent, -1, parent->getRelativeRect() )
@@ -52,9 +53,9 @@ PushButton* StartMenu::addButton( const std::string& caption, int id )
 
     Point offsetBtn( ( getWidth() - btnSize.getWidth() ) / 2, ( getHeight() - offsetY * 3 ) / 2 );
     List< PushButton* > buttons = findChildren< PushButton* >(); 
-    for( List< PushButton* >::iterator it=buttons.begin(); it != buttons.end(); it++ )
+    foreach( PushButton* btn, buttons )
     {
-        (*it)->setPosition( offsetBtn );
+        btn->setPosition( offsetBtn );
         offsetBtn += Point( 0, offsetY );
     }
 

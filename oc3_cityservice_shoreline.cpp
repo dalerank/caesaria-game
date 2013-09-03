@@ -35,12 +35,12 @@ void CityServiceShoreline::Impl::checkMap( CityPtr city )
   int mapSize = city->getTilemap().getSize();
   PtrTilesList tiles = city->getTilemap().getFilledRectangle( TilePos( 0, 0), Size( mapSize ) );
 
-  for( PtrTilesList::iterator it=tiles.begin(); it != tiles.end(); it++ )
+  foreach( Tile* tile, tiles )
   {
-    int imgId = (*it)->getTerrain().getOriginalImgId();
+    int imgId = tile->getTerrain().getOriginalImgId();
     if( (imgId >= 372 && imgId <= 403) || (imgId>=414 && imgId<=418) )
     {
-      slTiles.push_back( *it );
+      slTiles.push_back( tile );
     }
   }
 }

@@ -65,8 +65,6 @@ protected:
   virtual void _waterStateChanged();
 };
 
-typedef SmartPtr< Aqueduct > AqueductPtr;
-
 class Reservoir : public WaterSource
 {
 public:

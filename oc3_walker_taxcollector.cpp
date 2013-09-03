@@ -30,9 +30,9 @@ void TaxCollector::onMidTile()
   ServiceWalker::onMidTile();
 
   ReachedBuildings buildings = getReachedBuildings( getIJ() );
-  for( ReachedBuildings::iterator it=buildings.begin(); it != buildings.end(); it++ )
+  foreach( BuildingPtr building, buildings )
   {
-    HousePtr house = (*it).as<House>();
+    HousePtr house = building.as<House>();
     if( house.isValid() )
     {
       int money = house->collectTaxes();

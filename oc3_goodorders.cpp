@@ -14,6 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_goodorders.hpp"
+#include "oc3_foreach.hpp"
 #include <map>
 
 class GoodOrders::Impl
@@ -35,11 +36,11 @@ GoodOrders::GoodOrders() : _d( new Impl )
 
 void GoodOrders::set( Order rule )
 {
-  for( Impl::Orders::iterator it=_d->orders.begin(); it != _d->orders.end(); it++ )
+  foreach( Impl::Orders::value_type& item, _d->orders )
   {
-    if( it->second != GoodOrders::none )
+    if( item.second != GoodOrders::none )
     {
-      it->second = rule;
+      item.second = rule;
     }
   }
 }

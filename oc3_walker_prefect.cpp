@@ -53,12 +53,11 @@ bool WalkerPrefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, Til
 {
   buildings = getReachedBuildings( getIJ() );
 
-  for( ServiceWalker::ReachedBuildings::const_iterator itBuilding = buildings.begin(); 
-    itBuilding != buildings.end(); ++itBuilding)
+  foreach( BuildingPtr building, buildings )
   {
-    if( (*itBuilding)->getType() == B_BURNING_RUINS )
+    if( building->getType() == B_BURNING_RUINS )
     {
-      pos = (*itBuilding)->getTilePos();
+      pos = building->getTilePos();
       return true;
     }
   }
@@ -70,14 +69,13 @@ void WalkerPrefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
 {
   PathWay bestPath;
   int minLength = 9999;
-  for( ReachedBuildings::const_iterator itBuilding = buildings.begin(); 
-       itBuilding != buildings.end(); ++itBuilding)
+  foreach( BuildingPtr building, buildings )
   {
-    if( (*itBuilding)->getType() != B_BURNING_RUINS )
+    if( building->getType() != B_BURNING_RUINS )
       continue;
 
     PathWay tmp;
-    bool foundPath = Pathfinder::getInstance().getPath( getIJ(), (*itBuilding)->getTile().getIJ(), tmp, 
+    bool foundPath = Pathfinder::getInstance().getPath( getIJ(), building->getTile().getIJ(), tmp,
                                                         false, Size( 0 ) ); 
     if( foundPath && tmp.getLength() < minLength )
     {
@@ -146,12 +144,11 @@ void WalkerPrefect::onMidTile()
     }
     else
     {
-      for( ReachedBuildings::iterator itBuilding = reachedBuildings.begin();
-           itBuilding != reachedBuildings.end(); ++itBuilding)
+      foreach( BuildingPtr building, reachedBuildings )
       {
-        (*itBuilding)->applyService( ServiceWalkerPtr( this ) );
+        building->applyService( ServiceWalkerPtr( this ) );
 
-        HousePtr house = (*itBuilding).as<House>();
+        HousePtr house = building.as<House>();
         if( house.isValid() && house->getHealthLevel() < 1 )
         {
           house->deleteLater();

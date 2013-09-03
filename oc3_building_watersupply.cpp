@@ -25,6 +25,7 @@
 #include "oc3_tile.hpp"
 #include "oc3_walker_service.hpp"
 #include "oc3_city.hpp"
+#include "oc3_foreach.hpp"
 
 class WaterSource::Impl
 {
@@ -68,10 +69,10 @@ void Aqueduct::build(const TilePos& pos )
   Construction::build( pos );
 
   CityHelper helper( Scenario::instance().getCity() );
-  std::list< AqueductPtr > aqueducts = helper.getBuildings<Aqueduct>( B_AQUEDUCT );
-  for( std::list< AqueductPtr >::iterator it = aqueducts.begin(); it!=aqueducts.end(); ++it )
+  Aqueducts aqueducts = helper.getBuildings<Aqueduct>( B_AQUEDUCT );
+  foreach( AqueductPtr aqueduct, aqueducts )
   {
-    (*it)->updatePicture();
+    aqueduct->updatePicture();
   }
 
   updatePicture();
@@ -347,9 +348,9 @@ void Reservoir::destroy()
   //now remove water flag from near tiles
   Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
   PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
-  for( PtrTilesArea::iterator it=reachedTiles.begin(); it != reachedTiles.end(); it++ )
+  foreach( Tile* tile, reachedTiles )
   {
-    (*it)->getTerrain().decreaseWaterService( WTR_RESERVOIR );
+    tile->getTerrain().decreaseWaterService( WTR_RESERVOIR );
   }
 
 
@@ -432,9 +433,9 @@ void Reservoir::timeStep(const unsigned long time)
   {
     Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
     PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() ); 
-    for( PtrTilesArea::iterator it=reachedTiles.begin(); it != reachedTiles.end(); it++ )
+    foreach( Tile* tile, reachedTiles )
     {
-      (*it)->getTerrain().fillWaterService( WTR_RESERVOIR );
+      tile->getTerrain().fillWaterService( WTR_RESERVOIR );
     }   
   }
 
@@ -497,9 +498,9 @@ void WaterSource::timeStep( const unsigned long time )
       _waterStateChanged();
     }
 
-    for( Impl::WaterSourceMap::iterator it=_d->sourcesMap.begin(); it != _d->sourcesMap.end(); it++ )
+    foreach( Impl::WaterSourceMap::value_type& item, _d->sourcesMap )
     {
-      (*it).second = math::clamp( (*it).second-1, 0, 4 );
+      item.second = math::clamp( item.second-1, 0, 4 );
     }
   }
 
@@ -577,18 +578,18 @@ void BuildingFountain::deliverService()
     //remove fontain service from tiles
     Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
     PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() ); 
-    for( PtrTilesArea::iterator it=reachedTiles.begin(); it != reachedTiles.end(); it++ )
+    foreach( Tile* tile, reachedTiles )
     {
-      (*it)->getTerrain().decreaseWaterService( WTR_FONTAIN );
+      tile->getTerrain().decreaseWaterService( WTR_FONTAIN );
     }
   }
 
   ServiceWalkerPtr walker = ServiceWalker::create( Scenario::instance().getCity(), getService() );
   walker->setBase( BuildingPtr( this ) );
   ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( getTile().getIJ() );
-  for( ServiceWalker::ReachedBuildings::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
+  foreach( BuildingPtr building, reachedBuildings )
   {
-    (*itBuilding)->applyService( walker );
+    building->applyService( walker );
   } 
 }
 
@@ -605,9 +606,9 @@ void BuildingFountain::timeStep(const unsigned long time)
   {
     Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
     PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() ); 
-    for( PtrTilesArea::iterator it=reachedTiles.begin(); it != reachedTiles.end(); it++ )
+    foreach( Tile* tile, reachedTiles )
     {
-      (*it)->getTerrain().fillWaterService( WTR_FONTAIN );
+      tile->getTerrain().fillWaterService( WTR_FONTAIN );
     }
   }
 

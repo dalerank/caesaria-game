@@ -29,6 +29,7 @@
 #include "oc3_tile.hpp"
 #include "oc3_empire_city.hpp"
 #include "oc3_positioni.hpp"
+#include "oc3_foreach.hpp"
 
 class DateTime;
 class CityBuildOptions;
@@ -46,7 +47,7 @@ public:
   void setLocation( const Point& location );
   Point getLocation() const;
 
-  Walkers getWalkerList( const WalkerType type );
+  WalkerList getWalkerList( const WalkerType type );
   void addWalker( WalkerPtr walker );
   void removeWalker( WalkerPtr walker );
 
@@ -138,9 +139,9 @@ public:
   {
     std::list< SmartPtr< T > > ret;
     LandOverlays buildings = _city->getBuildingList( type );
-    for( LandOverlays::iterator it = buildings.begin(); it != buildings.end(); it++  )
+    foreach( LandOverlayPtr item, buildings )
     {
-      SmartPtr< T > b = (*it).as<T>();
+      SmartPtr< T > b = item.as<T>();
       if( b.isValid() )
       {
         ret.push_back( b );
@@ -155,9 +156,9 @@ public:
   {
     std::list< SmartPtr< T > > ret;
     LandOverlays overlays = _city->getOverlayList();
-    for( LandOverlays::iterator it = overlays.begin(); it != overlays.end(); it++  )
+    foreach( LandOverlayPtr item, overlays )
     {
-      SmartPtr< T > b = (*it).as<T>();
+      SmartPtr< T > b = item.as<T>();
       if( b.isValid() && b->getClass() == type )
       {
         ret.push_back( b );
@@ -179,9 +180,9 @@ public:
   {
     std::list< SmartPtr< T > > ret;
     LandOverlays overlays = _city->getOverlayList();
-    for( LandOverlays::iterator it = overlays.begin(); it != overlays.end(); it++  )
+    foreach( LandOverlayPtr item, overlays )
     {
-      SmartPtr< T > b = (*it).as<T>();
+      SmartPtr< T > b = item.as<T>();
       if( b.isValid() && b->getOutGoodType() == goodtype )
       {
         ret.push_back( b );
@@ -195,12 +196,12 @@ public:
   std::list< SmartPtr< T > > getWalkers( const TilePos& pos )
   {
     std::list< SmartPtr< T > > ret;
-    Walkers walkers = _city->getWalkerList( WT_ALL );
-    for( Walkers::iterator it = walkers.begin(); it != walkers.end(); it++  )
+    WalkerList walkers = _city->getWalkerList( WT_ALL );
+    foreach( WalkerPtr walker, walkers )
     {
-      if( (*it)->getIJ() == pos )
+      if( walker->getIJ() == pos )
       {
-        SmartPtr< T > b = (*it).as<T>();
+        SmartPtr< T > b = walker.as<T>();
 
         if( b.isValid() )
         {

@@ -182,10 +182,11 @@ void HighBridge::_computePictures( const TilePos& startPos, const TilePos& endPo
       _d->addSpan( tiles.front()->getIJ() - startPos, HighBridgeSubTile::liftingSE2 );
       tiles.pop_front();
 
-      for( PtrTilesArea::iterator it=tiles.begin(); it != tiles.end(); it++ )
+      foreach( Tile* tile, tiles )
       {
-        _d->addSpan( (*it)->getIJ() - startPos, HighBridgeSubTile::spanSE );
+        _d->addSpan( tile->getIJ() - startPos, HighBridgeSubTile::spanSE );
       }
+
       _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 1, 0 ), HighBridgeSubTile::descentSE );     
       _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 2, 0 ), HighBridgeSubTile::descentSE2 );     
     }
@@ -203,11 +204,13 @@ void HighBridge::_computePictures( const TilePos& startPos, const TilePos& endPo
 
       _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 0, 1 ), HighBridgeSubTile::liftingSW );
       _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 0, 2 ), HighBridgeSubTile::liftingSW2 );
+
       for( PtrTilesArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
       {
         _d->addSpan( (*it)->getIJ() - startPos, HighBridgeSubTile::spanSW );
       }
-      _d->addSpan( liftPos - startPos, HighBridgeSubTile::descentSW2 );    
+
+      _d->addSpan( liftPos - startPos, HighBridgeSubTile::descentSW2 );
       _d->addSpan( liftPos - startPos - TilePos( 0, 1 ), HighBridgeSubTile::descentSW );    
     }
     break;
@@ -224,10 +227,11 @@ void HighBridge::_computePictures( const TilePos& startPos, const TilePos& endPo
       _d->addSpan( tiles.front()->getIJ() - startPos, HighBridgeSubTile::liftingSE2 );      
       tiles.pop_front();
 
-      for( PtrTilesArea::iterator it=tiles.begin(); it != tiles.end(); it++ )
+      foreach( Tile* tile, tiles )
       {        
-        _d->addSpan( (*it)->getIJ() - startPos, HighBridgeSubTile::spanSE );
+        _d->addSpan( tile->getIJ() - startPos, HighBridgeSubTile::spanSE );
       }
+
       _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 1, 0 ), HighBridgeSubTile::descentSE );
       _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 2, 0 ), HighBridgeSubTile::descentSE2 );
     }
@@ -358,9 +362,8 @@ void HighBridge::build( const TilePos& pos )
   {    
     _computePictures( startPos, endPos, _d->direction );
    
-    for( HighBridgeSubTiles::iterator it=_d->subtiles.begin(); it != _d->subtiles.end(); it++ )
+    foreach( HighBridgeSubTilePtr subtile, _d->subtiles )
     {
-      HighBridgeSubTilePtr subtile = (*it);
       TilePos buildPos = pos + subtile->_pos;
       Tile& tile = tilemap.at( buildPos );
       subtile->setPicture( tile.getPicture() );
@@ -376,13 +379,13 @@ void HighBridge::build( const TilePos& pos )
 void HighBridge::destroy()
 { 
   CityPtr city = Scenario::instance().getCity();
-  for( HighBridgeSubTiles::iterator it=_d->subtiles.begin(); it != _d->subtiles.end(); it++ )
+  foreach( HighBridgeSubTilePtr subtile,  _d->subtiles )
   {
-    (*it)->_parent = 0;
-    city->clearLand( (*it)->_pos );
+    subtile->_parent = 0;
+    city->clearLand( subtile->_pos );
 
-    std::string picName = TerrainTileHelper::convId2PicName( (*it)->_imgId );
-    city->getTilemap().at( (*it)->_pos ).setPicture( &Picture::load( picName ) );
-    city->getTilemap().at( (*it)->_pos ).getTerrain().decode( (*it)->_info );
+    std::string picName = TerrainTileHelper::convId2PicName( subtile->_imgId );
+    city->getTilemap().at( subtile->_pos ).setPicture( &Picture::load( picName ) );
+    city->getTilemap().at( subtile->_pos ).getTerrain().decode( subtile->_info );
   }
 }

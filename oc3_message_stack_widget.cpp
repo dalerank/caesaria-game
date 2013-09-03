@@ -19,6 +19,7 @@
 #include "oc3_widget_deleter.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_resourcegroup.hpp"
+#include "oc3_foreach.hpp"
 #include <list>
 
 class WindowMessageStack::Impl
@@ -30,9 +31,9 @@ public:
   {
     Point offsetLb( 0, 0 );
     Point offset( 0, 23 );
-    for( Widget::ChildIterator it=childs.begin(); it != childs.end(); it++ )
+    foreach( Widget* widget, childs )
     {
-      (*it)->setPosition( offsetLb );
+      widget->setPosition( offsetLb );
       offsetLb += offset;
     }
   }

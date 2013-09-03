@@ -19,6 +19,7 @@
 #include "oc3_building_engineer_post.hpp"
 #include "oc3_building_prefecture.hpp"
 #include "oc3_walker_workerhunter.hpp"
+#include "oc3_foreach.hpp"
 
 #include <map>
 
@@ -30,7 +31,7 @@ class CityServiceWorkersHire::Impl
 {
 public:
   Priorities priorities;
-  Walkers hrInCity;
+  WalkerList hrInCity;
   CityPtr city;
 };
 
@@ -75,9 +76,9 @@ CityServiceWorkersHire::CityServiceWorkersHire( CityPtr city )
 
 bool CityServiceWorkersHire::_haveHr( WorkingBuildingPtr building )
 {
-  for( Walkers::iterator it=_d->hrInCity.begin(); it != _d->hrInCity.end(); it++ )
+  foreach( WalkerPtr walker, _d->hrInCity )
   {
-    SmartPtr<WorkersHunter> hr = (*it).as<WorkersHunter>();
+    SmartPtr<WorkersHunter> hr = walker.as<WorkersHunter>();
     if( hr.isValid() )
     {
       if( hr->getBase() == building.as<Building>() )
@@ -91,18 +92,17 @@ bool CityServiceWorkersHire::_haveHr( WorkingBuildingPtr building )
 void CityServiceWorkersHire::_hireByType( const BuildingType type )
 {
   CityHelper hlp( _d->city );
-  WorkingBuildings buildings = hlp.getBuildings< WorkingBuilding >( type );
-  for( WorkingBuildings::iterator it = buildings.begin(); it != buildings.end(); ++it )
+  WorkingBuildingList buildings = hlp.getBuildings< WorkingBuilding >( type );
+  foreach( WorkingBuildingPtr wrkbld, buildings )
   {
-    WorkingBuildingPtr wb = *it;
-    if( _haveHr( wb ) )
+    if( _haveHr( wrkbld ) )
       continue;
 
-    if( wb.isValid() && wb->getAccessRoads().size() > 0 && wb->getWorkers() < wb->getMaxWorkers() )
+    if( wrkbld->getAccessRoads().size() > 0 && wrkbld->getWorkers() < wrkbld->getMaxWorkers() )
     {
       WorkersHunterPtr hr = WorkersHunter::create( _d->city );
       hr->setMaxDistance( 20 );
-      hr->send2City( wb, wb->getMaxWorkers() - wb->getWorkers());
+      hr->send2City( wrkbld, wrkbld->getMaxWorkers() - wrkbld->getWorkers());
     }
   }
 }
@@ -116,6 +116,8 @@ void CityServiceWorkersHire::update( const unsigned int time )
 
   _d->hrInCity = _d->city->getWalkerList( WT_WORKERS_HUNTER );
 
-  for( Priorities::iterator it=_d->priorities.begin(); it != _d->priorities.end(); it++ )
-    _hireByType( (*it).second );
+  foreach( Priorities::value_type& pr, _d->priorities )
+  {
+    _hireByType( pr.second );
+  }
 }

@@ -767,7 +767,7 @@ InfoBoxRawMaterial::~InfoBoxRawMaterial()
 {
 }
 
-InfoBoxCitizen::InfoBoxCitizen( Widget* parent, const Walkers& walkers )
+InfoBoxCitizen::InfoBoxCitizen(Widget* parent, const WalkerList& walkers )
   : InfoBoxSimple( parent, Rect( 0, 0, 460, 350 ), Rect( 18, 40, 460 - 18, 350 - 120 ) )
 {
   Picture& bg = getBgPicture();

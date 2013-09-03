@@ -49,11 +49,11 @@ void CityServiceEmigrant::update( const unsigned int time )
   
   unsigned int vacantPop=0;
 
-  LandOverlays houses = _d->city->getBuildingList(B_HOUSE);
-  for( LandOverlays::iterator itHouse = houses.begin(); itHouse != houses.end(); ++itHouse )
+  CityHelper helper( _d->city );
+  HouseList houses = helper.getBuildings<House>(B_HOUSE);
+  foreach( HousePtr house, houses )
   {
-    HousePtr house = (*itHouse).as<House>();
-    if( house.isValid() && house->getAccessRoads().size() > 0 )
+    if( house->getAccessRoads().size() > 0 )
     {
       vacantPop += math::clamp( house->getMaxHabitants() - house->getNbHabitants(), 0, 0xff );
     }
@@ -64,7 +64,7 @@ void CityServiceEmigrant::update( const unsigned int time )
     return;
   }
 
-  Walkers walkers = _d->city->getWalkerList( WT_EMIGRANT );
+  WalkerList walkers = _d->city->getWalkerList( WT_EMIGRANT );
 
   if( vacantPop <= walkers.size() * 5 )
   {

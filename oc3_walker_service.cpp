@@ -137,14 +137,12 @@ void ServiceWalker::computeWalkerPath()
 
   float maxPathValue = 0.0;
   PathWay* bestPath = NULL;
-  for( std::list<PathWay>::iterator itPath = pathWayList.begin(); 
-    itPath != pathWayList.end(); ++itPath)
+  foreach( PathWay& current, pathWayList )
   {
-    PathWay &path = *itPath;
-    float pathValue = evaluatePath(path);
+    float pathValue = evaluatePath(current);
     if (pathValue > maxPathValue)
     {
-      bestPath = &path;
+      bestPath = &current;
       maxPathValue = pathValue;
     }
   }
@@ -174,9 +172,9 @@ ServiceWalker::ReachedBuildings ServiceWalker::getReachedBuildings(const TilePos
   TilePos start = pos - TilePos( reachDistance, reachDistance );
   TilePos stop = pos + TilePos( reachDistance, reachDistance );
   PtrTilesArea reachedTiles = _d->city->getTilemap().getFilledRectangle( start, stop );
-  for( PtrTilesArea::iterator itTile = reachedTiles.begin(); itTile != reachedTiles.end(); ++itTile)
+  foreach( Tile* tile, reachedTiles )
   {
-    TerrainTile& terrain = (*itTile)->getTerrain();
+    TerrainTile& terrain = tile->getTerrain();
 
     BuildingPtr building = terrain.getOverlay().as<Building>();
     if( building.isValid() )

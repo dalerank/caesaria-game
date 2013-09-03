@@ -54,9 +54,9 @@ void WorkersHunter::onNewTile()
   {
     ServiceWalkerHelper hlp( *this );
     std::set<HousePtr> houses = hlp.getReachedBuildings<House>( getIJ() );
-    for( std::set<HousePtr>::iterator it = houses.begin(); it != houses.end(); ++it)
+    foreach( HousePtr house, houses )
     {
-        (*it)->applyService( ServiceWalkerPtr( this ) );
+      house->applyService( ServiceWalkerPtr( this ) );
     }
   }
   else

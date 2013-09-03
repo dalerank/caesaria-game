@@ -290,16 +290,14 @@ void Propagator::getWays(const int maxDistance, std::list<PathWay> &oPathWayList
          // std::cout << "Propagation from tile " << tile.getI() << ", " << tile.getJ() << std::endl;
 
          // propagate to neighbour tiles
-         const PtrTilesList accessTiles = _tilemap->getRectangle( tile.getIJ() + TilePos( -1, -1 ), 
-                                                                      tile.getIJ() + TilePos( 1, 1 ), _allDirections);
+         PtrTilesList accessTiles = _tilemap->getRectangle( tile.getIJ() + TilePos( -1, -1 ),
+                                                            tile.getIJ() + TilePos( 1, 1 ), _allDirections);
 
          // nextTiles = accessTiles - alreadyProcessedTiles
          PtrTilesList nextTiles;
-         for( PtrTilesList::const_iterator itTile = accessTiles.begin(); itTile!=accessTiles.end(); ++itTile)
+         foreach( Tile* tile2, accessTiles )
          {
             // for every neighbour tile
-            Tile* tile2 = *itTile;
-
             bool notResolved = (markTiles.find( tile2 ) == markTiles.end());
             if (tile2->getTerrain().isWalkable(_allLands) && !pathWay.contains( *tile2 ) && notResolved)
             {

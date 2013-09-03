@@ -65,16 +65,16 @@ void CityServiceProsperity::update( const unsigned int time )
     }
 
     CityHelper helper( _d->city );
-    std::list< HousePtr > houses = helper.getBuildings<House>( B_HOUSE );
+    HouseList houses = helper.getBuildings<House>( B_HOUSE );
 
     int prosperityCap = 0;
     int patricianCount = 0;
     int plebsCount = 0;
-    for( std::list< HousePtr >::iterator it=houses.begin(); it != houses.end(); it++ )
+    foreach( HousePtr house, houses)
     {
-      prosperityCap += (*it)->getLevelSpec().getProsperity();
-      patricianCount += (*it)->getLevelSpec().isPatrician() ? (*it)->getNbHabitants() : 0;
-      plebsCount += (*it)->getLevelSpec().getHouseLevel() < 5 ? (*it)->getNbHabitants() : 0;
+      prosperityCap += house->getLevelSpec().getProsperity();
+      patricianCount += house->getLevelSpec().isPatrician() ? house->getNbHabitants() : 0;
+      plebsCount += house->getLevelSpec().getHouseLevel() < 5 ? house->getNbHabitants() : 0;
     }
 
     prosperityCap /= houses.size();

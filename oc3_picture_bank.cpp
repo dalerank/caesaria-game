@@ -102,17 +102,6 @@ Picture& PictureBank::getPicture(const std::string &prefix, const int idx)
    return getPicture(resource_name);
 }
 
-PicturesArray PictureBank::getPictures()
-{
-   PicturesArray pictures;
-   for( Impl::ItPicture it = _d->resources.begin(); it != _d->resources.end(); ++it)
-   {
-      // for every resource
-      pictures.push_back( it->second );
-   }
-   return pictures;
-}
-
 Picture PictureBank::makePicture(SDL_Surface *surface, const std::string& resource_name) const
 {
    Point offset( 0, 0 );
