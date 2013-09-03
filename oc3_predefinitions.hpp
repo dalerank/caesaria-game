@@ -47,13 +47,19 @@ typedef std::list< FactoryPtr > Factories;
 PREFEDINE_CLASS_SMARTPOINTER(Temple)
 typedef std::list< TemplePtr > Temples;
 
+PREFEDINE_CLASS_SMARTPOINTER(ServiceBuilding)
+typedef std::list< ServiceBuildingPtr > ServiceBuildings;
+
 PREFEDINE_CLASS_SMARTPOINTER(House)
+typedef std::list< HousePtr > Houses;
+
+PREFEDINE_CLASS_SMARTPOINTER(Warehouse)
+typedef std::list< WarehousePtr > Warehouses;
+
 PREFEDINE_CLASS_SMARTPOINTER(Collosseum)
 PREFEDINE_CLASS_SMARTPOINTER(Construction)
-PREFEDINE_CLASS_SMARTPOINTER(Warehouse)
 PREFEDINE_CLASS_SMARTPOINTER(CartPusher)
 PREFEDINE_CLASS_SMARTPOINTER(Garden)
-PREFEDINE_CLASS_SMARTPOINTER(ServiceBuilding)
 PREFEDINE_CLASS_SMARTPOINTER(ServiceWalker)
 PREFEDINE_CLASS_SMARTPOINTER(TraineeWalker)
 PREFEDINE_CLASS_SMARTPOINTER(Road)

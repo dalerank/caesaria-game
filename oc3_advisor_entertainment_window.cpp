@@ -104,7 +104,8 @@ public:
     ret.buildingShow = 0;
     ret.buildingCount = 0;
 
-    foreach( ServiceBuildingPtr building, helper.getBuildings<ServiceBuilding>( service ) )
+    ServiceBuildings servBuildings = helper.getBuildings<ServiceBuilding>( service );
+    foreach( ServiceBuildingPtr building, servBuildings )
     {
       if( building->getWorkers() > 0 )
       {
@@ -179,7 +180,8 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow( CityPtr city, Widget* pa
 
   int sumScholars = 0;
   //int sumStudents = 0;
-  foreach( HousePtr house,  helper.getBuildings<House>( B_HOUSE ) )
+  Houses houses = helper.getBuildings<House>( B_HOUSE );
+  foreach( HousePtr house, houses )
   {
     sumScholars += house->getScholars();
     //sumStudents += (*it)->getStudents();

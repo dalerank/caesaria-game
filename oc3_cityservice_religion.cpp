@@ -53,7 +53,8 @@ void CityServiceReligion::update( const unsigned int time )
 
   _d->lastDate = GameDate::current();
 
-  foreach( RomeDivinityPtr div, DivinePantheon::getAll() )
+  DivinePantheon::Divinities divinities = DivinePantheon::getAll();
+  foreach( RomeDivinityPtr div, divinities )
   {
     _d->updateRelation( div );
   }
@@ -63,7 +64,8 @@ void CityServiceReligion::Impl::updateRelation(RomeDivinityPtr divn)
 {
   CityHelper helper( city );
   int peopleReached = 0;
-  foreach( TemplePtr temple, helper.getBuildings<Temple>( BC_RELIGION ) )
+  Temples temples =  helper.getBuildings<Temple>( BC_RELIGION );
+  foreach( TemplePtr temple, temples )
   {
     if( temple->getDivinity() == divn )
     {

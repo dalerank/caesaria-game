@@ -27,20 +27,20 @@ struct ForeachContainerBase {};
 template <typename T>
 class ForeachContainer : public ForeachContainerBase {
 public:
-    inline ForeachContainer(const T& t): c(t), brk(0), i(c.begin()), e(c.end()){}
-    const T c;
+    inline ForeachContainer(T& t): c(t), brk(0), i(c.begin()), e(c.end()){}
+    T& c;
     mutable int brk;
-    mutable typename T::const_iterator i, e;
+    mutable typename T::iterator i, e;
     inline bool condition() const { return (!brk++ && i != e); }
 };
 
-template <typename T> inline T *foreachPointer(const T &) { return 0; }
+template <typename T> inline T* foreachPointer(T &) { return 0; }
 
-template <typename T> inline ForeachContainer<T> foreachContainerNew(const T& t)
+template <typename T> inline ForeachContainer<T> foreachContainerNew(T& t)
 { return ForeachContainer<T>(t); }
 
 template <typename T>
-inline const ForeachContainer<T> *foreachContainer(const ForeachContainerBase *base, const T *)
-{ return static_cast<const ForeachContainer<T> *>(base); }
+inline ForeachContainer<T>* foreachContainer(ForeachContainerBase *base, T *)
+{ return ForeachContainer<T>(base); }
 
 #endif //__OPENCAESAR3_FOREACH_INCLUDE_H__

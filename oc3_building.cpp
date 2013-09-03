@@ -26,6 +26,7 @@
 #include "oc3_variant.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_city.hpp"
+#include "oc3_foreach.hpp"
 
 class LandOverlay::Impl
 {
@@ -230,16 +231,15 @@ bool Construction::canBuild( const TilePos& pos ) const
   bool is_constructible = true;
 
   //return area for available tiles
-  PtrTilesArea rect = tilemap.getFilledRectangle( pos, getSize() );
+  PtrTilesArea area = tilemap.getFilledRectangle( pos, getSize() );
 
   //on over map size
-  if( (int)rect.size() != getSize().getArea() )
+  if( (int)area.size() != getSize().getArea() )
     return false;
 
-  for( PtrTilesArea::iterator itTiles = rect.begin();
-       itTiles != rect.end(); ++itTiles )
+  foreach( Tile* tile, area )
   {
-     is_constructible &= (*itTiles)->getTerrain().isConstructible();
+     is_constructible &= tile->getTerrain().isConstructible();
   }
 
   return is_constructible;
@@ -262,20 +262,21 @@ void Construction::_updateDesirabilityInfluence( const DsbrlUpdate type )
   int desInfluence = getDesirabilityInfluence();
   int mul = ( type == duPositive ? 1 : -1);
 
-  PtrTilesArea selfArea = tilemap.getFilledRectangle( getTilePos(), getSize() );
-  for( PtrTilesArea::iterator it=selfArea.begin(); it != selfArea.end(); it++ )
+  //change desirability in selfarea
+  PtrTilesArea area = tilemap.getFilledRectangle( getTilePos(), getSize() );
+  foreach( Tile* tile, area )
   {
-    (*it)->getTerrain().appendDesirability( mul * desInfluence );
+    tile->getTerrain().appendDesirability( mul * desInfluence );
   }
 
+  //change deisirability around
   for( int curRange=1; curRange <= dsrblRange; curRange++ )
   {
     PtrTilesArea perimetr = tilemap.getRectangle( getTilePos() - TilePos( curRange, curRange ), 
                                                   getSize() + Size( 2 * curRange - 1 ) );
-
-    for( PtrTilesArea::iterator it=perimetr.begin(); it != perimetr.end(); it++ )
+    foreach( Tile* tile, perimetr )
     {
-      (*it)->getTerrain().appendDesirability( mul * desInfluence );
+      tile->getTerrain().appendDesirability( mul * desInfluence );
     }
 
     desInfluence += step;
@@ -302,11 +303,9 @@ void Construction::computeAccessRoads()
   int maxDst2road = getMaxDistance2Road();
   PtrTilesList rect = tilemap.getRectangle( _d->masterTile->getIJ() + TilePos( -maxDst2road, -maxDst2road ),
                                             getSize() + Size( 2 * maxDst2road ), !Tilemap::checkCorners );
-  for( PtrTilesList::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+  foreach( Tile* tile, rect )
   {
-    Tile* tile = *itTiles;
-
-    if ( tile->getTerrain().isRoad() )
+    if( tile->getTerrain().isRoad() )
     {
       _accessRoads.push_back( tile );
     }

@@ -100,7 +100,8 @@ void AdvisorsWindow::showAdvisor( const AdvisorType type )
   if( type >= ADV_COUNT )
     return;
 
-  foreach( Widget* child, getChildren() )
+  Widget::Widgets children = getChildren();
+  foreach( Widget* child, children )
   {
     if( PushButton* btn = safety_cast< PushButton* >( child ) )
     {

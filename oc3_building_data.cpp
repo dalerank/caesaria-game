@@ -22,6 +22,7 @@
 #include "oc3_saveadapter.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_enums_helper.hpp"
+#include "oc3_foreach.hpp"
 
 BuildingData BuildingData::invalid = BuildingData( B_NONE, "unknown", 0 );
 
@@ -350,25 +351,25 @@ void BuildingDataHolder::initialize( const io::FilePath& filename )
 
   VariantMap constructions = SaveAdapter::load( filename.toString() );
 
-  for( VariantMap::iterator it=constructions.begin(); it != constructions.end(); it++ )
+  foreach( VariantMap::value_type& mapItem, constructions )
   {
-    VariantMap options = (*it).second.toMap();
+    VariantMap options = mapItem.second.toMap();
 
-    const BuildingType btype = getType( (*it).first );
+    const BuildingType btype = getType( mapItem.first );
     if( btype == B_NONE )
     {
-      StringHelper::debug( 0xff, "!!!Warning: can't associate type with %s", (*it).first.c_str() );
+      StringHelper::debug( 0xff, "!!!Warning: can't associate type with %s", mapItem.first.c_str() );
       continue;
     }
 
     Impl::BuildingsMap::const_iterator bdataIt = _d->buildings.find( btype );
     if( bdataIt != _d->buildings.end() )
     {
-      StringHelper::debug( 0xff, "!!!Warning: type %s also initialized", (*it).first.c_str() );
+      StringHelper::debug( 0xff, "!!!Warning: type %s also initialized", mapItem.first.c_str() );
       continue;
     }
 
-    BuildingData bData( btype, (*it).first, (int)options[ "cost" ] );
+    BuildingData bData( btype, mapItem.first, (int)options[ "cost" ] );
     const std::string pretty = options[ "pretty" ].toString();
     if( !pretty.empty() )
     {

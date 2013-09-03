@@ -391,7 +391,8 @@ public:
 
     bool industryEnabled = isIndustryEnabled();
     //up or down all factory for this industry
-    foreach( FactoryPtr factory, helper.getProducers<Factory>( _type ) )
+    Factories factories = helper.getProducers<Factory>( _type );
+    foreach( FactoryPtr factory, factories )
     {
       factory->setActive( !industryEnabled );
     }
@@ -443,7 +444,8 @@ oc3_signals private:
 
 void AdvisorTradeWindow::Impl::updateGoodsInfo()
 {
-  foreach( Widget* child, gbInfo->getChildren() )
+  Widget::Widgets children = gbInfo->getChildren();
+  foreach( Widget* child, children )
   {
     child->deleteLater();
   }
@@ -491,7 +493,8 @@ int AdvisorTradeWindow::Impl::getStackedGoodsQty( Good::Type gtype )
   CityHelper helper( city );
 
   int goodsQty = 0;
-  foreach( WarehousePtr warehouse, helper.getBuildings< Warehouse >( B_WAREHOUSE ) )
+  Warehouses warehouses = helper.getBuildings< Warehouse >( B_WAREHOUSE );
+  foreach( WarehousePtr warehouse, warehouses )
   {
     goodsQty += warehouse->getGoodStore().getCurrentQty( gtype );
   }

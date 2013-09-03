@@ -18,6 +18,7 @@
 #include "oc3_scenario.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_city.hpp"
+#include "oc3_foreach.hpp"
 
 ClayPit::ClayPit() : Factory( Good::G_NONE, Good::G_CLAY, B_CLAY_PIT, Size(2) )
 {
@@ -43,10 +44,10 @@ bool ClayPit::canBuild(const TilePos& pos ) const
   bool near_water = false;
 
   Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
-  PtrTilesList rect = tilemap.getRectangle( pos + TilePos( -1, -1), getSize() + Size( 2 ), Tilemap::checkCorners );
-  for( PtrTilesList::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles )
+  PtrTilesList perimetr = tilemap.getRectangle( pos + TilePos( -1, -1), getSize() + Size( 2 ), Tilemap::checkCorners );
+  foreach( Tile* tile, perimetr )
   {
-    near_water |= (*itTiles)->getTerrain().isWater();
+    near_water |= tile->getTerrain().isWater();
   }
 
   return (is_constructible && near_water);
