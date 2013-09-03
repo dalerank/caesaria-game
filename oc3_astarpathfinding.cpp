@@ -4,13 +4,31 @@
 #include "oc3_astarpoint.hpp"
 #include "oc3_path_finding.hpp"
 #include "oc3_stringhelper.hpp"
+#include "oc3_foreach.hpp"
 
 using namespace std;
 
 class Pathfinder::Impl
 {
 public:
-  std::vector< std::vector< AStarPoint* > > grid;
+  typedef map<AStarPoint*,AStarPoint::WalkableType> AspSavemap;
+  typedef vector< AStarPoint* > AspRow;
+
+  class Grid : public vector< AspRow >
+  {
+  public:
+    AStarPoint* operator[](const TilePos& pos )
+    {
+      return at( pos.getI() ).at( pos.getJ() );
+    }
+
+    AspRow& operator[]( unsigned int row )
+    {
+      return at( row );
+    }
+  };
+
+  Grid grid;
   Tilemap* tilemap;
 
   bool getTraversingPoints( const TilePos& start, const TilePos& stop, PathWay& oPathWay );
@@ -19,7 +37,7 @@ public:
   {
     if( isValid( pos ) )
     {
-      return grid[pos.getI()][pos.getJ()];
+      return grid[ pos ];
     }
     else
     {
@@ -56,9 +74,9 @@ void Pathfinder::update( const Tilemap& tilemap )
   }
 
   PtrTilesList tiles = _d->tilemap->getFilledRectangle( TilePos( 0, 0 ), Size( tilemap.getSize() ) );
-  for( PtrTilesList::iterator i=tiles.begin(); i != tiles.end(); i++ )
+  foreach( Tile* tile, tiles )
   {
-    _d->grid[ (*i)->getI() ][ (*i)->getJ() ] = new AStarPoint( *i );
+    _d->grid[ tile->getI() ][ tile->getJ() ] = new AStarPoint( tile );
   }
 }
 
@@ -129,7 +147,7 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos,
   list<AStarPoint*>::iterator i;
 
   int tSize = _d->tilemap->getSize();
-  map<AStarPoint*,AStarPoint::WalkableType> saveArrivedArea;
+  Impl::AspSavemap saveArrivedArea;
 
   TilePos arrivedAreaStart( math::clamp( stopPos.getI()-arrivedArea.getWidth(), 0, tSize ),
                             math::clamp( stopPos.getJ()-arrivedArea.getHeight(), 0, tSize) );
@@ -159,11 +177,11 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos,
   while( n == 0 || (current != end && n < getMaxLoopCount() ))
   {
     // Look for the smallest F value in the openList and make it the current point
-    for (i = openList.begin(); i != openList.end(); ++ i)
+    foreach( AStarPoint* point, openList)
     {
-      if (i == openList.begin() || (*i)->getFScore() <= current->getFScore())
+      if( point == openList.front() || point->getFScore() <= current->getFScore() )
       {
-        current = (*i);
+        current = point;
       }
     }
 
@@ -254,18 +272,13 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos,
   }
 
   // Reset
-  for (i = openList.begin(); i != openList.end(); ++ i)
-  {
-    (*i)->opened = false;
-  }
-  for (i = closedList.begin(); i != closedList.end(); ++ i)
-  {
-    (*i)->closed = false;
-  }
+  foreach( AStarPoint* point, openList) { point->opened = false; }
 
-  for( map<AStarPoint*,AStarPoint::WalkableType>::iterator it=saveArrivedArea.begin(); it != saveArrivedArea.end(); it++ )
+  foreach( AStarPoint* point, closedList) { point->closed = false; }
+
+  foreach( Impl::AspSavemap::value_type point, saveArrivedArea )
   {
-    it->first->priorWalkable = it->second;
+    point.first->priorWalkable = point.second;
   }
 
   if( n == getMaxLoopCount() )
@@ -281,9 +294,9 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos,
     n++;
   }
 
-  for( list<AStarPoint*>::iterator lpIt=lPath.begin(); lpIt != lPath.end(); lpIt++ )
+  foreach( AStarPoint* pathPoint, lPath )
   {
-    oPathWay.setNextTile( _d->tilemap->at( (*lpIt)->getPos() ) );
+    oPathWay.setNextTile( _d->tilemap->at( pathPoint->getPos() ) );
   }
 
   return oPathWay.getLength() > 0;

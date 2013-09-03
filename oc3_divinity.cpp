@@ -18,7 +18,7 @@
 #include "oc3_saveadapter.hpp"
 
 class RomeDivinityBase : public RomeDivinity
-{
+{  
 public:
   static RomeDivinityPtr create( const VariantMap& vm )
   {
@@ -26,6 +26,8 @@ public:
     divn->_name = vm.get( "name" ).toString();
     divn->_service = (ServiceType)vm.get( "service" ).toInt();
     divn->_pic = Picture::load( vm.get( "image" ).toString() );
+    Variant vRelation = vm.get( "relation" );
+    divn->_relation = vRelation.isNull() ? 100.f : (float)vRelation;
 
     RomeDivinityPtr ret( divn );
     ret->drop();
@@ -33,10 +35,17 @@ public:
     return ret;
   }
 
-  std::string getName() const { return _name; }
-  std::string getShortDescription() const { return _shortDesc; }
-  ServiceType getServiceType() const { return _service; }
-  const Picture& getPicture() const { return _pic; }
+  virtual std::string getName() const { return _name; }
+  virtual std::string getShortDescription() const { return _shortDesc; }
+  virtual ServiceType getServiceType() const { return _service; }
+  virtual const Picture& getPicture() const { return _pic; }
+  virtual float getRelation() const { return _relation; }
+  virtual float getDefaultDecrease() const { return 1.f; }
+
+  virtual void updateRelation( float income )
+  {
+    _relation += income - getDefaultDecrease();
+  }
 
 private:
   RomeDivinityBase() {}
@@ -44,14 +53,15 @@ private:
   std::string _name;
   ServiceType _service;
   std::string _shortDesc;
+  DateTime _lastFestival;
+  float _relation;
   Picture _pic;
 };
 
 class DivinePantheon::Impl
 {
-public:
-  typedef std::vector< RomeDivinityPtr > Divinities;
-  Divinities divinties;
+public:  
+  DivinePantheon::Divinities divinties;
 };
 
 DivinePantheon& DivinePantheon::getInstance()
@@ -69,12 +79,17 @@ RomeDivinityPtr DivinePantheon::ceres()
   return getInstance().get( romeDivCeres );
 }
 
-RomeDivinityPtr DivinePantheon::get( RomeDivinityType name ) const
+RomeDivinityPtr DivinePantheon::get( RomeDivinityType name )
 {
-  if( (unsigned int)name > _d->divinties.size() )
+  if( (unsigned int)name > getInstance()._d->divinties.size() )
     return RomeDivinityPtr();
 
-  return _d->divinties.at( name );
+  return getInstance()._d->divinties.at( name );
+}
+
+DivinePantheon::Divinities DivinePantheon::getAll()
+{
+  return getInstance()._d->divinties;
 }
 
 RomeDivinityPtr DivinePantheon::mars()
@@ -106,4 +121,9 @@ void DivinePantheon::initialize( const io::FilePath& filename )
   _d->divinties.push_back( RomeDivinityBase::create( pantheon.get( "neptune" ).toMap() ) );
   _d->divinties.push_back( RomeDivinityBase::create( pantheon.get( "venus" ).toMap() ) );
   _d->divinties.push_back( RomeDivinityBase::create( pantheon.get( "mercury" ).toMap() ) );
+}
+
+void DivinePantheon::doFestival4(RomeDivinityPtr who)
+{
+
 }

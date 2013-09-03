@@ -55,6 +55,7 @@
 #include "oc3_empire_trading.hpp"
 #include "oc3_walker_merchant.hpp"
 #include "oc3_gamedate.hpp"
+#include "oc3_cityservice_religion.hpp"
 
 #include <set>
 
@@ -119,6 +120,7 @@ City::City() : _d( new Impl )
   addService( CityServiceInfo::create( this ) );
   addService( CityServiceCulture::create( this ) );
   addService( CityServiceAnimals::create( this ) );
+  addService( CityServiceReligion::create( this ) );
 
   CONNECT( &GameDate::instance(), onMonthChanged(), this, City::monthStep );
 }
