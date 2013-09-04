@@ -20,7 +20,7 @@
 #include "oc3_tile.hpp"
 #include "oc3_city.hpp"
 
-BuildingWell::BuildingWell() : ServiceBuilding(S_WELL, B_WELL, Size(1) )
+BuildingWell::BuildingWell() : ServiceBuilding( Service::S_WELL, B_WELL, Size(1) )
 {
   _fireIncrement = 0;
   _damageIncrement = 0;

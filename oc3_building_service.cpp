@@ -34,12 +34,12 @@ class ServiceBuilding::Impl
 {
 public:
   int serviceDelay;
-  ServiceType service;
+  Service::Type service;
   int serviceTimer;
   int serviceRange;
 };
 
-ServiceBuilding::ServiceBuilding(const ServiceType service,
+ServiceBuilding::ServiceBuilding(const Service::Type service,
                                  const BuildingType type, const Size& size)
                                  : WorkingBuilding( type, size ), _d( new Impl )
 {
@@ -56,7 +56,7 @@ void ServiceBuilding::setServiceDelay( const int delay )
   _d->serviceDelay = delay;
 }
 
-ServiceType ServiceBuilding::getService() const
+Service::Type ServiceBuilding::getService() const
 {
    return _d->service;
 }
@@ -138,7 +138,7 @@ unsigned int ServiceBuilding::getWalkerDistance() const
   return 5;
 }
 
-School::School() : ServiceBuilding(S_SCHOOL, B_SCHOOL, Size(2))
+School::School() : ServiceBuilding(Service::S_SCHOOL, B_SCHOOL, Size(2))
 {
   setPicture( Picture::load( ResourceGroup::commerce, 83));
 }
@@ -148,7 +148,7 @@ int School::getVisitorsNumber() const
   return 75;
 }
 
-Library::Library() : ServiceBuilding(S_LIBRARY, B_LIBRARY, Size(2))
+Library::Library() : ServiceBuilding(Service::S_LIBRARY, B_LIBRARY, Size(2))
 {
   setPicture( Picture::load( ResourceGroup::commerce, 84));
 }
@@ -158,7 +158,7 @@ int Library::getVisitorsNumber() const
   return 800;
 }
 
-College::College() : ServiceBuilding(S_COLLEGE, B_COLLEGE, Size(3))
+College::College() : ServiceBuilding(Service::S_COLLEGE, B_COLLEGE, Size(3))
 {
   setPicture( Picture::load( ResourceGroup::commerce, 85));
 }

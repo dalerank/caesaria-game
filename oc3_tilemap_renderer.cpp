@@ -395,11 +395,11 @@ void TilemapRenderer::Impl::drawTileReligion( Tile& tile )
       {
         HousePtr house = overlay.as< House >();
         pic = Picture::load( ResourceGroup::waterOverlay, ( overlay->getSize().getWidth() - 1 )*2 + 11 );
-        religionLevel = house->getServiceAccess(S_TEMPLE_MERCURE);
-        religionLevel += house->getServiceAccess(S_TEMPLE_VENUS);
-        religionLevel += house->getServiceAccess(S_TEMPLE_MARS);
-        religionLevel += house->getServiceAccess(S_TEMPLE_NEPTUNE);
-        religionLevel += house->getServiceAccess(S_TEMPLE_CERES);
+        religionLevel = house->getServiceAccess(Service::S_TEMPLE_MERCURE);
+        religionLevel += house->getServiceAccess(Service::S_TEMPLE_VENUS);
+        religionLevel += house->getServiceAccess(Service::S_TEMPLE_MARS);
+        religionLevel += house->getServiceAccess(Service::S_TEMPLE_NEPTUNE);
+        religionLevel += house->getServiceAccess(Service::S_TEMPLE_CERES);
         religionLevel = math::clamp( religionLevel / (house->getLevelSpec().getMinReligionLevel()+1), 0, 100 );
         needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() ==0);
       }
@@ -529,7 +529,7 @@ void TilemapRenderer::Impl::drawTileWater( Tile& tile )
       {
         HousePtr h = overlay.as<House>();
         tileNumber = WaterOverlay::inHouse;
-        haveWater = haveWater || h->hasServiceAccess(S_FOUNTAIN) || h->hasServiceAccess(S_WELL);
+        haveWater = haveWater || h->hasServiceAccess(Service::S_FOUNTAIN) || h->hasServiceAccess(Service::S_WELL);
       }
       tileNumber += (haveWater ? WaterOverlay::haveWater : 0);
       tileNumber += terrain.getWaterService( WTR_RESERVOIR ) > 0 ? WaterOverlay::reservoirRange : 0;

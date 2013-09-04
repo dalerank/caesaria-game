@@ -162,6 +162,8 @@
 	desirability : { base :0,	range : 0,	step : 0 }
 	employers : 5
 	class : "health"
+  image : [ "security", 20 ]
+  service : "srvc_doctor"
   },  
   
   hospital :
@@ -170,6 +172,8 @@
 	desirability : { base :2,	range : 2,	step : -1 }
 	employers : 30
 	class : "health"
+  image : [ "security", 44 ]
+  service : "srvc_hospital"
   },
   
   baths :
@@ -178,6 +182,9 @@
 	desirability : { base :4,	range : 4,	step : -1 }
 	employers : 10
 	class : "health"
+  image : [ "security", 21 ]
+  animation : { start : 22, count : 10, offset : [ 23, 25 ] }
+  service : "srvc_baths" 
   }, 
 
   barber :
@@ -186,6 +193,8 @@
 	desirability : { base :2,	range : 2,	step : -1 }
 	employers : 2
 	class : "health"
+  image : [ "security", 19 ]
+  service : "srvc_barber"
   }, 
   
   school :

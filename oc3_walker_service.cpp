@@ -26,11 +26,11 @@ class ServiceWalker::Impl
 public:
   CityPtr city;
   BuildingPtr base;
-  ServiceType service;
+  Service::Type service;
   int maxDistance;
 };
 
-ServiceWalker::ServiceWalker( CityPtr city, const ServiceType service) 
+ServiceWalker::ServiceWalker( CityPtr city, const Service::Type service)
 : _d( new Impl )
 {
   _setType( WT_SERVICE );
@@ -42,69 +42,69 @@ ServiceWalker::ServiceWalker( CityPtr city, const ServiceType service)
   init(service);
 }
 
-void ServiceWalker::init(const ServiceType service)
+void ServiceWalker::init(const Service::Type service)
 {
   _d->service = service;
   NameGenerator::NameType nameType = NameGenerator::male;
 
   switch (_d->service)
   {
-  case S_WELL:
-  case S_FOUNTAIN:
-  case S_TEMPLE_ORACLE:
+  case Service::S_WELL:
+  case Service::S_FOUNTAIN:
+  case Service::S_TEMPLE_ORACLE:
     _setGraphic( WG_NONE );
   break;
   
-  case S_ENGINEER:
+  case Service::S_ENGINEER:
      _setGraphic( WG_ENGINEER );
      _setType( WT_ENGINEER );
   break;
 
-  case S_TEMPLE_NEPTUNE:
-  case S_TEMPLE_CERES:
-  case S_TEMPLE_VENUS:
-  case S_TEMPLE_MARS:
-  case S_TEMPLE_MERCURE:
+  case Service::S_TEMPLE_NEPTUNE:
+  case Service::S_TEMPLE_CERES:
+  case Service::S_TEMPLE_VENUS:
+  case Service::S_TEMPLE_MARS:
+  case Service::S_TEMPLE_MERCURE:
     _setGraphic( WG_PRIEST );
   break;
   
-  case S_DOCTOR:
-  case S_HOSPITAL:
+  case Service::S_DOCTOR:
+  case Service::S_HOSPITAL:
     _setGraphic( WG_DOCTOR );
     _setType( WT_DOCTOR );
   break;
   
-  case S_BARBER:
+  case Service::S_BARBER:
     _setGraphic( WG_BARBER );
   break;
   
-  case S_BATHS:
+  case Service::S_BATHS:
     _setGraphic( WG_BATH );
   break;
   
-  case S_SCHOOL:
+  case Service::S_SCHOOL:
     _setGraphic( WG_CHILD );
   break;
   
-  case S_LIBRARY:
-  case S_COLLEGE:
+  case Service::S_LIBRARY:
+  case Service::S_COLLEGE:
     _setGraphic( WG_LIBRARIAN );
   break;
   
-  case S_THEATER:
-  case S_AMPHITHEATER:
-  case S_HIPPODROME:
-  case S_COLLOSSEUM:
+  case Service::S_THEATER:
+  case Service::S_AMPHITHEATER:
+  case Service::S_HIPPODROME:
+  case Service::S_COLLOSSEUM:
     _setGraphic( WG_ACTOR );
   break;
   
-  case S_MARKET:
+  case Service::S_MARKET:
     _setGraphic( WG_MARKETLADY );
     nameType = NameGenerator::female;
   break;
 
-  case S_FORUM:
-  case S_SENATE:
+  case Service::S_FORUM:
+  case Service::S_SENATE:
     _setGraphic( WG_TAX );
   break;
 
@@ -122,7 +122,7 @@ BuildingPtr ServiceWalker::getBase() const
   return _d->base;
 }
 
-ServiceType ServiceWalker::getService()
+Service::Type ServiceWalker::getService() const
 {
   return _d->service;
 }
@@ -279,7 +279,7 @@ void ServiceWalker::onDestination()
 void ServiceWalker::save( VariantMap& stream ) const
 {
   Walker::save( stream );
-  stream[ "service" ] = (int)_d->service;
+  stream[ "service" ] = Variant( ServiceHelper::getName( _d->service ) );
   stream[ "base" ] = _d->base->getTile().getIJ();
   stream[ "maxDistance" ] = _d->maxDistance;
 }
@@ -288,7 +288,8 @@ void ServiceWalker::load( const VariantMap& stream )
 {
   Walker::load( stream );
 
-  init( (ServiceType)stream.get( "service" ).toInt() );
+  Service::Type srvcType = ServiceHelper::getType( stream.get( "service" ).toString() );
+  init( srvcType );
   _d->maxDistance = stream.get( "maxDistance" ).toInt();
 
   TilePos basePos = stream.get( "base" ).toTilePos();
@@ -319,7 +320,7 @@ float ServiceWalker::getServiceValue() const
   return 100;
 }
 
-ServiceWalkerPtr ServiceWalker::create( CityPtr city, const ServiceType service )
+ServiceWalkerPtr ServiceWalker::create( CityPtr city, const Service::Type service )
 {
   ServiceWalkerPtr ret( new ServiceWalker( city, service ) );
   ret->drop();

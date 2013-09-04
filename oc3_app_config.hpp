@@ -30,6 +30,7 @@ public:
   static const char* houseModel;
   static const char* citiesModel;
   static const char* constructionModel;
+  static const char* workDir;
 
   static AppConfig& getInstance();
 

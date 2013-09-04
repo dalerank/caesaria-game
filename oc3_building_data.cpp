@@ -29,9 +29,7 @@ BuildingData BuildingData::invalid = BuildingData( B_NONE, "unknown", 0 );
 class BuildingTypeHelper : public EnumsHelper<BuildingType>
 {
 public:
-  virtual BuildingType getInvalid() const { return B_NONE; }
-
-  BuildingTypeHelper()
+  BuildingTypeHelper() : EnumsHelper<BuildingType>( B_NONE )
   {
     append( B_AMPHITHEATER,   "amphitheater");
     append( B_THEATER,        "theater" );
@@ -126,9 +124,7 @@ public:
 class BuildingClassHelper : public EnumsHelper<BuildingClass>
 {
 public:
-  virtual BuildingClass getInvalid() const { return BC_NONE; }
-
-  BuildingClassHelper()
+  BuildingClassHelper() : EnumsHelper<BuildingClass>( BC_NONE )
   {
     append( BC_INDUSTRY, "industry" );
     append( BC_RAWMATERIAL, "rawmaterial" );

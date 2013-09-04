@@ -27,12 +27,12 @@ class Widget;
 class ServiceBuilding : public WorkingBuilding
 {
 public:
-  ServiceBuilding( const ServiceType service,
+  ServiceBuilding( const Service::Type service,
                    const BuildingType type, const Size& size );
 
   virtual ~ServiceBuilding();
 
-  ServiceType getService() const;
+  Service::Type getService() const;
   virtual void timeStep(const unsigned long time);
   virtual void destroy();  // handles the walkers
 
@@ -50,7 +50,7 @@ public:
 
   //void removeWalker( WalkerPtr walker );
 private:  
-  static std::map<ServiceType, ServiceBuilding*> _specimen;
+  static std::map<Service::Type, ServiceBuilding*> _specimen;
 
   class Impl;
   ScopedPtr< Impl > _d;

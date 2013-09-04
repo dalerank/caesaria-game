@@ -28,7 +28,7 @@ public:
   int citizensReached;
 };
 
-Forum::Forum() : ServiceBuilding(S_FORUM, B_FORUM, Size(2)), _d( new Impl )
+Forum::Forum() : ServiceBuilding(Service::S_FORUM, B_FORUM, Size(2)), _d( new Impl )
 {
   _d->taxInThisMonth = 0;
   _d->citizensReached = 0;

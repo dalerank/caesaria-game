@@ -536,7 +536,7 @@ int WaterSource::getId() const
   return getTilePos().getJ() * 10000 + getTilePos().getI();
 }
 
-BuildingFountain::BuildingFountain() : ServiceBuilding(S_FOUNTAIN, B_FOUNTAIN, Size(1))
+BuildingFountain::BuildingFountain() : ServiceBuilding(Service::S_FOUNTAIN, B_FOUNTAIN, Size(1))
 {  
   std::srand( DateTime::getElapsedTime() );
 

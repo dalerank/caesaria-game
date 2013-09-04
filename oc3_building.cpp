@@ -429,7 +429,7 @@ void Building::storeGoods(GoodStock &stock, const int amount)
 float Building::evaluateService(ServiceWalkerPtr walker)
 {
    float res = 0.0;
-   ServiceType service = walker->getService();
+   Service::Type service = walker->getService();
    if (_reservedServices.count(service) == 1)
    {
       // service is already reserved
@@ -438,11 +438,11 @@ float Building::evaluateService(ServiceWalkerPtr walker)
 
    switch(service)
    {
-   case S_ENGINEER:
+   case Service::S_ENGINEER:
       res = _damageLevel;
    break;
 
-   case S_PREFECT:
+   case Service::S_PREFECT:
       res = _fireLevel;
    break;
 
@@ -451,13 +451,13 @@ float Building::evaluateService(ServiceWalkerPtr walker)
    return res;
 }
 
-void Building::reserveService(const ServiceType service)
+void Building::reserveService(const Service::Type service)
 {
    // std::cout << "reserved service" << std::endl;
    _reservedServices.insert(service);
 }
 
-void Building::cancelService(const ServiceType service)
+void Building::cancelService(const Service::Type service)
 {
    // std::cout << "cancel service" << std::endl;
    _reservedServices.erase(service);
@@ -467,17 +467,17 @@ void Building::applyService( ServiceWalkerPtr walker)
 {
    // std::cout << "apply service" << std::endl;
    // remove service reservation
-   ServiceType service = walker->getService();
+   Service::Type service = walker->getService();
    _reservedServices.erase(service);
 
    switch( service )
    {
-   case S_ENGINEER:
+   case Service::S_ENGINEER:
      {
        _damageLevel = 0;
      }
    break;
-   case S_PREFECT:
+   case Service::S_PREFECT:
     {
       _fireLevel = 0;
     }

@@ -18,21 +18,21 @@
 #include "oc3_positioni.hpp"
 #include "oc3_resourcegroup.hpp"
 
-EntertainmentBuilding::EntertainmentBuilding(const ServiceType service,
+EntertainmentBuilding::EntertainmentBuilding(const Service::Type service,
                                              const BuildingType type,
                                              const Size& size )
   : ServiceBuilding(service, type, size)
 {
    switch (service)
    {
-   case S_THEATER:
+   case Service::S_THEATER:
       _traineeMap[WT_ACTOR] = 0;
       break;
-   case S_AMPHITHEATER:
+   case Service::S_AMPHITHEATER:
       _traineeMap[WT_ACTOR] = 0;
       _traineeMap[WT_GLADIATOR] = 0;
       break;
-   case S_COLLOSSEUM:
+   case Service::S_COLLOSSEUM:
       _traineeMap[WT_GLADIATOR] = 0;
       _traineeMap[WT_TAMER] = 0;
       break;
@@ -66,7 +66,7 @@ int EntertainmentBuilding::getVisitorsNumber() const
   return 0;
 }
 
-Theater::Theater() : EntertainmentBuilding(S_THEATER, B_THEATER, Size(2))
+Theater::Theater() : EntertainmentBuilding(Service::S_THEATER, B_THEATER, Size(2))
 {
   _getAnimation().load( ResourceGroup::entertaiment, 14, 21);
   _getAnimation().setOffset( Point( 60, 36 ) );
@@ -80,7 +80,7 @@ int Theater::getVisitorsNumber() const
   return 500;
 }
 
-BuildingAmphiTheater::BuildingAmphiTheater() : EntertainmentBuilding(S_AMPHITHEATER, B_AMPHITHEATER, Size(3))
+BuildingAmphiTheater::BuildingAmphiTheater() : EntertainmentBuilding(Service::S_AMPHITHEATER, B_AMPHITHEATER, Size(3))
 {
   setPicture( Picture::load( ResourceGroup::entertaiment, 1));
 
@@ -90,7 +90,7 @@ BuildingAmphiTheater::BuildingAmphiTheater() : EntertainmentBuilding(S_AMPHITHEA
   _fgPictures[0] = Picture::load( ResourceGroup::entertaiment, 12);
 }
 
-Collosseum::Collosseum() : EntertainmentBuilding(S_COLLOSSEUM, B_COLLOSSEUM, Size(5) )
+Collosseum::Collosseum() : EntertainmentBuilding(Service::S_COLLOSSEUM, B_COLLOSSEUM, Size(5) )
 {
   setPicture( Picture::load( ResourceGroup::entertaiment, 36));
 
@@ -102,7 +102,7 @@ Collosseum::Collosseum() : EntertainmentBuilding(S_COLLOSSEUM, B_COLLOSSEUM, Siz
 
 //------------
 
-BuildingHippodrome::BuildingHippodrome() : EntertainmentBuilding(S_HIPPODROME, B_HIPPODROME, Size(5) )
+BuildingHippodrome::BuildingHippodrome() : EntertainmentBuilding(Service::S_HIPPODROME, B_HIPPODROME, Size(5) )
 {
   setPicture( Picture::load("circus", 5));
   Picture logo = Picture::load("circus", 3);

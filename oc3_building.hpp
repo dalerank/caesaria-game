@@ -31,6 +31,7 @@
 #include "oc3_animation.hpp"
 #include "oc3_referencecounted.hpp"
 #include "oc3_predefinitions.hpp"
+#include "oc3_service.hpp"
 
 class Widget;
 
@@ -104,7 +105,6 @@ protected:
   void _updateDesirabilityInfluence( const DsbrlUpdate type );
 };
 
-class ServiceWalker;
 class Building : public Construction
 {
 public:
@@ -116,8 +116,8 @@ public:
    // evaluate the given service
    virtual float evaluateService(ServiceWalkerPtr walker);
    // handle service reservation
-   void reserveService(const ServiceType service);
-   void cancelService(const ServiceType service);
+   void reserveService(const Service::Type service);
+   void cancelService(const Service::Type service);
    virtual void applyService( ServiceWalkerPtr walker);
    // evaluate the need for the given trainee
    virtual float evaluateTrainee(const WalkerType traineeType);  // returns >0 if trainee is needed
@@ -138,7 +138,7 @@ protected:
    float _fireLevel;    // >100 => building catch fire
    float _damageIncrement;
    float _fireIncrement;
-   std::set<ServiceType> _reservedServices;  // a serviceWalker is on the way
+   std::set<Service::Type> _reservedServices;  // a serviceWalker is on the way
    std::map<WalkerType, int> _traineeMap;  // current level of trainees working in the building (0..200)
    std::set<WalkerType> _reservedTrainees;  // a trainee is on the way
 };

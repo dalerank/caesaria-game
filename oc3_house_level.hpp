@@ -23,6 +23,7 @@
 #include "oc3_scopedptr.hpp"
 #include "oc3_smartptr.hpp"
 #include "oc3_filepath.hpp"
+#include "oc3_service.hpp"
 
 class House;
 
@@ -55,11 +56,11 @@ public:
   int computeFoodLevel(House &house);
   int computeMonthlyConsumption(House &house, const Good::Type goodType);
 
-  float evaluateServiceNeed(House &house, const ServiceType service);
-  float evaluateEntertainmentNeed(House &house, const ServiceType service);
-  float evaluateEducationNeed(House &house, const ServiceType service);
-  float evaluateHealthNeed(House &house, const ServiceType service);
-  float evaluateReligionNeed(House &house, const ServiceType service);
+  float evaluateServiceNeed(House &house, const Service::Type service);
+  float evaluateEntertainmentNeed(House &house, const Service::Type service);
+  float evaluateEducationNeed(House &house, const Service::Type service);
+  float evaluateHealthNeed(House &house, const Service::Type service);
+  float evaluateReligionNeed(House &house, const Service::Type service);
   // float evaluateFoodNeed(House &house, const ServiceType service);
 
 

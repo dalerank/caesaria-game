@@ -67,12 +67,9 @@ void CityServiceReligion::Impl::updateRelation(RomeDivinityPtr divn)
   TempleList temples = helper.getBuildings<Temple>( BC_RELIGION );
   foreach( TemplePtr temple, temples )
   {
-    if( temple->getDivinity() == divn )
-    {
-      peopleReached += temple->getParishionerNumber();
-    }
+    peopleReached += ( temple->getDivinity() == divn ? temple->getParishionerNumber() : 0 );
   }
 
-  float faithIncome = (float)peopleReached / (float)city->getPopulation();
+  float faithIncome = (float)peopleReached / (float)(city->getPopulation()+1);
   divn->updateRelation( faithIncome );
 }

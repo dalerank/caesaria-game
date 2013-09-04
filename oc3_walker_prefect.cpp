@@ -34,7 +34,7 @@ public:
 };
 
 WalkerPrefect::WalkerPrefect( CityPtr city )
-: ServiceWalker( city, S_PREFECT ), _d( new Impl )
+: ServiceWalker( city, Service::S_PREFECT ), _d( new Impl )
 {
   _setType( WT_PREFECT );
   _d->water = 0;

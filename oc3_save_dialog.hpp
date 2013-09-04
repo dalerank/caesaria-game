@@ -19,11 +19,12 @@
 #include "oc3_widget.hpp"
 #include "oc3_scopedptr.hpp"
 #include "oc3_signals.hpp"
+#include "oc3_filepath.hpp"
 
 class SaveDialog : public Widget
 {
 public:
-  SaveDialog( Widget* parent, const std::string& dir, const std::string& fileExt, int id );
+  SaveDialog( Widget* parent, const io::FilePath& dir, const std::string& fileExt, int id );
 
   void draw( GfxEngine& painter );
 

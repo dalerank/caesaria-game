@@ -68,15 +68,13 @@ public:
   typedef std::map<Good::Type, std::string > GoodNames;
   GoodNames goodName;  // index=GoodType, value=Good
 
-  virtual Good::Type getInvalid() const { return Good::G_NONE; }
-
   void append( Good::Type type, const std::string& name, const std::string prName )
   {
     EnumsHelper<Good::Type>::append( type, name );
     goodName[ type ] = prName;
   }
 
-  Impl()
+  Impl() : EnumsHelper<Good::Type>(Good::G_NONE)
   {
     append( Good::G_NONE, "none", _("None") );
     append( Good::G_WHEAT, "wheat", _("Wheat") );

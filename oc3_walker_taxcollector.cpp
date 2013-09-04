@@ -50,7 +50,7 @@ TaxCollectorPtr TaxCollector::create( CityPtr city )
   return tc;
 }
 
-TaxCollector::TaxCollector( CityPtr city ) : ServiceWalker( city, S_FORUM ), _d( new Impl )
+TaxCollector::TaxCollector( CityPtr city ) : ServiceWalker( city, Service::S_FORUM ), _d( new Impl )
 {
   _d->money = 0;
   _setType( WT_TAXCOLLECTOR );

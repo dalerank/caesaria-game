@@ -66,10 +66,11 @@ void ScreenMenu::Impl::resolveShowLoadGameWnd()
   Size rootSize = gui->getRootWidget()->getSize();
   RectF rect( 0.25f * rootSize.getWidth(), 0.25f * rootSize.getHeight(), 
               0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() );
-  LoadMapWindow* wnd = new LoadMapWindow( gui->getRootWidget(), 
-                                          rect.toRect(), 
-                                          AppConfig::rcpath( "/../saves/" ), ".oc3save",
-                                          -1 );
+
+  io::FilePath savesPath = io::FileDir::getApplicationDir().addEndSlash().toString() + "saves/";
+
+  LoadMapWindow* wnd = new LoadMapWindow( gui->getRootWidget(), rect.toRect(),
+                                          savesPath, ".oc3save",-1 );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
   wnd->setTitle( _("##Load save##") );
@@ -80,10 +81,8 @@ void ScreenMenu::Impl::resolvePlayMission()
   Size rootSize = gui->getRootWidget()->getSize();
   RectF rect( 0.25f * rootSize.getWidth(), 0.25f * rootSize.getHeight(), 
     0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() );
-  LoadMapWindow* wnd = new LoadMapWindow( gui->getRootWidget(), 
-                                          rect.toRect(), 
-                                          AppConfig::rcpath( "/missions/" ), ".oc3mission",
-                                          -1 );
+  LoadMapWindow* wnd = new LoadMapWindow( gui->getRootWidget(), rect.toRect(),
+                                          AppConfig::rcpath( "/missions/" ), ".oc3mission", -1 );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
   wnd->setTitle( _("##Select mission##") );

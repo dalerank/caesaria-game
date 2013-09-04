@@ -526,7 +526,6 @@ Soldier::Soldier()
 class WalkerHelper::Impl : public EnumsHelper<WalkerType>
 {
 public:
-  WalkerType getInvalid() const { return WT_NONE; }
   typedef std::map< WalkerType, std::string > PrettyNames;
   PrettyNames prettyTypenames;
 
@@ -536,7 +535,7 @@ public:
     prettyTypenames[ type ] = prettyTypename;
   }
 
-  Impl()
+  Impl() : EnumsHelper<WalkerType>( WT_NONE )
   {
     append( WT_NONE, "none", _("##wt_none##"));
     append( WT_IMMIGRANT, "immigrant", _("##wt_immigrant##") );
@@ -552,6 +551,8 @@ public:
     append( WT_TAXCOLLECTOR, "tax_collector", _("##wt_tax_collector##") );
     append( WT_MERCHANT, "merchant", _("##wt_merchant##") );
     append( WT_ENGINEER, "engineer", _("##wt_engineer##") );
+    append( WT_DOCTOR, "doctor", _("##wt_doctor##") );
+    append( WT_ANIMAL_SHEEP, "sheep", _("##wt_animal_sheep##") );
     append( WT_MAX, "unknown", _("##wt_unknown##") );
   }
 };
@@ -566,7 +567,7 @@ std::string WalkerHelper::getName( WalkerType type )
 {
   std::string name = instance()._d->findName( type );
 
-  if( type == instance()._d->getInvalid() )
+  if( name.empty() )
   {
     StringHelper::debug( 0xff, "Can't find walker typeName for %d", type );
     _OC3_DEBUG_BREAK_IF( "Can't find walker typeName by WalkerType" );
@@ -601,6 +602,7 @@ Picture WalkerHelper::getBigPicture(WalkerType type)
   {
   case WT_IMMIGRANT: index=9; break;
   case WT_EMIGRANT: index=13; break;
+  case WT_DOCTOR: index = 2; break;
   case WT_CART_PUSHER: index=51; break;
   case WT_MARKETLADY: index=12; break;
   case WT_MARKETLADY_HELPER: index=38; break;
@@ -608,6 +610,7 @@ Picture WalkerHelper::getBigPicture(WalkerType type)
   case WT_PREFECT: index=19; break;
   case WT_ENGINEER: index=7; break;
   case WT_TAXCOLLECTOR: index=6; break;
+  case WT_ANIMAL_SHEEP: index = 54; break;
   case WT_WORKERS_HUNTER: index=13; break;
 
   default: index=8; break;
