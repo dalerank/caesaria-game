@@ -18,6 +18,7 @@
 #include "oc3_empire_city.hpp"
 #include "oc3_goodstore_simple.hpp"
 #include "oc3_stringhelper.hpp"
+#include "oc3_foreach.hpp"
 
 class EmpireTradeRoute::Impl
 {
@@ -31,11 +32,11 @@ public:
 
   void resolveMerchantArrived( EmpireMerchantPtr merchant )
   {
-    for( MerchantList::iterator it=merchants.begin(); it != merchants.end(); it++ )
+    foreach( EmpireMerchantPtr m, merchants )
     {
-      if( *it == merchant )
+      if( m == merchant )
       {
-        (*it)->deleteLater();
+        m->deleteLater();
         break;
       }
     }
@@ -196,9 +197,9 @@ EmpireTradeRoutePtr EmpireTrading::createRoute( const std::string& begin, const 
   return route;
 }
 
-TradeRoutesList EmpireTrading::getRoutes( const std::string& begin )
+EmpireTradeRouteList EmpireTrading::getRoutes( const std::string& begin )
 {
-  TradeRoutesList ret;
+  EmpireTradeRouteList ret;
 
   EmpireCityPtr city = _d->empire->getCity( begin );
 

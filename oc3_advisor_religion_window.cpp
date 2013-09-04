@@ -28,6 +28,7 @@
 #include "oc3_building_house.hpp"
 #include "oc3_texturedbutton.hpp"
 #include "oc3_divinity.hpp"
+#include "oc3_gamedate.hpp"
 
 class ReligionInfoLabel : public Label
 {
@@ -39,7 +40,6 @@ public:
     _divinity = divinity;
     _smallTempleCount = smallTempleCount;
     _bigTempleCount = bigTempleCount;
-    _lastFestival = 99;
     _mood = 0;
 
     setFont( Font::create( FONT_1_WHITE ) );
@@ -54,6 +54,9 @@ public:
 
     if( _divinity.isValid() )
     {
+      _lastFestival = _divinity->getLastFestivalDate().getMonthToDate( GameDate::current() );
+      _mood = _divinity->getRelation();
+
       font.draw( *texture, _divinity->getName(), 0, 0 );
       Font fontBlack = Font::create( FONT_1 );
       fontBlack.draw( *texture, StringHelper::format( 0xff, "(%s)", _divinity->getShortDescription().c_str() ), 80, 0 );
@@ -102,24 +105,8 @@ public:
 
     InfrastructureInfo ret;
 
-    ret.smallTemplCount = 0;
-    ret.bigTempleCount = 0;
-
-    std::list< ServiceBuildingPtr > smallTemples = helper.getBuildings<ServiceBuilding>( small );
-   /*
-     for( std::list< ServiceBuildingPtr >::iterator it=buildings.begin(); it != buildings.end(); it++ )
-        {
-          if( (*it)->getWorkers() > 0 )
-          {
-            ret.buildingWork++;
-          }
-        }*/
-    
-
-    ret.smallTemplCount = smallTemples.size();
-
-    std::list< ServiceBuildingPtr > bigTemples = helper.getBuildings<ServiceBuilding>( big );
-    ret.bigTempleCount = bigTemples.size();
+    ret.smallTemplCount = helper.getBuildings<ServiceBuilding>( small ).size();
+    ret.bigTempleCount = helper.getBuildings<ServiceBuilding>( big ).size();
 
     return ret;
   }
@@ -152,7 +139,7 @@ AdvisorReligionWindow::AdvisorReligionWindow( CityPtr city, Widget* parent, int 
   font.draw( *_d->background, _("##small##"), 240, 47, false );
   font.draw( *_d->background, _("##large##"), 297, 47, false );
   font.draw( *_d->background, _("##Fest.##"), 370, 47, false );
-  font.draw( *_d->background, _("##Divinity##"), 450, 47, false );
+  font.draw( *_d->background, _("##Mood##"), 450, 47, false );
 
   Point startPoint( 42, 65 );
   Size labelSize( 550, 20 );

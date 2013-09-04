@@ -24,12 +24,11 @@
 #include "oc3_path_finding.hpp"
 #include "oc3_city.hpp"
 
-BuildingPrefecture::BuildingPrefecture() : ServiceBuilding(S_PREFECT, B_PREFECTURE, Size(1))
+BuildingPrefecture::BuildingPrefecture() : ServiceBuilding(Service::S_PREFECT, B_PREFECTURE, Size(1))
 {
   _fireDetect = TilePos( -1, -1 );
   setPicture( Picture::load( ResourceGroup::security, 1 ) );
   
-
   _getAnimation().load( ResourceGroup::security, 2, 10);
   _getAnimation().setFrameDelay( 4 );
   _getAnimation().setOffset( Point( 20, 36 ) );

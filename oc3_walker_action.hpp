@@ -18,23 +18,17 @@
 
 #include "oc3_enums.hpp"
 
-struct WalkerAction
+struct DirectedAction
 {
-  WalkerActionType _action;
-  DirectionType _direction;
+  int action;
+  DirectionType direction;
+
+  inline bool operator<( const DirectedAction &a ) const
+  {
+    return ( action != a.action
+              ? action < a.action
+              : direction < a.direction );
+  }
 };
-
-inline bool operator<(const WalkerAction &v1, const WalkerAction &v2)
-{
-  if( v1._action!=v2._action )
-  {
-    return v1._action < v2._action;
-  }
-  else
-  {
-    return v1._direction < v2._direction;
-  }
-}
-
 
 #endif

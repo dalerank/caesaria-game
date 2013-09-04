@@ -56,9 +56,9 @@ void Garden::build( const TilePos& pos )
 
   PtrTilesList tilesAround = Scenario::instance().getCity()->getTilemap().getRectangle( getTilePos() - TilePos( 1, 1), 
                                                                                         getTilePos() + TilePos( 1, 1 ) );
-  for( PtrTilesList::iterator it=tilesAround.begin(); it != tilesAround.end(); it++ )
+  foreach( Tile* tile, tilesAround )
   {
-    GardenPtr garden = (*it)->getTerrain().getOverlay().as<Garden>(); 
+    GardenPtr garden = tile->getTerrain().getOverlay().as<Garden>();
     if( garden.isValid() )
     {
       garden->update();
@@ -71,17 +71,17 @@ void Garden::update()
   PtrTilesArea nearTiles = Scenario::instance().getCity()->getTilemap().getFilledRectangle( getTilePos(), Size(2) );
 
   bool canGrow2squareGarden = ( nearTiles.size() == 4 ); // be carefull on map edges
-  for( PtrTilesArea::iterator it=nearTiles.begin(); it != nearTiles.end(); it++ )
+  foreach( Tile* tile, nearTiles )
   {
-    GardenPtr garden = (*it)->getTerrain().getOverlay().as<Garden>();
+    GardenPtr garden = tile->getTerrain().getOverlay().as<Garden>();
     canGrow2squareGarden &= (garden.isValid() && garden->getSize().getArea() <= 2 );
   }
 
   if( canGrow2squareGarden )
   {   
-    for( PtrTilesArea::iterator it=nearTiles.begin(); it != nearTiles.end(); it++ )
+    foreach( Tile* tile, nearTiles )
     {
-      LandOverlayPtr overlay = (*it)->getTerrain().getOverlay();
+      LandOverlayPtr overlay = tile->getTerrain().getOverlay();
 
       //not delete himself
       if( overlay != this && overlay.isValid() )

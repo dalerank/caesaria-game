@@ -40,58 +40,61 @@ class PathWay;
 class Walker : public Serializable, public ReferenceCounted
 {
 public:
-   Walker();
-   virtual ~Walker();
+  typedef enum { acNone, acMove, acFight, acDie, acMax } Action;
 
-   virtual void timeStep(const unsigned long time);  // performs one simulation step
-   virtual int getType() const;
-   // position and movement
-   int getI() const;
-   int getJ() const;
+  Walker();
+  virtual ~Walker();
 
-   TilePos getIJ() const;
-   void setIJ( const TilePos& pos );
+  virtual void timeStep(const unsigned long time);  // performs one simulation step
+  virtual int getType() const;
+  // position and movement
+  int getI() const;
+  int getJ() const;
 
-   Point getPosition() const;
+  TilePos getIJ() const;
+  void setIJ( const TilePos& pos );
 
-   void setPathWay( const PathWay& pathWay);
-   const PathWay& getPathway() const;
+  virtual Point getPosition() const;
 
-   //void setDestinationIJ( const TilePos& pos );
-   void setSpeed(const float speed);
-   virtual void onNewTile();  // called when the walker is on a new tile
-   virtual void onMidTile();  // called when the walker is on the middle of a tile
-   virtual void onDestination();  // called when the walker is at his destination
-   virtual void onNewDirection(); // called when the walker changes direction
-   void computeDirection();
-   void walk();
-   void setUniqueId( const UniqueId uid );
+  void setPathWay( const PathWay& pathWay);
+  const PathWay& getPathway() const;
 
-   DirectionType getDirection();
+  //void setDestinationIJ( const TilePos& pos );
+  void setSpeed(const float speed);
+  virtual void onNewTile();  // called when the walker is on a new tile
+  virtual void onMidTile();  // called when the walker is on the middle of a tile
+  virtual void onDestination();  // called when the walker is at his destination
+  virtual void onNewDirection(); // called when the walker changes direction
+  void computeDirection();
+  void walk();
+  void setUniqueId( const UniqueId uid );
 
-   void setName( const std::string& name );
-   const std::string& getName() const;
+  DirectionType getDirection();
 
-   std::string getThinks() const;
+  virtual void setName( const std::string& name );
+  virtual const std::string& getName() const;
 
-   void save( VariantMap& stream) const;
-   void load( const VariantMap& stream);
+  virtual std::string getThinks() const;
 
-   void go();
+  virtual void save( VariantMap& stream) const;
+  virtual void load( const VariantMap& stream);
 
-   // graphic
-   WalkerGraphicType getWalkerGraphic() const;
-   virtual void getPictureList(std::vector<Picture> &oPics);
-   virtual const Picture& getMainPicture();
+  virtual void go();
+  virtual void die();
 
-   // state
-   bool isDeleted() const;  // returns true if the walker should be forgotten
-   void deleteLater();
+  // graphic
+  WalkerGraphicType getWalkerGraphic() const;
+  virtual void getPictureList(std::vector<Picture> &oPics);
+  virtual const Picture& getMainPicture();
+
+  // state
+  bool isDeleted() const;  // returns true if the walker should be forgotten
+  void deleteLater();
 
 protected:
    PathWay& _getPathway();
    Animation& _getAnimation();
-   void _setAction( WalkerActionType );
+   void _setAction( Walker::Action action );
    void _setDirection( DirectionType );
    void _setGraphic( WalkerGraphicType type );
    void _setType( WalkerType type );

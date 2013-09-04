@@ -23,6 +23,7 @@
 #include "oc3_positioni.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_stringhelper.hpp"
+#include "oc3_foreach.hpp"
 
 static Tile invalidTile = Tile( TilePos( -1, -1 ) );
 
@@ -63,12 +64,12 @@ TilePos Tilemap::fit( const TilePos& pos ) const
 
 Tile& Tilemap::__at( const int i, const int j )
 {
-  _OC3_DEBUG_BREAK_IF( !isInside( TilePos( i, j ) ) && "Need inside point" );
   if( isInside( TilePos( i, j ) ) )
   {
     return _tile_array.at(i).at(j);
   }
 
+  StringHelper::debug( 0xff, "Need inside point current=[%d, %d]", i, j );
   return invalidTile;
 }
 
@@ -152,7 +153,7 @@ PtrTilesList Tilemap::getFilledRectangle(const TilePos& start, const TilePos& st
       {
          if( isInside( TilePos( i, j ) ))
          {
-            res.push_back(&at( TilePos( i, j ) ) );
+            res.push_back( &at( TilePos( i, j ) ) );
          }
       }
    }
@@ -173,11 +174,11 @@ void Tilemap::save( VariantMap& stream ) const
   VariantList idInfo;
 
   PtrTilesArea tiles = const_cast< Tilemap* >( this )->getFilledRectangle( TilePos( 0, 0 ), Size( _size ) );
-  for( PtrTilesArea::iterator it = tiles.begin(); it != tiles.end(); it++ )
+  foreach( Tile* tile, tiles )
   {
-    bitsetInfo.push_back( (*it)->getTerrain().encode() );
-    desInfo.push_back( (*it)->getTerrain().getDesirability() );
-    idInfo.push_back( (*it)->getTerrain().getOriginalImgId() );
+    bitsetInfo.push_back( tile->getTerrain().encode() );
+    desInfo.push_back( tile->getTerrain().getDesirability() );
+    idInfo.push_back( tile->getTerrain().getOriginalImgId() );
   }
 
   stream[ "bitset" ]       = bitsetInfo;

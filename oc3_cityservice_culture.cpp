@@ -18,11 +18,12 @@
 #include "oc3_safetycast.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_building_house.hpp"
+#include "oc3_building_entertainment.hpp"
 #include "oc3_house_level.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_time.hpp"
 #include "oc3_gamedate.hpp"
-#include "oc3_religion_building.hpp"
+#include "oc3_building_religion.hpp"
 
 struct Coverage2Point{
   double coverage;
@@ -100,65 +101,45 @@ void CityServiceCulture::update( const unsigned int time )
     _d->theaterVisitors = 0;
     int cityPopulation = _d->city->getPopulation();
 
-    const LandOverlays& overlays = _d->city->getOverlayList();
+    CityHelper helper( _d->city );
 
-    for( LandOverlays::const_iterator it=overlays.begin(); it != overlays.end(); it++ )
+    TempleList temples = helper.getBuildings<Temple>( BC_RELIGION );
+    foreach( TemplePtr temple, temples )
     {
-      TemplePtr temple = (*it).as<Temple>();
-
-      if( temple.isValid() )
-      {
-        _d->parishionersCount += temple->getParishionerNumber();
-      }
+      _d->parishionersCount += temple->getParishionerNumber();
     }
 
     _d->religionCoverage = _d->parishionersCount / (float)cityPopulation;
     _d->religionPoints = _d->convCoverage2Points( religionPoints, _d->religionCoverage );
 
-    for( LandOverlays::const_iterator it=overlays.begin(); it != overlays.end(); it++ )
+    TheaterList theaters = helper.getBuildings<Theater>( B_THEATER );
+    foreach( TheaterPtr theater, theaters )
     {
-      TheaterPtr theater = (*it).as<Theater>();
-
-      if( theater.isValid() )
-      {
-        _d->theaterVisitors += theater->getVisitorsNumber();
-      }
+      _d->theaterVisitors += theater->getVisitorsNumber();
     }
     _d->theatersCoverage = _d->theaterVisitors / (float)cityPopulation;
     _d->theatresPoints = _d->convCoverage2Points( theatresPoints, _d->theatersCoverage );
 
-    for( LandOverlays::const_iterator it=overlays.begin(); it != overlays.end(); it++ )
+    LibraryList libraries = helper.getBuildings<Library>( B_LIBRARY );
+    foreach( LibraryPtr library, libraries )
     {
-      LibraryPtr library = (*it).as<Library>();
-
-      if( library.isValid() )
-      {
-        _d->libraryVisitors += library->getVisitorsNumber();
-      }
+      _d->libraryVisitors += library->getVisitorsNumber();
     }
     _d->libraryCoverage = _d->libraryVisitors / (float)cityPopulation;
     _d->libraryPoints = _d->convCoverage2Points( librariesPoints, _d->libraryCoverage );
 
-    for( LandOverlays::const_iterator it=overlays.begin(); it != overlays.end(); it++ )
+    SchoolList schools = helper.getBuildings<School>( B_SCHOOL );
+    foreach( SchoolPtr school, schools )
     {
-      SchoolPtr school = (*it).as<School>();
-
-      if( school.isValid() )
-      {
-        _d->schoolVisitors += school->getVisitorsNumber();
-      }
+      _d->schoolVisitors += school->getVisitorsNumber();
     }
     _d->schoolCoverage = _d->schoolVisitors / (float)cityPopulation;
     _d->schoolPoints = _d->convCoverage2Points( schoolsPoints, _d->schoolCoverage );
 
-    for( LandOverlays::const_iterator it=overlays.begin(); it != overlays.end(); it++ )
+    CollegeList colleges = helper.getBuildings<College>( B_COLLEGE );
+    foreach( CollegePtr college, colleges )
     {
-      CollegePtr college = (*it).as<College>();
-
-      if( college.isValid() )
-      {
-        _d->collegeVisitors += college->getVisitorsNumber();
-      }
+      _d->collegeVisitors += college->getVisitorsNumber();
     }
     _d->collegeCoverage = _d->collegeVisitors / (float)cityPopulation;
     _d->collegePoints = _d->convCoverage2Points( academiesPoints, _d->collegeCoverage );

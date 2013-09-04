@@ -513,7 +513,7 @@ void ListBox::_SelectNew(int ypos)
 }
 
 //! Update the position and size of the listbox, and update the scrollbar
-void ListBox::resizeEvent_()
+void ListBox::_resizeEvent()
 {
     _d->totalItemHeight = 0;
     _d->recalculateItemHeight( _d->font, getHeight() );
@@ -935,6 +935,14 @@ ListBoxItem& ListBox::addItem( const std::string& text, Font font, const int col
   _d->recalculateItemHeight( _d->font, getHeight() );
 
   return _d->items.back();
+}
+
+void ListBox::addItems(const StringArray &strings)
+{
+  for( StringArray::const_iterator it=strings.begin(); it != strings.end(); it++ )
+  {
+    addItem( *it );
+  }
 }
 
 int ListBox::getSelected()

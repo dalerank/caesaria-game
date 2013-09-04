@@ -30,6 +30,7 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_goodstore_simple.hpp"
 #include "oc3_city.hpp"
+#include "oc3_foreach.hpp"
 
 class Factory::Impl
 {
@@ -283,11 +284,10 @@ bool TimberLogger::canBuild(const TilePos& pos ) const
    bool near_forest = false;  // tells if the factory is next to a forest
 
    Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
-   PtrTilesArea rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), Tilemap::checkCorners );
-   for( PtrTilesArea::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+   PtrTilesArea area = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), Tilemap::checkCorners );
+   foreach( Tile* tile, area )
    {
-      Tile &tile = **itTiles;
-      near_forest |= tile.getTerrain().isTree();
+      near_forest |= tile->getTerrain().isTree();
    }
 
    return (is_constructible && near_forest);
@@ -311,10 +311,10 @@ bool IronMine::canBuild(const TilePos& pos ) const
   bool near_mountain = false;  // tells if the factory is next to a mountain
 
   Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
-  PtrTilesArea rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size(2), Tilemap::checkCorners );
-  for( PtrTilesArea::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+  PtrTilesArea perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size(2), Tilemap::checkCorners );
+  foreach( Tile* tile, perimetr )
   {
-     near_mountain |= (*itTiles)->getTerrain().isRock();
+     near_mountain |= tile->getTerrain().isRock();
   }
 
   return (is_constructible && near_mountain);
@@ -378,19 +378,14 @@ bool Wharf::canBuild(const TilePos& pos ) const
    
   Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
    
-  PtrTilesArea rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), false);
-  for( PtrTilesArea::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
-  {
-    Tile &tile = **itTiles;
-    std::cout << tile.getI() << " " << tile.getJ() << "  " << pos.getI() << " " << pos.getJ() << std::endl;
-      
-     // if (tiles.get_terrain().isWater())
-      
+  PtrTilesArea perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), false);
+  foreach( Tile* tile, perimetr )
+  {    
     int size = getSize().getWidth();
-     if (tile.getJ() > (pos.getJ() + size -1) && !tile.getTerrain().isWater()) {  bNorth = false; }
-     if (tile.getJ() < pos.getJ() && !tile.getTerrain().isWater())              {  bSouth = false; }
-     if (tile.getI() > (pos.getI() + size -1) && !tile.getTerrain().isWater()) {  bEast = false;  }
-     if (tile.getI() < pos.getI() && !tile.getTerrain().isWater())              {  bWest = false;  }      
+     if (tile->getJ() > (pos.getJ() + size -1) && !tile->getTerrain().isWater()) {  bNorth = false; }
+     if (tile->getJ() < pos.getJ() && !tile->getTerrain().isWater())              {  bSouth = false; }
+     if (tile->getI() > (pos.getI() + size -1) && !tile->getTerrain().isWater()) {  bEast = false;  }
+     if (tile->getI() < pos.getI() && !tile->getTerrain().isWater())              {  bWest = false;  }
    }
 
    return (is_constructible && (bNorth || bSouth || bEast || bWest));

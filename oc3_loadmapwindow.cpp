@@ -33,14 +33,14 @@ public:
   ListBox* files;
   PushButton* btnExit;
   PushButton* btnHelp;
-  std::string directory;
+  io::FilePath directory;
   std::string fileExtension;
 
   void fillFiles();
 
   void resolveFileSelected( std::string fileName )
   {
-    onSelecteFileSignal.emit( directory + fileName );
+    onSelecteFileSignal.emit( directory.toString() + fileName );
   }
 
 oc3_signals public:
@@ -48,7 +48,7 @@ oc3_signals public:
 };
 
 LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect,
-                              const std::string& dir, const std::string& ext, 
+                              const io::FilePath& dir, const std::string& ext,
                               int id )
 : Widget( parent, id, rect ), _d( new Impl )
 {
@@ -84,15 +84,10 @@ LoadMapWindow::~LoadMapWindow()
 
 void LoadMapWindow::Impl::fillFiles()
 {
-  io::FileList::Items items = io::FileDir( directory ).getEntries().getItems();
-
-  for( io::FileList::ItemIt it=items.begin(); it != items.end(); ++it)
-  {
-    if( !(*it).isDirectory && (*it).fullName.getExtension() == fileExtension )
-    {
-      files->addItem( (*it).name.toString(), Font(), 0 );
-    }
-  }
+  io::FileList flist = io::FileDir( directory ).getEntries();
+  StringArray names;
+  names << flist.filter( io::FileList::file | io::FileList::extFilter, fileExtension );
+  files->addItems( names );
 }
 
 void LoadMapWindow::draw( GfxEngine& engine )

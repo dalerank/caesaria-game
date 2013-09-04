@@ -4,7 +4,6 @@
 #include <iostream>
 #include <vector>
 #include <list>
-#include <map>
 
 #include "oc3_scopedptr.hpp"
 
@@ -18,7 +17,8 @@ class Tile;
 class Pathfinder
 {
 public:
-  typedef enum { checkStart=0x1, checkStop=0x2, noFlags=0x0 } Flags;
+  typedef enum { noFlags=0x0, checkStart=0x1, checkStop=0x2, roadOnly=0x4, waterOnly=0x8,
+                 terrainOnly=0x10, traversePath=0x20, everyWhere=0x80 } Flags;
   static const AStarPoint invalidPoint;
   static Pathfinder& getInstance();
 
@@ -39,15 +39,6 @@ private:
   Pathfinder();
 
   bool aStar( const TilePos& start, const TilePos& stop, const Size& arrivedArea, PathWay& oPathWay, int flags );
-  std::list<AStarPoint*> getTraversingPoints( const TilePos& start, const TilePos& stop );
-
-  AStarPoint* getPoint( const TilePos& pos );
-
-  bool pointExists( const TilePos& pos );
-  bool pointIsWalkable( const TilePos& pos );
-
-  std::map< int, std::map< int, AStarPoint* > > grid;
-  Tilemap* _tilemap;
 
   class Impl;
   ScopedPtr< Impl > _d;

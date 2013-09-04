@@ -111,7 +111,7 @@ oc3_signals public:
   virtual Signal0<>& onClicked();
 
 protected:
-  virtual void resizeEvent_();
+  virtual void _resizeEvent();
   virtual void _updateTexture( GfxEngine& painter );
   PictureRef& getPicture();
   PictureRef& getTextPicture();

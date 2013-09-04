@@ -24,6 +24,8 @@
 #include "oc3_building_house.hpp"
 #include "oc3_building_senate.hpp"
 #include "oc3_building_prefecture.hpp"
+#include "oc3_building_entertainment.hpp"
+#include "oc3_building_religion.hpp"
 #include "oc3_road.hpp"
 #include "oc3_building_market.hpp"
 #include "oc3_granary.hpp"
@@ -31,15 +33,15 @@
 #include "oc3_nativebuildings.hpp"
 #include "oc3_farm.hpp"
 #include "oc3_factory_pottery.hpp"
-#include "oc3_religion_building.hpp"
+
 #include "oc3_low_bridge.hpp"
 #include "oc3_high_bridge.hpp"
 
-#include "oc3_clay_pit.hpp"
+#include "oc3_building_clay_pit.hpp"
 #include "oc3_factory_marble.hpp"
 #include "oc3_goverment_building.hpp"
 #include "oc3_building_military.hpp"
-#include "oc3_academy.hpp"
+#include "oc3_building_academy.hpp"
 #include "oc3_forum.hpp"
 #include "oc3_garden.hpp"
 #include "oc3_building_health.hpp"
@@ -92,7 +94,7 @@ ConstructionManager::ConstructionManager() : _d( new Impl )
   // entertainment
   addCreator( B_THEATER, OC3_STR_EXT(B_THEATER), new BuildingCreator<Theater>() );
   addCreator( B_AMPHITHEATER, OC3_STR_EXT(B_AMPHITHEATER), new BuildingCreator<BuildingAmphiTheater>() );
-  addCreator( B_COLLOSSEUM, OC3_STR_EXT(B_COLLOSSEUM), new BuildingCreator<BuildingCollosseum>() );
+  addCreator( B_COLLOSSEUM, OC3_STR_EXT(B_COLLOSSEUM), new BuildingCreator<Collosseum>() );
   addCreator( B_ACTOR_COLONY, OC3_STR_EXT(B_ACTOR_COLONY), new BuildingCreator<BuildingActor>() );
   addCreator( B_GLADIATOR_SCHOOL, OC3_STR_EXT(B_GLADIATOR_SCHOOL), new BuildingCreator<BuildingGladiator>() );
   addCreator( B_LION_HOUSE, OC3_STR_EXT(B_LION_HOUSE), new BuildingCreator<BuildingLion>() );

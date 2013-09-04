@@ -25,9 +25,9 @@ class ServiceWalker : public Walker
 public:
   typedef std::set<BuildingPtr> ReachedBuildings;
 
-  static ServiceWalkerPtr create( CityPtr city, const ServiceType service );
+  static ServiceWalkerPtr create( CityPtr city, const Service::Type service );
 
-  ServiceType getService();
+  Service::Type getService() const;
   BuildingPtr getBase() const;
 
   void setBase( BuildingPtr base );
@@ -51,10 +51,10 @@ public:
 
   ~ServiceWalker();
 protected:
-  ServiceWalker( CityPtr city, const ServiceType service );
+  ServiceWalker( CityPtr city, const Service::Type service );
 
   CityPtr _getCity() const;
-  void init(const ServiceType service);
+  void init(const Service::Type service);
   void computeWalkerPath();
 
 private:

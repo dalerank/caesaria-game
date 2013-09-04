@@ -138,12 +138,12 @@ void PushButton::_updateTexture( ElementState state )
     switch( _d->bgStyle )
     {
     case smallGrayBorderLine:
-      {
-        PictureDecorator::Mode mode = (state == stNormal || state == stDisabled) 
-                                        ? PictureDecorator::smallGreyPanel 
-                                        : PictureDecorator::smallBrownPanel;
-        PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), mode );
-      }
+    {
+      PictureDecorator::Mode mode = (state == stNormal || state == stDisabled)
+                                      ? PictureDecorator::smallGreyPanel
+                                      : PictureDecorator::smallBrownPanel;
+      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), mode );
+    }
     break;
 
     case grayBorderLine:
@@ -215,8 +215,8 @@ void PushButton::setPressed( bool pressed )
 {
   if( _d->pressed != pressed)
   {
-      _d->clickTime = DateTime::getElapsedTime();
-      _d->pressed = pressed;
+    _d->clickTime = DateTime::getElapsedTime();
+    _d->pressed = pressed;
   }
 }
 
@@ -440,7 +440,7 @@ void PushButton::setText( const std::string& text )
 {
 	Widget::setText( text );
 
-  resizeEvent_();
+  _resizeEvent();
 }
 
 void PushButton::setFont( const Font& font, ElementState state )
@@ -473,7 +473,7 @@ Font& PushButton::getFont( ElementState state )
   return _d->buttonStates[ state ].font;
 }
 
-void PushButton::resizeEvent_()
+void PushButton::_resizeEvent()
 {
   for( int i=0; i != StateCount; i++ )
   {
@@ -484,5 +484,5 @@ void PushButton::resizeEvent_()
 void PushButton::setBackgroundStyle( const BackgroundStyle style )
 {
   _d->bgStyle = style;
-  resizeEvent_();
+  _resizeEvent();
 }

@@ -51,13 +51,14 @@ public:
     _equales[ key ] = name;
   }
 
-  virtual T getInvalid() const = 0;
+  virtual T getInvalid() const { return _invalid; }
 
   virtual ~EnumsHelper() {}
-protected:
-  EnumsHelper() {}
+  EnumsHelper( T invalid ) : _invalid( invalid ) {}
 
+protected:
   Equales _equales;
+  T _invalid;
 };
 
 #endif //__OPENCAESAR3_ACADEMY_H_INCLUDED__

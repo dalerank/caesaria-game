@@ -38,7 +38,7 @@ public:
   void createTradeRoute( const std::string& start, const std::string& stop );
   EmpireTradeRoutePtr getTradeRoute( unsigned int index ); 
   EmpireTradeRoutePtr getTradeRoute( const std::string& start, const std::string& stop );
-  TradeRoutesList getTradeRoutes( const std::string& startCity ); 
+  EmpireTradeRouteList getTradeRoutes( const std::string& startCity );
 
   void save( VariantMap& stream ) const;
   void load( const VariantMap& stream );

@@ -113,61 +113,64 @@ public:
 	*/
   virtual void setTextAlignment( TypeAlign horizontal, TypeAlign vertical );
 
-	virtual TypeAlign getHorizontalTextAlign() const;
+  virtual TypeAlign getHorizontalTextAlign() const;
 
-	virtual TypeAlign getVerticalTextAlign() const;
+  virtual TypeAlign getVerticalTextAlign() const;
 
   virtual void styleChanged();
 
-	virtual void hide();
+  virtual void hide();
 
-	virtual void show();
+  virtual void show();
 
   virtual void setMaxWidth( unsigned int width );
 
   virtual void setWidth( unsigned int width );
 
-	virtual void setHeight( unsigned int height );
+  virtual void setHeight( unsigned int height );
 
   virtual unsigned int getHeight() const;
 
-	virtual unsigned int getWidth() const;
+  virtual unsigned int getWidth() const;
 
-	virtual int getScreenTop() const;
+  virtual int getScreenTop() const;
 
-	virtual int getScreenLeft() const;
+  virtual int getScreenLeft() const;
 
   virtual int getBottom() const;
-	virtual int getScreenBottom() const;
 
-	virtual int getScreenRight() const;
+  virtual int getScreenBottom() const;
 
-	virtual unsigned int getArea() const;
+  virtual int getScreenRight() const;
 
-	virtual Point convertLocalToScreen( const Point& localPoint ) const;
+  virtual Point getLeftdownCorner() const;
 
-	virtual Rect convertLocalToScreen( const Rect& localPoint ) const;
+  virtual unsigned int getArea() const;
 
-	virtual Size getSize() const;
+  virtual Point convertLocalToScreen( const Point& localPoint ) const;
 
-	//! Updates the absolute position.
-	virtual void updateAbsolutePosition();
+  virtual Rect convertLocalToScreen( const Rect& localPoint ) const;
 
-	//! Returns true if a point is within this element.
-	/** Elements with a shape other than a rectangle should override this method */
-	virtual bool isPointInside(const Point& point) const;
+  virtual Size getSize() const;
 
-	//! Adds a GUI element as new child of this element.
-	virtual void addChild(Widget* child);
+  //! Updates the absolute position.
+  virtual void updateAbsolutePosition();
 
-	//! Removes a child.
-	virtual void removeChild(Widget* child);
+  //! Returns true if a point is within this element.
+  /** Elements with a shape other than a rectangle should override this method */
+  virtual bool isPointInside(const Point& point) const;
 
-	//! Removes this element from its parent.
-	virtual void remove();
+  //! Adds a GUI element as new child of this element.
+  virtual void addChild(Widget* child);
 
-	//! Draws the element and its children.
-	virtual void draw( GfxEngine& painter );
+  //! Removes a child.
+  virtual void removeChild(Widget* child);
+
+  //! Removes this element from its parent.
+  virtual void remove();
+
+  //! Draws the element and its children.
+  virtual void draw( GfxEngine& painter );
 
   virtual void animate( unsigned int timeMs );
 	
@@ -178,145 +181,145 @@ public:
   //! Destructor
   virtual ~Widget();
 
-	//! Moves this element in absolute point.
-	virtual void setPosition(const Point& relativePosition);
+  //! Moves this element in absolute point.
+  virtual void setPosition(const Point& relativePosition);
 
-	//! Moves this element on relative distance.
-	virtual void move( const Point& offset );
+  //! Moves this element on relative distance.
+  virtual void move( const Point& offset );
 
-	//! Returns true if element is visible.
-	virtual bool isVisible() const;
+  //! Returns true if element is visible.
+  virtual bool isVisible() const;
 
-	//! Sets the visible state of this element.
-	virtual void setVisible( bool visible );
+  //! Sets the visible state of this element.
+  virtual void setVisible( bool visible );
 
-	//! Returns true if this element was created as part of its parent control
-	virtual bool isSubElement() const;
+  //! Returns true if this element was created as part of its parent control
+  virtual bool isSubElement() const;
 
-	//! Sets whether this control was created as part of its parent.
-	/** For example, it is true when a scrollbar is part of a listbox.
-	SubElements are not saved to disk when calling guiEnvironment->saveGUI() */
-	virtual void setSubElement(bool subElement);
+  //! Sets whether this control was created as part of its parent.
+  /** For example, it is true when a scrollbar is part of a listbox.
+  SubElements are not saved to disk when calling guiEnvironment->saveGUI() */
+  virtual void setSubElement(bool subElement);
 
-	//! If set to true, the focus will visit this element when using the tab key to cycle through elements.
-	/** If this element is a tab group (see isTabGroup/setTabGroup) then
-	ctrl+tab will be used instead. */
-	virtual void setTabStop(bool enable);
+  //! If set to true, the focus will visit this element when using the tab key to cycle through elements.
+  /** If this element is a tab group (see isTabGroup/setTabGroup) then
+  ctrl+tab will be used instead. */
+  virtual void setTabStop(bool enable);
 
-	//! Returns true if this element can be focused by navigating with the tab key
-	virtual bool isTabStop() const;
+  //! Returns true if this element can be focused by navigating with the tab key
+  virtual bool isTabStop() const;
 
-	//! Sets the priority of focus when using the tab key to navigate between a group of elements.
-	/** See setTabGroup, isTabGroup and getTabGroup for information on tab groups.
-	Elements with a lower number are focused first */
-	virtual void setTabOrder( int index );
+  //! Sets the priority of focus when using the tab key to navigate between a group of elements.
+  /** See setTabGroup, isTabGroup and getTabGroup for information on tab groups.
+  Elements with a lower number are focused first */
+  virtual void setTabOrder( int index );
 
-	//! Returns the number in the tab order sequence
-	virtual int getTabOrder() const;
+  //! Returns the number in the tab order sequence
+  virtual int getTabOrder() const;
 
-	//! Sets whether this element is a container for a group of elements which can be navigated using the tab key.
-	/** For example, windows are tab groups.
-	Groups can be navigated using ctrl+tab, providing isTabStop is true. */
-	virtual void setTabGroup(bool isGroup);
+  //! Sets whether this element is a container for a group of elements which can be navigated using the tab key.
+  /** For example, windows are tab groups.
+  Groups can be navigated using ctrl+tab, providing isTabStop is true. */
+  virtual void setTabGroup(bool isGroup);
 
-	//! Returns true if this element is a tab group.
-	virtual bool hasTabGroup() const;
+  //! Returns true if this element is a tab group.
+  virtual bool hasTabGroup() const;
 
-	//! Returns the container element which holds all elements in this element's tab group.
-	virtual Widget* getTabGroup();
+  //! Returns the container element which holds all elements in this element's tab group.
+  virtual Widget* getTabGroup();
 
-	//! Returns true if element is enabled
-	/** Currently elements do _not_ care about parent-states.
-	So if you want to affect childs you have to enable/disable them all.
-	The only exception to this are sub-elements which also check their parent.
-	*/
-	virtual bool isEnabled() const;
+  //! Returns true if element is enabled
+  /** Currently elements do _not_ care about parent-states.
+  So if you want to affect childs you have to enable/disable them all.
+  The only exception to this are sub-elements which also check their parent.
+  */
+  virtual bool isEnabled() const;
 
-	//! Sets the enabled state of this element.
-	virtual void setEnabled(bool enabled);
+  //! Sets the enabled state of this element.
+  virtual void setEnabled(bool enabled);
 
-	//! Sets the new caption of this element.
+  //! Sets the new caption of this element.
   virtual void setText(const std::string& text);
 
-	//! Returns caption of this element.
+  //! Returns caption of this element.
   virtual std::string getText() const;
 
-	//! Sets the new caption of this element.
+  //! Sets the new caption of this element.
   virtual void setTooltipText(const std::string& text);
 
-	//! Returns caption of this element.
+  //! Returns caption of this element.
   virtual std::string getTooltipText() const;
 
-	//! Returns id. Can be used to identify the element.
-	virtual int getID() const;
+  //! Returns id. Can be used to identify the element.
+  virtual int getID() const;
 
-	//! Sets the id of this element
-	virtual void setID(int id);
+  //! Sets the id of this element
+  virtual void setID(int id);
 
-	//! Called if an event happened.
-	virtual bool onEvent(const NEvent& event);
+  //! Called if an event happened.
+  virtual bool onEvent(const NEvent& event);
 
-	//! Brings a child to front
-	/** \return True if successful, false if not. */
-	virtual bool bringChildToFront(Widget* element);
+  //! Brings a child to front
+  /** \return True if successful, false if not. */
+  virtual bool bringChildToFront(Widget* element);
 
-	//! Brings a widget to front
-	/** \return true if successful, false if not. */
-	virtual bool bringToFront();
+  //! Brings a widget to front
+  /** \return true if successful, false if not. */
+  virtual bool bringToFront();
 
-	//! Moves a child to the back, so it's siblings are drawn on top of it
-	/** \return True if successful, false if not. */
-	virtual bool sendChildToBack(Widget* child);
+  //! Moves a child to the back, so it's siblings are drawn on top of it
+  /** \return True if successful, false if not. */
+  virtual bool sendChildToBack(Widget* child);
 
-	//! Moves widget to the back, so it's siblings are drawn on top of it
-	/** \return True if successful, false if not. */
-	virtual bool sendToBack();
+  //! Moves widget to the back, so it's siblings are drawn on top of it
+  /** \return True if successful, false if not. */
+  virtual bool sendToBack();
 
-	//! Returns list with children of this element
-	virtual const Widgets& getChildren() const;
+  //! Returns list with children of this element
+  virtual const Widgets& getChildren() const;
 
-	//! Finds the first element with the given id.
-	/** \param id: Id to search for.
-	 *	\param searchchildren: Set this to true, if also children of this
-	 *		element may contain the element with the searched id and they
-	 *       should be searched too.
-	 *	\return Returns the first element with the given id. If no element
-	 *	with this id was found, 0 is returned. 
-	 */
-	virtual Widget* findChild(int id, bool searchchildren=false) const;
+  //! Finds the first element with the given id.
+  /** \param id: Id to search for.
+   *	\param searchchildren: Set this to true, if also children of this
+   *		element may contain the element with the searched id and they
+   *       should be searched too.
+   *	\return Returns the first element with the given id. If no element
+   *	with this id was found, 0 is returned.
+   */
+  virtual Widget* findChild(int id, bool searchchildren=false) const;
 
-	//! Sets if the static text should use the overide color or the color in the gui skin.
-	/** \param enable: If set to true, the override color, which can be set
-	 */
-	//virtual void setEnabledColor(bool enable, u32 index=0);
+  //! Sets if the static text should use the overide color or the color in the gui skin.
+  /** \param enable: If set to true, the override color, which can be set
+   */
+  //virtual void setEnabledColor(bool enable, u32 index=0);
 
-	//! Writes attributes of the scene node.
-	/** Implement this to expose the attributes of your scene node for
-	 *	scripting languages, editors, debuggers or xml serialization purposes. 
-	 */
-	//virtual void save( core::VariantArray* out ) const;
+  //! Writes attributes of the scene node.
+  /** Implement this to expose the attributes of your scene node for
+   *	scripting languages, editors, debuggers or xml serialization purposes.
+   */
+  //virtual void save( core::VariantArray* out ) const;
 
-	//! Reads attributes of the scene node.
-	/** Implement this to set the attributes of your scene node for
-	 *	scripting languages, editors, debuggers or xml deserialization purposes. 
-	 */
-	//virtual void load( core::VariantArray* in );
+  //! Reads attributes of the scene node.
+  /** Implement this to set the attributes of your scene node for
+   *	scripting languages, editors, debuggers or xml deserialization purposes.
+   */
+  //virtual void load( core::VariantArray* in );
 
-	virtual void installEventHandler( Widget* elementHandler );
+  virtual void installEventHandler( Widget* elementHandler );
 
   //non overriding methods
-	//! Returns parent of this element.
+  //!!! Returns parent of this element.
   Widget* getParent() const;
 
-	//! 
+  //!
   void deleteLater();
 
   //! Returns the relative rectangle of this element.
   Rect getRelativeRect() const;
 
-	//! Sets the relative/absolute rectangle of this element.
-	/** \param r The absolute position to set */
-	void setGeometry(const Rect& r, GeometryType mode=RelativeGeometry );
+  //! Sets the relative/absolute rectangle of this element.
+  /** \param r The absolute position to set */
+  void setGeometry(const Rect& r, GeometryType mode=RelativeGeometry );
 
   //! 
   void setLeft( int newLeft );
@@ -330,11 +333,11 @@ public:
   //!
   int getTop() const;
 
-	//!
-	void setTop( int newTop );
+  //!
+  void setTop( int newTop );
 
-    //! Sets the relative rectangle of this element as a proportion of its parent's area.
-    /** \note This method used to be 'void setRelativePosition(const core::rect<f32>& r)'
+  //! Sets the relative rectangle of this element as a proportion of its parent's area.
+  /** \note This method used to be 'void setRelativePosition(const core::rect<f32>& r)'
         \param r  The rectangle to set, interpreted as a proportion of the parent's area.
 	Meaningful values are in the range [0...1], unless you intend this element to spill
 	outside its parent. */
@@ -346,8 +349,8 @@ public:
   //! Returns the visible area of the element.
   Rect getAbsoluteClippingRect() const;
 
-	//! Returns the visible area of the element.
-	Rect& getAbsoluteClippingRectRef() const;
+  //! Returns the visible area of the element.
+  Rect& getAbsoluteClippingRectRef() const;
 
   //! Sets whether the element will ignore its parent's clipping rectangle
   /** \param noClip If true, the element will not be clipped by its parent's clipping rectangle. */
@@ -395,17 +398,17 @@ public:
    *  \param color: New color of the text.
    *  \param na: index of overriding color
 	 */
-   //void setColor( const Color& color, u32 nA=0 );
+  //void setColor( const Color& color, u32 nA=0 );
 
-   //! Returns an override color
-   //Color getColor( u32 index=0 ) const;
+  //! Returns an override color
+  //Color getColor( u32 index=0 ) const;
 
-   //! returns true if the given element is a child of this one.
-   //! \param child: The child element to check
-   bool isMyChild(Widget* child) const;
+  //! returns true if the given element is a child of this one.
+  //! \param child: The child element to check
+  bool isMyChild(Widget* child) const;
 
-   //! searches elements to find the closest next element to tab to
-   /** \param startOrder: The TabOrder of the current element, -1 if none
+  //! searches elements to find the closest next element to tab to
+  /** \param startOrder: The TabOrder of the current element, -1 if none
     *  \param reverse: true if searching for a lower number
     *  \param group: true if searching for a higher one
     *  \param first: element with the highest/lowest known tab order depending on search direction
@@ -413,18 +416,18 @@ public:
     *  \param includeInvisible: includes invisible elements in the search (default=false)
     *  \return true if successfully found an element, false to continue searching/fail 
 	 */
-   bool getNextWidget( int startOrder, bool reverse, bool group,
-                       Widget*& first, Widget*& closest, bool includeInvisible=false) const;
+  bool getNextWidget( int startOrder, bool reverse, bool group,
+                      Widget*& first, Widget*& closest, bool includeInvisible=false) const;
 
 protected:
 
-	/*!
-	 * This event handler can be reimplemented in a subclass to receive
-	 * widget resize events which are passed in the \a event parameter.
-	 * When resizeEvent_() is called, the widget already has its new
-	 * geometry. 
-	 */
-	virtual void resizeEvent_();
+  /*!
+   * This event handler can be reimplemented in a subclass to receive
+   * widget resize events which are passed in the \a event parameter.
+   * When resizeEvent_() is called, the widget already has its new
+   * geometry.
+   */
+  virtual void _resizeEvent();
 
 protected:
   // not virtual because needed in constructor

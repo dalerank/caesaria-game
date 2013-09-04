@@ -15,30 +15,31 @@
 
 #include "oc3_animation.hpp"
 #include "oc3_positioni.hpp"
+#include "oc3_foreach.hpp"
 
 void Animation::start(bool loop)
 {
-    _animIndex = 0;
-    _loop = loop;
-    _lastTimeUpdate = 0;
+  _animIndex = 0;
+  _loop = loop;
+  _lastTimeUpdate = 0;
 }
 
 PicturesArray& Animation::getPictures()
 {
-    return _pictures;
+  return _pictures;
 }
 
 const PicturesArray& Animation::getPictures() const
 {
-    return _pictures;
+  return _pictures;
 }
 
 void Animation::setOffset( const Point& offset )
 {
-    for( PicturesArray::iterator it = _pictures.begin(); it != _pictures.end(); ++it)
-    {
-        (*it).setOffset( offset );
-    }
+  foreach( Picture& pic, _pictures )
+  {
+    pic.setOffset( offset );
+  }
 }
 
 void Animation::update( unsigned int time )
@@ -70,54 +71,54 @@ const Picture& Animation::getCurrentPicture()
 
 int Animation::getCurrentIndex() const
 {
-    return _animIndex;
+  return _animIndex;
 }
 
 Animation::Animation()
 {
-    _frameDelay = 0;
-    start( true );
+  _frameDelay = 0;
+  start( true );
 }
 
 void Animation::setFrameDelay( const unsigned int delay )
 {
-    _frameDelay = delay;
+  _frameDelay = delay;
 }
 
 void Animation::setLoop( bool loop )
 {
-    _loop = loop;
+  _loop = loop;
 }
 
 void Animation::load( const std::string &prefix, const int start, const int number, 
                       bool reverse /*= false*/, const int step /*= 1*/ )
 {
-    int revMul = reverse ? -1 : 1;
-    for( int i = 0; i < number; ++i)
-    {
-      const Picture& pic = Picture::load(prefix, start + revMul*i*step);
-      _pictures.push_back( pic );
-    }
+  int revMul = reverse ? -1 : 1;
+  for( int i = 0; i < number; ++i)
+  {
+    const Picture& pic = Picture::load(prefix, start + revMul*i*step);
+    _pictures.push_back( pic );
+  }
 }
 
 void Animation::clear()
 {
-    _pictures.clear();
+  _pictures.clear();
 }
 
 bool Animation::isRunning() const
 {
-    return _animIndex >= 0;
+  return _animIndex >= 0;
 }
 
 bool Animation::isStopped() const
 {
-    return _animIndex == -1;
+  return _animIndex == -1;
 }
 
 void Animation::stop()
 {
-    _animIndex = -1;
+  _animIndex = -1;
 }
 
 Animation& Animation::operator=( const Animation& other )

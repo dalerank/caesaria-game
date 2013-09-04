@@ -242,7 +242,7 @@ bool ScrollBar::onEvent(const NEvent& event)
 	return Widget::onEvent(event);
 }
 
-void ScrollBar::resizeEvent_()
+void ScrollBar::_resizeEvent()
 {
 	_lastStateNameHash = 0;
 }

@@ -182,8 +182,8 @@ void MarketLady::onDestination()
    {
       // walker is near the granary/warehouse
       _getPathway().rbegin();
-      _setAction( WA_MOVE );
       computeDirection();
+      go();
 
       // get goods from destination building
       LandOverlayPtr building = _d->city->getTilemap().at( _d->destBuildingPos ).getTerrain().getOverlay();

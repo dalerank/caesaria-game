@@ -34,12 +34,12 @@ class ServiceBuilding::Impl
 {
 public:
   int serviceDelay;
-  ServiceType service;
+  Service::Type service;
   int serviceTimer;
   int serviceRange;
 };
 
-ServiceBuilding::ServiceBuilding(const ServiceType service,
+ServiceBuilding::ServiceBuilding(const Service::Type service,
                                  const BuildingType type, const Size& size)
                                  : WorkingBuilding( type, size ), _d( new Impl )
 {
@@ -56,7 +56,7 @@ void ServiceBuilding::setServiceDelay( const int delay )
   _d->serviceDelay = delay;
 }
 
-ServiceType ServiceBuilding::getService() const
+Service::Type ServiceBuilding::getService() const
 {
    return _d->service;
 }
@@ -138,108 +138,7 @@ unsigned int ServiceBuilding::getWalkerDistance() const
   return 5;
 }
 
-EntertainmentBuilding::EntertainmentBuilding(const ServiceType service, 
-                                             const BuildingType type,
-                                             const Size& size ) 
-  : ServiceBuilding(service, type, size)
-{
-   switch (service)
-   {
-   case S_THEATER:
-      _traineeMap[WT_ACTOR] = 0;
-      break;
-   case S_AMPHITHEATER:
-      _traineeMap[WT_ACTOR] = 0;
-      _traineeMap[WT_GLADIATOR] = 0;
-      break;
-   case S_COLLOSSEUM:
-      _traineeMap[WT_GLADIATOR] = 0;
-      _traineeMap[WT_TAMER] = 0;
-      break;
-   default:
-      break;
-   }
-}
-
-void EntertainmentBuilding::deliverService()
-{
-   // we need all trainees types for the show
-   int minLevel = 100;
-   for (std::map<WalkerType, int>::iterator itLevel = _traineeMap.begin(); itLevel != _traineeMap.end(); ++itLevel)
-   {
-      minLevel = std::min(minLevel, itLevel->second);
-   }
-
-   if (minLevel > 10)
-   {
-      // all trainees are there for the show!
-      for (std::map<WalkerType, int>::iterator itLevel = _traineeMap.begin(); itLevel != _traineeMap.end(); ++itLevel)
-      {
-         itLevel->second = itLevel->second - 10;
-      }
-      ServiceBuilding::deliverService();
-   }
-}
-
-int EntertainmentBuilding::getVisitorsNumber() const
-{
-  return 0;
-}
-
-Theater::Theater() : EntertainmentBuilding(S_THEATER, B_THEATER, Size(2))
-{
-  setPicture( Picture::load( "entertainment", 13));
-
-  _getAnimation().load("entertainment", 14, 21);
-  _getAnimation().setOffset( Point( 60, 36 ) );
-  
-  _fgPictures.resize(2);
-  _fgPictures[0] = Picture::load("entertainment", 35);
-}
-
-int Theater::getVisitorsNumber() const
-{
-  return 500;
-}
-
-BuildingAmphiTheater::BuildingAmphiTheater() : EntertainmentBuilding(S_AMPHITHEATER, B_AMPHITHEATER, Size(3))
-{
-  setPicture( Picture::load("entertainment", 1));
-
-  _getAnimation().load("entertainment", 2, 10);
-  _getAnimation().setOffset( Point( 100, 49 ) );
-  _fgPictures.resize(2);
-  _fgPictures[0] = Picture::load("entertainment", 12);
-}
-
-BuildingCollosseum::BuildingCollosseum() : EntertainmentBuilding(S_COLLOSSEUM, B_COLLOSSEUM, Size(5) )
-{
-  setPicture( Picture::load( ResourceGroup::entertaiment, 36));
-
-  _getAnimation().load("entertainment", 37, 13);
-  _getAnimation().setOffset( Point( 122, 81 ) );
-  _fgPictures.resize(2);
-  _fgPictures[0] = Picture::load( ResourceGroup::entertaiment, 50);
-}
-
-//------------
-
-BuildingHippodrome::BuildingHippodrome() : EntertainmentBuilding(S_HIPPODROME, B_HIPPODROME, Size(5) )
-{
-  setPicture( Picture::load("circus", 5));
-  Picture logo = Picture::load("circus", 3);
-  Picture logo1 = Picture::load("circus", 1);
-  logo.setOffset(150,181);
-  logo1.setOffset(300,310);
-  _fgPictures.resize(5);
-  _fgPictures[ 0 ] = logo;
-  _fgPictures[ 1 ] = logo1;
-}
-
-//-----------
-
-
-School::School() : ServiceBuilding(S_SCHOOL, B_SCHOOL, Size(2))
+School::School() : ServiceBuilding(Service::S_SCHOOL, B_SCHOOL, Size(2))
 {
   setPicture( Picture::load( ResourceGroup::commerce, 83));
 }
@@ -249,7 +148,7 @@ int School::getVisitorsNumber() const
   return 75;
 }
 
-Library::Library() : ServiceBuilding(S_LIBRARY, B_LIBRARY, Size(2))
+Library::Library() : ServiceBuilding(Service::S_LIBRARY, B_LIBRARY, Size(2))
 {
   setPicture( Picture::load( ResourceGroup::commerce, 84));
 }
@@ -259,7 +158,7 @@ int Library::getVisitorsNumber() const
   return 800;
 }
 
-College::College() : ServiceBuilding(S_COLLEGE, B_COLLEGE, Size(3))
+College::College() : ServiceBuilding(Service::S_COLLEGE, B_COLLEGE, Size(3))
 {
   setPicture( Picture::load( ResourceGroup::commerce, 85));
 }

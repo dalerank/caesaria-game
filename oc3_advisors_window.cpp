@@ -36,6 +36,7 @@
 #include "oc3_advisor_entertainment_window.hpp"
 #include "oc3_advisor_religion_window.hpp"
 #include "oc3_advisor_finance_window.hpp"
+#include "oc3_foreach.hpp"
 
 class AdvisorsWindow::Impl
 {
@@ -99,12 +100,12 @@ void AdvisorsWindow::showAdvisor( const AdvisorType type )
   if( type >= ADV_COUNT )
     return;
 
-  const Widgets& childs = getChildren();
-  for( ConstChildIterator it=childs.begin(); it != childs.end(); it++ )
+  Widget::Widgets children = getChildren();
+  foreach( Widget* child, children )
   {
-    if( PushButton* btn = safety_cast< PushButton* >( *it ) )
+    if( PushButton* btn = safety_cast< PushButton* >( child ) )
     {
-      safety_cast< PushButton* >( *it )->setPressed( btn->getID() == type );
+      btn->setPressed( btn->getID() == type );
     }
   }
 

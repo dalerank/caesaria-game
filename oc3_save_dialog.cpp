@@ -33,7 +33,7 @@ public:
   PushButton* btnCancel;
   EditBox* edFilename;
   ListBox* lbxSaves;
-  std::string directory;
+  io::FilePath directory;
   std::string extension;
 
 oc3_signals public:
@@ -42,7 +42,7 @@ oc3_signals public:
 public:
   void resolveButtonOkClick()
   {
-    onFileSelectedSignal.emit( directory + edFilename->getText() + extension );
+    onFileSelectedSignal.emit( directory.toString() + edFilename->getText() + extension );
   }
 
   void resolveListboxChange( std::string text )
@@ -55,18 +55,13 @@ public:
 
 void SaveDialog::Impl::findFiles()
 {
-  io::FileList::Items files = io::FileDir( directory ).getEntries().getItems();
-
-  for( io::FileList::ItemIt it=files.begin(); it !=files.end(); ++it)
-  {
-    if( !(*it).isDirectory && (*it).fullName.getExtension() == extension )
-    {
-      lbxSaves->addItem( (*it).fullName.getBasename().toString(), Font(), 0 );
-    }
-  }
+  io::FileList flist = io::FileDir( directory ).getEntries();
+  StringArray names;
+  names << flist.filter( io::FileList::file | io::FileList::extFilter, extension );
+  lbxSaves->addItems( names );
 }
 
-SaveDialog::SaveDialog( Widget* parent, const std::string& dir, const std::string& fileExt, int id ) 
+SaveDialog::SaveDialog( Widget* parent, const io::FilePath& dir, const std::string& fileExt, int id )
 : Widget( parent, id, Rect( 0, 0, 385, 336 ) ), _d( new Impl )
 {
   setPosition( Point( (parent->getWidth() - getWidth())/2, (parent->getHeight() - getHeight()) / 2 ) );
@@ -81,7 +76,8 @@ SaveDialog::SaveDialog( Widget* parent, const std::string& dir, const std::strin
   PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
 
   _d->edFilename = new EditBox( this, Rect( 18, 40, 18 + 320, 40 + 30 ), "Savecity" );
-  _d->directory = dir;
+  _d->directory = io::FileDir::getApplicationDir().addEndSlash().toString() + dir.toString();
+  _d->directory = _d->directory.addEndSlash();
   _d->extension = fileExt;
 
   _d->lbxSaves = new ListBox( this, Rect( 18, 70, 18 + 356, 70 + 205 ) );

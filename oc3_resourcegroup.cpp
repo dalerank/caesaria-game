@@ -19,6 +19,7 @@ const char* ResourceGroup::panelBackground = "paneling";
 const char* ResourceGroup::menuMiddleIcons = "panelwindows";
 const char* ResourceGroup::land2a          = "land2a";
 const char* ResourceGroup::land3a          = "land3a";
+const char* ResourceGroup::animals          = "citizen04";
 const char* ResourceGroup::sprites         = "sprites";
 const char* ResourceGroup::buildingEngineer= "transport";  
 const char* ResourceGroup::wharf           = "transport"; 

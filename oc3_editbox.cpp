@@ -168,7 +168,7 @@ void EditBox::setWordWrap(bool enable)
 	breakText();
 }
 
-void EditBox::resizeEvent_()
+void EditBox::_resizeEvent()
 {
   breakText();
   calculateScrollPos();

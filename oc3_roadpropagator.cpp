@@ -24,28 +24,6 @@
 #include "oc3_positioni.hpp"
 #include "oc3_tile.hpp"
 
-class RoadPropagator::Impl
-{
-public:
-    const Tilemap& tilemap;
-    const Tile& startTile;
-
-    int mapSize;
-
-    Impl( const Tilemap& tmap, const Tile& start ) : tilemap(tmap), startTile(start)
-    {
-
-    }
-};
-
-RoadPropagator::RoadPropagator( const Tilemap& tileMap, const Tile& startTile )
-    : _d( new Impl( tileMap, startTile ) )
-{
-    _d->mapSize = tileMap.getSize();
-}
-
-
-
 // comparison (for sorting list of tiles by their coordinates)
 bool
 compare_tiles_(const Tile * first, const Tile * second)
@@ -62,9 +40,13 @@ compare_tiles_(const Tile * first, const Tile * second)
 
 
 
-bool RoadPropagator::getPath( const Tile& destination, ConstWayOnTiles& oPathWay ) const
+ConstWayOnTiles RoadPropagator::createPath( const Tilemap& tileMap, const Tile& startTile, const Tile& destination )
 {
-  TilePos startPos = _d->startTile.getIJ();
+  ConstWayOnTiles ret;
+
+  int mapSize = tileMap.getSize();;
+
+  TilePos startPos = startTile.getIJ();
   TilePos stopPos  = destination.getIJ();
   int iStep = (startPos.getI() < stopPos.getI()) ? 1 : -1;
   int jStep = (startPos.getJ() < stopPos.getJ()) ? 1 : -1;
@@ -75,8 +57,8 @@ bool RoadPropagator::getPath( const Tile& destination, ConstWayOnTiles& oPathWay
 
   if( startPos == stopPos )
   {
-    oPathWay.push_back( &_d->startTile );
-    return true;
+    ret.push_back( &startTile );
+    return ret;
   }
 
   std::cout << "propagate by I axis" << std::endl;
@@ -84,10 +66,10 @@ bool RoadPropagator::getPath( const Tile& destination, ConstWayOnTiles& oPathWay
   // propagate on I axis
   for( TilePos tmp( startPos.getI(), stopPos.getJ() ); ; tmp+=TilePos( iStep, 0 ) )
   {
-    const Tile& curTile = _d->tilemap.at( tmp );
+    const Tile& curTile = tileMap.at( tmp );
 
     StringHelper::debug( 0xff, "+ (%d, %d)", curTile.getI(), curTile.getJ() );
-    oPathWay.push_back( &curTile );
+    ret.push_back( &curTile );
 
     if (tmp.getI() == stopPos.getI())
       break;
@@ -98,22 +80,17 @@ bool RoadPropagator::getPath( const Tile& destination, ConstWayOnTiles& oPathWay
   // propagate on J axis
   for( int j = startPos.getJ();; j+=jStep )
   {
-    const Tile& curTile = _d->tilemap.at( startPos.getI(), j );
+    const Tile& curTile = tileMap.at( startPos.getI(), j );
 
     std::cout << "+ (" << curTile.getI() << " " << curTile.getJ() << ") ";
-    oPathWay.push_back( &curTile );
+    ret.push_back( &curTile );
 
     if( j == stopPos.getJ() )
       break;
   }
 
   // sort tiles to be drawn in the rigth order on screen
-  oPathWay.sort(compare_tiles_);
+  ret.sort(compare_tiles_);
 
-  return true;
-}
-
-RoadPropagator::~RoadPropagator()
-{
-
+  return ret;
 }

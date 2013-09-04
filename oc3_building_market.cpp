@@ -39,12 +39,9 @@ public:
   }
 };
 
-Market::Market() : ServiceBuilding(S_MARKET, B_MARKET, Size(2) ),
+Market::Market() : ServiceBuilding(Service::S_MARKET, B_MARKET, Size(2) ),
   _d( new Impl )
 {
-  setMaxWorkers(5);
-  setWorkers(0);
-
   setPicture( Picture::load( ResourceGroup::commerce, 1) );
   _fgPictures.resize(1);  // animation
 

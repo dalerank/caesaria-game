@@ -23,6 +23,7 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_enums.hpp"
+#include "oc3_foreach.hpp"
 #include "oc3_city.hpp"
 
 static const Point employerButtonOffset = Point( 0, 25 );
@@ -118,23 +119,21 @@ AdvisorEmployerWindow::Impl::EmployersInfo AdvisorEmployerWindow::Impl::getEmplo
   default: break;
   }
 
-  WorkingBuildings buildings;
+  WorkingBuildingList buildings;
   CityHelper helper( city );
-  for( std::vector< BuildingClass >::iterator it=bldClasses.begin(); it != bldClasses.end(); it++ )
+  foreach( BuildingClass cl, bldClasses )
   {
-    WorkingBuildings sectorBuildings = helper.getBuildings<WorkingBuilding>( *it );
+    WorkingBuildingList sectorBuildings = helper.getBuildings<WorkingBuilding>( cl );
     buildings.insert( buildings.begin(), sectorBuildings.begin(), sectorBuildings.end() );
   }
 
-  unsigned int currentWorkers = 0;
-  unsigned int needWorkers = 0;
-  for( WorkingBuildings::iterator it=buildings.begin(); it != buildings.end(); it++ )
+  EmployersInfo ret = { 0, 0 };
+  foreach( WorkingBuildingPtr building, buildings )
   {
-    currentWorkers += (*it)->getWorkers();
-    needWorkers += (*it)->getMaxWorkers();
+    ret.currentWorkers += building->getWorkers();
+    ret.needWorkers += building->getMaxWorkers();
   }
 
-  EmployersInfo ret = { needWorkers, currentWorkers };
   return ret;
 }
 

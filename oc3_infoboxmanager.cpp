@@ -32,7 +32,7 @@
 class InfoBoxHouseCreator : public InfoboxCreator
 {
 public:
-  GuiInfoBox* create( Widget* parent, const Tile& tile )
+  InfoBoxSimple* create( Widget* parent, const Tile& tile )
   {
     HousePtr house = tile.getTerrain().getOverlay().as<House>();
     if( house->getNbHabitants() > 0 )
@@ -51,10 +51,10 @@ template< class T >
 class CitizenInfoboxCreator : public InfoboxCreator
 {
 public:
-  GuiInfoBox* create( Widget* parent, const Tile& tile )
+  InfoBoxSimple* create( Widget* parent, const Tile& tile )
   {
     CityHelper helper( Scenario::instance().getCity() );
-    Walkers walkers = helper.getWalkers<Walker>( tile.getIJ() );
+    WalkerList walkers = helper.getWalkers<Walker>( tile.getIJ() );
 
     if( walkers.empty() )
     {
@@ -79,7 +79,7 @@ public:
     isDrawWorkers = drawWorkers;
   }
 
-  GuiInfoBox* create( Widget* parent, const Tile& tile )
+  InfoBoxSimple* create( Widget* parent, const Tile& tile )
   {
     Size  size = parent->getSize();
     WorkingBuildingPtr building = tile.getTerrain().getOverlay().as<WorkingBuilding>();
@@ -110,10 +110,10 @@ public:
     text = desc;
   }
 
-  GuiInfoBox* create( Widget* parent, const Tile& tile )
+  InfoBoxSimple* create( Widget* parent, const Tile& tile )
   {
     Size  size = parent->getSize();
-    InfoBoxBasic* infoBox = new InfoBoxBasic( parent, tile );
+    InfoBoxSimple* infoBox = new InfoBoxSimple( parent, Rect( 0, 0, 510, 300 ) );
     infoBox->setPosition( Point( (size.getWidth() - infoBox->getWidth()) / 2, 
                                   size.getHeight() - infoBox->getHeight()) );
 
@@ -157,8 +157,8 @@ InfoBoxManager::InfoBoxManager() : _d( new Impl )
   addCreator( B_BARBER,   OC3_STR_EXT(B_BARBER), new ServiceBaseInfoboxCreator( "##barber_title##", "##barber_text##" ) );
   addCreator( B_HOSPITAL, OC3_STR_EXT(B_HOSPITAL), new ServiceBaseInfoboxCreator( "##hospital_title##", "##hospital_text##" ) );
   addCreator( B_FOUNTAIN, OC3_STR_EXT(B_FOUNTAIN), new ServiceBaseInfoboxCreator( "##fontaun_title##", "##fontaun_text##" ) );
-  addCreator( B_MARKET,   OC3_STR_EXT(B_MARKET), new BaseInfoboxCreator<GuiInfoMarket>() );
-  addCreator( B_GRANARY,  OC3_STR_EXT(B_GRANARY), new BaseInfoboxCreator<GuiInfoGranary>() );
+  addCreator( B_MARKET,   OC3_STR_EXT(B_MARKET), new BaseInfoboxCreator<InfoBoxMarket>() );
+  addCreator( B_GRANARY,  OC3_STR_EXT(B_GRANARY), new BaseInfoboxCreator<InfoBoxGranary>() );
   addCreator( B_GRAPE_FARM, OC3_STR_EXT(B_GRAPE_FARM), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
   addCreator( B_WHEAT_FARM, OC3_STR_EXT(B_WHEAT_FARM), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
   addCreator( B_VEGETABLE_FARM, OC3_STR_EXT(B_VEGETABLE_FARM), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
@@ -200,7 +200,7 @@ InfoBoxManager::InfoBoxManager() : _d( new Impl )
   addCreator( B_ACTOR_COLONY, OC3_STR_EXT(B_ACTOR_COLONY), new ServiceBaseInfoboxCreator( _("##actor_colony_title##"), _("##actor_colony_text##")) );
   addCreator( B_AMPHITHEATER, OC3_STR_EXT(B_AMPHITHEATER), new ServiceBaseInfoboxCreator( _("##amphitheater_title##"), _("##amphitheater_text##")) );
   addCreator( B_GLADIATOR_SCHOOL, OC3_STR_EXT(B_GLADIATOR_SCHOOL), new ServiceBaseInfoboxCreator( _("##gladiator_school_title##"), _("##gladiator_school_text##")) );
-  addCreator( B_COLLOSSEUM,    OC3_STR_EXT(B_COLLOSSEUM), new ServiceBaseInfoboxCreator( _("##colloseum_title##"), _("##colloseum_text##")) );
+  addCreator( B_COLLOSSEUM,    OC3_STR_EXT(B_COLLOSSEUM), new BaseInfoboxCreator<InfoBoxColosseum>() );
   addCreator( B_LION_HOUSE,    OC3_STR_EXT(B_LION_HOUSE), new ServiceBaseInfoboxCreator( _("##lion_house_title##"), _("##lion_house_text##")) );
   addCreator( B_HIPPODROME,    OC3_STR_EXT(B_HIPPODROME), new ServiceBaseInfoboxCreator( _("##hippodrome_title##"), _("##hippodrome_text##")) );
   addCreator( B_CHARIOT_MAKER, OC3_STR_EXT(B_CHARIOT_MAKER), new ServiceBaseInfoboxCreator( _("##chario_maker_title##"), _("##chario_maker_text##")) );
@@ -231,7 +231,7 @@ void InfoBoxManager::showHelp( const Tile& tile )
 
   Impl::InfoboxCreators::iterator findConstructor = _d->constructors.find( type );
 
-  GuiInfoBox* infoBox = findConstructor != _d->constructors.end() 
+  InfoBoxSimple* infoBox = findConstructor != _d->constructors.end()
                                   ? findConstructor->second->create( _d->gui->getRootWidget(), tile )
                                   : 0;
   

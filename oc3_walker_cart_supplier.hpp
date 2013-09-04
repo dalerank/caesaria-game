@@ -20,10 +20,6 @@
 #include "oc3_walker.hpp"
 #include "oc3_predefinitions.hpp"
 
-class Propagator;
-class CartSupplier;
-typedef SmartPtr< CartSupplier > CartSupplierPtr;
-
 /** This walker delivers goods */
 class CartSupplier : public Walker
 {

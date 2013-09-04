@@ -208,13 +208,13 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
       if( warehouse.isValid() )
       {
         std::map< Good::Type, int > cityGoodsAvailable;
-        std::list< WarehousePtr > warehouses = helper.getBuildings<Warehouse>( B_WAREHOUSE );
-        for( std::list< WarehousePtr >::iterator it=warehouses.begin(); it != warehouses.end(); it++ )
+        WarehouseList warehouses = helper.getBuildings<Warehouse>( B_WAREHOUSE );
+        foreach( WarehousePtr wh, warehouses )
         {
           for( int i=Good::G_WHEAT; i < Good::G_MAX; i++ )
           {
             Good::Type goodType = (Good::Type)i;
-            cityGoodsAvailable[ goodType ] += (*it)->getGoodStore().getCurrentQty( goodType );
+            cityGoodsAvailable[ goodType ] += wh->getGoodStore().getCurrentQty( goodType );
           }
         }
         

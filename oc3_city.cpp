@@ -32,6 +32,7 @@
 #include "oc3_cityservice_prosperity.hpp"
 #include "oc3_cityservice_shoreline.hpp"
 #include "oc3_cityservice_info.hpp"
+#include "oc3_cityservice_animals.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_road.hpp"
 #include "oc3_time.hpp"
@@ -54,6 +55,8 @@
 #include "oc3_empire_trading.hpp"
 #include "oc3_walker_merchant.hpp"
 #include "oc3_gamedate.hpp"
+#include "oc3_cityservice_religion.hpp"
+#include "oc3_foreach.hpp"
 
 #include <set>
 
@@ -68,7 +71,7 @@ public:
   EmpirePtr empire;
 
   LandOverlays overlayList;
-  Walkers walkerList;
+  WalkerList walkerList;
   TilePos roadEntry; //coordinates can't be negative!
   CityServices services;
   bool needRecomputeAllRoads;
@@ -117,13 +120,15 @@ City::City() : _d( new Impl )
   addService( CityServiceShoreline::create( this ) );
   addService( CityServiceInfo::create( this ) );
   addService( CityServiceCulture::create( this ) );
+  addService( CityServiceAnimals::create( this ) );
+  addService( CityServiceReligion::create( this ) );
 
   CONNECT( &GameDate::instance(), onMonthChanged(), this, City::monthStep );
 }
 
 void City::timeStep( unsigned int time )
 {
-  Walkers::iterator walkerIt = _d->walkerList.begin();
+  WalkerList::iterator walkerIt = _d->walkerList.begin();
   while (walkerIt != _d->walkerList.end())
   {
     try
@@ -220,19 +225,19 @@ void City::monthStep( const DateTime& time )
   _d->funds.updateHistory( GameDate::current() );
 }
 
-Walkers City::getWalkerList( const WalkerType type )
+WalkerList City::getWalkerList( const WalkerType type )
 {
   if( type == WT_ALL )
   {
     return _d->walkerList;
   }
 
-  Walkers res;
-  for (Walkers::iterator itWalker = _d->walkerList.begin(); itWalker != _d->walkerList.end(); ++itWalker )
+  WalkerList res;
+  foreach( WalkerPtr walker, _d->walkerList )
   {
-    if( (*itWalker)->getType() == type  )
+    if( walker->getType() == type  )
     {
-      res.push_back( *itWalker );
+      res.push_back( walker );
     }
   }
 
@@ -248,11 +253,9 @@ LandOverlays City::getBuildingList(const BuildingType buildingType)
 {
    LandOverlays res;
 
-   for( LandOverlays::iterator itOverlay = _d->overlayList.begin(); 
-        itOverlay!=_d->overlayList.end(); ++itOverlay)
+   foreach( LandOverlayPtr overlay, _d->overlayList )
    {
       // for each overlay
-      LandOverlayPtr overlay = *itOverlay;
       ConstructionPtr construction = overlay.as<Construction>();
       if( construction.isValid() && construction->getType() == buildingType)
       {
@@ -361,13 +364,13 @@ void City::disaster( const TilePos& pos, DisasterType type )
     //bool deleteRoad = false;
 
     PtrTilesArea clearedTiles = _d->tilemap.getFilledRectangle( rPos, size );
-    for( PtrTilesArea::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
+    foreach( Tile* tile, clearedTiles )
     {
       BuildingType dstr2constr[] = { B_BURNING_RUINS, B_COLLAPSED_RUINS, B_PLAGUE_RUINS };
       bool canCreate = ConstructionManager::getInstance().canCreate( dstr2constr[type] );
       if( canCreate )
       {
-        build( dstr2constr[type], (*itTile)->getIJ() );
+        build( dstr2constr[type], tile->getIJ() );
       }
     }
 
@@ -401,10 +404,10 @@ void City::clearLand(const TilePos& pos  )
     }
 
     PtrTilesArea clearedTiles = _d->tilemap.getFilledRectangle( rPos, size );
-    for (PtrTilesArea::iterator itTile = clearedTiles.begin(); itTile!=clearedTiles.end(); ++itTile)
+    foreach( Tile* tile, clearedTiles )
     {
-      (*itTile)->setMasterTile(NULL);
-      TerrainTile &terrain = (*itTile)->getTerrain();
+      tile->setMasterTile(NULL);
+      TerrainTile &terrain = tile->getTerrain();
       terrain.setTree(false);
       terrain.setBuilding(false);
       terrain.setRoad(false);
@@ -421,7 +424,7 @@ void City::clearLand(const TilePos& pos  )
       if( terrain.isMeadow() )
       {
         unsigned int originId = terrain.getOriginalImgId();
-        (*itTile)->setPicture( &Picture::load( TerrainTileHelper::convId2PicName( originId ) ) );
+        tile->setPicture( &Picture::load( TerrainTileHelper::convId2PicName( originId ) ) );
       }
       else
       {
@@ -431,7 +434,7 @@ void City::clearLand(const TilePos& pos  )
         int startOffset  = ( (rand() % 10 > 6) ? 62 : 232 ); 
         int imgId = rand() % 58;
 
-        (*itTile)->setPicture( &Picture::load( "land1a", startOffset + imgId));
+        tile->setPicture( &Picture::load( "land1a", startOffset + imgId));
       }      
     }
       
@@ -451,18 +454,18 @@ void City::Impl::collectTaxes( CityPtr city )
   lastMonthTax = 0;
   lastMonthTaxpayer = 0;
   
-  std::list<ForumPtr> forumsList = hlp.getBuildings< Forum >(B_HOUSE);
-  for( std::list<ForumPtr>::iterator it = forumsList.begin(); it != forumsList.end(); ++it)
+  ForumList forums = hlp.getBuildings< Forum >( B_FORUM );
+  foreach( ForumPtr forum, forums )
   {
-    lastMonthTaxpayer += (*it)->getPeoplesReached();
-    lastMonthTax += (*it)->collectTaxes();
+    lastMonthTaxpayer += forum->getPeoplesReached();
+    lastMonthTax += forum->collectTaxes();
   }
 
   std::list<SenatePtr> senates = hlp.getBuildings< Senate >( B_SENATE );
-  for( std::list<SenatePtr>::iterator it = senates.begin(); it != senates.end(); ++it)
+  foreach( SenatePtr senate, senates )
   {
-    lastMonthTaxpayer += (*it)->getPeoplesReached();
-    lastMonthTax += (*it)->collectTaxes();
+    lastMonthTaxpayer += senate->getPeoplesReached();
+    lastMonthTax += senate->collectTaxes();
   }
 
   funds.resolveIssue( FundIssue( CityFunds::taxIncome, lastMonthTax ) );
@@ -472,15 +475,12 @@ void City::Impl::calculatePopulation( CityPtr city )
 {
   long pop = 0; /* population can't be negative - should be unsigned long long*/
   
-  LandOverlays houseList = city->getBuildingList(B_HOUSE);
-  for( LandOverlays::iterator itHouse = houseList.begin(); 
-       itHouse != houseList.end(); ++itHouse)
+  CityHelper helper( city );
+
+  HouseList houseList = helper.getBuildings<House>( B_HOUSE );
+  foreach( HousePtr house, houseList)
   {
-    HousePtr house = (*itHouse).as<House>();
-    if( house.isValid() )
-    {
-        pop += house->getNbHabitants();
-    }
+    pop += house->getNbHabitants();
   }
   
   population = pop;
@@ -506,24 +506,24 @@ void City::save( VariantMap& stream) const
   // walkers
   VariantMap vm_walkers;
   int walkedId = 0;
-  for (Walkers::iterator itWalker = _d->walkerList.begin(); itWalker != _d->walkerList.end(); ++itWalker, walkedId++)
+  foreach( WalkerPtr walker, _d->walkerList )
   {
     // std::cout << "WRITE WALKER @" << stream.tell() << std::endl;
-     VariantMap vm_walker;
-    (*itWalker)->save( vm_walker );
+    VariantMap vm_walker;
+    walker->save( vm_walker );
     vm_walkers[ StringHelper::format( 0xff, "%d", walkedId ) ] = vm_walker;
+    walkedId++;
   }
   stream[ "walkers" ] = vm_walkers;
 
   // overlays
   VariantMap vm_overlays;
-  for( LandOverlays::iterator itOverlay = _d->overlayList.begin(); 
-       itOverlay != _d->overlayList.end(); ++itOverlay )
+  foreach( LandOverlayPtr overlay, _d->overlayList )
   {
     VariantMap vm_overlay;
-    (*itOverlay)->save( vm_overlay );
-    vm_overlays[ StringHelper::format( 0xff, "%d,%d", (*itOverlay)->getTile().getI(),
-                                                      (*itOverlay)->getTile().getJ() ) ] = vm_overlay;
+    overlay->save( vm_overlay );
+    vm_overlays[ StringHelper::format( 0xff, "%d,%d", overlay->getTile().getI(),
+                                                      overlay->getTile().getJ() ) ] = vm_overlay;
   }
 
   stream[ "overlays" ] = vm_overlays;
@@ -544,9 +544,9 @@ void City::load( const VariantMap& stream )
   _d->name = stream.get( "name" ).toString();
 
   VariantMap overlays = stream.get( "overlays" ).toMap();
-  for( VariantMap::iterator it=overlays.begin(); it != overlays.end(); it++ )
+  foreach( VariantMap::value_type& item, overlays )
   {
-    VariantMap overlay = (*it).second.toMap();
+    VariantMap overlay = item.second.toMap();
     TilePos buildPos( overlay.get( "pos" ).toTilePos() );
     int buildingType = overlay.get( "buildingType" ).toInt();
 
@@ -560,9 +560,9 @@ void City::load( const VariantMap& stream )
   }
 
   VariantMap walkers = stream.get( "walkers" ).toMap();
-  for( VariantMap::iterator it=walkers.begin(); it != walkers.end(); it++ )
+  foreach( VariantMap::value_type& item, walkers )
   {
-    VariantMap walkerInfo = (*it).second.toMap();
+    VariantMap walkerInfo = item.second.toMap();
     int walkerType = walkerInfo.get( "type" ).toInt();
 
     WalkerPtr walker = WalkerManager::getInstance().create( WalkerType( walkerType ) );
@@ -619,9 +619,11 @@ void City::addService( CityServicePtr service )
 
 CityServicePtr City::findService( const std::string& name ) const
 {
-  for( CityServices::const_iterator sIt=_d->services.begin(); sIt != _d->services.end(); sIt++ )
-    if( name == (*sIt)->getName() )
-      return *sIt;
+  foreach( CityServicePtr service, _d->services )
+  {
+    if( name == service->getName() )
+      return service;
+  }
 
   return CityServicePtr();
 }

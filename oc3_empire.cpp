@@ -20,6 +20,7 @@
 #include "oc3_saveadapter.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_empire_trading.hpp"
+#include "oc3_foreach.hpp"
 
 class Empire::Impl
 {
@@ -88,13 +89,11 @@ EmpirePtr Empire::create()
 
 EmpireCityPtr Empire::getCity( const std::string& name ) const
 {
-  EmpireCities::iterator it = _d->cities.begin();
-
-  for( ; it != _d->cities.end(); it++ )
+  foreach( EmpireCityPtr city, _d->cities )
   {
-    if( (*it)->getName() == name )
+    if( city->getName() == name )
     {
-      return *it;
+      return city;
     }
   }
 
@@ -104,11 +103,11 @@ EmpireCityPtr Empire::getCity( const std::string& name ) const
 void Empire::save( VariantMap& stream ) const
 {
   VariantMap vm_cities;
-  for( EmpireCities::iterator it = _d->cities.begin(); it != _d->cities.end(); it++ )
+  foreach( EmpireCityPtr city, _d->cities )
   {
     VariantMap vm_city;
-    (*it)->save( vm_city );
-    vm_cities[ (*it)->getName() ] = vm_city; 
+    city->save( vm_city );
+    vm_cities[ city->getName() ] = vm_city;
   }
 
   stream[ "cities" ] = vm_cities;
@@ -152,9 +151,9 @@ void Empire::timeStep( unsigned int time )
 {
   _d->trading.update( time );
 
-  for( EmpireCities::iterator it = _d->cities.begin(); it != _d->cities.end(); it++ )
+  foreach( EmpireCityPtr city, _d->cities )
   {
-    (*it)->timeStep( time );
+    city->timeStep( time );
   }
 }
 
@@ -176,7 +175,7 @@ EmpireCityPtr Empire::initPlayerCity( EmpireCityPtr city )
   return ret;
 }
 
-TradeRoutesList Empire::getTradeRoutes( const std::string& startCity )
+EmpireTradeRouteList Empire::getTradeRoutes( const std::string& startCity )
 {
   return _d->trading.getRoutes( startCity );
 }

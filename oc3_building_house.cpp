@@ -32,10 +32,12 @@
 #include "oc3_gamedate.hpp"
 #include "oc3_goodstore_simple.hpp"
 #include "oc3_city.hpp"
+#include "oc3_foreach.hpp"
 
 class House::Impl
 {
 public:
+  typedef std::map<Service::Type, int> ServiceAccessMap;
   int picIdOffset;
   int houseId;  // pictureId
   int houseLevel;
@@ -44,7 +46,7 @@ public:
   HouseLevelSpec nextHouseLevelSpec;  // characteristics of the house level+1
   char desirability;
   SimpleGoodStore goodStore;
-  std::map<ServiceType, int> serviceAccessMap;  // value=access to the service (0=no access, 100=good access)
+  ServiceAccessMap serviceAccess;  // value=access to the service (0=no access, 100=good access)
   int currentHabitants;
   int maxHabitants;
   int freeWorkersCount;
@@ -62,10 +64,10 @@ public:
 
   void updateHealthLevel()
   {
-    float delim = 1 + (((serviceAccessMap[S_WELL]>0 || serviceAccessMap[S_FOUNTAIN]>0) ? 1 : 0))
-                + ((serviceAccessMap[S_DOCTOR]>0 || serviceAccessMap[S_HOSPITAL]) ? 1 : 0)
-                + (serviceAccessMap[S_BATHS] ? 0.7 : 0)
-                + (serviceAccessMap[S_BARBER] ? 0.3 : 0);
+    float delim = 1 + (((serviceAccess[Service::S_WELL]>0 || serviceAccess[Service::S_FOUNTAIN]>0) ? 1 : 0))
+                + ((serviceAccess[Service::S_DOCTOR]>0 || serviceAccess[Service::S_HOSPITAL]) ? 1 : 0)
+                + (serviceAccess[Service::S_BATHS] ? 0.7 : 0)
+                + (serviceAccess[Service::S_BARBER] ? 0.3 : 0);
 
     float decrease = 0.3f / delim;
 
@@ -101,11 +103,11 @@ House::House(const int houseId) : Building( B_HOUSE ), _d( new Impl )
    _d->goodStore.setMaxQty(Good::G_WINE, 0);
 
    // init the service access
-   for (int i = 0; i<S_MAX; ++i)
+   for (int i = 0; i<Service::S_MAX; ++i)
    {
       // for every service type
-      ServiceType service = ServiceType(i);
-      _d->serviceAccessMap[service] = 0;
+      Service::Type service = Service::Type(i);
+      _d->serviceAccess[service] = 0;
    }
 
    _update();
@@ -119,13 +121,13 @@ void House::timeStep(const unsigned long time)
      if( time % 16 == 0 )
      {
         // consume services
-        for (int i = 0; i < S_MAX; ++i)
+        for (int i = 0; i < Service::S_MAX; ++i)
         {
-           ServiceType service = (ServiceType) i;
-           _d->serviceAccessMap[service] = std::max(_d->serviceAccessMap[service] - 1, 0);
+           Service::Type service = (Service::Type) i;
+           _d->serviceAccess[service] = std::max(_d->serviceAccess[service] - 1, 0);
         }
 
-        cancelService( S_WORKERS_HUNTER );
+        cancelService( Service::S_WORKERS_HUNTER );
         _d->updateHealthLevel();
 
         // consume goods
@@ -187,18 +189,18 @@ void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int start
   {
     CityPtr city = Scenario::instance().getCity();
     Tilemap& tmap = city->getTilemap();
-    PtrTilesList tiles = tmap.getFilledRectangle( getTile().getIJ(), Size(2) );   
+    PtrTilesList area = tmap.getFilledRectangle( getTile().getIJ(), Size(2) );
     bool mayGrow = true;
 
-    for( PtrTilesList::iterator it=tiles.begin(); it != tiles.end(); it++ )
+    foreach( Tile* tile, area )
     {
-      if( *it == NULL )
+      if( tile == NULL )
       {
         mayGrow = false;   //some broken, can't grow
         break;
       }
 
-      HousePtr house = (*it)->getTerrain().getOverlay().as<House>();
+      HousePtr house = tile->getTerrain().getOverlay().as<House>();
       if( house != NULL && house->getLevelSpec().getHouseLevel() == level4grow )
       {
         if( house->getSize().getWidth() > 1 )  //bigger house near, can't grow
@@ -218,9 +220,9 @@ void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int start
     {
       int sumHabitants = getNbHabitants();
       int sumFreeWorkers = _d->freeWorkersCount;
-      PtrTilesList::iterator delIt=tiles.begin();
+      PtrTilesList::iterator delIt=area.begin();
       delIt++; //don't remove himself
-      for( ; delIt != tiles.end(); delIt++ )
+      for( ; delIt != area.end(); delIt++ )
       {
         HousePtr house = (*delIt)->getTerrain().getOverlay().as<House>();
         if( house.isValid() )
@@ -333,12 +335,12 @@ void House::levelDown()
        {
          _updateDesirabilityInfluence( Construction::duNegative );
 
-         PtrTilesList tiles = tmap.getFilledRectangle( getTile().getIJ(), Size(2) );      
-         PtrTilesList::iterator it=tiles.begin();
+         PtrTilesList perimetr = tmap.getFilledRectangle( getTile().getIJ(), Size(2) );
+         PtrTilesList::iterator it=perimetr.begin();
          int peoplesPerHouse = getNbHabitants() / 4;
          _d->currentHabitants = peoplesPerHouse;
          it++; //no destroy himself
-         for( ; it != tiles.end(); it++ )
+         for( ; it != perimetr.end(); it++ )
          {
            HousePtr house = ConstructionManager::getInstance().create( B_HOUSE ).as<House>();
            house->build( (*it)->getIJ() );
@@ -414,46 +416,46 @@ void House::applyService( ServiceWalkerPtr walker )
 {
   Building::applyService(walker);  // handles basic services, and remove service reservation
 
-  ServiceType service = walker->getService();
+  Service::Type service = walker->getService();
   switch (service)
   {
-  case S_WELL:
-  case S_FOUNTAIN:
-  case S_TEMPLE_NEPTUNE:
-  case S_TEMPLE_CERES:
-  case S_TEMPLE_VENUS:
-  case S_TEMPLE_MARS:
-  case S_TEMPLE_MERCURE:
-  case S_DOCTOR:
-  case S_BARBER:
-  case S_BATHS:
-  case S_HOSPITAL:
-  case S_SCHOOL:
-  case S_LIBRARY:
-  case S_COLLEGE:
-  case S_THEATER:
-  case S_AMPHITHEATER:
-  case S_COLLOSSEUM:
-  case S_HIPPODROME:
+  case Service::S_WELL:
+  case Service::S_FOUNTAIN:
+  case Service::S_TEMPLE_NEPTUNE:
+  case Service::S_TEMPLE_CERES:
+  case Service::S_TEMPLE_VENUS:
+  case Service::S_TEMPLE_MARS:
+  case Service::S_TEMPLE_MERCURE:
+  case Service::S_DOCTOR:
+  case Service::S_BARBER:
+  case Service::S_BATHS:
+  case Service::S_HOSPITAL:
+  case Service::S_SCHOOL:
+  case Service::S_LIBRARY:
+  case Service::S_COLLEGE:
+  case Service::S_THEATER:
+  case Service::S_AMPHITHEATER:
+  case Service::S_COLLOSSEUM:
+  case Service::S_HIPPODROME:
     setServiceAccess(service, 100);
   break;
   
-  case S_MARKET:
+  case Service::S_MARKET:
     buyMarket(walker);
   break;
  
-  case S_SENATE:
-  case S_FORUM:
+  case Service::S_SENATE:
+  case Service::S_FORUM:
     setServiceAccess(service, 100);
   break;
 
-  case S_TEMPLE_ORACLE:  
-  case S_ENGINEER:
-  case S_PREFECT:
-  case S_MAX:
+  case Service::S_TEMPLE_ORACLE:
+  case Service::S_ENGINEER:
+  case Service::S_PREFECT:
+  case Service::S_MAX:
   break;
 
-  case S_WORKERS_HUNTER:
+  case Service::S_WORKERS_HUNTER:
     {
       if( !_d->freeWorkersCount )
         break;
@@ -476,7 +478,7 @@ void House::applyService( ServiceWalkerPtr walker )
 float House::evaluateService(ServiceWalkerPtr walker)
 {
   float res = 0.0;
-  ServiceType service = walker->getService();
+  Service::Type service = walker->getService();
   if( _reservedServices.count(service) == 1 )
   {
      // service is already reserved
@@ -485,16 +487,16 @@ float House::evaluateService(ServiceWalkerPtr walker)
 
   switch(service)
   {
-  case S_ENGINEER: res = _damageLevel; break;
-  case S_PREFECT: res = _fireLevel; break;
+  case Service::S_ENGINEER: res = _damageLevel; break;
+  case Service::S_PREFECT: res = _fireLevel; break;
 
   // this house pays taxes
-  case S_FORUM: 
-  case S_SENATE:
+  case Service::S_FORUM:
+  case Service::S_SENATE:
     res = _d->mayPayTax() ? (float)_d->getAvailableTax() : 0.f;
   break;
 
-  case S_MARKET:
+  case Service::S_MARKET:
   {
     MarketPtr market = walker->getBase().as<Market>();
     GoodStore &marketStore = market->getGoodStore();
@@ -514,7 +516,7 @@ float House::evaluateService(ServiceWalkerPtr walker)
   }
   break;
 
-  case S_WORKERS_HUNTER:
+  case Service::S_WORKERS_HUNTER:
   {
     res = (float)_d->freeWorkersCount;        
   }
@@ -532,19 +534,19 @@ float House::evaluateService(ServiceWalkerPtr walker)
   return res;
 }
 
-bool House::hasServiceAccess(const ServiceType service)
+bool House::hasServiceAccess(const Service::Type service)
 {
-   return (_d->serviceAccessMap[service] > 0);
+   return (_d->serviceAccess[service] > 0);
 }
 
-int House::getServiceAccess(const ServiceType service)
+int House::getServiceAccess(const Service::Type service)
 {
-   return _d->serviceAccessMap[service];
+   return _d->serviceAccess[service];
 }
 
-void House::setServiceAccess(const ServiceType service, const int access)
+void House::setServiceAccess(const Service::Type service, const int access)
 {
-   _d->serviceAccessMap[service] = access;
+   _d->serviceAccess[service] = access;
 }
 
 int House::getNbHabitants()
@@ -619,11 +621,10 @@ void House::save( VariantMap& stream ) const
   stream[ "healthLevel" ] = _d->healthLevel;
 
   VariantList vl_services;
-  for( std::map<ServiceType, int>::iterator it = _d->serviceAccessMap.begin();
-       it != _d->serviceAccessMap.end(); it++ )
+  foreach( Impl::ServiceAccessMap::value_type& mapItem, _d->serviceAccess )
   {
-    vl_services.push_back( Variant( (int)it->first) );
-    vl_services.push_back( Variant( it->second ) );
+    vl_services.push_back( Variant( (int)mapItem.first) );
+    vl_services.push_back( Variant( mapItem.second ) );
   }
 
   stream[ "services" ] = vl_services;
@@ -648,14 +649,13 @@ void House::load( const VariantMap& stream )
   _d->goodStore.load( stream.get( "goodstore" ).toMap() );
 
   VariantList vl_services = stream.get( "services" ).toList();
-  for( VariantList::iterator it = vl_services.begin();
-       it != vl_services.end(); it++ )
+  for( VariantList::iterator it = vl_services.begin(); it != vl_services.end(); it++ )
   {
-    ServiceType type = ServiceType( (*it).toInt() );
+    Service::Type type = Service::Type( (*it).toInt() );
     it++;
     int serviceValue = (*it).toInt();
 
-    _d->serviceAccessMap[ type ] = serviceValue;
+    _d->serviceAccess[ type ] = serviceValue;
   }
 
   Building::build( getTilePos() );

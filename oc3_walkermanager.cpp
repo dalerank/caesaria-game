@@ -44,12 +44,12 @@ public:
     return ServiceWalker::create( Scenario::instance().getCity(), serviceType ).object();
   }
 
-  ServiceWalkerCreator( const ServiceType type )
+  ServiceWalkerCreator( const Service::Type type )
   {
     serviceType = type;
   }
 
-  ServiceType serviceType;
+  Service::Type serviceType;
 };
 
 class WalkerManager::Impl
@@ -66,8 +66,8 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( WT_CART_PUSHER, new WalkerCreator<CartPusher>() );
   addCreator( WT_PREFECT, new WalkerCreator<WalkerPrefect>() );
   addCreator( WT_TAXCOLLECTOR, new WalkerCreator<TaxCollector>() );
-  addCreator( WT_ENGINEER, new ServiceWalkerCreator( S_ENGINEER ));
-  addCreator( WT_DOCTOR, new ServiceWalkerCreator( S_DOCTOR ) );
+  addCreator( WT_ENGINEER, new ServiceWalkerCreator( Service::S_ENGINEER ));
+  addCreator( WT_DOCTOR, new ServiceWalkerCreator( Service::S_DOCTOR ) );
 }
 
 WalkerManager::~WalkerManager()

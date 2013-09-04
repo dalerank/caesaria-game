@@ -31,6 +31,7 @@
 #include "oc3_tile.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_overlays_menu.hpp"
+#include "oc3_foreach.hpp"
 
 static const int REMOVE_TOOL_ID = B_MAX + 1; 
 static const int MAXIMIZE_ID = REMOVE_TOOL_ID + 1;
@@ -430,8 +431,10 @@ bool Menu::unselectAll()
 void Menu::_createBuildMenu( int type, Widget* parent )
 {
     List< BuildMenu* > menus = findChildren<BuildMenu*>();
-    for( List< BuildMenu* >::iterator it=menus.begin(); it != menus.end(); it++ )
-        (*it)->deleteLater();
+    foreach( BuildMenu*  item, menus )
+    {
+        item->deleteLater();
+    }
 
     BuildMenu* buildMenu = BuildMenu::create( (BuildMenuType)type, this );
 

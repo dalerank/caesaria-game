@@ -602,7 +602,7 @@ void Label::setTextAlignment( TypeAlign horizontal, TypeAlign vertical )
   _d->needUpdatePicture = true;
 }
 
-void Label::resizeEvent_()
+void Label::_resizeEvent()
 {
     _d->needUpdatePicture = true;
 }

@@ -25,17 +25,11 @@ class Tilemap;
 class RoadPropagator
 {
 public:
-    RoadPropagator( const Tilemap& tileMap, const Tile& startTile );
-    ~RoadPropagator();
-
-    /** finds the shortest path between origin and destination
-    * returns True if a path exists
-    * the path is returned in oPathWay
-    */
-    bool getPath( const Tile& destination, ConstWayOnTiles& oPathWay ) const;
-private:
-    class Impl;
-    ScopedPtr< Impl > _d;
+  /** finds the shortest path between origin and destination
+  * returns True if a path exists
+  * the path is returned in oPathWay
+  */
+  static ConstWayOnTiles createPath( const Tilemap& tileMap, const Tile& startTile, const Tile& destination );
 };
 
 #endif //__OPENCAESAR3_ROADPROPAGATOR_H_INCLUDE_

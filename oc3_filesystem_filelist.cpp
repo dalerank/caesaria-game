@@ -223,6 +223,33 @@ void FileList::setIgnoreCase( bool ignore )
   _d->ignoreCase = ignore;
 }
 
+FileList FileList::filter(int flags, const std::string &options)
+{
+  FileList ret;
+  bool isFile = (flags & FileList::file) > 0;
+  bool isDirectory = (flags & FileList::directory) > 0;
+  bool checkFileExt = (flags & FileList::extFilter) > 0;
+
+  for( Items::iterator it=_d->files.begin(); it != _d->files.end(); it++ )
+  {
+    bool mayAdd = true;
+    if( isFile ) { mayAdd = !(*it).isDirectory; }
+    if( !mayAdd && isDirectory ) { mayAdd = (*it).isDirectory; }
+
+    if( mayAdd && !(*it).isDirectory && checkFileExt )
+    {
+      mayAdd = (*it).fullName.isExtension( options );
+    }
+
+    if( mayAdd )
+    {
+      ret._d->files.push_back( *it );
+    }
+  }
+
+  return ret;
+}
+
 const FileList::Items& FileList::getItems() const
 {
   return _d->files;

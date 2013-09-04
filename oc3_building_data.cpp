@@ -22,15 +22,14 @@
 #include "oc3_saveadapter.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_enums_helper.hpp"
+#include "oc3_foreach.hpp"
 
 BuildingData BuildingData::invalid = BuildingData( B_NONE, "unknown", 0 );
 
 class BuildingTypeHelper : public EnumsHelper<BuildingType>
 {
 public:
-  virtual BuildingType getInvalid() const { return B_NONE; }
-
-  BuildingTypeHelper()
+  BuildingTypeHelper() : EnumsHelper<BuildingType>( B_NONE )
   {
     append( B_AMPHITHEATER,   "amphitheater");
     append( B_THEATER,        "theater" );
@@ -125,9 +124,7 @@ public:
 class BuildingClassHelper : public EnumsHelper<BuildingClass>
 {
 public:
-  virtual BuildingClass getInvalid() const { return BC_NONE; }
-
-  BuildingClassHelper()
+  BuildingClassHelper() : EnumsHelper<BuildingClass>( BC_NONE )
   {
     append( BC_INDUSTRY, "industry" );
     append( BC_RAWMATERIAL, "rawmaterial" );
@@ -156,18 +153,43 @@ public:
   }
 };
 
+class BuildingData::Impl
+{
+public:
+  struct DeisrabilityInfo
+  {
+    int base;
+    int range;
+    int step;
+  };
+
+  BuildingType buildingType;
+  VariantMap options;
+  DeisrabilityInfo desirability;
+};
 
 BuildingData::BuildingData(const BuildingType buildingType, const std::string &name, const int cost)
+  : _d( new Impl )
 {
-  _buildingType = buildingType;
+  _d->buildingType = buildingType;
   _buildingClass = BC_NONE;
   _name = name;
   std::string key = "building_"+name;
   _prettyName = _(key.c_str());  // i18n translation
   _cost = cost;
-  _baseDesirability = 0;
-  _desirabilityRange = 0;
-  _desirabilityStep = 0;
+  _d->desirability.base = 0;
+  _d->desirability.range = 0;
+  _d->desirability.step = 0;
+}
+
+BuildingData::BuildingData(const BuildingData &a) : _d( new Impl )
+{
+  *this = a;
+}
+
+BuildingData::~BuildingData()
+{
+
 }
 
 std::string BuildingData::getName() const
@@ -182,7 +204,7 @@ std::string BuildingData::getPrettyName() const
 
 BuildingType BuildingData::getType() const
 {
-  return _buildingType;
+  return _d->buildingType;
 }
 
 int BuildingData::getCost() const
@@ -202,17 +224,37 @@ const Picture &BuildingData::getBasePicture() const
 
 char BuildingData::getDesirbilityInfluence() const
 {
-  return _baseDesirability;
+  return _d->desirability.base;
 }
 
 char BuildingData::getDesirbilityRange() const
 {
-  return _desirabilityRange;
+  return _d->desirability.range;
+}
+
+Variant BuildingData::getOption(const std::string &name) const
+{
+  VariantMap::iterator it = _d->options.find( name );
+  return it != _d->options.end() ? it->second : Variant();
+}
+
+BuildingData &BuildingData::operator=(const BuildingData &a)
+{
+  _d->buildingType = a._d->buildingType;
+  _name = a._name;
+  _prettyName = a._prettyName;
+  _basePicture = a._basePicture;
+  _buildingClass = a._buildingClass;
+  _d->desirability = a._d->desirability;
+  _employers = a._employers;
+  _cost = a._cost;
+
+  _d->options = a._d->options;
 }
 
 char BuildingData::getDesirabilityStep() const
 {
-  return _desirabilityStep;
+  return _d->desirability.step;
 }
 
 BuildingClass BuildingData::getClass() const
@@ -305,34 +347,36 @@ void BuildingDataHolder::initialize( const io::FilePath& filename )
 
   VariantMap constructions = SaveAdapter::load( filename.toString() );
 
-  for( VariantMap::iterator it=constructions.begin(); it != constructions.end(); it++ )
+  foreach( VariantMap::value_type& mapItem, constructions )
   {
-    VariantMap options = (*it).second.toMap();
+    VariantMap options = mapItem.second.toMap();
 
-    const BuildingType btype = getType( (*it).first );
+    const BuildingType btype = getType( mapItem.first );
     if( btype == B_NONE )
     {
-      StringHelper::debug( 0xff, "!!!Warning: can't associate type with %s", (*it).first.c_str() );
+      StringHelper::debug( 0xff, "!!!Warning: can't associate type with %s", mapItem.first.c_str() );
       continue;
     }
 
     Impl::BuildingsMap::const_iterator bdataIt = _d->buildings.find( btype );
     if( bdataIt != _d->buildings.end() )
     {
-      StringHelper::debug( 0xff, "!!!Warning: type %s also initialized", (*it).first.c_str() );
+      StringHelper::debug( 0xff, "!!!Warning: type %s also initialized", mapItem.first.c_str() );
       continue;
     }
 
-    BuildingData bData( btype, (*it).first, (int)options[ "cost" ] );
+    BuildingData bData( btype, mapItem.first, (int)options[ "cost" ] );
     const std::string pretty = options[ "pretty" ].toString();
     if( !pretty.empty() )
     {
       bData._prettyName = pretty;
     }
 
-    bData._baseDesirability  = (int)options[ "desirability" ];
-    bData._desirabilityRange = (int)options[ "desrange" ];
-    bData._desirabilityStep  = (int)options[ "desstep" ];
+    bData._d->options = options;
+    VariantMap desMap = options[ "desirability" ].toMap();
+    bData._d->desirability.base = (int)desMap[ "base" ];
+    bData._d->desirability.range = (int)desMap[ "range" ];
+    bData._d->desirability.step  = (int)desMap[ "step" ];
     bData._employers = (int)options[ "employers" ];
     bData._buildingClass = getClass( options[ "class" ].toString() );
 
@@ -374,5 +418,10 @@ BuildingClass BuildingDataHolder::getClass( const std::string& name )
     _OC3_DEBUG_BREAK_IF( "Can't find building class for building className" );
   }
 
-  return BC_NONE;
+  return type;
+}
+
+std::string BuildingDataHolder::getPrettyName(BuildingType bType)
+{
+  return instance().getData( bType ).getPrettyName();
 }

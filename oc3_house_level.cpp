@@ -24,6 +24,7 @@
 #include "oc3_variant.hpp"
 #include "oc3_saveadapter.hpp"
 #include "oc3_goodstore.hpp"
+#include "oc3_foreach.hpp"
 
 #include <string>
 #include <map>
@@ -49,7 +50,9 @@ public:
   int minWaterLevel;  // access to water (no water=0, well=1, fountain=2)
   int minReligionLevel;  // number of religions
   int minFoodLevel;  // number of food types
-  std::map<Good::Type, int> requiredGoods;  // rate of good usage for every good (furniture, pottery, ...)
+
+  typedef std::map<Good::Type, int> RequiredGoods;
+  RequiredGoods requiredGoods;  // rate of good usage for every good (furniture, pottery, ...)
 };
 
 int HouseLevelSpec::getHouseLevel() const
@@ -188,11 +191,11 @@ int HouseLevelSpec::computeWaterLevel(House &house, std::string &oMissingRequire
 {
    // no water=0, well=1, fountain=2
    int res = 0;
-   if (house.hasServiceAccess(S_FOUNTAIN))
+   if (house.hasServiceAccess(Service::S_FOUNTAIN))
    {
       res = 2;
    }
-   else if (house.hasServiceAccess(S_WELL))
+   else if (house.hasServiceAccess(Service::S_WELL))
    {
       res = 1;
       oMissingRequirement = _("need fountain");
@@ -238,19 +241,19 @@ int HouseLevelSpec::computeFoodLevel(House &house)
 int HouseLevelSpec::computeEntertainmentLevel(House &house)
 {
    int res = 0;
-   if (house.hasServiceAccess(S_THEATER))
+   if (house.hasServiceAccess(Service::S_THEATER))
    {
       res += 10;
    }
-   if (house.hasServiceAccess(S_AMPHITHEATER))
+   if (house.hasServiceAccess(Service::S_AMPHITHEATER))
    {
       res += 20;
    }
-   if (house.hasServiceAccess(S_COLLOSSEUM))
+   if (house.hasServiceAccess(Service::S_COLLOSSEUM))
    {
       res += 30;
    }
-   if (house.hasServiceAccess(S_HIPPODROME))
+   if (house.hasServiceAccess(Service::S_HIPPODROME))
    {
       res += 40;
    }
@@ -262,25 +265,25 @@ int HouseLevelSpec::computeHealthLevel(House &house, std::string &oMissingRequir
 {
    // no health=0, bath=1, bath+doctor/hospital=2, bath+doctor/hospital+barber=3, bath+doctor+hospital+barber=4
    int res = 0;
-   if (house.hasServiceAccess(S_BATHS))
+   if (house.hasServiceAccess(Service::S_BATHS))
    {
       res = 1;
 
-      if (house.hasServiceAccess(S_DOCTOR) || house.hasServiceAccess(S_HOSPITAL))
+      if (house.hasServiceAccess(Service::S_DOCTOR) || house.hasServiceAccess(Service::S_HOSPITAL))
       {
          res = 2;
 
-         if (house.hasServiceAccess(S_BARBER))
+         if (house.hasServiceAccess(Service::S_BARBER))
          {
             res = 3;
 
-            if (house.hasServiceAccess(S_DOCTOR) && house.hasServiceAccess(S_HOSPITAL))
+            if (house.hasServiceAccess(Service::S_DOCTOR) && house.hasServiceAccess(Service::S_HOSPITAL))
             {
                res = 4;
             }
             else
             {
-               if (house.hasServiceAccess(S_DOCTOR))
+               if (house.hasServiceAccess(Service::S_DOCTOR))
                {
                   oMissingRequirement = _("need hospital");
                }
@@ -311,15 +314,15 @@ int HouseLevelSpec::computeHealthLevel(House &house, std::string &oMissingRequir
 int HouseLevelSpec::computeEducationLevel(House &house, std::string &oMissingRequirement)
 {
    int res = 0;
-   if (house.hasServiceAccess(S_LIBRARY) || house.hasServiceAccess(S_SCHOOL))
+   if (house.hasServiceAccess(Service::S_LIBRARY) || house.hasServiceAccess(Service::S_SCHOOL))
    {
       res = 1;
 
-      if (house.hasServiceAccess(S_LIBRARY) && house.hasServiceAccess(S_SCHOOL))
+      if (house.hasServiceAccess(Service::S_LIBRARY) && house.hasServiceAccess(Service::S_SCHOOL))
       {
          res = 2;
 
-         if (house.hasServiceAccess(S_COLLEGE))
+         if (house.hasServiceAccess(Service::S_COLLEGE))
          {
             res = 3;
          }
@@ -328,7 +331,7 @@ int HouseLevelSpec::computeEducationLevel(House &house, std::string &oMissingReq
             oMissingRequirement = _("need college");
          }
       }
-      else if (house.hasServiceAccess(S_SCHOOL))
+      else if (house.hasServiceAccess(Service::S_SCHOOL))
       {
          oMissingRequirement = _("need library");
       }
@@ -349,47 +352,47 @@ int HouseLevelSpec::computeEducationLevel(House &house, std::string &oMissingReq
 int HouseLevelSpec::computeReligionLevel(House &house)
 {
    int res = 0;
-   res += house.hasServiceAccess(S_TEMPLE_MERCURE) ? 1 : 0;
-   res += house.hasServiceAccess(S_TEMPLE_VENUS) ? 1 : 0;
-   res += house.hasServiceAccess(S_TEMPLE_MARS) ? 1 : 0;
-   res += house.hasServiceAccess(S_TEMPLE_NEPTUNE) ? 1 : 0;
-   res += house.hasServiceAccess(S_TEMPLE_CERES) ? 1 : 0;
+   res += house.hasServiceAccess(Service::S_TEMPLE_MERCURE) ? 1 : 0;
+   res += house.hasServiceAccess(Service::S_TEMPLE_VENUS) ? 1 : 0;
+   res += house.hasServiceAccess(Service::S_TEMPLE_MARS) ? 1 : 0;
+   res += house.hasServiceAccess(Service::S_TEMPLE_NEPTUNE) ? 1 : 0;
+   res += house.hasServiceAccess(Service::S_TEMPLE_CERES) ? 1 : 0;
    return res;
 }
 
 
 
-float HouseLevelSpec::evaluateServiceNeed(House &house, const ServiceType service)
+float HouseLevelSpec::evaluateServiceNeed(House &house, const Service::Type service)
 {
    float res = 0;
 
    switch (service)
    {
-   case S_TEMPLE_CERES:
-   case S_TEMPLE_NEPTUNE:
-   case S_TEMPLE_MARS:
-   case S_TEMPLE_VENUS:
-   case S_TEMPLE_MERCURE:
+   case Service::S_TEMPLE_CERES:
+   case Service::S_TEMPLE_NEPTUNE:
+   case Service::S_TEMPLE_MARS:
+   case Service::S_TEMPLE_VENUS:
+   case Service::S_TEMPLE_MERCURE:
       res = evaluateReligionNeed(house, service);
       break;
-   case S_THEATER:
-   case S_AMPHITHEATER:
-   case S_COLLOSSEUM:
-   case S_HIPPODROME:
+   case Service::S_THEATER:
+   case Service::S_AMPHITHEATER:
+   case Service::S_COLLOSSEUM:
+   case Service::S_HIPPODROME:
       res = evaluateEntertainmentNeed(house, service);
       break;
-   case S_SCHOOL:
-   case S_LIBRARY:
-   case S_COLLEGE:
+   case Service::S_SCHOOL:
+   case Service::S_LIBRARY:
+   case Service::S_COLLEGE:
       res = evaluateEducationNeed(house, service);
       break;
-   case S_BATHS:
-   case S_BARBER:
-   case S_DOCTOR:
-   case S_HOSPITAL:
+   case Service::S_BATHS:
+   case Service::S_BARBER:
+   case Service::S_DOCTOR:
+   case Service::S_HOSPITAL:
       res = evaluateHealthNeed(house, service);
       break;
-   case S_FORUM:
+   case Service::S_FORUM:
       res = 1;
       break;
    default:
@@ -399,13 +402,13 @@ float HouseLevelSpec::evaluateServiceNeed(House &house, const ServiceType servic
    return res * (100 - house.getServiceAccess(service));
 }
 
-float HouseLevelSpec::evaluateEntertainmentNeed(House &house, const ServiceType service)
+float HouseLevelSpec::evaluateEntertainmentNeed(House &house, const Service::Type service)
 {
    //int houseLevel = house.getLevelSpec().getHouseLevel();
    return (float)next()._d->minEntertainmentLevel;
 }
 
-float HouseLevelSpec::evaluateEducationNeed(House& house, const ServiceType service)
+float HouseLevelSpec::evaluateEducationNeed(House& house, const Service::Type service)
 {
    float res = 0;
    //int houseLevel = house.getLevelSpec().getHouseLevel();
@@ -413,15 +416,15 @@ float HouseLevelSpec::evaluateEducationNeed(House& house, const ServiceType serv
    if (minLevel == 1)
    {
       // need school or library
-      if (service != S_COLLEGE)
+      if (service != Service::S_COLLEGE)
       {
-         res = (float)( 100 - std::max(house.getServiceAccess(S_SCHOOL), house.getServiceAccess(S_LIBRARY)) );
+         res = (float)( 100 - std::max(house.getServiceAccess(Service::S_SCHOOL), house.getServiceAccess(Service::S_LIBRARY)) );
       } 
    }
    else if (minLevel == 2)
    {
       // need school and library
-      if (service != S_COLLEGE)
+      if (service != Service::S_COLLEGE)
       {
          res = (float)( 100 - house.getServiceAccess(service) );
       }
@@ -435,18 +438,18 @@ float HouseLevelSpec::evaluateEducationNeed(House& house, const ServiceType serv
    return res;
 }
 
-float HouseLevelSpec::evaluateHealthNeed(House &house, const ServiceType service)
+float HouseLevelSpec::evaluateHealthNeed(House &house, const Service::Type service)
 {
    float res = 0;
    //int houseLevel = house.getLevelSpec().getHouseLevel();
    int minLevel = next()._d->minHealthLevel;
-   if (minLevel >= 1 && service == S_BATHS)
+   if (minLevel >= 1 && service == Service::S_BATHS)
    {
       // minLevel>=1  => need baths
       res = (float)( 100 - house.getServiceAccess(service) );
    }
 
-   if (minLevel >= 2 && (service == S_DOCTOR || service == S_HOSPITAL))
+   if (minLevel >= 2 && (service == Service::S_DOCTOR || service == Service::S_HOSPITAL))
    {
       if (minLevel == 4)
       {
@@ -456,11 +459,11 @@ float HouseLevelSpec::evaluateHealthNeed(House &house, const ServiceType service
       else
       {
          // need doctor or hospital
-         res = (float)( 100 - std::max(house.getServiceAccess(S_DOCTOR), house.getServiceAccess(S_HOSPITAL)) );
+         res = (float)( 100 - std::max(house.getServiceAccess(Service::S_DOCTOR), house.getServiceAccess(Service::S_HOSPITAL)) );
       }
    }
 
-   if (minLevel >= 3 && service == S_BARBER)
+   if (minLevel >= 3 && service == Service::S_BARBER)
    {
       // minLevel>=3  => need barber
       res = (float)( 100 - house.getServiceAccess(service) );
@@ -469,7 +472,7 @@ float HouseLevelSpec::evaluateHealthNeed(House &house, const ServiceType service
    return (std::max<float>)( res, 100 - house.getHealthLevel() );
 }
 
-float HouseLevelSpec::evaluateReligionNeed(House &house, const ServiceType service)
+float HouseLevelSpec::evaluateReligionNeed(House &house, const Service::Type service)
 {
    //int houseLevel = house.getLevelSpec().getHouseLevel();
    int minLevel = next()._d->minReligionLevel;
@@ -543,9 +546,9 @@ HouseLevelSpec& HouseLevelSpec::operator=( const HouseLevelSpec& other )
   _d->minWaterLevel = other._d->minWaterLevel;  // access to water (no water=0, well=1, fountain=2)
   _d->minReligionLevel = other._d->minReligionLevel;  // number of religions
   _d->minFoodLevel = other._d->minFoodLevel;  // number of food types
-  for( std::map<Good::Type, int>::iterator it=other._d->requiredGoods.begin(); it != other._d->requiredGoods.end(); it++ )
+  foreach( Impl::RequiredGoods::value_type& item, other._d->requiredGoods )
   {
-    _d->requiredGoods[ (*it).first ] = (*it).second;
+    _d->requiredGoods[ item.first ] = item.second;
   }
 
   return *this;
@@ -633,11 +636,11 @@ int HouseSpecHelper::getHouseLevel(const int houseId)
 
 int HouseSpecHelper::getHouseLevel( const std::string& name )
 {
-  for( Impl::HouseLevels::iterator it=_d->spec_by_level.begin(); it != _d->spec_by_level.end(); it++ )
+  foreach( Impl::HouseLevels::value_type& item, _d->spec_by_level )
   {
-    if( (*it).second.getInternalName() == name )
+    if( item.second.getInternalName() == name )
     {
-      return (*it).second.getHouseLevel();
+      return item.second.getHouseLevel();
     }
   }
 
@@ -659,15 +662,16 @@ void HouseSpecHelper::initialize( const io::FilePath& filename )
     return;
   }
 
-  for( VariantMap::iterator it = houses.begin(); it != houses.end(); it++ )
+
+  foreach( VariantMap::value_type& item, houses )
   {
     // this is not a comment (comments start by #)
     // std::cout << "Line #" << linenum << ":" << line << std::endl;
-    VariantMap hSpec = (*it).second.toMap();
+    VariantMap hSpec = item.second.toMap();
 
     HouseLevelSpec spec;
     spec._d->houseLevel = hSpec[ "level" ].toInt();
-    spec._d->internalName = (*it).first;
+    spec._d->internalName = item.first;
     spec._d->levelName = hSpec[ "title" ].toString();
     spec._d->maxHabitantsByTile = hSpec.get( "habitants" ).toInt();
     spec._d->midDesirability = hSpec.get( "minDesirability" ).toInt();  // min desirability

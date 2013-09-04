@@ -43,6 +43,7 @@
 #include "oc3_cityfunds.hpp"
 #include "oc3_gamedate.hpp"
 #include "oc3_empire.hpp"
+#include "oc3_app_config.hpp"
 #include "oc3_window_mission_target.hpp"
 
 class ScreenGame::Impl
@@ -53,7 +54,6 @@ public:
   GfxEngine* engine;
   TopMenu* topMenu;
   Menu* menu;
-  GuiInfoBox* infoBox;   // info box to display, if any
   TilemapArea mapArea;  // visible map area
   ExtentMenu* extMenu;
   InfoBoxManagerPtr infoBoxMgr;
@@ -163,7 +163,7 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
 
 void ScreenGame::Impl::showSaveDialog()
 {
-  SaveDialog* dialog = new SaveDialog( gui->getRootWidget(), "./saves/", ".oc3save", -1 );
+  SaveDialog* dialog = new SaveDialog( gui->getRootWidget(), "saves", ".oc3save", -1 );
   CONNECT( dialog, onFileSelected(), this, Impl::resolveGameSave );
 }
 

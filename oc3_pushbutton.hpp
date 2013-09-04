@@ -77,7 +77,7 @@ oc3_signals public:
 
 protected:
 
-  virtual void resizeEvent_();
+  virtual void _resizeEvent();
 
   //! when left mouse button pressed down
 	virtual bool _leftMouseBtnPressed( const NEvent& event );

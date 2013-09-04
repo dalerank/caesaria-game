@@ -47,7 +47,7 @@ public:
   Point posOnMap; // subtile coordinate across all tiles: 0..15*mapsize (ii=15*i+si)
   PointF remainMove;  // remaining movement
   PathWay pathWay;
-  WalkerAction action;
+  DirectedAction action;
   std::string name;
 
   float getSpeed() const
@@ -63,8 +63,8 @@ public:
 
 Walker::Walker() : _d( new Impl )
 {
-  _d->action._action = WA_MOVE;
-  _d->action._direction = D_NONE;
+  _d->action.action = Walker::acMove;
+  _d->action.direction = D_NONE;
   _d->walkerType = WT_NONE;
   _d->walkerGraphic = WG_NONE;
 
@@ -87,9 +87,9 @@ int Walker::getType() const
 
 void Walker::timeStep(const unsigned long time)
 {
-   switch (_d->action._action)
+   switch (_d->action.action)
    {
-   case WA_MOVE:
+   case Walker::acMove:
       walk();
      
       if( _d->animation.getPicturesCount() > 0 && _d->getSpeed() > 0.f )
@@ -203,7 +203,7 @@ void Walker::dec(int &ioSI, int &ioI, int &ioAmount, const int iMidPos, bool &oN
 
 void Walker::walk()
 {
-   if (D_NONE == _d->action._direction )
+   if (D_NONE == _d->action.direction )
    {
       // nothing to do
       return;
@@ -211,7 +211,7 @@ void Walker::walk()
 
    Tile& tile = Scenario::instance().getCity()->getTilemap().at( getIJ() );
     
-   switch (_d->action._direction)
+   switch (_d->action.direction)
    {
    case D_NORTH:
    case D_SOUTH:
@@ -228,7 +228,7 @@ void Walker::walk()
       _d->remainMove += PointF( _d->getSpeed() * 0.7f, _d->getSpeed() * 0.7f );
       break;
    default:
-      _OC3_DEBUG_BREAK_IF( "Invalid move direction: " ||  _d->action._direction);
+      _OC3_DEBUG_BREAK_IF( "Invalid move direction: " || _d->action.direction);
       break;
    }
    
@@ -246,7 +246,7 @@ void Walker::walk()
    int tmpI = _d->pos.getI();
    while (amountI+amountJ > 0)
    {
-      switch (_d->action._direction)
+      switch (_d->action.direction)
       {
       case D_NORTH:
          inc(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
@@ -277,7 +277,7 @@ void Walker::walk()
          dec(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
          break;
       default:
-         _OC3_DEBUG_BREAK_IF("Invalid move direction: " || _d->action._direction);
+         _OC3_DEBUG_BREAK_IF("Invalid move direction: " || _d->action.direction);
          break;
       }
 
@@ -311,14 +311,9 @@ void Walker::walk()
 
 void Walker::onNewTile()
 {
-   // std::cout << "Walker is on a new tile! coord=" << _i << "," << _j << std::endl;
    Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
    Tile& currentTile = tilemap.at( _d->pos );
    _d->updateSpeedMultiplier( currentTile );
-   if( !currentTile.getTerrain().isRoad() )
-   {
-     StringHelper::debug( 0xff, "Walker at (%d, %d) is not on a road!!!", _d->pos.getI(), _d->pos.getJ() );
-   }
 }
 
 
@@ -340,7 +335,7 @@ void Walker::onMidTile()
 void Walker::onDestination()
 {
    // std::cout << "Walker arrived at destination! coord=" << _i << "," << _j << std::endl;
-   _d->action._action=WA_NONE;  // stop moving
+   _d->action.action = acNone;  // stop moving
    _d->animation = Animation();
 }
 
@@ -352,10 +347,10 @@ void Walker::onNewDirection()
 
 void Walker::computeDirection()
 {
-   DirectionType lastDirection = _d->action._direction;
-   _d->action._direction = _d->pathWay.getNextDirection();
+   DirectionType lastDirection = _d->action.direction;
+   _d->action.direction = _d->pathWay.getNextDirection();
 
-   if (lastDirection != _d->action._direction)
+   if (lastDirection != _d->action.direction)
    {
       onNewDirection();
    }
@@ -364,7 +359,7 @@ void Walker::computeDirection()
 
 DirectionType Walker::getDirection()
 {
-  return _d->action._direction;
+  return _d->action.direction;
 }
 
 void Walker::setName(const std::string &name)
@@ -393,18 +388,18 @@ const Picture& Walker::getMainPicture()
    if( !_d->animation.isValid() )
    {
      const AnimationBank::WalkerAnimationMap& animMap = AnimationBank::getWalker( getWalkerGraphic() );
-     std::map<WalkerAction, Animation>::const_iterator itAnimMap;
-     if (_d->action._action == WA_NONE || _d->action._direction == D_NONE)
+     std::map<DirectedAction, Animation>::const_iterator itAnimMap;
+     if (_d->action.action == acNone || _d->action.direction == D_NONE)
      {
-        WalkerAction action;
-        action._action = WA_MOVE;       // default action
-        if (_d->action._direction == D_NONE)
+        DirectedAction action;
+        action.action = acMove;       // default action
+        if (_d->action.direction == D_NONE)
         {
-           action._direction = D_NORTH;  // default direction
+           action.direction = D_NORTH;  // default direction
         }
         else
         {
-           action._direction = _d->action._direction;  // last direction of the walker
+           action.direction = _d->action.direction;  // last direction of the walker
         }
         itAnimMap = animMap.find(action);
      }
@@ -424,8 +419,8 @@ void Walker::save( VariantMap& stream ) const
   stream[ "name" ] = Variant( _d->name );
   stream[ "type" ] = (int)_d->walkerType;
   stream[ "pathway" ] =  _d->pathWay.save();
-  stream[ "action" ] = (int)_d->action._action;
-  stream[ "direction" ] = (int)_d->action._direction;
+  stream[ "action" ] = (int)_d->action.action;
+  stream[ "direction" ] = (int)_d->action.direction;
   stream[ "pos" ] = _d->pos;
   stream[ "tileoffset" ] = _d->tileOffset;
   stream[ "mappos" ] = _d->posOnMap;
@@ -442,8 +437,8 @@ void Walker::load( const VariantMap& stream)
 
   _d->pathWay.init( tmap, tmap.at( 0, 0 ) );
   _d->pathWay.load( stream.get( "pathway" ).toMap() );
-  _d->action._action = (WalkerActionType) stream.get( "action" ).toInt();
-  _d->action._direction = (DirectionType) stream.get( "direction" ).toInt();
+  _d->action.action = (Walker::Action) stream.get( "action" ).toInt();
+  _d->action.direction = (DirectionType) stream.get( "direction" ).toInt();
   _d->pos = stream.get( "pos" ).toTilePos();
   _d->tileOffset = stream.get( "tileoffset" ).toPoint();
   _d->posOnMap = stream.get( "mappos" ).toPoint();
@@ -492,14 +487,14 @@ Animation& Walker::_getAnimation()
   return _d->animation;
 }
 
-void Walker::_setAction( WalkerActionType action )
+void Walker::_setAction( Walker::Action action )
 {
-  _d->action._action = action;
+  _d->action.action = action;
 }
 
 void Walker::_setDirection( DirectionType direction )
 {
-  _d->action._direction = direction;
+  _d->action.direction = direction;
 }
 
 void Walker::_setGraphic(WalkerGraphicType type)
@@ -514,7 +509,12 @@ void Walker::_setType(WalkerType type)
 
 void Walker::go()
 {
-  _d->action._action = WA_MOVE;       // default action
+  _d->action.action = acMove;       // default action
+}
+
+void Walker::die()
+{
+
 }
 
 Soldier::Soldier()
@@ -526,7 +526,6 @@ Soldier::Soldier()
 class WalkerHelper::Impl : public EnumsHelper<WalkerType>
 {
 public:
-  WalkerType getInvalid() const { return WT_NONE; }
   typedef std::map< WalkerType, std::string > PrettyNames;
   PrettyNames prettyTypenames;
 
@@ -536,7 +535,7 @@ public:
     prettyTypenames[ type ] = prettyTypename;
   }
 
-  Impl()
+  Impl() : EnumsHelper<WalkerType>( WT_NONE )
   {
     append( WT_NONE, "none", _("##wt_none##"));
     append( WT_IMMIGRANT, "immigrant", _("##wt_immigrant##") );
@@ -552,6 +551,8 @@ public:
     append( WT_TAXCOLLECTOR, "tax_collector", _("##wt_tax_collector##") );
     append( WT_MERCHANT, "merchant", _("##wt_merchant##") );
     append( WT_ENGINEER, "engineer", _("##wt_engineer##") );
+    append( WT_DOCTOR, "doctor", _("##wt_doctor##") );
+    append( WT_ANIMAL_SHEEP, "sheep", _("##wt_animal_sheep##") );
     append( WT_MAX, "unknown", _("##wt_unknown##") );
   }
 };
@@ -566,7 +567,7 @@ std::string WalkerHelper::getName( WalkerType type )
 {
   std::string name = instance()._d->findName( type );
 
-  if( type == instance()._d->getInvalid() )
+  if( name.empty() )
   {
     StringHelper::debug( 0xff, "Can't find walker typeName for %d", type );
     _OC3_DEBUG_BREAK_IF( "Can't find walker typeName by WalkerType" );
@@ -601,6 +602,7 @@ Picture WalkerHelper::getBigPicture(WalkerType type)
   {
   case WT_IMMIGRANT: index=9; break;
   case WT_EMIGRANT: index=13; break;
+  case WT_DOCTOR: index = 2; break;
   case WT_CART_PUSHER: index=51; break;
   case WT_MARKETLADY: index=12; break;
   case WT_MARKETLADY_HELPER: index=38; break;
@@ -608,6 +610,7 @@ Picture WalkerHelper::getBigPicture(WalkerType type)
   case WT_PREFECT: index=19; break;
   case WT_ENGINEER: index=7; break;
   case WT_TAXCOLLECTOR: index=6; break;
+  case WT_ANIMAL_SHEEP: index = 54; break;
   case WT_WORKERS_HUNTER: index=13; break;
 
   default: index=8; break;

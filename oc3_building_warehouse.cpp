@@ -29,13 +29,20 @@
 #include "oc3_scenario.hpp"
 #include "oc3_goodstore.hpp"
 #include "oc3_city.hpp"
+#include "oc3_foreach.hpp"
 
 #include <list>
 
-class WarehouseTile
+class WarehouseTile : public ReferenceCounted
 {
 public:
-  WarehouseTile(const TilePos& pos );
+  WarehouseTile(const TilePos& pos )
+  {
+    _pos = pos;
+    _stock._maxQty = 400;
+    computePicture();
+  }
+
   void computePicture();
 
   TilePos _pos;
@@ -43,12 +50,6 @@ public:
   Picture _picture;
 };
 
-WarehouseTile::WarehouseTile( const TilePos& pos )
-{
-  _pos = pos;
-  _stock._maxQty = 400;
-  computePicture();
-}
 
 void WarehouseTile::computePicture()
 {
@@ -89,6 +90,8 @@ void WarehouseTile::computePicture()
 class WarehouseStore : public GoodStore
 {
 public:
+  typedef std::map< Good::Type, int > StockMap;
+
   using GoodStore::applyStorageReservation;
   using GoodStore::applyRetrieveReservation;
 
@@ -117,6 +120,7 @@ class Warehouse::Impl
 public:
   Animation animFlag;  // the flag above the warehouse
   typedef std::vector<WarehouseTile> WhTiles;
+
   WhTiles subTiles;
   WarehouseStore goodStore;
 };
@@ -139,14 +143,16 @@ void WarehouseStore::init(Warehouse &warehouse)
 
 int WarehouseStore::getCurrentQty(const Good::Type &goodType) const
 {
+  if( _warehouse->getWorkers() == 0 )
+    return 0;
+
   int amount = 0;
 
-  for( Warehouse::Impl::WhTiles::iterator subTilesIt=_warehouse->_d->subTiles.begin(); 
-    subTilesIt!=_warehouse->_d->subTiles.end(); ++subTilesIt)
+  foreach( WarehouseTile& whTile, _warehouse->_d->subTiles )
   {
-    if ( (*subTilesIt)._stock.type() == goodType)
+    if ( whTile._stock.type() == goodType || goodType == Good::G_MAX )
     {
-      amount += (*subTilesIt)._stock._currentQty;
+      amount += whTile._stock._currentQty;
     }
   }
 
@@ -155,18 +161,7 @@ int WarehouseStore::getCurrentQty(const Good::Type &goodType) const
 
 int WarehouseStore::getCurrentQty() const
 {
-  if( _warehouse->getWorkers() == 0 )
-    return 0;
-
-  int amount = 0;
-
-  for( Warehouse::Impl::WhTiles::iterator subTilesIt=_warehouse->_d->subTiles.begin(); 
-    subTilesIt!=_warehouse->_d->subTiles.end(); ++subTilesIt)
-  {
-    amount += (*subTilesIt)._stock._currentQty;
-  }
-
-  return amount;
+  return getCurrentQty( Good::G_MAX );
 }
 
 int WarehouseStore::getMaxStore(const Good::Type goodType)
@@ -177,55 +172,51 @@ int WarehouseStore::getMaxStore(const Good::Type goodType)
   }
 
   // compute the quantity of each goodType in the warehouse, taking in account all reservations
-  std::map<Good::Type, int> stockList;
+  StockMap maxStore;
 
   // init the map
   for (int i = Good::G_NONE; i != Good::G_MAX; ++i)
   {
     Good::Type goodType = (Good::Type) i;
-    stockList[goodType] = 0;
+    maxStore[ goodType ] = 0;
   }
   // put current stock in the map
-  for( Warehouse::Impl::WhTiles::iterator subTilesIt=_warehouse->_d->subTiles.begin(); 
-    subTilesIt!=_warehouse->_d->subTiles.end(); ++subTilesIt)
+  foreach( WarehouseTile& whTile, _warehouse->_d->subTiles )
   {
-    WarehouseTile &subTile = *subTilesIt;
-    GoodStock &subTileStock = subTile._stock;
-    stockList[subTileStock.type()] += subTileStock._currentQty;
+    GoodStock &subTileStock = whTile._stock;
+    maxStore[ subTileStock.type() ] += subTileStock._currentQty;
   }
 
   // add reservations
-  for( _Reservations::iterator reservationIt = _getStoreReservations().begin(); 
-    reservationIt != _getStoreReservations().end(); ++reservationIt)
+  foreach( _Reservations::value_type reservation, _getStoreReservations() )
   {
-    GoodStock &reservationStock = reservationIt->second;
-    stockList[reservationStock.type()] += reservationStock._currentQty;
+    GoodStock &reservationStock = reservation.second;
+    maxStore[ reservationStock.type() ] += reservationStock._currentQty;
   }
 
   // compute number of free tiles
   int nbFreeTiles = _warehouse->_d->subTiles.size();
-  for (std::map<Good::Type, int>::iterator stockListIt=stockList.begin(); stockListIt!=stockList.end(); ++stockListIt)
+  foreach( StockMap::value_type& mapItem, maxStore )
   {
-    Good::Type otherGoodType = stockListIt->first;
+    Good::Type otherGoodType = mapItem.first;
     if (otherGoodType == goodType)
     {
       // don't count this goodType
       continue;
     }
-    int qty = stockListIt->second;
+    int qty = mapItem.second;
     int nbTiles = ((qty/100)+3)/4;  // nb of subTiles this goodType occupies
     nbFreeTiles -= nbTiles;
   }
 
-  int freeRoom = 400 * nbFreeTiles - stockList[goodType];
+  int freeRoom = 400 * nbFreeTiles - maxStore[goodType];
 
   // std::cout << "MaxStore for good is " << freeRoom << " on free tiles:" << nbFreeTiles << std::endl;
 
   return freeRoom;
 }
 
-
-void WarehouseStore::applyStorageReservation(GoodStock &stock, const long reservationID)
+void WarehouseStore::applyStorageReservation( GoodStock &stock, const long reservationID )
 {
   GoodStock reservedStock = getStorageReservation(reservationID, true);
 
@@ -246,39 +237,35 @@ void WarehouseStore::applyStorageReservation(GoodStock &stock, const long reserv
   // std::cout << "WarehouseStore, store qty=" << amount << " resID=" << reservationID << std::endl;
 
   // first we look at the half filled subTiles
-  for( Warehouse::Impl::WhTiles::iterator subTilesIt=_warehouse->_d->subTiles.begin(); 
-    subTilesIt!=_warehouse->_d->subTiles.end(); ++subTilesIt)
+  foreach( WarehouseTile& whTile, _warehouse->_d->subTiles )
   {
     if (amount == 0)
     {
       break;
     }
 
-    WarehouseTile &subTile = *subTilesIt;
-    if (subTile._stock.type() == stock.type() && subTile._stock._currentQty < subTile._stock._maxQty)
+    if (whTile._stock.type() == stock.type() && whTile._stock._currentQty < whTile._stock._maxQty)
     {
-      int tileAmount = std::min(amount, subTile._stock._maxQty - subTile._stock._currentQty);
+      int tileAmount = std::min(amount, whTile._stock._maxQty - whTile._stock._currentQty);
       // std::cout << "put in half filled" << std::endl;
-      subTile._stock.append(stock, tileAmount);
+      whTile._stock.append(stock, tileAmount);
       amount -= tileAmount;
     }
   }
 
   // then we look at the empty subTiles
-  for( Warehouse::Impl::WhTiles::iterator subTilesIt=_warehouse->_d->subTiles.begin(); 
-    subTilesIt!=_warehouse->_d->subTiles.end(); ++subTilesIt)
+  foreach( WarehouseTile& whTile, _warehouse->_d->subTiles )
   {
     if (amount == 0)
     {
       break;
     }
 
-    WarehouseTile& subTile = *subTilesIt;
-    if (subTile._stock.type() == Good::G_NONE)
+    if (whTile._stock.type() == Good::G_NONE)
     {
-      int tileAmount = std::min(amount, subTile._stock._maxQty);
+      int tileAmount = std::min(amount, whTile._stock._maxQty);
       // std::cout << "put in empty tile" << std::endl;
-      subTile._stock.append(stock, tileAmount);
+      whTile._stock.append(stock, tileAmount);
       amount -= tileAmount;
     }
   }
@@ -306,39 +293,35 @@ void WarehouseStore::applyRetrieveReservation(GoodStock &stock, const long reser
   // std::cout << "WarehouseStore, retrieve qty=" << amount << " resID=" << reservationID << std::endl;
 
   // first we look at the half filled subTiles
-  for( Warehouse::Impl::WhTiles::iterator subTilesIt=_warehouse->_d->subTiles.begin(); 
-    subTilesIt!=_warehouse->_d->subTiles.end(); ++subTilesIt)
+  foreach( WarehouseTile& whTile, _warehouse->_d->subTiles )
   {
     if (amount == 0)
     {
       break;
     }
 
-    WarehouseTile &subTile = *subTilesIt;
-    if( subTile._stock.type() == stock.type() && subTile._stock._currentQty < subTile._stock._maxQty)
+    if( whTile._stock.type() == stock.type() && whTile._stock._currentQty < whTile._stock._maxQty)
     {
-      int tileAmount = std::min(amount, subTile._stock._currentQty);
+      int tileAmount = std::min(amount, whTile._stock._currentQty);
       // std::cout << "retrieve from half filled" << std::endl;
-      stock.append(subTile._stock, tileAmount);
+      stock.append(whTile._stock, tileAmount);
       amount -= tileAmount;
     }
   }
 
   // then we look at the filled subTiles
-  for( Warehouse::Impl::WhTiles::iterator subTilesIt=_warehouse->_d->subTiles.begin(); 
-    subTilesIt!=_warehouse->_d->subTiles.end(); ++subTilesIt)
+  foreach( WarehouseTile& whTile, _warehouse->_d->subTiles )
   {
     if (amount == 0)
     {
       break;
     }
 
-    WarehouseTile& subTile = *subTilesIt;
-    if (subTile._stock.type() == stock.type())
+    if (whTile._stock.type() == stock.type())
     {
-      int tileAmount = std::min(amount, subTile._stock._currentQty);
+      int tileAmount = std::min(amount, whTile._stock._currentQty);
       // std::cout << "retrieve from filled" << std::endl;
-      stock.append(subTile._stock, tileAmount);
+      stock.append(whTile._stock, tileAmount);
       amount -= tileAmount;
     }
   }
@@ -415,10 +398,11 @@ void Warehouse::timeStep(const unsigned long time)
 void Warehouse::computePictures()
 {
   int index = 4;
-  for (Impl::WhTiles::iterator subTilesIt=_d->subTiles.begin(); subTilesIt!=_d->subTiles.end(); ++subTilesIt, index++)
+  foreach( WarehouseTile& whTile, _d->subTiles )
   {
-     (*subTilesIt).computePicture();
-     _fgPictures[index] = (*subTilesIt)._picture;
+     whTile.computePicture();
+     _fgPictures[index] = whTile._picture;
+     index++;
   }
 }
 
@@ -435,9 +419,9 @@ void Warehouse::save( VariantMap& stream ) const
   stream[ "goodStore" ] = _d->goodStore.save();
 
   VariantList vm_tiles;
-  for(Impl::WhTiles::iterator subTilesIt=_d->subTiles.begin(); subTilesIt!=_d->subTiles.end(); ++subTilesIt)
+  foreach( WarehouseTile& whTile, _d->subTiles )
   {
-    vm_tiles.push_back( subTilesIt->_stock.save() );
+    vm_tiles.push_back( whTile._stock.save() );
   }
   stream[ "tiles" ] = vm_tiles;
 }
@@ -450,9 +434,10 @@ void Warehouse::load( const VariantMap& stream )
   
   VariantList vm_tiles = stream.get( "tiles" ).toList();
   int tileIndex = 0;
-  for( VariantList::iterator it=vm_tiles.begin(); it != vm_tiles.end(); it++, tileIndex++ )
+  foreach( Variant& var, vm_tiles )
   {
-    _d->subTiles[ tileIndex ]._stock.load( it->toList() );
+    _d->subTiles[ tileIndex ]._stock.load( var.toList() );
+    tileIndex++;
   }
 
   computePictures();

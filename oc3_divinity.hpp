@@ -21,6 +21,7 @@
 #include "oc3_scopedptr.hpp"
 #include "oc3_predefinitions.hpp"
 #include "oc3_filepath.hpp"
+#include "oc3_service.hpp"
 
 typedef enum
 {
@@ -37,18 +38,27 @@ class RomeDivinity : public ReferenceCounted
 {
 public:
   virtual std::string getName() const = 0;
-  virtual ServiceType getServiceType() const = 0;
+  virtual float getRelation() const = 0;
+  virtual Service::Type getServiceType() const = 0;
   virtual std::string getShortDescription() const = 0;
   virtual const Picture& getPicture() const = 0;
+  virtual void updateRelation( float income ) = 0;
+  virtual DateTime getLastFestivalDate() const = 0;
 };
 
 class DivinePantheon
 {
 public:
+  typedef std::vector< RomeDivinityPtr > Divinities;
+
   static DivinePantheon& getInstance();
-  RomeDivinityPtr get( RomeDivinityType name ) const;
+  static RomeDivinityPtr get( RomeDivinityType name );
+
+  static Divinities getAll();
 
   void initialize( const io::FilePath& filename );
+
+  static void doFestival4( RomeDivinityPtr who );
 
   static RomeDivinityPtr ceres();
   static RomeDivinityPtr mars();

@@ -43,7 +43,7 @@ public:
   virtual void load( const VariantMap& stream);
 
   virtual void addWalker( WalkerPtr walker );
-  virtual const Walkers& getWalkerList() const;
+  virtual const WalkerList& getWalkerList() const;
 
 private:
   class Impl;

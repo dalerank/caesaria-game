@@ -44,9 +44,9 @@ void Road::build(const TilePos& pos )
   }
 
   // update adjacent roads
-  for( PtrTilesList::iterator itTile = _accessRoads.begin(); itTile != _accessRoads.end(); ++itTile)
+  foreach( Tile* tile, _accessRoads )
   {
-    RoadPtr road = (*itTile)->getTerrain().getOverlay().as<Road>(); // let's think: may here different type screw up whole program?
+    RoadPtr road = tile->getTerrain().getOverlay().as<Road>(); // let's think: may here different type screw up whole program?
     if( road.isValid() )
     {
       road->computeAccessRoads();
@@ -58,9 +58,9 @@ void Road::build(const TilePos& pos )
   // how to detect them if MaxDistance2Road can be any
   // so let's recompute accessRoads for every _building_
   LandOverlays list = Scenario::instance().getCity()->getOverlayList(); // it looks terrible!!!!
-  for( LandOverlays::iterator itOverlay = list.begin(); itOverlay!=list.end(); ++itOverlay )
+  foreach( LandOverlayPtr overlay, list )
   {
-    BuildingPtr construction = (*itOverlay).as<Building>();
+    BuildingPtr construction = overlay.as<Building>();
     if( construction.isValid() ) // if not valid then it isn't building
     {
       construction->computeAccessRoads();
@@ -96,9 +96,8 @@ Picture& Road::computePicture()
 
   PtrTilesList roads = getAccessRoads();
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
-  for( PtrTilesList::iterator itRoads = roads.begin(); itRoads!=roads.end(); ++itRoads)
+  foreach( Tile* tile, roads )
   {
-    Tile* tile = *itRoads;
     if (tile->getJ() > j)      { directionFlags += 1; } // road to the north
     else if (tile->getJ() < j) { directionFlags += 4; } // road to the south
     else if (tile->getI() > i) { directionFlags += 2; } // road to the east
@@ -223,10 +222,10 @@ bool Plaza::canBuild(const TilePos& pos ) const
 
   bool is_constructible = true;
 
-  PtrTilesArea rect = tilemap.getFilledRectangle( pos, getSize() ); // something very complex ???
-  for( PtrTilesArea::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+  PtrTilesArea area = tilemap.getFilledRectangle( pos, getSize() ); // something very complex ???
+  foreach( Tile* tile, area )
   {
-    is_constructible &= (*itTiles)->getTerrain().isRoad();
+    is_constructible &= tile->getTerrain().isRoad();
   }
 
   return is_constructible;

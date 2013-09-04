@@ -40,7 +40,7 @@ public:
 		if (isDirectory != other.isDirectory)
 			return false;
 
-    return StringHelper::isEquale( fullName.toString(), other.fullName.toString(), StringHelper::equaleIgnoreCase );
+		return StringHelper::isEquale( fullName.toString(), other.fullName.toString(), StringHelper::equaleIgnoreCase );
 	}
 
 	//! The < operator is provided so that CFileList can sort and quickly search the list.

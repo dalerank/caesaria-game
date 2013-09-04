@@ -70,15 +70,15 @@ public:
 
 void EmpireMapWindow::Impl::checkCityOnMap( const Point& pos )
 {
-  const EmpireCities& cities = scenario->getEmpire()->getCities();
+  EmpireCities cities = scenario->getEmpire()->getCities();
 
   currentCity = 0;
-  for( EmpireCities::const_iterator it=cities.begin(); it != cities.end(); it++ )
+  foreach( EmpireCityPtr city, cities )
   {
-    Rect rect( (*it)->getLocation(), Size( 40 ) );
+    Rect rect( city->getLocation(), Size( 40 ) );
     if( rect.isPointInside( pos ) )
     {
-      currentCity = *it;
+      currentCity = city;
       break;
     }
   }
@@ -240,9 +240,9 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
 void EmpireMapWindow::Impl::resetInfoPanel()
 {
   Widget::Widgets childs = tradeInfo->getChildren();
-  for( Widget::ConstChildIterator it=childs.begin(); it != childs.end(); it++ )
+  foreach( Widget* widget, childs )
   {
-    (*it)->deleteLater();
+    widget->deleteLater();
   }
 }
 

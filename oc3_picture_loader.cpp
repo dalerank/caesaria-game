@@ -1,5 +1,6 @@
 #include "oc3_picture_loader.hpp"
 #include "oc3_picture_loader_png.hpp"
+#include "oc3_foreach.hpp"
 
 class PictureLoader::Impl
 {
@@ -40,15 +41,14 @@ Picture PictureLoader::load( io::NFile file )
      return Picture::getInvalid();
 
   // try to load file based on file extension
-  Impl::LoaderIterator it = _d->loaders.begin();
-  for( ; it != _d->loaders.end(); ++it)
+  foreach( AbstractPictureLoader* loader, _d->loaders )
   {
-    if( (*it)->isALoadableFileExtension(file.getFileName()) ||
-        (*it)->isALoadableFileFormat(file) )
+    if( loader->isALoadableFileExtension(file.getFileName()) ||
+        loader->isALoadableFileFormat(file) )
     {
       // reset file position which might have changed due to previous loadImage calls
       file.seek(0);
-      return (*it)->load( file );
+      return loader->load( file );
     }
   }
 

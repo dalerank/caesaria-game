@@ -88,6 +88,15 @@ public:
   TilePos operator-() const { return TilePos( -x, -y ); }
   bool operator==(const TilePos& other) const{ return (x == other.x) && ( y == other.y ); }
   bool operator!=(const TilePos& other) const{ return (x != other.x ) || ( y != other.y ); }
+
+  TilePos fit( const TilePos& lur, const TilePos& tbr ) const
+  {
+    TilePos ret = *this;
+    ret.x = math::clamp( ret.x, lur.x, tbr.x );
+    ret.y = math::clamp( ret.y, lur.y, tbr.y );
+
+    return ret;
+  }
 };
 
 inline std::ostream & operator << (std::ostream& os, const TilePos& tp)

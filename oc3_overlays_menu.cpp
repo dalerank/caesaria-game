@@ -18,6 +18,7 @@
 #include "oc3_pushbutton.hpp"
 #include "oc3_event.hpp"
 #include "oc3_guienv.hpp"
+#include "oc3_foreach.hpp"
 #include <vector>
 
 class OverlaysMenu::Impl
@@ -130,8 +131,11 @@ bool OverlaysMenu::onEvent( const NEvent& event )
       case OV_HEALTH:
       case OV_COMMERCE:
         {
-          for( Impl::SubmenuButtons::iterator it=_d->buttons.begin(); it != _d->buttons.end(); it++ )
-              (*it)->deleteLater();
+          foreach( PushButton* item, _d->buttons )
+          {
+            item->deleteLater();
+          }
+
           _d->buttons.clear();
 
           _addButtons( (OverlayType)event.GuiEvent.Caller->getID() );
@@ -143,8 +147,11 @@ bool OverlaysMenu::onEvent( const NEvent& event )
       case OV_WATER:
       case OV_RELIGION:
         {
-          for( Impl::SubmenuButtons::iterator it=_d->buttons.begin(); it != _d->buttons.end(); it++ )
-            (*it)->deleteLater();
+          foreach( PushButton* item, _d->buttons )
+          {
+            item->deleteLater();
+          }
+
           _d->buttons.clear();
           return true;
         }

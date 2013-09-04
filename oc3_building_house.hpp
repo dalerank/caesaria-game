@@ -42,11 +42,11 @@ public:
   virtual float evaluateService(ServiceWalkerPtr walker);
   virtual void buyMarket(ServiceWalkerPtr walker);
 
-  bool hasServiceAccess(const ServiceType service);
-  int getServiceAccess(const ServiceType service);
+  bool hasServiceAccess(const Service::Type service);
+  int getServiceAccess(const Service::Type service);
   int getFoodLevel() const;
   int getHealthLevel() const;
-  void setServiceAccess(const ServiceType service, const int access);
+  void setServiceAccess(const Service::Type service, const int access);
   char getDesirabilityInfluence() const;
   unsigned char getDesirabilityRange() const;
   char getDesirabilityStep() const;
