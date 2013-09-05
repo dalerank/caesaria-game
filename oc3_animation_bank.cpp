@@ -49,14 +49,14 @@ class AnimationBank::Impl
 public:
   std::map< int, PicturesArray > carts;
   
-  typedef std::map< int, AnimationBank::WalkerAnimationMap > Animations;
+  typedef std::map< int, AnimationBank::MovementAnimation > Animations;
   Animations animations; // anim[WalkerGraphic][WalkerAction]
 
   // fills the cart pictures
   // prefix: image prefix
   // start: index of the first frame
   PicturesArray fillCart( const std::string &prefix, const int start, bool back );
-  AnimationBank::WalkerAnimationMap loadAnimation( const std::string& prefix, const int start, const int size);
+  AnimationBank::MovementAnimation loadAnimation( const std::string& prefix, const int start, const int size);
 
   void loadCarts();
   void loadWalkers();
@@ -67,30 +67,30 @@ void AnimationBank::Impl::loadCarts()
   //number of animations with goods + emmigrants + immigrants
   bool frontCart = false;
 
-  carts[Good::G_NONE] = fillCart(ResourceGroup::carts, noneGoodsPicId, frontCart);
-  carts[Good::G_WHEAT] = fillCart(ResourceGroup::carts, 9, frontCart);
-  carts[Good::G_VEGETABLE] = fillCart(ResourceGroup::carts, 17, frontCart);
-  carts[Good::G_FRUIT] = fillCart( ResourceGroup::carts, 25, frontCart);
-  carts[Good::G_OLIVE] = fillCart( ResourceGroup::carts, 33, frontCart);
-  carts[Good::G_GRAPE] = fillCart( ResourceGroup::carts, 41, frontCart);
-  carts[Good::G_MEAT] = fillCart( ResourceGroup::carts, 49, frontCart);
-  carts[Good::G_WINE] = fillCart( ResourceGroup::carts, 57, frontCart);
-  carts[Good::G_OIL] = fillCart( ResourceGroup::carts, 65, frontCart);
-  carts[Good::G_IRON] = fillCart( ResourceGroup::carts, 73, frontCart);
-  carts[Good::G_TIMBER] = fillCart( ResourceGroup::carts, 81, frontCart);
-  carts[Good::G_CLAY] =  fillCart( ResourceGroup::carts, 89, frontCart);
-  carts[Good::G_MARBLE] = fillCart( ResourceGroup::carts, 97, frontCart);
-  carts[Good::G_WEAPON] = fillCart( ResourceGroup::carts, 105, frontCart);
-  carts[Good::G_FURNITURE] = fillCart( ResourceGroup::carts, 113, frontCart);
-  carts[Good::G_POTTERY] = fillCart( ResourceGroup::carts, 121, frontCart);
+  carts[Good::none] = fillCart(ResourceGroup::carts, noneGoodsPicId, frontCart);
+  carts[Good::wheat] = fillCart(ResourceGroup::carts, 9, frontCart);
+  carts[Good::vegetable] = fillCart(ResourceGroup::carts, 17, frontCart);
+  carts[Good::fruit] = fillCart( ResourceGroup::carts, 25, frontCart);
+  carts[Good::olive] = fillCart( ResourceGroup::carts, 33, frontCart);
+  carts[Good::grape] = fillCart( ResourceGroup::carts, 41, frontCart);
+  carts[Good::meat] = fillCart( ResourceGroup::carts, 49, frontCart);
+  carts[Good::wine] = fillCart( ResourceGroup::carts, 57, frontCart);
+  carts[Good::oil] = fillCart( ResourceGroup::carts, 65, frontCart);
+  carts[Good::iron] = fillCart( ResourceGroup::carts, 73, frontCart);
+  carts[Good::timber] = fillCart( ResourceGroup::carts, 81, frontCart);
+  carts[Good::clay] =  fillCart( ResourceGroup::carts, 89, frontCart);
+  carts[Good::marble] = fillCart( ResourceGroup::carts, 97, frontCart);
+  carts[Good::weapon] = fillCart( ResourceGroup::carts, 105, frontCart);
+  carts[Good::furniture] = fillCart( ResourceGroup::carts, 113, frontCart);
+  carts[Good::pottery] = fillCart( ResourceGroup::carts, 121, frontCart);
   carts[Emigrant::G_EMIGRANT_CART1] = fillCart( ResourceGroup::carts, 129, !frontCart);
   carts[Emigrant::G_EMIGRANT_CART2] = fillCart( ResourceGroup::carts, 137, !frontCart);
-  carts[Good::G_FISH] = fillCart( ResourceGroup::carts, 697, frontCart);
+  carts[Good::fish] = fillCart( ResourceGroup::carts, 697, frontCart);
 }
 
 void AnimationBank::Impl::loadWalkers()
 {
-  animations[WG_NONE] = AnimationBank::WalkerAnimationMap();
+  animations[WG_NONE] = AnimationBank::MovementAnimation();
   animations[WG_POOR] =     loadAnimation( "citizen01", 1, 12 );
   animations[WG_BATH] =     loadAnimation( "citizen01", 105, 12);
   animations[WG_PRIEST] =   loadAnimation( "citizen01", 209, 12);
@@ -140,9 +140,9 @@ void AnimationBank::loadCarts()
   instance()._d->loadCarts();  
 }
 
-AnimationBank::WalkerAnimationMap AnimationBank::Impl::loadAnimation( const std::string& prefix, const int start, const int size)
+AnimationBank::MovementAnimation AnimationBank::Impl::loadAnimation( const std::string& prefix, const int start, const int size)
 {
-  WalkerAnimationMap ioMap;
+  MovementAnimation ioMap;
   DirectedAction action= { Walker::acMove, D_NORTH };
 
   action.direction = D_NORTH;      ioMap[action].load( prefix, start,   size, Animation::straight, 8);
@@ -157,7 +157,7 @@ AnimationBank::WalkerAnimationMap AnimationBank::Impl::loadAnimation( const std:
   return ioMap;
 }
 
-const AnimationBank::WalkerAnimationMap& AnimationBank::getWalker(const WalkerGraphicType walkerGraphic)
+const AnimationBank::MovementAnimation& AnimationBank::getWalker(const WalkerGraphicType walkerGraphic)
 {
   AnimationBank& inst = instance();
   Impl::Animations::iterator it = inst._d->animations.find( walkerGraphic );

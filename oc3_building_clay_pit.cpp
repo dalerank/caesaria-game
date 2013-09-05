@@ -20,7 +20,7 @@
 #include "oc3_city.hpp"
 #include "oc3_foreach.hpp"
 
-ClayPit::ClayPit() : Factory( Good::G_NONE, Good::G_CLAY, B_CLAY_PIT, Size(2) )
+ClayPit::ClayPit() : Factory( Good::none, Good::clay, B_CLAY_PIT, Size(2) )
 {
   _setProductRate( 9.6f );
   setPicture( Picture::load( ResourceGroup::commerce, 61 ) );

@@ -27,8 +27,8 @@ SimpleGoodStore::SimpleGoodStore()
 {
   _maxQty = 0;
 
-  _goodStockList.resize(Good::G_MAX);
-  for (int n = 0; n < (int)Good::G_MAX; ++n)
+  _goodStockList.resize(Good::goodCount);
+  for (int n = 0; n < (int)Good::goodCount; ++n)
   {
     _goodStockList[n].setType( (Good::Type)n );
   }
@@ -199,7 +199,7 @@ void SimpleGoodStore::resize( const GoodStore& other )
 {
   setMaxQty( other.getMaxQty() );
 
-  for( int i=Good::G_WHEAT; i < Good::G_MAX; i++ )
+  for( int i=Good::wheat; i < Good::goodCount; i++ )
   {
     Good::Type gtype = Good::Type( i );
     setMaxQty( gtype, other.getMaxQty( gtype ) );

@@ -29,12 +29,12 @@ public:
 
   GranaryGoodStore()
   {
-    for( int type=Good::G_WHEAT; type <= Good::G_VEGETABLE; type++ )
+    for( int type=Good::wheat; type <= Good::vegetable; type++ )
     {
       setOrder( (Good::Type)type, GoodOrders::accept );
     }
 
-    setOrder( Good::G_FISH, GoodOrders::none );
+    setOrder( Good::fish, GoodOrders::none );
     setMaxQty( GranaryGoodStore::maxCapacity );
   }
 
@@ -174,7 +174,7 @@ void Granary::load( const VariantMap& stream)
 void Granary::_tryDevastateGranary()
 {
   //if granary in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
-  for( int goodType=Good::G_WHEAT; goodType <= Good::G_VEGETABLE; goodType++ )
+  for( int goodType=Good::wheat; goodType <= Good::vegetable; goodType++ )
   {
     int goodQty = math::clamp( goodQty, 0, 400);
 

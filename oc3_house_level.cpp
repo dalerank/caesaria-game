@@ -165,19 +165,19 @@ bool HouseLevelSpec::checkHouse(House &house)
       StringHelper::debug( 0xff, "missing food" );
    }
 
-   if (_d->requiredGoods[Good::G_POTTERY] != 0 && house.getGoodStore().getCurrentQty(Good::G_POTTERY) == 0)
+   if (_d->requiredGoods[Good::pottery] != 0 && house.getGoodStore().getCurrentQty(Good::pottery) == 0)
    {
       res = false;
       StringHelper::debug( 0xff, "missing pottery" );
    }
 
-   if (_d->requiredGoods[Good::G_FURNITURE] != 0 && house.getGoodStore().getCurrentQty(Good::G_FURNITURE) == 0)
+   if (_d->requiredGoods[Good::furniture] != 0 && house.getGoodStore().getCurrentQty(Good::furniture) == 0)
    {
       res = false;
       StringHelper::debug( 0xff, "missing furniture" );
    }
 
-   if (_d->requiredGoods[Good::G_OIL] != 0 && house.getGoodStore().getCurrentQty(Good::G_OIL) == 0)
+   if (_d->requiredGoods[Good::oil] != 0 && house.getGoodStore().getCurrentQty(Good::oil) == 0)
    {
       res = false;
       StringHelper::debug( 0xff, "missing oil" );
@@ -213,23 +213,23 @@ int HouseLevelSpec::computeFoodLevel(House &house)
    int res = 0;
 
    GoodStore& goodStore = house.getGoodStore();
-   if (goodStore.getCurrentQty(Good::G_WHEAT) > 0)
+   if (goodStore.getCurrentQty(Good::wheat) > 0)
    {
       res++;
    }
-   if (goodStore.getCurrentQty(Good::G_FISH) > 0)
+   if (goodStore.getCurrentQty(Good::fish) > 0)
    {
       res++;
    }
-   if (goodStore.getCurrentQty(Good::G_MEAT) > 0)
+   if (goodStore.getCurrentQty(Good::meat) > 0)
    {
       res++;
    }
-   if (goodStore.getCurrentQty(Good::G_FRUIT) > 0)
+   if (goodStore.getCurrentQty(Good::fruit) > 0)
    {
       res++;
    }
-   if (goodStore.getCurrentQty(Good::G_VEGETABLE) > 0)
+   if (goodStore.getCurrentQty(Good::vegetable) > 0)
    {
       res++;
    }
@@ -683,11 +683,11 @@ void HouseSpecHelper::initialize( const io::FilePath& filename )
     spec._d->minHealthLevel = hSpec.get( "health" ).toInt();
     spec._d->minFoodLevel = hSpec.get( "food" ).toInt();
     
-    spec._d->requiredGoods[Good::G_WHEAT] = 1;  // hard coded ... to be changed!
-    spec._d->requiredGoods[Good::G_POTTERY] = hSpec.get( "pottery" ).toInt();  // pottery
-    spec._d->requiredGoods[Good::G_OIL] = hSpec.get( "oil" ).toInt();  // oil
-    spec._d->requiredGoods[Good::G_FURNITURE] = hSpec.get( "furniture").toInt();// furniture
-    spec._d->requiredGoods[Good::G_WINE] = hSpec.get( "wine" ).toInt();  // wine
+    spec._d->requiredGoods[Good::wheat] = 1;  // hard coded ... to be changed!
+    spec._d->requiredGoods[Good::pottery] = hSpec.get( "pottery" ).toInt();  // pottery
+    spec._d->requiredGoods[Good::oil] = hSpec.get( "oil" ).toInt();  // oil
+    spec._d->requiredGoods[Good::furniture] = hSpec.get( "furniture").toInt();// furniture
+    spec._d->requiredGoods[Good::wine] = hSpec.get( "wine" ).toInt();  // wine
     spec._d->crime = hSpec.get( "crime" ).toInt();;  // crime
     spec._d->prosperity = hSpec.get( "prosperity" ).toInt();  // prosperity
     spec._d->taxRate = hSpec.get( "tax" ).toInt();// tax_rate

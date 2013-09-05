@@ -311,8 +311,8 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_granary(Propagator &pathPropa
    BuildingPtr res;
 
    Good::Type goodType = stock.type();
-   if (!(goodType == Good::G_WHEAT || goodType == Good::G_FISH
-         || goodType == Good::G_MEAT || goodType == Good::G_FRUIT || goodType == Good::G_VEGETABLE))
+   if (!(goodType == Good::wheat || goodType == Good::fish
+         || goodType == Good::meat || goodType == Good::fruit || goodType == Good::vegetable))
    {
       // this good cannot be stored in a granary
       return 0;

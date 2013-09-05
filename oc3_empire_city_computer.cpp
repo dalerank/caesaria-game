@@ -72,7 +72,7 @@ void ComputerCity::save( VariantMap& options ) const
   VariantMap vm_buys;
   VariantMap vm_bought;
 
-  for( int i=Good::G_NONE; i < Good::G_MAX; i ++ )
+  for( int i=Good::none; i < Good::goodCount; i ++ )
   {
     Good::Type gtype = Good::Type ( i );
     std::string tname = GoodHelper::getTypeName( gtype );
@@ -189,7 +189,7 @@ void ComputerCity::timeStep( unsigned int time )
   {
     _d->lastTimeUpdate = GameDate::current();
 
-    for( int i=Good::G_NONE; i < Good::G_MAX; i ++ )
+    for( int i=Good::none; i < Good::goodCount; i ++ )
     {
       Good::Type gtype = Good::Type( i );
       _d->sellStore.setCurrentQty( gtype, _d->sellStore.getMaxQty( gtype ) );     
@@ -213,7 +213,7 @@ void ComputerCity::timeStep( unsigned int time )
       SimpleGoodStore sellGoods, buyGoods;
       sellGoods.setMaxQty( 2000 );
       buyGoods.setMaxQty( 2000 );
-      for( int i=Good::G_NONE; i < Good::G_MAX; i ++ )
+      for( int i=Good::none; i < Good::goodCount; i ++ )
       {
         Good::Type gtype = Good::Type( i );
 

@@ -19,7 +19,7 @@
 #include "oc3_tile.hpp"
 #include "oc3_city.hpp"
 
-FactoryMarble::FactoryMarble() : Factory(Good::G_NONE, Good::G_MARBLE, B_MARBLE_QUARRY, Size(2) )
+FactoryMarble::FactoryMarble() : Factory(Good::none, Good::marble, B_MARBLE_QUARRY, Size(2) )
 {
   _setProductRate( 9.6f );
   setPicture( Picture::load( ResourceGroup::commerce, 43 ) );

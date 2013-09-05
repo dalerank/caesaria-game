@@ -184,7 +184,7 @@ void GoodStore::retrieve(GoodStock &stock, int amount)
 
 void GoodStore::storeAll( GoodStore& goodStore)
 {
-  for (int n = 1; n<Good::G_MAX; ++n)
+  for (int n = 1; n<Good::goodCount; ++n)
   {
     // for all types of good (except G_NONE)
     Good::Type goodType = (Good::Type) n;

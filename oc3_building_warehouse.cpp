@@ -56,28 +56,28 @@ void WarehouseTile::computePicture()
   int picIdx = 0;
   switch (_stock.type() )
   {
-  case Good::G_NONE: picIdx = 19; break;
-  case Good::G_WHEAT: picIdx = 20; break;
-  case Good::G_VEGETABLE: picIdx = 24; break;
-  case Good::G_FRUIT: picIdx = 28; break;
-  case Good::G_OLIVE: picIdx = 32; break;
-  case Good::G_GRAPE: picIdx = 36; break;
-  case Good::G_MEAT: picIdx = 40; break;
-  case Good::G_WINE: picIdx = 44; break;
-  case Good::G_OIL: picIdx = 48; break;
-  case Good::G_IRON: picIdx = 52; break;
-  case Good::G_TIMBER: picIdx = 56; break;
-  case Good::G_CLAY: picIdx = 60; break;
-  case Good::G_MARBLE: picIdx = 64; break;
-  case Good::G_WEAPON: picIdx = 68; break;
-  case Good::G_FURNITURE: picIdx = 72; break;
-  case Good::G_POTTERY: picIdx = 76; break;
-  case Good::G_FISH: picIdx = 80; break;
+  case Good::none: picIdx = 19; break;
+  case Good::wheat: picIdx = 20; break;
+  case Good::vegetable: picIdx = 24; break;
+  case Good::fruit: picIdx = 28; break;
+  case Good::olive: picIdx = 32; break;
+  case Good::grape: picIdx = 36; break;
+  case Good::meat: picIdx = 40; break;
+  case Good::wine: picIdx = 44; break;
+  case Good::oil: picIdx = 48; break;
+  case Good::iron: picIdx = 52; break;
+  case Good::timber: picIdx = 56; break;
+  case Good::clay: picIdx = 60; break;
+  case Good::marble: picIdx = 64; break;
+  case Good::weapon: picIdx = 68; break;
+  case Good::furniture: picIdx = 72; break;
+  case Good::pottery: picIdx = 76; break;
+  case Good::fish: picIdx = 80; break;
   default:
       _OC3_DEBUG_BREAK_IF( "Unexpected good type: " );
   }
 
-  if (_stock.type() != Good::G_NONE)
+  if (_stock.type() != Good::none)
   {
     picIdx += _stock._currentQty/100 -1;
   }
@@ -129,7 +129,7 @@ WarehouseStore::WarehouseStore()
 {
   _warehouse = NULL;
 
-  for( int goodType=Good::G_WHEAT; goodType <= Good::G_MARBLE; goodType++ )
+  for( int goodType=Good::wheat; goodType <= Good::marble; goodType++ )
   {
     setOrder( (Good::Type)goodType, GoodOrders::accept );
   }
@@ -150,7 +150,7 @@ int WarehouseStore::getCurrentQty(const Good::Type &goodType) const
 
   foreach( WarehouseTile& whTile, _warehouse->_d->subTiles )
   {
-    if ( whTile._stock.type() == goodType || goodType == Good::G_MAX )
+    if ( whTile._stock.type() == goodType || goodType == Good::goodCount )
     {
       amount += whTile._stock._currentQty;
     }
@@ -161,7 +161,7 @@ int WarehouseStore::getCurrentQty(const Good::Type &goodType) const
 
 int WarehouseStore::getCurrentQty() const
 {
-  return getCurrentQty( Good::G_MAX );
+  return getCurrentQty( Good::goodCount );
 }
 
 int WarehouseStore::getMaxStore(const Good::Type goodType)
@@ -175,7 +175,7 @@ int WarehouseStore::getMaxStore(const Good::Type goodType)
   StockMap maxStore;
 
   // init the map
-  for (int i = Good::G_NONE; i != Good::G_MAX; ++i)
+  for (int i = Good::none; i != Good::goodCount; ++i)
   {
     Good::Type goodType = (Good::Type) i;
     maxStore[ goodType ] = 0;
@@ -261,7 +261,7 @@ void WarehouseStore::applyStorageReservation( GoodStock &stock, const long reser
       break;
     }
 
-    if (whTile._stock.type() == Good::G_NONE)
+    if (whTile._stock.type() == Good::none)
     {
       int tileAmount = std::min(amount, whTile._stock._maxQty);
       // std::cout << "put in empty tile" << std::endl;
@@ -448,7 +448,7 @@ void Warehouse::_resolveDevastationMode()
   //if warehouse in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
   if( (_d->goodStore.getCurrentQty() > 0) && getWalkerList().empty() )
   {
-    for( int goodType=Good::G_WHEAT; goodType <= Good::G_VEGETABLE; goodType++ )
+    for( int goodType=Good::wheat; goodType <= Good::vegetable; goodType++ )
     {
       //int goodQtyMax = _d->goodStore.getCurrentQty( (GoodType)goodType );
       int goodQty = math::clamp( goodQty, 0, 400);

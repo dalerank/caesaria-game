@@ -32,14 +32,16 @@ class Good
 public:
   typedef enum
   {
-    G_NONE,
-    G_WHEAT,
-    G_FISH,
-    G_MEAT,
-    G_FRUIT, G_VEGETABLE, G_OLIVE, G_OIL, G_GRAPE, G_WINE,
-    G_TIMBER, G_FURNITURE, G_CLAY, G_POTTERY, G_IRON, G_WEAPON, G_MARBLE,
-    G_DENARIES,
-    G_MAX
+    none,
+    wheat, fish, meat, fruit, vegetable,
+    olive, oil,
+    grape, wine,
+    timber, furniture,
+    clay, pottery,
+    iron, weapon,
+    marble,
+    denaries,
+    goodCount
   } Type;
 
   virtual Type type() const { return _type; }

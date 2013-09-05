@@ -339,11 +339,11 @@ BuildingDataHolder::BuildingDataHolder() : _d( new Impl )
 void BuildingDataHolder::initialize( const io::FilePath& filename )
 {
   // populate _mapBuildingByInGood
-  _d->mapBuildingByInGood[Good::G_IRON]   = B_WEAPONS_WORKSHOP;
-  _d->mapBuildingByInGood[Good::G_TIMBER] = B_FURNITURE;
-  _d->mapBuildingByInGood[Good::G_CLAY]   = B_POTTERY;
-  _d->mapBuildingByInGood[Good::G_OLIVE]  = B_OIL_WORKSHOP;
-  _d->mapBuildingByInGood[Good::G_GRAPE]  = B_WINE_WORKSHOP;
+  _d->mapBuildingByInGood[Good::iron]   = B_WEAPONS_WORKSHOP;
+  _d->mapBuildingByInGood[Good::timber] = B_FURNITURE;
+  _d->mapBuildingByInGood[Good::clay]   = B_POTTERY;
+  _d->mapBuildingByInGood[Good::olive]  = B_OIL_WORKSHOP;
+  _d->mapBuildingByInGood[Good::grape]  = B_WINE_WORKSHOP;
 
   VariantMap constructions = SaveAdapter::load( filename.toString() );
 

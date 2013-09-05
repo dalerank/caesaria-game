@@ -49,16 +49,16 @@ MarketLady::MarketLady() : _d( new Impl )
    _d->maxDistance = 25;
    _d->basket.setMaxQty(800);  // this is a big basket!
 
-   _d->basket.setMaxQty(Good::G_WHEAT, 800);
-   _d->basket.setMaxQty(Good::G_FRUIT, 800);
-   _d->basket.setMaxQty(Good::G_VEGETABLE, 800);
-   _d->basket.setMaxQty(Good::G_MEAT, 800);
-   _d->basket.setMaxQty(Good::G_FISH, 800);
+   _d->basket.setMaxQty(Good::wheat, 800);
+   _d->basket.setMaxQty(Good::fruit, 800);
+   _d->basket.setMaxQty(Good::vegetable, 800);
+   _d->basket.setMaxQty(Good::meat, 800);
+   _d->basket.setMaxQty(Good::fish, 800);
 
-   _d->basket.setMaxQty(Good::G_POTTERY, 100);
-   _d->basket.setMaxQty(Good::G_FURNITURE, 100);
-   _d->basket.setMaxQty(Good::G_OIL, 100);
-   _d->basket.setMaxQty(Good::G_WINE, 100);
+   _d->basket.setMaxQty(Good::pottery, 100);
+   _d->basket.setMaxQty(Good::furniture, 100);
+   _d->basket.setMaxQty(Good::oil, 100);
+   _d->basket.setMaxQty(Good::wine, 100);
 
    setName( NameGenerator::rand( NameGenerator::male ) );
 }
@@ -134,9 +134,9 @@ void MarketLady::computeWalkerDestination( MarketPtr market )
      {
         _d->priorityGood = *itGood;
 
-        if( _d->priorityGood == Good::G_WHEAT || _d->priorityGood == Good::G_FISH
-            || _d->priorityGood == Good::G_MEAT || _d->priorityGood == Good::G_FRUIT
-            || _d->priorityGood == Good::G_VEGETABLE)
+        if( _d->priorityGood == Good::wheat || _d->priorityGood == Good::fish
+            || _d->priorityGood == Good::meat || _d->priorityGood == Good::fruit
+            || _d->priorityGood == Good::vegetable)
         {
            // try get that good from a granary
            _d->destBuildingPos = getWalkerDestination2<Granary>( pathPropagator, B_GRANARY, _d->market,
@@ -196,7 +196,7 @@ void MarketLady::onDestination()
         granary->getGoodStore().applyRetrieveReservation(_d->basket, _d->reservationID);
 
         // take other goods if possible
-        for (int n = 1; n<Good::G_MAX; ++n)
+        for (int n = 1; n<Good::goodCount; ++n)
         {
            // for all types of good (except G_NONE)
            Good::Type goodType = (Good::Type) n;
@@ -223,7 +223,7 @@ void MarketLady::onDestination()
         warehouse->getGoodStore().applyRetrieveReservation(_d->basket, _d->reservationID);
 
         // take other goods if possible
-        for (int n = 1; n<Good::G_MAX; ++n)
+        for (int n = 1; n<Good::goodCount; ++n)
         {
            // for all types of good (except G_NONE)
            Good::Type goodType = (Good::Type) n;
@@ -246,7 +246,7 @@ void MarketLady::onDestination()
 
       while( _d->basket.getCurrentQty() > 100 )
       {
-        for( int gtype=Good::G_WHEAT; gtype <= Good::G_WINE; gtype++ )
+        for( int gtype=Good::wheat; gtype <= Good::wine; gtype++ )
         {
           GoodStock& currentStock = _d->basket.getStock( (Good::Type)gtype );
           if( currentStock._currentQty > 0 )

@@ -29,7 +29,7 @@
 
 GoodStock::GoodStock()
 {
-   _type = G_NONE;
+   _type = none;
    _maxQty = 0;
    _currentQty = 0;
 }
@@ -43,12 +43,12 @@ GoodStock::GoodStock(const Good::Type &goodType, const int maxQty, const int cur
 
 void GoodStock::append(GoodStock &stock, const int iAmount)
 {
-  if (stock._type == G_NONE)
+  if (stock._type == none)
   {
      // nothing to add => nothing to do!
      return;
   }
-  if (_type != G_NONE && _type != stock._type)
+  if (_type != none && _type != stock._type)
   {
     std::string errorStr = StringHelper::format( 0xff, "GoodTypes do not match: %d vs %d", _type, stock._type );
     _OC3_DEBUG_BREAK_IF( errorStr.c_str() );
@@ -79,7 +79,7 @@ void GoodStock::append(GoodStock &stock, const int iAmount)
   
   if (stock._currentQty == 0)
   {
-     stock._type = G_NONE;
+     stock._type = none;
   }
 }
 

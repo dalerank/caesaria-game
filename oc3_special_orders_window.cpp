@@ -182,7 +182,7 @@ GranarySpecialOrdersWindow::GranarySpecialOrdersWindow( Widget* parent, const Po
   setTitle( _("##granary_orders##") );
   int index=0;
   _granary = granary;
-  for( int goodType=Good::G_WHEAT; goodType <= Good::G_VEGETABLE; goodType++ )
+  for( int goodType=Good::wheat; goodType <= Good::vegetable; goodType++ )
   {
     const GoodOrders::Order rule = granary->getGoodStore().getOrder( (Good::Type)goodType );
     
@@ -220,7 +220,7 @@ WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, cons
 
   _warehouse = warehouse;
   int index=0;
-  for( int goodType=Good::G_WHEAT; goodType <= Good::G_MARBLE; goodType++ )
+  for( int goodType=Good::wheat; goodType <= Good::marble; goodType++ )
   {
     const GoodOrders::Order rule = _warehouse->getGoodStore().getOrder( (Good::Type)goodType );
 

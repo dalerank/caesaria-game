@@ -133,9 +133,9 @@ public:
     CityTradeOptions& ctrade = city->getTradeOptions();
     font = Font::create( FONT_1 );
     Point startPos( 140, 50 );
-    for( int i=Good::G_WHEAT; i < Good::G_MAX; i++ )
+    for( int i=Good::wheat; i < Good::goodCount; i++ )
     {
-      if( i == Good::G_FISH || i == Good::G_DENARIES)
+      if( i == Good::fish || i == Good::denaries)
       {
         continue;
       }
@@ -453,7 +453,7 @@ void AdvisorTradeWindow::Impl::updateGoodsInfo()
   Point startDraw( 0, 5 );
   Size btnSize( gbInfo->getWidth(), 20 );
   CityTradeOptions& copt = city->getTradeOptions();
-  for( int i=Good::G_WHEAT, indexOffset=0; i < Good::G_MAX; i++ )
+  for( int i=Good::wheat, indexOffset=0; i < Good::goodCount; i++ )
   {
     Good::Type gtype = Good::Type( i );
 

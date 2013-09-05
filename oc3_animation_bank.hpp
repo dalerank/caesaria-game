@@ -28,7 +28,7 @@
 class AnimationBank
 {
 public:
-  typedef std::map<DirectedAction, Animation> WalkerAnimationMap;
+  typedef std::map< DirectedAction, Animation > MovementAnimation;
 
   static AnimationBank& instance();
 
@@ -38,7 +38,7 @@ public:
 
   static const Picture& getCart( int cartID, const DirectionType& direction );
 
-  static const WalkerAnimationMap& getWalker( const WalkerGraphicType walkerGraphic );
+  static const MovementAnimation& getWalker( const WalkerGraphicType walkerGraphic );
 
 private:
   AnimationBank();

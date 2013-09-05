@@ -196,7 +196,7 @@ InfoBoxSenate::InfoBoxSenate( Widget* parent, const Tile& tile )
   // number of workers
   _drawWorkers( Point( 32, 136), 542, senate->getMaxWorkers(), senate->getWorkers() );
 
-  getBgPicture().draw( GoodHelper::getPicture( Good::G_DENARIES ), 16, 35);
+  getBgPicture().draw( GoodHelper::getPicture( Good::denaries ), 16, 35);
 
   std::string denariesStr = StringHelper::format( 0xff, "%s %d", _("##senate_save##"), senate->getFunds() );
 
@@ -231,7 +231,7 @@ InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
   int startY = lbCrime->getBottom() + 10;
   if( house->getLevelSpec().getHouseLevel() > 2 )
   {
-    drawGood( house, Good::G_WHEAT, 0, 0, startY );
+    drawGood( house, Good::wheat, 0, 0, startY );
   }
   else
   {
@@ -243,10 +243,10 @@ InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
     startY = lb->getTop();
   }
 
-  drawGood( house, Good::G_POTTERY, 0, 1, startY );
-  drawGood( house, Good::G_FURNITURE, 1, 1, startY );
-  drawGood( house, Good::G_OIL, 2, 1, startY );
-  drawGood( house, Good::G_WINE, 3, 1, startY );
+  drawGood( house, Good::pottery, 0, 1, startY );
+  drawGood( house, Good::furniture, 1, 1, startY );
+  drawGood( house, Good::oil, 2, 1, startY );
+  drawGood( house, Good::wine, 3, 1, startY );
 }
 
 InfoBoxHouse::~InfoBoxHouse()
@@ -309,13 +309,13 @@ GuiInfoFactory::GuiInfoFactory( Widget* parent, const Tile& tile)
   std::string text = StringHelper::format( 0xff, _("Le travail est a %d%% termine."), building->getProgress() );
   Label* lbProgress = new Label( this, Rect( _d->lbTitle->getLeftdownCorner(), Size( getWidth() - 32, 30 ) ), text );
 
-  if( building->getOutGoodType() != Good::G_NONE )
+  if( building->getOutGoodType() != Good::none )
   {
     getBgPicture().draw( GoodHelper::getPicture( building->getOutGoodType() ), 10, 10);
   }
 
   // paint picture of in good
-  if( building->getInGood().type() != Good::G_NONE )
+  if( building->getInGood().type() != Good::none )
   {
     getBgPicture().draw( GoodHelper::getPicture( building->getInGood().type() ), Point( 32, 20 ) );
     std::string text = StringHelper::format( 0xff, _("%s stock: %d units"),
@@ -389,10 +389,10 @@ InfoBoxGranary::InfoBoxGranary( Widget* parent, const Tile& tile )
 
   Label* lbUnits = new Label( this, Rect( _d->lbTitle->getLeftdownCorner(), Size( getWidth() - 16, 40 )), desc );
 
-  drawGood(Good::G_WHEAT, 0, lbUnits->getBottom() );
-  drawGood(Good::G_MEAT, 0, lbUnits->getBottom() + 25);
-  drawGood(Good::G_FRUIT, 1, lbUnits->getBottom() );
-  drawGood(Good::G_VEGETABLE, 1, lbUnits->getBottom() + 25);
+  drawGood(Good::wheat, 0, lbUnits->getBottom() );
+  drawGood(Good::meat, 0, lbUnits->getBottom() + 25);
+  drawGood(Good::fruit, 1, lbUnits->getBottom() );
+  drawGood(Good::vegetable, 1, lbUnits->getBottom() + 25);
 
   _drawWorkers( Point( 32, lbUnits->getBottom() + 50 ), 542, _granary->getMaxWorkers(), _granary->getWorkers() );
 }
@@ -446,23 +446,23 @@ InfoBoxWarehouse::InfoBoxWarehouse( Widget* parent, const Tile& tile )
   // summary: total stock, free capacity
   int _paintY = _d->lbTitle->getBottom();
 
-  drawGood(Good::G_WHEAT, 0, _paintY+25);
-  drawGood(Good::G_VEGETABLE, 0, _paintY+50);
-  drawGood(Good::G_FRUIT, 0, _paintY+75);
-  drawGood(Good::G_OLIVE, 0, _paintY+100);
-  drawGood(Good::G_GRAPE, 0, _paintY+125);
+  drawGood(Good::wheat, 0, _paintY+25);
+  drawGood(Good::vegetable, 0, _paintY+50);
+  drawGood(Good::fruit, 0, _paintY+75);
+  drawGood(Good::olive, 0, _paintY+100);
+  drawGood(Good::grape, 0, _paintY+125);
 
-  drawGood(Good::G_MEAT, 1, _paintY+25);
-  drawGood(Good::G_WINE, 1, _paintY+50);
-  drawGood(Good::G_OIL, 1, _paintY+75);
-  drawGood(Good::G_IRON, 1, _paintY+100);
-  drawGood(Good::G_TIMBER, 1, _paintY+125);
+  drawGood(Good::meat, 1, _paintY+25);
+  drawGood(Good::wine, 1, _paintY+50);
+  drawGood(Good::oil, 1, _paintY+75);
+  drawGood(Good::iron, 1, _paintY+100);
+  drawGood(Good::timber, 1, _paintY+125);
 
-  drawGood(Good::G_CLAY, 2, _paintY+25);
-  drawGood(Good::G_MARBLE, 2, _paintY+50);
-  drawGood(Good::G_WEAPON, 2, _paintY+75);
-  drawGood(Good::G_FURNITURE, 2, _paintY+100);
-  drawGood(Good::G_POTTERY, 2, _paintY+125);
+  drawGood(Good::clay, 2, _paintY+25);
+  drawGood(Good::marble, 2, _paintY+50);
+  drawGood(Good::weapon, 2, _paintY+75);
+  drawGood(Good::furniture, 2, _paintY+100);
+  drawGood(Good::pottery, 2, _paintY+125);
 
   Point workerFramePos( 16, 170 );
   PictureDecorator::draw( *_d->bgPicture,
@@ -539,7 +539,7 @@ InfoBoxMarket::InfoBoxMarket( Widget* parent, const Tile& tile )
      GoodStore& goods = market->getGoodStore();
      int furageSum = 0;
      // for all furage types of good
-     for (int goodType = 0; goodType<Good::G_OLIVE; ++goodType)
+     for (int goodType = 0; goodType<Good::olive; ++goodType)
      {
        furageSum += goods.getCurrentQty( (Good::Type)goodType );
      }
@@ -547,11 +547,11 @@ InfoBoxMarket::InfoBoxMarket( Widget* parent, const Tile& tile )
      int paintY = 78;
      if( 0 < furageSum )
      {
-       drawGood( market, Good::G_WHEAT, 0, paintY );
-       drawGood( market, Good::G_FISH, 1, paintY);
-       drawGood( market, Good::G_MEAT, 2, paintY);
-       drawGood( market, Good::G_FRUIT, 3, paintY);
-       drawGood( market, Good::G_VEGETABLE, 4, paintY);
+       drawGood( market, Good::wheat, 0, paintY );
+       drawGood( market, Good::fish, 1, paintY);
+       drawGood( market, Good::meat, 2, paintY);
+       drawGood( market, Good::fruit, 3, paintY);
+       drawGood( market, Good::vegetable, 4, paintY);
        lbAbout->setHeight( 25 );
      }
      else
@@ -560,10 +560,10 @@ InfoBoxMarket::InfoBoxMarket( Widget* parent, const Tile& tile )
      }
 
      paintY += 24;
-     drawGood( market, Good::G_POTTERY, 0, paintY);
-     drawGood( market, Good::G_FURNITURE, 1, paintY);
-     drawGood( market, Good::G_OIL, 2, paintY);
-     drawGood( market, Good::G_WINE, 3, paintY);
+     drawGood( market, Good::pottery, 0, paintY);
+     drawGood( market, Good::furniture, 1, paintY);
+     drawGood( market, Good::oil, 2, paintY);
+     drawGood( market, Good::wine, 3, paintY);
 
      lbAbout->setText( 0 == furageSum ? _("##market_search_food_source##") : _("##market_about##"));
    }
@@ -692,7 +692,7 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
 {
   FactoryPtr rawmb = tile.getTerrain().getOverlay().as<Factory>();
 
-  if( rawmb->getOutGoodType() != Good::G_NONE )
+  if( rawmb->getOutGoodType() != Good::none )
   {
     Picture pic = GoodHelper::getPicture( rawmb->getOutGoodType() );
     _d->bgPicture->draw( pic, 10, 10 );
