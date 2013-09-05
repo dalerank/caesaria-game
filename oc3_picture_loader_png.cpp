@@ -68,7 +68,10 @@ bool PictureLoaderPng::isALoadableFileFormat( io::NFile file) const
 Picture PictureLoaderPng::load( io::NFile file ) const
 {
   if(!file.isOpen())
+  {
+    StringHelper::debug( 0xff, "LOAD PNG: can't open file %s", file.getFileName().toString().c_str() );
     return Picture::getInvalid();
+  }
 
   png_byte buffer[8];
   // Read the first few bytes of the PNG file

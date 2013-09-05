@@ -78,7 +78,7 @@ endforeach()
 
 file(GLOB DATA_MODELS_LIST "${CMAKE_CURRENT_SOURCE_DIR}/models/*.model")
 
-add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST} ${UTILS_SRC_LIST})
+add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST} ${UTILS_SRC_LIST} ${DATA_MODELS_LIST})
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME "caesar3")
 

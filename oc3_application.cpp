@@ -104,10 +104,7 @@ void Application::initGuiEnvironment()
 
 void Application::Impl::initPictures(const io::FilePath& resourcePath)
 {
-  StringHelper::debug( 0xff, "Create animations for carts" );
   AnimationBank::loadCarts();
-
-  StringHelper::debug( 0xff, "Create animations for walkers" );
   AnimationBank::loadWalkers();
   
   StringHelper::debug( 0xff, "Load fonts" );

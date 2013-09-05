@@ -49,7 +49,7 @@ class AnimationBank::Impl
 public:
   std::map< int, PicturesArray > carts;
   
-  typedef std::vector< AnimationBank::WalkerAnimationMap > Animations;
+  typedef std::map< int, AnimationBank::WalkerAnimationMap > Animations;
   Animations animations; // anim[WalkerGraphic][WalkerAction]
 
   // fills the cart pictures
@@ -90,8 +90,7 @@ void AnimationBank::Impl::loadCarts()
 
 void AnimationBank::Impl::loadWalkers()
 {
-  animations.resize(30);  // number of walker types
-
+  animations[WG_NONE] = AnimationBank::WalkerAnimationMap();
   animations[WG_POOR] =     loadAnimation( "citizen01", 1, 12 );
   animations[WG_BATH] =     loadAnimation( "citizen01", 105, 12);
   animations[WG_PRIEST] =   loadAnimation( "citizen01", 209, 12);
@@ -160,13 +159,21 @@ AnimationBank::WalkerAnimationMap AnimationBank::Impl::loadAnimation( const std:
 
 const AnimationBank::WalkerAnimationMap& AnimationBank::getWalker(const WalkerGraphicType walkerGraphic)
 {
-  return instance()._d->animations[walkerGraphic];
+  AnimationBank& inst = instance();
+  Impl::Animations::iterator it = inst._d->animations.find( walkerGraphic );
+
+  if( it == inst._d->animations.end() )
+  {
+    StringHelper::debug( 0xff, "Can't find animation map for type %d", walkerGraphic );
+    return inst._d->animations[ WG_NONE ];
+  }
+
+  return it->second;
 }
 
 void AnimationBank::loadWalkers()
 {
-  StringHelper::debug( 0xff, "Loading cart graphics" );
-
+  StringHelper::debug( 0xff, "Start loading walkers graphics" );
   instance()._d->loadWalkers();
 }
 

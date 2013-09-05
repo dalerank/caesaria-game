@@ -16,6 +16,7 @@
 #include "oc3_animation.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_foreach.hpp"
+#include "oc3_stringhelper.hpp"
 
 void Animation::start(bool loop)
 {
@@ -92,7 +93,7 @@ void Animation::setLoop( bool loop )
 
 void Animation::load( const std::string &prefix, const int start, const int number, 
                       bool reverse /*= false*/, const int step /*= 1*/ )
-{
+{  
   int revMul = reverse ? -1 : 1;
   for( int i = 0; i < number; ++i)
   {
