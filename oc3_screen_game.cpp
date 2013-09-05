@@ -45,6 +45,10 @@
 #include "oc3_empire.hpp"
 #include "oc3_app_config.hpp"
 #include "oc3_window_mission_target.hpp"
+#include "oc3_gui_label.hpp"
+#include "oc3_gettext.hpp"
+
+static const int windowGamePausedId = StringHelper::hash( "gamepause" );
 
 class ScreenGame::Impl
 {
@@ -63,6 +67,7 @@ public:
   AlarmEventHolder alarmsHolder;
 
   int result;
+  bool paused;
 
   void resolveGameSave( std::string filename );
   void showSaveDialog();
@@ -82,6 +87,7 @@ ScreenGame::ScreenGame() : _d( new Impl )
 {
   _d->topMenu = NULL;
   _d->scenario = NULL;
+  _d->paused = false;
 }
 
 ScreenGame::~ScreenGame() {}
@@ -196,7 +202,10 @@ void ScreenGame::draw()
 
 void ScreenGame::afterFrame()
 {
-  _d->scenario->timeStep();
+  if( !_d->paused )
+  {
+    _d->scenario->timeStep();
+  }
 }
 
 void ScreenGame::handleEvent( NEvent& event )
@@ -220,6 +229,38 @@ void ScreenGame::handleEvent( NEvent& event )
       _d->scenario->changeTimeMultiplier( (event.KeyboardEvent.Key == KEY_MINUS || event.KeyboardEvent.Key == KEY_SUBTRACT)
                                            ? -10 : +10 );
     break;
+
+    case KEY_KEY_P:
+      if( event.KeyboardEvent.PressedDown )
+        break;
+
+      _d->paused = !_d->paused;
+      {
+        Widget* rootWidget = _d->gui->getRootWidget();
+        Label* wdg = safety_cast< Label* >( rootWidget->findChild( windowGamePausedId ) );
+        if( _d->paused  )
+        {
+          if( !wdg )
+          {
+            Size scrSize = rootWidget->getSize();
+            wdg = new Label( rootWidget, Rect( Point( (scrSize.getWidth() - 450)/2, 40 ), Size( 450, 50 ) ),
+                             _("##game_is_paused##"), false, Label::bgWhiteFrame, windowGamePausedId );
+            wdg->setTextAlignment( alignCenter, alignCenter );
+          }
+        }
+        else
+        {
+          if( wdg )
+          {
+            wdg->deleteLater();
+          }
+        }
+      }
+    break;
+
+		case KEY_F10:
+			_d->makeScreenShot();
+		break;
 
     default:
     break;
@@ -248,40 +289,30 @@ void ScreenGame::handleEvent( NEvent& event )
     {
     case _MET_GUI:
       _d->gui->handleEvent( event );
-      break;
+    break;
+
     case _MET_TILES:
       _d->mapRenderer.handleEvent( event );
-      break;
+    break;
+
     default:
-      if (!_d->gui->handleEvent( event ))
+       if (!_d->gui->handleEvent( event ))
         _d->mapRenderer.handleEvent( event );
-      break;
+    break;
     }
 
     if (event.EventType & (OC3_RMOUSE_LEFT_UP | OC3_LMOUSE_LEFT_UP))
+    {
       _mouseEventTarget = _MET_NONE;
+    }
   }
   else
   {
     eventResolved = _d->gui->handleEvent( event );      
    
     if( !eventResolved )
-      _d->mapRenderer.handleEvent( event );
-
-    if( event.EventType == OC3_KEYBOARD_EVENT )
     {
-      switch( event.KeyboardEvent.Key )
-      {
-	    case KEY_ESCAPE:
-       // stop();
-	    break;
-	    
-      case KEY_F10:
-	      _d->makeScreenShot();
-	    break;
-
-      default: break;
-      }
+      _d->mapRenderer.handleEvent( event );
     }
   }
 }

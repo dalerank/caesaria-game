@@ -24,7 +24,7 @@
 class Label : public Widget
 {
 public:
-  enum BackgroundMode { bgWhite=0, bgBlack, bgBrown, bgNone };
+  enum BackgroundMode { bgWhite=0, bgBlack, bgBrown, bgNone, bgWhiteFrame };
   //! constructor
   Label( Widget* parent, const Rect& rectangle, const std::string& text="", bool border=false,
          BackgroundMode background = bgNone, int id=-1);
