@@ -90,7 +90,7 @@ void AnimationBank::Impl::loadCarts()
 
 void AnimationBank::Impl::loadWalkers()
 {
-  animations.resize(30);  // number of walker types
+  animations.resize(WG_MAX);  // number of walker types
 
   animations[WG_POOR] =     loadAnimation( "citizen01", 1, 12 );
   animations[WG_BATH] =     loadAnimation( "citizen01", 105, 12);
