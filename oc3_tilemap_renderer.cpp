@@ -35,6 +35,7 @@
 #include "oc3_house_level.hpp"
 #include "oc3_building_watersupply.hpp"
 #include "oc3_foreach.hpp"
+#include "oc3_scenario_event.hpp"
 
 class TilemapRenderer::Impl
 {
@@ -953,7 +954,7 @@ void TilemapRenderer::Impl::buildAll()
   {   
     if( cnstr->canBuild( tile->getIJ() ) && tile->isMasterTile())
     {
-      city->build( cnstr->getType(), tile->getIJ() );
+      BuildEvent::create( tile->getIJ(), cnstr->getType() );
       buildOk = true;
     }   
   }

@@ -55,7 +55,6 @@ public:
   CityServicePtr findService( const std::string& name ) const;
 
   LandOverlays& getOverlayList();
-  LandOverlays getBuildingList( const BuildingType buildingType );
 
   void setRoadExit( const TilePos& pos );
   void setBoatEntry( const TilePos& pos );
@@ -94,8 +93,7 @@ public:
   void load( const VariantMap& stream);
 
   // add construction
-  void build( const BuildingType type, const TilePos& pos );
-  void build( ConstructionPtr building, const TilePos& pos );
+  void addOverlay(LandOverlayPtr overlay);
 
   CityBuildOptions& getBuildOptions();
   CityTradeOptions& getTradeOptions();
@@ -137,11 +135,11 @@ public:
   std::list< SmartPtr< T > > getBuildings( const BuildingType type )
   {
     std::list< SmartPtr< T > > ret;
-    LandOverlays buildings = _city->getBuildingList( type );
+    LandOverlays buildings = _city->getOverlayList();
     foreach( LandOverlayPtr item, buildings )
     {
       SmartPtr< T > b = item.as<T>();
-      if( b.isValid() )
+      if( b.isValid() && b->getType() == type )
       {
         ret.push_back( b );
       }

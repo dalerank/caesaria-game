@@ -361,7 +361,7 @@ void LowBridge::build( const TilePos& pos )
       subtile->_info = tile.getTerrain().encode();
       subtile->_parent = this;
       
-      city->build( subtile.as<Construction>(), buildPos );
+      BuildEvent::create( buildPos, subtile.as<Construction>() );
       index++;
     }    
   }

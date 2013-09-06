@@ -19,6 +19,7 @@
 #include "oc3_referencecounted.hpp"
 #include "oc3_smartptr.hpp"
 #include "oc3_positioni.hpp"
+#include "oc3_building.hpp"
 #include "oc3_predefinitions.hpp"
 
 class ScenarioEvent : public ReferenceCounted
@@ -46,6 +47,19 @@ public:
 private:
   TilePos _pos;
   Type _type;
+};
+
+
+class BuildEvent : public ScenarioEvent
+{
+public:
+  static void create( const TilePos&, BuildingType type );
+  static void create( const TilePos& pos, ConstructionPtr building );
+
+  virtual void exec( CityPtr city );
+private:
+  TilePos _pos;
+  ConstructionPtr _building;
 };
 
 #endif //_OPENCAESAR3_CITY_EVENT_H_INCLUDE_

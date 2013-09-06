@@ -18,6 +18,8 @@
 #include "oc3_scenario.hpp"
 #include "oc3_city.hpp"
 #include "oc3_gettext.hpp"
+#include "oc3_building_data.hpp"
+#include "oc3_cityfunds.hpp"
 
 void DisasterEvent::create( const TilePos& pos, Type type )
 {
@@ -58,12 +60,46 @@ void DisasterEvent::exec( CityPtr city )
       bool canCreate = ConstructionManager::getInstance().canCreate( dstr2constr[_type] );
       if( canCreate )
       {
-        city->build( dstr2constr[_type], tile->getIJ() );
+        BuildEvent::create( tile->getIJ(), dstr2constr[_type] );
       }
     }
 
     std::string dstr2string[] = { _("##alarm_fire_in_city##"), _("##alarm_building_collapsed##"),
                                   _("##alarm_plague_in_city##") };
     city->onDisasterEvent().emit( _pos, dstr2string[_type] );
+  }
+}
+
+void BuildEvent::create( const TilePos& pos, const BuildingType type )
+{
+  create( pos, ConstructionManager::getInstance().create( type ) );
+}
+
+void BuildEvent::create(const TilePos& pos , ConstructionPtr building)
+{
+  BuildEvent* ev = new BuildEvent();
+  ev->_pos = pos;
+  ev->_building = building;
+
+  ScenarioEventPtr ret( ev );
+  ret->drop();
+
+  Scenario::instance().addEvent( ret );
+}
+
+void BuildEvent::exec(CityPtr city)
+{
+  const BuildingData& buildingData = BuildingDataHolder::instance().getData( _building->getType() );
+  if( _building.isValid() )
+  {
+    _building->build( _pos );
+
+    city->addOverlay( _building.as<LandOverlay>() );
+    FundIssue::resolve( city, CityFunds::buildConstruction, -buildingData.getCost() );
+
+    if( _building->isNeedRoadAccess() && _building->getAccessRoads().empty() )
+    {
+      city->onWarningMessage().emit( "##building_need_road_access##" );
+    }
   }
 }

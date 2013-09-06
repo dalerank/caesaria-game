@@ -250,24 +250,6 @@ LandOverlays& City::getOverlayList()
   return _d->overlayList;
 }
 
-LandOverlays City::getBuildingList(const BuildingType buildingType)
-{
-   LandOverlays res;
-
-   foreach( LandOverlayPtr overlay, _d->overlayList )
-   {
-      // for each overlay
-      ConstructionPtr construction = overlay.as<Construction>();
-      if( construction.isValid() && construction->getType() == buildingType)
-      {
-         // overlay matches the filter
-         res.push_back( overlay );
-      }
-   }
-
-   return res;
-}
-
 Tilemap& City::getTilemap()
 {
    return _d->tilemap;
@@ -319,30 +301,6 @@ int City::getPopulation() const
    /* here we need to calculate population ??? */
    
    return _d->population;
-}
-
-void City::build( const BuildingType type, const TilePos& pos )
-{   
-   // make new building
-   ConstructionPtr building = ConstructionManager::getInstance().create( type );
-   build( building, pos );
-}
-
-void City::build( ConstructionPtr building, const TilePos& pos )
-{
-  const BuildingData& buildingData = BuildingDataHolder::instance().getData( building->getType() );
-  if( building.isValid() )
-  {
-    building->build( pos );
-
-    _d->overlayList.push_back( building.as<LandOverlay>() );
-    _d->funds.resolveIssue( FundIssue( CityFunds::buildConstruction, -buildingData.getCost() ) );
-
-    if( building->isNeedRoadAccess() && building->getAccessRoads().empty() )
-    {
-      _d->onWarningMessageSignal.emit( "##building_need_road_access##" );
-    }
-  }
 }
 
 void City::clearLand( const TilePos& pos  )
@@ -537,6 +495,11 @@ void City::load( const VariantMap& stream )
       _d->walkerList.push_back( walker );
     }
   }
+}
+
+void City::addOverlay( LandOverlayPtr overlay )
+{
+  _d->overlayList.push_back( overlay );
 }
 
 TilePos City::getRoadEntry() const

@@ -68,7 +68,7 @@ void BurningRuins::destroy()
 {
   ServiceBuilding::destroy();
 
-  Scenario::instance().getCity()->build( B_BURNED_RUINS, getTilePos());
+  BuildEvent::create( getTilePos(), B_BURNED_RUINS );
 }
 
 void BurningRuins::deliverService()
@@ -246,7 +246,7 @@ void PlagueRuins::destroy()
 {
   Building::destroy();
 
-  Scenario::instance().getCity()->build( B_BURNED_RUINS, getTilePos());
+  BuildEvent::create( getTilePos(), B_BURNED_RUINS );
 }
 
 void PlagueRuins::applyService(ServiceWalkerPtr walker)
