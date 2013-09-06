@@ -93,15 +93,11 @@ public:
   void load( const VariantMap& stream);
 
   // add construction
-  void addOverlay(LandOverlayPtr overlay);
+  void addOverlay(LandOverlayPtr overlay);  
+  LandOverlayPtr getOverlay( const TilePos& pos ) const;
 
   CityBuildOptions& getBuildOptions();
   CityTradeOptions& getTradeOptions();
-
-  // remove construction
-  void clearLand( const TilePos& pos );
-
-  LandOverlayPtr getOverlay( const TilePos& pos ) const;
 
   void resolveMerchantArrived( EmpireMerchantPtr merchant );
 
@@ -109,6 +105,8 @@ public:
   virtual const GoodStore& getBuys() const;
 
   virtual EmpirePtr getEmpire() const;
+
+  void updateRoads();
    
 oc3_signals public:
   Signal1<int>& onPopulationChanged();

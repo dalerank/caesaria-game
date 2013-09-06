@@ -931,7 +931,7 @@ void TilemapRenderer::Impl::clearAll()
   PtrTilesList tiles4clear = tilemap->getFilledRectangle( startPos, stopPos );
   foreach( Tile* tile, tiles4clear )
   {
-    city->clearLand( tile->getIJ() );
+    ClearLandEvent::create( tile->getIJ() );
   }
 }
 

@@ -303,73 +303,6 @@ int City::getPopulation() const
    return _d->population;
 }
 
-void City::clearLand( const TilePos& pos  )
-{
-  Tile& cursorTile = _d->tilemap.at( pos );
-  TerrainTile& terrain = cursorTile.getTerrain();
-
-  if( terrain.isDestructible() )
-  {
-    Size size( 1 );
-    TilePos rPos = pos;
-
-    LandOverlayPtr overlay = terrain.getOverlay();
-      
-    bool deleteRoad = false;
-
-    if (terrain.isRoad()) deleteRoad = true;
-      
-    if ( overlay.isValid() )	
-    {
-      size = overlay->getSize();
-      rPos = overlay->getTile().getIJ();
-      overlay->deleteLater();
-    }
-
-    PtrTilesArea clearedTiles = _d->tilemap.getFilledRectangle( rPos, size );
-    foreach( Tile* tile, clearedTiles )
-    {
-      tile->setMasterTile(NULL);
-      TerrainTile &terrain = tile->getTerrain();
-      terrain.setTree(false);
-      terrain.setBuilding(false);
-      terrain.setRoad(false);
-      terrain.setGarden(false);
-      terrain.setOverlay(NULL);
-
-      // choose a random landscape picture:
-      // flat land1a 2-9;
-      // wheat: land1a 18-29;
-      // green_something: land1a 62-119;  => 58
-      // green_flat: land1a 232-289; => 58
-
-      // FIX: when delete building on meadow, meadow is replaced by common land tile
-      if( terrain.isMeadow() )
-      {
-        unsigned int originId = terrain.getOriginalImgId();
-        tile->setPicture( &Picture::load( TerrainTileHelper::convId2PicName( originId ) ) );
-      }
-      else
-      {
-        // choose a random background image, green_something 62-119 or green_flat 232-240
-         // 30% => choose green_sth 62-119
-        // 70% => choose green_flat 232-289
-        int startOffset  = ( (rand() % 10 > 6) ? 62 : 232 ); 
-        int imgId = rand() % 58;
-
-        tile->setPicture( &Picture::load( "land1a", startOffset + imgId));
-      }      
-    }
-      
-    // recompute roads;
-    // there is problem that we NEED to recompute all roads map for all buildings
-    // because MaxDistance2Road can be any number    
-    if( deleteRoad )
-    {
-      _d->needRecomputeAllRoads = true;     
-    }
-  }
-}
 
 void City::Impl::collectTaxes( CityPtr city )
 {
@@ -651,4 +584,9 @@ const GoodStore& City::getBuys() const
 EmpirePtr City::getEmpire() const
 {
   return _d->empire;
+}
+
+void City::updateRoads()
+{
+  _d->needRecomputeAllRoads = true;
 }

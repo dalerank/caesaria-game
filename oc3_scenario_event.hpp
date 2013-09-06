@@ -62,4 +62,13 @@ private:
   ConstructionPtr _building;
 };
 
+class ClearLandEvent : public ScenarioEvent
+{
+public:
+  static void create( const TilePos& );
+  virtual void exec( CityPtr city );
+private:
+  TilePos _pos;
+};
+
 #endif //_OPENCAESAR3_CITY_EVENT_H_INCLUDE_

@@ -383,7 +383,7 @@ void HighBridge::destroy()
   foreach( HighBridgeSubTilePtr subtile,  _d->subtiles )
   {
     subtile->_parent = 0;
-    city->clearLand( subtile->_pos );
+    ClearLandEvent::create( subtile->_pos );
 
     std::string picName = TerrainTileHelper::convId2PicName( subtile->_imgId );
     city->getTilemap().at( subtile->_pos ).setPicture( &Picture::load( picName ) );
