@@ -22,6 +22,7 @@
 #include "oc3_predefinitions.hpp"
 #include "oc3_filepath.hpp"
 #include "oc3_service.hpp"
+#include "oc3_variant.hpp"
 
 typedef enum
 {
@@ -42,8 +43,11 @@ public:
   virtual Service::Type getServiceType() const = 0;
   virtual std::string getShortDescription() const = 0;
   virtual const Picture& getPicture() const = 0;
-  virtual void updateRelation( float income ) = 0;
+  virtual void updateRelation( float income, CityPtr city ) = 0;
   virtual DateTime getLastFestivalDate() const = 0;
+  virtual std::string getMoodDescription() const = 0;
+  virtual void load( const VariantMap& vm ) = 0;
+  virtual VariantMap save() const = 0;
 };
 
 class DivinePantheon

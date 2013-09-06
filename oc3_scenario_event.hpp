@@ -71,4 +71,13 @@ private:
   TilePos _pos;
 };
 
+class ShowInfoboxEvent : public ScenarioEvent
+{
+public:
+  static void create( const std::string& title, const std::string& text );
+  virtual void exec( CityPtr city );
+private:
+  std::string _title, _text;
+};
+
 #endif //_OPENCAESAR3_CITY_EVENT_H_INCLUDE_

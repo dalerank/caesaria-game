@@ -30,6 +30,7 @@
 #include "oc3_picture_bank.hpp"
 #include "oc3_building_factory.hpp"
 #include "oc3_goodstore.hpp"
+#include "oc3_stringhelper.hpp"
 #include "oc3_name_generator.hpp"
 
 class CartPusher::Impl
@@ -181,9 +182,9 @@ void CartPusher::computeWalkerDestination()
    Propagator pathPropagator( _d->city );
    _d->consumerBuilding = 0;
 
-   _OC3_DEBUG_BREAK_IF( _d->producerBuilding.isNull() && "CartPusher: producerBuilding can't be NULL" );
    if( _d->producerBuilding.isNull() )
    {
+     StringHelper::debug( 0xff, "CartPusher destroyed: producerBuilding can't be NULL" );
      deleteLater();
      return;
    }
@@ -273,6 +274,10 @@ BuildingPtr reserveShortestPath( const BuildingType buildingType,
     if (reservationID != 0)
     {
       oPathWay = *shortestPath;
+    }
+    else
+    {
+      res = BuildingPtr();
     }
   }
 

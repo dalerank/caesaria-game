@@ -20,6 +20,8 @@
 #include "oc3_gettext.hpp"
 #include "oc3_building_data.hpp"
 #include "oc3_cityfunds.hpp"
+#include "oc3_guienv.hpp"
+#include "oc3_gui_info_box.hpp"
 
 void DisasterEvent::create( const TilePos& pos, Type type )
 {
@@ -186,3 +188,22 @@ void ClearLandEvent::exec( CityPtr city )
   }
 }
 
+
+
+void ShowInfoboxEvent::create( const std::string& title, const std::string& text )
+{
+  ShowInfoboxEvent* ev = new ShowInfoboxEvent();
+  ev->_title = title;
+  ev->_text = text;
+
+  ScenarioEventPtr ret( ev );
+  ret->drop();
+
+  Scenario::instance().addEvent( ret );
+}
+
+void ShowInfoboxEvent::exec(CityPtr city)
+{
+  InfoBoxText* msgWnd = new InfoBoxText( GuiEnv::instance().getRootWidget(), _title, _text );
+  msgWnd->show();
+}

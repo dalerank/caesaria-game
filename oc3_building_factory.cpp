@@ -49,7 +49,7 @@ Factory::Factory(const Good::Type inType, const Good::Type outType,
                   const BuildingType type, const Size& size )
 : WorkingBuilding( type, size ), _d( new Impl )
 {
-   _d->productionRate = 4.8f;
+   _d->productionRate = 2.f;
    _d->progress = 0.0f;
    _d->isActive = true;
    _d->produceGood = false;
@@ -75,6 +75,11 @@ GoodStock& Factory::getOutGood()
 int Factory::getProgress()
 {
   return math::clamp<int>( (int)_d->progress, 0, 100 );
+}
+
+void Factory::updateProgress(float value)
+{
+  _d->progress += value;
 }
 
 bool Factory::mayWork() const

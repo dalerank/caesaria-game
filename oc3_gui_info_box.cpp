@@ -307,7 +307,7 @@ GuiInfoFactory::GuiInfoFactory( Widget* parent, const Tile& tile)
 
   // paint progress
   std::string text = StringHelper::format( 0xff, _("Le travail est a %d%% termine."), building->getProgress() );
-  Label* lbProgress = new Label( this, Rect( _d->lbTitle->getLeftdownCorner(), Size( getWidth() - 32, 30 ) ), text );
+  new Label( this, Rect( _d->lbTitle->getLeftdownCorner(), Size( getWidth() - 32, 30 ) ), text );
 
   if( building->getOutGoodType() != Good::none )
   {
@@ -330,6 +330,7 @@ GuiInfoFactory::GuiInfoFactory( Widget* parent, const Tile& tile)
 
 std::string GuiInfoFactory::getInfoText()
 {
+  return "";
   /*std::string textKey = GoodHelper::getName( _building->getOutGood().type() );
   if (_building->isActive() == false)
   {
@@ -374,7 +375,7 @@ std::string GuiInfoFactory::getInfoText()
 InfoBoxGranary::InfoBoxGranary( Widget* parent, const Tile& tile )
   : InfoBoxSimple( parent, Rect( 0, 0, 510, 280 ), Rect( 16, 80, 510 - 16, 80 + 62) )
 {
-  GranaryPtr _granary = tile.getTerrain().getOverlay().as<Granary>();
+  _granary = tile.getTerrain().getOverlay().as<Granary>();
   Size btnOrdersSize( 350, 20 );
   PushButton* btnOrders = new PushButton( this, Rect( Point( (getWidth() - btnOrdersSize.getWidth())/ 2, getHeight() - 34 ), btnOrdersSize),
                                          _("##special_orders##"), -1, false, PushButton::whiteBorderUp );
@@ -811,6 +812,24 @@ InfoBoxColosseum::InfoBoxColosseum(Widget *parent, const Tile &tile)
 }
 
 InfoBoxColosseum::~InfoBoxColosseum()
+{
+
+}
+
+InfoBoxText::InfoBoxText(Widget* parent, const std::string& title, const std::string& message)
+  : InfoBoxSimple( parent, Rect( 0, 0, 480, 320 ), Rect( 18, 40, 480 - 18, 320 - 50 ) )
+{
+  setTitle( title );
+  _d->isAutoPosition = false;
+
+  setPosition( Point( parent->getWidth() - getWidth(), parent->getHeight() - getHeight() ) / 2 );
+
+  _d->lbText->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
+  _d->lbText->setWordWrap( true );
+  _d->lbText->setText( message );
+}
+
+InfoBoxText::~InfoBoxText()
 {
 
 }

@@ -137,7 +137,7 @@ public:
     foreach( LandOverlayPtr item, buildings )
     {
       SmartPtr< T > b = item.as<T>();
-      if( b.isValid() && b->getType() == type )
+      if( b.isValid() && (b->getType() == type || type == B_MAX) )
       {
         ret.push_back( b );
       }

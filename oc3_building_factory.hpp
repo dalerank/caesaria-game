@@ -42,7 +42,9 @@ public:
   // called when the factory has made 100 good units
   virtual void deliverGood();
   virtual void receiveGood();
+
   virtual int getProgress();
+  virtual void updateProgress( float value );
 
   virtual bool isActive() const;
   virtual void setActive( bool active );

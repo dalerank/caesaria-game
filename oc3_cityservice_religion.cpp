@@ -20,7 +20,10 @@
 #include "oc3_gamedate.hpp"
 #include "oc3_building_religion.hpp"
 #include "oc3_divinity.hpp"
+#include "oc3_scenario_event.hpp"
 #include "oc3_foreach.hpp"
+#include "oc3_stringhelper.hpp"
+#include "oc3_gettext.hpp"
 
 class CityServiceReligion::Impl
 {
@@ -71,5 +74,5 @@ void CityServiceReligion::Impl::updateRelation(RomeDivinityPtr divn)
   }
 
   float faithIncome = (float)peopleReached / (float)(city->getPopulation()+1);
-  divn->updateRelation( faithIncome );
+  divn->updateRelation( faithIncome, city );
 }

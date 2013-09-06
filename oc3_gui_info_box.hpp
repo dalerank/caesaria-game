@@ -194,7 +194,7 @@ public:
 class InfoBoxText : public InfoBoxSimple
 {
 public:
-  InfoBoxText( Widget* parent, const std::string& message );
+  InfoBoxText(Widget* parent, const std::string& title, const std::string& message );
   virtual ~InfoBoxText();
 };
 
