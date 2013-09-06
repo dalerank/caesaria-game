@@ -177,10 +177,10 @@ public:
    void drawGood(HousePtr house, const Good::Type &goodType, const int col, const int row, const int startY );
 };
 
-class GuiBuilding : public InfoBoxSimple
+class InfoBoxBuilding : public InfoBoxSimple
 {
 public:
-   GuiBuilding( Widget* parent, const Tile& tile );
+   InfoBoxBuilding( Widget* parent, const Tile& tile );
 };
 
 // Simple info box with static text on plain background
@@ -189,6 +189,13 @@ class InfoBoxCitizen : public InfoBoxSimple
 public:
   InfoBoxCitizen(Widget* parent, const WalkerList& walkers );
   virtual ~InfoBoxCitizen();
+};
+
+class InfoBoxText : public InfoBoxSimple
+{
+public:
+  InfoBoxText( Widget* parent, const std::string& message );
+  virtual ~InfoBoxText();
 };
 
 #endif

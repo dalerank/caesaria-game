@@ -211,7 +211,7 @@ InfoBoxSenate::~InfoBoxSenate()
 }
 
 InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
-  : InfoBoxSimple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 150 ) )
+  : InfoBoxSimple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 50 ) )
 {
   HousePtr house = tile.getTerrain().getOverlay().as<House>();
   setTitle( house->getName() );
@@ -597,7 +597,7 @@ void InfoBoxMarket::drawGood( MarketPtr market, const Good::Type &goodType, int 
   font2.draw(*_d->bgPicture, outText, pos.getX() + 30, pos.getY(), false );
 }
 
-GuiBuilding::GuiBuilding( Widget* parent, const Tile& tile )
+InfoBoxBuilding::InfoBoxBuilding( Widget* parent, const Tile& tile )
   : InfoBoxSimple( parent, Rect( 0, 0, 450, 220 ), Rect( 16, 60, 450 - 16, 60 + 50) )
 {
   BuildingPtr building = tile.getTerrain().getOverlay().as<Building>();

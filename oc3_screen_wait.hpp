@@ -14,7 +14,7 @@ public:
     ScreenWait();
     ~ScreenWait();
 
-    void initialize( GfxEngine& engine, GuiEnv& gui );
+    void initialize();
 
     virtual void draw();
 

@@ -43,7 +43,7 @@ public:
 
     // draws the menu/menubar/etc... on the screen
     void draw();
-    void initialize( GfxEngine& engine, GuiEnv& gui );
+    void initialize();
 
     const std::string& getMapName() const;
 

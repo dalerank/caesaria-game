@@ -112,7 +112,7 @@ Widget::Widget( Widget* parent, int id, const Rect& rectangle )
   _isVisible(true), _isEnabled(true),
   _isSubElement(false), _noClip(false), _id(id), _isTabStop(false), _tabOrder(-1), _isTabGroup(false),
   _alignLeft(alignUpperLeft), _alignRight(alignUpperLeft), _alignTop(alignUpperLeft), _alignBottom(alignUpperLeft),
-  _environment( parent ? parent->getEnvironment() : NULL ), _eventHandler( NULL )
+  _environment( parent ? parent->getEnvironment() : 0 ), _eventHandler( NULL )
 {
   _d->maxSize = Size(0,0);
   _d->minSize = Size(1,1);
@@ -127,7 +127,7 @@ Widget::Widget( Widget* parent, int id, const Rect& rectangle )
 #endif
 
   // if we were given a parent to attach to
-  if (parent)
+  if( parent )
   {
     parent->addChild_(this);
     recalculateAbsolutePosition(true);

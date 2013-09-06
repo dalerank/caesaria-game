@@ -56,7 +56,9 @@ public:
   GuiEnv* gui;
   
   void initLocale(const std::string & localePath);
+  void initVideo();
   void initPictures(const io::FilePath& resourcePath);
+  void initGuiEnvironment();
 };
 
 void Application::Impl::initLocale(const std::string & localePath)
@@ -67,10 +69,10 @@ void Application::Impl::initLocale(const std::string & localePath)
   textdomain( "caesar" );
 }
 
-void Application::initVideo()
+void Application::Impl::initVideo()
 {
   StringHelper::debug( 0xff, "init graphic engine" );
-  _d->engine = new GfxSdlEngine();
+  engine = new GfxSdlEngine();
    
   /* Typical resolutions:
    * 640 x 480; 800 x 600; 1024 x 768; 1400 x 1050; 1600 x 1200
@@ -97,9 +99,9 @@ void Application::mountArchives()
   fs.mountArchive( AppConfig::rcpath( "/pics/pics_oc3.zip" ) );
 }
 
-void Application::initGuiEnvironment()
+void Application::Impl::initGuiEnvironment()
 {
-  _d->gui = new GuiEnv( *_d->engine );
+  GuiEnv::instance().initialize( *engine );
 }
 
 void Application::Impl::initPictures(const io::FilePath& resourcePath)
@@ -117,14 +119,14 @@ void Application::Impl::initPictures(const io::FilePath& resourcePath)
 void Application::setScreenWait()
 {
    ScreenWait screen;
-   screen.initialize( *_d->engine, *_d->gui);
+   screen.initialize();
    screen.drawFrame();
 }
 
 void Application::setScreenMenu()
 {
   ScreenMenu screen;
-  screen.initialize( *_d->engine, *_d->gui );
+  screen.initialize();
 
   int result = screen.run();
   Scenario& scenario = Scenario::instance();
@@ -174,7 +176,7 @@ void Application::setScreenGame()
 {
   ScreenGame screen;
   screen.setScenario( Scenario::instance() );
-  screen.initialize( *_d->engine, *_d->gui );
+  screen.initialize();
   int result = screen.run();
 
   switch( result )
@@ -198,14 +200,13 @@ Application::Application() : _d( new Impl )
    _d->nextScreen = SCREEN_NONE;
 }
 
-void Application::start()
+void Application::initialize()
 {
    //Create right PictureBank instance in the beginning   
   StringHelper::redirectCout2( "stdout.log" );
   _d->initLocale(AppConfig::get( AppConfig::localePath ).toString());
-  
-  initVideo();
-  initGuiEnvironment();
+  _d->initVideo();
+  _d->initGuiEnvironment();
   initSound();
   //SoundEngine::instance().play_music("resources/sound/drums.wav");
   mountArchives();  // init some quick pictures for screenWait
@@ -216,7 +217,10 @@ void Application::start()
   HouseSpecHelper::getInstance().initialize( AppConfig::rcpath( AppConfig::houseModel ) );
   DivinePantheon::getInstance().initialize(  AppConfig::rcpath( AppConfig::pantheonModel ) );
   BuildingDataHolder::instance().initialize( AppConfig::rcpath( AppConfig::constructionModel ) );
+}
 
+void Application::exec()
+{
   _d->nextScreen = SCREEN_MENU;
   _d->engine->setFlag( 0, 1 );
 
@@ -252,7 +256,9 @@ int main(int argc, char* argv[])
    try
    {
       Application app;
-      app.start();
+      app.initialize();
+
+      app.exec();
    }
    catch( Exception e )
    {

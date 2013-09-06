@@ -25,9 +25,11 @@ class GfxEngine;
 class GuiEnv : Widget
 {
 public:
-  GuiEnv( GfxEngine& painter );
+  static GuiEnv& instance();
 
   ~GuiEnv();
+
+  void initialize( GfxEngine& painter );
 
   bool hasFocus( const Widget* element) const;
   bool setFocus( Widget* element);
@@ -54,13 +56,11 @@ public:
   void clear();
    
 private:    
+  GuiEnv();
+
   void drawTooltip_( unsigned int time );
   void updateHoveredElement( const Point& mousePos);
-  Widget* getNextWidget(bool reverse, bool group);
-
-  Widget* _CheckParent( Widget* parent );
-  
-  void threatDeletionQueue_();
+  Widget* getNextWidget(bool reverse, bool group); 
 
   class Impl;
   std::auto_ptr< Impl > _d;

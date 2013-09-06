@@ -19,8 +19,6 @@
 #ifndef SCREEN_HPP
 #define SCREEN_HPP
 
-class GfxEngine;
-class GuiEnv;
 struct NEvent;
 
 class Screen
@@ -43,7 +41,7 @@ public:
    // draws the complete frame
     void drawFrame();
 
-    virtual void initialize( GfxEngine& engine, GuiEnv& gui ) = 0;
+    virtual void initialize() = 0;
 
 protected:
     virtual bool isStopped() const;
