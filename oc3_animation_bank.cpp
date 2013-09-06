@@ -21,6 +21,7 @@
 #include "oc3_picture.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_walker_emigrant.hpp"
+#include <vector>
 
 namespace{
   static const Point frontCartOffsetSouth = Point( -33, 22 );
@@ -49,7 +50,7 @@ class AnimationBank::Impl
 public:
   std::map< int, PicturesArray > carts;
   
-  typedef std::map< int, AnimationBank::MovementAnimation > Animations;
+  typedef std::vector< AnimationBank::MovementAnimation > Animations;
   Animations animations; // anim[WalkerGraphic][WalkerAction]
 
   // fills the cart pictures
@@ -90,6 +91,8 @@ void AnimationBank::Impl::loadCarts()
 
 void AnimationBank::Impl::loadWalkers()
 {
+  animations.resize( WG_MAX );
+
   animations[WG_NONE] = AnimationBank::MovementAnimation();
   animations[WG_POOR] =     loadAnimation( "citizen01", 1, 12 );
   animations[WG_BATH] =     loadAnimation( "citizen01", 105, 12);
@@ -160,15 +163,13 @@ AnimationBank::MovementAnimation AnimationBank::Impl::loadAnimation( const std::
 const AnimationBank::MovementAnimation& AnimationBank::getWalker(const WalkerGraphicType walkerGraphic)
 {
   AnimationBank& inst = instance();
-  Impl::Animations::iterator it = inst._d->animations.find( walkerGraphic );
-
-  if( it == inst._d->animations.end() )
+  if( walkerGraphic >= inst._d->animations.size() )
   {
     StringHelper::debug( 0xff, "Can't find animation map for type %d", walkerGraphic );
     return inst._d->animations[ WG_NONE ];
   }
 
-  return it->second;
+  return inst._d->animations[ walkerGraphic ];
 }
 
 void AnimationBank::loadWalkers()
