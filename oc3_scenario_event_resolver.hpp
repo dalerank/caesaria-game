@@ -12,52 +12,30 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
-#ifndef SCENARIO_HPP
-#define SCENARIO_HPP
-
-#include <string>
+#ifndef _OPENCAESAR3_SCENARIO_EVENT_RESOLVER_H_INCLUDE_
+#define _OPENCAESAR3_SCENARIO_EVENT_RESOLVER_H_INCLUDE_
 
 #include "oc3_predefinitions.hpp"
 #include "oc3_scopedptr.hpp"
-#include "oc3_filepath.hpp"
 #include "oc3_scenario_event.hpp"
 
-class CityWinTargets;
-class Player;
+class ScenarioEventResolver;
+typedef SmartPtr<ScenarioEventResolver> ScenarioEventResolverPtr;
 
-class Scenario
+class ScenarioEventResolver : public ReferenceCounted
 {
 public:
-  static Scenario& instance();
-  ~Scenario();
-
-  bool save( const io::FilePath& filename ) const;
-  bool load( const io::FilePath& filename );
-
-  EmpirePtr getEmpire() const;
-  CityPtr getCity();
-  Player& getPlayer() const;
-  const CityPtr getCity() const;
-  CityWinTargets& getWinTargets();
+  static ScenarioEventResolverPtr create(CityPtr city );
 
   void addEvent( ScenarioEventPtr event );
+  void update( unsigned int time );
 
-  void reset();
-
-  void changeTimeMultiplier( int percent );
-
-  void timeStep();
-
-  std::string getDescription() const;
 private:
-  Scenario();
-  
+  ScenarioEventResolver();
+
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#endif
+#endif //_OPENCAESAR3_SCENARIO_EVENT_RESOLVER_H_INCLUDE_

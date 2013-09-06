@@ -30,6 +30,7 @@
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_cityfunds.hpp"
 #include "oc3_gamedate.hpp"
+#include "oc3_scenario_event_resolver.hpp"
 
 class Scenario::Impl
 {
@@ -42,6 +43,7 @@ public:
   CityWinTargets targets;
   EmpirePtr empire;
   double time, saveTime;
+  ScenarioEventResolverPtr eventResolver;
 
   void resolveMonthChange( const DateTime& time )
   {
@@ -123,6 +125,11 @@ CityWinTargets& Scenario::getWinTargets()
   return _d->targets;
 }
 
+void Scenario::addEvent(ScenarioEventPtr event)
+{
+  _d->eventResolver->addEvent( event );
+}
+
 Scenario::~Scenario()
 {
 
@@ -132,6 +139,7 @@ void Scenario::reset()
 {
   _d->empire = Empire::create();
   _d->city = City::create( _d->empire );
+  _d->eventResolver = ScenarioEventResolver::create( _d->city );
 
   GameDate::instance().onMonthChanged().disconnectAll();
 
@@ -165,4 +173,6 @@ void Scenario::timeStep()
 
     _d->saveTime += 1;
   }
+
+  _d->eventResolver->update( _d->time );
 }

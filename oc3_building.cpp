@@ -27,6 +27,7 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_city.hpp"
 #include "oc3_foreach.hpp"
+#include "oc3_scenario_event.hpp"
 
 class LandOverlay::Impl
 {
@@ -321,14 +322,14 @@ int Construction::getMaxDistance2Road() const
 
 void Construction::burn()
 {
-   deleteLater();
-   Scenario::instance().getCity()->disaster( getTile().getIJ(), DSTR_BURN );
+  deleteLater();
+  DisasterEvent::create( getTile().getIJ(), DisasterEvent::fire );
 }
 
 void Construction::collapse()
 {
-   deleteLater();
-   Scenario::instance().getCity()->disaster( getTile().getIJ(), DSTR_COLLAPSE );
+  deleteLater();
+  DisasterEvent::create( getTile().getIJ(), DisasterEvent::collapse );
 }
 
 char Construction::getDesirabilityInfluence() const
