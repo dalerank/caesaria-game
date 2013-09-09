@@ -25,7 +25,7 @@
 class Empire::Impl
 {
 public:
-  EmpireCities cities;
+  EmpireCityList cities;
   EmpireTrading trading;
 };
 
@@ -34,9 +34,16 @@ Empire::Empire() : _d( new Impl )
   _d->trading.init( this );
 }
 
-EmpireCities Empire::getCities() const
+EmpireCityList Empire::getCities() const
 {
-  return _d->cities;
+  EmpireCityList ret;
+  foreach( EmpireCityPtr city, _d->cities )
+  {
+    if( city->isAvailable() )
+      ret.push_back( city );
+  }
+
+  return ret;
 }
 
 Empire::~Empire()
@@ -55,11 +62,11 @@ void Empire::initialize( const io::FilePath& filename )
     return;
   }
 
-  for( VariantMap::iterator it=cities.begin(); it != cities.end(); it++ )
+  foreach( VariantMap::value_type& item, cities )
   {
-    EmpireCityPtr city = ComputerCity::create( this, it->first );
+    EmpireCityPtr city = ComputerCity::create( this, item.first );
     addCity( city );
-    city->load( it->second.toMap() );
+    city->load( item.second.toMap() );
   }
 }
 
@@ -115,13 +122,14 @@ void Empire::save( VariantMap& stream ) const
 
 void Empire::load( const VariantMap& stream )
 {
-  const VariantMap& cities = stream.get( "cities" ).toMap();
-  for( VariantMap::const_iterator it=cities.begin(); it != stream.end(); it++ )
+  VariantMap cities = stream.get( "cities" ).toMap();
+
+  foreach( VariantMap::value_type& item, cities )
   {
-    EmpireCityPtr city = getCity( it->first );
+    EmpireCityPtr city = getCity( item.first );
     if( city != 0 )
     {
-      city->load( it->second.toMap() );
+      city->load( item.second.toMap() );
     }
   }
 }

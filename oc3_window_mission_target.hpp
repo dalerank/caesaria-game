@@ -23,7 +23,7 @@
 class MissionTargetsWindow : public Widget  
 {
 public:
-  static MissionTargetsWindow* create( Widget* parent, int id, Scenario* scenario );
+  static MissionTargetsWindow* create( Scenario* scenario , int id=-1 );
   ~MissionTargetsWindow();
 
   void draw( GfxEngine& painter );

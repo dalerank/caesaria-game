@@ -28,6 +28,7 @@ public:
   std::string name;
   EmpirePtr empire;
   bool distantCity;
+  bool isAvailable;
   SimpleGoodStore sellStore;
   SimpleGoodStore buyStore;
   DateTime lastTimeUpdate;
@@ -41,6 +42,7 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name ) : _d( ne
   _d->distantCity = false;
   _d->empire = empire;
   _d->merchantsNumber = 0;
+  _d->isAvailable = true;
 }
 
 std::string ComputerCity::getName() const
@@ -61,6 +63,16 @@ void ComputerCity::setLocation( const Point& location )
 bool ComputerCity::isDistantCity() const
 {
   return _d->distantCity;
+}
+
+bool ComputerCity::isAvailable() const
+{
+  return _d->isAvailable;
+}
+
+void ComputerCity::setAvailable(bool value)
+{
+  _d->isAvailable = value;
 }
 
 void ComputerCity::save( VariantMap& options ) const
@@ -107,11 +119,14 @@ void ComputerCity::save( VariantMap& options ) const
   options[ "bought" ] = vm_bought;
   options[ "lastTimeMerchantSend" ] = _d->lastTimeMerchantSend;
   options[ "lastTimeUpdate" ] = _d->lastTimeUpdate;
+  options[ "available" ] = _d->isAvailable;
 }
 
 void ComputerCity::load( const VariantMap& options )
 {
   setLocation( options.get( "location" ).toPoint() );
+
+  _d->isAvailable = options.get( "available" ).toBool();
 
   Variant vTime = options.get( "lastTimeUpdate" );
   _d->lastTimeUpdate = vTime.isNull() ? GameDate::current() : vTime.toDateTime();

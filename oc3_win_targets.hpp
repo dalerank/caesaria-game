@@ -34,6 +34,7 @@ public:
   int getFavour() const;
   int getPeace() const;
   int getPopulation() const;
+  const std::string& getOverview() const;
 
   bool isSuccess() const;
 

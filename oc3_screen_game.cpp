@@ -165,6 +165,8 @@ void ScreenGame::initialize()
   CONNECT( _d->extMenu, onSwitchAlarm(), &_d->alarmsHolder, AlarmEventHolder::next );
   CONNECT( &_d->alarmsHolder, onMoveToAlarm(), &_d->mapArea, TilemapArea::setCenter );
   CONNECT( &_d->alarmsHolder, onAlarmChange(), _d->extMenu, ExtentMenu::setAlarmEnabled );
+
+  _d->showMissionTaretsWindow();
 }
 
 void ScreenGame::Impl::showSaveDialog()
@@ -408,5 +410,5 @@ void ScreenGame::Impl::showEmpireMapWindow()
 
 void ScreenGame::Impl::showMissionTaretsWindow()
 {
-  MissionTargetsWindow::create( GuiEnv::instance().getRootWidget(), -1, scenario );
+  MissionTargetsWindow::create( scenario );
 }

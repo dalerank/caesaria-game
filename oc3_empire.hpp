@@ -27,7 +27,7 @@ class Empire : public ReferenceCounted, public Serializable
 public:
   static EmpirePtr create();
   ~Empire();
-  EmpireCities getCities() const;
+  EmpireCityList getCities() const;
   EmpireCityPtr getCity( const std::string& name ) const;
   EmpireCityPtr addCity( EmpireCityPtr city );
   EmpireCityPtr initPlayerCity( EmpireCityPtr city );

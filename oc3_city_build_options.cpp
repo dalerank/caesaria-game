@@ -14,7 +14,11 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_city_build_options.hpp"
+#include "oc3_building_data.hpp"
+#include "oc3_foreach.hpp"
 #include <map>
+
+static const char* disableAll = "disable_all";
 
 class CityBuildOptions::Impl
 {
@@ -67,6 +71,26 @@ void CityBuildOptions::setIndustryAvaible( const BuildMenuType type, bool mayBui
 void CityBuildOptions::clear()
 {
   _d->rules.clear();
+}
+
+void CityBuildOptions::load(const VariantMap& options)
+{
+  if( options.get( "farm" ).toString() == disableAll )
+    setIndustryAvaible( BM_FARM, false );
+
+  if( options.get( "raw_material" ).toString() == disableAll )
+    setIndustryAvaible( BM_RAW_MATERIAL, false );
+
+  if( options.get( "factory" ).toString() == disableAll)
+    setIndustryAvaible( BM_FACTORY, false );
+
+  VariantMap buildings = options.get( "buildings" ).toMap();
+  foreach( VariantMap::value_type& item, buildings )
+  {
+    BuildingType btype = BuildingDataHolder::getType( item.first );
+    setBuildingAvailble( btype, item.second.toBool() );
+  }
+
 }
 
 bool CityBuildOptions::isBuildingAvailble( const BuildingType type ) const

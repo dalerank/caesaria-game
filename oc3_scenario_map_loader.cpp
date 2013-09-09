@@ -79,6 +79,7 @@ public:
 bool ScenarioMapLoader::load(const std::string& filename, Scenario& oScenario)
 {
   std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
+
   _d->initClimate(f, oScenario.getCity());
 
   _d->loadMap(f, oScenario);

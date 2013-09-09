@@ -189,8 +189,6 @@ void ClearLandEvent::exec( CityPtr city )
   }
 }
 
-
-
 void ShowInfoboxEvent::create( const std::string& title, const std::string& text )
 {
   ShowInfoboxEvent* ev = new ShowInfoboxEvent();

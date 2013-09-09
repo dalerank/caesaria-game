@@ -174,8 +174,7 @@ BuildingData::BuildingData(const BuildingType buildingType, const std::string &n
   _d->buildingType = buildingType;
   _buildingClass = BC_NONE;
   _name = name;
-  std::string key = "building_"+name;
-  _prettyName = _(key.c_str());  // i18n translation
+  _prettyName = "##" + name + "##";  // i18n translation
   _cost = cost;
   _d->desirability.base = 0;
   _d->desirability.range = 0;
@@ -378,6 +377,13 @@ void BuildingDataHolder::initialize( const io::FilePath& filename )
     bData._d->desirability.range = (int)desMap[ "range" ];
     bData._d->desirability.step  = (int)desMap[ "step" ];
     bData._employers = (int)options[ "employers" ];
+
+    Variant prettyName = options[ "prettyName" ];
+    if( prettyName.isValid() )
+    {
+      bData._prettyName = prettyName.toString();
+    }
+
     bData._buildingClass = getClass( options[ "class" ].toString() );
 
     VariantList basePic = options[ "image" ].toList();

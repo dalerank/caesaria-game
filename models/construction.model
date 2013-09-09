@@ -636,6 +636,8 @@
   clay_pit : 
   {
   cost : 40,
+  prettyName : "##clay_pit##"
+  description : "##clay_pit_help##"
 	desirability : { base : -3,	range : 3,	step : 1 }
 	employers : 10
 	class : "rawmaterial"

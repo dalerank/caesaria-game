@@ -30,6 +30,8 @@ public:
   virtual void setLocation( const Point& location );
 
   bool isDistantCity() const;
+  virtual bool isAvailable() const;
+  virtual void setAvailable(bool value);
 
   virtual void timeStep( unsigned int time );
 

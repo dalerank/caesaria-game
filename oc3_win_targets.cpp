@@ -27,6 +27,7 @@ public:
   int favour;
   int peace;
   bool success;
+  std::string overview;
 };
 
 CityWinTargets::CityWinTargets() : _d( new Impl )
@@ -54,11 +55,12 @@ void CityWinTargets::load( const VariantMap& stream )
 {
   _d->maxHouseLevel = HouseSpecHelper::getInstance().getHouseLevel( stream.get( "maxHouseLevel" ).toString() );
   _d->success = stream.get( "success" ).toBool();
-  _d->population = stream.get( "population" ).toInt();
-  _d->culture = stream.get( "culture" ).toInt();
-  _d->prosperity = stream.get( "prosperity" ).toInt();
-  _d->favour = stream.get( "favour" ).toInt();
-  _d->peace = stream.get( "peace" ).toInt();
+  _d->population = (int)stream.get( "population" );
+  _d->culture = (int)stream.get( "culture" );
+  _d->prosperity = (int)stream.get( "prosperity" );
+  _d->favour = (int)stream.get( "favour" );
+  _d->peace = (int)stream.get( "peace" );
+  _d->overview = stream.get( "overview" ).toString();
 }
 
 int CityWinTargets::getCulture() const
@@ -84,4 +86,9 @@ int CityWinTargets::getPeace() const
 int CityWinTargets::getPopulation() const
 {
   return _d->population;
+}
+
+const std::string&CityWinTargets::getOverview() const
+{
+  return _d->overview;
 }
