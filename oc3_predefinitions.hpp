@@ -35,15 +35,14 @@ PREFEDINE_CLASS_SMARTPOINTER_LIST(College,List)
 PREFEDINE_CLASS_SMARTPOINTER_LIST(WorkingBuilding,List)
 PREFEDINE_CLASS_SMARTPOINTER_LIST(EmpireTradeRoute,List)
 PREFEDINE_CLASS_SMARTPOINTER_LIST(Warehouse,List)
+PREFEDINE_CLASS_SMARTPOINTER_LIST(Farm,List)
+PREFEDINE_CLASS_SMARTPOINTER_LIST(EmpireCity,List)
 
 PREFEDINE_CLASS_SMARTPOINTER(LandOverlay)
 typedef std::list< LandOverlayPtr > LandOverlays;
 
 PREFEDINE_CLASS_SMARTPOINTER(Building)
 typedef std::list< BuildingPtr > Buildings;
-
-PREFEDINE_CLASS_SMARTPOINTER(EmpireCity)
-typedef std::list< EmpireCityPtr > EmpireCities;
 
 PREFEDINE_CLASS_SMARTPOINTER(Factory)
 typedef std::list< FactoryPtr > Factories;
@@ -92,6 +91,7 @@ class Picture;
 class TilePos;
 class Size;
 class TerrainTile;
+class Tilemap;
 class VariantMap;
 
 class Widget;

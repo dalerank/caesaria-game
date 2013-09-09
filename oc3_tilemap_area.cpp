@@ -19,12 +19,12 @@
 
 #include "oc3_tilemap_area.hpp"
 
-#include <algorithm>
 #include "oc3_positioni.hpp"
 #include "oc3_size.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_tile.hpp"
+#include "oc3_foreach.hpp"
 
 class TilemapArea::Impl
 {
@@ -33,7 +33,7 @@ public:
   Size viewSize;    // width of the view (in tiles)  nb_tilesX = 1+2*_view_width
                     // height of the view (in tiles)  nb_tilesY = 1+2*_view_height
 
-  std::vector< TilePos > coordinates;  // cached list of visible tiles
+  PtrTilesArea tiles;  // cached list of visible tiles
 };
 
 TilemapArea::TilemapArea() : _d( new Impl )
@@ -56,35 +56,34 @@ void TilemapArea::init(Tilemap &tilemap)
   _map_size = tilemap.getSize();
 }
 
-void TilemapArea::setViewSize(const Size& newSize )
+void TilemapArea::setViewport(const Size& newSize )
 {
-  if (_d->viewSize != newSize )
+  if( _d->viewSize != newSize )
   {
-    _d->coordinates.clear();
+    _d->tiles.clear();
   }
+
   _d->viewSize = Size( (newSize.getWidth() + 59) / 60, ( newSize.getHeight() + 29) / 30 );
   
-  StringHelper::debug( 0xff, "width:%d height:%d", _d->viewSize.getWidth(), _d->viewSize.getHeight() );
-  
-  _d->coordinates.reserve( newSize.getArea() ); // ???? WTF
+  StringHelper::debug( 0xff, "TilemapArea::setViewport w=%d h=%d", _d->viewSize.getWidth(), _d->viewSize.getHeight() );
 }
 
-void TilemapArea::setCenterIJ(const TilePos& pos )
+void TilemapArea::setCenter(const TilePos& pos )
 {
   _center_i = pos.getI();
   _center_j = pos.getJ();
 
-  setCenterXZ( _center_i + _center_j, _map_size - 1 + _center_j - _center_i );
+  setCenter( Point( _center_i + _center_j, _map_size - 1 + _center_j - _center_i ) );
 }
 
-void TilemapArea::setCenterXZ(const int x, const int z)
+void TilemapArea::setCenter( const Point& pos )
 {
-  if( _d->centerMapXZ.getX() != x || _d->centerMapXZ.getY() != z)
+  if( _d->centerMapXZ != pos  )
   {
-    _d->coordinates.clear();
+    _d->tiles.clear();
   }
   
-  _d->centerMapXZ = Point( x, z );
+  _d->centerMapXZ = pos;
 }
 
 int TilemapArea::getCenterX() const  {   return _d->centerMapXZ.getX();   }
@@ -95,27 +94,27 @@ int TilemapArea::getCenterJ() const  {   return _center_j;   }
 
 void TilemapArea::moveRight(const int amount)
 {
-  setCenterXZ(getCenterX() + amount, getCenterZ());
+  setCenter( Point( getCenterX() + amount, getCenterZ() ) );
 }
 
 void TilemapArea::moveLeft(const int amount)
 {
-  setCenterXZ(getCenterX() - amount, getCenterZ());
+  setCenter( Point( getCenterX() - amount, getCenterZ() ) );
 }
 
 void TilemapArea::moveUp(const int amount)
 {
-  setCenterXZ(getCenterX(), getCenterZ() + amount);
+  setCenter( Point( getCenterX(), getCenterZ() + amount ) );
 }
 
 void TilemapArea::moveDown(const int amount)
 {
-  setCenterXZ(getCenterX(), getCenterZ() - amount);
+  setCenter( Point( getCenterX(), getCenterZ() - amount ) );
 }
 
-const std::vector< TilePos >& TilemapArea::getTiles()
+const PtrTilesArea& TilemapArea::getTiles() const
 {
-  if( _d->coordinates.empty() )
+  if( _d->tiles.empty() )
   {
     int zm = _map_size + 1;
     int cx = _d->centerMapXZ.getX();
@@ -141,22 +140,20 @@ const std::vector< TilePos >& TilemapArea::getTiles()
 
         if (i >= 0 && j >= 0 && i < _map_size && j < _map_size)
         {
-	        _d->coordinates.push_back( TilePos( i, j ));
+          _d->tiles.push_back( &_tilemap->at( i, j ));
         }
       }
     }
   }
 
-  return _d->coordinates;
+  return _d->tiles;
 }
 
 void TilemapArea::resetWasDrawn()
 {
-  const std::vector< TilePos >& tiles = getTiles();
-
-  for( std::vector< TilePos >::const_iterator itPos = tiles.begin(); itPos != tiles.end(); ++itPos )
+  foreach( Tile* tile, _d->tiles )
   {
-    _tilemap->at( *itPos ).resetWasDrawn();
+    tile->resetWasDrawn();
   }
 
 }

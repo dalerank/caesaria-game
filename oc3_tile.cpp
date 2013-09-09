@@ -91,3 +91,21 @@ Point Tile::getXY() const
 {
   return Point( 30 * ( getI() + getJ()), 15 * (getI() - getJ()) );
 }
+
+void Tile::animate(unsigned int time)
+{
+  if( _terrain.getOverlay().isNull() && _animation.isValid() )
+  {
+    _animation.update( time );
+  }
+}
+
+const Animation&Tile::getAnimation() const
+{
+  return _animation;
+}
+
+void Tile::setAnimation(const Animation& animation)
+{
+  _animation = animation;
+}

@@ -117,8 +117,6 @@ public:
 
   virtual TypeAlign getVerticalTextAlign() const;
 
-  virtual void styleChanged();
-
   virtual void hide();
 
   virtual void show();

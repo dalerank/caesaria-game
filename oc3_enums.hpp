@@ -184,14 +184,6 @@ enum BuildMenuType
   BM_MAX 
 };
 
-enum DisasterType
-{
-  DSTR_BURN,
-  DSTR_COLLAPSE,
-  DSTR_PLAGUE,
-  DSTR_COUNT
-};
-
 enum AdvisorType
 {
   ADV_EMPLOYERS=0,

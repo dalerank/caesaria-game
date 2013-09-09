@@ -25,6 +25,7 @@
 #include "oc3_gettext.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_predefinitions.hpp"
+#include "oc3_tilemap.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_walker_cart_supplier.hpp"
 #include "oc3_stringhelper.hpp"
@@ -49,7 +50,7 @@ Factory::Factory(const Good::Type inType, const Good::Type outType,
                   const BuildingType type, const Size& size )
 : WorkingBuilding( type, size ), _d( new Impl )
 {
-   _d->productionRate = 4.8f;
+   _d->productionRate = 2.f;
    _d->progress = 0.0f;
    _d->isActive = true;
    _d->produceGood = false;
@@ -77,13 +78,18 @@ int Factory::getProgress()
   return math::clamp<int>( (int)_d->progress, 0, 100 );
 }
 
+void Factory::updateProgress(float value)
+{
+  _d->progress += value;
+}
+
 bool Factory::mayWork() const
 {
   if( getWorkers() == 0 || !_d->isActive )
     return false;
 
   GoodStock& inStock = const_cast< Factory* >( this )->getInGood();
-  if( inStock.type() == Good::G_NONE )
+  if( inStock.type() == Good::none )
     return true;
 
   if( inStock._currentQty > 0 || _d->produceGood )
@@ -157,7 +163,7 @@ void Factory::timeStep(const unsigned long time)
 
    if( !_d->produceGood )
    {
-     if( _d->inGoodType == Good::G_NONE ) //raw material
+     if( _d->inGoodType == Good::none ) //raw material
      {
        _d->produceGood = true;
      }
@@ -269,7 +275,7 @@ bool Factory::standIdle() const
   return !mayWork();
 }
 
-TimberLogger::TimberLogger() : Factory(Good::G_NONE, Good::G_TIMBER, B_TIMBER_YARD, Size(2) )
+TimberLogger::TimberLogger() : Factory(Good::none, Good::timber, B_TIMBER_YARD, Size(2) )
 {
   _setProductRate( 9.6f );
   setPicture( Picture::load(ResourceGroup::commerce, 72) );
@@ -294,7 +300,7 @@ bool TimberLogger::canBuild(const TilePos& pos ) const
 }
 
 
-IronMine::IronMine() : Factory(Good::G_NONE, Good::G_IRON, B_IRON_MINE, Size(2) )
+IronMine::IronMine() : Factory(Good::none, Good::iron, B_IRON_MINE, Size(2) )
 {
   _setProductRate( 9.6f );
 
@@ -320,7 +326,7 @@ bool IronMine::canBuild(const TilePos& pos ) const
   return (is_constructible && near_mountain);
 }
 
-WeaponsWorkshop::WeaponsWorkshop() : Factory(Good::G_IRON, Good::G_WEAPON, B_WEAPONS_WORKSHOP, Size(2) )
+WeaponsWorkshop::WeaponsWorkshop() : Factory(Good::iron, Good::weapon, B_WEAPONS_WORKSHOP, Size(2) )
 {
   setPicture( Picture::load(ResourceGroup::commerce, 108) );
 
@@ -328,7 +334,7 @@ WeaponsWorkshop::WeaponsWorkshop() : Factory(Good::G_IRON, Good::G_WEAPON, B_WEA
   _fgPictures.resize(2);
 }
 
-FactoryFurniture::FactoryFurniture() : Factory(Good::G_TIMBER, Good::G_FURNITURE, B_FURNITURE, Size(2) )
+FactoryFurniture::FactoryFurniture() : Factory(Good::timber, Good::furniture, B_FURNITURE, Size(2) )
 {
   setPicture( Picture::load(ResourceGroup::commerce, 117) );
 
@@ -336,7 +342,7 @@ FactoryFurniture::FactoryFurniture() : Factory(Good::G_TIMBER, Good::G_FURNITURE
   _fgPictures.resize(2);
 }
 
-Winery::Winery() : Factory(Good::G_GRAPE, Good::G_WINE, B_WINE_WORKSHOP, Size(2) )
+Winery::Winery() : Factory(Good::grape, Good::wine, B_WINE_WORKSHOP, Size(2) )
 {
   setPicture( Picture::load(ResourceGroup::commerce, 86) );
 
@@ -344,7 +350,7 @@ Winery::Winery() : Factory(Good::G_GRAPE, Good::G_WINE, B_WINE_WORKSHOP, Size(2)
   _fgPictures.resize(2);
 }
 
-FactoryOil::FactoryOil() : Factory(Good::G_OLIVE, Good::G_OIL, B_OIL_WORKSHOP, Size(2) )
+FactoryOil::FactoryOil() : Factory(Good::olive, Good::oil, B_OIL_WORKSHOP, Size(2) )
 {
   setPicture( Picture::load(ResourceGroup::commerce, 99) );
 
@@ -352,7 +358,7 @@ FactoryOil::FactoryOil() : Factory(Good::G_OLIVE, Good::G_OIL, B_OIL_WORKSHOP, S
   _fgPictures.resize(2);
 }
 
-Wharf::Wharf() : Factory(Good::G_NONE, Good::G_FISH, B_WHARF, Size(2))
+Wharf::Wharf() : Factory(Good::none, Good::fish, B_WHARF, Size(2))
 {
   // transport 52 53 54 55
   setPicture( Picture::load( ResourceGroup::wharf, 52));

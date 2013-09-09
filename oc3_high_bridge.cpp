@@ -19,6 +19,8 @@
 #include "oc3_scenario.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_city.hpp"
+#include "oc3_tilemap.hpp"
+#include "oc3_scenario_event.hpp"
 
 #include <vector>
 
@@ -371,7 +373,7 @@ void HighBridge::build( const TilePos& pos )
       subtile->_info = tile.getTerrain().encode();
       subtile->_parent = this;
       
-      city->build( subtile.as<Construction>(), buildPos );
+      BuildEvent::create( buildPos, subtile.as<Construction>() );
     }    
   }
 }
@@ -382,7 +384,7 @@ void HighBridge::destroy()
   foreach( HighBridgeSubTilePtr subtile,  _d->subtiles )
   {
     subtile->_parent = 0;
-    city->clearLand( subtile->_pos );
+    ClearLandEvent::create( subtile->_pos );
 
     std::string picName = TerrainTileHelper::convId2PicName( subtile->_imgId );
     city->getTilemap().at( subtile->_pos ).setPicture( &Picture::load( picName ) );

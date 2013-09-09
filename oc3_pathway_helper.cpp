@@ -28,7 +28,7 @@ PathWay PathwayHelper::create( CityPtr city, const TilePos& startPos, const Tile
   {
     const Tilemap& tmap = city->getTilemap();
     PathWay ret;
-    bool pathfound = Pathfinder::getInstance().getPath( tmap.at( startPos ), tmap.at( stopPos ), ret, 0, Size(1) );
+    Pathfinder::getInstance().getPath( tmap.at( startPos ), tmap.at( stopPos ), ret, 0, Size(1) );
 
     return ret;
   }
@@ -37,4 +37,6 @@ PathWay PathwayHelper::create( CityPtr city, const TilePos& startPos, const Tile
   default:
   break;
   }
+
+  return PathWay();
 }

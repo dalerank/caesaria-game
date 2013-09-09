@@ -28,6 +28,7 @@ public:
   std::string name;
   EmpirePtr empire;
   bool distantCity;
+  bool isAvailable;
   SimpleGoodStore sellStore;
   SimpleGoodStore buyStore;
   DateTime lastTimeUpdate;
@@ -41,6 +42,7 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name ) : _d( ne
   _d->distantCity = false;
   _d->empire = empire;
   _d->merchantsNumber = 0;
+  _d->isAvailable = true;
 }
 
 std::string ComputerCity::getName() const
@@ -63,6 +65,16 @@ bool ComputerCity::isDistantCity() const
   return _d->distantCity;
 }
 
+bool ComputerCity::isAvailable() const
+{
+  return _d->isAvailable;
+}
+
+void ComputerCity::setAvailable(bool value)
+{
+  _d->isAvailable = value;
+}
+
 void ComputerCity::save( VariantMap& options ) const
 {
   options[ "location" ] = _d->location;
@@ -72,7 +84,7 @@ void ComputerCity::save( VariantMap& options ) const
   VariantMap vm_buys;
   VariantMap vm_bought;
 
-  for( int i=Good::G_NONE; i < Good::G_MAX; i ++ )
+  for( int i=Good::none; i < Good::goodCount; i ++ )
   {
     Good::Type gtype = Good::Type ( i );
     std::string tname = GoodHelper::getTypeName( gtype );
@@ -107,11 +119,14 @@ void ComputerCity::save( VariantMap& options ) const
   options[ "bought" ] = vm_bought;
   options[ "lastTimeMerchantSend" ] = _d->lastTimeMerchantSend;
   options[ "lastTimeUpdate" ] = _d->lastTimeUpdate;
+  options[ "available" ] = _d->isAvailable;
 }
 
 void ComputerCity::load( const VariantMap& options )
 {
   setLocation( options.get( "location" ).toPoint() );
+
+  _d->isAvailable = options.get( "available" ).toBool();
 
   Variant vTime = options.get( "lastTimeUpdate" );
   _d->lastTimeUpdate = vTime.isNull() ? GameDate::current() : vTime.toDateTime();
@@ -189,7 +204,7 @@ void ComputerCity::timeStep( unsigned int time )
   {
     _d->lastTimeUpdate = GameDate::current();
 
-    for( int i=Good::G_NONE; i < Good::G_MAX; i ++ )
+    for( int i=Good::none; i < Good::goodCount; i ++ )
     {
       Good::Type gtype = Good::Type( i );
       _d->sellStore.setCurrentQty( gtype, _d->sellStore.getMaxQty( gtype ) );     
@@ -213,7 +228,7 @@ void ComputerCity::timeStep( unsigned int time )
       SimpleGoodStore sellGoods, buyGoods;
       sellGoods.setMaxQty( 2000 );
       buyGoods.setMaxQty( 2000 );
-      for( int i=Good::G_NONE; i < Good::G_MAX; i ++ )
+      for( int i=Good::none; i < Good::goodCount; i ++ )
       {
         Good::Type gtype = Good::Type( i );
 

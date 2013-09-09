@@ -20,6 +20,7 @@
 #include "oc3_path_finding.hpp"
 #include "oc3_name_generator.hpp"
 #include "oc3_stringhelper.hpp"
+#include "oc3_tilemap.hpp"
 
 class ServiceWalker::Impl
 {
@@ -197,13 +198,13 @@ float ServiceWalker::evaluatePath( PathWay& pathWay )
   for( ConstPtrTilesList::iterator itTile = pathTileList.begin(); itTile != pathTileList.end(); ++itTile)
   {
     ServiceWalker::ReachedBuildings reachedBuildings = getReachedBuildings( (*itTile)->getIJ() );
-    for (ServiceWalker::ReachedBuildings::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
+    foreach( BuildingPtr building, reachedBuildings )
     {
-      std::pair<ServiceWalker::ReachedBuildings::iterator, bool> rc = doneBuildings.insert( *itBuilding );
+      std::pair<ServiceWalker::ReachedBuildings::iterator, bool> rc = doneBuildings.insert( building );
       if (rc.second == true)
       {
         // the building has not been evaluated yet
-        res += (*itBuilding)->evaluateService( ServiceWalkerPtr( this ) );
+        res += building->evaluateService( ServiceWalkerPtr( this ) );
       }
     }
     distance++;
@@ -225,13 +226,13 @@ void ServiceWalker::reservePath(PathWay &pathWay)
   for( ConstPtrTilesList::iterator itTile = pathTileList.begin(); itTile != pathTileList.end(); ++itTile)
   {
     ReachedBuildings reachedBuildings = getReachedBuildings( (*itTile)->getIJ() );
-    for (ReachedBuildings::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
+    foreach( BuildingPtr building, reachedBuildings )
     {
-      std::pair<ReachedBuildings::iterator, bool> rc = doneBuildings.insert( *itBuilding );
+      std::pair<ReachedBuildings::iterator, bool> rc = doneBuildings.insert( building );
       if (rc.second == true)
       {
         // the building has not been reserved yet
-        (*itBuilding)->reserveService(_d->service);
+        building->reserveService(_d->service);
       }
     }
   }
@@ -253,9 +254,9 @@ void ServiceWalker::onNewTile()
   Walker::onNewTile();
 
   ReachedBuildings reachedBuildings = getReachedBuildings( getIJ() );
-  for (ReachedBuildings::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
+  foreach( BuildingPtr building, reachedBuildings )
   {
-    (*itBuilding)->applyService( ServiceWalkerPtr( this ) );
+    building->applyService( ServiceWalkerPtr( this ) );
   }
 }
 

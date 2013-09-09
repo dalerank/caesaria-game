@@ -52,7 +52,6 @@ public:
   //! Reads attributes of the element
   //virtual void load(VariantArray* in);
 
-
 private:
 	class Impl;
 	ScopedPtr< Impl > _d;

@@ -78,9 +78,8 @@ void TraineeWalker::computeWalkerPath()
   pathPropagator.init( _originBuilding.as<Construction>() );
   pathPropagator.propagate( _maxDistance );
 
-  for (std::list<BuildingType>::iterator itType = _buildingNeed.begin(); itType != _buildingNeed.end(); ++itType)
+  foreach( BuildingType buildingType, _buildingNeed )
   {
-    BuildingType buildingType = *itType;
     checkDestination(buildingType, pathPropagator);
   }
 

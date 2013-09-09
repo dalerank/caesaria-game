@@ -27,197 +27,8 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_city.hpp"
 #include "oc3_foreach.hpp"
-
-class LandOverlay::Impl
-{
-public:
-  BuildingType buildingType;
-  BuildingClass buildingClass;
-  Tile* masterTile;  // left-most tile if multi-tile, or "this" if single-tile
-  std::string name;
-  Picture picture;
-  Size size;  // size in tiles
-  Animation animation;  // basic animation (if any)
-  bool isDeleted;
-};
-
-LandOverlay::LandOverlay(const BuildingType type, const Size& size)
-: _d( new Impl )
-{
-  _d->masterTile = 0;
-  _d->size = size;
-  _d->isDeleted = false;
-  _d->name = "unknown";
-
-  setType( type );
-}
-
-LandOverlay::~LandOverlay()
-{
-  // what we shall to do here?
-}
-
-
-BuildingType LandOverlay::getType() const
-{
-   return _d->buildingType;
-}
-
-void LandOverlay::setType(const BuildingType buildingType)
-{
-  const BuildingData& bd = BuildingDataHolder::instance().getData( buildingType );
-
-   _d->buildingType = buildingType;
-   _d->buildingClass = bd.getClass();
-   _d->name = bd.getName();
-}
-
-void LandOverlay::timeStep(const unsigned long time) { }
-
-void LandOverlay::setPicture(const Picture &picture)
-{
-   Tilemap &tilemap = Scenario::instance().getCity()->getTilemap();
-
-   _d->picture = picture;
-
-   if (_d->masterTile != NULL)
-   {
-      // _master_tile == NULL is cloneable buildings
-      TilePos pos = _d->masterTile->getIJ();
-
-      for (int dj = 0; dj<_d->size.getWidth(); ++dj)
-      {
-         for (int di = 0; di<_d->size.getHeight(); ++di)
-         {
-            Tile &tile = tilemap.at( pos + TilePos( di, dj ) );
-            tile.setPicture( &_d->picture );
-         }
-      }
-   }
-}
-
-void LandOverlay::build( const TilePos& pos )
-{
-  CityPtr city = Scenario::instance().getCity();
-  Tilemap &tilemap = city->getTilemap();
-
-  _d->masterTile = &tilemap.at( pos );
-
-  for (int dj = 0; dj < _d->size.getWidth(); ++dj)
-  {
-    for (int di = 0; di < _d->size.getHeight(); ++di)
-    {
-      Tile& tile = tilemap.at( pos + TilePos( di, dj ) );
-      tile.setMasterTile(_d->masterTile);
-      tile.setPicture( &_d->picture);
-      TerrainTile& terrain = tile.getTerrain();
-      
-      if( terrain.getOverlay().isValid() && terrain.getOverlay() != this)
-      {
-        terrain.getOverlay()->deleteLater();
-      }
-
-      terrain.setOverlay(this);
-      setTerrain( terrain );
-    }
-  }
-}
-
-void LandOverlay::deleteLater()
-{
-  _d->isDeleted  = true;
-}
-
-void LandOverlay::destroy()
-{
-}
-
-Tile& LandOverlay::getTile() const
-{
-  _OC3_DEBUG_BREAK_IF( !_d->masterTile && "master tile must be exists" );
-  return *_d->masterTile;
-}
-
-Size LandOverlay::getSize() const
-{
-  return _d->size;
-}
-
-bool LandOverlay::isDeleted() const
-{
-  return _d->isDeleted;
-}
-
-const Picture &LandOverlay::getPicture() const
-{
-  return _d->picture;
-}
-
-std::vector<Picture>& LandOverlay::getForegroundPictures()
-{
-  return _fgPictures;
-}
-
-std::string LandOverlay::getName()
-{
-  return _d->name;
-}
-
-void LandOverlay::save( VariantMap& stream ) const
-{
-  stream[ "pos" ] = getTile().getIJ();
-  stream[ "buildingTypeName" ] = Variant( BuildingDataHolder::instance().getData( _d->buildingType ).getName() );
-  stream[ "buildingType" ] = (int)_d->buildingType;
-  stream[ "picture" ] = Variant( _d->picture.getName() );   
-  stream[ "size" ] = _d->size;
-  stream[ "isDeleted" ] = _d->isDeleted;
-  stream[ "name" ] = Variant( _d->name );
-}
-
-void LandOverlay::load( const VariantMap& stream )
-{
-  _d->name = stream.get( "name" ).toString();
-  _d->buildingType = (BuildingType)stream.get( "buildingType" ).toInt();
-  _d->picture = Picture::load( stream.get( "picture" ).toString() + ".png" );
-  _d->size = stream.get( "size" ).toSize();
-  _d->isDeleted = stream.get( "isDeleted" ).toBool();
-}
-
-bool LandOverlay::isWalkable() const
-{
-  return false;
-}
-
-TilePos LandOverlay::getTilePos() const
-{
-  _OC3_DEBUG_BREAK_IF( !_d->masterTile && "master tile can't be null" );
-  return _d->masterTile ? _d->masterTile->getIJ() : TilePos( -1, -1 );
-}
-
-void LandOverlay::setName( const std::string& name )
-{
-  _d->name = name;
-}
-
-void LandOverlay::setSize( const Size& size )
-{
-  _d->size = size;
-}
-
-Point LandOverlay::getOffset( const Point& subpos ) const
-{
-  return Point( 0, 0 );
-}
-
-Animation& LandOverlay::_getAnimation()
-{
-  return _d->animation;
-}
-
-BuildingClass LandOverlay::getClass() const
-{
-  return _d->buildingClass;
-}
+#include "oc3_scenario_event.hpp"
+#include "oc3_tilemap.hpp"
 
 Construction::Construction( const BuildingType type, const Size& size)
 : LandOverlay( type, size )
@@ -295,13 +106,13 @@ const PtrTilesList& Construction::getAccessRoads() const
 void Construction::computeAccessRoads()
 {
   _accessRoads.clear();
-  if( !_d->masterTile )
+  if( !_getMasterTile() )
       return;
 
   Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
 
   int maxDst2road = getMaxDistance2Road();
-  PtrTilesList rect = tilemap.getRectangle( _d->masterTile->getIJ() + TilePos( -maxDst2road, -maxDst2road ),
+  PtrTilesList rect = tilemap.getRectangle( _getMasterTile()->getIJ() + TilePos( -maxDst2road, -maxDst2road ),
                                             getSize() + Size( 2 * maxDst2road ), !Tilemap::checkCorners );
   foreach( Tile* tile, rect )
   {
@@ -321,14 +132,14 @@ int Construction::getMaxDistance2Road() const
 
 void Construction::burn()
 {
-   deleteLater();
-   Scenario::instance().getCity()->disaster( getTile().getIJ(), DSTR_BURN );
+  deleteLater();
+  DisasterEvent::create( getTile().getIJ(), DisasterEvent::fire );
 }
 
 void Construction::collapse()
 {
-   deleteLater();
-   Scenario::instance().getCity()->disaster( getTile().getIJ(), DSTR_COLLAPSE );
+  deleteLater();
+  DisasterEvent::create( getTile().getIJ(), DisasterEvent::collapse );
 }
 
 char Construction::getDesirabilityInfluence() const
@@ -632,20 +443,20 @@ Dock::Dock() : Building( B_DOCK, Size(2) )
 {
   setPicture( Picture::load( ResourceGroup::transport, 5));  
 
-  _d->animation.load( ResourceGroup::transport, 6, 11);
+  _getAnimation().load( ResourceGroup::transport, 6, 11);
   // now fill in reverse order
-  _d->animation.load( ResourceGroup::transport, 15, 10, Animation::reverse );
+  _getAnimation().load( ResourceGroup::transport, 15, 10, Animation::reverse );
   
-  _d->animation.setOffset( Point( 107, 61 ) );
+  _getAnimation().setOffset( Point( 107, 61 ) );
   _fgPictures.resize(1);  
 }
 
 void Dock::timeStep(const unsigned long time)
 {
-  _d->animation.update( time );
+  _getAnimation().update( time );
   
   // takes current animation frame and put it into foreground
-  _fgPictures[ 0 ] = _d->animation.getCurrentPicture(); 
+  _fgPictures[ 0 ] = _getAnimation().getCurrentPicture();
 }
 
 // second arch pictures is land3a 45 + 46	
@@ -653,8 +464,8 @@ void Dock::timeStep(const unsigned long time)
 TriumphalArch::TriumphalArch() : Building( B_TRIUMPHAL_ARCH, Size(3) )
 {
   setPicture( Picture::load( "land3a", 43 ) );
-  _d->animation.load("land3a", 44, 1);
-  _d->animation.setOffset( Point( 63, 97 ) );
+  _getAnimation().load("land3a", 44, 1);
+  _getAnimation().setOffset( Point( 63, 97 ) );
   _fgPictures.resize(1);
-  _fgPictures.at(0) = _d->animation.getCurrentPicture(); 
+  _fgPictures.at(0) = _getAnimation().getCurrentPicture();
 }

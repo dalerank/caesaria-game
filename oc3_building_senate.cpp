@@ -44,9 +44,9 @@ bool Senate::canBuild( const TilePos& pos ) const
 
   if( mayBuild )
   {
-    CityPtr city = Scenario::instance().getCity();
-    LandOverlays senate = city->getBuildingList(B_SENATE);
-    mayBuild &= !( senate.size() > 0 );
+    CityHelper helper( Scenario::instance().getCity() );
+    bool isSenatePresent = helper.getBuildings<Building>(B_SENATE).size() > 0;
+    mayBuild &= !isSenatePresent;
   }
 
   return mayBuild;

@@ -33,9 +33,8 @@ public:
   ScreenGame();
   ~ScreenGame();
 
-  void initialize( GfxEngine& engine, GuiEnv& gui );
+  void initialize();
 
-  TilemapArea& getMapArea();
   void setScenario(Scenario &scenario);
 
   virtual void afterFrame();

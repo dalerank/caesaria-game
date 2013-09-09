@@ -26,18 +26,16 @@ class Application
 public:
    Application();
 
-   void start();
+   void initialize();
 
-   void initVideo();
+   void exec();
+
    void initSound();
    void mountArchives();
    
    void setScreenWait();
    void setScreenMenu();
    void setScreenGame();
-
-   void initGuiMain();
-   void initGuiEnvironment();
 
 private:
    class Impl;

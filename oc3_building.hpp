@@ -24,7 +24,8 @@
 #include <list>
 #include <set>
 
-#include "oc3_tilemap.hpp"
+//#include "oc3_tilemap.hpp"
+#include "oc3_landoverlay.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_good.hpp"
 #include "oc3_scopedptr.hpp"
@@ -32,53 +33,6 @@
 #include "oc3_referencecounted.hpp"
 #include "oc3_predefinitions.hpp"
 #include "oc3_service.hpp"
-
-class Widget;
-
-class LandOverlay : public Serializable, public ReferenceCounted
-{
-public:
-  LandOverlay( const BuildingType type, const Size& size=Size(1));
-  virtual ~LandOverlay();
-
-  Tile& getTile() const;  // master tile, in case of multi-tile area
-  TilePos getTilePos() const;
-  Size getSize() const;  // size in tiles (1=1x1, 2=2x2, ...)
-  void setSize( const Size& size );
-  
-  bool isDeleted() const;  // returns true if the overlay should be forgotten
-  void deleteLater();
-  
-  virtual bool isWalkable() const;
-  virtual void setTerrain( TerrainTile& terrain ) = 0;
-  virtual void build( const TilePos& pos );
-  virtual void destroy();  // handles the delete
-  virtual Point getOffset( const Point& subpos ) const;
-  virtual void timeStep(const unsigned long time);  // perform one simulation step
-
-  // graphic
-  void setPicture(const Picture &picture);
-  const Picture& getPicture() const;
-  std::vector<Picture>& getForegroundPictures();
-
-  std::string getName();  // landoverlay debug name
-  void setName( const std::string& name );
-
-  BuildingType getType() const;
-  BuildingClass getClass() const;
-  void setType(const BuildingType buildingType);
-
-  virtual void save( VariantMap& stream) const;
-  virtual void load( const VariantMap& stream );
-
-protected:
-  std::vector<Picture> _fgPictures;
-
-  Animation& _getAnimation();
-
-  class Impl;
-  ScopedPtr< Impl > _d;
-};
 
 class Construction : public LandOverlay
 {
@@ -138,8 +92,9 @@ protected:
    float _fireLevel;    // >100 => building catch fire
    float _damageIncrement;
    float _fireIncrement;
+   typedef std::map<WalkerType, int> TraineeMap;
    std::set<Service::Type> _reservedServices;  // a serviceWalker is on the way
-   std::map<WalkerType, int> _traineeMap;  // current level of trainees working in the building (0..200)
+   TraineeMap _traineeMap;  // current level of trainees working in the building (0..200)
    std::set<WalkerType> _reservedTrainees;  // a trainee is on the way
 };
 

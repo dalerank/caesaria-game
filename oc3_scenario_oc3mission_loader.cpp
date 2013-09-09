@@ -28,6 +28,7 @@
 #include "oc3_cityfunds.hpp"
 #include "oc3_empire.hpp"
 #include "oc3_city.hpp"
+#include "oc3_app_config.hpp"
 
 class ScenarioOc3MissionLoader::Impl
 {
@@ -48,26 +49,20 @@ bool ScenarioOc3MissionLoader::load( const std::string& filename, Scenario& oSce
   {
     std::string mapToLoad = vm[ "map" ].toString();
 
-    ScenarioLoader::getInstance().load( mapToLoad, oScenario );
+    ScenarioLoader::getInstance().load( AppConfig::rcpath( mapToLoad ), oScenario );
+
     CityPtr city = oScenario.getCity();
-    city->getFunds().resolveIssue( FundIssue( CityFunds::donation, vm[ "funds" ].toInt() ) );
+    FundIssue::resolve( city, CityFunds::donation, vm[ "funds" ].toInt() );
+
+    EmpireCityList cities = oScenario.getEmpire()->getCities();
+    foreach( EmpireCityPtr city, cities )
+    {
+      city->setAvailable( false );
+    }
 
     oScenario.getEmpire()->load( vm[ "empire" ].toMap() );
-
-    oScenario.getWinTargets().load( vm[ "targets" ].toMap() );
-
-    CityBuildOptions& boptions = city->getBuildOptions();
-    VariantList saveOptions = vm[ "buildoptions" ].toList();
-    boptions.clear();
-    boptions.setIndustryAvaible( BM_FARM, false );
-    boptions.setIndustryAvaible( BM_RAW_MATERIAL, false );
-    boptions.setIndustryAvaible( BM_FACTORY, false );
-
-    for( VariantList::iterator it = saveOptions.begin(); it != saveOptions.end(); it++ )
-    {
-      BuildingType btype = BuildingDataHolder::getType( (*it).toString() );
-      boptions.setBuildingAvailble( btype, true );
-    }
+    oScenario.getWinTargets().load( vm[ "win" ].toMap() );
+    city->getBuildOptions().load( vm[ "buildoptions" ].toMap() );
 
     return true;
   }

@@ -24,6 +24,7 @@
 #include "oc3_predefinitions.hpp"
 #include "oc3_scopedptr.hpp"
 #include "oc3_filepath.hpp"
+#include "oc3_scenario_event.hpp"
 
 class CityWinTargets;
 class Player;
@@ -43,11 +44,13 @@ public:
   const CityPtr getCity() const;
   CityWinTargets& getWinTargets();
 
+  void addEvent( ScenarioEventPtr event );
+
   void reset();
 
   void changeTimeMultiplier( int percent );
 
-  void timeStep();
+  unsigned int timeStep();
 
   std::string getDescription() const;
 private:

@@ -24,6 +24,7 @@
 #include "oc3_city.hpp"
 #include "oc3_name_generator.hpp"
 #include "oc3_stringhelper.hpp"
+#include "oc3_walker_animals.hpp"
 #include <map>
 
 template< class T >
@@ -68,6 +69,7 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( WT_TAXCOLLECTOR, new WalkerCreator<TaxCollector>() );
   addCreator( WT_ENGINEER, new ServiceWalkerCreator( Service::S_ENGINEER ));
   addCreator( WT_DOCTOR, new ServiceWalkerCreator( Service::S_DOCTOR ) );
+  addCreator( WT_ANIMAL_SHEEP, new WalkerCreator< Sheep >() );
 }
 
 WalkerManager::~WalkerManager()

@@ -70,7 +70,7 @@ public:
 
 void EmpireMapWindow::Impl::checkCityOnMap( const Point& pos )
 {
-  EmpireCities cities = scenario->getEmpire()->getCities();
+  EmpireCityList cities = scenario->getEmpire()->getCities();
 
   currentCity = 0;
   foreach( EmpireCityPtr city, cities )
@@ -156,7 +156,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   new Label( tradeInfo, Rect( startDraw, Size( 70, 30 )), _("##emw_sell##") );
 
   const GoodStore& sellgoods = currentCity->getSells();
-  for( int i=0, k=0; i < Good::G_MAX; i++ )
+  for( int i=0, k=0; i < Good::goodCount; i++ )
   {
     if( sellgoods.getMaxQty( (Good::Type)i ) > 0  )
     {
@@ -170,7 +170,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   new Label( tradeInfo, Rect( buyPoint, Size( 70, 30 )), _("##emw_buy##") );
 
   const GoodStore& buygoods = currentCity->getBuys();
-  for( int i=0, k=0; i < Good::G_MAX; i++ )
+  for( int i=0, k=0; i < Good::goodCount; i++ )
   {
     if( buygoods.getMaxQty( (Good::Type)i ) > 0  )
     {
@@ -197,7 +197,7 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
   new Label( tradeInfo, Rect( startDraw, Size( 80, 30 )), _("##emw_sold##") );
 
   const GoodStore& sellgoods = currentCity->getSells();
-  for( int i=0, k=0; i < Good::G_MAX; i++ )
+  for( int i=0, k=0; i < Good::goodCount; i++ )
   {
     int maxsell = sellgoods.getMaxQty( (Good::Type)i ) / 100;
     int cursell = sellgoods.getCurrentQty( (Good::Type)i ) / 100;
@@ -216,7 +216,7 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
   new Label( tradeInfo, Rect( buyPoint, Size( 80, 30 )), _("##emw_bought##") );
 
   const GoodStore& buygoods = currentCity->getBuys();
-  for( int i=0, k=0; i < Good::G_MAX; i++ )
+  for( int i=0, k=0; i < Good::goodCount; i++ )
   {
     int maxbuy = buygoods.getMaxQty( (Good::Type)i ) / 100;
     int curbuy = buygoods.getCurrentQty( (Good::Type)i ) / 100;
@@ -270,7 +270,7 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
 
   _d->tradeInfo = new Widget( this, -1, Rect( 0, getHeight() - 120, getWidth(), getHeight() ) );
 
-  const Picture& backgr = Picture::load( "empire_panels", 4 );
+  const Picture& backgr = Picture::load( ResourceGroup::empirepnls, 4 );
   for( unsigned int y=getHeight() - 120; y < getHeight(); y+=backgr.getHeight() )
   {
     for( unsigned int x=0; x < getWidth(); x += backgr.getWidth() )
@@ -279,14 +279,14 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
     }
   }
 
-  const Picture& lrBorderPic = Picture::load( "empire_panels", 1 );
+  const Picture& lrBorderPic = Picture::load( ResourceGroup::empirepnls, 1 );
   for( unsigned int y = 0; y < getHeight(); y += lrBorderPic.getHeight() )
   {
     _d->border->draw( lrBorderPic, 0, y );
     _d->border->draw( lrBorderPic, getWidth() - lrBorderPic.getWidth(), y );
   }
 
-  const Picture& tdBorderPic = Picture::load( "empire_panels", 2 );
+  const Picture& tdBorderPic = Picture::load( ResourceGroup::empirepnls, 2 );
   for( unsigned int x = 0; x < getWidth(); x += tdBorderPic.getWidth() )
   {
     _d->border->draw( tdBorderPic, x, 0 );
@@ -294,7 +294,7 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
     _d->border->draw( tdBorderPic, x, getHeight() - 120 );
   }
 
-  const Picture& corner = Picture::load( "empire_panels", 3 );
+  const Picture& corner = Picture::load( ResourceGroup::empirepnls, 3 );
   _d->border->draw( corner, 0, 0 );    //left top
   _d->border->draw( corner, 0, getHeight() - corner.getHeight() ); //top right
   _d->border->draw( corner, getWidth() - corner.getWidth(), 0 ); //left bottom
@@ -305,11 +305,11 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
   _d->border->fill( 0x00000000, Rect( corner.getWidth(), corner.getHeight(), 
                                       getWidth() - corner.getWidth(), getHeight() - 120 ) );
 
-  _d->leftEagle = Picture::load( "empire_panels", 7 );
-  _d->rightEagle = Picture::load( "empire_panels", 8 );
+  _d->leftEagle = Picture::load( ResourceGroup::empirepnls, 7 );
+  _d->rightEagle = Picture::load( ResourceGroup::empirepnls, 8 );
   _d->eagleOffset = corner.getSize();
 
-  _d->centerPicture = Picture::load( "empire_panels", 9 );
+  _d->centerPicture = Picture::load( ResourceGroup::empirepnls, 9 );
 
   _d->btnHelp = new TexturedButton( this, Point( 20, getHeight() - 44 ), Size( 24 ), -1, 528 );
   _d->btnExit = new TexturedButton( this, Point( getWidth() - 44, getHeight() - 44 ), Size( 24 ), -1, 533 );
@@ -330,11 +330,11 @@ void EmpireMapWindow::draw( GfxEngine& engine )
 
   engine.drawPicture( _d->empireMap, _d->offset );  
 
-  const EmpireCities& cities = _d->scenario->getEmpire()->getCities();
-  for( EmpireCities::const_iterator it=cities.begin(); it != cities.end(); it++ )
+  EmpireCityList cities = _d->scenario->getEmpire()->getCities();
+  foreach( EmpireCityPtr city, cities )
   {
-    Point location = (*it)->getLocation();
-    int index = (*it).is<City>() ? 0 : 2; //maybe it our city
+    Point location = city->getLocation();
+    int index = city.is<City>() ? 0 : 2; //maybe it our city
 
     engine.drawPicture( _d->citypics[ index ], _d->offset + Point( location.getX(), location.getY() ) );
   }

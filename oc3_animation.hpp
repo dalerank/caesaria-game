@@ -39,11 +39,12 @@ public:
     const PicturesArray& getPictures() const;
 
     int getCurrentIndex() const;
+    void setCurrentIndex( int index );
 
     int getPicturesCount() const;
 
     void update( unsigned int time );
-    const Picture& getCurrentPicture();
+    const Picture& getCurrentPicture() const;
 
     void setFrameDelay( const unsigned int delay );
     void setLoop( bool loop );

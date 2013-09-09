@@ -21,6 +21,7 @@
 #include "oc3_scenario.hpp"
 #include "pkwareinputstream.hpp"
 #include "oc3_city.hpp"
+#include "oc3_tilemap.hpp"
 
 #include <fstream>
 #include <limits>

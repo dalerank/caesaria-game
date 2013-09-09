@@ -22,6 +22,7 @@
 #include "oc3_goodhelper.hpp"
 #include "oc3_city.hpp"
 #include "oc3_stringhelper.hpp"
+#include "oc3_tilemap.hpp"
 
 class FarmTile
 {
@@ -44,12 +45,12 @@ FarmTile::FarmTile(const Good::Type outGood, const TilePos& pos )
   int picIdx = 0;
   switch (outGood)
   {
-  case Good::G_WHEAT: picIdx = 13; break;
-  case Good::G_VEGETABLE: picIdx = 18; break;
-  case Good::G_FRUIT: picIdx = 23; break;
-  case Good::G_OLIVE: picIdx = 28; break;
-  case Good::G_GRAPE: picIdx = 33; break;
-  case Good::G_MEAT: picIdx = 38; break;
+  case Good::wheat: picIdx = 13; break;
+  case Good::vegetable: picIdx = 18; break;
+  case Good::fruit: picIdx = 23; break;
+  case Good::olive: picIdx = 28; break;
+  case Good::grape: picIdx = 33; break;
+  case Good::meat: picIdx = 38; break;
   default:
     StringHelper::debug( 0xff, "Unexpected farmType in farm %s", GoodHelper::getName( outGood ).c_str() );
     _OC3_DEBUG_BREAK_IF( "Unexpected farmType in farm ");
@@ -85,7 +86,7 @@ public:
 };
 
 Farm::Farm(const Good::Type outGood, const BuildingType type )
-  : Factory( Good::G_NONE, outGood, type, Size(3) ), _d( new Impl )
+  : Factory( Good::none, outGood, type, Size(3) ), _d( new Impl )
 {
   _d->pictureBuilding = Picture::load( ResourceGroup::commerce, 12);  // farm building
   _d->pictureBuilding.addOffset(30, 15);
@@ -181,26 +182,26 @@ Farm::~Farm()
 
 }
 
-FarmWheat::FarmWheat() : Farm(Good::G_WHEAT, B_WHEAT_FARM)
+FarmWheat::FarmWheat() : Farm(Good::wheat, B_WHEAT_FARM)
 {
 }
 
-FarmOlive::FarmOlive() : Farm(Good::G_OLIVE, B_OLIVE_FARM)
+FarmOlive::FarmOlive() : Farm(Good::olive, B_OLIVE_FARM)
 {
 }
 
-FarmGrape::FarmGrape() : Farm(Good::G_GRAPE, B_GRAPE_FARM)
+FarmGrape::FarmGrape() : Farm(Good::grape, B_GRAPE_FARM)
 {
 }
 
-FarmMeat::FarmMeat() : Farm(Good::G_MEAT, B_PIG_FARM)
+FarmMeat::FarmMeat() : Farm(Good::meat, B_PIG_FARM)
 {
 }
 
-FarmFruit::FarmFruit() : Farm(Good::G_FRUIT, B_FRUIT_FARM)
+FarmFruit::FarmFruit() : Farm(Good::fruit, B_FRUIT_FARM)
 {
 }
 
-FarmVegetable::FarmVegetable() : Farm(Good::G_VEGETABLE, B_VEGETABLE_FARM)
+FarmVegetable::FarmVegetable() : Farm(Good::vegetable, B_VEGETABLE_FARM)
 {
 }

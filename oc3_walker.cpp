@@ -30,6 +30,7 @@
 #include "oc3_city.hpp"
 #include "oc3_animation_bank.hpp"
 #include "oc3_gettext.hpp"
+#include "oc3_tilemap.hpp"
 
 class Walker::Impl
 {
@@ -387,7 +388,7 @@ const Picture& Walker::getMainPicture()
 {
    if( !_d->animation.isValid() )
    {
-     const AnimationBank::WalkerAnimationMap& animMap = AnimationBank::getWalker( getWalkerGraphic() );
+     const AnimationBank::MovementAnimation& animMap = AnimationBank::getWalker( getWalkerGraphic() );
      std::map<DirectedAction, Animation>::const_iterator itAnimMap;
      if (_d->action.action == acNone || _d->action.direction == D_NONE)
      {

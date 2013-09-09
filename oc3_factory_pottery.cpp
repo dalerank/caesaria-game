@@ -17,7 +17,7 @@
 #include "oc3_picture.hpp"
 #include "oc3_resourcegroup.hpp"
 
-FactoryPottery::FactoryPottery() : Factory(Good::G_CLAY, Good::G_POTTERY, B_POTTERY, Size(2))
+FactoryPottery::FactoryPottery() : Factory(Good::clay, Good::pottery, B_POTTERY, Size(2))
 {
   setPicture( Picture::load(ResourceGroup::commerce, 132) );
 

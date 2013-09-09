@@ -51,30 +51,31 @@ public:
   Point cursorPos;
 
   WidgetPtr createStandartTooltip( Widget* parent );
+  void threatDeletionQueue();
 };
 
-GuiEnv::GuiEnv( GfxEngine& engine )
-: Widget( 0, -1, Rect( Point( 0, 0), engine.getScreenSize() ) ),
+GuiEnv::GuiEnv()
+: Widget( 0, -1, Rect( 0, 0, 1, 1) ),
  _d( new Impl )
 {
-    setDebugName( "GuiEnv" );
+  setDebugName( "GuiEnv" );
 
-    _d->preRenderFunctionCalled = false;
-    _d->hovered = 0;
-    _d->focusedElement = 0;
-    _d->hoveredNoSubelement = 0;
-    _d->lastHoveredMousePos = Point();
-	_d->engine = &engine;
+  _d->preRenderFunctionCalled = false;
+  _d->hovered = 0;
+  _d->focusedElement = 0;
+  _d->hoveredNoSubelement = 0;
+  _d->lastHoveredMousePos = Point();
 
-    //INITIALIZE_FILESYSTEM_INSTANCE;
 
-    _environment = this;
+  //INITIALIZE_FILESYSTEM_INSTANCE;
 
-    _d->toolTip.Element;
-    _d->toolTip.LastTime = 0;
-    _d->toolTip.EnterTime = 0;
-    _d->toolTip.LaunchTime = 1000;
-    _d->toolTip.RelaunchTime = 500;
+  _environment = this;
+
+  _d->toolTip.Element;
+  _d->toolTip.LastTime = 0;
+  _d->toolTip.EnterTime = 0;
+  _d->toolTip.LaunchTime = 1000;
+  _d->toolTip.RelaunchTime = 500;
 }
 
 //! Returns if the element has focus
@@ -83,8 +84,20 @@ bool GuiEnv::hasFocus( const Widget* element) const
     return ( _d->focusedElement.object() == element );
 }
 
+GuiEnv& GuiEnv::instance()
+{
+  static GuiEnv inst;
+  return inst;
+}
+
 GuiEnv::~GuiEnv()
 {
+}
+
+void GuiEnv::initialize(GfxEngine& painter)
+{
+	_d->engine = &painter;
+	setGeometry( Rect( 0, 0, painter.getScreenWidth(), painter.getScreenHeight() ) );
 }
 
 Widget* GuiEnv::getRootWidget()
@@ -92,15 +105,15 @@ Widget* GuiEnv::getRootWidget()
 	return this;
 }
 
-void GuiEnv::threatDeletionQueue_()
+void GuiEnv::Impl::threatDeletionQueue()
 {
-  foreach( Widget* widget, _d->deletionQueue )
+  foreach( Widget* widget, deletionQueue )
   {
     try{ widget->remove(); }
     catch(...){}
   }
 
-  _d->deletionQueue.clear();
+  deletionQueue.clear();
 }
 
 void GuiEnv::clear()
@@ -485,11 +498,6 @@ bool GuiEnv::handleEvent( const NEvent& event )
   return false;
 }
 
-Widget* GuiEnv::_CheckParent( Widget* parent )
-{
-  return parent ? parent : this;
-}
-
 Widget* GuiEnv::getHoveredElement() const
 {
   return _d->hovered.object();
@@ -506,7 +514,7 @@ void GuiEnv::beforeDraw()
     setGeometry( Rect( Point( 0, 0 ), screenSize ) );
   }
 
-  threatDeletionQueue_();
+  _d->threatDeletionQueue();
 
   updateHoveredElement( _d->cursorPos );
 

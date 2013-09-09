@@ -19,13 +19,10 @@
 #ifndef TILEMAP_AREA_HPP
 #define TILEMAP_AREA_HPP
 
-
-#include <list>
-#include <vector>
-
 #include "oc3_size.hpp"
 #include "oc3_scopedptr.hpp"
 #include "oc3_tilemap.hpp"
+#include "oc3_positioni.hpp"
 
 /* A subset of the tilemap, this is the visible area. Has convenient methods to sort tiles per depth */
 class TilemapArea
@@ -34,12 +31,12 @@ public:
   TilemapArea();
   ~TilemapArea();
 
-  void init(Tilemap& tilemap);
+  void init( Tilemap& tilemap );
 
   // size of the view in pixel
-  void setViewSize(const Size& newSize );
+  void setViewport( const Size& newSize );
 
-  void setCenterIJ( const TilePos& pos );
+  void setCenter( const TilePos& pos );
 
   void moveRight(const int amount);
   void moveLeft(const int amount);
@@ -47,7 +44,7 @@ public:
   void moveDown(const int amount);
 
   // return tile coordinates (i, j), in order of depth
-  const std::vector< TilePos >& getTiles();
+  const PtrTilesArea& getTiles() const;
 
   void resetWasDrawn();
 
@@ -57,7 +54,7 @@ public:
   int getCenterJ() const;
   
 private:  
-  void setCenterXZ(const int x, const int z);
+  void setCenter( const Point& pos );
   
   int _center_i;
   int _center_j;

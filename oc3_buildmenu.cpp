@@ -26,6 +26,7 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_building_data.hpp"
 #include "oc3_city_build_options.hpp"
+#include "oc3_foreach.hpp"
 
 // used to display the building name and its cost
 class BuildButton : public PushButton
@@ -91,9 +92,10 @@ void BuildMenu::initialize()
   int max_cost_width = 0;
   Size textSize;
   Font font = Font::create( FONT_2 );
-  for (Widget::ConstChildIterator itWidget = getChildren().begin(); itWidget != getChildren().end(); ++itWidget)
+  Widget::Widgets children = getChildren();
+  foreach( Widget* widget, children )
   {
-      if( BuildButton *button = dynamic_cast< BuildButton* >( *itWidget ) )
+      if( BuildButton *button = dynamic_cast< BuildButton* >( widget ) )
       {
           textSize = font.getSize( button->getText());
           max_text_width = std::max(max_text_width, textSize.getWidth() );
@@ -107,9 +109,9 @@ void BuildMenu::initialize()
   setWidth( std::max(150, max_text_width + max_cost_width + 20) );
 
   // set the same size for all buttons
-  for (Widget::ConstChildIterator itWidget = getChildren().begin(); itWidget != getChildren().end(); ++itWidget)
+  foreach( Widget* widget, children )
   {
-      if( BuildButton *button = dynamic_cast< BuildButton* >( *itWidget ) )
+      if( BuildButton *button = dynamic_cast< BuildButton* >( widget ) )
       {
           button->setWidth( getWidth() );
       }

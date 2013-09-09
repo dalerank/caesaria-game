@@ -55,7 +55,6 @@ public:
   CityServicePtr findService( const std::string& name ) const;
 
   LandOverlays& getOverlayList();
-  LandOverlays getBuildingList( const BuildingType buildingType );
 
   void setRoadExit( const TilePos& pos );
   void setBoatEntry( const TilePos& pos );
@@ -94,17 +93,11 @@ public:
   void load( const VariantMap& stream);
 
   // add construction
-  void build( const BuildingType type, const TilePos& pos );
-  void build( ConstructionPtr building, const TilePos& pos );
+  void addOverlay(LandOverlayPtr overlay);  
+  LandOverlayPtr getOverlay( const TilePos& pos ) const;
 
   CityBuildOptions& getBuildOptions();
   CityTradeOptions& getTradeOptions();
-
-  void disaster( const TilePos& pos, DisasterType type );
-  // remove construction
-  void clearLand( const TilePos& pos );
-
-  LandOverlayPtr getOverlay( const TilePos& pos ) const;
 
   void resolveMerchantArrived( EmpireMerchantPtr merchant );
 
@@ -112,6 +105,8 @@ public:
   virtual const GoodStore& getBuys() const;
 
   virtual EmpirePtr getEmpire() const;
+
+  void updateRoads();
    
 oc3_signals public:
   Signal1<int>& onPopulationChanged();
@@ -138,11 +133,11 @@ public:
   std::list< SmartPtr< T > > getBuildings( const BuildingType type )
   {
     std::list< SmartPtr< T > > ret;
-    LandOverlays buildings = _city->getBuildingList( type );
+    LandOverlays buildings = _city->getOverlayList();
     foreach( LandOverlayPtr item, buildings )
     {
       SmartPtr< T > b = item.as<T>();
-      if( b.isValid() )
+      if( b.isValid() && (b->getType() == type || type == B_MAX) )
       {
         ret.push_back( b );
       }
@@ -213,10 +208,7 @@ public:
     return ret;
   }
 
-  PtrTilesArea getArea( BuildingPtr building )
-  {
-    return _city->getTilemap().getFilledRectangle( building->getTilePos(), building->getSize() );
-  }
+  PtrTilesArea getArea( BuildingPtr building );
 
 protected:
   CityPtr _city;

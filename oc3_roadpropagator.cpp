@@ -44,7 +44,7 @@ ConstWayOnTiles RoadPropagator::createPath( const Tilemap& tileMap, const Tile& 
 {
   ConstWayOnTiles ret;
 
-  int mapSize = tileMap.getSize();;
+  //int mapSize = tileMap.getSize();;
 
   TilePos startPos = startTile.getIJ();
   TilePos stopPos  = destination.getIJ();

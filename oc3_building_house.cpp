@@ -29,6 +29,7 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_empire.hpp"
+#include "oc3_tilemap.hpp"
 #include "oc3_gamedate.hpp"
 #include "oc3_goodstore_simple.hpp"
 #include "oc3_city.hpp"
@@ -92,15 +93,15 @@ House::House(const int houseId) : Building( B_HOUSE ), _d( new Impl )
    _fireLevel = 0;
 
    _d->goodStore.setMaxQty(10000);  // no limit
-   _d->goodStore.setMaxQty(Good::G_WHEAT, 100);
-   _d->goodStore.setMaxQty(Good::G_FISH, 0);
-   _d->goodStore.setMaxQty(Good::G_MEAT, 0);
-   _d->goodStore.setMaxQty(Good::G_FRUIT, 0);
-   _d->goodStore.setMaxQty(Good::G_VEGETABLE, 0);
-   _d->goodStore.setMaxQty(Good::G_POTTERY, 0);
-   _d->goodStore.setMaxQty(Good::G_FURNITURE, 0);
-   _d->goodStore.setMaxQty(Good::G_OIL, 0);
-   _d->goodStore.setMaxQty(Good::G_WINE, 0);
+   _d->goodStore.setMaxQty(Good::wheat, 100);
+   _d->goodStore.setMaxQty(Good::fish, 0);
+   _d->goodStore.setMaxQty(Good::meat, 0);
+   _d->goodStore.setMaxQty(Good::fruit, 0);
+   _d->goodStore.setMaxQty(Good::vegetable, 0);
+   _d->goodStore.setMaxQty(Good::pottery, 0);
+   _d->goodStore.setMaxQty(Good::furniture, 0);
+   _d->goodStore.setMaxQty(Good::oil, 0);
+   _d->goodStore.setMaxQty(Good::wine, 0);
 
    // init the service access
    for (int i = 0; i<Service::S_MAX; ++i)
@@ -131,7 +132,7 @@ void House::timeStep(const unsigned long time)
         _d->updateHealthLevel();
 
         // consume goods
-        for (int i = 0; i < Good::G_MAX; ++i)
+        for (int i = 0; i < Good::goodCount; ++i)
         {
            Good::Type goodType = (Good::Type) i;
            int qty = std::max(_d->goodStore.getCurrentQty(goodType) - 1, 0);
@@ -395,7 +396,7 @@ void House::buyMarket( ServiceWalkerPtr walker )
    GoodStore& marketStore = market->getGoodStore();
 
    GoodStore &houseStore = getGoodStore();
-   for (int i = 0; i < Good::G_MAX; ++i)
+   for (int i = 0; i < Good::goodCount; ++i)
    {
       Good::Type goodType = (Good::Type) i;
       int houseQty = houseStore.getCurrentQty(goodType);
@@ -501,7 +502,7 @@ float House::evaluateService(ServiceWalkerPtr walker)
     MarketPtr market = walker->getBase().as<Market>();
     GoodStore &marketStore = market->getGoodStore();
     GoodStore &houseStore = getGoodStore();
-    for (int i = 0; i < Good::G_MAX; ++i)
+    for (int i = 0; i < Good::goodCount; ++i)
     {
        Good::Type goodType = (Good::Type) i;
        int houseQty  = houseStore.getCurrentQty(goodType);
@@ -683,7 +684,7 @@ int House::getFoodLevel() const
   case smallHut:
   case bigHut: 
   {
-    int ret = _d->goodStore.getCurrentQty(Good::G_WHEAT);
+    int ret = _d->goodStore.getCurrentQty(Good::wheat);
     return ret;
   }
   

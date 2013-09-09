@@ -1,42 +1,48 @@
 {
 	version : 1
-	map : "./resources/maps/Corinthus.map"
-	nextMission : "capua2.oc3mission"
+	map : "/maps/Corinthus.map"
+	next : "capua2.oc3mission"
 	funds : 8000	
-	overview : [ "This is the 1st peaceful mission. After the two training levels,",
-               "the shackles are removed and you are given plenty of freedom to build what you want,",
-               "right from the start. This level is quite forgiving, so go ahead and experiment, ",
-               "you can even afford to make a few mistakes. Don't run out of money, and everything will work out in the end" ]
+	date : "-350.01.01"
+	finish : "-300.01.01"	
 	
-	targets : {
+	win : 
+  {
 		population : 2500
 		culture : 35
 		prosperity : 10
 		peace : 20 
 		favour : 60
 		maxHouseLevel : "big_villa"
+    overview : "The shackles are removed and you are given plenty of freedom to build what you want, right from the start. This level is quite forgiving, so go ahead and experiment, you can even afford to make a few mistakes. Don't run out of money, and everything will work out in the end"
 	}
-  
-  empire : {
-    date : "-350.01.01"
-    finish : "-300.01.01"
-    
-    cities : {
-      Syracusae : {
-        type : "sea"
-        sells : { meat : 15, marble : 15 }
-        buys : { olives : 15, oil : 25, furniture : 15 }
+	
+	empire : 
+  {
+    cities : 
+    {
+      Syracusae : 
+      {
+        location : [ 843, 723 ]
+        land : false
+        available : true
+        sells : { meat : 15,  marble : 15 }			
+        buys : { olive : 15, oil : 25, furniture : 15	}
       }
       
-      Tarentum : { 
-        type : "land"
+      Tarentum : 
+      {
+        location : [ 903, 601 ]
+        sea : false
+        available : true
         sells : { furniture : 15, wine : 15 }
-        buys : { pottery" : 25 }
+        buys : { pottery : 25	}
       }
     }
-  }
+	}
 		
-	"events" : {
+	events : 
+  {
 		"Jul.348" : {
 			"date" : "-348.06.01"
 			"type" : "emperor_request"
@@ -61,7 +67,21 @@
 		}
 	}
 	
-	"buildoptions" : [ "pottery_workshop", "furniture_workshop", "oil_workshop",
-		                 "clay_pit", "lumber_mill",
-					           "olive_farm", "wheat_farm" ]
+	buildoptions : 
+  {
+    farm : "disable_all"
+    raw_material : "disable_all"
+    factory : "disable_all"
+                   
+    buildings : 
+    { 
+      pottery_workshop : true
+      furniture_workshop : true 
+      oil_workshop : true
+      clay_pit : true
+      lumber_mill : true 
+      olive_farm : true 
+      wheat_farm : true 
+    }
+  }
 }

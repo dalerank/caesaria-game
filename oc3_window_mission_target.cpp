@@ -24,6 +24,7 @@
 #include "oc3_gettext.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_groupbox.hpp"
+#include "oc3_guienv.hpp"
 
 class MissionTargetsWindow::Impl
 {
@@ -38,9 +39,11 @@ public:
   ListBox* lbxHelp;
 };
 
-MissionTargetsWindow* MissionTargetsWindow::create( Widget* parent, int id, Scenario* scenario )
+MissionTargetsWindow* MissionTargetsWindow::create( Scenario* scenario, int id )
 {
   Size size( 610, 430 );
+  Widget* parent = GuiEnv::instance().getRootWidget();
+
   Rect rectangle( Point( (parent->getWidth() - size.getWidth())/2, (parent->getHeight() - size.getHeight())/2 ), size );
   MissionTargetsWindow* ret = new MissionTargetsWindow( parent, id, rectangle );
   ret->_d->scenario = scenario;

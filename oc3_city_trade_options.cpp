@@ -76,7 +76,7 @@ public:
 
   void updateLists()
   {
-    for( int i=Good::G_WHEAT; i < Good::G_MAX; i++ )
+    for( int i=Good::wheat; i < Good::goodCount; i++ )
     {
       Good::Type gtype = (Good::Type)i;
       const GoodInfo& info = goods[ gtype ];
@@ -107,7 +107,7 @@ public:
   {
     buys.setMaxQty( 9999 );
     sells.setMaxQty( 9999 );
-    for( int i=Good::G_WHEAT; i < Good::G_MAX; i++ )
+    for( int i=Good::wheat; i < Good::goodCount; i++ )
     {
       Good::Type gtype = (Good::Type)i;
       goods[ gtype ].stacking = false;
@@ -116,8 +116,8 @@ public:
       goods[ gtype ].exportLimit = 0;
     }
 
-    goods[ Good::G_FISH ].order = CityTradeOptions::disabled;
-    goods[ Good::G_DENARIES ].order = CityTradeOptions::disabled;
+    goods[ Good::fish ].order = CityTradeOptions::disabled;
+    goods[ Good::denaries ].order = CityTradeOptions::disabled;
   }
 
   void initStandartPrice( Good::Type type, int buy, int sell )
@@ -127,21 +127,21 @@ public:
 
   void initStandartPrice()
   {
-    initStandartPrice( Good::G_WHEAT, 28, 22 );
-    initStandartPrice( Good::G_VEGETABLE, 38, 30 );
-    initStandartPrice( Good::G_FRUIT, 38, 30 );
-    initStandartPrice( Good::G_OLIVE, 42, 34 );
-    initStandartPrice( Good::G_GRAPE, 44, 36 );
-    initStandartPrice( Good::G_MEAT, 44, 36 );
-    initStandartPrice( Good::G_WINE, 215, 160 );
-    initStandartPrice( Good::G_OIL, 180, 140 );
-    initStandartPrice( Good::G_IRON, 60, 40 );
-    initStandartPrice( Good::G_TIMBER, 50, 35 );
-    initStandartPrice( Good::G_CLAY, 40, 30 );
-    initStandartPrice( Good::G_MARBLE, 200, 140 );
-    initStandartPrice( Good::G_WEAPON, 250, 180 );
-    initStandartPrice( Good::G_FURNITURE, 200, 150 );
-    initStandartPrice( Good::G_POTTERY, 180, 140 );
+    initStandartPrice( Good::wheat, 28, 22 );
+    initStandartPrice( Good::vegetable, 38, 30 );
+    initStandartPrice( Good::fruit, 38, 30 );
+    initStandartPrice( Good::olive, 42, 34 );
+    initStandartPrice( Good::grape, 44, 36 );
+    initStandartPrice( Good::meat, 44, 36 );
+    initStandartPrice( Good::wine, 215, 160 );
+    initStandartPrice( Good::oil, 180, 140 );
+    initStandartPrice( Good::iron, 60, 40 );
+    initStandartPrice( Good::timber, 50, 35 );
+    initStandartPrice( Good::clay, 40, 30 );
+    initStandartPrice( Good::marble, 200, 140 );
+    initStandartPrice( Good::weapon, 250, 180 );
+    initStandartPrice( Good::furniture, 200, 150 );
+    initStandartPrice( Good::pottery, 180, 140 );
   }
 };
 
@@ -261,7 +261,7 @@ void CityTradeOptions::load( const VariantMap& stream )
   {
     Good::Type gtype = GoodHelper::getType( it->first );
 
-    if( gtype == Good::G_NONE )
+    if( gtype == Good::none )
     {
       StringHelper::debug( 0xff, "%s %s [%s %d]", "Can't convert type from ", 
                            it->first.c_str(), __FILE__, __LINE__ );

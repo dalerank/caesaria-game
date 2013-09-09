@@ -30,6 +30,7 @@
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_cityfunds.hpp"
 #include "oc3_gamedate.hpp"
+#include "oc3_scenario_event_resolver.hpp"
 
 class Scenario::Impl
 {
@@ -42,6 +43,7 @@ public:
   CityWinTargets targets;
   EmpirePtr empire;
   double time, saveTime;
+  ScenarioEventResolverPtr eventResolver;
 
   void resolveMonthChange( const DateTime& time )
   {
@@ -103,9 +105,9 @@ bool Scenario::load( const io::FilePath& filename )
   _d->empire->initPlayerCity( _d->city.as<EmpireCity>() );
 
   LandOverlays llo = _d->city->getOverlayList();
-  for ( LandOverlays::iterator itLLO = llo.begin(); itLLO!=llo.end(); ++itLLO)
+  foreach( LandOverlayPtr overlay, llo )
   {
-    ConstructionPtr construction = (*itLLO).as<Construction>();
+    ConstructionPtr construction = overlay.as<Construction>();
     if( construction.isValid() )
     {
       construction->computeAccessRoads();
@@ -123,6 +125,11 @@ CityWinTargets& Scenario::getWinTargets()
   return _d->targets;
 }
 
+void Scenario::addEvent(ScenarioEventPtr event)
+{
+  _d->eventResolver->addEvent( event );
+}
+
 Scenario::~Scenario()
 {
 
@@ -132,6 +139,7 @@ void Scenario::reset()
 {
   _d->empire = Empire::create();
   _d->city = City::create( _d->empire );
+  _d->eventResolver = ScenarioEventResolver::create( _d->city );
 
   GameDate::instance().onMonthChanged().disconnectAll();
 
@@ -153,7 +161,7 @@ EmpirePtr Scenario::getEmpire() const
   return _d->empire;
 }
 
-void Scenario::timeStep()
+unsigned int Scenario::timeStep()
 {
   _d->time += _d->timeMultiplier / 100.f;
 
@@ -164,5 +172,9 @@ void Scenario::timeStep()
     GameDate::timeStep( _d->time );
 
     _d->saveTime += 1;
-  }
+
+    _d->eventResolver->update( _d->time );
+  }  
+
+  return (unsigned int)_d->saveTime;
 }

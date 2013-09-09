@@ -17,6 +17,7 @@
 #include "oc3_building_entertainment.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_resourcegroup.hpp"
+#include "oc3_foreach.hpp"
 
 EntertainmentBuilding::EntertainmentBuilding(const Service::Type service,
                                              const BuildingType type,
@@ -45,17 +46,17 @@ void EntertainmentBuilding::deliverService()
 {
    // we need all trainees types for the show
    int minLevel = 100;
-   for (std::map<WalkerType, int>::iterator itLevel = _traineeMap.begin(); itLevel != _traineeMap.end(); ++itLevel)
+   foreach( TraineeMap::value_type item, _traineeMap )
    {
-      minLevel = std::min(minLevel, itLevel->second);
+      minLevel = std::min( minLevel, item.second);
    }
 
    if (minLevel > 10)
    {
       // all trainees are there for the show!
-      for (std::map<WalkerType, int>::iterator itLevel = _traineeMap.begin(); itLevel != _traineeMap.end(); ++itLevel)
+      foreach( TraineeMap::value_type& item, _traineeMap )
       {
-         itLevel->second = itLevel->second - 10;
+         item.second = item.second - 10;
       }
       ServiceBuilding::deliverService();
    }

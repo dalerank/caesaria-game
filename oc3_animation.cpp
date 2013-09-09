@@ -16,6 +16,7 @@
 #include "oc3_animation.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_foreach.hpp"
+#include "oc3_stringhelper.hpp"
 
 void Animation::start(bool loop)
 {
@@ -62,7 +63,7 @@ void Animation::update( unsigned int time )
   }
 }
 
-const Picture& Animation::getCurrentPicture()
+const Picture& Animation::getCurrentPicture() const
 {
   return (_pictures.size() > 0 && _animIndex >= 0) 
                   ? _pictures[_animIndex] 
@@ -72,6 +73,11 @@ const Picture& Animation::getCurrentPicture()
 int Animation::getCurrentIndex() const
 {
   return _animIndex;
+}
+
+void Animation::setCurrentIndex(int index)
+{
+  _animIndex = math::clamp<int>( index, 0, _pictures.size()-1 );
 }
 
 Animation::Animation()
@@ -92,7 +98,7 @@ void Animation::setLoop( bool loop )
 
 void Animation::load( const std::string &prefix, const int start, const int number, 
                       bool reverse /*= false*/, const int step /*= 1*/ )
-{
+{  
   int revMul = reverse ? -1 : 1;
   for( int i = 0; i < number; ++i)
   {

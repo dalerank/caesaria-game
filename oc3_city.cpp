@@ -57,6 +57,7 @@
 #include "oc3_gamedate.hpp"
 #include "oc3_cityservice_religion.hpp"
 #include "oc3_foreach.hpp"
+#include "oc3_scenario_event.hpp"
 
 #include <set>
 
@@ -197,10 +198,9 @@ void City::timeStep( unsigned int time )
   if( _d->needRecomputeAllRoads )
   {
     _d->needRecomputeAllRoads = false;
-    for (LandOverlays::iterator itOverlay = _d->overlayList.begin(); itOverlay!=_d->overlayList.end(); ++itOverlay)
+    foreach( LandOverlayPtr overlay, _d->overlayList )
     {
       // for each overlay
-      LandOverlayPtr overlay = *itOverlay;
       ConstructionPtr construction = overlay.as<Construction>();
       if( construction != NULL )
       {
@@ -247,24 +247,6 @@ WalkerList City::getWalkerList( const WalkerType type )
 LandOverlays& City::getOverlayList()
 {
   return _d->overlayList;
-}
-
-LandOverlays City::getBuildingList(const BuildingType buildingType)
-{
-   LandOverlays res;
-
-   foreach( LandOverlayPtr overlay, _d->overlayList )
-   {
-      // for each overlay
-      ConstructionPtr construction = overlay.as<Construction>();
-      if( construction.isValid() && construction->getType() == buildingType)
-      {
-         // overlay matches the filter
-         res.push_back( overlay );
-      }
-   }
-
-   return res;
 }
 
 Tilemap& City::getTilemap()
@@ -320,133 +302,6 @@ int City::getPopulation() const
    return _d->population;
 }
 
-void City::build( const BuildingType type, const TilePos& pos )
-{   
-   // make new building
-   ConstructionPtr building = ConstructionManager::getInstance().create( type );
-   build( building, pos );
-}
-
-void City::build( ConstructionPtr building, const TilePos& pos )
-{
-  const BuildingData& buildingData = BuildingDataHolder::instance().getData( building->getType() );
-  if( building.isValid() )
-  {
-    building->build( pos );
-
-    _d->overlayList.push_back( building.as<LandOverlay>() );
-    _d->funds.resolveIssue( FundIssue( CityFunds::buildConstruction, -buildingData.getCost() ) );
-
-    if( building->isNeedRoadAccess() && building->getAccessRoads().empty() )
-    {
-      _d->onWarningMessageSignal.emit( "##building_need_road_access##" );
-    }
-  }
-}
-
-void City::disaster( const TilePos& pos, DisasterType type )
-{
-  TerrainTile& terrain = _d->tilemap.at( pos ).getTerrain();
-  TilePos rPos = pos;
-
-  if( terrain.isDestructible() )
-  {
-    Size size( 1 );
-
-    LandOverlayPtr overlay = terrain.getOverlay();
-    if( overlay.isValid() )
-    {
-      overlay->deleteLater();
-      size = overlay->getSize();
-      rPos = overlay->getTile().getIJ();
-    }
-
-    //bool deleteRoad = false;
-
-    PtrTilesArea clearedTiles = _d->tilemap.getFilledRectangle( rPos, size );
-    foreach( Tile* tile, clearedTiles )
-    {
-      BuildingType dstr2constr[] = { B_BURNING_RUINS, B_COLLAPSED_RUINS, B_PLAGUE_RUINS };
-      bool canCreate = ConstructionManager::getInstance().canCreate( dstr2constr[type] );
-      if( canCreate )
-      {
-        build( dstr2constr[type], tile->getIJ() );
-      }
-    }
-
-    std::string dstr2string[] = { _("##alarm_fire_in_city##"), _("##alarm_building_collapsed##"),
-                                  _("##alarm_plague_in_city##") };
-    _d->onDisasterEventSignal.emit( pos, dstr2string[type] );
-  }
-}
-
-void City::clearLand(const TilePos& pos  )
-{
-  Tile& cursorTile = _d->tilemap.at( pos );
-  TerrainTile& terrain = cursorTile.getTerrain();
-
-  if( terrain.isDestructible() )
-  {
-    Size size( 1 );
-    TilePos rPos = pos;
-
-    LandOverlayPtr overlay = terrain.getOverlay();
-      
-    bool deleteRoad = false;
-
-    if (terrain.isRoad()) deleteRoad = true;
-      
-    if ( overlay.isValid() )	
-    {
-      size = overlay->getSize();
-      rPos = overlay->getTile().getIJ();
-      overlay->deleteLater();
-    }
-
-    PtrTilesArea clearedTiles = _d->tilemap.getFilledRectangle( rPos, size );
-    foreach( Tile* tile, clearedTiles )
-    {
-      tile->setMasterTile(NULL);
-      TerrainTile &terrain = tile->getTerrain();
-      terrain.setTree(false);
-      terrain.setBuilding(false);
-      terrain.setRoad(false);
-      terrain.setGarden(false);
-      terrain.setOverlay(NULL);
-
-      // choose a random landscape picture:
-      // flat land1a 2-9;
-      // wheat: land1a 18-29;
-      // green_something: land1a 62-119;  => 58
-      // green_flat: land1a 232-289; => 58
-
-      // FIX: when delete building on meadow, meadow is replaced by common land tile
-      if( terrain.isMeadow() )
-      {
-        unsigned int originId = terrain.getOriginalImgId();
-        tile->setPicture( &Picture::load( TerrainTileHelper::convId2PicName( originId ) ) );
-      }
-      else
-      {
-        // choose a random background image, green_something 62-119 or green_flat 232-240
-         // 30% => choose green_sth 62-119
-        // 70% => choose green_flat 232-289
-        int startOffset  = ( (rand() % 10 > 6) ? 62 : 232 ); 
-        int imgId = rand() % 58;
-
-        tile->setPicture( &Picture::load( "land1a", startOffset + imgId));
-      }      
-    }
-      
-    // recompute roads;
-    // there is problem that we NEED to recompute all roads map for all buildings
-    // because MaxDistance2Road can be any number    
-    if( deleteRoad )
-    {
-      _d->needRecomputeAllRoads = true;     
-    }
-  }
-}
 
 void City::Impl::collectTaxes( CityPtr city )
 {
@@ -572,6 +427,11 @@ void City::load( const VariantMap& stream )
       _d->walkerList.push_back( walker );
     }
   }
+}
+
+void City::addOverlay( LandOverlayPtr overlay )
+{
+  _d->overlayList.push_back( overlay );
 }
 
 TilePos City::getRoadEntry() const
@@ -723,4 +583,15 @@ const GoodStore& City::getBuys() const
 EmpirePtr City::getEmpire() const
 {
   return _d->empire;
+}
+
+void City::updateRoads()
+{
+  _d->needRecomputeAllRoads = true;
+}
+
+
+PtrTilesArea CityHelper::getArea(BuildingPtr building)
+{
+  return _city->getTilemap().getFilledRectangle( building->getTilePos(), building->getSize() );
 }

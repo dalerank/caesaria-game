@@ -27,7 +27,6 @@ class ScreenWait::Impl
 public:
 	Picture bgPicture;
 	GfxEngine* engine;
-	GuiEnv* gui;
 };
 
 ScreenWait::ScreenWait() : _d( new Impl )
@@ -36,10 +35,9 @@ ScreenWait::ScreenWait() : _d( new Impl )
 
 ScreenWait::~ScreenWait() {}
 
-void ScreenWait::initialize( GfxEngine& engine, GuiEnv& gui )
+void ScreenWait::initialize()
 {
-  _d->engine = &engine;
-  _d->gui = &gui;
+  GfxEngine& engine = GfxEngine::instance();
 
   _d->bgPicture = Picture::load("c3title", 1);
 
@@ -50,9 +48,9 @@ void ScreenWait::initialize( GfxEngine& engine, GuiEnv& gui )
 
 void ScreenWait::draw()
 {
-   GfxEngine &engine = GfxEngine::instance();
+  GfxEngine& engine = GfxEngine::instance();
 
-   engine.drawPicture( _d->bgPicture, 0, 0);
+  engine.drawPicture( _d->bgPicture, 0, 0);
 }
 
 int ScreenWait::getResult() const

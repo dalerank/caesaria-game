@@ -22,7 +22,7 @@
 #include "oc3_gettext.hpp"
 #include <vector>
 
-static const int empPicId[ Good::G_MAX+1 ] = { PicID::bad,
+static const int empPicId[ Good::goodCount+1 ] = { PicID::bad,
                                        /*G_WHEAT*/11, 
                                        /*G_FISH*/27,
                                        /*G_MEAT*/16, 
@@ -42,7 +42,7 @@ static const int empPicId[ Good::G_MAX+1 ] = { PicID::bad,
                                        /*G_DENARIES*/26,                            
                                        PicID::bad };
 
- static const int localPicId[ Good::G_MAX+1 ] = { PicID::bad,
+ static const int localPicId[ Good::goodCount+1 ] = { PicID::bad,
                                           /*G_WHEAT*/317, 
                                           /*G_FISH*/333,
                                           /*G_MEAT*/322,
@@ -74,27 +74,27 @@ public:
     goodName[ type ] = prName;
   }
 
-  Impl() : EnumsHelper<Good::Type>(Good::G_NONE)
+  Impl() : EnumsHelper<Good::Type>(Good::none)
   {
-    append( Good::G_NONE, "none", _("None") );
-    append( Good::G_WHEAT, "wheat", _("Wheat") );
-    append( Good::G_FISH, "fish", _("Fish") );
-    append( Good::G_MEAT, "meat", _("Meat") );
-    append( Good::G_FRUIT, "fruit", _("Fruits"));
-    append( Good::G_VEGETABLE, "vegetable", _("Vegetables") );
-    append( Good::G_OLIVE, "olive", _("Olives") );
-    append( Good::G_OIL, "oil", _("Oil") );
-    append( Good::G_GRAPE, "grape", _("Grape") );
-    append( Good::G_WINE, "wine", _("Wine") );
-    append( Good::G_TIMBER, "timber", _("Timber") );
-    append( Good::G_FURNITURE, "furniture", _("Furniture") );
-    append( Good::G_CLAY, "clay", _("Clay") );
-    append( Good::G_POTTERY, "pottery", _("Pottery") );
-    append( Good::G_IRON, "iron", _("Iron") );
-    append( Good::G_WEAPON, "weapon", _("Weapon") );
-    append( Good::G_MARBLE, "marble", _("Marble") );
-    append( Good::G_DENARIES, "denaries", _("##Denaries##") );
-    append( Good::G_MAX, "", "unknown" );
+    append( Good::none, "none", _("None") );
+    append( Good::wheat, "wheat", _("Wheat") );
+    append( Good::fish, "fish", _("Fish") );
+    append( Good::meat, "meat", _("Meat") );
+    append( Good::fruit, "fruit", _("Fruits"));
+    append( Good::vegetable, "vegetable", _("Vegetables") );
+    append( Good::olive, "olive", _("Olives") );
+    append( Good::oil, "oil", _("Oil") );
+    append( Good::grape, "grape", _("Grape") );
+    append( Good::wine, "wine", _("Wine") );
+    append( Good::timber, "timber", _("Timber") );
+    append( Good::furniture, "furniture", _("Furniture") );
+    append( Good::clay, "clay", _("Clay") );
+    append( Good::pottery, "pottery", _("Pottery") );
+    append( Good::iron, "iron", _("Iron") );
+    append( Good::weapon, "weapon", _("Weapon") );
+    append( Good::marble, "marble", _("Marble") );
+    append( Good::denaries, "denaries", _("##Denaries##") );
+    append( Good::goodCount, "", "unknown" );
   }
 };
 
@@ -160,5 +160,5 @@ std::string GoodHelper::getTypeName( Good::Type type )
 
 const Picture& GoodHelper::getCartPicture(const GoodStock &stock, const DirectionType &direction)
 {
-  return AnimationBank::getCart( stock.empty() ? Good::G_NONE :  stock._type, direction );
+  return AnimationBank::getCart( stock.empty() ? Good::none :  stock._type, direction );
 }

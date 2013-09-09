@@ -25,6 +25,7 @@
 #include "oc3_cityfunds.hpp"
 #include "oc3_city_trade_options.hpp"
 #include "oc3_name_generator.hpp"
+#include "oc3_tilemap.hpp"
 
 class Merchant::Impl
 {
@@ -79,7 +80,7 @@ Propagator::DirectRoute getWarehouse4Buys( Propagator &pathPropagator,
     WarehousePtr warehouse= pathWayIt->first.as< Warehouse >();
 
     int rating = 0;
-    for( int i=Good::G_WHEAT; i<Good::G_MAX; i++ )
+    for( int i=Good::wheat; i<Good::goodCount; i++ )
     {
       Good::Type gtype = Good::Type(i);
       int qty = warehouse->getGoodStore().getMaxRetrieve( gtype );
@@ -211,7 +212,7 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
         WarehouseList warehouses = helper.getBuildings<Warehouse>( B_WAREHOUSE );
         foreach( WarehousePtr wh, warehouses )
         {
-          for( int i=Good::G_WHEAT; i < Good::G_MAX; i++ )
+          for( int i=Good::wheat; i < Good::goodCount; i++ )
           {
             Good::Type goodType = (Good::Type)i;
             cityGoodsAvailable[ goodType ] += wh->getGoodStore().getCurrentQty( goodType );
@@ -221,7 +222,7 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
         //const GoodStore& cityOrders = city->getSells();
         CityTradeOptions& options = city->getTradeOptions();
         //try buy goods
-        for( int n = Good::G_WHEAT; n<Good::G_MAX; ++n )
+        for( int n = Good::wheat; n<Good::goodCount; ++n )
         {
           Good::Type goodType = (Good::Type) n;
           int needQty = buy.getFreeQty( goodType );
@@ -278,7 +279,7 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
       if( warehouse.isValid() )
       {
         //try sell goods
-        for (int n = Good::G_WHEAT; n<Good::G_MAX; ++n)
+        for (int n = Good::wheat; n<Good::goodCount; ++n)
         {
           Good::Type goodType = (Good::Type)n;
           int qty4sell = sell.getCurrentQty( goodType );

@@ -20,6 +20,7 @@
 #include "oc3_building_house.hpp"
 #include "oc3_house_level.hpp"
 #include "oc3_tile.hpp"
+#include "oc3_building_entertainment.hpp"
 #include "oc3_gamedate.hpp"
 
 class CityServiceProsperity::Impl
@@ -90,8 +91,8 @@ void CityServiceProsperity::update( const unsigned int time )
     bool less30percentIsPlebs = (plebsCount / (float)_d->city->getPopulation()) < 0.3;
     _d->prosperityExtend += (less30percentIsPlebs ? 1 : 0);
 
-    LandOverlays hippodromes = _d->city->getBuildingList( B_HIPPODROME );
-    _d->prosperityExtend += (hippodromes.size() > 0 ? 1 : 0);
+    bool haveHippodrome = helper.getBuildings<BuildingHippodrome>( B_HIPPODROME ).size() > 0;
+    _d->prosperityExtend += (haveHippodrome > 0 ? 1 : 0);
 
     bool unemploymentLess5percent = false;
     bool unemploymentMore15percent = false;

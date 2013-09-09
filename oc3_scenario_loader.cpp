@@ -73,8 +73,7 @@ bool ScenarioLoader::load( const io::FilePath& filename, Scenario& scenario )
       
       if( loadok )
       {
-        ScenarioLoadFinalizer finalizer( scenario );
-        finalizer.check();
+        ScenarioLoadFinalizer::finalize( scenario );
       }
 
       return loadok;

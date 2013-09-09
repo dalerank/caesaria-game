@@ -18,6 +18,7 @@
 #include "oc3_safetycast.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_tile.hpp"
+#include "oc3_tilemap.hpp"
 #include "oc3_time.hpp"
 
 class CityServiceShoreline::Impl

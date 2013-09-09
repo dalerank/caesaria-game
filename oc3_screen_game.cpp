@@ -45,13 +45,15 @@
 #include "oc3_empire.hpp"
 #include "oc3_app_config.hpp"
 #include "oc3_window_mission_target.hpp"
+#include "oc3_gui_label.hpp"
+#include "oc3_gettext.hpp"
+
+static const int windowGamePausedId = StringHelper::hash( "gamepause" );
 
 class ScreenGame::Impl
 {
 public:
   MenuRigthPanel* rightPanel;
-  GuiEnv* gui;
-  GfxEngine* engine;
   TopMenu* topMenu;
   Menu* menu;
   TilemapArea mapArea;  // visible map area
@@ -63,6 +65,7 @@ public:
   AlarmEventHolder alarmsHolder;
 
   int result;
+  bool paused;
 
   void resolveGameSave( std::string filename );
   void showSaveDialog();
@@ -82,21 +85,24 @@ ScreenGame::ScreenGame() : _d( new Impl )
 {
   _d->topMenu = NULL;
   _d->scenario = NULL;
+  _d->paused = false;
 }
 
 ScreenGame::~ScreenGame() {}
 
-void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
+void ScreenGame::initialize()
 {
   CityPtr city = _d->scenario->getCity();
 
-  _d->gui = &gui;
-  _d->engine = &engine;
-  _d->infoBoxMgr = InfoBoxManager::create( &gui );
-  _d->gui->clear();
+  _d->infoBoxMgr = InfoBoxManager::create( &GuiEnv::instance() );
+  GuiEnv::instance().clear();
 
   const int topMenuHeight = 23;
   const Picture& rPanelPic = Picture::load( ResourceGroup::panelBackground, 14 );
+
+  GfxEngine& engine = GfxEngine::instance();
+  GuiEnv& gui = GuiEnv::instance();
+
   Rect rPanelRect( engine.getScreenWidth() - rPanelPic.getWidth(), topMenuHeight,
                    engine.getScreenWidth(), engine.getScreenHeight() );
 
@@ -122,12 +128,12 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
   _d->rightPanel->bringToFront();
 
   // 8*30: used for high buildings (granary...), visible even when not in tilemap_area.
-  getMapArea().setViewSize( engine.getScreenSize() + Size( 180 ) );
+  _d->mapArea.setViewport( engine.getScreenSize() + Size( 180 ) );
         
   // here move camera to start position of map
-  getMapArea().setCenterIJ( _d->scenario->getCity()->getCameraPos() ); 
+  _d->mapArea.setCenter( _d->scenario->getCity()->getCameraPos() );
 
-  new SenatePopupInfo( _d->gui->getRootWidget(), _d->mapRenderer );
+  new SenatePopupInfo( gui.getRootWidget(), _d->mapRenderer );
 
   //connect elements
   CONNECT( _d->topMenu, onSave(), _d.data(), Impl::showSaveDialog );
@@ -157,24 +163,21 @@ void ScreenGame::initialize( GfxEngine& engine, GuiEnv& gui )
 
   CONNECT( city, onDisasterEvent(), &_d->alarmsHolder, AlarmEventHolder::add );
   CONNECT( _d->extMenu, onSwitchAlarm(), &_d->alarmsHolder, AlarmEventHolder::next );
-  CONNECT( &_d->alarmsHolder, onMoveToAlarm(), &_d->mapArea, TilemapArea::setCenterIJ );
+  CONNECT( &_d->alarmsHolder, onMoveToAlarm(), &_d->mapArea, TilemapArea::setCenter );
   CONNECT( &_d->alarmsHolder, onAlarmChange(), _d->extMenu, ExtentMenu::setAlarmEnabled );
+
+  _d->showMissionTaretsWindow();
 }
 
 void ScreenGame::Impl::showSaveDialog()
 {
-  SaveDialog* dialog = new SaveDialog( gui->getRootWidget(), "saves", ".oc3save", -1 );
+  SaveDialog* dialog = new SaveDialog( GuiEnv::instance().getRootWidget(), "saves", ".oc3save", -1 );
   CONNECT( dialog, onFileSelected(), this, Impl::resolveGameSave );
 }
 
 void ScreenGame::Impl::resolveGameSave( std::string filename )
 {
   Scenario::instance().save( filename );
-}
-
-TilemapArea& ScreenGame::getMapArea()
-{
-  return _d->mapArea;
 }
 
 void ScreenGame::setScenario(Scenario& scenario)
@@ -190,18 +193,24 @@ void ScreenGame::setScenario(Scenario& scenario)
 void ScreenGame::draw()
 {
   _d->mapRenderer.drawTilemap();
-  _d->gui->beforeDraw();
-  _d->gui->draw();
+  GuiEnv::instance().beforeDraw();
+  GuiEnv::instance().draw();
 }
 
 void ScreenGame::afterFrame()
 {
-  _d->scenario->timeStep();
+  if( !_d->paused )    
+  {
+    unsigned int time = _d->scenario->timeStep();
+    _d->mapRenderer.animate( time );
+  }
 }
 
 void ScreenGame::handleEvent( NEvent& event )
 {
   //After MouseDown events are send to the same target till MouseUp
+  GuiEnv& gui = GuiEnv::instance();
+
   static enum _MouseEventTarget
   {
     _MET_NONE,
@@ -221,6 +230,38 @@ void ScreenGame::handleEvent( NEvent& event )
                                            ? -10 : +10 );
     break;
 
+    case KEY_KEY_P:
+      if( event.KeyboardEvent.PressedDown )
+        break;
+
+      _d->paused = !_d->paused;
+      {
+        Widget* rootWidget = GuiEnv::instance().getRootWidget();
+        Label* wdg = safety_cast< Label* >( rootWidget->findChild( windowGamePausedId ) );
+        if( _d->paused  )
+        {
+          if( !wdg )
+          {
+            Size scrSize = rootWidget->getSize();
+            wdg = new Label( rootWidget, Rect( Point( (scrSize.getWidth() - 450)/2, 40 ), Size( 450, 50 ) ),
+                             _("##game_is_paused##"), false, Label::bgWhiteFrame, windowGamePausedId );
+            wdg->setTextAlignment( alignCenter, alignCenter );
+          }
+        }
+        else
+        {
+          if( wdg )
+          {
+            wdg->deleteLater();
+          }
+        }
+      }
+    break;
+
+		case KEY_F10:
+			_d->makeScreenShot();
+		break;
+
     default:
     break;
     }
@@ -231,7 +272,7 @@ void ScreenGame::handleEvent( NEvent& event )
   {
     if (event.EventType & (OC3_RMOUSE_PRESSED_DOWN | OC3_LMOUSE_PRESSED_DOWN))
     {
-      eventResolved = _d->gui->handleEvent( event );
+      eventResolved = gui.handleEvent( event );
       if (eventResolved)
       {
         _mouseEventTarget = _MET_GUI;
@@ -247,41 +288,31 @@ void ScreenGame::handleEvent( NEvent& event )
     switch(_mouseEventTarget)
     {
     case _MET_GUI:
-      _d->gui->handleEvent( event );
-      break;
+      gui.handleEvent( event );
+    break;
+
     case _MET_TILES:
       _d->mapRenderer.handleEvent( event );
-      break;
+    break;
+
     default:
-      if (!_d->gui->handleEvent( event ))
+       if (!gui.handleEvent( event ))
         _d->mapRenderer.handleEvent( event );
-      break;
+    break;
     }
 
     if (event.EventType & (OC3_RMOUSE_LEFT_UP | OC3_LMOUSE_LEFT_UP))
+    {
       _mouseEventTarget = _MET_NONE;
+    }
   }
   else
   {
-    eventResolved = _d->gui->handleEvent( event );      
+    eventResolved = gui.handleEvent( event );
    
     if( !eventResolved )
-      _d->mapRenderer.handleEvent( event );
-
-    if( event.EventType == OC3_KEYBOARD_EVENT )
     {
-      switch( event.KeyboardEvent.Key )
-      {
-	    case KEY_ESCAPE:
-       // stop();
-	    break;
-	    
-      case KEY_F10:
-	      _d->makeScreenShot();
-	    break;
-
-      default: break;
-      }
+      _d->mapRenderer.handleEvent( event );
     }
   }
 }
@@ -295,7 +326,7 @@ void ScreenGame::Impl::makeScreenShot()
                                                time.getHour(), time.getMinutes(), time.getSeconds() );
   StringHelper::debug( 0xff, "creating screenshot %s", filename.c_str() );
 
-  engine->createScreenshot( filename );
+  GfxEngine::instance().createScreenshot( filename );
 }
 
 int ScreenGame::getResult() const
@@ -342,7 +373,7 @@ void ScreenGame::Impl::showAdvisorsWindow()
 
 void ScreenGame::Impl::showAdvisorsWindow( const int advType )
 {  
-  List<AdvisorsWindow*> wndList = gui->getRootWidget()->findChildren<AdvisorsWindow*>();
+  List<AdvisorsWindow*> wndList = GuiEnv::instance().getRootWidget()->findChildren<AdvisorsWindow*>();
 
   if( wndList.size() == 1 )
   {
@@ -351,7 +382,7 @@ void ScreenGame::Impl::showAdvisorsWindow( const int advType )
   }
   else
   {
-    AdvisorsWindow* advWnd = AdvisorsWindow::create( gui->getRootWidget(), -1, 
+    AdvisorsWindow* advWnd = AdvisorsWindow::create( GuiEnv::instance().getRootWidget(), -1,
                                                      (AdvisorType)advType, scenario->getCity() );
     CONNECT( advWnd, onEmpireMapRequest(), this, Impl::showEmpireMapWindow ); 
   }
@@ -364,7 +395,7 @@ void ScreenGame::Impl::showTradeAdvisorWindow()
 
 void ScreenGame::Impl::showEmpireMapWindow()
 {  
-  List<EmpireMapWindow*> wndList = gui->getRootWidget()->findChildren<EmpireMapWindow*>();
+  List<EmpireMapWindow*> wndList = GuiEnv::instance().getRootWidget()->findChildren<EmpireMapWindow*>();
 
   if( wndList.size() == 1 )
   {
@@ -372,12 +403,12 @@ void ScreenGame::Impl::showEmpireMapWindow()
   }
   else
   {
-    EmpireMapWindow* emap = EmpireMapWindow::create( scenario, gui->getRootWidget(), -1 );
+    EmpireMapWindow* emap = EmpireMapWindow::create( scenario, GuiEnv::instance().getRootWidget(), -1 );
     CONNECT( emap, onTradeAdvisorRequest(), this, Impl::showTradeAdvisorWindow ); 
   }  
 }
 
 void ScreenGame::Impl::showMissionTaretsWindow()
 {
-  MissionTargetsWindow::create( gui->getRootWidget(), -1, scenario );
+  MissionTargetsWindow::create( scenario );
 }

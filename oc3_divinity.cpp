@@ -18,6 +18,10 @@
 #include "oc3_saveadapter.hpp"
 #include "oc3_gamedate.hpp"
 #include "oc3_service.hpp"
+#include "oc3_city.hpp"
+#include "oc3_farm.hpp"
+#include "oc3_scenario_event.hpp"
+#include "oc3_gettext.hpp"
 
 class RomeDivinityBase : public RomeDivinity
 {  
@@ -32,29 +36,74 @@ public:
     Variant vLastFestival = vm.get( "lastFestivalDate" );
     _lastFestival = vLastFestival.isNull() ? GameDate::current() : vLastFestival.toDateTime();
     _shortDesc = vm.get( "shortDesc" ).toString();
+
+    _moodDescr << vm.get( "moodDescription" ).toList();
   }
 
+  virtual VariantMap save() const { return VariantMap(); }
   virtual std::string getName() const { return _name; }
   virtual std::string getShortDescription() const { return _shortDesc; }
   virtual Service::Type getServiceType() const { return _service; }
   virtual const Picture& getPicture() const { return _pic; }
   virtual float getRelation() const { return _relation; }
-  virtual float getDefaultDecrease() const { return 1.f; }
+  virtual float getDefaultDecrease() const { return 2.f; }
   virtual DateTime getLastFestivalDate() const { return _lastFestival; }
 
-  virtual void updateRelation( float income )
+  virtual void updateRelation( float income, CityPtr city )
   {
     _relation += income - getDefaultDecrease();
   }
 
+  virtual std::string getMoodDescription() const
+  {
+    if( _moodDescr.empty() )
+      return "no_descriptions_divinity_mood";
+
+    int delim = 100 / _moodDescr.size();
+    return _moodDescr[ _relation / delim ];
+  }
+
   RomeDivinityBase() {}
-private:
+
+protected:
   std::string _name;
   Service::Type _service;
   std::string _shortDesc;
   DateTime _lastFestival;
+  DateTime _lastActionDate;
   float _relation;
   Picture _pic;
+  StringArray _moodDescr;
+};
+
+class RomeDivinityCeres : public RomeDivinityBase
+{
+public:
+  static RomeDivinityPtr create()
+  {
+    RomeDivinityPtr ret( new RomeDivinityCeres() );
+    ret->drop();
+
+    return ret;
+  }
+
+  virtual void updateRelation(float income, CityPtr city)
+  {
+    RomeDivinityBase::updateRelation( income, city );
+
+    if( getRelation() < 1 && _lastActionDate.getMonthToDate( GameDate::current() ) > 10 )
+    {
+      _lastActionDate = GameDate::current();
+      ShowInfoboxEvent::create( _("##wrath_of_ceres_title##"), _("##wrath_of_ceres_description##") );
+
+      CityHelper helper( city );
+      FarmList farms = helper.getBuildings<Farm>( B_MAX );
+      foreach( FarmPtr farm, farms )
+      {
+        farm->updateProgress( -farm->getProgress() );
+      }
+    }
+  }
 };
 
 class DivinePantheon::Impl
@@ -96,11 +145,14 @@ void DivinePantheon::initialize( const io::FilePath& filename )
 {
   VariantMap pantheon = SaveAdapter::load( filename.toString() );
 
-  const char* divNames[] = { "ceres", "mars", "neptune", "venus", "mercury", 0 };
+  RomeDivinityPtr divn = RomeDivinityCeres::create();
+  divn.as<RomeDivinityBase>()->load( pantheon.get( "ceres" ).toMap() );
+  _d->divinties.push_back( divn );
 
+  const char* divNames[] = { "mars", "neptune", "venus", "mercury", 0 };
   for( int index=0; divNames[ index ] != 0; index++ )
   {
-    RomeDivinityBase* divn = new RomeDivinityBase();
+    divn = new RomeDivinityBase();
     divn->load( pantheon.get( divNames[ index ] ).toMap() );
 
     RomeDivinityPtr ret( divn );

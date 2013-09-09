@@ -30,7 +30,7 @@ public:
   bool isAnyGoodStored()
   {
     bool anyGoodStored = false;
-    for( int i = 0; i < Good::G_MAX; ++i)
+    for( int i = 0; i < Good::goodCount; ++i)
     {
       anyGoodStored |= ( goodStore.getCurrentQty( Good::Type(i) ) >= 100 );
     }
@@ -46,8 +46,8 @@ Market::Market() : ServiceBuilding(Service::S_MARKET, B_MARKET, Size(2) ),
   _fgPictures.resize(1);  // animation
 
   _d->goodStore.setMaxQty(5000);
-  _d->goodStore.setMaxQty(Good::G_WHEAT, 400);
-  _d->goodStore.setMaxQty(Good::G_POTTERY, 300);
+  _d->goodStore.setMaxQty(Good::wheat, 400);
+  _d->goodStore.setMaxQty(Good::pottery, 300);
   //_d->goodStore.setCurrentQty(G_WHEAT, 200);
 
   _getAnimation().load( ResourceGroup::commerce, 2, 10 );
@@ -84,7 +84,7 @@ std::list<Good::Type> Market::getMostNeededGoods()
 
   std::multimap<float, Good::Type> mapGoods;  // ordered by demand
 
-  for (int n = 0; n < Good::G_MAX; ++n)
+  for (int n = 0; n < Good::goodCount; ++n)
   {
     // for all types of good
     Good::Type goodType = (Good::Type) n;
@@ -96,7 +96,7 @@ std::list<Good::Type> Market::getMostNeededGoods()
     }
   }
 
-  for (std::multimap<float, Good::Type>::iterator itMap = mapGoods.begin(); itMap != mapGoods.end(); ++itMap)
+  for( std::multimap<float, Good::Type>::iterator itMap = mapGoods.begin(); itMap != mapGoods.end(); ++itMap)
   {
     Good::Type goodType = itMap->second;
     res.push_back(goodType);

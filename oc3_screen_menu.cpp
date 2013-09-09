@@ -33,8 +33,6 @@ class ScreenMenu::Impl
 public:
   Picture bgPicture;
   StartMenu* menu;         // menu to display
-  GfxEngine* engine;
-  GuiEnv* gui;
   int result;
   bool isStopped;
   std::string fileMap;
@@ -63,14 +61,14 @@ public:
 
 void ScreenMenu::Impl::resolveShowLoadGameWnd()
 {
-  Size rootSize = gui->getRootWidget()->getSize();
+  Widget* parent = GuiEnv::instance().getRootWidget();
+  Size rootSize = parent->getSize();
   RectF rect( 0.25f * rootSize.getWidth(), 0.25f * rootSize.getHeight(), 
               0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() );
 
   io::FilePath savesPath = io::FileDir::getApplicationDir().addEndSlash().toString() + "saves/";
 
-  LoadMapWindow* wnd = new LoadMapWindow( gui->getRootWidget(), rect.toRect(),
-                                          savesPath, ".oc3save",-1 );
+  LoadMapWindow* wnd = new LoadMapWindow( parent, rect.toRect(), savesPath, ".oc3save",-1 );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
   wnd->setTitle( _("##Load save##") );
@@ -78,10 +76,11 @@ void ScreenMenu::Impl::resolveShowLoadGameWnd()
 
 void ScreenMenu::Impl::resolvePlayMission()
 {
-  Size rootSize = gui->getRootWidget()->getSize();
+  Widget* parent = GuiEnv::instance().getRootWidget();
+  Size rootSize = parent->getSize();
   RectF rect( 0.25f * rootSize.getWidth(), 0.25f * rootSize.getHeight(), 
     0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() );
-  LoadMapWindow* wnd = new LoadMapWindow( gui->getRootWidget(), rect.toRect(),
+  LoadMapWindow* wnd = new LoadMapWindow( parent, rect.toRect(),
                                           AppConfig::rcpath( "/missions/" ), ".oc3mission", -1 );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
@@ -90,8 +89,9 @@ void ScreenMenu::Impl::resolvePlayMission()
 
 void ScreenMenu::Impl::resolveShowLoadMapWnd()
 {
-  Size rootSize = gui->getRootWidget()->getSize();
-  LoadMapWindow* wnd = new LoadMapWindow( gui->getRootWidget(), 
+  Widget* parent = GuiEnv::instance().getRootWidget();
+  Size rootSize = parent->getSize();
+  LoadMapWindow* wnd = new LoadMapWindow( parent,
                                           RectF( 0.25f * rootSize.getWidth(), 0.25f * rootSize.getHeight(), 
                                                 0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() ).toRect(), 
                                                 AppConfig::rcpath( "/maps/" ), ".map",
@@ -111,30 +111,31 @@ ScreenMenu::~ScreenMenu() {}
 
 void ScreenMenu::draw()
 {
-  _d->gui->beforeDraw();
+  GuiEnv::instance().beforeDraw();
 
-  _d->engine->drawPicture(_d->bgPicture, 0, 0);
-  _d->gui->draw();
+  GfxEngine::instance().drawPicture(_d->bgPicture, 0, 0);
+
+  GuiEnv::instance().draw();
 }
 
 void ScreenMenu::handleEvent( NEvent& event )
 {
-  _d->gui->handleEvent( event );
+  GuiEnv::instance().handleEvent( event );
 }
 
-void ScreenMenu::initialize( GfxEngine& engine, GuiEnv& gui )
+void ScreenMenu::initialize()
 {
   _d->bgPicture = Picture::load("title", 1);
 
   // center the bgPicture on the screen
+  GfxEngine& engine = GfxEngine::instance();
+
   _d->bgPicture.setOffset( (engine.getScreenWidth() - _d->bgPicture.getWidth()) / 2,
                              -( engine.getScreenHeight() - _d->bgPicture.getHeight() ) / 2 );
 
-  _d->gui = &gui;
-  _d->gui->clear();
-  
-  _d->engine = &engine;
-  _d->menu = new StartMenu( gui.getRootWidget() );
+  GuiEnv::instance().clear();
+
+  _d->menu = new StartMenu( GuiEnv::instance().getRootWidget() );
 
   PushButton* btn = _d->menu->addButton( _("##mainmenu_newgame##"), -1 );
   CONNECT( btn, onClicked(), _d.data(), Impl::resolveNewGame );

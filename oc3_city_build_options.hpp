@@ -19,6 +19,7 @@
 #include "oc3_referencecounted.hpp"
 #include "oc3_scopedptr.hpp"
 #include "oc3_enums.hpp"
+#include "oc3_variant.hpp"
 
 class CityBuildOptions : public ReferenceCounted
 {
@@ -32,6 +33,8 @@ public:
   bool isBuildingAvailble( const BuildingType type ) const;
 
   void clear();
+
+  void load( const VariantMap& options );
 
 private:
   class Impl;

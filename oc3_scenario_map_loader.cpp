@@ -20,6 +20,7 @@
 #include "oc3_exception.hpp"
 #include "oc3_constructionmanager.hpp"
 #include "oc3_stringhelper.hpp"
+#include "oc3_tilemap.hpp"
 
 #include <fstream>
 
@@ -78,6 +79,7 @@ public:
 bool ScenarioMapLoader::load(const std::string& filename, Scenario& oScenario)
 {
   std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
+
   _d->initClimate(f, oScenario.getCity());
 
   _d->loadMap(f, oScenario);
