@@ -532,13 +532,6 @@ void ContextMenu::recalculateSize_()
 	}
 }
 
-void ContextMenu::styleChanged()
-{
-  recalculateSize_();
-
-  Widget::styleChanged();
-}
-
 //! Returns the selected item in the menu
 int ContextMenu::getSelectedIndex() const
 {

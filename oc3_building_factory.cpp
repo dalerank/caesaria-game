@@ -25,6 +25,7 @@
 #include "oc3_gettext.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_predefinitions.hpp"
+#include "oc3_tilemap.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_walker_cart_supplier.hpp"
 #include "oc3_stringhelper.hpp"

@@ -63,7 +63,7 @@ void Animation::update( unsigned int time )
   }
 }
 
-const Picture& Animation::getCurrentPicture()
+const Picture& Animation::getCurrentPicture() const
 {
   return (_pictures.size() > 0 && _animIndex >= 0) 
                   ? _pictures[_animIndex] 
@@ -73,6 +73,11 @@ const Picture& Animation::getCurrentPicture()
 int Animation::getCurrentIndex() const
 {
   return _animIndex;
+}
+
+void Animation::setCurrentIndex(int index)
+{
+  _animIndex = math::clamp<int>( index, 0, _pictures.size()-1 );
 }
 
 Animation::Animation()

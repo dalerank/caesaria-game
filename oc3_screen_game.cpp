@@ -128,10 +128,10 @@ void ScreenGame::initialize()
   _d->rightPanel->bringToFront();
 
   // 8*30: used for high buildings (granary...), visible even when not in tilemap_area.
-  getMapArea().setViewSize( engine.getScreenSize() + Size( 180 ) );
+  _d->mapArea.setViewport( engine.getScreenSize() + Size( 180 ) );
         
   // here move camera to start position of map
-  getMapArea().setCenterIJ( _d->scenario->getCity()->getCameraPos() ); 
+  _d->mapArea.setCenter( _d->scenario->getCity()->getCameraPos() );
 
   new SenatePopupInfo( gui.getRootWidget(), _d->mapRenderer );
 
@@ -163,7 +163,7 @@ void ScreenGame::initialize()
 
   CONNECT( city, onDisasterEvent(), &_d->alarmsHolder, AlarmEventHolder::add );
   CONNECT( _d->extMenu, onSwitchAlarm(), &_d->alarmsHolder, AlarmEventHolder::next );
-  CONNECT( &_d->alarmsHolder, onMoveToAlarm(), &_d->mapArea, TilemapArea::setCenterIJ );
+  CONNECT( &_d->alarmsHolder, onMoveToAlarm(), &_d->mapArea, TilemapArea::setCenter );
   CONNECT( &_d->alarmsHolder, onAlarmChange(), _d->extMenu, ExtentMenu::setAlarmEnabled );
 }
 
@@ -176,11 +176,6 @@ void ScreenGame::Impl::showSaveDialog()
 void ScreenGame::Impl::resolveGameSave( std::string filename )
 {
   Scenario::instance().save( filename );
-}
-
-TilemapArea& ScreenGame::getMapArea()
-{
-  return _d->mapArea;
 }
 
 void ScreenGame::setScenario(Scenario& scenario)
@@ -202,9 +197,10 @@ void ScreenGame::draw()
 
 void ScreenGame::afterFrame()
 {
-  if( !_d->paused )
+  if( !_d->paused )    
   {
-    _d->scenario->timeStep();
+    unsigned int time = _d->scenario->timeStep();
+    _d->mapRenderer.animate( time );
   }
 }
 

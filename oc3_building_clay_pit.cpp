@@ -19,6 +19,7 @@
 #include "oc3_tile.hpp"
 #include "oc3_city.hpp"
 #include "oc3_foreach.hpp"
+#include "oc3_tilemap.hpp"
 
 ClayPit::ClayPit() : Factory( Good::none, Good::clay, B_CLAY_PIT, Size(2) )
 {

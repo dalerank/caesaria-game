@@ -29,6 +29,7 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_empire.hpp"
+#include "oc3_tilemap.hpp"
 #include "oc3_gamedate.hpp"
 #include "oc3_goodstore_simple.hpp"
 #include "oc3_city.hpp"

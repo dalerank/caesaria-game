@@ -198,10 +198,9 @@ void City::timeStep( unsigned int time )
   if( _d->needRecomputeAllRoads )
   {
     _d->needRecomputeAllRoads = false;
-    for (LandOverlays::iterator itOverlay = _d->overlayList.begin(); itOverlay!=_d->overlayList.end(); ++itOverlay)
+    foreach( LandOverlayPtr overlay, _d->overlayList )
     {
       // for each overlay
-      LandOverlayPtr overlay = *itOverlay;
       ConstructionPtr construction = overlay.as<Construction>();
       if( construction != NULL )
       {
@@ -589,4 +588,10 @@ EmpirePtr City::getEmpire() const
 void City::updateRoads()
 {
   _d->needRecomputeAllRoads = true;
+}
+
+
+PtrTilesArea CityHelper::getArea(BuildingPtr building)
+{
+  return _city->getTilemap().getFilledRectangle( building->getTilePos(), building->getSize() );
 }

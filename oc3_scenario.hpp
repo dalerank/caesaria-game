@@ -50,7 +50,7 @@ public:
 
   void changeTimeMultiplier( int percent );
 
-  void timeStep();
+  unsigned int timeStep();
 
   std::string getDescription() const;
 private:

@@ -157,24 +157,24 @@ std::string TerrainTileHelper::convId2PicName( const unsigned int imgId )
   std::string res_pfx;  // resource name prefix
   int res_id = imgId;   // id of resource
 
-  if (201<=imgId && imgId < 245)
+  if( imgId < 245 )
   {
     res_pfx = "plateau";
     res_id = imgId - 200;
   }
-  else if (245<=imgId && imgId < 548)
+  else if( imgId < 548 )
   {
     res_pfx = "land1a";
     res_id = imgId - 244;
   }
-  else if (548<=imgId && imgId < 779)
+  else if( imgId < 779 )
   {
     res_pfx = ResourceGroup::land2a;
     res_id = imgId - 547;
   }
-  else if (779<=imgId && imgId < 871)
+  else if( imgId < 871)
   {
-    res_pfx = "land3a";
+    res_pfx = ResourceGroup::land3a;
     res_id = imgId - 778;      
   }
   else
@@ -223,7 +223,7 @@ int TerrainTileHelper::convPicName2Id( const std::string &pic_name )
   {
     res_id += 547;
   }
-  else if (res_pfx == "land3a")
+  else if (res_pfx == ResourceGroup::land3a)
   {
     res_id += 778;
   }

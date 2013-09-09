@@ -93,6 +93,7 @@ class Picture;
 class TilePos;
 class Size;
 class TerrainTile;
+class Tilemap;
 class VariantMap;
 
 class Widget;

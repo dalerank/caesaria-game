@@ -107,8 +107,6 @@ public:
 	//! Reads attributes of the element
   virtual void load( const VariantMap& in );
 
-	virtual void styleChanged();
-
 	virtual void setAllowFocus( bool enabled );
 
 	void beforeDraw( GfxEngine& painter );

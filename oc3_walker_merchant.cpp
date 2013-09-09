@@ -25,6 +25,7 @@
 #include "oc3_cityfunds.hpp"
 #include "oc3_city_trade_options.hpp"
 #include "oc3_name_generator.hpp"
+#include "oc3_tilemap.hpp"
 
 class Merchant::Impl
 {

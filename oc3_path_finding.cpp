@@ -69,27 +69,23 @@ void Propagator::init(Tile& origin)
    init( tileList );
 }
 
-void Propagator::init(const std::list<Tile*>& origin)
+void Propagator::init( const PtrTilesList& origin)
 {
-   _activeBranches.clear();
-   _completedBranches.clear();
+  _activeBranches.clear();
+  _completedBranches.clear();
 
-   // init propagation
-   for (std::list<Tile*>::const_iterator itTile = origin.begin(); itTile!=origin.end(); ++itTile)
-   {
-      // for every access tile
-      Tile &tile = **itTile;
-      // std::cout << "Tile access " << tile.getI() << "," << tile.getJ() << std::endl;
-
-      PathWay pathWay;
-      pathWay.init(*_tilemap, tile);
-
-      // init active branches
-      _activeBranches.insert(pathWay);
-
-      // init trivial completed branches
-      _completedBranches.insert(std::pair<Tile*, PathWay>(&tile, pathWay));
-   }
+  // init propagation
+  for( PtrTilesList::const_iterator it=origin.begin(); it != origin.end(); it++ )
+  {
+    // std::cout << "Tile access " << tile.getI() << "," << tile.getJ() << std::endl;
+    Tile* tile = *it;
+    PathWay pathWay;
+    pathWay.init(*_tilemap, *tile);
+    // init active branches
+    _activeBranches.insert(pathWay);
+    // init trivial completed branches
+    _completedBranches.insert( std::pair<Tile*, PathWay>( tile, pathWay ) );
+  }
 }
 
 void Propagator::propagate(const int maxDistance)
@@ -120,23 +116,22 @@ void Propagator::propagate(const int maxDistance)
       }
 
       // propagate to neighbour tiles
-      const std::list<Tile*> accessTiles = _tilemap->getRectangle( tile.getIJ() + TilePos( -1,-1 ),
-                                                                   tile.getIJ() + TilePos( 1, 1 ), _allDirections);
-      for (std::list<Tile*>::const_iterator itTile = accessTiles.begin(); itTile!=accessTiles.end(); ++itTile)
+      PtrTilesList accessTiles = _tilemap->getRectangle( tile.getIJ() + TilePos( -1,-1 ),
+                                                         tile.getIJ() + TilePos( 1, 1 ), _allDirections);
+      foreach( Tile* tile2, accessTiles )
       {
          // for every neighbor tile
-         Tile &tile2 = **itTile;
-         if (tile2.getTerrain().isWalkable(_allLands))
+         if( tile2->getTerrain().isWalkable(_allLands))
          {
             // std::cout << "Next tile: " << tile2.getI() << ", " << tile2.getJ() << std::endl;
 
-            if (_completedBranches.find(&tile2)==_completedBranches.end())
+            if (_completedBranches.find( tile2 )==_completedBranches.end())
             {
                // the tile has not been processed yet
                PathWay pathWay2(pathWay);
-               pathWay2.setNextTile(tile2);
+               pathWay2.setNextTile( *tile2 );
                _activeBranches.insert(pathWay2);
-               _completedBranches.insert(std::pair<Tile*, PathWay>(&tile2, pathWay2));
+               _completedBranches.insert(std::pair<Tile*, PathWay>( tile2, pathWay2));
 
                // pathWay2.prettyPrint();
                // std::cout << "distance at:" << tile2.getI() << "," << tile2.getJ() << " is:" << pathWay2.getLength() << std::endl;

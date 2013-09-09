@@ -30,6 +30,7 @@
 #include "oc3_city.hpp"
 #include "oc3_animation_bank.hpp"
 #include "oc3_gettext.hpp"
+#include "oc3_tilemap.hpp"
 
 class Walker::Impl
 {

@@ -18,13 +18,13 @@
 #include "oc3_widgetprivate.hpp"
 #include "oc3_guienv.hpp"
 #include "oc3_event.hpp"
+#include "oc3_foreach.hpp"
 
 void Widget::beforeDraw( GfxEngine& painter )
 {
   _OC3_DEBUG_BREAK_IF( !_d->parent && "Parent must be exists" );
-  ChildIterator it = _d->children.begin();
-  for (; it != _d->children.end(); ++it)
-    (*it)->beforeDraw( painter );
+  foreach( Widget* widget, _d->children )
+    widget->beforeDraw( painter );
 }
 
 // void Widget::setFont( Font font, u32 nA/*=0 */ )
@@ -90,13 +90,6 @@ void Widget::setTextAlignment( TypeAlign horizontal, TypeAlign vertical )
     _d->textVertAlign = vertical;
 }
 
-void Widget::styleChanged()
-{
-    ConstChildIterator it = _d->children.begin();
-    for (; it != _d->children.end(); ++it)
-         (*it)->styleChanged();
-}
-
 void Widget::setMaxWidth( unsigned int width )
 {
     _d->maxSize.setWidth( width );
@@ -140,11 +133,10 @@ Widget::Widget( Widget* parent, int id, const Rect& rectangle )
 Widget::~Widget()
 {
     // delete all children
-    ChildIterator it = _d->children.begin();
-    for (; it != _d->children.end(); ++it)
+    foreach( Widget* widget, _d->children )
     {
-        (*it)->_d->parent = 0;
-        (*it)->drop();
+        widget->_d->parent = 0;
+        widget->drop();
     }
 }
 
@@ -276,10 +268,9 @@ void Widget::updateAbsolutePosition()
         _resizeEvent();
 
     // update all children
-    ChildIterator it = _d->children.begin();
-    for (; it != _d->children.end(); ++it)
+    foreach( Widget* widget, _d->children )
     {
-        (*it)->updateAbsolutePosition();
+        widget->updateAbsolutePosition();
     }
 }
 
@@ -341,9 +332,8 @@ void Widget::draw( GfxEngine& painter )
 {
   if ( isVisible() )
   {
-    ChildIterator it = _d->children.begin();
-    for (; it != _d->children.end(); ++it)
-      (*it)->draw( painter );
+    foreach( Widget* widget, _d->children )
+      widget->draw( painter );
   }
 }
 
@@ -427,7 +417,7 @@ bool Widget::bringToFront()
 bool Widget::bringChildToFront( Widget* element )
 {
     ChildIterator it = _d->children.begin();
-    for (; it != _d->children.end(); ++it)
+    for(; it != _d->children.end(); ++it)
     {
         if (element == (*it))
         {
@@ -470,14 +460,13 @@ Widget* Widget::findChild( int id, bool searchchildren/*=false*/ ) const
 {
     Widget* e = 0;
 
-    ConstChildIterator it = _d->children.begin();
-    for (; it != _d->children.end(); ++it)
+    foreach( Widget* widget, _d->children )
     {
-        if ((*it)->getID() == id)
-            return (*it);
+        if( widget->getID() == id)
+            return widget;
 
-        if (searchchildren)
-            e = (*it)->findChild(id, true);
+        if( searchchildren )
+            e = widget->findChild(id, true);
 
         if (e)
             return e;
@@ -762,9 +751,8 @@ void Widget::animate( unsigned int timeMs )
 {
     if ( isVisible() )
     {
-        ChildIterator it = _d->children.begin();
-        for (; it != _d->children.end(); ++it)
-            (*it)->animate( timeMs );
+        foreach( Widget* widget, _d->children )
+            widget->animate( timeMs );
     }
 }
 

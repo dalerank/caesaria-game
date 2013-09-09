@@ -41,7 +41,8 @@ public:
 
    TilemapArea &getMapArea();
 
-   // draws the tilemap on the screen, using a dumb back to front drawing of all pictures.
+   // draws the tilemap on the screen,
+   // using a dumb back to front drawing of all pictures.
    void drawTilemap();
    
    void handleEvent( NEvent& event);
@@ -55,6 +56,8 @@ public:
 
    // sets the current command
    void setMode( const TilemapChangeCommandPtr command );
+
+   void animate( unsigned int time );
 
 oc3_signals public:
    Signal1< const Tile& >& onShowTileInfo();

@@ -22,6 +22,7 @@
 #include "oc3_goodhelper.hpp"
 #include "oc3_city.hpp"
 #include "oc3_stringhelper.hpp"
+#include "oc3_tilemap.hpp"
 
 class FarmTile
 {

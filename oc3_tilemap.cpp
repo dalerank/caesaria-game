@@ -100,7 +100,7 @@ int Tilemap::getSize() const
 
 PtrTilesList Tilemap::getRectangle( const TilePos& start, const TilePos& stop, const bool corners /*= true*/ )
 {
-  std::list<Tile*> res;
+  PtrTilesList res;
 
   int delta_corners = 0;
   if (! corners)

@@ -96,7 +96,7 @@ std::list<Good::Type> Market::getMostNeededGoods()
     }
   }
 
-  for (std::multimap<float, Good::Type>::iterator itMap = mapGoods.begin(); itMap != mapGoods.end(); ++itMap)
+  for( std::multimap<float, Good::Type>::iterator itMap = mapGoods.begin(); itMap != mapGoods.end(); ++itMap)
   {
     Good::Type goodType = itMap->second;
     res.push_back(goodType);

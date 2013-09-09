@@ -34,6 +34,7 @@ public:
     static const char* aqueduct;
     static const char* waterbuildings;
     static const char* road;
+    static const char* land1a;
     static const char* entertaiment;
     static const char* warehouse;
     static const char* housing;

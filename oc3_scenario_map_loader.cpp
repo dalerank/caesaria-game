@@ -20,6 +20,7 @@
 #include "oc3_exception.hpp"
 #include "oc3_constructionmanager.hpp"
 #include "oc3_stringhelper.hpp"
+#include "oc3_tilemap.hpp"
 
 #include <fstream>
 

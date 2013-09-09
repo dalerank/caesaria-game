@@ -56,6 +56,7 @@ public:
 
   void save( VariantMap& stream) const;
   void load( const VariantMap& stream);
+
   TilePos fit( const TilePos& pos ) const;
 
 private:

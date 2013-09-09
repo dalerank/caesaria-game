@@ -26,6 +26,7 @@
 #include "oc3_walker_service.hpp"
 #include "oc3_city.hpp"
 #include "oc3_foreach.hpp"
+#include "oc3_tilemap.hpp"
 
 class WaterSource::Impl
 {
@@ -130,12 +131,10 @@ bool Aqueduct::canBuild( const TilePos& pos ) const
     if (!tilemap.isInside(tp_to))
       tp_to = pos;
 
-    std::list<Tile*> rect = tilemap.getRectangle(tp_from, tp_to, !Tilemap::checkCorners);
-    for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+    PtrTilesList perimetr = tilemap.getRectangle(tp_from, tp_to, !Tilemap::checkCorners);
+    foreach( Tile* tile, perimetr )
     {
-      Tile* tile = *itTiles;
-
-      if (tile->getTerrain().isRoad() && tile->getTerrain().isAqueduct())
+      if( tile->getTerrain().isRoad() && tile->getTerrain().isAqueduct() )
         return false;
     }
   }

@@ -21,6 +21,9 @@
 #include "oc3_scenario.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_city.hpp"
+#include "oc3_foreach.hpp"
+#include "oc3_animation_bank.hpp"
+#include "oc3_resourcegroup.hpp"
 
 static void initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap, const unsigned int picIdStart, bool exit )
 {
@@ -43,21 +46,35 @@ static void initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap, const uns
   StringHelper::debug( 0xff, "(%d, %d)", tlPos.getI(),    tlPos.getJ()    );
   StringHelper::debug( 0xff, "(%d, %d)", tlOffset.getI(), tlOffset.getJ() );
 
-  signTile.setPicture(&Picture::load( "land3a", picIdStart + idOffset ));
+  signTile.setPicture( &Picture::load( ResourceGroup::land3a, picIdStart + idOffset ) );
   signTile.getTerrain().setRock( true );
-};
-
-void ScenarioLoadFinalizer::check()
-{
-  Tilemap& tileMap = _scenario.getCity()->getTilemap();
-
-  // exit and entry can't point to one tile or .... can!
-  initEntryExitTile( _scenario.getCity()->getRoadEntry(), tileMap, 89, false );
-  initEntryExitTile( _scenario.getCity()->getRoadExit(),  tileMap, 85, true  ); 
 }
 
-ScenarioLoadFinalizer::ScenarioLoadFinalizer( Scenario& scenario )
-: _scenario( scenario )
+static void initWaterTileAnimation( Tilemap& tmap )
 {
+  PtrTilesArea area = tmap.getFilledRectangle( TilePos( 0, 0 ), Size( tmap.getSize() ) );
 
+  Animation water;
+  water.setFrameDelay( 12 );
+  water.load( ResourceGroup::land1a, 121, 7 );
+  water.load( ResourceGroup::land1a, 127, 7, true );
+  foreach( Tile* tile, area )
+  {
+    int rId = tile->getTerrain().getOriginalImgId() - 364;
+    if( rId >= 0 && rId < 8 )
+    {
+      water.setCurrentIndex( rId );
+      tile->setAnimation( water );
+    }
+  }
+}
+
+void ScenarioLoadFinalizer::finalize( Scenario& scenario )
+{
+  Tilemap& tileMap = scenario.getCity()->getTilemap();
+
+  // exit and entry can't point to one tile or .... can!
+  initEntryExitTile( scenario.getCity()->getRoadEntry(), tileMap, 89, false );
+  initEntryExitTile( scenario.getCity()->getRoadExit(),  tileMap, 85, true  );
+  initWaterTileAnimation( tileMap );
 }

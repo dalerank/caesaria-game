@@ -591,31 +591,45 @@ void TilemapRenderer::Impl::drawTileBase( Tile& tile )
 
   LandOverlayPtr overlay = tile.getTerrain().getOverlay();
 
-  if (!overlay.isNull())
-    if (overlay.is<Aqueduct>() && postTiles.size() > 0) {
+  if( overlay.isValid())
+  {
+    if (overlay.is<Aqueduct>() && postTiles.size() > 0)
+    {
       // check, do we have any aqueducts there... there can be empty items
       bool isAqueducts = false;
-      for (std::list<Tile*>::iterator it = postTiles.begin(); it != postTiles.end(); ++it)
-        if ((*it)->getTerrain().getOverlay().is<Aqueduct>()) {
+      foreach( Tile* tile, postTiles )
+      {
+        if( tile->getTerrain().getOverlay().is<Aqueduct>() )
+        {
           isAqueducts = true;
           break;
         }
+      }
 
-      if (isAqueducts) {
+      if( isAqueducts )
+      {
         tile.setWasDrawn();
         Picture& pic = overlay.as<Aqueduct>()->computePicture(&postTiles, tile.getIJ());
         engine->drawPicture( pic, screenPos );
       }
     }
+  }
 
-  if (!tile.wasDrawn())
+  if( !tile.wasDrawn() )
   {
     tile.setWasDrawn();
     engine->drawPicture( tile.getPicture(), screenPos );
+
+    if( tile.getAnimation().isValid() )
+    {
+      engine->drawPicture( tile.getAnimation().getCurrentPicture(), screenPos );
+    }
   }
 
-  if (overlay.isNull())
+  if( overlay.isNull() )
+  {
     return;
+  }
 
   drawAnimations( overlay, screenPos );
 }
@@ -648,7 +662,7 @@ void TilemapRenderer::Impl::drawTilemapWithRemoveTools()
 
   int lastZ = -1000;  // dummy value
 
-  std::vector< TilePos > tiles = mapArea->getTiles();
+  PtrTilesArea visibleTiles = mapArea->getTiles();
   mapArea->resetWasDrawn();
 
   TilePos startPos, stopPos;
@@ -675,25 +689,24 @@ void TilemapRenderer::Impl::drawTilemapWithRemoveTools()
   //Rect destroyArea = Rect( startPos.getI(), startPos.getJ(), stopPos.getI(), stopPos.getJ() );
 
   // FIRST PART: draw all flat land (walkable/boatable)
-  foreach( TilePos tilePos, tiles )
+  foreach( Tile* tile, visibleTiles )
   {
-    Tile& tile = tilemap->at( tilePos );
-    Tile* master = tile.getMasterTile();
+    Tile* master = tile->getMasterTile();
 
-    if( !tile.isFlat() )
+    if( !tile->isFlat() )
       continue;
 
-    int tilePosHash = tilePos.getJ() * 1000 + tilePos.getI();
+    int tilePosHash = tile->getJ() * 1000 + tile->getI();
     if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() )
     {
-      drawTileInSelArea( tile, master );  
+      drawTileInSelArea( *tile, master );
     }
     else
     {
       if( master==NULL )
       {
         // single-tile
-        drawTile( tile );
+        drawTile( *tile );
       }
       else if( !master->wasDrawn() )
       {
@@ -705,9 +718,9 @@ void TilemapRenderer::Impl::drawTilemapWithRemoveTools()
 
   // SECOND PART: draw all sprites, impassable land and buildings
   WalkerList walkerList = getVisibleWalkerList();
-  foreach( TilePos tilePos, tiles )
+  foreach( Tile* tile, visibleTiles )
   {
-    int z = tilePos.getZ();
+    int z = tile->getIJ().getZ();
 
     if (z != lastZ)
     {
@@ -716,13 +729,13 @@ void TilemapRenderer::Impl::drawTilemapWithRemoveTools()
       this->drawWalkersBetweenZ(walkerList, z, z+1);
     }   
 
-    int tilePosHash = tilePos.getJ() * 1000 + tilePos.getI();
+    int tilePosHash = tile->getJ() * 1000 + tile->getI();
     if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() )
     {
       engine->setTileDrawMask( 0x00ff0000, 0, 0, 0xff000000 );      
     }
 
-    drawTileEx( tilemap->at( tilePos ), z );
+    drawTileEx( *tile, z );
     engine->resetTileDrawMask();
   }
 }
@@ -735,26 +748,25 @@ void TilemapRenderer::Impl::simpleDrawTilemap()
 
   int lastZ = -1000;  // dummy value
 
-  std::vector< TilePos >& tiles = const_cast< std::vector< TilePos >& >( mapArea->getTiles() );
+ PtrTilesArea visibleTiles = mapArea->getTiles();
 
-  foreach( TilePos tilePos, tiles )
+  foreach( Tile* tile, visibleTiles )
   {
-    tilemap->at( tilePos ).resetWasDrawn();
+    tile->resetWasDrawn();
   }
 
   // FIRST PART: draw all flat land (walkable/boatable)
-  foreach( TilePos tilePos, tiles )
+  foreach( Tile* tile, visibleTiles )
   {
-    Tile& tile = tilemap->at( tilePos );
-    Tile* master = tile.getMasterTile();
+    Tile* master = tile->getMasterTile();
 
-    if( !tile.isFlat() )
+    if( !tile->isFlat() )
       continue;
 
     if( master==NULL )
     {
       // single-tile
-      drawTile( tile );
+      drawTile( *tile );
     }
     else
     {
@@ -767,9 +779,9 @@ void TilemapRenderer::Impl::simpleDrawTilemap()
   // SECOND PART: draw all sprites, impassable land and buildings
   WalkerList walkerList = getVisibleWalkerList();
 
-  foreach( TilePos tilePos, tiles )
+  foreach( Tile* tile, visibleTiles )
   {
-    int z = tilePos.getZ();
+    int z = tile->getIJ().getZ();
 
     if (z != lastZ)
     {
@@ -778,7 +790,7 @@ void TilemapRenderer::Impl::simpleDrawTilemap()
       drawWalkersBetweenZ( walkerList, z, z+1);
     }   
 
-    drawTileEx( tilemap->at( tilePos ), z );
+    drawTileEx( *tile, z );
   }
 }
 
@@ -806,8 +818,10 @@ void TilemapRenderer::drawTilemap()
       ConstructionPtr ptr_construction = postTile->getTerrain().getOverlay().as<Construction>();
       _d->engine->resetTileDrawMask();
 
-      if (ptr_construction != NULL) {
-        if (ptr_construction->canBuild(postTile->getIJ())) {
+      if (ptr_construction != NULL)
+      {
+        if (ptr_construction->canBuild(postTile->getIJ()))
+        {
           _d->engine->setTileDrawMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
 
           // aqueducts must be shown in correct form
@@ -819,6 +833,7 @@ void TilemapRenderer::drawTilemap()
 
       _d->drawTileEx( *postTile, postTile->getIJ().getZ() );
     }
+
     _d->engine->resetTileDrawMask();
   }
 }
@@ -1092,7 +1107,7 @@ void TilemapRenderer::handleEvent( NEvent& event )
             }
             else
             {
-                getMapArea().setCenterIJ( tile->getIJ() );
+                getMapArea().setCenter( tile->getIJ() );
                 _d->city->setCameraPos( tile->getIJ() );
             }
 
@@ -1154,7 +1169,7 @@ void TilemapRenderer::discardPreview()
 {
   foreach( Tile* tile, _d->postTiles )
   {
-       delete tile;
+    delete tile;
   }
 
   _d->postTiles.clear();
@@ -1232,8 +1247,6 @@ TilemapRenderer::checkPreviewBuild(const TilePos & pos)
   }
 }
 
-
-
 Tile* TilemapRenderer::getTile(const TilePos& pos )
 {
   return &_d->tilemap->at( pos );
@@ -1288,6 +1301,16 @@ void TilemapRenderer::setMode( const TilemapChangeCommandPtr command )
     }
 
     _d->changeCommand = TilemapChangeCommandPtr();
+  }
+}
+
+void TilemapRenderer::animate(unsigned int time)
+{
+  PtrTilesArea visibleTiles = _d->mapArea->getTiles();
+
+  foreach( Tile* tile, visibleTiles )
+  {
+    tile->animate( time );
   }
 }
 

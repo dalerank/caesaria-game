@@ -105,9 +105,9 @@ bool Scenario::load( const io::FilePath& filename )
   _d->empire->initPlayerCity( _d->city.as<EmpireCity>() );
 
   LandOverlays llo = _d->city->getOverlayList();
-  for ( LandOverlays::iterator itLLO = llo.begin(); itLLO!=llo.end(); ++itLLO)
+  foreach( LandOverlayPtr overlay, llo )
   {
-    ConstructionPtr construction = (*itLLO).as<Construction>();
+    ConstructionPtr construction = overlay.as<Construction>();
     if( construction.isValid() )
     {
       construction->computeAccessRoads();
@@ -161,7 +161,7 @@ EmpirePtr Scenario::getEmpire() const
   return _d->empire;
 }
 
-void Scenario::timeStep()
+unsigned int Scenario::timeStep()
 {
   _d->time += _d->timeMultiplier / 100.f;
 
@@ -172,7 +172,9 @@ void Scenario::timeStep()
     GameDate::timeStep( _d->time );
 
     _d->saveTime += 1;
-  }
 
-  _d->eventResolver->update( _d->time );
+    _d->eventResolver->update( _d->time );
+  }  
+
+  return (unsigned int)_d->saveTime;
 }

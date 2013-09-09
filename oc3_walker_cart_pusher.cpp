@@ -32,6 +32,7 @@
 #include "oc3_goodstore.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_name_generator.hpp"
+#include "oc3_tilemap.hpp"
 
 class CartPusher::Impl
 {

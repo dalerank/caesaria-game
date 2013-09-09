@@ -23,6 +23,7 @@
 #include "oc3_variant.hpp"
 #include "oc3_city.hpp"
 #include "oc3_path_finding.hpp"
+#include "oc3_tilemap.hpp"
 #include "oc3_name_generator.hpp"
 
 class Immigrant::Impl

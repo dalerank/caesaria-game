@@ -35,7 +35,6 @@ public:
 
   void initialize();
 
-  TilemapArea& getMapArea();
   void setScenario(Scenario &scenario);
 
   virtual void afterFrame();

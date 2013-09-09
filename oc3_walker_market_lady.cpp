@@ -22,6 +22,7 @@
 #include "oc3_positioni.hpp"
 #include "oc3_building_market.hpp"
 #include "oc3_granary.hpp"
+#include "oc3_tilemap.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_path_finding.hpp"
@@ -130,9 +131,9 @@ void MarketLady::computeWalkerDestination( MarketPtr market )
      pathPropagator.propagate( _d->maxDistance);
 
      // try to find the most needed good
-     for (std::list<Good::Type>::iterator itGood = priorityGoods.begin(); itGood != priorityGoods.end(); ++itGood)
+     foreach( Good::Type goodType, priorityGoods )
      {
-        _d->priorityGood = *itGood;
+        _d->priorityGood = goodType;
 
         if( _d->priorityGood == Good::wheat || _d->priorityGood == Good::fish
             || _d->priorityGood == Good::meat || _d->priorityGood == Good::fruit

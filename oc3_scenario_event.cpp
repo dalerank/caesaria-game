@@ -22,6 +22,7 @@
 #include "oc3_cityfunds.hpp"
 #include "oc3_guienv.hpp"
 #include "oc3_gui_info_box.hpp"
+#include "oc3_tilemap.hpp"
 
 void DisasterEvent::create( const TilePos& pos, Type type )
 {

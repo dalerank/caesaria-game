@@ -18,6 +18,7 @@
 
 #include "oc3_terraininfo.hpp"
 #include "oc3_positioni.hpp"
+#include "oc3_animation.hpp"
 
 class Picture;
 
@@ -35,7 +36,7 @@ public:
   Point getXY() const;
 
   // displayed picture
-  void setPicture( const Picture* picture);
+  void setPicture( const Picture* picture );
   const Picture& getPicture() const;
 
   // used for multi-tile graphics: current displayed picture
@@ -53,13 +54,18 @@ public:
   void setWasDrawn()   { _wasDrawn = true;  }
   bool wasDrawn()      { return _wasDrawn;  }
 
+  void animate( unsigned int time );
+
+  const Animation& getAnimation() const;
+  void setAnimation( const Animation& animation );
+
 private:
   TilePos _pos; // coordinates of the tile
   Tile* _master_tile;  // left-most tile if multi-tile, or "this" if single-tile
   TerrainTile _terrain;    // infos about the tile (building, tree, road, water, rock...)
-
   Picture const* _picture; // displayed picture
   bool _wasDrawn;
+  Animation _animation;
 };
 
 #endif //__OPENCAESAR3_TILE_H_INCLUDED__

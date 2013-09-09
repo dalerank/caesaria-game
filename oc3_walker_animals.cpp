@@ -18,6 +18,7 @@
 #include "oc3_city.hpp"
 #include "oc3_pathway_helper.hpp"
 #include "oc3_gettext.hpp"
+#include "oc3_tilemap.hpp"
 
 class Animal::Impl
 {

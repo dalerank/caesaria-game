@@ -21,12 +21,10 @@ class Scenario;
 class ScenarioLoadFinalizer
 {
 public:
-  ScenarioLoadFinalizer( Scenario& scenario );
-
-  void check();
+  static void finalize( Scenario& scenario );
 
 private:
-  Scenario& _scenario;
+  ScenarioLoadFinalizer();
 };
 
 #endif //__OPENCAESAR3_SCENARIO_LOAD_FINALIZER_H_INCLUDED__

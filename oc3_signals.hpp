@@ -55,12 +55,14 @@ public:
 
 	void disconnect( _Delegate delegate )
 	{
-                for (DelegateList::iterator it = delegateList.begin(); it != delegateList.end(); ++it)
+		for (DelegateList::iterator it = delegateList.begin(); it != delegateList.end(); ++it)
+		{
 			if( *it == delegate )
 			{
-                                delegateList.erase( it );
+				delegateList.erase( it );
 				return;
 			}
+		}
 	}
 
 	template< class X, class Y >

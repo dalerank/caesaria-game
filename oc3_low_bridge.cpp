@@ -19,6 +19,7 @@
 #include "oc3_scenario.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_city.hpp"
+#include "oc3_tilemap.hpp"
 
 #include <vector>
 
