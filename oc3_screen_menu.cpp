@@ -26,7 +26,7 @@
 #include "oc3_guienv.hpp"
 #include "oc3_pushbutton.hpp"
 #include "oc3_gui_label.hpp"
-#include "oc3_app_config.hpp"
+#include "oc3_game_settings.hpp"
 
 class ScreenMenu::Impl
 {

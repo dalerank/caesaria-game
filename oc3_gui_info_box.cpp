@@ -32,7 +32,7 @@
 #include "oc3_city.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_building_market.hpp"
-#include "oc3_granary.hpp"
+#include "oc3_building_granary.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_goodhelper.hpp"
 #include "oc3_farm.hpp"

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_contextmenu.hpp"
+#include "oc3_gui_contextmenu.hpp"
 #include "oc3_contextmenuprivate.hpp"
 #include "oc3_contextmenuitem.hpp"
 #include "oc3_event.hpp"
@@ -28,7 +28,7 @@ ContextMenu::ContextMenu( Widget* parent, const Rect& rectangle,
     _d( new Impl )
 {
   #ifdef _DEBUG
-    setDebugName( "NrpContextMenu");
+    setDebugName( "ContextMenu");
   #endif
 
   _d->eventParent = 0; 

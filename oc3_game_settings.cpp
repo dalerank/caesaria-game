@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_app_config.hpp"
+#include "oc3_game_settings.hpp"
 #include "oc3_filepath.hpp"
 
 const char* AppConfig::localePath = "localePath";

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_granary.hpp"
+#include "oc3_building_granary.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_variant.hpp"

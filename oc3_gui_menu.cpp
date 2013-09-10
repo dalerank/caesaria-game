@@ -20,7 +20,7 @@
 #include "oc3_color.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_event.hpp"
-#include "oc3_buildmenu.hpp"
+#include "oc3_gui_buildmenu.hpp"
 #include "oc3_guienv.hpp"
 #include "oc3_picture_decorator.hpp"
 #include "oc3_widgetpositionanimator.hpp"

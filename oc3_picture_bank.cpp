@@ -28,7 +28,7 @@
 #include "oc3_exception.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_animation.hpp"
-#include "oc3_app_config.hpp"
+#include "oc3_game_settings.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_picture_info_bank.hpp"
 #include "oc3_gfx_engine.hpp"

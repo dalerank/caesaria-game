@@ -23,7 +23,7 @@
 #include "oc3_gettext.hpp"
 #include "oc3_picture_decorator.hpp"
 #include "oc3_event.hpp"
-#include "oc3_granary.hpp"
+#include "oc3_building_granary.hpp"
 #include "oc3_building_warehouse.hpp"
 #include "oc3_goodhelper.hpp"
 #include "oc3_goodstore.hpp"

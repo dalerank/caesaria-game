@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#include "oc3_application.hpp"
+#include "oc3_game.hpp"
 #include "oc3_screen_wait.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_scenario.hpp"
@@ -31,7 +31,7 @@
 #include "oc3_screen_game.hpp"
 #include "oc3_house_level.hpp"
 #include "oc3_guienv.hpp"
-#include "oc3_app_config.hpp"
+#include "oc3_game_settings.hpp"
 #include "oc3_divinity.hpp"
 #include "oc3_filesystem.hpp"
 #include "oc3_enums.hpp"

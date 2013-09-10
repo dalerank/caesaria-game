@@ -43,7 +43,7 @@
 #include "oc3_cityfunds.hpp"
 #include "oc3_gamedate.hpp"
 #include "oc3_empire.hpp"
-#include "oc3_app_config.hpp"
+#include "oc3_game_settings.hpp"
 #include "oc3_window_mission_target.hpp"
 #include "oc3_gui_label.hpp"
 #include "oc3_gettext.hpp"

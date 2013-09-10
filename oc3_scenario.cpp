@@ -25,7 +25,7 @@
 #include "oc3_city.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_empire.hpp"
-#include "oc3_app_config.hpp"
+#include "oc3_game_settings.hpp"
 #include "oc3_scenario_loader.hpp"
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_cityfunds.hpp"

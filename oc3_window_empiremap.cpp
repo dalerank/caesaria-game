@@ -33,7 +33,7 @@
 #include "oc3_empire_trading.hpp"
 #include "oc3_cityfunds.hpp"
 #include "oc3_goodhelper.hpp"
-#include "oc3_app_config.hpp"
+#include "oc3_game_settings.hpp"
 
 static const char* empMapOffset = "EmpireMapWindowOffset";
 
