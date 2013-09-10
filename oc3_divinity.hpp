@@ -62,7 +62,7 @@ public:
 
   void initialize( const io::FilePath& filename );
 
-  static void doFestival4( RomeDivinityPtr who );
+  static void doFestival4( RomeDivinityType who , int type);
 
   static RomeDivinityPtr ceres();
   static RomeDivinityPtr mars();

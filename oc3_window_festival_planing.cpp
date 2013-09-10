@@ -83,8 +83,8 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
   _d->godBtns.push_back( new TexturedButton( this, Point( 60, 48), imgSize, 0x0217, ResourceGroup::festivalimg, 17, 17, 22, 22 ) );
   _d->godBtns.push_back( new TexturedButton( this, Point( 160, 48), imgSize, 0x0218, ResourceGroup::festivalimg, 18, 18, 23, 23 ) );
   _d->godBtns.push_back( new TexturedButton( this, Point( 260, 48), imgSize, 0x0219, ResourceGroup::festivalimg, 19, 19, 24, 24 ) );
-  _d->godBtns.push_back( new TexturedButton( this, Point( 360, 48), imgSize, 0x0220, ResourceGroup::festivalimg, 20, 20, 24, 24 ) );
-  _d->godBtns.push_back( new TexturedButton( this, Point( 460, 48), imgSize, 0x0221, ResourceGroup::festivalimg, 21, 21, 25,25 ) );
+  _d->godBtns.push_back( new TexturedButton( this, Point( 360, 48), imgSize, 0x0220, ResourceGroup::festivalimg, 20, 20, 25, 25 ) );
+  _d->godBtns.push_back( new TexturedButton( this, Point( 460, 48), imgSize, 0x0221, ResourceGroup::festivalimg, 21, 21, 26, 26 ) );
 
   foreach ( TexturedButton* btn, _d->godBtns )
     btn->setIsPushButton( true );
