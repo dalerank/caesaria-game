@@ -58,6 +58,7 @@
 #include "oc3_cityservice_religion.hpp"
 #include "oc3_foreach.hpp"
 #include "oc3_scenario_event.hpp"
+#include "oc3_cityservice_festival.hpp"
 
 #include <set>
 
@@ -123,6 +124,7 @@ City::City() : _d( new Impl )
   addService( CityServiceCulture::create( this ) );
   addService( CityServiceAnimals::create( this ) );
   addService( CityServiceReligion::create( this ) );
+  addService( CityServiceFestival::create( this ) );
 
   CONNECT( &GameDate::instance(), onMonthChanged(), this, City::monthStep );
 }
