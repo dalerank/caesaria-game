@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_roadpropagator.hpp"
+#include "oc3_roadbuild_helper.hpp"
 
 #include <set>
 #include <map>

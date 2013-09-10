@@ -21,6 +21,7 @@
 #include "oc3_constructionmanager.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_tilemap.hpp"
+#include "oc3_empire.hpp"
 
 #include <fstream>
 
@@ -86,7 +87,9 @@ bool ScenarioMapLoader::load(const std::string& filename, Scenario& oScenario)
 
   _d->initEntryExit(f, oScenario.getCity());
 
-  _d->initCameraStartPos(f, oScenario.getCity());
+  _d->initCameraStartPos(f, oScenario.getCity() );
+
+  oScenario.getEmpire()->setCitiesAvailable( true );
 
   f.close();
 

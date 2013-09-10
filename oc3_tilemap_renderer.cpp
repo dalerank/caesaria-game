@@ -27,7 +27,7 @@
 #include "oc3_positioni.hpp"
 #include "oc3_pictureconverter.hpp"
 #include "oc3_event.hpp"
-#include "oc3_roadpropagator.hpp"
+#include "oc3_roadbuild_helper.hpp"
 #include "oc3_tilemapchangecommand.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_stringhelper.hpp"

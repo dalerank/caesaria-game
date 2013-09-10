@@ -54,11 +54,7 @@ bool ScenarioOc3MissionLoader::load( const std::string& filename, Scenario& oSce
     CityPtr city = oScenario.getCity();
     FundIssue::resolve( city, CityFunds::donation, vm[ "funds" ].toInt() );
 
-    EmpireCityList cities = oScenario.getEmpire()->getCities();
-    foreach( EmpireCityPtr city, cities )
-    {
-      city->setAvailable( false );
-    }
+    oScenario.getEmpire()->setCitiesAvailable( false );
 
     oScenario.getEmpire()->load( vm[ "empire" ].toMap() );
     oScenario.getWinTargets().load( vm[ "win" ].toMap() );

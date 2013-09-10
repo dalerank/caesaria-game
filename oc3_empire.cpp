@@ -134,6 +134,12 @@ void Empire::load( const VariantMap& stream )
   }
 }
 
+void Empire::setCitiesAvailable(bool value)
+{
+  foreach( EmpireCityPtr city, _d->cities )
+    city->setAvailable( value );
+}
+
 void Empire::createTradeRoute( const std::string& start, const std::string& stop )
 {
   EmpireCityPtr startCity = getCity( start );

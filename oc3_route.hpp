@@ -13,29 +13,35 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_pathway_helper.hpp"
-#include "oc3_astarpathfinding.hpp"
-#include "oc3_astarpathfinding.hpp"
-#include "oc3_city.hpp"
+#ifndef _OPENCAESAR3_APPOINTEDWAY_H_INCLUDE_
+#define _OPENCAESAR3_APPOINTEDWAY_H_INCLUDE_
 
-PathWay PathwayHelper::create( CityPtr city, const TilePos& startPos, const TilePos& stopPos,
-                               WayType type/*=roadOnly */ )
+#include "oc3_pathway.hpp"
+#include <map>
+
+class RouteMap : public std::map<BuildingPtr,PathWay>
 {
-  switch( type )
-  {
-  case allTerrain:
-  {
-    const Tilemap& tmap = city->getTilemap();
-    PathWay ret;
-    Pathfinder::getInstance().getPath( tmap.at( startPos ), tmap.at( stopPos ), ret, 0, Size(1) );
+public:
+};
 
-    return ret;
-  }
-  break;
+class Route : public std::pair<BuildingPtr,PathWay>
+{
+public:
+  Route() {}
 
-  default:
-  break;
+  Route( const RouteMap::value_type& a )
+  {
+    *this = a;
   }
 
-  return PathWay();
-}
+  Route& operator=(const RouteMap::value_type& a)
+  {
+    first = a.first;
+    second = a.second;
+
+    return *this;
+  }
+};
+
+
+#endif
