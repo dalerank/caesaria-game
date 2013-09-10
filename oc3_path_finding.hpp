@@ -33,7 +33,7 @@ class Propagator
 {
 public:
   typedef std::pair< BuildingPtr,  PathWay > DirectRoute;
-  typedef std::map<BuildingPtr, PathWay> Routes;
+  typedef std::map< BuildingPtr, PathWay > Routes;
   //typedef std::list<PathWay> Ways;
   
   Propagator( CityPtr city );

@@ -1,0 +1,13 @@
+{ 
+  type : "gui"
+  
+	lbPopulation : 
+  {
+    type : "Label"
+    rect : "r155, 0, r35, 23"
+    image : [ "paneling", 15 ]
+    font : "FONT_2_WHITE"
+    textAlign : [ "center", "center" ]
+    tooltipText : "##population_tooltip##"
+  }
+}

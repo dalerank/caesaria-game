@@ -26,6 +26,7 @@
 #include "oc3_city.hpp"
 #include "oc3_foreach.hpp"
 #include "oc3_building_house.hpp"
+#include "oc3_window_festival_planing.hpp"
 
 class EntertainmentInfoLabel : public Label
 {
@@ -77,6 +78,7 @@ private:
 class AdvisorEntertainmentWindow::Impl
 {
 public:
+  CityPtr city;
   PictureRef background;
 
   EntertainmentInfoLabel* lbTheatresInfo;
@@ -128,12 +130,19 @@ public:
 
     return ret;
   }
+
+  void updateFestivalInfo()
+  {
+
+  }
 };
 
 
 AdvisorEntertainmentWindow::AdvisorEntertainmentWindow( CityPtr city, Widget* parent, int id ) 
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
+  _d->city = city;
+
   setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),
                Size( 640, 384 ) ) );
 
@@ -197,7 +206,8 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow( CityPtr city, Widget* pa
 
   PushButton* festivalBtn = new PushButton( this, Rect( Point( 104, 278 ), Size( 300, 20) ), 
                                             _("##new_festival##"), -1, false, PushButton::blackBorderUp );
-  festivalBtn;
+
+  CONNECT( festivalBtn, onClicked(), this, AdvisorEntertainmentWindow::_showFestivalWindow );
 
   Picture& pic = Picture::load( ResourceGroup::menuMiddleIcons, 16 );
   _d->background->draw( pic, 460, 260 );
@@ -213,4 +223,10 @@ void AdvisorEntertainmentWindow::draw( GfxEngine& painter )
   painter.drawPicture( *_d->background, getScreenLeft(), getScreenTop() );
 
   Widget::draw( painter );
+}
+
+void AdvisorEntertainmentWindow::_showFestivalWindow()
+{
+  FestivalPlaningWindow* wnd = FestivalPlaningWindow::create( this, _d->city, -1 );
+  CONNECT( wnd, onFestivalAssign(), _d.data(), Impl::updateFestivalInfo );
 }

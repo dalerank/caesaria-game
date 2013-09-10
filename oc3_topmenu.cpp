@@ -53,7 +53,7 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
   TopMenu* ret = new TopMenu( parent, height);
   ret->setGeometry( Rect( 0, 0, parent->getWidth(), height ) );
 
-  std::vector<Picture> p_marble;
+  PicturesArray p_marble;
   for (int i = 1; i<=12; ++i)
   {
     p_marble.push_back( Picture::load( ResourceGroup::panelBackground, i));

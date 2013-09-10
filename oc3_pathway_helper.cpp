@@ -17,6 +17,7 @@
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_city.hpp"
+#include "oc3_tilemap.hpp"
 
 PathWay PathwayHelper::create( CityPtr city, const TilePos& startPos, const TilePos& stopPos,
                                WayType type/*=roadOnly */ )
