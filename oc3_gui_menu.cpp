@@ -640,8 +640,8 @@ void ExtentMenu::draw( GfxEngine& painter )
   // this is window where minimap is displayed
   
   
-  int i = _tmap.getMapArea().getCenterX();
-  int j = _tmap.getMapArea().getCenterZ();
+  int i = _tmap.getCamera().getCenterX();
+  int j = _tmap.getCamera().getCenterZ();
   
   _d->minimap->fill( 0xff000000, Rect() );
   _d->minimap->draw( *_d->fullmap, 146/2 - i, 112/2 + j - mapsize*2 );

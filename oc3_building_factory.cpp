@@ -290,7 +290,7 @@ bool TimberLogger::canBuild(const TilePos& pos ) const
    bool near_forest = false;  // tells if the factory is next to a forest
 
    Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
-   PtrTilesArea area = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), Tilemap::checkCorners );
+   TilemapArea area = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), Tilemap::checkCorners );
    foreach( Tile* tile, area )
    {
       near_forest |= tile->getTerrain().isTree();
@@ -317,7 +317,7 @@ bool IronMine::canBuild(const TilePos& pos ) const
   bool near_mountain = false;  // tells if the factory is next to a mountain
 
   Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
-  PtrTilesArea perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size(2), Tilemap::checkCorners );
+  TilemapArea perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size(2), Tilemap::checkCorners );
   foreach( Tile* tile, perimetr )
   {
      near_mountain |= tile->getTerrain().isRock();
@@ -384,7 +384,7 @@ bool Wharf::canBuild(const TilePos& pos ) const
    
   Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
    
-  PtrTilesArea perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), false);
+  TilemapArea perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), false);
   foreach( Tile* tile, perimetr )
   {    
     int size = getSize().getWidth();

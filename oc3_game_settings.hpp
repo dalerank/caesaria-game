@@ -20,7 +20,7 @@
 #include "oc3_variant.hpp"
 #include "oc3_filepath.hpp"
 
-class AppConfig
+class GameSettings
 {
 public:
   static const char* ctNamesModel;
@@ -32,7 +32,7 @@ public:
   static const char* constructionModel;
   static const char* workDir;
 
-  static AppConfig& getInstance();
+  static GameSettings& getInstance();
 
   static void set( const std::string& option, const Variant& value );
   static Variant get( const std::string& option );
@@ -40,7 +40,7 @@ public:
   static io::FilePath rcpath( const std::string& option="" );
 
 private:
-  AppConfig();
+  GameSettings();
 
   class Impl;
   ScopedPtr< Impl > _d;

@@ -24,7 +24,7 @@
 class CityServiceShoreline::Impl
 {
 public:
-  PtrTilesList slTiles;
+  TilemapTiles slTiles;
   int lastTimeUpdate;
   CityPtr city;
 
@@ -34,7 +34,7 @@ public:
 void CityServiceShoreline::Impl::checkMap( CityPtr city )
 {
   int mapSize = city->getTilemap().getSize();
-  PtrTilesList tiles = city->getTilemap().getFilledRectangle( TilePos( 0, 0), Size( mapSize ) );
+  TilemapTiles tiles = city->getTilemap().getFilledRectangle( TilePos( 0, 0), Size( mapSize ) );
 
   foreach( Tile* tile, tiles )
   {
@@ -73,7 +73,7 @@ void CityServiceShoreline::update( const unsigned int time )
     _d->checkMap( _d->city );
   }
 
-  for( PtrTilesList::iterator it=_d->slTiles.begin(); it != _d->slTiles.end(); it++ )
+  for( TilemapTiles::iterator it=_d->slTiles.begin(); it != _d->slTiles.end(); it++ )
   {
     TerrainTile& info = (*it)->getTerrain();
 

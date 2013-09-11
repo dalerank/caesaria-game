@@ -25,11 +25,11 @@
 #include "oc3_positioni.hpp"
 
 /* A subset of the tilemap, this is the visible area. Has convenient methods to sort tiles per depth */
-class TilemapArea
+class TilemapCamera
 {
 public:
-  TilemapArea();
-  ~TilemapArea();
+  TilemapCamera();
+  ~TilemapCamera();
 
   void init( Tilemap& tilemap );
 
@@ -44,7 +44,7 @@ public:
   void moveDown(const int amount);
 
   // return tile coordinates (i, j), in order of depth
-  const PtrTilesArea& getTiles() const;
+  const TilemapArea& getTiles() const;
 
   void resetWasDrawn();
 

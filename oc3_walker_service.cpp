@@ -172,7 +172,7 @@ ServiceWalker::ReachedBuildings ServiceWalker::getReachedBuildings(const TilePos
   int reachDistance = getReachDistance();
   TilePos start = pos - TilePos( reachDistance, reachDistance );
   TilePos stop = pos + TilePos( reachDistance, reachDistance );
-  PtrTilesArea reachedTiles = _d->city->getTilemap().getFilledRectangle( start, stop );
+  TilemapArea reachedTiles = _d->city->getTilemap().getFilledRectangle( start, stop );
   foreach( Tile* tile, reachedTiles )
   {
     TerrainTile& terrain = tile->getTerrain();
@@ -191,11 +191,11 @@ float ServiceWalker::evaluatePath( PathWay& pathWay )
 {
   // evaluate all buildings along the path
   ServiceWalker::ReachedBuildings doneBuildings;  // list of evaluated building: don't do them again
-  ConstPtrTilesList& pathTileList = pathWay.getAllTiles();
+  ConstTilemapTiles& pathTileList = pathWay.getAllTiles();
 
   int distance = 0;
   float res = 0.0;
-  for( ConstPtrTilesList::iterator itTile = pathTileList.begin(); itTile != pathTileList.end(); ++itTile)
+  for( ConstTilemapTiles::iterator itTile = pathTileList.begin(); itTile != pathTileList.end(); ++itTile)
   {
     ServiceWalker::ReachedBuildings reachedBuildings = getReachedBuildings( (*itTile)->getIJ() );
     foreach( BuildingPtr building, reachedBuildings )
@@ -221,9 +221,9 @@ void ServiceWalker::reservePath(PathWay &pathWay)
 {
   // reserve all buildings along the path
   ReachedBuildings doneBuildings;  // list of evaluated building: don't do them again
-  ConstPtrTilesList& pathTileList = pathWay.getAllTiles();
+  ConstTilemapTiles& pathTileList = pathWay.getAllTiles();
 
-  for( ConstPtrTilesList::iterator itTile = pathTileList.begin(); itTile != pathTileList.end(); ++itTile)
+  for( ConstTilemapTiles::iterator itTile = pathTileList.begin(); itTile != pathTileList.end(); ++itTile)
   {
     ReachedBuildings reachedBuildings = getReachedBuildings( (*itTile)->getIJ() );
     foreach( BuildingPtr building, reachedBuildings )

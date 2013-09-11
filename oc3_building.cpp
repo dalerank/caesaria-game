@@ -42,7 +42,7 @@ bool Construction::canBuild( const TilePos& pos ) const
   bool is_constructible = true;
 
   //return area for available tiles
-  PtrTilesArea area = tilemap.getFilledRectangle( pos, getSize() );
+  TilemapArea area = tilemap.getFilledRectangle( pos, getSize() );
 
   //on over map size
   if( (int)area.size() != getSize().getArea() )
@@ -74,7 +74,7 @@ void Construction::_updateDesirabilityInfluence( const DsbrlUpdate type )
   int mul = ( type == duPositive ? 1 : -1);
 
   //change desirability in selfarea
-  PtrTilesArea area = tilemap.getFilledRectangle( getTilePos(), getSize() );
+  TilemapArea area = tilemap.getFilledRectangle( getTilePos(), getSize() );
   foreach( Tile* tile, area )
   {
     tile->getTerrain().appendDesirability( mul * desInfluence );
@@ -83,7 +83,7 @@ void Construction::_updateDesirabilityInfluence( const DsbrlUpdate type )
   //change deisirability around
   for( int curRange=1; curRange <= dsrblRange; curRange++ )
   {
-    PtrTilesArea perimetr = tilemap.getRectangle( getTilePos() - TilePos( curRange, curRange ), 
+    TilemapArea perimetr = tilemap.getRectangle( getTilePos() - TilePos( curRange, curRange ), 
                                                   getSize() + Size( 2 * curRange - 1 ) );
     foreach( Tile* tile, perimetr )
     {
@@ -95,7 +95,7 @@ void Construction::_updateDesirabilityInfluence( const DsbrlUpdate type )
 }
 
 
-const PtrTilesList& Construction::getAccessRoads() const
+const TilemapTiles& Construction::getAccessRoads() const
 {
    return _accessRoads;
 }
@@ -112,7 +112,7 @@ void Construction::computeAccessRoads()
   Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
 
   int maxDst2road = getMaxDistance2Road();
-  PtrTilesList rect = tilemap.getRectangle( _getMasterTile()->getIJ() + TilePos( -maxDst2road, -maxDst2road ),
+  TilemapTiles rect = tilemap.getRectangle( _getMasterTile()->getIJ() + TilePos( -maxDst2road, -maxDst2road ),
                                             getSize() + Size( 2 * maxDst2road ), !Tilemap::checkCorners );
   foreach( Tile* tile, rect )
   {

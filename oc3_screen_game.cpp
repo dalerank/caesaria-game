@@ -56,7 +56,7 @@ public:
   MenuRigthPanel* rightPanel;
   TopMenu* topMenu;
   Menu* menu;
-  TilemapArea mapArea;  // visible map area
+  TilemapCamera camera;  // visible map area
   ExtentMenu* extMenu;
   InfoBoxManagerPtr infoBoxMgr;
   TilemapRenderer mapRenderer;
@@ -128,10 +128,10 @@ void ScreenGame::initialize()
   _d->rightPanel->bringToFront();
 
   // 8*30: used for high buildings (granary...), visible even when not in tilemap_area.
-  _d->mapArea.setViewport( engine.getScreenSize() + Size( 180 ) );
+  _d->camera.setViewport( engine.getScreenSize() + Size( 180 ) );
         
   // here move camera to start position of map
-  _d->mapArea.setCenter( _d->scenario->getCity()->getCameraPos() );
+  _d->camera.setCenter( _d->scenario->getCity()->getCameraPos() );
 
   new SenatePopupInfo( gui.getRootWidget(), _d->mapRenderer );
 
@@ -163,7 +163,7 @@ void ScreenGame::initialize()
 
   CONNECT( city, onDisasterEvent(), &_d->alarmsHolder, AlarmEventHolder::add );
   CONNECT( _d->extMenu, onSwitchAlarm(), &_d->alarmsHolder, AlarmEventHolder::next );
-  CONNECT( &_d->alarmsHolder, onMoveToAlarm(), &_d->mapArea, TilemapArea::setCenter );
+  CONNECT( &_d->alarmsHolder, onMoveToAlarm(), &_d->camera, TilemapCamera::setCenter );
   CONNECT( &_d->alarmsHolder, onAlarmChange(), _d->extMenu, ExtentMenu::setAlarmEnabled );
 
   _d->showMissionTaretsWindow();
@@ -186,8 +186,8 @@ void ScreenGame::setScenario(Scenario& scenario)
   CityPtr city = scenario.getCity();
   Tilemap& tilemap = city->getTilemap();
 
-  _d->mapArea.init( tilemap );
-  _d->mapRenderer.init( city, _d->mapArea, this);
+  _d->camera.init( tilemap );
+  _d->mapRenderer.init( city, _d->camera, this);
 }
 
 void ScreenGame::draw()

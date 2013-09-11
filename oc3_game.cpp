@@ -48,7 +48,7 @@
   #undef main
 #endif
 
-class Application::Impl
+class Game::Impl
 {
 public:
   ScreenType nextScreen;
@@ -61,7 +61,7 @@ public:
   void initGuiEnvironment();
 };
 
-void Application::Impl::initLocale(const std::string & localePath)
+void Game::Impl::initLocale(const std::string & localePath)
 {
   // init the internationalization library (gettext)
   setlocale(LC_ALL, "");
@@ -69,7 +69,7 @@ void Application::Impl::initLocale(const std::string & localePath)
   textdomain( "caesar" );
 }
 
-void Application::Impl::initVideo()
+void Game::Impl::initVideo()
 {
   StringHelper::debug( 0xff, "init graphic engine" );
   engine = new GfxSdlEngine();
@@ -81,30 +81,30 @@ void Application::Impl::initVideo()
   GfxEngine::instance().init();
 }
 
-void Application::initSound()
+void Game::initSound()
 {
   StringHelper::debug( 0xff, "init sound engine" );
   new SoundEngine();
   SoundEngine::instance().init();
 }
 
-void Application::mountArchives()
+void Game::mountArchives()
 {
   StringHelper::debug( 0xff, "mount archives begin" );
 
   io::FileSystem& fs = io::FileSystem::instance();
 
-  fs.mountArchive( AppConfig::rcpath( "/pics/pics_wait.zip" ) );
-  fs.mountArchive( AppConfig::rcpath( "/pics/pics.zip" ) );
-  fs.mountArchive( AppConfig::rcpath( "/pics/pics_oc3.zip" ) );
+  fs.mountArchive( GameSettings::rcpath( "/pics/pics_wait.zip" ) );
+  fs.mountArchive( GameSettings::rcpath( "/pics/pics.zip" ) );
+  fs.mountArchive( GameSettings::rcpath( "/pics/pics_oc3.zip" ) );
 }
 
-void Application::Impl::initGuiEnvironment()
+void Game::Impl::initGuiEnvironment()
 {
   GuiEnv::instance().initialize( *engine );
 }
 
-void Application::Impl::initPictures(const io::FilePath& resourcePath)
+void Game::Impl::initPictures(const io::FilePath& resourcePath)
 {
   AnimationBank::loadCarts();
   AnimationBank::loadWalkers();
@@ -116,14 +116,14 @@ void Application::Impl::initPictures(const io::FilePath& resourcePath)
   PictureBank::instance().createResources();
 }
 
-void Application::setScreenWait()
+void Game::setScreenWait()
 {
    ScreenWait screen;
    screen.initialize();
    screen.drawFrame();
 }
 
-void Application::setScreenMenu()
+void Game::setScreenMenu()
 {
   ScreenMenu screen;
   screen.initialize();
@@ -137,7 +137,7 @@ void Application::setScreenMenu()
     case ScreenMenu::startNewGame:
     {
       /* temporary*/     
-      io::FileList::Items maps = io::FileDir( AppConfig::rcpath( "/maps/" ) ).getEntries().filter( io::FileList::file, "" ).getItems();
+      io::FileList::Items maps = io::FileDir( GameSettings::rcpath( "/maps/" ) ).getEntries().filter( io::FileList::file, "" ).getItems();
       std::srand( DateTime::getElapsedTime() );
       std::string file = maps.at( std::rand() % maps.size() ).fullName.toString();
       StringHelper::debug( 0xff, "Loading map:%s", file.c_str() );
@@ -149,7 +149,7 @@ void Application::setScreenMenu()
     case ScreenMenu::loadSavedGame:
     {  
       std::cout<<"Loading map:" << "lepcismagna.sav" << std::endl;
-      bool loadok = scenario.load(  AppConfig::rcpath( "/savs/timgad.sav" ).toString() );
+      bool loadok = scenario.load(  GameSettings::rcpath( "/savs/timgad.sav" ).toString() );
       _d->nextScreen = loadok ? SCREEN_GAME : SCREEN_MENU;
     }
     break;
@@ -172,7 +172,7 @@ void Application::setScreenMenu()
    }
 }
 
-void Application::setScreenGame()
+void Game::setScreenGame()
 {
   ScreenGame screen;
   screen.setScenario( Scenario::instance() );
@@ -195,16 +195,16 @@ void Application::setScreenGame()
 }
 
 
-Application::Application() : _d( new Impl )
+Game::Game() : _d( new Impl )
 {
    _d->nextScreen = SCREEN_NONE;
 }
 
-void Application::initialize()
+void Game::initialize()
 {
    //Create right PictureBank instance in the beginning   
   StringHelper::redirectCout2( "stdout.log" );
-  _d->initLocale(AppConfig::get( AppConfig::localePath ).toString());
+  _d->initLocale(GameSettings::get( GameSettings::localePath ).toString());
   _d->initVideo();
   _d->initGuiEnvironment();
   initSound();
@@ -212,14 +212,14 @@ void Application::initialize()
   mountArchives();  // init some quick pictures for screenWait
   setScreenWait();
 
-  _d->initPictures( AppConfig::rcpath() );
-  NameGenerator::initialize( AppConfig::rcpath( AppConfig::ctNamesModel ) );
-  HouseSpecHelper::getInstance().initialize( AppConfig::rcpath( AppConfig::houseModel ) );
-  DivinePantheon::getInstance().initialize(  AppConfig::rcpath( AppConfig::pantheonModel ) );
-  BuildingDataHolder::instance().initialize( AppConfig::rcpath( AppConfig::constructionModel ) );
+  _d->initPictures( GameSettings::rcpath() );
+  NameGenerator::initialize( GameSettings::rcpath( GameSettings::ctNamesModel ) );
+  HouseSpecHelper::getInstance().initialize( GameSettings::rcpath( GameSettings::houseModel ) );
+  DivinePantheon::getInstance().initialize(  GameSettings::rcpath( GameSettings::pantheonModel ) );
+  BuildingDataHolder::instance().initialize( GameSettings::rcpath( GameSettings::constructionModel ) );
 }
 
-void Application::exec()
+void Game::exec()
 {
   _d->nextScreen = SCREEN_MENU;
   _d->engine->setFlag( 0, 1 );
@@ -247,18 +247,18 @@ int main(int argc, char* argv[])
    {
      if( !strcmp( argv[i], "-R" ) )
      {
-       AppConfig::set( AppConfig::resourcePath, Variant( std::string( argv[i+1] ) ) );
-       AppConfig::set( AppConfig::localePath, Variant( std::string( argv[i+1] ) + "/locale" ) );
+       GameSettings::set( GameSettings::resourcePath, Variant( std::string( argv[i+1] ) ) );
+       GameSettings::set( GameSettings::localePath, Variant( std::string( argv[i+1] ) + "/locale" ) );
        break;
      }
    }
 
    try
    {
-      Application app;
-      app.initialize();
+      Game game;
 
-      app.exec();
+      game.initialize();
+      game.exec();
    }
    catch( Exception e )
    {

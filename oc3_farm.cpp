@@ -104,7 +104,7 @@ bool Farm::canBuild(const TilePos& pos ) const
   bool on_meadow = false;
 
   Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
-  PtrTilesArea area = tilemap.getFilledRectangle( pos, getSize() );
+  TilemapArea area = tilemap.getFilledRectangle( pos, getSize() );
 
   foreach( Tile* tile, area )
   {

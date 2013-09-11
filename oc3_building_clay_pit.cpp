@@ -45,7 +45,7 @@ bool ClayPit::canBuild(const TilePos& pos ) const
   bool near_water = false;
 
   Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
-  PtrTilesList perimetr = tilemap.getRectangle( pos + TilePos( -1, -1), getSize() + Size( 2 ), Tilemap::checkCorners );
+  TilemapTiles perimetr = tilemap.getRectangle( pos + TilePos( -1, -1), getSize() + Size( 2 ), Tilemap::checkCorners );
   foreach( Tile* tile, perimetr )
   {
     near_water |= tile->getTerrain().isWater();

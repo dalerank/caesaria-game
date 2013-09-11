@@ -55,7 +55,7 @@ void Garden::build( const TilePos& pos )
   Construction::build( pos );
   setPicture( Picture::load( ResourceGroup::entertaiment, theGrid[pos.getI() % 2][pos.getJ() % 2] ) );
 
-  PtrTilesList tilesAround = Scenario::instance().getCity()->getTilemap().getRectangle( getTilePos() - TilePos( 1, 1), 
+  TilemapTiles tilesAround = Scenario::instance().getCity()->getTilemap().getRectangle( getTilePos() - TilePos( 1, 1), 
                                                                                         getTilePos() + TilePos( 1, 1 ) );
   foreach( Tile* tile, tilesAround )
   {
@@ -69,7 +69,7 @@ void Garden::build( const TilePos& pos )
 
 void Garden::update()
 {
-  PtrTilesArea nearTiles = Scenario::instance().getCity()->getTilemap().getFilledRectangle( getTilePos(), Size(2) );
+  TilemapArea nearTiles = Scenario::instance().getCity()->getTilemap().getFilledRectangle( getTilePos(), Size(2) );
 
   bool canGrow2squareGarden = ( nearTiles.size() == 4 ); // be carefull on map edges
   foreach( Tile* tile, nearTiles )

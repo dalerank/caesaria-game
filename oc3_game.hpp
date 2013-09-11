@@ -20,11 +20,12 @@
 #define __OPENCAESAR3_APPLICATION_H_INCLUDED__
 
 #include "oc3_scopedptr.hpp"
+#include "oc3_predefinitions.hpp"
 
-class Application
+class Game
 {
 public:
-   Application();
+   Game();
 
    void initialize();
 

@@ -43,7 +43,7 @@ public:
   typedef std::vector< Picture > Pictures;
   
   Picture clearPic;
-  PtrTilesList postTiles;  // these tiles have draw over "normal" tilemap tiles!
+  TilemapTiles postTiles;  // these tiles have draw over "normal" tilemap tiles!
   Point lastCursorPos;
   Point startCursorPos;
   bool  lmbPressed;
@@ -51,7 +51,7 @@ public:
   Point mapOffset;
   CityPtr city;     // city to display
   Tilemap* tilemap;
-  TilemapArea* mapArea;  // visible map area
+  TilemapCamera* camera;  // visible map area
   ScreenGame* screenGame;
   GfxEngine* engine;
 
@@ -122,16 +122,16 @@ oc3_signals public:
 TilemapRenderer::TilemapRenderer() : _d( new Impl )
 {
   _d->city = NULL;
-  _d->mapArea = NULL;
+  _d->camera = NULL;
 }
 
 TilemapRenderer::~TilemapRenderer() {}
 
-void TilemapRenderer::init( CityPtr city, TilemapArea &mapArea, ScreenGame *screen)
+void TilemapRenderer::init(CityPtr city, TilemapCamera& camera, ScreenGame *screen)
 {
   _d->city = city;
   _d->tilemap = &city->getTilemap();
-  _d->mapArea = &mapArea;
+  _d->camera = &camera;
   _d->screenGame = screen;
   _d->engine = &GfxEngine::instance();
   _d->clearPic = Picture::load( "oc3_land", 2 );
@@ -218,7 +218,7 @@ void TilemapRenderer::Impl::drawTileDesirability( Tile& tile )
       {
         int picOffset = math::clamp( terrain.getDesirability() / 16, -5, 6 );
         Picture& pic = Picture::load( ResourceGroup::land2a, 37 + picOffset );
-        PtrTilesList tiles4clear = tilemap->getFilledRectangle( tile.getIJ(), overlay->getSize() );
+        TilemapTiles tiles4clear = tilemap->getFilledRectangle( tile.getIJ(), overlay->getSize() );
         foreach( Tile* tile, tiles4clear )
         {
           engine->drawPicture( pic, tile->getXY() + mapOffset );
@@ -557,7 +557,7 @@ void TilemapRenderer::Impl::drawTileWater( Tile& tile )
 
   if( !needDrawAnimations && (terrain.isWalkable(true) || terrain.isBuilding()) )
   {
-    PtrTilesArea area;
+    TilemapArea area;
     if( areaSize.getWidth() == 1 )
     {
       area.push_back( &tile );
@@ -657,19 +657,19 @@ void TilemapRenderer::Impl::drawTileInSelArea( Tile& tile, Tile* master )
 void TilemapRenderer::Impl::drawTilemapWithRemoveTools()
 {
   // center the map on the screen
-  mapOffset = Point( engine->getScreenWidth() / 2 - 30 * (mapArea->getCenterX() + 1) + 1,
-                     engine->getScreenHeight() / 2 + 15 * (mapArea->getCenterZ()-tilemap->getSize() + 1) - 30 );
+  mapOffset = Point( engine->getScreenWidth() / 2 - 30 * (camera->getCenterX() + 1) + 1,
+                     engine->getScreenHeight() / 2 + 15 * (camera->getCenterZ()-tilemap->getSize() + 1) - 30 );
 
   int lastZ = -1000;  // dummy value
 
-  PtrTilesArea visibleTiles = mapArea->getTiles();
-  mapArea->resetWasDrawn();
+  TilemapArea visibleTiles = camera->getTiles();
+  camera->resetWasDrawn();
 
   TilePos startPos, stopPos;
   getSelectedArea( startPos, stopPos );
  
   std::set<int> hashDestroyArea;
-  PtrTilesArea destroyArea = tilemap->getFilledRectangle( startPos, stopPos );
+  TilemapArea destroyArea = tilemap->getFilledRectangle( startPos, stopPos );
   
   //create list of destroy tiles add full area building if some of it tile constain in destroy area
   foreach( Tile* tile, destroyArea)
@@ -679,7 +679,7 @@ void TilemapRenderer::Impl::drawTilemapWithRemoveTools()
     LandOverlayPtr overlay = tile->getTerrain().getOverlay();
     if( overlay.isValid() )
     {
-      PtrTilesArea overlayArea = tilemap->getFilledRectangle( overlay->getTilePos(), overlay->getSize() );
+      TilemapArea overlayArea = tilemap->getFilledRectangle( overlay->getTilePos(), overlay->getSize() );
       foreach( Tile* ovelayTile, overlayArea )
       {
         hashDestroyArea.insert( ovelayTile->getJ() * 1000 + ovelayTile->getI() );
@@ -743,12 +743,12 @@ void TilemapRenderer::Impl::drawTilemapWithRemoveTools()
 void TilemapRenderer::Impl::simpleDrawTilemap()
 {
   // center the map on the screen
-  mapOffset = Point( engine->getScreenWidth() / 2 - 30 * (mapArea->getCenterX() + 1) + 1,
-                     engine->getScreenHeight() / 2 + 15 * (mapArea->getCenterZ()-tilemap->getSize() + 1) - 30 );
+  mapOffset = Point( engine->getScreenWidth() / 2 - 30 * (camera->getCenterX() + 1) + 1,
+                     engine->getScreenHeight() / 2 + 15 * (camera->getCenterZ() - tilemap->getSize() + 1) - 30 );
 
   int lastZ = -1000;  // dummy value
 
- PtrTilesArea visibleTiles = mapArea->getTiles();
+ TilemapArea visibleTiles = camera->getTiles();
 
   foreach( Tile* tile, visibleTiles )
   {
@@ -868,9 +868,9 @@ Tile* TilemapRenderer::Impl::getTile( const Point& pos, bool overborder)
   }
 }
 
-TilemapArea& TilemapRenderer::getMapArea()
+TilemapCamera& TilemapRenderer::getCamera()
 {
-  return *_d->mapArea;
+  return *_d->camera;
 }
 
 void TilemapRenderer::updatePreviewTiles( bool force )
@@ -900,8 +900,8 @@ void TilemapRenderer::updatePreviewTiles( bool force )
     Tile* startTile = getTile( _d->startCursorPos, true );  // tile under the cursor (or NULL)
     Tile* stopTile  = getTile( _d->lastCursorPos,  true );
 
-    ConstWayOnTiles pathWay = RoadPropagator::createPath( *_d->tilemap, *startTile, *stopTile );
-    for( ConstWayOnTiles::iterator it=pathWay.begin(); it != pathWay.end(); it++ )
+    ConstTilemapWay pathWay = RoadPropagator::createPath( *_d->tilemap, *startTile, *stopTile );
+    for( ConstTilemapWay::iterator it=pathWay.begin(); it != pathWay.end(); it++ )
     {
       checkPreviewBuild( (*it)->getIJ() );
     }
@@ -943,7 +943,7 @@ void TilemapRenderer::Impl::clearAll()
   TilePos startPos, stopPos;
   getSelectedArea( startPos, stopPos );
 
-  PtrTilesList tiles4clear = tilemap->getFilledRectangle( startPos, stopPos );
+  TilemapTiles tiles4clear = tilemap->getFilledRectangle( startPos, stopPos );
   foreach( Tile* tile, tiles4clear )
   {
     ClearLandEvent::create( tile->getIJ() );
@@ -1022,7 +1022,7 @@ void TilemapRenderer::Impl::drawWalkersBetweenZ(WalkerList walkerList, int minZ,
 
 void TilemapRenderer::Impl::drawBuildingAreaTiles(Tile& baseTile, LandOverlayPtr overlay, std::string resourceGroup, int tileId)
 {
-  PtrTilesArea area;
+  TilemapArea area;
   Size areaSize = overlay->getSize();
   if( areaSize.getWidth() == 1 )
   {
@@ -1107,7 +1107,7 @@ void TilemapRenderer::handleEvent( NEvent& event )
             }
             else
             {
-                getMapArea().setCenter( tile->getIJ() );
+                getCamera().setCenter( tile->getIJ() );
                 _d->city->setCameraPos( tile->getIJ() );
             }
 
@@ -1144,19 +1144,19 @@ void TilemapRenderer::handleEvent( NEvent& event )
         switch( event.KeyboardEvent.Key )
         {
         case KEY_UP:
-            getMapArea().moveUp(1 + ( event.KeyboardEvent.Shift ? 4 : 0 ) );
+            getCamera().moveUp(1 + ( event.KeyboardEvent.Shift ? 4 : 0 ) );
         break;
 
         case KEY_DOWN:          
-            getMapArea().moveDown(1 + ( event.KeyboardEvent.Shift ? 4 : 0 ) );
+            getCamera().moveDown(1 + ( event.KeyboardEvent.Shift ? 4 : 0 ) );
         break;
 
         case KEY_RIGHT:
-            getMapArea().moveRight(1 + ( event.KeyboardEvent.Shift ? 4 : 0 ));
+            getCamera().moveRight(1 + ( event.KeyboardEvent.Shift ? 4 : 0 ));
         break;
 
         case KEY_LEFT:
-            getMapArea().moveLeft(1 + ( event.KeyboardEvent.Shift ? 4 : 0 ) );
+            getCamera().moveLeft(1 + ( event.KeyboardEvent.Shift ? 4 : 0 ) );
         break;
 
         default:
@@ -1306,7 +1306,7 @@ void TilemapRenderer::setMode( const TilemapChangeCommandPtr command )
 
 void TilemapRenderer::animate(unsigned int time)
 {
-  PtrTilesArea visibleTiles = _d->mapArea->getTiles();
+  TilemapArea visibleTiles = _d->camera->getTiles();
 
   foreach( Tile* tile, visibleTiles )
   {

@@ -266,7 +266,7 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
   _d->dragging = false;
   _d->lbCityTitle = new Label( this, Rect( Point( (getWidth() - 240) / 2 + 60, getHeight() - 132 ), Size( 240, 32 )) );
   _d->lbCityTitle->setFont( Font::create( FONT_3 ) );
-  _d->offset = AppConfig::get( empMapOffset ).toPoint();
+  _d->offset = GameSettings::get( empMapOffset ).toPoint();
 
   _d->tradeInfo = new Widget( this, -1, Rect( 0, getHeight() - 120, getWidth(), getHeight() ) );
 
@@ -447,5 +447,5 @@ Signal0<>& EmpireMapWindow::onTradeAdvisorRequest()
 
 EmpireMapWindow::~EmpireMapWindow()
 {
-  AppConfig::set( empMapOffset, _d->offset );
+  GameSettings::set( empMapOffset, _d->offset );
 }

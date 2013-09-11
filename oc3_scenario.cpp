@@ -92,7 +92,7 @@ bool Scenario::load( const io::FilePath& filename )
 {
   StringHelper::debug( 0xff, "Load game begin" );
 
-  _d->empire->initialize( AppConfig::rcpath( AppConfig::citiesModel ) );
+  _d->empire->initialize( GameSettings::rcpath( GameSettings::citiesModel ) );
 
   bool loadok = ScenarioLoader::getInstance().load( filename, *this);   
 
@@ -104,7 +104,7 @@ bool Scenario::load( const io::FilePath& filename )
 
   _d->empire->initPlayerCity( _d->city.as<EmpireCity>() );
 
-  LandOverlays llo = _d->city->getOverlayList();
+  LandOverlayList& llo = _d->city->getOverlayList();
   foreach( LandOverlayPtr overlay, llo )
   {
     ConstructionPtr construction = overlay.as<Construction>();

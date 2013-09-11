@@ -40,9 +40,9 @@ compare_tiles_(const Tile * first, const Tile * second)
 
 
 
-ConstWayOnTiles RoadPropagator::createPath( const Tilemap& tileMap, const Tile& startTile, const Tile& destination )
+ConstTilemapWay RoadPropagator::createPath( const Tilemap& tileMap, const Tile& startTile, const Tile& destination )
 {
-  ConstWayOnTiles ret;
+  ConstTilemapWay ret;
 
   //int mapSize = tileMap.getSize();;
 

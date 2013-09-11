@@ -56,7 +56,7 @@ void DisasterEvent::exec( CityPtr city )
 
     //bool deleteRoad = false;
 
-    PtrTilesArea clearedTiles = tmap.getFilledRectangle( rPos, size );
+    TilemapArea clearedTiles = tmap.getFilledRectangle( rPos, size );
     foreach( Tile* tile, clearedTiles )
     {
       BuildingType dstr2constr[] = { B_BURNING_RUINS, B_COLLAPSED_RUINS, B_PLAGUE_RUINS };
@@ -144,7 +144,7 @@ void ClearLandEvent::exec( CityPtr city )
       overlay->deleteLater();
     }
 
-    PtrTilesArea clearedTiles = tmap.getFilledRectangle( rPos, size );
+    TilemapArea clearedTiles = tmap.getFilledRectangle( rPos, size );
     foreach( Tile* tile, clearedTiles )
     {
       tile->setMasterTile(NULL);

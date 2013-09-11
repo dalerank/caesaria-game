@@ -167,7 +167,7 @@ bool ScenarioSavLoader::load( const std::string& filename, Scenario &oScenario )
     oCity->setClimate((ClimateType)climate);
     Tilemap& oTilemap = oCity->getTilemap();
     
-    oTilemap.init(size);
+    oTilemap.resize(size);
 
     oCity->setCameraPos( TilePos( 0, 0 ) );
     

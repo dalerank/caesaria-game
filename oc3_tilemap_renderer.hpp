@@ -22,7 +22,7 @@
 #include "oc3_picture.hpp"
 #include "oc3_city.hpp"
 #include "oc3_tilemap.hpp"
-#include "oc3_tilemap_area.hpp"
+#include "oc3_tilemap_camera.hpp"
 #include "oc3_signals.hpp"
 #include "oc3_scopedptr.hpp"
 #include "oc3_tilemapchangecommand.hpp"
@@ -37,9 +37,9 @@ public:
    TilemapRenderer();
    ~TilemapRenderer();
    
-   void init( CityPtr city, TilemapArea &mapArea, ScreenGame *screen);
+   void init(CityPtr city, TilemapCamera& camera, ScreenGame *screen);
 
-   TilemapArea &getMapArea();
+   TilemapCamera &getCamera();
 
    // draws the tilemap on the screen,
    // using a dumb back to front drawing of all pictures.

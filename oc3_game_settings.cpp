@@ -16,26 +16,26 @@
 #include "oc3_game_settings.hpp"
 #include "oc3_filepath.hpp"
 
-const char* AppConfig::localePath = "localePath";
-const char* AppConfig::resourcePath = "resourcePath";
-const char* AppConfig::pantheonModel = "pantheonConfig";
-const char* AppConfig::houseModel = "houseModel";
-const char* AppConfig::citiesModel = "citiesModel";
-const char* AppConfig::constructionModel = "constructionModel";
-const char* AppConfig::ctNamesModel = "ctNamesModel";
-class AppConfig::Impl
+const char* GameSettings::localePath = "localePath";
+const char* GameSettings::resourcePath = "resourcePath";
+const char* GameSettings::pantheonModel = "pantheonConfig";
+const char* GameSettings::houseModel = "houseModel";
+const char* GameSettings::citiesModel = "citiesModel";
+const char* GameSettings::constructionModel = "constructionModel";
+const char* GameSettings::ctNamesModel = "ctNamesModel";
+class GameSettings::Impl
 {
 public:
   VariantMap options;
 };
 
-AppConfig& AppConfig::getInstance()
+GameSettings& GameSettings::getInstance()
 {
-  static AppConfig inst;
+  static GameSettings inst;
   return inst;
 }
 
-AppConfig::AppConfig() : _d( new Impl )
+GameSettings::GameSettings() : _d( new Impl )
 {
   std::string application_path = io::FileDir::getApplicationDir().toString();
 
@@ -48,17 +48,17 @@ AppConfig::AppConfig() : _d( new Impl )
   _d->options[ ctNamesModel ] = Variant( std::string( "/names.model" ) );
 }
 
-void AppConfig::set( const std::string& option, const Variant& value )
+void GameSettings::set( const std::string& option, const Variant& value )
 {
   getInstance()._d->options[ option ] = value;
 }
 
-Variant AppConfig::get( const std::string& option )
+Variant GameSettings::get( const std::string& option )
 {
   return getInstance()._d->options[ option ];
 }
 
-io::FilePath AppConfig::rcpath( const std::string& option )
+io::FilePath GameSettings::rcpath( const std::string& option )
 {
   std::string rc = getInstance()._d->options[ resourcePath ].toString();
 

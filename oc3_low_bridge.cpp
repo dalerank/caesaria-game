@@ -151,13 +151,13 @@ void LowBridge::_computePictures( const TilePos& startPos, const TilePos& endPos
   {
   case D_NORTH_WEST:
     {
-      PtrTilesArea tiles = tilemap.getFilledRectangle( endPos, startPos );
+      TilemapArea tiles = tilemap.getFilledRectangle( endPos, startPos );
 
       tiles.pop_back();
       tiles.pop_front();
 
       _d->addSpan( tiles.front()->getIJ() - startPos - TilePos( 1, 0 ), LowBridgeSubTile::liftingSE );
-      for( PtrTilesArea::iterator it=tiles.begin(); it != tiles.end(); it++ )
+      for( TilemapArea::iterator it=tiles.begin(); it != tiles.end(); it++ )
       {
         _d->addSpan( (*it)->getIJ() - startPos, LowBridgeSubTile::spanSE );
       }
@@ -167,13 +167,13 @@ void LowBridge::_computePictures( const TilePos& startPos, const TilePos& endPos
 
   case D_NORTH_EAST:
     {
-      PtrTilesArea tiles = tilemap.getFilledRectangle( startPos, endPos );
+      TilemapArea tiles = tilemap.getFilledRectangle( startPos, endPos );
 
       tiles.pop_back();
       tiles.pop_front();
 
       _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 0, 1 ), LowBridgeSubTile::liftingSW );
-      for( PtrTilesArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
+      for( TilemapArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
       {
         _d->addSpan( (*it)->getIJ() - startPos, LowBridgeSubTile::spanSW );
       }
@@ -183,7 +183,7 @@ void LowBridge::_computePictures( const TilePos& startPos, const TilePos& endPos
 
   case D_SOUTH_EAST:
     {
-      PtrTilesArea tiles = tilemap.getFilledRectangle( startPos, endPos );
+      TilemapArea tiles = tilemap.getFilledRectangle( startPos, endPos );
 
       if( tiles.size() < 3 )
           break;
@@ -192,7 +192,7 @@ void LowBridge::_computePictures( const TilePos& startPos, const TilePos& endPos
       tiles.pop_front();
 
       _d->addSpan( tiles.front()->getIJ() - startPos - TilePos( 1, 0 ), LowBridgeSubTile::liftingSE );
-      for( PtrTilesArea::iterator it=tiles.begin(); it != tiles.end(); it++ )
+      for( TilemapArea::iterator it=tiles.begin(); it != tiles.end(); it++ )
       {        
         _d->addSpan( (*it)->getIJ() - startPos, LowBridgeSubTile::spanSE );
         //_d->subtiles.push_back( LowBridgeSubTile( (*it)->getIJ() - startPos, water ) );
@@ -203,7 +203,7 @@ void LowBridge::_computePictures( const TilePos& startPos, const TilePos& endPos
 
   case D_SOUTH_WEST:
     {
-      PtrTilesArea tiles = tilemap.getFilledRectangle( endPos, startPos );
+      TilemapArea tiles = tilemap.getFilledRectangle( endPos, startPos );
 
       if( tiles.size() < 3 )
         break;
@@ -212,7 +212,7 @@ void LowBridge::_computePictures( const TilePos& startPos, const TilePos& endPos
       tiles.pop_front();
 
       _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 0, 1 ), LowBridgeSubTile::liftingSW );
-      for( PtrTilesArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
+      for( TilemapArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
       {        
         _d->addSpan( (*it)->getIJ() - startPos, LowBridgeSubTile::spanSW );
         //_d->subtiles.push_back( LowBridgeSubTile( (*it)->getIJ() - startPos, water ) );
@@ -247,8 +247,8 @@ void LowBridge::_checkParams( DirectionType& direction, TilePos& start, TilePos&
   int imdId = tile.getTerrain().getOriginalImgId();
   if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
   {    
-    PtrTilesArea tiles = tilemap.getFilledRectangle( curPos - TilePos( 10, 0), curPos );
-    for( PtrTilesArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
+    TilemapArea tiles = tilemap.getFilledRectangle( curPos - TilePos( 10, 0), curPos );
+    for( TilemapArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
     {
       imdId = (*it)->getTerrain().getOriginalImgId();
       if( imdId == 376 || imdId == 377 || imdId == 378 || imdId == 379 )
@@ -261,8 +261,8 @@ void LowBridge::_checkParams( DirectionType& direction, TilePos& start, TilePos&
   }
   else if( imdId == 376 || imdId == 377 || imdId == 378 || imdId == 379  )
   {
-    PtrTilesArea tiles = tilemap.getFilledRectangle( curPos, curPos + TilePos( 10, 0) );
-    for( PtrTilesArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
+    TilemapArea tiles = tilemap.getFilledRectangle( curPos, curPos + TilePos( 10, 0) );
+    for( TilemapArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
     {
       imdId = (*it)->getTerrain().getOriginalImgId();
       if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
@@ -275,8 +275,8 @@ void LowBridge::_checkParams( DirectionType& direction, TilePos& start, TilePos&
   }
   else if( imdId == 372 || imdId == 373 || imdId == 374 || imdId == 375  )
   {
-    PtrTilesArea tiles = tilemap.getFilledRectangle( curPos, curPos + TilePos( 0, 10) );
-    for( PtrTilesArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
+    TilemapArea tiles = tilemap.getFilledRectangle( curPos, curPos + TilePos( 0, 10) );
+    for( TilemapArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
     {
       imdId = (*it)->getTerrain().getOriginalImgId();
       if( imdId == 380 || imdId == 381 || imdId == 382 || imdId == 383 )
@@ -289,8 +289,8 @@ void LowBridge::_checkParams( DirectionType& direction, TilePos& start, TilePos&
   }
   else if( imdId == 380 || imdId == 381 || imdId == 382 || imdId == 383 )
   {
-    PtrTilesArea tiles = tilemap.getFilledRectangle( curPos - TilePos( 0, 10), curPos );
-    for( PtrTilesArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
+    TilemapArea tiles = tilemap.getFilledRectangle( curPos - TilePos( 0, 10), curPos );
+    for( TilemapArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
     {
       imdId = (*it)->getTerrain().getOriginalImgId();
       if( imdId == 372 || imdId == 373 || imdId == 374 || imdId == 375 )
@@ -350,9 +350,9 @@ void LowBridge::build( const TilePos& pos )
     default: break;
     }
     
-    PtrTilesArea tiles = tilemap.getFilledRectangle( startPos, endPos );
+    TilemapArea tiles = tilemap.getFilledRectangle( startPos, endPos );
     int index=0;
-    for( PtrTilesArea::iterator it=tiles.begin(); it != tiles.end(); it++ )
+    for( TilemapArea::iterator it=tiles.begin(); it != tiles.end(); it++ )
     {
       LowBridgeSubTilePtr subtile = _d->subtiles[ index ];
       TilePos buildPos = pos + subtile->_pos * signSum;

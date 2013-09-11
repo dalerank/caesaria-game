@@ -15,9 +15,7 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
-
-#include "oc3_tilemap_area.hpp"
+#include "oc3_tilemap_camera.hpp"
 
 #include "oc3_positioni.hpp"
 #include "oc3_size.hpp"
@@ -26,17 +24,17 @@
 #include "oc3_tile.hpp"
 #include "oc3_foreach.hpp"
 
-class TilemapArea::Impl
+class TilemapCamera::Impl
 {
 public:
   Point centerMapXZ;      //center of the view (in tiles)
   Size viewSize;    // width of the view (in tiles)  nb_tilesX = 1+2*_view_width
                     // height of the view (in tiles)  nb_tilesY = 1+2*_view_height
 
-  PtrTilesArea tiles;  // cached list of visible tiles
+  TilemapArea tiles;  // cached list of visible tiles
 };
 
-TilemapArea::TilemapArea() : _d( new Impl )
+TilemapCamera::TilemapCamera() : _d( new Impl )
 {
   _tilemap = NULL;
   _map_size = 0;
@@ -46,17 +44,17 @@ TilemapArea::TilemapArea() : _d( new Impl )
   _d->centerMapXZ = Point( 0, 0 );
 }
 
-TilemapArea::~TilemapArea()
+TilemapCamera::~TilemapCamera()
 {
 }
 
-void TilemapArea::init(Tilemap &tilemap)
+void TilemapCamera::init(Tilemap &tilemap)
 {
   _tilemap = &tilemap;
   _map_size = tilemap.getSize();
 }
 
-void TilemapArea::setViewport(const Size& newSize )
+void TilemapCamera::setViewport(const Size& newSize )
 {
   if( _d->viewSize != newSize )
   {
@@ -68,7 +66,7 @@ void TilemapArea::setViewport(const Size& newSize )
   StringHelper::debug( 0xff, "TilemapArea::setViewport w=%d h=%d", _d->viewSize.getWidth(), _d->viewSize.getHeight() );
 }
 
-void TilemapArea::setCenter(const TilePos& pos )
+void TilemapCamera::setCenter(const TilePos& pos )
 {
   _center_i = pos.getI();
   _center_j = pos.getJ();
@@ -76,7 +74,7 @@ void TilemapArea::setCenter(const TilePos& pos )
   setCenter( Point( _center_i + _center_j, _map_size - 1 + _center_j - _center_i ) );
 }
 
-void TilemapArea::setCenter( const Point& pos )
+void TilemapCamera::setCenter( const Point& pos )
 {
   if( _d->centerMapXZ != pos  )
   {
@@ -86,33 +84,33 @@ void TilemapArea::setCenter( const Point& pos )
   _d->centerMapXZ = pos;
 }
 
-int TilemapArea::getCenterX() const  {   return _d->centerMapXZ.getX();   }
-int TilemapArea::getCenterZ() const  {   return _d->centerMapXZ.getY();   }
-int TilemapArea::getCenterI() const  {   return _center_i;   }
-int TilemapArea::getCenterJ() const  {   return _center_j;   }
+int TilemapCamera::getCenterX() const  {   return _d->centerMapXZ.getX();   }
+int TilemapCamera::getCenterZ() const  {   return _d->centerMapXZ.getY();   }
+int TilemapCamera::getCenterI() const  {   return _center_i;   }
+int TilemapCamera::getCenterJ() const  {   return _center_j;   }
 
 
-void TilemapArea::moveRight(const int amount)
+void TilemapCamera::moveRight(const int amount)
 {
   setCenter( Point( getCenterX() + amount, getCenterZ() ) );
 }
 
-void TilemapArea::moveLeft(const int amount)
+void TilemapCamera::moveLeft(const int amount)
 {
   setCenter( Point( getCenterX() - amount, getCenterZ() ) );
 }
 
-void TilemapArea::moveUp(const int amount)
+void TilemapCamera::moveUp(const int amount)
 {
   setCenter( Point( getCenterX(), getCenterZ() + amount ) );
 }
 
-void TilemapArea::moveDown(const int amount)
+void TilemapCamera::moveDown(const int amount)
 {
   setCenter( Point( getCenterX(), getCenterZ() - amount ) );
 }
 
-const PtrTilesArea& TilemapArea::getTiles() const
+const TilemapArea& TilemapCamera::getTiles() const
 {
   if( _d->tiles.empty() )
   {
@@ -149,7 +147,7 @@ const PtrTilesArea& TilemapArea::getTiles() const
   return _d->tiles;
 }
 
-void TilemapArea::resetWasDrawn()
+void TilemapCamera::resetWasDrawn()
 {
   foreach( Tile* tile, _d->tiles )
   {

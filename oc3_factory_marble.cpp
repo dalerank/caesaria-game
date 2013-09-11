@@ -53,7 +53,7 @@ bool FactoryMarble::canBuild(const TilePos& pos ) const
   bool near_mountain = false;  // tells if the factory is next to a mountain
 
   Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
-  PtrTilesList perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), Tilemap::checkCorners);
+  TilemapTiles perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), Tilemap::checkCorners);
   foreach( Tile* tile, perimetr )
   {
     near_mountain |= tile->getTerrain().isRock();

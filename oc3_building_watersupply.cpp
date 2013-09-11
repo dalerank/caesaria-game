@@ -70,7 +70,7 @@ void Aqueduct::build(const TilePos& pos )
   Construction::build( pos );
 
   CityHelper helper( Scenario::instance().getCity() );
-  Aqueducts aqueducts = helper.getBuildings<Aqueduct>( B_AQUEDUCT );
+  AqueductList aqueducts = helper.getBuildings<Aqueduct>( B_AQUEDUCT );
   foreach( AqueductPtr aqueduct, aqueducts )
   {
     aqueduct->updatePicture();
@@ -131,7 +131,7 @@ bool Aqueduct::canBuild( const TilePos& pos ) const
     if (!tilemap.isInside(tp_to))
       tp_to = pos;
 
-    PtrTilesList perimetr = tilemap.getRectangle(tp_from, tp_to, !Tilemap::checkCorners);
+    TilemapTiles perimetr = tilemap.getRectangle(tp_from, tp_to, !Tilemap::checkCorners);
     foreach( Tile* tile, perimetr )
     {
       if( tile->getTerrain().isRoad() && tile->getTerrain().isAqueduct() )
@@ -184,7 +184,7 @@ bool Aqueduct::canBuild( const TilePos& pos ) const
 
 
 Picture&
-Aqueduct::computePicture(const PtrTilesList * tmp, const TilePos pos)
+Aqueduct::computePicture(const TilemapTiles * tmp, const TilePos pos)
 {
   // find correct picture as for roads
   Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
@@ -222,7 +222,7 @@ Aqueduct::computePicture(const PtrTilesList * tmp, const TilePos pos)
   // if we have a TMP array with aqueducts, calculate them
   if (tmp != NULL)
   {
-    for (PtrTilesList::const_iterator it = tmp->begin(); it != tmp->end(); ++it)
+    for (TilemapTiles::const_iterator it = tmp->begin(); it != tmp->end(); ++it)
     {
       int i = (*it)->getI();
       int j = (*it)->getJ();
@@ -346,7 +346,7 @@ void Reservoir::destroy()
 {
   //now remove water flag from near tiles
   Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
-  PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
+  TilemapArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
   foreach( Tile* tile, reachedTiles )
   {
     tile->getTerrain().decreaseWaterService( WTR_RESERVOIR );
@@ -431,7 +431,7 @@ void Reservoir::timeStep(const unsigned long time)
   if( time % 22 == 1 )
   {
     Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
-    PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() ); 
+    TilemapArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
     foreach( Tile* tile, reachedTiles )
     {
       tile->getTerrain().fillWaterService( WTR_RESERVOIR );
@@ -576,7 +576,7 @@ void BuildingFountain::deliverService()
   {
     //remove fontain service from tiles
     Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
-    PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() ); 
+    TilemapArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() );
     foreach( Tile* tile, reachedTiles )
     {
       tile->getTerrain().decreaseWaterService( WTR_FONTAIN );
@@ -604,7 +604,7 @@ void BuildingFountain::timeStep(const unsigned long time)
   if( time % 22 == 1 )
   {
     Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
-    PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() ); 
+    TilemapArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() );
     foreach( Tile* tile, reachedTiles )
     {
       tile->getTerrain().fillWaterService( WTR_FONTAIN );

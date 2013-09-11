@@ -47,7 +47,7 @@ public:
   void setNextDirection(const DirectionType direction);
   void setNextTile( const Tile& tile);
   bool contains(Tile &tile);
-  ConstPtrTilesList& getAllTiles();
+  ConstTilemapTiles& getAllTiles();
 
   void prettyPrint() const;
   void toggleDirection();
@@ -67,7 +67,7 @@ private:
   Directions _directionList;
   Directions::iterator _directionIt;
   Directions::reverse_iterator _directionIt_reverse;
-  ConstPtrTilesList _tileList;
+  ConstTilemapTiles _tileList;
   bool _isReverse;
 
   class Impl;

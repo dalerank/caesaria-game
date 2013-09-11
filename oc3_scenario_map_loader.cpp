@@ -164,7 +164,7 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario& oScenario)
     THROW("Horisontal and vertical map sizes are different!");
   }
 
-  oTilemap.init(size);
+  oTilemap.resize(size);
 
   // need to rewrite better
   short int     *pGraphicGrid = (short int     *)malloc(52488);

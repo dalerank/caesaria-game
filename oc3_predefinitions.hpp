@@ -37,22 +37,11 @@ PREFEDINE_CLASS_SMARTPOINTER_LIST(EmpireTradeRoute,List)
 PREFEDINE_CLASS_SMARTPOINTER_LIST(Warehouse,List)
 PREFEDINE_CLASS_SMARTPOINTER_LIST(Farm,List)
 PREFEDINE_CLASS_SMARTPOINTER_LIST(EmpireCity,List)
-
-PREFEDINE_CLASS_SMARTPOINTER(LandOverlay)
-typedef std::list< LandOverlayPtr > LandOverlays;
-
-PREFEDINE_CLASS_SMARTPOINTER(Building)
-typedef std::list< BuildingPtr > Buildings;
-
-PREFEDINE_CLASS_SMARTPOINTER(Factory)
-typedef std::list< FactoryPtr > Factories;
-
-PREFEDINE_CLASS_SMARTPOINTER(ServiceBuilding)
-typedef std::list< ServiceBuildingPtr > ServiceBuildings;
-
-PREFEDINE_CLASS_SMARTPOINTER( Aqueduct )
-typedef std::list< AqueductPtr > Aqueducts;
-
+PREFEDINE_CLASS_SMARTPOINTER_LIST(LandOverlay,List)
+PREFEDINE_CLASS_SMARTPOINTER_LIST(Building,List)
+PREFEDINE_CLASS_SMARTPOINTER_LIST(Factory, List)
+PREFEDINE_CLASS_SMARTPOINTER_LIST(ServiceBuilding,List)
+PREFEDINE_CLASS_SMARTPOINTER_LIST(Aqueduct,List)
 
 PREFEDINE_CLASS_SMARTPOINTER(Collosseum)
 PREFEDINE_CLASS_SMARTPOINTER(Construction)
@@ -75,16 +64,12 @@ PREFEDINE_CLASS_SMARTPOINTER(Animal)
 PREFEDINE_CLASS_SMARTPOINTER(CartSupplier)
 
 class Tile;
-typedef std::list< const Tile* > ConstWayOnTiles;
-typedef std::list< Tile* > WayOnTiles;
-typedef std::list< Tile* > PtrTilesArea;
-typedef std::list< Tile* > PtrTilesList;
-typedef std::list< const Tile* > ConstPtrTilesList;
-typedef std::list< const Tile* > ConstPtrTilesArea;
-
-typedef std::vector< Tile* > PtrTilesVector;
-typedef std::vector< Tile  > TilesVector;
-typedef std::vector< TilesVector > TileGrid;
+typedef std::list< const Tile* > ConstTilemapWay;
+typedef std::list< Tile* > TilemapWay;
+typedef std::list< Tile* > TilemapArea;
+typedef std::list< Tile* > TilemapTiles;
+typedef std::list< const Tile* > ConstTilemapTiles;
+typedef std::list< const Tile* > ConstTilemapArea;
 
 class VariantMap;
 class Picture;

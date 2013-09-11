@@ -47,7 +47,7 @@ public:
   * param oCompletedBranches: result of the propagation: road=destination, pathWay=path
   */
   void init(Tile& origin);
-  void init(const PtrTilesList& origin);
+  void init(const TilemapTiles& origin);
   void init(const ConstructionPtr origin);
   void propagate(const int maxDistance);
 

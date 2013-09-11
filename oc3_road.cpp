@@ -58,7 +58,7 @@ void Road::build(const TilePos& pos )
   // NOTE: also we need to update accessRoads for adjacent building
   // how to detect them if MaxDistance2Road can be any
   // so let's recompute accessRoads for every _building_
-  LandOverlays list = Scenario::instance().getCity()->getOverlayList(); // it looks terrible!!!!
+  LandOverlayList list = Scenario::instance().getCity()->getOverlayList(); // it looks terrible!!!!
   foreach( LandOverlayPtr overlay, list )
   {
     BuildingPtr construction = overlay.as<Building>();
@@ -95,7 +95,7 @@ Picture& Road::computePicture()
   int i = getTile().getI();
   int j = getTile().getJ();
 
-  PtrTilesList roads = getAccessRoads();
+  TilemapTiles roads = getAccessRoads();
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
   foreach( Tile* tile, roads )
   {
@@ -223,7 +223,7 @@ bool Plaza::canBuild(const TilePos& pos ) const
 
   bool is_constructible = true;
 
-  PtrTilesArea area = tilemap.getFilledRectangle( pos, getSize() ); // something very complex ???
+  TilemapArea area = tilemap.getFilledRectangle( pos, getSize() ); // something very complex ???
   foreach( Tile* tile, area )
   {
     is_constructible &= tile->getTerrain().isRoad();

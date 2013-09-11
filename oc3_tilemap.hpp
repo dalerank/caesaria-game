@@ -21,16 +21,17 @@
 
 #include "oc3_serializer.hpp"
 #include "oc3_predefinitions.hpp"
+#include "oc3_scopedptr.hpp"
 
 // Square Map of the Tiles.
 class Tilemap : public Serializable
 {
-public:
+public:  
   static const bool checkCorners = true;
 
   Tilemap();
   virtual ~Tilemap();
-  void init(const int size);
+  void resize(const int size);
 
   bool isInside( const TilePos& pos ) const;
 
@@ -44,14 +45,14 @@ public:
   // (i1, j1) : left corner of the rectangle (minI, minJ)
   // (i2, j2) : right corner of the rectangle (maxI, maxJ)
   // corners  : if false, don't return corner tiles
-  PtrTilesArea getRectangle(const TilePos& start, const TilePos& stope, const bool corners = true );
-  PtrTilesArea getRectangle(const TilePos& pos, const Size& size, const bool corners = true );
+  TilemapArea getRectangle(const TilePos& start, const TilePos& stope, const bool corners = true );
+  TilemapArea getRectangle(const TilePos& pos, const Size& size, const bool corners = true );
 
   // returns all tiles in a rectangular area
   // (i1, j1) : left corner of the rectangle (minI, minJ)
   // (i2, j2) : right corner of the rectangle (maxI, maxJ)
-  PtrTilesArea getFilledRectangle( const TilePos& start, const TilePos& stop );
-  PtrTilesArea getFilledRectangle( const TilePos& start, const Size& size );
+  TilemapArea getFilledRectangle( const TilePos& start, const TilePos& stop );
+  TilemapArea getFilledRectangle( const TilePos& start, const Size& size );
   int getSize() const;
 
   void save( VariantMap& stream) const;
@@ -59,11 +60,9 @@ public:
 
   TilePos fit( const TilePos& pos ) const;
 
-private:
-  Tile& __at( const int i, const int j );
-
-  TileGrid _tile_array;
-  int _size;
+private: 
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 

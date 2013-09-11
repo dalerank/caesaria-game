@@ -52,7 +52,7 @@ static void initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap, const uns
 
 static void initWaterTileAnimation( Tilemap& tmap )
 {
-  PtrTilesArea area = tmap.getFilledRectangle( TilePos( 0, 0 ), Size( tmap.getSize() ) );
+  TilemapArea area = tmap.getFilledRectangle( TilePos( 0, 0 ), Size( tmap.getSize() ) );
 
   Animation water;
   water.setFrameDelay( 12 );

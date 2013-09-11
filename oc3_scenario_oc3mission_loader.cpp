@@ -49,7 +49,7 @@ bool ScenarioOc3MissionLoader::load( const std::string& filename, Scenario& oSce
   {
     std::string mapToLoad = vm[ "map" ].toString();
 
-    ScenarioLoader::getInstance().load( AppConfig::rcpath( mapToLoad ), oScenario );
+    ScenarioLoader::getInstance().load( GameSettings::rcpath( mapToLoad ), oScenario );
 
     CityPtr city = oScenario.getCity();
     FundIssue::resolve( city, CityFunds::donation, vm[ "funds" ].toInt() );

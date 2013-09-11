@@ -190,7 +190,7 @@ void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int start
   {
     CityPtr city = Scenario::instance().getCity();
     Tilemap& tmap = city->getTilemap();
-    PtrTilesList area = tmap.getFilledRectangle( getTile().getIJ(), Size(2) );
+    TilemapTiles area = tmap.getFilledRectangle( getTile().getIJ(), Size(2) );
     bool mayGrow = true;
 
     foreach( Tile* tile, area )
@@ -221,7 +221,7 @@ void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int start
     {
       int sumHabitants = getNbHabitants();
       int sumFreeWorkers = _d->freeWorkersCount;
-      PtrTilesList::iterator delIt=area.begin();
+      TilemapTiles::iterator delIt=area.begin();
       delIt++; //don't remove himself
       for( ; delIt != area.end(); delIt++ )
       {
@@ -336,8 +336,8 @@ void House::levelDown()
        {
          _updateDesirabilityInfluence( Construction::duNegative );
 
-         PtrTilesList perimetr = tmap.getFilledRectangle( getTile().getIJ(), Size(2) );
-         PtrTilesList::iterator it=perimetr.begin();
+         TilemapTiles perimetr = tmap.getFilledRectangle( getTile().getIJ(), Size(2) );
+         TilemapTiles::iterator it=perimetr.begin();
          int peoplesPerHouse = getNbHabitants() / 4;
          _d->currentHabitants = peoplesPerHouse;
          it++; //no destroy himself

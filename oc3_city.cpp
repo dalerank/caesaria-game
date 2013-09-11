@@ -72,7 +72,7 @@ public:
   std::string name;
   EmpirePtr empire;
 
-  LandOverlays overlayList;
+  LandOverlayList overlayList;
   WalkerList walkerList;
   TilePos roadEntry; //coordinates can't be negative!
   CityServices services;
@@ -156,7 +156,7 @@ void City::timeStep( unsigned int time )
     }
   }
 
-  LandOverlays::iterator overlayIt = _d->overlayList.begin();
+  LandOverlayList::iterator overlayIt = _d->overlayList.begin();
   while( overlayIt != _d->overlayList.end() )
   {
     try
@@ -246,7 +246,7 @@ WalkerList City::getWalkerList( const WalkerType type )
   return res;
 }
 
-LandOverlays& City::getOverlayList()
+LandOverlayList& City::getOverlayList()
 {
   return _d->overlayList;
 }
@@ -593,7 +593,7 @@ void City::updateRoads()
 }
 
 
-PtrTilesArea CityHelper::getArea(BuildingPtr building)
+TilemapArea CityHelper::getArea(BuildingPtr building)
 {
   return _city->getTilemap().getFilledRectangle( building->getTilePos(), building->getSize() );
 }

@@ -49,7 +49,7 @@ public:
   Aqueduct();
 
   virtual void build(const TilePos& pos );
-  Picture& computePicture(const PtrTilesList * tmp = NULL,
+  Picture& computePicture(const TilemapTiles * tmp = NULL,
                           const TilePos pos = TilePos(0, 0));
   virtual void setTerrain(TerrainTile &terrain);
   virtual bool canBuild(const TilePos& pos ) const;

@@ -54,7 +54,7 @@ public:
   void addService( CityServicePtr service );
   CityServicePtr findService( const std::string& name ) const;
 
-  LandOverlays& getOverlayList();
+  LandOverlayList& getOverlayList();
 
   void setRoadExit( const TilePos& pos );
   void setBoatEntry( const TilePos& pos );
@@ -133,7 +133,7 @@ public:
   std::list< SmartPtr< T > > getBuildings( const BuildingType type )
   {
     std::list< SmartPtr< T > > ret;
-    LandOverlays buildings = _city->getOverlayList();
+    LandOverlayList& buildings = _city->getOverlayList();
     foreach( LandOverlayPtr item, buildings )
     {
       SmartPtr< T > b = item.as<T>();
@@ -150,7 +150,7 @@ public:
   std::list< SmartPtr< T > > getBuildings( const BuildingClass type )
   {
     std::list< SmartPtr< T > > ret;
-    LandOverlays overlays = _city->getOverlayList();
+    LandOverlayList& overlays = _city->getOverlayList();
     foreach( LandOverlayPtr item, overlays )
     {
       SmartPtr< T > b = item.as<T>();
@@ -174,7 +174,7 @@ public:
   std::list< SmartPtr< T > > getProducers( const Good::Type goodtype )
   {
     std::list< SmartPtr< T > > ret;
-    LandOverlays overlays = _city->getOverlayList();
+    LandOverlayList& overlays = _city->getOverlayList();
     foreach( LandOverlayPtr item, overlays )
     {
       SmartPtr< T > b = item.as<T>();
@@ -208,7 +208,7 @@ public:
     return ret;
   }
 
-  PtrTilesArea getArea( BuildingPtr building );
+  TilemapArea getArea( BuildingPtr building );
 
 protected:
   CityPtr _city;

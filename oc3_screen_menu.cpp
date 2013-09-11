@@ -81,7 +81,7 @@ void ScreenMenu::Impl::resolvePlayMission()
   RectF rect( 0.25f * rootSize.getWidth(), 0.25f * rootSize.getHeight(), 
     0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() );
   LoadMapWindow* wnd = new LoadMapWindow( parent, rect.toRect(),
-                                          AppConfig::rcpath( "/missions/" ), ".oc3mission", -1 );
+                                          GameSettings::rcpath( "/missions/" ), ".oc3mission", -1 );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
   wnd->setTitle( _("##Select mission##") );
@@ -94,7 +94,7 @@ void ScreenMenu::Impl::resolveShowLoadMapWnd()
   LoadMapWindow* wnd = new LoadMapWindow( parent,
                                           RectF( 0.25f * rootSize.getWidth(), 0.25f * rootSize.getHeight(), 
                                                 0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() ).toRect(), 
-                                                AppConfig::rcpath( "/maps/" ), ".map",
+                                                GameSettings::rcpath( "/maps/" ), ".map",
                                                 -1 );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );

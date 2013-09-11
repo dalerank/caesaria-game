@@ -24,7 +24,6 @@
 #include "oc3_scopedptr.hpp"
 
 class Scenario;
-class TilemapArea;
 
 class ScreenGame: public Screen
 {

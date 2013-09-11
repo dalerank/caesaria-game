@@ -106,7 +106,7 @@ public:
     ret.buildingShow = 0;
     ret.buildingCount = 0;
 
-    ServiceBuildings servBuildings = helper.getBuildings<ServiceBuilding>( service );
+    ServiceBuildingList servBuildings = helper.getBuildings<ServiceBuilding>( service );
     foreach( ServiceBuildingPtr building, servBuildings )
     {
       if( building->getWorkers() > 0 )

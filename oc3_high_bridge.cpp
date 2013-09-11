@@ -174,7 +174,7 @@ void HighBridge::_computePictures( const TilePos& startPos, const TilePos& endPo
   {
   case D_NORTH_WEST:
     {
-      PtrTilesArea tiles = tilemap.getFilledRectangle( endPos, startPos );
+      TilemapArea tiles = tilemap.getFilledRectangle( endPos, startPos );
 
       tiles.pop_back();
       tiles.pop_back();
@@ -196,7 +196,7 @@ void HighBridge::_computePictures( const TilePos& startPos, const TilePos& endPo
 
   case D_NORTH_EAST:
     {
-      PtrTilesArea tiles = tilemap.getFilledRectangle( startPos, endPos );
+      TilemapArea tiles = tilemap.getFilledRectangle( startPos, endPos );
 
       tiles.pop_back();
       tiles.pop_back();
@@ -207,7 +207,7 @@ void HighBridge::_computePictures( const TilePos& startPos, const TilePos& endPo
       _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 0, 1 ), HighBridgeSubTile::liftingSW );
       _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 0, 2 ), HighBridgeSubTile::liftingSW2 );
 
-      for( PtrTilesArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
+      for( TilemapArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
       {
         _d->addSpan( (*it)->getIJ() - startPos, HighBridgeSubTile::spanSW );
       }
@@ -219,7 +219,7 @@ void HighBridge::_computePictures( const TilePos& startPos, const TilePos& endPo
 
   case D_SOUTH_EAST:
     {
-      PtrTilesArea tiles = tilemap.getFilledRectangle( startPos, endPos );
+      TilemapArea tiles = tilemap.getFilledRectangle( startPos, endPos );
 
       tiles.pop_back();
       tiles.pop_back();
@@ -241,7 +241,7 @@ void HighBridge::_computePictures( const TilePos& startPos, const TilePos& endPo
 
   case D_SOUTH_WEST:
     {
-      PtrTilesArea tiles = tilemap.getFilledRectangle( endPos, startPos );
+      TilemapArea tiles = tilemap.getFilledRectangle( endPos, startPos );
       
       tiles.pop_back();
       tiles.pop_back();
@@ -252,7 +252,7 @@ void HighBridge::_computePictures( const TilePos& startPos, const TilePos& endPo
 
       _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 0, 1 ), HighBridgeSubTile::liftingSW );
       _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 0, 2 ), HighBridgeSubTile::liftingSW2 );
-      for( PtrTilesArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
+      for( TilemapArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
       {        
         _d->addSpan( (*it)->getIJ() - startPos, HighBridgeSubTile::spanSW );
       }
@@ -287,8 +287,8 @@ void HighBridge::_checkParams( DirectionType& direction, TilePos& start, TilePos
   int imdId = tile.getTerrain().getOriginalImgId();
   if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
   {    
-    PtrTilesArea tiles = tilemap.getFilledRectangle( curPos - TilePos( 10, 0), curPos );
-    for( PtrTilesArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
+    TilemapArea tiles = tilemap.getFilledRectangle( curPos - TilePos( 10, 0), curPos );
+    for( TilemapArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
     {
       imdId = (*it)->getTerrain().getOriginalImgId();
       if( imdId == 376 || imdId == 377 || imdId == 378 || imdId == 379 )
@@ -301,8 +301,8 @@ void HighBridge::_checkParams( DirectionType& direction, TilePos& start, TilePos
   }
   else if( imdId == 376 || imdId == 377 || imdId == 378 || imdId == 379  )
   {
-    PtrTilesArea tiles = tilemap.getFilledRectangle( curPos, curPos + TilePos( 10, 0) );
-    for( PtrTilesArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
+    TilemapArea tiles = tilemap.getFilledRectangle( curPos, curPos + TilePos( 10, 0) );
+    for( TilemapArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
     {
       imdId = (*it)->getTerrain().getOriginalImgId();
       if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
@@ -315,8 +315,8 @@ void HighBridge::_checkParams( DirectionType& direction, TilePos& start, TilePos
   }
   else if( imdId == 372 || imdId == 373 || imdId == 374 || imdId == 375  )
   {
-    PtrTilesArea tiles = tilemap.getFilledRectangle( curPos, curPos + TilePos( 0, 10) );
-    for( PtrTilesArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
+    TilemapArea tiles = tilemap.getFilledRectangle( curPos, curPos + TilePos( 0, 10) );
+    for( TilemapArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
     {
       imdId = (*it)->getTerrain().getOriginalImgId();
       if( imdId == 380 || imdId == 381 || imdId == 382 || imdId == 383 )
@@ -329,8 +329,8 @@ void HighBridge::_checkParams( DirectionType& direction, TilePos& start, TilePos
   }
   else if( imdId == 380 || imdId == 381 || imdId == 382 || imdId == 383 )
   {
-    PtrTilesArea tiles = tilemap.getFilledRectangle( curPos - TilePos( 0, 10), curPos );
-    for( PtrTilesArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
+    TilemapArea tiles = tilemap.getFilledRectangle( curPos - TilePos( 0, 10), curPos );
+    for( TilemapArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
     {
       imdId = (*it)->getTerrain().getOriginalImgId();
       if( imdId == 372 || imdId == 373 || imdId == 374 || imdId == 375 )

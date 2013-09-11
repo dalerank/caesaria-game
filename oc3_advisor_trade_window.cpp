@@ -349,7 +349,7 @@ public:
     CityHelper helper( _city );
     //if any factory work in city, that industry work too
     bool anyFactoryWork = false;
-    Factories factories = helper.getProducers<Factory>( _type );
+    FactoryList factories = helper.getProducers<Factory>( _type );
     foreach( FactoryPtr factory, factories )
     {
       anyFactoryWork |= factory->isActive();
@@ -371,7 +371,7 @@ public:
     CityHelper helper( _city );
     int workFactoryCount=0, idleFactoryCount=0;
 
-    Factories factories = helper.getProducers<Factory>( _type );
+    FactoryList factories = helper.getProducers<Factory>( _type );
     foreach( FactoryPtr factory, factories )
     {
       ( factory->standIdle() ? idleFactoryCount : workFactoryCount ) += 1;
@@ -391,7 +391,7 @@ public:
 
     bool industryEnabled = isIndustryEnabled();
     //up or down all factory for this industry
-    Factories factories = helper.getProducers<Factory>( _type );
+    FactoryList factories = helper.getProducers<Factory>( _type );
     foreach( FactoryPtr factory, factories )
     {
       factory->setActive( !industryEnabled );
@@ -479,7 +479,7 @@ bool AdvisorTradeWindow::Impl::getWorkState(Good::Type gtype )
   CityHelper helper( city );
 
   bool industryActive = false;
-  Factories producers = helper.getProducers<Factory>( gtype );
+  FactoryList producers = helper.getProducers<Factory>( gtype );
   foreach( FactoryPtr factory, producers )
   {
     industryActive |= factory->isActive();
