@@ -33,48 +33,48 @@ struct NEvent;
 class CityRenderer
 {
 public:
-   CityRenderer();
-   ~CityRenderer();
-   
-   void init( CityPtr city, TilemapCamera& camera );
+  CityRenderer();
+  ~CityRenderer();
 
-   TilemapCamera &getCamera();
+  void initialize( CityPtr city );
 
-   // draws the tilemap on the screen,
-   // using a dumb back to front drawing of all pictures.
-   void draw();
-   
-   void handleEvent( NEvent& event);
+  TilemapCamera &getCamera();
 
-   Tilemap& getTilemap();
+  // draws the tilemap on the screen,
+  // using a dumb back to front drawing of all pictures.
+  void draw();
 
-   Tile* getTile( const Point& pos, bool overborder=false );
-   
-   // returns the tile at the grid position
-   Tile* getTile( const TilePos& pos );
+  void handleEvent( NEvent& event);
 
-   // sets the current command
-   void setMode( const TilemapChangeCommandPtr command );
+  Tilemap& getTilemap();
 
-   void animate( unsigned int time );
+  Tile* getTile( const Point& pos, bool overborder=false );
+
+  // returns the tile at the grid position
+  Tile* getTile( const TilePos& pos );
+
+  // sets the current command
+  void setMode( const TilemapChangeCommandPtr command );
+
+  void animate( unsigned int time );
 
 oc3_signals public:
-   Signal1< const Tile& >& onShowTileInfo();
-   Signal1< std::string >& onWarningMessage();
+  Signal1< const Tile& >& onShowTileInfo();
+  Signal1< std::string >& onWarningMessage();
 
 protected:
-   // used to discard the build/remove preview
-   void discardPreview();
+  // used to discard the build/remove preview
+  void discardPreview();
 
-   // used to display the future building at mouse location
-   void checkPreviewBuild(const TilePos& pos );
-   
-   // update preview tiles
-   void updatePreviewTiles( bool force=false );
+  // used to display the future building at mouse location
+  void checkPreviewBuild(const TilePos& pos );
+
+  // update preview tiles
+  void updatePreviewTiles( bool force=false );
 
 private:
-   class Impl;
-   ScopedPtr< Impl > _d;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 

@@ -38,9 +38,7 @@
 
 class CityRenderer::Impl
 {
-public:
-  typedef std::vector< Picture > Pictures;
-  
+public: 
   Picture clearPic;
   TilemapTiles postTiles;  // these tiles have draw over "normal" tilemap tiles!
   Point lastCursorPos;
@@ -50,8 +48,8 @@ public:
   Point mapOffset;
   CityPtr city;     // city to display
   Tilemap* tilemap;
-  TilemapCamera* camera;  // visible map area
   GfxEngine* engine;
+  TilemapCamera camera;  // visible map area
 
   TilePos lastTilePos;
   TilemapChangeCommandPtr changeCommand;
@@ -95,6 +93,12 @@ public:
     drawTileFunction = makeDelegate( obj, func );
   }
 
+  void resetWasDrawn( TilemapArea tiles )
+  {
+    foreach( Tile* tile, tiles )
+      tile->resetWasDrawn();
+  }
+
   void setVisibleWalkers(const WalkerType walkersTypes[])
   {
     visibleWalkers.clear();
@@ -120,16 +124,15 @@ oc3_signals public:
 CityRenderer::CityRenderer() : _d( new Impl )
 {
   _d->city = NULL;
-  _d->camera = NULL;
 }
 
 CityRenderer::~CityRenderer() {}
 
-void CityRenderer::init(CityPtr city, TilemapCamera& camera)
+void CityRenderer::initialize( CityPtr city )
 {
   _d->city = city;
   _d->tilemap = &city->getTilemap();
-  _d->camera = &camera;
+  _d->camera.init( *_d->tilemap );
   _d->engine = &GfxEngine::instance();
   _d->clearPic = Picture::load( "oc3_land", 2 );
   _d->setDrawFunction( _d.data(), &Impl::drawTileBase );
@@ -166,7 +169,7 @@ void CityRenderer::Impl::drawTile( Tile& tile )
 void CityRenderer::Impl::drawAnimations( LandOverlayPtr overlay, const Point& screenPos )
 {
   // building foregrounds and animations
-  Impl::Pictures& fgPictures = overlay->getForegroundPictures();
+  PicturesArray& fgPictures = overlay->getForegroundPictures();
   foreach( Picture& picRef, fgPictures )
   {
     // skip void picture
@@ -654,13 +657,13 @@ void CityRenderer::Impl::drawTileInSelArea( Tile& tile, Tile* master )
 void CityRenderer::Impl::drawTilemapWithRemoveTools()
 {
   // center the map on the screen
-  mapOffset = Point( engine->getScreenWidth() / 2 - 30 * (camera->getCenterX() + 1) + 1,
-                     engine->getScreenHeight() / 2 + 15 * (camera->getCenterZ()-tilemap->getSize() + 1) - 30 );
+  mapOffset = Point( engine->getScreenWidth() / 2 - 30 * (camera.getCenterX() + 1) + 1,
+                     engine->getScreenHeight() / 2 + 15 * (camera.getCenterZ()-tilemap->getSize() + 1) - 30 );
 
   int lastZ = -1000;  // dummy value
 
-  TilemapArea visibleTiles = camera->getTiles();
-  camera->resetWasDrawn();
+  TilemapArea visibleTiles = camera.getTiles();
+  resetWasDrawn( visibleTiles );
 
   TilePos startPos, stopPos;
   getSelectedArea( startPos, stopPos );
@@ -740,12 +743,12 @@ void CityRenderer::Impl::drawTilemapWithRemoveTools()
 void CityRenderer::Impl::simpleDrawTilemap()
 {
   // center the map on the screen
-  mapOffset = Point( engine->getScreenWidth() / 2 - 30 * (camera->getCenterX() + 1) + 1,
-                     engine->getScreenHeight() / 2 + 15 * (camera->getCenterZ() - tilemap->getSize() + 1) - 30 );
+  mapOffset = Point( engine->getScreenWidth() / 2 - 30 * (camera.getCenterX() + 1) + 1,
+                     engine->getScreenHeight() / 2 + 15 * (camera.getCenterZ() - tilemap->getSize() + 1) - 30 );
 
   int lastZ = -1000;  // dummy value
 
- TilemapArea visibleTiles = camera->getTiles();
+ TilemapArea visibleTiles = camera.getTiles();
 
   foreach( Tile* tile, visibleTiles )
   {
@@ -865,7 +868,7 @@ Tile* CityRenderer::Impl::getTile( const Point& pos, bool overborder)
 
 TilemapCamera& CityRenderer::getCamera()
 {
-  return *_d->camera;
+  return _d->camera;
 }
 
 void CityRenderer::updatePreviewTiles( bool force )
@@ -994,7 +997,7 @@ void CityRenderer::Impl::drawColumn( const Point& pos, const int startPicId, con
 
 void CityRenderer::Impl::drawWalkersBetweenZ(WalkerList walkerList, int minZ, int maxZ)
 {
-  Impl::Pictures pictureList;
+  PicturesArray pictureList;
 
   foreach( WalkerPtr walker, walkerList )
   {
@@ -1300,7 +1303,7 @@ void CityRenderer::setMode( const TilemapChangeCommandPtr command )
 
 void CityRenderer::animate(unsigned int time)
 {
-  TilemapArea visibleTiles = _d->camera->getTiles();
+  TilemapArea visibleTiles = _d->camera.getTiles();
 
   foreach( Tile* tile, visibleTiles )
   {

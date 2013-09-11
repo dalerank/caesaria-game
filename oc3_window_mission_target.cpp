@@ -73,7 +73,7 @@ MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& 
   lbTtargets->setFont( Font::create( FONT_1_WHITE ) );
 
   _d->lbPopulation = new Label( gbTargets, Rect( 16, 32, getWidth() / 2, 32 + 20), _("##mission_wnd_population##"), false, Label::bgBrown );
-  _d->lbDescription = new Label( gbTargets, Rect( 16, 52, getWidth() - 16, 52 + 20), _("##mission_wnd_population##"), false, Label::bgBrown );
+  _d->lbDescription = new Label( gbTargets, Rect( 16, 52, getWidth() - 52, 52 + 20), _("##mission_wnd_description##"), false, Label::bgBrown );
 
   _d->lbxHelp = new ListBox( this, Rect( 16, 152, getWidth() - 20, getHeight() - 40 ) );
 }

@@ -115,7 +115,8 @@ void Label::_updateTexture( GfxEngine& painter )
   // draw button background
   if( _d->bgPicture.isValid() )
   {
-    _d->background->draw( _d->bgPicture, _d->bgOffset );
+    _d->background->fill( 0xff000000, Rect( 0, 0, 0, 0 ) );
+    _d->background->draw( _d->bgPicture, _d->bgOffset, true );
   }    
   else
   {
@@ -123,7 +124,11 @@ void Label::_updateTexture( GfxEngine& painter )
     {
     case bgWhite: PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteArea); break;
     case bgBlack: PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::blackArea ); break;
-    case bgBrown: PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::brownBorder ); break;
+    case bgBrown:
+      _d->background->fill( 0xff5C4033, Rect( 0, 0, 0, 0 ) );
+      PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::brownBorder );
+    break;
+
     case bgWhiteFrame: PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame ); break;
     case bgNone: _d->background.reset(); break;
     }

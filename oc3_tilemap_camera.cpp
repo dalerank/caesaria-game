@@ -146,12 +146,3 @@ const TilemapArea& TilemapCamera::getTiles() const
 
   return _d->tiles;
 }
-
-void TilemapCamera::resetWasDrawn()
-{
-  foreach( Tile* tile, _d->tiles )
-  {
-    tile->resetWasDrawn();
-  }
-
-}

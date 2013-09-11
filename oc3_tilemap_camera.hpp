@@ -46,8 +46,6 @@ public:
   // return tile coordinates (i, j), in order of depth
   const TilemapArea& getTiles() const;
 
-  void resetWasDrawn();
-
   int getCenterX() const;
   int getCenterZ() const;
   int getCenterI() const;
