@@ -27,6 +27,9 @@
 class TilemapCamera::Impl
 {
 public:
+  TilePos center;
+
+  Tilemap* tilemap;  // tile map to display
   Point centerMapXZ;      //center of the view (in tiles)
   Size viewSize;    // width of the view (in tiles)  nb_tilesX = 1+2*_view_width
                     // height of the view (in tiles)  nb_tilesY = 1+2*_view_height
@@ -36,11 +39,9 @@ public:
 
 TilemapCamera::TilemapCamera() : _d( new Impl )
 {
-  _tilemap = NULL;
-  _map_size = 0;
+  _d->tilemap = NULL;
   _d->viewSize = Size( 0 );
-  _center_i = 0;
-  _center_j = 0;
+  _d->center = TilePos( 0, 0 );
   _d->centerMapXZ = Point( 0, 0 );
 }
 
@@ -50,8 +51,7 @@ TilemapCamera::~TilemapCamera()
 
 void TilemapCamera::init(Tilemap &tilemap)
 {
-  _tilemap = &tilemap;
-  _map_size = tilemap.getSize();
+  _d->tilemap = &tilemap;
 }
 
 void TilemapCamera::setViewport(const Size& newSize )
@@ -68,10 +68,9 @@ void TilemapCamera::setViewport(const Size& newSize )
 
 void TilemapCamera::setCenter(const TilePos& pos )
 {
-  _center_i = pos.getI();
-  _center_j = pos.getJ();
+  _d->center = pos;
 
-  setCenter( Point( _center_i + _center_j, _map_size - 1 + _center_j - _center_i ) );
+  setCenter( Point( pos.getI() + pos.getJ(), _d->tilemap->getSize() - 1 + pos.getJ() - pos.getI() ) );
 }
 
 void TilemapCamera::setCenter( const Point& pos )
@@ -86,8 +85,7 @@ void TilemapCamera::setCenter( const Point& pos )
 
 int TilemapCamera::getCenterX() const  {   return _d->centerMapXZ.getX();   }
 int TilemapCamera::getCenterZ() const  {   return _d->centerMapXZ.getY();   }
-int TilemapCamera::getCenterI() const  {   return _center_i;   }
-int TilemapCamera::getCenterJ() const  {   return _center_j;   }
+TilePos TilemapCamera::getCenter() const  {   return _d->center;   }
 
 
 void TilemapCamera::moveRight(const int amount)
@@ -114,7 +112,8 @@ const TilemapArea& TilemapCamera::getTiles() const
 {
   if( _d->tiles.empty() )
   {
-    int zm = _map_size + 1;
+    int mapSize = _d->tilemap->getSize();
+    int zm = _d->tilemap->getSize() + 1;
     int cx = _d->centerMapXZ.getX();
     int cz = _d->centerMapXZ.getY();
 
@@ -136,9 +135,9 @@ const TilemapArea& TilemapCamera::getTiles() const
         int j = (x + z - zm)/2;
         int i = x - j;
 
-        if (i >= 0 && j >= 0 && i < _map_size && j < _map_size)
+        if( (i >= 0) && (j >= 0) && (i < mapSize) && (j < mapSize) )
         {
-          _d->tiles.push_back( &_tilemap->at( i, j ));
+          _d->tiles.push_back( &_d->tilemap->at( i, j ));
         }
       }
     }

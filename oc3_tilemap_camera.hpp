@@ -48,17 +48,10 @@ public:
 
   int getCenterX() const;
   int getCenterZ() const;
-  int getCenterI() const;
-  int getCenterJ() const;
+  TilePos getCenter() const;
   
 private:  
   void setCenter( const Point& pos );
-  
-  int _center_i;
-  int _center_j;
-  
-  Tilemap* _tilemap;  // tile map to display
-  int _map_size;      // size of the map  (in tiles)
 
   class Impl;
   ScopedPtr< Impl > _d;
