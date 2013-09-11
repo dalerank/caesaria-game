@@ -27,7 +27,7 @@
 #include "oc3_gui_label.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_minimap_colours.hpp"
-#include "oc3_tilemap_renderer.hpp"
+#include "oc3_city_renderer.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_overlays_menu.hpp"
@@ -456,7 +456,7 @@ Signal0<>& Menu::onMaximize()
   return _d->onMaximizeSignal;
 }
 
-ExtentMenu* ExtentMenu::create( Widget* parent, TilemapRenderer& tmap, int id, CityPtr city )
+ExtentMenu* ExtentMenu::create( Widget* parent, CityRenderer& tmap, int id, CityPtr city )
 {
   ExtentMenu* ret = new ExtentMenu( parent, tmap, id, Rect( 0, 0, 1, 1 ) );
 
@@ -492,7 +492,7 @@ void ExtentMenu::maximize()
                                                  stopPos, 300 );
 }
 
-ExtentMenu::ExtentMenu( Widget* parent, TilemapRenderer& tmap, int id, const Rect& rectangle )
+ExtentMenu::ExtentMenu( Widget* parent, CityRenderer& tmap, int id, const Rect& rectangle )
     : Menu( parent, id, rectangle ), _tmap( tmap )
 {
   _d->minimizeButton->deleteLater();

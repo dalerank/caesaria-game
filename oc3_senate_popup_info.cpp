@@ -14,7 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_senate_popup_info.hpp"
-#include "oc3_tilemap_renderer.hpp"
+#include "oc3_city_renderer.hpp"
 #include "oc3_building_senate.hpp"
 #include "oc3_picture_decorator.hpp"
 #include "oc3_gettext.hpp"
@@ -32,7 +32,7 @@ public:
   Point ratingStartPos;
   Point offset;
   Font font;
-  TilemapRenderer* mapRenderer;
+  CityRenderer* mapRenderer;
   PictureRef background;  
   int lastUpdateTime;
 
@@ -49,7 +49,7 @@ public:
   }
 };
 
-SenatePopupInfo::SenatePopupInfo( Widget* parent, TilemapRenderer& mapRenderer ) :
+SenatePopupInfo::SenatePopupInfo( Widget* parent, CityRenderer& mapRenderer ) :
   Widget( parent, -1, Rect( -1, -1, 0, 0 )), _d( new Impl )
 {
   _d->mapRenderer = &mapRenderer;

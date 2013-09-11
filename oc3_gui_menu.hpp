@@ -22,7 +22,7 @@
 #include "oc3_predefinitions.hpp"
 
 class PushButton;
-class TilemapRenderer;
+class CityRenderer;
 
 class Menu : public Widget
 {
@@ -55,29 +55,29 @@ protected:
 class ExtentMenu : public Menu
 {
 public:
-    static ExtentMenu* create( Widget* parent, TilemapRenderer& tilemap, int id, CityPtr city );
+  static ExtentMenu* create( Widget* parent, CityRenderer& tilemap, int id, CityPtr city );
 
-    void minimize();
-    void maximize();
+  void minimize();
+  void maximize();
 
-    bool onEvent(const NEvent& event);
+  bool onEvent(const NEvent& event);
 
-    void draw( GfxEngine& engine );
+  void draw( GfxEngine& engine );
 
-    void toggleOverlays();
+  void toggleOverlays();
 
-    void setAlarmEnabled( bool enabled );
+  void setAlarmEnabled( bool enabled );
 
 oc3_signals public:
-    Signal1<int>& onSelectOverlayType();
-    Signal0<>& onEmpireMapShow();
-    Signal0<>& onAdvisorsWindowShow();
-    Signal0<>& onSwitchAlarm();
-    Signal0<>& onMissionTargetsWindowShow();
+  Signal1<int>& onSelectOverlayType();
+  Signal0<>& onEmpireMapShow();
+  Signal0<>& onAdvisorsWindowShow();
+  Signal0<>& onSwitchAlarm();
+  Signal0<>& onMissionTargetsWindowShow();
 
 protected:
-    ExtentMenu( Widget* parent, TilemapRenderer&, int id, const Rect& rectangle );
-    TilemapRenderer& _tmap;
+  ExtentMenu( Widget* parent, CityRenderer&, int id, const Rect& rectangle );
+  CityRenderer& _tmap;
 };
 
 #endif

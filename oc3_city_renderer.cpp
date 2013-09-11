@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#include "oc3_tilemap_renderer.hpp"
+#include "oc3_city_renderer.hpp"
 
 #include <list>
 #include <vector>
@@ -23,7 +23,6 @@
 #include "oc3_tile.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_resourcegroup.hpp"
-#include "oc3_screen_game.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_pictureconverter.hpp"
 #include "oc3_event.hpp"
@@ -37,7 +36,7 @@
 #include "oc3_foreach.hpp"
 #include "oc3_scenario_event.hpp"
 
-class TilemapRenderer::Impl
+class CityRenderer::Impl
 {
 public:
   typedef std::vector< Picture > Pictures;
@@ -52,7 +51,6 @@ public:
   CityPtr city;     // city to display
   Tilemap* tilemap;
   TilemapCamera* camera;  // visible map area
-  ScreenGame* screenGame;
   GfxEngine* engine;
 
   TilePos lastTilePos;
@@ -119,26 +117,25 @@ oc3_signals public:
   Signal1< std::string > onWarningMessageSignal;
 };
 
-TilemapRenderer::TilemapRenderer() : _d( new Impl )
+CityRenderer::CityRenderer() : _d( new Impl )
 {
   _d->city = NULL;
   _d->camera = NULL;
 }
 
-TilemapRenderer::~TilemapRenderer() {}
+CityRenderer::~CityRenderer() {}
 
-void TilemapRenderer::init(CityPtr city, TilemapCamera& camera, ScreenGame *screen)
+void CityRenderer::init(CityPtr city, TilemapCamera& camera)
 {
   _d->city = city;
   _d->tilemap = &city->getTilemap();
   _d->camera = &camera;
-  _d->screenGame = screen;
   _d->engine = &GfxEngine::instance();
   _d->clearPic = Picture::load( "oc3_land", 2 );
   _d->setDrawFunction( _d.data(), &Impl::drawTileBase );
 }
 
-void TilemapRenderer::Impl::drawTileEx( Tile& tile, const int depth )
+void CityRenderer::Impl::drawTileEx( Tile& tile, const int depth )
 {
   if( tile.isFlat() )
   {
@@ -161,12 +158,12 @@ void TilemapRenderer::Impl::drawTileEx( Tile& tile, const int depth )
   }
 }
 
-void TilemapRenderer::Impl::drawTile( Tile& tile )
+void CityRenderer::Impl::drawTile( Tile& tile )
 {
   drawTileFunction( tile );
 }
 
-void TilemapRenderer::Impl::drawAnimations( LandOverlayPtr overlay, const Point& screenPos )
+void CityRenderer::Impl::drawAnimations( LandOverlayPtr overlay, const Point& screenPos )
 {
   // building foregrounds and animations
   Impl::Pictures& fgPictures = overlay->getForegroundPictures();
@@ -180,7 +177,7 @@ void TilemapRenderer::Impl::drawAnimations( LandOverlayPtr overlay, const Point&
   }
 }
 
-void TilemapRenderer::Impl::drawTileDesirability( Tile& tile )
+void CityRenderer::Impl::drawTileDesirability( Tile& tile )
 {
   Point screenPos = tile.getXY() + mapOffset;
 
@@ -229,7 +226,7 @@ void TilemapRenderer::Impl::drawTileDesirability( Tile& tile )
   }
 }
 
-void TilemapRenderer::Impl::drawTileFire( Tile& tile )
+void CityRenderer::Impl::drawTileFire( Tile& tile )
 {
   Point screenPos = tile.getXY() + mapOffset;
 
@@ -296,7 +293,7 @@ void TilemapRenderer::Impl::drawTileFire( Tile& tile )
   }
 }
 
-void TilemapRenderer::Impl::drawTileDamage( Tile& tile )
+void CityRenderer::Impl::drawTileDamage( Tile& tile )
 {
   Point screenPos = tile.getXY() + mapOffset;
 
@@ -361,7 +358,7 @@ void TilemapRenderer::Impl::drawTileDamage( Tile& tile )
   }
 }
 
-void TilemapRenderer::Impl::drawTileReligion( Tile& tile )
+void CityRenderer::Impl::drawTileReligion( Tile& tile )
 {
   Point screenPos = tile.getXY() + mapOffset;
 
@@ -427,7 +424,7 @@ void TilemapRenderer::Impl::drawTileReligion( Tile& tile )
   }
 }
 
-void TilemapRenderer::Impl::drawTileFood( Tile& tile )
+void CityRenderer::Impl::drawTileFood( Tile& tile )
 {
   Point screenPos = tile.getXY() + mapOffset;
 
@@ -490,7 +487,7 @@ void TilemapRenderer::Impl::drawTileFood( Tile& tile )
   }
 }
 
-void TilemapRenderer::Impl::drawTileWater( Tile& tile )
+void CityRenderer::Impl::drawTileWater( Tile& tile )
 {
   Point screenPos = tile.getXY() + mapOffset;
 
@@ -585,7 +582,7 @@ void TilemapRenderer::Impl::drawTileWater( Tile& tile )
 }
 
 
-void TilemapRenderer::Impl::drawTileBase( Tile& tile )
+void CityRenderer::Impl::drawTileBase( Tile& tile )
 {
   Point screenPos = tile.getXY() + mapOffset;
 
@@ -634,7 +631,7 @@ void TilemapRenderer::Impl::drawTileBase( Tile& tile )
   drawAnimations( overlay, screenPos );
 }
 
-void TilemapRenderer::Impl::drawTileInSelArea( Tile& tile, Tile* master )
+void CityRenderer::Impl::drawTileInSelArea( Tile& tile, Tile* master )
 {
   if( master==NULL )
   {
@@ -654,7 +651,7 @@ void TilemapRenderer::Impl::drawTileInSelArea( Tile& tile, Tile* master )
   }
 }
 
-void TilemapRenderer::Impl::drawTilemapWithRemoveTools()
+void CityRenderer::Impl::drawTilemapWithRemoveTools()
 {
   // center the map on the screen
   mapOffset = Point( engine->getScreenWidth() / 2 - 30 * (camera->getCenterX() + 1) + 1,
@@ -740,7 +737,7 @@ void TilemapRenderer::Impl::drawTilemapWithRemoveTools()
   }
 }
 
-void TilemapRenderer::Impl::simpleDrawTilemap()
+void CityRenderer::Impl::simpleDrawTilemap()
 {
   // center the map on the screen
   mapOffset = Point( engine->getScreenWidth() / 2 - 30 * (camera->getCenterX() + 1) + 1,
@@ -794,9 +791,7 @@ void TilemapRenderer::Impl::simpleDrawTilemap()
   }
 }
 
-
-
-void TilemapRenderer::drawTilemap()
+void CityRenderer::draw()
 {
   //First part: drawing city
   if( _d->changeCommand.isValid() && _d->changeCommand.is<TilemapRemoveCommand>() )
@@ -838,12 +833,12 @@ void TilemapRenderer::drawTilemap()
   }
 }
 
-Tile* TilemapRenderer::getTile( const Point& pos, bool overborder )
+Tile* CityRenderer::getTile( const Point& pos, bool overborder )
 {
   return _d->getTile( pos, overborder );
 }
 
-Tile* TilemapRenderer::Impl::getTile( const Point& pos, bool overborder)
+Tile* CityRenderer::Impl::getTile( const Point& pos, bool overborder)
 {
   Point mOffset = pos - mapOffset;  // x relative to the left most pixel of the tilemap
   int i = (mOffset.getX() + 2 * mOffset.getY()) / 60;
@@ -868,12 +863,12 @@ Tile* TilemapRenderer::Impl::getTile( const Point& pos, bool overborder)
   }
 }
 
-TilemapCamera& TilemapRenderer::getCamera()
+TilemapCamera& CityRenderer::getCamera()
 {
   return *_d->camera;
 }
 
-void TilemapRenderer::updatePreviewTiles( bool force )
+void CityRenderer::updatePreviewTiles( bool force )
 {
   TilemapBuildCommandPtr bldCommand = _d->changeCommand.as<TilemapBuildCommand>();
 
@@ -923,7 +918,7 @@ void TilemapRenderer::updatePreviewTiles( bool force )
   }
 }
 
-void TilemapRenderer::Impl::getSelectedArea( TilePos& outStartPos, TilePos& outStopPos )
+void CityRenderer::Impl::getSelectedArea( TilePos& outStartPos, TilePos& outStopPos )
 {
   Tile* startTile = getTile( startCursorPos, true );  // tile under the cursor (or NULL)
   Tile* stopTile  = getTile( lastCursorPos, true );
@@ -938,7 +933,7 @@ void TilemapRenderer::Impl::getSelectedArea( TilePos& outStartPos, TilePos& outS
   outStopPos  = TilePos( std::max<int>( startPosTmp.getI(), stopPosTmp.getI() ), std::max<int>( startPosTmp.getJ(), stopPosTmp.getJ() ) );
 }
 
-void TilemapRenderer::Impl::clearAll()
+void CityRenderer::Impl::clearAll()
 {
   TilePos startPos, stopPos;
   getSelectedArea( startPos, stopPos );
@@ -950,7 +945,7 @@ void TilemapRenderer::Impl::clearAll()
   }
 }
 
-void TilemapRenderer::Impl::buildAll()
+void CityRenderer::Impl::buildAll()
 {
   TilemapBuildCommandPtr bldCommand = changeCommand.as<TilemapBuildCommand>();
   if( bldCommand.isNull() )
@@ -980,7 +975,7 @@ void TilemapRenderer::Impl::buildAll()
   }
 }
 
-void TilemapRenderer::Impl::drawColumn( const Point& pos, const int startPicId, const int percent )
+void CityRenderer::Impl::drawColumn( const Point& pos, const int startPicId, const int percent )
 {
   engine->drawPicture( Picture::load( ResourceGroup::sprites, startPicId + 2 ), pos + Point( 5, 15 ) );
   
@@ -997,7 +992,7 @@ void TilemapRenderer::Impl::drawColumn( const Point& pos, const int startPicId, 
   }
 }
 
-void TilemapRenderer::Impl::drawWalkersBetweenZ(WalkerList walkerList, int minZ, int maxZ)
+void CityRenderer::Impl::drawWalkersBetweenZ(WalkerList walkerList, int minZ, int maxZ)
 {
   Impl::Pictures pictureList;
 
@@ -1020,7 +1015,7 @@ void TilemapRenderer::Impl::drawWalkersBetweenZ(WalkerList walkerList, int minZ,
   }
 }
 
-void TilemapRenderer::Impl::drawBuildingAreaTiles(Tile& baseTile, LandOverlayPtr overlay, std::string resourceGroup, int tileId)
+void CityRenderer::Impl::drawBuildingAreaTiles(Tile& baseTile, LandOverlayPtr overlay, std::string resourceGroup, int tileId)
 {
   TilemapArea area;
   Size areaSize = overlay->getSize();
@@ -1045,7 +1040,7 @@ void TilemapRenderer::Impl::drawBuildingAreaTiles(Tile& baseTile, LandOverlayPtr
   }
 }
 
-WalkerList TilemapRenderer::Impl::getVisibleWalkerList()
+WalkerList CityRenderer::Impl::getVisibleWalkerList()
 {
   WalkerList walkerList;
   foreach( WalkerType wtAct, visibleWalkers )
@@ -1057,7 +1052,7 @@ WalkerList TilemapRenderer::Impl::getVisibleWalkerList()
   return walkerList;
 }
 
-void TilemapRenderer::handleEvent( NEvent& event )
+void CityRenderer::handleEvent( NEvent& event )
 {
     if( event.EventType == OC3_MOUSE_EVENT )
     {
@@ -1165,7 +1160,7 @@ void TilemapRenderer::handleEvent( NEvent& event )
     }
 }
 
-void TilemapRenderer::discardPreview()
+void CityRenderer::discardPreview()
 {
   foreach( Tile* tile, _d->postTiles )
   {
@@ -1177,8 +1172,7 @@ void TilemapRenderer::discardPreview()
 
 
 
-void
-TilemapRenderer::checkPreviewBuild(const TilePos & pos)
+void CityRenderer::checkPreviewBuild(const TilePos & pos)
 {
   TilemapBuildCommandPtr bldCommand = _d->changeCommand.as<TilemapBuildCommand>();
 
@@ -1247,17 +1241,17 @@ TilemapRenderer::checkPreviewBuild(const TilePos & pos)
   }
 }
 
-Tile* TilemapRenderer::getTile(const TilePos& pos )
+Tile* CityRenderer::getTile(const TilePos& pos )
 {
   return &_d->tilemap->at( pos );
 }
 
-Signal1< const Tile& >& TilemapRenderer::onShowTileInfo()
+Signal1< const Tile& >& CityRenderer::onShowTileInfo()
 {
   return _d->onShowTileInfoSignal;
 }
 
-void TilemapRenderer::setMode( const TilemapChangeCommandPtr command )
+void CityRenderer::setMode( const TilemapChangeCommandPtr command )
 {
   _d->changeCommand = command;
   _d->startCursorPos = _d->lastCursorPos;
@@ -1304,7 +1298,7 @@ void TilemapRenderer::setMode( const TilemapChangeCommandPtr command )
   }
 }
 
-void TilemapRenderer::animate(unsigned int time)
+void CityRenderer::animate(unsigned int time)
 {
   TilemapArea visibleTiles = _d->camera->getTiles();
 
@@ -1314,12 +1308,12 @@ void TilemapRenderer::animate(unsigned int time)
   }
 }
 
-Signal1< std::string >& TilemapRenderer::onWarningMessage()
+Signal1< std::string >& CityRenderer::onWarningMessage()
 {
   return _d->onWarningMessageSignal;
 }
 
-Tilemap& TilemapRenderer::getTilemap()
+Tilemap& CityRenderer::getTilemap()
 { 
   return *_d->tilemap;
 }

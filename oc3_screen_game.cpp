@@ -37,7 +37,7 @@
 #include "oc3_save_dialog.hpp"
 #include "oc3_advisors_window.hpp"
 #include "oc3_alarm_event_holder.hpp"
-#include "oc3_tilemap_renderer.hpp"
+#include "oc3_city_renderer.hpp"
 #include "oc3_scenario.hpp"
 #include "oc3_senate_popup_info.hpp"
 #include "oc3_cityfunds.hpp"
@@ -59,7 +59,7 @@ public:
   TilemapCamera camera;  // visible map area
   ExtentMenu* extMenu;
   InfoBoxManagerPtr infoBoxMgr;
-  TilemapRenderer mapRenderer;
+  CityRenderer mapRenderer;
   WindowMessageStack* wndStackMsgs;
   Scenario* scenario; // current game scenario
   AlarmEventHolder alarmsHolder;
@@ -187,12 +187,13 @@ void ScreenGame::setScenario(Scenario& scenario)
   Tilemap& tilemap = city->getTilemap();
 
   _d->camera.init( tilemap );
-  _d->mapRenderer.init( city, _d->camera, this);
+  _d->mapRenderer.init( city, _d->camera );
 }
 
 void ScreenGame::draw()
 {
-  _d->mapRenderer.drawTilemap();
+  _d->mapRenderer.draw();
+
   GuiEnv::instance().beforeDraw();
   GuiEnv::instance().draw();
 }

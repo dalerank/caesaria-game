@@ -27,23 +27,22 @@
 #include "oc3_scopedptr.hpp"
 #include "oc3_tilemapchangecommand.hpp"
 
-class ScreenGame;
 struct NEvent;
 
 /* Draws the tilemap area on the screen thanks to the GfxEngine, and handle user events */
-class TilemapRenderer
+class CityRenderer
 {
 public:
-   TilemapRenderer();
-   ~TilemapRenderer();
+   CityRenderer();
+   ~CityRenderer();
    
-   void init(CityPtr city, TilemapCamera& camera, ScreenGame *screen);
+   void init( CityPtr city, TilemapCamera& camera );
 
    TilemapCamera &getCamera();
 
    // draws the tilemap on the screen,
    // using a dumb back to front drawing of all pictures.
-   void drawTilemap();
+   void draw();
    
    void handleEvent( NEvent& event);
 
