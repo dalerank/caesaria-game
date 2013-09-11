@@ -22,7 +22,6 @@
 #include "oc3_predefinitions.hpp"
 
 class PushButton;
-class CityRenderer;
 
 class Menu : public Widget
 {
@@ -55,7 +54,7 @@ protected:
 class ExtentMenu : public Menu
 {
 public:
-  static ExtentMenu* create( Widget* parent, CityRenderer& tilemap, int id, CityPtr city );
+  static ExtentMenu* create( Widget* parent, int id, CityPtr city );
 
   void minimize();
   void maximize();
@@ -76,8 +75,7 @@ oc3_signals public:
   Signal0<>& onMissionTargetsWindowShow();
 
 protected:
-  ExtentMenu( Widget* parent, CityRenderer&, int id, const Rect& rectangle );
-  CityRenderer& _tmap;
+  ExtentMenu( Widget* parent, int id, const Rect& rectangle );
 };
 
 #endif

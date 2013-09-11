@@ -35,6 +35,9 @@ public:
                     // height of the view (in tiles)  nb_tilesY = 1+2*_view_height
 
   TilemapArea tiles;  // cached list of visible tiles
+
+public oc3_signals:
+  Signal1<Point> onPositionChangedSignal;
 };
 
 TilemapCamera::TilemapCamera() : _d( new Impl )
@@ -71,6 +74,8 @@ void TilemapCamera::setCenter(const TilePos& pos )
   _d->center = pos;
 
   setCenter( Point( pos.getI() + pos.getJ(), _d->tilemap->getSize() - 1 + pos.getJ() - pos.getI() ) );
+
+  _d->onPositionChangedSignal.emit( _d->centerMapXZ );
 }
 
 void TilemapCamera::setCenter( const Point& pos )
@@ -86,6 +91,11 @@ void TilemapCamera::setCenter( const Point& pos )
 int TilemapCamera::getCenterX() const  {   return _d->centerMapXZ.getX();   }
 int TilemapCamera::getCenterZ() const  {   return _d->centerMapXZ.getY();   }
 TilePos TilemapCamera::getCenter() const  {   return _d->center;   }
+
+Signal1<Point>&TilemapCamera::onPositionChanged()
+{
+  return _d->onPositionChangedSignal;
+}
 
 
 void TilemapCamera::moveRight(const int amount)

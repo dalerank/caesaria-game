@@ -68,8 +68,6 @@ public:
   PushButton* overlaysButton;
   Label* middleLabel;
   OverlaysMenu* overlaysMenu; 
-  PictureRef minimap;
-  PictureRef fullmap;
   CityPtr city;
 
 oc3_signals public:
@@ -163,133 +161,7 @@ PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul,
 
 /* here will be helper functions for minimap generation */
 
-Caesar3Colours *colours;
 
-Point getBitmapCoordinates(int x, int y, int mapsize )
-{
-  return Point( x + y, x + mapsize - y - 1 );
-}
-
-void getBuildingColours(TerrainTile& tile, int &c1, int &c2);
-
-void getTerrainColours(TerrainTile& tile, int &c1, int &c2)
-{
-  int num3 = tile.getTerrainRndmData() & 3;
-  int num7 = tile.getTerrainRndmData() & 7;
-  
-  if (tile.isTree())
-  {
-    c1 = colours->colour(Caesar3Colours::MAP_TREE1, num3);
-    c2 = colours->colour(Caesar3Colours::MAP_TREE2, num3);
-  }
-  else if (tile.isRock())
-  {
-    c1 = colours->colour(Caesar3Colours::MAP_ROCK1, num3);
-    c2 = colours->colour(Caesar3Colours::MAP_ROCK2, num3);
-  }
-  else if (tile.isWater())
-  {
-    c1 = colours->colour(Caesar3Colours::MAP_WATER1, num3);
-    c2 = colours->colour(Caesar3Colours::MAP_WATER2, num3);
-  }
-  else if (tile.isRoad())
-  {
-    c1 = colours->colour(Caesar3Colours::MAP_ROAD, 0);
-    c2 = colours->colour(Caesar3Colours::MAP_ROAD, 1);
-  }
-  else if (tile.isMeadow())
-  {
-    c1 = colours->colour(Caesar3Colours::MAP_FERTILE1, num3);
-    c2 = colours->colour(Caesar3Colours::MAP_FERTILE2, num3);
-  }
-  else if (tile.isWall())
-  {
-    c1 = colours->colour(Caesar3Colours::MAP_WALL, 0);
-    c2 = colours->colour(Caesar3Colours::MAP_WALL, 1);   
-  }
-  else if (tile.isAqueduct()) // and not tile.isRoad()
-  {
-    c1 = colours->colour(Caesar3Colours::MAP_AQUA, 0);
-    c2 = colours->colour(Caesar3Colours::MAP_AQUA, 1);    
-  }
-  else if (tile.isBuilding())
-  {
-    getBuildingColours(tile, c1, c2);
-  }
-  else // plain terrain
-  {
-    c1 = colours->colour(Caesar3Colours::MAP_EMPTY1, num7);
-    c2 = colours->colour(Caesar3Colours::MAP_EMPTY2, num7);
-  }
-
-  c1 |= 0xff000000;
-  c2 |= 0xff000000;
-}
-
-void getBuildingColours(TerrainTile& tile, int &c1, int &c2)
-{
-  LandOverlayPtr overlay = tile.getOverlay();
-  
-  if (overlay == NULL)
-    return;
-  
-  BuildingType type = overlay->getType();
-  
-  switch(type)
-  {
-    case B_HOUSE:
-    {
-      switch (overlay->getSize().getWidth())
-      {
-	      case 1:
-	        {
-            c1 = colours->colour(Caesar3Colours::MAP_HOUSE, 0);
-            c2 = colours->colour(Caesar3Colours::MAP_HOUSE, 1);
-	          break;
-	        }
-	      default:
-	        {
-            c1 = colours->colour(Caesar3Colours::MAP_HOUSE, 2);
-            c2 = colours->colour(Caesar3Colours::MAP_HOUSE, 0);
-	        }
-        }
-        break;
-        }
-      case B_RESERVOIR:
-        {
-          c1 = colours->colour(Caesar3Colours::MAP_AQUA, 1);
-          c2 = colours->colour(Caesar3Colours::MAP_AQUA, 0);
-          break;
-        }
-      default:
-        {
-          switch (overlay->getSize().getWidth())
-          {
-	        case 1:
-	        {
-	          c1 = colours->colour(Caesar3Colours::MAP_BUILDING, 0);
-	          c2 = colours->colour(Caesar3Colours::MAP_BUILDING, 1);
-	          break;
-	        }
-	        default:
-	        {
-	          c1 = colours->colour(Caesar3Colours::MAP_BUILDING, 0);
-	          c2 = colours->colour(Caesar3Colours::MAP_BUILDING, 2);
-	        }
-        }
-    }
-  }
-
-  c1 |= 0xff000000;
-  c2 |= 0xff000000;
-}
-
-/* end of helper functions */
-
-namespace {
-  static const int kWhite  = 0xFFFFFF;
-  static const int kYellow = 0xFFFF00;
-}
 
 void Menu::draw( GfxEngine& painter )
 {
@@ -456,18 +328,17 @@ Signal0<>& Menu::onMaximize()
   return _d->onMaximizeSignal;
 }
 
-ExtentMenu* ExtentMenu::create( Widget* parent, CityRenderer& tmap, int id, CityPtr city )
+ExtentMenu* ExtentMenu::create(Widget* parent, int id, CityPtr city )
 {
-  ExtentMenu* ret = new ExtentMenu( parent, tmap, id, Rect( 0, 0, 1, 1 ) );
+  ExtentMenu* ret = new ExtentMenu( parent, id, Rect( 0, 0, 1, 1 ) );
 
   const Picture& bground = Picture::load( ResourceGroup::panelBackground, 17 );
   const Picture& bottom = Picture::load( ResourceGroup::panelBackground, 20 );
 
-  ret->_d->fullmap.reset( Picture::create( Size( ret->_tmap.getTilemap().getSize() * 2 ) ) );
-  ret->_d->minimap.reset( Picture::create( Size( 144, 110 ) ) );
   ret->_d->bgPicture.reset( Picture::create( Size( bground.getWidth(), bground.getHeight() + bottom.getHeight() ) ) );
   ret->_d->bgPicture->draw( bground, 0, 0);
   ret->_d->bgPicture->draw( bottom, 0, bground.getHeight() );
+
   ret->_d->city = city;
 
   ret->setGeometry( Rect( 0, 0, bground.getWidth(), ret->_d->bgPicture->getHeight() ) );
@@ -492,8 +363,8 @@ void ExtentMenu::maximize()
                                                  stopPos, 300 );
 }
 
-ExtentMenu::ExtentMenu( Widget* parent, CityRenderer& tmap, int id, const Rect& rectangle )
-    : Menu( parent, id, rectangle ), _tmap( tmap )
+ExtentMenu::ExtentMenu(Widget* parent, int id, const Rect& rectangle )
+    : Menu( parent, id, rectangle )
 {
   _d->minimizeButton->deleteLater();
   _d->minimizeButton = _addButton( 97, false, 0, MAXIMIZE_ID, false, ResourceMenu::emptyMidPicId, _("##minimizeBtnTooltip") );
@@ -575,81 +446,6 @@ void ExtentMenu::draw( GfxEngine& painter )
     return;
 
   Menu::draw( painter );
-  // here we will draw minimap
-
-  // TEMPORARY!!!
-
-  // try to generate and show minimap
-  // now we will show it at (0,0)
-  // then we will show it in right place 
-  int mapsize = _tmap.getTilemap().getSize(); 
-
-  _d->fullmap->lock();
-  // here we can draw anything
-  
-  // std::cout << "center is (" << _mapArea->getCenterX() << "," << _mapArea->getCenterZ() << ")" << std::endl;
-
-  int border = (162 - mapsize) / 2;
-  int max = border + mapsize;
-  
-  colours = new Caesar3Colours( _d->city->getClimate());
-  
-  for (int y = border; y < max; y++)
-  {
-    for (int x = border; x < max; x++)
-    {  
-      TerrainTile& tile = _d->city->getTilemap().at(x - border, y - border).getTerrain();
-
-      Point pnt = getBitmapCoordinates(x - border, y - border, mapsize);
-      int c1, c2;      
-      getTerrainColours(tile, c1, c2);
-
-      if( pnt.getX() >= _d->fullmap->getWidth()-1 || pnt.getY() >= _d->fullmap->getHeight() )
-        continue;
-
-      _d->fullmap->setPixel( pnt, c1);
-      _d->fullmap->setPixel( pnt + Point( 1, 0 ), c2);
-    }
-  }
-
-  delete colours;
-  
-  // show center of screen on minimap
-  // Exit out of image size on small carts... please fix it
-  
-  /*sdlFacade.setPixel(surface, TilemapRenderer::instance().getMapArea().getCenterX(),     mapsize * 2 - TilemapRenderer::instance().getMapArea().getCenterZ(), kWhite);
-  sdlFacade.setPixel(surface, TilemapRenderer::instance().getMapArea().getCenterX() + 1, mapsize * 2 - TilemapRenderer::instance().getMapArea().getCenterZ(), kWhite);
-  sdlFacade.setPixel(surface, TilemapRenderer::instance().getMapArea().getCenterX(),     mapsize * 2 - TilemapRenderer::instance().getMapArea().getCenterZ() + 1, kWhite);
-  sdlFacade.setPixel(surface, TilemapRenderer::instance().getMapArea().getCenterX() + 1, mapsize * 2 - TilemapRenderer::instance().getMapArea().getCenterZ() + 1, kWhite);
-
-  for ( int i = TilemapRenderer::instance().getMapArea().getCenterX() - 18; i <= TilemapRenderer::instance().getMapArea().getCenterX() + 18; i++ )
-  {
-    sdlFacade.setPixel(surface, i, mapsize * 2 - TilemapRenderer::instance().getMapArea().getCenterZ() + 34, kYellow);
-    sdlFacade.setPixel(surface, i, mapsize * 2 - TilemapRenderer::instance().getMapArea().getCenterZ() - 34, kYellow);
-  }
-
-  for ( int j = mapsize * 2 - TilemapRenderer::instance().getMapArea().getCenterZ() - 34; j <= mapsize * 2 - TilemapRenderer::instance().getMapArea().getCenterZ() + 34; j++ )
-  {
-    sdlFacade.setPixel(surface, TilemapRenderer::instance().getMapArea().getCenterX() - 18, j, kYellow);
-    sdlFacade.setPixel(surface, TilemapRenderer::instance().getMapArea().getCenterX() + 18, j, kYellow);
-  }
-  */
-  
-  _d->fullmap->unlock();
-  
-  // this is window where minimap is displayed
-  
-  
-  int i = _tmap.getCamera().getCenterX();
-  int j = _tmap.getCamera().getCenterZ();
-  
-  _d->minimap->fill( 0xff000000, Rect() );
-  _d->minimap->draw( *_d->fullmap, 146/2 - i, 112/2 + j - mapsize*2 );
-  
-  painter.drawPicture( *_d->minimap, getScreenLeft() + 8, getScreenTop() + 35); // 152, 145
-
-  //painter.deletePicture(minimap);
-  //painter.deletePicture(minimap_windows);
 }
 
 void ExtentMenu::toggleOverlays()

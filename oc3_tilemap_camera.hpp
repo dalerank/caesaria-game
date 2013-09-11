@@ -23,6 +23,7 @@
 #include "oc3_scopedptr.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_positioni.hpp"
+#include "oc3_signals.hpp"
 
 /* A subset of the tilemap, this is the visible area. Has convenient methods to sort tiles per depth */
 class TilemapCamera
@@ -49,6 +50,9 @@ public:
   int getCenterX() const;
   int getCenterZ() const;
   TilePos getCenter() const;
+
+public oc3_signals:
+  Signal1<Point>& onPositionChanged();
   
 private:  
   void setCenter( const Point& pos );

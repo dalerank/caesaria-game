@@ -47,6 +47,7 @@
 #include "oc3_window_mission_target.hpp"
 #include "oc3_gui_label.hpp"
 #include "oc3_gettext.hpp"
+#include "oc3_window_minimap.hpp"
 
 static const int windowGamePausedId = StringHelper::hash( "gamepause" );
 
@@ -116,9 +117,13 @@ void ScreenGame::initialize()
   _d->menu->setPosition( Point( engine.getScreenWidth() - _d->menu->getWidth() - _d->rightPanel->getWidth(), 
                                  _d->topMenu->getHeight() ) );
 
-  _d->extMenu = ExtentMenu::create( gui.getRootWidget(), _d->renderer, -1, _d->scenario->getCity() );
+  _d->extMenu = ExtentMenu::create( gui.getRootWidget(), -1, _d->scenario->getCity() );
   _d->extMenu->setPosition( Point( engine.getScreenWidth() - _d->extMenu->getWidth() - _d->rightPanel->getWidth(), 
                                      _d->topMenu->getHeight() ) );
+
+  Minimap* mmap = new Minimap( _d->extMenu, Rect( 8, 35, 8 + 144, 35 + 110 ),
+                               _d->scenario->getCity()->getTilemap(),
+                               _d->scenario->getCity()->getClimate() );
 
   _d->wndStackMsgs = WindowMessageStack::create( gui.getRootWidget(), -1 );
   _d->wndStackMsgs->setPosition( Point( gui.getRootWidget()->getWidth() / 4, 33 ) );
@@ -128,7 +133,6 @@ void ScreenGame::initialize()
 
   // 8*30: used for high buildings (granary...), visible even when not in tilemap_area.
   _d->renderer.getCamera().setViewport( engine.getScreenSize() + Size( 180 ) );
-  _d->renderer.getCamera().setCenter( _d->scenario->getCity()->getCameraPos() );
 
   new SenatePopupInfo( gui.getRootWidget(), _d->renderer );
 
@@ -162,8 +166,10 @@ void ScreenGame::initialize()
   CONNECT( _d->extMenu, onSwitchAlarm(), &_d->alarmsHolder, AlarmEventHolder::next );
   CONNECT( &_d->alarmsHolder, onMoveToAlarm(), &_d->renderer.getCamera(), TilemapCamera::setCenter );
   CONNECT( &_d->alarmsHolder, onAlarmChange(), _d->extMenu, ExtentMenu::setAlarmEnabled );
+  CONNECT( &_d->renderer.getCamera(), onPositionChanged(), mmap, Minimap::setCenter );
 
   _d->showMissionTaretsWindow();
+  _d->renderer.getCamera().setCenter( _d->scenario->getCity()->getCameraPos() );
 }
 
 void ScreenGame::Impl::showSaveDialog()
