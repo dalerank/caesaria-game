@@ -2,6 +2,9 @@ project(opencaesar3)
 
 cmake_minimum_required(VERSION 2.6)
 
+# Find revision ID and hash of the sourcetree
+include(cmake/Modules/GenerateVersionHPP.cmake)
+
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/" ${CMAKE_MODULE_PATH})
 #set(NO_USE_SYSTEM_ZLIB ON)
 
