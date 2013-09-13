@@ -128,12 +128,12 @@ CityRenderer::CityRenderer() : _d( new Impl )
 
 CityRenderer::~CityRenderer() {}
 
-void CityRenderer::initialize( CityPtr city )
+void CityRenderer::initialize( CityPtr city, GfxEngine* engine )
 {
   _d->city = city;
   _d->tilemap = &city->getTilemap();
   _d->camera.init( *_d->tilemap );
-  _d->engine = &GfxEngine::instance();
+  _d->engine = engine;
   _d->clearPic = Picture::load( "oc3_land", 2 );
   _d->setDrawFunction( _d.data(), &Impl::drawTileBase );
 }

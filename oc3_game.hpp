@@ -54,7 +54,7 @@ public:
   CityPtr getCity() const;
   EmpirePtr getEmpire() const;
 
-  void setWinTargets(const CityWinTargets& targets );
+  void setWinTargets( const CityWinTargets& targets );
 
   void setPaused( bool value );
   bool isPaused() const;

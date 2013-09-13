@@ -22,23 +22,26 @@
 #include "oc3_time.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_enums.hpp"
+#include "oc3_gamedate.hpp"
 
 namespace {
 static const int dateLabelOffset = 155;
 static const int populationLabelOffset = 344;
 static const int fundLabelOffset = 464;
 static const int panelBgStatus = 15;
-};
+}
 
 class TopMenu::Impl
 {
 public:
+  DateTime saveDate;
   Label* lbPopulation;
   Label* lbFunds;
   Label* lbDate;
   PictureRef bgPicture;
 
   void resolveSave();
+  void updateDate();
 
 oc3_signals public:
   Signal0<> onExitSignal;
@@ -153,19 +156,25 @@ void TopMenu::setFunds( int value )
   _d->lbFunds->setText( StringHelper::format( 0xff, "%.2s %d", _("##denarii_short##"), value) );
 }
 
-void TopMenu::setDate( const DateTime& time )
+void TopMenu::Impl::updateDate()
 {
-  std::string month = _( StringHelper::format( 0xff, "##month_%d_short##", time.getMonth() + 1).c_str() );
-  std::string age = _( StringHelper::format( 0xff, "##age_%s##", time.getYear() > 0 ? "ad" : "bc" ).c_str() );
+  if( saveDate.getMonth() == GameDate::current().getMonth() )
+    return;
+
+  saveDate = GameDate::current();
+
+  std::string month = _( StringHelper::format( 0xff, "##month_%d_short##", saveDate.getMonth() + 1).c_str() );
+  std::string age = _( StringHelper::format( 0xff, "##age_%s##", saveDate.getYear() > 0 ? "ad" : "bc" ).c_str() );
   std::string text = StringHelper::format( 0xff, "%.3s %d %.2s", 
-                                           month.c_str(), abs( time.getYear() ), age.c_str());
-  _d->lbDate->setText( text );
+                                           month.c_str(), abs( saveDate.getYear() ), age.c_str());
+  lbDate->setText( text );
 }
 
 TopMenu::TopMenu( Widget* parent, const int height ) 
 : MainMenu( parent, Rect( 0, 0, parent->getWidth(), height ) ),
   _d( new Impl )
 {
+  _d->updateDate();
 }
 
 Signal0<>& TopMenu::onExit()

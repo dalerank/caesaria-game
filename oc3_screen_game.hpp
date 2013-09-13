@@ -26,12 +26,13 @@
 #include <string>
 
 class Game;
+class GfxEngine;
 
 class ScreenGame: public Screen
 {
 public:
   typedef enum {mainMenu=0, quitGame} ResultType;
-  ScreenGame( Game& game);
+  ScreenGame( Game& game, GfxEngine& engine );
   ~ScreenGame();
 
   void initialize();

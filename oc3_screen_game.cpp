@@ -56,6 +56,7 @@ public:
   MenuRigthPanel* rightPanel;
   TopMenu* topMenu;
   Menu* menu;
+  GfxEngine* engine;
   ExtentMenu* extMenu;
   InfoBoxManagerPtr infoBoxMgr;
   CityRenderer renderer;
@@ -81,10 +82,11 @@ public oc3_signals:
   Signal0<> onFrameRenderFinishedSignal;
 };
 
-ScreenGame::ScreenGame( Game& game ) : _d( new Impl )
+ScreenGame::ScreenGame(Game& game , GfxEngine& engine ) : _d( new Impl )
 {
   _d->topMenu = NULL;
   _d->game = &game;
+  _d->engine = &engine;
 }
 
 ScreenGame::~ScreenGame() {}
@@ -92,7 +94,7 @@ ScreenGame::~ScreenGame() {}
 void ScreenGame::initialize()
 {
   CityPtr city = _d->game->getCity();
-  _d->renderer.initialize( city );
+  _d->renderer.initialize( city, _d->engine );
 
   _d->infoBoxMgr = InfoBoxManager::create( city, &GuiEnv::instance() );
   GuiEnv::instance().clear();
@@ -111,7 +113,6 @@ void ScreenGame::initialize()
   _d->topMenu = TopMenu::create( gui.getRootWidget(), topMenuHeight );
   _d->topMenu->setPopulation( _d->game->getCity()->getPopulation() );
   _d->topMenu->setFunds( _d->game->getCity()->getFunds().getValue() );
-  _d->topMenu->setDate( GameDate::current() );
 
   _d->menu = Menu::create( gui.getRootWidget(), -1, city );
   _d->menu->setPosition( Point( engine.getScreenWidth() - _d->menu->getWidth() - _d->rightPanel->getWidth(), 
@@ -151,7 +152,6 @@ void ScreenGame::initialize()
 
   CONNECT( city, onPopulationChanged(), _d->topMenu, TopMenu::setPopulation );
   CONNECT( city, onFundsChanged(), _d->topMenu, TopMenu::setFunds );
-  CONNECT( &GameDate::instance(), onMonthChanged(), _d->topMenu, TopMenu::setDate );
 
   CONNECT( &_d->renderer, onShowTileInfo(), _d.data(), Impl::showTileInfo );
 
@@ -186,7 +186,7 @@ void ScreenGame::draw()
   GuiEnv::instance().draw();
 }
 
-void ScreenGame::animate(unsigned int time)
+void ScreenGame::animate( unsigned int time )
 {
   _d->renderer.animate( time );
 }

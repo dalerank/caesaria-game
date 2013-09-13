@@ -190,7 +190,7 @@ void Game::setScreenMenu()
 
 void Game::setScreenGame()
 {
-  ScreenGame screen( *this );
+  ScreenGame screen( *this, *_d->engine );
   screen.initialize();
 
   CONNECT( &screen, onFrameRenderFinished(), this, Game::timeStep );

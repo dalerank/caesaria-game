@@ -26,6 +26,7 @@
 #include "oc3_signals.hpp"
 #include "oc3_scopedptr.hpp"
 #include "oc3_tilemapchangecommand.hpp"
+#include "oc3_gfx_engine.hpp"
 
 struct NEvent;
 
@@ -36,7 +37,7 @@ public:
   CityRenderer();
   ~CityRenderer();
 
-  void initialize( CityPtr city );
+  void initialize(CityPtr city, GfxEngine* engine );
 
   TilemapCamera &getCamera();
 

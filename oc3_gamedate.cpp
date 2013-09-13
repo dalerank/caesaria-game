@@ -20,9 +20,6 @@ class GameDate::Impl
 public:
   DateTime lastDateUpdate;
   DateTime current;
-
-oc3_signals public:
-  Signal1<const DateTime&> onMonthChangeSignal;
 };
 
 
@@ -44,7 +41,6 @@ void GameDate::timeStep( unsigned int time )
     // every X seconds
     GameDate& inst = instance();
     inst._d->current.appendMonth( 1 );
-    inst._d->onMonthChangeSignal.emit( inst._d->current );
   }
 }
 
@@ -62,9 +58,4 @@ GameDate::GameDate() : _d( new Impl )
 GameDate::~GameDate()
 {
 
-}
-
-Signal1<const DateTime&>& GameDate::onMonthChanged()
-{
-  return _d->onMonthChangeSignal;
 }

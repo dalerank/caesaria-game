@@ -32,7 +32,6 @@ public:
 
   void setFunds( int value );
   void setPopulation( int value );
-  void setDate( const DateTime& time );
 
 oc3_signals public:
   Signal0<>& onExit();

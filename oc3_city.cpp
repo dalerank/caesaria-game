@@ -67,6 +67,7 @@ typedef std::vector< CityServicePtr > CityServices;
 class City::Impl
 {
 public:
+  int lastMonthCount;
   int population;
   CityFunds funds;  // amount of money
   std::string name;
@@ -116,6 +117,7 @@ City::City() : _d( new Impl )
   _d->taxRate = 7;
   _d->walkerIdCount = 0;
   _d->climate = C_CENTRAL;
+  _d->lastMonthCount = GameDate::current().getMonth();
 
   addService( CityServiceEmigrant::create( this ) );
   addService( CityServiceWorkersHire::create( this ) );
@@ -127,12 +129,15 @@ City::City() : _d( new Impl )
   addService( CityServiceAnimals::create( this ) );
   addService( CityServiceReligion::create( this ) );
   addService( CityServiceFestival::create( this ) );
-
-  CONNECT( &GameDate::instance(), onMonthChanged(), this, City::monthStep );
 }
 
 void City::timeStep( unsigned int time )
 {
+  if( _d->lastMonthCount != GameDate::current().getMonth() )
+  {
+    monthStep( GameDate::current() );
+  }
+
   WalkerList::iterator walkerIt = _d->walkerList.begin();
   while (walkerIt != _d->walkerList.end())
   {
@@ -404,6 +409,7 @@ void City::load( const VariantMap& stream )
   _d->population = stream.get( "population" ).toInt();
   _d->cameraStart = TilePos( stream.get( "cameraStart" ).toTilePos() );
   _d->name = stream.get( "name" ).toString();
+  _d->lastMonthCount = GameDate::current().getMonth();
 
   VariantMap overlays = stream.get( "overlays" ).toMap();
   foreach( VariantMap::value_type& item, overlays )
