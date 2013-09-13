@@ -22,24 +22,27 @@
 #include "oc3_screen.hpp"
 #include "oc3_predefinitions.hpp"
 #include "oc3_scopedptr.hpp"
+#include "oc3_signals.hpp"
+#include <string>
 
-class Scenario;
+class Game;
 
 class ScreenGame: public Screen
 {
 public:
   typedef enum {mainMenu=0, quitGame} ResultType;
-  ScreenGame();
+  ScreenGame( Game& game);
   ~ScreenGame();
 
   void initialize();
 
-  void setScenario(Scenario &scenario);
-
-  virtual void afterFrame();
-  virtual void handleEvent( NEvent& event);
-
+  virtual void handleEvent( NEvent& event );
   virtual void draw();
+  virtual void animate( unsigned int time );
+  virtual void afterFrame();
+
+public oc3_signals:
+  Signal0<>& onFrameRenderFinished();
 
 protected:
   int getResult() const;

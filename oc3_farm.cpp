@@ -17,7 +17,6 @@
 #include "oc3_positioni.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_resourcegroup.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_goodhelper.hpp"
 #include "oc3_city.hpp"
@@ -98,13 +97,12 @@ Farm::Farm(const Good::Type outGood, const BuildingType type )
   setWorkers( 0 );
 }
 
-bool Farm::canBuild(const TilePos& pos ) const
+bool Farm::canBuild( CityPtr city, const TilePos& pos ) const
 {
-  bool is_constructible = Construction::canBuild( pos );
+  bool is_constructible = Construction::canBuild( city, pos );
   bool on_meadow = false;
 
-  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
-  TilemapArea area = tilemap.getFilledRectangle( pos, getSize() );
+  TilemapArea area = city->getTilemap().getFilledRectangle( pos, getSize() );
 
   foreach( Tile* tile, area )
   {

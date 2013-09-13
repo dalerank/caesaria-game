@@ -18,7 +18,6 @@
 #include "oc3_walker_market_lady.hpp"
 #include "oc3_building_data.hpp"
 #include "oc3_exception.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_building_market.hpp"
 #include "oc3_building_granary.hpp"
@@ -37,13 +36,13 @@ public:
   TilePos destBuildingPos;  // granary or warehouse
   Good::Type priorityGood;
   int maxDistance;
-  CityPtr city;
   MarketPtr market;
   SimpleGoodStore basket;
   long reservationID;
 };
 
-MarketLady::MarketLady() : _d( new Impl )
+MarketLady::MarketLady( CityPtr city )
+  : Walker( city ), _d( new Impl )
 {
    _setGraphic( WG_MARKETLADY );
    _setType( WT_MARKETLADY );
@@ -126,7 +125,7 @@ void MarketLady::computeWalkerDestination( MarketPtr market )
 
      // get the list of buildings within reach
      PathWay pathWay;
-     Propagator pathPropagator( _d->city );
+     Propagator pathPropagator( _getCity() );
      pathPropagator.init( _d->market.as<Construction>() );
      pathPropagator.propagate( _d->maxDistance);
 
@@ -187,7 +186,7 @@ void MarketLady::onDestination()
       go();
 
       // get goods from destination building
-      LandOverlayPtr building = _d->city->getTilemap().at( _d->destBuildingPos ).getTerrain().getOverlay();
+      LandOverlayPtr building = _getCity()->getTilemap().at( _d->destBuildingPos ).getTerrain().getOverlay();
       
       if( building.is<Granary>() )
       {
@@ -252,14 +251,14 @@ void MarketLady::onDestination()
           GoodStock& currentStock = _d->basket.getStock( (Good::Type)gtype );
           if( currentStock._currentQty > 0 )
           {
-            MarketLadyHelperPtr boy = MarketLadyHelper::create( this );
+            MarketLadyHelperPtr boy = MarketLadyHelper::create( _getCity(), this );
             GoodStock& boyBasket =  boy->getBasket();
             boyBasket.setType( (Good::Type)gtype );
             boyBasket._maxQty = 100;
             _d->basket.retrieve( boyBasket, math::clamp( currentStock._currentQty, 0, 100 ) );
             boy->setDelay( delay );
             delay += 20;
-            boy->send2City( _d->city, _d->market );
+            boy->send2City( _d->market );
           }
         }
       }
@@ -272,7 +271,7 @@ void MarketLady::send2City( MarketPtr market )
 
   if( !isDeleted() )
   {
-    _d->city->addWalker( WalkerPtr( this ) );   
+    _getCity()->addWalker( WalkerPtr( this ) );
   }
 }
 
@@ -294,7 +293,7 @@ void MarketLady::load( const VariantMap& stream)
   _d->destBuildingPos = stream.get( "destBuildPos" ).toTilePos();
   _d->priorityGood = (Good::Type)stream.get( "priorityGood" ).toInt();
   TilePos tpos = stream.get( "marketPos" ).toTilePos();
-  CityHelper helper( _d->city );
+  CityHelper helper( _getCity() );
   _d->market = helper.getBuilding<Market>( tpos );
   _d->basket.load( stream.get( "basket" ).toMap() );
   _d->maxDistance = stream.get( "maxDistance" ).toInt();
@@ -303,8 +302,7 @@ void MarketLady::load( const VariantMap& stream)
 
 MarketLadyPtr MarketLady::create( CityPtr city )
 {
-  MarketLadyPtr ret( new MarketLady() );
-  ret->_d->city = city;
+  MarketLadyPtr ret( new MarketLady( city ) );
   ret->drop();
 
   return ret;

@@ -20,7 +20,6 @@
 #include "oc3_tile.hpp"
 #include "oc3_house_level.hpp"
 #include "oc3_gui_info_box.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_walker_workerhunter.hpp"
 #include "oc3_walker_immigrant.hpp"
@@ -162,8 +161,7 @@ void House::timeStep(const unsigned long time)
        {
          _d->currentHabitants = math::clamp( _d->currentHabitants, 0, _d->maxHabitants );
 
-         CityPtr city = Scenario::instance().getCity();
-         ImmigrantPtr im = Immigrant::create( city );
+         ImmigrantPtr im = Immigrant::create( _getCity() );
          im->setCapacity( homeless );
          im->send2City( getTile() );
        }
@@ -188,8 +186,7 @@ void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int start
 {       
   if( getSize() == 1 )
   {
-    CityPtr city = Scenario::instance().getCity();
-    Tilemap& tmap = city->getTilemap();
+    Tilemap& tmap = _getCity()->getTilemap();
     TilemapTiles area = tmap.getFilledRectangle( getTile().getIJ(), Size(2) );
     bool mayGrow = true;
 
@@ -243,7 +240,7 @@ void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int start
       _update();
       _updateDesirabilityInfluence( Construction::duNegative );
       setSize( getSize() + Size(1) );
-      build( getTile().getIJ() );      
+      build( _getCity(), getTile().getIJ() );
     }
   }
 
@@ -329,8 +326,7 @@ void House::levelDown()
        _d->houseId = 1;
        _d->picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
 
-       CityPtr city = Scenario::instance().getCity();
-       Tilemap& tmap = city->getTilemap();   
+       Tilemap& tmap = _getCity()->getTilemap();
 
        if( getSize().getWidth() > 1 )
        {
@@ -344,7 +340,7 @@ void House::levelDown()
          for( ; it != perimetr.end(); it++ )
          {
            HousePtr house = ConstructionManager::getInstance().create( B_HOUSE ).as<House>();
-           house->build( (*it)->getIJ() );
+           house->build( _getCity(), (*it)->getIJ() );
            house->_d->currentHabitants = peoplesPerHouse;
            house->_update();
          }
@@ -588,8 +584,7 @@ void House::destroy()
 
   if( homeless > 0 )
   {
-    CityPtr city = Scenario::instance().getCity();
-    ImmigrantPtr im = Immigrant::create( city );
+    ImmigrantPtr im = Immigrant::create( _getCity() );
     im->setCapacity( homeless );
     im->send2City( getTile() );
   }
@@ -659,7 +654,7 @@ void House::load( const VariantMap& stream )
     _d->serviceAccess[ type ] = serviceValue;
   }
 
-  Building::build( getTilePos() );
+  Building::build( _getCity(), getTilePos() );
   _update();
 }
 

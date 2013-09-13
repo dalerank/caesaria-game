@@ -18,7 +18,6 @@
 #include "oc3_building.hpp"
 
 #include "oc3_tile.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_walker_service.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_building_data.hpp"
@@ -27,7 +26,7 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_city.hpp"
 #include "oc3_foreach.hpp"
-#include "oc3_scenario_event.hpp"
+#include "oc3_game_event.hpp"
 #include "oc3_tilemap.hpp"
 
 Construction::Construction( const BuildingType type, const Size& size)
@@ -35,9 +34,9 @@ Construction::Construction( const BuildingType type, const Size& size)
 {
 }
 
-bool Construction::canBuild( const TilePos& pos ) const
+bool Construction::canBuild( CityPtr city, const TilePos& pos ) const
 {
-  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
+  Tilemap& tilemap = city->getTilemap();
 
   bool is_constructible = true;
 
@@ -56,17 +55,17 @@ bool Construction::canBuild( const TilePos& pos ) const
   return is_constructible;
 }
 
-void Construction::build( const TilePos& pos )
+void Construction::build( CityPtr city, const TilePos& pos )
 {
-  LandOverlay::build( pos );
+  LandOverlay::build( city, pos );
+
   computeAccessRoads();
   _updateDesirabilityInfluence( duPositive );
 }
 
 void Construction::_updateDesirabilityInfluence( const DsbrlUpdate type )
 {
-  CityPtr city = Scenario::instance().getCity();
-  Tilemap& tilemap = city->getTilemap();
+  Tilemap& tilemap = _getCity()->getTilemap();
 
   int dsrblRange = getDesirabilityRange();
   int step = getDesirabilityStep();
@@ -109,7 +108,7 @@ void Construction::computeAccessRoads()
   if( !_getMasterTile() )
       return;
 
-  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
+  Tilemap& tilemap = _getCity()->getTilemap();
 
   int maxDst2road = getMaxDistance2Road();
   TilemapTiles rect = tilemap.getRectangle( _getMasterTile()->getIJ() + TilePos( -maxDst2road, -maxDst2road ),

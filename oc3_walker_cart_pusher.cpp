@@ -37,7 +37,6 @@
 class CartPusher::Impl
 {
 public:
-  CityPtr city;
   GoodStock stock;
   BuildingPtr producerBuilding;
   BuildingPtr consumerBuilding;
@@ -50,14 +49,14 @@ public:
   BuildingPtr getWalkerDestination_granary(Propagator& pathPropagator, PathWay &oPathWay);
 };
 
-CartPusher::CartPusher( CityPtr city ) : _d( new Impl )
+CartPusher::CartPusher( CityPtr city )
+  : Walker( city ), _d( new Impl )
 {
   _setGraphic( WG_PUSHER );
   _setType( WT_CART_PUSHER );
   _d->producerBuilding = NULL;
   _d->consumerBuilding = NULL;
   _d->maxDistance = 25;
-  _d->city = city;
   _d->stock._maxQty = 400;
 
   setName( NameGenerator::rand( NameGenerator::male ) );
@@ -180,7 +179,7 @@ void CartPusher::computeWalkerDestination()
 {
    // get the list of buildings within reach
    PathWay pathWay;
-   Propagator pathPropagator( _d->city );
+   Propagator pathPropagator( _getCity() );
    _d->consumerBuilding = 0;
 
    if( _d->producerBuilding.isNull() )
@@ -338,7 +337,7 @@ void CartPusher::send2City( BuildingPtr building, GoodStock& carry )
 
   if( !isDeleted() )
   {
-    _d->city->addWalker( this );
+    _getCity()->addWalker( this );
   }
 }
 
@@ -381,7 +380,7 @@ void CartPusher::load( const VariantMap& stream )
   _d->stock.load( stream.get( "stock" ).toList() );
 
   TilePos prPos( stream.get( "producerPos" ).toTilePos() );
-  Tile& prTile = _d->city->getTilemap().at( prPos );
+  Tile& prTile = _getCity()->getTilemap().at( prPos );
   _d->producerBuilding = prTile.getTerrain().getOverlay().as<Building>();
   
   if( _d->producerBuilding.is<WorkingBuilding>() )
@@ -390,7 +389,7 @@ void CartPusher::load( const VariantMap& stream )
   }
 
   TilePos cnsmPos( stream.get( "consumerPos" ).toTilePos() );
-  Tile& cnsmTile = _d->city->getTilemap().at( cnsmPos );
+  Tile& cnsmTile = _getCity()->getTilemap().at( cnsmPos );
   _d->consumerBuilding = cnsmTile.getTerrain().getOverlay().as<Building>();
 
   _d->maxDistance = stream.get( "maxDistance" ).toInt();

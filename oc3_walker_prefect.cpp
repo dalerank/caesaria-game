@@ -23,7 +23,7 @@
 #include "oc3_city.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_name_generator.hpp"
-#include "oc3_scenario_event.hpp"
+#include "oc3_game_event.hpp"
 
 class WalkerPrefect::Impl
 {

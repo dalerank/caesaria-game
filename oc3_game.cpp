@@ -18,7 +18,6 @@
 #include "oc3_game.hpp"
 #include "oc3_screen_wait.hpp"
 #include "oc3_stringhelper.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_city.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_gfx_sdl_engine.hpp"
@@ -40,6 +39,10 @@
 #include "oc3_empire.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_name_generator.hpp"
+#include "oc3_scenario_loader.hpp"
+#include "oc3_win_targets.hpp"
+#include "oc3_gamedate.hpp"
+#include "oc3_game_event_mgr.hpp"
 
 #include <libintl.h>
 #include <list>
@@ -54,6 +57,17 @@ public:
   ScreenType nextScreen;
   GfxEngine* engine;
   GuiEnv* gui;
+
+  EmpirePtr empire;
+  CityPtr city;
+  Player* player;
+  CityWinTargets targets;
+
+  bool loadOk;
+  bool paused;
+
+  unsigned int time, saveTime;
+  float timeMultiplier;
   
   void initLocale(const std::string & localePath);
   void initVideo();
@@ -129,8 +143,7 @@ void Game::setScreenMenu()
   screen.initialize();
 
   int result = screen.run();
-  Scenario& scenario = Scenario::instance();
-  scenario.reset();
+  reset();
 
   switch( result )
   {
@@ -141,23 +154,26 @@ void Game::setScreenMenu()
       std::srand( DateTime::getElapsedTime() );
       std::string file = maps.at( std::rand() % maps.size() ).fullName.toString();
       StringHelper::debug( 0xff, "Loading map:%s", file.c_str() );
-      bool loadok = scenario.load(file);
-      _d->nextScreen = loadok ? SCREEN_GAME : SCREEN_MENU;
+
+      load( file );
+
+      _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
     }
     break;
    
     case ScreenMenu::loadSavedGame:
     {  
       std::cout<<"Loading map:" << "lepcismagna.sav" << std::endl;
-      bool loadok = scenario.load(  GameSettings::rcpath( "/savs/timgad.sav" ).toString() );
-      _d->nextScreen = loadok ? SCREEN_GAME : SCREEN_MENU;
+      load(  GameSettings::rcpath( "/savs/timgad.sav" ).toString() );
+
+      _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
     }
     break;
 
     case ScreenMenu::loadMap:
     {
-      bool loadok = scenario.load( screen.getMapName() );
-      _d->nextScreen = loadok ? SCREEN_GAME : SCREEN_MENU;
+      load( screen.getMapName() );
+      _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
     }
     break;
    
@@ -174,9 +190,11 @@ void Game::setScreenMenu()
 
 void Game::setScreenGame()
 {
-  ScreenGame screen;
-  screen.setScenario( Scenario::instance() );
+  ScreenGame screen( *this );
   screen.initialize();
+
+  CONNECT( &screen, onFrameRenderFinished(), this, Game::timeStep );
+
   int result = screen.run();
 
   switch( result )
@@ -191,19 +209,130 @@ void Game::setScreenGame()
 
     default:
       _d->nextScreen = SCREEN_QUIT;
-  }   
+  }
 }
 
+void Game::timeStep()
+{
+  if( _d->paused )
+    return;
+
+  _d->time += _d->timeMultiplier / 100.f;
+
+  while( (_d->time - _d->saveTime) > 1 )
+  {
+    _d->empire->timeStep( _d->time );
+
+    GameDate::timeStep( _d->time );
+
+    _d->saveTime += 1;
+
+    GameEventMgr::update( _d->time );
+  }
+}
+
+Player* Game::getPlayer() const
+{
+  return _d->player;
+}
+
+CityPtr Game::getCity() const
+{
+  return _d->city;
+}
+
+EmpirePtr Game::getEmpire() const
+{
+  return _d->empire;
+}
+
+void Game::setWinTargets(const CityWinTargets& targets)
+{
+  _d->targets = targets;
+}
+
+void Game::setPaused(bool value)
+{
+  _d->paused = value;
+}
+
+bool Game::isPaused() const
+{
+  return _d->paused;
+}
 
 Game::Game() : _d( new Impl )
 {
-   _d->nextScreen = SCREEN_NONE;
+  _d->nextScreen = SCREEN_NONE;
+  _d->paused = false;
+  _d->time = 0;
+  _d->saveTime = 0;
+  _d->timeMultiplier = 100;
+
+  CONNECT( &GameEventMgr::instance(), onEvent(), this, Game::resolveEvent );
+}
+
+void Game::changeTimeMultiplier(int percent)
+{
+  _d->timeMultiplier = math::clamp<int>( _d->timeMultiplier + percent, 10, 300 );
+}
+
+void Game::resolveEvent(GameEventPtr event)
+{
+  if( event.isValid() )
+  {
+    event->exec( *this );
+  }
+}
+
+
+Game::~Game()
+{
+
+}
+
+void Game::save(std::string filename) const
+{
+
+}
+
+void Game::load(std::string filename)
+{
+  StringHelper::debug( 0xff, "Load game begin" );
+
+  _d->empire->initialize( GameSettings::rcpath( GameSettings::citiesModel ) );
+
+  GameLoader loader;
+  _d->loadOk = loader.load( filename, *this);
+
+  if( !_d->loadOk )
+  {
+    StringHelper::debug( 0xff, "LOADING ERROR: can't load game from %s", filename.c_str() );
+    return;
+  }
+
+  _d->empire->initPlayerCity( _d->city.as<EmpireCity>() );
+
+  LandOverlayList& llo = _d->city->getOverlayList();
+  foreach( LandOverlayPtr overlay, llo )
+  {
+    ConstructionPtr construction = overlay.as<Construction>();
+    if( construction.isValid() )
+    {
+      construction->computeAccessRoads();
+    }
+  }
+
+  Pathfinder::getInstance().update( _d->city->getTilemap() );
+
+  StringHelper::debug( 0xff, "Load game end" );
+  return;
 }
 
 void Game::initialize()
 {
-   //Create right PictureBank instance in the beginning   
   StringHelper::redirectCout2( "stdout.log" );
+
   _d->initLocale(GameSettings::get( GameSettings::localePath ).toString());
   _d->initVideo();
   _d->initGuiEnvironment();
@@ -230,10 +359,12 @@ void Game::exec()
      {
      case SCREEN_MENU:
         setScreenMenu();
-        break;
+     break;
+
      case SCREEN_GAME:
         setScreenGame();
-        break;
+     break;
+
      default:
         _OC3_DEBUG_BREAK_IF( "Unexpected next screen type" );
         StringHelper::debug( 0xff, "Unexpected next screen type %d", _d->nextScreen );
@@ -241,29 +372,9 @@ void Game::exec()
   }
 }
 
-int main(int argc, char* argv[])
+void Game::reset()
 {
-   for (int i = 0; i < (argc - 1); i++)
-   {
-     if( !strcmp( argv[i], "-R" ) )
-     {
-       GameSettings::set( GameSettings::resourcePath, Variant( std::string( argv[i+1] ) ) );
-       GameSettings::set( GameSettings::localePath, Variant( std::string( argv[i+1] ) + "/locale" ) );
-       break;
-     }
-   }
-
-   try
-   {
-      Game game;
-
-      game.initialize();
-      game.exec();
-   }
-   catch( Exception e )
-   {
-     StringHelper::debug( 0xff, "FATAL ERROR: %s", e.getDescription().c_str() );
-   }
-
-   return 0;
+  _d->empire = Empire::create();
+  _d->player = new Player();
+  _d->city = City::create( _d->empire, _d->player );
 }

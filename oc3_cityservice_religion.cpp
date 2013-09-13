@@ -20,7 +20,7 @@
 #include "oc3_gamedate.hpp"
 #include "oc3_building_religion.hpp"
 #include "oc3_divinity.hpp"
-#include "oc3_scenario_event.hpp"
+#include "oc3_game_event.hpp"
 #include "oc3_foreach.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_gettext.hpp"

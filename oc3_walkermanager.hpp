@@ -23,7 +23,7 @@
 class AbstractWalkerCreator
 {
 public:
-  virtual WalkerPtr create() = 0;
+  virtual WalkerPtr create( CityPtr city ) = 0;
 };
 
 class WalkerManager
@@ -35,7 +35,7 @@ public:
 
   void addCreator( const WalkerType type, AbstractWalkerCreator* ctor );
 
-  WalkerPtr create( const WalkerType walkerType );  // get an instance of the given type
+  WalkerPtr create( const WalkerType walkerType, CityPtr city );  // get an instance of the given type
 
   ~WalkerManager();
 private:

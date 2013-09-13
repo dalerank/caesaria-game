@@ -19,7 +19,6 @@
 #include "oc3_positioni.hpp"
 #include "oc3_walker_prefect.hpp"
 #include "oc3_astarpathfinding.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_path_finding.hpp"
 #include "oc3_city.hpp"
@@ -63,7 +62,7 @@ void BuildingPrefecture::deliverService()
   if( getWorkers() > 0 && getWalkerList().size() == 0 )
   {
     bool fireDetect = _fireDetect.getI() >= 0;
-    WalkerPrefectPtr walker = WalkerPrefect::create( Scenario::instance().getCity() );
+    WalkerPrefectPtr walker = WalkerPrefect::create( _getCity() );
     walker->setMaxDistance( 26 );
 
     //bool patrol = true;

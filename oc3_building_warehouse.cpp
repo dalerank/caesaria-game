@@ -26,7 +26,6 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_walker_cart_pusher.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_goodstore.hpp"
 #include "oc3_city.hpp"
 #include "oc3_foreach.hpp"
@@ -456,7 +455,7 @@ void Warehouse::_resolveDevastationMode()
       if( goodQty > 0 )
       {
         GoodStock stock( (Good::Type)goodType, goodQty, goodQty);
-        CartPusherPtr walker = CartPusher::create( Scenario::instance().getCity() );
+        CartPusherPtr walker = CartPusher::create( _getCity() );
         walker->send2City( BuildingPtr( this ), stock );
 
         if( !walker->isDeleted() )

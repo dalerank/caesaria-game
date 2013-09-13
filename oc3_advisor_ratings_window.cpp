@@ -25,7 +25,6 @@
 #include "oc3_gfx_engine.hpp"
 #include "oc3_font.hpp"
 #include "oc3_city.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_win_targets.hpp"
 #include "oc3_texturedbutton.hpp"
 
@@ -123,7 +122,7 @@ AdvisorRatingsWindow::AdvisorRatingsWindow( Widget* parent, int id, const CityPt
 
   _d->background->draw( Picture::load( ResourceGroup::menuMiddleIcons, 27), 60, 50 );
 
-  CityWinTargets& targets = Scenario::instance().getWinTargets();
+  const CityWinTargets& targets = city->getWinTargets();
 
   Font font = Font::create( FONT_2 );
   font.draw( *_d->background, StringHelper::format( 0xff, "(%s %d)", _("##need_population##"), targets.getPopulation() ), 225, 15, false );

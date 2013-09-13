@@ -38,7 +38,7 @@
 #include "oc3_advisors_window.hpp"
 #include "oc3_alarm_event_holder.hpp"
 #include "oc3_city_renderer.hpp"
-#include "oc3_scenario.hpp"
+#include "oc3_game.hpp"
 #include "oc3_senate_popup_info.hpp"
 #include "oc3_cityfunds.hpp"
 #include "oc3_gamedate.hpp"
@@ -48,8 +48,7 @@
 #include "oc3_gui_label.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_window_minimap.hpp"
-
-static const int windowGamePausedId = StringHelper::hash( "gamepause" );
+#include "oc3_game_event_mgr.hpp"
 
 class ScreenGame::Impl
 {
@@ -61,13 +60,11 @@ public:
   InfoBoxManagerPtr infoBoxMgr;
   CityRenderer renderer;
   WindowMessageStack* wndStackMsgs;
-  Scenario* scenario; // current game scenario
+  Game* game; // current game scenario
   AlarmEventHolder alarmsHolder;
 
   int result;
-  bool paused;
 
-  void resolveGameSave( std::string filename );
   void showSaveDialog();
   void showEmpireMapWindow();
   void showAdvisorsWindow( const int advType );
@@ -79,22 +76,25 @@ public:
   void resolveRemoveTool();
   void showTileInfo( const Tile& tile );
   void makeScreenShot();
+
+public oc3_signals:
+  Signal0<> onFrameRenderFinishedSignal;
 };
 
-ScreenGame::ScreenGame() : _d( new Impl )
+ScreenGame::ScreenGame( Game& game ) : _d( new Impl )
 {
   _d->topMenu = NULL;
-  _d->scenario = NULL;
-  _d->paused = false;
+  _d->game = &game;
 }
 
 ScreenGame::~ScreenGame() {}
 
 void ScreenGame::initialize()
 {
-  CityPtr city = _d->scenario->getCity();
+  CityPtr city = _d->game->getCity();
+  _d->renderer.initialize( city );
 
-  _d->infoBoxMgr = InfoBoxManager::create( &GuiEnv::instance() );
+  _d->infoBoxMgr = InfoBoxManager::create( city, &GuiEnv::instance() );
   GuiEnv::instance().clear();
 
   const int topMenuHeight = 23;
@@ -109,21 +109,21 @@ void ScreenGame::initialize()
   _d->rightPanel = MenuRigthPanel::create( gui.getRootWidget(), rPanelRect, rPanelPic);
 
   _d->topMenu = TopMenu::create( gui.getRootWidget(), topMenuHeight );
-  _d->topMenu->setPopulation( city->getPopulation() );
-  _d->topMenu->setFunds( city->getFunds().getValue() );
+  _d->topMenu->setPopulation( _d->game->getCity()->getPopulation() );
+  _d->topMenu->setFunds( _d->game->getCity()->getFunds().getValue() );
   _d->topMenu->setDate( GameDate::current() );
 
-  _d->menu = Menu::create( gui.getRootWidget(), -1, _d->scenario->getCity() );
+  _d->menu = Menu::create( gui.getRootWidget(), -1, city );
   _d->menu->setPosition( Point( engine.getScreenWidth() - _d->menu->getWidth() - _d->rightPanel->getWidth(), 
                                  _d->topMenu->getHeight() ) );
 
-  _d->extMenu = ExtentMenu::create( gui.getRootWidget(), -1, _d->scenario->getCity() );
+  _d->extMenu = ExtentMenu::create( gui.getRootWidget(), -1, city );
   _d->extMenu->setPosition( Point( engine.getScreenWidth() - _d->extMenu->getWidth() - _d->rightPanel->getWidth(), 
                                      _d->topMenu->getHeight() ) );
 
   Minimap* mmap = new Minimap( _d->extMenu, Rect( 8, 35, 8 + 144, 35 + 110 ),
-                               _d->scenario->getCity()->getTilemap(),
-                               _d->scenario->getCity()->getClimate() );
+                               city->getTilemap(),
+                               city->getClimate() );
 
   _d->wndStackMsgs = WindowMessageStack::create( gui.getRootWidget(), -1 );
   _d->wndStackMsgs->setPosition( Point( gui.getRootWidget()->getWidth() / 4, 33 ) );
@@ -169,26 +169,13 @@ void ScreenGame::initialize()
   CONNECT( &_d->renderer.getCamera(), onPositionChanged(), mmap, Minimap::setCenter );
 
   _d->showMissionTaretsWindow();
-  _d->renderer.getCamera().setCenter( _d->scenario->getCity()->getCameraPos() );
+  _d->renderer.getCamera().setCenter( city->getCameraPos() );
 }
 
 void ScreenGame::Impl::showSaveDialog()
 {
   SaveDialog* dialog = new SaveDialog( GuiEnv::instance().getRootWidget(), "saves", ".oc3save", -1 );
-  CONNECT( dialog, onFileSelected(), this, Impl::resolveGameSave );
-}
-
-void ScreenGame::Impl::resolveGameSave( std::string filename )
-{
-  Scenario::instance().save( filename );
-}
-
-void ScreenGame::setScenario(Scenario& scenario)
-{
-  _d->scenario = &scenario;
-  CityPtr city = scenario.getCity();
-
-  _d->renderer.initialize( city );
+  //CONNECT( dialog, onFileSelected(), &onSaveGameSignal, Signal1<std::string>::emit );
 }
 
 void ScreenGame::draw()
@@ -199,13 +186,19 @@ void ScreenGame::draw()
   GuiEnv::instance().draw();
 }
 
+void ScreenGame::animate(unsigned int time)
+{
+  _d->renderer.animate( time );
+}
+
 void ScreenGame::afterFrame()
 {
-  if( !_d->paused )    
-  {
-    unsigned int time = _d->scenario->timeStep();
-    _d->renderer.animate( time );
-  }
+  _d->onFrameRenderFinishedSignal.emit();
+}
+
+Signal0<>&ScreenGame::onFrameRenderFinished()
+{
+  return _d->onFrameRenderFinishedSignal;
 }
 
 void ScreenGame::handleEvent( NEvent& event )
@@ -228,36 +221,15 @@ void ScreenGame::handleEvent( NEvent& event )
     case KEY_PLUS:
     case KEY_SUBTRACT:
     case KEY_ADD:
-      _d->scenario->changeTimeMultiplier( (event.KeyboardEvent.Key == KEY_MINUS || event.KeyboardEvent.Key == KEY_SUBTRACT)
-                                           ? -10 : +10 );
+      GameEventMgr::append( ChangeSpeed::create( (event.KeyboardEvent.Key == KEY_MINUS || event.KeyboardEvent.Key == KEY_SUBTRACT)
+                                                 ? -10 : +10 ) );
     break;
 
     case KEY_KEY_P:
       if( event.KeyboardEvent.PressedDown )
         break;
 
-      _d->paused = !_d->paused;
-      {
-        Widget* rootWidget = GuiEnv::instance().getRootWidget();
-        Label* wdg = safety_cast< Label* >( rootWidget->findChild( windowGamePausedId ) );
-        if( _d->paused  )
-        {
-          if( !wdg )
-          {
-            Size scrSize = rootWidget->getSize();
-            wdg = new Label( rootWidget, Rect( Point( (scrSize.getWidth() - 450)/2, 40 ), Size( 450, 50 ) ),
-                             _("##game_is_paused##"), false, Label::bgWhiteFrame, windowGamePausedId );
-            wdg->setTextAlignment( alignCenter, alignCenter );
-          }
-        }
-        else
-        {
-          if( wdg )
-          {
-            wdg->deleteLater();
-          }
-        }
-      }
+      GameEventMgr::append( TogglePause::create() );
     break;
 
 		case KEY_F10:
@@ -385,7 +357,7 @@ void ScreenGame::Impl::showAdvisorsWindow( const int advType )
   else
   {
     AdvisorsWindow* advWnd = AdvisorsWindow::create( GuiEnv::instance().getRootWidget(), -1,
-                                                     (AdvisorType)advType, scenario->getCity() );
+                                                     (AdvisorType)advType, game->getCity() );
     CONNECT( advWnd, onEmpireMapRequest(), this, Impl::showEmpireMapWindow ); 
   }
 }
@@ -405,12 +377,12 @@ void ScreenGame::Impl::showEmpireMapWindow()
   }
   else
   {
-    EmpireMapWindow* emap = EmpireMapWindow::create( scenario, GuiEnv::instance().getRootWidget(), -1 );
+    EmpireMapWindow* emap = EmpireMapWindow::create( game->getEmpire(), game->getCity(), GuiEnv::instance().getRootWidget(), -1 );
     CONNECT( emap, onTradeAdvisorRequest(), this, Impl::showTradeAdvisorWindow ); 
   }  
 }
 
 void ScreenGame::Impl::showMissionTaretsWindow()
 {
-  MissionTargetsWindow::create( scenario );
+  MissionTargetsWindow::create( game->getCity() );
 }

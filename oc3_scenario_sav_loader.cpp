@@ -18,7 +18,7 @@
 #include "oc3_exception.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_constructionmanager.hpp"
-#include "oc3_scenario.hpp"
+#include "oc3_game.hpp"
 #include "pkwareinputstream.hpp"
 #include "oc3_city.hpp"
 #include "oc3_tilemap.hpp"
@@ -28,13 +28,13 @@
 #include <climits>
 #include <stdint.h>
 
-class ScenarioSavLoader::Impl
+class C3SavLoader::Impl
 {
 public:
 
 };
 
-ScenarioSavLoader::ScenarioSavLoader()
+C3SavLoader::C3SavLoader()
 {
 
 }
@@ -46,7 +46,7 @@ void SkipCompressed( std::fstream& f )
   f.seekg(tmp, std::ios::cur);
 }
 
-bool ScenarioSavLoader::load( const std::string& filename, Scenario &oScenario )
+bool C3SavLoader::load(const std::string& filename, Game& game )
 {
   std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
  
@@ -163,7 +163,7 @@ bool ScenarioSavLoader::load( const std::string& filename, Scenario &oScenario )
     
     // here goes the WORK!
     
-    CityPtr oCity = oScenario.getCity();
+    CityPtr oCity = game.getCity();
     oCity->setClimate((ClimateType)climate);
     Tilemap& oTilemap = oCity->getTilemap();
     
@@ -211,7 +211,7 @@ bool ScenarioSavLoader::load( const std::string& filename, Scenario &oScenario )
   return true;
 }
 
-bool ScenarioSavLoader::isLoadableFileExtension( const std::string& filename )
+bool C3SavLoader::isLoadableFileExtension( const std::string& filename )
 {
   return filename.substr( filename.size() - 4, -1 ) == ".sav";
 }

@@ -62,6 +62,7 @@ PREFEDINE_CLASS_SMARTPOINTER(Empire)
 PREFEDINE_CLASS_SMARTPOINTER(MarketLadyHelper)
 PREFEDINE_CLASS_SMARTPOINTER(Animal)
 PREFEDINE_CLASS_SMARTPOINTER(CartSupplier)
+PREFEDINE_CLASS_SMARTPOINTER(GameEvent)
 
 class Tile;
 typedef std::list< const Tile* > ConstTilemapWay;
@@ -81,7 +82,6 @@ class VariantMap;
 
 class Widget;
 class GuiEnv;
-class Scenario;
 class DateTime;
 
 #endif

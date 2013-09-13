@@ -63,6 +63,20 @@ void CityWinTargets::load( const VariantMap& stream )
   _d->overview = stream.get( "overview" ).toString();
 }
 
+CityWinTargets&CityWinTargets::operator=(const CityWinTargets& a)
+{
+  _d->maxHouseLevel = a._d->maxHouseLevel;
+  _d->success = a._d->success;
+  _d->population = a._d->population;
+  _d->culture = a._d->culture;
+  _d->prosperity = a._d->prosperity;
+  _d->favour = a._d->favour;
+  _d->peace = a._d->peace;
+  _d->overview = a._d->overview;
+
+  return *this;
+}
+
 int CityWinTargets::getCulture() const
 {
   return _d->culture;

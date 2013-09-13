@@ -16,10 +16,10 @@
 #include "oc3_low_bridge.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_resourcegroup.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_city.hpp"
 #include "oc3_tilemap.hpp"
+#include "oc3_game_event_mgr.hpp"
 
 #include <vector>
 
@@ -46,9 +46,9 @@ public:
     return true;
   }
 
-  void build( const TilePos& pos )
+  void build( CityPtr city, const TilePos& pos )
   {
-    Construction::build( pos );
+    Construction::build( city, pos );
     _fgPictures.clear();
     _pos = pos;
     _picture = Picture::load( ResourceGroup::transport, _index );
@@ -112,7 +112,7 @@ public:
   }
 };
 
-bool LowBridge::canBuild( const TilePos& pos ) const
+bool LowBridge::canBuild( CityPtr city, const TilePos& pos ) const
 {
   //bool is_constructible = Construction::canBuild( pos );
 
@@ -122,11 +122,11 @@ bool LowBridge::canBuild( const TilePos& pos ) const
   _d->subtiles.clear();
   const_cast< LowBridge* >( this )->_fgPictures.clear();
 
-  _checkParams( _d->direction, startPos, endPos, pos );
+  _checkParams( city, _d->direction, startPos, endPos, pos );
  
   if( _d->direction != D_NONE )
   {
-    const_cast< LowBridge* >( this )->_computePictures( startPos, endPos, _d->direction );
+    const_cast< LowBridge* >( this )->_computePictures( city, startPos, endPos, _d->direction );
   }
 
   return (_d->direction != D_NONE);
@@ -143,9 +143,9 @@ void LowBridge::setTerrain( TerrainTile& terrain )
 
 }
 
-void LowBridge::_computePictures( const TilePos& startPos, const TilePos& endPos, DirectionType dir )
+void LowBridge::_computePictures( CityPtr city, const TilePos& startPos, const TilePos& endPos, DirectionType dir )
 {
-  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
+  Tilemap& tilemap = city->getTilemap();
   //Picture& water = Picture::load( "land1a", 120 );
   switch( dir )
   {
@@ -231,11 +231,11 @@ void LowBridge::_computePictures( const TilePos& startPos, const TilePos& endPos
   }
 }
 
-void LowBridge::_checkParams( DirectionType& direction, TilePos& start, TilePos& stop, const TilePos& curPos ) const
+void LowBridge::_checkParams( CityPtr city, DirectionType& direction, TilePos& start, TilePos& stop, const TilePos& curPos ) const
 {
   start = curPos;
 
-  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
+  Tilemap& tilemap = city->getTilemap();
   Tile& tile = tilemap.at( curPos );
 
   if( tile.getTerrain().isRoad() )
@@ -307,7 +307,7 @@ void LowBridge::_checkParams( DirectionType& direction, TilePos& start, TilePos&
   }
 }
 
-void LowBridge::build( const TilePos& pos )
+void LowBridge::build( CityPtr city, const TilePos& pos )
 {
   TilePos endPos, startPos;
   _d->direction=D_NONE;
@@ -315,10 +315,9 @@ void LowBridge::build( const TilePos& pos )
   _d->subtiles.clear();
   _fgPictures.clear();
 
-  CityPtr city = Scenario::instance().getCity();
   Tilemap& tilemap = city->getTilemap();
 
-  _checkParams( _d->direction, startPos, endPos, pos );
+  _checkParams( city, _d->direction, startPos, endPos, pos );
   int signSum = 1;
 
   if( _d->direction != D_NONE )
@@ -326,25 +325,25 @@ void LowBridge::build( const TilePos& pos )
     switch( _d->direction )
     {
     case D_NORTH_EAST:
-      _computePictures( endPos, startPos, D_SOUTH_WEST );
+      _computePictures( city, endPos, startPos, D_SOUTH_WEST );
       std::swap( _d->subtiles.front()->_pos, _d->subtiles.back()->_pos );
       signSum = -1;      
     break;
 
     case D_NORTH_WEST:
-      _computePictures( endPos, startPos, D_SOUTH_EAST );
+      _computePictures( city, endPos, startPos, D_SOUTH_EAST );
       std::swap( _d->subtiles.front()->_pos, _d->subtiles.back()->_pos );
       std::swap( startPos, endPos );
       signSum = -1;
     break;
 
     case D_SOUTH_WEST:
-      _computePictures( startPos, endPos, _d->direction );        
+      _computePictures( city, startPos, endPos, _d->direction );
       std::swap( startPos, endPos );
     break;
 
     case D_SOUTH_EAST:     
-      _computePictures( startPos, endPos, _d->direction ); 
+      _computePictures( city, startPos, endPos, _d->direction );
     break;
 
     default: break;
@@ -362,7 +361,7 @@ void LowBridge::build( const TilePos& pos )
       subtile->_info = tile.getTerrain().encode();
       subtile->_parent = this;
       
-      BuildEvent::create( buildPos, subtile.as<Construction>() );
+      GameEventMgr::append( BuildEvent::create( buildPos, subtile.as<Construction>() ) );
       index++;
     }    
   }
@@ -370,14 +369,13 @@ void LowBridge::build( const TilePos& pos )
 
 void LowBridge::destroy()
 { 
-  CityPtr city = Scenario::instance().getCity();
   for( LowBridgeSubTiles::iterator it=_d->subtiles.begin(); it != _d->subtiles.end(); it++ )
   {
     (*it)->_parent = 0;
-    ClearLandEvent::create( (*it)->_pos );
+    GameEventMgr::append( ClearLandEvent::create( (*it)->_pos ) );
 
     std::string picName = TerrainTileHelper::convId2PicName( (*it)->_imgId );
-    city->getTilemap().at( (*it)->_pos ).setPicture( &Picture::load( picName ) );
-    city->getTilemap().at( (*it)->_pos ).getTerrain().decode( (*it)->_info );
+    _getCity()->getTilemap().at( (*it)->_pos ).setPicture( &Picture::load( picName ) );
+    _getCity()->getTilemap().at( (*it)->_pos ).getTerrain().decode( (*it)->_info );
   }
 }

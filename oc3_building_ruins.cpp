@@ -18,8 +18,8 @@
 #include "oc3_positioni.hpp"
 #include "oc3_walker_service.hpp"
 #include "oc3_tile.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_city.hpp"
+#include "oc3_game_event_mgr.hpp"
 
 BurningRuins::BurningRuins() : ServiceBuilding(Service::S_BURNING_RUINS, B_BURNING_RUINS, Size(1) )
 {
@@ -68,7 +68,7 @@ void BurningRuins::destroy()
 {
   ServiceBuilding::destroy();
 
-  BuildEvent::create( getTilePos(), B_BURNED_RUINS );
+  GameEventMgr::append( BuildEvent::create( getTilePos(), B_BURNED_RUINS ) );
 }
 
 void BurningRuins::deliverService()
@@ -88,9 +88,9 @@ void BurningRuins::burn()
 
 }
 
-void BurningRuins::build( const TilePos& pos )
+void BurningRuins::build( CityPtr city, const TilePos& pos )
 {
-  ServiceBuilding::build( pos );
+  ServiceBuilding::build( city, pos );
   //while burning can't remove it
   getTile().getTerrain().setTree( false );
   getTile().getTerrain().setBuilding( false );
@@ -136,9 +136,9 @@ BurnedRuins::BurnedRuins() : Building( B_BURNED_RUINS, Size(1) )
   setPicture( Picture::load( ResourceGroup::land2a, 111 + rand() % 8 ));
 }
 
-void BurnedRuins::build( const TilePos& pos )
+void BurnedRuins::build( CityPtr city, const TilePos& pos )
 {
-  Building::build(pos);
+  Building::build( city, pos);
 
   getTile().getTerrain().setBuilding( true );
   getTile().getTerrain().setRock( false );
@@ -175,9 +175,9 @@ void CollapsedRuins::burn()
 
 }
 
-void CollapsedRuins::build( const TilePos& pos )
+void CollapsedRuins::build( CityPtr city, const TilePos& pos )
 {
-    Building::build( pos );
+    Building::build( city, pos );
     //while burning can't remove it
     getTile().getTerrain().setTree( false );
     getTile().getTerrain().setBuilding( true );
@@ -259,9 +259,9 @@ void PlagueRuins::burn()
 
 }
 
-void PlagueRuins::build( const TilePos& pos )
+void PlagueRuins::build( CityPtr city, const TilePos& pos )
 {
-  Building::build( pos );
+  Building::build( city, pos );
   //while burning can't remove it
   getTile().getTerrain().setTree( false );
   getTile().getTerrain().setBuilding( false );

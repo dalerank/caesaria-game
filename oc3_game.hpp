@@ -21,26 +21,57 @@
 
 #include "oc3_scopedptr.hpp"
 #include "oc3_predefinitions.hpp"
+#include "oc3_signals.hpp"
+
+#include <string>
+
+class Player;
+class CityWinTargets;
 
 class Game
 {
 public:
-   Game();
+  Game();
+  ~Game();
 
-   void initialize();
+  void save(std::string filename) const;
+  void load(std::string filename);
 
-   void exec();
+  void initialize();
 
-   void initSound();
-   void mountArchives();
-   
-   void setScreenWait();
-   void setScreenMenu();
-   void setScreenGame();
+  void exec();
+
+  void reset();
+
+  void initSound();
+  void mountArchives();
+
+  void setScreenWait();
+  void setScreenMenu();
+  void setScreenGame();
+
+  Player* getPlayer() const;
+  CityPtr getCity() const;
+  EmpirePtr getEmpire() const;
+
+  void setWinTargets(const CityWinTargets& targets );
+
+  void setPaused( bool value );
+  bool isPaused() const;
+
+  void timeStep();
+
+  void changeTimeMultiplier(int percent);
+
+public oc3_slots:
+  void resolveEvent( GameEventPtr event );
+
+public oc3_signals:
+  Signal1<std::string>& onSaveAccepted();
 
 private:
-   class Impl;
-   ScopedPtr< Impl > _d;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 

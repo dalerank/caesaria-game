@@ -50,7 +50,8 @@ public:
   void resolveState(WalkerPtr wlk, const TilePos& position );
 };
 
-Merchant::Merchant() : _d( new Impl )
+Merchant::Merchant( CityPtr city )
+  : Walker( city ), _d( new Impl )
 {
   _setGraphic( WG_HORSE_CARAVAN );
   _setType( WT_MERCHANT );
@@ -330,15 +331,14 @@ void Merchant::onDestination()
   _d->resolveState( this, getIJ() );
 }
 
-void Merchant::send2City( CityPtr city )
+void Merchant::send2City()
 {
-  _d->city = city;
   _d->nextState = Impl::stFindWarehouseForSelling;
-  _d->resolveState( this, city->getRoadEntry() );
+  _d->resolveState( this, _getCity()->getRoadEntry() );
 
   if( !isDeleted() )
   {
-    _d->city->addWalker( this );
+    _getCity()->addWalker( this );
   }
 }
 
@@ -360,9 +360,9 @@ void Merchant::load( const VariantMap& stream)
   _d->baseCityName = stream.get( "baseCity" ).toString();
 }
 
-WalkerPtr Merchant::create( EmpireMerchantPtr merchant )
+WalkerPtr Merchant::create( CityPtr city, EmpireMerchantPtr merchant )
 {
-  Merchant* cityMerchant( new Merchant() );
+  Merchant* cityMerchant( new Merchant( city ) );
   cityMerchant->_d->sell.resize( merchant->getSellGoods() );
   cityMerchant->_d->sell.storeAll( merchant->getSellGoods() );
   cityMerchant->_d->buy.resize( merchant->getBuyGoods() );

@@ -37,14 +37,13 @@ public:
   void load( const VariantMap& stream);
 
 protected:
-  TraineeWalker(const WalkerType traineeType);
+  TraineeWalker( CityPtr city, const WalkerType traineeType);
   void init(const WalkerType traineeType);
 
 private:
   BuildingPtr _originBuilding;
   BuildingPtr _destinationBuilding;
   int _maxDistance;
-  CityPtr _city;
 
   std::list<BuildingType> _buildingNeed;  // list of buildings needing this trainee
   float _maxNeed;  // evaluates the need for that trainee

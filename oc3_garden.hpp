@@ -26,7 +26,7 @@ public:
   void setTerrain(TerrainTile &terrain);  
   bool isWalkable() const;
   bool isNeedRoadAccess() const;
-  void build( const TilePos& pos );
+  void build(CityPtr city, const TilePos& pos );
   void update();
 };
 

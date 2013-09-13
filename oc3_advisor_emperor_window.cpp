@@ -25,8 +25,6 @@
 #include "oc3_groupbox.hpp"
 #include "oc3_listbox.hpp"
 #include "oc3_listboxitem.hpp"
-#include "oc3_scenario.hpp"
-#include "oc3_player.hpp"
 
 class AdvisorEmperorWindow::Impl
 {
@@ -40,10 +38,8 @@ public:
   PushButton* btnSend2City;
   PushButton* btnChangeSalary;
 
-  void changePlayerSalary( const ListBoxItem& item )
-  {
-    Scenario::instance().getPlayer().setSalary( item.getTag() );
-  }
+public oc3_signals:
+  Signal1<int> onChangeSalarySignal;
 };
 
 void AdvisorEmperorWindow::showChangeSalaryWindow()
@@ -68,13 +64,29 @@ void AdvisorEmperorWindow::showChangeSalaryWindow()
   item = &lbx->addItem( _("##proconsoul_salary##") ); item->setTag( 80 );
   item = &lbx->addItem( _("##caesar_salary##") ); item->setTag( 100 );
 
-  CONNECT( lbx, onItemSelected(), _d.data(), Impl::changePlayerSalary );
-
   PushButton* btn = new PushButton( gb, Rect( Point( 176, gb->getHeight() - 32 ), Size( 160, 20) ), _("##cancel##"), -1, false, PushButton::whiteBorderUp );
   CONNECT( btn, onClicked(), gb, GroupBox::deleteLater );
 }
 
-AdvisorEmperorWindow::AdvisorEmperorWindow( Widget* parent, int id ) 
+bool AdvisorEmperorWindow::onEvent(const NEvent& event)
+{
+  if( event.EventType == OC3_GUI_EVENT && event.GuiEvent.EventType == OC3_LISTBOX_CHANGED )
+  {
+    if( ListBox* lstBox = safety_cast< ListBox* >( event.GuiEvent.Caller ) )
+    {
+      _d->onChangeSalarySignal.emit( lstBox->getSelectedItem().getTag() );
+    }
+  }
+
+  return Widget::onEvent( event );
+}
+
+Signal1<int>&AdvisorEmperorWindow::onChangeSalary()
+{
+  return _d->onChangeSalarySignal;
+}
+
+AdvisorEmperorWindow::AdvisorEmperorWindow(Widget* parent, int id )
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),

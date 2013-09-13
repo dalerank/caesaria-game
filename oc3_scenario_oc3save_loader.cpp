@@ -18,35 +18,26 @@
 #include "oc3_exception.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_constructionmanager.hpp"
-#include "oc3_scenario.hpp"
+#include "oc3_game.hpp"
 #include "oc3_saveadapter.hpp"
 #include "oc3_player.hpp"
 #include "oc3_city.hpp"
 #include "oc3_gamedate.hpp"
 
-class ScenarioOc3SaveLoader::Impl
-{
-public:
-  static const int currentVesion = 1;
-};
+static const int currentVesion = 1;
 
-ScenarioOc3SaveLoader::ScenarioOc3SaveLoader()
-{
-
-}
-
-bool ScenarioOc3SaveLoader::load( const std::string& filename, Scenario& oScenario )
+bool GameLoaderOc3::load( const std::string& filename, Game& game )
 {
   VariantMap vm = SaveAdapter::load( filename );
   
-  if( Impl::currentVesion == vm[ "version" ].toInt() )
+  if( currentVesion == (int)vm[ "version" ] )
   {
     VariantMap scenario_vm = vm[ "scenario" ].toMap();
 
     GameDate::init( scenario_vm[ "date" ].toDateTime() );
 
-    oScenario.getPlayer().load( vm[ "player" ].toMap() );
-    oScenario.getCity()->load( vm[ "city" ].toMap() );
+    game.getPlayer()->load( vm[ "player" ].toMap() );
+    game.getCity()->load( vm[ "city" ].toMap() );
 
     return true;
   }
@@ -54,7 +45,7 @@ bool ScenarioOc3SaveLoader::load( const std::string& filename, Scenario& oScenar
   return false;
 }
 
-bool ScenarioOc3SaveLoader::isLoadableFileExtension( const std::string& filename )
+bool GameLoaderOc3::isLoadableFileExtension( const std::string& filename )
 {
   return filename.substr( filename.size() - 8 ) == ".oc3save";
 }

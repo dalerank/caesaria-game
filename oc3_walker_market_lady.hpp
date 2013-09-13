@@ -40,7 +40,7 @@ public:
   void load( const VariantMap& stream);
 
 private:
-  MarketLady();
+  MarketLady( CityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;

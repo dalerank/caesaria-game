@@ -92,6 +92,7 @@ public:
   EmpireTradeRoutePtr getRoute( const std::string& begin, const std::string& end );
   EmpireTradeRoutePtr getRoute( unsigned int index );
   EmpireTradeRouteList getRoutes( const std::string& begin );
+  EmpireTradeRouteList getRoutes();
   EmpireTradeRoutePtr createRoute( const std::string& begin, const std::string& end );
 
   void sendMerchant( const std::string& begin, const std::string& end, 

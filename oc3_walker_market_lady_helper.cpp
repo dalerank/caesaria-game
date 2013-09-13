@@ -26,14 +26,13 @@ class MarketLadyHelper::Impl
 public:
   GoodStock basket;
   unsigned long delay;
-  CityPtr city;
   TilePos marketPos;
   unsigned long birthTime;
 };
 
-MarketLadyHelperPtr MarketLadyHelper::create( MarketLadyPtr lady )
+MarketLadyHelperPtr MarketLadyHelper::create( CityPtr city, MarketLadyPtr lady )
 {
-  MarketLadyHelperPtr ret( new MarketLadyHelper() );
+  MarketLadyHelperPtr ret( new MarketLadyHelper( city ) );
   ret->setPathWay( lady->getPathway() );
   ret->setIJ( lady->getIJ() );
   ret->_getPathway().rbegin();
@@ -43,7 +42,8 @@ MarketLadyHelperPtr MarketLadyHelper::create( MarketLadyPtr lady )
   return ret;
 }
 
-MarketLadyHelper::MarketLadyHelper() : _d( new Impl )
+MarketLadyHelper::MarketLadyHelper( CityPtr city )
+  : Walker( city ), _d( new Impl )
 {
   _d->delay = 0;
   _d->birthTime = 0;
@@ -59,13 +59,12 @@ void MarketLadyHelper::setDelay( int delay )
   _d->delay = delay;
 }
 
-void MarketLadyHelper::send2City( CityPtr city, MarketPtr destination )
+void MarketLadyHelper::send2City( MarketPtr destination )
 {
   if( destination.isValid() )
   {
     _d->marketPos = destination->getTilePos();
-    _d->city = city;
-    _d->city->addWalker( WalkerPtr( this ) );
+    _getCity()->addWalker( this );
   }
   else
   {
@@ -94,7 +93,7 @@ void MarketLadyHelper::onDestination()
 
   deleteLater();
 
-  CityHelper cityh( _d->city );
+  CityHelper cityh( _getCity() );
   MarketPtr market = cityh.getBuilding< Market >( _d->marketPos );
   if( market.isValid() )
   {

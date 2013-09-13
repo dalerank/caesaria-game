@@ -25,7 +25,7 @@ public:
   void save( VariantMap& stream) const;
   void load( const VariantMap& stream);
 
-  void build( const TilePos& pos );
+  void build(CityPtr city, const TilePos& pos );
 };
 
 class NativeHut : public NativeBuilding

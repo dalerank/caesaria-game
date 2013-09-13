@@ -31,15 +31,15 @@ public:
 class InfoBoxManager : public ReferenceCounted
 {
 public:
-  static InfoBoxManagerPtr create( GuiEnv* gui );
+  static InfoBoxManagerPtr create( CityPtr city, GuiEnv* gui );
 
   void showHelp( const Tile& tile ); 
   void setShowDebugInfo( const bool showInfo );
 
-  void addCreator( const BuildingType type, const std::string& typeName, InfoboxCreator* ctor );
+  void addInfobox( const BuildingType type, const std::string& typeName, InfoboxCreator* ctor );
   bool canCreate( const BuildingType type ) const;
 private:
-  InfoBoxManager();
+  InfoBoxManager( CityPtr city, GuiEnv* gui );
   ~InfoBoxManager();
    
   class Impl;

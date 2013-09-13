@@ -22,18 +22,12 @@
 #include "oc3_filepath.hpp"
 #include "oc3_scopedptr.hpp"
 
-class Scenario;
+class Game;
 
-class ScenarioOc3Saver
+class GameSaverOc3
 {
 public:
-   ScenarioOc3Saver( const Scenario& scenario );
-   ~ScenarioOc3Saver();
-
-   void save( const io::FilePath& filename );
-private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+   void save( const io::FilePath& filename, const Game& game );
 };
 
 

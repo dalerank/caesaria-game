@@ -13,9 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_scenario_event.hpp"
+#include "oc3_game_event.hpp"
 #include "oc3_constructionmanager.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_city.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_building_data.hpp"
@@ -23,22 +22,28 @@
 #include "oc3_guienv.hpp"
 #include "oc3_gui_info_box.hpp"
 #include "oc3_tilemap.hpp"
+#include "oc3_game.hpp"
+#include "oc3_game_event_mgr.hpp"
+#include "oc3_stringhelper.hpp"
+#include "oc3_gui_label.hpp"
 
-void DisasterEvent::create( const TilePos& pos, Type type )
+static const int windowGamePausedId = StringHelper::hash( "gamepause" );
+
+GameEventPtr DisasterEvent::create( const TilePos& pos, Type type )
 {
   DisasterEvent* event = new DisasterEvent();
   event->_pos = pos;
   event->_type = type;
 
-  ScenarioEventPtr ret( event );
+  GameEventPtr ret( event );
   ret->drop();
 
-  Scenario::instance().addEvent( ret );
+  return ret;
 }
 
-void DisasterEvent::exec( CityPtr city )
+void DisasterEvent::exec( Game& game )
 {
-  Tilemap& tmap = city->getTilemap();
+  Tilemap& tmap = game.getCity()->getTilemap();
   TerrainTile& terrain = tmap.at( _pos ).getTerrain();
   TilePos rPos = _pos;
 
@@ -69,59 +74,58 @@ void DisasterEvent::exec( CityPtr city )
 
     std::string dstr2string[] = { _("##alarm_fire_in_city##"), _("##alarm_building_collapsed##"),
                                   _("##alarm_plague_in_city##") };
-    city->onDisasterEvent().emit( _pos, dstr2string[_type] );
+    game.getCity()->onDisasterEvent().emit( _pos, dstr2string[_type] );
   }
 }
 
-void BuildEvent::create( const TilePos& pos, const BuildingType type )
+GameEventPtr BuildEvent::create( const TilePos& pos, const BuildingType type )
 {
-  create( pos, ConstructionManager::getInstance().create( type ) );
+  return create( pos, ConstructionManager::getInstance().create( type ) );
 }
 
-void BuildEvent::create(const TilePos& pos , ConstructionPtr building)
+GameEventPtr BuildEvent::create(const TilePos& pos, ConstructionPtr building)
 {
   BuildEvent* ev = new BuildEvent();
   ev->_pos = pos;
   ev->_building = building;
 
-  ScenarioEventPtr ret( ev );
+  GameEventPtr ret( ev );
   ret->drop();
 
-  Scenario::instance().addEvent( ret );
+  return ret;
 }
 
-void BuildEvent::exec(CityPtr city)
+void BuildEvent::exec( Game& game )
 {
   const BuildingData& buildingData = BuildingDataHolder::instance().getData( _building->getType() );
   if( _building.isValid() )
   {
-    _building->build( _pos );
+    _building->build( game.getCity(), _pos );
 
-    city->addOverlay( _building.as<LandOverlay>() );
-    FundIssue::resolve( city, CityFunds::buildConstruction, -buildingData.getCost() );
+    game.getCity()->addOverlay( _building.as<LandOverlay>() );
+    game.getCity()->getFunds().resolveIssue( FundIssue( CityFunds::buildConstruction, -buildingData.getCost() ) );
 
     if( _building->isNeedRoadAccess() && _building->getAccessRoads().empty() )
     {
-      city->onWarningMessage().emit( "##building_need_road_access##" );
+      game.getCity()->onWarningMessage().emit( "##building_need_road_access##" );
     }
   }
 }
 
-void ClearLandEvent::create(const TilePos& pos)
+GameEventPtr ClearLandEvent::create(const TilePos& pos)
 {
   ClearLandEvent* ev = new ClearLandEvent();
   ev->_pos = pos;
 
-  ScenarioEventPtr ret( ev );
+  GameEventPtr ret( ev );
   ret->drop();
 
-  Scenario::instance().addEvent( ret );
+  return ret;
 }
 
-
-void ClearLandEvent::exec( CityPtr city )
+void ClearLandEvent::exec( Game& game )
 {
-  Tilemap& tmap = city->getTilemap();
+  Tilemap& tmap = game.getCity()->getTilemap();
 
   Tile& cursorTile = tmap.at( _pos );
   TerrainTile& terrain = cursorTile.getTerrain();
@@ -184,25 +188,89 @@ void ClearLandEvent::exec( CityPtr city )
     // because MaxDistance2Road can be any number
     if( deleteRoad )
     {
-      city->updateRoads();
+      game.getCity()->updateRoads();
     }
   }
 }
 
-void ShowInfoboxEvent::create( const std::string& title, const std::string& text )
+GameEventPtr ShowInfoboxEvent::create( const std::string& title, const std::string& text )
 {
   ShowInfoboxEvent* ev = new ShowInfoboxEvent();
   ev->_title = title;
   ev->_text = text;
 
-  ScenarioEventPtr ret( ev );
+  GameEventPtr ret( ev );
   ret->drop();
 
-  Scenario::instance().addEvent( ret );
+  return ret;
 }
 
-void ShowInfoboxEvent::exec(CityPtr city)
+void ShowInfoboxEvent::exec( Game& game )
 {
   InfoBoxText* msgWnd = new InfoBoxText( GuiEnv::instance().getRootWidget(), _title, _text );
   msgWnd->show();
+}
+
+
+GameEventPtr TogglePause::create()
+{
+  GameEventPtr ret( new TogglePause() );
+  ret->drop();
+  return ret;
+}
+
+void TogglePause::exec(Game& game)
+{
+  Widget* rootWidget = GuiEnv::instance().getRootWidget();
+  Label* wdg = safety_cast< Label* >( rootWidget->findChild( windowGamePausedId ) );
+  game.setPaused( !game.isPaused() );
+
+  if( game.isPaused()  )
+  {
+    if( !wdg )
+    {
+      Size scrSize = rootWidget->getSize();
+      wdg = new Label( rootWidget, Rect( Point( (scrSize.getWidth() - 450)/2, 40 ), Size( 450, 50 ) ),
+                       _("##game_is_paused##"), false, Label::bgWhiteFrame, windowGamePausedId );
+      wdg->setTextAlignment( alignCenter, alignCenter );
+    }
+  }
+  else
+  {
+    if( wdg )
+    {
+      wdg->deleteLater();
+    }
+  }
+}
+
+
+GameEventPtr ChangeSpeed::create(int value)
+{
+  ChangeSpeed* ev = new ChangeSpeed();
+  ev->_value = value;
+  GameEventPtr ret( ev );
+  ret->drop();
+  return ret;
+}
+
+void ChangeSpeed::exec(Game& game)
+{
+  game.changeTimeMultiplier( _value );
+}
+
+
+GameEventPtr FundIssueEvent::create(int type, int value)
+{
+  FundIssueEvent* ev = new FundIssueEvent();
+  ev->_value = value;
+  ev->_type = type;
+  GameEventPtr ret( ev );
+  ret->drop();
+  return ret;
+}
+
+void FundIssueEvent::exec(Game& game)
+{
+  game.getCity()->getFunds().resolveIssue( FundIssue( _type, _value ) );
 }

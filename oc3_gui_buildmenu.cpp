@@ -81,7 +81,7 @@ private:
 };
 
 BuildMenu::BuildMenu( Widget* parent, const Rect& rectangle, int id )
-    : Widget( parent, id, rectangle ), _options( 0 )
+    : Widget( parent, id, rectangle )
 {
 }
 
@@ -138,7 +138,7 @@ void BuildMenu::addBuildButton( const BuildingType buildingType )
   const BuildingData &buildingData = BuildingDataHolder::instance().getData( buildingType );
 
   int cost = buildingData.getCost();
-  bool mayBuildInCity = (_options ? _options->isBuildingAvailble( buildingType ) : true);
+  bool mayBuildInCity = _options.isBuildingAvailble( buildingType );
   if( cost > 0 && mayBuildInCity )
   {
       // building can be built
@@ -182,7 +182,7 @@ bool BuildMenu::isPointInside( const Point& point ) const
     return clickedRect.isPointInside( point );
 }
 
-void BuildMenu::setBuildOptions( CityBuildOptions* options )
+void BuildMenu::setBuildOptions( const CityBuildOptions& options )
 {
   _options = options;
 }

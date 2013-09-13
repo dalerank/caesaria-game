@@ -47,7 +47,6 @@
 #include "oc3_building_senate.hpp"
 #include "oc3_cityservice_culture.hpp"
 #include "oc3_cityfunds.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_empire_city.hpp"
 #include "oc3_empire.hpp"
 #include "oc3_city_trade_options.hpp"
@@ -57,8 +56,9 @@
 #include "oc3_gamedate.hpp"
 #include "oc3_cityservice_religion.hpp"
 #include "oc3_foreach.hpp"
-#include "oc3_scenario_event.hpp"
+#include "oc3_game_event.hpp"
 #include "oc3_cityservice_festival.hpp"
+#include "oc3_win_targets.hpp"
 
 #include <set>
 
@@ -71,6 +71,7 @@ public:
   CityFunds funds;  // amount of money
   std::string name;
   EmpirePtr empire;
+  Player* player;
 
   LandOverlayList overlayList;
   WalkerList walkerList;
@@ -88,6 +89,7 @@ public:
   Point location;
   CityBuildOptions buildOptions;
   CityTradeOptions tradeOptions;
+  CityWinTargets targets;
 
   ClimateType climate;   
   UniqueId walkerIdCount;
@@ -223,6 +225,9 @@ void City::monthStep( const DateTime& time )
 {
   _d->collectTaxes( this );
   _d->calculatePopulation( this );
+
+  _d->funds.resolveIssue( FundIssue( CityFunds::playerSalary, -_d->player->getSalary() ) );
+  _d->player->appendMoney( _d->player->getSalary() );
 
   _d->funds.updateHistory( GameDate::current() );
 }
@@ -410,7 +415,7 @@ void City::load( const VariantMap& stream )
     ConstructionPtr construction = ConstructionManager::getInstance().create( BuildingType( buildingType ) );
     if( construction.isValid() )
     {
-      construction->build( buildPos );
+      construction->build( this, buildPos );
       construction->load( overlay );
       _d->overlayList.push_back( construction.as<LandOverlay>() );
     }
@@ -422,7 +427,7 @@ void City::load( const VariantMap& stream )
     VariantMap walkerInfo = item.second.toMap();
     int walkerType = walkerInfo.get( "type" ).toInt();
 
-    WalkerPtr walker = WalkerManager::getInstance().create( WalkerType( walkerType ) );
+    WalkerPtr walker = WalkerManager::getInstance().create( WalkerType( walkerType ), this );
     if( walker.isValid() )
     {
       walker->load( walkerInfo );
@@ -500,9 +505,24 @@ Signal2<const TilePos&, const std::string& >& City::onDisasterEvent()
   return _d->onDisasterEventSignal;
 }
 
-CityBuildOptions& City::getBuildOptions()
+const CityBuildOptions& City::getBuildOptions() const
 {
   return _d->buildOptions;
+}
+
+void City::setBuildOptions(const CityBuildOptions& options)
+{
+  _d->buildOptions = options;
+}
+
+const CityWinTargets&City::getWinTargets() const
+{
+  return _d->targets;
+}
+
+void City::setWinTargets(const CityWinTargets& targets)
+{
+  _d->targets = targets;
 }
 
 int City::getProsperity() const
@@ -511,10 +531,11 @@ int City::getProsperity() const
   return csPrsp.isValid() ? csPrsp.as<CityServiceProsperity>()->getValue() : 0;
 }
 
-CityPtr City::create( EmpirePtr empire )
+CityPtr City::create( EmpirePtr empire, Player* player )
 {
   CityPtr ret( new City );
   ret->_d->empire = empire;
+  ret->_d->player = player;
   ret->drop();
 
   return ret;
@@ -533,6 +554,11 @@ int City::getLastMonthTax() const
 int City::getLastMonthTaxpayer() const
 {
   return _d->lastMonthTaxpayer;
+}
+
+Player*City::getPlayer() const
+{
+  return _d->player;
 }
 
 int City::getCulture() const
@@ -568,8 +594,8 @@ Point City::getLocation() const
 
 void City::resolveMerchantArrived( EmpireMerchantPtr merchant )
 {
-  WalkerPtr cityMerchant = Merchant::create( merchant );
-  cityMerchant.as<Merchant>()->send2City( this );
+  WalkerPtr cityMerchant = Merchant::create( this, merchant );
+  cityMerchant.as<Merchant>()->send2City();
 }
 
 const GoodStore& City::getSells() const

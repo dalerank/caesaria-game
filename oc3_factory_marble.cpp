@@ -15,7 +15,6 @@
 
 #include "oc3_factory_marble.hpp"
 #include "oc3_resourcegroup.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_city.hpp"
@@ -47,12 +46,12 @@ void FactoryMarble::timeStep( const unsigned long time )
   Factory::timeStep( time );
 }
 
-bool FactoryMarble::canBuild(const TilePos& pos ) const
+bool FactoryMarble::canBuild( CityPtr city, const TilePos& pos ) const
 {
-  bool is_constructible = Construction::canBuild( pos );
+  bool is_constructible = Construction::canBuild( city, pos );
   bool near_mountain = false;  // tells if the factory is next to a mountain
 
-  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
+  Tilemap& tilemap = city->getTilemap();
   TilemapTiles perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), Tilemap::checkCorners);
   foreach( Tile* tile, perimetr )
   {

@@ -15,7 +15,6 @@
 
 #include "oc3_walker_emigrant.hpp"
 #include "oc3_positioni.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_road.hpp"
 #include "oc3_animation_bank.hpp"
 #include "oc3_city.hpp"

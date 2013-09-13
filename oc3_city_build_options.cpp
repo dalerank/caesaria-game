@@ -90,7 +90,11 @@ void CityBuildOptions::load(const VariantMap& options)
     BuildingType btype = BuildingDataHolder::getType( item.first );
     setBuildingAvailble( btype, item.second.toBool() );
   }
+}
 
+CityBuildOptions&CityBuildOptions::operator=(const CityBuildOptions& a)
+{
+  _d->rules = a._d->rules;
 }
 
 bool CityBuildOptions::isBuildingAvailble( const BuildingType type ) const

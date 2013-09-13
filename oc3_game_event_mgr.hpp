@@ -18,22 +18,26 @@
 
 #include "oc3_predefinitions.hpp"
 #include "oc3_scopedptr.hpp"
-#include "oc3_scenario_event.hpp"
+#include "oc3_game_event.hpp"
+#include "oc3_singleton.hpp"
+#include "oc3_signals.hpp"
 
-class ScenarioEventResolver;
-typedef SmartPtr<ScenarioEventResolver> ScenarioEventResolverPtr;
+class GameEventMgr;
+typedef SmartPtr<GameEventMgr> ScenarioEventResolverPtr;
 
-class ScenarioEventResolver : public ReferenceCounted
+class GameEventMgr : public StaticSingleton<GameEventMgr>
 {
 public:
-  static ScenarioEventResolverPtr create(CityPtr city );
+  GameEventMgr();
+  ~GameEventMgr();
 
-  void addEvent( ScenarioEventPtr event );
-  void update( unsigned int time );
+  static void append( GameEventPtr event );
+  static void update( unsigned int time );
+
+public oc3_signals:
+  Signal1<GameEventPtr>& onEvent();
 
 private:
-  ScenarioEventResolver();
-
   class Impl;
   ScopedPtr< Impl > _d;
 };

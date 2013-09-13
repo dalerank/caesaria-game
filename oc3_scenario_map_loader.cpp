@@ -16,7 +16,7 @@
 #include "oc3_scenario_map_loader.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_city.hpp"
-#include "oc3_scenario.hpp"
+#include "oc3_game.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_constructionmanager.hpp"
 #include "oc3_stringhelper.hpp"
@@ -25,7 +25,7 @@
 
 #include <fstream>
 
-class ScenarioMapLoader::Impl
+class GameLoaderC3Map::Impl
 {
 public:
   static const int kGraphicGrid = 0x0;
@@ -67,7 +67,7 @@ public:
   static const int kClimate     = 0x33ad8;
   static const int kFlotsam     = 0x33ad9;
 
-  void loadMap(std::fstream& f, Scenario &oScenario);
+  void loadCity(std::fstream& f, CityPtr oCity );
 
   void decodeTerrain(Tile &oTile, CityPtr city );
 
@@ -77,38 +77,37 @@ public:
   void initEntryExit(std::fstream &f, CityPtr ioCity);
 };
 
-bool ScenarioMapLoader::load(const std::string& filename, Scenario& oScenario)
+bool GameLoaderC3Map::load(const std::string& filename, Game& game)
 {
   std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
 
-  _d->initClimate(f, oScenario.getCity());
+  _d->initClimate(f, game.getCity() );
 
-  _d->loadMap(f, oScenario);
+  _d->loadCity(f, game.getCity() );
 
-  _d->initEntryExit(f, oScenario.getCity());
+  _d->initEntryExit(f, game.getCity());
 
-  _d->initCameraStartPos(f, oScenario.getCity() );
+  _d->initCameraStartPos(f, game.getCity() );
 
-  oScenario.getEmpire()->setCitiesAvailable( true );
+  game.getEmpire()->setCitiesAvailable( true );
 
   f.close();
 
   return true;
 }
 
-ScenarioMapLoader::ScenarioMapLoader() : _d( new Impl )
+GameLoaderC3Map::GameLoaderC3Map() : _d( new Impl )
 {
 
 }
 
-bool ScenarioMapLoader::isLoadableFileExtension( const std::string& filename )
+bool GameLoaderC3Map::isLoadableFileExtension( const std::string& filename )
 {
   return filename.substr( filename.size() - 4, -1 ) == ".map";
 }
 
-void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario& oScenario)
+void GameLoaderC3Map::Impl::loadCity(std::fstream& f, CityPtr oCity)
 {
-  CityPtr oCity = oScenario.getCity();
   Tilemap& oTilemap = oCity->getTilemap();
 
   /* get number of city */
@@ -313,7 +312,7 @@ void ScenarioMapLoader::Impl::loadMap(std::fstream& f, Scenario& oScenario)
   }
 }
 
-void ScenarioMapLoader::Impl::decodeTerrain(Tile &oTile, CityPtr city )
+void GameLoaderC3Map::Impl::decodeTerrain(Tile &oTile, CityPtr city )
 {
   if (!oTile.isMasterTile() && oTile.getMasterTile()!=NULL)
     return;
@@ -353,12 +352,12 @@ void ScenarioMapLoader::Impl::decodeTerrain(Tile &oTile, CityPtr city )
   //terrain.setOverlay( overlay );
   if( overlay != NULL )
   {
-    overlay->build( oTile.getIJ() );
+    overlay->build( city, oTile.getIJ() );
     city->getOverlayList().push_back(overlay);
   }
 }
 
-void ScenarioMapLoader::Impl::initClimate(std::fstream &f, CityPtr ioCity)
+void GameLoaderC3Map::Impl::initClimate(std::fstream &f, CityPtr ioCity)
 {
   // read climate
   unsigned int i = 0;
@@ -386,7 +385,7 @@ void ScenarioMapLoader::Impl::initClimate(std::fstream &f, CityPtr ioCity)
   //   }
 }
 
-void ScenarioMapLoader::Impl::initEntryExit(std::fstream &f, CityPtr ioCity)
+void GameLoaderC3Map::Impl::initEntryExit(std::fstream &f, CityPtr ioCity)
 {
   unsigned int size = ioCity->getTilemap().getSize();
 
@@ -425,7 +424,7 @@ void ScenarioMapLoader::Impl::initEntryExit(std::fstream &f, CityPtr ioCity)
   //std::cout << "boat exit at:"  << ioCity.getBoatExitI()  << "," << ioCity.getBoatExitJ()  << std::endl;
 }
 
-void ScenarioMapLoader::Impl::initCameraStartPos(std::fstream &f, CityPtr ioCity)
+void GameLoaderC3Map::Impl::initCameraStartPos(std::fstream &f, CityPtr ioCity)
 {
   unsigned short int i = 0;
   unsigned short int j = 0;

@@ -16,7 +16,6 @@
 #include "oc3_building_forum.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_picture.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_walker_taxcollector.hpp"
 #include "oc3_city.hpp"
 #include "oc3_foreach.hpp"
@@ -41,7 +40,7 @@ void Forum::deliverService()
 {
   if( getWorkers() > 0 && getWalkerList().size() == 0 )
   {
-    TaxCollectorPtr walker = TaxCollector::create( Scenario::instance().getCity() );
+    TaxCollectorPtr walker = TaxCollector::create( _getCity() );
     walker->send2City( this );
 
     if( !walker->isDeleted() )

@@ -30,7 +30,7 @@ public:
 
   void deliverService();
 
-  bool canBuild( const TilePos& pos )const;
+  bool canBuild(CityPtr city, const TilePos& pos )const;
 private:
   class Impl;
   ScopedPtr< Impl > _d;

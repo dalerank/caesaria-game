@@ -19,25 +19,20 @@
 #ifndef SCENARIO_LOADER_HPP
 #define SCENARIO_LOADER_HPP
 
-#include "oc3_tilemap.hpp"
 #include "oc3_scopedptr.hpp"
 #include "oc3_filepath.hpp"
 
-#include <string>
+class Game;
 
-class Scenario;
-
-class ScenarioLoader
+class GameLoader
 {
 public:
-  static ScenarioLoader& getInstance();
-  ~ScenarioLoader();
+  GameLoader();
+  ~GameLoader();
 
-  bool load(const io::FilePath& filename, Scenario& oScenario);
+  bool load(const io::FilePath& filename, Game& game);
 
 private:
-  ScenarioLoader();
-  
   class Impl;
   ScopedPtr< Impl > _d;
 };

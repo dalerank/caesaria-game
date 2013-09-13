@@ -15,7 +15,6 @@
 
 #include "oc3_landoverlay.hpp"
 #include "oc3_building_data.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_city.hpp"
 #include "oc3_tilemap.hpp"
 
@@ -30,6 +29,7 @@ public:
   Size size;  // size in tiles
   Animation animation;  // basic animation (if any)
   bool isDeleted;
+  CityPtr city;
 };
 
 LandOverlay::LandOverlay(const BuildingType type, const Size& size)
@@ -67,31 +67,30 @@ void LandOverlay::timeStep(const unsigned long time) { }
 
 void LandOverlay::setPicture(const Picture &picture)
 {
-   Tilemap &tilemap = Scenario::instance().getCity()->getTilemap();
+  _d->picture = picture;
 
-   _d->picture = picture;
+  if (_d->masterTile != NULL)
+  {
+     Tilemap &tilemap = _getCity()->getTilemap();
+     // _master_tile == NULL is cloneable buildings
+     TilePos pos = _d->masterTile->getIJ();
 
-   if (_d->masterTile != NULL)
-   {
-      // _master_tile == NULL is cloneable buildings
-      TilePos pos = _d->masterTile->getIJ();
-
-      for (int dj = 0; dj<_d->size.getWidth(); ++dj)
-      {
-         for (int di = 0; di<_d->size.getHeight(); ++di)
-         {
-            Tile &tile = tilemap.at( pos + TilePos( di, dj ) );
-            tile.setPicture( &_d->picture );
-         }
-      }
-   }
+     for (int dj = 0; dj<_d->size.getWidth(); ++dj)
+     {
+        for (int di = 0; di<_d->size.getHeight(); ++di)
+        {
+           Tile &tile = tilemap.at( pos + TilePos( di, dj ) );
+           tile.setPicture( &_d->picture );
+        }
+     }
+  }
 }
 
-void LandOverlay::build( const TilePos& pos )
+void LandOverlay::build( CityPtr city, const TilePos& pos )
 {
-  CityPtr city = Scenario::instance().getCity();
   Tilemap &tilemap = city->getTilemap();
 
+  _d->city = city;
   _d->masterTile = &tilemap.at( pos );
 
   for (int dj = 0; dj < _d->size.getWidth(); ++dj)
@@ -208,6 +207,11 @@ Animation& LandOverlay::_getAnimation()
 Tile* LandOverlay::_getMasterTile()
 {
   return _d->masterTile;
+}
+
+CityPtr LandOverlay::_getCity() const
+{
+  return _d->city;
 }
 
 BuildingClass LandOverlay::getClass() const

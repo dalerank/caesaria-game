@@ -209,3 +209,9 @@ unsigned int EmpireHelper::getTradeRouteOpenCost( EmpirePtr empire, const std::s
 
   return 0;
 }
+
+
+EmpireTradeRouteList Empire::getTradeRoutes()
+{
+  return _d->trading.getRoutes();
+}

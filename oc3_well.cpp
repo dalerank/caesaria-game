@@ -16,7 +16,6 @@
 #include "oc3_well.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_walker_service.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_city.hpp"
 
@@ -30,7 +29,7 @@ BuildingWell::BuildingWell() : ServiceBuilding( Service::S_WELL, B_WELL, Size(1)
 
 void BuildingWell::deliverService()
 {
-  ServiceWalkerPtr walker = ServiceWalker::create( Scenario::instance().getCity(), getService() );
+  ServiceWalkerPtr walker = ServiceWalker::create( _getCity(), getService() );
   walker->setBase( BuildingPtr( this ) );
 
   ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( getTile().getIJ() );

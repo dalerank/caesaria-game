@@ -19,7 +19,6 @@
 
 #include <iostream>
 
-#include "oc3_scenario.hpp"
 #include "oc3_walker_trainee.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_gui_info_box.hpp"
@@ -102,7 +101,7 @@ BuildingActor::BuildingActor() : TrainingBuilding( B_ACTOR_COLONY, Size(3) )
 void BuildingActor::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create( Scenario::instance().getCity(), WT_ACTOR);
+  TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), WT_ACTOR);
   trainee->setOriginBuilding(*this);
   trainee->send2City();
 }
@@ -119,7 +118,7 @@ BuildingGladiator::BuildingGladiator() : TrainingBuilding( B_GLADIATOR_SCHOOL, S
 void BuildingGladiator::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create( Scenario::instance().getCity(), WT_GLADIATOR);
+  TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), WT_GLADIATOR);
   trainee->setOriginBuilding(*this);
   trainee->send2City();
 }
@@ -137,7 +136,7 @@ BuildingLion::BuildingLion() : TrainingBuilding( B_LION_HOUSE, Size(3) )
 void BuildingLion::deliverTrainee()
 {
   // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create( Scenario::instance().getCity(), WT_TAMER );
+  TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), WT_TAMER );
   trainee->setOriginBuilding(*this);
   trainee->send2City();
 }
@@ -155,7 +154,7 @@ BuildingChariot::BuildingChariot() : TrainingBuilding( B_CHARIOT_MAKER, Size(3) 
 void BuildingChariot::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create( Scenario::instance().getCity(), WT_CHARIOT);
+  TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), WT_CHARIOT);
   trainee->setOriginBuilding(*this);
   trainee->send2City();
 }

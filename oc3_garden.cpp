@@ -16,7 +16,6 @@
 #include "oc3_garden.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_tile.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_city.hpp"
 #include "oc3_tilemap.hpp"
 
@@ -47,16 +46,16 @@ bool Garden::isNeedRoadAccess() const
   return false;
 }
 
-void Garden::build( const TilePos& pos )
+void Garden::build( CityPtr city, const TilePos& pos )
 {
   // this is the same arrangement of garden tiles as existed in C3
   int theGrid[2][2] = {{113, 110}, {112, 111}};
 
-  Construction::build( pos );
+  Construction::build( city, pos );
   setPicture( Picture::load( ResourceGroup::entertaiment, theGrid[pos.getI() % 2][pos.getJ() % 2] ) );
 
-  TilemapTiles tilesAround = Scenario::instance().getCity()->getTilemap().getRectangle( getTilePos() - TilePos( 1, 1), 
-                                                                                        getTilePos() + TilePos( 1, 1 ) );
+  TilemapTiles tilesAround = city->getTilemap().getRectangle( getTilePos() - TilePos( 1, 1),
+                                                              getTilePos() + TilePos( 1, 1 ) );
   foreach( Tile* tile, tilesAround )
   {
     GardenPtr garden = tile->getTerrain().getOverlay().as<Garden>();
@@ -69,7 +68,7 @@ void Garden::build( const TilePos& pos )
 
 void Garden::update()
 {
-  TilemapArea nearTiles = Scenario::instance().getCity()->getTilemap().getFilledRectangle( getTilePos(), Size(2) );
+  TilemapArea nearTiles = _getCity()->getTilemap().getFilledRectangle( getTilePos(), Size(2) );
 
   bool canGrow2squareGarden = ( nearTiles.size() == 4 ); // be carefull on map edges
   foreach( Tile* tile, nearTiles )
@@ -92,7 +91,7 @@ void Garden::update()
     }
 
     setSize( 2 );
-    Construction::build( getTilePos() );
+    Construction::build( _getCity(), getTilePos() );
     setPicture( Picture::load(  ResourceGroup::entertaiment, 114 + rand() % 3 ));
   }
 }

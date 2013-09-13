@@ -39,8 +39,8 @@ class Construction : public LandOverlay
 public:
   Construction( const BuildingType type, const Size& size );
 
-  virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
-  virtual void build( const TilePos& pos );
+  virtual bool canBuild( CityPtr city, const TilePos& pos ) const;  // returns true if it can be built there
+  virtual void build( CityPtr city, const TilePos& pos );
   virtual void burn();
   virtual void collapse();
   virtual bool isNeedRoadAccess() const;

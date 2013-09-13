@@ -34,7 +34,7 @@
 #include "oc3_house_level.hpp"
 #include "oc3_building_watersupply.hpp"
 #include "oc3_foreach.hpp"
-#include "oc3_scenario_event.hpp"
+#include "oc3_game_event_mgr.hpp"
 
 class CityRenderer::Impl
 {
@@ -818,7 +818,7 @@ void CityRenderer::draw()
 
       if (ptr_construction != NULL)
       {
-        if (ptr_construction->canBuild(postTile->getIJ()))
+        if (ptr_construction->canBuild( _d->city, postTile->getIJ()))
         {
           _d->engine->setTileDrawMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
 
@@ -965,9 +965,9 @@ void CityRenderer::Impl::buildAll()
   bool buildOk = false;
   foreach( Tile* tile, postTiles )
   {   
-    if( cnstr->canBuild( tile->getIJ() ) && tile->isMasterTile())
+    if( cnstr->canBuild( city, tile->getIJ() ) && tile->isMasterTile())
     {
-      BuildEvent::create( tile->getIJ(), cnstr->getType() );
+      GameEventMgr::append( BuildEvent::create( tile->getIJ(), cnstr->getType() ) );
       buildOk = true;
     }   
   }
@@ -1191,7 +1191,7 @@ void CityRenderer::checkPreviewBuild(const TilePos & pos)
 
   int size = overlay->getSize().getWidth();
 
-  if (overlay->canBuild(pos))
+  if( overlay->canBuild( _d->city, pos ) )
   {
     bldCommand->setCanBuild(true);
     Tile *masterTile=0;

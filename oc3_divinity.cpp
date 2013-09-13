@@ -20,7 +20,7 @@
 #include "oc3_service.hpp"
 #include "oc3_city.hpp"
 #include "oc3_farm.hpp"
-#include "oc3_scenario_event.hpp"
+#include "oc3_game_event.hpp"
 #include "oc3_gettext.hpp"
 
 class RomeDivinityBase : public RomeDivinity

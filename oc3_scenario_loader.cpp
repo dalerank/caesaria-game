@@ -20,47 +20,106 @@
 #include "oc3_scenario_map_loader.hpp"
 #include "oc3_scenario_sav_loader.hpp"
 #include "oc3_scenario_oc3save_loader.hpp"
-#include "oc3_scenario_load_finalizer.hpp"
 #include "oc3_scenario_oc3mission_loader.hpp"
+#include "oc3_positioni.hpp"
+#include "oc3_tilemap.hpp"
+#include "oc3_stringhelper.hpp"
+#include "oc3_tile.hpp"
+#include "oc3_resourcegroup.hpp"
+#include "oc3_foreach.hpp"
+#include "oc3_game.hpp"
+#include "oc3_city.hpp"
 
 #include <vector>
 
-typedef SmartPtr< ScenarioAbstractLoader > ScenarioAbstractLoaderPtr;
+typedef SmartPtr< GameAbstractLoader > GameAbstractLoaderPtr;
 
-class ScenarioLoader::Impl
+class GameLoader::Impl
 {
 public:
-  typedef std::vector< ScenarioAbstractLoaderPtr > Loaders;
+  typedef std::vector< GameAbstractLoaderPtr > Loaders;
   typedef Loaders::iterator LoaderIterator;
   Loaders loaders;
 
   void initLoaders();
+  void initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap, const unsigned int picIdStart, bool exit );
+  void initWaterTileAnimation( Tilemap& tmap );
+  void finalize( Game& game );
 };
 
-ScenarioLoader::ScenarioLoader() : _d( new Impl )
+GameLoader::GameLoader() : _d( new Impl )
 {
   _d->initLoaders();
 }
 
-ScenarioLoader& ScenarioLoader::getInstance()
+GameLoader::~GameLoader()
 {
-  static ScenarioLoader inst;
-  return inst;
+
 }
 
-void ScenarioLoader::Impl::initLoaders()
+void GameLoader::Impl::initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap, const unsigned int picIdStart, bool exit )
 {
-  loaders.push_back( ScenarioAbstractLoaderPtr( new ScenarioMapLoader() ) );
-  loaders.push_back( ScenarioAbstractLoaderPtr( new ScenarioSavLoader() ) );
-  loaders.push_back( ScenarioAbstractLoaderPtr( new ScenarioOc3SaveLoader() ) );
-  loaders.push_back( ScenarioAbstractLoaderPtr( new ScenarioOc3MissionLoader() ) );
+  unsigned int idOffset = 0;
+  TilePos tlOffset;
+  if( tlPos.getI() == 0 || tlPos.getI() == tileMap.getSize() - 1 )
+  {
+    tlOffset = TilePos( 0, 1 );
+    idOffset = (tlPos.getI() == 0 ? 1 : 3 );
+
+  }
+  else if( tlPos.getJ() == 0 || tlPos.getJ() == tileMap.getSize() - 1 )
+  {
+    tlOffset = TilePos( 1, 0 );
+    idOffset = (tlPos.getJ() == 0 ? 2 : 0 );
+  }
+
+  Tile& signTile = tileMap.at( tlPos + tlOffset );
+
+  StringHelper::debug( 0xff, "(%d, %d)", tlPos.getI(),    tlPos.getJ()    );
+  StringHelper::debug( 0xff, "(%d, %d)", tlOffset.getI(), tlOffset.getJ() );
+
+  signTile.setPicture( &Picture::load( ResourceGroup::land3a, picIdStart + idOffset ) );
+  signTile.getTerrain().setRock( true );
 }
 
-ScenarioLoader::~ScenarioLoader(void)
+void GameLoader::Impl::initWaterTileAnimation( Tilemap& tmap )
 {
+  TilemapArea area = tmap.getFilledRectangle( TilePos( 0, 0 ), Size( tmap.getSize() ) );
+
+  Animation water;
+  water.setFrameDelay( 12 );
+  water.load( ResourceGroup::land1a, 121, 7 );
+  water.load( ResourceGroup::land1a, 127, 7, true );
+  foreach( Tile* tile, area )
+  {
+    int rId = tile->getTerrain().getOriginalImgId() - 364;
+    if( rId >= 0 && rId < 8 )
+    {
+      water.setCurrentIndex( rId );
+      tile->setAnimation( water );
+    }
+  }
 }
 
-bool ScenarioLoader::load( const io::FilePath& filename, Scenario& scenario )
+void GameLoader::Impl::finalize( Game& game )
+{
+  Tilemap& tileMap = game.getCity()->getTilemap();
+
+  // exit and entry can't point to one tile or .... can!
+  initEntryExitTile( game.getCity()->getRoadEntry(), tileMap, 89, false );
+  initEntryExitTile( game.getCity()->getRoadExit(),  tileMap, 85, true  );
+  initWaterTileAnimation( tileMap );
+}
+
+void GameLoader::Impl::initLoaders()
+{
+  loaders.push_back( GameAbstractLoaderPtr( new GameLoaderC3Map() ) );
+  loaders.push_back( GameAbstractLoaderPtr( new C3SavLoader() ) );
+  loaders.push_back( GameAbstractLoaderPtr( new GameLoaderOc3() ) );
+  loaders.push_back( GameAbstractLoaderPtr( new GameMissionLoader() ) );
+}
+
+bool GameLoader::load( const io::FilePath& filename, Game& game )
 {
   // try to load file based on file extension
   Impl::LoaderIterator it = _d->loaders.begin();
@@ -69,11 +128,11 @@ bool ScenarioLoader::load( const io::FilePath& filename, Scenario& scenario )
     if( (*it)->isLoadableFileExtension( filename.toString() ) /*||
         (*it)->isLoadableFileFormat(file) */ )
     {
-      bool loadok = (*it)->load( filename.toString(), scenario );
+      bool loadok = (*it)->load( filename.toString(), game );
       
       if( loadok )
       {
-        ScenarioLoadFinalizer::finalize( scenario );
+        _d->finalize( game );
       }
 
       return loadok;

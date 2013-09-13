@@ -14,7 +14,6 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_building_senate.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_cityfunds.hpp"
@@ -38,13 +37,13 @@ Senate::Senate() : ServiceBuilding( Service::S_SENATE, B_SENATE, Size(5) ), _d( 
   _d->taxInLastMonth = 0;
 }
 
-bool Senate::canBuild( const TilePos& pos ) const
+bool Senate::canBuild( CityPtr city, const TilePos& pos ) const
 {
-  bool mayBuild = ServiceBuilding::canBuild( pos );
+  bool mayBuild = ServiceBuilding::canBuild( city, pos );
 
   if( mayBuild )
   {
-    CityHelper helper( Scenario::instance().getCity() );
+    CityHelper helper( city );
     bool isSenatePresent = helper.getBuildings<Building>(B_SENATE).size() > 0;
     mayBuild &= !isSenatePresent;
   }
@@ -54,7 +53,7 @@ bool Senate::canBuild( const TilePos& pos ) const
 
 unsigned int Senate::getFunds() const
 {
-  return Scenario::instance().getCity()->getFunds().getValue();
+  return _getCity()->getFunds().getValue();
 }
 
 int Senate::collectTaxes()
@@ -71,7 +70,7 @@ void Senate::deliverService()
 {
   if( getWorkers() > 0 && getWalkerList().size() == 0 )
   {
-    TaxCollectorPtr walker = TaxCollector::create( Scenario::instance().getCity() );
+    TaxCollectorPtr walker = TaxCollector::create( _getCity() );
     walker->send2City( this );
 
     if( !walker->isDeleted() )

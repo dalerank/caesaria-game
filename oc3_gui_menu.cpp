@@ -314,7 +314,7 @@ void Menu::_createBuildMenu( int type, Widget* parent )
     {
         buildMenu->setNotClipped( true );
 
-        buildMenu->setBuildOptions( &_d->city->getBuildOptions() );
+        buildMenu->setBuildOptions( _d->city->getBuildOptions() );
         buildMenu->initialize();
        
         int y = math::clamp< int >( parent->getScreenTop() - getScreenTop(), 0, _environment->getRootWidget()->getHeight() - buildMenu->getHeight() );

@@ -18,9 +18,9 @@
 
 #include "oc3_widget.hpp"
 #include "oc3_enums.hpp"
+#include "oc3_city_build_options.hpp"
 
 class PushButton;
-class CityBuildOptions;
 
 class BuildMenu : public Widget
 {
@@ -43,10 +43,10 @@ public:
 
   virtual void initialize();
 
-  void setBuildOptions( CityBuildOptions* options );
+  void setBuildOptions(const CityBuildOptions& options );
 
 protected:
-  CityBuildOptions* _options;
+  CityBuildOptions _options;
 };
 
 class BuildMenu_water : public BuildMenu

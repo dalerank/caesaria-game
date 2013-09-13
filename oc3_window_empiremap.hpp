@@ -23,7 +23,7 @@
 class EmpireMapWindow : public Widget
 {
 public:
-  static EmpireMapWindow* create( Scenario* scenario, Widget* parent, int id );
+  static EmpireMapWindow* create(EmpirePtr empire, CityPtr city, Widget* parent, int id );
 
   virtual ~EmpireMapWindow();
 

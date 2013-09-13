@@ -17,15 +17,23 @@
 #define __OPENCAESAR3_ADVISOR_EMPEROR_WINDOW_H_INCLUDED__
 
 #include "oc3_widget.hpp"
+#include "oc3_predefinitions.hpp"
 #include "oc3_scopedptr.hpp"
+#include "oc3_signals.hpp"
+#include "oc3_event.hpp"
 
 class AdvisorEmperorWindow : public Widget
 {
 public:
-  AdvisorEmperorWindow( Widget* parent, int id );
+  AdvisorEmperorWindow(Widget* parent, int id );
 
   void draw( GfxEngine& painter );
   void showChangeSalaryWindow();
+
+  bool onEvent(const NEvent &event);
+
+public oc3_signals:
+  Signal1<int>& onChangeSalary();
 
 private:
   class Impl;

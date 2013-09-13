@@ -48,11 +48,11 @@ class Aqueduct : public WaterSource
 public:
   Aqueduct();
 
-  virtual void build(const TilePos& pos );
+  virtual void build(CityPtr city, const TilePos& pos );
   Picture& computePicture(const TilemapTiles * tmp = NULL,
                           const TilePos pos = TilePos(0, 0));
   virtual void setTerrain(TerrainTile &terrain);
-  virtual bool canBuild(const TilePos& pos ) const;
+  virtual bool canBuild(CityPtr city, const TilePos& pos ) const;
   virtual bool isNeedRoadAccess() const;
   virtual void destroy();
   virtual bool isWalkable() const; 
@@ -71,8 +71,8 @@ public:
   Reservoir();
   ~Reservoir();
 
-  virtual void build(const TilePos& pos );
-  virtual bool canBuild(const TilePos& pos ) const;
+  virtual void build(CityPtr city, const TilePos& pos );
+  virtual bool canBuild(CityPtr city, const TilePos& pos ) const;
   virtual bool isNeedRoadAccess() const;
   virtual void setTerrain(TerrainTile &terrain);
   virtual void timeStep(const unsigned long time);
@@ -88,8 +88,8 @@ class BuildingFountain : public ServiceBuilding
 public:
   BuildingFountain();
 
-  virtual void build( const TilePos& pos );
-  virtual bool canBuild( const TilePos& pos ) const;
+  virtual void build( CityPtr city, const TilePos& pos );
+  virtual bool canBuild(CityPtr city, const TilePos& pos ) const;
   virtual void deliverService();
   virtual void timeStep(const unsigned long time);
   virtual bool isNeedRoadAccess() const;

@@ -42,7 +42,7 @@ class Walker : public Serializable, public ReferenceCounted
 public:
   typedef enum { acNone, acMove, acFight, acDie, acMax } Action;
 
-  Walker();
+  Walker( CityPtr city );
   virtual ~Walker();
 
   virtual void timeStep(const unsigned long time);  // performs one simulation step
@@ -98,6 +98,7 @@ protected:
    void _setDirection( DirectionType );
    void _setGraphic( WalkerGraphicType type );
    void _setType( WalkerType type );
+   CityPtr _getCity() const;
 
 private:
    /* useful method for subtile movement computation
@@ -120,7 +121,7 @@ private:
 class Soldier : public Walker
 {
 public:
-   Soldier();
+   Soldier(CityPtr city);
 private:
 
 };

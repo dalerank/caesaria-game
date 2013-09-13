@@ -43,7 +43,8 @@ public:
   long reservationID;
 };
 
-CartSupplier::CartSupplier( CityPtr city ) : _d( new Impl )
+CartSupplier::CartSupplier( CityPtr city )
+  : Walker( city ), _d( new Impl )
 {
   _setGraphic( WG_PUSHER );
   _setType( WT_CART_PUSHER );

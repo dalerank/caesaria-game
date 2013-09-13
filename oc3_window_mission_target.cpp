@@ -14,7 +14,6 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_window_mission_target.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_picture_decorator.hpp"
 #include "oc3_gui_label.hpp"
@@ -25,11 +24,12 @@
 #include "oc3_gfx_engine.hpp"
 #include "oc3_groupbox.hpp"
 #include "oc3_guienv.hpp"
+#include "oc3_city.hpp"
 
 class MissionTargetsWindow::Impl
 {
 public:
-  Scenario* scenario;
+  CityPtr city;
   PictureRef background;
   Label* title;
   Label* subTitle;
@@ -39,14 +39,14 @@ public:
   ListBox* lbxHelp;
 };
 
-MissionTargetsWindow* MissionTargetsWindow::create( Scenario* scenario, int id )
+MissionTargetsWindow* MissionTargetsWindow::create( CityPtr city, int id )
 {
   Size size( 610, 430 );
   Widget* parent = GuiEnv::instance().getRootWidget();
 
   Rect rectangle( Point( (parent->getWidth() - size.getWidth())/2, (parent->getHeight() - size.getHeight())/2 ), size );
   MissionTargetsWindow* ret = new MissionTargetsWindow( parent, id, rectangle );
-  ret->_d->scenario = scenario;
+  ret->_d->city = city;
   return ret;
 }
 

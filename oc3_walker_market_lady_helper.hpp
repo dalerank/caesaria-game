@@ -21,18 +21,18 @@
 class MarketLadyHelper : public Walker
 {
 public:
-  static MarketLadyHelperPtr create( MarketLadyPtr lady );
+  static MarketLadyHelperPtr create( CityPtr city, MarketLadyPtr lady );
 
   GoodStock& getBasket();
   void setDelay( int delay );
 
-  void send2City( CityPtr city, MarketPtr destination );
+  void send2City( MarketPtr destination );
 
   void timeStep(const unsigned long time);
 
   void onDestination();
 private:
-  MarketLadyHelper();
+  MarketLadyHelper( CityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;

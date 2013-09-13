@@ -19,7 +19,7 @@
 #include "oc3_picture.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_constructionmanager.hpp"
-#include "oc3_scenario.hpp"
+#include "oc3_game.hpp"
 #include "oc3_saveadapter.hpp"
 #include "oc3_scenario_loader.hpp"
 #include "oc3_win_targets.hpp"
@@ -30,18 +30,18 @@
 #include "oc3_city.hpp"
 #include "oc3_game_settings.hpp"
 
-class ScenarioOc3MissionLoader::Impl
+class GameMissionLoader::Impl
 {
 public:
   static const int currentVesion = 1;
 };
 
-ScenarioOc3MissionLoader::ScenarioOc3MissionLoader()
+GameMissionLoader::GameMissionLoader()
 {
 
 }
 
-bool ScenarioOc3MissionLoader::load( const std::string& filename, Scenario& oScenario )
+bool GameMissionLoader::load( const std::string& filename, Game& game )
 {
   VariantMap vm = SaveAdapter::load( filename );
   
@@ -49,16 +49,23 @@ bool ScenarioOc3MissionLoader::load( const std::string& filename, Scenario& oSce
   {
     std::string mapToLoad = vm[ "map" ].toString();
 
-    ScenarioLoader::getInstance().load( GameSettings::rcpath( mapToLoad ), oScenario );
+    GameLoader mapLoader;
+    mapLoader.load( GameSettings::rcpath( mapToLoad ), game );
 
-    CityPtr city = oScenario.getCity();
-    FundIssue::resolve( city, CityFunds::donation, vm[ "funds" ].toInt() );
+    CityPtr city = game.getCity();
+    city->getFunds().resolveIssue( FundIssue( CityFunds::donation, vm[ "funds" ].toInt() ) );
 
-    oScenario.getEmpire()->setCitiesAvailable( false );
+    game.getEmpire()->setCitiesAvailable( false );
 
-    oScenario.getEmpire()->load( vm[ "empire" ].toMap() );
-    oScenario.getWinTargets().load( vm[ "win" ].toMap() );
-    city->getBuildOptions().load( vm[ "buildoptions" ].toMap() );
+    game.getEmpire()->load( vm[ "empire" ].toMap() );
+
+    CityWinTargets targets;
+    targets.load( vm[ "win" ].toMap() );
+    game.setWinTargets( targets );
+
+    CityBuildOptions options;
+    options.load( vm[ "buildoptions" ].toMap() );
+    city->setBuildOptions( options  );
 
     return true;
   }
@@ -66,7 +73,7 @@ bool ScenarioOc3MissionLoader::load( const std::string& filename, Scenario& oSce
   return false;
 }
 
-bool ScenarioOc3MissionLoader::isLoadableFileExtension( const std::string& filename )
+bool GameMissionLoader::isLoadableFileExtension( const std::string& filename )
 {
   return filename.substr( filename.size() - 11 ) == ".oc3mission";
 }

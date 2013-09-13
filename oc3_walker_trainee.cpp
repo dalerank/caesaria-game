@@ -14,14 +14,14 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_walker_trainee.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_path_finding.hpp"
 #include "oc3_city.hpp"
 #include "oc3_name_generator.hpp"
 
-TraineeWalker::TraineeWalker(const WalkerType traineeType)
+TraineeWalker::TraineeWalker( CityPtr city, const WalkerType traineeType)
+  : Walker( city )
 {
   _setType( traineeType );
   _originBuilding = NULL;
@@ -74,7 +74,7 @@ void TraineeWalker::computeWalkerPath()
 {
   _maxNeed = 0;  // need of this trainee in buildings
  
-  Propagator pathPropagator( _city );
+  Propagator pathPropagator( _getCity() );
   pathPropagator.init( _originBuilding.as<Construction>() );
   pathPropagator.propagate( _maxDistance );
 
@@ -128,7 +128,7 @@ void TraineeWalker::send2City()
   if( !isDeleted() )
   {
     _destinationBuilding->reserveTrainee( (WalkerType)getType() );
-    _city->addWalker( WalkerPtr( this ) );
+    _getCity()->addWalker( WalkerPtr( this ) );
   }
 }
 
@@ -153,7 +153,7 @@ void TraineeWalker::load( const VariantMap& stream )
 
   init( (WalkerType)getType() );
 
-  CityHelper helper( _city );
+  CityHelper helper( _getCity() );
   _originBuilding = helper.getBuilding<Building>( stream.get( "originBldPos" ).toTilePos() );
   _destinationBuilding = helper.getBuilding<Building>( stream.get( "destBldPos" ).toTilePos() );
   _maxDistance = (int)stream.get( "maxDistance" );
@@ -161,8 +161,7 @@ void TraineeWalker::load( const VariantMap& stream )
 
 TraineeWalkerPtr TraineeWalker::create(CityPtr city, const WalkerType traineeType )
 {
-  TraineeWalkerPtr ret( new TraineeWalker( traineeType ) );
-  ret->_city = city;
+  TraineeWalkerPtr ret( new TraineeWalker( city, traineeType ) );
   ret->drop();
   return ret;
 }

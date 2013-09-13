@@ -18,30 +18,13 @@
 #include "oc3_scenario_oc3save_saver.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_saveadapter.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_player.hpp"
 #include "oc3_empire.hpp"
 #include "oc3_city.hpp"
 #include "oc3_gamedate.hpp"
+#include "oc3_game.hpp"
 
-class ScenarioOc3Saver::Impl
-{
-public:
-  const Scenario& scenario;
-
-  Impl( const Scenario& s ) : scenario( s )
-  {
-
-  }
-};
-
-ScenarioOc3Saver::ScenarioOc3Saver( const Scenario& scenario )
-  : _d( new Impl( scenario ) )
-{
-}
-
-
-void ScenarioOc3Saver::save(const io::FilePath& filename)
+void GameSaverOc3::save(const io::FilePath& filename, const Game& game )
 {
   VariantMap vm;
   vm[ "version" ] = Variant( 1 );
@@ -51,22 +34,17 @@ void ScenarioOc3Saver::save(const io::FilePath& filename)
   vm[ "scenario" ] = vm_scenario;
 
   VariantMap vm_empire;
-  _d->scenario.getEmpire()->save( vm_empire );
+  game.getEmpire()->save( vm_empire );
   vm[ "empire" ] = vm_empire;
 
   VariantMap plm;
-  _d->scenario.getPlayer().save( plm );
+  game.getPlayer()->save( plm );
   vm[ "player" ] = plm;
 
   VariantMap vm_city;
-  _d->scenario.getCity()->save( vm_city );
+  game.getCity()->save( vm_city );
   vm[ "city" ] = vm_city;
 
 
   SaveAdapter::save( vm, filename );
-}
-
-ScenarioOc3Saver::~ScenarioOc3Saver()
-{
-
 }

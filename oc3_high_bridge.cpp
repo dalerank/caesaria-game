@@ -16,11 +16,10 @@
 #include "oc3_high_bridge.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_resourcegroup.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_city.hpp"
 #include "oc3_tilemap.hpp"
-#include "oc3_scenario_event.hpp"
+#include "oc3_game_event.hpp"
 
 #include <vector>
 
@@ -66,11 +65,11 @@ public:
     return true;
   }
 
-  void build( const TilePos& pos )
+  void build( CityPtr city, const TilePos& pos )
   {
     _picture = Picture::load( ResourceGroup::transport, _index % 100 );
     checkSecondPart();
-    Construction::build( pos );
+    Construction::build( city, pos );
     _fgPictures.clear();
     _pos = pos;
     _fgPictures.push_back( _picture );
@@ -135,7 +134,7 @@ public:
   }
 };
 
-bool HighBridge::canBuild( const TilePos& pos ) const
+bool HighBridge::canBuild( CityPtr city, const TilePos& pos ) const
 {
   //bool is_constructible = Construction::canBuild( pos );
 
@@ -145,11 +144,11 @@ bool HighBridge::canBuild( const TilePos& pos ) const
   _d->subtiles.clear();
   const_cast< HighBridge* >( this )->_fgPictures.clear();
 
-  _checkParams( _d->direction, startPos, endPos, pos );
+  _checkParams( city, _d->direction, startPos, endPos, pos );
  
   if( _d->direction != D_NONE )
   {
-    const_cast< HighBridge* >( this )->_computePictures( startPos, endPos, _d->direction );
+    const_cast< HighBridge* >( this )->_computePictures( city, startPos, endPos, _d->direction );
   }
 
   return (_d->direction != D_NONE);
@@ -166,9 +165,9 @@ void HighBridge::setTerrain( TerrainTile& terrain )
 
 }
 
-void HighBridge::_computePictures( const TilePos& startPos, const TilePos& endPos, DirectionType dir )
+void HighBridge::_computePictures( CityPtr city, const TilePos& startPos, const TilePos& endPos, DirectionType dir )
 {
-  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
+  Tilemap& tilemap = city->getTilemap();
   //Picture& water = Picture::load( "land1a", 120 );
   switch( dir )
   {
@@ -271,11 +270,11 @@ void HighBridge::_computePictures( const TilePos& startPos, const TilePos& endPo
   }
 }
 
-void HighBridge::_checkParams( DirectionType& direction, TilePos& start, TilePos& stop, const TilePos& curPos ) const
+void HighBridge::_checkParams( CityPtr city, DirectionType& direction, TilePos& start, TilePos& stop, const TilePos& curPos ) const
 {
   start = curPos;
 
-  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
+  Tilemap& tilemap = city->getTilemap();
   Tile& tile = tilemap.at( curPos );
 
   if( tile.getTerrain().isRoad() )
@@ -347,7 +346,7 @@ void HighBridge::_checkParams( DirectionType& direction, TilePos& start, TilePos
   }
 }
 
-void HighBridge::build( const TilePos& pos )
+void HighBridge::build( CityPtr city, const TilePos& pos )
 {
   TilePos endPos, startPos;
   _d->direction=D_NONE;
@@ -355,14 +354,13 @@ void HighBridge::build( const TilePos& pos )
   _d->subtiles.clear();
   _fgPictures.clear();
 
-  CityPtr city = Scenario::instance().getCity();
   Tilemap& tilemap = city->getTilemap();
 
-  _checkParams( _d->direction, startPos, endPos, pos );
+  _checkParams( city, _d->direction, startPos, endPos, pos );
 
   if( _d->direction != D_NONE )
   {    
-    _computePictures( startPos, endPos, _d->direction );
+    _computePictures( city, startPos, endPos, _d->direction );
    
     foreach( HighBridgeSubTilePtr subtile, _d->subtiles )
     {
@@ -380,7 +378,7 @@ void HighBridge::build( const TilePos& pos )
 
 void HighBridge::destroy()
 { 
-  CityPtr city = Scenario::instance().getCity();
+  CityPtr city = _getCity();
   foreach( HighBridgeSubTilePtr subtile,  _d->subtiles )
   {
     subtile->_parent = 0;

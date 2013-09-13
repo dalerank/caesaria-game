@@ -40,6 +40,8 @@ public:
 
   void load( const VariantMap& stream );
 
+  CityWinTargets& operator=(const CityWinTargets& a);
+
 private:
   class Impl;
   ScopedPtr< Impl > _d;

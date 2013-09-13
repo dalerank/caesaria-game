@@ -23,17 +23,17 @@
 class Merchant : public Walker
 {
 public:
-  static WalkerPtr create( EmpireMerchantPtr merchant );
+  static WalkerPtr create( CityPtr city, EmpireMerchantPtr merchant );
 
   virtual ~Merchant();
 
-  void send2City( CityPtr city );
+  void send2City();
   virtual void onDestination();
 
   void save( VariantMap& stream) const;
   void load( const VariantMap& stream);
 private:
-  Merchant();
+  Merchant( CityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;

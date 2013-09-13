@@ -166,9 +166,3 @@ void FundIssue::exportGoods( CityPtr city, Good::Type type, int qty )
   FundIssue issue( CityFunds::exportGoods, price * qty / 100 );
   city->getFunds().resolveIssue( issue );
 }
-
-void FundIssue::resolve( CityPtr city, int type, int money )
-{
-  FundIssue issue( type, money );
-  city->getFunds().resolveIssue( issue );
-}

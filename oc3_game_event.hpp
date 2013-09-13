@@ -22,27 +22,27 @@
 #include "oc3_building.hpp"
 #include "oc3_predefinitions.hpp"
 
-class ScenarioEvent : public ReferenceCounted
+class Game;
+
+class GameEvent : public ReferenceCounted
 {
 public:
-  virtual void exec( CityPtr city ) = 0;
+  virtual void exec( Game& game ) = 0;
 
 protected:
-  ScenarioEvent() {}
+  GameEvent() {}
 };
 
-typedef SmartPtr< ScenarioEvent > ScenarioEventPtr;
-
-class DisasterEvent : public ScenarioEvent
+class DisasterEvent : public GameEvent
 {
 public:
   typedef enum
   {
     fire, collapse, plague, count
   } Type;
-  static void create( const TilePos&, Type type );
+  static GameEventPtr create( const TilePos&, Type type );
 
-  virtual void exec(CityPtr city);
+  virtual void exec( Game& game );
 
 private:
   TilePos _pos;
@@ -50,34 +50,61 @@ private:
 };
 
 
-class BuildEvent : public ScenarioEvent
+class BuildEvent : public GameEvent
 {
 public:
-  static void create( const TilePos&, BuildingType type );
-  static void create( const TilePos& pos, ConstructionPtr building );
+  static GameEventPtr create( const TilePos&, BuildingType type );
+  static GameEventPtr create( const TilePos& pos, ConstructionPtr building );
 
-  virtual void exec( CityPtr city );
+  virtual void exec( Game& game );
 private:
   TilePos _pos;
   ConstructionPtr _building;
 };
 
-class ClearLandEvent : public ScenarioEvent
+class ClearLandEvent : public GameEvent
 {
 public:
-  static void create( const TilePos& );
-  virtual void exec( CityPtr city );
+  static GameEventPtr create( const TilePos& );
+  virtual void exec( Game& game );
 private:
   TilePos _pos;
 };
 
-class ShowInfoboxEvent : public ScenarioEvent
+class ShowInfoboxEvent : public GameEvent
 {
 public:
-  static void create( const std::string& title, const std::string& text );
-  virtual void exec( CityPtr city );
+  static GameEventPtr create( const std::string& title, const std::string& text );
+  virtual void exec( Game& game );
 private:
   std::string _title, _text;
+};
+
+class TogglePause : public GameEvent
+{
+public:
+  static GameEventPtr create();
+  virtual void exec( Game& game );
+};
+
+class ChangeSpeed : public GameEvent
+{
+public:
+  static GameEventPtr create( int value );
+  virtual void exec( Game& game );
+
+private:
+  int _value;
+};
+
+class FundIssueEvent : public GameEvent
+{
+public:
+  static GameEventPtr create( int type, int value );
+  virtual void exec( Game& game );
+private:
+  int _type;
+  int _value;
 };
 
 #endif //_OPENCAESAR3_CITY_EVENT_H_INCLUDE_

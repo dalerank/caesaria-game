@@ -19,12 +19,12 @@
 #include "oc3_scenarioabstractloader.hpp"
 #include "oc3_scopedptr.hpp"
 
-class ScenarioMapLoader : public ScenarioAbstractLoader
+class GameLoaderC3Map : public GameAbstractLoader
 {
 public:
-  ScenarioMapLoader();
+  GameLoaderC3Map();
 
-  bool load(const std::string& filename, Scenario &oScenario);
+  bool load(const std::string& filename, Game& game);
   bool isLoadableFileExtension( const std::string& filename );
 
 private:

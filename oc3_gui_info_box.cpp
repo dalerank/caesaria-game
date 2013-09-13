@@ -30,7 +30,6 @@
 #include "oc3_texturedbutton.hpp"
 #include "oc3_gui_label.hpp"
 #include "oc3_city.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_building_market.hpp"
 #include "oc3_building_granary.hpp"
 #include "oc3_stringhelper.hpp"
@@ -645,11 +644,6 @@ InfoBoxLand::InfoBoxLand( Widget* parent, const Tile& tile )
     setTitle( _("##clear_land_caption") );
     lbText->setText( _("##clear_land_text"));
   }
- 
-  CityPtr oCity = Scenario::instance().getCity();
-  //Tilemap& oTilemap = oCity->getTilemap();
-  //int size = oTilemap.getSize();
-  //int border_size = (162 - size) / 2;
   
   //int index = (size - tile.getJ() - 1 + border_size) * 162 + tile.getI() + border_size;
   

@@ -13,45 +13,49 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_scenario_event_resolver.hpp"
+#include "oc3_game_event_mgr.hpp"
 #include "oc3_foreach.hpp"
 #include "oc3_city.hpp"
 #include <vector>
 
-class ScenarioEventResolver::Impl
+class GameEventMgr::Impl
 {
 public:
-  typedef std::vector< ScenarioEventPtr > Events;
+  typedef std::vector< GameEventPtr > Events;
 
   Events events;
-  CityPtr city;
+
+public oc3_signals:
+  Signal1<GameEventPtr> onEventSignal;
 };
 
-ScenarioEventResolver::ScenarioEventResolver(): _d( new Impl )
+GameEventMgr::GameEventMgr() : _d( new Impl )
 {
 }
 
-void ScenarioEventResolver::addEvent( ScenarioEventPtr event)
+GameEventMgr::~GameEventMgr()
 {
-  _d->events.push_back( event );
+
 }
 
-void ScenarioEventResolver::update(unsigned int time)
+void GameEventMgr::append( GameEventPtr event)
 {
-  Impl::Events events = _d->events;
-  _d->events.clear();
+  instance()._d->events.push_back( event );
+}
 
-  foreach( ScenarioEventPtr event, events )
+void GameEventMgr::update(unsigned int time)
+{
+  GameEventMgr& inst = instance();
+  Impl::Events events = inst._d->events;
+  inst._d->events.clear();
+
+  foreach( GameEventPtr event, events )
   {
-    event->exec( _d->city );
+   inst._d->onEventSignal.emit( event );
   }
 }
 
-
-ScenarioEventResolverPtr ScenarioEventResolver::create(CityPtr city)
+Signal1<GameEventPtr>&GameEventMgr::onEvent()
 {
-  ScenarioEventResolverPtr ret( new ScenarioEventResolver() );
-  ret->_d->city = city;
-
-  return ret;
+  return _d->onEventSignal;
 }

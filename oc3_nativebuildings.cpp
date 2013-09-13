@@ -16,6 +16,7 @@
 #include "oc3_nativebuildings.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_tile.hpp"
+#include "oc3_city.hpp"
 
 NativeBuilding::NativeBuilding( const BuildingType type, const Size& size ) 
 : Building( type, size )
@@ -29,9 +30,9 @@ void NativeBuilding::save( VariantMap& stream) const
 
 void NativeBuilding::load( const VariantMap& stream) {Building::load(stream);}
 
-void NativeBuilding::build( const TilePos& pos )
+void NativeBuilding::build( CityPtr city, const TilePos& pos )
 {
-  Building::build( pos );
+  Building::build( city, pos );
   getTile().getTerrain().setRock( true );
   getTile().getTerrain().setBuilding( false );
 }

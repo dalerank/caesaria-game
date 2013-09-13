@@ -118,13 +118,18 @@ unsigned int ListBox::getItemCount() const
 //! returns string of a list item. the may be a value from 0 to itemCount-1
 ListBoxItem& ListBox::getItem(unsigned int id)
 {
-	_OC3_DEBUG_BREAK_IF( (id >= _d->items.size()) && "Index out of range ListBox::items" );
-  if (id>=_d->items.size())
-  {
-	  return ListBoxItem::getInvalidItem();
-  }
+	if( id >= _d->items.size() )
+	{
+		StringHelper::debug( 0xff, "Index out of range ListBox::items [%d]", id );
+		return ListBoxItem::getInvalidItem();
+	}
 
-  return _d->items[ id ];
+	return _d->items[ id ];
+}
+
+ListBoxItem& ListBox::getSelectedItem()
+{
+	return getItem( getSelected() );
 }
 
 //! adds a list item, returns id of item

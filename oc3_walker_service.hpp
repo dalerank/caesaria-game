@@ -53,7 +53,6 @@ public:
 protected:
   ServiceWalker( CityPtr city, const Service::Type service );
 
-  CityPtr _getCity() const;
   void init(const Service::Type service);
   void computeWalkerPath();
 
