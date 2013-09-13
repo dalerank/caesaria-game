@@ -86,10 +86,10 @@ public:
    WeaponsWorkshop();
 };
 
-class FactoryFurniture : public Factory
+class WorkshopFurniture : public Factory
 {
 public:
-   FactoryFurniture();
+   WorkshopFurniture();
 };
 
 class Winery : public Factory
@@ -98,10 +98,10 @@ public:
    Winery();
 };
 
-class FactoryOil : public Factory
+class Creamery : public Factory
 {
 public:
-   FactoryOil();
+   Creamery();
 };
 
 class Wharf : public Factory

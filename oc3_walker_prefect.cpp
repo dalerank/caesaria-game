@@ -24,6 +24,7 @@
 #include "oc3_variant.hpp"
 #include "oc3_name_generator.hpp"
 #include "oc3_game_event.hpp"
+#include "oc3_stringhelper.hpp"
 
 class WalkerPrefect::Impl
 {
@@ -138,7 +139,7 @@ void WalkerPrefect::onMidTile()
       //on next deliverService
 
       //found fire, no water, go prefecture
-      getBase().as<BuildingPrefecture>()->fireDetect( firePos );
+      getBase().as<Prefecture>()->fireDetect( firePos );
       _back2Prefecture();
 
       Walker::onNewDirection();
@@ -174,7 +175,7 @@ void WalkerPrefect::onMidTile()
     {
       //tell our prefecture that need send prefect with water to fight with fire
       //on next deliverService
-      getBase().as<BuildingPrefecture>()->fireDetect( firePos );
+      getBase().as<Prefecture>()->fireDetect( firePos );
     }
 
     if( isDestination )
@@ -277,7 +278,7 @@ WalkerPrefectPtr WalkerPrefect::create( CityPtr city )
   return ret;
 }
 
-void WalkerPrefect::send2City( BuildingPrefecturePtr prefecture, int water/*=0 */ )
+void WalkerPrefect::send2City(PrefecturePtr prefecture, int water/*=0 */ )
 {
   _d->action = water > 0 ? Impl::gotoFire : Impl::patrol;
   _d->water = water;
@@ -303,14 +304,18 @@ void WalkerPrefect::load( const VariantMap& stream )
   _d->water = stream.get( "water" ).toInt();
   _setGraphic( _d->water > 0 ? WG_PREFECT_DRAG_WATER : WG_PREFECT );
 
-  BuildingPrefecturePtr prefecture = getBase().as<BuildingPrefecture>(); 
+  PrefecturePtr prefecture = getBase().as<Prefecture>();
   if( prefecture.isValid() )
   {
     prefecture->addWalker( WalkerPtr( this ) );
     _getCity()->addWalker( WalkerPtr( this ) );
   }
   
-  _OC3_DEBUG_BREAK_IF( prefecture.isNull() && "Not found prefecture on loading" );
+  if( prefecture.isNull() )
+  {
+    StringHelper::debug( 0xff, "Not found prefecture on loading" );
+    deleteLater();
+  }
 }
 
 void WalkerPrefect::save( VariantMap& stream ) const

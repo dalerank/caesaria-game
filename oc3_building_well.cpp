@@ -13,13 +13,13 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_well.hpp"
+#include "oc3_building_well.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_walker_service.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_city.hpp"
 
-BuildingWell::BuildingWell() : ServiceBuilding( Service::S_WELL, B_WELL, Size(1) )
+Well::Well() : ServiceBuilding( Service::S_WELL, B_WELL, Size(1) )
 {
   _fireIncrement = 0;
   _damageIncrement = 0;
@@ -27,7 +27,7 @@ BuildingWell::BuildingWell() : ServiceBuilding( Service::S_WELL, B_WELL, Size(1)
   setWorkers( 0 );
 }
 
-void BuildingWell::deliverService()
+void Well::deliverService()
 {
   ServiceWalkerPtr walker = ServiceWalker::create( _getCity(), getService() );
   walker->setBase( BuildingPtr( this ) );
@@ -39,7 +39,7 @@ void BuildingWell::deliverService()
   }
 }
 
-bool BuildingWell::isNeedRoadAccess() const
+bool Well::isNeedRoadAccess() const
 {
   return false;
 }

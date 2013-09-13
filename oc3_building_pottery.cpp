@@ -13,18 +13,23 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_FACTORY_POTTERY_H_INCLUDED__
-#define __OPENCAESAR3_FACTORY_POTTERY_H_INCLUDED__
+#include "oc3_building_pottery.hpp"
+#include "oc3_picture.hpp"
+#include "oc3_resourcegroup.hpp"
 
-#include "oc3_building_factory.hpp"
-
-class FactoryPottery : public Factory
+Pottery::Pottery() : Factory(Good::clay, Good::pottery, B_POTTERY, Size(2))
 {
-public:
-  FactoryPottery();
+  setPicture( Picture::load(ResourceGroup::commerce, 132) );
 
-  virtual void timeStep(const unsigned long time);
-};
+  _getAnimation().load(ResourceGroup::commerce, 133, 7);
+  _getAnimation().setFrameDelay( 3 );
+  _fgPictures.resize(2);
 
+  setMaxWorkers( 10 );
+  setWorkers( 0 );
+}
 
-#endif
+void Pottery::timeStep( const unsigned long time )
+{
+  Factory::timeStep( time );
+}

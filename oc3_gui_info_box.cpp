@@ -34,7 +34,7 @@
 #include "oc3_building_granary.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_goodhelper.hpp"
-#include "oc3_farm.hpp"
+#include "oc3_building_farm.hpp"
 #include "oc3_building_entertainment.hpp"
 #include "oc3_building_house.hpp"
 #include "oc3_building_religion.hpp"
@@ -43,7 +43,7 @@
 #include "oc3_gfx_engine.hpp"
 #include "oc3_special_orders_window.hpp"
 #include "oc3_goodstore.hpp"
-#include "oc3_groupbox.hpp"
+#include "oc3_gui_groupbox.hpp"
 #include "oc3_walker.hpp"
 #include "oc3_building_senate.hpp"
 

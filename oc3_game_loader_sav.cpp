@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_scenario_sav_loader.hpp"
+#include "oc3_game_loader_sav.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_positioni.hpp"
@@ -28,13 +28,13 @@
 #include <climits>
 #include <stdint.h>
 
-class C3SavLoader::Impl
+class GameLoaderC3Sav::Impl
 {
 public:
 
 };
 
-C3SavLoader::C3SavLoader()
+GameLoaderC3Sav::GameLoaderC3Sav()
 {
 
 }
@@ -46,7 +46,7 @@ void SkipCompressed( std::fstream& f )
   f.seekg(tmp, std::ios::cur);
 }
 
-bool C3SavLoader::load(const std::string& filename, Game& game )
+bool GameLoaderC3Sav::load(const std::string& filename, Game& game )
 {
   std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
  
@@ -211,7 +211,7 @@ bool C3SavLoader::load(const std::string& filename, Game& game )
   return true;
 }
 
-bool C3SavLoader::isLoadableFileExtension( const std::string& filename )
+bool GameLoaderC3Sav::isLoadableFileExtension( const std::string& filename )
 {
   return filename.substr( filename.size() - 4, -1 ) == ".sav";
 }

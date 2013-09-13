@@ -18,7 +18,7 @@
 
 #include "oc3_scopedptr.hpp"
 #include "oc3_predefinitions.hpp"
-#include "oc3_widget.hpp"
+#include "oc3_gui_widget.hpp"
 
 class MissionTargetsWindow : public Widget  
 {

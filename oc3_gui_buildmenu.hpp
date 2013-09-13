@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR_BUILDMENU_H_INCLUDE_
 #define __OPENCAESAR_BUILDMENU_H_INCLUDE_
 
-#include "oc3_widget.hpp"
+#include "oc3_gui_widget.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_city_build_options.hpp"
 

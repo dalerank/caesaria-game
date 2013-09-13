@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_GROUPBOX_H_INCLUDED__
 #define __OPENCAESAR3_GROUPBOX_H_INCLUDED__
 
-#include "oc3_widget.hpp"
+#include "oc3_gui_widget.hpp"
 
 class GroupBox : public Widget
 {

@@ -22,7 +22,7 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_gfx_engine.hpp"
-#include "oc3_groupbox.hpp"
+#include "oc3_gui_groupbox.hpp"
 #include "oc3_listbox.hpp"
 #include "oc3_listboxitem.hpp"
 

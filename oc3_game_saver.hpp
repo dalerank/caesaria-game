@@ -12,24 +12,23 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#ifndef __OPENCAESAR3_SCENARIO_OC3MISSION_LOADER_H_INCLUDED__
-#define __OPENCAESAR3_SCENARIO_OC3MISSION_LOADER_H_INCLUDED__
 
-#include "oc3_scenarioabstractloader.hpp"
+#ifndef _OPENCAESAR3_SCENARIO_OC3SAVE_SAVER_H_INCLUDE_
+#define _OPENCAESAR3_SCENARIO_OC3SAVE_SAVER_H_INCLUDE_
+
+#include "oc3_filepath.hpp"
 #include "oc3_scopedptr.hpp"
 
-class GameMissionLoader : public GameAbstractLoader
+class Game;
+
+class GameSaver
 {
 public:
-  GameMissionLoader();
-
-  bool load(const std::string& filename, Game& oScenario);
-  bool isLoadableFileExtension( const std::string& filename );
-
-private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+   void save( const io::FilePath& filename, const Game& game );
 };
 
-#endif
+
+#endif //_OPENCAESAR3_SCENARIO_OC3SAVE_SAVER_H_INCLUDE_

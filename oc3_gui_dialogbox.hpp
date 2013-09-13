@@ -16,7 +16,7 @@
 #ifndef _OPENCAESAR3_GUI_DIALOGBOX_INCLUDE_H_
 #define _OPENCAESAR3_GUI_DIALOGBOX_INCLUDE_H_
 
-#include "oc3_widget.hpp"
+#include "oc3_gui_widget.hpp"
 #include "oc3_signals.hpp"
 #include "oc3_scopedptr.hpp"
 

@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#include "oc3_scenario_oc3save_saver.hpp"
+#include "oc3_game_saver.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_saveadapter.hpp"
 #include "oc3_player.hpp"
@@ -24,7 +24,7 @@
 #include "oc3_gamedate.hpp"
 #include "oc3_game.hpp"
 
-void GameSaverOc3::save(const io::FilePath& filename, const Game& game )
+void GameSaver::save(const io::FilePath& filename, const Game& game )
 {
   VariantMap vm;
   vm[ "version" ] = Variant( 1 );

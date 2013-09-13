@@ -22,7 +22,7 @@
 #include <string>
 #include <list>
 
-#include "oc3_widget.hpp"
+#include "oc3_gui_widget.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_building_factory.hpp"
 #include "oc3_building_service.hpp"

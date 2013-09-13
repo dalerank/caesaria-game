@@ -333,7 +333,7 @@ WeaponsWorkshop::WeaponsWorkshop() : Factory(Good::iron, Good::weapon, B_WEAPONS
   _fgPictures.resize(2);
 }
 
-FactoryFurniture::FactoryFurniture() : Factory(Good::timber, Good::furniture, B_FURNITURE, Size(2) )
+WorkshopFurniture::WorkshopFurniture() : Factory(Good::timber, Good::furniture, B_FURNITURE, Size(2) )
 {
   setPicture( Picture::load(ResourceGroup::commerce, 117) );
 
@@ -349,7 +349,7 @@ Winery::Winery() : Factory(Good::grape, Good::wine, B_WINE_WORKSHOP, Size(2) )
   _fgPictures.resize(2);
 }
 
-FactoryOil::FactoryOil() : Factory(Good::olive, Good::oil, B_OIL_WORKSHOP, Size(2) )
+Creamery::Creamery() : Factory(Good::olive, Good::oil, B_OIL_WORKSHOP, Size(2) )
 {
   setPicture( Picture::load(ResourceGroup::commerce, 99) );
 

@@ -91,7 +91,7 @@ void CityServiceProsperity::update( const unsigned int time )
     bool less30percentIsPlebs = (plebsCount / (float)_d->city->getPopulation()) < 0.3;
     _d->prosperityExtend += (less30percentIsPlebs ? 1 : 0);
 
-    bool haveHippodrome = helper.getBuildings<BuildingHippodrome>( B_HIPPODROME ).size() > 0;
+    bool haveHippodrome = helper.getBuildings<Hippodrome>( B_HIPPODROME ).size() > 0;
     _d->prosperityExtend += (haveHippodrome > 0 ? 1 : 0);
 
     bool unemploymentLess5percent = false;

@@ -533,7 +533,7 @@ int WaterSource::getId() const
   return getTilePos().getJ() * 10000 + getTilePos().getI();
 }
 
-BuildingFountain::BuildingFountain() : ServiceBuilding(Service::S_FOUNTAIN, B_FOUNTAIN, Size(1))
+Fountain::Fountain() : ServiceBuilding(Service::S_FOUNTAIN, B_FOUNTAIN, Size(1))
 {  
   std::srand( DateTime::getElapsedTime() );
 
@@ -562,7 +562,7 @@ BuildingFountain::BuildingFountain() : ServiceBuilding(Service::S_FOUNTAIN, B_FO
   setWorkers( 1 );
 }
 
-void BuildingFountain::deliverService()
+void Fountain::deliverService()
 {
   const TerrainTile& myTile = getTile().getTerrain();
 
@@ -590,7 +590,7 @@ void BuildingFountain::deliverService()
   } 
 }
 
-void BuildingFountain::timeStep(const unsigned long time)
+void Fountain::timeStep(const unsigned long time)
 {
   if( !_haveReservoirWater )
   {
@@ -615,26 +615,26 @@ void BuildingFountain::timeStep(const unsigned long time)
   _fgPictures[ 0 ] = _getAnimation().getCurrentPicture(); 
 }
 
-bool BuildingFountain::canBuild( CityPtr city, const TilePos& pos ) const
+bool Fountain::canBuild( CityPtr city, const TilePos& pos ) const
 {
   bool ret = Construction::canBuild( city, pos );
 
   Tilemap& tmap = city->getTilemap();
   const TerrainTile& buildTerrain = tmap.at( pos ).getTerrain();
   bool reservoirPresent = buildTerrain.getWaterService( WTR_RESERVOIR ) > 0;
-  const_cast< BuildingFountain* >( this )->setPicture( Picture::load( ResourceGroup::waterbuildings, reservoirPresent ? 4 : 3 )  );
+  const_cast< Fountain* >( this )->setPicture( Picture::load( ResourceGroup::waterbuildings, reservoirPresent ? 4 : 3 )  );
 
   return ret;
 }
 
-void BuildingFountain::build( CityPtr city, const TilePos& pos )
+void Fountain::build( CityPtr city, const TilePos& pos )
 {
   ServiceBuilding::build( city, pos );
 
   setPicture( Picture::load( ResourceGroup::waterbuildings, 3 ) );
 }
 
-bool BuildingFountain::isNeedRoadAccess() const
+bool Fountain::isNeedRoadAccess() const
 {
   return false;
 }

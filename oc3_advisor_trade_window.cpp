@@ -24,7 +24,7 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_gettext.hpp"
-#include "oc3_groupbox.hpp"
+#include "oc3_gui_groupbox.hpp"
 #include "oc3_building_factory.hpp"
 #include "oc3_city.hpp"
 #include "oc3_city_trade_options.hpp"

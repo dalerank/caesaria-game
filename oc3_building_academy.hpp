@@ -18,10 +18,10 @@
 
 #include "oc3_building_working.hpp"
 
-class Academy : public WorkingBuilding
+class MilitaryAcademy : public WorkingBuilding
 {
 public:
-  Academy();
+  MilitaryAcademy();
 };
 
 #endif //__OPENCAESAR3_ACADEMY_H_INCLUDED__

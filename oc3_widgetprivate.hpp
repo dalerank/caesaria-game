@@ -17,7 +17,7 @@
 #ifndef __OPENCAESAR3_WIDGET_PRIVATE_H_INCLUDE_
 #define __OPENCAESAR3_WIDGET_PRIVATE_H_INCLUDE_
 
-#include "oc3_widget.hpp"
+#include "oc3_gui_widget.hpp"
 
 class Widget::Impl
 {

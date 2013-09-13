@@ -17,7 +17,7 @@
 
 #include "oc3_special_orders_window.hpp"
 #include "oc3_gfx_engine.hpp"
-#include "oc3_groupbox.hpp"
+#include "oc3_gui_groupbox.hpp"
 #include "oc3_gui_label.hpp"
 #include "oc3_texturedbutton.hpp"
 #include "oc3_gettext.hpp"

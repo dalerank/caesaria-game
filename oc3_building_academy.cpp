@@ -17,7 +17,7 @@
 #include "oc3_building_academy.hpp"
 #include "oc3_resourcegroup.hpp"
 
-Academy::Academy() : WorkingBuilding( B_MILITARY_ACADEMY, Size(3) )
+MilitaryAcademy::MilitaryAcademy() : WorkingBuilding( B_MILITARY_ACADEMY, Size(3) )
 {
   setMaxWorkers( 20 );
   setWorkers( 0 );

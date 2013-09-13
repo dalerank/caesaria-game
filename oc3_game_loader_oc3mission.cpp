@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_scenario_oc3mission_loader.hpp"
+#include "oc3_game_loader_oc3mission.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_picture.hpp"
@@ -21,7 +21,7 @@
 #include "oc3_constructionmanager.hpp"
 #include "oc3_game.hpp"
 #include "oc3_saveadapter.hpp"
-#include "oc3_scenario_loader.hpp"
+#include "oc3_game_loader.hpp"
 #include "oc3_win_targets.hpp"
 #include "oc3_city_build_options.hpp"
 #include "oc3_building_data.hpp"
@@ -30,18 +30,18 @@
 #include "oc3_city.hpp"
 #include "oc3_game_settings.hpp"
 
-class GameMissionLoader::Impl
+class GameLoaderMission::Impl
 {
 public:
   static const int currentVesion = 1;
 };
 
-GameMissionLoader::GameMissionLoader()
+GameLoaderMission::GameLoaderMission()
 {
 
 }
 
-bool GameMissionLoader::load( const std::string& filename, Game& game )
+bool GameLoaderMission::load( const std::string& filename, Game& game )
 {
   VariantMap vm = SaveAdapter::load( filename );
   
@@ -73,7 +73,7 @@ bool GameMissionLoader::load( const std::string& filename, Game& game )
   return false;
 }
 
-bool GameMissionLoader::isLoadableFileExtension( const std::string& filename )
+bool GameLoaderMission::isLoadableFileExtension( const std::string& filename )
 {
   return filename.substr( filename.size() - 11 ) == ".oc3mission";
 }

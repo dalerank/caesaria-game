@@ -18,10 +18,10 @@
 
 #include "oc3_building_factory.hpp"
 
-class FactoryMarble : public Factory
+class MarbleQuarry : public Factory
 {
 public:
-  FactoryMarble();
+  MarbleQuarry();
 
   bool canBuild(CityPtr city, const TilePos& pos ) const;  // returns true if it can be built there
   void timeStep(const unsigned long time);

@@ -13,13 +13,13 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_factory_marble.hpp"
+#include "oc3_building_marble_quarry.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_city.hpp"
 
-FactoryMarble::FactoryMarble() : Factory(Good::none, Good::marble, B_MARBLE_QUARRY, Size(2) )
+MarbleQuarry::MarbleQuarry() : Factory(Good::none, Good::marble, B_MARBLE_QUARRY, Size(2) )
 {
   _setProductRate( 9.6f );
   setPicture( Picture::load( ResourceGroup::commerce, 43 ) );
@@ -29,7 +29,7 @@ FactoryMarble::FactoryMarble() : Factory(Good::none, Good::marble, B_MARBLE_QUAR
   _fgPictures.resize(2);
 }
 
-void FactoryMarble::timeStep( const unsigned long time )
+void MarbleQuarry::timeStep( const unsigned long time )
 {
   bool mayAnimate = getWorkers() > 0;
 
@@ -46,7 +46,7 @@ void FactoryMarble::timeStep( const unsigned long time )
   Factory::timeStep( time );
 }
 
-bool FactoryMarble::canBuild( CityPtr city, const TilePos& pos ) const
+bool MarbleQuarry::canBuild( CityPtr city, const TilePos& pos ) const
 {
   bool is_constructible = Construction::canBuild( city, pos );
   bool near_mountain = false;  // tells if the factory is next to a mountain

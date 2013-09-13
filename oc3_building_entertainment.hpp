@@ -35,10 +35,10 @@ public:
    virtual int getVisitorsNumber() const;
 };
 
-class BuildingAmphiTheater : public EntertainmentBuilding
+class Amphitheater : public EntertainmentBuilding
 {
 public:
-   BuildingAmphiTheater();
+   Amphitheater();
 };
 
 class Collosseum : public EntertainmentBuilding
@@ -48,10 +48,10 @@ public:
 };
 
 
-class BuildingHippodrome : public EntertainmentBuilding
+class Hippodrome : public EntertainmentBuilding
 {
 public:
-   BuildingHippodrome();
+   Hippodrome();
 };
 
 #endif //__OPENCAESAR3_BUILDING_ENTERTAINMENT_H_INCLUDED__

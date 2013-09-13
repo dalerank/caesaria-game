@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_ADVISORSWINDOW_H_INCLUDED__
 #define __OPENCAESAR3_ADVISORSWINDOW_H_INCLUDED__
 
-#include "oc3_widget.hpp"
+#include "oc3_gui_widget.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_signals.hpp"
 #include "oc3_predefinitions.hpp"

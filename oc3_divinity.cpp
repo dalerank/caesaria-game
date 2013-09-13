@@ -19,7 +19,7 @@
 #include "oc3_gamedate.hpp"
 #include "oc3_service.hpp"
 #include "oc3_city.hpp"
-#include "oc3_farm.hpp"
+#include "oc3_building_farm.hpp"
 #include "oc3_game_event.hpp"
 #include "oc3_gettext.hpp"
 

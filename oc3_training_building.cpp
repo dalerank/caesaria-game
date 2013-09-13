@@ -89,7 +89,7 @@ void TrainingBuilding::load( const VariantMap& stream )
 //}
 
 
-BuildingActor::BuildingActor() : TrainingBuilding( B_ACTOR_COLONY, Size(3) )
+ActorColony::ActorColony() : TrainingBuilding( B_ACTOR_COLONY, Size(3) )
 {
   setPicture( Picture::load( ResourceGroup::entertaiment, 81));
 
@@ -98,7 +98,7 @@ BuildingActor::BuildingActor() : TrainingBuilding( B_ACTOR_COLONY, Size(3) )
   _fgPictures.resize(1);
 }
 
-void BuildingActor::deliverTrainee()
+void ActorColony::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
   TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), WT_ACTOR);
@@ -106,7 +106,7 @@ void BuildingActor::deliverTrainee()
   trainee->send2City();
 }
 
-BuildingGladiator::BuildingGladiator() : TrainingBuilding( B_GLADIATOR_SCHOOL, Size(3))
+GladiatorSchool::GladiatorSchool() : TrainingBuilding( B_GLADIATOR_SCHOOL, Size(3))
 {
   setPicture( Picture::load( ResourceGroup::entertaiment, 51));
 
@@ -115,7 +115,7 @@ BuildingGladiator::BuildingGladiator() : TrainingBuilding( B_GLADIATOR_SCHOOL, S
   _fgPictures.resize(1);
 }
 
-void BuildingGladiator::deliverTrainee()
+void GladiatorSchool::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
   TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), WT_GLADIATOR);
@@ -124,7 +124,7 @@ void BuildingGladiator::deliverTrainee()
 }
 
 
-BuildingLion::BuildingLion() : TrainingBuilding( B_LION_HOUSE, Size(3) )
+LionsNursery::LionsNursery() : TrainingBuilding( B_LION_HOUSE, Size(3) )
 {
   setPicture( Picture::load( ResourceGroup::entertaiment, 62));
 
@@ -133,7 +133,7 @@ BuildingLion::BuildingLion() : TrainingBuilding( B_LION_HOUSE, Size(3) )
    _fgPictures.resize(1);
 }
 
-void BuildingLion::deliverTrainee()
+void LionsNursery::deliverTrainee()
 {
   // std::cout << "Deliver trainee!" << std::endl;
   TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), WT_TAMER );
@@ -142,7 +142,7 @@ void BuildingLion::deliverTrainee()
 }
 
 
-BuildingChariot::BuildingChariot() : TrainingBuilding( B_CHARIOT_MAKER, Size(3) )
+WorkshopChariot::WorkshopChariot() : TrainingBuilding( B_CHARIOT_MAKER, Size(3) )
 {
   setPicture( Picture::load( ResourceGroup::entertaiment, 91));
 
@@ -151,7 +151,7 @@ BuildingChariot::BuildingChariot() : TrainingBuilding( B_CHARIOT_MAKER, Size(3) 
   _fgPictures.resize(1);
 }
 
-void BuildingChariot::deliverTrainee()
+void WorkshopChariot::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
   TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), WT_CHARIOT);

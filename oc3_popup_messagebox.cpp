@@ -17,7 +17,7 @@
 #include "oc3_picture.hpp"
 #include "oc3_pushbutton.hpp"
 #include "oc3_listbox.hpp"
-#include "oc3_editbox.hpp"
+#include "oc3_gui_editbox.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_gui_label.hpp"
 #include "oc3_picture_decorator.hpp"

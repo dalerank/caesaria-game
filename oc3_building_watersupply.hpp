@@ -83,10 +83,10 @@ private:
   bool _isNearWater( const TilePos& pos ) const;
 };
 
-class BuildingFountain : public ServiceBuilding
+class Fountain : public ServiceBuilding
 {
 public:
-  BuildingFountain();
+  Fountain();
 
   virtual void build( CityPtr city, const TilePos& pos );
   virtual bool canBuild(CityPtr city, const TilePos& pos ) const;

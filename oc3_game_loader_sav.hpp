@@ -13,19 +13,23 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_WELL_H_INCLUDED__
-#define __OPENCAESAR3_WELL_H_INCLUDED__
+#ifndef __OPENCAESAR3_SCENARIOSAV_LOADER_H_INCLUDED__
+#define __OPENCAESAR3_SCENARIOSAV_LOADER_H_INCLUDED__
 
-#include "oc3_building_service.hpp"
+#include "oc3_scenarioabstractloader.hpp"
+#include "oc3_scopedptr.hpp"
 
-class BuildingWell : public ServiceBuilding
+class GameLoaderC3Sav : public GameAbstractLoader
 {
 public:
-  BuildingWell();
+  GameLoaderC3Sav();
 
-  virtual void deliverService();
+  bool load(const std::string& filename, Game& game);
+  bool isLoadableFileExtension( const std::string& filename );
 
-  virtual bool isNeedRoadAccess() const;
+private:
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
-#endif
+#endif // __OPENCAESAR3_SCENARIOSAV_LOADER_H_INCLUDED__

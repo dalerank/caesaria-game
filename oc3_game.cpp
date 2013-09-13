@@ -39,7 +39,7 @@
 #include "oc3_empire.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_name_generator.hpp"
-#include "oc3_scenario_loader.hpp"
+#include "oc3_game_loader.hpp"
 #include "oc3_win_targets.hpp"
 #include "oc3_gamedate.hpp"
 #include "oc3_game_event_mgr.hpp"

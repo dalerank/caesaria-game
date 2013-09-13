@@ -23,7 +23,7 @@
 #include "oc3_path_finding.hpp"
 #include "oc3_city.hpp"
 
-BuildingPrefecture::BuildingPrefecture() : ServiceBuilding(Service::S_PREFECT, B_PREFECTURE, Size(1))
+Prefecture::Prefecture() : ServiceBuilding(Service::S_PREFECT, B_PREFECTURE, Size(1))
 {
   _fireDetect = TilePos( -1, -1 );
   setPicture( Picture::load( ResourceGroup::security, 1 ) );
@@ -34,13 +34,13 @@ BuildingPrefecture::BuildingPrefecture() : ServiceBuilding(Service::S_PREFECT, B
   _fgPictures.resize(1);
 }
 
-int BuildingPrefecture::getServiceDelay() const
+int Prefecture::getServiceDelay() const
 {
   float koeff = ( getWorkers() > 0 ) ? (float)getMaxWorkers() / (float)getWorkers() : 1.f;
   return (int)(ServiceBuilding::getServiceDelay() * koeff);
 }
 
-void BuildingPrefecture::timeStep(const unsigned long time)
+void Prefecture::timeStep(const unsigned long time)
 {
   bool mayAnimate = getWorkers() > 0;
 
@@ -57,7 +57,7 @@ void BuildingPrefecture::timeStep(const unsigned long time)
   ServiceBuilding::timeStep( time );
 }
 
-void BuildingPrefecture::deliverService()
+void Prefecture::deliverService()
 {
   if( getWorkers() > 0 && getWalkerList().size() == 0 )
   {
@@ -82,13 +82,13 @@ void BuildingPrefecture::deliverService()
       _fireDetect = TilePos( -1, -1 );
     }
     
-    walker->send2City( BuildingPrefecturePtr( this ), fireDetect ? 200 : 0 );
+    walker->send2City( PrefecturePtr( this ), fireDetect ? 200 : 0 );
 
     addWalker( walker.as<Walker>() );
   }
 }
 
-void BuildingPrefecture::fireDetect( const TilePos& pos )
+void Prefecture::fireDetect( const TilePos& pos )
 {
   _fireDetect = pos;
 }

@@ -15,12 +15,12 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#include "oc3_scenario_loader.hpp"
+#include "oc3_game_loader.hpp"
 
-#include "oc3_scenario_map_loader.hpp"
-#include "oc3_scenario_sav_loader.hpp"
-#include "oc3_scenario_oc3save_loader.hpp"
-#include "oc3_scenario_oc3mission_loader.hpp"
+#include "oc3_game_loader_map.hpp"
+#include "oc3_game_loader_sav.hpp"
+#include "oc3_game_loader_oc3save.hpp"
+#include "oc3_game_loader_oc3mission.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_stringhelper.hpp"
@@ -114,9 +114,9 @@ void GameLoader::Impl::finalize( Game& game )
 void GameLoader::Impl::initLoaders()
 {
   loaders.push_back( GameAbstractLoaderPtr( new GameLoaderC3Map() ) );
-  loaders.push_back( GameAbstractLoaderPtr( new C3SavLoader() ) );
+  loaders.push_back( GameAbstractLoaderPtr( new GameLoaderC3Sav() ) );
   loaders.push_back( GameAbstractLoaderPtr( new GameLoaderOc3() ) );
-  loaders.push_back( GameAbstractLoaderPtr( new GameMissionLoader() ) );
+  loaders.push_back( GameAbstractLoaderPtr( new GameLoaderMission() ) );
 }
 
 bool GameLoader::load( const io::FilePath& filename, Game& game )
