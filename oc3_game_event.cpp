@@ -207,7 +207,7 @@ GameEventPtr ShowInfoboxEvent::create( const std::string& title, const std::stri
 
 void ShowInfoboxEvent::exec( Game& game )
 {
-  InfoBoxText* msgWnd = new InfoBoxText( GuiEnv::instance().getRootWidget(), _title, _text );
+  InfoBoxText* msgWnd = new InfoBoxText( game.getGui()->getRootWidget(), _title, _text );
   msgWnd->show();
 }
 
@@ -221,7 +221,7 @@ GameEventPtr TogglePause::create()
 
 void TogglePause::exec(Game& game)
 {
-  Widget* rootWidget = GuiEnv::instance().getRootWidget();
+  Widget* rootWidget = game.getGui()->getRootWidget();
   Label* wdg = safety_cast< Label* >( rootWidget->findChild( windowGamePausedId ) );
   game.setPaused( !game.isPaused() );
 

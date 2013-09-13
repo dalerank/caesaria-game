@@ -53,6 +53,7 @@ public:
   Player* getPlayer() const;
   CityPtr getCity() const;
   EmpirePtr getEmpire() const;
+  GuiEnv* getGui() const;
 
   void setWinTargets( const CityWinTargets& targets );
 

@@ -21,6 +21,7 @@
 
 #include "oc3_screen.hpp"
 #include "oc3_scopedptr.hpp"
+#include "oc3_predefinitions.hpp"
 #include <string>
 
 // displays the newGame/loadGame/quitGame menu
@@ -36,7 +37,7 @@ public:
         unlknowState=0xff
     } Result;
     
-    ScreenMenu();
+    ScreenMenu( GuiEnv* gui );
     ~ScreenMenu();
 
     void handleEvent( NEvent& event);

@@ -96,14 +96,14 @@ void ScreenGame::initialize()
   CityPtr city = _d->game->getCity();
   _d->renderer.initialize( city, _d->engine );
 
-  _d->infoBoxMgr = InfoBoxManager::create( city, &GuiEnv::instance() );
-  GuiEnv::instance().clear();
+  _d->infoBoxMgr = InfoBoxManager::create( city, _d->game->getGui() );
+  _d->game->getGui()->clear();
 
   const int topMenuHeight = 23;
   const Picture& rPanelPic = Picture::load( ResourceGroup::panelBackground, 14 );
 
   GfxEngine& engine = GfxEngine::instance();
-  GuiEnv& gui = GuiEnv::instance();
+  GuiEnv& gui = *_d->game->getGui();
 
   Rect rPanelRect( engine.getScreenWidth() - rPanelPic.getWidth(), topMenuHeight,
                    engine.getScreenWidth(), engine.getScreenHeight() );
@@ -174,7 +174,7 @@ void ScreenGame::initialize()
 
 void ScreenGame::Impl::showSaveDialog()
 {
-  SaveDialog* dialog = new SaveDialog( GuiEnv::instance().getRootWidget(), "saves", ".oc3save", -1 );
+  SaveDialog* dialog = new SaveDialog( game->getGui()->getRootWidget(), "saves", ".oc3save", -1 );
   //CONNECT( dialog, onFileSelected(), &onSaveGameSignal, Signal1<std::string>::emit );
 }
 
@@ -182,8 +182,8 @@ void ScreenGame::draw()
 {
   _d->renderer.draw();
 
-  GuiEnv::instance().beforeDraw();
-  GuiEnv::instance().draw();
+  _d->game->getGui()->beforeDraw();
+  _d->game->getGui()->draw();
 }
 
 void ScreenGame::animate( unsigned int time )
@@ -204,7 +204,7 @@ Signal0<>&ScreenGame::onFrameRenderFinished()
 void ScreenGame::handleEvent( NEvent& event )
 {
   //After MouseDown events are send to the same target till MouseUp
-  GuiEnv& gui = GuiEnv::instance();
+  GuiEnv& gui = *_d->game->getGui();
 
   static enum _MouseEventTarget
   {
@@ -347,7 +347,7 @@ void ScreenGame::Impl::showAdvisorsWindow()
 
 void ScreenGame::Impl::showAdvisorsWindow( const int advType )
 {  
-  List<AdvisorsWindow*> wndList = GuiEnv::instance().getRootWidget()->findChildren<AdvisorsWindow*>();
+  List<AdvisorsWindow*> wndList = game->getGui()->getRootWidget()->findChildren<AdvisorsWindow*>();
 
   if( wndList.size() == 1 )
   {
@@ -356,7 +356,7 @@ void ScreenGame::Impl::showAdvisorsWindow( const int advType )
   }
   else
   {
-    AdvisorsWindow* advWnd = AdvisorsWindow::create( GuiEnv::instance().getRootWidget(), -1,
+    AdvisorsWindow* advWnd = AdvisorsWindow::create( game->getGui()->getRootWidget(), -1,
                                                      (AdvisorType)advType, game->getCity() );
     CONNECT( advWnd, onEmpireMapRequest(), this, Impl::showEmpireMapWindow ); 
   }
@@ -369,7 +369,7 @@ void ScreenGame::Impl::showTradeAdvisorWindow()
 
 void ScreenGame::Impl::showEmpireMapWindow()
 {  
-  List<EmpireMapWindow*> wndList = GuiEnv::instance().getRootWidget()->findChildren<EmpireMapWindow*>();
+  List<EmpireMapWindow*> wndList = game->getGui()->getRootWidget()->findChildren<EmpireMapWindow*>();
 
   if( wndList.size() == 1 )
   {
@@ -377,12 +377,12 @@ void ScreenGame::Impl::showEmpireMapWindow()
   }
   else
   {
-    EmpireMapWindow* emap = EmpireMapWindow::create( game->getEmpire(), game->getCity(), GuiEnv::instance().getRootWidget(), -1 );
+    EmpireMapWindow* emap = EmpireMapWindow::create( game->getEmpire(), game->getCity(), game->getGui()->getRootWidget(), -1 );
     CONNECT( emap, onTradeAdvisorRequest(), this, Impl::showTradeAdvisorWindow ); 
   }  
 }
 
 void ScreenGame::Impl::showMissionTaretsWindow()
 {
-  MissionTargetsWindow::create( game->getCity() );
+  MissionTargetsWindow::create( game->getGui()->getRootWidget(), game->getCity() );
 }

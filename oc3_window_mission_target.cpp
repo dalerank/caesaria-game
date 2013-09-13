@@ -39,10 +39,9 @@ public:
   ListBox* lbxHelp;
 };
 
-MissionTargetsWindow* MissionTargetsWindow::create( CityPtr city, int id )
+MissionTargetsWindow* MissionTargetsWindow::create( Widget* parent, CityPtr city, int id )
 {
   Size size( 610, 430 );
-  Widget* parent = GuiEnv::instance().getRootWidget();
 
   Rect rectangle( Point( (parent->getWidth() - size.getWidth())/2, (parent->getHeight() - size.getHeight())/2 ), size );
   MissionTargetsWindow* ret = new MissionTargetsWindow( parent, id, rectangle );

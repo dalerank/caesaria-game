@@ -115,7 +115,7 @@ void Game::mountArchives()
 
 void Game::Impl::initGuiEnvironment()
 {
-  GuiEnv::instance().initialize( *engine );
+  gui = new GuiEnv( *engine );
 }
 
 void Game::Impl::initPictures(const io::FilePath& resourcePath)
@@ -139,7 +139,7 @@ void Game::setScreenWait()
 
 void Game::setScreenMenu()
 {
-  ScreenMenu screen;
+  ScreenMenu screen( _d->gui );
   screen.initialize();
 
   int result = screen.run();
@@ -244,6 +244,11 @@ CityPtr Game::getCity() const
 EmpirePtr Game::getEmpire() const
 {
   return _d->empire;
+}
+
+GuiEnv*Game::getGui() const
+{
+  return _d->gui;
 }
 
 void Game::setWinTargets(const CityWinTargets& targets)

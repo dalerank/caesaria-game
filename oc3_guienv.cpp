@@ -54,7 +54,7 @@ public:
   void threatDeletionQueue();
 };
 
-GuiEnv::GuiEnv()
+GuiEnv::GuiEnv( GfxEngine& painter )
 : Widget( 0, -1, Rect( 0, 0, 1, 1) ),
  _d( new Impl )
 {
@@ -65,7 +65,7 @@ GuiEnv::GuiEnv()
   _d->focusedElement = 0;
   _d->hoveredNoSubelement = 0;
   _d->lastHoveredMousePos = Point();
-
+  _d->engine = &painter;
 
   //INITIALIZE_FILESYSTEM_INSTANCE;
 
@@ -76,6 +76,8 @@ GuiEnv::GuiEnv()
   _d->toolTip.EnterTime = 0;
   _d->toolTip.LaunchTime = 1000;
   _d->toolTip.RelaunchTime = 500;
+
+  setGeometry( Rect( 0, 0, painter.getScreenWidth(), painter.getScreenHeight() ) );
 }
 
 //! Returns if the element has focus
@@ -84,20 +86,8 @@ bool GuiEnv::hasFocus( const Widget* element) const
     return ( _d->focusedElement.object() == element );
 }
 
-GuiEnv& GuiEnv::instance()
-{
-  static GuiEnv inst;
-  return inst;
-}
-
 GuiEnv::~GuiEnv()
 {
-}
-
-void GuiEnv::initialize(GfxEngine& painter)
-{
-	_d->engine = &painter;
-	setGeometry( Rect( 0, 0, painter.getScreenWidth(), painter.getScreenHeight() ) );
 }
 
 Widget* GuiEnv::getRootWidget()
