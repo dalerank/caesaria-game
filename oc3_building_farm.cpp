@@ -88,7 +88,7 @@ Farm::Farm(const Good::Type outGood, const BuildingType type )
   : Factory( Good::none, outGood, type, Size(3) ), _d( new Impl )
 {
   _d->pictureBuilding = Picture::load( ResourceGroup::commerce, 12);  // farm building
-  _d->pictureBuilding.addOffset(30, 15);
+  _d->pictureBuilding.addOffset( 30, 15);
 
   setPicture( _d->pictureBuilding );
   getOutGood().setMax( 100 );

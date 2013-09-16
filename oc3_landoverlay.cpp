@@ -164,6 +164,7 @@ void LandOverlay::save( VariantMap& stream ) const
   stream[ "buildingTypeName" ] = Variant( BuildingDataHolder::instance().getData( _d->buildingType ).getName() );
   stream[ "buildingType" ] = (int)_d->buildingType;
   stream[ "picture" ] = Variant( _d->picture.getName() );
+  stream[ "pictureOffset" ] = _d->picture.getOffset();
   stream[ "size" ] = _d->size;
   stream[ "isDeleted" ] = _d->isDeleted;
   stream[ "name" ] = Variant( _d->name );
@@ -174,6 +175,7 @@ void LandOverlay::load( const VariantMap& stream )
   _d->name = stream.get( "name" ).toString();
   _d->buildingType = (BuildingType)stream.get( "buildingType" ).toInt();
   _d->picture = Picture::load( stream.get( "picture" ).toString() + ".png" );
+  _d->picture.setOffset( stream.get( "pictureOffset" ).toPoint() );
   _d->size = stream.get( "size" ).toSize();
   _d->isDeleted = stream.get( "isDeleted" ).toBool();
 }
