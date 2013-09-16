@@ -87,6 +87,10 @@ public:
 
   Tile* getTile( const Point& pos, bool overborder);
 
+  WalkerList getVisibleWalkerList();
+  void drawWalkersBetweenZ( WalkerList walkerList, int minZ, int maxZ );
+  void drawBuildingAreaTiles( Tile& baseTile, LandOverlayPtr overlay, std::string resourceGroup, int tileId );
+
   template< class X, class Y >
   void setDrawFunction( Y* obj, void (X::*func)( Tile& ) )
   {
@@ -109,12 +113,7 @@ public:
     }
   }
 
-private:
   std::vector<WalkerType> visibleWalkers;
-
-  WalkerList getVisibleWalkerList();
-  void drawWalkersBetweenZ( WalkerList walkerList, int minZ, int maxZ );
-  void drawBuildingAreaTiles( Tile& baseTile, LandOverlayPtr overlay, std::string resourceGroup, int tileId );
 
 oc3_signals public:
   Signal1< const Tile& > onShowTileInfoSignal;
@@ -245,7 +244,6 @@ void CityRenderer::Impl::drawTileFire( Tile& tile )
   else
   {   
     LandOverlayPtr overlay = terrain.getOverlay();
-    Picture pic;
     int fireLevel = 0;
     switch( overlay->getType() )
     {
@@ -256,7 +254,7 @@ void CityRenderer::Impl::drawTileFire( Tile& tile )
     case B_BURNED_RUINS:
     case B_COLLAPSED_RUINS:
     case B_PREFECTURE:
-      pic = tile.getPicture();
+      engine->drawPicture( tile.getPicture(), screenPos );
       needDrawAnimations = true;
     break;  
 
@@ -264,26 +262,26 @@ void CityRenderer::Impl::drawTileFire( Tile& tile )
     case B_HOUSE:
       {
         HousePtr house = overlay.as< House >();
-        pic = Picture::load( ResourceGroup::waterOverlay, ( overlay->getSize().getWidth() - 1 )*2 + 11 );
         fireLevel = (int)house->getFireLevel();
         needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() ==0);
+
+        drawBuildingAreaTiles( overlay->getTile(), overlay, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );
       }
     break;
 
       //other buildings
     default:
       {
-        pic = Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + 1 );
         BuildingPtr building = overlay.as< Building >();
-        if( building.isValid() )
+        if( building != 0 )
         {
           fireLevel = (int)building->getFireLevel();
         }
+
+        drawBuildingAreaTiles( overlay->getTile(), overlay, ResourceGroup::foodOverlay, OverlayPic::base  );
       }
     break;
     }  
-
-    engine->drawPicture( pic, screenPos );
 
     if( needDrawAnimations )
     {
@@ -312,7 +310,6 @@ void CityRenderer::Impl::drawTileDamage( Tile& tile )
   else
   {   
     LandOverlayPtr overlay = terrain.getOverlay();
-    Picture pic;
     int damageLevel = 0;
     switch( overlay->getType() )
     {
@@ -321,34 +318,33 @@ void CityRenderer::Impl::drawTileDamage( Tile& tile )
     case B_PLAZA:
     case B_COLLAPSED_RUINS:
     case B_ENGINEER_POST:
-      pic = tile.getPicture();
       needDrawAnimations = true;
+      engine->drawPicture( tile.getPicture(), screenPos );
       break;  
 
       //houses
     case B_HOUSE:
       {
         HousePtr house = overlay.as< House >();
-        pic = Picture::load( ResourceGroup::waterOverlay, ( overlay->getSize().getWidth() - 1 )*2 + 11 );
         damageLevel = (int)house->getDamageLevel();
         needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() ==0);
+        drawBuildingAreaTiles( overlay->getTile(), overlay, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
       }
       break;
 
       //other buildings
     default:
       {
-        pic = Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + 1 );
         BuildingPtr building = overlay.as< Building >();
         if( building.isValid() )
         {
           damageLevel = (int)building->getDamageLevel();
         }
+
+        drawBuildingAreaTiles( overlay->getTile(), overlay, ResourceGroup::foodOverlay, OverlayPic::base );
       }
       break;
-    }  
-
-    engine->drawPicture( pic, screenPos );
+    }      
 
     if( needDrawAnimations )
     {
@@ -377,7 +373,7 @@ void CityRenderer::Impl::drawTileReligion( Tile& tile )
   else
   {   
     LandOverlayPtr overlay = terrain.getOverlay();
-    Picture pic;
+
     int religionLevel = -1;
     switch( overlay->getType() )
     {
@@ -387,15 +383,14 @@ void CityRenderer::Impl::drawTileReligion( Tile& tile )
     case B_TEMPLE_CERES: case B_TEMPLE_MARS: case B_TEMPLE_MERCURE: case B_TEMPLE_NEPTUNE: case B_TEMPLE_VENUS:
     case B_TEMPLE_ORACLE:
     case B_BIG_TEMPLE_CERES: case B_BIG_TEMPLE_MARS: case B_BIG_TEMPLE_MERCURE: case B_BIG_TEMPLE_NEPTUNE: case B_BIG_TEMPLE_VENUS:
-      pic = tile.getPicture();
       needDrawAnimations = true;
+      engine->drawPicture( tile.getPicture(), screenPos );
     break;  
 
       //houses
     case B_HOUSE:
       {
         HousePtr house = overlay.as< House >();
-        pic = Picture::load( ResourceGroup::waterOverlay, ( overlay->getSize().getWidth() - 1 )*2 + 11 );
         religionLevel = house->getServiceAccess(Service::S_TEMPLE_MERCURE);
         religionLevel += house->getServiceAccess(Service::S_TEMPLE_VENUS);
         religionLevel += house->getServiceAccess(Service::S_TEMPLE_MARS);
@@ -403,18 +398,18 @@ void CityRenderer::Impl::drawTileReligion( Tile& tile )
         religionLevel += house->getServiceAccess(Service::S_TEMPLE_CERES);
         religionLevel = math::clamp( religionLevel / (house->getLevelSpec().getMinReligionLevel()+1), 0, 100 );
         needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() ==0);
+
+        drawBuildingAreaTiles( overlay->getTile(), overlay, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
       }
     break;
 
       //other buildings
     default:
       {
-        pic = Picture::load( ResourceGroup::waterOverlay, (overlay->getSize().getWidth() - 1)*2 + 1 );
+        drawBuildingAreaTiles( overlay->getTile(), overlay, ResourceGroup::foodOverlay, OverlayPic::base );
       }
     break;
     }  
-
-    engine->drawPicture( pic, screenPos );
 
     if( needDrawAnimations )
     {
@@ -459,7 +454,7 @@ void CityRenderer::Impl::drawTileFood( Tile& tile )
       //houses
     case B_HOUSE:
       {
-        drawBuildingAreaTiles(tile, overlay, ResourceGroup::foodOverlay, WaterOverlay::base);
+        drawBuildingAreaTiles(tile, overlay, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
         HousePtr house = overlay.as< House >();
         foodLevel = house->getFoodLevel();
         needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() == 0);
@@ -469,7 +464,7 @@ void CityRenderer::Impl::drawTileFood( Tile& tile )
       //other buildings
     default:
       {
-        drawBuildingAreaTiles(tile, overlay, ResourceGroup::foodOverlay, WaterOverlay::base);
+        drawBuildingAreaTiles(tile, overlay, ResourceGroup::foodOverlay, OverlayPic::base);
       }
       break;
     }  
@@ -529,13 +524,13 @@ void CityRenderer::Impl::drawTileWater( Tile& tile )
       if ( overlay->getType() == B_HOUSE )
       {
         HousePtr h = overlay.as<House>();
-        tileNumber = WaterOverlay::inHouse;
+        tileNumber = OverlayPic::inHouse;
         haveWater = haveWater || h->hasServiceAccess(Service::S_FOUNTAIN) || h->hasServiceAccess(Service::S_WELL);
       }
-      tileNumber += (haveWater ? WaterOverlay::haveWater : 0);
-      tileNumber += terrain.getWaterService( WTR_RESERVOIR ) > 0 ? WaterOverlay::reservoirRange : 0;
+      tileNumber += (haveWater ? OverlayPic::haveWater : 0);
+      tileNumber += terrain.getWaterService( WTR_RESERVOIR ) > 0 ? OverlayPic::reservoirRange : 0;
 
-      drawBuildingAreaTiles( tile, overlay, ResourceGroup::waterOverlay, WaterOverlay::base + tileNumber );
+      drawBuildingAreaTiles( tile, overlay, ResourceGroup::waterOverlay, OverlayPic::base + tileNumber );
 
       pic = Picture::getInvalid();
       areaSize = 0;
@@ -557,15 +552,7 @@ void CityRenderer::Impl::drawTileWater( Tile& tile )
 
   if( !needDrawAnimations && (terrain.isWalkable(true) || terrain.isBuilding()) )
   {
-    TilemapArea area;
-    if( areaSize.getWidth() == 1 )
-    {
-      area.push_back( &tile );
-    }
-    else
-    {
-      area = tilemap->getFilledRectangle( tile.getIJ(), areaSize );
-    }
+    TilemapArea area = tilemap->getFilledRectangle( tile.getIJ(), areaSize );
 
     foreach( Tile* tile, area )
     {
@@ -575,15 +562,14 @@ void CityRenderer::Impl::drawTileWater( Tile& tile )
 
       if( (reservoirWater + fontainWater > 0) && !curTera.isWater() && curTera.getOverlay().isNull() )
       {
-        int picIndex = reservoirWater ? WaterOverlay::reservoirRange : 0;
-        picIndex |= fontainWater > 0 ? WaterOverlay::haveWater : 0;
-        picIndex |= WaterOverlay::skipLeftBorder | WaterOverlay::skipRightBorder;
-        engine->drawPicture( Picture::load( ResourceGroup::waterOverlay, picIndex + WaterOverlay::base ), tile->getXY() + mapOffset );
+        int picIndex = reservoirWater ? OverlayPic::reservoirRange : 0;
+        picIndex |= fontainWater > 0 ? OverlayPic::haveWater : 0;
+        picIndex |= OverlayPic::skipLeftBorder | OverlayPic::skipRightBorder;
+        engine->drawPicture( Picture::load( ResourceGroup::waterOverlay, picIndex + OverlayPic::base ), tile->getXY() + mapOffset );
       }
     }
   }
 }
-
 
 void CityRenderer::Impl::drawTileBase( Tile& tile )
 {
@@ -1020,24 +1006,15 @@ void CityRenderer::Impl::drawWalkersBetweenZ(WalkerList walkerList, int minZ, in
 
 void CityRenderer::Impl::drawBuildingAreaTiles(Tile& baseTile, LandOverlayPtr overlay, std::string resourceGroup, int tileId)
 {
-  TilemapArea area;
-  Size areaSize = overlay->getSize();
-  if( areaSize.getWidth() == 1 )
-  {
-    area.push_back( &baseTile );
-  }
-  else
-  {
-    area = tilemap->getFilledRectangle( baseTile.getIJ(), areaSize );
-  }
+  TilemapArea area = tilemap->getFilledRectangle( baseTile.getIJ(), overlay->getSize() );
 
   Picture *pic = NULL;
   int leftBorderAtI = baseTile.getI();
-  int rightBorderAtJ = areaSize.getHeight() - 1 + baseTile.getJ();
+  int rightBorderAtJ = overlay->getSize().getHeight() - 1 + baseTile.getJ();
   foreach( Tile* tile, area )
   {
-    int tileBorders = ( tile->getI() == leftBorderAtI ? 0 : WaterOverlay::skipLeftBorder )
-                        + ( tile->getJ() == rightBorderAtJ ? 0 : WaterOverlay::skipRightBorder );
+    int tileBorders = ( tile->getI() == leftBorderAtI ? 0 : OverlayPic::skipLeftBorder )
+                        + ( tile->getJ() == rightBorderAtJ ? 0 : OverlayPic::skipRightBorder );
     pic = &Picture::load(resourceGroup, tileBorders + tileId);
     engine->drawPicture( *pic, tile->getXY() + mapOffset );
   }

@@ -43,6 +43,7 @@
 #include "oc3_win_targets.hpp"
 #include "oc3_gamedate.hpp"
 #include "oc3_game_event_mgr.hpp"
+#include "oc3_game_saver.hpp"
 
 #include <libintl.h>
 #include <list>
@@ -296,7 +297,8 @@ Game::~Game()
 
 void Game::save(std::string filename) const
 {
-
+  GameSaver saver;
+  saver.save( filename, *this );
 }
 
 void Game::load(std::string filename)

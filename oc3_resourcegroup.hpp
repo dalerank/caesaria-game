@@ -93,13 +93,14 @@ public:
   static const int fontainSize = 7;
 };
 
-class WaterOverlay
+class OverlayPic
 {
 public:
   static const int base = 1;
   static const int skipRightBorder = 1;
   static const int skipLeftBorder = 2;
   static const int inHouse = 4;
+  static const int inHouseBase = 5;
   static const int reservoirRange = 8;
   static const int haveWater = 16;
 };

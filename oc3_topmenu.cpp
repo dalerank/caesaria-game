@@ -94,6 +94,7 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
   ret->_d->lbDate->setTextAlignment( alignCenter, alignCenter );
   ret->_d->lbDate->setBackgroundPicture( Picture::load( ResourceGroup::panelBackground, panelBgStatus ) );
   ret->_d->lbDate->setTooltipText( _("##date_tooltip##") );
+  ret->_d->updateDate();
   //_dateLabel.setTextPosition(20, 0);
 
   ContextMenuItem* tmp = ret->addItem( _("##gmenu_file##"), -1, true, true, false, false );
@@ -172,7 +173,6 @@ TopMenu::TopMenu( Widget* parent, const int height )
 : MainMenu( parent, Rect( 0, 0, parent->getWidth(), height ) ),
   _d( new Impl )
 {
-  _d->updateDate();
 }
 
 Signal0<>& TopMenu::onExit()
