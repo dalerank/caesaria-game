@@ -48,6 +48,8 @@ public:
 
   // graphic
   void setPicture(const Picture &picture);
+  void setPicture(const char* resource, const int index);
+
   const Picture& getPicture() const;
   PicturesArray& getForegroundPictures();
 

@@ -61,7 +61,7 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
 
     CityWinTargets targets;
     targets.load( vm[ "win" ].toMap() );
-    game.setWinTargets( targets );
+    city->setWinTargets( targets );
 
     CityBuildOptions options;
     options.load( vm[ "buildoptions" ].toMap() );

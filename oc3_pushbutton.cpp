@@ -131,7 +131,7 @@ void PushButton::_updateTexture( ElementState state )
   // draw button background
   if( _d->buttonStates[ state ].bgTexture.isValid() )
   {
-    curTxs->draw( _d->buttonStates[ state ].bgTexture, 0, 0 );
+    curTxs->draw( _d->buttonStates[ state ].bgTexture, 0, 0, false );
   }    
   else
   {

@@ -521,7 +521,7 @@ void City::setBuildOptions(const CityBuildOptions& options)
   _d->buildOptions = options;
 }
 
-const CityWinTargets&City::getWinTargets() const
+const CityWinTargets& City::getWinTargets() const
 {
   return _d->targets;
 }

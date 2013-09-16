@@ -86,6 +86,11 @@ void LandOverlay::setPicture(const Picture &picture)
   }
 }
 
+void LandOverlay::setPicture(const char* resource, const int index)
+{
+  setPicture( Picture::load( resource, index ) );
+}
+
 void LandOverlay::build( CityPtr city, const TilePos& pos )
 {
   Tilemap &tilemap = city->getTilemap();

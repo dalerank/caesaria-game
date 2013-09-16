@@ -55,8 +55,6 @@ public:
   EmpirePtr getEmpire() const;
   GuiEnv* getGui() const;
 
-  void setWinTargets( const CityWinTargets& targets );
-
   void setPaused( bool value );
   bool isPaused() const;
 

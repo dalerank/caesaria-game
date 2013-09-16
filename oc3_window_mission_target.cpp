@@ -34,7 +34,10 @@ public:
   Label* title;
   Label* subTitle;
   Label* lbPopulation;
-  Label* lbDescription;
+  Label* lbProsperity;
+  Label* lbFavour;
+  Label* lbCulture;
+  Label* lbPeace;
 
   ListBox* lbxHelp;
 };
@@ -70,9 +73,14 @@ MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& 
   GroupBox* gbTargets = new GroupBox( this, Rect( 16, 64, getWidth() - 64, 64 + 80), Widget::noId, GroupBox::blackFrame );
   Label* lbTtargets = new Label( gbTargets, Rect( 15, 0, 490, 28), _("##mission_wnd_targets_title##") );
   lbTtargets->setFont( Font::create( FONT_1_WHITE ) );
+  lbTtargets->setTextAlignment( alignUpperLeft, alignUpperLeft );
 
-  _d->lbPopulation = new Label( gbTargets, Rect( 16, 32, getWidth() / 2, 32 + 20), _("##mission_wnd_population##"), false, Label::bgBrown );
-  _d->lbDescription = new Label( gbTargets, Rect( 16, 52, getWidth() - 52, 52 + 20), _("##mission_wnd_description##"), false, Label::bgBrown );
+  _d->lbPopulation = new Label( gbTargets, Rect( 16, 32, 16 + 240, 32 + 20), _("##mission_wnd_population##"), false, Label::bgSmBrown );
+  _d->lbProsperity = new Label( gbTargets, Rect( 16, 54, 16 + 240, 54 + 20), _("##mission_wnd_prosperity##"), false, Label::bgSmBrown );
+
+  _d->lbFavour = new Label( gbTargets, Rect( 270, 10, 270 + 240, 10 + 20), _("##mission_wnd_favour##"), false, Label::bgSmBrown );
+  _d->lbCulture = new Label( gbTargets, Rect( 270, 32, 270 + 240, 32 + 20), _("##mission_wnd_culture##"), false, Label::bgSmBrown );
+  _d->lbPeace = new Label( gbTargets, Rect( 270, 54, 270 + 240, 54 + 20), _("##mission_wnd_peace##"), false, Label::bgSmBrown );
 
   _d->lbxHelp = new ListBox( this, Rect( 16, 152, getWidth() - 20, getHeight() - 40 ) );
 }

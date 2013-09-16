@@ -26,7 +26,8 @@ class Font;
 class PushButton : public Widget
 {
 public:
-  typedef enum { grayBorderLine, smallGrayBorderLine, whiteBorderUp, blackBorderUp, noBackground } BackgroundStyle;
+  typedef enum { grayBorderLine, smallGrayBorderLine, whiteBorderUp,
+                 blackBorderUp, noBackground } BackgroundStyle;
 
 	//! constructor
 	PushButton( Widget* parent,

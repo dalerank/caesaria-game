@@ -80,7 +80,7 @@ public:
 
 private:
   bool _isWaterSource;
-  bool _isNearWater( const TilePos& pos ) const;
+  bool _isNearWater( CityPtr city, const TilePos& pos ) const;
 };
 
 class Fountain : public ServiceBuilding

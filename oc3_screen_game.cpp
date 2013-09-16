@@ -172,7 +172,7 @@ void ScreenGame::initialize()
 void ScreenGame::Impl::showSaveDialog()
 {
   SaveDialog* dialog = new SaveDialog( game->getGui()->getRootWidget(), "saves", ".oc3save", -1 );
-  //CONNECT( dialog, onFileSelected(), &onSaveGameSignal, Signal1<std::string>::emit );
+  CONNECT( dialog, onFileSelected(), _d->game, Game::save );
 }
 
 void ScreenGame::Impl::showEmpireMapWindow()

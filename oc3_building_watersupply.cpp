@@ -380,22 +380,22 @@ void Reservoir::build( CityPtr city, const TilePos& pos )
   Construction::build( city, pos );
 
   setPicture( Picture::load( ResourceGroup::waterbuildings, 1 ) );
-  _isWaterSource = _isNearWater( pos );
+  _isWaterSource = _isNearWater( city, pos );
   
   //updateAqueducts();
   
   // update adjacent aqueducts
 }
 
-bool Reservoir::_isNearWater( const TilePos& pos ) const
+bool Reservoir::_isNearWater(CityPtr city, const TilePos& pos ) const
 {
   bool near_water = false;  // tells if the factory is next to a mountain
 
-  Tilemap& tilemap = _getCity()->getTilemap();
-  std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), !Tilemap::checkCorners );
-  for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+  Tilemap& tilemap = city->getTilemap();
+  TilemapTiles perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), !Tilemap::checkCorners );
+  foreach( Tile* tile, perimetr)
   {
-    near_water |= (*itTiles)->getTerrain().isWater();
+    near_water |= tile->getTerrain().isWater();
   }
 
   return near_water;
@@ -453,8 +453,8 @@ bool Reservoir::canBuild( CityPtr city, const TilePos& pos ) const
 {
   bool ret = Construction::canBuild( city, pos );
 
-  bool nearWater = _isNearWater( pos );
-  const_cast< Reservoir* >( this )->setPicture( Picture::load( ResourceGroup::waterbuildings, nearWater ? 2 : 1 )  );
+  bool nearWater = _isNearWater( city, pos );
+  const_cast< Reservoir* >( this )->setPicture( ResourceGroup::waterbuildings, nearWater ? 2 : 1  );
 
   return ret;
 }

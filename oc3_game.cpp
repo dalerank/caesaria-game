@@ -61,12 +61,11 @@ public:
   EmpirePtr empire;
   CityPtr city;
   Player* player;
-  CityWinTargets targets;
 
   bool loadOk;
   bool paused;
 
-  unsigned int time, saveTime;
+  float time, saveTime;
   float timeMultiplier;
   
   void initLocale(const std::string & localePath);
@@ -253,11 +252,6 @@ EmpirePtr Game::getEmpire() const
 GuiEnv*Game::getGui() const
 {
   return _d->gui;
-}
-
-void Game::setWinTargets(const CityWinTargets& targets)
-{
-  _d->targets = targets;
 }
 
 void Game::setPaused(bool value)

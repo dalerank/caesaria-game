@@ -46,8 +46,14 @@ CityWinTargets::~CityWinTargets()
 
 }
 
-bool CityWinTargets::isSuccess() const
+bool CityWinTargets::isSuccess( int culture, int prosperity,
+                                int favour, int peace,
+                                int population ) const
 {
+  _d->success = (_d->population <= population &&
+                 _d->culture <= culture && _d->prosperity <= prosperity &&
+                 _d->favour <= favour && _d->peace <= peace);
+
   return _d->success;
 }
 
