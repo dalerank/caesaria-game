@@ -539,51 +539,22 @@ Fountain::Fountain() : ServiceBuilding(Service::S_FOUNTAIN, B_FOUNTAIN, Size(1))
 
   //id = std::rand() % 4;
 
-  setPicture( Picture::load( ResourceGroup::utilitya, 10));
-  _getAnimation().load( ResourceGroup::utilitya, 11, 7);
+  setPicture( ResourceGroup::utilitya, 10 );
+  _getAnimation().load( ResourceGroup::utilitya, AnimId::fontain, AnimId::fontainSize );
   //animLoader.fill_animation_reverse(_animation, "utilitya", 25, 7);
   _getAnimation().setOffset( Point( 12, 24 ) );
+  _getAnimation().setFrameDelay( 2 );
   _fgPictures.resize(1);
-
-  //2 10 18 26
-  // utilitya 10      - empty 
-  // utilitya 11 - 17 - working fontain
-
-  // the first fountain's (10) ofsets ~ 11, 23 
-  /*AnimLoader animLoader(PicLoader::instance());
-  animLoader.fill_animation(_animation, "utilitya", 11, 7); 
-  animLoader.change_offset(_animation, 11, 23);
-  _fgPictures.resize(1);*/
-
-  // the second (2)    ~ 8, 42
-  // the third (18)    ~ 8, 24
-  // the 4rd   (26)    ~14, 26     
 
   setWorkers( 1 );
 }
 
 void Fountain::deliverService()
 {
-  const TerrainTile& myTile = getTile().getTerrain();
-
-  if( myTile.getWaterService( WTR_RESERVOIR ) > 0 && getWorkers() > 0 )
-  {
-    _haveReservoirWater = true;
-  }
-  else
-  {
-    //remove fontain service from tiles
-    Tilemap& tmap = _getCity()->getTilemap();
-    TilemapArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() );
-    foreach( Tile* tile, reachedTiles )
-    {
-      tile->getTerrain().decreaseWaterService( WTR_FONTAIN );
-    }
-  }
-
   ServiceWalkerPtr walker = ServiceWalker::create( _getCity(), getService() );
   walker->setBase( BuildingPtr( this ) );
   ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( getTile().getIJ() );
+
   foreach( BuildingPtr building, reachedBuildings )
   {
     building->applyService( walker );
@@ -592,15 +563,32 @@ void Fountain::deliverService()
 
 void Fountain::timeStep(const unsigned long time)
 {
-  if( !_haveReservoirWater )
-  {
-    _fgPictures[ 0 ] = Picture::getInvalid();
-    return;
-  }
-
   //filled area, that fontain present and work
   if( time % 22 == 1 )
   {
+    const TerrainTile& myTile = getTile().getTerrain();
+
+    if( myTile.getWaterService( WTR_RESERVOIR ) > 0 && getWorkers() > 0 )
+    {
+      _haveReservoirWater = true;
+    }
+    else
+    {
+      //remove fontain service from tiles
+      Tilemap& tmap = _getCity()->getTilemap();
+      TilemapArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() );
+      foreach( Tile* tile, reachedTiles )
+      {
+        tile->getTerrain().decreaseWaterService( WTR_FONTAIN );
+      }
+    }
+
+    if( !_haveReservoirWater )
+    {
+      _fgPictures[ 0 ] = Picture::getInvalid();
+      return;
+    }
+
     Tilemap& tmap = _getCity()->getTilemap();
     TilemapArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() );
     foreach( Tile* tile, reachedTiles )
@@ -609,10 +597,7 @@ void Fountain::timeStep(const unsigned long time)
     }
   }
 
-  _getAnimation().update( time );
-
-  // takes current animation frame and put it into foreground
-  _fgPictures[ 0 ] = _getAnimation().getCurrentPicture(); 
+  ServiceBuilding::timeStep( time );
 }
 
 bool Fountain::canBuild( CityPtr city, const TilePos& pos ) const
@@ -622,7 +607,8 @@ bool Fountain::canBuild( CityPtr city, const TilePos& pos ) const
   Tilemap& tmap = city->getTilemap();
   const TerrainTile& buildTerrain = tmap.at( pos ).getTerrain();
   bool reservoirPresent = buildTerrain.getWaterService( WTR_RESERVOIR ) > 0;
-  const_cast< Fountain* >( this )->setPicture( Picture::load( ResourceGroup::waterbuildings, reservoirPresent ? 4 : 3 )  );
+  const_cast< Fountain* >( this )->setPicture( ResourceGroup::waterbuildings,
+                                               reservoirPresent ? PicID::fontainFull : PicID::fontainEmpty  );
 
   return ret;
 }
@@ -631,7 +617,7 @@ void Fountain::build( CityPtr city, const TilePos& pos )
 {
   ServiceBuilding::build( city, pos );
 
-  setPicture( Picture::load( ResourceGroup::waterbuildings, 3 ) );
+  setPicture( ResourceGroup::waterbuildings, PicID::fontainEmpty );
 }
 
 bool Fountain::isNeedRoadAccess() const
