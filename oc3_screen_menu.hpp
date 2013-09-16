@@ -48,7 +48,6 @@ public:
 
     const std::string& getMapName() const;
 
-protected:
     int getResult() const;
     bool isStopped() const;
 

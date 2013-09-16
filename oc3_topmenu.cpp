@@ -99,13 +99,11 @@ TopMenu* TopMenu::create( Widget* parent, const int height )
   ContextMenuItem* tmp = ret->addItem( _("##gmenu_file##"), -1, true, true, false, false );
   ContextMenu* file = tmp->addSubMenu();
 
-  ContextMenuItem* save = file->addItem( _("##gmenu_file_save##"), -1, true, false, false, false );
+  ContextMenuItem* newGame = file->addItem( _("##gmenu_file_new##"), -1, true, false, false, false );
+  ContextMenuItem* restart = file->addItem( _("##gmenu_file_restart##"), -1, true, false, false, false );
   ContextMenuItem* load = file->addItem( _("##gmenu_file_load##"), -1, true, false, false, false );
-
-  file->addItem( "", -1, false, false, false, false );
+  ContextMenuItem* save = file->addItem( _("##gmenu_file_save##"), -1, true, false, false, false );
   ContextMenuItem* mainMenu = file->addItem( _("##gmenu_file_mainmenu##"), -1, true, false, false, false );
-
-  file->addItem( "", -1, true, false, false, false );
   ContextMenuItem* exit = file->addItem( _("##gmenu_file_exit##"), -1, true, false, false, false );
 
   CONNECT( exit, onClicked(), &ret->_d->onExitSignal, Signal0<>::emit );

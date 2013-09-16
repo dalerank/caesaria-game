@@ -134,7 +134,7 @@ void Game::setScreenWait()
 {
    ScreenWait screen;
    screen.initialize();
-   screen.drawFrame();
+   screen.update( *_d->engine );
 }
 
 void Game::setScreenMenu()
@@ -142,10 +142,14 @@ void Game::setScreenMenu()
   ScreenMenu screen( _d->gui );
   screen.initialize();
 
-  int result = screen.run();
+  while( !screen.isStopped() )
+  {
+    screen.update( *_d->engine );
+  }
+
   reset();
 
-  switch( result )
+  switch( screen.getResult() )
   {
     case ScreenMenu::startNewGame:
     {
@@ -193,11 +197,30 @@ void Game::setScreenGame()
   ScreenGame screen( *this, *_d->engine );
   screen.initialize();
 
-  CONNECT( &screen, onFrameRenderFinished(), this, Game::timeStep );
+  while( !screen.isStopped() )
+  {
+    screen.update( *_d->engine );
 
-  int result = screen.run();
+    if( !_d->paused )
+    {
+      _d->time += _d->timeMultiplier / 100.f;
 
-  switch( result )
+      while( (_d->time - _d->saveTime) > 1 )
+      {
+        _d->empire->timeStep( _d->time );
+
+        GameDate::timeStep( _d->time );
+
+        _d->saveTime += 1;
+
+        GameEventMgr::update( _d->time );
+
+        screen.animate( _d->saveTime );
+      }
+    }
+  }
+
+  switch( screen.getResult() )
   {
     case ScreenGame::mainMenu:
       _d->nextScreen = SCREEN_MENU;
@@ -209,25 +232,6 @@ void Game::setScreenGame()
 
     default:
       _d->nextScreen = SCREEN_QUIT;
-  }
-}
-
-void Game::timeStep()
-{
-  if( _d->paused )
-    return;
-
-  _d->time += _d->timeMultiplier / 100.f;
-
-  while( (_d->time - _d->saveTime) > 1 )
-  {
-    _d->empire->timeStep( _d->time );
-
-    GameDate::timeStep( _d->time );
-
-    _d->saveTime += 1;
-
-    GameEventMgr::update( _d->time );
   }
 }
 

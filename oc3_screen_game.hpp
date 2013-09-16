@@ -22,7 +22,6 @@
 #include "oc3_screen.hpp"
 #include "oc3_predefinitions.hpp"
 #include "oc3_scopedptr.hpp"
-#include "oc3_signals.hpp"
 #include <string>
 
 class Game;
@@ -41,12 +40,7 @@ public:
   virtual void draw();
   virtual void animate( unsigned int time );
   virtual void afterFrame();
-
-public oc3_signals:
-  Signal0<>& onFrameRenderFinished();
-
-protected:
-  int getResult() const;
+  virtual int getResult() const;
 
 private:
   void resolveEndGame();

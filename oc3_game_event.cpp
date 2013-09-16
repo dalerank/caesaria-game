@@ -26,6 +26,10 @@
 #include "oc3_game_event_mgr.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_gui_label.hpp"
+#include "oc3_window_empiremap.hpp"
+#include "oc3_empire.hpp"
+#include "oc3_advisors_window.hpp"
+#include "oc3_city_trade_options.hpp"
 
 static const int windowGamePausedId = StringHelper::hash( "gamepause" );
 
@@ -270,7 +274,110 @@ GameEventPtr FundIssueEvent::create(int type, int value)
   return ret;
 }
 
+GameEventPtr FundIssueEvent::import(Good::Type good, int qty)
+{
+  FundIssueEvent* ev = new FundIssueEvent();
+  ev->_gtype = good;
+  ev->_qty = qty;
+  ev->_type = CityFunds::importGoods;
+  GameEventPtr ret( ev );
+  ret->drop();
+  return ret;
+}
+
+GameEventPtr FundIssueEvent::exportg(Good::Type good, int qty)
+{
+  FundIssueEvent* ev = new FundIssueEvent();
+  ev->_gtype = good;
+  ev->_qty = qty;
+  ev->_type = CityFunds::exportGoods;
+  GameEventPtr ret( ev );
+  ret->drop();
+  return ret;
+}
+
 void FundIssueEvent::exec(Game& game)
 {
+  if( _type == CityFunds::importGoods )
+  {
+    int price = game.getCity()->getTradeOptions().getSellPrice( _gtype );
+    _value = -price * _qty / 100;
+  }
+  else if( _type == CityFunds::exportGoods )
+  {
+    int price = game.getCity()->getTradeOptions().getBuyPrice( _gtype );
+    _value = price * _qty / 100;
+  }
+
   game.getCity()->getFunds().resolveIssue( FundIssue( _type, _value ) );
+}
+
+
+GameEventPtr ShowEmpireMapWindow::create(bool show)
+{
+  ShowEmpireMapWindow* ev = new ShowEmpireMapWindow();
+  ev->_show = show;
+  GameEventPtr ret( ev );
+  ret->drop();
+  return ret;
+}
+
+void ShowEmpireMapWindow::exec(Game& game)
+{
+  List<EmpireMapWindow*> wndList = game.getGui()->getRootWidget()->findChildren<EmpireMapWindow*>();
+
+  if( _show )
+  {
+    if( !wndList.empty() )
+    {
+      wndList.front()->bringToFront();
+    }
+    else
+    {
+      EmpireMapWindow::create( game.getEmpire(), game.getCity(), game.getGui()->getRootWidget(), -1 );
+    }
+  }
+  else
+  {
+    if( !wndList.empty() )
+    {
+      wndList.front()->deleteLater();
+    }
+  }
+}
+
+
+GameEventPtr ShowAdvisorWindow::create(bool show, int advisor)
+{
+  ShowAdvisorWindow* ev = new ShowAdvisorWindow();
+  ev->_show = show;
+  ev->_advisor = advisor;
+  GameEventPtr ret( ev );
+  ret->drop();
+  return ret;
+}
+
+void ShowAdvisorWindow::exec(Game& game)
+{
+  List<AdvisorsWindow*> wndList = game.getGui()->getRootWidget()->findChildren<AdvisorsWindow*>();
+
+  if( _show )
+  {
+    if( !wndList.empty() )
+    {
+      wndList.front()->bringToFront();
+      wndList.front()->showAdvisor( (AdvisorType)_advisor );
+    }
+    else
+    {
+      AdvisorsWindow::create( game.getGui()->getRootWidget(), -1, (AdvisorType)_advisor, game.getCity() );
+    }
+  }
+  else
+  {
+    if( !wndList.empty() )
+    {
+      wndList.front()->deleteLater();
+    }
+  }
 }

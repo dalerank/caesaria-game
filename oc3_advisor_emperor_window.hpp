@@ -25,15 +25,19 @@
 class AdvisorEmperorWindow : public Widget
 {
 public:
-  AdvisorEmperorWindow(Widget* parent, int id );
+  AdvisorEmperorWindow(Widget* parent, int maxMoney, int id );
 
   void draw( GfxEngine& painter );
-  void showChangeSalaryWindow();
 
   bool onEvent(const NEvent &event);
 
 public oc3_signals:
   Signal1<int>& onChangeSalary();
+  Signal1<int>& onSendMoney();
+
+protected:
+  void _showChangeSalaryWindow();
+  void _showSend2CityWindow();
 
 private:
   class Impl;

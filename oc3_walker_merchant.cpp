@@ -26,6 +26,7 @@
 #include "oc3_city_trade_options.hpp"
 #include "oc3_name_generator.hpp"
 #include "oc3_tilemap.hpp"
+#include "oc3_game_event_mgr.hpp"
 
 class Merchant::Impl
 {
@@ -239,7 +240,7 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
               GoodStock& stock = buy.getStock( goodType );
               warehouse->getGoodStore().retrieve( stock, mayBuy );
 
-              FundIssue::exportGoods( city, goodType, mayBuy );
+              GameEventMgr::append( FundIssueEvent::exportg( goodType, mayBuy ) );
             }
           }
         }
@@ -293,7 +294,7 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
               GoodStock& stock = sell.getStock( goodType );
               warehouse->getGoodStore().store( stock, maySells );
               
-              FundIssue::importGoods( city, goodType, maySells );
+              GameEventMgr::append( FundIssueEvent::import( goodType, maySells ) );
             }
           }
         }        

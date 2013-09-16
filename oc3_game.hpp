@@ -60,8 +60,6 @@ public:
   void setPaused( bool value );
   bool isPaused() const;
 
-  void timeStep();
-
   void changeTimeMultiplier(int percent);
 
 public oc3_slots:

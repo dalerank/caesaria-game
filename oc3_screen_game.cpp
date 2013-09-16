@@ -77,9 +77,6 @@ public:
   void resolveRemoveTool();
   void showTileInfo( const Tile& tile );
   void makeScreenShot();
-
-public oc3_signals:
-  Signal0<> onFrameRenderFinishedSignal;
 };
 
 ScreenGame::ScreenGame(Game& game , GfxEngine& engine ) : _d( new Impl )
@@ -178,6 +175,12 @@ void ScreenGame::Impl::showSaveDialog()
   //CONNECT( dialog, onFileSelected(), &onSaveGameSignal, Signal1<std::string>::emit );
 }
 
+void ScreenGame::Impl::showEmpireMapWindow()
+{
+  GameEventMgr::append( ShowEmpireMapWindow::create( true ) );
+  GameEventMgr::append( ShowAdvisorWindow::create( false, ADV_TRADING ) );
+}
+
 void ScreenGame::draw()
 {
   _d->renderer.draw();
@@ -193,12 +196,6 @@ void ScreenGame::animate( unsigned int time )
 
 void ScreenGame::afterFrame()
 {
-  _d->onFrameRenderFinishedSignal.emit();
-}
-
-Signal0<>&ScreenGame::onFrameRenderFinished()
-{
-  return _d->onFrameRenderFinishedSignal;
 }
 
 void ScreenGame::handleEvent( NEvent& event )
@@ -358,28 +355,12 @@ void ScreenGame::Impl::showAdvisorsWindow( const int advType )
   {
     AdvisorsWindow* advWnd = AdvisorsWindow::create( game->getGui()->getRootWidget(), -1,
                                                      (AdvisorType)advType, game->getCity() );
-    CONNECT( advWnd, onEmpireMapRequest(), this, Impl::showEmpireMapWindow ); 
   }
 }
 
 void ScreenGame::Impl::showTradeAdvisorWindow()
 {
   showAdvisorsWindow( ADV_TRADING );
-}
-
-void ScreenGame::Impl::showEmpireMapWindow()
-{  
-  List<EmpireMapWindow*> wndList = game->getGui()->getRootWidget()->findChildren<EmpireMapWindow*>();
-
-  if( wndList.size() == 1 )
-  {
-    wndList.front()->bringToFront();
-  }
-  else
-  {
-    EmpireMapWindow* emap = EmpireMapWindow::create( game->getEmpire(), game->getCity(), game->getGui()->getRootWidget(), -1 );
-    CONNECT( emap, onTradeAdvisorRequest(), this, Impl::showTradeAdvisorWindow ); 
-  }  
 }
 
 void ScreenGame::Impl::showMissionTaretsWindow()

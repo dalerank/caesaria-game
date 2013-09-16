@@ -80,6 +80,27 @@ private:
   std::string _title, _text;
 };
 
+class ShowEmpireMapWindow : public GameEvent
+{
+public:
+  static GameEventPtr create( bool show );
+  virtual void exec( Game& game );
+
+private:
+  bool _show;
+};
+
+class ShowAdvisorWindow : public GameEvent
+{
+public:
+  static GameEventPtr create( bool show, int advisor );
+  virtual void exec( Game& game );
+
+private:
+  bool _show;
+  int _advisor;
+};
+
 class TogglePause : public GameEvent
 {
 public:
@@ -101,10 +122,14 @@ class FundIssueEvent : public GameEvent
 {
 public:
   static GameEventPtr create( int type, int value );
+  static GameEventPtr import( Good::Type good, int qty );
+  static GameEventPtr exportg( Good::Type good, int qty );
   virtual void exec( Game& game );
 private:
   int _type;
   int _value;
+  Good::Type _gtype;
+  int _qty;
 };
 
 #endif //_OPENCAESAR3_CITY_EVENT_H_INCLUDE_
