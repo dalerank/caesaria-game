@@ -41,7 +41,6 @@ public:
 	//unsigned int resultTransparent;
   bool needUpdateTexture;
 	NColor overrideColor;
-	//core::AbstractOSOperator* osOperator;
 
 	int cursorPos, oldCursorPos;
 	int horizScrollPos, vertScrollPos; // scroll position in characters
@@ -86,6 +85,7 @@ EditBox::EditBox( Widget* parent, const Rect& rectangle, const std::string& text
 	_d->isPasswordBox = false;
 	_d->passwordChar = '*';
   _d->lastBreakFont = getActiveFont();  
+  _d->needUpdateTexture = true;
 
 	#ifdef _DEBUG
 	    setDebugName( "EditBox");
