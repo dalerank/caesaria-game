@@ -93,6 +93,7 @@ public:
   virtual void deliverService();
   virtual void timeStep(const unsigned long time);
   virtual bool isNeedRoadAccess() const;
+
 private:
   bool _haveReservoirWater;
 };

@@ -82,15 +82,6 @@ public:
   static const int landTradeRoute = 70;
   static const int baseLocalGoodId = 316;
   static const int baseEmpireGoodId = 10;
-  static const int fontainEmpty = 3;
-  static const int fontainFull = 4;
-};
-
-class AnimId
-{
-public:
-  static const int fontain = 11;
-  static const int fontainSize = 7;
 };
 
 class OverlayPic
