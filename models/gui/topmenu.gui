@@ -1,11 +1,10 @@
-{ 
-  type : "gui"
-  
+{  
 	lbPopulation : 
   {
+    class : "Widget" 
     type : "Label"
-    rect : "r155, 0, r35, 23"
-    image : [ "paneling", 15 ]
+    geometry : [ 0, 0, 120, 23 ]
+    image : "paneling_00015.png"
     font : "FONT_2_WHITE"
     textAlign : [ "center", "center" ]
     tooltipText : "##population_tooltip##"

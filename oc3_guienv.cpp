@@ -22,6 +22,7 @@
 #include "oc3_gui_label.hpp"
 #include "oc3_time.hpp"
 #include "oc3_foreach.hpp"
+#include "oc3_gui_widget_factory.hpp"
 
 class GuiEnv::Impl
 {
@@ -34,6 +35,7 @@ public:
     unsigned int LaunchTime;
     unsigned int RelaunchTime;
   };
+
 
   SToolTip toolTip;
   bool preRenderFunctionCalled;
@@ -49,6 +51,7 @@ public:
   Rect _desiredRect;
   GfxEngine* engine;
   Point cursorPos;
+  WidgetFactory factory;
 
   WidgetPtr createStandartTooltip( Widget* parent );
   void threatDeletionQueue();
@@ -220,6 +223,11 @@ void GuiEnv::deleteLater( Widget* ptrElement )
 	}
 	catch(...)
 	{}
+}
+
+Widget* GuiEnv::createWidget(const std::string& type, Widget* parent)
+{
+	return _d->factory.create( type, parent );
 }
 
 WidgetPtr GuiEnv::Impl::createStandartTooltip( Widget* parent )

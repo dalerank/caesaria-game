@@ -13,30 +13,14 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_ALIGNMENT_H_INCLUDED__
-#define __OPENCAESAR3_ALIGNMENT_H_INCLUDED__
+#include "oc3_alignment.hpp"
 
-#include "oc3_enums_helper.hpp"
 
-enum TypeAlign
+AlignHelper::AlignHelper() : EnumsHelper<TypeAlign>( alignAuto )
 {
-    //! Aligned to parent's top or left side (default)
-    alignUpperLeft=0,
-    //! Aligned to parent's bottom or right side
-    alignLowerRight,
-    //! Aligned to the center of parent
-    alignCenter,
-    //! Stretched to fit parent
-    alignScale,
-    //! 
-    alignAuto
-};
-
-class AlignHelper : public EnumsHelper<TypeAlign>
-{
-public:
-  AlignHelper();
-};
-
-#endif // __NRP_ALIGNMENT_H_INCLUDED__
-
+  append( alignUpperLeft, "upperLeft" );
+  append( alignLowerRight, "lowerRight" );
+  append( alignCenter, "center" );
+  append( alignScale, "scale" );
+  append( alignAuto, "auto" );
+}

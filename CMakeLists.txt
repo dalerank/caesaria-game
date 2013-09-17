@@ -79,9 +79,10 @@ foreach( name ${LZMA_SRC_LIST} )
   list( APPEND UTILS_SRC_LIST ${name} )
 endforeach()
 
-file(GLOB DATA_MODELS_LIST "${CMAKE_CURRENT_SOURCE_DIR}/models/*.model")
+file(GLOB GAME_MODELS_LIST "${CMAKE_CURRENT_SOURCE_DIR}/models/game/*.model")
+file(GLOB GUI_MODELS_LIST "${CMAKE_CURRENT_SOURCE_DIR}/models/gui/*.gui")
 
-add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST} ${UTILS_SRC_LIST} ${DATA_MODELS_LIST})
+add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST} ${UTILS_SRC_LIST} ${GAME_MODELS_LIST} ${GUI_MODELS_LIST})
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME "caesar3")
 

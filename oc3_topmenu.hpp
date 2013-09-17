@@ -24,11 +24,10 @@ class DateTime;
 class TopMenu : public MainMenu
 {
 public:
-  static TopMenu* create( Widget* parent, const int height );
+  TopMenu( Widget* parent, const int height );
 
   // draw on screen
   void draw( GfxEngine& engine );
-  //bool onEvent(const NEvent& event);
 
   void setFunds( int value );
   void setPopulation( int value );
@@ -41,8 +40,6 @@ oc3_signals public:
   Signal1<int>& onRequestAdvisor();
 
 private:
-  TopMenu( Widget* parent, const int height );
-
   class Impl;
   ScopedPtr< Impl > _d;
 };

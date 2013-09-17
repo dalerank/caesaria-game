@@ -26,6 +26,8 @@ class Label : public Widget
 public:
   enum BackgroundMode { bgWhite=0, bgBlack, bgBrown, bgSmBrown, bgNone, bgWhiteFrame };
   //! constructor
+  Label( Widget* parent );
+
   Label( Widget* parent, const Rect& rectangle, const std::string& text="", bool border=false,
          BackgroundMode background = bgNone, int id=-1);
 
@@ -101,11 +103,13 @@ public:
 
   virtual void setBackgroundPicture( const Picture& picture, const Point& offset=Point() );
 
-  void setFont( const Font& font );
+  virtual void setFont( const Font& font );
 
-  void setTextAlignment( TypeAlign horizontal, TypeAlign vertical );
+  virtual void setTextAlignment( TypeAlign horizontal, TypeAlign vertical );
 
-  void setLineIntervalOffset( const int offset );
+  virtual void setLineIntervalOffset( const int offset );
+
+  virtual void setupUI( const VariantMap &ui );
     
 oc3_signals public:
   virtual Signal0<>& onClicked();

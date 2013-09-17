@@ -22,8 +22,6 @@
 
 using namespace std;
 
-typedef vector< string > StringArray;
-
 class Label::Impl
 {
 public:
@@ -66,6 +64,13 @@ public oc3_signals:
 };
 
 //! constructor
+Label::Label( Widget* parent ) : Widget( parent, -1, Rect( 0, 0, 1, 1) ), _d( new Impl )
+{
+	_d->isBorderVisible = false;
+	_d->backgroundMode = bgNone;
+	setTextAlignment( alignAuto, alignAuto );
+}
+
 Label::Label(Widget* parent, const Rect& rectangle, const string& text, bool border,
 						 BackgroundMode background, int id)
 : Widget( parent, id, rectangle),
@@ -611,13 +616,21 @@ void Label::setTextAlignment( TypeAlign horizontal, TypeAlign vertical )
 
 void Label::_resizeEvent()
 {
-    _d->needUpdatePicture = true;
+  _d->needUpdatePicture = true;
 }
 
 void Label::setLineIntervalOffset( const int offset )
 {
-    _d->lineIntervalOffset = offset;
-    _d->needUpdatePicture = true;
+  _d->lineIntervalOffset = offset;
+  _d->needUpdatePicture = true;
+}
+
+void Label::setupUI(const VariantMap& ui)
+{
+  Widget::setupUI( ui );
+
+  setFont( Font::create( ui.get( "font" ).toString() ) );
+  setBackgroundPicture( Picture::load( ui.get( "image" ).toString() ) );
 }
 
 PictureRef& Label::getPicture()

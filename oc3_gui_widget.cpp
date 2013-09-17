@@ -19,6 +19,7 @@
 #include "oc3_guienv.hpp"
 #include "oc3_event.hpp"
 #include "oc3_foreach.hpp"
+#include "oc3_saveadapter.hpp"
 
 void Widget::beforeDraw( GfxEngine& painter )
 {
@@ -571,34 +572,65 @@ bool Widget::getNextWidget( int startOrder, bool reverse, bool group, Widget*& f
 //     out->AddBool( SerializeHelper::noClipProp, _noClip);
 // }
 // 
-// void Widget::load( core::VariantArray* in )
-// {
-//     setStyle( in->getAttributeAsString( SerializeHelper::styleProp ) );
-//     setOpacity( in->getAttributeAsFloat( SerializeHelper::opacityProp ) );
-//     _d->internalName = in->getAttributeAsString( SerializeHelper::internalNameProp );
-//     setTextAlignment( (TypeAlign)in->getAttributeAsEnumeration( SerializeHelper::hTextAlignProp, NrpAlignmentNames ),
-//                       (TypeAlign)in->getAttributeAsEnumeration( SerializeHelper::vTextAlignProp, NrpAlignmentNames ) );
-//     setID( in->getAttributeAsInt( SerializeHelper::idProp ) );
-//     setText(in->getAttributeAsString( SerializeHelper::captionProp ) );
-//     setTooltipText( in->getAttributeAsString( SerializeHelper::tooltipProp ) );
-//     setVisible( in->getAttributeAsBool( SerializeHelper::visibleProp ) );
-//     setEnabled(in->getAttributeAsBool( SerializeHelper::enabledProp ));
-//     _isTabStop = in->getAttributeAsBool( SerializeHelper::tabStopProp );
-//     _isTabGroup = in->getAttributeAsBool( SerializeHelper::tabGroupProp );
-//     _tabOrder = in->getAttributeAsInt( SerializeHelper::tabOrderProp );
-// 
-//     setMaxSize( in->getAttributeAsSize( SerializeHelper::maxSizeProp ) );
-//     setMinSize( in->getAttributeAsSize( SerializeHelper::minSizeProp ) );
-// 
-//     setAlignment( (TypeAlign) in->getAttributeAsEnumeration( SerializeHelper::leftAlignProp, NrpAlignmentNames),
-//                   (TypeAlign)in->getAttributeAsEnumeration( SerializeHelper::rightAlignProp, NrpAlignmentNames),
-//                   (TypeAlign)in->getAttributeAsEnumeration( SerializeHelper::topAlignProp, NrpAlignmentNames),
-//                   (TypeAlign)in->getAttributeAsEnumeration( SerializeHelper::bottomAlignProp, NrpAlignmentNames));
-// 
-//     setGeometry( in->getAttributeAsRect( SerializeHelper::rectangleProp ));
-// 
-//     setNotClipped( in->getAttributeAsBool( SerializeHelper::noClipProp ) );
-// }
+void Widget::setupUI( const VariantMap& ui )
+{
+  //setOpacity( in->getAttributeAsFloat( SerializeHelper::opacityProp ) );
+  _d->internalName = ui.get( "name" ).toString();
+  AlignHelper ahelper;
+  VariantList textAlign = ui.get( "textAlign" ).toList();
+
+  if( textAlign.size() > 1 )
+  {
+    setTextAlignment( ahelper.findType( textAlign.front().toString() ),
+                      ahelper.findType( textAlign.back().toString() ) );
+  }
+
+  Variant tmp;
+  tmp = ui.get( "id"); setID( tmp.isValid() ? tmp.toInt() : -1 );
+  tmp = ui.get( "text" ); setText( tmp.isValid() ? tmp.toString() : "" );
+  tmp = ui.get( "tooltip" ); setTooltipText( tmp.isValid() ? tmp.toString() : "" );
+  tmp = ui.get( "visible" ); setVisible( tmp.isValid() ? tmp.toBool() : true );
+  tmp = ui.get( "enabled" ); setEnabled( tmp.isValid() ? tmp.toBool() : true );
+  tmp = ui.get( "tabStop" ); _isTabStop = tmp.isValid() ? tmp.toInt() : false;
+  tmp = ui.get( "tabGroup" ); _isTabGroup = tmp.isValid() ? tmp.toInt() : -1;
+  tmp = ui.get( "tabOrder" ); _tabOrder = tmp.isValid() ? tmp.toInt() : -1;
+  tmp = ui.get( "maximumSize" ); setMaxSize( tmp.isValid() ? tmp.toSize() : Size( 0 ) );
+  tmp = ui.get( "minimumSize" ); setMinSize( tmp.isValid() ? tmp.toSize() : Size( 1 ) );
+
+  /*setAlignment( ahelper.findType( ui.get( "leftAlign" ).toString() ),
+                ahelper.findType( ui.get( "rightAlign" ).toString() ),
+                ahelper.findType( ui.get( "topAlign" ).toString() ),
+                ahelper.findType( ui.get( "bottomAlign" ).toString() ));*/
+
+  setGeometry( ui.get( "geometry" ).toRect() );
+
+  tmp = ui.get( "noclipped" ); setNotClipped( tmp.isValid() ? tmp.toBool() : false );
+
+  for( VariantMap::const_iterator it=ui.begin(); it != ui.end(); it++ )
+  {
+    if( it->second.type() != Variant::Map )
+      continue;
+
+    VariantMap tmp = it->second.toMap();
+    if( tmp.get( "class" ).toString() == "Widget" )
+    {
+      Widget* child = getEnvironment()->createWidget( tmp.get( "type" ).toString(), this );
+      if( child )
+      {        
+        child->setupUI( tmp );
+        if( child->getInternalName().empty() )
+        {
+          child->setInternalName( it->first );
+        }
+      }
+    }
+  }
+}
+
+void Widget::setupUI(const io::FilePath& filename)
+{
+  setupUI( SaveAdapter::load( filename ) );
+}
 
 void Widget::addChild_( Widget* child )
 {

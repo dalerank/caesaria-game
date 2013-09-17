@@ -107,7 +107,7 @@ void ScreenGame::initialize()
 
   _d->rightPanel = MenuRigthPanel::create( gui.getRootWidget(), rPanelRect, rPanelPic);
 
-  _d->topMenu = TopMenu::create( gui.getRootWidget(), topMenuHeight );
+  _d->topMenu = new TopMenu( gui.getRootWidget(), topMenuHeight );
   _d->topMenu->setPopulation( _d->game->getCity()->getPopulation() );
   _d->topMenu->setFunds( _d->game->getCity()->getFunds().getValue() );
 

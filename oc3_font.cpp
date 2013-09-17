@@ -18,6 +18,7 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_exception.hpp"
 #include <SDL_ttf.h>
+#include "oc3_color.hpp"
 #include <map>
 
 class Font::Impl
@@ -246,34 +247,22 @@ Font Font::create( FontType type )
   return FontCollection::instance().getFont_( type );
 }
 
+Font Font::create(const std::string& type)
+{
+  return FontCollection::instance().getFont_( type );
+}
+
+class FontTypeHelper : public EnumsHelper<int>
+{
+public:
+  FontTypeHelper() : EnumsHelper<int>(0) {}
+};
+
 class FontCollection::Impl
 {
 public:
-  std::map<int, Font> collection;
-
-  void addFont( const int key, const std::string& pathFont, const int size, const SDL_Color& color )
-  {
-    TTF_Font* ttf = TTF_OpenFont(pathFont.c_str(), size);
-    if( ttf == NULL ) 
-    {
-      THROW("Cannot load font file:" << pathFont << ", error:" << TTF_GetError());
-    }
-
-    Font font0;
-    font0._d->ttfFont = ttf;
-    font0._d->color = color;
-    setFont( key, font0);
-  }
-
-  void setFont( const int key, Font font )
-  {
-    std::pair< std::map<int, Font>::iterator, bool> ret = collection.insert(std::pair<int, Font>(key, font));
-    if( ret.second == false )
-    {
-      // no insert font (already exists)
-      StringHelper::debug( 0xff, "Error, font already exists, key=%d", key );
-    }
-  }
+  FontTypeHelper fhelper;
+  std::map< int, Font> collection;
 };
 
 FontCollection& FontCollection::instance()
@@ -284,6 +273,13 @@ FontCollection& FontCollection::instance()
 
 FontCollection::FontCollection() : _d( new Impl )
 { }
+
+Font& FontCollection::getFont_(const std::string& name)
+{
+  int type = _d->fhelper.findType( name );
+
+  return getFont_( type );
+}
 
 Font& FontCollection::getFont_(const int key)
 {
@@ -297,28 +293,53 @@ Font& FontCollection::getFont_(const int key)
   return (*it).second;
 }
 
-void FontCollection::setFont(const int key, Font font)
+void FontCollection::setFont(const int key, const std::string& name, Font font)
 {
-  _d->setFont( key, font );
+  std::pair< std::map< int, Font>::iterator, bool> ret = _d->collection.insert(std::pair<int, Font>(key, font) );
+
+  if( ret.second == false )
+  {
+    // no insert font (already exists)
+    StringHelper::debug( 0xff, "Error, font already exists, key=%d", key );
+    return;
+  }
+
+  _d->fhelper.append( key, name );
+}
+
+void FontCollection::addFont(const int key, const std::string& name, const std::string& pathFont, const int size, const NColor& color )
+{
+  TTF_Font* ttf = TTF_OpenFont(pathFont.c_str(), size);
+  if( ttf == NULL )
+  {
+    THROW("Cannot load font file:" << pathFont << ", error:" << TTF_GetError());
+  }
+
+  Font font0;
+  font0._d->ttfFont = ttf;
+
+  SDL_Color c = { color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha() };
+  font0._d->color = c;
+  setFont( key, name, font0);
 }
 
 void FontCollection::initialize(const std::string &resourcePath)
 {
   std::string full_font_path = resourcePath + "/FreeSerif.ttf";
 
-  SDL_Color black = {0, 0, 0, 255};
-  SDL_Color red = {160, 0, 0, 255};  // dim red
-  SDL_Color white = {215, 215, 215, 255};  // dim white
-  SDL_Color yellow = {160, 160, 0, 255}; 
+  NColor black( 255, 0, 0, 0 );
+  NColor red( 255, 160, 0, 0 );  // dim red
+  NColor white( 255, 215, 215, 215 );  // dim white
+  NColor yellow( 255, 160, 160, 0 );
 
-  _d->addFont( FONT_0, full_font_path, 12, black );
-  _d->addFont( FONT_1, full_font_path, 16, black );
-  _d->addFont( FONT_1_WHITE, full_font_path, 16, white );
-  _d->addFont( FONT_1_RED, full_font_path, 16, red );
-  _d->addFont( FONT_2, full_font_path, 18, black );
-  _d->addFont( FONT_2_RED, full_font_path, 18, red );
-  _d->addFont( FONT_2_WHITE, full_font_path, 18, white );
-  _d->addFont( FONT_2_YELLOW, full_font_path, 18, yellow );
-  _d->addFont( FONT_3, full_font_path, 28, black);
+  addFont( FONT_0,       OC3_STR_EXT(FONT_0),      full_font_path, 12, black );
+  addFont( FONT_1,       OC3_STR_EXT(FONT_1),      full_font_path, 16, black );
+  addFont( FONT_1_WHITE, OC3_STR_EXT(FONT_1_WHITE),full_font_path, 16, white );
+  addFont( FONT_1_RED,   OC3_STR_EXT(FONT_1_RED),  full_font_path, 16, red );
+  addFont( FONT_2,       OC3_STR_EXT(FONT_2),      full_font_path, 18, black );
+  addFont( FONT_2_RED,   OC3_STR_EXT(FONT_2_RED),  full_font_path, 18, red );
+  addFont( FONT_2_WHITE, OC3_STR_EXT(FONT_2_WHITE),full_font_path, 18, white );
+  addFont( FONT_2_YELLOW,OC3_STR_EXT(FONT_2_YELLOW), full_font_path, 18, yellow );
+  addFont( FONT_3,       OC3_STR_EXT(FONT_3),      full_font_path, 28, black);
 }
 

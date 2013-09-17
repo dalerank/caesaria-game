@@ -40,6 +40,7 @@ public:
   Font();
   static Font create( const std::string& family, const int size );
   static Font create( FontType type );
+  static Font create( const std::string& type );
   
   ~Font();
 
@@ -78,7 +79,10 @@ public:
   void initialize(const std::string &resourcePath);
 
   Font& getFont_(const int key);  // get a saved font
-  void setFont(const int key, Font font);  // save a font
+  Font& getFont_(const std::string& name );  // get a saved font
+
+  void setFont(const int key, const std::string& name, Font font);  // save a font
+  void addFont(const int key, const std::string& name, const std::string& pathFont, const int size, const NColor& color);
 
 private:
   FontCollection();

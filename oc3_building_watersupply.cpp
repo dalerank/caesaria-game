@@ -533,13 +533,7 @@ int WaterSource::getId() const
   return getTilePos().getJ() * 10000 + getTilePos().getI();
 }
 
-struct FontainInfo
-{
-  static const int empty = 3;
-  static const int full = 4;
-  static const int animStart = 11;
-  static const int animSize = 7;
-};
+typedef enum { fontainEmpty = 3, fontainFull = 4, fontainStartAnim = 11, fontainSizeAnim = 7 } FontainConstant;
 
 Fountain::Fountain() : ServiceBuilding(Service::S_FOUNTAIN, B_FOUNTAIN, Size(1))
 {  
@@ -548,7 +542,7 @@ Fountain::Fountain() : ServiceBuilding(Service::S_FOUNTAIN, B_FOUNTAIN, Size(1))
   //id = std::rand() % 4;
 
   setPicture( ResourceGroup::utilitya, 10 );
-  _getAnimation().load( ResourceGroup::utilitya, FontainInfo::animStart, FontainInfo::animSize );
+  _getAnimation().load( ResourceGroup::utilitya, fontainStartAnim, fontainSizeAnim );
   //animLoader.fill_animation_reverse(_animation, "utilitya", 25, 7);
   _getAnimation().setOffset( Point( 12, 24 ) );
   _getAnimation().setFrameDelay( 2 );
@@ -614,9 +608,8 @@ bool Fountain::canBuild( CityPtr city, const TilePos& pos ) const
 
   Tilemap& tmap = city->getTilemap();
   const TerrainTile& buildTerrain = tmap.at( pos ).getTerrain();
-  bool reservoirPresent = buildTerrain.getWaterService( WTR_RESERVOIR ) > 0;
-  const_cast< Fountain* >( this )->setPicture( ResourceGroup::waterbuildings,
-                                               reservoirPresent ? FontainInfo::full : FontainInfo::empty  );
+  int picid = (buildTerrain.getWaterService( WTR_RESERVOIR ) > 0 ? fontainFull : fontainEmpty );
+  const_cast< Fountain* >( this )->setPicture( ResourceGroup::waterbuildings, picid );
 
   return ret;
 }
@@ -625,7 +618,7 @@ void Fountain::build( CityPtr city, const TilePos& pos )
 {
   ServiceBuilding::build( city, pos );
 
-  setPicture( ResourceGroup::waterbuildings, FontainInfo::empty );
+  setPicture( ResourceGroup::waterbuildings, fontainEmpty );
 }
 
 bool Fountain::isNeedRoadAccess() const

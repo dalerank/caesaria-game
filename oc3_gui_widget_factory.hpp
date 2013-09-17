@@ -13,30 +13,34 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_ALIGNMENT_H_INCLUDED__
-#define __OPENCAESAR3_ALIGNMENT_H_INCLUDED__
+#ifndef _OPENCAESAR3_WIDGET_FACTORY_H_INCLUDE_
+#define _OPENCAESAR3_WIDGET_FACTORY_H_INCLUDE_
 
-#include "oc3_enums_helper.hpp"
+#include "oc3_scopedptr.hpp"
+#include <string>
 
-enum TypeAlign
-{
-    //! Aligned to parent's top or left side (default)
-    alignUpperLeft=0,
-    //! Aligned to parent's bottom or right side
-    alignLowerRight,
-    //! Aligned to the center of parent
-    alignCenter,
-    //! Stretched to fit parent
-    alignScale,
-    //! 
-    alignAuto
-};
+class Widget;
 
-class AlignHelper : public EnumsHelper<TypeAlign>
+class WidgetCreator
 {
 public:
-  AlignHelper();
+  virtual Widget* create( Widget* parent ) = 0;
 };
 
-#endif // __NRP_ALIGNMENT_H_INCLUDED__
+class WidgetFactory
+{
+public:
+  WidgetFactory();
+  ~WidgetFactory();
 
+  Widget* create(const std::string& type, Widget* parent ) const;
+
+  bool canCreate( const std::string& type ) const;
+
+  void addCreator( const std::string& type, WidgetCreator* ctor );
+private:
+  class Impl;
+  ScopedPtr< Impl > _d;
+};
+
+#endif //_OPENCAESAR3_WIDGET_FACTORY_H_INCLUDE_

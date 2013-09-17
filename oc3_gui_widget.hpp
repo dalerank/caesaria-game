@@ -26,6 +26,8 @@
 #include "oc3_safetycast.hpp"
 #include "oc3_font.hpp"
 #include "oc3_smartptr.hpp"
+#include "oc3_variant.hpp"
+#include "oc3_filepath.hpp"
 
 class GfxEngine;
 class GuiEnv;
@@ -301,7 +303,8 @@ public:
   /** Implement this to set the attributes of your scene node for
    *	scripting languages, editors, debuggers or xml deserialization purposes.
    */
-  //virtual void load( core::VariantArray* in );
+  virtual void setupUI( const VariantMap& ui );
+  virtual void setupUI( const io::FilePath& filename );
 
   virtual void installEventHandler( Widget* elementHandler );
 

@@ -51,6 +51,8 @@ public:
 
   virtual void deleteLater( Widget* ptrElement );
 
+  Widget* createWidget( const std::string& type, Widget* parent );
+
   void clear();
    
 private:    
