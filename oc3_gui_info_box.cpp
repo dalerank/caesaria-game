@@ -507,7 +507,7 @@ void InfoBoxWarehouse::drawGood( const Good::Type &goodType, int col, int paintY
 }
 
 InfoBoxTemple::InfoBoxTemple( Widget* parent, const Tile& tile )
-  : InfoBoxSimple( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 147, 510 - 16, 147 + 62) )
+  : InfoBoxSimple( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 56, 510 - 16, 56 + 62) )
 {
   TemplePtr temple = tile.getTerrain().getOverlay().as<Temple>();
   RomeDivinityPtr divn = temple->getDivinity();

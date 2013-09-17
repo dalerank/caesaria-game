@@ -156,6 +156,7 @@ InfoBoxManager::InfoBoxManager( CityPtr city, GuiEnv* gui ) : _d( new Impl )
   _d->gui = gui;
 
   addInfobox( B_ROAD,     OC3_STR_EXT(B_ROAD), new CitizenInfoboxCreator<InfoBoxLand>( _d->city ) );
+  addInfobox( B_RESERVOIR, OC3_STR_EXT(B_RESERVOIR), new InfoBoxBasicCreator( _("##reservoir_title##"), _("##reservoir_text##") ) );
   addInfobox( B_HOUSE,    OC3_STR_EXT(B_HOUSE), new InfoBoxHouseCreator() );
   addInfobox( B_PREFECTURE,    OC3_STR_EXT(B_PREFECTURE), new ServiceBaseInfoboxCreator( "##prefecture_title##", "##prefecture_text##") );
   addInfobox( B_ENGINEER_POST, OC3_STR_EXT(B_ENGINEER_POST), new ServiceBaseInfoboxCreator( "##engineering_post_title##", "##engineering_post_text##" ) );

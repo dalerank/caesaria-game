@@ -23,6 +23,7 @@
 #include "oc3_player.hpp"
 #include "oc3_city.hpp"
 #include "oc3_gamedate.hpp"
+#include "oc3_empire.hpp"
 
 static const int currentVesion = 1;
 
@@ -38,6 +39,8 @@ bool GameLoaderOc3::load( const std::string& filename, Game& game )
 
     game.getPlayer()->load( vm[ "player" ].toMap() );
     game.getCity()->load( vm[ "city" ].toMap() );
+
+    game.getEmpire()->load( vm[ "empire" ].toMap() );
 
     return true;
   }
