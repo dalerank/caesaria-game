@@ -59,6 +59,11 @@ oc3_signals public:
 
 void TopMenu::draw( GfxEngine& engine )
 {
+  if( !isVisible() )
+    return;
+
+  _d->updateDate();
+
   engine.drawPicture( *_d->bgPicture, getScreenLeft(), getScreenTop() );
 
   MainMenu::draw( engine );
@@ -126,12 +131,8 @@ TopMenu::TopMenu( Widget* parent, const int height )
   _d->lbFunds->setTooltipText( _("##funds_tooltip##") );
   //_fundsLabel.setTextPosition(20, 0);
 
-  _d->lbDate = new Label( this, Rect( Point( getWidth() - dateLabelOffset, 0), lbSize ), "Feb 39 BC" );
-  _d->lbDate->setFont( Font::create( FONT_2_YELLOW ));
-  _d->lbDate->setTextAlignment( alignCenter, alignCenter );
-  _d->lbDate->setBackgroundPicture( Picture::load( ResourceGroup::panelBackground, panelBgStatus ) );
-  _d->lbDate->setTooltipText( _("##date_tooltip##") );
-  _d->updateDate();
+  _d->lbDate = findChild<Label*>( "lbDate" );
+  _d->lbDate->setPosition( Point( getWidth() - dateLabelOffset, 0) );
   //_dateLabel.setTextPosition(20, 0);
 
   ContextMenuItem* tmp = addItem( _("##gmenu_file##"), -1, true, true, false, false );
@@ -150,6 +151,11 @@ TopMenu::TopMenu( Widget* parent, const int height )
   CONNECT( mainMenu, onClicked(), &_d->onEndSignal, Signal0<>::emit );
 
   tmp = addItem( _("##gmenu_options##"), -1, true, true, false, false );
+  ContextMenu* options = tmp->addSubMenu();
+  ContextMenuItem* screen = options->addItem( _("##screen_options##"), -1, true, false, false, false );
+  ContextMenuItem* sound = options->addItem( _("##sound_options##"), -1, true, false, false, false );
+  ContextMenuItem* speed = options->addItem( _("##speed_options##"), -1, true, false, false, false );
+
   tmp = addItem( _("##gmenu_help##"), -1, true, true, false, false );
   tmp = addItem( _("##gmenu_advisors##"), -1, true, true, false, false );
   ContextMenu* advisersMenu = tmp->addSubMenu();

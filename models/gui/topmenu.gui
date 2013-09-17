@@ -9,4 +9,15 @@
     textAlign : [ "center", "center" ]
     tooltipText : "##population_tooltip##"
   }
+  
+  lbDate : 
+  {
+    class : "Widget"
+    type : "Label" 
+    geometry : [ 0, 0, 120, 23 ]
+    font : "FONT_2_YELLOW"
+    textAlign : [ "center", "center" ]
+    image : "paneling_00015.png"
+    tooltipText : "##date_tooltip##"
+  }
 }
