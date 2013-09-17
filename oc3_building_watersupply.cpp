@@ -539,14 +539,15 @@ Fountain::Fountain() : ServiceBuilding(Service::S_FOUNTAIN, B_FOUNTAIN, Size(1))
 {  
   std::srand( DateTime::getElapsedTime() );
 
-  //id = std::rand() % 4;
-
   setPicture( ResourceGroup::utilitya, 10 );
   _getAnimation().load( ResourceGroup::utilitya, fontainStartAnim, fontainSizeAnim );
   //animLoader.fill_animation_reverse(_animation, "utilitya", 25, 7);
   _getAnimation().setOffset( Point( 12, 24 ) );
   _getAnimation().setFrameDelay( 2 );
   _fgPictures.resize(1);
+
+  _damageIncrement = 0;
+  _fireIncrement = 0;
 
   setWorkers( 1 );
 }
@@ -624,4 +625,12 @@ void Fountain::build( CityPtr city, const TilePos& pos )
 bool Fountain::isNeedRoadAccess() const
 {
   return false;
+}
+
+void Fountain::load(const VariantMap& stream)
+{
+  ServiceBuilding::load( stream );
+
+  //check animation
+  timeStep( 1 );
 }

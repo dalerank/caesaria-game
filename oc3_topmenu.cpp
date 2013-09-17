@@ -71,7 +71,8 @@ void TopMenu::draw( GfxEngine& engine )
 
 void TopMenu::setPopulation( int value )
 {
-  _d->lbPopulation->setText( StringHelper::format( 0xff, "%.3s %d", _("##population_short##"), value ) );
+  if( _d->lbPopulation )
+    _d->lbPopulation->setText( StringHelper::format( 0xff, "%.3s %d", _("##population_short##"), value ) );
 }
 
 void TopMenu::setFunds( int value )
@@ -81,7 +82,7 @@ void TopMenu::setFunds( int value )
 
 void TopMenu::Impl::updateDate()
 {
-  if( saveDate.getMonth() == GameDate::current().getMonth() )
+  if( !lbDate || saveDate.getMonth() == GameDate::current().getMonth() )
     return;
 
   saveDate = GameDate::current();
@@ -120,7 +121,8 @@ TopMenu::TopMenu( Widget* parent, const int height )
 
   Size lbSize( 120, 23 );
   _d->lbPopulation = findChild<Label*>( "lbPopulation" );
-  _d->lbPopulation->setPosition( Point( getWidth() - populationLabelOffset, 0 ) );
+  if( _d->lbPopulation )
+    _d->lbPopulation->setPosition( Point( getWidth() - populationLabelOffset, 0 ) );
 
   //_populationLabel.setTextPosition(20, 0);
 
@@ -132,7 +134,8 @@ TopMenu::TopMenu( Widget* parent, const int height )
   //_fundsLabel.setTextPosition(20, 0);
 
   _d->lbDate = findChild<Label*>( "lbDate" );
-  _d->lbDate->setPosition( Point( getWidth() - dateLabelOffset, 0) );
+  if( _d->lbDate )
+    _d->lbDate->setPosition( Point( getWidth() - dateLabelOffset, 0) );
   //_dateLabel.setTextPosition(20, 0);
 
   ContextMenuItem* tmp = addItem( _("##gmenu_file##"), -1, true, true, false, false );

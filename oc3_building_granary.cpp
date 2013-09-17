@@ -167,7 +167,10 @@ void Granary::save( VariantMap& stream) const
 void Granary::load( const VariantMap& stream)
 {
    WorkingBuilding::load(stream);
+
    _d->goodStore.load( stream.get( "goodStore" ).toMap() );
+
+   computePictures();
 }
 
 void Granary::_tryDevastateGranary()

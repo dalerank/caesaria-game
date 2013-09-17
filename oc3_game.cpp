@@ -213,11 +213,11 @@ void Game::setScreenGame()
 
         _d->saveTime += 1;
 
-        GameEventMgr::update( _d->time );
-
         screen.animate( _d->saveTime );
       }
     }
+
+    GameEventMgr::update( _d->time );
   }
 
   switch( screen.getResult() )

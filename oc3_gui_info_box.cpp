@@ -187,7 +187,7 @@ void InfoBoxWorkingBuilding::setText(const std::string& text)
 }
 
 InfoBoxSenate::InfoBoxSenate( Widget* parent, const Tile& tile )
-  : InfoBoxSimple( parent, Rect( 0, 0, 510, 290 ), Rect( 16, 136, 510 - 16, 136 + 62 ) )
+  : InfoBoxSimple( parent, Rect( 0, 0, 510, 290 ), Rect( 16, 126, 510 - 16, 126 + 62 ) )
 {
   SenatePtr senate = tile.getTerrain().getOverlay().as<Senate>();
   setTitle( BuildingDataHolder::instance().getData( B_SENATE ).getPrettyName() );
@@ -372,7 +372,7 @@ std::string GuiInfoFactory::getInfoText()
 }
 
 InfoBoxGranary::InfoBoxGranary( Widget* parent, const Tile& tile )
-  : InfoBoxSimple( parent, Rect( 0, 0, 510, 280 ), Rect( 16, 80, 510 - 16, 80 + 62) )
+  : InfoBoxSimple( parent, Rect( 0, 0, 510, 280 ), Rect( 16, 130, 510 - 16, 130 + 62) )
 {
   _granary = tile.getTerrain().getOverlay().as<Granary>();
   Size btnOrdersSize( 350, 20 );
@@ -385,7 +385,7 @@ InfoBoxGranary::InfoBoxGranary( Widget* parent, const Tile& tile )
   // summary: total stock, free capacity
   std::string desc = StringHelper::format( 0xff, _("%d unites en stock. Espace pour %d unites."),
                                                   _granary->getGoodStore().getCurrentQty(),
-                                                  _granary->getGoodStore().getMaxQty() );
+                                                  _granary->getGoodStore().getFreeQty() );
 
   Label* lbUnits = new Label( this, Rect( _d->lbTitle->getLeftdownCorner(), Size( getWidth() - 16, 40 )), desc );
 
@@ -394,7 +394,7 @@ InfoBoxGranary::InfoBoxGranary( Widget* parent, const Tile& tile )
   drawGood(Good::fruit, 1, lbUnits->getBottom() );
   drawGood(Good::vegetable, 1, lbUnits->getBottom() + 25);
 
-  _drawWorkers( Point( 32, lbUnits->getBottom() + 50 ), 542, _granary->getMaxWorkers(), _granary->getWorkers() );
+  _drawWorkers( Point( 32, lbUnits->getBottom() + 60 ), 542, _granary->getMaxWorkers(), _granary->getWorkers() );
 }
 
 InfoBoxGranary::~InfoBoxGranary()
@@ -507,7 +507,7 @@ void InfoBoxWarehouse::drawGood( const Good::Type &goodType, int col, int paintY
 }
 
 InfoBoxTemple::InfoBoxTemple( Widget* parent, const Tile& tile )
-  : InfoBoxSimple( parent, Rect( 0, 0, 510, 256 ) )
+  : InfoBoxSimple( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 147, 510 - 16, 147 + 62) )
 {
   TemplePtr temple = tile.getTerrain().getOverlay().as<Temple>();
   RomeDivinityPtr divn = temple->getDivinity();
@@ -526,7 +526,7 @@ InfoBoxTemple::~InfoBoxTemple()
 }
 
 InfoBoxMarket::InfoBoxMarket( Widget* parent, const Tile& tile )
-    : InfoBoxSimple( parent, Rect( 0, 0, 510, 256 ) )
+  : InfoBoxSimple( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 130, 510 - 16, 130 + 62) )
 {
    MarketPtr market = tile.getTerrain().getOverlay().as<Market>();
 

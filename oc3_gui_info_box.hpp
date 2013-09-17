@@ -117,8 +117,6 @@ public:
   InfoBoxGranary( Widget* parent, const Tile& tile );
   virtual ~InfoBoxGranary();
   
-  void paint();
-  void drawWorkers( int );
   void drawGood(const Good::Type &goodType, int, int);
   void showSpecialOrdersWindow();
 
@@ -134,8 +132,6 @@ public:
    InfoBoxMarket( Widget* parent, const Tile& tile );
    virtual ~InfoBoxMarket();
    
-   void paint();
-   void drawWorkers();
    void drawGood( MarketPtr market, const Good::Type &goodType, int, int );
 };
 

@@ -119,7 +119,7 @@ City::City() : _d( new Impl )
   _d->climate = C_CENTRAL;
   _d->lastMonthCount = GameDate::current().getMonth();
 
-  //addService( CityServiceEmigrant::create( this ) );
+  addService( CityServiceEmigrant::create( this ) );
   addService( CityServiceWorkersHire::create( this ) );
   addService( CityServicePtr( &CityServiceTimers::getInstance() ) );
   addService( CityServiceProsperity::create( this ) );
