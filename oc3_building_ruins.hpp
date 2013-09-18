@@ -26,7 +26,7 @@ public:
   void deliverService();
   void timeStep(const unsigned long time);
   void burn();
-  void build(const TilePos& pos );
+  void build(CityPtr city, const TilePos& pos );
   bool isWalkable() const;
   void destroy();
 
@@ -42,7 +42,7 @@ public:
 
   void timeStep(const unsigned long time);
   bool isWalkable() const;
-  void build( const TilePos& pos );
+  void build(CityPtr city, const TilePos& pos );
   bool isNeedRoadAccess() const;
   void destroy();
 };
@@ -55,7 +55,7 @@ public:
     CollapsedRuins();
 
     void burn();
-    void build(const TilePos& pos );
+    void build(CityPtr city, const TilePos& pos );
 
     bool isWalkable() const;
     bool isNeedRoadAccess() const;
@@ -68,7 +68,7 @@ public:
 
   void timeStep(const unsigned long time);
   void burn();
-  void build(const TilePos& pos );
+  void build( CityPtr city, const TilePos& pos );
   bool isWalkable() const;
   void destroy();
 

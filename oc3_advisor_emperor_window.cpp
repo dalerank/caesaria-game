@@ -22,15 +22,15 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_gfx_engine.hpp"
-#include "oc3_groupbox.hpp"
+#include "oc3_gui_groupbox.hpp"
 #include "oc3_listbox.hpp"
 #include "oc3_listboxitem.hpp"
-#include "oc3_scenario.hpp"
-#include "oc3_player.hpp"
 
 class AdvisorEmperorWindow::Impl
 {
 public:
+  int money;
+  int wantSend;
   PictureRef background;
   Label* lbEmperorFavour;
   Label* lbEmperorFavourDesc;
@@ -38,17 +38,23 @@ public:
   Label* lbPrimaryFunds;  
   PushButton* btnSendGift;
   PushButton* btnSend2City;
-  PushButton* btnChangeSalary;
+  PushButton* btnChangeSalary; 
 
-  void changePlayerSalary( const ListBoxItem& item )
+  void sendMoney()
   {
-    Scenario::instance().getPlayer().setSalary( item.getTag() );
+    money -= wantSend;
+    onSendMoneySignal.emit( wantSend );
   }
+
+public oc3_signals:
+  Signal1<int> onChangeSalarySignal;
+  Signal1<int> onSendMoneySignal;
 };
 
-void AdvisorEmperorWindow::showChangeSalaryWindow()
+void AdvisorEmperorWindow::_showChangeSalaryWindow()
 {
-  GroupBox* gb = new GroupBox( getParent(), Rect( Point( 256, 176 ), Size( 510, 400 )), -1, GroupBox::whiteFrame );
+  Rect wdgRect( Point( (getWidth() - 510) / 2, (getHeight() -400)/2), Size( 510, 400 ) );
+  GroupBox* gb = new GroupBox( this, wdgRect, -1, GroupBox::whiteFrame );
 
   new Label( gb, Rect( 15, 15, gb->getWidth() - 15, 35), _("##set_mayor_salary##"),  false, Label::bgNone );
   ListBox* lbx = new ListBox( gb, Rect( 16, 50, gb->getWidth() - 16, gb->getHeight() - 100 ) );
@@ -68,15 +74,77 @@ void AdvisorEmperorWindow::showChangeSalaryWindow()
   item = &lbx->addItem( _("##proconsoul_salary##") ); item->setTag( 80 );
   item = &lbx->addItem( _("##caesar_salary##") ); item->setTag( 100 );
 
-  CONNECT( lbx, onItemSelected(), _d.data(), Impl::changePlayerSalary );
-
   PushButton* btn = new PushButton( gb, Rect( Point( 176, gb->getHeight() - 32 ), Size( 160, 20) ), _("##cancel##"), -1, false, PushButton::whiteBorderUp );
   CONNECT( btn, onClicked(), gb, GroupBox::deleteLater );
 }
 
-AdvisorEmperorWindow::AdvisorEmperorWindow( Widget* parent, int id ) 
+void AdvisorEmperorWindow::_showSend2CityWindow()
+{
+  _d->wantSend = 0;
+  GroupBox* gb = new GroupBox( this, Rect( Point( 50, 175 ), Size( 510, 160 )), -1, GroupBox::whiteFrame );
+
+  Label* lbTitle = new Label( gb, Rect( 85, 15, gb->getWidth() - 85, 40), _("##send_money_to_city##"),  false, Label::bgNone );
+  lbTitle->setTextAlignment( alignCenter, alignCenter );
+  lbTitle->setFont( Font::create( FONT_3 ) );
+  new Label( gb, Rect( Point( 50, 50), Size( 415, 60 ) ), "", false, Label::bgBlack );
+
+  Point start( 65, 55 );
+  Point offset( 80, 0 );
+  Size btnSize( 65, 15 );
+  new PushButton( gb, Rect( start, btnSize ), "0", 0x0f00, false, PushButton::blackBorderUp ); start += offset;
+  new PushButton( gb, Rect( start, btnSize ), "500", 0x0f01, false,PushButton::blackBorderUp ); start += offset;
+  new PushButton( gb, Rect( start, btnSize ), "2000", 0x0f04, false, PushButton::blackBorderUp ); start += offset;
+  new PushButton( gb, Rect( start, btnSize ), "5000", 0x0f0a, false, PushButton::blackBorderUp ); start += offset;
+  new PushButton( gb, Rect( start, btnSize ), _("##send_all##"), 0xf0ff, false,PushButton::blackBorderUp );
+
+  Rect btnRect = Rect( 80, gb->getHeight() - 35, 80 + 160, gb->getHeight() - 15 );
+  PushButton* btnSend = new PushButton( gb, btnRect, _("##send_money##"), -1, false, PushButton::whiteBorderUp );
+  PushButton* btnCancel = new PushButton( gb, btnRect + Point( 190, 0), _("##cancel##"), -1, false, PushButton::whiteBorderUp );
+
+  CONNECT( btnSend, onClicked(), _d.data(), Impl::sendMoney );
+  CONNECT( btnSend, onClicked(), gb, GroupBox::deleteLater );
+  CONNECT( btnCancel, onClicked(), gb, GroupBox::deleteLater );
+}
+
+bool AdvisorEmperorWindow::onEvent(const NEvent& event)
+{
+  if( event.EventType == OC3_GUI_EVENT  )
+  {
+    if( event.GuiEvent.EventType == OC3_LISTBOX_CHANGED )
+    {
+      if( ListBox* lstBox = safety_cast< ListBox* >( event.GuiEvent.Caller ) )
+      {
+        _d->onChangeSalarySignal.emit( lstBox->getSelectedItem().getTag() );
+      }
+    }
+    else if( event.GuiEvent.EventType == OC3_BUTTON_CLICKED )
+    {
+      int id = event.GuiEvent.Caller->getID();
+      if( id > 0 && (id & 0x0f00 == 0x0f00) )
+      {
+        int multiplier = id & 0xff;
+        _d->wantSend = math::clamp( (multiplier == 0xff ? _d->money : (multiplier * 500)), 0, _d->money);
+      }
+    }
+  }
+
+  return Widget::onEvent( event );
+}
+
+Signal1<int>&AdvisorEmperorWindow::onChangeSalary()
+{
+  return _d->onChangeSalarySignal;
+}
+
+Signal1<int>&AdvisorEmperorWindow::onSendMoney()
+{
+  return _d->onSendMoneySignal;
+}
+
+AdvisorEmperorWindow::AdvisorEmperorWindow(Widget* parent, int maxMoney, int id )
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
+  _d->money = maxMoney;
   setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),
                Size( 640, 432 ) ) );
 
@@ -103,7 +171,8 @@ AdvisorEmperorWindow::AdvisorEmperorWindow( Widget* parent, int id )
   _d->btnSendGift = new PushButton( this, Rect( Point( 322, 343), Size( 250, 20 ) ), "Send gift", -1, false, PushButton::blackBorderUp );
   _d->btnSend2City = new PushButton( this, Rect( Point( 322, 370), Size( 250, 20 ) ), "Send to city", -1, false, PushButton::blackBorderUp );
   _d->btnChangeSalary = new PushButton( this, Rect( Point( 70, 395), Size( 500, 20 ) ), "Change salary", -1, false, PushButton::blackBorderUp );  
-  CONNECT( _d->btnChangeSalary, onClicked(), this, AdvisorEmperorWindow::showChangeSalaryWindow );
+  CONNECT( _d->btnChangeSalary, onClicked(), this, AdvisorEmperorWindow::_showChangeSalaryWindow );
+  CONNECT( _d->btnSend2City, onClicked(), this, AdvisorEmperorWindow::_showSend2CityWindow );
 }
 
 void AdvisorEmperorWindow::draw( GfxEngine& painter )

@@ -26,7 +26,7 @@
 #include "oc3_guienv.hpp"
 #include "oc3_pushbutton.hpp"
 #include "oc3_gui_label.hpp"
-#include "oc3_app_config.hpp"
+#include "oc3_game_settings.hpp"
 
 class ScreenMenu::Impl
 {
@@ -35,6 +35,7 @@ public:
   StartMenu* menu;         // menu to display
   int result;
   bool isStopped;
+  GuiEnv* gui;
   std::string fileMap;
 
   void resolveNewGame() { result=startNewGame; isStopped=true; }
@@ -61,7 +62,7 @@ public:
 
 void ScreenMenu::Impl::resolveShowLoadGameWnd()
 {
-  Widget* parent = GuiEnv::instance().getRootWidget();
+  Widget* parent = gui->getRootWidget();
   Size rootSize = parent->getSize();
   RectF rect( 0.25f * rootSize.getWidth(), 0.25f * rootSize.getHeight(), 
               0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() );
@@ -76,12 +77,12 @@ void ScreenMenu::Impl::resolveShowLoadGameWnd()
 
 void ScreenMenu::Impl::resolvePlayMission()
 {
-  Widget* parent = GuiEnv::instance().getRootWidget();
+  Widget* parent = gui->getRootWidget();
   Size rootSize = parent->getSize();
   RectF rect( 0.25f * rootSize.getWidth(), 0.25f * rootSize.getHeight(), 
     0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() );
   LoadMapWindow* wnd = new LoadMapWindow( parent, rect.toRect(),
-                                          AppConfig::rcpath( "/missions/" ), ".oc3mission", -1 );
+                                          GameSettings::rcpath( "/missions/" ), ".oc3mission", -1 );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
   wnd->setTitle( _("##Select mission##") );
@@ -89,38 +90,39 @@ void ScreenMenu::Impl::resolvePlayMission()
 
 void ScreenMenu::Impl::resolveShowLoadMapWnd()
 {
-  Widget* parent = GuiEnv::instance().getRootWidget();
+  Widget* parent = gui->getRootWidget();
   Size rootSize = parent->getSize();
   LoadMapWindow* wnd = new LoadMapWindow( parent,
                                           RectF( 0.25f * rootSize.getWidth(), 0.25f * rootSize.getHeight(), 
                                                 0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() ).toRect(), 
-                                                AppConfig::rcpath( "/maps/" ), ".map",
+                                                GameSettings::rcpath( "/maps/" ), ".map",
                                                 -1 );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
   wnd->setTitle( _("##Load map##") );
 }
 
-ScreenMenu::ScreenMenu() : _d( new Impl )
+ScreenMenu::ScreenMenu(GuiEnv* gui) : _d( new Impl )
 {
   _d->bgPicture = Picture::getInvalid();
   _d->isStopped = false;
+  _d->gui = gui;
 }
 
 ScreenMenu::~ScreenMenu() {}
 
 void ScreenMenu::draw()
 {
-  GuiEnv::instance().beforeDraw();
+  _d->gui->beforeDraw();
 
   GfxEngine::instance().drawPicture(_d->bgPicture, 0, 0);
 
-  GuiEnv::instance().draw();
+  _d->gui->draw();
 }
 
 void ScreenMenu::handleEvent( NEvent& event )
 {
-  GuiEnv::instance().handleEvent( event );
+  _d->gui->handleEvent( event );
 }
 
 void ScreenMenu::initialize()
@@ -133,9 +135,9 @@ void ScreenMenu::initialize()
   _d->bgPicture.setOffset( (engine.getScreenWidth() - _d->bgPicture.getWidth()) / 2,
                              -( engine.getScreenHeight() - _d->bgPicture.getHeight() ) / 2 );
 
-  GuiEnv::instance().clear();
+  _d->gui->clear();
 
-  _d->menu = new StartMenu( GuiEnv::instance().getRootWidget() );
+  _d->menu = new StartMenu( _d->gui->getRootWidget() );
 
   PushButton* btn = _d->menu->addButton( _("##mainmenu_newgame##"), -1 );
   CONNECT( btn, onClicked(), _d.data(), Impl::resolveNewGame );

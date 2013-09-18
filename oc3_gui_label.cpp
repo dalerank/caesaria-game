@@ -22,8 +22,6 @@
 
 using namespace std;
 
-typedef vector< string > StringArray;
-
 class Label::Impl
 {
 public:
@@ -66,6 +64,13 @@ public oc3_signals:
 };
 
 //! constructor
+Label::Label( Widget* parent ) : Widget( parent, -1, Rect( 0, 0, 1, 1) ), _d( new Impl )
+{
+	_d->isBorderVisible = false;
+	_d->backgroundMode = bgNone;
+	setTextAlignment( alignAuto, alignAuto );
+}
+
 Label::Label(Widget* parent, const Rect& rectangle, const string& text, bool border,
 						 BackgroundMode background, int id)
 : Widget( parent, id, rectangle),
@@ -115,7 +120,8 @@ void Label::_updateTexture( GfxEngine& painter )
   // draw button background
   if( _d->bgPicture.isValid() )
   {
-    _d->background->draw( _d->bgPicture, _d->bgOffset );
+    _d->background->fill( 0xff000000, Rect( 0, 0, 0, 0 ) );
+    _d->background->draw( _d->bgPicture, _d->bgOffset, true );
   }    
   else
   {
@@ -123,7 +129,12 @@ void Label::_updateTexture( GfxEngine& painter )
     {
     case bgWhite: PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteArea); break;
     case bgBlack: PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::blackArea ); break;
-    case bgBrown: PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::brownBorder ); break;
+    case bgBrown:
+      _d->background->fill( 0xff5C4033, Rect( 0, 0, 0, 0 ) );
+      PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::brownBorder );
+    break;
+
+    case bgSmBrown: PictureDecorator::draw( *_d->background, Rect( Point( 0, 0), getSize() ), PictureDecorator::smallBrownPanel ); break;
     case bgWhiteFrame: PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame ); break;
     case bgNone: _d->background.reset(); break;
     }
@@ -605,13 +616,21 @@ void Label::setTextAlignment( TypeAlign horizontal, TypeAlign vertical )
 
 void Label::_resizeEvent()
 {
-    _d->needUpdatePicture = true;
+  _d->needUpdatePicture = true;
 }
 
 void Label::setLineIntervalOffset( const int offset )
 {
-    _d->lineIntervalOffset = offset;
-    _d->needUpdatePicture = true;
+  _d->lineIntervalOffset = offset;
+  _d->needUpdatePicture = true;
+}
+
+void Label::setupUI(const VariantMap& ui)
+{
+  Widget::setupUI( ui );
+
+  setFont( Font::create( ui.get( "font" ).toString() ) );
+  setBackgroundPicture( Picture::load( ui.get( "image" ).toString() ) );
 }
 
 PictureRef& Label::getPicture()

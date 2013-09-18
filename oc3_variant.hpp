@@ -217,6 +217,7 @@ class Variant
 
     operator int() const { return toInt(); }
     operator float() const { return toFloat(); }
+    operator bool() const { return toBool(); }
 
     static std::string typeToName(Type type);
     static Type nameToType(const std::string& name);
@@ -280,7 +281,8 @@ public:
 
   Variant get( const std::string& name ) const
   {
-    return const_cast< VariantMap& >( *this )[ name ];
+    VariantMap::const_iterator it = find( name );
+    return (it != end() ? it->second : Variant() );
   }
 
   Variant toVariant() const

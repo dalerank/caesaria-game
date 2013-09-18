@@ -26,6 +26,7 @@
 #include "oc3_city_trade_options.hpp"
 #include "oc3_name_generator.hpp"
 #include "oc3_tilemap.hpp"
+#include "oc3_game_event_mgr.hpp"
 
 class Merchant::Impl
 {
@@ -50,7 +51,8 @@ public:
   void resolveState(WalkerPtr wlk, const TilePos& position );
 };
 
-Merchant::Merchant() : _d( new Impl )
+Merchant::Merchant( CityPtr city )
+  : Walker( city ), _d( new Impl )
 {
   _setGraphic( WG_HORSE_CARAVAN );
   _setType( WT_MERCHANT );
@@ -238,7 +240,7 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
               GoodStock& stock = buy.getStock( goodType );
               warehouse->getGoodStore().retrieve( stock, mayBuy );
 
-              FundIssue::exportGoods( city, goodType, mayBuy );
+              GameEventMgr::append( FundIssueEvent::exportg( goodType, mayBuy ) );
             }
           }
         }
@@ -292,7 +294,7 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
               GoodStock& stock = sell.getStock( goodType );
               warehouse->getGoodStore().store( stock, maySells );
               
-              FundIssue::importGoods( city, goodType, maySells );
+              GameEventMgr::append( FundIssueEvent::import( goodType, maySells ) );
             }
           }
         }        
@@ -330,15 +332,14 @@ void Merchant::onDestination()
   _d->resolveState( this, getIJ() );
 }
 
-void Merchant::send2City( CityPtr city )
+void Merchant::send2City()
 {
-  _d->city = city;
   _d->nextState = Impl::stFindWarehouseForSelling;
-  _d->resolveState( this, city->getRoadEntry() );
+  _d->resolveState( this, _getCity()->getRoadEntry() );
 
   if( !isDeleted() )
   {
-    _d->city->addWalker( this );
+    _getCity()->addWalker( this );
   }
 }
 
@@ -360,9 +361,9 @@ void Merchant::load( const VariantMap& stream)
   _d->baseCityName = stream.get( "baseCity" ).toString();
 }
 
-WalkerPtr Merchant::create( EmpireMerchantPtr merchant )
+WalkerPtr Merchant::create( CityPtr city, EmpireMerchantPtr merchant )
 {
-  Merchant* cityMerchant( new Merchant() );
+  Merchant* cityMerchant( new Merchant( city ) );
   cityMerchant->_d->sell.resize( merchant->getSellGoods() );
   cityMerchant->_d->sell.storeAll( merchant->getSellGoods() );
   cityMerchant->_d->buy.resize( merchant->getBuyGoods() );

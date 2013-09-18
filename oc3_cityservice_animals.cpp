@@ -46,8 +46,8 @@ void CityServiceAnimals::update(const unsigned int time)
   {
     _d->lastTimeUpdate = GameDate::current();
     Tilemap& tmap = _d->city->getTilemap();
-    PtrTilesList border = tmap.getRectangle( TilePos( 0, 0 ), Size( tmap.getSize() ) );
-    PtrTilesList::iterator it=border.begin();
+    TilemapTiles border = tmap.getRectangle( TilePos( 0, 0 ), Size( tmap.getSize() ) );
+    TilemapTiles::iterator it=border.begin();
     while( it != border.end() )
     {
       if( !(*it)->getTerrain().isWalkable(true) )
@@ -66,7 +66,7 @@ void CityServiceAnimals::update(const unsigned int time)
       WalkerPtr sheep = Sheep::create( _d->city );
       if( sheep.isValid() )
       {
-        PtrTilesList::iterator it = border.begin();
+        TilemapTiles::iterator it = border.begin();
         std::advance( it, std::rand() % border.size() );
         sheep.as<Sheep>()->send2City( (*it)->getIJ() );
       }

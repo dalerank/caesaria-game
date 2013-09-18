@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_LIST_BOX_H_INCLUDED__
 #define __OPENCAESAR3_LIST_BOX_H_INCLUDED__
 
-#include "oc3_widget.hpp"
+#include "oc3_gui_widget.hpp"
 #include "oc3_flagholder.hpp"
 #include "oc3_listboxitem.hpp"
 #include "oc3_predefinitions.hpp"
@@ -47,6 +47,8 @@ public:
 
   //! returns string of a list item. the id may be a value from 0 to itemCount-1
   virtual ListBoxItem& getItem(unsigned int id);
+
+  virtual ListBoxItem& getSelectedItem();
 
   //! clears the list
   virtual void clear();

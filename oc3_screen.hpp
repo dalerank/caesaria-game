@@ -20,6 +20,7 @@
 #define SCREEN_HPP
 
 struct NEvent;
+class GfxEngine;
 
 class Screen
 {
@@ -35,18 +36,18 @@ public:
   virtual void afterFrame();
 
   // runs the screen (main loop), returns _wevent
-  int run();
+  void update( GfxEngine& engine );
   void stop();
 
   // draws the complete frame
-  void drawFrame();
+  void drawFrame( GfxEngine &engine );
 
   virtual void initialize() = 0;
-
-protected:
   virtual bool isStopped() const;
+
   virtual int getResult() const = 0;
 
+protected:
   Screen();
 
   //WidgetEvent _wevent;  // event to pass to the main loop

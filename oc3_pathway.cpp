@@ -263,7 +263,7 @@ bool PathWay::contains(Tile &tile)
 {
   // search in reverse direction, because usually the last tile matches
   bool res = false;
-  for( ConstPtrTilesList::reverse_iterator itTile = _tileList.rbegin(); itTile != _tileList.rend(); ++itTile)
+  for( ConstTilemapTiles::reverse_iterator itTile = _tileList.rbegin(); itTile != _tileList.rend(); ++itTile)
   {
     if (*itTile == &tile)
     {
@@ -275,7 +275,7 @@ bool PathWay::contains(Tile &tile)
   return res;
 }
 
-ConstPtrTilesList& PathWay::getAllTiles()
+ConstTilemapTiles& PathWay::getAllTiles()
 {
   return _tileList;
 }

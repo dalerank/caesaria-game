@@ -81,7 +81,7 @@ int Theater::getVisitorsNumber() const
   return 500;
 }
 
-BuildingAmphiTheater::BuildingAmphiTheater() : EntertainmentBuilding(Service::S_AMPHITHEATER, B_AMPHITHEATER, Size(3))
+Amphitheater::Amphitheater() : EntertainmentBuilding(Service::S_AMPHITHEATER, B_AMPHITHEATER, Size(3))
 {
   setPicture( Picture::load( ResourceGroup::entertaiment, 1));
 
@@ -103,7 +103,7 @@ Collosseum::Collosseum() : EntertainmentBuilding(Service::S_COLLOSSEUM, B_COLLOS
 
 //------------
 
-BuildingHippodrome::BuildingHippodrome() : EntertainmentBuilding(Service::S_HIPPODROME, B_HIPPODROME, Size(5) )
+Hippodrome::Hippodrome() : EntertainmentBuilding(Service::S_HIPPODROME, B_HIPPODROME, Size(5) )
 {
   setPicture( Picture::load("circus", 5));
   Picture logo = Picture::load("circus", 3);

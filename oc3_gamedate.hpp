@@ -18,7 +18,6 @@
   
 #include "oc3_time.hpp"
 #include "oc3_scopedptr.hpp"
-#include "oc3_signals.hpp"
 
 class GameDate
 {
@@ -32,9 +31,6 @@ public:
   static GameDate& instance();
 
   ~GameDate();
-
-oc3_signals public:
-  Signal1<const DateTime&>& onMonthChanged();
 
 private:
   GameDate();

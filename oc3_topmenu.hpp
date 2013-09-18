@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_TOPMENU_H_INCLUDE_
 #define __OPENCAESAR3_TOPMENU_H_INCLUDE_
 
-#include "oc3_mainmenu.hpp"
+#include "oc3_gui_mainmenu.hpp"
 #include "oc3_scopedptr.hpp"
 
 class DateTime;
@@ -24,15 +24,13 @@ class DateTime;
 class TopMenu : public MainMenu
 {
 public:
-  static TopMenu* create( Widget* parent, const int height );
+  TopMenu( Widget* parent, const int height );
 
   // draw on screen
   void draw( GfxEngine& engine );
-  //bool onEvent(const NEvent& event);
 
   void setFunds( int value );
   void setPopulation( int value );
-  void setDate( const DateTime& time );
 
 oc3_signals public:
   Signal0<>& onExit();
@@ -42,8 +40,6 @@ oc3_signals public:
   Signal1<int>& onRequestAdvisor();
 
 private:
-  TopMenu( Widget* parent, const int height );
-
   class Impl;
   ScopedPtr< Impl > _d;
 };

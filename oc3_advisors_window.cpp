@@ -37,6 +37,8 @@
 #include "oc3_advisor_religion_window.hpp"
 #include "oc3_advisor_finance_window.hpp"
 #include "oc3_foreach.hpp"
+#include "oc3_game_event_mgr.hpp"
+#include "oc3_cityfunds.hpp"
 
 class AdvisorsWindow::Impl
 {
@@ -49,8 +51,8 @@ public:
 
   CityPtr city;
 
-oc3_signals public:
-  Signal0<> onEmpireMapRequestSignal;
+  void sendMoney2City( int money );
+  void showEmpireMapWindow();
 };
 
 PushButton* AdvisorsWindow::addButton( const int pos, const int picId )
@@ -119,13 +121,19 @@ void AdvisorsWindow::showAdvisor( const AdvisorType type )
   {
   case ADV_EMPLOYERS: _d->advisorPanel = new AdvisorEmployerWindow( _d->city, this, ADV_EMPLOYERS ); break;
   case ADV_LEGION: _d->advisorPanel = new AdvisorLegionWindow( this, ADV_LEGION ); break;
-  case ADV_EMPIRE: _d->advisorPanel = new AdvisorEmperorWindow( this, ADV_EMPIRE ); break;
+  case ADV_EMPIRE:
+    {
+      AdvisorEmperorWindow* wnd = new AdvisorEmperorWindow( this, _d->city->getPlayer()->getMoney(), ADV_EMPIRE );
+      _d->advisorPanel = wnd;
+      CONNECT( wnd, onSendMoney(), _d.data(), Impl::sendMoney2City );
+    }
+  break;
   case ADV_RATINGS: _d->advisorPanel = new AdvisorRatingsWindow( this, ADV_RATINGS, _d->city ); break;
   case ADV_TRADING:
     {
       AdvisorTradeWindow* wnd = new AdvisorTradeWindow( _d->city, this, ADV_TRADING );
       _d->advisorPanel =  wnd;
-      CONNECT( wnd, onEmpireMapRequest(), &_d->onEmpireMapRequestSignal, Signal0<>::emit );      
+      CONNECT( wnd, onEmpireMapRequest(), _d.data(), Impl::showEmpireMapWindow );
     }
   break;
 
@@ -179,7 +187,13 @@ AdvisorsWindow* AdvisorsWindow::create( Widget* parent, int id, const AdvisorTyp
   return ret;
 }
 
-Signal0<>& AdvisorsWindow::onEmpireMapRequest()
+void AdvisorsWindow::Impl::sendMoney2City(int money)
 {
-  return _d->onEmpireMapRequestSignal;
+  GameEventMgr::append( FundIssueEvent::create( CityFunds::donation, money ) );
+}
+
+void AdvisorsWindow::Impl::showEmpireMapWindow()
+{
+  advisorPanel->getParent()->deleteLater();
+  GameEventMgr::append( ShowEmpireMapWindow::create( true ) );
 }

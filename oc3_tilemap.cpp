@@ -26,81 +26,102 @@
 #include "oc3_foreach.hpp"
 
 static Tile invalidTile = Tile( TilePos( -1, -1 ) );
+typedef std::vector< Tile > Row;
 
-Tilemap::Tilemap()
+class TileGrid : public std::vector< Row >
 {
-  _size = 0;
-}
+};
 
-void Tilemap::init(const int size)
+class Tilemap::Impl : public TileGrid
 {
-  _size = size;
-
-  // resize the tile array
-  _tile_array.resize(_size);
-  for (int i = 0; i < _size; ++i)
+public:
+  Tile& at( const int i, const int j )
   {
-    _tile_array[i].reserve(_size);
-
-    for (int j = 0; j < _size; ++j)
+    if( isInside( TilePos( i, j ) ) )
     {
-      _tile_array[i].push_back( Tile( TilePos( i, j ) ));
+      return TileGrid::at(i).at(j);
+    }
+
+    StringHelper::debug( 0xff, "Need inside point current=[%d, %d]", i, j );
+    return invalidTile;
+  }
+
+  bool isInside( const TilePos& pos )
+  {
+    return( pos.getI() >= 0 && pos.getJ()>=0 && pos.getI() < size && pos.getJ() < size);
+  }
+
+  void resize( const int s )
+  {
+    size = s;
+
+    // resize the tile array
+    TileGrid::resize( size );
+    for( int i = 0; i < size; ++i )
+    {
+      TileGrid::at( i ).reserve( size );
+
+      for (int j = 0; j < size; ++j)
+      {
+        TileGrid::at( i ).push_back( Tile( TilePos( i, j ) ));
+      }
     }
   }
+
+  int size;
+};
+
+Tilemap::Tilemap() : _d( new Impl )
+{
+  _d->size = 0;
+}
+
+void Tilemap::resize( const int size )
+{
+  _d->resize( size );
 }
 
 bool Tilemap::isInside(const TilePos& pos ) const
 {
-  return ( pos.getI() >= 0 && pos.getJ()>=0 && pos.getI() < _size && pos.getJ() < _size);
+  return _d->isInside( pos );
 }
 
 TilePos Tilemap::fit( const TilePos& pos ) const
 {
   TilePos ret;
-  ret.setI( math::clamp( pos.getI(), 0, _size ) );
-  ret.setJ( math::clamp( pos.getJ(), 0, _size ) );
+  ret.setI( math::clamp( pos.getI(), 0, _d->size ) );
+  ret.setJ( math::clamp( pos.getJ(), 0, _d->size ) );
   return ret;
-}
-
-Tile& Tilemap::__at( const int i, const int j )
-{
-  if( isInside( TilePos( i, j ) ) )
-  {
-    return _tile_array.at(i).at(j);
-  }
-
-  StringHelper::debug( 0xff, "Need inside point current=[%d, %d]", i, j );
-  return invalidTile;
 }
 
 Tile& Tilemap::at(const int i, const int j)
 {
-  return __at( i, j );
+  return _d->at( i, j );
 }
 
 const Tile& Tilemap::at(const int i, const int j) const
 {
-  return const_cast< Tilemap* >( this )->__at( i, j );
+  return const_cast< Tilemap* >( this )->at( i, j );
 }
 
 Tile& Tilemap::at( const TilePos& ij )
 {
-  return __at( ij.getI(), ij.getJ() );
+  return _d->at( ij.getI(), ij.getJ() );
 }
 
 const Tile& Tilemap::at( const TilePos& ij ) const
 {
-  return const_cast<Tilemap*>( this )->__at( ij.getI(), ij.getJ() );
+  return const_cast<Tilemap*>( this )->at( ij.getI(), ij.getJ() );
 }
 
 int Tilemap::getSize() const
 {
-  return _size;
+  return _d->size;
 }
 
-PtrTilesList Tilemap::getRectangle( const TilePos& start, const TilePos& stop, const bool corners /*= true*/ )
+TilemapTiles Tilemap::getRectangle( const TilePos& start, const TilePos& stop, const bool corners /*= true*/ )
 {
-  PtrTilesList res;
+  TilemapTiles res;
 
   int delta_corners = 0;
   if (! corners)
@@ -137,15 +158,15 @@ PtrTilesList Tilemap::getRectangle( const TilePos& start, const TilePos& stop, c
   return res;
 }
 
-PtrTilesList Tilemap::getRectangle( const TilePos& pos, const Size& size, const bool corners /*= true */ )
+TilemapTiles Tilemap::getRectangle( const TilePos& pos, const Size& size, const bool corners /*= true */ )
 {
   return getRectangle( pos, pos + TilePos( size.getWidth()-1, size.getHeight()-1), corners );
 }
 
 // Get tiles inside of rectangle
-PtrTilesList Tilemap::getFilledRectangle(const TilePos& start, const TilePos& stop )
+TilemapTiles Tilemap::getFilledRectangle(const TilePos& start, const TilePos& stop )
 {
-   PtrTilesList res;
+   TilemapTiles res;
 
    for (int i = start.getI(); i <= stop.getI(); ++i)
    {
@@ -161,7 +182,7 @@ PtrTilesList Tilemap::getFilledRectangle(const TilePos& start, const TilePos& st
    return res;
 }
 
-PtrTilesList Tilemap::getFilledRectangle( const TilePos& start, const Size& size )
+TilemapTiles Tilemap::getFilledRectangle( const TilePos& start, const Size& size )
 {
   return getFilledRectangle( start, start + TilePos( size.getWidth()-1, size.getHeight()-1 ) );
 }
@@ -173,7 +194,7 @@ void Tilemap::save( VariantMap& stream ) const
   VariantList desInfo;
   VariantList idInfo;
 
-  PtrTilesArea tiles = const_cast< Tilemap* >( this )->getFilledRectangle( TilePos( 0, 0 ), Size( _size ) );
+  TilemapArea tiles = const_cast< Tilemap* >( this )->getFilledRectangle( TilePos( 0, 0 ), Size( _d->size ) );
   foreach( Tile* tile, tiles )
   {
     bitsetInfo.push_back( tile->getTerrain().encode() );
@@ -184,7 +205,7 @@ void Tilemap::save( VariantMap& stream ) const
   stream[ "bitset" ]       = bitsetInfo;
   stream[ "desirability" ] = desInfo;
   stream[ "imgId" ]        = idInfo;
-  stream[ "size" ]         = _size;
+  stream[ "size" ]         = _d->size;
 }
 
 void Tilemap::load( const VariantMap& stream )
@@ -195,14 +216,14 @@ void Tilemap::load( const VariantMap& stream )
 
   int size = stream.get( "size" ).toInt();
 
-  init( size );
+  resize( size );
 
   VariantList::iterator imgIdIt        = idInfo.begin();
   VariantList::iterator bitsetInfoIt   = bitsetInfo.begin();
   VariantList::iterator desirabilityIt = desInfo.begin();
 
-  PtrTilesArea tiles = const_cast< Tilemap* >( this )->getFilledRectangle( TilePos( 0, 0 ), Size( _size ) );
-  for( PtrTilesArea::iterator it = tiles.begin(); it != tiles.end(); 
+  TilemapArea tiles = const_cast< Tilemap* >( this )->getFilledRectangle( TilePos( 0, 0 ), Size( _d->size ) );
+  for( TilemapArea::iterator it = tiles.begin(); it != tiles.end(); 
        it++, imgIdIt++, bitsetInfoIt++, desirabilityIt++ )
   {
     Tile* tile = *it;

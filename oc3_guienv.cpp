@@ -22,6 +22,7 @@
 #include "oc3_gui_label.hpp"
 #include "oc3_time.hpp"
 #include "oc3_foreach.hpp"
+#include "oc3_gui_widget_factory.hpp"
 
 class GuiEnv::Impl
 {
@@ -34,6 +35,7 @@ public:
     unsigned int LaunchTime;
     unsigned int RelaunchTime;
   };
+
 
   SToolTip toolTip;
   bool preRenderFunctionCalled;
@@ -49,12 +51,13 @@ public:
   Rect _desiredRect;
   GfxEngine* engine;
   Point cursorPos;
+  WidgetFactory factory;
 
   WidgetPtr createStandartTooltip( Widget* parent );
   void threatDeletionQueue();
 };
 
-GuiEnv::GuiEnv()
+GuiEnv::GuiEnv( GfxEngine& painter )
 : Widget( 0, -1, Rect( 0, 0, 1, 1) ),
  _d( new Impl )
 {
@@ -65,7 +68,7 @@ GuiEnv::GuiEnv()
   _d->focusedElement = 0;
   _d->hoveredNoSubelement = 0;
   _d->lastHoveredMousePos = Point();
-
+  _d->engine = &painter;
 
   //INITIALIZE_FILESYSTEM_INSTANCE;
 
@@ -76,6 +79,8 @@ GuiEnv::GuiEnv()
   _d->toolTip.EnterTime = 0;
   _d->toolTip.LaunchTime = 1000;
   _d->toolTip.RelaunchTime = 500;
+
+  setGeometry( Rect( 0, 0, painter.getScreenWidth(), painter.getScreenHeight() ) );
 }
 
 //! Returns if the element has focus
@@ -84,20 +89,8 @@ bool GuiEnv::hasFocus( const Widget* element) const
     return ( _d->focusedElement.object() == element );
 }
 
-GuiEnv& GuiEnv::instance()
-{
-  static GuiEnv inst;
-  return inst;
-}
-
 GuiEnv::~GuiEnv()
 {
-}
-
-void GuiEnv::initialize(GfxEngine& painter)
-{
-	_d->engine = &painter;
-	setGeometry( Rect( 0, 0, painter.getScreenWidth(), painter.getScreenHeight() ) );
 }
 
 Widget* GuiEnv::getRootWidget()
@@ -230,6 +223,11 @@ void GuiEnv::deleteLater( Widget* ptrElement )
 	}
 	catch(...)
 	{}
+}
+
+Widget* GuiEnv::createWidget(const std::string& type, Widget* parent)
+{
+	return _d->factory.create( type, parent );
 }
 
 WidgetPtr GuiEnv::Impl::createStandartTooltip( Widget* parent )

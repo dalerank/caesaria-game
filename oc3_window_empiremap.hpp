@@ -16,14 +16,14 @@
 #ifndef __OPENCAESAR3_EMPIREMAP_WINDOW_H_INCLUDED__
 #define __OPENCAESAR3_EMPIREMAP_WINDOW_H_INCLUDED__
 
-#include "oc3_widget.hpp"
+#include "oc3_gui_widget.hpp"
 #include "oc3_signals.hpp"
 #include "oc3_predefinitions.hpp"
 
 class EmpireMapWindow : public Widget
 {
 public:
-  static EmpireMapWindow* create( Scenario* scenario, Widget* parent, int id );
+  static EmpireMapWindow* create(EmpirePtr empire, CityPtr city, Widget* parent, int id );
 
   virtual ~EmpireMapWindow();
 

@@ -39,12 +39,12 @@ class Construction : public LandOverlay
 public:
   Construction( const BuildingType type, const Size& size );
 
-  virtual bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
-  virtual void build( const TilePos& pos );
+  virtual bool canBuild( CityPtr city, const TilePos& pos ) const;  // returns true if it can be built there
+  virtual void build( CityPtr city, const TilePos& pos );
   virtual void burn();
   virtual void collapse();
   virtual bool isNeedRoadAccess() const;
-  virtual const PtrTilesList& getAccessRoads() const;  // return all road tiles adjacent to the construction
+  virtual const TilemapTiles& getAccessRoads() const;  // return all road tiles adjacent to the construction
   virtual void computeAccessRoads();  
   virtual int  getMaxDistance2Road() const; // virtual because HOUSE has different behavior
   virtual char getDesirabilityInfluence() const;
@@ -53,7 +53,7 @@ public:
   virtual void destroy();
 
 protected:
-  PtrTilesList _accessRoads;
+  TilemapTiles _accessRoads;
   
   typedef enum { duPositive=true, duNegative=false } DsbrlUpdate;
   void _updateDesirabilityInfluence( const DsbrlUpdate type );

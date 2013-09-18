@@ -18,12 +18,12 @@
 
 #include "oc3_scopedptr.hpp"
 #include "oc3_predefinitions.hpp"
-#include "oc3_widget.hpp"
+#include "oc3_gui_widget.hpp"
 
 class MissionTargetsWindow : public Widget  
 {
 public:
-  static MissionTargetsWindow* create( Scenario* scenario , int id=-1 );
+  static MissionTargetsWindow* create( Widget* parent, CityPtr city , int id=-1 );
   ~MissionTargetsWindow();
 
   void draw( GfxEngine& painter );

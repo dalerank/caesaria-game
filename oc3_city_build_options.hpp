@@ -36,6 +36,8 @@ public:
 
   void load( const VariantMap& options );
 
+  CityBuildOptions& operator=(const CityBuildOptions& a);
+
 private:
   class Impl;
   ScopedPtr< Impl > _d;

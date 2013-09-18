@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_PUSHBUTTON_H_INCLUDE_
 #define __OPENCAESAR3_PUSHBUTTON_H_INCLUDE_
 
-#include "oc3_widget.hpp"
+#include "oc3_gui_widget.hpp"
 #include "oc3_signals.hpp"
 #include "oc3_picture.hpp"
 
@@ -26,7 +26,8 @@ class Font;
 class PushButton : public Widget
 {
 public:
-  typedef enum { grayBorderLine, smallGrayBorderLine, whiteBorderUp, blackBorderUp, noBackground } BackgroundStyle;
+  typedef enum { grayBorderLine, smallGrayBorderLine, whiteBorderUp,
+                 blackBorderUp, noBackground } BackgroundStyle;
 
 	//! constructor
 	PushButton( Widget* parent,

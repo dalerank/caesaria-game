@@ -16,6 +16,8 @@
 #ifndef __OPENCAESAR3_ALIGNMENT_H_INCLUDED__
 #define __OPENCAESAR3_ALIGNMENT_H_INCLUDED__
 
+#include "oc3_enums_helper.hpp"
+
 enum TypeAlign
 {
     //! Aligned to parent's top or left side (default)
@@ -28,6 +30,12 @@ enum TypeAlign
     alignScale,
     //! 
     alignAuto
+};
+
+class AlignHelper : public EnumsHelper<TypeAlign>
+{
+public:
+  AlignHelper();
 };
 
 #endif // __NRP_ALIGNMENT_H_INCLUDED__

@@ -30,16 +30,18 @@
 #include "oc3_empire_city.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_foreach.hpp"
+#include "oc3_player.hpp"
 
 class DateTime;
 class CityBuildOptions;
 class CityTradeOptions;
+class CityWinTargets;
 class CityFunds;
 
 class City : public EmpireCity
 {
 public:
-  static CityPtr create( EmpirePtr empire );
+  static CityPtr create(EmpirePtr empire, Player* player );
   ~City();
 
   virtual void timeStep( unsigned int time );  // performs one simulation step
@@ -54,7 +56,7 @@ public:
   void addService( CityServicePtr service );
   CityServicePtr findService( const std::string& name ) const;
 
-  LandOverlays& getOverlayList();
+  LandOverlayList& getOverlayList();
 
   void setRoadExit( const TilePos& pos );
   void setBoatEntry( const TilePos& pos );
@@ -67,6 +69,8 @@ public:
 
   int getLastMonthTax() const;
   int getLastMonthTaxpayer() const;
+
+  Player* getPlayer() const;
 
   TilePos getRoadEntry() const;
   
@@ -96,7 +100,13 @@ public:
   void addOverlay(LandOverlayPtr overlay);  
   LandOverlayPtr getOverlay( const TilePos& pos ) const;
 
-  CityBuildOptions& getBuildOptions();
+  const CityBuildOptions& getBuildOptions() const;
+
+  void setBuildOptions( const CityBuildOptions& options );
+
+  const CityWinTargets& getWinTargets() const;
+  void setWinTargets( const CityWinTargets& targets );
+
   CityTradeOptions& getTradeOptions();
 
   void resolveMerchantArrived( EmpireMerchantPtr merchant );
@@ -133,7 +143,7 @@ public:
   std::list< SmartPtr< T > > getBuildings( const BuildingType type )
   {
     std::list< SmartPtr< T > > ret;
-    LandOverlays buildings = _city->getOverlayList();
+    LandOverlayList& buildings = _city->getOverlayList();
     foreach( LandOverlayPtr item, buildings )
     {
       SmartPtr< T > b = item.as<T>();
@@ -150,7 +160,7 @@ public:
   std::list< SmartPtr< T > > getBuildings( const BuildingClass type )
   {
     std::list< SmartPtr< T > > ret;
-    LandOverlays overlays = _city->getOverlayList();
+    LandOverlayList& overlays = _city->getOverlayList();
     foreach( LandOverlayPtr item, overlays )
     {
       SmartPtr< T > b = item.as<T>();
@@ -174,7 +184,7 @@ public:
   std::list< SmartPtr< T > > getProducers( const Good::Type goodtype )
   {
     std::list< SmartPtr< T > > ret;
-    LandOverlays overlays = _city->getOverlayList();
+    LandOverlayList& overlays = _city->getOverlayList();
     foreach( LandOverlayPtr item, overlays )
     {
       SmartPtr< T > b = item.as<T>();
@@ -208,7 +218,7 @@ public:
     return ret;
   }
 
-  PtrTilesArea getArea( BuildingPtr building );
+  TilemapArea getArea( BuildingPtr building );
 
 protected:
   CityPtr _city;

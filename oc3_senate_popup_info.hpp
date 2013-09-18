@@ -16,15 +16,15 @@
 #ifndef __OPENCAESAR3_SENATE_POPUP_INFO_H_INCLUDED__
 #define __OPENCAESAR3_SENATE_POPUP_INFO_H_INCLUDED__
 
-#include "oc3_widget.hpp"
+#include "oc3_gui_widget.hpp"
 #include "oc3_scopedptr.hpp"
 
-class TilemapRenderer;
+class CityRenderer;
 
 class SenatePopupInfo : public Widget
 {
 public:
-  SenatePopupInfo( Widget* parent, TilemapRenderer& mapRenderer );
+  SenatePopupInfo(Widget* parent, CityRenderer& mapRenderer );
 
   void draw( GfxEngine& painter );
 private:

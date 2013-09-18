@@ -39,9 +39,12 @@ public:
   EmpireTradeRoutePtr getTradeRoute( unsigned int index ); 
   EmpireTradeRoutePtr getTradeRoute( const std::string& start, const std::string& stop );
   EmpireTradeRouteList getTradeRoutes( const std::string& startCity );
+  EmpireTradeRouteList getTradeRoutes();
 
   void save( VariantMap& stream ) const;
   void load( const VariantMap& stream );
+
+  void setCitiesAvailable( bool value );
 
 private:
   Empire();

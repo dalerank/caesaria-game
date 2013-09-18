@@ -19,7 +19,6 @@
 
 #include <iostream>
 
-#include "oc3_scenario.hpp"
 #include "oc3_walker_trainee.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_gui_info_box.hpp"
@@ -90,7 +89,7 @@ void TrainingBuilding::load( const VariantMap& stream )
 //}
 
 
-BuildingActor::BuildingActor() : TrainingBuilding( B_ACTOR_COLONY, Size(3) )
+ActorColony::ActorColony() : TrainingBuilding( B_ACTOR_COLONY, Size(3) )
 {
   setPicture( Picture::load( ResourceGroup::entertaiment, 81));
 
@@ -99,15 +98,15 @@ BuildingActor::BuildingActor() : TrainingBuilding( B_ACTOR_COLONY, Size(3) )
   _fgPictures.resize(1);
 }
 
-void BuildingActor::deliverTrainee()
+void ActorColony::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create( Scenario::instance().getCity(), WT_ACTOR);
+  TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), WT_ACTOR);
   trainee->setOriginBuilding(*this);
   trainee->send2City();
 }
 
-BuildingGladiator::BuildingGladiator() : TrainingBuilding( B_GLADIATOR_SCHOOL, Size(3))
+GladiatorSchool::GladiatorSchool() : TrainingBuilding( B_GLADIATOR_SCHOOL, Size(3))
 {
   setPicture( Picture::load( ResourceGroup::entertaiment, 51));
 
@@ -116,16 +115,16 @@ BuildingGladiator::BuildingGladiator() : TrainingBuilding( B_GLADIATOR_SCHOOL, S
   _fgPictures.resize(1);
 }
 
-void BuildingGladiator::deliverTrainee()
+void GladiatorSchool::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create( Scenario::instance().getCity(), WT_GLADIATOR);
+  TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), WT_GLADIATOR);
   trainee->setOriginBuilding(*this);
   trainee->send2City();
 }
 
 
-BuildingLion::BuildingLion() : TrainingBuilding( B_LION_HOUSE, Size(3) )
+LionsNursery::LionsNursery() : TrainingBuilding( B_LION_HOUSE, Size(3) )
 {
   setPicture( Picture::load( ResourceGroup::entertaiment, 62));
 
@@ -134,16 +133,16 @@ BuildingLion::BuildingLion() : TrainingBuilding( B_LION_HOUSE, Size(3) )
    _fgPictures.resize(1);
 }
 
-void BuildingLion::deliverTrainee()
+void LionsNursery::deliverTrainee()
 {
   // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create( Scenario::instance().getCity(), WT_TAMER );
+  TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), WT_TAMER );
   trainee->setOriginBuilding(*this);
   trainee->send2City();
 }
 
 
-BuildingChariot::BuildingChariot() : TrainingBuilding( B_CHARIOT_MAKER, Size(3) )
+WorkshopChariot::WorkshopChariot() : TrainingBuilding( B_CHARIOT_MAKER, Size(3) )
 {
   setPicture( Picture::load( ResourceGroup::entertaiment, 91));
 
@@ -152,10 +151,10 @@ BuildingChariot::BuildingChariot() : TrainingBuilding( B_CHARIOT_MAKER, Size(3) 
   _fgPictures.resize(1);
 }
 
-void BuildingChariot::deliverTrainee()
+void WorkshopChariot::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create( Scenario::instance().getCity(), WT_CHARIOT);
+  TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), WT_CHARIOT);
   trainee->setOriginBuilding(*this);
   trainee->send2City();
 }

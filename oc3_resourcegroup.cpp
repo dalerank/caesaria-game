@@ -17,6 +17,7 @@
 
 const char* ResourceGroup::panelBackground = "paneling";
 const char* ResourceGroup::menuMiddleIcons = "panelwindows";
+const char* ResourceGroup::festivalimg = "panelwindows";
 const char* ResourceGroup::land1a          = "land1a";
 const char* ResourceGroup::land2a          = "land2a";
 const char* ResourceGroup::land3a          = "land3a";

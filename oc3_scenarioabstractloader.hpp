@@ -18,13 +18,13 @@
 
 #include "oc3_referencecounted.hpp"
 
-class Scenario;
+class Game;
 
-class ScenarioAbstractLoader : public ReferenceCounted
+class GameAbstractLoader : public ReferenceCounted
 {
 public:
-  virtual ~ScenarioAbstractLoader() {}
-  virtual bool load( const std::string& filename, Scenario& oScenario ) = 0;
+  virtual ~GameAbstractLoader() {}
+  virtual bool load( const std::string& filename, Game& oScenario ) = 0;
   virtual bool isLoadableFileExtension( const std::string& filename ) = 0;
   //virtual bool isLoadableFileFormat( file ) = 0;
 };

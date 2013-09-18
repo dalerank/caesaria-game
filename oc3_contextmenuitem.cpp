@@ -15,7 +15,7 @@
 
 #include "oc3_contextmenuitem.hpp"
 #include "oc3_contextmenuitemprivate.h"
-#include "oc3_contextmenu.hpp"
+#include "oc3_gui_contextmenu.hpp"
 
 ContextMenuItem::ContextMenuItem( ContextMenu* parent, const std::string& text ) 
   : Label( parent, Rect( 0, 0, 1, 1 ), text, false, Label::bgWhite ), _d( new Impl )

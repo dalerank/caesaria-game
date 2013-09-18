@@ -307,3 +307,14 @@ GoodStore& EmpireMerchant::getBuyGoods()
 {
   return _d->buys;
 }
+
+EmpireTradeRouteList EmpireTrading::getRoutes()
+{
+  EmpireTradeRouteList ret;
+  foreach( Impl::TradeRoutes::value_type& item, _d->routes )
+  {
+    ret.push_back( item.second );
+  }
+
+  return ret;
+}

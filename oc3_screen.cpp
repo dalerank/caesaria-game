@@ -23,14 +23,16 @@
 #include "oc3_eventconverter.hpp"
 #include "oc3_time.hpp"
 
-Screen::Screen() {}
+Screen::Screen()
+{
+  _isStopped = false;
+}
 
 Screen::~Screen() {}
 
 
-void Screen::drawFrame()
+void Screen::drawFrame( GfxEngine &engine )
 {
-   GfxEngine &engine = GfxEngine::instance();
    engine.startRenderFrame();
    
    draw();
@@ -47,35 +49,27 @@ void Screen::stop()
   _isStopped = true;
 }
 
-int Screen::run()
+void Screen::update( GfxEngine &engine )
 {
-  GfxEngine &engine = GfxEngine::instance();
-  unsigned int lastclock = DateTime::getElapsedTime();
-  unsigned int currentclock = 0;
-  unsigned int ref_delay = 1000 / 20;  // 20fps
+  static unsigned int lastclock = DateTime::getElapsedTime();
+  static unsigned int currentclock = 0;
+  static unsigned int ref_delay = 1000 / 20;  // 20fps
 
-  _isStopped = false;
+  drawFrame( engine );
+  afterFrame();
 
-  while ( !isStopped() )
+  NEvent nEvent;
+  while( engine.haveEvent( nEvent )  )
   {
-     drawFrame();
-     afterFrame();
-
-     NEvent nEvent;
-     while( engine.haveEvent( nEvent )  )
-     {
-       handleEvent( nEvent );
-     }
-
-     // sets a fix frameRate
-     currentclock = DateTime::getElapsedTime();
-     unsigned int delay = math::clamp<int>( ref_delay - (currentclock - lastclock), 0, ref_delay );
-     
-     lastclock = currentclock;
-     engine.delay( delay );
+    handleEvent( nEvent );
   }
 
-  return getResult();
+  // sets a fix frameRate
+  currentclock = DateTime::getElapsedTime();
+  unsigned int delay = math::clamp<int>( ref_delay - (currentclock - lastclock), 0, ref_delay );
+
+  lastclock = currentclock;
+  engine.delay( delay );
 }
 
 bool Screen::isStopped() const

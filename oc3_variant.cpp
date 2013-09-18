@@ -733,6 +733,24 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
         return false;
     break;
 
+    case Variant::NRectI:
+      if( d->type == Variant::List )
+      {
+        Rect *rect = static_cast< Rect* >( result );
+        const VariantList *list = v_cast< VariantList >(d);
+        VariantList::const_iterator it = list->begin();
+
+        int x1 = it->toInt(); it++;
+        int y1 = it->toInt(); it++;
+        int x2 = it->toInt(); it++;
+        int y2 = it->toInt(); it++;
+
+        *rect = Rect( x1, y1, x2, y2 );
+      }
+      else
+        return false;
+    break;
+
     case Variant::NStringArray:
         if (d->type == Variant::List) 
         {

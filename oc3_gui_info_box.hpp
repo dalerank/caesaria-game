@@ -22,7 +22,7 @@
 #include <string>
 #include <list>
 
-#include "oc3_widget.hpp"
+#include "oc3_gui_widget.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_building_factory.hpp"
 #include "oc3_building_service.hpp"
@@ -117,8 +117,6 @@ public:
   InfoBoxGranary( Widget* parent, const Tile& tile );
   virtual ~InfoBoxGranary();
   
-  void paint();
-  void drawWorkers( int );
   void drawGood(const Good::Type &goodType, int, int);
   void showSpecialOrdersWindow();
 
@@ -134,8 +132,6 @@ public:
    InfoBoxMarket( Widget* parent, const Tile& tile );
    virtual ~InfoBoxMarket();
    
-   void paint();
-   void drawWorkers();
    void drawGood( MarketPtr market, const Good::Type &goodType, int, int );
 };
 

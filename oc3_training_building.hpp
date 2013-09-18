@@ -39,31 +39,31 @@ private:
    int _trainingDelay;
 };
 
-class BuildingActor : public TrainingBuilding
+class ActorColony : public TrainingBuilding
 {
 public:
-   BuildingActor();
+   ActorColony();
    void deliverTrainee();
 };
 
-class BuildingGladiator : public TrainingBuilding
+class GladiatorSchool : public TrainingBuilding
 {
 public:
-   BuildingGladiator();
+   GladiatorSchool();
    void deliverTrainee();
 };
 
-class BuildingLion : public TrainingBuilding
+class LionsNursery : public TrainingBuilding
 {
 public:
-   BuildingLion();
+   LionsNursery();
    void deliverTrainee();
 };
 
-class BuildingChariot : public TrainingBuilding
+class WorkshopChariot : public TrainingBuilding
 {
 public:
-   BuildingChariot();
+   WorkshopChariot();
    void deliverTrainee();
 };
 

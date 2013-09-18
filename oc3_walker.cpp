@@ -21,7 +21,6 @@
 #include "oc3_enums_helper.hpp"
 #include "oc3_building_data.hpp"
 #include "oc3_exception.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_walkermanager.hpp"
 #include "oc3_variant.hpp"
@@ -35,6 +34,7 @@
 class Walker::Impl
 {
 public:
+  CityPtr city;
   WalkerType walkerType;
   WalkerGraphicType walkerGraphic;
   bool isDeleted;
@@ -62,8 +62,9 @@ public:
   }
 };
 
-Walker::Walker() : _d( new Impl )
+Walker::Walker( CityPtr city ) : _d( new Impl )
 {
+  _d->city = city;
   _d->action.action = Walker::acMove;
   _d->action.direction = D_NONE;
   _d->walkerType = WT_NONE;
@@ -210,7 +211,7 @@ void Walker::walk()
       return;
    }
 
-   Tile& tile = Scenario::instance().getCity()->getTilemap().at( getIJ() );
+   Tile& tile = _d->city->getTilemap().at( getIJ() );
     
    switch (_d->action.direction)
    {
@@ -312,7 +313,7 @@ void Walker::walk()
 
 void Walker::onNewTile()
 {
-   Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
+   Tilemap& tilemap = _d->city->getTilemap();
    Tile& currentTile = tilemap.at( _d->pos );
    _d->updateSpeedMultiplier( currentTile );
 }
@@ -434,7 +435,7 @@ void Walker::save( VariantMap& stream ) const
 
 void Walker::load( const VariantMap& stream)
 {
-  Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
+  Tilemap& tmap = _getCity()->getTilemap();
 
   _d->pathWay.init( tmap, tmap.at( 0, 0 ) );
   _d->pathWay.load( stream.get( "pathway" ).toMap() );
@@ -508,6 +509,11 @@ void Walker::_setType(WalkerType type)
   _d->walkerType = type;
 }
 
+CityPtr Walker::_getCity() const
+{
+  return _d->city;
+}
+
 void Walker::go()
 {
   _d->action.action = acMove;       // default action
@@ -518,7 +524,7 @@ void Walker::die()
 
 }
 
-Soldier::Soldier()
+Soldier::Soldier( CityPtr city ) : Walker( city )
 {
   _setType( WT_SOLDIER );
   _setGraphic( WG_HORSEMAN );

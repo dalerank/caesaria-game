@@ -17,7 +17,7 @@
 #ifndef __OPENCAESAR3_GUIENVIRONMENT_INCLUDE_
 #define __OPENCAESAR3_GUIENVIRONMENT_INCLUDE_
 
-#include "oc3_widget.hpp"
+#include "oc3_gui_widget.hpp"
 #include <memory>
 
 class GfxEngine;
@@ -25,11 +25,9 @@ class GfxEngine;
 class GuiEnv : Widget
 {
 public:
-  static GuiEnv& instance();
+  GuiEnv( GfxEngine& painter );
 
   ~GuiEnv();
-
-  void initialize( GfxEngine& painter );
 
   bool hasFocus( const Widget* element) const;
   bool setFocus( Widget* element);
@@ -53,11 +51,11 @@ public:
 
   virtual void deleteLater( Widget* ptrElement );
 
+  Widget* createWidget( const std::string& type, Widget* parent );
+
   void clear();
    
 private:    
-  GuiEnv();
-
   void drawTooltip_( unsigned int time );
   void updateHoveredElement( const Point& mousePos);
   Widget* getNextWidget(bool reverse, bool group); 

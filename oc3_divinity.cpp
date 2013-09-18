@@ -19,8 +19,8 @@
 #include "oc3_gamedate.hpp"
 #include "oc3_service.hpp"
 #include "oc3_city.hpp"
-#include "oc3_farm.hpp"
-#include "oc3_scenario_event.hpp"
+#include "oc3_building_farm.hpp"
+#include "oc3_game_event.hpp"
 #include "oc3_gettext.hpp"
 
 class RomeDivinityBase : public RomeDivinity
@@ -40,6 +40,11 @@ public:
     _moodDescr << vm.get( "moodDescription" ).toList();
   }
 
+  void assignFestival( int type )
+  {
+    _relation = math::clamp<float>( _relation + type * 10, 0, 100 );
+  }
+
   virtual VariantMap save() const { return VariantMap(); }
   virtual std::string getName() const { return _name; }
   virtual std::string getShortDescription() const { return _shortDesc; }
@@ -51,7 +56,7 @@ public:
 
   virtual void updateRelation( float income, CityPtr city )
   {
-    _relation += income - getDefaultDecrease();
+    _relation = math::clamp<float>( _relation + income - getDefaultDecrease(), 0, 100 );
   }
 
   virtual std::string getMoodDescription() const
@@ -162,7 +167,11 @@ void DivinePantheon::initialize( const io::FilePath& filename )
   }
 }
 
-void DivinePantheon::doFestival4(RomeDivinityPtr who)
+void DivinePantheon::doFestival4( RomeDivinityType who, int type )
 {
-
+  RomeDivinityPtr divn = get( who );
+  if( divn.isValid() )
+  {
+    divn.as<RomeDivinityBase>()->assignFestival( type );
+  }
 }

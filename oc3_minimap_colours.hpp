@@ -19,7 +19,7 @@
 
 #include "oc3_enums.hpp"
 
-class Caesar3Colours {
+class MinimapColors {
 	public:
 		/**
 		* Constants for the different terrain and building elements
@@ -60,7 +60,7 @@ class Caesar3Colours {
 		* Constructor - creates a new colour set with the given climate
 		* @param climate - one of the CLIMATE_* constants
 		*/
-		Caesar3Colours(ClimateType climate);
+		MinimapColors(ClimateType climate);
 		
 		/**
 		* Retrieves a specified colour from this set.

@@ -19,7 +19,6 @@
 #include "oc3_walker_cart_pusher.hpp"
 #include "oc3_walker_prefect.hpp"
 #include "oc3_walker_emigrant.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_walker_taxcollector.hpp"
 #include "oc3_city.hpp"
 #include "oc3_name_generator.hpp"
@@ -31,18 +30,18 @@ template< class T >
 class WalkerCreator : public AbstractWalkerCreator
 {
 public:
-  virtual WalkerPtr create()
+  virtual WalkerPtr create( CityPtr city )
   {
-    return T::create( Scenario::instance().getCity() ).object();
+    return T::create( city ).object();
   }
 };
 
 class ServiceWalkerCreator : public AbstractWalkerCreator
 {
 public:
-  WalkerPtr create()
+  WalkerPtr create( CityPtr city )
   {
-    return ServiceWalker::create( Scenario::instance().getCity(), serviceType ).object();
+    return ServiceWalker::create( city, serviceType ).object();
   }
 
   ServiceWalkerCreator( const Service::Type type )
@@ -77,13 +76,13 @@ WalkerManager::~WalkerManager()
 
 }
 
-WalkerPtr WalkerManager::create( const WalkerType walkerType )
+WalkerPtr WalkerManager::create(const WalkerType walkerType , CityPtr city)
 {
   Impl::WalkerCreators::iterator findConstructor = _d->constructors.find( walkerType );
 
   if( findConstructor != _d->constructors.end() )
   {
-    return findConstructor->second->create().as<Walker>();
+    return findConstructor->second->create( city ).as<Walker>();
   }
 
   StringHelper::debug( 0xff, "Can't create walker from type %d", walkerType );

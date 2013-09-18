@@ -20,6 +20,7 @@
 #include "oc3_referencecounted.hpp"
 #include "oc3_smartptr.hpp"
 #include "oc3_scopedptr.hpp"
+#include "oc3_predefinitions.hpp"
 
 class VariantMap;
 
@@ -36,9 +37,13 @@ public:
   int getPopulation() const;
   const std::string& getOverview() const;
 
-  bool isSuccess() const;
+  bool isSuccess( int culture, int prosperity,
+                  int favour, int peace,
+                  int population ) const;
 
   void load( const VariantMap& stream );
+
+  CityWinTargets& operator=(const CityWinTargets& a);
 
 private:
   class Impl;

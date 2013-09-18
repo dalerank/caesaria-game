@@ -15,7 +15,6 @@
 
 #include "oc3_building_clay_pit.hpp"
 #include "oc3_resourcegroup.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_city.hpp"
 #include "oc3_foreach.hpp"
@@ -39,13 +38,13 @@ void ClayPit::timeStep( const unsigned long time )
   Factory::timeStep( time );
 }
 
-bool ClayPit::canBuild(const TilePos& pos ) const
+bool ClayPit::canBuild( CityPtr city, const TilePos& pos ) const
 {
-  bool is_constructible = Construction::canBuild( pos );
+  bool is_constructible = Construction::canBuild( city, pos );
   bool near_water = false;
 
-  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
-  PtrTilesList perimetr = tilemap.getRectangle( pos + TilePos( -1, -1), getSize() + Size( 2 ), Tilemap::checkCorners );
+  Tilemap& tilemap = city->getTilemap();
+  TilemapTiles perimetr = tilemap.getRectangle( pos + TilePos( -1, -1), getSize() + Size( 2 ), Tilemap::checkCorners );
   foreach( Tile* tile, perimetr )
   {
     near_water |= tile->getTerrain().isWater();

@@ -28,7 +28,6 @@
 #include "oc3_building.hpp"
 #include "oc3_building_data.hpp"
 #include "oc3_city.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_pushbutton.hpp"

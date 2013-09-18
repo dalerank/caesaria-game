@@ -18,7 +18,6 @@
 #include "oc3_building_factory.hpp"
 
 #include "oc3_tile.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_walker_cart_pusher.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_gui_info_box.hpp"
@@ -183,7 +182,7 @@ void Factory::deliverGood()
   int qty = _d->goodStore.getCurrentQty( _d->outGoodType );
   if( _mayDeliverGood() && qty >= 100 )
   {      
-    CartPusherPtr walker = CartPusher::create( Scenario::instance().getCity() );
+    CartPusherPtr walker = CartPusher::create( _getCity() );
 
     GoodStock pusherStock( _d->outGoodType, qty, 0 ); 
     _d->goodStore.retrieve( pusherStock, math::clamp( qty, 0, 400 ) );
@@ -250,7 +249,7 @@ void Factory::receiveGood()
   //send cart supplier if stock not full
   if( _mayDeliverGood() && stock._currentQty < stock._maxQty )
   {
-    CartSupplierPtr walker = CartSupplier::create( Scenario::instance().getCity() );
+    CartSupplierPtr walker = CartSupplier::create( _getCity() );
     walker->send2City( this, stock.type(), stock._maxQty - stock._currentQty );
 
     if( !walker->isDeleted() )
@@ -284,13 +283,13 @@ TimberLogger::TimberLogger() : Factory(Good::none, Good::timber, B_TIMBER_YARD, 
   _fgPictures.resize(2);
 }
 
-bool TimberLogger::canBuild(const TilePos& pos ) const
+bool TimberLogger::canBuild( CityPtr city, const TilePos& pos ) const
 {
-   bool is_constructible = WorkingBuilding::canBuild( pos );
+   bool is_constructible = WorkingBuilding::canBuild( city, pos );
    bool near_forest = false;  // tells if the factory is next to a forest
 
-   Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
-   PtrTilesArea area = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), Tilemap::checkCorners );
+   Tilemap& tilemap = city->getTilemap();
+   TilemapArea area = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), Tilemap::checkCorners );
    foreach( Tile* tile, area )
    {
       near_forest |= tile->getTerrain().isTree();
@@ -311,13 +310,13 @@ IronMine::IronMine() : Factory(Good::none, Good::iron, B_IRON_MINE, Size(2) )
   _fgPictures.resize(2);
 }
 
-bool IronMine::canBuild(const TilePos& pos ) const
+bool IronMine::canBuild( CityPtr city, const TilePos& pos ) const
 {
-  bool is_constructible = WorkingBuilding::canBuild( pos );
+  bool is_constructible = WorkingBuilding::canBuild( city, pos );
   bool near_mountain = false;  // tells if the factory is next to a mountain
 
-  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
-  PtrTilesArea perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size(2), Tilemap::checkCorners );
+  Tilemap& tilemap = city->getTilemap();
+  TilemapArea perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size(2), Tilemap::checkCorners );
   foreach( Tile* tile, perimetr )
   {
      near_mountain |= tile->getTerrain().isRock();
@@ -334,7 +333,7 @@ WeaponsWorkshop::WeaponsWorkshop() : Factory(Good::iron, Good::weapon, B_WEAPONS
   _fgPictures.resize(2);
 }
 
-FactoryFurniture::FactoryFurniture() : Factory(Good::timber, Good::furniture, B_FURNITURE, Size(2) )
+WorkshopFurniture::WorkshopFurniture() : Factory(Good::timber, Good::furniture, B_FURNITURE, Size(2) )
 {
   setPicture( Picture::load(ResourceGroup::commerce, 117) );
 
@@ -350,7 +349,7 @@ Winery::Winery() : Factory(Good::grape, Good::wine, B_WINE_WORKSHOP, Size(2) )
   _fgPictures.resize(2);
 }
 
-FactoryOil::FactoryOil() : Factory(Good::olive, Good::oil, B_OIL_WORKSHOP, Size(2) )
+Creamery::Creamery() : Factory(Good::olive, Good::oil, B_OIL_WORKSHOP, Size(2) )
 {
   setPicture( Picture::load(ResourceGroup::commerce, 99) );
 
@@ -365,9 +364,9 @@ Wharf::Wharf() : Factory(Good::none, Good::fish, B_WHARF, Size(2))
 }
 
 /* INCORRECT! */
-bool Wharf::canBuild(const TilePos& pos ) const
+bool Wharf::canBuild( CityPtr city, const TilePos& pos ) const
 {
-  bool is_constructible = Construction::canBuild( pos );
+  bool is_constructible = Construction::canBuild( city, pos );
 
   // We can build wharf only on straight border of water and land
   //
@@ -382,9 +381,9 @@ bool Wharf::canBuild(const TilePos& pos ) const
   bool bWest  = true;
   bool bEast  = true;
    
-  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
+  Tilemap& tilemap = city->getTilemap();
    
-  PtrTilesArea perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), false);
+  TilemapArea perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), false);
   foreach( Tile* tile, perimetr )
   {    
     int size = getSize().getWidth();

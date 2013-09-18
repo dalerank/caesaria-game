@@ -18,7 +18,6 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_walker_market_lady.hpp"
 #include "oc3_variant.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_goodstore_simple.hpp"
 #include "oc3_city.hpp"
 
@@ -59,7 +58,7 @@ void Market::deliverService()
   if( getWorkers() > 0 && getWalkerList().size() == 0 )
   {
     // the marketBuyer is ready to buy something!
-    MarketLadyPtr buyer = MarketLady::create( Scenario::instance().getCity() );
+    MarketLadyPtr buyer = MarketLady::create( _getCity() );
     buyer->send2City( this );
 
     if( !buyer->isDeleted() )
@@ -71,6 +70,11 @@ void Market::deliverService()
       ServiceBuilding::deliverService();
     }
   }
+}
+
+unsigned int Market::getWalkerDistance() const
+{
+  return 26;
 }
 
 GoodStore& Market::getGoodStore()

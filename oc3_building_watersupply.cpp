@@ -16,7 +16,6 @@
 #include "oc3_building_watersupply.hpp"
 
 #include "oc3_stringhelper.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_time.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_resourcegroup.hpp"
@@ -55,9 +54,9 @@ Aqueduct::Aqueduct() : WaterSource( B_AQUEDUCT, Size(1) )
   // land2a 134 - 148       - aqueduct without water
 }
 
-void Aqueduct::build(const TilePos& pos )
+void Aqueduct::build( CityPtr city, const TilePos& pos )
 {
-  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
+  Tilemap& tilemap = city->getTilemap();
   TerrainTile& terrain = tilemap.at( pos ).getTerrain();
 
   // we can't build if already have aqueduct here
@@ -67,10 +66,10 @@ void Aqueduct::build(const TilePos& pos )
     return;
   }
 
-  Construction::build( pos );
+  Construction::build( city, pos );
 
-  CityHelper helper( Scenario::instance().getCity() );
-  Aqueducts aqueducts = helper.getBuildings<Aqueduct>( B_AQUEDUCT );
+  CityHelper helper( city );
+  AqueductList aqueducts = helper.getBuildings<Aqueduct>( B_AQUEDUCT );
   foreach( AqueductPtr aqueduct, aqueducts )
   {
     aqueduct->updatePicture();
@@ -99,15 +98,14 @@ void Aqueduct::setTerrain(TerrainTile &terrain)
 
 
 
-bool Aqueduct::canBuild( const TilePos& pos ) const
+bool Aqueduct::canBuild( CityPtr city, const TilePos& pos ) const
 {
-  bool is_free = Construction::canBuild( pos );
+  bool is_free = Construction::canBuild( city, pos );
 
   if( is_free )
       return true; // we try to build on free tile
 
   // we can place on road
-  CityPtr city = Scenario::instance().getCity();
   Tilemap& tilemap = city->getTilemap();
   TerrainTile& terrain = tilemap.at( pos ).getTerrain();
 
@@ -131,7 +129,7 @@ bool Aqueduct::canBuild( const TilePos& pos ) const
     if (!tilemap.isInside(tp_to))
       tp_to = pos;
 
-    PtrTilesList perimetr = tilemap.getRectangle(tp_from, tp_to, !Tilemap::checkCorners);
+    TilemapTiles perimetr = tilemap.getRectangle(tp_from, tp_to, !Tilemap::checkCorners);
     foreach( Tile* tile, perimetr )
     {
       if( tile->getTerrain().isRoad() && tile->getTerrain().isAqueduct() )
@@ -184,10 +182,10 @@ bool Aqueduct::canBuild( const TilePos& pos ) const
 
 
 Picture&
-Aqueduct::computePicture(const PtrTilesList * tmp, const TilePos pos)
+Aqueduct::computePicture(const TilemapTiles * tmp, const TilePos pos)
 {
   // find correct picture as for roads
-  Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
+  Tilemap& tmap = _getCity()->getTilemap();
 
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
 
@@ -222,7 +220,7 @@ Aqueduct::computePicture(const PtrTilesList * tmp, const TilePos pos)
   // if we have a TMP array with aqueducts, calculate them
   if (tmp != NULL)
   {
-    for (PtrTilesList::const_iterator it = tmp->begin(); it != tmp->end(); ++it)
+    for (TilemapTiles::const_iterator it = tmp->begin(); it != tmp->end(); ++it)
     {
       int i = (*it)->getI();
       int j = (*it)->getJ();
@@ -345,8 +343,8 @@ bool Aqueduct::isRoad() const
 void Reservoir::destroy()
 {
   //now remove water flag from near tiles
-  Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
-  PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
+  Tilemap& tmap = _getCity()->getTilemap();
+  TilemapArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
   foreach( Tile* tile, reachedTiles )
   {
     tile->getTerrain().decreaseWaterService( WTR_RESERVOIR );
@@ -377,27 +375,27 @@ Reservoir::~Reservoir()
 {
 }
 
-void Reservoir::build(const TilePos& pos )
+void Reservoir::build( CityPtr city, const TilePos& pos )
 {
-  Construction::build( pos );  
+  Construction::build( city, pos );
 
   setPicture( Picture::load( ResourceGroup::waterbuildings, 1 ) );
-  _isWaterSource = _isNearWater( pos );
+  _isWaterSource = _isNearWater( city, pos );
   
   //updateAqueducts();
   
   // update adjacent aqueducts
 }
 
-bool Reservoir::_isNearWater( const TilePos& pos ) const
+bool Reservoir::_isNearWater(CityPtr city, const TilePos& pos ) const
 {
   bool near_water = false;  // tells if the factory is next to a mountain
 
-  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
-  std::list<Tile*> rect = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), !Tilemap::checkCorners );
-  for (std::list<Tile*>::iterator itTiles = rect.begin(); itTiles != rect.end(); ++itTiles)
+  Tilemap& tilemap = city->getTilemap();
+  TilemapTiles perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), !Tilemap::checkCorners );
+  foreach( Tile* tile, perimetr)
   {
-    near_water |= (*itTiles)->getTerrain().isWater();
+    near_water |= tile->getTerrain().isWater();
   }
 
   return near_water;
@@ -430,8 +428,8 @@ void Reservoir::timeStep(const unsigned long time)
   //filled area, that reservoir present
   if( time % 22 == 1 )
   {
-    Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
-    PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() ); 
+    Tilemap& tmap = _getCity()->getTilemap();
+    TilemapArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
     foreach( Tile* tile, reachedTiles )
     {
       tile->getTerrain().fillWaterService( WTR_RESERVOIR );
@@ -451,12 +449,12 @@ void Reservoir::timeStep(const unsigned long time)
   _fgPictures[ 0 ] = _getAnimation().getCurrentPicture(); 
 }
 
-bool Reservoir::canBuild( const TilePos& pos ) const
+bool Reservoir::canBuild( CityPtr city, const TilePos& pos ) const
 {
-  bool ret = Construction::canBuild( pos );
+  bool ret = Construction::canBuild( city, pos );
 
-  bool nearWater = _isNearWater( pos );
-  const_cast< Reservoir* >( this )->setPicture( Picture::load( ResourceGroup::waterbuildings, nearWater ? 2 : 1 )  );
+  bool nearWater = _isNearWater( city, pos );
+  const_cast< Reservoir* >( this )->setPicture( ResourceGroup::waterbuildings, nearWater ? 2 : 1  );
 
   return ret;
 }
@@ -508,7 +506,7 @@ void WaterSource::timeStep( const unsigned long time )
 
 void WaterSource::_produceWater( const TilePos* points, const int size )
 {
-  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
+  Tilemap& tilemap = _getCity()->getTilemap();
 
   for( int index=0; index < size; index++ )
   {
@@ -535,108 +533,104 @@ int WaterSource::getId() const
   return getTilePos().getJ() * 10000 + getTilePos().getI();
 }
 
-BuildingFountain::BuildingFountain() : ServiceBuilding(Service::S_FOUNTAIN, B_FOUNTAIN, Size(1))
+typedef enum { fontainEmpty = 3, fontainFull = 4, fontainStartAnim = 11, fontainSizeAnim = 7 } FontainConstant;
+
+Fountain::Fountain() : ServiceBuilding(Service::S_FOUNTAIN, B_FOUNTAIN, Size(1))
 {  
   std::srand( DateTime::getElapsedTime() );
 
-  //id = std::rand() % 4;
-
-  setPicture( Picture::load( ResourceGroup::utilitya, 10));
-  _getAnimation().load( ResourceGroup::utilitya, 11, 7);
+  setPicture( ResourceGroup::utilitya, 10 );
+  _getAnimation().load( ResourceGroup::utilitya, fontainStartAnim, fontainSizeAnim );
   //animLoader.fill_animation_reverse(_animation, "utilitya", 25, 7);
   _getAnimation().setOffset( Point( 12, 24 ) );
+  _getAnimation().setFrameDelay( 2 );
   _fgPictures.resize(1);
 
-  //2 10 18 26
-  // utilitya 10      - empty 
-  // utilitya 11 - 17 - working fontain
-
-  // the first fountain's (10) ofsets ~ 11, 23 
-  /*AnimLoader animLoader(PicLoader::instance());
-  animLoader.fill_animation(_animation, "utilitya", 11, 7); 
-  animLoader.change_offset(_animation, 11, 23);
-  _fgPictures.resize(1);*/
-
-  // the second (2)    ~ 8, 42
-  // the third (18)    ~ 8, 24
-  // the 4rd   (26)    ~14, 26     
+  _damageIncrement = 0;
+  _fireIncrement = 0;
 
   setWorkers( 1 );
 }
 
-void BuildingFountain::deliverService()
+void Fountain::deliverService()
 {
-  const TerrainTile& myTile = getTile().getTerrain();
-
-  if( myTile.getWaterService( WTR_RESERVOIR ) > 0 && getWorkers() > 0 )
-  {
-    _haveReservoirWater = true;
-  }
-  else
-  {
-    //remove fontain service from tiles
-    Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
-    PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() ); 
-    foreach( Tile* tile, reachedTiles )
-    {
-      tile->getTerrain().decreaseWaterService( WTR_FONTAIN );
-    }
-  }
-
-  ServiceWalkerPtr walker = ServiceWalker::create( Scenario::instance().getCity(), getService() );
+  ServiceWalkerPtr walker = ServiceWalker::create( _getCity(), getService() );
   walker->setBase( BuildingPtr( this ) );
   ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( getTile().getIJ() );
+
   foreach( BuildingPtr building, reachedBuildings )
   {
     building->applyService( walker );
   } 
 }
 
-void BuildingFountain::timeStep(const unsigned long time)
+void Fountain::timeStep(const unsigned long time)
 {
-  if( !_haveReservoirWater )
-  {
-    _fgPictures[ 0 ] = Picture::getInvalid();
-    return;
-  }
-
   //filled area, that fontain present and work
   if( time % 22 == 1 )
   {
-    Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
-    PtrTilesArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() ); 
+    const TerrainTile& myTile = getTile().getTerrain();
+
+    if( myTile.getWaterService( WTR_RESERVOIR ) > 0 && getWorkers() > 0 )
+    {
+      _haveReservoirWater = true;
+    }
+    else
+    {
+      //remove fontain service from tiles
+      Tilemap& tmap = _getCity()->getTilemap();
+      TilemapArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() );
+      foreach( Tile* tile, reachedTiles )
+      {
+        tile->getTerrain().decreaseWaterService( WTR_FONTAIN );
+      }
+    }
+
+    if( !_haveReservoirWater )
+    {
+      _fgPictures[ 0 ] = Picture::getInvalid();
+      return;
+    }
+
+    Tilemap& tmap = _getCity()->getTilemap();
+    TilemapArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() );
     foreach( Tile* tile, reachedTiles )
     {
       tile->getTerrain().fillWaterService( WTR_FONTAIN );
     }
   }
 
-  _getAnimation().update( time );
-
-  // takes current animation frame and put it into foreground
-  _fgPictures[ 0 ] = _getAnimation().getCurrentPicture(); 
+  ServiceBuilding::timeStep( time );
 }
 
-bool BuildingFountain::canBuild( const TilePos& pos ) const
+bool Fountain::canBuild( CityPtr city, const TilePos& pos ) const
 {
-  bool ret = Construction::canBuild( pos );
+  bool ret = Construction::canBuild( city, pos );
 
-  Tilemap& tmap = Scenario::instance().getCity()->getTilemap();
+  Tilemap& tmap = city->getTilemap();
   const TerrainTile& buildTerrain = tmap.at( pos ).getTerrain();
-  bool reservoirPresent = buildTerrain.getWaterService( WTR_RESERVOIR ) > 0;
-  const_cast< BuildingFountain* >( this )->setPicture( Picture::load( ResourceGroup::waterbuildings, reservoirPresent ? 4 : 3 )  );
+  int picid = (buildTerrain.getWaterService( WTR_RESERVOIR ) > 0 ? fontainFull : fontainEmpty );
+  const_cast< Fountain* >( this )->setPicture( ResourceGroup::waterbuildings, picid );
 
   return ret;
 }
 
-void BuildingFountain::build( const TilePos& pos )
+void Fountain::build( CityPtr city, const TilePos& pos )
 {
-  ServiceBuilding::build( pos );  
+  ServiceBuilding::build( city, pos );
 
-  setPicture( Picture::load( ResourceGroup::waterbuildings, 3 ) );
+  setPicture( ResourceGroup::waterbuildings, fontainEmpty );
 }
 
-bool BuildingFountain::isNeedRoadAccess() const
+bool Fountain::isNeedRoadAccess() const
 {
   return false;
+}
+
+void Fountain::load(const VariantMap& stream)
+{
+  ServiceBuilding::load( stream );
+
+  //check animation
+  timeStep( 1 );
 }

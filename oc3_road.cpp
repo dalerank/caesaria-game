@@ -16,7 +16,6 @@
 #include "oc3_road.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_resourcegroup.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_building_watersupply.hpp"
 #include "oc3_city.hpp"
 #include "oc3_tilemap.hpp"
@@ -25,12 +24,12 @@ Road::Road() : Construction( B_ROAD, Size(1) )
 {
 }
 
-void Road::build(const TilePos& pos )
+void Road::build( CityPtr city, const TilePos& pos )
 {
-  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
+  Tilemap& tilemap = city->getTilemap();
   LandOverlayPtr overlay = tilemap.at( pos ).getTerrain().getOverlay();
 
-  Construction::build( pos );
+  Construction::build( city, pos );
   setPicture( computePicture() );
 
   if( overlay.is<Road>() )
@@ -40,7 +39,7 @@ void Road::build(const TilePos& pos )
 
   if( overlay.is<Aqueduct>() )
   {
-    overlay->build( pos );
+    overlay->build( city, pos );
     return;
   }
 
@@ -58,7 +57,7 @@ void Road::build(const TilePos& pos )
   // NOTE: also we need to update accessRoads for adjacent building
   // how to detect them if MaxDistance2Road can be any
   // so let's recompute accessRoads for every _building_
-  LandOverlays list = Scenario::instance().getCity()->getOverlayList(); // it looks terrible!!!!
+  LandOverlayList list = city->getOverlayList(); // it looks terrible!!!!
   foreach( LandOverlayPtr overlay, list )
   {
     BuildingPtr construction = overlay.as<Building>();
@@ -69,15 +68,14 @@ void Road::build(const TilePos& pos )
   }
 }
 
-bool Road::canBuild(const TilePos& pos ) const
+bool Road::canBuild( CityPtr city, const TilePos& pos ) const
 {
-  bool is_free = Construction::canBuild( pos );
+  bool is_free = Construction::canBuild( city, pos );
 
   if( is_free ) 
     return true; // we try to build on free tile
 
-  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
-  TerrainTile& terrain = tilemap.at( pos ).getTerrain();
+  TerrainTile& terrain = city->getTilemap().at( pos ).getTerrain();
 
   return ( terrain.getOverlay().is<Aqueduct>() || terrain.getOverlay().is<Road>() );
 }
@@ -95,7 +93,7 @@ Picture& Road::computePicture()
   int i = getTile().getI();
   int j = getTile().getJ();
 
-  PtrTilesList roads = getAccessRoads();
+  TilemapTiles roads = getAccessRoads();
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
   foreach( Tile* tile, roads )
   {
@@ -216,14 +214,14 @@ Picture& Plaza::computePicture()
 // Also in original game there was a bug:
 // gamer could place any number of plazas on one road tile (!!!)
 
-bool Plaza::canBuild(const TilePos& pos ) const
+bool Plaza::canBuild( CityPtr city, const TilePos& pos ) const
 {
   //std::cout << "Plaza::canBuild" << std::endl;
-  Tilemap& tilemap = Scenario::instance().getCity()->getTilemap();
+  Tilemap& tilemap = city->getTilemap();
 
   bool is_constructible = true;
 
-  PtrTilesArea area = tilemap.getFilledRectangle( pos, getSize() ); // something very complex ???
+  TilemapArea area = tilemap.getFilledRectangle( pos, getSize() ); // something very complex ???
   foreach( Tile* tile, area )
   {
     is_constructible &= tile->getTerrain().isRoad();

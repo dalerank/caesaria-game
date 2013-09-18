@@ -23,8 +23,8 @@ class ClayPit : public Factory
 public:
   ClayPit();
   
-  bool canBuild(const TilePos& pos ) const;  // returns true if it can be built there
-  void timeStep(const unsigned long time);
+  bool canBuild( CityPtr city, const TilePos& pos ) const;  // returns true if it can be built there
+  void timeStep( const unsigned long time );
 };
 
 #endif //__OPENCAESAR3_CLAY_PIT_H_INCLUDED__

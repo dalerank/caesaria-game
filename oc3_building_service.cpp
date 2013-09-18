@@ -21,7 +21,6 @@
 #include <ctime>
 
 #include "oc3_tile.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_walker_service.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_gui_info_box.hpp"
@@ -92,7 +91,7 @@ void ServiceBuilding::destroy()
 void ServiceBuilding::deliverService()
 {
   // make a service walker and send him to his wandering
-  ServiceWalkerPtr serviceman = ServiceWalker::create( Scenario::instance().getCity(), getService() );
+  ServiceWalkerPtr serviceman = ServiceWalker::create( _getCity(), getService() );
   serviceman->setMaxDistance( getWalkerDistance() );
   serviceman->send2City( BuildingPtr( this ) );
 

@@ -22,28 +22,25 @@
 #include "oc3_screen.hpp"
 #include "oc3_predefinitions.hpp"
 #include "oc3_scopedptr.hpp"
+#include <string>
 
-class Scenario;
-class TilemapArea;
+class Game;
+class GfxEngine;
 
 class ScreenGame: public Screen
 {
 public:
   typedef enum {mainMenu=0, quitGame} ResultType;
-  ScreenGame();
+  ScreenGame( Game& game, GfxEngine& engine );
   ~ScreenGame();
 
   void initialize();
 
-  void setScenario(Scenario &scenario);
-
-  virtual void afterFrame();
-  virtual void handleEvent( NEvent& event);
-
+  virtual void handleEvent( NEvent& event );
   virtual void draw();
-
-protected:
-  int getResult() const;
+  virtual void animate( unsigned int time );
+  virtual void afterFrame();
+  virtual int getResult() const;
 
 private:
   void resolveEndGame();

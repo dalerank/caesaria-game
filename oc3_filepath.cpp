@@ -119,10 +119,8 @@ FilePath FilePath::addEndSlash() const
 FilePath FilePath::removeBeginSlash() const
 {
   std::string pathTo = _d->path;
-    
-  _OC3_DEBUG_BREAK_IF( pathTo.size() == 0 );
  
-  if( pathTo.size() == 0 )
+  if( pathTo.empty() )
       return FilePath( "" ); 
 
   wchar_t endsym = *pathTo.begin();
@@ -136,8 +134,7 @@ FilePath FilePath::removeEndSlash() const
 {
   std::string pathTo = _d->path;
     
-  _OC3_DEBUG_BREAK_IF( pathTo.size() == 0 );
-  if( pathTo.size() == 0 )
+  if( pathTo.empty() )
       return "";
 
   if( (*pathTo.rbegin()) == '/' || (*pathTo.rbegin()) == '\\' )

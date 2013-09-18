@@ -14,10 +14,10 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_pathway_helper.hpp"
-#include "oc3_roadpropagator.hpp"
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_city.hpp"
+#include "oc3_tilemap.hpp"
 
 PathWay PathwayHelper::create( CityPtr city, const TilePos& startPos, const TilePos& stopPos,
                                WayType type/*=roadOnly */ )

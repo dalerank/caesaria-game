@@ -37,6 +37,8 @@ public:
 
   void deliverService();
 
+  virtual unsigned int getWalkerDistance() const;
+
 private:
   class Impl;
   ScopedPtr< Impl > _d;

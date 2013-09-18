@@ -27,6 +27,8 @@ class Empire::Impl
 public:
   EmpireCityList cities;
   EmpireTrading trading;
+
+  std::string playerCityName;
 };
 
 Empire::Empire() : _d( new Impl )
@@ -112,6 +114,10 @@ void Empire::save( VariantMap& stream ) const
   VariantMap vm_cities;
   foreach( EmpireCityPtr city, _d->cities )
   {
+    //not need save city player
+    if( city->getName() == _d->playerCityName )
+      continue;
+
     VariantMap vm_city;
     city->save( vm_city );
     vm_cities[ city->getName() ] = vm_city;
@@ -132,6 +138,12 @@ void Empire::load( const VariantMap& stream )
       city->load( item.second.toMap() );
     }
   }
+}
+
+void Empire::setCitiesAvailable(bool value)
+{
+  foreach( EmpireCityPtr city, _d->cities )
+    city->setAvailable( value );
 }
 
 void Empire::createTradeRoute( const std::string& start, const std::string& stop )
@@ -179,6 +191,7 @@ EmpireCityPtr Empire::initPlayerCity( EmpireCityPtr city )
   city->setLocation( ret->getLocation() );
   _d->cities.remove( ret );
   _d->cities.push_back( city );
+  _d->playerCityName = city->getName();
 
   return ret;
 }
@@ -202,4 +215,10 @@ unsigned int EmpireHelper::getTradeRouteOpenCost( EmpirePtr empire, const std::s
   }
 
   return 0;
+}
+
+
+EmpireTradeRouteList Empire::getTradeRoutes()
+{
+  return _d->trading.getRoutes();
 }

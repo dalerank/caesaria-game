@@ -36,7 +36,7 @@ public:
   void load( const VariantMap& stream );
   void save( VariantMap& stream ) const;
 
-  void send2City( BuildingPrefecturePtr prefecture, int water=0 );
+  void send2City( PrefecturePtr prefecture, int water=0 );
 
   ~WalkerPrefect();
  

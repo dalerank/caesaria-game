@@ -29,10 +29,6 @@ struct FundIssue
 
   FundIssue() : type( 0 ), money( 0 ) {}
   FundIssue( int t, int m ) : type( t ), money( m ) {}
-
-  static void resolve( CityPtr city, int type, int money );
-  static void importGoods( CityPtr city, Good::Type type, int qty );
-  static void exportGoods( CityPtr city, Good::Type type, int qty );
 };
 
 class CityFunds

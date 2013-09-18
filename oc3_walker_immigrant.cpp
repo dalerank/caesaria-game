@@ -15,7 +15,6 @@
 
 #include "oc3_walker_immigrant.hpp"
 #include "oc3_positioni.hpp"
-#include "oc3_scenario.hpp"
 #include "oc3_safetycast.hpp"
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_building_house.hpp"
@@ -32,22 +31,21 @@ public:
   TilePos destination;
   Picture cartPicture;
   unsigned char peopleCount;
-  CityPtr city;
 };
 
-Immigrant::Immigrant( CityPtr city ) : _d( new Impl )
+Immigrant::Immigrant( CityPtr city )
+  : Walker( city ), _d( new Impl )
 {
   _setType( WT_IMMIGRANT );
   _setGraphic( WG_HOMELESS );
   _d->peopleCount = 0;
-  _d->city = city;
 
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
 HousePtr Immigrant::_findBlankHouse()
 {
-  CityHelper hlp( _d->city );
+  CityHelper hlp( _getCity() );
   std::list< HousePtr > houses = hlp.getBuildings< House >( B_HOUSE );
   HousePtr blankHouse;
   _d->destination = TilePos( -1, -1 );
@@ -83,8 +81,8 @@ void Immigrant::_findPath2blankHouse( Tile& startPoint )
 
   PathWay pathWay;
 
-  Tilemap& citymap = _d->city->getTilemap();
-  Tile& destTile = house.isValid() ? house->getTile() : citymap.at( _d->city->getRoadExit() );
+  Tilemap& citymap = _getCity()->getTilemap();
+  Tile& destTile = house.isValid() ? house->getTile() : citymap.at( _getCity()->getRoadExit() );
   Size arrivedArea( house.isValid() ? house->getSize() : 1 );
 
   bool pathFound = Pathfinder::getInstance().getPath( startPoint.getIJ(), destTile.getIJ(), pathWay, 
@@ -107,7 +105,7 @@ void Immigrant::onDestination()
   bool gooutCity = true;
   if( _d->destination.getI() > 0 && _d->destination.getJ() > 0 )  //have destination
   {
-    const Tile& tile = _d->city->getTilemap().at( _d->destination );
+    const Tile& tile = _getCity()->getTilemap().at( _d->destination );
 
     HousePtr house = tile.getTerrain().getOverlay().as<House>();
     if( house.isValid() )
@@ -126,7 +124,7 @@ void Immigrant::onDestination()
 
   if( gooutCity )
   {
-    _findPath2blankHouse( _d->city->getTilemap().at( getIJ() ) );
+    _findPath2blankHouse( _getCity()->getTilemap().at( getIJ() ) );
   }
   else
   {
@@ -144,7 +142,7 @@ ImmigrantPtr Immigrant::create( CityPtr city )
 void Immigrant::send2City( Tile& startTile )
 {
   _findPath2blankHouse( startTile );
-  _d->city->addWalker( WalkerPtr( this ) );
+  _getCity()->addWalker( this );
 }
 
 Immigrant::~Immigrant()

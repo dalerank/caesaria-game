@@ -15,7 +15,7 @@
 
 #include "oc3_minimap_colours.hpp"
 
-Caesar3Colours::Caesar3Colours(ClimateType climate) {
+MinimapColors::MinimapColors(ClimateType climate) {
 	if (climate == C_CENTRAL) {
 		int colours[][8] = {
 			{0x000000}, // background
@@ -92,6 +92,6 @@ Caesar3Colours::Caesar3Colours(ClimateType climate) {
 	}
 }
 
-int Caesar3Colours::colour(int type, int number) {
+int MinimapColors::colour(int type, int number) {
 	return map[type][number];
 }

@@ -131,7 +131,7 @@ void PictureDecorator::draw( Picture& dstpic, const Rect& rectangle, Mode mode, 
 {
   switch( mode )
   {
-  case whiteArea: drawArea( dstpic, rectangle, 348, 10, 12, useAlpha ); break;
+  case whiteArea: drawArea( dstpic, rectangle, 348, 10, 12, useAlpha ); break;  
   case blackArea: drawArea( dstpic, rectangle, 487, 5, 7, useAlpha ); break;
   case greyPanel: drawPanel( dstpic, rectangle, 25, useAlpha ); break;
   case lightgreyPanel: drawPanel( dstpic, rectangle, 22, useAlpha ); break;

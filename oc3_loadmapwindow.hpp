@@ -17,7 +17,7 @@
 #ifndef __OPENCAESAR3_LOADMAPWINDOW_H_INCLUDED__
 #define __OPENCAESAR3_LOADMAPWINDOW_H_INCLUDED__
 
-#include "oc3_widget.hpp"
+#include "oc3_gui_widget.hpp"
 #include "oc3_scopedptr.hpp"
 #include "oc3_filepath.hpp"
 #include "oc3_signals.hpp"

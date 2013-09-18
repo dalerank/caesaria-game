@@ -39,13 +39,17 @@ public:
 
   virtual bool isWalkable() const;
   virtual void setTerrain( TerrainTile& terrain ) = 0;
-  virtual void build( const TilePos& pos );
+
+  virtual void build( CityPtr city, const TilePos& pos );
   virtual void destroy();  // handles the delete
+
   virtual Point getOffset( const Point& subpos ) const;
   virtual void timeStep(const unsigned long time);  // perform one simulation step
 
   // graphic
   void setPicture(const Picture &picture);
+  void setPicture(const char* resource, const int index);
+
   const Picture& getPicture() const;
   PicturesArray& getForegroundPictures();
 
@@ -64,7 +68,9 @@ protected:
 
   Animation& _getAnimation();
   Tile* _getMasterTile();
+  CityPtr _getCity() const;
 
+private:
   class Impl;
   ScopedPtr< Impl > _d;
 };

@@ -17,7 +17,7 @@
 #ifndef __OPENCAESAR3_MESSAGE_STACK_WIDGET_H_INCLUDED__ 
 #define __OPENCAESAR3_MESSAGE_STACK_WIDGET_H_INCLUDED__ 
 
-#include "oc3_widget.hpp"
+#include "oc3_gui_widget.hpp"
 #include "oc3_scopedptr.hpp"
 
 class WindowMessageStack : public Widget

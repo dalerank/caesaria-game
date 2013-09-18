@@ -69,13 +69,13 @@ void Propagator::init(Tile& origin)
    init( tileList );
 }
 
-void Propagator::init( const PtrTilesList& origin)
+void Propagator::init( const TilemapTiles& origin)
 {
   _activeBranches.clear();
   _completedBranches.clear();
 
   // init propagation
-  for( PtrTilesList::const_iterator it=origin.begin(); it != origin.end(); it++ )
+  for( TilemapTiles::const_iterator it=origin.begin(); it != origin.end(); it++ )
   {
     // std::cout << "Tile access " << tile.getI() << "," << tile.getJ() << std::endl;
     Tile* tile = *it;
@@ -116,7 +116,7 @@ void Propagator::propagate(const int maxDistance)
       }
 
       // propagate to neighbour tiles
-      PtrTilesList accessTiles = _tilemap->getRectangle( tile.getIJ() + TilePos( -1,-1 ),
+      TilemapTiles accessTiles = _tilemap->getRectangle( tile.getIJ() + TilePos( -1,-1 ),
                                                          tile.getIJ() + TilePos( 1, 1 ), _allDirections);
       foreach( Tile* tile2, accessTiles )
       {
@@ -174,7 +174,7 @@ bool Propagator::getPath( RoadPtr destination, PathWay &oPathWay)
 
 bool Propagator::getPath( BuildingPtr destination, PathWay &oPathWay)
 {
-   const PtrTilesList& destTiles = destination->getAccessRoads();
+   const TilemapTiles& destTiles = destination->getAccessRoads();
    std::map<Tile*, PathWay>::iterator mapIt;
    std::set<PathWay> destPath;  // paths to the destination building, ordered by distance
    int distance = 30;
@@ -183,7 +183,7 @@ bool Propagator::getPath( BuildingPtr destination, PathWay &oPathWay)
       propagate(distance);
 
       // searches reached destTiles
-      for (PtrTilesList::const_iterator itTile= destTiles.begin(); itTile != destTiles.end(); ++itTile)
+      for (TilemapTiles::const_iterator itTile= destTiles.begin(); itTile != destTiles.end(); ++itTile)
       {
          // for each destination tile
          Tile &tile= **itTile;
@@ -221,23 +221,18 @@ void Propagator::getRoutes( const BuildingType buildingType, Routes& oPathWayLis
 {
   // init the building list
   CityHelper helper( _d->city );
-  Buildings buildingList = helper.getBuildings<Building>( buildingType );
+  BuildingList buildingList = helper.getBuildings<Building>( buildingType );
 
-  for( Buildings::iterator itDest = buildingList.begin(); itDest != buildingList.end(); ++itDest )
+  // for each destination building
+  foreach( BuildingPtr destination, buildingList )
   {
-     // for each destination building
-     BuildingPtr destination = *itDest;
-
      std::set<PathWay> destPath;  // paths to the current building, ordered by distance
 
-     PtrTilesList destTiles= destination->getAccessRoads();
-     for( PtrTilesList::iterator itTile= destTiles.begin(); itTile != destTiles.end(); ++itTile)
+     TilemapTiles destTiles = destination->getAccessRoads();
+     foreach( Tile* tile, destTiles )
      {
-        // for each destination tile
-        Tile &tile= **itTile;
-
         // searches path to that given tile
-        std::map<Tile*, PathWay>::iterator pathWayIt= _completedBranches.find(&tile);
+        std::map<Tile*, PathWay>::iterator pathWayIt= _completedBranches.find( tile );
 
         if (pathWayIt != _completedBranches.end())
         {
@@ -285,11 +280,11 @@ void Propagator::getWays(const int maxDistance, std::list<PathWay> &oPathWayList
          // std::cout << "Propagation from tile " << tile.getI() << ", " << tile.getJ() << std::endl;
 
          // propagate to neighbour tiles
-         PtrTilesList accessTiles = _tilemap->getRectangle( tile.getIJ() + TilePos( -1, -1 ),
+         TilemapTiles accessTiles = _tilemap->getRectangle( tile.getIJ() + TilePos( -1, -1 ),
                                                             tile.getIJ() + TilePos( 1, 1 ), _allDirections);
 
          // nextTiles = accessTiles - alreadyProcessedTiles
-         PtrTilesList nextTiles;
+         TilemapTiles nextTiles;
          foreach( Tile* tile2, accessTiles )
          {
             // for every neighbour tile
@@ -307,7 +302,7 @@ void Propagator::getWays(const int maxDistance, std::list<PathWay> &oPathWayList
             break;
          }
 
-         for (PtrTilesList::const_iterator itTile = nextTiles.begin(); itTile!=nextTiles.end(); ++itTile)
+         for (TilemapTiles::const_iterator itTile = nextTiles.begin(); itTile!=nextTiles.end(); ++itTile)
          {
             // for every neighbor tile
             Tile &tile2 = **itTile;

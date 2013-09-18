@@ -104,7 +104,7 @@ public:
     ret.peoplesServed = 0;
     ret.buildingCount = 0;
 
-    ServiceBuildings srvBuildings = helper.getBuildings<ServiceBuilding>( service );
+    ServiceBuildingList srvBuildings = helper.getBuildings<ServiceBuilding>( service );
     foreach( ServiceBuildingPtr building, srvBuildings )
     {
       ret.buildingWork += building->getWorkers() > 0 ? 1 : 0;
