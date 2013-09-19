@@ -423,10 +423,8 @@ void House::applyService( ServiceWalkerPtr walker )
   case Service::S_TEMPLE_VENUS:
   case Service::S_TEMPLE_MARS:
   case Service::S_TEMPLE_MERCURE:
-  case Service::S_DOCTOR:
   case Service::S_BARBER:
   case Service::S_BATHS:
-  case Service::S_HOSPITAL:
   case Service::S_SCHOOL:
   case Service::S_LIBRARY:
   case Service::S_COLLEGE:
@@ -434,6 +432,12 @@ void House::applyService( ServiceWalkerPtr walker )
   case Service::S_AMPHITHEATER:
   case Service::S_COLLOSSEUM:
   case Service::S_HIPPODROME:
+    setServiceAccess(service, 100);
+  break;
+
+  case Service::S_HOSPITAL:
+  case Service::S_DOCTOR:
+    _d->healthLevel += 10;
     setServiceAccess(service, 100);
   break;
   

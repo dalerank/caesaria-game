@@ -561,6 +561,14 @@
 	class : "disaster"
   },
   
+  plague_ruins :
+  {
+  cost : 0,
+	desirability : { base : -2,	range : 2,	step : 1 }
+	employers : 0
+	class : "disaster"
+  },
+  
   wheat_farm : 
   {
   cost : 40,

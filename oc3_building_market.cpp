@@ -47,7 +47,6 @@ Market::Market() : ServiceBuilding(Service::S_MARKET, B_MARKET, Size(2) ),
   _d->goodStore.setMaxQty(5000);
   _d->goodStore.setMaxQty(Good::wheat, 400);
   _d->goodStore.setMaxQty(Good::pottery, 300);
-  //_d->goodStore.setCurrentQty(G_WHEAT, 200);
 
   _getAnimation().load( ResourceGroup::commerce, 2, 10 );
   _getAnimation().setFrameDelay( 4 );

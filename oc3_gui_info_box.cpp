@@ -565,6 +565,11 @@ InfoBoxMarket::InfoBoxMarket( Widget* parent, const Tile& tile )
      drawGood( market, Good::oil, 2, paintY);
      drawGood( market, Good::wine, 3, paintY);
 
+     if( 0 == furageSum )
+     {
+       lbAbout->setHeight( 60 );
+       lbAbout->setWordWrap( true );
+     }
      lbAbout->setText( 0 == furageSum ? _("##market_search_food_source##") : _("##market_about##"));
    }
    else
@@ -592,7 +597,7 @@ void InfoBoxMarket::drawGood( MarketPtr market, const Good::Type &goodType, int 
   Point pos( index * offset + startOffset, paintY );
   _d->bgPicture->draw( pic, pos.getX(), pos.getY() );
 
-  std::string outText = StringHelper::format( 0xff, "%d", market->getGoodStore().getCurrentQty(goodType) );
+  std::string outText = StringHelper::format( 0xff, "%d", market->getGoodStore().getCurrentQty( goodType ) );
   Font font2 = Font::create( FONT_2 );
   font2.draw(*_d->bgPicture, outText, pos.getX() + 30, pos.getY(), false );
 }

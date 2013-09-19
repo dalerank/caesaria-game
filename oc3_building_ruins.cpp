@@ -246,7 +246,7 @@ void PlagueRuins::destroy()
 {
   Building::destroy();
 
-  BuildEvent::create( getTilePos(), B_BURNED_RUINS );
+  GameEventMgr::append( BuildEvent::create( getTilePos(), B_BURNED_RUINS ) );
 }
 
 void PlagueRuins::applyService(ServiceWalkerPtr walker)
