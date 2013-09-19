@@ -59,7 +59,6 @@ public:
   void initTerrain( Tile& terrain )
   {
     terrain.setFlag( Tile::clearAll, true );
-    terrain.setOverlay( this );
     terrain.setFlag( Tile::tlRoad, true );
   }
 

@@ -86,7 +86,6 @@ bool Road::canBuild( CityPtr city, const TilePos& pos ) const
 void Road::initTerrain(Tile& terrain)
 {
   terrain.setFlag( Tile::clearAll, true );
-  terrain.setOverlay( this );
   terrain.setFlag( Tile::tlRoad, true );
 }
 
@@ -200,7 +199,6 @@ void Plaza::initTerrain(Tile& terrain)
   //std::cout << "Plaza::setTerrain" << std::endl;
   bool isMeadow = terrain.getFlag( Tile::tlMeadow );
   terrain.setFlag( Tile::clearAll , true);
-  terrain.setOverlay(this);
   terrain.setFlag( Tile::tlRoad, true);
   terrain.setFlag( Tile::tlMeadow, isMeadow );
 }

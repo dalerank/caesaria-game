@@ -184,7 +184,6 @@ void Building::initTerrain( Tile &tile )
   // try to fix
   bool saveMeadow = tile.getFlag( Tile::tlMeadow );
   tile.setFlag( Tile::clearAll, true );
-  tile.setOverlay(this);
   tile.setFlag( Tile::tlBuilding, true);
   tile.setFlag( Tile::tlMeadow, saveMeadow);
 }

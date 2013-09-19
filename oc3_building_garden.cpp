@@ -30,7 +30,6 @@ void Garden::initTerrain(Tile& terrain)
 {
   bool isMeadow = terrain.getFlag( Tile::tlMeadow );
   terrain.setFlag( Tile::clearAll, true );
-  terrain.setOverlay(this);
   terrain.setFlag( Tile::tlBuilding, true ); // are gardens buildings or not???? try to investigate from original game
   terrain.setFlag( Tile::tlGarden, true);
   terrain.setFlag( Tile::tlMeadow, isMeadow);

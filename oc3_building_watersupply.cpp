@@ -89,7 +89,6 @@ void Aqueduct::initTerrain(Tile &terrain)
   bool isMeadow = terrain.getFlag( Tile::tlMeadow );
 
   terrain.setFlag( Tile::clearAll, true );
-  terrain.setOverlay(this);
   terrain.setFlag( Tile::tlBuilding, true);
   terrain.setFlag( Tile::tlRoad, isRoad );
   terrain.setFlag( Tile::tlMeadow, isMeadow);
@@ -405,7 +404,6 @@ void Reservoir::initTerrain(Tile &terrain)
 {
   bool isMeadow = terrain.getFlag( Tile::tlMeadow );
   terrain.setFlag( Tile::clearAll, true );
-  terrain.setOverlay(this);
   terrain.setFlag( Tile::tlBuilding, true);
   terrain.setFlag( Tile::tlMeadow, isMeadow);
 }

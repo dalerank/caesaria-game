@@ -19,7 +19,7 @@
 #include "oc3_tile.hpp"
 #include "oc3_city.hpp"
 #include "oc3_tilemap.hpp"
-#include "oc3_game_event.hpp"
+#include "oc3_game_event_mgr.hpp"
 
 #include <vector>
 
@@ -78,7 +78,6 @@ public:
   void initTerrain( Tile& terrain )
   {
     terrain.setFlag( Tile::clearAll, true );
-    terrain.setOverlay( this );
     terrain.setFlag( Tile::tlRoad, true );
   }
 
@@ -382,7 +381,7 @@ void HighBridge::destroy()
   foreach( HighBridgeSubTilePtr subtile,  _d->subtiles )
   {
     subtile->_parent = 0;
-    ClearLandEvent::create( subtile->_pos );
+    GameEventMgr::append( ClearLandEvent::create( subtile->_pos ) );
 
     std::string picName = TileHelper::convId2PicName( subtile->_imgId );
 
