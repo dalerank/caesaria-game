@@ -23,7 +23,7 @@
 #include "oc3_city.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_name_generator.hpp"
-#include "oc3_game_event.hpp"
+#include "oc3_game_event_mgr.hpp"
 #include "oc3_stringhelper.hpp"
 
 class WalkerPrefect::Impl
@@ -155,7 +155,7 @@ void WalkerPrefect::onMidTile()
         {
           house->deleteLater();
 
-          DisasterEvent::create( house->getTilePos(), DisasterEvent::plague );
+          GameEventMgr::append( DisasterEvent::create( house->getTilePos(), DisasterEvent::plague ) );
         }
       }
     }

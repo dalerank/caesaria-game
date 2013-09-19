@@ -103,15 +103,16 @@ void LandOverlay::build( CityPtr city, const TilePos& pos )
     for (int di = 0; di < _d->size.getHeight(); ++di)
     {
       Tile& tile = tilemap.at( pos + TilePos( di, dj ) );
-      tile.setMasterTile(_d->masterTile);
+      tile.setMasterTile( _d->masterTile );
       tile.setPicture( &_d->picture );
 
-      if( tile.getOverlay().isValid() && tile.getOverlay() != this)
+      if( tile.getOverlay().isValid() && tile.getOverlay() != this )
       {
         tile.getOverlay()->deleteLater();
       }
 
-      tile.setOverlay(this);;
+      tile.setOverlay( this );
+      initTerrain( tile );
     }
   }
 }

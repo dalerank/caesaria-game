@@ -81,6 +81,7 @@ public:
 private:
   bool _isWaterSource;
   bool _isNearWater( CityPtr city, const TilePos& pos ) const;
+
 };
 
 class Fountain : public ServiceBuilding
@@ -97,6 +98,7 @@ public:
   virtual void load( const VariantMap& stream);
 private:
   bool _haveReservoirWater;
+  void _initAnimation();
 };
 
 #endif // __OPENCAESAR3_WATER_BUILDGINDS_INCLUDED__

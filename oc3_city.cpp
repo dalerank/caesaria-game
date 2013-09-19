@@ -625,7 +625,6 @@ void City::updateRoads()
   _d->needRecomputeAllRoads = true;
 }
 
-
 TilemapArea CityHelper::getArea(BuildingPtr building)
 {
   return _city->getTilemap().getFilledRectangle( building->getTilePos(), building->getSize() );

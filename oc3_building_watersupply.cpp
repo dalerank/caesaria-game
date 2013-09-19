@@ -540,10 +540,8 @@ Fountain::Fountain() : ServiceBuilding(Service::S_FOUNTAIN, B_FOUNTAIN, Size(1))
   std::srand( DateTime::getElapsedTime() );
 
   setPicture( ResourceGroup::utilitya, 10 );
-  _getAnimation().load( ResourceGroup::utilitya, fontainStartAnim, fontainSizeAnim );
-  //animLoader.fill_animation_reverse(_animation, "utilitya", 25, 7);
-  _getAnimation().setOffset( Point( 12, 24 ) );
-  _getAnimation().setFrameDelay( 2 );
+
+  _initAnimation();
   _fgPictures.resize(1);
 
   _damageIncrement = 0;
@@ -572,6 +570,7 @@ void Fountain::timeStep(const unsigned long time)
     if( getTile().getWaterService( WTR_RESERVOIR ) > 0 && getWorkers() > 0 )
     {
       _haveReservoirWater = true;
+      _getAnimation().start();
     }
     else
     {
@@ -582,6 +581,8 @@ void Fountain::timeStep(const unsigned long time)
       {
         getTile().decreaseWaterService( WTR_FONTAIN );
       }
+
+      _getAnimation().stop();
     }
 
     if( !_haveReservoirWater )
@@ -631,4 +632,13 @@ void Fountain::load(const VariantMap& stream)
 
   //check animation
   timeStep( 1 );
+}
+
+void Fountain::_initAnimation()
+{
+  _getAnimation().load( ResourceGroup::utilitya, fontainStartAnim, fontainSizeAnim );
+  //animLoader.fill_animation_reverse(_animation, "utilitya", 25, 7);
+  _getAnimation().setOffset( Point( 12, 24 ) );
+  _getAnimation().setFrameDelay( 2 );
+  _getAnimation().stop();
 }

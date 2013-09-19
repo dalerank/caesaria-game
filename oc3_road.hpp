@@ -23,7 +23,7 @@ class Road : public Construction
 public:
   Road();
 
-  virtual Picture& computePicture();
+  virtual Picture computePicture();
   void updatePicture();
 
   virtual void build( CityPtr city, const TilePos& pos );
@@ -40,7 +40,7 @@ public:
   Plaza();
   virtual void initTerrain(Tile& terrain);
   virtual bool canBuild( CityPtr city, const TilePos& pos ) const;
-  virtual Picture& computePicture();
+  virtual Picture computePicture();
 };
 
 

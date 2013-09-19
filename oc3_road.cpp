@@ -44,7 +44,7 @@ void Road::build( CityPtr city, const TilePos& pos )
   }
 
   // update adjacent roads
-  foreach( Tile* tile, _accessRoads )
+  /*foreach( Tile* tile, _accessRoads )
   {
     RoadPtr road = tile->getOverlay().as<Road>(); // let's think: may here different type screw up whole program?
     if( road.isValid() )
@@ -52,12 +52,12 @@ void Road::build( CityPtr city, const TilePos& pos )
       road->computeAccessRoads();
       road->setPicture(road->computePicture());
     }
-  }
+  }*/
   
   // NOTE: also we need to update accessRoads for adjacent building
   // how to detect them if MaxDistance2Road can be any
   // so let's recompute accessRoads for every _building_
-  LandOverlayList list = city->getOverlayList(); // it looks terrible!!!!
+  /*LandOverlayList list = city->getOverlayList(); // it looks terrible!!!!
   foreach( LandOverlayPtr overlay, list )
   {
     BuildingPtr construction = overlay.as<Building>();
@@ -65,7 +65,9 @@ void Road::build( CityPtr city, const TilePos& pos )
     {
       construction->computeAccessRoads();
     }
-  }
+  }*/
+
+  city->updateRoads();
 }
 
 bool Road::canBuild( CityPtr city, const TilePos& pos ) const
@@ -88,7 +90,7 @@ void Road::initTerrain(Tile& terrain)
   terrain.setFlag( Tile::tlRoad, true );
 }
 
-Picture& Road::computePicture()
+Picture Road::computePicture()
 {
   int i = getTile().getI();
   int j = getTile().getJ();
@@ -158,8 +160,7 @@ Picture& Road::computePicture()
     break;
   }
 
-  Picture *picture = &Picture::load( ResourceGroup::road, index);
-  return *picture;
+  return Picture::load( ResourceGroup::road, index);
 }
 
 bool Road::isWalkable() const
@@ -204,7 +205,7 @@ void Plaza::initTerrain(Tile& terrain)
   terrain.setFlag( Tile::tlMeadow, isMeadow );
 }
 
-Picture& Plaza::computePicture()
+Picture Plaza::computePicture()
 {
   //std::cout << "Plaza::computePicture" << std::endl;
   return Picture::load( ResourceGroup::entertaiment, 102);
