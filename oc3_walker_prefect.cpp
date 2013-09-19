@@ -192,7 +192,7 @@ void WalkerPrefect::onMidTile()
   {
     if( _getPathway().getDestination().getIJ().distanceFrom( getIJ() ) < 1.5f )
     {
-      LandOverlayPtr overlay = _getPathway().getDestination().getTerrain().getOverlay();
+      LandOverlayPtr overlay = _getPathway().getDestination().getOverlay();
       if( overlay->getType() == B_BURNING_RUINS )
       {
         _d->action = Impl::fightFire;
@@ -234,7 +234,7 @@ void WalkerPrefect::timeStep(const unsigned long time)
   if( _d->action == Impl::fightFire )
   {    
     setSpeed( 0 );
-    BuildingPtr building = _getPathway().getDestination().getTerrain().getOverlay().as<Building>();
+    BuildingPtr building = _getPathway().getDestination().getOverlay().as<Building>();
     bool inFire = (building.isValid() && building->getType() == B_BURNING_RUINS);
 
     if( inFire )

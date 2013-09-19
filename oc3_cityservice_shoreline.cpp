@@ -38,7 +38,7 @@ void CityServiceShoreline::Impl::checkMap( CityPtr city )
 
   foreach( Tile* tile, tiles )
   {
-    int imgId = tile->getTerrain().getOriginalImgId();
+    int imgId = tile->getOriginalImgId();
     if( (imgId >= 372 && imgId <= 403) || (imgId>=414 && imgId<=418) )
     {
       slTiles.push_back( tile );
@@ -73,15 +73,13 @@ void CityServiceShoreline::update( const unsigned int time )
     _d->checkMap( _d->city );
   }
 
-  for( TilemapTiles::iterator it=_d->slTiles.begin(); it != _d->slTiles.end(); it++ )
+  foreach( Tile* tile, _d->slTiles )
   {
-    TerrainTile& info = (*it)->getTerrain();
-
-    if( info.getOverlay().isValid() )
+    if( tile->getOverlay().isValid() )
       continue;
 
-    int picId = info.getOriginalImgId();
-    if( info.getDesirability() > 10 )
+    int picId = tile->getOriginalImgId();
+    if( tile->getDesirability() > 10 )
     {
       switch( picId )
       {
@@ -100,10 +98,10 @@ void CityServiceShoreline::update( const unsigned int time )
       }
     }
 
-    std::string picName = TerrainTileHelper::convId2PicName( picId ); 
-    if( picName != ((*it)->getPicture().getName()+".png") )
+    std::string picName = TileHelper::convId2PicName( picId );
+    if( picName != (tile->getPicture().getName()+".png") )
     {
-      (*it)->setPicture( &Picture::load( picName ) );
+      tile->setPicture( picName );
     }
 
   }

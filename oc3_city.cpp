@@ -550,7 +550,7 @@ CityPtr City::create( EmpirePtr empire, Player* player )
 
 LandOverlayPtr City::getOverlay( const TilePos& pos ) const
 {
-  return _d->tilemap.at( pos ).getTerrain().getOverlay();
+  return _d->tilemap.at( pos ).getOverlay();
 }
 
 int City::getLastMonthTax() const

@@ -37,6 +37,14 @@ RomeDivinityPtr Temple::getDivinity() const
   return _td->divinity;
 }
 
+void Temple::deliverService()
+{
+  if( getWalkerList().empty() && getWorkers() > 0 )
+  {
+    ServiceBuilding::deliverService();
+  }
+}
+
 unsigned int Temple::getWalkerDistance() const
 {
   return 26;

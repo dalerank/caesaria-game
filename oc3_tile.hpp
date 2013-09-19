@@ -26,6 +26,10 @@ class Picture;
 class Tile
 {
 public:
+  typedef enum { tlRoad=0, tlWater, tlTree, tlMeadow, tlRock, tlBuilding, tlAqueduct,
+                 tlGarden, tlElevation, tlWall, tlGateHouse,
+                 isConstructible, isDestructible, clearAll } Type;
+
   Tile(const TilePos& pos);
   Tile(const Tile& clone);
 
@@ -37,6 +41,8 @@ public:
 
   // displayed picture
   void setPicture( const Picture* picture );
+  void setPicture( const char* rc, const int index );
+  void setPicture( const std::string& name );
   const Picture& getPicture() const;
 
   // used for multi-tile graphics: current displayed picture
@@ -46,8 +52,8 @@ public:
   void setMasterTile(Tile* master);
   bool isMasterTile() const;
 
-  const TerrainTile& getTerrain() const;
-  TerrainTile& getTerrain();
+  //const TerrainTile& getTerrain() const;
+  //TerrainTile& getTerrain();
   bool isFlat() const;  // returns true if the tile is walkable/boatable (for display purpose)
 
   void resetWasDrawn() { _wasDrawn = false; }
@@ -59,13 +65,39 @@ public:
   const Animation& getAnimation() const;
   void setAnimation( const Animation& animation );
 
+  bool isWalkable( bool ) const;
+  bool getFlag( Type type ) const;
+  void setFlag( Type type, bool value );
+
+  void appendDesirability( int value );
+  int getDesirability() const;
+  LandOverlayPtr getOverlay() const;
+  void setOverlay( LandOverlayPtr overlay );
+  unsigned int getOriginalImgId() const;
+  void setOriginalImgId( unsigned short int id );
+
+  void fillWaterService( const WaterService type );
+  void decreaseWaterService( const WaterService type );
+  int getWaterService( const WaterService type ) const;
+
 private:
   TilePos _pos; // coordinates of the tile
-  Tile* _master_tile;  // left-most tile if multi-tile, or "this" if single-tile
+  Tile* _master;  // left-most tile if multi-tile, or "this" if single-tile
   TerrainTile _terrain;    // infos about the tile (building, tree, road, water, rock...)
   Picture const* _picture; // displayed picture
   bool _wasDrawn;
   Animation _animation;
+};
+
+class TileHelper
+{
+public:
+  static std::string convId2PicName( const unsigned int imgId );
+  static int convPicName2Id( const std::string &pic_name);
+  static int encode( const Tile& tt );
+
+  static void decode( Tile& tile, const int bitset);
+
 };
 
 #endif //__OPENCAESAR3_TILE_H_INCLUDED__

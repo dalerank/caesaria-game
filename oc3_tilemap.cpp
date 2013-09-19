@@ -197,9 +197,9 @@ void Tilemap::save( VariantMap& stream ) const
   TilemapArea tiles = const_cast< Tilemap* >( this )->getFilledRectangle( TilePos( 0, 0 ), Size( _d->size ) );
   foreach( Tile* tile, tiles )
   {
-    bitsetInfo.push_back( tile->getTerrain().encode() );
-    desInfo.push_back( tile->getTerrain().getDesirability() );
-    idInfo.push_back( tile->getTerrain().getOriginalImgId() );
+    bitsetInfo.push_back( TileHelper::encode( *tile ) );
+    desInfo.push_back( tile->getDesirability() );
+    idInfo.push_back( tile->getOriginalImgId() );
   }
 
   stream[ "bitset" ]       = bitsetInfo;
@@ -228,16 +228,16 @@ void Tilemap::load( const VariantMap& stream )
   {
     Tile* tile = *it;
 
-    tile->getTerrain().decode( (*bitsetInfoIt).toInt() );
-    tile->getTerrain().appendDesirability( (*desirabilityIt).toInt() );
+    TileHelper::decode( *tile, (*bitsetInfoIt).toInt() );
+    tile->appendDesirability( (*desirabilityIt).toInt() );
 
     int imgId = (*imgIdIt).toInt();
     if( imgId != 0 )
     {
-      std::string picName = TerrainTileHelper::convId2PicName( imgId );
+      std::string picName = TileHelper::convId2PicName( imgId );
       Picture& pic = Picture::load( picName );
 
-      tile->getTerrain().setOriginalImgId( imgId );
+      tile->setOriginalImgId( imgId );
 
       int tile_size = (pic.getWidth()+2)/60;  // size of the multi-tile. the multi-tile is a square.
 

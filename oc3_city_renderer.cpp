@@ -185,13 +185,12 @@ void CityRenderer::Impl::drawTileDesirability( Tile& tile )
 
   tile.setWasDrawn();
 
-  const TerrainTile& terrain = tile.getTerrain();
-  if( terrain.getOverlay().isNull() )
+  if( tile.getOverlay().isNull() )
   {
     //draw background
-    if( terrain.isConstructible() && terrain.getDesirability() != 0 )
+    if( tile.getFlag( Tile::isConstructible ) && tile.getDesirability() != 0 )
     {
-      int picOffset = math::clamp( terrain.getDesirability() / 16, -5, 6 );
+      int picOffset = math::clamp( tile.getDesirability() / 16, -5, 6 );
       Picture& pic = Picture::load( ResourceGroup::land2a, 37 + picOffset );
       engine->drawPicture( pic, screenPos );
     }
@@ -202,7 +201,7 @@ void CityRenderer::Impl::drawTileDesirability( Tile& tile )
   }
   else
   {   
-    LandOverlayPtr overlay = terrain.getOverlay();
+    LandOverlayPtr overlay = tile.getOverlay();
     switch( overlay->getType() )
     {
     //roads
@@ -215,7 +214,7 @@ void CityRenderer::Impl::drawTileDesirability( Tile& tile )
     //other buildings
     default:      
       {
-        int picOffset = math::clamp( terrain.getDesirability() / 16, -5, 6 );
+        int picOffset = math::clamp( tile.getDesirability() / 16, -5, 6 );
         Picture& pic = Picture::load( ResourceGroup::land2a, 37 + picOffset );
         TilemapTiles tiles4clear = tilemap->getFilledRectangle( tile.getIJ(), overlay->getSize() );
         foreach( Tile* tile, tiles4clear )
@@ -235,15 +234,14 @@ void CityRenderer::Impl::drawTileFire( Tile& tile )
   tile.setWasDrawn();
 
   bool needDrawAnimations = false;
-  const TerrainTile& terrain = tile.getTerrain();
-  if( terrain.getOverlay().isNull() )
+  if( tile.getOverlay().isNull() )
   {
     //draw background
     engine->drawPicture( tile.getPicture(), screenPos );
   }
   else
   {   
-    LandOverlayPtr overlay = terrain.getOverlay();
+    LandOverlayPtr overlay = tile.getOverlay();
     int fireLevel = 0;
     switch( overlay->getType() )
     {
@@ -301,15 +299,14 @@ void CityRenderer::Impl::drawTileDamage( Tile& tile )
   tile.setWasDrawn();
 
   bool needDrawAnimations = false;
-  const TerrainTile& terrain = tile.getTerrain();
-  if( terrain.getOverlay().isNull() )
+  if( tile.getOverlay().isNull() )
   {
     //draw background
     engine->drawPicture( tile.getPicture(), screenPos );
   }
   else
   {   
-    LandOverlayPtr overlay = terrain.getOverlay();
+    LandOverlayPtr overlay = tile.getOverlay();
     int damageLevel = 0;
     switch( overlay->getType() )
     {
@@ -364,15 +361,14 @@ void CityRenderer::Impl::drawTileReligion( Tile& tile )
   tile.setWasDrawn();
 
   bool needDrawAnimations = false;
-  const TerrainTile& terrain = tile.getTerrain();
-  if( terrain.getOverlay().isNull() )
+  if( tile.getOverlay().isNull() )
   {
     //draw background
     engine->drawPicture( tile.getPicture(), screenPos );
   }
   else
   {   
-    LandOverlayPtr overlay = terrain.getOverlay();
+    LandOverlayPtr overlay = tile.getOverlay();
 
     int religionLevel = -1;
     switch( overlay->getType() )
@@ -429,15 +425,14 @@ void CityRenderer::Impl::drawTileFood( Tile& tile )
   tile.setWasDrawn();
 
   bool needDrawAnimations = false;
-  const TerrainTile& terrain = tile.getTerrain();
-  if( terrain.getOverlay().isNull() )
+  if( tile.getOverlay().isNull() )
   {
     //draw background
     engine->drawPicture( tile.getPicture(), screenPos );
   }
   else
   {   
-    LandOverlayPtr overlay = terrain.getOverlay();
+    LandOverlayPtr overlay = tile.getOverlay();
     Picture pic;
     int foodLevel = -1;
     switch( overlay->getType() )
@@ -493,15 +488,15 @@ void CityRenderer::Impl::drawTileWater( Tile& tile )
 
   bool needDrawAnimations = false;
   Size areaSize(1);
-  const TerrainTile& terrain = tile.getTerrain();
-  if( terrain.getOverlay().isNull() )
+
+  if( tile.getOverlay().isNull() )
   {
     //draw background
     engine->drawPicture( tile.getPicture(), screenPos );
   }
   else
   {
-    LandOverlayPtr overlay = terrain.getOverlay();
+    LandOverlayPtr overlay = tile.getOverlay();
     Picture pic;
     switch( overlay->getType() )
     {
@@ -520,7 +515,7 @@ void CityRenderer::Impl::drawTileWater( Tile& tile )
     default:
     {
       int tileNumber = 0;
-      bool haveWater = terrain.getWaterService( WTR_FONTAIN ) > 0 || terrain.getWaterService( WTR_WELL ) > 0;
+      bool haveWater = tile.getWaterService( WTR_FONTAIN ) > 0 || tile.getWaterService( WTR_WELL ) > 0;
       if ( overlay->getType() == B_HOUSE )
       {
         HousePtr h = overlay.as<House>();
@@ -528,7 +523,7 @@ void CityRenderer::Impl::drawTileWater( Tile& tile )
         haveWater = haveWater || h->hasServiceAccess(Service::S_FOUNTAIN) || h->hasServiceAccess(Service::S_WELL);
       }
       tileNumber += (haveWater ? OverlayPic::haveWater : 0);
-      tileNumber += terrain.getWaterService( WTR_RESERVOIR ) > 0 ? OverlayPic::reservoirRange : 0;
+      tileNumber += tile.getWaterService( WTR_RESERVOIR ) > 0 ? OverlayPic::reservoirRange : 0;
 
       drawBuildingAreaTiles( tile, overlay, ResourceGroup::waterOverlay, OverlayPic::base + tileNumber );
 
@@ -550,22 +545,21 @@ void CityRenderer::Impl::drawTileWater( Tile& tile )
     }
   }
 
-  if( !needDrawAnimations && (terrain.isWalkable(true) || terrain.isBuilding()) )
+  if( !needDrawAnimations && ( tile.isWalkable(true) || tile.getFlag( Tile::tlBuilding ) ) )
   {
     TilemapArea area = tilemap->getFilledRectangle( tile.getIJ(), areaSize );
 
-    foreach( Tile* tile, area )
+    foreach( Tile* rtile, area )
     {
-      TerrainTile& curTera = tile->getTerrain();
-      int reservoirWater = curTera.getWaterService( WTR_RESERVOIR );
-      int fontainWater = curTera.getWaterService( WTR_FONTAIN );
+      int reservoirWater = rtile->getWaterService( WTR_RESERVOIR );
+      int fontainWater = rtile->getWaterService( WTR_FONTAIN );
 
-      if( (reservoirWater + fontainWater > 0) && !curTera.isWater() && curTera.getOverlay().isNull() )
+      if( (reservoirWater + fontainWater > 0) && ! rtile->getFlag( Tile::tlWater ) && rtile->getOverlay().isNull() )
       {
         int picIndex = reservoirWater ? OverlayPic::reservoirRange : 0;
         picIndex |= fontainWater > 0 ? OverlayPic::haveWater : 0;
         picIndex |= OverlayPic::skipLeftBorder | OverlayPic::skipRightBorder;
-        engine->drawPicture( Picture::load( ResourceGroup::waterOverlay, picIndex + OverlayPic::base ), tile->getXY() + mapOffset );
+        engine->drawPicture( Picture::load( ResourceGroup::waterOverlay, picIndex + OverlayPic::base ), rtile->getXY() + mapOffset );
       }
     }
   }
@@ -575,7 +569,7 @@ void CityRenderer::Impl::drawTileBase( Tile& tile )
 {
   Point screenPos = tile.getXY() + mapOffset;
 
-  LandOverlayPtr overlay = tile.getTerrain().getOverlay();
+  LandOverlayPtr overlay = tile.getOverlay();
 
   if( overlay.isValid())
   {
@@ -585,7 +579,7 @@ void CityRenderer::Impl::drawTileBase( Tile& tile )
       bool isAqueducts = false;
       foreach( Tile* tile, postTiles )
       {
-        if( tile->getTerrain().getOverlay().is<Aqueduct>() )
+        if( tile->getOverlay().is<Aqueduct>() )
         {
           isAqueducts = true;
           break;
@@ -662,7 +656,7 @@ void CityRenderer::Impl::drawTilemapWithRemoveTools()
   {
     hashDestroyArea.insert( tile->getJ() * 1000 + tile->getI() );
 
-    LandOverlayPtr overlay = tile->getTerrain().getOverlay();
+    LandOverlayPtr overlay = tile->getOverlay();
     if( overlay.isValid() )
     {
       TilemapArea overlayArea = tilemap->getFilledRectangle( overlay->getTilePos(), overlay->getSize() );
@@ -799,7 +793,7 @@ void CityRenderer::draw()
     {
       postTile->resetWasDrawn();
 
-      ConstructionPtr ptr_construction = postTile->getTerrain().getOverlay().as<Construction>();
+      ConstructionPtr ptr_construction = postTile->getOverlay().as<Construction>();
       _d->engine->resetTileDrawMask();
 
       if (ptr_construction != NULL)
@@ -1185,8 +1179,8 @@ void CityRenderer::checkPreviewBuild(const TilePos & pos)
         }
         tile->setPicture( &overlay->getPicture() );
         tile->setMasterTile( masterTile );
-        tile->getTerrain().setBuilding( true );
-        tile->getTerrain().setOverlay( overlay.as<LandOverlay>() );
+        tile->setFlag( Tile::tlBuilding, true );
+        tile->setOverlay( overlay.as<LandOverlay>() );
         _d->postTiles.push_back( tile );
         //_priorityTiles.push_back( tile );
       }
@@ -1209,12 +1203,12 @@ void CityRenderer::checkPreviewBuild(const TilePos & pos)
 
         Tile* tile = new Tile( _d->tilemap->at( rPos ) );  // make a copy of tile
 
-        bool isConstructible = tile->getTerrain().isConstructible();
+        bool isConstructible = tile->getFlag( Tile::isConstructible );
         tile->setPicture( isConstructible ? &grnPicture : &redPicture );
         tile->setMasterTile( 0 );
-        tile->getTerrain().clearFlags();
-        tile->getTerrain().setBuilding( true );
-        tile->getTerrain().setOverlay( 0 );
+        tile->setFlag( Tile::clearAll, true );
+        tile->setFlag( Tile::tlBuilding, true );
+        tile->setOverlay( 0 );
         _d->postTiles.push_back( tile );
       }
     }

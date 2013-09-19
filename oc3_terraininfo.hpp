@@ -27,9 +27,9 @@ class TerrainTile
 {
 public:
   TerrainTile();
-  TerrainTile(unsigned short int imgId, unsigned char edgeData,
-	      unsigned short int terrainData, unsigned char terrainRandom,
-	      unsigned char randomData, unsigned char elevationData);
+  /*TerrainTile( unsigned short int imgId, unsigned char edgeData,
+               unsigned short int terrainData, unsigned char terrainRandom,
+               unsigned char randomData, unsigned char elevationData ); */
 
   // reset all fields
 
@@ -65,10 +65,6 @@ public:
 
   void setOverlay(LandOverlayPtr overlay);
   LandOverlayPtr getOverlay() const;
-
-  // encode/decode to bitset
-  int encode() const;
-  void decode(const int bitset);
 
   void setOriginalImgId( unsigned short int id ) { _imgId = id;          }
  
@@ -114,13 +110,6 @@ private:
   unsigned char      _elevationData;
     
   LandOverlayPtr _overlay;
-};
-
-class TerrainTileHelper
-{
-public:
-  static std::string convId2PicName( const unsigned int imgId );
-  static int convPicName2Id( const std::string &pic_name);
 };
 
 #endif //__OPENCAESAR3_TERRAININFO_H_INCLUDED__

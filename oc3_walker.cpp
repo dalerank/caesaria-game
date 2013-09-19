@@ -58,7 +58,7 @@ public:
 
   void updateSpeedMultiplier( const Tile& tile ) 
   {
-    speedMultiplier = (tile.getTerrain().isRoad() || tile.getTerrain().isGarden()) ? 1.f : 0.5f;
+    speedMultiplier = (tile.getFlag( Tile::tlRoad ) || tile.getFlag( Tile::tlGarden )) ? 1.f : 0.5f;
   }
 };
 
@@ -303,8 +303,8 @@ void Walker::walk()
       // if (amount != 0) std::cout << "walker remaining step :" << amount << std::endl;
    }
 
-   Point overlayOffset = tile.getTerrain().getOverlay().isValid() 
-                              ? tile.getTerrain().getOverlay()->getOffset( _d->tileOffset ) 
+   Point overlayOffset = tile.getOverlay().isValid()
+                              ? tile.getOverlay()->getOffset( _d->tileOffset )
                               : Point( 0, 0 );
 
    _d->posOnMap = Point( _d->pos.getI(), _d->pos.getJ() )*15 + _d->tileOffset + overlayOffset;

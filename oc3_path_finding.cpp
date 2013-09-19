@@ -121,7 +121,7 @@ void Propagator::propagate(const int maxDistance)
       foreach( Tile* tile2, accessTiles )
       {
          // for every neighbor tile
-         if( tile2->getTerrain().isWalkable(_allLands))
+         if( tile2->isWalkable(_allLands))
          {
             // std::cout << "Next tile: " << tile2.getI() << ", " << tile2.getJ() << std::endl;
 
@@ -289,7 +289,7 @@ void Propagator::getWays(const int maxDistance, std::list<PathWay> &oPathWayList
          {
             // for every neighbour tile
             bool notResolved = (markTiles.find( tile2 ) == markTiles.end());
-            if (tile2->getTerrain().isWalkable(_allLands) && !pathWay.contains( *tile2 ) && notResolved)
+            if (tile2->isWalkable(_allLands) && !pathWay.contains( *tile2 ) && notResolved)
             {
                nextTiles.push_back( tile2 );
                markTiles.insert( tile2 );

@@ -92,10 +92,10 @@ void BurningRuins::build( CityPtr city, const TilePos& pos )
 {
   ServiceBuilding::build( city, pos );
   //while burning can't remove it
-  getTile().getTerrain().setTree( false );
-  getTile().getTerrain().setBuilding( false );
-  getTile().getTerrain().setRoad( false );
-  getTile().getTerrain().setRock( true );
+  getTile().setFlag( Tile::tlTree, false );
+  getTile().setFlag( Tile::tlBuilding, false );
+  getTile().setFlag( Tile::tlRoad, false );
+  getTile().setFlag( Tile::tlRock, true );
 }   
 
 bool BurningRuins::isWalkable() const
@@ -140,8 +140,8 @@ void BurnedRuins::build( CityPtr city, const TilePos& pos )
 {
   Building::build( city, pos);
 
-  getTile().getTerrain().setBuilding( true );
-  getTile().getTerrain().setRock( false );
+  getTile().setFlag( Tile::tlBuilding, true );
+  getTile().setFlag( Tile::tlRock, false );
 }
 
 bool BurnedRuins::isWalkable() const
@@ -179,10 +179,10 @@ void CollapsedRuins::build( CityPtr city, const TilePos& pos )
 {
     Building::build( city, pos );
     //while burning can't remove it
-    getTile().getTerrain().setTree( false );
-    getTile().getTerrain().setBuilding( true );
-    getTile().getTerrain().setRoad( false );
-    setPicture( Picture::load( ResourceGroup::land2a, 111 + rand() % 8 ) );
+    getTile().setFlag( Tile::tlTree, false );
+    getTile().setFlag( Tile::tlBuilding, true );
+    getTile().setFlag( Tile::tlRoad, false );
+    setPicture( ResourceGroup::land2a, 111 + rand() % 8  );
 }
 
 bool CollapsedRuins::isWalkable() const
@@ -263,10 +263,10 @@ void PlagueRuins::build( CityPtr city, const TilePos& pos )
 {
   Building::build( city, pos );
   //while burning can't remove it
-  getTile().getTerrain().setTree( false );
-  getTile().getTerrain().setBuilding( false );
-  getTile().getTerrain().setRoad( false );
-  getTile().getTerrain().setRock( true );
+  getTile().setFlag( Tile::tlTree, false );
+  getTile().setFlag( Tile::tlBuilding, false );
+  getTile().setFlag( Tile::tlRoad, false );
+  getTile().setFlag( Tile::tlRock, true );
 }
 
 bool PlagueRuins::isWalkable() const

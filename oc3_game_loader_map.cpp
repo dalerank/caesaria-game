@@ -204,21 +204,12 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, CityPtr oCity)
       int i = itB;
       int j = size - itA - 1;
 
-      int index = 162 * (border_size + itA) + border_size + itB;
+      int index = 162 * (border_size + itA) + border_size + itB;  
 
-      TerrainTile terrain(pGraphicGrid[index],
-			  pEdgeGrid[index],
-			  pTerrainGrid[index],
-			  pRndmTerGrid[index],
-			  pRandomGrid[index],
-			  pZeroGrid[index]
-			  );      
-      
       Tile& tile = oTilemap.at(i, j);
-      Picture& pic = Picture::load( TerrainTileHelper::convId2PicName( pGraphicGrid[index] ) );
-      tile.setPicture( &pic );
-      
-      tile.getTerrain() = terrain; // what happens here?
+      tile.setPicture( TileHelper::convId2PicName( pGraphicGrid[index] ) );
+      tile.setOriginalImgId(pGraphicGrid[index] );
+      TileHelper::decode( tile, pTerrainGrid[index] );
     }    
   }
 
@@ -226,10 +217,9 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, CityPtr oCity)
   {
     for (int j = 0; j < size; ++j)
     {
-      Tile& tile = oTilemap.at(i, j);
-      TerrainTile& terrain = tile.getTerrain();
-
-      if (terrain.getEdgeData()==0x00)
+      int index = 162 * (border_size + i) + border_size + j;
+      unsigned char edgeData = pEdgeGrid[index];
+      if( edgeData == 0x00)
       {
         int size = 1;
 
@@ -240,7 +230,8 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, CityPtr oCity)
 	          // find size, 5 is maximal size for building
 	          for (dj = 0; dj < 5; ++dj)
 	          {
-	            int edge = oTilemap.at(i, j - dj).getTerrain().getEdgeData();
+							int dindex = 162 * (border_size + i) + border_size + (j-dj);
+							int edge = pEdgeGrid[dindex];
 	            // find bottom left corner
 	            if (edge == 8 * dj + 0x40)
 	            {
@@ -299,15 +290,9 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, CityPtr oCity)
         StringHelper::debug( 0xff, " decoding " );
       }
       
-      TilePos pos( i, j );
-
-      Tile &ttile = oTilemap.at( pos );
-
-      LandOverlayPtr overlay = ttile.getTerrain().getOverlay();
-
       // Check if it is building and type of building
       //if (ttile.getMasterTile() == NULL)
-      decodeTerrain(ttile, oCity );
+      decodeTerrain( oTilemap.at( i, j ), oCity );
     }
   }
 }
@@ -317,19 +302,17 @@ void GameLoaderC3Map::Impl::decodeTerrain(Tile &oTile, CityPtr city )
   if (!oTile.isMasterTile() && oTile.getMasterTile()!=NULL)
     return;
   
-  TerrainTile& terrain = oTile.getTerrain();
-
   LandOverlayPtr overlay; // This is the overlay object, if any
 
-  if( terrain.isRoad() )   // road
+  if( oTile.getFlag( Tile::tlRoad ) )   // road
   {
     overlay = ConstructionManager::getInstance().create( B_ROAD ).as<LandOverlay>();
   }
-  else if (terrain.isBuilding())
+  else if( oTile.getFlag( Tile::tlBuilding ) )
   {
-    StringHelper::debug( 0xff, "Building at ( %d, %d ) with ID: %x", oTile.getI(), oTile.getJ(), terrain.getOriginalImgId() );
+    StringHelper::debug( 0xff, "Building at ( %d, %d ) with ID: %x", oTile.getI(), oTile.getJ(), oTile.getOriginalImgId() );
   
-    switch ( terrain.getOriginalImgId() )
+    switch ( oTile.getOriginalImgId() )
     {
       case 0xb0e:
       case 0xb0f:

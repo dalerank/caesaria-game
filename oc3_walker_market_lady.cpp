@@ -186,7 +186,7 @@ void MarketLady::onDestination()
       go();
 
       // get goods from destination building
-      LandOverlayPtr building = _getCity()->getTilemap().at( _d->destBuildingPos ).getTerrain().getOverlay();
+      LandOverlayPtr building = _getCity()->getTilemap().at( _d->destBuildingPos ).getOverlay();
       
       if( building.is<Granary>() )
       {

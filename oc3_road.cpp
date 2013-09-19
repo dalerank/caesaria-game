@@ -27,7 +27,7 @@ Road::Road() : Construction( B_ROAD, Size(1) )
 void Road::build( CityPtr city, const TilePos& pos )
 {
   Tilemap& tilemap = city->getTilemap();
-  LandOverlayPtr overlay = tilemap.at( pos ).getTerrain().getOverlay();
+  LandOverlayPtr overlay = tilemap.at( pos ).getOverlay();
 
   Construction::build( city, pos );
   setPicture( computePicture() );
@@ -46,7 +46,7 @@ void Road::build( CityPtr city, const TilePos& pos )
   // update adjacent roads
   foreach( Tile* tile, _accessRoads )
   {
-    RoadPtr road = tile->getTerrain().getOverlay().as<Road>(); // let's think: may here different type screw up whole program?
+    RoadPtr road = tile->getOverlay().as<Road>(); // let's think: may here different type screw up whole program?
     if( road.isValid() )
     {
       road->computeAccessRoads();
@@ -75,9 +75,9 @@ bool Road::canBuild( CityPtr city, const TilePos& pos ) const
   if( is_free ) 
     return true; // we try to build on free tile
 
-  TerrainTile& terrain = city->getTilemap().at( pos ).getTerrain();
+  LandOverlayPtr overlay  = city->getTilemap().at( pos ).getOverlay();
 
-  return ( terrain.getOverlay().is<Aqueduct>() || terrain.getOverlay().is<Road>() );
+  return ( overlay.is<Aqueduct>() || overlay.is<Road>() );
 }
 
 
@@ -224,7 +224,7 @@ bool Plaza::canBuild( CityPtr city, const TilePos& pos ) const
   TilemapArea area = tilemap.getFilledRectangle( pos, getSize() ); // something very complex ???
   foreach( Tile* tile, area )
   {
-    is_constructible &= tile->getTerrain().isRoad();
+    is_constructible &= tile->getFlag( Tile::tlRoad );
   }
 
   return is_constructible;

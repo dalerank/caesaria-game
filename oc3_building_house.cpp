@@ -198,7 +198,7 @@ void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int start
         break;
       }
 
-      HousePtr house = tile->getTerrain().getOverlay().as<House>();
+      HousePtr house = tile->getOverlay().as<House>();
       if( house != NULL && house->getLevelSpec().getHouseLevel() == level4grow )
       {
         if( house->getSize().getWidth() > 1 )  //bigger house near, can't grow
@@ -222,7 +222,7 @@ void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int start
       delIt++; //don't remove himself
       for( ; delIt != area.end(); delIt++ )
       {
-        HousePtr house = (*delIt)->getTerrain().getOverlay().as<House>();
+        HousePtr house = (*delIt)->getOverlay().as<House>();
         if( house.isValid() )
         {
           house->deleteLater();

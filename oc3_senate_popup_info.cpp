@@ -81,7 +81,7 @@ void SenatePopupInfo::draw( GfxEngine& painter )
 
   if( tile )
   {
-    SmartPtr< Senate > senate = tile->getTerrain().getOverlay().as< Senate >();
+    SmartPtr< Senate > senate = tile->getOverlay().as< Senate >();
 
     if( senate.isValid() )
     {

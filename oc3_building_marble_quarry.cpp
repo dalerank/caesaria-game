@@ -55,7 +55,7 @@ bool MarbleQuarry::canBuild( CityPtr city, const TilePos& pos ) const
   TilemapTiles perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), Tilemap::checkCorners);
   foreach( Tile* tile, perimetr )
   {
-    near_mountain |= tile->getTerrain().isRock();
+    near_mountain |= tile->getFlag( Tile::tlRock );
   }
 
   return (is_constructible && near_mountain);

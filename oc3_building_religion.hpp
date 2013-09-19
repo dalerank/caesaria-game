@@ -27,6 +27,7 @@ public:
   RomeDivinityPtr getDivinity() const;
 
   virtual unsigned int getParishionerNumber() const = 0;
+  virtual void deliverService();
 
 protected:
   Temple( RomeDivinityPtr divinity, BuildingType type, int imgId, const Size& size );

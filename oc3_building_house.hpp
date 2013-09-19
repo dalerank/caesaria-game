@@ -31,7 +31,7 @@ public:
 
   House( const int houseId=smallHovel );
 
-  void timeStep(const unsigned long time);
+  virtual void timeStep(const unsigned long time);
 
   virtual GoodStore& getGoodStore();
 
@@ -55,10 +55,10 @@ public:
   void levelUp();
   void levelDown();
 
-  void destroy();
+  virtual void destroy();
 
-  void save(VariantMap& stream) const;
-  void load(const VariantMap& stream);
+  virtual void save(VariantMap& stream) const;
+  virtual void load(const VariantMap& stream);
 
   int getNbHabitants();
   int getMaxHabitants();
