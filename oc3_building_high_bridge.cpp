@@ -75,11 +75,11 @@ public:
     _fgPictures.push_back( _picture );
   }
 
-  void setTerrain( TerrainTile& terrain )
+  void initTerrain( Tile& terrain )
   {
-    terrain.clearFlags();
+    terrain.setFlag( Tile::clearAll, true );
     terrain.setOverlay( this );
-    terrain.setRoad( true );
+    terrain.setFlag( Tile::tlRoad, true );
   }
 
   void destroy()
@@ -160,7 +160,7 @@ HighBridge::HighBridge() : Construction( B_HIGH_BRIDGE, Size(1) ), _d( new Impl 
   setPicture( tmp );
 }
 
-void HighBridge::setTerrain( TerrainTile& terrain )
+void HighBridge::initTerrain(Tile& terrain )
 {
 
 }

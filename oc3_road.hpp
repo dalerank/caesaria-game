@@ -27,7 +27,7 @@ public:
   void updatePicture();
 
   virtual void build( CityPtr city, const TilePos& pos );
-  virtual void setTerrain(TerrainTile &terrain);
+  virtual void initTerrain(Tile &terrain);
   virtual bool canBuild(CityPtr city, const TilePos& pos ) const;
   virtual bool isWalkable() const;
   virtual bool isNeedRoadAccess() const;
@@ -38,7 +38,7 @@ class Plaza : public Road
 {
 public:
   Plaza();
-  virtual void setTerrain(TerrainTile &terrain);  
+  virtual void initTerrain(Tile& terrain);
   virtual bool canBuild( CityPtr city, const TilePos& pos ) const;
   virtual Picture& computePicture();
 };

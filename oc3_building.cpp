@@ -176,17 +176,17 @@ Building::Building(const BuildingType type, const Size& size )
    _fireIncrement = 1;
 }
 
-void Building::setTerrain(TerrainTile &terrain)
+void Building::initTerrain( Tile &tile )
 {
   // here goes the problem
   // when we reset tile, we delete information
   // about it's original information
   // try to fix
-  bool saveMeadow = terrain.isMeadow();
-  terrain.clearFlags();
-  terrain.setOverlay(this);
-  terrain.setBuilding(true);
-  terrain.setMeadow(saveMeadow);
+  bool saveMeadow = tile.getFlag( Tile::tlMeadow );
+  tile.setFlag( Tile::clearAll, true );
+  tile.setOverlay(this);
+  tile.setFlag( Tile::tlBuilding, true);
+  tile.setFlag( Tile::tlMeadow, saveMeadow);
 }
 
 void Building::timeStep(const unsigned long time)

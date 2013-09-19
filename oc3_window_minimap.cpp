@@ -18,7 +18,6 @@
 #include "oc3_minimap_colours.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_landoverlay.hpp"
-#include "oc3_terraininfo.hpp"
 #include "oc3_time.hpp"
 #include "oc3_gfx_engine.hpp"
 

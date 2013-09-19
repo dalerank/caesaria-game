@@ -23,7 +23,7 @@ class Garden : public Construction
 {
 public:
   Garden();
-  void setTerrain(TerrainTile &terrain);  
+  void initTerrain(Tile& terrain);
   bool isWalkable() const;
   bool isNeedRoadAccess() const;
   void build(CityPtr city, const TilePos& pos );

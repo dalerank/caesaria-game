@@ -26,14 +26,14 @@ Garden::Garden() : Construction(B_GARDEN, Size(1) )
   setPicture( Picture::load( ResourceGroup::entertaiment, 110 ) ); // 110 111 112 113
 }
 
-void Garden::setTerrain(TerrainTile &terrain)
+void Garden::initTerrain(Tile& terrain)
 {
-  bool isMeadow = terrain.isMeadow();
-  terrain.clearFlags();
+  bool isMeadow = terrain.getFlag( Tile::tlMeadow );
+  terrain.setFlag( Tile::clearAll, true );
   terrain.setOverlay(this);
-  terrain.setBuilding(true); // are gardens buildings or not???? try to investigate from original game
-  terrain.setGarden(true);
-  terrain.setMeadow(isMeadow);    
+  terrain.setFlag( Tile::tlBuilding, true ); // are gardens buildings or not???? try to investigate from original game
+  terrain.setFlag( Tile::tlGarden, true);
+  terrain.setFlag( Tile::tlMeadow, isMeadow);
 }
 
 bool Garden::isWalkable() const

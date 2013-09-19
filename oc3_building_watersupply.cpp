@@ -83,17 +83,17 @@ void Aqueduct::destroy()
   Construction::destroy();
 }
 
-void Aqueduct::setTerrain(TerrainTile &terrain)
+void Aqueduct::initTerrain(Tile &terrain)
 {
-  bool isRoad   = terrain.isRoad();
-  bool isMeadow = terrain.isMeadow();
+  bool isRoad   = terrain.getFlag( Tile::tlRoad );
+  bool isMeadow = terrain.getFlag( Tile::tlMeadow );
 
-  terrain.clearFlags();
+  terrain.setFlag( Tile::clearAll, true );
   terrain.setOverlay(this);
-  terrain.setBuilding(true);
-  terrain.setRoad(isRoad);
-  terrain.setMeadow(isMeadow);
-  terrain.setAqueduct(true); // mandatory!
+  terrain.setFlag( Tile::tlBuilding, true);
+  terrain.setFlag( Tile::tlRoad, isRoad );
+  terrain.setFlag( Tile::tlMeadow, isMeadow);
+  terrain.setFlag( Tile::tlAqueduct, true); // mandatory!
 }
 
 
@@ -401,13 +401,13 @@ bool Reservoir::_isNearWater(CityPtr city, const TilePos& pos ) const
   return near_water;
 }
 
-void Reservoir::setTerrain(TerrainTile &terrain)
+void Reservoir::initTerrain(Tile &terrain)
 {
-  bool isMeadow = terrain.isMeadow();
-  terrain.clearFlags();
+  bool isMeadow = terrain.getFlag( Tile::tlMeadow );
+  terrain.setFlag( Tile::clearAll, true );
   terrain.setOverlay(this);
-  terrain.setBuilding(true);
-  terrain.setMeadow(isMeadow);
+  terrain.setFlag( Tile::tlBuilding, true);
+  terrain.setFlag( Tile::tlMeadow, isMeadow);
 }
 
 void Reservoir::timeStep(const unsigned long time)

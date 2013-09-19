@@ -154,7 +154,7 @@ void CityRenderer::Impl::drawTileEx( Tile& tile, const int depth )
 
   // multi-tile: draw the master tile.
   // and it is time to draw the master tile
-  if( master->getIJ().getZ() == depth && !master->wasDrawn() )
+  if( master->getIJ().getZ() == depth && !master->getFlag( Tile::wasDrawn ) )
   {
     drawTile( *master );
   }
@@ -595,7 +595,7 @@ void CityRenderer::Impl::drawTileBase( Tile& tile )
     }
   }
 
-  if( !tile.wasDrawn() )
+  if( !tile.getFlag( Tile::wasDrawn ) )
   {
     tile.setWasDrawn();
     engine->drawPicture( tile.getPicture(), screenPos );
@@ -627,7 +627,7 @@ void CityRenderer::Impl::drawTileInSelArea( Tile& tile, Tile* master )
     engine->setTileDrawMask( 0x00ff0000, 0, 0, 0xff000000 );
 
     // multi-tile: draw the master tile.
-    if( !master->wasDrawn() )
+    if( !master->getFlag( Tile::wasDrawn ) )
       drawTileFunction( *master );
 
     engine->resetTileDrawMask();
@@ -688,7 +688,7 @@ void CityRenderer::Impl::drawTilemapWithRemoveTools()
         // single-tile
         drawTile( *tile );
       }
-      else if( !master->wasDrawn() )
+      else if( !master->getFlag( Tile::wasDrawn ) )
       {
         // multi-tile: draw the master tile.
         drawTile( *master );
@@ -751,7 +751,7 @@ void CityRenderer::Impl::simpleDrawTilemap()
     else
     {
       // multi-tile: draw the master tile.
-      if( !master->wasDrawn() )
+      if( !master->getFlag( Tile::wasDrawn ) )
         drawTile( *master );
     }    
   }  

@@ -56,11 +56,11 @@ public:
     _fgPictures.push_back( _picture );
   }
 
-  void setTerrain( TerrainTile& terrain )
+  void initTerrain( Tile& terrain )
   {
-    terrain.clearFlags();
+    terrain.setFlag( Tile::clearAll, true );
     terrain.setOverlay( this );
-    terrain.setRoad( true );
+    terrain.setFlag( Tile::tlRoad, true );
   }
 
   void destroy()
@@ -138,7 +138,7 @@ LowBridge::LowBridge() : Construction( B_LOW_BRIDGE, Size(1) ), _d( new Impl )
   setPicture( pic );
 }
 
-void LowBridge::setTerrain( TerrainTile& terrain )
+void LowBridge::initTerrain(Tile& terrain )
 {
 
 }

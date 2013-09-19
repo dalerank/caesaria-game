@@ -16,22 +16,49 @@
 #ifndef __OPENCAESAR3_TILE_H_INCLUDED__
 #define __OPENCAESAR3_TILE_H_INCLUDED__
 
-#include "oc3_terraininfo.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_animation.hpp"
+#include "oc3_enums.hpp"
+#include "oc3_predefinitions.hpp"
 
 class Picture;
 
 // a Tile in the Tilemap
 class Tile
 {
+  struct Terrain
+  {
+    bool water;
+    bool rock;
+    bool tree;
+    bool building;
+    bool road;
+    bool garden;
+    bool aqueduct;
+    bool meadow;
+    bool elevation;
+    bool wall;
+    bool gatehouse;
+    int  desirability;
+    int  watersrvc;
+
+    /*
+     * original tile information
+     */
+    unsigned short int imgid;
+    unsigned short int terraininfo;
+
+    void reset();
+    void clearFlags();
+  };
+
 public:
   typedef enum { tlRoad=0, tlWater, tlTree, tlMeadow, tlRock, tlBuilding, tlAqueduct,
                  tlGarden, tlElevation, tlWall, tlGateHouse,
-                 isConstructible, isDestructible, clearAll } Type;
+                 isConstructible, isDestructible, clearAll,
+                 wasDrawn } Type;
 
   Tile(const TilePos& pos);
-  Tile(const Tile& clone);
 
   // tile coordinates
   int getI() const;
@@ -58,7 +85,6 @@ public:
 
   void resetWasDrawn() { _wasDrawn = false; }
   void setWasDrawn()   { _wasDrawn = true;  }
-  bool wasDrawn()      { return _wasDrawn;  }
 
   void animate( unsigned int time );
 
@@ -83,10 +109,11 @@ public:
 private:
   TilePos _pos; // coordinates of the tile
   Tile* _master;  // left-most tile if multi-tile, or "this" if single-tile
-  TerrainTile _terrain;    // infos about the tile (building, tree, road, water, rock...)
+  Terrain _terrain;    // infos about the tile (building, tree, road, water, rock...)
   Picture const* _picture; // displayed picture
   bool _wasDrawn;
   Animation _animation;
+  LandOverlayPtr _overlay;
 };
 
 class TileHelper

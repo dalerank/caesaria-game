@@ -16,8 +16,30 @@
 #include "oc3_tile.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_building.hpp"
+#include "oc3_landoverlay.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_stringhelper.hpp"
+
+void Tile::Terrain::reset()
+{
+  clearFlags();
+  desirability = 0;
+  watersrvc = 0;
+}
+
+void Tile::Terrain::clearFlags()
+{
+  water      = false;
+  rock       = false;
+  tree       = false;
+  building   = false;
+  road       = false;
+  aqueduct   = false;
+  garden     = false;
+  meadow     = false;
+  wall       = false;
+  gatehouse  = false;
+}
 
 Tile::Tile( const TilePos& pos) //: _terrain( 0, 0, 0, 0, 0, 0 )
 {
@@ -25,15 +47,9 @@ Tile::Tile( const TilePos& pos) //: _terrain( 0, 0, 0, 0, 0, 0 )
   _picture = NULL;
   _wasDrawn = false;
   _master = NULL;
-}
-
-Tile::Tile(const Tile& clone)
-{
-  _pos = clone._pos;
-  _picture = clone._picture;
-  _master = clone._master;
-  _terrain = clone._terrain;
-  _wasDrawn = clone._wasDrawn;
+  _overlay = NULL;
+  _terrain.reset();
+  _terrain.imgid = 0;
 }
 
 int Tile::getI() const    {   return _pos.getI();   }
@@ -75,7 +91,7 @@ void Tile::setMasterTile(Tile* master)
 
 bool Tile::isFlat() const
 {
-  return !(_terrain.isRock() || _terrain.isTree() || _terrain.isBuilding() || _terrain.isAqueduct());
+  return !(_terrain.rock || _terrain.tree || _terrain.building || _terrain.aqueduct);
 }
 
 TilePos Tile::getIJ() const
@@ -95,7 +111,7 @@ Point Tile::getXY() const
 
 void Tile::animate(unsigned int time)
 {
-  if( _terrain.getOverlay().isNull() && _animation.isValid() )
+  if( _overlay.isNull() && _animation.isValid() )
   {
     _animation.update( time );
   }
@@ -113,26 +129,40 @@ void Tile::setAnimation(const Animation& animation)
 
 bool Tile::isWalkable(bool alllands ) const
 {
-  return _terrain.isWalkable( alllands );
+  // TODO: test building to allow garden, gatehouse, granary, ...
+  bool walkable = (_terrain.road || (alllands && !_terrain.water && !_terrain.tree && !_terrain.rock));
+  if( _overlay.isValid() )
+  {
+    walkable &= _overlay->isWalkable();
+  }
+
+  return walkable;
 }
 
 bool Tile::getFlag(Tile::Type type) const
 {
   switch( type )
   {
-  case tlRoad: return _terrain.isRoad();
-  case tlWater: return _terrain.isWater();
-  case tlTree: return _terrain.isTree();
-  case isConstructible: return _terrain.isConstructible();
-  case tlMeadow: return _terrain.isMeadow();
-  case tlRock: return _terrain.isRock();
-  case tlBuilding: return _terrain.isBuilding();
-  case tlAqueduct: return _terrain.isAqueduct();
-  case isDestructible: return _terrain.isDestructible();
-  case tlGarden: return _terrain.isGarden();
-  case tlElevation: return _terrain.isElevation();
-  case tlWall: return _terrain.isWall();
-  case tlGateHouse: return _terrain.isGateHouse();
+  case tlRoad: return _terrain.road;
+  case tlWater: return _terrain.water;
+  case tlTree: return _terrain.tree;
+  case isConstructible:
+  {
+    return !(_terrain.water || _terrain.rock || _terrain.tree || _terrain.building || _terrain.road);
+  }
+  case tlMeadow: return _terrain.meadow;
+  case tlRock: return _terrain.rock;
+  case tlBuilding: return _terrain.building;
+  case tlAqueduct: return _terrain.aqueduct;
+  case isDestructible:
+  {
+    return (_terrain.tree || _terrain.building || _terrain.road);
+  }
+  case tlGarden: return _terrain.garden;
+  case tlElevation: return _terrain.elevation;
+  case tlWall: return _terrain.wall;
+  case tlGateHouse: return _terrain.gatehouse;
+  case wasDrawn: return _wasDrawn;
   }
 
   return false;
@@ -142,64 +172,70 @@ void Tile::setFlag(Tile::Type type, bool value)
 {
   switch( type )
   {
-  case tlRoad: _terrain.setRoad( value ); break;
-  case tlWater: _terrain.setWater( value ); break;
-  case tlTree: _terrain.setTree( value ); break;
-  case tlMeadow: _terrain.setMeadow( value ); break;
-  case tlRock: _terrain.setRock( value ); break;
-  case tlBuilding: _terrain.setBuilding( value ); break;
-  case tlAqueduct: _terrain.setAqueduct( value ); break;
-  case tlGarden: _terrain.setGarden( value ); break;
-  case tlElevation: _terrain.setElevation( value ); break;
+  case tlRoad: _terrain.road = value; break;
+  case tlWater: _terrain.water = value; break;
+  case tlTree: _terrain.tree = value; break;
+  case tlMeadow: _terrain.meadow = value; break;
+  case tlRock: _terrain.rock = value; break;
+  case tlBuilding: _terrain.building = value; break;
+  case tlAqueduct: _terrain.aqueduct = value; break;
+  case tlGarden: _terrain.garden = value; break;
+  case tlElevation: _terrain.elevation = value; break;
   case clearAll: _terrain.clearFlags(); break;
-  case tlWall: _terrain.setWall( value ); break;
-  case tlGateHouse: _terrain.setGateHouse( value ); break;
+  case tlWall: _terrain.wall = value; break;
+  case tlGateHouse: _terrain.gatehouse = value; break;
+  case wasDrawn: _wasDrawn = value; break;
   }
 }
 
 void Tile::appendDesirability(int value)
 {
-  _terrain.appendDesirability( value );
+   _terrain.desirability = math::clamp( _terrain.desirability += value, -0xff, 0xff );
 }
 
 int Tile::getDesirability() const
 {
-  return _terrain.getDesirability();
+  return _terrain.desirability;
 }
 
 LandOverlayPtr Tile::getOverlay() const
 {
-  return _terrain.getOverlay();
+  return _overlay;
 }
 
 void Tile::setOverlay(LandOverlayPtr overlay)
 {
-  _terrain.setOverlay( overlay );
+  _overlay = overlay;
 }
 
 unsigned int Tile::getOriginalImgId() const
 {
-  return _terrain.getOriginalImgId();
+  return _terrain.imgid;
 }
 
 void Tile::setOriginalImgId(unsigned short id)
 {
-  _terrain.setOriginalImgId( id );
+  _terrain.imgid = id;
 }
 
 void Tile::fillWaterService(const WaterService type)
 {
-  _terrain.fillWaterService( type );
+  _terrain.watersrvc |= (0xf << (type*4));
 }
 
 void Tile::decreaseWaterService(const WaterService type)
 {
-  _terrain.decreaseWaterService( type );
+  int tmpSrvValue = (_terrain.watersrvc >> (type*4)) & 0xf;
+  //tmpSrvValue = math::clamp( tmpSrvValue-1, 0, 0xf );
+  tmpSrvValue = 0;
+
+  _terrain.watersrvc &= ~(0xf<<(type*4));
+  _terrain.watersrvc |= tmpSrvValue << (type*4);
 }
 
 int Tile::getWaterService(const WaterService type) const
 {
-  return _terrain.getWaterService( type );
+  return (_terrain.watersrvc >> (type*4)) & 0xf;
 }
 
 std::string TileHelper::convId2PicName( const unsigned int imgId )

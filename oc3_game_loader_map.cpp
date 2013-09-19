@@ -166,15 +166,15 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, CityPtr oCity)
   oTilemap.resize(size);
 
   // need to rewrite better
-  short int     *pGraphicGrid = (short int     *)malloc(52488);
-  unsigned char *pEdgeGrid    = (unsigned char *)malloc(26244);
-  short int     *pTerrainGrid = (short int     *)malloc(52488);
-  unsigned char *pRndmTerGrid = (unsigned char *)malloc(26244);
-  unsigned char *pRandomGrid  = (unsigned char *)malloc(26244);
-  unsigned char *pZeroGrid    = (unsigned char *)malloc(26244);
+  ScopedPtr<short> pGraphicGrid( new short[26244] );
+  ScopedPtr<unsigned char> pEdgeGrid( new unsigned char[26244] );
+  ScopedPtr<short> pTerrainGrid( new short[26244] );
+  ScopedPtr<unsigned char> pRndmTerGrid( new unsigned char[26244] );
+  ScopedPtr<unsigned char> pRandomGrid( new unsigned char[26244] );
+  ScopedPtr<unsigned char> pZeroGrid( new unsigned char[26244] );
   
-  if( pGraphicGrid == NULL || pEdgeGrid == NULL || pTerrainGrid == NULL ||
-      pRndmTerGrid == NULL || pRandomGrid == NULL || pZeroGrid == NULL )
+  if( pGraphicGrid.isNull() || pEdgeGrid.isNull() || pTerrainGrid.isNull() ||
+      pRndmTerGrid.isNull() || pRandomGrid.isNull() || pZeroGrid.isNull() )
   {
     THROW("NOT ENOUGH MEMORY!!!! FATAL");
   }  
@@ -182,17 +182,19 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, CityPtr oCity)
   // here also make copy of original arrays in memory
 
   f.seekg(kGraphicGrid, std::ios::beg);
-  f.read((char*)pGraphicGrid, 52488);
+  f.read((char*)pGraphicGrid.data(), 52488);
   f.seekg(kEdgeGrid, std::ios::beg);
-  f.read((char*)pEdgeGrid, 26244);
+  f.read((char*)pEdgeGrid.data(), 26244);
   f.seekg(kTerrainGrid, std::ios::beg);
-  f.read((char*)pTerrainGrid, 52488);
+  f.read((char*)pTerrainGrid.data(), 52488);
   f.seekg(kRndmTerGrid, std::ios::beg);
-  f.read((char*)pRndmTerGrid, 26244);
+  f.read((char*)pRndmTerGrid.data(), 26244);
   f.seekg(kRandomGrid, std::ios::beg);
-  f.read((char*)pRandomGrid, 26244);
+  f.read((char*)pRandomGrid.data(), 26244);
   f.seekg(kZeroGrid, std::ios::beg);
-  f.read((char*)pZeroGrid, 26244);
+  f.read((char*)pZeroGrid.data(), 26244);
+
+  std::map< int, std::map< int, unsigned char > > edgeData;
 
   // loads the graphics map
   int border_size = (162 - size) / 2;
@@ -207,9 +209,11 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, CityPtr oCity)
       int index = 162 * (border_size + itA) + border_size + itB;  
 
       Tile& tile = oTilemap.at(i, j);
-      tile.setPicture( TileHelper::convId2PicName( pGraphicGrid[index] ) );
-      tile.setOriginalImgId(pGraphicGrid[index] );
-      TileHelper::decode( tile, pTerrainGrid[index] );
+      tile.setPicture( TileHelper::convId2PicName( pGraphicGrid.data()[index] ) );
+      tile.setOriginalImgId( pGraphicGrid.data()[index] );
+
+      edgeData[ i ][ j ] =  pEdgeGrid.data()[index];
+      TileHelper::decode( tile, pTerrainGrid.data()[index] );
     }    
   }
 
@@ -217,9 +221,8 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, CityPtr oCity)
   {
     for (int j = 0; j < size; ++j)
     {
-      int index = 162 * (border_size + i) + border_size + j;
-      unsigned char edgeData = pEdgeGrid[index];
-      if( edgeData == 0x00)
+      unsigned char ed = edgeData[ i ][ j ];
+      if( ed == 0x00)
       {
         int size = 1;
 
@@ -230,10 +233,9 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, CityPtr oCity)
 	          // find size, 5 is maximal size for building
 	          for (dj = 0; dj < 5; ++dj)
 	          {
-							int dindex = 162 * (border_size + i) + border_size + (j-dj);
-							int edge = pEdgeGrid[dindex];
+							int edd = edgeData[ i ][ j - dj ];
 	            // find bottom left corner
-	            if (edge == 8 * dj + 0x40)
+							if (edd == 8 * dj + 0x40)
 	            {
 	              size = dj + 1;
 	              break;
@@ -247,34 +249,7 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, CityPtr oCity)
 	      }
 	
         StringHelper::debug( 0xff, "Multi-tile x %d at (%d,%d)", size, i, j );
-	
-	      bool bBad = false;
-	
-	      //Str << "probing ";
-      	
-         /* for (int di = 0; di < size && !bBad; ++di)
-        {
-	        for (int dj = 0; dj < size && !bBad; ++dj)
-	        {
-	          //std::cout << i - di << "," << j - dj << " ";
-	          try
-	          {
-	            int edge = oTilemap.at(i - di, j - dj).getTerrain().getEdgeData();
-	          }
-	          catch(...)
-	          {
-      	      
-	          }
-      //	    if (edge != 8 * dj + di && edge != 8 * dj + 0x40)
-      //	      bBad = true;
-	        }
-        }*/
-	
-	//std::cout << std::endl;
-	
-	      if (bBad)
-	        THROW ("ERROR in multi-tiles!!!");
-      	
+	      	
 	      Tile& master = oTilemap.at(i, j - size + 1);
       	
         StringHelper::debug( 0xff, "Master will be at (%d,%d)", master.getI(), master.getJ() );
