@@ -97,7 +97,7 @@ void ServiceBuilding::deliverService()
 
   if( !serviceman->isDeleted() )
   {
-      addWalker( serviceman.as<Walker>() );
+    addWalker( serviceman.as<Walker>() );
   }
 }
 

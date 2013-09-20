@@ -193,7 +193,7 @@ void WalkerPrefect::onMidTile()
     if( _getPathway().getDestination().getIJ().distanceFrom( getIJ() ) < 1.5f )
     {
       LandOverlayPtr overlay = _getPathway().getDestination().getOverlay();
-      if( overlay->getType() == B_BURNING_RUINS )
+      if( overlay.isValid() && overlay->getType() == B_BURNING_RUINS )
       {
         _d->action = Impl::fightFire;
         _setGraphic( WG_PREFECT_FIGHTS_FIRE );

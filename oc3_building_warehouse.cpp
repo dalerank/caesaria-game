@@ -29,6 +29,7 @@
 #include "oc3_goodstore.hpp"
 #include "oc3_city.hpp"
 #include "oc3_foreach.hpp"
+#include "oc3_stringhelper.hpp"
 
 #include <list>
 
@@ -221,13 +222,13 @@ void WarehouseStore::applyStorageReservation( GoodStock &stock, const long reser
 
   if (stock.type() != reservedStock.type())
   {
-    _OC3_DEBUG_BREAK_IF( "GoodType does not match reservation" );
+    StringHelper::debug( 0xff, "GoodType does not match reservation" );
     return;
   }
 
   if (stock._currentQty < reservedStock._currentQty)
   {
-    _OC3_DEBUG_BREAK_IF( "Quantity does not match reservation" );
+    StringHelper::debug( 0xff, "Quantity does not match reservation" );
     return;
   }
 
@@ -279,12 +280,12 @@ void WarehouseStore::applyRetrieveReservation(GoodStock &stock, const long reser
 
   if (stock.type() != reservedStock.type())
   {
-    _OC3_DEBUG_BREAK_IF("GoodType does not match reservation");
+    StringHelper::debug( 0xff, "GoodType does not match reservation");
     return;
   }
   if (stock._maxQty < stock._currentQty + reservedStock._currentQty)
   {
-    _OC3_DEBUG_BREAK_IF("Quantity does not match reservation");
+    StringHelper::debug( 0xff, "Quantity does not match reservation");
     return;
   }
 

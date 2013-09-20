@@ -201,11 +201,11 @@ void MarketLady::onDestination()
            // for all types of good (except G_NONE)
            Good::Type goodType = (Good::Type) n;
            int qty = _d->market->getGoodDemand(goodType) - _d->basket.getCurrentQty(goodType);
-           if (qty != 0)
+           if (qty > 0)
            {
               qty = std::min(qty, granary->getGoodStore().getMaxRetrieve(goodType));
               qty = std::min(qty, _d->basket.getMaxQty(_d->priorityGood) - _d->basket.getCurrentQty(_d->priorityGood));
-              if (qty != 0)
+              if (qty > 0)
               {
                  // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
                  GoodStock& stock = _d->basket.getStock(goodType);
@@ -228,11 +228,11 @@ void MarketLady::onDestination()
            // for all types of good (except G_NONE)
            Good::Type goodType = (Good::Type) n;
            int qty = _d->market->getGoodDemand(goodType) - _d->basket.getCurrentQty(goodType);
-           if (qty != 0)
+           if (qty > 0)
            {
               qty = std::min(qty, warehouse->getGoodStore().getMaxRetrieve(goodType));
               qty = std::min(qty, _d->basket.getMaxQty(_d->priorityGood) - _d->basket.getCurrentQty(_d->priorityGood));
-              if (qty != 0)
+              if (qty > 0)
               {
                  // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
                  GoodStock& stock = _d->basket.getStock(goodType);

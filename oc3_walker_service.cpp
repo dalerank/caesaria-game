@@ -163,6 +163,14 @@ unsigned int ServiceWalker::getReachDistance() const
   return 2;
 }
 
+void ServiceWalker::return2Base()
+{
+  if( !getPathway().isReverse() )
+  {
+    _getPathway().toggleDirection();
+  }
+}
+
 ServiceWalker::ReachedBuildings ServiceWalker::getReachedBuildings(const TilePos& pos )
 {
   ReachedBuildings res;

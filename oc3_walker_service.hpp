@@ -44,10 +44,11 @@ public:
 
   virtual unsigned int getReachDistance() const;
 
+  virtual void return2Base();
   void setMaxDistance( const int distance );
 
-  void save( VariantMap& stream) const;
-  void load( const VariantMap& stream);
+  virtual void save( VariantMap& stream) const;
+  virtual void load( const VariantMap& stream);
 
   ~ServiceWalker();
 protected:

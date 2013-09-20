@@ -552,11 +552,12 @@ InfoBoxMarket::InfoBoxMarket( Widget* parent, const Tile& tile )
        drawGood( market, Good::meat, 2, paintY);
        drawGood( market, Good::fruit, 3, paintY);
        drawGood( market, Good::vegetable, 4, paintY);
-       lbAbout->setHeight( 25 );
+       lbAbout->setHeight( 30 );
      }
      else
      {
-       lbAbout->setHeight( 50 );
+       lbAbout->setHeight( 60 );
+       lbAbout->setWordWrap( true );
      }
 
      paintY += 24;
@@ -565,11 +566,6 @@ InfoBoxMarket::InfoBoxMarket( Widget* parent, const Tile& tile )
      drawGood( market, Good::oil, 2, paintY);
      drawGood( market, Good::wine, 3, paintY);
 
-     if( 0 == furageSum )
-     {
-       lbAbout->setHeight( 60 );
-       lbAbout->setWordWrap( true );
-     }
      lbAbout->setText( 0 == furageSum ? _("##market_search_food_source##") : _("##market_about##"));
    }
    else
