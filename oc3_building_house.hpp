@@ -66,6 +66,8 @@ public:
 
   int collectTaxes();
 
+  std::string getUpCondition() const;
+
   int getMaxDistance2Road() const; 
 
   bool isWalkable() const;

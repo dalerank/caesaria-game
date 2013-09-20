@@ -51,6 +51,7 @@ public:
   int maxHabitants;
   int freeWorkersCount;
   DateTime lastPayDate;
+  std::string condition4Up;
 
   bool mayPayTax()
   {
@@ -139,14 +140,15 @@ void House::timeStep(const unsigned long time)
 
      if( time % 64 == 0 )
      {
-       bool validate = _d->houseLevelSpec.checkHouse(*this);
+       bool validate = _d->houseLevelSpec.checkHouse( this );
        if (!validate)
        {
          levelDown();
        }
        else
        {
-         validate = _d->nextHouseLevelSpec.checkHouse(*this);
+         _d->condition4Up = "";
+         validate = _d->nextHouseLevelSpec.checkHouse( this, &_d->condition4Up );
          if( validate && _d->currentHabitants > 0 )
          {
             levelUp();
@@ -725,4 +727,9 @@ int House::collectTaxes()
 {
   _d->lastPayDate = GameDate::current();
   return _d->getAvailableTax();
+}
+
+std::string House::getUpCondition() const
+{
+  return _d->condition4Up;
 }

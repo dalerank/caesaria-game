@@ -215,16 +215,18 @@ InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
   HousePtr house = tile.getOverlay().as<House>();
   setTitle( house->getName() );
 
+  new Label( this, Rect( 30, 40, getWidth() - 30, 40 + 100 ), house->getUpCondition() );
+
   drawHabitants( house );
 
   int taxes = -1;
   std::string taxesStr = taxes > 0
-                           ? StringHelper::format( 0xff, _("Aucun percepteur ne passe ici. Ne paye pas de taxes") )
-                           : StringHelper::format( 0xff, _("Paye %d Denarii de taxes par mois"), taxes );
+                           ? StringHelper::format( 0xff, _("##house_not_taxation##") )
+                           : StringHelper::format( 0xff, _("%d %s"), taxes, _("##house_pay_tax##") );
 
   Label* taxesLb = new Label( this, Rect( 16 + 15, 177, getWidth() - 16, 177 + 20 ), taxesStr );
 
-  std::string aboutCrimes = _("Inhabitants didn't report about crimes");
+  std::string aboutCrimes = _("##house_not_report_about_crimes##");
   Label* lbCrime = new Label( this, taxesLb->getRelativeRect() + Point( 0, 22 ), aboutCrimes );
 
   int startY = lbCrime->getBottom() + 10;
@@ -237,7 +239,7 @@ InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
     Label* lb = new Label( this, lbCrime->getRelativeRect() + Point( 0, 30 ) );
     lb->setHeight( 40 );
     lb->setLineIntervalOffset( -6 );
-    lb->setText( _("Inabitants of tents provide food themselves, conducting a subsistence economy") );
+    lb->setText( _("##house_provide_food_themselves##") );
     lb->setWordWrap( true );
     startY = lb->getTop();
   }
