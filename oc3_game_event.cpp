@@ -28,6 +28,7 @@
 #include "oc3_gui_label.hpp"
 #include "oc3_window_empiremap.hpp"
 #include "oc3_empire.hpp"
+#include "oc3_resourcegroup.hpp"
 #include "oc3_advisors_window.hpp"
 #include "oc3_city_trade_options.hpp"
 
@@ -48,14 +49,14 @@ GameEventPtr DisasterEvent::create( const TilePos& pos, Type type )
 void DisasterEvent::exec( Game& game )
 {
   Tilemap& tmap = game.getCity()->getTilemap();
-  TerrainTile& terrain = tmap.at( _pos ).getTerrain();
+  Tile& tile = tmap.at( _pos );
   TilePos rPos = _pos;
 
-  if( terrain.isDestructible() )
+  if( tile.getFlag( Tile::isDestructible ) )
   {
     Size size( 1 );
 
-    LandOverlayPtr overlay = terrain.getOverlay();
+    LandOverlayPtr overlay = tile.getOverlay();
     if( overlay.isValid() )
     {
       overlay->deleteLater();
@@ -72,7 +73,7 @@ void DisasterEvent::exec( Game& game )
       bool canCreate = ConstructionManager::getInstance().canCreate( dstr2constr[_type] );
       if( canCreate )
       {
-        BuildEvent::create( tile->getIJ(), dstr2constr[_type] );
+        GameEventMgr::append( BuildEvent::create( tile->getIJ(), dstr2constr[_type] ) );
       }
     }
 
@@ -132,18 +133,17 @@ void ClearLandEvent::exec( Game& game )
   Tilemap& tmap = game.getCity()->getTilemap();
 
   Tile& cursorTile = tmap.at( _pos );
-  TerrainTile& terrain = cursorTile.getTerrain();
 
-  if( terrain.isDestructible() )
+  if( cursorTile.getFlag( Tile::isDestructible ) )
   {
     Size size( 1 );
     TilePos rPos = _pos;
 
-    LandOverlayPtr overlay = terrain.getOverlay();
+    LandOverlayPtr overlay = cursorTile.getOverlay();
 
     bool deleteRoad = false;
 
-    if (terrain.isRoad()) deleteRoad = true;
+    if (cursorTile.getFlag( Tile::tlRoad )) deleteRoad = true;
 
     if ( overlay.isValid() )
     {
@@ -155,41 +155,41 @@ void ClearLandEvent::exec( Game& game )
     TilemapArea clearedTiles = tmap.getFilledRectangle( rPos, size );
     foreach( Tile* tile, clearedTiles )
     {
-      tile->setMasterTile(NULL);
-      TerrainTile &terrain = tile->getTerrain();
-      terrain.setTree(false);
-      terrain.setBuilding(false);
-      terrain.setRoad(false);
-      terrain.setGarden(false);
-      terrain.setOverlay(NULL);
+      tile->setMasterTile( NULL );
+      tile->setFlag( Tile::tlTree, false);
+      tile->setFlag( Tile::tlBuilding, false);
+      tile->setFlag( Tile::tlRoad, false);
+      tile->setFlag( Tile::tlGarden, false);
+      tile->setOverlay( NULL );
 
-      // choose a random landscape picture:
-      // flat land1a 2-9;
-      // wheat: land1a 18-29;
-      // green_something: land1a 62-119;  => 58
-      // green_flat: land1a 232-289; => 58
+      deleteRoad |= tile->getFlag( Tile::tlRoad );
 
-      // FIX: when delete building on meadow, meadow is replaced by common land tile
-      if( terrain.isMeadow() )
+      if( tile->getFlag( Tile::tlMeadow ) )
       {
-        unsigned int originId = terrain.getOriginalImgId();
-        tile->setPicture( &Picture::load( TerrainTileHelper::convId2PicName( originId ) ) );
+        tile->setPicture( TileHelper::convId2PicName( tile->getOriginalImgId() ) );
       }
       else
       {
+        // choose a random landscape picture:
+        // flat land1a 2-9;
+        // wheat: land1a 18-29;
+        // green_something: land1a 62-119;  => 58
+        // green_flat: land1a 232-289; => 58
+
         // choose a random background image, green_something 62-119 or green_flat 232-240
          // 30% => choose green_sth 62-119
         // 70% => choose green_flat 232-289
         int startOffset  = ( (rand() % 10 > 6) ? 62 : 232 );
         int imgId = rand() % 58;
 
-        tile->setPicture( &Picture::load( "land1a", startOffset + imgId));
+        tile->setPicture( ResourceGroup::land1a, startOffset + imgId );
       }
     }
 
     // recompute roads;
     // there is problem that we NEED to recompute all roads map for all buildings
     // because MaxDistance2Road can be any number
+    //
     if( deleteRoad )
     {
       game.getCity()->updateRoads();

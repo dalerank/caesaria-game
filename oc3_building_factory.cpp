@@ -292,7 +292,7 @@ bool TimberLogger::canBuild( CityPtr city, const TilePos& pos ) const
    TilemapArea area = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), Tilemap::checkCorners );
    foreach( Tile* tile, area )
    {
-      near_forest |= tile->getTerrain().isTree();
+      near_forest |= tile->getFlag( Tile::tlTree );
    }
 
    return (is_constructible && near_forest);
@@ -319,7 +319,7 @@ bool IronMine::canBuild( CityPtr city, const TilePos& pos ) const
   TilemapArea perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size(2), Tilemap::checkCorners );
   foreach( Tile* tile, perimetr )
   {
-     near_mountain |= tile->getTerrain().isRock();
+     near_mountain |= tile->getFlag( Tile::tlRock );
   }
 
   return (is_constructible && near_mountain);
@@ -387,10 +387,10 @@ bool Wharf::canBuild( CityPtr city, const TilePos& pos ) const
   foreach( Tile* tile, perimetr )
   {    
     int size = getSize().getWidth();
-     if (tile->getJ() > (pos.getJ() + size -1) && !tile->getTerrain().isWater()) {  bNorth = false; }
-     if (tile->getJ() < pos.getJ() && !tile->getTerrain().isWater())              {  bSouth = false; }
-     if (tile->getI() > (pos.getI() + size -1) && !tile->getTerrain().isWater()) {  bEast = false;  }
-     if (tile->getI() < pos.getI() && !tile->getTerrain().isWater())              {  bWest = false;  }
+     if(tile->getJ() > (pos.getJ() + size -1) && !tile->getFlag( Tile::tlWater )) {  bNorth = false; }
+     if(tile->getJ() < pos.getJ() && !tile->getFlag( Tile::tlWater ))              {  bSouth = false; }
+     if(tile->getI() > (pos.getI() + size -1) && !tile->getFlag( Tile::tlWater )) {  bEast = false;  }
+     if(tile->getI() < pos.getI() && !tile->getFlag( Tile::tlWater ))              {  bWest = false;  }
    }
 
    return (is_constructible && (bNorth || bSouth || bEast || bWest));

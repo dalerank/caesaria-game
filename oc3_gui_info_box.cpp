@@ -189,7 +189,7 @@ void InfoBoxWorkingBuilding::setText(const std::string& text)
 InfoBoxSenate::InfoBoxSenate( Widget* parent, const Tile& tile )
   : InfoBoxSimple( parent, Rect( 0, 0, 510, 290 ), Rect( 16, 126, 510 - 16, 126 + 62 ) )
 {
-  SenatePtr senate = tile.getTerrain().getOverlay().as<Senate>();
+  SenatePtr senate = tile.getOverlay().as<Senate>();
   setTitle( BuildingDataHolder::instance().getData( B_SENATE ).getPrettyName() );
 
   // number of workers
@@ -212,19 +212,21 @@ InfoBoxSenate::~InfoBoxSenate()
 InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
   : InfoBoxSimple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 50 ) )
 {
-  HousePtr house = tile.getTerrain().getOverlay().as<House>();
+  HousePtr house = tile.getOverlay().as<House>();
   setTitle( house->getName() );
+
+  new Label( this, Rect( 30, 40, getWidth() - 30, 40 + 100 ), house->getUpCondition() );
 
   drawHabitants( house );
 
   int taxes = -1;
   std::string taxesStr = taxes > 0
-                           ? StringHelper::format( 0xff, _("Aucun percepteur ne passe ici. Ne paye pas de taxes") )
-                           : StringHelper::format( 0xff, _("Paye %d Denarii de taxes par mois"), taxes );
+                           ? StringHelper::format( 0xff, _("##house_not_taxation##") )
+                           : StringHelper::format( 0xff, _("%d %s"), taxes, _("##house_pay_tax##") );
 
   Label* taxesLb = new Label( this, Rect( 16 + 15, 177, getWidth() - 16, 177 + 20 ), taxesStr );
 
-  std::string aboutCrimes = _("Inhabitants didn't report about crimes");
+  std::string aboutCrimes = _("##house_not_report_about_crimes##");
   Label* lbCrime = new Label( this, taxesLb->getRelativeRect() + Point( 0, 22 ), aboutCrimes );
 
   int startY = lbCrime->getBottom() + 10;
@@ -237,7 +239,7 @@ InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
     Label* lb = new Label( this, lbCrime->getRelativeRect() + Point( 0, 30 ) );
     lb->setHeight( 40 );
     lb->setLineIntervalOffset( -6 );
-    lb->setText( _("Inabitants of tents provide food themselves, conducting a subsistence economy") );
+    lb->setText( _("##house_provide_food_themselves##") );
     lb->setWordWrap( true );
     startY = lb->getTop();
   }
@@ -301,7 +303,7 @@ void InfoBoxHouse::drawGood( HousePtr house, const Good::Type &goodType, const i
 GuiInfoFactory::GuiInfoFactory( Widget* parent, const Tile& tile)
   : InfoBoxSimple( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 147, 510 - 16, 147 + 62) )
 {
-  FactoryPtr building = tile.getTerrain().getOverlay().as<Factory>();
+  FactoryPtr building = tile.getOverlay().as<Factory>();
   setTitle( BuildingDataHolder::getPrettyName( building->getType() ) );
 
   // paint progress
@@ -374,7 +376,7 @@ std::string GuiInfoFactory::getInfoText()
 InfoBoxGranary::InfoBoxGranary( Widget* parent, const Tile& tile )
   : InfoBoxSimple( parent, Rect( 0, 0, 510, 280 ), Rect( 16, 130, 510 - 16, 130 + 62) )
 {
-  _granary = tile.getTerrain().getOverlay().as<Granary>();
+  _granary = tile.getOverlay().as<Granary>();
   Size btnOrdersSize( 350, 20 );
   PushButton* btnOrders = new PushButton( this, Rect( Point( (getWidth() - btnOrdersSize.getWidth())/ 2, getHeight() - 34 ), btnOrdersSize),
                                          _("##special_orders##"), -1, false, PushButton::whiteBorderUp );
@@ -434,7 +436,7 @@ void InfoBoxGranary::drawGood(const Good::Type &goodType, int col, int paintY)
 InfoBoxWarehouse::InfoBoxWarehouse( Widget* parent, const Tile& tile )
 : InfoBoxSimple( parent, Rect( 0, 0, 510, 360 ) )
 {
-  _warehouse = tile.getTerrain().getOverlay().as<Warehouse>();
+  _warehouse = tile.getOverlay().as<Warehouse>();
   Size btnOrdersSize( 350, 20 );
   PushButton* btnOrders = new PushButton( this, Rect( Point( (getWidth() - btnOrdersSize.getWidth()) / 2, getHeight() - 34 ), btnOrdersSize ),
                                    _("##special_orders##"), -1, false, PushButton::whiteBorderUp );
@@ -509,7 +511,7 @@ void InfoBoxWarehouse::drawGood( const Good::Type &goodType, int col, int paintY
 InfoBoxTemple::InfoBoxTemple( Widget* parent, const Tile& tile )
   : InfoBoxSimple( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 56, 510 - 16, 56 + 62) )
 {
-  TemplePtr temple = tile.getTerrain().getOverlay().as<Temple>();
+  TemplePtr temple = tile.getOverlay().as<Temple>();
   RomeDivinityPtr divn = temple->getDivinity();
 
   std::string text = StringHelper::format( 0xff, "##Temple of ##%s (%s)", 
@@ -528,7 +530,7 @@ InfoBoxTemple::~InfoBoxTemple()
 InfoBoxMarket::InfoBoxMarket( Widget* parent, const Tile& tile )
   : InfoBoxSimple( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 130, 510 - 16, 130 + 62) )
 {
-   MarketPtr market = tile.getTerrain().getOverlay().as<Market>();
+   MarketPtr market = tile.getOverlay().as<Market>();
 
    Label* lbAbout = new Label( this, _d->lbTitle->getRelativeRect() + Point( 0, 30 ) );
 
@@ -552,11 +554,12 @@ InfoBoxMarket::InfoBoxMarket( Widget* parent, const Tile& tile )
        drawGood( market, Good::meat, 2, paintY);
        drawGood( market, Good::fruit, 3, paintY);
        drawGood( market, Good::vegetable, 4, paintY);
-       lbAbout->setHeight( 25 );
+       lbAbout->setHeight( 30 );
      }
      else
      {
-       lbAbout->setHeight( 50 );
+       lbAbout->setHeight( 60 );
+       lbAbout->setWordWrap( true );
      }
 
      paintY += 24;
@@ -592,7 +595,7 @@ void InfoBoxMarket::drawGood( MarketPtr market, const Good::Type &goodType, int 
   Point pos( index * offset + startOffset, paintY );
   _d->bgPicture->draw( pic, pos.getX(), pos.getY() );
 
-  std::string outText = StringHelper::format( 0xff, "%d", market->getGoodStore().getCurrentQty(goodType) );
+  std::string outText = StringHelper::format( 0xff, "%d", market->getGoodStore().getCurrentQty( goodType ) );
   Font font2 = Font::create( FONT_2 );
   font2.draw(*_d->bgPicture, outText, pos.getX() + 30, pos.getY(), false );
 }
@@ -600,7 +603,7 @@ void InfoBoxMarket::drawGood( MarketPtr market, const Good::Type &goodType, int 
 InfoBoxBuilding::InfoBoxBuilding( Widget* parent, const Tile& tile )
   : InfoBoxSimple( parent, Rect( 0, 0, 450, 220 ), Rect( 16, 60, 450 - 16, 60 + 50) )
 {
-  BuildingPtr building = tile.getTerrain().getOverlay().as<Building>();
+  BuildingPtr building = tile.getOverlay().as<Building>();
   setTitle( BuildingDataHolder::getPrettyName( building->getType() ) );
 }
 
@@ -611,24 +614,24 @@ InfoBoxLand::InfoBoxLand( Widget* parent, const Tile& tile )
   lbText->setFont( Font::create( FONT_2 ) );
   lbText->setWordWrap( true );
 
-  if( tile.getTerrain().isTree() )
+  if( tile.getFlag( Tile::tlTree ) )
   {
     setTitle( _("##trees_and_forest_caption") );
     lbText->setText( _("##trees_and_forest_text"));
   } 
-  else if( tile.getTerrain().isWater() )
+  else if( tile.getFlag( Tile::tlWater ) )
   {
     setTitle( _("##water_caption") );
     lbText->setText( _("##water_text"));
   }
-  else if( tile.getTerrain().isRock() )
+  else if( tile.getFlag( Tile::tlRock ) )
   {
     setTitle( _("##rock_caption") );
     lbText->setText( _("##rock_text"));
   }
-  else if( tile.getTerrain().isRoad() )
+  else if( tile.getFlag( Tile::tlRoad ) )
   {
-    if( tile.getTerrain().getOverlay()->getType() == B_PLAZA )
+    if( tile.getOverlay()->getType() == B_PLAZA )
     {
       setTitle( _("##plaza_caption") );
       lbText->setText( _("##plaza_text"));
@@ -646,17 +649,10 @@ InfoBoxLand::InfoBoxLand( Widget* parent, const Tile& tile )
   }
   
   //int index = (size - tile.getJ() - 1 + border_size) * 162 + tile.getI() + border_size;
-  
-  const TerrainTile& terrain = tile.getTerrain();
 
-  std::string text = StringHelper::format( 0xff, "Tile at: (%d,%d) %04X %02X %04X %02X %02X %02X",
+  std::string text = StringHelper::format( 0xff, "Tile at: (%d,%d) ID:%04X",
                                            tile.getI(), tile.getJ(),  
-                                          ((short int) terrain.getOriginalImgId() ),
-                                          ((short int) terrain.getEdgeData()),
-                                          ((short int) terrain.getTerrainData()),  
-                                          ((short int) terrain.getTerrainRndmData()),  
-                                          ((short int) terrain.getRandomData()),
-                                          ((short int) terrain.getElevationData() ) );
+                                          ((short int) tile.getOriginalImgId() ) );
   
   lbText->setText( text );
 }
@@ -672,7 +668,7 @@ InfoBoxFreeHouse::InfoBoxFreeHouse( Widget* parent, const Tile& tile )
 {
     setTitle( _("##freehouse_caption##") );
 
-    if( tile.getTerrain().getOverlay().as<Construction>()->getAccessRoads().size() == 0 )
+    if( tile.getOverlay().as<Construction>()->getAccessRoads().size() == 0 )
     {
       setText( _("##freehouse_text_noroad##") );
     }
@@ -685,7 +681,7 @@ InfoBoxFreeHouse::InfoBoxFreeHouse( Widget* parent, const Tile& tile )
 InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
   : InfoBoxSimple( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 146, 510 - 16, 146 + 64 ) )
 {
-  FactoryPtr rawmb = tile.getTerrain().getOverlay().as<Factory>();
+  FactoryPtr rawmb = tile.getOverlay().as<Factory>();
 
   if( rawmb->getOutGoodType() != Good::none )
   {
@@ -793,7 +789,7 @@ InfoBoxCitizen::~InfoBoxCitizen() {
 InfoBoxColosseum::InfoBoxColosseum(Widget *parent, const Tile &tile)
   : InfoBoxSimple( parent, Rect( 0, 0, 470, 300), Rect( 16, 145, 470 - 16, 145 + 100 ) )
 {
-  CollosseumPtr colloseum = tile.getTerrain().getOverlay().as<Collosseum>();
+  CollosseumPtr colloseum = tile.getOverlay().as<Collosseum>();
   setTitle( BuildingDataHolder::getPrettyName( B_COLLOSSEUM ) );
 
   _drawWorkers( Point( 40, 150), 542, colloseum->getMaxWorkers(), colloseum->getWorkers() );

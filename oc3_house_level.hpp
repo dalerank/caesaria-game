@@ -23,9 +23,8 @@
 #include "oc3_scopedptr.hpp"
 #include "oc3_smartptr.hpp"
 #include "oc3_filepath.hpp"
+#include "oc3_predefinitions.hpp"
 #include "oc3_service.hpp"
-
-class House;
 
 class HouseLevelSpec
 {
@@ -44,16 +43,16 @@ public:
   // returns True if patrician villa
   bool isPatrician() const;
 
-  bool checkHouse(House &house);
+  bool checkHouse( HousePtr house, std::string* retMissing = 0);
 
   HouseLevelSpec next() const;
 
-  int computeEntertainmentLevel(House &house);
-  int computeEducationLevel(House &house, std::string &oMissingRequirement);
-  int computeHealthLevel(House &house, std::string &oMissingRequirement);
-  int computeReligionLevel(House &house);
-  int computeWaterLevel(House &house, std::string &oMissingRequirement);
-  int computeFoodLevel(House &house);
+  int computeEntertainmentLevel(HousePtr house);
+  int computeEducationLevel(HousePtr house, std::string &oMissingRequirement);
+  int computeHealthLevel(HousePtr house, std::string &oMissingRequirement);
+  int computeReligionLevel(HousePtr house);
+  int computeWaterLevel(HousePtr house, std::string &oMissingRequirement);
+  int computeFoodLevel(HousePtr house);
   int computeMonthlyConsumption(House &house, const Good::Type goodType);
 
   float evaluateServiceNeed(House &house, const Service::Type service);

@@ -51,7 +51,8 @@ public:
   virtual void load( const VariantMap& stream );
 
 private:
-  std::vector<GoodStock> _goodStockList;
+  typedef std::vector<GoodStock> StockList;
+  StockList _goodStockList;
   int _maxQty;
 
   class Impl;

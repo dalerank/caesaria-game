@@ -51,7 +51,7 @@ public:
   virtual void build(CityPtr city, const TilePos& pos );
   Picture& computePicture(const TilemapTiles * tmp = NULL,
                           const TilePos pos = TilePos(0, 0));
-  virtual void setTerrain(TerrainTile &terrain);
+  virtual void initTerrain(Tile& terrain);
   virtual bool canBuild(CityPtr city, const TilePos& pos ) const;
   virtual bool isNeedRoadAccess() const;
   virtual void destroy();
@@ -74,13 +74,14 @@ public:
   virtual void build(CityPtr city, const TilePos& pos );
   virtual bool canBuild(CityPtr city, const TilePos& pos ) const;
   virtual bool isNeedRoadAccess() const;
-  virtual void setTerrain(TerrainTile &terrain);
+  virtual void initTerrain(Tile& terrain);
   virtual void timeStep(const unsigned long time);
   virtual void destroy();
 
 private:
   bool _isWaterSource;
   bool _isNearWater( CityPtr city, const TilePos& pos ) const;
+
 };
 
 class Fountain : public ServiceBuilding
@@ -97,6 +98,7 @@ public:
   virtual void load( const VariantMap& stream);
 private:
   bool _haveReservoirWater;
+  void _initAnimation();
 };
 
 #endif // __OPENCAESAR3_WATER_BUILDGINDS_INCLUDED__

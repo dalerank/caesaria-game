@@ -33,8 +33,8 @@ void NativeBuilding::load( const VariantMap& stream) {Building::load(stream);}
 void NativeBuilding::build( CityPtr city, const TilePos& pos )
 {
   Building::build( city, pos );
-  getTile().getTerrain().setRock( true );
-  getTile().getTerrain().setBuilding( false );
+  getTile().setFlag( Tile::tlRock, true );
+  getTile().setFlag( Tile::tlBuilding, false );
 }
 
 NativeHut::NativeHut() : NativeBuilding( B_NATIVE_HUT, Size(1) )

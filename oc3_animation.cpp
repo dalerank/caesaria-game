@@ -21,8 +21,8 @@
 void Animation::start(bool loop)
 {
   _animIndex = 0;
-  _loop = loop;
   _lastTimeUpdate = 0;
+  _loop = loop;
 }
 
 PicturesArray& Animation::getPictures()
@@ -65,7 +65,7 @@ void Animation::update( unsigned int time )
 
 const Picture& Animation::getCurrentPicture() const
 {
-  return (_pictures.size() > 0 && _animIndex >= 0) 
+  return ( _animIndex >= 0 && _animIndex < _pictures.size())
                   ? _pictures[_animIndex] 
                   : Picture::getInvalid();
 }

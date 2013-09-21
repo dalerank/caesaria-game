@@ -106,7 +106,7 @@ bool Farm::canBuild( CityPtr city, const TilePos& pos ) const
 
   foreach( Tile* tile, area )
   {
-    on_meadow |= tile->getTerrain().isMeadow();
+    on_meadow |= tile->getFlag( Tile::tlMeadow );
   }
 
   return (is_constructible && on_meadow);  

@@ -23,7 +23,7 @@
 #include "oc3_city.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_name_generator.hpp"
-#include "oc3_game_event.hpp"
+#include "oc3_game_event_mgr.hpp"
 #include "oc3_stringhelper.hpp"
 
 class WalkerPrefect::Impl
@@ -155,7 +155,7 @@ void WalkerPrefect::onMidTile()
         {
           house->deleteLater();
 
-          DisasterEvent::create( house->getTilePos(), DisasterEvent::plague );
+          GameEventMgr::append( DisasterEvent::create( house->getTilePos(), DisasterEvent::plague ) );
         }
       }
     }
@@ -192,8 +192,8 @@ void WalkerPrefect::onMidTile()
   {
     if( _getPathway().getDestination().getIJ().distanceFrom( getIJ() ) < 1.5f )
     {
-      LandOverlayPtr overlay = _getPathway().getDestination().getTerrain().getOverlay();
-      if( overlay->getType() == B_BURNING_RUINS )
+      LandOverlayPtr overlay = _getPathway().getDestination().getOverlay();
+      if( overlay.isValid() && overlay->getType() == B_BURNING_RUINS )
       {
         _d->action = Impl::fightFire;
         _setGraphic( WG_PREFECT_FIGHTS_FIRE );
@@ -234,7 +234,7 @@ void WalkerPrefect::timeStep(const unsigned long time)
   if( _d->action == Impl::fightFire )
   {    
     setSpeed( 0 );
-    BuildingPtr building = _getPathway().getDestination().getTerrain().getOverlay().as<Building>();
+    BuildingPtr building = _getPathway().getDestination().getOverlay().as<Building>();
     bool inFire = (building.isValid() && building->getType() == B_BURNING_RUINS);
 
     if( inFire )

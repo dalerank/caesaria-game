@@ -38,7 +38,7 @@ public:
   void deleteLater();
 
   virtual bool isWalkable() const;
-  virtual void setTerrain( TerrainTile& terrain ) = 0;
+  virtual void initTerrain( Tile& terrain ) = 0;
 
   virtual void build( CityPtr city, const TilePos& pos );
   virtual void destroy();  // handles the delete

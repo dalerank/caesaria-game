@@ -381,7 +381,7 @@ void CartPusher::load( const VariantMap& stream )
 
   TilePos prPos( stream.get( "producerPos" ).toTilePos() );
   Tile& prTile = _getCity()->getTilemap().at( prPos );
-  _d->producerBuilding = prTile.getTerrain().getOverlay().as<Building>();
+  _d->producerBuilding = prTile.getOverlay().as<Building>();
   
   if( _d->producerBuilding.is<WorkingBuilding>() )
   {
@@ -390,7 +390,7 @@ void CartPusher::load( const VariantMap& stream )
 
   TilePos cnsmPos( stream.get( "consumerPos" ).toTilePos() );
   Tile& cnsmTile = _getCity()->getTilemap().at( cnsmPos );
-  _d->consumerBuilding = cnsmTile.getTerrain().getOverlay().as<Building>();
+  _d->consumerBuilding = cnsmTile.getOverlay().as<Building>();
 
   _d->maxDistance = stream.get( "maxDistance" ).toInt();
   _d->reservationID = stream.get( "reservationID" ).toInt();

@@ -26,7 +26,7 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_city.hpp"
 #include "oc3_foreach.hpp"
-#include "oc3_game_event.hpp"
+#include "oc3_game_event_mgr.hpp"
 #include "oc3_tilemap.hpp"
 
 Construction::Construction( const BuildingType type, const Size& size)
@@ -49,7 +49,7 @@ bool Construction::canBuild( CityPtr city, const TilePos& pos ) const
 
   foreach( Tile* tile, area )
   {
-     is_constructible &= tile->getTerrain().isConstructible();
+     is_constructible &= tile->getFlag( Tile::isConstructible );
   }
 
   return is_constructible;
@@ -76,7 +76,7 @@ void Construction::_updateDesirabilityInfluence( const DsbrlUpdate type )
   TilemapArea area = tilemap.getFilledRectangle( getTilePos(), getSize() );
   foreach( Tile* tile, area )
   {
-    tile->getTerrain().appendDesirability( mul * desInfluence );
+    tile->appendDesirability( mul * desInfluence );
   }
 
   //change deisirability around
@@ -86,7 +86,7 @@ void Construction::_updateDesirabilityInfluence( const DsbrlUpdate type )
                                                   getSize() + Size( 2 * curRange - 1 ) );
     foreach( Tile* tile, perimetr )
     {
-      tile->getTerrain().appendDesirability( mul * desInfluence );
+      tile->appendDesirability( mul * desInfluence );
     }
 
     desInfluence += step;
@@ -115,7 +115,7 @@ void Construction::computeAccessRoads()
                                             getSize() + Size( 2 * maxDst2road ), !Tilemap::checkCorners );
   foreach( Tile* tile, rect )
   {
-    if( tile->getTerrain().isRoad() )
+    if( tile->getFlag( Tile::tlRoad ) )
     {
       _accessRoads.push_back( tile );
     }
@@ -132,13 +132,13 @@ int Construction::getMaxDistance2Road() const
 void Construction::burn()
 {
   deleteLater();
-  DisasterEvent::create( getTile().getIJ(), DisasterEvent::fire );
+  GameEventMgr::append( DisasterEvent::create( getTile().getIJ(), DisasterEvent::fire ) );
 }
 
 void Construction::collapse()
 {
   deleteLater();
-  DisasterEvent::create( getTile().getIJ(), DisasterEvent::collapse );
+  GameEventMgr::append( DisasterEvent::create( getTile().getIJ(), DisasterEvent::collapse ) );
 }
 
 char Construction::getDesirabilityInfluence() const
@@ -176,17 +176,16 @@ Building::Building(const BuildingType type, const Size& size )
    _fireIncrement = 1;
 }
 
-void Building::setTerrain(TerrainTile &terrain)
+void Building::initTerrain( Tile &tile )
 {
   // here goes the problem
   // when we reset tile, we delete information
   // about it's original information
   // try to fix
-  bool saveMeadow = terrain.isMeadow();
-  terrain.clearFlags();
-  terrain.setOverlay(this);
-  terrain.setBuilding(true);
-  terrain.setMeadow(saveMeadow);
+  bool saveMeadow = tile.getFlag( Tile::tlMeadow );
+  tile.setFlag( Tile::clearAll, true );
+  tile.setFlag( Tile::tlBuilding, true);
+  tile.setFlag( Tile::tlMeadow, saveMeadow);
 }
 
 void Building::timeStep(const unsigned long time)

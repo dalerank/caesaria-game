@@ -183,21 +183,11 @@ bool GameLoaderC3Sav::load(const std::string& filename, Game& game )
 
       int index = 162 * (border_size + itA) + border_size + itB;
 
-      TerrainTile terrain(pGraphicGrid[index],
-			  pEdgeGrid[index],
-			  pTerrainGrid[index],
-			  0,
-			  0,
-			  0
-			  );      
-      
       Tile& tile = oTilemap.at(i, j);
-      Picture& pic = Picture::load( TerrainTileHelper::convId2PicName( pGraphicGrid[index] ) );
-      tile.setPicture( &pic );
-      
-      tile.getTerrain() = terrain; // what happens here?
+      tile.setPicture( TileHelper::convId2PicName( pGraphicGrid[index] ) );
+      tile.setOriginalImgId( pGraphicGrid[index] );
+      TileHelper::decode( tile, pTerrainGrid[index] );
     }
-    
   }    
     
   }

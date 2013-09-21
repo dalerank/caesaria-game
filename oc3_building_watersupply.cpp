@@ -57,7 +57,7 @@ Aqueduct::Aqueduct() : WaterSource( B_AQUEDUCT, Size(1) )
 void Aqueduct::build( CityPtr city, const TilePos& pos )
 {
   Tilemap& tilemap = city->getTilemap();
-  TerrainTile& terrain = tilemap.at( pos ).getTerrain();
+  Tile& terrain = tilemap.at( pos );
 
   // we can't build if already have aqueduct here
   SmartPtr<Aqueduct> aqueveduct = terrain.getOverlay().as<Aqueduct>();
@@ -83,17 +83,16 @@ void Aqueduct::destroy()
   Construction::destroy();
 }
 
-void Aqueduct::setTerrain(TerrainTile &terrain)
+void Aqueduct::initTerrain(Tile &terrain)
 {
-  bool isRoad   = terrain.isRoad();
-  bool isMeadow = terrain.isMeadow();
+  bool isRoad   = terrain.getFlag( Tile::tlRoad );
+  bool isMeadow = terrain.getFlag( Tile::tlMeadow );
 
-  terrain.clearFlags();
-  terrain.setOverlay(this);
-  terrain.setBuilding(true);
-  terrain.setRoad(isRoad);
-  terrain.setMeadow(isMeadow);
-  terrain.setAqueduct(true); // mandatory!
+  terrain.setFlag( Tile::clearAll, true );
+  terrain.setFlag( Tile::tlBuilding, true);
+  terrain.setFlag( Tile::tlRoad, isRoad );
+  terrain.setFlag( Tile::tlMeadow, isMeadow);
+  terrain.setFlag( Tile::tlAqueduct, true); // mandatory!
 }
 
 
@@ -107,7 +106,7 @@ bool Aqueduct::canBuild( CityPtr city, const TilePos& pos ) const
 
   // we can place on road
   Tilemap& tilemap = city->getTilemap();
-  TerrainTile& terrain = tilemap.at( pos ).getTerrain();
+  Tile& terrain = tilemap.at( pos );
 
   // we can't build on plazas
   if( terrain.getOverlay().as<Plaza>().isValid() )
@@ -118,7 +117,7 @@ bool Aqueduct::canBuild( CityPtr city, const TilePos& pos ) const
       return false;
 
   // also we can't build if next tile is road + aqueduct
-  if ( terrain.isRoad() )
+  if ( terrain.getFlag( Tile::tlRoad ) )
   {
     TilePos tp_from = pos + TilePos (-1, -1);
     TilePos tp_to = pos + TilePos (1, 1);
@@ -132,13 +131,13 @@ bool Aqueduct::canBuild( CityPtr city, const TilePos& pos ) const
     TilemapTiles perimetr = tilemap.getRectangle(tp_from, tp_to, !Tilemap::checkCorners);
     foreach( Tile* tile, perimetr )
     {
-      if( tile->getTerrain().isRoad() && tile->getTerrain().isAqueduct() )
+      if( tile->getFlag( Tile::tlRoad ) && tile->getFlag( Tile::tlAqueduct ) )
         return false;
     }
   }
 
   // and we can't build on intersections
-  if ( terrain.isRoad() )
+  if ( terrain.getFlag( Tile::tlRoad ) )
   {
     int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
 
@@ -157,10 +156,10 @@ bool Aqueduct::canBuild( CityPtr city, const TilePos& pos ) const
         tile_pos_d[i] = pos;
     }
 
-    if (tilemap.at(tile_pos_d[D_NORTH]).getTerrain().isRoad()) { directionFlags += 1; } // road to the north
-    if (tilemap.at(tile_pos_d[D_EAST]).getTerrain().isRoad()) { directionFlags += 2; } // road to the east
-    if (tilemap.at(tile_pos_d[D_SOUTH]).getTerrain().isRoad()) { directionFlags += 4; } // road to the south
-    if (tilemap.at(tile_pos_d[D_WEST]).getTerrain().isRoad()) { directionFlags += 8; } // road to the west
+    if (tilemap.at(tile_pos_d[D_NORTH]).getFlag( Tile::tlRoad )) { directionFlags += 1; } // road to the north
+    if (tilemap.at(tile_pos_d[D_EAST]).getFlag( Tile::tlRoad )) { directionFlags += 2; } // road to the east
+    if (tilemap.at(tile_pos_d[D_SOUTH]).getFlag( Tile::tlRoad )) { directionFlags += 4; } // road to the south
+    if (tilemap.at(tile_pos_d[D_WEST]).getFlag( Tile::tlRoad )) { directionFlags += 8; } // road to the west
 
     StringHelper::debug( 0xff, "direction flags=%d", directionFlags );
 
@@ -212,10 +211,10 @@ Aqueduct::computePicture(const TilemapTiles * tmp, const TilePos pos)
 
   // get overlays for all directions
   LandOverlayPtr overlay_d[D_MAX];
-  overlay_d[D_NORTH] = tmap.at( tile_pos_d[D_NORTH] ).getTerrain().getOverlay();
-  overlay_d[D_EAST] = tmap.at( tile_pos_d[D_EAST]  ).getTerrain().getOverlay();
-  overlay_d[D_SOUTH] = tmap.at( tile_pos_d[D_SOUTH] ).getTerrain().getOverlay();
-  overlay_d[D_WEST] = tmap.at( tile_pos_d[D_WEST]  ).getTerrain().getOverlay();
+  overlay_d[D_NORTH] = tmap.at( tile_pos_d[D_NORTH] ).getOverlay();
+  overlay_d[D_EAST] = tmap.at( tile_pos_d[D_EAST]  ).getOverlay();
+  overlay_d[D_SOUTH] = tmap.at( tile_pos_d[D_SOUTH] ).getOverlay();
+  overlay_d[D_WEST] = tmap.at( tile_pos_d[D_WEST]  ).getOverlay();
 
   // if we have a TMP array with aqueducts, calculate them
   if (tmp != NULL)
@@ -257,7 +256,7 @@ Aqueduct::computePicture(const TilemapTiles * tmp, const TilePos pos)
   case 4:  // S
   case 5:  // N + S
     index = 121; 
-    if( tmap.at( tile_pos ).getTerrain().isRoad() ) 
+    if( tmap.at( tile_pos ).getFlag( Tile::tlRoad ) )
     {
       index = 119; 
       _d->isRoad = true;
@@ -276,7 +275,7 @@ Aqueduct::computePicture(const TilemapTiles * tmp, const TilePos pos)
   case 8:  // W
   case 10: // E + W
     index = 122; 
-    if( tmap.at( tile_pos ).getTerrain().isRoad() )
+    if( tmap.at( tile_pos ).getFlag( Tile::tlRoad ) )
     {
       index = 120; 
       _d->isRoad = true;
@@ -347,7 +346,7 @@ void Reservoir::destroy()
   TilemapArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
   foreach( Tile* tile, reachedTiles )
   {
-    tile->getTerrain().decreaseWaterService( WTR_RESERVOIR );
+    tile->decreaseWaterService( WTR_RESERVOIR );
   }
 
 
@@ -395,19 +394,18 @@ bool Reservoir::_isNearWater(CityPtr city, const TilePos& pos ) const
   TilemapTiles perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), !Tilemap::checkCorners );
   foreach( Tile* tile, perimetr)
   {
-    near_water |= tile->getTerrain().isWater();
+    near_water |= tile->getFlag( Tile::tlWater );
   }
 
   return near_water;
 }
 
-void Reservoir::setTerrain(TerrainTile &terrain)
+void Reservoir::initTerrain(Tile &terrain)
 {
-  bool isMeadow = terrain.isMeadow();
-  terrain.clearFlags();
-  terrain.setOverlay(this);
-  terrain.setBuilding(true);
-  terrain.setMeadow(isMeadow);
+  bool isMeadow = terrain.getFlag( Tile::tlMeadow );
+  terrain.setFlag( Tile::clearAll, true );
+  terrain.setFlag( Tile::tlBuilding, true);
+  terrain.setFlag( Tile::tlMeadow, isMeadow);
 }
 
 void Reservoir::timeStep(const unsigned long time)
@@ -432,7 +430,7 @@ void Reservoir::timeStep(const unsigned long time)
     TilemapArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
     foreach( Tile* tile, reachedTiles )
     {
-      tile->getTerrain().fillWaterService( WTR_RESERVOIR );
+      tile->fillWaterService( WTR_RESERVOIR );
     }   
   }
 
@@ -516,7 +514,7 @@ void WaterSource::_produceWater( const TilePos* points, const int size )
       continue;
     }
 
-    SmartPtr< WaterSource > ws = tilemap.at( pos ).getTerrain().getOverlay().as<WaterSource>();
+    SmartPtr< WaterSource > ws = tilemap.at( pos ).getOverlay().as<WaterSource>();
     
     if( ws.isValid() )
     {     
@@ -540,10 +538,8 @@ Fountain::Fountain() : ServiceBuilding(Service::S_FOUNTAIN, B_FOUNTAIN, Size(1))
   std::srand( DateTime::getElapsedTime() );
 
   setPicture( ResourceGroup::utilitya, 10 );
-  _getAnimation().load( ResourceGroup::utilitya, fontainStartAnim, fontainSizeAnim );
-  //animLoader.fill_animation_reverse(_animation, "utilitya", 25, 7);
-  _getAnimation().setOffset( Point( 12, 24 ) );
-  _getAnimation().setFrameDelay( 2 );
+
+  _initAnimation();
   _fgPictures.resize(1);
 
   _damageIncrement = 0;
@@ -569,11 +565,10 @@ void Fountain::timeStep(const unsigned long time)
   //filled area, that fontain present and work
   if( time % 22 == 1 )
   {
-    const TerrainTile& myTile = getTile().getTerrain();
-
-    if( myTile.getWaterService( WTR_RESERVOIR ) > 0 && getWorkers() > 0 )
+    if( getTile().getWaterService( WTR_RESERVOIR ) > 0 && getWorkers() > 0 )
     {
       _haveReservoirWater = true;
+      _getAnimation().start();
     }
     else
     {
@@ -582,8 +577,10 @@ void Fountain::timeStep(const unsigned long time)
       TilemapArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() );
       foreach( Tile* tile, reachedTiles )
       {
-        tile->getTerrain().decreaseWaterService( WTR_FONTAIN );
+        getTile().decreaseWaterService( WTR_FONTAIN );
       }
+
+      _getAnimation().stop();
     }
 
     if( !_haveReservoirWater )
@@ -596,7 +593,7 @@ void Fountain::timeStep(const unsigned long time)
     TilemapArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() );
     foreach( Tile* tile, reachedTiles )
     {
-      tile->getTerrain().fillWaterService( WTR_FONTAIN );
+      getTile().fillWaterService( WTR_FONTAIN );
     }
   }
 
@@ -608,8 +605,8 @@ bool Fountain::canBuild( CityPtr city, const TilePos& pos ) const
   bool ret = Construction::canBuild( city, pos );
 
   Tilemap& tmap = city->getTilemap();
-  const TerrainTile& buildTerrain = tmap.at( pos ).getTerrain();
-  int picid = (buildTerrain.getWaterService( WTR_RESERVOIR ) > 0 ? fontainFull : fontainEmpty );
+  const Tile& tile = tmap.at( pos );
+  int picid = (tile.getWaterService( WTR_RESERVOIR ) > 0 ? fontainFull : fontainEmpty );
   const_cast< Fountain* >( this )->setPicture( ResourceGroup::waterbuildings, picid );
 
   return ret;
@@ -633,4 +630,13 @@ void Fountain::load(const VariantMap& stream)
 
   //check animation
   timeStep( 1 );
+}
+
+void Fountain::_initAnimation()
+{
+  _getAnimation().load( ResourceGroup::utilitya, fontainStartAnim, fontainSizeAnim );
+  //animLoader.fill_animation_reverse(_animation, "utilitya", 25, 7);
+  _getAnimation().setOffset( Point( 12, 24 ) );
+  _getAnimation().setFrameDelay( 2 );
+  _getAnimation().stop();
 }

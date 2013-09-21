@@ -27,7 +27,7 @@ Road::Road() : Construction( B_ROAD, Size(1) )
 void Road::build( CityPtr city, const TilePos& pos )
 {
   Tilemap& tilemap = city->getTilemap();
-  LandOverlayPtr overlay = tilemap.at( pos ).getTerrain().getOverlay();
+  LandOverlayPtr overlay = tilemap.at( pos ).getOverlay();
 
   Construction::build( city, pos );
   setPicture( computePicture() );
@@ -44,20 +44,20 @@ void Road::build( CityPtr city, const TilePos& pos )
   }
 
   // update adjacent roads
-  foreach( Tile* tile, _accessRoads )
+  /*foreach( Tile* tile, _accessRoads )
   {
-    RoadPtr road = tile->getTerrain().getOverlay().as<Road>(); // let's think: may here different type screw up whole program?
+    RoadPtr road = tile->getOverlay().as<Road>(); // let's think: may here different type screw up whole program?
     if( road.isValid() )
     {
       road->computeAccessRoads();
       road->setPicture(road->computePicture());
     }
-  }
+  }*/
   
   // NOTE: also we need to update accessRoads for adjacent building
   // how to detect them if MaxDistance2Road can be any
   // so let's recompute accessRoads for every _building_
-  LandOverlayList list = city->getOverlayList(); // it looks terrible!!!!
+  /*LandOverlayList list = city->getOverlayList(); // it looks terrible!!!!
   foreach( LandOverlayPtr overlay, list )
   {
     BuildingPtr construction = overlay.as<Building>();
@@ -65,7 +65,9 @@ void Road::build( CityPtr city, const TilePos& pos )
     {
       construction->computeAccessRoads();
     }
-  }
+  }*/
+
+  city->updateRoads();
 }
 
 bool Road::canBuild( CityPtr city, const TilePos& pos ) const
@@ -75,20 +77,19 @@ bool Road::canBuild( CityPtr city, const TilePos& pos ) const
   if( is_free ) 
     return true; // we try to build on free tile
 
-  TerrainTile& terrain = city->getTilemap().at( pos ).getTerrain();
+  LandOverlayPtr overlay  = city->getTilemap().at( pos ).getOverlay();
 
-  return ( terrain.getOverlay().is<Aqueduct>() || terrain.getOverlay().is<Road>() );
+  return ( overlay.is<Aqueduct>() || overlay.is<Road>() );
 }
 
 
-void Road::setTerrain(TerrainTile& terrain)
+void Road::initTerrain(Tile& terrain)
 {
-  terrain.clearFlags();
-  terrain.setOverlay( this );
-  terrain.setRoad( true );
+  terrain.setFlag( Tile::clearAll, true );
+  terrain.setFlag( Tile::tlRoad, true );
 }
 
-Picture& Road::computePicture()
+Picture Road::computePicture()
 {
   int i = getTile().getI();
   int j = getTile().getJ();
@@ -158,8 +159,7 @@ Picture& Road::computePicture()
     break;
   }
 
-  Picture *picture = &Picture::load( ResourceGroup::road, index);
-  return *picture;
+  return Picture::load( ResourceGroup::road, index);
 }
 
 bool Road::isWalkable() const
@@ -194,17 +194,16 @@ Plaza::Plaza()
 }
 
 
-void Plaza::setTerrain(TerrainTile& terrain)
+void Plaza::initTerrain(Tile& terrain)
 {
   //std::cout << "Plaza::setTerrain" << std::endl;
-  bool isMeadow = terrain.isMeadow();  
-  terrain.clearFlags();
-  terrain.setOverlay(this);
-  terrain.setRoad(true);
-  terrain.setMeadow( isMeadow );
+  bool isMeadow = terrain.getFlag( Tile::tlMeadow );
+  terrain.setFlag( Tile::clearAll , true);
+  terrain.setFlag( Tile::tlRoad, true);
+  terrain.setFlag( Tile::tlMeadow, isMeadow );
 }
 
-Picture& Plaza::computePicture()
+Picture Plaza::computePicture()
 {
   //std::cout << "Plaza::computePicture" << std::endl;
   return Picture::load( ResourceGroup::entertaiment, 102);
@@ -224,7 +223,7 @@ bool Plaza::canBuild( CityPtr city, const TilePos& pos ) const
   TilemapArea area = tilemap.getFilledRectangle( pos, getSize() ); // something very complex ???
   foreach( Tile* tile, area )
   {
-    is_constructible &= tile->getTerrain().isRoad();
+    is_constructible &= tile->getFlag( Tile::tlRoad );
   }
 
   return is_constructible;

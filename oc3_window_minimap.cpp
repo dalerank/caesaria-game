@@ -18,7 +18,6 @@
 #include "oc3_minimap_colours.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_landoverlay.hpp"
-#include "oc3_terraininfo.hpp"
 #include "oc3_time.hpp"
 #include "oc3_gfx_engine.hpp"
 
@@ -36,8 +35,8 @@ public:
   int lastTimeUpdate;
   Point center;
 
-  void getTerrainColours(const TerrainTile& tile, int &c1, int &c2);
-  void getBuildingColours(const TerrainTile& tile, int &c1, int &c2);
+  void getTerrainColours(const Tile& tile, int &c1, int &c2);
+  void getBuildingColours(const Tile& tile, int &c1, int &c2);
   void updateImage();
 };
 
@@ -57,49 +56,50 @@ Point getBitmapCoordinates(int x, int y, int mapsize )
   return Point( x + y, x + mapsize - y - 1 );
 }
 
-void getBuildingColours(TerrainTile& tile, int &c1, int &c2);
+void getBuildingColours( const Tile& tile, int &c1, int &c2);
 
-void Minimap::Impl::getTerrainColours(const TerrainTile& tile, int &c1, int &c2)
+void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
 {
-  int num3 = tile.getTerrainRndmData() & 3;
-  int num7 = tile.getTerrainRndmData() & 7;
+  int rndData = tile.getI() * tile.getJ();
+  int num3 = rndData & 3;
+  int num7 = rndData & 7;
 
-  if (tile.isTree())
+  if (tile.getFlag( Tile::tlTree ))
   {
     c1 = colors->colour(MinimapColors::MAP_TREE1, num3);
     c2 = colors->colour(MinimapColors::MAP_TREE2, num3);
   }
-  else if (tile.isRock())
+  else if (tile.getFlag( Tile::tlRock ))
   {
     c1 = colors->colour(MinimapColors::MAP_ROCK1, num3);
     c2 = colors->colour(MinimapColors::MAP_ROCK2, num3);
   }
-  else if (tile.isWater())
+  else if (tile.getFlag( Tile::tlWater ))
   {
     c1 = colors->colour(MinimapColors::MAP_WATER1, num3);
     c2 = colors->colour(MinimapColors::MAP_WATER2, num3);
   }
-  else if (tile.isRoad())
+  else if (tile.getFlag( Tile::tlRoad ))
   {
     c1 = colors->colour(MinimapColors::MAP_ROAD, 0);
     c2 = colors->colour(MinimapColors::MAP_ROAD, 1);
   }
-  else if (tile.isMeadow())
+  else if (tile.getFlag( Tile::tlMeadow ))
   {
     c1 = colors->colour(MinimapColors::MAP_FERTILE1, num3);
     c2 = colors->colour(MinimapColors::MAP_FERTILE2, num3);
   }
-  else if (tile.isWall())
+  else if (tile.getFlag( Tile::tlWall ))
   {
     c1 = colors->colour(MinimapColors::MAP_WALL, 0);
     c2 = colors->colour(MinimapColors::MAP_WALL, 1);
   }
-  else if (tile.isAqueduct()) // and not tile.isRoad()
+  else if (tile.getFlag( Tile::tlAqueduct )) // and not tile.isRoad()
   {
     c1 = colors->colour(MinimapColors::MAP_AQUA, 0);
     c2 = colors->colour(MinimapColors::MAP_AQUA, 1);
   }
-  else if (tile.isBuilding())
+  else if (tile.getFlag( Tile::tlBuilding ))
   {
     getBuildingColours(tile, c1, c2);
   }
@@ -113,7 +113,7 @@ void Minimap::Impl::getTerrainColours(const TerrainTile& tile, int &c1, int &c2)
   c2 |= 0xff000000;
 }
 
-void Minimap::Impl::getBuildingColours(const TerrainTile& tile, int &c1, int &c2)
+void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
 {
   LandOverlayPtr overlay = tile.getOverlay();
 
@@ -187,11 +187,11 @@ void Minimap::Impl::updateImage()
   {
     for (int x = border; x < max; x++)
     {
-      const TerrainTile& tile = tilemap->at(x - border, y - border).getTerrain();
+      const Tile& tile = tilemap->at(x - border, y - border);
 
       Point pnt = getBitmapCoordinates(x - border, y - border, mapsize);
       int c1, c2;
-      getTerrainColours(tile, c1, c2);
+      getTerrainColours( tile, c1, c2);
 
       if( pnt.getX() >= fullmap->getWidth()-1 || pnt.getY() >= fullmap->getHeight() )
         continue;

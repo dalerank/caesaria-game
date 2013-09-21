@@ -25,7 +25,7 @@ public:
   HighBridge();
 
   bool canBuild( CityPtr city, const TilePos& pos ) const;
-  void setTerrain( TerrainTile& terrain );
+  void initTerrain( Tile& terrain );
   void build( CityPtr city, const TilePos& pos );
   void destroy();
 

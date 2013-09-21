@@ -56,11 +56,10 @@ public:
     _fgPictures.push_back( _picture );
   }
 
-  void setTerrain( TerrainTile& terrain )
+  void initTerrain( Tile& terrain )
   {
-    terrain.clearFlags();
-    terrain.setOverlay( this );
-    terrain.setRoad( true );
+    terrain.setFlag( Tile::clearAll, true );
+    terrain.setFlag( Tile::tlRoad, true );
   }
 
   void destroy()
@@ -138,7 +137,7 @@ LowBridge::LowBridge() : Construction( B_LOW_BRIDGE, Size(1) ), _d( new Impl )
   setPicture( pic );
 }
 
-void LowBridge::setTerrain( TerrainTile& terrain )
+void LowBridge::initTerrain(Tile& terrain )
 {
 
 }
@@ -238,19 +237,19 @@ void LowBridge::_checkParams( CityPtr city, DirectionType& direction, TilePos& s
   Tilemap& tilemap = city->getTilemap();
   Tile& tile = tilemap.at( curPos );
 
-  if( tile.getTerrain().isRoad() )
+  if( tile.getFlag( Tile::tlRoad ) )
   {
     direction = D_NONE;
     return;
   }
 
-  int imdId = tile.getTerrain().getOriginalImgId();
+  int imdId = tile.getOriginalImgId();
   if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
   {    
     TilemapArea tiles = tilemap.getFilledRectangle( curPos - TilePos( 10, 0), curPos );
     for( TilemapArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
     {
-      imdId = (*it)->getTerrain().getOriginalImgId();
+      imdId = (*it)->getOriginalImgId();
       if( imdId == 376 || imdId == 377 || imdId == 378 || imdId == 379 )
       {
         stop = (*it)->getIJ();
@@ -264,7 +263,7 @@ void LowBridge::_checkParams( CityPtr city, DirectionType& direction, TilePos& s
     TilemapArea tiles = tilemap.getFilledRectangle( curPos, curPos + TilePos( 10, 0) );
     for( TilemapArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
     {
-      imdId = (*it)->getTerrain().getOriginalImgId();
+      imdId = (*it)->getOriginalImgId();
       if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
       {
         stop = (*it)->getIJ();
@@ -278,7 +277,7 @@ void LowBridge::_checkParams( CityPtr city, DirectionType& direction, TilePos& s
     TilemapArea tiles = tilemap.getFilledRectangle( curPos, curPos + TilePos( 0, 10) );
     for( TilemapArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
     {
-      imdId = (*it)->getTerrain().getOriginalImgId();
+      imdId = (*it)->getOriginalImgId();
       if( imdId == 380 || imdId == 381 || imdId == 382 || imdId == 383 )
       {
         stop = (*it)->getIJ();
@@ -292,7 +291,7 @@ void LowBridge::_checkParams( CityPtr city, DirectionType& direction, TilePos& s
     TilemapArea tiles = tilemap.getFilledRectangle( curPos - TilePos( 0, 10), curPos );
     for( TilemapArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
     {
-      imdId = (*it)->getTerrain().getOriginalImgId();
+      imdId = (*it)->getOriginalImgId();
       if( imdId == 372 || imdId == 373 || imdId == 374 || imdId == 375 )
       {
         stop = (*it)->getIJ();
@@ -357,8 +356,8 @@ void LowBridge::build( CityPtr city, const TilePos& pos )
       TilePos buildPos = pos + subtile->_pos * signSum;
       Tile& tile = tilemap.at( buildPos );
       subtile->setPicture( tile.getPicture() );
-      subtile->_imgId = tile.getTerrain().getOriginalImgId();
-      subtile->_info = tile.getTerrain().encode();
+      subtile->_imgId = tile.getOriginalImgId();
+      subtile->_info = TileHelper::encode( tile );
       subtile->_parent = this;
       
       GameEventMgr::append( BuildEvent::create( buildPos, subtile.as<Construction>() ) );
@@ -374,8 +373,10 @@ void LowBridge::destroy()
     (*it)->_parent = 0;
     GameEventMgr::append( ClearLandEvent::create( (*it)->_pos ) );
 
-    std::string picName = TerrainTileHelper::convId2PicName( (*it)->_imgId );
-    _getCity()->getTilemap().at( (*it)->_pos ).setPicture( &Picture::load( picName ) );
-    _getCity()->getTilemap().at( (*it)->_pos ).getTerrain().decode( (*it)->_info );
+    std::string picName = TileHelper::convId2PicName( (*it)->_imgId );
+
+    Tile& mapTile = _getCity()->getTilemap().at( (*it)->_pos );
+    mapTile.setPicture( &Picture::load( picName ) );
+    TileHelper::decode( mapTile, (*it)->_info );
   }
 }

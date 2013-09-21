@@ -50,7 +50,7 @@ void CityServiceAnimals::update(const unsigned int time)
     TilemapTiles::iterator it=border.begin();
     while( it != border.end() )
     {
-      if( !(*it)->getTerrain().isWalkable(true) )
+      if( !(*it)->isWalkable(true) )
       {
         it = border.erase( it );
       }

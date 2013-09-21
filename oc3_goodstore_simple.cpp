@@ -17,6 +17,7 @@
 #include "oc3_math.hpp"
 #include "oc3_foreach.hpp"
 #include "oc3_variant.hpp"
+#include "oc3_stringhelper.hpp"
 
 class SimpleGoodStore::Impl
 {
@@ -114,13 +115,13 @@ void SimpleGoodStore::applyStorageReservation(GoodStock &stock, const long reser
 
   if (stock.type() != reservedStock.type())
   {
-    _OC3_DEBUG_BREAK_IF( "SimpleGoodStore:GoodType does not match reservation");
+    StringHelper::debug( 0xff, "SimpleGoodStore:GoodType does not match reservation");
     return;
   }
 
   if (stock._currentQty < reservedStock._currentQty)
   {
-    _OC3_DEBUG_BREAK_IF( "SimpleGoodStore:Quantity does not match reservation");
+    StringHelper::debug( 0xff, "SimpleGoodStore:Quantity does not match reservation");
     return;
   }
 
@@ -138,13 +139,13 @@ void SimpleGoodStore::applyRetrieveReservation(GoodStock &stock, const long rese
 
   if (stock.type() != reservedStock.type())
   {
-    _OC3_DEBUG_BREAK_IF("SimpleGoodStore:GoodType does not match reservation");
+    StringHelper::debug( 0xff, "SimpleGoodStore:GoodType does not match reservation");
     return;
   }
 
   if( stock._maxQty < stock._currentQty + reservedStock._currentQty)
   {
-    _OC3_DEBUG_BREAK_IF("SimpleGoodStore:Quantity does not match reservation");
+    StringHelper::debug( 0xff, "SimpleGoodStore:Quantity does not match reservation");
     return;
   }
 
@@ -163,7 +164,7 @@ VariantMap SimpleGoodStore::save() const
   stream[ "max" ] = _maxQty;
 
   VariantList stockSave;
-  for( std::vector<GoodStock>::const_iterator itStock = _goodStockList.begin();
+  for( StockList::const_iterator itStock = _goodStockList.begin();
        itStock != _goodStockList.end(); itStock++)
   {
     stockSave.push_back( (*itStock).save() );

@@ -172,7 +172,6 @@ public:
     U* tmp = safety_cast<U*>(obj);
     return ( tmp != 0 );
   }
-
 };
 
 #endif //__OPENCAESAR3_SMARTPTR_H_INCLUDE_

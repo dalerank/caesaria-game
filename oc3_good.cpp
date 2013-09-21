@@ -101,7 +101,7 @@ void GoodStock::load( const VariantList& stream )
   VariantList::const_iterator it=stream.begin();
   _type = (Good::Type)(*it).toInt(); it++;
   _maxQty = (*it).toInt(); it++;
-  _currentQty = (*it).toInt();
+  _currentQty = math::clamp( (*it).toInt(), 0, _maxQty );
 }
 
 bool GoodStock::empty() const

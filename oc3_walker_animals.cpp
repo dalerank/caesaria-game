@@ -68,7 +68,7 @@ void Animal::_findNewWay( const TilePos& start )
     TilePos dest( std::rand() % range- range / 2, std::rand() % range - range / 2 );
     dest = (start+dest).fit( TilePos( 0, 0 ), TilePos( tmap.getSize()-1, tmap.getSize()-1 ) );
 
-    if( tmap.at( dest ).getTerrain().isWalkable(true) )
+    if( tmap.at( dest ).isWalkable( true) )
     {
       PathWay pathway = PathwayHelper::create( _getCity(), start, dest, PathwayHelper::allTerrain );
 

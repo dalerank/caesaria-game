@@ -26,14 +26,13 @@ Garden::Garden() : Construction(B_GARDEN, Size(1) )
   setPicture( Picture::load( ResourceGroup::entertaiment, 110 ) ); // 110 111 112 113
 }
 
-void Garden::setTerrain(TerrainTile &terrain)
+void Garden::initTerrain(Tile& terrain)
 {
-  bool isMeadow = terrain.isMeadow();
-  terrain.clearFlags();
-  terrain.setOverlay(this);
-  terrain.setBuilding(true); // are gardens buildings or not???? try to investigate from original game
-  terrain.setGarden(true);
-  terrain.setMeadow(isMeadow);    
+  bool isMeadow = terrain.getFlag( Tile::tlMeadow );
+  terrain.setFlag( Tile::clearAll, true );
+  terrain.setFlag( Tile::tlBuilding, true ); // are gardens buildings or not???? try to investigate from original game
+  terrain.setFlag( Tile::tlGarden, true);
+  terrain.setFlag( Tile::tlMeadow, isMeadow);
 }
 
 bool Garden::isWalkable() const
@@ -58,7 +57,7 @@ void Garden::build( CityPtr city, const TilePos& pos )
                                                               getTilePos() + TilePos( 1, 1 ) );
   foreach( Tile* tile, tilesAround )
   {
-    GardenPtr garden = tile->getTerrain().getOverlay().as<Garden>();
+    GardenPtr garden = tile->getOverlay().as<Garden>();
     if( garden.isValid() )
     {
       garden->update();
@@ -73,7 +72,7 @@ void Garden::update()
   bool canGrow2squareGarden = ( nearTiles.size() == 4 ); // be carefull on map edges
   foreach( Tile* tile, nearTiles )
   {
-    GardenPtr garden = tile->getTerrain().getOverlay().as<Garden>();
+    GardenPtr garden = tile->getOverlay().as<Garden>();
     canGrow2squareGarden &= (garden.isValid() && garden->getSize().getArea() <= 2 );
   }
 
@@ -81,7 +80,7 @@ void Garden::update()
   {   
     foreach( Tile* tile, nearTiles )
     {
-      LandOverlayPtr overlay = tile->getTerrain().getOverlay();
+      LandOverlayPtr overlay = tile->getOverlay();
 
       //not delete himself
       if( overlay != this && overlay.isValid() )

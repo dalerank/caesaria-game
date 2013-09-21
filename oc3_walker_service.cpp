@@ -163,6 +163,14 @@ unsigned int ServiceWalker::getReachDistance() const
   return 2;
 }
 
+void ServiceWalker::return2Base()
+{
+  if( !getPathway().isReverse() )
+  {
+    _getPathway().toggleDirection();
+  }
+}
+
 ServiceWalker::ReachedBuildings ServiceWalker::getReachedBuildings(const TilePos& pos )
 {
   ReachedBuildings res;
@@ -173,9 +181,7 @@ ServiceWalker::ReachedBuildings ServiceWalker::getReachedBuildings(const TilePos
   TilemapArea reachedTiles = _getCity()->getTilemap().getFilledRectangle( start, stop );
   foreach( Tile* tile, reachedTiles )
   {
-    TerrainTile& terrain = tile->getTerrain();
-
-    BuildingPtr building = terrain.getOverlay().as<Building>();
+    BuildingPtr building = tile->getOverlay().as<Building>();
     if( building.isValid() )
     {
       res.insert(building);
@@ -292,7 +298,7 @@ void ServiceWalker::load( const VariantMap& stream )
   _d->maxDistance = stream.get( "maxDistance" ).toInt();
 
   TilePos basePos = stream.get( "base" ).toTilePos();
-  LandOverlayPtr overlay = _getCity()->getTilemap().at( basePos ).getTerrain().getOverlay();
+  LandOverlayPtr overlay = _getCity()->getTilemap().at( basePos ).getOverlay();
 
   _d->base = overlay.as<Building>();
   if( _d->base.isNull() )

@@ -63,7 +63,7 @@ class Building : public Construction
 {
 public:
    Building(const BuildingType type, const Size& size=Size(1) );
-   virtual void setTerrain(TerrainTile &terrain);
+   virtual void initTerrain(Tile& terrain);
 
    virtual void timeStep(const unsigned long time);
    virtual void storeGoods(GoodStock &stock, const int amount = -1);

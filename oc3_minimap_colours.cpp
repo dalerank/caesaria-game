@@ -36,8 +36,10 @@ MinimapColors::MinimapColors(ClimateType climate) {
 			{0xFFFBDE, 0xEFD34A, 0xFFEBB5, 0xFFF3C6}, // buildings
 			{0x000000, 0xF70000, 0x7B0000, 0x1800FF}, // sprites: wolves, soldiers, enemy1, enemy2
 		};
-		for (int i = 0; i < MAP_SIZE; i++) {
-			for (int j = 0; j < 8; j++) {
+		for (int i = 0; i < MAP_SIZE; i++)
+		{
+			for (int j = 0; j < 8; j++)
+			{
 				map[i][j] = colours[i][j];
 			}
 		}
@@ -60,8 +62,10 @@ MinimapColors::MinimapColors(ClimateType climate) {
 			{0xFFFBDE, 0xEFD34A, 0xFFEBB5, 0xFFF3C6}, // buildings
 			{0x000000, 0xF70000, 0x7B0000, 0x1800FF}, // sprites: wolves, soldiers, enemy1, enemy2
 		};
-		for (int i = 0; i < MAP_SIZE; i++) {
-			for (int j = 0; j < 8; j++) {
+		for (int i = 0; i < MAP_SIZE; i++)
+		{
+			for (int j = 0; j < 8; j++)
+			{
 				map[i][j] = colours[i][j];
 			}
 		}
@@ -84,8 +88,10 @@ MinimapColors::MinimapColors(ClimateType climate) {
 			{0xFFFBDE, 0xEFD34A, 0xFFEBB5, 0xFFF3C6}, // buildings
 			{0x000000, 0xF70000, 0x7B0000, 0x1800FF}, // sprites: wolves, soldiers, enemy1, enemy2
 		};
-		for (int i = 0; i < MAP_SIZE; i++) {
-			for (int j = 0; j < 8; j++) {
+		for (int i = 0; i < MAP_SIZE; i++)
+		{
+			for (int j = 0; j < 8; j++)
+			{
 				map[i][j] = colours[i][j];
 			}
 		}

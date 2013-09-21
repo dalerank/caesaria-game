@@ -47,7 +47,7 @@ bool ClayPit::canBuild( CityPtr city, const TilePos& pos ) const
   TilemapTiles perimetr = tilemap.getRectangle( pos + TilePos( -1, -1), getSize() + Size( 2 ), Tilemap::checkCorners );
   foreach( Tile* tile, perimetr )
   {
-    near_water |= tile->getTerrain().isWater();
+    near_water |= tile->getFlag( Tile::tlWater );
   }
 
   return (is_constructible && near_water);

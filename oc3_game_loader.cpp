@@ -78,8 +78,8 @@ void GameLoader::Impl::initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap
   StringHelper::debug( 0xff, "(%d, %d)", tlPos.getI(),    tlPos.getJ()    );
   StringHelper::debug( 0xff, "(%d, %d)", tlOffset.getI(), tlOffset.getJ() );
 
-  signTile.setPicture( &Picture::load( ResourceGroup::land3a, picIdStart + idOffset ) );
-  signTile.getTerrain().setRock( true );
+  signTile.setPicture( ResourceGroup::land3a, picIdStart + idOffset );
+  signTile.setFlag( Tile::tlRock, true );
 }
 
 void GameLoader::Impl::initWaterTileAnimation( Tilemap& tmap )
@@ -92,7 +92,7 @@ void GameLoader::Impl::initWaterTileAnimation( Tilemap& tmap )
   water.load( ResourceGroup::land1a, 127, 7, true );
   foreach( Tile* tile, area )
   {
-    int rId = tile->getTerrain().getOriginalImgId() - 364;
+    int rId = tile->getOriginalImgId() - 364;
     if( rId >= 0 && rId < 8 )
     {
       water.setCurrentIndex( rId );

@@ -36,7 +36,7 @@ public:
   {
     switch( priorWalkable )
     {
-    case autoWalkable: return tile ? tile->getTerrain().isWalkable( true ) : false;
+    case autoWalkable: return tile ? tile->isWalkable( true ) : false;
     case alwaysWalkable: return true;
     case alwaysImpassable: return false;   
     }
@@ -66,7 +66,7 @@ public:
 
   int getGScore(AStarPoint* p)
   { 
-    int offset = p->tile ? p->tile->getTerrain().isRoad() ? -5 : +10 : 0;
+    int offset = p->tile ? p->tile->getFlag( Tile::tlRoad ) ? -5 : +10 : 0;
     TilePos pos = tile ? tile->getIJ() : TilePos( 0, 0 ); 
     TilePos otherPos = p->tile ? p->tile->getIJ() : getPos();
     return p->g + ((pos.getI() == otherPos.getI() || pos.getJ() == otherPos.getJ()) ? 10 : 14) + offset;

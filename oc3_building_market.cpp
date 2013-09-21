@@ -20,6 +20,8 @@
 #include "oc3_variant.hpp"
 #include "oc3_goodstore_simple.hpp"
 #include "oc3_city.hpp"
+#include "oc3_walker_service.hpp"
+
 
 class Market::Impl
 {
@@ -41,13 +43,13 @@ public:
 Market::Market() : ServiceBuilding(Service::S_MARKET, B_MARKET, Size(2) ),
   _d( new Impl )
 {
-  setPicture( Picture::load( ResourceGroup::commerce, 1) );
+  setPicture( ResourceGroup::commerce, 1 );
+
   _fgPictures.resize(1);  // animation
 
   _d->goodStore.setMaxQty(5000);
   _d->goodStore.setMaxQty(Good::wheat, 400);
   _d->goodStore.setMaxQty(Good::pottery, 300);
-  //_d->goodStore.setCurrentQty(G_WHEAT, 200);
 
   _getAnimation().load( ResourceGroup::commerce, 2, 10 );
   _getAnimation().setFrameDelay( 4 );
@@ -130,4 +132,22 @@ void Market::load( const VariantMap& stream)
   ServiceBuilding::load( stream );
 
   _d->goodStore.load( stream.get( "goodStore" ).toMap() );
+}
+
+void Market::timeStep(const unsigned long time)
+{
+  if( time % 16 == 0 )
+  {
+    WalkerList walkers = getWalkerList();
+    if( walkers.size() > 0 && _d->goodStore.getCurrentQty() == 0 )
+    {
+      ServiceWalkerPtr walker = walkers.front().as<ServiceWalker>();
+      if( walker.isValid() )
+      {
+        walker->return2Base();
+      }
+    }
+  }
+
+  ServiceBuilding::timeStep( time );
 }
