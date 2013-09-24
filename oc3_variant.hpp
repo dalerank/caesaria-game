@@ -172,7 +172,7 @@ class Variant
     //Variant( const Line& line);
     //Variant( const LineF& line);
 	  Variant( const Rect& rect);
-    //Variant( const RectF& rect);
+		Variant( const RectF& rect);
     //Variant( const Color& color);
 
     Variant& operator=( const Variant& other);
@@ -213,7 +213,7 @@ class Variant
     TilePos toTilePos() const;
     //Line toLine() const;
     //LineF toLineF() const;
-    //RectF toRectF() const;
+    RectF toRectf() const;
 
     operator int() const { return toInt(); }
     operator float() const { return toFloat(); }

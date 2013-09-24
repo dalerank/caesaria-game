@@ -205,9 +205,9 @@ static void constructNewVariant( Variant2Impl *x, const void *copy)
 // 	case Variant::LineF:
 // 		v_construct<LineF>(x, copy);
 // 		break;
-// 	case Variant::NRectF:
-// 		v_construct<RectF>(x, copy);
-// 		break;
+  case Variant::NRectF:
+    v_construct<RectF>(x, copy);
+    break;
 	case Variant::NPoint:
 		v_construct<Point>(x, copy);
 		break;
@@ -234,22 +234,10 @@ static void clearVariant(Variant2Impl *d)
 {
   switch( d->type ) 
 	{
-    case Variant::String:
-      v_clear<std::string>(d);
-        break;
-    case Variant::NStringArray:
-        v_clear<StringArray>(d);
-        break;
-    case Variant::Map:
-        v_clear<VariantMap>(d);
-        break;
-    /*case Variant::Hash:
-        v_clear<Variant2Hash>(d);
-        break;
-    */
-    case Variant::List:
-        v_clear<VariantList>(d);
-        break;
+		case Variant::String: v_clear<std::string>(d); break;
+		case Variant::NStringArray: v_clear<StringArray>(d); break;
+		case Variant::Map: v_clear<VariantMap>(d); break;
+		case Variant::List: v_clear<VariantList>(d); break;
     /*case Variant::Date:
         v_clear<Date>(d);
         break;
@@ -257,39 +245,21 @@ static void clearVariant(Variant2Impl *d)
         v_clear<Time>(d);
         break;
     */
-    case Variant::NDateTime:
-        v_clear<DateTime>(d);
-        break;
-    case Variant::NByteArray:
-        v_clear<ByteArray>(d);
-        break;
-    case Variant::NPoint:
-      v_clear<Point>(d);
-      break;
-    case Variant::NTilePos:
-      v_clear<TilePos>(d);
-      break;
-    case Variant::NPointF:
-      v_clear<PointF>(d);
-      break;
-    case Variant::NSize:
-      v_clear<Size>(d);
-      break;
-    case Variant::NSizeF:
-      v_clear<SizeF>(d);
-      break;
-    case Variant::NRectI:
-      v_clear<Rect>(d);
-      break;
+    case Variant::NDateTime: v_clear<DateTime>(d); break;
+    case Variant::NByteArray: v_clear<ByteArray>(d); break;
+    case Variant::NPoint: v_clear<Point>(d); break;
+    case Variant::NTilePos: v_clear<TilePos>(d); break;
+    case Variant::NPointF: v_clear<PointF>(d); break;
+    case Variant::NSize: v_clear<Size>(d); break;
+    case Variant::NSizeF: v_clear<SizeF>(d); break;
+    case Variant::NRectI: v_clear<Rect>(d); break;
 //     case Variant::LineF:
 //         v_clear<LineF>(d);
 //         break;
 //     case Variant::Line:
 //         v_clear<Line>(d);
 //         break;
-//     case Variant::NRectF:
-//         v_clear<RectF>(d);
-//         break;
+     case Variant::NRectF: v_clear<RectF>(d); break;
 /*    case Variant::Url:
         v_clear<Url>(d);
         break;
@@ -349,13 +319,12 @@ static bool compare(const Variant2Impl *a, const Variant2Impl *b)
         return *v_cast<StringList>(a) == *v_cast<StringList>(b);*/
     case Variant::NSize: return *v_cast<Size>(a) == *v_cast<Size>(b);
     case Variant::NSizeF: return *v_cast<SizeF>(a) == *v_cast<SizeF>(b);
-    case Variant::NRectI: return *v_cast<Rect>(a) == *v_cast<Rect>(b);        
+    case Variant::NRectI: return *v_cast<Rect>(a) == *v_cast<Rect>(b);
+    case Variant::NRectF: return *v_cast<RectF>(a) == *v_cast<RectF>(b);
 //     case Variant::Line:
 //         return *v_cast<Line>(a) == *v_cast<Line>(b);
 //     case Variant::LineF:
 //         return *v_cast<LineF>(a) == *v_cast<LineF>(b);
-//     case Variant::NRectF:
-//         return *v_cast<RectF>(a) == *v_cast<RectF>(b);
     case Variant::NPoint: return *v_cast<Point>(a) == *v_cast<Point>(b);
     case Variant::NPointF: return *v_cast<PointF>(a) == *v_cast<PointF>(b);
     case Variant::NTilePos: return *v_cast<TilePos>(a) == *v_cast<TilePos>(b);
@@ -750,6 +719,25 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
       else
         return false;
     break;
+
+    case Variant::NRectF:
+      if( d->type == Variant::List )
+      {
+        RectF *rect = static_cast< RectF* >( result );
+        const VariantList *list = v_cast< VariantList >(d);
+        VariantList::const_iterator it = list->begin();
+
+        float x1 = it->toFloat(); it++;
+        float y1 = it->toFloat(); it++;
+        float x2 = it->toFloat(); it++;
+        float y2 = it->toFloat(); it++;
+
+        *rect = RectF( x1, y1, x2, y2 );
+      }
+      else
+        return false;
+    break;
+
 
     case Variant::NStringArray:
         if (d->type == Variant::List) 
@@ -1174,7 +1162,7 @@ Variant::Variant(const VariantMap& rmap)
 Variant::Variant(const Point &pt) { _d.is_null = false; _d.type = Variant::NPoint; v_construct<Point>(&_d, pt); }
 Variant::Variant(const PointF &pt) { _d.is_null = false; _d.type = Variant::NPointF; v_construct<PointF>(&_d, pt); }
 Variant::Variant(const TilePos &pt) { _d.is_null = false; _d.type = Variant::NTilePos; v_construct<TilePos>(&_d, pt); }
-//Variant::Variant(const core::RectF &r) { _d.is_null = false; _d.type = Variant::NRectF; v_construct<core::RectF>(&_d, r); }
+Variant::Variant(const RectF &r) { _d.is_null = false; _d.type = Variant::NRectF; v_construct<RectF>(&_d, r); }
 // Variant::Variant(const core::LineF &l) { _d.is_null = false; _d.type = Variant::LineF; v_construct<core::LineF>(&_d, l); }
 // Variant::Variant(const core::Line &l) { _d.is_null = false; _d.type = Variant::Line; v_construct<core::Line>(&_d, l); }
 Variant::Variant(const Rect &r) { _d.is_null = false; _d.type = Variant::NRectI; v_construct<Rect>(&_d, r); }
@@ -1396,6 +1384,11 @@ TilePos Variant::toTilePos() const
 Rect Variant::toRect() const
 {
     return Variant2ToHelper<Rect>(_d, Variant::NRectI, varHandler);
+}
+
+RectF Variant::toRectf() const
+{
+    return Variant2ToHelper<RectF>(_d, Variant::NRectF, varHandler);
 }
 
 /*!

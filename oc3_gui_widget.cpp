@@ -20,6 +20,7 @@
 #include "oc3_event.hpp"
 #include "oc3_foreach.hpp"
 #include "oc3_saveadapter.hpp"
+#include "oc3_stringhelper.hpp"
 
 void Widget::beforeDraw( GfxEngine& painter )
 {
@@ -28,54 +29,6 @@ void Widget::beforeDraw( GfxEngine& painter )
     widget->beforeDraw( painter );
 }
 
-// void Widget::setFont( Font font, u32 nA/*=0 */ )
-// {
-//     _d->overrideFonts[ nA ] = font;
-// }
-// 
-// Font Widget::getFont( u32 index/*=0 */ ) const
-// {
-//     FontsMap::Node* ret = _d->overrideFonts.find( index );
-//     return ret ? ret->getValue() : Font();
-// }
-
-// void Widget::setColor( const Color& color, u32 nA/*=0 */ )
-// {
-//     _d->overrideColors.set( nA, _OverrideColor( color, true ) );
-// }
-// 
-// Color Widget::getColor( u32 index/*=0 */ ) const
-// {
-// 	ColorMap::Node* ret = _d->overrideColors.find( index );
-// 	return ret ? ret->getValue().color : Color( 0xff000000 );
-// }
-
-
-// FontsMap& Widget::getFonts_()
-// {
-// 	return _d->overrideFonts;
-// }
-
-// unsigned int Widget::getResultOpacity()
-// {
-//     f32 resultAlpha = getOpacity() / 255.f;
-// 
-//     Widget* parent = getParent();
-//     while( parent )
-//     {
-//         resultAlpha *= ( parent->getOpacity() / 255.f );
-//         parent = parent->getParent();
-//     }
-// 
-//     return u32( resultAlpha * 0xff );
-// }
-// 
-// Color Widget::getResultColor( Color defColor /*= video::SColor( 0xffffffff ) */ )
-// {
-//     defColor.setAlpha( math::middle_<u32>( defColor.getAlpha(), getResultOpacity(), 255 ) );
-//     return defColor;
-// }
-
 GuiEnv* Widget::getEnvironment()
 {
     return _environment;
@@ -83,9 +36,12 @@ GuiEnv* Widget::getEnvironment()
 
 void Widget::setTextAlignment( TypeAlign horizontal, TypeAlign vertical )
 {
-    _OC3_DEBUG_BREAK_IF( (!(horizontal >= alignUpperLeft && horizontal <= alignAuto)
-        || !(vertical >= alignUpperLeft && vertical <= alignAuto))
-        && "Unknown align in SetTextAlignment" );
+    if( !(horizontal >= alignUpperLeft && horizontal <= alignAuto)
+        || !(vertical >= alignUpperLeft && vertical <= alignAuto) )
+    {
+        StringHelper::debug( 0xff, "Unknown align in SetTextAlignment" );
+        return;
+    }
 
     _d->textHorzAlign = horizontal;
     _d->textVertAlign = vertical;
@@ -103,11 +59,12 @@ unsigned int Widget::getHeight() const
 
 Widget::Widget( Widget* parent, int id, const Rect& rectangle )
 : _d( new Impl ),
-  _isVisible(true), _isEnabled(true),
+  _isEnabled(true),
   _isSubElement(false), _noClip(false), _id(id), _isTabStop(false), _tabOrder(-1), _isTabGroup(false),
   _alignLeft(alignUpperLeft), _alignRight(alignUpperLeft), _alignTop(alignUpperLeft), _alignBottom(alignUpperLeft),
   _environment( parent ? parent->getEnvironment() : 0 ), _eventHandler( NULL )
 {
+  _d->isVisible = true;
   _d->maxSize = Size(0,0);
   _d->minSize = Size(1,1);
   _d->parent = parent;
@@ -133,34 +90,32 @@ Widget::Widget( Widget* parent, int id, const Rect& rectangle )
 
 Widget::~Widget()
 {
-    // delete all children
-    foreach( Widget* widget, _d->children )
-    {
-        widget->_d->parent = 0;
-        widget->drop();
-    }
+  // delete all children
+  foreach( Widget* widget, _d->children )
+  {
+      widget->_d->parent = 0;
+      widget->drop();
+  }
 }
 
 void Widget::setGeometry( const Rect& r, GeometryType mode )
 {
-    if( getParent() )
-    {
-        /*const Rect& r2 = */getParent()->getAbsoluteRect();
+  if( getParent() )
+  {
+    const Rect& r2 = getParent()->getAbsoluteRect();
+    SizeF d = r2.getSize().toSizeF();
 
-//         NSizeF d = r2.getSize().As<f32>();//( (f32)(r2.getSize().Width), (f32)(r2.getSize().Height) );
-// 
-// 		RectF& scaleRect = _d->scaleRect;
-//         if (_alignLeft   == alignScale)
-//             scaleRect.UpperLeftCorner.X = (f32)r.UpperLeftCorner.X / d.Width;
-//         if (_alignRight  == alignScale)
-//             scaleRect.LowerRightCorner.X = (f32)r.LowerRightCorner.X / d.Width;
-//         if (_alignTop    == alignScale)
-//             scaleRect.UpperLeftCorner.Y = (f32)r.UpperLeftCorner.Y / d.Height;
-//         if (_alignBottom == alignScale)
-//             scaleRect.LowerRightCorner.Y = (f32)r.LowerRightCorner.Y / d.Height;
-    }
+    if( _alignLeft == alignScale)
+      _d->scaleRect.UpperLeftCorner.setX( (float)r.UpperLeftCorner.getX() / d.getWidth() );
+    if (_alignRight == alignScale)
+      _d->scaleRect.LowerRightCorner.setX( (float)r.LowerRightCorner.getX() / d.getWidth() );
+    if (_alignTop == alignScale)
+      _d->scaleRect.UpperLeftCorner.setY( (float)r.UpperLeftCorner.getY() / d.getHeight() );
+    if (_alignBottom == alignScale)
+      _d->scaleRect.LowerRightCorner.setY( (float)r.LowerRightCorner.getY() / d.getHeight() );
+  }
 
-    _d->desiredRect = r;   
+	_d->desiredRect = r;
 	updateAbsolutePosition();
 }
 
@@ -174,31 +129,31 @@ void Widget::setPosition( const Point& position )
     setGeometry( rectangle );
 }
 
-// void Widget::setRelativeRectProportional( const RectF& r, GeometryType mode )
-// {
-//     if( !getParent() )
-//         return;
-// 
-//     const NSizeI& d = getParent()->getSize();
-// 
-// 	switch( mode )
-//     {
-//     case ProportionalGeometry:
-//         _d->desiredRect = RectI(
-//             math::floor32( d.Width * r.UpperLeftCorner.X),
-//             math::floor32( d.Height * r.UpperLeftCorner.Y),
-//             math::floor32( d.Width * r.LowerRightCorner.X),
-//             math::floor32( d.Height * r.LowerRightCorner.Y));
-// 
-//         _d->scaleRect = r;
-//     break;
-// 
-//     default:
-//     break;
-//     }
-//   
-//     updateAbsolutePosition();
-// }
+void Widget::setGeometry( const RectF& r, GeometryType mode )
+{
+  if( !getParent() )
+    return;
+
+  const Size& d = getParent()->getSize();
+
+  switch( mode )
+  {
+  case ProportionalGeometry:
+    _d->desiredRect = Rect(
+          floor( d.getWidth() * r.UpperLeftCorner.getX() ),
+          floor( d.getHeight() * r.UpperLeftCorner.getY() ),
+          floor( d.getWidth() * r.LowerRightCorner.getX() ),
+          floor( d.getHeight() * r.LowerRightCorner.getY() ));
+
+    _d->scaleRect = r;
+  break;
+
+  default:
+  break;
+  }
+
+  updateAbsolutePosition();
+}
 
 Rect Widget::getAbsoluteRect() const
 {
@@ -236,70 +191,75 @@ void Widget::setMinSize( const Size& size )
 
 void Widget::setAlignment( TypeAlign left, TypeAlign right, TypeAlign top, TypeAlign bottom )
 {
-    _alignLeft = left;
-    _alignRight = right;
-    _alignTop = top;
-    _alignBottom = bottom;
+  _alignLeft = left;
+  _alignRight = right;
+  _alignTop = top;
+  _alignBottom = bottom;
 
-    if( getParent() )
-    {
-        Rect r( getParent()->getAbsoluteRect() );
+  if( getParent() )
+  {
+    Rect r( getParent()->getAbsoluteRect() );
 
-//         SizeF d = r.getSize().As<f32>();
-// 
-// 		RectF& scaleRect = _d->scaleRect;
-// 		RectF dRect = _d->desiredRect.As<f32>();
-//         if (_alignLeft   == alignScale)
-//             scaleRect.UpperLeftCorner.X = dRect.UpperLeftCorner.X / d.Width;
-//         if (_alignRight  == alignScale)
-//             scaleRect.LowerRightCorner.X = dRect.LowerRightCorner.X / d.Width;
-//         if (_alignTop    == alignScale)
-//             scaleRect.UpperLeftCorner.Y = dRect.UpperLeftCorner.Y / d.Height;
-//         if (_alignBottom == alignScale)
-//             scaleRect.LowerRightCorner.Y = dRect.LowerRightCorner.Y / d.Height;
-    }
+    SizeF d = r.getSize().toSizeF();
+
+    RectF dRect = _d->desiredRect.toRectF();
+    if( _alignLeft == alignScale)
+      _d->scaleRect.UpperLeftCorner.setX( dRect.UpperLeftCorner.getX() / d.getWidth() );
+    if(_alignRight == alignScale)
+      _d->scaleRect.LowerRightCorner.setX( dRect.LowerRightCorner.getX() / d.getWidth() );
+    if( _alignTop  == alignScale)
+      _d->scaleRect.UpperLeftCorner.setY( dRect.UpperLeftCorner.getY() / d.getHeight() );
+    if (_alignBottom == alignScale)
+      _d->scaleRect.LowerRightCorner.setY( dRect.LowerRightCorner.getY() / d.getHeight() );
+  }
 }
 
 void Widget::updateAbsolutePosition()
 {
-    const Rect oldRect = _d->absoluteRect;
-    recalculateAbsolutePosition(false);
+  const Rect oldRect = _d->absoluteRect;
+  recalculateAbsolutePosition(false);
 
-    if( oldRect != _d->absoluteRect )
-        _resizeEvent();
+  if( oldRect != _d->absoluteRect )
+  {
+    _resizeEvent();
+  }
 
-    // update all children
-    foreach( Widget* widget, _d->children )
-    {
-        widget->updateAbsolutePosition();
-    }
+  // update all children
+  foreach( Widget* widget, _d->children )
+  {
+    widget->updateAbsolutePosition();
+  }
 }
 
 Widget* Widget::getElementFromPoint( const Point& point )
 {
-    Widget* target = 0;
+  Widget* target = 0;
 
-    // we have to search from back to front, because later children
-    // might be drawn over the top of earlier ones.
+  // we have to search from back to front, because later children
+  // might be drawn over the top of earlier ones.
 
-    ChildIterator it = _d->children.getLast();
+  ChildIterator it = _d->children.getLast();
 
-    if (isVisible())
+  if (isVisible())
+  {
+    while(it != _d->children.end())
     {
-        while(it != _d->children.end())
-        {
-            target = (*it)->getElementFromPoint(point);
-            if (target)
-                return target;
+      target = (*it)->getElementFromPoint(point);
+      if( target )
+      {
+        return target;
+      }
 
-            --it;
-        }
+      --it;
     }
+  }
 
-    if (isVisible() && isPointInside(point))
-        target = this;
+  if( isVisible() && isPointInside(point) )
+  {
+    target = this;
+  }
 
-    return target;
+  return target;
 }
 
 bool Widget::isPointInside( const Point& point ) const
@@ -340,7 +300,7 @@ void Widget::draw( GfxEngine& painter )
 
 bool Widget::isVisible() const
 {
-  return _isVisible;
+  return _d->isVisible;
 }
 
 bool Widget::isSubElement() const
@@ -360,120 +320,131 @@ void Widget::setTabStop( bool enable )
 
 void Widget::setTabOrder( int index )
 {
-    // negative = autonumber
-    if (index < 0)
+  // negative = autonumber
+  if (index < 0)
+  {
+    _tabOrder = 0;
+    Widget *el = getTabGroup();
+    while( _isTabGroup && el && el->getParent() )
+        el = el->getParent();
+
+    Widget *first=0, *closest=0;
+    if (el)
     {
-        _tabOrder = 0;
-        Widget *el = getTabGroup();
-        while( _isTabGroup && el && el->getParent() )
-            el = el->getParent();
-
-        Widget *first=0, *closest=0;
-        if (el)
+        // find the highest element number
+        el->getNextWidget(-1, true, _isTabGroup, first, closest, true);
+        if (first)
         {
-            // find the highest element number
-            el->getNextWidget(-1, true, _isTabGroup, first, closest, true);
-            if (first)
-            {
-                _tabOrder = first->getTabOrder() + 1;
-            }
+            _tabOrder = first->getTabOrder() + 1;
         }
-
     }
-    else
-        _tabOrder = index;
+  }
+  else
+    _tabOrder = index;
 }
 
 int Widget::getTabOrder() const
 {
-    return _tabOrder;
+  return _tabOrder;
 }
 
 Widget* Widget::getTabGroup()
 {
-    Widget *ret=this;
+  Widget *ret=this;
 
-    while (ret && !ret->hasTabGroup())
-        ret = ret->getParent();
+  while (ret && !ret->hasTabGroup())
+      ret = ret->getParent();
 
-    return ret;
+  return ret;
 }
 
 bool Widget::isEnabled() const
 {
-    if ( isSubElement() && _isEnabled && getParent() )
-        return getParent()->isEnabled();
+  if ( isSubElement() && _isEnabled && getParent() )
+  {
+    return getParent()->isEnabled();
+  }
 
-    return _isEnabled;
+  return _isEnabled;
 }
 
 bool Widget::bringToFront()
 {
 	if( getParent() )
+	{
 		return getParent()->bringChildToFront( this );
+	}
 
 	return false;
 }
 
 bool Widget::bringChildToFront( Widget* element )
 {
-    ChildIterator it = _d->children.begin();
-    for(; it != _d->children.end(); ++it)
+  ChildIterator it = _d->children.begin();
+  for(; it != _d->children.end(); ++it)
+  {
+    if (element == (*it))
     {
-        if (element == (*it))
-        {
-            _d->children.erase(it);
-            _d->children.push_back(element);
-            return true;
-        }
+      _d->children.erase(it);
+      _d->children.push_back(element);
+      return true;
     }
+  }
 
-    return false;
+  return false;
 }
 
 bool Widget::sendChildToBack( Widget* child )
 {
-    ChildIterator it = _d->children.begin();
-    if (child == (*it))	// already there
-        return true;
-    for (; it != _d->children.end(); ++it)
+  ChildIterator it = _d->children.begin();
+  if (child == (*it))	// already there
+      return true;
+  for (; it != _d->children.end(); ++it)
+  {
+    if (child == (*it))
     {
-        if (child == (*it))
-        {
-            _d->children.erase(it);
-            _d->children.push_front(child);
-            return true;
-        }
+      _d->children.erase(it);
+      _d->children.push_front(child);
+      return true;
     }
+  }
 
-    return false;
+  return false;
 }
 
 bool Widget::sendToBack()
 {
 	if( getParent() )
+	{
 		return getParent()->sendChildToBack( this );
+	}
 
 	return false;
 }
 
 Widget* Widget::findChild( int id, bool searchchildren/*=false*/ ) const
 {
-    Widget* e = 0;
+  Widget* e = 0;
 
-    foreach( Widget* widget, _d->children )
+  foreach( Widget* widget, _d->children )
+  {
+    if( widget->getID() == id)
     {
-        if( widget->getID() == id)
-            return widget;
-
-        if( searchchildren )
-            e = widget->findChild(id, true);
-
-        if (e)
-            return e;
+      return widget;
     }
 
-    return e;
+    if( searchchildren )
+    {
+      e = widget->findChild(id, true);
+    }
+
+    if( e )
+    {
+      return e;
+    }
+  }
+
+  return e;
 }
 
 bool Widget::getNextWidget( int startOrder, bool reverse, bool group, Widget*& first, Widget*& closest, bool includeInvisible/*=false*/ ) const
@@ -586,7 +557,7 @@ void Widget::setupUI( const VariantMap& ui )
   }
 
   Variant tmp;
-  tmp = ui.get( "id"); setID( tmp.isValid() ? tmp.toInt() : -1 );
+  tmp = ui.get( "id" ); setID( tmp.isValid() ? tmp.toInt() : -1 );
   tmp = ui.get( "text" ); setText( tmp.isValid() ? tmp.toString() : "" );
   tmp = ui.get( "tooltip" ); setTooltipText( tmp.isValid() ? tmp.toString() : "" );
   tmp = ui.get( "visible" ); setVisible( tmp.isValid() ? tmp.toBool() : true );
@@ -602,7 +573,17 @@ void Widget::setupUI( const VariantMap& ui )
                 ahelper.findType( ui.get( "topAlign" ).toString() ),
                 ahelper.findType( ui.get( "bottomAlign" ).toString() ));*/
 
-  setGeometry( ui.get( "geometry" ).toRect() );
+  tmp = ui.get( "geometry" );
+  if( tmp.isValid() )
+  {
+    setGeometry( tmp.toRect() );
+  }
+
+  tmp = ui.get( "geometryf" );
+  if( tmp.isValid() )
+  {
+    setGeometry( tmp.toRectf() );
+  }
 
   tmp = ui.get( "noclipped" ); setNotClipped( tmp.isValid() ? tmp.toBool() : false );
 
@@ -634,21 +615,21 @@ void Widget::setupUI(const io::FilePath& filename)
 
 void Widget::addChild_( Widget* child )
 {
-    if (child)
-    {
-        child->grab(); // prevent destruction when removed
-        child->remove(); // remove from old parent
-        child->_d->lastParentRect = getAbsoluteRect();
-        child->_d->parent = this;
-        _d->children.push_back(child);
-    }
+  if (child)
+  {
+    child->grab(); // prevent destruction when removed
+    child->remove(); // remove from old parent
+    child->_d->lastParentRect = getAbsoluteRect();
+    child->_d->parent = this;
+    _d->children.push_back(child);
+  }
 }
 
 void Widget::recalculateAbsolutePosition( bool recursive )
 {
     Rect parentAbsolute(0,0,0,0);
     Rect parentAbsoluteClip;
-    //float fw=0.f, fh=0.f;
+    float fw=0.f, fh=0.f;
 
     if ( getParent() )
     {
@@ -669,76 +650,48 @@ void Widget::recalculateAbsolutePosition( bool recursive )
     const int diffx = parentAbsolute.getWidth() - _d->lastParentRect.getWidth();
     const int diffy = parentAbsolute.getHeight() - _d->lastParentRect.getHeight();
 
-    /* QUESTION: garbage code?????
+
     if (_alignLeft == alignScale || _alignRight == alignScale)
         fw = (float)parentAbsolute.getWidth();
 
     if (_alignTop == alignScale || _alignBottom == alignScale)
         fh = (float)parentAbsolute.getHeight();
-    */
+
     
     switch (_alignLeft)
     {
     case alignAuto:
-    case alignUpperLeft:
-        break;
-    case alignLowerRight:
-        _d->desiredRect.UpperLeftCorner += Point( diffx, 0 );
-        break;
-    case alignCenter:
-        _d->desiredRect.UpperLeftCorner += Point( diffx/2, 0 );
-        break;
-    case alignScale:
-        //_d->desiredRect.UpperLeftCorner.setX( _d->scaleRect.UpperLeftCorner.X * fw );
-        break;
+    case alignUpperLeft: break;
+    case alignLowerRight: _d->desiredRect.UpperLeftCorner += Point( diffx, 0 ); break;
+    case alignCenter: _d->desiredRect.UpperLeftCorner += Point( diffx/2, 0 ); break;
+    case alignScale: _d->desiredRect.UpperLeftCorner.setX( _d->scaleRect.UpperLeftCorner.getX() * fw ); break;
     }
 
     switch (_alignRight)
     {
     case alignAuto:
-    case alignUpperLeft:
-        break;
-    case alignLowerRight:
-        _d->desiredRect.LowerRightCorner += Point( diffx, 0 );
-        break;
-    case alignCenter:
-        _d->desiredRect.LowerRightCorner += Point( diffx/2, 0 );
-        break;
-    case alignScale:
-        //_d->desiredRect.LowerRightCorner.X = math::round_(_d->scaleRect.LowerRightCorner.X * fw);
-        break;
+    case alignUpperLeft:   break;
+    case alignLowerRight: _d->desiredRect.LowerRightCorner += Point( diffx, 0 ); break;
+    case alignCenter: _d->desiredRect.LowerRightCorner += Point( diffx/2, 0 ); break;
+    case alignScale: _d->desiredRect.LowerRightCorner.setX( roundf( _d->scaleRect.LowerRightCorner.getX() * fw ) ); break;
     }
 
     switch (_alignTop)
     {
     case alignAuto:
-    case alignUpperLeft:
-        break;
-    case alignLowerRight:
-        _d->desiredRect.UpperLeftCorner += Point( 0, diffy );
-        break;
-    case alignCenter:
-        _d->desiredRect.UpperLeftCorner += Point( 0, diffy/2 );
-        break;
-    case alignScale:
-        //_d->desiredRect.UpperLeftCorner.Y = math::round_(_d->scaleRect.UpperLeftCorner.Y * fh);
-        break;
+    case alignUpperLeft: break;
+    case alignLowerRight: _d->desiredRect.UpperLeftCorner += Point( 0, diffy ); break;
+    case alignCenter: _d->desiredRect.UpperLeftCorner += Point( 0, diffy/2 ); break;
+    case alignScale: _d->desiredRect.UpperLeftCorner.setY( roundf(_d->scaleRect.UpperLeftCorner.getY() * fh) ); break;
     }
 
     switch (_alignBottom)
     {
     case alignAuto:
-    case alignUpperLeft:
-        break;
-    case alignLowerRight:
-        _d->desiredRect.LowerRightCorner += Point( 0, diffy );
-        break;
-    case alignCenter:
-        _d->desiredRect.LowerRightCorner += Point( 0, diffy/2 );
-        break;
-    case alignScale:
-        //_d->desiredRect.LowerRightCorner.Y = math::round_(_d->scaleRect.LowerRightCorner.Y * fh);
-        break;
+    case alignUpperLeft:  break;
+    case alignLowerRight: _d->desiredRect.LowerRightCorner += Point( 0, diffy );  break;
+    case alignCenter:  _d->desiredRect.LowerRightCorner += Point( 0, diffy/2 );  break;
+    case alignScale: _d->desiredRect.LowerRightCorner.setY( roundf(_d->scaleRect.LowerRightCorner.getY() * fh) );  break;
     }
 
     _d->relativeRect = _d->desiredRect;
@@ -827,27 +780,27 @@ Widget* Widget::getParent() const
 
 Rect Widget::getRelativeRect() const
 {
-    return _d->relativeRect;
+  return _d->relativeRect;
 }
 
 bool Widget::isNotClipped() const
 {
-    return _noClip;
+  return _noClip;
 }
 
 void Widget::setVisible( bool visible )
 {
-    _isVisible = visible;
+  _d->isVisible = visible;
 }
 
 bool Widget::isTabStop() const
 {
-    return _isTabStop;
+  return _isTabStop;
 }
 
 bool Widget::hasTabGroup() const
 {
-    return _isTabGroup;
+  return _isTabGroup;
 }
 
 void Widget::setText( const std::string& text )

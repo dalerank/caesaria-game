@@ -322,6 +322,8 @@ public:
   /** \param r The absolute position to set */
   void setGeometry(const Rect& r, GeometryType mode=RelativeGeometry );
 
+  void setGeometry(const RectF& r, GeometryType mode=ProportionalGeometry);
+
   //! 
   void setLeft( int newLeft );
 
@@ -441,9 +443,6 @@ protected:
 
   class Impl;
   ScopedPtr< Impl > _d;
-
-  //! is visible?
-  bool _isVisible;
 
   //! is enabled?
   bool _isEnabled;

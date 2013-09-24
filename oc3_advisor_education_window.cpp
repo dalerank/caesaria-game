@@ -26,6 +26,7 @@
 #include "oc3_city.hpp"
 #include "oc3_building_house.hpp"
 #include "oc3_foreach.hpp"
+#include "oc3_game_settings.hpp"
 
 class EducationInfoLabel : public Label
 {
@@ -133,10 +134,9 @@ AdvisorEducationWindow::AdvisorEducationWindow( CityPtr city, Widget* parent, in
   setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),
                Size( 640, 256 ) ) );
 
+  setupUI( GameSettings::rcpath( "/gui/educationadv.gui" ) );
+
   Label* title = new Label( this, Rect( 10, 10, getWidth() - 10, 10 + 40) );
-  title->setText( _("##Education advisor##") );
-  title->setFont( Font::create( FONT_3 ) );
-  title->setTextAlignment( alignCenter, alignCenter );
 
   _d->background.reset( Picture::create( getSize() ) );
   //main _d->_d->background

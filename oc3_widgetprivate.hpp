@@ -54,9 +54,12 @@ public:
 	Rect lastParentRect;
 
 	//! relative scale of the element inside its parent
-	//RectF scaleRect;
+	RectF scaleRect;
 
 	TypeAlign textHorzAlign, textVertAlign;
+
+  //! is visible?
+  bool isVisible;
 
   std::string internalName;
 };
