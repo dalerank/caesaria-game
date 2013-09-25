@@ -22,6 +22,21 @@
 
 using namespace std;
 
+class BackgroundModeHelper : public EnumsHelper<Label::BackgroundMode>
+{
+public:
+  BackgroundModeHelper() : EnumsHelper( Label::bgNone )
+  {
+    append( Label::bgWhite, "white" );
+    append( Label::bgBlack, "black" );
+    append( Label::bgBrown, "brown" );
+    append( Label::bgSmBrown, "smallBrown" );
+    append( Label::bgNone, "none" );
+    append( Label::bgWhiteFrame, "whiteFrame" );
+    append( Label::bgBlackFrame, "blackFrame" );
+  }
+};
+
 class Label::Impl
 {
 public:
@@ -33,7 +48,7 @@ public:
   bool OverrideBGColorEnabled;
   bool WordWrap;
   Point bgOffset;
-  BackgroundMode backgroundMode;
+  Label::BackgroundMode backgroundMode;
   bool RestrainTextInside;
   bool RightToLeft;
   string prefix;
@@ -136,6 +151,7 @@ void Label::_updateTexture( GfxEngine& painter )
 
     case bgSmBrown: PictureDecorator::draw( *_d->background, Rect( Point( 0, 0), getSize() ), PictureDecorator::smallBrownPanel ); break;
     case bgWhiteFrame: PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame ); break;
+    case bgBlackFrame: PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::blackFrame ); break;
     case bgNone: _d->background.reset(); break;
     }
   }
@@ -220,18 +236,11 @@ Font Label::getFont() const
     return _d->font;
 }
 
-//! Sets another color for the text.
-// void Label::setBackgroundColor( Color color)
-// {
-// 	setColor( color, bgColor );
-// 	_d->OverrideBGColorEnabled = true;
-// 	_d->backgroundMode = true;
-// }
-
 //! Sets whether to draw the background
 void Label::setBackgroundMode( BackgroundMode mode )
 {
   _d->backgroundMode = mode;
+  _d->needUpdatePicture = true;
 }
 
 //! Sets whether to draw the border
@@ -562,11 +571,6 @@ void Label::setPadding( const Rect& margin )
   _d->textMargin = margin;
 }
 
-int Label::getBackgroundColor() const
-{
-  return 0;//_d->bgColor; //getColor( bgColor );
-}
-
 void Label::beforeDraw( GfxEngine& painter )
 {
   if( _d->needUpdatePicture )
@@ -629,8 +633,16 @@ void Label::setupUI(const VariantMap& ui)
 {
   Widget::setupUI( ui );
 
-  setFont( Font::create( ui.get( "font" ).toString() ) );
-  setBackgroundPicture( Picture::load( ui.get( "image" ).toString() ) );
+  Variant tmp ;
+  tmp = ui.get( "font" ); if( tmp.isValid() ) setFont( Font::create( tmp.toString() ) );
+  tmp = ui.get( "image" ); if( tmp.isValid() ) setBackgroundPicture( Picture::load( tmp.toString() ) );
+  tmp = ui.get( "bgtype" );
+
+  if( tmp.isValid() )
+  {
+    BackgroundModeHelper helper;
+    setBackgroundMode( helper.findType( tmp.toString() ));
+  }
 }
 
 PictureRef& Label::getPicture()

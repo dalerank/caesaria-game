@@ -24,7 +24,7 @@
 class Label : public Widget
 {
 public:
-  enum BackgroundMode { bgWhite=0, bgBlack, bgBrown, bgSmBrown, bgNone, bgWhiteFrame };
+  typedef enum { bgWhite=0, bgBlack, bgBrown, bgSmBrown, bgNone, bgWhiteFrame, bgBlackFrame } BackgroundMode;
   //! constructor
   Label( Widget* parent );
 
@@ -41,11 +41,6 @@ public:
 
   //! Get the font which is used right now for drawing
   virtual Font getFont() const;
-
-  //! Sets another color for the background.
-  //virtual void setBackgroundColor( const SDL_Color& color);
-
-  virtual int getBackgroundColor() const;
 
   //! Sets whether to draw the background
   virtual void setBackgroundMode( BackgroundMode mode );
@@ -94,12 +89,6 @@ public:
   virtual bool isRightToLeft() const;
 
   virtual void setPrefixText( const std::string& prefix );
-
-  //! Writes attributes of the element.
-  //virtual void save( core::VariantArray* out) const;
-
-  //! Reads attributes of the element
-  //virtual void load( core::VariantArray* in);
 
   virtual void setBackgroundPicture( const Picture& picture, const Point& offset=Point() );
 

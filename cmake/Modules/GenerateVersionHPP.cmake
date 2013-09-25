@@ -11,7 +11,7 @@ find_program(_GIT_EXEC
 )
 
 if(_GIT_EXEC)
-  message( "Git test" )
+  message( "Git test\n" )
   execute_process(
     COMMAND "${_GIT_EXEC}" --version
     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"

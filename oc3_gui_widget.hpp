@@ -427,7 +427,7 @@ protected:
   /*!
    * This event handler can be reimplemented in a subclass to receive
    * widget resize events which are passed in the \a event parameter.
-   * When resizeEvent_() is called, the widget already has its new
+   * When _resizeEvent() is called, the widget already has its new
    * geometry.
    */
   virtual void _resizeEvent();
