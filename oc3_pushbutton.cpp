@@ -24,6 +24,19 @@
 #include "oc3_gfx_engine.hpp"
 #include "oc3_color.hpp"
 
+class BackgroundStyleHelper : public EnumsHelper<PushButton::BackgroundStyle>
+{
+public:
+  BackgroundStyleHelper() : EnumsHelper(PushButton::noBackground)
+  {
+    append( PushButton::grayBorderLine, "grayBorderLine" );
+    append( PushButton::smallGrayBorderLine, "smallGrayBorderLine" );
+    append( PushButton::whiteBorderUp, "whiteBorderUp" );
+    append( PushButton::blackBorderUp, "blackBorderUp" );
+    append( PushButton::noBackground, "noBackground" );
+  }
+};
+
 struct ButtonState
 {
   Picture bgTexture;
@@ -87,8 +100,18 @@ public:
 };
 
 //! constructor
+PushButton::PushButton(Widget* parent )
+  : Widget( parent, -1, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
+{
+  _d->currentButtonState = stNormal;
+  _d->lastButtonState = StateCount;
+  _d->pressed = false;
+  _d->bgStyle = grayBorderLine;
+  setTextAlignment( alignCenter, alignCenter );
+}
+
 PushButton::PushButton( Widget* parent,
-					    const Rect& rectangle, 
+                        const Rect& rectangle,
                         const std::string& caption,
                         int id, 
 					              bool noclip, 
@@ -195,6 +218,19 @@ PushButton::~PushButton()
 void PushButton::setIsPushButton( bool value )
 {
   _d->isPushButton = value;
+}
+
+void PushButton::setupUI(const VariantMap &ui)
+{
+  Widget::setupUI( ui );
+
+  Variant tmp;
+  tmp = ui.get( "bgtype" );
+  if( tmp.isValid() )
+  {
+    BackgroundStyleHelper helper;
+    setBackgroundStyle( helper.findType( tmp.toString() ) );
+  }
 }
 
 bool PushButton::isPushButton() const

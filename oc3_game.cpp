@@ -91,7 +91,7 @@ void Game::Impl::initVideo()
   /* Typical resolutions:
    * 640 x 480; 800 x 600; 1024 x 768; 1400 x 1050; 1600 x 1200
    */
-  GfxEngine::instance().setScreenSize(1024, 768);
+  GfxEngine::instance().setScreenSize( Size( 1024, 768 ) );
   GfxEngine::instance().init();
 }
 

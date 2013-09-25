@@ -45,9 +45,9 @@ GfxEngine::~GfxEngine()
 }
 
 
-void GfxEngine::setScreenSize(const int width, const int height)
+void GfxEngine::setScreenSize( Size size )
 {
-  _srcSize = Size( width, height );
+  _srcSize = size;
 }
 
 int GfxEngine::getScreenWidth() const

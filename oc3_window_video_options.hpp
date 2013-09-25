@@ -13,17 +13,30 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_PROJECT_VERSION_INCLUDE_H_
-#define __OPENCAESAR3_PROJECT_VERSION_INCLUDE_H_
+#ifndef _OPENCAESAR3_WINDOW_VIDEO_OPTIONS_H_INCLUDE_
+#define _OPENCAESAR3_WINDOW_VIDEO_OPTIONS_H_INCLUDE_
 
-#include "oc3_requirements.hpp"
+#include "oc3_gui_widget.hpp"
+#include "oc3_signals.hpp"
 
-#define OC3_VERSION_MAJOR 0
-#define OC3_VERSION_MINOR 2
-#define OC3_VERSION_REVSN 801
+#define ANIMATOR_UNUSE_VALUE -9999
 
-#define OC3_STR_EXT(__A) #__A
-#define OC3_STR_A(__A) OC3_STR_EXT(__A)
-#define OC3_VERSION OC3_STR_A(OC3_VERSION_MAJOR)"."OC3_STR_A(OC3_VERSION_MINOR)"."OC3_STR_A(OC3_VERSION_REVSN)"["OC3_PLATFORM_NAME":"OC3_COMPILER_NAME"]"
+class VideoOptionsWindow : public Widget
+{
+public:
+  VideoOptionsWindow( Widget* parent );
 
-#endif
+  //! Деструктор
+  virtual ~VideoOptionsWindow(void);
+
+  virtual bool onEvent(const NEvent &event);
+
+public oc3_signals:
+  Signal1<Size>& onSreenSizeChange();
+
+private:
+  class Impl;
+  ScopedPtr< Impl > _d;
+};
+
+#endif //_OPENCAESAR3_WINDOW_VIDEO_OPTIONS_H_INCLUDE_

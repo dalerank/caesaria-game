@@ -49,6 +49,7 @@ oc3_signals public:
   Signal0<> onEndSignal;
   Signal0<> onSaveSignal;
   Signal0<> onLoadSignal;
+  Signal0<> onShowVideoOptionsSignal;
   Signal1<int> onRequestAdvisorSignal;
 };
 
@@ -124,19 +125,13 @@ TopMenu::TopMenu( Widget* parent, const int height )
   if( _d->lbPopulation )
     _d->lbPopulation->setPosition( Point( getWidth() - populationLabelOffset, 0 ) );
 
-  //_populationLabel.setTextPosition(20, 0);
-
-  _d->lbFunds = new Label( this, Rect( Point( getWidth() - fundLabelOffset, 0), lbSize ), "Dn 10,000" );
-  _d->lbFunds->setFont( Font::create( FONT_2_WHITE ));
-  _d->lbFunds->setTextAlignment( alignCenter, alignCenter );
-  _d->lbFunds->setBackgroundPicture( Picture::load( ResourceGroup::panelBackground, panelBgStatus ) );
-  _d->lbFunds->setTooltipText( _("##funds_tooltip##") );
-  //_fundsLabel.setTextPosition(20, 0);
+  _d->lbFunds = findChild<Label*>( "lbFunds" );
+  if( _d->lbFunds )
+    _d->lbFunds->setPosition(  Point( getWidth() - fundLabelOffset, 0) );
 
   _d->lbDate = findChild<Label*>( "lbDate" );
   if( _d->lbDate )
     _d->lbDate->setPosition( Point( getWidth() - dateLabelOffset, 0) );
-  //_dateLabel.setTextPosition(20, 0);
 
   ContextMenuItem* tmp = addItem( _("##gmenu_file##"), -1, true, true, false, false );
   ContextMenu* file = tmp->addSubMenu();
@@ -155,9 +150,12 @@ TopMenu::TopMenu( Widget* parent, const int height )
 
   tmp = addItem( _("##gmenu_options##"), -1, true, true, false, false );
   ContextMenu* options = tmp->addSubMenu();
-  ContextMenuItem* screen = options->addItem( _("##screen_options##"), -1, true, false, false, false );
+  ContextMenuItem* screen = options->addItem( _("##screen_options##"), -1, true, false, false, false );  
   ContextMenuItem* sound = options->addItem( _("##sound_options##"), -1, true, false, false, false );
   ContextMenuItem* speed = options->addItem( _("##speed_options##"), -1, true, false, false, false );
+
+  CONNECT( screen, onClicked(), &_d->onShowVideoOptionsSignal, Signal0<>::emit );
+
 
   tmp = addItem( _("##gmenu_help##"), -1, true, true, false, false );
   tmp = addItem( _("##gmenu_advisors##"), -1, true, true, false, false );
@@ -200,4 +198,9 @@ Signal1<int>& TopMenu::onRequestAdvisor()
 Signal0<>& TopMenu::onLoad()
 {
   return _d->onLoadSignal;
+}
+
+Signal0<>& TopMenu::onShowVideoOptions()
+{
+  return _d->onShowVideoOptionsSignal;
 }

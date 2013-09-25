@@ -29,6 +29,8 @@ public:
   typedef enum { grayBorderLine, smallGrayBorderLine, whiteBorderUp,
                  blackBorderUp, noBackground } BackgroundStyle;
 
+	PushButton( Widget* );
+
 	//! constructor
 	PushButton( Widget* parent,
 			        const Rect& rectangle,
@@ -72,6 +74,8 @@ public:
   virtual Font& getFont( ElementState state );
 
   virtual void setIsPushButton( bool value );
+
+  virtual void setupUI(const VariantMap &ui);
 
 oc3_signals public:
   virtual Signal0<>& onClicked(); 

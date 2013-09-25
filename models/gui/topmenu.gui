@@ -18,6 +18,67 @@
     font : "FONT_2_YELLOW"
     textAlign : [ "center", "center" ]
     image : "paneling_00015.png"
+    tooltipText : "##funds_tooltip##"
+  }
+  
+  lbFunds :
+  {
+    class : "Widget"
+    type : "Label" 
+    geometry : [ 0, 0, 120, 23 ]
+    font : "FONT_2_WHITE"
+    textAlign : [ "center", "center" ]
+    image : "paneling_00015.png"
     tooltipText : "##date_tooltip##"
+  }
+  
+  cntxItemFile :
+  {
+    class : "Widget"
+    type : "ContextMenuItem"
+    text : "##gmenu_file##"
+    submenu : true
+    
+    cntxItemNewgame :
+    {
+      class : "Widget"
+      type : "ContextMenuItem"
+      text : "##gmenu_file_new##"
+    }
+    
+    cntxItemRestart :
+    {
+      class : "Widget"
+      type : "ContextMenuItem"
+      text : "##gmenu_file_restart##"
+    }
+    
+    cntxItemLoad :
+    {
+      class : "Widget"
+      type : "ContextMenuItem"
+      text : "##gmenu_file_load##"
+    }
+    
+    cntxItemSave :
+    {
+      class : "Widget"
+      type : "ContextMenuItem"
+      text : "##gmenu_file_save##"
+    }
+    
+    cntxItemMainMenu :
+    {
+      class : "Widget"
+      type : "ContextMenuItem"
+      text : "##gmenu_file_mainmenu##"
+    }
+    
+    cntxItemExit :
+    {
+      class : "Widget"
+      type : "ContextMenuItem"
+      text : "##gmenu_file_exit##"
+    }
   }
 }

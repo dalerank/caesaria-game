@@ -37,7 +37,7 @@ public:
   virtual bool haveEvent( NEvent& event ) = 0;
 
   
-  void setScreenSize(const int width, const int height);
+  void setScreenSize( Size size );
   Size getScreenSize() const;
 
   int getScreenWidth() const;

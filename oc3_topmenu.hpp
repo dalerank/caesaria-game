@@ -37,6 +37,7 @@ oc3_signals public:
   Signal0<>& onSave();
   Signal0<>& onEnd();
   Signal0<>& onLoad();
+  Signal0<>& onShowVideoOptions();
   Signal1<int>& onRequestAdvisor();
 
 private:
