@@ -31,6 +31,7 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_advisors_window.hpp"
 #include "oc3_city_trade_options.hpp"
+#include "oc3_message_stack_widget.hpp"
 
 static const int windowGamePausedId = StringHelper::hash( "gamepause" );
 
@@ -379,5 +380,24 @@ void ShowAdvisorWindow::exec(Game& game)
     {
       wndList.front()->deleteLater();
     }
+  }
+}
+
+GameEventPtr WarningMessageEvent::create(const std::string& text)
+{
+  WarningMessageEvent* ev = new WarningMessageEvent();
+  ev->_text = text;
+  GameEventPtr ret( ev );
+  ret->drop();
+  return ret;
+}
+
+void WarningMessageEvent::exec(Game& game)
+{
+  WindowMessageStack* window = safety_cast<WindowMessageStack*>( game.getGui()->getRootWidget()->findChild( WindowMessageStack::defaultID ) );
+
+  if( window )
+  {
+    window->addMessage( _text );
   }
 }

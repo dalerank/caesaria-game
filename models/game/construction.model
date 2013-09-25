@@ -499,7 +499,7 @@
   {
     cost : 5,
     desirability : { base : -1,    range : 1,    step : 1 }
-    employers : 1,
+    employers : 0,
     pretty : "Well",
     image : [ "utilitya", 1 ]
     class : "water"
@@ -519,6 +519,7 @@
 	desirability : { base : -3,	range : 3,	step : 1 }
 	employers : 20
 	class : "military"
+  image : [ "security", 18 ]
   },
   
   "barracks" : 
@@ -689,5 +690,6 @@
 	desirability : { base : -4,	range : 2,	step : 2 }
 	employers : 10
 	class : "industry"
+  image : [ "commerce", 132 ]
   }
 }

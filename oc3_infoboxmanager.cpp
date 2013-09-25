@@ -194,7 +194,7 @@ InfoBoxManager::InfoBoxManager( CityPtr city, GuiEnv* gui ) : _d( new Impl )
   addInfobox( B_STATUE2, OC3_STR_EXT(B_STATUE2), new InfoBoxBasicCreator( _("building_statue_middle"), _("##statue_desc##")) );
   addInfobox( B_STATUE3, OC3_STR_EXT(B_STATUE3), new InfoBoxBasicCreator( _("building_statue_big"), _("##statue_desc##")) );
   addInfobox( B_PLAZA,   OC3_STR_EXT(B_PLAZA), new CitizenInfoboxCreator<InfoBoxLand>( _d->city ) );
-  addInfobox( B_NONE,    OC3_STR_EXT(B_NONE), new CitizenInfoboxCreator<InfoBoxLand>( _d->city ) );
+  addInfobox( notBuilding, OC3_STR_EXT(notBuilding), new CitizenInfoboxCreator<InfoBoxLand>( _d->city ) );
   addInfobox( B_POTTERY, OC3_STR_EXT(B_POTTERY), new BaseInfoboxCreator<GuiInfoFactory>() );
   addInfobox( B_WEAPONS_WORKSHOP, OC3_STR_EXT(B_WEAPONS_WORKSHOP), new BaseInfoboxCreator<GuiInfoFactory>() );
   addInfobox( B_FURNITURE,        OC3_STR_EXT(B_FURNITURE), new BaseInfoboxCreator<GuiInfoFactory>() );
@@ -236,7 +236,7 @@ void InfoBoxManager::showHelp( const Tile& tile )
     StringHelper::debug( 0xff, "Tile debug info: dsrbl=%d", tile.getDesirability() );
   }
 
-  type = overlay.isNull() ? B_NONE : overlay->getType();
+  type = overlay.isNull() ? notBuilding : overlay->getType();
 
   Impl::InfoboxCreators::iterator findConstructor = _d->constructors.find( type );
 

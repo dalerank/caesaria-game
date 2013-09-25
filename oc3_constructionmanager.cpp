@@ -52,9 +52,22 @@
 template< class T > class BaseBuildingCreator : public BuildingCreator
 {
 public:
-  Construction* create()
+  Construction* create( const BuildingData& info )
   {
     return new T();
+  }
+};
+
+template< class T > class WorkingBuildingCreator : public BuildingCreator
+{
+public:
+  Construction* create( const BuildingData& info )
+  {
+    WorkingBuilding* wb = new T();
+
+    wb->setMaxWorkers( info.getEmployers() );
+
+    return wb;
   }
 };
 
@@ -72,8 +85,9 @@ ConstructionPtr ConstructionManager::create(const BuildingType buildingType) con
 
   if( findConstructor != _d->constructors.end() )
   {
-    ConstructionPtr ret( findConstructor->second->create() );
     const BuildingData& info = BuildingDataHolder::instance().getData( buildingType );
+
+    ConstructionPtr ret( findConstructor->second->create( info ) );
 
     if( info.getBasePicture().isValid() )
     {
@@ -101,7 +115,7 @@ ConstructionManager& ConstructionManager::getInstance()
 ConstructionManager::ConstructionManager() : _d( new Impl )
 {
   // entertainment
-  addCreator( B_THEATER, OC3_STR_EXT(B_THEATER), new BaseBuildingCreator<Theater>() );
+  addCreator( B_THEATER, OC3_STR_EXT(B_THEATER), new WorkingBuildingCreator<Theater>() );
   addCreator( B_AMPHITHEATER, OC3_STR_EXT(B_AMPHITHEATER), new BaseBuildingCreator<Amphitheater>() );
   addCreator( B_COLLOSSEUM, OC3_STR_EXT(B_COLLOSSEUM), new BaseBuildingCreator<Collosseum>() );
   addCreator( B_ACTOR_COLONY, OC3_STR_EXT(B_ACTOR_COLONY), new BaseBuildingCreator<ActorColony>() );
@@ -124,7 +138,7 @@ ConstructionManager::ConstructionManager() : _d( new Impl )
   addCreator(B_GARDEN, OC3_STR_EXT(B_GARDEN) , new BaseBuildingCreator<Garden>() );
   addCreator(B_PLAZA, OC3_STR_EXT(B_PLAZA)  , new BaseBuildingCreator<Plaza>() );
   // water
-  addCreator(B_WELL, OC3_STR_EXT(B_WELL)     , new BaseBuildingCreator<Well>() );
+  addCreator(B_WELL, OC3_STR_EXT(B_WELL)     , new WorkingBuildingCreator<Well>() );
   addCreator(B_FOUNTAIN, OC3_STR_EXT(B_FOUNTAIN) , new BaseBuildingCreator<Fountain>() );
   addCreator(B_AQUEDUCT, OC3_STR_EXT(B_AQUEDUCT), new BaseBuildingCreator<Aqueduct>() );
   addCreator(B_RESERVOIR, OC3_STR_EXT(B_RESERVOIR), new BaseBuildingCreator<Reservoir>() );

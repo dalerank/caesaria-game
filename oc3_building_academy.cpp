@@ -19,7 +19,4 @@
 
 MilitaryAcademy::MilitaryAcademy() : WorkingBuilding( B_MILITARY_ACADEMY, Size(3) )
 {
-  setMaxWorkers( 20 );
-  setWorkers( 0 );
-  setPicture( Picture::load( ResourceGroup::security, 18));
 }

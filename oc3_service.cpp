@@ -24,7 +24,7 @@ ServiceHelper& ServiceHelper::instance()
 
 ServiceHelper::ServiceHelper() : EnumsHelper<Service::Type>( Service::S_MAX )
 {
-  append( Service::S_WELL, "srvc_well" );
+  append( Service::well, "srvc_well" );
   append( Service::S_FOUNTAIN, "srvc_fonutain" );
   append( Service::S_MARKET, "srvc_market" );
   append( Service::S_ENGINEER, "srvc_engineer" );
@@ -44,7 +44,7 @@ ServiceHelper::ServiceHelper() : EnumsHelper<Service::Type>( Service::S_MAX )
   append( Service::S_SCHOOL, "srvc_school" );
   append( Service::S_LIBRARY, "srvc_library" );
   append( Service::S_COLLEGE, "srvc_college" );
-  append( Service::S_THEATER, "srvc_theater" );
+  append( Service::theater, "srvc_theater" );
   append( Service::S_AMPHITHEATER, "srvc_amphitheater" );
   append( Service::S_COLLOSSEUM, "srvc_collosseum" );
   append( Service::S_HIPPODROME, "srvc_hippodrome" );

@@ -14,7 +14,6 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_building_working.hpp"
-#include "oc3_building_data.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_walker.hpp"
@@ -32,9 +31,6 @@ public:
 WorkingBuilding::WorkingBuilding(const BuildingType type, const Size& size)
 : Building( type, size ), _d( new Impl )
 {
-  const BuildingData& data = BuildingDataHolder::instance().getData( type );
-
-  _d->maxWorkers = data.getEmployers();
   _d->currentWorkers = 0;
   _d->isActive = true;
 }

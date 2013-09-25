@@ -21,11 +21,12 @@
 #include "oc3_predefinitions.hpp"
 
 class Construction;
+class BuildingData;
 
 class BuildingCreator
 {
 public:
-  virtual Construction* create() = 0;
+  virtual Construction* create( const BuildingData& info ) = 0;
 };
 
 class ConstructionManager

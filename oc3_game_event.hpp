@@ -80,6 +80,15 @@ private:
   std::string _title, _text;
 };
 
+class WarningMessageEvent : public GameEvent
+{
+public:
+  static GameEventPtr create( const std::string& text );
+  virtual void exec( Game& game );
+private:
+  std::string _text;
+};
+
 class ShowEmpireMapWindow : public GameEvent
 {
 public:

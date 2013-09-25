@@ -520,7 +520,7 @@ void CityRenderer::Impl::drawTileWater( Tile& tile )
       {
         HousePtr h = overlay.as<House>();
         tileNumber = OverlayPic::inHouse;
-        haveWater = haveWater || h->hasServiceAccess(Service::S_FOUNTAIN) || h->hasServiceAccess(Service::S_WELL);
+        haveWater = haveWater || h->hasServiceAccess(Service::S_FOUNTAIN) || h->hasServiceAccess(Service::well);
       }
       tileNumber += (haveWater ? OverlayPic::haveWater : 0);
       tileNumber += tile.getWaterService( WTR_RESERVOIR ) > 0 ? OverlayPic::reservoirRange : 0;

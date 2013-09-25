@@ -291,7 +291,7 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_factory(Propagator &pathPropa
   Good::Type goodType = stock.type();
   BuildingType buildingType = BuildingDataHolder::instance().getConsumerType( goodType );
 
-  if (buildingType == B_NONE)
+  if (buildingType == notBuilding)
   {
      // no factory can use this good
      return 0;

@@ -65,7 +65,7 @@ public:
 
   void updateHealthLevel()
   {
-    float delim = 1 + (((serviceAccess[Service::S_WELL]>0 || serviceAccess[Service::S_FOUNTAIN]>0) ? 1 : 0))
+    float delim = 1 + (((serviceAccess[Service::well]>0 || serviceAccess[Service::S_FOUNTAIN]>0) ? 1 : 0))
                 + ((serviceAccess[Service::S_DOCTOR]>0 || serviceAccess[Service::S_HOSPITAL]) ? 1 : 0)
                 + (serviceAccess[Service::S_BATHS] ? 0.7 : 0)
                 + (serviceAccess[Service::S_BARBER] ? 0.3 : 0);
@@ -425,7 +425,7 @@ void House::applyService( ServiceWalkerPtr walker )
   Service::Type service = walker->getService();
   switch (service)
   {
-  case Service::S_WELL:
+  case Service::well:
   case Service::S_FOUNTAIN:
   case Service::S_TEMPLE_NEPTUNE:
   case Service::S_TEMPLE_CERES:
@@ -437,7 +437,7 @@ void House::applyService( ServiceWalkerPtr walker )
   case Service::S_SCHOOL:
   case Service::S_LIBRARY:
   case Service::S_COLLEGE:
-  case Service::S_THEATER:
+  case Service::theater:
   case Service::S_AMPHITHEATER:
   case Service::S_COLLOSSEUM:
   case Service::S_HIPPODROME:

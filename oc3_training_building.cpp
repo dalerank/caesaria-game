@@ -59,14 +59,6 @@ void TrainingBuilding::timeStep(const unsigned long time)
    }
 }
 
-// void TrainingBuilding::deliverTrainee()
-// {
-//    // make a service walker and send him to his wandering
-//    ServiceWalker *walker = new ServiceWalker(_service);
-//    walker->setServiceBuilding(*this);
-//    walker->start();
-// }
-
 void TrainingBuilding::save( VariantMap& stream) const
 {
   WorkingBuilding::save( stream );
@@ -76,22 +68,14 @@ void TrainingBuilding::save( VariantMap& stream) const
 
 void TrainingBuilding::load( const VariantMap& stream )
 {
-//    WorkingBuilding::unserialize(stream);
-//    _trainingTimer = stream.read_int(2, 0, 1000);
-//    _trainingDelay = stream.read_int(2, 0, 1000);
+  WorkingBuilding::load( stream );
+  _trainingTimer = (int)stream.get( "trainingTimer" );
+  _trainingDelay = (int)stream.get( "trainingDelay" );
 }
-
-
-//GuiInfoBox* TrainingBuilding::makeInfoBox()
-//{
-//   GuiInfoService* box = new GuiInfoService(*this);
-//   return box;
-//}
-
 
 ActorColony::ActorColony() : TrainingBuilding( B_ACTOR_COLONY, Size(3) )
 {
-  setPicture( Picture::load( ResourceGroup::entertaiment, 81));
+  setPicture( ResourceGroup::entertaiment, 81 );
 
   _getAnimation().load( ResourceGroup::entertaiment, 82, 9);
   _getAnimation().setOffset( Point( 68, -6 ) );
@@ -100,8 +84,7 @@ ActorColony::ActorColony() : TrainingBuilding( B_ACTOR_COLONY, Size(3) )
 
 void ActorColony::deliverTrainee()
 {
-   // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), WT_ACTOR);
+  TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), WT_ACTOR );
   trainee->setOriginBuilding(*this);
   trainee->send2City();
 }

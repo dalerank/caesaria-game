@@ -20,7 +20,10 @@
 #include "oc3_gfx_engine.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_foreach.hpp"
+#include "oc3_stringhelper.hpp"
 #include <list>
+
+const int WindowMessageStack::defaultID = StringHelper::hash( OC3_STR_EXT(WindowMessageStack) );
 
 class WindowMessageStack::Impl
 {
@@ -78,10 +81,12 @@ void WindowMessageStack::addMessage( std::string message )
   _d->updatePositions( const_cast< Widget::Widgets& >( getChildren() ), getRelativeRect() );
 }
 
-WindowMessageStack* WindowMessageStack::create( Widget* parent, int id )
+WindowMessageStack* WindowMessageStack::create( Widget* parent )
 {
-  Rect rectangle( 0, 0, parent->getWidth() / 2, 92 );
+  WindowMessageStack* wnd = new WindowMessageStack( parent, WindowMessageStack::defaultID,
+                                                    Rect( 0, 0, parent->getWidth() / 2, 92 ) );
+  wnd->setPosition( Point( parent->getWidth() / 4, 33 ) );
+  wnd->sendToBack();
 
-  WindowMessageStack* wnd = new WindowMessageStack( parent, id, rectangle );
   return wnd;
 }

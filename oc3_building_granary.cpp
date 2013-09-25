@@ -87,9 +87,6 @@ Granary::Granary() : WorkingBuilding( B_GRANARY, Size(3) ), _d( new Impl )
 {
   _d->goodStore.granary = this;
 
-  setMaxWorkers(6);
-  setWorkers(0);
-
   setPicture( Picture::load( ResourceGroup::commerce, 140));
   _fgPictures.resize(6);  // 1 upper level + 4 windows + animation
 

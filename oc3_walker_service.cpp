@@ -48,7 +48,7 @@ void ServiceWalker::init(const Service::Type service)
 
   switch (_d->service)
   {
-  case Service::S_WELL:
+  case Service::well:
   case Service::S_FOUNTAIN:
   case Service::S_TEMPLE_ORACLE:
     _setGraphic( WG_NONE );
@@ -90,7 +90,7 @@ void ServiceWalker::init(const Service::Type service)
     _setGraphic( WG_LIBRARIAN );
   break;
   
-  case Service::S_THEATER:
+  case Service::theater:
   case Service::S_AMPHITHEATER:
   case Service::S_HIPPODROME:
   case Service::S_COLLOSSEUM:

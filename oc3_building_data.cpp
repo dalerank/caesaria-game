@@ -24,12 +24,12 @@
 #include "oc3_enums_helper.hpp"
 #include "oc3_foreach.hpp"
 
-BuildingData BuildingData::invalid = BuildingData( B_NONE, "unknown", 0 );
+BuildingData BuildingData::invalid = BuildingData( notBuilding, "unknown", 0 );
 
 class BuildingTypeHelper : public EnumsHelper<BuildingType>
 {
 public:
-  BuildingTypeHelper() : EnumsHelper<BuildingType>( B_NONE )
+  BuildingTypeHelper() : EnumsHelper<BuildingType>( notBuilding )
   {
     append( B_AMPHITHEATER,   "amphitheater");
     append( B_THEATER,        "theater" );
@@ -117,7 +117,7 @@ public:
     append( B_SENATE_2, "senate_2" );
     append( B_TOWER, "tower" );
     append( B_WALL, "wall"  );
-    append( B_NONE, "" );
+    append( notBuilding, "" );
  }
 };
 
@@ -282,7 +282,7 @@ BuildingDataHolder& BuildingDataHolder::instance()
 
 BuildingType BuildingDataHolder::getConsumerType(const Good::Type inGoodType) const
 {
-  BuildingType res = B_NONE;
+  BuildingType res = notBuilding;
 
   Impl::FactoryInMap::iterator mapIt;
   mapIt = _d->mapBuildingByInGood.find(inGoodType);
@@ -351,7 +351,7 @@ void BuildingDataHolder::initialize( const io::FilePath& filename )
     VariantMap options = mapItem.second.toMap();
 
     const BuildingType btype = getType( mapItem.first );
-    if( btype == B_NONE )
+    if( btype == notBuilding )
     {
       StringHelper::debug( 0xff, "!!!Warning: can't associate type with %s", mapItem.first.c_str() );
       continue;

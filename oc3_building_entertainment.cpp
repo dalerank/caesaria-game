@@ -18,6 +18,10 @@
 #include "oc3_positioni.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_foreach.hpp"
+#include "oc3_city.hpp"
+#include "oc3_training_building.hpp"
+#include "oc3_game_event_mgr.hpp"
+#include "oc3_gettext.hpp"
 
 EntertainmentBuilding::EntertainmentBuilding(const Service::Type service,
                                              const BuildingType type,
@@ -26,7 +30,7 @@ EntertainmentBuilding::EntertainmentBuilding(const Service::Type service,
 {
    switch (service)
    {
-   case Service::S_THEATER:
+   case Service::theater:
       _traineeMap[WT_ACTOR] = 0;
       break;
    case Service::S_AMPHITHEATER:
@@ -67,13 +71,26 @@ int EntertainmentBuilding::getVisitorsNumber() const
   return 0;
 }
 
-Theater::Theater() : EntertainmentBuilding(Service::S_THEATER, B_THEATER, Size(2))
+Theater::Theater() : EntertainmentBuilding(Service::theater, B_THEATER, Size(2))
 {
   _getAnimation().load( ResourceGroup::entertaiment, 14, 21);
   _getAnimation().setOffset( Point( 60, 36 ) );
 
   _fgPictures.resize(2);
   _fgPictures[0] = Picture::load( ResourceGroup::entertaiment, 35);
+}
+
+void Theater::build(CityPtr city, const TilePos& pos)
+{
+  ServiceBuilding::build( city, pos );
+
+  CityHelper helper( city );
+  ActorColonyList actors = helper.getBuildings<ActorColony>( B_ACTOR_COLONY );
+
+  if( actors.empty() )
+  {
+    GameEventMgr::append( WarningMessageEvent::create( _("##need_actor_colony##")) );
+  }
 }
 
 int Theater::getVisitorsNumber() const
@@ -83,7 +100,7 @@ int Theater::getVisitorsNumber() const
 
 Amphitheater::Amphitheater() : EntertainmentBuilding(Service::S_AMPHITHEATER, B_AMPHITHEATER, Size(3))
 {
-  setPicture( Picture::load( ResourceGroup::entertaiment, 1));
+  setPicture( ResourceGroup::entertaiment, 1 );
 
   _getAnimation().load( ResourceGroup::entertaiment, 2, 10);
   _getAnimation().setOffset( Point( 100, 49 ) );

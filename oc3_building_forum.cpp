@@ -31,8 +31,6 @@ Forum::Forum() : ServiceBuilding(Service::S_FORUM, B_FORUM, Size(2)), _d( new Im
 {
   _d->taxInThisMonth = 0;
   _d->citizensReached = 0;
-  setMaxWorkers( 6 );
-  setWorkers( 0 );
   setPicture( Picture::load( ResourceGroup::govt, 10));
 }
 

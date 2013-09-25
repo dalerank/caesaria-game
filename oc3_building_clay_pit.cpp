@@ -28,9 +28,6 @@ ClayPit::ClayPit() : Factory( Good::none, Good::clay, B_CLAY_PIT, Size(2) )
   _getAnimation().load( ResourceGroup::commerce, 62, 10);
   _getAnimation().setFrameDelay( 3 );
   _fgPictures.resize(2);
-
-  setMaxWorkers( 10 );
-  setWorkers( 0 );
 }
 
 void ClayPit::timeStep( const unsigned long time )

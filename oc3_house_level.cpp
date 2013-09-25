@@ -195,7 +195,7 @@ int HouseLevelSpec::computeWaterLevel(HousePtr house, std::string &oMissingRequi
    {
       res = 2;
    }
-   else if (house->hasServiceAccess(Service::S_WELL))
+   else if (house->hasServiceAccess(Service::well))
    {
       res = 1;
       oMissingRequirement = _("##need fountain##");
@@ -241,7 +241,7 @@ int HouseLevelSpec::computeFoodLevel(HousePtr house)
 int HouseLevelSpec::computeEntertainmentLevel(HousePtr house)
 {
    int res = 0;
-   if (house->hasServiceAccess(Service::S_THEATER))
+   if (house->hasServiceAccess(Service::theater))
    {
       res += 10;
    }
@@ -375,7 +375,7 @@ float HouseLevelSpec::evaluateServiceNeed(House &house, const Service::Type serv
    case Service::S_TEMPLE_MERCURE:
       res = evaluateReligionNeed(house, service);
       break;
-   case Service::S_THEATER:
+   case Service::theater:
    case Service::S_AMPHITHEATER:
    case Service::S_COLLOSSEUM:
    case Service::S_HIPPODROME:

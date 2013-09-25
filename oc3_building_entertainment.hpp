@@ -32,6 +32,8 @@ class Theater : public EntertainmentBuilding
 public:
    Theater();
 
+   virtual void build(CityPtr city, const TilePos &pos);
+
    virtual int getVisitorsNumber() const;
 };
 

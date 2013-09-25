@@ -23,7 +23,8 @@
 class WindowMessageStack : public Widget
 {
 public:
-  static WindowMessageStack* create( Widget* parent, int id );
+  static const int defaultID;
+  static WindowMessageStack* create( Widget* parent );
 
   // draw on screen
   virtual void draw( GfxEngine& engine );
@@ -34,6 +35,7 @@ public:
  
 private:
   WindowMessageStack( Widget* parent, int id, const Rect& rectangle );
+
   class Impl;
   ScopedPtr< Impl > _d;
 };
