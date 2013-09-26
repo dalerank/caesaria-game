@@ -560,6 +560,8 @@ public:
     append( WT_ENGINEER, "engineer", _("##wt_engineer##") );
     append( WT_DOCTOR, "doctor", _("##wt_doctor##") );
     append( WT_ANIMAL_SHEEP, "sheep", _("##wt_animal_sheep##") );
+    append( WT_BATHLADY, "bathlady", _("##wt_bathlady##") );
+    append( WT_ACTOR, "actor", _("##wt_actor##") );
     append( WT_MAX, "unknown", _("##wt_unknown##") );
   }
 };

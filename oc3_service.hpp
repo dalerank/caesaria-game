@@ -25,14 +25,14 @@ public:
   {
     well, S_FOUNTAIN,
     S_MARKET,
-    S_ENGINEER,
+    engineer,
     S_SENATE, S_FORUM,
     S_PREFECT,
     S_TEMPLE_NEPTUNE, S_TEMPLE_CERES, S_TEMPLE_VENUS,  S_TEMPLE_MARS, S_TEMPLE_MERCURE, S_TEMPLE_ORACLE,
-    S_DOCTOR, S_BARBER, S_BATHS, S_HOSPITAL,
+    doctor, S_BARBER, baths, S_HOSPITAL,
     S_SCHOOL, S_LIBRARY, S_COLLEGE,
     theater, amphitheater, colloseum,
-    S_HIPPODROME,
+    hippodrome,
     S_BURNING_RUINS,
     S_WORKERS_HUNTER,
     S_MAX

@@ -247,7 +247,7 @@ float Building::evaluateService(ServiceWalkerPtr walker)
 
    switch(service)
    {
-   case Service::S_ENGINEER:
+   case Service::engineer:
       res = _damageLevel;
    break;
 
@@ -281,7 +281,7 @@ void Building::applyService( ServiceWalkerPtr walker)
 
    switch( service )
    {
-   case Service::S_ENGINEER:
+   case Service::engineer:
      {
        _damageLevel = 0;
      }

@@ -36,6 +36,22 @@
 #include "oc3_foreach.hpp"
 #include "oc3_game_event_mgr.hpp"
 
+namespace WalkersVisibility
+{
+  static const WalkerType all[] = { WT_ALL, WT_NONE };
+  static const WalkerType nobody[] = { WT_NONE };
+  static const WalkerType engineer[] = { WT_ENGINEER, WT_NONE };
+  static const WalkerType prefect[] = { WT_PREFECT, WT_NONE };
+  static const WalkerType prestige[] = { WT_ALL, WT_NONE };
+  static const WalkerType food[] = { WT_CART_PUSHER, WT_MARKETLADY, WT_MARKETLADY_HELPER, WT_NONE };
+  static const WalkerType religion[] = { WT_ALL, WT_NONE };
+  static const WalkerType allEntertainment[] = { WT_ACTOR, WT_GLADIATOR, WT_TAMER, WT_CHARIOT, WT_NONE };
+  static const WalkerType actorsOnly[] = { WT_ACTOR, WT_NONE };
+  static const WalkerType gladiatorsOnly[] = { WT_GLADIATOR, WT_NONE };
+  static const WalkerType tamersOnly[] = { WT_TAMER, WT_NONE };
+  static const WalkerType chariotdOnly[] = { WT_CHARIOT, WT_NONE };
+}
+
 class CityRenderer::Impl
 {
 public: 
@@ -50,6 +66,7 @@ public:
   Tilemap* tilemap;
   GfxEngine* engine;
   TilemapCamera camera;  // visible map area
+  std::set<int> entertainmentRendeFlags;
 
   TilePos lastTilePos;
   TilemapChangeCommandPtr changeCommand;
@@ -72,6 +89,7 @@ public:
   void drawTileWater( Tile& tile );
   void drawTileDesirability( Tile& tile );
   void drawTileFire( Tile& tile );
+  void drawTileEntertainment( Tile& tile );
   void drawTileDamage( Tile& tile );
   void drawTileReligion( Tile& tile );
   void drawTileInSelArea( Tile& tile, Tile* master );
@@ -350,6 +368,76 @@ void CityRenderer::Impl::drawTileDamage( Tile& tile )
     else if( damageLevel >= 0 )
     {
       drawColumn( screenPos, 15, damageLevel );
+    }
+  }
+}
+
+void CityRenderer::Impl::drawTileEntertainment( Tile& tile )
+{
+  Point screenPos = tile.getXY() + mapOffset;
+
+  tile.setWasDrawn();
+
+  bool needDrawAnimations = false;
+  if( tile.getOverlay().isNull() )
+  {
+    //draw background
+    engine->drawPicture( tile.getPicture(), screenPos );
+  }
+  else
+  {
+    LandOverlayPtr overlay = tile.getOverlay();
+
+    int entertainmentLevel = -1;
+    switch( overlay->getType() )
+    {
+      //fire buildings and roads
+    case B_ROAD:
+    case B_PLAZA:
+      needDrawAnimations = true;
+      engine->drawPicture( tile.getPicture(), screenPos );
+    break;
+
+    case B_THEATER:
+    case B_AMPHITHEATER:
+    case B_COLLOSSEUM:
+    case B_HIPPODROME:
+    case B_LION_HOUSE:
+    case B_ACTOR_COLONY:
+    case B_GLADIATOR_SCHOOL:
+      needDrawAnimations = entertainmentRendeFlags.find( overlay->getType() ) != entertainmentRendeFlags.end();
+      if( needDrawAnimations )
+      {
+        engine->drawPicture( tile.getPicture(), screenPos );
+      }
+    break;
+
+      //houses
+    case B_HOUSE:
+      {
+        HousePtr house = overlay.as< House >();
+        entertainmentLevel = house->getLevelSpec().computeEntertainmentLevel( house );
+        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() == 0);
+
+        drawBuildingAreaTiles( overlay->getTile(), overlay, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+      }
+    break;
+
+      //other buildings
+    default:
+      {
+        drawBuildingAreaTiles( overlay->getTile(), overlay, ResourceGroup::foodOverlay, OverlayPic::base );
+      }
+    break;
+    }
+
+    if( needDrawAnimations )
+    {
+      drawAnimations( overlay, screenPos );
+    }
+    else if( entertainmentLevel > 0 )
+    {
+      drawColumn( screenPos, 9, entertainmentLevel );
     }
   }
 }
@@ -1245,26 +1333,57 @@ void CityRenderer::setMode( const TilemapChangeCommandPtr command )
     case OV_COMMERCE_PRESTIGE: _d->setDrawFunction( _d.data(), &Impl::drawTileDesirability ); break;
     case OV_COMMERCE_FOOD: _d->setDrawFunction( _d.data(), &Impl::drawTileFood ); break;
     case OV_RELIGION: _d->setDrawFunction( _d.data(), &Impl::drawTileReligion ); break;
+    case OV_ENTERTAINMENT_ALL:
+      _d->setDrawFunction( _d.data(), &Impl::drawTileEntertainment );
+      _d->entertainmentRendeFlags.clear();
+      _d->entertainmentRendeFlags.insert( B_THEATER );
+      _d->entertainmentRendeFlags.insert( B_AMPHITHEATER );
+      _d->entertainmentRendeFlags.insert( B_COLLOSSEUM );
+      _d->entertainmentRendeFlags.insert( B_HIPPODROME );
+    break;
+
+    case OV_ENTERTAINMENT_THEATRES:
+      _d->setDrawFunction( _d.data(), &Impl::drawTileEntertainment );
+      _d->entertainmentRendeFlags.clear();
+      _d->entertainmentRendeFlags.insert( B_THEATER );
+    break;
+
+    case OV_ENTERTAINMENT_AMPHITHEATRES:
+      _d->setDrawFunction( _d.data(), &Impl::drawTileEntertainment );
+      _d->entertainmentRendeFlags.clear();
+      _d->entertainmentRendeFlags.insert( B_AMPHITHEATER );
+    break;
+
+    case OV_ENTERTAINMENT_COLLISEUM:
+      _d->setDrawFunction( _d.data(), &Impl::drawTileEntertainment );
+      _d->entertainmentRendeFlags.clear();
+      _d->entertainmentRendeFlags.insert( B_COLLOSSEUM );
+    break;
+
+    case OV_ENTERTAINMENT_HIPPODROME:
+      _d->setDrawFunction( _d.data(), &Impl::drawTileEntertainment );
+      _d->entertainmentRendeFlags.clear();
+      _d->entertainmentRendeFlags.insert( B_COLLOSSEUM );
+    break;
+
     default:_d->setDrawFunction( _d.data(), &Impl::drawTileBase ); break;
     }
 
-    static const WalkerType OV_DEFAULT_WALKERS[] = { WT_ALL, WT_NONE };
-    static const WalkerType OV_WATER_WALKERS[] = { WT_NONE };
-    static const WalkerType OV_RISK_FIRE_WALKERS[] = { WT_PREFECT, WT_NONE };
-    static const WalkerType OV_COMMERCE_PRESTIGE_WALKERS[] = { WT_ALL, WT_NONE };
-    static const WalkerType OV_COMMERCE_FOOD_WALKERS[] = { WT_CART_PUSHER, WT_MARKETLADY, WT_MARKETLADY_HELPER, WT_NONE };
-    static const WalkerType OV_RELIGION_WALKERS[] = { WT_ALL, WT_NONE };
-
     switch( ovCmd->getType() )
     {
-    case OV_WATER: _d->setVisibleWalkers(OV_WATER_WALKERS); break;
-    case OV_RISK_FIRE: _d->setVisibleWalkers(OV_RISK_FIRE_WALKERS); break;
-    case OV_RISK_DAMAGE: _d->setVisibleWalkers(OV_WATER_WALKERS); break;
-    case OV_COMMERCE_PRESTIGE: _d->setVisibleWalkers(OV_COMMERCE_PRESTIGE_WALKERS); break;
-    case OV_COMMERCE_FOOD: _d->setVisibleWalkers(OV_COMMERCE_FOOD_WALKERS); break;
-    case OV_RELIGION: _d->setVisibleWalkers(OV_RELIGION_WALKERS); break;
+    case OV_WATER: _d->setVisibleWalkers(WalkersVisibility::nobody); break;
+    case OV_RISK_FIRE: _d->setVisibleWalkers(WalkersVisibility::prefect); break;
+    case OV_RISK_DAMAGE: _d->setVisibleWalkers(WalkersVisibility::engineer); break;
+    case OV_COMMERCE_PRESTIGE: _d->setVisibleWalkers(WalkersVisibility::prestige); break;
+    case OV_COMMERCE_FOOD: _d->setVisibleWalkers(WalkersVisibility::food); break;
+    case OV_RELIGION: _d->setVisibleWalkers(WalkersVisibility::religion); break;
+    case OV_ENTERTAINMENT_ALL: _d->setVisibleWalkers(WalkersVisibility::allEntertainment); break;
+    case OV_ENTERTAINMENT_THEATRES: _d->setVisibleWalkers(WalkersVisibility::actorsOnly); break;
+    case OV_ENTERTAINMENT_AMPHITHEATRES: _d->setVisibleWalkers(WalkersVisibility::gladiatorsOnly); break;
+    case OV_ENTERTAINMENT_COLLISEUM: _d->setVisibleWalkers(WalkersVisibility::tamersOnly); break;
+    case OV_ENTERTAINMENT_HIPPODROME: _d->setVisibleWalkers(WalkersVisibility::chariotdOnly); break;
     default:
-      _d->setVisibleWalkers(OV_DEFAULT_WALKERS);
+      _d->setVisibleWalkers(WalkersVisibility::all);
       break;
     }
 

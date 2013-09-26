@@ -54,7 +54,7 @@ void ServiceWalker::init(const Service::Type service)
     _setGraphic( WG_NONE );
   break;
   
-  case Service::S_ENGINEER:
+  case Service::engineer:
      _setGraphic( WG_ENGINEER );
      _setType( WT_ENGINEER );
   break;
@@ -67,7 +67,7 @@ void ServiceWalker::init(const Service::Type service)
     _setGraphic( WG_PRIEST );
   break;
   
-  case Service::S_DOCTOR:
+  case Service::doctor:
   case Service::S_HOSPITAL:
     _setGraphic( WG_DOCTOR );
     _setType( WT_DOCTOR );
@@ -77,8 +77,9 @@ void ServiceWalker::init(const Service::Type service)
     _setGraphic( WG_BARBER );
   break;
   
-  case Service::S_BATHS:
+  case Service::baths:
     _setGraphic( WG_BATH );
+    _setType( WT_BATHLADY );
   break;
   
   case Service::S_SCHOOL:
@@ -91,9 +92,22 @@ void ServiceWalker::init(const Service::Type service)
   break;
   
   case Service::theater:
+    _setType( WT_ACTOR );
+    _setGraphic( WG_ACTOR );
+  break;
+
   case Service::amphitheater:
-  case Service::S_HIPPODROME:
+    _setType( WT_GLADIATOR );
+    _setGraphic( WG_GLADIATOR );
+  break;
+
   case Service::colloseum:
+    _setType( WT_TAMER );
+    _setGraphic( WG_TAMER );
+  break;
+
+  case Service::hippodrome:
+    _setType( WT_CHARIOT );
     _setGraphic( WG_ACTOR );
   break;
   

@@ -18,7 +18,7 @@
 #include "oc3_positioni.hpp"
 #include "oc3_tile.hpp"
 
-Doctor::Doctor() : ServiceBuilding(Service::S_DOCTOR, B_DOCTOR, Size(1))
+Doctor::Doctor() : ServiceBuilding(Service::doctor, B_DOCTOR, Size(1))
 {
 }
 
@@ -39,7 +39,7 @@ Hospital::Hospital() : ServiceBuilding(Service::S_HOSPITAL, B_HOSPITAL, Size(3 )
 {
 }
 
-Baths::Baths() : ServiceBuilding(Service::S_BATHS, B_BATHS, Size(2) )
+Baths::Baths() : ServiceBuilding(Service::baths, B_BATHS, Size(2) )
 {
   _haveReservorWater = false;
   _fgPictures.resize(2);

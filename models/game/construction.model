@@ -183,7 +183,7 @@
 	desirability : { base :4,	range : 4,	step : -1 }
 	employers : 10
 	class : "health"
-  image : [ "security", 21 ]
+  image : [ "security", 32 ]
   animation : { start : 22, count : 10, offset : [ 23, 25 ] }
   service : "srvc_baths" 
   }, 
@@ -692,5 +692,6 @@
 	desirability : { base : -4,	range : 2,	step : 2 }
 	employers : 10
 	class : "industry"
+  image : [ "commerce", 132 ]
   }
 }

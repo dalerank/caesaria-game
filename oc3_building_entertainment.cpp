@@ -165,7 +165,7 @@ Collosseum::Collosseum() : EntertainmentBuilding(Service::colloseum, B_COLLOSSEU
 
 //------------
 
-Hippodrome::Hippodrome() : EntertainmentBuilding(Service::S_HIPPODROME, B_HIPPODROME, Size(5) )
+Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, B_HIPPODROME, Size(5) )
 {
   setPicture( Picture::load("circus", 5));
   Picture logo = Picture::load("circus", 3);

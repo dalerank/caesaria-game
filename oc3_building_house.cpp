@@ -66,8 +66,8 @@ public:
   void updateHealthLevel()
   {
     float delim = 1 + (((serviceAccess[Service::well]>0 || serviceAccess[Service::S_FOUNTAIN]>0) ? 1 : 0))
-                + ((serviceAccess[Service::S_DOCTOR]>0 || serviceAccess[Service::S_HOSPITAL]) ? 1 : 0)
-                + (serviceAccess[Service::S_BATHS] ? 0.7 : 0)
+                + ((serviceAccess[Service::doctor]>0 || serviceAccess[Service::S_HOSPITAL]) ? 1 : 0)
+                + (serviceAccess[Service::baths] ? 0.7 : 0)
                 + (serviceAccess[Service::S_BARBER] ? 0.3 : 0);
 
     float decrease = 0.3f / delim;
@@ -445,19 +445,19 @@ void House::applyService( ServiceWalkerPtr walker )
   case Service::S_TEMPLE_MARS:
   case Service::S_TEMPLE_MERCURE:
   case Service::S_BARBER:
-  case Service::S_BATHS:
+  case Service::baths:
   case Service::S_SCHOOL:
   case Service::S_LIBRARY:
   case Service::S_COLLEGE:
   case Service::theater:
   case Service::amphitheater:
   case Service::colloseum:
-  case Service::S_HIPPODROME:
+  case Service::hippodrome:
     setServiceAccess(service, 100);
   break;
 
   case Service::S_HOSPITAL:
-  case Service::S_DOCTOR:
+  case Service::doctor:
     _d->healthLevel += 10;
     setServiceAccess(service, 100);
   break;
@@ -472,7 +472,7 @@ void House::applyService( ServiceWalkerPtr walker )
   break;
 
   case Service::S_TEMPLE_ORACLE:
-  case Service::S_ENGINEER:
+  case Service::engineer:
   case Service::S_PREFECT:
   case Service::S_MAX:
   break;
@@ -509,7 +509,7 @@ float House::evaluateService(ServiceWalkerPtr walker)
 
   switch(service)
   {
-  case Service::S_ENGINEER: res = _damageLevel; break;
+  case Service::engineer: res = _damageLevel; break;
   case Service::S_PREFECT: res = _fireLevel; break;
 
   // this house pays taxes
@@ -546,7 +546,7 @@ float House::evaluateService(ServiceWalkerPtr walker)
 
   default:
   {
-    return _d->houseLevelSpec.evaluateServiceNeed(*this, service);
+    return _d->houseLevelSpec.evaluateServiceNeed( this, service);
   }
   break;
   }
