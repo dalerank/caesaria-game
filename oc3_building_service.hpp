@@ -50,8 +50,6 @@ public:
 
   //void removeWalker( WalkerPtr walker );
 private:  
-  static std::map<Service::Type, ServiceBuilding*> _specimen;
-
   class Impl;
   ScopedPtr< Impl > _d;
 };

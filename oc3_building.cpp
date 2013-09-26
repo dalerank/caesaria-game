@@ -300,13 +300,13 @@ float Building::evaluateTrainee(const WalkerType traineeType)
 {
    float res = 0.0;
 
-   if (_reservedTrainees.count(traineeType) == 1)
+   if( _reservedTrainees.count(traineeType) == 1 )
    {
       // don't allow two reservations of the same type
       return 0.0;
    }
 
-   if (_traineeMap.count(traineeType) == 1)
+   if( _traineeMap.count(traineeType) == 1 )
    {
       int currentLevel = _traineeMap[traineeType];
       res = (float)( 101 - currentLevel );

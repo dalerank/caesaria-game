@@ -438,8 +438,8 @@ void House::applyService( ServiceWalkerPtr walker )
   case Service::S_LIBRARY:
   case Service::S_COLLEGE:
   case Service::theater:
-  case Service::S_AMPHITHEATER:
-  case Service::S_COLLOSSEUM:
+  case Service::amphitheater:
+  case Service::colloseum:
   case Service::S_HIPPODROME:
     setServiceAccess(service, 100);
   break;

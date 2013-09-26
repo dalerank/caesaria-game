@@ -22,48 +22,71 @@
 #include "oc3_training_building.hpp"
 #include "oc3_game_event_mgr.hpp"
 #include "oc3_gettext.hpp"
+#include "oc3_stringhelper.hpp"
 
 EntertainmentBuilding::EntertainmentBuilding(const Service::Type service,
                                              const BuildingType type,
                                              const Size& size )
   : ServiceBuilding(service, type, size)
 {
-   switch (service)
+   switch( service )
    {
    case Service::theater:
       _traineeMap[WT_ACTOR] = 0;
-      break;
-   case Service::S_AMPHITHEATER:
+   break;
+
+   case Service::amphitheater:
       _traineeMap[WT_ACTOR] = 0;
       _traineeMap[WT_GLADIATOR] = 0;
-      break;
-   case Service::S_COLLOSSEUM:
+   break;
+
+   case Service::colloseum:
       _traineeMap[WT_GLADIATOR] = 0;
       _traineeMap[WT_TAMER] = 0;
-      break;
+   break;
+
    default:
-      break;
+     StringHelper::debug( 0xff, "Wrong entertainment service type %d", service );
+   break;
    }
 }
 
 void EntertainmentBuilding::deliverService()
 {
-   // we need all trainees types for the show
-   int minLevel = 100;
-   foreach( TraineeMap::value_type item, _traineeMap )
-   {
-      minLevel = std::min( minLevel, item.second);
-   }
+  // we need all trainees types for the show
+  int minLevel = _getTraineeLevel();
 
-   if (minLevel > 10)
-   {
-      // all trainees are there for the show!
-      foreach( TraineeMap::value_type& item, _traineeMap )
-      {
-         item.second = item.second - 10;
-      }
+  if( (getWorkers() <= 0) )
+  {
+    _getAnimation().stop();
+    return;
+  }
+
+  int decreaseLevel = 10;
+  // all trainees are there for the show!
+  if( minLevel > 25 )
+  {
+    if( getWalkerList().empty() )
+    {
       ServiceBuilding::deliverService();
-   }
+
+      if( !getWalkerList().empty() )
+      {
+        _getAnimation().start();
+        decreaseLevel = 25;
+      }
+    }
+  }
+
+  if( getWalkerList().empty() )
+  {
+    _getAnimation().stop(); //have no actors for the show
+  }
+
+  foreach( TraineeMap::value_type& item, _traineeMap )
+  {
+    item.second = math::clamp( item.second-decreaseLevel, 0, 100);
+  }
 }
 
 int EntertainmentBuilding::getVisitorsNumber() const
@@ -71,13 +94,25 @@ int EntertainmentBuilding::getVisitorsNumber() const
   return 0;
 }
 
+int EntertainmentBuilding::_getTraineeLevel()
+{
+  int minLevel = 100;
+  foreach( TraineeMap::value_type item, _traineeMap )
+  {
+    minLevel = std::min( minLevel, item.second);
+  }
+
+  return minLevel;
+}
+
 Theater::Theater() : EntertainmentBuilding(Service::theater, B_THEATER, Size(2))
 {
   _getAnimation().load( ResourceGroup::entertaiment, 14, 21);
   _getAnimation().setOffset( Point( 60, 36 ) );
+  _getAnimation().stop();
 
   _fgPictures.resize(2);
-  _fgPictures[0] = Picture::load( ResourceGroup::entertaiment, 35);
+  //_fgPictures[0] = Picture::load( ResourceGroup::entertaiment, 35);
 }
 
 void Theater::build(CityPtr city, const TilePos& pos)
@@ -93,12 +128,17 @@ void Theater::build(CityPtr city, const TilePos& pos)
   }
 }
 
+void Theater::timeStep(const unsigned long time)
+{
+  EntertainmentBuilding::timeStep( time );
+}
+
 int Theater::getVisitorsNumber() const
 {
   return 500;
 }
 
-Amphitheater::Amphitheater() : EntertainmentBuilding(Service::S_AMPHITHEATER, B_AMPHITHEATER, Size(3))
+Amphitheater::Amphitheater() : EntertainmentBuilding(Service::amphitheater, B_AMPHITHEATER, Size(3))
 {
   setPicture( ResourceGroup::entertaiment, 1 );
 
@@ -108,7 +148,7 @@ Amphitheater::Amphitheater() : EntertainmentBuilding(Service::S_AMPHITHEATER, B_
   _fgPictures[0] = Picture::load( ResourceGroup::entertaiment, 12);
 }
 
-Collosseum::Collosseum() : EntertainmentBuilding(Service::S_COLLOSSEUM, B_COLLOSSEUM, Size(5) )
+Collosseum::Collosseum() : EntertainmentBuilding(Service::colloseum, B_COLLOSSEUM, Size(5) )
 {
   setPicture( Picture::load( ResourceGroup::entertaiment, 36));
 

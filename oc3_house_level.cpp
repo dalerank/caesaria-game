@@ -245,11 +245,11 @@ int HouseLevelSpec::computeEntertainmentLevel(HousePtr house)
    {
       res += 10;
    }
-   if (house->hasServiceAccess(Service::S_AMPHITHEATER))
+   if (house->hasServiceAccess(Service::amphitheater))
    {
       res += 20;
    }
-   if (house->hasServiceAccess(Service::S_COLLOSSEUM))
+   if (house->hasServiceAccess(Service::colloseum))
    {
       res += 30;
    }
@@ -376,8 +376,8 @@ float HouseLevelSpec::evaluateServiceNeed(House &house, const Service::Type serv
       res = evaluateReligionNeed(house, service);
       break;
    case Service::theater:
-   case Service::S_AMPHITHEATER:
-   case Service::S_COLLOSSEUM:
+   case Service::amphitheater:
+   case Service::colloseum:
    case Service::S_HIPPODROME:
       res = evaluateEntertainmentNeed(house, service);
       break;

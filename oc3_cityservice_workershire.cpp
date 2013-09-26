@@ -73,6 +73,7 @@ CityServiceWorkersHire::CityServiceWorkersHire( CityPtr city )
   _d->priorities[ 24 ] = B_FURNITURE;
   _d->priorities[ 25 ] = B_WEAPONS_WORKSHOP;
   _d->priorities[ 26 ] = B_THEATER;
+  _d->priorities[ 27 ] = B_ACTOR_COLONY;
 }
 
 bool CityServiceWorkersHire::_haveHr( WorkingBuildingPtr building )

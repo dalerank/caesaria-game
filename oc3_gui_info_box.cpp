@@ -169,15 +169,15 @@ void InfoBoxSimple::_drawWorkers(const Point &pos, int picId, int need, int have
 InfoBoxWorkingBuilding::InfoBoxWorkingBuilding( Widget* parent, WorkingBuildingPtr building)
   : InfoBoxSimple( parent, Rect( 0, 0, 510, 256 ) )
 {
-  setTitle( BuildingDataHolder::instance().getData( building->getType() ).getPrettyName() );
-
-  _drawWorkers( Point( 32, 150 ), 542, building->getMaxWorkers(), building->getWorkers() );
+  setTitle( BuildingDataHolder::instance().getData( building->getType() ).getPrettyName() );  
 
   if( building.isValid() && building->getMaxWorkers() > 0 )
   {
     Rect r( 16, 136, 510 - 16, 136 + 62 );
     PictureDecorator::draw( *_d->bgPicture, r, PictureDecorator::blackFrame );
   }
+
+  _drawWorkers( Point( 32, 150 ), 542, building->getMaxWorkers(), building->getWorkers() );
 
   std::string text = StringHelper::format( 0xff, "%d%% damage - %d%% fire",
                                            (int)building->getDamageLevel(), (int)building->getFireLevel());

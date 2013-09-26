@@ -91,9 +91,9 @@ void ServiceWalker::init(const Service::Type service)
   break;
   
   case Service::theater:
-  case Service::S_AMPHITHEATER:
+  case Service::amphitheater:
   case Service::S_HIPPODROME:
-  case Service::S_COLLOSSEUM:
+  case Service::colloseum:
     _setGraphic( WG_ACTOR );
   break;
   
