@@ -16,6 +16,7 @@
 #include "oc3_building_health.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_positioni.hpp"
+#include "oc3_tile.hpp"
 
 Doctor::Doctor() : ServiceBuilding(Service::S_DOCTOR, B_DOCTOR, Size(1))
 {
@@ -40,11 +41,63 @@ Hospital::Hospital() : ServiceBuilding(Service::S_HOSPITAL, B_HOSPITAL, Size(3 )
 
 Baths::Baths() : ServiceBuilding(Service::S_BATHS, B_BATHS, Size(2) )
 {
+  _haveReservorWater = false;
+  _fgPictures.resize(2);
+
+  _initAnimation();
+}
+
+unsigned int Baths::getWalkerDistance() const
+{
+  return 35;
+}
+
+void Baths::timeStep(const unsigned long time)
+{
+  if( time % 22 == 1 )
+  {
+    if( getTile().getWaterService( WTR_RESERVOIR ) > 0 && getWorkers() > 0 )
+    {
+      _getAnimation().start();
+      _haveReservorWater = true;
+    }
+    else
+    {
+      _getAnimation().stop();
+      _haveReservorWater = false;
+      _fgPictures[ 0 ] = Picture::getInvalid();
+    }
+  }
+
+  ServiceBuilding::timeStep( time );
+}
+
+void Baths::deliverService()
+{
+  if( _haveReservorWater && getWalkerList().empty() )
+  {
+    ServiceBuilding::deliverService();
+  }
+}
+
+void Baths::_initAnimation()
+{
   _getAnimation().load( ResourceGroup::security, 22, 10);
   _getAnimation().setOffset( Point( 23, 25 ) );
-  _fgPictures.resize(2);
+  _getAnimation().setFrameDelay( 2 );
+  _getAnimation().stop();
 }
 
 Barber::Barber() : ServiceBuilding(Service::S_BARBER, B_BARBER, Size(1))
 {
+}
+
+void Barber::deliverService()
+{
+
+}
+
+unsigned int Barber::getWalkerDistance() const
+{
+  return 35;
 }

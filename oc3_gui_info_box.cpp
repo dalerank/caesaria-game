@@ -239,6 +239,10 @@ InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
   if( house->getLevelSpec().getHouseLevel() > 2 )
   {
     drawGood( house, Good::wheat, 0, 0, startY );
+    drawGood( house, Good::fish, 1, 0, startY );
+    drawGood( house, Good::meat, 2, 0, startY );
+    drawGood( house, Good::fruit, 3, 0, startY );
+    drawGood( house, Good::vegetable, 4, 0, startY );
   }
   else
   {

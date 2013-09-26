@@ -40,6 +40,8 @@ public:
   const std::string& getLevelName() const;
   const std::string& getInternalName() const;
 
+  int getRequiredGoodLevel(Good::Type type) const;
+
   // returns True if patrician villa
   bool isPatrician() const;
 
@@ -53,7 +55,7 @@ public:
   int computeReligionLevel(HousePtr house);
   int computeWaterLevel(HousePtr house, std::string &oMissingRequirement);
   int computeFoodLevel(HousePtr house);
-  int computeMonthlyConsumption(House &house, const Good::Type goodType);
+  int computeMonthlyConsumption(House &house, const Good::Type goodType, bool real);
 
   float evaluateServiceNeed(House &house, const Service::Type service);
   float evaluateEntertainmentNeed(House &house, const Service::Type service);

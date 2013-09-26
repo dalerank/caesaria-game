@@ -37,12 +37,24 @@ class Baths : public ServiceBuilding
 {
 public:
   Baths();
+
+  virtual void timeStep(const unsigned long time);
+  virtual void deliverService();
+  unsigned int getWalkerDistance() const;
+
+protected:
+  void _initAnimation();
+
+  bool _haveReservorWater;
 };
 
 class Barber : public ServiceBuilding
 {
 public:
   Barber();
+
+  virtual void deliverService();
+  virtual unsigned int getWalkerDistance() const;
 };
 
 #endif //__OPENCAESAR3_HEALTHBUILDINGS_H_INCLUDED__

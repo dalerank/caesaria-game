@@ -25,6 +25,7 @@
 #include "oc3_saveadapter.hpp"
 #include "oc3_goodstore.hpp"
 #include "oc3_foreach.hpp"
+#include "oc3_goodhelper.hpp"
 
 #include <string>
 #include <map>
@@ -43,7 +44,7 @@ public:
   // required services
   int minEntertainmentLevel;
   int minHealthLevel;
-  int midDesirability, maxDesirability;
+  int minDesirability, maxDesirability;
   int minEducationLevel;
   int crime;
   int prosperity;
@@ -53,6 +54,9 @@ public:
 
   typedef std::map<Good::Type, int> RequiredGoods;
   RequiredGoods requiredGoods;  // rate of good usage for every good (furniture, pottery, ...)
+
+  typedef std::map<Good::Type, float> GoodConsumptionMuls;
+  GoodConsumptionMuls consumptionMuls;
 };
 
 int HouseLevelSpec::getHouseLevel() const
@@ -480,26 +484,27 @@ float HouseLevelSpec::evaluateReligionNeed(House &house, const Service::Type ser
    return (float)minLevel;
 }
 
-// float HouseLevelSpec::evaluateFoodNeed(House &house, const ServiceType service)
-// {
-//    int houseLevel = house.getLevelSpec().getHouseLevel();
-//    return getHouseLevelSpec(houseLevel+1)._minFoodLevel;
-// }
-
-int HouseLevelSpec::computeMonthlyConsumption(House &house, const Good::Type goodType)
+int HouseLevelSpec::computeMonthlyConsumption(House &house, const Good::Type goodType, bool real)
 {
-   int res = 0;
-   if (_d->requiredGoods[goodType] != 0)
-   {
-      res = house.getMaxHabitants() * _d->requiredGoods[goodType];
-   }
+  int res = 0;
+  if (_d->requiredGoods[goodType] != 0)
+  {
+    res = house.getNbHabitants() * _d->requiredGoods[goodType];
+  }
 
-   return res;
+  res *= (real ? _d->consumptionMuls[ goodType ] : 1);
+
+  return res;
 }
 
 const std::string& HouseLevelSpec::getInternalName() const
 {
   return _d->internalName;
+}
+
+int HouseLevelSpec::getRequiredGoodLevel(Good::Type type) const
+{
+  return _d->requiredGoods[type];
 }
 
 int HouseLevelSpec::getProsperity() const
@@ -538,7 +543,7 @@ HouseLevelSpec& HouseLevelSpec::operator=( const HouseLevelSpec& other )
   // required services
   _d->minEntertainmentLevel = other._d->minEntertainmentLevel;
   _d->minHealthLevel = other._d->minHealthLevel;
-  _d->midDesirability = other._d->midDesirability;
+  _d->minDesirability = other._d->minDesirability;
   _d->maxDesirability = other._d->maxDesirability;
   _d->minEducationLevel = other._d->minEducationLevel;
   _d->crime = other._d->crime;
@@ -546,10 +551,8 @@ HouseLevelSpec& HouseLevelSpec::operator=( const HouseLevelSpec& other )
   _d->minWaterLevel = other._d->minWaterLevel;  // access to water (no water=0, well=1, fountain=2)
   _d->minReligionLevel = other._d->minReligionLevel;  // number of religions
   _d->minFoodLevel = other._d->minFoodLevel;  // number of food types
-  foreach( Impl::RequiredGoods::value_type& item, other._d->requiredGoods )
-  {
-    _d->requiredGoods[ item.first ] = item.second;
-  }
+  _d->requiredGoods = other._d->requiredGoods;
+  _d->consumptionMuls = other._d->consumptionMuls;
 
   return *this;
 }
@@ -674,7 +677,7 @@ void HouseSpecHelper::initialize( const io::FilePath& filename )
     spec._d->internalName = item.first;
     spec._d->levelName = hSpec[ "title" ].toString();
     spec._d->maxHabitantsByTile = hSpec.get( "habitants" ).toInt();
-    spec._d->midDesirability = hSpec.get( "minDesirability" ).toInt();  // min desirability
+    spec._d->minDesirability = hSpec.get( "minDesirability" ).toInt();  // min desirability
     spec._d->maxDesirability = hSpec.get( "maxDesirability" ).toInt();  // desirability levelUp
     spec._d->minEntertainmentLevel = hSpec.get( "entertainment" ).toInt();
     spec._d->minWaterLevel = hSpec.get( "water" ).toInt();
@@ -691,6 +694,18 @@ void HouseSpecHelper::initialize( const io::FilePath& filename )
     spec._d->crime = hSpec.get( "crime" ).toInt();;  // crime
     spec._d->prosperity = hSpec.get( "prosperity" ).toInt();  // prosperity
     spec._d->taxRate = hSpec.get( "tax" ).toInt();// tax_rate
+
+    for (int i = 0; i < Good::goodCount; ++i)
+    {
+      spec._d->consumptionMuls[ (Good::Type)i ] = 1;
+    }
+
+    //load consumption goods koefficient
+    VariantMap varConsumptions = hSpec.get( "consumptionkoeff" ).toMap();
+    foreach( VariantMap::value_type& v, varConsumptions )
+    {
+      spec._d->consumptionMuls[ GoodHelper::getType( v.first ) ] = (float)v.second;
+    }
 
     _d->spec_by_level[ spec._d->houseLevel ] = spec;
   }

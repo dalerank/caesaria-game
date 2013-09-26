@@ -55,10 +55,10 @@ MarketLady::MarketLady( CityPtr city )
    _d->basket.setMaxQty(Good::meat, 800);
    _d->basket.setMaxQty(Good::fish, 800);
 
-   _d->basket.setMaxQty(Good::pottery, 100);
-   _d->basket.setMaxQty(Good::furniture, 100);
-   _d->basket.setMaxQty(Good::oil, 100);
-   _d->basket.setMaxQty(Good::wine, 100);
+   _d->basket.setMaxQty(Good::pottery, 300);
+   _d->basket.setMaxQty(Good::furniture, 300);
+   _d->basket.setMaxQty(Good::oil, 300);
+   _d->basket.setMaxQty(Good::wine, 300);
 
    setName( NameGenerator::rand( NameGenerator::male ) );
 }
@@ -246,7 +246,7 @@ void MarketLady::onDestination()
 
       while( _d->basket.getCurrentQty() > 100 )
       {
-        for( int gtype=Good::wheat; gtype <= Good::wine; gtype++ )
+        for( int gtype=Good::none; gtype <= Good::goodCount ; gtype++ )
         {
           GoodStock& currentStock = _d->basket.getStock( (Good::Type)gtype );
           if( currentStock._currentQty > 0 )
@@ -259,6 +259,7 @@ void MarketLady::onDestination()
             boy->setDelay( delay );
             delay += 20;
             boy->send2City( _d->market );
+            _d->market->addWalker( boy.as<Walker>() );
           }
         }
       }

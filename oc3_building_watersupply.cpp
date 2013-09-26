@@ -178,10 +178,7 @@ bool Aqueduct::canBuild( CityPtr city, const TilePos& pos ) const
   return false;
 }
 
-
-
-Picture&
-Aqueduct::computePicture(const TilemapTiles * tmp, const TilePos pos)
+Picture& Aqueduct::computePicture(const TilemapTiles * tmp, const TilePos pos)
 {
   // find correct picture as for roads
   Tilemap& tmap = _getCity()->getTilemap();
@@ -298,8 +295,6 @@ Aqueduct::computePicture(const TilemapTiles * tmp, const TilePos pos)
 
   return Picture::load( ResourceGroup::aqueduct, index + (_d->water == 0 ? 15 : 0) );
 }
-
-
 
 void Aqueduct::updatePicture()
 {
