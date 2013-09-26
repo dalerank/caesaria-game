@@ -19,7 +19,7 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_foreach.hpp"
 #include "oc3_city.hpp"
-#include "oc3_training_building.hpp"
+#include "oc3_building_training.hpp"
 #include "oc3_game_event_mgr.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_stringhelper.hpp"
@@ -92,6 +92,11 @@ void EntertainmentBuilding::deliverService()
 int EntertainmentBuilding::getVisitorsNumber() const
 {
   return 0;
+}
+
+unsigned int EntertainmentBuilding::getWalkerDistance() const
+{
+  return 35;
 }
 
 int EntertainmentBuilding::_getTraineeLevel()

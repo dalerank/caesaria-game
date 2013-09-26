@@ -15,7 +15,7 @@
 
 #include "oc3_constructionmanager.hpp"
 #include "oc3_building_service.hpp"
-#include "oc3_training_building.hpp"
+#include "oc3_building_training.hpp"
 #include "oc3_building_watersupply.hpp"
 #include "oc3_building_warehouse.hpp"
 #include "oc3_building_ruins.hpp"

@@ -120,7 +120,6 @@ void TraineeWalker::checkDestination(const BuildingType buildingType, Propagator
   }
 }
 
-
 void TraineeWalker::send2City()
 {
   computeWalkerPath();
@@ -128,7 +127,7 @@ void TraineeWalker::send2City()
   if( !isDeleted() )
   {
     _destinationBuilding->reserveTrainee( (WalkerType)getType() );
-    _getCity()->addWalker( WalkerPtr( this ) );
+    _getCity()->addWalker( this );
   }
 }
 

@@ -26,6 +26,8 @@ public:
   virtual void deliverService();
   virtual int getVisitorsNumber() const;
 
+  virtual unsigned int getWalkerDistance() const;
+
 protected:
   int _getTraineeLevel();
 };

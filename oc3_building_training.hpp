@@ -26,13 +26,13 @@ class TrainingBuilding : public WorkingBuilding
 public:
    TrainingBuilding(const BuildingType type, const Size& size);
 
-   void timeStep(const unsigned long time);
+   virtual void timeStep(const unsigned long time);
 
    // called when a trainee is created
    virtual void deliverTrainee() = 0;
 
-   void save( VariantMap& stream) const;
-   void load( const VariantMap& stream);
+   virtual void save( VariantMap& stream) const;
+   virtual void load( const VariantMap& stream);
 
 private:
    int _trainingTimer;
@@ -43,28 +43,28 @@ class ActorColony : public TrainingBuilding
 {
 public:
    ActorColony();
-   void deliverTrainee();
+   virtual void deliverTrainee();
 };
 
 class GladiatorSchool : public TrainingBuilding
 {
 public:
    GladiatorSchool();
-   void deliverTrainee();
+   virtual void deliverTrainee();
 };
 
 class LionsNursery : public TrainingBuilding
 {
 public:
    LionsNursery();
-   void deliverTrainee();
+   virtual void deliverTrainee();
 };
 
 class WorkshopChariot : public TrainingBuilding
 {
 public:
    WorkshopChariot();
-   void deliverTrainee();
+   virtual void deliverTrainee();
 };
 
 #endif

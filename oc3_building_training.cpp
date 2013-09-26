@@ -15,9 +15,7 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#include "oc3_training_building.hpp"
-
-#include <iostream>
+#include "oc3_building_training.hpp"
 
 #include "oc3_walker_trainee.hpp"
 #include "oc3_exception.hpp"
@@ -30,17 +28,20 @@
 TrainingBuilding::TrainingBuilding( const BuildingType type, const Size& size )
   : WorkingBuilding( type, size )
 {
-   setMaxWorkers(5);
-   setWorkers(0);
    _trainingTimer = 0;
    _trainingDelay = 80;
 }
 
 void TrainingBuilding::timeStep(const unsigned long time)
 {
-   Building::timeStep(time);
+   WorkingBuilding::timeStep(time);
 
-   if (_trainingTimer == 0)
+   if( getWorkers() <= 0 )
+   {
+     return;
+   }
+
+   if( _trainingTimer == 0 )
    {
       deliverTrainee();
       _trainingTimer = _trainingDelay;
@@ -75,8 +76,6 @@ void TrainingBuilding::load( const VariantMap& stream )
 
 ActorColony::ActorColony() : TrainingBuilding( B_ACTOR_COLONY, Size(3) )
 {
-  setPicture( ResourceGroup::entertaiment, 81 );
-
   _getAnimation().load( ResourceGroup::entertaiment, 82, 9);
   _getAnimation().setOffset( Point( 68, -6 ) );
   _fgPictures.resize(1);
@@ -84,9 +83,19 @@ ActorColony::ActorColony() : TrainingBuilding( B_ACTOR_COLONY, Size(3) )
 
 void ActorColony::deliverTrainee()
 {
+  if( !getWalkerList().empty() )
+  {
+    return;
+  }
+
   TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), WT_ACTOR );
   trainee->setOriginBuilding(*this);
   trainee->send2City();
+
+  if( !trainee->isDeleted() )
+  {
+    addWalker( trainee.as<Walker>() );
+  }
 }
 
 GladiatorSchool::GladiatorSchool() : TrainingBuilding( B_GLADIATOR_SCHOOL, Size(3))
