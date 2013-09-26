@@ -60,7 +60,7 @@ Service::Type ServiceHelper::getType( const std::string& name )
   if( type == instance().getInvalid() )
   {
     StringHelper::debug( 0xff, "Can't find Service::Type for serviceName %s", name.c_str() );
-    _OC3_DEBUG_BREAK_IF( "Can't find  Service::Type for serviceName" );
+    //_OC3_DEBUG_BREAK_IF( "Can't find  Service::Type for serviceName" );
   }
 
   return type;
@@ -73,7 +73,7 @@ std::string ServiceHelper::getName( Service::Type type )
   if( name.empty() )
   {
     StringHelper::debug( 0xff, "Can't find service typeName for %d", type );
-    _OC3_DEBUG_BREAK_IF( "Can't find service typeName by ServiceType" );
+    //_OC3_DEBUG_BREAK_IF( "Can't find service typeName by ServiceType" );
   }
 
   return name;

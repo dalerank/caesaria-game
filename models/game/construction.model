@@ -342,6 +342,7 @@
 	desirability : { base : -2, 	range : 2, 	step : 1 }
 	employers : 5
 	class : "food"
+  image : [ "commerce", 1 ]
   }, 
 
   granery :

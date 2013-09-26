@@ -97,6 +97,7 @@ protected:
    void _setAction( Walker::Action action );
    void _setDirection( DirectionType );
    void _setGraphic( WalkerGraphicType type );
+   WalkerGraphicType _getGraphic() const;
    void _setType( WalkerType type );
    CityPtr _getCity() const;
 

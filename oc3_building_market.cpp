@@ -38,18 +38,28 @@ public:
 
     return anyGoodStored;
   }
+
+  void initStore()
+  {
+    goodStore.setMaxQty(5000);
+    goodStore.setMaxQty(Good::wheat, 400);
+    goodStore.setMaxQty(Good::fish, 400);
+    goodStore.setMaxQty(Good::fruit, 400);
+    goodStore.setMaxQty(Good::meat, 400);
+    goodStore.setMaxQty(Good::vegetable, 400);
+    goodStore.setMaxQty(Good::pottery, 300);
+    goodStore.setMaxQty(Good::furniture, 300);
+    goodStore.setMaxQty(Good::oil, 300);
+    goodStore.setMaxQty(Good::wine, 300);
+  }
 };
 
 Market::Market() : ServiceBuilding(Service::S_MARKET, B_MARKET, Size(2) ),
   _d( new Impl )
 {
-  setPicture( ResourceGroup::commerce, 1 );
-
   _fgPictures.resize(1);  // animation
 
-  _d->goodStore.setMaxQty(5000);
-  _d->goodStore.setMaxQty(Good::wheat, 400);
-  _d->goodStore.setMaxQty(Good::pottery, 300);
+  _d->initStore();
 
   _getAnimation().load( ResourceGroup::commerce, 2, 10 );
   _getAnimation().setFrameDelay( 4 );
@@ -132,6 +142,8 @@ void Market::load( const VariantMap& stream)
   ServiceBuilding::load( stream );
 
   _d->goodStore.load( stream.get( "goodStore" ).toMap() );
+
+  _d->initStore();
 }
 
 void Market::timeStep(const unsigned long time)

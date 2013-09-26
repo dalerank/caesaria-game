@@ -504,6 +504,11 @@ void Walker::_setGraphic(WalkerGraphicType type)
   _d->walkerGraphic = type;
 }
 
+WalkerGraphicType Walker::_getGraphic() const
+{
+  return _d->walkerGraphic;
+}
+
 void Walker::_setType(WalkerType type)
 {
   _d->walkerType = type;
@@ -562,6 +567,7 @@ public:
     append( WT_ANIMAL_SHEEP, "sheep", _("##wt_animal_sheep##") );
     append( WT_BATHLADY, "bathlady", _("##wt_bathlady##") );
     append( WT_ACTOR, "actor", _("##wt_actor##") );
+    append( WT_GLADIATOR, "gladiator", _("##wt_gladiator##") );
     append( WT_MAX, "unknown", _("##wt_unknown##") );
   }
 };
@@ -579,7 +585,7 @@ std::string WalkerHelper::getName( WalkerType type )
   if( name.empty() )
   {
     StringHelper::debug( 0xff, "Can't find walker typeName for %d", type );
-    _OC3_DEBUG_BREAK_IF( "Can't find walker typeName by WalkerType" );
+    //_OC3_DEBUG_BREAK_IF( "Can't find walker typeName by WalkerType" );
   }
 
   return name;
@@ -592,7 +598,7 @@ WalkerType WalkerHelper::getType(const std::string &name)
   if( type == instance()._d->getInvalid() )
   {
     StringHelper::debug( 0xff, "Can't find walker type for %s", name.c_str() );
-    _OC3_DEBUG_BREAK_IF( "Can't find walker type by typeName" );
+    //_OC3_DEBUG_BREAK_IF( "Can't find walker type by typeName" );
   }
 
   return type;

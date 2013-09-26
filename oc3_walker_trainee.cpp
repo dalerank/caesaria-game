@@ -33,7 +33,7 @@ TraineeWalker::TraineeWalker( CityPtr city, const WalkerType traineeType)
 
 void TraineeWalker::init(const WalkerType traineeType)
 {
-  switch (traineeType)
+  switch( traineeType )
   {
   case WT_ACTOR:
     _setGraphic( WG_ACTOR );
@@ -100,7 +100,6 @@ void TraineeWalker::computeWalkerPath()
   }
 }
 
-
 void TraineeWalker::checkDestination(const BuildingType buildingType, Propagator &pathPropagator)
 {
   Propagator::Routes pathWayList;
@@ -144,6 +143,8 @@ void TraineeWalker::save( VariantMap& stream ) const
   stream[ "originBldPos" ] = _originBuilding->getTile().getIJ();
   stream[ "destBldPos" ] = _destinationBuilding->getTile().getIJ();
   stream[ "maxDistance" ] = _maxDistance;
+  stream[ "graphic" ] = _getGraphic();
+  stream[ "type" ] = (int)WT_TRAINEE;
 }
 
 void TraineeWalker::load( const VariantMap& stream )
@@ -156,6 +157,10 @@ void TraineeWalker::load( const VariantMap& stream )
   _originBuilding = helper.getBuilding<Building>( stream.get( "originBldPos" ).toTilePos() );
   _destinationBuilding = helper.getBuilding<Building>( stream.get( "destBldPos" ).toTilePos() );
   _maxDistance = (int)stream.get( "maxDistance" );
+  WalkerType wtype = (WalkerType)stream.get( "graphic" ).toInt();
+
+  _setType( wtype );
+  init( wtype );
 }
 
 TraineeWalkerPtr TraineeWalker::create(CityPtr city, const WalkerType traineeType )

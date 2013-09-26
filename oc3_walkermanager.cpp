@@ -52,6 +52,15 @@ public:
   Service::Type serviceType;
 };
 
+class TraineeWalkerCreator : public AbstractWalkerCreator
+{
+public:
+  WalkerPtr create( CityPtr city )
+  {
+    return TraineeWalker::create( city, WT_TRAINEE ).object();
+  }
+};
+
 class WalkerManager::Impl
 {
 public:
@@ -71,6 +80,8 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( WT_ANIMAL_SHEEP, new WalkerCreator< Sheep >() );
   addCreator( WT_BATHLADY, new ServiceWalkerCreator( Service::baths ) );
   addCreator( WT_ACTOR, new ServiceWalkerCreator( Service::theater ) );
+  addCreator( WT_GLADIATOR, new ServiceWalkerCreator( Service::amphitheater ) );
+  addCreator( WT_TRAINEE, new TraineeWalkerCreator() );
 }
 
 WalkerManager::~WalkerManager()
