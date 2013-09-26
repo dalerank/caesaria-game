@@ -99,6 +99,14 @@ unsigned int EntertainmentBuilding::getWalkerDistance() const
   return 35;
 }
 
+float EntertainmentBuilding::evaluateTrainee(const WalkerType traineeType)
+{
+  if( getWorkers() == 0 )
+    return 0.0;
+
+  return ServiceBuilding::evaluateTrainee( traineeType );
+}
+
 int EntertainmentBuilding::_getTraineeLevel()
 {
   int minLevel = 100;

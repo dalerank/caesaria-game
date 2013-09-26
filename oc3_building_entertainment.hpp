@@ -28,6 +28,8 @@ public:
 
   virtual unsigned int getWalkerDistance() const;
 
+  virtual float evaluateTrainee(const WalkerType traineeType);
+
 protected:
   int _getTraineeLevel();
 };

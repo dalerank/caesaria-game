@@ -410,6 +410,10 @@ void CityRenderer::Impl::drawTileEntertainment( Tile& tile )
       {
         engine->drawPicture( tile.getPicture(), screenPos );
       }
+      else
+      {
+        drawBuildingAreaTiles( overlay->getTile(), overlay, ResourceGroup::foodOverlay, OverlayPic::base );
+      }
     break;
 
       //houses
@@ -1340,30 +1344,37 @@ void CityRenderer::setMode( const TilemapChangeCommandPtr command )
       _d->entertainmentRendeFlags.insert( B_AMPHITHEATER );
       _d->entertainmentRendeFlags.insert( B_COLLOSSEUM );
       _d->entertainmentRendeFlags.insert( B_HIPPODROME );
+      _d->entertainmentRendeFlags.insert( B_ACTOR_COLONY );
+      _d->entertainmentRendeFlags.insert( B_GLADIATOR_SCHOOL );
     break;
 
     case OV_ENTERTAINMENT_THEATRES:
       _d->setDrawFunction( _d.data(), &Impl::drawTileEntertainment );
       _d->entertainmentRendeFlags.clear();
       _d->entertainmentRendeFlags.insert( B_THEATER );
+      _d->entertainmentRendeFlags.insert( B_ACTOR_COLONY );
     break;
 
     case OV_ENTERTAINMENT_AMPHITHEATRES:
       _d->setDrawFunction( _d.data(), &Impl::drawTileEntertainment );
       _d->entertainmentRendeFlags.clear();
       _d->entertainmentRendeFlags.insert( B_AMPHITHEATER );
+      _d->entertainmentRendeFlags.insert( B_ACTOR_COLONY );
+      _d->entertainmentRendeFlags.insert( B_GLADIATOR_SCHOOL );
     break;
 
     case OV_ENTERTAINMENT_COLLISEUM:
       _d->setDrawFunction( _d.data(), &Impl::drawTileEntertainment );
       _d->entertainmentRendeFlags.clear();
       _d->entertainmentRendeFlags.insert( B_COLLOSSEUM );
+      _d->entertainmentRendeFlags.insert( B_GLADIATOR_SCHOOL );
     break;
 
     case OV_ENTERTAINMENT_HIPPODROME:
       _d->setDrawFunction( _d.data(), &Impl::drawTileEntertainment );
       _d->entertainmentRendeFlags.clear();
-      _d->entertainmentRendeFlags.insert( B_COLLOSSEUM );
+      _d->entertainmentRendeFlags.insert( B_HIPPODROME );
+      _d->entertainmentRendeFlags.insert( B_CHARIOT_MAKER );
     break;
 
     default:_d->setDrawFunction( _d.data(), &Impl::drawTileBase ); break;
