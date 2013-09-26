@@ -54,28 +54,4 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-class School : public ServiceBuilding
-{
-public:
-   School();
-
-   int getVisitorsNumber() const;
-};
-
-class Library : public ServiceBuilding
-{
-public:
-   Library();
-
-   int getVisitorsNumber() const;
-};
-
-class College : public ServiceBuilding
-{
-public:
-   College();
-
-   int getVisitorsNumber() const;
-};
-
 #endif

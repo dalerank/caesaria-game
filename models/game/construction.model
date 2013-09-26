@@ -81,6 +81,7 @@
 	cost : 50,
 	desirability : { base : -2, range : 3, step : 1 }
 	employers : 5
+  image : [ "entertainment", 81 ]
 	class : "entertainment"
   },
 
@@ -519,7 +520,6 @@
 	desirability : { base : -3,	range : 3,	step : 1 }
 	employers : 20
 	class : "military"
-  image : [ "security", 18 ]
   },
   
   "barracks" : 
@@ -649,6 +649,8 @@
   description : "##clay_pit_help##"
 	desirability : { base : -3,	range : 3,	step : 1 }
 	employers : 10
+  image : [ "commerce", 61 ]
+  productRate : 9.6
 	class : "rawmaterial"
   },
   
@@ -690,6 +692,5 @@
 	desirability : { base : -4,	range : 2,	step : 2 }
 	employers : 10
 	class : "industry"
-  image : [ "commerce", 132 ]
   }
 }

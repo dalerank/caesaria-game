@@ -57,8 +57,8 @@ public:
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);
 
-protected:
-  void _setProductRate( const float rate );
+  void setProductRate( const float rate );
+protected:  
   virtual bool _mayDeliverGood() const;
 
 protected:

@@ -211,11 +211,6 @@ int BuildingData::getCost() const
   return _cost;
 }
 
-int BuildingData::getEmployers() const
-{
-  return _employers;
-}
-
 const Picture &BuildingData::getBasePicture() const
 {
   return _basePicture;
@@ -245,7 +240,6 @@ BuildingData &BuildingData::operator=(const BuildingData &a)
   _basePicture = a._basePicture;
   _buildingClass = a._buildingClass;
   _d->desirability = a._d->desirability;
-  _employers = a._employers;
   _cost = a._cost;
 
   _d->options = a._d->options;
@@ -376,7 +370,6 @@ void BuildingDataHolder::initialize( const io::FilePath& filename )
     bData._d->desirability.base = (int)desMap[ "base" ];
     bData._d->desirability.range = (int)desMap[ "range" ];
     bData._d->desirability.step  = (int)desMap[ "step" ];
-    bData._employers = (int)options[ "employers" ];
 
     Variant prettyName = options[ "prettyName" ];
     if( prettyName.isValid() )

@@ -21,7 +21,7 @@
 
 MarbleQuarry::MarbleQuarry() : Factory(Good::none, Good::marble, B_MARBLE_QUARRY, Size(2) )
 {
-  _setProductRate( 9.6f );
+  setProductRate( 9.6f );
   setPicture( Picture::load( ResourceGroup::commerce, 43 ) );
 
   _getAnimation().load( ResourceGroup::commerce, 44, 10);

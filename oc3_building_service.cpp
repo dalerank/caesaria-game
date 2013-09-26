@@ -136,33 +136,3 @@ unsigned int ServiceBuilding::getWalkerDistance() const
 {
   return 5;
 }
-
-School::School() : ServiceBuilding(Service::S_SCHOOL, B_SCHOOL, Size(2))
-{
-  setPicture( Picture::load( ResourceGroup::commerce, 83));
-}
-
-int School::getVisitorsNumber() const
-{
-  return 75;
-}
-
-Library::Library() : ServiceBuilding(Service::S_LIBRARY, B_LIBRARY, Size(2))
-{
-  setPicture( Picture::load( ResourceGroup::commerce, 84));
-}
-
-int Library::getVisitorsNumber() const
-{
-  return 800;
-}
-
-College::College() : ServiceBuilding(Service::S_COLLEGE, B_COLLEGE, Size(3))
-{
-  setPicture( Picture::load( ResourceGroup::commerce, 85));
-}
-
-int College::getVisitorsNumber() const
-{
-  return 100;
-}

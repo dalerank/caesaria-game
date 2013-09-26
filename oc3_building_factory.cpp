@@ -232,7 +232,7 @@ bool Factory::_mayDeliverGood() const
   return ( getAccessRoads().size() > 0 ) && ( getWalkerList().size() == 0 );
 }
 
-void Factory::_setProductRate( const float rate )
+void Factory::setProductRate( const float rate )
 {
   _d->productionRate = rate;
 }
@@ -276,7 +276,7 @@ bool Factory::standIdle() const
 
 TimberLogger::TimberLogger() : Factory(Good::none, Good::timber, B_TIMBER_YARD, Size(2) )
 {
-  _setProductRate( 9.6f );
+  setProductRate( 9.6f );
   setPicture( Picture::load(ResourceGroup::commerce, 72) );
 
   _getAnimation().load( ResourceGroup::commerce, 73, 10);
@@ -301,7 +301,7 @@ bool TimberLogger::canBuild( CityPtr city, const TilePos& pos ) const
 
 IronMine::IronMine() : Factory(Good::none, Good::iron, B_IRON_MINE, Size(2) )
 {
-  _setProductRate( 9.6f );
+  setProductRate( 9.6f );
 
   setPicture( Picture::load(ResourceGroup::commerce, 54) );
 

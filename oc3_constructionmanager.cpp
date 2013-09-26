@@ -46,6 +46,7 @@
 #include "oc3_building_garden.hpp"
 #include "oc3_building_health.hpp"
 #include "oc3_building_data.hpp"
+#include "oc3_building_education.hpp"
 
 #include <map>
 
@@ -65,7 +66,20 @@ public:
   {
     WorkingBuilding* wb = new T();
 
-    wb->setMaxWorkers( info.getEmployers() );
+    wb->setMaxWorkers( (int)info.getOption( "employers" ) );
+
+    return wb;
+  }
+};
+
+template< class T > class FactoryCreator : BuildingCreator
+{
+  Construction* create( const BuildingData& info )
+  {
+    Factory* wb = new T();
+
+    wb->setMaxWorkers( (int)info.getOption( "employers" ) );
+    wb->setProductRate( (float)info.getOption( "productRate" ) );
 
     return wb;
   }

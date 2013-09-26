@@ -24,6 +24,7 @@
 #include "oc3_time.hpp"
 #include "oc3_gamedate.hpp"
 #include "oc3_building_religion.hpp"
+#include "oc3_building_education.hpp"
 
 struct Coverage2Point{
   double coverage;

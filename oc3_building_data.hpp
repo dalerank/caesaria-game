@@ -41,7 +41,6 @@ public:
   std::string getPrettyName() const;
   BuildingType getType() const;
   BuildingClass getClass() const;
-  int getEmployers() const;
   const Picture& getBasePicture() const;
   // returns the building price, -1 => cannot be built
   int getCost() const;
@@ -58,7 +57,6 @@ private:
   std::string _name;  // debug name  (english, ex:"iron")
   std::string _prettyName;  // pretty-print name  (i18n, ex:"Iron mine")
   Picture _basePicture;
-  int _employers;
   int _cost;
 
   class Impl;

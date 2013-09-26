@@ -6,7 +6,7 @@
 			"title" : "Terrain vacant",
 			"habitants" : 0,
 			"minDesirability" : 0,
-		    "maxDesirability" : 0,
+		  "maxDesirability" : 0,
 			"entertainment" : 0,
 			"water" : 0,
 			"religion" : 0,
@@ -28,7 +28,7 @@
 			"title" : "Small tent",
 			"habitants" : 5,
 			"minDesirability" : -99,
-		    "maxDesirability" : -10,
+		  "maxDesirability" : -10,
 			"desirability" : -3,
 			"desstep" : 1
 			"desrange" : 3,
@@ -54,7 +54,7 @@
 			"title" : "Big tent",
 			"habitants" : 7,
 			"minDesirability" : -12,
-		    "maxDesirability" : -5,
+		  "maxDesirability" : -5,
 			"entertainment" : 0,
 			"desirability" : -3,
 			"desstep" : 1
@@ -80,7 +80,7 @@
 			"title" : "Small hut",
 			"habitants" : 9,
 			"minDesirability" : -9,
-		    "maxDesirability" : 0,
+		  "maxDesirability" : 0,
 			"entertainment" : 0,
 			"desirability" : -2,
 			"desstep" : 1
@@ -106,7 +106,7 @@
 			"title" : "Big hut",
 			"habitants" : 11,
 			"minDesirability" : -2,
-		    "maxDesirability" : 4,
+		  "maxDesirability" : 4,
 			"entertainment" : 0,
 			"desirability" : -2,
 			"desstep" : 1
@@ -132,7 +132,7 @@
 			"title" : "Small domus",
 			"habitants" : 13,
 			"minDesirability" : 2,
-		    "maxDesirability" : 8,
+		  "maxDesirability" : 8,
 			"entertainment" : 0,
 			"desirability" : -2,
 			"desstep" : 1
@@ -157,7 +157,7 @@
 			"title" : "big domus",
 			"habitants" : 15,
 			"minDesirability" : 6,
-		    "maxDesirability" : 12,
+		  "maxDesirability" : 12,
 			"entertainment" : 10,
 			"desirability" : -2,
 			"desstep" : 1
@@ -183,7 +183,7 @@
 			"title" : "Small mansion",
 			"habitants" : 17,
 			"minDesirability" : 10,
-		    "maxDesirability" : 16,
+		  "maxDesirability" : 16,
 			"entertainment" : 10,
 			"desirability" : -1,
 			"desstep" : 1
@@ -209,7 +209,7 @@
 			"title" : "Big mansion",
 			"habitants" : 19,
 			"minDesirability" : 14,
-		    "maxDesirability" : 20,
+		  "maxDesirability" : 20,
 			"entertainment" : 10,
 			"desirability" : -1,
 			"desstep" : 1
