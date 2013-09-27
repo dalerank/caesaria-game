@@ -208,7 +208,9 @@ void CityRenderer::Impl::drawTileDesirability( Tile& tile )
     //draw background
     if( tile.getFlag( Tile::isConstructible ) && tile.getDesirability() != 0 )
     {
-      int picOffset = math::clamp( tile.getDesirability() / 16, -5, 6 );
+      int picOffset = tile.getDesirability() < 0
+                          ? math::clamp( tile.getDesirability() / 25, -3, 0 )
+                          : math::clamp( tile.getDesirability() / 15, 0, 6 );
       Picture& pic = Picture::load( ResourceGroup::land2a, 37 + picOffset );
       engine->drawPicture( pic, screenPos );
     }
@@ -232,7 +234,9 @@ void CityRenderer::Impl::drawTileDesirability( Tile& tile )
     //other buildings
     default:      
       {
-        int picOffset = math::clamp( tile.getDesirability() / 16, -5, 6 );
+        int picOffset = tile.getDesirability() < 0
+                          ? math::clamp( tile.getDesirability() / 25, -3, 0 )
+                          : math::clamp( tile.getDesirability() / 15, 0, 6 );
         Picture& pic = Picture::load( ResourceGroup::land2a, 37 + picOffset );
         TilemapTiles tiles4clear = tilemap->getFilledRectangle( tile.getIJ(), overlay->getSize() );
         foreach( Tile* tile, tiles4clear )
