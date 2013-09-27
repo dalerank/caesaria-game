@@ -49,7 +49,7 @@ void ServiceWalker::init(const Service::Type service)
   switch (_d->service)
   {
   case Service::well:
-  case Service::S_FOUNTAIN:
+  case Service::fontain:
   case Service::S_TEMPLE_ORACLE:
     _setGraphic( WG_NONE );
   break;
@@ -68,12 +68,12 @@ void ServiceWalker::init(const Service::Type service)
   break;
   
   case Service::doctor:
-  case Service::S_HOSPITAL:
+  case Service::hospital:
     _setGraphic( WG_DOCTOR );
     _setType( WT_DOCTOR );
   break;
   
-  case Service::S_BARBER:
+  case Service::barber:
     _setGraphic( WG_BARBER );
   break;
   
@@ -82,12 +82,12 @@ void ServiceWalker::init(const Service::Type service)
     _setType( WT_BATHLADY );
   break;
   
-  case Service::S_SCHOOL:
+  case Service::school:
     _setGraphic( WG_CHILD );
   break;
   
-  case Service::S_LIBRARY:
-  case Service::S_COLLEGE:
+  case Service::library:
+  case Service::college:
     _setGraphic( WG_LIBRARIAN );
   break;
   
@@ -192,7 +192,7 @@ ServiceWalker::ReachedBuildings ServiceWalker::getReachedBuildings(const TilePos
   int reachDistance = getReachDistance();
   TilePos start = pos - TilePos( reachDistance, reachDistance );
   TilePos stop = pos + TilePos( reachDistance, reachDistance );
-  TilemapArea reachedTiles = _getCity()->getTilemap().getFilledRectangle( start, stop );
+  TilemapArea reachedTiles = _getCity()->getTilemap().getArea( start, stop );
   foreach( Tile* tile, reachedTiles )
   {
     BuildingPtr building = tile->getOverlay().as<Building>();

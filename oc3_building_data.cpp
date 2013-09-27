@@ -226,10 +226,10 @@ char BuildingData::getDesirbilityRange() const
   return _d->desirability.range;
 }
 
-Variant BuildingData::getOption(const std::string &name) const
+Variant BuildingData::getOption(const std::string &name, Variant defaultVal ) const
 {
   VariantMap::iterator it = _d->options.find( name );
-  return it != _d->options.end() ? it->second : Variant();
+  return it != _d->options.end() ? it->second : defaultVal;
 }
 
 BuildingData &BuildingData::operator=(const BuildingData &a)

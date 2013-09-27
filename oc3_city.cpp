@@ -407,7 +407,7 @@ void City::load( const VariantMap& stream )
   _d->boatExit = TilePos( stream.get( "boatExit" ).toTilePos() );
   _d->climate = (ClimateType)stream.get( "climate" ).toInt(); 
   _d->funds.load( stream.get( "funds" ).toMap() );
-  _d->population = stream.get( "population" ).toInt();
+  _d->population = (int)stream.get( "population", 0 );
   _d->cameraStart = TilePos( stream.get( "cameraStart" ).toTilePos() );
   _d->name = stream.get( "name" ).toString();
   _d->lastMonthCount = GameDate::current().getMonth();
@@ -417,7 +417,7 @@ void City::load( const VariantMap& stream )
   {
     VariantMap overlay = item.second.toMap();
     TilePos buildPos( overlay.get( "pos" ).toTilePos() );
-    int buildingType = overlay.get( "buildingType" ).toInt();
+    int buildingType = (int)overlay.get( "buildingType", 0 );
 
     ConstructionPtr construction = ConstructionManager::getInstance().create( BuildingType( buildingType ) );
     if( construction.isValid() )
@@ -432,7 +432,7 @@ void City::load( const VariantMap& stream )
   foreach( VariantMap::value_type& item, walkers )
   {
     VariantMap walkerInfo = item.second.toMap();
-    int walkerType = walkerInfo.get( "type" ).toInt();
+    int walkerType = (int)walkerInfo.get( "type", 0 );
 
     WalkerPtr walker = WalkerManager::getInstance().create( WalkerType( walkerType ), this );
     if( walker.isValid() )
@@ -627,5 +627,5 @@ void City::updateRoads()
 
 TilemapArea CityHelper::getArea(BuildingPtr building)
 {
-  return _city->getTilemap().getFilledRectangle( building->getTilePos(), building->getSize() );
+  return _city->getTilemap().getArea( building->getTilePos(), building->getSize() );
 }

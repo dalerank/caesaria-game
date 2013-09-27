@@ -120,12 +120,11 @@ int EntertainmentBuilding::_getTraineeLevel()
 
 Theater::Theater() : EntertainmentBuilding(Service::theater, B_THEATER, Size(2))
 {
-  _getAnimation().load( ResourceGroup::entertaiment, 14, 21);
-  _getAnimation().setOffset( Point( 60, 36 ) );
+  //_getAnimation().load( ResourceGroup::entertaiment, 14, 21);
+  //_getAnimation().setOffset( Point( 60, 36 ) );
   _getAnimation().stop();
 
   _fgPictures.resize(2);
-  //_fgPictures[0] = Picture::load( ResourceGroup::entertaiment, 35);
 }
 
 void Theater::build(CityPtr city, const TilePos& pos)
@@ -151,22 +150,59 @@ int Theater::getVisitorsNumber() const
   return 500;
 }
 
+void Theater::deliverService()
+{
+  EntertainmentBuilding::deliverService();
+
+  _fgPictures[0] =  _getAnimation().isRunning()
+                      ? Picture::load( ResourceGroup::entertaiment, 35 )
+                      : Picture::getInvalid();
+}
+
 Amphitheater::Amphitheater() : EntertainmentBuilding(Service::amphitheater, B_AMPHITHEATER, Size(3))
 {
-  setPicture( ResourceGroup::entertaiment, 1 );
+  //setPicture( ResourceGroup::entertaiment, 1 );
 
-  _getAnimation().load( ResourceGroup::entertaiment, 2, 10);
-  _getAnimation().setOffset( Point( 100, 49 ) );
+  //_getAnimation().load( ResourceGroup::entertaiment, 2, 10);
+  //_getAnimation().setOffset( Point( 100, 49 ) );
   _fgPictures.resize(2);
-  _fgPictures[0] = Picture::load( ResourceGroup::entertaiment, 12);
+  //_fgPictures[0] = Picture::load( ResourceGroup::entertaiment, 12);
+}
+
+void Amphitheater::build(CityPtr city, const TilePos& pos)
+{
+  EntertainmentBuilding::build( city, pos );
+
+  CityHelper helper( city );
+  ActorColonyList actors = helper.getBuildings<ActorColony>( B_ACTOR_COLONY );
+
+  if( actors.empty() )
+  {
+    GameEventMgr::append( WarningMessageEvent::create( _("##need_actor_colony##")) );
+  }
+
+  GladiatorSchoolList gladiators = helper.getBuildings<GladiatorSchool>( B_GLADIATOR_SCHOOL );
+  if( actors.empty() )
+  {
+    GameEventMgr::append( WarningMessageEvent::create( _("##need_gladiator_school##")) );
+  }
+}
+
+void Amphitheater::deliverService()
+{
+  EntertainmentBuilding::deliverService();
+
+  _fgPictures[0] = _getAnimation().isRunning()
+                         ? Picture::load( ResourceGroup::entertaiment, 12 )
+                         : Picture::getInvalid();
 }
 
 Collosseum::Collosseum() : EntertainmentBuilding(Service::colloseum, B_COLLOSSEUM, Size(5) )
 {
-  setPicture( Picture::load( ResourceGroup::entertaiment, 36));
+  //setPicture( Picture::load( ResourceGroup::entertaiment, 36));
 
-  _getAnimation().load( ResourceGroup::entertaiment, 37, 13);
-  _getAnimation().setOffset( Point( 122, 81 ) );
+  //_getAnimation().load( ResourceGroup::entertaiment, 37, 13);
+  //_getAnimation().setOffset( Point( 122, 81 ) );
   _fgPictures.resize(2);
   _fgPictures[0] = Picture::load( ResourceGroup::entertaiment, 50);
 }

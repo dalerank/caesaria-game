@@ -126,13 +126,9 @@ void ComputerCity::load( const VariantMap& options )
 {
   setLocation( options.get( "location" ).toPoint() );
 
-  _d->isAvailable = options.get( "available" ).toBool();
-
-  Variant vTime = options.get( "lastTimeUpdate" );
-  _d->lastTimeUpdate = vTime.isNull() ? GameDate::current() : vTime.toDateTime();
-
-  vTime = options.get( "lastTimeMerchantSend" );
-  _d->lastTimeMerchantSend = vTime.isNull() ? GameDate::current() : vTime.toDateTime();
+  _d->isAvailable = (bool)options.get( "available", false );
+  _d->lastTimeUpdate = options.get( "lastTimeUpdate", GameDate::current() ).toDateTime();
+  _d->lastTimeMerchantSend = options.get( "lastTimeMerchantSend", GameDate::current() ).toDateTime();
 
   const VariantMap& sells_vm = options.get( "sells" ).toMap();
   for( VariantMap::const_iterator it=sells_vm.begin(); it != sells_vm.end(); it++ )

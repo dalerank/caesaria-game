@@ -41,7 +41,7 @@ bool Construction::canBuild( CityPtr city, const TilePos& pos ) const
   bool is_constructible = true;
 
   //return area for available tiles
-  TilemapArea area = tilemap.getFilledRectangle( pos, getSize() );
+  TilemapArea area = tilemap.getArea( pos, getSize() );
 
   //on over map size
   if( (int)area.size() != getSize().getArea() )
@@ -73,7 +73,7 @@ void Construction::_updateDesirabilityInfluence( const DsbrlUpdate type )
   int mul = ( type == duPositive ? 1 : -1);
 
   //change desirability in selfarea
-  TilemapArea area = tilemap.getFilledRectangle( getTilePos(), getSize() );
+  TilemapArea area = tilemap.getArea( getTilePos(), getSize() );
   foreach( Tile* tile, area )
   {
     tile->appendDesirability( mul * desInfluence );
@@ -83,7 +83,7 @@ void Construction::_updateDesirabilityInfluence( const DsbrlUpdate type )
   for( int curRange=1; curRange <= dsrblRange; curRange++ )
   {
     TilemapArea perimetr = tilemap.getRectangle( getTilePos() - TilePos( curRange, curRange ), 
-                                                  getSize() + Size( 2 * curRange - 1 ) );
+                                                  getSize() + Size( 2 * curRange ) );
     foreach( Tile* tile, perimetr )
     {
       tile->appendDesirability( mul * desInfluence );
@@ -357,8 +357,8 @@ void Building::save( VariantMap& stream) const
 void Building::load( const VariantMap& stream )
 {
   Construction::load( stream );
-  _damageLevel = stream.get( Serializable::damageLevel ).toFloat();
-  _fireLevel = stream.get( Serializable::fireLevel ).toFloat();
+  _damageLevel = (float)stream.get( Serializable::damageLevel, 0.f );
+  _fireLevel = (float)stream.get( Serializable::fireLevel, 0.f );
 //    Construction::unserialize(stream);
 //    _damageLevel = (float)stream.read_int(1, 0, 100);
 //    _fireLevel = (float)stream.read_int(1, 0, 100);

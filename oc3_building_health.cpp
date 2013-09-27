@@ -35,7 +35,7 @@ void Doctor::deliverService()
   }
 }
 
-Hospital::Hospital() : ServiceBuilding(Service::S_HOSPITAL, B_HOSPITAL, Size(3 ) )
+Hospital::Hospital() : ServiceBuilding(Service::hospital, B_HOSPITAL, Size(3 ) )
 {
 }
 
@@ -88,7 +88,7 @@ void Baths::_initAnimation()
   _getAnimation().stop();
 }
 
-Barber::Barber() : ServiceBuilding(Service::S_BARBER, B_BARBER, Size(1))
+Barber::Barber() : ServiceBuilding(Service::barber, B_BARBER, Size(1))
 {
 }
 

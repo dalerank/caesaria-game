@@ -172,7 +172,7 @@ void HighBridge::_computePictures( CityPtr city, const TilePos& startPos, const 
   {
   case D_NORTH_WEST:
     {
-      TilemapArea tiles = tilemap.getFilledRectangle( endPos, startPos );
+      TilemapArea tiles = tilemap.getArea( endPos, startPos );
 
       tiles.pop_back();
       tiles.pop_back();
@@ -194,7 +194,7 @@ void HighBridge::_computePictures( CityPtr city, const TilePos& startPos, const 
 
   case D_NORTH_EAST:
     {
-      TilemapArea tiles = tilemap.getFilledRectangle( startPos, endPos );
+      TilemapArea tiles = tilemap.getArea( startPos, endPos );
 
       tiles.pop_back();
       tiles.pop_back();
@@ -217,7 +217,7 @@ void HighBridge::_computePictures( CityPtr city, const TilePos& startPos, const 
 
   case D_SOUTH_EAST:
     {
-      TilemapArea tiles = tilemap.getFilledRectangle( startPos, endPos );
+      TilemapArea tiles = tilemap.getArea( startPos, endPos );
 
       tiles.pop_back();
       tiles.pop_back();
@@ -239,7 +239,7 @@ void HighBridge::_computePictures( CityPtr city, const TilePos& startPos, const 
 
   case D_SOUTH_WEST:
     {
-      TilemapArea tiles = tilemap.getFilledRectangle( endPos, startPos );
+      TilemapArea tiles = tilemap.getArea( endPos, startPos );
       
       tiles.pop_back();
       tiles.pop_back();
@@ -285,7 +285,7 @@ void HighBridge::_checkParams( CityPtr city, DirectionType& direction, TilePos& 
   int imdId = tile.getOriginalImgId();
   if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
   {    
-    TilemapArea tiles = tilemap.getFilledRectangle( curPos - TilePos( 10, 0), curPos );
+    TilemapArea tiles = tilemap.getArea( curPos - TilePos( 10, 0), curPos );
     for( TilemapArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
     {
       imdId = (*it)->getOriginalImgId();
@@ -299,7 +299,7 @@ void HighBridge::_checkParams( CityPtr city, DirectionType& direction, TilePos& 
   }
   else if( imdId == 376 || imdId == 377 || imdId == 378 || imdId == 379  )
   {
-    TilemapArea tiles = tilemap.getFilledRectangle( curPos, curPos + TilePos( 10, 0) );
+    TilemapArea tiles = tilemap.getArea( curPos, curPos + TilePos( 10, 0) );
     for( TilemapArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
     {
       imdId = (*it)->getOriginalImgId();
@@ -313,7 +313,7 @@ void HighBridge::_checkParams( CityPtr city, DirectionType& direction, TilePos& 
   }
   else if( imdId == 372 || imdId == 373 || imdId == 374 || imdId == 375  )
   {
-    TilemapArea tiles = tilemap.getFilledRectangle( curPos, curPos + TilePos( 0, 10) );
+    TilemapArea tiles = tilemap.getArea( curPos, curPos + TilePos( 0, 10) );
     for( TilemapArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
     {
       imdId = (*it)->getOriginalImgId();
@@ -327,7 +327,7 @@ void HighBridge::_checkParams( CityPtr city, DirectionType& direction, TilePos& 
   }
   else if( imdId == 380 || imdId == 381 || imdId == 382 || imdId == 383 )
   {
-    TilemapArea tiles = tilemap.getFilledRectangle( curPos - TilePos( 0, 10), curPos );
+    TilemapArea tiles = tilemap.getArea( curPos - TilePos( 0, 10), curPos );
     for( TilemapArea::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
     {
       imdId = (*it)->getOriginalImgId();

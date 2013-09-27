@@ -73,7 +73,7 @@ void Pathfinder::update( const Tilemap& tilemap )
     _d->grid[ k ].resize( tilemap.getSize());
   }
 
-  TilemapTiles tiles = _d->tilemap->getFilledRectangle( TilePos( 0, 0 ), Size( tilemap.getSize() ) );
+  TilemapTiles tiles = _d->tilemap->getArea( TilePos( 0, 0 ), Size( tilemap.getSize() ) );
   foreach( Tile* tile, tiles )
   {
     _d->grid[ tile->getI() ][ tile->getJ() ] = new AStarPoint( tile );

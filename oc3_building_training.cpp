@@ -70,14 +70,14 @@ void TrainingBuilding::save( VariantMap& stream) const
 void TrainingBuilding::load( const VariantMap& stream )
 {
   WorkingBuilding::load( stream );
-  _trainingTimer = (int)stream.get( "trainingTimer" );
-  _trainingDelay = (int)stream.get( "trainingDelay" );
+  _trainingTimer = (int)stream.get( "trainingTimer", 0 );
+  _trainingDelay = (int)stream.get( "trainingDelay", 80 );
 }
 
 ActorColony::ActorColony() : TrainingBuilding( B_ACTOR_COLONY, Size(3) )
 {
-  _getAnimation().load( ResourceGroup::entertaiment, 82, 9);
-  _getAnimation().setOffset( Point( 68, -6 ) );
+  //_getAnimation().load( ResourceGroup::entertaiment, 82, 9);
+  //_getAnimation().setOffset( Point( 68, -6 ) );
   _fgPictures.resize(1);
 }
 
@@ -100,7 +100,7 @@ void ActorColony::deliverTrainee()
 
 GladiatorSchool::GladiatorSchool() : TrainingBuilding( B_GLADIATOR_SCHOOL, Size(3))
 {
-  setPicture( Picture::load( ResourceGroup::entertaiment, 51));
+  //setPicture( Picture::load( ResourceGroup::entertaiment, 51 ) );
 
   _getAnimation().load( ResourceGroup::entertaiment, 52, 10);
   _getAnimation().setOffset( Point( 62, 24 ) );

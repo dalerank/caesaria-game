@@ -44,12 +44,18 @@ public:
   virtual void timeStep(const unsigned long time);
 
   virtual int getVisitorsNumber() const;
+
+  virtual void deliverService();
 };
 
 class Amphitheater : public EntertainmentBuilding
 {
 public:
-   Amphitheater();
+  Amphitheater();
+
+  virtual void build(CityPtr city, const TilePos &pos);
+
+  virtual void deliverService();
 };
 
 class Collosseum : public EntertainmentBuilding

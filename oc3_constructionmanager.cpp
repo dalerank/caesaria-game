@@ -72,14 +72,14 @@ public:
   }
 };
 
-template< class T > class FactoryCreator : BuildingCreator
+template< class T > class FactoryCreator : public BuildingCreator
 {
   Construction* create( const BuildingData& info )
   {
     Factory* wb = new T();
 
-    wb->setMaxWorkers( (int)info.getOption( "employers" ) );
-    wb->setProductRate( (float)info.getOption( "productRate" ) );
+    wb->setMaxWorkers( (int)info.getOption( "employers", 0 ) );
+    wb->setProductRate( (float)info.getOption( "productRate", 9.6 ) );
 
     return wb;
   }
@@ -108,6 +108,20 @@ ConstructionPtr ConstructionManager::create(const BuildingType buildingType) con
       ret->setPicture( info.getBasePicture() );  // default picture for build tool
     }
 
+    VariantMap anMap = info.getOption( "animation" ).toMap();
+    if( !anMap.empty() )
+    {
+      Animation anim;
+
+      anim.load( anMap.get( "rc" ).toString(), anMap.get( "start" ).toInt(),
+                 anMap.get( "count" ).toInt(), anMap.get( "reverse", false ).toBool(),
+                 anMap.get( "step", 1 ).toInt() );
+      anim.setOffset( anMap.get( "offset" ).toPoint() );
+      anim.setFrameDelay( anMap.get( "delay", 1 ).toInt() );
+
+      ret->setAnimation( anim );
+    }
+
     ret->drop();
     return ret;
   }
@@ -130,19 +144,19 @@ ConstructionManager::ConstructionManager() : _d( new Impl )
 {
   // entertainment
   addCreator( B_THEATER, OC3_STR_EXT(B_THEATER), new WorkingBuildingCreator<Theater>() );
-  addCreator( B_AMPHITHEATER, OC3_STR_EXT(B_AMPHITHEATER), new BaseBuildingCreator<Amphitheater>() );
-  addCreator( B_COLLOSSEUM, OC3_STR_EXT(B_COLLOSSEUM), new BaseBuildingCreator<Collosseum>() );
-  addCreator( B_ACTOR_COLONY, OC3_STR_EXT(B_ACTOR_COLONY), new BaseBuildingCreator<ActorColony>() );
-  addCreator( B_GLADIATOR_SCHOOL, OC3_STR_EXT(B_GLADIATOR_SCHOOL), new BaseBuildingCreator<GladiatorSchool>() );
-  addCreator( B_LION_HOUSE, OC3_STR_EXT(B_LION_HOUSE), new BaseBuildingCreator<LionsNursery>() );
-  addCreator( B_CHARIOT_MAKER, OC3_STR_EXT(B_CHARIOT_MAKER), new BaseBuildingCreator<WorkshopChariot>() );
-  addCreator( B_HIPPODROME, OC3_STR_EXT(B_HIPPODROME),new BaseBuildingCreator<Hippodrome>() );
+  addCreator( B_AMPHITHEATER, OC3_STR_EXT(B_AMPHITHEATER), new WorkingBuildingCreator<Amphitheater>() );
+  addCreator( B_COLLOSSEUM, OC3_STR_EXT(B_COLLOSSEUM), new WorkingBuildingCreator<Collosseum>() );
+  addCreator( B_ACTOR_COLONY, OC3_STR_EXT(B_ACTOR_COLONY), new WorkingBuildingCreator<ActorColony>() );
+  addCreator( B_GLADIATOR_SCHOOL, OC3_STR_EXT(B_GLADIATOR_SCHOOL), new WorkingBuildingCreator<GladiatorSchool>() );
+  addCreator( B_LION_HOUSE, OC3_STR_EXT(B_LION_HOUSE), new WorkingBuildingCreator<LionsNursery>() );
+  addCreator( B_CHARIOT_MAKER, OC3_STR_EXT(B_CHARIOT_MAKER), new WorkingBuildingCreator<WorkshopChariot>() );
+  addCreator( B_HIPPODROME, OC3_STR_EXT(B_HIPPODROME),new WorkingBuildingCreator<Hippodrome>() );
   // road&house
   addCreator(B_HOUSE, OC3_STR_EXT(B_HOUSE), new BaseBuildingCreator<House>() );
   addCreator(B_ROAD, OC3_STR_EXT(B_ROAD) , new BaseBuildingCreator<Road>() );
   // administration
-  addCreator(B_FORUM, OC3_STR_EXT(B_FORUM) , new BaseBuildingCreator<Forum>() );
-  addCreator(B_SENATE, OC3_STR_EXT(B_SENATE), new BaseBuildingCreator<Senate>() );
+  addCreator(B_FORUM, OC3_STR_EXT(B_FORUM) , new WorkingBuildingCreator<Forum>() );
+  addCreator(B_SENATE, OC3_STR_EXT(B_SENATE), new WorkingBuildingCreator<Senate>() );
   addCreator(B_GOVERNOR_HOUSE, OC3_STR_EXT(B_GOVERNOR_HOUSE) , new BaseBuildingCreator<GovernorsHouse>() );
   addCreator(B_GOVERNOR_VILLA, OC3_STR_EXT(B_GOVERNOR_VILLA) , new BaseBuildingCreator<GovernorsVilla>() );
   addCreator(B_GOVERNOR_PALACE, OC3_STR_EXT(B_GOVERNOR_PALACE), new BaseBuildingCreator<GovernorsPalace>() );
@@ -153,67 +167,67 @@ ConstructionManager::ConstructionManager() : _d( new Impl )
   addCreator(B_PLAZA, OC3_STR_EXT(B_PLAZA)  , new BaseBuildingCreator<Plaza>() );
   // water
   addCreator(B_WELL, OC3_STR_EXT(B_WELL)     , new WorkingBuildingCreator<Well>() );
-  addCreator(B_FOUNTAIN, OC3_STR_EXT(B_FOUNTAIN) , new BaseBuildingCreator<Fountain>() );
+  addCreator(B_FOUNTAIN, OC3_STR_EXT(B_FOUNTAIN) , new WorkingBuildingCreator<Fountain>() );
   addCreator(B_AQUEDUCT, OC3_STR_EXT(B_AQUEDUCT), new BaseBuildingCreator<Aqueduct>() );
   addCreator(B_RESERVOIR, OC3_STR_EXT(B_RESERVOIR), new BaseBuildingCreator<Reservoir>() );
   // security
-  addCreator(B_PREFECTURE, OC3_STR_EXT(B_PREFECTURE)  , new BaseBuildingCreator<Prefecture>() );
+  addCreator(B_PREFECTURE, OC3_STR_EXT(B_PREFECTURE)  , new WorkingBuildingCreator<Prefecture>() );
   addCreator(B_FORT_LEGIONNAIRE, OC3_STR_EXT(B_FORT_LEGIONNAIRE), new BaseBuildingCreator<FortLegionnaire>() );
   addCreator(B_FORT_JAVELIN, OC3_STR_EXT(B_FORT_JAVELIN)   , new BaseBuildingCreator<FortJaveline>() );
   addCreator(B_FORT_MOUNTED, OC3_STR_EXT(B_FORT_MOUNTED)  , new BaseBuildingCreator<FortMounted>() );
-  addCreator(B_MILITARY_ACADEMY, OC3_STR_EXT(B_MILITARY_ACADEMY), new BaseBuildingCreator<MilitaryAcademy>() );
+  addCreator(B_MILITARY_ACADEMY, OC3_STR_EXT(B_MILITARY_ACADEMY), new WorkingBuildingCreator<MilitaryAcademy>() );
   addCreator(B_BARRACKS, OC3_STR_EXT(B_BARRACKS)        , new BaseBuildingCreator<Barracks>() );
   // commerce
-  addCreator(B_MARKET, OC3_STR_EXT(B_MARKET)  , new BaseBuildingCreator<Market>() );
-  addCreator(B_WAREHOUSE, OC3_STR_EXT(B_WAREHOUSE), new BaseBuildingCreator<Warehouse>() );
-  addCreator(B_GRANARY, OC3_STR_EXT(B_GRANARY)  , new BaseBuildingCreator<Granary>() );
+  addCreator(B_MARKET, OC3_STR_EXT(B_MARKET)  , new WorkingBuildingCreator<Market>() );
+  addCreator(B_WAREHOUSE, OC3_STR_EXT(B_WAREHOUSE), new WorkingBuildingCreator<Warehouse>() );
+  addCreator(B_GRANARY, OC3_STR_EXT(B_GRANARY)  , new WorkingBuildingCreator<Granary>() );
   // farms
-  addCreator(B_WHEAT_FARM, OC3_STR_EXT(B_WHEAT_FARM)    , new BaseBuildingCreator<FarmWheat>() );
-  addCreator(B_OLIVE_FARM, OC3_STR_EXT(B_OLIVE_FARM)    , new BaseBuildingCreator<FarmOlive>() );
-  addCreator(B_GRAPE_FARM, OC3_STR_EXT(B_GRAPE_FARM)    , new BaseBuildingCreator<FarmGrape>() );
-  addCreator(B_PIG_FARM, OC3_STR_EXT(B_PIG_FARM)     , new BaseBuildingCreator<FarmMeat>() );
-  addCreator(B_FRUIT_FARM, OC3_STR_EXT(B_FRUIT_FARM)    , new BaseBuildingCreator<FarmFruit>() );
-  addCreator(B_VEGETABLE_FARM, OC3_STR_EXT(B_VEGETABLE_FARM), new BaseBuildingCreator<FarmVegetable>() );
+  addCreator(B_WHEAT_FARM, OC3_STR_EXT(B_WHEAT_FARM) , new FactoryCreator<FarmWheat>() );
+  addCreator(B_OLIVE_FARM, OC3_STR_EXT(B_OLIVE_FARM) , new FactoryCreator<FarmOlive>() );
+  addCreator(B_GRAPE_FARM, OC3_STR_EXT(B_GRAPE_FARM) , new FactoryCreator<FarmGrape>() );
+  addCreator(B_PIG_FARM, OC3_STR_EXT(B_PIG_FARM)     , new FactoryCreator<FarmMeat>() );
+  addCreator(B_FRUIT_FARM, OC3_STR_EXT(B_FRUIT_FARM)    , new FactoryCreator<FarmFruit>() );
+  addCreator(B_VEGETABLE_FARM, OC3_STR_EXT(B_VEGETABLE_FARM), new FactoryCreator<FarmVegetable>() );
   // raw materials
-  addCreator(B_IRON_MINE, OC3_STR_EXT(B_IRON_MINE)  , new BaseBuildingCreator<IronMine>() );
-  addCreator(B_TIMBER_YARD, OC3_STR_EXT(B_TIMBER_YARD), new BaseBuildingCreator<TimberLogger>() );
-  addCreator(B_CLAY_PIT, OC3_STR_EXT(B_CLAY_PIT)  , new BaseBuildingCreator<ClayPit>() );
-  addCreator(B_MARBLE_QUARRY, OC3_STR_EXT(B_MARBLE_QUARRY), new BaseBuildingCreator<MarbleQuarry>() );
+  addCreator(B_IRON_MINE, OC3_STR_EXT(B_IRON_MINE)  , new FactoryCreator<IronMine>() );
+  addCreator(B_TIMBER_YARD, OC3_STR_EXT(B_TIMBER_YARD), new FactoryCreator<TimberLogger>() );
+  addCreator(B_CLAY_PIT, OC3_STR_EXT(B_CLAY_PIT)  , new FactoryCreator<ClayPit>() );
+  addCreator(B_MARBLE_QUARRY, OC3_STR_EXT(B_MARBLE_QUARRY), new FactoryCreator<MarbleQuarry>() );
   // factories
-  addCreator(B_WEAPONS_WORKSHOP, OC3_STR_EXT(B_WEAPONS_WORKSHOP)   , new BaseBuildingCreator<WeaponsWorkshop>() );
-  addCreator(B_FURNITURE, OC3_STR_EXT(B_FURNITURE), new BaseBuildingCreator<WorkshopFurniture>() );
-  addCreator(B_WINE_WORKSHOP, OC3_STR_EXT(B_WINE_WORKSHOP)     , new BaseBuildingCreator<Winery>() );
-  addCreator(B_OIL_WORKSHOP, OC3_STR_EXT(B_OIL_WORKSHOP)      , new BaseBuildingCreator<Creamery>() );
-  addCreator(B_POTTERY, OC3_STR_EXT(B_POTTERY)  , new BaseBuildingCreator<Pottery>() );
+  addCreator(B_WEAPONS_WORKSHOP, OC3_STR_EXT(B_WEAPONS_WORKSHOP)   , new FactoryCreator<WeaponsWorkshop>() );
+  addCreator(B_FURNITURE, OC3_STR_EXT(B_FURNITURE), new FactoryCreator<WorkshopFurniture>() );
+  addCreator(B_WINE_WORKSHOP, OC3_STR_EXT(B_WINE_WORKSHOP)     , new FactoryCreator<Winery>() );
+  addCreator(B_OIL_WORKSHOP, OC3_STR_EXT(B_OIL_WORKSHOP)      , new FactoryCreator<Creamery>() );
+  addCreator(B_POTTERY, OC3_STR_EXT(B_POTTERY)  , new FactoryCreator<Pottery>() );
   // utility
-  addCreator(B_ENGINEER_POST, OC3_STR_EXT(B_ENGINEER_POST), new BaseBuildingCreator<BuildingEngineer>() );
+  addCreator(B_ENGINEER_POST, OC3_STR_EXT(B_ENGINEER_POST), new WorkingBuildingCreator<BuildingEngineer>() );
   addCreator(B_LOW_BRIDGE, OC3_STR_EXT(B_LOW_BRIDGE), new BaseBuildingCreator<LowBridge>() );
   addCreator(B_HIGH_BRIDGE, OC3_STR_EXT(B_HIGH_BRIDGE), new BaseBuildingCreator<HighBridge>() );
   addCreator(B_DOCK, OC3_STR_EXT(B_DOCK)    , new BaseBuildingCreator<Dock>() );
   addCreator(B_SHIPYARD, OC3_STR_EXT(B_SHIPYARD), new BaseBuildingCreator<Shipyard>() );
-  addCreator(B_WHARF, OC3_STR_EXT(B_WHARF)   , new BaseBuildingCreator<Wharf>() );
+  addCreator(B_WHARF, OC3_STR_EXT(B_WHARF)   , new WorkingBuildingCreator<Wharf>() );
   addCreator(B_TRIUMPHAL_ARCH, OC3_STR_EXT(B_TRIUMPHAL_ARCH) , new BaseBuildingCreator<TriumphalArch>() );
   // religion
-  addCreator(B_TEMPLE_CERES, OC3_STR_EXT(B_TEMPLE_CERES)  , new BaseBuildingCreator<TempleCeres>() );
-  addCreator(B_TEMPLE_NEPTUNE, OC3_STR_EXT(B_TEMPLE_NEPTUNE), new BaseBuildingCreator<TempleNeptune>() );
-  addCreator(B_TEMPLE_MARS, OC3_STR_EXT(B_TEMPLE_MARS)   , new BaseBuildingCreator<TempleMars>() );
-  addCreator(B_TEMPLE_VENUS, OC3_STR_EXT(B_TEMPLE_VENUS)  , new BaseBuildingCreator<TempleVenus>() );
-  addCreator(B_TEMPLE_MERCURE, OC3_STR_EXT(B_TEMPLE_MERCURE), new BaseBuildingCreator<TempleMercure>() );
-  addCreator(B_BIG_TEMPLE_CERES, OC3_STR_EXT(B_BIG_TEMPLE_CERES)  , new BaseBuildingCreator<BigTempleCeres>() );
-  addCreator(B_BIG_TEMPLE_NEPTUNE, OC3_STR_EXT(B_BIG_TEMPLE_NEPTUNE), new BaseBuildingCreator<BigTempleNeptune>() );
-  addCreator(B_BIG_TEMPLE_MARS, OC3_STR_EXT(B_BIG_TEMPLE_MARS)   , new BaseBuildingCreator<BigTempleMars>() );
-  addCreator(B_BIG_TEMPLE_VENUS, OC3_STR_EXT(B_BIG_TEMPLE_VENUS)  , new BaseBuildingCreator<BigTempleVenus>() );
-  addCreator(B_BIG_TEMPLE_MERCURE, OC3_STR_EXT(B_BIG_TEMPLE_MERCURE), new BaseBuildingCreator<BigTempleMercure>() );
-  addCreator(B_TEMPLE_ORACLE, OC3_STR_EXT(B_TEMPLE_ORACLE) , new BaseBuildingCreator<TempleOracle>() );
+  addCreator(B_TEMPLE_CERES, OC3_STR_EXT(B_TEMPLE_CERES)  , new WorkingBuildingCreator<TempleCeres>() );
+  addCreator(B_TEMPLE_NEPTUNE, OC3_STR_EXT(B_TEMPLE_NEPTUNE), new WorkingBuildingCreator<TempleNeptune>() );
+  addCreator(B_TEMPLE_MARS, OC3_STR_EXT(B_TEMPLE_MARS)   , new WorkingBuildingCreator<TempleMars>() );
+  addCreator(B_TEMPLE_VENUS, OC3_STR_EXT(B_TEMPLE_VENUS)  , new WorkingBuildingCreator<TempleVenus>() );
+  addCreator(B_TEMPLE_MERCURE, OC3_STR_EXT(B_TEMPLE_MERCURE), new WorkingBuildingCreator<TempleMercure>() );
+  addCreator(B_BIG_TEMPLE_CERES, OC3_STR_EXT(B_BIG_TEMPLE_CERES)  , new WorkingBuildingCreator<BigTempleCeres>() );
+  addCreator(B_BIG_TEMPLE_NEPTUNE, OC3_STR_EXT(B_BIG_TEMPLE_NEPTUNE), new WorkingBuildingCreator<BigTempleNeptune>() );
+  addCreator(B_BIG_TEMPLE_MARS, OC3_STR_EXT(B_BIG_TEMPLE_MARS)   , new WorkingBuildingCreator<BigTempleMars>() );
+  addCreator(B_BIG_TEMPLE_VENUS, OC3_STR_EXT(B_BIG_TEMPLE_VENUS)  , new WorkingBuildingCreator<BigTempleVenus>() );
+  addCreator(B_BIG_TEMPLE_MERCURE, OC3_STR_EXT(B_BIG_TEMPLE_MERCURE), new WorkingBuildingCreator<BigTempleMercure>() );
+  addCreator(B_TEMPLE_ORACLE, OC3_STR_EXT(B_TEMPLE_ORACLE) , new WorkingBuildingCreator<TempleOracle>() );
   // health
-  addCreator(B_BATHS, OC3_STR_EXT(B_BATHS)   , new BaseBuildingCreator<Baths>() );
-  addCreator(B_BARBER, OC3_STR_EXT(B_BARBER)  , new BaseBuildingCreator<Barber>() );
-  addCreator(B_DOCTOR, OC3_STR_EXT(B_DOCTOR)  , new BaseBuildingCreator<Doctor>() );
-  addCreator(B_HOSPITAL, OC3_STR_EXT(B_HOSPITAL), new BaseBuildingCreator<Hospital>() );
+  addCreator(B_BATHS, OC3_STR_EXT(B_BATHS)   , new WorkingBuildingCreator<Baths>() );
+  addCreator(B_BARBER, OC3_STR_EXT(B_BARBER)  , new WorkingBuildingCreator<Barber>() );
+  addCreator(B_DOCTOR, OC3_STR_EXT(B_DOCTOR)  , new WorkingBuildingCreator<Doctor>() );
+  addCreator(B_HOSPITAL, OC3_STR_EXT(B_HOSPITAL), new WorkingBuildingCreator<Hospital>() );
   // education
-  addCreator(B_SCHOOL, OC3_STR_EXT(B_SCHOOL) , new BaseBuildingCreator<School>() );
-  addCreator(B_LIBRARY, OC3_STR_EXT(B_LIBRARY), new BaseBuildingCreator<Library>() );
-  addCreator(B_COLLEGE, OC3_STR_EXT(B_COLLEGE), new BaseBuildingCreator<College>() );
+  addCreator(B_SCHOOL, OC3_STR_EXT(B_SCHOOL) , new WorkingBuildingCreator<School>() );
+  addCreator(B_LIBRARY, OC3_STR_EXT(B_LIBRARY), new WorkingBuildingCreator<Library>() );
+  addCreator(B_COLLEGE, OC3_STR_EXT(B_COLLEGE), new WorkingBuildingCreator<College>() );
   addCreator(B_MISSION_POST, OC3_STR_EXT(B_MISSION_POST), new BaseBuildingCreator<MissionPost>() );
   // natives
   addCreator(B_NATIVE_HUT, OC3_STR_EXT(B_NATIVE_HUT)   , new BaseBuildingCreator<NativeHut>() );

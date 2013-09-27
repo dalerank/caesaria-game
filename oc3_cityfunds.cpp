@@ -120,7 +120,7 @@ VariantMap CityFunds::save() const
 
 void CityFunds::load( const VariantMap& stream )
 {
-  _d->money = stream.get( "money" ).toInt();
+  _d->money = (int)stream.get( "money", 0 );
 
   VariantList history = stream.get( "history" ).toList();
   for( VariantList::iterator it = history.begin(); it != history.end(); it++ )

@@ -557,16 +557,16 @@ void Widget::setupUI( const VariantMap& ui )
   }
 
   Variant tmp;
-  tmp = ui.get( "id" ); setID( tmp.isValid() ? tmp.toInt() : -1 );
-  tmp = ui.get( "text" ); setText( tmp.isValid() ? tmp.toString() : "" );
-  tmp = ui.get( "tooltip" ); setTooltipText( tmp.isValid() ? tmp.toString() : "" );
-  tmp = ui.get( "visible" ); setVisible( tmp.isValid() ? tmp.toBool() : true );
-  tmp = ui.get( "enabled" ); setEnabled( tmp.isValid() ? tmp.toBool() : true );
-  tmp = ui.get( "tabStop" ); _isTabStop = tmp.isValid() ? tmp.toInt() : false;
-  tmp = ui.get( "tabGroup" ); _isTabGroup = tmp.isValid() ? tmp.toInt() : -1;
-  tmp = ui.get( "tabOrder" ); _tabOrder = tmp.isValid() ? tmp.toInt() : -1;
-  tmp = ui.get( "maximumSize" ); setMaxSize( tmp.isValid() ? tmp.toSize() : Size( 0 ) );
-  tmp = ui.get( "minimumSize" ); setMinSize( tmp.isValid() ? tmp.toSize() : Size( 1 ) );
+  setID( (int)ui.get( "id", -1 ) );
+  setText( ui.get( "text" ).toString() );
+  setTooltipText( ui.get( "tooltip" ).toString() );
+  setVisible( ui.get( "visible", true ).toBool() );
+  setEnabled( ui.get( "enabled", true ).toBool() );
+  _isTabStop = ui.get( "tabStop", false ).toBool();
+  _isTabGroup = ui.get( "tabGroup", -1 ).toInt();
+  _tabOrder = ui.get( "tabOrder", -1 ).toInt();
+  setMaxSize( ui.get( "maximumSize", Size( 0 ) ).toSize() );
+  setMinSize( ui.get( "minimumSize", Size( 1 ) ).toSize() );
 
   /*setAlignment( ahelper.findType( ui.get( "leftAlign" ).toString() ),
                 ahelper.findType( ui.get( "rightAlign" ).toString() ),
@@ -585,7 +585,7 @@ void Widget::setupUI( const VariantMap& ui )
     setGeometry( tmp.toRectf() );
   }
 
-  tmp = ui.get( "noclipped" ); setNotClipped( tmp.isValid() ? tmp.toBool() : false );
+  setNotClipped( ui.get( "noclipped", false ).toBool() );
 
   for( VariantMap::const_iterator it=ui.begin(); it != ui.end(); it++ )
   {

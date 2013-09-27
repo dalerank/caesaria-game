@@ -74,7 +74,7 @@ void WorkingBuilding::save( VariantMap& stream ) const
 void WorkingBuilding::load( const VariantMap& stream)
 {
   Building::load( stream );
-  _d->currentWorkers = stream.get( "currentWorkers" ).toInt();
+  _d->currentWorkers = (int)stream.get( "currentWorkers", 0 );
 }
 
 void WorkingBuilding::addWorkers( const int workers )

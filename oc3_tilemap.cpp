@@ -164,7 +164,7 @@ TilemapTiles Tilemap::getRectangle( const TilePos& pos, const Size& size, const 
 }
 
 // Get tiles inside of rectangle
-TilemapTiles Tilemap::getFilledRectangle(const TilePos& start, const TilePos& stop )
+TilemapTiles Tilemap::getArea(const TilePos& start, const TilePos& stop )
 {
    TilemapTiles res;
 
@@ -182,9 +182,9 @@ TilemapTiles Tilemap::getFilledRectangle(const TilePos& start, const TilePos& st
    return res;
 }
 
-TilemapTiles Tilemap::getFilledRectangle( const TilePos& start, const Size& size )
+TilemapTiles Tilemap::getArea( const TilePos& start, const Size& size )
 {
-  return getFilledRectangle( start, start + TilePos( size.getWidth()-1, size.getHeight()-1 ) );
+  return getArea( start, start + TilePos( size.getWidth()-1, size.getHeight()-1 ) );
 }
 
 void Tilemap::save( VariantMap& stream ) const
@@ -194,7 +194,7 @@ void Tilemap::save( VariantMap& stream ) const
   VariantList desInfo;
   VariantList idInfo;
 
-  TilemapArea tiles = const_cast< Tilemap* >( this )->getFilledRectangle( TilePos( 0, 0 ), Size( _d->size ) );
+  TilemapArea tiles = const_cast< Tilemap* >( this )->getArea( TilePos( 0, 0 ), Size( _d->size ) );
   foreach( Tile* tile, tiles )
   {
     bitsetInfo.push_back( TileHelper::encode( *tile ) );
@@ -222,7 +222,7 @@ void Tilemap::load( const VariantMap& stream )
   VariantList::iterator bitsetInfoIt   = bitsetInfo.begin();
   VariantList::iterator desirabilityIt = desInfo.begin();
 
-  TilemapArea tiles = const_cast< Tilemap* >( this )->getFilledRectangle( TilePos( 0, 0 ), Size( _d->size ) );
+  TilemapArea tiles = const_cast< Tilemap* >( this )->getArea( TilePos( 0, 0 ), Size( _d->size ) );
   for( TilemapArea::iterator it = tiles.begin(); it != tiles.end(); 
        it++, imgIdIt++, bitsetInfoIt++, desirabilityIt++ )
   {

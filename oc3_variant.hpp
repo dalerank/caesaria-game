@@ -279,10 +279,10 @@ public:
     return *this;
   }
 
-  Variant get( const std::string& name ) const
+  Variant get( const std::string& name, Variant defaultVal=Variant() ) const
   {
     VariantMap::const_iterator it = find( name );
-    return (it != end() ? it->second : Variant() );
+    return (it != end() ? it->second : defaultVal );
   }
 
   Variant toVariant() const

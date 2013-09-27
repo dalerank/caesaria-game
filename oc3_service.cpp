@@ -25,7 +25,7 @@ ServiceHelper& ServiceHelper::instance()
 ServiceHelper::ServiceHelper() : EnumsHelper<Service::Type>( Service::S_MAX )
 {
   append( Service::well, "srvc_well" );
-  append( Service::S_FOUNTAIN, "srvc_fonutain" );
+  append( Service::fontain, "srvc_fonutain" );
   append( Service::S_MARKET, "srvc_market" );
   append( Service::engineer, "srvc_engineer" );
   append( Service::S_SENATE, "srvc_senate" );
@@ -38,12 +38,12 @@ ServiceHelper::ServiceHelper() : EnumsHelper<Service::Type>( Service::S_MAX )
   append( Service::S_TEMPLE_MERCURE, "srvc_temple_mercury" );
   append( Service::S_TEMPLE_ORACLE, "srvc_temple_oracle" );
   append( Service::doctor, "srvc_doctor" );
-  append( Service::S_BARBER, "srvc_barber" );
+  append( Service::barber, "srvc_barber" );
   append( Service::baths, "srvc_baths" );
-  append( Service::S_HOSPITAL, "srvc_hospital" );
-  append( Service::S_SCHOOL, "srvc_school" );
-  append( Service::S_LIBRARY, "srvc_library" );
-  append( Service::S_COLLEGE, "srvc_college" );
+  append( Service::hospital, "srvc_hospital" );
+  append( Service::school, "srvc_school" );
+  append( Service::library, "srvc_library" );
+  append( Service::college, "srvc_college" );
   append( Service::theater, "srvc_theater" );
   append( Service::amphitheater, "srvc_amphitheater" );
   append( Service::colloseum, "srvc_collosseum" );

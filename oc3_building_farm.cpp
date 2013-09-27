@@ -102,7 +102,7 @@ bool Farm::canBuild( CityPtr city, const TilePos& pos ) const
   bool is_constructible = Construction::canBuild( city, pos );
   bool on_meadow = false;
 
-  TilemapArea area = city->getTilemap().getFilledRectangle( pos, getSize() );
+  TilemapArea area = city->getTilemap().getArea( pos, getSize() );
 
   foreach( Tile* tile, area )
   {

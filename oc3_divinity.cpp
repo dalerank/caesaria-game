@@ -31,10 +31,8 @@ public:
     _name = vm.get( "name" ).toString();
     _service = ServiceHelper::getType( vm.get( "service" ).toString() );
     _pic = Picture::load( vm.get( "image" ).toString() );
-    Variant vRelation = vm.get( "relation" );
-    _relation = vRelation.isNull() ? 100.f : (float)vRelation;
-    Variant vLastFestival = vm.get( "lastFestivalDate" );
-    _lastFestival = vLastFestival.isNull() ? GameDate::current() : vLastFestival.toDateTime();
+    _relation = (float)vm.get( "relation", 100.f );
+    _lastFestival = vm.get( "lastFestivalDate", GameDate::current() ).toDateTime() ;
     _shortDesc = vm.get( "shortDesc" ).toString();
 
     _moodDescr << vm.get( "moodDescription" ).toList();

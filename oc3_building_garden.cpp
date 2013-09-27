@@ -23,7 +23,7 @@ Garden::Garden() : Construction(B_GARDEN, Size(1) )
 {
   // always set picture to 110 (tree garden) here, for sake of building preview
   // actual garden picture will be set upon building being constructed
-  setPicture( Picture::load( ResourceGroup::entertaiment, 110 ) ); // 110 111 112 113
+  //setPicture( Picture::load( ResourceGroup::entertaiment, 110 ) ); // 110 111 112 113
 }
 
 void Garden::initTerrain(Tile& terrain)
@@ -51,23 +51,38 @@ void Garden::build( CityPtr city, const TilePos& pos )
   int theGrid[2][2] = {{113, 110}, {112, 111}};
 
   Construction::build( city, pos );
-  setPicture( Picture::load( ResourceGroup::entertaiment, theGrid[pos.getI() % 2][pos.getJ() % 2] ) );
+  setPicture( ResourceGroup::entertaiment, theGrid[pos.getI() % 2][pos.getJ() % 2] );
 
-  TilemapTiles tilesAround = city->getTilemap().getRectangle( getTilePos() - TilePos( 1, 1),
-                                                              getTilePos() + TilePos( 1, 1 ) );
-  foreach( Tile* tile, tilesAround )
+  if( getSize().getArea() == 1 )
   {
-    GardenPtr garden = tile->getOverlay().as<Garden>();
-    if( garden.isValid() )
+    TilemapTiles tilesAround = city->getTilemap().getRectangle( getTilePos() - TilePos( 1, 1),
+                                                                getTilePos() + TilePos( 1, 1 ) );
+    foreach( Tile* tile, tilesAround )
     {
-      garden->update();
+      GardenPtr garden = tile->getOverlay().as<Garden>();
+      if( garden.isValid() )
+      {
+        garden->update();
+      }
     }
+  }
+}
+
+void Garden::load(const VariantMap& stream)
+{
+  Construction::load( stream );
+
+  //rebuild that garden have size=1 on basic build
+  //after loading size may change to 2
+  if( getSize().getArea() > 1 )
+  {
+    Construction::build( _getCity(), getTilePos() );
   }
 }
 
 void Garden::update()
 {
-  TilemapArea nearTiles = _getCity()->getTilemap().getFilledRectangle( getTilePos(), Size(2) );
+  TilemapArea nearTiles = _getCity()->getTilemap().getArea( getTilePos(), Size(2) );
 
   bool canGrow2squareGarden = ( nearTiles.size() == 4 ); // be carefull on map edges
   foreach( Tile* tile, nearTiles )
@@ -91,6 +106,6 @@ void Garden::update()
 
     setSize( 2 );
     Construction::build( _getCity(), getTilePos() );
-    setPicture( Picture::load(  ResourceGroup::entertaiment, 114 + rand() % 3 ));
+    setPicture( ResourceGroup::entertaiment, 114 + rand() % 3 );
   }
 }

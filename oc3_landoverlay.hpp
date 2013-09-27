@@ -50,6 +50,8 @@ public:
   void setPicture(const Picture &picture);
   void setPicture(const char* resource, const int index);
 
+  void setAnimation( const Animation& animation );
+
   const Picture& getPicture() const;
   PicturesArray& getForegroundPictures();
 

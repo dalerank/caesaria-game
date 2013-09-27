@@ -49,7 +49,8 @@ public:
   Aqueduct();
 
   virtual void build(CityPtr city, const TilePos& pos );
-  Picture& computePicture(const TilemapTiles * tmp = NULL,
+  Picture& computePicture(CityPtr city,
+                          const TilemapTiles * tmp = NULL,
                           const TilePos pos = TilePos(0, 0));
   virtual void initTerrain(Tile& terrain);
   virtual bool canBuild(CityPtr city, const TilePos& pos ) const;
@@ -58,7 +59,7 @@ public:
   virtual bool isWalkable() const; 
   virtual bool isRoad() const;
 
-  void updatePicture();
+  void updatePicture(CityPtr city);
   void addWater( const WaterSource& source );
 
 protected:

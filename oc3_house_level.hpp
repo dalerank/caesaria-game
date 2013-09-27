@@ -49,6 +49,7 @@ public:
 
   HouseLevelSpec next() const;
 
+  int computeDesirabilityLevel(HousePtr house, std::string &oMissingRequirement) const;
   int computeEntertainmentLevel(HousePtr house) const;
   int computeEducationLevel(HousePtr house, std::string &oMissingRequirement);
   int computeHealthLevel(HousePtr house, std::string &oMissingRequirement);

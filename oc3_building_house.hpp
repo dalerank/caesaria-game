@@ -26,6 +26,7 @@ class GoodStore;
 
 class House : public Building
 {
+  friend class HouseLevelSpec;
 public:
   enum { smallHovel=1, bigTent, smallHut, bigHut } Level;
 
@@ -44,12 +45,15 @@ public:
 
   bool hasServiceAccess(const Service::Type service);
   int getServiceAccess(const Service::Type service);
+  void setServiceAccess(const Service::Type service, const int access);
+
   int getFoodLevel() const;
   int getHealthLevel() const;
-  void setServiceAccess(const Service::Type service, const int access);
+
   char getDesirabilityInfluence() const;
   unsigned char getDesirabilityRange() const;
   char getDesirabilityStep() const;
+
   int getScholars() const;
 
   void levelUp();

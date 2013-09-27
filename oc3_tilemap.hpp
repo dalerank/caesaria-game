@@ -51,8 +51,8 @@ public:
   // returns all tiles in a rectangular area
   // (i1, j1) : left corner of the rectangle (minI, minJ)
   // (i2, j2) : right corner of the rectangle (maxI, maxJ)
-  TilemapArea getFilledRectangle( const TilePos& start, const TilePos& stop );
-  TilemapArea getFilledRectangle( const TilePos& start, const Size& size );
+  TilemapArea getArea( const TilePos& start, const TilePos& stop );
+  TilemapArea getArea( const TilePos& start, const Size& size );
   int getSize() const;
 
   void save( VariantMap& stream) const;

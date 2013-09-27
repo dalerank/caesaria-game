@@ -633,16 +633,11 @@ void Label::setupUI(const VariantMap& ui)
 {
   Widget::setupUI( ui );
 
-  Variant tmp ;
-  tmp = ui.get( "font" ); if( tmp.isValid() ) setFont( Font::create( tmp.toString() ) );
-  tmp = ui.get( "image" ); if( tmp.isValid() ) setBackgroundPicture( Picture::load( tmp.toString() ) );
-  tmp = ui.get( "bgtype" );
+  setFont( Font::create( ui.get( "font" ).toString() ) );
+  setBackgroundPicture( Picture::load( ui.get( "image" ).toString() ) );
 
-  if( tmp.isValid() )
-  {
-    BackgroundModeHelper helper;
-    setBackgroundMode( helper.findType( tmp.toString() ));
-  }
+  BackgroundModeHelper helper;
+  setBackgroundMode( helper.findType( ui.get( "bgtype" ).toString() ));
 }
 
 PictureRef& Label::getPicture()

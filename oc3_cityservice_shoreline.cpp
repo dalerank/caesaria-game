@@ -34,7 +34,7 @@ public:
 void CityServiceShoreline::Impl::checkMap( CityPtr city )
 {
   int mapSize = city->getTilemap().getSize();
-  TilemapTiles tiles = city->getTilemap().getFilledRectangle( TilePos( 0, 0), Size( mapSize ) );
+  TilemapTiles tiles = city->getTilemap().getArea( TilePos( 0, 0), Size( mapSize ) );
 
   foreach( Tile* tile, tiles )
   {

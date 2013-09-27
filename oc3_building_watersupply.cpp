@@ -42,7 +42,7 @@ public:
 
 Aqueduct::Aqueduct() : WaterSource( B_AQUEDUCT, Size(1) ) 
 {
-  setPicture( Picture::load( ResourceGroup::aqueduct, 133) ); // default picture for aqueduct
+  setPicture( ResourceGroup::aqueduct, 133 ); // default picture for aqueduct
   _d->isRoad = false;
   _d->alsoResolved = false;
   // land2a 119 120         - aqueduct over road
@@ -72,15 +72,28 @@ void Aqueduct::build( CityPtr city, const TilePos& pos )
   AqueductList aqueducts = helper.getBuildings<Aqueduct>( B_AQUEDUCT );
   foreach( AqueductPtr aqueduct, aqueducts )
   {
-    aqueduct->updatePicture();
+    aqueduct->updatePicture( city );
   }
 
-  updatePicture();
+  updatePicture( city );
 }
 
 void Aqueduct::destroy()
 {
   Construction::destroy();
+
+  if( _getCity().isValid() )
+  {
+    TilemapArea area = _getCity()->getTilemap().getArea( getTilePos() - TilePos( 2, 2), Size( 5 ) );
+    foreach( Tile* tile, area )
+    {
+      LandOverlayPtr overlay = tile->getOverlay();
+      if( overlay.isValid() && overlay->getType() == B_AQUEDUCT )
+      {
+        overlay.as<Aqueduct>()->updatePicture( _getCity() );
+      }
+    }
+  }
 }
 
 void Aqueduct::initTerrain(Tile &terrain)
@@ -94,8 +107,6 @@ void Aqueduct::initTerrain(Tile &terrain)
   terrain.setFlag( Tile::tlMeadow, isMeadow);
   terrain.setFlag( Tile::tlAqueduct, true); // mandatory!
 }
-
-
 
 bool Aqueduct::canBuild( CityPtr city, const TilePos& pos ) const
 {
@@ -178,17 +189,17 @@ bool Aqueduct::canBuild( CityPtr city, const TilePos& pos ) const
   return false;
 }
 
-Picture& Aqueduct::computePicture(const TilemapTiles * tmp, const TilePos pos)
+Picture& Aqueduct::computePicture(CityPtr city , const TilemapTiles * tmp, const TilePos pos)
 {
   // find correct picture as for roads
-  Tilemap& tmap = _getCity()->getTilemap();
+  Tilemap& tmap = city->getTilemap();
 
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
 
   const TilePos tile_pos = (tmp == NULL) ? getTilePos() : pos;
 
   if (!tmap.isInside(tile_pos))
-    return Picture::load( ResourceGroup::aqueduct, 121);
+    return Picture::load( ResourceGroup::aqueduct, 121 );
 
   TilePos tile_pos_d[D_MAX];
   bool is_border[D_MAX];
@@ -296,9 +307,9 @@ Picture& Aqueduct::computePicture(const TilemapTiles * tmp, const TilePos pos)
   return Picture::load( ResourceGroup::aqueduct, index + (_d->water == 0 ? 15 : 0) );
 }
 
-void Aqueduct::updatePicture()
+void Aqueduct::updatePicture( CityPtr city )
 {
-  setPicture(computePicture());
+  setPicture( computePicture( city ) );
 }
 
 bool Aqueduct::isNeedRoadAccess() const
@@ -308,7 +319,7 @@ bool Aqueduct::isNeedRoadAccess() const
 
 void Aqueduct::_waterStateChanged()
 {
-  updatePicture();
+  updatePicture( _getCity() );
 }
 
 void Aqueduct::addWater( const WaterSource& source )
@@ -338,7 +349,7 @@ void Reservoir::destroy()
 {
   //now remove water flag from near tiles
   Tilemap& tmap = _getCity()->getTilemap();
-  TilemapArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
+  TilemapArea reachedTiles = tmap.getArea( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
   foreach( Tile* tile, reachedTiles )
   {
     tile->decreaseWaterService( WTR_RESERVOIR );
@@ -422,7 +433,7 @@ void Reservoir::timeStep(const unsigned long time)
   if( time % 22 == 1 )
   {
     Tilemap& tmap = _getCity()->getTilemap();
-    TilemapArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
+    TilemapArea reachedTiles = tmap.getArea( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
     foreach( Tile* tile, reachedTiles )
     {
       tile->fillWaterService( WTR_RESERVOIR );
@@ -528,7 +539,7 @@ int WaterSource::getId() const
 
 typedef enum { fontainEmpty = 3, fontainFull = 4, fontainStartAnim = 11, fontainSizeAnim = 7 } FontainConstant;
 
-Fountain::Fountain() : ServiceBuilding(Service::S_FOUNTAIN, B_FOUNTAIN, Size(1))
+Fountain::Fountain() : ServiceBuilding(Service::fontain, B_FOUNTAIN, Size(1))
 {  
   std::srand( DateTime::getElapsedTime() );
 
@@ -569,7 +580,7 @@ void Fountain::timeStep(const unsigned long time)
     {
       //remove fontain service from tiles
       Tilemap& tmap = _getCity()->getTilemap();
-      TilemapArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() );
+      TilemapArea reachedTiles = tmap.getArea( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() );
       foreach( Tile* tile, reachedTiles )
       {
         getTile().decreaseWaterService( WTR_FONTAIN );
@@ -585,7 +596,7 @@ void Fountain::timeStep(const unsigned long time)
     }
 
     Tilemap& tmap = _getCity()->getTilemap();
-    TilemapArea reachedTiles = tmap.getFilledRectangle( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() );
+    TilemapArea reachedTiles = tmap.getArea( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() );
     foreach( Tile* tile, reachedTiles )
     {
       getTile().fillWaterService( WTR_FONTAIN );

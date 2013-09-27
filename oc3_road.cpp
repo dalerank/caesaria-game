@@ -220,7 +220,7 @@ bool Plaza::canBuild( CityPtr city, const TilePos& pos ) const
 
   bool is_constructible = true;
 
-  TilemapArea area = tilemap.getFilledRectangle( pos, getSize() ); // something very complex ???
+  TilemapArea area = tilemap.getArea( pos, getSize() ); // something very complex ???
   foreach( Tile* tile, area )
   {
     is_constructible &= tile->getFlag( Tile::tlRoad );

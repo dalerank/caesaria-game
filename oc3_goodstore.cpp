@@ -225,8 +225,8 @@ VariantMap GoodStore::save() const
 
 void GoodStore::load( const VariantMap& stream )
 {
-  _d->devastation = stream.get( "devastation" ).toBool();
-  _d->nextReservationID = stream.get( "nextReservationId" ).toInt();
+  _d->devastation = (bool)stream.get( "devastation" );
+  _d->nextReservationID = (int)stream.get( "nextReservationId" );
 
   VariantList vm_storeReservations = stream.get( "storeReservations" ).toList();
   for( VariantList::iterator it=vm_storeReservations.begin(); it != vm_storeReservations.end(); it++ )

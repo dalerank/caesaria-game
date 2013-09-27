@@ -35,6 +35,8 @@
 #include "oc3_building_watersupply.hpp"
 #include "oc3_foreach.hpp"
 #include "oc3_game_event_mgr.hpp"
+#include "oc3_font.hpp"
+#include "oc3_gfx_sdl_engine.hpp"
 
 namespace WalkersVisibility
 {
@@ -74,9 +76,12 @@ public:
   typedef Delegate1< Tile& > DrawTileSignature;
   DrawTileSignature drawTileFunction;
 
+  Font debugFont;
+
   Impl()
   {
     visibleWalkers.push_back(WT_ALL);
+    debugFont = Font::create( FONT_2_WHITE );
   }
 
   void getSelectedArea( TilePos& outStartPos, TilePos& outStopPos );
@@ -212,6 +217,7 @@ void CityRenderer::Impl::drawTileDesirability( Tile& tile )
                           ? math::clamp( tile.getDesirability() / 25, -3, 0 )
                           : math::clamp( tile.getDesirability() / 15, 0, 6 );
       Picture& pic = Picture::load( ResourceGroup::land2a, 37 + picOffset );
+
       engine->drawPicture( pic, screenPos );
     }
     else
@@ -238,7 +244,7 @@ void CityRenderer::Impl::drawTileDesirability( Tile& tile )
                           ? math::clamp( tile.getDesirability() / 25, -3, 0 )
                           : math::clamp( tile.getDesirability() / 15, 0, 6 );
         Picture& pic = Picture::load( ResourceGroup::land2a, 37 + picOffset );
-        TilemapTiles tiles4clear = tilemap->getFilledRectangle( tile.getIJ(), overlay->getSize() );
+        TilemapTiles tiles4clear = tilemap->getArea( tile.getIJ(), overlay->getSize() );
         foreach( Tile* tile, tiles4clear )
         {
           engine->drawPicture( pic, tile->getXY() + mapOffset );
@@ -246,6 +252,12 @@ void CityRenderer::Impl::drawTileDesirability( Tile& tile )
       }
     break;
     } 
+  }
+
+  if( tile.getDesirability() != 0 )
+  {
+    GfxSdlEngine* painter = static_cast< GfxSdlEngine* >( engine );
+    debugFont.draw( painter->getScreen(), StringHelper::format( 0xff, "%d", tile.getDesirability() ), screenPos + Point( 20, -15 ), false );
   }
 }
 
@@ -616,7 +628,7 @@ void CityRenderer::Impl::drawTileWater( Tile& tile )
       {
         HousePtr h = overlay.as<House>();
         tileNumber = OverlayPic::inHouse;
-        haveWater = haveWater || h->hasServiceAccess(Service::S_FOUNTAIN) || h->hasServiceAccess(Service::well);
+        haveWater = haveWater || h->hasServiceAccess(Service::fontain) || h->hasServiceAccess(Service::well);
       }
       tileNumber += (haveWater ? OverlayPic::haveWater : 0);
       tileNumber += tile.getWaterService( WTR_RESERVOIR ) > 0 ? OverlayPic::reservoirRange : 0;
@@ -643,7 +655,7 @@ void CityRenderer::Impl::drawTileWater( Tile& tile )
 
   if( !needDrawAnimations && ( tile.isWalkable(true) || tile.getFlag( Tile::tlBuilding ) ) )
   {
-    TilemapArea area = tilemap->getFilledRectangle( tile.getIJ(), areaSize );
+    TilemapArea area = tilemap->getArea( tile.getIJ(), areaSize );
 
     foreach( Tile* rtile, area )
     {
@@ -685,7 +697,7 @@ void CityRenderer::Impl::drawTileBase( Tile& tile )
       if( isAqueducts )
       {
         tile.setWasDrawn();
-        Picture& pic = overlay.as<Aqueduct>()->computePicture(&postTiles, tile.getIJ());
+        Picture& pic = overlay.as<Aqueduct>()->computePicture( city, &postTiles, tile.getIJ());
         engine->drawPicture( pic, screenPos );
       }
     }
@@ -745,7 +757,7 @@ void CityRenderer::Impl::drawTilemapWithRemoveTools()
   getSelectedArea( startPos, stopPos );
  
   std::set<int> hashDestroyArea;
-  TilemapArea destroyArea = tilemap->getFilledRectangle( startPos, stopPos );
+  TilemapArea destroyArea = tilemap->getArea( startPos, stopPos );
   
   //create list of destroy tiles add full area building if some of it tile constain in destroy area
   foreach( Tile* tile, destroyArea)
@@ -755,7 +767,7 @@ void CityRenderer::Impl::drawTilemapWithRemoveTools()
     LandOverlayPtr overlay = tile->getOverlay();
     if( overlay.isValid() )
     {
-      TilemapArea overlayArea = tilemap->getFilledRectangle( overlay->getTilePos(), overlay->getSize() );
+      TilemapArea overlayArea = tilemap->getArea( overlay->getTilePos(), overlay->getSize() );
       foreach( Tile* ovelayTile, overlayArea )
       {
         hashDestroyArea.insert( ovelayTile->getJ() * 1000 + ovelayTile->getI() );
@@ -901,7 +913,7 @@ void CityRenderer::draw()
           // aqueducts must be shown in correct form
           AqueductPtr aqueduct = ptr_construction.as<Aqueduct>();
           if (aqueduct != NULL)
-            aqueduct->setPicture(aqueduct->computePicture(&_d->postTiles, postTile->getIJ()));
+            aqueduct->setPicture(aqueduct->computePicture( _d->city, &_d->postTiles, postTile->getIJ()));
         }
       }
 
@@ -1017,7 +1029,7 @@ void CityRenderer::Impl::clearAll()
   TilePos startPos, stopPos;
   getSelectedArea( startPos, stopPos );
 
-  TilemapTiles tiles4clear = tilemap->getFilledRectangle( startPos, stopPos );
+  TilemapTiles tiles4clear = tilemap->getArea( startPos, stopPos );
   foreach( Tile* tile, tiles4clear )
   {
     GameEventMgr::append( ClearLandEvent::create( tile->getIJ() ) );
@@ -1096,7 +1108,7 @@ void CityRenderer::Impl::drawWalkersBetweenZ(WalkerList walkerList, int minZ, in
 
 void CityRenderer::Impl::drawBuildingAreaTiles(Tile& baseTile, LandOverlayPtr overlay, std::string resourceGroup, int tileId)
 {
-  TilemapArea area = tilemap->getFilledRectangle( baseTile.getIJ(), overlay->getSize() );
+  TilemapArea area = tilemap->getArea( baseTile.getIJ(), overlay->getSize() );
 
   Picture *pic = NULL;
   int leftBorderAtI = baseTile.getI();
@@ -1234,6 +1246,11 @@ void CityRenderer::discardPreview()
 {
   foreach( Tile* tile, _d->postTiles )
   {
+    if( tile->getOverlay().isValid() )
+    {
+      tile->getOverlay()->deleteLater();
+    }
+
     delete tile;
   }
 

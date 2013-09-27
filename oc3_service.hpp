@@ -23,14 +23,14 @@ class Service
 public:
   typedef enum
   {
-    well, S_FOUNTAIN,
+    well, fontain,
     S_MARKET,
     engineer,
     S_SENATE, S_FORUM,
     S_PREFECT,
     S_TEMPLE_NEPTUNE, S_TEMPLE_CERES, S_TEMPLE_VENUS,  S_TEMPLE_MARS, S_TEMPLE_MERCURE, S_TEMPLE_ORACLE,
-    doctor, S_BARBER, baths, S_HOSPITAL,
-    S_SCHOOL, S_LIBRARY, S_COLLEGE,
+    doctor, barber, baths, hospital,
+    school, library, college,
     theater, amphitheater, colloseum,
     hippodrome,
     S_BURNING_RUINS,

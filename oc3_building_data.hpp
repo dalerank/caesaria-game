@@ -48,7 +48,7 @@ public:
   char getDesirabilityStep() const;
   char getDesirbilityRange() const;
 
-  Variant getOption( const std::string& name ) const;
+  Variant getOption( const std::string& name, Variant defaultVal=Variant() ) const;
 
   BuildingData& operator=( const BuildingData& a );
 
