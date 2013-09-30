@@ -154,8 +154,8 @@ void Factory::timeStep(const unsigned long time)
        if( pic.isValid() )
        {
          // animation of the working factory
-         int level = _fgPictures.size()-1;
-         _fgPictures[level] = _getAnimation().getCurrentPicture();
+         int level = getForegroundPictures().size()-1;
+         _getForegroundPictures().at(level) = _getAnimation().getCurrentPicture();
        }
      }
    }  
@@ -280,7 +280,7 @@ TimberLogger::TimberLogger() : Factory(Good::none, Good::timber, B_TIMBER_YARD, 
   setPicture( Picture::load(ResourceGroup::commerce, 72) );
 
   _getAnimation().load( ResourceGroup::commerce, 73, 10);
-  _fgPictures.resize(2);
+  _getForegroundPictures().resize(2);
 }
 
 bool TimberLogger::canBuild( CityPtr city, const TilePos& pos ) const
@@ -307,7 +307,7 @@ IronMine::IronMine() : Factory(Good::none, Good::iron, B_IRON_MINE, Size(2) )
 
   _getAnimation().load( ResourceGroup::commerce, 55, 6 );
   _getAnimation().setFrameDelay( 5 );
-  _fgPictures.resize(2);
+  _getForegroundPictures().resize(2);
 }
 
 bool IronMine::canBuild( CityPtr city, const TilePos& pos ) const
@@ -330,7 +330,7 @@ WeaponsWorkshop::WeaponsWorkshop() : Factory(Good::iron, Good::weapon, B_WEAPONS
   setPicture( Picture::load(ResourceGroup::commerce, 108) );
 
   _getAnimation().load( ResourceGroup::commerce, 109, 6);
-  _fgPictures.resize(2);
+  _getForegroundPictures().resize(2);
 }
 
 WorkshopFurniture::WorkshopFurniture() : Factory(Good::timber, Good::furniture, B_FURNITURE, Size(2) )
@@ -338,23 +338,23 @@ WorkshopFurniture::WorkshopFurniture() : Factory(Good::timber, Good::furniture, 
   setPicture( Picture::load(ResourceGroup::commerce, 117) );
 
   _getAnimation().load(ResourceGroup::commerce, 118, 14);
-  _fgPictures.resize(2);
+  _getForegroundPictures().resize(2);
 }
 
 Winery::Winery() : Factory(Good::grape, Good::wine, B_WINE_WORKSHOP, Size(2) )
 {
-  setPicture( Picture::load(ResourceGroup::commerce, 86) );
+  setPicture( ResourceGroup::commerce, 86 );
 
   _getAnimation().load(ResourceGroup::commerce, 87, 12);
-  _fgPictures.resize(2);
+  _getForegroundPictures().resize(2);
 }
 
 Creamery::Creamery() : Factory(Good::olive, Good::oil, B_OIL_WORKSHOP, Size(2) )
 {
-  setPicture( Picture::load(ResourceGroup::commerce, 99) );
+  setPicture( ResourceGroup::commerce, 99 );
 
   _getAnimation().load(ResourceGroup::commerce, 100, 8);
-  _fgPictures.resize(2);
+  _getForegroundPictures().resize(2);
 }
 
 Wharf::Wharf() : Factory(Good::none, Good::fish, B_WHARF, Size(2))

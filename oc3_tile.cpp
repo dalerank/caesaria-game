@@ -163,6 +163,7 @@ bool Tile::getFlag(Tile::Type type) const
   case tlWall: return _terrain.wall;
   case tlGateHouse: return _terrain.gatehouse;
   case wasDrawn: return _wasDrawn;
+  default: break;
   }
 
   return false;
@@ -185,6 +186,7 @@ void Tile::setFlag(Tile::Type type, bool value)
   case tlWall: _terrain.wall = value; break;
   case tlGateHouse: _terrain.gatehouse = value; break;
   case wasDrawn: _wasDrawn = value; break;
+  default: break;
   }
 }
 

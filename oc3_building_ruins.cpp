@@ -25,10 +25,10 @@ BurningRuins::BurningRuins() : ServiceBuilding(Service::S_BURNING_RUINS, B_BURNI
 {
     _fireLevel = 99;
 
-    setPicture( Picture::load( ResourceGroup::land2a, 187) );
+    setPicture( ResourceGroup::land2a, 187 );
     _getAnimation().load( ResourceGroup::land2a, 188, 8 );
     _getAnimation().setOffset( Point( 14, 26 ) );
-    _fgPictures.resize(1);           
+    _getForegroundPictures().resize(1);
 }
 
 void BurningRuins::timeStep(const unsigned long time)
@@ -59,7 +59,7 @@ void BurningRuins::timeStep(const unsigned long time)
       {
         deleteLater();
         _getAnimation().clear();
-        _fgPictures.clear();
+        _getForegroundPictures().clear();
       }           
     }
 }
@@ -167,7 +167,7 @@ CollapsedRuins::CollapsedRuins() : Building(B_COLLAPSED_RUINS, Size(1) )
     _getAnimation().setOffset( Point( 14, 26 ) );
     _getAnimation().setFrameDelay( 4 );
     _getAnimation().setLoop( false );
-    _fgPictures.resize(1);
+    _getForegroundPictures().resize(1);
 }
 
 void CollapsedRuins::burn()
@@ -200,18 +200,18 @@ PlagueRuins::PlagueRuins() : Building( B_PLAGUE_RUINS, Size(1) )
 {
   _fireLevel = 99;
 
-  setPicture( Picture::load( ResourceGroup::land2a, 187) );
+  setPicture( ResourceGroup::land2a, 187 );
   _getAnimation().load( ResourceGroup::land2a, 188, 8 );
   _getAnimation().setOffset( Point( 14, 26 ) );
-  _fgPictures.resize(2);
-  _fgPictures[ 1 ] = Picture::load( ResourceGroup::sprites, 218 );
-  _fgPictures[ 1 ].setOffset( 16, 32 );
+  _getForegroundPictures().resize(2);
+  _getForegroundPictures().at( 1 ) = Picture::load( ResourceGroup::sprites, 218 );
+  _getForegroundPictures().at( 1 ).setOffset( 16, 32 );
 }
 
 void PlagueRuins::timeStep(const unsigned long time)
 {
   _getAnimation().update( time );
-  _fgPictures[ 0 ] = _getAnimation().getCurrentPicture();
+  _getForegroundPictures().at( 0 ) = _getAnimation().getCurrentPicture();
 
   if (time % 16 == 0 )
   {
@@ -237,7 +237,7 @@ void PlagueRuins::timeStep(const unsigned long time)
     {
       deleteLater();
       _getAnimation().clear();
-      _fgPictures.clear();
+      _getForegroundPictures().clear();
     }
   }
 }

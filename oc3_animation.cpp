@@ -65,7 +65,7 @@ void Animation::update( unsigned int time )
 
 const Picture& Animation::getCurrentPicture() const
 {
-  return ( _animIndex >= 0 && _animIndex < _pictures.size())
+  return ( _animIndex >= 0 && _animIndex < (int)_pictures.size())
                   ? _pictures[_animIndex] 
                   : Picture::getInvalid();
 }

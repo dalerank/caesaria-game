@@ -243,6 +243,8 @@ BuildingData &BuildingData::operator=(const BuildingData &a)
   _cost = a._cost;
 
   _d->options = a._d->options;
+
+  return *this;
 }
 
 char BuildingData::getDesirabilityStep() const

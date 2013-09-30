@@ -104,7 +104,7 @@ TempleOracle::TempleOracle() : Temple( RomeDivinityPtr(), B_TEMPLE_ORACLE, 55, S
 {
   _getAnimation().load( ResourceGroup::security, 56, 6);
   _getAnimation().setOffset( Point( 9, 30 ) );
-  _fgPictures.resize(1);   
+  _getForegroundPictures().resize(1);
 }
 
 unsigned int TempleOracle::getParishionerNumber() const

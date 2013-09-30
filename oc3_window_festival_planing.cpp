@@ -97,7 +97,7 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
   _d->btnHelp = new TexturedButton( this, Point( 52, getHeight() - 52 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
   _d->btnExit = new TexturedButton( this, Point( getWidth() - 74, getHeight() - 52 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
 
-  int money = _d->city->getFunds().getValue();
+  /*int money = _d->city->getFunds().getValue();*/
   int greatFestivalCost = math::clamp( _d->city->getPopulation() / 10, 100, 9999 );
 
   _d->btnSmallFestival = new PushButton( this, Rect( 95, 170, getWidth() - 95, 170 + 25),

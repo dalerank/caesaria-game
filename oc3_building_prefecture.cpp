@@ -31,7 +31,7 @@ Prefecture::Prefecture() : ServiceBuilding(Service::S_PREFECT, B_PREFECTURE, Siz
   _getAnimation().load( ResourceGroup::security, 2, 10);
   _getAnimation().setFrameDelay( 4 );
   _getAnimation().setOffset( Point( 20, 36 ) );
-  _fgPictures.resize(1);
+  _getForegroundPictures().resize(1);
 }
 
 int Prefecture::getServiceDelay() const

@@ -124,7 +124,7 @@ Theater::Theater() : EntertainmentBuilding(Service::theater, B_THEATER, Size(2))
   //_getAnimation().setOffset( Point( 60, 36 ) );
   _getAnimation().stop();
 
-  _fgPictures.resize(2);
+  _getForegroundPictures().resize(2);
 }
 
 void Theater::build(CityPtr city, const TilePos& pos)
@@ -154,7 +154,7 @@ void Theater::deliverService()
 {
   EntertainmentBuilding::deliverService();
 
-  _fgPictures[0] =  _getAnimation().isRunning()
+  _getForegroundPictures().at(0) =  _getAnimation().isRunning()
                       ? Picture::load( ResourceGroup::entertaiment, 35 )
                       : Picture::getInvalid();
 }
@@ -162,10 +162,9 @@ void Theater::deliverService()
 Amphitheater::Amphitheater() : EntertainmentBuilding(Service::amphitheater, B_AMPHITHEATER, Size(3))
 {
   //setPicture( ResourceGroup::entertaiment, 1 );
-
   //_getAnimation().load( ResourceGroup::entertaiment, 2, 10);
   //_getAnimation().setOffset( Point( 100, 49 ) );
-  _fgPictures.resize(2);
+  _getForegroundPictures().resize(2);
   //_fgPictures[0] = Picture::load( ResourceGroup::entertaiment, 12);
 }
 
@@ -192,7 +191,7 @@ void Amphitheater::deliverService()
 {
   EntertainmentBuilding::deliverService();
 
-  _fgPictures[0] = _getAnimation().isRunning()
+  _getForegroundPictures().at(0) = _getAnimation().isRunning()
                          ? Picture::load( ResourceGroup::entertaiment, 12 )
                          : Picture::getInvalid();
 }
@@ -203,8 +202,8 @@ Collosseum::Collosseum() : EntertainmentBuilding(Service::colloseum, B_COLLOSSEU
 
   //_getAnimation().load( ResourceGroup::entertaiment, 37, 13);
   //_getAnimation().setOffset( Point( 122, 81 ) );
-  _fgPictures.resize(2);
-  _fgPictures[0] = Picture::load( ResourceGroup::entertaiment, 50);
+  _getForegroundPictures().resize(2);
+  _getForegroundPictures().at(0) = Picture::load( ResourceGroup::entertaiment, 50);
 }
 
 //------------
@@ -216,9 +215,9 @@ Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, B_HIPPODRO
   Picture logo1 = Picture::load("circus", 1);
   logo.setOffset(150,181);
   logo1.setOffset(300,310);
-  _fgPictures.resize(5);
-  _fgPictures[ 0 ] = logo;
-  _fgPictures[ 1 ] = logo1;
+  _getForegroundPictures().resize(5);
+  _getForegroundPictures().at(0) = logo;
+  _getForegroundPictures().at(1) = logo1;
 }
 
 //-----------

@@ -365,7 +365,7 @@ void ScreenGame::Impl::showAdvisorsWindow( const int advType )
   }
   else
   {
-    AdvisorsWindow* advWnd = AdvisorsWindow::create( game->getGui()->getRootWidget(), -1,
+    /*AdvisorsWindow* advWnd = */AdvisorsWindow::create( game->getGui()->getRootWidget(), -1,
                                                      (AdvisorType)advType, game->getCity() );
   }
 }

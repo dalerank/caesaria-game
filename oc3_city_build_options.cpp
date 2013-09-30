@@ -92,9 +92,11 @@ void CityBuildOptions::load(const VariantMap& options)
   }
 }
 
-CityBuildOptions&CityBuildOptions::operator=(const CityBuildOptions& a)
+CityBuildOptions& CityBuildOptions::operator=(const CityBuildOptions& a)
 {
   _d->rules = a._d->rules;
+
+  return *this;
 }
 
 bool CityBuildOptions::isBuildingAvailble( const BuildingType type ) const

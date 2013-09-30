@@ -372,7 +372,7 @@ Reservoir::Reservoir() : WaterSource( B_RESERVOIR, Size( 3 ) )
   _getAnimation().setFrameDelay( 11 );
   _getAnimation().setOffset( Point( 47, 63 ) );
 
-  _fgPictures.resize(1);
+  _getForegroundPictures().resize(1);
   //_fgPictures[0]=;
 }
 
@@ -425,7 +425,7 @@ void Reservoir::timeStep(const unsigned long time)
 
   if( !_d->water )
   {
-    _fgPictures[ 0 ] = Picture::getInvalid();
+    _getForegroundPictures().at( 0 ) = Picture::getInvalid();
     return;
   }
 
@@ -450,7 +450,7 @@ void Reservoir::timeStep(const unsigned long time)
   _getAnimation().update( time );
   
   // takes current animation frame and put it into foreground
-  _fgPictures[ 0 ] = _getAnimation().getCurrentPicture(); 
+  _getForegroundPictures().at( 0 ) = _getAnimation().getCurrentPicture();
 }
 
 bool Reservoir::canBuild( CityPtr city, const TilePos& pos ) const
@@ -546,7 +546,7 @@ Fountain::Fountain() : ServiceBuilding(Service::fontain, B_FOUNTAIN, Size(1))
   setPicture( ResourceGroup::utilitya, 10 );
 
   _initAnimation();
-  _fgPictures.resize(1);
+  _getForegroundPictures().resize(1);
 
   _damageIncrement = 0;
   _fireIncrement = 0;
@@ -583,7 +583,7 @@ void Fountain::timeStep(const unsigned long time)
       TilemapArea reachedTiles = tmap.getArea( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() );
       foreach( Tile* tile, reachedTiles )
       {
-        getTile().decreaseWaterService( WTR_FONTAIN );
+        tile->decreaseWaterService( WTR_FONTAIN );
       }
 
       _getAnimation().stop();
@@ -591,7 +591,7 @@ void Fountain::timeStep(const unsigned long time)
 
     if( !_haveReservoirWater )
     {
-      _fgPictures[ 0 ] = Picture::getInvalid();
+      _getForegroundPictures().at( 0 ) = Picture::getInvalid();
       return;
     }
 
@@ -599,7 +599,7 @@ void Fountain::timeStep(const unsigned long time)
     TilemapArea reachedTiles = tmap.getArea( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() );
     foreach( Tile* tile, reachedTiles )
     {
-      getTile().fillWaterService( WTR_FONTAIN );
+      tile->fillWaterService( WTR_FONTAIN );
     }
   }
 

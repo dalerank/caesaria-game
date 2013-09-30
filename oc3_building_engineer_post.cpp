@@ -26,7 +26,7 @@ BuildingEngineer::BuildingEngineer() : ServiceBuilding( Service::engineer, B_ENG
   _getAnimation().load( ResourceGroup::buildingEngineer, 57, 10 );
   _getAnimation().setFrameDelay( 4 );
   _getAnimation().setOffset( Point( 10, 42 ) );
-  _fgPictures.resize(1);
+  _getForegroundPictures().resize(1);
 }
 
 void BuildingEngineer::timeStep(const unsigned long time)

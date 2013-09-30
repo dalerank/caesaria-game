@@ -284,14 +284,14 @@ public:
     _lbIndustryInfo = new Label( this, Rect( 40, 40, getWidth() - 10, 40 + 20 ) );
 
     std::string text = StringHelper::format( 0xff, "%d %s", stackedGoods, _("##qty_stacked_in_city_warehouse##") );
-    Label* lbStacked = new Label( this, Rect( 40, 60, getWidth() - 10, 60 + 20 ), text );
+    /*Label* lbStacked = */new Label( this, Rect( 40, 60, getWidth() - 10, 60 + 20 ), text );
 
     _btnTradeState = new TradeStateButton( this, Rect( 50, 85, getWidth() - 60, 85 + 30), -1 );
     _btnIndustryState = new PushButton( this, Rect( 50, 125, getWidth() - 60, 125 + 30), "", -1, false, PushButton::whiteBorderUp );
     _btnStackingState = new PushButton( this, Rect( 50, 160, getWidth() - 60, 160 + 50), "", -1, false, PushButton::whiteBorderUp );
 
     TexturedButton* btnExit = new TexturedButton( this, Point( getWidth() - 34, getHeight() - 34 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
-    TexturedButton* btnHelp = new TexturedButton( this, Point( 11, getHeight() - 34 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+    /*TexturedButton* btnHelp = */new TexturedButton( this, Point( 11, getHeight() - 34 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 
     updateTradeState();
     updateIndustryState();

@@ -22,6 +22,7 @@
 class LandOverlay::Impl
 {
 public:
+  PicturesArray fgPictures;
   BuildingType buildingType;
   BuildingClass buildingClass;
   Tile* masterTile;  // left-most tile if multi-tile, or "this" if single-tile
@@ -158,9 +159,9 @@ const Picture &LandOverlay::getPicture() const
   return _d->picture;
 }
 
-std::vector<Picture>& LandOverlay::getForegroundPictures()
+const PicturesArray& LandOverlay::getForegroundPictures() const
 {
-  return _fgPictures;
+  return _d->fgPictures;
 }
 
 std::string LandOverlay::getName()
@@ -233,6 +234,11 @@ Tile* LandOverlay::_getMasterTile()
 CityPtr LandOverlay::_getCity() const
 {
   return _d->city;
+}
+
+PicturesArray& LandOverlay::_getForegroundPictures()
+{
+  return _d->fgPictures;
 }
 
 BuildingClass LandOverlay::getClass() const

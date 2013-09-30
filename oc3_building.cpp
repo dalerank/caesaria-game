@@ -439,14 +439,14 @@ Shipyard::Shipyard() : Building( B_SHIPYARD, Size(2) )
 
 Dock::Dock() : Building( B_DOCK, Size(2) )
 {
-  setPicture( Picture::load( ResourceGroup::transport, 5));  
+  setPicture( ResourceGroup::transport, 5);
 
   _getAnimation().load( ResourceGroup::transport, 6, 11);
   // now fill in reverse order
   _getAnimation().load( ResourceGroup::transport, 15, 10, Animation::reverse );
   
   _getAnimation().setOffset( Point( 107, 61 ) );
-  _fgPictures.resize(1);  
+  _getForegroundPictures().resize(1);
 }
 
 void Dock::timeStep(const unsigned long time)
@@ -454,16 +454,16 @@ void Dock::timeStep(const unsigned long time)
   _getAnimation().update( time );
   
   // takes current animation frame and put it into foreground
-  _fgPictures[ 0 ] = _getAnimation().getCurrentPicture();
+  _getForegroundPictures().at(0) = _getAnimation().getCurrentPicture();
 }
 
 // second arch pictures is land3a 45 + 46	
 
 TriumphalArch::TriumphalArch() : Building( B_TRIUMPHAL_ARCH, Size(3) )
 {
-  setPicture( Picture::load( "land3a", 43 ) );
+  setPicture( ResourceGroup::land3a, 43 );
   _getAnimation().load("land3a", 44, 1);
   _getAnimation().setOffset( Point( 63, 97 ) );
-  _fgPictures.resize(1);
-  _fgPictures.at(0) = _getAnimation().getCurrentPicture();
+  _getForegroundPictures().resize(1);
+  _getForegroundPictures().at(0) = _getAnimation().getCurrentPicture();
 }

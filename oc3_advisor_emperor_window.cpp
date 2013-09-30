@@ -120,7 +120,7 @@ bool AdvisorEmperorWindow::onEvent(const NEvent& event)
     else if( event.GuiEvent.EventType == OC3_BUTTON_CLICKED )
     {
       int id = event.GuiEvent.Caller->getID();
-      if( id > 0 && (id & 0x0f00 == 0x0f00) )
+      if( id > 0 && ((id & 0x0f00) == 0x0f00) )
       {
         int multiplier = id & 0xff;
         _d->wantSend = math::clamp( (multiplier == 0xff ? _d->money : (multiplier * 500)), 0, _d->money);

@@ -342,8 +342,8 @@ int WarehouseStore::getMaxQty( const Good::Type& goodType ) const
 Warehouse::Warehouse() : WorkingBuilding( B_WAREHOUSE, Size( 3 )), _d( new Impl )
 {
    // _name = _("Entrepot");
-  setPicture( Picture::load( ResourceGroup::warehouse, 19) );
-  _fgPictures.resize(12);  // 8 tiles + 4
+  setPicture( ResourceGroup::warehouse, 19 );
+  _getForegroundPictures().resize(12);  // 8 tiles + 4
 
   _getAnimation().load( ResourceGroup::warehouse, 2, 16 );
   _getAnimation().setFrameDelay( 4 );
@@ -357,10 +357,10 @@ Warehouse::Warehouse() : WorkingBuilding( B_WAREHOUSE, Size( 3 )), _d( new Impl 
 
 void Warehouse::init()
 {
-  _fgPictures[0] = Picture::load(ResourceGroup::warehouse, 1);
-  _fgPictures[1] = Picture::load(ResourceGroup::warehouse, 18);
-  _fgPictures[2] = _getAnimation().getCurrentPicture();
-  _fgPictures[3] = _d->animFlag.getCurrentPicture();
+  _getForegroundPictures().at( 0 ) = Picture::load(ResourceGroup::warehouse, 1);
+  _getForegroundPictures().at( 1 ) = Picture::load(ResourceGroup::warehouse, 18);
+  _getForegroundPictures().at( 2 ) = _getAnimation().getCurrentPicture();
+  _getForegroundPictures().at( 3 ) = _d->animFlag.getCurrentPicture();
 
   // add subTiles in Z-order (from far to near)
   _d->subTiles.clear();
@@ -385,8 +385,8 @@ void Warehouse::timeStep(const unsigned long time)
    _getAnimation().update( time );
    _d->animFlag.update( time );
 
-   _fgPictures[2] = _getAnimation().getCurrentPicture();
-   _fgPictures[3] = _d->animFlag.getCurrentPicture();
+   _getForegroundPictures().at(2) = _getAnimation().getCurrentPicture();
+   _getForegroundPictures().at(3) = _d->animFlag.getCurrentPicture();
   }
 
   if( _d->goodStore.isDevastation() && (time % 22 == 1 ) )
@@ -401,7 +401,7 @@ void Warehouse::computePictures()
   foreach( WarehouseTile& whTile, _d->subTiles )
   {
      whTile.computePicture();
-     _fgPictures[index] = whTile._picture;
+     _getForegroundPictures().at(index) = whTile._picture;
      index++;
   }
 }

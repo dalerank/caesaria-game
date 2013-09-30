@@ -78,8 +78,8 @@ void ServiceBuilding::timeStep(const unsigned long time)
    const Picture& pic = _getAnimation().getCurrentPicture();
    if( pic.isValid() )
    {
-      int level = _fgPictures.size()-1;
-      _fgPictures[level] = _getAnimation().getCurrentPicture();
+      int level = getForegroundPictures().size()-1;
+      _getForegroundPictures().at( level ) = _getAnimation().getCurrentPicture();
    }
 }
 

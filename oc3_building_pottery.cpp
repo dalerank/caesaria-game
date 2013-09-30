@@ -21,7 +21,7 @@ Pottery::Pottery() : Factory(Good::clay, Good::pottery, B_POTTERY, Size(2))
 {
   _getAnimation().load(ResourceGroup::commerce, 133, 7);
   _getAnimation().setFrameDelay( 3 );
-  _fgPictures.resize(2);
+  _getForegroundPictures().resize(2);
 }
 
 void Pottery::timeStep( const unsigned long time )

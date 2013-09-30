@@ -191,13 +191,13 @@ void CityRenderer::Impl::drawTile( Tile& tile )
 void CityRenderer::Impl::drawAnimations( LandOverlayPtr overlay, const Point& screenPos )
 {
   // building foregrounds and animations
-  PicturesArray& fgPictures = overlay->getForegroundPictures();
-  foreach( Picture& picRef, fgPictures )
+  const PicturesArray& fgPictures = overlay->getForegroundPictures();
+  for( PicturesArray::const_iterator it=fgPictures.begin(); it != fgPictures.end(); it++ )
   {
     // skip void picture
-    if( picRef.isValid() )
+    if( it->isValid() )
     {
-      engine->drawPicture( picRef, screenPos);
+      engine->drawPicture( *it, screenPos);
     }
   }
 }

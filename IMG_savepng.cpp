@@ -62,7 +62,7 @@ static void sdlrw_write_png(png_structp png_ptr, png_bytep data, png_size_t leng
     SDL_RWops *rwops = (SDL_RWops *)png_get_io_ptr(png_ptr);
 
     // write, and fallover if there's a problem writing the whole buffer
-    if(SDL_RWwrite(rwops, data, 1, length) != length) {
+    if(SDL_RWwrite(rwops, data, 1, length) != (int)length) {
         png_error(png_ptr, "Write was not able to write all png data");
     }
 }

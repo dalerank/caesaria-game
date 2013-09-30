@@ -136,8 +136,8 @@ TopMenu::TopMenu( Widget* parent, const int height )
   ContextMenuItem* tmp = addItem( _("##gmenu_file##"), -1, true, true, false, false );
   ContextMenu* file = tmp->addSubMenu();
 
-  ContextMenuItem* newGame = file->addItem( _("##gmenu_file_new##"), -1, true, false, false, false );
-  ContextMenuItem* restart = file->addItem( _("##gmenu_file_restart##"), -1, true, false, false, false );
+  /*ContextMenuItem* newGame = */file->addItem( _("##gmenu_file_new##"), -1, true, false, false, false );
+  /*ContextMenuItem* restart = */ file->addItem( _("##gmenu_file_restart##"), -1, true, false, false, false );
   ContextMenuItem* load = file->addItem( _("##gmenu_file_load##"), -1, true, false, false, false );
   ContextMenuItem* save = file->addItem( _("##gmenu_file_save##"), -1, true, false, false, false );
   ContextMenuItem* mainMenu = file->addItem( _("##gmenu_file_mainmenu##"), -1, true, false, false, false );
@@ -151,8 +151,8 @@ TopMenu::TopMenu( Widget* parent, const int height )
   tmp = addItem( _("##gmenu_options##"), -1, true, true, false, false );
   ContextMenu* options = tmp->addSubMenu();
   ContextMenuItem* screen = options->addItem( _("##screen_options##"), -1, true, false, false, false );  
-  ContextMenuItem* sound = options->addItem( _("##sound_options##"), -1, true, false, false, false );
-  ContextMenuItem* speed = options->addItem( _("##speed_options##"), -1, true, false, false, false );
+  /*ContextMenuItem* sound = */options->addItem( _("##sound_options##"), -1, true, false, false, false );
+  /*ContextMenuItem* speed = */options->addItem( _("##speed_options##"), -1, true, false, false, false );
 
   CONNECT( screen, onClicked(), &_d->onShowVideoOptionsSignal, Signal0<>::emit );
 
