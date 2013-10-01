@@ -159,8 +159,6 @@ void City::timeStep( unsigned int time )
     }
     catch(...)
     {
-      //int o=0;
-      //volatile error here... WTF
     }
   }
 
@@ -173,11 +171,16 @@ void City::timeStep( unsigned int time )
 
       if( (*overlayIt)->isDeleted() )
       {
-         // remove the overlay from the overlay list
-          (*overlayIt)->destroy();
-          //delete (*overlayIt);
+        // remove the overlay from the overlay list
+        (*overlayIt)->destroy();
 
-          overlayIt = _d->overlayList.erase(overlayIt);
+        if( (*overlayIt).is<Construction>() )
+        {
+          CityHelper helper( this );
+          helper.updateDesirability( (*overlayIt).as<Construction>(), false );
+        }
+
+        overlayIt = _d->overlayList.erase(overlayIt);
       }
       else
       {
@@ -628,4 +631,34 @@ void City::updateRoads()
 TilemapArea CityHelper::getArea(BuildingPtr building)
 {
   return _city->getTilemap().getArea( building->getTilePos(), building->getSize() );
+}
+
+
+void CityHelper::updateDesirability( ConstructionPtr construction, bool onBuild )
+{
+  Tilemap& tilemap = _city->getTilemap();
+
+  const BuildingData::Desirability dsrbl = construction->getDesirabilityInfo();
+  int mul = ( onBuild ? 1 : -1);
+
+  //change desirability in selfarea
+  TilemapArea area = tilemap.getArea( construction->getTilePos(), construction->getSize() );
+  foreach( Tile* tile, area )
+  {
+    tile->appendDesirability( mul * dsrbl.base );
+  }
+
+  //change deisirability around
+  int current = mul * dsrbl.base;
+  for( int curRange=1; curRange <= dsrbl.range; curRange++ )
+  {
+    TilemapArea perimetr = tilemap.getRectangle( construction->getTilePos() - TilePos( curRange, curRange ),
+                                                 construction->getSize() + Size( 2 * curRange ) );
+    foreach( Tile* tile, perimetr )
+    {
+      tile->appendDesirability( current );
+    }
+
+    current += mul * dsrbl.step;
+  }
 }

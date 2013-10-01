@@ -50,9 +50,7 @@ public:
   int getFoodLevel() const;
   int getHealthLevel() const;
 
-  char getDesirabilityInfluence() const;
-  unsigned char getDesirabilityRange() const;
-  char getDesirabilityStep() const;
+  const BuildingData::Desirability& getDesirabilityInfo() const;
 
   int getScholars() const;
 

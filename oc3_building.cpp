@@ -60,39 +60,7 @@ void Construction::build( CityPtr city, const TilePos& pos )
   LandOverlay::build( city, pos );
 
   computeAccessRoads();
-  _updateDesirabilityInfluence( duPositive );
 }
-
-void Construction::_updateDesirabilityInfluence( const DsbrlUpdate type )
-{
-  Tilemap& tilemap = _getCity()->getTilemap();
-
-  int dsrblRange = getDesirabilityRange();
-  int step = getDesirabilityStep();
-  int desInfluence = getDesirabilityInfluence();
-  int mul = ( type == duPositive ? 1 : -1);
-
-  //change desirability in selfarea
-  TilemapArea area = tilemap.getArea( getTilePos(), getSize() );
-  foreach( Tile* tile, area )
-  {
-    tile->appendDesirability( mul * desInfluence );
-  }
-
-  //change deisirability around
-  for( int curRange=1; curRange <= dsrblRange; curRange++ )
-  {
-    TilemapArea perimetr = tilemap.getRectangle( getTilePos() - TilePos( curRange, curRange ), 
-                                                  getSize() + Size( 2 * curRange ) );
-    foreach( Tile* tile, perimetr )
-    {
-      tile->appendDesirability( mul * desInfluence );
-    }
-
-    desInfluence += step;
-  }
-}
-
 
 const TilemapTiles& Construction::getAccessRoads() const
 {
@@ -141,30 +109,19 @@ void Construction::collapse()
   GameEventMgr::append( DisasterEvent::create( getTile().getIJ(), DisasterEvent::collapse ) );
 }
 
-char Construction::getDesirabilityInfluence() const
+const BuildingData::Desirability& Construction::getDesirabilityInfo() const
 {
-  return BuildingDataHolder::instance().getData( getType() ).getDesirbilityInfluence();
-}
-
-unsigned char Construction::getDesirabilityRange() const
-{
-  return BuildingDataHolder::instance().getData( getType() ).getDesirbilityRange();
+  return BuildingDataHolder::instance().getData( getType() ).getDesirbilityInfo();
 }
 
 void Construction::destroy()
 {
   LandOverlay::destroy();
-  _updateDesirabilityInfluence( duNegative );
 }
 
 bool Construction::isNeedRoadAccess() const
 {
   return true;
-}
-
-char Construction::getDesirabilityStep() const
-{
-  return BuildingDataHolder::instance().getData( getType() ).getDesirabilityStep();
 }
 
 Building::Building(const BuildingType type, const Size& size )

@@ -1,9 +1,9 @@
 {
 	/* 0;Terrain vague;0;;;;;;;;;;;;;;; */
-	"terrain_vacant" : 
+	terrain_vacant : 
 		{
-			"level" : 0,
-			"title" : "Terrain vacant",
+			level : 0,
+			title : "Terrain vacant",
 			"habitants" : 0,
 			"minDesirability" : 0,
 		  "maxDesirability" : 0,
@@ -24,8 +24,8 @@
 	/* 1;Petite tente;5;-99;-10;0;0;0;0;0;0;0;0;0;0;3;5;1 */
 	"small_tent" : 
 		{
-			"level" : 1,
-			"title" : "Small tent",
+			level : 1,
+			title : "Small tent",
 			"habitants" : 5,
 			"minDesirability" : -99,
 		  "maxDesirability" : -10,
@@ -50,8 +50,8 @@
 	/*2;Grande tente;7;-12;-5;0;1;0;0;0;0;0;0;0;0;3;10;1*/
 	"big_tent" : 
 		{
-			"level" : 2,
-			"title" : "Big tent",
+			level : 2,
+			title : "Big tent",
 			"habitants" : 7,
 			"minDesirability" : -12,
 		  "maxDesirability" : -5,
@@ -76,8 +76,8 @@
 	/* 3;Petite hutte;9;-7;0;0;1;0;0;0;1;0;0;0;0;3;15;1 */
 	"small_hut" : 
 		{
-			"level" : 3,
-			"title" : "Small hut",
+			level : 3,
+			title : "Small hut",
 			"habitants" : 9,
 			"minDesirability" : -9,
 		  "maxDesirability" : 0,
@@ -102,8 +102,8 @@
 	/*4;Grande hutte;11;-2;4;0;1;1;0;0;1;0;0;0;0;3;20;1*/	
 	"big_hut" : 
 		{
-			"level" : 4,
-			"title" : "Big hut",
+			level : 4,
+			title : "Big hut",
 			"habitants" : 11,
 			"minDesirability" : -2,
 		  "maxDesirability" : 4,
@@ -128,8 +128,8 @@
 	/* 5;Petit taudis;13;2;8;0;2;1;0;0;1;0;0;0;0;3;25;2	*/	
 	"small_domus" : 
 		{
-			"level" : 5,
-			"title" : "Small domus",
+			level : 5,
+			title : "Small domus",
 			"habitants" : 13,
 			"minDesirability" : 2,
 		  "maxDesirability" : 8,
@@ -153,8 +153,8 @@
 	/* 6;Grand taudis;15;6;12;10;2;1;0;0;1;0;0;0;0;3;30;2 */
 	"big_domus" : 
 		{
-			"level" : 6,
-			"title" : "big domus",
+			level : 6,
+			title : "big domus",
 			"habitants" : 15,
 			"minDesirability" : 6,
 		  "maxDesirability" : 12,
@@ -179,8 +179,8 @@
 	/* 7;Petite maison;17;10;16;10;2;1;1;0;1;0;0;0;0;2;35;2 */
 	"small_mansion" : 
 		{
-			"level" : 7,
-			"title" : "Small mansion",
+			level : 7,
+			title : "Small mansion",
 			"habitants" : 17,
 			"minDesirability" : 10,
 		  "maxDesirability" : 16,
@@ -205,8 +205,8 @@
 	/* 8;Grande maison;19;14;20;10;2;1;1;1;1;1;0;0;0;2;45;2 */
 	"big_mansion" : 
 		{
-			"level" : 8,
-			"title" : "Big mansion",
+			level : 8,
+			title : "Big mansion",
 			"habitants" : 19,
 			"minDesirability" : 14,
 		  "maxDesirability" : 20,
@@ -231,8 +231,8 @@
 	/*9;Petite insula;19;18;25;25;2;1;1;1;1;1;0;0;0;2;50;3*/
 	"small_insula" : 
 		{
-			"level" : 9,
-			"title" : "Small insula",
+			level : 9,
+			title : "Small insula",
 			"habitants" : 19,
 			"minDesirability" : 18,
 		    "maxDesirability" : 25,
@@ -257,8 +257,8 @@
 	/*10;Insula moyenne;20;22;32;25;2;1;1;2;1;1;0;1;0;2;58;3*/
 	"middle_insula" : 
 		{
-			"level" : 10,
-			"title" : "Middle insula",
+			level : 10,
+			title : "Middle insula",
 			"habitants" : 19,
 			"minDesirability" : 22,
 		    "maxDesirability" : 32,
@@ -283,8 +283,8 @@
 	/*11;Grande insula;21;29;40;25;2;1;2;3;1;1;1;1;0;2;65;3*/
 	"big_insula" : 
 		{
-			"level" : 11,
-			"title" : "Big insula",
+			level : 11,
+			title : "Big insula",
 			"habitants" : 21,
 			"minDesirability" : 29,
 		    "maxDesirability" : 40,
@@ -309,8 +309,8 @@
 	/* 12;Insula imposante;21;37;48;35;2;1;2;3;2;1;1;1;0;2;80;4 */
 	"beatyfull_insula" : 
 		{
-			"level" : 12,
-			"title" : "Beatyfull insula",
+			level : 12,
+			title : "Beatyfull insula",
 			"habitants" : 21,
 			"minDesirability" : 37,
 		    "maxDesirability" : 48,
@@ -335,8 +335,8 @@
 	/*13;Petite villa;10;45;53;35;2;2;2;3;2;1;1;1;1;1;150;9*/
 	"small_villa" : 
 		{
-			"level" : 13,
-			"title" : "Small villa",
+			level : 13,
+			title : "Small villa",
 			"habitants" : 10,
 			"minDesirability" : 45,
 		    "maxDesirability" : 53,
@@ -361,8 +361,8 @@
 	/* 14;Villa moyenne;10;50;58;40;2;2;2;4;2;1;1;1;1;1;180;10 */
 	"middle_villa" : 
 		{
-			"level" : 14,
-			"title" : "Middle villa",
+			level : 14,
+			title : "Middle villa",
 			"habitants" : 10,
 			"minDesirability" : 50,
 		    "maxDesirability" : 58,
@@ -387,8 +387,8 @@
 	/*15;Grande villa;10;55;63;45;2;2;3;4;2;1;1;1;1;1;400;11*/
 	"big_villa" : 
 		{
-			"level" : 15,
-			"title" : "Big villa",
+			level : 15,
+			title : "Big villa",
 			"habitants" : 10,
 			"minDesirability" : 55,
 		    "maxDesirability" : 63,
@@ -411,8 +411,8 @@
 	/*16;Villa imposante;11;60;68;50;2;3;3;4;3;1;1;1;1;1;600;11*/
 	"beatigull_villa" : 
 		{
-			"level" : 16,
-			"title" : "Beatifull villa",
+			level : 16,
+			title : "Beatifull villa",
 			"habitants" : 11,
 			"minDesirability" : 60,
 		    "maxDesirability" : 68,
@@ -437,8 +437,8 @@
 	/*17;Petit palais;12;65;74;55;2;3;3;4;3;1;1;1;2;1;700;12*/
 	"small_palace" : 
 		{
-			"level" : 17,
-			"title" : "Small palace",
+			level : 17,
+			title : "Small palace",
 			"habitants" : 12,
 			"minDesirability" : 65,
 		    "maxDesirability" : 74,
@@ -463,8 +463,8 @@
 	/*18;Palais moyen;12;70;80;60;2;4;3;4;3;1;1;1;2;1;900;12*/
 	"middle_palace" : 
 		{
-			"level" : 18,
-			"title" : "Middle palace",
+			level : 18,
+			title : "Middle palace",
 			"habitants" : 12,
 			"minDesirability" : 70,
 		    "maxDesirability" : 80,
@@ -489,8 +489,8 @@
 	/*19;Grand palais;12;76;90;70;2;4;3;4;3;1;1;1;2;1;1500;15*/	
 	"big_palace" : 
 		{
-			"level" : 19,
-			"title" : "Big palace",
+			level : 19,
+			title : "Big palace",
 			"habitants" : 12,
 			"minDesirability" : 76,
 		    "maxDesirability" : 90,
@@ -515,11 +515,11 @@
 	/*20;Palais luxueux;12;85;100;80;2;4;3;4;3;1;1;1;2;1;1750;16*/
 	"luxury_palace" : 
 		{
-			"level" : 20,
-			"title" : "Luxury palace",
+			level : 20,
+			title : "Luxury palace",
 			"habitants" : 12,
 			"minDesirability" : 85,
-		    "maxDesirability" : 100,
+		  "maxDesirability" : 100,
 			"entertainment" : 80,
 			"desirability" : 4,
 			"desstep" : -1

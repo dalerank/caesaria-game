@@ -156,16 +156,9 @@ public:
 class BuildingData::Impl
 {
 public:
-  struct DeisrabilityInfo
-  {
-    int base;
-    int range;
-    int step;
-  };
-
+  BuildingData::Desirability desirability;
   BuildingType buildingType;
   VariantMap options;
-  DeisrabilityInfo desirability;
 };
 
 BuildingData::BuildingData(const BuildingType buildingType, const std::string &name, const int cost)
@@ -216,14 +209,9 @@ const Picture &BuildingData::getBasePicture() const
   return _basePicture;
 }
 
-char BuildingData::getDesirbilityInfluence() const
+const BuildingData::Desirability& BuildingData::getDesirbilityInfo() const
 {
-  return _d->desirability.base;
-}
-
-char BuildingData::getDesirbilityRange() const
-{
-  return _d->desirability.range;
+  return _d->desirability;
 }
 
 Variant BuildingData::getOption(const std::string &name, Variant defaultVal ) const
@@ -245,11 +233,6 @@ BuildingData &BuildingData::operator=(const BuildingData &a)
   _d->options = a._d->options;
 
   return *this;
-}
-
-char BuildingData::getDesirabilityStep() const
-{
-  return _d->desirability.step;
 }
 
 BuildingClass BuildingData::getClass() const

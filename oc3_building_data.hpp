@@ -32,6 +32,13 @@ class BuildingData
 
   static BuildingData invalid;
 public:
+  typedef struct
+  {
+    int base;
+    int range;
+    int step;
+  } Desirability;
+
   BuildingData( const BuildingType buildingType, const std::string &name, const int cost );
   BuildingData( const BuildingData& a );
 
@@ -44,9 +51,7 @@ public:
   const Picture& getBasePicture() const;
   // returns the building price, -1 => cannot be built
   int getCost() const;
-  char getDesirbilityInfluence() const;
-  char getDesirabilityStep() const;
-  char getDesirbilityRange() const;
+  const Desirability& getDesirbilityInfo() const;
 
   Variant getOption( const std::string& name, Variant defaultVal=Variant() ) const;
 

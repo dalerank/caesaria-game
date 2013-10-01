@@ -33,6 +33,7 @@
 #include "oc3_referencecounted.hpp"
 #include "oc3_predefinitions.hpp"
 #include "oc3_service.hpp"
+#include "oc3_building_data.hpp"
 
 class Construction : public LandOverlay
 {
@@ -47,16 +48,11 @@ public:
   virtual const TilemapTiles& getAccessRoads() const;  // return all road tiles adjacent to the construction
   virtual void computeAccessRoads();  
   virtual int  getMaxDistance2Road() const; // virtual because HOUSE has different behavior
-  virtual char getDesirabilityInfluence() const;
-  virtual unsigned char getDesirabilityRange() const;
-  virtual char getDesirabilityStep() const;
+  virtual const BuildingData::Desirability& getDesirabilityInfo() const;
   virtual void destroy();
 
 protected:
   TilemapTiles _accessRoads;
-  
-  typedef enum { duPositive=true, duNegative=false } DsbrlUpdate;
-  void _updateDesirabilityInfluence( const DsbrlUpdate type );
 };
 
 class Building : public Construction

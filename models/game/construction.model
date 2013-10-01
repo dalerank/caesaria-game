@@ -339,7 +339,7 @@
   market :
   {
   cost : 40,
-	desirability : { base : -2, 	range : 2, 	step : 1 }
+	desirability : { base : -2, range : 6, 	step : 1 }
 	employers : 5
 	class : "food"
   image : [ "commerce", 1 ]
@@ -348,7 +348,7 @@
   granery :
   {
   cost : 100,
-	desirability : { base : -4,	range : 2,	step : 2 }
+	desirability : { base : -4,	range : 4,	step : 1 }
 	employers : 6
 	class : "food"
   }, 

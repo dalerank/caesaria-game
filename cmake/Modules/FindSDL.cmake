@@ -67,6 +67,11 @@
 # (To distribute this file outside of CMake, substitute the full
 #  License text for the above reference.)
 
+if(WIN32)
+  set(WIN32_SDL_DEPENDENCIES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/SDL #windows")
+endif(WIN32)
+
+
 find_path(SDL_INCLUDE_DIR SDL.h
   HINTS
   ENV SDLDIR
@@ -74,7 +79,7 @@ find_path(SDL_INCLUDE_DIR SDL.h
   PATHS
   /usr/local/include/SDL11  #freebsd sdl1.1
   /usr/local/include/SDL12  #freebsd sdl1.2
-  ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/SDL #windows
+  ${WIN32_SDL_DEPENDENCIES_DIR}
 )
 MESSAGE("SDL_INCLUDE_DIR is ${SDL_INCLUDE_DIR}")
 
@@ -83,7 +88,7 @@ MESSAGE("SDL_INCLUDE_DIR is ${SDL_INCLUDE_DIR}")
 find_library(SDL_LIBRARY_TEMP
   NAMES SDL SDL-1.1
   HINTS
-	${CMAKE_CURRENT_SOURCE_DIR}/dependencies/SDL
+        ${WIN32_SDL_DEPENDENCIES_DIR}
     ENV SDLDIR
   PATH_SUFFIXES lib lib/x86
 )
@@ -97,8 +102,8 @@ if(NOT SDL_BUILDING_LIBRARY)
     find_library(SDLMAIN_LIBRARY
       NAMES SDLmain SDLmain-1.1
       HINTS
-		${CMAKE_CURRENT_SOURCE_DIR}/dependencies/SDL
-        ENV SDLDIR
+        ${WIN32_SDL_DEPENDENCIES_DIR}
+      ENV SDLDIR
       PATH_SUFFIXES lib lib/x86
       PATHS
       /sw

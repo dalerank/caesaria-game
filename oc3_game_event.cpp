@@ -93,7 +93,7 @@ GameEventPtr BuildEvent::create(const TilePos& pos, ConstructionPtr building)
 {
   BuildEvent* ev = new BuildEvent();
   ev->_pos = pos;
-  ev->_building = building;
+  ev->_construction = building;
 
   GameEventPtr ret( ev );
   ret->drop();
@@ -103,15 +103,18 @@ GameEventPtr BuildEvent::create(const TilePos& pos, ConstructionPtr building)
 
 void BuildEvent::exec( Game& game )
 {
-  const BuildingData& buildingData = BuildingDataHolder::instance().getData( _building->getType() );
-  if( _building.isValid() )
+  const BuildingData& buildingData = BuildingDataHolder::instance().getData( _construction->getType() );
+  if( _construction.isValid() )
   {
-    _building->build( game.getCity(), _pos );
+    _construction->build( game.getCity(), _pos );
 
-    game.getCity()->addOverlay( _building.as<LandOverlay>() );
+    CityHelper helper( game.getCity() );
+    helper.updateDesirability( _construction, true );
+
+    game.getCity()->addOverlay( _construction.as<LandOverlay>() );
     game.getCity()->getFunds().resolveIssue( FundIssue( CityFunds::buildConstruction, -buildingData.getCost() ) );
 
-    if( _building->isNeedRoadAccess() && _building->getAccessRoads().empty() )
+    if( _construction->isNeedRoadAccess() && _construction->getAccessRoads().empty() )
     {
       game.getCity()->onWarningMessage().emit( "##building_need_road_access##" );
     }

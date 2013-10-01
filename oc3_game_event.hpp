@@ -59,7 +59,7 @@ public:
   virtual void exec( Game& game );
 private:
   TilePos _pos;
-  ConstructionPtr _building;
+  ConstructionPtr _construction;
 };
 
 class ClearLandEvent : public GameEvent

@@ -220,6 +220,8 @@ public:
 
   TilemapArea getArea( BuildingPtr building );
 
+  void updateDesirability( ConstructionPtr construction, bool onBuild );
+
 protected:
   CityPtr _city;
 };

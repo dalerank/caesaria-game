@@ -33,6 +33,7 @@
 #include "oc3_goodstore_simple.hpp"
 #include "oc3_city.hpp"
 #include "oc3_foreach.hpp"
+#include "oc3_game_event_mgr.hpp"
 
 class House::Impl
 {
@@ -43,7 +44,7 @@ public:
   int houseLevel;
   float healthLevel;
   HouseLevelSpec levelSpec;  // characteristics of the current house level
-  char desirability;
+  BuildingData::Desirability desirability;
   SimpleGoodStore goodStore;
   ServiceAccessMap serviceAccess;  // value=access to the service (0=no access, 100=good access)
   int currentHabitants;
@@ -102,7 +103,9 @@ House::House(const int houseId) : Building( B_HOUSE ), _d( new Impl )
   _d->levelSpec = helper.getHouseLevelSpec( _d->houseLevel );
   setName( _d->levelSpec.getLevelName() );
   _d->currentHabitants = 0;
-  _d->desirability = -3;
+  _d->desirability.base = -3;
+  _d->desirability.range = 3;
+  _d->desirability.step = 1;
   _fireLevel = 0;
 
   _d->initGoodStore( 1 );
@@ -188,7 +191,9 @@ const HouseLevelSpec& House::getLevelSpec() const
 }
 
 void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int startBigPic, const char desirability )
-{       
+{
+  CityHelper helper( _getCity() );
+
   if( getSize() == 1 )
   {
     Tilemap& tmap = _getCity()->getTilemap();
@@ -245,16 +250,24 @@ void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int start
       _d->currentHabitants = sumHabitants;
       _d->freeWorkersCount = sumFreeWorkers;
 
+      //reset desirability level with old house size
+      helper.updateDesirability( this, false );
+
       _update();
-      _updateDesirabilityInfluence( Construction::duNegative );
-      setSize( getSize() + Size(1) );
+      setSize( getSize() + Size(1) );      
       build( _getCity(), getTile().getIJ() );
+      //set new desirability level
+      helper.updateDesirability( this, true );
     }
   }
 
-  _updateDesirabilityInfluence( Construction::duNegative );
-  _d->desirability = desirability;       
-  _updateDesirabilityInfluence( Construction::duPositive );
+  //that this house will be upgrade, we need decrease current desirability level
+  helper.updateDesirability( this, false );
+
+  _d->desirability.base = desirability;
+  _d->desirability.step = desirability < 0 ? 1 : -1;
+  //now upgrade groud area to new desirability
+  helper.updateDesirability( this, true );
 
   bool bigSize = getSize().getWidth() > 1;
   _d->houseId = bigSize ? startBigPic : startSmallPic; 
@@ -271,7 +284,8 @@ void House::levelUp()
   {
   case 1:
     _d->houseId = 1;
-    _d->desirability = -3;
+    _d->desirability.base = -3;
+    _d->desirability.step = 1;
   break;
 
   case 2: _tryUpdate_1_to_11_lvl( 1, 1, 5, -3);
@@ -316,9 +330,14 @@ void House::_tryDegrage_11_to_2_lvl( int smallPic, int bigPic, const char desira
   _d->houseId = bigSize ? bigPic : smallPic;
   _d->picIdOffset = bigSize ? 0 : ( rand() % 10 > 6 ? 1 : 0 );
 
-  _updateDesirabilityInfluence( Construction::duNegative );
-  _d->desirability = desirability;
-  _updateDesirabilityInfluence( Construction::duPositive );
+  CityHelper helper( _getCity() );
+  //clear current desirability influence
+  helper.updateDesirability( this, false );
+
+  _d->desirability.base = desirability;
+  _d->desirability.step = desirability < 0 ? 1 : -1;
+  //set new desirability level
+  helper.updateDesirability( this, true );
 }
 
 void House::levelDown()
@@ -335,25 +354,22 @@ void House::levelDown()
 
      Tilemap& tmap = _getCity()->getTilemap();
 
-     if( getSize().getWidth() > 1 )
+     if( getSize().getArea() > 1 )
      {
-       _updateDesirabilityInfluence( Construction::duNegative );
-
-       TilemapTiles perimetr = tmap.getArea( getTile().getIJ(), Size(2) );
-       TilemapTiles::iterator it=perimetr.begin();
+       TilemapTiles perimetr = tmap.getArea( getTilePos(), Size(2) );
        int peoplesPerHouse = getNbHabitants() / 4;
        _d->currentHabitants = peoplesPerHouse;
-       it++; //no destroy himself
-       for( ; it != perimetr.end(); it++ )
+       foreach( Tile* tile, perimetr )
        {
          HousePtr house = ConstructionManager::getInstance().create( B_HOUSE ).as<House>();
-         house->build( _getCity(), (*it)->getIJ() );
          house->_d->currentHabitants = peoplesPerHouse;
+         house->_d->houseId = smallHovel;
          house->_update();
+
+         GameEventMgr::append( BuildEvent::create( tile->getIJ(), house.as<Construction>() ));
        }
 
-       setSize( Size( 1 ) );
-       _updateDesirabilityInfluence( Construction::duPositive );
+       deleteLater();
      }
    }
    break;
@@ -617,7 +633,7 @@ bool House::isWalkable() const
   return (_d->houseId == smallHovel && _d->currentHabitants == 0) ? true : false;
 }
 
-char House::getDesirabilityInfluence() const
+const BuildingData::Desirability& House::getDesirabilityInfo() const
 {
   return _d->desirability;
 }
@@ -629,7 +645,7 @@ void House::save( VariantMap& stream ) const
   stream[ "picIdOffset" ] = _d->picIdOffset;
   stream[ "houseId" ] = _d->houseId;
   stream[ "houseLevel" ] = _d->houseLevel;
-  stream[ "desirability" ] = _d->desirability;
+  stream[ "desirability" ] = _d->desirability.base;
   stream[ "currentHubitants" ] = _d->currentHabitants;
   stream[ "maxHubitants" ] = _d->maxHabitants;
   stream[ "freeWorkersCount" ] = _d->freeWorkersCount;
@@ -656,7 +672,9 @@ void House::load( const VariantMap& stream )
   _d->healthLevel = (float)stream.get( "healthLevel", 0 );
   _d->levelSpec = HouseSpecHelper::getInstance().getHouseLevelSpec(_d->houseLevel);
 
-  _d->desirability = (int)stream.get( "desirability", 0 );
+  _d->desirability.base = (int)stream.get( "desirability", 0 );
+  _d->desirability.step = _d->desirability.base < 0 ? 1 : -1;
+
   _d->currentHabitants = (int)stream.get( "currentHubitants", 0 );
   _d->maxHabitants = (int)stream.get( "maxHubitants", 0 );
   _d->freeWorkersCount = (int)stream.get( "freeWorkersCount", 0 );
@@ -677,16 +695,6 @@ void House::load( const VariantMap& stream )
 
   Building::build( _getCity(), getTilePos() );
   _update();
-}
-
-unsigned char House::getDesirabilityRange() const
-{
-  return abs( _d->desirability );
-}
-
-char House::getDesirabilityStep() const
-{
-  return _d->desirability > 0 ? -1 : 1;
 }
 
 int House::getFoodLevel() const

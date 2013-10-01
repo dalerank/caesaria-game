@@ -222,7 +222,7 @@ void Tilemap::load( const VariantMap& stream )
   VariantList::iterator bitsetInfoIt   = bitsetInfo.begin();
   VariantList::iterator desirabilityIt = desInfo.begin();
 
-  TilemapArea tiles = const_cast< Tilemap* >( this )->getArea( TilePos( 0, 0 ), Size( _d->size ) );
+  TilemapArea tiles = getArea( TilePos( 0, 0 ), Size( _d->size ) );
   for( TilemapArea::iterator it = tiles.begin(); it != tiles.end(); 
        it++, imgIdIt++, bitsetInfoIt++, desirabilityIt++ )
   {
