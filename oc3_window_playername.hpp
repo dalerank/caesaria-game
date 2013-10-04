@@ -24,6 +24,7 @@ class WindowPlayerName : public Widget
 {
 public:
   WindowPlayerName( Widget* parent );
+  ~WindowPlayerName();
 
 public oc3_signals:
   Signal0<>& onClose();

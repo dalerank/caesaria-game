@@ -45,6 +45,11 @@ WindowPlayerName::WindowPlayerName(Widget* parent)
   }
 }
 
+WindowPlayerName::~WindowPlayerName()
+{
+
+}
+
 Signal0<>& WindowPlayerName::onClose()
 {
   return _d->onCloseSignal;
