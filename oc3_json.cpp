@@ -36,12 +36,11 @@ static std::string join(const StringArray& rlist, const std::string& sep)
   for( StringArray::const_iterator it = rlist.begin();
        it != rlist.end(); it++ )
   {
-          if(!res.empty())
-          {
-             res.append( sep );
-          }
-
-          res.append( *it );
+    if(!res.empty())
+    {
+      res.append( sep );
+    }
+    res.append( *it );
   }
   return res;
 }
@@ -233,7 +232,7 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
 
     if (success)
     {
-            return str;
+      return str;
     }
     else
     {
@@ -474,7 +473,7 @@ Variant Json::parseObjectName(const std::string &json, int &index, bool &success
 
   bool complete = false;
 
-  int lastIndex = math::clamp<int>( index + 32, 0, json.size() );
+  int lastIndex = math::clamp<int>( index + 64, 0, json.size() );
   for( int i=index; i < lastIndex; i++ )
   {    
     if( json[i+1] != limiter )
@@ -525,57 +524,57 @@ Variant Json::parseString(const std::string &json, int &index, bool &success)
         bool complete = false;
         while(!complete)
         {
-                if(index == (int)json.size())
-                {
-                        break;
-                }
+          if(index == (int)json.size())
+          {
+            break;
+          }
 
-                c = json[index++];
+          c = json[index++];
 
-                if(c == '\"')
-                {
-                        complete = true;
-                        break;
-                }
-                else if(c == '\\')
-                {
-                        if(index == (int)json.size())
-                        {
-                                break;
-                        }
+          if(c == '\"')
+          {
+            complete = true;
+            break;
+          }
+          else if(c == '\\')
+          {
+            if(index == (int)json.size())
+            {
+              break;
+            }
 
-                        c = json[index++];
+            c = json[index++];
 
-                        if( c == '\"' || c == '\\' )
-                        {
-                           s += c;
-                        }
-                        else if(c == '/')
-                        {
-                                s.append("/");
-                        }
-                        else if(c == 'b')
-                        {
-                                s.append("\b");
-                        }
-                        else if(c == 'f')
-                        {
-                                s.append("\f");
-                        }
-                        else if(c == 'n')
-                        {
-                                s.append("\n");
-                        }
-                        else if(c == 'r')
-                        {
-                                s.append("\r");
-                        }
-                        else if(c == 't')
-                        {
-                                s.append("\t");
-                        }
-                        else if(c == 'u')
-                        {
+            if( c == '\"' || c == '\\' )
+            {
+              s += c;
+            }
+            else if(c == '/')
+            {
+              s.append("/");
+            }
+            else if(c == 'b')
+            {
+              s.append("\b");
+            }
+            else if(c == 'f')
+            {
+              s.append("\f");
+            }
+            else if(c == 'n')
+            {
+              s.append("\n");
+            }
+            else if(c == 'r')
+            {
+              s.append("\r");
+            }
+            else if(c == 't')
+            {
+              s.append("\t");
+            }
+            else if(c == 'u')
+            {
 //                                 int remainingLength = json.size() - index;
 // 
 //                                 if(remainingLength >= 4)
@@ -592,13 +591,13 @@ Variant Json::parseString(const std::string &json, int &index, bool &success)
 //                                 {
 //                                         break;
 //                                 }
-                          _OC3_DEBUG_BREAK_IF( true && "yet not work")
-                        }
-                }
-                else
-                {
-                        s += c;
-                }
+              _OC3_DEBUG_BREAK_IF( true && "yet not work")
+            }
+          }
+          else
+          {
+            s += c;
+          }
         }
 
         if(!complete)
@@ -764,7 +763,7 @@ int Json::nextToken(const std::string &json, int &index)
 
   if( remainingLength > 1 )
   {
-    int lastIndex = math::clamp<int>( index + 32, 0, json.size() );
+    int lastIndex = math::clamp<int>( index + 64, 0, json.size() );
     for( int i=index+1; i < lastIndex ; i++ )
     {
       if( json[i] == ':' )

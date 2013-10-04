@@ -16,8 +16,10 @@
 #include "oc3_gui_widget_factory.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_gui_label.hpp"
+#include "oc3_gui_editbox.hpp"
 #include "oc3_pushbutton.hpp"
 #include "oc3_requirements.hpp"
+#include "oc3_texturedbutton.hpp"
 
 #include <map>
 
@@ -53,6 +55,8 @@ WidgetFactory::WidgetFactory() : _d( new Impl )
 {
   // entertainment
   addCreator( OC3_STR_EXT(Label), new BaseWidgetCreator<Label>() );
+  addCreator( OC3_STR_EXT(EditBox), new BaseWidgetCreator<EditBox>() );
+  addCreator( OC3_STR_EXT(TexturedButton), new BaseWidgetCreator<TexturedButton>() );
   addCreator( OC3_STR_EXT(PushButton), new BaseWidgetCreator<PushButton>() );
 }
 

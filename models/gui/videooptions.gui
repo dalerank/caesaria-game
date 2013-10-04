@@ -1,0 +1,56 @@
+{  
+  geometry : [ 0, 0, 320, 190 ]
+  
+  lbTitle#Label :
+  {
+    font : "FONT_3"
+    geometry : [ 30, 10, 290, 35 ]
+    text : "##video_options##"
+    textAlign : [ "center", "center" ]
+  }
+
+	lbBackground#Label : 
+  {
+    geometryf : [ 0.0, 0.0, 1, 1 ]
+    bgtype : "whiteFrame"
+       
+    btnSwitchMode#PushButton :
+    {
+      geometry : [ 50, 45, 270, 65 ]
+      text : "##switch_mode##"
+      bgtype : "smallGrayBorderLine"
+      id : 1
+    }
+    
+    btn1024x768Mode#PushButton :
+    {
+      geometry : [ 50, 68, 270, 88 ]
+      text : "##1024x768_mode##"
+      bgtype : "smallGrayBorderLine"
+      id : 1024
+    }
+    
+    btn1280x1024Mode#PushButton :
+    {
+      geometry : [ 50, 91, 270, 111 ]
+      text : "##1280x1024_mode##"
+      bgtype : "smallGrayBorderLine"
+      id : 1280
+    }
+    
+    btnAutoMode#PushButton :
+    {
+      geometry : [ 50, 114, 270, 134 ]
+      text : "##auto_mode##"
+      bgtype : "smallGrayBorderLine"
+      id : 9999
+    }
+    
+    btnCancel#PushButton :
+    {
+      geometry : [ 50, 137, 270, 157 ]
+      bgtype : "smallGrayBorderLine"
+      text : "##cancel##"
+    }
+  }
+}

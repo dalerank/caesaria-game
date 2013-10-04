@@ -593,15 +593,28 @@ void Widget::setupUI( const VariantMap& ui )
       continue;
 
     VariantMap tmp = it->second.toMap();
-    if( tmp.get( "class" ).toString() == "Widget" )
+    std::string widgetName = it->first;
+    std::string widgetType;
+    std::string::size_type delimPos = widgetName.find( '#' );
+    if( delimPos != std::string::npos )
     {
-      Widget* child = getEnvironment()->createWidget( tmp.get( "type" ).toString(), this );
+      widgetType = widgetName.substr( delimPos+1 );
+      widgetName = widgetName.substr( 0, delimPos );
+    }
+    else
+    {
+      widgetType = tmp.get( "type" ).toString();
+    }
+
+    if( !widgetType.empty() )
+    {
+      Widget* child = getEnvironment()->createWidget( widgetType, this );
       if( child )
-      {        
+      {
         child->setupUI( tmp );
         if( child->getInternalName().empty() )
         {
-          child->setInternalName( it->first );
+          child->setInternalName( widgetName );
         }
       }
     }
@@ -805,22 +818,22 @@ bool Widget::hasTabGroup() const
 
 void Widget::setText( const std::string& text )
 {
-    _text = text;
+  _d->text = text;
 }
 
 void Widget::setTooltipText( const std::string& text )
 {
-    _toolTipText = text;
+  _d->toolTipText = text;
 }
 
 std::string Widget::getText() const
 {
-    return _text;
+  return _d->text;
 }
 
 std::string Widget::getTooltipText() const
 {
-  return _toolTipText;
+  return _d->toolTipText;
 }
 
 int Widget::getID() const

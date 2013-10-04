@@ -95,13 +95,12 @@ VariantList GoodStock::save() const
 
 void GoodStock::load( const VariantList& stream )
 {
-  if( stream.size() < 3 )
+  if( stream.empty())
     return;
 
-  VariantList::const_iterator it=stream.begin();
-  _type = (Good::Type)(*it).toInt(); it++;
-  _maxQty = (*it).toInt(); it++;
-  _currentQty = math::clamp( (*it).toInt(), 0, _maxQty );
+  _type = (Good::Type)stream.get( 0 ).toInt();
+  _maxQty = (int)stream.get( 1 );
+  _currentQty = math::clamp( (int)stream.get( 2 ), 0, _maxQty );
 }
 
 bool GoodStock::empty() const

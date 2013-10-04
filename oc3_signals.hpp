@@ -172,8 +172,10 @@ public:
 
 	void emit( Param1 p1 ) const
 	{
-		for (DelegateIterator it = delegateList.begin(); it != delegateList.end(); ++it)
+		for( DelegateIterator it = delegateList.begin(); it != delegateList.end(); ++it )
+		{
 			(*it)( p1 );
+		}
 	}
 
 	void operator() ( Param1 p1 ) const

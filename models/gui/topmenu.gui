@@ -1,8 +1,5 @@
 {  
-	lbPopulation : 
-  {
-    class : "Widget" 
-    type : "Label"
+	lbPopulation#Label : {
     geometry : [ 0, 0, 120, 23 ]
     image : "paneling_00015.png"
     font : "FONT_2_WHITE"
@@ -10,10 +7,7 @@
     tooltipText : "##population_tooltip##"
   }
   
-  lbDate : 
-  {
-    class : "Widget"
-    type : "Label" 
+  lbDate#Label : {
     geometry : [ 0, 0, 120, 23 ]
     font : "FONT_2_YELLOW"
     textAlign : [ "center", "center" ]
@@ -21,10 +15,7 @@
     tooltipText : "##funds_tooltip##"
   }
   
-  lbFunds :
-  {
-    class : "Widget"
-    type : "Label" 
+  lbFunds#Label : {
     geometry : [ 0, 0, 120, 23 ]
     font : "FONT_2_WHITE"
     textAlign : [ "center", "center" ]
@@ -32,52 +23,31 @@
     tooltipText : "##date_tooltip##"
   }
   
-  cntxItemFile :
-  {
-    class : "Widget"
-    type : "ContextMenuItem"
+  cntxItemFile#ContextMenuItem : {
     text : "##gmenu_file##"
     submenu : true
     
-    cntxItemNewgame :
-    {
-      class : "Widget"
-      type : "ContextMenuItem"
+    cntxItemNewgame#ContextMenuItem : {
       text : "##gmenu_file_new##"
     }
     
-    cntxItemRestart :
-    {
-      class : "Widget"
-      type : "ContextMenuItem"
+    cntxItemRestart#ContextMenuItem : {
       text : "##gmenu_file_restart##"
     }
     
-    cntxItemLoad :
-    {
-      class : "Widget"
-      type : "ContextMenuItem"
+    cntxItemLoad#ContextMenuItem : {
       text : "##gmenu_file_load##"
     }
     
-    cntxItemSave :
-    {
-      class : "Widget"
-      type : "ContextMenuItem"
+    cntxItemSave#ContextMenuItem : {
       text : "##gmenu_file_save##"
     }
     
-    cntxItemMainMenu :
-    {
-      class : "Widget"
-      type : "ContextMenuItem"
+    cntxItemMainMenu#ContextMenuItem : {
       text : "##gmenu_file_mainmenu##"
     }
     
-    cntxItemExit :
-    {
-      class : "Widget"
-      type : "ContextMenuItem"
+    cntxItemExit#ContextMenuItem : {
       text : "##gmenu_file_exit##"
     }
   }

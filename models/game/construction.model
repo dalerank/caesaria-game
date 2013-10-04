@@ -29,30 +29,30 @@
 
   theater : 
   {
-  cost : 50,
-	desirability : { base : 2, range : 2, step : -1 }
-	employers : 8
-	class : "entertainment"
-  image : [ "entertainment", 13 ]
+    cost : 50,
+    desirability : { base : 2, range : 2, step : -1 }
+    employers : 8
+    class : "entertainment"
+    image : [ "entertainment", 13 ]
   },
 
   hippodrome : 
   {
-  cost : 2500,
-	desirability : { base : -3, range : 3, step : 1 }
-	employers : 150
-	class : "entertainment"
+    cost : 2500,
+    desirability : { base : -3, range : 3, step : 1 }
+    employers : 150
+    class : "entertainment"
   },
   
   colloseum : 
   {
-  cost : 500,
-	desirability : { base : -3, range : 3, step : 1 }
-	employers : 25
-	class : "entertainment"
+    cost : 500,
+    desirability : { base : -3, range : 3, step : 1 }
+    employers : 25
+    class : "entertainment"
   },
   
-  "gladiator_pit" : 
+  gladiator_pit : 
   {
   cost : 75,
 	desirability : { base : -3, range : 3, step : 1 }
@@ -76,37 +76,36 @@
 	class : "entertainment"
   },
   
-  artist_colony : 
-  {
-	cost : 50,
-	desirability : { base : -2, range : 3, step : 1 }
-	employers : 5
-  image : [ "entertainment", 81 ]
-	class : "entertainment"
+  artist_colony : {
+    cost : 50,
+    desirability : { base : -2, range : 3, step : 1 }
+    employers : 5
+    image : [ "entertainment", 81 ]
+    class : "entertainment"
   },
 
   chatioteer_school :
   {
-	cost : 75,
-	desirability : { base : -3, range : 3, step : 1 }
-	employers : 10
-	class : "entertainment"
+    cost : 75,
+    desirability : { base : -3, range : 3, step : 1 }
+    employers : 10
+    class : "entertainment"
   },
   
   plaza :
   {
-  cost : 15,
-	desirability : { base : 4, range : 2,	step : -2 }
-	employers : 0
-	class : "road"
+    cost : 15,
+    desirability : { base : 4, range : 2,	step : -2 }
+    employers : 0
+    class : "road"
   },  
 
   garden : 
   {
-  cost : 12,
-	desirability : { base :3,	range : 3,	step : -1 }
-	employers : 0
-	class : "garden"
+    cost : 12,
+    desirability : { base :3,	range : 3,	step : -1 }
+    employers : 0
+    class : "garden"
   },
   
   fort_legionaries :

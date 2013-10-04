@@ -255,6 +255,19 @@ private:
 class VariantList : public std::list<Variant>
 {
 public:
+  Variant get( const unsigned int index, Variant defaultVal=Variant() ) const
+  {
+    VariantList::const_iterator it = begin();
+    if( index >= size() )
+    {
+      return defaultVal;
+    }
+    else
+    {
+      std::advance( it, index );
+      return *it;
+    }
+  }
 };
 
 StringArray& operator<<(StringArray& strlist, const VariantList& vars );

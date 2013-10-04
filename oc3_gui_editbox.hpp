@@ -25,6 +25,8 @@ class EditBox : public Widget
 {
 public:
 
+  EditBox( Widget* parent );
+
   //! constructor
   EditBox( Widget* parent, const Rect& rectangle, 
            const std::string& text="", const int id=-1, bool border=false );
@@ -45,7 +47,7 @@ public:
   virtual Font getActiveFont();
 
   //! Sets another color for the text.
-  virtual void setOverrideColor( const NColor& color );
+  virtual void setOverrideColor(NColor color );
 
   //! Gets the override color
   virtual NColor getOverrideColor() const;
@@ -58,7 +60,7 @@ public:
   /** \return true if the override color is enabled, false otherwise */
   virtual bool isOverrideColorEnabled() const;
 
-  virtual void SetDrawBackground( bool drawBackground );
+  virtual void setDrawBackground( bool drawBackground );
 
   //! Turns the border on or off
   virtual void setDrawBorder( bool border );
@@ -73,19 +75,19 @@ public:
   //! Enables or disables newlines.
   /** \param enable: If set to true, the EGET_EDITBOX_ENTER event will not be fired,
   instead a newline character will be inserted. */
-  virtual void setMultiLine( bool enable );
+  virtual void setMultiline( bool enable );
 
   //! Checks if multi line editing is enabled
   //! \return true if mult-line is enabled, false otherwise
-  virtual bool isMultiLineEnabled() const;
+  virtual bool isMultilineEnabled() const;
 
   //! Enables or disables automatic scrolling with cursor position
   //! \param enable: If set to true, the text will move around with the cursor position
-  virtual void setAutoScroll( bool enable );
+  virtual void setAutoscroll( bool enable );
 
   //! Checks to see if automatic scrolling is enabled
   //! \return true if automatic scrolling is enabled, false if not
-  virtual bool isAutoScrollEnabled() const;
+  virtual bool isAutoscrollEnabled() const;
 
   //! Gets the size area of the text in the edit box
   //! \return Returns the size in pixels of the text
@@ -124,7 +126,7 @@ public:
   //virtual void save( VariantArray* out ) const;
 
   //! Reads attributes of the element
-  //virtual void load( VariantArray* in );
+  virtual void setupUI(const VariantMap& ui);
 
   void beforeDraw( GfxEngine& painter );
 
@@ -152,14 +154,16 @@ protected:
   //! set text markers
   void setTextMarkers( int begin, int end );
 
-  bool processKey( const NEvent& event );
-  bool processMouse( const NEvent& event );
+  bool _processKey( const NEvent& event );
+  bool _processMouse( const NEvent& event );
   int getCursorPos( int x, int y );
 
-  void DrawHolderText_( Font font, Rect* clip );
+  void _drawHolderText( Font font, Rect* clip );
+
+  void _init();
   
   class Impl;
-	ScopedPtr< Impl > _d;
+  ScopedPtr< Impl > _d;
 };
 
 

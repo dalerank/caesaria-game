@@ -1,0 +1,40 @@
+{
+  lbBackground#Label :
+  {
+    geometryf : [ 0.0, 0.0, 1, 1 ]
+    bgtype : "whiteFrame"
+    
+    lbBlackframe#Label : {
+      geometryf : [ 0.05, 0.3, 0.95, 0.7 ]
+      bgtype : "blackFrame"
+    }
+
+    lbWorkText#Label : { 
+      font : "FONT_1"
+      geometry : [ 180, 80, 250, 105 ]
+      text : "##work##"
+    }
+  
+    lbMaxAvailableText#Label : { 
+      font : "FONT_1"
+      geometry : [ 290, 80, 450, 105 ]
+      text : "##max_available##"
+    }
+  
+    lbCoverageText#Label : { 
+      font : "FONT_1"
+      geometry : [ 480, 80, 600, 105 ]
+      text : "##coverage##"
+    }
+
+    lbTitle#Label : {
+      geometryf : [ 0.05, 0.05, 0.95, 0.1 ]
+      minimumSize : [ 0, 30 ]
+      maximumSize : [ 0, 60 ]
+      font : "FONT_3"
+      text : "##education_advisor_title##"
+      textAlign : [ "center", "center" ]
+    }  
+  }  
+}
+

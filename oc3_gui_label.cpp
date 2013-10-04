@@ -68,8 +68,8 @@ public:
 
   ~Impl()
   {
-      background.reset();
-      textPicture.reset();
+    background.reset();
+    textPicture.reset();
   }
 
   void breakText( const std::string& text, const Size& size );
@@ -94,7 +94,6 @@ Label::Label(Widget* parent, const Rect& rectangle, const string& text, bool bor
   _d->isBorderVisible = border;
   _d->backgroundMode = background;
  
-
   #ifdef _DEBUG
     setDebugName( "OC3_label");
   #endif
@@ -159,7 +158,7 @@ void Label::_updateTexture( GfxEngine& painter )
   if( _d->font.isValid() )
   {
     Rect frameRect( Point( 0, 0 ), getSize() );
-    string rText = _d->prefix + _text;
+    string rText = _d->prefix + getText();
 
     if( rText.size() && _d->font.isValid() )
     {
@@ -513,15 +512,15 @@ void Label::Impl::breakText( const std::string& text, const Size& wdgSize )
 //! Sets the new caption of this element.
 void Label::setText(const string& text)
 {
-    Widget::setText( text );
+  Widget::setText( text );
 
-    _d->breakText( getText(), getSize() );
-    _d->needUpdatePicture = true;
+  _d->breakText( getText(), getSize() );
+  _d->needUpdatePicture = true;
 }
 
 Signal0<>& Label::onClicked()
 {
-    return _d->onClickedSignal;
+  return _d->onClickedSignal;
 }
 
 //! Returns the height of the text in pixels when it is drawn.
@@ -548,21 +547,21 @@ int Label::getTextWidth() const
 
     if( _d->WordWrap )
     {
-        int widest = 0;
+      int widest = 0;
 
-        for(unsigned int line = 0; line < _d->brokenText.size(); ++line)
-        {
-            int width = font.getSize( _d->brokenText[line] ).getWidth();
+      for(unsigned int line = 0; line < _d->brokenText.size(); ++line)
+      {
+        int width = font.getSize( _d->brokenText[line] ).getWidth();
 
-            if(width > widest)
-               widest = width;
-        }
+        if(width > widest)
+          widest = width;
+      }
 
-        return widest;
+      return widest;
     }
     else
     {
-        return font.getSize( _text ).getWidth();
+      return font.getSize( getText() ).getWidth();
     }
 }
 
@@ -633,7 +632,7 @@ void Label::setupUI(const VariantMap& ui)
 {
   Widget::setupUI( ui );
 
-  setFont( Font::create( ui.get( "font" ).toString() ) );
+  setFont( Font::create( ui.get( "font", "FONT_2" ).toString() ) );
   setBackgroundPicture( Picture::load( ui.get( "image" ).toString() ) );
 
   BackgroundModeHelper helper;

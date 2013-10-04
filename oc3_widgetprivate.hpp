@@ -62,6 +62,10 @@ public:
   bool isVisible;
 
   std::string internalName;
+
+  std::string toolTipText;
+
+  std::string text;
 };
 
 #endif

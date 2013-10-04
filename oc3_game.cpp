@@ -139,7 +139,7 @@ void Game::setScreenWait()
 
 void Game::setScreenMenu()
 {
-  ScreenMenu screen( _d->gui );
+  ScreenMenu screen( *this, *_d->engine );
   screen.initialize();
 
   while( !screen.isStopped() )

@@ -126,7 +126,7 @@ PushButton::PushButton( Widget* parent,
   _d->bgStyle = bgStyle;
   setTextAlignment( alignCenter, alignCenter );
 
-  _text = caption;
+  setText( caption );
   setNotClipped(noclip);
 }
 
@@ -231,6 +231,18 @@ void PushButton::setupUI(const VariantMap &ui)
     BackgroundStyleHelper helper;
     setBackgroundStyle( helper.findType( tmp.toString() ) );
   }
+
+  VariantList vlist = ui.get( "normal" ).toList();
+  if( !vlist.empty() ) setPicture( vlist.get( 0 ).toString(), vlist.get( 1 ).toInt(), stNormal );
+
+  vlist = ui.get( "hovered" ).toList();
+  if( !vlist.empty() ) setPicture( vlist.get( 0 ).toString(), vlist.get( 1 ).toInt(), stHovered  );
+
+  vlist = ui.get( "pressed" ).toList();
+  if( !vlist.empty() ) setPicture( vlist.get( 0 ).toString(), vlist.get( 1 ).toInt(), stPressed );
+
+  vlist = ui.get( "disabled" ).toList();
+  if( !vlist.empty() ) setPicture( vlist.get( 0 ).toString(), vlist.get( 1 ).toInt(), stDisabled );
 }
 
 bool PushButton::isPushButton() const
@@ -245,6 +257,11 @@ void PushButton::setPicture( const Picture& picture, ElementState state )
   _d->buttonStates[ state ].bgTexture = picture;
   _d->buttonStates[ state ].rectangle = rectangle;
   _updateTexture( state );
+}
+
+void PushButton::setPicture(const std::string& rcname, int index, ElementState state)
+{
+  setPicture( Picture::load( rcname, index ), state );
 }
 
 void PushButton::setPressed( bool pressed )

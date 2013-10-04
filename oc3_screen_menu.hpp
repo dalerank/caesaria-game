@@ -24,6 +24,8 @@
 #include "oc3_predefinitions.hpp"
 #include <string>
 
+class Game;
+
 // displays the newGame/loadGame/quitGame menu
 class ScreenMenu : public Screen
 {
@@ -37,7 +39,7 @@ public:
         unlknowState=0xff
     } Result;
     
-    ScreenMenu( GuiEnv* gui );
+    ScreenMenu( Game& game, GfxEngine& engine );
     ~ScreenMenu();
 
     void handleEvent( NEvent& event);

@@ -64,6 +64,7 @@ public:
   virtual void drawIcon( GfxEngine& painter );
 
   virtual void setPicture( const Picture& picture, ElementState state );
+  virtual void setPicture( const std::string& rcname, int index, ElementState state );
 
   virtual void setBackgroundStyle( const BackgroundStyle style );
 

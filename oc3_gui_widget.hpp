@@ -453,12 +453,6 @@ protected:
   //! does this element ignore its parent's clipping rectangle?
   bool _noClip;
 
-  //! caption
-  std::string _text;
-
-	//! tooltip
-  std::string _toolTipText;
-
   //! id
   int _id;
 

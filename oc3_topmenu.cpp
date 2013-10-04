@@ -78,7 +78,8 @@ void TopMenu::setPopulation( int value )
 
 void TopMenu::setFunds( int value )
 {
-  _d->lbFunds->setText( StringHelper::format( 0xff, "%.2s %d", _("##denarii_short##"), value) );
+  if( _d->lbFunds )
+    _d->lbFunds->setText( StringHelper::format( 0xff, "%.2s %d", _("##denarii_short##"), value) );
 }
 
 void TopMenu::Impl::updateDate()

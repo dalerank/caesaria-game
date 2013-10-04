@@ -365,18 +365,13 @@ void BuildingDataHolder::initialize( const io::FilePath& filename )
     bData._buildingClass = getClass( options[ "class" ].toString() );
 
     VariantList basePic = options[ "image" ].toList();
-    if( basePic.size() == 2 && basePic.back().toInt() > 0 )
+    if( !basePic.empty() )
     {
-      std::string resourceGroup = basePic.front().toString();
-      int rcIndex = basePic.back().toInt();
-      if( rcIndex > 0 )
-      {
-        bData._basePicture = Picture::load( resourceGroup, rcIndex );
-      }
+      bData._basePicture = Picture::load( basePic.get( 0 ).toString(), basePic.get( 1 ).toInt() );
     }
 
     addData( bData );
-    }
+  }
 }
 
 BuildingType BuildingDataHolder::getType( const std::string& name )

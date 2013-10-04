@@ -30,6 +30,7 @@ public:
   Rect currentTextRect;
   Rect cursorRect; // temporary values
   Rect markAreaRect;
+  Point textOffset;
   Font overrideFont;
   Font lastBreakFont;
 	bool mouseMarking;
@@ -56,52 +57,60 @@ public:
 
   Impl() : currentTextRect(0,0,1,1)
 	{
-
+		mouseMarking = false;
+		overrideColorEnabled = false;
+		markBegin = 0;
+		markEnd = 0;
+		border = border;
+		drawBackground = true;
+		overrideColor = NColor(101,255,255,255);
+		cursorPos = 0;
+		horizScrollPos = 0;
+		vertScrollPos = 0;
+		max = 0;
+		wordWrapEnabled = false;
+		multiLine = false;
+		autoScrollEnabled = true;
+		isPasswordBox = false;
+		passwordChar = '*';
+		needUpdateTexture = true;
 	}
 
 oc3_signals public:
   Signal1<std::string> onTextChangedSignal;
 };
 
+void EditBox::_init()
+{
+  _d->lastBreakFont = getActiveFont();
+
+  #ifdef _DEBUG
+      setDebugName( "EditBox");
+  #endif
+
+  // this element can be tabbed to
+  setTabStop(true);
+  setTabOrder(-1);
+
+  breakText();
+
+  calculateScrollPos();
+
+  setTextAlignment( alignUpperLeft, alignCenter );
+}
+
+EditBox::EditBox( Widget* parent ) : Widget( parent, -1, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
+{
+  _init();
+}
+
 //! constructor
 EditBox::EditBox( Widget* parent, const Rect& rectangle, const std::string& text, int id, bool border )
 	: Widget( parent, id, rectangle), _d( new Impl )
 {
-	_d->mouseMarking = false;
-	_d->overrideColorEnabled = false;
-	_d->markBegin = 0;
-	_d->markEnd = 0;
-	_d->border = border;
-	_d->drawBackground = true;
-	_d->overrideColor = NColor(101,255,255,255);
-	//_d->osOperator = 0;
-	_d->cursorPos = 0;
-	_d->horizScrollPos = 0;
-	_d->vertScrollPos = 0;
-	_d->max = 0;
-	_d->wordWrapEnabled = false;
-	_d->multiLine = false; 
-	_d->autoScrollEnabled = true;
-	_d->isPasswordBox = false;
-	_d->passwordChar = '*';
-  _d->lastBreakFont = getActiveFont();  
-  _d->needUpdateTexture = true;
+	_init();
 
-	#ifdef _DEBUG
-	    setDebugName( "EditBox");
-	#endif
-
-	_text = text;
-
-	// this element can be tabbed to
-	setTabStop(true);
-	setTabOrder(-1);
-
-	breakText();
-
-	calculateScrollPos();
-
-	setTextAlignment( alignUpperLeft, alignCenter );
+	setText( text );
 }
 
 Signal1<std::string>& EditBox::onTextChanged()
@@ -118,14 +127,14 @@ EditBox::~EditBox()
 void EditBox::setFont( const Font& font )
 {
   _d->overrideFont = font;
-
 	breakText();
+	_d->needUpdateTexture = true;
 }
 
 //! Gets the override font (if any)
 Font EditBox::getFont() const
 {
-    return _d->overrideFont;
+	return _d->overrideFont;
 }
 
 //! Get the font which is used right now for drawing
@@ -138,7 +147,7 @@ Font EditBox::getActiveFont()
 }
 
 //! Sets another color for the text.
-void EditBox::setOverrideColor( const NColor& color)
+void EditBox::setOverrideColor( NColor color )
 {
 	_d->overrideColor = color;
 	_d->overrideColorEnabled = true;
@@ -172,7 +181,7 @@ void EditBox::_resizeEvent()
 {
   breakText();
   calculateScrollPos();
-  _d->needUpdateTexture = true ;
+  _d->needUpdateTexture = true;
 }
 
 
@@ -185,14 +194,14 @@ bool EditBox::isWordWrapEnabled() const
 
 
 //! Enables or disables newlines.
-void EditBox::setMultiLine(bool enable)
+void EditBox::setMultiline(bool enable)
 {
 	_d->multiLine = enable;
 }
 
 
 //! Checks if multi line editing is enabled
-bool EditBox::isMultiLineEnabled() const
+bool EditBox::isMultilineEnabled() const
 {
 
 	return _d->multiLine;
@@ -205,7 +214,7 @@ void EditBox::setPasswordBox(bool passwordBox, char passwordChar)
 	if (_d->isPasswordBox)
 	{
 		_d->passwordChar = passwordChar;
-		setMultiLine(false);
+		setMultiline(false);
 		setWordWrap(false);
 		_d->brokenText.clear();
 	}
@@ -213,8 +222,17 @@ void EditBox::setPasswordBox(bool passwordBox, char passwordChar)
 
 bool EditBox::isPasswordBox() const
 {
-
 	return _d->isPasswordBox;
+}
+
+void EditBox::setupUI(const VariantMap& ui)
+{
+	Widget::setupUI( ui );
+
+	setFont( Font::create( ui.get( "font", "FONT_2" ).toString() ) );
+
+	_d->textOffset = ui.get( "textOffset" ).toPoint();
+	_d->needUpdateTexture = true;
 }
 
 //! Sets text justification
@@ -242,11 +260,11 @@ bool EditBox::onEvent(const NEvent& event)
 			}
 			break;
 		case OC3_KEYBOARD_EVENT:
-			if (processKey(event))
+			if (_processKey(event))
 				return true;
 			break;
 		case OC3_MOUSE_EVENT:
-			if (processMouse(event))
+			if (_processMouse(event))
 				return true;
 			break;
 		default:
@@ -258,7 +276,7 @@ bool EditBox::onEvent(const NEvent& event)
 }
 
 
-bool EditBox::processKey(const NEvent& event)
+bool EditBox::_processKey(const NEvent& event)
 {
 	if (!event.KeyboardEvent.PressedDown)
 		return false;
@@ -283,7 +301,7 @@ bool EditBox::processKey(const NEvent& event)
 		case KEY_KEY_A:
 			// select all
 			newMarkBegin = 0;
-			newMarkEnd = _text.size();
+			newMarkEnd = getText().size();
 			break;
 		case KEY_KEY_C:
 			// copy to clipboard
@@ -396,12 +414,12 @@ bool EditBox::processKey(const NEvent& event)
 			if (event.KeyboardEvent.Shift)
 			{
 				newMarkBegin = _d->cursorPos;
-				newMarkEnd = _text.size();
+				newMarkEnd = getText().size();
 				_d->cursorPos = 0;
 			}
 			else
 			{
-				_d->cursorPos = _text.size();
+				_d->cursorPos = getText().size();
 				newMarkBegin = 0;
 				newMarkEnd = 0;
 			}
@@ -416,12 +434,12 @@ bool EditBox::processKey(const NEvent& event)
 	{
 	case KEY_END:
 		{
-			int p = _text.size();
+			int p = getText().size();
 			if (_d->wordWrapEnabled || _d->multiLine)
 			{
 				p = getLineFromPos(_d->cursorPos);
 				p = _d->brokenTextPositions[p] + (int)_d->brokenText[p].size();
-				if (p > 0 && (_text[p-1] == L'\r' || _text[p-1] == L'\n' ))
+				if (p > 0 && (getText().at( p-1 ) == L'\r' || getText().at( p-1 ) == L'\n' ))
 					p-=1;
 			}
 
@@ -499,7 +517,7 @@ bool EditBox::processKey(const NEvent& event)
 	case KEY_RIGHT:
 		if (event.KeyboardEvent.Shift)
 		{
-			if (_text.size() > (unsigned int)_d->cursorPos)
+			if( getText().size() > (unsigned int)_d->cursorPos)
 			{
 				if (_d->markBegin == _d->markEnd)
 					newMarkBegin = _d->cursorPos;
@@ -513,7 +531,7 @@ bool EditBox::processKey(const NEvent& event)
 			newMarkEnd = 0;
 		}
 
-		if (_text.size() > (unsigned int)_d->cursorPos) _d->cursorPos++;
+		if( getText().size() > (unsigned int)_d->cursorPos) _d->cursorPos++;
 		break;
 	case KEY_UP:
 		if (_d->multiLine || (_d->wordWrapEnabled && _d->brokenText.size() > 1) )
@@ -582,7 +600,7 @@ bool EditBox::processKey(const NEvent& event)
 		if ( !isEnabled() )
 			break;
 
-		if (_text.size())
+		if( getText().size())
 		{
       std::string s;
 
@@ -592,19 +610,19 @@ bool EditBox::processKey(const NEvent& event)
 				const int realmbgn = _d->markBegin < _d->markEnd ? _d->markBegin : _d->markEnd;
 				const int realmend = _d->markBegin < _d->markEnd ? _d->markEnd : _d->markBegin;
 
-				s = _text.substr(0, realmbgn);
-				s.append( _text.substr(realmend, _text.size()-realmend) );
-				_text = s;
+				s = getText().substr(0, realmbgn);
+				s.append( getText().substr( realmend, getText().size() - realmend ) );
+				setText( s );
 
 				_d->cursorPos = realmbgn;
 			}
 			else
 			{
 				// delete text behind cursor
-        s = _d->cursorPos>0 ? _text.substr(0, _d->cursorPos-1) : "";
+				s = _d->cursorPos>0 ? getText().substr( 0, _d->cursorPos-1 ) : "";
 
-				s.append( _text.substr(_d->cursorPos, _text.size()-_d->cursorPos) );
-				_text = s;
+				s.append( getText().substr(_d->cursorPos, getText().size()-_d->cursorPos) );
+				setText( s );
 				--_d->cursorPos;
 			}
 
@@ -619,7 +637,7 @@ bool EditBox::processKey(const NEvent& event)
 		if ( !isEnabled() )
 			break;
 
-		if (_text.size() != 0)
+		if( getText().size() != 0)
 		{
       std::string s;
 
@@ -629,22 +647,22 @@ bool EditBox::processKey(const NEvent& event)
 				const int realmbgn = _d->markBegin < _d->markEnd ? _d->markBegin : _d->markEnd;
 				const int realmend = _d->markBegin < _d->markEnd ? _d->markEnd : _d->markBegin;
 
-				s = _text.substr(0, realmbgn);
-				s.append( _text.substr(realmend, _text.size()-realmend) );
-				_text = s;
+				s = getText().substr(0, realmbgn);
+				s.append( getText().substr(realmend, getText().size()-realmend) );
+				setText( s );
 
 				_d->cursorPos = realmbgn;
 			}
 			else
 			{
 				// delete text before cursor
-				s = _text.substr(0, _d->cursorPos);
-				s.append( _text.substr(_d->cursorPos+1, _text.size()-_d->cursorPos-1) );
-				_text = s;
+				s = getText().substr(0, _d->cursorPos);
+				s.append( getText().substr(_d->cursorPos+1, getText().size()-_d->cursorPos-1) );
+				setText( s );
 			}
 
-			if (_d->cursorPos > (int)_text.size())
-				_d->cursorPos = (int)_text.size();
+			if (_d->cursorPos > (int)getText().size())
+				_d->cursorPos = (int)getText().size();
 
             newMarkBegin = 0;
 			newMarkEnd = 0;
@@ -703,7 +721,7 @@ bool EditBox::processKey(const NEvent& event)
 	return true;
 }
 
-void EditBox::DrawHolderText_( Font font, Rect* clip )
+void EditBox::_drawHolderText( Font font, Rect* clip )
 {
   if( isFocused() )
   {
@@ -739,6 +757,7 @@ void EditBox::beforeDraw( GfxEngine& painter )
       if( !_d->textPicture || ( _d->textPicture && getSize() != _d->textPicture->getSize()) )
       {
         _d->textPicture.reset( Picture::create( getSize() ) );
+        _d->textPicture->fill( 0x00000000, Rect( 0, 0, 0, 0) );
       }
 
       if( _d->bgPicture.isValid() )
@@ -767,8 +786,9 @@ void EditBox::beforeDraw( GfxEngine& painter )
 
       if( _d->lastBreakFont.isValid() )
       {
-          // calculate cursor pos
-        std::string* txtLine = &_text;
+        // calculate cursor pos
+        std::string myText = getText();
+        std::string* txtLine = &myText;
 
         std::string s2;
 
@@ -780,7 +800,7 @@ void EditBox::beforeDraw( GfxEngine& painter )
         const int hlineCount = ml ? getLineFromPos(realmend) - hlineStart + 1 : 1;
         const int lineCount = ml ? _d->brokenText.size() : 1;
 
-        if( _text.size() )
+        if( !getText().empty() )
         {
           _d->textPicture->fill( 0x00000000, Rect(0, 0, 0, 0) );
           for (int i=0; i < lineCount; ++i)
@@ -796,32 +816,35 @@ void EditBox::beforeDraw( GfxEngine& painter )
              // get current line%
              if (_d->isPasswordBox)
              {
-                 if (_d->brokenText.size() != 1)
+               if (_d->brokenText.size() != 1)
+               {
+                 _d->brokenText.clear();
+                 _d->brokenText.push_back(std::string());
+               }
+
+               if( _d->brokenText[0].size() != getText().size())
+               {
+                 _d->brokenText[0] = getText();
+                 for (unsigned int q = 0; q < myText.size(); ++q)
                  {
-                     _d->brokenText.clear();
-                     _d->brokenText.push_back(std::string());
+                   _d->brokenText[0][q] = _d->passwordChar;
                  }
-                 if (_d->brokenText[0].size() != _text.size())
-                 {
-                     _d->brokenText[0] = _text;
-                     for (unsigned int q = 0; q < _text.size(); ++q)
-                     {
-                         _d->brokenText[0][q] = _d->passwordChar;
-                     }
-                 }
-                 txtLine = &_d->brokenText[0];
-                 startPos = 0;
+               }
+               txtLine = &_d->brokenText[0];
+               startPos = 0;
              }
              else
              {
-                 txtLine = ml ? &_d->brokenText[i] : &_text;
-                 startPos = ml ? _d->brokenTextPositions[i] : 0;
+               txtLine = ml ? &_d->brokenText[i] : &myText;
+               startPos = ml ? _d->brokenTextPositions[i] : 0;
              }
 
              //font->Draw(txtLine->c_str(), _d->currentTextRect_ + marginOffset, simpleTextColor,	false, true, &localClipRect);
-             Rect textureRect( Point( 0, 0 ), _d->currentTextRect.getSize() );
-             
-             _d->lastBreakFont.draw( *_d->textPicture, *txtLine, 0, 0 );
+             Rect curTextureRect( Point( 0, 0), _d->currentTextRect.getSize() );
+             curTextureRect = _d->lastBreakFont.calculateTextRect( *txtLine, curTextureRect, getHorizontalTextAlign(), getVerticalTextAlign() );
+             curTextureRect += (_d->currentTextRect.UpperLeftCorner - getAbsoluteRect().UpperLeftCorner );
+
+             _d->lastBreakFont.draw( *_d->textPicture, *txtLine, curTextureRect.UpperLeftCorner );
 
              // draw mark and marked text
              if( isFocused() && _d->markBegin != _d->markEnd && i >= hlineStart && i < hlineStart + hlineCount)
@@ -876,7 +899,7 @@ void EditBox::beforeDraw( GfxEngine& painter )
            }
         }
         else
-            DrawHolderText_( _d->lastBreakFont, &localClipRect );
+            _drawHolderText( _d->lastBreakFont, &localClipRect );
       }
   }
 
@@ -886,7 +909,8 @@ void EditBox::beforeDraw( GfxEngine& painter )
       int charcursorpos = 0;
       _d->oldCursorPos = _d->cursorPos;
 
-      std::string* txtLine = &_text;
+      std::string myText = getText();
+      std::string* txtLine = &myText;
 
       if( _d->wordWrapEnabled || _d->multiLine )
       {
@@ -929,7 +953,6 @@ void EditBox::draw( GfxEngine& painter )
   {
       NColor markAreaColor( 0xff0000ff );
       //markAreaColor.setAlpha( _d->resultTransparent );
-
       //painter.drawRectangle( markAreaColor, convertLocalToScreen( _d->markAreaRect ), &getAbsoluteClippingRectRef() );
   }
 
@@ -941,7 +964,7 @@ void EditBox::draw( GfxEngine& painter )
 
   if( _d->textPicture )
   {
-    painter.drawPicture( *_d->textPicture, getScreenLeft(), getScreenTop() );
+    painter.drawPicture( *_d->textPicture, _d->textOffset.getX() + getScreenLeft(), _d->textOffset.getY() + getScreenTop() );
   }
 
   if( focus )
@@ -949,7 +972,7 @@ void EditBox::draw( GfxEngine& painter )
 		unsigned int t = DateTime::getElapsedTime() % 1000;
     if( t < 500 )
     {
-		  painter.drawPicture( *_d->cursorPic, _d->cursorRect.UpperLeftCorner );
+      painter.drawPicture( *_d->cursorPic, _d->textOffset + _d->cursorRect.UpperLeftCorner );
     }
 	}
 
@@ -960,10 +983,10 @@ void EditBox::draw( GfxEngine& painter )
 //! Sets the new caption of this element.
 void EditBox::setText(const std::string& text)
 {
-  _text = text;
-  if (static_cast<unsigned int>(_d->cursorPos) > _text.size())
+  Widget::setText( text );
+  if (static_cast<unsigned int>(_d->cursorPos) > getText().size())
   {
-    _d->cursorPos = _text.size();
+    _d->cursorPos = getText().size();
   }
 
   _d->horizScrollPos = 0;
@@ -975,7 +998,7 @@ void EditBox::setText(const std::string& text)
 
 //! Enables or disables automatic scrolling with cursor position
 //! \param enable: If set to true, the text will move around with the cursor position
-void EditBox::setAutoScroll(bool enable)
+void EditBox::setAutoscroll(bool enable)
 {
 	_d->autoScrollEnabled = enable;
 }
@@ -983,7 +1006,7 @@ void EditBox::setAutoScroll(bool enable)
 
 //! Checks to see if automatic scrolling is enabled
 //! \return true if automatic scrolling is enabled, false if not
-bool EditBox::isAutoScrollEnabled() const
+bool EditBox::isAutoscrollEnabled() const
 {
 
 	return _d->autoScrollEnabled;
@@ -1017,8 +1040,8 @@ void EditBox::setMax(unsigned int max)
 {
 	_d->max = max;
 
-	if (_text.size() > _d->max && _d->max != 0)
-		_text = _text.substr(0, _d->max);
+	if( getText().size() > _d->max && _d->max != 0)
+		setText( getText().substr(0, _d->max ) );
 }
 
 
@@ -1029,7 +1052,7 @@ unsigned int EditBox::getMax() const
 }
 
 
-bool EditBox::processMouse(const NEvent& event)
+bool EditBox::_processMouse(const NEvent& event)
 {
 	switch(event.MouseEvent.Event)
 	{
@@ -1101,6 +1124,7 @@ int EditBox::getCursorPos(int x, int y)
 
 	const unsigned int lineCount = (_d->wordWrapEnabled || _d->multiLine) ? _d->brokenText.size() : 1;
 
+  std::string myText = getText();
   std::string *txtLine=0;
 	int startPos=0;
 	x+=3;
@@ -1122,7 +1146,7 @@ int EditBox::getCursorPos(int x, int y)
     if (y >= _d->currentTextRect.UpperLeftCorner.getY() && y <= _d->currentTextRect.LowerRightCorner.getY() )
 		{
 			// we've found the clicked line
-			txtLine = (_d->wordWrapEnabled || _d->multiLine) ? &_d->brokenText[i] : &_text;
+			txtLine = (_d->wordWrapEnabled || _d->multiLine) ? &_d->brokenText[i] : &myText;
 			startPos = (_d->wordWrapEnabled || _d->multiLine) ? _d->brokenTextPositions[i] : 0;
 			break;
 		}
@@ -1148,47 +1172,46 @@ int EditBox::getCursorPos(int x, int y)
 	return txtLine->size() + startPos;
 }
 
-
 //! Breaks the single text line.
 void EditBox::breakText()
 {
+	Font font = getActiveFont();
+	if( !font.isValid() )
+		return;
+
+	_d->lastBreakFont = font;
+
 	if ((!_d->wordWrapEnabled && !_d->multiLine))
 		return;
 
 	_d->brokenText.clear(); // need to reallocate :/
 	_d->brokenTextPositions.clear();
 
-	Font font = getActiveFont();
-	if( !font.isValid() )
-		return;
-
-  _d->lastBreakFont = font;
-
   std::string line;
 	std::string word;
 	std::string whitespace;
 	int lastLineStart = 0;
-	int size = _text.size();
+	int size = getText().size();
 	int length = 0;
 	int elWidth = getWidth() - 6;
 	char c;
 
 	for (int i=0; i<size; ++i)
 	{
-		c = _text[i];
+		c = getText().at( i );
 		bool lineBreak = false;
 
-		if (c == L'\r') // Mac or Windows breaks
+		if( c == '\r' ) // Mac or Windows breaks
 		{
 			lineBreak = true;
 			c = 0;
-			if (_text[i+1] == L'\n') // Windows breaks
+			if( getText().at( i+1 ) == '\n') // Windows breaks
 			{
-				_text.erase(i+1);
+				getText().erase(i+1);
 				--size;
 			}
 		}
-		else if (c == L'\n') // Unix breaks
+		else if( c == '\n' ) // Unix breaks
 		{
 			lineBreak = true;
 			c = 0;
@@ -1198,7 +1221,7 @@ void EditBox::breakText()
 		if (!_d->multiLine)
 			lineBreak = false;
 
-		if (c == L' ' || c == 0 || i == (size-1))
+		if (c == ' ' || c == 0 || i == (size-1))
 		{
 			// here comes the next whitespace, look if
 			// we can break the last word to the next line
@@ -1272,11 +1295,11 @@ void EditBox::setTextRect(int line, const std::string& tempText )
         //const unsigned int lineCount = (WordWrap || MultiLine) ? BrokenText.size() : 1;
 	if (_d->wordWrapEnabled || _d->multiLine)
 	{
-        d = font.getSize( tempText.size() > 0 ? tempText : _d->brokenText[line] );
+		d = font.getSize( tempText.size() > 0 ? tempText : _d->brokenText[line] );
 	}
 	else
 	{
-		d = font.getSize( tempText.size() > 0 ? tempText : _text );
+		d = font.getSize( tempText.size() > 0 ? tempText : getText() );
 		d.setHeight( getHeight() );
 	}
 	
@@ -1284,7 +1307,7 @@ void EditBox::setTextRect(int line, const std::string& tempText )
 
   _d->currentTextRect = getAbsoluteRect();
 
-  _d->currentTextRect.UpperLeftCorner += Point( -_d->horizScrollPos, d.getHeight() *line - _d->vertScrollPos );
+  _d->currentTextRect.UpperLeftCorner += Point( -_d->horizScrollPos, d.getHeight() * line - _d->vertScrollPos );
   _d->currentTextRect.LowerRightCorner = Point( _d->currentTextRect.getRight() +_d->horizScrollPos, _d->currentTextRect.UpperLeftCorner.getY() + d.getHeight() );
 }
 
@@ -1311,7 +1334,7 @@ void EditBox::inputChar( char c)
 
 	if (c != 0)
 	{
-		if (_text.size() < _d->max || _d->max == 0)
+		if( getText().size() < _d->max || _d->max == 0)
 		{
       std::string s;
 
@@ -1321,19 +1344,19 @@ void EditBox::inputChar( char c)
 				const int realmbgn = _d->markBegin < _d->markEnd ? _d->markBegin : _d->markEnd;
 				const int realmend = _d->markBegin < _d->markEnd ? _d->markEnd : _d->markBegin;
 
-				s = _text.substr(0, realmbgn);
+        s = getText().substr(0, realmbgn);
         s += c;
-				s += _text.substr(realmend, _text.size()-realmend);
-				_text = s;
+        s += getText().substr(realmend, getText().size()-realmend);
+        setText( s );
 				_d->cursorPos = realmbgn+1;
 			}
 			else
 			{
 				// add new character
-				s = _text.substr(0, _d->cursorPos);
+				s = getText().substr(0, _d->cursorPos);
 				s += c;
-				s += _text.substr(_d->cursorPos, _text.size()-_d->cursorPos);
-				_text = s;
+				s += getText().substr( _d->cursorPos, getText().size()-_d->cursorPos);
+				setText( s );
 				++_d->cursorPos;
 			}
 
@@ -1367,7 +1390,8 @@ void EditBox::calculateScrollPos()
 		if( !font.isValid() )
 			return;
 
-    std::string *txtLine = _d->multiLine ? &_d->brokenText[cursLine] : &_text;
+		std::string myText = getText();
+		std::string *txtLine = _d->multiLine ? &_d->brokenText[cursLine] : &myText;
 		int cPos = _d->multiLine ? _d->cursorPos - _d->brokenTextPositions[cursLine] : _d->cursorPos;
 
     int cStart = _d->currentTextRect.UpperLeftCorner.getX() + _d->horizScrollPos +
@@ -1474,7 +1498,7 @@ NColor EditBox::getOverrideColor() const
     return _d->overrideColor;
 }
 
-void EditBox::SetDrawBackground( bool enabled )
+void EditBox::setDrawBackground( bool enabled )
 {
     _d->drawBackground = enabled;
 }
