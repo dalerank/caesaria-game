@@ -568,6 +568,8 @@ public:
     append( WT_BATHLADY, "bathlady", _("##wt_bathlady##") );
     append( WT_ACTOR, "actor", _("##wt_actor##") );
     append( WT_GLADIATOR, "gladiator", _("##wt_gladiator##") );
+    append( WT_BARBER, "barber", _("##wt_barber##" ) );
+    append( WT_SURGEON, "surgeon", _("##wt_surgeon##") );
     append( WT_MAX, "unknown", _("##wt_unknown##") );
   }
 };

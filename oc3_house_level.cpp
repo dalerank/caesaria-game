@@ -380,7 +380,7 @@ float HouseLevelSpec::evaluateServiceNeed(HousePtr house, const Service::Type se
       break;
    }
 
-   return res * (100 - house->getServiceAccess(service));
+   return res * (100 - house->getServiceValue(service));
 }
 
 float HouseLevelSpec::evaluateEntertainmentNeed(HousePtr house, const Service::Type service)
@@ -399,7 +399,7 @@ float HouseLevelSpec::evaluateEducationNeed(HousePtr house, const Service::Type 
       // need school or library
       if (service != Service::college)
       {
-         res = (float)( 100 - std::max(house->getServiceAccess(Service::school), house->getServiceAccess(Service::library)) );
+         res = (float)( 100 - std::max(house->getServiceValue(Service::school), house->getServiceValue(Service::library)) );
       } 
    }
    else if (minLevel == 2)
@@ -407,13 +407,13 @@ float HouseLevelSpec::evaluateEducationNeed(HousePtr house, const Service::Type 
       // need school and library
       if (service != Service::college)
       {
-         res = (float)( 100 - house->getServiceAccess(service) );
+         res = (float)( 100 - house->getServiceValue(service) );
       }
    }
    else if (minLevel == 3)
    {
       // need school and library and college
-      res = (float)( 100 - house->getServiceAccess(service) );
+      res = (float)( 100 - house->getServiceValue(service) );
    }
    // std::cout << "education need: " << service << " " << res << std::endl;
    return res;
@@ -427,7 +427,7 @@ float HouseLevelSpec::evaluateHealthNeed(HousePtr house, const Service::Type ser
    if (minLevel >= 1 && service == Service::baths)
    {
       // minLevel>=1  => need baths
-      res = (float)( 100 - house->getServiceAccess(service) );
+      res = (float)( 100 - house->getServiceValue(service) );
    }
 
    if (minLevel >= 2 && (service == Service::doctor || service == Service::hospital))
@@ -435,19 +435,19 @@ float HouseLevelSpec::evaluateHealthNeed(HousePtr house, const Service::Type ser
       if (minLevel == 4)
       {
          // need doctor and hospital
-         res = (float)( 100 - house->getServiceAccess(service) );
+         res = (float)( 100 - house->getServiceValue(service) );
       }
       else
       {
          // need doctor or hospital
-         res = (float)( 100 - std::max(house->getServiceAccess(Service::doctor), house->getServiceAccess(Service::hospital)) );
+         res = (float)( 100 - std::max(house->getServiceValue(Service::doctor), house->getServiceValue(Service::hospital)) );
       }
    }
 
    if (minLevel >= 3 && service == Service::barber)
    {
       // minLevel>=3  => need barber
-      res = (float)( 100 - house->getServiceAccess(service) );
+      res = (float)( 100 - house->getServiceValue(service) );
    }
 
    return (std::max<float>)( res, 100 - house->getHealthLevel() );

@@ -571,7 +571,7 @@ bool House::hasServiceAccess(const Service::Type service)
   return (_d->serviceAccess[service] > 0);
 }
 
-int House::getServiceAccess(const Service::Type service)
+int House::getServiceValue( const Service::Type service)
 {
   return _d->serviceAccess[service];
 }

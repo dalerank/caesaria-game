@@ -81,6 +81,8 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( WT_BATHLADY, new ServiceWalkerCreator( Service::baths ) );
   addCreator( WT_ACTOR, new ServiceWalkerCreator( Service::theater ) );
   addCreator( WT_GLADIATOR, new ServiceWalkerCreator( Service::amphitheater ) );
+  addCreator( WT_BARBER, new ServiceWalkerCreator( Service::barber ) );
+  addCreator( WT_SURGEON, new ServiceWalkerCreator( Service::hospital ) );
   addCreator( WT_TRAINEE, new TraineeWalkerCreator() );
 }
 

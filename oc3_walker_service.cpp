@@ -68,13 +68,17 @@ void ServiceWalker::init(const Service::Type service)
   break;
   
   case Service::doctor:
-  case Service::hospital:
     _setGraphic( WG_DOCTOR );
     _setType( WT_DOCTOR );
   break;
+
+  case Service::hospital:
+    _setGraphic( WG_DOCTOR );
+    _setType( WT_SURGEON );
   
   case Service::barber:
     _setGraphic( WG_BARBER );
+    _setType( WT_BARBER );
   break;
   
   case Service::baths:

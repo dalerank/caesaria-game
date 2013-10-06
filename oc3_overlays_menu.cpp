@@ -85,8 +85,8 @@ void OverlaysMenu::_addButtons( const OverlayType type )
 
   case OV_HEALTH:
     _addButton( OV_HEALTH_BARBER, _("##ovrm_barber##"), startPos );
-    _addButton( OV_HEALTH_BATH, _("##ovrm_bath##"), startPos+=offset );
-    _addButton( OV_HEALTH_CLINIC, _("##ovrm_clinic##"), startPos+=offset );
+    _addButton( OV_HEALTH_BATHS, _("##ovrm_bath##"), startPos+=offset );
+    _addButton( OV_HEALTH_DOCTOR, _("##ovrm_clinic##"), startPos+=offset );
     _addButton( OV_HEALTH_HOSPITAL, _("##ovrm_hospital##"), startPos+=offset );
     break;
 
