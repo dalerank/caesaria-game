@@ -45,6 +45,7 @@ public:
   void load( const VariantMap& stream );
 
   void setCitiesAvailable( bool value );
+  unsigned int getWorkersSalary() const;
 
 private:
   Empire();

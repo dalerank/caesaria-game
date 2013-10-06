@@ -1,0 +1,53 @@
+{
+  geometry : [ 0, 0, 640, 848 ]
+  
+  lbBackground#Label :
+  {
+    geometryf : [ 0.0, 0.0, 1, 1 ]
+    bgtype : "whiteFrame"
+    
+    lbBlackframe#Label : {
+      geometry : [ 32, 70, 608, 308 ]
+      bgtype : "blackFrame"
+    }
+    
+    lbSalaryFrame#Label : {
+      geometry : [ 64, 352, 574, 684 ]
+      bgtype : "blackFrame"
+    }
+    
+    lbPriorityLabel#Label : {
+      geometry : [ 56, 54, 156, 86 ]
+      font : "FONT_1"
+      text : "##advemployer_panel_priority##"
+    }
+    
+    lbSectorLabel#Label : {
+      geometry : [ 164, 54, 390, 86 ]
+      font : "FONT_1"
+      text : "##advemployer_panel_sector##"    
+    }
+
+    lbNeedWorkersLabel#Label : {
+      geometry : [ 400, 54, 490, 86 ]
+      font : "FONT_1"
+      text : "##advemployer_panel_needworkers##"    
+    }
+    
+    lbHaveWorkersLabel#Label : {
+      geometry : [ 500, 54, 600, 86 ]
+      font : "FONT_1"
+      text : "##advemployer_panel_haveworkers##"    
+    }
+  
+    lbTitle#Label : {
+      geometryf : [ 0.05, 0.05, 0.95, 0.1 ]
+      minimumSize : [ 0, 30 ]
+      maximumSize : [ 0, 60 ]
+      font : "FONT_3"
+      text : "##advemployer_panel_title##"
+      textAlign : [ "center", "center" ]
+    }  
+  }  
+}
+

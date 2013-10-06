@@ -29,11 +29,13 @@ public:
   EmpireTrading trading;
 
   std::string playerCityName;
+  int workerSalary;
 };
 
 Empire::Empire() : _d( new Impl )
 {
   _d->trading.init( this );
+  _d->workerSalary = 30;
 }
 
 EmpireCityList Empire::getCities() const
@@ -144,6 +146,11 @@ void Empire::setCitiesAvailable(bool value)
 {
   foreach( EmpireCityPtr city, _d->cities )
     city->setAvailable( value );
+}
+
+unsigned int Empire::getWorkersSalary() const
+{
+  return _d->workerSalary;
 }
 
 void Empire::createTradeRoute( const std::string& start, const std::string& stop )
