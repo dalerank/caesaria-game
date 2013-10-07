@@ -82,7 +82,7 @@ void Immigrant::_findPath2blankHouse( Tile& startPoint )
   PathWay pathWay;
 
   Tilemap& citymap = _getCity()->getTilemap();
-  Tile& destTile = house.isValid() ? house->getTile() : citymap.at( _getCity()->getRoadExit() );
+  Tile& destTile = house.isValid() ? house->getTile() : citymap.at( _getCity()->getBorderInfo().boatExit );
   Size arrivedArea( house.isValid() ? house->getSize() : 1 );
 
   bool pathFound = Pathfinder::getInstance().getPath( startPoint.getIJ(), destTile.getIJ(), pathWay, 

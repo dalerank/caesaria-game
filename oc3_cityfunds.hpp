@@ -53,6 +53,9 @@ public:
 
   int getIssueValue( IssueType type, int age=thisYear ) const;
 
+  int getTaxRate() const;
+  void setTaxRate( const int newTax );
+
   int getValue() const;
 
   VariantMap save() const;

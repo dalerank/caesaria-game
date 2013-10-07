@@ -28,6 +28,7 @@
 #include "oc3_color.hpp"
 #include "oc3_texturedbutton.hpp"
 #include "oc3_cityfunds.hpp"
+#include "oc3_house_level.hpp"
 
 class AdvisorFinanceWindow::Impl
 {
@@ -38,23 +39,9 @@ public:
   Label* lbTaxRateNow;
   TexturedButton* btnHelp;
 
-  void drawReportRow( const Point& pos, const std::string& title, CityFunds::IssueType type )
-  {
-    Font font = Font::create( FONT_1 );
-
-    int lyvalue = city->getFunds().getIssueValue( type, CityFunds::lastYear );
-    int tyvalue = city->getFunds().getIssueValue( type, CityFunds::thisYear );
-
-    font.draw( *background, title, pos, false );
-    font.draw( *background, StringHelper::format( 0xff, "%d", lyvalue ), pos + Point( 215, 0), false );
-    font.draw( *background, StringHelper::format( 0xff, "%d", tyvalue ), pos + Point( 355, 0), false );
-  }
-
-  void updateTaxRateNowLabel()
-  {
-    std::string strCurretnTax = StringHelper::format( 0xff, "%d%% %s %d %s", city->getTaxRate(), _("##may_collect_about##"), 0, _("##denaries##") );
-    lbTaxRateNow->setText( strCurretnTax );
-  }
+  void drawReportRow( const Point& pos, const std::string& title, CityFunds::IssueType type );
+  void updateTaxRateNowLabel();
+  int calculateTaxValue();
 };
 
 AdvisorFinanceWindow::AdvisorFinanceWindow( CityPtr city, Widget* parent, int id ) 
@@ -140,4 +127,42 @@ void AdvisorFinanceWindow::draw( GfxEngine& painter )
   painter.drawPicture( *_d->background, getScreenLeft(), getScreenTop() );
 
   Widget::draw( painter );
+}
+
+
+void AdvisorFinanceWindow::Impl::drawReportRow(const Point& pos, const std::string& title, CityFunds::IssueType type)
+{
+  Font font = Font::create( FONT_1 );
+
+  int lyvalue = city->getFunds().getIssueValue( type, CityFunds::lastYear );
+  int tyvalue = city->getFunds().getIssueValue( type, CityFunds::thisYear );
+
+  font.draw( *background, title, pos, false );
+  font.draw( *background, StringHelper::format( 0xff, "%d", lyvalue ), pos + Point( 215, 0), false );
+  font.draw( *background, StringHelper::format( 0xff, "%d", tyvalue ), pos + Point( 355, 0), false );
+}
+
+void AdvisorFinanceWindow::Impl::updateTaxRateNowLabel()
+{
+  int taxValue = calculateTaxValue();
+  std::string strCurretnTax = StringHelper::format( 0xff, "%d%% %s %d %s",
+                                                    city->getFunds().getTaxRate(), _("##may_collect_about##"),
+                                                    taxValue, _("##denaries##") );
+  lbTaxRateNow->setText( strCurretnTax );
+}
+
+int AdvisorFinanceWindow::Impl::calculateTaxValue()
+{
+  CityHelper helper( city );
+
+  HouseList houses = helper.getBuildings<House>( B_HOUSE );
+
+  float taxValue = 0.f;
+  float taxRate = city->getFunds().getTaxRate();
+  foreach( HousePtr house, houses )
+  {
+    taxValue += house->getLevelSpec().getTaxRate() * house->getNbHabitants() / house->getMaxHabitants() * taxRate;
+  }
+
+  return taxValue;
 }

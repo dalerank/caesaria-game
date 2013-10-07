@@ -72,7 +72,7 @@ void CityServiceEmigrant::update( const unsigned int time )
     return;
   }
 
-  Tile& roadTile = _d->city->getTilemap().at( _d->city->getRoadEntry() );
+  Tile& roadTile = _d->city->getTilemap().at( _d->city->getBorderInfo().roadEntry );
 
   EmigrantPtr emigrant = Emigrant::create( _d->city );
 

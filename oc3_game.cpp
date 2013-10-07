@@ -61,7 +61,7 @@ public:
 
   EmpirePtr empire;
   CityPtr city;
-  Player* player;
+  PlayerPtr player;
 
   bool loadOk;
   bool paused;
@@ -235,7 +235,7 @@ void Game::setScreenGame()
   }
 }
 
-Player* Game::getPlayer() const
+PlayerPtr Game::getPlayer() const
 {
   return _d->player;
 }
@@ -380,6 +380,6 @@ void Game::exec()
 void Game::reset()
 {
   _d->empire = Empire::create();
-  _d->player = new Player();
+  _d->player = Player::create();
   _d->city = City::create( _d->empire, _d->player );
 }

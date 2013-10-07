@@ -19,15 +19,16 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
-
 #include "oc3_enums.hpp"
 #include "oc3_serializer.hpp"
-#include <list>
+#include "oc3_scopedptr.hpp"
+#include "oc3_predefinitions.hpp"
+#include "oc3_referencecounted.hpp"
 
-class Player : public Serializable
+class Player : public Serializable, public ReferenceCounted
 {
 public:
-   Player();
+   static PlayerPtr create();
 
    void save( VariantMap& stream) const;
    void load( const VariantMap& stream);
@@ -40,10 +41,13 @@ public:
 
    void appendMoney( int money );
    int getMoney() const;
+
+   ~Player();
 private:
-   int _funds;  // amount of money
-   std::string _name;
-   int _salary;
+   Player();
+
+   class Impl;
+   ScopedPtr< Impl > _d;
 };
 
 #endif

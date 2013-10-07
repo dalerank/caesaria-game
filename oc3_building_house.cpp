@@ -55,7 +55,7 @@ public:
 
   bool mayPayTax()
   {
-    return lastPayDate.getMonthToDate( GameDate::current() ) > 0;
+    return lastPayDate.getMonthToDate( GameDate::current() ) > 2;
   }
 
   int getAvailableTax()

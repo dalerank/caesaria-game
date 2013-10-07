@@ -21,53 +21,73 @@
 #include "oc3_variant.hpp"
 
 
-Player::Player()
+class Player::Impl
 {
-   _funds = 0;
-   _salary = 0;
+public:
+  int funds;  // amount of money
+  std::string name;
+  int salary;
+};
+
+Player::Player() : _d( new Impl )
+{
+   _d->funds = 0;
+   _d->salary = 0;
 }
 
+PlayerPtr Player::create()
+{
+  PlayerPtr ret( new Player() );
+  ret->drop(); //delete automatically
+
+  return ret;
+}
 
 void Player::save( VariantMap& stream ) const
 {
-  stream[ "money" ] = _funds;
-  stream[ "name" ] = Variant( _name );
-  stream[ "salary" ] = _salary;
+  stream[ "money" ] = _d->funds;
+  stream[ "name" ] = Variant( _d->name );
+  stream[ "salary" ] = _d->salary;
 }
 
 void Player::load( const VariantMap& stream )
 {
-  _funds = stream.get( "money" ).toInt();
-  _name = stream.get( "name" ).toString();
-  _salary = stream.get( "salary" ).toInt(); 
+  _d->funds = (int)stream.get( "money" );
+  _d->name = stream.get( "name" ).toString();
+  _d->salary = (int)stream.get( "salary" );
 }
 
 void Player::appendMoney( int money )
 {
-  _funds += money;
+  _d->funds += money;
 }
 
 int Player::getMoney() const
 {
-  return _funds;
+  return _d->funds;
+}
+
+Player::~Player()
+{
+
 }
 
 void Player::setName( const std::string& name )
 {
-  _name = name;
+  _d->name = name;
 }
 
 std::string Player::getName() const
 {
-  return _name;
+  return _d->name;
 }
 
 int Player::getSalary() const
 {
-  return _salary;
+  return _d->salary;
 }
 
 void Player::setSalary( const int value )
 {
-  _salary = value;
+  _d->salary = value;
 }

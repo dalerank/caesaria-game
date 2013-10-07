@@ -354,27 +354,25 @@ void GameLoaderC3Map::Impl::initEntryExit(std::fstream &f, CityPtr ioCity)
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);
 
-  ioCity->setRoadEntry( TilePos( i, size - j - 1 ) );
+  BorderInfo borderInfo;
 
-  i = 0;
-  j = 0;
+  borderInfo.roadEntry = TilePos( i, size - j - 1 );
+
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);
-  ioCity->setRoadExit( TilePos( i, size - j - 1 ) );
+  borderInfo.roadExit = TilePos( i, size - j - 1 );
 
   // init boat entry/exit point
-  i = 0;
-  j = 0;
   f.seekg(kBoatEntry, std::ios::beg);
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);
-  ioCity->setBoatEntry( TilePos( i, size - j - 1 ) );
+  borderInfo.boatEntry = TilePos( i, size - j - 1 );
 
-  i = 0;
-  j = 0;
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);
-  ioCity->setBoatExit( TilePos( i, size - j - 1) );
+  borderInfo.boatExit = TilePos( i, size - j - 1);
+
+  ioCity->setBorderInfo( borderInfo );
 
   //std::cout << "road entry at:" << ioCity.getRoadEntryI() << "," << ioCity.getRoadEntryJ() << std::endl;
   //std::cout << "road exit at:"  << ioCity.getRoadExitI()  << "," << ioCity.getRoadExitJ()  << std::endl;

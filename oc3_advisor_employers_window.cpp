@@ -42,7 +42,7 @@ public:
     _haveWorkers = have;
   }
 
-  void _updateTexture( ElementState state )
+  virtual void _updateTexture( ElementState state )
   {
     PushButton::_updateTexture( state );
 
@@ -186,14 +186,17 @@ EmployerButton* AdvisorEmployerWindow::Impl::addButton( Widget* parent, const Po
 {
   EmployersInfo info = getEmployersInfo( priority );
 
-  return new EmployerButton( parent, startPos, priority, title, info.needWorkers, info.currentWorkers );
+  EmployerButton* btn = new EmployerButton( parent, startPos, priority, title, info.needWorkers, info.currentWorkers );
+  btn->setText( "" );
+
+  return btn;
 }
 
 AdvisorEmployerWindow::AdvisorEmployerWindow( CityPtr city, Widget* parent, int id ) 
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   setupUI( GameSettings::rcpath( "/gui/employersadv.gui" ) );
-  setPosition( Point( parent->getWidth() - getWidth(), parent->getHeight() - getHeight() ) / 2 );
+  setPosition( Point( (parent->getWidth() - getWidth()) / 2, parent->getHeight() / 2 - 242 ) );
 
   _d->city = city;
 

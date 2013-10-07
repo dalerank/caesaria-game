@@ -255,7 +255,7 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
     {
       PathWay pathWay;
       // we have nothing to buy/sell with city, or cannot find available warehouse -> go out
-      bool pathFound = Pathfinder::getInstance().getPath( position, city->getRoadExit(), pathWay, false, 1 );
+      bool pathFound = Pathfinder::getInstance().getPath( position, city->getBorderInfo().roadExit, pathWay, false, 1 );
       if( pathFound )
       {
         wlk->setPathWay( pathWay );
@@ -335,7 +335,7 @@ void Merchant::onDestination()
 void Merchant::send2City()
 {
   _d->nextState = Impl::stFindWarehouseForSelling;
-  _d->resolveState( this, _getCity()->getRoadEntry() );
+  _d->resolveState( this, _getCity()->getBorderInfo().roadEntry );
 
   if( !isDeleted() )
   {

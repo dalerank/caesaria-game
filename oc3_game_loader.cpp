@@ -106,8 +106,10 @@ void GameLoader::Impl::finalize( Game& game )
   Tilemap& tileMap = game.getCity()->getTilemap();
 
   // exit and entry can't point to one tile or .... can!
-  initEntryExitTile( game.getCity()->getRoadEntry(), tileMap, 89, false );
-  initEntryExitTile( game.getCity()->getRoadExit(),  tileMap, 85, true  );
+  const BorderInfo& border = game.getCity()->getBorderInfo();
+
+  initEntryExitTile( border.roadEntry, tileMap, 89, false );
+  initEntryExitTile( border.roadExit,  tileMap, 85, true  );
   initWaterTileAnimation( tileMap );
 }
 

@@ -38,10 +38,18 @@ class CityTradeOptions;
 class CityWinTargets;
 class CityFunds;
 
+struct BorderInfo
+{
+  TilePos roadEntry;
+  TilePos roadExit;
+  TilePos boatEntry;
+  TilePos boatExit;
+};
+
 class City : public EmpireCity
 {
 public:
-  static CityPtr create(EmpirePtr empire, Player* player );
+  static CityPtr create(EmpirePtr empire, PlayerPtr player );
   ~City();
 
   virtual void timeStep( unsigned int time );  // performs one simulation step
@@ -58,21 +66,13 @@ public:
 
   LandOverlayList& getOverlayList();
 
-  void setRoadExit( const TilePos& pos );
-  void setBoatEntry( const TilePos& pos );
-  void setRoadEntry( const TilePos& pos );
-  void setBoatExit( const TilePos& pos );
-  
-  TilePos getRoadExit() const;
-  TilePos getBoatEntry() const;
-  TilePos getBoatExit() const;
+  void setBorderInfo( const BorderInfo& info );
+  const BorderInfo& getBorderInfo() const;
 
   int getLastMonthTax() const;
   int getLastMonthTaxpayer() const;
 
-  Player* getPlayer() const;
-
-  TilePos getRoadEntry() const;
+  PlayerPtr getPlayer() const;
   
   void setCameraPos(const TilePos pos);
   TilePos getCameraPos() const;
@@ -80,8 +80,6 @@ public:
   ClimateType getClimate() const;
   void setClimate(const ClimateType);
 
-  int getTaxRate() const;
-  void setTaxRate(const int taxRate);
   CityFunds& getFunds() const;
 
   int getPopulation() const;

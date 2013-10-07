@@ -22,6 +22,7 @@
 class CityFunds::Impl
 {
 public:
+  int taxRate;
   int money;
   int lastYeapUpdate;
 
@@ -92,6 +93,16 @@ int CityFunds::getIssueValue( IssueType type, int age ) const
      
   Impl::IssuesValue::iterator it = step.find( type );
   return ( it == step.end() ) ? 0 : it->second;
+}
+
+int CityFunds::getTaxRate() const
+{
+  return _d->taxRate;
+}
+
+void CityFunds::setTaxRate(const int newTax)
+{
+  _d->taxRate = newTax;
 }
 
 VariantMap CityFunds::save() const

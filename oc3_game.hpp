@@ -25,7 +25,6 @@
 
 #include <string>
 
-class Player;
 class CityWinTargets;
 
 class Game
@@ -50,7 +49,7 @@ public:
   void setScreenMenu();
   void setScreenGame();
 
-  Player* getPlayer() const;
+  PlayerPtr getPlayer() const;
   CityPtr getCity() const;
   EmpirePtr getEmpire() const;
   GuiEnv* getGui() const;

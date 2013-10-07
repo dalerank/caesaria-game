@@ -72,20 +72,16 @@ public:
   CityFunds funds;  // amount of money
   std::string name;
   EmpirePtr empire;
-  Player* player;
+  PlayerPtr player;
 
   LandOverlayList overlayList;
   WalkerList walkerList;
-  TilePos roadEntry; //coordinates can't be negative!
   CityServices services;
   bool needRecomputeAllRoads;
-  int taxRate;
   int lastMonthTax;
   int lastMonthTaxpayer;
-  TilePos roadExit;
+  BorderInfo borderInfo;
   Tilemap tilemap;
-  TilePos boatEntry;
-  TilePos boatExit;
   TilePos cameraStart;
   Point location;
   CityBuildOptions buildOptions;
@@ -107,14 +103,14 @@ oc3_signals public:
 
 City::City() : _d( new Impl )
 {
-  _d->roadEntry = TilePos( 0, 0 );
-  _d->roadExit = TilePos( 0, 0 );
-  _d->boatEntry = TilePos( 0, 0 );
-  _d->boatExit = TilePos( 0, 0 );
+  _d->borderInfo.roadEntry = TilePos( 0, 0 );
+  _d->borderInfo.roadExit = TilePos( 0, 0 );
+  _d->borderInfo.boatEntry = TilePos( 0, 0 );
+  _d->borderInfo.boatExit = TilePos( 0, 0 );
   _d->funds.resolveIssue( FundIssue( CityFunds::donation, 1000 ) );
   _d->population = 0;
   _d->needRecomputeAllRoads = false;
-  _d->taxRate = 7;
+  _d->funds.setTaxRate( 7 );
   _d->walkerIdCount = 0;
   _d->climate = C_CENTRAL;
   _d->lastMonthCount = GameDate::current().getMonth();
@@ -265,51 +261,32 @@ LandOverlayList& City::getOverlayList()
   return _d->overlayList;
 }
 
+void City::setBorderInfo(const BorderInfo& info)
+{
+  int size = getTilemap().getSize();
+  TilePos start( 0, 0 );
+  TilePos stop( size-1, size-1 );
+  _d->borderInfo.roadEntry = _d->borderInfo.roadEntry.fit( start, stop );
+  _d->borderInfo.roadExit = _d->borderInfo.roadExit.fit( start, stop );
+  _d->borderInfo.boatEntry = _d->borderInfo.boatEntry.fit( start, stop );
+  _d->borderInfo.boatExit = _d->borderInfo.boatExit.fit( start, stop );
+}
+
+const BorderInfo&City::getBorderInfo() const
+{
+  return _d->borderInfo;
+}
+
 Tilemap& City::getTilemap()
 {
    return _d->tilemap;
 }
 
-TilePos City::getBoatEntry() const { return _d->boatEntry; }
-TilePos City::getBoatExit() const  { return _d->boatExit;  }
-
 ClimateType City::getClimate() const     { return _d->climate;    }
 
 void City::setClimate(const ClimateType climate) { _d->climate = climate; }
 
-// paste here protection from bad values
-void City::setRoadEntry( const TilePos& pos )
-{
-  int size = getTilemap().getSize();
-  _d->roadEntry = TilePos( math::clamp<unsigned int>( pos.getI(), 0, size - 1 ),
-                           math::clamp<unsigned int>( pos.getJ(), 0, size - 1 ) );
-}
-
-void City::setRoadExit( const TilePos& pos )
-{
-  int size = getTilemap().getSize();
-  _d->roadExit.setI( math::clamp<unsigned int>( pos.getI(), 0, size - 1 ) );
-  _d->roadExit.setJ( math::clamp<unsigned int>( pos.getJ(), 0, size - 1 ) );
-}
-
-void City::setBoatEntry(const TilePos& pos )
-{
-  int size = getTilemap().getSize();
-  _d->boatEntry.setI( math::clamp<unsigned int>( pos.getI(), 0, size - 1 ) );
-  _d->boatEntry.setJ( math::clamp<unsigned int>( pos.getJ(), 0, size - 1 ) );
-}
-
-void City::setBoatExit( const TilePos& pos )
-{
-  int size = getTilemap().getSize();
-  _d->boatExit.setI( math::clamp<unsigned int>( pos.getI(), 0, size - 1 ) );
-  _d->boatExit.setJ( math::clamp<unsigned int>( pos.getJ(), 0, size - 1 ) );
-}
-
-int City::getTaxRate() const                 {  return _d->taxRate;    }
-void City::setTaxRate(const int taxRate)     {  _d->taxRate = taxRate; }
 CityFunds& City::getFunds() const                  {  return _d->funds;   }
-
 
 int City::getPopulation() const
 {
@@ -364,11 +341,11 @@ void City::save( VariantMap& stream) const
   _d->tilemap.save( vm_tilemap );
 
   stream[ "tilemap" ] = vm_tilemap;
-  stream[ "roadEntry" ] = _d->roadEntry;
-  stream[ "roadExit" ]  = _d->roadExit;
+  stream[ "roadEntry" ] = _d->borderInfo.roadEntry;
+  stream[ "roadExit" ]  = _d->borderInfo.roadExit;
   stream[ "cameraStart" ] = _d->cameraStart;
-  stream[ "boatEntry" ] = _d->boatEntry;
-  stream[ "boatExit" ] = _d->boatExit;
+  stream[ "boatEntry" ] = _d->borderInfo.boatEntry;
+  stream[ "boatExit" ] = _d->borderInfo.boatExit;
   stream[ "climate" ] = _d->climate;
   stream[ "funds" ] = _d->funds.save();
   stream[ "population" ] = _d->population;
@@ -404,10 +381,11 @@ void City::load( const VariantMap& stream )
 {
   _d->tilemap.load( stream.get( "tilemap" ).toMap() );
 
-  _d->roadEntry = TilePos( stream.get( "roadEntry" ).toTilePos() );
-  _d->roadExit = TilePos( stream.get( "roadExit" ).toTilePos() );
-  _d->boatEntry = TilePos( stream.get( "boatEntry" ).toTilePos() );
-  _d->boatExit = TilePos( stream.get( "boatExit" ).toTilePos() );
+  _d->borderInfo.roadEntry = TilePos( stream.get( "roadEntry" ).toTilePos() );
+  _d->borderInfo.roadExit = TilePos( stream.get( "roadExit" ).toTilePos() );
+  _d->borderInfo.boatEntry = TilePos( stream.get( "boatEntry" ).toTilePos() );
+  _d->borderInfo.boatExit = TilePos( stream.get( "boatExit" ).toTilePos() );
+
   _d->climate = (ClimateType)stream.get( "climate" ).toInt(); 
   _d->funds.load( stream.get( "funds" ).toMap() );
   _d->population = (int)stream.get( "population", 0 );
@@ -449,16 +427,6 @@ void City::load( const VariantMap& stream )
 void City::addOverlay( LandOverlayPtr overlay )
 {
   _d->overlayList.push_back( overlay );
-}
-
-TilePos City::getRoadEntry() const
-{
-  return _d->roadEntry;
-}
-
-TilePos City::getRoadExit() const
-{
-  return _d->roadExit;
 }
 
 City::~City()
@@ -541,7 +509,7 @@ int City::getProsperity() const
   return csPrsp.isValid() ? csPrsp.as<CityServiceProsperity>()->getValue() : 0;
 }
 
-CityPtr City::create( EmpirePtr empire, Player* player )
+CityPtr City::create( EmpirePtr empire, PlayerPtr player )
 {
   CityPtr ret( new City );
   ret->_d->empire = empire;
@@ -566,7 +534,7 @@ int City::getLastMonthTaxpayer() const
   return _d->lastMonthTaxpayer;
 }
 
-Player*City::getPlayer() const
+PlayerPtr City::getPlayer() const
 {
   return _d->player;
 }
