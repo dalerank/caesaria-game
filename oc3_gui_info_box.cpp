@@ -228,7 +228,7 @@ InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
   int taxes = -1;
   std::string taxesStr = taxes > 0
                            ? StringHelper::format( 0xff, _("##house_not_taxation##") )
-                           : StringHelper::format( 0xff, _("%d %s"), taxes, _("##house_pay_tax##") );
+                           : StringHelper::format( 0xff, "%d %s", taxes, _("##house_pay_tax##") );
 
   Label* taxesLb = new Label( this, Rect( 16 + 15, 177, getWidth() - 16, 177 + 20 ), taxesStr );
 
@@ -280,17 +280,17 @@ void InfoBoxHouse::drawHabitants( HousePtr house )
   if( freeRoom > 0 )
   {
     // there is some room for new habitants!
-    freeRoomText = StringHelper::format( 0xff, _("%d citizens, additional rooms for %d"), house->getNbHabitants(), freeRoom);
+    freeRoomText = StringHelper::format( 0xff, "%d %s %d", house->getNbHabitants(), _("##citizens_additional_rooms_for##"), freeRoom);
   }
   else if (freeRoom == 0)
   {
     // full house!
-    freeRoomText = StringHelper::format( 0xff, _("%d citizens"), house->getNbHabitants());
+    freeRoomText = StringHelper::format( 0xff, "%d %s", house->getNbHabitants(), _("##citizens##"));
   }
   else if (freeRoom < 0)
   {
     // too many habitants!
-    freeRoomText = StringHelper::format( 0xff, _("%d citizens, %d habitants en trop"), house->getNbHabitants(), -freeRoom);
+    freeRoomText = StringHelper::format( 0xff, "%d %s %d", house->getNbHabitants(), _("##no_room_for_citizens##"),-freeRoom);
     lbHabitants->setFont( Font::create( FONT_2_RED ) );
   }
 
