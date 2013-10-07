@@ -54,7 +54,10 @@ public:
   int getIssueValue( IssueType type, int age=thisYear ) const;
 
   int getTaxRate() const;
-  void setTaxRate( const int newTax );
+  void setTaxRate( const unsigned int value );
+
+  int getWorkerSalary() const;
+  void setWorkerSalary( const unsigned int value );
 
   int getValue() const;
 

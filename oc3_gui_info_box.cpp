@@ -219,7 +219,7 @@ InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
   : InfoBoxSimple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 50 ) )
 {
   HousePtr house = tile.getOverlay().as<House>();
-  setTitle( house->getName() );
+  setTitle( house->getLevelSpec().getLevelName() );
 
   new Label( this, Rect( 30, 40, getWidth() - 30, 40 + 100 ), house->getUpCondition() );
 

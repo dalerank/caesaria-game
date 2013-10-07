@@ -23,6 +23,7 @@ class CityFunds::Impl
 {
 public:
   int taxRate;
+  int workerSalary;
   int money;
   int lastYeapUpdate;
 
@@ -37,6 +38,7 @@ oc3_signals public:
 CityFunds::CityFunds() : _d( new Impl )
 {
   _d->money = 0;
+  _d->workerSalary = 30;
   _d->lastYeapUpdate = 0;
   _d->history.push_back( Impl::IssuesValue() );
 }
@@ -100,9 +102,19 @@ int CityFunds::getTaxRate() const
   return _d->taxRate;
 }
 
-void CityFunds::setTaxRate(const int newTax)
+void CityFunds::setTaxRate(const unsigned int value)
 {
-  _d->taxRate = newTax;
+  _d->taxRate = value;
+}
+
+int CityFunds::getWorkerSalary() const
+{
+  return _d->workerSalary;
+}
+
+void CityFunds::setWorkerSalary(const unsigned int value)
+{
+  _d->workerSalary = value;
 }
 
 VariantMap CityFunds::save() const
@@ -110,6 +122,8 @@ VariantMap CityFunds::save() const
   VariantMap ret;
 
   ret[ "money" ] = _d->money;
+  ret[ "taxRate" ] = _d->taxRate;
+  ret[ "workerSalary" ] = _d->workerSalary;
   
   VariantList history;
   for( Impl::IssuesHistory::iterator stepIt=_d->history.begin(); stepIt != _d->history.end(); stepIt++ )
@@ -132,6 +146,8 @@ VariantMap CityFunds::save() const
 void CityFunds::load( const VariantMap& stream )
 {
   _d->money = (int)stream.get( "money", 0 );
+  _d->taxRate = (int)stream.get( "taxRate", 7 );
+  _d->workerSalary = (int)stream.get( "workerSalary", 30 );
 
   VariantList history = stream.get( "history" ).toList();
   for( VariantList::iterator it = history.begin(); it != history.end(); it++ )

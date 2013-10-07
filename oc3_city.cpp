@@ -93,6 +93,7 @@ public:
 
   // collect taxes from all houses
   void collectTaxes( CityPtr city);
+  void payWages( CityPtr city );
   void calculatePopulation( CityPtr city );
 
 oc3_signals public:
@@ -230,6 +231,7 @@ void City::monthStep( const DateTime& time )
 {
   _d->collectTaxes( this );
   _d->calculatePopulation( this );
+  _d->payWages( this );
 
   _d->funds.resolveIssue( FundIssue( CityFunds::playerSalary, -_d->player->getSalary() ) );
   _d->player->appendMoney( _d->player->getSalary() );
@@ -317,6 +319,25 @@ void City::Impl::collectTaxes( CityPtr city )
   }
 
   funds.resolveIssue( FundIssue( CityFunds::taxIncome, lastMonthTax ) );
+}
+
+void City::Impl::payWages(CityPtr city)
+{
+  CityHelper helper( city );
+
+  WorkingBuildingList buildings = helper.getBuildings<WorkingBuilding>( B_MAX );
+
+  int workersNumber = 0;
+  foreach( WorkingBuildingPtr bld, buildings )
+  {
+    workersNumber += bld->getWorkers();
+  }
+
+  //wages all worker in year
+  //workers take salary in sestertius 1/100 part of dinarius
+  int wages = workersNumber * city->getFunds().getWorkerSalary() / 100;
+
+  funds.resolveIssue( FundIssue( CityFunds::workersWages, -wages ) );
 }
 
 void City::Impl::calculatePopulation( CityPtr city )
