@@ -16,6 +16,7 @@
 #include "oc3_cityfunds.hpp"
 #include "oc3_city.hpp"
 #include "oc3_city_trade_options.hpp"
+#include "oc3_building_house.hpp"
 
 #include <map>
 
@@ -174,4 +175,51 @@ CityFunds::~CityFunds()
 Signal1<int>& CityFunds::onChange()
 {
   return _d->onChangeSignal;
+}
+
+
+unsigned int CityFundsHelper::getCurrentWorkersNumber(CityPtr city)
+{
+  CityHelper helper( city );
+
+  WorkingBuildingList buildings = helper.getBuildings<WorkingBuilding>( B_MAX );
+
+  int workersNumber = 0;
+  foreach( WorkingBuildingPtr bld, buildings )
+  {
+    workersNumber += bld->getWorkers();
+  }
+
+  return workersNumber;
+}
+
+unsigned int CityFundsHelper::getMontlyWorkersWages(CityPtr city)
+{
+  int workersNumber = getCurrentWorkersNumber( city );
+
+  if( workersNumber == 0 )
+    return 0;
+
+  //wages all worker in year
+  //workers take salary in sestertius 1/100 part of dinarius
+  int wages = workersNumber * city->getFunds().getWorkerSalary() / 100;
+
+  wages = std::max<int>( wages, 1 );
+
+  return wages;
+}
+
+unsigned int CityFundsHelper::getWorklessNumber(CityPtr city)
+{
+  CityHelper helper( city );
+
+  HouseList houses = helper.getBuildings<House>( B_HOUSE );
+
+  int worklessNumber = 0;
+  foreach( HousePtr house, houses )
+  {
+    worklessNumber += (house->getMaxWorkersNumber() - house->getAvailbleWorkersNumner());
+  }
+
+  return worklessNumber;
 }

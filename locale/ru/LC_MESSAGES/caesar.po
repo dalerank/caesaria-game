@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: opencaesar3\n"
-"POT-Creation-Date: 2013-10-07 15:28+0400\n"
-"PO-Revision-Date: 2013-10-07 15:28+0400\n"
+"POT-Creation-Date: 2013-10-08 17:48+0400\n"
+"PO-Revision-Date: 2013-10-08 18:21+0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -109,19 +109,23 @@ msgstr "все"
 msgid "##send_money##"
 msgstr "передать деньги"
 
-#: oc3_advisor_employers_window.cpp:126
+#: oc3_advisor_employers_window.cpp:131
 msgid "##advemployer_panel_workers##"
 msgstr "работают"
 
-#: oc3_advisor_employers_window.cpp:127
+#: oc3_advisor_employers_window.cpp:132
 msgid "##advemployer_panel_workless##"
 msgstr "безработные"
 
-#: oc3_advisor_employers_window.cpp:140
+#: oc3_advisor_employers_window.cpp:146
+msgid "##workers_yearly_wages_is##"
+msgstr "Примерный ежегодный платеж"
+
+#: oc3_advisor_employers_window.cpp:157
 msgid "##advemployer_panel_denaries##"
 msgstr "дн"
 
-#: oc3_advisor_employers_window.cpp:141
+#: oc3_advisor_employers_window.cpp:158
 msgid "##advemployer_panel_romepay##"
 msgstr "рим платит"
 
@@ -176,7 +180,7 @@ msgstr "Советник по финансам"
 
 #: oc3_advisor_finance_window.cpp:71
 msgid "##city_have##"
-msgstr ""
+msgstr "В городской казне находится"
 
 #: oc3_advisor_finance_window.cpp:71 oc3_advisor_finance_window.cpp:150
 msgid "##denaries##"
@@ -256,7 +260,7 @@ msgstr "Баланс"
 
 #: oc3_advisor_finance_window.cpp:149
 msgid "##may_collect_about##"
-msgstr ""
+msgstr "приносит примерно"
 
 #: oc3_advisor_health_window.cpp:53
 msgid "##bath##"
@@ -288,11 +292,11 @@ msgstr "Советник по безопасности"
 
 #: oc3_advisor_legion_window.cpp:51
 msgid "##advlegion_noalarm##"
-msgstr ""
+msgstr "Нет сообщений об опасности"
 
 #: oc3_advisor_legion_window.cpp:52
 msgid "##advlegion_norequest##"
-msgstr ""
+msgstr "Нет запросов от императора"
 
 #: oc3_advisor_ratings_window.cpp:128
 msgid "##need_population##"
@@ -360,27 +364,27 @@ msgstr "Нажмите правую кнопку мыши для выхода"
 
 #: oc3_advisor_trade_window.cpp:228
 msgid "##trade_btn_import_text##"
-msgstr ""
+msgstr "Импорт"
 
 #: oc3_advisor_trade_window.cpp:228
 msgid "##trade_btn_notrade_text##"
-msgstr ""
+msgstr "Нет торговли"
 
 #: oc3_advisor_trade_window.cpp:240
 msgid "##trade_btn_export_text##"
-msgstr ""
+msgstr "Экспорт"
 
 #: oc3_advisor_trade_window.cpp:244
 msgid "##trade_btn_qty##"
-msgstr ""
+msgstr "шт"
 
 #: oc3_advisor_trade_window.cpp:286
 msgid "##qty_stacked_in_city_warehouse##"
-msgstr ""
+msgstr "На складах города"
 
 #: oc3_advisor_trade_window.cpp:381
 msgid "##idle_factory_in_city##"
-msgstr ""
+msgstr "Остановлено"
 
 #: oc3_advisor_trade_window.cpp:385
 msgid "##industry_enabled##"
@@ -392,7 +396,7 @@ msgstr "Не работает"
 
 #: oc3_advisor_trade_window.cpp:419
 msgid "##use_and_trade_resource##"
-msgstr ""
+msgstr "Использовать и торговать ресурсом. Нажмите для складирования."
 
 #: oc3_advisor_trade_window.cpp:419
 msgid "##click_here_that_stacking##"
@@ -404,7 +408,7 @@ msgstr "складирование ресурсов"
 
 #: oc3_advisor_trade_window.cpp:423
 msgid "##click_here_that_use_it##"
-msgstr ""
+msgstr "Складирование ресурса. Нажмите для использования"
 
 #: oc3_advisor_trade_window.cpp:530
 msgid "##Trade advisor##"
@@ -553,12 +557,13 @@ msgid "##infobox_tooltip_help##"
 msgstr ""
 
 #: oc3_gui_info_box.cpp:165
-msgid "employers"
-msgstr ""
+#, fuzzy
+msgid "##employers##"
+msgstr "Храмов"
 
 #: oc3_gui_info_box.cpp:165
-msgid "requierd"
-msgstr ""
+msgid "##requierd##"
+msgstr "требуется"
 
 #: oc3_gui_info_box.cpp:206
 msgid "##senate_save##"
@@ -603,204 +608,230 @@ msgid "##no_room_for_citizens##"
 msgstr "гражданин"
 
 #: oc3_gui_info_box.cpp:320
-#, c-format
-msgid "Le travail est a %d%% termine."
-msgstr ""
+msgid "##production_ready_at##"
+msgstr "Производство завершено на "
 
-#: oc3_gui_info_box.cpp:332
-#, c-format
-msgid "%s stock: %d units"
-msgstr ""
+#: oc3_gui_info_box.cpp:334
+#, fuzzy
+msgid "##factory_stock##"
+msgstr "Остановлено"
 
-#: oc3_gui_info_box.cpp:392 oc3_gui_info_box.cpp:452
+#: oc3_gui_info_box.cpp:336
+#, fuzzy
+msgid "##factory_units##"
+msgstr "Остановлено"
+
+#: oc3_gui_info_box.cpp:394 oc3_gui_info_box.cpp:455
 msgid "##special_orders##"
 msgstr ""
 
-#: oc3_gui_info_box.cpp:398
-#, c-format
-msgid "%d unites en stock. Espace pour %d unites."
-msgstr ""
+#: oc3_gui_info_box.cpp:402
+msgid "##units_in_stock_freespace_for##"
+msgstr "размещено. Свободного места для"
 
-#: oc3_gui_info_box.cpp:547
-msgid "building_market"
-msgstr ""
-
-#: oc3_gui_info_box.cpp:581
+#: oc3_gui_info_box.cpp:582
 msgid "##market_search_food_source##"
 msgstr "Наш торговец занят поиском товара для продажи"
 
-#: oc3_gui_info_box.cpp:581
+#: oc3_gui_info_box.cpp:582
 msgid "##market_about##"
 msgstr ""
+"Наши рынки делают все товары в Империи доступными для всех, у кого "
+"достаточно денег. Каждому жилищу необходим доступ к рынку, хотя никто не "
+"любит жить по соседству с ними."
 
-#: oc3_gui_info_box.cpp:586
+#: oc3_gui_info_box.cpp:587
 msgid "##market_not_work##"
 msgstr "На этом рынке нет рабочих"
 
-#: oc3_gui_info_box.cpp:629
-msgid "##trees_and_forest_caption"
-msgstr ""
-
 #: oc3_gui_info_box.cpp:630
-msgid "##trees_and_forest_text"
-msgstr ""
+#, fuzzy
+msgid "##trees_and_forest_caption##"
+msgstr "Дом не платит налогов"
 
-#: oc3_gui_info_box.cpp:634
-msgid "##water_caption"
-msgstr ""
+#: oc3_gui_info_box.cpp:631
+#, fuzzy
+msgid "##trees_and_forest_text##"
+msgstr "Импорт"
 
 #: oc3_gui_info_box.cpp:635
-msgid "##water_text"
-msgstr ""
+#, fuzzy
+msgid "##water_caption##"
+msgstr "Требуется"
 
-#: oc3_gui_info_box.cpp:639
-msgid "##rock_caption"
-msgstr ""
+#: oc3_gui_info_box.cpp:636
+#, fuzzy
+msgid "##water_text##"
+msgstr "Экспорт"
 
 #: oc3_gui_info_box.cpp:640
-msgid "##rock_text"
-msgstr ""
+#, fuzzy
+msgid "##rock_caption##"
+msgstr "Пожертвования"
 
-#: oc3_gui_info_box.cpp:646
-msgid "##plaza_caption"
-msgstr ""
+#: oc3_gui_info_box.cpp:641
+msgid "##rock_text##"
+msgstr "Скалы"
 
 #: oc3_gui_info_box.cpp:647
-msgid "##plaza_text"
-msgstr ""
+#, fuzzy
+msgid "##plaza_caption##"
+msgstr "Требуется"
 
-#: oc3_gui_info_box.cpp:651
-msgid "##road_caption"
-msgstr ""
+#: oc3_gui_info_box.cpp:648
+msgid "##plaza_text##"
+msgstr "Плаза"
 
 #: oc3_gui_info_box.cpp:652
-msgid "##road_text"
-msgstr ""
+#, fuzzy
+msgid "##road_caption##"
+msgstr "Пожертвования"
 
-#: oc3_gui_info_box.cpp:657
-msgid "##clear_land_caption"
-msgstr ""
+#: oc3_gui_info_box.cpp:653
+#, fuzzy
+msgid "##road_text##"
+msgstr "Нет торговли"
 
 #: oc3_gui_info_box.cpp:658
-msgid "##clear_land_text"
-msgstr ""
+msgid "##clear_land_caption##"
+msgstr "Свободный участок земли"
 
-#: oc3_gui_info_box.cpp:679
+#: oc3_gui_info_box.cpp:659
+#, fuzzy
+msgid "##clear_land_text##"
+msgstr "клерк"
+
+#: oc3_gui_info_box.cpp:680
 msgid "##freehouse_caption##"
-msgstr ""
+msgstr "Свободный дом"
 
-#: oc3_gui_info_box.cpp:683
+#: oc3_gui_info_box.cpp:684
 msgid "##freehouse_text_noroad##"
 msgstr ""
 
-#: oc3_gui_info_box.cpp:687
+#: oc3_gui_info_box.cpp:688
 msgid "##freehouse_text##"
 msgstr ""
 
-#: oc3_gui_info_box.cpp:708
-#, c-format
-msgid "Production %d%% complete."
-msgstr ""
-
-#: oc3_gui_info_box.cpp:717
-msgid "##farm_description_wheat##"
-msgstr ""
+#: oc3_gui_info_box.cpp:709
+#, fuzzy
+msgid "##rawm_production_complete##"
+msgstr "Производство завершено на "
 
 #: oc3_gui_info_box.cpp:718
-msgid "##farm_title_wheat##"
+msgid "##farm_description_wheat##"
 msgstr ""
+"Зерно - основной источник продовольствия для вашего населения. Оно должно "
+"храниться в амбарах, чтобы кормить ваших жителей, или на складах, если вы "
+"хотите его экспортировать."
 
-#: oc3_gui_info_box.cpp:722
-msgid "##farm_description_fruit##"
-msgstr ""
+#: oc3_gui_info_box.cpp:719
+msgid "##farm_title_wheat##"
+msgstr "Пшеничная ферма"
 
 #: oc3_gui_info_box.cpp:723
-msgid "##farm_title_fruit##"
+msgid "##farm_description_fruit##"
 msgstr ""
+"Фрукты являются важной частью сбалансированной диеты, необходимой вашим "
+"горожанам, чтобы быть здоровыми и счастливыми. В амбарах хранятся фрукты для "
+"внутреннего потребления, а склады забирают излишки, предназначенные на "
+"экспорт."
 
-#: oc3_gui_info_box.cpp:727
-msgid "##farm_description_olive##"
-msgstr ""
+#: oc3_gui_info_box.cpp:724
+msgid "##farm_title_fruit##"
+msgstr "Фруктовый сад"
 
 #: oc3_gui_info_box.cpp:728
-msgid "##farm_title_olive##"
+msgid "##farm_description_olive##"
 msgstr ""
+"Оливки больше всего ценятся из-за своего масла. На маслодельнях оливки "
+"выжимают, чтобы получить масло для употребления в пищу, освещения, смазки и "
+"консервирования"
 
-#: oc3_gui_info_box.cpp:732
-msgid "##farm_description_vine##"
-msgstr ""
+#: oc3_gui_info_box.cpp:729
+msgid "##farm_title_olive##"
+msgstr "Оливковый сад"
 
 #: oc3_gui_info_box.cpp:733
-msgid "##farm_title_vine##"
+msgid "##farm_description_vine##"
 msgstr ""
+"Виноград на этих лозах выведен специально для виноделия.  На винодельнях "
+"делают отличное вино для ваших патрициев и на экспорт."
 
-#: oc3_gui_info_box.cpp:737
-msgid "##farm_description_meat##"
-msgstr ""
+#: oc3_gui_info_box.cpp:734
+msgid "##farm_title_vine##"
+msgstr "Виноградник"
 
 #: oc3_gui_info_box.cpp:738
-msgid "##farm_title_meat##"
+msgid "##farm_description_meat##"
 msgstr ""
+"Зажиточные граждане любят кушать мясо. Мясо для внутреннего потребления "
+"можно хранить в амбарах или отвозить на склад, если оно предназначается на "
+"экспорт."
 
-#: oc3_gui_info_box.cpp:742
+#: oc3_gui_info_box.cpp:739
+msgid "##farm_title_meat##"
+msgstr "Животноводческая ферма"
+
+#: oc3_gui_info_box.cpp:743
 msgid "##farm_description_vegetable##"
 msgstr ""
 
-#: oc3_gui_info_box.cpp:743
+#: oc3_gui_info_box.cpp:744
 msgid "##farm_title_vegetable##"
-msgstr ""
+msgstr "Овощная плантация"
 
-#: oc3_gui_info_box.cpp:754
+#: oc3_gui_info_box.cpp:755
 msgid "##farm_working_normally##"
 msgstr ""
 
-#: oc3_gui_info_box.cpp:757
+#: oc3_gui_info_box.cpp:758
 msgid "##farm_have_no_workers##"
-msgstr ""
+msgstr "На этой ферме нет рабочих"
 
-#: oc3_gui_info_box.cpp:761
+#: oc3_gui_info_box.cpp:762
 msgid "##farm_working_bad##"
-msgstr ""
+msgstr "На этой ферме недостаточно рабочих для нормальной работы"
 
 #: oc3_gui_menu.cpp:112 oc3_gui_menu.cpp:351 oc3_gui_menu.cpp:370
 msgid "##minimizeBtnTooltip"
-msgstr ""
+msgstr "Скрыть меню"
 
 #: oc3_gui_menu.cpp:116
 msgid "##houseBtnTooltip"
-msgstr ""
+msgstr "Дома"
 
 #: oc3_gui_menu.cpp:119
 msgid "##clearBtnTooltip"
-msgstr ""
+msgstr "Очистить"
 
 #: oc3_gui_menu.cpp:121
 msgid "##roadBtnTooltip"
-msgstr ""
+msgstr "Дороги"
 
 #: oc3_gui_menu.cpp:122
 msgid "##waterBtnTooltip"
-msgstr ""
+msgstr "Снабже"
 
 #: oc3_gui_menu.cpp:123
 msgid "##healthBtnTooltip"
-msgstr ""
+msgstr "Здравоохранение"
 
 #: oc3_gui_menu.cpp:124
 msgid "##templeBtnTooltip"
-msgstr ""
+msgstr "Религия"
 
 #: oc3_gui_menu.cpp:125
 msgid "##educationBtnTooltip"
-msgstr ""
+msgstr "Образование"
 
 #: oc3_gui_menu.cpp:128
 msgid "##entertainmentBtnTooltip"
-msgstr ""
+msgstr "Развлечения"
 
 #: oc3_gui_menu.cpp:131
 msgid "##administractionBtnTooltip"
-msgstr ""
+msgstr "Управление"
 
 #: oc3_gui_menu.cpp:134
 msgid "##engineerBtnTooltip"
@@ -808,27 +839,27 @@ msgstr ""
 
 #: oc3_gui_menu.cpp:137
 msgid "##securityBtnTooltip"
-msgstr ""
+msgstr "Безопасность"
 
 #: oc3_gui_menu.cpp:140
 msgid "##comerceBtnTooltip"
-msgstr ""
+msgstr "Торговля"
 
 #: oc3_gui_menu.cpp:327
 msgid "##maximizeBtnTooltip##"
-msgstr ""
+msgstr "Открыть меню"
 
 #: oc3_gui_menu.cpp:392
 msgid "##senateBtnTooltip"
-msgstr ""
+msgstr "Советники"
 
 #: oc3_gui_menu.cpp:394
 msgid "##empireBtnTooltip"
-msgstr ""
+msgstr "Империя"
 
 #: oc3_gui_menu.cpp:397
 msgid "##missionBtnTooltip"
-msgstr ""
+msgstr "Описание миссии"
 
 #: oc3_gui_menu.cpp:399
 msgid "##northBtnTooltip"
@@ -844,7 +875,7 @@ msgstr ""
 
 #: oc3_gui_menu.cpp:406
 msgid "##cancelBtnTooltip"
-msgstr ""
+msgstr "Отмена"
 
 #: oc3_gui_menu.cpp:408
 msgid "##messageBtnTooltip"
@@ -852,7 +883,7 @@ msgstr ""
 
 #: oc3_gui_menu.cpp:410
 msgid "##disasterBtnTooltip"
-msgstr ""
+msgstr "Предупреждения"
 
 #: oc3_gui_menu.cpp:420
 msgid "##ovrm_text##"
@@ -864,79 +895,79 @@ msgstr ""
 
 #: oc3_house_level.cpp:132
 msgid "##low_desirability##"
-msgstr ""
+msgstr "Низкая благоустроенность территории"
 
 #: oc3_house_level.cpp:139
 msgid "##missing_entertainment##"
-msgstr ""
+msgstr "Этому дому требуется доступ к культурным сооружениям."
 
 #: oc3_house_level.cpp:160
 msgid "##missing_religion##"
-msgstr ""
+msgstr "Этому дому требуется доступ к реликиозным объектам."
 
 #: oc3_house_level.cpp:174
 msgid "##missing_food##"
-msgstr ""
+msgstr "Этому дому не хватает продуктов."
 
 #: oc3_house_level.cpp:180
 msgid "##missing_pottery##"
-msgstr ""
+msgstr "Этому дому не хватает посуды."
 
 #: oc3_house_level.cpp:186
 msgid "##missing_furniture##"
-msgstr ""
+msgstr "Этому дому не хватает мебели."
 
 #: oc3_house_level.cpp:192
 msgid "##missing_oil##"
-msgstr ""
+msgstr "Этому дому не хватает масла"
 
 #: oc3_house_level.cpp:209
 msgid "##need fountain##"
-msgstr ""
+msgstr "Жители дома нуждаются в чистой воде из фонтана"
 
 #: oc3_house_level.cpp:213
 msgid "##need water##"
-msgstr ""
+msgstr "У жителей этого дома нет доступа даже к простейшим источникам воды"
 
 #: oc3_house_level.cpp:269
 msgid "##need_hospital##"
-msgstr ""
+msgstr "Этому дому требуется доступ к качественному медицинскому обслуживанию"
 
 #: oc3_house_level.cpp:273
 msgid "##need_doctor##"
-msgstr ""
+msgstr "Этому дому необходим доступ к доктору."
 
 #: oc3_house_level.cpp:279
 msgid "##need_barber##"
-msgstr ""
+msgstr "Этому дому необходим доступ к парикмахерской."
 
 #: oc3_house_level.cpp:284
 msgid "##need_doctor_or_hospital##"
-msgstr ""
+msgstr "Этот дом нуждается в медицинском обслуживании."
 
 #: oc3_house_level.cpp:289
 msgid "##need_bath##"
-msgstr ""
+msgstr "Этому дому требуется доступ к баням."
 
 #: oc3_house_level.cpp:312
 msgid "##need_college##"
-msgstr ""
+msgstr "Этому дому требуется доступ к академии"
 
 #: oc3_house_level.cpp:317
 msgid "##need_library##"
-msgstr ""
+msgstr "Этому дому требуется доступ к библиотеке"
 
 #: oc3_house_level.cpp:321
 msgid "##need_school##"
-msgstr ""
+msgstr "Этому дому требуется доступ к школе"
 
 #: oc3_house_level.cpp:326
 msgid "##need_library_or_school##"
-msgstr ""
+msgstr "Этому дому требуется доступ к образовательным учереждениям"
 
 #: oc3_infoboxmanager.cpp:159
 msgid "##reservoir_title##"
-msgstr ""
+msgstr "Резервуар"
 
 #: oc3_infoboxmanager.cpp:159
 msgid "##reservoir_text##"
@@ -944,7 +975,7 @@ msgstr ""
 
 #: oc3_infoboxmanager.cpp:189
 msgid "##school_title##"
-msgstr ""
+msgstr "Школа"
 
 #: oc3_infoboxmanager.cpp:189
 msgid "##school_text##"
@@ -952,7 +983,7 @@ msgstr ""
 
 #: oc3_infoboxmanager.cpp:190
 msgid "##college_title##"
-msgstr ""
+msgstr "Академия"
 
 #: oc3_infoboxmanager.cpp:190
 msgid "##college_text##"
@@ -960,100 +991,119 @@ msgstr ""
 
 #: oc3_infoboxmanager.cpp:191
 msgid "##library_title##"
-msgstr ""
+msgstr "Библиотека"
 
 #: oc3_infoboxmanager.cpp:191
 msgid "##library_text##"
 msgstr ""
+"Здесь хранятся литературные труды на греческом и латинском со всех концов "
+"Империи.  Ученые утверждают, что библиотеки жизненно важны для города."
 
 #: oc3_infoboxmanager.cpp:192
-msgid "building_garden"
-msgstr ""
+#, fuzzy
+msgid "##building_garden##"
+msgstr "Строительство"
 
 #: oc3_infoboxmanager.cpp:192
 msgid "##garden_desc##"
 msgstr ""
+"Это приятное место дает гражданам возможность отдохнуть от шума, жары и "
+"грязи города в прохладном зеленом оазисе.  Каждому хочется жить рядом с "
+"садом."
 
 #: oc3_infoboxmanager.cpp:193
-msgid "building_statue_small"
-msgstr ""
+#, fuzzy
+msgid "##building_statue_small##"
+msgstr "Строительство"
 
 #: oc3_infoboxmanager.cpp:193 oc3_infoboxmanager.cpp:194
 #: oc3_infoboxmanager.cpp:195
 msgid "##statue_desc##"
 msgstr ""
+"Памятники в честь выдающихся граждан и исторических событий повышают "
+"престижность района. Люди гордятся, живя рядом с памятниками... и чем они "
+"больше, тем лучше."
 
 #: oc3_infoboxmanager.cpp:194
-msgid "building_statue_middle"
-msgstr ""
+#, fuzzy
+msgid "##building_statue_middle##"
+msgstr "Строительство"
 
 #: oc3_infoboxmanager.cpp:195
-msgid "building_statue_big"
-msgstr ""
+#, fuzzy
+msgid "##building_statue_big##"
+msgstr "Строительство"
 
 #: oc3_infoboxmanager.cpp:208
 msgid "##theater_title##"
-msgstr ""
+msgstr "Театр"
 
 #: oc3_infoboxmanager.cpp:208
 msgid "##theater_text##"
-msgstr ""
+msgstr " Горожане наслаждаются греческими драмами и комедиями."
 
 #: oc3_infoboxmanager.cpp:209
 msgid "##actor_colony_title##"
-msgstr ""
+msgstr "Школа актеров"
 
 #: oc3_infoboxmanager.cpp:209
 msgid "##actor_colony_text##"
-msgstr ""
+msgstr "Театры и амфитеатры постоянно находятся в поисках новых талантов."
 
 #: oc3_infoboxmanager.cpp:210
 msgid "##amphitheater_title##"
-msgstr ""
+msgstr "Амфитеатр"
 
 #: oc3_infoboxmanager.cpp:210
 msgid "##amphitheater_text##"
-msgstr ""
+msgstr "Жители приходят сюда смотреть пьесы и гладиаторские бои."
 
 #: oc3_infoboxmanager.cpp:211
 msgid "##gladiator_school_title##"
-msgstr ""
+msgstr "Школа гладиаторов"
 
 #: oc3_infoboxmanager.cpp:211
 msgid "##gladiator_school_text##"
 msgstr ""
+"Колизеям и амфитеатрам постоянно требуются новые гладиаторы, чтобы занимать "
+"место проигравших."
 
 #: oc3_infoboxmanager.cpp:213
 msgid "##lion_house_title##"
-msgstr ""
+msgstr "Львиный питомник"
 
 #: oc3_infoboxmanager.cpp:213
 msgid "##lion_house_text##"
-msgstr ""
+msgstr "Колизеи радуют публику битвами против этих грозных зверей."
 
 #: oc3_infoboxmanager.cpp:214
 msgid "##hippodrome_title##"
-msgstr ""
+msgstr "Ипподром"
 
 #: oc3_infoboxmanager.cpp:214
 msgid "##hippodrome_text##"
-msgstr ""
+msgstr "Больше всего на свете горожане любят гонки на колесницах."
 
 #: oc3_infoboxmanager.cpp:215
 msgid "##chario_maker_title##"
-msgstr ""
+msgstr "Строители колесниц"
 
 #: oc3_infoboxmanager.cpp:215
 msgid "##chario_maker_text##"
 msgstr ""
+"Мастера, работающие здесь строят быстрые колесницы и обучают возничих.  "
+"Гонки на ипподроме очень популярны у горожан."
 
 #: oc3_infoboxmanager.cpp:216
 msgid "##forum_title##"
-msgstr ""
+msgstr "Форум"
 
 #: oc3_infoboxmanager.cpp:216
 msgid "##forum_text##"
 msgstr ""
+"Популярное в народе место сборов и привлекательный общественный элемент, "
+"форум также является местом работы сборщиков налогов и жизненно важен для "
+"городской казны."
 
 #: oc3_infoboxmanager.cpp:217
 msgid "##governor_house_title##"
@@ -1089,11 +1139,13 @@ msgstr ""
 
 #: oc3_infoboxmanager.cpp:221
 msgid "##low_bridge_title##"
-msgstr ""
+msgstr "Низкий мост"
 
 #: oc3_infoboxmanager.cpp:221
 msgid "##low_bridge_text##"
 msgstr ""
+"Этот мост расширяет границы нашего города, но позволяет войти в него не "
+"только нашим гражданам, но и нашим врагам!"
 
 #: oc3_overlays_menu.cpp:52
 msgid "##ovrm_nothing##"
@@ -1101,159 +1153,159 @@ msgstr ""
 
 #: oc3_overlays_menu.cpp:53
 msgid "##ovrm_water##"
-msgstr ""
+msgstr "Вода"
 
 #: oc3_overlays_menu.cpp:54
 msgid "##ovrm_risk##"
-msgstr ""
+msgstr "Риски"
 
 #: oc3_overlays_menu.cpp:55
 msgid "##ovrm_entertainment##"
-msgstr ""
+msgstr "Развлечения"
 
 #: oc3_overlays_menu.cpp:56
 msgid "##ovrm_education##"
-msgstr ""
+msgstr "Обучение"
 
 #: oc3_overlays_menu.cpp:57
 msgid "##ovrm_health##"
-msgstr ""
+msgstr "Здравоохранение"
 
 #: oc3_overlays_menu.cpp:58
 msgid "##ovrm_commerce##"
-msgstr ""
+msgstr "Торговля"
 
 #: oc3_overlays_menu.cpp:59
 msgid "##ovrm_religion##"
-msgstr ""
+msgstr "Религия"
 
 #: oc3_overlays_menu.cpp:64
 msgid "##ovrm_fire##"
-msgstr ""
+msgstr "Пожар"
 
 #: oc3_overlays_menu.cpp:65
 msgid "##ovrm_damage##"
-msgstr ""
+msgstr "Повреждения"
 
 #: oc3_overlays_menu.cpp:66
 msgid "##ovrm_crime##"
-msgstr ""
+msgstr "Преступность"
 
 #: oc3_overlays_menu.cpp:67
 msgid "##ovrm_aborigen##"
-msgstr ""
+msgstr "Аборигены"
 
 #: oc3_overlays_menu.cpp:68
 msgid "##ovrm_troubles##"
-msgstr ""
+msgstr "Проблемы"
 
 #: oc3_overlays_menu.cpp:72
 msgid "##ovrm_entr_all##"
-msgstr ""
+msgstr "Все"
 
 #: oc3_overlays_menu.cpp:73
 msgid "##ovrm_theatres##"
-msgstr ""
+msgstr "Театры"
 
 #: oc3_overlays_menu.cpp:74
 msgid "##ovrm_amtheatres##"
-msgstr ""
+msgstr "Амфитеатры"
 
 #: oc3_overlays_menu.cpp:75
 msgid "##ovrm_colliseum##"
-msgstr ""
+msgstr "Коллизеи"
 
 #: oc3_overlays_menu.cpp:76
 msgid "##ovrm_hpdrome##"
-msgstr ""
+msgstr "Ипподромы"
 
 #: oc3_overlays_menu.cpp:80
 msgid "##ovrm_edct_all##"
-msgstr ""
+msgstr "Все"
 
 #: oc3_overlays_menu.cpp:81
 msgid "##ovrm_school##"
-msgstr ""
+msgstr "Школы"
 
 #: oc3_overlays_menu.cpp:82
 msgid "##ovrm_library##"
-msgstr ""
+msgstr "Библиотеки"
 
 #: oc3_overlays_menu.cpp:83
 msgid "##ovrm_academy##"
-msgstr ""
+msgstr "Академии"
 
 #: oc3_overlays_menu.cpp:87
 msgid "##ovrm_barber##"
-msgstr ""
+msgstr "Парикмахерские"
 
 #: oc3_overlays_menu.cpp:88
 msgid "##ovrm_bath##"
-msgstr ""
+msgstr "Бани"
 
 #: oc3_overlays_menu.cpp:89
 msgid "##ovrm_clinic##"
-msgstr ""
+msgstr "Доктора"
 
 #: oc3_overlays_menu.cpp:90
 msgid "##ovrm_hospital##"
-msgstr ""
+msgstr "Госпитали"
 
 #: oc3_overlays_menu.cpp:94
 msgid "##ovrm_tax##"
-msgstr ""
+msgstr "Налоги"
 
 #: oc3_overlays_menu.cpp:95
 msgid "##ovrm_food##"
-msgstr ""
+msgstr "Еда"
 
 #: oc3_overlays_menu.cpp:96
 msgid "##ovrm_prestige##"
-msgstr ""
+msgstr "Престиж"
 
 #: oc3_screen_menu.cpp:86
 msgid "##Load save##"
-msgstr ""
+msgstr "Сохранить"
 
 #: oc3_screen_menu.cpp:112
 msgid "##Select mission##"
-msgstr ""
+msgstr "Выбрать миссию"
 
 #: oc3_screen_menu.cpp:126
 msgid "##Load map##"
-msgstr ""
+msgstr "Загрузить карту"
 
 #: oc3_screen_menu.cpp:165
 msgid "##mainmenu_newgame##"
-msgstr ""
+msgstr "Новая игра"
 
 #: oc3_screen_menu.cpp:168
 msgid "##mainmenu_playmission##"
-msgstr ""
+msgstr "Миссия"
 
 #: oc3_screen_menu.cpp:171
 msgid "##mainmenu_loadgame##"
-msgstr ""
+msgstr "Загрузить игру"
 
 #: oc3_screen_menu.cpp:174
 msgid "##mainmenu_loadmap##"
-msgstr ""
+msgstr "Закгрузить карту"
 
 #: oc3_screen_menu.cpp:177
 msgid "##mainmenu_quit##"
-msgstr ""
+msgstr "Выход"
 
 #: oc3_senate_popup_info.cpp:67
 msgid "##senatepp_unemployment##"
-msgstr ""
+msgstr "Безработица"
 
 #: oc3_senate_popup_info.cpp:68
 msgid "##senatepp_clt_rating##"
-msgstr ""
+msgstr "Культура"
 
 #: oc3_senate_popup_info.cpp:69
 msgid "##senatepp_prsp_rating##"
-msgstr ""
+msgstr "Благосостояние"
 
 #: oc3_senate_popup_info.cpp:70
 msgid "##senatepp_peace_rating##"
@@ -1261,15 +1313,15 @@ msgstr ""
 
 #: oc3_senate_popup_info.cpp:71
 msgid "##senatepp_favour_rating##"
-msgstr ""
+msgstr "Отношение"
 
 #: oc3_special_orders_window.cpp:70
 msgid "##accept##"
-msgstr ""
+msgstr "Принимать"
 
 #: oc3_special_orders_window.cpp:70
 msgid "##reject##"
-msgstr ""
+msgstr "Не принимать"
 
 #: oc3_special_orders_window.cpp:70
 msgid "##deliver##"
@@ -1281,31 +1333,31 @@ msgstr ""
 
 #: oc3_special_orders_window.cpp:182
 msgid "##granary_orders##"
-msgstr ""
+msgstr "Специальные указы"
 
 #: oc3_special_orders_window.cpp:212
 msgid "##stop_granary_devastation##"
-msgstr ""
+msgstr "Прекратить опустошение"
 
 #: oc3_special_orders_window.cpp:213
 msgid "##devastate_granary##"
-msgstr ""
+msgstr "Опустошить амбар"
 
 #: oc3_special_orders_window.cpp:219
 msgid "##warehouse_orders##"
-msgstr ""
+msgstr "Специальные указы"
 
 #: oc3_special_orders_window.cpp:238
 msgid "##Trace center##"
-msgstr ""
+msgstr "Оптовый склад"
 
 #: oc3_special_orders_window.cpp:253
 msgid "##stop_warehouse_devastation##"
-msgstr ""
+msgstr "Прекратить опустошение"
 
 #: oc3_special_orders_window.cpp:254
 msgid "##devastate_warehouse##"
-msgstr ""
+msgstr "Опустошить склад"
 
 #: oc3_topmenu.cpp:76
 msgid "##population_short##"
@@ -1317,75 +1369,75 @@ msgstr ""
 
 #: oc3_topmenu.cpp:137
 msgid "##gmenu_file##"
-msgstr ""
+msgstr "Файл"
 
 #: oc3_topmenu.cpp:140
 msgid "##gmenu_file_new##"
-msgstr ""
+msgstr "Новая игра"
 
 #: oc3_topmenu.cpp:141
 msgid "##gmenu_file_restart##"
-msgstr ""
+msgstr "Переиграть"
 
 #: oc3_topmenu.cpp:142
 msgid "##gmenu_file_load##"
-msgstr ""
+msgstr "Загрузить"
 
 #: oc3_topmenu.cpp:143
 msgid "##gmenu_file_save##"
-msgstr ""
+msgstr "Сохранить"
 
 #: oc3_topmenu.cpp:144
 msgid "##gmenu_file_mainmenu##"
-msgstr ""
+msgstr "Главное меню"
 
 #: oc3_topmenu.cpp:145
 msgid "##gmenu_file_exit##"
-msgstr ""
+msgstr "Выход"
 
 #: oc3_topmenu.cpp:152
 msgid "##gmenu_options##"
-msgstr ""
+msgstr "Настройки"
 
 #: oc3_topmenu.cpp:154
 msgid "##screen_options##"
-msgstr ""
+msgstr "Настройки экрана"
 
 #: oc3_topmenu.cpp:155
 msgid "##sound_options##"
-msgstr ""
+msgstr "Настройки звука"
 
 #: oc3_topmenu.cpp:156
 msgid "##speed_options##"
-msgstr ""
+msgstr "Настроки игры"
 
 #: oc3_topmenu.cpp:161
 msgid "##gmenu_help##"
-msgstr ""
+msgstr "Помощь"
 
 #: oc3_topmenu.cpp:162
 msgid "##gmenu_advisors##"
-msgstr ""
+msgstr "Советники"
 
 #: oc3_topmenu.cpp:164
 msgid "##adv_employments_m##"
-msgstr ""
+msgstr "Советник по труду"
 
 #: oc3_topmenu.cpp:165
 msgid "##adv_military_m##"
-msgstr ""
+msgstr "Военный советник"
 
 #: oc3_topmenu.cpp:166
 msgid "##adv_empire_m##"
-msgstr ""
+msgstr "Имперский консул"
 
 #: oc3_topmenu.cpp:167
 msgid "##adv_ratings_m##"
-msgstr ""
+msgstr "Советник по рейтингам"
 
 #: oc3_topmenu.cpp:168
 msgid "##adv_trade_m##"
-msgstr ""
+msgstr "Торговый Советник"
 
 #: oc3_topmenu.cpp:169
 msgid "##adv_population_m##"
@@ -1393,27 +1445,27 @@ msgstr ""
 
 #: oc3_topmenu.cpp:170
 msgid "##adv_health_m##"
-msgstr ""
+msgstr "Советник по здравоохранению"
 
 #: oc3_topmenu.cpp:171
 msgid "##adv_education_m##"
-msgstr ""
+msgstr "Советник по науке"
 
 #: oc3_topmenu.cpp:172
 msgid "##adv_religion_m##"
-msgstr ""
+msgstr "Советник по религии"
 
 #: oc3_topmenu.cpp:173
 msgid "##adv_entertainment_m##"
-msgstr ""
+msgstr "Советник по развлечениям"
 
 #: oc3_topmenu.cpp:174
 msgid "##adv_finance_m##"
-msgstr ""
+msgstr "Финансовый советник"
 
 #: oc3_topmenu.cpp:175
 msgid "##adv_main_m##"
-msgstr ""
+msgstr "Главный советник"
 
 #: oc3_walker.cpp:552
 msgid "##wt_none##"
@@ -1421,27 +1473,27 @@ msgstr ""
 
 #: oc3_walker.cpp:553
 msgid "##wt_immigrant##"
-msgstr ""
+msgstr "Иммигрант"
 
 #: oc3_walker.cpp:554
 msgid "##wt_emmigrant##"
-msgstr ""
+msgstr "Поселенец"
 
 #: oc3_walker.cpp:555
 msgid "##wt_soldier##"
-msgstr ""
+msgstr "Солдат"
 
 #: oc3_walker.cpp:556
 msgid "##wt_cart_pushher##"
-msgstr ""
+msgstr "Носильщик"
 
 #: oc3_walker.cpp:557
 msgid "##wt_market_lady##"
-msgstr ""
+msgstr "Торговка"
 
 #: oc3_walker.cpp:558
 msgid "##wt_market_lady_helper##"
-msgstr ""
+msgstr "Помощник торговки"
 
 #: oc3_walker.cpp:559
 msgid "##wt_serviceman##"
@@ -1453,27 +1505,27 @@ msgstr ""
 
 #: oc3_walker.cpp:561
 msgid "##wt_workers_hunter##"
-msgstr ""
+msgstr "Рекрутер"
 
 #: oc3_walker.cpp:562
 msgid "##wt_prefect##"
-msgstr ""
+msgstr "Префект"
 
 #: oc3_walker.cpp:563
 msgid "##wt_tax_collector##"
-msgstr ""
+msgstr "Сборщик налогов"
 
 #: oc3_walker.cpp:564
 msgid "##wt_merchant##"
-msgstr ""
+msgstr "Торговец"
 
 #: oc3_walker.cpp:565
 msgid "##wt_engineer##"
-msgstr ""
+msgstr "Инженер"
 
 #: oc3_walker.cpp:566
 msgid "##wt_doctor##"
-msgstr ""
+msgstr "Доктор"
 
 #: oc3_walker.cpp:567
 msgid "##wt_animal_sheep##"

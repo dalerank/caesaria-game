@@ -25,6 +25,7 @@
 #include "oc3_enums.hpp"
 #include "oc3_foreach.hpp"
 #include "oc3_city.hpp"
+#include "oc3_cityfunds.hpp"
 #include "oc3_game_settings.hpp"
 #include "oc3_empire.hpp"
 
@@ -85,6 +86,7 @@ public:
   };
 
   Label* lbSalary;
+  Label* lbYearlyWages;
   Label* lbWorkersState;
 
   CityPtr city;
@@ -94,6 +96,7 @@ public:
   void decreaseSalary();
   void updateSalaryLabel();
   void updateWorkersState();
+  void updateYearlyWages();
 
   struct EmployersInfo { 
     unsigned int needWorkers;
@@ -122,13 +125,27 @@ void AdvisorEmployerWindow::Impl::decreaseSalary()
 
 void AdvisorEmployerWindow::Impl::updateWorkersState()
 {
-  int workers = 0, withoutWork = 0;
-  std::string strWorkerState = StringHelper::format( 0xff, "%d %s     %d %s  ( %d%% )", workers, _("##advemployer_panel_workers##"),
-                                                     withoutWork, _("##advemployer_panel_workless##"), (withoutWork * 100/ (workers+1)) );
+  int workers = CityFundsHelper::getCurrentWorkersNumber( city );
+  int withoutWork = CityFundsHelper::getWorklessNumber( city );
+  std::string strWorkerState = StringHelper::format( 0xff, "%d %s     %d %s  ( %d%% )",
+                                                     workers, _("##advemployer_panel_workers##"),
+                                                     withoutWork, _("##advemployer_panel_workless##"),
+                                                     (withoutWork * 100/ (workers+1)) );
 
   if( lbWorkersState )
   {
     lbWorkersState->setText( strWorkerState );
+  }
+}
+
+void AdvisorEmployerWindow::Impl::updateYearlyWages()
+{
+  if( lbYearlyWages )
+  {
+    int wages = CityFundsHelper::getMontlyWorkersWages( city ) * DateTime::monthInYear;
+    std::string wagesStr = StringHelper::format( 0xff, "%s %d", _("##workers_yearly_wages_is##"), wages );
+
+    lbYearlyWages->setText( wagesStr );
   }
 }
 
@@ -214,9 +231,11 @@ AdvisorEmployerWindow::AdvisorEmployerWindow( CityPtr city, Widget* parent, int 
 
   _d->lbSalary = findChild<Label*>( "lbSalaries", true );
   _d->lbWorkersState = findChild<Label*>( "lbWorkersState", true );
+  _d->lbYearlyWages = findChild<Label*>( "lbYearlyWages", true );
 
   _d->updateSalaryLabel();
   _d->updateWorkersState();
+  _d->updateYearlyWages();
 }
 
 void AdvisorEmployerWindow::draw( GfxEngine& painter )

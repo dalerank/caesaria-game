@@ -29,10 +29,10 @@
 
 using namespace std;
 
-const char* dayNames[ DateTime::maxDayNumber ] = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
-const char* monthNames[ DateTime::maxMonthNumber ] = { "January", "February", "March", "April", 
-                                                  "May", "June", "July", "August", "September", 
-                                                  "October", "November", "December" };
+const char* dayNames[ DateTime::dayInWeek ] = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+const char* monthNames[ DateTime::monthInYear ] = { "January", "February", "March", "April",
+                                                    "May", "June", "July", "August", "September",
+                                                    "October", "November", "December" };
 
 const DateTime DateTime::invalid = DateTime();
 

@@ -57,6 +57,9 @@ public:
   void levelUp();
   void levelDown();
 
+  unsigned int getMaxWorkersNumber() const;
+  unsigned int getAvailbleWorkersNumner() const;
+
   virtual void destroy();
 
   virtual void save(VariantMap& stream) const;

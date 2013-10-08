@@ -11,6 +11,11 @@
       bgtype : "blackFrame"
     }
     
+    lbYearlyWages#Label : {
+      geometryf : [ 0.1, 0.90, 0.5, 0.95 ]
+      text : "##yearly_workers_wages##"
+    }
+    
     lbSalaryFrame#Label : {
       geometry : [ 64, 352, 574, 384 ]
       bgtype : "blackFrame"

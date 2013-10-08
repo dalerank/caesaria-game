@@ -325,20 +325,7 @@ void City::Impl::collectTaxes( CityPtr city )
 
 void City::Impl::payWages(CityPtr city)
 {
-  CityHelper helper( city );
-
-  WorkingBuildingList buildings = helper.getBuildings<WorkingBuilding>( B_MAX );
-
-  int workersNumber = 0;
-  foreach( WorkingBuildingPtr bld, buildings )
-  {
-    workersNumber += bld->getWorkers();
-  }
-
-  //wages all worker in year
-  //workers take salary in sestertius 1/100 part of dinarius
-  int wages = workersNumber * city->getFunds().getWorkerSalary() / 100;
-
+  int wages = CityFundsHelper::getMontlyWorkersWages( city );
   funds.resolveIssue( FundIssue( CityFunds::workersWages, -wages ) );
 }
 

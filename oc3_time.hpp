@@ -25,8 +25,8 @@ public:
     typedef enum { dateLess=-1, dateEquale=0, dateMore=1 } DATE_EQUALE_FEEL;
 
     static const DateTime invalid;
-    static const int maxDayNumber = 7;
-    static const int maxMonthNumber = 12;
+    static const int dayInWeek = 7;
+    static const int monthInYear = 12;
 
     unsigned char getHour() const;
     unsigned char getMonth() const;

@@ -72,4 +72,12 @@ private:
   ScopedPtr< Impl > _d;
 };
 
+class CityFundsHelper
+{
+public:
+  static unsigned int getCurrentWorkersNumber( CityPtr city );
+  static unsigned int getMontlyWorkersWages( CityPtr city );
+  static unsigned int getWorklessNumber( CityPtr city );
+};
+
 #endif //__OPENCAESAR3_CITYFUNDS_H_INCLUDED__

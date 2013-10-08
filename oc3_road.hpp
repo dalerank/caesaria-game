@@ -35,6 +35,9 @@ public:
   virtual void appendPaved( int value );
   int getPavedValue() const;
 
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
+
 private:
   int _paved;
 };

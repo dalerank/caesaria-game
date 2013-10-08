@@ -195,6 +195,21 @@ int Road::getPavedValue() const
   return _paved;
 }
 
+void Road::save(VariantMap& stream) const
+{
+  Construction::save( stream );
+
+  stream[ "paved" ] = _paved;
+}
+
+void Road::load(const VariantMap& stream)
+{
+  Construction::load( stream );
+  _paved  = (int)stream.get( "paved", 0 );
+
+  updatePicture();
+}
+
 // I didn't decide what is the best approach: make Plaza as constructions or as upgrade to roads
 Plaza::Plaza()
 {

@@ -189,10 +189,10 @@ InfoBoxManager::InfoBoxManager( CityPtr city, GuiEnv* gui ) : _d( new Impl )
   addInfobox( B_SCHOOL,  OC3_STR_EXT(B_SCHOOL), new ServiceBaseInfoboxCreator( _("##school_title##"), _("##school_text##") ));
   addInfobox( B_COLLEGE, OC3_STR_EXT(B_COLLEGE), new ServiceBaseInfoboxCreator( _("##college_title##"), _("##college_text##") ));
   addInfobox( B_LIBRARY, OC3_STR_EXT(B_LIBRARY), new ServiceBaseInfoboxCreator( _("##library_title##"), _("##library_text##") ));
-  addInfobox( B_GARDEN,  OC3_STR_EXT(B_GARDEN), new InfoBoxBasicCreator( _("building_garden"), _("##garden_desc##")) );
-  addInfobox( B_STATUE1, OC3_STR_EXT(B_STATUE1), new InfoBoxBasicCreator( _("building_statue_small"), _("##statue_desc##")) );
-  addInfobox( B_STATUE2, OC3_STR_EXT(B_STATUE2), new InfoBoxBasicCreator( _("building_statue_middle"), _("##statue_desc##")) );
-  addInfobox( B_STATUE3, OC3_STR_EXT(B_STATUE3), new InfoBoxBasicCreator( _("building_statue_big"), _("##statue_desc##")) );
+  addInfobox( B_GARDEN,  OC3_STR_EXT(B_GARDEN), new InfoBoxBasicCreator( _("##building_garden##"), _("##garden_desc##")) );
+  addInfobox( B_STATUE1, OC3_STR_EXT(B_STATUE1), new InfoBoxBasicCreator( _("##building_statue_small##"), _("##statue_desc##")) );
+  addInfobox( B_STATUE2, OC3_STR_EXT(B_STATUE2), new InfoBoxBasicCreator( _("##building_statue_middle##"), _("##statue_desc##")) );
+  addInfobox( B_STATUE3, OC3_STR_EXT(B_STATUE3), new InfoBoxBasicCreator( _("##building_statue_big##"), _("##statue_desc##")) );
   addInfobox( B_PLAZA,   OC3_STR_EXT(B_PLAZA), new CitizenInfoboxCreator<InfoBoxLand>( _d->city ) );
   addInfobox( notBuilding, OC3_STR_EXT(notBuilding), new CitizenInfoboxCreator<InfoBoxLand>( _d->city ) );
   addInfobox( B_POTTERY, OC3_STR_EXT(B_POTTERY), new BaseInfoboxCreator<GuiInfoFactory>() );

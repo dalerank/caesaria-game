@@ -35,6 +35,11 @@
 #include "oc3_foreach.hpp"
 #include "oc3_game_event_mgr.hpp"
 
+namespace {
+  static const int workingHbKoeff = 2;
+
+}
+
 class House::Impl
 {
 public:
@@ -408,6 +413,16 @@ void House::levelDown()
    _update();
 }
 
+unsigned int House::getMaxWorkersNumber() const
+{
+  return _d->currentHabitants / workingHbKoeff;
+}
+
+unsigned int House::getAvailbleWorkersNumner() const
+{
+  return _d->freeWorkersCount;
+}
+
 void House::buyMarket( ServiceWalkerPtr walker )
 {
   // std::cout << "House buyMarket" << std::endl;
@@ -607,9 +622,11 @@ int House::getMaxDistance2Road() const
 
 void House::addHabitants( const int newHabitCount )
 {
+  int saveHabitantsValue = _d->currentHabitants;
+
   int peoplesCount = (std::min)( _d->currentHabitants + newHabitCount, _d->maxHabitants );
   _d->currentHabitants = peoplesCount;
-  _d->freeWorkersCount += peoplesCount / 2;
+  _d->freeWorkersCount += ( peoplesCount - saveHabitantsValue ) / workingHbKoeff;
   _update();
 }
 
@@ -678,6 +695,7 @@ void House::load( const VariantMap& stream )
   _d->currentHabitants = (int)stream.get( "currentHubitants", 0 );
   _d->maxHabitants = (int)stream.get( "maxHubitants", 0 );
   _d->freeWorkersCount = (int)stream.get( "freeWorkersCount", 0 );
+  _d->freeWorkersCount = math::clamp( _d->freeWorkersCount, 0, _d->currentHabitants / workingHbKoeff );
 
   _d->goodStore.load( stream.get( "goodstore" ).toMap() );
 
