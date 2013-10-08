@@ -13,17 +13,25 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_PROJECT_VERSION_INCLUDE_H_
-#define __OPENCAESAR3_PROJECT_VERSION_INCLUDE_H_
+#ifndef __OPENCAESAR3_CITYSERVICE_ROADS_H_INCLUDED__
+#define __OPENCAESAR3_CITYSERVICE_ROADS_H_INCLUDED__
 
-#include "oc3_requirements.hpp"
+#include "oc3_cityservice.hpp"
+#include "oc3_scopedptr.hpp"
+#include "oc3_predefinitions.hpp"
 
-#define OC3_VERSION_MAJOR 0
-#define OC3_VERSION_MINOR 2
-#define OC3_VERSION_REVSN 826
+class CityServiceRoads : public CityService
+{
+public:
+  static CityServicePtr create( CityPtr city );
 
-#define OC3_STR_EXT(__A) #__A
-#define OC3_STR_A(__A) OC3_STR_EXT(__A)
-#define OC3_VERSION OC3_STR_A(OC3_VERSION_MAJOR)"."OC3_STR_A(OC3_VERSION_MINOR)"."OC3_STR_A(OC3_VERSION_REVSN)"["OC3_PLATFORM_NAME":"OC3_COMPILER_NAME"]"
+  void update( const unsigned int time );
+  ~CityServiceRoads();
+private:
+  CityServiceRoads( CityPtr city );
 
-#endif
+  class Impl;
+  ScopedPtr< Impl > _d;
+};
+
+#endif //__OPENCAESAR3_CITYSERVICE_ROADS_H_INCLUDED__

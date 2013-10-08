@@ -59,6 +59,7 @@
 #include "oc3_game_event.hpp"
 #include "oc3_cityservice_festival.hpp"
 #include "oc3_win_targets.hpp"
+#include "oc3_cityservice_roads.hpp"
 
 #include <set>
 
@@ -126,6 +127,7 @@ City::City() : _d( new Impl )
   addService( CityServiceAnimals::create( this ) );
   addService( CityServiceReligion::create( this ) );
   addService( CityServiceFestival::create( this ) );
+  addService( CityServiceRoads::create( this ) );
 }
 
 void City::timeStep( unsigned int time )

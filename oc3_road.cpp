@@ -22,6 +22,7 @@
 
 Road::Road() : Construction( B_ROAD, Size(1) )
 {
+  _paved = 0;
 }
 
 void Road::build( CityPtr city, const TilePos& pos )
@@ -107,56 +108,52 @@ Picture Road::computePicture()
   // std::cout << "direction flags=" << directionFlags << std::endl;
 
   int index;
-  switch (directionFlags)
+  if( _paved == 0 )
   {
-  case 0:  // no road!
-    index = 101;
+    switch (directionFlags)
+    {
+    case 0: index = 101; break; // no road!
+    case 1: index = 101; break; // North
+    case 2: index = 102; break; // East
+    case 4: index = 103; break; // South
+    case 8: index = 104; break; // West
+    case 3: index = 97;  break; // North+East
+    case 5: index = 93+2*(rand()%2); break;  // 93/95 // North+South
+    case 6: index = 98;  break; // East+South
+    case 7: index = 106; break; // North+East+South
+    case 9: index = 100; break; // North+West
+    case 10: index = 94+2*(rand()%2); break;  // 94/96 // East+West
+    case 11: index = 109; break; // North+East+West
+    case 12: index = 99; break;  // South+West
+    case 13: index = 108; break; // North+South+West
+    case 14: index = 107; break; // East+South+West
+    case 15: index = 110; break; // North+East+South+West
+    }
+  }
+  else
+  {
+    switch (directionFlags)
+    {
+    case 0: index = 52; break; // no road!
+    case 1: index = 52+4*(rand()%2); break; // North
+    case 2: index = 53; break; // East
+    case 4: index = 54; break; // South
+    case 8: index = 55; break; // West
+    case 3: index = 48;  break; // North+East
+    case 5: index = 44+2*(rand()%2); break;  // 93/95 // North+South
+    case 6: index = 49;  break; // East+South
+    case 9: index = 51; break; // North+West
+    case 10: index = 45+2*(rand()%2); break;  // 94/96 // East+West
+    case 12: index = 50; break;  // South+West
+
+    case 7:
+    case 11:
+    case 13:
+    case 14:
+    case 15:
+      index = 78 + rand() % 14;
     break;
-  case 1:  // North
-    index = 101;
-    break;
-  case 2:  // East
-    index = 102;
-    break;
-  case 4:  // South
-    index = 103;
-    break;
-  case 8:  // West
-    index = 104;
-    break;
-  case 3:  // North+East
-    index = 97;
-    break;
-  case 5:  // North+South
-    index = 93+2*(rand()%2);
-    break;  // 93/95
-  case 6:  // East+South
-    index = 98;
-    break;
-  case 7:  // North+East+South
-    index = 106;
-    break;
-  case 9:  // North+West
-    index = 100;
-    break;
-  case 10:  // East+West
-    index = 94+2*(rand()%2);
-    break;  // 94/96
-  case 11:  // North+East+West
-    index = 109;
-    break;
-  case 12:  // South+West
-    index = 99;
-    break;
-  case 13:  // North+South+West
-    index = 108;
-    break;
-  case 14:  // East+South+West
-    index = 107;
-    break;
-  case 15:  // North+East+South+West
-    index = 110;
-    break;
+    }
   }
 
   return Picture::load( ResourceGroup::road, index);
@@ -181,6 +178,23 @@ void Road::destroy()
 {
   Construction::destroy();
 }
+
+void Road::appendPaved( int value )
+{
+  bool saveValue = _paved > 0;
+  _paved = math::clamp( _paved += value, 0, 4 );
+
+  if( saveValue != (_paved > 0) )
+  {
+    updatePicture();
+  }
+}
+
+int Road::getPavedValue() const
+{
+  return _paved;
+}
+
 // I didn't decide what is the best approach: make Plaza as constructions or as upgrade to roads
 Plaza::Plaza()
 {
@@ -227,4 +241,10 @@ bool Plaza::canBuild( CityPtr city, const TilePos& pos ) const
   }
 
   return is_constructible;
+}
+
+
+void Plaza::appendPaved(int value)
+{
+
 }
