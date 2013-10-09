@@ -10,9 +10,16 @@ int main(int argc, char* argv[])
    {
      if( !strcmp( argv[i], "-R" ) )
      {
-       GameSettings::set( GameSettings::resourcePath, Variant( std::string( argv[i+1] ) ) );
-       GameSettings::set( GameSettings::localePath, Variant( std::string( argv[i+1] ) + "/locale" ) );
-       break;
+       std::string path = argv[i+1];
+       GameSettings::set( GameSettings::resourcePath, Variant( path ) );
+       GameSettings::set( GameSettings::localePath, Variant( path + "/locale" ) );
+       i++;
+     }
+
+     if( !strcmp( argv[i], "-Lc" ) )
+     {
+       GameSettings::set( GameSettings::localeName, Variant( std::string( argv[i+1] ) ) );
+       i++;
      }
    }
 

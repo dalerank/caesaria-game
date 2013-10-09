@@ -14,7 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_gettext.hpp"
-#include "oc3_topmenu.hpp"
+#include "oc3_gui_topmenu.hpp"
 #include "oc3_gui_label.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_contextmenuitem.hpp"
@@ -39,6 +39,7 @@ public:
   Label* lbPopulation;
   Label* lbFunds;
   Label* lbDate;
+  ContextMenu* langSelect;
   PictureRef bgPicture;
 
   void resolveSave();
@@ -154,6 +155,13 @@ TopMenu::TopMenu( Widget* parent, const int height )
   ContextMenuItem* screen = options->addItem( _("##screen_options##"), -1, true, false, false, false );  
   /*ContextMenuItem* sound = */options->addItem( _("##sound_options##"), -1, true, false, false, false );
   /*ContextMenuItem* speed = */options->addItem( _("##speed_options##"), -1, true, false, false, false );
+  ContextMenuItem* language = options->addItem( _("##select_language##"), -1, true, true, false, false );
+  _d->langSelect = language->addSubMenu();
+  ContextMenuItem* russianLng = _d->langSelect->addItem( _("##russian_lang##"), 0xf001, true, false, false, false );
+  ContextMenuItem* englishLng = _d->langSelect->addItem( _("##english_lang##"), 0xf002, true, false, false, false );
+
+  CONNECT( russianLng, onClicked(), this, TopMenu::resolveSelectLanguage );
+  CONNECT( englishLng, onClicked(), this, TopMenu::resolveSelectLanguage );
 
   CONNECT( screen, onClicked(), &_d->onShowVideoOptionsSignal, Signal0<>::emit );
 
@@ -194,6 +202,22 @@ Signal0<>& TopMenu::onEnd()
 Signal1<int>& TopMenu::onRequestAdvisor()
 {
   return _d->onRequestAdvisorSignal;
+}
+
+void TopMenu::resolveSelectLanguage()
+{
+  if( ContextMenuItem* current = _d->langSelect->getSelectedItem() )
+  {
+    switch( current->getCommandId() )
+    {
+    case 0xf001: putenv( "LC_ALL=ru_RU" ); break;
+
+    case 0xf002:
+    default:
+        putenv( "LC_ALL=en_US" );
+    break;
+    }
+  }
 }
 
 Signal0<>& TopMenu::onLoad()

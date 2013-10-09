@@ -31,6 +31,7 @@ public:
   static const char* citiesModel;
   static const char* constructionModel;
   static const char* workDir;
+  static const char* localeName;
 
   static GameSettings& getInstance();
 

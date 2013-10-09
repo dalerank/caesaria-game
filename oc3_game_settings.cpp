@@ -23,6 +23,7 @@ const char* GameSettings::houseModel = "houseModel";
 const char* GameSettings::citiesModel = "citiesModel";
 const char* GameSettings::constructionModel = "constructionModel";
 const char* GameSettings::ctNamesModel = "ctNamesModel";
+const char* GameSettings::localeName = "en_US";
 class GameSettings::Impl
 {
 public:

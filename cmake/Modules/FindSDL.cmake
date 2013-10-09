@@ -68,7 +68,7 @@
 #  License text for the above reference.)
 
 if(WIN32)
-  set(WIN32_SDL_DEPENDENCIES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/SDL #windows")
+  set(WIN32_SDL_DEPENDENCIES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/SDL") #windows
 endif(WIN32)
 
 

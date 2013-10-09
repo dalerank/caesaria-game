@@ -41,6 +41,8 @@ oc3_signals public:
   Signal1<int>& onRequestAdvisor();
 
 private:
+  void resolveSelectLanguage();
+
   class Impl;
   ScopedPtr< Impl > _d;
 };

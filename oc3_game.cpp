@@ -78,8 +78,12 @@ public:
 void Game::Impl::initLocale(const std::string & localePath)
 {
   // init the internationalization library (gettext)
-  setlocale(LC_ALL, "");
+  std::string localeStr = StringHelper::format( 0xff, "LC_ALL=%s", GameSettings::get( GameSettings::localeName ).toString().c_str() );
+
+  putenv( localeStr.c_str() );
+  //setlocale(LC_ALL, "English");
   bindtextdomain( "caesar", localePath.data() );
+  bind_textdomain_codeset( "caesar", "UTF-8" );
   textdomain( "caesar" );
 }
 
@@ -250,7 +254,7 @@ EmpirePtr Game::getEmpire() const
   return _d->empire;
 }
 
-GuiEnv*Game::getGui() const
+GuiEnv* Game::getGui() const
 {
   return _d->gui;
 }
