@@ -165,7 +165,6 @@ TopMenu::TopMenu( Widget* parent, const int height )
 
   CONNECT( screen, onClicked(), &_d->onShowVideoOptionsSignal, Signal0<>::emit );
 
-
   tmp = addItem( _("##gmenu_help##"), -1, true, true, false, false );
   tmp = addItem( _("##gmenu_advisors##"), -1, true, true, false, false );
   ContextMenu* advisersMenu = tmp->addSubMenu();

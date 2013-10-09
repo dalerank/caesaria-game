@@ -137,7 +137,7 @@ bool Font::isValid() const
 Size Font::getSize( const std::string& text ) const
 {
   int w, h;
-  TTF_SizeText( _d->ttfFont, text.c_str(), &w, &h);
+  TTF_SizeUTF8( _d->ttfFont, text.c_str(), &w, &h );
 
   return Size( w, h );
 }
