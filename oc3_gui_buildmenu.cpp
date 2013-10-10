@@ -54,7 +54,7 @@ public:
     {           
         char buffer[32];
         sprintf( buffer, "%d", _cost );
-        Rect textRect = font.calculateTextRect( buffer, Rect( 0, 0, getWidth(), getHeight() ),
+        Rect textRect = font.calculateTextRect( buffer, Rect( 5, 0, getWidth(), getHeight() ),
                                                 alignLowerRight, getVerticalTextAlign() );
         font.draw( *_getTextPicture( state ), buffer, textRect.getLeft(), textRect.getTop() );
     }
@@ -95,15 +95,15 @@ void BuildMenu::initialize()
   Widget::Widgets children = getChildren();
   foreach( Widget* widget, children )
   {
-      if( BuildButton *button = dynamic_cast< BuildButton* >( widget ) )
-      {
-          textSize = font.getSize( button->getText());
-          max_text_width = std::max(max_text_width, textSize.getWidth() );
+    if( BuildButton *button = dynamic_cast< BuildButton* >( widget ) )
+    {
+        textSize = font.getSize( button->getText());
+        max_text_width = std::max(max_text_width, textSize.getWidth() );
 
-          std::string text = StringHelper::format( 0xff, "%i", button->getCost() );
-          textSize = font.getSize( text );
-          max_cost_width = std::max(max_cost_width, textSize.getWidth());
-      }
+        std::string text = StringHelper::format( 0xff, "%i", button->getCost() );
+        textSize = font.getSize( text );
+        max_cost_width = std::max(max_cost_width, textSize.getWidth());
+    }
   }
 
   setWidth( std::max(150, max_text_width + max_cost_width + 20) );
@@ -382,8 +382,8 @@ BuildMenu_factory::BuildMenu_factory( Widget* parent, const Rect& rectangle )
 
 void BuildMenu_religion::initialize()
 {
-  addSubmenuButton(BM_TEMPLE , _("Small temples") );   
-  addSubmenuButton(BM_BIGTEMPLE , _("Large temples") );
+  addSubmenuButton(BM_TEMPLE , _("##small_temples##") );
+  addSubmenuButton(BM_BIGTEMPLE , _("##large_temples##") );
   addBuildButton(B_TEMPLE_ORACLE);   
 
   BuildMenu::initialize();

@@ -67,4 +67,11 @@ Size GfxEngine::getScreenSize() const
 
 void GfxEngine::setFlag( int flag, int value )
 {
+  _flags[ flag ] = value;
+}
+
+int GfxEngine::getFlag(int flag) const
+{
+  std::map< int, int >::const_iterator it = _flags.find( flag );
+  return it != _flags.end() ? it->second : 0;
 }

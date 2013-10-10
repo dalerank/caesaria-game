@@ -21,12 +21,14 @@
 
 #include "oc3_picture.hpp"
 #include "oc3_size.hpp"
+#include <map>
 
 struct NEvent;
 
 class GfxEngine
 {
 public:
+  typedef enum { fullscreen=0, debugInfo } Flags;
   static GfxEngine& instance();
 
   GfxEngine();
@@ -44,6 +46,7 @@ public:
   int getScreenHeight() const;
 
   virtual void setFlag( int flag, int value );
+  virtual int getFlag( int flag ) const;
 
   virtual void loadPicture( Picture& ioPicture) = 0;
   virtual void unloadPicture( Picture& ioPicture) = 0;
@@ -68,6 +71,7 @@ protected:
   static GfxEngine* _instance;
 
   Size _srcSize;
+  std::map< int, int > _flags;
 };
 
 #endif

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: opencaesar3\n"
 "POT-Creation-Date: 2013-10-09 14:35+0400\n"
-"PO-Revision-Date: 2013-10-09 14:36+0400\n"
+"PO-Revision-Date: 2013-10-10 10:56+0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -138,7 +138,7 @@ msgid "##amphitheatres##"
 msgstr "амфитеатров"
 
 #: oc3_advisor_entertainment_window.cpp:56
-msgid "##colloseum##"
+msgid "##colloseums##"
 msgstr "коллизеи"
 
 #: oc3_advisor_entertainment_window.cpp:57
@@ -267,11 +267,11 @@ msgid "##bath##"
 msgstr "Бани"
 
 #: oc3_advisor_health_window.cpp:54
-msgid "##barber##"
+msgid "##barbers##"
 msgstr "Парикмахеры"
 
 #: oc3_advisor_health_window.cpp:55
-msgid "##hospital##"
+msgid "##hospitals##"
 msgstr "Больниц"
 
 #: oc3_advisor_health_window.cpp:55
@@ -279,7 +279,7 @@ msgid "##patients##"
 msgstr "пациентов"
 
 #: oc3_advisor_health_window.cpp:56
-msgid "##doctor##"
+msgid "##doctors##"
 msgstr "Докторов"
 
 #: oc3_advisor_health_window.cpp:126
@@ -1649,3 +1649,321 @@ msgstr "Культура"
 #: oc3_window_mission_target.cpp:83
 msgid "##mission_wnd_peace##"
 msgstr "Мир"
+
+msgid "##road##"
+msgstr "Дорога"
+
+msgid "##wall##"
+msgstr "Стена"
+
+msgid "##aqueduct##"
+msgstr "Акведук"
+
+msgid "##amphitheater##"
+msgstr "Амфитеатр"
+
+msgid "##theater##"
+msgstr "Театр"
+
+msgid "##hippodrome##"
+msgstr "Ипподром"
+
+msgid "##colloseum##"
+msgstr "Коллизей"
+
+msgid "##gladiator_pit##"
+msgstr "Школа гладиаторов"
+
+msgid "##house##"
+msgstr "Дом"
+
+msgid "##lion_pit##"
+msgstr "Львиный питомник"
+
+msgid "##artist_colony##"
+msgstr "Школа актёров"
+
+msgid "##chatioteer_school##"
+msgstr "Школа возничих"
+
+msgid "##plaza##"
+msgstr "Плаза"
+
+msgid "##garden##"
+msgstr "Сады"
+
+msgid "##fort_legionaries##"
+msgstr "Форт легионеров"
+
+msgid "##statue_small##"
+msgstr "Маленькая статуя"
+
+msgid "##statue_middle##"
+msgstr "Статуя"
+
+msgid "##statue_big##"
+msgstr "большая статуя"
+
+msgid "##fort_javelin##"
+msgstr "Форт стрелков"
+
+msgid "##fort_horse##"
+msgstr "Форт всадников"
+
+msgid "##clinic##"
+msgstr "Доктор"
+
+msgid "##hospital##"
+msgstr "Больница"
+
+msgid "##baths##"
+msgstr "Бани"
+
+msgid "##barber##"
+msgstr "Парикмахер"
+
+msgid "##school##"
+msgstr "Школа"
+
+msgid "##academy##"
+msgstr "Академия"
+
+msgid "##library##"
+msgstr "Библиотека"
+
+msgid "##prefecture##"
+msgstr "Префектура"
+
+msgid "##triumphal_arch##"
+msgstr "Триумфальная арка"
+
+msgid "##gatehouse##"
+msgstr "Ворота"
+
+msgid "##tower##"
+msgstr "Башня"
+
+msgid "##small_ceres_temple##"
+msgstr "Храм Цереры"
+
+msgid "##small_neptune_temple##"
+msgstr "Храм Нептуна"
+
+msgid "##small_mercury_temple##"
+msgstr "Храм Меркурия"
+
+msgid "##small_mars_temple##"
+msgstr "Храм Марса"
+
+msgid "##small_venus_temple##"
+msgstr "Храм Венеры"
+
+msgid "##big_ceres_temple##"
+msgstr "Храм Цереры"
+
+msgid "##big_neptune_temple##"
+msgstr "Храм Нептуна"
+
+msgid "##big_mercury_temple##"
+msgstr "Храм Меркурия"
+
+msgid "##big_mars_temple##"
+msgstr "Храм Марса"
+
+msgid "##big_venus_temple##"
+msgstr "Храм Венеры"
+
+msgid "##market##"
+msgstr "Рынок"
+
+msgid "##granery##"
+msgstr "Амбар"
+
+msgid "##warehouse##"
+msgstr "Склад"
+
+msgid "##shipyard##"
+msgstr "Верфь"
+
+msgid "##dock##"
+msgstr "Доки"
+
+msgid "##wharf##"
+msgstr "Пристань"
+
+msgid "##governor_palace_1##"
+msgstr "Дворец 1"
+
+msgid "##governor_palace_2##"
+msgstr "Дворец 2"
+
+msgid "##governor_palace_3##"
+msgstr "Дворец 3"
+
+msgid "##engineering_post##"
+msgstr "Инженерный пост"
+
+msgid "##low_bridge##"
+msgstr "Низкий мост"
+
+msgid "##high_bridge##"
+msgstr "Корабельный мост"
+
+msgid "##senate_1##"
+msgstr "Сенат"
+
+msgid "##senate_2##"
+msgstr "Сенат"
+
+msgid "##forum_1##"
+msgstr "Форум"
+
+msgid "##forum_2##"
+msgstr "Форум"
+
+msgid "##native_hut##"
+msgstr ""
+
+msgid "##native_center##"
+msgstr ""
+
+msgid "##reservoir##"
+msgstr ""
+
+msgid "##fountain##"
+msgstr "Фонтан"
+
+msgid "##well##"
+msgstr "Колодец"
+
+msgid "##native_field##"
+msgstr ""
+
+msgid "##military_academy##"
+msgstr "Военная академия"
+
+msgid "##barracks##"
+msgstr "Бараки"
+
+msgid "##oracle##"
+msgstr "Оракул"
+
+msgid "##burning_ruins##"
+msgstr "Горящие руины"
+
+msgid "##burned_ruins##"
+msgstr "Руины"
+
+msgid "##collapsed_ruins##"
+msgstr "Руины"
+
+msgid "##plague_ruins##"
+msgstr "Руины"
+
+msgid "##wheat_farm##"
+msgstr "Пшеничная ферма"
+
+msgid "##vegetable_farm##"
+msgstr "Овощная ферма"
+
+msgid "##fig_farm##"
+msgstr "Фруктовый сад"
+
+msgid "##olive_farm##"
+msgstr "Оливковый сад"
+
+msgid "##vinard##"
+msgstr "Виноградник"
+
+msgid "##meat_farm##"
+msgstr "Животн. ферма"
+
+msgid "##quarry##"
+msgstr "Мраморный карьер"
+
+msgid "##iron_mine##"
+msgstr "Железная шахта"
+
+msgid "##lumber_mill##"
+msgstr "Лесопилка"
+
+msgid "##clay_pit##"
+msgstr "Глиняная яма"
+
+msgid "##wine_workshop##"
+msgstr "Винодельня"
+
+msgid "##oil_workshop##"
+msgstr "Маслобойня"
+
+msgid "##weapons_workshop##"
+msgstr "Оружейная мастерская"
+
+msgid "##furniture_workshop##"
+msgstr "Мебельная мастерская"
+
+msgid "##pottery_workshop##"
+msgstr "Гончарная"
+
+msgid "##terrain_vacant##"
+msgstr "terrain_vacant"
+
+msgid "##small_tent##"
+msgstr "Маленькая палатка"
+
+msgid "##big_tent##"
+msgstr "Большая палатка"
+
+msgid "##small_hut##"
+msgstr "Маленькая лачуга"
+
+msgid "##big_hut##"
+msgstr "Большая лачуга"
+
+msgid "##small_domus##"
+msgstr "Маленькая хибара"
+
+msgid "##big_domus##"
+msgstr "Большая хибара"
+
+msgid "##small_mansion##"
+msgstr "Маленькая хижина"
+
+msgid "##big_mansion##"
+msgstr "Большая хижина"
+
+msgid "##small_insula##"
+msgstr "Маленький дом"
+
+msgid "##middle_insula##"
+msgstr "Средний дом"
+
+msgid "##big_insula##"
+msgstr "Большой дом"
+
+msgid "##beatyfull_insula##"
+msgstr "Огромный дом"
+
+msgid "##small_villa##"
+msgstr "Маленькая вилла"
+
+msgid "##middle_villa##"
+msgstr "Средняя вилла"
+
+msgid "##big_villa##"
+msgstr "Большая вилла"
+
+msgid "##beatigull_villa##"
+msgstr "Роскошная вилла"
+
+msgid "##small_palace##"
+msgstr "Маленький дворец"
+
+msgid "##middle_palace##"
+msgstr "Средний дворец "
+
+msgid "##big_palace##"
+msgstr "Большой дворец "
+
+msgid "##luxury_palace##"
+msgstr "Роскошный дворец"

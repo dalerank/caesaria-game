@@ -143,14 +143,14 @@ ConstructionManager& ConstructionManager::getInstance()
 ConstructionManager::ConstructionManager() : _d( new Impl )
 {
   // entertainment
-  addCreator( B_THEATER, OC3_STR_EXT(B_THEATER), new WorkingBuildingCreator<Theater>() );
-  addCreator( B_AMPHITHEATER, OC3_STR_EXT(B_AMPHITHEATER), new WorkingBuildingCreator<Amphitheater>() );
-  addCreator( B_COLLOSSEUM, OC3_STR_EXT(B_COLLOSSEUM), new WorkingBuildingCreator<Collosseum>() );
-  addCreator( B_ACTOR_COLONY, OC3_STR_EXT(B_ACTOR_COLONY), new WorkingBuildingCreator<ActorColony>() );
-  addCreator( B_GLADIATOR_SCHOOL, OC3_STR_EXT(B_GLADIATOR_SCHOOL), new WorkingBuildingCreator<GladiatorSchool>() );
-  addCreator( B_LION_HOUSE, OC3_STR_EXT(B_LION_HOUSE), new WorkingBuildingCreator<LionsNursery>() );
-  addCreator( B_CHARIOT_MAKER, OC3_STR_EXT(B_CHARIOT_MAKER), new WorkingBuildingCreator<WorkshopChariot>() );
-  addCreator( B_HIPPODROME, OC3_STR_EXT(B_HIPPODROME),new WorkingBuildingCreator<Hippodrome>() );
+  addCreator(B_THEATER, OC3_STR_EXT(B_THEATER), new WorkingBuildingCreator<Theater>() );
+  addCreator(B_AMPHITHEATER, OC3_STR_EXT(B_AMPHITHEATER), new WorkingBuildingCreator<Amphitheater>() );
+  addCreator(B_COLLOSSEUM, OC3_STR_EXT(B_COLLOSSEUM), new WorkingBuildingCreator<Collosseum>() );
+  addCreator(B_ACTOR_COLONY, OC3_STR_EXT(B_ACTOR_COLONY), new WorkingBuildingCreator<ActorColony>() );
+  addCreator(B_GLADIATOR_SCHOOL, OC3_STR_EXT(B_GLADIATOR_SCHOOL), new WorkingBuildingCreator<GladiatorSchool>() );
+  addCreator(B_LION_HOUSE, OC3_STR_EXT(B_LION_HOUSE), new WorkingBuildingCreator<LionsNursery>() );
+  addCreator(B_CHARIOT_MAKER, OC3_STR_EXT(B_CHARIOT_MAKER), new WorkingBuildingCreator<WorkshopChariot>() );
+  addCreator(B_HIPPODROME, OC3_STR_EXT(B_HIPPODROME),new WorkingBuildingCreator<Hippodrome>() );
   // road&house
   addCreator(B_HOUSE, OC3_STR_EXT(B_HOUSE), new BaseBuildingCreator<House>() );
   addCreator(B_ROAD, OC3_STR_EXT(B_ROAD) , new BaseBuildingCreator<Road>() );

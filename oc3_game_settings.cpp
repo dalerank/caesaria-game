@@ -23,6 +23,9 @@ const char* GameSettings::houseModel = "houseModel";
 const char* GameSettings::citiesModel = "citiesModel";
 const char* GameSettings::constructionModel = "constructionModel";
 const char* GameSettings::ctNamesModel = "ctNamesModel";
+const char* GameSettings::settingsPath = "settingsPath";
+const char* GameSettings::resolution = "resolution";
+const char* GameSettings::fullscreen = "fullscreen";
 const char* GameSettings::localeName = "en_US";
 class GameSettings::Impl
 {
@@ -47,6 +50,9 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ constructionModel ] = Variant( std::string( "/construction.model" ) );
   _d->options[ citiesModel ] = Variant( std::string( "/cities.model" ) );
   _d->options[ ctNamesModel ] = Variant( std::string( "/names.model" ) );
+  _d->options[ settingsPath ] = Variant( std::string( "/settings.model" ) );
+  _d->options[ resolution ] = Size( 1024, 768 );
+  _d->options[ fullscreen ] = false;
 }
 
 void GameSettings::set( const std::string& option, const Variant& value )

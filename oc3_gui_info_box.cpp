@@ -225,12 +225,12 @@ InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
 
   drawHabitants( house );
 
-  int taxes = -1;
-  std::string taxesStr = taxes > 0
+  int taxes = house->getLevelSpec().getTaxRate();
+  std::string taxesStr = taxes <= 0
                            ? StringHelper::format( 0xff, _("##house_not_taxation##") )
                            : StringHelper::format( 0xff, "%d %s", taxes, _("##house_pay_tax##") );
 
-  Label* taxesLb = new Label( this, Rect( 16 + 15, 177, getWidth() - 16, 177 + 20 ), taxesStr );
+  Label* taxesLb = new Label( this, Rect( 16 + 35, 177, getWidth() - 16, 177 + 20 ), taxesStr );
 
   std::string aboutCrimes = _("##house_not_report_about_crimes##");
   Label* lbCrime = new Label( this, taxesLb->getRelativeRect() + Point( 0, 22 ), aboutCrimes );

@@ -167,7 +167,7 @@ BuildingData::BuildingData(const BuildingType buildingType, const std::string &n
   _d->buildingType = buildingType;
   _buildingClass = BC_NONE;
   _name = name;
-  _prettyName = "##" + name + "##";  // i18n translation
+  _prettyName = _( ("##" + name + "##").c_str() );  // i18n translation
   _cost = cost;
   _d->desirability.base = 0;
   _d->desirability.range = 0;

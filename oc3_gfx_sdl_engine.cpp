@@ -81,7 +81,10 @@ void GfxSdlEngine::init()
   rc = TTF_Init();
   if (rc != 0) THROW("Unable to initialize SDL: " << SDL_GetError());
 
-  SDL_Surface* scr = SDL_SetVideoMode(_srcSize.getWidth(), _srcSize.getHeight(), 32, SDL_DOUBLEBUF | SDL_SWSURFACE);  // 32bpp
+  unsigned int flags = SDL_DOUBLEBUF | SDL_SWSURFACE;
+  flags |= (getFlag( GfxEngine::fullscreen ) > 0 ? SDL_FULLSCREEN : 0);
+
+  SDL_Surface* scr = SDL_SetVideoMode(_srcSize.getWidth(), _srcSize.getHeight(), 32, flags );  // 32bpp
   _d->screen.init( scr, Point( 0, 0 ) );
   
   if( !_d->screen.isValid() ) 
@@ -226,8 +229,13 @@ unsigned int GfxSdlEngine::getFps() const
 
 void GfxSdlEngine::setFlag( int flag, int value )
 {
-  _d->showDebugInfo = value > 0;
-  _d->debugFont = Font::create( FONT_2 );
+  GfxEngine::setFlag( flag, value );
+
+  if( flag == debugInfo )
+  {
+    _d->showDebugInfo = value > 0;
+    _d->debugFont = Font::create( FONT_2 );
+  }
 }
 
 void GfxSdlEngine::delay( const unsigned int msec )

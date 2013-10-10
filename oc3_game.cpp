@@ -44,6 +44,7 @@
 #include "oc3_gamedate.hpp"
 #include "oc3_game_event_mgr.hpp"
 #include "oc3_game_saver.hpp"
+#include "oc3_saveadapter.hpp"
 
 #include <libintl.h>
 #include <list>
@@ -73,6 +74,7 @@ public:
   void initVideo();
   void initPictures(const io::FilePath& resourcePath);
   void initGuiEnvironment();
+  void loadSettings(const io::FilePath& filename);
 };
 
 void Game::Impl::initLocale(const std::string & localePath)
@@ -95,8 +97,10 @@ void Game::Impl::initVideo()
   /* Typical resolutions:
    * 640 x 480; 800 x 600; 1024 x 768; 1400 x 1050; 1600 x 1200
    */
-  GfxEngine::instance().setScreenSize( Size( 1024, 768 ) );
-  GfxEngine::instance().init();
+
+  engine->setScreenSize( GameSettings::get( GameSettings::resolution ).toSize() );
+  engine->setFlag( GfxEngine::fullscreen, GameSettings::get( GameSettings::fullscreen ).toBool() ? 1 : 0 );
+  engine->init();
 }
 
 void Game::initSound()
@@ -120,6 +124,16 @@ void Game::mountArchives()
 void Game::Impl::initGuiEnvironment()
 {
   gui = new GuiEnv( *engine );
+}
+
+void Game::Impl::loadSettings( const io::FilePath& filename )
+{
+  VariantMap settings = SaveAdapter::load( filename );
+
+  foreach( VariantMap::value_type& v, settings )
+  {
+    GameSettings::set( v.first, v.second );
+  }
 }
 
 void Game::Impl::initPictures(const io::FilePath& resourcePath)
@@ -342,7 +356,8 @@ void Game::initialize()
 {
   StringHelper::redirectCout2( "stdout.log" );
 
-  _d->initLocale(GameSettings::get( GameSettings::localePath ).toString());
+  _d->loadSettings( GameSettings::rcpath( GameSettings::settingsPath ) );
+  _d->initLocale( GameSettings::get( GameSettings::localePath ).toString() );
   _d->initVideo();
   _d->initGuiEnvironment();
   initSound();
@@ -360,7 +375,7 @@ void Game::initialize()
 void Game::exec()
 {
   _d->nextScreen = SCREEN_MENU;
-  _d->engine->setFlag( 0, 1 );
+  _d->engine->setFlag( GfxEngine::debugInfo, 1 );
 
   while(_d->nextScreen != SCREEN_QUIT)
   {
