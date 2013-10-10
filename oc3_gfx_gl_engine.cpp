@@ -229,3 +229,8 @@ bool GfxGlEngine::haveEvent( NEvent& event )
 
   return false;
 }
+
+std::vector<Size> GfxGlEngine::getAvailableModes() const
+{
+  return std::vector<Size>();
+}

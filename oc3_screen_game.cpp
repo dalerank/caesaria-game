@@ -178,8 +178,11 @@ void ScreenGame::Impl::showSaveDialog()
 
 void ScreenGame::Impl::showScreenOptionsDialog()
 {
-  VideoOptionsWindow* dialog = new VideoOptionsWindow( game->getGui()->getRootWidget() );
+  VideoOptionsWindow* dialog = new VideoOptionsWindow( game->getGui()->getRootWidget(),
+                                                       engine->getAvailableModes(),
+                                                       engine->isFullscreen() );
   CONNECT( dialog, onSreenSizeChange(), engine, GfxEngine::setScreenSize );
+  CONNECT( dialog, onFullScreenChange(), engine, GfxEngine::setFullscreen );
 }
 
 void ScreenGame::Impl::resolveWarningMessage(std::string text )

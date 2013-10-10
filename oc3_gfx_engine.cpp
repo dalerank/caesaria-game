@@ -60,6 +60,16 @@ int GfxEngine::getScreenHeight() const
   return _srcSize.getHeight();
 }
 
+bool GfxEngine::isFullscreen() const
+{
+  return getFlag( fullscreen ) > 0;
+}
+
+void GfxEngine::setFullscreen(bool enabled)
+{
+  setFlag( fullscreen, enabled ? 1 : 0 );
+}
+
 Size GfxEngine::getScreenSize() const
 {
   return _srcSize;

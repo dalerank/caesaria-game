@@ -22,6 +22,7 @@
 #include "oc3_picture.hpp"
 #include "oc3_size.hpp"
 #include <map>
+#include <vector>
 
 struct NEvent;
 
@@ -45,6 +46,9 @@ public:
   int getScreenWidth() const;
   int getScreenHeight() const;
 
+  bool isFullscreen() const;
+  void setFullscreen(bool enabled );
+
   virtual void setFlag( int flag, int value );
   virtual int getFlag( int flag ) const;
 
@@ -66,6 +70,7 @@ public:
 
   virtual void createScreenshot( const std::string& filename ) = 0;
   virtual unsigned int getFps() const = 0;
+  virtual std::vector<Size> getAvailableModes() const = 0;
 
 protected:
   static GfxEngine* _instance;

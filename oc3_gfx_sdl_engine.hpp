@@ -60,6 +60,8 @@ public:
   unsigned int getFps() const;
   void createScreenshot( const std::string& filename );
 
+  virtual std::vector<Size> getAvailableModes() const;
+
 private:
   class Impl;
   ScopedPtr< Impl > _d;

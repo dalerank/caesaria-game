@@ -34,10 +34,11 @@ class ListBox : public Widget, public FlagHolder<LISTBOX_FLAG>
 {
 public:
   typedef enum { selectOnMove=true, selectOnClick=false } SelectMode;
+
   //! constructor
   ListBox( Widget* parent,
-          const Rect& rectangle, int id=-1, bool clip=true,
-          bool drawBack=false, bool moveOverSelect=false);
+           const Rect& rectangle=Rect( 0, 0, 1, 1), int id=-1, bool clip=true,
+           bool drawBack=false, bool moveOverSelect=false);
 
   //! destructor
   virtual ~ListBox();

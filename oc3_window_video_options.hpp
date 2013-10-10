@@ -24,7 +24,8 @@
 class VideoOptionsWindow : public Widget
 {
 public:
-  VideoOptionsWindow( Widget* parent );
+  VideoOptionsWindow( Widget* parent, const std::vector<Size>& modes,
+                      bool fullscreen);
 
   //! Деструктор
   virtual ~VideoOptionsWindow(void);
@@ -33,8 +34,11 @@ public:
 
 public oc3_signals:
   Signal1<Size>& onSreenSizeChange();
+  Signal1<bool>& onFullScreenChange();
 
 private:
+  void _update();
+
   class Impl;
   ScopedPtr< Impl > _d;
 };

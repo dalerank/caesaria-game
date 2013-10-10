@@ -1,5 +1,5 @@
 {  
-  geometry : [ 0, 0, 320, 190 ]
+  geometry : [ 0, 0, 320, 290 ]
   
   lbTitle#Label :
   {
@@ -21,34 +21,16 @@
       bgtype : "smallGrayBorderLine"
       id : 1
     }
-    
-    btn1024x768Mode#PushButton :
+     
+    lbxModes#ListBox :
     {
-      geometry : [ 50, 68, 270, 88 ]
-      text : "##1024x768_mode##"
+      geometry : [ 52, 68, 270, 232 ]
       bgtype : "smallGrayBorderLine"
-      id : 1024
-    }
-    
-    btn1280x1024Mode#PushButton :
-    {
-      geometry : [ 50, 91, 270, 111 ]
-      text : "##1280x1024_mode##"
-      bgtype : "smallGrayBorderLine"
-      id : 1280
-    }
-    
-    btnAutoMode#PushButton :
-    {
-      geometry : [ 50, 114, 270, 134 ]
-      text : "##auto_mode##"
-      bgtype : "smallGrayBorderLine"
-      id : 9999
     }
     
     btnCancel#PushButton :
     {
-      geometry : [ 50, 137, 270, 157 ]
+      geometry : [ 50, 237, 270, 257 ]
       bgtype : "smallGrayBorderLine"
       text : "##cancel##"
     }

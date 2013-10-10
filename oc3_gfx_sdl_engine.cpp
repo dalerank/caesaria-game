@@ -222,6 +222,21 @@ void GfxSdlEngine::createScreenshot( const std::string& filename )
   IMG_SavePNG( filename.c_str(), _d->screen.getSurface(), -1 );
 }
 
+std::vector<Size> GfxSdlEngine::getAvailableModes() const
+{
+  std::vector<Size> ret;
+
+  /* Get available fullscreen/hardware modes */
+  SDL_Rect** modes = SDL_ListModes(NULL, SDL_FULLSCREEN|SDL_HWSURFACE);
+
+  for(int i=0; modes[i]; ++i)
+  {
+    ret.push_back( Size( modes[i]->w, modes[i]->h) );
+  }
+
+  return ret;
+}
+
 unsigned int GfxSdlEngine::getFps() const
 {
   return _d->fps;

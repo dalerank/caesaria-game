@@ -20,7 +20,7 @@
 #include "oc3_pushbutton.hpp"
 #include "oc3_requirements.hpp"
 #include "oc3_texturedbutton.hpp"
-
+#include "oc3_listbox.hpp"
 #include <map>
 
 template< class T > class BaseWidgetCreator : public WidgetCreator
@@ -58,6 +58,7 @@ WidgetFactory::WidgetFactory() : _d( new Impl )
   addCreator( OC3_STR_EXT(EditBox), new BaseWidgetCreator<EditBox>() );
   addCreator( OC3_STR_EXT(TexturedButton), new BaseWidgetCreator<TexturedButton>() );
   addCreator( OC3_STR_EXT(PushButton), new BaseWidgetCreator<PushButton>() );
+  addCreator( OC3_STR_EXT(ListBox), new BaseWidgetCreator<ListBox>() );
 }
 
 WidgetFactory::~WidgetFactory()

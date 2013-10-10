@@ -574,54 +574,54 @@ Rect ListBox::getItemTextRect_()
 
 void ListBox::beforeDraw( GfxEngine& painter)
 {
-    if ( !isVisible() )
-        return;
+  if ( !isVisible() )
+      return;
 
-    if( _d->needItemsRepackTextures )
+  if( _d->needItemsRepackTextures )
+  {
+    _updateTexture();
+
+    _d->picture->draw( *_d->background, 0, 0 );
+
+    bool hl = ( isFlag( LBF_HIGHLIGHTWHEN_NOTFOCUSED ) || isFocused() || _d->scrollBar->isFocused() );
+    Rect frameRect = getItemTextRect_();
+    frameRect.LowerRightCorner.setY( frameRect.getTop() + _d->itemHeight );
+
+    TypeAlign itemTextHorizontalAlign, itemTextVerticalAlign;
+    Font currentFont;
+
+    for (int i=0; i<(int)_d->items.size(); ++i)
     {
-      _updateTexture();
+       ListBoxItem& refItem = _d->items[i];
 
-      _d->picture->draw( *_d->background, 0, 0 );
-    
-      bool hl = ( isFlag( LBF_HIGHLIGHTWHEN_NOTFOCUSED ) || isFocused() || _d->scrollBar->isFocused() );
-      Rect frameRect = getItemTextRect_();
-      frameRect.LowerRightCorner.setY( frameRect.getTop() + _d->itemHeight );
+       if( frameRect.LowerRightCorner.getY() >= 0 &&
+           frameRect.UpperLeftCorner.getY() <= (int)getHeight() )
+       {
+         refItem.setState( _GetCurrentItemState( i, hl ) );
 
-      TypeAlign itemTextHorizontalAlign, itemTextVerticalAlign;
-      Font currentFont;
+         itemTextHorizontalAlign = refItem.isAlignEnabled() ? refItem.getHorizontalAlign() : getHorizontalTextAlign();
+         itemTextVerticalAlign = refItem.isAlignEnabled() ? refItem.getVerticalAlign() : getVerticalTextAlign();
 
-      for (int i=0; i<(int)_d->items.size(); ++i)
-      {
-         ListBoxItem& refItem = _d->items[i];
+         currentFont = _GetCurrentItemFont( refItem, i == _d->selectedItemIndex && hl );
+         currentFont.setColor( _GetCurrentItemColor( refItem, i==_d->selectedItemIndex && hl ) );
 
-         if( frameRect.LowerRightCorner.getY() >= 0 &&
-             frameRect.UpperLeftCorner.getY() <= (int)getHeight() )
-         {
-           refItem.setState( _GetCurrentItemState( i, hl ) );
-           
-           itemTextHorizontalAlign = refItem.isAlignEnabled() ? refItem.getHorizontalAlign() : getHorizontalTextAlign();
-           itemTextVerticalAlign = refItem.isAlignEnabled() ? refItem.getVerticalAlign() : getVerticalTextAlign();
+         Rect textRect = currentFont.calculateTextRect( refItem.getText(), frameRect,
+                                                        itemTextHorizontalAlign, itemTextVerticalAlign );
 
-           currentFont = _GetCurrentItemFont( refItem, i == _d->selectedItemIndex && hl );
-           currentFont.setColor( _GetCurrentItemColor( refItem, i==_d->selectedItemIndex && hl ) );
+         //_DrawItemIcon( refItem, textRect, hl, i == _d->selectedItemIndex, &_d->clientClip, fontColor );
 
-           Rect textRect = currentFont.calculateTextRect( refItem.getText(), frameRect, 
-                                                          itemTextHorizontalAlign, itemTextVerticalAlign );
+         textRect.UpperLeftCorner += Point( _d->itemsIconWidth+3, 0 );
 
-           //_DrawItemIcon( refItem, textRect, hl, i == _d->selectedItemIndex, &_d->clientClip, fontColor );
+         currentFont.draw( *_d->picture, refItem.getText(), textRect.getLeft(), textRect.getTop() - _d->scrollBar->getPos(), false );
+       }
 
-           textRect.UpperLeftCorner += Point( _d->itemsIconWidth+3, 0 );
-
-           currentFont.draw( *_d->picture, refItem.getText(), textRect.getLeft(), textRect.getTop() - _d->scrollBar->getPos(), false );
-         }
-
-         frameRect += Point( 0, _d->itemHeight );
-      }
-
-      _d->needItemsRepackTextures = false;
+       frameRect += Point( 0, _d->itemHeight );
     }
 
-    Widget::beforeDraw( painter );
+    _d->needItemsRepackTextures = false;
+  }
+
+  Widget::beforeDraw( painter );
 }
 
 //! draws the element and its children
