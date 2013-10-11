@@ -23,7 +23,7 @@
 #include "oc3_path_finding.hpp"
 #include "oc3_city.hpp"
 
-Prefecture::Prefecture() : ServiceBuilding(Service::S_PREFECT, B_PREFECTURE, Size(1))
+Prefecture::Prefecture() : ServiceBuilding(Service::prefect, B_PREFECTURE, Size(1))
 {
   _fireDetect = TilePos( -1, -1 );
   setPicture( Picture::load( ResourceGroup::security, 1 ) );

@@ -592,30 +592,30 @@ void ListBox::beforeDraw( GfxEngine& painter)
 
     for (int i=0; i<(int)_d->items.size(); ++i)
     {
-       ListBoxItem& refItem = _d->items[i];
+      ListBoxItem& refItem = _d->items[i];
 
-       if( frameRect.LowerRightCorner.getY() >= 0 &&
-           frameRect.UpperLeftCorner.getY() <= (int)getHeight() )
-       {
-         refItem.setState( _GetCurrentItemState( i, hl ) );
+      if( frameRect.LowerRightCorner.getY() >= 0 &&
+          frameRect.UpperLeftCorner.getY() <= (int)getHeight() )
+      {
+        refItem.setState( _GetCurrentItemState( i, hl ) );
 
-         itemTextHorizontalAlign = refItem.isAlignEnabled() ? refItem.getHorizontalAlign() : getHorizontalTextAlign();
-         itemTextVerticalAlign = refItem.isAlignEnabled() ? refItem.getVerticalAlign() : getVerticalTextAlign();
+        itemTextHorizontalAlign = refItem.isAlignEnabled() ? refItem.getHorizontalAlign() : getHorizontalTextAlign();
+        itemTextVerticalAlign = refItem.isAlignEnabled() ? refItem.getVerticalAlign() : getVerticalTextAlign();
 
-         currentFont = _GetCurrentItemFont( refItem, i == _d->selectedItemIndex && hl );
-         currentFont.setColor( _GetCurrentItemColor( refItem, i==_d->selectedItemIndex && hl ) );
+        currentFont = _GetCurrentItemFont( refItem, i == _d->selectedItemIndex && hl );
+        currentFont.setColor( _GetCurrentItemColor( refItem, i==_d->selectedItemIndex && hl ) );
 
-         Rect textRect = currentFont.calculateTextRect( refItem.getText(), frameRect,
-                                                        itemTextHorizontalAlign, itemTextVerticalAlign );
+        Rect textRect = currentFont.calculateTextRect( refItem.getText(), frameRect,
+                                                       itemTextHorizontalAlign, itemTextVerticalAlign );
 
-         //_DrawItemIcon( refItem, textRect, hl, i == _d->selectedItemIndex, &_d->clientClip, fontColor );
+        //_DrawItemIcon( refItem, textRect, hl, i == _d->selectedItemIndex, &_d->clientClip, fontColor );
 
-         textRect.UpperLeftCorner += Point( _d->itemsIconWidth+3, 0 );
+        textRect.UpperLeftCorner += Point( _d->itemsIconWidth+3, 0 );
 
-         currentFont.draw( *_d->picture, refItem.getText(), textRect.getLeft(), textRect.getTop() - _d->scrollBar->getPos(), false );
-       }
+        currentFont.draw( *_d->picture, refItem.getText(), textRect.getLeft(), textRect.getTop() - _d->scrollBar->getPos(), false );
+      }
 
-       frameRect += Point( 0, _d->itemHeight );
+      frameRect += Point( 0, _d->itemHeight );
     }
 
     _d->needItemsRepackTextures = false;

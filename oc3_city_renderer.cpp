@@ -581,11 +581,11 @@ void CityRenderer::Impl::drawTileReligion( Tile& tile )
     case B_HOUSE:
       {
         HousePtr house = overlay.as< House >();
-        religionLevel = house->getServiceValue(Service::S_TEMPLE_MERCURE);
-        religionLevel += house->getServiceValue(Service::S_TEMPLE_VENUS);
-        religionLevel += house->getServiceValue(Service::S_TEMPLE_MARS);
-        religionLevel += house->getServiceValue(Service::S_TEMPLE_NEPTUNE);
-        religionLevel += house->getServiceValue(Service::S_TEMPLE_CERES);
+        religionLevel = house->getServiceValue(Service::religionMercury);
+        religionLevel += house->getServiceValue(Service::religionVenus);
+        religionLevel += house->getServiceValue(Service::religionMars);
+        religionLevel += house->getServiceValue(Service::religionNeptune);
+        religionLevel += house->getServiceValue(Service::religionCeres);
         religionLevel = math::clamp( religionLevel / (house->getLevelSpec().getMinReligionLevel()+1), 0, 100 );
         needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() ==0);
 

@@ -221,7 +221,13 @@ InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
   HousePtr house = tile.getOverlay().as<House>();
   setTitle( house->getLevelSpec().getLevelName() );
 
-  new Label( this, Rect( 30, 40, getWidth() - 30, 40 + 100 ), house->getUpCondition() );
+  Label* houseInfo = new Label( this, Rect( 30, 40, getWidth() - 30, 40 + 100 ), house->getUpCondition() );
+  houseInfo->setWordWrap( true );
+
+  std::string workerState = StringHelper::format( 0xff, "habtns=%d avWrk=%d",
+                                                  house->getNbHabitants(),
+                                                  house->getServiceValue( Service::workersRecruter ) );
+  new Label( this, Rect( 16, 125, getWidth() - 16, 150 ), workerState );
 
   drawHabitants( house );
 

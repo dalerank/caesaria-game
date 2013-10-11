@@ -43,9 +43,10 @@ public:
   virtual float evaluateService(ServiceWalkerPtr walker);
   virtual void buyMarket(ServiceWalkerPtr walker);
 
-  bool hasServiceAccess(const Service::Type service);
-  int getServiceValue(const Service::Type service);
-  void setServiceAccess(const Service::Type service, const int access);
+  void appendServiceValue( Service::Type srvc, const int value );
+  bool hasServiceAccess( Service::Type service);
+  int getServiceValue( Service::Type service);
+  void setServiceValue( Service::Type service, const int access);
 
   int getFoodLevel() const;
   int getHealthLevel() const;
@@ -56,9 +57,6 @@ public:
 
   void levelUp();
   void levelDown();
-
-  unsigned int getMaxWorkersNumber() const;
-  unsigned int getAvailbleWorkersNumner() const;
 
   virtual void destroy();
 

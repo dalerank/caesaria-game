@@ -96,6 +96,7 @@ public:
   void collectTaxes( CityPtr city);
   void payWages( CityPtr city );
   void calculatePopulation( CityPtr city );
+  void returnFiredWorkers( WorkingBuildingPtr building );
 
 oc3_signals public:
   Signal1<int> onPopulationChangedSignal;
@@ -177,6 +178,11 @@ void City::timeStep( unsigned int time )
         {
           CityHelper helper( this );
           helper.updateDesirability( (*overlayIt).as<Construction>(), false );
+        }
+
+        if( (*overlayIt).is<WorkingBuilding>() )
+        {
+          _d->returnFiredWorkers( (*overlayIt).as<WorkingBuilding>() );
         }
 
         overlayIt = _d->overlayList.erase(overlayIt);
@@ -270,10 +276,10 @@ void City::setBorderInfo(const BorderInfo& info)
   int size = getTilemap().getSize();
   TilePos start( 0, 0 );
   TilePos stop( size-1, size-1 );
-  _d->borderInfo.roadEntry = _d->borderInfo.roadEntry.fit( start, stop );
-  _d->borderInfo.roadExit = _d->borderInfo.roadExit.fit( start, stop );
-  _d->borderInfo.boatEntry = _d->borderInfo.boatEntry.fit( start, stop );
-  _d->borderInfo.boatExit = _d->borderInfo.boatExit.fit( start, stop );
+  _d->borderInfo.roadEntry = info.roadEntry.fit( start, stop );
+  _d->borderInfo.roadExit = info.roadExit.fit( start, stop );
+  _d->borderInfo.boatEntry = info.boatEntry.fit( start, stop );
+  _d->borderInfo.boatExit = info.boatExit.fit( start, stop );
 }
 
 const BorderInfo&City::getBorderInfo() const
@@ -325,7 +331,7 @@ void City::Impl::collectTaxes( CityPtr city )
 
 void City::Impl::payWages(CityPtr city)
 {
-  int wages = CityFundsHelper::getMontlyWorkersWages( city );
+  int wages = CityStatistic::getMontlyWorkersWages( city );
   funds.resolveIssue( FundIssue( CityFunds::workersWages, -wages ) );
 }
 
@@ -343,6 +349,33 @@ void City::Impl::calculatePopulation( CityPtr city )
   
   population = pop;
   onPopulationChangedSignal.emit( pop );
+}
+
+void City::Impl::returnFiredWorkers(WorkingBuildingPtr building )
+{
+  int workersCount = building->getWorkers();
+  const int defaultFireWorkersDistance = 40;
+  for( int curRange=1; curRange < defaultFireWorkersDistance; curRange++ )
+  {
+    TilemapArea perimetr = tilemap.getRectangle( building->getTilePos() - TilePos( curRange, curRange ),
+                                                 building->getSize() + Size( 2 * curRange ) );
+    foreach( Tile* tile, perimetr )
+    {
+      HousePtr house = tile->getOverlay().as<House>();     
+      if( house.isValid() )
+      {
+        int lastWorkersCount = house->getServiceValue( Service::workersRecruter );
+        house->appendServiceValue( Service::workersRecruter, workersCount );
+        int currentWorkers = house->getServiceValue( Service::workersRecruter );
+
+        int mayAppend = math::clamp( workersCount, 0, currentWorkers - lastWorkersCount );
+        workersCount -= mayAppend;
+      }
+
+      if( !workersCount )
+        return;
+    }
+  }
 }
 
 void City::save( VariantMap& stream) const

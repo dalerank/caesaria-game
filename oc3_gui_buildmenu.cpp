@@ -42,6 +42,7 @@ public:
 
     setFont( fontRed, stHovered );
     setTextAlignment( alignUpperLeft, alignCenter );
+    setTextOffset( Point( 15, 0 ) );
   }
 
   void _updateTexture( ElementState state )
@@ -54,7 +55,7 @@ public:
     {           
         char buffer[32];
         sprintf( buffer, "%d", _cost );
-        Rect textRect = font.calculateTextRect( buffer, Rect( 5, 0, getWidth(), getHeight() ),
+        Rect textRect = font.calculateTextRect( buffer, Rect( 5, 0, getWidth()-10, getHeight() ),
                                                 alignLowerRight, getVerticalTextAlign() );
         font.draw( *_getTextPicture( state ), buffer, textRect.getLeft(), textRect.getTop() );
     }

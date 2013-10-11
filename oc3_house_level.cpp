@@ -333,11 +333,11 @@ int HouseLevelSpec::computeEducationLevel(HousePtr house, std::string &oMissingR
 int HouseLevelSpec::computeReligionLevel(HousePtr house)
 {
    int res = 0;
-   res += house->hasServiceAccess(Service::S_TEMPLE_MERCURE) ? 1 : 0;
-   res += house->hasServiceAccess(Service::S_TEMPLE_VENUS) ? 1 : 0;
-   res += house->hasServiceAccess(Service::S_TEMPLE_MARS) ? 1 : 0;
-   res += house->hasServiceAccess(Service::S_TEMPLE_NEPTUNE) ? 1 : 0;
-   res += house->hasServiceAccess(Service::S_TEMPLE_CERES) ? 1 : 0;
+   res += house->hasServiceAccess(Service::religionMercury) ? 1 : 0;
+   res += house->hasServiceAccess(Service::religionVenus) ? 1 : 0;
+   res += house->hasServiceAccess(Service::religionMars) ? 1 : 0;
+   res += house->hasServiceAccess(Service::religionNeptune) ? 1 : 0;
+   res += house->hasServiceAccess(Service::religionCeres) ? 1 : 0;
    return res;
 }
 
@@ -349,11 +349,11 @@ float HouseLevelSpec::evaluateServiceNeed(HousePtr house, const Service::Type se
 
    switch (service)
    {
-   case Service::S_TEMPLE_CERES:
-   case Service::S_TEMPLE_NEPTUNE:
-   case Service::S_TEMPLE_MARS:
-   case Service::S_TEMPLE_VENUS:
-   case Service::S_TEMPLE_MERCURE:
+   case Service::religionCeres:
+   case Service::religionNeptune:
+   case Service::religionMars:
+   case Service::religionVenus:
+   case Service::religionMercury:
       res = evaluateReligionNeed(house, service);
       break;
    case Service::theater:
@@ -373,7 +373,7 @@ float HouseLevelSpec::evaluateServiceNeed(HousePtr house, const Service::Type se
    case Service::hospital:
       res = evaluateHealthNeed(house, service);
       break;
-   case Service::S_FORUM:
+   case Service::forum:
       res = 1;
       break;
    default:

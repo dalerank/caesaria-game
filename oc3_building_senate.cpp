@@ -30,7 +30,7 @@ public:
   int taxInLastMonth;
 };
 
-Senate::Senate() : ServiceBuilding( Service::S_SENATE, B_SENATE, Size(5) ), _d( new Impl )
+Senate::Senate() : ServiceBuilding( Service::senate, B_SENATE, Size(5) ), _d( new Impl )
 {
   setWorkers( 0 );
   setPicture( Picture::load( ResourceGroup::govt, 4) );

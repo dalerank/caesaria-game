@@ -22,6 +22,8 @@
 #include "oc3_road.hpp"
 #include "oc3_building_house.hpp"
 #include "oc3_tile.hpp"
+#include "oc3_cityfunds.hpp"
+#include "oc3_empire.hpp"
 
 class CityServiceEmigrant::Impl
 {
@@ -49,6 +51,18 @@ void CityServiceEmigrant::update( const unsigned int time )
     return;
   
   unsigned int vacantPop=0;
+  int emigrantsDesirability = 50; //base desirability value
+  //if salary in city more then empire people more effectivelly go to ouu city
+  emigrantsDesirability += (_d->city->getEmpire()->getWorkersSalary() - _d->city->getFunds().getWorkerSalary());
+
+  //
+  //CityFundsHelper fundsHelper;
+  //emigrantsDesirability +=
+
+  int goddesRandom = rand() % 100;
+  if( goddesRandom > emigrantsDesirability )
+    return;
+
 
   CityHelper helper( _d->city );
   HouseList houses = helper.getBuildings<House>(B_HOUSE);

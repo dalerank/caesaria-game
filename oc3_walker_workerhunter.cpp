@@ -24,7 +24,7 @@
 #include "oc3_path_finding.hpp"
 
 WorkersHunter::WorkersHunter( CityPtr city )
- : ServiceWalker( city, Service::S_WORKERS_HUNTER )
+ : ServiceWalker( city, Service::workersRecruter )
 {    
     _workersNeeded = 0;
     _setGraphic( WG_POOR );

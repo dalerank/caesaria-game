@@ -59,7 +59,8 @@ public:
   Rect textRect;
   Rect iconRect;
   int clickTime;
-  BackgroundStyle bgStyle;
+  Point textOffset;
+  PushButton::BackgroundStyle bgStyle;
   
   ElementState currentButtonState, lastButtonState;
   ButtonState buttonStates[ StateCount ];
@@ -206,7 +207,7 @@ void PushButton::_updateTexture( ElementState state )
     Rect textRect = stFont.calculateTextRect( getText(), Rect( 0, 0, getWidth(), getHeight() ),
                                               getHorizontalTextAlign(), getVerticalTextAlign() );
     textTxs->fill( 0x00ffffff, Rect( 0, 0, 0, 0 ) );
-    stFont.draw( *textTxs, getText(), textRect.getLeft(), textRect.getTop() );
+    stFont.draw( *textTxs, getText(), textRect.UpperLeftCorner + _d->textOffset );
   }
 }
 
@@ -232,6 +233,8 @@ void PushButton::setupUI(const VariantMap &ui)
     setBackgroundStyle( helper.findType( tmp.toString() ) );
   }
 
+  _d->textOffset = ui.get( "textOffset" ).toPoint();
+
   VariantList vlist = ui.get( "normal" ).toList();
   if( !vlist.empty() ) setPicture( vlist.get( 0 ).toString(), vlist.get( 1 ).toInt(), stNormal );
 
@@ -243,6 +246,11 @@ void PushButton::setupUI(const VariantMap &ui)
 
   vlist = ui.get( "disabled" ).toList();
   if( !vlist.empty() ) setPicture( vlist.get( 0 ).toString(), vlist.get( 1 ).toInt(), stDisabled );
+}
+
+void PushButton::setTextOffset(const Point& offset)
+{
+  _d->textOffset = offset;
 }
 
 bool PushButton::isPushButton() const

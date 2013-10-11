@@ -78,6 +78,8 @@ public:
 
   virtual void setupUI(const VariantMap &ui);
 
+  virtual void setTextOffset( const Point& offset );
+
 oc3_signals public:
   virtual Signal0<>& onClicked(); 
 

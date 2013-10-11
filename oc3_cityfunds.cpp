@@ -178,7 +178,7 @@ Signal1<int>& CityFunds::onChange()
 }
 
 
-unsigned int CityFundsHelper::getCurrentWorkersNumber(CityPtr city)
+unsigned int CityStatistic::getCurrentWorkersNumber(CityPtr city)
 {
   CityHelper helper( city );
 
@@ -193,7 +193,37 @@ unsigned int CityFundsHelper::getCurrentWorkersNumber(CityPtr city)
   return workersNumber;
 }
 
-unsigned int CityFundsHelper::getMontlyWorkersWages(CityPtr city)
+unsigned int CityStatistic::getAvailableWorkersNumber(CityPtr city)
+{
+  CityHelper helper( city );
+
+  HouseList houses = helper.getBuildings<House>( B_HOUSE );
+
+  int avWrksNumber = 0;
+  foreach( HousePtr house, houses )
+  {
+    avWrksNumber += house->getServiceValue( Service::workersRecruter );
+  }
+
+  return avWrksNumber;
+}
+
+unsigned int CityStatistic::getVacantionsNumber(CityPtr city)
+{
+  CityHelper helper( city );
+
+  WorkingBuildingList buildings = helper.getBuildings<WorkingBuilding>( B_MAX );
+
+  int workersNumber = 0;
+  foreach( WorkingBuildingPtr bld, buildings )
+  {
+    workersNumber += bld->getMaxWorkers();
+  }
+
+  return workersNumber;
+}
+
+unsigned int CityStatistic::getMontlyWorkersWages(CityPtr city)
 {
   int workersNumber = getCurrentWorkersNumber( city );
 
@@ -209,7 +239,7 @@ unsigned int CityFundsHelper::getMontlyWorkersWages(CityPtr city)
   return wages;
 }
 
-unsigned int CityFundsHelper::getWorklessNumber(CityPtr city)
+unsigned int CityStatistic::getWorklessNumber(CityPtr city)
 {
   CityHelper helper( city );
 
@@ -218,7 +248,7 @@ unsigned int CityFundsHelper::getWorklessNumber(CityPtr city)
   int worklessNumber = 0;
   foreach( HousePtr house, houses )
   {
-    worklessNumber += (house->getMaxWorkersNumber() - house->getAvailbleWorkersNumner());
+    worklessNumber += house->getServiceValue( Service::workersRecruter );
   }
 
   return worklessNumber;

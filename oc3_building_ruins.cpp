@@ -21,7 +21,7 @@
 #include "oc3_city.hpp"
 #include "oc3_game_event_mgr.hpp"
 
-BurningRuins::BurningRuins() : ServiceBuilding(Service::S_BURNING_RUINS, B_BURNING_RUINS, Size(1) )
+BurningRuins::BurningRuins() : ServiceBuilding(Service::burningRuins, B_BURNING_RUINS, Size(1) )
 {
     _fireLevel = 99;
 
@@ -105,7 +105,7 @@ bool BurningRuins::isWalkable() const
 
 float BurningRuins::evaluateService( ServiceWalkerPtr walker )
 {
-  if ( Service::S_PREFECT == walker->getService() )
+  if ( Service::prefect == walker->getService() )
   {
     return _fireLevel;
   }
@@ -115,7 +115,7 @@ float BurningRuins::evaluateService( ServiceWalkerPtr walker )
 
 void BurningRuins::applyService(ServiceWalkerPtr walker)
 {
-  if ( Service::S_PREFECT == walker->getService() )
+  if ( Service::prefect == walker->getService() )
   {
     _fireLevel = math::clamp<float>( _fireLevel - walker->getServiceValue(), 0.f, 100.f );
   }

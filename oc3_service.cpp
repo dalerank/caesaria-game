@@ -22,21 +22,21 @@ ServiceHelper& ServiceHelper::instance()
   return inst;
 }
 
-ServiceHelper::ServiceHelper() : EnumsHelper<Service::Type>( Service::S_MAX )
+ServiceHelper::ServiceHelper() : EnumsHelper<Service::Type>( Service::srvCount )
 {
   append( Service::well, "srvc_well" );
   append( Service::fontain, "srvc_fonutain" );
-  append( Service::S_MARKET, "srvc_market" );
+  append( Service::market, "srvc_market" );
   append( Service::engineer, "srvc_engineer" );
-  append( Service::S_SENATE, "srvc_senate" );
-  append( Service::S_FORUM, "srvc_forum" );
-  append( Service::S_PREFECT, "srvc_prefect" );
-  append( Service::S_TEMPLE_NEPTUNE, "srvc_temple_neptune" );
-  append( Service::S_TEMPLE_CERES, "srvc_temple_ceres" );
-  append( Service::S_TEMPLE_VENUS, "srvc_temple_venus" );
-  append( Service::S_TEMPLE_MARS, "srvc_temple_mars" );
-  append( Service::S_TEMPLE_MERCURE, "srvc_temple_mercury" );
-  append( Service::S_TEMPLE_ORACLE, "srvc_temple_oracle" );
+  append( Service::senate, "srvc_senate" );
+  append( Service::forum, "srvc_forum" );
+  append( Service::prefect, "srvc_prefect" );
+  append( Service::religionNeptune, "srvc_temple_neptune" );
+  append( Service::religionCeres, "srvc_temple_ceres" );
+  append( Service::religionVenus, "srvc_temple_venus" );
+  append( Service::religionMars, "srvc_temple_mars" );
+  append( Service::religionMercury, "srvc_temple_mercury" );
+  append( Service::oracle, "srvc_temple_oracle" );
   append( Service::doctor, "srvc_doctor" );
   append( Service::barber, "srvc_barber" );
   append( Service::baths, "srvc_baths" );
@@ -48,9 +48,9 @@ ServiceHelper::ServiceHelper() : EnumsHelper<Service::Type>( Service::S_MAX )
   append( Service::amphitheater, "srvc_amphitheater" );
   append( Service::colloseum, "srvc_collosseum" );
   append( Service::hippodrome, "srvc_hippodrome" );
-  append( Service::S_BURNING_RUINS, "srvc_burning_ruins" );
-  append( Service::S_WORKERS_HUNTER, "srvc_workers_hunter" );
-  append( Service::S_MAX, "srvc_none" );
+  append( Service::burningRuins, "srvc_burning_ruins" );
+  append( Service::workersRecruter, "srvc_workers_hunter" );
+  append( Service::srvCount, "srvc_none" );
 }
 
 Service::Type ServiceHelper::getType( const std::string& name )

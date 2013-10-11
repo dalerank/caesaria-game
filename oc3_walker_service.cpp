@@ -50,7 +50,7 @@ void ServiceWalker::init(const Service::Type service)
   {
   case Service::well:
   case Service::fontain:
-  case Service::S_TEMPLE_ORACLE:
+  case Service::oracle:
     _setGraphic( WG_NONE );
   break;
   
@@ -59,11 +59,11 @@ void ServiceWalker::init(const Service::Type service)
      _setType( WT_ENGINEER );
   break;
 
-  case Service::S_TEMPLE_NEPTUNE:
-  case Service::S_TEMPLE_CERES:
-  case Service::S_TEMPLE_VENUS:
-  case Service::S_TEMPLE_MARS:
-  case Service::S_TEMPLE_MERCURE:
+  case Service::religionNeptune:
+  case Service::religionCeres:
+  case Service::religionVenus:
+  case Service::religionMars:
+  case Service::religionMercury:
     _setGraphic( WG_PRIEST );
   break;
   
@@ -115,13 +115,13 @@ void ServiceWalker::init(const Service::Type service)
     _setGraphic( WG_ACTOR );
   break;
   
-  case Service::S_MARKET:
+  case Service::market:
     _setGraphic( WG_MARKETLADY );
     nameType = NameGenerator::female;
   break;
 
-  case Service::S_FORUM:
-  case Service::S_SENATE:
+  case Service::forum:
+  case Service::senate:
     _setGraphic( WG_TAX );
   break;
 

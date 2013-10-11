@@ -97,6 +97,7 @@ public:
   void updateSalaryLabel();
   void updateWorkersState();
   void updateYearlyWages();
+  void changeSalary( int relative );
 
   struct EmployersInfo { 
     unsigned int needWorkers;
@@ -115,22 +116,23 @@ void AdvisorEmployerWindow::Impl::showPriorityWindow( int id )
 
 void AdvisorEmployerWindow::Impl::increaseSalary()
 {
-
+  changeSalary( +1 );
 }
 
 void AdvisorEmployerWindow::Impl::decreaseSalary()
 {
-
+  changeSalary( -1 );
 }
 
 void AdvisorEmployerWindow::Impl::updateWorkersState()
 {
-  int workers = CityFundsHelper::getCurrentWorkersNumber( city );
-  int withoutWork = CityFundsHelper::getWorklessNumber( city );
+  int workers = CityStatistic::getCurrentWorkersNumber( city );
+  int allWorkers = CityStatistic::getAvailableWorkersNumber( city );
+  int withoutWork = CityStatistic::getWorklessNumber( city );
   std::string strWorkerState = StringHelper::format( 0xff, "%d %s     %d %s  ( %d%% )",
                                                      workers, _("##advemployer_panel_workers##"),
                                                      withoutWork, _("##advemployer_panel_workless##"),
-                                                     (withoutWork * 100/ (workers+1)) );
+                                                     (withoutWork * 100/ (allWorkers+1)) );
 
   if( lbWorkersState )
   {
@@ -142,11 +144,18 @@ void AdvisorEmployerWindow::Impl::updateYearlyWages()
 {
   if( lbYearlyWages )
   {
-    int wages = CityFundsHelper::getMontlyWorkersWages( city ) * DateTime::monthInYear;
+    int wages = CityStatistic::getMontlyWorkersWages( city ) * DateTime::monthInYear;
     std::string wagesStr = StringHelper::format( 0xff, "%s %d", _("##workers_yearly_wages_is##"), wages );
 
     lbYearlyWages->setText( wagesStr );
   }
+}
+
+void AdvisorEmployerWindow::Impl::changeSalary(int relative)
+{
+  int currentSalary = city->getFunds().getWorkerSalary();
+  city->getFunds().setWorkerSalary( currentSalary+relative );
+  updateSalaryLabel();
 }
 
 void AdvisorEmployerWindow::Impl::updateSalaryLabel()
@@ -219,15 +228,15 @@ AdvisorEmployerWindow::AdvisorEmployerWindow( CityPtr city, Widget* parent, int 
 
   //buttons _d->_d->background
   Point startPos = Point( 32, 70 ) + Point( 8, 8 );
-  _d->addButton( this, startPos, Impl::prIndustryAndTrade, "industry&trade" );
-  _d->addButton( this, startPos, Impl::prFood, "food" );
-  _d->addButton( this, startPos, Impl::prEngineers, "engineers" );
-  _d->addButton( this, startPos, Impl::prWater, "water" );
-  _d->addButton( this, startPos, Impl::prPrefectures, "prefectures" );
-  _d->addButton( this, startPos, Impl::prMilitary, "military" );
-  _d->addButton( this, startPos, Impl::prEntertainment, "entertainment" );
-  _d->addButton( this, startPos, Impl::prHealthAndEducation, "health&education" );
-  _d->addButton( this, startPos, Impl::prAdministrationAndReligion, "administration&religion" );
+  _d->addButton( this, startPos, Impl::prIndustryAndTrade, _("##adve_industry_and_trade##") );
+  _d->addButton( this, startPos, Impl::prFood, _("##adve_food##") );
+  _d->addButton( this, startPos, Impl::prEngineers, _("##adve_engineers##" ) );
+  _d->addButton( this, startPos, Impl::prWater, _("##adve_water##") );
+  _d->addButton( this, startPos, Impl::prPrefectures, _("##adve_prefectures##") );
+  _d->addButton( this, startPos, Impl::prMilitary, _("##adve_military##") );
+  _d->addButton( this, startPos, Impl::prEntertainment, _("##adve_entertainment##") );
+  _d->addButton( this, startPos, Impl::prHealthAndEducation, _("##adve_health_education##") );
+  _d->addButton( this, startPos, Impl::prAdministrationAndReligion, _("##adve_administration_religion##") );
 
   _d->lbSalary = findChild<Label*>( "lbSalaries", true );
   _d->lbWorkersState = findChild<Label*>( "lbWorkersState", true );

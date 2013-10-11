@@ -208,7 +208,7 @@ float Building::evaluateService(ServiceWalkerPtr walker)
       res = _damageLevel;
    break;
 
-   case Service::S_PREFECT:
+   case Service::prefect:
       res = _fireLevel;
    break;
 
@@ -243,7 +243,7 @@ void Building::applyService( ServiceWalkerPtr walker)
        _damageLevel = 0;
      }
    break;
-   case Service::S_PREFECT:
+   case Service::prefect:
     {
       _fireLevel = 0;
     }

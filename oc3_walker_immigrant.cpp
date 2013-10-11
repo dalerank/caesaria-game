@@ -82,7 +82,7 @@ void Immigrant::_findPath2blankHouse( Tile& startPoint )
   PathWay pathWay;
 
   Tilemap& citymap = _getCity()->getTilemap();
-  Tile& destTile = house.isValid() ? house->getTile() : citymap.at( _getCity()->getBorderInfo().boatExit );
+  Tile& destTile = house.isValid() ? house->getTile() : citymap.at( _getCity()->getBorderInfo().roadExit );
   Size arrivedArea( house.isValid() ? house->getSize() : 1 );
 
   bool pathFound = Pathfinder::getInstance().getPath( startPoint.getIJ(), destTile.getIJ(), pathWay, 
@@ -137,6 +137,19 @@ ImmigrantPtr Immigrant::create( CityPtr city )
   ImmigrantPtr newImmigrant( new Immigrant( city ) );
   newImmigrant->drop(); //delete automatically
   return newImmigrant;
+}
+
+bool Immigrant::send2City( CityPtr city, unsigned int capacity, Tile& startTile )
+{
+  if( capacity > 0 )
+  {
+    ImmigrantPtr im = Immigrant::create( city );
+    im->setCapacity( capacity );
+    im->send2City( startTile );
+    return true;
+  }
+
+  return false;
 }
 
 void Immigrant::send2City( Tile& startTile )

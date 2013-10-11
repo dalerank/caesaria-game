@@ -46,6 +46,8 @@ public:
   virtual const WalkerList& getWalkerList() const;
 
 private:
+  void _fireWorkers();
+
   class Impl;
   ScopedPtr< Impl > _d;
 };

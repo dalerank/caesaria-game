@@ -27,6 +27,7 @@ class Immigrant : public Walker
 {
 public:
   static ImmigrantPtr create( CityPtr city );
+  static bool send2City( CityPtr city, unsigned int capacity, Tile& startTile );
 
   void send2City( Tile& startTile );
   void setCapacity( int value );
