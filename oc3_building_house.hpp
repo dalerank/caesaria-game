@@ -44,12 +44,13 @@ public:
   virtual void buyMarket(ServiceWalkerPtr walker);
 
   void appendServiceValue( Service::Type srvc, const int value );
-  bool hasServiceAccess( Service::Type service);
-  int getServiceValue( Service::Type service);
-  void setServiceValue( Service::Type service, const int access);
+  bool hasServiceAccess( Service::Type service );
+  int getServiceValue( Service::Type service );
+  void setServiceValue( Service::Type service, const int access );
 
   int getFoodLevel() const;
   int getHealthLevel() const;
+  int getWorkersCount() const;
 
   const BuildingData::Desirability& getDesirabilityInfo() const;
 

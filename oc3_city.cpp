@@ -96,7 +96,9 @@ public:
   void collectTaxes( CityPtr city);
   void payWages( CityPtr city );
   void calculatePopulation( CityPtr city );
+  void beforeOverlayDestroyed(CityPtr city, LandOverlayPtr overlay );
   void returnFiredWorkers( WorkingBuildingPtr building );
+  void fireWorkers(HousePtr house );
 
 oc3_signals public:
   Signal1<int> onPopulationChangedSignal;
@@ -171,20 +173,9 @@ void City::timeStep( unsigned int time )
 
       if( (*overlayIt)->isDeleted() )
       {
+        _d->beforeOverlayDestroyed( this, *overlayIt );
         // remove the overlay from the overlay list
         (*overlayIt)->destroy();
-
-        if( (*overlayIt).is<Construction>() )
-        {
-          CityHelper helper( this );
-          helper.updateDesirability( (*overlayIt).as<Construction>(), false );
-        }
-
-        if( (*overlayIt).is<WorkingBuilding>() )
-        {
-          _d->returnFiredWorkers( (*overlayIt).as<WorkingBuilding>() );
-        }
-
         overlayIt = _d->overlayList.erase(overlayIt);
       }
       else
@@ -350,6 +341,50 @@ void City::Impl::calculatePopulation( CityPtr city )
   population = pop;
   onPopulationChangedSignal.emit( pop );
 }
+
+void City::Impl::beforeOverlayDestroyed( CityPtr city, LandOverlayPtr overlay)
+{
+  if( overlay.is<Construction>() )
+  {
+    CityHelper helper( city );
+    helper.updateDesirability( overlay.as<Construction>(), false );
+  }
+
+  if( overlay.is<WorkingBuilding>() )
+  {
+    returnFiredWorkers( overlay.as<WorkingBuilding>() );
+  }
+  else if( overlay.is<House>() )
+  {
+    fireWorkers( overlay.as<House>() );
+  }
+}
+
+void City::Impl::fireWorkers( HousePtr house )
+{
+  int leftWorkers = house->getWorkersCount();
+  const int defaultFireWorkersDistance = 40;
+
+  for( int curRange=1; curRange < defaultFireWorkersDistance; curRange++ )
+  {
+    TilemapArea perimetr = tilemap.getRectangle( house->getTilePos() - TilePos( curRange, curRange ),
+                                                 house->getSize() + Size( 2 * curRange ) );
+    foreach( Tile* tile, perimetr )
+    {
+      WorkingBuildingPtr wrkBuilding = tile->getOverlay().as<WorkingBuilding>();
+      if( wrkBuilding.isValid() )
+      {
+        int bldWorkersCount = wrkBuilding->getWorkers();
+        wrkBuilding->removeWorkers( leftWorkers );
+        leftWorkers -= math::clamp( bldWorkersCount, 0, leftWorkers );
+      }
+
+      if( !leftWorkers )
+        return;
+    }
+  }
+}
+
 
 void City::Impl::returnFiredWorkers(WorkingBuildingPtr building )
 {

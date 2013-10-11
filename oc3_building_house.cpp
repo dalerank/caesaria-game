@@ -506,7 +506,7 @@ void House::applyService( ServiceWalkerPtr walker )
     if( hunter.isValid() )
     {
       int hiredWorkers = math::clamp( svalue, 0, hunter->getWorkersNeeded() );
-      setServiceValue( service, svalue -= hiredWorkers );
+      appendServiceValue( service, -hiredWorkers );
       hunter->hireWorkers( hiredWorkers );
     }
   }
@@ -687,6 +687,7 @@ void House::load( const VariantMap& stream )
 
   _d->initGoodStore( getSize().getArea() );
 
+  _d->services[ Service::workersRecruter ].setMax( _d->currentHabitants / workingHbKoeff );
   VariantList vl_services = stream.get( "services" ).toList();
   for( VariantList::iterator it = vl_services.begin(); it != vl_services.end(); it++ )
   {
@@ -724,6 +725,12 @@ int House::getFoodLevel() const
 int House::getHealthLevel() const
 {
   return _d->healthLevel;
+}
+
+int House::getWorkersCount() const
+{
+  const Service& srvc = _d->services[ Service::workersRecruter ];
+  return srvc.getMax() - srvc.value();
 }
 
 int House::getScholars() const

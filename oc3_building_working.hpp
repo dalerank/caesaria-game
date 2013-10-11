@@ -28,8 +28,9 @@ public:
   void setMaxWorkers(const int maxWorkers);
   int getMaxWorkers() const;
 
-  void setWorkers(const int currentWorkers);
-  void addWorkers( const int workers );
+  void setWorkers( const unsigned int currentWorkers );
+  void addWorkers( const unsigned int workers );
+  void removeWorkers( const unsigned int workers );
 
   int getWorkers() const;
 
