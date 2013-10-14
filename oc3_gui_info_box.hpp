@@ -124,7 +124,6 @@ private:
   GranaryPtr _granary;
 };
 
-
 // info box about a market
 class InfoBoxMarket : public InfoBoxSimple
 {
@@ -133,6 +132,14 @@ public:
    virtual ~InfoBoxMarket();
    
    void drawGood( MarketPtr market, const Good::Type &goodType, int, int );
+};
+
+// info box about a fontain
+class InfoBoxFontain : public InfoBoxSimple
+{
+public:
+   InfoBoxFontain( Widget* parent, const Tile& tile );
+   virtual ~InfoBoxFontain();
 };
 
 class InfoBoxWarehouse : public InfoBoxSimple

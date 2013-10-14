@@ -35,6 +35,7 @@ public:
   static const char* localeName;
   static const char* resolution;
   static const char* fullscreen;
+  static const char* emigrantSalaryKoeff;
 
   static GameSettings& getInstance();
 

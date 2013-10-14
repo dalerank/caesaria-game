@@ -50,6 +50,7 @@
 #include "oc3_window_minimap.hpp"
 #include "oc3_game_event_mgr.hpp"
 #include "oc3_window_video_options.hpp"
+#include "oc3_window_gamespeed_options.hpp"
 
 class ScreenGame::Impl
 {
@@ -78,6 +79,7 @@ public:
   void showTileInfo( const Tile& tile );
   void makeScreenShot();
   void showScreenOptionsDialog();
+  void showGameSpeedOptionsDialog();
   void resolveWarningMessage( std::string );
 };
 
@@ -140,6 +142,7 @@ void ScreenGame::initialize()
   CONNECT( _d->topMenu, onEnd(), this, ScreenGame::resolveEndGame );
   CONNECT( _d->topMenu, onRequestAdvisor(), _d.data(), Impl::showAdvisorsWindow );
   CONNECT( _d->topMenu, onShowVideoOptions(), _d.data(), Impl::showScreenOptionsDialog );
+  CONNECT( _d->topMenu, onShowGameSpeedOptions(), _d.data(), Impl::showGameSpeedOptionsDialog );
 
   CONNECT( _d->menu, onCreateConstruction(), _d.data(), Impl::resolveCreateConstruction );
   CONNECT( _d->menu, onRemoveTool(), _d.data(), Impl::resolveRemoveTool );
@@ -183,6 +186,16 @@ void ScreenGame::Impl::showScreenOptionsDialog()
                                                        engine->isFullscreen() );
   CONNECT( dialog, onSreenSizeChange(), engine, GfxEngine::setScreenSize );
   CONNECT( dialog, onFullScreenChange(), engine, GfxEngine::setFullscreen );
+}
+
+void ScreenGame::Impl::showGameSpeedOptionsDialog()
+{
+  GameSpeedOptionsWindow* dialog = new GameSpeedOptionsWindow( game->getGui()->getRootWidget(),
+                                                               game->getTimeMultiplier(),
+                                                               0 );
+
+  CONNECT( dialog, onGameSpeedChange(), game, Game::setTimeMultiplier );
+  CONNECT( dialog, onScrollSpeedChange(), &renderer, CityRenderer::setScrollSpeed );
 }
 
 void ScreenGame::Impl::resolveWarningMessage(std::string text )

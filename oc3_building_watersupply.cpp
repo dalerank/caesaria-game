@@ -541,9 +541,9 @@ typedef enum { fontainEmpty = 3, fontainFull = 4, fontainStartAnim = 11, fontain
 
 Fountain::Fountain() : ServiceBuilding(Service::fontain, B_FOUNTAIN, Size(1))
 {  
-  std::srand( DateTime::getElapsedTime() );
+  //std::srand( DateTime::getElapsedTime() );
 
-  setPicture( ResourceGroup::utilitya, 10 );
+  //setPicture( ResourceGroup::utilitya, 10 );
 
   _initAnimation();
   _getForegroundPictures().resize(1);
@@ -589,7 +589,7 @@ void Fountain::timeStep(const unsigned long time)
       _getAnimation().stop();
     }
 
-    if( !_haveReservoirWater )
+    if( !isActive() )
     {
       _getForegroundPictures().at( 0 ) = Picture::getInvalid();
       return;
@@ -627,6 +627,26 @@ void Fountain::build( CityPtr city, const TilePos& pos )
 
 bool Fountain::isNeedRoadAccess() const
 {
+  return false;
+}
+
+bool Fountain::isActive()
+{
+  return ServiceBuilding::isActive() && _haveReservoirWater;
+}
+
+bool Fountain::haveReservoirAccess() const
+{
+  TilemapArea reachedTiles = _getCity()->getTilemap().getArea( getTilePos() - TilePos( 10, 10 ), Size( 10, 10 ) + getSize() );
+  foreach( Tile* tile, reachedTiles )
+  {
+    LandOverlayPtr overlay = tile->getOverlay();
+    if( overlay != 0 && (B_RESERVOIR == overlay->getType()) )
+    {
+      return true;
+    }
+  }
+
   return false;
 }
 

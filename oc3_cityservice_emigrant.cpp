@@ -24,6 +24,7 @@
 #include "oc3_tile.hpp"
 #include "oc3_cityfunds.hpp"
 #include "oc3_empire.hpp"
+#include "oc3_game_settings.hpp"
 
 class CityServiceEmigrant::Impl
 {
@@ -52,12 +53,12 @@ void CityServiceEmigrant::update( const unsigned int time )
   
   unsigned int vacantPop=0;
   int emigrantsDesirability = 50; //base desirability value
+  float emDesKoeff = math::clamp<float>( (float)GameSettings::get( GameSettings::emigrantSalaryKoeff ), 1.f, 99.f );
   //if salary in city more then empire people more effectivelly go to ouu city
-  emigrantsDesirability += (_d->city->getEmpire()->getWorkersSalary() - _d->city->getFunds().getWorkerSalary());
+  emigrantsDesirability += (_d->city->getEmpire()->getWorkersSalary() - _d->city->getFunds().getWorkerSalary()) * emDesKoeff;
 
-  //
-  //CityFundsHelper fundsHelper;
-  //emigrantsDesirability +=
+  int worklessPercent = CityStatistic::getWorklessNumber( _d->city ) * 100 / CityStatistic::getAvailableWorkersNumber( _d->city );
+  emigrantsDesirability += worklessPercent;
 
   int goddesRandom = rand() % 100;
   if( goddesRandom > emigrantsDesirability )

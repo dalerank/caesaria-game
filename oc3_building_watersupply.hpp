@@ -96,6 +96,9 @@ public:
   virtual void timeStep(const unsigned long time);
   virtual bool isNeedRoadAccess() const;
 
+  virtual bool isActive();
+  virtual bool haveReservoirAccess() const;
+
   virtual void load( const VariantMap& stream);
 private:
   bool _haveReservoirWater;

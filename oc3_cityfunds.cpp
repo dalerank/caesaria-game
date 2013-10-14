@@ -193,21 +193,6 @@ unsigned int CityStatistic::getCurrentWorkersNumber(CityPtr city)
   return workersNumber;
 }
 
-unsigned int CityStatistic::getAvailableWorkersNumber(CityPtr city)
-{
-  CityHelper helper( city );
-
-  HouseList houses = helper.getBuildings<House>( B_HOUSE );
-
-  int avWrksNumber = 0;
-  foreach( HousePtr house, houses )
-  {
-    avWrksNumber += house->getServiceValue( Service::workersRecruter );
-  }
-
-  return avWrksNumber;
-}
-
 unsigned int CityStatistic::getVacantionsNumber(CityPtr city)
 {
   CityHelper helper( city );
@@ -218,6 +203,21 @@ unsigned int CityStatistic::getVacantionsNumber(CityPtr city)
   foreach( WorkingBuildingPtr bld, buildings )
   {
     workersNumber += bld->getMaxWorkers();
+  }
+
+  return workersNumber;
+}
+
+unsigned int CityStatistic::getAvailableWorkersNumber(CityPtr city)
+{
+  CityHelper helper( city );
+
+  HouseList houses = helper.getBuildings<House>( B_HOUSE );
+
+  int workersNumber = 0;
+  foreach( HousePtr house, houses )
+  {
+    workersNumber += (house->getServiceValue( Service::workersRecruter ) + house->getWorkersCount());
   }
 
   return workersNumber;

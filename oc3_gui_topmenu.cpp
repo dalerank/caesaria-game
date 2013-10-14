@@ -51,6 +51,7 @@ oc3_signals public:
   Signal0<> onSaveSignal;
   Signal0<> onLoadSignal;
   Signal0<> onShowVideoOptionsSignal;
+  Signal0<> onShowGameSpeedOptionsSignal;
   Signal1<int> onRequestAdvisorSignal;
 };
 
@@ -74,7 +75,7 @@ void TopMenu::draw( GfxEngine& engine )
 void TopMenu::setPopulation( int value )
 {
   if( _d->lbPopulation )
-    _d->lbPopulation->setText( StringHelper::format( 0xff, "%.3s %d", _("##population_short##"), value ) );
+    _d->lbPopulation->setText( StringHelper::format( 0xff, "%s %d", _("##population_short##"), value ) );
 }
 
 void TopMenu::setFunds( int value )
@@ -92,7 +93,7 @@ void TopMenu::Impl::updateDate()
 
   std::string month = _( StringHelper::format( 0xff, "##month_%d_short##", saveDate.getMonth() + 1).c_str() );
   std::string age = _( StringHelper::format( 0xff, "##age_%s##", saveDate.getYear() > 0 ? "ad" : "bc" ).c_str() );
-  std::string text = StringHelper::format( 0xff, "%.3s %d %.2s", 
+  std::string text = StringHelper::format( 0xff, "%s %d %s",
                                            month.c_str(), abs( saveDate.getYear() ), age.c_str());
   lbDate->setText( text );
 }
@@ -121,8 +122,6 @@ TopMenu::TopMenu( Widget* parent, const int height )
     x += pic.getWidth();
     i++;
   }
-
-  Size lbSize( 120, 23 );
   _d->lbPopulation = findChild<Label*>( "lbPopulation" );
   if( _d->lbPopulation )
     _d->lbPopulation->setPosition( Point( getWidth() - populationLabelOffset, 0 ) );
@@ -154,7 +153,7 @@ TopMenu::TopMenu( Widget* parent, const int height )
   ContextMenu* options = tmp->addSubMenu();
   ContextMenuItem* screen = options->addItem( _("##screen_options##"), -1, true, false, false, false );  
   /*ContextMenuItem* sound = */options->addItem( _("##sound_options##"), -1, true, false, false, false );
-  /*ContextMenuItem* speed = */options->addItem( _("##speed_options##"), -1, true, false, false, false );
+  ContextMenuItem* speed = options->addItem( _("##speed_options##"), -1, true, false, false, false );
   ContextMenuItem* language = options->addItem( _("##select_language##"), -1, true, true, false, false );
   _d->langSelect = language->addSubMenu();
   ContextMenuItem* russianLng = _d->langSelect->addItem( _("##russian_lang##"), 0xf001, true, false, false, false );
@@ -163,7 +162,8 @@ TopMenu::TopMenu( Widget* parent, const int height )
   CONNECT( russianLng, onClicked(), this, TopMenu::resolveSelectLanguage );
   CONNECT( englishLng, onClicked(), this, TopMenu::resolveSelectLanguage );
 
-  CONNECT( screen, onClicked(), &_d->onShowVideoOptionsSignal, Signal0<>::emit );
+  CONNECT( screen, onClicked(), &_d->onShowVideoOptionsSignal,     Signal0<>::emit );
+  CONNECT( speed,  onClicked(), &_d->onShowGameSpeedOptionsSignal, Signal0<>::emit );
 
   tmp = addItem( _("##gmenu_help##"), -1, true, true, false, false );
   tmp = addItem( _("##gmenu_advisors##"), -1, true, true, false, false );
@@ -227,4 +227,9 @@ Signal0<>& TopMenu::onLoad()
 Signal0<>& TopMenu::onShowVideoOptions()
 {
   return _d->onShowVideoOptionsSignal;
+}
+
+Signal0<>&TopMenu::onShowGameSpeedOptions()
+{
+  return _d->onShowGameSpeedOptionsSignal;
 }

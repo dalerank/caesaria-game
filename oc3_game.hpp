@@ -58,6 +58,8 @@ public:
   bool isPaused() const;
 
   void changeTimeMultiplier(int percent);
+  void setTimeMultiplier( int percent );
+  int getTimeMultiplier() const;
 
 public oc3_slots:
   void resolveEvent( GameEventPtr event );

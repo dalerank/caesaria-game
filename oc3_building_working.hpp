@@ -34,8 +34,9 @@ public:
 
   int getWorkers() const;
 
-  void setActive(const bool value);  // if false then this building is stopped
+  virtual void setActive(const bool value);  // if false then this building is stopped
   virtual bool isActive();
+
   virtual void destroy();
 
   virtual void timeStep(const unsigned long time);

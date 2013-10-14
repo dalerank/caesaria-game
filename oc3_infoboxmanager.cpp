@@ -165,7 +165,8 @@ InfoBoxManager::InfoBoxManager( CityPtr city, GuiEnv* gui ) : _d( new Impl )
   addInfobox( B_BATHS,    OC3_STR_EXT(B_BATHS), new ServiceBaseInfoboxCreator( "##baths_title##", "##baths_text##" ) );
   addInfobox( B_BARBER,   OC3_STR_EXT(B_BARBER), new ServiceBaseInfoboxCreator( "##barber_title##", "##barber_text##" ) );
   addInfobox( B_HOSPITAL, OC3_STR_EXT(B_HOSPITAL), new ServiceBaseInfoboxCreator( "##hospital_title##", "##hospital_text##" ) );
-  addInfobox( B_FOUNTAIN, OC3_STR_EXT(B_FOUNTAIN), new ServiceBaseInfoboxCreator( "##fontaun_title##", "##fontaun_text##" ) );
+  addInfobox( B_FOUNTAIN, OC3_STR_EXT(B_FOUNTAIN), new BaseInfoboxCreator<InfoBoxFontain>() );
+  addInfobox( B_AQUEDUCT, OC3_STR_EXT(B_AQUEDUCT), new InfoBoxBasicCreator( "##aqueduct_title##", "##aqueduct_text##") );
   addInfobox( B_MARKET,   OC3_STR_EXT(B_MARKET), new BaseInfoboxCreator<InfoBoxMarket>() );
   addInfobox( B_GRANARY,  OC3_STR_EXT(B_GRANARY), new BaseInfoboxCreator<InfoBoxGranary>() );
   addInfobox( B_GRAPE_FARM, OC3_STR_EXT(B_GRAPE_FARM), new BaseInfoboxCreator<InfoBoxRawMaterial>() );

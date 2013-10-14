@@ -59,6 +59,8 @@ public:
 
   void animate( unsigned int time );
 
+  void setScrollSpeed( int value );
+
 oc3_signals public:
   Signal1< const Tile& >& onShowTileInfo();
   Signal1< std::string >& onWarningMessage();

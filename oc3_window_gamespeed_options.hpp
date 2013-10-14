@@ -13,26 +13,25 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _OPENCAESAR3_WINDOW_VIDEO_OPTIONS_H_INCLUDE_
-#define _OPENCAESAR3_WINDOW_VIDEO_OPTIONS_H_INCLUDE_
+#ifndef _OPENCAESAR3_WINDOW_GAMESPEED_OPTIONS_H_INCLUDE_
+#define _OPENCAESAR3_WINDOW_GAMESPEED_OPTIONS_H_INCLUDE_
 
 #include "oc3_gui_widget.hpp"
 #include "oc3_signals.hpp"
 
-class VideoOptionsWindow : public Widget
+class GameSpeedOptionsWindow : public Widget
 {
 public:
-  VideoOptionsWindow( Widget* parent, const std::vector<Size>& modes,
-                      bool fullscreen);
+  GameSpeedOptionsWindow( Widget* parent, int gameSpeed, int scrollSpeed );
 
   //! Деструктор
-  virtual ~VideoOptionsWindow(void);
+  virtual ~GameSpeedOptionsWindow(void);
 
   virtual bool onEvent(const NEvent &event);
 
 public oc3_signals:
-  Signal1<Size>& onSreenSizeChange();
-  Signal1<bool>& onFullScreenChange();
+  Signal1<int>& onGameSpeedChange();
+  Signal1<int>& onScrollSpeedChange();
 
 private:
   void _update();

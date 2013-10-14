@@ -76,8 +76,8 @@ class CityStatistic
 {
 public:
   static unsigned int getCurrentWorkersNumber( CityPtr city );
-  static unsigned int getAvailableWorkersNumber( CityPtr city );
   static unsigned int getVacantionsNumber( CityPtr city );
+  static unsigned int getAvailableWorkersNumber( CityPtr city );
   static unsigned int getMontlyWorkersWages( CityPtr city );
   static unsigned int getWorklessNumber( CityPtr city );
 };

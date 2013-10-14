@@ -44,7 +44,7 @@ VideoOptionsWindow::VideoOptionsWindow(Widget* parent, const std::vector<Size>& 
     {
       modeStr = StringHelper::format( 0xff, "%dx%d", (*mode).getWidth(), (*mode).getHeight() );
       ListBoxItem& item = lbxModes->addItem( modeStr );
-      item.setTag( (*mode).getWidth() << 16 + (*mode).getHeight());
+      item.setTag( ((*mode).getWidth() << 16) + (*mode).getHeight());
     }
   }
 }
@@ -89,6 +89,8 @@ bool VideoOptionsWindow::onEvent(const NEvent& event)
     _d->onScreenSizeChangeSignal.emit( Size( (tag>>16) & 0xffff, tag & 0xffff ) );
   }
   break;
+
+  default: break;
   }
 
   return Widget::onEvent( event );

@@ -73,6 +73,7 @@ public:
   GfxEngine* engine;
   TilemapCamera camera;  // visible map area
   std::set<int> overlayRendeFlags;
+  int scrollSpeed;
 
   TilePos lastTilePos;
   TilemapChangeCommandPtr changeCommand;
@@ -81,12 +82,6 @@ public:
   DrawTileSignature drawTileFunction;
 
   Font debugFont;
-
-  Impl()
-  {
-    visibleWalkers.push_back(WT_ALL);
-    debugFont = Font::create( FONT_2_WHITE );
-  }
 
   void getSelectedArea( TilePos& outStartPos, TilePos& outStopPos );
   // returns the tile at the cursor position.
@@ -150,13 +145,16 @@ oc3_signals public:
 
 CityRenderer::CityRenderer() : _d( new Impl )
 {
-  _d->city = NULL;
 }
 
 CityRenderer::~CityRenderer() {}
 
 void CityRenderer::initialize( CityPtr city, GfxEngine* engine )
 {
+  _d->visibleWalkers.push_back(WT_ALL);
+  _d->debugFont = Font::create( FONT_2_WHITE );
+  _d->scrollSpeed = 4;
+  _d->city = 0;
   _d->city = city;
   _d->tilemap = &city->getTilemap();
   _d->camera.init( *_d->tilemap );
@@ -1304,27 +1302,15 @@ void CityRenderer::handleEvent( NEvent& event )
 
     if( event.EventType == OC3_KEYBOARD_EVENT )
     {
-        switch( event.KeyboardEvent.Key )
-        {
-        case KEY_UP:
-            getCamera().moveUp(1 + ( event.KeyboardEvent.Shift ? 4 : 0 ) );
-        break;
-
-        case KEY_DOWN:          
-            getCamera().moveDown(1 + ( event.KeyboardEvent.Shift ? 4 : 0 ) );
-        break;
-
-        case KEY_RIGHT:
-            getCamera().moveRight(1 + ( event.KeyboardEvent.Shift ? 4 : 0 ));
-        break;
-
-        case KEY_LEFT:
-            getCamera().moveLeft(1 + ( event.KeyboardEvent.Shift ? 4 : 0 ) );
-        break;
-
-        default:
-        break;
-        }
+      int moveValue = _d->scrollSpeed * ( event.KeyboardEvent.Shift ? 2 : 0 ) ;
+      switch( event.KeyboardEvent.Key )
+      {
+      case KEY_UP: getCamera().moveUp( moveValue  ); break;
+      case KEY_DOWN: getCamera().moveDown( moveValue ); break;
+      case KEY_RIGHT: getCamera().moveRight( moveValue ); break;
+      case KEY_LEFT: getCamera().moveLeft( moveValue ); break;
+      default: break;
+      }
     }
 }
 
@@ -1542,6 +1528,11 @@ void CityRenderer::animate(unsigned int time)
   {
     tile->animate( time );
   }
+}
+
+void CityRenderer::setScrollSpeed(int value)
+{
+  _d->scrollSpeed = value;
 }
 
 Signal1< std::string >& CityRenderer::onWarningMessage()

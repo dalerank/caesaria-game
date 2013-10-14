@@ -296,7 +296,17 @@ Game::Game() : _d( new Impl )
 
 void Game::changeTimeMultiplier(int percent)
 {
-  _d->timeMultiplier = math::clamp<int>( _d->timeMultiplier + percent, 10, 300 );
+  setTimeMultiplier( _d->timeMultiplier + percent );
+}
+
+void Game::setTimeMultiplier(int percent)
+{
+  _d->timeMultiplier = math::clamp<int>( percent, 10, 300 );
+}
+
+int Game::getTimeMultiplier() const
+{
+  return _d->timeMultiplier;
 }
 
 void Game::resolveEvent(GameEventPtr event)

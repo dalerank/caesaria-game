@@ -45,6 +45,7 @@
 #include "oc3_goodstore.hpp"
 #include "oc3_gui_groupbox.hpp"
 #include "oc3_walker.hpp"
+#include "oc3_building_watersupply.hpp"
 #include "oc3_building_senate.hpp"
 
 class InfoBoxSimple::Impl
@@ -837,6 +838,39 @@ InfoBoxText::InfoBoxText(Widget* parent, const std::string& title, const std::st
 }
 
 InfoBoxText::~InfoBoxText()
+{
+
+}
+
+
+InfoBoxFontain::InfoBoxFontain(Widget* parent, const Tile& tile)
+  : InfoBoxSimple( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
+{
+  setTitle( "##fontaun_title##" );
+
+  _d->lbText->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
+  _d->lbText->setWordWrap( true );
+
+  FountainPtr fountain = tile.getOverlay().as<Fountain>();
+  std::string text;
+  if( fountain != 0 )
+  {
+    if( fountain->isActive() )
+    {
+      text = _("##fountain_text##");
+    }
+    else
+    {
+      text = fountain->haveReservoirAccess()
+               ? _("##need_full_reservoir_for_work##")
+               : _("##need_reservoir_for_work##");
+    }
+  }
+
+  _d->lbText->setText( text );
+}
+
+InfoBoxFontain::~InfoBoxFontain()
 {
 
 }
