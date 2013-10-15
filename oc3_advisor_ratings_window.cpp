@@ -116,7 +116,7 @@ void AdvisorRatingsWindow::Impl::checkCultureRating()
   {
     if( culture->getValue() == 0 )
     {
-      _d->lbRatingInfo->setText( _("##no_culture_building_in_city##") );
+      lbRatingInfo->setText( _("##no_culture_building_in_city##") );
       return;
     }
 
@@ -129,7 +129,7 @@ void AdvisorRatingsWindow::Impl::checkCultureRating()
 
     if( !troubles.empty() )
     {
-      _d->lbRatingInfo->setText( troubles.at( rand() % troubles.size() ) );
+      lbRatingInfo->setText( troubles.at( rand() % troubles.size() ) );
     }
   }
 }
@@ -142,7 +142,7 @@ void AdvisorRatingsWindow::Impl::checkProsperityRating()
   {
     if( prosperity->getValue() == 0 )
     {
-      _d->lbRatingInfo->setText( _("##cant_calc_prosperity##") );
+      lbRatingInfo->setText( _("##cant_calc_prosperity##") );
       return;
     }
 
@@ -162,7 +162,7 @@ void AdvisorRatingsWindow::Impl::checkProsperityRating()
                         ? _("##good_prosperity##")
                         : troubles.at( rand() % troubles.size() );
 
-    _d->lbRatingInfo->setText( text );
+    lbRatingInfo->setText( text );
   }
 }
 
@@ -179,7 +179,7 @@ AdvisorRatingsWindow::AdvisorRatingsWindow( Widget* parent, int id, const CityPt
                Size( 640, 432 ) ) );
 
   Label* title = new Label( this, Rect( 60, 10, 225, 10 + 40) );
-  title->setText( _("##wnd_ratings_title##" );
+  title->setText( _("##wnd_ratings_title##") );
   title->setFont( Font::create( FONT_3 ) );
   title->setTextAlignment( alignUpperLeft, alignCenter );
 

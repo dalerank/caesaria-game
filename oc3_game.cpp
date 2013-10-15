@@ -80,7 +80,7 @@ public:
 void Game::Impl::initLocale(const std::string & localePath)
 {
   // init the internationalization library (gettext)
-  std::string localeStr = StringHelper::format( 0xff, "LC_ALL=%s", GameSettings::get( GameSettings::localeName ).toString().c_str() );
+  const std::string localeStr = StringHelper::format( 0xff, "LC_ALL=%s", GameSettings::get( GameSettings::localeName ).toString().c_str() );
 
   putenv( localeStr.c_str() );
   //setlocale(LC_ALL, "English");

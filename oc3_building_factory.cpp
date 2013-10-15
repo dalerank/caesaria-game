@@ -304,7 +304,7 @@ bool TimberLogger::canBuild( CityPtr city, const TilePos& pos ) const
       near_forest |= tile->getFlag( Tile::tlTree );
    }
 
-   _setError( near_forest ? "" : _("##lumber_mill_need_forest_near##"));
+   const_cast< TimberLogger* >( this )->_setError( near_forest ? "" : _("##lumber_mill_need_forest_near##"));
 
    return (is_constructible && near_forest);
 }
@@ -349,7 +349,7 @@ bool WeaponsWorkshop::canBuild(CityPtr city, const TilePos& pos) const
   CityHelper helper( city );
   bool haveIronMine = !helper.getBuildings<Building>( B_IRON_MINE ).empty();
 
-  _setError( haveIronMine ? "" : _("##need_iron_for_work##") );
+  const_cast< WeaponsWorkshop* >( this )->_setError( haveIronMine ? "" : _("##need_iron_for_work##") );
   return ret;
 }
 
@@ -360,7 +360,7 @@ bool WorkshopFurniture::canBuild(CityPtr city, const TilePos& pos) const
   CityHelper helper( city );
   bool haveTimberLogger = !helper.getBuildings<TimberLogger>( B_TIMBER_YARD ).empty();
 
-  _setError( haveTimberLogger ? "" : _("##need_timber_for_work##") );
+  const_cast< WorkshopFurniture* >( this )->_setError( haveTimberLogger ? "" : _("##need_timber_for_work##") );
 
   return ret;
 }
@@ -388,7 +388,7 @@ bool Winery::canBuild(CityPtr city, const TilePos& pos) const
   CityHelper helper( city );
   bool haveVinegrad = !helper.getBuildings<Building>( B_GRAPE_FARM ).empty();
 
-  _setError( haveVinegrad ? "" : _("##need_vinegrad_for_work##") );
+  const_cast< Winery* >( this )->_setError( haveVinegrad ? "" : _("##need_vinegrad_for_work##") );
   return ret;
 }
 
@@ -407,7 +407,7 @@ bool Creamery::canBuild(CityPtr city, const TilePos& pos) const
   CityHelper helper( city );
   bool haveOliveFarm = !helper.getBuildings<Building>( B_OLIVE_FARM ).empty();
 
-  _setError( haveOliveFarm ? "" : _("##need_olive_for_work##") );
+  const_cast< Creamery* >( this )->_setError( haveOliveFarm ? "" : _("##need_olive_for_work##") );
 
   return ret;
 }

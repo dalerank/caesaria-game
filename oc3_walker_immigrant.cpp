@@ -30,7 +30,7 @@ class Immigrant::Impl
 public:
   TilePos destination;
   Picture cartPicture;
-  unsigned char peopleCount;
+  CitizenGroup peoples;
 };
 
 Immigrant::Immigrant( CityPtr city )
@@ -38,7 +38,6 @@ Immigrant::Immigrant( CityPtr city )
 {
   _setType( WT_IMMIGRANT );
   _setGraphic( WG_HOMELESS );
-  _d->peopleCount = 0;
 
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
@@ -46,15 +45,15 @@ Immigrant::Immigrant( CityPtr city )
 HousePtr Immigrant::_findBlankHouse()
 {
   CityHelper hlp( _getCity() );
-  std::list< HousePtr > houses = hlp.getBuildings< House >( B_HOUSE );
+  HouseList houses = hlp.getBuildings< House >( B_HOUSE );
   HousePtr blankHouse;
   _d->destination = TilePos( -1, -1 );
 
-  std::list< HousePtr >::iterator itHouse = houses.begin();
+  HouseList::iterator itHouse = houses.begin();
   while( itHouse != houses.end() )
   {
     if( (*itHouse)->getAccessRoads().size() > 0 && 
-        ( (*itHouse)->getNbHabitants() < (*itHouse)->getMaxHabitants() ) )
+        ( (*itHouse)->getHabitants().count() < (*itHouse)->getMaxHabitants() ) )
     {
       itHouse++;
     }
@@ -110,14 +109,13 @@ void Immigrant::onDestination()
     HousePtr house = tile.getOverlay().as<House>();
     if( house.isValid() )
     {      
-      if( house->getNbHabitants() < house->getMaxHabitants() )
+      int freeRoom = house->getMaxHabitants() - house->getHabitants().count();
+      if( freeRoom > 0 )
       {
-        int saveHbCount = house->getNbHabitants();
-        house->addHabitants( _getPeoplesCount() );
-        _d->peopleCount -= ( house->getNbHabitants() - saveHbCount ); 
+        house->addHabitants( _d->peoples );
         Walker::onDestination();
 
-        gooutCity = (_d->peopleCount > 0);
+        gooutCity = (_d->peoples.count() > 0);
       }
     }
   }
@@ -139,12 +137,12 @@ ImmigrantPtr Immigrant::create( CityPtr city )
   return newImmigrant;
 }
 
-bool Immigrant::send2City( CityPtr city, unsigned int capacity, Tile& startTile )
+bool Immigrant::send2City( CityPtr city, const CitizenGroup& peoples, Tile& startTile )
 {
-  if( capacity > 0 )
+  if( peoples.count() > 0 )
   {
     ImmigrantPtr im = Immigrant::create( city );
-    im->setCapacity( capacity );
+    im->setPeoples( peoples );
     im->send2City( startTile );
     return true;
   }
@@ -173,31 +171,26 @@ const Picture& Immigrant::getCartPicture()
   return _d->cartPicture;
 }
 
-void Immigrant::_setPeoplesCount( const unsigned char num )
+const CitizenGroup& Immigrant::_getPeoples() const
 {
-  _d->peopleCount = num;
+  return _d->peoples;
 }
 
-unsigned char Immigrant::_getPeoplesCount() const
+void Immigrant::setPeoples( const CitizenGroup& peoples )
 {
-  return _d->peopleCount;
-}
-
-void Immigrant::setCapacity( int value )
-{
-  _d->peopleCount = value;
+  _d->peoples = peoples;
 } 
 
 void Immigrant::save( VariantMap& stream ) const
 {
   Walker::save( stream );
-  stream[ "peopleCount" ] = _d->peopleCount;
+  stream[ "peoples" ] = _d->peoples.save();
   stream[ "destination" ] = _d->destination;
 }
 
 void Immigrant::load( const VariantMap& stream )
 {
   Walker::load( stream );
-  _d->peopleCount = stream.get( "peopleCount" ).toInt();
+  _d->peoples.load( stream.get( "peoples" ).toMap() );
   _d->destination = TilePos( stream.get( "destination" ).toTilePos() );
 }

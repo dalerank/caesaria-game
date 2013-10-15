@@ -34,7 +34,7 @@ public:
   InfoBoxSimple* create( Widget* parent, const Tile& tile )
   {
     HousePtr house = tile.getOverlay().as<House>();
-    if( house->getNbHabitants() > 0 )
+    if( house->getHabitants().count() > 0 )
     {
       return new InfoBoxHouse( parent, tile );
     }

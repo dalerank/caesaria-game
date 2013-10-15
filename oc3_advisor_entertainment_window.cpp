@@ -85,6 +85,7 @@ public:
   EntertainmentInfoLabel* lbAmphitheatresInfo;
   EntertainmentInfoLabel* lbColisseumInfo;
   EntertainmentInfoLabel* lbHippodromeInfo;
+  Label* lbInfo;
   TexturedButton* btnHelp;
 
   struct InfrastructureInfo
@@ -135,6 +136,8 @@ public:
   {
 
   }
+
+  void updateInfo();
 };
 
 
@@ -147,7 +150,7 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow( CityPtr city, Widget* pa
                Size( 640, 384 ) ) );
 
   Label* title = new Label( this, Rect( 60, 10, getWidth() - 10, 10 + 40) );
-  title->setText( _("##Entertainment advisor##") );
+  title->setText( _("##entertainment_advisor_title##") );
   title->setFont( Font::create( FONT_3 ) );
   title->setTextAlignment( alignUpperLeft, alignCenter );
 
@@ -157,6 +160,9 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow( CityPtr city, Widget* pa
 
   //buttons _d->_d->background
   PictureDecorator::draw( *_d->background, Rect( 32, 60, getWidth() - 32, 60 + 86 ), PictureDecorator::blackFrame );
+  _d->lbInfo = new Label( this, Rect( 50, 145, getWidth() - 50, 145 + 75) );
+
+  _d->updateInfo();
 
   Picture& icon = Picture::load( ResourceGroup::panelBackground, 263 );
   _d->background->draw( icon, Point( 11, 11 ) );
@@ -192,7 +198,7 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow( CityPtr city, Widget* pa
   HouseList houses = helper.getBuildings<House>( B_HOUSE );
   foreach( HousePtr house, houses )
   {
-    sumScholars += house->getScholars();
+    sumScholars += house->getHabitants().count( CitizenGroup::young );
     //sumStudents += (*it)->getStudents();
   }
 
@@ -229,4 +235,10 @@ void AdvisorEntertainmentWindow::_showFestivalWindow()
 {
   FestivalPlaningWindow* wnd = FestivalPlaningWindow::create( this, _d->city, -1 );
   CONNECT( wnd, onFestivalAssign(), _d.data(), Impl::updateFestivalInfo );
+}
+
+
+void AdvisorEntertainmentWindow::Impl::updateInfo()
+{
+  lbInfo->setText( _( "##entrainment_not_need##") );
 }

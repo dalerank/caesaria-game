@@ -37,6 +37,7 @@
 #include "oc3_game_event_mgr.hpp"
 #include "oc3_font.hpp"
 #include "oc3_gfx_sdl_engine.hpp"
+#include "oc3_gettext.hpp"
 
 namespace WalkersVisibility
 {
@@ -298,7 +299,7 @@ void CityRenderer::Impl::drawTileFire( Tile& tile )
       {
         HousePtr house = overlay.as< House >();
         fireLevel = (int)house->getFireLevel();
-        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() ==0);
+        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getHabitants().size() ==0);
 
         drawBuildingAreaTiles( overlay->getTile(), overlay, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );
       }
@@ -361,7 +362,7 @@ void CityRenderer::Impl::drawTileDamage( Tile& tile )
       {
         HousePtr house = overlay.as< House >();
         damageLevel = (int)house->getDamageLevel();
-        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() ==0);
+        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getHabitants().size() == 0);
         drawBuildingAreaTiles( overlay->getTile(), overlay, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
       }
       break;
@@ -445,7 +446,7 @@ void CityRenderer::Impl::drawTileEntertainment( Tile& tile )
         else if( overlayRendeFlags.count( B_COLLOSSEUM ) ) { entertainmentLevel = house->getServiceValue( Service::colloseum ); }
         else if( overlayRendeFlags.count( B_HIPPODROME ) ) { entertainmentLevel = house->getServiceValue( Service::hippodrome ); }
 
-        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() == 0);
+        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getHabitants().size() == 0);
         drawBuildingAreaTiles( overlay->getTile(), overlay, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
       }
     break;
@@ -520,7 +521,7 @@ void CityRenderer::Impl::drawTileHealth( Tile& tile )
         else if( overlayRendeFlags.count( B_BARBER ) ) { healthLevel = house->getServiceValue( Service::barber ); }
         else if( overlayRendeFlags.count( B_BATHS ) ) { healthLevel = house->getServiceValue( Service::baths ); }
 
-        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() == 0);
+        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getHabitants().size() == 0);
 
         drawBuildingAreaTiles( overlay->getTile(), overlay, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
       }
@@ -585,7 +586,7 @@ void CityRenderer::Impl::drawTileReligion( Tile& tile )
         religionLevel += house->getServiceValue(Service::religionNeptune);
         religionLevel += house->getServiceValue(Service::religionCeres);
         religionLevel = math::clamp( religionLevel / (house->getLevelSpec().getMinReligionLevel()+1), 0, 100 );
-        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() ==0);
+        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getHabitants().size() ==0);
 
         drawBuildingAreaTiles( overlay->getTile(), overlay, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
       }
@@ -644,7 +645,7 @@ void CityRenderer::Impl::drawTileFood( Tile& tile )
         drawBuildingAreaTiles(tile, overlay, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
         HousePtr house = overlay.as< House >();
         foodLevel = house->getFoodLevel();
-        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getNbHabitants() == 0);
+        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getHabitants().size() == 0);
       }
       break;
 

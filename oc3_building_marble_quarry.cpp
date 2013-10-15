@@ -18,6 +18,7 @@
 #include "oc3_tilemap.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_city.hpp"
+#include "oc3_gettext.hpp"
 
 MarbleQuarry::MarbleQuarry() : Factory(Good::none, Good::marble, B_MARBLE_QUARRY, Size(2) )
 {
@@ -55,7 +56,7 @@ bool MarbleQuarry::canBuild( CityPtr city, const TilePos& pos ) const
     near_mountain |= tile->getFlag( Tile::tlRock );
   }
 
-  _setError( near_mountain ? "" : _("##build_near_mountain_only##") );
+  const_cast< MarbleQuarry* >( this )->_setError( near_mountain ? "" : _("##build_near_mountain_only##") );
 
   return (is_constructible && near_mountain);
 }

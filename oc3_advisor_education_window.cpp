@@ -28,17 +28,25 @@
 #include "oc3_foreach.hpp"
 #include "oc3_game_settings.hpp"
 
+namespace {
+  struct InfrastructureInfo
+  {
+    int buildingCount;
+    int buildingWork;
+    int peoplesStuding;
+    int coverage;
+  };
+}
+
 class EducationInfoLabel : public Label
 {
 public:
   EducationInfoLabel( Widget* parent, const Rect& rect, const BuildingType service, 
-                      int workBulding, int numberBuilding, int peoplesCount  )
+                      const InfrastructureInfo& info )
     : Label( parent, rect )
   {
     _service = service;
-    _workingBuilding = workBulding;
-    _numberBuilding = numberBuilding;
-    _peoplesCount = peoplesCount;
+    _info = info;
 
     setFont( Font::create( FONT_1_WHITE ) );
   }
@@ -58,21 +66,23 @@ public:
 
     PictureRef& texture = getTextPicture();
     Font font = getFont();
-    std::string buildingStrT = StringHelper::format( 0xff, "%d %s", _numberBuilding, buildingStr.c_str() );
+    std::string buildingStrT = StringHelper::format( 0xff, "%d %s", _info.buildingCount, buildingStr.c_str() );
     font.draw( *texture, buildingStrT, 0, 0 );
 
-    std::string buildingWorkT = StringHelper::format( 0xff, "%d", _workingBuilding );
+    std::string buildingWorkT = StringHelper::format( 0xff, "%d", _info.buildingWork );
     font.draw( *texture, buildingWorkT, 165, 0 );
 
-    std::string peoplesStrT = StringHelper::format( 0xff, "%d %s", _peoplesCount, peoplesStr.c_str() );
+    std::string peoplesStrT = StringHelper::format( 0xff, "%d %s", _info.peoplesStuding, peoplesStr.c_str() );
     font.draw( *texture, peoplesStrT, 255, 0 );
+
+    const char* coverages[10] = { "##edu_poor##", "##edu_very_bad##", "##edu_bad##", "##edu_not_bad##", "##edu_simple##",
+                                  "##edu_above_simple##", "##edu_good##", "##edu_very_good##", "##edu_pretty##", "##edu_awesome##" };
+    font.draw( *texture, _( coverages[ _info.coverage / 10 ] ), 470, 0 );
   }
 
 private:
   BuildingType _service;
-  int _workingBuilding;
-  int _numberBuilding;
-  int _peoplesCount;
+  InfrastructureInfo _info;
 };
 
 class AdvisorEducationWindow::Impl
@@ -84,46 +94,7 @@ public:
   EducationInfoLabel* lbCollegeInfo;
   EducationInfoLabel* lbLibraryInfo;
 
-  struct InfrastructureInfo
-  {
-    int buildingCount;
-    int buildingWork;
-    int peoplesStuding;
-  };
-
-  InfrastructureInfo getInfo( CityPtr city, const BuildingType service )
-  {
-    CityHelper helper( city );
-
-    InfrastructureInfo ret;
-
-    ret.buildingWork = 0;
-    ret.peoplesStuding = 0;
-    ret.buildingCount = 0;
-
-    ServiceBuildingList servBuildings = helper.getBuildings<ServiceBuilding>( service );
-    foreach( ServiceBuildingPtr serv, servBuildings )
-    {
-      if( serv->getWorkers() > 0 )
-      {
-        ret.buildingWork++;
-
-        int maxStuding = 0;
-        switch( service )
-        {
-        case B_SCHOOL: maxStuding = 75; break;
-        case B_COLLEGE: maxStuding = 100; break;
-        case B_LIBRARY: maxStuding = 800; break;
-        default: break;
-        }
-
-        ret.peoplesStuding += maxStuding * serv->getWorkers() / serv->getMaxWorkers();
-      }
-      ret.buildingCount++;
-    }
-
-    return ret;
-  }
+  InfrastructureInfo getInfo( CityPtr city, const BuildingType service );
 };
 
 
@@ -137,17 +108,14 @@ AdvisorEducationWindow::AdvisorEducationWindow( CityPtr city, Widget* parent, in
 
   Point startPoint( 42, 103 );
   Size labelSize( 550, 20 );
-  Impl::InfrastructureInfo info = _d->getInfo( city, B_SCHOOL );
-  _d->lbSchoolInfo = new EducationInfoLabel( this, Rect( startPoint, labelSize ), B_SCHOOL, 
-                                             info.buildingWork, info.buildingCount, info.peoplesStuding );
+  InfrastructureInfo info = _d->getInfo( city, B_SCHOOL );
+  _d->lbSchoolInfo = new EducationInfoLabel( this, Rect( startPoint, labelSize ), B_SCHOOL, info );
 
   info = _d->getInfo( city, B_COLLEGE );
-  _d->lbCollegeInfo = new EducationInfoLabel( this, Rect( startPoint + Point( 0, 20), labelSize), B_COLLEGE,
-                                              info.buildingWork, info.buildingCount, info.peoplesStuding );
+  _d->lbCollegeInfo = new EducationInfoLabel( this, Rect( startPoint + Point( 0, 20), labelSize), B_COLLEGE, info );
 
   info = _d->getInfo( city, B_LIBRARY );
-  _d->lbLibraryInfo = new EducationInfoLabel( this, Rect( startPoint + Point( 0, 40), labelSize), B_LIBRARY,
-                                              info.buildingWork, info.buildingCount, info.peoplesStuding );
+  _d->lbLibraryInfo = new EducationInfoLabel( this, Rect( startPoint + Point( 0, 40), labelSize), B_LIBRARY, info );
 
   CityHelper helper( city );
 
@@ -156,8 +124,8 @@ AdvisorEducationWindow::AdvisorEducationWindow( CityPtr city, Widget* parent, in
   HouseList houses = helper.getBuildings<House>( B_HOUSE );
   foreach( HousePtr house, houses )
   {
-    sumScholars += house->getScholars();
-    //sumStudents += (*it)->getStudents();
+    sumScholars += house->getHabitants().count( CitizenGroup::young );
+    sumStudents += house->getHabitants().count( CitizenGroup::student );
   }
 
   std::string cityInfoStr = StringHelper::format( 0xff, "%d %s, %d %s, %d %s", city->getPopulation(), _("##peoples##"),
@@ -171,4 +139,39 @@ void AdvisorEducationWindow::draw( GfxEngine& painter )
     return;
 
   Widget::draw( painter );
+}
+
+
+InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(CityPtr city, const BuildingType service)
+{
+  CityHelper helper( city );
+
+  InfrastructureInfo ret;
+
+  ret.buildingWork = 0;
+  ret.peoplesStuding = 0;
+  ret.buildingCount = 0;
+
+  ServiceBuildingList servBuildings = helper.getBuildings<ServiceBuilding>( service );
+  foreach( ServiceBuildingPtr serv, servBuildings )
+  {
+    if( serv->getWorkers() > 0 )
+    {
+      ret.buildingWork++;
+
+      int maxStuding = 0;
+      switch( service )
+      {
+      case B_SCHOOL: maxStuding = 75; break;
+      case B_COLLEGE: maxStuding = 100; break;
+      case B_LIBRARY: maxStuding = 800; break;
+      default: break;
+      }
+
+      ret.peoplesStuding += maxStuding * serv->getWorkers() / serv->getMaxWorkers();
+    }
+    ret.buildingCount++;
+  }
+
+  return ret;
 }

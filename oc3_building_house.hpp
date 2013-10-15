@@ -20,6 +20,7 @@
 
 #include "oc3_building.hpp"
 #include "oc3_scopedptr.hpp"
+#include "oc3_citizen_group.hpp"
 
 class HouseLevelSpec;
 class GoodStore;
@@ -54,8 +55,6 @@ public:
 
   const BuildingData::Desirability& getDesirabilityInfo() const;
 
-  int getScholars() const;
-
   void levelUp();
   void levelDown();
 
@@ -64,9 +63,9 @@ public:
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
 
-  int getNbHabitants();
   int getMaxHabitants();
-  void addHabitants( const int newHabitCount );
+  void addHabitants(CitizenGroup& habitants );
+  const CitizenGroup& getHabitants();
 
   int collectTaxes();
 

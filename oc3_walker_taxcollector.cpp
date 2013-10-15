@@ -40,7 +40,7 @@ void TaxCollector::onMidTile()
     {
       int money = (int)(house->collectTaxes() * taxRate);
       _d->money += money;
-      _d->peoplesReached += money > 0 ? house->getNbHabitants() : 0;
+      _d->peoplesReached += money > 0 ? house->getHabitants().count() : 0;
     }
   }
 }

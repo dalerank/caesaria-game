@@ -335,7 +335,7 @@ void City::Impl::calculatePopulation( CityPtr city )
   HouseList houseList = helper.getBuildings<House>( B_HOUSE );
   foreach( HousePtr house, houseList)
   {
-    pop += house->getNbHabitants();
+    pop += house->getHabitants().count();
   }
   
   population = pop;

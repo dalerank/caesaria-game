@@ -19,6 +19,7 @@
 #include "oc3_city.hpp"
 #include "oc3_foreach.hpp"
 #include "oc3_tilemap.hpp"
+#include "oc3_gettext.hpp"
 
 ClayPit::ClayPit() : Factory( Good::none, Good::clay, B_CLAY_PIT, Size(2) )
 {
@@ -45,7 +46,7 @@ bool ClayPit::canBuild( CityPtr city, const TilePos& pos ) const
     near_water |= tile->getFlag( Tile::tlWater );
   }
 
-  _setError( near_water ? "" : _("##clay_pit_need_water##") );
+  const_cast<ClayPit*>( this )->_setError( near_water ? "" : _("##clay_pit_need_water##") );
 
   return (is_constructible && near_water);
 } 

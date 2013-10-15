@@ -13,31 +13,25 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_EMIGRANT_H_INCLUDE_
-#define __OPENCAESAR3_EMIGRANT_H_INCLUDE_
+#ifndef _OPENCAESAR_HOUSE_HABITANT_INCLUDE_H_
+#define _OPENCAESAR_HOUSE_HABITANT_INCLUDE_H_
 
-#include "oc3_walker_immigrant.hpp"
-#include "oc3_predefinitions.hpp"
+#include "oc3_variant.hpp"
 
-class Emigrant;
-typedef SmartPtr< Emigrant > EmigrantPtr;
-
-/** This is an immigrant coming with his stuff */
-class Emigrant : public Immigrant
+class CitizenGroup : public std::map< int, int >
 {
 public:
-  typedef enum { G_EMIGRANT_CART1 = Good::goodCount, G_EMIGRANT_CART2, CT_MAX } CartType;
+  typedef enum { child, young, student, mature, aged } Age;
 
-  static EmigrantPtr create( CityPtr city);
+  int count() const;
+  int count( Age group ) const;
 
-  void getPictureList(std::vector<Picture> &oPics);
-  void onNewDirection();
+  CitizenGroup retrieve( int count );
 
-  ~Emigrant();
-protected:
-  const Picture& getCartPicture();
+  CitizenGroup& operator += ( const CitizenGroup& b );
 
-  Emigrant( CityPtr city );
+  VariantMap save() const;
+  void load( const VariantMap& stream );
 };
 
-#endif
+#endif //_OPENCAESAR_HOUSE_HABITANT_INCLUDE_H_

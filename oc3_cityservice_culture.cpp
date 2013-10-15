@@ -165,6 +165,8 @@ int CityServiceCulture::getCoverage( Coverage type) const
   case ccReligion: return _d->religionCoverage * 100;
   case ccTheatres: return _d->theatersCoverage * 100;
   }
+
+  return 0;
 }
 
 std::string CityServiceCulture::getDefaultName()

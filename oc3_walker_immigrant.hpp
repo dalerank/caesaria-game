@@ -18,19 +18,17 @@
 
 #include "oc3_walker.hpp"
 #include "oc3_predefinitions.hpp"
-
-class Immigrant;
-typedef SmartPtr< Immigrant > ImmigrantPtr;
+#include "oc3_citizen_group.hpp"
 
 /** This is an immigrant coming with his stuff */
 class Immigrant : public Walker
 {
 public:
   static ImmigrantPtr create( CityPtr city );
-  static bool send2City( CityPtr city, unsigned int capacity, Tile& startTile );
+  static bool send2City( CityPtr city, const CitizenGroup& peoples, Tile& startTile );
 
   void send2City( Tile& startTile );
-  void setCapacity( int value );
+  void setPeoples( const CitizenGroup& peoples );
 
   void onDestination();
   ~Immigrant();
@@ -48,8 +46,7 @@ protected:
   void _findPath2blankHouse( Tile& startPoint );
 
 protected:
-  void _setPeoplesCount( const unsigned char num );
-  unsigned char _getPeoplesCount() const;
+  const CitizenGroup& _getPeoples() const;
 
 private:
   class Impl;

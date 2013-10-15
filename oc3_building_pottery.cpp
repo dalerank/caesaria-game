@@ -17,6 +17,7 @@
 #include "oc3_picture.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_city.hpp"
+#include "oc3_gettext.hpp"
 
 Pottery::Pottery() : Factory(Good::clay, Good::pottery, B_POTTERY, Size(2))
 {
@@ -32,7 +33,7 @@ bool Pottery::canBuild(CityPtr city, const TilePos& pos) const
   CityHelper helper( city );
   bool haveClaypit = !helper.getBuildings<Building>( B_CLAY_PIT ).empty();
 
-  _setError( haveClaypit ? "" : _("##need_clay_for_work##") );
+  const_cast< Pottery* >( this )->_setError( haveClaypit ? "" : _("##need_clay_for_work##") );
 
   return ret;
 }

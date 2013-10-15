@@ -25,6 +25,7 @@
 #include "oc3_walker_service.hpp"
 #include "oc3_city.hpp"
 #include "oc3_foreach.hpp"
+#include "oc3_gettext.hpp"
 #include "oc3_tilemap.hpp"
 
 class WaterSource::Impl
@@ -461,7 +462,7 @@ bool Reservoir::canBuild( CityPtr city, const TilePos& pos ) const
   bool nearWater = _isNearWater( city, pos );
   const_cast< Reservoir* >( this )->setPicture( ResourceGroup::waterbuildings, nearWater ? 2 : 1  );
 
-  _setError( nearWater ? "" : _("##need_connect_to_other_reservoir##"));
+  const_cast< Reservoir* >( this )->_setError( nearWater ? "" : _("##need_connect_to_other_reservoir##"));
 
   return ret;
 }

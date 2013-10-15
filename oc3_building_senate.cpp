@@ -19,6 +19,7 @@
 #include "oc3_cityfunds.hpp"
 #include "oc3_walker_taxcollector.hpp"
 #include "oc3_city.hpp"
+#include "oc3_gettext.hpp"
 
 // govt 4  - senate
 // govt 9  - advanced senate
@@ -68,7 +69,7 @@ int Senate::getPeoplesReached() const
   return 0;
 }
 
-Senate::getError() const
+std::string Senate::getError() const
 {
   return _d->errorStr;
 }

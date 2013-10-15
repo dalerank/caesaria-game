@@ -125,6 +125,11 @@ bool HouseLevelSpec::checkHouse( HousePtr house, std::string* retMissing )
   std::string defaultStr;
   std::string& ref = retMissing ? *retMissing : defaultStr;
 
+  if( house->getHabitants().count() == 0 )
+  {
+    return false;
+  }
+
   value = computeDesirabilityLevel( house, reason );
   if( value < _d->minDesirability )
   {
@@ -466,7 +471,7 @@ int HouseLevelSpec::computeMonthlyConsumption(House &house, const Good::Type goo
   int res = 0;
   if (_d->requiredGoods[goodType] != 0)
   {
-    res = house.getNbHabitants() * _d->requiredGoods[goodType];
+    res = house.getHabitants().count() * _d->requiredGoods[goodType];
   }
 
   res *= (real ? _d->consumptionMuls[ goodType ] : 1);

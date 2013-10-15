@@ -28,7 +28,7 @@ public:
   int collectTaxes();
   int getPeoplesReached() const;
 
-  virtual getError() const;
+  virtual std::string getError() const;
 
   void deliverService();
 

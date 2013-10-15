@@ -71,7 +71,7 @@ void CityServiceEmigrant::update( const unsigned int time )
   {
     if( house->getAccessRoads().size() > 0 )
     {
-      vacantPop += math::clamp( house->getMaxHabitants() - house->getNbHabitants(), 0, 0xff );
+      vacantPop += math::clamp( house->getMaxHabitants() - house->getHabitants().count(), 0, 0xff );
     }
   }
 

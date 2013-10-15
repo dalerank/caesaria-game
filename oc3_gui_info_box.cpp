@@ -226,7 +226,7 @@ InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
   houseInfo->setWordWrap( true );
 
   std::string workerState = StringHelper::format( 0xff, "habtns=%d avWrk=%d",
-                                                  house->getNbHabitants(),
+                                                  house->getHabitants().size(),
                                                   house->getServiceValue( Service::workersRecruter ) );
   new Label( this, Rect( 16, 125, getWidth() - 16, 150 ), workerState );
 
@@ -283,21 +283,22 @@ void InfoBoxHouse::drawHabitants( HousePtr house )
   Label* lbHabitants = new Label( this, Rect( 60, 157, getWidth() - 16, 157 + citPic.getHeight() ) );
 
   std::string freeRoomText;
-  int freeRoom = house->getMaxHabitants() - house->getNbHabitants();
+  int current = house->getHabitants().count();
+  int freeRoom = house->getMaxHabitants() - current;
   if( freeRoom > 0 )
   {
     // there is some room for new habitants!
-    freeRoomText = StringHelper::format( 0xff, "%d %s %d", house->getNbHabitants(), _("##citizens_additional_rooms_for##"), freeRoom);
+    freeRoomText = StringHelper::format( 0xff, "%d %s %d", current, _("##citizens_additional_rooms_for##"), freeRoom);
   }
   else if (freeRoom == 0)
   {
     // full house!
-    freeRoomText = StringHelper::format( 0xff, "%d %s", house->getNbHabitants(), _("##citizens##"));
+    freeRoomText = StringHelper::format( 0xff, "%d %s", current, _("##citizens##"));
   }
   else if (freeRoom < 0)
   {
     // too many habitants!
-    freeRoomText = StringHelper::format( 0xff, "%d %s %d", house->getNbHabitants(), _("##no_room_for_citizens##"),-freeRoom);
+    freeRoomText = StringHelper::format( 0xff, "%d %s %d", current, _("##no_room_for_citizens##"),-freeRoom);
     lbHabitants->setFont( Font::create( FONT_2_RED ) );
   }
 

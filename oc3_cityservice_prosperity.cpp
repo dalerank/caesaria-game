@@ -90,8 +90,8 @@ void CityServiceProsperity::update( const unsigned int time )
     foreach( HousePtr house, houses)
     {
       prosperityCap += house->getLevelSpec().getProsperity();
-      patricianCount += house->getLevelSpec().isPatrician() ? house->getNbHabitants() : 0;
-      plebsCount += house->getLevelSpec().getHouseLevel() < 5 ? house->getNbHabitants() : 0;
+      patricianCount += house->getLevelSpec().isPatrician() ? house->getHabitants().count() : 0;
+      plebsCount += house->getLevelSpec().getHouseLevel() < 5 ? house->getHabitants().count() : 0;
     }
 
     prosperityCap /= houses.size();

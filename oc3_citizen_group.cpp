@@ -13,31 +13,35 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_EMIGRANT_H_INCLUDE_
-#define __OPENCAESAR3_EMIGRANT_H_INCLUDE_
+#include "oc3_citizen_group.hpp"
 
-#include "oc3_walker_immigrant.hpp"
-#include "oc3_predefinitions.hpp"
-
-class Emigrant;
-typedef SmartPtr< Emigrant > EmigrantPtr;
-
-/** This is an immigrant coming with his stuff */
-class Emigrant : public Immigrant
+int CitizenGroup::count() const
 {
-public:
-  typedef enum { G_EMIGRANT_CART1 = Good::goodCount, G_EMIGRANT_CART2, CT_MAX } CartType;
+  int ret = 0;
+  for( const_iterator t=begin(); t != end(); t++ ){ ret += t->second; }
+  return ret;
+}
 
-  static EmigrantPtr create( CityPtr city);
+int CitizenGroup::count( Age group) const
+{
+  int tmin=0, tmax=0;
+  switch( group )
+  {
+  case child: tmax=8; break;
+  case young: tmin=9; tmax=15; break;
+  case student: tmin=16; tmax=20; break;
+  case mature: tmin=21; tmax=50; break;
+  case aged: tmin=51; tmax=99; break;
+  }
 
-  void getPictureList(std::vector<Picture> &oPics);
-  void onNewDirection();
+  int ret=0;
+  for( const_iterator t=begin(); t != end(); t++ )
+  {
+    if( t->first >= tmin && t->first < tmax )
+    {
+      ret += t->second;
+    }
+  }
 
-  ~Emigrant();
-protected:
-  const Picture& getCartPicture();
-
-  Emigrant( CityPtr city );
-};
-
-#endif
+  return ret;
+}

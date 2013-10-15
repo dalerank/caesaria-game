@@ -161,7 +161,7 @@ int AdvisorFinanceWindow::Impl::calculateTaxValue()
   float taxRate = city->getFunds().getTaxRate();
   foreach( HousePtr house, houses )
   {
-    taxValue += house->getLevelSpec().getTaxRate() * house->getNbHabitants() / house->getMaxHabitants() * taxRate;
+    taxValue += house->getLevelSpec().getTaxRate() * house->getHabitants().count( CitizenGroup::mature ) / house->getMaxHabitants() * taxRate;
   }
 
   return taxValue;
