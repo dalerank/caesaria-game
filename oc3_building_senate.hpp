@@ -28,6 +28,8 @@ public:
   int collectTaxes();
   int getPeoplesReached() const;
 
+  virtual getError() const;
+
   void deliverService();
 
   bool canBuild(CityPtr city, const TilePos& pos )const;

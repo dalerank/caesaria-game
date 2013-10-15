@@ -38,6 +38,7 @@ public:
   bool lastWaterState;
   bool isRoad;
   bool alsoResolved;
+  std::string errorStr;
 };
 
 Aqueduct::Aqueduct() : WaterSource( B_AQUEDUCT, Size(1) ) 
@@ -460,6 +461,8 @@ bool Reservoir::canBuild( CityPtr city, const TilePos& pos ) const
   bool nearWater = _isNearWater( city, pos );
   const_cast< Reservoir* >( this )->setPicture( ResourceGroup::waterbuildings, nearWater ? 2 : 1  );
 
+  _setError( nearWater ? "" : _("##need_connect_to_other_reservoir##"));
+
   return ret;
 }
 
@@ -535,6 +538,16 @@ void WaterSource::_produceWater( const TilePos* points, const int size )
 int WaterSource::getId() const
 {
   return getTilePos().getJ() * 10000 + getTilePos().getI();
+}
+
+std::string WaterSource::getError() const
+{
+  return _d->errorStr;
+}
+
+void WaterSource::_setError(const std::string& error)
+{
+  _d->errorStr = error;
 }
 
 typedef enum { fontainEmpty = 3, fontainFull = 4, fontainStartAnim = 11, fontainSizeAnim = 7 } FontainConstant;

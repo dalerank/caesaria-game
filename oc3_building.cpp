@@ -55,6 +55,8 @@ bool Construction::canBuild( CityPtr city, const TilePos& pos ) const
   return is_constructible;
 }
 
+std::string Construction::getError() const { return ""; }
+
 void Construction::build( CityPtr city, const TilePos& pos )
 {
   LandOverlay::build( city, pos );

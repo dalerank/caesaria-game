@@ -33,8 +33,11 @@ public:
   virtual void timeStep(const unsigned long time);
   int getId() const;
 
+  virtual std::string getError() const;
+
 protected:
-  virtual void _waterStateChanged() {};
+  void _setError( const std::string& error );
+  virtual void _waterStateChanged() {}
   virtual void _produceWater( const TilePos* points, const int size );
   
   class Impl;
@@ -82,7 +85,6 @@ public:
 private:
   bool _isWaterSource;
   bool _isNearWater( CityPtr city, const TilePos& pos ) const;
-
 };
 
 class Fountain : public ServiceBuilding

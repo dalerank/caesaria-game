@@ -23,10 +23,16 @@
 class CityServiceProsperity : public CityService
 {
 public:
+  typedef enum { cmHousesCap, cmHaveProfit, cmWorkless,
+                 cmWorkersSalary, cmChange, cmPercentPlebs } Mark;
   static CityServicePtr create( CityPtr city );
 
   void update( const unsigned int time );
   int getValue() const;
+
+  int getMark( Mark type ) const;
+
+  static std::string getDefaultName();
 
 private:
   CityServiceProsperity( CityPtr city );

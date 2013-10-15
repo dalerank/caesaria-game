@@ -28,23 +28,25 @@ class Senate::Impl
 {
 public:
   int taxInLastMonth;
+  std::string errorStr;
 };
 
 Senate::Senate() : ServiceBuilding( Service::senate, B_SENATE, Size(5) ), _d( new Impl )
 {
-  setWorkers( 0 );
-  setPicture( Picture::load( ResourceGroup::govt, 4) );
+  setPicture( ResourceGroup::govt, 4 );
   _d->taxInLastMonth = 0;
 }
 
 bool Senate::canBuild( CityPtr city, const TilePos& pos ) const
 {
+  _d->errorStr = "";
   bool mayBuild = ServiceBuilding::canBuild( city, pos );
 
   if( mayBuild )
   {
     CityHelper helper( city );
     bool isSenatePresent = helper.getBuildings<Building>(B_SENATE).size() > 0;
+    _d->errorStr = isSenatePresent ? _("##can_build_only_once##") : "";
     mayBuild &= !isSenatePresent;
   }
 
@@ -64,6 +66,11 @@ int Senate::collectTaxes()
 int Senate::getPeoplesReached() const
 {
   return 0;
+}
+
+Senate::getError() const
+{
+  return _d->errorStr;
 }
 
 void Senate::deliverService()

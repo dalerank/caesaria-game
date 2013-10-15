@@ -83,7 +83,7 @@ CityServicePtr CityServiceCulture::create( CityPtr city )
 }
 
 CityServiceCulture::CityServiceCulture( CityPtr city )
-  : CityService( "culture" ), _d( new Impl )
+  : CityService( getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
   _d->lastDate = GameDate::current();
@@ -153,4 +153,21 @@ void CityServiceCulture::update( const unsigned int time )
 int CityServiceCulture::getValue() const
 {
   return _d->culture;
+}
+
+int CityServiceCulture::getCoverage( Coverage type) const
+{
+  switch( type )
+  {
+  case ccSchool: return _d->schoolCoverage * 100;
+  case ccLibrary: return _d->libraryCoverage * 100;
+  case ccAcademy: return _d->collegeCoverage * 100;
+  case ccReligion: return _d->religionCoverage * 100;
+  case ccTheatres: return _d->theatersCoverage * 100;
+  }
+}
+
+std::string CityServiceCulture::getDefaultName()
+{
+  return OC3_STR_EXT(CityServiceCulture);
 }

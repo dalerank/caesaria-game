@@ -23,10 +23,15 @@
 class CityServiceCulture : public CityService
 {
 public:
+  typedef enum { ccSchool, ccLibrary, ccAcademy, ccReligion, ccTheatres } Coverage;
   static CityServicePtr create( CityPtr city );
 
   void update( const unsigned int time );
   int getValue() const;
+
+  int getCoverage( Coverage type ) const;
+
+  static std::string getDefaultName();
 
 private:
   CityServiceCulture( CityPtr city );

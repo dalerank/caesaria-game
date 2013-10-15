@@ -43,6 +43,7 @@ public:
   Good::Type inGoodType;
   Good::Type outGoodType;
   bool produceGood;
+  std::string errorStr;
 };
 
 Factory::Factory(const Good::Type inType, const Good::Type outType,
@@ -65,7 +66,6 @@ GoodStock& Factory::getInGood()
 {
    return _d->goodStore.getStock(_d->inGoodType);
 }
-
 
 GoodStock& Factory::getOutGood()
 {
@@ -232,9 +232,19 @@ bool Factory::_mayDeliverGood() const
   return ( getAccessRoads().size() > 0 ) && ( getWalkerList().size() == 0 );
 }
 
+void Factory::_setError(const std::string& err)
+{
+  _d->errorStr = err;
+}
+
 void Factory::setProductRate( const float rate )
 {
   _d->productionRate = rate;
+}
+
+std::string Factory::getError() const
+{
+  return _d->errorStr;
 }
 
 Good::Type Factory::getOutGoodType() const
@@ -276,8 +286,7 @@ bool Factory::standIdle() const
 
 TimberLogger::TimberLogger() : Factory(Good::none, Good::timber, B_TIMBER_YARD, Size(2) )
 {
-  setProductRate( 9.6f );
-  setPicture( Picture::load(ResourceGroup::commerce, 72) );
+  setPicture( ResourceGroup::commerce, 72 );
 
   _getAnimation().load( ResourceGroup::commerce, 73, 10);
   _getForegroundPictures().resize(2);
@@ -295,15 +304,15 @@ bool TimberLogger::canBuild( CityPtr city, const TilePos& pos ) const
       near_forest |= tile->getFlag( Tile::tlTree );
    }
 
+   _setError( near_forest ? "" : _("##lumber_mill_need_forest_near##"));
+
    return (is_constructible && near_forest);
 }
 
 
 IronMine::IronMine() : Factory(Good::none, Good::iron, B_IRON_MINE, Size(2) )
 {
-  setProductRate( 9.6f );
-
-  setPicture( Picture::load(ResourceGroup::commerce, 54) );
+  setPicture( ResourceGroup::commerce, 54 );
 
   _getAnimation().load( ResourceGroup::commerce, 55, 6 );
   _getAnimation().setFrameDelay( 5 );
@@ -327,15 +336,38 @@ bool IronMine::canBuild( CityPtr city, const TilePos& pos ) const
 
 WeaponsWorkshop::WeaponsWorkshop() : Factory(Good::iron, Good::weapon, B_WEAPONS_WORKSHOP, Size(2) )
 {
-  setPicture( Picture::load(ResourceGroup::commerce, 108) );
+  setPicture( ResourceGroup::commerce, 108);
 
   _getAnimation().load( ResourceGroup::commerce, 109, 6);
   _getForegroundPictures().resize(2);
 }
 
+bool WeaponsWorkshop::canBuild(CityPtr city, const TilePos& pos) const
+{
+  bool ret = Factory::canBuild( city, pos );
+
+  CityHelper helper( city );
+  bool haveIronMine = !helper.getBuildings<Building>( B_IRON_MINE ).empty();
+
+  _setError( haveIronMine ? "" : _("##need_iron_for_work##") );
+  return ret;
+}
+
+bool WorkshopFurniture::canBuild(CityPtr city, const TilePos& pos) const
+{
+  bool ret = Factory::canBuild( city, pos );
+
+  CityHelper helper( city );
+  bool haveTimberLogger = !helper.getBuildings<TimberLogger>( B_TIMBER_YARD ).empty();
+
+  _setError( haveTimberLogger ? "" : _("##need_timber_for_work##") );
+
+  return ret;
+}
+
 WorkshopFurniture::WorkshopFurniture() : Factory(Good::timber, Good::furniture, B_FURNITURE, Size(2) )
 {
-  setPicture( Picture::load(ResourceGroup::commerce, 117) );
+  setPicture( ResourceGroup::commerce, 117 );
 
   _getAnimation().load(ResourceGroup::commerce, 118, 14);
   _getForegroundPictures().resize(2);
@@ -349,6 +381,17 @@ Winery::Winery() : Factory(Good::grape, Good::wine, B_WINE_WORKSHOP, Size(2) )
   _getForegroundPictures().resize(2);
 }
 
+bool Winery::canBuild(CityPtr city, const TilePos& pos) const
+{
+  bool ret = Factory::canBuild( city, pos );
+
+  CityHelper helper( city );
+  bool haveVinegrad = !helper.getBuildings<Building>( B_GRAPE_FARM ).empty();
+
+  _setError( haveVinegrad ? "" : _("##need_vinegrad_for_work##") );
+  return ret;
+}
+
 Creamery::Creamery() : Factory(Good::olive, Good::oil, B_OIL_WORKSHOP, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 99 );
@@ -357,10 +400,22 @@ Creamery::Creamery() : Factory(Good::olive, Good::oil, B_OIL_WORKSHOP, Size(2) )
   _getForegroundPictures().resize(2);
 }
 
+bool Creamery::canBuild(CityPtr city, const TilePos& pos) const
+{
+  bool ret = Factory::canBuild( city, pos );
+
+  CityHelper helper( city );
+  bool haveOliveFarm = !helper.getBuildings<Building>( B_OLIVE_FARM ).empty();
+
+  _setError( haveOliveFarm ? "" : _("##need_olive_for_work##") );
+
+  return ret;
+}
+
 Wharf::Wharf() : Factory(Good::none, Good::fish, B_WHARF, Size(2))
 {
   // transport 52 53 54 55
-  setPicture( Picture::load( ResourceGroup::wharf, 52));
+  setPicture( ResourceGroup::wharf, 52 );
 }
 
 /* INCORRECT! */

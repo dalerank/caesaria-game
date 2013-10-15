@@ -16,12 +16,25 @@
 #include "oc3_building_pottery.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_resourcegroup.hpp"
+#include "oc3_city.hpp"
 
 Pottery::Pottery() : Factory(Good::clay, Good::pottery, B_POTTERY, Size(2))
 {
   _getAnimation().load(ResourceGroup::commerce, 133, 7);
   _getAnimation().setFrameDelay( 3 );
   _getForegroundPictures().resize(2);
+}
+
+bool Pottery::canBuild(CityPtr city, const TilePos& pos) const
+{
+  bool ret = Factory::canBuild( city, pos );
+
+  CityHelper helper( city );
+  bool haveClaypit = !helper.getBuildings<Building>( B_CLAY_PIT ).empty();
+
+  _setError( haveClaypit ? "" : _("##need_clay_for_work##") );
+
+  return ret;
 }
 
 void Pottery::timeStep( const unsigned long time )

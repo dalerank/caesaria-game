@@ -41,6 +41,7 @@ public:
   Construction( const BuildingType type, const Size& size );
 
   virtual bool canBuild( CityPtr city, const TilePos& pos ) const;  // returns true if it can be built there
+  virtual std::string getError() const;
   virtual void build( CityPtr city, const TilePos& pos );
   virtual void burn();
   virtual void collapse();

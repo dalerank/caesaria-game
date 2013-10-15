@@ -55,5 +55,7 @@ bool MarbleQuarry::canBuild( CityPtr city, const TilePos& pos ) const
     near_mountain |= tile->getFlag( Tile::tlRock );
   }
 
+  _setError( near_mountain ? "" : _("##build_near_mountain_only##") );
+
   return (is_constructible && near_mountain);
 }

@@ -1,4 +1,4 @@
 {
-	resolution : [1280, 1024]
-  fullscreen : yes
+	resolution : [1024, 768]
+  fullscreen : false
 }

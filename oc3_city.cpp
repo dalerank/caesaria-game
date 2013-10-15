@@ -583,7 +583,7 @@ void City::setWinTargets(const CityWinTargets& targets)
 
 int City::getProsperity() const
 {
-  CityServicePtr csPrsp = findService( "prosperity" );
+  CityServicePtr csPrsp = findService( CityServiceProsperity::getDefaultName() );
   return csPrsp.isValid() ? csPrsp.as<CityServiceProsperity>()->getValue() : 0;
 }
 
@@ -619,7 +619,7 @@ PlayerPtr City::getPlayer() const
 
 int City::getCulture() const
 {
-  CityServicePtr csPrsp = findService( "culture" );
+  CityServicePtr csPrsp = findService( CityServiceCulture::getDefaultName() );
   return csPrsp.isValid() ? csPrsp.as<CityServiceCulture>()->getValue() : 0;
 }
 

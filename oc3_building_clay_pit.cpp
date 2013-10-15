@@ -45,5 +45,7 @@ bool ClayPit::canBuild( CityPtr city, const TilePos& pos ) const
     near_water |= tile->getFlag( Tile::tlWater );
   }
 
+  _setError( near_water ? "" : _("##clay_pit_need_water##") );
+
   return (is_constructible && near_water);
 } 

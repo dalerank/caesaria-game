@@ -1146,7 +1146,11 @@ void CityRenderer::Impl::buildAll()
 
   if( !buildOk )
   {
-    onWarningMessageSignal.emit( "##need_build_on_cleared_area##" ); 
+    std::string errorStr = cnstr->getError();
+
+    onWarningMessageSignal.emit( errorStr.empty()
+                                 ? _("##need_build_on_cleared_area##")
+                                 : errorStr );
   }
 }
 

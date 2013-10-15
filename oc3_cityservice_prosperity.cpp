@@ -22,6 +22,8 @@
 #include "oc3_tile.hpp"
 #include "oc3_building_entertainment.hpp"
 #include "oc3_gamedate.hpp"
+#include "oc3_cityfunds.hpp"
+#include "oc3_empire.hpp"
 
 class CityServiceProsperity::Impl
 {
@@ -29,7 +31,14 @@ public:
   CityPtr city;
   DateTime lastDate;
   int prosperity;
+  int houseCapTrand;
   int prosperityExtend;
+  bool makeProfit;
+  int lastYearBalance;
+  int worklessPercent;
+  int lastYearProsperity;
+  int workersSalary;
+  int percentPlebs;
 };
 
 CityServicePtr CityServiceProsperity::create( CityPtr city )
@@ -41,12 +50,19 @@ CityServicePtr CityServiceProsperity::create( CityPtr city )
 }
 
 CityServiceProsperity::CityServiceProsperity( CityPtr city )
-  : CityService( "prosperity" ), _d( new Impl )
+  : CityService( getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
   _d->lastDate = GameDate::current();
   _d->prosperity = 0;
+  _d->houseCapTrand = 0;
   _d->prosperityExtend = 0;
+  _d->makeProfit = false;
+  _d->lastYearBalance = city->getFunds().getValue();
+  _d->worklessPercent = 0;
+  _d->workersSalary = city->getFunds().getWorkerSalary();
+  _d->lastYearProsperity = 0;
+  _d->percentPlebs = 0;
 }
 
 void CityServiceProsperity::update( const unsigned int time )
@@ -80,32 +96,38 @@ void CityServiceProsperity::update( const unsigned int time )
 
     prosperityCap /= houses.size();
 
-    _d->prosperity = math::clamp( prosperityCap, 0, _d->prosperity + 2 );
+    _d->lastYearProsperity = getValue();
 
-    bool cityMakeProfit = false;
-    _d->prosperityExtend = (cityMakeProfit ? 2 : -1);
+    int saveValue = _d->prosperity;
+    _d->prosperity = math::clamp( prosperityCap, 0, _d->prosperity + 2 );
+    _d->houseCapTrand = _d->prosperity - saveValue;
+
+    int currentFunds = _d->city->getFunds().getValue();
+    _d->makeProfit = _d->lastYearBalance < currentFunds;
+    _d->lastYearBalance = currentFunds;
+    _d->prosperityExtend = (_d->makeProfit ? 2 : -1);
 
     bool more10PercentIsPatrician = (patricianCount / (float)_d->city->getPopulation()) > 0.1;
     _d->prosperityExtend += (more10PercentIsPatrician ? 1 : 0);
 
-    bool less30percentIsPlebs = (plebsCount / (float)_d->city->getPopulation()) < 0.3;
-    _d->prosperityExtend += (less30percentIsPlebs ? 1 : 0);
+    _d->percentPlebs = plebsCount * 100/ (float)_d->city->getPopulation();
+    _d->prosperityExtend += (_d->percentPlebs < 30 ? 1 : 0);
 
     bool haveHippodrome = helper.getBuildings<Hippodrome>( B_HIPPODROME ).size() > 0;
     _d->prosperityExtend += (haveHippodrome > 0 ? 1 : 0);
 
-    bool unemploymentLess5percent = false;
-    bool unemploymentMore15percent = false;
+    _d->worklessPercent = CityStatistic::getWorklessNumber( _d->city ) * 100 / CityStatistic::getAvailableWorkersNumber( _d->city );
+    bool unemploymentLess5percent = _d->worklessPercent < 5;
+    bool unemploymentMore15percent = _d->worklessPercent > 15;
     _d->prosperityExtend += (unemploymentLess5percent ? 1 : 0);
     _d->prosperityExtend += (unemploymentMore15percent ? -1 : 0);
 
     bool havePatrician = patricianCount > 0;
     _d->prosperityExtend += (havePatrician ? 1 : 0);
 
-    bool payMoreThanRome = false;
-    bool payLessThanRome = false;
-    _d->prosperityExtend += (payMoreThanRome ? 1 : 0);
-    _d->prosperityExtend += (payLessThanRome ? -1 : 0);
+    _d->workersSalary = _d->city->getFunds().getWorkerSalary() - _d->city->getEmpire()->getWorkersSalary();
+    _d->prosperityExtend += (_d->workersSalary > 0 ? 1 : 0);
+    _d->prosperityExtend += (_d->workersSalary < 0 ? -1 : 0);
    
     bool brokeAndCaesarBailCity = false;
     _d->prosperityExtend += (brokeAndCaesarBailCity ? -3 : 0);
@@ -118,4 +140,22 @@ void CityServiceProsperity::update( const unsigned int time )
 int CityServiceProsperity::getValue() const
 {
   return _d->prosperity + _d->prosperityExtend;
+}
+
+int CityServiceProsperity::getMark(CityServiceProsperity::Mark type) const
+{
+  switch( type )
+  {
+  case cmHousesCap: return _d->houseCapTrand;
+  case cmHaveProfit: return _d->makeProfit;
+  case cmWorkless: return _d->worklessPercent;
+  case cmWorkersSalary: return _d->workersSalary;
+  case cmChange: return getValue() - _d->lastYearProsperity;
+  case cmPercentPlebs: return _d->percentPlebs;
+  }
+}
+
+std::string CityServiceProsperity::getDefaultName()
+{
+  return "prosperity";
 }

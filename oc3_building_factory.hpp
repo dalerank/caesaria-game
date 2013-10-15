@@ -58,8 +58,12 @@ public:
   virtual void load( const VariantMap& stream);
 
   void setProductRate( const float rate );
+
+  virtual std::string getError() const;
+
 protected:  
   virtual bool _mayDeliverGood() const;
+  void _setError( const std::string& err );
 
 protected:
   class Impl;
@@ -70,7 +74,7 @@ class TimberLogger : public Factory
 {
 public:
    TimberLogger();
-   bool canBuild(CityPtr city, const TilePos& pos ) const;  // returns true if it can be built there
+   virtual bool canBuild(CityPtr city, const TilePos& pos ) const;  // returns true if it can be built there
 };
 
 class IronMine : public Factory
@@ -84,24 +88,31 @@ class WeaponsWorkshop : public Factory
 {
 public:
    WeaponsWorkshop();
+
+   virtual bool canBuild(CityPtr city, const TilePos &pos) const;
 };
 
 class WorkshopFurniture : public Factory
 {
 public:
-   WorkshopFurniture();
+  virtual bool canBuild(CityPtr city, const TilePos &pos) const;
+
+  WorkshopFurniture();
 };
 
 class Winery : public Factory
 {
 public:
    Winery();
+   virtual bool canBuild(CityPtr city, const TilePos &pos) const;
 };
 
 class Creamery : public Factory
 {
 public:
    Creamery();
+
+   virtual bool canBuild(CityPtr city, const TilePos &pos) const;
 };
 
 class Wharf : public Factory
