@@ -10,6 +10,7 @@ compiler:
 #     env: OPTIONS="-DCMAKE_TOOLCHAIN_FILE=cmake/xcompile/win32.cmake"
 
 before_install:
+  - sudo apt-get update
   - sudo apt-get install -qq libsdl1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev
 
 
