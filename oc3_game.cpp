@@ -80,9 +80,10 @@ public:
 void Game::Impl::initLocale(const std::string & localePath)
 {
   // init the internationalization library (gettext)
-  const std::string localeStr = StringHelper::format( 0xff, "LC_ALL=%s", GameSettings::get( GameSettings::localeName ).toString().c_str() );
+  ByteArray localeData;
+  localeData = StringHelper::format( 0xff, "LC_ALL=%s", GameSettings::get( GameSettings::localeName ).toString().c_str() );
 
-  putenv( localeStr.c_str() );
+  putenv( localeData.data() );
   //setlocale(LC_ALL, "English");
   bindtextdomain( "caesar", localePath.data() );
   bind_textdomain_codeset( "caesar", "UTF-8" );
