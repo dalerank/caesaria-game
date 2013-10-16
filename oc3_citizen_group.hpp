@@ -21,7 +21,8 @@
 class CitizenGroup : public std::map< int, int >
 {
 public:
-  typedef enum { child, young, student, mature, aged } Age;
+  typedef enum { newborn=0, child, scholar, student, mature, aged, longliver=99 } Age;
+  typedef enum { childMin=2, matureMin=21 } AgeRange;
 
   int count() const;
   int count( Age group ) const;
@@ -30,8 +31,8 @@ public:
 
   CitizenGroup& operator += ( const CitizenGroup& b );
 
-  VariantMap save() const;
-  void load( const VariantMap& stream );
+  VariantList save() const;
+  void load( const VariantList& stream );
 };
 
 #endif //_OPENCAESAR_HOUSE_HABITANT_INCLUDE_H_

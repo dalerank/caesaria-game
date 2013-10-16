@@ -22,8 +22,8 @@
 Emigrant::Emigrant( CityPtr city ) : Immigrant( city )
 {
   CitizenGroup peoples;
-  peoples[ 20 ] = 2;
-  peoples[ 5 ] = 2;
+  peoples[ CitizenGroup::matureMin ] = 2;
+  peoples[ CitizenGroup::childMin ] = 2;
   setPeoples( peoples );
 
   _setType( WT_EMIGRANT );

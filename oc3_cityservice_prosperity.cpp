@@ -116,7 +116,7 @@ void CityServiceProsperity::update( const unsigned int time )
     bool haveHippodrome = helper.getBuildings<Hippodrome>( B_HIPPODROME ).size() > 0;
     _d->prosperityExtend += (haveHippodrome > 0 ? 1 : 0);
 
-    _d->worklessPercent = CityStatistic::getWorklessNumber( _d->city ) * 100 / CityStatistic::getAvailableWorkersNumber( _d->city );
+    _d->worklessPercent = CityStatistic::getWorklessPercent( _d->city );
     bool unemploymentLess5percent = _d->worklessPercent < 5;
     bool unemploymentMore15percent = _d->worklessPercent > 15;
     _d->prosperityExtend += (unemploymentLess5percent ? 1 : 0);
@@ -153,6 +153,8 @@ int CityServiceProsperity::getMark(CityServiceProsperity::Mark type) const
   case cmChange: return getValue() - _d->lastYearProsperity;
   case cmPercentPlebs: return _d->percentPlebs;
   }
+
+  return 0;
 }
 
 std::string CityServiceProsperity::getDefaultName()

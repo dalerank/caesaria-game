@@ -225,9 +225,15 @@ InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
   Label* houseInfo = new Label( this, Rect( 30, 40, getWidth() - 30, 40 + 100 ), house->getUpCondition() );
   houseInfo->setWordWrap( true );
 
-  std::string workerState = StringHelper::format( 0xff, "habtns=%d avWrk=%d",
-                                                  house->getHabitants().size(),
-                                                  house->getServiceValue( Service::workersRecruter ) );
+  std::string workerState = StringHelper::format( 0xff, "hb=%d hr=%d nb=%d ch=%d sch=%d st=%d mt=%d old=%d",
+                                                  house->getHabitants().count(),
+                                                  house->getServiceValue( Service::workersRecruter ),
+                                                  house->getHabitants().count( CitizenGroup::newborn ),
+                                                  house->getHabitants().count( CitizenGroup::child ),
+                                                  house->getHabitants().count( CitizenGroup::scholar ),
+                                                  house->getHabitants().count( CitizenGroup::student ),
+                                                  house->getHabitants().count( CitizenGroup::mature ),
+                                                  house->getHabitants().count( CitizenGroup::aged ) );
   new Label( this, Rect( 16, 125, getWidth() - 16, 150 ), workerState );
 
   drawHabitants( house );

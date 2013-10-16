@@ -198,7 +198,7 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow( CityPtr city, Widget* pa
   HouseList houses = helper.getBuildings<House>( B_HOUSE );
   foreach( HousePtr house, houses )
   {
-    sumScholars += house->getHabitants().count( CitizenGroup::young );
+    sumScholars += house->getHabitants().count( CitizenGroup::scholar );
     //sumStudents += (*it)->getStudents();
   }
 

@@ -124,7 +124,7 @@ AdvisorEducationWindow::AdvisorEducationWindow( CityPtr city, Widget* parent, in
   HouseList houses = helper.getBuildings<House>( B_HOUSE );
   foreach( HousePtr house, houses )
   {
-    sumScholars += house->getHabitants().count( CitizenGroup::young );
+    sumScholars += house->getHabitants().count( CitizenGroup::scholar );
     sumStudents += house->getHabitants().count( CitizenGroup::student );
   }
 

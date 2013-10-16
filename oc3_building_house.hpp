@@ -64,8 +64,8 @@ public:
   virtual void load(const VariantMap& stream);
 
   int getMaxHabitants();
-  void addHabitants(CitizenGroup& habitants );
-  const CitizenGroup& getHabitants();
+  void addHabitants( CitizenGroup& habitants );
+  const CitizenGroup& getHabitants() const;
 
   int collectTaxes();
 

@@ -80,6 +80,7 @@ public:
   static unsigned int getAvailableWorkersNumber( CityPtr city );
   static unsigned int getMontlyWorkersWages( CityPtr city );
   static unsigned int getWorklessNumber( CityPtr city );
+  static unsigned int getWorklessPercent( CityPtr city );
 };
 
 #endif //__OPENCAESAR3_CITYFUNDS_H_INCLUDED__

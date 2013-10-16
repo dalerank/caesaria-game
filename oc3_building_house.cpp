@@ -51,6 +51,7 @@ public:
   DateTime lastPayDate;
   std::string condition4Up;  
   CitizenGroup habitants;
+  int currentYear;
 
   bool mayPayTax()
   {
@@ -88,6 +89,25 @@ public:
     goodStore.setMaxQty(Good::oil, rsize );
     goodStore.setMaxQty(Good::wine, rsize );
   }
+
+  void consumeServices()
+  {
+    int currentWorkersPower = services[ Service::workersRecruter ];       //save available workers number
+    foreach( Services::value_type& srvc, services ) { srvc.second -= 1; } //consume services
+    services[ Service::workersRecruter ] = currentWorkersPower;     //restore available workers number
+  }
+
+  void makeOldHabitants()
+  {
+    for( CitizenGroup::reverse_iterator g=habitants.rbegin(); g!=habitants.rend(); g++ )
+    {
+      habitants[ g->first+1 ] = g->second;
+      habitants[ g->first ] = 0;
+    }
+
+    habitants[ CitizenGroup::newborn ] = 0; //birth+helath function from mature habitants count
+    habitants[ CitizenGroup::longliver ] = 0;
+  }
 };
 
 House::House(const int houseId) : Building( B_HOUSE ), _d( new Impl )
@@ -103,6 +123,7 @@ House::House(const int houseId) : Building( B_HOUSE ), _d( new Impl )
   _d->desirability.base = -3;
   _d->desirability.range = 3;
   _d->desirability.step = 1;
+  _d->currentYear = GameDate::current().getYear();
   _fireLevel = 0;
 
   _d->initGoodStore( 1 );
@@ -121,59 +142,55 @@ House::House(const int houseId) : Building( B_HOUSE ), _d( new Impl )
 
 void House::timeStep(const unsigned long time)
 {
-  if( _d->habitants.count() > 0 )
+  if( _d->habitants.empty()  )
+    return;
+
+  if( _d->currentYear != GameDate::current().getYear() )
   {
-    if( time % 16 == 0 )
-    {
-      //save available workers number
-      int currentWorkersPower = getServiceValue( Service::workersRecruter );
-
-      //consume services
-      foreach( Impl::Services::value_type& srvc, _d->services )
-      {
-        srvc.second -= 1;
-      }
-
-      setServiceValue( Service::workersRecruter, currentWorkersPower );
-      //restore available workers number
-      _d->updateHealthLevel();
-    }
-
-    if( time % 64 == 0 )
-    {
-      // consume goods
-      for( int i = 0; i < Good::goodCount; ++i)
-      {
-         Good::Type goodType = (Good::Type) i;
-         int montlyGoodsQty = _d->levelSpec.computeMonthlyConsumption( *this, goodType, true );
-         _d->goodStore.setCurrentQty( goodType, std::max( _d->goodStore.getCurrentQty(goodType) - montlyGoodsQty, 0) );
-      }
-
-      bool validate = _d->levelSpec.checkHouse( this );
-      if( !validate )
-      {
-        levelDown();
-      }
-      else
-      {
-        _d->condition4Up = "";
-        if( _d->levelSpec.next().checkHouse( this, &_d->condition4Up ) )
-        {
-           levelUp();
-        }
-      }
-
-      int homelessCount = math::clamp( _d->habitants.count() - _d->maxHabitants, 0, 0xff );
-      if( homelessCount > 0 )
-      {
-        CitizenGroup homeless = _d->habitants.retrieve( homelessCount );
-
-        Immigrant::send2City( _getCity(), homeless, getTile() );
-      }
-    }
-
-    Building::timeStep( time );
+    _d->currentYear = GameDate::current().getYear();
+    _d->makeOldHabitants();
   }
+
+  if( time % 16 == 0 )
+  {
+    _d->consumeServices();
+    _d->updateHealthLevel();
+  }
+
+  if( time % 64 == 0 )
+  {
+    // consume goods
+    for( int i = 0; i < Good::goodCount; ++i)
+    {
+       Good::Type goodType = (Good::Type) i;
+       int montlyGoodsQty = _d->levelSpec.computeMonthlyConsumption( *this, goodType, true );
+       _d->goodStore.setCurrentQty( goodType, std::max( _d->goodStore.getCurrentQty(goodType) - montlyGoodsQty, 0) );
+    }
+
+    bool validate = _d->levelSpec.checkHouse( this );
+    if( !validate )
+    {
+      levelDown();
+    }
+    else
+    {
+      _d->condition4Up = "";
+      if( _d->levelSpec.next().checkHouse( this, &_d->condition4Up ) )
+      {
+         levelUp();
+      }
+    }
+
+    int homelessCount = math::clamp( _d->habitants.count() - _d->maxHabitants, 0, 0xff );
+    if( homelessCount > 0 )
+    {
+      CitizenGroup homeless = _d->habitants.retrieve( homelessCount );
+
+      Immigrant::send2City( _getCity(), homeless, getTile() );
+    }
+  }
+
+  Building::timeStep( time );
 }
 
 GoodStore& House::getGoodStore()
@@ -604,12 +621,17 @@ int House::getMaxDistance2Road() const
 
 void House::addHabitants( CitizenGroup& habitants )
 {
-  int peoplesCount = (std::min)( _d->habitants.count() + habitants.count(), _d->maxHabitants );
+  int peoplesCount = math::clamp(  _d->maxHabitants - _d->habitants.count(), 0, _d->maxHabitants );
   CitizenGroup newHabitants = habitants.retrieve( peoplesCount );
   _d->habitants += newHabitants;
   _d->services[ Service::workersRecruter ].setMax( _d->habitants.count( CitizenGroup::mature ) );
   _d->services[ Service::workersRecruter ] += newHabitants.count( CitizenGroup::mature );
   _update();
+}
+
+const CitizenGroup&House::getHabitants() const
+{
+  return _d->habitants;
 }
 
 void House::destroy()
@@ -669,7 +691,7 @@ void House::load( const VariantMap& stream )
   _d->desirability.base = (int)stream.get( "desirability", 0 );
   _d->desirability.step = _d->desirability.base < 0 ? 1 : -1;
 
-  _d->habitants.load( stream.get( "currentHubitants" ).toMap() );
+  _d->habitants.load( stream.get( "currentHubitants" ).toList() );
   _d->maxHabitants = (int)stream.get( "maxHubitants", 0 );
 
   _d->goodStore.load( stream.get( "goodstore" ).toMap() );

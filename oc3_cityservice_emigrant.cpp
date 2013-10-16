@@ -57,7 +57,7 @@ void CityServiceEmigrant::update( const unsigned int time )
   //if salary in city more then empire people more effectivelly go to ouu city
   emigrantsDesirability += (_d->city->getEmpire()->getWorkersSalary() - _d->city->getFunds().getWorkerSalary()) * emDesKoeff;
 
-  int worklessPercent = CityStatistic::getWorklessNumber( _d->city ) * 100 / CityStatistic::getAvailableWorkersNumber( _d->city );
+  int worklessPercent = CityStatistic::getWorklessPercent( _d->city );
   emigrantsDesirability += worklessPercent;
 
   int goddesRandom = rand() % 100;

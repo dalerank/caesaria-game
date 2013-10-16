@@ -22,26 +22,92 @@ int CitizenGroup::count() const
   return ret;
 }
 
-int CitizenGroup::count( Age group) const
+int CitizenGroup::count( Age group ) const
 {
   int tmin=0, tmax=0;
   switch( group )
   {
-  case child: tmax=8; break;
-  case young: tmin=9; tmax=15; break;
+  case newborn: tmax=1; break;
+  case child: tmin=childMin; tmax=8; break;
+  case scholar: tmin=9; tmax=15; break;
   case student: tmin=16; tmax=20; break;
-  case mature: tmin=21; tmax=50; break;
+  case mature: tmin=matureMin; tmax=50; break;
   case aged: tmin=51; tmax=99; break;
+  case longliver: tmin=99; tmax=99; break;
   }
 
   int ret=0;
   for( const_iterator t=begin(); t != end(); t++ )
   {
-    if( t->first >= tmin && t->first < tmax )
+    if( t->first >= tmin && t->first <= tmax )
     {
       ret += t->second;
     }
   }
 
   return ret;
+}
+
+CitizenGroup CitizenGroup::retrieve(int count)
+{
+  CitizenGroup ret;
+
+  while( count > 0 && size() > 0 )
+  {
+    int groupIndex = rand() % size();
+    iterator g = begin();
+    std::advance( g, groupIndex );
+    if( g->second > 0 )
+    {
+      ret[ g->first ] += 1;
+      (*this)[ g->first ] -= 1;
+      count--;
+    }
+
+    if( g->second <= 0 )
+    {
+      erase( g );
+    }
+  }
+
+  return ret;
+}
+
+CitizenGroup& CitizenGroup::operator += (const CitizenGroup& b)
+{
+  for( const_iterator g=b.begin(); g != b.end(); g++ )
+  {
+    (*this)[ g->first ] += g->second;
+  }
+
+  return *this;
+}
+
+VariantList CitizenGroup::save() const
+{
+  VariantList ret;
+
+  for( const_iterator g = begin(); g != end(); g++ )
+  {
+    if( g->second != 0 )
+    {
+      VariantList gv;
+      gv.push_back( g->first );
+      gv.push_back( g->second );
+      ret.push_back( gv );
+    }
+  }
+
+  return ret;
+}
+
+void CitizenGroup::load(const VariantList& stream)
+{
+  for( VariantList::const_iterator g=stream.begin(); g != stream.end(); g++ )
+  {
+    VariantList gv = (*g).toList();
+    int age = gv.get( 0, 0 );
+    int count = gv.get( 1, 0 );
+    (*this)[ age ] = count;
+  }
 }

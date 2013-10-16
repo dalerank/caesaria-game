@@ -191,6 +191,6 @@ void Immigrant::save( VariantMap& stream ) const
 void Immigrant::load( const VariantMap& stream )
 {
   Walker::load( stream );
-  _d->peoples.load( stream.get( "peoples" ).toMap() );
+  _d->peoples.load( stream.get( "peoples" ).toList() );
   _d->destination = TilePos( stream.get( "destination" ).toTilePos() );
 }

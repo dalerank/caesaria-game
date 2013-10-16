@@ -253,3 +253,8 @@ unsigned int CityStatistic::getWorklessNumber(CityPtr city)
 
   return worklessNumber;
 }
+
+unsigned int CityStatistic::getWorklessPercent(CityPtr city)
+{
+  return getWorklessNumber( city ) * 100 / (getAvailableWorkersNumber( city )+1);
+}
