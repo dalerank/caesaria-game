@@ -25,7 +25,7 @@ public:
   RomeDivinityPtr divinity;
 };
 
-Temple::Temple( RomeDivinityPtr divinity, BuildingType type, int imgId, const Size& size )
+Temple::Temple( RomeDivinityPtr divinity, LandOverlayType type, int imgId, const Size& size )
 : ServiceBuilding( divinity->getServiceType(), type, size ), _td( new Impl )
 {
   _td->divinity = divinity;
@@ -112,7 +112,7 @@ unsigned int TempleOracle::getParishionerNumber() const
   return 500;
 }
 
-SmallTemple::SmallTemple( RomeDivinityPtr divinity, BuildingType type, int imgId ) 
+SmallTemple::SmallTemple( RomeDivinityPtr divinity, LandOverlayType type, int imgId ) 
   : Temple( divinity, type, imgId, Size(2) )
 {
   setMaxWorkers( 2 );
@@ -123,7 +123,7 @@ unsigned int SmallTemple::getParishionerNumber() const
   return 150;
 }
 
-BigTemple::BigTemple( RomeDivinityPtr divinity, BuildingType type, int imgId )
+BigTemple::BigTemple( RomeDivinityPtr divinity, LandOverlayType type, int imgId )
   : Temple( divinity, type, imgId, Size(3) )
 {
   setMaxWorkers( 8 );

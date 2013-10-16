@@ -13,34 +13,34 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_BUILD_OPTIONS_H_INCLUDED__
-#define __OPENCAESAR3_BUILD_OPTIONS_H_INCLUDED__
+#ifndef __OPENCAESAR3_LANDOVERLAYFACTORY_H_INCLUDE_
+#define __OPENCAESAR3_LANDOVERLAYFACTORY_H_INCLUDE_
 
-#include "oc3_referencecounted.hpp"
-#include "oc3_scopedptr.hpp"
 #include "oc3_enums.hpp"
-#include "oc3_variant.hpp"
+#include "oc3_scopedptr.hpp"
+#include "oc3_predefinitions.hpp"
 
-class CityBuildOptions : public ReferenceCounted
+class LandOverlayConstructor
 {
 public:
-  CityBuildOptions();
-  ~CityBuildOptions();
-
-  void setBuildingAvailble( const LandOverlayType type, bool mayBuild );
-  void setIndustryAvaible( const BuildMenuType type, bool mayBuild );
-
-  bool isBuildingAvailble( const LandOverlayType type ) const;
-
-  void clear();
-
-  void load( const VariantMap& options );
-
-  CityBuildOptions& operator=(const CityBuildOptions& a);
-
-private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  virtual LandOverlayPtr create() = 0;
 };
 
-#endif //__OPENCAESAR3_BUILD_OPTIONS_H_INCLUDED__
+class LandOverlayFactory
+{
+public:
+    static LandOverlayFactory& getInstance();
+    LandOverlayPtr create( const LandOverlayType type ) const;
+    LandOverlayPtr create( const std::string& typeName ) const;
+
+    bool canCreate( const LandOverlayType type ) const;
+
+    void addCreator( const LandOverlayType type, const std::string& typeName, LandOverlayConstructor* ctor );
+private:
+    LandOverlayFactory();
+
+    class Impl;
+    ScopedPtr< Impl > _d;
+};
+
+#endif  //__OPENCAESAR3_CONSTRUCTIONMANAGER_H_INCLUDE_

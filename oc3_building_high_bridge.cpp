@@ -370,7 +370,7 @@ void HighBridge::build( CityPtr city, const TilePos& pos )
       subtile->_info = TileHelper::encode( tile );
       subtile->_parent = this;
       
-      BuildEvent::create( buildPos, subtile.as<Construction>() );
+      BuildEvent::create( buildPos, subtile.as<LandOverlay>() );
     }    
   }
 }

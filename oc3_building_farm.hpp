@@ -21,7 +21,7 @@
 class Farm : public Factory
 {
 public:
-  Farm(const Good::Type outGood, const BuildingType type );
+  Farm(const Good::Type outGood, const LandOverlayType type );
   virtual ~Farm();
   void init();
 

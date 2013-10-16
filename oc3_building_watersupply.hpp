@@ -26,7 +26,7 @@ class Reservoir;
 class WaterSource : public Construction
 {
 public:
-  WaterSource( const BuildingType type, const Size& size );
+  WaterSource( const LandOverlayType type, const Size& size );
   
   virtual void addWater( const WaterSource& source );
   virtual bool haveWater() const;
@@ -98,7 +98,7 @@ public:
   virtual void timeStep(const unsigned long time);
   virtual bool isNeedRoadAccess() const;
 
-  virtual bool isActive();
+  virtual bool isActive() const;
   virtual bool haveReservoirAccess() const;
 
   virtual void load( const VariantMap& stream);

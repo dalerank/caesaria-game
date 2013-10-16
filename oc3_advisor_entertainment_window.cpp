@@ -31,7 +31,7 @@
 class EntertainmentInfoLabel : public Label
 {
 public:
-  EntertainmentInfoLabel( Widget* parent, const Rect& rect, const BuildingType service, 
+  EntertainmentInfoLabel( Widget* parent, const Rect& rect, const LandOverlayType service, 
                       int workBulding, int numberBuilding, int peoplesCount  )
     : Label( parent, rect )
   {
@@ -52,7 +52,7 @@ public:
     switch( _service )
     {
     case B_THEATER: buildingStr = _("##theaters##"); peoplesStr = _("##peoples##"); break;
-    case B_AMPHITHEATER: buildingStr = _("##amphitheatres##"); peoplesStr = _("##peoples##"); break;
+    case buildingAmphitheater: buildingStr = _("##amphitheatres##"); peoplesStr = _("##peoples##"); break;
     case B_COLLOSSEUM: buildingStr = _("##colloseum##"); peoplesStr = _("##peoples##"); break;
     case B_HIPPODROME: buildingStr = _("##hippodromes##"); peoplesStr = "-"; break;
     default:
@@ -68,7 +68,7 @@ public:
   }
 
 private:
-  BuildingType _service;
+  LandOverlayType _service;
   int _workingBuilding;
   int _numberBuilding;
   int _peoplesCount;
@@ -96,7 +96,7 @@ public:
     int peoplesStuding;
   };
 
-  InfrastructureInfo getInfo( CityPtr city, const BuildingType service )
+  InfrastructureInfo getInfo( CityPtr city, const LandOverlayType service )
   {
     CityHelper helper( city );
 
@@ -118,7 +118,7 @@ public:
         switch( service )
         {
         case B_THEATER: maxStuding = 500; break;
-        case B_AMPHITHEATER: maxStuding = 800; break;
+        case buildingAmphitheater: maxStuding = 800; break;
         case B_COLLOSSEUM: maxStuding = 1500; break;
         default:
         break;
@@ -179,8 +179,8 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow( CityPtr city, Widget* pa
   _d->lbTheatresInfo = new EntertainmentInfoLabel( this, Rect( startPoint, labelSize ), B_THEATER, 
                                              info.buildingWork, info.buildingCount, info.peoplesStuding );
 
-  info = _d->getInfo( city, B_AMPHITHEATER );
-  _d->lbAmphitheatresInfo = new EntertainmentInfoLabel( this, Rect( startPoint + Point( 0, 20), labelSize), B_AMPHITHEATER,
+  info = _d->getInfo( city, buildingAmphitheater );
+  _d->lbAmphitheatresInfo = new EntertainmentInfoLabel( this, Rect( startPoint + Point( 0, 20), labelSize), buildingAmphitheater,
                                               info.buildingWork, info.buildingCount, info.peoplesStuding );
 
   info = _d->getInfo( city, B_COLLOSSEUM );

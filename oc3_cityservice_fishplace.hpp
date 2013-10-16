@@ -13,37 +13,25 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_CONSTRUCTIONMANAGER_H_INCLUDE_
-#define __OPENCAESAR3_CONSTRUCTIONMANAGER_H_INCLUDE_
+#ifndef __OPENCAESAR3_CITYSERVICE_FISHPLACE_H_INCLUDED__
+#define __OPENCAESAR3_CITYSERVICE_FISHPLACE_H_INCLUDED__
 
-#include "oc3_enums.hpp"
+#include "oc3_cityservice.hpp"
 #include "oc3_scopedptr.hpp"
 #include "oc3_predefinitions.hpp"
 
-class Construction;
-class BuildingData;
-
-class BuildingCreator
+class CityServiceFishPlace : public CityService
 {
 public:
-  virtual Construction* create( const BuildingData& info ) = 0;
-};
+  static CityServicePtr create( CityPtr city );
 
-class ConstructionManager
-{
-public:
-    static ConstructionManager& getInstance();
-    ConstructionPtr create(const BuildingType buildingType) const;
-    ConstructionPtr create(const std::string& typeName ) const;
+  void update( const unsigned int time );
 
-    bool canCreate( const BuildingType type ) const;
-
-    void addCreator( const BuildingType type, const std::string& typeName, BuildingCreator* ctor );
 private:
-    ConstructionManager();
+  CityServiceFishPlace( CityPtr city );
 
-    class Impl;
-    ScopedPtr< Impl > _d;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
-#endif  //__OPENCAESAR3_CONSTRUCTIONMANAGER_H_INCLUDE_
+#endif //__OPENCAESAR3_CITYSERVICE_FISHPLACE_H_INCLUDED__

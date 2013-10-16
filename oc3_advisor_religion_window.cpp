@@ -99,7 +99,7 @@ public:
     int bigTempleCount;
   };
 
-  InfrastructureInfo getInfo( CityPtr city, const BuildingType small, const BuildingType big )
+  InfrastructureInfo getInfo( CityPtr city, const LandOverlayType small, const LandOverlayType big )
   {
     CityHelper helper( city );
 

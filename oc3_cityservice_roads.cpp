@@ -59,12 +59,12 @@ void CityServiceRoads::update( const unsigned int time )
 
   _d->lastTimeUpdate = GameDate::current();
 
-  std::vector< BuildingType > btypes;
+  std::vector< LandOverlayType > btypes;
   btypes.push_back( B_SENATE );
 
   CityHelper helper( _d->city );
 
-  foreach( BuildingType type, btypes )
+  foreach( LandOverlayType type, btypes )
   {
     BuildingList buildings = helper.getBuildings<Building>( type );
 

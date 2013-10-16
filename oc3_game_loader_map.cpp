@@ -18,7 +18,7 @@
 #include "oc3_city.hpp"
 #include "oc3_game.hpp"
 #include "oc3_exception.hpp"
-#include "oc3_constructionmanager.hpp"
+#include "oc3_landoverlayfactory.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_empire.hpp"
@@ -281,7 +281,7 @@ void GameLoaderC3Map::Impl::decodeTerrain(Tile &oTile, CityPtr city )
 
   if( oTile.getFlag( Tile::tlRoad ) )   // road
   {
-    overlay = ConstructionManager::getInstance().create( B_ROAD ).as<LandOverlay>();
+    overlay = LandOverlayFactory::getInstance().create( B_ROAD ).as<LandOverlay>();
   }
   else if( oTile.getFlag( Tile::tlBuilding ) )
   {
@@ -293,16 +293,16 @@ void GameLoaderC3Map::Impl::decodeTerrain(Tile &oTile, CityPtr city )
       case 0xb0f:
       case 0xb0b:
       case 0xb0c:
-	      overlay = ConstructionManager::getInstance().create( B_NATIVE_HUT ).as<LandOverlay>();
+	      overlay = LandOverlayFactory::getInstance().create( B_NATIVE_HUT ).as<LandOverlay>();
         break;
       case 0xb10:
       case 0xb0d:
-	      overlay =  ConstructionManager::getInstance().create( B_NATIVE_CENTER ).as<LandOverlay>();
+	      overlay =  LandOverlayFactory::getInstance().create( B_NATIVE_CENTER ).as<LandOverlay>();
         StringHelper::debug( 0xff, "creation of Native center at (%d,%d)", oTile.getI(), oTile.getJ() );
 	      break;
       case 0xb11:
       case 0xb44:
-       	overlay = ConstructionManager::getInstance().create( B_NATIVE_FIELD ).as<LandOverlay>();
+       	overlay = LandOverlayFactory::getInstance().create( B_NATIVE_FIELD ).as<LandOverlay>();
 	      break;
     }
   }

@@ -419,7 +419,7 @@ void CityRenderer::Impl::drawTileEntertainment( Tile& tile )
     break;
 
     case B_THEATER:
-    case B_AMPHITHEATER:
+    case buildingAmphitheater:
     case B_COLLOSSEUM:
     case B_HIPPODROME:
     case B_LION_HOUSE:
@@ -442,7 +442,7 @@ void CityRenderer::Impl::drawTileEntertainment( Tile& tile )
         HousePtr house = overlay.as< House >();
         if( overlayRendeFlags.count( B_MAX ) ) { entertainmentLevel = house->getLevelSpec().computeEntertainmentLevel( house ); }
         else if( overlayRendeFlags.count( B_THEATER ) ) { entertainmentLevel = house->getServiceValue( Service::theater ); }
-        else if( overlayRendeFlags.count( B_AMPHITHEATER ) ) { entertainmentLevel = house->getServiceValue( Service::amphitheater ); }
+        else if( overlayRendeFlags.count( buildingAmphitheater ) ) { entertainmentLevel = house->getServiceValue( Service::amphitheater ); }
         else if( overlayRendeFlags.count( B_COLLOSSEUM ) ) { entertainmentLevel = house->getServiceValue( Service::colloseum ); }
         else if( overlayRendeFlags.count( B_HIPPODROME ) ) { entertainmentLevel = house->getServiceValue( Service::hippodrome ); }
 
@@ -1429,7 +1429,7 @@ void CityRenderer::setMode( const TilemapChangeCommandPtr command )
     TilemapOverlayCommandPtr ovCmd = _d->changeCommand.as<TilemapOverlayCommand>();
     switch( ovCmd->getType() )
     {
-    case OV_WATER: _d->setDrawFunction( _d.data(), &Impl::drawTileWater ); break;
+    case drwWater: _d->setDrawFunction( _d.data(), &Impl::drawTileWater ); break;
     case OV_RISK_FIRE: _d->setDrawFunction( _d.data(), &Impl::drawTileFire ); break;
     case OV_RISK_DAMAGE: _d->setDrawFunction( _d.data(), &Impl::drawTileDamage ); break;
     case OV_COMMERCE_PRESTIGE: _d->setDrawFunction( _d.data(), &Impl::drawTileDesirability ); break;
@@ -1440,7 +1440,7 @@ void CityRenderer::setMode( const TilemapChangeCommandPtr command )
       _d->overlayRendeFlags.clear();
       _d->overlayRendeFlags.insert( B_MAX );
       _d->overlayRendeFlags.insert( B_THEATER );
-      _d->overlayRendeFlags.insert( B_AMPHITHEATER );
+      _d->overlayRendeFlags.insert( buildingAmphitheater );
       _d->overlayRendeFlags.insert( B_COLLOSSEUM );
       _d->overlayRendeFlags.insert( B_HIPPODROME );
       _d->overlayRendeFlags.insert( B_ACTOR_COLONY );
@@ -1477,7 +1477,7 @@ void CityRenderer::setMode( const TilemapChangeCommandPtr command )
     case OV_ENTERTAINMENT_AMPHITHEATRES:
       _d->setDrawFunction( _d.data(), &Impl::drawTileEntertainment );
       _d->overlayRendeFlags.clear();
-      _d->overlayRendeFlags.insert( B_AMPHITHEATER );
+      _d->overlayRendeFlags.insert( buildingAmphitheater );
       _d->overlayRendeFlags.insert( B_ACTOR_COLONY );
       _d->overlayRendeFlags.insert( B_GLADIATOR_SCHOOL );
     break;
@@ -1501,7 +1501,7 @@ void CityRenderer::setMode( const TilemapChangeCommandPtr command )
 
     switch( ovCmd->getType() )
     {
-    case OV_WATER: _d->setVisibleWalkers(WalkersVisibility::nobody); break;
+    case drwWater: _d->setVisibleWalkers(WalkersVisibility::nobody); break;
     case OV_RISK_FIRE: _d->setVisibleWalkers(WalkersVisibility::prefect); break;
     case OV_RISK_DAMAGE: _d->setVisibleWalkers(WalkersVisibility::engineer); break;
     case OV_COMMERCE_PRESTIGE: _d->setVisibleWalkers(WalkersVisibility::prestige); break;

@@ -138,7 +138,7 @@ public:
   CityHelper( CityPtr city ) : _city( city ) {}
 
   template< class T >
-  std::list< SmartPtr< T > > getBuildings( const BuildingType type )
+  std::list< SmartPtr< T > > getBuildings( const LandOverlayType type )
   {
     std::list< SmartPtr< T > > ret;
     LandOverlayList& buildings = _city->getOverlayList();
@@ -155,7 +155,7 @@ public:
   }
 
   template< class T >
-  std::list< SmartPtr< T > > getBuildings( const BuildingClass type )
+  std::list< SmartPtr< T > > getBuildings( const LandOverlayClass type )
   {
     std::list< SmartPtr< T > > ret;
     LandOverlayList& overlays = _city->getOverlayList();

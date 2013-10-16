@@ -12,7 +12,7 @@ public:
 
   }
 
-  ServiceWalker::ReachedBuildings getReachedBuildings( const TilePos& pos, const BuildingType type )
+  ServiceWalker::ReachedBuildings getReachedBuildings( const TilePos& pos, const LandOverlayType type )
   {
     ServiceWalker::ReachedBuildings res = _walker.getReachedBuildings( pos );
 

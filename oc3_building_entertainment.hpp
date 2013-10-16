@@ -21,7 +21,7 @@
 class EntertainmentBuilding : public ServiceBuilding
 {
 public:
-  EntertainmentBuilding( const Service::Type service, const BuildingType type,
+  EntertainmentBuilding( const Service::Type service, const LandOverlayType type,
                          const Size& size);
   virtual void deliverService();
   virtual int getVisitorsNumber() const;

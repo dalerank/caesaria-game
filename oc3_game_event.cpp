@@ -14,7 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_game_event.hpp"
-#include "oc3_constructionmanager.hpp"
+#include "oc3_landoverlayfactory.hpp"
 #include "oc3_city.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_building_data.hpp"
@@ -70,8 +70,8 @@ void DisasterEvent::exec( Game& game )
     TilemapArea clearedTiles = tmap.getArea( rPos, size );
     foreach( Tile* tile, clearedTiles )
     {
-      BuildingType dstr2constr[] = { B_BURNING_RUINS, B_COLLAPSED_RUINS, B_PLAGUE_RUINS };
-      bool canCreate = ConstructionManager::getInstance().canCreate( dstr2constr[_type] );
+      LandOverlayType dstr2constr[] = { B_BURNING_RUINS, B_COLLAPSED_RUINS, B_PLAGUE_RUINS };
+      bool canCreate = LandOverlayFactory::getInstance().canCreate( dstr2constr[_type] );
       if( canCreate )
       {
         GameEventMgr::append( BuildEvent::create( tile->getIJ(), dstr2constr[_type] ) );
@@ -84,16 +84,16 @@ void DisasterEvent::exec( Game& game )
   }
 }
 
-GameEventPtr BuildEvent::create( const TilePos& pos, const BuildingType type )
+GameEventPtr BuildEvent::create( const TilePos& pos, const LandOverlayType type )
 {
-  return create( pos, ConstructionManager::getInstance().create( type ) );
+  return create( pos, LandOverlayFactory::getInstance().create( type ) );
 }
 
-GameEventPtr BuildEvent::create(const TilePos& pos, ConstructionPtr building)
+GameEventPtr BuildEvent::create(const TilePos& pos, LandOverlayPtr overlay)
 {
   BuildEvent* ev = new BuildEvent();
   ev->_pos = pos;
-  ev->_construction = building;
+  ev->_overlay = overlay;
 
   GameEventPtr ret( ev );
   ret->drop();
@@ -103,20 +103,24 @@ GameEventPtr BuildEvent::create(const TilePos& pos, ConstructionPtr building)
 
 void BuildEvent::exec( Game& game )
 {
-  const BuildingData& buildingData = BuildingDataHolder::instance().getData( _construction->getType() );
-  if( _construction.isValid() )
+  const BuildingData& buildingData = BuildingDataHolder::instance().getData( _overlay->getType() );
+  if( _overlay.isValid() )
   {
-    _construction->build( game.getCity(), _pos );
+    _overlay->build( game.getCity(), _pos );
 
-    CityHelper helper( game.getCity() );
-    helper.updateDesirability( _construction, true );
-
-    game.getCity()->addOverlay( _construction.as<LandOverlay>() );
-    game.getCity()->getFunds().resolveIssue( FundIssue( CityFunds::buildConstruction, -buildingData.getCost() ) );
-
-    if( _construction->isNeedRoadAccess() && _construction->getAccessRoads().empty() )
+    ConstructionPtr construction = _overlay.as<Construction>();
+    if( construction != 0 )
     {
-      game.getCity()->onWarningMessage().emit( "##building_need_road_access##" );
+      CityHelper helper( game.getCity() );
+      helper.updateDesirability( construction, true );
+
+      game.getCity()->addOverlay( _overlay );
+      game.getCity()->getFunds().resolveIssue( FundIssue( CityFunds::buildConstruction, -buildingData.getCost() ) );
+
+      if( construction->isNeedRoadAccess() && construction->getAccessRoads().empty() )
+      {
+        game.getCity()->onWarningMessage().emit( "##building_need_road_access##" );
+      }
     }
   }
 }

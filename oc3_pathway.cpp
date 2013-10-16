@@ -112,7 +112,7 @@ void PathWay::toggleDirection()
 
 DirectionType PathWay::getNextDirection()
 {
-  DirectionType res;
+  DirectionType res=D_NONE;
   if (_isReverse)
   {
     if (_directionIt_reverse == _directionList.rend())
@@ -144,7 +144,6 @@ DirectionType PathWay::getNextDirection()
     res = *_directionIt;
     _directionIt ++;
   }
-
 
   return res;
 }

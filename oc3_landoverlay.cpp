@@ -23,8 +23,8 @@ class LandOverlay::Impl
 {
 public:
   PicturesArray fgPictures;
-  BuildingType buildingType;
-  BuildingClass buildingClass;
+  LandOverlayType overlayType;
+  LandOverlayClass overlayClass;
   Tile* masterTile;  // left-most tile if multi-tile, or "this" if single-tile
   std::string name;
   Picture picture;
@@ -34,7 +34,7 @@ public:
   CityPtr city;
 };
 
-LandOverlay::LandOverlay(const BuildingType type, const Size& size)
+LandOverlay::LandOverlay(const LandOverlayType type, const Size& size)
 : _d( new Impl )
 {
   _d->masterTile = 0;
@@ -51,17 +51,17 @@ LandOverlay::~LandOverlay()
 }
 
 
-BuildingType LandOverlay::getType() const
+LandOverlayType LandOverlay::getType() const
 {
-   return _d->buildingType;
+   return _d->overlayType;
 }
 
-void LandOverlay::setType(const BuildingType buildingType)
+void LandOverlay::setType(const LandOverlayType type)
 {
-  const BuildingData& bd = BuildingDataHolder::instance().getData( buildingType );
+  const BuildingData& bd = BuildingDataHolder::instance().getData( type );
 
-   _d->buildingType = buildingType;
-   _d->buildingClass = bd.getClass();
+   _d->overlayType = type;
+   _d->overlayClass = bd.getClass();
    _d->name = bd.getName();
 }
 
@@ -172,8 +172,8 @@ std::string LandOverlay::getName()
 void LandOverlay::save( VariantMap& stream ) const
 {
   stream[ "pos" ] = getTile().getIJ();
-  stream[ "buildingTypeName" ] = Variant( BuildingDataHolder::instance().getData( _d->buildingType ).getName() );
-  stream[ "buildingType" ] = (int)_d->buildingType;
+  stream[ "overlayTypeName" ] = Variant( BuildingDataHolder::instance().getData( _d->overlayType ).getName() );
+  stream[ "overlayType" ] = (int)_d->overlayType;
   stream[ "picture" ] = Variant( _d->picture.getName() );
   stream[ "pictureOffset" ] = _d->picture.getOffset();
   stream[ "size" ] = _d->size;
@@ -185,7 +185,7 @@ void LandOverlay::load( const VariantMap& stream )
 {
   _d->name = stream.get( "name" ).toString();
   _d->size = stream.get( "size", Size(1) ).toSize();
-  _d->buildingType = (BuildingType)stream.get( "buildingType" ).toInt();
+  _d->overlayType = (LandOverlayType)stream.get( "overlayType" ).toInt();
   _d->picture = Picture::load( stream.get( "picture" ).toString() + ".png" );
   _d->picture.setOffset( stream.get( "pictureOffset" ).toPoint() );
   _d->isDeleted = stream.get( "isDeleted", false ).toBool();  
@@ -241,7 +241,7 @@ PicturesArray& LandOverlay::_getForegroundPictures()
   return _d->fgPictures;
 }
 
-BuildingClass LandOverlay::getClass() const
+LandOverlayClass LandOverlay::getClass() const
 {
-  return _d->buildingClass;
+  return _d->overlayClass;
 }

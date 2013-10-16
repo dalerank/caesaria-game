@@ -37,7 +37,7 @@ OverlaysMenu::OverlaysMenu( Widget* parent, const Rect& rectangle, int id )
   _addButtons( OV_COUNT );
 }
 
-void OverlaysMenu::_addButtons( const OverlayType type )
+void OverlaysMenu::_addButtons( const DrawingOverlayType type )
 {
   Point startPos;
   Point offset( 0, 27 );
@@ -49,9 +49,9 @@ void OverlaysMenu::_addButtons( const OverlayType type )
   switch( type )
   {
   case OV_COUNT:
-    _addButton( OV_NOTHING, _("##ovrm_nothing##"), startPos );
-    _addButton( OV_WATER, _("##ovrm_water##"), startPos+=offset );
-    _addButton( OV_RISK, _("##ovrm_risk##"), startPos+=offset );
+    _addButton( drwSimple, _("##ovrm_nothing##"), startPos );
+    _addButton( drwWater, _("##ovrm_water##"), startPos+=offset );
+    _addButton( drwRisks, _("##ovrm_risk##"), startPos+=offset );
     _addButton( OV_ENTERTAINMENT, _("##ovrm_entertainment##"), startPos+=offset );
     _addButton( OV_EDUCATION, _("##ovrm_education##"), startPos+=offset );
     _addButton( OV_HEALTH, _("##ovrm_health##"), startPos+=offset );
@@ -60,7 +60,7 @@ void OverlaysMenu::_addButtons( const OverlayType type )
     setHeight( 8 * offset.getY() );
     break;
 
-  case OV_RISK:
+  case drwRisks:
     _addButton( OV_RISK_FIRE, _("##ovrm_fire##"), startPos );
     _addButton( OV_RISK_DAMAGE, _("##ovrm_damage##"), startPos+=offset );
     _addButton( OV_RISK_CRIME, _("##ovrm_crime##"), startPos+=offset );
@@ -100,7 +100,7 @@ void OverlaysMenu::_addButtons( const OverlayType type )
   }  
 }
 
-void OverlaysMenu::_addButton(const OverlayType ovType, const std::string& name, const Point& offset )
+void OverlaysMenu::_addButton(const DrawingOverlayType ovType, const std::string& name, const Point& offset )
 {
   PushButton* btn = new PushButton( this, Rect( 0, 0, getWidth(), 20 ) + offset, name, ovType, false, PushButton::smallGrayBorderLine );
   btn->setFont( Font::create( FONT_1 ) );
@@ -125,7 +125,7 @@ bool OverlaysMenu::onEvent( const NEvent& event )
     case OC3_ELEMENT_HOVERED:
       switch( event.GuiEvent.Caller->getID() )
       {
-      case OV_RISK:
+      case drwRisks:
       case OV_ENTERTAINMENT:
       case OV_EDUCATION:
       case OV_HEALTH:
@@ -138,13 +138,13 @@ bool OverlaysMenu::onEvent( const NEvent& event )
 
           _d->buttons.clear();
 
-          _addButtons( (OverlayType)event.GuiEvent.Caller->getID() );
+          _addButtons( (DrawingOverlayType)event.GuiEvent.Caller->getID() );
           return true;
         }
       break;
 
-      case OV_NOTHING:
-      case OV_WATER:
+      case drwSimple:
+      case drwWater:
       case OV_RELIGION:
         {
           foreach( PushButton* item, _d->buttons )

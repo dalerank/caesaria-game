@@ -135,8 +135,8 @@ public:
     CityPtr city;
     bool showDebugInfo;
 
-    typedef std::map< BuildingType, InfoboxCreator* > InfoboxCreators;
-    std::map< std::string, BuildingType > name2typeMap;
+    typedef std::map< LandOverlayType, InfoboxCreator* > InfoboxCreators;
+    std::map< std::string, LandOverlayType > name2typeMap;
 
     InfoboxCreators constructors;
 };
@@ -195,7 +195,7 @@ InfoBoxManager::InfoBoxManager( CityPtr city, GuiEnv* gui ) : _d( new Impl )
   addInfobox( B_STATUE2, OC3_STR_EXT(B_STATUE2), new InfoBoxBasicCreator( _("##building_statue_middle##"), _("##statue_desc##")) );
   addInfobox( B_STATUE3, OC3_STR_EXT(B_STATUE3), new InfoBoxBasicCreator( _("##building_statue_big##"), _("##statue_desc##")) );
   addInfobox( B_PLAZA,   OC3_STR_EXT(B_PLAZA), new CitizenInfoboxCreator<InfoBoxLand>( _d->city ) );
-  addInfobox( notBuilding, OC3_STR_EXT(notBuilding), new CitizenInfoboxCreator<InfoBoxLand>( _d->city ) );
+  addInfobox( unknown, OC3_STR_EXT(unknown), new CitizenInfoboxCreator<InfoBoxLand>( _d->city ) );
   addInfobox( B_POTTERY, OC3_STR_EXT(B_POTTERY), new BaseInfoboxCreator<GuiInfoFactory>() );
   addInfobox( B_WEAPONS_WORKSHOP, OC3_STR_EXT(B_WEAPONS_WORKSHOP), new BaseInfoboxCreator<GuiInfoFactory>() );
   addInfobox( B_FURNITURE,        OC3_STR_EXT(B_FURNITURE), new BaseInfoboxCreator<GuiInfoFactory>() );
@@ -208,7 +208,7 @@ InfoBoxManager::InfoBoxManager( CityPtr city, GuiEnv* gui ) : _d( new Impl )
   addInfobox( B_SENATE,       OC3_STR_EXT(B_SENATE), new BaseInfoboxCreator<InfoBoxSenate>() );
   addInfobox( B_THEATER,      OC3_STR_EXT(B_THEATER), new ServiceBaseInfoboxCreator( _("##theater_title##"), _("##theater_text##")) );
   addInfobox( B_ACTOR_COLONY, OC3_STR_EXT(B_ACTOR_COLONY), new ServiceBaseInfoboxCreator( _("##actor_colony_title##"), _("##actor_colony_text##")) );
-  addInfobox( B_AMPHITHEATER, OC3_STR_EXT(B_AMPHITHEATER), new ServiceBaseInfoboxCreator( _("##amphitheater_title##"), _("##amphitheater_text##")) );
+  addInfobox( buildingAmphitheater, OC3_STR_EXT(buildingAmphitheater), new ServiceBaseInfoboxCreator( _("##amphitheater_title##"), _("##amphitheater_text##")) );
   addInfobox( B_GLADIATOR_SCHOOL, OC3_STR_EXT(B_GLADIATOR_SCHOOL), new ServiceBaseInfoboxCreator( _("##gladiator_school_title##"), _("##gladiator_school_text##")) );
   addInfobox( B_COLLOSSEUM,    OC3_STR_EXT(B_COLLOSSEUM), new BaseInfoboxCreator<InfoBoxColosseum>() );
   addInfobox( B_LION_HOUSE,    OC3_STR_EXT(B_LION_HOUSE), new ServiceBaseInfoboxCreator( _("##lion_house_title##"), _("##lion_house_text##")) );
@@ -230,14 +230,14 @@ InfoBoxManager::~InfoBoxManager()
 void InfoBoxManager::showHelp( const Tile& tile )
 {
   LandOverlayPtr overlay = tile.getOverlay();
-  BuildingType type;
+  LandOverlayType type;
 
   if( _d->showDebugInfo )
   {
     StringHelper::debug( 0xff, "Tile debug info: dsrbl=%d", tile.getDesirability() );
   }
 
-  type = overlay.isNull() ? notBuilding : overlay->getType();
+  type = overlay.isNull() ? unknown : overlay->getType();
 
   Impl::InfoboxCreators::iterator findConstructor = _d->constructors.find( type );
 
@@ -262,7 +262,7 @@ void InfoBoxManager::setShowDebugInfo( const bool showInfo )
   _d->showDebugInfo = showInfo;
 } 
 
-void InfoBoxManager::addInfobox( const BuildingType type, const std::string& typeName, InfoboxCreator* ctor )
+void InfoBoxManager::addInfobox( const LandOverlayType type, const std::string& typeName, InfoboxCreator* ctor )
 {
   bool alreadyHaveConstructor = _d->name2typeMap.find( typeName ) != _d->name2typeMap.end();
   _OC3_DEBUG_BREAK_IF( alreadyHaveConstructor && "already have constructor for this type");
@@ -274,7 +274,7 @@ void InfoBoxManager::addInfobox( const BuildingType type, const std::string& typ
   }
 }
 
-bool InfoBoxManager::canCreate( const BuildingType type ) const
+bool InfoBoxManager::canCreate( const LandOverlayType type ) const
 {
   return _d->constructors.find( type ) != _d->constructors.end();   
 }

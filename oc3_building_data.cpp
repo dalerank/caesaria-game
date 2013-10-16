@@ -24,14 +24,14 @@
 #include "oc3_enums_helper.hpp"
 #include "oc3_foreach.hpp"
 
-BuildingData BuildingData::invalid = BuildingData( notBuilding, "unknown", 0 );
+BuildingData BuildingData::invalid = BuildingData( unknown, "unknown", 0 );
 
-class BuildingTypeHelper : public EnumsHelper<BuildingType>
+class BuildingTypeHelper : public EnumsHelper<LandOverlayType>
 {
 public:
-  BuildingTypeHelper() : EnumsHelper<BuildingType>( notBuilding )
+  BuildingTypeHelper() : EnumsHelper<LandOverlayType>( unknown )
   {
-    append( B_AMPHITHEATER,   "amphitheater");
+    append( buildingAmphitheater,   "amphitheater");
     append( B_THEATER,        "theater" );
     append( B_HIPPODROME,     "hippodrome" );
     append( B_COLLOSSEUM,     "colloseum" );
@@ -117,14 +117,14 @@ public:
     append( B_SENATE_2, "senate_2" );
     append( B_TOWER, "tower" );
     append( B_WALL, "wall"  );
-    append( notBuilding, "" );
+    append( unknown, "" );
  }
 };
 
-class BuildingClassHelper : public EnumsHelper<BuildingClass>
+class BuildingClassHelper : public EnumsHelper<LandOverlayClass>
 {
 public:
-  BuildingClassHelper() : EnumsHelper<BuildingClass>( BC_NONE )
+  BuildingClassHelper() : EnumsHelper<LandOverlayClass>( lndcUnknown )
   {
     append( BC_INDUSTRY, "industry" );
     append( BC_RAWMATERIAL, "rawmaterial" );
@@ -149,7 +149,7 @@ public:
     append( BC_ENTERTAINMENT, "entertainment" );
     append( BC_HOUSE, "house" );
     append( BC_WALL, "wall" );
-    append( BC_NONE, "" );
+    append( lndcUnknown, "" );
   }
 };
 
@@ -157,15 +157,15 @@ class BuildingData::Impl
 {
 public:
   BuildingData::Desirability desirability;
-  BuildingType buildingType;
+  LandOverlayType buildingType;
   VariantMap options;
 };
 
-BuildingData::BuildingData(const BuildingType buildingType, const std::string &name, const int cost)
+BuildingData::BuildingData(const LandOverlayType buildingType, const std::string &name, const int cost)
   : _d( new Impl )
 {
   _d->buildingType = buildingType;
-  _buildingClass = BC_NONE;
+  _buildingClass = lndcUnknown;
   _name = name;
   _prettyName = _( ("##" + name + "##").c_str() );  // i18n translation
   _cost = cost;
@@ -194,7 +194,7 @@ std::string BuildingData::getPrettyName() const
   return _prettyName;
 }
 
-BuildingType BuildingData::getType() const
+LandOverlayType BuildingData::getType() const
 {
   return _d->buildingType;
 }
@@ -235,7 +235,7 @@ BuildingData &BuildingData::operator=(const BuildingData &a)
   return *this;
 }
 
-BuildingClass BuildingData::getClass() const
+LandOverlayClass BuildingData::getClass() const
 {
   return _buildingClass;
 }
@@ -246,8 +246,8 @@ public:
   BuildingTypeHelper typeHelper;
   BuildingClassHelper classHelper;
 
-  typedef std::map<BuildingType, BuildingData> BuildingsMap; 
-  typedef std::map<Good::Type, BuildingType> FactoryInMap;
+  typedef std::map<LandOverlayType, BuildingData> BuildingsMap; 
+  typedef std::map<Good::Type, LandOverlayType> FactoryInMap;
 
   BuildingsMap buildings;// key=building_type, value=data
   FactoryInMap mapBuildingByInGood;
@@ -259,9 +259,9 @@ BuildingDataHolder& BuildingDataHolder::instance()
   return inst;
 }
 
-BuildingType BuildingDataHolder::getConsumerType(const Good::Type inGoodType) const
+LandOverlayType BuildingDataHolder::getConsumerType(const Good::Type inGoodType) const
 {
-  BuildingType res = notBuilding;
+  LandOverlayType res = unknown;
 
   Impl::FactoryInMap::iterator mapIt;
   mapIt = _d->mapBuildingByInGood.find(inGoodType);
@@ -272,7 +272,7 @@ BuildingType BuildingDataHolder::getConsumerType(const Good::Type inGoodType) co
   return res;
 }
 
-const BuildingData& BuildingDataHolder::getData(const BuildingType buildingType) const
+const BuildingData& BuildingDataHolder::getData(const LandOverlayType buildingType) const
 {
   Impl::BuildingsMap::iterator mapIt;
   mapIt = _d->buildings.find(buildingType);
@@ -284,7 +284,7 @@ const BuildingData& BuildingDataHolder::getData(const BuildingType buildingType)
   return mapIt->second;
 }
 
-bool BuildingDataHolder::hasData(const BuildingType buildingType) const
+bool BuildingDataHolder::hasData(const LandOverlayType buildingType) const
 {
   bool res = true;
   Impl::BuildingsMap::iterator mapIt;
@@ -298,7 +298,7 @@ bool BuildingDataHolder::hasData(const BuildingType buildingType) const
 
 void BuildingDataHolder::addData(const BuildingData &data)
 {
-  BuildingType buildingType = data.getType();
+  LandOverlayType buildingType = data.getType();
 
   if (hasData(buildingType))
   {
@@ -329,8 +329,8 @@ void BuildingDataHolder::initialize( const io::FilePath& filename )
   {
     VariantMap options = mapItem.second.toMap();
 
-    const BuildingType btype = getType( mapItem.first );
-    if( btype == notBuilding )
+    const LandOverlayType btype = getType( mapItem.first );
+    if( btype == unknown )
     {
       StringHelper::debug( 0xff, "!!!Warning: can't associate type with %s", mapItem.first.c_str() );
       continue;
@@ -374,9 +374,9 @@ void BuildingDataHolder::initialize( const io::FilePath& filename )
   }
 }
 
-BuildingType BuildingDataHolder::getType( const std::string& name )
+LandOverlayType BuildingDataHolder::getType( const std::string& name )
 {
-  BuildingType type = instance()._d->typeHelper.findType( name );
+  LandOverlayType type = instance()._d->typeHelper.findType( name );
 
   if( type == instance()._d->typeHelper.getInvalid() )
   {
@@ -387,9 +387,9 @@ BuildingType BuildingDataHolder::getType( const std::string& name )
   return type;
 }
 
-BuildingClass BuildingDataHolder::getClass( const std::string& name )
+LandOverlayClass BuildingDataHolder::getClass( const std::string& name )
 {
-  BuildingClass type = instance()._d->classHelper.findType( name );
+  LandOverlayClass type = instance()._d->classHelper.findType( name );
 
   if( type == instance()._d->classHelper.getInvalid() )
   {
@@ -400,7 +400,7 @@ BuildingClass BuildingDataHolder::getClass( const std::string& name )
   return type;
 }
 
-std::string BuildingDataHolder::getPrettyName(BuildingType bType)
+std::string BuildingDataHolder::getPrettyName(LandOverlayType bType)
 {
   return instance().getData( bType ).getPrettyName();
 }

@@ -18,7 +18,7 @@
 #include "oc3_exception.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_positioni.hpp"
-#include "oc3_constructionmanager.hpp"
+#include "oc3_landoverlayfactory.hpp"
 #include "oc3_game.hpp"
 #include "oc3_saveadapter.hpp"
 #include "oc3_game_loader.hpp"

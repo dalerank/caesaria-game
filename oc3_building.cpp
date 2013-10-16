@@ -29,7 +29,7 @@
 #include "oc3_game_event_mgr.hpp"
 #include "oc3_tilemap.hpp"
 
-Construction::Construction( const BuildingType type, const Size& size)
+Construction::Construction( const LandOverlayType type, const Size& size)
 : LandOverlay( type, size )
 {
 }
@@ -126,7 +126,7 @@ bool Construction::isNeedRoadAccess() const
   return true;
 }
 
-Building::Building(const BuildingType type, const Size& size )
+Building::Building(const LandOverlayType type, const Size& size )
 : Construction( type, size )
 {
    _damageLevel = 0.0;

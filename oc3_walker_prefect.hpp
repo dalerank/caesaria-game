@@ -33,10 +33,10 @@ public:
   float getServiceValue() const;
   void onDestination();
 
-  void load( const VariantMap& stream );
-  void save( VariantMap& stream ) const;
+  virtual void load( const VariantMap& stream );
+  virtual void save( VariantMap& stream ) const;
 
-  void send2City( PrefecturePtr prefecture, int water=0 );
+  virtual void send2City( PrefecturePtr prefecture, int water=0 );
 
   ~WalkerPrefect();
  

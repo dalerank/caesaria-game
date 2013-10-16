@@ -23,7 +23,7 @@
 #include "oc3_path_finding.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_positioni.hpp"
-#include "oc3_constructionmanager.hpp"
+#include "oc3_landoverlayfactory.hpp"
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_safetycast.hpp"
 #include "oc3_cityservice_emigrant.hpp"
@@ -476,9 +476,9 @@ void City::load( const VariantMap& stream )
   {
     VariantMap overlay = item.second.toMap();
     TilePos buildPos( overlay.get( "pos" ).toTilePos() );
-    int buildingType = (int)overlay.get( "buildingType", 0 );
+    int buildingType = (int)overlay.get( "overlayType", 0 );
 
-    ConstructionPtr construction = ConstructionManager::getInstance().create( BuildingType( buildingType ) );
+    LandOverlayPtr construction = LandOverlayFactory::getInstance().create( LandOverlayType( buildingType ) );
     if( construction.isValid() )
     {
       construction->build( this, buildPos );

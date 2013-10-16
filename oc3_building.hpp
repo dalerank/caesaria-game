@@ -38,7 +38,7 @@
 class Construction : public LandOverlay
 {
 public:
-  Construction( const BuildingType type, const Size& size );
+  Construction( const LandOverlayType type, const Size& size );
 
   virtual bool canBuild( CityPtr city, const TilePos& pos ) const;  // returns true if it can be built there
   virtual std::string getError() const;
@@ -59,7 +59,7 @@ protected:
 class Building : public Construction
 {
 public:
-   Building(const BuildingType type, const Size& size=Size(1) );
+   Building(const LandOverlayType type, const Size& size=Size(1) );
    virtual void initTerrain(Tile& terrain);
 
    virtual void timeStep(const unsigned long time);

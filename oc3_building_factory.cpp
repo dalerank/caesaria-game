@@ -47,7 +47,7 @@ public:
 };
 
 Factory::Factory(const Good::Type inType, const Good::Type outType,
-                  const BuildingType type, const Size& size )
+                  const LandOverlayType type, const Size& size )
 : WorkingBuilding( type, size ), _d( new Impl )
 {
    _d->productionRate = 2.f;

@@ -162,7 +162,7 @@ void CartSupplier::getPictureList(std::vector<Picture> &oPics)
 }
 
 template< class T >
-TilePos getSupplierDestination2( Propagator &pathPropagator, const BuildingType type, 
+TilePos getSupplierDestination2( Propagator &pathPropagator, const LandOverlayType type, 
                                  const Good::Type what, const int needQty,
                                  PathWay &oPathWay, long& reservId )
 {

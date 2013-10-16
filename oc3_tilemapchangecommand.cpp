@@ -14,7 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_tilemapchangecommand.hpp"
-#include "oc3_constructionmanager.hpp"
+#include "oc3_landoverlayfactory.hpp"
 #include "oc3_building.hpp"
 
 class TilemapBuildCommand::Impl
@@ -58,11 +58,11 @@ TilemapChangeCommandPtr TilemapRemoveCommand::create()
   return ret;
 }
 
-TilemapChangeCommandPtr TilemapBuildCommand::create( BuildingType type )
+TilemapChangeCommandPtr TilemapBuildCommand::create( LandOverlayType type )
 {
   TilemapBuildCommand* newCommand = new TilemapBuildCommand();
-  ConstructionPtr construction = ConstructionManager::getInstance().create( type );
-  newCommand->_d->construction = construction;
+  LandOverlayPtr overlay = LandOverlayFactory::getInstance().create( type );
+  newCommand->_d->construction = overlay.as<Construction>();
   newCommand->_d->isMultiBuilding = false;
   newCommand->_d->isBorderBuilding = false;
   newCommand->_d->canBuild = false;
@@ -108,10 +108,10 @@ bool TilemapBuildCommand::isCanBuild() const
 class TilemapOverlayCommand::Impl
 {
 public:
-  OverlayType type;
+  DrawingOverlayType type;
 };
 
-TilemapChangeCommandPtr TilemapOverlayCommand::create( const OverlayType type )
+TilemapChangeCommandPtr TilemapOverlayCommand::create( const DrawingOverlayType type )
 {
   TilemapOverlayCommand* newCommand = new TilemapOverlayCommand();
   newCommand->_d->type = type;
@@ -124,10 +124,10 @@ TilemapChangeCommandPtr TilemapOverlayCommand::create( const OverlayType type )
 
 TilemapOverlayCommand::TilemapOverlayCommand() : _d( new Impl )
 {
-  _d->type = OV_NOTHING;
+  _d->type = drwSimple;
 }
 
-OverlayType TilemapOverlayCommand::getType() const
+DrawingOverlayType TilemapOverlayCommand::getType() const
 {
   return _d->type;
 }

@@ -120,7 +120,7 @@ void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
   if (overlay == NULL)
     return;
 
-  BuildingType type = overlay->getType();
+  LandOverlayType type = overlay->getType();
 
   switch(type)
   {

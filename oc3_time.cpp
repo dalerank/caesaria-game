@@ -109,11 +109,11 @@ bool DateTime::operator>( const DateTime& other ) const
 bool DateTime::isValid() const
 {   
     return (year > -4573 && year < 9999)
-            && (month >=0 && month<12)
-            && (day >= 0 && day<31)
-            && (hour >= 0 && hour < 24)
-            && (minutes >= 0 && minutes < 60)
-            && (seconds >= 0 && seconds < 60);
+            && (month<12)
+            && (day<31)
+            && (hour < 24)
+            && (minutes < 60)
+            && (seconds < 60);
 }
 
 /*DateTime& DateTime::appendHour( int hour )

@@ -68,7 +68,7 @@ MarketLady::~MarketLady()
 }
 
 template< class T >
-TilePos getWalkerDestination2( Propagator &pathPropagator, const BuildingType type, 
+TilePos getWalkerDestination2( Propagator &pathPropagator, const LandOverlayType type, 
                                MarketPtr market, SimpleGoodStore& basket, const Good::Type what,
                                PathWay &oPathWay, long& reservId )
 {

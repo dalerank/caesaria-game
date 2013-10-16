@@ -22,7 +22,7 @@
 class WorkingBuilding : public Building
 {
 public:
-  WorkingBuilding(const BuildingType type, const Size& size);
+  WorkingBuilding(const LandOverlayType type, const Size& size);
   ~WorkingBuilding();
 
   void setMaxWorkers(const int maxWorkers);
@@ -35,7 +35,7 @@ public:
   int getWorkers() const;
 
   virtual void setActive(const bool value);  // if false then this building is stopped
-  virtual bool isActive();
+  virtual bool isActive() const;
 
   virtual void destroy();
 

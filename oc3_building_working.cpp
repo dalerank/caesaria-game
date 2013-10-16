@@ -28,7 +28,7 @@ public:
   WalkerList walkerList;
 };
 
-WorkingBuilding::WorkingBuilding(const BuildingType type, const Size& size)
+WorkingBuilding::WorkingBuilding(const LandOverlayType type, const Size& size)
 : Building( type, size ), _d( new Impl )
 {
   _d->currentWorkers = 0;
@@ -60,7 +60,7 @@ void WorkingBuilding::setActive(const bool value)
   _d->isActive = value;
 }
 
-bool WorkingBuilding::isActive()
+bool WorkingBuilding::isActive() const
 {
   return _d->isActive;
 }

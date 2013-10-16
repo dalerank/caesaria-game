@@ -29,7 +29,7 @@ class Factory : public WorkingBuilding
 {
 public:
   Factory( const Good::Type inGood, const Good::Type outGood,
-           const BuildingType type, const Size& size );
+           const LandOverlayType type, const Size& size );
   ~Factory();
 
   GoodStock& getInGood();

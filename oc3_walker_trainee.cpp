@@ -38,12 +38,12 @@ void TraineeWalker::init(const WalkerType traineeType)
   case WT_ACTOR:
     _setGraphic( WG_ACTOR );
     _buildingNeed.push_back(B_THEATER);
-    _buildingNeed.push_back(B_AMPHITHEATER);
+    _buildingNeed.push_back(buildingAmphitheater);
   break;
 
   case WT_GLADIATOR:
     _setGraphic( WG_GLADIATOR );
-    _buildingNeed.push_back(B_AMPHITHEATER);
+    _buildingNeed.push_back(buildingAmphitheater);
     _buildingNeed.push_back(B_COLLOSSEUM);
   break;
 
@@ -78,7 +78,7 @@ void TraineeWalker::computeWalkerPath()
   pathPropagator.init( _originBuilding.as<Construction>() );
   pathPropagator.propagate( _maxDistance );
 
-  foreach( BuildingType buildingType, _buildingNeed )
+  foreach( LandOverlayType buildingType, _buildingNeed )
   {
     checkDestination(buildingType, pathPropagator);
   }
@@ -100,7 +100,7 @@ void TraineeWalker::computeWalkerPath()
   }
 }
 
-void TraineeWalker::checkDestination(const BuildingType buildingType, Propagator &pathPropagator)
+void TraineeWalker::checkDestination(const LandOverlayType buildingType, Propagator &pathPropagator)
 {
   Propagator::Routes pathWayList;
   pathPropagator.getRoutes(buildingType, pathWayList);

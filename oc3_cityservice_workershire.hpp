@@ -30,7 +30,7 @@ public:
 private:
   CityServiceWorkersHire( CityPtr city );
 
-  void _hireByType( const BuildingType type );
+  void _hireByType( const LandOverlayType type );
   bool _haveHr( WorkingBuildingPtr building );
  
   class Impl;

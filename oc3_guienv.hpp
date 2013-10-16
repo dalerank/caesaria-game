@@ -30,8 +30,8 @@ public:
   ~GuiEnv();
 
   bool hasFocus( const Widget* element) const;
-  bool setFocus( Widget* element);
-  bool removeFocus( Widget* element);
+  virtual bool setFocus( Widget* element);
+  virtual bool removeFocus( Widget* element);
 
   double getVersion() const;
 
@@ -39,11 +39,11 @@ public:
   Widget* getFocus() const;
   Point getCursorPos() const;
 
-  bool isHovered( const Widget* element );
+  virtual bool isHovered( const Widget* element );
   Widget* getHoveredElement() const;
 
-  void draw();
-  void beforeDraw();
+  virtual void draw();
+  virtual void beforeDraw();
 
   void animate( unsigned int time );
 

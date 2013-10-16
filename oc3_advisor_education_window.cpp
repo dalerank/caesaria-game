@@ -41,7 +41,7 @@ namespace {
 class EducationInfoLabel : public Label
 {
 public:
-  EducationInfoLabel( Widget* parent, const Rect& rect, const BuildingType service, 
+  EducationInfoLabel( Widget* parent, const Rect& rect, const LandOverlayType service,
                       const InfrastructureInfo& info )
     : Label( parent, rect )
   {
@@ -81,7 +81,7 @@ public:
   }
 
 private:
-  BuildingType _service;
+  LandOverlayType _service;
   InfrastructureInfo _info;
 };
 
@@ -94,7 +94,7 @@ public:
   EducationInfoLabel* lbCollegeInfo;
   EducationInfoLabel* lbLibraryInfo;
 
-  InfrastructureInfo getInfo( CityPtr city, const BuildingType service );
+  InfrastructureInfo getInfo( CityPtr city, const LandOverlayType service );
 };
 
 
@@ -142,7 +142,7 @@ void AdvisorEducationWindow::draw( GfxEngine& painter )
 }
 
 
-InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(CityPtr city, const BuildingType service)
+InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(CityPtr city, const LandOverlayType service)
 {
   CityHelper helper( city );
 

@@ -25,7 +25,7 @@
 #include "oc3_stringhelper.hpp"
 
 EntertainmentBuilding::EntertainmentBuilding(const Service::Type service,
-                                             const BuildingType type,
+                                             const LandOverlayType type,
                                              const Size& size )
   : ServiceBuilding(service, type, size)
 {
@@ -159,7 +159,7 @@ void Theater::deliverService()
                       : Picture::getInvalid();
 }
 
-Amphitheater::Amphitheater() : EntertainmentBuilding(Service::amphitheater, B_AMPHITHEATER, Size(3))
+Amphitheater::Amphitheater() : EntertainmentBuilding(Service::amphitheater, buildingAmphitheater, Size(3))
 {
   //setPicture( ResourceGroup::entertaiment, 1 );
   //_getAnimation().load( ResourceGroup::entertaiment, 2, 10);

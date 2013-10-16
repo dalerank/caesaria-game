@@ -26,7 +26,7 @@
 class LandOverlay : public Serializable, public ReferenceCounted
 {
 public:
-  LandOverlay( const BuildingType type, const Size& size=Size(1));
+  LandOverlay( const LandOverlayType type, const Size& size=Size(1));
   virtual ~LandOverlay();
 
   Tile& getTile() const;  // master tile, in case of multi-tile area
@@ -58,9 +58,9 @@ public:
   std::string getName();  // landoverlay debug name
   void setName( const std::string& name );
 
-  BuildingType getType() const;
-  BuildingClass getClass() const;
-  void setType(const BuildingType buildingType);
+  LandOverlayType getType() const;
+  LandOverlayClass getClass() const;
+  void setType(const LandOverlayType type);
 
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream );

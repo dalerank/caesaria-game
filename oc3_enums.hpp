@@ -74,10 +74,10 @@ enum ClimateType { C_CENTRAL, C_NORTHERN, C_DESERT, C_MAX };
 
 enum ScreenType { SCREEN_NONE, SCREEN_MENU, SCREEN_GAME, SCREEN_QUIT, SCREEN_MAX };
 
-enum BuildingType
+enum LandOverlayType
 {
-  notBuilding,
-  B_AMPHITHEATER, B_THEATER, B_HIPPODROME, B_COLLOSSEUM, B_ACTOR_COLONY, B_GLADIATOR_SCHOOL, B_LION_HOUSE, B_CHARIOT_MAKER,   // entertainment
+  unknown,
+  buildingAmphitheater, B_THEATER, B_HIPPODROME, B_COLLOSSEUM, B_ACTOR_COLONY, B_GLADIATOR_SCHOOL, B_LION_HOUSE, B_CHARIOT_MAKER,   // entertainment
   B_HOUSE, B_ROAD, B_PLAZA, B_GARDEN,  // road & house
   B_SENATE, B_FORUM,  // administration
   B_GOVERNOR_HOUSE, B_GOVERNOR_VILLA, B_GOVERNOR_PALACE,
@@ -99,13 +99,14 @@ enum BuildingType
   B_TRIUMPHAL_ARCH,
   B_BURNING_RUINS, B_BURNED_RUINS, B_COLLAPSED_RUINS, B_PLAGUE_RUINS,
   B_FORUM_2, B_SENATE_2,
+  wtrFishPlace,
   userType=1000,
   B_MAX
 };
 
-enum BuildingClass
+enum LandOverlayClass
 {
-  BC_NONE,
+  lndcUnknown,
   BC_INDUSTRY,
   BC_RAWMATERIAL,
   BC_FOOD,
@@ -132,11 +133,11 @@ enum BuildingClass
   BC_MAX
 };
 
-enum OverlayType
+enum DrawingOverlayType
 {
-  OV_NOTHING,
-  OV_WATER,
-  OV_RISK,
+  drwSimple,
+  drwWater,
+  drwRisks,
   OV_RISK_FIRE,
   OV_RISK_DAMAGE,
   OV_RISK_CRIME,

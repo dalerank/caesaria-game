@@ -39,15 +39,15 @@ public:
     int step;
   } Desirability;
 
-  BuildingData( const BuildingType buildingType, const std::string &name, const int cost );
+  BuildingData( const LandOverlayType buildingType, const std::string &name, const int cost );
   BuildingData( const BuildingData& a );
 
   ~BuildingData();
 
   std::string getName() const;
   std::string getPrettyName() const;
-  BuildingType getType() const;
-  BuildingClass getClass() const;
+  LandOverlayType getType() const;
+  LandOverlayClass getClass() const;
   const Picture& getBasePicture() const;
   // returns the building price, -1 => cannot be built
   int getCost() const;
@@ -58,7 +58,7 @@ public:
   BuildingData& operator=( const BuildingData& a );
 
 private:
-  BuildingClass _buildingClass;
+  LandOverlayClass _buildingClass;
   std::string _name;  // debug name  (english, ex:"iron")
   std::string _prettyName;  // pretty-print name  (i18n, ex:"Iron mine")
   Picture _basePicture;
@@ -75,16 +75,16 @@ public:
    static BuildingDataHolder& instance();
 
    void addData(const BuildingData &data);
-   const BuildingData& getData(const BuildingType buildingType) const;
-   bool hasData(const BuildingType buildingType) const;
+   const BuildingData& getData(const LandOverlayType buildingType) const;
+   bool hasData(const LandOverlayType buildingType) const;
 
    // return factory that consume goodType
-   BuildingType getConsumerType(const Good::Type inGoodType) const;
+   LandOverlayType getConsumerType(const Good::Type inGoodType) const;
 
-   static BuildingType getType( const std::string& name );
-   static BuildingClass getClass( const std::string& name );
+   static LandOverlayType getType( const std::string& name );
+   static LandOverlayClass getClass( const std::string& name );
 
-   static std::string getPrettyName( BuildingType bType );
+   static std::string getPrettyName( LandOverlayType bType );
 
    void initialize( const io::FilePath& filename );
 private:

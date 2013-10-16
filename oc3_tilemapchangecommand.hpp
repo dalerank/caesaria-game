@@ -36,7 +36,7 @@ typedef SmartPtr< TilemapChangeCommand > TilemapChangeCommandPtr;
 class TilemapBuildCommand : public TilemapChangeCommand
 {
 public:
-  static TilemapChangeCommandPtr create( BuildingType type );
+  static TilemapChangeCommandPtr create( LandOverlayType type );
 
   ConstructionPtr getContruction() const;
   bool isBorderBuilding() const;
@@ -63,9 +63,9 @@ private:
 class TilemapOverlayCommand : public TilemapChangeCommand
 {
 public:
-  static TilemapChangeCommandPtr create( const OverlayType type );
+  static TilemapChangeCommandPtr create( const DrawingOverlayType type );
 
-  OverlayType getType() const;
+  DrawingOverlayType getType() const;
 
 private:
   TilemapOverlayCommand();

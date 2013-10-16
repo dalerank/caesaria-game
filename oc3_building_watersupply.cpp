@@ -472,7 +472,7 @@ bool Reservoir::isNeedRoadAccess() const
   return false;
 }
 
-WaterSource::WaterSource( const BuildingType type, const Size& size )
+WaterSource::WaterSource( const LandOverlayType type, const Size& size )
   : Construction( type, size ), _d( new Impl )
 
 {
@@ -644,7 +644,7 @@ bool Fountain::isNeedRoadAccess() const
   return false;
 }
 
-bool Fountain::isActive()
+bool Fountain::isActive() const
 {
   return ServiceBuilding::isActive() && _haveReservoirWater;
 }

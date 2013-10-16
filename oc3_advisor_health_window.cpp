@@ -31,7 +31,7 @@
 class HealthInfoLabel : public Label
 {
 public:
-  HealthInfoLabel( Widget* parent, const Rect& rect, const BuildingType service, 
+  HealthInfoLabel( Widget* parent, const Rect& rect, const LandOverlayType service, 
                    int workBulding, int numberBuilding, int peoplesCount  )
     : Label( parent, rect )
   {
@@ -70,7 +70,7 @@ public:
   }
 
 private:
-  BuildingType _service;
+  LandOverlayType _service;
   int _workingBuilding;
   int _numberBuilding;
   int _peoplesCount;
@@ -94,7 +94,7 @@ public:
     int peoplesServed;
   };
 
-  InfrastructureInfo getInfo( CityPtr city, const BuildingType service )
+  InfrastructureInfo getInfo( CityPtr city, const LandOverlayType service )
   {
     CityHelper helper( city );
 
