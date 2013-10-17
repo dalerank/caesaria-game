@@ -22,12 +22,16 @@ class FishPlace : public LandOverlay
 {
 public:
   FishPlace();
+  ~FishPlace();
 
-  virtual void build( CityPtr city, const TilePos& pos );
-  virtual void timeStep(const unsigned long time);
+  virtual void build(CityPtr city, const TilePos &pos);
   virtual void initTerrain(Tile &terrain);
+  virtual void timeStep(const unsigned long time);
 
-protected:
+private:
+
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 typedef SmartPtr<FishPlace> FishPlacePtr;

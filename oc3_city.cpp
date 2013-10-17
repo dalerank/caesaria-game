@@ -60,6 +60,7 @@
 #include "oc3_cityservice_festival.hpp"
 #include "oc3_win_targets.hpp"
 #include "oc3_cityservice_roads.hpp"
+#include "oc3_cityservice_fishplace.hpp"
 
 #include <set>
 
@@ -131,6 +132,7 @@ City::City() : _d( new Impl )
   addService( CityServiceReligion::create( this ) );
   addService( CityServiceFestival::create( this ) );
   addService( CityServiceRoads::create( this ) );
+  addService( CityServiceFishPlace::create( this ) );
 }
 
 void City::timeStep( unsigned int time )
@@ -474,16 +476,22 @@ void City::load( const VariantMap& stream )
   VariantMap overlays = stream.get( "overlays" ).toMap();
   foreach( VariantMap::value_type& item, overlays )
   {
-    VariantMap overlay = item.second.toMap();
-    TilePos buildPos( overlay.get( "pos" ).toTilePos() );
-    int buildingType = (int)overlay.get( "overlayType", 0 );
+    VariantMap overlayParams = item.second.toMap();
+    VariantList config = overlayParams.get( "config" ).toList();
 
-    LandOverlayPtr construction = LandOverlayFactory::getInstance().create( LandOverlayType( buildingType ) );
-    if( construction.isValid() )
+    int overlayType = (int)config.get( 0 );
+    TilePos pos = config.get( 2, TilePos( -1, -1 ) ).toTilePos();
+
+    LandOverlayPtr overlay = LandOverlayFactory::getInstance().create( LandOverlayType( overlayType ) );
+    if( overlay.isValid() && pos.getI() >= 0 )
     {
-      construction->build( this, buildPos );
-      construction->load( overlay );
-      _d->overlayList.push_back( construction.as<LandOverlay>() );
+      overlay->build( this, pos );
+      overlay->load( overlayParams );
+      _d->overlayList.push_back( overlay );
+    }
+    else
+    {
+      StringHelper::debug( 0xff, "Can't load overlay %s", item.first.c_str() );
     }
   }
 
@@ -498,6 +506,10 @@ void City::load( const VariantMap& stream )
     {
       walker->load( walkerInfo );
       _d->walkerList.push_back( walker );
+    }
+    else
+    {
+      StringHelper::debug( 0xff, "Can't load walker %s", item.first.c_str() );
     }
   }
 }

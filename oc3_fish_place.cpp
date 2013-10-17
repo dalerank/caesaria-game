@@ -14,23 +14,47 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_fish_place.hpp"
+#include "oc3_resourcegroup.hpp"
+#include "oc3_city.hpp"
+#include "oc3_tilemap.hpp"
 
-FishPlace::FishPlace() : LandOverlay( wtrFishPlace )
+class FishPlace::Impl
+{
+public:
+  int fishCount;
+};
+
+FishPlace::FishPlace() : LandOverlay( wtrFishPlace ), _d( new Impl )
+{
+  _getAnimation().setFrameDelay( 3 );
+  _getForegroundPictures().resize( 1 );
+
+  _d->fishCount = rand() % 100;
+
+  if( _d->fishCount > 50 ) { _getAnimation().load( ResourceGroup::land3a, 19, 24); } //big fish place
+  else { _getAnimation().load( ResourceGroup::land3a, 1, 18); } //small fish place
+}
+
+FishPlace::~FishPlace()
 {
 
 }
 
 void FishPlace::build(CityPtr city, const TilePos& pos)
 {
+  setPicture( city->getTilemap().at( pos ).getPicture() );
 
-}
-
-void FishPlace::timeStep(const unsigned long time)
-{
-
+  LandOverlay::build( city, pos );
 }
 
 void FishPlace::initTerrain(Tile& terrain)
 {
 
+}
+
+void FishPlace::timeStep(const unsigned long time)
+{
+  _getAnimation().update( time );
+
+  _getForegroundPictures().at(0) = _getAnimation().getCurrentPicture();
 }

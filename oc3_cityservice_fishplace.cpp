@@ -26,7 +26,7 @@ class CityServiceFishPlace::Impl
 {
 public:
   CityPtr city;
-  int maxFishPlace;
+  unsigned int maxFishPlace;
 
   std::vector< FishPlacePtr > places;
 };
@@ -43,22 +43,23 @@ CityServiceFishPlace::CityServiceFishPlace( CityPtr city )
 : CityService( "fishplace" ), _d( new Impl )
 {
   _d->city = city;
-  _d->maxFishPlace = 5;
+  _d->maxFishPlace = 1;
 }
 
 void CityServiceFishPlace::update( const unsigned int time )
-{
+{  
   if( time % 44 != 1 )
     return;
 
   while( _d->places.size() < _d->maxFishPlace )
   {
-    FishPlacePtr fishplace = LandOverlayFactory::getInstance().create( wtrFishPlace ).as<FishPlace>();
+    LandOverlayPtr fishplace = LandOverlayFactory::getInstance().create( wtrFishPlace );
 
     if( fishplace != 0 )
     {
       fishplace->build( _d->city, TilePos( 10, 10 ) );
-      _d->places.push_back( fishplace );
+      _d->city->addOverlay( fishplace );
+      _d->places.push_back( fishplace.as<FishPlace>() );
     }
   }
 }

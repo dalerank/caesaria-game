@@ -134,7 +134,10 @@ void ServiceWalker::init(const Service::Type service)
 
 BuildingPtr ServiceWalker::getBase() const
 {
-  _OC3_DEBUG_BREAK_IF( _d->base.isNull() && "ServiceBuilding is not initialized" );
+  if( _d->base.isNull() )
+  {
+    StringHelper::debug( 0xff, "ServiceBuilding is not initialized" );
+  }
 
   return _d->base;
 }

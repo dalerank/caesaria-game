@@ -74,6 +74,7 @@ public:
   GfxEngine* engine;
   TilemapCamera camera;  // visible map area
   std::set<int> overlayRendeFlags;
+  std::vector<Tile*> animationStack;
   int scrollSpeed;
 
   TilePos lastTilePos;
@@ -100,7 +101,7 @@ public:
   void drawTileReligion( Tile& tile );
   void drawTileInSelArea( Tile& tile, Tile* master );
   void drawTileFood( Tile& tile );
-  void drawAnimations( LandOverlayPtr overlay, const Point& screenPos );
+  void drawAnimations();
   void drawColumn( const Point& pos, const int startPicId, const int percent );
 
   void drawTilemapWithRemoveTools();
@@ -162,6 +163,7 @@ void CityRenderer::initialize( CityPtr city, GfxEngine* engine )
   _d->engine = engine;
   _d->clearPic = Picture::load( "oc3_land", 2 );
   _d->setDrawFunction( _d.data(), &Impl::drawTileBase );
+  _d->animationStack.reserve( _d->tilemap->getSize() * 10 );
 }
 
 void CityRenderer::Impl::drawTileEx( Tile& tile, const int depth )
@@ -192,18 +194,23 @@ void CityRenderer::Impl::drawTile( Tile& tile )
   drawTileFunction( tile );
 }
 
-void CityRenderer::Impl::drawAnimations( LandOverlayPtr overlay, const Point& screenPos )
+void CityRenderer::Impl::drawAnimations()
 {
   // building foregrounds and animations
-  const PicturesArray& fgPictures = overlay->getForegroundPictures();
-  for( PicturesArray::const_iterator it=fgPictures.begin(); it != fgPictures.end(); it++ )
+  foreach( Tile* tile, animationStack )
   {
-    // skip void picture
-    if( it->isValid() )
+    const PicturesArray& fgPictures = tile->getOverlay()->getForegroundPictures();
+    for( PicturesArray::const_iterator it=fgPictures.begin(); it != fgPictures.end(); it++ )
     {
-      engine->drawPicture( *it, screenPos);
+      // skip void picture
+      if( it->isValid() )
+      {
+        engine->drawPicture( *it, tile->getXY() + mapOffset );
+      }
     }
   }
+
+  animationStack.clear();
 }
 
 void CityRenderer::Impl::drawTileDesirability( Tile& tile )
@@ -238,7 +245,7 @@ void CityRenderer::Impl::drawTileDesirability( Tile& tile )
     case B_ROAD:
     case B_PLAZA:
       engine->drawPicture( tile.getPicture(), screenPos );
-      drawAnimations( overlay, screenPos );
+      animationStack.push_back( &tile );
     break;  
 
     //other buildings
@@ -321,7 +328,7 @@ void CityRenderer::Impl::drawTileFire( Tile& tile )
 
     if( needDrawAnimations )
     {
-      drawAnimations( overlay, screenPos );
+      animationStack.push_back( &tile );
     }
     else if( fireLevel >= 0)
     {
@@ -383,7 +390,7 @@ void CityRenderer::Impl::drawTileDamage( Tile& tile )
 
     if( needDrawAnimations )
     {
-      drawAnimations( overlay, screenPos );
+      animationStack.push_back( &tile );
     }
     else if( damageLevel >= 0 )
     {
@@ -461,7 +468,7 @@ void CityRenderer::Impl::drawTileEntertainment( Tile& tile )
 
     if( needDrawAnimations )
     {
-      drawAnimations( overlay, screenPos );
+      animationStack.push_back( &tile );
     }
     else if( entertainmentLevel > 0 )
     {
@@ -537,7 +544,7 @@ void CityRenderer::Impl::drawTileHealth( Tile& tile )
 
     if( needDrawAnimations )
     {
-      drawAnimations( overlay, screenPos );
+      animationStack.push_back( &tile );
     }
     else if( healthLevel > 0 )
     {
@@ -602,7 +609,7 @@ void CityRenderer::Impl::drawTileReligion( Tile& tile )
 
     if( needDrawAnimations )
     {
-      drawAnimations( overlay, screenPos );
+      animationStack.push_back( &tile );
     }
     else if( religionLevel > 0 )
     {
@@ -664,7 +671,7 @@ void CityRenderer::Impl::drawTileFood( Tile& tile )
 
     if( needDrawAnimations )
     {
-      drawAnimations( overlay, screenPos );
+      animationStack.push_back( &tile );
     }
     else if( foodLevel >= 0 )
     {
@@ -734,7 +741,7 @@ void CityRenderer::Impl::drawTileWater( Tile& tile )
 
     if( needDrawAnimations )
     {
-      drawAnimations( overlay, screenPos );
+      animationStack.push_back( &tile );
     }
   }
 
@@ -799,12 +806,10 @@ void CityRenderer::Impl::drawTileBase( Tile& tile )
     }
   }
 
-  if( overlay.isNull() )
+  if( overlay != 0 && !overlay->getForegroundPictures().empty() )
   {
-    return;
+    animationStack.push_back( &tile );
   }
-
-  drawAnimations( overlay, screenPos );
 }
 
 void CityRenderer::Impl::drawTileInSelArea( Tile& tile, Tile* master )
@@ -921,7 +926,7 @@ void CityRenderer::Impl::simpleDrawTilemap()
 
   int lastZ = -1000;  // dummy value
 
- TilemapArea visibleTiles = camera.getTiles();
+  TilemapArea visibleTiles = camera.getTiles();
 
   foreach( Tile* tile, visibleTiles )
   {
@@ -1007,6 +1012,8 @@ void CityRenderer::draw()
 
     _d->engine->resetTileDrawMask();
   }
+
+  _d->drawAnimations();
 }
 
 Tile* CityRenderer::getTile( const Point& pos, bool overborder )

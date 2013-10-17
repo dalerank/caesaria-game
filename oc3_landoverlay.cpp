@@ -171,9 +171,12 @@ std::string LandOverlay::getName()
 
 void LandOverlay::save( VariantMap& stream ) const
 {
-  stream[ "pos" ] = getTile().getIJ();
-  stream[ "overlayTypeName" ] = Variant( BuildingDataHolder::instance().getData( _d->overlayType ).getName() );
-  stream[ "overlayType" ] = (int)_d->overlayType;
+  VariantList config;
+  config.push_back( (int)_d->overlayType );
+  config.push_back( Variant( BuildingDataHolder::instance().getData( _d->overlayType ).getName() ) );
+  config.push_back( getTile().getIJ() );
+
+  stream[ "config" ] = config;
   stream[ "picture" ] = Variant( _d->picture.getName() );
   stream[ "pictureOffset" ] = _d->picture.getOffset();
   stream[ "size" ] = _d->size;
@@ -185,7 +188,7 @@ void LandOverlay::load( const VariantMap& stream )
 {
   _d->name = stream.get( "name" ).toString();
   _d->size = stream.get( "size", Size(1) ).toSize();
-  _d->overlayType = (LandOverlayType)stream.get( "overlayType" ).toInt();
+  //_d->overlayType = (LandOverlayType)stream.get( "overlayType" ).toInt();
   _d->picture = Picture::load( stream.get( "picture" ).toString() + ".png" );
   _d->picture.setOffset( stream.get( "pictureOffset" ).toPoint() );
   _d->isDeleted = stream.get( "isDeleted", false ).toBool();  
