@@ -55,6 +55,7 @@ public:
   void setIJ( const TilePos& pos );
 
   virtual Point getPosition() const;
+  Point getSubPosition() const;
 
   void setPathWay( const PathWay& pathWay);
   const PathWay& getPathway() const;

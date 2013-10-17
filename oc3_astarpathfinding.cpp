@@ -51,9 +51,9 @@ public:
     return ( pos.getI() >= 0 && pos.getJ() >= 0 && pos.getI() < (int)grid.size() && pos.getJ() < (int)grid[pos.getI()].size() );
   }
 
-  bool isWalkable( const TilePos& pos )
+  bool isWalkable( const TilePos& pos, int flags )
   {
-    return ( isValid( pos ) && at( pos )->isWalkable() );
+    return ( isValid( pos ) && at( pos )->isWalkable( flags ) );
   }
 
   void tunePoints( int flags );
@@ -90,7 +90,7 @@ bool Pathfinder::getPath( const TilePos& start, const TilePos& stop,
                           PathWay& oPathWay, int flags,
                           const Size& arrivedArea )
 {
-  if( (flags & checkStart) && !_d->isWalkable( start ) )
+  if( (flags & checkStart) && !_d->isWalkable( start, AStarPoint::wtAll ) )
       return false;
 
   if( flags & traversePath )
@@ -135,6 +135,11 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos,
 {
   oPathWay.init( *_d->tilemap, _d->tilemap->at( startPos ) );
 
+  int pointFlags = AStarPoint::wtAll;
+  if( (flags & roadOnly) > 0 ) { pointFlags = AStarPoint::road; }
+  else if( (flags & terrainOnly) > 0 ) { pointFlags = AStarPoint::road | AStarPoint::land; }
+  else if( (flags & waterOnly) > 0 ) { pointFlags = AStarPoint::water; }
+
   // Define points to work with
   AStarPoint* start = _d->at( startPos );
   AStarPoint* end = _d->at( stopPos );
@@ -171,7 +176,7 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos,
   unsigned int n = 0;
 
   // Add the start point to the openList
-  openList.push_back(start);
+  openList.push_back( start );
   start->opened = true;
 
   while( n == 0 || (current != end && n < getMaxLoopCount() ))
@@ -219,7 +224,7 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos,
           continue;
         }
         // If it's closed or not walkable then pass
-        if( child->closed || !child->isWalkable() )
+        if( child->closed || !child->isWalkable( pointFlags ) )
         {
           continue;
         }
@@ -230,14 +235,14 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos,
           // if the next horizontal point is not walkable or in the closed list then pass
           //AStarPoint* tmpPoint = getPoint( current->pos + TilePos( 0, y ) );
           TilePos tmp = current->getPos() + TilePos( 0, y );
-          if( !_d->isWalkable( tmp ) || _d->at( tmp )->closed)
+          if( !_d->isWalkable( tmp, pointFlags ) || _d->at( tmp )->closed)
           {
             continue;
           }
 
           tmp = current->getPos() + TilePos( x, 0 );
           // if the next vertical point is not walkable or in the closed list then pass
-          if( !_d->isWalkable( tmp ) || _d->at( tmp )->closed)
+          if( !_d->isWalkable( tmp, pointFlags ) || _d->at( tmp )->closed)
           {
             continue;
           }

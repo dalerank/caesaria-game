@@ -89,20 +89,20 @@ int Walker::getType() const
 
 void Walker::timeStep(const unsigned long time)
 {
-   switch (_d->action.action)
-   {
-   case Walker::acMove:
-      walk();
-     
-      if( _d->animation.getPicturesCount() > 0 && _d->getSpeed() > 0.f )
-      {
-        _d->animation.update( time );
-      }
-      break;
+  switch (_d->action.action)
+  {
+  case Walker::acMove:
+    walk();
 
-   default:
-      break;
-   }
+    if( _d->animation.getPicturesCount() > 0 && _d->getSpeed() > 0.f )
+    {
+      _d->animation.update( time );
+    }
+  break;
+
+  default:
+  break;
+  }
 }
 
 
@@ -117,7 +117,7 @@ void Walker::setIJ( const TilePos& pos )
 
    _d->tileOffset = _d->midTilePos;
 
-   _d->posOnMap = Point( _d->pos.getI(), _d->pos.getJ() ) * 15 + _d->tileOffset ;
+   _d->posOnMap = Point( _d->pos.getI(), _d->pos.getJ() ) * 15 + _d->tileOffset;
 }
 
 int Walker::getI() const
@@ -133,8 +133,13 @@ int Walker::getJ() const
 Point Walker::getPosition() const
 {
   return Point( 2*(_d->posOnMap.getX() + _d->posOnMap.getY()),
-                   _d->posOnMap.getX() - _d->posOnMap.getY() );
-} 
+                _d->posOnMap.getX() - _d->posOnMap.getY() );
+}
+
+Point Walker::getSubPosition() const
+{
+  return _d->tileOffset;
+}
 
 void Walker::setPathWay( const PathWay &pathWay)
 {

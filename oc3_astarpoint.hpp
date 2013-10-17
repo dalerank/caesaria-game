@@ -9,6 +9,8 @@ class AStarPoint
 
 public:
   typedef enum { autoWalkable, alwaysWalkable, alwaysImpassable } WalkableType;
+  typedef enum { land=1, road=2, water=4, wtAll=0xf } WayType;
+
   AStarPoint* parent;
   bool closed;
   bool opened;
@@ -32,11 +34,23 @@ public:
     return tile ? tile->getIJ() : TilePos( 0, 0 );
   }
 
-  bool isWalkable()
+  bool isWalkable( int wtype )
   {
     switch( priorWalkable )
     {
-    case autoWalkable: return tile ? tile->isWalkable( true ) : false;
+    case autoWalkable:
+    {
+      if( (wtype & land)!=0 || (wtype & road) != 0 )
+      {
+        return tile ? tile->isWalkable( (wtype & land) != 0 ) : false;
+      }
+      else if( (wtype & water) != 0 )
+      {
+        return tile ? tile->getFlag( Tile::tlWater ) : false;
+      }
+    }
+    break;
+
     case alwaysWalkable: return true;
     case alwaysImpassable: return false;   
     }

@@ -127,7 +127,7 @@ void Tile::setAnimation(const Animation& animation)
   _animation = animation;
 }
 
-bool Tile::isWalkable(bool alllands ) const
+bool Tile::isWalkable( bool alllands ) const
 {
   // TODO: test building to allow garden, gatehouse, granary, ...
   bool walkable = (_terrain.road || (alllands && !_terrain.water && !_terrain.tree && !_terrain.rock));

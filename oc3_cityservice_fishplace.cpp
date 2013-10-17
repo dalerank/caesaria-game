@@ -57,9 +57,22 @@ void CityServiceFishPlace::update( const unsigned int time )
 
     if( fishplace != 0 )
     {
-      fishplace->build( _d->city, TilePos( 10, 10 ) );
+      fishplace->build( _d->city, _d->city->getBorderInfo().boatEntry );
       _d->city->addOverlay( fishplace );
       _d->places.push_back( fishplace.as<FishPlace>() );
+    }
+  }
+
+  std::vector< FishPlacePtr >::iterator fit = _d->places.begin();
+  while( fit != _d->places.end() )
+  {
+    if( (*fit)->isDeleted() )
+    {
+      fit = _d->places.erase( fit );
+    }
+    else
+    {
+      fit++;
     }
   }
 }
