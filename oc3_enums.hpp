@@ -74,7 +74,7 @@ enum ClimateType { C_CENTRAL, C_NORTHERN, C_DESERT, C_MAX };
 
 enum ScreenType { SCREEN_NONE, SCREEN_MENU, SCREEN_GAME, SCREEN_QUIT, SCREEN_MAX };
 
-enum LandOverlayType
+enum TileOverlayType
 {
   unknown,
   buildingAmphitheater, B_THEATER, B_HIPPODROME, B_COLLOSSEUM, B_ACTOR_COLONY, B_GLADIATOR_SCHOOL, B_LION_HOUSE, B_CHARIOT_MAKER,   // entertainment
@@ -104,7 +104,7 @@ enum LandOverlayType
   B_MAX
 };
 
-enum LandOverlayClass
+enum TileOverlayGroup
 {
   lndcUnknown,
   BC_INDUSTRY,

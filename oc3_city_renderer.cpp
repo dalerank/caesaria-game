@@ -114,7 +114,7 @@ public:
 
   WalkerList getVisibleWalkerList();
   void drawWalkersBetweenZ( WalkerList walkerList, int minZ, int maxZ );
-  void drawBuildingAreaTiles( Tile& baseTile, LandOverlayPtr overlay, std::string resourceGroup, int tileId );
+  void drawBuildingAreaTiles( Tile& baseTile, TileOverlayPtr overlay, std::string resourceGroup, int tileId );
 
   template< class X, class Y >
   void setDrawFunction( Y* obj, void (X::*func)( Tile& ) )
@@ -238,7 +238,7 @@ void CityRenderer::Impl::drawTileDesirability( Tile& tile )
   }
   else
   {   
-    LandOverlayPtr overlay = tile.getOverlay();
+    TileOverlayPtr overlay = tile.getOverlay();
     switch( overlay->getType() )
     {
     //roads
@@ -286,7 +286,7 @@ void CityRenderer::Impl::drawTileFire( Tile& tile )
   }
   else
   {   
-    LandOverlayPtr overlay = tile.getOverlay();
+    TileOverlayPtr overlay = tile.getOverlay();
     int fireLevel = 0;
     switch( overlay->getType() )
     {
@@ -351,7 +351,7 @@ void CityRenderer::Impl::drawTileDamage( Tile& tile )
   }
   else
   {   
-    LandOverlayPtr overlay = tile.getOverlay();
+    TileOverlayPtr overlay = tile.getOverlay();
     int damageLevel = 0;
     switch( overlay->getType() )
     {
@@ -413,7 +413,7 @@ void CityRenderer::Impl::drawTileEntertainment( Tile& tile )
   }
   else
   {
-    LandOverlayPtr overlay = tile.getOverlay();
+    TileOverlayPtr overlay = tile.getOverlay();
 
     int entertainmentLevel = -1;
     switch( overlay->getType() )
@@ -491,7 +491,7 @@ void CityRenderer::Impl::drawTileHealth( Tile& tile )
   }
   else
   {
-    LandOverlayPtr overlay = tile.getOverlay();
+    TileOverlayPtr overlay = tile.getOverlay();
 
     int healthLevel = -1;
     switch( overlay->getType() )
@@ -568,7 +568,7 @@ void CityRenderer::Impl::drawTileReligion( Tile& tile )
   }
   else
   {   
-    LandOverlayPtr overlay = tile.getOverlay();
+    TileOverlayPtr overlay = tile.getOverlay();
 
     int religionLevel = -1;
     switch( overlay->getType() )
@@ -632,7 +632,7 @@ void CityRenderer::Impl::drawTileFood( Tile& tile )
   }
   else
   {   
-    LandOverlayPtr overlay = tile.getOverlay();
+    TileOverlayPtr overlay = tile.getOverlay();
     Picture pic;
     int foodLevel = -1;
     switch( overlay->getType() )
@@ -696,7 +696,7 @@ void CityRenderer::Impl::drawTileWater( Tile& tile )
   }
   else
   {
-    LandOverlayPtr overlay = tile.getOverlay();
+    TileOverlayPtr overlay = tile.getOverlay();
     Picture pic;
     switch( overlay->getType() )
     {
@@ -769,7 +769,7 @@ void CityRenderer::Impl::drawTileBase( Tile& tile )
 {
   Point screenPos = tile.getXY() + mapOffset;
 
-  LandOverlayPtr overlay = tile.getOverlay();
+  TileOverlayPtr overlay = tile.getOverlay();
 
   if( overlay.isValid())
   {
@@ -854,7 +854,7 @@ void CityRenderer::Impl::drawTilemapWithRemoveTools()
   {
     hashDestroyArea.insert( tile->getJ() * 1000 + tile->getI() );
 
-    LandOverlayPtr overlay = tile->getOverlay();
+    TileOverlayPtr overlay = tile->getOverlay();
     if( overlay.isValid() )
     {
       TilemapArea overlayArea = tilemap->getArea( overlay->getTilePos(), overlay->getSize() );
@@ -1202,7 +1202,7 @@ void CityRenderer::Impl::drawWalkersBetweenZ(WalkerList walkerList, int minZ, in
   }
 }
 
-void CityRenderer::Impl::drawBuildingAreaTiles(Tile& baseTile, LandOverlayPtr overlay, std::string resourceGroup, int tileId)
+void CityRenderer::Impl::drawBuildingAreaTiles(Tile& baseTile, TileOverlayPtr overlay, std::string resourceGroup, int tileId)
 {
   TilemapArea area = tilemap->getArea( baseTile.getIJ(), overlay->getSize() );
 
@@ -1377,7 +1377,7 @@ void CityRenderer::checkPreviewBuild(const TilePos & pos)
         tile->setPicture( &overlay->getPicture() );
         tile->setMasterTile( masterTile );
         tile->setFlag( Tile::tlBuilding, true );
-        tile->setOverlay( overlay.as<LandOverlay>() );
+        tile->setOverlay( overlay.as<TileOverlay>() );
         _d->postTiles.push_back( tile );
         //_priorityTiles.push_back( tile );
       }

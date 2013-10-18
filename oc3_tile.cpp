@@ -16,7 +16,7 @@
 #include "oc3_tile.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_building.hpp"
-#include "oc3_landoverlay.hpp"
+#include "oc3_tileoverlay.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_stringhelper.hpp"
 
@@ -200,12 +200,12 @@ int Tile::getDesirability() const
   return _terrain.desirability;
 }
 
-LandOverlayPtr Tile::getOverlay() const
+TileOverlayPtr Tile::getOverlay() const
 {
   return _overlay;
 }
 
-void Tile::setOverlay(LandOverlayPtr overlay)
+void Tile::setOverlay(TileOverlayPtr overlay)
 {
   _overlay = overlay;
 }

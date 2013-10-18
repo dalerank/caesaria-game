@@ -23,7 +23,7 @@
 #include "oc3_path_finding.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_positioni.hpp"
-#include "oc3_landoverlayfactory.hpp"
+#include "oc3_tileoverlay_factory.hpp"
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_safetycast.hpp"
 #include "oc3_cityservice_emigrant.hpp"
@@ -76,7 +76,7 @@ public:
   EmpirePtr empire;
   PlayerPtr player;
 
-  LandOverlayList overlayList;
+  TileOverlayList overlayList;
   WalkerList walkerList;
   CityServices services;
   bool needRecomputeAllRoads;
@@ -97,7 +97,7 @@ public:
   void collectTaxes( CityPtr city);
   void payWages( CityPtr city );
   void calculatePopulation( CityPtr city );
-  void beforeOverlayDestroyed(CityPtr city, LandOverlayPtr overlay );
+  void beforeOverlayDestroyed(CityPtr city, TileOverlayPtr overlay );
   void returnFiredWorkers( WorkingBuildingPtr building );
   void fireWorkers(HousePtr house );
 
@@ -166,7 +166,7 @@ void City::timeStep( unsigned int time )
     }
   }
 
-  LandOverlayList::iterator overlayIt = _d->overlayList.begin();
+  TileOverlayList::iterator overlayIt = _d->overlayList.begin();
   while( overlayIt != _d->overlayList.end() )
   {
     try
@@ -209,7 +209,7 @@ void City::timeStep( unsigned int time )
   if( _d->needRecomputeAllRoads )
   {
     _d->needRecomputeAllRoads = false;
-    foreach( LandOverlayPtr overlay, _d->overlayList )
+    foreach( TileOverlayPtr overlay, _d->overlayList )
     {
       // for each overlay
       ConstructionPtr construction = overlay.as<Construction>();
@@ -259,7 +259,7 @@ WalkerList City::getWalkerList( const WalkerType type )
   return res;
 }
 
-LandOverlayList& City::getOverlayList()
+TileOverlayList& City::getOverlayList()
 {
   return _d->overlayList;
 }
@@ -305,14 +305,14 @@ void City::Impl::collectTaxes( CityPtr city )
   lastMonthTax = 0;
   lastMonthTaxpayer = 0;
   
-  ForumList forums = hlp.getBuildings< Forum >( B_FORUM );
+  ForumList forums = hlp.find< Forum >( B_FORUM );
   foreach( ForumPtr forum, forums )
   {
     lastMonthTaxpayer += forum->getPeoplesReached();
     lastMonthTax += forum->collectTaxes();
   }
 
-  std::list<SenatePtr> senates = hlp.getBuildings< Senate >( B_SENATE );
+  std::list<SenatePtr> senates = hlp.find< Senate >( B_SENATE );
   foreach( SenatePtr senate, senates )
   {
     lastMonthTaxpayer += senate->getPeoplesReached();
@@ -334,7 +334,7 @@ void City::Impl::calculatePopulation( CityPtr city )
   
   CityHelper helper( city );
 
-  HouseList houseList = helper.getBuildings<House>( B_HOUSE );
+  HouseList houseList = helper.find<House>( B_HOUSE );
   foreach( HousePtr house, houseList)
   {
     pop += house->getHabitants().count();
@@ -344,7 +344,7 @@ void City::Impl::calculatePopulation( CityPtr city )
   onPopulationChangedSignal.emit( pop );
 }
 
-void City::Impl::beforeOverlayDestroyed( CityPtr city, LandOverlayPtr overlay)
+void City::Impl::beforeOverlayDestroyed(CityPtr city, TileOverlayPtr overlay)
 {
   if( overlay.is<Construction>() )
   {
@@ -446,7 +446,7 @@ void City::save( VariantMap& stream) const
 
   // overlays
   VariantMap vm_overlays;
-  foreach( LandOverlayPtr overlay, _d->overlayList )
+  foreach( TileOverlayPtr overlay, _d->overlayList )
   {
     VariantMap vm_overlay;
     overlay->save( vm_overlay );
@@ -482,7 +482,7 @@ void City::load( const VariantMap& stream )
     int overlayType = (int)config.get( 0 );
     TilePos pos = config.get( 2, TilePos( -1, -1 ) ).toTilePos();
 
-    LandOverlayPtr overlay = LandOverlayFactory::getInstance().create( LandOverlayType( overlayType ) );
+    TileOverlayPtr overlay = TileOverlayFactory::getInstance().create( TileOverlayType( overlayType ) );
     if( overlay.isValid() && pos.getI() >= 0 )
     {
       overlay->build( this, pos );
@@ -514,7 +514,7 @@ void City::load( const VariantMap& stream )
   }
 }
 
-void City::addOverlay( LandOverlayPtr overlay )
+void City::addOverlay( TileOverlayPtr overlay )
 {
   _d->overlayList.push_back( overlay );
 }
@@ -609,7 +609,7 @@ CityPtr City::create( EmpirePtr empire, PlayerPtr player )
   return ret;
 }
 
-LandOverlayPtr City::getOverlay( const TilePos& pos ) const
+TileOverlayPtr City::getOverlay( const TilePos& pos ) const
 {
   return _d->tilemap.at( pos ).getOverlay();
 }

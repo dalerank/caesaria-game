@@ -70,7 +70,7 @@ private:
 class AdvisorEmployerWindow::Impl
 {
 public:
-  typedef std::vector< LandOverlayType > BldTypes;
+  typedef std::vector< TileOverlayType > BldTypes;
   enum PriorityIndex
   {
     prIndustryAndTrade=0,
@@ -174,7 +174,7 @@ void AdvisorEmployerWindow::Impl::updateSalaryLabel()
 
 AdvisorEmployerWindow::Impl::EmployersInfo AdvisorEmployerWindow::Impl::getEmployersInfo( PriorityIndex type )
 {
-  std::vector< LandOverlayClass > bldClasses;
+  std::vector< TileOverlayGroup > bldClasses;
   switch( type )
   {
   case prIndustryAndTrade: bldClasses.push_back( BC_INDUSTRY ); bldClasses.push_back( BC_TRADE ); break;
@@ -191,9 +191,9 @@ AdvisorEmployerWindow::Impl::EmployersInfo AdvisorEmployerWindow::Impl::getEmplo
 
   WorkingBuildingList buildings;
   CityHelper helper( city );
-  foreach( LandOverlayClass cl, bldClasses )
+  foreach( TileOverlayGroup cl, bldClasses )
   {
-    WorkingBuildingList sectorBuildings = helper.getBuildings<WorkingBuilding>( cl );
+    WorkingBuildingList sectorBuildings = helper.find<WorkingBuilding>( cl );
     buildings.insert( buildings.begin(), sectorBuildings.begin(), sectorBuildings.end() );
   }
 

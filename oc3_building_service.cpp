@@ -39,7 +39,7 @@ public:
 };
 
 ServiceBuilding::ServiceBuilding(const Service::Type service,
-                                 const LandOverlayType type, const Size& size)
+                                 const TileOverlayType type, const Size& size)
                                  : WorkingBuilding( type, size ), _d( new Impl )
 {
    _d->service = service;

@@ -206,12 +206,12 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
   case stBuyGoods:
     {
       CityHelper helper( city );
-      WarehousePtr warehouse = helper.getBuilding<Warehouse>( destBuildingPos );   
+      WarehousePtr warehouse = helper.find<Warehouse>( destBuildingPos );
 
       if( warehouse.isValid() )
       {
         std::map< Good::Type, int > cityGoodsAvailable;
-        WarehouseList warehouses = helper.getBuildings<Warehouse>( B_WAREHOUSE );
+        WarehouseList warehouses = helper.find<Warehouse>( B_WAREHOUSE );
         foreach( WarehousePtr wh, warehouses )
         {
           for( int i=Good::wheat; i < Good::goodCount; i++ )
@@ -274,7 +274,7 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
   case stSellGoods:
     {
       CityHelper helper( city );
-      WarehousePtr warehouse = helper.getBuilding<Warehouse>( destBuildingPos );
+      WarehousePtr warehouse = helper.find<Warehouse>( destBuildingPos );
 
       const GoodStore& cityOrders = city->getBuys();
 

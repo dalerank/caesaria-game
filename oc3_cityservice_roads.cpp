@@ -59,14 +59,14 @@ void CityServiceRoads::update( const unsigned int time )
 
   _d->lastTimeUpdate = GameDate::current();
 
-  std::vector< LandOverlayType > btypes;
+  std::vector< TileOverlayType > btypes;
   btypes.push_back( B_SENATE );
 
   CityHelper helper( _d->city );
 
-  foreach( LandOverlayType type, btypes )
+  foreach( TileOverlayType type, btypes )
   {
-    BuildingList buildings = helper.getBuildings<Building>( type );
+    BuildingList buildings = helper.find<Building>( type );
 
     foreach( BuildingPtr building, buildings )
     {
@@ -76,7 +76,7 @@ void CityServiceRoads::update( const unsigned int time )
 
   if( _d->lastTimeUpdate.getMonth() % 3 == 1 )
   {
-    RoadList roads = helper.getBuildings<Road>( B_ROAD );
+    RoadList roads = helper.find<Road>( B_ROAD );
     foreach( RoadPtr road, roads )
     {
       road->appendPaved( _d->defaultDecreasePaved );

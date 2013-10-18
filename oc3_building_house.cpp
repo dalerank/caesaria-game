@@ -24,7 +24,7 @@
 #include "oc3_walker_workerhunter.hpp"
 #include "oc3_walker_immigrant.hpp"
 #include "oc3_building_market.hpp"
-#include "oc3_landoverlayfactory.hpp"
+#include "oc3_tileoverlay_factory.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_empire.hpp"
@@ -374,12 +374,12 @@ void House::levelDown()
        int peoplesPerHouse = getHabitants().count() / 4;
        foreach( Tile* tile, perimetr )
        {
-         HousePtr house = LandOverlayFactory::getInstance().create( B_HOUSE ).as<House>();
+         HousePtr house = TileOverlayFactory::getInstance().create( B_HOUSE ).as<House>();
          house->_d->habitants = _d->habitants.retrieve( peoplesPerHouse );
          house->_d->houseId = smallHovel;
          house->_update();
 
-         GameEventMgr::append( BuildEvent::create( tile->getIJ(), house.as<LandOverlay>() ));
+         GameEventMgr::append( BuildEvent::create( tile->getIJ(), house.as<TileOverlay>() ));
        }
 
        deleteLater();

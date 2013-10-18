@@ -95,7 +95,7 @@ void Garden::update()
   {   
     foreach( Tile* tile, nearTiles )
     {
-      LandOverlayPtr overlay = tile->getOverlay();
+      TileOverlayPtr overlay = tile->getOverlay();
 
       //not delete himself
       if( overlay != this && overlay.isValid() )

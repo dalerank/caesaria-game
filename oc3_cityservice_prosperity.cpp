@@ -82,7 +82,7 @@ void CityServiceProsperity::update( const unsigned int time )
     }
 
     CityHelper helper( _d->city );
-    HouseList houses = helper.getBuildings<House>( B_HOUSE );
+    HouseList houses = helper.find<House>( B_HOUSE );
 
     int prosperityCap = 0;
     int patricianCount = 0;
@@ -113,7 +113,7 @@ void CityServiceProsperity::update( const unsigned int time )
     _d->percentPlebs = plebsCount * 100/ (float)_d->city->getPopulation();
     _d->prosperityExtend += (_d->percentPlebs < 30 ? 1 : 0);
 
-    bool haveHippodrome = helper.getBuildings<Hippodrome>( B_HIPPODROME ).size() > 0;
+    bool haveHippodrome = !helper.find<Hippodrome>( B_HIPPODROME ).empty();
     _d->prosperityExtend += (haveHippodrome > 0 ? 1 : 0);
 
     _d->worklessPercent = CityStatistic::getWorklessPercent( _d->city );

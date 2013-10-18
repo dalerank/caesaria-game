@@ -68,7 +68,7 @@ MarketLady::~MarketLady()
 }
 
 template< class T >
-TilePos getWalkerDestination2( Propagator &pathPropagator, const LandOverlayType type, 
+TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlayType type, 
                                MarketPtr market, SimpleGoodStore& basket, const Good::Type what,
                                PathWay &oPathWay, long& reservId )
 {
@@ -186,7 +186,7 @@ void MarketLady::onDestination()
       go();
 
       // get goods from destination building
-      LandOverlayPtr building = _getCity()->getTilemap().at( _d->destBuildingPos ).getOverlay();
+      TileOverlayPtr building = _getCity()->getTilemap().at( _d->destBuildingPos ).getOverlay();
       
       if( building.is<Granary>() )
       {
@@ -295,7 +295,7 @@ void MarketLady::load( const VariantMap& stream)
   _d->priorityGood = (Good::Type)stream.get( "priorityGood" ).toInt();
   TilePos tpos = stream.get( "marketPos" ).toTilePos();
   CityHelper helper( _getCity() );
-  _d->market = helper.getBuilding<Market>( tpos );
+  _d->market = helper.find<Market>( tpos );
   _d->basket.load( stream.get( "basket" ).toMap() );
   _d->maxDistance = stream.get( "maxDistance" ).toInt();
   _d->reservationID = stream.get( "reserationId" ).toInt();

@@ -25,7 +25,7 @@
 
 using namespace std;
 
-typedef map< int, LandOverlayType > Priorities;
+typedef map< int, TileOverlayType > Priorities;
 
 class CityServiceWorkersHire::Impl
 {
@@ -94,10 +94,10 @@ bool CityServiceWorkersHire::_haveHr( WorkingBuildingPtr building )
   return false;
 }
 
-void CityServiceWorkersHire::_hireByType( const LandOverlayType type )
+void CityServiceWorkersHire::_hireByType( const TileOverlayType type )
 {
   CityHelper hlp( _d->city );
-  WorkingBuildingList buildings = hlp.getBuildings< WorkingBuilding >( type );
+  WorkingBuildingList buildings = hlp.find< WorkingBuilding >( type );
   foreach( WorkingBuildingPtr wrkbld, buildings )
   {
     if( _haveHr( wrkbld ) )

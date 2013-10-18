@@ -28,7 +28,7 @@ public:
   WalkerList walkerList;
 };
 
-WorkingBuilding::WorkingBuilding(const LandOverlayType type, const Size& size)
+WorkingBuilding::WorkingBuilding(const TileOverlayType type, const Size& size)
 : Building( type, size ), _d( new Impl )
 {
   _d->currentWorkers = 0;

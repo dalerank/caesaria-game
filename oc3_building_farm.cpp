@@ -85,7 +85,7 @@ public:
   Picture pictureBuilding;  // we need to change its offset
 };
 
-Farm::Farm(const Good::Type outGood, const LandOverlayType type )
+Farm::Farm(const Good::Type outGood, const TileOverlayType type )
   : Factory( Good::none, outGood, type, Size(3) ), _d( new Impl )
 {
   _d->pictureBuilding = Picture::load( ResourceGroup::commerce, 12);  // farm building

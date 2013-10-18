@@ -16,9 +16,9 @@
 #ifndef _OPENCAESAR3_FISHPLACE_H_INCLUDE_
 #define _OPENCAESAR3_FISHPLACE_H_INCLUDE_
 
-#include "oc3_landoverlay.hpp"
+#include "oc3_tileoverlay.hpp"
 
-class FishPlace : public LandOverlay
+class FishPlace : public TileOverlay
 {
 public:
   FishPlace();

@@ -97,8 +97,8 @@ public:
 
   void appendDesirability( int value );
   int getDesirability() const;
-  LandOverlayPtr getOverlay() const;
-  void setOverlay( LandOverlayPtr overlay );
+  TileOverlayPtr getOverlay() const;
+  void setOverlay( TileOverlayPtr overlay );
   unsigned int getOriginalImgId() const;
   void setOriginalImgId( unsigned short int id );
 
@@ -113,7 +113,7 @@ private:
   Picture const* _picture; // displayed picture
   bool _wasDrawn;
   Animation _animation;
-  LandOverlayPtr _overlay;
+  TileOverlayPtr _overlay;
 };
 
 class TileHelper

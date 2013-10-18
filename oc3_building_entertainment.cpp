@@ -25,7 +25,7 @@
 #include "oc3_stringhelper.hpp"
 
 EntertainmentBuilding::EntertainmentBuilding(const Service::Type service,
-                                             const LandOverlayType type,
+                                             const TileOverlayType type,
                                              const Size& size )
   : ServiceBuilding(service, type, size)
 {
@@ -132,7 +132,7 @@ void Theater::build(CityPtr city, const TilePos& pos)
   ServiceBuilding::build( city, pos );
 
   CityHelper helper( city );
-  ActorColonyList actors = helper.getBuildings<ActorColony>( B_ACTOR_COLONY );
+  ActorColonyList actors = helper.find<ActorColony>( B_ACTOR_COLONY );
 
   if( actors.empty() )
   {
@@ -173,14 +173,14 @@ void Amphitheater::build(CityPtr city, const TilePos& pos)
   EntertainmentBuilding::build( city, pos );
 
   CityHelper helper( city );
-  ActorColonyList actors = helper.getBuildings<ActorColony>( B_ACTOR_COLONY );
+  ActorColonyList actors = helper.find<ActorColony>( B_ACTOR_COLONY );
 
   if( actors.empty() )
   {
     GameEventMgr::append( WarningMessageEvent::create( _("##need_actor_colony##")) );
   }
 
-  GladiatorSchoolList gladiators = helper.getBuildings<GladiatorSchool>( B_GLADIATOR_SCHOOL );
+  GladiatorSchoolList gladiators = helper.find<GladiatorSchool>( B_GLADIATOR_SCHOOL );
   if( actors.empty() )
   {
     GameEventMgr::append( WarningMessageEvent::create( _("##need_gladiator_school##")) );

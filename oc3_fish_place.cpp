@@ -30,7 +30,7 @@ public:
   Point basicOffset;
 };
 
-FishPlace::FishPlace() : LandOverlay( wtrFishPlace ), _d( new Impl )
+FishPlace::FishPlace() : TileOverlay( wtrFishPlace ), _d( new Impl )
 {
   _getAnimation().setFrameDelay( 3 );
   _getForegroundPictures().resize( 1 );
@@ -79,7 +79,7 @@ void FishPlace::build(CityPtr city, const TilePos& pos)
     _d->walker->go();
   }
 
-  LandOverlay::build( city, pos );
+  TileOverlay::build( city, pos );
 }
 
 void FishPlace::initTerrain(Tile& terrain)
@@ -108,7 +108,7 @@ void FishPlace::timeStep(const unsigned long time)
       _d->savePicture = &_getCity()->getTilemap().at( pos ).getPicture();
       setPicture( *_d->savePicture );
 
-      LandOverlay::build( _getCity(), pos );
+      TileOverlay::build( _getCity(), pos );
     }
     else if( lastPos == _d->walker->getPathway().getDestination().getIJ() )
     {
@@ -121,5 +121,5 @@ void FishPlace::destroy()
 {
   getTile().setOverlay( 0 );
 
-  LandOverlay::destroy();
+  TileOverlay::destroy();
 }

@@ -347,8 +347,8 @@ void Game::load(std::string filename)
 
   _d->empire->initPlayerCity( _d->city.as<EmpireCity>() );
 
-  LandOverlayList& llo = _d->city->getOverlayList();
-  foreach( LandOverlayPtr overlay, llo )
+  TileOverlayList& llo = _d->city->getOverlayList();
+  foreach( TileOverlayPtr overlay, llo )
   {
     ConstructionPtr construction = overlay.as<Construction>();
     if( construction.isValid() )

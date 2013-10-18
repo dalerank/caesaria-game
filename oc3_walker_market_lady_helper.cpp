@@ -94,7 +94,7 @@ void MarketLadyHelper::onDestination()
   deleteLater();
 
   CityHelper cityh( _getCity() );
-  MarketPtr market = cityh.getBuilding< Market >( _d->marketPos );
+  MarketPtr market = cityh.find< Market >( _d->marketPos );
   if( market.isValid() )
   {
     market->getGoodStore().store( _d->basket, _d->basket._currentQty );

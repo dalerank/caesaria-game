@@ -36,8 +36,8 @@ public:
   void showHelp( const Tile& tile ); 
   void setShowDebugInfo( const bool showInfo );
 
-  void addInfobox( const LandOverlayType type, const std::string& typeName, InfoboxCreator* ctor );
-  bool canCreate( const LandOverlayType type ) const;
+  void addInfobox( const TileOverlayType type, const std::string& typeName, InfoboxCreator* ctor );
+  bool canCreate( const TileOverlayType type ) const;
 private:
   InfoBoxManager( CityPtr city, GuiEnv* gui );
   ~InfoBoxManager();

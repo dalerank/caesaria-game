@@ -27,10 +27,10 @@ public:
   CityBuildOptions();
   ~CityBuildOptions();
 
-  void setBuildingAvailble( const LandOverlayType type, bool mayBuild );
+  void setBuildingAvailble( const TileOverlayType type, bool mayBuild );
   void setIndustryAvaible( const BuildMenuType type, bool mayBuild );
 
-  bool isBuildingAvailble( const LandOverlayType type ) const;
+  bool isBuildingAvailble( const TileOverlayType type ) const;
 
   void clear();
 

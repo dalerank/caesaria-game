@@ -52,7 +52,7 @@ public:
 
   /** returns all paths starting at origin */
   void getWays(const int maxDistance, std::list<PathWay> &oPathWayList);
-  void getRoutes(const LandOverlayType buildingType, Routes& oPathWayList);
+  void getRoutes(const TileOverlayType buildingType, Routes& oPathWayList);
 
   /** finds the shortest path between origin and destination
    * returns True if a path exists
@@ -62,7 +62,7 @@ public:
   bool getPath( BuildingPtr destination, PathWay& oPathWay );
 
   DirectRoute getShortestRoute( const Routes& routes );
-  DirectRoute getShortestRoute( const LandOverlayType buildingType );
+  DirectRoute getShortestRoute( const TileOverlayType buildingType );
 
 private:
   std::set<PathWay> _activeBranches;

@@ -30,7 +30,7 @@ public:
   virtual void deliverService();
 
 protected:
-  Temple( RomeDivinityPtr divinity, LandOverlayType type, int imgId, const Size& size );
+  Temple( RomeDivinityPtr divinity, TileOverlayType type, int imgId, const Size& size );
 
   virtual unsigned int getWalkerDistance() const;
 
@@ -42,14 +42,14 @@ private:
 class SmallTemple : public Temple
 {
 protected:
-  SmallTemple( RomeDivinityPtr divinity, LandOverlayType type, int imgId );
+  SmallTemple( RomeDivinityPtr divinity, TileOverlayType type, int imgId );
   virtual unsigned int getParishionerNumber() const;
 };
 
 class BigTemple : public Temple
 {
 protected:
-  BigTemple( RomeDivinityPtr divinity, LandOverlayType type, int imgId );
+  BigTemple( RomeDivinityPtr divinity, TileOverlayType type, int imgId );
   virtual unsigned int getParishionerNumber() const;
 };
 

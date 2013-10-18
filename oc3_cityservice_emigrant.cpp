@@ -66,7 +66,7 @@ void CityServiceEmigrant::update( const unsigned int time )
 
 
   CityHelper helper( _d->city );
-  HouseList houses = helper.getBuildings<House>(B_HOUSE);
+  HouseList houses = helper.find<House>(B_HOUSE);
   foreach( HousePtr house, houses )
   {
     if( house->getAccessRoads().size() > 0 )

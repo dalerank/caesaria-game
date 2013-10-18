@@ -99,14 +99,14 @@ public:
     int bigTempleCount;
   };
 
-  InfrastructureInfo getInfo( CityPtr city, const LandOverlayType small, const LandOverlayType big )
+  InfrastructureInfo getInfo( CityPtr city, const TileOverlayType small, const TileOverlayType big )
   {
     CityHelper helper( city );
 
     InfrastructureInfo ret;
 
-    ret.smallTemplCount = helper.getBuildings<ServiceBuilding>( small ).size();
-    ret.bigTempleCount = helper.getBuildings<ServiceBuilding>( big ).size();
+    ret.smallTemplCount = helper.find<ServiceBuilding>( small ).size();
+    ret.bigTempleCount = helper.find<ServiceBuilding>( big ).size();
 
     return ret;
   }

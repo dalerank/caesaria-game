@@ -25,7 +25,7 @@
 #include <set>
 
 //#include "oc3_tilemap.hpp"
-#include "oc3_landoverlay.hpp"
+#include "oc3_tileoverlay.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_good.hpp"
 #include "oc3_scopedptr.hpp"
@@ -35,10 +35,10 @@
 #include "oc3_service.hpp"
 #include "oc3_building_data.hpp"
 
-class Construction : public LandOverlay
+class Construction : public TileOverlay
 {
 public:
-  Construction( const LandOverlayType type, const Size& size );
+  Construction( const TileOverlayType type, const Size& size );
 
   virtual bool canBuild( CityPtr city, const TilePos& pos ) const;  // returns true if it can be built there
   virtual std::string getError() const;
@@ -59,7 +59,7 @@ protected:
 class Building : public Construction
 {
 public:
-   Building(const LandOverlayType type, const Size& size=Size(1) );
+   Building(const TileOverlayType type, const Size& size=Size(1) );
    virtual void initTerrain(Tile& terrain);
 
    virtual void timeStep(const unsigned long time);

@@ -104,7 +104,7 @@ void CityServiceCulture::update( const unsigned int time )
 
     CityHelper helper( _d->city );
 
-    TempleList temples = helper.getBuildings<Temple>( BC_RELIGION );
+    TempleList temples = helper.find<Temple>( BC_RELIGION );
     foreach( TemplePtr temple, temples )
     {
       _d->parishionersCount += temple->getParishionerNumber();
@@ -113,7 +113,7 @@ void CityServiceCulture::update( const unsigned int time )
     _d->religionCoverage = _d->parishionersCount / (float)cityPopulation;
     _d->religionPoints = _d->convCoverage2Points( religionPoints, _d->religionCoverage );
 
-    TheaterList theaters = helper.getBuildings<Theater>( B_THEATER );
+    TheaterList theaters = helper.find<Theater>( B_THEATER );
     foreach( TheaterPtr theater, theaters )
     {
       _d->theaterVisitors += theater->getVisitorsNumber();
@@ -121,7 +121,7 @@ void CityServiceCulture::update( const unsigned int time )
     _d->theatersCoverage = _d->theaterVisitors / (float)cityPopulation;
     _d->theatresPoints = _d->convCoverage2Points( theatresPoints, _d->theatersCoverage );
 
-    LibraryList libraries = helper.getBuildings<Library>( B_LIBRARY );
+    LibraryList libraries = helper.find<Library>( B_LIBRARY );
     foreach( LibraryPtr library, libraries )
     {
       _d->libraryVisitors += library->getVisitorsNumber();
@@ -129,7 +129,7 @@ void CityServiceCulture::update( const unsigned int time )
     _d->libraryCoverage = _d->libraryVisitors / (float)cityPopulation;
     _d->libraryPoints = _d->convCoverage2Points( librariesPoints, _d->libraryCoverage );
 
-    SchoolList schools = helper.getBuildings<School>( B_SCHOOL );
+    SchoolList schools = helper.find<School>( B_SCHOOL );
     foreach( SchoolPtr school, schools )
     {
       _d->schoolVisitors += school->getVisitorsNumber();
@@ -137,7 +137,7 @@ void CityServiceCulture::update( const unsigned int time )
     _d->schoolCoverage = _d->schoolVisitors / (float)cityPopulation;
     _d->schoolPoints = _d->convCoverage2Points( schoolsPoints, _d->schoolCoverage );
 
-    CollegeList colleges = helper.getBuildings<College>( B_COLLEGE );
+    CollegeList colleges = helper.find<College>( B_COLLEGE );
     foreach( CollegePtr college, colleges )
     {
       _d->collegeVisitors += college->getVisitorsNumber();

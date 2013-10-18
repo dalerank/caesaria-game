@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_landoverlayfactory.hpp"
+#include "oc3_tileoverlay_factory.hpp"
 #include "oc3_building_service.hpp"
 #include "oc3_building_training.hpp"
 #include "oc3_building_watersupply.hpp"
@@ -54,9 +54,9 @@
 template< class T > class BaseCreator : public LandOverlayConstructor
 {
 public:
-  virtual LandOverlayPtr create()
+  virtual TileOverlayPtr create()
   {
-    LandOverlayPtr ret( new T() );
+    TileOverlayPtr ret( new T() );
     ret->drop();
 
     return ret;
@@ -66,9 +66,9 @@ public:
 template< class T > class ConstructionCreator : public BaseCreator<T>
 {
 public: 
-  virtual LandOverlayPtr create()
+  virtual TileOverlayPtr create()
   {
-    LandOverlayPtr ret = BaseCreator<T>::create();
+    TileOverlayPtr ret = BaseCreator<T>::create();
 
     const BuildingData& info = BuildingDataHolder::instance().getData( ret->getType() );
     init( ret, info );
@@ -76,7 +76,7 @@ public:
     return ret;
   }
 
-  virtual void init( LandOverlayPtr a, const BuildingData& info )
+  virtual void init( TileOverlayPtr a, const BuildingData& info )
   {
     ConstructionPtr construction = a.as<Construction>();
     if( construction == 0 )
@@ -106,7 +106,7 @@ public:
 template< class T > class WorkingBuildingCreator : public ConstructionCreator<T>
 {
 public:
-  void init( LandOverlayPtr a, const BuildingData& info )
+  void init( TileOverlayPtr a, const BuildingData& info )
   {
     ConstructionCreator<T>::init( a, info );
 
@@ -121,7 +121,7 @@ public:
 template< class T > class FactoryCreator : public WorkingBuildingCreator<T>
 {
 public:
-  void init( LandOverlayPtr a, const BuildingData& info )
+  void init( TileOverlayPtr a, const BuildingData& info )
   {
     WorkingBuildingCreator<T>::init( a, info );
 
@@ -133,15 +133,15 @@ public:
   }
 };
 
-class LandOverlayFactory::Impl
+class TileOverlayFactory::Impl
 {
 public:
-  typedef std::map< LandOverlayType, LandOverlayConstructor* > Constructors;
-  std::map< std::string, LandOverlayType > name2typeMap;
+  typedef std::map< TileOverlayType, LandOverlayConstructor* > Constructors;
+  std::map< std::string, TileOverlayType > name2typeMap;
   Constructors constructors;
 };
 
-LandOverlayPtr LandOverlayFactory::create(const LandOverlayType type) const
+TileOverlayPtr TileOverlayFactory::create(const TileOverlayType type) const
 {
   Impl::Constructors::iterator findConstructor = _d->constructors.find( type );
 
@@ -150,21 +150,21 @@ LandOverlayPtr LandOverlayFactory::create(const LandOverlayType type) const
     return findConstructor->second->create();
   }
 
-  return LandOverlayPtr();
+  return TileOverlayPtr();
 }
 
-LandOverlayPtr LandOverlayFactory::create( const std::string& typeName ) const
+TileOverlayPtr TileOverlayFactory::create( const std::string& typeName ) const
 {
-  return LandOverlayPtr();
+  return TileOverlayPtr();
 }
 
-LandOverlayFactory& LandOverlayFactory::getInstance()
+TileOverlayFactory& TileOverlayFactory::getInstance()
 {
-  static LandOverlayFactory inst;
+  static TileOverlayFactory inst;
   return inst;
 }
 
-LandOverlayFactory::LandOverlayFactory() : _d( new Impl )
+TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
 {
   // entertainment
   addCreator(B_THEATER, OC3_STR_EXT(B_THEATER), new WorkingBuildingCreator<Theater>() );
@@ -266,7 +266,7 @@ LandOverlayFactory::LandOverlayFactory() : _d( new Impl )
   addCreator(wtrFishPlace, OC3_STR_EXT(wtrFishPlace), new BaseCreator<FishPlace>() );
 }
 
-void LandOverlayFactory::addCreator( const LandOverlayType type, const std::string& typeName, LandOverlayConstructor* ctor )
+void TileOverlayFactory::addCreator( const TileOverlayType type, const std::string& typeName, LandOverlayConstructor* ctor )
 {
   bool alreadyHaveConstructor = _d->name2typeMap.find( typeName ) != _d->name2typeMap.end();
   _OC3_DEBUG_BREAK_IF( alreadyHaveConstructor && "already have constructor for this type");
@@ -278,7 +278,7 @@ void LandOverlayFactory::addCreator( const LandOverlayType type, const std::stri
   }
 }
 
-bool LandOverlayFactory::canCreate( const LandOverlayType type ) const
+bool TileOverlayFactory::canCreate( const TileOverlayType type ) const
 {
   return _d->constructors.find( type ) != _d->constructors.end();   
 }

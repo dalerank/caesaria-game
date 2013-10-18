@@ -28,7 +28,7 @@ class ServiceBuilding : public WorkingBuilding
 {
 public:
   ServiceBuilding( const Service::Type service,
-                   const LandOverlayType type, const Size& size );
+                   const TileOverlayType type, const Size& size );
 
   virtual ~ServiceBuilding();
 

@@ -29,8 +29,8 @@
 #include "oc3_game_event_mgr.hpp"
 #include "oc3_tilemap.hpp"
 
-Construction::Construction( const LandOverlayType type, const Size& size)
-: LandOverlay( type, size )
+Construction::Construction( const TileOverlayType type, const Size& size)
+: TileOverlay( type, size )
 {
 }
 
@@ -59,7 +59,7 @@ std::string Construction::getError() const { return ""; }
 
 void Construction::build( CityPtr city, const TilePos& pos )
 {
-  LandOverlay::build( city, pos );
+  TileOverlay::build( city, pos );
 
   computeAccessRoads();
 }
@@ -118,7 +118,7 @@ const BuildingData::Desirability& Construction::getDesirabilityInfo() const
 
 void Construction::destroy()
 {
-  LandOverlay::destroy();
+  TileOverlay::destroy();
 }
 
 bool Construction::isNeedRoadAccess() const
@@ -126,7 +126,7 @@ bool Construction::isNeedRoadAccess() const
   return true;
 }
 
-Building::Building(const LandOverlayType type, const Size& size )
+Building::Building(const TileOverlayType type, const Size& size )
 : Construction( type, size )
 {
    _damageLevel = 0.0;

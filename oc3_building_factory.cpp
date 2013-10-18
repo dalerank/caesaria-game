@@ -47,7 +47,7 @@ public:
 };
 
 Factory::Factory(const Good::Type inType, const Good::Type outType,
-                  const LandOverlayType type, const Size& size )
+                  const TileOverlayType type, const Size& size )
 : WorkingBuilding( type, size ), _d( new Impl )
 {
    _d->productionRate = 2.f;
@@ -347,7 +347,7 @@ bool WeaponsWorkshop::canBuild(CityPtr city, const TilePos& pos) const
   bool ret = Factory::canBuild( city, pos );
 
   CityHelper helper( city );
-  bool haveIronMine = !helper.getBuildings<Building>( B_IRON_MINE ).empty();
+  bool haveIronMine = !helper.find<Building>( B_IRON_MINE ).empty();
 
   const_cast< WeaponsWorkshop* >( this )->_setError( haveIronMine ? "" : _("##need_iron_for_work##") );
   return ret;
@@ -358,7 +358,7 @@ bool WorkshopFurniture::canBuild(CityPtr city, const TilePos& pos) const
   bool ret = Factory::canBuild( city, pos );
 
   CityHelper helper( city );
-  bool haveTimberLogger = !helper.getBuildings<TimberLogger>( B_TIMBER_YARD ).empty();
+  bool haveTimberLogger = !helper.find<TimberLogger>( B_TIMBER_YARD ).empty();
 
   const_cast< WorkshopFurniture* >( this )->_setError( haveTimberLogger ? "" : _("##need_timber_for_work##") );
 
@@ -386,7 +386,7 @@ bool Winery::canBuild(CityPtr city, const TilePos& pos) const
   bool ret = Factory::canBuild( city, pos );
 
   CityHelper helper( city );
-  bool haveVinegrad = !helper.getBuildings<Building>( B_GRAPE_FARM ).empty();
+  bool haveVinegrad = !helper.find<Building>( B_GRAPE_FARM ).empty();
 
   const_cast< Winery* >( this )->_setError( haveVinegrad ? "" : _("##need_vinegrad_for_work##") );
   return ret;
@@ -405,7 +405,7 @@ bool Creamery::canBuild(CityPtr city, const TilePos& pos) const
   bool ret = Factory::canBuild( city, pos );
 
   CityHelper helper( city );
-  bool haveOliveFarm = !helper.getBuildings<Building>( B_OLIVE_FARM ).empty();
+  bool haveOliveFarm = !helper.find<Building>( B_OLIVE_FARM ).empty();
 
   const_cast< Creamery* >( this )->_setError( haveOliveFarm ? "" : _("##need_olive_for_work##") );
 

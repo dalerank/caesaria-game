@@ -133,7 +133,7 @@ void BuildMenu::addSubmenuButton(const BuildMenuType menuType, const std::string
 }
 
 
-void BuildMenu::addBuildButton( const LandOverlayType buildingType )
+void BuildMenu::addBuildButton( const TileOverlayType buildingType )
 {
   //int t = DateTime::getElapsedTime();
   const BuildingData &buildingData = BuildingDataHolder::instance().getData( buildingType );

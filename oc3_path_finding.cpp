@@ -217,11 +217,11 @@ bool Propagator::getPath( BuildingPtr destination, PathWay &oPathWay)
    }
 }
 
-void Propagator::getRoutes( const LandOverlayType buildingType, Routes& oPathWayList)
+void Propagator::getRoutes( const TileOverlayType buildingType, Routes& oPathWayList)
 {
   // init the building list
   CityHelper helper( _d->city );
-  BuildingList buildingList = helper.getBuildings<Building>( buildingType );
+  BuildingList buildingList = helper.find<Building>( buildingType );
 
   // for each destination building
   foreach( BuildingPtr destination, buildingList )
@@ -362,7 +362,7 @@ Propagator::DirectRoute Propagator::getShortestRoute( const Routes& routes )
   return ret;
 }
 
-Propagator::DirectRoute Propagator::getShortestRoute( const LandOverlayType buildingType )
+Propagator::DirectRoute Propagator::getShortestRoute( const TileOverlayType buildingType )
 {
   Routes routes;
   getRoutes( buildingType, routes );

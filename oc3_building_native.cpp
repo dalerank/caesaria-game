@@ -18,7 +18,7 @@
 #include "oc3_tile.hpp"
 #include "oc3_city.hpp"
 
-NativeBuilding::NativeBuilding( const LandOverlayType type, const Size& size ) 
+NativeBuilding::NativeBuilding( const TileOverlayType type, const Size& size ) 
 : Building( type, size )
 {
 }

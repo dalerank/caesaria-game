@@ -19,7 +19,7 @@
 #include "oc3_tilemap.hpp"
 #include "oc3_positioni.hpp"
 #include "oc3_tile.hpp"
-#include "oc3_landoverlayfactory.hpp"
+#include "oc3_tileoverlay_factory.hpp"
 #include "oc3_fish_place.hpp"
 
 class CityServiceFishPlace::Impl
@@ -53,7 +53,7 @@ void CityServiceFishPlace::update( const unsigned int time )
 
   while( _d->places.size() < _d->maxFishPlace )
   {
-    LandOverlayPtr fishplace = LandOverlayFactory::getInstance().create( wtrFishPlace );
+    TileOverlayPtr fishplace = TileOverlayFactory::getInstance().create( wtrFishPlace );
 
     if( fishplace != 0 )
     {

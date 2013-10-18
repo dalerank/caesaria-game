@@ -31,7 +31,7 @@
 class EntertainmentInfoLabel : public Label
 {
 public:
-  EntertainmentInfoLabel( Widget* parent, const Rect& rect, const LandOverlayType service, 
+  EntertainmentInfoLabel( Widget* parent, const Rect& rect, const TileOverlayType service, 
                       int workBulding, int numberBuilding, int peoplesCount  )
     : Label( parent, rect )
   {
@@ -68,7 +68,7 @@ public:
   }
 
 private:
-  LandOverlayType _service;
+  TileOverlayType _service;
   int _workingBuilding;
   int _numberBuilding;
   int _peoplesCount;
@@ -96,7 +96,7 @@ public:
     int peoplesStuding;
   };
 
-  InfrastructureInfo getInfo( CityPtr city, const LandOverlayType service )
+  InfrastructureInfo getInfo( CityPtr city, const TileOverlayType service )
   {
     CityHelper helper( city );
 
@@ -107,7 +107,7 @@ public:
     ret.buildingShow = 0;
     ret.buildingCount = 0;
 
-    ServiceBuildingList servBuildings = helper.getBuildings<ServiceBuilding>( service );
+    ServiceBuildingList servBuildings = helper.find<ServiceBuilding>( service );
     foreach( ServiceBuildingPtr building, servBuildings )
     {
       if( building->getWorkers() > 0 )
@@ -195,7 +195,7 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow( CityPtr city, Widget* pa
 
   int sumScholars = 0;
   //int sumStudents = 0;
-  HouseList houses = helper.getBuildings<House>( B_HOUSE );
+  HouseList houses = helper.find<House>( B_HOUSE );
   foreach( HousePtr house, houses )
   {
     sumScholars += house->getHabitants().count( CitizenGroup::scholar );

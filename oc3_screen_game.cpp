@@ -28,7 +28,7 @@
 #include "oc3_gui_menu.hpp"
 #include "oc3_event.hpp"
 #include "oc3_infoboxmanager.hpp"
-#include "oc3_landoverlayfactory.hpp"
+#include "oc3_tileoverlay_factory.hpp"
 #include "oc3_tilemapchangecommand.hpp"
 #include "oc3_message_stack_widget.hpp"
 #include "oc3_time.hpp"
@@ -335,7 +335,7 @@ int ScreenGame::getResult() const
 
 void ScreenGame::Impl::resolveCreateConstruction( int type )
 {
-  renderer.setMode( TilemapBuildCommand::create( LandOverlayType( type ) ) );
+  renderer.setMode( TilemapBuildCommand::create( TileOverlayType( type ) ) );
 }
 
 void ScreenGame::Impl::resolveRemoveTool()

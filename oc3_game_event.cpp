@@ -14,7 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_game_event.hpp"
-#include "oc3_landoverlayfactory.hpp"
+#include "oc3_tileoverlay_factory.hpp"
 #include "oc3_city.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_building_data.hpp"
@@ -57,7 +57,7 @@ void DisasterEvent::exec( Game& game )
   {
     Size size( 1 );
 
-    LandOverlayPtr overlay = tile.getOverlay();
+    TileOverlayPtr overlay = tile.getOverlay();
     if( overlay.isValid() )
     {
       overlay->deleteLater();
@@ -70,8 +70,8 @@ void DisasterEvent::exec( Game& game )
     TilemapArea clearedTiles = tmap.getArea( rPos, size );
     foreach( Tile* tile, clearedTiles )
     {
-      LandOverlayType dstr2constr[] = { B_BURNING_RUINS, B_COLLAPSED_RUINS, B_PLAGUE_RUINS };
-      bool canCreate = LandOverlayFactory::getInstance().canCreate( dstr2constr[_type] );
+      TileOverlayType dstr2constr[] = { B_BURNING_RUINS, B_COLLAPSED_RUINS, B_PLAGUE_RUINS };
+      bool canCreate = TileOverlayFactory::getInstance().canCreate( dstr2constr[_type] );
       if( canCreate )
       {
         GameEventMgr::append( BuildEvent::create( tile->getIJ(), dstr2constr[_type] ) );
@@ -84,12 +84,12 @@ void DisasterEvent::exec( Game& game )
   }
 }
 
-GameEventPtr BuildEvent::create( const TilePos& pos, const LandOverlayType type )
+GameEventPtr BuildEvent::create( const TilePos& pos, const TileOverlayType type )
 {
-  return create( pos, LandOverlayFactory::getInstance().create( type ) );
+  return create( pos, TileOverlayFactory::getInstance().create( type ) );
 }
 
-GameEventPtr BuildEvent::create(const TilePos& pos, LandOverlayPtr overlay)
+GameEventPtr BuildEvent::create(const TilePos& pos, TileOverlayPtr overlay)
 {
   BuildEvent* ev = new BuildEvent();
   ev->_pos = pos;
@@ -147,7 +147,7 @@ void ClearLandEvent::exec( Game& game )
     Size size( 1 );
     TilePos rPos = _pos;
 
-    LandOverlayPtr overlay = cursorTile.getOverlay();
+    TileOverlayPtr overlay = cursorTile.getOverlay();
 
     bool deleteRoad = false;
 

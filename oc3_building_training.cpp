@@ -25,7 +25,7 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_city.hpp"
 
-TrainingBuilding::TrainingBuilding( const LandOverlayType type, const Size& size )
+TrainingBuilding::TrainingBuilding( const TileOverlayType type, const Size& size )
   : WorkingBuilding( type, size )
 {
    _trainingTimer = 0;

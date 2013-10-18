@@ -78,7 +78,7 @@ void TraineeWalker::computeWalkerPath()
   pathPropagator.init( _originBuilding.as<Construction>() );
   pathPropagator.propagate( _maxDistance );
 
-  foreach( LandOverlayType buildingType, _buildingNeed )
+  foreach( TileOverlayType buildingType, _buildingNeed )
   {
     checkDestination(buildingType, pathPropagator);
   }
@@ -100,7 +100,7 @@ void TraineeWalker::computeWalkerPath()
   }
 }
 
-void TraineeWalker::checkDestination(const LandOverlayType buildingType, Propagator &pathPropagator)
+void TraineeWalker::checkDestination(const TileOverlayType buildingType, Propagator &pathPropagator)
 {
   Propagator::Routes pathWayList;
   pathPropagator.getRoutes(buildingType, pathWayList);
@@ -154,8 +154,8 @@ void TraineeWalker::load( const VariantMap& stream )
   init( (WalkerType)getType() );
 
   CityHelper helper( _getCity() );
-  _originBuilding = helper.getBuilding<Building>( stream.get( "originBldPos" ).toTilePos() );
-  _destinationBuilding = helper.getBuilding<Building>( stream.get( "destBldPos" ).toTilePos() );
+  _originBuilding = helper.find<Building>( stream.get( "originBldPos" ).toTilePos() );
+  _destinationBuilding = helper.find<Building>( stream.get( "destBldPos" ).toTilePos() );
   _maxDistance = (int)stream.get( "maxDistance" );
   WalkerType wtype = (WalkerType)stream.get( "graphic" ).toInt();
 

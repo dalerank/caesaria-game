@@ -31,7 +31,7 @@
 class HealthInfoLabel : public Label
 {
 public:
-  HealthInfoLabel( Widget* parent, const Rect& rect, const LandOverlayType service, 
+  HealthInfoLabel( Widget* parent, const Rect& rect, const TileOverlayType service, 
                    int workBulding, int numberBuilding, int peoplesCount  )
     : Label( parent, rect )
   {
@@ -70,7 +70,7 @@ public:
   }
 
 private:
-  LandOverlayType _service;
+  TileOverlayType _service;
   int _workingBuilding;
   int _numberBuilding;
   int _peoplesCount;
@@ -94,7 +94,7 @@ public:
     int peoplesServed;
   };
 
-  InfrastructureInfo getInfo( CityPtr city, const LandOverlayType service )
+  InfrastructureInfo getInfo( CityPtr city, const TileOverlayType service )
   {
     CityHelper helper( city );
 
@@ -104,7 +104,7 @@ public:
     ret.peoplesServed = 0;
     ret.buildingCount = 0;
 
-    ServiceBuildingList srvBuildings = helper.getBuildings<ServiceBuilding>( service );
+    ServiceBuildingList srvBuildings = helper.find<ServiceBuilding>( service );
     foreach( ServiceBuildingPtr building, srvBuildings )
     {
       ret.buildingWork += building->getWorkers() > 0 ? 1 : 0;

@@ -37,7 +37,7 @@ public:
   void addSubmenuButton(const BuildMenuType menuType, const std::string &text);
 
   // add the button in the menu.
-  void addBuildButton(const LandOverlayType buildingType);
+  void addBuildButton(const TileOverlayType buildingType);
 
   bool isPointInside(const Point& point) const;
 

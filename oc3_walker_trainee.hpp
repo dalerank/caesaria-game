@@ -26,7 +26,7 @@ class TraineeWalker : public Walker
 public:
   static TraineeWalkerPtr create( CityPtr city, const WalkerType traineeType );
 
-  void checkDestination(const LandOverlayType buildingType, Propagator& pathPropagator);
+  void checkDestination(const TileOverlayType buildingType, Propagator& pathPropagator);
   void send2City();
   void setOriginBuilding(Building &building);
   void computeWalkerPath();
@@ -45,7 +45,7 @@ private:
   BuildingPtr _destinationBuilding;
   int _maxDistance;
 
-  std::list<LandOverlayType> _buildingNeed;  // list of buildings needing this trainee
+  std::list<TileOverlayType> _buildingNeed;  // list of buildings needing this trainee
   float _maxNeed;  // evaluates the need for that trainee
 };
 

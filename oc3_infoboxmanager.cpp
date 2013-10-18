@@ -135,8 +135,8 @@ public:
     CityPtr city;
     bool showDebugInfo;
 
-    typedef std::map< LandOverlayType, InfoboxCreator* > InfoboxCreators;
-    std::map< std::string, LandOverlayType > name2typeMap;
+    typedef std::map< TileOverlayType, InfoboxCreator* > InfoboxCreators;
+    std::map< std::string, TileOverlayType > name2typeMap;
 
     InfoboxCreators constructors;
 };
@@ -229,8 +229,8 @@ InfoBoxManager::~InfoBoxManager()
 
 void InfoBoxManager::showHelp( const Tile& tile )
 {
-  LandOverlayPtr overlay = tile.getOverlay();
-  LandOverlayType type;
+  TileOverlayPtr overlay = tile.getOverlay();
+  TileOverlayType type;
 
   if( _d->showDebugInfo )
   {
@@ -262,7 +262,7 @@ void InfoBoxManager::setShowDebugInfo( const bool showInfo )
   _d->showDebugInfo = showInfo;
 } 
 
-void InfoBoxManager::addInfobox( const LandOverlayType type, const std::string& typeName, InfoboxCreator* ctor )
+void InfoBoxManager::addInfobox( const TileOverlayType type, const std::string& typeName, InfoboxCreator* ctor )
 {
   bool alreadyHaveConstructor = _d->name2typeMap.find( typeName ) != _d->name2typeMap.end();
   _OC3_DEBUG_BREAK_IF( alreadyHaveConstructor && "already have constructor for this type");
@@ -274,7 +274,7 @@ void InfoBoxManager::addInfobox( const LandOverlayType type, const std::string& 
   }
 }
 
-bool InfoBoxManager::canCreate( const LandOverlayType type ) const
+bool InfoBoxManager::canCreate( const TileOverlayType type ) const
 {
   return _d->constructors.find( type ) != _d->constructors.end();   
 }

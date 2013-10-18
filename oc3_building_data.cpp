@@ -26,10 +26,10 @@
 
 BuildingData BuildingData::invalid = BuildingData( unknown, "unknown", 0 );
 
-class BuildingTypeHelper : public EnumsHelper<LandOverlayType>
+class BuildingTypeHelper : public EnumsHelper<TileOverlayType>
 {
 public:
-  BuildingTypeHelper() : EnumsHelper<LandOverlayType>( unknown )
+  BuildingTypeHelper() : EnumsHelper<TileOverlayType>( unknown )
   {
     append( buildingAmphitheater,   "amphitheater");
     append( B_THEATER,        "theater" );
@@ -121,10 +121,10 @@ public:
  }
 };
 
-class BuildingClassHelper : public EnumsHelper<LandOverlayClass>
+class BuildingClassHelper : public EnumsHelper<TileOverlayGroup>
 {
 public:
-  BuildingClassHelper() : EnumsHelper<LandOverlayClass>( lndcUnknown )
+  BuildingClassHelper() : EnumsHelper<TileOverlayGroup>( lndcUnknown )
   {
     append( BC_INDUSTRY, "industry" );
     append( BC_RAWMATERIAL, "rawmaterial" );
@@ -157,11 +157,11 @@ class BuildingData::Impl
 {
 public:
   BuildingData::Desirability desirability;
-  LandOverlayType buildingType;
+  TileOverlayType buildingType;
   VariantMap options;
 };
 
-BuildingData::BuildingData(const LandOverlayType buildingType, const std::string &name, const int cost)
+BuildingData::BuildingData(const TileOverlayType buildingType, const std::string &name, const int cost)
   : _d( new Impl )
 {
   _d->buildingType = buildingType;
@@ -194,7 +194,7 @@ std::string BuildingData::getPrettyName() const
   return _prettyName;
 }
 
-LandOverlayType BuildingData::getType() const
+TileOverlayType BuildingData::getType() const
 {
   return _d->buildingType;
 }
@@ -235,7 +235,7 @@ BuildingData &BuildingData::operator=(const BuildingData &a)
   return *this;
 }
 
-LandOverlayClass BuildingData::getClass() const
+TileOverlayGroup BuildingData::getClass() const
 {
   return _buildingClass;
 }
@@ -246,8 +246,8 @@ public:
   BuildingTypeHelper typeHelper;
   BuildingClassHelper classHelper;
 
-  typedef std::map<LandOverlayType, BuildingData> BuildingsMap; 
-  typedef std::map<Good::Type, LandOverlayType> FactoryInMap;
+  typedef std::map<TileOverlayType, BuildingData> BuildingsMap; 
+  typedef std::map<Good::Type, TileOverlayType> FactoryInMap;
 
   BuildingsMap buildings;// key=building_type, value=data
   FactoryInMap mapBuildingByInGood;
@@ -259,9 +259,9 @@ BuildingDataHolder& BuildingDataHolder::instance()
   return inst;
 }
 
-LandOverlayType BuildingDataHolder::getConsumerType(const Good::Type inGoodType) const
+TileOverlayType BuildingDataHolder::getConsumerType(const Good::Type inGoodType) const
 {
-  LandOverlayType res = unknown;
+  TileOverlayType res = unknown;
 
   Impl::FactoryInMap::iterator mapIt;
   mapIt = _d->mapBuildingByInGood.find(inGoodType);
@@ -272,7 +272,7 @@ LandOverlayType BuildingDataHolder::getConsumerType(const Good::Type inGoodType)
   return res;
 }
 
-const BuildingData& BuildingDataHolder::getData(const LandOverlayType buildingType) const
+const BuildingData& BuildingDataHolder::getData(const TileOverlayType buildingType) const
 {
   Impl::BuildingsMap::iterator mapIt;
   mapIt = _d->buildings.find(buildingType);
@@ -284,7 +284,7 @@ const BuildingData& BuildingDataHolder::getData(const LandOverlayType buildingTy
   return mapIt->second;
 }
 
-bool BuildingDataHolder::hasData(const LandOverlayType buildingType) const
+bool BuildingDataHolder::hasData(const TileOverlayType buildingType) const
 {
   bool res = true;
   Impl::BuildingsMap::iterator mapIt;
@@ -298,7 +298,7 @@ bool BuildingDataHolder::hasData(const LandOverlayType buildingType) const
 
 void BuildingDataHolder::addData(const BuildingData &data)
 {
-  LandOverlayType buildingType = data.getType();
+  TileOverlayType buildingType = data.getType();
 
   if (hasData(buildingType))
   {
@@ -329,7 +329,7 @@ void BuildingDataHolder::initialize( const io::FilePath& filename )
   {
     VariantMap options = mapItem.second.toMap();
 
-    const LandOverlayType btype = getType( mapItem.first );
+    const TileOverlayType btype = getType( mapItem.first );
     if( btype == unknown )
     {
       StringHelper::debug( 0xff, "!!!Warning: can't associate type with %s", mapItem.first.c_str() );
@@ -374,9 +374,9 @@ void BuildingDataHolder::initialize( const io::FilePath& filename )
   }
 }
 
-LandOverlayType BuildingDataHolder::getType( const std::string& name )
+TileOverlayType BuildingDataHolder::getType( const std::string& name )
 {
-  LandOverlayType type = instance()._d->typeHelper.findType( name );
+  TileOverlayType type = instance()._d->typeHelper.findType( name );
 
   if( type == instance()._d->typeHelper.getInvalid() )
   {
@@ -387,9 +387,9 @@ LandOverlayType BuildingDataHolder::getType( const std::string& name )
   return type;
 }
 
-LandOverlayClass BuildingDataHolder::getClass( const std::string& name )
+TileOverlayGroup BuildingDataHolder::getClass( const std::string& name )
 {
-  LandOverlayClass type = instance()._d->classHelper.findType( name );
+  TileOverlayGroup type = instance()._d->classHelper.findType( name );
 
   if( type == instance()._d->classHelper.getInvalid() )
   {
@@ -400,7 +400,7 @@ LandOverlayClass BuildingDataHolder::getClass( const std::string& name )
   return type;
 }
 
-std::string BuildingDataHolder::getPrettyName(LandOverlayType bType)
+std::string BuildingDataHolder::getPrettyName(TileOverlayType bType)
 {
   return instance().getData( bType ).getPrettyName();
 }

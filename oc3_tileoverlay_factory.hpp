@@ -23,21 +23,21 @@
 class LandOverlayConstructor
 {
 public:
-  virtual LandOverlayPtr create() = 0;
+  virtual TileOverlayPtr create() = 0;
 };
 
-class LandOverlayFactory
+class TileOverlayFactory
 {
 public:
-    static LandOverlayFactory& getInstance();
-    LandOverlayPtr create( const LandOverlayType type ) const;
-    LandOverlayPtr create( const std::string& typeName ) const;
+    static TileOverlayFactory& getInstance();
+    TileOverlayPtr create( const TileOverlayType type ) const;
+    TileOverlayPtr create( const std::string& typeName ) const;
 
-    bool canCreate( const LandOverlayType type ) const;
+    bool canCreate( const TileOverlayType type ) const;
 
-    void addCreator( const LandOverlayType type, const std::string& typeName, LandOverlayConstructor* ctor );
+    void addCreator( const TileOverlayType type, const std::string& typeName, LandOverlayConstructor* ctor );
 private:
-    LandOverlayFactory();
+    TileOverlayFactory();
 
     class Impl;
     ScopedPtr< Impl > _d;

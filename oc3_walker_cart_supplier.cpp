@@ -67,7 +67,7 @@ void CartSupplier::onDestination()
     // walker is back in the market
     deleteLater();
     // put the content of the stock to receiver
-    BuildingPtr building = helper.getBuilding<Building>( _d->baseBuildingPos );
+    BuildingPtr building = helper.find<Building>( _d->baseBuildingPos );
 
     GoodStore* storage = 0;
     if( building.is<Factory>() )
@@ -98,7 +98,7 @@ void CartSupplier::onDestination()
 
     // get goods from destination building
     
-    BuildingPtr building = helper.getBuilding<Building>( _d->storageBuildingPos );
+    BuildingPtr building = helper.find<Building>( _d->storageBuildingPos );
 
     if( building.is<Granary>() )
     {
@@ -162,7 +162,7 @@ void CartSupplier::getPictureList(std::vector<Picture> &oPics)
 }
 
 template< class T >
-TilePos getSupplierDestination2( Propagator &pathPropagator, const LandOverlayType type, 
+TilePos getSupplierDestination2( Propagator &pathPropagator, const TileOverlayType type, 
                                  const Good::Type what, const int needQty,
                                  PathWay &oPathWay, long& reservId )
 {

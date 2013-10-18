@@ -100,7 +100,7 @@ public:
       ShowInfoboxEvent::create( _("##wrath_of_ceres_title##"), _("##wrath_of_ceres_description##") );
 
       CityHelper helper( city );
-      FarmList farms = helper.getBuildings<Farm>( B_MAX );
+      FarmList farms = helper.find<Farm>( B_MAX );
       foreach( FarmPtr farm, farms )
       {
         farm->updateProgress( -farm->getProgress() );

@@ -41,7 +41,7 @@ namespace {
 class EducationInfoLabel : public Label
 {
 public:
-  EducationInfoLabel( Widget* parent, const Rect& rect, const LandOverlayType service,
+  EducationInfoLabel( Widget* parent, const Rect& rect, const TileOverlayType service,
                       const InfrastructureInfo& info )
     : Label( parent, rect )
   {
@@ -81,7 +81,7 @@ public:
   }
 
 private:
-  LandOverlayType _service;
+  TileOverlayType _service;
   InfrastructureInfo _info;
 };
 
@@ -94,7 +94,7 @@ public:
   EducationInfoLabel* lbCollegeInfo;
   EducationInfoLabel* lbLibraryInfo;
 
-  InfrastructureInfo getInfo( CityPtr city, const LandOverlayType service );
+  InfrastructureInfo getInfo( CityPtr city, const TileOverlayType service );
 };
 
 
@@ -121,7 +121,7 @@ AdvisorEducationWindow::AdvisorEducationWindow( CityPtr city, Widget* parent, in
 
   int sumScholars = 0;
   int sumStudents = 0;
-  HouseList houses = helper.getBuildings<House>( B_HOUSE );
+  HouseList houses = helper.find<House>( B_HOUSE );
   foreach( HousePtr house, houses )
   {
     sumScholars += house->getHabitants().count( CitizenGroup::scholar );
@@ -142,7 +142,7 @@ void AdvisorEducationWindow::draw( GfxEngine& painter )
 }
 
 
-InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(CityPtr city, const LandOverlayType service)
+InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(CityPtr city, const TileOverlayType service)
 {
   CityHelper helper( city );
 
@@ -152,7 +152,7 @@ InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(CityPtr city, const Lan
   ret.peoplesStuding = 0;
   ret.buildingCount = 0;
 
-  ServiceBuildingList servBuildings = helper.getBuildings<ServiceBuilding>( service );
+  ServiceBuildingList servBuildings = helper.find<ServiceBuilding>( service );
   foreach( ServiceBuildingPtr serv, servBuildings )
   {
     if( serv->getWorkers() > 0 )

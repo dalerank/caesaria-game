@@ -23,11 +23,11 @@
 #include "oc3_serializer.hpp"
 #include "oc3_scopedptr.hpp"
 
-class LandOverlay : public Serializable, public ReferenceCounted
+class TileOverlay : public Serializable, public ReferenceCounted
 {
 public:
-  LandOverlay( const LandOverlayType type, const Size& size=Size(1));
-  virtual ~LandOverlay();
+  TileOverlay( const TileOverlayType type, const Size& size=Size(1));
+  virtual ~TileOverlay();
 
   Tile& getTile() const;  // master tile, in case of multi-tile area
   TilePos getTilePos() const;
@@ -58,9 +58,9 @@ public:
   std::string getName();  // landoverlay debug name
   void setName( const std::string& name );
 
-  LandOverlayType getType() const;
-  LandOverlayClass getClass() const;
-  void setType(const LandOverlayType type);
+  TileOverlayType getType() const;
+  TileOverlayGroup getClass() const;
+  void setType(const TileOverlayType type);
 
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream );

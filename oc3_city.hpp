@@ -64,7 +64,7 @@ public:
   void addService( CityServicePtr service );
   CityServicePtr findService( const std::string& name ) const;
 
-  LandOverlayList& getOverlayList();
+  TileOverlayList& getOverlayList();
 
   void setBorderInfo( const BorderInfo& info );
   const BorderInfo& getBorderInfo() const;
@@ -95,8 +95,8 @@ public:
   void load( const VariantMap& stream);
 
   // add construction
-  void addOverlay(LandOverlayPtr overlay);  
-  LandOverlayPtr getOverlay( const TilePos& pos ) const;
+  void addOverlay(TileOverlayPtr overlay);
+  TileOverlayPtr getOverlay( const TilePos& pos ) const;
 
   const CityBuildOptions& getBuildOptions() const;
 
@@ -138,11 +138,11 @@ public:
   CityHelper( CityPtr city ) : _city( city ) {}
 
   template< class T >
-  std::list< SmartPtr< T > > getBuildings( const LandOverlayType type )
+  std::list< SmartPtr< T > > find( const TileOverlayType type )
   {
     std::list< SmartPtr< T > > ret;
-    LandOverlayList& buildings = _city->getOverlayList();
-    foreach( LandOverlayPtr item, buildings )
+    TileOverlayList& buildings = _city->getOverlayList();
+    foreach( TileOverlayPtr item, buildings )
     {
       SmartPtr< T > b = item.as<T>();
       if( b.isValid() && (b->getType() == type || type == B_MAX) )
@@ -155,11 +155,11 @@ public:
   }
 
   template< class T >
-  std::list< SmartPtr< T > > getBuildings( const LandOverlayClass type )
+  std::list< SmartPtr< T > > find( const TileOverlayGroup type )
   {
     std::list< SmartPtr< T > > ret;
-    LandOverlayList& overlays = _city->getOverlayList();
-    foreach( LandOverlayPtr item, overlays )
+    TileOverlayList& overlays = _city->getOverlayList();
+    foreach( TileOverlayPtr item, overlays )
     {
       SmartPtr< T > b = item.as<T>();
       if( b.isValid() && b->getClass() == type )
@@ -172,9 +172,9 @@ public:
   }
 
   template< class T >
-  SmartPtr< T > getBuilding( const TilePos& pos )
+  SmartPtr< T > find( const TilePos& pos )
   {
-    LandOverlayPtr overlay = _city->getOverlay( pos );
+    TileOverlayPtr overlay = _city->getOverlay( pos );
     return overlay.as< T >();
   }
 
@@ -182,8 +182,8 @@ public:
   std::list< SmartPtr< T > > getProducers( const Good::Type goodtype )
   {
     std::list< SmartPtr< T > > ret;
-    LandOverlayList& overlays = _city->getOverlayList();
-    foreach( LandOverlayPtr item, overlays )
+    TileOverlayList& overlays = _city->getOverlayList();
+    foreach( TileOverlayPtr item, overlays )
     {
       SmartPtr< T > b = item.as<T>();
       if( b.isValid() && b->getOutGoodType() == goodtype )

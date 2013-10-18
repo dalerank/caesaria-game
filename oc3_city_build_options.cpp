@@ -23,7 +23,7 @@ static const char* disableAll = "disable_all";
 class CityBuildOptions::Impl
 {
 public:
-  typedef std::map< LandOverlayType, bool > BuildingRules;
+  typedef std::map< TileOverlayType, bool > BuildingRules;
   BuildingRules rules;
 };
 
@@ -37,7 +37,7 @@ CityBuildOptions::~CityBuildOptions()
 
 }
 
-void CityBuildOptions::setBuildingAvailble( const LandOverlayType type, bool mayBuild )
+void CityBuildOptions::setBuildingAvailble( const TileOverlayType type, bool mayBuild )
 {
   _d->rules[ type ] = mayBuild;
 }
@@ -87,7 +87,7 @@ void CityBuildOptions::load(const VariantMap& options)
   VariantMap buildings = options.get( "buildings" ).toMap();
   foreach( VariantMap::value_type& item, buildings )
   {
-    LandOverlayType btype = BuildingDataHolder::getType( item.first );
+    TileOverlayType btype = BuildingDataHolder::getType( item.first );
     setBuildingAvailble( btype, item.second.toBool() );
   }
 }
@@ -99,7 +99,7 @@ CityBuildOptions& CityBuildOptions::operator=(const CityBuildOptions& a)
   return *this;
 }
 
-bool CityBuildOptions::isBuildingAvailble( const LandOverlayType type ) const
+bool CityBuildOptions::isBuildingAvailble( const TileOverlayType type ) const
 {
   Impl::BuildingRules::iterator it = _d->rules.find( type );
   return (it != _d->rules.end() ? (*it).second : true);

@@ -319,7 +319,7 @@ void ServiceWalker::load( const VariantMap& stream )
   _d->maxDistance = stream.get( "maxDistance" ).toInt();
 
   TilePos basePos = stream.get( "base" ).toTilePos();
-  LandOverlayPtr overlay = _getCity()->getTilemap().at( basePos ).getOverlay();
+  TileOverlayPtr overlay = _getCity()->getTilemap().at( basePos ).getOverlay();
 
   _d->base = overlay.as<Building>();
   if( _d->base.isNull() )

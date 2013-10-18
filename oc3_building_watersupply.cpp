@@ -71,7 +71,7 @@ void Aqueduct::build( CityPtr city, const TilePos& pos )
   Construction::build( city, pos );
 
   CityHelper helper( city );
-  AqueductList aqueducts = helper.getBuildings<Aqueduct>( B_AQUEDUCT );
+  AqueductList aqueducts = helper.find<Aqueduct>( B_AQUEDUCT );
   foreach( AqueductPtr aqueduct, aqueducts )
   {
     aqueduct->updatePicture( city );
@@ -89,7 +89,7 @@ void Aqueduct::destroy()
     TilemapArea area = _getCity()->getTilemap().getArea( getTilePos() - TilePos( 2, 2), Size( 5 ) );
     foreach( Tile* tile, area )
     {
-      LandOverlayPtr overlay = tile->getOverlay();
+      TileOverlayPtr overlay = tile->getOverlay();
       if( overlay.isValid() && overlay->getType() == B_AQUEDUCT )
       {
         overlay.as<Aqueduct>()->updatePicture( _getCity() );
@@ -220,7 +220,7 @@ Picture& Aqueduct::computePicture(CityPtr city , const TilemapTiles * tmp, const
   }
 
   // get overlays for all directions
-  LandOverlayPtr overlay_d[D_MAX];
+  TileOverlayPtr overlay_d[D_MAX];
   overlay_d[D_NORTH] = tmap.at( tile_pos_d[D_NORTH] ).getOverlay();
   overlay_d[D_EAST] = tmap.at( tile_pos_d[D_EAST]  ).getOverlay();
   overlay_d[D_SOUTH] = tmap.at( tile_pos_d[D_SOUTH] ).getOverlay();
@@ -472,7 +472,7 @@ bool Reservoir::isNeedRoadAccess() const
   return false;
 }
 
-WaterSource::WaterSource( const LandOverlayType type, const Size& size )
+WaterSource::WaterSource( const TileOverlayType type, const Size& size )
   : Construction( type, size ), _d( new Impl )
 
 {
@@ -654,7 +654,7 @@ bool Fountain::haveReservoirAccess() const
   TilemapArea reachedTiles = _getCity()->getTilemap().getArea( getTilePos() - TilePos( 10, 10 ), Size( 10, 10 ) + getSize() );
   foreach( Tile* tile, reachedTiles )
   {
-    LandOverlayPtr overlay = tile->getOverlay();
+    TileOverlayPtr overlay = tile->getOverlay();
     if( overlay != 0 && (B_RESERVOIR == overlay->getType()) )
     {
       return true;

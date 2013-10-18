@@ -14,7 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_tilemapchangecommand.hpp"
-#include "oc3_landoverlayfactory.hpp"
+#include "oc3_tileoverlay_factory.hpp"
 #include "oc3_building.hpp"
 
 class TilemapBuildCommand::Impl
@@ -58,10 +58,10 @@ TilemapChangeCommandPtr TilemapRemoveCommand::create()
   return ret;
 }
 
-TilemapChangeCommandPtr TilemapBuildCommand::create( LandOverlayType type )
+TilemapChangeCommandPtr TilemapBuildCommand::create( TileOverlayType type )
 {
   TilemapBuildCommand* newCommand = new TilemapBuildCommand();
-  LandOverlayPtr overlay = LandOverlayFactory::getInstance().create( type );
+  TileOverlayPtr overlay = TileOverlayFactory::getInstance().create( type );
   newCommand->_d->construction = overlay.as<Construction>();
   newCommand->_d->isMultiBuilding = false;
   newCommand->_d->isBorderBuilding = false;

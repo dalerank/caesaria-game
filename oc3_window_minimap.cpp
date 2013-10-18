@@ -17,7 +17,7 @@
 #include "oc3_tilemap.hpp"
 #include "oc3_minimap_colours.hpp"
 #include "oc3_tile.hpp"
-#include "oc3_landoverlay.hpp"
+#include "oc3_tileoverlay.hpp"
 #include "oc3_time.hpp"
 #include "oc3_gfx_engine.hpp"
 
@@ -115,12 +115,12 @@ void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
 
 void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
 {
-  LandOverlayPtr overlay = tile.getOverlay();
+  TileOverlayPtr overlay = tile.getOverlay();
 
   if (overlay == NULL)
     return;
 
-  LandOverlayType type = overlay->getType();
+  TileOverlayType type = overlay->getType();
 
   switch(type)
   {
