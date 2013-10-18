@@ -138,7 +138,7 @@ public:
   CityHelper( CityPtr city ) : _city( city ) {}
 
   template< class T >
-  std::list< SmartPtr< T > > find( const TileOverlayType type )
+  std::list< SmartPtr< T > > find( const TileOverlayType type=B_MAX )
   {
     std::list< SmartPtr< T > > ret;
     TileOverlayList& buildings = _city->getOverlayList();

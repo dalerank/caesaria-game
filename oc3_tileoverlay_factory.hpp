@@ -20,7 +20,7 @@
 #include "oc3_scopedptr.hpp"
 #include "oc3_predefinitions.hpp"
 
-class LandOverlayConstructor
+class TileOverlayConstructor
 {
 public:
   virtual TileOverlayPtr create() = 0;
@@ -35,7 +35,7 @@ public:
 
     bool canCreate( const TileOverlayType type ) const;
 
-    void addCreator( const TileOverlayType type, const std::string& typeName, LandOverlayConstructor* ctor );
+    void addCreator( const TileOverlayType type, const std::string& typeName, TileOverlayConstructor* ctor );
 private:
     TileOverlayFactory();
 

@@ -48,10 +48,11 @@
 #include "oc3_building_data.hpp"
 #include "oc3_building_education.hpp"
 #include "oc3_fish_place.hpp"
+#include "oc3_building_wharf.hpp"
 
 #include <map>
 
-template< class T > class BaseCreator : public LandOverlayConstructor
+template< class T > class BaseCreator : public TileOverlayConstructor
 {
 public:
   virtual TileOverlayPtr create()
@@ -136,7 +137,7 @@ public:
 class TileOverlayFactory::Impl
 {
 public:
-  typedef std::map< TileOverlayType, LandOverlayConstructor* > Constructors;
+  typedef std::map< TileOverlayType, TileOverlayConstructor* > Constructors;
   std::map< std::string, TileOverlayType > name2typeMap;
   Constructors constructors;
 };
@@ -266,7 +267,7 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(wtrFishPlace, OC3_STR_EXT(wtrFishPlace), new BaseCreator<FishPlace>() );
 }
 
-void TileOverlayFactory::addCreator( const TileOverlayType type, const std::string& typeName, LandOverlayConstructor* ctor )
+void TileOverlayFactory::addCreator( const TileOverlayType type, const std::string& typeName, TileOverlayConstructor* ctor )
 {
   bool alreadyHaveConstructor = _d->name2typeMap.find( typeName ) != _d->name2typeMap.end();
   _OC3_DEBUG_BREAK_IF( alreadyHaveConstructor && "already have constructor for this type");

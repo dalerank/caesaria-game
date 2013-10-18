@@ -115,11 +115,4 @@ public:
    virtual bool canBuild(CityPtr city, const TilePos &pos) const;
 };
 
-class Wharf : public Factory
-{
-public:
-  Wharf();
-  virtual bool canBuild(CityPtr city, const TilePos& pos ) const;  // returns true if it can be built there
-};
-
 #endif
