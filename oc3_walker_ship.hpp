@@ -13,17 +13,43 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_PROJECT_VERSION_INCLUDE_H_
-#define __OPENCAESAR3_PROJECT_VERSION_INCLUDE_H_
+#ifndef _OPENCAESAR_SHIP_INCLUDE_H_
+#define _OPENCAESAR_SHIP_INCLUDE_H_
 
-#include "oc3_requirements.hpp"
+#include "oc3_walker.hpp"
+#include "oc3_predefinitions.hpp"
 
-#define OC3_VERSION_MAJOR 0
-#define OC3_VERSION_MINOR 2
-#define OC3_VERSION_REVSN 845
+class Ship : public Walker
+{
+public:
+  Ship( CityPtr city );
+  ~Ship();
+};
 
-#define OC3_STR_EXT(__A) #__A
-#define OC3_STR_A(__A) OC3_STR_EXT(__A)
-#define OC3_VERSION OC3_STR_A(OC3_VERSION_MAJOR)"."OC3_STR_A(OC3_VERSION_MINOR)"."OC3_STR_A(OC3_VERSION_REVSN)"["OC3_PLATFORM_NAME":"OC3_COMPILER_NAME"]"
+class FishingBoat : public Ship
+{
+public:
+  static FishingBoatPtr create( CityPtr city );
+
+  void send2City( WharfPtr base, const TilePos& start);
+
+  virtual void onDestination();
+  virtual void onNewTile();
+
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
+
+  virtual void timeStep(const unsigned long time);
+  void startCatch();
+
+  bool isBusy() const;
+
+private:
+  FishingBoat( CityPtr city );
+
+  class Impl;
+  ScopedPtr< Impl > _d;
+};
+
 
 #endif

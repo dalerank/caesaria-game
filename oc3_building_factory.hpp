@@ -35,6 +35,7 @@ public:
   GoodStock& getInGood();
   GoodStock& getOutGood();
 
+  Good::Type getInGoodType() const;
   Good::Type getOutGoodType() const;
 
   GoodStore& getGoodStore();

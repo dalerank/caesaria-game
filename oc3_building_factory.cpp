@@ -69,7 +69,12 @@ GoodStock& Factory::getInGood()
 
 GoodStock& Factory::getOutGood()
 {
-   return _d->goodStore.getStock(_d->outGoodType);
+  return _d->goodStore.getStock(_d->outGoodType);
+}
+
+Good::Type Factory::getInGoodType() const
+{
+  return _d->inGoodType;
 }
 
 int Factory::getProgress()

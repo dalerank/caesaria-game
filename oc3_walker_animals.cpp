@@ -37,7 +37,10 @@ Animal::Animal( CityPtr city )
 
 void Animal::send2City(const TilePos &start )
 {
-  _getCity()->addWalker( WalkerPtr( this ) );
+  if( !isDeleted() )
+  {
+    _getCity()->addWalker( WalkerPtr( this ) );
+  }
 }
 
 Animal::~Animal()

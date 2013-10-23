@@ -19,11 +19,17 @@
 #include "oc3_city.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_foreach.hpp"
+#include "oc3_walker_ship.hpp"
+#include "oc3_foreach.hpp"
+#include "oc3_goodstore.hpp"
 
 class Wharf::Impl
 {
 public:
+  enum { southWestPic=54, northEastPic=52, northWestPic=55, southEastPic=53 };
   std::vector<int> saveTileInfo;
+  DirectionType direction;
+  FishingBoatPtr boat;
 
   DirectionType getDirection( CityPtr city, TilePos pos )
   {
@@ -64,24 +70,23 @@ public:
 Wharf::Wharf() : Factory(Good::none, Good::fish, B_WHARF, Size(2)), _d( new Impl )
 {
   // transport 52 53 54 55
-  setPicture( ResourceGroup::wharf, 52 );
+  setPicture( ResourceGroup::wharf, Impl::northEastPic );
 }
 
-/* INCORRECT! */
 bool Wharf::canBuild( CityPtr city, const TilePos& pos ) const
 {
   bool is_constructible = true;//Construction::canBuild( city, pos );
 
   DirectionType direction = _d->getDirection( city, pos );
 
-  const_cast< Wharf* >( this )->_setPicture( direction );
+  const_cast< Wharf* >( this )->_setDirection( direction );
 
   return (is_constructible && direction != D_NONE );
 }
 
 void Wharf::build(CityPtr city, const TilePos& pos)
 {
-  _setPicture( _d->getDirection( city, pos ) );
+  _setDirection( _d->getDirection( city, pos ) );
 
   CityHelper helper( city );
   TilemapArea area = city->getTilemap().getArea( pos, getSize() );
@@ -89,6 +94,9 @@ void Wharf::build(CityPtr city, const TilePos& pos)
   foreach( Tile* tile, area ) { _d->saveTileInfo.push_back( TileHelper::encode( *tile ) ); }
 
   Factory::build( city, pos );
+
+  _d->boat = FishingBoat::create( city );
+  _d->boat->send2City( this, getLandingTile().getIJ() );
 }
 
 void Wharf::destroy()
@@ -103,16 +111,90 @@ void Wharf::destroy()
   Factory::destroy();
 }
 
-void Wharf::_setPicture(DirectionType direction)
+void Wharf::timeStep(const unsigned long time)
 {
+  WorkingBuilding::timeStep(time);
+
+  //try get good from storage building for us
+  if( time % 22 == 1 && getWorkers() > 0 && getWalkerList().size() == 0 )
+  {
+    receiveGood();
+    deliverGood();
+  }
+
+  //start/stop animation when workers found
+  bool mayAnimate = mayWork();
+
+  if( mayAnimate && _getAnimation().isStopped() )
+  {
+    _getAnimation().start();
+  }
+
+  if( !mayAnimate && _getAnimation().isRunning() )
+  {
+    _getAnimation().stop();
+  }
+
+  //no workers or no good in stock... stop animate
+  if( !mayAnimate )
+  {
+    return;
+  }
+
+  if( getProgress() >= 100.0 )
+  {
+    if( getGoodStore().getCurrentQty( getInGoodType() ) < getGoodStore().getMaxQty( getOutGoodType() )  )
+    {
+      updateProgress( -100.f );
+      //gcc fix for temporaly ref object
+      GoodStock tmpStock( getOutGoodType(), 100, 100 );
+      getGoodStore().store( tmpStock, 100 );
+    }
+  }
+  else
+  {
+    if( _d->boat.isValid() && !_d->boat->isBusy() )
+    {
+      _d->boat->startCatch();
+    }
+  }
+}
+
+const Tile& Wharf::getLandingTile() const
+{
+  Tilemap& tmap = _getCity()->getTilemap();
+  TilePos offset( -999, -999 );
+  switch( _d->direction )
+  {
+  case D_SOUTH_WEST: offset = TilePos( 0, -1 ); break;
+  case D_NORTH_WEST: offset = TilePos( -1, 0 ); break;
+  case D_NORTH_EAST: offset = TilePos( 0, 1 ); break;
+  case D_SOUTH_EAST: offset = TilePos( 1, 0 ); break;
+
+  default: break;
+  }
+
+  return tmap.at( getTilePos() + offset );
+}
+
+FishingBoatPtr Wharf::getBoat() const
+{
+  return _d->boat;
+}
+
+void Wharf::_setDirection(DirectionType direction)
+{
+  _d->direction = direction;
   switch( direction )
   {
-  case D_SOUTH_WEST: setPicture( ResourceGroup::wharf, 54 ); break;
-  case D_NORTH_EAST: setPicture( ResourceGroup::wharf, 52 ); break;
-  case D_NORTH_WEST: setPicture( ResourceGroup::wharf, 55 ); break;
-  case D_SOUTH_EAST: setPicture( ResourceGroup::wharf, 53 ); break;
+  case D_SOUTH_WEST: setPicture( ResourceGroup::wharf, Impl::southWestPic ); break;
+  case D_NORTH_EAST: setPicture( ResourceGroup::wharf, Impl::northEastPic ); break;
+  case D_NORTH_WEST: setPicture( ResourceGroup::wharf, Impl::northWestPic ); break;
+  case D_SOUTH_EAST: setPicture( ResourceGroup::wharf, Impl::southEastPic ); break;
 
   default: break;
   }
 }
+
+
 

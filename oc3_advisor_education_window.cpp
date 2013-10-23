@@ -77,7 +77,7 @@ public:
 
     const char* coverages[10] = { "##edu_poor##", "##edu_very_bad##", "##edu_bad##", "##edu_not_bad##", "##edu_simple##",
                                   "##edu_above_simple##", "##edu_good##", "##edu_very_good##", "##edu_pretty##", "##edu_awesome##" };
-    font.draw( *texture, _( coverages[ _info.coverage / 10 ] ), 470, 0 );
+    font.draw( *texture, _( coverages[ math::clamp( _info.coverage / 10, 0, 10 ) ] ), 470, 0 );
   }
 
 private:
@@ -151,6 +151,7 @@ InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(CityPtr city, const Til
   ret.buildingWork = 0;
   ret.peoplesStuding = 0;
   ret.buildingCount = 0;
+  ret.coverage = 0;
 
   ServiceBuildingList servBuildings = helper.find<ServiceBuilding>( service );
   foreach( ServiceBuildingPtr serv, servBuildings )
@@ -172,6 +173,23 @@ InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(CityPtr city, const Til
     }
     ret.buildingCount++;
   }
+
+  CitizenGroup::Age age;
+  switch( service )
+  {
+  case B_SCHOOL: age = CitizenGroup::scholar; break;
+  case B_COLLEGE: age = CitizenGroup::student; break;
+  case B_LIBRARY: age = CitizenGroup::mature; break;
+  default: break;
+  }
+
+  HouseList houses = helper.find<House>( B_HOUSE );
+  int peoplesCount=0;
+  foreach( HousePtr house, houses )
+  {
+    peoplesCount += house->getHabitants().count( age );
+  }
+  ret.coverage = ret.peoplesStuding * 100 / peoplesCount;
 
   return ret;
 }

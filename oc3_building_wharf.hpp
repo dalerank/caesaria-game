@@ -25,9 +25,14 @@ public:
   virtual bool canBuild(CityPtr city, const TilePos& pos ) const;  // returns true if it can be built there
   virtual void build(CityPtr city, const TilePos &pos);
   virtual void destroy();
+  virtual void timeStep(const unsigned long time);
+
+  const Tile& getLandingTile() const;
+
+  FishingBoatPtr getBoat() const;
 
 private:
-  void _setPicture( DirectionType direction );
+  void _setDirection( DirectionType direction );
 
 private:
   class Impl;

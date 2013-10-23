@@ -35,6 +35,4 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-typedef SmartPtr<FishPlace> FishPlacePtr;
-
 #endif //_OPENCAESAR3_FISHPLACE_H_INCLUDE_

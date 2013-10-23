@@ -78,7 +78,7 @@ public:
   void setI( const int i ) { x = i; }
   void setJ( const int j ) { y = j; }
 
-  float distanceFrom( const TilePos& other ) { return getDistanceFrom( other );}
+  float distanceFrom( const TilePos& other ) const { return getDistanceFrom( other );}
 
   TilePos& operator=(const TilePos& other) { set( other.x, other.y ); return *this; }
   TilePos& operator+=(const TilePos& other) { set( x+other.x, y+other.y ); return *this; }
