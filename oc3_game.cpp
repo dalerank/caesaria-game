@@ -42,9 +42,9 @@
 #include "oc3_game_loader.hpp"
 #include "oc3_win_targets.hpp"
 #include "oc3_gamedate.hpp"
-#include "oc3_game_event_mgr.hpp"
 #include "oc3_game_saver.hpp"
 #include "oc3_saveadapter.hpp"
+#include "events/dispatcher.hpp"
 
 #include <libintl.h>
 #include <list>
@@ -236,7 +236,7 @@ void Game::setScreenGame()
       }
     }
 
-    GameEventMgr::update( _d->time );
+    events::Dispatcher::update( _d->time );
   }
 
   switch( screen.getResult() )
@@ -274,6 +274,11 @@ GuiEnv* Game::getGui() const
   return _d->gui;
 }
 
+GfxEngine*Game::getEngine() const
+{
+  return _d->engine;
+}
+
 void Game::setPaused(bool value)
 {
   _d->paused = value;
@@ -292,7 +297,7 @@ Game::Game() : _d( new Impl )
   _d->saveTime = 0;
   _d->timeMultiplier = 100;
 
-  CONNECT( &GameEventMgr::instance(), onEvent(), this, Game::resolveEvent );
+  CONNECT( &events::Dispatcher::instance(), onEvent(), this, Game::resolveEvent );
 }
 
 void Game::changeTimeMultiplier(int percent)
@@ -310,7 +315,7 @@ int Game::getTimeMultiplier() const
   return _d->timeMultiplier;
 }
 
-void Game::resolveEvent(GameEventPtr event)
+void Game::resolveEvent( events::GameEventPtr event)
 {
   if( event.isValid() )
   {

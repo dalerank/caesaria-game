@@ -20,7 +20,7 @@
 #define WALKER_CART_PUSHER_HPP
 
 #include "oc3_walker.hpp"
-#include "oc3_predefinitions.hpp"
+#include "core/predefinitions.hpp"
 
 /** This walker delivers goods */
 class CartPusher : public Walker

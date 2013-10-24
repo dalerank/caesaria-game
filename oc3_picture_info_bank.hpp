@@ -16,8 +16,8 @@
 #ifndef __OPENCAESAR3_PICTURE_INFO_BANK_H_INCLUDED__
 #define __OPENCAESAR3_PICTURE_INFO_BANK_H_INCLUDED__
 
-#include "oc3_positioni.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/position.hpp"
+#include "core/scopedptr.hpp"
 
 // contains data needed for loading pictures
 class PictureInfoBank

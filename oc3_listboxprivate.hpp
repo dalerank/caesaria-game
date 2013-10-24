@@ -17,7 +17,7 @@
 #define _NRP_LISTBOX_PRIVATE_H_INCLUDE_
 
 #include "oc3_listboxitem.hpp"
-#include "oc3_signals.hpp"
+#include "core/signals.hpp"
 #include "oc3_scrollbar.hpp"
 #include "oc3_color.hpp"
 #include <vector>

@@ -16,10 +16,10 @@
 #ifndef __OPENCAESAR3_EMPIRECITY_H_INCLUDED__
 #define __OPENCAESAR3_EMPIRECITY_H_INCLUDED__
 
-#include "oc3_scopedptr.hpp"
-#include "oc3_referencecounted.hpp"
-#include "oc3_positioni.hpp"
-#include "oc3_predefinitions.hpp"
+#include "core/scopedptr.hpp"
+#include "core/referencecounted.hpp"
+#include "core/position.hpp"
+#include "core/predefinitions.hpp"
 #include "oc3_serializer.hpp"
 
 class GoodStore;

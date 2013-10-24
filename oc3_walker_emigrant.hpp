@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_EMIGRANT_H_INCLUDE_
 
 #include "oc3_walker_immigrant.hpp"
-#include "oc3_predefinitions.hpp"
+#include "core/predefinitions.hpp"
 
 class Emigrant;
 typedef SmartPtr< Emigrant > EmigrantPtr;

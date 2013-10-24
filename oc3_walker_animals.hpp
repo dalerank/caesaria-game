@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_ANIMAL_H_INCLUDED__
 
 #include "oc3_walker.hpp"
-#include "oc3_predefinitions.hpp"
+#include "core/predefinitions.hpp"
 
 /** This is an immigrant coming with his stuff */
 class Animal : public Walker

@@ -13,12 +13,14 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_game_event_mgr.hpp"
-#include "oc3_foreach.hpp"
-#include "oc3_city.hpp"
+#include "dispatcher.hpp"
+#include "core/foreach.hpp"
 #include <vector>
 
-class GameEventMgr::Impl
+namespace events
+{
+
+class Dispatcher::Impl
 {
 public:
   typedef std::vector< GameEventPtr > Events;
@@ -29,23 +31,23 @@ public oc3_signals:
   Signal1<GameEventPtr> onEventSignal;
 };
 
-GameEventMgr::GameEventMgr() : _d( new Impl )
+Dispatcher::Dispatcher() : _d( new Impl )
 {
 }
 
-GameEventMgr::~GameEventMgr()
+Dispatcher::~Dispatcher()
 {
 
 }
 
-void GameEventMgr::append( GameEventPtr event)
+void Dispatcher::append( GameEventPtr event)
 {
   instance()._d->events.push_back( event );
 }
 
-void GameEventMgr::update(unsigned int time)
+void Dispatcher::update(unsigned int time)
 {
-  GameEventMgr& inst = instance();
+  Dispatcher& inst = instance();
   Impl::Events events = inst._d->events;
   inst._d->events.clear();
 
@@ -55,7 +57,9 @@ void GameEventMgr::update(unsigned int time)
   }
 }
 
-Signal1<GameEventPtr>&GameEventMgr::onEvent()
+Signal1<GameEventPtr>&Dispatcher::onEvent()
 {
   return _d->onEventSignal;
 }
+
+}//end namespace events

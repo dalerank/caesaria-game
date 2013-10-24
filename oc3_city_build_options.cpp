@@ -15,7 +15,7 @@
 
 #include "oc3_city_build_options.hpp"
 #include "oc3_building_data.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 #include <map>
 
 static const char* disableAll = "disable_all";

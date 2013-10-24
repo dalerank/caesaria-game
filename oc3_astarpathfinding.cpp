@@ -1,10 +1,10 @@
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_tilemap.hpp"
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 #include "oc3_astarpoint.hpp"
 #include "oc3_path_finding.hpp"
 #include "oc3_stringhelper.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 
 using namespace std;
 

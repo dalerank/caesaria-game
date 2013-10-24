@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_MARKET_H_INCLUDED__
 
 #include "oc3_building_service.hpp"
-#include "oc3_predefinitions.hpp"
+#include "core/predefinitions.hpp"
 
 class GoodStore;
 

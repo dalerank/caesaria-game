@@ -17,8 +17,8 @@
 #define _OPENCAESAR3_WINDOW_PLAYERNAME_H_INCLUDE_
 
 #include "oc3_gui_widget.hpp"
-#include "oc3_signals.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/signals.hpp"
+#include "core/scopedptr.hpp"
 
 class WindowPlayerName : public Widget
 {

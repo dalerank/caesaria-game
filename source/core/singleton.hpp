@@ -22,7 +22,7 @@
 #ifndef _OPENCAESAR3_SINGLETON_H_INCLUDE_
 #define _OPENCAESAR3_SINGLETON_H_INCLUDE_
 
-#include "oc3_requirements.hpp"
+#include "requirements.hpp"
 
 /** The "classic" Singleton.
  */

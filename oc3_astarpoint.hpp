@@ -1,7 +1,7 @@
 #ifndef __OPENCAESAR3_ASTARPOINT_H_INCLUDED__
 #define __OPENCAESAR3_ASTARPOINT_H_INCLUDED__
 
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 #include "oc3_tile.hpp"
 
 class AStarPoint

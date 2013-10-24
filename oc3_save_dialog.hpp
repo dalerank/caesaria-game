@@ -17,8 +17,8 @@
 #define __OPENCAESAR3_SAVE_DIALOG_H_INCLUDED__
 
 #include "oc3_gui_widget.hpp"
-#include "oc3_scopedptr.hpp"
-#include "oc3_signals.hpp"
+#include "core/scopedptr.hpp"
+#include "core/signals.hpp"
 #include "oc3_filepath.hpp"
 
 class SaveDialog : public Widget

@@ -16,12 +16,13 @@
 #ifndef __OPENCAESAR3_PREDEFINITIONS_H_INCLUDED__
 #define __OPENCAESAR3_PREDEFINITIONS_H_INCLUDED__
 
-#include "oc3_smartptr.hpp"
+#include "core/smartptr.hpp"
 
 #include <list>
 #include <vector>
 
 #define PREFEDINE_CLASS_SMARTPOINTER(a) class a; typedef SmartPtr<a> a##Ptr;
+#define PREFEDINE_NS_CLASS_SMARTPOINTER(ns,a) namespace ns { class a; typedef SmartPtr<a> a##Ptr; }
 #define PREFEDINE_CLASS_SMARTPOINTER_LIST(a,b) PREFEDINE_CLASS_SMARTPOINTER(a); typedef std::list< a##Ptr > a##b;
 
 PREFEDINE_CLASS_SMARTPOINTER_LIST(Walker,List)
@@ -70,7 +71,7 @@ PREFEDINE_CLASS_SMARTPOINTER(MarketLadyHelper)
 PREFEDINE_CLASS_SMARTPOINTER(Animal)
 PREFEDINE_CLASS_SMARTPOINTER(CartSupplier)
 PREFEDINE_CLASS_SMARTPOINTER(Prefecture)
-PREFEDINE_CLASS_SMARTPOINTER(GameEvent)
+PREFEDINE_NS_CLASS_SMARTPOINTER(events,GameEvent)
 PREFEDINE_CLASS_SMARTPOINTER(Player)
 
 class Tile;

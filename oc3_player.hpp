@@ -21,9 +21,9 @@
 
 #include "oc3_enums.hpp"
 #include "oc3_serializer.hpp"
-#include "oc3_scopedptr.hpp"
-#include "oc3_predefinitions.hpp"
-#include "oc3_referencecounted.hpp"
+#include "core/scopedptr.hpp"
+#include "core/predefinitions.hpp"
+#include "core/referencecounted.hpp"
 
 class Player : public Serializable, public ReferenceCounted
 {

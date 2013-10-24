@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_HIGH_BRIDGE_H_INCLUDED__
 
 #include "oc3_building.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 
 class HighBridge : public Construction
 {

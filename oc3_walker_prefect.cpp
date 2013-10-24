@@ -14,7 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_walker_prefect.hpp"
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 #include "oc3_building_prefecture.hpp"
 #include "oc3_building_house.hpp"
 #include "oc3_astarpathfinding.hpp"
@@ -23,8 +23,8 @@
 #include "oc3_city.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_name_generator.hpp"
-#include "oc3_game_event_mgr.hpp"
 #include "oc3_stringhelper.hpp"
+#include "events/event.hpp"
 
 class WalkerPrefect::Impl
 {
@@ -155,7 +155,8 @@ void WalkerPrefect::onMidTile()
         {
           house->deleteLater();
 
-          GameEventMgr::append( DisasterEvent::create( house->getTilePos(), DisasterEvent::plague ) );
+          events::GameEventPtr e = events::DisasterEvent::create( house->getTilePos(), events::DisasterEvent::plague );
+          e->dispatch();
         }
       }
     }

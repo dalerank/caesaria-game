@@ -17,7 +17,7 @@
 #include "oc3_building_religion.hpp"
 #include "oc3_divinity.hpp"
 #include "oc3_resourcegroup.hpp"
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 
 class Temple::Impl
 {

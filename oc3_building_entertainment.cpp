@@ -15,14 +15,14 @@
 
 
 #include "oc3_building_entertainment.hpp"
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 #include "oc3_resourcegroup.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 #include "oc3_city.hpp"
 #include "oc3_building_training.hpp"
-#include "oc3_game_event_mgr.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_stringhelper.hpp"
+#include "events/event.hpp"
 
 EntertainmentBuilding::EntertainmentBuilding(const Service::Type service,
                                              const TileOverlayType type,
@@ -136,7 +136,8 @@ void Theater::build(CityPtr city, const TilePos& pos)
 
   if( actors.empty() )
   {
-    GameEventMgr::append( WarningMessageEvent::create( _("##need_actor_colony##")) );
+    events::GameEventPtr event = events::WarningMessageEvent::create( _("##need_actor_colony##"));
+    event->dispatch();
   }
 }
 
@@ -177,13 +178,15 @@ void Amphitheater::build(CityPtr city, const TilePos& pos)
 
   if( actors.empty() )
   {
-    GameEventMgr::append( WarningMessageEvent::create( _("##need_actor_colony##")) );
+    events::GameEventPtr event = events::WarningMessageEvent::create( _("##need_actor_colony##"));
+    event->dispatch();
   }
 
   GladiatorSchoolList gladiators = helper.find<GladiatorSchool>( B_GLADIATOR_SCHOOL );
   if( actors.empty() )
   {
-    GameEventMgr::append( WarningMessageEvent::create( _("##need_gladiator_school##")) );
+    events::GameEventPtr event = events::WarningMessageEvent::create( _("##need_gladiator_school##"));
+    event->dispatch();
   }
 }
 

@@ -19,7 +19,7 @@
 #define __OPENCAESAR3_HOUSE_H_INCLUDED__
 
 #include "oc3_building.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 #include "oc3_citizen_group.hpp"
 
 class HouseLevelSpec;

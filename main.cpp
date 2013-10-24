@@ -2,7 +2,6 @@
 #include "oc3_game_settings.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_stringhelper.hpp"
-#include "oc3_game_event_mgr.hpp"
 
 int main(int argc, char* argv[])
 {

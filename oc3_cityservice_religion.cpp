@@ -15,13 +15,13 @@
 
 #include "oc3_cityservice_religion.hpp"
 #include "oc3_city.hpp"
-#include "oc3_safetycast.hpp"
-#include "oc3_positioni.hpp"
+#include "core/safetycast.hpp"
+#include "core/position.hpp"
 #include "oc3_gamedate.hpp"
 #include "oc3_building_religion.hpp"
 #include "oc3_divinity.hpp"
-#include "oc3_game_event.hpp"
-#include "oc3_foreach.hpp"
+#include "events/event.hpp"
+#include "core/foreach.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_gettext.hpp"
 

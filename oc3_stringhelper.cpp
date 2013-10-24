@@ -14,7 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_stringhelper.hpp"
-#include "oc3_requirements.hpp"
+#include "core/requirements.hpp"
 
 #include <cstdarg>
 #include <cfloat>
@@ -309,5 +309,5 @@ void StringHelper::redirectCout2( const std::string& filename )
   std::ofstream* file = new std::ofstream();
 
   file->open("stdout.txt");
-  std::cout.rdbuf( file->rdbuf() ); // οεπενΰοπΰλÿεμ β τΰιλ
+  std::cout.rdbuf( file->rdbuf() ); // ΠΏΠµΡ€ΠµΠ½Π°ΠΏΡ€Π°Π»ΡΠµΠΌ Π² Ρ„Π°ΠΉΠ»
 }

@@ -29,6 +29,9 @@ struct NEvent;
 class GfxEngine
 {
 public:
+  typedef Size Mode;
+  typedef std::vector<Size> Modes;
+
   typedef enum { fullscreen=0, debugInfo } Flags;
   static GfxEngine& instance();
 
@@ -39,7 +42,6 @@ public:
   virtual void delay( const unsigned int msec ) = 0;
   virtual bool haveEvent( NEvent& event ) = 0;
 
-  
   void setScreenSize( Size size );
   Size getScreenSize() const;
 
@@ -70,7 +72,7 @@ public:
 
   virtual void createScreenshot( const std::string& filename ) = 0;
   virtual unsigned int getFps() const = 0;
-  virtual std::vector<Size> getAvailableModes() const = 0;
+  virtual Modes getAvailableModes() const = 0;
 
 protected:
   static GfxEngine* _instance;

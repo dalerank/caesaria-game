@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_GOODSTORE_SIMPLE_H_INCLUDED__
 
 #include "oc3_goodstore.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 
 class SimpleGoodStore : public GoodStore
 {

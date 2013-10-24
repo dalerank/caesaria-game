@@ -20,8 +20,8 @@
 #include "oc3_filepath.hpp"
 #include "oc3_filelist_item.hpp"
 #include "oc3_stringarray.hpp"
-#include "oc3_scopedptr.hpp"
-#include "oc3_referencecounted.hpp"
+#include "core/scopedptr.hpp"
+#include "core/referencecounted.hpp"
 #include <vector>
 
 namespace io

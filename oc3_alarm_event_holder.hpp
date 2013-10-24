@@ -16,9 +16,9 @@
 #ifndef __OPENCAESAR3_ALARM_EVENT_HOLDER_H_INCLUDED__
 #define __OPENCAESAR3_ALARM_EVENT_HOLDER_H_INCLUDED__
 
-#include "oc3_scopedptr.hpp"
-#include "oc3_positioni.hpp"
-#include "oc3_signals.hpp"
+#include "core/scopedptr.hpp"
+#include "core/position.hpp"
+#include "core/signals.hpp"
 
 #include <string>
 

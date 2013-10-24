@@ -16,12 +16,12 @@
 #ifndef _OPENCAESAR3_LANDOVERLAY_H_INCLUDE_
 #define _OPENCAESAR3_LANDOVERLAY_H_INCLUDE_
 
-#include "oc3_predefinitions.hpp"
+#include "core/predefinitions.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_animation.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_serializer.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 
 class TileOverlay : public Serializable, public ReferenceCounted
 {

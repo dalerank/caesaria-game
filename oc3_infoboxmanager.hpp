@@ -1,10 +1,10 @@
 #ifndef __OPENCAESAR3_INFOBOX_MANAGER_H_INCLUDE_
 #define __OPENCAESAR3_INFOBOX_MANAGER_H_INCLUDE_
 
-#include "oc3_smartptr.hpp"
-#include "oc3_referencecounted.hpp"
-#include "oc3_scopedptr.hpp"
-#include "oc3_predefinitions.hpp"
+#include "core/smartptr.hpp"
+#include "core/referencecounted.hpp"
+#include "core/scopedptr.hpp"
+#include "core/predefinitions.hpp"
 #include "oc3_enums.hpp"
 
 class InfoBoxSimple;

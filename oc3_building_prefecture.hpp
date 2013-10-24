@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_BUILDINGPREFECT_H_INCLUDED__
 
 #include "oc3_building_service.hpp"
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 
 class Prefecture : public ServiceBuilding
 {

@@ -13,35 +13,14 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_project_version.hpp"
-
 #ifndef __OPENCAESAR3_REQUIREMENTS_INCLUDE_
 #define __OPENCAESAR3_REQUIREMENTS_INCLUDE_
 
+#include "../../oc3_project_version.hpp"
+#include "platform.hpp"
+
 //see CMakeLists.txt for this define
 //#define NO_USE_SYSTEM_ZLIB
-
-#if defined(__WIN32__) || defined(_WIN32)
-  #define OC3_PLATFORM_WIN
-  #define OC3_PLATFORM_WIN32
-  #define OC3_PLATFORM_NAME "win32"
-#elif defined(WIN64) || defined(_WIN64)
-  #define OC3_PLATFORM_WIN
-  #define OC3_PLATFORM_WIN64
-  #define OC3_PLATFORM_NAME "win64"
-#elif defined(__APPLE_CC__)
-  #define OC3_PLATFORM_UNIX
-  #define OC3_PLATFORM_MACOSX
-  #define OC3_PLATFORM_NAME "macosx"
-#elif defined(__FreeBSD__) || defined(__OpenBSD__)
-  #define OC3_PLATFORM_UNIX
-  #define OC3_PLATFORM_XBSD
-  #define OC3_PLATFORM_NAME "freebsd"
-#else
-  #define OC3_PLATFORM_UNIX
-  #define OC3_PLATFORM_LINUX
-  #define OC3_PLATFORM_NAME "linux"
-#endif
 
 #if defined OC3_PLATFORM_WIN
   // alignment of a member was sensitive to packing

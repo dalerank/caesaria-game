@@ -16,9 +16,9 @@
 #ifndef __OPENCAESAR3_ARCHIVE_LOADER_H_INCLUDED__
 #define __OPENCAESAR3_ARCHIVE_LOADER_H_INCLUDED__
 
-#include "oc3_referencecounted.hpp"
+#include "core/referencecounted.hpp"
 #include "oc3_filesystem_file.hpp"
-#include "oc3_smartptr.hpp"
+#include "core/smartptr.hpp"
 
 namespace io
 {

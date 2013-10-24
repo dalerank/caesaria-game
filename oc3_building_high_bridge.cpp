@@ -19,8 +19,7 @@
 #include "oc3_tile.hpp"
 #include "oc3_city.hpp"
 #include "oc3_tilemap.hpp"
-#include "oc3_game_event_mgr.hpp"
-
+#include "events/event.hpp"
 #include <vector>
 
 class HighBridgeSubTile : public Construction
@@ -370,7 +369,8 @@ void HighBridge::build( CityPtr city, const TilePos& pos )
       subtile->_info = TileHelper::encode( tile );
       subtile->_parent = this;
       
-      BuildEvent::create( buildPos, subtile.as<TileOverlay>() );
+      events::GameEventPtr event = events::BuildEvent::create( buildPos, subtile.as<TileOverlay>() );
+      event->dispatch();
     }    
   }
 }
@@ -381,7 +381,8 @@ void HighBridge::destroy()
   foreach( HighBridgeSubTilePtr subtile,  _d->subtiles )
   {
     subtile->_parent = 0;
-    GameEventMgr::append( ClearLandEvent::create( subtile->_pos ) );
+    events::GameEventPtr event = events::ClearLandEvent::create( subtile->_pos );
+    event->dispatch();
 
     std::string picName = TileHelper::convId2PicName( subtile->_imgId );
 

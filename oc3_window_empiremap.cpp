@@ -32,8 +32,8 @@
 #include "oc3_empire_trading.hpp"
 #include "oc3_cityfunds.hpp"
 #include "oc3_goodhelper.hpp"
-#include "oc3_game_event_mgr.hpp"
 #include "oc3_game_settings.hpp"
+#include "events/event.hpp"
 
 static const char* empMapOffset = "EmpireMapWindowOffset";
 
@@ -121,7 +121,8 @@ void EmpireMapWindow::Impl::createTradeRoute()
   if( currentCity != 0 )
   {
     unsigned int cost = EmpireHelper::getTradeRouteOpenCost( empire, ourCity, currentCity->getName() );
-    GameEventMgr::append( FundIssueEvent::create( CityFunds::otherExpenditure, -(int)cost ) );
+    events::GameEventPtr e = events::FundIssueEvent::create( CityFunds::otherExpenditure, -(int)cost );
+    e->dispatch();
     empire->createTradeRoute( ourCity, currentCity->getName() );
   }
 

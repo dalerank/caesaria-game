@@ -19,7 +19,7 @@
 #include "oc3_picture_decorator.hpp"
 #include "oc3_event.hpp"
 #include "oc3_guienv.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 #include "oc3_city.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_cityfunds.hpp"

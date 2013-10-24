@@ -19,13 +19,12 @@
 
 #include <memory>
 
-#include "oc3_referencecounted.hpp"
-#include "oc3_list.hpp"
+#include "core/referencecounted.hpp"
+#include "core/list.hpp"
 #include "oc3_rectangle.hpp"
 #include "oc3_alignment.hpp"
-#include "oc3_safetycast.hpp"
 #include "oc3_font.hpp"
-#include "oc3_smartptr.hpp"
+#include "core/smartptr.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_filepath.hpp"
 

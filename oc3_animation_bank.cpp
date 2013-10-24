@@ -16,7 +16,7 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 #include "oc3_animation_bank.hpp"
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_stringhelper.hpp"

@@ -2,7 +2,7 @@
 #define _OC3_PICTURE_LOADER_H_INLCUDE_
 
 #include "oc3_picture.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 #include "oc3_filesystem_file.hpp"
 
 //! Class which is able to create a picture(sdl surface) from a file.

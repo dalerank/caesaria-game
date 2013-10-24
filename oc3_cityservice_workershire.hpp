@@ -17,9 +17,9 @@
 #define __OPENCAESAR3_CITYSERVICE_WORKERSHIRE_H_INCLUDED__
 
 #include "oc3_cityservice.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 #include "oc3_enums.hpp"
-#include "oc3_predefinitions.hpp"
+#include "core/predefinitions.hpp"
 
 class CityServiceWorkersHire : public CityService
 {

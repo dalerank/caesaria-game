@@ -19,7 +19,7 @@
 #include "oc3_goodstore_simple.hpp"
 #include "oc3_goodhelper.hpp"
 #include "oc3_gamedate.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 
 class ComputerCity::Impl
 {

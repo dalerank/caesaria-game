@@ -18,11 +18,11 @@
 #include "oc3_picture.hpp"
 
 #include "oc3_exception.hpp"
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 #include "oc3_rectangle.hpp"
 #include "oc3_picture_bank.hpp"
 #include "oc3_gfx_engine.hpp"
-#include "oc3_requirements.hpp"
+#include "core/requirements.hpp"
 #include "oc3_color.hpp"
 #include <SDL.h>
 

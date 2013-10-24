@@ -17,7 +17,7 @@
 #define _OPENCAESAR3_SCROLLBAR_PRIVATE_H_INCLUDE_
 
 #include "oc3_picture.hpp"
-#include "oc3_signals.hpp"
+#include "core/signals.hpp"
 #include "oc3_rectangle.hpp"
 
 class PushButton;

@@ -28,8 +28,8 @@
 
 #include "IMG_savepng.h"
 #include "oc3_exception.hpp"
-#include "oc3_requirements.hpp"
-#include "oc3_positioni.hpp"
+#include "core/requirements.hpp"
+#include "core/position.hpp"
 #include "oc3_pictureconverter.hpp"
 #include "oc3_time.hpp"
 #include "oc3_stringhelper.hpp"
@@ -222,9 +222,9 @@ void GfxSdlEngine::createScreenshot( const std::string& filename )
   IMG_SavePNG( filename.c_str(), _d->screen.getSurface(), -1 );
 }
 
-std::vector<Size> GfxSdlEngine::getAvailableModes() const
+GfxEngine::Modes GfxSdlEngine::getAvailableModes() const
 {
-  std::vector<Size> ret;
+  Modes ret;
 
   /* Get available fullscreen/hardware modes */
   SDL_Rect** modes = SDL_ListModes(NULL, SDL_FULLSCREEN|SDL_HWSURFACE);

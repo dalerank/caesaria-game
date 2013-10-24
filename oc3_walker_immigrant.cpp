@@ -14,8 +14,8 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_walker_immigrant.hpp"
-#include "oc3_positioni.hpp"
-#include "oc3_safetycast.hpp"
+#include "core/position.hpp"
+#include "core/safetycast.hpp"
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_building_house.hpp"
 #include "oc3_tile.hpp"

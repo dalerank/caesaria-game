@@ -19,7 +19,7 @@
 #include <vector>
 
 #include "oc3_picture.hpp"
-#include "oc3_signals.hpp"
+#include "core/signals.hpp"
 
 class ContextMenuItem;
 

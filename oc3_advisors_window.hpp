@@ -18,7 +18,7 @@
 
 #include "oc3_gui_widget.hpp"
 #include "oc3_enums.hpp"
-#include "oc3_predefinitions.hpp"
+#include "core/predefinitions.hpp"
 
 class PushButton;
 

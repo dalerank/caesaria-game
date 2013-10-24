@@ -32,8 +32,8 @@
 #include "oc3_gamedate.hpp"
 #include "oc3_goodstore_simple.hpp"
 #include "oc3_city.hpp"
-#include "oc3_foreach.hpp"
-#include "oc3_game_event_mgr.hpp"
+#include "core/foreach.hpp"
+#include "events/event.hpp"
 
 class House::Impl
 {
@@ -379,7 +379,8 @@ void House::levelDown()
          house->_d->houseId = smallHovel;
          house->_update();
 
-         GameEventMgr::append( BuildEvent::create( tile->getIJ(), house.as<TileOverlay>() ));
+         events::GameEventPtr event = events::BuildEvent::create( tile->getIJ(), house.as<TileOverlay>() );
+         event->dispatch();
        }
 
        deleteLater();

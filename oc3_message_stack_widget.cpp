@@ -19,7 +19,7 @@
 #include "oc3_widget_deleter.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_resourcegroup.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 #include "oc3_stringhelper.hpp"
 #include <list>
 

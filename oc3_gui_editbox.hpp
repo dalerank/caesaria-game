@@ -18,7 +18,7 @@
 
 #include "oc3_gui_widget.hpp"
 #include "oc3_color.hpp"
-#include "oc3_signals.hpp"
+#include "core/signals.hpp"
 #include <string>
 
 class EditBox : public Widget

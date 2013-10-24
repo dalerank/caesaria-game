@@ -18,7 +18,7 @@
 #include "oc3_widgetprivate.hpp"
 #include "oc3_guienv.hpp"
 #include "oc3_event.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 #include "oc3_saveadapter.hpp"
 #include "oc3_stringhelper.hpp"
 

@@ -17,8 +17,8 @@
 #define __OPENCAESAR3_CONTEXT_MENU_H_INCLUDED__
 
 #include "oc3_gui_widget.hpp"
-#include "oc3_signals.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/signals.hpp"
+#include "core/scopedptr.hpp"
 
 class ContextMenuItem;
 class VariantMap;

@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_TOPMENU_H_INCLUDE_
 
 #include "oc3_gui_mainmenu.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 
 class DateTime;
 

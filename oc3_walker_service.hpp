@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_SERVICEWALKER_H_INCLUDED__
 
 #include "oc3_walker.hpp"
-#include "oc3_predefinitions.hpp"
+#include "core/predefinitions.hpp"
 
 /** This walker gives a service to buildings along the road */
 class ServiceWalker : public Walker

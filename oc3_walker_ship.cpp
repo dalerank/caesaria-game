@@ -115,7 +115,7 @@ void FishingBoat::timeStep(const unsigned long time)
       if( _d->base != 0 )
       {
         bool pathfound = Pathfinder::getInstance().getPath( getIJ(), _d->base->getLandingTile().getIJ(),
-                                                            _getPathway(), Pathfinder::waterOnly, Size(1) );
+                                                            _getPathway(), Pathfinder::waterOnly, Size(0) );
 
         if( pathfound )
         {
@@ -221,7 +221,7 @@ PathWay FishingBoat::Impl::findFishingPlace( CityPtr city, const TilePos& pos )
   {
     PathWay way;
     bool pathFound = Pathfinder::getInstance().getPath( pos, nearest->getTilePos(),
-                                                        way, Pathfinder::waterOnly, Size(1) );
+                                                        way, Pathfinder::waterOnly, Size(0) );
 
     if( pathFound )
       return way;

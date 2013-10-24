@@ -20,7 +20,7 @@
 #define _OPENCAESAR3_SCENARIO_OC3SAVE_SAVER_H_INCLUDE_
 
 #include "oc3_filepath.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 
 class Game;
 

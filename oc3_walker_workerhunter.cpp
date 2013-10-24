@@ -15,9 +15,9 @@
 
 #include "oc3_walker_workerhunter.hpp"
 #include "oc3_building_house.hpp"
-#include "oc3_predefinitions.hpp"
-#include "oc3_safetycast.hpp"
-#include "oc3_positioni.hpp"
+#include "core/predefinitions.hpp"
+#include "core/safetycast.hpp"
+#include "core/position.hpp"
 #include "oc3_servicewalker_helper.h"
 #include "oc3_city.hpp"
 #include "oc3_enums.hpp"

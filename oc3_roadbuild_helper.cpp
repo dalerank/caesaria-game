@@ -21,7 +21,7 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_tilemap.hpp"
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 #include "oc3_tile.hpp"
 
 // comparison (for sorting list of tiles by their coordinates)

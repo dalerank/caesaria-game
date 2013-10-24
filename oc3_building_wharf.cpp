@@ -18,9 +18,9 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_city.hpp"
 #include "oc3_tilemap.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 #include "oc3_walker_ship.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 #include "oc3_goodstore.hpp"
 
 class Wharf::Impl
@@ -105,6 +105,11 @@ void Wharf::destroy()
 
   TilemapArea area = helper.getArea( this );
 
+  if( _d->boat )
+  {
+    _d->boat->die();
+  }
+
   int index=0;
   foreach( Tile* tile, area ) { TileHelper::decode( *tile, _d->saveTileInfo.at( index++ ) ); }
 
@@ -153,7 +158,7 @@ void Wharf::timeStep(const unsigned long time)
   }
   else
   {
-    if( _d->boat.isValid() && !_d->boat->isBusy() )
+    if( _d->boat.isValid() && !_d->boat->isBusy() && getOutGood().empty() )
     {
       _d->boat->startCatch();
     }

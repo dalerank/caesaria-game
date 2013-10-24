@@ -16,10 +16,10 @@
 #ifndef __OPENCAESAR3_TILE_H_INCLUDED__
 #define __OPENCAESAR3_TILE_H_INCLUDED__
 
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 #include "oc3_animation.hpp"
 #include "oc3_enums.hpp"
-#include "oc3_predefinitions.hpp"
+#include "core/predefinitions.hpp"
 
 class Picture;
 

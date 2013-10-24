@@ -14,8 +14,8 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_animation.hpp"
-#include "oc3_positioni.hpp"
-#include "oc3_foreach.hpp"
+#include "core/position.hpp"
+#include "core/foreach.hpp"
 #include "oc3_stringhelper.hpp"
 
 void Animation::start(bool loop)

@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_SERVICE_H_INCLUDED__
 
 #include "oc3_enums_helper.hpp"
-#include "oc3_math.hpp"
+#include "core/math.hpp"
 
 class Service
 {

@@ -15,7 +15,7 @@
 
 #include "oc3_building_health.hpp"
 #include "oc3_resourcegroup.hpp"
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 #include "oc3_tile.hpp"
 
 Doctor::Doctor() : ServiceBuilding(Service::doctor, B_DOCTOR, Size(1))

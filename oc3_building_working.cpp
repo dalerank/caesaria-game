@@ -17,7 +17,7 @@
 #include "oc3_picture.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_walker.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 
 class WorkingBuilding::Impl
 {

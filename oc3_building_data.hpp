@@ -20,7 +20,7 @@
 #define BUILDING_DATA_HPP
 
 #include "oc3_good.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 #include "oc3_filepath.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_variant.hpp"

@@ -18,7 +18,7 @@
 #include "oc3_walker_market_lady.hpp"
 #include "oc3_building_data.hpp"
 #include "oc3_exception.hpp"
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 #include "oc3_building_market.hpp"
 #include "oc3_building_granary.hpp"
 #include "oc3_tilemap.hpp"

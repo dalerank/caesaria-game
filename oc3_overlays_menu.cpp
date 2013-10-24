@@ -18,7 +18,7 @@
 #include "oc3_pushbutton.hpp"
 #include "oc3_event.hpp"
 #include "oc3_guienv.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 #include <vector>
 
 class OverlaysMenu::Impl

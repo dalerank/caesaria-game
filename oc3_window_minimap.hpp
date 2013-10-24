@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_MINIMAP_WINDOW_H_INCLUDE_
 
 #include "oc3_gui_widget.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 #include "oc3_picture.hpp"
 
 class Tilemap;

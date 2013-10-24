@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_SENATE_POPUP_INFO_H_INCLUDED__
 
 #include "oc3_gui_widget.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 
 class CityRenderer;
 

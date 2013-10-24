@@ -20,8 +20,8 @@
 #define __OPENCAESAR3_TILEMAP_H_INCLUDED__
 
 #include "oc3_serializer.hpp"
-#include "oc3_predefinitions.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/predefinitions.hpp"
+#include "core/scopedptr.hpp"
 
 // Square Map of the Tiles.
 class Tilemap : public Serializable

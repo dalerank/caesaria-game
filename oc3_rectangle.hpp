@@ -17,7 +17,7 @@
 #ifndef __OPENCAESAR3_RECTANGLE_H_INCLUDED__
 #define __OPENCAESAR3_RECTANGLE_H_INCLUDED__
 
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 #include "oc3_size.hpp"
 
 //! RectT.

@@ -16,18 +16,22 @@
 #ifndef _OPENCAESAR3_SCENARIO_EVENT_H_INCLUDE_
 #define _OPENCAESAR3_SCENARIO_EVENT_H_INCLUDE_
 
-#include "oc3_referencecounted.hpp"
-#include "oc3_smartptr.hpp"
-#include "oc3_positioni.hpp"
-#include "oc3_building.hpp"
-#include "oc3_predefinitions.hpp"
+#include "core/referencecounted.hpp"
+#include "core/smartptr.hpp"
+#include "core/position.hpp"
+#include "../../oc3_building.hpp"
+#include "core/predefinitions.hpp"
 
 class Game;
+
+namespace events
+{
 
 class GameEvent : public ReferenceCounted
 {
 public:
   virtual void exec( Game& game ) = 0;
+  virtual void dispatch();
 
 protected:
   GameEvent() {}
@@ -48,7 +52,6 @@ private:
   TilePos _pos;
   Type _type;
 };
-
 
 class BuildEvent : public GameEvent
 {
@@ -141,4 +144,5 @@ private:
   int _qty;
 };
 
+} //end namespace events
 #endif //_OPENCAESAR3_CITY_EVENT_H_INCLUDE_

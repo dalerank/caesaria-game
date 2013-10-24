@@ -20,10 +20,10 @@
 #include "oc3_tile.hpp"
 #include "oc3_building.hpp"
 #include "oc3_exception.hpp"
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_stringhelper.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 
 static Tile invalidTile = Tile( TilePos( -1, -1 ) );
 typedef std::vector< Tile > Row;

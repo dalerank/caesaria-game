@@ -28,10 +28,10 @@
 #include "oc3_tileoverlay.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_good.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 #include "oc3_animation.hpp"
-#include "oc3_referencecounted.hpp"
-#include "oc3_predefinitions.hpp"
+#include "core/referencecounted.hpp"
+#include "core/predefinitions.hpp"
 #include "oc3_service.hpp"
 #include "oc3_building_data.hpp"
 

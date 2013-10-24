@@ -16,7 +16,7 @@
 #ifndef _OPENCAESAR3_CITYTRADEOPTIONS_INCLUDE_H_
 #define _OPENCAESAR3_CITYTRADEOPTIONS_INCLUDE_H_
 
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 #include "oc3_good.hpp"
 #include "oc3_variant.hpp"
 

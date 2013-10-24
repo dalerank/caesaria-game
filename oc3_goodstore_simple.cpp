@@ -14,8 +14,8 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_goodstore_simple.hpp"
-#include "oc3_math.hpp"
-#include "oc3_foreach.hpp"
+#include "core/math.hpp"
+#include "core/foreach.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_stringhelper.hpp"
 

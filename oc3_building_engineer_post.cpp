@@ -15,7 +15,7 @@
 
 #include "oc3_building_engineer_post.hpp"
 #include "oc3_resourcegroup.hpp"
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 
 
 BuildingEngineer::BuildingEngineer() : ServiceBuilding( Service::engineer, B_ENGINEER_POST, Size(1) )

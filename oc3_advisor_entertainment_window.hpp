@@ -17,8 +17,8 @@
 #define __OPENCAESAR3_ADVISOR_ENTERTAINMENT_WINDOW_H_INCLUDED__
 
 #include "oc3_gui_widget.hpp"
-#include "oc3_scopedptr.hpp"
-#include "oc3_predefinitions.hpp"
+#include "core/scopedptr.hpp"
+#include "core/predefinitions.hpp"
 
 class AdvisorEntertainmentWindow : public Widget
 {

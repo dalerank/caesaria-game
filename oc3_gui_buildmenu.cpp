@@ -26,7 +26,7 @@
 #include "oc3_stringhelper.hpp"
 #include "oc3_building_data.hpp"
 #include "oc3_city_build_options.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 
 // used to display the building name and its cost
 class BuildButton : public PushButton

@@ -21,7 +21,7 @@
 #include "oc3_event.hpp"
 #include "oc3_gui_label.hpp"
 #include "oc3_time.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 #include "oc3_gui_widget_factory.hpp"
 
 class GuiEnv::Impl

@@ -15,8 +15,8 @@
 
 #include "oc3_cityservice_culture.hpp"
 #include "oc3_city.hpp"
-#include "oc3_safetycast.hpp"
-#include "oc3_positioni.hpp"
+#include "core/safetycast.hpp"
+#include "core/position.hpp"
 #include "oc3_building_house.hpp"
 #include "oc3_building_entertainment.hpp"
 #include "oc3_house_level.hpp"

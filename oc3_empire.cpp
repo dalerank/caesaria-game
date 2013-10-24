@@ -20,7 +20,7 @@
 #include "oc3_saveadapter.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_empire_trading.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 
 class Empire::Impl
 {

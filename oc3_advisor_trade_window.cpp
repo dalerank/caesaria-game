@@ -32,7 +32,7 @@
 #include "oc3_goodstore.hpp"
 #include "oc3_texturedbutton.hpp"
 #include "oc3_event.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 
 class TradeGoodInfo : public PushButton
 {

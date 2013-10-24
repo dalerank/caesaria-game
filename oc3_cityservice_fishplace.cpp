@@ -15,9 +15,9 @@
 
 #include "oc3_cityservice_fishplace.hpp"
 #include "oc3_city.hpp"
-#include "oc3_safetycast.hpp"
+#include "core/safetycast.hpp"
 #include "oc3_tilemap.hpp"
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_tileoverlay_factory.hpp"
 #include "oc3_fish_place.hpp"

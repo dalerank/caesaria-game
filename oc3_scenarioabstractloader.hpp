@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_SCENARIOABSTRACTLOADER_H_INCLUDED__
 #define __OPENCAESAR3_SCENARIOABSTRACTLOADER_H_INCLUDED__
 
-#include "oc3_referencecounted.hpp"
+#include "core/referencecounted.hpp"
 
 class Game;
 

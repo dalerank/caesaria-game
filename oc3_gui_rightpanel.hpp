@@ -18,7 +18,7 @@
 #define __OPENCAESAR3_MENURIGTHPANEL_H_INCLUDE_
 
 #include "oc3_gui_widget.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 
 class Picture;
 

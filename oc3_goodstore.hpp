@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_GOODSTORE_H_INCLUDED__
 
 #include "oc3_serializer.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 #include "oc3_good.hpp"
 #include "oc3_goodorders.hpp"
 #include "oc3_variant.hpp"

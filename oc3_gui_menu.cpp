@@ -31,7 +31,7 @@
 #include "oc3_tile.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_overlays_menu.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 
 static const int REMOVE_TOOL_ID = B_MAX + 1; 
 static const int MAXIMIZE_ID = REMOVE_TOOL_ID + 1;

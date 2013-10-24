@@ -19,13 +19,13 @@
 #ifndef __OPENCAESAR3_APPLICATION_H_INCLUDED__
 #define __OPENCAESAR3_APPLICATION_H_INCLUDED__
 
-#include "oc3_scopedptr.hpp"
-#include "oc3_predefinitions.hpp"
-#include "oc3_signals.hpp"
+#include "core/scopedptr.hpp"
+#include "core/predefinitions.hpp"
+#include "core/signals.hpp"
 
 #include <string>
 
-class CityWinTargets;
+class GfxEngine;
 
 class Game
 {
@@ -53,6 +53,7 @@ public:
   CityPtr getCity() const;
   EmpirePtr getEmpire() const;
   GuiEnv* getGui() const;
+  GfxEngine* getEngine() const;
 
   void setPaused( bool value );
   bool isPaused() const;
@@ -62,7 +63,7 @@ public:
   int getTimeMultiplier() const;
 
 public oc3_slots:
-  void resolveEvent( GameEventPtr event );
+  void resolveEvent( events::GameEventPtr event );
 
 public oc3_signals:
   Signal1<std::string>& onSaveAccepted();

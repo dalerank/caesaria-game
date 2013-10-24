@@ -1,6 +1,6 @@
 #include "oc3_picture_loader.hpp"
 #include "oc3_picture_loader_png.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 
 class PictureLoader::Impl
 {

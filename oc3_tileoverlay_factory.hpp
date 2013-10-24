@@ -17,8 +17,8 @@
 #define __OPENCAESAR3_LANDOVERLAYFACTORY_H_INCLUDE_
 
 #include "oc3_enums.hpp"
-#include "oc3_scopedptr.hpp"
-#include "oc3_predefinitions.hpp"
+#include "core/scopedptr.hpp"
+#include "core/predefinitions.hpp"
 
 class TileOverlayConstructor
 {

@@ -13,32 +13,37 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _OPENCAESAR3_WINDOW_VIDEO_OPTIONS_H_INCLUDE_
-#define _OPENCAESAR3_WINDOW_VIDEO_OPTIONS_H_INCLUDE_
+#ifndef _OPENCAESAR3_SCENARIO_EVENT_RESOLVER_H_INCLUDE_
+#define _OPENCAESAR3_SCENARIO_EVENT_RESOLVER_H_INCLUDE_
 
-#include "oc3_gui_widget.hpp"
-#include "oc3_signals.hpp"
+#include "core/predefinitions.hpp"
+#include "core/scopedptr.hpp"
+#include "event.hpp"
+#include "core/singleton.hpp"
+#include "core/signals.hpp"
 
-class VideoOptionsWindow : public Widget
+namespace events
+{
+
+class Dispatcher : public StaticSingleton<Dispatcher>
 {
 public:
-  VideoOptionsWindow( Widget* parent, const std::vector<Size>& modes,
-                      bool fullscreen);
+  Dispatcher();
+  ~Dispatcher();
 
-  //! Деструктор
-  virtual ~VideoOptionsWindow(void);
-
-  virtual bool onEvent(const NEvent &event);
+  static void append( GameEventPtr event );
+  static void update( unsigned int time );
 
 public oc3_signals:
-  Signal1<Size>& onSreenSizeChange();
-  Signal1<bool>& onFullScreenChange();
+  Signal1<GameEventPtr>& onEvent();
 
 private:
-  void _update();
-
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#endif //_OPENCAESAR3_WINDOW_VIDEO_OPTIONS_H_INCLUDE_
+typedef SmartPtr<Dispatcher> DispatcherPtr;
+
+} //end namespace events
+
+#endif //_OPENCAESAR3_SCENARIO_EVENT_RESOLVER_H_INCLUDE_

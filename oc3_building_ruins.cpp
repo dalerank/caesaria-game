@@ -15,11 +15,11 @@
 
 #include "oc3_building_ruins.hpp"
 #include "oc3_resourcegroup.hpp"
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 #include "oc3_walker_service.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_city.hpp"
-#include "oc3_game_event_mgr.hpp"
+#include "events/event.hpp"
 
 BurningRuins::BurningRuins() : ServiceBuilding(Service::burningRuins, B_BURNING_RUINS, Size(1) )
 {
@@ -68,7 +68,8 @@ void BurningRuins::destroy()
 {
   ServiceBuilding::destroy();
 
-  GameEventMgr::append( BuildEvent::create( getTilePos(), B_BURNED_RUINS ) );
+  events::GameEventPtr event = events::BuildEvent::create( getTilePos(), B_BURNED_RUINS );
+  event->dispatch();
 }
 
 void BurningRuins::deliverService()
@@ -246,7 +247,8 @@ void PlagueRuins::destroy()
 {
   Building::destroy();
 
-  GameEventMgr::append( BuildEvent::create( getTilePos(), B_BURNED_RUINS ) );
+  events::GameEventPtr event = events::BuildEvent::create( getTilePos(), B_BURNED_RUINS );
+  event->dispatch();
 }
 
 void PlagueRuins::applyService(ServiceWalkerPtr walker)

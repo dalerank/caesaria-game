@@ -16,12 +16,12 @@
 #ifndef __OPENCAESAR3_VARIANT_H_INCLUDE__
 #define __OPENCAESAR3_VARIANT_H_INCLUDE__
 
-#include "oc3_referencecounted.hpp"
+#include "core/referencecounted.hpp"
 #include "oc3_bytearray.hpp"
 #include "oc3_stringarray.hpp"
 #include "oc3_time.hpp"
 #include "oc3_size.hpp"
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 #include "oc3_rectangle.hpp"
 
 #include <list>

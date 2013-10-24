@@ -19,7 +19,7 @@
 #include "oc3_tile.hpp"
 #include "oc3_city.hpp"
 #include "oc3_tilemap.hpp"
-#include "oc3_game_event_mgr.hpp"
+#include "events/event.hpp"
 
 #include <vector>
 
@@ -360,7 +360,8 @@ void LowBridge::build( CityPtr city, const TilePos& pos )
       subtile->_info = TileHelper::encode( tile );
       subtile->_parent = this;
       
-      GameEventMgr::append( BuildEvent::create( buildPos, subtile.as<TileOverlay>() ) );
+      events::GameEventPtr event = events::BuildEvent::create( buildPos, subtile.as<TileOverlay>() );
+      event->dispatch();
       index++;
     }    
   }
@@ -371,7 +372,8 @@ void LowBridge::destroy()
   for( LowBridgeSubTiles::iterator it=_d->subtiles.begin(); it != _d->subtiles.end(); it++ )
   {
     (*it)->_parent = 0;
-    GameEventMgr::append( ClearLandEvent::create( (*it)->_pos ) );
+    events::GameEventPtr event = events::ClearLandEvent::create( (*it)->_pos );
+    event->dispatch();
 
     std::string picName = TileHelper::convId2PicName( (*it)->_imgId );
 

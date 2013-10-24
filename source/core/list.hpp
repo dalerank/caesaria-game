@@ -16,8 +16,8 @@
 #ifndef __OPENCAESAR3_LIST_H_INCLUDED__
 #define __OPENCAESAR3_LIST_H_INCLUDED__
 
-#include "oc3_math.hpp"
-#include "oc3_allocator.hpp"
+#include "math.hpp"
+#include "allocator.hpp"
 
 //! Doubly linked list template.
 template <class T>

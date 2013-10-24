@@ -24,7 +24,7 @@
 #include <map>
 #include <SDL.h>
 
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_animation.hpp"

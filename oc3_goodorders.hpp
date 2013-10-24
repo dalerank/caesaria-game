@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_GOODORDERS_H_INCLUDED__
 
 #include "oc3_good.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 
 class GoodOrders 
 {

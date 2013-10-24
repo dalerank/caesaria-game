@@ -22,7 +22,7 @@
 #include "oc3_building_working.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_good.hpp"
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 
 class GoodStore;
 

@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_APPCONFIG_H_INCLUDED__
 #define __OPENCAESAR3_APPCONFIG_H_INCLUDED__
 
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_filepath.hpp"
 

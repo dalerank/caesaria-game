@@ -17,7 +17,7 @@
 #ifndef __OPENCAESAR3_GOODHELPER_H_INCLUDED__
 #define __OPENCAESAR3_GOODHELPER_H_INCLUDED__
 
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_picture.hpp"
 #include "oc3_good.hpp"

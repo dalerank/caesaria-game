@@ -25,7 +25,7 @@
 #include "oc3_enums.hpp"
 #include "oc3_city.hpp"
 #include "oc3_building_house.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 #include "oc3_game_settings.hpp"
 
 namespace {

@@ -24,7 +24,7 @@
 #include "oc3_variant.hpp"
 #include "oc3_saveadapter.hpp"
 #include "oc3_goodstore.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 #include "oc3_city.hpp"
 #include "oc3_goodhelper.hpp"
 #include "oc3_tilemap.hpp"

@@ -17,7 +17,7 @@
 #define _OPENCAESAR3_WINDOW_GAMESPEED_OPTIONS_H_INCLUDE_
 
 #include "oc3_gui_widget.hpp"
-#include "oc3_signals.hpp"
+#include "core/signals.hpp"
 
 class GameSpeedOptionsWindow : public Widget
 {

@@ -23,8 +23,8 @@
 #include "oc3_city.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_tilemap_camera.hpp"
-#include "oc3_signals.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/signals.hpp"
+#include "core/scopedptr.hpp"
 #include "oc3_tilemapchangecommand.hpp"
 #include "oc3_gfx_engine.hpp"
 

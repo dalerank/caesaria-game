@@ -17,8 +17,8 @@
 #define __OPENCAESAR3_POPUP_MESSAGEBOX_H_INCLUDED__
 
 #include "oc3_gui_widget.hpp"
-#include "oc3_scopedptr.hpp"
-#include "oc3_signals.hpp"
+#include "core/scopedptr.hpp"
+#include "core/signals.hpp"
 
 class PopupMessageBox : public Widget
 {

@@ -19,8 +19,8 @@
 #include "oc3_gui_widget.hpp"
 #include "oc3_flagholder.hpp"
 #include "oc3_listboxitem.hpp"
-#include "oc3_predefinitions.hpp"
-#include "oc3_signals.hpp"
+#include "core/predefinitions.hpp"
+#include "core/signals.hpp"
 #include "oc3_stringarray.hpp"
 #include "oc3_font.hpp"
 

@@ -36,9 +36,9 @@
 #include "oc3_advisor_entertainment_window.hpp"
 #include "oc3_advisor_religion_window.hpp"
 #include "oc3_advisor_finance_window.hpp"
-#include "oc3_foreach.hpp"
-#include "oc3_game_event_mgr.hpp"
+#include "core/foreach.hpp"
 #include "oc3_cityfunds.hpp"
+#include "events/event.hpp"
 
 class AdvisorsWindow::Impl
 {
@@ -189,11 +189,13 @@ AdvisorsWindow* AdvisorsWindow::create( Widget* parent, int id, const AdvisorTyp
 
 void AdvisorsWindow::Impl::sendMoney2City(int money)
 {
-  GameEventMgr::append( FundIssueEvent::create( CityFunds::donation, money ) );
+ events::GameEventPtr event = events::FundIssueEvent::create( CityFunds::donation, money );
+ event->dispatch();
 }
 
 void AdvisorsWindow::Impl::showEmpireMapWindow()
 {
   advisorPanel->getParent()->deleteLater();
-  GameEventMgr::append( ShowEmpireMapWindow::create( true ) );
+  events::GameEventPtr event = events::ShowEmpireMapWindow::create( true );
+  event->dispatch();
 }

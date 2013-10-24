@@ -17,9 +17,9 @@
 #define __OPENCAESAR3_ADVISOR_TRADE_WINDOW_H_INCLUDED__
 
 #include "oc3_gui_widget.hpp"
-#include "oc3_scopedptr.hpp"
-#include "oc3_signals.hpp"
-#include "oc3_predefinitions.hpp"
+#include "core/scopedptr.hpp"
+#include "core/signals.hpp"
+#include "core/predefinitions.hpp"
 
 class AdvisorTradeWindow : public Widget
 {

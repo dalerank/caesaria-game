@@ -26,7 +26,7 @@
 #include "oc3_picture.hpp"
 #include "oc3_building_factory.hpp"
 #include "oc3_building_service.hpp"
-#include "oc3_predefinitions.hpp"
+#include "core/predefinitions.hpp"
 
 class PushButton;
 class Label;

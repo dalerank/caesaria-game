@@ -17,7 +17,7 @@
 #include "oc3_resourcegroup.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_city.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 #include "oc3_tilemap.hpp"
 #include "oc3_gettext.hpp"
 

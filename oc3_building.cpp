@@ -25,9 +25,9 @@
 #include "oc3_variant.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_city.hpp"
-#include "oc3_foreach.hpp"
-#include "oc3_game_event_mgr.hpp"
+#include "core/foreach.hpp"
 #include "oc3_tilemap.hpp"
+#include "events/event.hpp"
 
 Construction::Construction( const TileOverlayType type, const Size& size)
 : TileOverlay( type, size )
@@ -102,13 +102,16 @@ int Construction::getMaxDistance2Road() const
 void Construction::burn()
 {
   deleteLater();
-  GameEventMgr::append( DisasterEvent::create( getTile().getIJ(), DisasterEvent::fire ) );
+
+  events::GameEventPtr event = events::DisasterEvent::create( getTile().getIJ(), events::DisasterEvent::fire );
+  event->dispatch();
 }
 
 void Construction::collapse()
 {
   deleteLater();
-  GameEventMgr::append( DisasterEvent::create( getTile().getIJ(), DisasterEvent::collapse ) );
+  events::GameEventPtr event = events::DisasterEvent::create( getTile().getIJ(), events::DisasterEvent::collapse );
+  event->dispatch();
 }
 
 const BuildingData::Desirability& Construction::getDesirabilityInfo() const

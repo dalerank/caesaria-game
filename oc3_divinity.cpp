@@ -20,7 +20,7 @@
 #include "oc3_service.hpp"
 #include "oc3_city.hpp"
 #include "oc3_building_farm.hpp"
-#include "oc3_game_event.hpp"
+#include "events/event.hpp"
 #include "oc3_gettext.hpp"
 
 class RomeDivinityBase : public RomeDivinity
@@ -97,7 +97,9 @@ public:
     if( getRelation() < 1 && _lastActionDate.getMonthToDate( GameDate::current() ) > 10 )
     {
       _lastActionDate = GameDate::current();
-      ShowInfoboxEvent::create( _("##wrath_of_ceres_title##"), _("##wrath_of_ceres_description##") );
+      events::GameEventPtr event = events::ShowInfoboxEvent::create( _("##wrath_of_ceres_title##"),
+                                                                     _("##wrath_of_ceres_description##") );
+      event->dispatch();
 
       CityHelper helper( city );
       FarmList farms = helper.find<Farm>( B_MAX );

@@ -28,7 +28,7 @@
 
 #include "oc3_exception.hpp"
 #include "oc3_picture.hpp"
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 #include "oc3_eventconverter.hpp"
 
 
@@ -230,7 +230,7 @@ bool GfxGlEngine::haveEvent( NEvent& event )
   return false;
 }
 
-std::vector<Size> GfxGlEngine::getAvailableModes() const
+GfxEngine::Modes GfxGlEngine::getAvailableModes() const
 {
-  return std::vector<Size>();
+  return Modes();
 }

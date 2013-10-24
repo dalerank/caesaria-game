@@ -18,7 +18,7 @@
 #include "oc3_empire_city.hpp"
 #include "oc3_goodstore_simple.hpp"
 #include "oc3_stringhelper.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 
 class EmpireTradeRoute::Impl
 {

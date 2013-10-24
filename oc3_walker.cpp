@@ -21,7 +21,7 @@
 #include "oc3_enums_helper.hpp"
 #include "oc3_building_data.hpp"
 #include "oc3_exception.hpp"
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 #include "oc3_walkermanager.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_stringhelper.hpp"

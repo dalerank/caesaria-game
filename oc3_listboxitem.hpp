@@ -19,7 +19,7 @@
 
 #include "oc3_alignment.hpp"
 #include "oc3_gui_widget.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 #include "oc3_picture.hpp"
 
 #include <string>

@@ -18,7 +18,7 @@
 #include "oc3_picture.hpp"
 #include "oc3_walker_taxcollector.hpp"
 #include "oc3_city.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 
 class Forum::Impl
 {

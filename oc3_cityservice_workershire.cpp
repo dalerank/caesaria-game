@@ -15,11 +15,11 @@
 
 #include "oc3_cityservice_workershire.hpp"
 #include "oc3_city.hpp"
-#include "oc3_safetycast.hpp"
+#include "core/safetycast.hpp"
 #include "oc3_building_engineer_post.hpp"
 #include "oc3_building_prefecture.hpp"
 #include "oc3_walker_workerhunter.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 
 #include <map>
 

@@ -20,10 +20,10 @@
 #define HOUSE_LEVEL_HPP
 
 #include "oc3_good.hpp"
-#include "oc3_scopedptr.hpp"
-#include "oc3_smartptr.hpp"
+#include "core/scopedptr.hpp"
+#include "core/smartptr.hpp"
 #include "oc3_filepath.hpp"
-#include "oc3_predefinitions.hpp"
+#include "core/predefinitions.hpp"
 #include "oc3_service.hpp"
 
 class HouseLevelSpec

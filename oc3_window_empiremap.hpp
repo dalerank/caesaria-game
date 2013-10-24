@@ -17,8 +17,8 @@
 #define __OPENCAESAR3_EMPIREMAP_WINDOW_H_INCLUDED__
 
 #include "oc3_gui_widget.hpp"
-#include "oc3_signals.hpp"
-#include "oc3_predefinitions.hpp"
+#include "core/signals.hpp"
+#include "core/predefinitions.hpp"
 
 class EmpireMapWindow : public Widget
 {

@@ -28,11 +28,10 @@
 #include "oc3_picture.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_serializer.hpp"
-#include "oc3_referencecounted.hpp"
-#include "oc3_smartptr.hpp"
-#include "oc3_safetycast.hpp"
-#include "oc3_scopedptr.hpp"
-#include "oc3_predefinitions.hpp"
+#include "core/referencecounted.hpp"
+#include "core/smartptr.hpp"
+#include "core/scopedptr.hpp"
+#include "core/predefinitions.hpp"
 
 typedef unsigned int UniqueId;
 class PathWay;

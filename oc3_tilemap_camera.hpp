@@ -20,10 +20,10 @@
 #define TILEMAP_AREA_HPP
 
 #include "oc3_size.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 #include "oc3_tilemap.hpp"
-#include "oc3_positioni.hpp"
-#include "oc3_signals.hpp"
+#include "core/position.hpp"
+#include "core/signals.hpp"
 
 /* A subset of the tilemap, this is the visible area. Has convenient methods to sort tiles per depth */
 class TilemapCamera

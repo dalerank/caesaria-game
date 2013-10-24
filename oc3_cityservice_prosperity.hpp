@@ -17,8 +17,8 @@
 #define __OPENCAESAR3_CITYSERVICE_PROSPERITY_H_INCLUDED__
 
 #include "oc3_cityservice.hpp"
-#include "oc3_scopedptr.hpp"
-#include "oc3_predefinitions.hpp"
+#include "core/scopedptr.hpp"
+#include "core/predefinitions.hpp"
 
 class CityServiceProsperity : public CityService
 {

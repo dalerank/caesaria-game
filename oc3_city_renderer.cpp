@@ -23,7 +23,7 @@
 #include "oc3_tile.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_resourcegroup.hpp"
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 #include "oc3_pictureconverter.hpp"
 #include "oc3_event.hpp"
 #include "oc3_roadbuild_helper.hpp"
@@ -33,8 +33,8 @@
 #include "oc3_building_house.hpp"
 #include "oc3_house_level.hpp"
 #include "oc3_building_watersupply.hpp"
-#include "oc3_foreach.hpp"
-#include "oc3_game_event_mgr.hpp"
+#include "core/foreach.hpp"
+#include "events/event.hpp"
 #include "oc3_font.hpp"
 #include "oc3_gfx_sdl_engine.hpp"
 #include "oc3_gettext.hpp"
@@ -1124,7 +1124,8 @@ void CityRenderer::Impl::clearAll()
   TilemapTiles tiles4clear = tilemap->getArea( startPos, stopPos );
   foreach( Tile* tile, tiles4clear )
   {
-    GameEventMgr::append( ClearLandEvent::create( tile->getIJ() ) );
+    events::GameEventPtr event = events::ClearLandEvent::create( tile->getIJ() );
+    event->dispatch();
   }
 }
 
@@ -1147,7 +1148,8 @@ void CityRenderer::Impl::buildAll()
   {   
     if( cnstr->canBuild( city, tile->getIJ() ) && tile->isMasterTile())
     {
-      GameEventMgr::append( BuildEvent::create( tile->getIJ(), cnstr->getType() ) );
+      events::GameEventPtr event = events::BuildEvent::create( tile->getIJ(), cnstr->getType() );
+      event->dispatch();
       buildOk = true;
     }   
   }

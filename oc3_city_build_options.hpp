@@ -16,8 +16,8 @@
 #ifndef __OPENCAESAR3_BUILD_OPTIONS_H_INCLUDED__
 #define __OPENCAESAR3_BUILD_OPTIONS_H_INCLUDED__
 
-#include "oc3_referencecounted.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/referencecounted.hpp"
+#include "core/scopedptr.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_variant.hpp"
 

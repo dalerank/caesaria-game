@@ -13,25 +13,29 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_game_event.hpp"
-#include "oc3_tileoverlay_factory.hpp"
-#include "oc3_city.hpp"
-#include "oc3_gettext.hpp"
-#include "oc3_building_data.hpp"
-#include "oc3_cityfunds.hpp"
-#include "oc3_guienv.hpp"
-#include "oc3_gui_info_box.hpp"
-#include "oc3_tilemap.hpp"
-#include "oc3_game.hpp"
-#include "oc3_game_event_mgr.hpp"
-#include "oc3_stringhelper.hpp"
-#include "oc3_gui_label.hpp"
-#include "oc3_window_empiremap.hpp"
-#include "oc3_empire.hpp"
-#include "oc3_resourcegroup.hpp"
-#include "oc3_advisors_window.hpp"
-#include "oc3_city_trade_options.hpp"
-#include "oc3_message_stack_widget.hpp"
+#include "event.hpp"
+#include "../../oc3_tileoverlay_factory.hpp"
+#include "../../oc3_city.hpp"
+#include "../../oc3_gettext.hpp"
+#include "../../oc3_building_data.hpp"
+#include "../../oc3_cityfunds.hpp"
+#include "../../oc3_guienv.hpp"
+#include "../../oc3_gui_info_box.hpp"
+#include "../../oc3_tilemap.hpp"
+#include "../../oc3_game.hpp"
+#include "dispatcher.hpp"
+#include "../../oc3_stringhelper.hpp"
+#include "../../oc3_gui_label.hpp"
+#include "../../oc3_window_empiremap.hpp"
+#include "../../oc3_empire.hpp"
+#include "../../oc3_resourcegroup.hpp"
+#include "../../oc3_advisors_window.hpp"
+#include "../../oc3_city_trade_options.hpp"
+#include "../../oc3_message_stack_widget.hpp"
+#include "../../oc3_game_settings.hpp"
+
+namespace events
+{
 
 static const int windowGamePausedId = StringHelper::hash( "gamepause" );
 
@@ -74,7 +78,7 @@ void DisasterEvent::exec( Game& game )
       bool canCreate = TileOverlayFactory::getInstance().canCreate( dstr2constr[_type] );
       if( canCreate )
       {
-        GameEventMgr::append( BuildEvent::create( tile->getIJ(), dstr2constr[_type] ) );
+        Dispatcher::append( BuildEvent::create( tile->getIJ(), dstr2constr[_type] ) );
       }
     }
 
@@ -408,3 +412,10 @@ void WarningMessageEvent::exec(Game& game)
     window->addMessage( _text );
   }
 }
+
+void events::GameEvent::dispatch()
+{
+  Dispatcher::append( this );
+}
+
+} //end namespace events

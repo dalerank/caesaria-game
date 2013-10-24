@@ -16,7 +16,7 @@
 #ifndef _OPENCAESAR3_CONTEXT_MENU_ITEM_PRIVATE_H_INCLUDE_
 #define _OPENCAESAR3_CONTEXT_MENU_ITEM_PRIVATE_H_INCLUDE_
 
-#include "oc3_signals.hpp"
+#include "core/signals.hpp"
 #include "oc3_size.hpp"
 #include "oc3_flagholder.hpp"
 

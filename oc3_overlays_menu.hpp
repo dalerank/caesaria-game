@@ -18,8 +18,8 @@
 
 #include "oc3_gui_widget.hpp"
 #include "oc3_enums.hpp"
-#include "oc3_scopedptr.hpp"
-#include "oc3_signals.hpp"
+#include "core/scopedptr.hpp"
+#include "core/signals.hpp"
 
 class OverlaysMenu : public Widget
 {

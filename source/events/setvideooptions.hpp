@@ -13,33 +13,25 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _OPENCAESAR3_SCENARIO_EVENT_RESOLVER_H_INCLUDE_
-#define _OPENCAESAR3_SCENARIO_EVENT_RESOLVER_H_INCLUDE_
+#ifndef _OPENCAESAR_EVENT_SETVIDEOOPTIONS_H_INCLUDE_
+#define _OPENCAESAR_EVENT_SETVIDEOOPTIONS_H_INCLUDE_
 
-#include "oc3_predefinitions.hpp"
-#include "oc3_scopedptr.hpp"
-#include "oc3_game_event.hpp"
-#include "oc3_singleton.hpp"
-#include "oc3_signals.hpp"
+#include "event.hpp"
 
-class GameEventMgr;
-typedef SmartPtr<GameEventMgr> ScenarioEventResolverPtr;
+namespace events
+{
 
-class GameEventMgr : public StaticSingleton<GameEventMgr>
+class SetVideoSettings : public GameEvent
 {
 public:
-  GameEventMgr();
-  ~GameEventMgr();
-
-  static void append( GameEventPtr event );
-  static void update( unsigned int time );
-
-public oc3_signals:
-  Signal1<GameEventPtr>& onEvent();
+  static GameEventPtr create();
+  virtual void exec( Game& game );
 
 private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  void _setResolution(Size);
+  void _setFullscreen(bool);
 };
 
-#endif //_OPENCAESAR3_SCENARIO_EVENT_RESOLVER_H_INCLUDE_
+}
+
+#endif

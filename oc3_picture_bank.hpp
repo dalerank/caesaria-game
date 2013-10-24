@@ -24,7 +24,7 @@
 #include "oc3_picture.hpp"
 #include "oc3_walker_action.hpp"
 #include "oc3_good.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 
 class GfxEngine;
 

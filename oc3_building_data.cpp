@@ -22,7 +22,7 @@
 #include "oc3_saveadapter.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_enums_helper.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 
 BuildingData BuildingData::invalid = BuildingData( unknown, "unknown", 0 );
 

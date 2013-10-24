@@ -16,7 +16,7 @@
 #include "oc3_game_loader_sav.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_exception.hpp"
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 #include "oc3_tileoverlay_factory.hpp"
 #include "oc3_game.hpp"
 #include "pkwareinputstream.hpp"

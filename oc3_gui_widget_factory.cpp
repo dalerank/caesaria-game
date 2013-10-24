@@ -18,7 +18,7 @@
 #include "oc3_gui_label.hpp"
 #include "oc3_gui_editbox.hpp"
 #include "oc3_pushbutton.hpp"
-#include "oc3_requirements.hpp"
+#include "core/requirements.hpp"
 #include "oc3_texturedbutton.hpp"
 #include "oc3_listbox.hpp"
 #include <map>

@@ -19,7 +19,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <stdint.h>
-#include "oc3_requirements.hpp"
+#include "core/requirements.hpp"
 
 #if defined(OC3_PLATFORM_WIN)
     #include "windows.h"

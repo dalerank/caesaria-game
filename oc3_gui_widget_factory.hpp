@@ -16,7 +16,7 @@
 #ifndef _OPENCAESAR3_WIDGET_FACTORY_H_INCLUDE_
 #define _OPENCAESAR3_WIDGET_FACTORY_H_INCLUDE_
 
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 #include <string>
 
 class Widget;

@@ -54,7 +54,7 @@ public:
    unsigned int getFps() const;
    bool haveEvent( NEvent& event );
 
-   std::vector<Size> getAvailableModes() const;
+   Modes getAvailableModes() const;
 
 private:
    SDL_Surface *_screen;

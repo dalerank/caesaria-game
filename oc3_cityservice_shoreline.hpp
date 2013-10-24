@@ -17,8 +17,8 @@
 #define __OPENCAESAR3_CITYSERVICE_SHORELINE_H_INCLUDED__
 
 #include "oc3_cityservice.hpp"
-#include "oc3_predefinitions.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/predefinitions.hpp"
+#include "core/scopedptr.hpp"
 
 class CityServiceShoreline : public CityService
 {

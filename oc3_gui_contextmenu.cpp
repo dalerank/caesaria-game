@@ -18,7 +18,7 @@
 #include "oc3_contextmenuitem.hpp"
 #include "oc3_event.hpp"
 #include "oc3_time.hpp"
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 #include "oc3_guienv.hpp"
 
 //! constructor

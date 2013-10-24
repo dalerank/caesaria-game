@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_WATER_BUILDGINDS_INCLUDED__
 #define __OPENCAESAR3_WATER_BUILDGINDS_INCLUDED__
 
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 #include "oc3_building_service.hpp"
 
 class WaterSource;

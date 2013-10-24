@@ -28,7 +28,7 @@
 #include "oc3_walker_cart_pusher.hpp"
 #include "oc3_goodstore.hpp"
 #include "oc3_city.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 #include "oc3_stringhelper.hpp"
 
 #include <list>

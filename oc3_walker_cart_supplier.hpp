@@ -18,7 +18,7 @@
 #define __OPENCAESAR3_WALKER_CART_SUPPLIER_H_INCLUDED__
 
 #include "oc3_walker.hpp"
-#include "oc3_predefinitions.hpp"
+#include "core/predefinitions.hpp"
 
 /** This walker delivers goods */
 class CartSupplier : public Walker

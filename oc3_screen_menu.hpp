@@ -20,8 +20,8 @@
 #define SCREEN_MENU_HPP
 
 #include "oc3_screen.hpp"
-#include "oc3_scopedptr.hpp"
-#include "oc3_predefinitions.hpp"
+#include "core/scopedptr.hpp"
+#include "core/predefinitions.hpp"
 #include <string>
 
 class Game;

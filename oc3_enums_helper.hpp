@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_ENUMS_HELPER_H_INCLUDED__
 #define __OPENCAESAR3_ENUMS_HELPER_H_INCLUDED__
 
-#include "oc3_requirements.hpp"
+#include "core/requirements.hpp"
 #include <map>
 #include <string>
 

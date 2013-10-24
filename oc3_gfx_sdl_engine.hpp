@@ -21,8 +21,7 @@
 
 #include "oc3_gfx_engine.hpp"
 #include "oc3_picture.hpp"
-#include "oc3_scopedptr.hpp"
-
+#include "core/scopedptr.hpp"
 
 // This is the SDL engine
 // It does a dumb drawing from back to front
@@ -31,36 +30,36 @@ class GfxSdlEngine : public GfxEngine
 public:
   GfxSdlEngine();
   ~GfxSdlEngine();
-  void init();
-  void exit();
-  void delay( const unsigned int msec );
-  bool haveEvent( NEvent& event );
 
-  virtual void loadPicture(Picture &ioPicture);
-  virtual void unloadPicture(Picture& ioPicture);
+  virtual void init();
+  virtual void exit();
+  virtual void delay( const unsigned int msec );
+  virtual bool haveEvent( NEvent& event );
 
-  void startRenderFrame();
-  void drawPicture(const Picture &picture, const int dx, const int dy, Rect* clipRect=0);
-  void drawPicture(const Picture &picture, const Point& pos, Rect* clipRect=0 );
-  void endRenderFrame();
+  virtual void startRenderFrame();
+  virtual void endRenderFrame();
 
-  void setFlag( int flag, int value );
+  virtual void setFlag( int flag, int value );
 
-  void setTileDrawMask( int rmask, int gmask, int bmask, int amask );
-  void resetTileDrawMask();
+  virtual void setTileDrawMask( int rmask, int gmask, int bmask, int amask );
+  virtual void resetTileDrawMask();
 
   // deletes a picture (deallocate memory)
-  void deletePicture( Picture* pic );
-
+  virtual void deletePicture( Picture* pic );
+  virtual void loadPicture(Picture &ioPicture);
+  virtual void unloadPicture(Picture& ioPicture);
+  virtual void drawPicture(const Picture &picture, const int dx, const int dy, Rect* clipRect=0);
+  virtual void drawPicture(const Picture &picture, const Point& pos, Rect* clipRect=0 );
   // creates a picture with the given size, it will need to be loaded by the graphic engine
-  Picture* createPicture(const Size& size);
+  virtual Picture* createPicture(const Size& size);
 
+  virtual unsigned int getFps() const;
+  virtual void createScreenshot( const std::string& filename );
+
+  virtual Modes getAvailableModes() const;
+
+//non virtual functions: need to debug functional
   Picture& getScreen();
-
-  unsigned int getFps() const;
-  void createScreenshot( const std::string& filename );
-
-  virtual std::vector<Size> getAvailableModes() const;
 
 private:
   class Impl;

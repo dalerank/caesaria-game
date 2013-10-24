@@ -19,7 +19,7 @@
 #ifndef SCENARIO_LOADER_HPP
 #define SCENARIO_LOADER_HPP
 
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 #include "oc3_filepath.hpp"
 
 class Game;

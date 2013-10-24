@@ -1,7 +1,7 @@
 #include "oc3_gui_modal_widget.hpp"
-#include "oc3_safetycast.hpp"
+#include "core/safetycast.hpp"
 #include "oc3_event.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_guienv.hpp"
 

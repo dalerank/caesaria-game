@@ -16,8 +16,8 @@
 #ifndef __OPENCAESAR3_MISSION_TARGETS_WINDOW_H_INCLUDED__
 #define __OPENCAESAR3_MISSION_TARGETS_WINDOW_H_INCLUDED__
 
-#include "oc3_scopedptr.hpp"
-#include "oc3_predefinitions.hpp"
+#include "core/scopedptr.hpp"
+#include "core/predefinitions.hpp"
 #include "oc3_gui_widget.hpp"
 
 class MissionTargetsWindow : public Widget  

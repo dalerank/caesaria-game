@@ -5,7 +5,7 @@
 #include <vector>
 #include <list>
 
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 
 class Tilemap;
 class TilePos;

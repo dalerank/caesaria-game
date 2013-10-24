@@ -14,7 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "oc3_goodorders.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 #include <map>
 
 class GoodOrders::Impl

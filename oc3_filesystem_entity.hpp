@@ -1,9 +1,9 @@
 #ifndef __OPENCAESAR3_FSENTITY_H_INCLUDED__
 #define __OPENCAESAR3_FSENTITY_H_INCLUDED__
 
-#include "oc3_referencecounted.hpp"
+#include "core/referencecounted.hpp"
 #include "oc3_bytearray.hpp"
-#include "oc3_smartptr.hpp"
+#include "core/smartptr.hpp"
 
 namespace io
 {

@@ -28,11 +28,11 @@
 #include "oc3_building.hpp"
 #include "oc3_building_data.hpp"
 #include "oc3_city.hpp"
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_pushbutton.hpp"
 #include "oc3_gui_label.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 
 StartMenu::StartMenu( Widget* parent ) 
 	: Widget( parent, -1, parent->getRelativeRect() )

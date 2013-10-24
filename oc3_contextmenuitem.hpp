@@ -17,7 +17,7 @@
 #define _OPENCAESAR3_CONTEXMENUITEM_INCLUDE_H_
 
 #include "oc3_gui_label.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 
 class ContextMenu;
 

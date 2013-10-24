@@ -16,11 +16,11 @@
 #ifndef __OPENCAESAR3_CITYFUNDS_H_INCLUDED__
 #define __OPENCAESAR3_CITYFUNDS_H_INCLUDED__
 
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 #include "oc3_variant.hpp"
-#include "oc3_signals.hpp"
+#include "core/signals.hpp"
 #include "oc3_good.hpp"
-#include "oc3_predefinitions.hpp"
+#include "core/predefinitions.hpp"
 
 struct FundIssue
 {

@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_SENATE_H_INCLUDED_
 
 #include "oc3_building_service.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 
 class Senate : public ServiceBuilding
 {

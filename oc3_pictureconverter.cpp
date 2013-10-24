@@ -16,8 +16,8 @@
 #include "oc3_pictureconverter.hpp"
 
 #include "oc3_picture.hpp"
-#include "oc3_math.hpp"
-#include "oc3_positioni.hpp"
+#include "core/math.hpp"
+#include "core/position.hpp"
 
 #include <SDL.h>
 

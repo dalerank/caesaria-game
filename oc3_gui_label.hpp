@@ -19,7 +19,7 @@
 
 #include "oc3_gui_widget.hpp"
 #include "oc3_picture.hpp"
-#include "oc3_signals.hpp"
+#include "core/signals.hpp"
 
 class Label : public Widget
 {

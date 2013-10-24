@@ -18,7 +18,7 @@
 
 #include <iostream>
 
-#include "oc3_vector2.hpp"
+#include "vector2.hpp"
 
 class PointF;
 

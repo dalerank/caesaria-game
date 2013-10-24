@@ -20,7 +20,7 @@
 #define SERVICE_BUILDING_HPP
 
 #include "oc3_building_working.hpp"
-#include "oc3_predefinitions.hpp"
+#include "core/predefinitions.hpp"
 
 class Widget;
 

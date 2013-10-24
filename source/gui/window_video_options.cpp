@@ -13,13 +13,16 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_window_video_options.hpp"
-#include "oc3_gfx_engine.hpp"
-#include "oc3_game_settings.hpp"
-#include "oc3_pushbutton.hpp"
-#include "oc3_event.hpp"
-#include "oc3_listbox.hpp"
-#include "oc3_stringhelper.hpp"
+#include "window_video_options.hpp"
+#include "../../oc3_game_settings.hpp"
+#include "../../oc3_pushbutton.hpp"
+#include "../../oc3_event.hpp"
+#include "../../oc3_listbox.hpp"
+#include "../../oc3_stringhelper.hpp"
+#include "core/foreach.hpp"
+
+namespace gui
+{
 
 class VideoOptionsWindow::Impl
 {
@@ -29,7 +32,7 @@ public:
   bool fullScreen;
 };
 
-VideoOptionsWindow::VideoOptionsWindow(Widget* parent, const std::vector<Size>& modes, bool fullscreen )
+VideoOptionsWindow::VideoOptionsWindow(Widget* parent, GfxEngine::Modes modes, bool fullscreen )
   : Widget( parent, -1, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   setupUI( GameSettings::rcpath( "/gui/videooptions.gui" ) );
@@ -40,11 +43,11 @@ VideoOptionsWindow::VideoOptionsWindow(Widget* parent, const std::vector<Size>& 
   if( ListBox* lbxModes = findChild<ListBox*>( "lbxModes", true ) )
   {
     std::string modeStr;
-    for( std::vector<Size>::const_iterator mode=modes.begin(); mode != modes.end(); mode++ )
+    foreach( GfxEngine::Mode mode, modes )
     {
-      modeStr = StringHelper::format( 0xff, "%dx%d", (*mode).getWidth(), (*mode).getHeight() );
+      modeStr = StringHelper::format( 0xff, "%dx%d", mode.getWidth(), mode.getHeight() );
       ListBoxItem& item = lbxModes->addItem( modeStr );
-      item.setTag( ((*mode).getWidth() << 16) + (*mode).getHeight());
+      item.setTag( (mode.getWidth() << 16) + mode.getHeight());
     }
   }
 }
@@ -110,3 +113,6 @@ void VideoOptionsWindow::_update()
 {
 
 }
+
+
+}//end namespace gui

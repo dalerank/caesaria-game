@@ -17,7 +17,7 @@
 #define _OPENCAESAR_SHIP_INCLUDE_H_
 
 #include "oc3_walker.hpp"
-#include "oc3_predefinitions.hpp"
+#include "core/predefinitions.hpp"
 
 class Ship : public Walker
 {

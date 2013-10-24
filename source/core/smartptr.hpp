@@ -17,8 +17,8 @@
 #define __OPENCAESAR3_SMARTPTR_H_INCLUDE_
 
 #include <cstddef>
-#include "oc3_safetycast.hpp"
-#include "oc3_requirements.hpp"
+#include "core/safetycast.hpp"
+#include "core/requirements.hpp"
   
 template<class T> class SmartPtr
 {

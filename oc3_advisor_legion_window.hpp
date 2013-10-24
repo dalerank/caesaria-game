@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_ADVISOR_LEGION_WINDOW_H_INCLUDED__
 
 #include "oc3_gui_widget.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 
 class AdvisorLegionWindow : public Widget
 {

@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_PUSHBUTTON_H_INCLUDE_
 
 #include "oc3_gui_widget.hpp"
-#include "oc3_signals.hpp"
+#include "core/signals.hpp"
 #include "oc3_picture.hpp"
 
 class Font;

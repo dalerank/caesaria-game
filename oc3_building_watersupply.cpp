@@ -17,14 +17,14 @@
 
 #include "oc3_stringhelper.hpp"
 #include "oc3_time.hpp"
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 #include "oc3_resourcegroup.hpp"
-#include "oc3_safetycast.hpp"
+#include "core/safetycast.hpp"
 #include "oc3_road.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_walker_service.hpp"
 #include "oc3_city.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_tilemap.hpp"
 

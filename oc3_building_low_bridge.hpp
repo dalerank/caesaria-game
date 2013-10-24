@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_LOW_BRIDGE_H_INCLUDED__
 
 #include "oc3_building.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 
 class LowBridge : public Construction
 {

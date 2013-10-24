@@ -22,8 +22,8 @@
 #include "oc3_building.hpp"
 #include "oc3_enums.hpp"
 #include "oc3_serializer.hpp"
-#include "oc3_predefinitions.hpp"
-#include "oc3_positioni.hpp"
+#include "core/predefinitions.hpp"
+#include "core/position.hpp"
 #include "oc3_variant.hpp"
 #include "oc3_pathway.hpp"
 #include <list>

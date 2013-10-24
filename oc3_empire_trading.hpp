@@ -17,11 +17,11 @@
 #define _OPENCAESAR3_EMPIRE_TRADING_INCLUDE_H_
 
 #include "oc3_cityservice.hpp"
-#include "oc3_scopedptr.hpp"
-#include "oc3_referencecounted.hpp"
-#include "oc3_predefinitions.hpp"
-#include "oc3_signals.hpp"
-#include "oc3_positioni.hpp"
+#include "core/scopedptr.hpp"
+#include "core/referencecounted.hpp"
+#include "core/predefinitions.hpp"
+#include "core/signals.hpp"
+#include "core/position.hpp"
 
 class GoodStore;
 

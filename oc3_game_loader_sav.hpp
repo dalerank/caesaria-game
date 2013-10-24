@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_SCENARIOSAV_LOADER_H_INCLUDED__
 
 #include "oc3_scenarioabstractloader.hpp"
-#include "oc3_scopedptr.hpp"
+#include "core/scopedptr.hpp"
 
 class GameLoaderC3Sav : public GameAbstractLoader
 {

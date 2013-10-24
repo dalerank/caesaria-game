@@ -34,7 +34,10 @@ find_package(Libintl REQUIRED)
 find_package(PNG REQUIRED)
 find_package(zlib REQUIRED)
 
+set(APPEND_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/source" )
+
 include_directories(
+  ${APPEND_SOURCE_DIR}
   ${SDL_INCLUDE_DIR}
   ${SDL_MIXER_INCLUDE_DIR}
   ${SDL_TTF_INCLUDE_DIR}
@@ -79,10 +82,15 @@ foreach( name ${LZMA_SRC_LIST} )
   list( APPEND UTILS_SRC_LIST ${name} )
 endforeach()
 
+file(GLOB EVENTS_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/source/events/*.*")
+file(GLOB CORE_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/source/core/*.*")
+file(GLOB GUI_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/source/gui/*.*")
 file(GLOB GAME_MODELS_LIST "${CMAKE_CURRENT_SOURCE_DIR}/models/game/*.model")
 file(GLOB GUI_MODELS_LIST "${CMAKE_CURRENT_SOURCE_DIR}/models/gui/*.gui")
 
-add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST} ${UTILS_SRC_LIST} ${GAME_MODELS_LIST} ${GUI_MODELS_LIST})
+add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST} ${UTILS_SRC_LIST}
+               ${GAME_MODELS_LIST} ${GUI_MODELS_LIST} ${EVENTS_SOURCES_LIST}
+               ${CORE_SOURCES_LIST} ${GUI_SOURCES_LIST})
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME "caesar3")
 

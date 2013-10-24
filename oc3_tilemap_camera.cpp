@@ -17,12 +17,12 @@
 
 #include "oc3_tilemap_camera.hpp"
 
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 #include "oc3_size.hpp"
 #include "oc3_exception.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_tile.hpp"
-#include "oc3_foreach.hpp"
+#include "core/foreach.hpp"
 
 class TilemapCamera::Impl
 {

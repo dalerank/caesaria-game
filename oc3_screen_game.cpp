@@ -48,9 +48,8 @@
 #include "oc3_gui_label.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_window_minimap.hpp"
-#include "oc3_game_event_mgr.hpp"
-#include "oc3_window_video_options.hpp"
 #include "oc3_window_gamespeed_options.hpp"
+#include "events/setvideooptions.hpp"
 
 class ScreenGame::Impl
 {
@@ -62,7 +61,7 @@ public:
   ExtentMenu* extMenu;
   InfoBoxManagerPtr infoBoxMgr;
   CityRenderer renderer;
-  Game* game; // current game scenario
+  Game* game; // current game
   AlarmEventHolder alarmsHolder;
 
   int result;
@@ -78,7 +77,7 @@ public:
   void resolveRemoveTool();
   void showTileInfo( const Tile& tile );
   void makeScreenShot();
-  void showScreenOptionsDialog();
+  void setVideoOptions();
   void showGameSpeedOptionsDialog();
   void resolveWarningMessage( std::string );
 };
@@ -141,7 +140,7 @@ void ScreenGame::initialize()
   CONNECT( _d->topMenu, onExit(), this, ScreenGame::resolveExitGame );
   CONNECT( _d->topMenu, onEnd(), this, ScreenGame::resolveEndGame );
   CONNECT( _d->topMenu, onRequestAdvisor(), _d.data(), Impl::showAdvisorsWindow );
-  CONNECT( _d->topMenu, onShowVideoOptions(), _d.data(), Impl::showScreenOptionsDialog );
+  CONNECT( _d->topMenu, onShowVideoOptions(), _d.data(), Impl::setVideoOptions );
   CONNECT( _d->topMenu, onShowGameSpeedOptions(), _d.data(), Impl::showGameSpeedOptionsDialog );
 
   CONNECT( _d->menu, onCreateConstruction(), _d.data(), Impl::resolveCreateConstruction );
@@ -179,13 +178,10 @@ void ScreenGame::Impl::showSaveDialog()
   CONNECT( dialog, onFileSelected(), game, Game::save );
 }
 
-void ScreenGame::Impl::showScreenOptionsDialog()
+void ScreenGame::Impl::setVideoOptions()
 {
-  VideoOptionsWindow* dialog = new VideoOptionsWindow( game->getGui()->getRootWidget(),
-                                                       engine->getAvailableModes(),
-                                                       engine->isFullscreen() );
-  CONNECT( dialog, onSreenSizeChange(), engine, GfxEngine::setScreenSize );
-  CONNECT( dialog, onFullScreenChange(), engine, GfxEngine::setFullscreen );
+  events::GameEventPtr event = events::SetVideoSettings::create();
+  event->dispatch();
 }
 
 void ScreenGame::Impl::showGameSpeedOptionsDialog()
@@ -200,13 +196,17 @@ void ScreenGame::Impl::showGameSpeedOptionsDialog()
 
 void ScreenGame::Impl::resolveWarningMessage(std::string text )
 {
-  GameEventMgr::append( WarningMessageEvent::create( text ) );
+  events::GameEventPtr e = events::WarningMessageEvent::create( text );
+  e->dispatch();
 }
 
 void ScreenGame::Impl::showEmpireMapWindow()
 {
-  GameEventMgr::append( ShowEmpireMapWindow::create( true ) );
-  GameEventMgr::append( ShowAdvisorWindow::create( false, ADV_TRADING ) );
+  events::GameEventPtr e = events::ShowEmpireMapWindow::create( true );
+  e->dispatch();
+
+  e = events::ShowAdvisorWindow::create( false, ADV_TRADING );
+  e->dispatch();
 }
 
 void ScreenGame::draw()
@@ -246,15 +246,22 @@ void ScreenGame::handleEvent( NEvent& event )
     case KEY_PLUS:
     case KEY_SUBTRACT:
     case KEY_ADD:
-      GameEventMgr::append( ChangeSpeed::create( (event.KeyboardEvent.Key == KEY_MINUS || event.KeyboardEvent.Key == KEY_SUBTRACT)
-                                                 ? -10 : +10 ) );
+    {
+      events::GameEventPtr e = events::ChangeSpeed::create( (event.KeyboardEvent.Key == KEY_MINUS ||
+                                                              event.KeyboardEvent.Key == KEY_SUBTRACT)
+                                                            ? -10 : +10 );
+      e->dispatch();
+    }
     break;
 
     case KEY_KEY_P:
+    {
       if( event.KeyboardEvent.PressedDown )
         break;
 
-      GameEventMgr::append( TogglePause::create() );
+      events::GameEventPtr e = events::TogglePause::create();
+      e->dispatch();
+    }
     break;
 
 		case KEY_F10:

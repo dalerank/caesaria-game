@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_COLOR_H_INCLUDED__
 #define __OPENCAESAR3_COLOR_H_INCLUDED__
 
-#include "oc3_math.hpp"
+#include "core/math.hpp"
 
  
     

@@ -17,7 +17,7 @@
 #ifndef __OPENCAESAR3_SIZE_H_INCLUDED__
 #define __OPENCAESAR3_SIZE_H_INCLUDED__
 
-#include "oc3_vector2.hpp"
+#include "core/vector2.hpp"
 
 class SizeF;
 

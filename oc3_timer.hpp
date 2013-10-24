@@ -16,10 +16,10 @@
 #ifndef __OPENCAESAR3_TIMER_H_INCLUDED__
 #define __OPENCAESAR3_TIMER_H_INCLUDED__
 
-#include "oc3_smartptr.hpp"
-#include "oc3_scopedptr.hpp"
-#include "oc3_referencecounted.hpp"
-#include "oc3_signals.hpp"
+#include "core/smartptr.hpp"
+#include "core/scopedptr.hpp"
+#include "core/referencecounted.hpp"
+#include "core/signals.hpp"
 
 class Timer;
 typedef SmartPtr< Timer > TimerPtr;

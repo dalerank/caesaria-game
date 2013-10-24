@@ -20,7 +20,7 @@
 #include "oc3_tilemap.hpp"
 #include "oc3_city.hpp"
 #include "oc3_exception.hpp"
-#include "oc3_positioni.hpp"
+#include "core/position.hpp"
 #include "oc3_road.hpp"
 #include "oc3_tile.hpp"
 #include "oc3_variant.hpp"

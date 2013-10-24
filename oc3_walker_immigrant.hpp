@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_IMMIGRANT_H_INCLUDED__
 
 #include "oc3_walker.hpp"
-#include "oc3_predefinitions.hpp"
+#include "core/predefinitions.hpp"
 #include "oc3_citizen_group.hpp"
 
 /** This is an immigrant coming with his stuff */
