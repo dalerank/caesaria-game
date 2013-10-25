@@ -18,7 +18,7 @@
 
 #include "oc3_picture.hpp"
 #include "core/signals.hpp"
-#include "oc3_rectangle.hpp"
+#include "core/rectangle.hpp"
 
 class PushButton;
 

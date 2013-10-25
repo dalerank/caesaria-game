@@ -16,7 +16,7 @@
 #ifndef __OC3_MAINMENU_H_INCLUDED__
 #define __OC3_MAINMENU_H_INCLUDED__
 
-#include "oc3_gui_contextmenu.hpp"
+#include "contextmenu.hpp"
 
 //! GUI menu interface.
 class MainMenu : public ContextMenu

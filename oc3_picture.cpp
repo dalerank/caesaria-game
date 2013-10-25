@@ -19,7 +19,7 @@
 
 #include "oc3_exception.hpp"
 #include "core/position.hpp"
-#include "oc3_rectangle.hpp"
+#include "core/rectangle.hpp"
 #include "oc3_picture_bank.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "core/requirements.hpp"

@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_CONTEXT_MENU_H_INCLUDED__
 #define __OPENCAESAR3_CONTEXT_MENU_H_INCLUDED__
 
-#include "oc3_gui_widget.hpp"
+#include "../../oc3_gui_widget.hpp"
 #include "core/signals.hpp"
 #include "core/scopedptr.hpp"
 

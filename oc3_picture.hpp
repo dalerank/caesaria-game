@@ -21,7 +21,7 @@
 
 #include <vector>
 #include <string>
-#include "oc3_size.hpp"
+#include "core/size.hpp"
 #include "core/scopedptr.hpp"
 #include "core/referencecounted.hpp"
 

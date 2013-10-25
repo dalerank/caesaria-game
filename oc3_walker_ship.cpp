@@ -22,6 +22,7 @@
 #include "oc3_astarpathfinding.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_pathway.hpp"
+#include "oc3_resourcegroup.hpp"
 
 Ship::Ship( CityPtr city )
   : Walker( city )
@@ -162,6 +163,15 @@ void FishingBoat::startCatch()
 bool FishingBoat::isBusy() const
 {
   return _d->mode != Impl::wait;
+}
+
+void FishingBoat::die()
+{
+  _d->mode = Impl::wait;
+  _getAnimation().load( ResourceGroup::carts, 265, 8 );
+  _getAnimation().setFrameDelay( 4 );
+
+  Ship::die();
 }
 
 FishingBoat::FishingBoat( CityPtr city ) : Ship( city ), _d( new Impl )

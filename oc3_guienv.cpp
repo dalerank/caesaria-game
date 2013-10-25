@@ -16,7 +16,7 @@
 #include "oc3_guienv.hpp"
 
 #include "oc3_widgetprivate.hpp"
-#include "oc3_rectangle.hpp"
+#include "core/rectangle.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_event.hpp"
 #include "oc3_gui_label.hpp"

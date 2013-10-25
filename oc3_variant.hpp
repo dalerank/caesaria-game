@@ -20,9 +20,9 @@
 #include "oc3_bytearray.hpp"
 #include "oc3_stringarray.hpp"
 #include "oc3_time.hpp"
-#include "oc3_size.hpp"
+#include "core/size.hpp"
 #include "core/position.hpp"
-#include "oc3_rectangle.hpp"
+#include "core/rectangle.hpp"
 
 #include <list>
 #include <map>

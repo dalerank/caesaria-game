@@ -70,6 +70,7 @@ public:
   void setUniqueId( const UniqueId uid );
 
   DirectionType getDirection();
+  virtual int getHealth() const;
 
   virtual void setName( const std::string& name );
   virtual const std::string& getName() const;

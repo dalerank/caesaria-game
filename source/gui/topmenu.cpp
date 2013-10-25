@@ -13,17 +13,18 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_gettext.hpp"
-#include "oc3_gui_topmenu.hpp"
-#include "oc3_gui_label.hpp"
-#include "oc3_resourcegroup.hpp"
-#include "oc3_contextmenuitem.hpp"
-#include "oc3_stringhelper.hpp"
-#include "oc3_time.hpp"
-#include "oc3_gfx_engine.hpp"
-#include "oc3_enums.hpp"
-#include "oc3_gamedate.hpp"
-#include "oc3_game_settings.hpp"
+#include "topmenu.hpp"
+
+#include "../../oc3_gettext.hpp"
+#include "../../oc3_gui_label.hpp"
+#include "../../oc3_resourcegroup.hpp"
+#include "contextmenuitem.hpp"
+#include "../../oc3_stringhelper.hpp"
+#include "../../oc3_time.hpp"
+#include "../../oc3_gfx_engine.hpp"
+#include "../../oc3_enums.hpp"
+#include "../../oc3_gamedate.hpp"
+#include "../../oc3_game_settings.hpp"
 
 namespace {
 static const int dateLabelOffset = 155;

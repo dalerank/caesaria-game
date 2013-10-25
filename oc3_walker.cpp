@@ -50,6 +50,7 @@ public:
   PathWay pathWay;
   DirectedAction action;
   std::string name;
+  int health;
 
   float getSpeed() const
   {
@@ -69,6 +70,7 @@ Walker::Walker( CityPtr city ) : _d( new Impl )
   _d->action.direction = D_NONE;
   _d->walkerType = WT_NONE;
   _d->walkerGraphic = WG_NONE;
+  _d->health = 100;
 
   _d->speed = 1.f;  // default speed
   _d->speedMultiplier = 1.f;
@@ -102,6 +104,16 @@ void Walker::timeStep(const unsigned long time)
 
   default:
   break;
+  }
+
+  if( ( time % 15 == 1 ) && _d->health <= 0 )
+  {
+    _d->health--;
+
+    if( _d->health <= -100 )
+    {
+      deleteLater();
+    }
   }
 }
 
@@ -369,6 +381,11 @@ DirectionType Walker::getDirection()
   return _d->action.direction;
 }
 
+int Walker::getHealth() const
+{
+  return _d->health;
+}
+
 void Walker::setName(const std::string &name)
 {
   _d->name = name;
@@ -531,7 +548,7 @@ void Walker::go()
 
 void Walker::die()
 {
-
+  _d->health = 0;
 }
 
 Soldier::Soldier( CityPtr city ) : Walker( city )

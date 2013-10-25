@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_LIST_BOX_H_INCLUDED__
 
 #include "oc3_gui_widget.hpp"
-#include "oc3_flagholder.hpp"
+#include "core/flagholder.hpp"
 #include "oc3_listboxitem.hpp"
 #include "core/predefinitions.hpp"
 #include "core/signals.hpp"

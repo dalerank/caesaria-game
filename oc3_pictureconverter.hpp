@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_PICTURECONVERTER_H_INCLUDE_
 #define __OPENCAESAR3_PICTURECONVERTER_H_INCLUDE_
 
-#include "oc3_rectangle.hpp"
+#include "core/rectangle.hpp"
 
 class Picture;
 

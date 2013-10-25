@@ -105,7 +105,7 @@ void Wharf::destroy()
 
   TilemapArea area = helper.getArea( this );
 
-  if( _d->boat )
+  if( _d->boat.isValid() )
   {
     _d->boat->die();
   }

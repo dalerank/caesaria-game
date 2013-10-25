@@ -20,7 +20,7 @@
 #define GFX_ENGINE_HPP
 
 #include "oc3_picture.hpp"
-#include "oc3_size.hpp"
+#include "core/size.hpp"
 #include <map>
 #include <vector>
 

@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_WIDGETANIMATOR_H_INCLUDE_
 
 #include "oc3_gui_widget.hpp"
-#include "oc3_flagholder.hpp"
+#include "core/flagholder.hpp"
 
 #define ANIMATOR_UNUSE_VALUE -9999
 

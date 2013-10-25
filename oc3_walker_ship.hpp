@@ -44,6 +44,8 @@ public:
 
   bool isBusy() const;
 
+  virtual void die();
+
 private:
   FishingBoat( CityPtr city );
 

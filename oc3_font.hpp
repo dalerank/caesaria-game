@@ -17,8 +17,8 @@
 #define __OPENCAESAR3_FONT_H_INCLUDED__
 
 #include <string>
-#include "oc3_size.hpp"
-#include "oc3_rectangle.hpp"
+#include "core/size.hpp"
+#include "core/rectangle.hpp"
 #include "oc3_alignment.hpp"
 #include "core/scopedptr.hpp"
 #include "oc3_color.hpp"

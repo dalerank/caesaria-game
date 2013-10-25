@@ -17,8 +17,8 @@
 #define _OPENCAESAR3_CONTEXT_MENU_ITEM_PRIVATE_H_INCLUDE_
 
 #include "core/signals.hpp"
-#include "oc3_size.hpp"
-#include "oc3_flagholder.hpp"
+#include "core/size.hpp"
+#include "core/flagholder.hpp"
 
 class ContextMenu;
 

@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_PROJECT_VERSION_INCLUDE_H_
 #define __OPENCAESAR3_PROJECT_VERSION_INCLUDE_H_
 
-#include "oc3_requirements.hpp"
+#include "core/platform.hpp"
 
 #define OC3_VERSION_MAJOR 0
 #define OC3_VERSION_MINOR 2

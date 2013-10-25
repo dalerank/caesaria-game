@@ -21,7 +21,7 @@
 
 #include "core/referencecounted.hpp"
 #include "core/list.hpp"
-#include "oc3_rectangle.hpp"
+#include "core/rectangle.hpp"
 #include "oc3_alignment.hpp"
 #include "oc3_font.hpp"
 #include "core/smartptr.hpp"

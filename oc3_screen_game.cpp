@@ -24,7 +24,7 @@
 #include "oc3_gui_rightpanel.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_guienv.hpp"
-#include "oc3_gui_topmenu.hpp"
+#include "gui/topmenu.hpp"
 #include "oc3_gui_menu.hpp"
 #include "oc3_event.hpp"
 #include "oc3_infoboxmanager.hpp"

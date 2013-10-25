@@ -13,9 +13,9 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_contextmenuitem.hpp"
-#include "oc3_contextmenuitemprivate.h"
-#include "oc3_gui_contextmenu.hpp"
+#include "contextmenuitem.hpp"
+#include "contextmenuitemprivate.h"
+#include "contextmenu.hpp"
 
 ContextMenuItem::ContextMenuItem( ContextMenu* parent, const std::string& text ) 
   : Label( parent, Rect( 0, 0, 1, 1 ), text, false, Label::bgWhite ), _d( new Impl )
