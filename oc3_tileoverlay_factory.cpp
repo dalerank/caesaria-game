@@ -48,7 +48,7 @@
 #include "oc3_building_data.hpp"
 #include "oc3_building_education.hpp"
 #include "oc3_fish_place.hpp"
-#include "oc3_building_wharf.hpp"
+#include "building/wharf.hpp"
 
 #include <map>
 

@@ -54,7 +54,8 @@ public:
 
 protected:
   virtual void _afterCreate() {}
-
+  Label* _getTitle();
+  Picture& _getBgPicture();
   virtual void _drawWorkers( const Point& pos, int picId, int need, int have );
 
   class Impl;
@@ -140,18 +141,6 @@ class InfoBoxFontain : public InfoBoxSimple
 public:
    InfoBoxFontain( Widget* parent, const Tile& tile );
    virtual ~InfoBoxFontain();
-};
-
-class InfoBoxWarehouse : public InfoBoxSimple
-{
-public:
-  InfoBoxWarehouse( Widget* parent, const Tile& tile );
-  virtual ~InfoBoxWarehouse();
-
-  void drawGood( const Good::Type &goodType, int col, int paintY);
-  void showSpecialOrdersWindow();
-private:
-  WarehousePtr _warehouse;
 };
 
 class InfoBoxTemple : public InfoBoxSimple

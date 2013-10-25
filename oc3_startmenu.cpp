@@ -31,7 +31,7 @@
 #include "core/position.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_pushbutton.hpp"
-#include "oc3_gui_label.hpp"
+#include "gui/label.hpp"
 #include "core/foreach.hpp"
 
 StartMenu::StartMenu( Widget* parent ) 

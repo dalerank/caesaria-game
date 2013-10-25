@@ -13,17 +13,23 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_PROJECT_VERSION_INCLUDE_H_
-#define __OPENCAESAR3_PROJECT_VERSION_INCLUDE_H_
+#ifndef _OPENCAESAR3_WAREHOUSE_INFOBOX_H_INCLUDE_
+#define _OPENCAESAR3_WAREHOUSE_INFOBOX_H_INCLUDE_
 
-#include "core/platform.hpp"
+#include "../../oc3_gui_info_box.hpp"
 
-#define OC3_VERSION_MAJOR 0
-#define OC3_VERSION_MINOR 2
-#define OC3_VERSION_REVSN 850
+class InfoBoxWarehouse : public InfoBoxSimple
+{
+public:
+  InfoBoxWarehouse( Widget* parent, const Tile& tile );
+  virtual ~InfoBoxWarehouse();
 
-#define OC3_STR_EXT(__A) #__A
-#define OC3_STR_A(__A) OC3_STR_EXT(__A)
-#define OC3_VERSION OC3_STR_A(OC3_VERSION_MAJOR)"."OC3_STR_A(OC3_VERSION_MINOR)"."OC3_STR_A(OC3_VERSION_REVSN)"["OC3_PLATFORM_NAME":"OC3_COMPILER_NAME"]"
+  void drawGood( const Good::Type &goodType, int col, int paintY);
+  void showSpecialOrdersWindow();
 
-#endif
+private:
+  WarehousePtr _warehouse;
+};
+
+
+#endif //_OPENCAESAR3_WAREHOUSE_INFOBOX_H_INCLUDE_

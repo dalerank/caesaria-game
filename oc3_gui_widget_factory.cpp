@@ -15,7 +15,7 @@
 
 #include "oc3_gui_widget_factory.hpp"
 #include "oc3_stringhelper.hpp"
-#include "oc3_gui_label.hpp"
+#include "gui/label.hpp"
 #include "oc3_gui_editbox.hpp"
 #include "oc3_pushbutton.hpp"
 #include "core/requirements.hpp"

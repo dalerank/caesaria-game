@@ -19,7 +19,7 @@
 #include "core/rectangle.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_event.hpp"
-#include "oc3_gui_label.hpp"
+#include "gui/label.hpp"
 #include "oc3_time.hpp"
 #include "core/foreach.hpp"
 #include "oc3_gui_widget_factory.hpp"

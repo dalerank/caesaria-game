@@ -16,7 +16,7 @@
 #include "fishing_boat.hpp"
 #include "../../oc3_gettext.hpp"
 #include "../../oc3_city.hpp"
-#include "../../oc3_building_wharf.hpp"
+#include "building/wharf.hpp"
 #include "../../oc3_good.hpp"
 #include "../../oc3_fish_place.hpp"
 #include "../../oc3_astarpathfinding.hpp"

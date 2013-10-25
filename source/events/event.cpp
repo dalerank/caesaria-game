@@ -25,7 +25,7 @@
 #include "../../oc3_game.hpp"
 #include "dispatcher.hpp"
 #include "../../oc3_stringhelper.hpp"
-#include "../../oc3_gui_label.hpp"
+#include "gui/label.hpp"
 #include "../../oc3_window_empiremap.hpp"
 #include "../../oc3_empire.hpp"
 #include "../../oc3_resourcegroup.hpp"

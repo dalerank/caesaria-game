@@ -16,7 +16,7 @@
 #include "oc3_window_mission_target.hpp"
 #include "oc3_resourcegroup.hpp"
 #include "oc3_picture_decorator.hpp"
-#include "oc3_gui_label.hpp"
+#include "gui/label.hpp"
 #include "oc3_listbox.hpp"
 #include "oc3_picture_decorator.hpp"
 #include "oc3_texturedbutton.hpp"

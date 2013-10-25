@@ -45,7 +45,7 @@
 #include "oc3_empire.hpp"
 #include "oc3_game_settings.hpp"
 #include "oc3_window_mission_target.hpp"
-#include "oc3_gui_label.hpp"
+#include "gui/label.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_window_minimap.hpp"
 #include "oc3_window_gamespeed_options.hpp"

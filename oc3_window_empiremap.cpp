@@ -24,7 +24,7 @@
 #include "oc3_empire.hpp"
 #include "oc3_empire_city_computer.hpp"
 #include "oc3_city.hpp"
-#include "oc3_gui_label.hpp"
+#include "gui/label.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_gui_dialogbox.hpp"

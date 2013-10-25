@@ -17,7 +17,7 @@
 #include "../../oc3_picture_decorator.hpp"
 #include "../../oc3_gettext.hpp"
 #include "../../oc3_pushbutton.hpp"
-#include "../../oc3_gui_label.hpp"
+#include "label.hpp"
 #include "../../oc3_resourcegroup.hpp"
 #include "../../oc3_stringhelper.hpp"
 #include "../../oc3_gfx_engine.hpp"
@@ -80,7 +80,10 @@ public:
 
     const char* coverages[10] = { "##edu_poor##", "##edu_very_bad##", "##edu_bad##", "##edu_not_bad##", "##edu_simple##",
                                   "##edu_above_simple##", "##edu_good##", "##edu_very_good##", "##edu_pretty##", "##edu_awesome##" };
-    font.draw( *texture, _( coverages[ math::clamp( _info.coverage / 10, 0, 10 ) ] ), 470, 0 );
+    const char* coverageStr = _info.coverage > 0
+                                  ? coverages[ math::clamp( _info.coverage / 10, 0, 10 ) ]
+                                  : "##non_cvrg##";
+    font.draw( *texture, _( coverageStr ), 470, 0 );
   }
 
 private:

@@ -24,7 +24,7 @@
 #include "oc3_guienv.hpp"
 #include "oc3_picture_decorator.hpp"
 #include "oc3_widgetpositionanimator.hpp"
-#include "oc3_gui_label.hpp"
+#include "gui/label.hpp"
 #include "oc3_gettext.hpp"
 #include "oc3_minimap_colours.hpp"
 #include "oc3_city_renderer.hpp"

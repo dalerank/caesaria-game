@@ -27,7 +27,7 @@
 #include "oc3_game.hpp"
 #include "oc3_player.hpp"
 #include "oc3_pushbutton.hpp"
-#include "oc3_gui_label.hpp"
+#include "gui/label.hpp"
 #include "oc3_game_settings.hpp"
 #include "oc3_window_playername.hpp"
 
