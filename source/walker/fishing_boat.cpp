@@ -13,30 +13,16 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_walker_ship.hpp"
-#include "oc3_gettext.hpp"
-#include "oc3_city.hpp"
-#include "oc3_building_wharf.hpp"
-#include "oc3_good.hpp"
-#include "oc3_fish_place.hpp"
-#include "oc3_astarpathfinding.hpp"
-#include "oc3_stringhelper.hpp"
-#include "oc3_pathway.hpp"
-#include "oc3_resourcegroup.hpp"
-
-Ship::Ship( CityPtr city )
-  : Walker( city )
-{
-  _setType( WT_NONE );
-  _setGraphic( WG_NONE );
-
-  setName( _("##ship##") );
-}
-
-Ship::~Ship()
-{
-
-}
+#include "fishing_boat.hpp"
+#include "../../oc3_gettext.hpp"
+#include "../../oc3_city.hpp"
+#include "../../oc3_building_wharf.hpp"
+#include "../../oc3_good.hpp"
+#include "../../oc3_fish_place.hpp"
+#include "../../oc3_astarpathfinding.hpp"
+#include "../../oc3_stringhelper.hpp"
+#include "../../oc3_pathway.hpp"
+#include "../../oc3_resourcegroup.hpp"
 
 class FishingBoat::Impl
 {
@@ -55,12 +41,20 @@ void FishingBoat::save( VariantMap& stream ) const
   Ship::save( stream );
 
   stream[ "destination" ] = _d->destination;
+  stream[ "stock" ] = _d->stock.save();
+  stream[ "mode" ] = (int)_d->mode;
+  stream[ "base" ] = _d->base.isValid() ? _d->base->getTilePos() : TilePos( -1, -1 );
 }
 
 void FishingBoat::load( const VariantMap& stream )
 {
   Walker::load( stream );
-  _d->destination = stream.get( "destination" ).toTilePos();
+  _d->destination = stream.get( "destination" );
+  _d->stock.load( stream.get( "stock" ).toList() );
+  _d->mode = (Impl::Mode)stream.get( "mode", (int)Impl::wait ).toInt();
+
+  CityHelper helper( _getCity() );
+  _d->base = helper.find<Wharf>( (TilePos)stream.get( "base") );
 }
 
 void FishingBoat::timeStep(const unsigned long time)
@@ -168,6 +162,7 @@ bool FishingBoat::isBusy() const
 void FishingBoat::die()
 {
   _d->mode = Impl::wait;
+  _d->base = 0;
   _getAnimation().load( ResourceGroup::carts, 265, 8 );
   _getAnimation().setFrameDelay( 4 );
 

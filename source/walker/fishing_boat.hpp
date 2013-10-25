@@ -13,18 +13,10 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _OPENCAESAR_SHIP_INCLUDE_H_
-#define _OPENCAESAR_SHIP_INCLUDE_H_
+#ifndef _OPENCAESAR_FISHING_BOAT_INCLUDE_H_
+#define _OPENCAESAR_FISHING_BOAT_INCLUDE_H_
 
-#include "oc3_walker.hpp"
-#include "core/predefinitions.hpp"
-
-class Ship : public Walker
-{
-public:
-  Ship( CityPtr city );
-  ~Ship();
-};
+#include "ship.hpp"
 
 class FishingBoat : public Ship
 {
@@ -54,4 +46,4 @@ private:
 };
 
 
-#endif
+#endif //_OPENCAESAR_FISHING_BOAT_INCLUDE_H_

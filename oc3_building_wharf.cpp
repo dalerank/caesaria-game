@@ -19,7 +19,7 @@
 #include "oc3_city.hpp"
 #include "oc3_tilemap.hpp"
 #include "core/foreach.hpp"
-#include "oc3_walker_ship.hpp"
+#include "walker/fishing_boat.hpp"
 #include "core/foreach.hpp"
 #include "oc3_goodstore.hpp"
 

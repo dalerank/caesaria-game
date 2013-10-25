@@ -24,6 +24,7 @@
 #include "oc3_name_generator.hpp"
 #include "oc3_stringhelper.hpp"
 #include "oc3_walker_animals.hpp"
+#include "walker/fishing_boat.hpp"
 #include <map>
 
 template< class T >
@@ -84,6 +85,7 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( WT_BARBER, new ServiceWalkerCreator( Service::barber ) );
   addCreator( WT_SURGEON, new ServiceWalkerCreator( Service::hospital ) );
   addCreator( WT_TRAINEE, new TraineeWalkerCreator() );
+  addCreator( WT_FISHING_BOAT, new WalkerCreator<FishingBoat>() );
 }
 
 WalkerManager::~WalkerManager()
