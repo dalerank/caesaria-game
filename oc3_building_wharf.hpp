@@ -27,9 +27,13 @@ public:
   virtual void destroy();
   virtual void timeStep(const unsigned long time);
 
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
+
   const Tile& getLandingTile() const;
 
   FishingBoatPtr getBoat() const;
+  void assignBoat( FishingBoatPtr boat );
 
 private:
   void _setDirection( DirectionType direction );

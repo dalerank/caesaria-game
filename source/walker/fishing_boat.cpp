@@ -54,7 +54,11 @@ void FishingBoat::load( const VariantMap& stream )
   _d->mode = (Impl::Mode)stream.get( "mode", (int)Impl::wait ).toInt();
 
   CityHelper helper( _getCity() );
-  _d->base = helper.find<Wharf>( (TilePos)stream.get( "base") );
+  _d->base = helper.find<Wharf>( (TilePos)stream.get( "base" ) );
+  if( _d->base.isValid() )
+  {
+    _d->base->assignBoat( this );
+  }
 }
 
 void FishingBoat::timeStep(const unsigned long time)
@@ -109,12 +113,14 @@ void FishingBoat::timeStep(const unsigned long time)
     {
       if( _d->base != 0 )
       {
+        PathWay way;
         bool pathfound = Pathfinder::getInstance().getPath( getIJ(), _d->base->getLandingTile().getIJ(),
-                                                            _getPathway(), Pathfinder::waterOnly, Size(0) );
+                                                            way, Pathfinder::waterOnly, Size(0) );
 
         if( pathfound )
         {
           _d->mode = Impl::back2Base;
+          setPathWay( way );
           go();
         }
 

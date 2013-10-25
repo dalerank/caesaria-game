@@ -61,24 +61,6 @@ void FishPlace::build(CityPtr city, const TilePos& pos)
   _d->savePicture = &city->getTilemap().at( pos ).getPicture();
   setPicture( *_d->savePicture );
 
-  PathWay pathway;
-  bool pathFound = Pathfinder::getInstance().getPath( pos, city->getBorderInfo().boatExit,
-                                                      pathway, Pathfinder::waterOnly, Size( 1 ) );
-
-  if( !pathFound )
-  {
-    deleteLater();
-  }
-  else
-  {
-    _d->walker = WalkerPtr( new Walker( city ) );
-    _d->walker->drop();
-    _d->walker->setSpeed( 0.1f );
-    _d->walker->setPathWay( pathway );
-    _d->walker->setIJ( pos );
-    _d->walker->go();
-  }
-
   TileOverlay::build( city, pos );
 }
 
@@ -113,6 +95,26 @@ void FishPlace::timeStep(const unsigned long time)
     else if( lastPos == _d->walker->getPathway().getDestination().getIJ() )
     {
       deleteLater();
+    }
+  }
+  else
+  {
+    PathWay pathway;
+    bool pathFound = Pathfinder::getInstance().getPath( getTilePos(), _getCity()->getBorderInfo().boatExit,
+                                                        pathway, Pathfinder::waterOnly, Size( 1 ) );
+
+    if( !pathFound )
+    {
+      deleteLater();
+    }
+    else
+    {
+      _d->walker = WalkerPtr( new Walker( _getCity() ) );
+      _d->walker->drop();
+      _d->walker->setSpeed( 0.1f );
+      _d->walker->setPathWay( pathway );
+      _d->walker->setIJ( getTilePos() );
+      _d->walker->go();
     }
   }
 }

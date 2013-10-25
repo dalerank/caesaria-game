@@ -126,7 +126,6 @@ void AnimationBank::Impl::loadWalkers()
   animations[WG_ANIMAL_SHEEP_WALK ] = loadAnimation( ResourceGroup::animals, 153, 5 );
   animations[WG_FISHING_BOAT      ] = loadAnimation( ResourceGroup::carts, 249, 1 );
   animations[WG_FISHING_BOAT_WORK ] = loadAnimation( ResourceGroup::carts, 257, 1 );
-  animations[WG_SHIP_DIE          ] = loadAnimation( ResourceGroup::carts, 265, 1 );
 }
 
 AnimationBank& AnimationBank::instance()

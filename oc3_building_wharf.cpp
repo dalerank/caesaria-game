@@ -94,9 +94,6 @@ void Wharf::build(CityPtr city, const TilePos& pos)
   foreach( Tile* tile, area ) { _d->saveTileInfo.push_back( TileHelper::encode( *tile ) ); }
 
   Factory::build( city, pos );
-
-  _d->boat = FishingBoat::create( city );
-  _d->boat->send2City( this, getLandingTile().getIJ() );
 }
 
 void Wharf::destroy()
@@ -125,6 +122,12 @@ void Wharf::timeStep(const unsigned long time)
   {
     receiveGood();
     deliverGood();
+
+    if( _d->boat.isNull() )
+    {
+      _d->boat = FishingBoat::create( _getCity() );
+      _d->boat->send2City( this, getLandingTile().getIJ() );
+    }
   }
 
   //start/stop animation when workers found
@@ -165,6 +168,22 @@ void Wharf::timeStep(const unsigned long time)
   }
 }
 
+void Wharf::save(VariantMap& stream) const
+{
+  Factory::save( stream );
+
+  stream[ "direction" ] = (int)_d->direction;
+  stream[ "saved_tile"] = VariantList( _d->saveTileInfo );
+}
+
+void Wharf::load(const VariantMap& stream)
+{
+  Factory::load( stream );
+
+  _d->direction = (DirectionType)stream.get( "direction", (int)D_SOUTH_WEST ).toInt();
+  _d->saveTileInfo << stream.get( "saved_tile" ).toList();
+}
+
 const Tile& Wharf::getLandingTile() const
 {
   Tilemap& tmap = _getCity()->getTilemap();
@@ -185,6 +204,11 @@ const Tile& Wharf::getLandingTile() const
 FishingBoatPtr Wharf::getBoat() const
 {
   return _d->boat;
+}
+
+void Wharf::assignBoat(FishingBoatPtr boat)
+{
+  _d->boat = boat;
 }
 
 void Wharf::_setDirection(DirectionType direction)

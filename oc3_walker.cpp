@@ -235,20 +235,24 @@ void Walker::walk()
    case D_NORTH:
    case D_SOUTH:
       _d->remainMove += PointF( 0, _d->getSpeed() );
-      break;
+   break;
+
    case D_EAST:
    case D_WEST:
       _d->remainMove += PointF( _d->getSpeed(), 0 );
-      break;
+   break;
+
    case D_NORTH_EAST:
    case D_SOUTH_WEST:
    case D_SOUTH_EAST:
    case D_NORTH_WEST:
       _d->remainMove += PointF( _d->getSpeed() * 0.7f, _d->getSpeed() * 0.7f );
-      break;
+   break;
+
    default:
-      _OC3_DEBUG_BREAK_IF( "Invalid move direction: " || _d->action.direction);
-      break;
+      StringHelper::debug( 0xff, "Invalid move direction: %d", _d->action.direction );
+      _d->action.direction = D_NONE;
+   break;
    }
    
 
@@ -296,8 +300,9 @@ void Walker::walk()
          dec(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
          break;
       default:
-         _OC3_DEBUG_BREAK_IF("Invalid move direction: " || _d->action.direction);
-         break;
+         StringHelper::debug( 0xff, "Invalid move direction: %d", _d->action.direction);
+         _d->action.direction = D_NONE;
+      break;
       }
 
       _d->tileOffset = Point( tmpX, tmpY );
@@ -409,33 +414,42 @@ void Walker::getPictureList(std::vector<Picture> &oPics)
 
 const Picture& Walker::getMainPicture()
 {
-   if( !_d->animation.isValid() )
-   {
-     const AnimationBank::MovementAnimation& animMap = AnimationBank::getWalker( getWalkerGraphic() );
-     std::map<DirectedAction, Animation>::const_iterator itAnimMap;
-     if (_d->action.action == acNone || _d->action.direction == D_NONE)
-     {
-        DirectedAction action;
-        action.action = acMove;       // default action
-        if (_d->action.direction == D_NONE)
-        {
-           action.direction = D_NORTH;  // default direction
-        }
-        else
-        {
-           action.direction = _d->action.direction;  // last direction of the walker
-        }
-        itAnimMap = animMap.find(action);
-     }
-     else
-     {
-        itAnimMap = animMap.find(_d->action);
-     }
+  if( !_d->animation.isValid() )
+  {
+    const AnimationBank::MovementAnimation& animMap = AnimationBank::getWalker( getWalkerGraphic() );
+    std::map<DirectedAction, Animation>::const_iterator itAnimMap;
+    if (_d->action.action == acNone || _d->action.direction == D_NONE)
+    {
+      DirectedAction action;
+      action.action = acMove;       // default action
+      if (_d->action.direction == D_NONE)
+      {
+         action.direction = D_NORTH;  // default direction
+      }
+      else
+      {
+         action.direction = _d->action.direction;  // last direction of the walker
+      }
 
-     _d->animation = itAnimMap->second;
-   }
+      itAnimMap = animMap.find(action);
+    }
+    else
+    {
+      itAnimMap = animMap.find(_d->action);
+    }
 
-   return _d->animation.getCurrentPicture();
+    if( itAnimMap != animMap.end() )
+    {
+      _d->animation = itAnimMap->second;
+    }
+    else
+    {
+      _d->animation = animMap.begin()->second;
+      StringHelper::debug( 0xff, "Wrong walker direction detected" );
+    }
+  }
+
+  return _d->animation.getCurrentPicture();
 }
 
 void Walker::save( VariantMap& stream ) const

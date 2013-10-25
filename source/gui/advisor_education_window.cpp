@@ -13,20 +13,23 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "oc3_advisor_education_window.hpp"
-#include "oc3_picture_decorator.hpp"
-#include "oc3_gettext.hpp"
-#include "oc3_pushbutton.hpp"
-#include "oc3_gui_label.hpp"
-#include "oc3_resourcegroup.hpp"
-#include "oc3_stringhelper.hpp"
-#include "oc3_gfx_engine.hpp"
-#include "oc3_gettext.hpp"
-#include "oc3_enums.hpp"
-#include "oc3_city.hpp"
-#include "oc3_building_house.hpp"
+#include "advisor_education_window.hpp"
+#include "../../oc3_picture_decorator.hpp"
+#include "../../oc3_gettext.hpp"
+#include "../../oc3_pushbutton.hpp"
+#include "../../oc3_gui_label.hpp"
+#include "../../oc3_resourcegroup.hpp"
+#include "../../oc3_stringhelper.hpp"
+#include "../../oc3_gfx_engine.hpp"
+#include "../../oc3_gettext.hpp"
+#include "../../oc3_enums.hpp"
+#include "../../oc3_city.hpp"
+#include "../../oc3_building_house.hpp"
 #include "core/foreach.hpp"
-#include "oc3_game_settings.hpp"
+#include "../../oc3_game_settings.hpp"
+
+namespace gui
+{
 
 namespace {
   struct InfrastructureInfo
@@ -189,7 +192,9 @@ InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(CityPtr city, const Til
   {
     peoplesCount += house->getHabitants().count( age );
   }
-  ret.coverage = ret.peoplesStuding * 100 / peoplesCount;
+  ret.coverage = ret.peoplesStuding * 100 / (peoplesCount+1);
 
   return ret;
 }
+
+} //end namespace gui

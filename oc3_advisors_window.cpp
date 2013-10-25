@@ -31,7 +31,7 @@
 #include "oc3_advisor_emperor_window.hpp"
 #include "oc3_advisor_ratings_window.hpp"
 #include "oc3_advisor_trade_window.hpp"
-#include "oc3_advisor_education_window.hpp"
+#include "gui/advisor_education_window.hpp"
 #include "oc3_advisor_health_window.hpp"
 #include "oc3_advisor_entertainment_window.hpp"
 #include "oc3_advisor_religion_window.hpp"
@@ -39,6 +39,8 @@
 #include "core/foreach.hpp"
 #include "oc3_cityfunds.hpp"
 #include "events/event.hpp"
+
+using namespace gui;
 
 class AdvisorsWindow::Impl
 {

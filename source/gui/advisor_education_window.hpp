@@ -1,4 +1,4 @@
-// This file is part of openCaesar3.
+﻿// This file is part of openCaesar3.
 //
 // openCaesar3 is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,42 +12,30 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
+#ifndef __OPENCAESAR3_ADVISOR_EDUCATION_WINDOW_H_INCLUDED__
+#define __OPENCAESAR3_ADVISOR_EDUCATION_WINDOW_H_INCLUDED__
 
-#ifndef WAREHOUSE_HPP
-#define WAREHOUSE_HPP
+#include "../../oc3_gui_widget.hpp"
+#include "core/scopedptr.hpp"
+#include "core/signals.hpp"
+#include "core/predefinitions.hpp"
 
-#include "oc3_building_working.hpp"
-#include "oc3_enums.hpp"
-#include "oc3_good.hpp"
-#include "core/position.hpp"
-
-class GoodStore;
-
-class Warehouse: public WorkingBuilding
+namespace gui
 {
-  friend class WarehouseStore;
 
+class AdvisorEducationWindow : public Widget
+{
 public:
-  Warehouse();
-  void init();
+  AdvisorEducationWindow( CityPtr city, Widget* parent, int id );
 
-  virtual void timeStep(const unsigned long time);
-  void computePictures();
-  GoodStore& getGoodStore();
-  
-  virtual void save(VariantMap& stream) const;
-  virtual void load(const VariantMap& stream);
+  void draw( GfxEngine& painter );
 
 private:
-  void _resolveDevastationMode();
-
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
+} //end namespace gui
 
-
-#endif
+#endif //__OPENCAESAR3_ADVISOR_EDUCATION_WINDOW_H_INCLUDED__

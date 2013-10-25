@@ -28,7 +28,7 @@
 #include "oc3_building_factory.hpp"
 #include "oc3_city.hpp"
 #include "oc3_city_trade_options.hpp"
-#include "oc3_building_warehouse.hpp"
+#include "building/warehouse.hpp"
 #include "oc3_goodstore.hpp"
 #include "oc3_texturedbutton.hpp"
 #include "oc3_event.hpp"

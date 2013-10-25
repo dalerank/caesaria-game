@@ -256,6 +256,8 @@ private:
 class VariantList : public std::list<Variant>
 {
 public:
+  VariantList() {}
+
   Variant get( const unsigned int index, Variant defaultVal=Variant() ) const
   {
     VariantList::const_iterator it = begin();
@@ -269,7 +271,29 @@ public:
       return *it;
     }
   }
+
+  template<class T>
+  VariantList( std::vector<T> array )
+  {
+    typename std::vector<T>::iterator it = array.begin();
+    for( ; it != array.end(); it++ )
+    {
+      push_back( Variant(*it) );
+    }
+  }
 };
+
+template<class T>
+typename std::vector<T>& operator<<(std::vector<T>& v, const VariantList& vars)
+{
+  VariantList::const_iterator it = vars.begin();
+  for( ; it != vars.end(); it++ )
+  {
+    v.push_back( (T)(*it) );
+  }
+
+  return v;
+}
 
 StringArray& operator<<(StringArray& strlist, const VariantList& vars );
 

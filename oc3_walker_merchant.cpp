@@ -15,7 +15,7 @@
 
 #include "oc3_walker_merchant.hpp"
 #include "oc3_goodstore_simple.hpp"
-#include "oc3_building_warehouse.hpp"
+#include "building/warehouse.hpp"
 #include "oc3_path_finding.hpp"
 #include "oc3_city.hpp"
 #include "oc3_tile.hpp"

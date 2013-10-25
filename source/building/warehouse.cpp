@@ -15,21 +15,21 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#include "oc3_building_warehouse.hpp"
+#include "warehouse.hpp"
 
 #include <iostream>
 
-#include "oc3_picture.hpp"
-#include "oc3_exception.hpp"
-#include "oc3_gui_info_box.hpp"
-#include "oc3_gettext.hpp"
-#include "oc3_resourcegroup.hpp"
-#include "oc3_variant.hpp"
-#include "oc3_walker_cart_pusher.hpp"
-#include "oc3_goodstore.hpp"
-#include "oc3_city.hpp"
+#include "../../oc3_picture.hpp"
+#include "../../oc3_exception.hpp"
+#include "../../oc3_gui_info_box.hpp"
+#include "../../oc3_gettext.hpp"
+#include "../../oc3_resourcegroup.hpp"
+#include "../../oc3_variant.hpp"
+#include "../../oc3_walker_cart_pusher.hpp"
+#include "../../oc3_goodstore.hpp"
+#include "../../oc3_city.hpp"
 #include "core/foreach.hpp"
-#include "oc3_stringhelper.hpp"
+#include "../../oc3_stringhelper.hpp"
 
 #include <list>
 
@@ -351,8 +351,6 @@ Warehouse::Warehouse() : WorkingBuilding( B_WAREHOUSE, Size( 3 )), _d( new Impl 
   _d->animFlag.load( ResourceGroup::warehouse, 84, 8 );
 
   init();
-
-  setWorkers( 0 );
 }
 
 void Warehouse::init()

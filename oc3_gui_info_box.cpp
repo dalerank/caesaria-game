@@ -39,7 +39,7 @@
 #include "oc3_building_house.hpp"
 #include "oc3_building_religion.hpp"
 #include "oc3_divinity.hpp"
-#include "oc3_building_warehouse.hpp"
+#include "building/warehouse.hpp"
 #include "oc3_gfx_engine.hpp"
 #include "oc3_special_orders_window.hpp"
 #include "oc3_goodstore.hpp"
@@ -461,12 +461,13 @@ void InfoBoxGranary::drawGood(const Good::Type &goodType, int col, int paintY)
 }
 
 InfoBoxWarehouse::InfoBoxWarehouse( Widget* parent, const Tile& tile )
-: InfoBoxSimple( parent, Rect( 0, 0, 510, 360 ) )
+  : InfoBoxSimple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 90, 510 - 16, 90 + 62 ) )
 {
   _warehouse = tile.getOverlay().as<Warehouse>();
+
   Size btnOrdersSize( 350, 20 );
   PushButton* btnOrders = new PushButton( this, Rect( Point( (getWidth() - btnOrdersSize.getWidth()) / 2, getHeight() - 34 ), btnOrdersSize ),
-                                   _("##special_orders##"), -1, false, PushButton::whiteBorderUp );
+                                          _("##special_orders##"), -1, false, PushButton::whiteBorderUp );
 
   CONNECT( btnOrders, onClicked(), this, InfoBoxWarehouse::showSpecialOrdersWindow );
 
@@ -493,12 +494,7 @@ InfoBoxWarehouse::InfoBoxWarehouse( Widget* parent, const Tile& tile )
   drawGood(Good::furniture, 2, _paintY+100);
   drawGood(Good::pottery, 2, _paintY+125);
 
-  Point workerFramePos( 16, 170 );
-  PictureDecorator::draw( *_d->bgPicture,
-                          Rect( workerFramePos, Size( getWidth()-32, 62 ) ),
-                          PictureDecorator::blackFrame );
-
-  _drawWorkers( workerFramePos + Point( 20, 10 ), 542, _warehouse->getMaxWorkers(), _warehouse->getWorkers() );
+  _drawWorkers( Point( 16 + 20, 90 + 10 ), 542, _warehouse->getMaxWorkers(), _warehouse->getWorkers() );
 }
 
 InfoBoxWarehouse::~InfoBoxWarehouse()
