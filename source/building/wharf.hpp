@@ -16,7 +16,7 @@
 #ifndef _OPENCAESAR3_WHARF_INCLUDE_H_
 #define _OPENCAESAR3_WHARF_INCLUDE_H_
 
-#include "../../oc3_building_factory.hpp"
+#include "factory.hpp"
 
 class Wharf : public Factory
 {

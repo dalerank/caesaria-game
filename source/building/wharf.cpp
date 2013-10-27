@@ -14,14 +14,14 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "wharf.hpp"
-#include "../../oc3_tile.hpp"
-#include "../../oc3_resourcegroup.hpp"
-#include "../../oc3_city.hpp"
-#include "../../oc3_tilemap.hpp"
+#include "gfx/tile.hpp"
+#include "game/resourcegroup.hpp"
+#include "game/city.hpp"
+#include "game/tilemap.hpp"
 #include "core/foreach.hpp"
 #include "walker/fishing_boat.hpp"
 #include "core/foreach.hpp"
-#include "../../oc3_goodstore.hpp"
+#include "game/goodstore.hpp"
 
 class Wharf::Impl
 {

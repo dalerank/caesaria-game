@@ -19,17 +19,17 @@
 
 #include <iostream>
 
-#include "../../oc3_picture.hpp"
-#include "../../oc3_exception.hpp"
-#include "../../oc3_gui_info_box.hpp"
-#include "../../oc3_gettext.hpp"
-#include "../../oc3_resourcegroup.hpp"
-#include "../../oc3_variant.hpp"
-#include "../../oc3_walker_cart_pusher.hpp"
-#include "../../oc3_goodstore.hpp"
-#include "../../oc3_city.hpp"
+#include "gfx/picture.hpp"
+#include "core/exception.hpp"
+#include "gui/info_box.hpp"
+#include "core/gettext.hpp"
+#include "game/resourcegroup.hpp"
+#include "core/variant.hpp"
+#include "walker/cart_pusher.hpp"
+#include "game/goodstore.hpp"
+#include "game/city.hpp"
 #include "core/foreach.hpp"
-#include "../../oc3_stringhelper.hpp"
+#include "core/stringhelper.hpp"
 
 #include <list>
 

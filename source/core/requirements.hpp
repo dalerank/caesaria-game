@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_REQUIREMENTS_INCLUDE_
 #define __OPENCAESAR3_REQUIREMENTS_INCLUDE_
 
-#include "../../oc3_project_version.hpp"
+#include "version.hpp"
 #include "platform.hpp"
 
 //see CMakeLists.txt for this define

@@ -19,6 +19,9 @@
 #include "label.hpp"
 #include "core/scopedptr.hpp"
 
+namespace gui
+{
+
 class ContextMenu;
 
 class ContextMenuItem : public Label
@@ -93,4 +96,5 @@ private:
   ScopedPtr< Impl > _d;
 };
 
+}//end namespace gui
 #endif //_OPENCAESAR3_CONTEXMENUITEM_INCLUDE_H_

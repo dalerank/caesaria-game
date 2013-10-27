@@ -14,19 +14,18 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "advisor_education_window.hpp"
-#include "../../oc3_picture_decorator.hpp"
-#include "../../oc3_gettext.hpp"
-#include "../../oc3_pushbutton.hpp"
+#include "gfx/decorator.hpp"
+#include "core/gettext.hpp"
+#include "pushbutton.hpp"
 #include "label.hpp"
-#include "../../oc3_resourcegroup.hpp"
-#include "../../oc3_stringhelper.hpp"
-#include "../../oc3_gfx_engine.hpp"
-#include "../../oc3_gettext.hpp"
-#include "../../oc3_enums.hpp"
-#include "../../oc3_city.hpp"
-#include "../../oc3_building_house.hpp"
+#include "game/resourcegroup.hpp"
+#include "core/stringhelper.hpp"
+#include "gfx/engine.hpp"
+#include "game/enums.hpp"
+#include "game/city.hpp"
+#include "building/house.hpp"
 #include "core/foreach.hpp"
-#include "../../oc3_game_settings.hpp"
+#include "game/settings.hpp"
 
 namespace gui
 {

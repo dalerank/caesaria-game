@@ -14,16 +14,19 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "warehouse_infobox.hpp"
-#include "../../oc3_tile.hpp"
-#include "../../oc3_pushbutton.hpp"
-#include "../../oc3_gettext.hpp"
-#include "../../oc3_building_data.hpp"
+#include "gfx/tile.hpp"
+#include "pushbutton.hpp"
+#include "core/gettext.hpp"
+#include "building/metadata.hpp"
 #include "building/warehouse.hpp"
-#include "gui/label.hpp"
-#include "../../oc3_goodhelper.hpp"
+#include "label.hpp"
+#include "game/goodhelper.hpp"
 #include "special_orders_window.hpp"
-#include "../../oc3_goodstore.hpp"
-#include "../../oc3_stringhelper.hpp"
+#include "game/goodstore.hpp"
+#include "core/stringhelper.hpp"
+
+namespace gui
+{
 
 InfoBoxWarehouse::InfoBoxWarehouse( Widget* parent, const Tile& tile )
   : InfoBoxSimple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 225, 510 - 16, 225 + 62 ) )
@@ -96,3 +99,5 @@ void InfoBoxWarehouse::drawGood( const Good::Type &goodType, int col, int paintY
   std::string outText = StringHelper::format( 0xff, "%d %s", qty, goodName.c_str() );
   font.draw( _getBgPicture(), outText, col * 150 + 45, paintY, false );
 }
+
+}//end namespace gui

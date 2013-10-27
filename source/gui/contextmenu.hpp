@@ -16,12 +16,16 @@
 #ifndef __OPENCAESAR3_CONTEXT_MENU_H_INCLUDED__
 #define __OPENCAESAR3_CONTEXT_MENU_H_INCLUDED__
 
-#include "../../oc3_gui_widget.hpp"
+#include "widget.hpp"
 #include "core/signals.hpp"
 #include "core/scopedptr.hpp"
 
-class ContextMenuItem;
 class VariantMap;
+
+namespace gui
+{
+
+class ContextMenuItem;
 
 //! GUI Context menu interface.
 class ContextMenu : public Widget
@@ -141,5 +145,6 @@ protected:
 	ScopedPtr< Impl > _d;
 };
 
+}//end namespace gui
 #endif // __OPENCAESAR3_CONTEXT_MENU_H_INCLUDED__
 

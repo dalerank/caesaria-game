@@ -19,9 +19,9 @@
 #ifndef WAREHOUSE_HPP
 #define WAREHOUSE_HPP
 
-#include "../../oc3_building_working.hpp"
-#include "../../oc3_enums.hpp"
-#include "../../oc3_good.hpp"
+#include "working.hpp"
+#include "game/enums.hpp"
+#include "game/good.hpp"
 #include "core/position.hpp"
 
 class GoodStore;

@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_ADVISOR_EDUCATION_WINDOW_H_INCLUDED__
 #define __OPENCAESAR3_ADVISOR_EDUCATION_WINDOW_H_INCLUDED__
 
-#include "../../oc3_gui_widget.hpp"
+#include "widget.hpp"
 #include "core/scopedptr.hpp"
 #include "core/signals.hpp"
 #include "core/predefinitions.hpp"

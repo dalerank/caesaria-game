@@ -16,10 +16,13 @@
 #include "contextmenu.hpp"
 #include "contextmenuprivate.hpp"
 #include "contextmenuitem.hpp"
-#include "../../oc3_event.hpp"
-#include "../../oc3_time.hpp"
+#include "core/event.hpp"
+#include "core/time.hpp"
 #include "core/position.hpp"
-#include "../../oc3_guienv.hpp"
+#include "environment.hpp"
+
+namespace gui
+{
 
 //! constructor
 ContextMenu::ContextMenu( Widget* parent, const Rect& rectangle,
@@ -178,10 +181,10 @@ bool ContextMenu::onEvent(const NEvent& event)
 
 		switch(event.EventType)
 		{
-		case OC3_GUI_EVENT:
+		case sEventGui:
 			switch(event.GuiEvent.EventType)
 			{
-			case OC3_ELEMENT_FOCUS_LOST:
+			case guiElementFocusLost:
 				if (event.GuiEvent.Caller == this && !isMyChild(event.GuiEvent.Element) && _d->allowFocus)
 				{
 					// set event parent of submenus
@@ -189,10 +192,10 @@ bool ContextMenu::onEvent(const NEvent& event)
 					setEventParent(p);
 
 					NEvent event;
-					event.EventType = OC3_GUI_EVENT;
+					event.EventType = sEventGui;
 					event.GuiEvent.Caller = this;
 					event.GuiEvent.Element = 0;
-					event.GuiEvent.EventType = OC3_ELEMENT_CLOSED;
+					event.GuiEvent.EventType = guiElementClosed;
 					if ( !p->onEvent(event) )
 					{
 						if( (_d->closeHandling & cmHide) > 0 )
@@ -208,7 +211,7 @@ bool ContextMenu::onEvent(const NEvent& event)
 					return false;
 				}
 				break;
-			case OC3_ELEMENT_FOCUSED:
+			case guiElementFocused:
 				if (event.GuiEvent.Caller == this && !_d->allowFocus)
 				{
 					return true;
@@ -217,11 +220,12 @@ bool ContextMenu::onEvent(const NEvent& event)
 			default:
 				break;
 			}
-			break;
-		case OC3_MOUSE_EVENT:
+		break;
+
+		case sEventMouse:
 			switch(event.MouseEvent.Event)
 			{
-			case OC3_LMOUSE_LEFT_UP:
+			case mouseLbtnRelease:
 				{
 					// menu might be removed if it loses focus in sendClick, so grab a reference
 					grab();
@@ -231,9 +235,9 @@ bool ContextMenu::onEvent(const NEvent& event)
 					drop();
 				}
 				return true;
-			case OC3_LMOUSE_PRESSED_DOWN:
+			case mouseLbtnPressed:
 				return true;
-			case OC3_MOUSE_MOVED:
+			case mouseMoved:
 				if( isHovered() )
 					isHighlighted_( event.MouseEvent.getPosition(), true);
 				return true;
@@ -303,10 +307,10 @@ unsigned int ContextMenu::sendClick_(const Point& p)
 		getSelectedItem()->toggleCheck();
 
 		NEvent event;
-		event.EventType = OC3_GUI_EVENT;
+		event.EventType = sEventGui;
 		event.GuiEvent.Caller = this;
 		event.GuiEvent.Element = 0;
-		event.GuiEvent.EventType = OC3_MENU_ITEM_SELECTED;
+		event.GuiEvent.EventType = guiMenuItemSelected;
 		if( _d->eventParent )
  			_d->eventParent->onEvent(event);
 		else 
@@ -729,3 +733,5 @@ Signal1<int>& ContextMenu::onItemAction()
 {
   return _d->onItemActionSignal;
 }
+
+}//end namespace gui

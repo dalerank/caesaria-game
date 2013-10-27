@@ -14,12 +14,15 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "label.hpp"
-#include "../../oc3_gfx_engine.hpp"
-#include "../../oc3_picture_decorator.hpp"
-#include "../../oc3_pictureconverter.hpp"
-#include "../../oc3_color.hpp"
+#include "gfx/engine.hpp"
+#include "gfx/decorator.hpp"
+#include "gfx/pictureconverter.hpp"
+#include "core/color.hpp"
 
 using namespace std;
+
+namespace gui
+{
 
 class BackgroundModeHelper : public EnumsHelper<Label::BackgroundMode>
 {
@@ -647,3 +650,5 @@ PictureRef& Label::getTextPicture()
 {
   return _d->textPicture;
 }
+
+}//end namespace gui

@@ -14,8 +14,8 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "ship.hpp"
-#include "../../oc3_gettext.hpp"
-#include "../../oc3_city.hpp"
+#include "core/gettext.hpp"
+#include "game/city.hpp"
 
 Ship::Ship( CityPtr city )
   : Walker( city )

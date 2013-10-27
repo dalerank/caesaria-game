@@ -15,9 +15,11 @@
 
 #include "mainmenu.hpp"
 #include "contextmenuitem.hpp"
-#include "../../oc3_event.hpp"
-#include "../../oc3_guienv.hpp"
+#include "core/event.hpp"
+#include "environment.hpp"
 
+namespace gui
+{
 #define DEFAULT_MENU_HEIGHT 15
 
 //! constructor
@@ -60,17 +62,17 @@ bool MainMenu::onEvent(const NEvent& event)
 	{
 		switch(event.EventType)
 		{
-		case OC3_GUI_EVENT:
+		case sEventGui:
 			switch(event.GuiEvent.EventType)
 			{
-			case OC3_ELEMENT_FOCUS_LOST:
+			case guiElementFocusLost:
 				if (event.GuiEvent.Caller == this && !isMyChild(event.GuiEvent.Element))
 				{
 					closeAllSubMenus_();
 					setHoverIndex_( -1 );
 				}
 				break;
-			case OC3_ELEMENT_FOCUSED:
+			case guiElementFocused:
 				if (event.GuiEvent.Caller == this )
 				{
 					bringToFront();
@@ -80,10 +82,10 @@ bool MainMenu::onEvent(const NEvent& event)
 				break;
 			}
 			break;
-		case OC3_MOUSE_EVENT:
+		case sEventMouse:
 			switch(event.MouseEvent.Event)
 			{
-			case OC3_LMOUSE_PRESSED_DOWN:
+			case mouseLbtnPressed:
 			{
 				if (!getEnvironment()->hasFocus(this))
 				{
@@ -107,7 +109,7 @@ bool MainMenu::onEvent(const NEvent& event)
 				return true;
 			}
 
-			case OC3_LMOUSE_LEFT_UP:
+			case mouseLbtnRelease:
 			{
         Point p(event.MouseEvent.getPosition() );
 				if (!getAbsoluteClippingRect().isPointInside(p))
@@ -120,7 +122,7 @@ bool MainMenu::onEvent(const NEvent& event)
 			  return true;
 			}
 
-      case OC3_MOUSE_MOVED:
+      case mouseMoved:
       {
 				if (getEnvironment()->hasFocus(this) && getHoveredIndex() >= 0)
 				{
@@ -202,3 +204,5 @@ void MainMenu::recalculateSize_()
 		}
   }
 }
+
+}//end namespace gui

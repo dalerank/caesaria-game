@@ -18,8 +18,11 @@
 
 #include <vector>
 
-#include "../../oc3_picture.hpp"
+#include "gfx/picture.hpp"
 #include "core/signals.hpp"
+
+namespace gui
+{
 
 class ContextMenuItem;
 
@@ -43,4 +46,5 @@ oc3_signals public:
   Signal1<int> onItemActionSignal;
 };
 
+}//end namespace gui
 #endif //_OPENCAESAR3_CONTEXT_MENU_PRIVATE_H_INLCUDE_

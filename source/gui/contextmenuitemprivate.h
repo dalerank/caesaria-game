@@ -20,6 +20,9 @@
 #include "core/size.hpp"
 #include "core/flagholder.hpp"
 
+namespace gui
+{
+
 class ContextMenu;
 
 class ContextMenuItem::Impl : public FlagHolder<int>
@@ -40,4 +43,5 @@ oc3_signals public:
 	Signal1<bool> onCheckedSignal;
 };
 
+}//end namespace gui
 #endif //_OPENCAESAR3_CONTEXT_MENU_ITEM_PRIVATE_H_INCLUDE_

@@ -16,18 +16,21 @@
 #include <cstdio>
 
 #include "special_orders_window.hpp"
-#include "../../oc3_gfx_engine.hpp"
-#include "../../oc3_gui_groupbox.hpp"
-#include "gui/label.hpp"
-#include "../../oc3_texturedbutton.hpp"
-#include "../../oc3_gettext.hpp"
-#include "../../oc3_picture_decorator.hpp"
-#include "../../oc3_event.hpp"
-#include "../../oc3_building_granary.hpp"
+#include "gfx/engine.hpp"
+#include "groupbox.hpp"
+#include "label.hpp"
+#include "texturedbutton.hpp"
+#include "core/gettext.hpp"
+#include "gfx/decorator.hpp"
+#include "core/event.hpp"
+#include "building/granary.hpp"
 #include "building/warehouse.hpp"
-#include "../../oc3_goodhelper.hpp"
-#include "../../oc3_goodstore.hpp"
-#include "../../oc3_goodorders.hpp"
+#include "game/goodhelper.hpp"
+#include "game/goodstore.hpp"
+#include "game/goodorders.hpp"
+
+namespace gui
+{
 
 template< class T >
 class OrderGoodWidget : public Label
@@ -152,13 +155,13 @@ bool BaseSpecialOrdersWindow::onEvent( const NEvent& event)
 {
   switch( event.EventType )
   {
-  case OC3_MOUSE_EVENT:
-    if( event.MouseEvent.Event == OC3_RMOUSE_LEFT_UP )
+  case sEventMouse:
+    if( event.MouseEvent.Event == mouseRbtnRelease )
     {
       deleteLater();
       return true;
     }
-    else if( event.MouseEvent.Event == OC3_LMOUSE_LEFT_UP )
+    else if( event.MouseEvent.Event == mouseLbtnRelease )
     {
       return true;
     }
@@ -253,3 +256,5 @@ void WarehouseSpecialOrdersWindow::_updateBtnDevastation()
                                       ? _("##stop_warehouse_devastation##")
                                       : _("##devastate_warehouse##") );
 }
+
+}//end namespace gui

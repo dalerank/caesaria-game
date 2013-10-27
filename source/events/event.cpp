@@ -14,25 +14,25 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "event.hpp"
-#include "../../oc3_tileoverlay_factory.hpp"
-#include "../../oc3_city.hpp"
-#include "../../oc3_gettext.hpp"
-#include "../../oc3_building_data.hpp"
-#include "../../oc3_cityfunds.hpp"
-#include "../../oc3_guienv.hpp"
-#include "../../oc3_gui_info_box.hpp"
-#include "../../oc3_tilemap.hpp"
-#include "../../oc3_game.hpp"
+#include "game/tileoverlay_factory.hpp"
+#include "game/city.hpp"
+#include "core/gettext.hpp"
+#include "building/metadata.hpp"
+#include "game/cityfunds.hpp"
+#include "gui/environment.hpp"
+#include "gui/info_box.hpp"
+#include "game/tilemap.hpp"
+#include "game/game.hpp"
 #include "dispatcher.hpp"
-#include "../../oc3_stringhelper.hpp"
+#include "core/stringhelper.hpp"
 #include "gui/label.hpp"
-#include "../../oc3_window_empiremap.hpp"
-#include "../../oc3_empire.hpp"
-#include "../../oc3_resourcegroup.hpp"
-#include "../../oc3_advisors_window.hpp"
-#include "../../oc3_city_trade_options.hpp"
-#include "../../oc3_message_stack_widget.hpp"
-#include "../../oc3_game_settings.hpp"
+#include "gui/empiremap_window.hpp"
+#include "game/empire.hpp"
+#include "game/resourcegroup.hpp"
+#include "gui/advisors_window.hpp"
+#include "game/trade_options.hpp"
+#include "gui/message_stack_widget.hpp"
+#include "game/settings.hpp"
 
 namespace events
 {
@@ -223,7 +223,7 @@ GameEventPtr ShowInfoboxEvent::create( const std::string& title, const std::stri
 
 void ShowInfoboxEvent::exec( Game& game )
 {
-  InfoBoxText* msgWnd = new InfoBoxText( game.getGui()->getRootWidget(), _title, _text );
+  gui::InfoBoxText* msgWnd = new gui::InfoBoxText( game.getGui()->getRootWidget(), _title, _text );
   msgWnd->show();
 }
 
@@ -237,8 +237,8 @@ GameEventPtr TogglePause::create()
 
 void TogglePause::exec(Game& game)
 {
-  Widget* rootWidget = game.getGui()->getRootWidget();
-  Label* wdg = safety_cast< Label* >( rootWidget->findChild( windowGamePausedId ) );
+  gui::Widget* rootWidget = game.getGui()->getRootWidget();
+  gui::Label* wdg = safety_cast< gui::Label* >( rootWidget->findChild( windowGamePausedId ) );
   game.setPaused( !game.isPaused() );
 
   if( game.isPaused()  )
@@ -246,8 +246,8 @@ void TogglePause::exec(Game& game)
     if( !wdg )
     {
       Size scrSize = rootWidget->getSize();
-      wdg = new Label( rootWidget, Rect( Point( (scrSize.getWidth() - 450)/2, 40 ), Size( 450, 50 ) ),
-                       _("##game_is_paused##"), false, Label::bgWhiteFrame, windowGamePausedId );
+      wdg = new gui::Label( rootWidget, Rect( Point( (scrSize.getWidth() - 450)/2, 40 ), Size( 450, 50 ) ),
+                            _("##game_is_paused##"), false, gui::Label::bgWhiteFrame, windowGamePausedId );
       wdg->setTextAlignment( alignCenter, alignCenter );
     }
   }
@@ -336,7 +336,7 @@ GameEventPtr ShowEmpireMapWindow::create(bool show)
 
 void ShowEmpireMapWindow::exec(Game& game)
 {
-  List<EmpireMapWindow*> wndList = game.getGui()->getRootWidget()->findChildren<EmpireMapWindow*>();
+  List<gui::EmpireMapWindow*> wndList = game.getGui()->getRootWidget()->findChildren<gui::EmpireMapWindow*>();
 
   if( _show )
   {
@@ -346,7 +346,7 @@ void ShowEmpireMapWindow::exec(Game& game)
     }
     else
     {
-      EmpireMapWindow::create( game.getEmpire(), game.getCity(), game.getGui()->getRootWidget(), -1 );
+      gui::EmpireMapWindow::create( game.getEmpire(), game.getCity(), game.getGui()->getRootWidget(), -1 );
     }
   }
   else
@@ -371,7 +371,7 @@ GameEventPtr ShowAdvisorWindow::create(bool show, int advisor)
 
 void ShowAdvisorWindow::exec(Game& game)
 {
-  List<AdvisorsWindow*> wndList = game.getGui()->getRootWidget()->findChildren<AdvisorsWindow*>();
+  List<gui::AdvisorsWindow*> wndList = game.getGui()->getRootWidget()->findChildren<gui::AdvisorsWindow*>();
 
   if( _show )
   {
@@ -382,7 +382,7 @@ void ShowAdvisorWindow::exec(Game& game)
     }
     else
     {
-      AdvisorsWindow::create( game.getGui()->getRootWidget(), -1, (AdvisorType)_advisor, game.getCity() );
+      gui::AdvisorsWindow::create( game.getGui()->getRootWidget(), -1, (AdvisorType)_advisor, game.getCity() );
     }
   }
   else
@@ -405,7 +405,8 @@ GameEventPtr WarningMessageEvent::create(const std::string& text)
 
 void WarningMessageEvent::exec(Game& game)
 {
-  WindowMessageStack* window = safety_cast<WindowMessageStack*>( game.getGui()->getRootWidget()->findChild( WindowMessageStack::defaultID ) );
+  gui::WindowMessageStack* window = safety_cast<gui::WindowMessageStack*>(
+                                      game.getGui()->getRootWidget()->findChild( gui::WindowMessageStack::defaultID ) );
 
   if( window )
   {

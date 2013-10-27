@@ -54,8 +54,8 @@ endif()
 # Create the actual revision file from the above params
 if(NOT "${rev_number_cached}" MATCHES "${rev_number}")
   configure_file(
-    "${CMAKE_SOURCE_DIR}/cmake/Modules/oc3_project_version.hpp.in.cmake"
-    "${CMAKE_SOURCE_DIR}/oc3_project_version.hpp"
+    "${CMAKE_SOURCE_DIR}/cmake/Modules/version.hpp.in.cmake"
+    "${CMAKE_SOURCE_DIR}/source/version.hpp"
     @ONLY
   )
   set(rev_number_cached "${rev_number}" CACHE INTERNAL "Cached commit-number")

@@ -18,6 +18,9 @@
 
 #include "contextmenu.hpp"
 
+namespace gui
+{
+
 //! GUI menu interface.
 class MainMenu : public ContextMenu
 {
@@ -41,4 +44,5 @@ protected:
   virtual void recalculateSize_();
 };
 
+}//end namespace gui
 #endif

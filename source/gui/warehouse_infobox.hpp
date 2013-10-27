@@ -16,7 +16,10 @@
 #ifndef _OPENCAESAR3_WAREHOUSE_INFOBOX_H_INCLUDE_
 #define _OPENCAESAR3_WAREHOUSE_INFOBOX_H_INCLUDE_
 
-#include "../../oc3_gui_info_box.hpp"
+#include "info_box.hpp"
+
+namespace gui
+{
 
 class InfoBoxWarehouse : public InfoBoxSimple
 {
@@ -31,5 +34,5 @@ private:
   WarehousePtr _warehouse;
 };
 
-
+}//end namespace gui
 #endif //_OPENCAESAR3_WAREHOUSE_INFOBOX_H_INCLUDE_

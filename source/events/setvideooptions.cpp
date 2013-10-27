@@ -14,11 +14,11 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "setvideooptions.hpp"
-#include "gui/window_video_options.hpp"
-#include "../../oc3_game_settings.hpp"
-#include "../../oc3_game.hpp"
-#include "../../oc3_gfx_engine.hpp"
-#include "../../oc3_guienv.hpp"
+#include "gui/video_options_window.hpp"
+#include "game/settings.hpp"
+#include "game/game.hpp"
+#include "gfx/engine.hpp"
+#include "gui/environment.hpp"
 
 namespace events
 {

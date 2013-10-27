@@ -21,6 +21,9 @@
 
 class DateTime;
 
+namespace gui
+{
+
 class TopMenu : public MainMenu
 {
 public:
@@ -48,4 +51,5 @@ private:
   ScopedPtr< Impl > _d;
 };
 
+}//end namespace gui
 #endif //__OPENCAESAR3_TOPMENU_H_INCLUDE_

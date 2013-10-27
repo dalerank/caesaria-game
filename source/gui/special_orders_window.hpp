@@ -17,8 +17,11 @@
 #ifndef __OPENCAESAR3_SPECIAL_ORDERS_WINDOW_H_INCLUDED__
 #define __OPENCAESAR3_SPECIAL_ORDERS_WINDOW_H_INCLUDED__
 
-#include "../../oc3_gui_widget.hpp"
+#include "widget.hpp"
 #include "core/predefinitions.hpp"
+
+namespace gui
+{
 
 class PushButton;
 
@@ -68,4 +71,5 @@ private:
   PushButton* _btnTradeCenter;
 };
 
+}//end namesapce gui
 #endif //__OPENCAESAR3_SPECIAL_ORDERS_WINDOW_H_INCLUDED__

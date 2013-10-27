@@ -14,15 +14,15 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "fishing_boat.hpp"
-#include "../../oc3_gettext.hpp"
-#include "../../oc3_city.hpp"
+#include "core/gettext.hpp"
+#include "game/city.hpp"
 #include "building/wharf.hpp"
-#include "../../oc3_good.hpp"
-#include "../../oc3_fish_place.hpp"
-#include "../../oc3_astarpathfinding.hpp"
-#include "../../oc3_stringhelper.hpp"
-#include "../../oc3_pathway.hpp"
-#include "../../oc3_resourcegroup.hpp"
+#include "game/good.hpp"
+#include "game/fish_place.hpp"
+#include "game/astarpathfinding.hpp"
+#include "core/stringhelper.hpp"
+#include "game/pathway.hpp"
+#include "game/resourcegroup.hpp"
 
 class FishingBoat::Impl
 {

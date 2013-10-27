@@ -15,16 +15,19 @@
 
 #include "topmenu.hpp"
 
-#include "../../oc3_gettext.hpp"
+#include "core/gettext.hpp"
 #include "label.hpp"
-#include "../../oc3_resourcegroup.hpp"
+#include "game/resourcegroup.hpp"
 #include "contextmenuitem.hpp"
-#include "../../oc3_stringhelper.hpp"
-#include "../../oc3_time.hpp"
-#include "../../oc3_gfx_engine.hpp"
-#include "../../oc3_enums.hpp"
-#include "../../oc3_gamedate.hpp"
-#include "../../oc3_game_settings.hpp"
+#include "core/stringhelper.hpp"
+#include "core/time.hpp"
+#include "gfx/engine.hpp"
+#include "game/enums.hpp"
+#include "game/gamedate.hpp"
+#include "game/settings.hpp"
+
+namespace gui
+{
 
 namespace {
 static const int dateLabelOffset = 155;
@@ -234,3 +237,5 @@ Signal0<>&TopMenu::onShowGameSpeedOptions()
 {
   return _d->onShowGameSpeedOptionsSignal;
 }
+
+}//end namespace gui

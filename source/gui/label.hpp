@@ -17,9 +17,12 @@
 #ifndef __OPENCAESAR3_GUILABEL_H_INCLUDE_
 #define __OPENCAESAR3_GUILABEL_H_INCLUDE_
 
-#include "../../oc3_gui_widget.hpp"
-#include "../../oc3_picture.hpp"
+#include "widget.hpp"
+#include "gfx/picture.hpp"
 #include "core/signals.hpp"
+
+namespace gui
+{
 
 class Label : public Widget
 {
@@ -114,5 +117,7 @@ private:
   class Impl;
   std::auto_ptr< Impl > _d;   
 };
+
+}//end namespace gui
 
 #endif

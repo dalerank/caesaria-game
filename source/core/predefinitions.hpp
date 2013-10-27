@@ -90,8 +90,11 @@ class TerrainTile;
 class Tilemap;
 class VariantMap;
 
-class Widget;
-class GuiEnv;
+namespace gui
+{
+  class Widget;
+  class GuiEnv;
+}
 class DateTime;
 
 #endif

@@ -17,6 +17,9 @@
 #include "contextmenuitemprivate.h"
 #include "contextmenu.hpp"
 
+namespace gui
+{
+
 ContextMenuItem::ContextMenuItem( ContextMenu* parent, const std::string& text ) 
   : Label( parent, Rect( 0, 0, 1, 1 ), text, false, Label::bgWhite ), _d( new Impl )
 {
@@ -178,3 +181,5 @@ void ContextMenuItem::setOffset( int offset )
 {
   _d->offset = offset;
 }
+
+}//end namespace gui
