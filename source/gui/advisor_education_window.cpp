@@ -26,6 +26,7 @@
 #include "building/house.hpp"
 #include "core/foreach.hpp"
 #include "game/settings.hpp"
+#include "game/house_level.hpp"
 
 namespace gui
 {
@@ -36,6 +37,8 @@ namespace {
     int buildingCount;
     int buildingWork;
     int peoplesStuding;
+    int need;
+    int nextLevel;
     int coverage;
   };
 }
@@ -51,6 +54,11 @@ public:
     _info = info;
 
     setFont( Font::create( FONT_1_WHITE ) );
+  }
+
+  const InfrastructureInfo& getInfo() const
+  {
+    return _info;
   }
 
   virtual void _updateTexture( GfxEngine& painter )
@@ -93,15 +101,17 @@ private:
 class AdvisorEducationWindow::Impl
 {
 public:
-  Label* cityInfo;
+  Label* lbCityInfo;
+  Label* lbCityTrouble;
+  Label* lbBackframe;
 
   EducationInfoLabel* lbSchoolInfo;
   EducationInfoLabel* lbCollegeInfo;
   EducationInfoLabel* lbLibraryInfo;
 
   InfrastructureInfo getInfo( CityPtr city, const TileOverlayType service );
+  StringArray getTrouble( CityPtr city );
 };
-
 
 AdvisorEducationWindow::AdvisorEducationWindow( CityPtr city, Widget* parent, int id ) 
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
@@ -110,17 +120,20 @@ AdvisorEducationWindow::AdvisorEducationWindow( CityPtr city, Widget* parent, in
                Size( 640, 256 ) ) );
 
   setupUI( GameSettings::rcpath( "/gui/educationadv.gui" ) );
+  _d->lbBackframe = findChild<Label*>( "lbBlackframe", true );
+  _d->lbCityInfo = findChild<Label*>( "lbCityInfo", true );
 
-  Point startPoint( 42, 103 );
+  Point startPoint( 2, 2 );
   Size labelSize( 550, 20 );
-  InfrastructureInfo info = _d->getInfo( city, B_SCHOOL );
-  _d->lbSchoolInfo = new EducationInfoLabel( this, Rect( startPoint, labelSize ), B_SCHOOL, info );
+  InfrastructureInfo info;
+  info = _d->getInfo( city, B_SCHOOL );
+  _d->lbSchoolInfo = new EducationInfoLabel( _d->lbBackframe, Rect( startPoint, labelSize ), B_SCHOOL, info );
 
   info = _d->getInfo( city, B_COLLEGE );
-  _d->lbCollegeInfo = new EducationInfoLabel( this, Rect( startPoint + Point( 0, 20), labelSize), B_COLLEGE, info );
+  _d->lbCollegeInfo = new EducationInfoLabel( _d->lbBackframe, Rect( startPoint + Point( 0, 20), labelSize), B_COLLEGE, info );
 
   info = _d->getInfo( city, B_LIBRARY );
-  _d->lbLibraryInfo = new EducationInfoLabel( this, Rect( startPoint + Point( 0, 40), labelSize), B_LIBRARY, info );
+  _d->lbLibraryInfo = new EducationInfoLabel( _d->lbBackframe, Rect( startPoint + Point( 0, 40), labelSize), B_LIBRARY, info );
 
   CityHelper helper( city );
 
@@ -135,7 +148,10 @@ AdvisorEducationWindow::AdvisorEducationWindow( CityPtr city, Widget* parent, in
 
   std::string cityInfoStr = StringHelper::format( 0xff, "%d %s, %d %s, %d %s", city->getPopulation(), _("##peoples##"),
                                                   sumScholars, _("##scholars##"), sumStudents, _("##students##") );
-  _d->cityInfo = new Label( this, Rect( 65, 50, getWidth() - 65, 50 +30), cityInfoStr, false );
+  if( _d->lbCityInfo ) { _d->lbCityInfo->setText( cityInfoStr ); }
+
+  StringArray troubles = _d->getTrouble( city );
+  if( _d->lbCityTrouble ) { _d->lbCityTrouble->setText( _( troubles.at( rand() % troubles.size() ).c_str() ) ); }
 }
 
 void AdvisorEducationWindow::draw( GfxEngine& painter )
@@ -147,54 +163,82 @@ void AdvisorEducationWindow::draw( GfxEngine& painter )
 }
 
 
-InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(CityPtr city, const TileOverlayType service)
+InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(CityPtr city, const TileOverlayType bType)
 {
   CityHelper helper( city );
 
   InfrastructureInfo ret;
 
+  Service::Type service;
+
   ret.buildingWork = 0;
   ret.peoplesStuding = 0;
   ret.buildingCount = 0;
+  ret.need = 0;
+  ret.nextLevel = 0;
   ret.coverage = 0;
 
-  ServiceBuildingList servBuildings = helper.find<ServiceBuilding>( service );
+  ServiceBuildingList servBuildings = helper.find<ServiceBuilding>( bType );
+
+  ret.buildingCount = servBuildings.size();
+  int maxStuding = 0;
+  CitizenGroup::Age age;
+  switch( bType )
+  {
+  case B_SCHOOL:  service = Service::school;  maxStuding = 75;  age = CitizenGroup::scholar; break;
+  case B_COLLEGE: service = Service::college; maxStuding = 100; age = CitizenGroup::student; break;
+  case B_LIBRARY: service = Service::library; maxStuding = 800; age = CitizenGroup::mature;  break;
+  default: break;
+  }
+
   foreach( ServiceBuildingPtr serv, servBuildings )
   {
     if( serv->getWorkers() > 0 )
     {
       ret.buildingWork++;
-
-      int maxStuding = 0;
-      switch( service )
-      {
-      case B_SCHOOL: maxStuding = 75; break;
-      case B_COLLEGE: maxStuding = 100; break;
-      case B_LIBRARY: maxStuding = 800; break;
-      default: break;
-      }
-
       ret.peoplesStuding += maxStuding * serv->getWorkers() / serv->getMaxWorkers();
     }
-    ret.buildingCount++;
-  }
-
-  CitizenGroup::Age age;
-  switch( service )
-  {
-  case B_SCHOOL: age = CitizenGroup::scholar; break;
-  case B_COLLEGE: age = CitizenGroup::student; break;
-  case B_LIBRARY: age = CitizenGroup::mature; break;
-  default: break;
   }
 
   HouseList houses = helper.find<House>( B_HOUSE );
-  int peoplesCount=0;
   foreach( HousePtr house, houses )
   {
-    peoplesCount += house->getHabitants().count( age );
+    ret.need += ( house->getHabitants().count( age ) * ( house->isEducationNeed( service ) ? 1 : 0 ) );
+    ret.nextLevel += (house->getLevelSpec().next().evaluateEducationNeed( house, service ) == 100 ? 1 : 0);
   }
-  ret.coverage = ret.peoplesStuding * 100 / (peoplesCount+1);
+
+  ret.coverage = ret.need > 0
+                  ? ret.peoplesStuding * 100 / ret.need
+                  : 0;
+
+  return ret;
+}
+
+StringArray AdvisorEducationWindow::Impl::getTrouble(CityPtr city)
+{
+  StringArray ret;
+  const InfrastructureInfo& schInfo = lbSchoolInfo->getInfo();
+  const InfrastructureInfo& clgInfo = lbCollegeInfo->getInfo();
+  const InfrastructureInfo& lbrInfo = lbLibraryInfo->getInfo();
+  if( schInfo.need == 0 && clgInfo.need == 0 && lbrInfo.need == 0 )
+  {
+    ret.push_back( "##not_need_education##" );
+    return ret;
+  }
+
+  if( schInfo.nextLevel > 0 ) { ret.push_back( "##have_no_access_school_colege##" ); }
+  if( schInfo.coverage < 75 ) { ret.push_back( "##need_more_school_colege##" ); }
+  if( lbrInfo.nextLevel > 0 ) { ret.push_back( "##have_no_access_to_library##" ); }
+  if( lbrInfo.coverage < 75 ) { ret.push_back( "##need_more_access_to_library##"); }
+  if( schInfo.coverage < 75 && clgInfo.coverage < 75 && lbrInfo.coverage < 75 )
+  {
+    ret.push_back( "##need_more_access_to_lbr_school_colege##" );
+  }
+  if( schInfo.coverage >= 100 && schInfo.coverage < 115 ) { ret.push_back( "##school_access_perfectly##"); }
+  if( clgInfo.coverage >= 100 && clgInfo.coverage < 115 ) { ret.push_back( "##colege_access_perfectly##"); }
+  if( clgInfo.coverage >= 100 && clgInfo.coverage < 115 ) { ret.push_back( "##academy_access_perfectly##"); }
+
+  if( ret.empty() ) { ret.push_back( "##education_awesome##" ); }
 
   return ret;
 }

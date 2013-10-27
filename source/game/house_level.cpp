@@ -91,10 +91,10 @@ int HouseLevelSpec::getTaxRate() const
 //    return _minEntertainmentLevel;
 // }
 //
-// int HouseLevelSpec::getMinEducationLevel()
-// {
-//    return _minEducationLevel;
-// }
+int HouseLevelSpec::getMinEducationLevel()
+{
+  return _d->minEducationLevel;
+}
 //
 // int HouseLevelSpec::getMinHealthLevel()
 // {
@@ -300,40 +300,33 @@ int HouseLevelSpec::computeHealthLevel( HousePtr house, std::string &oMissingReq
 int HouseLevelSpec::computeEducationLevel(HousePtr house, std::string &oMissingRequirement)
 {
    int res = 0;
-   if (house->hasServiceAccess(Service::library) || house->hasServiceAccess(Service::school))
+   if( house->hasServiceAccess(Service::school) )
    {
       res = 1;
-
-      if (house->hasServiceAccess(Service::library) && house->hasServiceAccess(Service::school))
+      if( house->hasServiceAccess(Service::college) )
       {
          res = 2;
-
-         if (house->hasServiceAccess(Service::college))
+         if( house->hasServiceAccess(Service::library) )
          {
             res = 3;
          }
          else
          {
-            oMissingRequirement = _("##need_college##");
+            oMissingRequirement = _("##need_library##");
          }
-      }
-      else if (house->hasServiceAccess(Service::school))
-      {
-         oMissingRequirement = _("##need_library##");
       }
       else
       {
-         oMissingRequirement = _("##need_school##");
+         oMissingRequirement = _("##need_colege##");
       }
    }
    else
    {
-      oMissingRequirement = _("##need_library_or_school##");
+      oMissingRequirement = _("##need_school##");
    }
 
    return res;
 }
-
 
 int HouseLevelSpec::computeReligionLevel(HousePtr house)
 {
@@ -345,8 +338,6 @@ int HouseLevelSpec::computeReligionLevel(HousePtr house)
    res += house->hasServiceAccess(Service::religionCeres) ? 1 : 0;
    return res;
 }
-
-
 
 float HouseLevelSpec::evaluateServiceNeed(HousePtr house, const Service::Type service)
 {
@@ -399,12 +390,12 @@ float HouseLevelSpec::evaluateEducationNeed(HousePtr house, const Service::Type 
    float res = 0;
    //int houseLevel = house.getLevelSpec().getHouseLevel();
    int minLevel = next()._d->minEducationLevel;
-   if (minLevel == 1)
+   if( minLevel == 1 )
    {
       // need school or library
       if (service != Service::college)
       {
-         res = (float)( 100 - std::max(house->getServiceValue(Service::school), house->getServiceValue(Service::library)) );
+         res = (float)( 100 - house->getServiceValue(service) );
       } 
    }
    else if (minLevel == 2)

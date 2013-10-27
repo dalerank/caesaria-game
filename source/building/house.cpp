@@ -744,6 +744,19 @@ int House::getWorkersCount() const
   return srvc.getMax() - srvc.value();
 }
 
+bool House::isEducationNeed(Service::Type edType) const
+{
+  int lvl = _d->levelSpec.getMinEducationLevel();
+  switch( edType )
+  {
+  case Service::school: return (lvl>0);
+  case Service::college: return (lvl>1);
+  case Service::library: return (lvl>2);
+  }
+
+  return false;
+}
+
 int House::collectTaxes()
 {
   _d->lastPayDate = GameDate::current();

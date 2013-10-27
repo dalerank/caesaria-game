@@ -67,7 +67,7 @@ public:
 
 
 //    int getMinEntertainmentLevel();
-//    int getMinEducationLevel();
+  int getMinEducationLevel();
 //    int getMinHealthLevel();
   int getMinReligionLevel() const;
 //    int getMinWaterLevel();
