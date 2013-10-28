@@ -122,6 +122,7 @@ AdvisorEducationWindow::AdvisorEducationWindow( CityPtr city, Widget* parent, in
   setupUI( GameSettings::rcpath( "/gui/educationadv.gui" ) );
   _d->lbBackframe = findChild<Label*>( "lbBlackframe", true );
   _d->lbCityInfo = findChild<Label*>( "lbCityInfo", true );
+  _d->lbCityTrouble = findChild<Label*>( "lbCityTrouble", true );
 
   Point startPoint( 2, 2 );
   Size labelSize( 550, 20 );

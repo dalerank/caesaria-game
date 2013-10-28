@@ -636,6 +636,7 @@ void Label::setupUI(const VariantMap& ui)
 
   setFont( Font::create( ui.get( "font", "FONT_2" ).toString() ) );
   setBackgroundPicture( Picture::load( ui.get( "image" ).toString() ) );
+  setWordWrap( (bool)ui.get( "multiline", false ) );
 
   BackgroundModeHelper helper;
   setBackgroundMode( helper.findType( ui.get( "bgtype" ).toString() ));

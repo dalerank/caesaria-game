@@ -5,7 +5,7 @@
     bgtype : "whiteFrame"
     
     lbBlackframe#Label : {
-      geometryf : [ 0.05, 0.3, 0.95, 0.7 ]
+      geometryf : [ 0.05, 0.4, 0.95, 0.7 ]
       bgtype : "blackFrame"
     }
 
@@ -33,8 +33,9 @@
     }
     
     lbCityTrouble#Label : {
-      font : "FONT_2"
-      geometryf : [ 0.05, 0.75, 0.95, 0.95 ] 
+      font : "FONT_1"
+      multiline : true
+      geometryf : [ 0.05, 0.71, 0.95, 0.95 ] 
     }
     
     lbTitle#Label : {

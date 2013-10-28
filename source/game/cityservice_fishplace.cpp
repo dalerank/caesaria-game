@@ -28,7 +28,7 @@ public:
   CityPtr city;
   unsigned int maxFishPlace;
 
-  std::vector< FishPlacePtr > places;
+  FishPlaceList places;
 };
 
 CityServicePtr CityServiceFishPlace::create( CityPtr city )
@@ -44,6 +44,9 @@ CityServiceFishPlace::CityServiceFishPlace( CityPtr city )
 {
   _d->city = city;
   _d->maxFishPlace = 1;
+
+  CityHelper helper( city );
+  _d->places = helper.find<FishPlace>( wtrFishPlace );
 }
 
 void CityServiceFishPlace::update( const unsigned int time )
@@ -63,7 +66,7 @@ void CityServiceFishPlace::update( const unsigned int time )
     }
   }
 
-  std::vector< FishPlacePtr >::iterator fit = _d->places.begin();
+  FishPlaceList::iterator fit = _d->places.begin();
   while( fit != _d->places.end() )
   {
     if( (*fit)->isDeleted() )
