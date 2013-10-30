@@ -31,7 +31,7 @@
 		  maxDesirability : -10,
 			desirability : -3,
 			desstep : 1
-			"desrange" : 3,
+			desrange : 3,
 			entertainment : 0,
 			water : 0,
 			religion : 0,
@@ -58,7 +58,7 @@
 			entertainment : 0,
 			desirability : -3,
 			desstep : 1
-			"desrange" : 3,
+			desrange : 3,
 			water : 1,
 			religion : 0,
 			"education" : 0,
@@ -84,7 +84,7 @@
 			entertainment : 0,
 			desirability : -2,
 			desstep : 1
-			"desrange" : 2,
+			desrange : 2,
 			water : 1,
 			religion : 0,
 			"education" : 0,
@@ -110,7 +110,7 @@
 			entertainment : 0,
 			desirability : -2,
 			desstep : 1
-			"desrange" : 2,
+			desrange : 2,
 			water : 1,
 			religion : 1,
 			"education" : 0,
@@ -136,7 +136,7 @@
 			entertainment : 0,
 			desirability : -2,
 			desstep : 1
-			"desrange" : 2,
+			desrange : 2,
 			water : 2
 			religion : 1,
 			"education" : 0,
@@ -161,7 +161,7 @@
 			entertainment : 10,
 			desirability : -2,
 			desstep : 1
-			"desrange" : 2,		
+			desrange : 2,		
 			water : 2
 			religion : 1,
 			"education" : 0,
@@ -187,7 +187,7 @@
 			entertainment : 10,
 			desirability : -1,
 			desstep : 1
-			"desrange" : 1,		
+			desrange : 1,		
 			water : 2,
 			religion : 1,
 			"education" :1,
@@ -213,7 +213,7 @@
 			entertainment : 10,
 			desirability : -1,
 			desstep : 1
-			"desrange" : 1,	
+			desrange : 1,	
 			water : 2,
 			religion : 1,
 			"education" :1,
@@ -239,7 +239,7 @@
 			entertainment : 25,
 			desirability : 0,
 			desstep : 0
-			"desrange" : 0,
+			desrange : 0,
 			water : 2,
 			religion : 1,
 			"education" :1,
@@ -265,7 +265,7 @@
 			entertainment : 25,
 			desirability : 0,
 			desstep : 0
-			"desrange" : 0
+			desrange : 0
 			water : 2,
 			religion : 1,
 			"education" :1,
@@ -287,11 +287,11 @@
 			title : "##big_insula##",
 			habitants : 21,
 			minDesirability : 29,
-		    maxDesirability : 40,
+		  maxDesirability : 40,
 			entertainment : 25,
 			desirability : 1,
 			desstep : -1
-			"desrange" : 2,	
+			desrange : 2,	
 			water : 2,
 			religion : 1,
 			"education" :2,
@@ -317,7 +317,7 @@
 			entertainment : 35,
 			desirability : 1,
 			desstep : -1
-			"desrange" : 2,				
+			desrange : 2,				
 			water : 2,
 			religion : 1,
 			"education" : 2,
@@ -343,7 +343,7 @@
 			entertainment : 35,
 			desirability : 2,
 			desstep : -1
-			"desrange" : 2,	
+			desrange : 2,	
 			water : 2,
 			religion : 2,
 			"education" : 2,
@@ -369,7 +369,7 @@
 			entertainment : 40,
 			desirability : 2,
 			desstep : -1
-			"desrange" : 2,				
+			desrange : 2,				
 			water : 2,
 			religion : 2,
 			"education" : 2,
@@ -391,10 +391,10 @@
 			title : "##big_villa##",
 			habitants : 10,
 			minDesirability : 55,
-		    maxDesirability : 63,
+		  maxDesirability : 63,
 			desirability : 2,
 			desstep : -1
-			"desrange" : 2,		
+			desrange : 2,		
 			water : 2,
 			religion : 2,
 			"education" : 2,
@@ -419,7 +419,7 @@
 			entertainment : 50,
 			desirability : 2,
 			desstep : -1
-			"desrange" : 2,	
+			desrange : 2,	
 			water : 2,
 			religion : 3,
 			"education" : 3,
@@ -445,7 +445,7 @@
 			entertainment : 55,
 			desirability : 3,
 			desstep : -1
-			"desrange" : 3,	
+			desrange : 3,	
 			water : 2,
 			religion : 3,
 			"education" : 3,
@@ -471,7 +471,7 @@
 			entertainment : 60,
 			desirability : 3,
 			desstep : -1
-			"desrange" : 3,				
+			desrange : 3,				
 			water : 2,
 			religion : 4,
 			"education" : 3,
@@ -497,7 +497,7 @@
 			entertainment : 70,
 			desirability : 4
 			desstep : -1
-			"desrange" : 4,				
+			desrange : 4,				
 			water : 2,
 			religion : 4,
 			"education" : 3,
@@ -523,7 +523,7 @@
 			entertainment : 80,
 			desirability : 4,
 			desstep : -1
-			"desrange" : 4,				
+			desrange : 4,				
 			water : 2,
 			religion : 4,
 			"education" : 3,

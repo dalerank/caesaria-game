@@ -86,12 +86,12 @@ int HouseLevelSpec::getTaxRate() const
    return _d->taxRate;
 }
 
-// int HouseLevelSpec::getMinEntertainmentLevel()
-// {
-//    return _minEntertainmentLevel;
-// }
-//
-int HouseLevelSpec::getMinEducationLevel()
+int HouseLevelSpec::getMinEntertainmentLevel() const
+{
+  return _d->minEntertainmentLevel;
+}
+
+int HouseLevelSpec::getMinEducationLevel() const
 {
   return _d->minEducationLevel;
 }

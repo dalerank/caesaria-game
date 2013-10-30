@@ -113,7 +113,7 @@ void CityServiceCulture::update( const unsigned int time )
     _d->religionCoverage = _d->parishionersCount / (float)cityPopulation;
     _d->religionPoints = _d->convCoverage2Points( religionPoints, _d->religionCoverage );
 
-    TheaterList theaters = helper.find<Theater>( B_THEATER );
+    TheaterList theaters = helper.find<Theater>( buildingTheater );
     foreach( TheaterPtr theater, theaters )
     {
       _d->theaterVisitors += theater->getVisitorsNumber();

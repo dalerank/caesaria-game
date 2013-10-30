@@ -107,6 +107,11 @@ float EntertainmentBuilding::evaluateTrainee(const WalkerType traineeType)
   return ServiceBuilding::evaluateTrainee( traineeType );
 }
 
+bool EntertainmentBuilding::isShow() const
+{
+  return true;
+}
+
 int EntertainmentBuilding::_getTraineeLevel()
 {
   int minLevel = 100;
@@ -118,7 +123,7 @@ int EntertainmentBuilding::_getTraineeLevel()
   return minLevel;
 }
 
-Theater::Theater() : EntertainmentBuilding(Service::theater, B_THEATER, Size(2))
+Theater::Theater() : EntertainmentBuilding(Service::theater, buildingTheater, Size(2))
 {
   //_getAnimation().load( ResourceGroup::entertaiment, 14, 21);
   //_getAnimation().setOffset( Point( 60, 36 ) );

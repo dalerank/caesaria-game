@@ -53,7 +53,8 @@ public:
   int getHealthLevel() const;
   int getWorkersCount() const;
 
-  bool isEducationNeed( Service::Type edType ) const;
+  bool isEducationNeed( Service::Type type ) const;
+  bool isEntertainmentNeed( Service::Type type ) const;
 
   const BuildingData::Desirability& getDesirabilityInfo() const;
 

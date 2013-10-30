@@ -584,7 +584,13 @@ void Widget::setupUI( const VariantMap& ui )
   tmp = ui.get( "geometryf" );
   if( tmp.isValid() )
   {
-    setGeometry( tmp.toRectf() );
+    RectF r = tmp.toRectf();
+    if( r.getWidth() <= 1 && r.getHeight() <= 1)
+    {
+      StringHelper::debug( 0xff, "Incorrect geometryf values [%f, %f, %f, %f]",
+                           r.getLeft(), r.getTop(), r.getRight(), r.getBottom() );
+      setGeometry( r );
+    }
   }
 
   setNotClipped( ui.get( "noclipped", false ).toBool() );

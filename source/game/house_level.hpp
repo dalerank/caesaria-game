@@ -66,8 +66,8 @@ public:
   // float evaluateFoodNeed(House &house, const ServiceType service);
 
 
-//    int getMinEntertainmentLevel();
-  int getMinEducationLevel();
+  int getMinEntertainmentLevel() const;
+  int getMinEducationLevel() const;
 //    int getMinHealthLevel();
   int getMinReligionLevel() const;
 //    int getMinWaterLevel();

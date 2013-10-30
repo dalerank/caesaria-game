@@ -296,7 +296,7 @@ BuildMenu_administration::BuildMenu_administration( Widget* parent, const Rect& 
 
 void BuildMenu_entertainment::initialize()
 {
-  addBuildButton(B_THEATER);
+  addBuildButton(buildingTheater);
   addBuildButton(buildingAmphitheater);
   addBuildButton(B_COLLOSSEUM);
   addBuildButton(B_HIPPODROME);

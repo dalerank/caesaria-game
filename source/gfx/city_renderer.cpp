@@ -425,7 +425,7 @@ void CityRenderer::Impl::drawTileEntertainment( Tile& tile )
       engine->drawPicture( tile.getPicture(), screenPos );
     break;
 
-    case B_THEATER:
+    case buildingTheater:
     case buildingAmphitheater:
     case B_COLLOSSEUM:
     case B_HIPPODROME:
@@ -448,7 +448,7 @@ void CityRenderer::Impl::drawTileEntertainment( Tile& tile )
       {
         HousePtr house = overlay.as< House >();
         if( overlayRendeFlags.count( B_MAX ) ) { entertainmentLevel = house->getLevelSpec().computeEntertainmentLevel( house ); }
-        else if( overlayRendeFlags.count( B_THEATER ) ) { entertainmentLevel = house->getServiceValue( Service::theater ); }
+        else if( overlayRendeFlags.count( buildingTheater ) ) { entertainmentLevel = house->getServiceValue( Service::theater ); }
         else if( overlayRendeFlags.count( buildingAmphitheater ) ) { entertainmentLevel = house->getServiceValue( Service::amphitheater ); }
         else if( overlayRendeFlags.count( B_COLLOSSEUM ) ) { entertainmentLevel = house->getServiceValue( Service::colloseum ); }
         else if( overlayRendeFlags.count( B_HIPPODROME ) ) { entertainmentLevel = house->getServiceValue( Service::hippodrome ); }
@@ -1448,7 +1448,7 @@ void CityRenderer::setMode( const TilemapChangeCommandPtr command )
       _d->setDrawFunction( _d.data(), &Impl::drawTileEntertainment );
       _d->overlayRendeFlags.clear();
       _d->overlayRendeFlags.insert( B_MAX );
-      _d->overlayRendeFlags.insert( B_THEATER );
+      _d->overlayRendeFlags.insert( buildingTheater );
       _d->overlayRendeFlags.insert( buildingAmphitheater );
       _d->overlayRendeFlags.insert( B_COLLOSSEUM );
       _d->overlayRendeFlags.insert( B_HIPPODROME );
@@ -1479,7 +1479,7 @@ void CityRenderer::setMode( const TilemapChangeCommandPtr command )
     case OV_ENTERTAINMENT_THEATRES:
       _d->setDrawFunction( _d.data(), &Impl::drawTileEntertainment );
       _d->overlayRendeFlags.clear();
-      _d->overlayRendeFlags.insert( B_THEATER );
+      _d->overlayRendeFlags.insert( buildingTheater );
       _d->overlayRendeFlags.insert( B_ACTOR_COLONY );
     break;
 

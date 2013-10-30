@@ -28,11 +28,11 @@
     }
 
     lbCityInfo#Label : {
-      font : "FONT_2"
+      font : "FONT_1"
       geometry : [ 65, 50, 610, 80 ]
     }
     
-    lbCityTrouble#Label : {
+    lbTroubleInfo#Label : {
       font : "FONT_1"
       multiline : true
       geometryf : [ 0.05, 0.71, 0.95, 0.95 ] 

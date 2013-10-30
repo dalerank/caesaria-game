@@ -37,7 +37,7 @@ void TraineeWalker::init(const WalkerType traineeType)
   {
   case WT_ACTOR:
     _setGraphic( WG_ACTOR );
-    _buildingNeed.push_back(B_THEATER);
+    _buildingNeed.push_back(buildingTheater);
     _buildingNeed.push_back(buildingAmphitheater);
   break;
 

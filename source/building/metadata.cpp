@@ -32,7 +32,7 @@ public:
   BuildingTypeHelper() : EnumsHelper<TileOverlayType>( unknown )
   {
     append( buildingAmphitheater,   "amphitheater");
-    append( B_THEATER,        "theater" );
+    append( buildingTheater,        "theater" );
     append( B_HIPPODROME,     "hippodrome" );
     append( B_COLLOSSEUM,     "colloseum" );
     append( B_ACTOR_COLONY,          "artist_colony" );

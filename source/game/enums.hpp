@@ -79,7 +79,7 @@ enum ScreenType { SCREEN_NONE, SCREEN_MENU, SCREEN_GAME, SCREEN_QUIT, SCREEN_MAX
 enum TileOverlayType
 {
   unknown,
-  buildingAmphitheater, B_THEATER, B_HIPPODROME, B_COLLOSSEUM, B_ACTOR_COLONY, B_GLADIATOR_SCHOOL, B_LION_HOUSE, B_CHARIOT_MAKER,   // entertainment
+  buildingAmphitheater, buildingTheater, B_HIPPODROME, B_COLLOSSEUM, B_ACTOR_COLONY, B_GLADIATOR_SCHOOL, B_LION_HOUSE, B_CHARIOT_MAKER,   // entertainment
   B_HOUSE, B_ROAD, B_PLAZA, B_GARDEN,  // road & house
   B_SENATE, B_FORUM,  // administration
   B_GOVERNOR_HOUSE, B_GOVERNOR_VILLA, B_GOVERNOR_PALACE,

@@ -166,7 +166,7 @@ TileOverlayFactory& TileOverlayFactory::getInstance()
 TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
 {
   // entertainment
-  addCreator(B_THEATER, OC3_STR_EXT(B_THEATER), new WorkingBuildingCreator<Theater>() );
+  addCreator(buildingTheater, OC3_STR_EXT(buildingTheater), new WorkingBuildingCreator<Theater>() );
   addCreator(buildingAmphitheater, OC3_STR_EXT(buildingAmphitheater), new WorkingBuildingCreator<Amphitheater>() );
   addCreator(B_COLLOSSEUM, OC3_STR_EXT(B_COLLOSSEUM), new WorkingBuildingCreator<Collosseum>() );
   addCreator(B_ACTOR_COLONY, OC3_STR_EXT(B_ACTOR_COLONY), new WorkingBuildingCreator<ActorColony>() );
