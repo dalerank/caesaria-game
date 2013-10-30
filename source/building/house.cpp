@@ -752,6 +752,7 @@ bool House::isEducationNeed(Service::Type edType) const
   case Service::school: return (lvl>0);
   case Service::college: return (lvl>1);
   case Service::library: return (lvl>2);
+  default: break;
   }
 
   return false;

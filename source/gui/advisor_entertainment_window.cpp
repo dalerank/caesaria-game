@@ -27,6 +27,7 @@
 #include "core/foreach.hpp"
 #include "building/house.hpp"
 #include "festival_planing_window.hpp"
+#include "game/settings.hpp"
 
 namespace gui
 {
@@ -82,13 +83,12 @@ class AdvisorEntertainmentWindow::Impl
 {
 public:
   CityPtr city;
-  PictureRef background;
 
   EntertainmentInfoLabel* lbTheatresInfo;
   EntertainmentInfoLabel* lbAmphitheatresInfo;
   EntertainmentInfoLabel* lbColisseumInfo;
   EntertainmentInfoLabel* lbHippodromeInfo;
-  Label* lbInfo;
+  Label* lbBlackframe;
   TexturedButton* btnHelp;
 
   struct InfrastructureInfo
@@ -152,74 +152,46 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow( CityPtr city, Widget* pa
   setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),
                Size( 640, 384 ) ) );
 
-  Label* title = new Label( this, Rect( 60, 10, getWidth() - 10, 10 + 40) );
-  title->setText( _("##entertainment_advisor_title##") );
-  title->setFont( Font::create( FONT_3 ) );
-  title->setTextAlignment( alignUpperLeft, alignCenter );
+  setupUI( GameSettings::rcpath( "/gui/entertainmentadv.gui" ) );
 
-  _d->background.reset( Picture::create( getSize() ) );
-  //main _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
-
-  //buttons _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( 32, 60, getWidth() - 32, 60 + 86 ), PictureDecorator::blackFrame );
-  _d->lbInfo = new Label( this, Rect( 50, 145, getWidth() - 50, 145 + 75) );
+  _d->lbBlackframe = findChild<Label*>( "lbBlackframe", true );
 
   _d->updateInfo();
 
-  Picture& icon = Picture::load( ResourceGroup::panelBackground, 263 );
-  _d->background->draw( icon, Point( 11, 11 ) );
-
-  Font font = Font::create( FONT_1 );
-  font.draw( *_d->background, _("##work##"), 180, 45, false );
-  font.draw( *_d->background, _("##show##"), 260, 45, false );
-  font.draw( *_d->background, _("##max_available##"), 350, 45, false);
-  font.draw( *_d->background, _("##coverage##"), 480, 45, false );
-
   Point startPoint( 42, 64 );
   Size labelSize( 550, 20 );
-  Impl::InfrastructureInfo info = _d->getInfo( city, B_THEATER );
+  Impl::InfrastructureInfo info;
+  info = _d->getInfo( city, B_THEATER );
   _d->lbTheatresInfo = new EntertainmentInfoLabel( this, Rect( startPoint, labelSize ), B_THEATER, 
                                              info.buildingWork, info.buildingCount, info.peoplesStuding );
 
   info = _d->getInfo( city, buildingAmphitheater );
   _d->lbAmphitheatresInfo = new EntertainmentInfoLabel( this, Rect( startPoint + Point( 0, 20), labelSize), buildingAmphitheater,
                                               info.buildingWork, info.buildingCount, info.peoplesStuding );
-
   info = _d->getInfo( city, B_COLLOSSEUM );
   _d->lbColisseumInfo = new EntertainmentInfoLabel( this, Rect( startPoint + Point( 0, 40), labelSize), B_COLLOSSEUM,
                                               info.buildingWork, info.buildingCount, info.peoplesStuding );
-
   info = _d->getInfo( city, B_HIPPODROME );
   _d->lbHippodromeInfo = new EntertainmentInfoLabel( this, Rect( startPoint + Point( 0, 60), labelSize), B_HIPPODROME,
-                                                  info.buildingWork, info.buildingCount, info.peoplesStuding );
+                                              info.buildingWork, info.buildingCount, info.peoplesStuding );
 
   CityHelper helper( city );
 
-  int sumScholars = 0;
-  //int sumStudents = 0;
+  int scholars = 0;
+  int students = 0;
+  int matures = 0;
   HouseList houses = helper.find<House>( B_HOUSE );
   foreach( HousePtr house, houses )
   {
-    sumScholars += house->getHabitants().count( CitizenGroup::scholar );
-    //sumStudents += (*it)->getStudents();
+    scholars += house->getHabitants().count( CitizenGroup::scholar );
+    students += house->getHabitants().count( CitizenGroup::student );
+    matures  += house->getHabitants().count( CitizenGroup::mature );
   }
 
-  //festival
-  PictureDecorator::draw( *_d->background, Rect( 50, 247, getWidth() - 50, 247 + 110 ), PictureDecorator::blackFrame );
-
-  Label* festivalTitle = new Label( this, Rect( 50, 218, getWidth() - 50, 218 + 35) );
-  festivalTitle->setText( _("##Festivals##") );
-  festivalTitle->setFont( Font::create( FONT_3 ) );
-  festivalTitle->setTextAlignment( alignUpperLeft, alignCenter );
-
-  PushButton* festivalBtn = new PushButton( this, Rect( Point( 104, 278 ), Size( 300, 20) ), 
-                                            _("##new_festival##"), -1, false, PushButton::blackBorderUp );
-
-  CONNECT( festivalBtn, onClicked(), this, AdvisorEntertainmentWindow::_showFestivalWindow );
-
-  Picture& pic = Picture::load( ResourceGroup::menuMiddleIcons, 16 );
-  _d->background->draw( pic, 460, 260 );
+  if( PushButton* festivalBtn = findChild<PushButton*>( "btnNewFestival" ) )
+  {
+    CONNECT( festivalBtn, onClicked(), this, AdvisorEntertainmentWindow::_showFestivalWindow );
+  }
 
   _d->btnHelp = new TexturedButton( this, Point( 12, getHeight() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 }
@@ -228,8 +200,6 @@ void AdvisorEntertainmentWindow::draw( GfxEngine& painter )
 {
   if( !isVisible() )
     return;
-
-  painter.drawPicture( *_d->background, getScreenLeft(), getScreenTop() );
 
   Widget::draw( painter );
 }
@@ -243,7 +213,7 @@ void AdvisorEntertainmentWindow::_showFestivalWindow()
 
 void AdvisorEntertainmentWindow::Impl::updateInfo()
 {
-  lbInfo->setText( _( "##entrainment_not_need##") );
+  lbBlackframe->setText( _( "##entrainment_not_need##") );
 }
 
 }//end namespace gui
