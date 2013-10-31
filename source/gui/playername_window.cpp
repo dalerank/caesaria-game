@@ -39,15 +39,11 @@ WindowPlayerName::WindowPlayerName(Widget* parent)
   setPosition( parent->getRelativeRect().getCenter() - offset / 2 );
 
   const bool searchRecursive = true;
-  if( EditBox* ed = findChild<EditBox*>( "edPlayerName", searchRecursive ) )
-  {
-    CONNECT( ed, onTextChanged(), &_d->onNameChangeSignal, Signal1<std::string>::emit );
-  }
+  EditBox* ed = findChild<EditBox*>( "edPlayerName", searchRecursive );
+  CONNECT( ed, onTextChanged(), &_d->onNameChangeSignal, Signal1<std::string>::emit );
 
-  if( PushButton* btn = findChild<PushButton*>( "btnContinue", searchRecursive ) )
-  {
-    CONNECT( btn, onClicked(), &_d->onCloseSignal, Signal0<>::emit );
-  }
+  PushButton* btn = findChild<PushButton*>( "btnContinue", searchRecursive );
+  CONNECT( btn, onClicked(), &_d->onCloseSignal, Signal0<>::emit );
 }
 
 WindowPlayerName::~WindowPlayerName()

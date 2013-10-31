@@ -167,7 +167,7 @@ void DivinePantheon::initialize( const io::FilePath& filename )
   }
 }
 
-void DivinePantheon::doFestival4( RomeDivinityType who, int type )
+void DivinePantheon::doFestival( RomeDivinityType who, int type )
 {
   RomeDivinityPtr divn = get( who );
   if( divn.isValid() )

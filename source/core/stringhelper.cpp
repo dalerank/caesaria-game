@@ -290,11 +290,3 @@ std::string StringHelper::localeLower( const std::string& str)
 
   return ret;
 }
-
-void StringHelper::redirectCout2( const std::string& filename )
-{
-  std::ofstream* file = new std::ofstream();
-
-  file->open("stdout.txt");
-  std::cout.rdbuf( file->rdbuf() ); // перенапраляем в файл
-}

@@ -58,6 +58,9 @@ public:
   void setPaused( bool value );
   bool isPaused() const;
 
+  void play();
+  void pause();
+
   void changeTimeMultiplier(int percent);
   void setTimeMultiplier( int percent );
   int getTimeMultiplier() const;

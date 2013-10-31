@@ -39,3 +39,12 @@ void Logger::warning( const char* fmt, ... )
 
   std::cout << ret << std::endl;
 }
+
+void Logger::redirect(std::string filename )
+{
+  std::ofstream* file = new std::ofstream();
+
+  file->open("stdout.txt");
+  std::cout.rdbuf( file->rdbuf() ); // перенапраляем в файл
+}
+

@@ -22,6 +22,8 @@ class Logger
 {
 public:
   static void warning( const char* fmt, ...);
+
+  static void redirect( std::string filename );
 };
 
 #endif //__OPENCAESAR3_LOGGER_H_INCLUDED__

@@ -72,6 +72,19 @@
         text : "##new_festival##"
         bgtype : "blackBorderUp"
       }
+      
+      lbMonthFromLastFestival#Label : {
+        geometry : [ 5, 5, 400, 25 ]
+        font : "FONT_1"
+        textAlign : [ "center", "center" ]
+      }
+      
+      lbInfoAboutLastFestival#Label : {
+        geometry : [ 5, 55, 400, 105 ]
+        font : "FONT_1"
+        multiline : true
+        textAlign : [ "center", "center" ]
+      }
     }
     
     lbFestivals#Label : {

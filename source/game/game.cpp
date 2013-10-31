@@ -258,40 +258,15 @@ void Game::setScreenGame()
   }
 }
 
-PlayerPtr Game::getPlayer() const
-{
-  return _d->player;
-}
-
-CityPtr Game::getCity() const
-{
-  return _d->city;
-}
-
-EmpirePtr Game::getEmpire() const
-{
-  return _d->empire;
-}
-
-gui::GuiEnv* Game::getGui() const
-{
-  return _d->gui;
-}
-
-GfxEngine*Game::getEngine() const
-{
-  return _d->engine;
-}
-
-void Game::setPaused(bool value)
-{
-  _d->paused = value;
-}
-
-bool Game::isPaused() const
-{
-  return _d->paused;
-}
+PlayerPtr Game::getPlayer() const { return _d->player; }
+CityPtr Game::getCity() const { return _d->city; }
+EmpirePtr Game::getEmpire() const { return _d->empire; }
+gui::GuiEnv* Game::getGui() const { return _d->gui; }
+GfxEngine*Game::getEngine() const { return _d->engine; }
+void Game::setPaused(bool value) { _d->paused = value; }
+bool Game::isPaused() const { return _d->paused; }
+void Game::play() { setPaused( false ); }
+void Game::pause() { setPaused( true ); }
 
 Game::Game() : _d( new Impl )
 {
@@ -319,7 +294,7 @@ int Game::getTimeMultiplier() const
   return _d->timeMultiplier;
 }
 
-void Game::resolveEvent( events::GameEventPtr event)
+void Game::resolveEvent( events::GameEventPtr event )
 {
   if( event.isValid() )
   {
@@ -374,7 +349,7 @@ void Game::load(std::string filename)
 
 void Game::initialize()
 {
-  StringHelper::redirectCout2( "stdout.log" );
+  Logger::redirect( "stdout.log" );
 
   _d->loadSettings( GameSettings::rcpath( GameSettings::settingsPath ) );
   _d->initLocale( GameSettings::get( GameSettings::localePath ).toString() );

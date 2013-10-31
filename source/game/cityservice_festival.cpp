@@ -17,6 +17,7 @@
 #include "gamedate.hpp"
 #include "city.hpp"
 #include "divinity.hpp"
+#include "events/showfeastwindow.hpp"
 
 class CityServiceFestival::Impl
 {
@@ -79,7 +80,14 @@ void CityServiceFestival::update( const unsigned int time )
   {
     _d->lastFestivalDate = GameDate::current();
     _d->festivalDate = DateTime( -350, 1, 1 );
-    DivinePantheon::doFestival4( _d->divinity, _d->festivalType );
+    DivinePantheon::doFestival( _d->divinity, _d->festivalType );
+
+    const char* titles[3] = { "##small_festival##", "##middle_festival##", "##great_festival##" };
+    const char* text[3] = { "##small_fest_description##", "##middle_fest_description##", "##big_fest_description##" };
+    int id = math::clamp( _d->festivalType, 0, 3 );
+    events::GameEventPtr e = events::ShowFeastWindow::create( text[ id ], titles[ id ],
+                                                              _d->city->getPlayer()->getName() );
+    e->dispatch();
   }
 }
 

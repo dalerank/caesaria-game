@@ -1,0 +1,55 @@
+{  
+  geometry : [ 0, 0, 415, 450 ]
+  
+	lbBackground#Label : 
+  {
+    geometryf : [ 0.0, 0.0, 1, 1 ]
+    bgtype : "whiteFrame"
+    
+    lbTitle#Label :
+    {
+      font : "FONT_2"
+      geometry : [ 42, 400, 370, 440 ]
+      text : "##title##"
+      textAlign : [ "center", "center" ]
+    }
+       
+    btnHelp#TexturedButton :
+    {
+      geometry : [ 16, 408, 40, 432 ]
+      normal : [ "paneling", 528 ]
+      hovered : [ "paneling", 529 ]
+      pressed : [ "paneling", 530 ]
+      disabled : [ "paneling", 531 ]
+    }
+    
+    btnExit#TexturedButton :
+    {
+      geometry : [ 374, 408, 398, 432 ]
+      normal : [ "paneling", 532 ]
+      hovered : [ "paneling", 533 ]
+      pressed : [ "paneling", 534 ]
+      disabled : [ "paneling", 535 ]
+    }
+    
+    lbBlackFrame#Label : {
+      geometry : [ 10, 310, 405, 400 ]
+      bgtype : "blackFrame"
+      
+      lbTime#Label : {
+        geometry : [ 0, 0, 150, 20 ]
+        font : "FONT_1"
+      }
+      
+      lbReceiver#Label : {
+        geometry : [ 150, 0, 405, 20 ]
+        font : "FONT_1"
+      }
+      
+      lbMessage#Label : {
+        geometry : [ 0, 20, 430, 90 ]
+        font : "FONT_1"
+      }
+    }
+  }
+}

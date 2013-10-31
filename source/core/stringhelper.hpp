@@ -17,6 +17,7 @@
 #define __OPENCAESAR3_STRINGHELPER_H_INCLUDED__
 
 #include <string>
+#include <vadefs.h>
 #include "core/stringarray.hpp"
 
 class StringHelper
@@ -24,8 +25,6 @@ class StringHelper
 public:
   typedef enum { equaleIgnoreCase=0, equaleCase } equaleMode;
   static std::string format( unsigned int max_size, const char* fmt, ...);
-
-  static void redirectCout2(const std::string& filename);
 
   static unsigned int hash( unsigned int max_size, const char* fmt, ...);
   static unsigned int hash( const std::string& text );

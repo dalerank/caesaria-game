@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: opencaesar3\n"
 "POT-Creation-Date: 2013-10-09 14:35+0400\n"
-"PO-Revision-Date: 2013-10-16 12:16+0400\n"
+"PO-Revision-Date: 2013-10-31 18:21+0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -485,71 +485,71 @@ msgid "##game_is_paused##"
 msgstr "Пауза ( нажмите \"P\" для продолжения игры)"
 
 #: oc3_goodhelper.cpp:79
-msgid "None"
+msgid "##none##"
 msgstr " "
 
 #: oc3_goodhelper.cpp:80
-msgid "Wheat"
+msgid "##wheat##"
 msgstr "Пшеница"
 
 #: oc3_goodhelper.cpp:81
-msgid "Fish"
+msgid "##fish##"
 msgstr "Рыба"
 
 #: oc3_goodhelper.cpp:82
-msgid "Meat"
+msgid "##meat##"
 msgstr "Мясо"
 
 #: oc3_goodhelper.cpp:83
-msgid "Fruits"
+msgid "##fruits##"
 msgstr "Фрукты"
 
 #: oc3_goodhelper.cpp:84
-msgid "Vegetables"
+msgid "##vegetables##"
 msgstr "Овощи"
 
 #: oc3_goodhelper.cpp:85
-msgid "Olives"
+msgid "##olives##"
 msgstr "Оливки"
 
 #: oc3_goodhelper.cpp:86
-msgid "Oil"
+msgid "##oil##"
 msgstr "Масло"
 
 #: oc3_goodhelper.cpp:87
-msgid "Grape"
+msgid "##grape##"
 msgstr "Виноград"
 
 #: oc3_goodhelper.cpp:88
-msgid "Wine"
+msgid "##wine##"
 msgstr "Вино"
 
 #: oc3_goodhelper.cpp:89
-msgid "Timber"
+msgid "##timber##"
 msgstr "Лес"
 
 #: oc3_goodhelper.cpp:90
-msgid "Furniture"
+msgid "##furniture##"
 msgstr "Мебель"
 
 #: oc3_goodhelper.cpp:91
-msgid "Clay"
+msgid "##clay##"
 msgstr "Глина"
 
 #: oc3_goodhelper.cpp:92
-msgid "Pottery"
+msgid "##pottery##"
 msgstr "Посуда"
 
 #: oc3_goodhelper.cpp:93
-msgid "Iron"
+msgid "##iron##"
 msgstr "Железо"
 
 #: oc3_goodhelper.cpp:94
-msgid "Weapon"
+msgid "##weapon##"
 msgstr "Оружие"
 
 #: oc3_goodhelper.cpp:95
-msgid "Marble"
+msgid "##marble##"
 msgstr "Мрамор"
 
 #: oc3_goodhelper.cpp:96
@@ -557,23 +557,23 @@ msgid "##Denaries##"
 msgstr "Дн"
 
 #: oc3_gui_buildmenu.cpp:315
-msgid "Farm"
+msgid "##bldm_farm##"
 msgstr "Фермы"
 
 #: oc3_gui_buildmenu.cpp:316
-msgid "Raw materials"
+msgid "##bldm_raw_materials##"
 msgstr "Добыча ископаемых"
 
 #: oc3_gui_buildmenu.cpp:317
-msgid "Factory"
+msgid "##bldm_factory##"
 msgstr "Производство"
 
 #: oc3_gui_buildmenu.cpp:385
-msgid "Small temples"
+msgid "##bldm_small_temple##"
 msgstr "Малый храм"
 
 #: oc3_gui_buildmenu.cpp:386
-msgid "Large temples"
+msgid "##bldm_large_temple##"
 msgstr "Большой храм"
 
 #: oc3_gui_info_box.cpp:71 oc3_popup_messagebox.cpp:55
@@ -1451,7 +1451,7 @@ msgstr "Загрузить игру"
 
 #: oc3_screen_menu.cpp:174
 msgid "##mainmenu_loadmap##"
-msgstr "Закгрузить карту"
+msgstr "Загрузить карту"
 
 #: oc3_screen_menu.cpp:177
 msgid "##mainmenu_quit##"
@@ -1488,10 +1488,6 @@ msgstr "Не принимать"
 #: oc3_special_orders_window.cpp:70
 msgid "##deliver##"
 msgstr "Получить"
-
-#: oc3_special_orders_window.cpp:70
-msgid "##none##"
-msgstr "##none##"
 
 #: oc3_special_orders_window.cpp:182
 msgid "##granary_orders##"
@@ -1663,7 +1659,7 @@ msgstr "Маленькое праздненство"
 
 #: oc3_window_festival_planing.cpp:109 oc3_window_festival_planing.cpp:160
 msgid "##middle_festival##"
-msgstr "##middle_festival##"
+msgstr "Праздник"
 
 #: oc3_window_festival_planing.cpp:114 oc3_window_festival_planing.cpp:160
 msgid "##great_festival##"
@@ -1865,13 +1861,13 @@ msgid "##forum_2##"
 msgstr "Форум"
 
 msgid "##native_hut##"
-msgstr ""
+msgstr "Хижина аборигенов"
 
 msgid "##native_center##"
-msgstr ""
+msgstr "Большая хижина аборигенов"
 
 msgid "##reservoir##"
-msgstr ""
+msgstr "Резервуар"
 
 msgid "##fountain##"
 msgstr "Фонтан"
@@ -1880,7 +1876,7 @@ msgid "##well##"
 msgstr "Колодец"
 
 msgid "##native_field##"
-msgstr ""
+msgstr "Маленькая хижина аборигенов"
 
 msgid "##military_academy##"
 msgstr "Военная академия"
@@ -2157,31 +2153,53 @@ msgstr ""
 "библиотек."
 
 msgid "##have_no_access_school_colege##"
-msgstr "Некоторым районам города необходим доступ к школам или академиям. Недостаток образовательных объектов не позволяет им развиваться."
+msgstr ""
+"Некоторым районам города необходим доступ к школам или академиям. Недостаток "
+"образовательных объектов не позволяет им развиваться."
 
 msgid "##need_more_school_colege##"
-msgstr "Некоторым городским кварталам необходимо улучшить доступ к школам или академиям. Отдельные дома там имеют доступ к городским школам или академиям, но не все, что сдерживает их развитие."
+msgstr ""
+"Некоторым городским кварталам необходимо улучшить доступ к школам или "
+"академиям. Отдельные дома там имеют доступ к городским школам или академиям, "
+"но не все, что сдерживает их развитие."
 
 msgid "##have_no_access_to_library##"
-msgstr "Некоторым районам города необходим доступ к библиотекам. У ваших жителей появилось свободное время для чтения. Теперь им нужен доступ к литературе."
+msgstr ""
+"Некоторым районам города необходим доступ к библиотекам. У ваших жителей "
+"появилось свободное время для чтения. Теперь им нужен доступ к литературе."
 
 msgid "##need_more_access_to_library##"
-msgstr "Некоторым районам города необходим лучший доступ к библиотекам. Богатые горожане любят читать, но им не нравятся длительные пешие прогулки до библиотек."
+msgstr ""
+"Некоторым районам города необходим лучший доступ к библиотекам. Богатые "
+"горожане любят читать, но им не нравятся длительные пешие прогулки до "
+"библиотек."
 
 msgid "##need_more_access_to_lbr_school_colege##"
-msgstr "Некоторым районам города необходим лучший доступ к школам или академиям и библиотекам. Люди не должны совершать такие длительные переходы, испытывая тягу к знаниям!"
+msgstr ""
+"Некоторым районам города необходим лучший доступ к школам или академиям и "
+"библиотекам. Люди не должны совершать такие длительные переходы, испытывая "
+"тягу к знаниям!"
 
 msgid "##education_awesome##"
-msgstr "В городе есть все необходимые образовательные объекты, которые находятся в идеальном состоянии."
+msgstr ""
+"В городе есть все необходимые образовательные объекты, которые находятся в "
+"идеальном состоянии."
 
 msgid "##school_access_perfectly##"
-msgstr "В округе достаточно образовательных объектов, однако строительство дополнительных школ позволило бы уменьшить количество учеников в классах."
+msgstr ""
+"В округе достаточно образовательных объектов, однако строительство "
+"дополнительных школ позволило бы уменьшить количество учеников в классах."
 
 msgid "##colege_access_perfectly##"
-msgstr "В округе достаточно образовательных объектов, однако строительство дополнительных академий позволило бы уменьшить количество студентов в аудиториях."
+msgstr ""
+"В округе достаточно образовательных объектов, однако строительство "
+"дополнительных академий позволило бы уменьшить количество студентов в "
+"аудиториях."
 
 msgid "##academy_access_perfectly##"
-msgstr "В округе достаточно образовательных объектов, однако строительство дополнительных библиотек позволило бы избежать тесноты в помещениях."
+msgstr ""
+"В округе достаточно образовательных объектов, однако строительство "
+"дополнительных библиотек позволило бы избежать тесноты в помещениях."
 
 msgid "##edu_poor##"
 msgstr "Скудное"
@@ -2232,8 +2250,7 @@ msgid "##entertainment_50_80##"
 msgstr ""
 "Некоторые жители жалуются на недостаток развлечений в своих районах."
 "Возможно, вам следует разнообразить их или построить больше актерских "
-"поселений, чтобы обучить больше актеров для театров, которые в них "
-"нуждаются."
+"поселений, чтобы обучить больше актеров для театров, которые в них нуждаются."
 
 msgid "##entertainment_need_for_upgrade##"
 msgstr ""
@@ -2269,7 +2286,9 @@ msgid "##month_from_last_festival##"
 msgstr "месяцев прошло с последнего праздненства"
 
 msgid "##more_0_month_from_festival##"
-msgstr "Ваши горожане, еще немного пьяные после недавнего веселья, приветствуют вашу щедрость."
+msgstr ""
+"Ваши горожане, еще немного пьяные после недавнего веселья, приветствуют вашу "
+"щедрость."
 
 msgid "##more_4_month_from_festival##"
 msgstr "Люди до сих пор с восхищением вспоминают последнее празднество."
@@ -2278,16 +2297,35 @@ msgid "##more_8_month_from_festival##"
 msgstr "Воспоминания о последнем празднестве уже исчезают из памяти горожан."
 
 msgid "##more_12_month_from_festival##"
-msgstr "Люди не могут вспомнить, когда в городе в последний раз проводили празднество."
+msgstr ""
+"Люди не могут вспомнить, когда в городе в последний раз проводили "
+"празднество."
 
 msgid "##more_16_month_from_festival##"
 msgstr "Люди жалуются на недостаток праздников в вашем городе."
 
 msgid "##more_20_month_from_festival##"
-msgstr "Ваши жители очень недовольны перспективой прожить еще один год без празднеств."
+msgstr ""
+"Ваши жители очень недовольны перспективой прожить еще один год без "
+"празднеств."
 
 msgid "##more_24_month_from_festival##"
-msgstr "Правитель-без-праздников!" - так прозвали вас в народе."
+msgstr "Правитель-без-праздников! - так прозвали вас в народе."
 
 msgid "##prepare_to_festival##"
 msgstr "Подготовка к грядущему празднеству"
+
+msgid "##assign_festival_for##"
+msgstr "Провести праздник в честь"
+
+msgid "##small_fest_description##"
+msgstr "small_fest_description"
+
+msgid "##middle_fest_description##"
+msgstr "middle_fest_description"
+
+msgid "##big_fest_description##"
+msgstr ""
+"Когда продолжавшийся весь день празник подошел к концу, радостные жители, "
+"уставшие, но довольные, нетвердой походкой направились по домам, а выбранный "
+"вами богс благожелательной улыбкой смотрел на них с небес"

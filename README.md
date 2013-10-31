@@ -2,11 +2,7 @@ openCaesar3
 -----------
 openCaesar3 is a remake of the classic Caesar3 PC game, a city building game developed by Impression Games and published by Sierra Entertainment, in 1998.
 
-The game will be a near clone of the original Caesar3 game. Notable changes are:
- * A new AI for walkers. They will walk where they are needed the most.
- * Actors coming from the actor school do not provide access to the entertainment. The same goes for lion tamers, gladiators and horse wagons.
-
-The game is currently under heavy development and not in a playable state. Developers are invited to participate.
+The game is currently under heavy development and nearly playable state. Developers are invited to participate.
 
 Building openCaesar3
 -------------------
@@ -18,13 +14,34 @@ openCaesar3 is build using following excellent libraries:
     * SDL_image - http://www.libsdl.org/projects/SDL_image/
     * SDL_mixer - http://www.libsdl.org/projects/SDL_mixer/
     * SDL_ttf - http://www.libsdl.org/projects/SDL_ttf/
-  * Boost - http://www.boost.org/
-    * System - http://www.boost.org/doc/libs/release/libs/system/
-    * Filesystem - http://www.boost.org/doc/libs/release/libs/filesystem/
-  * LibArchive - http://www.libarchive.org/
-
+    
 Releases:
 ---------
+##### 2013-10-31
+  * warf and fishing boat add
+  * translation system improved
+  * education adviser, employers adviser improved
+  * source structure refactoring
+  * add tile animation
+  * city population model changed
+  * speed options window and video options added add
+  * big screnn resolutions add
+  * utf8 text rendering
+  * paved road add
+  * health layer add
+  * desirability calculating improved
+  * city workers model changed
+  * house now using furniture and pottery
+  * actor and bathlady available onloading from oc3save
+  * actor colony\theater logic improved, add warning when theater build if no actor colony in city
+  * widget now support proportional geometry
+  * house infobox now show what need for next level.
+  * house upgrade improved
+  * plague ruins add
+  * fountain animation fixed
+  * other small fixes
+
+
 ##### 2013-05-11
   * Fixed a lot of bugs.
   * Minimap is introduced.
