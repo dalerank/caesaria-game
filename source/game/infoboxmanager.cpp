@@ -28,6 +28,7 @@
 #include "core/gettext.hpp"
 #include "game/city.hpp"
 #include "gui/warehouse_infobox.hpp"
+#include "core/logger.hpp"
 
 #include <map>
 
@@ -251,7 +252,7 @@ void InfoBoxManager::showHelp( const Tile& tile )
 
   if( _d->showDebugInfo )
   {
-    StringHelper::debug( 0xff, "Tile debug info: dsrbl=%d", tile.getDesirability() );
+    Logger::warning( "Tile debug info: dsrbl=%d", tile.getDesirability() );
   }
 
   type = overlay.isNull() ? unknown : overlay->getType();

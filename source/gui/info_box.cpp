@@ -47,6 +47,7 @@
 #include "walker/walker.hpp"
 #include "building/watersupply.hpp"
 #include "building/senate.hpp"
+#include "core/logger.hpp"
 
 namespace gui
 {

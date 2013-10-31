@@ -17,7 +17,7 @@
 #include "building/metadata.hpp"
 #include "game/city.hpp"
 #include "game/tilemap.hpp"
-#include "core/stringhelper.hpp"
+#include "core/logger.hpp"
 
 class TileOverlay::Impl
 {
@@ -137,7 +137,7 @@ Tile& TileOverlay::getTile() const
 {
   if( !_d->masterTile )
   {
-    StringHelper::debug( 0xff, "master tile must be exists" );
+    Logger::warning( "master tile must be exists" );
     static Tile invalid( TilePos( -1, -1 ));
     return invalid;
   }
@@ -203,7 +203,7 @@ TilePos TileOverlay::getTilePos() const
 {
   if( !_d->masterTile )
   {
-    StringHelper::debug( 0xff,  "master tile can't be null" );
+    Logger::warning(  "master tile can't be null" );
     return TilePos( -1, -1 );
   }
   return _d->masterTile->getIJ();

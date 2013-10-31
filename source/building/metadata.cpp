@@ -23,6 +23,7 @@
 #include "core/stringhelper.hpp"
 #include "core/enumerator.hpp"
 #include "core/foreach.hpp"
+#include "core/logger.hpp"
 
 BuildingData BuildingData::invalid = BuildingData( unknown, "unknown", 0 );
 
@@ -278,7 +279,7 @@ const BuildingData& BuildingDataHolder::getData(const TileOverlayType buildingTy
   mapIt = _d->buildings.find(buildingType);
   if (mapIt == _d->buildings.end())
   {
-    StringHelper::debug( 0xff, "Unknown building %d", buildingType );
+    Logger::warning("Unknown building %d", buildingType );
     return BuildingData::invalid;
   }
   return mapIt->second;
@@ -302,7 +303,7 @@ void BuildingDataHolder::addData(const BuildingData &data)
 
   if (hasData(buildingType))
   {
-    StringHelper::debug( 0xff, "Building is already set %s", data.getName().c_str() );
+    Logger::warning( "Building is already set %s", data.getName().c_str() );
     return;
   }
 
@@ -332,14 +333,14 @@ void BuildingDataHolder::initialize( const io::FilePath& filename )
     const TileOverlayType btype = getType( mapItem.first );
     if( btype == unknown )
     {
-      StringHelper::debug( 0xff, "!!!Warning: can't associate type with %s", mapItem.first.c_str() );
+      Logger::warning( "!!!Warning: can't associate type with %s", mapItem.first.c_str() );
       continue;
     }
 
     Impl::BuildingsMap::const_iterator bdataIt = _d->buildings.find( btype );
     if( bdataIt != _d->buildings.end() )
     {
-      StringHelper::debug( 0xff, "!!!Warning: type %s also initialized", mapItem.first.c_str() );
+      Logger::warning( "!!!Warning: type %s also initialized", mapItem.first.c_str() );
       continue;
     }
 
@@ -380,7 +381,7 @@ TileOverlayType BuildingDataHolder::getType( const std::string& name )
 
   if( type == instance()._d->typeHelper.getInvalid() )
   {
-    StringHelper::debug( 0xff, "Can't find type for typeName %s", name.c_str() );
+    Logger::warning( "Can't find type for typeName %s", name.c_str() );
     _OC3_DEBUG_BREAK_IF( "Can't find type for typeName" );
   }
 
@@ -393,7 +394,7 @@ TileOverlayGroup BuildingDataHolder::getClass( const std::string& name )
 
   if( type == instance()._d->classHelper.getInvalid() )
   {
-    StringHelper::debug( 0xff, "Can't find building class for building className %s", name.c_str() );
+    Logger::warning( "Can't find building class for building className %s", name.c_str() );
     _OC3_DEBUG_BREAK_IF( "Can't find building class for building className" );
   }
 

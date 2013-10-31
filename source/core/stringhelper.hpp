@@ -24,7 +24,6 @@ class StringHelper
 public:
   typedef enum { equaleIgnoreCase=0, equaleCase } equaleMode;
   static std::string format( unsigned int max_size, const char* fmt, ...);
-  static void debug( unsigned int max_size, const char* fmt, ...);
 
   static void redirectCout2(const std::string& filename);
 
@@ -66,6 +65,8 @@ public:
 
   static std::string localeLower( const std::string& str );
   static char localeLower( char x );
+
+  static int vformat(std::string& str, int max_size, const char* format, va_list argument_list);
 };
 
 #endif

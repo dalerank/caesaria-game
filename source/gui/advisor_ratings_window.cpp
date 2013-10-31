@@ -29,6 +29,7 @@
 #include "texturedbutton.hpp"
 #include "game/cityservice_culture.hpp"
 #include "game/cityservice_prosperity.hpp"
+#include "core/logger.hpp"
 
 namespace gui
 {

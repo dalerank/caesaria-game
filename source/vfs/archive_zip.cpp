@@ -17,6 +17,7 @@
 
 #include "filelist.hpp"
 #include "memfile.hpp"
+#include "core/logger.hpp"
 //#include <NrpLimitFile.h>
 
 #if defined(NO_USE_SYSTEM_ZLIB)
@@ -458,7 +459,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
   if ((e.header.GeneralBitFlag & ZIP_FILE_ENCRYPTED) && (e.header.CompressionMethod == 99))
   {
-    StringHelper::debug( 0xff, "Reading encrypted file." );
+    Logger::warning( "Reading encrypted file." );
     unsigned char salt[16]={0};
     const unsigned short saltSize = (((e.header.Sig & 0x00ff0000) >>16)+1)*4;
     File.seek(e.Offset);
@@ -476,7 +477,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
                           &zctx); // encryption context
     if (strncmp(pwVerificationFile, pwVerification, 2))
     {
-      StringHelper::debug( 0xff, "Wrong password" );
+      Logger::warning( "Wrong password" );
       return NFile();
     }
     decryptedSize= e.header.DataDescriptor.CompressedSize-saltSize-12;
@@ -502,14 +503,14 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
                     &zctx); // encryption context
     if (rc != 10)
     {
-      StringHelper::debug( 0xff, "Error on encryption closing" );
+      Logger::warning( "Error on encryption closing" );
       return NFile();
     }
 
     File.read(fileMAC, 10);
     if (strncmp(fileMAC, resMAC, 10))
     {
-      StringHelper::debug( 0xff, "Error on encryption check" );
+      Logger::warning( "Error on encryption check" );
       return NFile();
     }
 
@@ -556,7 +557,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
       if( pBuf.empty() || pcData.empty() )
       {
-        StringHelper::debug( 0xff, "Not enough memory for decompressing %s", _getItems()[ index ].fullName.toString().c_str() );
+        Logger::warning( "Not enough memory for decompressing %s", _getItems()[ index ].fullName.toString().c_str() );
         return NFile();
       }
 
@@ -589,7 +590,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
       if (err != Z_OK)
       {
-        StringHelper::debug( 0xff, "Error decompressing %s", _getItems()[index].fullName.toString().c_str() );
+        Logger::warning( "Error decompressing %s", _getItems()[index].fullName.toString().c_str() );
         return NFile();
       }
       else
@@ -610,7 +611,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
       if( pBuf.empty() || pcData.empty() )
       {
-        StringHelper::debug( 0xff, "Not enough memory for decompressing %s", _getItems()[index].fullName.toString().c_str() );
+        Logger::warning( "Not enough memory for decompressing %s", _getItems()[index].fullName.toString().c_str() );
         return NFile();
       }
 
@@ -626,7 +627,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
       int err = BZ2_bzDecompressInit(&bz_ctx, 0, 0); /* decompression */
       if(err != BZ_OK)
       {
-        StringHelper::debug( 0xff, "bzip2 decompression failed. File cannot be read." );
+        Logger::warning( "bzip2 decompression failed. File cannot be read." );
         return NFile();
       }
 
@@ -640,7 +641,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
       if (err != BZ_OK)
       {
-        StringHelper::debug( 0xff, "Error decompressing %s", _getItems()[index].fullName.toString().c_str() );
+        Logger::warning( "Error decompressing %s", _getItems()[index].fullName.toString().c_str() );
         return NFile();
       }
       else
@@ -658,10 +659,10 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
       ByteArray pcData;
       pcData.resize( decryptedSize );
       if( pBuf.empty() || pcData.empty() )
-                          {
-          StringHelper::debug( 0xff, "Not enough memory for decompressing %s", _getItems()[index].fullName.toString().c_str() );
-          return NFile();
-                          }
+      {
+        Logger::warning( "Not enough memory for decompressing %s", _getItems()[index].fullName.toString().c_str() );
+        return NFile();
+      }
 
       File.seek(e.Offset);
       pcData = File.read(decryptedSize);
@@ -680,7 +681,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
       if (err != SZ_OK)
       {
-        StringHelper::debug( 0xff, "Error decompressing %s", _getItems()[index].fullName.toString().c_str() );
+        Logger::warning( "Error decompressing %s", _getItems()[index].fullName.toString().c_str() );
         return NFile();
       }
       else
@@ -699,12 +700,12 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
     default:
     {
-      StringHelper::debug( 0xff, "file %s has unsupported compression method", _getItems()[index].fullName.toString().c_str() );
+      Logger::warning( "file %s has unsupported compression method", _getItems()[index].fullName.toString().c_str() );
       return NFile();
     }
   }
 
-  StringHelper::debug( 0xff, "Can't read file %s ", _getItems()[index].fullName.toString().c_str() );
+  Logger::warning( "Can't read file %s ", _getItems()[index].fullName.toString().c_str() );
   return NFile();
 }
 

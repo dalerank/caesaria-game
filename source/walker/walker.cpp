@@ -29,6 +29,7 @@
 #include "gfx/animation_bank.hpp"
 #include "core/gettext.hpp"
 #include "game/tilemap.hpp"
+#include "core/logger.hpp"
 
 class Walker::Impl
 {
@@ -249,7 +250,7 @@ void Walker::walk()
    break;
 
    default:
-      StringHelper::debug( 0xff, "Invalid move direction: %d", _d->action.direction );
+      Logger::warning( "Invalid move direction: %d", _d->action.direction );
       _d->action.direction = D_NONE;
    break;
    }
@@ -299,7 +300,7 @@ void Walker::walk()
          dec(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
          break;
       default:
-         StringHelper::debug( 0xff, "Invalid move direction: %d", _d->action.direction);
+         Logger::warning( "Invalid move direction: %d", _d->action.direction);
          _d->action.direction = D_NONE;
       break;
       }
@@ -444,7 +445,7 @@ const Picture& Walker::getMainPicture()
     else
     {
       _d->animation = animMap.begin()->second;
-      StringHelper::debug( 0xff, "Wrong walker direction detected" );
+      Logger::warning( "Wrong walker direction detected" );
     }
   }
 
@@ -621,7 +622,7 @@ std::string WalkerHelper::getName( WalkerType type )
 
   if( name.empty() )
   {
-    StringHelper::debug( 0xff, "Can't find walker typeName for %d", type );
+    Logger::warning( "Can't find walker typeName for %d", type );
     //_OC3_DEBUG_BREAK_IF( "Can't find walker typeName by WalkerType" );
   }
 
@@ -634,7 +635,7 @@ WalkerType WalkerHelper::getType(const std::string &name)
 
   if( type == instance()._d->getInvalid() )
   {
-    StringHelper::debug( 0xff, "Can't find walker type for %s", name.c_str() );
+    Logger::warning( "Can't find walker type for %s", name.c_str() );
     //_OC3_DEBUG_BREAK_IF( "Can't find walker type by typeName" );
   }
 

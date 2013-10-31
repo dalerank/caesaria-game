@@ -23,6 +23,7 @@
 #include "core/gettext.hpp"
 #include "core/stringhelper.hpp"
 #include "events/event.hpp"
+#include "core/logger.hpp"
 
 EntertainmentBuilding::EntertainmentBuilding(const Service::Type service,
                                              const TileOverlayType type,
@@ -46,7 +47,7 @@ EntertainmentBuilding::EntertainmentBuilding(const Service::Type service,
    break;
 
    default:
-     StringHelper::debug( 0xff, "Wrong entertainment service type %d", service );
+     Logger::warning( "Wrong entertainment service type %d", service );
    break;
    }
 }

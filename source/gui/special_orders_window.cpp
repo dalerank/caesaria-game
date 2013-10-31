@@ -28,6 +28,8 @@
 #include "game/goodhelper.hpp"
 #include "game/goodstore.hpp"
 #include "game/goodorders.hpp"
+#include "core/stringhelper.hpp"
+#include "core/logger.hpp"
 
 namespace gui
 {

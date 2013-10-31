@@ -25,6 +25,7 @@
 #include "groupbox.hpp"
 #include "listbox.hpp"
 #include "listboxitem.hpp"
+#include "core/logger.hpp"
 
 namespace gui
 {

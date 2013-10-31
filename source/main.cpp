@@ -2,6 +2,7 @@
 #include "game/settings.hpp"
 #include "core/exception.hpp"
 #include "core/stringhelper.hpp"
+#include "core/logger.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -31,7 +32,7 @@ int main(int argc, char* argv[])
    }
    catch( Exception e )
    {
-     StringHelper::debug( 0xff, "FATAL ERROR: %s", e.getDescription().c_str() );
+     Logger::warning( "FATAL ERROR: %s", e.getDescription().c_str() );
    }
 
    return 0;

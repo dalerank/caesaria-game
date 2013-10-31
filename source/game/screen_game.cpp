@@ -50,6 +50,7 @@
 #include "gui/minimap_window.hpp"
 #include "gui/window_gamespeed_options.hpp"
 #include "events/setvideooptions.hpp"
+#include "core/logger.hpp"
 
 using namespace gui;
 
@@ -332,7 +333,7 @@ void ScreenGame::Impl::makeScreenShot()
   std::string filename = StringHelper::format( 0xff, "oc3_[%04d_%02d_%02d_%02d_%02d_%02d].png", 
                                                time.getYear(), time.getMonth(), time.getDay(),
                                                time.getHour(), time.getMinutes(), time.getSeconds() );
-  StringHelper::debug( 0xff, "creating screenshot %s", filename.c_str() );
+  Logger::warning( "creating screenshot %s", filename.c_str() );
 
   GfxEngine::instance().createScreenshot( filename );
 }

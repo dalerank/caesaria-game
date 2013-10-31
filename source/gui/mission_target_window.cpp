@@ -24,6 +24,8 @@
 #include "groupbox.hpp"
 #include "environment.hpp"
 #include "game/city.hpp"
+#include "core/stringhelper.hpp"
+#include "core/logger.hpp"
 
 namespace gui
 {

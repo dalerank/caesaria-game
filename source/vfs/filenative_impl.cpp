@@ -18,7 +18,7 @@
 #define _WITH_GETLINE
 
 #include "filenative_impl.hpp"
-#include "core/stringhelper.hpp"
+#include "core/logger.hpp"
 
 #ifdef OC3_PLATFORM_WIN
 #define getline_def getline_win
@@ -154,7 +154,7 @@ ByteArray FileNative::readLine()
 
         if( readOneLineCounter > 1000 )
         {
-            StringHelper::debug( 0xff, "Too many iteration for read one line" );
+            Logger::warning( "Too many iteration for read one line" );
             return ByteArray();
         }
 
@@ -199,7 +199,7 @@ void FileNative::openFile()
   const char* modeStr[] = { "rb", "wb", "ab" };
   if( (unsigned int)_mode > FSEntity::fmAppend )
   {
-    StringHelper::debug( 0xff, "Unsupported file open mode for %s", _name.toString().c_str() );
+    Logger::warning( "Unsupported file open mode for %s", _name.toString().c_str() );
     _mode = FSEntity::fmRead;
   }
 
@@ -214,7 +214,7 @@ void FileNative::openFile()
   }
   else
   {
-    StringHelper::debug( 0xff, "FileNative: Can't open file %s", _name.toString().c_str() );
+    Logger::warning( "FileNative: Can't open file %s", _name.toString().c_str() );
   }
 }
 

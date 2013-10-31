@@ -31,6 +31,8 @@
 #include "gfx/engine.hpp"
 #include "overlays_menu.hpp"
 #include "core/foreach.hpp"
+#include "core/stringhelper.hpp"
+#include "core/logger.hpp"
 
 namespace gui
 {

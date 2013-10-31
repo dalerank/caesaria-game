@@ -23,6 +23,7 @@
 #include "tilemap.hpp"
 #include "core/position.hpp"
 #include "gfx/tile.hpp"
+#include "core/logger.hpp"
 
 // comparison (for sorting list of tiles by their coordinates)
 bool
@@ -53,7 +54,7 @@ ConstTilemapWay RoadPropagator::createPath( const Tilemap& tileMap, const Tile& 
 
   std::cout << "RoadPropagator::getPath" << std::endl;
 
-  StringHelper::debug( 0xff, "(%d, %d) to (%d, %d)", startPos.getI(), startPos.getJ(), stopPos.getI(), stopPos.getJ() );
+  Logger::warning( "(%d, %d) to (%d, %d)", startPos.getI(), startPos.getJ(), stopPos.getI(), stopPos.getJ() );
 
   if( startPos == stopPos )
   {
@@ -68,7 +69,7 @@ ConstTilemapWay RoadPropagator::createPath( const Tilemap& tileMap, const Tile& 
   {
     const Tile& curTile = tileMap.at( tmp );
 
-    StringHelper::debug( 0xff, "+ (%d, %d)", curTile.getI(), curTile.getJ() );
+    Logger::warning( "+ (%d, %d)", curTile.getI(), curTile.getJ() );
     ret.push_back( &curTile );
 
     if (tmp.getI() == stopPos.getI())

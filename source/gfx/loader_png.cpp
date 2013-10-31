@@ -1,5 +1,5 @@
 #include "loader_png.hpp"
-#include "core/stringhelper.hpp"
+#include "core/logger.hpp"
 #include "vfs/filepath.hpp"
 #include "gfx/engine.hpp"
 
@@ -14,14 +14,14 @@
 // PNG function for error handling
 static void png_cpexcept_error(png_structp png_ptr, png_const_charp msg)
 {
-  StringHelper::debug( 0xff, "PNG fatal error %s", msg );
+  Logger::warning( "PNG fatal error %s", msg );
   longjmp( png_jmpbuf(png_ptr), 1 );
 }
 
 // PNG function for warning handling
 static void png_cpexcept_warn(png_structp png_ptr, png_const_charp msg)
 {
-  StringHelper::debug( 0xff, "PNG warning %s", msg );
+  Logger::warning( "PNG warning %s", msg );
 }
 
 // PNG function for file reading
@@ -69,7 +69,7 @@ Picture PictureLoaderPng::load( io::NFile file ) const
 {
   if(!file.isOpen())
   {
-    StringHelper::debug( 0xff, "LOAD PNG: can't open file %s", file.getFileName().toString().c_str() );
+    Logger::warning( "LOAD PNG: can't open file %s", file.getFileName().toString().c_str() );
     return Picture::getInvalid();
   }
 
@@ -77,14 +77,14 @@ Picture PictureLoaderPng::load( io::NFile file ) const
   // Read the first few bytes of the PNG file
   if( file.read(buffer, 8) != 8 )
   {
-    StringHelper::debug( 0xff, "LOAD PNG: can't read file %s", file.getFileName().toString().c_str() );
+    Logger::warning( "LOAD PNG: can't read file %s", file.getFileName().toString().c_str() );
     return Picture::getInvalid();
   }
 
   // Check if it really is a PNG file
   if( png_sig_cmp(buffer, 0, 8) )
   {
-    StringHelper::debug( 0xff, "LOAD PNG: not really a png %s", file.getFileName().toString().c_str() );
+    Logger::warning( "LOAD PNG: not really a png %s", file.getFileName().toString().c_str() );
     return Picture::getInvalid();
   }
 
@@ -94,7 +94,7 @@ Picture PictureLoaderPng::load( io::NFile file ) const
                                                 (png_error_ptr)png_cpexcept_warn);
   if( !png_ptr )
   {
-    StringHelper::debug( 0xff, "LOAD PNG: Internal PNG create read struct failure %s", file.getFileName().toString().c_str() );
+    Logger::warning( "LOAD PNG: Internal PNG create read struct failure %s", file.getFileName().toString().c_str() );
     return Picture::getInvalid();
   }
 
@@ -102,7 +102,7 @@ Picture PictureLoaderPng::load( io::NFile file ) const
   png_infop info_ptr = png_create_info_struct(png_ptr);
   if (!info_ptr)
   {
-    StringHelper::debug( 0xff, "LOAD PNG: Internal PNG create info struct failure 5s", file.getFileName().toString().c_str() );
+    Logger::warning( "LOAD PNG: Internal PNG create info struct failure 5s", file.getFileName().toString().c_str() );
     png_destroy_read_struct(&png_ptr, NULL, NULL);
     return Picture::getInvalid();
   }
@@ -204,14 +204,14 @@ Picture PictureLoaderPng::load( io::NFile file ) const
 
   if( pic->getSize().getArea() == 0 )
   {
-    StringHelper::debug( 0xff, "LOAD PNG: Internal PNG create image struct failure %s", file.getFileName().toString().c_str() );
+    Logger::warning( "LOAD PNG: Internal PNG create image struct failure %s", file.getFileName().toString().c_str() );
     png_destroy_read_struct(&png_ptr, NULL, NULL);
     return Picture::getInvalid();
   }
 
   if( !Height )
   {
-    StringHelper::debug( 0xff, "LOAD PNG: Internal PNG create row pointers failure %s", file.getFileName().toString().c_str() );
+    Logger::warning( "LOAD PNG: Internal PNG create row pointers failure %s", file.getFileName().toString().c_str() );
     png_destroy_read_struct(&png_ptr, NULL, NULL);
     return Picture::getInvalid();
   }

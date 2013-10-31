@@ -22,7 +22,13 @@
 #define oc3_signals
 #define oc3_slots
 
-#define CONNECT( a, signal, b, slot ) (a)->signal.connect( (b), &slot )
+#define CONNECT( a, signal, b, slot ) \
+{ \
+	if( (a!=0) && (b!=0) ) { (a)->signal.connect( (b), &slot ); } \
+	else if( (a==0) && (b==0) ) { Logger::warning( "Cannot connect null::%s to null::%s at %d:%s", OC3_STR_A(signal), OC3_STR_A(slot), __LINE__, __FILE__); } \
+	else if( (b==0) ) { Logger::warning( "Cannot connect %s::%s to null::%s at %d:%s", OC3_STR_A(a), OC3_STR_A(signal), OC3_STR_A(slot), __LINE__, __FILE__); }\
+	else if( (a==0) ) { Logger::warning( "Cannot connect null::%s to %s::%s at %d:%s", OC3_STR_A(signal), OC3_STR_A(b), OC3_STR_A(slot), __LINE__, __FILE__); }\
+}
 
 template< class Param0 = void >
 class Signal0

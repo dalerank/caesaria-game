@@ -18,6 +18,7 @@
 #include "core/foreach.hpp"
 #include "core/variant.hpp"
 #include "core/stringhelper.hpp"
+#include "core/logger.hpp"
 
 class SimpleGoodStore::Impl
 {
@@ -115,16 +116,15 @@ void SimpleGoodStore::applyStorageReservation(GoodStock &stock, const long reser
 
   if (stock.type() != reservedStock.type())
   {
-    StringHelper::debug( 0xff, "SimpleGoodStore:GoodType does not match reservation");
+    Logger::warning( "SimpleGoodStore:GoodType does not match reservation");
     return;
   }
 
   if (stock._currentQty < reservedStock._currentQty)
   {
-    StringHelper::debug( 0xff, "SimpleGoodStore:Quantity does not match reservation");
+    Logger::warning( "SimpleGoodStore:Quantity does not match reservation");
     return;
   }
-
 
   int amount = reservedStock._currentQty;
   GoodStock &currentStock = _goodStockList[reservedStock.type()];
@@ -139,13 +139,13 @@ void SimpleGoodStore::applyRetrieveReservation(GoodStock &stock, const long rese
 
   if (stock.type() != reservedStock.type())
   {
-    StringHelper::debug( 0xff, "SimpleGoodStore:GoodType does not match reservation");
+    Logger::warning( "SimpleGoodStore:GoodType does not match reservation");
     return;
   }
 
   if( stock._maxQty < stock._currentQty + reservedStock._currentQty)
   {
-    StringHelper::debug( 0xff, "SimpleGoodStore:Quantity does not match reservation");
+    Logger::warning( "SimpleGoodStore:Quantity does not match reservation");
     return;
   }
 

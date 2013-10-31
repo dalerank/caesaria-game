@@ -21,6 +21,7 @@
 #include "core/event.hpp"
 #include "gfx/engine.hpp"
 #include "gfx/decorator.hpp"
+#include "core/logger.hpp"
 
 #define DEFAULT_SCROLLBAR_SIZE 39
 
@@ -123,7 +124,7 @@ ListBoxItem& ListBox::getItem(unsigned int id)
 {
 	if( id >= _d->items.size() )
 	{
-		StringHelper::debug( 0xff, "Index out of range ListBox::items [%d]", id );
+		Logger::warning( "Index out of range ListBox::items [%d]", id );
 		return ListBoxItem::getInvalidItem();
 	}
 

@@ -30,6 +30,10 @@
 #include "game/settings.hpp"
 #include "game/house_level.hpp"
 #include "building/entertainment.hpp"
+#include "game/cityservice_festival.hpp"
+#include "game/divinity.hpp"
+#include "game/gamedate.hpp"
+#include "core/logger.hpp"
 
 namespace gui
 {
@@ -100,52 +104,16 @@ public:
   EntertainmentInfoLabel* lbHippodromeInfo;
   Label* lbBlackframe;
   Label* lbTroubleInfo;
+  PushButton* btnNewFestival;
+  Label* lbInfoAboutLastFestival;
   TexturedButton* btnHelp;
+  Label* lbMonthFromLastFestival;
+  SmartPtr<CityServiceFestival> srvc;
 
-  InfrastructureInfo getInfo( CityPtr city, const TileOverlayType service )
-  {
-    CityHelper helper( city );
-
-    InfrastructureInfo ret;
-
-    ret.buildingWork = 0;
-    ret.peoplesServed = 0;
-    ret.buildingShow = 0;
-    ret.buildingCount = 0;
-    ret.partlyWork = 0;
-
-    ServiceBuildingList servBuildings = helper.find<ServiceBuilding>( service );
-    foreach( ServiceBuildingPtr building, servBuildings )
-    {
-      if( building->getWorkers() > 0 )
-      {
-        ret.buildingWork++;
-
-        int maxServing = 0;
-        switch( service )
-        {
-        case buildingTheater: maxServing = 500; break;
-        case buildingAmphitheater: maxServing = 800; break;
-        case B_COLLOSSEUM: maxServing = 1500; break;
-        default:
-        break;
-        }
-
-        ret.peoplesServed += maxServing * building->getWorkers() / building->getMaxWorkers();
-      }
-      ret.buildingCount++;
-      ret.partlyWork += (building->getWorkers() != building->getMaxWorkers() ? 1 : 0);
-    }
-
-    return ret;
-  }
-
-  void updateFestivalInfo()
-  {
-
-  }
-
+  InfrastructureInfo getInfo( CityPtr city, const TileOverlayType service );
+  void assignFestival(int divinityType, int festSize);
   void updateInfo();
+  void updateFestivalInfo();
 };
 
 
@@ -153,6 +121,7 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow( CityPtr city, Widget* pa
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   _d->city = city;
+  _d->srvc = city->findService( CityServiceFestival::getDefaultName() ).as<CityServiceFestival>();
 
   setupUI( GameSettings::rcpath( "/gui/entertainmentadv.gui" ) );
 
@@ -160,6 +129,10 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow( CityPtr city, Widget* pa
 
   _d->lbBlackframe = findChild<Label*>( "lbBlackframe", true );
   _d->lbTroubleInfo = findChild<Label*>( "lbTroubleInfo", true );
+  _d->btnHelp = findChild<TexturedButton*>( "btnHelp", true );
+  _d->btnNewFestival = findChild<PushButton*>( "btnNewFestival", true );
+  _d->lbMonthFromLastFestival = findChild<Label*>( "lbMonthFromLastFestival", true );
+  _d->lbInfoAboutLastFestival = findChild<Label*>( "lbInfoAboutLastFestival", true );
 
   Point startPoint( 2, 2 );
   Size labelSize( 550, 20 );
@@ -176,13 +149,10 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow( CityPtr city, Widget* pa
   info = _d->getInfo( city, B_HIPPODROME );
   _d->lbHippodromeInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 60), labelSize), B_HIPPODROME, info );
 
-  if( PushButton* festivalBtn = findChild<PushButton*>( "btnNewFestival" ) )
-  {
-    CONNECT( festivalBtn, onClicked(), this, AdvisorEntertainmentWindow::_showFestivalWindow );
-  }
+  CONNECT( _d->btnNewFestival, onClicked(), this, AdvisorEntertainmentWindow::_showFestivalWindow );
 
-  _d->btnHelp = findChild<TexturedButton*>( "btnHelp", true );
   _d->updateInfo();
+  _d->updateFestivalInfo();
 }
 
 void AdvisorEntertainmentWindow::draw( GfxEngine& painter )
@@ -196,7 +166,53 @@ void AdvisorEntertainmentWindow::draw( GfxEngine& painter )
 void AdvisorEntertainmentWindow::_showFestivalWindow()
 {
   FestivalPlaningWindow* wnd = FestivalPlaningWindow::create( this, _d->city, -1 );
-  CONNECT( wnd, onFestivalAssign(), _d.data(), Impl::updateFestivalInfo );
+  CONNECT( wnd, onFestivalAssign(), _d.data(), Impl::assignFestival );
+}
+
+InfrastructureInfo AdvisorEntertainmentWindow::Impl::getInfo(CityPtr city, const TileOverlayType service)
+{
+  CityHelper helper( city );
+
+  InfrastructureInfo ret;
+
+  ret.buildingWork = 0;
+  ret.peoplesServed = 0;
+  ret.buildingShow = 0;
+  ret.buildingCount = 0;
+  ret.partlyWork = 0;
+
+  ServiceBuildingList servBuildings = helper.find<ServiceBuilding>( service );
+  foreach( ServiceBuildingPtr building, servBuildings )
+  {
+    if( building->getWorkers() > 0 )
+    {
+      ret.buildingWork++;
+
+      int maxServing = 0;
+      switch( service )
+      {
+      case buildingTheater: maxServing = 500; break;
+      case buildingAmphitheater: maxServing = 800; break;
+      case B_COLLOSSEUM: maxServing = 1500; break;
+      default:
+      break;
+      }
+
+      ret.peoplesServed += maxServing * building->getWorkers() / building->getMaxWorkers();
+    }
+    ret.buildingCount++;
+    ret.partlyWork += (building->getWorkers() != building->getMaxWorkers() ? 1 : 0);
+  }
+
+  return ret;
+}
+
+void AdvisorEntertainmentWindow::Impl::assignFestival(int divinityType, int festSize)
+{
+  if( srvc.isValid() )
+  {
+    srvc->assignFestival( (RomeDivinityType)divinityType, festSize );
+  }
 }
 
 void AdvisorEntertainmentWindow::Impl::updateInfo()
@@ -284,6 +300,24 @@ void AdvisorEntertainmentWindow::Impl::updateInfo()
   }
 
   lbTroubleInfo->setText( _( troubles.at( rand() % troubles.size() ).c_str() ) );
+}
+
+void AdvisorEntertainmentWindow::Impl::updateFestivalInfo()
+{
+  if( srvc.isValid() )
+  {
+    int monthFromLastFestival = srvc->getLastFestivalDate().getMonthToDate( GameDate::current() );
+    std::string text = StringHelper::format( 0xff, "%d %s", monthFromLastFestival, _("##month_from_last_festival##") );
+
+    if( lbMonthFromLastFestival ) { lbMonthFromLastFestival->setText( text ); }
+
+    bool prepare2Festival = srvc->getNextFestivalDate() >= GameDate::current();
+    btnNewFestival->setText( prepare2Festival ? _("##prepare_to_festival##") : _("##new_festival##") );
+    btnNewFestival->setEnabled( !prepare2Festival );
+
+    text = StringHelper::format( 0xff, "##more_%d_month_from_festival##", math::clamp( monthFromLastFestival / 4 * 4, 0, 24) );
+    if( lbInfoAboutLastFestival ) { lbInfoAboutLastFestival->setText( _( text.c_str() ) ); }
+  }
 }
 
 }//end namespace gui

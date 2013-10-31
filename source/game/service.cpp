@@ -15,6 +15,7 @@
 
 #include "service.hpp"
 #include "core/stringhelper.hpp"
+#include "core/logger.hpp"
 
 ServiceHelper& ServiceHelper::instance()
 {
@@ -59,7 +60,7 @@ Service::Type ServiceHelper::getType( const std::string& name )
 
   if( type == instance().getInvalid() )
   {
-    StringHelper::debug( 0xff, "Can't find Service::Type for serviceName %s", name.c_str() );
+    Logger::warning( "Can't find Service::Type for serviceName %s", name.c_str() );
     //_OC3_DEBUG_BREAK_IF( "Can't find  Service::Type for serviceName" );
   }
 
@@ -72,7 +73,7 @@ std::string ServiceHelper::getName( Service::Type type )
 
   if( name.empty() )
   {
-    StringHelper::debug( 0xff, "Can't find service typeName for %d", type );
+    Logger::warning( "Can't find service typeName for %d", type );
     //_OC3_DEBUG_BREAK_IF( "Can't find service typeName by ServiceType" );
   }
 

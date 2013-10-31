@@ -16,7 +16,7 @@
 #include "saveadapter.hpp"
 #include "scopedptr.hpp"
 #include "json.hpp"
-#include "stringhelper.hpp"
+#include "logger.hpp"
 
 #include <fstream>
 
@@ -45,12 +45,12 @@ VariantMap SaveAdapter::load( const io::FilePath& fileName )
     }
     else
     {
-      StringHelper::debug( 0xff, "Can't parse file %s: %s", fileName.toString().c_str(), ret.toString().c_str() );
+     Logger::warning( "Can't parse file %s: %s", fileName.toString().c_str(), ret.toString().c_str() );
     }
   }
   else
   {
-    StringHelper::debug( 0xff, "Can't find file %s", fileName.toString().c_str() );
+    Logger::warning( "Can't find file %s", fileName.toString().c_str() );
   }
 
   return VariantMap();

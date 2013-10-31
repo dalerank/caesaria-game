@@ -25,6 +25,7 @@
 #include "game/name_generator.hpp"
 #include "core/stringhelper.hpp"
 #include "events/event.hpp"
+#include "core/logger.hpp"
 
 class WalkerPrefect::Impl
 {
@@ -314,7 +315,7 @@ void WalkerPrefect::load( const VariantMap& stream )
   
   if( prefecture.isNull() )
   {
-    StringHelper::debug( 0xff, "Not found prefecture on loading" );
+    Logger::warning( "Not found prefecture on loading" );
     deleteLater();
   }
 }

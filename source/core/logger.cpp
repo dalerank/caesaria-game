@@ -13,17 +13,29 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_PROJECT_VERSION_INCLUDE_H_
-#define __OPENCAESAR3_PROJECT_VERSION_INCLUDE_H_
+#include "logger.hpp"
+#include "requirements.hpp"
+#include "stringhelper.hpp"
 
-#include "core/platform.hpp"
+#include <cstdarg>
+#include <cfloat>
+#include <cstdio>
+#include <limits>
+#include <climits>
+#include <cstring>
+#include <iostream>
+#include <stdint.h>
+#include <fstream>
 
-#define OC3_VERSION_MAJOR 0
-#define OC3_VERSION_MINOR 2
-#define OC3_VERSION_REVSN 857
+void Logger::warning( const char* fmt, ... )
+{
+  va_list argument_list;
+  va_start(argument_list, fmt);
 
-#define OC3_STR_EXT(__A) #__A
-#define OC3_STR_A(__A) OC3_STR_EXT(__A)
-#define OC3_VERSION OC3_STR_A(OC3_VERSION_MAJOR)"."OC3_STR_A(OC3_VERSION_MINOR)"."OC3_STR_A(OC3_VERSION_REVSN)"["OC3_PLATFORM_NAME":"OC3_COMPILER_NAME"]"
+  std::string ret;
+  StringHelper::vformat( ret, 512, fmt, argument_list );
 
-#endif
+  va_end(argument_list);
+
+  std::cout << ret << std::endl;
+}

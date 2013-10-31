@@ -28,6 +28,7 @@
 #include "core/foreach.hpp"
 #include "game/tilemap.hpp"
 #include "events/event.hpp"
+#include "core/logger.hpp"
 
 Building::Building(const TileOverlayType type, const Size& size )
 : Construction( type, size )
@@ -60,12 +61,12 @@ void Building::timeStep(const unsigned long time)
       _fireLevel += _fireIncrement;
       if (_damageLevel >= 100)
       {
-        StringHelper::debug( 0xff, "Building destroyed!" );
+        Logger::warning( "Building destroyed!" );
         collapse();
       }
       if (_fireLevel >= 100)
       {
-        StringHelper::debug( 0xff, "Building catch fire!" );
+        Logger::warning( "Building catch fire!" );
         burn();
       }
    }

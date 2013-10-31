@@ -21,6 +21,7 @@
 #include "core/requirements.hpp"
 #include "texturedbutton.hpp"
 #include "listbox.hpp"
+#include "core/logger.hpp"
 #include <map>
 
 namespace gui
@@ -79,7 +80,7 @@ void WidgetFactory::addCreator( const std::string& typeName, WidgetCreator* ctor
   }
   else
   {
-    StringHelper::debug( 0xff, "already have constructor for this widget type" );
+    Logger::warning( "already have constructor for this widget type" );
   }
 }
 

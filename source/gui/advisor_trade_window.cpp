@@ -33,6 +33,7 @@
 #include "texturedbutton.hpp"
 #include "core/event.hpp"
 #include "core/foreach.hpp"
+#include "core/logger.hpp"
 
 namespace gui
 {

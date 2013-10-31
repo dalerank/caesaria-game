@@ -18,7 +18,9 @@
 #include "game/settings.hpp"
 #include "game/game.hpp"
 #include "gfx/engine.hpp"
+#include "core/stringhelper.hpp"
 #include "gui/environment.hpp"
+#include "core/logger.hpp"
 
 namespace events
 {

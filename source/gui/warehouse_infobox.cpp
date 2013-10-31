@@ -24,6 +24,7 @@
 #include "special_orders_window.hpp"
 #include "game/goodstore.hpp"
 #include "core/stringhelper.hpp"
+#include "core/logger.hpp"
 
 namespace gui
 {

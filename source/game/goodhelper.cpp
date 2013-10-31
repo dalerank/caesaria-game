@@ -20,6 +20,7 @@
 #include "core/stringhelper.hpp"
 #include "gfx/animation_bank.hpp"
 #include "core/gettext.hpp"
+#include "core/logger.hpp"
 #include <vector>
 
 static const int empPicId[ Good::goodCount+1 ] = { PicID::bad,
@@ -146,7 +147,7 @@ Good::Type GoodHelper::getType( const std::string& name )
 
   if( type == getInstance()._d->getInvalid() )
   {
-    StringHelper::debug( 0xff, "Can't find type for goodName %s", name.c_str() );
+    Logger::warning( "Can't find type for goodName %s", name.c_str() );
     _OC3_DEBUG_BREAK_IF( "Can't find type for goodName" );
   }
 

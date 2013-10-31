@@ -23,6 +23,8 @@
 #include "gfx/decorator.hpp"
 #include "gfx/engine.hpp"
 #include "texturedbutton.hpp"
+#include "core/stringhelper.hpp"
+#include "core/logger.hpp"
 
 namespace gui
 {

@@ -29,7 +29,7 @@ public:
     engineer,
     senate, forum,
     prefect,
-    religionNeptune, religionCeres, religionVenus,  religionMars, religionMercury, oracle,
+    religionNeptune, religionCeres, religionVenus, religionMars, religionMercury, oracle,
     doctor, barber, baths, hospital,
     school, library, college,
     theater, amphitheater, colloseum,

@@ -26,7 +26,7 @@
 #include <stdint.h>
 #include <fstream>
 
-static int formatString(std::string& str, int max_size, const char* format, va_list argument_list)
+int StringHelper::vformat(std::string& str, int max_size, const char* format, va_list argument_list)
 {
   const int INTERNAL_BUFFER_SIZE = 1024;
   static char buffer[INTERNAL_BUFFER_SIZE];
@@ -54,7 +54,7 @@ std::string StringHelper::format( unsigned int max_size, const char* fmt, ...)
   va_start(argument_list, fmt);
 
   std::string ret;
-  formatString( ret, max_size, fmt, argument_list);
+  vformat( ret, max_size, fmt, argument_list);
 
   va_end(argument_list);
 
@@ -197,19 +197,6 @@ bool StringHelper::isEquale( const std::string& a, const std::string& b, equaleM
   }
 }
 
-void StringHelper::debug( unsigned int max_size, const char* fmt, ... )
-{
-  va_list argument_list;
-  va_start(argument_list, fmt);
-
-  std::string ret;
-  formatString( ret, max_size, fmt, argument_list);
-
-  va_end(argument_list);
-
-  std::cout << ret << std::endl;
-}
-
 unsigned int StringHelper::hash( const std::string& text )
 {
   unsigned int nHash = 0;
@@ -229,7 +216,7 @@ unsigned int StringHelper::hash( unsigned int max_size, const char* fmt, ... )
   va_start(argument_list, fmt);
 
   std::string fmtStr;
-  formatString( fmtStr, max_size, fmt, argument_list);
+  vformat( fmtStr, max_size, fmt, argument_list);
 
   va_end(argument_list);
 

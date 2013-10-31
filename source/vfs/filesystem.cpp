@@ -19,7 +19,7 @@
 #include "archive.hpp"
 #include "filelist.hpp"
 #include "archive_zip.hpp"
-#include "core/stringhelper.hpp"
+#include "core/logger.hpp"
 
 #if defined (OC3_PLATFORM_WIN)
 	#include <direct.h> // for _chdir
@@ -281,7 +281,7 @@ ArchivePtr FileSystem::mountArchive(  const FilePath& filename,
   }
   else
   {
-    StringHelper::debug( 0xff, "Could not create archive for %s", filename.toString().c_str() );
+    Logger::warning( "Could not create archive for %s", filename.toString().c_str() );
   }
 
   return ArchivePtr();
@@ -365,7 +365,7 @@ ArchivePtr FileSystem::mountArchive(NFile file, Archive::Type archiveType,
 
     if( archive.isValid() )
     {
-      StringHelper::debug( 0xff, "Mount archive %s", file.getFileName().toString().c_str() );
+      Logger::warning( "Mount archive %s", file.getFileName().toString().c_str() );
       _d->openArchives.push_back(archive);
 
       if (password.size())
@@ -377,7 +377,7 @@ ArchivePtr FileSystem::mountArchive(NFile file, Archive::Type archiveType,
     }
     else
     {
-      StringHelper::debug( 0xff, "Could not create archive for %s", file.getFileName().toString().c_str() );
+      Logger::warning( "Could not create archive for %s", file.getFileName().toString().c_str() );
     }
   }
 

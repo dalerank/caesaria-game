@@ -21,6 +21,7 @@
 #include "game/name_generator.hpp"
 #include "core/stringhelper.hpp"
 #include "game/tilemap.hpp"
+#include "core/logger.hpp"
 
 class ServiceWalker::Impl
 {
@@ -136,7 +137,7 @@ BuildingPtr ServiceWalker::getBase() const
 {
   if( _d->base.isNull() )
   {
-    StringHelper::debug( 0xff, "ServiceBuilding is not initialized" );
+   Logger::warning( "ServiceBuilding is not initialized" );
   }
 
   return _d->base;
@@ -324,7 +325,7 @@ void ServiceWalker::load( const VariantMap& stream )
   _d->base = overlay.as<Building>();
   if( _d->base.isNull() )
   {
-    StringHelper::debug(  0xff, "Not found base building[%d,%d] for service walker", basePos.getI(), basePos.getJ() );
+    Logger::warning( "Not found base building[%d,%d] for service walker", basePos.getI(), basePos.getJ() );
   }
   else
   {

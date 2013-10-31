@@ -28,6 +28,7 @@
 #include "city.hpp"
 #include "game/goodhelper.hpp"
 #include "tilemap.hpp"
+#include "core/logger.hpp"
 
 #include <string>
 #include <map>
@@ -563,7 +564,7 @@ HouseSpecHelper& HouseSpecHelper::getInstance()
 
 HouseSpecHelper::HouseSpecHelper() : _d( new Impl )
 {
-  StringHelper::debug( 0xff, "HouseLevelSpec INIT" );
+  Logger::warning( "HouseLevelSpec INIT" );
 
   _d->level_by_id.clear();
   _d->level_by_id[0] = 0;
@@ -649,7 +650,7 @@ void HouseSpecHelper::initialize( const io::FilePath& filename )
 
   if( houses.empty() )
   {
-    StringHelper::debug( 0xff, "Can't load house model from %s", filename.toString().c_str() );
+    Logger::warning( "Can't load house model from %s", filename.toString().c_str() );
     return;
   }
 

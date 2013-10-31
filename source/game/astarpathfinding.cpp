@@ -5,6 +5,7 @@
 #include "path_finding.hpp"
 #include "core/stringhelper.hpp"
 #include "core/foreach.hpp"
+#include "core/logger.hpp"
 
 using namespace std;
 
@@ -41,7 +42,7 @@ public:
     }
     else
     {
-      StringHelper::debug( 0xff, "ERROR: failed to gather point (%d,%d) on grid", pos.getI(), pos.getJ() );
+      Logger::warning( "ERROR: failed to gather point (%d,%d) on grid", pos.getI(), pos.getJ() );
       return 0;
     }
   }
@@ -220,7 +221,7 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos,
 
         if( !child )
         {
-          StringHelper::debug( 0xff, "No child for parent is (%d,%d)", current->getPos().getI() + x, current->getPos().getJ() + y );
+          Logger::warning( "No child for parent is (%d,%d)", current->getPos().getI() + x, current->getPos().getJ() + y );
           continue;
         }
         // If it's closed or not walkable then pass

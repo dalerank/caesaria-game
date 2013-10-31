@@ -24,6 +24,7 @@
 #include "vfs/filesystem.hpp"
 #include "vfs/filelist.hpp"
 #include "core/color.hpp"
+#include "core/logger.hpp"
 
 namespace gui
 {

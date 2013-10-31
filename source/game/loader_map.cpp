@@ -22,6 +22,7 @@
 #include "core/stringhelper.hpp"
 #include "tilemap.hpp"
 #include "empire.hpp"
+#include "core/logger.hpp"
 
 #include <fstream>
 
@@ -115,7 +116,7 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, CityPtr oCity)
   f.seekg(kLocation, std::ios::beg);
   unsigned int location=0;
   f.read((char*)&location, 1);
-  StringHelper::debug( 0xff, "Location of city is %d", (int)(location+1) );
+  Logger::warning( "Location of city is %d", (int)(location+1) );
 
   std::string cityName = "";
   switch( location+1 ) {
@@ -156,7 +157,7 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, CityPtr oCity)
   int size_2;
   f.read((char*)&size,   4);
   f.read((char*)&size_2, 4);
-  StringHelper::debug( 0xff, "Map size is %d", size );
+  Logger::warning( "Map size is %d", size );
 
   if (size != size_2)
   {
@@ -248,11 +249,11 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, CityPtr oCity)
 	        }
 	      }
 	
-        StringHelper::debug( 0xff, "Multi-tile x %d at (%d,%d)", size, i, j );
+				Logger::warning( "Multi-tile x %d at (%d,%d)", size, i, j );
 	      	
 	      Tile& master = oTilemap.at(i, j - size + 1);
       	
-        StringHelper::debug( 0xff, "Master will be at (%d,%d)", master.getI(), master.getJ() );
+        Logger::warning( "Master will be at (%d,%d)", master.getI(), master.getJ() );
       	
 	      for (int di = 0; di < size; ++di)
         {
@@ -262,7 +263,7 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, CityPtr oCity)
 	        }
         }
     	
-        StringHelper::debug( 0xff, " decoding " );
+        Logger::warning( " decoding " );
       }
       
       // Check if it is building and type of building
@@ -285,7 +286,7 @@ void GameLoaderC3Map::Impl::decodeTerrain(Tile &oTile, CityPtr city )
   }
   else if( oTile.getFlag( Tile::tlBuilding ) )
   {
-    StringHelper::debug( 0xff, "Building at ( %d, %d ) with ID: %x", oTile.getI(), oTile.getJ(), oTile.getOriginalImgId() );
+    Logger::warning( "Building at ( %d, %d ) with ID: %x", oTile.getI(), oTile.getJ(), oTile.getOriginalImgId() );
   
     switch ( oTile.getOriginalImgId() )
     {
@@ -298,7 +299,7 @@ void GameLoaderC3Map::Impl::decodeTerrain(Tile &oTile, CityPtr city )
       case 0xb10:
       case 0xb0d:
         overlay =  TileOverlayFactory::getInstance().create( B_NATIVE_CENTER ).as<TileOverlay>();
-        StringHelper::debug( 0xff, "creation of Native center at (%d,%d)", oTile.getI(), oTile.getJ() );
+        Logger::warning( "creation of Native center at (%d,%d)", oTile.getI(), oTile.getJ() );
 	      break;
       case 0xb11:
       case 0xb44:
@@ -325,7 +326,7 @@ void GameLoaderC3Map::Impl::initClimate(std::fstream &f, CityPtr ioCity)
   ClimateType climate = (ClimateType) i;
   ioCity->setClimate(climate);
 
-  StringHelper::debug( 0xff, "Climate type is %d", climate );
+  Logger::warning( "Climate type is %d", climate );
 
   // reload all pics for the given climate
   //   PicLoader &pic_loader = PicLoader::instance();

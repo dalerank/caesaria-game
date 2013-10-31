@@ -33,6 +33,7 @@
 #include "core/stringhelper.hpp"
 #include "game/name_generator.hpp"
 #include "game/tilemap.hpp"
+#include "core/logger.hpp"
 
 class CartPusher::Impl
 {
@@ -184,7 +185,7 @@ void CartPusher::computeWalkerDestination()
 
    if( _d->producerBuilding.isNull() )
    {
-     StringHelper::debug( 0xff, "CartPusher destroyed: producerBuilding can't be NULL" );
+     Logger::warning( "CartPusher destroyed: producerBuilding can't be NULL" );
      deleteLater();
      return;
    }

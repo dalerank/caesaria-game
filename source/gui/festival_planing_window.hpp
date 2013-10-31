@@ -35,7 +35,7 @@ public:
   virtual bool onEvent(const NEvent &event);
 
 public oc3_signals:
-  Signal0<>& onFestivalAssign();
+  Signal2<int,int>& onFestivalAssign();
 
 private:
   FestivalPlaningWindow( Widget* parent, int id, const Rect& rectangle, CityPtr city );

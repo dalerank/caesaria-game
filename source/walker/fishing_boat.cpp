@@ -23,6 +23,7 @@
 #include "core/stringhelper.hpp"
 #include "game/pathway.hpp"
 #include "game/resourcegroup.hpp"
+#include "core/logger.hpp"
 
 class FishingBoat::Impl
 {
@@ -129,7 +130,7 @@ void FishingBoat::timeStep(const unsigned long time)
       }
       else
       {
-        StringHelper::debug( 0xff, "Broken fishing boat" );
+        Logger::warning( "Broken fishing boat" );
         deleteLater();
       }
     }

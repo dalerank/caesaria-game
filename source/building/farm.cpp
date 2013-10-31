@@ -23,6 +23,7 @@
 #include "core/stringhelper.hpp"
 #include "game/tilemap.hpp"
 #include "core/gettext.hpp"
+#include "core/logger.hpp"
 
 class FarmTile
 {
@@ -52,7 +53,7 @@ FarmTile::FarmTile(const Good::Type outGood, const TilePos& pos )
   case Good::grape: picIdx = 33; break;
   case Good::meat: picIdx = 38; break;
   default:
-    StringHelper::debug( 0xff, "Unexpected farmType in farm %s", GoodHelper::getName( outGood ).c_str() );
+    Logger::warning( "Unexpected farmType in farm %s", GoodHelper::getName( outGood ).c_str() );
     _OC3_DEBUG_BREAK_IF( "Unexpected farmType in farm ");
   }
 

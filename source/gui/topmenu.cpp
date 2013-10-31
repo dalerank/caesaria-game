@@ -25,6 +25,7 @@
 #include "game/enums.hpp"
 #include "game/gamedate.hpp"
 #include "game/settings.hpp"
+#include "core/logger.hpp"
 
 namespace gui
 {

@@ -198,11 +198,11 @@ msgstr "покрытие"
 
 #: oc3_advisor_entertainment_window.cpp:203
 msgid "##Festivals##"
-msgstr "Фестивали"
+msgstr "Празднества"
 
 #: oc3_advisor_entertainment_window.cpp:208
 msgid "##new_festival##"
-msgstr "назначить новый фестиваль"
+msgstr "Провести новое праздненство"
 
 #: oc3_advisor_finance_window.cpp:55
 msgid "##Finance advisor##"
@@ -2264,3 +2264,30 @@ msgstr ""
 
 msgid "##no_need_religion##"
 msgstr "Ваши жители проявляют интерес к религии."
+
+msgid "##month_from_last_festival##"
+msgstr "месяцев прошло с последнего праздненства"
+
+msgid "##more_0_month_from_festival##"
+msgstr "Ваши горожане, еще немного пьяные после недавнего веселья, приветствуют вашу щедрость."
+
+msgid "##more_4_month_from_festival##"
+msgstr "Люди до сих пор с восхищением вспоминают последнее празднество."
+
+msgid "##more_8_month_from_festival##"
+msgstr "Воспоминания о последнем празднестве уже исчезают из памяти горожан."
+
+msgid "##more_12_month_from_festival##"
+msgstr "Люди не могут вспомнить, когда в городе в последний раз проводили празднество."
+
+msgid "##more_16_month_from_festival##"
+msgstr "Люди жалуются на недостаток праздников в вашем городе."
+
+msgid "##more_20_month_from_festival##"
+msgstr "Ваши жители очень недовольны перспективой прожить еще один год без празднеств."
+
+msgid "##more_24_month_from_festival##"
+msgstr "Правитель-без-праздников!" - так прозвали вас в народе."
+
+msgid "##prepare_to_festival##"
+msgstr "Подготовка к грядущему празднеству"

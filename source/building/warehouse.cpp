@@ -30,6 +30,7 @@
 #include "game/city.hpp"
 #include "core/foreach.hpp"
 #include "core/stringhelper.hpp"
+#include "core/logger.hpp"
 
 #include <list>
 
@@ -222,13 +223,13 @@ void WarehouseStore::applyStorageReservation( GoodStock &stock, const long reser
 
   if (stock.type() != reservedStock.type())
   {
-    StringHelper::debug( 0xff, "GoodType does not match reservation" );
+    Logger::warning( "GoodType does not match reservation" );
     return;
   }
 
   if (stock._currentQty < reservedStock._currentQty)
   {
-    StringHelper::debug( 0xff, "Quantity does not match reservation" );
+    Logger::warning( "Quantity does not match reservation" );
     return;
   }
 
@@ -280,12 +281,12 @@ void WarehouseStore::applyRetrieveReservation(GoodStock &stock, const long reser
 
   if (stock.type() != reservedStock.type())
   {
-    StringHelper::debug( 0xff, "GoodType does not match reservation");
+    Logger::warning( "GoodType does not match reservation");
     return;
   }
   if (stock._maxQty < stock._currentQty + reservedStock._currentQty)
   {
-    StringHelper::debug( 0xff, "Quantity does not match reservation");
+    Logger::warning( "Quantity does not match reservation");
     return;
   }
 

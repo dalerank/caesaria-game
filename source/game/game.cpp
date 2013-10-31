@@ -45,6 +45,7 @@
 #include "saver.hpp"
 #include "core/saveadapter.hpp"
 #include "events/dispatcher.hpp"
+#include "core/logger.hpp"
 
 #include <libintl.h>
 #include <list>
@@ -95,7 +96,7 @@ void Game::Impl::initLocale(const std::string & localePath)
 
 void Game::Impl::initVideo()
 {
-  StringHelper::debug( 0xff, "init graphic engine" );
+  Logger::warning( "init graphic engine" );
   engine = new GfxSdlEngine();
    
   /* Typical resolutions:
@@ -109,14 +110,14 @@ void Game::Impl::initVideo()
 
 void Game::initSound()
 {
-  StringHelper::debug( 0xff, "init sound engine" );
+  Logger::warning( "init sound engine" );
   new SoundEngine();
   SoundEngine::instance().init();
 }
 
 void Game::mountArchives()
 {
-  StringHelper::debug( 0xff, "mount archives begin" );
+  Logger::warning( "mount archives begin" );
 
   io::FileSystem& fs = io::FileSystem::instance();
 
@@ -145,10 +146,10 @@ void Game::Impl::initPictures(const io::FilePath& resourcePath)
   AnimationBank::loadCarts();
   AnimationBank::loadWalkers();
   
-  StringHelper::debug( 0xff, "Load fonts" );
+  Logger::warning( "Load fonts" );
   FontCollection::instance().initialize( resourcePath.toString() );
 
-  StringHelper::debug( 0xff, "Create runtime pictures" );
+  Logger::warning( "Create runtime pictures" );
   PictureBank::instance().createResources();
 }
 
@@ -179,7 +180,7 @@ void Game::setScreenMenu()
       io::FileList::Items maps = io::FileDir( GameSettings::rcpath( "/maps/" ) ).getEntries().filter( io::FileList::file, "" ).getItems();
       std::srand( DateTime::getElapsedTime() );
       std::string file = maps.at( std::rand() % maps.size() ).fullName.toString();
-      StringHelper::debug( 0xff, "Loading map:%s", file.c_str() );
+      Logger::warning( "Loading map:%s", file.c_str() );
 
       load( file );
 
@@ -340,7 +341,7 @@ void Game::save(std::string filename) const
 
 void Game::load(std::string filename)
 {
-  StringHelper::debug( 0xff, "Load game begin" );
+  Logger::warning( "Load game begin" );
 
   _d->empire->initialize( GameSettings::rcpath( GameSettings::citiesModel ) );
 
@@ -349,7 +350,7 @@ void Game::load(std::string filename)
 
   if( !_d->loadOk )
   {
-    StringHelper::debug( 0xff, "LOADING ERROR: can't load game from %s", filename.c_str() );
+    Logger::warning( "LOADING ERROR: can't load game from %s", filename.c_str() );
     return;
   }
 
@@ -367,7 +368,7 @@ void Game::load(std::string filename)
 
   Pathfinder::getInstance().update( _d->city->getTilemap() );
 
-  StringHelper::debug( 0xff, "Load game end" );
+  Logger::warning( "Load game end" );
   return;
 }
 
@@ -409,8 +410,8 @@ void Game::exec()
      break;
 
      default:
+        Logger::warning( "Unexpected next screen type %d", _d->nextScreen );
         _OC3_DEBUG_BREAK_IF( "Unexpected next screen type" );
-        StringHelper::debug( 0xff, "Unexpected next screen type %d", _d->nextScreen );
      }
   }
 }

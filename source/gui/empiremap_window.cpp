@@ -34,6 +34,7 @@
 #include "game/goodhelper.hpp"
 #include "game/settings.hpp"
 #include "events/event.hpp"
+#include "core/logger.hpp"
 
 namespace gui
 {

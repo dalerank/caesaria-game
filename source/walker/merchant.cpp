@@ -27,6 +27,7 @@
 #include "game/name_generator.hpp"
 #include "game/tilemap.hpp"
 #include "events/event.hpp"
+#include "core/logger.hpp"
 
 class Merchant::Impl
 {
@@ -324,7 +325,7 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
   break;
 
   default:
-    StringHelper::debug( 0xff, "Merchant: unknown state resolved" );
+    Logger::warning( "Merchant: unknown state resolved" );
   }
 }
 

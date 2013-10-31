@@ -61,6 +61,7 @@
 #include "win_targets.hpp"
 #include "cityservice_roads.hpp"
 #include "cityservice_fishplace.hpp"
+#include "core/logger.hpp"
 
 #include <set>
 
@@ -491,7 +492,7 @@ void City::load( const VariantMap& stream )
     }
     else
     {
-      StringHelper::debug( 0xff, "Can't load overlay %s", item.first.c_str() );
+      Logger::warning( "Can't load overlay %s", item.first.c_str() );
     }
   }
 
@@ -509,7 +510,7 @@ void City::load( const VariantMap& stream )
     }
     else
     {
-      StringHelper::debug( 0xff, "Can't load walker %s", item.first.c_str() );
+      Logger::warning( "Can't load walker %s", item.first.c_str() );
     }
   }
 }

@@ -15,7 +15,7 @@
 
 
 #include "memfile.hpp"
-#include "core/stringhelper.hpp"
+#include "core/logger.hpp"
 
 namespace io
 {
@@ -127,7 +127,7 @@ ByteArray MemoryFile::readLine()
 
         if( readOneLineCounter > 1000 )
         {
-            StringHelper::debug( 0xff, "Too many iteration for read one line" );
+            Logger::warning( "Too many iteration for read one line" );
             return ByteArray();
         }
     }

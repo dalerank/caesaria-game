@@ -22,7 +22,7 @@
 #include "walker/taxcollector.hpp"
 #include "city.hpp"
 #include "name_generator.hpp"
-#include "core/stringhelper.hpp"
+#include "core/logger.hpp"
 #include "walker/animals.hpp"
 #include "walker/fishing_boat.hpp"
 #include <map>
@@ -102,7 +102,7 @@ WalkerPtr WalkerManager::create(const WalkerType walkerType , CityPtr city)
     return findConstructor->second->create( city ).as<Walker>();
   }
 
-  StringHelper::debug( 0xff, "Can't create walker from type %d", walkerType );
+  Logger::warning( "Can't create walker from type %d", walkerType );
   return WalkerPtr();
 }
 
@@ -119,7 +119,7 @@ void WalkerManager::addCreator( const WalkerType type, AbstractWalkerCreator* ct
   bool alreadyHaveConstructor = _d->constructors.find( type ) != _d->constructors.end();
   if( alreadyHaveConstructor )
   {
-    StringHelper::debug( 0xff, "Already have constructor for type %s", typeName.c_str() );
+    Logger::warning( "Already have constructor for type %s", typeName.c_str() );
     return;
   }
   else

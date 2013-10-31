@@ -15,7 +15,7 @@
 
 #include "font.hpp"
 #include "gfx/picture.hpp"
-#include "stringhelper.hpp"
+#include "logger.hpp"
 #include "exception.hpp"
 #include <SDL_ttf.h>
 #include "color.hpp"
@@ -286,7 +286,7 @@ Font& FontCollection::getFont_(const int key)
   std::map<int, Font>::iterator it = _d->collection.find(key);
   if (it == _d->collection.end())
   {
-    StringHelper::debug( 0xff, "Error, font is not initialized, key=%d", key );
+    Logger::warning( "Error, font is not initialized, key=%d", key );
     return _d->collection[ FONT_2 ];
   }
 
@@ -300,7 +300,7 @@ void FontCollection::setFont(const int key, const std::string& name, Font font)
   if( ret.second == false )
   {
     // no insert font (already exists)
-    StringHelper::debug( 0xff, "Error, font already exists, key=%d", key );
+    Logger::warning( "Error, font already exists, key=%d", key );
     return;
   }
 

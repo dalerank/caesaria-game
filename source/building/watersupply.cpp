@@ -27,6 +27,7 @@
 #include "core/foreach.hpp"
 #include "core/gettext.hpp"
 #include "game/tilemap.hpp"
+#include "core/logger.hpp"
 
 class WaterSource::Impl
 {
@@ -174,7 +175,7 @@ bool Aqueduct::canBuild( CityPtr city, const TilePos& pos ) const
     if (tilemap.at(tile_pos_d[D_SOUTH]).getFlag( Tile::tlRoad )) { directionFlags += 4; } // road to the south
     if (tilemap.at(tile_pos_d[D_WEST]).getFlag( Tile::tlRoad )) { directionFlags += 8; } // road to the west
 
-    StringHelper::debug( 0xff, "direction flags=%d", directionFlags );
+    Logger::warning( "direction flags=%d", directionFlags );
 
     switch (directionFlags)
     {

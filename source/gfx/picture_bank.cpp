@@ -30,6 +30,7 @@
 #include "gfx/animation.hpp"
 #include "game/settings.hpp"
 #include "core/stringhelper.hpp"
+#include "core/logger.hpp"
 #include "picture_info_bank.hpp"
 #include "engine.hpp"
 #include "loader.hpp"
@@ -86,7 +87,7 @@ Picture& PictureBank::getPicture(const std::string &name)
     }
     else
     {
-      StringHelper::debug( 0xff, "Unknown resource %s", name.c_str() );
+      Logger::warning( "Unknown resource %s", name.c_str() );
       _d->resources[ hash ] = Picture::getInvalid();
       return _d->resources[ hash ];
     }

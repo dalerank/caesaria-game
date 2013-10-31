@@ -18,6 +18,7 @@
 #include "goodorders.hpp"
 #include "core/stringhelper.hpp"
 #include "core/foreach.hpp"
+#include "core/logger.hpp"
 
 class GoodStore::Impl
 {
@@ -161,7 +162,7 @@ void GoodStore::store( GoodStock &stock, const int amount)
   }
   else
   {
-    StringHelper::debug( 0xff, "GoodStore:Impossible to store goods RID=%d", reservationID );
+    Logger::warning( "GoodStore:Impossible to store goods RID=%d", reservationID );
   }
 }
 
@@ -178,7 +179,7 @@ void GoodStore::retrieve(GoodStock &stock, int amount)
   }
   else
   {
-    StringHelper::debug( 0xff, "GoodStore:Impossible to retrieve goods RID=%d", reservationID );
+    Logger::warning( "GoodStore:Impossible to retrieve goods RID=%d", reservationID );
   }
 }
 

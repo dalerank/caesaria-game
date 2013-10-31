@@ -25,6 +25,8 @@
 #include "game/cityfunds.hpp"
 #include "gfx/engine.hpp"
 #include "core/stringhelper.hpp"
+#include "game/divinity.hpp"
+#include "core/logger.hpp"
 
 namespace gui
 {
@@ -32,11 +34,14 @@ namespace gui
 class FestivalPlaningWindow::Impl
 {
 public:
+  static const int divId=0x200;
+  typedef enum { festId=0x400, smallFest=1, middleFest, greatFest } FestID;
   PictureRef background;
   Label* title;
   Label* festivalName;
   int festivalType;
-  std::vector< TexturedButton* > godBtns;
+  std::vector<TexturedButton*> godBtns;
+  std::map<int, RomeDivinityType > divines;
 
   PushButton* btnHelp;
   PushButton* btnExit;
@@ -48,14 +53,34 @@ public:
   TexturedButton* btnNo;
 
   CityPtr city;
+  RomeDivinityType currentDivinity;
 
 public oc3_signals:
-  Signal0<> onFestivalAssignSignal;
+  Signal2<int, int> onFestivalAssignSignal;
 
 public:
   void assignFestival()
   {
-    onFestivalAssignSignal.emit();
+    onFestivalAssignSignal.emit( (int)currentDivinity, festivalType );
+  }
+
+  void addImage( Widget* parent, RomeDivinityType type, int column, int startPic )
+  {
+    Size imgSize( 81, 91 );
+    godBtns.push_back( new TexturedButton( parent, Point( column * 100 + 60, 48),
+                                           imgSize, divId + type, ResourceGroup::festivalimg,
+                                           startPic, startPic, startPic+5, startPic+5 ) );
+    godBtns.back()->setIsPushButton( true );
+    divines[ divId + type ] = type;
+  }
+
+  void updateTitle()
+  {
+    RomeDivinityPtr divinity = DivinePantheon::get( currentDivinity );
+
+    std::string text = StringHelper::format( 0xff, "%s %s", _("##assign_festival_for##"),
+                                             divinity.isValid() ? divinity->getName().c_str() : "unknown" );
+    title->setText( text );
   }
 };
 
@@ -82,20 +107,24 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
 
   PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
 
-  Size imgSize( 81, 91 );
-  _d->godBtns.push_back( new TexturedButton( this, Point( 60, 48), imgSize, 0x0217, ResourceGroup::festivalimg, 17, 17, 22, 22 ) );
-  _d->godBtns.push_back( new TexturedButton( this, Point( 160, 48), imgSize, 0x0218, ResourceGroup::festivalimg, 18, 18, 23, 23 ) );
-  _d->godBtns.push_back( new TexturedButton( this, Point( 260, 48), imgSize, 0x0219, ResourceGroup::festivalimg, 19, 19, 24, 24 ) );
-  _d->godBtns.push_back( new TexturedButton( this, Point( 360, 48), imgSize, 0x0220, ResourceGroup::festivalimg, 20, 20, 25, 25 ) );
-  _d->godBtns.push_back( new TexturedButton( this, Point( 460, 48), imgSize, 0x0221, ResourceGroup::festivalimg, 21, 21, 26, 26 ) );
-
-  foreach ( TexturedButton* btn, _d->godBtns )
-    btn->setIsPushButton( true );
+  _d->addImage( this, romeDivCeres, 0, 17 );
+  _d->addImage( this, romeDivNeptune, 1, 18 );
+  _d->addImage( this, romeDivMercury, 2, 19 );
+  _d->addImage( this, romeDivMars, 3, 20 );
+  _d->addImage( this, romeDivVenus, 4, 21 );
 
   _d->godBtns.front()->setPressed( true );
+  _d->currentDivinity = romeDivCeres;
 
   _d->title = new Label( this, Rect( 16, 16, getWidth() - 16, 16 + 30), _("##title##") );
-  _d->festivalName = new Label( this, Rect( 145, getHeight() - 52, 145 + 200, getHeight() - 22) );
+  _d->title->setFont( Font::create( FONT_3 ) );
+  _d->title->setTextAlignment( alignCenter, alignCenter );
+
+  _d->updateTitle();
+
+  _d->festivalName = new Label( this, Rect( 145, getHeight() - 52, 145 + 200, getHeight() - 22), "##small_festival##" );
+
+  _d->festivalType = Impl::smallFest;
 
   _d->btnHelp = new TexturedButton( this, Point( 52, getHeight() - 52 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
   _d->btnExit = new TexturedButton( this, Point( getWidth() - 74, getHeight() - 52 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
@@ -105,18 +134,21 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
 
   _d->btnSmallFestival = new PushButton( this, Rect( 95, 170, getWidth() - 95, 170 + 25),
                                          StringHelper::format( 0xff, "%s %d", _("##small_festival##"), greatFestivalCost / 4 ),
-                                         0x0401, false, PushButton::whiteBorderUp );
+                                         Impl::festId+Impl::smallFest, false, PushButton::whiteBorderUp );
   _d->btnSmallFestival->setTextAlignment( alignUpperLeft, alignCenter );
+  //_d->btnSmallFestival->setIsPushButton( true );
 
   _d->btnMiddleFestival = new PushButton( this, _d->btnSmallFestival->getRelativeRect() + Point( 0, 30 ),
                                           StringHelper::format( 0xff, "%s %d", _("##middle_festival##"), greatFestivalCost / 2 ),
-                                          0x0402, false, PushButton::whiteBorderUp );
+                                          Impl::festId+Impl::middleFest, false, PushButton::whiteBorderUp );
   _d->btnMiddleFestival->setTextAlignment( alignUpperLeft, alignCenter );
+  //_d->btnMiddleFestival->setIsPushButton( true );
 
   _d->btnGreatFestival = new PushButton( this, _d->btnMiddleFestival->getRelativeRect() + Point( 0, 30 ),
                                          StringHelper::format( 0xff, "%s %d", _("##great_festival##"), greatFestivalCost  ),
-                                         0x0403, false, PushButton::whiteBorderUp );
+                                         Impl::festId+Impl::greatFest, false, PushButton::whiteBorderUp );
   _d->btnGreatFestival->setTextAlignment( alignUpperLeft, alignCenter );
+  //_d->btnGreatFestival->setIsPushButton( true );
 
   _d->btnYes = new TexturedButton( this, Point( 350, getHeight() - 50 ), Size( 39, 26), -1, ResourceMenu::okBtnPicId );
   _d->btnNo = new TexturedButton( this, Point( 350 + 43, getHeight() - 50 ), Size( 39, 26), -1, ResourceMenu::cancelBtnPicId );
@@ -145,7 +177,6 @@ bool FestivalPlaningWindow::onEvent(const NEvent& event)
   if( event.EventType == sEventGui && event.GuiEvent.EventType == guiButtonClicked )
   {
     PushButton* btn = safety_cast< PushButton* >( event.GuiEvent.Caller );
-
     if( btn && (btn->getID() & 0x0200) )
     {
       foreach ( TexturedButton* abtn, _d->godBtns )
@@ -154,22 +185,24 @@ bool FestivalPlaningWindow::onEvent(const NEvent& event)
       }
 
       btn->setPressed( true );
+      _d->currentDivinity = _d->divines[ btn->getID() ];
 
-      return true;
+      _d->updateTitle();
     }
-
-    if( btn && (btn->getID() & 0x0400) )
+    else if( btn && (btn->getID() & 0x0400) )
     {
       const char* titles[] = { "", _("##small_festival##"), _("##middle_festival##"),  _("##great_festival##") };
       _d->festivalType = btn->getID() & 0xf;
-      _d->festivalName->setText( titles[ _d->festivalType ] );
+      _d->festivalName->setText( titles[ _d->festivalType ] );      
     }
+
+    return true;
   }
 
   return Widget::onEvent( event );
 }
 
-Signal0<>&FestivalPlaningWindow::onFestivalAssign()
+Signal2<int,int>& FestivalPlaningWindow::onFestivalAssign()
 {
   return _d->onFestivalAssignSignal;
 }

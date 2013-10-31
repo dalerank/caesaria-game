@@ -19,6 +19,7 @@
 #include "goodstore_simple.hpp"
 #include "core/stringhelper.hpp"
 #include "core/foreach.hpp"
+#include "core/logger.hpp"
 
 class EmpireTradeRoute::Impl
 {
@@ -147,7 +148,7 @@ void EmpireTrading::sendMerchant( const std::string& begin, const std::string& e
   EmpireTradeRoutePtr route = getRoute( begin, end );
   if( route != 0 )
   {
-    StringHelper::debug( 0xff, "Trade route no exist [%s to %s]", begin.c_str(), end.c_str() );
+    Logger::warning( "Trade route no exist [%s to %s]", begin.c_str(), end.c_str() );
     return;
   }
 
@@ -160,7 +161,7 @@ EmpireTradeRoutePtr EmpireTrading::getRoute( const std::string& begin, const std
   Impl::TradeRoutes::iterator it = _d->routes.find( routeId );
   if( it == _d->routes.end() )
   {
-    StringHelper::debug( 0xff, "Trade route no exist [%s to %s]", begin.c_str(), end.c_str() );
+    Logger::warning( "Trade route no exist [%s to %s]", begin.c_str(), end.c_str() );
     return 0;
   }
 
@@ -182,7 +183,7 @@ EmpireTradeRoutePtr EmpireTrading::createRoute( const std::string& begin, const 
   EmpireTradeRoutePtr route = getRoute( begin, end );
   if( route != 0 )
   {
-    StringHelper::debug( 0xff, "Trade route exist [%s to %s]", begin.c_str(), end.c_str() );
+    Logger::warning( "Trade route exist [%s to %s]", begin.c_str(), end.c_str() );
     return route;
   }
 

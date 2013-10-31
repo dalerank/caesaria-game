@@ -38,6 +38,7 @@
 #include "core/font.hpp"
 #include "gfx/sdl_engine.hpp"
 #include "core/gettext.hpp"
+#include "core/logger.hpp"
 
 namespace WalkersVisibility
 {
@@ -1139,7 +1140,7 @@ void CityRenderer::Impl::buildAll()
 
   if( !cnstr.isValid() )
   {
-    StringHelper::debug( 0xff, "No construction for build" );
+    Logger::warning( "No construction for build" );
     return;
   }
 

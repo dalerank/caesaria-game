@@ -19,7 +19,7 @@
 #include "core/position.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/picture.hpp"
-#include "core/stringhelper.hpp"
+#include "core/logger.hpp"
 #include "walker/emigrant.hpp"
 #include <vector>
 
@@ -140,7 +140,7 @@ AnimationBank::AnimationBank() : _d( new Impl )
 
 void AnimationBank::loadCarts()
 {
-  StringHelper::debug( 0xff, "Loading cart graphics" );
+  Logger::warning( "Loading cart graphics" );
 
   instance()._d->loadCarts();  
 }
@@ -167,7 +167,7 @@ const AnimationBank::MovementAnimation& AnimationBank::getWalker(const WalkerGra
   AnimationBank& inst = instance();
   if( walkerGraphic >= inst._d->animations.size() )
   {
-    StringHelper::debug( 0xff, "Can't find animation map for type %d", walkerGraphic );
+    Logger::warning( "Can't find animation map for type %d", walkerGraphic );
     return inst._d->animations[ WG_NONE ];
   }
 
@@ -176,7 +176,7 @@ const AnimationBank::MovementAnimation& AnimationBank::getWalker(const WalkerGra
 
 void AnimationBank::loadWalkers()
 {
-  StringHelper::debug( 0xff, "Start loading walkers graphics" );
+  Logger::warning( "Start loading walkers graphics" );
   instance()._d->loadWalkers();
 }
 

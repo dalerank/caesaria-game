@@ -24,6 +24,7 @@
 #include "core/variant.hpp"
 #include "core/stringhelper.hpp"
 #include "core/foreach.hpp"
+#include "core/logger.hpp"
 
 static Tile invalidTile = Tile( TilePos( -1, -1 ) );
 typedef std::vector< Tile > Row;
@@ -42,7 +43,7 @@ public:
       return TileGrid::at(i).at(j);
     }
 
-    StringHelper::debug( 0xff, "Need inside point current=[%d, %d]", i, j );
+    Logger::warning( "Need inside point current=[%d, %d]", i, j );
     return invalidTile;
   }
 

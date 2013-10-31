@@ -30,6 +30,7 @@
 #include "gui/label.hpp"
 #include "game/settings.hpp"
 #include "gui/playername_window.hpp"
+#include "core/logger.hpp"
 
 class ScreenMenu::Impl
 {

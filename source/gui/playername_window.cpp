@@ -17,6 +17,8 @@
 #include "game/settings.hpp"
 #include "editbox.hpp"
 #include "pushbutton.hpp"
+#include "core/stringhelper.hpp"
+#include "core/logger.hpp"
 
 namespace gui
 {

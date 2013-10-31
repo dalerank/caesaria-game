@@ -21,6 +21,7 @@
 #include "core/stringhelper.hpp"
 #include "empire_trading.hpp"
 #include "core/foreach.hpp"
+#include "core/logger.hpp"
 
 class Empire::Impl
 {
@@ -62,7 +63,7 @@ void Empire::initialize( const io::FilePath& filename )
 
   if( cities.empty() )
   {
-    StringHelper::debug( 0xff, "Can't load cities model from %s", filename.toString().c_str() );
+    Logger::warning( "Can't load cities model from %s", filename.toString().c_str() );
     return;
   }
 
@@ -80,7 +81,7 @@ EmpireCityPtr Empire::addCity( EmpireCityPtr city )
 
   if( ret.isValid() )
   {
-    StringHelper::debug( 0xff, "City %s already exist", city->getName().c_str() );
+    Logger::warning( "City %s already exist", city->getName().c_str() );
     _OC3_DEBUG_BREAK_IF( "City already exist" );
     return ret;
   }
@@ -190,7 +191,7 @@ EmpireCityPtr Empire::initPlayerCity( EmpireCityPtr city )
 
   if( ret.isNull() )
   {
-    StringHelper::debug( 0xff, "Can't init player city, that empire city with name %s no exist", city->getName().c_str() );
+    Logger::warning("Can't init player city, that empire city with name %s no exist", city->getName().c_str() );
     _OC3_DEBUG_BREAK_IF( "City already exist" );
     return ret;
   }

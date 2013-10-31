@@ -17,6 +17,7 @@
 #include "core/stringhelper.hpp"
 #include "goodhelper.hpp"
 #include "goodstore_simple.hpp"
+#include "core/logger.hpp"
 
 class CityTradeOptions::Impl
 {
@@ -53,7 +54,7 @@ public:
     {
       if( stream.size() != 9 )
       {
-        StringHelper::debug( 0xff, "%s [%s %d]", "Incorrect argument number in ", __FILE__, __LINE__ );
+        Logger::warning( "%s [%s %d]", "Incorrect argument number in ", __FILE__, __LINE__ );
         return;
       }
 
@@ -263,7 +264,7 @@ void CityTradeOptions::load( const VariantMap& stream )
 
     if( gtype == Good::none )
     {
-      StringHelper::debug( 0xff, "%s %s [%s %d]", "Can't convert type from ", 
+      Logger::warning( "%s %s [%s %d]", "Can't convert type from ",
                            it->first.c_str(), __FILE__, __LINE__ );
       return;
     }
