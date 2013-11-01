@@ -33,6 +33,9 @@
 #include "game/trade_options.hpp"
 #include "gui/message_stack_widget.hpp"
 #include "game/settings.hpp"
+#include "building/constants.hpp"
+
+using namespace constants;
 
 namespace events
 {
@@ -74,7 +77,7 @@ void DisasterEvent::exec( Game& game )
     TilemapArea clearedTiles = tmap.getArea( rPos, size );
     foreach( Tile* tile, clearedTiles )
     {
-      TileOverlayType dstr2constr[] = { B_BURNING_RUINS, B_COLLAPSED_RUINS, B_PLAGUE_RUINS };
+      TileOverlay::Type dstr2constr[] = { building::B_BURNING_RUINS, building::B_COLLAPSED_RUINS, building::B_PLAGUE_RUINS };
       bool canCreate = TileOverlayFactory::getInstance().canCreate( dstr2constr[_type] );
       if( canCreate )
       {
@@ -88,7 +91,7 @@ void DisasterEvent::exec( Game& game )
   }
 }
 
-GameEventPtr BuildEvent::create( const TilePos& pos, const TileOverlayType type )
+GameEventPtr BuildEvent::create( const TilePos& pos, const TileOverlay::Type type )
 {
   return create( pos, TileOverlayFactory::getInstance().create( type ) );
 }
@@ -107,7 +110,7 @@ GameEventPtr BuildEvent::create(const TilePos& pos, TileOverlayPtr overlay)
 
 void BuildEvent::exec( Game& game )
 {
-  const BuildingData& buildingData = BuildingDataHolder::instance().getData( _overlay->getType() );
+  const MetaData& buildingData = MetaDataHolder::instance().getData( _overlay->getType() );
   if( _overlay.isValid() )
   {
     _overlay->build( game.getCity(), _pos );

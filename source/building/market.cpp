@@ -21,6 +21,7 @@
 #include "game/goodstore_simple.hpp"
 #include "game/city.hpp"
 #include "walker/serviceman.hpp"
+#include "building/constants.hpp"
 
 
 class Market::Impl
@@ -54,7 +55,7 @@ public:
   }
 };
 
-Market::Market() : ServiceBuilding(Service::market, B_MARKET, Size(2) ),
+Market::Market() : ServiceBuilding(Service::market, constants::building::B_MARKET, Size(2) ),
   _d( new Impl )
 {
   _getForegroundPictures().resize(1);  // animation

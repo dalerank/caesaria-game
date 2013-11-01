@@ -345,7 +345,7 @@ int ScreenGame::getResult() const
 
 void ScreenGame::Impl::resolveCreateConstruction( int type )
 {
-  renderer.setMode( TilemapBuildCommand::create( TileOverlayType( type ) ) );
+  renderer.setMode( TilemapBuildCommand::create( TileOverlay::Type( type ) ) );
 }
 
 void ScreenGame::Impl::resolveRemoveTool()

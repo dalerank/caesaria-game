@@ -24,6 +24,9 @@
 #include "gamedate.hpp"
 #include "cityfunds.hpp"
 #include "empire.hpp"
+#include "building/constants.hpp"
+
+using namespace  constants;
 
 class CityServiceProsperity::Impl
 {
@@ -82,7 +85,7 @@ void CityServiceProsperity::update( const unsigned int time )
     }
 
     CityHelper helper( _d->city );
-    HouseList houses = helper.find<House>( B_HOUSE );
+    HouseList houses = helper.find<House>( building::B_HOUSE );
 
     int prosperityCap = 0;
     int patricianCount = 0;
@@ -113,7 +116,7 @@ void CityServiceProsperity::update( const unsigned int time )
     _d->percentPlebs = plebsCount * 100/ (float)_d->city->getPopulation();
     _d->prosperityExtend += (_d->percentPlebs < 30 ? 1 : 0);
 
-    bool haveHippodrome = !helper.find<Hippodrome>( B_HIPPODROME ).empty();
+    bool haveHippodrome = !helper.find<Hippodrome>( building::B_HIPPODROME ).empty();
     _d->prosperityExtend += (haveHippodrome > 0 ? 1 : 0);
 
     _d->worklessPercent = CityStatistic::getWorklessPercent( _d->city );

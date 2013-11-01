@@ -19,6 +19,9 @@
 #include "game/path_finding.hpp"
 #include "game/city.hpp"
 #include "game/name_generator.hpp"
+#include "building/constants.hpp"
+
+using namespace constants;
 
 TraineeWalker::TraineeWalker( CityPtr city, const WalkerType traineeType)
   : Walker( city )
@@ -37,19 +40,19 @@ void TraineeWalker::init(const WalkerType traineeType)
   {
   case WT_ACTOR:
     _setGraphic( WG_ACTOR );
-    _buildingNeed.push_back(buildingTheater);
-    _buildingNeed.push_back(buildingAmphitheater);
+    _buildingNeed.push_back(building::theater);
+    _buildingNeed.push_back(building::amphitheater);
   break;
 
   case WT_GLADIATOR:
     _setGraphic( WG_GLADIATOR );
-    _buildingNeed.push_back(buildingAmphitheater);
-    _buildingNeed.push_back(B_COLLOSSEUM);
+    _buildingNeed.push_back(building::amphitheater);
+    _buildingNeed.push_back(building::B_COLLOSSEUM);
   break;
 
   case WT_TAMER:
     _setGraphic( WG_TAMER );
-    _buildingNeed.push_back(B_COLLOSSEUM);
+    _buildingNeed.push_back(building::B_COLLOSSEUM);
   break;
 
   case WT_CHARIOT:
@@ -78,7 +81,7 @@ void TraineeWalker::computeWalkerPath()
   pathPropagator.init( _originBuilding.as<Construction>() );
   pathPropagator.propagate( _maxDistance );
 
-  foreach( TileOverlayType buildingType, _buildingNeed )
+  foreach( TileOverlay::Type buildingType, _buildingNeed )
   {
     checkDestination(buildingType, pathPropagator);
   }
@@ -100,7 +103,7 @@ void TraineeWalker::computeWalkerPath()
   }
 }
 
-void TraineeWalker::checkDestination(const TileOverlayType buildingType, Propagator &pathPropagator)
+void TraineeWalker::checkDestination(const TileOverlay::Type buildingType, Propagator &pathPropagator)
 {
   Propagator::Routes pathWayList;
   pathPropagator.getRoutes(buildingType, pathWayList);

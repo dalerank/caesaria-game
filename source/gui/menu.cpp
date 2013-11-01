@@ -33,11 +33,14 @@
 #include "core/foreach.hpp"
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
+#include "building/constants.hpp"
+
+using namespace constants;
 
 namespace gui
 {
 
-static const int REMOVE_TOOL_ID = B_MAX + 1; 
+static const int REMOVE_TOOL_ID = 0xff00 + 1;
 static const int MAXIMIZE_ID = REMOVE_TOOL_ID + 1;
 
 class Menu::Impl
@@ -116,13 +119,13 @@ Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id
                                      !haveSubMenu, ResourceMenu::emptyMidPicId, _("##minimizeBtnTooltip") );
     _d->minimizeButton->setGeometry( Rect( Point( 6, 4 ), Size( 31, 20 ) ) );
 
-    _d->houseButton = _addButton( ResourceMenu::houseBtnPicId, true, 0, B_HOUSE, 
+    _d->houseButton = _addButton( ResourceMenu::houseBtnPicId, true, 0, building::B_HOUSE,
                                   !haveSubMenu, ResourceMenu::houseMidPicId, _("##houseBtnTooltip") );
     
     _d->clearButton = _addButton( 131, true, 1, REMOVE_TOOL_ID, 
                                   !haveSubMenu, ResourceMenu::clearMidPicId, _("##clearBtnTooltip") );
     
-    _d->roadButton = _addButton( 135, true, 2, B_ROAD, !haveSubMenu, ResourceMenu::roadMidPicId, _("##roadBtnTooltip") );
+    _d->roadButton = _addButton( 135, true, 2, building::B_ROAD, !haveSubMenu, ResourceMenu::roadMidPicId, _("##roadBtnTooltip") );
     _d->waterButton = _addButton( 127, true, 3, BM_WATER, haveSubMenu, ResourceMenu::waterMidPicId, _("##waterBtnTooltip") );
     _d->healthButton = _addButton( 163, true, 4, BM_HEALTH, haveSubMenu, ResourceMenu::healthMidPicId, _("##healthBtnTooltip") );
     _d->templeButton = _addButton( 151, true, 5, BM_RELIGION, haveSubMenu, ResourceMenu::religionMidPicId, _("##templeBtnTooltip") );
@@ -193,8 +196,8 @@ bool Menu::onEvent(const NEvent& event)
             _d->onMaximizeSignal.emit();
         break;
 
-        case B_HOUSE:
-        case B_ROAD:
+        case building::B_HOUSE:
+        case building::B_ROAD:
             _d->lastPressed = event.GuiEvent.Caller;
             _d->onCreateConstructionSignal.emit( id );
             _createBuildMenu( -1, this );

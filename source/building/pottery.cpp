@@ -18,8 +18,11 @@
 #include "game/resourcegroup.hpp"
 #include "game/city.hpp"
 #include "core/gettext.hpp"
+#include "constants.hpp"
 
-Pottery::Pottery() : Factory(Good::clay, Good::pottery, B_POTTERY, Size(2))
+using namespace constants;
+
+Pottery::Pottery() : Factory(Good::clay, Good::pottery, building::B_POTTERY, Size(2))
 {
   _getAnimation().load(ResourceGroup::commerce, 133, 7);
   _getAnimation().setFrameDelay( 3 );
@@ -31,7 +34,7 @@ bool Pottery::canBuild(CityPtr city, const TilePos& pos) const
   bool ret = Factory::canBuild( city, pos );
 
   CityHelper helper( city );
-  bool haveClaypit = !helper.find<Building>( B_CLAY_PIT ).empty();
+  bool haveClaypit = !helper.find<Building>( building::B_CLAY_PIT ).empty();
 
   const_cast< Pottery* >( this )->_setError( haveClaypit ? "" : _("##need_clay_for_work##") );
 

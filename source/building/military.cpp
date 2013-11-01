@@ -15,16 +15,17 @@
 
 
 #include "military.hpp"
+#include "constants.hpp"
 #include "game/resourcegroup.hpp"
 
-Barracks::Barracks() : WorkingBuilding( B_BARRACKS, Size( 3 ) )
+Barracks::Barracks() : WorkingBuilding( constants::building::B_BARRACKS, Size( 3 ) )
 {
   setMaxWorkers(5);
   setWorkers(0);  
   setPicture( ResourceGroup::security, 17 );
 }
 
-FortLegionnaire::FortLegionnaire() : Building( B_FORT_LEGIONNAIRE, Size(3) )
+FortLegionnaire::FortLegionnaire() : Building( constants::building::B_FORT_LEGIONNAIRE, Size(3) )
 {
   setPicture( ResourceGroup::security, 12 );
 
@@ -34,7 +35,7 @@ FortLegionnaire::FortLegionnaire() : Building( B_FORT_LEGIONNAIRE, Size(3) )
   _getForegroundPictures().at( 0 ) = logo;
 }
 
-FortMounted::FortMounted() : Building( B_FORT_MOUNTED, Size(3) )
+FortMounted::FortMounted() : Building( constants::building::B_FORT_MOUNTED, Size(3) )
 {
   setPicture( Picture::load(ResourceGroup::security, 12));
 
@@ -44,7 +45,7 @@ FortMounted::FortMounted() : Building( B_FORT_MOUNTED, Size(3) )
   _getForegroundPictures().at( 0 ) = logo;
 }
 
-FortJaveline::FortJaveline() : Building( B_FORT_JAVELIN, Size(3) )
+FortJaveline::FortJaveline() : Building( constants::building::B_FORT_JAVELIN, Size(3) )
 {
   setPicture( Picture::load(ResourceGroup::security, 12));
 

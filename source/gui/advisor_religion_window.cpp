@@ -29,6 +29,9 @@
 #include "texturedbutton.hpp"
 #include "game/divinity.hpp"
 #include "game/gamedate.hpp"
+#include "building/constants.hpp"
+
+using namespace constants;
 
 namespace gui
 {
@@ -102,7 +105,7 @@ public:
     int bigTempleCount;
   };
 
-  InfrastructureInfo getInfo( CityPtr city, const TileOverlayType small, const TileOverlayType big )
+  InfrastructureInfo getInfo( CityPtr city, const TileOverlay::Type small, const TileOverlay::Type big )
   {
     CityHelper helper( city );
 
@@ -146,27 +149,27 @@ AdvisorReligionWindow::AdvisorReligionWindow( CityPtr city, Widget* parent, int 
 
   Point startPoint( 42, 65 );
   Size labelSize( 550, 20 );
-  Impl::InfrastructureInfo info = _d->getInfo( city, B_TEMPLE_CERES, B_BIG_TEMPLE_CERES );
+  Impl::InfrastructureInfo info = _d->getInfo( city, building::B_TEMPLE_CERES, building::B_BIG_TEMPLE_CERES );
   _d->lbCeresInfo = new ReligionInfoLabel( this, Rect( startPoint, labelSize ), DivinePantheon::ceres(), 
                                            info.smallTemplCount, info.bigTempleCount );
 
-  info = _d->getInfo( city, B_TEMPLE_NEPTUNE, B_BIG_TEMPLE_NEPTUNE );
+  info = _d->getInfo( city, building::B_TEMPLE_NEPTUNE, building::B_BIG_TEMPLE_NEPTUNE );
   _d->lbNeptuneInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 20), labelSize), DivinePantheon::neptune(),
                                              info.smallTemplCount, info.bigTempleCount );
 
-  info = _d->getInfo( city, B_TEMPLE_MERCURE, B_BIG_TEMPLE_MERCURE );
+  info = _d->getInfo( city, building::B_TEMPLE_MERCURE, building::B_BIG_TEMPLE_MERCURE );
   _d->lbMercuryInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 40), labelSize), DivinePantheon::mercury(),
                                              info.smallTemplCount, info.bigTempleCount );
 
-  info = _d->getInfo( city, B_TEMPLE_MARS, B_BIG_TEMPLE_MARS );
+  info = _d->getInfo( city, building::B_TEMPLE_MARS, building::B_BIG_TEMPLE_MARS );
   _d->lbMarsInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 60), labelSize), DivinePantheon::mars(),
                                           info.smallTemplCount, info.bigTempleCount );
 
-  info = _d->getInfo( city, B_TEMPLE_VENUS, B_BIG_TEMPLE_VENUS );
+  info = _d->getInfo( city, building::B_TEMPLE_VENUS, building::B_BIG_TEMPLE_VENUS );
   _d->lbVenusInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 80), labelSize), DivinePantheon::venus(),
                                            info.smallTemplCount, info.bigTempleCount );
 
-  info = _d->getInfo( city, B_TEMPLE_ORACLE, B_TEMPLE_ORACLE );
+  info = _d->getInfo( city, building::B_TEMPLE_ORACLE, building::B_TEMPLE_ORACLE );
   _d->lbOracleInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 100), labelSize), RomeDivinityPtr(),
                                             info.smallTemplCount, 0 );
 

@@ -26,7 +26,12 @@
 class TileOverlay : public Serializable, public ReferenceCounted
 {
 public:
-  TileOverlay( const TileOverlayType type, const Size& size=Size(1));
+  typedef int Type;
+  typedef int Group;
+
+  enum { any=0 };
+
+  TileOverlay( const Type type, const Size& size=Size(1));
   virtual ~TileOverlay();
 
   Tile& getTile() const;  // master tile, in case of multi-tile area
@@ -47,7 +52,7 @@ public:
   virtual void timeStep(const unsigned long time);  // perform one simulation step
 
   // graphic
-  void setPicture(const Picture &picture);
+  void setPicture(const Picture& picture);
   void setPicture(const char* resource, const int index);
 
   void setAnimation( const Animation& animation );
@@ -58,9 +63,9 @@ public:
   std::string getName();  // landoverlay debug name
   void setName( const std::string& name );
 
-  TileOverlayType getType() const;
-  TileOverlayGroup getClass() const;
-  void setType(const TileOverlayType type);
+  Type getType() const;
+  Group getClass() const;
+  void setType(const Type type);
 
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream );

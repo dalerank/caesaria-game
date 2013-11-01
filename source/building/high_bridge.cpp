@@ -20,6 +20,7 @@
 #include "game/city.hpp"
 #include "game/tilemap.hpp"
 #include "events/event.hpp"
+#include "constants.hpp"
 #include <vector>
 
 class HighBridgeSubTile : public Construction
@@ -30,7 +31,7 @@ public:
           liftingSE2=173, descentSE2=175,
           liftingSW2=176, descentSW2=178 };
   HighBridgeSubTile( const TilePos& pos, int index )
-    : Construction( B_LOW_BRIDGE, Size( 1 ) )
+    : Construction( constants::building::B_LOW_BRIDGE, Size( 1 ) )
   {
     _pos = pos;
     _index = index;
@@ -152,7 +153,7 @@ bool HighBridge::canBuild( CityPtr city, const TilePos& pos ) const
   return (_d->direction != D_NONE);
 }
 
-HighBridge::HighBridge() : Construction( B_HIGH_BRIDGE, Size(1) ), _d( new Impl )
+HighBridge::HighBridge() : Construction( constants::building::B_HIGH_BRIDGE, Size(1) ), _d( new Impl )
 {
   Picture tmp;
   setPicture( tmp );

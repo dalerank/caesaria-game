@@ -24,13 +24,14 @@
 #include "vfs/filepath.hpp"
 #include "gfx/picture.hpp"
 #include "core/variant.hpp"
+#include "gfx/tileoverlay.hpp"
 
 // contains some metaData for a building type
-class BuildingData
+class MetaData
 {
-  friend class BuildingDataHolder;
+  friend class MetaDataHolder;
 
-  static BuildingData invalid;
+  static MetaData invalid;
 public:
   typedef struct
   {
@@ -39,26 +40,26 @@ public:
     int step;
   } Desirability;
 
-  BuildingData( const TileOverlayType buildingType, const std::string &name, const int cost );
-  BuildingData( const BuildingData& a );
+  MetaData( const TileOverlay::Type type, const std::string& name );
+  MetaData( const MetaData& a );
 
-  ~BuildingData();
+  ~MetaData();
 
   std::string getName() const;
   std::string getPrettyName() const;
-  TileOverlayType getType() const;
-  TileOverlayGroup getClass() const;
-  const Picture& getBasePicture() const;
+  TileOverlay::Type getType() const;
+  TileOverlay::Group getClass() const;
+  Picture getBasePicture() const;
   // returns the building price, -1 => cannot be built
   int getCost() const;
   const Desirability& getDesirbilityInfo() const;
 
   Variant getOption( const std::string& name, Variant defaultVal=Variant() ) const;
 
-  BuildingData& operator=( const BuildingData& a );
+  MetaData& operator=( const MetaData& a );
 
 private:
-  TileOverlayGroup _buildingClass;
+  TileOverlay::Group _group;
   std::string _name;  // debug name  (english, ex:"iron")
   std::string _prettyName;  // pretty-print name  (i18n, ex:"Iron mine")
   Picture _basePicture;
@@ -69,26 +70,26 @@ private:
 };
 
 // contains some metaData for each building type
-class BuildingDataHolder
+class MetaDataHolder
 {
 public:
-   static BuildingDataHolder& instance();
+   static MetaDataHolder& instance();
 
-   void addData(const BuildingData &data);
-   const BuildingData& getData(const TileOverlayType buildingType) const;
-   bool hasData(const TileOverlayType buildingType) const;
+   void addData(const MetaData& data);
+   const MetaData& getData(const TileOverlay::Type buildingType) const;
+   bool hasData(const TileOverlay::Type buildingType) const;
 
    // return factory that consume goodType
-   TileOverlayType getConsumerType(const Good::Type inGoodType) const;
+   TileOverlay::Type getConsumerType(const Good::Type inGoodType) const;
 
-   static TileOverlayType getType( const std::string& name );
-   static TileOverlayGroup getClass( const std::string& name );
+   static TileOverlay::Type getType( const std::string& name );
+   static TileOverlay::Group getClass( const std::string& name );
 
-   static std::string getPrettyName( TileOverlayType bType );
+   static std::string getPrettyName( TileOverlay::Type bType );
 
    void initialize( const io::FilePath& filename );
 private:
-   BuildingDataHolder();
+   MetaDataHolder();
 
    class Impl;
    ScopedPtr< Impl > _d;

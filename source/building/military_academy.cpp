@@ -15,7 +15,8 @@
 
 
 #include "military_academy.hpp"
+#include "constants.hpp"
 
-MilitaryAcademy::MilitaryAcademy() : WorkingBuilding( B_MILITARY_ACADEMY, Size(3) )
+MilitaryAcademy::MilitaryAcademy() : WorkingBuilding( constants::building::B_MILITARY_ACADEMY, Size(3) )
 {
 }

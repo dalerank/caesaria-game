@@ -22,8 +22,9 @@
 #include "gfx/tile.hpp"
 #include "game/path_finding.hpp"
 #include "game/city.hpp"
+#include "building/constants.hpp"
 
-Prefecture::Prefecture() : ServiceBuilding(Service::prefect, B_PREFECTURE, Size(1))
+Prefecture::Prefecture() : ServiceBuilding(Service::prefect, constants::building::B_PREFECTURE, Size(1))
 {
   _fireDetect = TilePos( -1, -1 );
   setPicture( Picture::load( ResourceGroup::security, 1 ) );

@@ -27,6 +27,9 @@
 #include "core/foreach.hpp"
 #include "building/house.hpp"
 #include "texturedbutton.hpp"
+#include "building/constants.hpp"
+
+using namespace constants;
 
 namespace gui
 {
@@ -34,7 +37,7 @@ namespace gui
 class HealthInfoLabel : public Label
 {
 public:
-  HealthInfoLabel( Widget* parent, const Rect& rect, const TileOverlayType service, 
+  HealthInfoLabel( Widget* parent, const Rect& rect, const TileOverlay::Type service,
                    int workBulding, int numberBuilding, int peoplesCount  )
     : Label( parent, rect )
   {
@@ -53,10 +56,10 @@ public:
     std::string buildingStr, peoplesStr;
     switch( _service )
     {
-    case B_BATHS: buildingStr = _("##bath##"); peoplesStr = _("##peoples##"); break;
-    case B_BARBER: buildingStr = _("##barber##"); peoplesStr = _("##peoples##"); break;
-    case B_HOSPITAL: buildingStr = _("##hospital##"); peoplesStr = _("##patients##"); break;
-    case B_DOCTOR: buildingStr = _("##doctor##"); peoplesStr = _("##peoples##"); break;
+    case building::B_BATHS: buildingStr = _("##bath##"); peoplesStr = _("##peoples##"); break;
+    case building::B_BARBER: buildingStr = _("##barber##"); peoplesStr = _("##peoples##"); break;
+    case building::B_HOSPITAL: buildingStr = _("##hospital##"); peoplesStr = _("##patients##"); break;
+    case building::B_DOCTOR: buildingStr = _("##doctor##"); peoplesStr = _("##peoples##"); break;
     default: break;
     }
 
@@ -73,7 +76,7 @@ public:
   }
 
 private:
-  TileOverlayType _service;
+  TileOverlay::Type _service;
   int _workingBuilding;
   int _numberBuilding;
   int _peoplesCount;
@@ -97,7 +100,7 @@ public:
     int peoplesServed;
   };
 
-  InfrastructureInfo getInfo( CityPtr city, const TileOverlayType service )
+  InfrastructureInfo getInfo( CityPtr city, const TileOverlay::Type service )
   {
     CityHelper helper( city );
 
@@ -147,20 +150,20 @@ AdvisorHealthWindow::AdvisorHealthWindow( CityPtr city, Widget* parent, int id )
 
   Point startPoint( 42, 112 );
   Size labelSize( 550, 20 );
-  Impl::InfrastructureInfo info = _d->getInfo( city, B_BATHS );
-  _d->lbBathsInfo = new HealthInfoLabel( this, Rect( startPoint, labelSize ), B_BATHS, 
+  Impl::InfrastructureInfo info = _d->getInfo( city, building::B_BATHS );
+  _d->lbBathsInfo = new HealthInfoLabel( this, Rect( startPoint, labelSize ), building::B_BATHS,
                                              info.buildingWork, info.buildingCount, info.peoplesServed );
 
-  info = _d->getInfo( city, B_BARBER );
-  _d->lbBarbersInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 20), labelSize), B_BARBER,
+  info = _d->getInfo( city, building::B_BARBER );
+  _d->lbBarbersInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 20), labelSize), building::B_BARBER,
                                               info.buildingWork, info.buildingCount, info.peoplesServed );
 
-  info = _d->getInfo( city, B_DOCTOR );
-  _d->lbDoctorInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 40), labelSize), B_DOCTOR,
+  info = _d->getInfo( city, building::B_DOCTOR );
+  _d->lbDoctorInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 40), labelSize), building::B_DOCTOR,
                                               info.buildingWork, info.buildingCount, info.peoplesServed );
 
-  info = _d->getInfo( city, B_HOSPITAL );
-  _d->lbDoctorInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 60), labelSize), B_HOSPITAL,
+  info = _d->getInfo( city, building::B_HOSPITAL );
+  _d->lbDoctorInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 60), labelSize), building::B_HOSPITAL,
                                           info.buildingWork, info.buildingCount, info.peoplesServed );
 
   _d->btnHelp = new TexturedButton( this, Point( 12, getHeight() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );

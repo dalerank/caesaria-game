@@ -16,6 +16,9 @@
 #include "tilemapchangecommand.hpp"
 #include "tileoverlay_factory.hpp"
 #include "building/building.hpp"
+#include "building/constants.hpp"
+
+using namespace constants;
 
 class TilemapBuildCommand::Impl
 {
@@ -58,7 +61,7 @@ TilemapChangeCommandPtr TilemapRemoveCommand::create()
   return ret;
 }
 
-TilemapChangeCommandPtr TilemapBuildCommand::create( TileOverlayType type )
+TilemapChangeCommandPtr TilemapBuildCommand::create(TileOverlay::Type type )
 {
   TilemapBuildCommand* newCommand = new TilemapBuildCommand();
   TileOverlayPtr overlay = TileOverlayFactory::getInstance().create( type );
@@ -69,14 +72,14 @@ TilemapChangeCommandPtr TilemapBuildCommand::create( TileOverlayType type )
 
   switch( type )
   {
-  case B_ROAD:
-  case B_AQUEDUCT:
+  case building::B_ROAD:
+  case building::B_AQUEDUCT:
     newCommand->_d->isBorderBuilding = true;
     newCommand->_d->isMultiBuilding = true;
     break;
 
-  case B_HOUSE:
-  case B_GARDEN:
+  case building::B_HOUSE:
+  case building::B_GARDEN:
     newCommand->_d->isMultiBuilding = true;
   break;
 

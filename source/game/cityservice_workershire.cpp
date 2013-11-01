@@ -20,12 +20,13 @@
 #include "building/prefecture.hpp"
 #include "walker/workerhunter.hpp"
 #include "core/foreach.hpp"
-
+#include "building/constants.hpp"
 #include <map>
 
+using namespace constants;
 using namespace std;
 
-typedef map< int, TileOverlayType > Priorities;
+typedef map< int, TileOverlay::Type > Priorities;
 
 class CityServiceWorkersHire::Impl
 {
@@ -47,37 +48,37 @@ CityServiceWorkersHire::CityServiceWorkersHire( CityPtr city )
 : CityService( "workershire" ), _d( new Impl )
 {
   _d->city = city;
-  _d->priorities[ 1 ] = B_PREFECTURE;
-  _d->priorities[ 2 ] = B_ENGINEER_POST;
-  _d->priorities[ 3 ] = B_CLAY_PIT;
-  _d->priorities[ 4 ] = B_WHEAT_FARM;
-  _d->priorities[ 5 ] = B_GRAPE_FARM;
-  _d->priorities[ 6 ] = B_GRANARY;
-  _d->priorities[ 7 ] = B_IRON_MINE;
-  _d->priorities[ 8 ] = B_TEMPLE_CERES;
-  _d->priorities[ 9 ] = B_POTTERY;
-  _d->priorities[ 10 ] = B_WAREHOUSE;  
-  _d->priorities[ 11 ] = B_FORUM;
-  _d->priorities[ 12 ] = B_DOCTOR;
-  _d->priorities[ 13 ] = B_HOSPITAL;
-  _d->priorities[ 14 ] = B_BARBER;
-  _d->priorities[ 15 ] = B_BATHS;
-  _d->priorities[ 16 ] = B_FRUIT_FARM;
-  _d->priorities[ 17 ] = B_OLIVE_FARM;
-  _d->priorities[ 18 ] = B_VEGETABLE_FARM;
-  _d->priorities[ 19 ] = B_PIG_FARM;
-  _d->priorities[ 20 ] = B_SENATE;
-  _d->priorities[ 21 ] = B_MARKET;
-  _d->priorities[ 22 ] = B_TIMBER_YARD;
-  _d->priorities[ 23 ] = B_MARBLE_QUARRY;
-  _d->priorities[ 24 ] = B_FURNITURE;
-  _d->priorities[ 25 ] = B_WEAPONS_WORKSHOP;
-  _d->priorities[ 26 ] = buildingTheater;
-  _d->priorities[ 27 ] = B_ACTOR_COLONY;
-  _d->priorities[ 28 ] = B_SCHOOL;
-  _d->priorities[ 29 ] = buildingAmphitheater;
-  _d->priorities[ 30 ] = B_GLADIATOR_SCHOOL;
-  _d->priorities[ 31 ] = B_WHARF;
+  _d->priorities[ 1 ] = building::B_PREFECTURE;
+  _d->priorities[ 2 ] = building::B_ENGINEER_POST;
+  _d->priorities[ 3 ] = building::B_CLAY_PIT;
+  _d->priorities[ 4 ] = building::B_WHEAT_FARM;
+  _d->priorities[ 5 ] = building::B_GRAPE_FARM;
+  _d->priorities[ 6 ] = building::B_GRANARY;
+  _d->priorities[ 7 ] = building::B_IRON_MINE;
+  _d->priorities[ 8 ] = building::B_TEMPLE_CERES;
+  _d->priorities[ 9 ] = building::B_POTTERY;
+  _d->priorities[ 10 ] = building::B_WAREHOUSE;
+  _d->priorities[ 11 ] = building::B_FORUM;
+  _d->priorities[ 12 ] = building::B_DOCTOR;
+  _d->priorities[ 13 ] = building::B_HOSPITAL;
+  _d->priorities[ 14 ] = building::B_BARBER;
+  _d->priorities[ 15 ] = building::B_BATHS;
+  _d->priorities[ 16 ] = building::B_FRUIT_FARM;
+  _d->priorities[ 17 ] = building::B_OLIVE_FARM;
+  _d->priorities[ 18 ] = building::B_VEGETABLE_FARM;
+  _d->priorities[ 19 ] = building::B_PIG_FARM;
+  _d->priorities[ 20 ] = building::B_SENATE;
+  _d->priorities[ 21 ] = building::B_MARKET;
+  _d->priorities[ 22 ] = building::B_TIMBER_YARD;
+  _d->priorities[ 23 ] = building::B_MARBLE_QUARRY;
+  _d->priorities[ 24 ] = building::B_FURNITURE;
+  _d->priorities[ 25 ] = building::B_WEAPONS_WORKSHOP;
+  _d->priorities[ 26 ] = building::theater;
+  _d->priorities[ 27 ] = building::B_ACTOR_COLONY;
+  _d->priorities[ 28 ] = building::B_SCHOOL;
+  _d->priorities[ 29 ] = building::amphitheater;
+  _d->priorities[ 30 ] = building::B_GLADIATOR_SCHOOL;
+  _d->priorities[ 31 ] = building::B_WHARF;
 }
 
 bool CityServiceWorkersHire::_haveHr( WorkingBuildingPtr building )
@@ -95,7 +96,7 @@ bool CityServiceWorkersHire::_haveHr( WorkingBuildingPtr building )
   return false;
 }
 
-void CityServiceWorkersHire::_hireByType( const TileOverlayType type )
+void CityServiceWorkersHire::_hireByType(const TileOverlay::Type type )
 {
   CityHelper hlp( _d->city );
   WorkingBuildingList buildings = hlp.find< WorkingBuilding >( type );

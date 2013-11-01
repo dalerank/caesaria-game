@@ -18,7 +18,7 @@
 
 #include "cityservice.hpp"
 #include "core/scopedptr.hpp"
-#include "enums.hpp"
+#include "gfx/tileoverlay.hpp"
 #include "core/predefinitions.hpp"
 
 class CityServiceWorkersHire : public CityService
@@ -30,7 +30,7 @@ public:
 private:
   CityServiceWorkersHire( CityPtr city );
 
-  void _hireByType( const TileOverlayType type );
+  void _hireByType( const TileOverlay::Type type );
   bool _haveHr( WorkingBuildingPtr building );
  
   class Impl;

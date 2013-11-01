@@ -24,6 +24,9 @@
 #include "game/pathway.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/logger.hpp"
+#include "game/constants.hpp"
+
+using namespace constants;
 
 class FishingBoat::Impl
 {
@@ -215,7 +218,7 @@ void FishingBoat::onNewTile()
 PathWay FishingBoat::Impl::findFishingPlace( CityPtr city, const TilePos& pos )
 {
   CityHelper helper( city );
-  FishPlaceList places = helper.find<FishPlace>( wtrFishPlace );
+  FishPlaceList places = helper.find<FishPlace>( place::fishPlace );
 
   int minDistance = 999;
   FishPlacePtr nearest;

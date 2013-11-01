@@ -22,6 +22,7 @@
 #include "walker/fishing_boat.hpp"
 #include "core/foreach.hpp"
 #include "game/goodstore.hpp"
+#include "constants.hpp"
 
 class Wharf::Impl
 {
@@ -67,7 +68,7 @@ public:
   }
 };
 
-Wharf::Wharf() : Factory(Good::none, Good::fish, B_WHARF, Size(2)), _d( new Impl )
+Wharf::Wharf() : Factory(Good::none, Good::fish, constants::building::B_WHARF, Size(2)), _d( new Impl )
 {
   // transport 52 53 54 55
   setPicture( ResourceGroup::wharf, Impl::northEastPic );

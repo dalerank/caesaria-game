@@ -138,31 +138,16 @@ public:
   CityHelper( CityPtr city ) : _city( city ) {}
 
   template< class T >
-  std::list< SmartPtr< T > > find( const TileOverlayType type=B_MAX )
+  std::list< SmartPtr< T > > find( const TileOverlay::Type type, const TileOverlay::Group group=TileOverlay::any )
   {
     std::list< SmartPtr< T > > ret;
     TileOverlayList& buildings = _city->getOverlayList();
     foreach( TileOverlayPtr item, buildings )
     {
       SmartPtr< T > b = item.as<T>();
-      if( b.isValid() && (b->getType() == type || type == B_MAX) )
-      {
-        ret.push_back( b );
-      }
-    }
-
-    return ret;
-  }
-
-  template< class T >
-  std::list< SmartPtr< T > > find( const TileOverlayGroup type )
-  {
-    std::list< SmartPtr< T > > ret;
-    TileOverlayList& overlays = _city->getOverlayList();
-    foreach( TileOverlayPtr item, overlays )
-    {
-      SmartPtr< T > b = item.as<T>();
-      if( b.isValid() && b->getClass() == type )
+      if( b.isValid()
+          && (b->getType() == type || type == TileOverlay::any)
+          && (b->getClass() == group || group == TileOverlay::any) )
       {
         ret.push_back( b );
       }

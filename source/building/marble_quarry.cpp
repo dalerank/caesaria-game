@@ -19,8 +19,9 @@
 #include "gfx/tile.hpp"
 #include "game/city.hpp"
 #include "core/gettext.hpp"
+#include "constants.hpp"
 
-MarbleQuarry::MarbleQuarry() : Factory(Good::none, Good::marble, B_MARBLE_QUARRY, Size(2) )
+MarbleQuarry::MarbleQuarry() : Factory(Good::none, Good::marble, constants::building::B_MARBLE_QUARRY, Size(2) )
 {
   _getAnimation().load( ResourceGroup::commerce, 44, 10);
   _getAnimation().setFrameDelay( 4 );

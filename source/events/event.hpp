@@ -56,8 +56,8 @@ private:
 class BuildEvent : public GameEvent
 {
 public:
-  static GameEventPtr create( const TilePos&, TileOverlayType type );
-  static GameEventPtr create(const TilePos&, TileOverlayPtr overlay );
+  static GameEventPtr create( const TilePos&, TileOverlay::Type type );
+  static GameEventPtr create( const TilePos&, TileOverlayPtr overlay );
 
   virtual void exec( Game& game );
 private:

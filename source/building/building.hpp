@@ -33,45 +33,44 @@
 #include "core/referencecounted.hpp"
 #include "core/predefinitions.hpp"
 #include "game/service.hpp"
-#include "building/metadata.hpp"
 
 class Building : public Construction
 {
 public:
-   Building(const TileOverlayType type, const Size& size=Size(1) );
-   virtual void initTerrain(Tile& terrain);
+  Building(const Type type, const Size& size=Size(1) );
+  virtual void initTerrain(Tile& terrain);
 
-   virtual void timeStep(const unsigned long time);
-   virtual void storeGoods(GoodStock &stock, const int amount = -1);
-   // evaluate the given service
-   virtual float evaluateService(ServiceWalkerPtr walker);
-   // handle service reservation
-   void reserveService(const Service::Type service);
-   void cancelService(const Service::Type service);
-   virtual void applyService( ServiceWalkerPtr walker);
-   // evaluate the need for the given trainee
-   virtual float evaluateTrainee(const WalkerType traineeType);  // returns >0 if trainee is needed
-   void reserveTrainee(const WalkerType traineeType); // trainee will come
-   void cancelTrainee(const WalkerType traineeType);  // trainee will not come
-   void applyTrainee(const WalkerType traineeType); // trainee arrives
+  virtual void timeStep(const unsigned long time);
+  virtual void storeGoods(GoodStock &stock, const int amount = -1);
+  // evaluate the given service
+  virtual float evaluateService(ServiceWalkerPtr walker);
+  // handle service reservation
+  void reserveService(const Service::Type service);
+  void cancelService(const Service::Type service);
+  virtual void applyService( ServiceWalkerPtr walker);
+  // evaluate the need for the given trainee
+  virtual float evaluateTrainee(const WalkerType traineeType);  // returns >0 if trainee is needed
+  void reserveTrainee(const WalkerType traineeType); // trainee will come
+  void cancelTrainee(const WalkerType traineeType);  // trainee will not come
+  void applyTrainee(const WalkerType traineeType); // trainee arrives
 
-   float getDamageLevel();
-   void  setDamageLevel(const float value);
-   float getFireLevel();
-   void  setFireLevel(const float value);
+  float getDamageLevel();
+  void  setDamageLevel(const float value);
+  float getFireLevel();
+  void  setFireLevel(const float value);
 
-   void save( VariantMap& stream) const;
-   void load( const VariantMap& stream);
+  void save( VariantMap& stream) const;
+  void load( const VariantMap& stream);
 
 protected:
-   float _damageLevel;  // >100 => building is destroyed
-   float _fireLevel;    // >100 => building catch fire
-   float _damageIncrement;
-   float _fireIncrement;
-   typedef std::map<WalkerType, int> TraineeMap;
-   std::set<Service::Type> _reservedServices;  // a serviceWalker is on the way
-   TraineeMap _traineeMap;  // current level of trainees working in the building (0..200)
-   std::set<WalkerType> _reservedTrainees;  // a trainee is on the way
+  float _damageLevel;  // >100 => building is destroyed
+  float _fireLevel;    // >100 => building catch fire
+  float _damageIncrement;
+  float _fireIncrement;
+  typedef std::map<WalkerType, int> TraineeMap;
+  std::set<Service::Type> _reservedServices;  // a serviceWalker is on the way
+  TraineeMap _traineeMap;  // current level of trainees working in the building (0..200)
+  std::set<WalkerType> _reservedTrainees;  // a trainee is on the way
 };
 
 //operator need for std::reset

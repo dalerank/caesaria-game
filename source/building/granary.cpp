@@ -20,6 +20,7 @@
 #include "walker/cart_pusher.hpp"
 #include "game/goodstore_simple.hpp"
 #include "game/city.hpp"
+#include "constants.hpp"
 
 class GranaryGoodStore : public SimpleGoodStore
 {
@@ -83,7 +84,7 @@ public:
   bool devastateThis;
 };
 
-Granary::Granary() : WorkingBuilding( B_GRANARY, Size(3) ), _d( new Impl )
+Granary::Granary() : WorkingBuilding( constants::building::B_GRANARY, Size(3) ), _d( new Impl )
 {
   _d->goodStore.granary = this;
 

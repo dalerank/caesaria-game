@@ -15,8 +15,11 @@
 
 #include "education.hpp"
 #include "game/resourcegroup.hpp"
+#include "building/constants.hpp"
 
-School::School() : ServiceBuilding(Service::school, B_SCHOOL, Size(2))
+using namespace constants;
+
+School::School() : ServiceBuilding(Service::school, building::B_SCHOOL, Size(2))
 {
   setPicture( ResourceGroup::commerce, 83 );
 }
@@ -42,7 +45,7 @@ unsigned int School::getWalkerDistance() const
   return 26;
 }
 
-Library::Library() : ServiceBuilding(Service::library, B_LIBRARY, Size(2))
+Library::Library() : ServiceBuilding(Service::library, building::B_LIBRARY, Size(2))
 {
   setPicture( ResourceGroup::commerce, 84 );
 }
@@ -52,7 +55,7 @@ int Library::getVisitorsNumber() const
   return 800;
 }
 
-College::College() : ServiceBuilding(Service::college, B_COLLEGE, Size(3))
+College::College() : ServiceBuilding(Service::college, building::B_COLLEGE, Size(3))
 {
   setPicture( ResourceGroup::commerce, 85 );
 }

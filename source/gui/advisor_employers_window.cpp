@@ -28,6 +28,9 @@
 #include "game/cityfunds.hpp"
 #include "game/settings.hpp"
 #include "game/empire.hpp"
+#include "building/constants.hpp"
+
+using namespace constants;
 
 namespace gui
 {
@@ -73,7 +76,7 @@ private:
 class AdvisorEmployerWindow::Impl
 {
 public:
-  typedef std::vector< TileOverlayType > BldTypes;
+  typedef std::vector< TileOverlay::Type > BldTypes;
   enum PriorityIndex
   {
     prIndustryAndTrade=0,
@@ -177,26 +180,26 @@ void AdvisorEmployerWindow::Impl::updateSalaryLabel()
 
 AdvisorEmployerWindow::Impl::EmployersInfo AdvisorEmployerWindow::Impl::getEmployersInfo( PriorityIndex type )
 {
-  std::vector< TileOverlayGroup > bldClasses;
+  std::vector< TileOverlay::Group > bldClasses;
   switch( type )
   {
-  case prIndustryAndTrade: bldClasses.push_back( BC_INDUSTRY ); bldClasses.push_back( BC_TRADE ); break;
-  case prFood: bldClasses.push_back( BC_FOOD ); break;
-  case prEngineers: bldClasses.push_back( BC_ENGINEERING ); break;
-  case prWater: bldClasses.push_back( BC_WATER ); break;
-  case prPrefectures: bldClasses.push_back( BC_SECURITY ); break;
-  case prMilitary: bldClasses.push_back( BC_MILITARY ); break;
-  case prEntertainment: bldClasses.push_back( BC_ENTERTAINMENT ); break;
-  case prHealthAndEducation: bldClasses.push_back( BC_HEALTH ); bldClasses.push_back( BC_EDUCATUION ); break;
-  case prAdministrationAndReligion: bldClasses.push_back( BC_ADMINISTRATION ); bldClasses.push_back( BC_RELIGION ); break;
+  case prIndustryAndTrade: bldClasses.push_back( building::BC_INDUSTRY ); bldClasses.push_back( building::BC_TRADE ); break;
+  case prFood: bldClasses.push_back( building::BC_FOOD ); break;
+  case prEngineers: bldClasses.push_back( building::BC_ENGINEERING ); break;
+  case prWater: bldClasses.push_back( building::BC_WATER ); break;
+  case prPrefectures: bldClasses.push_back( building::BC_SECURITY ); break;
+  case prMilitary: bldClasses.push_back( building::BC_MILITARY ); break;
+  case prEntertainment: bldClasses.push_back( building::BC_ENTERTAINMENT ); break;
+  case prHealthAndEducation: bldClasses.push_back( building::BC_HEALTH ); bldClasses.push_back( building::BC_EDUCATUION ); break;
+  case prAdministrationAndReligion: bldClasses.push_back( building::BC_ADMINISTRATION ); bldClasses.push_back( building::BC_RELIGION ); break;
   default: break;
   }
 
   WorkingBuildingList buildings;
   CityHelper helper( city );
-  foreach( TileOverlayGroup cl, bldClasses )
+  foreach( TileOverlay::Group cl, bldClasses )
   {
-    WorkingBuildingList sectorBuildings = helper.find<WorkingBuilding>( cl );
+    WorkingBuildingList sectorBuildings = helper.find<WorkingBuilding>( TileOverlay::any, cl );
     buildings.insert( buildings.begin(), sectorBuildings.begin(), sectorBuildings.end() );
   }
 

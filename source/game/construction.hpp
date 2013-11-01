@@ -31,7 +31,7 @@
 class Construction : public TileOverlay
 {
 public:
-  Construction( const TileOverlayType type, const Size& size );
+  Construction( const TileOverlay::Type type, const Size& size );
 
   virtual bool canBuild( CityPtr city, const TilePos& pos ) const;  // returns true if it can be built there
   virtual std::string getError() const;
@@ -42,7 +42,7 @@ public:
   virtual const TilemapTiles& getAccessRoads() const;  // return all road tiles adjacent to the construction
   virtual void computeAccessRoads();  
   virtual int  getMaxDistance2Road() const; // virtual because HOUSE has different behavior
-  virtual const BuildingData::Desirability& getDesirabilityInfo() const;
+  virtual const MetaData::Desirability& getDesirabilityInfo() const;
   virtual void destroy();
 
 protected:

@@ -20,6 +20,7 @@
 #include "core/scopedptr.hpp"
 #include "game/enums.hpp"
 #include "core/variant.hpp"
+#include "gfx/tileoverlay.hpp"
 
 class CityBuildOptions : public ReferenceCounted
 {
@@ -27,10 +28,10 @@ public:
   CityBuildOptions();
   ~CityBuildOptions();
 
-  void setBuildingAvailble( const TileOverlayType type, bool mayBuild );
+  void setBuildingAvailble( const TileOverlay::Type type, bool mayBuild );
   void setIndustryAvaible( const BuildMenuType type, bool mayBuild );
 
-  bool isBuildingAvailble( const TileOverlayType type ) const;
+  bool isBuildingAvailble( const TileOverlay::Type type ) const;
 
   void clear();
 

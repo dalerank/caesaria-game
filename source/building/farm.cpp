@@ -24,6 +24,9 @@
 #include "game/tilemap.hpp"
 #include "core/gettext.hpp"
 #include "core/logger.hpp"
+#include "constants.hpp"
+
+using namespace constants;
 
 class FarmTile
 {
@@ -86,7 +89,7 @@ public:
   Picture pictureBuilding;  // we need to change its offset
 };
 
-Farm::Farm(const Good::Type outGood, const TileOverlayType type )
+Farm::Farm(const Good::Type outGood, const Type type )
   : Factory( Good::none, outGood, type, Size(3) ), _d( new Impl )
 {
   _d->pictureBuilding = Picture::load( ResourceGroup::commerce, 12);  // farm building
@@ -184,26 +187,26 @@ Farm::~Farm()
 
 }
 
-FarmWheat::FarmWheat() : Farm(Good::wheat, B_WHEAT_FARM)
+FarmWheat::FarmWheat() : Farm(Good::wheat, building::B_WHEAT_FARM)
 {
 }
 
-FarmOlive::FarmOlive() : Farm(Good::olive, B_OLIVE_FARM)
+FarmOlive::FarmOlive() : Farm(Good::olive, building::B_OLIVE_FARM)
 {
 }
 
-FarmGrape::FarmGrape() : Farm(Good::grape, B_GRAPE_FARM)
+FarmGrape::FarmGrape() : Farm(Good::grape, building::B_GRAPE_FARM)
 {
 }
 
-FarmMeat::FarmMeat() : Farm(Good::meat, B_PIG_FARM)
+FarmMeat::FarmMeat() : Farm(Good::meat, building::B_PIG_FARM)
 {
 }
 
-FarmFruit::FarmFruit() : Farm(Good::fruit, B_FRUIT_FARM)
+FarmFruit::FarmFruit() : Farm(Good::fruit, building::B_FRUIT_FARM)
 {
 }
 
-FarmVegetable::FarmVegetable() : Farm(Good::vegetable, B_VEGETABLE_FARM)
+FarmVegetable::FarmVegetable() : Farm(Good::vegetable, building::B_VEGETABLE_FARM)
 {
 }

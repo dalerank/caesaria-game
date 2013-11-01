@@ -16,14 +16,17 @@
 #include "build_options.hpp"
 #include "building/metadata.hpp"
 #include "core/foreach.hpp"
+#include "building/constants.hpp"
 #include <map>
+
+using namespace constants;
 
 static const char* disableAll = "disable_all";
 
 class CityBuildOptions::Impl
 {
 public:
-  typedef std::map< TileOverlayType, bool > BuildingRules;
+  typedef std::map< TileOverlay::Type, bool > BuildingRules;
   BuildingRules rules;
 };
 
@@ -37,7 +40,7 @@ CityBuildOptions::~CityBuildOptions()
 
 }
 
-void CityBuildOptions::setBuildingAvailble( const TileOverlayType type, bool mayBuild )
+void CityBuildOptions::setBuildingAvailble( const TileOverlay::Type type, bool mayBuild )
 {
   _d->rules[ type ] = mayBuild;
 }
@@ -47,20 +50,20 @@ void CityBuildOptions::setIndustryAvaible( const BuildMenuType type, bool mayBui
   switch( type )
   {
   case BM_FARM:
-    _d->rules[ B_OLIVE_FARM ] = mayBuild; _d->rules[ B_WHEAT_FARM ] = mayBuild;
-    _d->rules[ B_FRUIT_FARM ] = mayBuild; _d->rules[ B_VEGETABLE_FARM ] = mayBuild;
-    _d->rules[ B_GRAPE_FARM ] = mayBuild; _d->rules[ B_PIG_FARM ] = mayBuild;
+    _d->rules[ building::B_OLIVE_FARM ] = mayBuild; _d->rules[ building::B_WHEAT_FARM ] = mayBuild;
+    _d->rules[ building::B_FRUIT_FARM ] = mayBuild; _d->rules[ building::B_VEGETABLE_FARM ] = mayBuild;
+    _d->rules[ building::B_GRAPE_FARM ] = mayBuild; _d->rules[ building::B_PIG_FARM ] = mayBuild;
   break;
 
   case BM_RAW_MATERIAL:
-    _d->rules[ B_MARBLE_QUARRY ] = mayBuild; _d->rules[ B_IRON_MINE ] = mayBuild;
-    _d->rules[ B_TIMBER_YARD ] = mayBuild; _d->rules[ B_CLAY_PIT ] = mayBuild;
+    _d->rules[ building::B_MARBLE_QUARRY ] = mayBuild; _d->rules[ building::B_IRON_MINE ] = mayBuild;
+    _d->rules[ building::B_TIMBER_YARD ] = mayBuild; _d->rules[ building::B_CLAY_PIT ] = mayBuild;
   break;
 
   case BM_FACTORY:
-    _d->rules[ B_WINE_WORKSHOP ] = mayBuild; _d->rules[ B_OIL_WORKSHOP ] = mayBuild;
-    _d->rules[ B_WEAPONS_WORKSHOP ] = mayBuild; _d->rules[ B_FURNITURE ] = mayBuild;
-    _d->rules[ B_POTTERY ] = mayBuild; 
+    _d->rules[ building::B_WINE_WORKSHOP ] = mayBuild; _d->rules[ building::B_OIL_WORKSHOP ] = mayBuild;
+    _d->rules[ building::B_WEAPONS_WORKSHOP ] = mayBuild; _d->rules[ building::B_FURNITURE ] = mayBuild;
+    _d->rules[ building::B_POTTERY ] = mayBuild;
   break;
 
   default:
@@ -87,7 +90,7 @@ void CityBuildOptions::load(const VariantMap& options)
   VariantMap buildings = options.get( "buildings" ).toMap();
   foreach( VariantMap::value_type& item, buildings )
   {
-    TileOverlayType btype = BuildingDataHolder::getType( item.first );
+    TileOverlay::Type btype = MetaDataHolder::getType( item.first );
     setBuildingAvailble( btype, item.second.toBool() );
   }
 }
@@ -99,7 +102,7 @@ CityBuildOptions& CityBuildOptions::operator=(const CityBuildOptions& a)
   return *this;
 }
 
-bool CityBuildOptions::isBuildingAvailble( const TileOverlayType type ) const
+bool CityBuildOptions::isBuildingAvailble(const TileOverlay::Type type ) const
 {
   Impl::BuildingRules::iterator it = _d->rules.find( type );
   return (it != _d->rules.end() ? (*it).second : true);

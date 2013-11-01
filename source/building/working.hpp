@@ -22,7 +22,7 @@
 class WorkingBuilding : public Building
 {
 public:
-  WorkingBuilding(const TileOverlayType type, const Size& size);
+  WorkingBuilding(const TileOverlay::Type type, const Size& size);
   ~WorkingBuilding();
 
   void setMaxWorkers(const int maxWorkers);

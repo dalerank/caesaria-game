@@ -62,8 +62,10 @@
 #include "cityservice_roads.hpp"
 #include "cityservice_fishplace.hpp"
 #include "core/logger.hpp"
-
+#include "building/constants.hpp"
 #include <set>
+
+using namespace constants;
 
 typedef std::vector< CityServicePtr > CityServices;
 
@@ -219,7 +221,7 @@ void City::timeStep( unsigned int time )
         // overlay matches the filter
         construction->computeAccessRoads();
         // for some constructions we need to update picture
-        if( construction->getType() == B_ROAD ) 
+        if( construction->getType() == building::B_ROAD )
         {
           RoadPtr road = construction.as<Road>();
           road->updatePicture();
@@ -306,14 +308,14 @@ void City::Impl::collectTaxes( CityPtr city )
   lastMonthTax = 0;
   lastMonthTaxpayer = 0;
   
-  ForumList forums = hlp.find< Forum >( B_FORUM );
+  ForumList forums = hlp.find< Forum >( building::B_FORUM );
   foreach( ForumPtr forum, forums )
   {
     lastMonthTaxpayer += forum->getPeoplesReached();
     lastMonthTax += forum->collectTaxes();
   }
 
-  std::list<SenatePtr> senates = hlp.find< Senate >( B_SENATE );
+  std::list<SenatePtr> senates = hlp.find< Senate >( building::B_SENATE );
   foreach( SenatePtr senate, senates )
   {
     lastMonthTaxpayer += senate->getPeoplesReached();
@@ -335,7 +337,7 @@ void City::Impl::calculatePopulation( CityPtr city )
   
   CityHelper helper( city );
 
-  HouseList houseList = helper.find<House>( B_HOUSE );
+  HouseList houseList = helper.find<House>( building::B_HOUSE );
   foreach( HousePtr house, houseList)
   {
     pop += house->getHabitants().count();
@@ -480,10 +482,10 @@ void City::load( const VariantMap& stream )
     VariantMap overlayParams = item.second.toMap();
     VariantList config = overlayParams.get( "config" ).toList();
 
-    int overlayType = (int)config.get( 0 );
+    TileOverlay::Type overlayType = (TileOverlay::Type)config.get( 0 ).toInt();
     TilePos pos = config.get( 2, TilePos( -1, -1 ) ).toTilePos();
 
-    TileOverlayPtr overlay = TileOverlayFactory::getInstance().create( TileOverlayType( overlayType ) );
+    TileOverlayPtr overlay = TileOverlayFactory::getInstance().create( overlayType );
     if( overlay.isValid() && pos.getI() >= 0 )
     {
       overlay->build( this, pos );
@@ -697,7 +699,7 @@ void CityHelper::updateDesirability( ConstructionPtr construction, bool onBuild 
 {
   Tilemap& tilemap = _city->getTilemap();
 
-  const BuildingData::Desirability dsrbl = construction->getDesirabilityInfo();
+  const MetaData::Desirability dsrbl = construction->getDesirabilityInfo();
   int mul = ( onBuild ? 1 : -1);
 
   //change desirability in selfarea

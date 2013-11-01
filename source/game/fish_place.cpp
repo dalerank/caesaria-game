@@ -20,6 +20,7 @@
 #include "astarpathfinding.hpp"
 #include "pathway.hpp"
 #include "walker/walker.hpp"
+#include "constants.hpp"
 
 class FishPlace::Impl
 {
@@ -30,7 +31,7 @@ public:
   Point basicOffset;
 };
 
-FishPlace::FishPlace() : TileOverlay( wtrFishPlace ), _d( new Impl )
+FishPlace::FishPlace() : TileOverlay( constants::place::fishPlace ), _d( new Impl )
 {
   _getAnimation().setFrameDelay( 3 );
   _getForegroundPictures().resize( 1 );

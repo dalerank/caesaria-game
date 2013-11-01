@@ -364,7 +364,7 @@ void Game::initialize()
   NameGenerator::initialize( GameSettings::rcpath( GameSettings::ctNamesModel ) );
   HouseSpecHelper::getInstance().initialize( GameSettings::rcpath( GameSettings::houseModel ) );
   DivinePantheon::getInstance().initialize(  GameSettings::rcpath( GameSettings::pantheonModel ) );
-  BuildingDataHolder::instance().initialize( GameSettings::rcpath( GameSettings::constructionModel ) );
+  MetaDataHolder::instance().initialize( GameSettings::rcpath( GameSettings::constructionModel ) );
 }
 
 void Game::exec()

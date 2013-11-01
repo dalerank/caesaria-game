@@ -19,6 +19,9 @@
 #include "path_finding.hpp"
 #include "tilemap.hpp"
 #include "road.hpp"
+#include "building/constants.hpp"
+
+using namespace constants;
 
 class CityServiceRoads::Impl
 {
@@ -59,12 +62,12 @@ void CityServiceRoads::update( const unsigned int time )
 
   _d->lastTimeUpdate = GameDate::current();
 
-  std::vector< TileOverlayType > btypes;
-  btypes.push_back( B_SENATE );
+  std::vector< TileOverlay::Type > btypes;
+  btypes.push_back( building::B_SENATE );
 
   CityHelper helper( _d->city );
 
-  foreach( TileOverlayType type, btypes )
+  foreach( TileOverlay::Type type, btypes )
   {
     BuildingList buildings = helper.find<Building>( type );
 
@@ -76,7 +79,7 @@ void CityServiceRoads::update( const unsigned int time )
 
   if( _d->lastTimeUpdate.getMonth() % 3 == 1 )
   {
-    RoadList roads = helper.find<Road>( B_ROAD );
+    RoadList roads = helper.find<Road>( building::B_ROAD );
     foreach( RoadPtr road, roads )
     {
       road->appendPaved( _d->defaultDecreasePaved );

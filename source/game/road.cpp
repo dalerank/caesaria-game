@@ -19,8 +19,11 @@
 #include "building/watersupply.hpp"
 #include "city.hpp"
 #include "tilemap.hpp"
+#include "constants.hpp"
 
-Road::Road() : Construction( B_ROAD, Size(1) )
+using namespace constants;
+
+Road::Road() : Construction( building::B_ROAD, Size(1) )
 {
   _paved = 0;
 }
@@ -217,7 +220,7 @@ Plaza::Plaza()
   // because as we remove original road we need to recompute adjacent tiles
   // or we will run into big troubles
 
-  setType(B_PLAZA);
+  setType(building::B_PLAZA);
   setPicture(computePicture()); // 102 ~ 107
   setSize( Size( 1 ) );
 }

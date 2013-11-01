@@ -21,6 +21,7 @@
 #include "gfx/tile.hpp"
 #include "tileoverlay_factory.hpp"
 #include "fish_place.hpp"
+#include "constants.hpp"
 
 class CityServiceFishPlace::Impl
 {
@@ -46,7 +47,7 @@ CityServiceFishPlace::CityServiceFishPlace( CityPtr city )
   _d->maxFishPlace = 1;
 
   CityHelper helper( city );
-  _d->places = helper.find<FishPlace>( wtrFishPlace );
+  _d->places = helper.find<FishPlace>( constants::place::fishPlace );
 }
 
 void CityServiceFishPlace::update( const unsigned int time )
@@ -56,7 +57,7 @@ void CityServiceFishPlace::update( const unsigned int time )
 
   while( _d->places.size() < _d->maxFishPlace )
   {
-    TileOverlayPtr fishplace = TileOverlayFactory::getInstance().create( wtrFishPlace );
+    TileOverlayPtr fishplace = TileOverlayFactory::getInstance().create( constants::place::fishPlace );
 
     if( fishplace != 0 )
     {

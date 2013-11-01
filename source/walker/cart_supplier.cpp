@@ -29,6 +29,9 @@
 #include "building/factory.hpp"
 #include "game/name_generator.hpp"
 #include "game/goodstore.hpp"
+#include "building/constants.hpp"
+
+using namespace constants;
 
 class CartSupplier::Impl
 {
@@ -162,7 +165,7 @@ void CartSupplier::getPictureList(std::vector<Picture> &oPics)
 }
 
 template< class T >
-TilePos getSupplierDestination2( Propagator &pathPropagator, const TileOverlayType type, 
+TilePos getSupplierDestination2( Propagator &pathPropagator, const TileOverlay::Type type,
                                  const Good::Type what, const int needQty,
                                  PathWay &oPathWay, long& reservId )
 {
@@ -219,13 +222,13 @@ void CartSupplier::computeWalkerDestination(BuildingPtr building, const Good::Ty
   pathPropagator.propagate( _d->maxDistance);
 
   // try get that good from a granary
-  _d->storageBuildingPos = getSupplierDestination2<Granary>( pathPropagator, B_GRANARY,
+  _d->storageBuildingPos = getSupplierDestination2<Granary>( pathPropagator, building::B_GRANARY,
                                                              type, qty, pathWay, _d->reservationID );
 
   if( _d->storageBuildingPos.getI() < 0 )
   {
     // try get that good from a warehouse
-    _d->storageBuildingPos = getSupplierDestination2<Warehouse>( pathPropagator, B_WAREHOUSE,
+    _d->storageBuildingPos = getSupplierDestination2<Warehouse>( pathPropagator, building::B_WAREHOUSE,
                                                                  type, qty, pathWay, _d->reservationID );
   }
 

@@ -28,6 +28,9 @@
 #include "game/tilemap.hpp"
 #include "events/event.hpp"
 #include "core/logger.hpp"
+#include "building/constants.hpp"
+
+using namespace constants;
 
 class Merchant::Impl
 {
@@ -71,7 +74,7 @@ Propagator::DirectRoute getWarehouse4Buys( Propagator &pathPropagator,
                                            SimpleGoodStore& basket )
 {
   Propagator::Routes pathWayList;
-  pathPropagator.getRoutes( B_WAREHOUSE, pathWayList);
+  pathPropagator.getRoutes( building::B_WAREHOUSE, pathWayList);
 
   std::map< int, Propagator::DirectRoute > warehouseRating;
 
@@ -105,7 +108,7 @@ Propagator::DirectRoute getWarehouse4Sells( Propagator &pathPropagator,
                                             SimpleGoodStore& basket )
 {
   Propagator::Routes pathWayList;
-  pathPropagator.getRoutes( B_WAREHOUSE, pathWayList);
+  pathPropagator.getRoutes( building::B_WAREHOUSE, pathWayList);
 
   // select the warehouse with the max quantity of requested goods
   Propagator::Routes::iterator pathWayIt = pathWayList.begin(); 
@@ -150,7 +153,7 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
 
       if( !route.first.isValid() )
       {
-        route = pathPropagator.getShortestRoute( B_WAREHOUSE );
+        route = pathPropagator.getShortestRoute( building::B_WAREHOUSE );
       }
 
       if( route.first.isValid()  )
@@ -212,7 +215,7 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
       if( warehouse.isValid() )
       {
         std::map< Good::Type, int > cityGoodsAvailable;
-        WarehouseList warehouses = helper.find<Warehouse>( B_WAREHOUSE );
+        WarehouseList warehouses = helper.find<Warehouse>( building::B_WAREHOUSE );
         foreach( WarehousePtr wh, warehouses )
         {
           for( int i=Good::wheat; i < Good::goodCount; i++ )

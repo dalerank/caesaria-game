@@ -22,7 +22,7 @@
 #include "game/city.hpp"
 #include "events/event.hpp"
 
-Construction::Construction( const TileOverlayType type, const Size& size)
+Construction::Construction(const Type type, const Size& size)
 : TileOverlay( type, size )
 {
 }
@@ -107,9 +107,9 @@ void Construction::collapse()
   event->dispatch();
 }
 
-const BuildingData::Desirability& Construction::getDesirabilityInfo() const
+const MetaData::Desirability& Construction::getDesirabilityInfo() const
 {
-  return BuildingDataHolder::instance().getData( getType() ).getDesirbilityInfo();
+  return MetaDataHolder::instance().getData( getType() ).getDesirbilityInfo();
 }
 
 void Construction::destroy()

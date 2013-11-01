@@ -34,6 +34,9 @@
 #include "game/name_generator.hpp"
 #include "game/tilemap.hpp"
 #include "core/logger.hpp"
+#include "building/constants.hpp"
+
+using namespace constants;
 
 class CartPusher::Impl
 {
@@ -230,7 +233,7 @@ void CartPusher::computeWalkerDestination()
 }
 
 template< class T >
-BuildingPtr reserveShortestPath( const TileOverlayType buildingType, 
+BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
                                  GoodStock& stock, long& reservationID,
                                  Propagator &pathPropagator, PathWay &oPathWay )
 {
@@ -290,9 +293,9 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_factory(Propagator &pathPropa
 {
   BuildingPtr res;
   Good::Type goodType = stock.type();
-  TileOverlayType buildingType = BuildingDataHolder::instance().getConsumerType( goodType );
+  TileOverlay::Type buildingType = MetaDataHolder::instance().getConsumerType( goodType );
 
-  if (buildingType == unknown)
+  if (buildingType == building::unknown)
   {
      // no factory can use this good
      return 0;
@@ -307,7 +310,7 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_warehouse(Propagator &pathPro
 {
   BuildingPtr res;
 
-  res = reserveShortestPath<Warehouse>( B_WAREHOUSE, stock, reservationID, pathPropagator, oPathWay );
+  res = reserveShortestPath<Warehouse>( building::B_WAREHOUSE, stock, reservationID, pathPropagator, oPathWay );
 
   return res;
 }
@@ -324,7 +327,7 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_granary(Propagator &pathPropa
       return 0;
    }
 
-   res = reserveShortestPath<Granary>( B_GRANARY, stock, reservationID, pathPropagator, oPathWay );
+   res = reserveShortestPath<Granary>( building::B_GRANARY, stock, reservationID, pathPropagator, oPathWay );
 
    return res;
 }

@@ -16,9 +16,10 @@
 #include "engineer_post.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/position.hpp"
+#include "building/constants.hpp"
 
 
-BuildingEngineer::BuildingEngineer() : ServiceBuilding( Service::engineer, B_ENGINEER_POST, Size(1) )
+BuildingEngineer::BuildingEngineer() : ServiceBuilding( Service::engineer, constants::building::B_ENGINEER_POST, Size(1) )
 {
   setPicture( ResourceGroup::buildingEngineer, 56 );
 

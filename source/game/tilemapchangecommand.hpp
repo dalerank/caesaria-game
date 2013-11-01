@@ -35,7 +35,7 @@ typedef SmartPtr< TilemapChangeCommand > TilemapChangeCommandPtr;
 class TilemapBuildCommand : public TilemapChangeCommand
 {
 public:
-  static TilemapChangeCommandPtr create( TileOverlayType type );
+  static TilemapChangeCommandPtr create( TileOverlay::Type type );
 
   ConstructionPtr getContruction() const;
   bool isBorderBuilding() const;

@@ -20,8 +20,9 @@
 #include "core/foreach.hpp"
 #include "game/tilemap.hpp"
 #include "core/gettext.hpp"
+#include "building/constants.hpp"
 
-ClayPit::ClayPit() : Factory( Good::none, Good::clay, B_CLAY_PIT, Size(2) )
+ClayPit::ClayPit() : Factory( Good::none, Good::clay, constants::building::B_CLAY_PIT, Size(2) )
 {
   _getAnimation().load( ResourceGroup::commerce, 62, 10);
   _getAnimation().setFrameDelay( 3 );

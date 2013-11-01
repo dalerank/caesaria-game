@@ -34,6 +34,9 @@
 #include "game/divinity.hpp"
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
+#include "building/constants.hpp"
+
+using namespace constants;
 
 namespace gui
 {
@@ -51,7 +54,7 @@ class EntertainmentInfoLabel : public Label
 {
 public:
   EntertainmentInfoLabel( Widget* parent, const Rect& rect,
-                          const TileOverlayType service, InfrastructureInfo info  )
+                          const TileOverlay::Type service, InfrastructureInfo info  )
     : Label( parent, rect )
   {
     _service = service;
@@ -72,10 +75,10 @@ public:
     std::string buildingStr, peoplesStr;
     switch( _service )
     {
-    case buildingTheater: buildingStr = _("##theaters##"); peoplesStr = _("##peoples##"); break;
-    case buildingAmphitheater: buildingStr = _("##amphitheatres##"); peoplesStr = _("##peoples##"); break;
-    case B_COLLOSSEUM: buildingStr = _("##colloseum##"); peoplesStr = _("##peoples##"); break;
-    case B_HIPPODROME: buildingStr = _("##hippodromes##"); peoplesStr = "-"; break;
+    case building::theater: buildingStr = _("##theaters##"); peoplesStr = _("##peoples##"); break;
+    case building::amphitheater: buildingStr = _("##amphitheatres##"); peoplesStr = _("##peoples##"); break;
+    case building::B_COLLOSSEUM: buildingStr = _("##colloseum##"); peoplesStr = _("##peoples##"); break;
+    case building::B_HIPPODROME: buildingStr = _("##hippodromes##"); peoplesStr = "-"; break;
     default:
     break;
     }
@@ -89,7 +92,7 @@ public:
   }
 
 private:
-  TileOverlayType _service;
+  TileOverlay::Type _service;
   InfrastructureInfo _info;
 };
 
@@ -110,7 +113,7 @@ public:
   Label* lbMonthFromLastFestival;
   SmartPtr<CityServiceFestival> srvc;
 
-  InfrastructureInfo getInfo( CityPtr city, const TileOverlayType service );
+  InfrastructureInfo getInfo( CityPtr city, const TileOverlay::Type service );
   void assignFestival(int divinityType, int festSize);
   void updateInfo();
   void updateFestivalInfo();
@@ -137,17 +140,17 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow( CityPtr city, Widget* pa
   Point startPoint( 2, 2 );
   Size labelSize( 550, 20 );
   InfrastructureInfo info;
-  info = _d->getInfo( city, buildingTheater );
-  _d->lbTheatresInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint, labelSize ), buildingTheater, info );
+  info = _d->getInfo( city, building::theater );
+  _d->lbTheatresInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint, labelSize ), building::theater, info );
 
-  info = _d->getInfo( city, buildingAmphitheater );
-  _d->lbAmphitheatresInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 20), labelSize), buildingAmphitheater,
+  info = _d->getInfo( city, building::amphitheater );
+  _d->lbAmphitheatresInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 20), labelSize), building::amphitheater,
                                                         info );
-  info = _d->getInfo( city, B_COLLOSSEUM );
-  _d->lbColisseumInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 40), labelSize), B_COLLOSSEUM, info );
+  info = _d->getInfo( city, building::B_COLLOSSEUM );
+  _d->lbColisseumInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 40), labelSize), building::B_COLLOSSEUM, info );
 
-  info = _d->getInfo( city, B_HIPPODROME );
-  _d->lbHippodromeInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 60), labelSize), B_HIPPODROME, info );
+  info = _d->getInfo( city, building::B_HIPPODROME );
+  _d->lbHippodromeInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 60), labelSize), building::B_HIPPODROME, info );
 
   CONNECT( _d->btnNewFestival, onClicked(), this, AdvisorEntertainmentWindow::_showFestivalWindow );
 
@@ -169,7 +172,7 @@ void AdvisorEntertainmentWindow::_showFestivalWindow()
   CONNECT( wnd, onFestivalAssign(), _d.data(), Impl::assignFestival );
 }
 
-InfrastructureInfo AdvisorEntertainmentWindow::Impl::getInfo(CityPtr city, const TileOverlayType service)
+InfrastructureInfo AdvisorEntertainmentWindow::Impl::getInfo(CityPtr city, const TileOverlay::Type service)
 {
   CityHelper helper( city );
 
@@ -191,9 +194,9 @@ InfrastructureInfo AdvisorEntertainmentWindow::Impl::getInfo(CityPtr city, const
       int maxServing = 0;
       switch( service )
       {
-      case buildingTheater: maxServing = 500; break;
-      case buildingAmphitheater: maxServing = 800; break;
-      case B_COLLOSSEUM: maxServing = 1500; break;
+      case building::theater: maxServing = 500; break;
+      case building::amphitheater: maxServing = 800; break;
+      case building::B_COLLOSSEUM: maxServing = 1500; break;
       default:
       break;
       }
@@ -231,7 +234,7 @@ void AdvisorEntertainmentWindow::Impl::updateInfo()
   int theatersServed = 0, amptServed = 0, clsServed = 0, hpdServed = 0;
   int nextLevel = 0;
 
-  HouseList houses = helper.find<House>( B_HOUSE );
+  HouseList houses = helper.find<House>( building::B_HOUSE );
   foreach( HousePtr house, houses )
   {
     int habitants = house->getHabitants().count( CitizenGroup::mature );
@@ -278,7 +281,7 @@ void AdvisorEntertainmentWindow::Impl::updateInfo()
   if( amthInfo.partlyWork > 0 ) { troubles.push_back( "##some_amphitheaters_no_actors##" ); }
   if( clsInfo.partlyWork > 0 ) { troubles.push_back( "##small_colloseum_show##" ); }
 
-  HippodromeList hippodromes = helper.find<Hippodrome>( B_HIPPODROME );
+  HippodromeList hippodromes = helper.find<Hippodrome>( building::B_HIPPODROME );
   foreach( HippodromePtr h, hippodromes )
   {
     if( h->evaluateTrainee( WT_CHARIOT ) == 100 ) { troubles.push_back( "##no_chariots##" ); }

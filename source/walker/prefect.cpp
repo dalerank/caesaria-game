@@ -26,6 +26,9 @@
 #include "core/stringhelper.hpp"
 #include "events/event.hpp"
 #include "core/logger.hpp"
+#include "building/constants.hpp"
+
+using namespace constants;
 
 class WalkerPrefect::Impl
 {
@@ -58,7 +61,7 @@ bool WalkerPrefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, Til
 
   foreach( BuildingPtr building, buildings )
   {
-    if( building->getType() == B_BURNING_RUINS )
+    if( building->getType() == building::B_BURNING_RUINS )
     {
       pos = building->getTilePos();
       return true;
@@ -74,7 +77,7 @@ void WalkerPrefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
   int minLength = 9999;
   foreach( BuildingPtr building, buildings )
   {
-    if( building->getType() != B_BURNING_RUINS )
+    if( building->getType() != building::B_BURNING_RUINS )
       continue;
 
     PathWay tmp;
@@ -195,7 +198,7 @@ void WalkerPrefect::onMidTile()
     if( _getPathway().getDestination().getIJ().distanceFrom( getIJ() ) < 1.5f )
     {
       TileOverlayPtr overlay = _getPathway().getDestination().getOverlay();
-      if( overlay.isValid() && overlay->getType() == B_BURNING_RUINS )
+      if( overlay.isValid() && overlay->getType() == building::B_BURNING_RUINS )
       {
         _d->action = Impl::fightFire;
         _setGraphic( WG_PREFECT_FIGHTS_FIRE );
@@ -237,7 +240,7 @@ void WalkerPrefect::timeStep(const unsigned long time)
   {    
     setSpeed( 0 );
     BuildingPtr building = _getPathway().getDestination().getOverlay().as<Building>();
-    bool inFire = (building.isValid() && building->getType() == B_BURNING_RUINS);
+    bool inFire = (building.isValid() && building->getType() == building::B_BURNING_RUINS);
 
     if( inFire )
     {

@@ -15,32 +15,35 @@
 
 #include "goverment.hpp"
 #include "game/resourcegroup.hpp"
+#include "constants.hpp"
+
+using namespace constants;
 
 // housng1a 46 - governor's house    3 x 3
 // housng1a 47 - governor's villa    4 x 4
 // housng1a 48 - governor's palace   5 x 5
 
-GovernorsHouse::GovernorsHouse() : WorkingBuilding( B_GOVERNOR_HOUSE, Size(3) )
+GovernorsHouse::GovernorsHouse() : WorkingBuilding( building::B_GOVERNOR_HOUSE, Size(3) )
 {
   setMaxWorkers(5);
   setPicture( ResourceGroup::housing, 46 );
 }
 
-GovernorsVilla::GovernorsVilla() : WorkingBuilding(B_GOVERNOR_VILLA, Size(4) )
+GovernorsVilla::GovernorsVilla() : WorkingBuilding( building::B_GOVERNOR_VILLA, Size(4) )
 {
   setMaxWorkers(10);
   setWorkers(0);    
   setPicture( ResourceGroup::housing, 47 );
 }
 
-GovernorsPalace::GovernorsPalace() : WorkingBuilding(B_GOVERNOR_PALACE, Size( 5 ) )
+GovernorsPalace::GovernorsPalace() : WorkingBuilding( building::B_GOVERNOR_PALACE, Size( 5 ) )
 {
   setMaxWorkers(15);
   setWorkers(0);  
   setPicture(Picture::load(ResourceGroup::housing, 48));
 }
 
-MissionPost::MissionPost() : WorkingBuilding(B_MISSION_POST, Size(2) )
+MissionPost::MissionPost() : WorkingBuilding(building::B_MISSION_POST, Size(2) )
 {
   setMaxWorkers(20);
   setWorkers(0);  

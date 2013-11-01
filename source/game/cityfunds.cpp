@@ -17,6 +17,9 @@
 #include "city.hpp"
 #include "trade_options.hpp"
 #include "building/house.hpp"
+#include "building/constants.hpp"
+
+using namespace constants;
 
 #include <map>
 
@@ -182,7 +185,7 @@ unsigned int CityStatistic::getCurrentWorkersNumber(CityPtr city)
 {
   CityHelper helper( city );
 
-  WorkingBuildingList buildings = helper.find<WorkingBuilding>( B_MAX );
+  WorkingBuildingList buildings = helper.find<WorkingBuilding>( TileOverlay::any );
 
   int workersNumber = 0;
   foreach( WorkingBuildingPtr bld, buildings )
@@ -197,7 +200,7 @@ unsigned int CityStatistic::getVacantionsNumber(CityPtr city)
 {
   CityHelper helper( city );
 
-  WorkingBuildingList buildings = helper.find<WorkingBuilding>( B_MAX );
+  WorkingBuildingList buildings = helper.find<WorkingBuilding>( TileOverlay::any );
 
   int workersNumber = 0;
   foreach( WorkingBuildingPtr bld, buildings )
@@ -212,7 +215,7 @@ unsigned int CityStatistic::getAvailableWorkersNumber(CityPtr city)
 {
   CityHelper helper( city );
 
-  HouseList houses = helper.find<House>( B_HOUSE );
+  HouseList houses = helper.find<House>( building::B_HOUSE );
 
   int workersNumber = 0;
   foreach( HousePtr house, houses )
@@ -243,7 +246,7 @@ unsigned int CityStatistic::getWorklessNumber(CityPtr city)
 {
   CityHelper helper( city );
 
-  HouseList houses = helper.find<House>( B_HOUSE );
+  HouseList houses = helper.find<House>( building::B_HOUSE );
 
   int worklessNumber = 0;
   foreach( HousePtr house, houses )

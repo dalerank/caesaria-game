@@ -32,6 +32,7 @@
 #include "game/goodstore_simple.hpp"
 #include "game/city.hpp"
 #include "core/foreach.hpp"
+#include "constants.hpp"
 #include "events/event.hpp"
 
 class House::Impl
@@ -43,7 +44,7 @@ public:
   int houseLevel;
   float healthLevel;
   HouseLevelSpec levelSpec;  // characteristics of the current house level
-  BuildingData::Desirability desirability;
+  MetaData::Desirability desirability;
   SimpleGoodStore goodStore;
   Services services;  // value=access to the service (0=no access, 100=good access)
   int maxHabitants;
@@ -109,7 +110,7 @@ public:
   }
 };
 
-House::House(const int houseId) : Building( B_HOUSE ), _d( new Impl )
+House::House(const int houseId) : Building( constants::building::B_HOUSE ), _d( new Impl )
 {
   _d->houseId = houseId;
   _d->lastPayDate = DateTime( -400, 1, 1 );
@@ -373,7 +374,7 @@ void House::levelDown()
        int peoplesPerHouse = getHabitants().count() / 4;
        foreach( Tile* tile, perimetr )
        {
-         HousePtr house = TileOverlayFactory::getInstance().create( B_HOUSE ).as<House>();
+         HousePtr house = TileOverlayFactory::getInstance().create( constants::building::B_HOUSE ).as<House>();
          house->_d->habitants = _d->habitants.retrieve( peoplesPerHouse );
          house->_d->houseId = smallHovel;
          house->_update();
@@ -499,9 +500,12 @@ void House::applyService( ServiceWalkerPtr walker )
     setServiceValue(service, 100);
   break;
 
+  case Service::prefect:
+    appendServiceValue(Service::crime, -10);
+  break;
+
   case Service::oracle:
   case Service::engineer:
-  case Service::prefect:
   case Service::srvCount:
   break;
 
@@ -650,7 +654,7 @@ bool House::isWalkable() const
   return (_d->houseId == smallHovel && _d->habitants.count() == 0) ? true : false;
 }
 
-const BuildingData::Desirability& House::getDesirabilityInfo() const
+const MetaData::Desirability& House::getDesirabilityInfo() const
 {
   return _d->desirability;
 }

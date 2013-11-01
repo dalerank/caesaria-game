@@ -28,6 +28,9 @@
 #include "core/gettext.hpp"
 #include "game/tilemap.hpp"
 #include "core/logger.hpp"
+#include "constants.hpp"
+
+using namespace constants;
 
 class WaterSource::Impl
 {
@@ -43,7 +46,7 @@ public:
   std::string errorStr;
 };
 
-Aqueduct::Aqueduct() : WaterSource( B_AQUEDUCT, Size(1) ) 
+Aqueduct::Aqueduct() : WaterSource( building::B_AQUEDUCT, Size(1) )
 {
   setPicture( ResourceGroup::aqueduct, 133 ); // default picture for aqueduct
   _d->isRoad = false;
@@ -72,7 +75,7 @@ void Aqueduct::build( CityPtr city, const TilePos& pos )
   Construction::build( city, pos );
 
   CityHelper helper( city );
-  AqueductList aqueducts = helper.find<Aqueduct>( B_AQUEDUCT );
+  AqueductList aqueducts = helper.find<Aqueduct>( building::B_AQUEDUCT );
   foreach( AqueductPtr aqueduct, aqueducts )
   {
     aqueduct->updatePicture( city );
@@ -91,7 +94,7 @@ void Aqueduct::destroy()
     foreach( Tile* tile, area )
     {
       TileOverlayPtr overlay = tile->getOverlay();
-      if( overlay.isValid() && overlay->getType() == B_AQUEDUCT )
+      if( overlay.isValid() && overlay->getType() == building::B_AQUEDUCT )
       {
         overlay.as<Aqueduct>()->updatePicture( _getCity() );
       }
@@ -363,7 +366,7 @@ void Reservoir::destroy()
   Construction::destroy();
 }
 
-Reservoir::Reservoir() : WaterSource( B_RESERVOIR, Size( 3 ) )
+Reservoir::Reservoir() : WaterSource( building::B_RESERVOIR, Size( 3 ) )
 {
   setPicture( Picture::load( ResourceGroup::waterbuildings, 1 )  );
   
@@ -473,7 +476,7 @@ bool Reservoir::isNeedRoadAccess() const
   return false;
 }
 
-WaterSource::WaterSource( const TileOverlayType type, const Size& size )
+WaterSource::WaterSource(const Type type, const Size& size )
   : Construction( type, size ), _d( new Impl )
 
 {
@@ -554,7 +557,7 @@ void WaterSource::_setError(const std::string& error)
 
 typedef enum { fontainEmpty = 3, fontainFull = 4, fontainStartAnim = 11, fontainSizeAnim = 7 } FontainConstant;
 
-Fountain::Fountain() : ServiceBuilding(Service::fontain, B_FOUNTAIN, Size(1))
+Fountain::Fountain() : ServiceBuilding(Service::fontain, building::B_FOUNTAIN, Size(1))
 {  
   //std::srand( DateTime::getElapsedTime() );
 
@@ -656,7 +659,7 @@ bool Fountain::haveReservoirAccess() const
   foreach( Tile* tile, reachedTiles )
   {
     TileOverlayPtr overlay = tile->getOverlay();
-    if( overlay != 0 && (B_RESERVOIR == overlay->getType()) )
+    if( overlay != 0 && (building::B_RESERVOIR == overlay->getType()) )
     {
       return true;
     }

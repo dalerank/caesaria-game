@@ -19,8 +19,10 @@
 #include "game/cityfunds.hpp"
 #include "walker/taxcollector.hpp"
 #include "game/city.hpp"
+#include "constants.hpp"
 #include "core/gettext.hpp"
 
+using namespace constants;
 // govt 4  - senate
 // govt 9  - advanced senate
 // govt 5 ~ 8 - senate flags
@@ -32,7 +34,7 @@ public:
   std::string errorStr;
 };
 
-Senate::Senate() : ServiceBuilding( Service::senate, B_SENATE, Size(5) ), _d( new Impl )
+Senate::Senate() : ServiceBuilding( Service::senate, building::B_SENATE, Size(5) ), _d( new Impl )
 {
   setPicture( ResourceGroup::govt, 4 );
   _d->taxInLastMonth = 0;
@@ -46,7 +48,7 @@ bool Senate::canBuild( CityPtr city, const TilePos& pos ) const
   if( mayBuild )
   {
     CityHelper helper( city );
-    bool isSenatePresent = !helper.find<Building>(B_SENATE).empty();
+    bool isSenatePresent = !helper.find<Building>(building::B_SENATE).empty();
     _d->errorStr = isSenatePresent ? _("##can_build_only_once##") : "";
     mayBuild &= !isSenatePresent;
   }

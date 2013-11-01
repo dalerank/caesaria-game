@@ -23,6 +23,9 @@
 #include "tilemap.hpp"
 #include "empire.hpp"
 #include "core/logger.hpp"
+#include "building/constants.hpp"
+
+using namespace constants;
 
 #include <fstream>
 
@@ -282,7 +285,7 @@ void GameLoaderC3Map::Impl::decodeTerrain(Tile &oTile, CityPtr city )
 
   if( oTile.getFlag( Tile::tlRoad ) )   // road
   {
-    overlay = TileOverlayFactory::getInstance().create( B_ROAD ).as<TileOverlay>();
+    overlay = TileOverlayFactory::getInstance().create( building::B_ROAD ).as<TileOverlay>();
   }
   else if( oTile.getFlag( Tile::tlBuilding ) )
   {
@@ -294,16 +297,16 @@ void GameLoaderC3Map::Impl::decodeTerrain(Tile &oTile, CityPtr city )
       case 0xb0f:
       case 0xb0b:
       case 0xb0c:
-        overlay = TileOverlayFactory::getInstance().create( B_NATIVE_HUT ).as<TileOverlay>();
+        overlay = TileOverlayFactory::getInstance().create( building::B_NATIVE_HUT ).as<TileOverlay>();
         break;
       case 0xb10:
       case 0xb0d:
-        overlay =  TileOverlayFactory::getInstance().create( B_NATIVE_CENTER ).as<TileOverlay>();
+        overlay =  TileOverlayFactory::getInstance().create( building::B_NATIVE_CENTER ).as<TileOverlay>();
         Logger::warning( "creation of Native center at (%d,%d)", oTile.getI(), oTile.getJ() );
 	      break;
       case 0xb11:
       case 0xb44:
-        overlay = TileOverlayFactory::getInstance().create( B_NATIVE_FIELD ).as<TileOverlay>();
+        overlay = TileOverlayFactory::getInstance().create( building::B_NATIVE_FIELD ).as<TileOverlay>();
 	      break;
     }
   }

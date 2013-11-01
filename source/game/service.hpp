@@ -36,6 +36,7 @@ public:
     hippodrome,
     burningRuins,
     workersRecruter,
+    crime,
     srvCount
   } Type;
 

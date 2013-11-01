@@ -17,8 +17,11 @@
 #include "game/resourcegroup.hpp"
 #include "core/position.hpp"
 #include "gfx/tile.hpp"
+#include "constants.hpp"
 
-Doctor::Doctor() : ServiceBuilding(Service::doctor, B_DOCTOR, Size(1))
+using namespace constants;
+
+Doctor::Doctor() : ServiceBuilding(Service::doctor, building::B_DOCTOR, Size(1))
 {
 }
 
@@ -35,11 +38,11 @@ void Doctor::deliverService()
   }
 }
 
-Hospital::Hospital() : ServiceBuilding(Service::hospital, B_HOSPITAL, Size(3 ) )
+Hospital::Hospital() : ServiceBuilding(Service::hospital, building::B_HOSPITAL, Size(3 ) )
 {
 }
 
-Baths::Baths() : ServiceBuilding(Service::baths, B_BATHS, Size(2) )
+Baths::Baths() : ServiceBuilding(Service::baths, building::B_BATHS, Size(2) )
 {
   _haveReservorWater = false;
   _getForegroundPictures().resize(2);
@@ -88,7 +91,7 @@ void Baths::_initAnimation()
   _getAnimation().stop();
 }
 
-Barber::Barber() : ServiceBuilding(Service::barber, B_BARBER, Size(1))
+Barber::Barber() : ServiceBuilding(Service::barber, building::B_BARBER, Size(1))
 {
 }
 

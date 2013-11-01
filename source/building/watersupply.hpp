@@ -26,7 +26,7 @@ class Reservoir;
 class WaterSource : public Construction
 {
 public:
-  WaterSource( const TileOverlayType type, const Size& size );
+  WaterSource( const TileOverlay::Type type, const Size& size );
   
   virtual void addWater( const WaterSource& source );
   virtual bool haveWater() const;

@@ -20,6 +20,9 @@
 #include "gfx/tileoverlay.hpp"
 #include "core/time.hpp"
 #include "gfx/engine.hpp"
+#include "building/constants.hpp"
+
+using namespace constants;
 
 namespace gui
 {
@@ -123,11 +126,11 @@ void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
   if (overlay == NULL)
     return;
 
-  TileOverlayType type = overlay->getType();
+  TileOverlay::Type type = overlay->getType();
 
   switch(type)
   {
-    case B_HOUSE:
+    case building::B_HOUSE:
     {
       switch (overlay->getSize().getWidth())
       {
@@ -145,7 +148,7 @@ void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
         }
         break;
         }
-      case B_RESERVOIR:
+      case building::B_RESERVOIR:
         {
           c1 = colors->colour(MinimapColors::MAP_AQUA, 1);
           c2 = colors->colour(MinimapColors::MAP_AQUA, 0);

@@ -24,9 +24,12 @@
 #include "core/stringhelper.hpp"
 #include "events/event.hpp"
 #include "core/logger.hpp"
+#include "building/constants.hpp"
+
+using namespace constants;
 
 EntertainmentBuilding::EntertainmentBuilding(const Service::Type service,
-                                             const TileOverlayType type,
+                                             const TileOverlay::Type type,
                                              const Size& size )
   : ServiceBuilding(service, type, size)
 {
@@ -124,7 +127,7 @@ int EntertainmentBuilding::_getTraineeLevel()
   return minLevel;
 }
 
-Theater::Theater() : EntertainmentBuilding(Service::theater, buildingTheater, Size(2))
+Theater::Theater() : EntertainmentBuilding(Service::theater, building::theater, Size(2))
 {
   //_getAnimation().load( ResourceGroup::entertaiment, 14, 21);
   //_getAnimation().setOffset( Point( 60, 36 ) );
@@ -138,7 +141,7 @@ void Theater::build(CityPtr city, const TilePos& pos)
   ServiceBuilding::build( city, pos );
 
   CityHelper helper( city );
-  ActorColonyList actors = helper.find<ActorColony>( B_ACTOR_COLONY );
+  ActorColonyList actors = helper.find<ActorColony>( building::B_ACTOR_COLONY );
 
   if( actors.empty() )
   {
@@ -166,7 +169,7 @@ void Theater::deliverService()
                       : Picture::getInvalid();
 }
 
-Amphitheater::Amphitheater() : EntertainmentBuilding(Service::amphitheater, buildingAmphitheater, Size(3))
+Amphitheater::Amphitheater() : EntertainmentBuilding(Service::amphitheater, building::amphitheater, Size(3))
 {
   //setPicture( ResourceGroup::entertaiment, 1 );
   //_getAnimation().load( ResourceGroup::entertaiment, 2, 10);
@@ -180,7 +183,7 @@ void Amphitheater::build(CityPtr city, const TilePos& pos)
   EntertainmentBuilding::build( city, pos );
 
   CityHelper helper( city );
-  ActorColonyList actors = helper.find<ActorColony>( B_ACTOR_COLONY );
+  ActorColonyList actors = helper.find<ActorColony>( building::B_ACTOR_COLONY );
 
   if( actors.empty() )
   {
@@ -188,7 +191,7 @@ void Amphitheater::build(CityPtr city, const TilePos& pos)
     event->dispatch();
   }
 
-  GladiatorSchoolList gladiators = helper.find<GladiatorSchool>( B_GLADIATOR_SCHOOL );
+  GladiatorSchoolList gladiators = helper.find<GladiatorSchool>( building::B_GLADIATOR_SCHOOL );
   if( actors.empty() )
   {
     events::GameEventPtr event = events::WarningMessageEvent::create( _("##need_gladiator_school##"));
@@ -205,7 +208,7 @@ void Amphitheater::deliverService()
                          : Picture::getInvalid();
 }
 
-Collosseum::Collosseum() : EntertainmentBuilding(Service::colloseum, B_COLLOSSEUM, Size(5) )
+Collosseum::Collosseum() : EntertainmentBuilding(Service::colloseum, building::B_COLLOSSEUM, Size(5) )
 {
   //setPicture( Picture::load( ResourceGroup::entertaiment, 36));
 
@@ -217,7 +220,7 @@ Collosseum::Collosseum() : EntertainmentBuilding(Service::colloseum, B_COLLOSSEU
 
 //------------
 
-Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, B_HIPPODROME, Size(5) )
+Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, building::B_HIPPODROME, Size(5) )
 {
   setPicture( Picture::load("circus", 5));
   Picture logo = Picture::load("circus", 3);

@@ -23,8 +23,8 @@ class TileOverlay::Impl
 {
 public:
   PicturesArray fgPictures;
-  TileOverlayType overlayType;
-  TileOverlayGroup overlayClass;
+  TileOverlay::Type overlayType;
+  TileOverlay::Group overlayClass;
   Tile* masterTile;  // left-most tile if multi-tile, or "this" if single-tile
   std::string name;
   Picture picture;
@@ -34,7 +34,7 @@ public:
   CityPtr city;
 };
 
-TileOverlay::TileOverlay(const TileOverlayType type, const Size& size)
+TileOverlay::TileOverlay(const Type type, const Size& size)
 : _d( new Impl )
 {
   _d->masterTile = 0;
@@ -51,14 +51,14 @@ TileOverlay::~TileOverlay()
 }
 
 
-TileOverlayType TileOverlay::getType() const
+TileOverlay::Type TileOverlay::getType() const
 {
    return _d->overlayType;
 }
 
-void TileOverlay::setType(const TileOverlayType type)
+void TileOverlay::setType(const Type type)
 {
-  const BuildingData& bd = BuildingDataHolder::instance().getData( type );
+  const MetaData& bd = MetaDataHolder::instance().getData( type );
 
    _d->overlayType = type;
    _d->overlayClass = bd.getClass();
@@ -173,7 +173,7 @@ void TileOverlay::save( VariantMap& stream ) const
 {
   VariantList config;
   config.push_back( (int)_d->overlayType );
-  config.push_back( Variant( BuildingDataHolder::instance().getData( _d->overlayType ).getName() ) );
+  config.push_back( Variant( MetaDataHolder::instance().getData( _d->overlayType ).getName() ) );
   config.push_back( getTile().getIJ() );
 
   stream[ "config" ] = config;
@@ -244,7 +244,7 @@ PicturesArray& TileOverlay::_getForegroundPictures()
   return _d->fgPictures;
 }
 
-TileOverlayGroup TileOverlay::getClass() const
+TileOverlay::Group TileOverlay::getClass() const
 {
   return _d->overlayClass;
 }

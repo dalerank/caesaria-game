@@ -19,6 +19,7 @@
 #include "enums.hpp"
 #include "core/scopedptr.hpp"
 #include "core/predefinitions.hpp"
+#include "gfx/tileoverlay.hpp"
 
 class TileOverlayConstructor
 {
@@ -30,12 +31,12 @@ class TileOverlayFactory
 {
 public:
     static TileOverlayFactory& getInstance();
-    TileOverlayPtr create( const TileOverlayType type ) const;
+    TileOverlayPtr create( const TileOverlay::Type type ) const;
     TileOverlayPtr create( const std::string& typeName ) const;
 
-    bool canCreate( const TileOverlayType type ) const;
+    bool canCreate( const TileOverlay::Type type ) const;
 
-    void addCreator( const TileOverlayType type, const std::string& typeName, TileOverlayConstructor* ctor );
+    void addCreator( const TileOverlay::Type type, const std::string& typeName, TileOverlayConstructor* ctor );
 private:
     TileOverlayFactory();
 

@@ -21,7 +21,7 @@
 class NativeBuilding : public Building
 {
 public:
-  NativeBuilding( const TileOverlayType type, const Size& size );
+  NativeBuilding( const TileOverlay::Type type, const Size& size );
   void save( VariantMap& stream) const;
   void load( const VariantMap& stream);
 

@@ -102,7 +102,7 @@ public:
       event->dispatch();
 
       CityHelper helper( city );
-      FarmList farms = helper.find<Farm>( B_MAX );
+      FarmList farms = helper.find<Farm>( TileOverlay::any );
       foreach( FarmPtr farm, farms )
       {
         farm->updateProgress( -farm->getProgress() );
