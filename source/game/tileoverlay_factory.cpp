@@ -171,15 +171,15 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   // entertainment
   addCreator(building::theater, OC3_STR_EXT(buildingTheater), new WorkingBuildingCreator<Theater>() );
   addCreator(building::amphitheater, OC3_STR_EXT(buildingAmphitheater), new WorkingBuildingCreator<Amphitheater>() );
-  addCreator(building::B_COLLOSSEUM, OC3_STR_EXT(B_COLLOSSEUM), new WorkingBuildingCreator<Collosseum>() );
-  addCreator(building::B_ACTOR_COLONY, OC3_STR_EXT(B_ACTOR_COLONY), new WorkingBuildingCreator<ActorColony>() );
-  addCreator(building::B_GLADIATOR_SCHOOL, OC3_STR_EXT(B_GLADIATOR_SCHOOL), new WorkingBuildingCreator<GladiatorSchool>() );
-  addCreator(building::B_LION_HOUSE, OC3_STR_EXT(B_LION_HOUSE), new WorkingBuildingCreator<LionsNursery>() );
-  addCreator(building::B_CHARIOT_MAKER, OC3_STR_EXT(B_CHARIOT_MAKER), new WorkingBuildingCreator<WorkshopChariot>() );
-  addCreator(building::B_HIPPODROME, OC3_STR_EXT(B_HIPPODROME),new WorkingBuildingCreator<Hippodrome>() );
+  addCreator(building::colloseum, OC3_STR_EXT(B_COLLOSSEUM), new WorkingBuildingCreator<Collosseum>() );
+  addCreator(building::actorColony, OC3_STR_EXT(B_ACTOR_COLONY), new WorkingBuildingCreator<ActorColony>() );
+  addCreator(building::gladiatorSchool, OC3_STR_EXT(B_GLADIATOR_SCHOOL), new WorkingBuildingCreator<GladiatorSchool>() );
+  addCreator(building::lionHouse, OC3_STR_EXT(B_LION_HOUSE), new WorkingBuildingCreator<LionsNursery>() );
+  addCreator(building::chariotSchool, OC3_STR_EXT(B_CHARIOT_MAKER), new WorkingBuildingCreator<WorkshopChariot>() );
+  addCreator(building::hippodrome, OC3_STR_EXT(B_HIPPODROME),new WorkingBuildingCreator<Hippodrome>() );
   // road&house
-  addCreator(building::B_HOUSE, OC3_STR_EXT(B_HOUSE), new ConstructionCreator<House>() );
-  addCreator(building::B_ROAD, OC3_STR_EXT(B_ROAD) , new ConstructionCreator<Road>() );
+  addCreator(building::house, OC3_STR_EXT(B_HOUSE), new ConstructionCreator<House>() );
+  addCreator(construction::B_ROAD, OC3_STR_EXT(B_ROAD) , new ConstructionCreator<Road>() );
   // administration
   addCreator(building::B_FORUM, OC3_STR_EXT(B_FORUM) , new WorkingBuildingCreator<Forum>() );
   addCreator(building::B_SENATE, OC3_STR_EXT(B_SENATE), new WorkingBuildingCreator<Senate>() );
@@ -189,8 +189,8 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::B_STATUE1, OC3_STR_EXT(B_STATUE1), new ConstructionCreator<SmallStatue>() );
   addCreator(building::B_STATUE2, OC3_STR_EXT(B_STATUE2), new ConstructionCreator<MediumStatue>() );
   addCreator(building::B_STATUE3, OC3_STR_EXT(B_STATUE3), new ConstructionCreator<BigStatue>() );
-  addCreator(building::B_GARDEN, OC3_STR_EXT(B_GARDEN) , new ConstructionCreator<Garden>() );
-  addCreator(building::B_PLAZA, OC3_STR_EXT(B_PLAZA)  , new ConstructionCreator<Plaza>() );
+  addCreator(construction::B_GARDEN, OC3_STR_EXT(B_GARDEN) , new ConstructionCreator<Garden>() );
+  addCreator(construction::B_PLAZA, OC3_STR_EXT(B_PLAZA)  , new ConstructionCreator<Plaza>() );
   // water
   addCreator(building::B_WELL, OC3_STR_EXT(B_WELL)     , new WorkingBuildingCreator<Well>() );
   addCreator(building::B_FOUNTAIN, OC3_STR_EXT(B_FOUNTAIN) , new WorkingBuildingCreator<Fountain>() );

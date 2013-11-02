@@ -143,7 +143,7 @@ AdvisorEducationWindow::AdvisorEducationWindow( CityPtr city, Widget* parent, in
 
   int sumScholars = 0;
   int sumStudents = 0;
-  HouseList houses = helper.find<House>( building::B_HOUSE );
+  HouseList houses = helper.find<House>( building::house );
   foreach( HousePtr house, houses )
   {
     sumScholars += house->getHabitants().count( CitizenGroup::scholar );
@@ -204,7 +204,7 @@ InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(CityPtr city, const Til
     }
   }
 
-  HouseList houses = helper.find<House>( building::B_HOUSE );
+  HouseList houses = helper.find<House>( building::house );
   foreach( HousePtr house, houses )
   {
     ret.need += ( house->getHabitants().count( age ) * ( house->isEducationNeed( service ) ? 1 : 0 ) );

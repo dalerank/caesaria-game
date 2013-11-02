@@ -47,12 +47,12 @@ void TraineeWalker::init(const WalkerType traineeType)
   case WT_GLADIATOR:
     _setGraphic( WG_GLADIATOR );
     _buildingNeed.push_back(building::amphitheater);
-    _buildingNeed.push_back(building::B_COLLOSSEUM);
+    _buildingNeed.push_back(building::colloseum);
   break;
 
   case WT_TAMER:
     _setGraphic( WG_TAMER );
-    _buildingNeed.push_back(building::B_COLLOSSEUM);
+    _buildingNeed.push_back(building::colloseum);
   break;
 
   case WT_CHARIOT:

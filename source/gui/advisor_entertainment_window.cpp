@@ -77,8 +77,8 @@ public:
     {
     case building::theater: buildingStr = _("##theaters##"); peoplesStr = _("##peoples##"); break;
     case building::amphitheater: buildingStr = _("##amphitheatres##"); peoplesStr = _("##peoples##"); break;
-    case building::B_COLLOSSEUM: buildingStr = _("##colloseum##"); peoplesStr = _("##peoples##"); break;
-    case building::B_HIPPODROME: buildingStr = _("##hippodromes##"); peoplesStr = "-"; break;
+    case building::colloseum: buildingStr = _("##colloseum##"); peoplesStr = _("##peoples##"); break;
+    case building::hippodrome: buildingStr = _("##hippodromes##"); peoplesStr = "-"; break;
     default:
     break;
     }
@@ -146,11 +146,11 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow( CityPtr city, Widget* pa
   info = _d->getInfo( city, building::amphitheater );
   _d->lbAmphitheatresInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 20), labelSize), building::amphitheater,
                                                         info );
-  info = _d->getInfo( city, building::B_COLLOSSEUM );
-  _d->lbColisseumInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 40), labelSize), building::B_COLLOSSEUM, info );
+  info = _d->getInfo( city, building::colloseum );
+  _d->lbColisseumInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 40), labelSize), building::colloseum, info );
 
-  info = _d->getInfo( city, building::B_HIPPODROME );
-  _d->lbHippodromeInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 60), labelSize), building::B_HIPPODROME, info );
+  info = _d->getInfo( city, building::hippodrome );
+  _d->lbHippodromeInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 60), labelSize), building::hippodrome, info );
 
   CONNECT( _d->btnNewFestival, onClicked(), this, AdvisorEntertainmentWindow::_showFestivalWindow );
 
@@ -196,7 +196,7 @@ InfrastructureInfo AdvisorEntertainmentWindow::Impl::getInfo(CityPtr city, const
       {
       case building::theater: maxServing = 500; break;
       case building::amphitheater: maxServing = 800; break;
-      case building::B_COLLOSSEUM: maxServing = 1500; break;
+      case building::colloseum: maxServing = 1500; break;
       default:
       break;
       }
@@ -234,7 +234,7 @@ void AdvisorEntertainmentWindow::Impl::updateInfo()
   int theatersServed = 0, amptServed = 0, clsServed = 0, hpdServed = 0;
   int nextLevel = 0;
 
-  HouseList houses = helper.find<House>( building::B_HOUSE );
+  HouseList houses = helper.find<House>( building::house );
   foreach( HousePtr house, houses )
   {
     int habitants = house->getHabitants().count( CitizenGroup::mature );
@@ -281,7 +281,7 @@ void AdvisorEntertainmentWindow::Impl::updateInfo()
   if( amthInfo.partlyWork > 0 ) { troubles.push_back( "##some_amphitheaters_no_actors##" ); }
   if( clsInfo.partlyWork > 0 ) { troubles.push_back( "##small_colloseum_show##" ); }
 
-  HippodromeList hippodromes = helper.find<Hippodrome>( building::B_HIPPODROME );
+  HippodromeList hippodromes = helper.find<Hippodrome>( building::hippodrome );
   foreach( HippodromePtr h, hippodromes )
   {
     if( h->evaluateTrainee( WT_CHARIOT ) == 100 ) { troubles.push_back( "##no_chariots##" ); }

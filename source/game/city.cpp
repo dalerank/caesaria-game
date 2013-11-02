@@ -221,7 +221,7 @@ void City::timeStep( unsigned int time )
         // overlay matches the filter
         construction->computeAccessRoads();
         // for some constructions we need to update picture
-        if( construction->getType() == building::B_ROAD )
+        if( construction->getType() == construction::B_ROAD )
         {
           RoadPtr road = construction.as<Road>();
           road->updatePicture();
@@ -337,7 +337,7 @@ void City::Impl::calculatePopulation( CityPtr city )
   
   CityHelper helper( city );
 
-  HouseList houseList = helper.find<House>( building::B_HOUSE );
+  HouseList houseList = helper.find<House>( building::house );
   foreach( HousePtr house, houseList)
   {
     pop += house->getHabitants().count();

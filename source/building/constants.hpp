@@ -24,16 +24,24 @@
 namespace constants
 {
 
+namespace construction
+{
+// road
+const TileOverlay::Type B_ROAD=10;
+const TileOverlay::Type B_PLAZA=11;
+const TileOverlay::Type B_GARDEN=12;
+}
+
 namespace building
 {
 const TileOverlay::Group unknownGroup=0;
-const TileOverlay::Group BC_INDUSTRY=1;
-const TileOverlay::Group BC_RAWMATERIAL=2;
-const TileOverlay::Group BC_FOOD=3;
+const TileOverlay::Group industryGroup=1;
+const TileOverlay::Group obtainGroup=2;
+const TileOverlay::Group foodGroup=3;
 const TileOverlay::Group BC_DISASTER=4;
-const TileOverlay::Group BC_RELIGION=5;
-const TileOverlay::Group BC_MILITARY=6;
-const TileOverlay::Group BC_NATIVE=7;
+const TileOverlay::Group religionGroup=5;
+const TileOverlay::Group militaryGroup=6;
+const TileOverlay::Group nativeGroup=7;
 const TileOverlay::Group BC_WATER=8;
 const TileOverlay::Group BC_ADMINISTRATION=9;
 const TileOverlay::Group BC_BRIDGE=10;
@@ -58,18 +66,15 @@ const TileOverlay::Type unknown=0;
 // entertainment
 const TileOverlay::Type amphitheater=1;
 const TileOverlay::Type theater=2;
-const TileOverlay::Type B_HIPPODROME=3;
-const TileOverlay::Type B_COLLOSSEUM=4;
-const TileOverlay::Type B_ACTOR_COLONY=5;
-const TileOverlay::Type B_GLADIATOR_SCHOOL=6;
-const TileOverlay::Type B_LION_HOUSE=7;
-const TileOverlay::Type B_CHARIOT_MAKER=8;
+const TileOverlay::Type hippodrome=3;
+const TileOverlay::Type colloseum=4;
+const TileOverlay::Type actorColony=5;
+const TileOverlay::Type gladiatorSchool=6;
+const TileOverlay::Type lionHouse=7;
+const TileOverlay::Type chariotSchool=8;
 
-// road & house
-const TileOverlay::Type B_HOUSE=9;
-const TileOverlay::Type B_ROAD=10;
-const TileOverlay::Type B_PLAZA=11;
-const TileOverlay::Type B_GARDEN=12;
+// house
+const TileOverlay::Type house=9;
 
 // administration
 const TileOverlay::Type B_SENATE=13;

@@ -37,16 +37,16 @@ public:
   {
     append( building::amphitheater,   "amphitheater");
     append( building::theater,        "theater" );
-    append( building::B_HIPPODROME,     "hippodrome" );
-    append( building::B_COLLOSSEUM,     "colloseum" );
-    append( building::B_ACTOR_COLONY,          "artist_colony" );
-    append( building::B_GLADIATOR_SCHOOL,      "gladiator_pit" );
-    append( building::B_LION_HOUSE,           "lion_pit" );
-    append( building::B_CHARIOT_MAKER,        "chatioteer_school" );
-    append( building::B_HOUSE,          "house" );
-    append( building::B_ROAD,           "road" );
-    append( building::B_PLAZA,          "plaza" );
-    append( building::B_GARDEN,         "garden" );
+    append( building::hippodrome,     "hippodrome" );
+    append( building::colloseum,     "colloseum" );
+    append( building::actorColony,          "artist_colony" );
+    append( building::gladiatorSchool,      "gladiator_pit" );
+    append( building::lionHouse,           "lion_pit" );
+    append( building::chariotSchool,        "chatioteer_school" );
+    append( building::house,          "house" );
+    append( construction::B_ROAD,           "road" );
+    append( construction::B_PLAZA,          "plaza" );
+    append( construction::B_GARDEN,         "garden" );
     append( building::B_SENATE,         "senate_1" );
     append( building::B_FORUM,          "forum_1" );
     append( building::B_GOVERNOR_HOUSE, "governor_palace_1" );
@@ -130,13 +130,13 @@ class BuildingClassHelper : public EnumsHelper<TileOverlay::Group>
 public:
   BuildingClassHelper() : EnumsHelper<TileOverlay::Group>( building::unknownGroup )
   {
-    append( building::BC_INDUSTRY, "industry" );
-    append( building::BC_RAWMATERIAL, "rawmaterial" );
-    append( building::BC_FOOD, "food" );
+    append( building::industryGroup, "industry" );
+    append( building::obtainGroup, "rawmaterial" );
+    append( building::foodGroup, "food" );
     append( building::BC_DISASTER, "disaster" );
-    append( building::BC_RELIGION, "religion" );
-    append( building::BC_MILITARY, "military" );
-    append( building::BC_NATIVE, "native" );
+    append( building::religionGroup, "religion" );
+    append( building::militaryGroup, "military" );
+    append( building::nativeGroup, "native" );
     append( building::BC_WATER, "water" );
     append( building::BC_ADMINISTRATION, "administration" );
     append( building::BC_BRIDGE, "bridge" );

@@ -110,7 +110,7 @@ public:
   }
 };
 
-House::House(const int houseId) : Building( constants::building::B_HOUSE ), _d( new Impl )
+House::House(const int houseId) : Building( constants::building::house ), _d( new Impl )
 {
   _d->houseId = houseId;
   _d->lastPayDate = DateTime( -400, 1, 1 );
@@ -374,7 +374,7 @@ void House::levelDown()
        int peoplesPerHouse = getHabitants().count() / 4;
        foreach( Tile* tile, perimetr )
        {
-         HousePtr house = TileOverlayFactory::getInstance().create( constants::building::B_HOUSE ).as<House>();
+         HousePtr house = TileOverlayFactory::getInstance().create( constants::building::house ).as<House>();
          house->_d->habitants = _d->habitants.retrieve( peoplesPerHouse );
          house->_d->houseId = smallHovel;
          house->_update();

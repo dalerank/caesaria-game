@@ -285,7 +285,7 @@ void GameLoaderC3Map::Impl::decodeTerrain(Tile &oTile, CityPtr city )
 
   if( oTile.getFlag( Tile::tlRoad ) )   // road
   {
-    overlay = TileOverlayFactory::getInstance().create( building::B_ROAD ).as<TileOverlay>();
+    overlay = TileOverlayFactory::getInstance().create( construction::B_ROAD ).as<TileOverlay>();
   }
   else if( oTile.getFlag( Tile::tlBuilding ) )
   {

@@ -162,7 +162,7 @@ int AdvisorFinanceWindow::Impl::calculateTaxValue()
 {
   CityHelper helper( city );
 
-  HouseList houses = helper.find<House>( building::B_HOUSE );
+  HouseList houses = helper.find<House>( building::house );
 
   float taxValue = 0.f;
   float taxRate = city->getFunds().getTaxRate();

@@ -598,7 +598,7 @@ InfoBoxLand::InfoBoxLand( Widget* parent, const Tile& tile )
   }
   else if( tile.getFlag( Tile::tlRoad ) )
   {
-    if( tile.getOverlay()->getType() == building::B_PLAZA )
+    if( tile.getOverlay()->getType() == construction::B_PLAZA )
     {
       setTitle( _("##plaza_caption##") );
       lbText->setText( _("##plaza_text##"));
@@ -757,7 +757,7 @@ InfoBoxColosseum::InfoBoxColosseum(Widget *parent, const Tile &tile)
   : InfoBoxSimple( parent, Rect( 0, 0, 470, 300), Rect( 16, 145, 470 - 16, 145 + 100 ) )
 {
   CollosseumPtr colloseum = tile.getOverlay().as<Collosseum>();
-  setTitle( MetaDataHolder::getPrettyName( building::B_COLLOSSEUM ) );
+  setTitle( MetaDataHolder::getPrettyName( building::colloseum ) );
 
   _drawWorkers( Point( 40, 150), 542, colloseum->getMaxWorkers(), colloseum->getWorkers() );
 

@@ -108,8 +108,9 @@ public:
   void drawAnimations();
   void drawColumn( const Point& pos, const int startPicId, const int percent );
 
-  void drawTilemapWithRemoveTools();
-  void simpleDrawTilemap();
+  void renderCellGridWithRTools();
+  void renderCellGridBTools();
+  void renderCellGrid();
 
   void drawTile( Tile& tile );
   void drawTileEx( Tile& tile, const int depth );
@@ -246,8 +247,8 @@ void CityRenderer::Impl::drawTileDesirability( Tile& tile )
     switch( overlay->getType() )
     {
     //roads
-    case building::B_ROAD:
-    case building::B_PLAZA:
+    case construction::B_ROAD:
+    case construction::B_PLAZA:
       engine->drawPicture( tile.getPicture(), screenPos );
       animationStack.push_back( &tile );
     break;  
@@ -295,8 +296,8 @@ void CityRenderer::Impl::drawTileFire( Tile& tile )
     switch( overlay->getType() )
     {
     //fire buildings and roads
-    case building::B_ROAD:
-    case building::B_PLAZA:
+    case construction::B_ROAD:
+    case construction::B_PLAZA:
     case building::B_BURNING_RUINS:
     case building::B_BURNED_RUINS:
     case building::B_COLLAPSED_RUINS:
@@ -308,7 +309,7 @@ void CityRenderer::Impl::drawTileFire( Tile& tile )
     break;  
 
       //houses
-    case building::B_HOUSE:
+    case building::house:
       {
         HousePtr house = overlay.as< House >();
         fireLevel = (int)house->getFireLevel();
@@ -362,8 +363,8 @@ void CityRenderer::Impl::drawTileDamage( Tile& tile )
     switch( overlay->getType() )
     {
       //fire buildings and roads
-    case building::B_ROAD:
-    case building::B_PLAZA:
+    case construction::B_ROAD:
+    case construction::B_PLAZA:
     case building::B_COLLAPSED_RUINS:
     case building::B_ENGINEER_POST:
       needDrawAnimations = true;
@@ -371,7 +372,7 @@ void CityRenderer::Impl::drawTileDamage( Tile& tile )
       break;  
 
       //houses
-    case building::B_HOUSE:
+    case building::house:
       {
         HousePtr house = overlay.as< House >();
         damageLevel = (int)house->getDamageLevel();
@@ -425,19 +426,19 @@ void CityRenderer::Impl::drawTileEntertainment( Tile& tile )
     switch( overlay->getType() )
     {
       //fire buildings and roads
-    case building::B_ROAD:
-    case building::B_PLAZA:
+    case construction::B_ROAD:
+    case construction::B_PLAZA:
       needDrawAnimations = true;
       engine->drawPicture( tile.getPicture(), screenPos );
     break;
 
     case building::theater:
     case building::amphitheater:
-    case building::B_COLLOSSEUM:
-    case building::B_HIPPODROME:
-    case building::B_LION_HOUSE:
-    case building::B_ACTOR_COLONY:
-    case building::B_GLADIATOR_SCHOOL:
+    case building::colloseum:
+    case building::hippodrome:
+    case building::lionHouse:
+    case building::actorColony:
+    case building::gladiatorSchool:
       needDrawAnimations = overlayRendeFlags.count( overlay->getType() );
       if( needDrawAnimations )
       {
@@ -450,14 +451,14 @@ void CityRenderer::Impl::drawTileEntertainment( Tile& tile )
     break;
 
       //houses
-    case building::B_HOUSE:
+    case building::house:
       {
         HousePtr house = overlay.as< House >();
         if( overlayRendeFlags.count( building::unknown ) ) { entertainmentLevel = house->getLevelSpec().computeEntertainmentLevel( house ); }
         else if( overlayRendeFlags.count( building::theater ) ) { entertainmentLevel = house->getServiceValue( Service::theater ); }
         else if( overlayRendeFlags.count( building::amphitheater ) ) { entertainmentLevel = house->getServiceValue( Service::amphitheater ); }
-        else if( overlayRendeFlags.count( building::B_COLLOSSEUM ) ) { entertainmentLevel = house->getServiceValue( Service::colloseum ); }
-        else if( overlayRendeFlags.count( building::B_HIPPODROME ) ) { entertainmentLevel = house->getServiceValue( Service::hippodrome ); }
+        else if( overlayRendeFlags.count( building::colloseum ) ) { entertainmentLevel = house->getServiceValue( Service::colloseum ); }
+        else if( overlayRendeFlags.count( building::hippodrome ) ) { entertainmentLevel = house->getServiceValue( Service::hippodrome ); }
 
         needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getHabitants().size() == 0);
         drawBuildingAreaTiles( overlay->getTile(), overlay, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
@@ -503,8 +504,8 @@ void CityRenderer::Impl::drawTileHealth( Tile& tile )
     switch( overlay->getType() )
     {
       //fire buildings and roads
-    case building::B_ROAD:
-    case building::B_PLAZA:
+    case construction::B_ROAD:
+    case construction::B_PLAZA:
       needDrawAnimations = true;
       engine->drawPicture( tile.getPicture(), screenPos );
     break;
@@ -525,7 +526,7 @@ void CityRenderer::Impl::drawTileHealth( Tile& tile )
     break;
 
       //houses
-    case building::B_HOUSE:
+    case building::house:
       {
         HousePtr house = overlay.as< House >();
 
@@ -580,8 +581,8 @@ void CityRenderer::Impl::drawTileReligion( Tile& tile )
     switch( overlay->getType() )
     {
       //fire buildings and roads
-    case building::B_ROAD:
-    case building::B_PLAZA:
+    case construction::B_ROAD:
+    case construction::B_PLAZA:
     case building::B_TEMPLE_CERES: case building::B_TEMPLE_MARS:
     case building::B_TEMPLE_MERCURE: case building::B_TEMPLE_NEPTUNE: case building::B_TEMPLE_VENUS:
     case building::B_TEMPLE_ORACLE:
@@ -592,7 +593,7 @@ void CityRenderer::Impl::drawTileReligion( Tile& tile )
     break;  
 
       //houses
-    case building::B_HOUSE:
+    case building::house:
       {
         HousePtr house = overlay.as< House >();
         religionLevel = house->getServiceValue(Service::religionMercury);
@@ -646,8 +647,8 @@ void CityRenderer::Impl::drawTileFood( Tile& tile )
     switch( overlay->getType() )
     {
       //fire buildings and roads
-    case building::B_ROAD:
-    case building::B_PLAZA:
+    case construction::B_ROAD:
+    case construction::B_PLAZA:
     case building::B_MARKET:
     case building::B_GRANARY:
       pic = tile.getPicture();
@@ -655,7 +656,7 @@ void CityRenderer::Impl::drawTileFood( Tile& tile )
     break;  
 
       //houses
-    case building::B_HOUSE:
+    case building::house:
       {
         drawBuildingAreaTiles(tile, overlay, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
         HousePtr house = overlay.as< House >();
@@ -709,8 +710,8 @@ void CityRenderer::Impl::drawTileWater( Tile& tile )
     switch( overlay->getType() )
     {
       //water buildings
-    case building::B_ROAD:
-    case building::B_PLAZA:
+    case construction::B_ROAD:
+    case construction::B_PLAZA:
     case building::B_RESERVOIR:
     case building::B_FOUNTAIN:
     case building::B_WELL:
@@ -724,7 +725,7 @@ void CityRenderer::Impl::drawTileWater( Tile& tile )
     {
       int tileNumber = 0;
       bool haveWater = tile.getWaterService( WTR_FONTAIN ) > 0 || tile.getWaterService( WTR_WELL ) > 0;
-      if ( overlay->getType() == building::B_HOUSE )
+      if ( overlay->getType() == building::house )
       {
         HousePtr h = overlay.as<House>();
         tileNumber = OverlayPic::inHouse;
@@ -840,7 +841,7 @@ void CityRenderer::Impl::drawTileInSelArea( Tile& tile, Tile* master )
   }
 }
 
-void CityRenderer::Impl::drawTilemapWithRemoveTools()
+void CityRenderer::Impl::renderCellGridWithRTools()
 {
   // center the map on the screen
   mapOffset = Point( engine->getScreenWidth() / 2 - 30 * (camera.getCenterX() + 1) + 1,
@@ -926,7 +927,7 @@ void CityRenderer::Impl::drawTilemapWithRemoveTools()
   }
 }
 
-void CityRenderer::Impl::simpleDrawTilemap()
+void CityRenderer::Impl::renderCellGrid()
 {
   // center the map on the screen
   mapOffset = Point( engine->getScreenWidth() / 2 - 30 * (camera.getCenterX() + 1) + 1,
@@ -980,46 +981,20 @@ void CityRenderer::Impl::simpleDrawTilemap()
   }
 }
 
-void CityRenderer::draw()
+void CityRenderer::render()
 {
   //First part: drawing city
   if( _d->changeCommand.isValid() && _d->changeCommand.is<TilemapRemoveCommand>() )
   {
-    _d->drawTilemapWithRemoveTools();
+    _d->renderCellGridWithRTools();
   }
   else
   {
-    _d->simpleDrawTilemap();
+    _d->renderCellGrid();
   }
 
   //Second part: drawing build tools
-  if( _d->changeCommand.isValid() && _d->changeCommand.is<TilemapBuildCommand>() )
-  {
-    foreach( Tile* postTile, _d->postTiles )
-    {
-      postTile->resetWasDrawn();
-
-      ConstructionPtr ptr_construction = postTile->getOverlay().as<Construction>();
-      _d->engine->resetTileDrawMask();
-
-      if (ptr_construction != NULL)
-      {
-        if (ptr_construction->canBuild( _d->city, postTile->getIJ()))
-        {
-          _d->engine->setTileDrawMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
-
-          // aqueducts must be shown in correct form
-          AqueductPtr aqueduct = ptr_construction.as<Aqueduct>();
-          if (aqueduct != NULL)
-            aqueduct->setPicture(aqueduct->computePicture( _d->city, &_d->postTiles, postTile->getIJ()));
-        }
-      }
-
-      _d->drawTileEx( *postTile, postTile->getIJ().getZ() );
-    }
-
-    _d->engine->resetTileDrawMask();
-  }
+  _d->renderCellGridBTools();
 
   _d->drawAnimations();
 }
@@ -1027,6 +1002,37 @@ void CityRenderer::draw()
 Tile* CityRenderer::getTile( const Point& pos, bool overborder )
 {
   return _d->getTile( pos, overborder );
+}
+
+void CityRenderer::Impl::renderCellGridBTools()
+{
+  if( changeCommand.isValid() && changeCommand.is<TilemapBuildCommand>() )
+  {
+    foreach( Tile* postTile, postTiles )
+    {
+      postTile->resetWasDrawn();
+
+      ConstructionPtr ptr_construction = postTile->getOverlay().as<Construction>();
+      engine->resetTileDrawMask();
+
+      if (ptr_construction != NULL)
+      {
+        if (ptr_construction->canBuild( city, postTile->getIJ()))
+        {
+          engine->setTileDrawMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
+
+          // aqueducts must be shown in correct form
+          AqueductPtr aqueduct = ptr_construction.as<Aqueduct>();
+          if (aqueduct != NULL)
+            aqueduct->setPicture(aqueduct->computePicture( city, &postTiles, postTile->getIJ()));
+        }
+      }
+
+      drawTileEx( *postTile, postTile->getIJ().getZ() );
+    }
+
+    engine->resetTileDrawMask();
+  }
 }
 
 Tile* CityRenderer::Impl::getTile( const Point& pos, bool overborder)
@@ -1458,10 +1464,10 @@ void CityRenderer::setMode( const TilemapChangeCommandPtr command )
       _d->overlayRendeFlags.insert( building::unknown );
       _d->overlayRendeFlags.insert( building::theater );
       _d->overlayRendeFlags.insert( building::amphitheater );
-      _d->overlayRendeFlags.insert( building::B_COLLOSSEUM );
-      _d->overlayRendeFlags.insert( building::B_HIPPODROME );
-      _d->overlayRendeFlags.insert( building::B_ACTOR_COLONY );
-      _d->overlayRendeFlags.insert( building::B_GLADIATOR_SCHOOL );
+      _d->overlayRendeFlags.insert( building::colloseum );
+      _d->overlayRendeFlags.insert( building::hippodrome );
+      _d->overlayRendeFlags.insert( building::actorColony );
+      _d->overlayRendeFlags.insert( building::gladiatorSchool );
     break;
 
     case OV_HEALTH_DOCTOR:
@@ -1488,29 +1494,29 @@ void CityRenderer::setMode( const TilemapChangeCommandPtr command )
       _d->setDrawFunction( _d.data(), &Impl::drawTileEntertainment );
       _d->overlayRendeFlags.clear();
       _d->overlayRendeFlags.insert( building::theater );
-      _d->overlayRendeFlags.insert( building::B_ACTOR_COLONY );
+      _d->overlayRendeFlags.insert( building::actorColony );
     break;
 
     case OV_ENTERTAINMENT_AMPHITHEATRES:
       _d->setDrawFunction( _d.data(), &Impl::drawTileEntertainment );
       _d->overlayRendeFlags.clear();
       _d->overlayRendeFlags.insert( building::amphitheater );
-      _d->overlayRendeFlags.insert( building::B_ACTOR_COLONY );
-      _d->overlayRendeFlags.insert( building::B_GLADIATOR_SCHOOL );
+      _d->overlayRendeFlags.insert( building::actorColony );
+      _d->overlayRendeFlags.insert( building::gladiatorSchool );
     break;
 
     case OV_ENTERTAINMENT_COLLISEUM:
       _d->setDrawFunction( _d.data(), &Impl::drawTileEntertainment );
       _d->overlayRendeFlags.clear();
-      _d->overlayRendeFlags.insert( building::B_COLLOSSEUM );
-      _d->overlayRendeFlags.insert( building::B_GLADIATOR_SCHOOL );
+      _d->overlayRendeFlags.insert( building::colloseum );
+      _d->overlayRendeFlags.insert( building::gladiatorSchool );
     break;
 
     case OV_ENTERTAINMENT_HIPPODROME:
       _d->setDrawFunction( _d.data(), &Impl::drawTileEntertainment );
       _d->overlayRendeFlags.clear();
-      _d->overlayRendeFlags.insert( building::B_HIPPODROME );
-      _d->overlayRendeFlags.insert( building::B_CHARIOT_MAKER );
+      _d->overlayRendeFlags.insert( building::hippodrome );
+      _d->overlayRendeFlags.insert( building::chariotSchool );
     break;
 
     default:_d->setDrawFunction( _d.data(), &Impl::drawTileBase ); break;

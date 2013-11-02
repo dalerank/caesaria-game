@@ -74,10 +74,10 @@ CityServiceWorkersHire::CityServiceWorkersHire( CityPtr city )
   _d->priorities[ 24 ] = building::B_FURNITURE;
   _d->priorities[ 25 ] = building::B_WEAPONS_WORKSHOP;
   _d->priorities[ 26 ] = building::theater;
-  _d->priorities[ 27 ] = building::B_ACTOR_COLONY;
+  _d->priorities[ 27 ] = building::actorColony;
   _d->priorities[ 28 ] = building::B_SCHOOL;
   _d->priorities[ 29 ] = building::amphitheater;
-  _d->priorities[ 30 ] = building::B_GLADIATOR_SCHOOL;
+  _d->priorities[ 30 ] = building::gladiatorSchool;
   _d->priorities[ 31 ] = building::B_WHARF;
 }
 

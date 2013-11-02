@@ -215,7 +215,7 @@ unsigned int CityStatistic::getAvailableWorkersNumber(CityPtr city)
 {
   CityHelper helper( city );
 
-  HouseList houses = helper.find<House>( building::B_HOUSE );
+  HouseList houses = helper.find<House>( building::house );
 
   int workersNumber = 0;
   foreach( HousePtr house, houses )
@@ -246,7 +246,7 @@ unsigned int CityStatistic::getWorklessNumber(CityPtr city)
 {
   CityHelper helper( city );
 
-  HouseList houses = helper.find<House>( building::B_HOUSE );
+  HouseList houses = helper.find<House>( building::house );
 
   int worklessNumber = 0;
   foreach( HousePtr house, houses )

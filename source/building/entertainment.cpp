@@ -141,7 +141,7 @@ void Theater::build(CityPtr city, const TilePos& pos)
   ServiceBuilding::build( city, pos );
 
   CityHelper helper( city );
-  ActorColonyList actors = helper.find<ActorColony>( building::B_ACTOR_COLONY );
+  ActorColonyList actors = helper.find<ActorColony>( building::actorColony );
 
   if( actors.empty() )
   {
@@ -183,7 +183,7 @@ void Amphitheater::build(CityPtr city, const TilePos& pos)
   EntertainmentBuilding::build( city, pos );
 
   CityHelper helper( city );
-  ActorColonyList actors = helper.find<ActorColony>( building::B_ACTOR_COLONY );
+  ActorColonyList actors = helper.find<ActorColony>( building::actorColony );
 
   if( actors.empty() )
   {
@@ -191,7 +191,7 @@ void Amphitheater::build(CityPtr city, const TilePos& pos)
     event->dispatch();
   }
 
-  GladiatorSchoolList gladiators = helper.find<GladiatorSchool>( building::B_GLADIATOR_SCHOOL );
+  GladiatorSchoolList gladiators = helper.find<GladiatorSchool>( building::gladiatorSchool );
   if( actors.empty() )
   {
     events::GameEventPtr event = events::WarningMessageEvent::create( _("##need_gladiator_school##"));
@@ -208,7 +208,7 @@ void Amphitheater::deliverService()
                          : Picture::getInvalid();
 }
 
-Collosseum::Collosseum() : EntertainmentBuilding(Service::colloseum, building::B_COLLOSSEUM, Size(5) )
+Collosseum::Collosseum() : EntertainmentBuilding(Service::colloseum, building::colloseum, Size(5) )
 {
   //setPicture( Picture::load( ResourceGroup::entertaiment, 36));
 
@@ -220,7 +220,7 @@ Collosseum::Collosseum() : EntertainmentBuilding(Service::colloseum, building::B
 
 //------------
 
-Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, building::B_HIPPODROME, Size(5) )
+Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, building::hippodrome, Size(5) )
 {
   setPicture( Picture::load("circus", 5));
   Picture logo = Picture::load("circus", 3);

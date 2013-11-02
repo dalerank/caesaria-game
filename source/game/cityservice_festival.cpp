@@ -66,7 +66,7 @@ CityServiceFestival::CityServiceFestival( CityPtr city )
 {
   _d->city = city;
   _d->lastFestivalDate = DateTime( -350, 0, 0 );
-  _d->festivalDate = DateTime( -350, 0, 0 );
+  _d->festivalDate = DateTime( -550, 0, 0 );
 }
 
 void CityServiceFestival::update( const unsigned int time )
@@ -79,7 +79,7 @@ void CityServiceFestival::update( const unsigned int time )
       && _d->festivalDate.getMonth() == current.getMonth() )
   {
     _d->lastFestivalDate = GameDate::current();
-    _d->festivalDate = DateTime( -350, 1, 1 );
+    _d->festivalDate = DateTime( -550, 1, 1 );
     DivinePantheon::doFestival( _d->divinity, _d->festivalType );
 
     const char* titles[3] = { "##small_festival##", "##middle_festival##", "##great_festival##" };

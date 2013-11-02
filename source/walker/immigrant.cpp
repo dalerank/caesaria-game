@@ -48,7 +48,7 @@ Immigrant::Immigrant( CityPtr city )
 HousePtr Immigrant::_findBlankHouse()
 {
   CityHelper hlp( _getCity() );
-  HouseList houses = hlp.find< House >( building::B_HOUSE );
+  HouseList houses = hlp.find< House >( building::house );
   HousePtr blankHouse;
   _d->destination = TilePos( -1, -1 );
 

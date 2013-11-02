@@ -130,7 +130,7 @@ void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
 
   switch(type)
   {
-    case building::B_HOUSE:
+    case building::house:
     {
       switch (overlay->getSize().getWidth())
       {

@@ -20,7 +20,7 @@
 #include "game/tilemap.hpp"
 #include "constants.hpp"
 
-Garden::Garden() : Construction(constants::building::B_GARDEN, Size(1) )
+Garden::Garden() : Construction(constants::construction::B_GARDEN, Size(1) )
 {
   // always set picture to 110 (tree garden) here, for sake of building preview
   // actual garden picture will be set upon building being constructed

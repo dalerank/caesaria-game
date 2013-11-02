@@ -263,8 +263,8 @@ void BuildMenu_engineering::initialize()
   addBuildButton(building::B_SHIPYARD);
   addBuildButton(building::B_WHARF);
   addBuildButton(building::B_TRIUMPHAL_ARCH);
-  addBuildButton(building::B_GARDEN);
-  addBuildButton(building::B_PLAZA);
+  addBuildButton(construction::B_GARDEN);
+  addBuildButton(construction::B_PLAZA);
 
   BuildMenu::initialize();
 }
@@ -301,12 +301,12 @@ void BuildMenu_entertainment::initialize()
 {
   addBuildButton(building::theater);
   addBuildButton(building::amphitheater);
-  addBuildButton(building::B_COLLOSSEUM);
-  addBuildButton(building::B_HIPPODROME);
-  addBuildButton(building::B_ACTOR_COLONY);
-  addBuildButton(building::B_GLADIATOR_SCHOOL);
-  addBuildButton(building::B_LION_HOUSE);
-  addBuildButton(building::B_CHARIOT_MAKER);
+  addBuildButton(building::colloseum);
+  addBuildButton(building::hippodrome);
+  addBuildButton(building::actorColony);
+  addBuildButton(building::gladiatorSchool);
+  addBuildButton(building::lionHouse);
+  addBuildButton(building::chariotSchool);
 
   BuildMenu::initialize();
 }

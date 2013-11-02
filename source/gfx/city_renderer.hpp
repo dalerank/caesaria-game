@@ -42,7 +42,7 @@ public:
 
   // draws the tilemap on the screen,
   // using a dumb back to front drawing of all pictures.
-  void draw();
+  void render();
 
   void handleEvent( NEvent& event);
 

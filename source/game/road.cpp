@@ -23,7 +23,7 @@
 
 using namespace constants;
 
-Road::Road() : Construction( building::B_ROAD, Size(1) )
+Road::Road() : Construction( construction::B_ROAD, Size(1) )
 {
   _paved = 0;
 }
@@ -220,7 +220,7 @@ Plaza::Plaza()
   // because as we remove original road we need to recompute adjacent tiles
   // or we will run into big troubles
 
-  setType(building::B_PLAZA);
+  setType(construction::B_PLAZA);
   setPicture(computePicture()); // 102 ~ 107
   setSize( Size( 1 ) );
 }

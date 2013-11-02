@@ -77,7 +77,7 @@ void TrainingBuilding::load( const VariantMap& stream )
   _trainingDelay = (int)stream.get( "trainingDelay", 80 );
 }
 
-ActorColony::ActorColony() : TrainingBuilding( building::B_ACTOR_COLONY, Size(3) )
+ActorColony::ActorColony() : TrainingBuilding( building::actorColony, Size(3) )
 {
   //_getAnimation().load( ResourceGroup::entertaiment, 82, 9);
   //_getAnimation().setOffset( Point( 68, -6 ) );
@@ -101,7 +101,7 @@ void ActorColony::deliverTrainee()
   }
 }
 
-GladiatorSchool::GladiatorSchool() : TrainingBuilding( building::B_GLADIATOR_SCHOOL, Size(3))
+GladiatorSchool::GladiatorSchool() : TrainingBuilding( building::gladiatorSchool, Size(3))
 {
   //setPicture( Picture::load( ResourceGroup::entertaiment, 51 ) );
 
@@ -119,7 +119,7 @@ void GladiatorSchool::deliverTrainee()
 }
 
 
-LionsNursery::LionsNursery() : TrainingBuilding( building::B_LION_HOUSE, Size(3) )
+LionsNursery::LionsNursery() : TrainingBuilding( building::lionHouse, Size(3) )
 {
   setPicture( Picture::load( ResourceGroup::entertaiment, 62));
 
@@ -137,7 +137,7 @@ void LionsNursery::deliverTrainee()
 }
 
 
-WorkshopChariot::WorkshopChariot() : TrainingBuilding( building::B_CHARIOT_MAKER, Size(3) )
+WorkshopChariot::WorkshopChariot() : TrainingBuilding( building::chariotSchool, Size(3) )
 {
   setPicture( Picture::load( ResourceGroup::entertaiment, 91));
 

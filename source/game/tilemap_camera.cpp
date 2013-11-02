@@ -139,7 +139,7 @@ const TilemapArea& TilemapCamera::getTiles() const
 	      ++xstart;
       }
 
-      for (int x = xstart; x<=cx + sizeT.getWidth(); x+=2)
+      /*for (int x = xstart; x<=cx + sizeT.getWidth(); x+=2)
       {
 	// left-right axis
         int j = (x + z - zm)/2;
@@ -149,6 +149,22 @@ const TilemapArea& TilemapCamera::getTiles() const
         {
           _d->tiles.push_back( &_d->tilemap->at( i, j ));
         }
+      }*/
+    }
+
+    for( int y=0; y < mapSize; y++ )
+    {
+      for( int t=0; t <= y; t++ )
+      {
+        _d->tiles.push_back( &_d->tilemap->at( t, mapSize - 1 - ( y - t ) ) );
+      }
+    }
+
+    for( int x=1; x < mapSize; x++ )
+    {
+      for( int t=0; t < mapSize-x; t++ )
+      {
+        _d->tiles.push_back( &_d->tilemap->at( x + t, t ) );
       }
     }
   }
