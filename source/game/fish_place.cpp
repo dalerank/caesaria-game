@@ -25,16 +25,20 @@
 class FishPlace::Impl
 {
 public:
+  Renderer::PassQueue passQueue;
   int fishCount;
   WalkerPtr walker;
   Picture const* savePicture;
   Point basicOffset;
+  PicturesArray animations;
 };
 
 FishPlace::FishPlace() : TileOverlay( constants::place::fishPlace ), _d( new Impl )
 {
   _getAnimation().setFrameDelay( 3 );
-  _getForegroundPictures().resize( 1 );
+  _d->animations.resize( 1 );
+  _d->passQueue.push_back( Renderer::foreground );
+  _d->passQueue.push_back( Renderer::animations );
 
   _d->fishCount = rand() % 100;
 
@@ -74,7 +78,7 @@ void FishPlace::timeStep(const unsigned long time)
 {
   _getAnimation().update( time );
 
-  _getForegroundPictures().at(0) = _getAnimation().getCurrentPicture();
+  _d->animations[ 0 ] = _getAnimation().getCurrentPicture();
 
   if( _d->walker != 0 )
   {
@@ -125,4 +129,20 @@ void FishPlace::destroy()
   getTile().setOverlay( 0 );
 
   TileOverlay::destroy();
+}
+
+const PicturesArray& FishPlace::getPictures(Renderer::Pass pass) const
+{
+  switch(pass)
+  {
+  case Renderer::animations: return _d->animations;
+  default: break;
+  }
+
+  return TileOverlay::getPictures( pass );
+}
+
+Renderer::PassQueue FishPlace::getPassQueue() const
+{
+  return _d->passQueue;
 }

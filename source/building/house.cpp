@@ -612,13 +612,14 @@ int House::getMaxHabitants()
 void House::_update()
 {
   int picId = ( _d->houseId == smallHovel && _d->habitants.count() == 0 ) ? 45 : (_d->houseId + _d->picIdOffset);
-  setPicture( ResourceGroup::housing, picId );
-  setSize( Size( (getPicture().getWidth() + 2 ) / 60 ) );
+  Picture pic = Picture::load( ResourceGroup::housing, picId );
+  setPicture( pic );
+  setSize( Size( (pic.getWidth() + 2 ) / 60 ) );
   _d->maxHabitants = _d->levelSpec.getMaxHabitantsByTile() * getSize().getArea();
   _d->initGoodStore( getSize().getArea() );
 }
 
-int House::getMaxDistance2Road() const
+int House::getRoadAccessDistance() const
 {
   return 2;
 }

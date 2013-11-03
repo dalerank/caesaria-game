@@ -162,8 +162,8 @@ void Factory::timeStep(const unsigned long time)
        if( pic.isValid() )
        {
          // animation of the working factory
-         int level = getForegroundPictures().size()-1;
-         _getForegroundPictures().at(level) = _getAnimation().getCurrentPicture();
+         int level = _getFgPictures().size()-1;
+         _getFgPictures().at(level) = _getAnimation().getCurrentPicture();
        }
      }
    }  
@@ -297,7 +297,7 @@ TimberLogger::TimberLogger() : Factory(Good::none, Good::timber, building::B_TIM
   setPicture( ResourceGroup::commerce, 72 );
 
   _getAnimation().load( ResourceGroup::commerce, 73, 10);
-  _getForegroundPictures().resize(2);
+  _getFgPictures().resize(2);
 }
 
 bool TimberLogger::canBuild( CityPtr city, const TilePos& pos ) const
@@ -324,7 +324,7 @@ IronMine::IronMine() : Factory(Good::none, Good::iron, building::B_IRON_MINE, Si
 
   _getAnimation().load( ResourceGroup::commerce, 55, 6 );
   _getAnimation().setFrameDelay( 5 );
-  _getForegroundPictures().resize(2);
+  _getFgPictures().resize(2);
 }
 
 bool IronMine::canBuild( CityPtr city, const TilePos& pos ) const
@@ -347,7 +347,7 @@ WeaponsWorkshop::WeaponsWorkshop() : Factory(Good::iron, Good::weapon, building:
   setPicture( ResourceGroup::commerce, 108);
 
   _getAnimation().load( ResourceGroup::commerce, 109, 6);
-  _getForegroundPictures().resize(2);
+  _getFgPictures().resize(2);
 }
 
 bool WeaponsWorkshop::canBuild(CityPtr city, const TilePos& pos) const
@@ -378,7 +378,7 @@ WorkshopFurniture::WorkshopFurniture() : Factory(Good::timber, Good::furniture, 
   setPicture( ResourceGroup::commerce, 117 );
 
   _getAnimation().load(ResourceGroup::commerce, 118, 14);
-  _getForegroundPictures().resize(2);
+  _getFgPictures().resize(2);
 }
 
 Winery::Winery() : Factory(Good::grape, Good::wine, building::B_WINE_WORKSHOP, Size(2) )
@@ -386,7 +386,7 @@ Winery::Winery() : Factory(Good::grape, Good::wine, building::B_WINE_WORKSHOP, S
   setPicture( ResourceGroup::commerce, 86 );
 
   _getAnimation().load(ResourceGroup::commerce, 87, 12);
-  _getForegroundPictures().resize(2);
+  _getFgPictures().resize(2);
 }
 
 bool Winery::canBuild(CityPtr city, const TilePos& pos) const
@@ -405,7 +405,7 @@ Creamery::Creamery() : Factory(Good::olive, Good::oil, building::B_OIL_WORKSHOP,
   setPicture( ResourceGroup::commerce, 99 );
 
   _getAnimation().load(ResourceGroup::commerce, 100, 8);
-  _getForegroundPictures().resize(2);
+  _getFgPictures().resize(2);
 }
 
 bool Creamery::canBuild(CityPtr city, const TilePos& pos) const

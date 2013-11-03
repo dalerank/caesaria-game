@@ -45,7 +45,7 @@ Hospital::Hospital() : ServiceBuilding(Service::hospital, building::B_HOSPITAL, 
 Baths::Baths() : ServiceBuilding(Service::baths, building::B_BATHS, Size(2) )
 {
   _haveReservorWater = false;
-  _getForegroundPictures().resize(2);
+  _getFgPictures().resize(2);
 
   _initAnimation();
 }
@@ -68,7 +68,7 @@ void Baths::timeStep(const unsigned long time)
     {
       _getAnimation().stop();
       _haveReservorWater = false;
-      _getForegroundPictures().at(0) = Picture::getInvalid();
+      _getFgPictures().at(0) = Picture::getInvalid();
     }
   }
 

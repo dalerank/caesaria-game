@@ -202,11 +202,6 @@ TileOverlay::Type MetaData::getType() const
   return _d->buildingType;
 }
 
-int MetaData::getCost() const
-{
-  return _cost;
-}
-
 Picture MetaData::getBasePicture() const
 {
   return _basePicture;
@@ -231,7 +226,6 @@ MetaData &MetaData::operator=(const MetaData &a)
   _basePicture = a._basePicture;
   _group = a._group;
   _d->desirability = a._d->desirability;
-  _cost = a._cost;
 
   _d->options = a._d->options;
 

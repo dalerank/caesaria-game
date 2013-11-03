@@ -32,7 +32,7 @@ Temple::Temple( RomeDivinityPtr divinity, TileOverlay::Type type, int imgId, con
 : ServiceBuilding( divinity->getServiceType(), type, size ), _td( new Impl )
 {
   _td->divinity = divinity;
-  setPicture( Picture::load( ResourceGroup::security, imgId ));
+  setPicture( ResourceGroup::security, imgId );
 }
 
 RomeDivinityPtr Temple::getDivinity() const
@@ -107,7 +107,7 @@ TempleOracle::TempleOracle() : Temple( RomeDivinityPtr(), building::B_TEMPLE_ORA
 {
   _getAnimation().load( ResourceGroup::security, 56, 6);
   _getAnimation().setOffset( Point( 9, 30 ) );
-  _getForegroundPictures().resize(1);
+  _getFgPictures().resize(1);
 }
 
 unsigned int TempleOracle::getParishionerNumber() const

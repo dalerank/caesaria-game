@@ -27,7 +27,7 @@ ClayPit::ClayPit() : Factory( Good::none, Good::clay, constants::building::B_CLA
   _getAnimation().load( ResourceGroup::commerce, 62, 10);
   _getAnimation().setFrameDelay( 3 );
 
-  _getForegroundPictures().resize(2);
+  _getFgPictures().resize(2);
 }
 
 void ClayPit::timeStep( const unsigned long time )

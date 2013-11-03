@@ -26,7 +26,7 @@ Pottery::Pottery() : Factory(Good::clay, Good::pottery, building::B_POTTERY, Siz
 {
   _getAnimation().load(ResourceGroup::commerce, 133, 7);
   _getAnimation().setFrameDelay( 3 );
-  _getForegroundPictures().resize(2);
+  _getFgPictures().resize(2);
 }
 
 bool Pottery::canBuild(CityPtr city, const TilePos& pos) const

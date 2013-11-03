@@ -27,12 +27,12 @@
 Prefecture::Prefecture() : ServiceBuilding(Service::prefect, constants::building::B_PREFECTURE, Size(1))
 {
   _fireDetect = TilePos( -1, -1 );
-  setPicture( Picture::load( ResourceGroup::security, 1 ) );
+  setPicture( ResourceGroup::security, 1 );
   
   _getAnimation().load( ResourceGroup::security, 2, 10);
   _getAnimation().setFrameDelay( 4 );
   _getAnimation().setOffset( Point( 20, 36 ) );
-  _getForegroundPictures().resize(1);
+  _getFgPictures().resize(1);
 }
 
 int Prefecture::getServiceDelay() const

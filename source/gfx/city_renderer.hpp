@@ -28,9 +28,10 @@
 #include "game/tilemapchangecommand.hpp"
 #include "engine.hpp"
 #include "core/event.hpp"
+#include "renderer.hpp"
 
 /* Draws the tilemap area on the screen thanks to the GfxEngine, and handle user events */
-class CityRenderer
+class CityRenderer : public Renderer
 {
 public:
   CityRenderer();

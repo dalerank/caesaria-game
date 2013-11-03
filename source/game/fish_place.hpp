@@ -29,6 +29,9 @@ public:
   virtual void timeStep(const unsigned long time);
   virtual void destroy();
 
+  const PicturesArray& getPictures(Renderer::Pass pass) const;
+  Renderer::PassQueue getPassQueue() const;
+
 private:
 
   class Impl;

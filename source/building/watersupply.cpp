@@ -368,7 +368,7 @@ void Reservoir::destroy()
 
 Reservoir::Reservoir() : WaterSource( building::B_RESERVOIR, Size( 3 ) )
 {
-  setPicture( Picture::load( ResourceGroup::waterbuildings, 1 )  );
+  setPicture( ResourceGroup::waterbuildings, 1 );
   
   // utilitya 34      - empty reservoir
   // utilitya 35 ~ 42 - full reservoir animation
@@ -378,7 +378,7 @@ Reservoir::Reservoir() : WaterSource( building::B_RESERVOIR, Size( 3 ) )
   _getAnimation().setFrameDelay( 11 );
   _getAnimation().setOffset( Point( 47, 63 ) );
 
-  _getForegroundPictures().resize(1);
+  _getFgPictures().resize(1);
   //_fgPictures[0]=;
 }
 
@@ -390,7 +390,7 @@ void Reservoir::build( CityPtr city, const TilePos& pos )
 {
   Construction::build( city, pos );
 
-  setPicture( Picture::load( ResourceGroup::waterbuildings, 1 ) );
+  setPicture( ResourceGroup::waterbuildings, 1 );
   _isWaterSource = _isNearWater( city, pos );
   
   //updateAqueducts();
@@ -431,7 +431,7 @@ void Reservoir::timeStep(const unsigned long time)
 
   if( !_d->water )
   {
-    _getForegroundPictures().at( 0 ) = Picture::getInvalid();
+    _getFgPictures().at( 0 ) = Picture::getInvalid();
     return;
   }
 
@@ -456,7 +456,7 @@ void Reservoir::timeStep(const unsigned long time)
   _getAnimation().update( time );
   
   // takes current animation frame and put it into foreground
-  _getForegroundPictures().at( 0 ) = _getAnimation().getCurrentPicture();
+  _getFgPictures().at( 0 ) = _getAnimation().getCurrentPicture();
 }
 
 bool Reservoir::canBuild( CityPtr city, const TilePos& pos ) const
@@ -564,7 +564,7 @@ Fountain::Fountain() : ServiceBuilding(Service::fontain, building::B_FOUNTAIN, S
   //setPicture( ResourceGroup::utilitya, 10 );
 
   _initAnimation();
-  _getForegroundPictures().resize(1);
+  _getFgPictures().resize(1);
 
   _damageIncrement = 0;
   _fireIncrement = 0;
@@ -609,7 +609,7 @@ void Fountain::timeStep(const unsigned long time)
 
     if( !isActive() )
     {
-      _getForegroundPictures().at( 0 ) = Picture::getInvalid();
+      _getFgPictures().at( 0 ) = Picture::getInvalid();
       return;
     }
 

@@ -58,7 +58,7 @@ public:
 Market::Market() : ServiceBuilding(Service::market, constants::building::B_MARKET, Size(2) ),
   _d( new Impl )
 {
-  _getForegroundPictures().resize(1);  // animation
+  _getFgPictures().resize(1);  // animation
 
   _d->initStore();
 

@@ -88,16 +88,16 @@ Granary::Granary() : WorkingBuilding( constants::building::B_GRANARY, Size(3) ),
 {
   _d->goodStore.granary = this;
 
-  setPicture( Picture::load( ResourceGroup::commerce, 140));
-  _getForegroundPictures().resize(6);  // 1 upper level + 4 windows + animation
+  setPicture( ResourceGroup::commerce, 140 );
+  _getFgPictures().resize(6);  // 1 upper level + 4 windows + animation
 
   _getAnimation().load(ResourceGroup::commerce, 146, 7, Animation::straight);
   // do the animation in reverse
   _getAnimation().load(ResourceGroup::commerce, 151, 6, Animation::reverse);
   _getAnimation().setFrameDelay( 4 );
 
-  _getForegroundPictures().at(0) = Picture::load( ResourceGroup::commerce, 141);
-  _getForegroundPictures().at(5) = _getAnimation().getCurrentPicture();
+  _getFgPictures().at(0) = Picture::load( ResourceGroup::commerce, 141);
+  _getFgPictures().at(5) = _getAnimation().getCurrentPicture();
   computePictures();
 
   _d->devastateThis = false;  
@@ -110,7 +110,7 @@ void Granary::timeStep(const unsigned long time)
   {
     _getAnimation().update( time );
 
-    _getForegroundPictures().at(5) = _getAnimation().getCurrentPicture();
+    _getFgPictures().at(5) = _getAnimation().getCurrentPicture();
 
     if( time % 22 == 1 && _d->goodStore.isDevastation() 
         && (_d->goodStore.getCurrentQty() > 0) && getWalkerList().empty() )
@@ -133,24 +133,24 @@ void Granary::computePictures()
   for (int n = 0; n < 4; ++n)
   {
     // reset all window pictures
-    _getForegroundPictures().at(n+1) = Picture::getInvalid();
+    _getFgPictures().at(n+1) = Picture::getInvalid();
   }
 
   if (allQty > 0)
   {
-    _getForegroundPictures().at(1) = Picture::load( ResourceGroup::commerce, 142);
+    _getFgPictures().at(1) = Picture::load( ResourceGroup::commerce, 142);
   }
   if( allQty > maxQty * 0.25)
   {
-    _getForegroundPictures().at(2) = Picture::load( ResourceGroup::commerce, 143);
+    _getFgPictures().at(2) = Picture::load( ResourceGroup::commerce, 143);
   }
   if (allQty > maxQty * 0.5)
   {
-    _getForegroundPictures().at(3) = Picture::load( ResourceGroup::commerce, 144);
+    _getFgPictures().at(3) = Picture::load( ResourceGroup::commerce, 144);
   }
   if (allQty > maxQty * 0.9)
   {
-    _getForegroundPictures().at(4) = Picture::load( ResourceGroup::commerce, 145);
+    _getFgPictures().at(4) = Picture::load( ResourceGroup::commerce, 145);
   }
 }
 

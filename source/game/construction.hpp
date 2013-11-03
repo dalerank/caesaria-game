@@ -41,7 +41,7 @@ public:
   virtual bool isNeedRoadAccess() const;
   virtual const TilemapTiles& getAccessRoads() const;  // return all road tiles adjacent to the construction
   virtual void computeAccessRoads();  
-  virtual int  getMaxDistance2Road() const; // virtual because HOUSE has different behavior
+  virtual int  getRoadAccessDistance() const; // virtual because HOUSE has different behavior
   virtual const MetaData::Desirability& getDesirabilityInfo() const;
   virtual void destroy();
 

@@ -73,7 +73,7 @@ void Construction::computeAccessRoads()
 
   Tilemap& tilemap = _getCity()->getTilemap();
 
-  int maxDst2road = getMaxDistance2Road();
+  int maxDst2road = getRoadAccessDistance();
   TilemapTiles rect = tilemap.getRectangle( _getMasterTile()->getIJ() + TilePos( -maxDst2road, -maxDst2road ),
                                             getSize() + Size( 2 * maxDst2road ), !Tilemap::checkCorners );
   foreach( Tile* tile, rect )
@@ -85,7 +85,7 @@ void Construction::computeAccessRoads()
   }
 }
 
-int Construction::getMaxDistance2Road() const
+int Construction::getRoadAccessDistance() const
 {
   return 1;
   // it is default value

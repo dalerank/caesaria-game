@@ -32,7 +32,6 @@ class Warehouse: public WorkingBuilding
 
 public:
   Warehouse();
-  void init();
 
   virtual void timeStep(const unsigned long time);
   void computePictures();

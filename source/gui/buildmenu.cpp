@@ -144,7 +144,7 @@ void BuildMenu::addBuildButton(const TileOverlay::Type buildingType )
   //int t = DateTime::getElapsedTime();
   const MetaData &buildingData = MetaDataHolder::instance().getData( buildingType );
 
-  int cost = buildingData.getCost();
+  int cost = buildingData.getOption( "cost" );
   bool mayBuildInCity = _options.isBuildingAvailble( buildingType );
   if( cost > 0 && mayBuildInCity )
   {

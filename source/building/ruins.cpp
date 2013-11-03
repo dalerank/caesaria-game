@@ -31,7 +31,7 @@ BurningRuins::BurningRuins() : ServiceBuilding(Service::burningRuins, building::
     setPicture( ResourceGroup::land2a, 187 );
     _getAnimation().load( ResourceGroup::land2a, 188, 8 );
     _getAnimation().setOffset( Point( 14, 26 ) );
-    _getForegroundPictures().resize(1);
+    _getFgPictures().resize(1);
 }
 
 void BurningRuins::timeStep(const unsigned long time)
@@ -45,14 +45,14 @@ void BurningRuins::timeStep(const unsigned long time)
         _fireLevel -= 1;
         if( _fireLevel == 50 )
         {
-          setPicture(Picture::load( ResourceGroup::land2a, 214));
+          setPicture( ResourceGroup::land2a, 214 );
           _getAnimation().clear();
           _getAnimation().load( ResourceGroup::land2a, 215, 8);
           _getAnimation().setOffset( Point( 14, 26 ) );
         }
         else if( _fireLevel == 25 )
         {
-          setPicture( Picture::load( ResourceGroup::land2a, 223));
+          setPicture( ResourceGroup::land2a, 223 );
           _getAnimation().clear();
           _getAnimation().load(ResourceGroup::land2a, 224, 8);
           _getAnimation().setOffset( Point( 14, 18 ) );
@@ -62,7 +62,7 @@ void BurningRuins::timeStep(const unsigned long time)
       {
         deleteLater();
         _getAnimation().clear();
-        _getForegroundPictures().clear();
+        _getFgPictures().clear();
       }           
     }
 }
@@ -137,7 +137,7 @@ void BurnedRuins::timeStep( const unsigned long time )
 
 BurnedRuins::BurnedRuins() : Building( building::B_BURNED_RUINS, Size(1) )
 {
-  setPicture( Picture::load( ResourceGroup::land2a, 111 + rand() % 8 ));
+  setPicture( ResourceGroup::land2a, 111 + rand() % 8 );
 }
 
 void BurnedRuins::build( CityPtr city, const TilePos& pos )
@@ -171,7 +171,7 @@ CollapsedRuins::CollapsedRuins() : Building(building::B_COLLAPSED_RUINS, Size(1)
     _getAnimation().setOffset( Point( 14, 26 ) );
     _getAnimation().setFrameDelay( 4 );
     _getAnimation().setLoop( false );
-    _getForegroundPictures().resize(1);
+    _getFgPictures().resize(1);
 }
 
 void CollapsedRuins::burn()
@@ -207,15 +207,15 @@ PlagueRuins::PlagueRuins() : Building( building::B_PLAGUE_RUINS, Size(1) )
   setPicture( ResourceGroup::land2a, 187 );
   _getAnimation().load( ResourceGroup::land2a, 188, 8 );
   _getAnimation().setOffset( Point( 14, 26 ) );
-  _getForegroundPictures().resize(2);
-  _getForegroundPictures().at( 1 ) = Picture::load( ResourceGroup::sprites, 218 );
-  _getForegroundPictures().at( 1 ).setOffset( 16, 32 );
+  _getFgPictures().resize(2);
+  _getFgPictures().at( 1 ) = Picture::load( ResourceGroup::sprites, 218 );
+  _getFgPictures().at( 1 ).setOffset( 16, 32 );
 }
 
 void PlagueRuins::timeStep(const unsigned long time)
 {
   _getAnimation().update( time );
-  _getForegroundPictures().at( 0 ) = _getAnimation().getCurrentPicture();
+  _getFgPictures().at( 0 ) = _getAnimation().getCurrentPicture();
 
   if (time % 16 == 0 )
   {
@@ -224,14 +224,14 @@ void PlagueRuins::timeStep(const unsigned long time)
       _fireLevel -= 1;
       if( _fireLevel == 50 )
       {
-        setPicture(Picture::load( ResourceGroup::land2a, 214));
+        setPicture( ResourceGroup::land2a, 214 );
         _getAnimation().clear();
         _getAnimation().load( ResourceGroup::land2a, 215, 8);
         _getAnimation().setOffset( Point( 14, 26 ) );
       }
       else if( _fireLevel == 25 )
       {
-        setPicture( Picture::load( ResourceGroup::land2a, 223));
+        setPicture( ResourceGroup::land2a, 223 );
         _getAnimation().clear();
         _getAnimation().load(ResourceGroup::land2a, 224, 8);
         _getAnimation().setOffset( Point( 14, 18 ) );
@@ -241,7 +241,7 @@ void PlagueRuins::timeStep(const unsigned long time)
     {
       deleteLater();
       _getAnimation().clear();
-      _getForegroundPictures().clear();
+      _getFgPictures().clear();
     }
   }
 }

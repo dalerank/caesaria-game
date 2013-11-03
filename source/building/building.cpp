@@ -262,7 +262,7 @@ SmallStatue::SmallStatue() : Building( building::B_STATUE1, Size(1) )
 {
   _fireIncrement = 0;
   _damageIncrement = 0;
-  setPicture( Picture::load( ResourceGroup::govt, 1));
+  setPicture( ResourceGroup::govt, 1 );
 }
 
 bool SmallStatue::isNeedRoadAccess() const
@@ -274,7 +274,7 @@ MediumStatue::MediumStatue() : Building( building::B_STATUE2, Size(2) )
 {
   _fireIncrement = 0;
   _damageIncrement = 0;
-  setPicture( Picture::load( ResourceGroup::govt, 2));
+  setPicture( ResourceGroup::govt, 2);
 }
 
 bool MediumStatue::isNeedRoadAccess() const
@@ -286,7 +286,7 @@ BigStatue::BigStatue() : Building( building::B_STATUE3, Size(3))
 {
   _fireIncrement = 0;
   _damageIncrement = 0;
-  setPicture( Picture::load( ResourceGroup::govt, 3));
+  setPicture( ResourceGroup::govt, 3 );
 }
 
 bool BigStatue::isNeedRoadAccess() const
@@ -296,7 +296,7 @@ bool BigStatue::isNeedRoadAccess() const
 
 Shipyard::Shipyard() : Building( building::B_SHIPYARD, Size(2) )
 {
-  setPicture( Picture::load( ResourceGroup::transport, 1));
+  setPicture( ResourceGroup::transport, 1);
   // also transport 2 3 4 check position of river on map
 }
 
@@ -315,7 +315,7 @@ Dock::Dock() : Building( building::B_DOCK, Size(2) )
   _getAnimation().load( ResourceGroup::transport, 15, 10, Animation::reverse );
   
   _getAnimation().setOffset( Point( 107, 61 ) );
-  _getForegroundPictures().resize(1);
+  _getFgPictures().resize(1);
 }
 
 void Dock::timeStep(const unsigned long time)
@@ -323,7 +323,7 @@ void Dock::timeStep(const unsigned long time)
   _getAnimation().update( time );
   
   // takes current animation frame and put it into foreground
-  _getForegroundPictures().at(0) = _getAnimation().getCurrentPicture();
+  _getFgPictures().at(0) = _getAnimation().getCurrentPicture();
 }
 
 // second arch pictures is land3a 45 + 46	
@@ -333,6 +333,6 @@ TriumphalArch::TriumphalArch() : Building( building::B_TRIUMPHAL_ARCH, Size(3) )
   setPicture( ResourceGroup::land3a, 43 );
   _getAnimation().load("land3a", 44, 1);
   _getAnimation().setOffset( Point( 63, 97 ) );
-  _getForegroundPictures().resize(1);
-  _getForegroundPictures().at(0) = _getAnimation().getCurrentPicture();
+  _getFgPictures().resize(1);
+  _getFgPictures().at(0) = _getAnimation().getCurrentPicture();
 }

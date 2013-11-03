@@ -122,7 +122,7 @@ void BuildEvent::exec( Game& game )
       helper.updateDesirability( construction, true );
 
       game.getCity()->addOverlay( _overlay );
-      game.getCity()->getFunds().resolveIssue( FundIssue( CityFunds::buildConstruction, -buildingData.getCost() ) );
+      game.getCity()->getFunds().resolveIssue( FundIssue( CityFunds::buildConstruction, -(int)buildingData.getOption( "cost" ) ) );
 
       if( construction->isNeedRoadAccess() && construction->getAccessRoads().empty() )
       {

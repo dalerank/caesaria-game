@@ -22,6 +22,7 @@
 #include "game/enums.hpp"
 #include "core/serializer.hpp"
 #include "core/scopedptr.hpp"
+#include "renderer.hpp"
 
 class TileOverlay : public Serializable, public ReferenceCounted
 {
@@ -52,13 +53,14 @@ public:
   virtual void timeStep(const unsigned long time);  // perform one simulation step
 
   // graphic
-  void setPicture(const Picture& picture);
+  void setPicture(Picture picture);
   void setPicture(const char* resource, const int index);
+  const Picture& getPicture() const;
 
   void setAnimation( const Animation& animation );
 
-  const Picture& getPicture() const;
-  const PicturesArray& getForegroundPictures() const;
+  virtual const PicturesArray& getPictures( Renderer::Pass pass ) const;
+  virtual Renderer::PassQueue getPassQueue() const;
 
   std::string getName();  // landoverlay debug name
   void setName( const std::string& name );
@@ -74,7 +76,8 @@ protected:
   Animation& _getAnimation();
   Tile* _getMasterTile();
   CityPtr _getCity() const;
-  PicturesArray& _getForegroundPictures();
+  PicturesArray& _getFgPictures();
+  Picture& _getPicture();
 
 private:
   class Impl;

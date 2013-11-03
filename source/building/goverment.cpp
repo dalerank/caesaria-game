@@ -40,13 +40,13 @@ GovernorsPalace::GovernorsPalace() : WorkingBuilding( building::B_GOVERNOR_PALAC
 {
   setMaxWorkers(15);
   setWorkers(0);  
-  setPicture(Picture::load(ResourceGroup::housing, 48));
+  setPicture( ResourceGroup::housing, 48 );
 }
 
 MissionPost::MissionPost() : WorkingBuilding(building::B_MISSION_POST, Size(2) )
 {
   setMaxWorkers(20);
   setWorkers(0);  
-  setPicture( Picture::load( ResourceGroup::transport, 93));
+  setPicture( ResourceGroup::transport, 93 );
 }
 

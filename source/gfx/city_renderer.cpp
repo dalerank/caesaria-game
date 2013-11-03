@@ -66,6 +66,9 @@ namespace WalkersVisibility
 class CityRenderer::Impl
 {
 public: 
+  typedef std::vector<Tile*> TileQueue;
+  typedef std::map<Renderer::Pass, TileQueue> RenderQueue;
+
   Picture clearPic;
   TilemapTiles postTiles;  // these tiles have draw over "normal" tilemap tiles!
   Point lastCursorPos;
@@ -78,7 +81,8 @@ public:
   GfxEngine* engine;
   TilemapCamera camera;  // visible map area
   std::set<int> overlayRendeFlags;
-  std::vector<Tile*> animationStack;
+  RenderQueue renderQueue;
+
   int scrollSpeed;
 
   TilePos lastTilePos;
@@ -106,11 +110,14 @@ public:
   void drawTileInSelArea( Tile& tile, Tile* master );
   void drawTileFood( Tile& tile );
   void drawAnimations();
+  void drawTilePass( Tile& tile, Renderer::Pass pass);
   void drawColumn( const Point& pos, const int startPicId, const int percent );
 
-  void renderCellGridWithRTools();
-  void renderCellGridBTools();
-  void renderCellGrid();
+  void renderTilesRTools();
+  void renderTilesBTools();
+  void renderTiles();
+
+  void registerTileForRendering( Tile& );
 
   void drawTile( Tile& tile );
   void drawTileEx( Tile& tile, const int depth );
@@ -168,7 +175,6 @@ void CityRenderer::initialize( CityPtr city, GfxEngine* engine )
   _d->engine = engine;
   _d->clearPic = Picture::load( "oc3_land", 2 );
   _d->setDrawFunction( _d.data(), &Impl::drawTileBase );
-  _d->animationStack.reserve( _d->tilemap->getSize() * 10 );
 }
 
 void CityRenderer::Impl::drawTileEx( Tile& tile, const int depth )
@@ -199,23 +205,29 @@ void CityRenderer::Impl::drawTile( Tile& tile )
   drawTileFunction( tile );
 }
 
+void CityRenderer::Impl::drawTilePass( Tile& tile, Renderer::Pass pass )
+{
+  if( tile.getOverlay().isNull() )
+    return;
+
+  const PicturesArray& pictures = tile.getOverlay()->getPictures( pass );
+
+  for( PicturesArray::const_iterator it=pictures.begin(); it != pictures.end(); it++ )
+  {
+    engine->drawPicture( *it, tile.getXY() + mapOffset );
+  }
+}
+
 void CityRenderer::Impl::drawAnimations()
 {
   // building foregrounds and animations
-  foreach( Tile* tile, animationStack )
+  TileQueue& tiles = renderQueue[ Renderer::animations ];
+  foreach( Tile* tile, tiles )
   {
-    const PicturesArray& fgPictures = tile->getOverlay()->getForegroundPictures();
-    for( PicturesArray::const_iterator it=fgPictures.begin(); it != fgPictures.end(); it++ )
-    {
-      // skip void picture
-      if( it->isValid() )
-      {
-        engine->drawPicture( *it, tile->getXY() + mapOffset );
-      }
-    }
+    drawTilePass( *tile, Renderer::animations );
   }
 
-  animationStack.clear();
+  tiles.clear();
 }
 
 void CityRenderer::Impl::drawTileDesirability( Tile& tile )
@@ -250,7 +262,7 @@ void CityRenderer::Impl::drawTileDesirability( Tile& tile )
     case construction::B_ROAD:
     case construction::B_PLAZA:
       engine->drawPicture( tile.getPicture(), screenPos );
-      animationStack.push_back( &tile );
+      registerTileForRendering( tile );
     break;  
 
     //other buildings
@@ -335,7 +347,7 @@ void CityRenderer::Impl::drawTileFire( Tile& tile )
 
     if( needDrawAnimations )
     {
-      animationStack.push_back( &tile );
+      registerTileForRendering( tile );
     }
     else if( fireLevel >= 0)
     {
@@ -397,7 +409,7 @@ void CityRenderer::Impl::drawTileDamage( Tile& tile )
 
     if( needDrawAnimations )
     {
-      animationStack.push_back( &tile );
+      registerTileForRendering( tile );
     }
     else if( damageLevel >= 0 )
     {
@@ -475,7 +487,7 @@ void CityRenderer::Impl::drawTileEntertainment( Tile& tile )
 
     if( needDrawAnimations )
     {
-      animationStack.push_back( &tile );
+      registerTileForRendering( tile );
     }
     else if( entertainmentLevel > 0 )
     {
@@ -551,7 +563,7 @@ void CityRenderer::Impl::drawTileHealth( Tile& tile )
 
     if( needDrawAnimations )
     {
-      animationStack.push_back( &tile );
+      registerTileForRendering( tile );
     }
     else if( healthLevel > 0 )
     {
@@ -618,7 +630,7 @@ void CityRenderer::Impl::drawTileReligion( Tile& tile )
 
     if( needDrawAnimations )
     {
-      animationStack.push_back( &tile );
+      registerTileForRendering( tile );
     }
     else if( religionLevel > 0 )
     {
@@ -680,7 +692,7 @@ void CityRenderer::Impl::drawTileFood( Tile& tile )
 
     if( needDrawAnimations )
     {
-      animationStack.push_back( &tile );
+      registerTileForRendering( tile );
     }
     else if( foodLevel >= 0 )
     {
@@ -750,7 +762,7 @@ void CityRenderer::Impl::drawTileWater( Tile& tile )
 
     if( needDrawAnimations )
     {
-      animationStack.push_back( &tile );
+      registerTileForRendering( tile );
     }
   }
 
@@ -780,7 +792,7 @@ void CityRenderer::Impl::drawTileBase( Tile& tile )
 
   TileOverlayPtr overlay = tile.getOverlay();
 
-  if( overlay.isValid())
+  if( overlay.isValid() )
   {
     if (overlay.is<Aqueduct>() && postTiles.size() > 0)
     {
@@ -802,6 +814,8 @@ void CityRenderer::Impl::drawTileBase( Tile& tile )
         engine->drawPicture( pic, screenPos );
       }
     }
+
+    registerTileForRendering( tile );
   }
 
   if( !tile.getFlag( Tile::wasDrawn ) )
@@ -813,11 +827,8 @@ void CityRenderer::Impl::drawTileBase( Tile& tile )
     {
       engine->drawPicture( tile.getAnimation().getCurrentPicture(), screenPos );
     }
-  }
 
-  if( overlay != 0 && !overlay->getForegroundPictures().empty() )
-  {
-    animationStack.push_back( &tile );
+    drawTilePass( tile, Renderer::foreground );
   }
 }
 
@@ -841,7 +852,7 @@ void CityRenderer::Impl::drawTileInSelArea( Tile& tile, Tile* master )
   }
 }
 
-void CityRenderer::Impl::renderCellGridWithRTools()
+void CityRenderer::Impl::renderTilesRTools()
 {
   // center the map on the screen
   mapOffset = Point( engine->getScreenWidth() / 2 - 30 * (camera.getCenterX() + 1) + 1,
@@ -927,7 +938,7 @@ void CityRenderer::Impl::renderCellGridWithRTools()
   }
 }
 
-void CityRenderer::Impl::renderCellGrid()
+void CityRenderer::Impl::renderTiles()
 {
   // center the map on the screen
   mapOffset = Point( engine->getScreenWidth() / 2 - 30 * (camera.getCenterX() + 1) + 1,
@@ -981,20 +992,32 @@ void CityRenderer::Impl::renderCellGrid()
   }
 }
 
+void CityRenderer::Impl::registerTileForRendering(Tile& tile)
+{
+  if( tile.getOverlay() != 0 )
+  {
+    Renderer::PassQueue passQueue = tile.getOverlay()->getPassQueue();
+    foreach( Renderer::Pass pass, passQueue )
+    {
+      renderQueue[ pass ].push_back( &tile );
+    }
+  }
+}
+
 void CityRenderer::render()
 {
   //First part: drawing city
   if( _d->changeCommand.isValid() && _d->changeCommand.is<TilemapRemoveCommand>() )
   {
-    _d->renderCellGridWithRTools();
+    _d->renderTilesRTools();
   }
   else
   {
-    _d->renderCellGrid();
+    _d->renderTiles();
   }
 
   //Second part: drawing build tools
-  _d->renderCellGridBTools();
+  _d->renderTilesBTools();
 
   _d->drawAnimations();
 }
@@ -1004,7 +1027,7 @@ Tile* CityRenderer::getTile( const Point& pos, bool overborder )
   return _d->getTile( pos, overborder );
 }
 
-void CityRenderer::Impl::renderCellGridBTools()
+void CityRenderer::Impl::renderTilesBTools()
 {
   if( changeCommand.isValid() && changeCommand.is<TilemapBuildCommand>() )
   {
@@ -1356,8 +1379,6 @@ void CityRenderer::discardPreview()
 
   _d->postTiles.clear();
 }
-
-
 
 void CityRenderer::checkPreviewBuild(const TilePos & pos)
 {

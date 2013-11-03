@@ -50,8 +50,6 @@ public:
   TileOverlay::Type getType() const;
   TileOverlay::Group getClass() const;
   Picture getBasePicture() const;
-  // returns the building price, -1 => cannot be built
-  int getCost() const;
   const Desirability& getDesirbilityInfo() const;
 
   Variant getOption( const std::string& name, Variant defaultVal=Variant() ) const;
@@ -63,7 +61,6 @@ private:
   std::string _name;  // debug name  (english, ex:"iron")
   std::string _prettyName;  // pretty-print name  (i18n, ex:"Iron mine")
   Picture _basePicture;
-  int _cost;
 
   class Impl;
   ScopedPtr< Impl > _d;

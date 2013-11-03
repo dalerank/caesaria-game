@@ -19,9 +19,14 @@
 #include "game/tilemap.hpp"
 #include "core/logger.hpp"
 
+namespace {
+static Renderer::PassQueue defaultPassQueue=Renderer::PassQueue(1,Renderer::foreground);
+static PicturesArray invalidPictures;
+}
+
 class TileOverlay::Impl
 {
-public:
+public:  
   PicturesArray fgPictures;
   TileOverlay::Type overlayType;
   TileOverlay::Group overlayClass;
@@ -67,7 +72,7 @@ void TileOverlay::setType(const Type type)
 
 void TileOverlay::timeStep(const unsigned long time) { }
 
-void TileOverlay::setPicture(const Picture &picture)
+void TileOverlay::setPicture(Picture picture)
 {
   _d->picture = picture;
 
@@ -91,6 +96,11 @@ void TileOverlay::setPicture(const Picture &picture)
 void TileOverlay::setPicture(const char* resource, const int index)
 {
   setPicture( Picture::load( resource, index ) );
+}
+
+const Picture& TileOverlay::getPicture() const
+{
+  return _d->picture;
 }
 
 void TileOverlay::setAnimation(const Animation& animation)
@@ -154,14 +164,20 @@ bool TileOverlay::isDeleted() const
   return _d->isDeleted;
 }
 
-const Picture &TileOverlay::getPicture() const
+const PicturesArray& TileOverlay::getPictures( Renderer::Pass pass ) const
 {
-  return _d->picture;
+  switch( pass )
+  {
+  case Renderer::foreground: return _d->fgPictures;
+  default: break;
+  }
+
+  return invalidPictures;
 }
 
-const PicturesArray& TileOverlay::getForegroundPictures() const
+Renderer::PassQueue TileOverlay::getPassQueue() const
 {
-  return _d->fgPictures;
+  return defaultPassQueue;
 }
 
 std::string TileOverlay::getName()
@@ -239,9 +255,14 @@ CityPtr TileOverlay::_getCity() const
   return _d->city;
 }
 
-PicturesArray& TileOverlay::_getForegroundPictures()
+PicturesArray& TileOverlay::_getFgPictures()
 {
   return _d->fgPictures;
+}
+
+Picture&TileOverlay::_getPicture()
+{
+  return _d->picture;
 }
 
 TileOverlay::Group TileOverlay::getClass() const

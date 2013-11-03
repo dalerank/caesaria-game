@@ -74,7 +74,7 @@ public:
 
   std::string getUpCondition() const;
 
-  int getMaxDistance2Road() const; 
+  int getRoadAccessDistance() const;
 
   bool isWalkable() const;
 

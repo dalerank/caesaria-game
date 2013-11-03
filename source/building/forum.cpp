@@ -32,7 +32,7 @@ Forum::Forum() : ServiceBuilding(Service::forum, constants::building::B_FORUM, S
 {
   _d->taxInThisMonth = 0;
   _d->citizensReached = 0;
-  setPicture( Picture::load( ResourceGroup::govt, 10));
+  setPicture( ResourceGroup::govt, 10 );
 }
 
 void Forum::deliverService()
