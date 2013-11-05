@@ -22,10 +22,15 @@ namespace constants
 namespace citylayer
 {
 enum { simple=0, water, fire, damage, desirability,
-       entertainment, theater, amphitheater, colloseum, hippodrome,
+       entertainments, entertainmentAll, theater, amphitheater, colloseum, hippodrome,
        health, doctor, hospital, barber, baths,
        food,
-       religion };
+       religion,
+       risks, crime, aborigen, troubles,
+       education, educationAll, school, library, academy,
+       commerce, tax,
+       all
+     };
 }
 
 }

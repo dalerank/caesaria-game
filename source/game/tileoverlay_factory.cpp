@@ -181,11 +181,11 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::house, OC3_STR_EXT(B_HOUSE), new ConstructionCreator<House>() );
   addCreator(construction::B_ROAD, OC3_STR_EXT(B_ROAD) , new ConstructionCreator<Road>() );
   // administration
-  addCreator(building::B_FORUM, OC3_STR_EXT(B_FORUM) , new WorkingBuildingCreator<Forum>() );
-  addCreator(building::B_SENATE, OC3_STR_EXT(B_SENATE), new WorkingBuildingCreator<Senate>() );
-  addCreator(building::B_GOVERNOR_HOUSE, OC3_STR_EXT(B_GOVERNOR_HOUSE) , new ConstructionCreator<GovernorsHouse>() );
-  addCreator(building::B_GOVERNOR_VILLA, OC3_STR_EXT(B_GOVERNOR_VILLA) , new ConstructionCreator<GovernorsVilla>() );
-  addCreator(building::B_GOVERNOR_PALACE, OC3_STR_EXT(B_GOVERNOR_PALACE), new ConstructionCreator<GovernorsPalace>() );
+  addCreator(building::forum, OC3_STR_EXT(B_FORUM) , new WorkingBuildingCreator<Forum>() );
+  addCreator(building::senate, OC3_STR_EXT(B_SENATE), new WorkingBuildingCreator<Senate>() );
+  addCreator(building::governorHouse, OC3_STR_EXT(B_GOVERNOR_HOUSE) , new ConstructionCreator<GovernorsHouse>() );
+  addCreator(building::governorVilla, OC3_STR_EXT(B_GOVERNOR_VILLA) , new ConstructionCreator<GovernorsVilla>() );
+  addCreator(building::governorPalace, OC3_STR_EXT(B_GOVERNOR_PALACE), new ConstructionCreator<GovernorsPalace>() );
   addCreator(building::B_STATUE1, OC3_STR_EXT(B_STATUE1), new ConstructionCreator<SmallStatue>() );
   addCreator(building::B_STATUE2, OC3_STR_EXT(B_STATUE2), new ConstructionCreator<MediumStatue>() );
   addCreator(building::B_STATUE3, OC3_STR_EXT(B_STATUE3), new ConstructionCreator<BigStatue>() );

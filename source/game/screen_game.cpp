@@ -372,7 +372,7 @@ void ScreenGame::resolveExitGame()
 
 void ScreenGame::Impl::resolveSelectOverlayView( int type )
 {
-  renderer.setMode( TilemapOverlayCommand::create( DrawingOverlayType( type ) ) );
+  renderer.setMode( TilemapOverlayCommand::create( type ) );
 }
 
 void ScreenGame::Impl::showAdvisorsWindow()

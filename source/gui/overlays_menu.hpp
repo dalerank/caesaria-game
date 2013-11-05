@@ -37,9 +37,9 @@ oc3_signals public:
   Signal1<int>& onSelectOverlayType();
 
 private:
-  void _addButtons( const DrawingOverlayType type );
+  void _addButtons( const int type );
   // add the button in the menu.
-  void _addButton( const DrawingOverlayType buildingType, const std::string& name, const Point& offset );
+  void _addButton( const int buildingType, const std::string& name, const Point& offset );
 
   class Impl;
   ScopedPtr< Impl > _d;

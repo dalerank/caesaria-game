@@ -214,7 +214,7 @@ InfoBoxSenate::InfoBoxSenate( Widget* parent, const Tile& tile )
   : InfoBoxSimple( parent, Rect( 0, 0, 510, 290 ), Rect( 16, 126, 510 - 16, 126 + 62 ) )
 {
   SenatePtr senate = tile.getOverlay().as<Senate>();
-  setTitle( MetaDataHolder::instance().getData( building::B_SENATE ).getPrettyName() );
+  setTitle( MetaDataHolder::instance().getData( building::senate ).getPrettyName() );
 
   // number of workers
   _drawWorkers( Point( 32, 136), 542, senate->getMaxWorkers(), senate->getWorkers() );

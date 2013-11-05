@@ -186,12 +186,12 @@ AdvisorEmployerWindow::Impl::EmployersInfo AdvisorEmployerWindow::Impl::getEmplo
   case prIndustryAndTrade: bldClasses.push_back( building::industryGroup ); bldClasses.push_back( building::BC_TRADE ); break;
   case prFood: bldClasses.push_back( building::foodGroup ); break;
   case prEngineers: bldClasses.push_back( building::BC_ENGINEERING ); break;
-  case prWater: bldClasses.push_back( building::BC_WATER ); break;
+  case prWater: bldClasses.push_back( building::water ); break;
   case prPrefectures: bldClasses.push_back( building::BC_SECURITY ); break;
   case prMilitary: bldClasses.push_back( building::militaryGroup ); break;
   case prEntertainment: bldClasses.push_back( building::BC_ENTERTAINMENT ); break;
   case prHealthAndEducation: bldClasses.push_back( building::BC_HEALTH ); bldClasses.push_back( building::BC_EDUCATUION ); break;
-  case prAdministrationAndReligion: bldClasses.push_back( building::BC_ADMINISTRATION ); bldClasses.push_back( building::religionGroup ); break;
+  case prAdministrationAndReligion: bldClasses.push_back( building::administration ); bldClasses.push_back( building::religionGroup ); break;
   default: break;
   }
 

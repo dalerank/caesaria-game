@@ -277,12 +277,12 @@ BuildMenu_engineering::BuildMenu_engineering( Widget* parent, const Rect& rectan
 
 void BuildMenu_administration::initialize()
 {
-  addBuildButton(building::B_FORUM);
-  addBuildButton(building::B_SENATE);
+  addBuildButton(building::forum);
+  addBuildButton(building::senate);
 
-  addBuildButton(building::B_GOVERNOR_HOUSE);
-  addBuildButton(building::B_GOVERNOR_VILLA);
-  addBuildButton(building::B_GOVERNOR_PALACE);
+  addBuildButton(building::governorHouse);
+  addBuildButton(building::governorVilla);
+  addBuildButton(building::governorPalace);
 
   addBuildButton(building::B_STATUE1);
   addBuildButton(building::B_STATUE2);

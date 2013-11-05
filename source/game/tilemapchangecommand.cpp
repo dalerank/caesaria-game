@@ -17,6 +17,7 @@
 #include "tileoverlay_factory.hpp"
 #include "building/building.hpp"
 #include "building/constants.hpp"
+#include "gfx/layerconstants.hpp"
 
 using namespace constants;
 
@@ -111,10 +112,10 @@ bool TilemapBuildCommand::isCanBuild() const
 class TilemapOverlayCommand::Impl
 {
 public:
-  DrawingOverlayType type;
+  int type;
 };
 
-TilemapChangeCommandPtr TilemapOverlayCommand::create( const DrawingOverlayType type )
+TilemapChangeCommandPtr TilemapOverlayCommand::create( const int type )
 {
   TilemapOverlayCommand* newCommand = new TilemapOverlayCommand();
   newCommand->_d->type = type;
@@ -127,10 +128,10 @@ TilemapChangeCommandPtr TilemapOverlayCommand::create( const DrawingOverlayType 
 
 TilemapOverlayCommand::TilemapOverlayCommand() : _d( new Impl )
 {
-  _d->type = drwSimple;
+  _d->type = citylayer::simple;
 }
 
-DrawingOverlayType TilemapOverlayCommand::getType() const
+int TilemapOverlayCommand::getType() const
 {
   return _d->type;
 }

@@ -63,7 +63,7 @@ void CityServiceRoads::update( const unsigned int time )
   _d->lastTimeUpdate = GameDate::current();
 
   std::vector< TileOverlay::Type > btypes;
-  btypes.push_back( building::B_SENATE );
+  btypes.push_back( building::senate );
 
   CityHelper helper( _d->city );
 

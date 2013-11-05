@@ -58,7 +58,7 @@ CityServiceWorkersHire::CityServiceWorkersHire( CityPtr city )
   _d->priorities[ 8 ] = building::B_TEMPLE_CERES;
   _d->priorities[ 9 ] = building::B_POTTERY;
   _d->priorities[ 10 ] = building::B_WAREHOUSE;
-  _d->priorities[ 11 ] = building::B_FORUM;
+  _d->priorities[ 11 ] = building::forum;
   _d->priorities[ 12 ] = building::B_DOCTOR;
   _d->priorities[ 13 ] = building::B_HOSPITAL;
   _d->priorities[ 14 ] = building::B_BARBER;
@@ -67,7 +67,7 @@ CityServiceWorkersHire::CityServiceWorkersHire( CityPtr city )
   _d->priorities[ 17 ] = building::B_OLIVE_FARM;
   _d->priorities[ 18 ] = building::B_VEGETABLE_FARM;
   _d->priorities[ 19 ] = building::B_PIG_FARM;
-  _d->priorities[ 20 ] = building::B_SENATE;
+  _d->priorities[ 20 ] = building::senate;
   _d->priorities[ 21 ] = building::B_MARKET;
   _d->priorities[ 22 ] = building::B_TIMBER_YARD;
   _d->priorities[ 23 ] = building::B_MARBLE_QUARRY;

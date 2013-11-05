@@ -118,10 +118,11 @@ LayerPtr LayerEntertainment::create(CityRenderer* renderer, CityPtr city, int ty
   LayerEntertainment* l = new LayerEntertainment();
   l->_renderer = renderer;
   l->_city = city;
+  l->_type = type;
 
   switch( type )
   {
-  case citylayer::entertainment:
+  case citylayer::entertainmentAll:
     l->_flags.insert( building::unknown ); l->_flags.insert( building::theater );
     l->_flags.insert( building::amphitheater ); l->_flags.insert( building::colloseum );
     l->_flags.insert( building::hippodrome ); l->_flags.insert( building::actorColony );
@@ -137,24 +138,34 @@ LayerPtr LayerEntertainment::create(CityRenderer* renderer, CityPtr city, int ty
   case citylayer::theater:
     l->_flags.insert( building::theater );
     l->_flags.insert( building::actorColony );
+
+    l->_visibleWalkers.insert( WT_ACTOR );
   break;
 
   case citylayer::amphitheater:
     l->_flags.insert( building::amphitheater );
     l->_flags.insert( building::actorColony );
     l->_flags.insert( building::gladiatorSchool );
+
+    l->_visibleWalkers.insert( WT_ACTOR );
+    l->_visibleWalkers.insert( WT_GLADIATOR );
   break;
 
   case citylayer::colloseum:
     l->_flags.insert( building::colloseum );
     l->_flags.insert( building::gladiatorSchool );
     l->_flags.insert( building::lionHouse );
+
+    l->_visibleWalkers.insert( WT_GLADIATOR );
+    l->_visibleWalkers.insert( WT_TAMER );
   break;
 
 
   case citylayer::hippodrome:
     l->_flags.insert( building::hippodrome );
     l->_flags.insert( building::chariotSchool );
+
+    l->_visibleWalkers.insert( WT_CHARIOT );
   break;
 
   default: break;

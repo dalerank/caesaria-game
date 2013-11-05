@@ -38,12 +38,12 @@ const TileOverlay::Group unknownGroup=0;
 const TileOverlay::Group industryGroup=1;
 const TileOverlay::Group obtainGroup=2;
 const TileOverlay::Group foodGroup=3;
-const TileOverlay::Group BC_DISASTER=4;
+const TileOverlay::Group disaster=4;
 const TileOverlay::Group religionGroup=5;
 const TileOverlay::Group militaryGroup=6;
 const TileOverlay::Group nativeGroup=7;
-const TileOverlay::Group BC_WATER=8;
-const TileOverlay::Group BC_ADMINISTRATION=9;
+const TileOverlay::Group water=8;
+const TileOverlay::Group administration=9;
 const TileOverlay::Group BC_BRIDGE=10;
 const TileOverlay::Group BC_ENGINEERING=11;
 const TileOverlay::Group BC_TRADE=12;
@@ -77,11 +77,11 @@ const TileOverlay::Type chariotSchool=8;
 const TileOverlay::Type house=9;
 
 // administration
-const TileOverlay::Type B_SENATE=13;
-const TileOverlay::Type B_FORUM=14;
-const TileOverlay::Type B_GOVERNOR_HOUSE=15;
-const TileOverlay::Type B_GOVERNOR_VILLA=16;
-const TileOverlay::Type B_GOVERNOR_PALACE=17;
+const TileOverlay::Type senate=13;
+const TileOverlay::Type forum=14;
+const TileOverlay::Type governorHouse=15;
+const TileOverlay::Type governorVilla=16;
+const TileOverlay::Type governorPalace=17;
 
 // water
 const TileOverlay::Type B_RESERVOIR=18;

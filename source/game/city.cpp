@@ -308,14 +308,14 @@ void City::Impl::collectTaxes( CityPtr city )
   lastMonthTax = 0;
   lastMonthTaxpayer = 0;
   
-  ForumList forums = hlp.find< Forum >( building::B_FORUM );
+  ForumList forums = hlp.find< Forum >( building::forum );
   foreach( ForumPtr forum, forums )
   {
     lastMonthTaxpayer += forum->getPeoplesReached();
     lastMonthTax += forum->collectTaxes();
   }
 
-  std::list<SenatePtr> senates = hlp.find< Senate >( building::B_SENATE );
+  std::list<SenatePtr> senates = hlp.find< Senate >( building::senate );
   foreach( SenatePtr senate, senates )
   {
     lastMonthTaxpayer += senate->getPeoplesReached();

@@ -62,9 +62,9 @@ private:
 class TilemapOverlayCommand : public TilemapChangeCommand
 {
 public:
-  static TilemapChangeCommandPtr create( const DrawingOverlayType type );
+  static TilemapChangeCommandPtr create( const int type );
 
-  DrawingOverlayType getType() const;
+  int getType() const;
 
 private:
   TilemapOverlayCommand();

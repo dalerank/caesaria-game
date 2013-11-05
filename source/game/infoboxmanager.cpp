@@ -223,7 +223,7 @@ InfoBoxManager::InfoBoxManager( CityPtr city, GuiEnv* gui ) : _d( new Impl )
   addInfobox( building::B_IRON_MINE,        OC3_STR_EXT(B_IRON_MINE), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
   addInfobox( building::B_WINE_WORKSHOP,    OC3_STR_EXT(B_WINE_WORKSHOP), new BaseInfoboxCreator<GuiInfoFactory>() );
   addInfobox( building::B_OIL_WORKSHOP,     OC3_STR_EXT(B_OIL_WORKSHOP), new BaseInfoboxCreator<GuiInfoFactory>() );
-  addInfobox( building::B_SENATE,           OC3_STR_EXT(B_SENATE), new BaseInfoboxCreator<InfoBoxSenate>() );
+  addInfobox( building::senate,           OC3_STR_EXT(B_SENATE), new BaseInfoboxCreator<InfoBoxSenate>() );
   addInfobox( building::theater,          OC3_STR_EXT(buildingTheater), new ServiceBaseInfoboxCreator( _("##theater_title##"), _("##theater_text##")) );
   addInfobox( building::actorColony,     OC3_STR_EXT(B_ACTOR_COLONY), new ServiceBaseInfoboxCreator( _("##actor_colony_title##"), _("##actor_colony_text##")) );
   addInfobox( building::amphitheater, OC3_STR_EXT(buildingAmphitheater), new ServiceBaseInfoboxCreator( _("##amphitheater_title##"), _("##amphitheater_text##")) );
@@ -232,10 +232,10 @@ InfoBoxManager::InfoBoxManager( CityPtr city, GuiEnv* gui ) : _d( new Impl )
   addInfobox( building::lionHouse,       OC3_STR_EXT(B_LION_HOUSE), new ServiceBaseInfoboxCreator( _("##lion_house_title##"), _("##lion_house_text##")) );
   addInfobox( building::hippodrome,       OC3_STR_EXT(B_HIPPODROME), new ServiceBaseInfoboxCreator( _("##hippodrome_title##"), _("##hippodrome_text##")) );
   addInfobox( building::chariotSchool,    OC3_STR_EXT(B_CHARIOT_MAKER), new ServiceBaseInfoboxCreator( _("##chario_maker_title##"), _("##chario_maker_text##")) );
-  addInfobox( building::B_FORUM,            OC3_STR_EXT(B_FORUM), new ServiceBaseInfoboxCreator( _("##forum_title##"), _("##forum_text##")) );
-  addInfobox( building::B_GOVERNOR_HOUSE,   OC3_STR_EXT(B_GOVERNOR_HOUSE), new ServiceBaseInfoboxCreator( _("##governor_house_title##"), _("##governonr_house_text##")) );
-  addInfobox( building::B_GOVERNOR_VILLA,   OC3_STR_EXT(B_GOVERNOR_VILLA), new ServiceBaseInfoboxCreator( _("##governor_villa_title##"), _("##governonr_villa_text##")) );
-  addInfobox( building::B_GOVERNOR_PALACE,  OC3_STR_EXT(B_GOVERNOR_PALACE), new ServiceBaseInfoboxCreator( _("##governor_palace_title##"), _("##governonr_palace_text##")) );
+  addInfobox( building::forum,            OC3_STR_EXT(B_FORUM), new ServiceBaseInfoboxCreator( _("##forum_title##"), _("##forum_text##")) );
+  addInfobox( building::governorHouse,   OC3_STR_EXT(B_GOVERNOR_HOUSE), new ServiceBaseInfoboxCreator( _("##governor_house_title##"), _("##governonr_house_text##")) );
+  addInfobox( building::governorVilla,   OC3_STR_EXT(B_GOVERNOR_VILLA), new ServiceBaseInfoboxCreator( _("##governor_villa_title##"), _("##governonr_villa_text##")) );
+  addInfobox( building::governorPalace,  OC3_STR_EXT(B_GOVERNOR_PALACE), new ServiceBaseInfoboxCreator( _("##governor_palace_title##"), _("##governonr_palace_text##")) );
   addInfobox( building::B_HIGH_BRIDGE,      OC3_STR_EXT(B_HIGH_BRIDGE), new InfoBoxBasicCreator( _("##high_bridge_title##"), _("##high_bridge_text##")) );
   addInfobox( building::B_LOW_BRIDGE,       OC3_STR_EXT(B_LOW_BRIDGE), new InfoBoxBasicCreator( _("##low_bridge_title##"), _("##low_bridge_text##")) );
   addInfobox( building::B_WHARF,            OC3_STR_EXT(B_WHARF), new BaseInfoboxCreator<GuiInfoFactory>() );

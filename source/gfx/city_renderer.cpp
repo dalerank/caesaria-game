@@ -93,6 +93,7 @@ public:
   void renderTilesRTools();
   void renderTilesBTools();
   void renderTiles();
+  void setLayer( int type );
 
   void drawTile( Tile& tile );
   void drawTileEx( Tile& tile, const int depth );
@@ -108,16 +109,6 @@ public:
       tile->resetWasDrawn();
   }
 
-  void setVisibleWalkers(const WalkerType walkersTypes[])
-  {
-    visibleWalkers.clear();
-    int i=0;
-    while (walkersTypes[i] != WT_NONE)
-    {
-      visibleWalkers.push_back(walkersTypes[i++]);
-    }
-  }
-
 oc3_signals public:
   Signal1< const Tile& > onShowTileInfoSignal;
   Signal1< std::string > onWarningMessageSignal;
@@ -131,14 +122,13 @@ CityRenderer::~CityRenderer() {}
 
 void CityRenderer::initialize( CityPtr city, GfxEngine* engine )
 {
-  _d->visibleWalkers.push_back(WT_ALL);
+  _d->visibleWalkers.clear();
   _d->scrollSpeed = 4;
   _d->city = city;
   _d->tilemap = &city->getTilemap();
   _d->camera.init( *_d->tilemap );
   _d->engine = engine;
   _d->clearPic = Picture::load( "oc3_land", 2 );
-  _d->currentLayer = _d->layers.front();
 
   addLayer( LayerSimple::create( this, city ) );
   addLayer( LayerWater::create( this, city ) );
@@ -152,11 +142,13 @@ void CityRenderer::initialize( CityPtr city, GfxEngine* engine )
   addLayer( LayerReligion::create( this, city ) );
   addLayer( LayerDamage::create( this, city ) );
   addLayer( LayerDesirability::create( this, city ) );
-  addLayer( LayerEntertainment::create( this, city, citylayer::entertainment ) );
+  addLayer( LayerEntertainment::create( this, city, citylayer::entertainmentAll ) );
   addLayer( LayerEntertainment::create( this, city, citylayer::theater ) );
   addLayer( LayerEntertainment::create( this, city, citylayer::amphitheater ) );
   addLayer( LayerEntertainment::create( this, city, citylayer::colloseum ) );
   addLayer( LayerEntertainment::create( this, city, citylayer::hippodrome ) );
+
+  _d->setLayer( citylayer::simple );
 }
 
 void CityRenderer::Impl::drawTileEx( Tile& tile, const int depth )
@@ -291,7 +283,7 @@ void CityRenderer::Impl::renderTilesRTools()
     {
       // TODO: pre-sort all animations
       lastZ = z;
-      this->drawWalkersBetweenZ(walkerList, z, z+1);
+      drawWalkersBetweenZ(walkerList, z, z+1);
     }   
 
     int tilePosHash = tile->getJ() * 1000 + tile->getI();
@@ -357,6 +349,26 @@ void CityRenderer::Impl::renderTiles()
 
     drawTileEx( *tile, z );
   }
+}
+
+void CityRenderer::Impl::setLayer(int type)
+{
+  currentLayer = 0;
+  foreach( LayerPtr layer, layers )
+  {
+    if( layer->getType() == type )
+    {
+      currentLayer = layer;
+      break;
+    }
+  }
+
+  if( currentLayer.isNull() )
+  {
+    currentLayer = layers.front();
+  }
+
+  visibleWalkers = currentLayer->getVisibleWalkers();
 }
 
 void CityRenderer::registerTileForRendering(Tile& tile)
@@ -599,10 +611,10 @@ void CityRenderer::Impl::drawWalkersBetweenZ(WalkerList walkerList, int minZ, in
 WalkerList CityRenderer::Impl::getVisibleWalkerList()
 {
   WalkerList walkerList;
-  foreach( WalkerType wtAct, visibleWalkers )
+  foreach( int wtAct, visibleWalkers )
   {
-    WalkerList foundWalkers = city->getWalkerList( wtAct );
-    walkerList.insert(walkerList.end(), foundWalkers.begin(), foundWalkers.end());
+    WalkerList foundWalkers = city->getWalkerList( (WalkerType)wtAct );
+    walkerList.insert( walkerList.end(), foundWalkers.begin(), foundWalkers.end() );
   }
 
   return walkerList;
@@ -809,23 +821,7 @@ void CityRenderer::setMode( const TilemapChangeCommandPtr command )
   if( _d->changeCommand.is<TilemapOverlayCommand>() )
   {
     TilemapOverlayCommandPtr ovCmd = _d->changeCommand.as<TilemapOverlayCommand>();
-    _d->currentLayer = 0;
-    int layerName = ovCmd->getType();
-    foreach( LayerPtr layer, _d->layers )
-    {
-      if( layer->getType() == layerName )
-      {
-        _d->currentLayer = layer;
-        break;
-      }
-    }
-
-    if( _d->currentLayer.isNull() )
-    {
-      _d->currentLayer = _d->layers.front();
-    }
-
-    _d->visibleWalkers = _d->currentLayer->getVisibleWalkers();
+    _d->setLayer( ovCmd->getType() );
     _d->changeCommand = TilemapChangeCommandPtr();
   }
 }
