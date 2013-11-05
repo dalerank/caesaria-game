@@ -689,9 +689,9 @@ void City::updateRoads()
   _d->needRecomputeAllRoads = true;
 }
 
-TilemapArea CityHelper::getArea(BuildingPtr building)
+TilemapArea CityHelper::getArea(TileOverlayPtr overlay)
 {
-  return _city->getTilemap().getArea( building->getTilePos(), building->getSize() );
+  return _city->getTilemap().getArea( overlay->getTilePos(), overlay->getSize() );
 }
 
 

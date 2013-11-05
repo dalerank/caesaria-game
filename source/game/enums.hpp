@@ -67,6 +67,7 @@ enum WalkerType
   WT_ANIMAL_SHEEP,
   WT_BARBER, WT_SURGEON,
   WT_FISHING_BOAT,
+  WT_PRIEST,
   WT_MAX, WT_ALL=WT_MAX 
 };
   

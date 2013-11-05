@@ -13,17 +13,24 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_PROJECT_VERSION_INCLUDE_H_
-#define __OPENCAESAR3_PROJECT_VERSION_INCLUDE_H_
+#ifndef __OPENCAESAR3_LAYERSIMPLE_H_INCLUDED__
+#define __OPENCAESAR3_LAYERSIMPLE_H_INCLUDED__
 
-#include "core/platform.hpp"
+#include "core/referencecounted.hpp"
+#include "gfx/layer.hpp"
+#include "city_renderer.hpp"
 
-#define OC3_VERSION_MAJOR 0
-#define OC3_VERSION_MINOR 2
-#define OC3_VERSION_REVSN 862
+class LayerSimple : public Layer
+{
+public:
+  virtual int getType() const;
+  virtual std::set<int> getVisibleWalkers() const;
+  virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset );
 
-#define OC3_STR_EXT(__A) #__A
-#define OC3_STR_A(__A) OC3_STR_EXT(__A)
-#define OC3_VERSION OC3_STR_A(OC3_VERSION_MAJOR)"."OC3_STR_A(OC3_VERSION_MINOR)"."OC3_STR_A(OC3_VERSION_REVSN)"["OC3_PLATFORM_NAME":"OC3_COMPILER_NAME"]"
+  static LayerPtr create( CityRenderer* renderer, CityPtr city );
+private:
+  CityRenderer* _renderer;
+  CityPtr _city;
+};
 
-#endif
+#endif //__OPENCAESAR3_LAYERSIMPLE_H_INCLUDED__

@@ -201,7 +201,7 @@ public:
     return ret;
   }
 
-  TilemapArea getArea( BuildingPtr building );
+  TilemapArea getArea(TileOverlayPtr overlay );
 
   void updateDesirability( ConstructionPtr construction, bool onBuild );
 
