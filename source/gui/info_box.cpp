@@ -49,6 +49,7 @@
 #include "building/senate.hpp"
 #include "core/logger.hpp"
 #include "building/constants.hpp"
+#include "events/event.hpp"
 
 using namespace constants;
 
@@ -96,6 +97,9 @@ InfoBoxSimple::InfoBoxSimple( Widget* parent, const Rect& rect, const Rect& blac
   }
 
   _afterCreate();
+
+  events::GameEventPtr e = events::Pause::create( events::Pause::hidepause );
+  e->dispatch();
 }
 
 void InfoBoxSimple::setText( const std::string& text )
@@ -105,6 +109,8 @@ void InfoBoxSimple::setText( const std::string& text )
 
 InfoBoxSimple::~InfoBoxSimple()
 {
+  events::GameEventPtr e = events::Pause::create( events::Pause::hideplay );
+  e->dispatch();
 }
 
 void InfoBoxSimple::draw( GfxEngine& engine )

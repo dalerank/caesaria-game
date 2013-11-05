@@ -66,7 +66,7 @@ public:
   PlayerPtr player;
 
   bool loadOk;
-  bool paused;
+  int pauseCounter;
 
   float time, saveTime;
   float timeMultiplier;
@@ -224,7 +224,7 @@ void Game::setScreenGame()
   {
     screen.update( *_d->engine );
 
-    if( !_d->paused )
+    if( !_d->pauseCounter )
     {
       _d->time += _d->timeMultiplier / 100.f;
 
@@ -263,15 +263,19 @@ CityPtr Game::getCity() const { return _d->city; }
 EmpirePtr Game::getEmpire() const { return _d->empire; }
 gui::GuiEnv* Game::getGui() const { return _d->gui; }
 GfxEngine*Game::getEngine() const { return _d->engine; }
-void Game::setPaused(bool value) { _d->paused = value; }
-bool Game::isPaused() const { return _d->paused; }
+bool Game::isPaused() const { return _d->pauseCounter>0; }
 void Game::play() { setPaused( false ); }
 void Game::pause() { setPaused( true ); }
+
+void Game::setPaused(bool value)
+{
+  _d->pauseCounter = math::clamp( _d->pauseCounter + (value ? 1 : -1 ), 0, 99 );
+}
 
 Game::Game() : _d( new Impl )
 {
   _d->nextScreen = SCREEN_NONE;
-  _d->paused = false;
+  _d->pauseCounter = 0;
   _d->time = 0;
   _d->saveTime = 0;
   _d->timeMultiplier = 100;

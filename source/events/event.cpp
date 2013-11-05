@@ -231,35 +231,51 @@ void ShowInfoboxEvent::exec( Game& game )
 }
 
 
-GameEventPtr TogglePause::create()
+GameEventPtr Pause::create( Mode mode )
 {
-  GameEventPtr ret( new TogglePause() );
+  Pause* e = new Pause();
+  e->_mode = mode;
+
+  GameEventPtr ret( e );
   ret->drop();
   return ret;
 }
 
-void TogglePause::exec(Game& game)
+void Pause::exec(Game& game)
 {
   gui::Widget* rootWidget = game.getGui()->getRootWidget();
   gui::Label* wdg = safety_cast< gui::Label* >( rootWidget->findChild( windowGamePausedId ) );
-  game.setPaused( !game.isPaused() );
 
-  if( game.isPaused()  )
+  switch( _mode )
   {
-    if( !wdg )
+  case toggle:
+  case pause:
+  case play:
+    game.setPaused( _mode == toggle ? !game.isPaused() : (_mode == pause) );
+
+    if( game.isPaused()  )
     {
-      Size scrSize = rootWidget->getSize();
-      wdg = new gui::Label( rootWidget, Rect( Point( (scrSize.getWidth() - 450)/2, 40 ), Size( 450, 50 ) ),
-                            _("##game_is_paused##"), false, gui::Label::bgWhiteFrame, windowGamePausedId );
-      wdg->setTextAlignment( alignCenter, alignCenter );
+      if( !wdg )
+      {
+        Size scrSize = rootWidget->getSize();
+        wdg = new gui::Label( rootWidget, Rect( Point( (scrSize.getWidth() - 450)/2, 40 ), Size( 450, 50 ) ),
+                              _("##game_is_paused##"), false, gui::Label::bgWhiteFrame, windowGamePausedId );
+        wdg->setTextAlignment( alignCenter, alignCenter );
+      }
     }
-  }
-  else
-  {
-    if( wdg )
+    else
     {
-      wdg->deleteLater();
+      if( wdg )
+      {
+        wdg->deleteLater();
+      }
     }
+  break;
+
+  case hidepause:
+  case hideplay:
+    game.setPaused( _mode == hidepause );
+  break;
   }
 }
 

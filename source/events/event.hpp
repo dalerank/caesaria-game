@@ -113,11 +113,15 @@ private:
   int _advisor;
 };
 
-class TogglePause : public GameEvent
+class Pause : public GameEvent
 {
 public:
-  static GameEventPtr create();
+  typedef enum { toggle, pause, play, hidepause, hideplay } Mode;
+  static GameEventPtr create( Mode mode );
   virtual void exec( Game& game );
+
+private:
+  Mode _mode;
 };
 
 class ChangeSpeed : public GameEvent

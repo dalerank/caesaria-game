@@ -66,6 +66,7 @@ public:
   CityRenderer renderer;
   Game* game; // current game
   AlarmEventHolder alarmsHolder;
+  bool isPaused;
 
   int result;
 
@@ -90,6 +91,7 @@ ScreenGame::ScreenGame(Game& game , GfxEngine& engine ) : _d( new Impl )
   _d->topMenu = NULL;
   _d->game = &game;
   _d->engine = &engine;
+  _d->isPaused = false;
 }
 
 ScreenGame::~ScreenGame() {}
@@ -262,8 +264,12 @@ void ScreenGame::handleEvent( NEvent& event )
       if( event.KeyboardEvent.PressedDown )
         break;
 
-      events::GameEventPtr e = events::TogglePause::create();
-      e->dispatch();
+      _d->isPaused = !_d->isPaused;
+
+      events::GameEventPtr e = events::Pause::create( _d->isPaused
+                                                        ? events::Pause::pause
+                                                        : events::Pause::play );
+      e->dispatch();      
     }
     break;
 
