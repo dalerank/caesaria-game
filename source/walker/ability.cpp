@@ -13,20 +13,30 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_PATHWAYHELPER_H_INCLUDED__
-#define __OPENCAESAR3_PATHWAYHELPER_H_INCLUDED__
+#include "ability.hpp"
 
-#include "pathway.hpp"
-
-class PathwayHelper
+Illness::Illness(int strong, int delay)
 {
-public:
-  typedef enum { roadOnly=0, allTerrain, roadFirst } WayType;
-  static PathWay create( CityPtr city,
-                         TilePos startPos, TilePos stopPos,
-                         WayType type=roadOnly );
+  _strong = strong;
+  _time = 0;
+  _delay = delay;
+}
 
-  static PathWay randomWay( CityPtr city, TilePos startPos, int walkRadius );
-};
+AbilityPtr Illness::create(int strong, int delay)
+{
+  AbilityPtr ret( new Illness( strong, delay ) );
+  ret->drop();
 
-#endif
+  return ret;
+}
+
+void Illness::run(WalkerPtr parent, unsigned int time)
+{
+  if( _time >= _delay )
+  {
+    _time = 0;
+    parent->updateHealth( -_strong );
+  }
+
+  _time++;
+}

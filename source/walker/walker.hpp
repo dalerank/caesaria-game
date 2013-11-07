@@ -71,6 +71,7 @@ public:
 
   DirectionType getDirection();
   virtual int getHealth() const;
+  virtual void updateHealth(int value);
 
   virtual void setName( const std::string& name );
   virtual const std::string& getName() const;
@@ -79,6 +80,8 @@ public:
 
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);
+
+  virtual void addAbility( AbilityPtr ability );
 
   virtual void go();
   virtual void die();
@@ -99,8 +102,9 @@ protected:
    void _setDirection( DirectionType );
    void _setGraphic( WalkerGraphicType type );
    WalkerGraphicType _getGraphic() const;
-   void _setType( WalkerType type );
+   void _setType( constants::walker::Type type );
    CityPtr _getCity() const;
+   void _setHealth( int value );
 
 private:
    /* useful method for subtile movement computation
@@ -133,12 +137,10 @@ class WalkerHelper
 public:
   static WalkerHelper& instance();
 
-  static std::string getName( WalkerType type );
-  static WalkerType getType( const std::string& name );
-
-  static std::string getPrettyTypeName( WalkerType type );
-
-  static Picture getBigPicture( WalkerType type );
+  static std::string getName( constants::walker::Type type );
+  static constants::walker::Type getType( const std::string& name );
+  static std::string getPrettyTypeName( constants::walker::Type type );
+  static Picture getBigPicture( constants::walker::Type type );
 
   virtual ~WalkerHelper();
 private:

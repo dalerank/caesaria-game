@@ -19,10 +19,7 @@
 #define _OPENCAESAR_CONSTRUCTION_H_INCLUDE_
 
 #include "gfx/tileoverlay.hpp"
-#include "game/enums.hpp"
-#include "game/good.hpp"
 #include "core/scopedptr.hpp"
-#include "gfx/animation.hpp"
 #include "core/referencecounted.hpp"
 #include "core/predefinitions.hpp"
 #include "game/service.hpp"
@@ -31,7 +28,9 @@
 class Construction : public TileOverlay
 {
 public:
+  typedef enum { fire=0, damage } Param;
   Construction( const TileOverlay::Type type, const Size& size );
+  virtual ~Construction();
 
   virtual bool canBuild( CityPtr city, const TilePos& pos ) const;  // returns true if it can be built there
   virtual std::string getError() const;
@@ -44,9 +43,15 @@ public:
   virtual int  getRoadAccessDistance() const; // virtual because HOUSE has different behavior
   virtual const MetaData::Desirability& getDesirabilityInfo() const;
   virtual void destroy();
+  virtual void updateState( Param param, double value, bool relative=true );
+  virtual double getState( Param param ) const;
+  virtual void timeStep(const unsigned long time);
 
+  virtual void save(VariantMap& stream) const;
+  virtual void load(const VariantMap& stream);
 protected:
-  TilemapTiles _accessRoads;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 #endif//_OPENCAESAR_CONSTRUCTION_H_INCLUDE_

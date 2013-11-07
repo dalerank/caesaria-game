@@ -13,20 +13,31 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_PATHWAYHELPER_H_INCLUDED__
-#define __OPENCAESAR3_PATHWAYHELPER_H_INCLUDED__
+#ifndef __OPENCAESAR3_CORPSE_H_INCLUDED__
+#define __OPENCAESAR3_CORPSE_H_INCLUDED__
 
-#include "pathway.hpp"
+#include "walker.hpp"
+#include "core/predefinitions.hpp"
 
-class PathwayHelper
+/** This is an immigrant coming with his stuff */
+class Corpse : public Walker
 {
 public:
-  typedef enum { roadOnly=0, allTerrain, roadFirst } WayType;
-  static PathWay create( CityPtr city,
-                         TilePos startPos, TilePos stopPos,
-                         WayType type=roadOnly );
+  static void create( CityPtr city, TilePos pos, const char* rcGroup, int startIndex, int stopIndex );
+  ~Corpse();
 
-  static PathWay randomWay( CityPtr city, TilePos startPos, int walkRadius );
+  virtual void timeStep(const unsigned long time);
+
+  virtual void save(VariantMap& stream) const;
+  virtual void load(const VariantMap& stream);
+
+  virtual const Picture& getMainPicture();
+
+protected:
+  Corpse( CityPtr city );
+
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
-#endif
+#endif //__OPENCAESAR3_CORPSE_H_INCLUDED__

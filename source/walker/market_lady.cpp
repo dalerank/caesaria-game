@@ -48,7 +48,7 @@ MarketLady::MarketLady( CityPtr city )
   : Walker( city ), _d( new Impl )
 {
    _setGraphic( WG_MARKETLADY );
-   _setType( WT_MARKETLADY );
+   _setType( walker::WT_MARKETLADY );
    _d->maxDistance = 25;
    _d->basket.setMaxQty(800);  // this is a big basket!
 
@@ -77,8 +77,7 @@ TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Ty
 {
   SmartPtr< T > res;
 
-  Propagator::Routes pathWayList;
-  pathPropagator.getRoutes(type, pathWayList);
+  Propagator::Routes pathWayList = pathPropagator.getRoutes( type );
 
   int max_qty = 0;
 
@@ -87,10 +86,10 @@ TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Ty
     pathWayIt != pathWayList.end(); ++pathWayIt)
   {
     // for every warehouse within range
-    BuildingPtr building= pathWayIt->first;
+    ConstructionPtr construction = pathWayIt->first;
     PathWay& pathWay= pathWayIt->second;
 
-    SmartPtr< T > destBuilding = building.as< T >();
+    SmartPtr< T > destBuilding = construction.as< T >();
     int qty = destBuilding->getGoodStore().getMaxRetrieve( what );
     if( qty > max_qty )
     {
@@ -142,7 +141,7 @@ void MarketLady::computeWalkerDestination( MarketPtr market )
             || _d->priorityGood == Good::vegetable)
         {
            // try get that good from a granary
-           _d->destBuildingPos = getWalkerDestination2<Granary>( pathPropagator, building::B_GRANARY, _d->market,
+           _d->destBuildingPos = getWalkerDestination2<Granary>( pathPropagator, building::granary, _d->market,
                                                               _d->basket, _d->priorityGood, pathWay, _d->reservationID );
         }
         else

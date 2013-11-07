@@ -33,6 +33,7 @@
 #include "core/referencecounted.hpp"
 #include "core/predefinitions.hpp"
 #include "game/service.hpp"
+#include "walker/constants.hpp"
 
 class Building : public Construction
 {
@@ -49,35 +50,19 @@ public:
   void cancelService(const Service::Type service);
   virtual void applyService( ServiceWalkerPtr walker);
   // evaluate the need for the given trainee
-  virtual float evaluateTrainee(const WalkerType traineeType);  // returns >0 if trainee is needed
-  void reserveTrainee(const WalkerType traineeType); // trainee will come
-  void cancelTrainee(const WalkerType traineeType);  // trainee will not come
-  void applyTrainee(const WalkerType traineeType); // trainee arrives
-
-  float getDamageLevel();
-  void  setDamageLevel(const float value);
-  float getFireLevel();
-  void  setFireLevel(const float value);
-
-  void save( VariantMap& stream) const;
-  void load( const VariantMap& stream);
+  virtual float evaluateTrainee( constants::walker::Type traineeType);  // returns >0 if trainee is needed
+  void reserveTrainee( constants::walker::Type traineeType); // trainee will come
+  void cancelTrainee( constants::walker::Type traineeType);  // trainee will not come
+  void applyTrainee( constants::walker::Type traineeType); // trainee arrives
 
 protected:
-  float _damageLevel;  // >100 => building is destroyed
-  float _fireLevel;    // >100 => building catch fire
   float _damageIncrement;
   float _fireIncrement;
-  typedef std::map<WalkerType, int> TraineeMap;
+  typedef std::map< constants::walker::Type, int> TraineeMap;
   std::set<Service::Type> _reservedServices;  // a serviceWalker is on the way
   TraineeMap _traineeMap;  // current level of trainees working in the building (0..200)
-  std::set<WalkerType> _reservedTrainees;  // a trainee is on the way
+  std::set< constants::walker::Type > _reservedTrainees;  // a trainee is on the way
 };
-
-//operator need for std::reset
-inline bool operator<(BuildingPtr v1, BuildingPtr v2)
-{
-  return v1.object() < v2.object();
-}
 
 class SmallStatue : public Building
 {

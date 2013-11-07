@@ -19,7 +19,7 @@
 #include "building/constants.hpp"
 
 
-BuildingEngineer::BuildingEngineer() : ServiceBuilding( Service::engineer, constants::building::B_ENGINEER_POST, Size(1) )
+BuildingEngineer::BuildingEngineer() : ServiceBuilding( Service::engineer, constants::building::engineerPost, Size(1) )
 {
   setPicture( ResourceGroup::buildingEngineer, 56 );
 

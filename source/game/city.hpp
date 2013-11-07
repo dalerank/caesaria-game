@@ -57,7 +57,7 @@ public:
   void setLocation( const Point& location );
   Point getLocation() const;
 
-  WalkerList getWalkerList( const WalkerType type );
+  WalkerList getWalkerList( constants::walker::Type type );
   void addWalker( WalkerPtr walker );
   void removeWalker( WalkerPtr walker );
 
@@ -164,6 +164,35 @@ public:
   }
 
   template< class T >
+  std::list< SmartPtr< T > > find( TilePos start, TilePos stop,
+                                   TileOverlay::Type type=TileOverlay::any,
+                                   TileOverlay::Group group=TileOverlay::any )
+  {
+    std::set< SmartPtr< T > > tmp;
+    for( int i=start.getI(); i < stop.getI(); i++ )
+    {
+      for( int j=start.getJ(); j < stop.getJ(); j++ )
+      {
+        SmartPtr<T> obj = _city->getOverlay( TilePos( i, j ) ).as<T>();
+        if( obj.isValid()
+            && (obj->getType() == type || type == TileOverlay::any)
+            && (obj->getClass() == group || group == TileOverlay::any) )
+        {
+          tmp.insert( obj );
+        }
+      }
+    }
+
+    std::list< SmartPtr< T > > ret;
+    foreach( SmartPtr<T> obj, tmp )
+    {
+      ret.push_back( obj );
+    }
+
+    return ret;
+  }
+
+  template< class T >
   std::list< SmartPtr< T > > getProducers( const Good::Type goodtype )
   {
     std::list< SmartPtr< T > > ret;
@@ -184,7 +213,7 @@ public:
   std::list< SmartPtr< T > > getWalkers( const TilePos& pos )
   {
     std::list< SmartPtr< T > > ret;
-    WalkerList walkers = _city->getWalkerList( WT_ALL );
+    WalkerList walkers = _city->getWalkerList( constants::walker::WT_ALL );
     foreach( WalkerPtr walker, walkers )
     {
       if( walker->getIJ() == pos )
@@ -201,7 +230,7 @@ public:
     return ret;
   }
 
-  TilemapArea getArea(TileOverlayPtr overlay );
+  TilemapArea getArea( TileOverlayPtr overlay );
 
   void updateDesirability( ConstructionPtr construction, bool onBuild );
 

@@ -16,6 +16,9 @@
 #include "layersimple.hpp"
 #include "building/watersupply.hpp"
 #include "layerconstants.hpp"
+#include "walker/constants.hpp"
+
+using namespace constants;
 
 int LayerSimple::getType() const
 {
@@ -25,7 +28,7 @@ int LayerSimple::getType() const
 std::set<int> LayerSimple::getVisibleWalkers() const
 {
   std::set<int> ret;
-  ret.insert( WT_ALL );
+  ret.insert( walker::WT_ALL );
 
   return ret;
 }

@@ -27,10 +27,10 @@ int LayerReligion::getType() const
   return citylayer::religion;
 }
 
-std::set<int> LayerReligion::getVisibleWalkers() const
+Layer::VisibleWalkers LayerReligion::getVisibleWalkers() const
 {
-  std::set<int> ret;
-  ret.insert( WT_PRIEST );
+  VisibleWalkers ret;
+  ret.insert( walker::WT_PRIEST );
 
   return ret;
 }
@@ -57,7 +57,7 @@ void LayerReligion::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       //fire buildings and roads
     case construction::B_ROAD:
     case construction::B_PLAZA:
-    case building::B_TEMPLE_CERES: case building::B_TEMPLE_MARS:
+    case building::templeCeres: case building::B_TEMPLE_MARS:
     case building::B_TEMPLE_MERCURE: case building::B_TEMPLE_NEPTUNE: case building::B_TEMPLE_VENUS:
     case building::B_TEMPLE_ORACLE:
     case building::B_BIG_TEMPLE_CERES: case building::B_BIG_TEMPLE_MARS:
@@ -75,8 +75,8 @@ void LayerReligion::drawTile(GfxEngine& engine, Tile& tile, Point offset)
         religionLevel += house->getServiceValue(Service::religionMars);
         religionLevel += house->getServiceValue(Service::religionNeptune);
         religionLevel += house->getServiceValue(Service::religionCeres);
-        religionLevel = math::clamp( religionLevel / (house->getLevelSpec().getMinReligionLevel()+1), 0, 100 );
-        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getHabitants().size() ==0);
+        religionLevel = math::clamp( religionLevel / (house->getSpec().getMinReligionLevel()+1), 0, 100 );
+        needDrawAnimations = (house->getSpec().getLevel() == 1) && (house->getHabitants().size() ==0);
 
         CityHelper helper( _city );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );

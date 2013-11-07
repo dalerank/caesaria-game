@@ -318,7 +318,7 @@ bool TimberLogger::canBuild( CityPtr city, const TilePos& pos ) const
 }
 
 
-IronMine::IronMine() : Factory(Good::none, Good::iron, building::B_IRON_MINE, Size(2) )
+IronMine::IronMine() : Factory(Good::none, Good::iron, building::ironMine, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 54 );
 
@@ -355,7 +355,7 @@ bool WeaponsWorkshop::canBuild(CityPtr city, const TilePos& pos) const
   bool ret = Factory::canBuild( city, pos );
 
   CityHelper helper( city );
-  bool haveIronMine = !helper.find<Building>( building::B_IRON_MINE ).empty();
+  bool haveIronMine = !helper.find<Building>( building::ironMine ).empty();
 
   const_cast< WeaponsWorkshop* >( this )->_setError( haveIronMine ? "" : _("##need_iron_for_work##") );
   return ret;
@@ -394,7 +394,7 @@ bool Winery::canBuild(CityPtr city, const TilePos& pos) const
   bool ret = Factory::canBuild( city, pos );
 
   CityHelper helper( city );
-  bool haveVinegrad = !helper.find<Building>( building::B_GRAPE_FARM ).empty();
+  bool haveVinegrad = !helper.find<Building>( building::grapeFarm ).empty();
 
   const_cast< Winery* >( this )->_setError( haveVinegrad ? "" : _("##need_vinegrad_for_work##") );
   return ret;

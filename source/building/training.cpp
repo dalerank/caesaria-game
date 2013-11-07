@@ -90,7 +90,7 @@ void ActorColony::deliverTrainee()
     return;
   }
 
-  TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), WT_ACTOR );
+  TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), walker::actor );
   trainee->setOriginBuilding(*this);
   trainee->send2City();
 
@@ -112,7 +112,7 @@ GladiatorSchool::GladiatorSchool() : TrainingBuilding( building::gladiatorSchool
 void GladiatorSchool::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), WT_GLADIATOR);
+  TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), walker::gladiator );
   trainee->setOriginBuilding(*this);
   trainee->send2City();
 }
@@ -130,7 +130,7 @@ LionsNursery::LionsNursery() : TrainingBuilding( building::lionHouse, Size(3) )
 void LionsNursery::deliverTrainee()
 {
   // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), WT_TAMER );
+  TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), walker::tamer );
   trainee->setOriginBuilding(*this);
   trainee->send2City();
 }
@@ -148,7 +148,7 @@ WorkshopChariot::WorkshopChariot() : TrainingBuilding( building::chariotSchool, 
 void WorkshopChariot::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), WT_CHARIOT);
+  TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), walker::charioter );
   trainee->setOriginBuilding(*this);
   trainee->send2City();
 }

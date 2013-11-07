@@ -22,13 +22,16 @@
 #include "game/city.hpp"
 #include "game/enums.hpp"
 #include "game/path_finding.hpp"
+#include "constants.hpp"
+
+using namespace constants;
 
 WorkersHunter::WorkersHunter( CityPtr city )
  : ServiceWalker( city, Service::workersRecruter )
 {    
     _workersNeeded = 0;
     _setGraphic( WG_POOR );
-    _setType( WT_WORKERS_HUNTER );
+    _setType( walker::recruter );
 }
 
 void WorkersHunter::hireWorkers( const int workers )

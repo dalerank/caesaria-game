@@ -30,12 +30,15 @@
 #include "core/gettext.hpp"
 #include "game/tilemap.hpp"
 #include "core/logger.hpp"
+#include "ability.hpp"
+
+using namespace constants;
 
 class Walker::Impl
 {
 public:
   CityPtr city;
-  WalkerType walkerType;
+  walker::Type walkerType;
   WalkerGraphicType walkerGraphic;
   bool isDeleted;
   float speed;
@@ -51,6 +54,7 @@ public:
   DirectedAction action;
   std::string name;
   int health;
+  AbilityList abilities;
 
   float getSpeed() const
   {
@@ -68,7 +72,7 @@ Walker::Walker( CityPtr city ) : _d( new Impl )
   _d->city = city;
   _d->action.action = Walker::acMove;
   _d->action.direction = D_NONE;
-  _d->walkerType = WT_NONE;
+  _d->walkerType = walker::unknown;
   _d->walkerGraphic = WG_NONE;
   _d->health = 100;
 
@@ -78,7 +82,7 @@ Walker::Walker( CityPtr city ) : _d( new Impl )
 
   _d->midTilePos = Point( 7, 7 );
   _d->remainMove = PointF( 0, 0 );
-};
+}
 
 Walker::~Walker()
 {
@@ -106,17 +110,16 @@ void Walker::timeStep(const unsigned long time)
   break;
   }
 
-  if( ( time % 15 == 1 ) && _d->health <= 0 )
+  foreach( AbilityPtr ab, _d->abilities)
   {
-    _d->health--;
+    ab->run( this, time );
+  }
 
-    if( _d->health <= -100 )
-    {
-      deleteLater();
-    }
+  if( getHealth() <= 0 )
+  {
+    die();
   }
 }
-
 
 bool Walker::isDeleted() const
 {
@@ -391,6 +394,11 @@ int Walker::getHealth() const
   return _d->health;
 }
 
+void Walker::updateHealth(int value)
+{
+  _d->health = math::clamp( _d->health + value, -100, 100 );
+}
+
 void Walker::setName(const std::string &name)
 {
   _d->name = name;
@@ -495,6 +503,11 @@ void Walker::load( const VariantMap& stream)
   _d->remainMove = stream.get( "remainmove" ).toPointF();
 }
 
+void Walker::addAbility(AbilityPtr ability)
+{
+  _d->abilities.push_back( ability );
+}
+
 TilePos Walker::getIJ() const
 {
     return _d->pos;
@@ -545,7 +558,7 @@ WalkerGraphicType Walker::_getGraphic() const
   return _d->walkerGraphic;
 }
 
-void Walker::_setType(WalkerType type)
+void Walker::_setType(walker::Type type)
 {
   _d->walkerType = type;
 }
@@ -553,6 +566,11 @@ void Walker::_setType(WalkerType type)
 CityPtr Walker::_getCity() const
 {
   return _d->city;
+}
+
+void Walker::_setHealth(int value)
+{
+  _d->health = value;
 }
 
 void Walker::go()
@@ -563,50 +581,51 @@ void Walker::go()
 void Walker::die()
 {
   _d->health = 0;
+  deleteLater();
 }
 
 Soldier::Soldier( CityPtr city ) : Walker( city )
 {
-  _setType( WT_SOLDIER );
+  _setType( walker::soldier );
   _setGraphic( WG_HORSEMAN );
 }
 
-class WalkerHelper::Impl : public EnumsHelper<WalkerType>
+class WalkerHelper::Impl : public EnumsHelper<walker::Type>
 {
 public:
-  typedef std::map< WalkerType, std::string > PrettyNames;
+  typedef std::map< walker::Type, std::string > PrettyNames;
   PrettyNames prettyTypenames;
 
-  void append( WalkerType type, const std::string& typeName, const std::string& prettyTypename )
+  void append( walker::Type type, const std::string& typeName, const std::string& prettyTypename )
   {
-    EnumsHelper<WalkerType>::append( type, typeName );
+    EnumsHelper<walker::Type>::append( type, typeName );
     prettyTypenames[ type ] = prettyTypename;
   }
 
-  Impl() : EnumsHelper<WalkerType>( WT_NONE )
+  Impl() : EnumsHelper<walker::Type>( walker::unknown )
   {
-    append( WT_NONE, "none", _("##wt_none##"));
-    append( WT_IMMIGRANT, "immigrant", _("##wt_immigrant##") );
-    append( WT_EMIGRANT, "emmigrant", _("##wt_emmigrant##") );
-    append( WT_SOLDIER, "soldier", _("##wt_soldier##") );
-    append( WT_CART_PUSHER, "cart_pusher", _("##wt_cart_pushher##") );
-    append( WT_MARKETLADY, "market_lady", _("##wt_market_lady##") );
-    append( WT_MARKETLADY_HELPER, "market_lady_helper", _("##wt_market_lady_helper##") );
-    append( WT_SERVICE, "serviceman", _("##wt_serviceman##") );
-    append( WT_TRAINEE, "trainee", _("##wt_trainee##") );
-    append( WT_WORKERS_HUNTER, "workers_hunter", _("##wt_workers_hunter##") );
-    append( WT_PREFECT, "prefect", _("##wt_prefect##") );
-    append( WT_TAXCOLLECTOR, "tax_collector", _("##wt_tax_collector##") );
-    append( WT_MERCHANT, "merchant", _("##wt_merchant##") );
-    append( WT_ENGINEER, "engineer", _("##wt_engineer##") );
-    append( WT_DOCTOR, "doctor", _("##wt_doctor##") );
-    append( WT_ANIMAL_SHEEP, "sheep", _("##wt_animal_sheep##") );
-    append( WT_BATHLADY, "bathlady", _("##wt_bathlady##") );
-    append( WT_ACTOR, "actor", _("##wt_actor##") );
-    append( WT_GLADIATOR, "gladiator", _("##wt_gladiator##") );
-    append( WT_BARBER, "barber", _("##wt_barber##" ) );
-    append( WT_SURGEON, "surgeon", _("##wt_surgeon##") );
-    append( WT_MAX, "unknown", _("##wt_unknown##") );
+    append( walker::unknown, "none", _("##wt_none##"));
+    append( walker::immigrant, "immigrant", _("##wt_immigrant##") );
+    append( walker::emigrant, "emmigrant", _("##wt_emmigrant##") );
+    append( walker::soldier, "soldier", _("##wt_soldier##") );
+    append( walker::cartPusher, "cart_pusher", _("##wt_cart_pushher##") );
+    append( walker::WT_MARKETLADY, "market_lady", _("##wt_market_lady##") );
+    append( walker::marketLady, "market_lady_helper", _("##wt_market_lady_helper##") );
+    append( walker::WT_SERVICE, "serviceman", _("##wt_serviceman##") );
+    append( walker::WT_TRAINEE, "trainee", _("##wt_trainee##") );
+    append( walker::recruter, "workers_hunter", _("##wt_workers_hunter##") );
+    append( walker::prefect, "prefect", _("##wt_prefect##") );
+    append( walker::WT_TAXCOLLECTOR, "tax_collector", _("##wt_tax_collector##") );
+    append( walker::WT_MERCHANT, "merchant", _("##wt_merchant##") );
+    append( walker::WT_ENGINEER, "engineer", _("##wt_engineer##") );
+    append( walker::WT_DOCTOR, "doctor", _("##wt_doctor##") );
+    append( walker::sheep, "sheep", _("##wt_animal_sheep##") );
+    append( walker::WT_BATHLADY, "bathlady", _("##wt_bathlady##") );
+    append( walker::actor, "actor", _("##wt_actor##") );
+    append( walker::gladiator, "gladiator", _("##wt_gladiator##") );
+    append( walker::WT_BARBER, "barber", _("##wt_barber##" ) );
+    append( walker::WT_SURGEON, "surgeon", _("##wt_surgeon##") );
+    append( walker::WT_ALL, "unknown", _("##wt_unknown##") );
   }
 };
 
@@ -616,7 +635,7 @@ WalkerHelper& WalkerHelper::instance()
   return inst;
 }
 
-std::string WalkerHelper::getName( WalkerType type )
+std::string WalkerHelper::getName( walker::Type type )
 {
   std::string name = instance()._d->findName( type );
 
@@ -629,9 +648,9 @@ std::string WalkerHelper::getName( WalkerType type )
   return name;
 }
 
-WalkerType WalkerHelper::getType(const std::string &name)
+walker::Type WalkerHelper::getType(const std::string &name)
 {
-  WalkerType type = instance()._d->findType( name );
+  walker::Type type = instance()._d->findType( name );
 
   if( type == instance()._d->getInvalid() )
   {
@@ -642,29 +661,29 @@ WalkerType WalkerHelper::getType(const std::string &name)
   return type;
 }
 
-std::string WalkerHelper::getPrettyTypeName(WalkerType type)
+std::string WalkerHelper::getPrettyTypeName(walker::Type type)
 {
   Impl::PrettyNames::iterator it = instance()._d->prettyTypenames.find( type );
   return it != instance()._d->prettyTypenames.end() ? it->second : "";
 }
 
-Picture WalkerHelper::getBigPicture(WalkerType type)
+Picture WalkerHelper::getBigPicture(walker::Type type)
 {
   int index = -1;
   switch( type )
   {
-  case WT_IMMIGRANT: index=9; break;
-  case WT_EMIGRANT: index=13; break;
-  case WT_DOCTOR: index = 2; break;
-  case WT_CART_PUSHER: index=51; break;
-  case WT_MARKETLADY: index=12; break;
-  case WT_MARKETLADY_HELPER: index=38; break;
-  case WT_MERCHANT: index=25; break;
-  case WT_PREFECT: index=19; break;
-  case WT_ENGINEER: index=7; break;
-  case WT_TAXCOLLECTOR: index=6; break;
-  case WT_ANIMAL_SHEEP: index = 54; break;
-  case WT_WORKERS_HUNTER: index=13; break;
+  case walker::immigrant: index=9; break;
+  case walker::emigrant: index=13; break;
+  case walker::WT_DOCTOR: index = 2; break;
+  case walker::cartPusher: index=51; break;
+  case walker::WT_MARKETLADY: index=12; break;
+  case walker::marketLady: index=38; break;
+  case walker::WT_MERCHANT: index=25; break;
+  case walker::prefect: index=19; break;
+  case walker::WT_ENGINEER: index=7; break;
+  case walker::WT_TAXCOLLECTOR: index=6; break;
+  case walker::sheep: index = 54; break;
+  case walker::recruter: index=13; break;
 
   default: index=8; break;
   break;

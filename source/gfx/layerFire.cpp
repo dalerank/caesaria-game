@@ -32,7 +32,7 @@ int LayerFire::getType() const
 std::set<int> LayerFire::getVisibleWalkers() const
 {
   std::set<int> ret;
-  ret.insert( WT_PREFECT );
+  ret.insert( walker::prefect );
   return ret;
 }
 
@@ -60,7 +60,7 @@ void LayerFire::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     case building::B_BURNING_RUINS:
     case building::B_BURNED_RUINS:
     case building::B_COLLAPSED_RUINS:
-    case building::B_PREFECTURE:
+    case building::prefecture:
     case building::B_WELL:
     case building::B_FOUNTAIN:
       engine.drawPicture( tile.getPicture(), screenPos );
@@ -71,8 +71,8 @@ void LayerFire::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     case building::house:
       {
         HousePtr house = overlay.as< House >();
-        fireLevel = (int)house->getFireLevel();
-        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getHabitants().size() ==0);
+        fireLevel = (int)house->getState( Construction::fire );
+        needDrawAnimations = (house->getSpec().getLevel() == 1) && (house->getHabitants().size() ==0);
 
         CityHelper helper( _city );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );
@@ -85,7 +85,7 @@ void LayerFire::drawTile(GfxEngine& engine, Tile& tile, Point offset)
         BuildingPtr building = overlay.as< Building >();
         if( building != 0 )
         {
-          fireLevel = (int)building->getFireLevel();
+          fireLevel = (int)building->getState( Construction::fire );
         }
 
         CityHelper helper( _city );

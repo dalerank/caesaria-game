@@ -19,8 +19,9 @@
 #include "enums.hpp"
 #include "core/scopedptr.hpp"
 #include "core/predefinitions.hpp"
+#include "walker/constants.hpp"
 
-class AbstractWalkerCreator
+class WalkerCreator
 {
 public:
   virtual WalkerPtr create( CityPtr city ) = 0;
@@ -31,11 +32,11 @@ class WalkerManager
 public:
   static WalkerManager& getInstance();
 
-  bool canCreate( const WalkerType type ) const;
+  bool canCreate( constants::walker::Type type ) const;
 
-  void addCreator( const WalkerType type, AbstractWalkerCreator* ctor );
+  void addCreator( constants::walker::Type type, WalkerCreator* ctor );
 
-  WalkerPtr create( const WalkerType walkerType, CityPtr city );  // get an instance of the given type
+  WalkerPtr create( constants::walker::Type walkerType, CityPtr city );  // get an instance of the given type
 
   ~WalkerManager();
 private:

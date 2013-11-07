@@ -50,7 +50,7 @@ CartSupplier::CartSupplier( CityPtr city )
   : Walker( city ), _d( new Impl )
 {
   _setGraphic( WG_PUSHER );
-  _setType( WT_CART_PUSHER );
+  _setType( walker::cartPusher );
 
   _d->storageBuildingPos = TilePos( -1, -1 );
   _d->baseBuildingPos = TilePos( -1, -1 );
@@ -171,8 +171,7 @@ TilePos getSupplierDestination2( Propagator &pathPropagator, const TileOverlay::
 {
   SmartPtr< T > res;
 
-  Propagator::Routes pathWayList;
-  pathPropagator.getRoutes(type, pathWayList);
+  Propagator::Routes pathWayList = pathPropagator.getRoutes( type );
 
   int max_qty = 0;
 
@@ -181,7 +180,7 @@ TilePos getSupplierDestination2( Propagator &pathPropagator, const TileOverlay::
        pathWayIt != pathWayList.end(); ++pathWayIt)
   {
     // for every warehouse within range
-    BuildingPtr building= pathWayIt->first;
+    BuildingPtr building= pathWayIt->first.as<Building>();
     PathWay& pathWay= pathWayIt->second;
 
     SmartPtr< T > destBuilding = building.as< T >();
@@ -222,7 +221,7 @@ void CartSupplier::computeWalkerDestination(BuildingPtr building, const Good::Ty
   pathPropagator.propagate( _d->maxDistance);
 
   // try get that good from a granary
-  _d->storageBuildingPos = getSupplierDestination2<Granary>( pathPropagator, building::B_GRANARY,
+  _d->storageBuildingPos = getSupplierDestination2<Granary>( pathPropagator, building::granary,
                                                              type, qty, pathWay, _d->reservationID );
 
   if( _d->storageBuildingPos.getI() < 0 )

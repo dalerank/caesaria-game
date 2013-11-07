@@ -46,6 +46,7 @@ public:
   virtual void send2City(const TilePos& start);
   virtual void onDestination();
   virtual void onNewTile();
+  virtual void die();
 
 private:
   Sheep( CityPtr city );

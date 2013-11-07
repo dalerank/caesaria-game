@@ -13,20 +13,31 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_PATHWAYHELPER_H_INCLUDED__
-#define __OPENCAESAR3_PATHWAYHELPER_H_INCLUDED__
+#ifndef __OPENCAESAR3_WALKER_ABILITY_H_INCLUDED__
+#define __OPENCAESAR3_WALKER_ABILITY_H_INCLUDED__
 
-#include "pathway.hpp"
+#include "core/referencecounted.hpp"
+#include "walker.hpp"
 
-class PathwayHelper
+class Ability : public ReferenceCounted
 {
 public:
-  typedef enum { roadOnly=0, allTerrain, roadFirst } WayType;
-  static PathWay create( CityPtr city,
-                         TilePos startPos, TilePos stopPos,
-                         WayType type=roadOnly );
-
-  static PathWay randomWay( CityPtr city, TilePos startPos, int walkRadius );
+  virtual void run( WalkerPtr parent, unsigned int time=4 ) = 0;
 };
 
-#endif
+class Illness : public Ability
+{
+public:
+  static AbilityPtr create( int strong, int delay );
+
+  virtual void run(WalkerPtr parent, unsigned int time);
+
+private:
+  Illness( int strong, int delay );
+
+  int _strong;
+  unsigned int _time;
+  int _delay;
+};
+
+#endif //__OPENCAESAR3_WALKER_ABILITY_H_INCLUDED__

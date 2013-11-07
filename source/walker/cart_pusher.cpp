@@ -57,7 +57,7 @@ CartPusher::CartPusher( CityPtr city )
   : Walker( city ), _d( new Impl )
 {
   _setGraphic( WG_PUSHER );
-  _setType( WT_CART_PUSHER );
+  _setType( walker::cartPusher );
   _d->producerBuilding = NULL;
   _d->consumerBuilding = NULL;
   _d->maxDistance = 25;
@@ -234,12 +234,11 @@ void CartPusher::computeWalkerDestination()
 
 template< class T >
 BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
-                                 GoodStock& stock, long& reservationID,
-                                 Propagator &pathPropagator, PathWay &oPathWay )
+                                     GoodStock& stock, long& reservationID,
+                                     Propagator &pathPropagator, PathWay &oPathWay )
 {
   BuildingPtr res;
-  Propagator::Routes pathWayList;
-  pathPropagator.getRoutes(buildingType, pathWayList);
+  Propagator::Routes pathWayList = pathPropagator.getRoutes( buildingType );
 
   //remove factories with improrer storage
   Propagator::Routes::iterator pathWayIt= pathWayList.begin();
@@ -268,7 +267,7 @@ BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
     {
       shortestPath = &pathIt->second;
       maxLength = pathIt->second.getLength();
-      res = pathIt->first;
+      res = pathIt->first.as<Building>();
     }
   }
 
@@ -327,7 +326,7 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_granary(Propagator &pathPropa
       return 0;
    }
 
-   res = reserveShortestPath<Granary>( building::B_GRANARY, stock, reservationID, pathPropagator, oPathWay );
+   res = reserveShortestPath<Granary>( building::granary, stock, reservationID, pathPropagator, oPathWay );
 
    return res;
 }

@@ -94,10 +94,8 @@ CityServiceRoads::~CityServiceRoads()
 
 void CityServiceRoads::Impl::updateRoadsAround(BuildingPtr building)
 {
-  std::list<PathWay> pathWayList;
-
   propagator->init( building.as<Construction>() );
-  propagator->getWays( maxDistance, pathWayList );
+  Propagator::PathWayList pathWayList = propagator->getWays( maxDistance );
 
   Tilemap& tmap = city->getTilemap();
 

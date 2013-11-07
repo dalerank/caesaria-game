@@ -182,7 +182,7 @@ void FishingBoat::die()
 FishingBoat::FishingBoat( CityPtr city ) : Ship( city ), _d( new Impl )
 {
   _setGraphic( WG_FISHING_BOAT );
-  _setType( WT_FISHING_BOAT );
+  _setType( walker::fishingBoat );
   setName( _("##fishing_boat##") );
   _d->mode = Impl::wait;
   _d->stock.setType( Good::fish );

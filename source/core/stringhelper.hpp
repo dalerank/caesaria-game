@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_STRINGHELPER_H_INCLUDED__
 
 #include <string>
-#include <vadefs.h>
+#include <cstdarg>
 #include "core/stringarray.hpp"
 
 class StringHelper

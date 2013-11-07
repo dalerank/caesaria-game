@@ -1,0 +1,228 @@
+// This file is part of openCaesar3.
+//
+// openCaesar3 is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// openCaesar3 is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+
+#include "rioter.hpp"
+#include "building/house.hpp"
+#include "game/path_finding.hpp"
+#include "constants.hpp"
+#include "game/city.hpp"
+#include "game/house_level.hpp"
+#include "building/constants.hpp"
+#include "core/foreach.hpp"
+#include "game/astarpathfinding.hpp"
+#include "game/tilemap.hpp"
+#include "building/constants.hpp"
+#include "game/pathway_helper.hpp"
+
+using namespace constants;
+
+class Rioter::Impl
+{
+public:
+  typedef enum { searchHouse=0, go2construction, searchAnyBuilding,
+                 destroyConstruction, go2anyplace, gooutFromCity } State;
+  int houseLevel;
+  State state;
+
+  PathWay findTarget( CityPtr city, ConstructionList constructions, TilePos pos );
+};
+
+Rioter::Rioter( CityPtr city ) : Walker( city ), _d( new Impl )
+{    
+  _setGraphic( WG_RIOTER );
+  _setType( walker::rioter );
+}
+
+void Rioter::onNewTile()
+{
+  Walker::onNewTile();
+}
+
+void Rioter::onDestination()
+{
+  Walker::onDestination();
+
+  switch( _d->state )
+  {
+  case Impl::go2construction: _d->state = Impl::destroyConstruction; break;
+  default: break;
+  }
+}
+
+void Rioter::timeStep(const unsigned long time)
+{
+  Walker::timeStep( time );
+
+  switch( _d->state )
+  {
+  case Impl::searchHouse:
+  {
+    CityHelper helper( _getCity() );
+    ConstructionList constructions = helper.find<Construction>( building::house );
+    for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
+    {
+      if( (*it).as<House>()->getSpec().getLevel() <= _d->houseLevel ) { it=constructions.erase( it ); }
+      else { it++; }
+    }
+
+    PathWay pathway = _d->findTarget( _getCity(), constructions, getIJ() );
+    //find more expensive house, fire this!!!
+    if( pathway.isValid() )
+    {
+      setPathWay( pathway );
+      setIJ( pathway.getOrigin().getIJ() );
+      go();
+      _d->state = Impl::go2construction;
+    }
+    else //not find house, try find any, that rioter can destroy
+    {
+      _d->state = Impl::searchAnyBuilding;
+    }
+  }
+  break;
+
+  case Impl::searchAnyBuilding:
+  {
+    CityHelper helper( _getCity() );
+    ConstructionList constructions = helper.find<Construction>( building::house );
+    constructions = helper.find<Construction>( building::any );
+
+    for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
+    {
+      TileOverlay::Type type = (*it)->getType();
+      TileOverlay::Group group = (*it)->getClass();
+      if( type == building::house || type == construction::B_ROAD
+          || group == building::disasterGroup ) { it=constructions.erase( it ); }
+      else { it++; }
+    }
+
+    PathWay pathway = _d->findTarget( _getCity(), constructions, getIJ() );
+    if( pathway.isValid() )
+    {
+      setPathWay( pathway );
+      setIJ( pathway.getOrigin().getIJ() );
+      go();
+      _d->state = Impl::go2construction;
+    }
+    else
+    {
+      _d->state = Impl::go2anyplace;
+    }
+  }
+
+  case Impl::go2anyplace:
+  {
+    Propagator prp( _getCity() );
+    prp.init( getIJ() );
+    Propagator::PathWayList pathList = prp.getWays( 10 );
+    PathWay pathway;
+    if( pathList.empty() )
+    {
+      pathway = PathwayHelper::randomWay( _getCity(), getIJ(), 10 );
+
+      if( pathway.isValid() )
+      {
+        setPathWay( pathway );
+        go();
+      }
+    }
+    else
+    {
+      die();
+    }
+  }
+  break;
+
+  case Impl::go2construction:
+  break;
+
+  case Impl::destroyConstruction:
+    if( time % 16 == 1 )
+    {
+      CityHelper helper( _getCity() );
+      ConstructionList constructions = helper.find<Construction>( getIJ() - TilePos( 1, 1), getIJ() + TilePos( 1, 1) );     
+
+      if( constructions.empty() )
+      {
+        _d->state = Impl::searchHouse;
+      }
+      else
+      {
+        foreach( ConstructionPtr c, constructions )
+        {
+          if( c->getClass() != building::disasterGroup
+              && c->getType() != construction::B_ROAD )
+          {
+            c->updateState( Construction::fire, 5 );
+            c->updateState( Construction::damage, 5 );
+            break;
+          }
+        }
+      }
+    }
+  break;
+
+  default: break;
+  }
+}
+
+RioterPtr Rioter::create( CityPtr city )
+{ 
+  RioterPtr ret( new Rioter( city ) );
+  ret->drop();
+  return ret;
+}
+
+Rioter::~Rioter()
+{
+
+}
+
+void Rioter::send2City( HousePtr house )
+{
+  setIJ( house->getTilePos() );
+  _d->houseLevel = house->getSpec().getLevel();
+  _d->state = Impl::searchHouse;
+
+  if( !isDeleted() )
+  {
+    _getCity()->addWalker( WalkerPtr( this ));
+  }
+}
+
+PathWay Rioter::Impl::findTarget( CityPtr city, ConstructionList constructions, TilePos pos )
+{  
+  Propagator prp( city );
+  prp.init( pos );
+  prp.propagate( 26 );
+
+  Propagator::Routes routes;
+  foreach( ConstructionPtr c, constructions )
+  {
+    PathWay pathway;
+    if( prp.getPath( c, pathway ) )
+    {
+      routes[ c ] = pathway;
+    }
+  }
+
+  Propagator::DirectRoute route = prp.getShortestRoute( routes );
+  if( route.first.isValid() )
+  {
+    return route.second;
+  }
+
+  return PathWay();
+}

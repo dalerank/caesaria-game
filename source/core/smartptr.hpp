@@ -118,17 +118,22 @@ public:
     referenceObject(aPtr.obj);
   }
 
-  bool operator== (const SmartPtr<T> &aPtr)
+  bool operator==(const SmartPtr<T> &aPtr) const
   {
     return (obj == aPtr.obj);
   }
 
-  bool operator!= (const SmartPtr<T> &aPtr)
+  bool operator!=(const SmartPtr<T> &aPtr) const
   {
     return (obj != aPtr.obj);
   }
 
-  bool operator==(void *ptr)
+  bool operator<(const SmartPtr<T> &aPtr ) const
+  {
+    return (obj < aPtr.obj);
+  }
+
+  bool operator==(void *ptr) const
   {
     return ((void*)obj == ptr);
   }
@@ -139,7 +144,7 @@ public:
   }
   */
 
-  bool operator != (void *ptr)
+  bool operator != (void *ptr) const
   {
     return ((void*)obj != ptr);
   }

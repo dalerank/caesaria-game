@@ -29,11 +29,11 @@ int LayerFood::getType() const
   return citylayer::food;
 }
 
-std::set<int> LayerFood::getVisibleWalkers() const
+Layer::VisibleWalkers LayerFood::getVisibleWalkers() const
 {
-  std::set<int> ret;
-  ret.insert( WT_MARKETLADY );
-  ret.insert( WT_MARKETLADY_HELPER );
+  VisibleWalkers ret;
+  ret.insert( walker::WT_MARKETLADY );
+  ret.insert( walker::marketLady );
 
   return ret;
 }
@@ -61,7 +61,7 @@ void LayerFood::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     case construction::B_ROAD:
     case construction::B_PLAZA:
     case building::B_MARKET:
-    case building::B_GRANARY:
+    case building::granary:
       pic = tile.getPicture();
       needDrawAnimations = true;
     break;
@@ -73,7 +73,7 @@ void LayerFood::drawTile(GfxEngine& engine, Tile& tile, Point offset)
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
         HousePtr house = overlay.as< House >();
         foodLevel = house->getFoodLevel();
-        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getHabitants().size() == 0);
+        needDrawAnimations = (house->getSpec().getLevel() == 1) && (house->getHabitants().size() == 0);
       }
       break;
 

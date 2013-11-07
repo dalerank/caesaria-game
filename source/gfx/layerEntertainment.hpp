@@ -23,7 +23,7 @@ class LayerEntertainment : public Layer
 {
 public:
   virtual int getType() const;
-  virtual std::set<int> getVisibleWalkers() const;
+  virtual VisibleWalkers getVisibleWalkers() const;
   virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset );
 
   static LayerPtr create( CityRenderer* renderer, CityPtr city, int type );
@@ -31,7 +31,7 @@ private:
   CityRenderer* _renderer;
   CityPtr _city;
   std::set<int> _flags;
-  std::set<int> _visibleWalkers;
+  VisibleWalkers _visibleWalkers;
   int _type;
 };
 

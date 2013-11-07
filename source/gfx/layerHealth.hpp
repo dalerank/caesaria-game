@@ -23,7 +23,7 @@ class LayerHealth : public Layer
 {
 public:
   virtual int getType() const;
-  virtual std::set<int> getVisibleWalkers() const;
+  virtual VisibleWalkers getVisibleWalkers() const;
   virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset );
 
   static LayerPtr create( CityRenderer* renderer, CityPtr city, int type );

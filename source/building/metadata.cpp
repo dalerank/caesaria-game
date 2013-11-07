@@ -55,7 +55,7 @@ public:
     append( building::B_FORT_LEGIONNAIRE, "fort_legionaries" );
     append( building::B_FORT_JAVELIN,   "fort_javelin" );
     append( building::B_FORT_MOUNTED,   "fort_horse" );
-    append( building::B_PREFECTURE,        "prefecture" );
+    append( building::prefecture,        "prefecture" );
     append( building::B_BARRACKS,       "barracks" );
     append( building::B_MILITARY_ACADEMY, "military_academy" );
     append( building::B_DOCTOR,         "clinic" );
@@ -66,7 +66,7 @@ public:
     append( building::B_COLLEGE,        "academy" );
     append( building::B_LIBRARY,        "library" );
     append( building::B_MISSION_POST,   "mission post" );
-    append( building::B_TEMPLE_CERES,   "small_ceres_temple" );
+    append( building::templeCeres,   "small_ceres_temple" );
     append( building::B_TEMPLE_NEPTUNE, "small_neptune_temple" );
     append( building::B_TEMPLE_MARS,    "small_mars_temple" );
     append( building::B_TEMPLE_MERCURE, "small_mercury_temple" );
@@ -78,24 +78,24 @@ public:
     append( building::B_BIG_TEMPLE_VENUS,  "big_venus_temple");
     append( building::B_TEMPLE_ORACLE,     "oracle");
     append( building::B_MARKET,            "market");
-    append( building::B_GRANARY,        "granery");
+    append( building::granary,        "granery");
     append( building::B_WAREHOUSE,      "warehouse");
-    append( building::B_WHEAT_FARM,          "wheat_farm");
+    append( building::wheatFarm,          "wheat_farm");
     append( building::B_FRUIT_FARM,          "fig_farm");
     append( building::B_VEGETABLE_FARM,      "vegetable_farm");
     append( building::B_OLIVE_FARM,          "olive_farm");
-    append( building::B_GRAPE_FARM,          "vinard");
+    append( building::grapeFarm,          "vinard");
     append( building::B_PIG_FARM,           "meat_farm");
     append( building::B_MARBLE_QUARRY,         "quarry");
-    append( building::B_IRON_MINE,           "iron_mine");
+    append( building::ironMine,           "iron_mine");
     append( building::B_TIMBER_YARD,         "lumber_mill");
-    append( building::B_CLAY_PIT,       "clay_pit");
+    append( building::clayPit,       "clay_pit");
     append( building::B_WINE_WORKSHOP,           "wine_workshop");
     append( building::B_OIL_WORKSHOP,            "oil_workshop");
     append( building::B_WEAPONS_WORKSHOP,         "weapons_workshop");
     append( building::B_FURNITURE,      "furniture_workshop");
-    append( building::B_POTTERY,        "pottery_workshop");
-    append( building::B_ENGINEER_POST,       "engineering_post");
+    append( building::pottery,        "pottery_workshop");
+    append( building::engineerPost,       "engineering_post");
     append( building::B_STATUE1,        "statue_small");
     append( building::B_STATUE2,        "statue_middle");
     append( building::B_STATUE3,        "statue_big");
@@ -133,7 +133,7 @@ public:
     append( building::industryGroup, "industry" );
     append( building::obtainGroup, "rawmaterial" );
     append( building::foodGroup, "food" );
-    append( building::disaster, "disaster" );
+    append( building::disasterGroup, "disaster" );
     append( building::religionGroup, "religion" );
     append( building::militaryGroup, "military" );
     append( building::nativeGroup, "native" );
@@ -316,7 +316,7 @@ void MetaDataHolder::initialize( const io::FilePath& filename )
   // populate _mapBuildingByInGood
   _d->mapBuildingByInGood[Good::iron]   = building::B_WEAPONS_WORKSHOP;
   _d->mapBuildingByInGood[Good::timber] = building::B_FURNITURE;
-  _d->mapBuildingByInGood[Good::clay]   = building::B_POTTERY;
+  _d->mapBuildingByInGood[Good::clay]   = building::pottery;
   _d->mapBuildingByInGood[Good::olive]  = building::B_OIL_WORKSHOP;
   _d->mapBuildingByInGood[Good::grape]  = building::B_WINE_WORKSHOP;
 

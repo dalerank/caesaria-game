@@ -59,7 +59,7 @@ Merchant::Merchant( CityPtr city )
   : Walker( city ), _d( new Impl )
 {
   _setGraphic( WG_HORSE_CARAVAN );
-  _setType( WT_MERCHANT );
+  _setType( walker::WT_MERCHANT );
   _d->maxDistance = 60;
   _d->attemptCount = 0;
 
@@ -73,8 +73,7 @@ Merchant::~Merchant()
 Propagator::DirectRoute getWarehouse4Buys( Propagator &pathPropagator,
                                            SimpleGoodStore& basket )
 {
-  Propagator::Routes pathWayList;
-  pathPropagator.getRoutes( building::B_WAREHOUSE, pathWayList);
+  Propagator::Routes pathWayList = pathPropagator.getRoutes( building::B_WAREHOUSE );
 
   std::map< int, Propagator::DirectRoute > warehouseRating;
 
@@ -107,8 +106,7 @@ Propagator::DirectRoute getWarehouse4Buys( Propagator &pathPropagator,
 Propagator::DirectRoute getWarehouse4Sells( Propagator &pathPropagator,
                                             SimpleGoodStore& basket )
 {
-  Propagator::Routes pathWayList;
-  pathPropagator.getRoutes( building::B_WAREHOUSE, pathWayList);
+  Propagator::Routes pathWayList = pathPropagator.getRoutes( building::B_WAREHOUSE );
 
   // select the warehouse with the max quantity of requested goods
   Propagator::Routes::iterator pathWayIt = pathWayList.begin(); 

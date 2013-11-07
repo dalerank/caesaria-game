@@ -18,6 +18,9 @@
 #include "game/road.hpp"
 #include "gfx/animation_bank.hpp"
 #include "game/city.hpp"
+#include "constants.hpp"
+
+using namespace constants;
 
 Emigrant::Emigrant( CityPtr city ) : Immigrant( city )
 {
@@ -26,7 +29,7 @@ Emigrant::Emigrant( CityPtr city ) : Immigrant( city )
   peoples[ CitizenGroup::childMin ] = 2;
   setPeoples( peoples );
 
-  _setType( WT_EMIGRANT );
+  _setType( walker::emigrant );
   _setGraphic( WG_PUSHER2 );
 }
 

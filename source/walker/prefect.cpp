@@ -42,7 +42,7 @@ public:
 WalkerPrefect::WalkerPrefect( CityPtr city )
 : ServiceWalker( city, Service::prefect ), _d( new Impl )
 {
-  _setType( WT_PREFECT );
+  _setType( walker::prefect );
   _d->water = 0;
   _d->action = Impl::patrol;
   _setGraphic( WG_PREFECT );
@@ -327,8 +327,8 @@ void WalkerPrefect::save( VariantMap& stream ) const
 {
   ServiceWalker::save( stream );
 
-  stream[ "type" ] = (int)WT_PREFECT;
+  stream[ "type" ] = (int)walker::prefect;
   stream[ "water" ] = _d->water;
   stream[ "prefectAction" ] = (int)_d->action;
-  stream[ "__debug_typeName" ] = Variant( std::string( OC3_STR_EXT(WT_PREFECT) ) );
+  stream[ "__debug_typeName" ] = Variant( std::string( OC3_STR_EXT(walker::prefect) ) );
 }

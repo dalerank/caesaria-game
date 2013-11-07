@@ -22,6 +22,9 @@
 #include "core/stringhelper.hpp"
 #include "game/tilemap.hpp"
 #include "core/logger.hpp"
+#include "constants.hpp"
+
+using namespace constants;
 
 class ServiceWalker::Impl
 {
@@ -34,7 +37,7 @@ public:
 ServiceWalker::ServiceWalker( CityPtr city, const Service::Type service)
   : Walker( city ), _d( new Impl )
 {
-  _setType( WT_SERVICE );
+  _setType( walker::WT_SERVICE );
   _setGraphic( WG_NONE );
   _d->maxDistance = 5;  // TODO: _building.getMaxDistance() ?
   _d->service = service;
@@ -57,7 +60,7 @@ void ServiceWalker::init(const Service::Type service)
   
   case Service::engineer:
      _setGraphic( WG_ENGINEER );
-     _setType( WT_ENGINEER );
+     _setType( walker::WT_ENGINEER );
   break;
 
   case Service::religionNeptune:
@@ -70,21 +73,21 @@ void ServiceWalker::init(const Service::Type service)
   
   case Service::doctor:
     _setGraphic( WG_DOCTOR );
-    _setType( WT_DOCTOR );
+    _setType( walker::WT_DOCTOR );
   break;
 
   case Service::hospital:
     _setGraphic( WG_DOCTOR );
-    _setType( WT_SURGEON );
+    _setType( walker::WT_SURGEON );
   
   case Service::barber:
     _setGraphic( WG_BARBER );
-    _setType( WT_BARBER );
+    _setType( walker::WT_BARBER );
   break;
   
   case Service::baths:
     _setGraphic( WG_BATH );
-    _setType( WT_BATHLADY );
+    _setType( walker::WT_BATHLADY );
   break;
   
   case Service::school:
@@ -97,22 +100,22 @@ void ServiceWalker::init(const Service::Type service)
   break;
   
   case Service::theater:
-    _setType( WT_ACTOR );
+    _setType( walker::actor );
     _setGraphic( WG_ACTOR );
   break;
 
   case Service::amphitheater:
-    _setType( WT_GLADIATOR );
+    _setType( walker::gladiator );
     _setGraphic( WG_GLADIATOR );
   break;
 
   case Service::colloseum:
-    _setType( WT_TAMER );
+    _setType( walker::tamer );
     _setGraphic( WG_TAMER );
   break;
 
   case Service::hippodrome:
-    _setType( WT_CHARIOT );
+    _setType( walker::charioter );
     _setGraphic( WG_ACTOR );
   break;
   
@@ -149,12 +152,10 @@ Service::Type ServiceWalker::getService() const
 }
 
 void ServiceWalker::computeWalkerPath()
-{
-  std::list<PathWay> pathWayList;
-
+{  
   Propagator pathPropagator( _getCity() );
   pathPropagator.init( _d->base.as<Construction>() );
-  pathPropagator.getWays(_d->maxDistance, pathWayList);
+  Propagator::PathWayList pathWayList = pathPropagator.getWays(_d->maxDistance);
 
   float maxPathValue = 0.0;
   PathWay* bestPath = NULL;

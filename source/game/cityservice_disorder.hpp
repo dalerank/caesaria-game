@@ -13,20 +13,24 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_PATHWAYHELPER_H_INCLUDED__
-#define __OPENCAESAR3_PATHWAYHELPER_H_INCLUDED__
+#ifndef __OPENCAESAR3_CITYSERVICE_DISORDER_H_INCLUDED__
+#define __OPENCAESAR3_CITYSERVICE_DISORDER_H_INCLUDED__
 
-#include "pathway.hpp"
+#include "cityservice.hpp"
+#include "core/scopedptr.hpp"
+#include "core/predefinitions.hpp"
 
-class PathwayHelper
+class CityServiceDisorder : public CityService
 {
 public:
-  typedef enum { roadOnly=0, allTerrain, roadFirst } WayType;
-  static PathWay create( CityPtr city,
-                         TilePos startPos, TilePos stopPos,
-                         WayType type=roadOnly );
+  static CityServicePtr create( CityPtr city );
 
-  static PathWay randomWay( CityPtr city, TilePos startPos, int walkRadius );
+  void update( const unsigned int time );
+private:
+  CityServiceDisorder( CityPtr city );
+
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
-#endif
+#endif //__OPENCAESAR3_CITYSERVICE_DISORDER_H_INCLUDED__

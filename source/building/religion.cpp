@@ -58,7 +58,7 @@ Temple::~Temple()
 
 }
 
-TempleCeres::TempleCeres() : SmallTemple( DivinePantheon::ceres(), building::B_TEMPLE_CERES, 45 )
+TempleCeres::TempleCeres() : SmallTemple( DivinePantheon::ceres(), building::templeCeres, 45 )
 {
 }
 

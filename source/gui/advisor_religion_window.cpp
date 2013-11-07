@@ -149,7 +149,7 @@ AdvisorReligionWindow::AdvisorReligionWindow( CityPtr city, Widget* parent, int 
 
   Point startPoint( 42, 65 );
   Size labelSize( 550, 20 );
-  Impl::InfrastructureInfo info = _d->getInfo( city, building::B_TEMPLE_CERES, building::B_BIG_TEMPLE_CERES );
+  Impl::InfrastructureInfo info = _d->getInfo( city, building::templeCeres, building::B_BIG_TEMPLE_CERES );
   _d->lbCeresInfo = new ReligionInfoLabel( this, Rect( startPoint, labelSize ), DivinePantheon::ceres(), 
                                            info.smallTemplCount, info.bigTempleCount );
 

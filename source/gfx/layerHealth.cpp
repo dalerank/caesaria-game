@@ -27,7 +27,7 @@ int LayerHealth::getType() const
   return _type;
 }
 
-std::set<int> LayerHealth::getVisibleWalkers() const
+Layer::VisibleWalkers LayerHealth::getVisibleWalkers() const
 {
   return _walkers;
 }
@@ -84,7 +84,7 @@ void LayerHealth::drawTile(GfxEngine& engine, Tile& tile, Point offset)
         else if( _flags.count( building::B_BARBER ) ) { healthLevel = house->getServiceValue( Service::barber ); }
         else if( _flags.count( building::B_BATHS ) ) { healthLevel = house->getServiceValue( Service::baths ); }
 
-        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getHabitants().size() == 0);
+        needDrawAnimations = (house->getSpec().getLevel() == 1) && (house->getHabitants().size() == 0);
 
         CityHelper helper( _city );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
@@ -122,19 +122,19 @@ LayerPtr LayerHealth::create(CityRenderer* renderer, CityPtr city, int type )
   {
   case citylayer::health:
   case citylayer::doctor:
-    l->_flags.insert( building::B_DOCTOR ); l->_walkers.insert( WT_DOCTOR );
+    l->_flags.insert( building::B_DOCTOR ); l->_walkers.insert( walker::WT_DOCTOR );
   break;
 
   case citylayer::hospital:
-    l->_flags.insert( building::B_HOSPITAL ); l->_walkers.insert( WT_SURGEON );
+    l->_flags.insert( building::B_HOSPITAL ); l->_walkers.insert( walker::WT_SURGEON );
   break;
 
   case citylayer::barber:
-    l->_flags.insert( building::B_BARBER ); l->_walkers.insert( WT_BARBER );
+    l->_flags.insert( building::B_BARBER ); l->_walkers.insert( walker::WT_BARBER );
   break;
 
   case citylayer::baths:
-    l->_flags.insert( building::B_BATHS ); l->_walkers.insert( WT_BATHLADY );
+    l->_flags.insert( building::B_BATHS ); l->_walkers.insert( walker::WT_BATHLADY );
   break;
   }
 

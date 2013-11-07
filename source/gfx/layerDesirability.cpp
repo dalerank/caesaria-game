@@ -35,7 +35,7 @@ std::set<int> LayerDesirability::getVisibleWalkers() const
 
 void LayerDesirability::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 {
-  Tilemap& tilemap = _city->getTilemap();
+  //Tilemap& tilemap = _city->getTilemap();
   Point screenPos = tile.getXY() + offset;
 
   tile.setWasDrawn();

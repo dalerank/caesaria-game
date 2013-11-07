@@ -63,6 +63,7 @@
 #include "cityservice_fishplace.hpp"
 #include "core/logger.hpp"
 #include "building/constants.hpp"
+#include "cityservice_disorder.hpp"
 #include <set>
 
 using namespace constants;
@@ -136,6 +137,7 @@ City::City() : _d( new Impl )
   addService( CityServiceFestival::create( this ) );
   addService( CityServiceRoads::create( this ) );
   addService( CityServiceFishPlace::create( this ) );
+  addService( CityServiceDisorder::create( this ) );
 }
 
 void City::timeStep( unsigned int time )
@@ -243,9 +245,9 @@ void City::monthStep( const DateTime& time )
   _d->funds.updateHistory( GameDate::current() );
 }
 
-WalkerList City::getWalkerList( const WalkerType type )
+WalkerList City::getWalkerList( walker::Type type )
 {
-  if( type == WT_ALL )
+  if( type == walker::WT_ALL )
   {
     return _d->walkerList;
   }
@@ -504,7 +506,7 @@ void City::load( const VariantMap& stream )
     VariantMap walkerInfo = item.second.toMap();
     int walkerType = (int)walkerInfo.get( "type", 0 );
 
-    WalkerPtr walker = WalkerManager::getInstance().create( WalkerType( walkerType ), this );
+    WalkerPtr walker = WalkerManager::getInstance().create( walker::Type( walkerType ), this );
     if( walker.isValid() )
     {
       walker->load( walkerInfo );

@@ -27,7 +27,7 @@ int LayerEntertainment::getType() const
   return _type;
 }
 
-std::set<int> LayerEntertainment::getVisibleWalkers() const
+Layer::VisibleWalkers LayerEntertainment::getVisibleWalkers() const
 {
   return _visibleWalkers;
 }
@@ -81,13 +81,13 @@ void LayerEntertainment::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     case building::house:
       {
         HousePtr house = overlay.as< House >();
-        if( _flags.count( building::unknown ) ) { entertainmentLevel = house->getLevelSpec().computeEntertainmentLevel( house ); }
+        if( _flags.count( building::unknown ) ) { entertainmentLevel = house->getSpec().computeEntertainmentLevel( house ); }
         else if( _flags.count( building::theater ) ) { entertainmentLevel = house->getServiceValue( Service::theater ); }
         else if( _flags.count( building::amphitheater ) ) { entertainmentLevel = house->getServiceValue( Service::amphitheater ); }
         else if( _flags.count( building::colloseum ) ) { entertainmentLevel = house->getServiceValue( Service::colloseum ); }
         else if( _flags.count( building::hippodrome ) ) { entertainmentLevel = house->getServiceValue( Service::hippodrome ); }
 
-        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getHabitants().size() == 0);
+        needDrawAnimations = (house->getSpec().getLevel() == 1) && (house->getHabitants().size() == 0);
         CityHelper helper( _city );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
       }
@@ -129,17 +129,17 @@ LayerPtr LayerEntertainment::create(CityRenderer* renderer, CityPtr city, int ty
     l->_flags.insert( building::gladiatorSchool ); l->_flags.insert( building::lionHouse );
     l->_flags.insert( building::chariotSchool );
 
-    l->_visibleWalkers.insert( WT_ACTOR );
-    l->_visibleWalkers.insert( WT_GLADIATOR );
-    l->_visibleWalkers.insert( WT_TAMER );
-    l->_visibleWalkers.insert( WT_CHARIOT );
+    l->_visibleWalkers.insert( walker::actor );
+    l->_visibleWalkers.insert( walker::gladiator );
+    l->_visibleWalkers.insert( walker::tamer );
+    l->_visibleWalkers.insert( walker::charioter );
   break;
 
   case citylayer::theater:
     l->_flags.insert( building::theater );
     l->_flags.insert( building::actorColony );
 
-    l->_visibleWalkers.insert( WT_ACTOR );
+    l->_visibleWalkers.insert( walker::actor );
   break;
 
   case citylayer::amphitheater:
@@ -147,8 +147,8 @@ LayerPtr LayerEntertainment::create(CityRenderer* renderer, CityPtr city, int ty
     l->_flags.insert( building::actorColony );
     l->_flags.insert( building::gladiatorSchool );
 
-    l->_visibleWalkers.insert( WT_ACTOR );
-    l->_visibleWalkers.insert( WT_GLADIATOR );
+    l->_visibleWalkers.insert( walker::actor );
+    l->_visibleWalkers.insert( walker::gladiator );
   break;
 
   case citylayer::colloseum:
@@ -156,8 +156,8 @@ LayerPtr LayerEntertainment::create(CityRenderer* renderer, CityPtr city, int ty
     l->_flags.insert( building::gladiatorSchool );
     l->_flags.insert( building::lionHouse );
 
-    l->_visibleWalkers.insert( WT_GLADIATOR );
-    l->_visibleWalkers.insert( WT_TAMER );
+    l->_visibleWalkers.insert( walker::gladiator );
+    l->_visibleWalkers.insert( walker::tamer );
   break;
 
 
@@ -165,7 +165,7 @@ LayerPtr LayerEntertainment::create(CityRenderer* renderer, CityPtr city, int ty
     l->_flags.insert( building::hippodrome );
     l->_flags.insert( building::chariotSchool );
 
-    l->_visibleWalkers.insert( WT_CHARIOT );
+    l->_visibleWalkers.insert( walker::charioter );
   break;
 
   default: break;

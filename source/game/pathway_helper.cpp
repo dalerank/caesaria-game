@@ -18,7 +18,7 @@
 #include "city.hpp"
 #include "tilemap.hpp"
 
-PathWay PathwayHelper::create( CityPtr city, const TilePos& startPos, const TilePos& stopPos,
+PathWay PathwayHelper::create(CityPtr city, TilePos startPos, TilePos stopPos,
                                WayType type/*=roadOnly */ )
 {
   switch( type )
@@ -36,6 +36,31 @@ PathWay PathwayHelper::create( CityPtr city, const TilePos& startPos, const Tile
   default:
   break;
   }
+
+  return PathWay();
+}
+
+PathWay PathwayHelper::randomWay(CityPtr city, TilePos startPos, int walkRadius)
+{
+  int loopCounter = 0; //loop limiter
+  do
+  {
+    const Tilemap& tmap = city->getTilemap();
+
+    TilePos destPos( std::rand() % walkRadius - walkRadius / 2, std::rand() % walkRadius - walkRadius / 2 );
+    destPos = (startPos+destPos).fit( TilePos( 0, 0 ), TilePos( tmap.getSize()-1, tmap.getSize()-1 ) );
+
+    if( tmap.at( destPos ).isWalkable( true) )
+    {
+      PathWay pathway = create( city, startPos, destPos, PathwayHelper::allTerrain );
+
+      if( pathway.isValid() )
+      {
+        return pathway;
+      }
+    }
+  }
+  while( ++loopCounter < 20 );
 
   return PathWay();
 }

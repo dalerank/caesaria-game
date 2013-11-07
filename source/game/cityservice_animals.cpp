@@ -19,11 +19,14 @@
 #include "gamedate.hpp"
 #include "tilemap.hpp"
 #include "walker/animals.hpp"
+#include "walker/constants.hpp"
+
+using namespace constants;
 
 class CityServiceAnimals::Impl
 {
 public:
-  static const unsigned int maxSheeps = 10;
+  static const unsigned int maxSheeps = 1;
   CityPtr city;
   DateTime lastTimeUpdate;
 };
@@ -60,7 +63,7 @@ void CityServiceAnimals::update(const unsigned int time)
       }
     }
 
-    WalkerList sheeps = _d->city->getWalkerList( WT_ANIMAL_SHEEP );
+    WalkerList sheeps = _d->city->getWalkerList( walker::sheep );
     if( sheeps.size() < Impl::maxSheeps )
     {
       WalkerPtr sheep = Sheep::create( _d->city );

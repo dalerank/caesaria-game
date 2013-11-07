@@ -23,7 +23,7 @@
 
 using namespace constants;
 
-TraineeWalker::TraineeWalker( CityPtr city, const WalkerType traineeType)
+TraineeWalker::TraineeWalker( CityPtr city, walker::Type traineeType)
   : Walker( city )
 {
   _setType( traineeType );
@@ -34,34 +34,34 @@ TraineeWalker::TraineeWalker( CityPtr city, const WalkerType traineeType)
   init( traineeType );
 }
 
-void TraineeWalker::init(const WalkerType traineeType)
+void TraineeWalker::init(walker::Type traineeType)
 {
   switch( traineeType )
   {
-  case WT_ACTOR:
+  case walker::actor:
     _setGraphic( WG_ACTOR );
     _buildingNeed.push_back(building::theater);
     _buildingNeed.push_back(building::amphitheater);
   break;
 
-  case WT_GLADIATOR:
+  case walker::gladiator:
     _setGraphic( WG_GLADIATOR );
     _buildingNeed.push_back(building::amphitheater);
     _buildingNeed.push_back(building::colloseum);
   break;
 
-  case WT_TAMER:
+  case walker::tamer:
     _setGraphic( WG_TAMER );
     _buildingNeed.push_back(building::colloseum);
   break;
 
-  case WT_CHARIOT:
+  case walker::charioter:
     _setGraphic( WG_NONE );  // TODO
   break;
 
   default:
-  case WT_NONE:
-  case WT_MAX:
+  case walker::unknown:
+  case walker::WT_ALL:
     break;
   }
 
@@ -91,7 +91,7 @@ void TraineeWalker::computeWalkerPath()
     // some building needs that trainee!
     // std::cout << "trainee sent!" << std::endl;
     PathWay pathWay;
-    pathPropagator.getPath( _destinationBuilding, pathWay);
+    pathPropagator.getPath( _destinationBuilding.as<Construction>(), pathWay);
     setPathWay( pathWay );
     setIJ( _getPathway().getOrigin().getIJ() );
   }
@@ -105,15 +105,14 @@ void TraineeWalker::computeWalkerPath()
 
 void TraineeWalker::checkDestination(const TileOverlay::Type buildingType, Propagator &pathPropagator)
 {
-  Propagator::Routes pathWayList;
-  pathPropagator.getRoutes(buildingType, pathWayList);
+  Propagator::Routes pathWayList = pathPropagator.getRoutes( buildingType );
 
   foreach( Propagator::Routes::value_type& item, pathWayList )
   {
     // for every building within range
-    BuildingPtr building = item.first;
+    BuildingPtr building = item.first.as<Building>();
 
-    float need = building->evaluateTrainee( (WalkerType)getType() );
+    float need = building->evaluateTrainee( getType() );
     if (need > _maxNeed)
     {
       _maxNeed = need;
@@ -128,7 +127,7 @@ void TraineeWalker::send2City()
 
   if( !isDeleted() )
   {
-    _destinationBuilding->reserveTrainee( (WalkerType)getType() );
+    _destinationBuilding->reserveTrainee( getType() );
     _getCity()->addWalker( this );
   }
 }
@@ -137,7 +136,7 @@ void TraineeWalker::onDestination()
 {
   Walker::onDestination();
   deleteLater();
-  _destinationBuilding->applyTrainee( (WalkerType)getType() );
+  _destinationBuilding->applyTrainee( getType() );
 }
 
 void TraineeWalker::save( VariantMap& stream ) const
@@ -147,26 +146,26 @@ void TraineeWalker::save( VariantMap& stream ) const
   stream[ "destBldPos" ] = _destinationBuilding->getTile().getIJ();
   stream[ "maxDistance" ] = _maxDistance;
   stream[ "graphic" ] = _getGraphic();
-  stream[ "type" ] = (int)WT_TRAINEE;
+  stream[ "type" ] = (int)walker::WT_TRAINEE;
 }
 
 void TraineeWalker::load( const VariantMap& stream )
 {
   Walker::load(stream);
 
-  init( (WalkerType)getType() );
+  init( getType() );
 
   CityHelper helper( _getCity() );
   _originBuilding = helper.find<Building>( stream.get( "originBldPos" ).toTilePos() );
   _destinationBuilding = helper.find<Building>( stream.get( "destBldPos" ).toTilePos() );
   _maxDistance = (int)stream.get( "maxDistance" );
-  WalkerType wtype = (WalkerType)stream.get( "graphic" ).toInt();
+  walker::Type wtype = (walker::Type)stream.get( "graphic" ).toInt();
 
   _setType( wtype );
   init( wtype );
 }
 
-TraineeWalkerPtr TraineeWalker::create(CityPtr city, const WalkerType traineeType )
+TraineeWalkerPtr TraineeWalker::create(CityPtr city, walker::Type traineeType )
 {
   TraineeWalkerPtr ret( new TraineeWalker( city, traineeType ) );
   ret->drop();

@@ -36,17 +36,17 @@ EntertainmentBuilding::EntertainmentBuilding(const Service::Type service,
    switch( service )
    {
    case Service::theater:
-      _traineeMap[WT_ACTOR] = 0;
+      _traineeMap[walker::actor] = 0;
    break;
 
    case Service::amphitheater:
-      _traineeMap[WT_ACTOR] = 0;
-      _traineeMap[WT_GLADIATOR] = 0;
+      _traineeMap[walker::actor] = 0;
+      _traineeMap[walker::gladiator] = 0;
    break;
 
    case Service::colloseum:
-      _traineeMap[WT_GLADIATOR] = 0;
-      _traineeMap[WT_TAMER] = 0;
+      _traineeMap[walker::gladiator] = 0;
+      _traineeMap[walker::tamer] = 0;
    break;
 
    default:
@@ -103,7 +103,7 @@ unsigned int EntertainmentBuilding::getWalkerDistance() const
   return 35;
 }
 
-float EntertainmentBuilding::evaluateTrainee(const WalkerType traineeType)
+float EntertainmentBuilding::evaluateTrainee(walker::Type traineeType)
 {
   if( getWorkers() == 0 )
     return 0.0;

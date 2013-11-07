@@ -24,7 +24,7 @@
 #include "game/city.hpp"
 #include "building/constants.hpp"
 
-Prefecture::Prefecture() : ServiceBuilding(Service::prefect, constants::building::B_PREFECTURE, Size(1))
+Prefecture::Prefecture() : ServiceBuilding(Service::prefect, constants::building::prefecture, Size(1))
 {
   _fireDetect = TilePos( -1, -1 );
   setPicture( ResourceGroup::security, 1 );
@@ -70,7 +70,7 @@ void Prefecture::deliverService()
     if( fireDetect )
     {
       PathWay pathway;
-      TilePos startPos = _accessRoads.front()->getIJ();
+      TilePos startPos = getAccessRoads().front()->getIJ();
       bool pathFounded = Pathfinder::getInstance().getPath( startPos, _fireDetect, pathway, false, Size( 0 ) );
       //patrol = !pathFounded;
 

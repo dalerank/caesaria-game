@@ -26,45 +26,45 @@ using namespace constants;
 
 BurningRuins::BurningRuins() : ServiceBuilding(Service::burningRuins, building::B_BURNING_RUINS, Size(1) )
 {
-    _fireLevel = 99;
+  updateState( Construction::fire, 99, false );
 
-    setPicture( ResourceGroup::land2a, 187 );
-    _getAnimation().load( ResourceGroup::land2a, 188, 8 );
-    _getAnimation().setOffset( Point( 14, 26 ) );
-    _getFgPictures().resize(1);
+  setPicture( ResourceGroup::land2a, 187 );
+  _getAnimation().load( ResourceGroup::land2a, 188, 8 );
+  _getAnimation().setOffset( Point( 14, 26 ) );
+  _getFgPictures().resize(1);
 }
 
 void BurningRuins::timeStep(const unsigned long time)
 {
-    ServiceBuilding::timeStep(time);
+  ServiceBuilding::timeStep(time);
 
-    if (time % 16 == 0 )
+  if (time % 16 == 0 )
+  {
+    if( getState( Construction::fire ) > 0 )
     {
-      if( _fireLevel > 0 )
+      updateState( Construction::fire, -1 );
+      if( getState( Construction::fire ) == 50 )
       {
-        _fireLevel -= 1;
-        if( _fireLevel == 50 )
-        {
-          setPicture( ResourceGroup::land2a, 214 );
-          _getAnimation().clear();
-          _getAnimation().load( ResourceGroup::land2a, 215, 8);
-          _getAnimation().setOffset( Point( 14, 26 ) );
-        }
-        else if( _fireLevel == 25 )
-        {
-          setPicture( ResourceGroup::land2a, 223 );
-          _getAnimation().clear();
-          _getAnimation().load(ResourceGroup::land2a, 224, 8);
-          _getAnimation().setOffset( Point( 14, 18 ) );
-        }
-      }
-      else
-      {
-        deleteLater();
+        setPicture( ResourceGroup::land2a, 214 );
         _getAnimation().clear();
-        _getFgPictures().clear();
-      }           
+        _getAnimation().load( ResourceGroup::land2a, 215, 8);
+        _getAnimation().setOffset( Point( 14, 26 ) );
+      }
+      else if( getState( Construction::fire ) == 25 )
+      {
+        setPicture( ResourceGroup::land2a, 223 );
+        _getAnimation().clear();
+        _getAnimation().load(ResourceGroup::land2a, 224, 8);
+        _getAnimation().setOffset( Point( 14, 18 ) );
+      }
     }
+    else
+    {
+      deleteLater();
+      _getAnimation().clear();
+      _getFgPictures().clear();
+    }
+  }
 }
 
 void BurningRuins::destroy()
@@ -104,14 +104,14 @@ void BurningRuins::build( CityPtr city, const TilePos& pos )
 
 bool BurningRuins::isWalkable() const
 {
-  return (_fireLevel == 0);
+  return (getState( Construction::fire ) == 0);
 }
 
 float BurningRuins::evaluateService( ServiceWalkerPtr walker )
 {
   if ( Service::prefect == walker->getService() )
   {
-    return _fireLevel;
+    return getState( Construction::fire ) * 2;
   }
 
   return 0;
@@ -121,7 +121,8 @@ void BurningRuins::applyService(ServiceWalkerPtr walker)
 {
   if ( Service::prefect == walker->getService() )
   {
-    _fireLevel = math::clamp<float>( _fireLevel - walker->getServiceValue(), 0.f, 100.f );
+    double newValue = math::clamp<float>( getState( Construction::fire ) - walker->getServiceValue(), 0.f, 100.f );
+    updateState( Construction::fire, newValue, false );
   }
 }
 
@@ -165,13 +166,13 @@ void BurnedRuins::destroy()
 
 CollapsedRuins::CollapsedRuins() : Building(building::B_COLLAPSED_RUINS, Size(1) )
 {
-    _damageLevel = 1;
+  updateState( Construction::damage, 1, false );
 
-    _getAnimation().load( ResourceGroup::sprites, 1, 8 );
-    _getAnimation().setOffset( Point( 14, 26 ) );
-    _getAnimation().setFrameDelay( 4 );
-    _getAnimation().setLoop( false );
-    _getFgPictures().resize(1);
+  _getAnimation().load( ResourceGroup::sprites, 1, 8 );
+  _getAnimation().setOffset( Point( 14, 26 ) );
+  _getAnimation().setFrameDelay( 4 );
+  _getAnimation().setLoop( false );
+  _getFgPictures().resize(1);
 }
 
 void CollapsedRuins::burn()
@@ -181,12 +182,12 @@ void CollapsedRuins::burn()
 
 void CollapsedRuins::build( CityPtr city, const TilePos& pos )
 {
-    Building::build( city, pos );
-    //while burning can't remove it
-    getTile().setFlag( Tile::tlTree, false );
-    getTile().setFlag( Tile::tlBuilding, true );
-    getTile().setFlag( Tile::tlRoad, false );
-    setPicture( ResourceGroup::land2a, 111 + rand() % 8  );
+  Building::build( city, pos );
+  //while burning can't remove it
+  getTile().setFlag( Tile::tlTree, false );
+  getTile().setFlag( Tile::tlBuilding, true );
+  getTile().setFlag( Tile::tlRoad, false );
+  setPicture( ResourceGroup::land2a, 111 + rand() % 8  );
 }
 
 bool CollapsedRuins::isWalkable() const
@@ -202,7 +203,7 @@ bool CollapsedRuins::isNeedRoadAccess() const
 
 PlagueRuins::PlagueRuins() : Building( building::B_PLAGUE_RUINS, Size(1) )
 {
-  _fireLevel = 99;
+  updateState( Construction::fire, 99, false );
 
   setPicture( ResourceGroup::land2a, 187 );
   _getAnimation().load( ResourceGroup::land2a, 188, 8 );
@@ -219,17 +220,17 @@ void PlagueRuins::timeStep(const unsigned long time)
 
   if (time % 16 == 0 )
   {
-    if( _fireLevel > 0 )
+    if( getState( Construction::fire ) > 0 )
     {
-      _fireLevel -= 1;
-      if( _fireLevel == 50 )
+      updateState( Construction::fire, -1 );
+      if( getState( Construction::fire ) == 50 )
       {
         setPicture( ResourceGroup::land2a, 214 );
         _getAnimation().clear();
         _getAnimation().load( ResourceGroup::land2a, 215, 8);
         _getAnimation().setOffset( Point( 14, 26 ) );
       }
-      else if( _fireLevel == 25 )
+      else if( getState( Construction::fire ) == 25 )
       {
         setPicture( ResourceGroup::land2a, 223 );
         _getAnimation().clear();
@@ -276,7 +277,7 @@ void PlagueRuins::build( CityPtr city, const TilePos& pos )
 
 bool PlagueRuins::isWalkable() const
 {
-  return (_fireLevel == 0);
+  return (getState( Construction::fire ) == 0);
 }
 
 bool PlagueRuins::isNeedRoadAccess() const

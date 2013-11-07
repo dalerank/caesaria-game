@@ -239,7 +239,7 @@ void AdvisorEntertainmentWindow::Impl::updateInfo()
   {
     int habitants = house->getHabitants().count( CitizenGroup::mature );
 
-    const HouseLevelSpec& lspec = house->getLevelSpec();
+    const HouseLevelSpec& lspec = house->getSpec();
 
     if( house->isEntertainmentNeed( Service::theater ) )
     {
@@ -284,7 +284,7 @@ void AdvisorEntertainmentWindow::Impl::updateInfo()
   HippodromeList hippodromes = helper.find<Hippodrome>( building::hippodrome );
   foreach( HippodromePtr h, hippodromes )
   {
-    if( h->evaluateTrainee( WT_CHARIOT ) == 100 ) { troubles.push_back( "##no_chariots##" ); }
+    if( h->evaluateTrainee( walker::charioter ) == 100 ) { troubles.push_back( "##no_chariots##" ); }
   }
 
   if( nextLevel > 0 )

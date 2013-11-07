@@ -39,7 +39,7 @@ public:
 Immigrant::Immigrant( CityPtr city )
   : Walker( city ), _d( new Impl )
 {
-  _setType( WT_IMMIGRANT );
+  _setType( walker::immigrant );
   _setGraphic( WG_HOMELESS );
 
   setName( NameGenerator::rand( NameGenerator::male ) );

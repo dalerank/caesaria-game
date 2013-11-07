@@ -208,7 +208,7 @@ InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(CityPtr city, const Til
   foreach( HousePtr house, houses )
   {
     ret.need += ( house->getHabitants().count( age ) * ( house->isEducationNeed( service ) ? 1 : 0 ) );
-    ret.nextLevel += (house->getLevelSpec().next().evaluateEducationNeed( house, service ) == 100 ? 1 : 0);
+    ret.nextLevel += (house->getSpec().next().evaluateEducationNeed( house, service ) == 100 ? 1 : 0);
   }
 
   ret.coverage = ret.need > 0

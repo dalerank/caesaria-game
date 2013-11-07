@@ -13,20 +13,30 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_PATHWAYHELPER_H_INCLUDED__
-#define __OPENCAESAR3_PATHWAYHELPER_H_INCLUDED__
+#ifndef __OPENCAESAR3_RIOTER_H_INCLUDE_
+#define __OPENCAESAR3_RIOTER_H_INCLUDE_
 
-#include "pathway.hpp"
+#include "walker.hpp"
 
-class PathwayHelper
+class Rioter;
+typedef SmartPtr<Rioter> RioterPtr;
+
+class Rioter : public Walker
 {
 public:
-  typedef enum { roadOnly=0, allTerrain, roadFirst } WayType;
-  static PathWay create( CityPtr city,
-                         TilePos startPos, TilePos stopPos,
-                         WayType type=roadOnly );
+  static RioterPtr create( CityPtr city );
+  ~Rioter();
 
-  static PathWay randomWay( CityPtr city, TilePos startPos, int walkRadius );
+  void onNewTile();
+  void onDestination();
+  void timeStep(const unsigned long time);
+  void send2City( HousePtr house );
+
+private:
+  Rioter( CityPtr city );
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
-#endif
+#endif//__OPENCAESAR3_RIOTER_H_INCLUDE_

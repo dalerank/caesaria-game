@@ -30,7 +30,7 @@ int LayerDamage::getType() const
 std::set<int> LayerDamage::getVisibleWalkers() const
 {
   std::set<int> ret;
-  ret.insert( WT_ENGINEER );
+  ret.insert( walker::WT_ENGINEER );
   return ret;
 }
 
@@ -56,7 +56,7 @@ void LayerDamage::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     case construction::B_ROAD:
     case construction::B_PLAZA:
     case building::B_COLLAPSED_RUINS:
-    case building::B_ENGINEER_POST:
+    case building::engineerPost:
       needDrawAnimations = true;
       engine.drawPicture( tile.getPicture(), screenPos );
       break;
@@ -65,8 +65,8 @@ void LayerDamage::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     case building::house:
       {
         HousePtr house = overlay.as< House >();
-        damageLevel = (int)house->getDamageLevel();
-        needDrawAnimations = (house->getLevelSpec().getHouseLevel() == 1) && (house->getHabitants().size() == 0);
+        damageLevel = (int)house->getState( Construction::damage );
+        needDrawAnimations = (house->getSpec().getLevel() == 1) && (house->getHabitants().size() == 0);
 
         CityHelper helper( _city );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
@@ -79,7 +79,7 @@ void LayerDamage::drawTile(GfxEngine& engine, Tile& tile, Point offset)
         BuildingPtr building = overlay.as< Building >();
         if( building.isValid() )
         {
-          damageLevel = (int)building->getDamageLevel();
+          damageLevel = (int)building->getState( Construction::damage );
         }
 
         CityHelper helper( _city );

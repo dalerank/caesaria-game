@@ -187,7 +187,7 @@ Farm::~Farm()
 
 }
 
-FarmWheat::FarmWheat() : Farm(Good::wheat, building::B_WHEAT_FARM)
+FarmWheat::FarmWheat() : Farm(Good::wheat, building::wheatFarm)
 {
 }
 
@@ -195,7 +195,7 @@ FarmOlive::FarmOlive() : Farm(Good::olive, building::B_OLIVE_FARM)
 {
 }
 
-FarmGrape::FarmGrape() : Farm(Good::grape, building::B_GRAPE_FARM)
+FarmGrape::FarmGrape() : Farm(Good::grape, building::grapeFarm)
 {
 }
 

@@ -124,7 +124,7 @@ House::House(const int houseId) : Building( constants::building::house ), _d( ne
   _d->desirability.range = 3;
   _d->desirability.step = 1;
   _d->currentYear = GameDate::current().getYear();
-  _fireLevel = 0;
+  updateState( Construction::fire, 0, false );
 
   _d->initGoodStore( 1 );
 
@@ -155,6 +155,8 @@ void House::timeStep(const unsigned long time)
   {
     _d->consumeServices();
     _d->updateHealthLevel();
+
+    appendServiceValue( Service::crime, _d->levelSpec.getCrime() * 3 );
   }
 
   if( time % 64 == 0 )
@@ -199,7 +201,7 @@ GoodStore& House::getGoodStore()
 }
 
 
-const HouseLevelSpec& House::getLevelSpec() const
+const HouseLevelSpec& House::getSpec() const
 {
    return _d->levelSpec;
 }
@@ -223,7 +225,7 @@ void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int start
       }
 
       HousePtr house = tile->getOverlay().as<House>();
-      if( house != NULL && house->getLevelSpec().getHouseLevel() == level4grow )
+      if( house != NULL && house->getSpec().getLevel() == level4grow )
       {
         if( house->getSize().getWidth() > 1 )  //bigger house near, can't grow
         {
@@ -542,8 +544,8 @@ float House::evaluateService(ServiceWalkerPtr walker)
 
   switch(service)
   {
-  case Service::engineer: res = _damageLevel; break;
-  case Service::prefect: res = _fireLevel; break;
+  case Service::engineer: res = getState( Construction::damage ); break;
+  case Service::prefect: res = getState( Construction::fire ); break;
 
   // this house pays taxes
   case Service::forum:
@@ -720,7 +722,7 @@ void House::load( const VariantMap& stream )
 
 int House::getFoodLevel() const
 {
-  switch( _d->levelSpec.getHouseLevel() )
+  switch( _d->levelSpec.getLevel() )
   {
   case smallHovel:
   case bigTent:

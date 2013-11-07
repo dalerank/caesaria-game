@@ -84,7 +84,7 @@ public:
   bool devastateThis;
 };
 
-Granary::Granary() : WorkingBuilding( constants::building::B_GRANARY, Size(3) ), _d( new Impl )
+Granary::Granary() : WorkingBuilding( constants::building::granary, Size(3) ), _d( new Impl )
 {
   _d->goodStore.granary = this;
 

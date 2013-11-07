@@ -20,6 +20,9 @@
 #include "game/pathway.hpp"
 #include "game/goodstore.hpp"
 #include "game/name_generator.hpp"
+#include "constants.hpp"
+
+using namespace constants;
 
 class MarketLadyHelper::Impl
 {
@@ -49,7 +52,7 @@ MarketLadyHelper::MarketLadyHelper( CityPtr city )
   _d->birthTime = 0;
   _d->basket._maxQty = 100;
   _setGraphic( WG_MARKETLADY_HELPER );
-  _setType( WT_MARKETLADY_HELPER );
+  _setType( walker::marketLady );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
 }

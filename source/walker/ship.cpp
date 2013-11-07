@@ -16,11 +16,14 @@
 #include "ship.hpp"
 #include "core/gettext.hpp"
 #include "game/city.hpp"
+#include "constants.hpp"
+
+using namespace constants;
 
 Ship::Ship( CityPtr city )
   : Walker( city )
 {
-  _setType( WT_NONE );
+  _setType( walker::unknown );
   _setGraphic( WG_NONE );
 
   setName( _("##ship##") );

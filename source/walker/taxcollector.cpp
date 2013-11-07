@@ -18,6 +18,9 @@
 #include "game/cityfunds.hpp"
 #include "building/house.hpp"
 #include "game/name_generator.hpp"
+#include "constants.hpp"
+
+using namespace constants;
 
 class TaxCollector::Impl
 {
@@ -56,7 +59,7 @@ TaxCollectorPtr TaxCollector::create( CityPtr city )
 TaxCollector::TaxCollector( CityPtr city ) : ServiceWalker( city, Service::forum ), _d( new Impl )
 {
   _d->money = 0;
-  _setType( WT_TAXCOLLECTOR );
+  _setType( walker::WT_TAXCOLLECTOR );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
 }

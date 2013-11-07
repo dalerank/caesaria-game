@@ -19,6 +19,11 @@
 #include "game/pathway_helper.hpp"
 #include "core/gettext.hpp"
 #include "game/tilemap.hpp"
+#include "constants.hpp"
+#include "corpse.hpp"
+#include "ability.hpp"
+
+using namespace constants;
 
 class Animal::Impl
 {
@@ -29,7 +34,7 @@ public:
 Animal::Animal( CityPtr city )
   : Walker( city ), _d( new Impl )
 {
-  _setType( WT_NONE );
+  _setType( walker::unknown );
   _setGraphic( WG_NONE );
 
   setName( _("##Animal##") );
@@ -62,43 +67,27 @@ void Animal::load( const VariantMap& stream )
 
 void Animal::_findNewWay( const TilePos& start )
 {
-  int loopIndex = 0;
-  bool foundPath = false;
-  do
+  PathWay pathway = PathwayHelper::randomWay( _getCity(), start, 10 );
+
+  if( pathway.isValid() )
   {
-    const Tilemap& tmap = _getCity()->getTilemap();
-    int range = 10;
-    TilePos dest( std::rand() % range- range / 2, std::rand() % range - range / 2 );
-    dest = (start+dest).fit( TilePos( 0, 0 ), TilePos( tmap.getSize()-1, tmap.getSize()-1 ) );
-
-    if( tmap.at( dest ).isWalkable( true) )
-    {
-      PathWay pathway = PathwayHelper::create( _getCity(), start, dest, PathwayHelper::allTerrain );
-
-      if( pathway.isValid() )
-      {
-        foundPath = true;
-        setPathWay( pathway );
-        setIJ( start );
-        go();
-      }
-    }
+    setPathWay( pathway );
+    setIJ( start );
+    go();
   }
-  while( !foundPath && ++loopIndex < 20 );
-
-  if( !foundPath )
+  else
   {
-    deleteLater();
+    die();
   }
 }
-
-
 
 Sheep::Sheep( CityPtr city ) : Animal( city )
 {
   _setGraphic( WG_ANIMAL_SHEEP_WALK );
-  _setType( WT_ANIMAL_SHEEP );
+  _setType( walker::sheep );
   setName( _("##Sheep##") );
+
+  addAbility( Illness::create( 1, 4 ) );
 }
 
 WalkerPtr Sheep::create(CityPtr city)
@@ -113,6 +102,12 @@ void Sheep::onDestination()
 {
   Walker::onDestination();
 
+  Tilemap& tmap = _getCity()->getTilemap();
+  if( tmap.at( getIJ() ).getFlag( Tile::tlMeadow ) )
+  {
+    updateHealth( +100 );
+  }
+
   _findNewWay( getIJ() );
 }
 
@@ -120,6 +115,13 @@ void Sheep::onNewTile()
 {
   Walker::onNewTile();
   _getAnimation().setFrameDelay( 3 );
+}
+
+void Sheep::die()
+{
+  Animal::die();
+
+  Corpse::create( _getCity(), getIJ(), "citizen04", 257, 264 );
 }
 
 void Sheep::send2City(const TilePos &start )

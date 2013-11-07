@@ -204,7 +204,8 @@ InfoBoxWorkingBuilding::InfoBoxWorkingBuilding( Widget* parent, WorkingBuildingP
   _drawWorkers( Point( 32, 150 ), 542, building->getMaxWorkers(), building->getWorkers() );
 
   std::string text = StringHelper::format( 0xff, "%d%% damage - %d%% fire",
-                                           (int)building->getDamageLevel(), (int)building->getFireLevel());
+                                           (int)building->getState( Construction::damage ),
+                                           (int)building->getState( Construction::fire ));
 
   new Label( this, Rect( 50, getHeight() - 50, getWidth() - 50, getHeight() - 16 ), text );
   new Label( this, Rect( 16, 50, getWidth() - 16, 130 ), "", false, Label::bgNone, lbHelpId );
@@ -243,7 +244,7 @@ InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
   : InfoBoxSimple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 50 ) )
 {
   HousePtr house = tile.getOverlay().as<House>();
-  setTitle( house->getLevelSpec().getLevelName() );
+  setTitle( house->getSpec().getLevelName() );
 
   Label* houseInfo = new Label( this, Rect( 30, 40, getWidth() - 30, 40 + 100 ), house->getUpCondition() );
   houseInfo->setWordWrap( true );
@@ -261,7 +262,7 @@ InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
 
   drawHabitants( house );
 
-  int taxes = house->getLevelSpec().getTaxRate();
+  int taxes = house->getSpec().getTaxRate();
   std::string taxesStr = taxes <= 0
                            ? StringHelper::format( 0xff, _("##house_not_taxation##") )
                            : StringHelper::format( 0xff, "%d %s", taxes, _("##house_pay_tax##") );
@@ -272,7 +273,7 @@ InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
   Label* lbCrime = new Label( this, taxesLb->getRelativeRect() + Point( 0, 22 ), aboutCrimes );
 
   int startY = lbCrime->getBottom() + 10;
-  if( house->getLevelSpec().getHouseLevel() > 2 )
+  if( house->getSpec().getLevel() > 2 )
   {
     drawGood( house, Good::wheat, 0, 0, startY );
     drawGood( house, Good::fish, 1, 0, startY );
@@ -303,7 +304,7 @@ InfoBoxHouse::~InfoBoxHouse()
 void InfoBoxHouse::drawHabitants( HousePtr house )
 {
   // citizen or patrician picture
-  int picId = house->getLevelSpec().isPatrician() ? 541 : 542;
+  int picId = house->getSpec().isPatrician() ? 541 : 542;
    
   Picture& citPic = Picture::load( ResourceGroup::panelBackground, picId );
   _d->bgPicture->draw( citPic, 16+15, 157 );
@@ -665,7 +666,8 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
   _drawWorkers( Point( 32, 160 ), 542, rawmb->getMaxWorkers(), rawmb->getWorkers() );
 
   std::string text = StringHelper::format( 0xff, "%d%% damage - %d%% fire",
-                                          (int)rawmb->getDamageLevel(), (int)rawmb->getFireLevel());
+                                          (int)rawmb->getState( Construction::damage ),
+                                          (int)rawmb->getState( Construction::fire ) );
   new Label( this, Rect( 50, getHeight() - 50, getWidth() - 50, getHeight() - 16 ), text );
 
   text = StringHelper::format( 0xff, "%s %d", _("##rawm_production_complete##"), rawmb->getProgress() );
@@ -676,38 +678,38 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
   //GoodType goodType = G_NONE;
   switch( rawmb->getType() )
   {
-    case building::B_WHEAT_FARM:
-      desc.assign( _("##farm_description_wheat##") );
-      name.assign( _("##farm_title_wheat##") );
-      //goodType = G_WHEAT;
-      break;
-    case building::B_FRUIT_FARM:
-      desc.assign( _("##farm_description_fruit##") );
-      name.assign( _("##farm_title_fruit##") );
-      //goodType = G_FRUIT;
-      break;
-    case building::B_OLIVE_FARM:
-      desc.assign( _("##farm_description_olive##") );
-      name.assign( _("##farm_title_olive##") );
-      //goodType = G_OLIVE;
-      break;
-    case building::B_GRAPE_FARM:
-      desc.assign( _("##farm_description_vine##") );
-      name.assign( _("##farm_title_vine##") );
-      //goodType = G_GRAPE;
-      break;
-    case building::B_PIG_FARM:
-      desc.assign( _("##farm_description_meat##") );
-      name.assign( _("##farm_title_meat##") );
-      //goodType = G_MEAT;
-      break;
-    case building::B_VEGETABLE_FARM:
-      desc.assign( _("##farm_description_vegetable##") );
-      name.assign( _("##farm_title_vegetable##") );
-      //goodType = G_VEGETABLE;
-      break;
-    default:
-    break;
+  case building::wheatFarm:
+    desc.assign( _("##farm_description_wheat##") );
+    name.assign( _("##farm_title_wheat##") );
+  break;
+
+  case building::B_FRUIT_FARM:
+    desc.assign( _("##farm_description_fruit##") );
+    name.assign( _("##farm_title_fruit##") );
+  break;
+
+  case building::B_OLIVE_FARM:
+    desc.assign( _("##farm_description_olive##") );
+    name.assign( _("##farm_title_olive##") );
+  break;
+
+  case building::grapeFarm:
+    desc.assign( _("##farm_description_vine##") );
+    name.assign( _("##farm_title_vine##") );
+  break;
+
+  case building::B_PIG_FARM:
+    desc.assign( _("##farm_description_meat##") );
+    name.assign( _("##farm_title_meat##") );
+  break;
+
+  case building::B_VEGETABLE_FARM:
+    desc.assign( _("##farm_description_vegetable##") );
+    name.assign( _("##farm_title_vegetable##") );
+  break;
+
+  default:
+  break;
   }
 
   new Label( this, Rect( 32, 236, getWidth() - 50, getHeight() - 50 ), desc );
@@ -749,9 +751,9 @@ InfoBoxCitizen::InfoBoxCitizen(Widget* parent, const WalkerList& walkers )
   {
     WalkerPtr walker = walkers.front();
     lbName->setText( walker->getName() );
-    lbType->setText( WalkerHelper::getPrettyTypeName( (WalkerType)walker->getType() ) );
+    lbType->setText( WalkerHelper::getPrettyTypeName( walker->getType() ) );
     lbThinks->setText( walker->getThinks() );
-    lbCitizenPic->setBackgroundPicture( WalkerHelper::getBigPicture( (WalkerType)walker->getType() ) );
+    lbCitizenPic->setBackgroundPicture( WalkerHelper::getBigPicture( walker->getType() ) );
   }
 }
 

@@ -62,7 +62,7 @@ public:
   GoodConsumptionMuls consumptionMuls;
 };
 
-int HouseLevelSpec::getHouseLevel() const
+int HouseLevelSpec::getLevel() const
 {
    return _d->houseLevel;
 }
@@ -486,6 +486,11 @@ int HouseLevelSpec::getProsperity() const
   return _d->prosperity;
 }
 
+int HouseLevelSpec::getCrime() const
+{
+  return _d->crime;
+}
+
 HouseLevelSpec::~HouseLevelSpec()
 {
 
@@ -632,7 +637,7 @@ int HouseSpecHelper::getHouseLevel( const std::string& name )
   {
     if( item.second.getInternalName() == name )
     {
-      return item.second.getHouseLevel();
+      return item.second.getLevel();
     }
   }
 

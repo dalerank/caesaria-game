@@ -48,15 +48,15 @@ CityServiceWorkersHire::CityServiceWorkersHire( CityPtr city )
 : CityService( "workershire" ), _d( new Impl )
 {
   _d->city = city;
-  _d->priorities[ 1 ] = building::B_PREFECTURE;
-  _d->priorities[ 2 ] = building::B_ENGINEER_POST;
-  _d->priorities[ 3 ] = building::B_CLAY_PIT;
-  _d->priorities[ 4 ] = building::B_WHEAT_FARM;
-  _d->priorities[ 5 ] = building::B_GRAPE_FARM;
-  _d->priorities[ 6 ] = building::B_GRANARY;
-  _d->priorities[ 7 ] = building::B_IRON_MINE;
-  _d->priorities[ 8 ] = building::B_TEMPLE_CERES;
-  _d->priorities[ 9 ] = building::B_POTTERY;
+  _d->priorities[ 1 ] = building::prefecture;
+  _d->priorities[ 2 ] = building::engineerPost;
+  _d->priorities[ 3 ] = building::clayPit;
+  _d->priorities[ 4 ] = building::wheatFarm;
+  _d->priorities[ 5 ] = building::grapeFarm;
+  _d->priorities[ 6 ] = building::granary;
+  _d->priorities[ 7 ] = building::ironMine;
+  _d->priorities[ 8 ] = building::templeCeres;
+  _d->priorities[ 9 ] = building::pottery;
   _d->priorities[ 10 ] = building::B_WAREHOUSE;
   _d->priorities[ 11 ] = building::forum;
   _d->priorities[ 12 ] = building::B_DOCTOR;
@@ -121,7 +121,7 @@ void CityServiceWorkersHire::update( const unsigned int time )
 
   //unsigned int vacantPop=0;
 
-  _d->hrInCity = _d->city->getWalkerList( WT_WORKERS_HUNTER );
+  _d->hrInCity = _d->city->getWalkerList( walker::recruter );
 
   foreach( Priorities::value_type& pr, _d->priorities )
   {

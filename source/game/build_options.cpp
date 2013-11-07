@@ -50,20 +50,20 @@ void CityBuildOptions::setIndustryAvaible( const BuildMenuType type, bool mayBui
   switch( type )
   {
   case BM_FARM:
-    _d->rules[ building::B_OLIVE_FARM ] = mayBuild; _d->rules[ building::B_WHEAT_FARM ] = mayBuild;
+    _d->rules[ building::B_OLIVE_FARM ] = mayBuild; _d->rules[ building::wheatFarm ] = mayBuild;
     _d->rules[ building::B_FRUIT_FARM ] = mayBuild; _d->rules[ building::B_VEGETABLE_FARM ] = mayBuild;
-    _d->rules[ building::B_GRAPE_FARM ] = mayBuild; _d->rules[ building::B_PIG_FARM ] = mayBuild;
+    _d->rules[ building::grapeFarm ] = mayBuild; _d->rules[ building::B_PIG_FARM ] = mayBuild;
   break;
 
   case BM_RAW_MATERIAL:
-    _d->rules[ building::B_MARBLE_QUARRY ] = mayBuild; _d->rules[ building::B_IRON_MINE ] = mayBuild;
-    _d->rules[ building::B_TIMBER_YARD ] = mayBuild; _d->rules[ building::B_CLAY_PIT ] = mayBuild;
+    _d->rules[ building::B_MARBLE_QUARRY ] = mayBuild; _d->rules[ building::ironMine ] = mayBuild;
+    _d->rules[ building::B_TIMBER_YARD ] = mayBuild; _d->rules[ building::clayPit ] = mayBuild;
   break;
 
   case BM_FACTORY:
     _d->rules[ building::B_WINE_WORKSHOP ] = mayBuild; _d->rules[ building::B_OIL_WORKSHOP ] = mayBuild;
     _d->rules[ building::B_WEAPONS_WORKSHOP ] = mayBuild; _d->rules[ building::B_FURNITURE ] = mayBuild;
-    _d->rules[ building::B_POTTERY ] = mayBuild;
+    _d->rules[ building::pottery ] = mayBuild;
   break;
 
   default:
