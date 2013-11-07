@@ -18,7 +18,7 @@
 #include "city.hpp"
 #include "tilemap.hpp"
 
-PathWay PathwayHelper::create(CityPtr city, TilePos startPos, TilePos stopPos,
+PathWay PathwayHelper::create( CityPtr city, TilePos startPos, TilePos stopPos,
                                WayType type/*=roadOnly */ )
 {
   switch( type )

@@ -56,17 +56,25 @@ void CityServiceDisorder::update( const unsigned int time )
   CityHelper helper( _d->city );
   HouseList houses = helper.find<House>( building::house );
 
+  WalkerList walkers = _d->city->getWalkerList( walker::rioter );
+
+  HouseList criminalizedHouse;
   foreach( HousePtr house, houses )
   {
-    int houseCrime = house->getServiceValue( Service::crime );
-
-    int crime = rand() % houseCrime;
-    if( crime >= _d->minCrimeLevel )
+    int crimeLvl = rand() % (house->getServiceValue( Service::crime )+1);
+    if( crimeLvl >= _d->minCrimeLevel )
     {
-      RioterPtr rioter = Rioter::create( _d->city );
-      rioter->send2City( house );
-
-      house->appendServiceValue( Service::crime, -defaultCrimeLevel / 2 );
+      criminalizedHouse.push_back( house );
     }
+  }
+
+  if( criminalizedHouse.size() > walkers.size() )
+  {
+    HouseList::iterator it = criminalizedHouse.begin();
+    std::advance( it, rand() % criminalizedHouse.size() );
+    (*it)->appendServiceValue( Service::crime, -defaultCrimeLevel / 2 );
+
+    RioterPtr rioter = Rioter::create( _d->city );
+    rioter->send2City( *it );
   }
 }

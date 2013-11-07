@@ -124,7 +124,7 @@ public:
   static int encode( const Tile& tt );
 
   static void decode( Tile& tile, const int bitset);
-
+  static Tile& getInvalid();
 };
 
 #endif //__OPENCAESAR3_TILE_H_INCLUDED__

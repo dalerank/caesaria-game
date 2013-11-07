@@ -223,7 +223,7 @@ void City::timeStep( unsigned int time )
         // overlay matches the filter
         construction->computeAccessRoads();
         // for some constructions we need to update picture
-        if( construction->getType() == construction::B_ROAD )
+        if( construction->getType() == construction::road )
         {
           RoadPtr road = construction.as<Road>();
           road->updatePicture();

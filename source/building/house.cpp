@@ -136,6 +136,7 @@ House::House(const int houseId) : Building( constants::building::house ), _d( ne
     _d->services[service] = Service();
   }
   _d->services[ Service::workersRecruter ].setMax( 0 );
+  _d->services[ Service::crime ] = 0;
 
   _update();
 }
@@ -156,7 +157,7 @@ void House::timeStep(const unsigned long time)
     _d->consumeServices();
     _d->updateHealthLevel();
 
-    appendServiceValue( Service::crime, _d->levelSpec.getCrime() * 3 );
+    appendServiceValue( Service::crime, _d->levelSpec.getCrime() * 25 );
   }
 
   if( time % 64 == 0 )
@@ -503,7 +504,7 @@ void House::applyService( ServiceWalkerPtr walker )
   break;
 
   case Service::prefect:
-    appendServiceValue(Service::crime, -10);
+    appendServiceValue(Service::crime, -25);
   break;
 
   case Service::oracle:

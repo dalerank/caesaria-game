@@ -46,6 +46,7 @@ public:
   static const char* foodOverlay;
   static const char* empirebits;
   static const char* empirepnls;
+  static const char* citizen2;
 };
 
 class ResourceMenu

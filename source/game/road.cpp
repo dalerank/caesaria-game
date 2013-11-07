@@ -23,7 +23,7 @@
 
 using namespace constants;
 
-Road::Road() : Construction( construction::B_ROAD, Size(1) )
+Road::Road() : Construction( construction::road, Size(1) )
 {
   _paved = 0;
 }

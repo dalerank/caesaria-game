@@ -28,7 +28,7 @@ public:
 class Illness : public Ability
 {
 public:
-  static AbilityPtr create( int strong, int delay );
+  static AbilityPtr create( int strong, unsigned int delay );
 
   virtual void run(WalkerPtr parent, unsigned int time);
 
@@ -37,7 +37,7 @@ private:
 
   int _strong;
   unsigned int _time;
-  int _delay;
+  unsigned int _delay;
 };
 
 #endif //__OPENCAESAR3_WALKER_ABILITY_H_INCLUDED__

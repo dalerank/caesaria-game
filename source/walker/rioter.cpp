@@ -25,14 +25,17 @@
 #include "game/tilemap.hpp"
 #include "building/constants.hpp"
 #include "game/pathway_helper.hpp"
+#include "corpse.hpp"
+#include "ability.hpp"
+#include "game/resourcegroup.hpp"
 
 using namespace constants;
 
 class Rioter::Impl
 {
 public:
-  typedef enum { searchHouse=0, go2construction, searchAnyBuilding,
-                 destroyConstruction, go2anyplace, gooutFromCity } State;
+  typedef enum { searchHouse=0, go2destination, searchAnyBuilding,
+                 destroyConstruction, go2anyplace, gooutFromCity, wait } State;
   int houseLevel;
   State state;
 
@@ -43,6 +46,8 @@ Rioter::Rioter( CityPtr city ) : Walker( city ), _d( new Impl )
 {    
   _setGraphic( WG_RIOTER );
   _setType( walker::rioter );
+
+  addAbility( Illness::create(1,4) );
 }
 
 void Rioter::onNewTile()
@@ -56,7 +61,14 @@ void Rioter::onDestination()
 
   switch( _d->state )
   {
-  case Impl::go2construction: _d->state = Impl::destroyConstruction; break;
+  case Impl::go2destination:
+    _getAnimation().clear();
+    _getAnimation().load( ResourceGroup::citizen2, 455, 8 );
+    _getAnimation().load( ResourceGroup::citizen2, 462, 8, Animation::reverse );
+    _setAction( acFight );
+    _d->state = Impl::destroyConstruction;
+  break;
+
   default: break;
   }
 }
@@ -81,10 +93,11 @@ void Rioter::timeStep(const unsigned long time)
     //find more expensive house, fire this!!!
     if( pathway.isValid() )
     {
+
       setPathWay( pathway );
       setIJ( pathway.getOrigin().getIJ() );
       go();
-      _d->state = Impl::go2construction;
+      _d->state = Impl::go2destination;
     }
     else //not find house, try find any, that rioter can destroy
     {
@@ -103,7 +116,7 @@ void Rioter::timeStep(const unsigned long time)
     {
       TileOverlay::Type type = (*it)->getType();
       TileOverlay::Group group = (*it)->getClass();
-      if( type == building::house || type == construction::B_ROAD
+      if( type == building::house || type == construction::road
           || group == building::disasterGroup ) { it=constructions.erase( it ); }
       else { it++; }
     }
@@ -114,56 +127,63 @@ void Rioter::timeStep(const unsigned long time)
       setPathWay( pathway );
       setIJ( pathway.getOrigin().getIJ() );
       go();
-      _d->state = Impl::go2construction;
+      _d->state = Impl::go2destination;
     }
     else
     {
       _d->state = Impl::go2anyplace;
     }
   }
+  break;
 
   case Impl::go2anyplace:
   {
-    Propagator prp( _getCity() );
-    prp.init( getIJ() );
-    Propagator::PathWayList pathList = prp.getWays( 10 );
-    PathWay pathway;
-    if( pathList.empty() )
-    {
-      pathway = PathwayHelper::randomWay( _getCity(), getIJ(), 10 );
+    PathWay pathway = PathwayHelper::randomWay( _getCity(), getIJ(), 10 );
 
-      if( pathway.isValid() )
-      {
-        setPathWay( pathway );
-        go();
-      }
+    if( pathway.isValid() )
+    {
+      setPathWay( pathway );
+      go();
+      _d->state = Impl::go2destination;
     }
     else
     {
       die();
+      _d->state = Impl::wait;
     }
   }
   break;
 
-  case Impl::go2construction:
+  case Impl::go2destination:
+  case Impl::wait:
   break;
 
   case Impl::destroyConstruction:
+  {
     if( time % 16 == 1 )
     {
+
       CityHelper helper( _getCity() );
-      ConstructionList constructions = helper.find<Construction>( getIJ() - TilePos( 1, 1), getIJ() + TilePos( 1, 1) );     
+      ConstructionList constructions = helper.find<Construction>( getIJ() - TilePos( 1, 1), getIJ() + TilePos( 1, 1) );
+
+      for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
+      {
+        if( (*it)->getType() == construction::road || (*it)->getClass() == building::disasterGroup )
+        { it=constructions.erase( it ); }
+        else { it++; }
+      }
 
       if( constructions.empty() )
       {
+        _getAnimation().clear();
+        _setAction( acMove );
         _d->state = Impl::searchHouse;
       }
       else
       {
         foreach( ConstructionPtr c, constructions )
         {
-          if( c->getClass() != building::disasterGroup
-              && c->getType() != construction::B_ROAD )
+          if( c->getClass() != building::disasterGroup && c->getType() != construction::road )
           {
             c->updateState( Construction::fire, 5 );
             c->updateState( Construction::damage, 5 );
@@ -172,6 +192,7 @@ void Rioter::timeStep(const unsigned long time)
         }
       }
     }
+  }
   break;
 
   default: break;
@@ -202,26 +223,29 @@ void Rioter::send2City( HousePtr house )
   }
 }
 
+void Rioter::die()
+{
+  Walker::die();
+
+  Corpse::create( _getCity(), getIJ(), ResourceGroup::citizen2, 447, 454 );
+}
+
 PathWay Rioter::Impl::findTarget( CityPtr city, ConstructionList constructions, TilePos pos )
 {  
-  Propagator prp( city );
-  prp.init( pos );
-  prp.propagate( 26 );
-
-  Propagator::Routes routes;
-  foreach( ConstructionPtr c, constructions )
+  if( !constructions.empty() )
   {
     PathWay pathway;
-    if( prp.getPath( c, pathway ) )
+    for( int i=0; i<10; i++)
     {
-      routes[ c ] = pathway;
-    }
-  }
+      ConstructionList::iterator it = constructions.begin();
+      std::advance( it, rand() % constructions.size() );
 
-  Propagator::DirectRoute route = prp.getShortestRoute( routes );
-  if( route.first.isValid() )
-  {
-    return route.second;
+      pathway = PathwayHelper::create( city, pos, (*it)->getEnterPos(), PathwayHelper::allTerrain );
+      if( pathway.isValid() )
+      {
+        return pathway;
+      }
+    }
   }
 
   return PathWay();

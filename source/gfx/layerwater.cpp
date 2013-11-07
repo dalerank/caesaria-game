@@ -53,7 +53,7 @@ void LayerWater::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     switch( overlay->getType() )
     {
       //water buildings
-    case construction::B_ROAD:
+    case construction::road:
     case construction::B_PLAZA:
     case building::B_RESERVOIR:
     case building::B_FOUNTAIN:

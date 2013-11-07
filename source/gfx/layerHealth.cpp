@@ -52,7 +52,7 @@ void LayerHealth::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     switch( overlay->getType() )
     {
       //fire buildings and roads
-    case construction::B_ROAD:
+    case construction::road:
     case construction::B_PLAZA:
       needDrawAnimations = true;
       engine.drawPicture( tile.getPicture(), screenPos );
@@ -122,19 +122,19 @@ LayerPtr LayerHealth::create(CityRenderer* renderer, CityPtr city, int type )
   {
   case citylayer::health:
   case citylayer::doctor:
-    l->_flags.insert( building::B_DOCTOR ); l->_walkers.insert( walker::WT_DOCTOR );
+    l->_flags.insert( building::B_DOCTOR ); l->_walkers.insert( walker::doctor );
   break;
 
   case citylayer::hospital:
-    l->_flags.insert( building::B_HOSPITAL ); l->_walkers.insert( walker::WT_SURGEON );
+    l->_flags.insert( building::B_HOSPITAL ); l->_walkers.insert( walker::surgeon );
   break;
 
   case citylayer::barber:
-    l->_flags.insert( building::B_BARBER ); l->_walkers.insert( walker::WT_BARBER );
+    l->_flags.insert( building::B_BARBER ); l->_walkers.insert( walker::barber );
   break;
 
   case citylayer::baths:
-    l->_flags.insert( building::B_BATHS ); l->_walkers.insert( walker::WT_BATHLADY );
+    l->_flags.insert( building::B_BATHS ); l->_walkers.insert( walker::bathlady );
   break;
   }
 

@@ -63,7 +63,7 @@ void LayerDesirability::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     switch( overlay->getType() )
     {
     //roads
-    case construction::B_ROAD:
+    case construction::road:
     case construction::B_PLAZA:
       engine.drawPicture( tile.getPicture(), screenPos );
       _renderer->registerTileForRendering( tile );

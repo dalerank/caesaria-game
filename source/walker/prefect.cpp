@@ -27,10 +27,12 @@
 #include "events/event.hpp"
 #include "core/logger.hpp"
 #include "building/constants.hpp"
+#include "corpse.hpp"
+#include "game/resourcegroup.hpp"
 
 using namespace constants;
 
-class WalkerPrefect::Impl
+class Prefect::Impl
 {
 public:
   typedef enum { patrol=0, back2Prefecture, gotoFire, fightFire, doNothing } PrefectAction; 
@@ -39,7 +41,7 @@ public:
   PrefectAction action;
 };
 
-WalkerPrefect::WalkerPrefect( CityPtr city )
+Prefect::Prefect( CityPtr city )
 : ServiceWalker( city, Service::prefect ), _d( new Impl )
 {
   _setType( walker::prefect );
@@ -50,12 +52,12 @@ WalkerPrefect::WalkerPrefect( CityPtr city )
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
-void WalkerPrefect::onNewTile()
+void Prefect::onNewTile()
 {
   Walker::onNewTile();
 }
 
-bool WalkerPrefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, TilePos& pos )
+bool Prefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, TilePos& pos )
 {
   buildings = getReachedBuildings( getIJ() );
 
@@ -71,7 +73,7 @@ bool WalkerPrefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, Til
   return false;
 }
 
-void WalkerPrefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
+void Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
 {
   PathWay bestPath;
   int minLength = 9999;
@@ -81,7 +83,7 @@ void WalkerPrefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
       continue;
 
     PathWay tmp;
-    bool foundPath = Pathfinder::getInstance().getPath( getIJ(), building->getTile().getIJ(), tmp,
+    bool foundPath = Pathfinder::getInstance().getPath( getIJ(), building->getEnterPos(), tmp,
                                                         false, Size( 0 ) ); 
     if( foundPath && tmp.getLength() < minLength )
     {
@@ -100,13 +102,13 @@ void WalkerPrefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
   }
 }
 
-void WalkerPrefect::onDestination()
+void Prefect::onDestination()
 { 
 }
 
-void WalkerPrefect::_back2Prefecture()
+void Prefect::_back2Prefecture()
 {
-  bool pathFound = Pathfinder::getInstance().getPath( getIJ(), getBase()->getTile().getIJ(),
+  bool pathFound = Pathfinder::getInstance().getPath( getIJ(), getBase()->getEnterPos(),
                                                       _getPathway(), false, Size( 0 ) );
 
   if( !pathFound )
@@ -123,7 +125,7 @@ void WalkerPrefect::_back2Prefecture()
   _d->action = Impl::back2Prefecture;
 }
 
-void WalkerPrefect::onMidTile()
+void Prefect::onMidTile()
 {
   ReachedBuildings reachedBuildings;
   TilePos firePos;
@@ -232,7 +234,7 @@ void WalkerPrefect::onMidTile()
   }
 }
 
-void WalkerPrefect::timeStep(const unsigned long time)
+void Prefect::timeStep(const unsigned long time)
 {
   ServiceWalker::timeStep( time );
 
@@ -266,24 +268,24 @@ void WalkerPrefect::timeStep(const unsigned long time)
   }
 }
 
-WalkerPrefect::~WalkerPrefect()
+Prefect::~Prefect()
 {
 }
 
-float WalkerPrefect::getServiceValue() const
+float Prefect::getServiceValue() const
 {
   return 5;
 }
 
-WalkerPrefectPtr WalkerPrefect::create( CityPtr city )
+PrefectPtr Prefect::create( CityPtr city )
 {
-  WalkerPrefectPtr ret( new WalkerPrefect( city ) );
+  PrefectPtr ret( new Prefect( city ) );
   ret->drop();
 
   return ret;
 }
 
-void WalkerPrefect::send2City(PrefecturePtr prefecture, int water/*=0 */ )
+void Prefect::send2City(PrefecturePtr prefecture, int water/*=0 */ )
 {
   _d->action = water > 0 ? Impl::gotoFire : Impl::patrol;
   _d->water = water;
@@ -301,7 +303,14 @@ void WalkerPrefect::send2City(PrefecturePtr prefecture, int water/*=0 */ )
   }
 }
 
-void WalkerPrefect::load( const VariantMap& stream )
+void Prefect::die()
+{
+  ServiceWalker::die();
+
+  Corpse::create( _getCity(), getIJ(), ResourceGroup::citizen2, 711, 718 );
+}
+
+void Prefect::load( const VariantMap& stream )
 {
   ServiceWalker::load( stream );
  
@@ -323,7 +332,7 @@ void WalkerPrefect::load( const VariantMap& stream )
   }
 }
 
-void WalkerPrefect::save( VariantMap& stream ) const
+void Prefect::save( VariantMap& stream ) const
 {
   ServiceWalker::save( stream );
 

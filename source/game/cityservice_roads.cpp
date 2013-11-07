@@ -79,7 +79,7 @@ void CityServiceRoads::update( const unsigned int time )
 
   if( _d->lastTimeUpdate.getMonth() % 3 == 1 )
   {
-    RoadList roads = helper.find<Road>( construction::B_ROAD );
+    RoadList roads = helper.find<Road>( construction::road );
     foreach( RoadPtr road, roads )
     {
       road->appendPaved( _d->defaultDecreasePaved );

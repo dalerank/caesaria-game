@@ -31,12 +31,13 @@ bool operator<(const PathWay &v1, const PathWay &v2)
 class PathWay::Impl
 {
 public:
+  TilePos destination;
 };
 
-PathWay::PathWay()
+PathWay::PathWay() : _d( new Impl )
 {
   _origin = NULL;
-  _destination = TilePos( 0, 0 );
+  _d->destination = TilePos( 0, 0 );
   _isReverse = false;
 }
 
@@ -45,7 +46,7 @@ PathWay::~PathWay()
 
 }
 
-PathWay::PathWay(const PathWay &copy)
+PathWay::PathWay(const PathWay &copy) : _d( new Impl )
 {
   *this = copy;
 }
@@ -54,7 +55,7 @@ void PathWay::init( const Tilemap &tilemap, const Tile &origin)
 {
   _tilemap = &tilemap;
   _origin = &origin;
-  _destination = origin.getIJ();
+  _d->destination = origin.getIJ();
   _directionList.clear();
   _directionIt = _directionList.begin();
   _directionIt_reverse = _directionList.rbegin();
@@ -75,7 +76,7 @@ const Tile& PathWay::getOrigin() const
 
 const Tile& PathWay::getDestination() const
 {
-  const Tile& res = _tilemap->at( _destination );
+  const Tile& res = _tilemap->at( _d->destination );
   return res;
 }
 
@@ -172,84 +173,41 @@ void PathWay::setNextDirection(const DirectionType direction)
 {
   switch (direction)
   {
-  case D_NORTH:
-    _destination += TilePos( 0, 1 );
-    break;
-  case D_NORTH_EAST:
-    _destination += TilePos( 1, 1 );
-    break;
-  case D_EAST:
-    _destination += TilePos( 1, 0 );
-    break;
-  case D_SOUTH_EAST:
-    _destination += TilePos( 1, -1 );
-    break;
-  case D_SOUTH:
-    _destination += TilePos( 0, -1 );
-    break;
-  case D_SOUTH_WEST:
-    _destination += TilePos( -1, -1 );
-    break;
-  case D_WEST:
-    _destination += TilePos( -1, 0 );
-    break;
-  case D_NORTH_WEST:
-    _destination += TilePos( -1, 1 );
-    break;
+  case D_NORTH:      _d->destination += TilePos( 0, 1 );  break;
+  case D_NORTH_EAST: _d->destination += TilePos( 1, 1 );  break;
+  case D_EAST:       _d->destination += TilePos( 1, 0 );  break;
+  case D_SOUTH_EAST: _d->destination += TilePos( 1, -1 ); break;
+  case D_SOUTH:      _d->destination += TilePos( 0, -1 ); break;
+  case D_SOUTH_WEST: _d->destination += TilePos( -1, -1 );break;
+  case D_WEST:       _d->destination += TilePos( -1, 0 ); break;
+  case D_NORTH_WEST: _d->destination += TilePos( -1, 1 ); break;
   default:
     _OC3_DEBUG_BREAK_IF( "Unexpected Direction:" || direction);
     break;
   }
 
-  _OC3_DEBUG_BREAK_IF( !_tilemap->isInside( TilePos( _destination ) ) && "Destination is out of range");
-  _tileList.push_back( &_tilemap->at( _destination ) );
+  _OC3_DEBUG_BREAK_IF( !_tilemap->isInside( TilePos( _d->destination ) ) && "Destination is out of range");
+  _tileList.push_back( &_tilemap->at( _d->destination ) );
 
   _directionList.push_back(direction);
 }
 
 void PathWay::setNextTile( const Tile& tile)
 {
-  int dI = tile.getI() - _destination.getI();
-  int dJ = tile.getJ() - _destination.getJ();
+  int dI = tile.getI() - _d->destination.getI();
+  int dJ = tile.getJ() - _d->destination.getJ();
 
   DirectionType direction;
 
-  if (dI==0 && dJ==0)
-  {
-    direction = D_NONE;
-  }
-  else if (dI==0 && dJ==1)
-  {
-    direction = D_NORTH;
-  }
-  else if (dI==1 && dJ==1)
-  {
-    direction = D_NORTH_EAST;
-  }
-  else if (dI==1 && dJ==0)
-  {
-    direction = D_EAST;
-  }
-  else if (dI==1 && dJ==-1)
-  {
-    direction = D_SOUTH_EAST;
-  }
-  else if (dI==0 && dJ==-1)
-  {
-    direction = D_SOUTH;
-  }
-  else if (dI==-1 && dJ==-1)
-  {
-    direction = D_SOUTH_WEST;
-  }
-  else if (dI==-1 && dJ==0)
-  {
-    direction = D_WEST;
-  }
-  else if (dI==-1 && dJ==1)
-  {
-    direction = D_NORTH_WEST;
-  }
+  if (dI==0 && dJ==0) {  direction = D_NONE; }
+  else if (dI==0 && dJ==1) { direction = D_NORTH; }
+  else if (dI==1 && dJ==1) { direction = D_NORTH_EAST; }
+  else if (dI==1 && dJ==0) { direction = D_EAST; }
+  else if (dI==1 && dJ==-1){ direction = D_SOUTH_EAST; }
+  else if (dI==0 && dJ==-1){ direction = D_SOUTH; }
+  else if (dI==-1 && dJ==-1){ direction = D_SOUTH_WEST;}
+  else if (dI==-1 && dJ==0) {direction = D_WEST;}
+  else if (dI==-1 && dJ==1){direction = D_NORTH_WEST; }
   else
   {
     _OC3_DEBUG_BREAK_IF( "Unexpected tile, deltaI:" );
@@ -288,40 +246,24 @@ void PathWay::prettyPrint() const
   else
   {
     std::cout << "pathWay from (" << _origin->getI() << ", " << _origin->getJ() 
-      << ") to (" << _destination.getI() << ", " << _destination.getJ() << "): ";
+      << ") to (" << _d->destination.getI() << ", " << _d->destination.getJ() << "): ";
     for (std::vector<DirectionType>::const_iterator itDir = _directionList.begin(); itDir != _directionList.end(); ++itDir)
     {
       DirectionType direction = *itDir;
       std::string strDir = "";
       switch (direction)
       {
-      case D_NORTH:
-        strDir = "N";
-        break;
-      case D_NORTH_EAST:
-        strDir = "NE";
-        break;
-      case D_EAST:
-        strDir = "E";
-        break;
-      case D_SOUTH_EAST:
-        strDir = "SE";
-        break;
-      case D_SOUTH:
-        strDir = "S";
-        break;
-      case D_SOUTH_WEST:
-        strDir = "SW";
-        break;
-      case D_WEST:
-        strDir = "W";
-        break;
-      case D_NORTH_WEST:
-        strDir = "NW";
-        break;
+      case D_NORTH: strDir = "N";  break;
+      case D_NORTH_EAST: strDir = "NE"; break;
+      case D_EAST: strDir = "E"; break;
+      case D_SOUTH_EAST: strDir = "SE"; break;
+      case D_SOUTH: strDir = "S";   break;
+      case D_SOUTH_WEST: strDir = "SW"; break;
+      case D_WEST: strDir = "W";  break;
+      case D_NORTH_WEST: strDir = "NW"; break;
       default:
         _OC3_DEBUG_BREAK_IF( "Unexpected Direction:" || direction);
-        break;
+      break;
       }
       std::cout << strDir << " ";
     }
@@ -338,7 +280,7 @@ VariantMap PathWay::save() const
   }
 
   stream[ "startPos" ] = _origin->getIJ();
-  stream[ "stopPos" ] = _destination;
+  stream[ "stopPos" ] = _d->destination;
 
   VariantList directions;
   for( Directions::const_iterator itDir = _directionList.begin(); itDir != _directionList.end(); ++itDir)
@@ -366,7 +308,7 @@ void PathWay::load( const VariantMap& stream )
   }
 
   _origin = &_tilemap->at( stream.get( "startPos" ).toTilePos() );
-  _destination = _origin->getIJ();//stream.get( "stopPos" ).toTilePos();
+  _d->destination = _origin->getIJ(); //stream.get( "stopPos" ).toTilePos();
   VariantList directions = stream.get( "directions" ).toList();
   for( VariantList::iterator it = directions.begin(); it != directions.end(); it++ )
   {
@@ -385,7 +327,7 @@ PathWay& PathWay::operator=( const PathWay& other )
 {
   _tilemap             = other._tilemap;
   _origin              = other._origin;
-  _destination         = other._destination;
+  _d->destination      = other._d->destination;
   _directionList       = other._directionList;
   _directionIt         = _directionList.begin();
   _directionIt_reverse = _directionList.rbegin();

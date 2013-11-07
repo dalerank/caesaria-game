@@ -60,7 +60,7 @@ void ServiceWalker::init(const Service::Type service)
   
   case Service::engineer:
      _setGraphic( WG_ENGINEER );
-     _setType( walker::WT_ENGINEER );
+     _setType( walker::engineer );
   break;
 
   case Service::religionNeptune:
@@ -73,21 +73,21 @@ void ServiceWalker::init(const Service::Type service)
   
   case Service::doctor:
     _setGraphic( WG_DOCTOR );
-    _setType( walker::WT_DOCTOR );
+    _setType( walker::doctor );
   break;
 
   case Service::hospital:
     _setGraphic( WG_DOCTOR );
-    _setType( walker::WT_SURGEON );
+    _setType( walker::surgeon );
   
   case Service::barber:
     _setGraphic( WG_BARBER );
-    _setType( walker::WT_BARBER );
+    _setType( walker::barber );
   break;
   
   case Service::baths:
     _setGraphic( WG_BATH );
-    _setType( walker::WT_BATHLADY );
+    _setType( walker::bathlady );
   break;
   
   case Service::school:

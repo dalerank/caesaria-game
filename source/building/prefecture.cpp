@@ -63,7 +63,7 @@ void Prefecture::deliverService()
   if( getWorkers() > 0 && getWalkerList().size() == 0 )
   {
     bool fireDetect = _fireDetect.getI() >= 0;
-    WalkerPrefectPtr walker = WalkerPrefect::create( _getCity() );
+    PrefectPtr walker = Prefect::create( _getCity() );
     walker->setMaxDistance( 26 );
 
     //bool patrol = true;

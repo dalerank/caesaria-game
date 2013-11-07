@@ -357,3 +357,9 @@ void TileHelper::decode(Tile& tile, const int bitset)
   if(bitset & 0x8000) { tile.setFlag( Tile::tlGateHouse, true); }
 }
 
+Tile& TileHelper::getInvalid()
+{
+  static Tile invalidTile( TilePos( -1, -1) );
+  return invalidTile;
+}
+

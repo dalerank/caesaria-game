@@ -25,12 +25,14 @@ class Rioter : public Walker
 {
 public:
   static RioterPtr create( CityPtr city );
-  ~Rioter();
+  virtual ~Rioter();
 
-  void onNewTile();
-  void onDestination();
-  void timeStep(const unsigned long time);
+  virtual void onNewTile();
+  virtual void onDestination();
+  virtual void timeStep(const unsigned long time);
   void send2City( HousePtr house );
+
+  virtual void die();
 
 private:
   Rioter( CityPtr city );

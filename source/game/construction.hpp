@@ -45,6 +45,7 @@ public:
   virtual void destroy();
   virtual void updateState( Param param, double value, bool relative=true );
   virtual double getState( Param param ) const;
+  virtual TilePos getEnterPos() const;
   virtual void timeStep(const unsigned long time);
 
   virtual void save(VariantMap& stream) const;

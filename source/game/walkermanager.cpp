@@ -61,7 +61,7 @@ class TraineeWalkerCreator : public WalkerCreator
 public:
   WalkerPtr create( CityPtr city )
   {
-    return TraineeWalker::create( city, walker::WT_TRAINEE ).object();
+    return TraineeWalker::create( city, walker::trainee ).object();
   }
 };
 
@@ -77,17 +77,17 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( walker::emigrant, new BaseWalkerCreator<Emigrant>() );
   addCreator( walker::immigrant, new BaseWalkerCreator<Immigrant>() );
   addCreator( walker::cartPusher, new BaseWalkerCreator<CartPusher>() );
-  addCreator( walker::prefect, new BaseWalkerCreator<WalkerPrefect>() );
-  addCreator( walker::WT_TAXCOLLECTOR, new BaseWalkerCreator<TaxCollector>() );
-  addCreator( walker::WT_ENGINEER, new ServiceWalkerCreator( Service::engineer ));
-  addCreator( walker::WT_DOCTOR, new ServiceWalkerCreator( Service::doctor ) );
+  addCreator( walker::prefect, new BaseWalkerCreator<Prefect>() );
+  addCreator( walker::taxCollector, new BaseWalkerCreator<TaxCollector>() );
+  addCreator( walker::engineer, new ServiceWalkerCreator( Service::engineer ));
+  addCreator( walker::doctor, new ServiceWalkerCreator( Service::doctor ) );
   addCreator( walker::sheep, new BaseWalkerCreator< Sheep >() );
-  addCreator( walker::WT_BATHLADY, new ServiceWalkerCreator( Service::baths ) );
+  addCreator( walker::bathlady, new ServiceWalkerCreator( Service::baths ) );
   addCreator( walker::actor, new ServiceWalkerCreator( Service::theater ) );
   addCreator( walker::gladiator, new ServiceWalkerCreator( Service::amphitheater ) );
-  addCreator( walker::WT_BARBER, new ServiceWalkerCreator( Service::barber ) );
-  addCreator( walker::WT_SURGEON, new ServiceWalkerCreator( Service::hospital ) );
-  addCreator( walker::WT_TRAINEE, new TraineeWalkerCreator() );
+  addCreator( walker::barber, new ServiceWalkerCreator( Service::barber ) );
+  addCreator( walker::surgeon, new ServiceWalkerCreator( Service::hospital ) );
+  addCreator( walker::trainee, new TraineeWalkerCreator() );
   addCreator( walker::fishingBoat, new BaseWalkerCreator<FishingBoat>() );
 }
 

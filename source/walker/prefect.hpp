@@ -19,29 +19,27 @@
 #include "serviceman.hpp"
 #include "building/prefecture.hpp"
 
-class WalkerPrefect;
-typedef SmartPtr< WalkerPrefect > WalkerPrefectPtr;
-
-class WalkerPrefect : public ServiceWalker
+class Prefect : public ServiceWalker
 {
 public:
-  static WalkerPrefectPtr create( CityPtr city );
+  static PrefectPtr create( CityPtr city );
  
-  void onMidTile();
-  void onNewTile();
-  void timeStep(const unsigned long time);
+  virtual void onMidTile();
+  virtual void onNewTile();
+  virtual void timeStep(const unsigned long time);
   float getServiceValue() const;
-  void onDestination();
+  virtual void onDestination();
 
   virtual void load( const VariantMap& stream );
   virtual void save( VariantMap& stream ) const;
 
   virtual void send2City( PrefecturePtr prefecture, int water=0 );
+  virtual void die();
 
-  ~WalkerPrefect();
+  ~Prefect();
  
 protected:
-  WalkerPrefect( CityPtr city );
+  Prefect( CityPtr city );
 
   bool _looks4Fire( ReachedBuildings& buildings, TilePos& pos );
   void _checkPath2NearestFire( const ReachedBuildings& buildings );

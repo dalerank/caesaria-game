@@ -26,7 +26,7 @@ using namespace constants;
 class CityServiceAnimals::Impl
 {
 public:
-  static const unsigned int maxSheeps = 1;
+  static const unsigned int maxSheeps = 10;
   CityPtr city;
   DateTime lastTimeUpdate;
 };

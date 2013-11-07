@@ -100,10 +100,14 @@ void Walker::timeStep(const unsigned long time)
   case Walker::acMove:
     walk();
 
-    if( _d->animation.getPicturesCount() > 0 && _d->getSpeed() > 0.f )
+    if( _d->speed > 0.f )
     {
-      _d->animation.update( time );
+      _updateAnimation( time );
     }
+  break;
+
+  case Walker::acFight:
+    _updateAnimation( time );
   break;
 
   default:
@@ -377,7 +381,7 @@ void Walker::computeDirection()
    DirectionType lastDirection = _d->action.direction;
    _d->action.direction = _d->pathWay.getNextDirection();
 
-   if (lastDirection != _d->action.direction)
+   if( lastDirection != _d->action.direction )
    {
       onNewDirection();
    }
@@ -573,6 +577,14 @@ void Walker::_setHealth(int value)
   _d->health = value;
 }
 
+void Walker::_updateAnimation( const unsigned int time )
+{
+  if( _d->animation.getPicturesCount() > 0 )
+  {
+    _d->animation.update( time );
+  }
+}
+
 void Walker::go()
 {
   _d->action.action = acMove;       // default action
@@ -612,19 +624,19 @@ public:
     append( walker::WT_MARKETLADY, "market_lady", _("##wt_market_lady##") );
     append( walker::marketLady, "market_lady_helper", _("##wt_market_lady_helper##") );
     append( walker::WT_SERVICE, "serviceman", _("##wt_serviceman##") );
-    append( walker::WT_TRAINEE, "trainee", _("##wt_trainee##") );
+    append( walker::trainee, "trainee", _("##wt_trainee##") );
     append( walker::recruter, "workers_hunter", _("##wt_workers_hunter##") );
     append( walker::prefect, "prefect", _("##wt_prefect##") );
-    append( walker::WT_TAXCOLLECTOR, "tax_collector", _("##wt_tax_collector##") );
+    append( walker::taxCollector, "tax_collector", _("##wt_tax_collector##") );
     append( walker::WT_MERCHANT, "merchant", _("##wt_merchant##") );
-    append( walker::WT_ENGINEER, "engineer", _("##wt_engineer##") );
-    append( walker::WT_DOCTOR, "doctor", _("##wt_doctor##") );
+    append( walker::engineer, "engineer", _("##wt_engineer##") );
+    append( walker::doctor, "doctor", _("##wt_doctor##") );
     append( walker::sheep, "sheep", _("##wt_animal_sheep##") );
-    append( walker::WT_BATHLADY, "bathlady", _("##wt_bathlady##") );
+    append( walker::bathlady, "bathlady", _("##wt_bathlady##") );
     append( walker::actor, "actor", _("##wt_actor##") );
     append( walker::gladiator, "gladiator", _("##wt_gladiator##") );
-    append( walker::WT_BARBER, "barber", _("##wt_barber##" ) );
-    append( walker::WT_SURGEON, "surgeon", _("##wt_surgeon##") );
+    append( walker::barber, "barber", _("##wt_barber##" ) );
+    append( walker::surgeon, "surgeon", _("##wt_surgeon##") );
     append( walker::WT_ALL, "unknown", _("##wt_unknown##") );
   }
 };
@@ -674,14 +686,14 @@ Picture WalkerHelper::getBigPicture(walker::Type type)
   {
   case walker::immigrant: index=9; break;
   case walker::emigrant: index=13; break;
-  case walker::WT_DOCTOR: index = 2; break;
+  case walker::doctor: index = 2; break;
   case walker::cartPusher: index=51; break;
   case walker::WT_MARKETLADY: index=12; break;
   case walker::marketLady: index=38; break;
   case walker::WT_MERCHANT: index=25; break;
   case walker::prefect: index=19; break;
-  case walker::WT_ENGINEER: index=7; break;
-  case walker::WT_TAXCOLLECTOR: index=6; break;
+  case walker::engineer: index=7; break;
+  case walker::taxCollector: index=6; break;
   case walker::sheep: index = 54; break;
   case walker::recruter: index=13; break;
 

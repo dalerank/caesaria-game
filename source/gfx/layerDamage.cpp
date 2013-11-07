@@ -30,7 +30,7 @@ int LayerDamage::getType() const
 std::set<int> LayerDamage::getVisibleWalkers() const
 {
   std::set<int> ret;
-  ret.insert( walker::WT_ENGINEER );
+  ret.insert( walker::engineer );
   return ret;
 }
 
@@ -53,7 +53,7 @@ void LayerDamage::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     switch( overlay->getType() )
     {
       //fire buildings and roads
-    case construction::B_ROAD:
+    case construction::road:
     case construction::B_PLAZA:
     case building::B_COLLAPSED_RUINS:
     case building::engineerPost:

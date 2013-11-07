@@ -173,7 +173,7 @@ InfoBoxManager::InfoBoxManager( CityPtr city, GuiEnv* gui ) : _d( new Impl )
   _d->showDebugInfo = true;
   _d->gui = gui;
 
-  addInfobox( construction::B_ROAD,             OC3_STR_EXT(B_ROAD), new CitizenInfoboxCreator<InfoBoxLand>( _d->city ) );
+  addInfobox( construction::road,             OC3_STR_EXT(B_ROAD), new CitizenInfoboxCreator<InfoBoxLand>( _d->city ) );
   addInfobox( building::B_RESERVOIR,        OC3_STR_EXT(B_RESERVOIR), new InfoBoxBasicCreator( _("##reservoir_title##"), _("##reservoir_text##") ) );
   addInfobox( building::house,            OC3_STR_EXT(B_HOUSE), new InfoBoxHouseCreator() );
   addInfobox( building::prefecture,       OC3_STR_EXT(B_PREFECTURE), new ServiceBaseInfoboxCreator( "##prefecture_title##", "##prefecture_text##") );

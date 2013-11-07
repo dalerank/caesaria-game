@@ -27,7 +27,7 @@ namespace constants
 namespace construction
 {
 // road
-const TileOverlay::Type B_ROAD=10;
+const TileOverlay::Type road=10;
 const TileOverlay::Type B_PLAZA=11;
 const TileOverlay::Type B_GARDEN=12;
 }

@@ -105,6 +105,7 @@ protected:
    void _setType( constants::walker::Type type );
    CityPtr _getCity() const;
    void _setHealth( int value );
+   void _updateAnimation(const unsigned int time);
 
 private:
    /* useful method for subtile movement computation

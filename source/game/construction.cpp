@@ -192,6 +192,13 @@ double Construction::getState(Construction::Param param) const
   return _d->params[ param ];
 }
 
+TilePos Construction::getEnterPos() const
+{
+  return _d->accessRoads.empty()
+            ? getTilePos()
+            : _d->accessRoads.front()->getIJ();
+}
+
 void Construction::timeStep(const unsigned long time)
 {
   if( getState( Construction::damage ) >= 100 )

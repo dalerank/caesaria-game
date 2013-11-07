@@ -28,10 +28,11 @@ class PathWay
 {
 public:
   PathWay();
-  virtual ~PathWay();
   PathWay( const PathWay &copy ); 
 
-  void init(const Tilemap &tilemap, const Tile &origin );
+  virtual ~PathWay();
+
+  void init( const Tilemap &tilemap, const Tile &origin );
 
   int getLength() const;
   const Tile& getOrigin() const;
@@ -61,7 +62,6 @@ public:
 private:
   Tilemap const* _tilemap;
   Tile const* _origin;
-  TilePos _destination;
 
   typedef std::vector<DirectionType> Directions;
   Directions _directionList;

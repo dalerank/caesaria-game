@@ -55,7 +55,7 @@ void LayerReligion::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     switch( overlay->getType() )
     {
       //fire buildings and roads
-    case construction::B_ROAD:
+    case construction::road:
     case construction::B_PLAZA:
     case building::templeCeres: case building::B_TEMPLE_MARS:
     case building::B_TEMPLE_MERCURE: case building::B_TEMPLE_NEPTUNE: case building::B_TEMPLE_VENUS:

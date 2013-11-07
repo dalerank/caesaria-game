@@ -44,7 +44,7 @@ public:
     append( building::lionHouse,           "lion_pit" );
     append( building::chariotSchool,        "chatioteer_school" );
     append( building::house,          "house" );
-    append( construction::B_ROAD,           "road" );
+    append( construction::road,           "road" );
     append( construction::B_PLAZA,          "plaza" );
     append( construction::B_GARDEN,         "garden" );
     append( building::senate,         "senate_1" );

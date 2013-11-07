@@ -43,7 +43,7 @@ void Corpse::create(CityPtr city, TilePos pos, const char* rcGroup, int startInd
   corpse->_d->rcGroup = rcGroup;
   corpse->_d->picture = Picture::load( rcGroup, startIndex );
   corpse->_d->time = 0;
-  corpse->_d->delay = 8;
+  corpse->_d->delay = 1;
 
   WalkerPtr ret( corpse );
   ret->drop();
@@ -68,10 +68,10 @@ void Corpse::timeStep(const unsigned long time)
 {
   if( _d->time >= _d->delay && _d->currentIndex < _d->stopIndex )
   {
-    _d->delay+=4;
     _d->time = 0;
     _d->picture = Picture::load( _d->rcGroup, _d->currentIndex );
     _d->currentIndex++;
+    _d->delay *= 2;
   }
 
   _d->time++;

@@ -179,7 +179,7 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::hippodrome, OC3_STR_EXT(B_HIPPODROME),new WorkingBuildingCreator<Hippodrome>() );
   // road&house
   addCreator(building::house, OC3_STR_EXT(B_HOUSE), new ConstructionCreator<House>() );
-  addCreator(construction::B_ROAD, OC3_STR_EXT(B_ROAD) , new ConstructionCreator<Road>() );
+  addCreator(construction::road, OC3_STR_EXT(B_ROAD) , new ConstructionCreator<Road>() );
   // administration
   addCreator(building::forum, OC3_STR_EXT(B_FORUM) , new WorkingBuildingCreator<Forum>() );
   addCreator(building::senate, OC3_STR_EXT(B_SENATE), new WorkingBuildingCreator<Senate>() );

@@ -146,7 +146,7 @@ void TraineeWalker::save( VariantMap& stream ) const
   stream[ "destBldPos" ] = _destinationBuilding->getTile().getIJ();
   stream[ "maxDistance" ] = _maxDistance;
   stream[ "graphic" ] = _getGraphic();
-  stream[ "type" ] = (int)walker::WT_TRAINEE;
+  stream[ "type" ] = (int)walker::trainee;
 }
 
 void TraineeWalker::load( const VariantMap& stream )

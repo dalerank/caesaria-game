@@ -59,7 +59,7 @@ TaxCollectorPtr TaxCollector::create( CityPtr city )
 TaxCollector::TaxCollector( CityPtr city ) : ServiceWalker( city, Service::forum ), _d( new Impl )
 {
   _d->money = 0;
-  _setType( walker::WT_TAXCOLLECTOR );
+  _setType( walker::taxCollector );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
