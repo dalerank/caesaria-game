@@ -70,8 +70,8 @@ public:
   void setUniqueId( const UniqueId uid );
 
   DirectionType getDirection();
-  virtual int getHealth() const;
-  virtual void updateHealth(int value);
+  virtual double getHealth() const;
+  virtual void updateHealth(double value);
 
   virtual void setName( const std::string& name );
   virtual const std::string& getName() const;
@@ -104,7 +104,7 @@ protected:
    WalkerGraphicType _getGraphic() const;
    void _setType( constants::walker::Type type );
    CityPtr _getCity() const;
-   void _setHealth( int value );
+   void _setHealth( double value );
    void _updateAnimation(const unsigned int time);
 
 private:

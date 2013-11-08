@@ -22,7 +22,7 @@ Illness::Illness(int strong, int delay)
   _delay = delay;
 }
 
-AbilityPtr Illness::create(int strong, unsigned int delay)
+AbilityPtr Illness::create(double strong, unsigned int delay)
 {
   AbilityPtr ret( new Illness( strong, delay ) );
   ret->drop();

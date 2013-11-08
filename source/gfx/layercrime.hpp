@@ -13,31 +13,23 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_WALKER_ABILITY_H_INCLUDED__
-#define __OPENCAESAR3_WALKER_ABILITY_H_INCLUDED__
+#ifndef __OPENCAESAR3_LAYERCRIME_H_INCLUDED__
+#define __OPENCAESAR3_LAYERCRIME_H_INCLUDED__
 
-#include "core/referencecounted.hpp"
-#include "walker.hpp"
+#include "layer.hpp"
+#include "city_renderer.hpp"
 
-class Ability : public ReferenceCounted
+class LayerCrime : public Layer
 {
 public:
-  virtual void run( WalkerPtr parent, unsigned int time=4 ) = 0;
-};
+  virtual int getType() const;
+  virtual VisibleWalkers getVisibleWalkers() const;
+  virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset );
 
-class Illness : public Ability
-{
-public:
-  static AbilityPtr create( double strong, unsigned int delay );
-
-  virtual void run(WalkerPtr parent, unsigned int time);
-
+  static LayerPtr create( CityRenderer* renderer, CityPtr city );
 private:
-  Illness( int strong, int delay );
-
-  double _strong;
-  unsigned int _time;
-  unsigned int _delay;
+  CityRenderer* _renderer;
+  CityPtr _city;
 };
 
-#endif //__OPENCAESAR3_WALKER_ABILITY_H_INCLUDED__
+#endif //__OPENCAESAR3_LAYERCRIME_H_INCLUDED__

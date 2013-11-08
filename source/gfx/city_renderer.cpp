@@ -50,6 +50,7 @@
 #include "layerdamage.hpp"
 #include "layerdesirability.hpp"
 #include "layerentertainment.hpp"
+#include "layercrime.hpp"
 
 using namespace constants;
 
@@ -147,6 +148,7 @@ void CityRenderer::initialize( CityPtr city, GfxEngine* engine )
   addLayer( LayerEntertainment::create( this, city, citylayer::amphitheater ) );
   addLayer( LayerEntertainment::create( this, city, citylayer::colloseum ) );
   addLayer( LayerEntertainment::create( this, city, citylayer::hippodrome ) );
+  addLayer( LayerCrime::create( this, city )) ;
 
   _d->setLayer( citylayer::simple );
 }

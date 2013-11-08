@@ -393,14 +393,14 @@ DirectionType Walker::getDirection()
   return _d->action.direction;
 }
 
-int Walker::getHealth() const
+double Walker::getHealth() const
 {
   return _d->health;
 }
 
-void Walker::updateHealth(int value)
+void Walker::updateHealth(double value)
 {
-  _d->health = math::clamp( _d->health + value, -100, 100 );
+  _d->health = math::clamp( _d->health + value, -100.0, 100.0 );
 }
 
 void Walker::setName(const std::string &name)
@@ -469,6 +469,7 @@ void Walker::save( VariantMap& stream ) const
   stream[ "name" ] = Variant( _d->name );
   stream[ "type" ] = (int)_d->walkerType;
   stream[ "pathway" ] =  _d->pathWay.save();
+  stream[ "health" ] = _d->health;
   stream[ "action" ] = (int)_d->action.action;
   stream[ "direction" ] = (int)_d->action.direction;
   stream[ "pos" ] = _d->pos;
@@ -505,6 +506,7 @@ void Walker::load( const VariantMap& stream)
   _d->speed = stream.get( "speed" ).toFloat();
   _d->midTilePos = stream.get( "midTile" ).toPoint();
   _d->remainMove = stream.get( "remainmove" ).toPointF();
+  _d->health = (double)stream.get( "health" );
 }
 
 void Walker::addAbility(AbilityPtr ability)
@@ -572,7 +574,7 @@ CityPtr Walker::_getCity() const
   return _d->city;
 }
 
-void Walker::_setHealth(int value)
+void Walker::_setHealth(double value)
 {
   _d->health = value;
 }

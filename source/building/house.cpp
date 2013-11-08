@@ -43,7 +43,7 @@ public:
   int houseId;  // pictureId
   int houseLevel;
   float healthLevel;
-  HouseLevelSpec levelSpec;  // characteristics of the current house level
+  HouseLevelSpec spec;  // characteristics of the current house level
   MetaData::Desirability desirability;
   SimpleGoodStore goodStore;
   Services services;  // value=access to the service (0=no access, 100=good access)
@@ -60,7 +60,7 @@ public:
 
   int getAvailableTax()
   {
-    return levelSpec.getTaxRate() * habitants.count( CitizenGroup::mature );
+    return spec.getTaxRate() * habitants.count( CitizenGroup::mature );
   }
 
   void updateHealthLevel()
@@ -118,8 +118,8 @@ House::House(const int houseId) : Building( constants::building::house ), _d( ne
   _d->healthLevel = 100;
   HouseSpecHelper& helper = HouseSpecHelper::getInstance();
   _d->houseLevel = helper.getHouseLevel( houseId );
-  _d->levelSpec = helper.getHouseLevelSpec( _d->houseLevel );
-  setName( _d->levelSpec.getLevelName() );
+  _d->spec = helper.getHouseLevelSpec( _d->houseLevel );
+  setName( _d->spec.getLevelName() );
   _d->desirability.base = -3;
   _d->desirability.range = 3;
   _d->desirability.step = 1;
@@ -157,7 +157,7 @@ void House::timeStep(const unsigned long time)
     _d->consumeServices();
     _d->updateHealthLevel();
 
-    appendServiceValue( Service::crime, _d->levelSpec.getCrime() * 25 );
+    appendServiceValue( Service::crime, _d->spec.getCrime() + 1 );
   }
 
   if( time % 64 == 0 )
@@ -166,11 +166,11 @@ void House::timeStep(const unsigned long time)
     for( int i = 0; i < Good::goodCount; ++i)
     {
        Good::Type goodType = (Good::Type) i;
-       int montlyGoodsQty = _d->levelSpec.computeMonthlyConsumption( *this, goodType, true );
+       int montlyGoodsQty = _d->spec.computeMonthlyConsumption( *this, goodType, true );
        _d->goodStore.setCurrentQty( goodType, std::max( _d->goodStore.getCurrentQty(goodType) - montlyGoodsQty, 0) );
     }
 
-    bool validate = _d->levelSpec.checkHouse( this );
+    bool validate = _d->spec.checkHouse( this );
     if( !validate )
     {
       levelDown();
@@ -178,7 +178,7 @@ void House::timeStep(const unsigned long time)
     else
     {
       _d->condition4Up = "";
-      if( _d->levelSpec.next().checkHouse( this, &_d->condition4Up ) )
+      if( _d->spec.next().checkHouse( this, &_d->condition4Up ) )
       {
          levelUp();
       }
@@ -204,7 +204,7 @@ GoodStore& House::getGoodStore()
 
 const HouseLevelSpec& House::getSpec() const
 {
-   return _d->levelSpec;
+   return _d->spec;
 }
 
 void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int startBigPic, const char desirability )
@@ -336,7 +336,7 @@ void House::levelUp()
   break;
   }
 
-  _d->levelSpec = HouseSpecHelper::getInstance().getHouseLevelSpec(_d->houseLevel);
+  _d->spec = HouseSpecHelper::getInstance().getHouseLevelSpec(_d->houseLevel);
 
   _update();
 }
@@ -360,7 +360,7 @@ void House::_tryDegrage_11_to_2_lvl( int smallPic, int bigPic, const char desira
 void House::levelDown()
 {
    _d->houseLevel--;
-   _d->levelSpec = HouseSpecHelper::getInstance().getHouseLevelSpec(_d->houseLevel);
+   _d->spec = HouseSpecHelper::getInstance().getHouseLevelSpec(_d->houseLevel);
 
    switch (_d->houseLevel)
    {
@@ -436,8 +436,8 @@ void House::buyMarket( ServiceWalkerPtr walker )
   {
     Good::Type goodType = (Good::Type) i;
     int houseQty = houseStore.getCurrentQty(goodType) / 10;
-    int houseSafeQty = _d->levelSpec.computeMonthlyConsumption(*this, goodType, false )
-                       + _d->levelSpec.next().computeMonthlyConsumption(*this, goodType, false );
+    int houseSafeQty = _d->spec.computeMonthlyConsumption(*this, goodType, false )
+                       + _d->spec.next().computeMonthlyConsumption(*this, goodType, false );
     int marketQty = marketStore.getCurrentQty(goodType);
     if( houseQty < houseSafeQty && marketQty > 0  )
     {
@@ -563,8 +563,8 @@ float House::evaluateService(ServiceWalkerPtr walker)
     {
       Good::Type goodType = (Good::Type) i;
       int houseQty = houseStore.getCurrentQty(goodType) / 10;
-      int houseSafeQty = _d->levelSpec.computeMonthlyConsumption(*this, goodType, false)
-                         + _d->levelSpec.next().computeMonthlyConsumption(*this, goodType, false );
+      int houseSafeQty = _d->spec.computeMonthlyConsumption(*this, goodType, false)
+                         + _d->spec.next().computeMonthlyConsumption(*this, goodType, false );
       int marketQty = marketStore.getCurrentQty(goodType);
       if( houseQty < houseSafeQty && marketQty > 0)
       {
@@ -582,7 +582,7 @@ float House::evaluateService(ServiceWalkerPtr walker)
 
   default:
   {
-    return _d->levelSpec.evaluateServiceNeed( this, service);
+    return _d->spec.evaluateServiceNeed( this, service);
   }
   break;
   }
@@ -618,7 +618,7 @@ void House::_update()
   Picture pic = Picture::load( ResourceGroup::housing, picId );
   setPicture( pic );
   setSize( Size( (pic.getWidth() + 2 ) / 60 ) );
-  _d->maxHabitants = _d->levelSpec.getMaxHabitantsByTile() * getSize().getArea();
+  _d->maxHabitants = _d->spec.getMaxHabitantsByTile() * getSize().getArea();
   _d->initGoodStore( getSize().getArea() );
 }
 
@@ -694,7 +694,7 @@ void House::load( const VariantMap& stream )
   _d->houseId = (int)stream.get( "houseId", 0 );
   _d->houseLevel = (int)stream.get( "houseLevel", 0 );
   _d->healthLevel = (float)stream.get( "healthLevel", 0 );
-  _d->levelSpec = HouseSpecHelper::getInstance().getHouseLevelSpec(_d->houseLevel);
+  _d->spec = HouseSpecHelper::getInstance().getHouseLevelSpec(_d->houseLevel);
 
   _d->desirability.base = (int)stream.get( "desirability", 0 );
   _d->desirability.step = _d->desirability.base < 0 ? 1 : -1;
@@ -723,7 +723,7 @@ void House::load( const VariantMap& stream )
 
 int House::getFoodLevel() const
 {
-  switch( _d->levelSpec.getLevel() )
+  switch( _d->spec.getLevel() )
   {
   case smallHovel:
   case bigTent:
@@ -754,7 +754,7 @@ int House::getWorkersCount() const
 
 bool House::isEducationNeed(Service::Type type) const
 {
-  int lvl = _d->levelSpec.getMinEducationLevel();
+  int lvl = _d->spec.getMinEducationLevel();
   switch( type )
   {
   case Service::school: return (lvl>0);
@@ -768,7 +768,7 @@ bool House::isEducationNeed(Service::Type type) const
 
 bool House::isEntertainmentNeed(Service::Type type) const
 {
-  int lvl = _d->levelSpec.getMinEntertainmentLevel();
+  int lvl = _d->spec.getMinEntertainmentLevel();
   switch( type )
   {
   case Service::theater: return (lvl>=10);
