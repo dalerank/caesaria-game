@@ -18,7 +18,7 @@
 #include "building/constants.hpp"
 #include "core/foreach.hpp"
 #include "building/house.hpp"
-#include "walker/rioter.hpp"
+#include "walker/protestor.hpp"
 
 using namespace constants;
 
@@ -56,7 +56,7 @@ void CityServiceDisorder::update( const unsigned int time )
   CityHelper helper( _d->city );
   HouseList houses = helper.find<House>( building::house );
 
-  WalkerList walkers = _d->city->getWalkers( walker::rioter );
+  WalkerList walkers = _d->city->getWalkers( walker::protestor );
 
   HouseList criminalizedHouse;
   foreach( HousePtr house, houses )
@@ -74,7 +74,7 @@ void CityServiceDisorder::update( const unsigned int time )
     std::advance( it, rand() % criminalizedHouse.size() );
     (*it)->appendServiceValue( Service::crime, -defaultCrimeLevel / 2 );
 
-    RioterPtr rioter = Rioter::create( _d->city );
-    rioter->send2City( *it );
+    ProtestorPtr protestor = Protestor::create( _d->city );
+    protestor->send2City( *it );
   }
 }

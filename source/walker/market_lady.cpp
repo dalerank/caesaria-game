@@ -25,7 +25,7 @@
 #include "gfx/tile.hpp"
 #include "core/variant.hpp"
 #include "game/path_finding.hpp"
-#include "market_lady_helper.hpp"
+#include "market_kid.hpp"
 #include "game/goodstore_simple.hpp"
 #include "game/city.hpp"
 #include "game/name_generator.hpp"
@@ -253,7 +253,7 @@ void MarketLady::onDestination()
           GoodStock& currentStock = _d->basket.getStock( (Good::Type)gtype );
           if( currentStock._currentQty > 0 )
           {
-            MarketLadyHelperPtr boy = MarketLadyHelper::create( _getCity(), this );
+            MarketKidPtr boy = MarketKid::create( _getCity(), this );
             GoodStock& boyBasket =  boy->getBasket();
             boyBasket.setType( (Good::Type)gtype );
             boyBasket._maxQty = 100;

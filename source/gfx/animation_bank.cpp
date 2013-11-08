@@ -109,7 +109,7 @@ void AnimationBank::Impl::loadWalkers()
   animations[WG_ENGINEER          ] = loadAnimation( ResourceGroup::citizen1, 1137, 12);
   animations[WG_GLADIATOR         ] = loadAnimation( ResourceGroup::citizen2, 1, 12);
   animations[WG_GLADIATOR2        ] = loadAnimation( ResourceGroup::citizen2, 199, 12);
-  animations[WG_RIOTER            ] = loadAnimation( ResourceGroup::citizen2, 351, 12);
+  animations[WG_PROTESTOR         ] = loadAnimation( ResourceGroup::citizen2, 351, 12);
   animations[WG_BARBER            ] = loadAnimation( ResourceGroup::citizen2, 463, 12);
   animations[WG_PREFECT           ] = loadAnimation( ResourceGroup::citizen2, 615, 12);
   animations[WG_PREFECT_DRAG_WATER] = loadAnimation( ResourceGroup::citizen2, 767, 12);
@@ -119,13 +119,13 @@ void AnimationBank::Impl::loadWalkers()
   animations[WG_RICH              ] = loadAnimation( ResourceGroup::citizen3, 713, 12);
   animations[WG_DOCTOR            ] = loadAnimation( ResourceGroup::citizen3, 817, 12);
   animations[WG_RICH2             ] = loadAnimation( ResourceGroup::citizen3, 921, 12);
-  animations[WG_LIBRARIAN         ] = loadAnimation( ResourceGroup::citizen3, 1025, 12);
+  animations[WG_TEACHER           ] = loadAnimation( ResourceGroup::citizen3, 1025, 12);
   animations[WG_SOLDIER           ] = loadAnimation( ResourceGroup::citizen3, 553, 12);
   animations[WG_JAVELINEER        ] = loadAnimation( ResourceGroup::citizen3, 241, 12);
   animations[WG_HORSEMAN          ] = loadAnimation( ResourceGroup::citizen4, 1, 12);
   animations[WG_HORSE_CARAVAN     ] = loadAnimation( ResourceGroup::carts, 145, 12);
   animations[WG_CAMEL_CARAVAN     ] = loadAnimation( ResourceGroup::carts, 273, 12);
-  animations[WG_MARKETLADY_HELPER ] = loadAnimation( ResourceGroup::carts, 369, 12);
+  animations[WG_MARKET_KID        ] = loadAnimation( ResourceGroup::carts, 369, 12);
   animations[WG_ANIMAL_SHEEP_WALK ] = loadAnimation( ResourceGroup::animals, 153, 5 );
   animations[WG_FISHING_BOAT      ] = loadAnimation( ResourceGroup::carts, 249, 1 );
   animations[WG_FISHING_BOAT_WORK ] = loadAnimation( ResourceGroup::carts, 257, 1 );

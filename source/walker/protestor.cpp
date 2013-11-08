@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "rioter.hpp"
+#include "protestor.hpp"
 #include "building/house.hpp"
 #include "game/path_finding.hpp"
 #include "constants.hpp"
@@ -32,7 +32,7 @@
 
 using namespace constants;
 
-class Rioter::Impl
+class Protestor::Impl
 {
 public:
   typedef enum { searchHouse=0, go2destination, searchAnyBuilding,
@@ -43,20 +43,20 @@ public:
   PathWay findTarget( CityPtr city, ConstructionList constructions, TilePos pos );
 };
 
-Rioter::Rioter( CityPtr city ) : Walker( city ), _d( new Impl )
+Protestor::Protestor( CityPtr city ) : Walker( city ), _d( new Impl )
 {    
-  _setGraphic( WG_RIOTER );
+  _setGraphic( WG_PROTESTOR );
   _setType( walker::protestor );
 
   addAbility( Illness::create(1,4) );
 }
 
-void Rioter::onNewTile()
+void Protestor::onNewTile()
 {
   Walker::onNewTile();
 }
 
-void Rioter::onDestination()
+void Protestor::onDestination()
 {
   Walker::onDestination();
 
@@ -74,7 +74,7 @@ void Rioter::onDestination()
   }
 }
 
-void Rioter::timeStep(const unsigned long time)
+void Protestor::timeStep(const unsigned long time)
 {
   Walker::timeStep( time );
 
@@ -200,19 +200,19 @@ void Rioter::timeStep(const unsigned long time)
   }
 }
 
-RioterPtr Rioter::create( CityPtr city )
+ProtestorPtr Protestor::create( CityPtr city )
 { 
-  RioterPtr ret( new Rioter( city ) );
+  ProtestorPtr ret( new Protestor( city ) );
   ret->drop();
   return ret;
 }
 
-Rioter::~Rioter()
+Protestor::~Protestor()
 {
 
 }
 
-void Rioter::send2City( HousePtr house )
+void Protestor::send2City( HousePtr house )
 {
   setIJ( house->getTilePos() );
   _d->houseLevel = house->getSpec().getLevel();
@@ -224,14 +224,14 @@ void Rioter::send2City( HousePtr house )
   }
 }
 
-void Rioter::die()
+void Protestor::die()
 {
   Walker::die();
 
   Corpse::create( _getCity(), getIJ(), ResourceGroup::citizen2, 447, 454 );
 }
 
-void Rioter::save(VariantMap& stream) const
+void Protestor::save(VariantMap& stream) const
 {
   Walker::save( stream );
 
@@ -239,7 +239,7 @@ void Rioter::save(VariantMap& stream) const
   stream[ "state" ] = (int)_d->state;
 }
 
-void Rioter::load(const VariantMap& stream)
+void Protestor::load(const VariantMap& stream)
 {
   Walker::load( stream );
 
@@ -247,7 +247,7 @@ void Rioter::load(const VariantMap& stream)
   _d->state = (Impl::State)stream.at( "state" ).toInt();
 }
 
-PathWay Rioter::Impl::findTarget( CityPtr city, ConstructionList constructions, TilePos pos )
+PathWay Protestor::Impl::findTarget( CityPtr city, ConstructionList constructions, TilePos pos )
 {  
   if( !constructions.empty() )
   {

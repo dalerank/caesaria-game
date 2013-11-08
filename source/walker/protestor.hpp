@@ -19,12 +19,12 @@
 #include "walker.hpp"
 
 class Protestor;
-typedef SmartPtr<Protestor> RioterPtr;
+typedef SmartPtr<Protestor> ProtestorPtr;
 
 class Protestor : public Walker
 {
 public:
-  static RioterPtr create( CityPtr city );
+  static ProtestorPtr create( CityPtr city );
   virtual ~Protestor();
 
   virtual void onNewTile();

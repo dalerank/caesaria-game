@@ -33,7 +33,7 @@ Layer::VisibleWalkers LayerFood::getVisibleWalkers() const
 {
   VisibleWalkers ret;
   ret.insert( walker::marketLady );
-  ret.insert( walker::marketLadyHelper );
+  ret.insert( walker::marketKid );
 
   return ret;
 }

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "market_lady_helper.hpp"
+#include "market_kid.hpp"
 #include "market_lady.hpp"
 #include "building/market.hpp"
 #include "game/city.hpp"
@@ -26,7 +26,7 @@
 
 using namespace constants;
 
-class MarketLadyHelper::Impl
+class MarketKid::Impl
 {
 public:
   GoodStock basket;
@@ -35,9 +35,9 @@ public:
   unsigned long birthTime;
 };
 
-MarketLadyHelperPtr MarketLadyHelper::create( CityPtr city, MarketLadyPtr lady )
+MarketKidPtr MarketKid::create( CityPtr city, MarketLadyPtr lady )
 {
-  MarketLadyHelperPtr ret( new MarketLadyHelper( city ) );
+  MarketKidPtr ret( new MarketKid( city ) );
   ret->setPathWay( lady->getPathway() );
   ret->setIJ( lady->getIJ() );
   ret->_getPathway().rbegin();
@@ -47,24 +47,24 @@ MarketLadyHelperPtr MarketLadyHelper::create( CityPtr city, MarketLadyPtr lady )
   return ret;
 }
 
-MarketLadyHelper::MarketLadyHelper( CityPtr city )
+MarketKid::MarketKid( CityPtr city )
   : Walker( city ), _d( new Impl )
 {
   _d->delay = 0;
   _d->birthTime = 0;
   _d->basket._maxQty = 100;
-  _setGraphic( WG_MARKETLADY_HELPER );
-  _setType( walker::marketLadyHelper );
+  _setGraphic( WG_MARKET_KID );
+  _setType( walker::marketKid );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
-void MarketLadyHelper::setDelay( int delay )
+void MarketKid::setDelay( int delay )
 {
   _d->delay = delay;
 }
 
-void MarketLadyHelper::send2City( MarketPtr destination )
+void MarketKid::send2City( MarketPtr destination )
 {
   if( destination.isValid() )
   {
@@ -77,7 +77,7 @@ void MarketLadyHelper::send2City( MarketPtr destination )
   }
 }
 
-void MarketLadyHelper::timeStep( const unsigned long time )
+void MarketKid::timeStep( const unsigned long time )
 {
   if( _d->birthTime == 0 )
   {
@@ -92,7 +92,7 @@ void MarketLadyHelper::timeStep( const unsigned long time )
   Walker::timeStep( time );
 }
 
-void MarketLadyHelper::onDestination()
+void MarketKid::onDestination()
 {
   Walker::onDestination();
 
@@ -106,14 +106,14 @@ void MarketLadyHelper::onDestination()
   }
 }
 
-void MarketLadyHelper::die()
+void MarketKid::die()
 {
   Walker::die();
 
   Corpse::create( _getCity(), getIJ(), ResourceGroup::carts, 465, 472 );
 }
 
-GoodStock& MarketLadyHelper::getBasket()
+GoodStock& MarketKid::getBasket()
 {
   return _d->basket;
 }

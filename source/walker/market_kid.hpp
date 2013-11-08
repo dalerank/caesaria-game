@@ -13,15 +13,15 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_MARKET_LADY_HELPER_H_INCLUDED__
-#define __OPENCAESAR3_MARKET_LADY_HELPER_H_INCLUDED__
+#ifndef __OPENCAESAR3_MARKET_KID_H_INCLUDED__
+#define __OPENCAESAR3_MARKET_KID_H_INCLUDED__
 
 #include "walker.hpp"
 
-class MarketLadyHelper : public Walker
+class MarketKid : public Walker
 {
 public:
-  static MarketLadyHelperPtr create( CityPtr city, MarketLadyPtr lady );
+  static MarketKidPtr create( CityPtr city, MarketLadyPtr lady );
 
   GoodStock& getBasket();
   void setDelay( int delay );
@@ -33,10 +33,10 @@ public:
   virtual void die();
 
 private:
-  MarketLadyHelper( CityPtr city );
+  MarketKid( CityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#endif
+#endif //__OPENCAESAR3_MARKET_KID_H_INCLUDED__
