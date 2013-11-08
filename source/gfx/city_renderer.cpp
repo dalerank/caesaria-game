@@ -40,7 +40,7 @@
 #include "core/gettext.hpp"
 #include "core/logger.hpp"
 #include "building/constants.hpp"
-#include "layerSimple.hpp"
+#include "layersimple.hpp"
 #include "layerwater.hpp"
 #include "layerfire.hpp"
 #include "layerfood.hpp"
