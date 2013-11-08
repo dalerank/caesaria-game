@@ -19,8 +19,10 @@
 #include "game/city.hpp"
 #include "game/pathway.hpp"
 #include "game/goodstore.hpp"
+#include "game/resourcegroup.hpp"
 #include "game/name_generator.hpp"
 #include "constants.hpp"
+#include "corpse.hpp"
 
 using namespace constants;
 
@@ -102,6 +104,13 @@ void MarketLadyHelper::onDestination()
   {
     market->getGoodStore().store( _d->basket, _d->basket._currentQty );
   }
+}
+
+void MarketLadyHelper::die()
+{
+  Walker::die();
+
+  Corpse::create( _getCity(), getIJ(), ResourceGroup::carts, 465, 472 );
 }
 
 GoodStock& MarketLadyHelper::getBasket()

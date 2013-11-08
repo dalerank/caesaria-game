@@ -35,7 +35,7 @@ public:
 
 FishPlace::FishPlace() : TileOverlay( constants::place::fishPlace ), _d( new Impl )
 {
-  _getAnimation().setFrameDelay( 3 );
+  _getAnimation().setDelay( 3 );
   _d->animations.resize( 1 );
   _d->passQueue.push_back( Renderer::foreground );
   _d->passQueue.push_back( Renderer::animations );
@@ -78,7 +78,7 @@ void FishPlace::timeStep(const unsigned long time)
 {
   _getAnimation().update( time );
 
-  _d->animations[ 0 ] = _getAnimation().getCurrentPicture();
+  _d->animations[ 0 ] = _getAnimation().getFrame();
 
   if( _d->walker != 0 )
   {

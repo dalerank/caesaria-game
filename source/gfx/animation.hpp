@@ -18,53 +18,58 @@
 
 #include "picture.hpp"
 
-class Point;
-
 // several frames for a basic visual animation
 class Animation
 {
 public:
-    static const bool reverse = true;
-    static const bool straight = false;
-    static const bool isLoop = true; 
+  static const bool reverse = true;
+  static const bool straight = false;
+  static const bool isLoop = true;
 
-    Animation();
+  Animation();
+  virtual ~Animation();
 
-    Animation& operator=(const Animation& other);
+  Animation( const Animation& other );
+  Animation& operator=(const Animation& other);
 
-    void start(bool loop=true);
-    void stop();
+  void start(bool loop=true);
+  void stop();
 
-    PicturesArray& getPictures();
-    const PicturesArray& getPictures() const;
+  PicturesArray& getFrames();
+  const PicturesArray& getFrames() const;
 
-    int getCurrentIndex() const;
-    void setCurrentIndex( int index );
+  int getIndex() const;
+  void setIndex( int index );
 
-    int getPicturesCount() const;
+  int size() const;
 
-    void update( unsigned int time );
-    const Picture& getCurrentPicture() const;
+  void update( unsigned int time );
+  const Picture& getFrame() const;
 
-    void setFrameDelay( const unsigned int delay );
-    void setLoop( bool loop );
-   
-    void setOffset( const Point& offset );
+  void setDelay( const unsigned int delay );
+  void setLoop( bool loop );
 
-    bool isRunning() const;
-    bool isStopped() const;
+  void setOffset( const Point& offset );
 
-    void clear();
-    void load( const std::string &prefix, const int start, const int number, bool reverse = false, const int step = 1);
+  bool isRunning() const;
+  bool isStopped() const;
 
-    bool isValid() const;
+  void clear();
+  void load( const std::string &prefix,
+             const int start, const int number,
+             bool reverse = false, const int step = 1);
+
+  bool isValid() const;
 private:
-    PicturesArray _pictures;
-    int _animIndex;  // index of the current frame
-    unsigned int _frameDelay;
-    unsigned int _lastTimeUpdate;
+  PicturesArray _pictures;
+  int _animIndex;  // index of the current frame
+  unsigned int _frameDelay;
+  unsigned int _lastTimeUpdate;
 
-    bool _loop;
+  bool _loop;
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 #endif

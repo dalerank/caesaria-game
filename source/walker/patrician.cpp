@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "animals.hpp"
+#include "patrician.hpp"
 #include "core/variant.hpp"
 #include "game/city.hpp"
 #include "game/pathway_helper.hpp"
@@ -22,25 +22,26 @@
 #include "constants.hpp"
 #include "corpse.hpp"
 #include "ability.hpp"
+#include "game/resourcegroup.hpp"
 
 using namespace constants;
 
-class Animal::Impl
+class Patrician::Impl
 {
 public:
   TilePos destination;
 };
 
-Animal::Animal( CityPtr city )
+Patrician::Patrician( CityPtr city )
   : Walker( city ), _d( new Impl )
 {
-  _setType( walker::unknown );
-  _setGraphic( WG_NONE );
+  _setType( walker::patrician );
+  _setGraphic( rand() % 100 ? WG_RICH : WG_RICH2 );
 
-  setName( _("##Animal##") );
+  setName( _("##patrician##") );
 }
 
-void Animal::send2City(const TilePos &start )
+void Patrician::send2City(const TilePos &start )
 {
   if( !isDeleted() )
   {
@@ -48,24 +49,24 @@ void Animal::send2City(const TilePos &start )
   }
 }
 
-Animal::~Animal()
+Patrician::~Patrician()
 {
 
 }
 
-void Animal::save( VariantMap& stream ) const
+void Patrician::save( VariantMap& stream ) const
 {
   Walker::save( stream );
   stream[ "destination" ] = _d->destination;
 }
 
-void Animal::load( const VariantMap& stream )
+void Patrician::load( const VariantMap& stream )
 {
   Walker::load( stream );
   _d->destination = stream.get( "destination" ).toTilePos();
 }
 
-void Animal::_findNewWay( const TilePos& start )
+void Patrician::_findNewWay( const TilePos& start )
 {
   PathWay pathway = PathwayHelper::randomWay( _getCity(), start, 10 );
 
@@ -81,50 +82,21 @@ void Animal::_findNewWay( const TilePos& start )
   }
 }
 
-Sheep::Sheep( CityPtr city ) : Animal( city )
-{
-  _setGraphic( WG_ANIMAL_SHEEP_WALK );
-  _setType( walker::sheep );
-  setName( _("##Sheep##") );
-
-  addAbility( Illness::create( 1, 4 ) );
-}
-
-WalkerPtr Sheep::create(CityPtr city)
-{
-  WalkerPtr ret( new Sheep( city ) );
-  ret->drop();
-
-  return ret;
-}
-
-void Sheep::onDestination()
-{
-  Walker::onDestination();
-
-  Tilemap& tmap = _getCity()->getTilemap();
-  if( tmap.at( getIJ() ).getFlag( Tile::tlMeadow ) )
-  {
-    updateHealth( +100 );
-  }
-
-  _findNewWay( getIJ() );
-}
-
-void Sheep::onNewTile()
-{
-  Walker::onNewTile();
-  _getAnimation().setDelay( 3 );
-}
-
-void Sheep::die()
+void Patrician::die()
 {
   Animal::die();
 
-  Corpse::create( _getCity(), getIJ(), "citizen04", 257, 264 );
+  if( _getGraphic() == WG_RICH )
+  {
+    Corpse::create( _getCity(), getIJ(), ResourceGroup::citizen3, 809, 816 );
+  }
+  else
+  {
+    Corpse::create( _getCity(), getIJ(), ResourceGroup::citizen3, 1017, 1024 );
+  }
 }
 
-void Sheep::send2City(const TilePos &start )
+void Patrician::send2City(const TilePos &start )
 {
   _findNewWay( start );
 

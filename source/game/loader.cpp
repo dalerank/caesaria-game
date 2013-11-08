@@ -88,7 +88,7 @@ void GameLoader::Impl::initWaterTileAnimation( Tilemap& tmap )
   TilemapArea area = tmap.getArea( TilePos( 0, 0 ), Size( tmap.getSize() ) );
 
   Animation water;
-  water.setFrameDelay( 12 );
+  water.setDelay( 12 );
   water.load( ResourceGroup::land1a, 121, 7 );
   water.load( ResourceGroup::land1a, 127, 7, true );
   foreach( Tile* tile, area )
@@ -96,7 +96,7 @@ void GameLoader::Impl::initWaterTileAnimation( Tilemap& tmap )
     int rId = tile->getOriginalImgId() - 364;
     if( rId >= 0 && rId < 8 )
     {
-      water.setCurrentIndex( rId );
+      water.setIndex( rId );
       tile->setAnimation( water );
     }
   }

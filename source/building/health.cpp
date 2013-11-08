@@ -87,7 +87,7 @@ void Baths::_initAnimation()
 {
   _getAnimation().load( ResourceGroup::security, 22, 10);
   _getAnimation().setOffset( Point( 23, 25 ) );
-  _getAnimation().setFrameDelay( 2 );
+  _getAnimation().setDelay( 2 );
   _getAnimation().stop();
 }
 

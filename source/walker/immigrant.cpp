@@ -25,6 +25,8 @@
 #include "game/tilemap.hpp"
 #include "game/name_generator.hpp"
 #include "building/constants.hpp"
+#include "game/resourcegroup.hpp"
+#include "corpse.hpp"
 
 using namespace constants;
 
@@ -196,4 +198,11 @@ void Immigrant::load( const VariantMap& stream )
   Walker::load( stream );
   _d->peoples.load( stream.get( "peoples" ).toList() );
   _d->destination = TilePos( stream.get( "destination" ).toTilePos() );
+}
+
+void Immigrant::die()
+{
+  Walker::die();
+
+  Corpse::create( _getCity(), getIJ(), ResourceGroup::citizen2, 1007, 1014 );
 }

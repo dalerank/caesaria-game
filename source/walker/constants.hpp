@@ -50,6 +50,7 @@ const Type surgeon=22;
 const Type fishingBoat=23;
 const Type WT_PRIEST=24;
 const Type rioter=25;
+const Type patrician=26;
 const Type WT_ALL=0xff;
 
 }

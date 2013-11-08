@@ -13,30 +13,31 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_WORKERSHUNTER_H_INCLUDE_
-#define __OPENCAESAR3_WORKERSHUNTER_H_INCLUDE_
+#ifndef __OPENCAESAR3_PATRICIAN_H_INCLUDED__
+#define __OPENCAESAR3_PATRICIAN_H_INCLUDED__
 
-#include "serviceman.hpp"
+#include "walker.hpp"
+#include "core/predefinitions.hpp"
 
-class WorkersHunter;
-typedef SmartPtr<WorkersHunter> WorkersHunterPtr;
-
-class WorkersHunter : public ServiceWalker
+/** This is an immigrant coming with his stuff */
+class Patrician : public Walker
 {
 public:
-  static WorkersHunterPtr create( CityPtr city );
+  Patrician( CityPtr city );
+  ~Patrician();
 
-  int getWorkersNeeded() const;
-  virtual void onNewTile();
-  void hireWorkers( const int workers );
+  virtual void send2City(const TilePos& start );
 
-  void send2City( WorkingBuildingPtr building, const int workersNeeded );
+  virtual void save(VariantMap& stream) const;
+  virtual void load(const VariantMap& stream);
 
   virtual void die();
-private:
-  WorkersHunter( CityPtr city );
 
-  int _workersNeeded;
+protected:
+  void _findNewWay(const TilePos& start);
+
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
-#endif//__OPENCAESAR3_WORKERSHUNTER_H_INCLUDE_
+#endif //__OPENCAESAR3_PATRICIAN_H_INCLUDED__

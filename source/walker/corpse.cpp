@@ -27,23 +27,29 @@ class Corpse::Impl
 {
 public:
   std::string rcGroup;
+  int startIndex;
   int currentIndex;
   int stopIndex;
   int time;
   int delay;
+  bool loop;
   Picture picture;
 };
 
-void Corpse::create(CityPtr city, TilePos pos, const char* rcGroup, int startIndex, int stopIndex)
+void Corpse::create(CityPtr city, TilePos pos,
+                    const char* rcGroup, int startIndex, int stopIndex,
+                    bool loop )
 {
   Corpse* corpse = new Corpse( city );
   corpse->setIJ( pos );
+  corpse->_d->startIndex = startIndex;
   corpse->_d->currentIndex = startIndex+1;
   corpse->_d->stopIndex = stopIndex;
   corpse->_d->rcGroup = rcGroup;
   corpse->_d->picture = Picture::load( rcGroup, startIndex );
   corpse->_d->time = 0;
   corpse->_d->delay = 1;
+  corpse->_d->loop = loop;
 
   WalkerPtr ret( corpse );
   ret->drop();
@@ -66,12 +72,20 @@ Corpse::~Corpse()
 
 void Corpse::timeStep(const unsigned long time)
 {
-  if( _d->time >= _d->delay && _d->currentIndex < _d->stopIndex )
+  if( _d->time >= _d->delay  )
   {
     _d->time = 0;
-    _d->picture = Picture::load( _d->rcGroup, _d->currentIndex );
-    _d->currentIndex++;
-    _d->delay *= 2;
+
+    if( _d->currentIndex < _d->stopIndex )
+    {
+      _d->picture = Picture::load( _d->rcGroup, _d->currentIndex );
+      _d->currentIndex++;
+      _d->delay *= 2;
+    }
+    else if( _d->loop )
+    {
+      _d->currentIndex = _d->startIndex;
+    }
   }
 
   _d->time++;

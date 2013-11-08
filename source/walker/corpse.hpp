@@ -23,7 +23,9 @@
 class Corpse : public Walker
 {
 public:
-  static void create( CityPtr city, TilePos pos, const char* rcGroup, int startIndex, int stopIndex );
+  static void create( CityPtr city, TilePos pos,
+                      const char* rcGroup, int startIndex, int stopIndex,
+                      bool loop=false);
   ~Corpse();
 
   virtual void timeStep(const unsigned long time);

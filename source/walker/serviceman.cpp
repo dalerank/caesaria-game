@@ -23,6 +23,8 @@
 #include "game/tilemap.hpp"
 #include "core/logger.hpp"
 #include "constants.hpp"
+#include "game/resourcegroup.hpp"
+#include "corpse.hpp"
 
 using namespace constants;
 
@@ -42,10 +44,10 @@ ServiceWalker::ServiceWalker( CityPtr city, const Service::Type service)
   _d->maxDistance = 5;  // TODO: _building.getMaxDistance() ?
   _d->service = service;
 
-  init(service);
+  _init(service);
 }
 
-void ServiceWalker::init(const Service::Type service)
+void ServiceWalker::_init(const Service::Type service)
 {
   _d->service = service;
   NameGenerator::NameType nameType = NameGenerator::male;
@@ -151,7 +153,7 @@ Service::Type ServiceWalker::getService() const
   return _d->service;
 }
 
-void ServiceWalker::computeWalkerPath()
+void ServiceWalker::_computeWalkerPath()
 {  
   Propagator pathPropagator( _getCity() );
   pathPropagator.init( _d->base.as<Construction>() );
@@ -268,7 +270,7 @@ void ServiceWalker::reservePath(PathWay &pathWay)
 void ServiceWalker::send2City( BuildingPtr base )
 {
   setBase( base );
-  computeWalkerPath();
+  _computeWalkerPath();
 
   if( !isDeleted() )
   {
@@ -317,7 +319,7 @@ void ServiceWalker::load( const VariantMap& stream )
   Walker::load( stream );
 
   Service::Type srvcType = ServiceHelper::getType( stream.get( "service" ).toString() );
-  init( srvcType );
+  _init( srvcType );
   _d->maxDistance = stream.get( "maxDistance" ).toInt();
 
   TilePos basePos = stream.get( "base" ).toTilePos();
@@ -335,6 +337,60 @@ void ServiceWalker::load( const VariantMap& stream )
     {
       wrk->addWalker( this );
     }
+  }
+}
+
+void ServiceWalker::die()
+{
+  int start=-1, stop=-1;
+  std::string rcGroup;
+  switch( _d->service )
+  {
+  case Service::engineer: start=1233; stop=1240; rcGroup=ResourceGroup::citizen1; break;
+
+  case Service::religionNeptune:
+  case Service::religionCeres:
+  case Service::religionVenus:
+  case Service::religionMars:
+  case Service::religionMercury:
+    start=305; stop=312; rcGroup=ResourceGroup::citizen1;
+  break;
+
+  case Service::doctor:
+  case Service::hospital:
+    start=913; stop=920; rcGroup=ResourceGroup::citizen3; break;
+  break;
+
+  case Service::barber: start=559; stop=566; rcGroup=ResourceGroup::citizen2; break;
+  case Service::baths: start=201; stop=208; rcGroup = ResourceGroup::citizen1; break;
+  case Service::school: start=817; stop=824; rcGroup = ResourceGroup::citizen1; break;
+
+  case Service::library:
+  case Service::college:
+    start=1121; stop=1128; rcGroup = ResourceGroup::citizen3;
+  break;
+
+  case Service::theater: start=409; stop=416; rcGroup=ResourceGroup::citizen1; break;
+  case Service::amphitheater: start=97; stop=104; rcGroup=ResourceGroup::citizen2; break;
+  case Service::colloseum: start=513; stop=520; rcGroup=ResourceGroup::citizen1; break;
+  case Service::hippodrome: break;
+
+  case Service::market: start=921; stop=928; rcGroup=ResourceGroup::citizen1; break;
+
+  case Service::forum:
+  case Service::senate:
+    start=713; stop=720; rcGroup = ResourceGroup::citizen1; break;
+  break;
+
+  default:
+  break;
+  }
+
+  Walker::die();
+
+  if( start >= 0 )
+  {
+    Corpse::create( _getCity(), getIJ(), rcGroup, start, stop );
   }
 }
 

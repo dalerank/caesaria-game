@@ -25,7 +25,7 @@ class TaxCollector : public ServiceWalker
 {
 public:
   static TaxCollectorPtr create( CityPtr city );
-  void onMidTile();
+  virtual void onMidTile();
 
   int getMoney() const;
   int getCitizensReachedCount() const;

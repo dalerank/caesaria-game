@@ -49,13 +49,14 @@ public:
 
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);
+  virtual void die();
 
   ~ServiceWalker();
 protected:
   ServiceWalker( CityPtr city, const Service::Type service );
 
-  void init(const Service::Type service);
-  void computeWalkerPath();
+  void _init(const Service::Type service);
+  void _computeWalkerPath();
 
 private:
   class Impl;

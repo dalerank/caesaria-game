@@ -43,10 +43,11 @@ public:
 
   void computeWalkerDestination();
  
-  void timeStep(const unsigned long time);
+  virtual void timeStep(const unsigned long time);
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
+  virtual void die();
 
 protected:
    CartPusher( CityPtr city );

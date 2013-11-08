@@ -170,7 +170,7 @@ CollapsedRuins::CollapsedRuins() : Building(building::B_COLLAPSED_RUINS, Size(1)
 
   _getAnimation().load( ResourceGroup::sprites, 1, 8 );
   _getAnimation().setOffset( Point( 14, 26 ) );
-  _getAnimation().setFrameDelay( 4 );
+  _getAnimation().setDelay( 4 );
   _getAnimation().setLoop( false );
   _getFgPictures().resize(1);
 }
@@ -216,7 +216,7 @@ PlagueRuins::PlagueRuins() : Building( building::B_PLAGUE_RUINS, Size(1) )
 void PlagueRuins::timeStep(const unsigned long time)
 {
   _getAnimation().update( time );
-  _getFgPictures().at( 0 ) = _getAnimation().getCurrentPicture();
+  _getFgPictures().at( 0 ) = _getAnimation().getFrame();
 
   if (time % 16 == 0 )
   {

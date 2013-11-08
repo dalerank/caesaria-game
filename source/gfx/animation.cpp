@@ -18,6 +18,11 @@
 #include "core/foreach.hpp"
 #include "core/stringhelper.hpp"
 
+class Animation::Impl
+{
+public:
+};
+
 void Animation::start(bool loop)
 {
   _animIndex = 0;
@@ -25,12 +30,12 @@ void Animation::start(bool loop)
   _loop = loop;
 }
 
-PicturesArray& Animation::getPictures()
+PicturesArray& Animation::getFrames()
 {
   return _pictures;
 }
 
-const PicturesArray& Animation::getPictures() const
+const PicturesArray& Animation::getFrames() const
 {
   return _pictures;
 }
@@ -63,30 +68,40 @@ void Animation::update( unsigned int time )
   }
 }
 
-const Picture& Animation::getCurrentPicture() const
+const Picture& Animation::getFrame() const
 {
   return ( _animIndex >= 0 && _animIndex < (int)_pictures.size())
                   ? _pictures[_animIndex] 
                   : Picture::getInvalid();
 }
 
-int Animation::getCurrentIndex() const
+int Animation::getIndex() const
 {
   return _animIndex;
 }
 
-void Animation::setCurrentIndex(int index)
+void Animation::setIndex(int index)
 {
   _animIndex = math::clamp<int>( index, 0, _pictures.size()-1 );
 }
 
-Animation::Animation()
+Animation::Animation() : _d( new Impl )
 {
   _frameDelay = 0;
   start( true );
 }
 
-void Animation::setFrameDelay( const unsigned int delay )
+Animation::~Animation()
+{
+
+}
+
+Animation::Animation(const Animation& other) : _d( new Impl )
+{
+  *this = other;
+}
+
+void Animation::setDelay( const unsigned int delay )
 {
   _frameDelay = delay;
 }
@@ -138,7 +153,7 @@ Animation& Animation::operator=( const Animation& other )
   return *this;
 }
 
-int Animation::getPicturesCount() const
+int Animation::size() const
 {
   return _pictures.size();
 }

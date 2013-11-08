@@ -19,6 +19,8 @@
 #include "gfx/animation_bank.hpp"
 #include "game/city.hpp"
 #include "constants.hpp"
+#include "corpse.hpp"
+#include "game/resourcegroup.hpp"
 
 using namespace constants;
 
@@ -76,6 +78,13 @@ void Emigrant::onNewDirection()
 {
   Immigrant::onNewDirection();
   setCartPicture( Picture() );  // need to get the new graphic
+}
+
+void Emigrant::die()
+{
+  Walker::die();
+
+  Corpse::create( _getCity(), getIJ(), ResourceGroup::citizen1, 1129, 1136 );
 }
 
 EmigrantPtr Emigrant::create( CityPtr city )

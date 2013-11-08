@@ -25,7 +25,7 @@
 ClayPit::ClayPit() : Factory( Good::none, Good::clay, constants::building::clayPit, Size(2) )
 {
   _getAnimation().load( ResourceGroup::commerce, 62, 10);
-  _getAnimation().setFrameDelay( 3 );
+  _getAnimation().setDelay( 3 );
 
   _getFgPictures().resize(2);
 }

@@ -21,8 +21,10 @@
 #include "servicewalker_helper.hpp"
 #include "game/city.hpp"
 #include "game/enums.hpp"
+#include "game/resourcegroup.hpp"
 #include "game/path_finding.hpp"
 #include "constants.hpp"
+#include "corpse.hpp"
 
 using namespace constants;
 
@@ -82,4 +84,11 @@ void WorkersHunter::send2City( WorkingBuildingPtr building, const int workersNee
 {
   _workersNeeded = workersNeeded;
   ServiceWalker::send2City( building.as< Building >() );
+}
+
+void WorkersHunter::die()
+{
+  ServiceWalker::die();
+
+  Corpse::create( _getCity(), getIJ(), ResourceGroup::citizen1, 97, 104 );
 }

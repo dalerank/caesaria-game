@@ -63,7 +63,7 @@ Market::Market() : ServiceBuilding(Service::market, constants::building::B_MARKE
   _d->initStore();
 
   _getAnimation().load( ResourceGroup::commerce, 2, 10 );
-  _getAnimation().setFrameDelay( 4 );
+  _getAnimation().setDelay( 4 );
 }
 
 void Market::deliverService()

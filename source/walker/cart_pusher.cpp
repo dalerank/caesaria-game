@@ -35,6 +35,8 @@
 #include "game/tilemap.hpp"
 #include "core/logger.hpp"
 #include "building/constants.hpp"
+#include "corpse.hpp"
+#include "game/resourcegroup.hpp"
 
 using namespace constants;
 
@@ -397,4 +399,11 @@ void CartPusher::load( const VariantMap& stream )
 
   _d->maxDistance = stream.get( "maxDistance" ).toInt();
   _d->reservationID = stream.get( "reservationID" ).toInt();
+}
+
+void CartPusher::die()
+{
+  Walker::die();
+
+  Corpse::create( _getCity(), getIJ(), ResourceGroup::citizen1, 1025, 1032 );
 }

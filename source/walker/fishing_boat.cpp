@@ -174,7 +174,7 @@ void FishingBoat::die()
   _d->mode = Impl::wait;
   _d->base = 0;
   _getAnimation().load( ResourceGroup::carts, 265, 8 );
-  _getAnimation().setFrameDelay( 4 );
+  _getAnimation().setDelay( 4 );
 
   Ship::die();
 }
@@ -212,7 +212,7 @@ void FishingBoat::onDestination()
 void FishingBoat::onNewTile()
 {
   Walker::onNewTile();
-  _getAnimation().setFrameDelay( 3 );
+  _getAnimation().setDelay( 3 );
 }
 
 PathWay FishingBoat::Impl::findFishingPlace( CityPtr city, const TilePos& pos )

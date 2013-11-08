@@ -227,7 +227,7 @@ void Dock::timeStep(const unsigned long time)
   _getAnimation().update( time );
   
   // takes current animation frame and put it into foreground
-  _getFgPictures().at(0) = _getAnimation().getCurrentPicture();
+  _getFgPictures().at(0) = _getAnimation().getFrame();
 }
 
 // second arch pictures is land3a 45 + 46	
@@ -238,5 +238,5 @@ TriumphalArch::TriumphalArch() : Building( building::B_TRIUMPHAL_ARCH, Size(3) )
   _getAnimation().load("land3a", 44, 1);
   _getAnimation().setOffset( Point( 63, 97 ) );
   _getFgPictures().resize(1);
-  _getFgPictures().at(0) = _getAnimation().getCurrentPicture();
+  _getFgPictures().at(0) = _getAnimation().getFrame();
 }

@@ -30,7 +30,7 @@ Prefecture::Prefecture() : ServiceBuilding(Service::prefect, constants::building
   setPicture( ResourceGroup::security, 1 );
   
   _getAnimation().load( ResourceGroup::security, 2, 10);
-  _getAnimation().setFrameDelay( 4 );
+  _getAnimation().setDelay( 4 );
   _getAnimation().setOffset( Point( 20, 36 ) );
   _getFgPictures().resize(1);
 }

@@ -348,14 +348,14 @@ Warehouse::Warehouse() : WorkingBuilding( constants::building::B_WAREHOUSE, Size
   _getFgPictures().resize(12);  // 8 tiles + 4
 
   _getAnimation().load( ResourceGroup::warehouse, 2, 16 );
-  _getAnimation().setFrameDelay( 4 );
+  _getAnimation().setDelay( 4 );
 
   _d->animFlag.load( ResourceGroup::warehouse, 84, 8 );
 
   _getFgPictures().at( 0 ) = Picture::load(ResourceGroup::warehouse, 1);
   _getFgPictures().at( 1 ) = Picture::load(ResourceGroup::warehouse, 18);
-  _getFgPictures().at( 2 ) = _getAnimation().getCurrentPicture();
-  _getFgPictures().at( 3 ) = _d->animFlag.getCurrentPicture();
+  _getFgPictures().at( 2 ) = _getAnimation().getFrame();
+  _getFgPictures().at( 3 ) = _d->animFlag.getFrame();
 
   // add subTiles in Z-order (from far to near)
   _d->subTiles.clear();
@@ -380,8 +380,8 @@ void Warehouse::timeStep(const unsigned long time)
    _getAnimation().update( time );
    _d->animFlag.update( time );
 
-   _getFgPictures().at(2) = _getAnimation().getCurrentPicture();
-   _getFgPictures().at(3) = _d->animFlag.getCurrentPicture();
+   _getFgPictures().at(2) = _getAnimation().getFrame();
+   _getFgPictures().at(3) = _d->animFlag.getFrame();
   }
 
   if( _d->goodStore.isDevastation() && (time % 22 == 1 ) )

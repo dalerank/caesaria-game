@@ -98,7 +98,7 @@ public:
                  anMap.get( "count" ).toInt(), anMap.get( "reverse", false ).toBool(),
                  anMap.get( "step", 1 ).toInt() );
       anim.setOffset( anMap.get( "offset" ).toPoint() );
-      anim.setFrameDelay( anMap.get( "delay", 1 ).toInt() );
+      anim.setDelay( anMap.get( "delay", 1 ).toInt() );
 
       construction->setAnimation( anim );
     }

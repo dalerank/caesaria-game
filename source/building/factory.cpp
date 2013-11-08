@@ -158,12 +158,12 @@ void Factory::timeStep(const unsigned long time)
        _d->progress += work;
 
        _getAnimation().update( time );
-       const Picture& pic = _getAnimation().getCurrentPicture();
+       const Picture& pic = _getAnimation().getFrame();
        if( pic.isValid() )
        {
          // animation of the working factory
          int level = _getFgPictures().size()-1;
-         _getFgPictures().at(level) = _getAnimation().getCurrentPicture();
+         _getFgPictures().at(level) = _getAnimation().getFrame();
        }
      }
    }  
@@ -323,7 +323,7 @@ IronMine::IronMine() : Factory(Good::none, Good::iron, building::ironMine, Size(
   setPicture( ResourceGroup::commerce, 54 );
 
   _getAnimation().load( ResourceGroup::commerce, 55, 6 );
-  _getAnimation().setFrameDelay( 5 );
+  _getAnimation().setDelay( 5 );
   _getFgPictures().resize(2);
 }
 

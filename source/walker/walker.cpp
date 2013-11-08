@@ -461,7 +461,7 @@ const Picture& Walker::getMainPicture()
     }
   }
 
-  return _d->animation.getCurrentPicture();
+  return _d->animation.getFrame();
 }
 
 void Walker::save( VariantMap& stream ) const
@@ -581,7 +581,7 @@ void Walker::_setHealth(double value)
 
 void Walker::_updateAnimation( const unsigned int time )
 {
-  if( _d->animation.getPicturesCount() > 0 )
+  if( _d->animation.size() > 0 )
   {
     _d->animation.update( time );
   }

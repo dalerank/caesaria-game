@@ -24,7 +24,7 @@ BuildingEngineer::BuildingEngineer() : ServiceBuilding( Service::engineer, const
   setPicture( ResourceGroup::buildingEngineer, 56 );
 
   _getAnimation().load( ResourceGroup::buildingEngineer, 57, 10 );
-  _getAnimation().setFrameDelay( 4 );
+  _getAnimation().setDelay( 4 );
   _getAnimation().setOffset( Point( 10, 42 ) );
   _getFgPictures().resize(1);
 }

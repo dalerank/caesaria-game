@@ -23,6 +23,8 @@ class Ship : public Walker
 {
 public:
   Ship( CityPtr city );
+
+  virtual void die();
   virtual ~Ship();
 };
 

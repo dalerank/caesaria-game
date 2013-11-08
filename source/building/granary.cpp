@@ -94,10 +94,10 @@ Granary::Granary() : WorkingBuilding( constants::building::granary, Size(3) ), _
   _getAnimation().load(ResourceGroup::commerce, 146, 7, Animation::straight);
   // do the animation in reverse
   _getAnimation().load(ResourceGroup::commerce, 151, 6, Animation::reverse);
-  _getAnimation().setFrameDelay( 4 );
+  _getAnimation().setDelay( 4 );
 
   _getFgPictures().at(0) = Picture::load( ResourceGroup::commerce, 141);
-  _getFgPictures().at(5) = _getAnimation().getCurrentPicture();
+  _getFgPictures().at(5) = _getAnimation().getFrame();
   computePictures();
 
   _d->devastateThis = false;  
@@ -110,7 +110,7 @@ void Granary::timeStep(const unsigned long time)
   {
     _getAnimation().update( time );
 
-    _getFgPictures().at(5) = _getAnimation().getCurrentPicture();
+    _getFgPictures().at(5) = _getAnimation().getFrame();
 
     if( time % 22 == 1 && _d->goodStore.isDevastation() 
         && (_d->goodStore.getCurrentQty() > 0) && getWalkerList().empty() )

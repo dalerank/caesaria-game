@@ -17,12 +17,17 @@
 
 const char* ResourceGroup::panelBackground = "paneling";
 const char* ResourceGroup::menuMiddleIcons = "panelwindows";
-const char* ResourceGroup::festivalimg = "panelwindows";
+const char* ResourceGroup::festivalimg     = "panelwindows";
 const char* ResourceGroup::land1a          = "land1a";
 const char* ResourceGroup::land2a          = "land2a";
 const char* ResourceGroup::land3a          = "land3a";
+const char* ResourceGroup::lion            = "citizen03";
 const char* ResourceGroup::animals         = "citizen04";
+const char* ResourceGroup::citizen1        = "citizen01";
 const char* ResourceGroup::citizen2        = "citizen02";
+const char* ResourceGroup::citizen3        = "citizen03";
+const char* ResourceGroup::citizen4        = "citizen04";
+const char* ResourceGroup::citizen4        = "citizen05";
 const char* ResourceGroup::sprites         = "sprites";
 const char* ResourceGroup::buildingEngineer= "transport";  
 const char* ResourceGroup::wharf           = "transport"; 

@@ -375,7 +375,7 @@ Reservoir::Reservoir() : WaterSource( building::B_RESERVOIR, Size( 3 ) )
  
   _getAnimation().load( ResourceGroup::utilitya, 35, 8);
   _getAnimation().load( ResourceGroup::utilitya, 42, 7, Animation::reverse);
-  _getAnimation().setFrameDelay( 11 );
+  _getAnimation().setDelay( 11 );
   _getAnimation().setOffset( Point( 47, 63 ) );
 
   _getFgPictures().resize(1);
@@ -456,7 +456,7 @@ void Reservoir::timeStep(const unsigned long time)
   _getAnimation().update( time );
   
   // takes current animation frame and put it into foreground
-  _getFgPictures().at( 0 ) = _getAnimation().getCurrentPicture();
+  _getFgPictures().at( 0 ) = _getAnimation().getFrame();
 }
 
 bool Reservoir::canBuild( CityPtr city, const TilePos& pos ) const
@@ -681,6 +681,6 @@ void Fountain::_initAnimation()
   _getAnimation().load( ResourceGroup::utilitya, fontainStartAnim, fontainSizeAnim );
   //animLoader.fill_animation_reverse(_animation, "utilitya", 25, 7);
   _getAnimation().setOffset( Point( 12, 24 ) );
-  _getAnimation().setFrameDelay( 2 );
+  _getAnimation().setDelay( 2 );
   _getAnimation().stop();
 }

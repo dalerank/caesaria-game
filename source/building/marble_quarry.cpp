@@ -24,7 +24,7 @@
 MarbleQuarry::MarbleQuarry() : Factory(Good::none, Good::marble, constants::building::B_MARBLE_QUARRY, Size(2) )
 {
   _getAnimation().load( ResourceGroup::commerce, 44, 10);
-  _getAnimation().setFrameDelay( 4 );
+  _getAnimation().setDelay( 4 );
   _getFgPictures().resize(2);
 }
 

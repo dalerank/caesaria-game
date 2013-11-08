@@ -28,9 +28,10 @@ public:
 
   void send2City( MarketPtr destination );
 
-  void timeStep(const unsigned long time);
+  virtual void timeStep(const unsigned long time);
+  virtual void onDestination();
+  virtual void die();
 
-  void onDestination();
 private:
   MarketLadyHelper( CityPtr city );
 
