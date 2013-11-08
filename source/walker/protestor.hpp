@@ -13,19 +13,19 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_RIOTER_H_INCLUDE_
-#define __OPENCAESAR3_RIOTER_H_INCLUDE_
+#ifndef __OPENCAESAR3_PROTESTOR_H_INCLUDE_
+#define __OPENCAESAR3_PROTESTOR_H_INCLUDE_
 
 #include "walker.hpp"
 
-class Rioter;
-typedef SmartPtr<Rioter> RioterPtr;
+class Protestor;
+typedef SmartPtr<Protestor> RioterPtr;
 
-class Rioter : public Walker
+class Protestor : public Walker
 {
 public:
   static RioterPtr create( CityPtr city );
-  virtual ~Rioter();
+  virtual ~Protestor();
 
   virtual void onNewTile();
   virtual void onDestination();
@@ -38,10 +38,10 @@ public:
   virtual void load(const VariantMap &stream);
 
 private:
-  Rioter( CityPtr city );
+  Protestor( CityPtr city );
 
   class Impl;
   ScopedPtr<Impl> _d;
 };
 
-#endif//__OPENCAESAR3_RIOTER_H_INCLUDE_
+#endif//__OPENCAESAR3_PROTESTOR_H_INCLUDE_

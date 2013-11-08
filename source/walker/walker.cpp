@@ -636,8 +636,8 @@ public:
     append( walker::soldier, "soldier", _("##wt_soldier##") );
     append( walker::cartPusher, "cart_pusher", _("##wt_cart_pushher##") );
     append( walker::marketLady, "market_lady", _("##wt_market_lady##") );
-    append( walker::marketLadyHelper, "market_lady_helper", _("##wt_market_lady_helper##") );
-    append( walker::WT_SERVICE, "serviceman", _("##wt_serviceman##") );
+    append( walker::marketKid, "market_lady_helper", _("##wt_market_lady_helper##") );
+    append( walker::serviceman, "serviceman", _("##wt_serviceman##") );
     append( walker::trainee, "trainee", _("##wt_trainee##") );
     append( walker::recruter, "workers_hunter", _("##wt_workers_hunter##") );
     append( walker::prefect, "prefect", _("##wt_prefect##") );
@@ -703,7 +703,7 @@ Picture WalkerHelper::getBigPicture(walker::Type type)
   case walker::doctor: index = 2; break;
   case walker::cartPusher: index=51; break;
   case walker::marketLady: index=12; break;
-  case walker::marketLadyHelper: index=38; break;
+  case walker::marketKid: index=38; break;
   case walker::merchant: index=25; break;
   case walker::prefect: index=19; break;
   case walker::engineer: index=7; break;

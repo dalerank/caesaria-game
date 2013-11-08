@@ -46,7 +46,7 @@ public:
 Rioter::Rioter( CityPtr city ) : Walker( city ), _d( new Impl )
 {    
   _setGraphic( WG_RIOTER );
-  _setType( walker::rioter );
+  _setType( walker::protestor );
 
   addAbility( Illness::create(1,4) );
 }

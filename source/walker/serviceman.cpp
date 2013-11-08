@@ -39,7 +39,7 @@ public:
 ServiceWalker::ServiceWalker( CityPtr city, const Service::Type service)
   : Walker( city ), _d( new Impl )
 {
-  _setType( walker::WT_SERVICE );
+  _setType( walker::serviceman );
   _setGraphic( WG_NONE );
   _d->maxDistance = 5;  // TODO: _building.getMaxDistance() ?
   _d->service = service;
@@ -81,7 +81,7 @@ void ServiceWalker::_init(const Service::Type service)
   case Service::market: _setGraphic( WG_MARKETLADY ); nameType = NameGenerator::female; break;
 
   case Service::library:
-  case Service::college:  _setGraphic( WG_LIBRARIAN );                              break;
+  case Service::college:  _setGraphic( WG_TEACHER );                              break;
 
   case Service::forum:
   case Service::senate:   _setGraphic( WG_TAX );                                    break;
