@@ -17,6 +17,7 @@
 #define _OPENCAESAR3_WHARF_INCLUDE_H_
 
 #include "factory.hpp"
+#include "core/direction.hpp"
 
 class Wharf : public Factory
 {
@@ -36,7 +37,7 @@ public:
   void assignBoat( FishingBoatPtr boat );
 
 private:
-  void _setDirection( DirectionType direction );
+  void _setDirection( constants::Direction direction );
 
 private:
   class Impl;

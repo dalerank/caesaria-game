@@ -61,7 +61,7 @@ void TraineeWalker::init(walker::Type traineeType)
 
   default:
   case walker::unknown:
-  case walker::WT_ALL:
+  case walker::all:
     break;
   }
 

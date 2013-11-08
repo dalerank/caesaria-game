@@ -29,7 +29,7 @@ public:
 
   ~AlarmEventHolder();
 
-  void add( const TilePos& pos, const std::string& message );
+  void add(TilePos pos, std::string message );
   void next();
   
   bool haveAlarms() const;

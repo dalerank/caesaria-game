@@ -36,6 +36,7 @@ public:
   TilePos destination;
   Picture cartPicture;
   CitizenGroup peoples;
+  int stamina;
 };
 
 Immigrant::Immigrant( CityPtr city )
@@ -45,6 +46,7 @@ Immigrant::Immigrant( CityPtr city )
   _setGraphic( WG_HOMELESS );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
+  _d->stamina = rand() % 80 + 20;
 }
 
 HousePtr Immigrant::_findBlankHouse()
@@ -184,7 +186,38 @@ const CitizenGroup& Immigrant::_getPeoples() const
 void Immigrant::setPeoples( const CitizenGroup& peoples )
 {
   _d->peoples = peoples;
-} 
+}
+
+void Immigrant::timeStep(const unsigned long time)
+{
+  Walker::timeStep( time );
+
+  switch( getAction() )
+  {
+  case Walker::acMove:
+    _d->stamina = math::clamp( _d->stamina-1, 0, 100 );
+    if( _d->stamina == 0 )
+    {
+      _setGraphic( WG_HOMELESS_SIT );
+      _setAction( Walker::acNone );
+      _getAnimation().clear();
+    }
+  break;
+
+  case Walker::acNone:
+    _d->stamina = math::clamp( _d->stamina+5, 0, 100 );
+    if( _d->stamina >= 100 )
+    {
+      _setGraphic( WG_HOMELESS );
+      _setAction( Walker::acMove );
+      _getAnimation().clear();
+    }
+  break;
+
+  default:
+  break;
+  }
+}
 
 void Immigrant::save( VariantMap& stream ) const
 {

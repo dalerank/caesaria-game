@@ -26,7 +26,7 @@ public:
   Patrician( CityPtr city );
   ~Patrician();
 
-  virtual void send2City(const TilePos& start );
+  virtual void send2City(TilePos start );
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);

@@ -116,9 +116,9 @@ const TileOverlay::Type grapeFarm=38;
 const TileOverlay::Type B_PIG_FARM=39;
 
 // raw materials
-const TileOverlay::Type B_MARBLE_QUARRY=40;
+const TileOverlay::Type marbleQuarry=40;
 const TileOverlay::Type ironMine=41;
-const TileOverlay::Type B_TIMBER_YARD=42;
+const TileOverlay::Type timberLogger=42;
 const TileOverlay::Type clayPit=43;
 
 // factories
@@ -133,11 +133,11 @@ const TileOverlay::Type engineerPost=49;
 const TileOverlay::Type B_STATUE1=50;
 const TileOverlay::Type B_STATUE2=51;
 const TileOverlay::Type B_STATUE3=52;
-const TileOverlay::Type B_LOW_BRIDGE=53;
-const TileOverlay::Type B_HIGH_BRIDGE=54;
+const TileOverlay::Type lowBridge=53;
+const TileOverlay::Type highBridge=54;
 const TileOverlay::Type B_SHIPYARD=55;
 const TileOverlay::Type B_DOCK=56;
-const TileOverlay::Type B_WHARF=57;
+const TileOverlay::Type wharf=57;
 
 // health
 const TileOverlay::Type B_DOCTOR=58;

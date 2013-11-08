@@ -48,7 +48,7 @@ MarketLady::MarketLady( CityPtr city )
   : Walker( city ), _d( new Impl )
 {
    _setGraphic( WG_MARKETLADY );
-   _setType( walker::WT_MARKETLADY );
+   _setType( walker::marketLady );
    _d->maxDistance = 25;
    _d->basket.setMaxQty(800);  // this is a big basket!
 

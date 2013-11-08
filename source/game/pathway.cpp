@@ -16,6 +16,10 @@
 #include "pathway.hpp"
 #include "gfx/tile.hpp"
 #include "tilemap.hpp"
+#include "core/direction.hpp"
+#include "core/logger.hpp"
+
+using namespace  constants;
 
 bool operator<(const PathWay &v1, const PathWay &v2)
 {
@@ -32,13 +36,20 @@ class PathWay::Impl
 {
 public:
   TilePos destination;
+  bool isReverse;
+
+  typedef std::vector<constants::Direction> Directions;
+  Directions directionList;
+  Directions::iterator directionIt;
+  Directions::reverse_iterator directionIt_reverse;
+  ConstTilemapTiles tileList;
 };
 
 PathWay::PathWay() : _d( new Impl )
 {
   _origin = NULL;
   _d->destination = TilePos( 0, 0 );
-  _isReverse = false;
+  _d->isReverse = false;
 }
 
 PathWay::~PathWay()
@@ -56,17 +67,17 @@ void PathWay::init( const Tilemap &tilemap, const Tile &origin)
   _tilemap = &tilemap;
   _origin = &origin;
   _d->destination = origin.getIJ();
-  _directionList.clear();
-  _directionIt = _directionList.begin();
-  _directionIt_reverse = _directionList.rbegin();
-  _tileList.clear();
-  _tileList.push_back(&origin);
+  _d->directionList.clear();
+  _d->directionIt = _d->directionList.begin();
+  _d->directionIt_reverse = _d->directionList.rbegin();
+  _d->tileList.clear();
+  _d->tileList.push_back(&origin);
 }
 
 int PathWay::getLength() const
 {
   // TODO: various lands have various travel time (road easier to travel than open country)
-  return _directionList.size();
+  return _d->directionList.size();
 }
 
 const Tile& PathWay::getOrigin() const
@@ -82,68 +93,68 @@ const Tile& PathWay::getDestination() const
 
 bool PathWay::isReverse() const
 {
-  return _isReverse;
+  return _d->isReverse;
 }
 
 void PathWay::begin()
 {
-  _directionIt = _directionList.begin();
-  _isReverse = false;
+  _d->directionIt = _d->directionList.begin();
+  _d->isReverse = false;
 }
 
 void PathWay::rbegin()
 {
-  _directionIt_reverse = _directionList.rbegin();
-  _isReverse = true;
+  _d->directionIt_reverse = _d->directionList.rbegin();
+  _d->isReverse = true;
 }
 
 void PathWay::toggleDirection()
 {
-  if( _isReverse )
+  if( _d->isReverse )
   {
-    _isReverse = false;
-    _directionIt = _directionIt_reverse.base();
+    _d->isReverse = false;
+    _d->directionIt = _d->directionIt_reverse.base();
   }
   else
   {
-    _isReverse = true;
-    _directionIt_reverse = Directions::reverse_iterator( _directionIt );
+    _d->isReverse = true;
+    _d->directionIt_reverse = Impl::Directions::reverse_iterator( _d->directionIt );
   }
 }
 
-DirectionType PathWay::getNextDirection()
+constants::Direction PathWay::getNextDirection()
 {
-  DirectionType res=D_NONE;
-  if (_isReverse)
+  Direction res = noneDirection;
+  if (_d->isReverse)
   {
-    if (_directionIt_reverse == _directionList.rend())
+    if (_d->directionIt_reverse == _d->directionList.rend())
     {
       // end of path!
-      return D_NONE;
+      return noneDirection;
     }
-    int direction = (int) *_directionIt_reverse;
-    if (direction != (int) D_NONE)
+    int direction = (int) *_d->directionIt_reverse;
+    if( direction != (int) noneDirection )
     {
-      if (direction + 4 < (int) D_MAX)
+      if (direction + 4 < (int) countDirection)
       {
-        res = (DirectionType) (direction+4);
+        res = (Direction) (direction+4);
       }
       else
       {
-        res = (DirectionType) (direction-4);
+        res = (Direction) (direction-4);
       }
     }
-    _directionIt_reverse ++;
+    _d->directionIt_reverse ++;
   }
   else
   {
-    if (_directionIt == _directionList.end())
+    if (_d->directionIt == _d->directionList.end())
     {
       // end of path!
-      return D_NONE;
+      return noneDirection;
     }
-    res = *_directionIt;
-    _directionIt ++;
+    res = *_d->directionIt;
+    _d->directionIt ++;
   }
 
   return res;
@@ -152,65 +163,73 @@ DirectionType PathWay::getNextDirection()
 bool PathWay::isDestination() const
 {
   bool res;
-  if (_isReverse)
+  if (_d->isReverse)
   {
 #if defined(OC3_PLATFORM_WIN)
-    std::vector<DirectionType>::const_reverse_iterator convItReverse = _directionIt_reverse;
-    res = (convItReverse == _directionList.rend());
+    Impl::Directions::const_reverse_iterator convItReverse = _d->directionIt_reverse;
+    res = (convItReverse == _d->directionList.rend());
 #elif defined(OC3_PLATFORM_UNIX)
-    res = (_directionIt_reverse == _directionList.rend());
+    res = (_d->directionIt_reverse == _d->directionList.rend());
 #endif //OC3_PLATFORM_UNIX
   }
   else
   {
-    res = (_directionIt == _directionList.end());
+    res = (_d->directionIt == _d->directionList.end());
   }
 
   return res;
 }
 
-void PathWay::setNextDirection(const DirectionType direction)
+void PathWay::setNextDirection(Direction direction)
 {
   switch (direction)
   {
-  case D_NORTH:      _d->destination += TilePos( 0, 1 );  break;
-  case D_NORTH_EAST: _d->destination += TilePos( 1, 1 );  break;
-  case D_EAST:       _d->destination += TilePos( 1, 0 );  break;
-  case D_SOUTH_EAST: _d->destination += TilePos( 1, -1 ); break;
-  case D_SOUTH:      _d->destination += TilePos( 0, -1 ); break;
-  case D_SOUTH_WEST: _d->destination += TilePos( -1, -1 );break;
-  case D_WEST:       _d->destination += TilePos( -1, 0 ); break;
-  case D_NORTH_WEST: _d->destination += TilePos( -1, 1 ); break;
+  case north      : _d->destination += TilePos( 0, 1 );  break;
+  case northEast  : _d->destination += TilePos( 1, 1 );  break;
+  case east       : _d->destination += TilePos( 1, 0 );  break;
+  case southEast  : _d->destination += TilePos( 1, -1 ); break;
+  case south      : _d->destination += TilePos( 0, -1 ); break;
+  case southWest  : _d->destination += TilePos( -1, -1 );break;
+  case west       : _d->destination += TilePos( -1, 0 ); break;
+  case northWest  : _d->destination += TilePos( -1, 1 ); break;
   default:
-    _OC3_DEBUG_BREAK_IF( "Unexpected Direction:" || direction);
-    break;
+    _d->destination += TilePos( 0, 1 );  break;
+    Logger::warning( "Unexpected Direction:%d", direction);
+  break;
   }
 
-  _OC3_DEBUG_BREAK_IF( !_tilemap->isInside( TilePos( _d->destination ) ) && "Destination is out of range");
-  _tileList.push_back( &_tilemap->at( _d->destination ) );
 
-  _directionList.push_back(direction);
+  if( !_tilemap->isInside( TilePos( _d->destination ) ) )
+  {
+    Logger::warning( "Destination[%d, %d] out of map", _d->destination.getI(), _d->destination.getJ() );
+  }
+  else
+  {
+    _d->tileList.push_back( &_tilemap->at( _d->destination ) );
+    _d->directionList.push_back(direction);
+  }
 }
 
-void PathWay::setNextTile( const Tile& tile)
+void PathWay::setNextTile( const Tile& tile )
 {
   int dI = tile.getI() - _d->destination.getI();
   int dJ = tile.getJ() - _d->destination.getJ();
 
-  DirectionType direction;
+  Direction direction;
 
-  if (dI==0 && dJ==0) {  direction = D_NONE; }
-  else if (dI==0 && dJ==1) { direction = D_NORTH; }
-  else if (dI==1 && dJ==1) { direction = D_NORTH_EAST; }
-  else if (dI==1 && dJ==0) { direction = D_EAST; }
-  else if (dI==1 && dJ==-1){ direction = D_SOUTH_EAST; }
-  else if (dI==0 && dJ==-1){ direction = D_SOUTH; }
-  else if (dI==-1 && dJ==-1){ direction = D_SOUTH_WEST;}
-  else if (dI==-1 && dJ==0) {direction = D_WEST;}
-  else if (dI==-1 && dJ==1){direction = D_NORTH_WEST; }
+  if (dI==0 && dJ==0) {  direction = noneDirection; }
+  else if (dI==0 && dJ==1) { direction = north; }
+  else if (dI==1 && dJ==1) { direction = northEast; }
+  else if (dI==1 && dJ==0) { direction = east; }
+  else if (dI==1 && dJ==-1){ direction = southEast; }
+  else if (dI==0 && dJ==-1){ direction = south; }
+  else if (dI==-1 && dJ==-1){ direction = southWest;}
+  else if (dI==-1 && dJ==0) {direction = west;}
+  else if (dI==-1 && dJ==1){direction = northWest; }
   else
   {
-    _OC3_DEBUG_BREAK_IF( "Unexpected tile, deltaI:" );
+    Logger::warning( "Destination[%d, %d] out of map", dI, dJ );
+    direction = noneDirection;
   }
 
   setNextDirection(direction);
@@ -220,7 +239,8 @@ bool PathWay::contains(Tile &tile)
 {
   // search in reverse direction, because usually the last tile matches
   bool res = false;
-  for( ConstTilemapTiles::reverse_iterator itTile = _tileList.rbegin(); itTile != _tileList.rend(); ++itTile)
+  for( ConstTilemapTiles::reverse_iterator itTile = _d->tileList.rbegin();
+       itTile != _d->tileList.rend(); ++itTile)
   {
     if (*itTile == &tile)
     {
@@ -234,40 +254,45 @@ bool PathWay::contains(Tile &tile)
 
 ConstTilemapTiles& PathWay::getAllTiles()
 {
-  return _tileList;
+  return _d->tileList;
 }
 
 void PathWay::prettyPrint() const
 {
   if (_origin == NULL)
   {
-    std::cout << "pathWay is NULL" << std::endl;
+    Logger::warning( "pathWay is NULL" );
   }
   else
   {
-    std::cout << "pathWay from (" << _origin->getI() << ", " << _origin->getJ() 
-      << ") to (" << _d->destination.getI() << ", " << _d->destination.getJ() << "): ";
-    for (std::vector<DirectionType>::const_iterator itDir = _directionList.begin(); itDir != _directionList.end(); ++itDir)
+    Logger::warning( "pathWay from [%d,%d] to [%d,%d]",
+                     _origin->getI(), _origin->getJ(), _d->destination.getI(), _d->destination.getJ() );
+
+    std::string strDir = "";
+    for( Impl::Directions::const_iterator itDir = _d->directionList.begin();
+         itDir != _d->directionList.end(); ++itDir)
     {
-      DirectionType direction = *itDir;
-      std::string strDir = "";
+      Direction direction = *itDir;
+
       switch (direction)
       {
-      case D_NORTH: strDir = "N";  break;
-      case D_NORTH_EAST: strDir = "NE"; break;
-      case D_EAST: strDir = "E"; break;
-      case D_SOUTH_EAST: strDir = "SE"; break;
-      case D_SOUTH: strDir = "S";   break;
-      case D_SOUTH_WEST: strDir = "SW"; break;
-      case D_WEST: strDir = "W";  break;
-      case D_NORTH_WEST: strDir = "NW"; break;
+      case north: strDir += "N";  break;
+      case northEast: strDir += "NE"; break;
+      case east: strDir += "E"; break;
+      case southEast: strDir += "SE"; break;
+      case south: strDir += "S";   break;
+      case southWest: strDir += "SW"; break;
+      case west: strDir += "W";  break;
+      case northWest: strDir += "NW"; break;
       default:
         _OC3_DEBUG_BREAK_IF( "Unexpected Direction:" || direction);
       break;
       }
-      std::cout << strDir << " ";
+
+      strDir += " ";
     }
-    std::cout << std::endl;
+
+    Logger::warning( strDir.c_str() );
   }
 }
 
@@ -283,13 +308,14 @@ VariantMap PathWay::save() const
   stream[ "stopPos" ] = _d->destination;
 
   VariantList directions;
-  for( Directions::const_iterator itDir = _directionList.begin(); itDir != _directionList.end(); ++itDir)
+  for( Impl::Directions::const_iterator itDir = _d->directionList.begin();
+       itDir != _d->directionList.end(); ++itDir)
   {
     directions.push_back( (int)*itDir );
   }
 
   stream[ "directions" ] = directions;
-  stream[ "reverse" ] = _isReverse;
+  stream[ "reverse" ] = _d->isReverse;
   stream[ "step" ] = getStep();
 
   return stream;
@@ -312,15 +338,16 @@ void PathWay::load( const VariantMap& stream )
   VariantList directions = stream.get( "directions" ).toList();
   for( VariantList::iterator it = directions.begin(); it != directions.end(); it++ )
   {
-    DirectionType dir = (DirectionType)(*it).toInt();
+    Direction dir = (Direction)(*it).toInt();
     setNextDirection( dir );
   }
-  _isReverse = stream.get( "reverse" ).toBool();
+
+  _d->isReverse = stream.get( "reverse" ).toBool();
   int off = stream.get( "step" ).toInt();
-  _directionIt = _directionList.begin();
-  _directionIt_reverse = _directionList.rbegin();
-  std::advance(_directionIt_reverse, off);
-  std::advance(_directionIt, off);
+  _d->directionIt = _d->directionList.begin();
+  _d->directionIt_reverse = _d->directionList.rbegin();
+  std::advance(_d->directionIt_reverse, off);
+  std::advance(_d->directionIt, off);
 }
 
 PathWay& PathWay::operator=( const PathWay& other )
@@ -328,24 +355,24 @@ PathWay& PathWay::operator=( const PathWay& other )
   _tilemap             = other._tilemap;
   _origin              = other._origin;
   _d->destination      = other._d->destination;
-  _directionList       = other._directionList;
-  _directionIt         = _directionList.begin();
-  _directionIt_reverse = _directionList.rbegin();
-  _tileList            = other._tileList;
+  _d->directionList       = other._d->directionList;
+  _d->directionIt         = _d->directionList.begin();
+  _d->directionIt_reverse = _d->directionList.rbegin();
+  _d->tileList            = other._d->tileList;
 
   return *this;
 }
 
 unsigned int PathWay::getStep() const
 {
-  if (_isReverse)
+  if(_d->isReverse)
   {
-    size_t pos = std::distance<Directions::const_reverse_iterator>(_directionList.rbegin(), _directionIt_reverse);
+    size_t pos = std::distance<Impl::Directions::const_reverse_iterator>(_d->directionList.rbegin(), _d->directionIt_reverse);
     return static_cast<unsigned int>(pos);
   }
   else
   {
-    size_t pos = std::distance<Directions::const_iterator>(_directionList.begin(), _directionIt);
+    size_t pos = std::distance<Impl::Directions::const_iterator>(_d->directionList.begin(), _d->directionIt);
     return static_cast<unsigned int>(pos);
   }
 }

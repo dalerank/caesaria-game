@@ -56,7 +56,7 @@ void CityServiceDisorder::update( const unsigned int time )
   CityHelper helper( _d->city );
   HouseList houses = helper.find<House>( building::house );
 
-  WalkerList walkers = _d->city->getWalkerList( walker::rioter );
+  WalkerList walkers = _d->city->getWalkers( walker::rioter );
 
   HouseList criminalizedHouse;
   foreach( HousePtr house, houses )

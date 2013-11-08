@@ -18,10 +18,10 @@
 #ifndef __OPENCAESAR3_ANIMATION_BANK_H_INCLUDED__
 #define __OPENCAESAR3_ANIMATION_BANK_H_INCLUDED__
 
-#include "game/enums.hpp"
 #include "gfx/animation.hpp"
 #include "walker/action.hpp"
 #include "game/good.hpp"
+#include "core/direction.hpp"
 
 #include <map>
 
@@ -36,7 +36,7 @@ public:
   static void loadCarts();
   static void loadWalkers();
 
-  static const Picture& getCart( int cartID, const DirectionType& direction );
+  static const Picture& getCart( int cartID, constants::Direction direction );
 
   static const MovementAnimation& getWalker( const WalkerGraphicType walkerGraphic );
 

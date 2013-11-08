@@ -29,6 +29,7 @@ public:
 
   void send2City( Tile& startTile );
   void setPeoples( const CitizenGroup& peoples );
+  virtual void timeStep(const unsigned long time);
 
   virtual void onDestination();
   ~Immigrant();

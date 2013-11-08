@@ -59,7 +59,7 @@ Merchant::Merchant( CityPtr city )
   : Walker( city ), _d( new Impl )
 {
   _setGraphic( WG_HORSE_CARAVAN );
-  _setType( walker::WT_MERCHANT );
+  _setType( walker::merchant );
   _d->maxDistance = 60;
   _d->attemptCount = 0;
 

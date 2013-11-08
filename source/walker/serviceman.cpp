@@ -60,11 +60,6 @@ void ServiceWalker::_init(const Service::Type service)
     _setGraphic( WG_NONE );
   break;
   
-  case Service::engineer:
-     _setGraphic( WG_ENGINEER );
-     _setType( walker::engineer );
-  break;
-
   case Service::religionNeptune:
   case Service::religionCeres:
   case Service::religionVenus:
@@ -73,63 +68,23 @@ void ServiceWalker::_init(const Service::Type service)
     _setGraphic( WG_PRIEST );
   break;
   
-  case Service::doctor:
-    _setGraphic( WG_DOCTOR );
-    _setType( walker::doctor );
-  break;
+  case Service::engineer: _setGraphic( WG_ENGINEER ); _setType( walker::engineer ); break;
+  case Service::doctor:   _setGraphic( WG_DOCTOR );   _setType( walker::doctor );   break;
+  case Service::hospital: _setGraphic( WG_DOCTOR );   _setType( walker::surgeon );  break;
+  case Service::barber:   _setGraphic( WG_BARBER );   _setType( walker::barber );   break;
+  case Service::baths:    _setGraphic( WG_BATH );     _setType( walker::bathlady ); break;
+  case Service::school:   _setGraphic( WG_CHILD );                                  break;
+  case Service::theater:  _setGraphic( WG_ACTOR );    _setType( walker::actor );    break;
+  case Service::amphitheater:_setGraphic( WG_GLADIATOR ); _setType( walker::gladiator ); break;
+  case Service::colloseum:_setGraphic( WG_TAMER );    _setType( walker::tamer );    break;
+  case Service::hippodrome:_setGraphic( WG_ACTOR );   _setType( walker::charioter ); break;
+  case Service::market: _setGraphic( WG_MARKETLADY ); nameType = NameGenerator::female; break;
 
-  case Service::hospital:
-    _setGraphic( WG_DOCTOR );
-    _setType( walker::surgeon );
-  
-  case Service::barber:
-    _setGraphic( WG_BARBER );
-    _setType( walker::barber );
-  break;
-  
-  case Service::baths:
-    _setGraphic( WG_BATH );
-    _setType( walker::bathlady );
-  break;
-  
-  case Service::school:
-    _setGraphic( WG_CHILD );
-  break;
-  
   case Service::library:
-  case Service::college:
-    _setGraphic( WG_LIBRARIAN );
-  break;
-  
-  case Service::theater:
-    _setType( walker::actor );
-    _setGraphic( WG_ACTOR );
-  break;
-
-  case Service::amphitheater:
-    _setType( walker::gladiator );
-    _setGraphic( WG_GLADIATOR );
-  break;
-
-  case Service::colloseum:
-    _setType( walker::tamer );
-    _setGraphic( WG_TAMER );
-  break;
-
-  case Service::hippodrome:
-    _setType( walker::charioter );
-    _setGraphic( WG_ACTOR );
-  break;
-  
-  case Service::market:
-    _setGraphic( WG_MARKETLADY );
-    nameType = NameGenerator::female;
-  break;
+  case Service::college:  _setGraphic( WG_LIBRARIAN );                              break;
 
   case Service::forum:
-  case Service::senate:
-    _setGraphic( WG_TAX );
-  break;
+  case Service::senate:   _setGraphic( WG_TAX );                                    break;
 
   default:
   break;

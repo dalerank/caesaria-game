@@ -28,6 +28,7 @@
 #include "corpse.hpp"
 #include "ability.hpp"
 #include "game/resourcegroup.hpp"
+#include "core/variant.hpp"
 
 using namespace constants;
 
@@ -228,6 +229,22 @@ void Rioter::die()
   Walker::die();
 
   Corpse::create( _getCity(), getIJ(), ResourceGroup::citizen2, 447, 454 );
+}
+
+void Rioter::save(VariantMap& stream) const
+{
+  Walker::save( stream );
+
+  stream[ "houseLevel" ] = _d->houseLevel;
+  stream[ "state" ] = (int)_d->state;
+}
+
+void Rioter::load(const VariantMap& stream)
+{
+  Walker::load( stream );
+
+  _d->houseLevel = stream.at( "houseLevel" );
+  _d->state = (Impl::State)stream.at( "state" ).toInt();
 }
 
 PathWay Rioter::Impl::findTarget( CityPtr city, ConstructionList constructions, TilePos pos )

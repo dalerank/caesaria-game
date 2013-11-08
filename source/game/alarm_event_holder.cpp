@@ -64,7 +64,7 @@ AlarmEventHolder::~AlarmEventHolder()
   _d->alarmDeleter->destroy();
 }
 
-void AlarmEventHolder::add( const TilePos& pos, const std::string& message )
+void AlarmEventHolder::add( TilePos pos, std::string message )
 {
   AlarmEvent alarm;
   alarm.message = message;

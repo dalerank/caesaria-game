@@ -162,22 +162,24 @@ void CartPusher::getPictureList(std::vector<Picture> &oPics)
    // depending on the walker direction, the cart is ahead or behind
    switch (getDirection())
    {
-   case D_WEST:
-   case D_NORTH_WEST:
-   case D_NORTH:
-   case D_NORTH_EAST:
+   case constants::west:
+   case constants::northWest:
+   case constants::north:
+   case constants::northEast:
       oPics.push_back( getCartPicture() );
       oPics.push_back( getMainPicture() );
-      break;
-   case D_EAST:
-   case D_SOUTH_EAST:
-   case D_SOUTH:
-   case D_SOUTH_WEST:
+   break;
+
+   case constants::east:
+   case constants::southEast:
+   case constants::south:
+   case constants::southWest:
       oPics.push_back( getMainPicture() );
       oPics.push_back( getCartPicture() );
-      break;
+   break;
+
    default:
-      break;
+   break;
    }
 }
 
@@ -227,7 +229,7 @@ void CartPusher::computeWalkerDestination()
    }
    else
    {
-     _setDirection( D_NORTH );
+     _setDirection( constants::north );
      setSpeed( 0 );
      setIJ( _d->producerBuilding->getAccessRoads().front()->getIJ() );
      walk();

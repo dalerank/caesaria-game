@@ -54,7 +54,7 @@ MarketLadyHelper::MarketLadyHelper( CityPtr city )
   _d->birthTime = 0;
   _d->basket._maxQty = 100;
   _setGraphic( WG_MARKETLADY_HELPER );
-  _setType( walker::marketLady );
+  _setType( walker::marketLadyHelper );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
 }

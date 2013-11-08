@@ -257,11 +257,11 @@ BuildMenu_health::BuildMenu_health( Widget* parent, const Rect& rectangle )
 void BuildMenu_engineering::initialize()
 {
   addBuildButton(building::engineerPost);
-  addBuildButton(building::B_LOW_BRIDGE);
-  addBuildButton(building::B_HIGH_BRIDGE);
+  addBuildButton(building::lowBridge);
+  addBuildButton(building::highBridge);
   addBuildButton(building::B_DOCK);
   addBuildButton(building::B_SHIPYARD);
-  addBuildButton(building::B_WHARF);
+  addBuildButton(building::wharf);
   addBuildButton(building::B_TRIUMPHAL_ARCH);
   addBuildButton(construction::B_GARDEN);
   addBuildButton(construction::B_PLAZA);
@@ -356,9 +356,9 @@ BuildMenu_farm::BuildMenu_farm( Widget* parent, const Rect& rectangle )
 
 void BuildMenu_raw_factory::initialize()
 {
-  addBuildButton(building::B_MARBLE_QUARRY);
+  addBuildButton(building::marbleQuarry);
   addBuildButton(building::ironMine);
-  addBuildButton(building::B_TIMBER_YARD);
+  addBuildButton(building::timberLogger);
   addBuildButton(building::clayPit);
 
   BuildMenu::initialize();

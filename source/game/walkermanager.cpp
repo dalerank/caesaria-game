@@ -26,6 +26,8 @@
 #include "walker/animals.hpp"
 #include "walker/fishing_boat.hpp"
 #include "walker/constants.hpp"
+#include "walker/corpse.hpp"
+#include "walker/rioter.hpp"
 #include <map>
 
 using namespace constants;
@@ -89,6 +91,8 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( walker::surgeon, new ServiceWalkerCreator( Service::hospital ) );
   addCreator( walker::trainee, new TraineeWalkerCreator() );
   addCreator( walker::fishingBoat, new BaseWalkerCreator<FishingBoat>() );
+  addCreator( walker::corpse, new BaseWalkerCreator<Corpse>() );
+  addCreator( walker::rioter, new BaseWalkerCreator<Rioter>() );
 }
 
 WalkerManager::~WalkerManager()

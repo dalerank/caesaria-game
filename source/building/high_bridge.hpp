@@ -18,6 +18,7 @@
 
 #include "game/construction.hpp"
 #include "core/scopedptr.hpp"
+#include "core/direction.hpp"
 
 class HighBridge : public Construction
 {
@@ -30,8 +31,8 @@ public:
   void destroy();
 
 private:
-  void _computePictures( CityPtr city, const TilePos& startPos, const TilePos& endPos, DirectionType dir );
-  void _checkParams( CityPtr city, DirectionType& direction, TilePos& start, TilePos& stop, const TilePos& curPos ) const;
+  void _computePictures( CityPtr city, const TilePos& startPos, const TilePos& endPos, constants::Direction dir );
+  void _checkParams( CityPtr city, constants::Direction& direction, TilePos& start, TilePos& stop, const TilePos& curPos ) const;
 
   class Impl;
   ScopedPtr< Impl > _d;

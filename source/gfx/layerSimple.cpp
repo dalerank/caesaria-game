@@ -28,7 +28,7 @@ int LayerSimple::getType() const
 std::set<int> LayerSimple::getVisibleWalkers() const
 {
   std::set<int> ret;
-  ret.insert( walker::WT_ALL );
+  ret.insert( walker::all );
 
   return ret;
 }

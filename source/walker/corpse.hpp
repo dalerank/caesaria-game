@@ -23,8 +23,9 @@
 class Corpse : public Walker
 {
 public:
+  static WalkerPtr create( CityPtr city ); //need for walker manager
   static void create( CityPtr city, TilePos pos,
-                      const char* rcGroup, int startIndex, int stopIndex,
+                      std::string rcGroup, int startIndex, int stopIndex,
                       bool loop=false);
   ~Corpse();
 

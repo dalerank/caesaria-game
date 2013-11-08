@@ -23,6 +23,8 @@
 #include "walker/emigrant.hpp"
 #include <vector>
 
+using namespace constants;
+
 namespace{
   static const Point frontCartOffsetSouth = Point( -33, 22 );
   static const Point frontCartOffsetWest  = Point( -31, 35 );
@@ -152,16 +154,16 @@ void AnimationBank::loadCarts()
 AnimationBank::MovementAnimation AnimationBank::Impl::loadAnimation( const std::string& prefix, const int start, const int size)
 {
   MovementAnimation ioMap;
-  DirectedAction action= { Walker::acMove, D_NORTH };
+  DirectedAction action= { Walker::acMove, north };
 
-  action.direction = D_NORTH;      ioMap[action].load( prefix, start,   size, Animation::straight, 8);
-  action.direction = D_NORTH_EAST; ioMap[action].load( prefix, start+1, size, Animation::straight, 8);
-  action.direction = D_EAST;       ioMap[action].load( prefix, start+2, size, Animation::straight, 8);
-  action.direction = D_SOUTH_EAST; ioMap[action].load( prefix, start+3, size, Animation::straight, 8);
-  action.direction = D_SOUTH;      ioMap[action].load( prefix, start+4, size, Animation::straight, 8);
-  action.direction = D_SOUTH_WEST; ioMap[action].load( prefix, start+5, size, Animation::straight, 8);
-  action.direction = D_WEST;       ioMap[action].load( prefix, start+6, size, Animation::straight, 8);
-  action.direction = D_NORTH_WEST; ioMap[action].load( prefix, start+7, size, Animation::straight, 8);
+  action.direction = north;      ioMap[action].load( prefix, start,   size, Animation::straight, 8);
+  action.direction = northEast;  ioMap[action].load( prefix, start+1, size, Animation::straight, 8);
+  action.direction = east;       ioMap[action].load( prefix, start+2, size, Animation::straight, 8);
+  action.direction = southEast;  ioMap[action].load( prefix, start+3, size, Animation::straight, 8);
+  action.direction = south;      ioMap[action].load( prefix, start+4, size, Animation::straight, 8);
+  action.direction = southWest;  ioMap[action].load( prefix, start+5, size, Animation::straight, 8);
+  action.direction = west;       ioMap[action].load( prefix, start+6, size, Animation::straight, 8);
+  action.direction = northWest;  ioMap[action].load( prefix, start+7, size, Animation::straight, 8);
 
   return ioMap;
 }
@@ -188,31 +190,31 @@ PicturesArray AnimationBank::Impl::fillCart( const std::string &prefix, const in
 {
   PicturesArray ioCart;
 
-  ioCart.resize(D_MAX);
+  ioCart.resize(countDirection);
 
-  ioCart[D_NORTH]      = Picture::load(ResourceGroup::carts, start);
-  ioCart[D_NORTH_EAST] = Picture::load(ResourceGroup::carts, start + 1);
-  ioCart[D_EAST]       = Picture::load(ResourceGroup::carts, start + 2);
-  ioCart[D_SOUTH_EAST] = Picture::load(ResourceGroup::carts, start + 3);
-  ioCart[D_SOUTH]      = Picture::load(ResourceGroup::carts, start + 4);
-  ioCart[D_SOUTH_WEST] = Picture::load(ResourceGroup::carts, start + 5);
-  ioCart[D_WEST]       = Picture::load(ResourceGroup::carts, start + 6);
-  ioCart[D_NORTH_WEST] = Picture::load(ResourceGroup::carts, start + 7);
+  ioCart[north]      = Picture::load(ResourceGroup::carts, start);
+  ioCart[northEast]  = Picture::load(ResourceGroup::carts, start + 1);
+  ioCart[east]       = Picture::load(ResourceGroup::carts, start + 2);
+  ioCart[southEast]  = Picture::load(ResourceGroup::carts, start + 3);
+  ioCart[south]      = Picture::load(ResourceGroup::carts, start + 4);
+  ioCart[southWest]  = Picture::load(ResourceGroup::carts, start + 5);
+  ioCart[west]       = Picture::load(ResourceGroup::carts, start + 6);
+  ioCart[northWest]  = Picture::load(ResourceGroup::carts, start + 7);
 
-  ioCart[D_SOUTH].setOffset( back ? backCartOffsetSouth : frontCartOffsetSouth);
-  ioCart[D_WEST].setOffset ( back ? backCartOffsetWest  : frontCartOffsetWest );
-  ioCart[D_NORTH].setOffset( back ? backCartOffsetNorth : frontCartOffsetNorth);
-  ioCart[D_EAST].setOffset ( back ? backCartOffsetEast  : frontCartOffsetEast );
+  ioCart[south].setOffset( back ? backCartOffsetSouth : frontCartOffsetSouth);
+  ioCart[west].setOffset ( back ? backCartOffsetWest  : frontCartOffsetWest );
+  ioCart[north].setOffset( back ? backCartOffsetNorth : frontCartOffsetNorth);
+  ioCart[east].setOffset ( back ? backCartOffsetEast  : frontCartOffsetEast );
 
-  ioCart[D_SOUTH_EAST].setOffset ( back ? backCartOffsetSouthEast  : frontCartOffsetSouthEast );
-  ioCart[D_NORTH_WEST].setOffset ( back ? backCartOffsetNorthWest  : frontCartOffsetNorthWest );
-  ioCart[D_NORTH_EAST].setOffset ( back ? backCartOffsetNorthEast  : frontCartOffsetNorthEast );
-  ioCart[D_SOUTH_WEST].setOffset ( back ? backCartOffsetSouthWest  : frontCartOffsetSouthWest );
+  ioCart[southEast].setOffset( back ? backCartOffsetSouthEast : frontCartOffsetSouthEast );
+  ioCart[northWest].setOffset( back ? backCartOffsetNorthWest : frontCartOffsetNorthWest );
+  ioCart[northEast].setOffset( back ? backCartOffsetNorthEast : frontCartOffsetNorthEast );
+  ioCart[southWest].setOffset( back ? backCartOffsetSouthWest : frontCartOffsetSouthWest );
 
   return ioCart;
 }
 
-const Picture& AnimationBank::getCart( int cartId, const DirectionType &direction)
+const Picture& AnimationBank::getCart(int cartId, constants::Direction direction)
 {
   return instance()._d->carts.at( cartId ).at( direction );
 }

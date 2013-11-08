@@ -16,7 +16,7 @@
 #include "goodhelper.hpp"
 #include "good.hpp"
 #include "core/enumerator.hpp"
-#include "game/resourcegroup.hpp"
+#include "resourcegroup.hpp"
 #include "core/stringhelper.hpp"
 #include "gfx/animation_bank.hpp"
 #include "core/gettext.hpp"
@@ -159,7 +159,7 @@ std::string GoodHelper::getTypeName( Good::Type type )
   return getInstance()._d->findName( type );
 }
 
-const Picture& GoodHelper::getCartPicture(const GoodStock &stock, const DirectionType &direction)
+Picture GoodHelper::getCartPicture(const GoodStock &stock, constants::Direction direction)
 {
   return AnimationBank::getCart( stock.empty() ? Good::none :  stock._type, direction );
 }

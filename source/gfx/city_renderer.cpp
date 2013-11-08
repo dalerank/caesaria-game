@@ -615,7 +615,7 @@ WalkerList CityRenderer::Impl::getVisibleWalkerList()
   WalkerList walkerList;
   foreach( int wtAct, visibleWalkers )
   {
-    WalkerList foundWalkers = city->getWalkerList( (walker::Type)wtAct );
+    WalkerList foundWalkers = city->getWalkers( (walker::Type)wtAct );
     walkerList.insert( walkerList.end(), foundWalkers.begin(), foundWalkers.end() );
   }
 

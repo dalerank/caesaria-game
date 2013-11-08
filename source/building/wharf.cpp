@@ -24,15 +24,17 @@
 #include "game/goodstore.hpp"
 #include "constants.hpp"
 
+using namespace constants;
+
 class Wharf::Impl
 {
 public:
   enum { southWestPic=54, northEastPic=52, northWestPic=55, southEastPic=53 };
   std::vector<int> saveTileInfo;
-  DirectionType direction;
+  Direction direction;
   FishingBoatPtr boat;
 
-  DirectionType getDirection( CityPtr city, TilePos pos )
+  Direction getDirection( CityPtr city, TilePos pos )
   {
     Tilemap& tilemap = city->getTilemap();
     Tile& t00 = tilemap.at( pos );
@@ -43,32 +45,32 @@ public:
     if( t00.getFlag( Tile::tlWater ) && t10.getFlag( Tile::tlWater )
         && t01.getFlag( Tile::isConstructible ) && t11.getFlag( Tile::isConstructible ) )
     {
-      return D_SOUTH_WEST;
+      return southWest;
     }
 
     if( t01.getFlag( Tile::tlWater ) && t11.getFlag( Tile::tlWater )
         && t00.getFlag( Tile::isConstructible ) && t10.getFlag( Tile::isConstructible ) )
     {
-      return D_NORTH_EAST;
+      return northEast;
     }
 
     if( t00.getFlag( Tile::tlWater ) && t01.getFlag( Tile::tlWater )
         && t10.getFlag( Tile::isConstructible ) && t11.getFlag( Tile::isConstructible ) )
     {
-      return D_NORTH_WEST;
+      return northWest;
     }
 
     if( t10.getFlag( Tile::tlWater ) && t11.getFlag( Tile::tlWater )
         && t00.getFlag( Tile::isConstructible ) && t01.getFlag( Tile::isConstructible ) )
     {
-      return D_SOUTH_EAST;
+      return southEast;
     }
 
-    return D_NONE;
+    return noneDirection;
   }
 };
 
-Wharf::Wharf() : Factory(Good::none, Good::fish, constants::building::B_WHARF, Size(2)), _d( new Impl )
+Wharf::Wharf() : Factory(Good::none, Good::fish, building::wharf, Size(2)), _d( new Impl )
 {
   // transport 52 53 54 55
   setPicture( ResourceGroup::wharf, Impl::northEastPic );
@@ -78,11 +80,11 @@ bool Wharf::canBuild( CityPtr city, const TilePos& pos ) const
 {
   bool is_constructible = true;//Construction::canBuild( city, pos );
 
-  DirectionType direction = _d->getDirection( city, pos );
+  Direction direction = _d->getDirection( city, pos );
 
   const_cast< Wharf* >( this )->_setDirection( direction );
 
-  return (is_constructible && direction != D_NONE );
+  return (is_constructible && direction != noneDirection );
 }
 
 void Wharf::build(CityPtr city, const TilePos& pos)
@@ -181,7 +183,7 @@ void Wharf::load(const VariantMap& stream)
 {
   Factory::load( stream );
 
-  _d->direction = (DirectionType)stream.get( "direction", (int)D_SOUTH_WEST ).toInt();
+  _d->direction = (Direction)stream.get( "direction", (int)southWest ).toInt();
   _d->saveTileInfo << stream.get( "saved_tile" ).toList();
 }
 
@@ -191,10 +193,10 @@ const Tile& Wharf::getLandingTile() const
   TilePos offset( -999, -999 );
   switch( _d->direction )
   {
-  case D_SOUTH_WEST: offset = TilePos( 0, -1 ); break;
-  case D_NORTH_WEST: offset = TilePos( -1, 0 ); break;
-  case D_NORTH_EAST: offset = TilePos( 0, 1 ); break;
-  case D_SOUTH_EAST: offset = TilePos( 1, 0 ); break;
+  case southWest: offset = TilePos( 0, -1 ); break;
+  case northWest: offset = TilePos( -1, 0 ); break;
+  case northEast: offset = TilePos( 0, 1 ); break;
+  case southEast: offset = TilePos( 1, 0 ); break;
 
   default: break;
   }
@@ -212,15 +214,15 @@ void Wharf::assignBoat(FishingBoatPtr boat)
   _d->boat = boat;
 }
 
-void Wharf::_setDirection(DirectionType direction)
+void Wharf::_setDirection(Direction direction)
 {
   _d->direction = direction;
   switch( direction )
   {
-  case D_SOUTH_WEST: setPicture( ResourceGroup::wharf, Impl::southWestPic ); break;
-  case D_NORTH_EAST: setPicture( ResourceGroup::wharf, Impl::northEastPic ); break;
-  case D_NORTH_WEST: setPicture( ResourceGroup::wharf, Impl::northWestPic ); break;
-  case D_SOUTH_EAST: setPicture( ResourceGroup::wharf, Impl::southEastPic ); break;
+  case southWest: setPicture( ResourceGroup::wharf, Impl::southWestPic ); break;
+  case northEast: setPicture( ResourceGroup::wharf, Impl::northEastPic ); break;
+  case northWest: setPicture( ResourceGroup::wharf, Impl::northWestPic ); break;
+  case southEast: setPicture( ResourceGroup::wharf, Impl::southEastPic ); break;
 
   default: break;
   }

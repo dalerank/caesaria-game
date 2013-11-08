@@ -32,8 +32,8 @@ int LayerFood::getType() const
 Layer::VisibleWalkers LayerFood::getVisibleWalkers() const
 {
   VisibleWalkers ret;
-  ret.insert( walker::WT_MARKETLADY );
   ret.insert( walker::marketLady );
+  ret.insert( walker::marketLadyHelper );
 
   return ret;
 }

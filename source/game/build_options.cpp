@@ -56,8 +56,8 @@ void CityBuildOptions::setIndustryAvaible( const BuildMenuType type, bool mayBui
   break;
 
   case BM_RAW_MATERIAL:
-    _d->rules[ building::B_MARBLE_QUARRY ] = mayBuild; _d->rules[ building::ironMine ] = mayBuild;
-    _d->rules[ building::B_TIMBER_YARD ] = mayBuild; _d->rules[ building::clayPit ] = mayBuild;
+    _d->rules[ building::marbleQuarry ] = mayBuild; _d->rules[ building::ironMine ] = mayBuild;
+    _d->rules[ building::timberLogger ] = mayBuild; _d->rules[ building::clayPit ] = mayBuild;
   break;
 
   case BM_FACTORY:

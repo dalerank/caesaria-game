@@ -57,7 +57,8 @@ public:
   void setLocation( const Point& location );
   Point getLocation() const;
 
-  WalkerList getWalkerList( constants::walker::Type type );
+  WalkerList getWalkers( constants::walker::Type type );
+  WalkerList getWalkers( constants::walker::Type type, TilePos startPos, TilePos stopPos=TilePos( -1, -1 ) );
   void addWalker( WalkerPtr walker );
   void removeWalker( WalkerPtr walker );
 
@@ -120,7 +121,7 @@ oc3_signals public:
   Signal1<int>& onPopulationChanged();
   Signal1<int>& onFundsChanged();
   Signal1<std::string>& onWarningMessage();
-  Signal2<const TilePos&, const std::string& >& onDisasterEvent();
+  Signal2<TilePos,std::string>& onDisasterEvent();
 
 protected:
   void monthStep( const DateTime& time );
@@ -213,7 +214,7 @@ public:
   std::list< SmartPtr< T > > getWalkers( const TilePos& pos )
   {
     std::list< SmartPtr< T > > ret;
-    WalkerList walkers = _city->getWalkerList( constants::walker::WT_ALL );
+    WalkerList walkers = _city->getWalkers( constants::walker::all );
     foreach( WalkerPtr walker, walkers )
     {
       if( walker->getIJ() == pos )

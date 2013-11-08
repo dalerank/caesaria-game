@@ -16,10 +16,9 @@
 #include "engineer_post.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/position.hpp"
-#include "building/constants.hpp"
+#include "constants.hpp"
 
-
-BuildingEngineer::BuildingEngineer() : ServiceBuilding( Service::engineer, constants::building::engineerPost, Size(1) )
+EngineerPost::EngineerPost() : ServiceBuilding( Service::engineer, constants::building::engineerPost, Size(1) )
 {
   setPicture( ResourceGroup::buildingEngineer, 56 );
 
@@ -29,7 +28,7 @@ BuildingEngineer::BuildingEngineer() : ServiceBuilding( Service::engineer, const
   _getFgPictures().resize(1);
 }
 
-void BuildingEngineer::timeStep(const unsigned long time)
+void EngineerPost::timeStep(const unsigned long time)
 {
   bool mayAnimate = getWorkers() > 0;
 
@@ -46,7 +45,7 @@ void BuildingEngineer::timeStep(const unsigned long time)
   ServiceBuilding::timeStep( time );
 }
 
-void BuildingEngineer::deliverService()
+void EngineerPost::deliverService()
 {
   if( getWorkers() > 0 && getWalkerList().size() == 0 )
   {
@@ -54,7 +53,7 @@ void BuildingEngineer::deliverService()
   }
 }
 
-unsigned int BuildingEngineer::getWalkerDistance() const
+unsigned int EngineerPost::getWalkerDistance() const
 {
   return 26;
 }

@@ -30,7 +30,7 @@ int LayerReligion::getType() const
 Layer::VisibleWalkers LayerReligion::getVisibleWalkers() const
 {
   VisibleWalkers ret;
-  ret.insert( walker::WT_PRIEST );
+  ret.insert( walker::priest );
 
   return ret;
 }

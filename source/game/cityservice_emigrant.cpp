@@ -83,7 +83,7 @@ void CityServiceEmigrant::update( const unsigned int time )
     return;
   }
 
-  WalkerList walkers = _d->city->getWalkerList( walker::emigrant );
+  WalkerList walkers = _d->city->getWalkers( walker::emigrant );
 
   if( vacantPop <= walkers.size() * 5 )
   {

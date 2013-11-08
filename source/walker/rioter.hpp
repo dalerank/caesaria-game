@@ -34,6 +34,9 @@ public:
 
   virtual void die();
 
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
+
 private:
   Rioter( CityPtr city );
 

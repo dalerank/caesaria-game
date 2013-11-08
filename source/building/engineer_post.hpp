@@ -16,12 +16,12 @@
 #ifndef __OPENCAESAR3_BUILDINGENGINEER_H_INCLUDE_
 #define __OPENCAESAR3_BUILDINGENGINEER_H_INCLUDE_
 
-#include "building/service.hpp"
+#include "service.hpp"
 
-class BuildingEngineer : public ServiceBuilding
+class EngineerPost : public ServiceBuilding
 {
 public:
-    BuildingEngineer();
+    EngineerPost();
     void timeStep(const unsigned long time);
     void deliverService();
 

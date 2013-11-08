@@ -70,6 +70,46 @@ using namespace constants;
 
 typedef std::vector< CityServicePtr > CityServices;
 
+class WGrid
+{
+public:
+  void resize( Size size )
+  {
+    _grid.resize( size.getWidth() );
+    for( int i=0; i < size.getWidth(); i++ )
+    {
+      _grid[ i ].resize( size.getHeight() );
+    }
+  }
+
+  void clear()
+  {
+    foreach( Row& r, _grid )
+    {
+      foreach( WalkerList& cell, r)
+      {
+        cell.clear();
+      }
+    }
+  }
+
+  void append( WalkerPtr& a )
+  {
+    const TilePos& pos = a->getIJ();
+    _grid[ pos.getI() ][ pos.getJ() ].push_back( a );
+  }
+
+  const WalkerList& at( TilePos pos )
+  {
+    return _grid[ pos.getI() ][ pos.getJ() ];
+  }
+
+private:
+  typedef std::vector< WalkerList > Row;
+  typedef std::vector< Row > Grid;
+  Grid _grid;
+};
+
 class City::Impl
 {
 public:
@@ -82,6 +122,11 @@ public:
 
   TileOverlayList overlayList;
   WalkerList walkerList;
+
+  //walkers fast access map !!!
+  WGrid walkersGrid;
+  //*********************** !!!
+
   CityServices services;
   bool needRecomputeAllRoads;
   int lastMonthTax;
@@ -108,7 +153,7 @@ public:
 oc3_signals public:
   Signal1<int> onPopulationChangedSignal;
   Signal1<std::string> onWarningMessageSignal;
-  Signal2<const TilePos&, const std::string&> onDisasterEventSignal;
+  Signal2<TilePos,std::string> onDisasterEventSignal;
 };
 
 City::City() : _d( new Impl )
@@ -146,6 +191,13 @@ void City::timeStep( unsigned int time )
   {
     _d->lastMonthCount = GameDate::current().getMonth();
     monthStep( GameDate::current() );
+  }
+
+  //update walkers access map
+  _d->walkersGrid.clear();
+  foreach( WalkerPtr walker, _d->walkerList )
+  {
+    _d->walkersGrid.append( walker );
   }
 
   WalkerList::iterator walkerIt = _d->walkerList.begin();
@@ -245,9 +297,9 @@ void City::monthStep( const DateTime& time )
   _d->funds.updateHistory( GameDate::current() );
 }
 
-WalkerList City::getWalkerList( walker::Type type )
+WalkerList City::getWalkers( walker::Type type )
 {
-  if( type == walker::WT_ALL )
+  if( type == walker::all )
   {
     return _d->walkerList;
   }
@@ -262,6 +314,19 @@ WalkerList City::getWalkerList( walker::Type type )
   }
 
   return res;
+}
+
+WalkerList City::getWalkers(walker::Type type, TilePos startPos, TilePos stopPos)
+{
+  WalkerList ret;
+  TilemapArea area = _d->tilemap.getArea( startPos, stopPos );
+  foreach( Tile* tile, area)
+  {
+    WalkerList current = _d->walkersGrid.at( tile->getIJ() );
+    ret.insert( ret.end(), current.begin(), current.end() );
+  }
+
+  return ret;
 }
 
 TileOverlayList& City::getOverlayList()
@@ -302,7 +367,6 @@ int City::getPopulation() const
    
    return _d->population;
 }
-
 
 void City::Impl::collectTaxes( CityPtr city )
 {
@@ -528,26 +592,12 @@ City::~City()
 {
 }
 
-Signal1<int>& City::onPopulationChanged()
-{
-  return _d->onPopulationChangedSignal;
-}
-
-Signal1<int>& City::onFundsChanged()
-{
-  return _d->funds.onChange();
-}
-
 void City::addWalker( WalkerPtr walker )
 {
   walker->setUniqueId( ++_d->walkerIdCount );
   _d->walkerList.push_back( walker );
 }
 
-void City::removeWalker( WalkerPtr walker )
-{
-  _d->walkerList.remove( walker );
-}
 
 void City::setCameraPos(const TilePos pos) { _d->cameraStart = pos; }
 TilePos City::getCameraPos() const {return _d->cameraStart; }
@@ -568,35 +618,28 @@ CityServicePtr City::findService( const std::string& name ) const
   return CityServicePtr();
 }
 
-Signal1<std::string>& City::onWarningMessage()
-{
-  return _d->onWarningMessageSignal;
-}
-
-Signal2<const TilePos&, const std::string& >& City::onDisasterEvent()
-{
-  return _d->onDisasterEventSignal;
-}
-
-const CityBuildOptions& City::getBuildOptions() const
-{
-  return _d->buildOptions;
-}
-
-void City::setBuildOptions(const CityBuildOptions& options)
-{
-  _d->buildOptions = options;
-}
-
-const CityWinTargets& City::getWinTargets() const
-{
-  return _d->targets;
-}
-
-void City::setWinTargets(const CityWinTargets& targets)
-{
-  _d->targets = targets;
-}
+Signal1<std::string>& City::onWarningMessage() { return _d->onWarningMessageSignal; }
+Signal2<TilePos,std::string>& City::onDisasterEvent() { return _d->onDisasterEventSignal; }
+const CityBuildOptions& City::getBuildOptions() const { return _d->buildOptions; }
+void City::setBuildOptions(const CityBuildOptions& options) { _d->buildOptions = options; }
+const CityWinTargets& City::getWinTargets() const {   return _d->targets; }
+void City::setWinTargets(const CityWinTargets& targets) { _d->targets = targets; }
+TileOverlayPtr City::getOverlay( const TilePos& pos ) const { return _d->tilemap.at( pos ).getOverlay(); }
+int City::getLastMonthTax() const { return _d->lastMonthTax; }
+int City::getLastMonthTaxpayer() const { return _d->lastMonthTaxpayer; }
+PlayerPtr City::getPlayer() const { return _d->player; }
+std::string City::getName() const {  return _d->name; }
+void City::setName( const std::string& name ) {   _d->name = name;}
+CityTradeOptions& City::getTradeOptions() { return _d->tradeOptions; }
+void City::setLocation( const Point& location ) {   _d->location = location; }
+Point City::getLocation() const {   return _d->location; }
+const GoodStore& City::getSells() const {   return _d->tradeOptions.getSells(); }
+const GoodStore& City::getBuys() const {   return _d->tradeOptions.getBuys(); }
+EmpirePtr City::getEmpire() const {   return _d->empire; }
+void City::updateRoads() {    _d->needRecomputeAllRoads = true; }
+Signal1<int>& City::onPopulationChanged() {  return _d->onPopulationChangedSignal; }
+Signal1<int>& City::onFundsChanged() {  return _d->funds.onChange(); }
+void City::removeWalker( WalkerPtr walker ) { _d->walkerList.remove( walker ); }
 
 int City::getProsperity() const
 {
@@ -614,55 +657,10 @@ CityPtr City::create( EmpirePtr empire, PlayerPtr player )
   return ret;
 }
 
-TileOverlayPtr City::getOverlay( const TilePos& pos ) const
-{
-  return _d->tilemap.at( pos ).getOverlay();
-}
-
-int City::getLastMonthTax() const
-{
-  return _d->lastMonthTax;
-}
-
-int City::getLastMonthTaxpayer() const
-{
-  return _d->lastMonthTaxpayer;
-}
-
-PlayerPtr City::getPlayer() const
-{
-  return _d->player;
-}
-
 int City::getCulture() const
 {
   CityServicePtr csPrsp = findService( CityServiceCulture::getDefaultName() );
   return csPrsp.isValid() ? csPrsp.as<CityServiceCulture>()->getValue() : 0;
-}
-
-std::string City::getName() const
-{
-  return _d->name;
-}
-
-void City::setName( const std::string& name )
-{
-  _d->name = name;
-}
-
-CityTradeOptions& City::getTradeOptions()
-{
-  return _d->tradeOptions;
-}
-
-void City::setLocation( const Point& location )
-{
-  _d->location = location;
-}
-
-Point City::getLocation() const
-{
-  return _d->location;
 }
 
 void City::resolveMerchantArrived( EmpireMerchantPtr merchant )
@@ -670,32 +668,6 @@ void City::resolveMerchantArrived( EmpireMerchantPtr merchant )
   WalkerPtr cityMerchant = Merchant::create( this, merchant );
   cityMerchant.as<Merchant>()->send2City();
 }
-
-const GoodStore& City::getSells() const
-{
-  return _d->tradeOptions.getSells();
-}
-
-const GoodStore& City::getBuys() const
-{
-  return _d->tradeOptions.getBuys();
-}
-
-EmpirePtr City::getEmpire() const
-{
-  return _d->empire;
-}
-
-void City::updateRoads()
-{
-  _d->needRecomputeAllRoads = true;
-}
-
-TilemapArea CityHelper::getArea(TileOverlayPtr overlay)
-{
-  return _city->getTilemap().getArea( overlay->getTilePos(), overlay->getSize() );
-}
-
 
 void CityHelper::updateDesirability( ConstructionPtr construction, bool onBuild )
 {
@@ -724,4 +696,9 @@ void CityHelper::updateDesirability( ConstructionPtr construction, bool onBuild 
 
     current += mul * dsrbl.step;
   }
+}
+
+TilemapArea CityHelper::getArea(TileOverlayPtr overlay)
+{
+  return _city->getTilemap().getArea( overlay->getTilePos(), overlay->getSize() );
 }

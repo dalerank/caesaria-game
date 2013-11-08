@@ -14,32 +14,26 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#ifndef __OPENCAESAR3_GOODHELPER_H_INCLUDED__
-#define __OPENCAESAR3_GOODHELPER_H_INCLUDED__
+#ifndef _OPENCAESAR3_DIRECTION_INCLUDE_H_
+#define _OPENCAESAR3_DIRECTION_INCLUDE_H_
 
-#include "core/scopedptr.hpp"
-#include "gfx/picture.hpp"
-#include "good.hpp"
-#include "core/direction.hpp"
-
-class GoodStock;
-
-class GoodHelper
+namespace constants
 {
-public:
-  static GoodHelper& getInstance();
 
-  static std::string getName( Good::Type type );
-  static Picture getPicture( Good::Type type, bool emp=false );
-  static Good::Type getType( const std::string& name );
-  static std::string getTypeName( Good::Type type );
-  static Picture getCartPicture( const GoodStock& stock, constants::Direction direction );
-  ~GoodHelper();
-private:
-  GoodHelper();
+typedef enum
+{ 
+  noneDirection,
+  north,
+  northWest,
+  west,
+  southWest,
+  south,
+  southEast,
+  east,
+  northEast,
+  countDirection
+} Direction;
 
-  class Impl;
-  ScopedPtr< Impl > _d;
-};
+} //end namespace constants
 
-#endif
+#endif  //_OPENCAESAR3_DIRECTION_INCLUDE_H_

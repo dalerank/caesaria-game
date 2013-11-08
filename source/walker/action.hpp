@@ -16,12 +16,12 @@
 #ifndef __OPENCAESAR3_WALKER_ACTION_H_INCLUDED__
 #define __OPENCAESAR3_WALKER_ACTION_H_INCLUDED__
 
-#include "game/enums.hpp"
+#include "core/direction.hpp"
 
 struct DirectedAction
 {
   int action;
-  DirectionType direction;
+  constants::Direction direction;
 
   inline bool operator<( const DirectedAction &a ) const
   {

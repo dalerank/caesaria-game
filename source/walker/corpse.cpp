@@ -36,8 +36,18 @@ public:
   Picture picture;
 };
 
+WalkerPtr Corpse::create(CityPtr city)
+{
+  Corpse* corpse = new Corpse( city );
+
+  WalkerPtr ret( corpse );
+  ret->drop();
+
+  return ret;
+}
+
 void Corpse::create(CityPtr city, TilePos pos,
-                    const char* rcGroup, int startIndex, int stopIndex,
+                    std::string rcGroup, int startIndex, int stopIndex,
                     bool loop )
 {
   Corpse* corpse = new Corpse( city );
@@ -46,10 +56,14 @@ void Corpse::create(CityPtr city, TilePos pos,
   corpse->_d->currentIndex = startIndex+1;
   corpse->_d->stopIndex = stopIndex;
   corpse->_d->rcGroup = rcGroup;
-  corpse->_d->picture = Picture::load( rcGroup, startIndex );
   corpse->_d->time = 0;
   corpse->_d->delay = 1;
   corpse->_d->loop = loop;
+
+  if( !rcGroup.empty() )
+  {
+    corpse->_d->picture = Picture::load( rcGroup, startIndex );
+  }
 
   WalkerPtr ret( corpse );
   ret->drop();
@@ -59,8 +73,16 @@ void Corpse::create(CityPtr city, TilePos pos,
 
 Corpse::Corpse( CityPtr city ) : Walker( city ), _d( new Impl )
 {
-  _setType( walker::unknown );
+  _setType( walker::corpse );
   _setGraphic( WG_NONE );
+
+  _d->startIndex = 0;
+  _d->currentIndex = 0;
+  _d->stopIndex = 0;
+  _d->rcGroup = "";
+  _d->time = 0;
+  _d->delay = 0;
+  _d->loop = false;
 
   setName( _("##corpse##") );
   _setHealth( 0 );
@@ -104,11 +126,29 @@ void Corpse::timeStep(const unsigned long time)
 void Corpse::save( VariantMap& stream ) const
 {
   Walker::save( stream );
+
+  stream[ "rc" ] = Variant( _d->rcGroup );
+  stream[ "start" ] = _d->startIndex;
+  stream[ "index" ] = _d->currentIndex;
+  stream[ "stop" ] = _d->stopIndex;
+  stream[ "time" ] = _d->time;
+  stream[ "delay" ] = _d->delay;
+  stream[ "loop" ] = _d->loop;
 }
 
 void Corpse::load( const VariantMap& stream )
 {
   Walker::load( stream );
+
+  _d->rcGroup = stream.at( "rc" ).toString();
+  _d->startIndex = stream.at( "start" );
+  _d->currentIndex = stream.at( "index" );
+  _d->stopIndex = stream.at( "stop" );
+  _d->time = stream.at( "time" );
+  _d->delay = stream.at( "delay" );
+  _d->loop = stream.at( "loop" );
+
+  _d->picture = Picture::load( _d->rcGroup, _d->currentIndex );
 }
 
 const Picture& Corpse::getMainPicture()

@@ -32,6 +32,7 @@ public:
 
   virtual void getPictureList(std::vector<Picture> &oPics);
   virtual void onNewDirection();
+  virtual void timeStep(const unsigned long time);
 
   virtual void die();
 

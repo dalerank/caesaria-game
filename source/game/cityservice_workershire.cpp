@@ -69,8 +69,8 @@ CityServiceWorkersHire::CityServiceWorkersHire( CityPtr city )
   _d->priorities[ 19 ] = building::B_PIG_FARM;
   _d->priorities[ 20 ] = building::senate;
   _d->priorities[ 21 ] = building::B_MARKET;
-  _d->priorities[ 22 ] = building::B_TIMBER_YARD;
-  _d->priorities[ 23 ] = building::B_MARBLE_QUARRY;
+  _d->priorities[ 22 ] = building::timberLogger;
+  _d->priorities[ 23 ] = building::marbleQuarry;
   _d->priorities[ 24 ] = building::B_FURNITURE;
   _d->priorities[ 25 ] = building::B_WEAPONS_WORKSHOP;
   _d->priorities[ 26 ] = building::theater;
@@ -78,7 +78,7 @@ CityServiceWorkersHire::CityServiceWorkersHire( CityPtr city )
   _d->priorities[ 28 ] = building::B_SCHOOL;
   _d->priorities[ 29 ] = building::amphitheater;
   _d->priorities[ 30 ] = building::gladiatorSchool;
-  _d->priorities[ 31 ] = building::B_WHARF;
+  _d->priorities[ 31 ] = building::wharf;
 }
 
 bool CityServiceWorkersHire::_haveHr( WorkingBuildingPtr building )
@@ -121,7 +121,7 @@ void CityServiceWorkersHire::update( const unsigned int time )
 
   //unsigned int vacantPop=0;
 
-  _d->hrInCity = _d->city->getWalkerList( walker::recruter );
+  _d->hrInCity = _d->city->getWalkers( walker::recruter );
 
   foreach( Priorities::value_type& pr, _d->priorities )
   {

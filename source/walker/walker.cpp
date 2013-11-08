@@ -71,7 +71,7 @@ Walker::Walker( CityPtr city ) : _d( new Impl )
 {
   _d->city = city;
   _d->action.action = Walker::acMove;
-  _d->action.direction = D_NONE;
+  _d->action.direction = constants::noneDirection;
   _d->walkerType = walker::unknown;
   _d->walkerGraphic = WG_NONE;
   _d->health = 100;
@@ -229,7 +229,7 @@ void Walker::dec(int &ioSI, int &ioI, int &ioAmount, const int iMidPos, bool &oN
 
 void Walker::walk()
 {
-   if (D_NONE == _d->action.direction )
+   if( constants::noneDirection == _d->action.direction )
    {
       // nothing to do
       return;
@@ -239,26 +239,26 @@ void Walker::walk()
     
    switch (_d->action.direction)
    {
-   case D_NORTH:
-   case D_SOUTH:
-      _d->remainMove += PointF( 0, _d->getSpeed() );
+   case constants::north:
+   case constants::south:
+     _d->remainMove += PointF( 0, _d->getSpeed() );
    break;
 
-   case D_EAST:
-   case D_WEST:
-      _d->remainMove += PointF( _d->getSpeed(), 0 );
+   case constants::east:
+   case constants::west:
+     _d->remainMove += PointF( _d->getSpeed(), 0 );
    break;
 
-   case D_NORTH_EAST:
-   case D_SOUTH_WEST:
-   case D_SOUTH_EAST:
-   case D_NORTH_WEST:
+   case constants::northEast:
+   case constants::southWest:
+   case constants::southEast:
+   case constants::northWest:
       _d->remainMove += PointF( _d->getSpeed() * 0.7f, _d->getSpeed() * 0.7f );
    break;
 
    default:
       Logger::warning( "Invalid move direction: %d", _d->action.direction );
-      _d->action.direction = D_NONE;
+      _d->action.direction = constants::noneDirection;
    break;
    }
    
@@ -278,37 +278,45 @@ void Walker::walk()
    {
       switch (_d->action.direction)
       {
-      case D_NORTH:
+      case constants::north:
          inc(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
-         break;
-      case D_NORTH_EAST:
+      break;
+
+      case constants::northEast:
          inc(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
          inc(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
-         break;
-      case D_EAST:
+      break;
+
+      case constants::east:
          inc(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
-         break;
-      case D_SOUTH_EAST:
+      break;
+
+      case constants::southEast:
          dec(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
          inc(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
-         break;
-      case D_SOUTH:
+      break;
+
+      case constants::south:
          dec(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
-         break;
-      case D_SOUTH_WEST:
+      break;
+
+      case constants::southWest:
          dec(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
          dec(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
-         break;
-      case D_WEST:
+      break;
+
+      case constants::west:
          dec(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
-         break;
-      case D_NORTH_WEST:
+      break;
+
+      case constants::northWest:
          inc(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
          dec(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
-         break;
+      break;
+
       default:
          Logger::warning( "Invalid move direction: %d", _d->action.direction);
-         _d->action.direction = D_NONE;
+         _d->action.direction = constants::noneDirection;
       break;
       }
 
@@ -365,32 +373,36 @@ void Walker::onMidTile()
 
 void Walker::onDestination()
 {
-   // std::cout << "Walker arrived at destination! coord=" << _i << "," << _j << std::endl;
-   _d->action.action = acNone;  // stop moving
-   _d->animation = Animation();
+  _d->action.action = acNone;  // stop moving
+  _d->animation = Animation();
 }
 
 void Walker::onNewDirection()
 {
-   _d->animation = Animation();  // need to fetch the new animation
+  _d->animation = Animation();  // need to fetch the new animation
 }
 
 
 void Walker::computeDirection()
 {
-   DirectionType lastDirection = _d->action.direction;
-   _d->action.direction = _d->pathWay.getNextDirection();
+  Direction lastDirection = _d->action.direction;
+  _d->action.direction = _d->pathWay.getNextDirection();
 
-   if( lastDirection != _d->action.direction )
-   {
-      onNewDirection();
-   }
+  if( lastDirection != _d->action.direction )
+  {
+    onNewDirection();
+  }
 }
 
 
-DirectionType Walker::getDirection()
+Direction Walker::getDirection()
 {
   return _d->action.direction;
+}
+
+Walker::Action Walker::getAction()
+{
+  return (Walker::Action)_d->action.action;
 }
 
 double Walker::getHealth() const
@@ -430,13 +442,13 @@ const Picture& Walker::getMainPicture()
   {
     const AnimationBank::MovementAnimation& animMap = AnimationBank::getWalker( getWalkerGraphic() );
     std::map<DirectedAction, Animation>::const_iterator itAnimMap;
-    if (_d->action.action == acNone || _d->action.direction == D_NONE)
+    if (_d->action.action == acNone || _d->action.direction == constants::noneDirection )
     {
       DirectedAction action;
       action.action = acMove;       // default action
-      if (_d->action.direction == D_NONE)
+      if (_d->action.direction == constants::noneDirection)
       {
-         action.direction = D_NORTH;  // default direction
+         action.direction = constants::north;  // default direction
       }
       else
       {
@@ -489,7 +501,7 @@ void Walker::load( const VariantMap& stream)
   _d->pathWay.init( tmap, tmap.at( 0, 0 ) );
   _d->pathWay.load( stream.get( "pathway" ).toMap() );
   _d->action.action = (Walker::Action) stream.get( "action" ).toInt();
-  _d->action.direction = (DirectionType) stream.get( "direction" ).toInt();
+  _d->action.direction = (Direction) stream.get( "direction" ).toInt();
   _d->pos = stream.get( "pos" ).toTilePos();
   _d->tileOffset = stream.get( "tileoffset" ).toPoint();
   _d->posOnMap = stream.get( "mappos" ).toPoint();
@@ -549,7 +561,7 @@ void Walker::_setAction( Walker::Action action )
   _d->action.action = action;
 }
 
-void Walker::_setDirection( DirectionType direction )
+void Walker::_setDirection(constants::Direction direction )
 {
   _d->action.direction = direction;
 }
@@ -623,14 +635,14 @@ public:
     append( walker::emigrant, "emmigrant", _("##wt_emmigrant##") );
     append( walker::soldier, "soldier", _("##wt_soldier##") );
     append( walker::cartPusher, "cart_pusher", _("##wt_cart_pushher##") );
-    append( walker::WT_MARKETLADY, "market_lady", _("##wt_market_lady##") );
-    append( walker::marketLady, "market_lady_helper", _("##wt_market_lady_helper##") );
+    append( walker::marketLady, "market_lady", _("##wt_market_lady##") );
+    append( walker::marketLadyHelper, "market_lady_helper", _("##wt_market_lady_helper##") );
     append( walker::WT_SERVICE, "serviceman", _("##wt_serviceman##") );
     append( walker::trainee, "trainee", _("##wt_trainee##") );
     append( walker::recruter, "workers_hunter", _("##wt_workers_hunter##") );
     append( walker::prefect, "prefect", _("##wt_prefect##") );
     append( walker::taxCollector, "tax_collector", _("##wt_tax_collector##") );
-    append( walker::WT_MERCHANT, "merchant", _("##wt_merchant##") );
+    append( walker::merchant, "merchant", _("##wt_merchant##") );
     append( walker::engineer, "engineer", _("##wt_engineer##") );
     append( walker::doctor, "doctor", _("##wt_doctor##") );
     append( walker::sheep, "sheep", _("##wt_animal_sheep##") );
@@ -639,7 +651,7 @@ public:
     append( walker::gladiator, "gladiator", _("##wt_gladiator##") );
     append( walker::barber, "barber", _("##wt_barber##" ) );
     append( walker::surgeon, "surgeon", _("##wt_surgeon##") );
-    append( walker::WT_ALL, "unknown", _("##wt_unknown##") );
+    append( walker::all, "unknown", _("##wt_unknown##") );
   }
 };
 
@@ -690,9 +702,9 @@ Picture WalkerHelper::getBigPicture(walker::Type type)
   case walker::emigrant: index=13; break;
   case walker::doctor: index = 2; break;
   case walker::cartPusher: index=51; break;
-  case walker::WT_MARKETLADY: index=12; break;
-  case walker::marketLady: index=38; break;
-  case walker::WT_MERCHANT: index=25; break;
+  case walker::marketLady: index=12; break;
+  case walker::marketLadyHelper: index=38; break;
+  case walker::merchant: index=25; break;
   case walker::prefect: index=19; break;
   case walker::engineer: index=7; break;
   case walker::taxCollector: index=6; break;

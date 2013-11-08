@@ -69,7 +69,9 @@ public:
   void walk();
   void setUniqueId( const UniqueId uid );
 
-  DirectionType getDirection();
+  constants::Direction getDirection();
+  Walker::Action getAction();
+
   virtual double getHealth() const;
   virtual void updateHealth(double value);
 
@@ -99,7 +101,7 @@ protected:
    PathWay& _getPathway();
    Animation& _getAnimation();
    void _setAction( Walker::Action action );
-   void _setDirection( DirectionType );
+   void _setDirection( constants::Direction direction );
    void _setGraphic( WalkerGraphicType type );
    WalkerGraphicType _getGraphic() const;
    void _setType( constants::walker::Type type );

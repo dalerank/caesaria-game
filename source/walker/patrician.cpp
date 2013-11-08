@@ -41,14 +41,6 @@ Patrician::Patrician( CityPtr city )
   setName( _("##patrician##") );
 }
 
-void Patrician::send2City(const TilePos &start )
-{
-  if( !isDeleted() )
-  {
-    _getCity()->addWalker( WalkerPtr( this ) );
-  }
-}
-
 Patrician::~Patrician()
 {
 
@@ -84,7 +76,7 @@ void Patrician::_findNewWay( const TilePos& start )
 
 void Patrician::die()
 {
-  Animal::die();
+  Walker::die();
 
   if( _getGraphic() == WG_RICH )
   {
@@ -96,7 +88,7 @@ void Patrician::die()
   }
 }
 
-void Patrician::send2City(const TilePos &start )
+void Patrician::send2City(TilePos start )
 {
   _findNewWay( start );
 

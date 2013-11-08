@@ -21,20 +21,6 @@
 
 #include <string>
 
-enum DirectionType 
-{ 
-  D_NONE, 
-  D_NORTH, 
-  D_NORTH_WEST, 
-  D_WEST, 
-  D_SOUTH_WEST, 
-  D_SOUTH, 
-  D_SOUTH_EAST, 
-  D_EAST, 
-  D_NORTH_EAST, 
-  D_MAX 
-};
-
 enum WalkerGraphicType 
 {
   WG_NONE, WG_POOR, WG_BATH, WG_PRIEST, WG_ACTOR, WG_TAMER, WG_TAX, WG_CHILD, WG_MARKETLADY, 

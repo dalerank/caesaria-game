@@ -86,9 +86,9 @@ public:
     append( building::B_OLIVE_FARM,          "olive_farm");
     append( building::grapeFarm,          "vinard");
     append( building::B_PIG_FARM,           "meat_farm");
-    append( building::B_MARBLE_QUARRY,         "quarry");
+    append( building::marbleQuarry,         "quarry");
     append( building::ironMine,           "iron_mine");
-    append( building::B_TIMBER_YARD,         "lumber_mill");
+    append( building::timberLogger,         "lumber_mill");
     append( building::clayPit,       "clay_pit");
     append( building::B_WINE_WORKSHOP,           "wine_workshop");
     append( building::B_OIL_WORKSHOP,            "oil_workshop");
@@ -99,11 +99,11 @@ public:
     append( building::B_STATUE1,        "statue_small");
     append( building::B_STATUE2,        "statue_middle");
     append( building::B_STATUE3,        "statue_big");
-    append( building::B_LOW_BRIDGE,     "low_bridge");
-    append( building::B_HIGH_BRIDGE,    "high_bridge");
+    append( building::lowBridge,     "low_bridge");
+    append( building::highBridge,    "high_bridge");
     append( building::B_DOCK,           "dock");
     append( building::B_SHIPYARD,       "shipyard");
-    append( building::B_WHARF,          "wharf");
+    append( building::wharf,          "wharf");
     append( building::B_TRIUMPHAL_ARCH, "triumphal_arch");
     append( building::B_WELL,           "well");
     append( building::B_FOUNTAIN,       "fountain");

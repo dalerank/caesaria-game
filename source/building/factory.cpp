@@ -292,7 +292,7 @@ bool Factory::standIdle() const
   return !mayWork();
 }
 
-TimberLogger::TimberLogger() : Factory(Good::none, Good::timber, building::B_TIMBER_YARD, Size(2) )
+TimberLogger::TimberLogger() : Factory(Good::none, Good::timber, building::timberLogger, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 72 );
 
@@ -366,7 +366,7 @@ bool WorkshopFurniture::canBuild(CityPtr city, const TilePos& pos) const
   bool ret = Factory::canBuild( city, pos );
 
   CityHelper helper( city );
-  bool haveTimberLogger = !helper.find<TimberLogger>( building::B_TIMBER_YARD ).empty();
+  bool haveTimberLogger = !helper.find<TimberLogger>( building::timberLogger ).empty();
 
   const_cast< WorkshopFurniture* >( this )->_setError( haveTimberLogger ? "" : _("##need_timber_for_work##") );
 
