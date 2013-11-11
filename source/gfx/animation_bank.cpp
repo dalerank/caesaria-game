@@ -95,45 +95,45 @@ void AnimationBank::Impl::loadCarts()
 
 void AnimationBank::Impl::loadWalkers()
 {
-  animations.resize( WG_MAX );
+  animations.resize( gfx::countType );
 
-  animations[WG_NONE              ] = AnimationBank::MovementAnimation();
-  animations[WG_POOR              ] = loadAnimation( ResourceGroup::citizen1, 1, 12 );
-  animations[WG_BATH              ] = loadAnimation( ResourceGroup::citizen1, 105, 12);
-  animations[WG_PRIEST            ] = loadAnimation( ResourceGroup::citizen1, 209, 12);
-  animations[WG_ACTOR             ] = loadAnimation( ResourceGroup::citizen1, 313, 12);
-  animations[WG_TAMER             ] = loadAnimation( ResourceGroup::citizen1, 417, 12);
-  animations[WG_TAX               ] = loadAnimation( ResourceGroup::citizen1, 617, 12);
-  animations[WG_CHILD             ] = loadAnimation( ResourceGroup::citizen1, 721, 12);
-  animations[WG_MARKETLADY        ] = loadAnimation( ResourceGroup::citizen1, 825, 12);
-  animations[WG_PUSHER            ] = loadAnimation( ResourceGroup::citizen1, 929, 12);
-  animations[WG_PUSHER2           ] = loadAnimation( ResourceGroup::citizen1, 1033, 12);
-  animations[WG_ENGINEER          ] = loadAnimation( ResourceGroup::citizen1, 1137, 12);
-  animations[WG_GLADIATOR         ] = loadAnimation( ResourceGroup::citizen2, 1, 12);
-  animations[WG_GLADIATOR2        ] = loadAnimation( ResourceGroup::citizen2, 199, 12);
-  animations[WG_PROTESTOR         ] = loadAnimation( ResourceGroup::citizen2, 351, 12);
-  animations[WG_BARBER            ] = loadAnimation( ResourceGroup::citizen2, 463, 12);
-  animations[WG_PREFECT           ] = loadAnimation( ResourceGroup::citizen2, 615, 12);
-  animations[WG_PREFECT_DRAG_WATER] = loadAnimation( ResourceGroup::citizen2, 767, 12);
-  animations[WG_PREFECT_FIGHTS_FIRE]= loadAnimation( ResourceGroup::citizen2, 863, 6, Walker::acFight );
-  animations[WG_PREFECT_FIGHT     ] = loadAnimation( ResourceGroup::citizen2, 719, 6, Walker::acFight );
-  animations[WG_HOMELESS          ] = loadAnimation( ResourceGroup::citizen2, 911, 12);
-  animations[WG_RICH              ] = loadAnimation( ResourceGroup::citizen3, 713, 12);
-  animations[WG_DOCTOR            ] = loadAnimation( ResourceGroup::citizen3, 817, 12);
-  animations[WG_RICH2             ] = loadAnimation( ResourceGroup::citizen3, 921, 12);
-  animations[WG_TEACHER           ] = loadAnimation( ResourceGroup::citizen3, 1025, 12);
-  animations[WG_SOLDIER           ] = loadAnimation( ResourceGroup::citizen3, 553, 12);
-  animations[WG_JAVELINEER        ] = loadAnimation( ResourceGroup::citizen3, 241, 12);
-  animations[WG_HORSEMAN          ] = loadAnimation( ResourceGroup::citizen4, 1, 12);
-  animations[WG_HORSE_CARAVAN     ] = loadAnimation( ResourceGroup::carts, 145, 12);
-  animations[WG_CAMEL_CARAVAN     ] = loadAnimation( ResourceGroup::carts, 273, 12);
-  animations[WG_MARKET_KID        ] = loadAnimation( ResourceGroup::carts, 369, 12);
-  animations[WG_ANIMAL_SHEEP_WALK ] = loadAnimation( ResourceGroup::animals, 153, 5 );
-  animations[WG_FISHING_BOAT      ] = loadAnimation( ResourceGroup::carts, 249, 1 );
-  animations[WG_FISHING_BOAT_WORK ] = loadAnimation( ResourceGroup::carts, 257, 1 );
-  animations[WG_HOMELESS_SIT      ] = loadAnimation( ResourceGroup::citizen2, 1015, 1 );
-  animations[WG_LION              ] = loadAnimation( ResourceGroup::lion, 1, 12 );
-  animations[WG_CHARIOT           ] = loadAnimation( ResourceGroup::citizen5, 1, 12 );
+  animations[gfx::unknown              ] = AnimationBank::MovementAnimation();
+  animations[gfx::citizen              ] = loadAnimation( ResourceGroup::citizen1, 1, 12 );
+  animations[gfx::bathlady              ] = loadAnimation( ResourceGroup::citizen1, 105, 12);
+  animations[gfx::priest            ] = loadAnimation( ResourceGroup::citizen1, 209, 12);
+  animations[gfx::actor             ] = loadAnimation( ResourceGroup::citizen1, 313, 12);
+  animations[gfx::tamer             ] = loadAnimation( ResourceGroup::citizen1, 417, 12);
+  animations[gfx::taxCollector               ] = loadAnimation( ResourceGroup::citizen1, 617, 12);
+  animations[gfx::scholar             ] = loadAnimation( ResourceGroup::citizen1, 721, 12);
+  animations[gfx::marketlady        ] = loadAnimation( ResourceGroup::citizen1, 825, 12);
+  animations[gfx::cartPusher            ] = loadAnimation( ResourceGroup::citizen1, 929, 12);
+  animations[gfx::cartPusher2           ] = loadAnimation( ResourceGroup::citizen1, 1033, 12);
+  animations[gfx::engineer          ] = loadAnimation( ResourceGroup::citizen1, 1137, 12);
+  animations[gfx::gladiator         ] = loadAnimation( ResourceGroup::citizen2, 1, 12);
+  animations[gfx::gladiator2        ] = loadAnimation( ResourceGroup::citizen2, 199, 12);
+  animations[gfx::protestor         ] = loadAnimation( ResourceGroup::citizen2, 351, 12);
+  animations[gfx::barber            ] = loadAnimation( ResourceGroup::citizen2, 463, 12);
+  animations[gfx::prefect           ] = loadAnimation( ResourceGroup::citizen2, 615, 12);
+  animations[gfx::prefectDragWater] = loadAnimation( ResourceGroup::citizen2, 767, 12);
+  animations[gfx::prefectFightFire]= loadAnimation( ResourceGroup::citizen2, 863, 6, Walker::acFight );
+  animations[gfx::prefectFight     ] = loadAnimation( ResourceGroup::citizen2, 719, 6, Walker::acFight );
+  animations[gfx::homeless          ] = loadAnimation( ResourceGroup::citizen2, 911, 12);
+  animations[gfx::patrician              ] = loadAnimation( ResourceGroup::citizen3, 713, 12);
+  animations[gfx::doctor            ] = loadAnimation( ResourceGroup::citizen3, 817, 12);
+  animations[gfx::patrician2             ] = loadAnimation( ResourceGroup::citizen3, 921, 12);
+  animations[gfx::teacher           ] = loadAnimation( ResourceGroup::citizen3, 1025, 12);
+  animations[gfx::soldier           ] = loadAnimation( ResourceGroup::citizen3, 553, 12);
+  animations[gfx::javelineer        ] = loadAnimation( ResourceGroup::citizen3, 241, 12);
+  animations[gfx::horseman          ] = loadAnimation( ResourceGroup::citizen4, 1, 12);
+  animations[gfx::horseMerchant     ] = loadAnimation( ResourceGroup::carts, 145, 12);
+  animations[gfx::camelMerchant     ] = loadAnimation( ResourceGroup::carts, 273, 12);
+  animations[gfx::marketkid        ] = loadAnimation( ResourceGroup::carts, 369, 12);
+  animations[gfx::sheep ] = loadAnimation( ResourceGroup::animals, 153, 5 );
+  animations[gfx::fishingBoat      ] = loadAnimation( ResourceGroup::carts, 249, 1 );
+  animations[gfx::fishingBoatWork ] = loadAnimation( ResourceGroup::carts, 257, 1 );
+  animations[gfx::homelessSit      ] = loadAnimation( ResourceGroup::citizen2, 1015, 1 );
+  animations[gfx::lion              ] = loadAnimation( ResourceGroup::lion, 1, 12 );
+  animations[gfx::charioter           ] = loadAnimation( ResourceGroup::citizen5, 1, 12 );
 }
 
 AnimationBank& AnimationBank::instance()
@@ -172,16 +172,16 @@ AnimationBank::MovementAnimation AnimationBank::Impl::loadAnimation( const std::
   return ioMap;
 }
 
-const AnimationBank::MovementAnimation& AnimationBank::getWalker(const WalkerGraphicType walkerGraphic)
+const AnimationBank::MovementAnimation& AnimationBank::getWalker( gfx::Type anim)
 {
   AnimationBank& inst = instance();
-  if( walkerGraphic >= inst._d->animations.size() )
+  if( anim >= inst._d->animations.size() )
   {
-    Logger::warning( "Can't find animation map for type %d", walkerGraphic );
-    return inst._d->animations[ WG_NONE ];
+    Logger::warning( "Can't find animation map for type %d", anim );
+    return inst._d->animations[ gfx::unknown ];
   }
 
-  return inst._d->animations[ walkerGraphic ];
+  return inst._d->animations[ anim ];
 }
 
 void AnimationBank::loadWalkers()

@@ -39,24 +39,24 @@ void TraineeWalker::init(walker::Type traineeType)
   switch( traineeType )
   {
   case walker::actor:
-    _setGraphic( WG_ACTOR );
+    _setAnimation( gfx::actor );
     _buildingNeed.push_back(building::theater);
     _buildingNeed.push_back(building::amphitheater);
   break;
 
   case walker::gladiator:
-    _setGraphic( WG_GLADIATOR );
+    _setAnimation( gfx::gladiator );
     _buildingNeed.push_back(building::amphitheater);
     _buildingNeed.push_back(building::colloseum);
   break;
 
   case walker::tamer:
-    _setGraphic( WG_TAMER );
+    _setAnimation( gfx::tamer );
     _buildingNeed.push_back(building::colloseum);
   break;
 
   case walker::charioter:
-    _setGraphic( WG_NONE );  // TODO
+    _setAnimation( gfx::unknown );  // TODO
   break;
 
   default:
@@ -145,7 +145,7 @@ void TraineeWalker::save( VariantMap& stream ) const
   stream[ "originBldPos" ] = _originBuilding->getTile().getIJ();
   stream[ "destBldPos" ] = _destinationBuilding->getTile().getIJ();
   stream[ "maxDistance" ] = _maxDistance;
-  stream[ "graphic" ] = _getGraphic();
+  stream[ "graphic" ] = _getAnimationType();
   stream[ "type" ] = (int)walker::trainee;
 }
 

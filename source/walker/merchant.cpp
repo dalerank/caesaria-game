@@ -58,7 +58,7 @@ public:
 Merchant::Merchant( CityPtr city )
   : Walker( city ), _d( new Impl )
 {
-  _setGraphic( WG_HORSE_CARAVAN );
+  _setAnimation( gfx::horseMerchant );
   _setType( walker::merchant );
   _d->maxDistance = 60;
   _d->attemptCount = 0;

@@ -50,7 +50,7 @@ public:
 CartSupplier::CartSupplier( CityPtr city )
   : Walker( city ), _d( new Impl )
 {
-  _setGraphic( WG_PUSHER );
+  _setAnimation( gfx::cartPusher );
   _setType( walker::cartPusher );
 
   _d->storageBuildingPos = TilePos( -1, -1 );

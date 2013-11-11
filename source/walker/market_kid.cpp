@@ -53,7 +53,7 @@ MarketKid::MarketKid( CityPtr city )
   _d->delay = 0;
   _d->birthTime = 0;
   _d->basket._maxQty = 100;
-  _setGraphic( WG_MARKET_KID );
+  _setAnimation( gfx::marketkid );
   _setType( walker::marketKid );
 
   setName( NameGenerator::rand( NameGenerator::male ) );

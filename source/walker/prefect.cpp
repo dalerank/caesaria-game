@@ -53,7 +53,7 @@ Prefect::Prefect( CityPtr city )
   _setType( walker::prefect );
   _d->water = 0;
   _d->action = Impl::patrol;
-  _setGraphic( WG_PREFECT );
+  _setAnimation( gfx::prefect );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
@@ -161,7 +161,7 @@ void Prefect::_back2Patrol()
   if( pathway.isValid() )
   {
     _d->action = Impl::patrol;
-    _setGraphic( WG_PREFECT );
+    _setAnimation( gfx::prefect );
     setSpeed( 1 );
     _updatePathway( pathway );
     go();
@@ -246,7 +246,7 @@ void Prefect::onMidTile()
         setSpeed( 0 );
         _setAction( acFight );
         _d->action = Impl::fightFire;
-        _setGraphic( WG_PREFECT_FIGHTS_FIRE );
+        _setAnimation( gfx::prefectFightFire );
         Walker::onNewDirection();
         isDestination = false;
       }
@@ -264,7 +264,7 @@ void Prefect::onMidTile()
       }
       else
       {
-        _setGraphic( WG_PREFECT_DRAG_WATER );
+        _setAnimation( gfx::prefectDragWater );
         _d->action = Impl::gotoFire;
 
         _checkPath2NearestFire( reachedBuildings );
@@ -287,7 +287,7 @@ void Prefect::onMidTile()
         _d->action = Impl::fightProtestor;
         setSpeed( 0.f );
         _setAction( acFight );
-        _setGraphic( WG_PREFECT_FIGHT );
+        _setAnimation( gfx::prefectFight );
         Walker::onNewDirection();
       }
     }
@@ -331,7 +331,7 @@ void Prefect::timeStep(const unsigned long time)
 
     if( !inFire || 0 == _d->water )
     {
-      _setGraphic( WG_PREFECT_DRAG_WATER );
+      _setAnimation( gfx::prefectDragWater );
       _d->action = Impl::gotoFire;  
       setSpeed( 1.5f );
     }      
@@ -385,7 +385,7 @@ void Prefect::send2City(PrefecturePtr prefecture, int water/*=0 */ )
 {
   _d->action = water > 0 ? Impl::gotoFire : Impl::patrol;
   _d->water = water;
-  _setGraphic( water > 0 ? WG_PREFECT_DRAG_WATER : WG_PREFECT );
+  _setAnimation( water > 0 ? gfx::prefectDragWater : gfx::prefect );
 
   if( water > 0 )
   {
@@ -414,7 +414,7 @@ void Prefect::load( const VariantMap& stream )
  
   _d->action = (Impl::PrefectAction)stream.get( "prefectAction" ).toInt();
   _d->water = stream.get( "water" ).toInt();
-  _setGraphic( _d->water > 0 ? WG_PREFECT_DRAG_WATER : WG_PREFECT );
+  _setAnimation( _d->water > 0 ? gfx::prefectDragWater : gfx::prefect );
 
   PrefecturePtr prefecture = getBase().as<Prefecture>();
   if( prefecture.isValid() )

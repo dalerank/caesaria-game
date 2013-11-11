@@ -35,7 +35,7 @@ Animal::Animal( CityPtr city )
   : Walker( city ), _d( new Impl )
 {
   _setType( walker::unknown );
-  _setGraphic( WG_NONE );
+  _setAnimation( gfx::unknown );
 
   setName( _("##Animal##") );
 }
@@ -83,7 +83,7 @@ void Animal::_findNewWay( const TilePos& start )
 
 Sheep::Sheep( CityPtr city ) : Animal( city )
 {
-  _setGraphic( WG_ANIMAL_SHEEP_WALK );
+  _setAnimation( gfx::sheep );
   _setType( walker::sheep );
   setName( _("##Sheep##") );
 

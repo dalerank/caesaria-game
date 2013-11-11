@@ -76,7 +76,7 @@ void FishingBoat::timeStep(const unsigned long time)
     case Impl::ready2Catch:
     {
       _getAnimation().clear();
-      _setGraphic( WG_FISHING_BOAT );
+      _setAnimation( gfx::fishingBoat );
       Pathway way = _d->findFishingPlace( _getCity(), getIJ() );
       if( way.isValid() )
       {
@@ -91,7 +91,7 @@ void FishingBoat::timeStep(const unsigned long time)
     case Impl::catchFish:
     {
       _getAnimation().clear();
-      _setGraphic( WG_FISHING_BOAT_WORK );
+      _setAnimation( gfx::fishingBoatWork );
 
       CityHelper helper( _getCity() );
       FishPlacePtr overlay = helper.find<FishPlace>( place::fishPlace, getIJ() );
@@ -129,7 +129,7 @@ void FishingBoat::timeStep(const unsigned long time)
         }
 
         _getAnimation().clear();
-        _setGraphic( WG_FISHING_BOAT );
+        _setAnimation( gfx::fishingBoat );
       }
       else
       {
@@ -181,7 +181,7 @@ void FishingBoat::die()
 
 FishingBoat::FishingBoat( CityPtr city ) : Ship( city ), _d( new Impl )
 {
-  _setGraphic( WG_FISHING_BOAT );
+  _setAnimation( gfx::fishingBoat );
   _setType( walker::fishingBoat );
   setName( _("##fishing_boat##") );
   _d->mode = Impl::wait;

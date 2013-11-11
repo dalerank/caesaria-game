@@ -15,37 +15,60 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#ifndef __OPENCAESAR3_ANIMATION_BANK_H_INCLUDED__
-#define __OPENCAESAR3_ANIMATION_BANK_H_INCLUDED__
 
-#include "animation.hpp"
-#include "walker/action.hpp"
-#include "game/good.hpp"
-#include "core/direction.hpp"
-#include "constants.hpp"
+#ifndef _OPENCAESAR3_GFX_CONSTANTS_INCLUDE_H_
+#define _OPENCAESAR3_GFX_CONSTANTS_INCLUDE_H_
 
-#include <map>
-
-class AnimationBank
+namespace constants
 {
-public:
-  typedef std::map< DirectedAction, Animation > MovementAnimation;
 
-  static AnimationBank& instance();
+namespace gfx
+{
 
-  // loads all cart graphics
-  static void loadCarts();
-  static void loadWalkers();
-
-  static const Picture& getCart( int cartID, constants::Direction direction );
-
-  static const MovementAnimation& getWalker( const constants::gfx::Type walkerGraphic );
-
-private:
-  AnimationBank();
-
-  class Impl;
-  ScopedPtr< Impl > _d;
+enum Type
+{
+  unknown=0,
+  citizen,
+  bathlady,
+  priest,
+  actor,
+  tamer,
+  taxCollector,
+  scholar,
+  marketlady,
+  cartPusher,
+  cartPusher2,
+  engineer,
+  gladiator,
+  gladiator2,
+  protestor,
+  barber,
+  prefect,
+  prefectDragWater,
+  prefectFightFire,
+  prefectFight,
+  homeless,
+  patrician,
+  patrician2,
+  doctor,
+  teacher,
+  javelineer,
+  soldier,
+  horseman,
+  horseMerchant,
+  camelMerchant,
+  marketkid,
+  sheep,
+  fishingBoat,
+  fishingBoatWork,
+  homelessSit,
+  lion,
+  charioter,
+  countType
 };
 
-#endif  //__OPENCAESAR3_ANIMATION_BANK_H_INCLUDED__
+}//end namespace gfx
+
+}//end namespace constants
+
+#endif  //_OPENCAESAR3_GFX_CONSTANTS_INCLUDE_H_

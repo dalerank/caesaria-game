@@ -32,6 +32,7 @@
 #include "core/smartptr.hpp"
 #include "core/scopedptr.hpp"
 #include "core/predefinitions.hpp"
+#include "gfx/constants.hpp"
 
 typedef unsigned int UniqueId;
 class Pathway;
@@ -91,8 +92,6 @@ public:
   virtual void go();
   virtual void die();
 
-  // graphic
-  WalkerGraphicType getWalkerGraphic() const;
   virtual void getPictureList(std::vector<Picture> &oPics);
   virtual const Picture& getMainPicture();
 
@@ -106,8 +105,8 @@ protected:
    void _updatePathway( const Pathway& pathway );
    void _setAction( Walker::Action action );
    void _setDirection( constants::Direction direction );
-   void _setGraphic( WalkerGraphicType type );
-   WalkerGraphicType _getGraphic() const;
+   void _setAnimation( constants::gfx::Type type );
+   constants::gfx::Type _getAnimationType() const;
    void _setType( constants::walker::Type type );
    CityPtr _getCity() const;
    void _setHealth( double value );

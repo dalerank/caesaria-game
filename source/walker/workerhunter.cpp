@@ -32,7 +32,7 @@ WorkersHunter::WorkersHunter( CityPtr city )
  : ServiceWalker( city, Service::workersRecruter )
 {    
     _workersNeeded = 0;
-    _setGraphic( WG_POOR );
+    _setAnimation( gfx::citizen );
     _setType( walker::recruter );
 }
 

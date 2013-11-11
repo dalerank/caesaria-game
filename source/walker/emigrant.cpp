@@ -32,7 +32,7 @@ Emigrant::Emigrant( CityPtr city ) : Immigrant( city )
   setPeoples( peoples );
 
   _setType( walker::emigrant );
-  _setGraphic( WG_PUSHER2 );
+  _setAnimation( gfx::cartPusher2 );
 }
 
 const Picture& Emigrant::getCartPicture()

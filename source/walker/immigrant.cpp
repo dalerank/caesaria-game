@@ -43,7 +43,7 @@ Immigrant::Immigrant( CityPtr city )
   : Walker( city ), _d( new Impl )
 {
   _setType( walker::immigrant );
-  _setGraphic( WG_HOMELESS );
+  _setAnimation( gfx::homeless );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
   _d->stamina = rand() % 80 + 20;
@@ -198,7 +198,7 @@ void Immigrant::timeStep(const unsigned long time)
     _d->stamina = math::clamp( _d->stamina-1, 0, 100 );
     if( _d->stamina == 0 )
     {
-      _setGraphic( WG_HOMELESS_SIT );
+      _setAnimation( gfx::homelessSit );
       _setAction( Walker::acNone );
       _getAnimation().clear();
     }
@@ -208,7 +208,7 @@ void Immigrant::timeStep(const unsigned long time)
     _d->stamina = math::clamp( _d->stamina+5, 0, 100 );
     if( _d->stamina >= 100 )
     {
-      _setGraphic( WG_HOMELESS );
+      _setAnimation( gfx::homeless );
       _setAction( Walker::acMove );
       _getAnimation().clear();
     }

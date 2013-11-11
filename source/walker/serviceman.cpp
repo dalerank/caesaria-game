@@ -40,7 +40,7 @@ ServiceWalker::ServiceWalker( CityPtr city, const Service::Type service)
   : Walker( city ), _d( new Impl )
 {
   _setType( walker::serviceman );
-  _setGraphic( WG_NONE );
+  _setAnimation( gfx::unknown );
   _d->maxDistance = 5;  // TODO: _building.getMaxDistance() ?
   _d->service = service;
 
@@ -57,7 +57,7 @@ void ServiceWalker::_init(const Service::Type service)
   case Service::well:
   case Service::fontain:
   case Service::oracle:
-    _setGraphic( WG_NONE );
+    _setAnimation( gfx::unknown );
   break;
   
   case Service::religionNeptune:
@@ -65,26 +65,26 @@ void ServiceWalker::_init(const Service::Type service)
   case Service::religionVenus:
   case Service::religionMars:
   case Service::religionMercury:
-    _setGraphic( WG_PRIEST );
+    _setAnimation( gfx::priest );
   break;
   
-  case Service::engineer: _setGraphic( WG_ENGINEER ); _setType( walker::engineer ); break;
-  case Service::doctor:   _setGraphic( WG_DOCTOR );   _setType( walker::doctor );   break;
-  case Service::hospital: _setGraphic( WG_DOCTOR );   _setType( walker::surgeon );  break;
-  case Service::barber:   _setGraphic( WG_BARBER );   _setType( walker::barber );   break;
-  case Service::baths:    _setGraphic( WG_BATH );     _setType( walker::bathlady ); break;
-  case Service::school:   _setGraphic( WG_CHILD );                                  break;
-  case Service::theater:  _setGraphic( WG_ACTOR );    _setType( walker::actor );    break;
-  case Service::amphitheater:_setGraphic( WG_GLADIATOR ); _setType( walker::gladiator ); break;
-  case Service::colloseum:_setGraphic( WG_TAMER );    _setType( walker::tamer );    break;
-  case Service::hippodrome:_setGraphic( WG_ACTOR );   _setType( walker::charioter ); break;
-  case Service::market: _setGraphic( WG_MARKETLADY ); nameType = NameGenerator::female; break;
+  case Service::engineer: _setAnimation( gfx::engineer ); _setType( walker::engineer ); break;
+  case Service::doctor:   _setAnimation( gfx::doctor );   _setType( walker::doctor );   break;
+  case Service::hospital: _setAnimation( gfx::doctor );   _setType( walker::surgeon );  break;
+  case Service::barber:   _setAnimation( gfx::barber );   _setType( walker::barber );   break;
+  case Service::baths:    _setAnimation( gfx::bathlady );     _setType( walker::bathlady ); break;
+  case Service::school:   _setAnimation( gfx::scholar );                                  break;
+  case Service::theater:  _setAnimation( gfx::actor );    _setType( walker::actor );    break;
+  case Service::amphitheater:_setAnimation( gfx::gladiator ); _setType( walker::gladiator ); break;
+  case Service::colloseum:_setAnimation( gfx::tamer );    _setType( walker::tamer );    break;
+  case Service::hippodrome:_setAnimation( gfx::actor );   _setType( walker::charioter ); break;
+  case Service::market: _setAnimation( gfx::marketlady ); nameType = NameGenerator::female; break;
 
   case Service::library:
-  case Service::college:  _setGraphic( WG_TEACHER );                              break;
+  case Service::college:  _setAnimation( gfx::teacher );                              break;
 
   case Service::forum:
-  case Service::senate:   _setGraphic( WG_TAX );                                    break;
+  case Service::senate:   _setAnimation(gfx:: taxCollector );                                    break;
 
   default:
   break;

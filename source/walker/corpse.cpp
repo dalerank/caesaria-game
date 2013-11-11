@@ -74,7 +74,7 @@ void Corpse::create(CityPtr city, TilePos pos,
 Corpse::Corpse( CityPtr city ) : Walker( city ), _d( new Impl )
 {
   _setType( walker::corpse );
-  _setGraphic( WG_NONE );
+  _setAnimation( gfx::unknown );
 
   _d->startIndex = 0;
   _d->currentIndex = 0;

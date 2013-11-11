@@ -45,7 +45,7 @@ public:
 
 Protestor::Protestor( CityPtr city ) : Walker( city ), _d( new Impl )
 {    
-  _setGraphic( WG_PROTESTOR );
+  _setAnimation( gfx::protestor );
   _setType( walker::protestor );
 
   addAbility( Illness::create( 0.3, 4) );
