@@ -197,9 +197,9 @@ AdvisorEmployerWindow::Impl::EmployersInfo AdvisorEmployerWindow::Impl::getEmplo
 
   WorkingBuildingList buildings;
   CityHelper helper( city );
-  foreach( TileOverlay::Group cl, bldClasses )
+  foreach( TileOverlay::Group buildingsGroup, bldClasses )
   {
-    WorkingBuildingList sectorBuildings = helper.find<WorkingBuilding>( TileOverlay::any, cl );
+    WorkingBuildingList sectorBuildings = helper.find<WorkingBuilding>( buildingsGroup );
     buildings.insert( buildings.begin(), sectorBuildings.begin(), sectorBuildings.end() );
   }
 

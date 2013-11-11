@@ -313,7 +313,7 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_warehouse(Propagator &pathPro
 {
   BuildingPtr res;
 
-  res = reserveShortestPath<Warehouse>( building::B_WAREHOUSE, stock, reservationID, pathPropagator, oPathWay );
+  res = reserveShortestPath<Warehouse>( building::warehouse, stock, reservationID, pathPropagator, oPathWay );
 
   return res;
 }

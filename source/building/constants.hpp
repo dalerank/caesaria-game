@@ -19,171 +19,184 @@
 #ifndef _OPENCAESAR3_BUILDING_CONSTANTS_INCLUDE_H_
 #define _OPENCAESAR3_BUILDING_CONSTANTS_INCLUDE_H_
 
-#include "gfx/tileoverlay.hpp"
-
 namespace constants
 {
 
 namespace construction
 {
-// road
-const TileOverlay::Type road=10;
-const TileOverlay::Type B_PLAZA=11;
-const TileOverlay::Type B_GARDEN=12;
+
+enum Type
+{
+  unknown=0,
+  road,
+  B_PLAZA,
+  B_GARDEN,
+  count
+};
+
 }
 
 namespace building
 {
 
-const TileOverlay::Group unknownGroup=0;
-const TileOverlay::Group industryGroup=1;
-const TileOverlay::Group obtainGroup=2;
-const TileOverlay::Group foodGroup=3;
-const TileOverlay::Group disasterGroup=4;
-const TileOverlay::Group religionGroup=5;
-const TileOverlay::Group militaryGroup=6;
-const TileOverlay::Group nativeGroup=7;
-const TileOverlay::Group water=8;
-const TileOverlay::Group administration=9;
-const TileOverlay::Group BC_BRIDGE=10;
-const TileOverlay::Group BC_ENGINEERING=11;
-const TileOverlay::Group BC_TRADE=12;
-const TileOverlay::Group BC_TOWER=13;
-const TileOverlay::Group BC_GATE=14;
-const TileOverlay::Group BC_SECURITY=15;
-const TileOverlay::Group BC_EDUCATUION=16;
-const TileOverlay::Group BC_HEALTH=17;
-const TileOverlay::Group BC_SIGHT=18;
-const TileOverlay::Group BC_GARDEN=19;
-const TileOverlay::Group BC_ROAD=20;
-const TileOverlay::Group BC_ENTERTAINMENT=21;
-const TileOverlay::Group BC_HOUSE=22;
-const TileOverlay::Group BC_WALL=23;
-const TileOverlay::Group BC_MAX=24;
+enum Group
+{
+  unknownGroup=0,
+  industryGroup,
+  obtainGroup,
+  foodGroup,
+  disasterGroup,
+  religionGroup,
+  militaryGroup,
+  nativeGroup,
+  water,
+  administration,
+  BC_BRIDGE,
+  BC_ENGINEERING,
+  BC_TRADE,
+  BC_TOWER,
+  BC_GATE,
+  BC_SECURITY,
+  BC_EDUCATUION,
+  BC_HEALTH,
+  BC_SIGHT,
+  BC_GARDEN,
+  BC_ROAD,
+  BC_ENTERTAINMENT,
+  BC_HOUSE,
+  BC_WALL,
+  BC_MAX,
+  anyGroup=BC_MAX
+};
 
+enum Type
+{
 //unknown building
-const TileOverlay::Type unknown=0;
-const TileOverlay::Type any=TileOverlay::any;
+  unknown=construction::unknown,
+  any=unknown,
 
 // entertainment
-const TileOverlay::Type amphitheater=1;
-const TileOverlay::Type theater=2;
-const TileOverlay::Type hippodrome=3;
-const TileOverlay::Type colloseum=4;
-const TileOverlay::Type actorColony=5;
-const TileOverlay::Type gladiatorSchool=6;
-const TileOverlay::Type lionHouse=7;
-const TileOverlay::Type chariotSchool=8;
+  amphitheater=construction::count,
+  theater,
+  hippodrome,
+  colloseum,
+  actorColony,
+  gladiatorSchool,
+  lionHouse,
+  chariotSchool,
 
 // house
-const TileOverlay::Type house=9;
+  house,
 
 // administration
-const TileOverlay::Type senate=13;
-const TileOverlay::Type forum=14;
-const TileOverlay::Type governorHouse=15;
-const TileOverlay::Type governorVilla=16;
-const TileOverlay::Type governorPalace=17;
+  senate,
+  forum,
+  governorHouse,
+  governorVilla,
+  governorPalace,
 
 // water
-const TileOverlay::Type B_RESERVOIR=18;
-const TileOverlay::Type B_AQUEDUCT=19;
-const TileOverlay::Type B_FOUNTAIN=20;
-const TileOverlay::Type B_WELL=21;
+  B_RESERVOIR,
+  B_AQUEDUCT,
+  B_FOUNTAIN,
+  B_WELL,
 
 // security
-const TileOverlay::Type prefecture=22;
-const TileOverlay::Type B_WALL=23;
-const TileOverlay::Type B_TOWER=24;
-const TileOverlay::Type B_GATEHOUSE=25;
-const TileOverlay::Type B_FORT_LEGIONNAIRE=26;
-const TileOverlay::Type B_FORT_JAVELIN=27;
-const TileOverlay::Type B_FORT_MOUNTED=28;
-const TileOverlay::Type B_MILITARY_ACADEMY=29;
-const TileOverlay::Type B_BARRACKS=30;
+  prefecture,
+  B_WALL,
+  B_TOWER,
+  B_GATEHOUSE,
+  B_FORT_LEGIONNAIRE,
+  B_FORT_JAVELIN,
+  B_FORT_MOUNTED,
+  B_MILITARY_ACADEMY,
+  B_BARRACKS,
 
 // commerce
-const TileOverlay::Type B_MARKET=31;
-const TileOverlay::Type granary=32;
-const TileOverlay::Type B_WAREHOUSE=33;
+  market,
+  granary,
+  warehouse,
 
 // farms
-const TileOverlay::Type wheatFarm=34;
-const TileOverlay::Type B_FRUIT_FARM=35;
-const TileOverlay::Type B_VEGETABLE_FARM=36;
-const TileOverlay::Type B_OLIVE_FARM=37;
-const TileOverlay::Type grapeFarm=38;
-const TileOverlay::Type B_PIG_FARM=39;
+  wheatFarm,
+  B_FRUIT_FARM,
+  B_VEGETABLE_FARM,
+  B_OLIVE_FARM,
+  grapeFarm,
+  B_PIG_FARM,
 
 // raw materials
-const TileOverlay::Type marbleQuarry=40;
-const TileOverlay::Type ironMine=41;
-const TileOverlay::Type timberLogger=42;
-const TileOverlay::Type clayPit=43;
+  marbleQuarry,
+  ironMine,
+  timberLogger,
+  clayPit,
 
 // factories
-const TileOverlay::Type B_WINE_WORKSHOP=44;
-const TileOverlay::Type B_OIL_WORKSHOP=45;
-const TileOverlay::Type B_WEAPONS_WORKSHOP=46;
-const TileOverlay::Type B_FURNITURE=47;
-const TileOverlay::Type pottery=48;
+  B_WINE_WORKSHOP,
+  B_OIL_WORKSHOP,
+  B_WEAPONS_WORKSHOP,
+  B_FURNITURE,
+  pottery,
 
 // utility
-const TileOverlay::Type engineerPost=49;
-const TileOverlay::Type B_STATUE1=50;
-const TileOverlay::Type B_STATUE2=51;
-const TileOverlay::Type B_STATUE3=52;
-const TileOverlay::Type lowBridge=53;
-const TileOverlay::Type highBridge=54;
-const TileOverlay::Type B_SHIPYARD=55;
-const TileOverlay::Type B_DOCK=56;
-const TileOverlay::Type wharf=57;
+  engineerPost,
+  B_STATUE1,
+  B_STATUE2,
+  B_STATUE3,
+  lowBridge,
+  highBridge,
+  B_SHIPYARD,
+  B_DOCK,
+  wharf,
 
 // health
-const TileOverlay::Type B_DOCTOR=58;
-const TileOverlay::Type B_HOSPITAL=59;
-const TileOverlay::Type B_BATHS=60;
-const TileOverlay::Type B_BARBER=61;
+  B_DOCTOR,
+  B_HOSPITAL,
+  B_BATHS,
+  B_BARBER,
 
 // education
-const TileOverlay::Type B_SCHOOL=62;
-const TileOverlay::Type B_COLLEGE=63;
-const TileOverlay::Type B_LIBRARY=64;
-const TileOverlay::Type B_MISSION_POST=65;
+  B_SCHOOL,
+  B_COLLEGE,
+  B_LIBRARY,
+  B_MISSION_POST,
 
 // religion: small temples
-const TileOverlay::Type templeCeres=66;
-const TileOverlay::Type B_TEMPLE_MARS=67;
-const TileOverlay::Type B_TEMPLE_NEPTUNE=68;
-const TileOverlay::Type B_TEMPLE_MERCURE=69;
-const TileOverlay::Type B_TEMPLE_VENUS=70;
+  templeCeres,
+  B_TEMPLE_MARS,
+  B_TEMPLE_NEPTUNE,
+  B_TEMPLE_MERCURE,
+  B_TEMPLE_VENUS,
 
 // religion: big temples
-const TileOverlay::Type B_BIG_TEMPLE_CERES=71;
-const TileOverlay::Type B_BIG_TEMPLE_MARS=72;
-const TileOverlay::Type B_BIG_TEMPLE_NEPTUNE=73;
-const TileOverlay::Type B_BIG_TEMPLE_MERCURE=74;
-const TileOverlay::Type B_BIG_TEMPLE_VENUS=75;
+  B_BIG_TEMPLE_CERES,
+  B_BIG_TEMPLE_MARS,
+  B_BIG_TEMPLE_NEPTUNE,
+  B_BIG_TEMPLE_MERCURE,
+  B_BIG_TEMPLE_VENUS,
 
 // religion: others
-const TileOverlay::Type B_TEMPLE_ORACLE=76;
+  B_TEMPLE_ORACLE,
 
 // building of natives
-const TileOverlay::Type B_NATIVE_HUT=77;
-const TileOverlay::Type B_NATIVE_CENTER=78;
-const TileOverlay::Type B_NATIVE_FIELD=79;
+  B_NATIVE_HUT,
+  B_NATIVE_CENTER,
+  B_NATIVE_FIELD,
 
 //other
-const TileOverlay::Type B_TRIUMPHAL_ARCH=80;
-const TileOverlay::Type B_BURNING_RUINS=81;
-const TileOverlay::Type B_BURNED_RUINS=82;
-const TileOverlay::Type B_COLLAPSED_RUINS=83;
-const TileOverlay::Type B_PLAGUE_RUINS=84;
+  B_TRIUMPHAL_ARCH,
+  burningRuins,
+  B_BURNED_RUINS,
+  B_COLLAPSED_RUINS,
+  B_PLAGUE_RUINS,
 
-const TileOverlay::Type B_FORUM_2=85;
-const TileOverlay::Type B_SENATE_2=86;
-}
+  B_FORUM_2,
+  B_SENATE_2,
+  userType=1000
+}; //end Type
 
-}
+} //end namespace building
+
+} //end namespace constants
 
 #endif  //_OPENCAESAR3_BUILDING_CONSTANTS_INCLUDE_H_

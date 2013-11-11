@@ -185,7 +185,7 @@ unsigned int CityStatistic::getCurrentWorkersNumber(CityPtr city)
 {
   CityHelper helper( city );
 
-  WorkingBuildingList buildings = helper.find<WorkingBuilding>( TileOverlay::any );
+  WorkingBuildingList buildings = helper.find<WorkingBuilding>( building::any );
 
   int workersNumber = 0;
   foreach( WorkingBuildingPtr bld, buildings )
@@ -200,7 +200,7 @@ unsigned int CityStatistic::getVacantionsNumber(CityPtr city)
 {
   CityHelper helper( city );
 
-  WorkingBuildingList buildings = helper.find<WorkingBuilding>( TileOverlay::any );
+  WorkingBuildingList buildings = helper.find<WorkingBuilding>( building::any );
 
   int workersNumber = 0;
   foreach( WorkingBuildingPtr bld, buildings )

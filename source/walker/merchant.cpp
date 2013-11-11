@@ -73,7 +73,7 @@ Merchant::~Merchant()
 Propagator::DirectRoute getWarehouse4Buys( Propagator &pathPropagator,
                                            SimpleGoodStore& basket )
 {
-  Propagator::Routes pathWayList = pathPropagator.getRoutes( building::B_WAREHOUSE );
+  Propagator::Routes pathWayList = pathPropagator.getRoutes( building::warehouse );
 
   std::map< int, Propagator::DirectRoute > warehouseRating;
 
@@ -106,7 +106,7 @@ Propagator::DirectRoute getWarehouse4Buys( Propagator &pathPropagator,
 Propagator::DirectRoute getWarehouse4Sells( Propagator &pathPropagator,
                                             SimpleGoodStore& basket )
 {
-  Propagator::Routes pathWayList = pathPropagator.getRoutes( building::B_WAREHOUSE );
+  Propagator::Routes pathWayList = pathPropagator.getRoutes( building::warehouse );
 
   // select the warehouse with the max quantity of requested goods
   Propagator::Routes::iterator pathWayIt = pathWayList.begin(); 
@@ -151,7 +151,7 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
 
       if( !route.first.isValid() )
       {
-        route = pathPropagator.getShortestRoute( building::B_WAREHOUSE );
+        route = pathPropagator.getShortestRoute( building::warehouse );
       }
 
       if( route.first.isValid()  )
@@ -208,12 +208,12 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
   case stBuyGoods:
     {
       CityHelper helper( city );
-      WarehousePtr warehouse = helper.find<Warehouse>( destBuildingPos );
+      WarehousePtr warehouse = helper.find<Warehouse>( building::warehouse, destBuildingPos );
 
       if( warehouse.isValid() )
       {
         std::map< Good::Type, int > cityGoodsAvailable;
-        WarehouseList warehouses = helper.find<Warehouse>( building::B_WAREHOUSE );
+        WarehouseList warehouses = helper.find<Warehouse>( building::warehouse );
         foreach( WarehousePtr wh, warehouses )
         {
           for( int i=Good::wheat; i < Good::goodCount; i++ )
@@ -277,7 +277,7 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
   case stSellGoods:
     {
       CityHelper helper( city );
-      WarehousePtr warehouse = helper.find<Warehouse>( destBuildingPos );
+      WarehousePtr warehouse = helper.find<Warehouse>( building::warehouse, destBuildingPos );
 
       const GoodStore& cityOrders = city->getBuys();
 

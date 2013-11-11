@@ -500,7 +500,7 @@ int AdvisorTradeWindow::Impl::getStackedGoodsQty( Good::Type gtype )
   CityHelper helper( city );
 
   int goodsQty = 0;
-  WarehouseList warehouses = helper.find< Warehouse >( building::B_WAREHOUSE );
+  WarehouseList warehouses = helper.find< Warehouse >( building::warehouse );
   foreach( WarehousePtr warehouse, warehouses )
   {
     goodsQty += warehouse->getGoodStore().getCurrentQty( gtype );

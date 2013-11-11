@@ -71,7 +71,7 @@ void CartSupplier::onDestination()
     // walker is back in the market
     deleteLater();
     // put the content of the stock to receiver
-    BuildingPtr building = helper.find<Building>( _d->baseBuildingPos );
+    BuildingPtr building = helper.find<Building>( building::any, _d->baseBuildingPos );
 
     GoodStore* storage = 0;
     if( building.is<Factory>() )
@@ -102,7 +102,7 @@ void CartSupplier::onDestination()
 
     // get goods from destination building
     
-    BuildingPtr building = helper.find<Building>( _d->storageBuildingPos );
+    BuildingPtr building = helper.find<Building>( building::any, _d->storageBuildingPos );
 
     if( building.is<Granary>() )
     {
@@ -230,7 +230,7 @@ void CartSupplier::computeWalkerDestination(BuildingPtr building, const Good::Ty
   if( _d->storageBuildingPos.getI() < 0 )
   {
     // try get that good from a warehouse
-    _d->storageBuildingPos = getSupplierDestination2<Warehouse>( pathPropagator, building::B_WAREHOUSE,
+    _d->storageBuildingPos = getSupplierDestination2<Warehouse>( pathPropagator, building::warehouse,
                                                                  type, qty, pathWay, _d->reservationID );
   }
 

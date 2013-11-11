@@ -22,6 +22,9 @@
 #include "building/farm.hpp"
 #include "events/event.hpp"
 #include "core/gettext.hpp"
+#include "building/constants.hpp"
+
+using namespace constants;
 
 class RomeDivinityBase : public RomeDivinity
 {  
@@ -102,7 +105,7 @@ public:
       event->dispatch();
 
       CityHelper helper( city );
-      FarmList farms = helper.find<Farm>( TileOverlay::any );
+      FarmList farms = helper.find<Farm>( building::any );
       foreach( FarmPtr farm, farms )
       {
         farm->updateProgress( -farm->getProgress() );

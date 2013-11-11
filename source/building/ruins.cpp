@@ -24,7 +24,7 @@
 
 using namespace constants;
 
-BurningRuins::BurningRuins() : ServiceBuilding(Service::burningRuins, building::B_BURNING_RUINS, Size(1) )
+BurningRuins::BurningRuins() : ServiceBuilding(Service::burningRuins, building::burningRuins, Size(1) )
 {
   updateState( Construction::fire, 99, false );
 

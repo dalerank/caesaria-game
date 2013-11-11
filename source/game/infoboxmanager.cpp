@@ -73,7 +73,7 @@ public:
   gui::InfoBoxSimple* create( gui::Widget* parent, const Tile& tile )
   {
     CityHelper helper( city );
-    WalkerList walkers = helper.getWalkers<Walker>( tile.getIJ() );
+    WalkerList walkers = helper.find<Walker>( walker::any, tile.getIJ() );
 
     if( walkers.empty() )
     {
@@ -185,14 +185,14 @@ InfoBoxManager::InfoBoxManager( CityPtr city, GuiEnv* gui ) : _d( new Impl )
   addInfobox( building::B_HOSPITAL,         OC3_STR_EXT(B_HOSPITAL), new ServiceBaseInfoboxCreator( "##hospital_title##", "##hospital_text##" ) );
   addInfobox( building::B_FOUNTAIN,         OC3_STR_EXT(B_FOUNTAIN), new BaseInfoboxCreator<InfoBoxFontain>() );
   addInfobox( building::B_AQUEDUCT,         OC3_STR_EXT(B_AQUEDUCT), new InfoBoxBasicCreator( "##aqueduct_title##", "##aqueduct_text##") );
-  addInfobox( building::B_MARKET,           OC3_STR_EXT(B_MARKET), new BaseInfoboxCreator<InfoBoxMarket>() );
+  addInfobox( building::market,           OC3_STR_EXT(B_MARKET), new BaseInfoboxCreator<InfoBoxMarket>() );
   addInfobox( building::granary,          OC3_STR_EXT(B_GRANARY), new BaseInfoboxCreator<InfoBoxGranary>() );
   addInfobox( building::grapeFarm,       OC3_STR_EXT(B_GRAPE_FARM), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
   addInfobox( building::wheatFarm,       OC3_STR_EXT(B_WHEAT_FARM), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
   addInfobox( building::B_VEGETABLE_FARM,   OC3_STR_EXT(B_VEGETABLE_FARM), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
   addInfobox( building::B_OLIVE_FARM,       OC3_STR_EXT(B_OLIVE_FARM), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
   addInfobox( building::B_FRUIT_FARM,       OC3_STR_EXT(B_FRUIT_FARM), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
-  addInfobox( building::B_WAREHOUSE,        OC3_STR_EXT(B_WAREHOUSE), new BaseInfoboxCreator<InfoBoxWarehouse>() );
+  addInfobox( building::warehouse,        OC3_STR_EXT(B_WAREHOUSE), new BaseInfoboxCreator<InfoBoxWarehouse>() );
   addInfobox( building::B_PIG_FARM,         OC3_STR_EXT(B_PIG_FARM), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
   addInfobox( building::templeCeres,     OC3_STR_EXT(B_TEMPLE_CERES), new BaseInfoboxCreator<InfoBoxTemple>() );
   addInfobox( building::B_TEMPLE_MARS,      OC3_STR_EXT(B_TEMPLE_MARS), new BaseInfoboxCreator<InfoBoxTemple>() );

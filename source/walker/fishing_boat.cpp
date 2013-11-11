@@ -58,7 +58,7 @@ void FishingBoat::load( const VariantMap& stream )
   _d->mode = (Impl::Mode)stream.get( "mode", (int)Impl::wait ).toInt();
 
   CityHelper helper( _getCity() );
-  _d->base = helper.find<Wharf>( (TilePos)stream.get( "base" ) );
+  _d->base = helper.find<Wharf>( building::wharf, (TilePos)stream.get( "base" ) );
   if( _d->base.isValid() )
   {
     _d->base->assignBoat( this );
@@ -94,7 +94,7 @@ void FishingBoat::timeStep(const unsigned long time)
       _setGraphic( WG_FISHING_BOAT_WORK );
 
       CityHelper helper( _getCity() );
-      FishPlacePtr overlay = helper.find<FishPlace>( getIJ() );
+      FishPlacePtr overlay = helper.find<FishPlace>( place::fishPlace, getIJ() );
 
       if( overlay != 0 )
       {

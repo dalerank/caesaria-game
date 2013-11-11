@@ -60,7 +60,7 @@ void LayerFood::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       //fire buildings and roads
     case construction::road:
     case construction::B_PLAZA:
-    case building::B_MARKET:
+    case building::market:
     case building::granary:
       pic = tile.getPicture();
       needDrawAnimations = true;

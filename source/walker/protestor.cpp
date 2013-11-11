@@ -165,7 +165,7 @@ void Protestor::timeStep(const unsigned long time)
     {
 
       CityHelper helper( _getCity() );
-      ConstructionList constructions = helper.find<Construction>( getIJ() - TilePos( 1, 1), getIJ() + TilePos( 1, 1) );
+      ConstructionList constructions = helper.find<Construction>( building::any, getIJ() - TilePos( 1, 1), getIJ() + TilePos( 1, 1) );
 
       for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
       {

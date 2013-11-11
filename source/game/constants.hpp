@@ -27,7 +27,6 @@ namespace constants
 namespace place
 {
 const TileOverlay::Type fishPlace=100;
-const TileOverlay::Type userType=1000;
 }
 
 }

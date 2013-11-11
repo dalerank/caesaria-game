@@ -88,7 +88,7 @@ Walker::~Walker()
 {
 }
 
-int Walker::getType() const
+walker::Type Walker::getType() const
 {
    return _d->walkerType;
 }
@@ -415,6 +415,11 @@ void Walker::updateHealth(double value)
   _d->health = math::clamp( _d->health + value, -100.0, 100.0 );
 }
 
+void Walker::acceptAction(Walker::Action, TilePos)
+{
+
+}
+
 void Walker::setName(const std::string &name)
 {
   _d->name = name;
@@ -549,6 +554,19 @@ PathWay& Walker::_getPathway()
 const PathWay& Walker::getPathway() const
 {
   return _d->pathWay;
+}
+
+void Walker::turn(TilePos pos)
+{
+  int angle = (int)((pos - getIJ()).getAngle() / 45.f);
+
+  Direction directions[] = { north, northEast, east, southEast, south, southWest, west, northWest };
+
+  if( _d->action.direction != directions[ angle ] )
+  {
+    _d->action.direction = directions[ angle ];
+    onNewDirection();
+  }
 }
 
 Animation& Walker::_getAnimation()

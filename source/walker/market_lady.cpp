@@ -147,7 +147,7 @@ void MarketLady::computeWalkerDestination( MarketPtr market )
         else
         {
            // try get that good from a warehouse
-           _d->destBuildingPos = getWalkerDestination2<Warehouse>( pathPropagator, building::B_WAREHOUSE, _d->market,
+           _d->destBuildingPos = getWalkerDestination2<Warehouse>( pathPropagator, building::warehouse, _d->market,
                                                                 _d->basket, _d->priorityGood, pathWay, _d->reservationID );
         }
 
@@ -297,7 +297,7 @@ void MarketLady::load( const VariantMap& stream)
   _d->priorityGood = (Good::Type)stream.get( "priorityGood" ).toInt();
   TilePos tpos = stream.get( "marketPos" ).toTilePos();
   CityHelper helper( _getCity() );
-  _d->market = helper.find<Market>( tpos );
+  _d->market = helper.find<Market>( building::market, tpos );
   _d->basket.load( stream.get( "basket" ).toMap() );
   _d->maxDistance = stream.get( "maxDistance" ).toInt();
   _d->reservationID = stream.get( "reserationId" ).toInt();

@@ -204,8 +204,8 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::B_MILITARY_ACADEMY, OC3_STR_EXT(MilitaryAcademy), new WorkingBuildingCreator<MilitaryAcademy>() );
   addCreator(building::B_BARRACKS,   OC3_STR_EXT(Barracks)        , new ConstructionCreator<Barracks>() );
   // commerce
-  addCreator(building::B_MARKET,     OC3_STR_EXT(Market)  , new WorkingBuildingCreator<Market>() );
-  addCreator(building::B_WAREHOUSE,  OC3_STR_EXT(Warehouse), new WorkingBuildingCreator<Warehouse>() );
+  addCreator(building::market,     OC3_STR_EXT(Market)  , new WorkingBuildingCreator<Market>() );
+  addCreator(building::warehouse,  OC3_STR_EXT(Warehouse), new WorkingBuildingCreator<Warehouse>() );
   addCreator(building::granary,      OC3_STR_EXT(Warehouse)  , new WorkingBuildingCreator<Warehouse>() );
   // farms
   addCreator(building::wheatFarm,    OC3_STR_EXT(FarmWheat) , new FactoryCreator<FarmWheat>() );
@@ -261,7 +261,7 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::B_NATIVE_FIELD, OC3_STR_EXT(NativeField) , new ConstructionCreator<NativeField>() );
 
   //damages
-  addCreator(building::B_BURNING_RUINS , OC3_STR_EXT(BurningRuins), new ConstructionCreator<BurningRuins>() );
+  addCreator(building::burningRuins , OC3_STR_EXT(BurningRuins), new ConstructionCreator<BurningRuins>() );
   addCreator(building::B_BURNED_RUINS , OC3_STR_EXT(BurnedRuins), new ConstructionCreator<BurnedRuins>() );
   addCreator(building::B_COLLAPSED_RUINS , OC3_STR_EXT(CollapsedRuins), new ConstructionCreator<CollapsedRuins>() );
   addCreator(building::B_PLAGUE_RUINS , OC3_STR_EXT(PlagueRuins), new ConstructionCreator<PlagueRuins>() );

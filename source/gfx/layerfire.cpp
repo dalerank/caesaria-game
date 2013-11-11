@@ -57,7 +57,7 @@ void LayerFire::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     //fire buildings and roads
     case construction::road:
     case construction::B_PLAZA:
-    case building::B_BURNING_RUINS:
+    case building::burningRuins:
     case building::B_BURNED_RUINS:
     case building::B_COLLAPSED_RUINS:
     case building::prefecture:

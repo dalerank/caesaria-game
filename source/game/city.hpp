@@ -31,6 +31,7 @@
 #include "core/position.hpp"
 #include "core/foreach.hpp"
 #include "game/player.hpp"
+#include "building/constants.hpp"
 
 class DateTime;
 class CityBuildOptions;
@@ -139,16 +140,14 @@ public:
   CityHelper( CityPtr city ) : _city( city ) {}
 
   template< class T >
-  std::list< SmartPtr< T > > find( const TileOverlay::Type type, const TileOverlay::Group group=TileOverlay::any )
+  std::list< SmartPtr< T > > find( const TileOverlay::Type type )
   {
     std::list< SmartPtr< T > > ret;
     TileOverlayList& buildings = _city->getOverlayList();
     foreach( TileOverlayPtr item, buildings )
     {
       SmartPtr< T > b = item.as<T>();
-      if( b.isValid()
-          && (b->getType() == type || type == TileOverlay::any)
-          && (b->getClass() == group || group == TileOverlay::any) )
+      if( b.isValid() && (b->getType() == type || type == constants::building::any ) )
       {
         ret.push_back( b );
       }
@@ -158,16 +157,55 @@ public:
   }
 
   template< class T >
-  SmartPtr< T > find( const TilePos& pos )
+  std::list< SmartPtr< T > > find( constants::building::Group group )
   {
+    std::list< SmartPtr< T > > ret;
+    TileOverlayList& buildings = _city->getOverlayList();
+    foreach( TileOverlayPtr item, buildings )
+    {
+      SmartPtr< T > b = item.as<T>();
+      if( b.isValid() && (b->getClass() == group || group == constants::building::anyGroup ) )
+      {
+        ret.push_back( b );
+      }
+    }
+
+    return ret;
+  }
+
+
+  template< class T >
+  SmartPtr< T > find( const TileOverlay::Type type, const TilePos& pos )
+  {   
     TileOverlayPtr overlay = _city->getOverlay( pos );
-    return overlay.as< T >();
+    if( overlay->getType() == type || type == constants::building::any )
+    {
+      return overlay.as< T >();
+    }
+
+    return SmartPtr<T>();
   }
 
   template< class T >
-  std::list< SmartPtr< T > > find( TilePos start, TilePos stop,
-                                   TileOverlay::Type type=TileOverlay::any,
-                                   TileOverlay::Group group=TileOverlay::any )
+  std::list< SmartPtr< T > > find( constants::walker::Type type,
+                                   TilePos start, TilePos stop=TilePos(-1,-1) )
+  {
+    std::list< SmartPtr< T > > ret;
+
+    WalkerList walkers = _city->getWalkers( type, start, stop );
+    foreach( WalkerPtr w, walkers )
+    {
+      if( w.is<T>() )
+      {
+        ret.push_back( w.as<T>() );
+      }
+    }
+
+    return ret;
+  }
+
+  template< class T >
+  std::list< SmartPtr< T > > find( const TileOverlay::Type type, TilePos start, TilePos stop )
   {
     std::set< SmartPtr< T > > tmp;
     for( int i=start.getI(); i < stop.getI(); i++ )
@@ -175,9 +213,32 @@ public:
       for( int j=start.getJ(); j < stop.getJ(); j++ )
       {
         SmartPtr<T> obj = _city->getOverlay( TilePos( i, j ) ).as<T>();
-        if( obj.isValid()
-            && (obj->getType() == type || type == TileOverlay::any)
-            && (obj->getClass() == group || group == TileOverlay::any) )
+        if( obj.isValid() && (obj->getType() == type || type == constants::building::any) )
+        {
+          tmp.insert( obj );
+        }
+      }
+    }    
+
+    std::list< SmartPtr< T > > ret;
+    foreach( SmartPtr<T> obj, tmp )
+    {
+      ret.push_back( obj );
+    }
+
+    return ret;
+  }
+
+  template< class T >
+  std::list< SmartPtr< T > > find( constants::building::Group group, TilePos start, TilePos stop )
+  {
+    std::set< SmartPtr< T > > tmp;
+    for( int i=start.getI(); i < stop.getI(); i++ )
+    {
+      for( int j=start.getJ(); j < stop.getJ(); j++ )
+      {
+        SmartPtr<T> obj = _city->getOverlay( TilePos( i, j ) ).as<T>();
+        if( obj.isValid() && (obj->getClass() == group || group == constants::building::anyGroup) )
         {
           tmp.insert( obj );
         }
@@ -204,27 +265,6 @@ public:
       if( b.isValid() && b->getOutGoodType() == goodtype )
       {
         ret.push_back( b );
-      }
-    }
-
-    return ret;
-  }
-
-  template< class T >
-  std::list< SmartPtr< T > > getWalkers( const TilePos& pos )
-  {
-    std::list< SmartPtr< T > > ret;
-    WalkerList walkers = _city->getWalkers( constants::walker::all );
-    foreach( WalkerPtr walker, walkers )
-    {
-      if( walker->getIJ() == pos )
-      {
-        SmartPtr< T > b = walker.as<T>();
-
-        if( b.isValid() )
-        {
-          ret.push_back( b );
-        }
       }
     }
 

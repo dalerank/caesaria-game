@@ -341,7 +341,7 @@ int WarehouseStore::getMaxQty( const Good::Type& goodType ) const
   return getMaxQty();
 }
 
-Warehouse::Warehouse() : WorkingBuilding( constants::building::B_WAREHOUSE, Size( 3 )), _d( new Impl )
+Warehouse::Warehouse() : WorkingBuilding( constants::building::warehouse, Size( 3 )), _d( new Impl )
 {
    // _name = _("Entrepot");
   setPicture( ResourceGroup::warehouse, 19 );

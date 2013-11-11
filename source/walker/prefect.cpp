@@ -29,13 +29,18 @@
 #include "building/constants.hpp"
 #include "corpse.hpp"
 #include "game/resourcegroup.hpp"
+#include "protestor.hpp"
+#include "game/pathway_helper.hpp"
 
 using namespace constants;
 
 class Prefect::Impl
 {
 public:
-  typedef enum { patrol=0, back2Prefecture, gotoFire, fightFire, doNothing } PrefectAction; 
+  typedef enum { patrol=0, back2Prefecture,
+                 gotoFire, fightFire,
+                 go2protestor, fightProtestor,
+                 doNothing } PrefectAction;
     
   int water;
   PrefectAction action;
@@ -63,7 +68,7 @@ bool Prefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, TilePos& 
 
   foreach( BuildingPtr building, buildings )
   {
-    if( building->getType() == building::B_BURNING_RUINS )
+    if( building->getType() == building::burningRuins )
     {
       pos = building->getTilePos();
       return true;
@@ -73,13 +78,33 @@ bool Prefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, TilePos& 
   return false;
 }
 
+bool Prefect::_looks4Protestor( TilePos& pos )
+{
+  CityHelper helper( _getCity() );
+  TilePos offset( 2, 2 );
+  ProtestorList protestors = helper.find<Protestor>( walker::protestor, getIJ() - offset, getIJ() + offset );
+
+  int minDistance=99;
+  foreach( ProtestorPtr p, protestors )
+  {
+    int distance = p->getIJ().distanceFrom( getIJ() );
+    if( distance < minDistance )
+    {
+      minDistance =  distance;
+      pos = p->getIJ();
+    }
+  }
+
+  return !protestors.empty();
+}
+
 void Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
 {
   PathWay bestPath;
   int minLength = 9999;
   foreach( BuildingPtr building, buildings )
   {
-    if( building->getType() != building::B_BURNING_RUINS )
+    if( building->getType() != building::burningRuins )
       continue;
 
     PathWay tmp;
@@ -125,11 +150,29 @@ void Prefect::_back2Prefecture()
   _d->action = Impl::back2Prefecture;
 }
 
+void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
+{
+  foreach( BuildingPtr building, reachedBuildings )
+  {
+    building->applyService( ServiceWalkerPtr( this ) );
+
+    HousePtr house = building.as<House>();
+    if( house.isValid() && house->getHealthLevel() < 1 )
+    {
+      house->deleteLater();
+
+      events::GameEventPtr e = events::DisasterEvent::create( house->getTilePos(), events::DisasterEvent::plague );
+      e->dispatch();
+    }
+  }
+}
+
 void Prefect::onMidTile()
 {
   ReachedBuildings reachedBuildings;
-  TilePos firePos;
-  bool haveBurningRuinsNear = _looks4Fire( reachedBuildings, firePos );  
+  TilePos firePos, protestorPos;
+  bool haveBurningRuinsNear = _looks4Fire( reachedBuildings, firePos );
+  bool haveProtestorNear = _looks4Protestor( protestorPos );
   bool isDestination = _getPathway().isDestination();
 
   switch( _d->action )
@@ -139,7 +182,19 @@ void Prefect::onMidTile()
 
   case Impl::patrol:
   {
-    if( haveBurningRuinsNear )
+    if( haveProtestorNear )
+    {      
+      PathWay pathway = PathwayHelper::create( _getCity(), getIJ(), protestorPos, PathwayHelper::allTerrain );
+
+      if( pathway.isValid() )
+      {
+        setSpeed( 1.5f );
+        _d->action = Impl::go2protestor;
+        setPathWay( pathway );
+        go();
+      }
+    }
+    else if( haveBurningRuinsNear )
     {
       //tell our prefecture that need send prefect with water to fight with fire
       //on next deliverService
@@ -152,19 +207,7 @@ void Prefect::onMidTile()
     }
     else
     {
-      foreach( BuildingPtr building, reachedBuildings )
-      {
-        building->applyService( ServiceWalkerPtr( this ) );
-
-        HousePtr house = building.as<House>();
-        if( house.isValid() && house->getHealthLevel() < 1 )
-        {
-          house->deleteLater();
-
-          events::GameEventPtr e = events::DisasterEvent::create( house->getTilePos(), events::DisasterEvent::plague );
-          e->dispatch();
-        }
-      }
+      _serveBuildings( reachedBuildings );
     }
 
     if( isDestination )
@@ -185,6 +228,8 @@ void Prefect::onMidTile()
       getBase().as<Prefecture>()->fireDetect( firePos );
     }
 
+    _serveBuildings( reachedBuildings );
+
     if( isDestination )
     {
       deleteLater();
@@ -200,8 +245,9 @@ void Prefect::onMidTile()
     if( _getPathway().getDestination().getIJ().distanceFrom( getIJ() ) < 1.5f )
     {
       TileOverlayPtr overlay = _getPathway().getDestination().getOverlay();
-      if( overlay.isValid() && overlay->getType() == building::B_BURNING_RUINS )
+      if( overlay.isValid() && overlay->getType() == building::burningRuins )
       {
+        setSpeed( 0 );
         _d->action = Impl::fightFire;
         _setGraphic( WG_PREFECT_FIGHTS_FIRE );
         Walker::onNewDirection();
@@ -229,7 +275,20 @@ void Prefect::onMidTile()
   }
   break;
 
+  case Impl::go2protestor:
+  {
+    if( haveProtestorNear && protestorPos.distanceFrom( getIJ() ) < 1.5f )
+    {
+      turn( protestorPos );
+      _d->action = Impl::fightProtestor;
+      _setGraphic( WG_PREFECT_FIGHT );
+      Walker::onNewDirection();
+    }
+  }
+  break;
+
   case Impl::fightFire:
+  case Impl::fightProtestor:
   break;
   }
 }
@@ -238,11 +297,12 @@ void Prefect::timeStep(const unsigned long time)
 {
   ServiceWalker::timeStep( time );
 
-  if( _d->action == Impl::fightFire )
+  switch( _d->action )
+  {
+  case Impl::fightFire:
   {    
-    setSpeed( 0 );
     BuildingPtr building = _getPathway().getDestination().getOverlay().as<Building>();
-    bool inFire = (building.isValid() && building->getType() == building::B_BURNING_RUINS);
+    bool inFire = (building.isValid() && building->getType() == building::burningRuins );
 
     if( inFire )
     {
@@ -264,8 +324,31 @@ void Prefect::timeStep(const unsigned long time)
       _d->action = Impl::gotoFire;  
       setSpeed( 1 );
     }      
-
   }
+  break;
+
+  case Impl::fightProtestor:
+  {
+    CityHelper helper( _getCity() );
+    ProtestorList protestors = helper.find<Protestor>( walker::protestor, _getPathway().getDestination().getIJ() );
+
+    foreach( ProtestorPtr p, protestors)
+    {
+      p->updateHealth( -3 );
+      p->acceptAction( Walker::acFight, getIJ() );
+      break;                    //fight once protestor
+    }
+
+    if( protestors.empty() )
+    {
+      _d->action = Impl::patrol;
+      setSpeed( 1 );
+    }
+  }
+  break;
+
+  default: break;
+  } // end switch( _d->action )
 }
 
 Prefect::~Prefect()

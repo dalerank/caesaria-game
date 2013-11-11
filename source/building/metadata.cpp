@@ -77,9 +77,9 @@ public:
     append( building::B_BIG_TEMPLE_MERCURE,"big_mercury_temple");
     append( building::B_BIG_TEMPLE_VENUS,  "big_venus_temple");
     append( building::B_TEMPLE_ORACLE,     "oracle");
-    append( building::B_MARKET,            "market");
+    append( building::market,            "market");
     append( building::granary,        "granery");
-    append( building::B_WAREHOUSE,      "warehouse");
+    append( building::warehouse,      "warehouse");
     append( building::wheatFarm,          "wheat_farm");
     append( building::B_FRUIT_FARM,          "fig_farm");
     append( building::B_VEGETABLE_FARM,      "vegetable_farm");
@@ -112,7 +112,7 @@ public:
     append( building::B_NATIVE_HUT,     "native_hut");
     append( building::B_NATIVE_CENTER,  "native_center");
     append( building::B_NATIVE_FIELD,   "native_field");
-    append( building::B_BURNING_RUINS,  "burning_ruins");
+    append( building::burningRuins,  "burning_ruins");
     append( building::B_BURNED_RUINS,   "burned_ruins");
     append( building::B_PLAGUE_RUINS,   "plague_ruins");
     append( building::B_COLLAPSED_RUINS,"collapsed_ruins");

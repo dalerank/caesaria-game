@@ -37,12 +37,14 @@ public:
   virtual void die();
 
   ~Prefect();
- 
+
 protected:
   Prefect( CityPtr city );
 
+  bool _looks4Protestor(TilePos& pos);
   bool _looks4Fire( ReachedBuildings& buildings, TilePos& pos );
   void _checkPath2NearestFire( const ReachedBuildings& buildings );
+  void _serveBuildings( ReachedBuildings& reachedBuildings );
   void _back2Prefecture();
 
   class Impl;

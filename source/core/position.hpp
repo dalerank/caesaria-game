@@ -89,6 +89,8 @@ public:
   bool operator==(const TilePos& other) const{ return (x == other.x) && ( y == other.y ); }
   bool operator!=(const TilePos& other) const{ return (x != other.x ) || ( y != other.y ); }
 
+  double getAngle() const { return getAngleTrig(); }
+
   TilePos fit( const TilePos& lur, const TilePos& tbr ) const
   {
     TilePos ret = *this;

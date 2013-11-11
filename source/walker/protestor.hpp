@@ -18,9 +18,6 @@
 
 #include "walker.hpp"
 
-class Protestor;
-typedef SmartPtr<Protestor> ProtestorPtr;
-
 class Protestor : public Walker
 {
 public:

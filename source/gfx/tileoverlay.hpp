@@ -30,8 +30,6 @@ public:
   typedef int Type;
   typedef int Group;
 
-  enum { any=0 };
-
   TileOverlay( const Type type, const Size& size=Size(1));
   virtual ~TileOverlay();
 

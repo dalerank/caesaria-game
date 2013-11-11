@@ -323,9 +323,9 @@ void BuildMenu_commerce::initialize()
   addSubmenuButton(BM_RAW_MATERIAL, _("Raw materials") );
   addSubmenuButton(BM_FACTORY, _("Factory") );
 
-  addBuildButton(building::B_MARKET);
+  addBuildButton(building::market);
   addBuildButton(building::granary);
-  addBuildButton(building::B_WAREHOUSE);
+  addBuildButton(building::warehouse);
 
   BuildMenu::initialize();
 }

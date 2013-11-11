@@ -107,7 +107,7 @@ void CityServiceCulture::update( const unsigned int time )
 
     CityHelper helper( _d->city );
 
-    TempleList temples = helper.find<Temple>( TileOverlay::any, building::religionGroup );
+    TempleList temples = helper.find<Temple>( building::religionGroup );
     foreach( TemplePtr temple, temples )
     {
       _d->parishionersCount += temple->getParishionerNumber();

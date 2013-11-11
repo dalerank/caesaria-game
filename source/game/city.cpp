@@ -319,11 +319,23 @@ WalkerList City::getWalkers( walker::Type type )
 WalkerList City::getWalkers(walker::Type type, TilePos startPos, TilePos stopPos)
 {
   WalkerList ret;
+  if( stopPos == TilePos( -1, -1 ) )
+  {
+    stopPos = startPos;
+  }
+
   TilemapArea area = _d->tilemap.getArea( startPos, stopPos );
   foreach( Tile* tile, area)
   {
     WalkerList current = _d->walkersGrid.at( tile->getIJ() );
-    ret.insert( ret.end(), current.begin(), current.end() );
+
+    foreach( WalkerPtr w, current )
+    {
+      if( w->getType() == type || type == walker::any )
+      {
+        ret.push_back( w );
+      }
+    }
   }
 
   return ret;

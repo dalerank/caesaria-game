@@ -22,40 +22,41 @@ namespace constants
 namespace walker
 {
 
-typedef int Type;
+enum Type{
+  unknown=0,
+  immigrant,
+  emigrant,
+  soldier,
+  cartPusher,
+  marketLady,
+  marketKid,
+  serviceman,                   //unknown service
+  trainee,
+  recruter,
+  prefect,
+  taxCollector,
+  engineer,
+  doctor,
+  bathlady,
+  merchant,
+  actor,
+  gladiator,
+  tamer,
+  charioter,
+  sheep,
+  barber,
+  surgeon,
+  fishingBoat,
+  priest,
+  protestor,
+  patrician,
+  corpse,
+  all = 0xff,
+  any = all
+};
 
-const Type unknown      =0;
-const Type immigrant    =1;
-const Type emigrant     =2;
-const Type soldier      =3;
-const Type cartPusher   =4;
-const Type marketLady   =5;
-const Type marketKid    =6;
-const Type serviceman   =7;                     //unknown service
-const Type trainee      =8;
-const Type recruter     =9;
-const Type prefect      =10;
-const Type taxCollector =11;
-const Type engineer     =12;
-const Type doctor       =13;
-const Type bathlady     =14;
-const Type merchant     =15;
-const Type actor        =16;
-const Type gladiator    =17;
-const Type tamer        =18;
-const Type charioter    =19;
-const Type sheep        =20;
-const Type barber       =21;
-const Type surgeon      =22;
-const Type fishingBoat  =23;
-const Type priest       =24;
-const Type protestor    =25;
-const Type patrician    =26;
-const Type corpse       =27;
-const Type all          =0xff;
+} //end namespace walker
 
-}
-
-}
+} //end namespace constants
 
 #endif //__OPENCAESAR3_WALKER_CONSTANTS_H_INCLUDED__
