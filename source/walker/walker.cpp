@@ -50,7 +50,7 @@ public:
   Animation animation;  // current animation
   Point posOnMap; // subtile coordinate across all tiles: 0..15*mapsize (ii=15*i+si)
   PointF remainMove;  // remaining movement
-  PathWay pathWay;
+  Pathway pathWay;
   DirectedAction action;
   std::string name;
   int health;
@@ -95,7 +95,7 @@ walker::Type Walker::getType() const
 
 void Walker::timeStep(const unsigned long time)
 {
-  switch (_d->action.action)
+  switch(_d->action.action)
   {
   case Walker::acMove:
     walk();
@@ -160,12 +160,12 @@ Point Walker::getSubPosition() const
   return _d->tileOffset;
 }
 
-void Walker::setPathWay( const PathWay &pathWay)
+void Walker::setPathway( const Pathway& pathway)
 {
-   _d->pathWay = pathWay;
-   _d->pathWay.begin();
+  _d->pathWay = pathway;
+  _d->pathWay.begin();
 
-   onMidTile();
+  onMidTile();
 }
 
 void Walker::setSpeed(const float speed)
@@ -546,12 +546,12 @@ void Walker::setUniqueId( const UniqueId uid )
   _d->uid = uid;
 }
 
-PathWay& Walker::_getPathway()
+Pathway& Walker::_getPathway()
 {
   return _d->pathWay;
 }
 
-const PathWay& Walker::getPathway() const
+const Pathway& Walker::getPathway() const
 {
   return _d->pathWay;
 }
@@ -560,18 +560,27 @@ void Walker::turn(TilePos pos)
 {
   int angle = (int)((pos - getIJ()).getAngle() / 45.f);
 
-  Direction directions[] = { north, northEast, east, southEast, south, southWest, west, northWest };
+  Direction directions[] = { north, northEast, east, southEast, south,
+                             southWest, west, northWest };
 
   if( _d->action.direction != directions[ angle ] )
   {
     _d->action.direction = directions[ angle ];
     onNewDirection();
+    getMainPicture();
   }
 }
 
 Animation& Walker::_getAnimation()
 {
   return _d->animation;
+}
+
+void Walker::_updatePathway(const Pathway& pathway)
+{
+  _d->pathWay = pathway;
+  _d->pathWay.begin();
+  computeDirection();
 }
 
 void Walker::_setAction( Walker::Action action )

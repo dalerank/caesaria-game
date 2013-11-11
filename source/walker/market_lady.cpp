@@ -73,7 +73,7 @@ MarketLady::~MarketLady()
 template< class T >
 TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Type type,
                                MarketPtr market, SimpleGoodStore& basket, const Good::Type what,
-                               PathWay &oPathWay, long& reservId )
+                               Pathway &oPathWay, long& reservId )
 {
   SmartPtr< T > res;
 
@@ -87,7 +87,7 @@ TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Ty
   {
     // for every warehouse within range
     ConstructionPtr construction = pathWayIt->first;
-    PathWay& pathWay= pathWayIt->second;
+    Pathway& pathWay= pathWayIt->second;
 
     SmartPtr< T > destBuilding = construction.as< T >();
     int qty = destBuilding->getGoodStore().getMaxRetrieve( what );
@@ -126,7 +126,7 @@ void MarketLady::computeWalkerDestination( MarketPtr market )
      // we have something to buy!
 
      // get the list of buildings within reach
-     PathWay pathWay;
+     Pathway pathWay;
      Propagator pathPropagator( _getCity() );
      pathPropagator.init( _d->market.as<Construction>() );
      pathPropagator.propagate( _d->maxDistance);
@@ -154,7 +154,7 @@ void MarketLady::computeWalkerDestination( MarketPtr market )
         if( _d->destBuildingPos.getI() >= 0 )
         {
            // we found a destination!
-           setPathWay(pathWay);
+           setPathway(pathWay);
            break;
         }
      }

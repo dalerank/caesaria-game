@@ -66,7 +66,7 @@ public:
   void addService( CityServicePtr service );
   CityServicePtr findService( const std::string& name ) const;
 
-  TileOverlayList& getOverlayList();
+  TileOverlayList& getOverlays();
 
   void setBorderInfo( const BorderInfo& info );
   const BorderInfo& getBorderInfo() const;
@@ -143,7 +143,7 @@ public:
   std::list< SmartPtr< T > > find( const TileOverlay::Type type )
   {
     std::list< SmartPtr< T > > ret;
-    TileOverlayList& buildings = _city->getOverlayList();
+    TileOverlayList& buildings = _city->getOverlays();
     foreach( TileOverlayPtr item, buildings )
     {
       SmartPtr< T > b = item.as<T>();
@@ -160,7 +160,7 @@ public:
   std::list< SmartPtr< T > > find( constants::building::Group group )
   {
     std::list< SmartPtr< T > > ret;
-    TileOverlayList& buildings = _city->getOverlayList();
+    TileOverlayList& buildings = _city->getOverlays();
     foreach( TileOverlayPtr item, buildings )
     {
       SmartPtr< T > b = item.as<T>();
@@ -208,15 +208,14 @@ public:
   std::list< SmartPtr< T > > find( const TileOverlay::Type type, TilePos start, TilePos stop )
   {
     std::set< SmartPtr< T > > tmp;
-    for( int i=start.getI(); i < stop.getI(); i++ )
+
+    TilemapArea area = getArea( start, stop );
+    foreach( Tile* tile, area )
     {
-      for( int j=start.getJ(); j < stop.getJ(); j++ )
+      SmartPtr<T> obj = tile->getOverlay().as<T>();
+      if( obj.isValid() && (obj->getType() == type || type == constants::building::any) )
       {
-        SmartPtr<T> obj = _city->getOverlay( TilePos( i, j ) ).as<T>();
-        if( obj.isValid() && (obj->getType() == type || type == constants::building::any) )
-        {
-          tmp.insert( obj );
-        }
+        tmp.insert( obj );
       }
     }    
 
@@ -233,15 +232,15 @@ public:
   std::list< SmartPtr< T > > find( constants::building::Group group, TilePos start, TilePos stop )
   {
     std::set< SmartPtr< T > > tmp;
-    for( int i=start.getI(); i < stop.getI(); i++ )
+
+    TilemapArea area = getArea( start, stop );
+
+    foreach( Tile* tile, area )
     {
-      for( int j=start.getJ(); j < stop.getJ(); j++ )
+      SmartPtr<T> obj = tile->getOverlay().as<T>();
+      if( obj.isValid() && (obj->getClass() == group || group == constants::building::anyGroup) )
       {
-        SmartPtr<T> obj = _city->getOverlay( TilePos( i, j ) ).as<T>();
-        if( obj.isValid() && (obj->getClass() == group || group == constants::building::anyGroup) )
-        {
-          tmp.insert( obj );
-        }
+        tmp.insert( obj );
       }
     }
 
@@ -258,7 +257,7 @@ public:
   std::list< SmartPtr< T > > getProducers( const Good::Type goodtype )
   {
     std::list< SmartPtr< T > > ret;
-    TileOverlayList& overlays = _city->getOverlayList();
+    TileOverlayList& overlays = _city->getOverlays();
     foreach( TileOverlayPtr item, overlays )
     {
       SmartPtr< T > b = item.as<T>();
@@ -272,6 +271,7 @@ public:
   }
 
   TilemapArea getArea( TileOverlayPtr overlay );
+  TilemapArea getArea( TilePos start, TilePos stop );
 
   void updateDesirability( ConstructionPtr construction, bool onBuild );
 

@@ -99,7 +99,7 @@ void CityServiceRoads::Impl::updateRoadsAround(BuildingPtr building)
 
   Tilemap& tmap = city->getTilemap();
 
-  foreach( PathWay& current, pathWayList )
+  foreach( Pathway& current, pathWayList )
   {
     ConstTilemapTiles tiles = current.getAllTiles();
     foreach( const Tile* tile, tiles )

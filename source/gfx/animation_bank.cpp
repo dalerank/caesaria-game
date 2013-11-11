@@ -59,7 +59,9 @@ public:
   // prefix: image prefix
   // start: index of the first frame
   PicturesArray fillCart( const std::string &prefix, const int start, bool back );
-  AnimationBank::MovementAnimation loadAnimation( const std::string& prefix, const int start, const int size);
+  AnimationBank::MovementAnimation loadAnimation(const std::string& prefix,
+                                                 const int start, const int size,
+                                                 Walker::Action wa=Walker::acMove );
 
   void loadCarts();
   void loadWalkers();
@@ -113,8 +115,8 @@ void AnimationBank::Impl::loadWalkers()
   animations[WG_BARBER            ] = loadAnimation( ResourceGroup::citizen2, 463, 12);
   animations[WG_PREFECT           ] = loadAnimation( ResourceGroup::citizen2, 615, 12);
   animations[WG_PREFECT_DRAG_WATER] = loadAnimation( ResourceGroup::citizen2, 767, 12);
-  animations[WG_PREFECT_FIGHTS_FIRE]= loadAnimation( ResourceGroup::citizen2, 863, 6);
-  animations[WG_PREFECT_FIGHT     ] = loadAnimation( ResourceGroup::citizen2, 719, 6);
+  animations[WG_PREFECT_FIGHTS_FIRE]= loadAnimation( ResourceGroup::citizen2, 863, 6, Walker::acFight );
+  animations[WG_PREFECT_FIGHT     ] = loadAnimation( ResourceGroup::citizen2, 719, 6, Walker::acFight );
   animations[WG_HOMELESS          ] = loadAnimation( ResourceGroup::citizen2, 911, 12);
   animations[WG_RICH              ] = loadAnimation( ResourceGroup::citizen3, 713, 12);
   animations[WG_DOCTOR            ] = loadAnimation( ResourceGroup::citizen3, 817, 12);
@@ -151,10 +153,12 @@ void AnimationBank::loadCarts()
   instance()._d->loadCarts();  
 }
 
-AnimationBank::MovementAnimation AnimationBank::Impl::loadAnimation( const std::string& prefix, const int start, const int size)
+AnimationBank::MovementAnimation AnimationBank::Impl::loadAnimation( const std::string& prefix,
+                                                                     const int start, const int size,
+                                                                     Walker::Action wa )
 {
   MovementAnimation ioMap;
-  DirectedAction action= { Walker::acMove, north };
+  DirectedAction action={ wa, north };
 
   action.direction = north;      ioMap[action].load( prefix, start,   size, Animation::straight, 8);
   action.direction = northEast;  ioMap[action].load( prefix, start+1, size, Animation::straight, 8);

@@ -31,9 +31,9 @@
 class Propagator
 {
 public:
-  typedef std::pair< ConstructionPtr, PathWay > DirectRoute;
-  typedef std::map < ConstructionPtr, PathWay > Routes;
-  typedef std::list< PathWay > PathWayList;
+  typedef std::pair< ConstructionPtr, Pathway > DirectRoute;
+  typedef std::map < ConstructionPtr, Pathway > Routes;
+  typedef std::list< Pathway > PathWayList;
   //typedef std::list<PathWay> Ways;
   
   Propagator( CityPtr city );
@@ -60,8 +60,8 @@ public:
    * returns True if a path exists
    * the path is returned in oPathWay
    */
-  bool getPath( RoadPtr destination, PathWay& oPathWay );
-  bool getPath( ConstructionPtr destination, PathWay& oPathWay );
+  bool getPath( RoadPtr destination, Pathway& oPathWay );
+  bool getPath( ConstructionPtr destination, Pathway& oPathWay );
 
   DirectRoute getShortestRoute( const Routes& routes );
   DirectRoute getShortestRoute( const TileOverlay::Type buildingType );

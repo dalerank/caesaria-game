@@ -115,8 +115,8 @@ void ServiceWalker::_computeWalkerPath()
   Propagator::PathWayList pathWayList = pathPropagator.getWays(_d->maxDistance);
 
   float maxPathValue = 0.0;
-  PathWay* bestPath = NULL;
-  foreach( PathWay& current, pathWayList )
+  Pathway* bestPath = NULL;
+  foreach( Pathway& current, pathWayList )
   {
     float pathValue = evaluatePath(current);
     if (pathValue > maxPathValue)
@@ -134,7 +134,7 @@ void ServiceWalker::_computeWalkerPath()
   }
 
   reservePath(*bestPath);
-  setPathWay(*bestPath);
+  setPathway(*bestPath);
   setIJ( _getPathway().getOrigin().getIJ() );
 }
 
@@ -171,7 +171,7 @@ ServiceWalker::ReachedBuildings ServiceWalker::getReachedBuildings(const TilePos
   return res;
 }
 
-float ServiceWalker::evaluatePath( PathWay& pathWay )
+float ServiceWalker::evaluatePath( Pathway& pathWay )
 {
   // evaluate all buildings along the path
   ServiceWalker::ReachedBuildings doneBuildings;  // list of evaluated building: don't do them again
@@ -201,7 +201,7 @@ float ServiceWalker::evaluatePath( PathWay& pathWay )
   return res;
 }
 
-void ServiceWalker::reservePath(PathWay &pathWay)
+void ServiceWalker::reservePath(Pathway &pathWay)
 {
   // reserve all buildings along the path
   ReachedBuildings doneBuildings;  // list of evaluated building: don't do them again

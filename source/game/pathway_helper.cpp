@@ -18,16 +18,26 @@
 #include "city.hpp"
 #include "tilemap.hpp"
 
-PathWay PathwayHelper::create( CityPtr city, TilePos startPos, TilePos stopPos,
-                               WayType type/*=roadOnly */ )
+Pathway PathwayHelper::create(CityPtr city, TilePos startPos, TilePos stopPos,
+                               WayType type/*=roadOnly */, Size arrivedArea )
 {
   switch( type )
   {
   case allTerrain:
   {
     const Tilemap& tmap = city->getTilemap();
-    PathWay ret;
-    Pathfinder::getInstance().getPath( tmap.at( startPos ), tmap.at( stopPos ), ret, 0, Size(1) );
+    Pathway ret;
+    Pathfinder::getInstance().getPath( tmap.at( startPos ), tmap.at( stopPos ), ret, 0, arrivedArea );
+
+    return ret;
+  }
+  break;
+
+  case roadFirst:
+  {
+    const Tilemap& tmap = city->getTilemap();
+    Pathway ret;
+    Pathfinder::getInstance().getPath( tmap.at( startPos ), tmap.at( stopPos ), ret, 0, arrivedArea );
 
     return ret;
   }
@@ -37,10 +47,10 @@ PathWay PathwayHelper::create( CityPtr city, TilePos startPos, TilePos stopPos,
   break;
   }
 
-  return PathWay();
+  return Pathway();
 }
 
-PathWay PathwayHelper::randomWay(CityPtr city, TilePos startPos, int walkRadius)
+Pathway PathwayHelper::randomWay(CityPtr city, TilePos startPos, int walkRadius)
 {
   int loopCounter = 0; //loop limiter
   do
@@ -52,7 +62,7 @@ PathWay PathwayHelper::randomWay(CityPtr city, TilePos startPos, int walkRadius)
 
     if( tmap.at( destPos ).isWalkable( true) )
     {
-      PathWay pathway = create( city, startPos, destPos, PathwayHelper::allTerrain );
+      Pathway pathway = create( city, startPos, destPos, PathwayHelper::allTerrain );
 
       if( pathway.isValid() )
       {
@@ -62,5 +72,5 @@ PathWay PathwayHelper::randomWay(CityPtr city, TilePos startPos, int walkRadius)
   }
   while( ++loopCounter < 20 );
 
-  return PathWay();
+  return Pathway();
 }

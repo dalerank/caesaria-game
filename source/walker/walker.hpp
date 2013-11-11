@@ -34,7 +34,7 @@
 #include "core/predefinitions.hpp"
 
 typedef unsigned int UniqueId;
-class PathWay;
+class Pathway;
 
 class Walker : public Serializable, public ReferenceCounted
 {
@@ -56,8 +56,8 @@ public:
   virtual Point getPosition() const;
   Point getSubPosition() const;
 
-  void setPathWay( const PathWay& pathWay);
-  const PathWay& getPathway() const;
+  void setPathway( const Pathway& pathWay);
+  const Pathway& getPathway() const;
 
   virtual void turn( TilePos pos );
 
@@ -101,8 +101,9 @@ public:
   void deleteLater();
 
 protected:
-   PathWay& _getPathway();
+   Pathway& _getPathway();
    Animation& _getAnimation();
+   void _updatePathway( const Pathway& pathway );
    void _setAction( Walker::Action action );
    void _setDirection( constants::Direction direction );
    void _setGraphic( WalkerGraphicType type );

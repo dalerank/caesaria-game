@@ -21,7 +21,7 @@
 
 using namespace  constants;
 
-bool operator<(const PathWay &v1, const PathWay &v2)
+bool operator<(const Pathway &v1, const Pathway &v2)
 {
   if (v1.getLength()!=v2.getLength())
   {
@@ -32,7 +32,7 @@ bool operator<(const PathWay &v1, const PathWay &v2)
   return (&v1 < &v2);
 }
 
-class PathWay::Impl
+class Pathway::Impl
 {
 public:
   TilePos destination;
@@ -45,24 +45,24 @@ public:
   ConstTilemapTiles tileList;
 };
 
-PathWay::PathWay() : _d( new Impl )
+Pathway::Pathway() : _d( new Impl )
 {
   _origin = NULL;
   _d->destination = TilePos( 0, 0 );
   _d->isReverse = false;
 }
 
-PathWay::~PathWay()
+Pathway::~Pathway()
 {
 
 }
 
-PathWay::PathWay(const PathWay &copy) : _d( new Impl )
+Pathway::Pathway(const Pathway &copy) : _d( new Impl )
 {
   *this = copy;
 }
 
-void PathWay::init( const Tilemap &tilemap, const Tile &origin)
+void Pathway::init( const Tilemap &tilemap, const Tile &origin)
 {
   _tilemap = &tilemap;
   _origin = &origin;
@@ -74,41 +74,41 @@ void PathWay::init( const Tilemap &tilemap, const Tile &origin)
   _d->tileList.push_back(&origin);
 }
 
-int PathWay::getLength() const
+int Pathway::getLength() const
 {
   // TODO: various lands have various travel time (road easier to travel than open country)
   return _d->directionList.size();
 }
 
-const Tile& PathWay::getOrigin() const
+const Tile& Pathway::getOrigin() const
 {
   return *_origin;
 }
 
-const Tile& PathWay::getDestination() const
+const Tile& Pathway::getDestination() const
 {
   const Tile& res = _tilemap->at( _d->destination );
   return res;
 }
 
-bool PathWay::isReverse() const
+bool Pathway::isReverse() const
 {
   return _d->isReverse;
 }
 
-void PathWay::begin()
+void Pathway::begin()
 {
   _d->directionIt = _d->directionList.begin();
   _d->isReverse = false;
 }
 
-void PathWay::rbegin()
+void Pathway::rbegin()
 {
   _d->directionIt_reverse = _d->directionList.rbegin();
   _d->isReverse = true;
 }
 
-void PathWay::toggleDirection()
+void Pathway::toggleDirection()
 {
   if( _d->isReverse )
   {
@@ -122,7 +122,7 @@ void PathWay::toggleDirection()
   }
 }
 
-constants::Direction PathWay::getNextDirection()
+constants::Direction Pathway::getNextDirection()
 {
   Direction res = noneDirection;
   if (_d->isReverse)
@@ -160,7 +160,7 @@ constants::Direction PathWay::getNextDirection()
   return res;
 }
 
-bool PathWay::isDestination() const
+bool Pathway::isDestination() const
 {
   bool res;
   if (_d->isReverse)
@@ -180,7 +180,7 @@ bool PathWay::isDestination() const
   return res;
 }
 
-void PathWay::setNextDirection(Direction direction)
+void Pathway::setNextDirection(Direction direction)
 {
   switch (direction)
   {
@@ -210,7 +210,7 @@ void PathWay::setNextDirection(Direction direction)
   }
 }
 
-void PathWay::setNextTile( const Tile& tile )
+void Pathway::setNextTile( const Tile& tile )
 {
   int dI = tile.getI() - _d->destination.getI();
   int dJ = tile.getJ() - _d->destination.getJ();
@@ -235,7 +235,7 @@ void PathWay::setNextTile( const Tile& tile )
   setNextDirection(direction);
 }
 
-bool PathWay::contains(Tile &tile)
+bool Pathway::contains(Tile &tile)
 {
   // search in reverse direction, because usually the last tile matches
   bool res = false;
@@ -252,12 +252,12 @@ bool PathWay::contains(Tile &tile)
   return res;
 }
 
-ConstTilemapTiles& PathWay::getAllTiles()
+ConstTilemapTiles& Pathway::getAllTiles()
 {
   return _d->tileList;
 }
 
-void PathWay::prettyPrint() const
+void Pathway::prettyPrint() const
 {
   if (_origin == NULL)
   {
@@ -296,7 +296,7 @@ void PathWay::prettyPrint() const
   }
 }
 
-VariantMap PathWay::save() const
+VariantMap Pathway::save() const
 {
   VariantMap stream;
   if( getLength() == 0 ) //not save empty way
@@ -321,12 +321,12 @@ VariantMap PathWay::save() const
   return stream;
 }
 
-bool PathWay::isValid() const
+bool Pathway::isValid() const
 {
   return getLength() != 0;
 }
 
-void PathWay::load( const VariantMap& stream )
+void Pathway::load( const VariantMap& stream )
 {
   if( stream.size() == 0 )
   {
@@ -350,7 +350,7 @@ void PathWay::load( const VariantMap& stream )
   std::advance(_d->directionIt, off);
 }
 
-PathWay& PathWay::operator=( const PathWay& other )
+Pathway& Pathway::operator=( const Pathway& other )
 {
   _tilemap             = other._tilemap;
   _origin              = other._origin;
@@ -363,7 +363,7 @@ PathWay& PathWay::operator=( const PathWay& other )
   return *this;
 }
 
-unsigned int PathWay::getStep() const
+unsigned int Pathway::getStep() const
 {
   if(_d->isReverse)
   {

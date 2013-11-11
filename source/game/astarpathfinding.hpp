@@ -9,7 +9,7 @@
 
 class Tilemap;
 class TilePos;
-class PathWay;
+class Pathway;
 class AStarPoint;
 class Size;
 class Tile;
@@ -25,11 +25,11 @@ public:
   void update( const Tilemap& tmap );
 
   bool getPath( const TilePos& start, const TilePos& stop, 
-                PathWay& oPathWay, int flags,
+                Pathway& oPathWay, int flags,
                 const Size& arrivedArea );
 
   bool getPath( const Tile& start, const Tile& stop, 
-                PathWay& oPathWay, int flags, 
+                Pathway& oPathWay, int flags, 
                 const Size& arrivedArea );
   
   unsigned int getMaxLoopCount() const;
@@ -38,7 +38,7 @@ public:
 private:
   Pathfinder();
 
-  bool aStar( const TilePos& start, const TilePos& stop, const Size& arrivedArea, PathWay& oPathWay, int flags );
+  bool aStar( const TilePos& start, const TilePos& stop, const Size& arrivedArea, Pathway& oPathWay, int flags );
 
   class Impl;
   ScopedPtr< Impl > _d;

@@ -170,7 +170,7 @@ void CartSupplier::getPictureList(std::vector<Picture> &oPics)
 template< class T >
 TilePos getSupplierDestination2( Propagator &pathPropagator, const TileOverlay::Type type,
                                  const Good::Type what, const int needQty,
-                                 PathWay &oPathWay, long& reservId )
+                                 Pathway &oPathWay, long& reservId )
 {
   SmartPtr< T > res;
 
@@ -184,7 +184,7 @@ TilePos getSupplierDestination2( Propagator &pathPropagator, const TileOverlay::
   {
     // for every warehouse within range
     BuildingPtr building= pathWayIt->first.as<Building>();
-    PathWay& pathWay= pathWayIt->second;
+    Pathway& pathWay= pathWayIt->second;
 
     SmartPtr< T > destBuilding = building.as< T >();
     int qty = destBuilding->getGoodStore().getMaxRetrieve( what );
@@ -218,7 +218,7 @@ void CartSupplier::computeWalkerDestination(BuildingPtr building, const Good::Ty
 
   // we have something to buy!
   // get the list of buildings within reach
-  PathWay pathWay;
+  Pathway pathWay;
   Propagator pathPropagator( _d->city );
   pathPropagator.init( building.as<Construction>() );
   pathPropagator.propagate( _d->maxDistance);
@@ -237,7 +237,7 @@ void CartSupplier::computeWalkerDestination(BuildingPtr building, const Good::Ty
   if( _d->storageBuildingPos.getI() >= 0 )
   {
     // we found a destination!
-    setPathWay(pathWay);    
+    setPathway(pathWay);    
   }
   else
   {

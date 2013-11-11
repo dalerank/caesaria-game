@@ -67,11 +67,11 @@ void Animal::load( const VariantMap& stream )
 
 void Animal::_findNewWay( const TilePos& start )
 {
-  PathWay pathway = PathwayHelper::randomWay( _getCity(), start, 10 );
+  Pathway pathway = PathwayHelper::randomWay( _getCity(), start, 10 );
 
   if( pathway.isValid() )
   {
-    setPathWay( pathway );
+    setPathway( pathway );
     setIJ( start );
     go();
   }
@@ -87,7 +87,7 @@ Sheep::Sheep( CityPtr city ) : Animal( city )
   _setType( walker::sheep );
   setName( _("##Sheep##") );
 
-  addAbility( Illness::create( 1, 4 ) );
+  addAbility( Illness::create( 0.2, 4 ) );
 }
 
 WalkerPtr Sheep::create(CityPtr city)

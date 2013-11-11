@@ -85,7 +85,7 @@ void Immigrant::_findPath2blankHouse( Tile& startPoint )
 {
   HousePtr house = _findBlankHouse();
 
-  PathWay pathWay;
+  Pathway pathWay;
 
   Tilemap& citymap = _getCity()->getTilemap();
   Tile& destTile = house.isValid() ? house->getTile() : citymap.at( _getCity()->getBorderInfo().roadExit );
@@ -95,7 +95,7 @@ void Immigrant::_findPath2blankHouse( Tile& startPoint )
                                                       false, arrivedArea );
   if( pathFound )
   {
-     setPathWay( pathWay );
+     setPathway( pathWay );
      setIJ( startPoint.getIJ() );
      go();
   }

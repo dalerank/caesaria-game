@@ -40,7 +40,7 @@ public:
   int houseLevel;
   State state;
 
-  PathWay findTarget( CityPtr city, ConstructionList constructions, TilePos pos );
+  Pathway findTarget( CityPtr city, ConstructionList constructions, TilePos pos );
 };
 
 Protestor::Protestor( CityPtr city ) : Walker( city ), _d( new Impl )
@@ -48,7 +48,7 @@ Protestor::Protestor( CityPtr city ) : Walker( city ), _d( new Impl )
   _setGraphic( WG_PROTESTOR );
   _setType( walker::protestor );
 
-  addAbility( Illness::create(1,4) );
+  addAbility( Illness::create( 0.3, 4) );
 }
 
 void Protestor::onNewTile()
@@ -90,12 +90,12 @@ void Protestor::timeStep(const unsigned long time)
       else { it++; }
     }
 
-    PathWay pathway = _d->findTarget( _getCity(), constructions, getIJ() );
+    Pathway pathway = _d->findTarget( _getCity(), constructions, getIJ() );
     //find more expensive house, fire this!!!
     if( pathway.isValid() )
     {
 
-      setPathWay( pathway );
+      setPathway( pathway );
       setIJ( pathway.getOrigin().getIJ() );
       go();
       _d->state = Impl::go2destination;
@@ -122,10 +122,10 @@ void Protestor::timeStep(const unsigned long time)
       else { it++; }
     }
 
-    PathWay pathway = _d->findTarget( _getCity(), constructions, getIJ() );
+    Pathway pathway = _d->findTarget( _getCity(), constructions, getIJ() );
     if( pathway.isValid() )
     {
-      setPathWay( pathway );
+      setPathway( pathway );
       setIJ( pathway.getOrigin().getIJ() );
       go();
       _d->state = Impl::go2destination;
@@ -139,11 +139,11 @@ void Protestor::timeStep(const unsigned long time)
 
   case Impl::go2anyplace:
   {
-    PathWay pathway = PathwayHelper::randomWay( _getCity(), getIJ(), 10 );
+    Pathway pathway = PathwayHelper::randomWay( _getCity(), getIJ(), 10 );
 
     if( pathway.isValid() )
     {
-      setPathWay( pathway );
+      setPathway( pathway );
       go();
       _d->state = Impl::go2destination;
     }
@@ -174,7 +174,7 @@ void Protestor::timeStep(const unsigned long time)
         else { it++; }
       }
 
-      if( constructions.empty() )
+       if( constructions.empty() )
       {
         _getAnimation().clear();
         _setAction( acMove );
@@ -186,8 +186,8 @@ void Protestor::timeStep(const unsigned long time)
         {
           if( c->getClass() != building::disasterGroup && c->getType() != construction::road )
           {
-            c->updateState( Construction::fire, 5 );
-            c->updateState( Construction::damage, 5 );
+            c->updateState( Construction::fire, -1 );
+            c->updateState( Construction::damage, -1 );
             break;
           }
         }
@@ -247,11 +247,11 @@ void Protestor::load(const VariantMap& stream)
   _d->state = (Impl::State)stream.at( "state" ).toInt();
 }
 
-PathWay Protestor::Impl::findTarget( CityPtr city, ConstructionList constructions, TilePos pos )
+Pathway Protestor::Impl::findTarget( CityPtr city, ConstructionList constructions, TilePos pos )
 {  
   if( !constructions.empty() )
   {
-    PathWay pathway;
+    Pathway pathway;
     for( int i=0; i<10; i++)
     {
       ConstructionList::iterator it = constructions.begin();
@@ -265,5 +265,5 @@ PathWay Protestor::Impl::findTarget( CityPtr city, ConstructionList construction
     }
   }
 
-  return PathWay();
+  return Pathway();
 }

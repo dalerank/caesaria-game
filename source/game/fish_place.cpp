@@ -104,7 +104,7 @@ void FishPlace::timeStep(const unsigned long time)
   }
   else
   {
-    PathWay pathway;
+    Pathway pathway;
     bool pathFound = Pathfinder::getInstance().getPath( getTilePos(), _getCity()->getBorderInfo().boatExit,
                                                         pathway, Pathfinder::waterOnly, Size( 1 ) );
 
@@ -117,7 +117,7 @@ void FishPlace::timeStep(const unsigned long time)
       _d->walker = WalkerPtr( new Walker( _getCity() ) );
       _d->walker->drop();
       _d->walker->setSpeed( 0.1f );
-      _d->walker->setPathWay( pathway );
+      _d->walker->setPathway( pathway );
       _d->walker->setIJ( getTilePos() );
       _d->walker->go();
     }

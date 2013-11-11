@@ -315,7 +315,7 @@ void GameLoaderC3Map::Impl::decodeTerrain(Tile &oTile, CityPtr city )
   if( overlay != NULL )
   {
     overlay->build( city, oTile.getIJ() );
-    city->getOverlayList().push_back(overlay);
+    city->getOverlays().push_back(overlay);
   }
 }
 

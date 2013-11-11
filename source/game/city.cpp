@@ -96,7 +96,11 @@ public:
   void append( WalkerPtr& a )
   {
     const TilePos& pos = a->getIJ();
-    _grid[ pos.getI() ][ pos.getJ() ].push_back( a );
+    if( pos.getI() >= 0 && pos.getI() < (int)_grid.size()
+        && pos.getJ() >= 0 && pos.getJ() < (int)_grid.size() )
+    {
+      _grid[ pos.getI() ][ pos.getJ() ].push_back( a );
+    }
   }
 
   const WalkerList& at( TilePos pos )
@@ -341,11 +345,6 @@ WalkerList City::getWalkers(walker::Type type, TilePos startPos, TilePos stopPos
   return ret;
 }
 
-TileOverlayList& City::getOverlayList()
-{
-  return _d->overlayList;
-}
-
 void City::setBorderInfo(const BorderInfo& info)
 {
   int size = getTilemap().getSize();
@@ -355,30 +354,16 @@ void City::setBorderInfo(const BorderInfo& info)
   _d->borderInfo.roadExit = info.roadExit.fit( start, stop );
   _d->borderInfo.boatEntry = info.boatEntry.fit( start, stop );
   _d->borderInfo.boatExit = info.boatExit.fit( start, stop );
+  _d->walkersGrid.resize( Size(size) );
 }
 
-const BorderInfo&City::getBorderInfo() const
-{
-  return _d->borderInfo;
-}
-
-Tilemap& City::getTilemap()
-{
-   return _d->tilemap;
-}
-
-ClimateType City::getClimate() const     { return _d->climate;    }
-
-void City::setClimate(const ClimateType climate) { _d->climate = climate; }
-
-CityFunds& City::getFunds() const                  {  return _d->funds;   }
-
-int City::getPopulation() const
-{
-   /* here we need to calculate population ??? */
-   
-   return _d->population;
-}
+TileOverlayList&  City::getOverlays()         { return _d->overlayList; }
+const BorderInfo& City::getBorderInfo() const { return _d->borderInfo; }
+Tilemap&          City::getTilemap()          { return _d->tilemap; }
+ClimateType       City::getClimate() const    { return _d->climate;    }
+void              City::setClimate(const ClimateType climate) { _d->climate = climate; }
+CityFunds&        City::getFunds() const      {  return _d->funds;   }
+int               City::getPopulation() const {   return _d->population; }
 
 void City::Impl::collectTaxes( CityPtr city )
 {
@@ -595,14 +580,9 @@ void City::load( const VariantMap& stream )
   }
 }
 
-void City::addOverlay( TileOverlayPtr overlay )
-{
-  _d->overlayList.push_back( overlay );
-}
+void City::addOverlay( TileOverlayPtr overlay ) { _d->overlayList.push_back( overlay ); }
 
-City::~City()
-{
-}
+City::~City(){}
 
 void City::addWalker( WalkerPtr walker )
 {
@@ -614,10 +594,7 @@ void City::addWalker( WalkerPtr walker )
 void City::setCameraPos(const TilePos pos) { _d->cameraStart = pos; }
 TilePos City::getCameraPos() const {return _d->cameraStart; }
 
-void City::addService( CityServicePtr service )
-{
-  _d->services.push_back( service );
-}
+void City::addService( CityServicePtr service ) {  _d->services.push_back( service ); }
 
 CityServicePtr City::findService( const std::string& name ) const
 {
@@ -713,4 +690,9 @@ void CityHelper::updateDesirability( ConstructionPtr construction, bool onBuild 
 TilemapArea CityHelper::getArea(TileOverlayPtr overlay)
 {
   return _city->getTilemap().getArea( overlay->getTilePos(), overlay->getSize() );
+}
+
+TilemapArea CityHelper::getArea(TilePos start, TilePos stop)
+{
+  return _city->getTilemap().getArea( start, stop );
 }

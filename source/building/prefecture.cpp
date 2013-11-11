@@ -69,14 +69,14 @@ void Prefecture::deliverService()
     //bool patrol = true;
     if( fireDetect )
     {
-      PathWay pathway;
+      Pathway pathway;
       TilePos startPos = getAccessRoads().front()->getIJ();
       bool pathFounded = Pathfinder::getInstance().getPath( startPos, _fireDetect, pathway, false, Size( 0 ) );
       //patrol = !pathFounded;
 
       if( pathFounded )
       {
-        walker->setPathWay( pathway );
+        walker->setPathway( pathway );
         walker->setIJ( pathway.getOrigin().getIJ() );
       }
 

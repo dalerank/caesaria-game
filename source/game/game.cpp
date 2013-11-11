@@ -335,7 +335,7 @@ void Game::load(std::string filename)
 
   _d->empire->initPlayerCity( _d->city.as<EmpireCity>() );
 
-  TileOverlayList& llo = _d->city->getOverlayList();
+  TileOverlayList& llo = _d->city->getOverlays();
   foreach( TileOverlayPtr overlay, llo )
   {
     ConstructionPtr construction = overlay.as<Construction>();

@@ -90,9 +90,9 @@ void TraineeWalker::computeWalkerPath()
   {
     // some building needs that trainee!
     // std::cout << "trainee sent!" << std::endl;
-    PathWay pathWay;
+    Pathway pathWay;
     pathPropagator.getPath( _destinationBuilding.as<Construction>(), pathWay);
-    setPathWay( pathWay );
+    setPathway( pathWay );
     setIJ( _getPathway().getOrigin().getIJ() );
   }
   else

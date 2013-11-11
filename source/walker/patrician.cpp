@@ -60,11 +60,11 @@ void Patrician::load( const VariantMap& stream )
 
 void Patrician::_findNewWay( const TilePos& start )
 {
-  PathWay pathway = PathwayHelper::randomWay( _getCity(), start, 10 );
+  Pathway pathway = PathwayHelper::randomWay( _getCity(), start, 10 );
 
   if( pathway.isValid() )
   {
-    setPathWay( pathway );
+    setPathway( pathway );
     setIJ( start );
     go();
   }

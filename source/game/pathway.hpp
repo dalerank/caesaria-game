@@ -24,13 +24,13 @@
 
 class Tilemap;
 
-class PathWay
+class Pathway
 {
 public:
-  PathWay();
-  PathWay( const PathWay& copy );
+  Pathway();
+  Pathway( const Pathway& copy );
 
-  virtual ~PathWay();
+  virtual ~Pathway();
 
   void init( const Tilemap &tilemap, const Tile &origin );
 
@@ -47,13 +47,13 @@ public:
 
   void setNextDirection(constants::Direction direction);
   void setNextTile( const Tile& tile);
-  bool contains(Tile &tile);
+  bool contains(Tile& tile);
   ConstTilemapTiles& getAllTiles();
 
   void prettyPrint() const;
   void toggleDirection();
 
-  PathWay& operator=(const PathWay& other );
+  Pathway& operator=(const Pathway& other );
 
   void load( const VariantMap& stream );
   VariantMap save() const;
@@ -67,6 +67,6 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-bool operator<(const PathWay &v1, const PathWay &v2);
+bool operator<(const Pathway &v1, const Pathway &v2);
 
 #endif //__OPENCAESAR3_PATHWAY_H_INCLUDED__

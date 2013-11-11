@@ -49,6 +49,7 @@
 #include "building/wharf.hpp"
 #include "building/constants.hpp"
 #include "constants.hpp"
+#include "core/logger.hpp"
 #include <map>
 
 using namespace constants;
@@ -206,7 +207,7 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   // commerce
   addCreator(building::market,     OC3_STR_EXT(Market)  , new WorkingBuildingCreator<Market>() );
   addCreator(building::warehouse,  OC3_STR_EXT(Warehouse), new WorkingBuildingCreator<Warehouse>() );
-  addCreator(building::granary,      OC3_STR_EXT(Warehouse)  , new WorkingBuildingCreator<Warehouse>() );
+  addCreator(building::granary,      OC3_STR_EXT(Granary)  , new WorkingBuildingCreator<Granary>() );
   // farms
   addCreator(building::wheatFarm,    OC3_STR_EXT(FarmWheat) , new FactoryCreator<FarmWheat>() );
   addCreator(building::B_OLIVE_FARM, OC3_STR_EXT(FarmOlive) , new FactoryCreator<FarmOlive>() );
@@ -271,12 +272,15 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
 void TileOverlayFactory::addCreator( const TileOverlay::Type type, const std::string& typeName, TileOverlayConstructor* ctor )
 {
   bool alreadyHaveConstructor = _d->name2typeMap.find( typeName ) != _d->name2typeMap.end();
-  _OC3_DEBUG_BREAK_IF( alreadyHaveConstructor && "already have constructor for this type");
 
   if( !alreadyHaveConstructor )
   {
     _d->name2typeMap[ typeName ] = type;
     _d->constructors[ type ] = ctor;
+  }
+  else
+  {
+    Logger::warning( "TileOverlayFactory already have constructor for %s", typeName.c_str() );
   }
 }
 

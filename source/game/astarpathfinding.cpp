@@ -32,7 +32,7 @@ public:
   Grid grid;
   Tilemap* tilemap;
 
-  bool getTraversingPoints( const TilePos& start, const TilePos& stop, PathWay& oPathWay );
+  bool getTraversingPoints( const TilePos& start, const TilePos& stop, Pathway& oPathWay );
 
   AStarPoint* at( const TilePos& pos )
   {
@@ -81,14 +81,14 @@ void Pathfinder::update( const Tilemap& tilemap )
   }
 }
 
-bool Pathfinder::getPath( const Tile& start, const Tile& stop, PathWay& oPathWay,
+bool Pathfinder::getPath( const Tile& start, const Tile& stop, Pathway& oPathWay,
                           int flags, const Size& arrivedArea )
 {
   return getPath( start.getIJ(), stop.getIJ(), oPathWay, flags, arrivedArea );
 }
 
 bool Pathfinder::getPath( const TilePos& start, const TilePos& stop,  
-                          PathWay& oPathWay, int flags,
+                          Pathway& oPathWay, int flags,
                           const Size& arrivedArea )
 {
   if( (flags & checkStart) && !_d->isWalkable( start, AStarPoint::wtAll ) )
@@ -102,7 +102,7 @@ bool Pathfinder::getPath( const TilePos& start, const TilePos& stop,
   return aStar( start, stop, arrivedArea, oPathWay, flags );
 }
 
-bool Pathfinder::Impl::getTraversingPoints( const TilePos& start, const TilePos& stop, PathWay& oPathway )
+bool Pathfinder::Impl::getTraversingPoints( const TilePos& start, const TilePos& stop, Pathway& oPathway )
 {
   oPathway.init( *tilemap, tilemap->at( start ) );
 
@@ -131,7 +131,7 @@ void Pathfinder::Impl::tunePoints( int flags )
 }
 
 bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos, 
-                        const Size& arrivedArea, PathWay& oPathWay,
+                        const Size& arrivedArea, Pathway& oPathWay,
                         int flags )
 {
   oPathWay.init( *_d->tilemap, _d->tilemap->at( startPos ) );

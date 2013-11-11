@@ -46,6 +46,7 @@ protected:
   void _checkPath2NearestFire( const ReachedBuildings& buildings );
   void _serveBuildings( ReachedBuildings& reachedBuildings );
   void _back2Prefecture();
+  void _back2Patrol();
 
   class Impl;
   ScopedPtr< Impl > _d;

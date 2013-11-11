@@ -38,8 +38,8 @@ public:
   virtual void onNewTile();  // called when the walker is on a new tile
 
   // evaluates the service demand on the given pathWay
-  float evaluatePath(PathWay &pathWay);
-  void reservePath(PathWay &pathWay);
+  float evaluatePath(Pathway &pathWay);
+  void reservePath(Pathway &pathWay);
   ReachedBuildings getReachedBuildings(const TilePos& pos );
 
   virtual unsigned int getReachDistance() const;

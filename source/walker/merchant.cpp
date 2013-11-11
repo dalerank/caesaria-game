@@ -159,7 +159,7 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
         // we found a destination!
         nextState = stSellGoods;
         destBuildingPos = route.first->getTilePos();
-        wlk->setPathWay( route.second );
+        wlk->setPathway( route.second );
         wlk->setIJ( route.second.getOrigin().getIJ() );      
         wlk->go();
       }
@@ -193,7 +193,7 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
         // we found a destination!
         nextState = stBuyGoods;
         destBuildingPos = route.first->getTilePos();    
-        wlk->setPathWay( route.second );
+        wlk->setPathway( route.second );
         wlk->setIJ( route.second.getOrigin().getIJ() );    
         wlk->go();
       }
@@ -256,12 +256,12 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
 
   case stGoOutFromCity:
     {
-      PathWay pathWay;
+      Pathway pathWay;
       // we have nothing to buy/sell with city, or cannot find available warehouse -> go out
       bool pathFound = Pathfinder::getInstance().getPath( position, city->getBorderInfo().roadExit, pathWay, false, 1 );
       if( pathFound )
       {
-        wlk->setPathWay( pathWay );
+        wlk->setPathway( pathWay );
         wlk->setIJ( pathWay.getOrigin().getIJ() );
         wlk->go();
       }
