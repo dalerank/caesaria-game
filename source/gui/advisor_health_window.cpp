@@ -113,7 +113,7 @@ public:
     ServiceBuildingList srvBuildings = helper.find<ServiceBuilding>( service );
     foreach( ServiceBuildingPtr building, srvBuildings )
     {
-      ret.buildingWork += building->getWorkers() > 0 ? 1 : 0;
+      ret.buildingWork += building->getWorkersCount() > 0 ? 1 : 0;
       ret.buildingCount++;
     }
 

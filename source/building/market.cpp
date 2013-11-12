@@ -58,17 +58,17 @@ public:
 Market::Market() : ServiceBuilding(Service::market, constants::building::market, Size(2) ),
   _d( new Impl )
 {
-  _getFgPictures().resize(1);  // animation
+  _fgPicturesRef().resize(1);  // animation
 
   _d->initStore();
 
-  _getAnimation().load( ResourceGroup::commerce, 2, 10 );
-  _getAnimation().setDelay( 4 );
+  _animationRef().load( ResourceGroup::commerce, 2, 10 );
+  _animationRef().setDelay( 4 );
 }
 
 void Market::deliverService()
 {
-  if( getWorkers() > 0 && getWalkers().size() == 0 )
+  if( getWorkersCount() > 0 && getWalkers().size() == 0 )
   {
     // the marketBuyer is ready to buy something!
     MarketLadyPtr buyer = MarketLady::create( _getCity() );

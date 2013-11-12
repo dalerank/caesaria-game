@@ -52,11 +52,11 @@ public:
   void build( CityPtr city, const TilePos& pos )
   {
     Construction::build( city, pos );
-    _getFgPictures().clear();
+    _fgPicturesRef().clear();
     _pos = pos;
     _picture = Picture::load( ResourceGroup::transport, _index );
     _picture.addOffset( 10, -10 );
-    _getFgPictures().push_back( _picture );
+    _fgPicturesRef().push_back( _picture );
   }
 
   void initTerrain( Tile& terrain )
@@ -126,7 +126,7 @@ bool LowBridge::canBuild( CityPtr city, const TilePos& pos ) const
   _d->direction=noneDirection;
   
   _d->subtiles.clear();
-  const_cast< LowBridge* >( this )->_getFgPictures().clear();
+  const_cast< LowBridge* >( this )->_fgPicturesRef().clear();
 
   _checkParams( city, _d->direction, startPos, endPos, pos );
  
@@ -233,7 +233,7 @@ void LowBridge::_computePictures( CityPtr city, const TilePos& startPos, const T
 
   for( LowBridgeSubTiles::iterator it=_d->subtiles.begin(); it != _d->subtiles.end(); it++ )
   {
-    _getFgPictures().push_back( (*it)->_picture );
+    _fgPicturesRef().push_back( (*it)->_picture );
   }
 }
 
@@ -319,7 +319,7 @@ void LowBridge::build( CityPtr city, const TilePos& pos )
   _d->direction=noneDirection;
 
   _d->subtiles.clear();
-  _getFgPictures().clear();
+  _fgPicturesRef().clear();
 
   Tilemap& tilemap = city->getTilemap();
 

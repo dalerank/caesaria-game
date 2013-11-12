@@ -74,11 +74,11 @@ void ServiceBuilding::timeStep(const unsigned long time)
       _d->serviceTimer -= 1;
    }
 
-   _getAnimation().update( time );
-   const Picture& pic = _getAnimation().getFrame();
+   _animationRef().update( time );
+   const Picture& pic = _animationRef().getFrame();
    if( pic.isValid() )
    {
-      _getFgPictures().back() = _getAnimation().getFrame();
+      _fgPicturesRef().back() = _animationRef().getFrame();
    }
 }
 

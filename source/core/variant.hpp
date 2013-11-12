@@ -219,6 +219,7 @@ class Variant
     operator float() const { return toFloat(); }
     operator bool() const { return toBool(); }
     operator TilePos() const { return toTilePos(); }
+    operator Point() const { return toPoint(); }
 
     static std::string typeToName(Type type);
     static Type nameToType(const std::string& name);

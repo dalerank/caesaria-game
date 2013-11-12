@@ -514,7 +514,12 @@ void Walker::load( const VariantMap& stream)
   _d->uid = (UniqueId)stream.get( "uid" ).toInt();
   _d->speedMultiplier = (float)stream.get( "speedMul" );
   _d->name = stream.get( "name" ).toString();
-  _d->walkerGraphic = (gfx::Type)stream.get( "animationType", (int)Walker::acMove ).toInt();
+
+  Variant value = stream.get( "animationType" );
+  if( value.isValid() )
+  {
+    _d->walkerGraphic = (gfx::Type)value.toInt();
+  }
   
   if( _d->speedMultiplier < 0.1 ) //Sometime this have this error in save file
   {

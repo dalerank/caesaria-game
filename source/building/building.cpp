@@ -214,20 +214,20 @@ Dock::Dock() : Building( building::dock, Size(2) )
 {
   setPicture( ResourceGroup::transport, 5);
 
-  _getAnimation().load( ResourceGroup::transport, 6, 11);
+  _animationRef().load( ResourceGroup::transport, 6, 11);
   // now fill in reverse order
-  _getAnimation().load( ResourceGroup::transport, 15, 10, Animation::reverse );
+  _animationRef().load( ResourceGroup::transport, 15, 10, Animation::reverse );
   
-  _getAnimation().setOffset( Point( 107, 61 ) );
-  _getFgPictures().resize(1);
+  _animationRef().setOffset( Point( 107, 61 ) );
+  _fgPicturesRef().resize(1);
 }
 
 void Dock::timeStep(const unsigned long time)
 {
-  _getAnimation().update( time );
+  _animationRef().update( time );
   
   // takes current animation frame and put it into foreground
-  _getFgPictures().at(0) = _getAnimation().getFrame();
+  _fgPicturesRef().at(0) = _animationRef().getFrame();
 }
 
 // second arch pictures is land3a 45 + 46	
@@ -235,8 +235,8 @@ void Dock::timeStep(const unsigned long time)
 TriumphalArch::TriumphalArch() : Building( building::triumphalArch, Size(3) )
 {
   setPicture( ResourceGroup::land3a, 43 );
-  _getAnimation().load("land3a", 44, 1);
-  _getAnimation().setOffset( Point( 63, 97 ) );
-  _getFgPictures().resize(1);
-  _getFgPictures().at(0) = _getAnimation().getFrame();
+  _animationRef().load("land3a", 44, 1);
+  _animationRef().setOffset( Point( 63, 97 ) );
+  _fgPicturesRef().resize(1);
+  _fgPicturesRef().at(0) = _animationRef().getFrame();
 }

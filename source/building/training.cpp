@@ -39,7 +39,7 @@ void TrainingBuilding::timeStep(const unsigned long time)
 {
    WorkingBuilding::timeStep(time);
 
-   if( getWorkers() <= 0 )
+   if( getWorkersCount() <= 0 )
    {
      return;
    }
@@ -54,11 +54,11 @@ void TrainingBuilding::timeStep(const unsigned long time)
       _trainingTimer -= 1;
    }
 
-   _getAnimation().update( time );
-   const Picture& pic = _getAnimation().getFrame();
+   _animationRef().update( time );
+   const Picture& pic = _animationRef().getFrame();
    if( pic.isValid() )
    {
-      _getFgPictures().back() = _getAnimation().getFrame();
+      _fgPicturesRef().back() = _animationRef().getFrame();
    }
 }
 
@@ -80,7 +80,7 @@ ActorColony::ActorColony() : TrainingBuilding( building::actorColony, Size(3) )
 {
   //_getAnimation().load( ResourceGroup::entertaiment, 82, 9);
   //_getAnimation().setOffset( Point( 68, -6 ) );
-  _getFgPictures().resize(1);
+  _fgPicturesRef().resize(1);
 }
 
 void ActorColony::deliverTrainee()
@@ -104,9 +104,9 @@ GladiatorSchool::GladiatorSchool() : TrainingBuilding( building::gladiatorSchool
 {
   //setPicture( Picture::load( ResourceGroup::entertaiment, 51 ) );
 
-  _getAnimation().load( ResourceGroup::entertaiment, 52, 10);
-  _getAnimation().setOffset( Point( 62, 24 ) );
-  _getFgPictures().resize(1);
+  _animationRef().load( ResourceGroup::entertaiment, 52, 10);
+  _animationRef().setOffset( Point( 62, 24 ) );
+  _fgPicturesRef().resize(1);
 }
 
 void GladiatorSchool::deliverTrainee()
@@ -122,9 +122,9 @@ LionsNursery::LionsNursery() : TrainingBuilding( building::lionHouse, Size(3) )
 {
   setPicture( ResourceGroup::entertaiment, 62 );
 
-   _getAnimation().load( ResourceGroup::entertaiment, 63, 18);
-   _getAnimation().setOffset( Point( 78, 21) );
-   _getFgPictures().resize(1);
+   _animationRef().load( ResourceGroup::entertaiment, 63, 18);
+   _animationRef().setOffset( Point( 78, 21) );
+   _fgPicturesRef().resize(1);
 }
 
 void LionsNursery::deliverTrainee()
@@ -140,9 +140,9 @@ WorkshopChariot::WorkshopChariot() : TrainingBuilding( building::chariotSchool, 
 {
   setPicture( ResourceGroup::entertaiment, 91 );
 
-  _getAnimation().load( ResourceGroup::entertaiment, 92, 10);
-  _getAnimation().setOffset( Point( 54, 23 ));
-  _getFgPictures().resize(1);
+  _animationRef().load( ResourceGroup::entertaiment, 92, 10);
+  _animationRef().setOffset( Point( 54, 23 ));
+  _fgPicturesRef().resize(1);
 }
 
 void WorkshopChariot::deliverTrainee()

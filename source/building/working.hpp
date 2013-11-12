@@ -32,7 +32,7 @@ public:
   void addWorkers( const unsigned int workers );
   void removeWorkers( const unsigned int workers );
 
-  int getWorkers() const;
+  int getWorkersCount() const;
 
   virtual void setActive(const bool value);  // if false then this building is stopped
   virtual bool isActive() const;

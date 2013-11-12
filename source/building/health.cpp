@@ -32,7 +32,7 @@ unsigned int Doctor::getWalkerDistance() const
 
 void Doctor::deliverService()
 {
-  if( getWorkers() > 0 && getWalkers().size() == 0 )
+  if( getWorkersCount() > 0 && getWalkers().size() == 0 )
   {
     ServiceBuilding::deliverService();
   }
@@ -45,7 +45,7 @@ Hospital::Hospital() : ServiceBuilding(Service::hospital, building::B_HOSPITAL, 
 Baths::Baths() : ServiceBuilding(Service::baths, building::B_BATHS, Size(2) )
 {
   _haveReservorWater = false;
-  _getFgPictures().resize(2);
+  _fgPicturesRef().resize(2);
 
   _initAnimation();
 }
@@ -59,16 +59,16 @@ void Baths::timeStep(const unsigned long time)
 {
   if( time % 22 == 1 )
   {
-    if( getTile().getWaterService( WTR_RESERVOIR ) > 0 && getWorkers() > 0 )
+    if( getTile().getWaterService( WTR_RESERVOIR ) > 0 && getWorkersCount() > 0 )
     {
-      _getAnimation().start();
+      _animationRef().start();
       _haveReservorWater = true;
     }
     else
     {
-      _getAnimation().stop();
+      _animationRef().stop();
       _haveReservorWater = false;
-      _getFgPictures().at(0) = Picture::getInvalid();
+      _fgPicturesRef().at(0) = Picture::getInvalid();
     }
   }
 
@@ -85,10 +85,10 @@ void Baths::deliverService()
 
 void Baths::_initAnimation()
 {
-  _getAnimation().load( ResourceGroup::security, 22, 10);
-  _getAnimation().setOffset( Point( 23, 25 ) );
-  _getAnimation().setDelay( 2 );
-  _getAnimation().stop();
+  _animationRef().load( ResourceGroup::security, 22, 10);
+  _animationRef().setOffset( Point( 23, 25 ) );
+  _animationRef().setDelay( 2 );
+  _animationRef().stop();
 }
 
 Barber::Barber() : ServiceBuilding(Service::barber, building::B_BARBER, Size(1))

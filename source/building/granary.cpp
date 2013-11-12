@@ -41,12 +41,12 @@ public:
   // returns the reservationID if stock can be retrieved (else 0)
   virtual long reserveStorage(GoodStock &stock)
   {
-    return granary->getWorkers() > 0 ? SimpleGoodStore::reserveStorage( stock ) : 0;
+    return granary->getWorkersCount() > 0 ? SimpleGoodStore::reserveStorage( stock ) : 0;
   }
 
   virtual void store( GoodStock &stock, const int amount)
   {
-    if( granary->getWorkers() == 0 )
+    if( granary->getWorkersCount() == 0 )
     {
       return;
     }
@@ -89,15 +89,15 @@ Granary::Granary() : WorkingBuilding( constants::building::granary, Size(3) ), _
   _d->goodStore.granary = this;
 
   setPicture( ResourceGroup::commerce, 140 );
-  _getFgPictures().resize(6);  // 1 upper level + 4 windows + animation
+  _fgPicturesRef().resize(6);  // 1 upper level + 4 windows + animation
 
-  _getAnimation().load(ResourceGroup::commerce, 146, 7, Animation::straight);
+  _animationRef().load(ResourceGroup::commerce, 146, 7, Animation::straight);
   // do the animation in reverse
-  _getAnimation().load(ResourceGroup::commerce, 151, 6, Animation::reverse);
-  _getAnimation().setDelay( 4 );
+  _animationRef().load(ResourceGroup::commerce, 151, 6, Animation::reverse);
+  _animationRef().setDelay( 4 );
 
-  _getFgPictures().at(0) = Picture::load( ResourceGroup::commerce, 141);
-  _getFgPictures().at(5) = _getAnimation().getFrame();
+  _fgPicturesRef().at(0) = Picture::load( ResourceGroup::commerce, 141);
+  _fgPicturesRef().at(5) = _animationRef().getFrame();
   computePictures();
 
   _d->devastateThis = false;  
@@ -106,11 +106,11 @@ Granary::Granary() : WorkingBuilding( constants::building::granary, Size(3) ), _
 void Granary::timeStep(const unsigned long time)
 {
   WorkingBuilding::timeStep( time );
-  if( getWorkers() > 0 )
+  if( getWorkersCount() > 0 )
   {
-    _getAnimation().update( time );
+    _animationRef().update( time );
 
-    _getFgPictures().at(5) = _getAnimation().getFrame();
+    _fgPicturesRef().at(5) = _animationRef().getFrame();
 
     if( time % 22 == 1 && _d->goodStore.isDevastation() 
         && (_d->goodStore.getCurrentQty() > 0) && getWalkers().empty() )
@@ -133,24 +133,24 @@ void Granary::computePictures()
   for (int n = 0; n < 4; ++n)
   {
     // reset all window pictures
-    _getFgPictures().at(n+1) = Picture::getInvalid();
+    _fgPicturesRef().at(n+1) = Picture::getInvalid();
   }
 
   if (allQty > 0)
   {
-    _getFgPictures().at(1) = Picture::load( ResourceGroup::commerce, 142);
+    _fgPicturesRef().at(1) = Picture::load( ResourceGroup::commerce, 142);
   }
   if( allQty > maxQty * 0.25)
   {
-    _getFgPictures().at(2) = Picture::load( ResourceGroup::commerce, 143);
+    _fgPicturesRef().at(2) = Picture::load( ResourceGroup::commerce, 143);
   }
   if (allQty > maxQty * 0.5)
   {
-    _getFgPictures().at(3) = Picture::load( ResourceGroup::commerce, 144);
+    _fgPicturesRef().at(3) = Picture::load( ResourceGroup::commerce, 144);
   }
   if (allQty > maxQty * 0.9)
   {
-    _getFgPictures().at(4) = Picture::load( ResourceGroup::commerce, 145);
+    _fgPicturesRef().at(4) = Picture::load( ResourceGroup::commerce, 145);
   }
 }
 

@@ -35,7 +35,7 @@ public:
 
 FishPlace::FishPlace() : TileOverlay( constants::place::fishPlace ), _d( new Impl )
 {
-  _getAnimation().setDelay( 3 );
+  _animationRef().setDelay( 3 );
   _d->animations.resize( 1 );
   _d->passQueue.push_back( Renderer::foreground );
   _d->passQueue.push_back( Renderer::animations );
@@ -44,15 +44,15 @@ FishPlace::FishPlace() : TileOverlay( constants::place::fishPlace ), _d( new Imp
 
   if( _d->fishCount > 1 )
   {
-    _getAnimation().load( ResourceGroup::land3a, 19, 24); //big fish place
+    _animationRef().load( ResourceGroup::land3a, 19, 24); //big fish place
     _d->basicOffset = Point( -41, 122 );
-    _getAnimation().setOffset( _d->basicOffset );
+    _animationRef().setOffset( _d->basicOffset );
   }
   else
   {
-    _getAnimation().load( ResourceGroup::land3a, 1, 18);
+    _animationRef().load( ResourceGroup::land3a, 1, 18);
     _d->basicOffset =  Point( 0, 55 );
-    _getAnimation().setOffset( _d->basicOffset );
+    _animationRef().setOffset( _d->basicOffset );
   } //small fish place
 }
 
@@ -76,9 +76,9 @@ void FishPlace::initTerrain(Tile& terrain)
 
 void FishPlace::timeStep(const unsigned long time)
 {
-  _getAnimation().update( time );
+  _animationRef().update( time );
 
-  _d->animations[ 0 ] = _getAnimation().getFrame();
+  _d->animations[ 0 ] = _animationRef().getFrame();
 
   if( _d->walker != 0 )
   {

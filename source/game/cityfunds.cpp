@@ -190,7 +190,7 @@ unsigned int CityStatistic::getCurrentWorkersNumber(CityPtr city)
   int workersNumber = 0;
   foreach( WorkingBuildingPtr bld, buildings )
   {
-    workersNumber += bld->getWorkers();
+    workersNumber += bld->getWorkersCount();
   }
 
   return workersNumber;

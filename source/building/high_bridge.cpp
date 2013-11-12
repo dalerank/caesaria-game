@@ -72,9 +72,9 @@ public:
     _picture = Picture::load( ResourceGroup::transport, _index % 100 );
     checkSecondPart();
     Construction::build( city, pos );
-    _getFgPictures().clear();
+    _fgPicturesRef().clear();
     _pos = pos;
-    _getFgPictures().push_back( _picture );
+    _fgPicturesRef().push_back( _picture );
   }
 
   void initTerrain( Tile& terrain )
@@ -143,7 +143,7 @@ bool HighBridge::canBuild( CityPtr city, const TilePos& pos ) const
   _d->direction=noneDirection;
   
   _d->subtiles.clear();
-  const_cast< HighBridge* >( this )->_getFgPictures().clear();
+  const_cast< HighBridge* >( this )->_fgPicturesRef().clear();
 
   _checkParams( city, _d->direction, startPos, endPos, pos );
  
@@ -267,7 +267,7 @@ void HighBridge::_computePictures( CityPtr city, const TilePos& startPos, const 
 
   foreach( HighBridgeSubTilePtr tile, _d->subtiles )
   {
-    _getFgPictures().push_back( tile->_picture );
+    _fgPicturesRef().push_back( tile->_picture );
   }
 }
 
@@ -353,7 +353,7 @@ void HighBridge::build( CityPtr city, const TilePos& pos )
   _d->direction=noneDirection;
 
   _d->subtiles.clear();
-  _getFgPictures().clear();
+  _fgPicturesRef().clear();
 
   Tilemap& tilemap = city->getTilemap();
 

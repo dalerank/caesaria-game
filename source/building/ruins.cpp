@@ -29,9 +29,9 @@ BurningRuins::BurningRuins() : ServiceBuilding(Service::burningRuins, building::
   updateState( Construction::fire, 99, false );
 
   setPicture( ResourceGroup::land2a, 187 );
-  _getAnimation().load( ResourceGroup::land2a, 188, 8 );
-  _getAnimation().setOffset( Point( 14, 26 ) );
-  _getFgPictures().resize(1);
+  _animationRef().load( ResourceGroup::land2a, 188, 8 );
+  _animationRef().setOffset( Point( 14, 26 ) );
+  _fgPicturesRef().resize(1);
 }
 
 void BurningRuins::timeStep(const unsigned long time)
@@ -46,23 +46,23 @@ void BurningRuins::timeStep(const unsigned long time)
       if( getState( Construction::fire ) == 50 )
       {
         setPicture( ResourceGroup::land2a, 214 );
-        _getAnimation().clear();
-        _getAnimation().load( ResourceGroup::land2a, 215, 8);
-        _getAnimation().setOffset( Point( 14, 26 ) );
+        _animationRef().clear();
+        _animationRef().load( ResourceGroup::land2a, 215, 8);
+        _animationRef().setOffset( Point( 14, 26 ) );
       }
       else if( getState( Construction::fire ) == 25 )
       {
         setPicture( ResourceGroup::land2a, 223 );
-        _getAnimation().clear();
-        _getAnimation().load(ResourceGroup::land2a, 224, 8);
-        _getAnimation().setOffset( Point( 14, 18 ) );
+        _animationRef().clear();
+        _animationRef().load(ResourceGroup::land2a, 224, 8);
+        _animationRef().setOffset( Point( 14, 18 ) );
       }
     }
     else
     {
       deleteLater();
-      _getAnimation().clear();
-      _getFgPictures().clear();
+      _animationRef().clear();
+      _fgPicturesRef().clear();
     }
   }
 }
@@ -168,11 +168,11 @@ CollapsedRuins::CollapsedRuins() : Building(building::B_COLLAPSED_RUINS, Size(1)
 {
   updateState( Construction::damage, 1, false );
 
-  _getAnimation().load( ResourceGroup::sprites, 1, 8 );
-  _getAnimation().setOffset( Point( 14, 26 ) );
-  _getAnimation().setDelay( 4 );
-  _getAnimation().setLoop( false );
-  _getFgPictures().resize(1);
+  _animationRef().load( ResourceGroup::sprites, 1, 8 );
+  _animationRef().setOffset( Point( 14, 26 ) );
+  _animationRef().setDelay( 4 );
+  _animationRef().setLoop( false );
+  _fgPicturesRef().resize(1);
 }
 
 void CollapsedRuins::burn()
@@ -206,17 +206,17 @@ PlagueRuins::PlagueRuins() : Building( building::B_PLAGUE_RUINS, Size(1) )
   updateState( Construction::fire, 99, false );
 
   setPicture( ResourceGroup::land2a, 187 );
-  _getAnimation().load( ResourceGroup::land2a, 188, 8 );
-  _getAnimation().setOffset( Point( 14, 26 ) );
-  _getFgPictures().resize(2);
-  _getFgPictures().at( 1 ) = Picture::load( ResourceGroup::sprites, 218 );
-  _getFgPictures().at( 1 ).setOffset( 16, 32 );
+  _animationRef().load( ResourceGroup::land2a, 188, 8 );
+  _animationRef().setOffset( Point( 14, 26 ) );
+  _fgPicturesRef().resize(2);
+  _fgPicturesRef().at( 1 ) = Picture::load( ResourceGroup::sprites, 218 );
+  _fgPicturesRef().at( 1 ).setOffset( 16, 32 );
 }
 
 void PlagueRuins::timeStep(const unsigned long time)
 {
-  _getAnimation().update( time );
-  _getFgPictures().at( 0 ) = _getAnimation().getFrame();
+  _animationRef().update( time );
+  _fgPicturesRef().at( 0 ) = _animationRef().getFrame();
 
   if (time % 16 == 0 )
   {
@@ -226,23 +226,23 @@ void PlagueRuins::timeStep(const unsigned long time)
       if( getState( Construction::fire ) == 50 )
       {
         setPicture( ResourceGroup::land2a, 214 );
-        _getAnimation().clear();
-        _getAnimation().load( ResourceGroup::land2a, 215, 8);
-        _getAnimation().setOffset( Point( 14, 26 ) );
+        _animationRef().clear();
+        _animationRef().load( ResourceGroup::land2a, 215, 8);
+        _animationRef().setOffset( Point( 14, 26 ) );
       }
       else if( getState( Construction::fire ) == 25 )
       {
         setPicture( ResourceGroup::land2a, 223 );
-        _getAnimation().clear();
-        _getAnimation().load(ResourceGroup::land2a, 224, 8);
-        _getAnimation().setOffset( Point( 14, 18 ) );
+        _animationRef().clear();
+        _animationRef().load(ResourceGroup::land2a, 224, 8);
+        _animationRef().setOffset( Point( 14, 18 ) );
       }
     }
     else
     {
       deleteLater();
-      _getAnimation().clear();
-      _getFgPictures().clear();
+      _animationRef().clear();
+      _fgPicturesRef().clear();
     }
   }
 }

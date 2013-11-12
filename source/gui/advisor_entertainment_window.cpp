@@ -187,7 +187,7 @@ InfrastructureInfo AdvisorEntertainmentWindow::Impl::getInfo(CityPtr city, const
   ServiceBuildingList servBuildings = helper.find<ServiceBuilding>( service );
   foreach( ServiceBuildingPtr building, servBuildings )
   {
-    if( building->getWorkers() > 0 )
+    if( building->getWorkersCount() > 0 )
     {
       ret.buildingWork++;
 
@@ -201,10 +201,10 @@ InfrastructureInfo AdvisorEntertainmentWindow::Impl::getInfo(CityPtr city, const
       break;
       }
 
-      ret.peoplesServed += maxServing * building->getWorkers() / building->getMaxWorkers();
+      ret.peoplesServed += maxServing * building->getWorkersCount() / building->getMaxWorkers();
     }
     ret.buildingCount++;
-    ret.partlyWork += (building->getWorkers() != building->getMaxWorkers() ? 1 : 0);
+    ret.partlyWork += (building->getWorkersCount() != building->getMaxWorkers() ? 1 : 0);
   }
 
   return ret;

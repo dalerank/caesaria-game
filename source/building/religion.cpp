@@ -42,7 +42,7 @@ RomeDivinityPtr Temple::getDivinity() const
 
 void Temple::deliverService()
 {
-  if( getWalkers().empty() && getWorkers() > 0 )
+  if( getWalkers().empty() && getWorkersCount() > 0 )
   {
     ServiceBuilding::deliverService();
   }
@@ -105,9 +105,9 @@ unsigned int BigTempleMercure::getParishionerNumber() const
 
 TempleOracle::TempleOracle() : Temple( RomeDivinityPtr(), building::oracle, 55, Size(2) )
 {
-  _getAnimation().load( ResourceGroup::security, 56, 6);
-  _getAnimation().setOffset( Point( 9, 30 ) );
-  _getFgPictures().resize(1);
+  _animationRef().load( ResourceGroup::security, 56, 6);
+  _animationRef().setOffset( Point( 9, 30 ) );
+  _fgPicturesRef().resize(1);
 }
 
 unsigned int TempleOracle::getParishionerNumber() const

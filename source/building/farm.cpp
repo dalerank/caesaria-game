@@ -129,7 +129,7 @@ void Farm::init()
   _d->subTiles.push_back(FarmTile(farmType, TilePos( 2, 1 ) ));
   _d->subTiles.push_back(FarmTile(farmType, TilePos( 2, 0 ) ));
 
-  _getFgPictures().resize(5);
+  _fgPicturesRef().resize(5);
   computePictures();
 }
 
@@ -157,7 +157,7 @@ void Farm::computePictures()
 
   for (int n = 0; n<5; ++n)
   {
-    _getFgPictures().at(n) = _d->subTiles[n].getPicture();
+    _fgPicturesRef().at(n) = _d->subTiles[n].getPicture();
   }
 }
 

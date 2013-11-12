@@ -33,8 +33,8 @@ FortLegionnaire::FortLegionnaire() : Building( building::B_FORT_LEGIONNAIRE, Siz
 
   Picture logo = Picture::load(ResourceGroup::security, 16);
   logo.setOffset(80,10);
-  _getFgPictures().resize(1);
-  _getFgPictures().at( 0 ) = logo;
+  _fgPicturesRef().resize(1);
+  _fgPicturesRef().at( 0 ) = logo;
 }
 
 FortMounted::FortMounted() : Building( constants::building::B_FORT_MOUNTED, Size(3) )
@@ -43,8 +43,8 @@ FortMounted::FortMounted() : Building( constants::building::B_FORT_MOUNTED, Size
 
   Picture logo = Picture::load(ResourceGroup::security, 15);
   logo.setOffset(80,10);
-  _getFgPictures().resize(1);
-  _getFgPictures().at( 0 ) = logo;
+  _fgPicturesRef().resize(1);
+  _fgPicturesRef().at( 0 ) = logo;
 }
 
 FortJaveline::FortJaveline() : Building( building::B_FORT_JAVELIN, Size(3) )
@@ -54,6 +54,6 @@ FortJaveline::FortJaveline() : Building( building::B_FORT_JAVELIN, Size(3) )
   Picture logo = Picture::load(ResourceGroup::security, 14);
   //std::cout << logo->get_xoffset() << " " << logo->get_yoffset() << " " << logo->get_width() << " " << logo->get_height() << std::endl;
   logo.setOffset(80,10);
-  _getFgPictures().resize(1);
-  _getFgPictures().at( 0 ) = logo;
+  _fgPicturesRef().resize(1);
+  _fgPicturesRef().at( 0 ) = logo;
 }

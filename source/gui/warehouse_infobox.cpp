@@ -64,7 +64,7 @@ InfoBoxWarehouse::InfoBoxWarehouse( Widget* parent, const Tile& tile )
   drawGood(Good::furniture, 2, _paintY+100);
   drawGood(Good::pottery,   2, _paintY+125);
 
-  _drawWorkers( Point( 16 + 20, 225 + 10 ), 542, _warehouse->getMaxWorkers(), _warehouse->getWorkers() );
+  _drawWorkers( Point( 16 + 20, 225 + 10 ), 542, _warehouse->getMaxWorkers(), _warehouse->getWorkersCount() );
 }
 
 InfoBoxWarehouse::~InfoBoxWarehouse()

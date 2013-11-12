@@ -105,11 +105,11 @@ void CityServiceWorkersHire::_hireByType(const TileOverlay::Type type )
     if( _haveHr( wrkbld ) )
       continue;
 
-    if( wrkbld->getAccessRoads().size() > 0 && wrkbld->getWorkers() < wrkbld->getMaxWorkers() )
+    if( wrkbld->getAccessRoads().size() > 0 && wrkbld->getWorkersCount() < wrkbld->getMaxWorkers() )
     {
       WorkersHunterPtr hr = WorkersHunter::create( _d->city );
       hr->setMaxDistance( 20 );
-      hr->send2City( wrkbld, wrkbld->getMaxWorkers() - wrkbld->getWorkers());
+      hr->send2City( wrkbld, wrkbld->getMaxWorkers() - wrkbld->getWorkersCount());
     }
   }
 }

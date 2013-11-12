@@ -23,23 +23,23 @@
 
 MarbleQuarry::MarbleQuarry() : Factory(Good::none, Good::marble, constants::building::marbleQuarry, Size(2) )
 {
-  _getAnimation().load( ResourceGroup::commerce, 44, 10);
-  _getAnimation().setDelay( 4 );
-  _getFgPictures().resize(2);
+  _animationRef().load( ResourceGroup::commerce, 44, 10);
+  _animationRef().setDelay( 4 );
+  _fgPicturesRef().resize(2);
 }
 
 void MarbleQuarry::timeStep( const unsigned long time )
 {
-  bool mayAnimate = getWorkers() > 0;
+  bool mayAnimate = getWorkersCount() > 0;
 
-  if( mayAnimate && _getAnimation().isStopped() )
+  if( mayAnimate && _animationRef().isStopped() )
   {
-    _getAnimation().start();
+    _animationRef().start();
   }
 
-  if( !mayAnimate && _getAnimation().isRunning() )
+  if( !mayAnimate && _animationRef().isRunning() )
   {
-    _getAnimation().stop();
+    _animationRef().stop();
   }
 
   Factory::timeStep( time );

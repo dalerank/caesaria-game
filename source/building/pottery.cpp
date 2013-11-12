@@ -24,9 +24,9 @@ using namespace constants;
 
 Pottery::Pottery() : Factory(Good::clay, Good::pottery, building::pottery, Size(2))
 {
-  _getAnimation().load(ResourceGroup::commerce, 133, 7);
-  _getAnimation().setDelay( 3 );
-  _getFgPictures().resize(2);
+  _animationRef().load(ResourceGroup::commerce, 133, 7);
+  _animationRef().setDelay( 3 );
+  _fgPicturesRef().resize(2);
 }
 
 bool Pottery::canBuild(CityPtr city, const TilePos& pos) const

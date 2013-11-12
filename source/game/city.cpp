@@ -161,8 +161,6 @@ public:
   void payWages( CityPtr city );
   void calculatePopulation( CityPtr city );
   void beforeOverlayDestroyed(CityPtr city, TileOverlayPtr overlay );
-  void returnFiredWorkers( WorkingBuildingPtr building );
-  void fireWorkers(HousePtr house );
 
 oc3_signals public:
   Signal1<int> onPopulationChangedSignal;
@@ -427,68 +425,6 @@ void City::Impl::beforeOverlayDestroyed(CityPtr city, TileOverlayPtr overlay)
     CityHelper helper( city );
     helper.updateDesirability( overlay.as<Construction>(), false );
   }
-
-  if( overlay.is<WorkingBuilding>() )
-  {
-    returnFiredWorkers( overlay.as<WorkingBuilding>() );
-  }
-  else if( overlay.is<House>() )
-  {
-    fireWorkers( overlay.as<House>() );
-  }
-}
-
-void City::Impl::fireWorkers( HousePtr house )
-{
-  int leftWorkers = house->getWorkersCount();
-  const int defaultFireWorkersDistance = 40;
-
-  for( int curRange=1; curRange < defaultFireWorkersDistance; curRange++ )
-  {
-    TilemapArea perimetr = tilemap.getRectangle( house->getTilePos() - TilePos( curRange, curRange ),
-                                                 house->getSize() + Size( 2 * curRange ) );
-    foreach( Tile* tile, perimetr )
-    {
-      WorkingBuildingPtr wrkBuilding = tile->getOverlay().as<WorkingBuilding>();
-      if( wrkBuilding.isValid() )
-      {
-        int bldWorkersCount = wrkBuilding->getWorkers();
-        wrkBuilding->removeWorkers( leftWorkers );
-        leftWorkers -= math::clamp( bldWorkersCount, 0, leftWorkers );
-      }
-
-      if( !leftWorkers )
-        return;
-    }
-  }
-}
-
-
-void City::Impl::returnFiredWorkers(WorkingBuildingPtr building )
-{
-  int workersCount = building->getWorkers();
-  const int defaultFireWorkersDistance = 40;
-  for( int curRange=1; curRange < defaultFireWorkersDistance; curRange++ )
-  {
-    TilemapArea perimetr = tilemap.getRectangle( building->getTilePos() - TilePos( curRange, curRange ),
-                                                 building->getSize() + Size( 2 * curRange ) );
-    foreach( Tile* tile, perimetr )
-    {
-      HousePtr house = tile->getOverlay().as<House>();     
-      if( house.isValid() )
-      {
-        int lastWorkersCount = house->getServiceValue( Service::workersRecruter );
-        house->appendServiceValue( Service::workersRecruter, workersCount );
-        int currentWorkers = house->getServiceValue( Service::workersRecruter );
-
-        int mayAppend = math::clamp( workersCount, 0, currentWorkers - lastWorkersCount );
-        workersCount -= mayAppend;
-      }
-
-      if( !workersCount )
-        return;
-    }
-  }
 }
 
 void City::save( VariantMap& stream) const
@@ -512,7 +448,6 @@ void City::save( VariantMap& stream) const
   int walkedId = 0;
   foreach( WalkerPtr walker, _d->walkerList )
   {
-    // std::cout << "WRITE WALKER @" << stream.tell() << std::endl;
     VariantMap vm_walker;
     walker->save( vm_walker );
     vm_walkers[ StringHelper::format( 0xff, "%d", walkedId ) ] = vm_walker;

@@ -22,24 +22,29 @@ EngineerPost::EngineerPost() : ServiceBuilding( Service::engineer, constants::bu
 {
   setPicture( ResourceGroup::buildingEngineer, 56 );
 
-  _getAnimation().load( ResourceGroup::buildingEngineer, 57, 10 );
-  _getAnimation().setDelay( 4 );
-  _getAnimation().setOffset( Point( 10, 42 ) );
-  _getFgPictures().resize(1);
+  _animationRef().load( ResourceGroup::buildingEngineer, 57, 10 );
+  _animationRef().setDelay( 4 );
+  _animationRef().setOffset( Point( 10, 42 ) );
+  _fgPicturesRef().resize(1);
 }
 
 void EngineerPost::timeStep(const unsigned long time)
 {
-  bool mayAnimate = getWorkers() > 0;
+  bool mayAnimate = getWorkersCount() > 0;
 
-  if( mayAnimate && _getAnimation().isStopped() )
+  if( mayAnimate )
   {
-      _getAnimation().start();
+    if( _animationRef().isStopped() )
+    {
+      _animationRef().setIndex( 0 );
+      _animationRef().start();
+    }
   }
-
-  if( !mayAnimate && _getAnimation().isRunning() )
+  else if( _animationRef().isRunning() )
   {
-      _getAnimation().stop();
+    _animationRef().stop();
+    _animationRef().setIndex( -1 );
+    _fgPicturesRef().back() = Picture::getInvalid();
   }
 
   ServiceBuilding::timeStep( time );
@@ -47,7 +52,7 @@ void EngineerPost::timeStep(const unsigned long time)
 
 void EngineerPost::deliverService()
 {
-  if( getWorkers() > 0 && getWalkers().size() == 0 )
+  if( getWorkersCount() > 0 && getWalkers().size() == 0 )
   {
       ServiceBuilding::deliverService();
   }

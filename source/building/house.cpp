@@ -34,6 +34,7 @@
 #include "core/foreach.hpp"
 #include "constants.hpp"
 #include "events/event.hpp"
+#include "events/fireworkers.hpp"
 
 class House::Impl
 {
@@ -188,6 +189,13 @@ void House::timeStep(const unsigned long time)
     if( homelessCount > 0 )
     {
       CitizenGroup homeless = _d->habitants.retrieve( homelessCount );
+
+      int workersFireCount = homeless.count( CitizenGroup::mature );
+      if( workersFireCount > 0 )
+      {
+        events::GameEventPtr e = events::FireWorkers::create( getTilePos(), workersFireCount );
+        e->dispatch();
+      }
 
       Immigrant::send2City( _getCity(), homeless, getTile() );
     }
@@ -647,6 +655,9 @@ void House::destroy()
   _d->maxHabitants = 0;
 
   Immigrant::send2City( _getCity(), _d->habitants, getTile() );
+
+  events::GameEventPtr e = events::FireWorkers::create( getTilePos(), getWorkersCount() );
+  e->dispatch();
 
   _d->habitants.clear();
 

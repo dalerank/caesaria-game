@@ -369,12 +369,12 @@ Reservoir::Reservoir() : WaterSource( building::reservoir, Size( 3 ) )
   // utilitya 34      - empty reservoir
   // utilitya 35 ~ 42 - full reservoir animation
  
-  _getAnimation().load( ResourceGroup::utilitya, 35, 8);
-  _getAnimation().load( ResourceGroup::utilitya, 42, 7, Animation::reverse);
-  _getAnimation().setDelay( 11 );
-  _getAnimation().setOffset( Point( 47, 63 ) );
+  _animationRef().load( ResourceGroup::utilitya, 35, 8);
+  _animationRef().load( ResourceGroup::utilitya, 42, 7, Animation::reverse);
+  _animationRef().setDelay( 11 );
+  _animationRef().setOffset( Point( 47, 63 ) );
 
-  _getFgPictures().resize(1);
+  _fgPicturesRef().resize(1);
   //_fgPictures[0]=;
 }
 
@@ -427,7 +427,7 @@ void Reservoir::timeStep(const unsigned long time)
 
   if( !_d->water )
   {
-    _getFgPictures().at( 0 ) = Picture::getInvalid();
+    _fgPicturesRef().at( 0 ) = Picture::getInvalid();
     return;
   }
 
@@ -449,10 +449,10 @@ void Reservoir::timeStep(const unsigned long time)
     _produceWater(offsets, 4);
   }
 
-  _getAnimation().update( time );
+  _animationRef().update( time );
   
   // takes current animation frame and put it into foreground
-  _getFgPictures().at( 0 ) = _getAnimation().getFrame();
+  _fgPicturesRef().at( 0 ) = _animationRef().getFrame();
 }
 
 bool Reservoir::canBuild( CityPtr city, const TilePos& pos ) const
@@ -560,7 +560,7 @@ Fountain::Fountain() : ServiceBuilding(Service::fontain, building::fountain, Siz
   //setPicture( ResourceGroup::utilitya, 10 );
 
   _initAnimation();
-  _getFgPictures().resize(1);
+  _fgPicturesRef().resize(1);
 
   _damageIncrement = 0;
   _fireIncrement = 0;
@@ -585,10 +585,10 @@ void Fountain::timeStep(const unsigned long time)
   //filled area, that fontain present and work
   if( time % 22 == 1 )
   {
-    if( getTile().getWaterService( WTR_RESERVOIR ) > 0 && getWorkers() > 0 )
+    if( getTile().getWaterService( WTR_RESERVOIR ) > 0 && getWorkersCount() > 0 )
     {
       _haveReservoirWater = true;
-      _getAnimation().start();
+      _animationRef().start();
     }
     else
     {
@@ -600,12 +600,12 @@ void Fountain::timeStep(const unsigned long time)
         tile->decreaseWaterService( WTR_FONTAIN );
       }
 
-      _getAnimation().stop();
+      _animationRef().stop();
     }
 
     if( !isActive() )
     {
-      _getFgPictures().at( 0 ) = Picture::getInvalid();
+      _fgPicturesRef().at( 0 ) = Picture::getInvalid();
       return;
     }
 
@@ -674,9 +674,9 @@ void Fountain::load(const VariantMap& stream)
 
 void Fountain::_initAnimation()
 {
-  _getAnimation().load( ResourceGroup::utilitya, fontainStartAnim, fontainSizeAnim );
+  _animationRef().load( ResourceGroup::utilitya, fontainStartAnim, fontainSizeAnim );
   //animLoader.fill_animation_reverse(_animation, "utilitya", 25, 7);
-  _getAnimation().setOffset( Point( 12, 24 ) );
-  _getAnimation().setDelay( 2 );
-  _getAnimation().stop();
+  _animationRef().setOffset( Point( 12, 24 ) );
+  _animationRef().setDelay( 2 );
+  _animationRef().stop();
 }

@@ -201,7 +201,7 @@ InfoBoxWorkingBuilding::InfoBoxWorkingBuilding( Widget* parent, WorkingBuildingP
     PictureDecorator::draw( *_d->bgPicture, r, PictureDecorator::blackFrame );
   }
 
-  _drawWorkers( Point( 32, 150 ), 542, building->getMaxWorkers(), building->getWorkers() );
+  _drawWorkers( Point( 32, 150 ), 542, building->getMaxWorkers(), building->getWorkersCount() );
 
   std::string text = StringHelper::format( 0xff, "%d%% damage - %d%% fire",
                                            (int)building->getState( Construction::damage ),
@@ -224,7 +224,7 @@ InfoBoxSenate::InfoBoxSenate( Widget* parent, const Tile& tile )
   setTitle( MetaDataHolder::instance().getData( building::senate ).getPrettyName() );
 
   // number of workers
-  _drawWorkers( Point( 32, 136), 542, senate->getMaxWorkers(), senate->getWorkers() );
+  _drawWorkers( Point( 32, 136), 542, senate->getMaxWorkers(), senate->getWorkersCount() );
 
   getBgPicture().draw( GoodHelper::getPicture( Good::denaries ), 16, 35);
 
@@ -376,7 +376,7 @@ GuiInfoFactory::GuiInfoFactory( Widget* parent, const Tile& tile)
     new Label( this, Rect( _d->lbTitle->getLeftdownCorner() + Point( 0, 25 ), Size( getWidth() - 32, 25 ) ), text );
   }
 
-  _drawWorkers( Point( 32, 157 ), 542, building->getMaxWorkers(), building->getWorkers() );
+  _drawWorkers( Point( 32, 157 ), 542, building->getMaxWorkers(), building->getWorkersCount() );
 }
 
 std::string GuiInfoFactory::getInfoText()
@@ -447,7 +447,7 @@ InfoBoxGranary::InfoBoxGranary( Widget* parent, const Tile& tile )
   drawGood(Good::fruit, 1, lbUnits->getBottom() );
   drawGood(Good::vegetable, 1, lbUnits->getBottom() + 25);
 
-  _drawWorkers( Point( 32, lbUnits->getBottom() + 60 ), 542, _granary->getMaxWorkers(), _granary->getWorkers() );
+  _drawWorkers( Point( 32, lbUnits->getBottom() + 60 ), 542, _granary->getMaxWorkers(), _granary->getWorkersCount() );
 }
 
 InfoBoxGranary::~InfoBoxGranary()
@@ -495,7 +495,7 @@ InfoBoxTemple::InfoBoxTemple( Widget* parent, const Tile& tile )
                                                  divn->getShortDescription().c_str() );
   setTitle( text );
 
-  _drawWorkers( Point( 32, 56 + 12), 542, temple->getMaxWorkers(), temple->getWorkers() );
+  _drawWorkers( Point( 32, 56 + 12), 542, temple->getMaxWorkers(), temple->getWorkersCount() );
   _d->bgPicture->draw( temple->getDivinity()->getPicture(), 192, 140 );
 }
 
@@ -510,7 +510,7 @@ InfoBoxMarket::InfoBoxMarket( Widget* parent, const Tile& tile )
 
    Label* lbAbout = new Label( this, _d->lbTitle->getRelativeRect() + Point( 0, 30 ) );
 
-   if( market->getWorkers() > 0 )
+   if( market->getWorkersCount() > 0 )
    {
      GoodStore& goods = market->getGoodStore();
      int furageSum = 0;
@@ -550,7 +550,7 @@ InfoBoxMarket::InfoBoxMarket( Widget* parent, const Tile& tile )
      lbAbout->setText( _("##market_not_work##") );
    }
 
-   _drawWorkers( Point( 32, 138 ), 542, market->getMaxWorkers(), market->getWorkers() );
+   _drawWorkers( Point( 32, 138 ), 542, market->getMaxWorkers(), market->getWorkersCount() );
 }
 
 InfoBoxMarket::~InfoBoxMarket()
@@ -663,7 +663,7 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
     _d->bgPicture->draw( pic, 10, 10 );
   }
 
-  _drawWorkers( Point( 32, 160 ), 542, rawmb->getMaxWorkers(), rawmb->getWorkers() );
+  _drawWorkers( Point( 32, 160 ), 542, rawmb->getMaxWorkers(), rawmb->getWorkersCount() );
 
   std::string text = StringHelper::format( 0xff, "%d%% damage - %d%% fire",
                                           (int)rawmb->getState( Construction::damage ),
@@ -717,11 +717,11 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
   setTitle( name );
 
   text = _("##farm_working_normally##");
-  if( rawmb->getWorkers() == 0 )
+  if( rawmb->getWorkersCount() == 0 )
   {
     text = _("##farm_have_no_workers##");
   }
-  else if( rawmb->getWorkers() <= rawmb->getMaxWorkers() / 2 )
+  else if( rawmb->getWorkersCount() <= rawmb->getMaxWorkers() / 2 )
   {
     text = _("##farm_working_bad##");
   }
@@ -767,7 +767,7 @@ InfoBoxColosseum::InfoBoxColosseum(Widget *parent, const Tile &tile)
   CollosseumPtr colloseum = tile.getOverlay().as<Collosseum>();
   setTitle( MetaDataHolder::getPrettyName( building::colloseum ) );
 
-  _drawWorkers( Point( 40, 150), 542, colloseum->getMaxWorkers(), colloseum->getWorkers() );
+  _drawWorkers( Point( 40, 150), 542, colloseum->getMaxWorkers(), colloseum->getWorkersCount() );
 
   std::string text = StringHelper::format( 0xff, "Animal contest runs for another %d days", 0 );
   new Label( this, Rect( 35, 190, getWidth() - 35, 190 + 20 ), text );

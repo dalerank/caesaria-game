@@ -240,7 +240,7 @@ Point TileOverlay::getOffset( const Point& subpos ) const
   return Point( 0, 0 );
 }
 
-Animation& TileOverlay::_getAnimation()
+Animation& TileOverlay::_animationRef()
 {
   return _d->animation;
 }
@@ -255,7 +255,7 @@ CityPtr TileOverlay::_getCity() const
   return _d->city;
 }
 
-PicturesArray& TileOverlay::_getFgPictures()
+PicturesArray& TileOverlay::_fgPicturesRef()
 {
   return _d->fgPictures;
 }

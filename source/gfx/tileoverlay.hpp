@@ -71,10 +71,10 @@ public:
   virtual void load( const VariantMap& stream );
 
 protected:
-  Animation& _getAnimation();
+  Animation& _animationRef();
   Tile* _getMasterTile();
   CityPtr _getCity() const;
-  PicturesArray& _getFgPictures();
+  PicturesArray& _fgPicturesRef();
   Picture& _getPicture();
 
 private:

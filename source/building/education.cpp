@@ -31,7 +31,7 @@ int School::getVisitorsNumber() const
 
 void School::deliverService()
 {
-  if( getWorkers() <= 0 )
+  if( getWorkersCount() <= 0 )
     return;
 
   if( getWalkers().size() < 3 )

@@ -180,7 +180,7 @@ void AdvisorEmployerWindow::Impl::updateSalaryLabel()
 
 AdvisorEmployerWindow::Impl::EmployersInfo AdvisorEmployerWindow::Impl::getEmployersInfo( PriorityIndex type )
 {
-  std::vector< TileOverlay::Group > bldClasses;
+  std::vector< building::Group > bldClasses;
   switch( type )
   {
   case prIndustryAndTrade: bldClasses.push_back( building::industryGroup ); bldClasses.push_back( building::BC_TRADE ); break;
@@ -206,7 +206,7 @@ AdvisorEmployerWindow::Impl::EmployersInfo AdvisorEmployerWindow::Impl::getEmplo
   EmployersInfo ret = { 0, 0 };
   foreach( WorkingBuildingPtr building, buildings )
   {
-    ret.currentWorkers += building->getWorkers();
+    ret.currentWorkers += building->getWorkersCount();
     ret.needWorkers += building->getMaxWorkers();
   }
 

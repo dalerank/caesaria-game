@@ -60,9 +60,9 @@ void EntertainmentBuilding::deliverService()
   // we need all trainees types for the show
   int minLevel = _getTraineeLevel();
 
-  if( (getWorkers() <= 0) )
+  if( (getWorkersCount() <= 0) )
   {
-    _getAnimation().stop();
+    _animationRef().stop();
     return;
   }
 
@@ -76,7 +76,7 @@ void EntertainmentBuilding::deliverService()
 
       if( !getWalkers().empty() )
       {
-        _getAnimation().start();
+        _animationRef().start();
         decreaseLevel = 25;
       }
     }
@@ -84,7 +84,7 @@ void EntertainmentBuilding::deliverService()
 
   if( getWalkers().empty() )
   {
-    _getAnimation().stop(); //have no actors for the show
+    _animationRef().stop(); //have no actors for the show
   }
 
   foreach( TraineeMap::value_type& item, _traineeMap )
@@ -105,7 +105,7 @@ unsigned int EntertainmentBuilding::getWalkerDistance() const
 
 float EntertainmentBuilding::evaluateTrainee(walker::Type traineeType)
 {
-  if( getWorkers() == 0 )
+  if( getWorkersCount() == 0 )
     return 0.0;
 
   return ServiceBuilding::evaluateTrainee( traineeType );
@@ -131,9 +131,9 @@ Theater::Theater() : EntertainmentBuilding(Service::theater, building::theater, 
 {
   //_getAnimation().load( ResourceGroup::entertaiment, 14, 21);
   //_getAnimation().setOffset( Point( 60, 36 ) );
-  _getAnimation().stop();
+  _animationRef().stop();
 
-  _getFgPictures().resize(2);
+  _fgPicturesRef().resize(2);
 }
 
 void Theater::build(CityPtr city, const TilePos& pos)
@@ -164,7 +164,7 @@ void Theater::deliverService()
 {
   EntertainmentBuilding::deliverService();
 
-  _getFgPictures().at(0) =  _getAnimation().isRunning()
+  _fgPicturesRef().at(0) =  _animationRef().isRunning()
                       ? Picture::load( ResourceGroup::entertaiment, 35 )
                       : Picture::getInvalid();
 }
@@ -174,7 +174,7 @@ Amphitheater::Amphitheater() : EntertainmentBuilding(Service::amphitheater, buil
   //setPicture( ResourceGroup::entertaiment, 1 );
   //_getAnimation().load( ResourceGroup::entertaiment, 2, 10);
   //_getAnimation().setOffset( Point( 100, 49 ) );
-  _getFgPictures().resize(2);
+  _fgPicturesRef().resize(2);
   //_fgPictures[0] = Picture::load( ResourceGroup::entertaiment, 12);
 }
 
@@ -203,7 +203,7 @@ void Amphitheater::deliverService()
 {
   EntertainmentBuilding::deliverService();
 
-  _getFgPictures().at(0) = _getAnimation().isRunning()
+  _fgPicturesRef().at(0) = _animationRef().isRunning()
                          ? Picture::load( ResourceGroup::entertaiment, 12 )
                          : Picture::getInvalid();
 }
@@ -214,8 +214,8 @@ Collosseum::Collosseum() : EntertainmentBuilding(Service::colloseum, building::c
 
   //_getAnimation().load( ResourceGroup::entertaiment, 37, 13);
   //_getAnimation().setOffset( Point( 122, 81 ) );
-  _getFgPictures().resize(2);
-  _getFgPictures().at(0) = Picture::load( ResourceGroup::entertaiment, 50);
+  _fgPicturesRef().resize(2);
+  _fgPicturesRef().at(0) = Picture::load( ResourceGroup::entertaiment, 50);
 }
 
 //------------
@@ -227,9 +227,9 @@ Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, building::
   Picture logo1 = Picture::load("circus", 1);
   logo.setOffset(150,181);
   logo1.setOffset(300,310);
-  _getFgPictures().resize(5);
-  _getFgPictures().at(0) = logo;
-  _getFgPictures().at(1) = logo1;
+  _fgPicturesRef().resize(5);
+  _fgPicturesRef().at(0) = logo;
+  _fgPicturesRef().at(1) = logo1;
 }
 
 //-----------

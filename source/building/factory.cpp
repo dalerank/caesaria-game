@@ -92,7 +92,7 @@ void Factory::updateProgress(float value)
 
 bool Factory::mayWork() const
 {
-  if( getWorkers() == 0 || !_d->isActive )
+  if( getWorkersCount() == 0 || !_d->isActive )
     return false;
 
   GoodStock& inStock = const_cast< Factory* >( this )->getInGood();
@@ -110,7 +110,7 @@ void Factory::timeStep(const unsigned long time)
    WorkingBuilding::timeStep(time);
 
    //try get good from storage building for us
-   if( time % 22 == 1 && getWorkers() > 0 && getWalkers().size() == 0 )
+   if( time % 22 == 1 && getWorkersCount() > 0 && getWalkers().size() == 0 )
    {
      receiveGood(); 
      deliverGood();      
@@ -119,14 +119,14 @@ void Factory::timeStep(const unsigned long time)
    //start/stop animation when workers found
    bool mayAnimate = mayWork();
 
-   if( mayAnimate && _getAnimation().isStopped() )
+   if( mayAnimate && _animationRef().isStopped() )
    {
-     _getAnimation().start();
+     _animationRef().start();
    }
 
-   if( !mayAnimate && _getAnimation().isRunning() )
+   if( !mayAnimate && _animationRef().isRunning() )
    {
-     _getAnimation().stop();
+     _animationRef().stop();
    }
 
    //no workers or no good in stock... stop animate
@@ -150,20 +150,20 @@ void Factory::timeStep(const unsigned long time)
    else
    {
      //ok... factory is work, produce goods
-     float workersRatio = float(getWorkers()) / float(getMaxWorkers());  // work drops if not enough workers
+     float workersRatio = float(getWorkersCount()) / float(getMaxWorkers());  // work drops if not enough workers
      // 1080: number of seconds in a year, 0.67: number of timeSteps per second
      float work = 100.f / 1080.f / 0.67f * _d->productionRate * workersRatio * workersRatio;  // work is proportional to time and factory speed
      if( _d->produceGood )
      {
        _d->progress += work;
 
-       _getAnimation().update( time );
-       const Picture& pic = _getAnimation().getFrame();
+       _animationRef().update( time );
+       const Picture& pic = _animationRef().getFrame();
        if( pic.isValid() )
        {
          // animation of the working factory
-         int level = _getFgPictures().size()-1;
-         _getFgPictures().at(level) = _getAnimation().getFrame();
+         int level = _fgPicturesRef().size()-1;
+         _fgPicturesRef().at(level) = _animationRef().getFrame();
        }
      }
    }  
@@ -296,8 +296,8 @@ TimberLogger::TimberLogger() : Factory(Good::none, Good::timber, building::timbe
 {
   setPicture( ResourceGroup::commerce, 72 );
 
-  _getAnimation().load( ResourceGroup::commerce, 73, 10);
-  _getFgPictures().resize(2);
+  _animationRef().load( ResourceGroup::commerce, 73, 10);
+  _fgPicturesRef().resize(2);
 }
 
 bool TimberLogger::canBuild( CityPtr city, const TilePos& pos ) const
@@ -322,9 +322,9 @@ IronMine::IronMine() : Factory(Good::none, Good::iron, building::ironMine, Size(
 {
   setPicture( ResourceGroup::commerce, 54 );
 
-  _getAnimation().load( ResourceGroup::commerce, 55, 6 );
-  _getAnimation().setDelay( 5 );
-  _getFgPictures().resize(2);
+  _animationRef().load( ResourceGroup::commerce, 55, 6 );
+  _animationRef().setDelay( 5 );
+  _fgPicturesRef().resize(2);
 }
 
 bool IronMine::canBuild( CityPtr city, const TilePos& pos ) const
@@ -346,8 +346,8 @@ WeaponsWorkshop::WeaponsWorkshop() : Factory(Good::iron, Good::weapon, building:
 {
   setPicture( ResourceGroup::commerce, 108);
 
-  _getAnimation().load( ResourceGroup::commerce, 109, 6);
-  _getFgPictures().resize(2);
+  _animationRef().load( ResourceGroup::commerce, 109, 6);
+  _fgPicturesRef().resize(2);
 }
 
 bool WeaponsWorkshop::canBuild(CityPtr city, const TilePos& pos) const
@@ -377,16 +377,16 @@ WorkshopFurniture::WorkshopFurniture() : Factory(Good::timber, Good::furniture, 
 {
   setPicture( ResourceGroup::commerce, 117 );
 
-  _getAnimation().load(ResourceGroup::commerce, 118, 14);
-  _getFgPictures().resize(2);
+  _animationRef().load(ResourceGroup::commerce, 118, 14);
+  _fgPicturesRef().resize(2);
 }
 
 Winery::Winery() : Factory(Good::grape, Good::wine, building::winery, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 86 );
 
-  _getAnimation().load(ResourceGroup::commerce, 87, 12);
-  _getFgPictures().resize(2);
+  _animationRef().load(ResourceGroup::commerce, 87, 12);
+  _fgPicturesRef().resize(2);
 }
 
 bool Winery::canBuild(CityPtr city, const TilePos& pos) const
@@ -404,8 +404,8 @@ Creamery::Creamery() : Factory(Good::olive, Good::oil, building::creamery, Size(
 {
   setPicture( ResourceGroup::commerce, 99 );
 
-  _getAnimation().load(ResourceGroup::commerce, 100, 8);
-  _getFgPictures().resize(2);
+  _animationRef().load(ResourceGroup::commerce, 100, 8);
+  _fgPicturesRef().resize(2);
 }
 
 bool Creamery::canBuild(CityPtr city, const TilePos& pos) const

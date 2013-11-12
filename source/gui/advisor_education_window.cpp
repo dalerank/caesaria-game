@@ -197,10 +197,10 @@ InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(CityPtr city, const Til
 
   foreach( ServiceBuildingPtr serv, servBuildings )
   {
-    if( serv->getWorkers() > 0 )
+    if( serv->getWorkersCount() > 0 )
     {
       ret.buildingWork++;
-      ret.peoplesStuding += maxStuding * serv->getWorkers() / serv->getMaxWorkers();
+      ret.peoplesStuding += maxStuding * serv->getWorkersCount() / serv->getMaxWorkers();
     }
   }
 

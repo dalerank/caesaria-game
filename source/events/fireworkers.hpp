@@ -13,17 +13,25 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_PROJECT_VERSION_INCLUDE_H_
-#define __OPENCAESAR3_PROJECT_VERSION_INCLUDE_H_
+#ifndef _OPENCAESAR_EVENT_FIREWORKERS_H_INCLUDE_
+#define _OPENCAESAR_EVENT_FIREWORKERS_H_INCLUDE_
 
-#include "core/platform.hpp"
+#include "event.hpp"
 
-#define OC3_VERSION_MAJOR 0
-#define OC3_VERSION_MINOR 2
-#define OC3_VERSION_REVSN 883
+namespace events
+{
 
-#define OC3_STR_EXT(__A) #__A
-#define OC3_STR_A(__A) OC3_STR_EXT(__A)
-#define OC3_VERSION OC3_STR_A(OC3_VERSION_MAJOR)"."OC3_STR_A(OC3_VERSION_MINOR)"."OC3_STR_A(OC3_VERSION_REVSN)"["OC3_PLATFORM_NAME":"OC3_COMPILER_NAME"]"
+class FireWorkers : public GameEvent
+{
+public:
+  static GameEventPtr create(TilePos center, unsigned int workers);
+  virtual void exec( Game& game );
 
-#endif
+private:
+  TilePos _center;
+  unsigned int _workers;
+};
+
+}
+
+#endif //_OPENCAESAR_EVENT_FIREWORKERS_H_INCLUDE_

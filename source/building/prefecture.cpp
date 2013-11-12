@@ -29,30 +29,35 @@ Prefecture::Prefecture() : ServiceBuilding(Service::prefect, constants::building
   _fireDetect = TilePos( -1, -1 );
   setPicture( ResourceGroup::security, 1 );
   
-  _getAnimation().load( ResourceGroup::security, 2, 10);
-  _getAnimation().setDelay( 4 );
-  _getAnimation().setOffset( Point( 20, 36 ) );
-  _getFgPictures().resize(1);
+  _animationRef().load( ResourceGroup::security, 2, 10);
+  _animationRef().setDelay( 4 );
+  _animationRef().setOffset( Point( 20, 36 ) );
+  _fgPicturesRef().resize(1);
 }
 
 int Prefecture::getServiceDelay() const
 {
-  float koeff = ( getWorkers() > 0 ) ? (float)getMaxWorkers() / (float)getWorkers() : 1.f;
+  float koeff = ( getWorkersCount() > 0 ) ? (float)getMaxWorkers() / (float)getWorkersCount() : 1.f;
   return (int)(ServiceBuilding::getServiceDelay() * koeff);
 }
 
 void Prefecture::timeStep(const unsigned long time)
 {
-  bool mayAnimate = getWorkers() > 0;
+  bool mayAnimate = getWorkersCount() > 0;
 
-  if( mayAnimate && _getAnimation().isStopped() )
+  if( mayAnimate  )
   {
-    _getAnimation().start();
+    if( _animationRef().isStopped() )
+    {
+      _animationRef().setIndex( 0 );
+      _animationRef().start();
+    }
   }
-
-  if( !mayAnimate && _getAnimation().isRunning() )
+  else if( _animationRef().isRunning() )
   {
-    _getAnimation().stop();
+    _animationRef().setIndex( -1 );
+    _animationRef().stop();
+    _fgPicturesRef().back() = Picture::getInvalid();
   }
 
   ServiceBuilding::timeStep( time );
@@ -60,7 +65,7 @@ void Prefecture::timeStep(const unsigned long time)
 
 void Prefecture::deliverService()
 {
-  if( getWorkers() > 0 && getWalkers().size() == 0 )
+  if( getWorkersCount() > 0 && getWalkers().size() == 0 )
   {
     bool fireDetect = _fireDetect.getI() >= 0;
     PrefectPtr walker = Prefect::create( _getCity() );

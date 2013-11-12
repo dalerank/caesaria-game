@@ -18,6 +18,7 @@
 #include "core/variant.hpp"
 #include "walker/walker.hpp"
 #include "core/foreach.hpp"
+#include "events/returnworkers.hpp"
 
 class WorkingBuilding::Impl
 {
@@ -51,7 +52,7 @@ void WorkingBuilding::setWorkers(const unsigned int currentWorkers)
   _d->currentWorkers = math::clamp<int>( currentWorkers, 0, _d->maxWorkers );
 }
 
-int WorkingBuilding::getWorkers() const
+int WorkingBuilding::getWorkersCount() const
 {
   return _d->currentWorkers;
 }
@@ -79,17 +80,20 @@ void WorkingBuilding::load( const VariantMap& stream)
   Building::load( stream );
   _d->currentWorkers = (int)stream.get( "currentWorkers", 0 );
   _d->isActive = (bool)stream.get( "active", true );
-  _d->maxWorkers = (int)stream.get( "maxWorkers" );
+  Variant value = stream.get( "maxWorkers" );
+
+  if( !value.isNull() )
+    _d->maxWorkers = value;
 }
 
 void WorkingBuilding::addWorkers(const unsigned int workers )
 {
-  setWorkers( getWorkers() + workers );
+  setWorkers( getWorkersCount() + workers );
 }
 
 void WorkingBuilding::removeWorkers(const unsigned int workers)
 {
-  setWorkers( getWorkers() - workers );
+  setWorkers( getWorkersCount() - workers );
 }
 
 WorkingBuilding::~WorkingBuilding()
@@ -136,4 +140,7 @@ void WorkingBuilding::destroy()
   {
     walker->deleteLater();
   }
+
+  events::GameEventPtr e=events::ReturnWorkers::create( getTilePos(), getWorkersCount() );
+  e->dispatch();
 }

@@ -145,7 +145,7 @@ void WarehouseStore::init(Warehouse &warehouse)
 
 int WarehouseStore::getCurrentQty(const Good::Type &goodType) const
 {
-  if( _warehouse->getWorkers() == 0 )
+  if( _warehouse->getWorkersCount() == 0 )
     return 0;
 
   int amount = 0;
@@ -168,7 +168,7 @@ int WarehouseStore::getCurrentQty() const
 
 int WarehouseStore::getMaxStore(const Good::Type goodType)
 {
-  if( getOrder( goodType ) == GoodOrders::reject || isDevastation() || _warehouse->getWorkers() == 0 )
+  if( getOrder( goodType ) == GoodOrders::reject || isDevastation() || _warehouse->getWorkersCount() == 0 )
   { 
     return 0;
   }
@@ -345,17 +345,17 @@ Warehouse::Warehouse() : WorkingBuilding( constants::building::warehouse, Size( 
 {
    // _name = _("Entrepot");
   setPicture( ResourceGroup::warehouse, 19 );
-  _getFgPictures().resize(12);  // 8 tiles + 4
+  _fgPicturesRef().resize(12);  // 8 tiles + 4
 
-  _getAnimation().load( ResourceGroup::warehouse, 2, 16 );
-  _getAnimation().setDelay( 4 );
+  _animationRef().load( ResourceGroup::warehouse, 2, 16 );
+  _animationRef().setDelay( 4 );
 
   _d->animFlag.load( ResourceGroup::warehouse, 84, 8 );
 
-  _getFgPictures().at( 0 ) = Picture::load(ResourceGroup::warehouse, 1);
-  _getFgPictures().at( 1 ) = Picture::load(ResourceGroup::warehouse, 18);
-  _getFgPictures().at( 2 ) = _getAnimation().getFrame();
-  _getFgPictures().at( 3 ) = _d->animFlag.getFrame();
+  _fgPicturesRef().at( 0 ) = Picture::load(ResourceGroup::warehouse, 1);
+  _fgPicturesRef().at( 1 ) = Picture::load(ResourceGroup::warehouse, 18);
+  _fgPicturesRef().at( 2 ) = _animationRef().getFrame();
+  _fgPicturesRef().at( 3 ) = _d->animFlag.getFrame();
 
   // add subTiles in Z-order (from far to near)
   _d->subTiles.clear();
@@ -375,13 +375,13 @@ Warehouse::Warehouse() : WorkingBuilding( constants::building::warehouse, Size( 
 
 void Warehouse::timeStep(const unsigned long time)
 {
-  if( getWorkers() > 0 )
+  if( getWorkersCount() > 0 )
   {
-   _getAnimation().update( time );
+   _animationRef().update( time );
    _d->animFlag.update( time );
 
-   _getFgPictures().at(2) = _getAnimation().getFrame();
-   _getFgPictures().at(3) = _d->animFlag.getFrame();
+   _fgPicturesRef().at(2) = _animationRef().getFrame();
+   _fgPicturesRef().at(3) = _d->animFlag.getFrame();
   }
 
   if( _d->goodStore.isDevastation() && (time % 22 == 1 ) )
@@ -396,7 +396,7 @@ void Warehouse::computePictures()
   foreach( WarehouseTile& whTile, _d->subTiles )
   {
      whTile.computePicture();
-     _getFgPictures().at(index) = whTile._picture;
+     _fgPicturesRef().at(index) = whTile._picture;
      index++;
   }
 }
