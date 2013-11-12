@@ -19,7 +19,7 @@
 #include "core/position.hpp"
 #include "gfx/animation.hpp"
 #include "game/enums.hpp"
-#include "core/predefinitions.hpp"
+#include "predefinitions.hpp"
 
 class Picture;
 

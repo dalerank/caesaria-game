@@ -20,7 +20,7 @@
 #define __OPENCAESAR3_TILEMAP_H_INCLUDED__
 
 #include "core/serializer.hpp"
-#include "core/predefinitions.hpp"
+#include "predefinitions.hpp"
 #include "core/scopedptr.hpp"
 
 // Square Map of the Tiles.

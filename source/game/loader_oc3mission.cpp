@@ -26,7 +26,7 @@
 #include "build_options.hpp"
 #include "building/metadata.hpp"
 #include "cityfunds.hpp"
-#include "empire.hpp"
+#include "world/empire.hpp"
 #include "city.hpp"
 #include "settings.hpp"
 

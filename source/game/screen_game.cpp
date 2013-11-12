@@ -42,7 +42,7 @@
 #include "gui/senate_popup_info.hpp"
 #include "cityfunds.hpp"
 #include "gamedate.hpp"
-#include "empire.hpp"
+#include "world/empire.hpp"
 #include "settings.hpp"
 #include "gui/mission_target_window.hpp"
 #include "gui/label.hpp"

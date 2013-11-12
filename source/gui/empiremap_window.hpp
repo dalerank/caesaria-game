@@ -18,7 +18,7 @@
 
 #include "widget.hpp"
 #include "core/signals.hpp"
-#include "core/predefinitions.hpp"
+#include "game/predefinitions.hpp"
 
 namespace gui
 {

@@ -17,7 +17,7 @@
 #define _OPENCAESAR3_WALKER_MERCHANT_INCLUDE_H_
 
 #include "walker.hpp"
-#include "game/empire_trading.hpp"
+#include "world/trading.hpp"
 
 /** This is the empire merchant which buy/sell goods at warehouses */
 class Merchant : public Walker

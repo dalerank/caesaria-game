@@ -18,7 +18,7 @@
 
 #include "widget.hpp"
 #include "game/enums.hpp"
-#include "core/predefinitions.hpp"
+#include "game/predefinitions.hpp"
 
 namespace gui
 {

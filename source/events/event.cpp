@@ -27,7 +27,7 @@
 #include "core/stringhelper.hpp"
 #include "gui/label.hpp"
 #include "gui/empiremap_window.hpp"
-#include "game/empire.hpp"
+#include "world/empire.hpp"
 #include "game/resourcegroup.hpp"
 #include "gui/advisors_window.hpp"
 #include "game/trade_options.hpp"

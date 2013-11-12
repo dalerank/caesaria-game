@@ -36,7 +36,7 @@
 #include "enums.hpp"
 #include "gfx/animation_bank.hpp"
 #include "vfs/filelist.hpp"
-#include "empire.hpp"
+#include "world/empire.hpp"
 #include "core/exception.hpp"
 #include "name_generator.hpp"
 #include "loader.hpp"
@@ -399,5 +399,5 @@ void Game::reset()
 {
   _d->empire = Empire::create();
   _d->player = Player::create();
-  _d->city = City::create( _d->empire, _d->player );
+  _d->city = PlayerCity::create( _d->empire, _d->player );
 }

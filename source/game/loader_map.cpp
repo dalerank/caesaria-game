@@ -21,7 +21,7 @@
 #include "tileoverlay_factory.hpp"
 #include "core/stringhelper.hpp"
 #include "tilemap.hpp"
-#include "empire.hpp"
+#include "world/empire.hpp"
 #include "core/logger.hpp"
 #include "building/constants.hpp"
 

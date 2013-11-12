@@ -19,7 +19,7 @@
 #include "core/variant.hpp"
 #include "core/saveadapter.hpp"
 #include "player.hpp"
-#include "empire.hpp"
+#include "world/empire.hpp"
 #include "city.hpp"
 #include "gamedate.hpp"
 #include "game.hpp"

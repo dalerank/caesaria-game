@@ -13,16 +13,17 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _OPENCAESAR3_LANDOVERLAY_H_INCLUDE_
-#define _OPENCAESAR3_LANDOVERLAY_H_INCLUDE_
+#ifndef _OPENCAESAR3_TILEOVERLAY_H_INCLUDE_
+#define _OPENCAESAR3_TILEOVERLAY_H_INCLUDE_
 
-#include "core/predefinitions.hpp"
+#include "predefinitions.hpp"
 #include "picture.hpp"
 #include "animation.hpp"
 #include "game/enums.hpp"
 #include "core/serializer.hpp"
 #include "core/scopedptr.hpp"
 #include "renderer.hpp"
+#include "game/predefinitions.hpp"
 
 class TileOverlay : public Serializable, public ReferenceCounted
 {
@@ -82,4 +83,4 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-#endif //_OPENCAESAR3_LANDOVERLAY_H_INCLUDE_
+#endif //_OPENCAESAR3_TILEOVERLAY_H_INCLUDE_

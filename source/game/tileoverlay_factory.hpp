@@ -18,7 +18,7 @@
 
 #include "enums.hpp"
 #include "core/scopedptr.hpp"
-#include "core/predefinitions.hpp"
+#include "predefinitions.hpp"
 #include "gfx/tileoverlay.hpp"
 
 class TileOverlayConstructor

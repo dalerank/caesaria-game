@@ -26,7 +26,7 @@
 #include "gfx/picture.hpp"
 #include "building/factory.hpp"
 #include "building/service.hpp"
-#include "core/predefinitions.hpp"
+#include "game/predefinitions.hpp"
 
 namespace gui
 {

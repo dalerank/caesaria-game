@@ -20,7 +20,7 @@
 #define SERVICE_BUILDING_HPP
 
 #include "building/working.hpp"
-#include "core/predefinitions.hpp"
+#include "predefinitions.hpp"
 
 class Widget;
 

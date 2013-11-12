@@ -19,7 +19,7 @@
 #include "game/path_finding.hpp"
 #include "game/city.hpp"
 #include "gfx/tile.hpp"
-#include "game/empire.hpp"
+#include "world/empire.hpp"
 #include "core/stringhelper.hpp"
 #include "game/astarpathfinding.hpp"
 #include "game/cityfunds.hpp"

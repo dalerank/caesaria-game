@@ -27,7 +27,7 @@
 #include "game/city.hpp"
 #include "game/cityfunds.hpp"
 #include "game/settings.hpp"
-#include "game/empire.hpp"
+#include "world/empire.hpp"
 #include "building/constants.hpp"
 
 using namespace constants;

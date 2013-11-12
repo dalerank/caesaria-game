@@ -22,7 +22,7 @@
 #include "game/enums.hpp"
 #include "core/serializer.hpp"
 #include "core/scopedptr.hpp"
-#include "core/predefinitions.hpp"
+#include "predefinitions.hpp"
 #include "core/referencecounted.hpp"
 
 class Player : public Serializable, public ReferenceCounted

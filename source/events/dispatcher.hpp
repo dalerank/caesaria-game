@@ -16,7 +16,7 @@
 #ifndef _OPENCAESAR3_SCENARIO_EVENT_RESOLVER_H_INCLUDE_
 #define _OPENCAESAR3_SCENARIO_EVENT_RESOLVER_H_INCLUDE_
 
-#include "core/predefinitions.hpp"
+#include "predefinitions.hpp"
 #include "core/scopedptr.hpp"
 #include "event.hpp"
 #include "core/singleton.hpp"

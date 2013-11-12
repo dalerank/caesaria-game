@@ -23,9 +23,9 @@
 #include "building/house.hpp"
 #include "gfx/tile.hpp"
 #include "cityfunds.hpp"
-#include "empire.hpp"
 #include "building/constants.hpp"
 #include "settings.hpp"
+#include "world/empire.hpp"
 
 using namespace constants;
 

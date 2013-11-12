@@ -67,7 +67,9 @@ TaxCollector::TaxCollector( CityPtr city ) : ServiceWalker( city, Service::forum
 
 int TaxCollector::getMoney() const
 {
-  return _d->money;
+  int save = _d->money;
+  _d->money = 0;
+  return save;
 }
 
 void TaxCollector::onDestination()

@@ -23,7 +23,7 @@
 #include "building/entertainment.hpp"
 #include "gamedate.hpp"
 #include "cityfunds.hpp"
-#include "empire.hpp"
+#include "world/empire.hpp"
 #include "building/constants.hpp"
 
 using namespace  constants;

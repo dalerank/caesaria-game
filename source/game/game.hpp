@@ -20,7 +20,7 @@
 #define __OPENCAESAR3_APPLICATION_H_INCLUDED__
 
 #include "core/scopedptr.hpp"
-#include "core/predefinitions.hpp"
+#include "predefinitions.hpp"
 #include "core/signals.hpp"
 
 #include <string>
@@ -51,7 +51,7 @@ public:
 
   PlayerPtr getPlayer() const;
   CityPtr getCity() const;
-  EmpirePtr getEmpire() const;
+  world::EmpirePtr getEmpire() const;
   gui::GuiEnv* getGui() const;
   GfxEngine* getEngine() const;
 

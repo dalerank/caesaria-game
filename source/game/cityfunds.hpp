@@ -20,7 +20,7 @@
 #include "core/variant.hpp"
 #include "core/signals.hpp"
 #include "good.hpp"
-#include "core/predefinitions.hpp"
+#include "predefinitions.hpp"
 
 struct FundIssue
 {

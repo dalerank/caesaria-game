@@ -47,11 +47,11 @@
 #include "building/senate.hpp"
 #include "cityservice_culture.hpp"
 #include "cityfunds.hpp"
-#include "empire_city.hpp"
-#include "empire.hpp"
+#include "world/city.hpp"
+#include "world/empire.hpp"
 #include "trade_options.hpp"
 #include "goodstore_simple.hpp"
-#include "empire_trading.hpp"
+#include "world/trading.hpp"
 #include "walker/merchant.hpp"
 #include "gamedate.hpp"
 #include "cityservice_religion.hpp"
@@ -67,6 +67,9 @@
 #include <set>
 
 using namespace constants;
+
+namespace world
+{
 
 typedef std::vector< CityServicePtr > CityServices;
 
@@ -517,7 +520,7 @@ void City::load( const VariantMap& stream )
 
 void City::addOverlay( TileOverlayPtr overlay ) { _d->overlayList.push_back( overlay ); }
 
-City::~City(){}
+City::~PlayerCity(){}
 
 void City::addWalker( WalkerPtr walker )
 {
@@ -629,3 +632,5 @@ TilemapArea CityHelper::getArea(TilePos start, TilePos stop)
 {
   return _city->getTilemap().getArea( start, stop );
 }
+
+} //end namespace world

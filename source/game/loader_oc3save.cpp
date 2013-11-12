@@ -23,7 +23,7 @@
 #include "player.hpp"
 #include "city.hpp"
 #include "gamedate.hpp"
-#include "empire.hpp"
+#include "world/empire.hpp"
 
 static const int currentVesion = 1;
 

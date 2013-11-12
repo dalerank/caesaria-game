@@ -23,15 +23,16 @@
 #include "enums.hpp"
 #include "core/serializer.hpp"
 #include "core/signals.hpp"
-#include "core/predefinitions.hpp"
+#include "predefinitions.hpp"
 #include "core/referencecounted.hpp"
 #include "game/cityservice.hpp"
 #include "gfx/tile.hpp"
-#include "empire_city.hpp"
+#include "city.hpp"
 #include "core/position.hpp"
 #include "core/foreach.hpp"
 #include "game/player.hpp"
 #include "building/constants.hpp"
+#include "world/city.hpp"
 
 class DateTime;
 class CityBuildOptions;
@@ -47,11 +48,11 @@ struct BorderInfo
   TilePos boatExit;
 };
 
-class City : public EmpireCity
+class PlayerCity : public world::City
 {
 public:
-  static CityPtr create(EmpirePtr empire, PlayerPtr player );
-  ~City();
+  static CityPtr create( world::EmpirePtr empire, PlayerPtr player );
+  ~PlayerCity();
 
   virtual void timeStep( unsigned int time );  // performs one simulation step
 
@@ -125,7 +126,7 @@ protected:
   void monthStep( const DateTime& time );
 
 private:
-  City();
+  PlayerCity();
 
   class Impl;
   ScopedPtr< Impl > _d;

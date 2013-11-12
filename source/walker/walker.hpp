@@ -31,7 +31,7 @@
 #include "core/referencecounted.hpp"
 #include "core/smartptr.hpp"
 #include "core/scopedptr.hpp"
-#include "core/predefinitions.hpp"
+#include "predefinitions.hpp"
 #include "gfx/constants.hpp"
 
 typedef unsigned int UniqueId;

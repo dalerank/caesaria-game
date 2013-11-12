@@ -20,7 +20,7 @@
 #include "core/smartptr.hpp"
 #include "core/position.hpp"
 #include "building/building.hpp"
-#include "core/predefinitions.hpp"
+#include "predefinitions.hpp"
 
 class Game;
 

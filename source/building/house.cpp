@@ -26,7 +26,6 @@
 #include "game/tileoverlay_factory.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/variant.hpp"
-#include "game/empire.hpp"
 #include "game/tilemap.hpp"
 #include "game/gamedate.hpp"
 #include "game/goodstore_simple.hpp"

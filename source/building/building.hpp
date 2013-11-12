@@ -31,7 +31,7 @@
 #include "core/scopedptr.hpp"
 #include "gfx/animation.hpp"
 #include "core/referencecounted.hpp"
-#include "core/predefinitions.hpp"
+#include "predefinitions.hpp"
 #include "game/service.hpp"
 #include "walker/constants.hpp"
 
