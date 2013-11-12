@@ -61,8 +61,8 @@ void LayerFire::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     case building::B_BURNED_RUINS:
     case building::B_COLLAPSED_RUINS:
     case building::prefecture:
-    case building::B_WELL:
-    case building::B_FOUNTAIN:
+    case building::well:
+    case building::fountain:
       engine.drawPicture( tile.getPicture(), screenPos );
       needDrawAnimations = true;
     break;

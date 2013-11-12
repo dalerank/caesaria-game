@@ -51,7 +51,7 @@ void LayerCrime::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   else
   {
     TileOverlayPtr overlay = tile.getOverlay();
-    int fireLevel = 0;
+    int fireLevel = -1;
     switch( overlay->getType() )
     {
     //fire buildings and roads

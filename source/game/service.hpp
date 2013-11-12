@@ -24,7 +24,7 @@ class Service
 public:
   typedef enum
   {
-    well, fontain,
+    well=0, fontain,
     market,
     engineer,
     senate, forum,

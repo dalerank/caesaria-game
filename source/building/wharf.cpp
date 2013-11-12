@@ -121,7 +121,7 @@ void Wharf::timeStep(const unsigned long time)
   WorkingBuilding::timeStep(time);
 
   //try get good from storage building for us
-  if( time % 22 == 1 && getWorkers() > 0 && getWalkerList().size() == 0 )
+  if( time % 22 == 1 && getWorkers() > 0 && getWalkers().size() == 0 )
   {
     receiveGood();
     deliverGood();

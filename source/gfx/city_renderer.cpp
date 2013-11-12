@@ -706,7 +706,7 @@ void CityRenderer::handleEvent( NEvent& event )
 
     if( event.EventType == sEventKeyboard )
     {
-      int moveValue = _d->scrollSpeed * ( event.KeyboardEvent.Shift ? 2 : 0 ) ;
+      int moveValue = _d->scrollSpeed * ( event.KeyboardEvent.Shift ? 4 : 1 ) ;
       switch( event.KeyboardEvent.Key )
       {
       case KEY_UP: getCamera().moveUp( moveValue  ); break;

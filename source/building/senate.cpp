@@ -78,7 +78,7 @@ std::string Senate::getError() const
 
 void Senate::deliverService()
 {
-  if( getWorkers() > 0 && getWalkerList().size() == 0 )
+  if( getWorkers() > 0 && getWalkers().size() == 0 )
   {
     TaxCollectorPtr walker = TaxCollector::create( _getCity() );
     walker->send2City( this );

@@ -34,7 +34,7 @@ void School::deliverService()
   if( getWorkers() <= 0 )
     return;
 
-  if( getWalkerList().size() < 3 )
+  if( getWalkers().size() < 3 )
   {
     ServiceBuilding::deliverService();
   }

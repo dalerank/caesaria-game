@@ -395,8 +395,11 @@ void Prefect::send2City(PrefecturePtr prefecture, int water/*=0 */ )
   }
   else
   {
-    ServiceWalker::send2City( prefecture.as<Building>() );
+    ServiceWalker::send2City( prefecture.as<Building>() );    
+  }
 
+  if( _getPathway().isValid() )
+  {
     _d->endPatrolPoint = _getPathway().getDestination().getIJ();
   }
 }
@@ -413,7 +416,9 @@ void Prefect::load( const VariantMap& stream )
   ServiceWalker::load( stream );
  
   _d->action = (Impl::PrefectAction)stream.get( "prefectAction" ).toInt();
-  _d->water = stream.get( "water" ).toInt();
+  _d->water = (int)stream.get( "water" );
+  _d->endPatrolPoint = stream.get( "endPoint" );
+
   _setAnimation( _d->water > 0 ? gfx::prefectDragWater : gfx::prefect );
 
   PrefecturePtr prefecture = getBase().as<Prefecture>();
@@ -437,5 +442,6 @@ void Prefect::save( VariantMap& stream ) const
   stream[ "type" ] = (int)walker::prefect;
   stream[ "water" ] = _d->water;
   stream[ "prefectAction" ] = (int)_d->action;
+  stream[ "endPoint" ] = _d->endPatrolPoint;
   stream[ "__debug_typeName" ] = Variant( std::string( OC3_STR_EXT(walker::prefect) ) );
 }

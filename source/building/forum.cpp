@@ -37,7 +37,7 @@ Forum::Forum() : ServiceBuilding(Service::forum, constants::building::forum, Siz
 
 void Forum::deliverService()
 {
-  if( getWorkers() > 0 && getWalkerList().size() == 0 )
+  if( getWorkers() > 0 && getWalkers().size() == 0 )
   {
     TaxCollectorPtr walker = TaxCollector::create( _getCity() );
     walker->send2City( this );
@@ -51,7 +51,7 @@ void Forum::deliverService()
 
 void Forum::timeStep( const unsigned long time )
 {
-  WalkerList walkers = getWalkerList();
+  WalkerList walkers = getWalkers();
   foreach( WalkerPtr walker, walkers )
   {
     if( walker->isDeleted() )

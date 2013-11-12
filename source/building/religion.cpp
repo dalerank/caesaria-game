@@ -42,7 +42,7 @@ RomeDivinityPtr Temple::getDivinity() const
 
 void Temple::deliverService()
 {
-  if( getWalkerList().empty() && getWorkers() > 0 )
+  if( getWalkers().empty() && getWorkers() > 0 )
   {
     ServiceBuilding::deliverService();
   }
@@ -66,7 +66,7 @@ BigTempleCeres::BigTempleCeres() : BigTemple( DivinePantheon::ceres(), building:
 {
 }
 
-TempleNeptune::TempleNeptune() : SmallTemple( DivinePantheon::neptune(), building::B_TEMPLE_NEPTUNE, 47 )
+TempleNeptune::TempleNeptune() : SmallTemple( DivinePantheon::neptune(), building::templeNeptune, 47 )
 {
 }
 
@@ -74,7 +74,7 @@ BigTempleNeptune::BigTempleNeptune() : BigTemple( DivinePantheon::neptune(), bui
 {
 }
 
-TempleMars::TempleMars() : SmallTemple( DivinePantheon::mars(), building::B_TEMPLE_MARS, 51 )
+TempleMars::TempleMars() : SmallTemple( DivinePantheon::mars(), building::templeMars, 51 )
 {
 }
 
@@ -82,7 +82,7 @@ BigTempleMars::BigTempleMars() : BigTemple( DivinePantheon::mars(), building::B_
 {
 }
 
-TempleVenus::TempleVenus() : SmallTemple( DivinePantheon::venus(), building::B_TEMPLE_VENUS, 53 )
+TempleVenus::TempleVenus() : SmallTemple( DivinePantheon::venus(), building::templeVenus, 53 )
 {
 }
 
@@ -90,7 +90,7 @@ BigTempleVenus::BigTempleVenus() : BigTemple( DivinePantheon::venus(), building:
 {
 }
 
-TempleMercure::TempleMercure() : SmallTemple( DivinePantheon::mercury(), building::B_TEMPLE_MERCURE, 49 )
+TempleMercure::TempleMercure() : SmallTemple( DivinePantheon::mercury(), building::templeMercury, 49 )
 {
 }
 
@@ -103,7 +103,7 @@ unsigned int BigTempleMercure::getParishionerNumber() const
   return 300;
 }
 
-TempleOracle::TempleOracle() : Temple( RomeDivinityPtr(), building::B_TEMPLE_ORACLE, 55, Size(2) )
+TempleOracle::TempleOracle() : Temple( RomeDivinityPtr(), building::oracle, 55, Size(2) )
 {
   _getAnimation().load( ResourceGroup::security, 56, 6);
   _getAnimation().setOffset( Point( 9, 30 ) );

@@ -441,7 +441,7 @@ void Warehouse::load( const VariantMap& stream )
 void Warehouse::_resolveDevastationMode()
 {
   //if warehouse in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
-  if( (_d->goodStore.getCurrentQty() > 0) && getWalkerList().empty() )
+  if( (_d->goodStore.getCurrentQty() > 0) && getWalkers().empty() )
   {
     for( int goodType=Good::wheat; goodType <= Good::vegetable; goodType++ )
     {

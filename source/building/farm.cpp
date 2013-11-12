@@ -99,7 +99,6 @@ Farm::Farm(const Good::Type outGood, const Type type )
   getOutGood().setMax( 100 );
 
   init();
-  setWorkers( 0 );
 }
 
 bool Farm::canBuild( CityPtr city, const TilePos& pos ) const
@@ -191,7 +190,7 @@ FarmWheat::FarmWheat() : Farm(Good::wheat, building::wheatFarm)
 {
 }
 
-FarmOlive::FarmOlive() : Farm(Good::olive, building::B_OLIVE_FARM)
+FarmOlive::FarmOlive() : Farm(Good::olive, building::oliveFarm)
 {
 }
 
@@ -199,14 +198,14 @@ FarmGrape::FarmGrape() : Farm(Good::grape, building::grapeFarm)
 {
 }
 
-FarmMeat::FarmMeat() : Farm(Good::meat, building::B_PIG_FARM)
+FarmMeat::FarmMeat() : Farm(Good::meat, building::pigFarm)
 {
 }
 
-FarmFruit::FarmFruit() : Farm(Good::fruit, building::B_FRUIT_FARM)
+FarmFruit::FarmFruit() : Farm(Good::fruit, building::fruitFarm)
 {
 }
 
-FarmVegetable::FarmVegetable() : Farm(Good::vegetable, building::B_VEGETABLE_FARM)
+FarmVegetable::FarmVegetable() : Farm(Good::vegetable, building::vegetableFarm)
 {
 }

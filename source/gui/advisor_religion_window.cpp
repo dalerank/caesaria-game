@@ -153,23 +153,23 @@ AdvisorReligionWindow::AdvisorReligionWindow( CityPtr city, Widget* parent, int 
   _d->lbCeresInfo = new ReligionInfoLabel( this, Rect( startPoint, labelSize ), DivinePantheon::ceres(), 
                                            info.smallTemplCount, info.bigTempleCount );
 
-  info = _d->getInfo( city, building::B_TEMPLE_NEPTUNE, building::B_BIG_TEMPLE_NEPTUNE );
+  info = _d->getInfo( city, building::templeNeptune, building::B_BIG_TEMPLE_NEPTUNE );
   _d->lbNeptuneInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 20), labelSize), DivinePantheon::neptune(),
                                              info.smallTemplCount, info.bigTempleCount );
 
-  info = _d->getInfo( city, building::B_TEMPLE_MERCURE, building::B_BIG_TEMPLE_MERCURE );
+  info = _d->getInfo( city, building::templeMercury, building::B_BIG_TEMPLE_MERCURE );
   _d->lbMercuryInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 40), labelSize), DivinePantheon::mercury(),
                                              info.smallTemplCount, info.bigTempleCount );
 
-  info = _d->getInfo( city, building::B_TEMPLE_MARS, building::B_BIG_TEMPLE_MARS );
+  info = _d->getInfo( city, building::templeMars, building::B_BIG_TEMPLE_MARS );
   _d->lbMarsInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 60), labelSize), DivinePantheon::mars(),
                                           info.smallTemplCount, info.bigTempleCount );
 
-  info = _d->getInfo( city, building::B_TEMPLE_VENUS, building::B_BIG_TEMPLE_VENUS );
+  info = _d->getInfo( city, building::templeVenus, building::B_BIG_TEMPLE_VENUS );
   _d->lbVenusInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 80), labelSize), DivinePantheon::venus(),
                                            info.smallTemplCount, info.bigTempleCount );
 
-  info = _d->getInfo( city, building::B_TEMPLE_ORACLE, building::B_TEMPLE_ORACLE );
+  info = _d->getInfo( city, building::oracle, building::oracle );
   _d->lbOracleInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 100), labelSize), RomeDivinityPtr(),
                                             info.smallTemplCount, 0 );
 

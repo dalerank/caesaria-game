@@ -46,7 +46,7 @@ public:
   std::string errorStr;
 };
 
-Aqueduct::Aqueduct() : WaterSource( building::B_AQUEDUCT, Size(1) )
+Aqueduct::Aqueduct() : WaterSource( building::aqueduct, Size(1) )
 {
   setPicture( ResourceGroup::aqueduct, 133 ); // default picture for aqueduct
   _d->isRoad = false;
@@ -75,7 +75,7 @@ void Aqueduct::build( CityPtr city, const TilePos& pos )
   Construction::build( city, pos );
 
   CityHelper helper( city );
-  AqueductList aqueducts = helper.find<Aqueduct>( building::B_AQUEDUCT );
+  AqueductList aqueducts = helper.find<Aqueduct>( building::aqueduct );
   foreach( AqueductPtr aqueduct, aqueducts )
   {
     aqueduct->updatePicture( city );
@@ -94,7 +94,7 @@ void Aqueduct::destroy()
     foreach( Tile* tile, area )
     {
       TileOverlayPtr overlay = tile->getOverlay();
-      if( overlay.isValid() && overlay->getType() == building::B_AQUEDUCT )
+      if( overlay.isValid() && overlay->getType() == building::aqueduct )
       {
         overlay.as<Aqueduct>()->updatePicture( _getCity() );
       }
@@ -362,7 +362,7 @@ void Reservoir::destroy()
   Construction::destroy();
 }
 
-Reservoir::Reservoir() : WaterSource( building::B_RESERVOIR, Size( 3 ) )
+Reservoir::Reservoir() : WaterSource( building::reservoir, Size( 3 ) )
 {
   setPicture( ResourceGroup::waterbuildings, 1 );
   
@@ -553,7 +553,7 @@ void WaterSource::_setError(const std::string& error)
 
 typedef enum { fontainEmpty = 3, fontainFull = 4, fontainStartAnim = 11, fontainSizeAnim = 7 } FontainConstant;
 
-Fountain::Fountain() : ServiceBuilding(Service::fontain, building::B_FOUNTAIN, Size(1))
+Fountain::Fountain() : ServiceBuilding(Service::fontain, building::fountain, Size(1))
 {  
   //std::srand( DateTime::getElapsedTime() );
 
@@ -655,7 +655,7 @@ bool Fountain::haveReservoirAccess() const
   foreach( Tile* tile, reachedTiles )
   {
     TileOverlayPtr overlay = tile->getOverlay();
-    if( overlay != 0 && (building::B_RESERVOIR == overlay->getType()) )
+    if( overlay != 0 && (building::reservoir == overlay->getType()) )
     {
       return true;
     }

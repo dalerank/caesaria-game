@@ -57,9 +57,9 @@ void LayerReligion::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       //fire buildings and roads
     case construction::road:
     case construction::B_PLAZA:
-    case building::templeCeres: case building::B_TEMPLE_MARS:
-    case building::B_TEMPLE_MERCURE: case building::B_TEMPLE_NEPTUNE: case building::B_TEMPLE_VENUS:
-    case building::B_TEMPLE_ORACLE:
+    case building::templeCeres: case building::templeMars:
+    case building::templeMercury: case building::templeNeptune: case building::templeVenus:
+    case building::oracle:
     case building::B_BIG_TEMPLE_CERES: case building::B_BIG_TEMPLE_MARS:
     case building::B_BIG_TEMPLE_MERCURE: case building::B_BIG_TEMPLE_NEPTUNE: case building::B_BIG_TEMPLE_VENUS:
       needDrawAnimations = true;

@@ -148,7 +148,7 @@ void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
         }
         break;
         }
-      case building::B_RESERVOIR:
+      case building::reservoir:
         {
           c1 = colors->colour(MinimapColors::MAP_AQUA, 1);
           c2 = colors->colour(MinimapColors::MAP_AQUA, 0);

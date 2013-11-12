@@ -20,7 +20,9 @@
 #include "game/city.hpp"
 #include "constants.hpp"
 
-Well::Well() : ServiceBuilding( Service::well, constants::building::B_WELL, Size(1) )
+using namespace constants;
+
+Well::Well() : ServiceBuilding( Service::well, building::well, Size(1) )
 {
   _fireIncrement = 0;
   _damageIncrement = 0;

@@ -491,6 +491,7 @@ void Walker::save( VariantMap& stream ) const
   stream[ "direction" ] = (int)_d->action.direction;
   stream[ "pos" ] = _d->pos;
   stream[ "tileoffset" ] = _d->tileOffset;
+  stream[ "animationType" ] = (int)_d->walkerGraphic;
   stream[ "mappos" ] = _d->posOnMap;
   stream[ "speed" ] = _d->speed;
   stream[ "midTile" ] = _d->midTilePos;
@@ -507,21 +508,22 @@ void Walker::load( const VariantMap& stream)
   _d->pathWay.load( stream.get( "pathway" ).toMap() );
   _d->action.action = (Walker::Action) stream.get( "action" ).toInt();
   _d->action.direction = (Direction) stream.get( "direction" ).toInt();
-  _d->pos = stream.get( "pos" ).toTilePos();
-  _d->tileOffset = stream.get( "tileoffset" ).toPoint();
-  _d->posOnMap = stream.get( "mappos" ).toPoint();
+  _d->pos = stream.get( "pos" );
+  _d->tileOffset = stream.get( "tileoffset" );
+  _d->posOnMap = stream.get( "mappos" );
   _d->uid = (UniqueId)stream.get( "uid" ).toInt();
-  _d->speedMultiplier = stream.get( "speedMul" ).toFloat();
+  _d->speedMultiplier = (float)stream.get( "speedMul" );
   _d->name = stream.get( "name" ).toString();
+  _d->walkerGraphic = (gfx::Type)stream.get( "animationType", (int)Walker::acMove ).toInt();
   
-  _OC3_DEBUG_BREAK_IF( _d->speedMultiplier < 0.1 );
   if( _d->speedMultiplier < 0.1 ) //Sometime this have this error in save file
   {
+    Logger::warning( "Wrong speed multiplier for %d", _d->uid );
     _d->speedMultiplier = 1;
   }
 
-  _d->speed = stream.get( "speed" ).toFloat();
-  _d->midTilePos = stream.get( "midTile" ).toPoint();
+  _d->speed = (float)stream.get( "speed" );
+  _d->midTilePos = stream.get( "midTile" );
   _d->remainMove = stream.get( "remainmove" ).toPointF();
   _d->health = (double)stream.get( "health" );
 }

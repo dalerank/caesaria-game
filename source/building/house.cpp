@@ -710,11 +710,9 @@ void House::load( const VariantMap& stream )
   VariantList vl_services = stream.get( "services" ).toList();
   for( VariantList::iterator it = vl_services.begin(); it != vl_services.end(); it++ )
   {
-    Service::Type type = Service::Type( (*it).toInt() );
+    Service::Type type = Service::Type( (int)(*it) );
     it++;
-    int serviceValue = (*it).toInt();
-
-    _d->services[ type ] = serviceValue;
+    _d->services[ type ] = (*it).toInt(); //serviceValue
   }
 
   Building::build( _getCity(), getTilePos() );

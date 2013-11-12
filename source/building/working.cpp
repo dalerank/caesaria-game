@@ -32,6 +32,7 @@ WorkingBuilding::WorkingBuilding(const Type type, const Size& size)
 : Building( type, size ), _d( new Impl )
 {
   _d->currentWorkers = 0;
+  _d->maxWorkers = 0;
   _d->isActive = true;
 }
 
@@ -69,12 +70,16 @@ void WorkingBuilding::save( VariantMap& stream ) const
 {
   Building::save( stream );
   stream[ "currentWorkers" ] = _d->currentWorkers;
+  stream[ "active" ] = _d->isActive;
+  stream[ "maxWorkers" ] = _d->maxWorkers;
 }
 
 void WorkingBuilding::load( const VariantMap& stream)
 {
   Building::load( stream );
   _d->currentWorkers = (int)stream.get( "currentWorkers", 0 );
+  _d->isActive = (bool)stream.get( "active", true );
+  _d->maxWorkers = (int)stream.get( "maxWorkers" );
 }
 
 void WorkingBuilding::addWorkers(const unsigned int workers )
@@ -118,7 +123,7 @@ void WorkingBuilding::addWalker( WalkerPtr walker )
   }
 }
 
-const WalkerList& WorkingBuilding::getWalkerList() const
+const WalkerList& WorkingBuilding::getWalkers() const
 {
   return _d->walkerList;
 }

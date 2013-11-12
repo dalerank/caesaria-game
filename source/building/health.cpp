@@ -32,7 +32,7 @@ unsigned int Doctor::getWalkerDistance() const
 
 void Doctor::deliverService()
 {
-  if( getWorkers() > 0 && getWalkerList().size() == 0 )
+  if( getWorkers() > 0 && getWalkers().size() == 0 )
   {
     ServiceBuilding::deliverService();
   }
@@ -77,7 +77,7 @@ void Baths::timeStep(const unsigned long time)
 
 void Baths::deliverService()
 {
-  if( _haveReservorWater && getWalkerList().empty() )
+  if( _haveReservorWater && getWalkers().empty() )
   {
     ServiceBuilding::deliverService();
   }

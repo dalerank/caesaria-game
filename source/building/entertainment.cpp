@@ -70,11 +70,11 @@ void EntertainmentBuilding::deliverService()
   // all trainees are there for the show!
   if( minLevel > 25 )
   {
-    if( getWalkerList().empty() )
+    if( getWalkers().empty() )
     {
       ServiceBuilding::deliverService();
 
-      if( !getWalkerList().empty() )
+      if( !getWalkers().empty() )
       {
         _getAnimation().start();
         decreaseLevel = 25;
@@ -82,7 +82,7 @@ void EntertainmentBuilding::deliverService()
     }
   }
 
-  if( getWalkerList().empty() )
+  if( getWalkers().empty() )
   {
     _getAnimation().stop(); //have no actors for the show
   }

@@ -105,7 +105,17 @@ public:
 
   const WalkerList& at( TilePos pos )
   {
-    return _grid[ pos.getI() ][ pos.getJ() ];
+    if( pos.getI() >= 0 && pos.getI() < (int)_grid.size()
+        && pos.getJ() >= 0 && pos.getJ() < (int)_grid.size() )
+    {
+      return _grid[ pos.getI() ][ pos.getJ() ];
+    }
+    else
+    {
+      Logger::warning( "WalkersGrid incorrect" );
+      static WalkerList invalidList;
+      return invalidList;
+    }
   }
 
 private:
@@ -538,6 +548,7 @@ void City::load( const VariantMap& stream )
   _d->cameraStart = TilePos( stream.get( "cameraStart" ).toTilePos() );
   _d->name = stream.get( "name" ).toString();
   _d->lastMonthCount = GameDate::current().getMonth();
+  _d->walkersGrid.resize( Size( _d->tilemap.getSize() ) );
 
   VariantMap overlays = stream.get( "overlays" ).toMap();
   foreach( VariantMap::value_type& item, overlays )

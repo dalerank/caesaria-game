@@ -68,7 +68,7 @@ Market::Market() : ServiceBuilding(Service::market, constants::building::market,
 
 void Market::deliverService()
 {
-  if( getWorkers() > 0 && getWalkerList().size() == 0 )
+  if( getWorkers() > 0 && getWalkers().size() == 0 )
   {
     // the marketBuyer is ready to buy something!
     MarketLadyPtr buyer = MarketLady::create( _getCity() );
@@ -151,7 +151,7 @@ void Market::timeStep(const unsigned long time)
 {
   if( time % 16 == 0 )
   {
-    WalkerList walkers = getWalkerList();
+    WalkerList walkers = getWalkers();
     if( walkers.size() > 0 && _d->goodStore.getCurrentQty() == 0 )
     {
       ServiceWalkerPtr walker = walkers.front().as<ServiceWalker>();

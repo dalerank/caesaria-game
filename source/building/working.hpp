@@ -45,7 +45,7 @@ public:
   virtual void load( const VariantMap& stream);
 
   virtual void addWalker( WalkerPtr walker );
-  virtual const WalkerList& getWalkerList() const;
+  virtual const WalkerList& getWalkers() const;
 
 private:
   void _fireWorkers();

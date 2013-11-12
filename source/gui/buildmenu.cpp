@@ -196,10 +196,10 @@ void BuildMenu::setBuildOptions( const CityBuildOptions& options )
 
 void BuildMenu_water::initialize()
 {
-  addBuildButton(building::B_FOUNTAIN);
-  addBuildButton(building::B_WELL);
-  addBuildButton(building::B_AQUEDUCT);
-  addBuildButton(building::B_RESERVOIR);
+  addBuildButton(building::fountain);
+  addBuildButton(building::well);
+  addBuildButton(building::aqueduct);
+  addBuildButton(building::reservoir);
 
   BuildMenu::initialize();
 }
@@ -259,10 +259,10 @@ void BuildMenu_engineering::initialize()
   addBuildButton(building::engineerPost);
   addBuildButton(building::lowBridge);
   addBuildButton(building::highBridge);
-  addBuildButton(building::B_DOCK);
-  addBuildButton(building::B_SHIPYARD);
+  addBuildButton(building::dock);
+  addBuildButton(building::shipyard);
   addBuildButton(building::wharf);
-  addBuildButton(building::B_TRIUMPHAL_ARCH);
+  addBuildButton(building::triumphalArch);
   addBuildButton(construction::B_GARDEN);
   addBuildButton(construction::B_PLAZA);
 
@@ -339,11 +339,11 @@ BuildMenu_commerce::BuildMenu_commerce( Widget* parent, const Rect& rectangle )
 void BuildMenu_farm::initialize()
 {
   addBuildButton(building::wheatFarm);
-  addBuildButton(building::B_FRUIT_FARM);
-  addBuildButton(building::B_OLIVE_FARM);
+  addBuildButton(building::fruitFarm);
+  addBuildButton(building::oliveFarm);
   addBuildButton(building::grapeFarm);
-  addBuildButton(building::B_PIG_FARM);
-  addBuildButton(building::B_VEGETABLE_FARM);
+  addBuildButton(building::pigFarm);
+  addBuildButton(building::vegetableFarm);
 
   BuildMenu::initialize();
 }
@@ -372,10 +372,10 @@ BuildMenu_raw_factory::BuildMenu_raw_factory( Widget* parent, const Rect& rectan
 
 void BuildMenu_factory::initialize()
 {
-  addBuildButton(building::B_WINE_WORKSHOP);
-  addBuildButton(building::B_OIL_WORKSHOP);
+  addBuildButton(building::winery);
+  addBuildButton(building::creamery);
   addBuildButton(building::B_WEAPONS_WORKSHOP);
-  addBuildButton(building::B_FURNITURE);
+  addBuildButton(building::furniture);
   addBuildButton(building::pottery);
 
   BuildMenu::initialize();
@@ -391,7 +391,7 @@ void BuildMenu_religion::initialize()
 {
   addSubmenuButton(BM_TEMPLE , _("##small_temples##") );
   addSubmenuButton(BM_BIGTEMPLE , _("##large_temples##") );
-  addBuildButton(building::B_TEMPLE_ORACLE);
+  addBuildButton(building::oracle);
 
   BuildMenu::initialize();
 }
@@ -405,10 +405,10 @@ BuildMenu_religion::BuildMenu_religion( Widget* parent, const Rect& rectangle )
 void BuildMenu_temple::initialize()
 {
   addBuildButton(building::templeCeres);
-  addBuildButton(building::B_TEMPLE_NEPTUNE);
-  addBuildButton(building::B_TEMPLE_MARS);
-  addBuildButton(building::B_TEMPLE_VENUS);
-  addBuildButton(building::B_TEMPLE_MERCURE);
+  addBuildButton(building::templeNeptune);
+  addBuildButton(building::templeMars);
+  addBuildButton(building::templeVenus);
+  addBuildButton(building::templeMercury);
 
   BuildMenu::initialize();
 }

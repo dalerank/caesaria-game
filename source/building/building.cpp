@@ -198,7 +198,7 @@ bool BigStatue::isNeedRoadAccess() const
   return false;
 }
 
-Shipyard::Shipyard() : Building( building::B_SHIPYARD, Size(2) )
+Shipyard::Shipyard() : Building( building::shipyard, Size(2) )
 {
   setPicture( ResourceGroup::transport, 1);
   // also transport 2 3 4 check position of river on map
@@ -210,7 +210,7 @@ Shipyard::Shipyard() : Building( building::B_SHIPYARD, Size(2) )
 // transport 29       animation = 30~40
 // transport 41       animation = 42~51
 
-Dock::Dock() : Building( building::B_DOCK, Size(2) )
+Dock::Dock() : Building( building::dock, Size(2) )
 {
   setPicture( ResourceGroup::transport, 5);
 
@@ -232,7 +232,7 @@ void Dock::timeStep(const unsigned long time)
 
 // second arch pictures is land3a 45 + 46	
 
-TriumphalArch::TriumphalArch() : Building( building::B_TRIUMPHAL_ARCH, Size(3) )
+TriumphalArch::TriumphalArch() : Building( building::triumphalArch, Size(3) )
 {
   setPicture( ResourceGroup::land3a, 43 );
   _getAnimation().load("land3a", 44, 1);

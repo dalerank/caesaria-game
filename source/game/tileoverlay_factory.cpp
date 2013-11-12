@@ -193,28 +193,28 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(construction::B_GARDEN, OC3_STR_EXT(Garden) , new ConstructionCreator<Garden>() );
   addCreator(construction::B_PLAZA,  OC3_STR_EXT(Plaza)  , new ConstructionCreator<Plaza>() );
   // water
-  addCreator(building::B_WELL,       OC3_STR_EXT(Well)     , new WorkingBuildingCreator<Well>() );
-  addCreator(building::B_FOUNTAIN,   OC3_STR_EXT(Fountain) , new WorkingBuildingCreator<Fountain>() );
-  addCreator(building::B_AQUEDUCT,   OC3_STR_EXT(Aqueduct), new ConstructionCreator<Aqueduct>() );
-  addCreator(building::B_RESERVOIR,  OC3_STR_EXT(Reservoir), new ConstructionCreator<Reservoir>() );
+  addCreator(building::well,       OC3_STR_EXT(Well)     , new WorkingBuildingCreator<Well>() );
+  addCreator(building::fountain,   OC3_STR_EXT(Fountain) , new WorkingBuildingCreator<Fountain>() );
+  addCreator(building::aqueduct,   OC3_STR_EXT(Aqueduct), new ConstructionCreator<Aqueduct>() );
+  addCreator(building::reservoir,  OC3_STR_EXT(Reservoir), new ConstructionCreator<Reservoir>() );
   // security
   addCreator(building::prefecture,   OC3_STR_EXT(Prefecture)  , new WorkingBuildingCreator<Prefecture>() );
   addCreator(building::B_FORT_LEGIONNAIRE, OC3_STR_EXT(FortLegionnaire), new ConstructionCreator<FortLegionnaire>() );
   addCreator(building::B_FORT_JAVELIN, OC3_STR_EXT(FortJaveline)   , new ConstructionCreator<FortJaveline>() );
   addCreator(building::B_FORT_MOUNTED, OC3_STR_EXT(FortMounted)  , new ConstructionCreator<FortMounted>() );
-  addCreator(building::B_MILITARY_ACADEMY, OC3_STR_EXT(MilitaryAcademy), new WorkingBuildingCreator<MilitaryAcademy>() );
-  addCreator(building::B_BARRACKS,   OC3_STR_EXT(Barracks)        , new ConstructionCreator<Barracks>() );
+  addCreator(building::militaryAcademy, OC3_STR_EXT(MilitaryAcademy), new WorkingBuildingCreator<MilitaryAcademy>() );
+  addCreator(building::barracks,   OC3_STR_EXT(Barracks)        , new ConstructionCreator<Barracks>() );
   // commerce
   addCreator(building::market,     OC3_STR_EXT(Market)  , new WorkingBuildingCreator<Market>() );
   addCreator(building::warehouse,  OC3_STR_EXT(Warehouse), new WorkingBuildingCreator<Warehouse>() );
   addCreator(building::granary,      OC3_STR_EXT(Granary)  , new WorkingBuildingCreator<Granary>() );
   // farms
   addCreator(building::wheatFarm,    OC3_STR_EXT(FarmWheat) , new FactoryCreator<FarmWheat>() );
-  addCreator(building::B_OLIVE_FARM, OC3_STR_EXT(FarmOlive) , new FactoryCreator<FarmOlive>() );
+  addCreator(building::oliveFarm, OC3_STR_EXT(FarmOlive) , new FactoryCreator<FarmOlive>() );
   addCreator(building::grapeFarm,    OC3_STR_EXT(FarmGrape) , new FactoryCreator<FarmGrape>() );
-  addCreator(building::B_PIG_FARM,   OC3_STR_EXT(FarmMeat)     , new FactoryCreator<FarmMeat>() );
-  addCreator(building::B_FRUIT_FARM, OC3_STR_EXT(FarmFruit)    , new FactoryCreator<FarmFruit>() );
-  addCreator(building::B_VEGETABLE_FARM, OC3_STR_EXT(FarmVegetable), new FactoryCreator<FarmVegetable>() );
+  addCreator(building::pigFarm,   OC3_STR_EXT(FarmMeat)     , new FactoryCreator<FarmMeat>() );
+  addCreator(building::fruitFarm, OC3_STR_EXT(FarmFruit)    , new FactoryCreator<FarmFruit>() );
+  addCreator(building::vegetableFarm, OC3_STR_EXT(FarmVegetable), new FactoryCreator<FarmVegetable>() );
   // raw materials
   addCreator(building::ironMine,     OC3_STR_EXT(IronMine)  , new FactoryCreator<IronMine>() );
   addCreator(building::timberLogger, OC3_STR_EXT(TimberLogger), new FactoryCreator<TimberLogger>() );
@@ -222,30 +222,30 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::marbleQuarry, OC3_STR_EXT(MarbleQuarry), new FactoryCreator<MarbleQuarry>() );
   // factories
   addCreator(building::B_WEAPONS_WORKSHOP, OC3_STR_EXT(WeaponsWorkshop)   , new FactoryCreator<WeaponsWorkshop>() );
-  addCreator(building::B_FURNITURE,  OC3_STR_EXT(WorkshopFurniture), new FactoryCreator<WorkshopFurniture>() );
-  addCreator(building::B_WINE_WORKSHOP, OC3_STR_EXT(Winery)     , new FactoryCreator<Winery>() );
-  addCreator(building::B_OIL_WORKSHOP, OC3_STR_EXT(Creamery)      , new FactoryCreator<Creamery>() );
+  addCreator(building::furniture,  OC3_STR_EXT(WorkshopFurniture), new FactoryCreator<WorkshopFurniture>() );
+  addCreator(building::winery, OC3_STR_EXT(Winery)     , new FactoryCreator<Winery>() );
+  addCreator(building::creamery, OC3_STR_EXT(Creamery)      , new FactoryCreator<Creamery>() );
   addCreator(building::pottery,      OC3_STR_EXT(Pottery)  , new FactoryCreator<Pottery>() );
   // utility
   addCreator(building::engineerPost, OC3_STR_EXT(EngineerPost), new WorkingBuildingCreator<EngineerPost>() );
   addCreator(building::lowBridge,    OC3_STR_EXT(LowBridge), new ConstructionCreator<LowBridge>() );
   addCreator(building::highBridge,   OC3_STR_EXT(HighBridge), new ConstructionCreator<HighBridge>() );
-  addCreator(building::B_DOCK,       OC3_STR_EXT(Dock)    , new ConstructionCreator<Dock>() );
-  addCreator(building::B_SHIPYARD,   OC3_STR_EXT(Shipyard), new ConstructionCreator<Shipyard>() );
+  addCreator(building::dock,       OC3_STR_EXT(Dock)    , new ConstructionCreator<Dock>() );
+  addCreator(building::shipyard,   OC3_STR_EXT(Shipyard), new ConstructionCreator<Shipyard>() );
   addCreator(building::wharf,        OC3_STR_EXT(Wharf)   , new WorkingBuildingCreator<Wharf>() );
-  addCreator(building::B_TRIUMPHAL_ARCH, OC3_STR_EXT(TriumphalArch) , new ConstructionCreator<TriumphalArch>() );
+  addCreator(building::triumphalArch, OC3_STR_EXT(TriumphalArch) , new ConstructionCreator<TriumphalArch>() );
   // religion
   addCreator(building::templeCeres,  OC3_STR_EXT(TempleCeres)  , new WorkingBuildingCreator<TempleCeres>() );
-  addCreator(building::B_TEMPLE_NEPTUNE, OC3_STR_EXT(TempleNeptune), new WorkingBuildingCreator<TempleNeptune>() );
-  addCreator(building::B_TEMPLE_MARS,OC3_STR_EXT(TempleMars)   , new WorkingBuildingCreator<TempleMars>() );
-  addCreator(building::B_TEMPLE_VENUS, OC3_STR_EXT(TempleVenus)  , new WorkingBuildingCreator<TempleVenus>() );
-  addCreator(building::B_TEMPLE_MERCURE, OC3_STR_EXT(TempleMercure), new WorkingBuildingCreator<TempleMercure>() );
+  addCreator(building::templeNeptune, OC3_STR_EXT(TempleNeptune), new WorkingBuildingCreator<TempleNeptune>() );
+  addCreator(building::templeMars,OC3_STR_EXT(TempleMars)   , new WorkingBuildingCreator<TempleMars>() );
+  addCreator(building::templeVenus, OC3_STR_EXT(TempleVenus)  , new WorkingBuildingCreator<TempleVenus>() );
+  addCreator(building::templeMercury, OC3_STR_EXT(TempleMercure), new WorkingBuildingCreator<TempleMercure>() );
   addCreator(building::B_BIG_TEMPLE_CERES, OC3_STR_EXT(BigTempleCeres)  , new WorkingBuildingCreator<BigTempleCeres>() );
   addCreator(building::B_BIG_TEMPLE_NEPTUNE, OC3_STR_EXT(BigTempleNeptune), new WorkingBuildingCreator<BigTempleNeptune>() );
   addCreator(building::B_BIG_TEMPLE_MARS, OC3_STR_EXT(BigTempleMars)   , new WorkingBuildingCreator<BigTempleMars>() );
   addCreator(building::B_BIG_TEMPLE_VENUS, OC3_STR_EXT(BigTempleVenus)  , new WorkingBuildingCreator<BigTempleVenus>() );
   addCreator(building::B_BIG_TEMPLE_MERCURE, OC3_STR_EXT(BigTempleMercure), new WorkingBuildingCreator<BigTempleMercure>() );
-  addCreator(building::B_TEMPLE_ORACLE, OC3_STR_EXT(TempleOracle) , new WorkingBuildingCreator<TempleOracle>() );
+  addCreator(building::oracle, OC3_STR_EXT(TempleOracle) , new WorkingBuildingCreator<TempleOracle>() );
   // health
   addCreator(building::B_BATHS,      OC3_STR_EXT(Baths)   , new WorkingBuildingCreator<Baths>() );
   addCreator(building::B_BARBER,     OC3_STR_EXT(Barber)  , new WorkingBuildingCreator<Barber>() );

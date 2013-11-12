@@ -55,10 +55,10 @@ void LayerWater::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       //water buildings
     case construction::road:
     case construction::B_PLAZA:
-    case building::B_RESERVOIR:
-    case building::B_FOUNTAIN:
-    case building::B_WELL:
-    case building::B_AQUEDUCT:
+    case building::reservoir:
+    case building::fountain:
+    case building::well:
+    case building::aqueduct:
       pic = tile.getPicture();
       needDrawAnimations = true;
       areaSize = overlay->getSize();

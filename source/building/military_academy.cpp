@@ -17,6 +17,9 @@
 #include "military_academy.hpp"
 #include "constants.hpp"
 
-MilitaryAcademy::MilitaryAcademy() : WorkingBuilding( constants::building::B_MILITARY_ACADEMY, Size(3) )
+using namespace constants;
+
+MilitaryAcademy::MilitaryAcademy()
+  : WorkingBuilding( building::militaryAcademy, Size(3) )
 {
 }

@@ -50,9 +50,9 @@ void CityBuildOptions::setIndustryAvaible( const BuildMenuType type, bool mayBui
   switch( type )
   {
   case BM_FARM:
-    _d->rules[ building::B_OLIVE_FARM ] = mayBuild; _d->rules[ building::wheatFarm ] = mayBuild;
-    _d->rules[ building::B_FRUIT_FARM ] = mayBuild; _d->rules[ building::B_VEGETABLE_FARM ] = mayBuild;
-    _d->rules[ building::grapeFarm ] = mayBuild; _d->rules[ building::B_PIG_FARM ] = mayBuild;
+    _d->rules[ building::oliveFarm ] = mayBuild; _d->rules[ building::wheatFarm ] = mayBuild;
+    _d->rules[ building::fruitFarm ] = mayBuild; _d->rules[ building::vegetableFarm ] = mayBuild;
+    _d->rules[ building::grapeFarm ] = mayBuild; _d->rules[ building::pigFarm ] = mayBuild;
   break;
 
   case BM_RAW_MATERIAL:
@@ -61,8 +61,8 @@ void CityBuildOptions::setIndustryAvaible( const BuildMenuType type, bool mayBui
   break;
 
   case BM_FACTORY:
-    _d->rules[ building::B_WINE_WORKSHOP ] = mayBuild; _d->rules[ building::B_OIL_WORKSHOP ] = mayBuild;
-    _d->rules[ building::B_WEAPONS_WORKSHOP ] = mayBuild; _d->rules[ building::B_FURNITURE ] = mayBuild;
+    _d->rules[ building::winery ] = mayBuild; _d->rules[ building::creamery ] = mayBuild;
+    _d->rules[ building::B_WEAPONS_WORKSHOP ] = mayBuild; _d->rules[ building::furniture ] = mayBuild;
     _d->rules[ building::pottery ] = mayBuild;
   break;
 

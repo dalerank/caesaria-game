@@ -85,7 +85,7 @@ ActorColony::ActorColony() : TrainingBuilding( building::actorColony, Size(3) )
 
 void ActorColony::deliverTrainee()
 {
-  if( !getWalkerList().empty() )
+  if( !getWalkers().empty() )
   {
     return;
   }

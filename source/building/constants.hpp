@@ -96,21 +96,21 @@ enum Type
   governorPalace,
 
 // water
-  B_RESERVOIR,
-  B_AQUEDUCT,
-  B_FOUNTAIN,
-  B_WELL,
+  reservoir,
+  aqueduct,
+  fountain,
+  well,
 
 // security
   prefecture,
-  B_WALL,
-  B_TOWER,
-  B_GATEHOUSE,
+  wall,
+  tower,
+  gatehouse,
   B_FORT_LEGIONNAIRE,
   B_FORT_JAVELIN,
   B_FORT_MOUNTED,
-  B_MILITARY_ACADEMY,
-  B_BARRACKS,
+  militaryAcademy,
+  barracks,
 
 // commerce
   market,
@@ -119,11 +119,11 @@ enum Type
 
 // farms
   wheatFarm,
-  B_FRUIT_FARM,
-  B_VEGETABLE_FARM,
-  B_OLIVE_FARM,
+  fruitFarm,
+  vegetableFarm,
+  oliveFarm,
   grapeFarm,
-  B_PIG_FARM,
+  pigFarm,
 
 // raw materials
   marbleQuarry,
@@ -132,10 +132,10 @@ enum Type
   clayPit,
 
 // factories
-  B_WINE_WORKSHOP,
-  B_OIL_WORKSHOP,
+  winery,
+  creamery,
   B_WEAPONS_WORKSHOP,
-  B_FURNITURE,
+  furniture,
   pottery,
 
 // utility
@@ -145,8 +145,8 @@ enum Type
   B_STATUE3,
   lowBridge,
   highBridge,
-  B_SHIPYARD,
-  B_DOCK,
+  shipyard,
+  dock,
   wharf,
 
 // health
@@ -163,10 +163,10 @@ enum Type
 
 // religion: small temples
   templeCeres,
-  B_TEMPLE_MARS,
-  B_TEMPLE_NEPTUNE,
-  B_TEMPLE_MERCURE,
-  B_TEMPLE_VENUS,
+  templeMars,
+  templeNeptune,
+  templeMercury,
+  templeVenus,
 
 // religion: big temples
   B_BIG_TEMPLE_CERES,
@@ -176,7 +176,7 @@ enum Type
   B_BIG_TEMPLE_VENUS,
 
 // religion: others
-  B_TEMPLE_ORACLE,
+  oracle,
 
 // building of natives
   B_NATIVE_HUT,
@@ -184,14 +184,14 @@ enum Type
   B_NATIVE_FIELD,
 
 //other
-  B_TRIUMPHAL_ARCH,
+  triumphalArch,
   burningRuins,
   B_BURNED_RUINS,
   B_COLLAPSED_RUINS,
   B_PLAGUE_RUINS,
 
-  B_FORUM_2,
-  B_SENATE_2,
+  forum2,
+  senate2,
   userType=1000
 }; //end Type
 

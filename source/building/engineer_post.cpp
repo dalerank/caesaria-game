@@ -47,7 +47,7 @@ void EngineerPost::timeStep(const unsigned long time)
 
 void EngineerPost::deliverService()
 {
-  if( getWorkers() > 0 && getWalkerList().size() == 0 )
+  if( getWorkers() > 0 && getWalkers().size() == 0 )
   {
       ServiceBuilding::deliverService();
   }

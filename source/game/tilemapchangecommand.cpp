@@ -74,7 +74,7 @@ TilemapChangeCommandPtr TilemapBuildCommand::create(TileOverlay::Type type )
   switch( type )
   {
   case construction::road:
-  case building::B_AQUEDUCT:
+  case building::aqueduct:
     newCommand->_d->isBorderBuilding = true;
     newCommand->_d->isMultiBuilding = true;
     break;

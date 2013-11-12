@@ -110,7 +110,7 @@ void Factory::timeStep(const unsigned long time)
    WorkingBuilding::timeStep(time);
 
    //try get good from storage building for us
-   if( time % 22 == 1 && getWorkers() > 0 && getWalkerList().size() == 0 )
+   if( time % 22 == 1 && getWorkers() > 0 && getWalkers().size() == 0 )
    {
      receiveGood(); 
      deliverGood();      
@@ -237,7 +237,7 @@ Factory::~Factory()
 
 bool Factory::_mayDeliverGood() const
 {
-  return ( getAccessRoads().size() > 0 ) && ( getWalkerList().size() == 0 );
+  return ( getAccessRoads().size() > 0 ) && ( getWalkers().size() == 0 );
 }
 
 void Factory::_setError(const std::string& err)
@@ -373,7 +373,7 @@ bool WorkshopFurniture::canBuild(CityPtr city, const TilePos& pos) const
   return ret;
 }
 
-WorkshopFurniture::WorkshopFurniture() : Factory(Good::timber, Good::furniture, building::B_FURNITURE, Size(2) )
+WorkshopFurniture::WorkshopFurniture() : Factory(Good::timber, Good::furniture, building::furniture, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 117 );
 
@@ -381,7 +381,7 @@ WorkshopFurniture::WorkshopFurniture() : Factory(Good::timber, Good::furniture, 
   _getFgPictures().resize(2);
 }
 
-Winery::Winery() : Factory(Good::grape, Good::wine, building::B_WINE_WORKSHOP, Size(2) )
+Winery::Winery() : Factory(Good::grape, Good::wine, building::winery, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 86 );
 
@@ -400,7 +400,7 @@ bool Winery::canBuild(CityPtr city, const TilePos& pos) const
   return ret;
 }
 
-Creamery::Creamery() : Factory(Good::olive, Good::oil, building::B_OIL_WORKSHOP, Size(2) )
+Creamery::Creamery() : Factory(Good::olive, Good::oil, building::creamery, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 99 );
 
@@ -413,7 +413,7 @@ bool Creamery::canBuild(CityPtr city, const TilePos& pos) const
   bool ret = Factory::canBuild( city, pos );
 
   CityHelper helper( city );
-  bool haveOliveFarm = !helper.find<Building>( building::B_OLIVE_FARM ).empty();
+  bool haveOliveFarm = !helper.find<Building>( building::oliveFarm ).empty();
 
   const_cast< Creamery* >( this )->_setError( haveOliveFarm ? "" : _("##need_olive_for_work##") );
 
