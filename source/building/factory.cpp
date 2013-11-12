@@ -227,7 +227,12 @@ void Factory::load( const VariantMap& stream)
   WorkingBuilding::load( stream );
   _d->goodStore.load( stream.get( "goodStore" ).toMap() );
   _d->progress = (float)stream.get( "progress", 0.f ); // approximation
-  _d->productionRate = (float)stream.get( "productionRate", 9.6f );
+
+  Variant value = stream.get( "productionRate", 9.6f );
+  if( value.isValid() )
+  {
+    _d->productionRate = (float)value;
+  }
 }
 
 Factory::~Factory()

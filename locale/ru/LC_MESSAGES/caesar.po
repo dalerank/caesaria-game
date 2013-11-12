@@ -190,14 +190,14 @@ msgstr "спектакли"
 
 #: oc3_advisor_entertainment_window.cpp:167 oc3_advisor_health_window.cpp:142
 msgid "##max_available##"
-msgstr "максимум"
+msgstr "могут развлечь"
 
 #: oc3_advisor_entertainment_window.cpp:168 oc3_advisor_health_window.cpp:143
 msgid "##coverage##"
 msgstr "покрытие"
 
 #: oc3_advisor_entertainment_window.cpp:203
-msgid "##Festivals##"
+msgid "##festivals##"
 msgstr "Празднества"
 
 #: oc3_advisor_entertainment_window.cpp:208
@@ -205,7 +205,7 @@ msgid "##new_festival##"
 msgstr "Провести новое праздненство"
 
 #: oc3_advisor_finance_window.cpp:55
-msgid "##Finance advisor##"
+msgid "##finance_advisor##"
 msgstr "Советник по финансам"
 
 #: oc3_advisor_finance_window.cpp:71
@@ -222,70 +222,70 @@ msgstr "Ставка налога"
 
 #: oc3_advisor_finance_window.cpp:79
 msgid "##population_registered_as_taxpayers##"
-msgstr "населения зарегестрировано как налогоплательщики"
+msgstr "населения зарегистрировано как налогоплательщики"
 
 #: oc3_advisor_finance_window.cpp:83
-msgid "##Last year##"
+msgid "##last_year##"
 msgstr "Прошлый год"
 
 #: oc3_advisor_finance_window.cpp:84
-msgid "##This year##"
+msgid "##this_year##"
 msgstr "Итого за этот год"
 
 #: oc3_advisor_finance_window.cpp:89
-msgid "##Taxes##"
+msgid "##taxes##"
 msgstr "Налоги"
 
 #: oc3_advisor_finance_window.cpp:90
-msgid "##Trade##"
+msgid "##trade##"
 msgstr "Торговля"
 
 #: oc3_advisor_finance_window.cpp:91
-msgid "##Donations##"
+msgid "##donations##"
 msgstr "Пожертвования"
 
 #: oc3_advisor_finance_window.cpp:92
-msgid "##Debet##"
+msgid "##debet##"
 msgstr "Доход"
 
 #: oc3_advisor_finance_window.cpp:97
-msgid "##Import##"
+msgid "##import##"
 msgstr "Импорт"
 
 #: oc3_advisor_finance_window.cpp:98
-msgid "##Wages##"
+msgid "##wages##"
 msgstr "Зарплаты"
 
 #: oc3_advisor_finance_window.cpp:99
-msgid "##Buildings##"
+msgid "##buildings##"
 msgstr "Строительство"
 
 #: oc3_advisor_finance_window.cpp:100
-msgid "##Percents##"
+msgid "##percents##"
 msgstr "Проценты 10%"
 
 #: oc3_advisor_finance_window.cpp:101
-msgid "##Salary##"
+msgid "##salary##"
 msgstr "Личное жалование"
 
 #: oc3_advisor_finance_window.cpp:103
-msgid "##Other##"
+msgid "##other##"
 msgstr "Разное"
 
 #: oc3_advisor_finance_window.cpp:104
-msgid "##Empire tax##"
+msgid "##empire_tax##"
 msgstr "Подать"
 
 #: oc3_advisor_finance_window.cpp:108
-msgid "##Credit##"
+msgid "##credit##"
 msgstr "Расход"
 
 #: oc3_advisor_finance_window.cpp:111
-msgid "##Profit##"
+msgid "##profit##"
 msgstr "Чистая прибыль"
 
 #: oc3_advisor_finance_window.cpp:114
-msgid "##Balance##"
+msgid "##balance##"
 msgstr "Баланс"
 
 #: oc3_advisor_finance_window.cpp:149
@@ -313,7 +313,7 @@ msgid "##doctors##"
 msgstr "Докторов"
 
 #: oc3_advisor_health_window.cpp:126
-msgid "##Health advisor##"
+msgid "##health_advisor##"
 msgstr "Советник по здавоохранению"
 
 #: oc3_advisor_legion_window.cpp:47
@@ -333,15 +333,15 @@ msgid "##need_population##"
 msgstr "Требуется"
 
 #: oc3_advisor_religion_window.cpp:70
-msgid "##Oracles_in_city##"
+msgid "##oracles_in_city##"
 msgstr "Оракулов в городе"
 
 #: oc3_advisor_religion_window.cpp:123
-msgid "##Religion advisor##"
+msgid "##religion_advisor##"
 msgstr "Советник по религии"
 
 #: oc3_advisor_religion_window.cpp:138
-msgid "##Temples##"
+msgid "##temples##"
 msgstr "Храмов"
 
 #: oc3_advisor_religion_window.cpp:139
@@ -353,11 +353,11 @@ msgid "##large##"
 msgstr "больших"
 
 #: oc3_advisor_religion_window.cpp:141
-msgid "##Fest.##"
+msgid "##fest.##"
 msgstr "Фест."
 
 #: oc3_advisor_religion_window.cpp:142
-msgid "##Mood##"
+msgid "##mood##"
 msgstr "Настроение"
 
 #: oc3_advisor_trade_window.cpp:70
@@ -365,20 +365,16 @@ msgid "##disable##"
 msgstr "Не работает"
 
 #: oc3_advisor_trade_window.cpp:72
-msgid "##import##"
+msgid "##import_d##"
 msgstr "импорт"
 
 #: oc3_advisor_trade_window.cpp:72
-msgid "##export##"
+msgid "##export_d##"
 msgstr "экспорт"
 
 #: oc3_advisor_trade_window.cpp:72
-msgid "##stacking##"
+msgid "##stacking_d##"
 msgstr "складирование"
-
-#: oc3_advisor_trade_window.cpp:131
-msgid "##rome_prices##"
-msgstr "рим платит"
 
 #: oc3_advisor_trade_window.cpp:157
 msgid "##buy_price##"
@@ -441,7 +437,7 @@ msgid "##click_here_that_use_it##"
 msgstr "Складирование ресурса. Нажмите для использования"
 
 #: oc3_advisor_trade_window.cpp:530
-msgid "##Trade advisor##"
+msgid "##trade_advisor##"
 msgstr "Советник по торговле"
 
 #: oc3_advisor_trade_window.cpp:539
@@ -553,7 +549,7 @@ msgid "##marble##"
 msgstr "Мрамор"
 
 #: oc3_goodhelper.cpp:96
-msgid "##Denaries##"
+msgid "##denaries##"
 msgstr "Дн"
 
 #: oc3_gui_buildmenu.cpp:315

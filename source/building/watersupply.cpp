@@ -585,7 +585,7 @@ void Fountain::timeStep(const unsigned long time)
   //filled area, that fontain present and work
   if( time % 22 == 1 )
   {
-    if( getTile().getWaterService( WTR_RESERVOIR ) > 0 && getWorkersCount() > 0 )
+    if( getTile().getWaterService( WTR_RESERVOIR ) > 0 /*&& getWorkersCount() > 0*/ )
     {
       _haveReservoirWater = true;
       _animationRef().start();

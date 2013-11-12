@@ -176,7 +176,7 @@ void Prefect::_back2Patrol()
 
 void Prefect::onMidTile()
 {
-  bool isDestination = _getPathway().isDestination();
+  bool isDestination = _pathwayRef().isDestination();
 
   switch( _d->action )
   {
@@ -238,9 +238,9 @@ void Prefect::onMidTile()
 
   case Impl::gotoFire:
   {
-    if( _getPathway().getDestination().getIJ().distanceFrom( getIJ() ) < 1.5f )
+    if( _pathwayRef().getDestination().getIJ().distanceFrom( getIJ() ) < 1.5f )
     {
-      TileOverlayPtr overlay = _getPathway().getDestination().getOverlay();
+      TileOverlayPtr overlay = _pathwayRef().getDestination().getOverlay();
       if( overlay.isValid() && overlay->getType() == building::burningRuins )
       {
         setSpeed( 0 );
@@ -312,7 +312,7 @@ void Prefect::timeStep(const unsigned long time)
   {
   case Impl::fightFire:
   {    
-    BuildingPtr building = _getPathway().getDestination().getOverlay().as<Building>();
+    BuildingPtr building = _pathwayRef().getDestination().getOverlay().as<Building>();
     bool inFire = (building.isValid() && building->getType() == building::burningRuins );
 
     if( inFire )
@@ -398,9 +398,9 @@ void Prefect::send2City(PrefecturePtr prefecture, int water/*=0 */ )
     ServiceWalker::send2City( prefecture.as<Building>() );    
   }
 
-  if( _getPathway().isValid() )
+  if( _pathwayRef().isValid() )
   {
-    _d->endPatrolPoint = _getPathway().getDestination().getIJ();
+    _d->endPatrolPoint = _pathwayRef().getDestination().getIJ();
   }
 }
 

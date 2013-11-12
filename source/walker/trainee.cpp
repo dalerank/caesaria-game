@@ -93,7 +93,7 @@ void TraineeWalker::computeWalkerPath()
     Pathway pathWay;
     pathPropagator.getPath( _destinationBuilding.as<Construction>(), pathWay);
     setPathway( pathWay );
-    setIJ( _getPathway().getOrigin().getIJ() );
+    setIJ( _pathwayRef().getOrigin().getIJ() );
   }
   else
   {

@@ -19,6 +19,9 @@
 #include "building/house.hpp"
 #include "game/name_generator.hpp"
 #include "constants.hpp"
+#include "game/pathway.hpp"
+#include "building/senate.hpp"
+#include "building/forum.hpp"
 
 using namespace constants;
 
@@ -26,7 +29,6 @@ class TaxCollector::Impl
 {
 public:
   int money;
-  int peoplesReached;
 };
 
 void TaxCollector::onMidTile()
@@ -39,11 +41,10 @@ void TaxCollector::onMidTile()
   foreach( BuildingPtr building, buildings )
   {
     HousePtr house = building.as<House>();
-    if( house.isValid() )
+    if( house.isValid() && house->ready2Taxation() )
     {
       int money = (int)(house->collectTaxes() * taxRate);
       _d->money += money;
-      _d->peoplesReached += money > 0 ? house->getHabitants().count() : 0;
     }
   }
 }
@@ -69,7 +70,28 @@ int TaxCollector::getMoney() const
   return _d->money;
 }
 
-int TaxCollector::getCitizensReachedCount() const
+void TaxCollector::onDestination()
 {
-  return _d->peoplesReached;
+  ServiceWalker::onDestination();
+
+  if( _pathwayRef().isReverse() )
+  {
+    if( getBase().isValid() )
+    {
+      getBase()->evaluateService( this );
+    }
+  }
+}
+
+void TaxCollector::load(const VariantMap& stream)
+{
+  ServiceWalker::load( stream );
+
+  _d->money = stream.get( "money" );
+}
+
+void TaxCollector::save(VariantMap& stream) const
+{
+  ServiceWalker::save( stream );
+  stream[ "money" ] = _d->money;
 }

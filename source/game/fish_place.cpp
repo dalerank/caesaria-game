@@ -97,11 +97,12 @@ void FishPlace::timeStep(const unsigned long time)
     if( lastPos != _d->walker->getIJ() )
     {
       getTile().setOverlay( 0 );
+      _d->restoreTilePic( getTile() );
 
       TilePos pos =  _d->walker->getIJ();
       TileOverlay::build( _getCity(), pos );
 
-      _animationRef().setDelay( 3 + rand() % 4 );
+      _animationRef().setDelay( 2 + rand() % 4 );
     }
     else if( lastPos == _d->walker->getPathway().getDestination().getIJ() )
     {

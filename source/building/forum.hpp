@@ -25,10 +25,9 @@ public:
   Forum();
 
   int collectTaxes();
-  int getPeoplesReached() const;
   
   virtual void deliverService();
-  virtual void timeStep( const unsigned long time );
+  virtual void applyService(ServiceWalkerPtr walker);
 
 private:
   class Impl;

@@ -71,6 +71,7 @@ public:
   const CitizenGroup& getHabitants() const;
 
   int collectTaxes();
+  bool ready2Taxation() const;
 
   std::string getUpCondition() const;
 

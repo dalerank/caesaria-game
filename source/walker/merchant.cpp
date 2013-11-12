@@ -44,7 +44,6 @@ public:
                  stBackToBaseCity } State;
 
   TilePos destBuildingPos;  // warehouse
-  CityPtr city;
   SimpleGoodStore sell;
   SimpleGoodStore buy;
   int attemptCount;
@@ -52,7 +51,7 @@ public:
   int maxDistance;
   State nextState;
 
-  void resolveState(WalkerPtr wlk, const TilePos& position );
+  void resolveState( CityPtr city, WalkerPtr wlk, const TilePos& position );
 };
 
 Merchant::Merchant( CityPtr city )
@@ -126,7 +125,7 @@ Propagator::DirectRoute getWarehouse4Sells( Propagator &pathPropagator,
 }
 
 
-void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
+void Merchant::Impl::resolveState( CityPtr city, WalkerPtr wlk, const TilePos& position )
 {
   switch( nextState )
   {
@@ -166,7 +165,7 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
       else
       {
         nextState = stGoOutFromCity;
-        resolveState( wlk, position );
+        resolveState( city, wlk, position );
       }
     }
   break;
@@ -200,7 +199,7 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
       else
       {
         nextState = stGoOutFromCity;
-        resolveState( wlk, position );
+        resolveState( city, wlk, position );
       }
     }
   break;
@@ -250,7 +249,7 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
       }
 
       nextState = stGoOutFromCity;
-      resolveState( wlk, position );
+      resolveState( city, wlk, position );
     }
   break;
 
@@ -305,7 +304,7 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
       }
 
       nextState = stFindWarehouseForBuying;
-      resolveState( wlk, position );
+      resolveState( city, wlk, position );
     }
   break;
 
@@ -333,13 +332,13 @@ void Merchant::Impl::resolveState( WalkerPtr wlk, const TilePos& position )
 void Merchant::onDestination()
 {
   Walker::onDestination();
-  _d->resolveState( this, getIJ() );
+  _d->resolveState( _getCity(), this, getIJ() );
 }
 
 void Merchant::send2City()
 {
   _d->nextState = Impl::stFindWarehouseForSelling;
-  _d->resolveState( this, _getCity()->getBorderInfo().roadEntry );
+  _d->resolveState( _getCity(), this, _getCity()->getBorderInfo().roadEntry );
 
   if( !isDeleted() )
   {

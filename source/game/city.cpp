@@ -143,8 +143,6 @@ public:
 
   CityServices services;
   bool needRecomputeAllRoads;
-  int lastMonthTax;
-  int lastMonthTaxpayer;
   BorderInfo borderInfo;
   Tilemap tilemap;
   TilePos cameraStart;
@@ -376,22 +374,13 @@ int               City::getPopulation() const {   return _d->population; }
 void City::Impl::collectTaxes( CityPtr city )
 {
   CityHelper hlp( city );
-  lastMonthTax = 0;
-  lastMonthTaxpayer = 0;
+  int lastMonthTax = 0;
   
   ForumList forums = hlp.find< Forum >( building::forum );
-  foreach( ForumPtr forum, forums )
-  {
-    lastMonthTaxpayer += forum->getPeoplesReached();
-    lastMonthTax += forum->collectTaxes();
-  }
+  foreach( ForumPtr forum, forums ) { lastMonthTax += forum->collectTaxes(); }
 
   std::list<SenatePtr> senates = hlp.find< Senate >( building::senate );
-  foreach( SenatePtr senate, senates )
-  {
-    lastMonthTaxpayer += senate->getPeoplesReached();
-    lastMonthTax += senate->collectTaxes();
-  }
+  foreach( SenatePtr senate, senates ) { lastMonthTax += senate->collectTaxes(); }
 
   funds.resolveIssue( FundIssue( CityFunds::taxIncome, lastMonthTax ) );
 }
@@ -560,8 +549,6 @@ void City::setBuildOptions(const CityBuildOptions& options) { _d->buildOptions =
 const CityWinTargets& City::getWinTargets() const {   return _d->targets; }
 void City::setWinTargets(const CityWinTargets& targets) { _d->targets = targets; }
 TileOverlayPtr City::getOverlay( const TilePos& pos ) const { return _d->tilemap.at( pos ).getOverlay(); }
-int City::getLastMonthTax() const { return _d->lastMonthTax; }
-int City::getLastMonthTaxpayer() const { return _d->lastMonthTaxpayer; }
 PlayerPtr City::getPlayer() const { return _d->player; }
 std::string City::getName() const {  return _d->name; }
 void City::setName( const std::string& name ) {   _d->name = name;}

@@ -20,18 +20,19 @@
 #include "game/city.hpp"
 #include "core/foreach.hpp"
 #include "constants.hpp"
+#include "walker/constants.hpp"
+
+using namespace constants;
 
 class Forum::Impl
 {
 public:
-  int taxInThisMonth;
-  int citizensReached;
+  int taxValue;
 };
 
-Forum::Forum() : ServiceBuilding(Service::forum, constants::building::forum, Size(2)), _d( new Impl )
+Forum::Forum() : ServiceBuilding(Service::forum, building::forum, Size(2)), _d( new Impl )
 {
-  _d->taxInThisMonth = 0;
-  _d->citizensReached = 0;
+  _d->taxValue = 0;
   setPicture( ResourceGroup::govt, 10 );
 }
 
@@ -49,34 +50,24 @@ void Forum::deliverService()
   }
 }
 
-void Forum::timeStep( const unsigned long time )
+void Forum::applyService(ServiceWalkerPtr walker)
 {
-  WalkerList walkers = getWalkers();
-  foreach( WalkerPtr walker, walkers )
+  switch( walker->getType() )
   {
-    if( walker->isDeleted() )
-    {
-      TaxCollectorPtr collector = walker.as< TaxCollector >();
-      if( collector.isValid() )
-      {
-        _d->taxInThisMonth += collector->getMoney();
-        _d->citizensReached += collector->getCitizensReachedCount();
-      }
-    }
+  case walker::taxCollector:
+    _d->taxValue += walker.as<TaxCollector>()->getMoney();
+  break;
+
+  default:
+  break;
   }
 
-  Building::timeStep( time );
+  ServiceBuilding::evaluateService( walker );
 }
 
 int Forum::collectTaxes()
 {
-  int taxes = _d->taxInThisMonth;
-  _d->taxInThisMonth = 0;
-  _d->citizensReached = 0;
+  int taxes = _d->taxValue;
+  _d->taxValue = 0;
   return taxes;
-}
-
-int Forum::getPeoplesReached() const
-{
-  return _d->citizensReached;
 }

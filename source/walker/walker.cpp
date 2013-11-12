@@ -553,7 +553,7 @@ void Walker::setUniqueId( const UniqueId uid )
   _d->uid = uid;
 }
 
-Pathway& Walker::_getPathway()
+Pathway& Walker::_pathwayRef()
 {
   return _d->pathWay;
 }

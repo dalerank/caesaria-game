@@ -66,9 +66,9 @@ void WorkersHunter::onNewTile()
   }
   else
   {
-    if( !_getPathway().isReverse() ) 
+    if( !_pathwayRef().isReverse() ) 
     {
-      _getPathway().toggleDirection();
+      _pathwayRef().toggleDirection();
     }
   }
 }

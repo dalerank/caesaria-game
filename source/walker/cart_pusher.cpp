@@ -96,9 +96,9 @@ void CartPusher::onDestination()
     }
   }
   //
-  if( !_getPathway().isReverse() )
+  if( !_pathwayRef().isReverse() )
   {
-    _getPathway().toggleDirection();
+    _pathwayRef().toggleDirection();
     computeDirection();
     go();
     _d->consumerBuilding = 0;
@@ -224,7 +224,7 @@ void CartPusher::computeWalkerDestination()
       //_isDeleted = true;  // no destination!
      setConsumerBuilding( destBuilding );
      setPathway( pathWay );
-     setIJ( _getPathway().getOrigin().getIJ() );
+     setIJ( _pathwayRef().getOrigin().getIJ() );
      setSpeed( 1 );
    }
    else
@@ -350,7 +350,7 @@ void CartPusher::send2City( BuildingPtr building, GoodStock& carry )
 
 void CartPusher::timeStep( const unsigned long time )
 {
-  if( (time % 22 == 1) && (_getPathway().getLength() < 2) )
+  if( (time % 22 == 1) && (_pathwayRef().getLength() < 2) )
   {
     computeWalkerDestination();
   }

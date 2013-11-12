@@ -135,7 +135,7 @@ void ServiceWalker::_computeWalkerPath()
 
   reservePath(*bestPath);
   setPathway(*bestPath);
-  setIJ( _getPathway().getOrigin().getIJ() );
+  setIJ( _pathwayRef().getOrigin().getIJ() );
 }
 
 unsigned int ServiceWalker::getReachDistance() const
@@ -147,7 +147,7 @@ void ServiceWalker::return2Base()
 {
   if( !getPathway().isReverse() )
   {
-    _getPathway().toggleDirection();
+    _pathwayRef().toggleDirection();
   }
 }
 
@@ -247,7 +247,7 @@ void ServiceWalker::onNewTile()
 void ServiceWalker::onDestination()
 {
   Walker::onDestination();
-  if (_getPathway().isReverse())
+  if (_pathwayRef().isReverse())
   {
     // walker is back in the market
     deleteLater();
@@ -255,7 +255,7 @@ void ServiceWalker::onDestination()
   else
   {
     // walker finished service => get back to service building
-    _getPathway().rbegin();
+    _pathwayRef().rbegin();
     computeDirection();
     go();
   }

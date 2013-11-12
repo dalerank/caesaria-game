@@ -100,7 +100,7 @@ public:
   void deleteLater();
 
 protected:
-   Pathway& _getPathway();
+   Pathway& _pathwayRef();
    Animation& _getAnimation();
    void _updatePathway( const Pathway& pathway );
    void _setAction( Walker::Action action );

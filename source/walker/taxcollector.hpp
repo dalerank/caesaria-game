@@ -28,7 +28,10 @@ public:
   virtual void onMidTile();
 
   int getMoney() const;
-  int getCitizensReachedCount() const;
+
+  virtual void onDestination();
+  virtual void load(const VariantMap &stream);
+  virtual void save(VariantMap &stream) const;
 
 private:
   TaxCollector( CityPtr city );

@@ -66,7 +66,7 @@ void CartSupplier::onDestination()
   Walker::onDestination();
   CityHelper helper( _d->city );
   
-  if( _getPathway().isReverse() )
+  if( _pathwayRef().isReverse() )
   {
     // walker is back in the market
     deleteLater();
@@ -96,7 +96,7 @@ void CartSupplier::onDestination()
   else
   {
     // walker is near the granary/warehouse
-    _getPathway().rbegin();
+    _pathwayRef().rbegin();
     computeDirection();
     go();
 
@@ -246,7 +246,7 @@ void CartSupplier::computeWalkerDestination(BuildingPtr building, const Good::Ty
     return;
   }
 
-  setIJ( _getPathway().getOrigin().getIJ() );
+  setIJ( _pathwayRef().getOrigin().getIJ() );
 }
 
 void CartSupplier::send2City( BuildingPtr building, const Good::Type type, const int qty )

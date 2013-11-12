@@ -40,7 +40,7 @@ MarketKidPtr MarketKid::create( CityPtr city, MarketLadyPtr lady )
   MarketKidPtr ret( new MarketKid( city ) );
   ret->setPathway( lady->getPathway() );
   ret->setIJ( lady->getIJ() );
-  ret->_getPathway().rbegin();
+  ret->_pathwayRef().rbegin();
   ret->onMidTile();
   ret->drop();
 

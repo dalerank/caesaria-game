@@ -156,9 +156,12 @@ void House::timeStep(const unsigned long time)
   if( time % 16 == 0 )
   {
     _d->consumeServices();
-    _d->updateHealthLevel();
+    _d->updateHealthLevel();    
+  }
 
-    appendServiceValue( Service::crime, _d->spec.getCrime() + 1 );
+  if( time % 32 == 0 )
+  {
+    appendServiceValue( Service::crime, _d->spec.getCrime() + 2 );
   }
 
   if( time % 64 == 0 )
@@ -792,8 +795,18 @@ bool House::isEntertainmentNeed(Service::Type type) const
 
 int House::collectTaxes()
 {
-  _d->lastPayDate = GameDate::current();
-  return _d->getAvailableTax();
+  if( _d->mayPayTax() )
+  {
+    _d->lastPayDate = GameDate::current();
+    return _d->getAvailableTax();
+  }
+
+  return 0;
+}
+
+bool House::ready2Taxation() const
+{
+  return _d->mayPayTax();
 }
 
 std::string House::getUpCondition() const

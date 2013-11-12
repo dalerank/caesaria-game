@@ -30,14 +30,14 @@ using namespace constants;
 class Senate::Impl
 {
 public:
-  int taxInLastMonth;
+  int taxValue;
   std::string errorStr;
 };
 
 Senate::Senate() : ServiceBuilding( Service::senate, building::senate, Size(5) ), _d( new Impl )
 {
   setPicture( ResourceGroup::govt, 4 );
-  _d->taxInLastMonth = 0;
+  _d->taxValue = 0;
 }
 
 bool Senate::canBuild( CityPtr city, const TilePos& pos ) const
@@ -56,6 +56,21 @@ bool Senate::canBuild( CityPtr city, const TilePos& pos ) const
   return mayBuild;
 }
 
+void Senate::applyService(ServiceWalkerPtr walker)
+{
+  switch( walker->getType() )
+  {
+  case walker::taxCollector:
+    _d->taxValue += walker.as<TaxCollector>()->getMoney();
+  break;
+
+  default:
+  break;
+  }
+
+  ServiceBuilding::applyService( walker );
+}
+
 unsigned int Senate::getFunds() const
 {
   return _getCity()->getFunds().getValue();
@@ -63,12 +78,7 @@ unsigned int Senate::getFunds() const
 
 int Senate::collectTaxes()
 {
-  return 0;
-}
-
-int Senate::getPeoplesReached() const
-{
-  return 0;
+  return _d->taxValue;
 }
 
 std::string Senate::getError() const

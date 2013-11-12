@@ -26,13 +26,14 @@ public:
   unsigned int getFunds() const;
 
   int collectTaxes();
-  int getPeoplesReached() const;
 
   virtual std::string getError() const;
 
-  void deliverService();
+  virtual void deliverService();
 
-  bool canBuild(CityPtr city, const TilePos& pos )const;
+  virtual bool canBuild(CityPtr city, const TilePos& pos )const;
+
+  virtual void applyService(ServiceWalkerPtr walker);
 private:
   class Impl;
   ScopedPtr< Impl > _d;

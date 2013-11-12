@@ -71,9 +71,6 @@ public:
   void setBorderInfo( const BorderInfo& info );
   const BorderInfo& getBorderInfo() const;
 
-  int getLastMonthTax() const;
-  int getLastMonthTaxpayer() const;
-
   PlayerPtr getPlayer() const;
   
   void setCameraPos(const TilePos pos);
