@@ -189,7 +189,12 @@ void TileOverlay::save( VariantMap& stream ) const
 {
   VariantList config;
   config.push_back( (int)_d->overlayType );
-  config.push_back( Variant( MetaDataHolder::instance().getData( _d->overlayType ).getName() ) );
+
+  MetaDataHolder& md = MetaDataHolder::instance();
+  config.push_back( md.hasData( _d->overlayType )
+                      ? Variant( md.getData( _d->overlayType ).getName() )
+                      : Variant( getDebugName() ) );
+
   config.push_back( getTile().getIJ() );
 
   stream[ "config" ] = config;

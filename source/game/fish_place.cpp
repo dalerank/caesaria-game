@@ -28,13 +28,23 @@ public:
   Renderer::PassQueue passQueue;
   int fishCount;
   WalkerPtr walker;
-  Picture const* savePicture;
   Point basicOffset;
   PicturesArray animations;
+
+  void restoreTilePic( Tile& tile )
+  {
+    int picId = tile.getOriginalImgId();
+    Picture* pic = &Picture::load( TileHelper::convId2PicName( picId ) );
+    tile.setPicture( pic );
+  }
 };
 
 FishPlace::FishPlace() : TileOverlay( constants::place::fishPlace ), _d( new Impl )
 {
+  setDebugName( "fishPlace" );
+
+  setPicture( Picture::getInvalid() );
+
   _animationRef().setDelay( 3 );
   _d->animations.resize( 1 );
   _d->passQueue.push_back( Renderer::foreground );
@@ -63,10 +73,9 @@ FishPlace::~FishPlace()
 
 void FishPlace::build(CityPtr city, const TilePos& pos)
 {
-  _d->savePicture = &city->getTilemap().at( pos ).getPicture();
-  setPicture( *_d->savePicture );
-
   TileOverlay::build( city, pos );
+
+  _d->restoreTilePic( getTile() );
 }
 
 void FishPlace::initTerrain(Tile& terrain)
@@ -88,14 +97,11 @@ void FishPlace::timeStep(const unsigned long time)
     if( lastPos != _d->walker->getIJ() )
     {
       getTile().setOverlay( 0 );
-      getTile().setPicture( _d->savePicture );
 
       TilePos pos =  _d->walker->getIJ();
-
-      _d->savePicture = &_getCity()->getTilemap().at( pos ).getPicture();
-      setPicture( *_d->savePicture );
-
       TileOverlay::build( _getCity(), pos );
+
+      _animationRef().setDelay( 3 + rand() % 4 );
     }
     else if( lastPos == _d->walker->getPathway().getDestination().getIJ() )
     {
@@ -128,7 +134,21 @@ void FishPlace::destroy()
 {
   getTile().setOverlay( 0 );
 
+  _d->restoreTilePic( getTile() );
+
   TileOverlay::destroy();
+}
+
+void FishPlace::save(VariantMap& stream) const
+{
+  TileOverlay::save( stream );
+  stream[ "fishCount" ] = _d->fishCount;
+}
+
+void FishPlace::load(const VariantMap& stream)
+{
+  TileOverlay::load( stream );
+  _d->fishCount = stream.get( "fishCount" );
 }
 
 const PicturesArray& FishPlace::getPictures(Renderer::Pass pass) const

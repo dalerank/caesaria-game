@@ -29,6 +29,9 @@ public:
   virtual void timeStep(const unsigned long time);
   virtual void destroy();
 
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
+
   const PicturesArray& getPictures(Renderer::Pass pass) const;
   Renderer::PassQueue getPassQueue() const;
 

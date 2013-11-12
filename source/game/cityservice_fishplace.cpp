@@ -45,15 +45,18 @@ CityServiceFishPlace::CityServiceFishPlace( CityPtr city )
 {
   _d->city = city;
   _d->maxFishPlace = 1;
-
-  CityHelper helper( city );
-  _d->places = helper.find<FishPlace>( constants::place::fishPlace );
 }
 
 void CityServiceFishPlace::update( const unsigned int time )
 {  
   if( time % 44 != 1 )
     return;
+
+  if( _d->places.empty() )
+  {
+    CityHelper helper( _d->city );
+    _d->places = helper.find<FishPlace>( constants::place::fishPlace );
+  }
 
   while( _d->places.size() < _d->maxFishPlace )
   {
