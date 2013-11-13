@@ -23,7 +23,7 @@
 
 using namespace constants;
 
-TraineeWalker::TraineeWalker( CityPtr city, walker::Type traineeType)
+TraineeWalker::TraineeWalker(PlayerCityPtr city, walker::Type traineeType)
   : Walker( city )
 {
   _setType( traineeType );
@@ -165,7 +165,7 @@ void TraineeWalker::load( const VariantMap& stream )
   init( wtype );
 }
 
-TraineeWalkerPtr TraineeWalker::create(CityPtr city, walker::Type traineeType )
+TraineeWalkerPtr TraineeWalker::create(PlayerCityPtr city, walker::Type traineeType )
 {
   TraineeWalkerPtr ret( new TraineeWalker( city, traineeType ) );
   ret->drop();

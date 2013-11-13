@@ -71,7 +71,7 @@ FishPlace::~FishPlace()
 
 }
 
-void FishPlace::build(CityPtr city, const TilePos& pos)
+void FishPlace::build(PlayerCityPtr city, const TilePos& pos)
 {
   TileOverlay::build( city, pos );
 

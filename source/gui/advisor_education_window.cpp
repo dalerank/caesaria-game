@@ -28,6 +28,7 @@
 #include "game/settings.hpp"
 #include "game/house_level.hpp"
 #include "building/constants.hpp"
+#include "building/service.hpp"
 
 using namespace constants;
 
@@ -112,11 +113,11 @@ public:
   EducationInfoLabel* lbCollegeInfo;
   EducationInfoLabel* lbLibraryInfo;
 
-  InfrastructureInfo getInfo( CityPtr city, const TileOverlay::Type service );
-  StringArray getTrouble( CityPtr city );
+  InfrastructureInfo getInfo( PlayerCityPtr city, const TileOverlay::Type service );
+  StringArray getTrouble( PlayerCityPtr city );
 };
 
-AdvisorEducationWindow::AdvisorEducationWindow( CityPtr city, Widget* parent, int id ) 
+AdvisorEducationWindow::AdvisorEducationWindow(PlayerCityPtr city, Widget* parent, int id )
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),
@@ -167,7 +168,7 @@ void AdvisorEducationWindow::draw( GfxEngine& painter )
 }
 
 
-InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(CityPtr city, const TileOverlay::Type bType)
+InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(PlayerCityPtr city, const TileOverlay::Type bType)
 {
   CityHelper helper( city );
 
@@ -218,7 +219,7 @@ InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(CityPtr city, const Til
   return ret;
 }
 
-StringArray AdvisorEducationWindow::Impl::getTrouble(CityPtr city)
+StringArray AdvisorEducationWindow::Impl::getTrouble(PlayerCityPtr city)
 {
   StringArray ret;
   const InfrastructureInfo& schInfo = lbSchoolInfo->getInfo();

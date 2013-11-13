@@ -21,7 +21,7 @@
 class MarketKid : public Walker
 {
 public:
-  static MarketKidPtr create( CityPtr city, MarketLadyPtr lady );
+  static MarketKidPtr create( PlayerCityPtr city, MarketLadyPtr lady );
 
   GoodStock& getBasket();
   void setDelay( int delay );
@@ -33,7 +33,7 @@ public:
   virtual void die();
 
 private:
-  MarketKid( CityPtr city );
+  MarketKid( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;

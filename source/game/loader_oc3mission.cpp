@@ -52,7 +52,7 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
     GameLoader mapLoader;
     mapLoader.load( GameSettings::rcpath( mapToLoad ), game );
 
-    CityPtr city = game.getCity();
+    PlayerCityPtr city = game.getCity();
     city->getFunds().resolveIssue( FundIssue( CityFunds::donation, vm[ "funds" ].toInt() ) );
 
     game.getEmpire()->setCitiesAvailable( false );

@@ -26,12 +26,12 @@ class CityServiceShoreline::Impl
 public:
   TilemapTiles slTiles;
   int lastTimeUpdate;
-  CityPtr city;
+  PlayerCityPtr city;
 
-  void checkMap( CityPtr city );
+  void checkMap(PlayerCityPtr city );
 };
 
-void CityServiceShoreline::Impl::checkMap( CityPtr city )
+void CityServiceShoreline::Impl::checkMap( PlayerCityPtr city )
 {
   int mapSize = city->getTilemap().getSize();
   TilemapTiles tiles = city->getTilemap().getArea( TilePos( 0, 0), Size( mapSize ) );
@@ -46,7 +46,7 @@ void CityServiceShoreline::Impl::checkMap( CityPtr city )
   }
 }
 
-CityServicePtr CityServiceShoreline::create( CityPtr city )
+CityServicePtr CityServiceShoreline::create(PlayerCityPtr city )
 {
   CityServicePtr ret( new CityServiceShoreline( city ) );
   ret->drop();
@@ -54,7 +54,7 @@ CityServicePtr CityServiceShoreline::create( CityPtr city )
   return ret;
 }
 
-CityServiceShoreline::CityServiceShoreline( CityPtr city )
+CityServiceShoreline::CityServiceShoreline( PlayerCityPtr city )
   : CityService( "shoreline" ), _d( new Impl )
 {
   _d->city = city;

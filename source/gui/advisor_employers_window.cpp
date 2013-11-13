@@ -29,6 +29,7 @@
 #include "game/settings.hpp"
 #include "world/empire.hpp"
 #include "building/constants.hpp"
+#include "building/working.hpp"
 
 using namespace constants;
 
@@ -95,7 +96,7 @@ public:
   gui::Label* lbYearlyWages;
   gui::Label* lbWorkersState;
 
-  CityPtr city;
+  PlayerCityPtr city;
 
   void showPriorityWindow( int id );
   void increaseSalary();
@@ -224,7 +225,7 @@ EmployerButton* AdvisorEmployerWindow::Impl::addButton( Widget* parent, const Po
   return btn;
 }
 
-AdvisorEmployerWindow::AdvisorEmployerWindow( CityPtr city, Widget* parent, int id ) 
+AdvisorEmployerWindow::AdvisorEmployerWindow(PlayerCityPtr city, Widget* parent, int id )
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   setupUI( GameSettings::rcpath( "/gui/employersadv.gui" ) );

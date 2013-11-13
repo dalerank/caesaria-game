@@ -33,7 +33,7 @@ void NativeBuilding::save( VariantMap& stream) const
 
 void NativeBuilding::load( const VariantMap& stream) {Building::load(stream);}
 
-void NativeBuilding::build( CityPtr city, const TilePos& pos )
+void NativeBuilding::build(PlayerCityPtr city, const TilePos& pos )
 {
   Building::build( city, pos );
   getTile().setFlag( Tile::tlRock, true );

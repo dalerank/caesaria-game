@@ -31,13 +31,13 @@ using namespace constants;
 class CityServiceReligion::Impl
 {
 public:
-  CityPtr city;
+  PlayerCityPtr city;
   DateTime lastDate;
 
   void updateRelation( RomeDivinityPtr divn );
 };
 
-CityServicePtr CityServiceReligion::create( CityPtr city )
+CityServicePtr CityServiceReligion::create(PlayerCityPtr city)
 {
   CityServicePtr ret( new CityServiceReligion( city ) );
   ret->drop();
@@ -45,7 +45,7 @@ CityServicePtr CityServiceReligion::create( CityPtr city )
   return ret;
 }
 
-CityServiceReligion::CityServiceReligion( CityPtr city )
+CityServiceReligion::CityServiceReligion(PlayerCityPtr city )
   : CityService( "religion" ), _d( new Impl )
 {
   _d->city = city;

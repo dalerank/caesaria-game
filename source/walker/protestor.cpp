@@ -40,10 +40,10 @@ public:
   int houseLevel;
   State state;
 
-  Pathway findTarget( CityPtr city, ConstructionList constructions, TilePos pos );
+  Pathway findTarget( PlayerCityPtr city, ConstructionList constructions, TilePos pos );
 };
 
-Protestor::Protestor( CityPtr city ) : Walker( city ), _d( new Impl )
+Protestor::Protestor(PlayerCityPtr city) : Walker( city ), _d( new Impl )
 {    
   _setAnimation( gfx::protestor );
   _setType( walker::protestor );
@@ -200,7 +200,7 @@ void Protestor::timeStep(const unsigned long time)
   }
 }
 
-ProtestorPtr Protestor::create( CityPtr city )
+ProtestorPtr Protestor::create(PlayerCityPtr city )
 { 
   ProtestorPtr ret( new Protestor( city ) );
   ret->drop();
@@ -247,7 +247,7 @@ void Protestor::load(const VariantMap& stream)
   _d->state = (Impl::State)stream.at( "state" ).toInt();
 }
 
-Pathway Protestor::Impl::findTarget( CityPtr city, ConstructionList constructions, TilePos pos )
+Pathway Protestor::Impl::findTarget(PlayerCityPtr city, ConstructionList constructions, TilePos pos )
 {  
   if( !constructions.empty() )
   {

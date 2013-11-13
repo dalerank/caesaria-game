@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_MISSION_TARGETS_WINDOW_H_INCLUDED__
 
 #include "core/scopedptr.hpp"
-#include "core/predefinitions.hpp"
+#include "game/predefinitions.hpp"
 #include "widget.hpp"
 
 namespace gui
@@ -26,7 +26,7 @@ namespace gui
 class MissionTargetsWindow : public Widget  
 {
 public:
-  static MissionTargetsWindow* create( Widget* parent, CityPtr city , int id=-1 );
+  static MissionTargetsWindow* create( Widget* parent, PlayerCityPtr city , int id=-1 );
   ~MissionTargetsWindow();
 
   void draw( GfxEngine& painter );

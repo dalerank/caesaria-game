@@ -36,7 +36,7 @@ template< class T >
 class BaseWalkerCreator : public WalkerCreator
 {
 public:
-  virtual WalkerPtr create( CityPtr city )
+  virtual WalkerPtr create( PlayerCityPtr city )
   {
     return T::create( city ).object();
   }
@@ -45,7 +45,7 @@ public:
 class ServiceWalkerCreator : public WalkerCreator
 {
 public:
-  WalkerPtr create( CityPtr city )
+  WalkerPtr create( PlayerCityPtr city )
   {
     return ServiceWalker::create( city, serviceType ).object();
   }
@@ -61,7 +61,7 @@ public:
 class TraineeWalkerCreator : public WalkerCreator
 {
 public:
-  WalkerPtr create( CityPtr city )
+  WalkerPtr create( PlayerCityPtr city )
   {
     return TraineeWalker::create( city, walker::trainee ).object();
   }
@@ -100,7 +100,7 @@ WalkerManager::~WalkerManager()
 
 }
 
-WalkerPtr WalkerManager::create(const walker::Type walkerType , CityPtr city)
+WalkerPtr WalkerManager::create(const walker::Type walkerType, PlayerCityPtr city)
 {
   Impl::WalkerCreators::iterator findConstructor = _d->constructors.find( walkerType );
 

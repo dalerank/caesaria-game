@@ -105,7 +105,7 @@ public:
     int bigTempleCount;
   };
 
-  InfrastructureInfo getInfo( CityPtr city, const TileOverlay::Type small, const TileOverlay::Type big )
+  InfrastructureInfo getInfo( PlayerCityPtr city, const TileOverlay::Type small, const TileOverlay::Type big )
   {
     CityHelper helper( city );
 
@@ -119,7 +119,7 @@ public:
 };
 
 
-AdvisorReligionWindow::AdvisorReligionWindow( CityPtr city, Widget* parent, int id ) 
+AdvisorReligionWindow::AdvisorReligionWindow(PlayerCityPtr city, Widget* parent, int id )
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),

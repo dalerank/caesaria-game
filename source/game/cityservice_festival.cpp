@@ -22,7 +22,7 @@
 class CityServiceFestival::Impl
 {
 public:
-  CityPtr city;
+  PlayerCityPtr city;
 
   DateTime lastFestivalDate;
   DateTime festivalDate;
@@ -30,7 +30,7 @@ public:
   int festivalType;
 };
 
-CityServicePtr CityServiceFestival::create( CityPtr city )
+CityServicePtr CityServiceFestival::create(PlayerCityPtr city )
 {
   CityServicePtr ret( new CityServiceFestival( city ) );
   ret->drop();
@@ -61,7 +61,7 @@ void CityServiceFestival::assignFestival( RomeDivinityType name, int size )
   _d->divinity = name;
 }
 
-CityServiceFestival::CityServiceFestival( CityPtr city )
+CityServiceFestival::CityServiceFestival(PlayerCityPtr city )
 : CityService( getDefaultName() ), _d( new Impl )
 {
   _d->city = city;

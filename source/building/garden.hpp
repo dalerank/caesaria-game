@@ -26,7 +26,7 @@ public:
   virtual void initTerrain(Tile& terrain);
   virtual bool isWalkable() const;
   virtual bool isNeedRoadAccess() const;
-  virtual void build(CityPtr city, const TilePos& pos );
+  virtual void build(PlayerCityPtr city, const TilePos& pos );
   virtual void load(const VariantMap &stream);
   void update();
 };

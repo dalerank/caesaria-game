@@ -26,7 +26,7 @@
 class CartPusher : public Walker
 {
 public:
-  static CartPusherPtr create( CityPtr city );
+  static CartPusherPtr create( PlayerCityPtr city );
 
   void setProducerBuilding( BuildingPtr building );
   void setConsumerBuilding( BuildingPtr building );
@@ -50,7 +50,7 @@ public:
   virtual void die();
 
 protected:
-   CartPusher( CityPtr city );
+   CartPusher( PlayerCityPtr city );
 
 private:
    class Impl;

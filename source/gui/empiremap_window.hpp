@@ -26,7 +26,7 @@ namespace gui
 class EmpireMapWindow : public Widget
 {
 public:
-  static EmpireMapWindow* create(EmpirePtr empire, CityPtr city, Widget* parent, int id );
+  static EmpireMapWindow* create(world::EmpirePtr empire, PlayerCityPtr city, Widget* parent, int id );
 
   virtual ~EmpireMapWindow();
 

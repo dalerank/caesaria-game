@@ -163,7 +163,7 @@ bool GameLoaderC3Sav::load(const std::string& filename, Game& game )
     
     // here goes the WORK!
     
-    CityPtr oCity = game.getCity();
+    PlayerCityPtr oCity = game.getCity();
     oCity->setClimate((ClimateType)climate);
     Tilemap& oTilemap = oCity->getTilemap();
     

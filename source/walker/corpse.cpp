@@ -36,7 +36,7 @@ public:
   Picture picture;
 };
 
-WalkerPtr Corpse::create(CityPtr city)
+WalkerPtr Corpse::create(PlayerCityPtr city)
 {
   Corpse* corpse = new Corpse( city );
 
@@ -46,7 +46,7 @@ WalkerPtr Corpse::create(CityPtr city)
   return ret;
 }
 
-void Corpse::create(CityPtr city, TilePos pos,
+void Corpse::create(PlayerCityPtr city, TilePos pos,
                     std::string rcGroup, int startIndex, int stopIndex,
                     bool loop )
 {
@@ -71,7 +71,7 @@ void Corpse::create(CityPtr city, TilePos pos,
   city->addWalker( ret );
 }
 
-Corpse::Corpse( CityPtr city ) : Walker( city ), _d( new Impl )
+Corpse::Corpse( PlayerCityPtr city ) : Walker( city ), _d( new Impl )
 {
   _setType( walker::corpse );
   _setAnimation( gfx::unknown );

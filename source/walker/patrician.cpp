@@ -32,7 +32,7 @@ public:
   TilePos destination;
 };
 
-Patrician::Patrician( CityPtr city )
+Patrician::Patrician(PlayerCityPtr city )
   : Walker( city ), _d( new Impl )
 {
   _setType( walker::patrician );

@@ -26,13 +26,13 @@
 class CityServiceFishPlace::Impl
 {
 public:
-  CityPtr city;
+  PlayerCityPtr city;
   unsigned int maxFishPlace;
 
   FishPlaceList places;
 };
 
-CityServicePtr CityServiceFishPlace::create( CityPtr city )
+CityServicePtr CityServiceFishPlace::create( PlayerCityPtr city )
 {
   CityServicePtr ret( new CityServiceFishPlace( city ) );
   ret->drop();
@@ -40,7 +40,7 @@ CityServicePtr CityServiceFishPlace::create( CityPtr city )
   return ret;
 }
 
-CityServiceFishPlace::CityServiceFishPlace( CityPtr city )
+CityServiceFishPlace::CityServiceFishPlace( PlayerCityPtr city )
 : CityService( "fishplace" ), _d( new Impl )
 {
   _d->city = city;

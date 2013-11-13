@@ -27,11 +27,11 @@ class CityServiceAnimals::Impl
 {
 public:
   static const unsigned int maxSheeps = 10;
-  CityPtr city;
+  PlayerCityPtr city;
   DateTime lastTimeUpdate;
 };
 
-CityServicePtr CityServiceAnimals::create(CityPtr city)
+CityServicePtr CityServiceAnimals::create(PlayerCityPtr city)
 {
   CityServiceAnimals* ret = new CityServiceAnimals();
   ret->_d->city = city;

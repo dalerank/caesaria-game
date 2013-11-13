@@ -17,29 +17,32 @@
 #define __OPENCAESAR3_EMPIRE_H_INCLUDED__
 
 #include "core/scopedptr.hpp"
-#include "core/predefinitions.hpp"
+#include "predefinitions.hpp"
 #include "vfs/filepath.hpp"
 #include "core/referencecounted.hpp"
 #include "core/serializer.hpp"
+
+namespace world
+{
 
 class Empire : public ReferenceCounted, public Serializable
 {
 public:
   static EmpirePtr create();
   ~Empire();
-  EmpireCityList getCities() const;
-  EmpireCityPtr getCity( const std::string& name ) const;
-  EmpireCityPtr addCity( EmpireCityPtr city );
-  EmpireCityPtr initPlayerCity( EmpireCityPtr city );
+  CityList getCities() const;
+  CityPtr getCity( const std::string& name ) const;
+  CityPtr addCity( CityPtr city );
+  CityPtr initPlayerCity( CityPtr city );
 
   void initialize( const io::FilePath& filename );
   void timeStep( unsigned int time );
 
   void createTradeRoute( const std::string& start, const std::string& stop );
-  EmpireTradeRoutePtr getTradeRoute( unsigned int index ); 
-  EmpireTradeRoutePtr getTradeRoute( const std::string& start, const std::string& stop );
-  EmpireTradeRouteList getTradeRoutes( const std::string& startCity );
-  EmpireTradeRouteList getTradeRoutes();
+  TradeRoutePtr getTradeRoute( unsigned int index );
+  TradeRoutePtr getTradeRoute( const std::string& start, const std::string& stop );
+  TradeRouteList getTradeRoutes( const std::string& startCity );
+  TradeRouteList getTradeRoutes();
 
   void save( VariantMap& stream ) const;
   void load( const VariantMap& stream );
@@ -59,5 +62,7 @@ class EmpireHelper
 public:
   static unsigned int getTradeRouteOpenCost( EmpirePtr empire, const std::string& start, const std::string& stop );
 };
+
+}//end namespace world
 
 #endif //__OPENCAESAR3_EMPIRE_H_INCLUDED__

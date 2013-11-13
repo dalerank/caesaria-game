@@ -38,7 +38,7 @@ public:
   CityRenderer();
   ~CityRenderer();
 
-  void initialize(CityPtr city, GfxEngine* engine );
+  void initialize(PlayerCityPtr city, GfxEngine* engine );
 
   TilemapCamera &getCamera();
 

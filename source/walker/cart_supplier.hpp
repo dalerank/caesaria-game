@@ -24,7 +24,7 @@
 class CartSupplier : public Walker
 {
 public:
-  static CartSupplierPtr create( CityPtr city );
+  static CartSupplierPtr create( PlayerCityPtr city );
 
   void setDestinationBuilding( BuildingPtr building );
   void setBaseBuilding( BuildingPtr building );
@@ -43,7 +43,7 @@ public:
   void load(const VariantMap& stream);
 
 protected:
-  CartSupplier( CityPtr city );
+  CartSupplier( PlayerCityPtr city );
 
 private:
   class Impl;

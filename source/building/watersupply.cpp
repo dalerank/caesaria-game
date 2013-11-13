@@ -60,7 +60,7 @@ Aqueduct::Aqueduct() : WaterSource( building::aqueduct, Size(1) )
   // land2a 134 - 148       - aqueduct without water
 }
 
-void Aqueduct::build( CityPtr city, const TilePos& pos )
+void Aqueduct::build(PlayerCityPtr city, const TilePos& pos )
 {
   Tilemap& tilemap = city->getTilemap();
   Tile& terrain = tilemap.at( pos );
@@ -114,7 +114,7 @@ void Aqueduct::initTerrain(Tile &terrain)
   terrain.setFlag( Tile::tlAqueduct, true); // mandatory!
 }
 
-bool Aqueduct::canBuild( CityPtr city, const TilePos& pos ) const
+bool Aqueduct::canBuild(PlayerCityPtr city, const TilePos& pos ) const
 {
   bool is_free = Construction::canBuild( city, pos );
 
@@ -195,7 +195,7 @@ bool Aqueduct::canBuild( CityPtr city, const TilePos& pos ) const
   return false;
 }
 
-Picture& Aqueduct::computePicture(CityPtr city , const TilemapTiles * tmp, const TilePos pos)
+Picture& Aqueduct::computePicture(PlayerCityPtr city , const TilemapTiles * tmp, const TilePos pos)
 {
   // find correct picture as for roads
   Tilemap& tmap = city->getTilemap();
@@ -309,7 +309,7 @@ Picture& Aqueduct::computePicture(CityPtr city , const TilemapTiles * tmp, const
   return Picture::load( ResourceGroup::aqueduct, index + (_d->water == 0 ? 15 : 0) );
 }
 
-void Aqueduct::updatePicture( CityPtr city )
+void Aqueduct::updatePicture(PlayerCityPtr city )
 {
   setPicture( computePicture( city ) );
 }
@@ -382,7 +382,7 @@ Reservoir::~Reservoir()
 {
 }
 
-void Reservoir::build( CityPtr city, const TilePos& pos )
+void Reservoir::build(PlayerCityPtr city, const TilePos& pos )
 {
   Construction::build( city, pos );
 
@@ -394,7 +394,7 @@ void Reservoir::build( CityPtr city, const TilePos& pos )
   // update adjacent aqueducts
 }
 
-bool Reservoir::_isNearWater(CityPtr city, const TilePos& pos ) const
+bool Reservoir::_isNearWater(PlayerCityPtr city, const TilePos& pos ) const
 {
   bool near_water = false;  // tells if the factory is next to a mountain
 
@@ -455,7 +455,7 @@ void Reservoir::timeStep(const unsigned long time)
   _fgPicturesRef().at( 0 ) = _animationRef().getFrame();
 }
 
-bool Reservoir::canBuild( CityPtr city, const TilePos& pos ) const
+bool Reservoir::canBuild(PlayerCityPtr city, const TilePos& pos ) const
 {
   bool ret = Construction::canBuild( city, pos );
 
@@ -620,7 +620,7 @@ void Fountain::timeStep(const unsigned long time)
   ServiceBuilding::timeStep( time );
 }
 
-bool Fountain::canBuild( CityPtr city, const TilePos& pos ) const
+bool Fountain::canBuild(PlayerCityPtr city, const TilePos& pos ) const
 {
   bool ret = Construction::canBuild( city, pos );
 
@@ -632,7 +632,7 @@ bool Fountain::canBuild( CityPtr city, const TilePos& pos ) const
   return ret;
 }
 
-void Fountain::build( CityPtr city, const TilePos& pos )
+void Fountain::build(PlayerCityPtr city, const TilePos& pos )
 {
   ServiceBuilding::build( city, pos );
 

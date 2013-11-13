@@ -36,7 +36,7 @@ public:
   Size size;  // size in tiles
   Animation animation;  // basic animation (if any)
   bool isDeleted;
-  CityPtr city;
+  PlayerCityPtr city;
 };
 
 TileOverlay::TileOverlay(const Type type, const Size& size)
@@ -108,7 +108,7 @@ void TileOverlay::setAnimation(const Animation& animation)
   _d->animation = animation;
 }
 
-void TileOverlay::build( CityPtr city, const TilePos& pos )
+void TileOverlay::build( PlayerCityPtr city, const TilePos& pos )
 {
   Tilemap &tilemap = city->getTilemap();
 
@@ -255,7 +255,7 @@ Tile* TileOverlay::_getMasterTile()
   return _d->masterTile;
 }
 
-CityPtr TileOverlay::_getCity() const
+PlayerCityPtr TileOverlay::_getCity() const
 {
   return _d->city;
 }

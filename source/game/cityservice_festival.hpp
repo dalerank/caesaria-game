@@ -25,7 +25,7 @@
 class CityServiceFestival : public CityService
 {
 public:
-  static CityServicePtr create( CityPtr city );
+  static CityServicePtr create( PlayerCityPtr city );
   static std::string getDefaultName();
 
   DateTime getLastFestivalDate() const;
@@ -38,7 +38,7 @@ public:
   void load( VariantMap stream );
 
 private:
-  CityServiceFestival( CityPtr city );
+  CityServiceFestival( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;

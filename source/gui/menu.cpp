@@ -75,7 +75,7 @@ public:
   PushButton* overlaysButton;
   Label* middleLabel;
   OverlaysMenu* overlaysMenu; 
-  CityPtr city;
+  PlayerCityPtr city;
 
 oc3_signals public:
   Signal1< int > onCreateConstructionSignal;
@@ -275,7 +275,7 @@ bool Menu::onEvent(const NEvent& event)
     return Widget::onEvent( event );
 }
 
-Menu* Menu::create( Widget* parent, int id, CityPtr city )
+Menu* Menu::create(Widget* parent, int id, PlayerCityPtr city )
 {
   Menu* ret = new Menu( parent, id, Rect( 0, 0, 1, 1 ) );
 
@@ -335,7 +335,7 @@ Signal0<>& Menu::onMaximize()
   return _d->onMaximizeSignal;
 }
 
-ExtentMenu* ExtentMenu::create(Widget* parent, int id, CityPtr city )
+ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city )
 {
   ExtentMenu* ret = new ExtentMenu( parent, id, Rect( 0, 0, 1, 1 ) );
 

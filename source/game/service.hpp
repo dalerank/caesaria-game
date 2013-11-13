@@ -35,7 +35,7 @@ public:
     theater, amphitheater, colloseum,
     hippodrome,
     burningRuins,
-    workersRecruter,
+    recruter,
     crime,
     srvCount
   } Type;

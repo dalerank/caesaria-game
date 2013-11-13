@@ -103,7 +103,7 @@ void LayerReligion::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   }
 }
 
-LayerPtr LayerReligion::create(CityRenderer* renderer, CityPtr city)
+LayerPtr LayerReligion::create(CityRenderer* renderer, PlayerCityPtr city)
 {
   LayerReligion* l = new LayerReligion();
   l->_renderer = renderer;

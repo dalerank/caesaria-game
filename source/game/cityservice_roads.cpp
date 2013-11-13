@@ -26,7 +26,7 @@ using namespace constants;
 class CityServiceRoads::Impl
 {
 public:
-  CityPtr city;
+  PlayerCityPtr city;
   int maxDistance;
   int defaultIncreasePaved;
   int defaultDecreasePaved;
@@ -37,14 +37,14 @@ public:
   void updateRoadsAround( BuildingPtr building );
 };
 
-CityServicePtr CityServiceRoads::create( CityPtr city )
+CityServicePtr CityServiceRoads::create(PlayerCityPtr city)
 {
   CityServiceRoads* ret = new CityServiceRoads( city );
 
   return CityServicePtr( ret );
 }
 
-CityServiceRoads::CityServiceRoads( CityPtr city )
+CityServiceRoads::CityServiceRoads(PlayerCityPtr city )
 : CityService( "roads" ), _d( new Impl )
 {
   _d->city = city;

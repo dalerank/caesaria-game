@@ -28,6 +28,7 @@
 #include "building/house.hpp"
 #include "texturedbutton.hpp"
 #include "building/constants.hpp"
+#include "building/service.hpp"
 
 using namespace constants;
 
@@ -100,7 +101,7 @@ public:
     int peoplesServed;
   };
 
-  InfrastructureInfo getInfo( CityPtr city, const TileOverlay::Type service )
+  InfrastructureInfo getInfo( PlayerCityPtr city, const TileOverlay::Type service )
   {
     CityHelper helper( city );
 
@@ -122,7 +123,7 @@ public:
 };
 
 
-AdvisorHealthWindow::AdvisorHealthWindow( CityPtr city, Widget* parent, int id ) 
+AdvisorHealthWindow::AdvisorHealthWindow(PlayerCityPtr city, Widget* parent, int id )
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),

@@ -24,7 +24,7 @@ typedef SmartPtr< TaxCollector > TaxCollectorPtr;
 class TaxCollector : public ServiceWalker
 {
 public:
-  static TaxCollectorPtr create( CityPtr city );
+  static TaxCollectorPtr create( PlayerCityPtr city );
   virtual void onMidTile();
 
   int getMoney() const;
@@ -34,7 +34,7 @@ public:
   virtual void save(VariantMap &stream) const;
 
 private:
-  TaxCollector( CityPtr city );
+  TaxCollector( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;

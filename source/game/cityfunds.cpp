@@ -181,7 +181,7 @@ Signal1<int>& CityFunds::onChange()
 }
 
 
-unsigned int CityStatistic::getCurrentWorkersNumber(CityPtr city)
+unsigned int CityStatistic::getCurrentWorkersNumber(PlayerCityPtr city)
 {
   CityHelper helper( city );
 
@@ -196,7 +196,7 @@ unsigned int CityStatistic::getCurrentWorkersNumber(CityPtr city)
   return workersNumber;
 }
 
-unsigned int CityStatistic::getVacantionsNumber(CityPtr city)
+unsigned int CityStatistic::getVacantionsNumber(PlayerCityPtr city)
 {
   CityHelper helper( city );
 
@@ -211,7 +211,7 @@ unsigned int CityStatistic::getVacantionsNumber(CityPtr city)
   return workersNumber;
 }
 
-unsigned int CityStatistic::getAvailableWorkersNumber(CityPtr city)
+unsigned int CityStatistic::getAvailableWorkersNumber(PlayerCityPtr city)
 {
   CityHelper helper( city );
 
@@ -220,13 +220,13 @@ unsigned int CityStatistic::getAvailableWorkersNumber(CityPtr city)
   int workersNumber = 0;
   foreach( HousePtr house, houses )
   {
-    workersNumber += (house->getServiceValue( Service::workersRecruter ) + house->getWorkersCount());
+    workersNumber += (house->getServiceValue( Service::recruter ) + house->getWorkersCount());
   }
 
   return workersNumber;
 }
 
-unsigned int CityStatistic::getMontlyWorkersWages(CityPtr city)
+unsigned int CityStatistic::getMontlyWorkersWages(PlayerCityPtr city)
 {
   int workersNumber = getCurrentWorkersNumber( city );
 
@@ -242,7 +242,7 @@ unsigned int CityStatistic::getMontlyWorkersWages(CityPtr city)
   return wages;
 }
 
-unsigned int CityStatistic::getWorklessNumber(CityPtr city)
+unsigned int CityStatistic::getWorklessNumber(PlayerCityPtr city)
 {
   CityHelper helper( city );
 
@@ -251,13 +251,13 @@ unsigned int CityStatistic::getWorklessNumber(CityPtr city)
   int worklessNumber = 0;
   foreach( HousePtr house, houses )
   {
-    worklessNumber += house->getServiceValue( Service::workersRecruter );
+    worklessNumber += house->getServiceValue( Service::recruter );
   }
 
   return worklessNumber;
 }
 
-unsigned int CityStatistic::getWorklessPercent(CityPtr city)
+unsigned int CityStatistic::getWorklessPercent(PlayerCityPtr city)
 {
   return getWorklessNumber( city ) * 100 / (getAvailableWorkersNumber( city )+1);
 }

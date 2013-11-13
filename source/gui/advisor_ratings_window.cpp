@@ -90,7 +90,7 @@ public:
   void checkProsperityRating();
   void checkPeaceRating();
 
-  CityPtr city;
+  PlayerCityPtr city;
 };
 
 void AdvisorRatingsWindow::Impl::drawColumn( const Point& center, const int value )
@@ -175,7 +175,7 @@ void AdvisorRatingsWindow::Impl::checkPeaceRating()
   lbRatingInfo->setText( _("##peace_rating_text##") );
 }
 
-AdvisorRatingsWindow::AdvisorRatingsWindow( Widget* parent, int id, const CityPtr city ) 
+AdvisorRatingsWindow::AdvisorRatingsWindow(Widget* parent, int id, const PlayerCityPtr city )
   : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   _d->city = city;

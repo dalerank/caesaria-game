@@ -20,7 +20,7 @@ public:
 class InfoBoxManager : public ReferenceCounted
 {
 public:
-  static InfoBoxManagerPtr create( CityPtr city, gui::GuiEnv* gui );
+  static InfoBoxManagerPtr create( PlayerCityPtr city, gui::GuiEnv* gui );
 
   void showHelp( const Tile& tile ); 
   void setShowDebugInfo( const bool showInfo );
@@ -28,7 +28,7 @@ public:
   void addInfobox( const TileOverlay::Type type, const std::string& typeName, InfoboxCreator* ctor );
   bool canCreate( const TileOverlay::Type type ) const;
 private:
-  InfoBoxManager( CityPtr city, gui::GuiEnv* gui );
+  InfoBoxManager( PlayerCityPtr city, gui::GuiEnv* gui );
   ~InfoBoxManager();
    
   class Impl;

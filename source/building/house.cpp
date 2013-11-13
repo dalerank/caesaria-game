@@ -92,9 +92,9 @@ public:
 
   void consumeServices()
   {
-    int currentWorkersPower = services[ Service::workersRecruter ];       //save available workers number
+    int currentWorkersPower = services[ Service::recruter ];       //save available workers number
     foreach( Services::value_type& srvc, services ) { srvc.second -= 1; } //consume services
-    services[ Service::workersRecruter ] = currentWorkersPower;     //restore available workers number
+    services[ Service::recruter ] = currentWorkersPower;     //restore available workers number
   }
 
   void makeOldHabitants()
@@ -135,7 +135,7 @@ House::House(const int houseId) : Building( constants::building::house ), _d( ne
     Service::Type service = Service::Type(i);
     _d->services[service] = Service();
   }
-  _d->services[ Service::workersRecruter ].setMax( 0 );
+  _d->services[ Service::recruter ].setMax( 0 );
   _d->services[ Service::crime ] = 0;
 
   _update();
@@ -254,7 +254,7 @@ void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int start
     if( mayGrow )
     {
       CitizenGroup sumHabitants = getHabitants();
-      int sumFreeWorkers = getServiceValue( Service::workersRecruter );
+      int sumFreeWorkers = getServiceValue( Service::recruter );
       TilemapTiles::iterator delIt=area.begin();
       HousePtr selfHouse = (*delIt)->getOverlay().as<House>();
 
@@ -268,14 +268,14 @@ void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int start
           house->_d->habitants.clear();
 
           sumHabitants += house->getHabitants();
-          sumFreeWorkers += house->getServiceValue( Service::workersRecruter );
+          sumFreeWorkers += house->getServiceValue( Service::recruter );
 
           selfHouse->getGoodStore().storeAll( house->getGoodStore() );
         }
       }
 
       _d->habitants = sumHabitants;
-      setServiceValue( Service::workersRecruter, sumFreeWorkers );
+      setServiceValue( Service::recruter, sumFreeWorkers );
 
       //reset desirability level with old house size
       helper.updateDesirability( this, false );
@@ -522,13 +522,13 @@ void House::applyService( ServiceWalkerPtr walker )
   case Service::srvCount:
   break;
 
-  case Service::workersRecruter:
+  case Service::recruter:
   {
     int svalue = getServiceValue( service );
     if( !svalue )
       break;
 
-    WorkersHunterPtr hunter = walker.as<WorkersHunter>();
+    RecruterPtr hunter = walker.as<Recruter>();
     if( hunter.isValid() )
     {
       int hiredWorkers = math::clamp( svalue, 0, hunter->getWorkersNeeded() );
@@ -584,7 +584,7 @@ float House::evaluateService(ServiceWalkerPtr walker)
   }
   break;
 
-  case Service::workersRecruter:
+  case Service::recruter:
   {
     res = (float)getServiceValue( service );
   }
@@ -642,8 +642,8 @@ void House::addHabitants( CitizenGroup& habitants )
   int peoplesCount = math::clamp(  _d->maxHabitants - _d->habitants.count(), 0, _d->maxHabitants );
   CitizenGroup newHabitants = habitants.retrieve( peoplesCount );
   _d->habitants += newHabitants;
-  _d->services[ Service::workersRecruter ].setMax( _d->habitants.count( CitizenGroup::mature ) );
-  _d->services[ Service::workersRecruter ] += newHabitants.count( CitizenGroup::mature );
+  _d->services[ Service::recruter ].setMax( _d->habitants.count( CitizenGroup::mature ) );
+  _d->services[ Service::recruter ] += newHabitants.count( CitizenGroup::mature );
   _update();
 }
 
@@ -719,7 +719,7 @@ void House::load( const VariantMap& stream )
 
   _d->initGoodStore( getSize().getArea() );
 
-  _d->services[ Service::workersRecruter ].setMax( _d->habitants.count( CitizenGroup::mature ) );
+  _d->services[ Service::recruter ].setMax( _d->habitants.count( CitizenGroup::mature ) );
   VariantList vl_services = stream.get( "services" ).toList();
   for( VariantList::iterator it = vl_services.begin(); it != vl_services.end(); it++ )
   {
@@ -759,7 +759,7 @@ int House::getHealthLevel() const
 
 int House::getWorkersCount() const
 {
-  const Service& srvc = _d->services[ Service::workersRecruter ];
+  const Service& srvc = _d->services[ Service::recruter ];
   return srvc.getMax() - srvc.value();
 }
 

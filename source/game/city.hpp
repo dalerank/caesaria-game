@@ -19,22 +19,21 @@
 #ifndef __OPENCAESAR3_CITY_H_INCLUDED__
 #define __OPENCAESAR3_CITY_H_INCLUDED__
 
-#include "walker/walker.hpp"
-#include "enums.hpp"
 #include "core/serializer.hpp"
 #include "core/signals.hpp"
 #include "predefinitions.hpp"
-#include "core/referencecounted.hpp"
-#include "game/cityservice.hpp"
 #include "gfx/tile.hpp"
-#include "city.hpp"
 #include "core/position.hpp"
 #include "core/foreach.hpp"
 #include "game/player.hpp"
 #include "building/constants.hpp"
 #include "world/city.hpp"
+#include "walker/constants.hpp"
+#include "gfx/tileoverlay.hpp"
+#include "good.hpp"
+#include "building/service.hpp"
+#include <set>
 
-class DateTime;
 class CityBuildOptions;
 class CityTradeOptions;
 class CityWinTargets;
@@ -51,7 +50,7 @@ struct BorderInfo
 class PlayerCity : public world::City
 {
 public:
-  static CityPtr create( world::EmpirePtr empire, PlayerPtr player );
+  static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr player );
   ~PlayerCity();
 
   virtual void timeStep( unsigned int time );  // performs one simulation step
@@ -107,12 +106,12 @@ public:
 
   CityTradeOptions& getTradeOptions();
 
-  void resolveMerchantArrived( EmpireMerchantPtr merchant );
+  void resolveMerchantArrived( world::MerchantPtr merchant );
 
   virtual const GoodStore& getSells() const;
   virtual const GoodStore& getBuys() const;
 
-  virtual EmpirePtr getEmpire() const;
+  virtual world::EmpirePtr getEmpire() const;
 
   void updateRoads();
    
@@ -135,7 +134,7 @@ private:
 class CityHelper
 {
 public:
-  CityHelper( CityPtr city ) : _city( city ) {}
+  CityHelper( PlayerCityPtr city ) : _city( city ) {}
 
   template< class T >
   std::list< SmartPtr< T > > find( const TileOverlay::Type type )
@@ -274,7 +273,7 @@ public:
   void updateDesirability( ConstructionPtr construction, bool onBuild );
 
 protected:
-  CityPtr _city;
+  PlayerCityPtr _city;
 };
 
 #endif //__OPENCAESAR3_CITY_H_INCLUDED__

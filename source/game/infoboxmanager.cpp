@@ -30,6 +30,7 @@
 #include "gui/warehouse_infobox.hpp"
 #include "core/logger.hpp"
 #include "building/constants.hpp"
+#include "walker/walker.hpp"
 #include <map>
 
 using namespace constants;
@@ -68,7 +69,7 @@ template< class T >
 class CitizenInfoboxCreator : public InfoboxCreator
 {
 public:
-  CitizenInfoboxCreator( CityPtr c ) : city(c) {}
+  CitizenInfoboxCreator( PlayerCityPtr c ) : city(c) {}
 
   gui::InfoBoxSimple* create( gui::Widget* parent, const Tile& tile )
   {
@@ -85,7 +86,7 @@ public:
     }
   }
 
-  CityPtr city;
+  PlayerCityPtr city;
 };
 
 class ServiceBaseInfoboxCreator : public InfoboxCreator
@@ -150,7 +151,7 @@ class InfoBoxManager::Impl
 {
 public:
     GuiEnv* gui;
-    CityPtr city;
+    PlayerCityPtr city;
     bool showDebugInfo;
 
     typedef std::map< TileOverlay::Type, InfoboxCreator* > InfoboxCreators;
@@ -159,7 +160,7 @@ public:
     InfoboxCreators constructors;
 };
 
-InfoBoxManagerPtr InfoBoxManager::create( CityPtr city, GuiEnv* gui )
+InfoBoxManagerPtr InfoBoxManager::create(PlayerCityPtr city, GuiEnv* gui )
 {
   InfoBoxManagerPtr ret( new InfoBoxManager( city, gui ) );
   ret->drop();
@@ -167,7 +168,7 @@ InfoBoxManagerPtr InfoBoxManager::create( CityPtr city, GuiEnv* gui )
   return ret;
 }
 
-InfoBoxManager::InfoBoxManager( CityPtr city, GuiEnv* gui ) : _d( new Impl )
+InfoBoxManager::InfoBoxManager( PlayerCityPtr city, GuiEnv* gui ) : _d( new Impl )
 {
   _d->city = city;
   _d->showDebugInfo = true;

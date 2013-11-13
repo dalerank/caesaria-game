@@ -113,7 +113,7 @@ void LayerEntertainment::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   }
 }
 
-LayerPtr LayerEntertainment::create(CityRenderer* renderer, CityPtr city, int type )
+LayerPtr LayerEntertainment::create(CityRenderer* renderer, PlayerCityPtr city, int type )
 {
   LayerEntertainment* l = new LayerEntertainment();
   l->_renderer = renderer;

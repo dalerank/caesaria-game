@@ -14,20 +14,24 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "empire.hpp"
-#include "empire_city_computer.hpp"
+#include "computer_city.hpp"
 #include "core/variant.hpp"
 #include "core/time.hpp"
 #include "core/saveadapter.hpp"
 #include "core/stringhelper.hpp"
-#include "empire_trading.hpp"
+#include "trading.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
+#include "traderoute.hpp"
+
+namespace world
+{
 
 class Empire::Impl
 {
 public:
-  EmpireCityList cities;
-  EmpireTrading trading;
+  CityList cities;
+  Trading trading;
 
   std::string playerCityName;
   int workerSalary;
@@ -39,10 +43,10 @@ Empire::Empire() : _d( new Impl )
   _d->workerSalary = 30;
 }
 
-EmpireCityList Empire::getCities() const
+CityList Empire::getCities() const
 {
-  EmpireCityList ret;
-  foreach( EmpireCityPtr city, _d->cities )
+  CityList ret;
+  foreach( CityPtr city, _d->cities )
   {
     if( city->isAvailable() )
       ret.push_back( city );
@@ -69,15 +73,15 @@ void Empire::initialize( const io::FilePath& filename )
 
   foreach( VariantMap::value_type& item, cities )
   {
-    EmpireCityPtr city = ComputerCity::create( this, item.first );
+    CityPtr city = ComputerCity::create( this, item.first );
     addCity( city );
     city->load( item.second.toMap() );
   }
 }
 
-EmpireCityPtr Empire::addCity( EmpireCityPtr city )
+CityPtr Empire::addCity( CityPtr city )
 {
-  EmpireCityPtr ret = getCity( city->getName() );
+  CityPtr ret = getCity( city->getName() );
 
   if( ret.isValid() )
   {
@@ -99,9 +103,9 @@ EmpirePtr Empire::create()
   return ret;
 }
 
-EmpireCityPtr Empire::getCity( const std::string& name ) const
+CityPtr Empire::getCity( const std::string& name ) const
 {
-  foreach( EmpireCityPtr city, _d->cities )
+  foreach( CityPtr city, _d->cities )
   {
     if( city->getName() == name )
     {
@@ -115,7 +119,7 @@ EmpireCityPtr Empire::getCity( const std::string& name ) const
 void Empire::save( VariantMap& stream ) const
 {
   VariantMap vm_cities;
-  foreach( EmpireCityPtr city, _d->cities )
+  foreach( CityPtr city, _d->cities )
   {
     //not need save city player
     if( city->getName() == _d->playerCityName )
@@ -135,7 +139,7 @@ void Empire::load( const VariantMap& stream )
 
   foreach( VariantMap::value_type& item, cities )
   {
-    EmpireCityPtr city = getCity( item.first );
+    CityPtr city = getCity( item.first );
     if( city != 0 )
     {
       city->load( item.second.toMap() );
@@ -145,7 +149,7 @@ void Empire::load( const VariantMap& stream )
 
 void Empire::setCitiesAvailable(bool value)
 {
-  foreach( EmpireCityPtr city, _d->cities )
+  foreach( CityPtr city, _d->cities )
     city->setAvailable( value );
 }
 
@@ -156,8 +160,8 @@ unsigned int Empire::getWorkersSalary() const
 
 void Empire::createTradeRoute( const std::string& start, const std::string& stop )
 {
-  EmpireCityPtr startCity = getCity( start );
-  EmpireCityPtr stopCity = getCity( stop );
+  CityPtr startCity = getCity( start );
+  CityPtr stopCity = getCity( stop );
 
   if( startCity != 0 && stopCity != 0 )
   {
@@ -165,12 +169,12 @@ void Empire::createTradeRoute( const std::string& start, const std::string& stop
   }
 }
 
-EmpireTradeRoutePtr Empire::getTradeRoute( unsigned int index )
+TradeRoutePtr Empire::getTradeRoute( unsigned int index )
 {
   return _d->trading.getRoute( index );
 }
 
-EmpireTradeRoutePtr Empire::getTradeRoute( const std::string& start, const std::string& stop )
+TradeRoutePtr Empire::getTradeRoute( const std::string& start, const std::string& stop )
 {
   return _d->trading.getRoute( start, stop ); 
 }
@@ -179,15 +183,15 @@ void Empire::timeStep( unsigned int time )
 {
   _d->trading.update( time );
 
-  foreach( EmpireCityPtr city, _d->cities )
+  foreach( CityPtr city, _d->cities )
   {
     city->timeStep( time );
   }
 }
 
-EmpireCityPtr Empire::initPlayerCity( EmpireCityPtr city )
+CityPtr Empire::initPlayerCity( CityPtr city )
 {
-  EmpireCityPtr ret = getCity( city->getName() );
+  CityPtr ret = getCity( city->getName() );
 
   if( ret.isNull() )
   {
@@ -204,15 +208,15 @@ EmpireCityPtr Empire::initPlayerCity( EmpireCityPtr city )
   return ret;
 }
 
-EmpireTradeRouteList Empire::getTradeRoutes( const std::string& startCity )
+TradeRouteList Empire::getTradeRoutes( const std::string& startCity )
 {
   return _d->trading.getRoutes( startCity );
 }
 
 unsigned int EmpireHelper::getTradeRouteOpenCost( EmpirePtr empire, const std::string& start, const std::string& stop )
 {
-  EmpireCityPtr startCity = empire->getCity( start );
-  EmpireCityPtr stopCity = empire->getCity( stop );
+  CityPtr startCity = empire->getCity( start );
+  CityPtr stopCity = empire->getCity( stop );
 
   if( startCity != 0 && stopCity != 0 )
   {
@@ -226,7 +230,9 @@ unsigned int EmpireHelper::getTradeRouteOpenCost( EmpirePtr empire, const std::s
 }
 
 
-EmpireTradeRouteList Empire::getTradeRoutes()
+TradeRouteList Empire::getTradeRoutes()
 {
   return _d->trading.getRoutes();
 }
+
+}//end namespace world

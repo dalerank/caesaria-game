@@ -16,12 +16,15 @@
 #ifndef __OPENCAESAR3_EMPIRE_CITY_COMPUTER_H_INCLUDED__
 #define __OPENCAESAR3_EMPIRE_CITY_COMPUTER_H_INCLUDED__
 
-#include "empire_city.hpp"
+#include "city.hpp"
 
-class ComputerCity : public EmpireCity
+namespace world
+{
+
+class ComputerCity : public City
 {
 public:
-  static EmpireCityPtr create( EmpirePtr empire, const std::string& name );
+  static CityPtr create( EmpirePtr empire, const std::string& name );
 
   ~ComputerCity();
 
@@ -43,7 +46,7 @@ public:
 
   virtual EmpirePtr getEmpire() const;
 
-  void resolveMerchantArrived( EmpireMerchantPtr );
+  void resolveMerchantArrived( MerchantPtr );
 
 protected:
   ComputerCity( EmpirePtr empire, const std::string& name );
@@ -51,7 +54,8 @@ protected:
 private:
   class Impl;
   ScopedPtr< Impl > _d;
-
 };
+
+}//end namespace world
 
 #endif //__OPENCAESAR3_EMPIRE_CITY_COMPUTER_H_INCLUDED__

@@ -37,7 +37,7 @@ using namespace constants;
 class Walker::Impl
 {
 public:
-  CityPtr city;
+  PlayerCityPtr city;
   walker::Type walkerType;
   gfx::Type walkerGraphic;
   bool isDeleted;
@@ -67,7 +67,7 @@ public:
   }
 };
 
-Walker::Walker( CityPtr city ) : _d( new Impl )
+Walker::Walker(PlayerCityPtr city) : _d( new Impl )
 {
   _d->city = city;
   _d->action.action = Walker::acMove;
@@ -610,7 +610,7 @@ void Walker::_setType(walker::Type type)
   _d->walkerType = type;
 }
 
-CityPtr Walker::_getCity() const
+PlayerCityPtr Walker::_getCity() const
 {
   return _d->city;
 }
@@ -637,12 +637,6 @@ void Walker::die()
 {
   _d->health = 0;
   deleteLater();
-}
-
-Soldier::Soldier( CityPtr city ) : Walker( city )
-{
-  _setType( walker::soldier );
-  _setAnimation( gfx::horseman );
 }
 
 class WalkerHelper::Impl : public EnumsHelper<walker::Type>

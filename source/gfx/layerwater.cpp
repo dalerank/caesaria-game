@@ -120,7 +120,7 @@ void LayerWater::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 
 }
 
-LayerPtr LayerWater::create(CityRenderer* renderer, CityPtr city)
+LayerPtr LayerWater::create(CityRenderer* renderer, PlayerCityPtr city)
 {
   LayerWater* l = new LayerWater();
   l->_renderer = renderer;

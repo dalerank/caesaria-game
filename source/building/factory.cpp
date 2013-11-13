@@ -305,7 +305,7 @@ TimberLogger::TimberLogger() : Factory(Good::none, Good::timber, building::timbe
   _fgPicturesRef().resize(2);
 }
 
-bool TimberLogger::canBuild( CityPtr city, const TilePos& pos ) const
+bool TimberLogger::canBuild( PlayerCityPtr city, const TilePos& pos ) const
 {
    bool is_constructible = WorkingBuilding::canBuild( city, pos );
    bool near_forest = false;  // tells if the factory is next to a forest
@@ -332,7 +332,7 @@ IronMine::IronMine() : Factory(Good::none, Good::iron, building::ironMine, Size(
   _fgPicturesRef().resize(2);
 }
 
-bool IronMine::canBuild( CityPtr city, const TilePos& pos ) const
+bool IronMine::canBuild(PlayerCityPtr city, const TilePos& pos ) const
 {
   bool is_constructible = WorkingBuilding::canBuild( city, pos );
   bool near_mountain = false;  // tells if the factory is next to a mountain
@@ -355,7 +355,7 @@ WeaponsWorkshop::WeaponsWorkshop() : Factory(Good::iron, Good::weapon, building:
   _fgPicturesRef().resize(2);
 }
 
-bool WeaponsWorkshop::canBuild(CityPtr city, const TilePos& pos) const
+bool WeaponsWorkshop::canBuild(PlayerCityPtr city, const TilePos& pos) const
 {
   bool ret = Factory::canBuild( city, pos );
 
@@ -366,7 +366,7 @@ bool WeaponsWorkshop::canBuild(CityPtr city, const TilePos& pos) const
   return ret;
 }
 
-bool WorkshopFurniture::canBuild(CityPtr city, const TilePos& pos) const
+bool WorkshopFurniture::canBuild(PlayerCityPtr city, const TilePos& pos) const
 {
   bool ret = Factory::canBuild( city, pos );
 
@@ -394,7 +394,7 @@ Winery::Winery() : Factory(Good::grape, Good::wine, building::winery, Size(2) )
   _fgPicturesRef().resize(2);
 }
 
-bool Winery::canBuild(CityPtr city, const TilePos& pos) const
+bool Winery::canBuild(PlayerCityPtr city, const TilePos& pos) const
 {
   bool ret = Factory::canBuild( city, pos );
 
@@ -413,7 +413,7 @@ Creamery::Creamery() : Factory(Good::olive, Good::oil, building::creamery, Size(
   _fgPicturesRef().resize(2);
 }
 
-bool Creamery::canBuild(CityPtr city, const TilePos& pos) const
+bool Creamery::canBuild(PlayerCityPtr city, const TilePos& pos) const
 {
   bool ret = Factory::canBuild( city, pos );
 

@@ -23,7 +23,7 @@
 class Patrician : public Walker
 {
 public:
-  Patrician( CityPtr city );
+  Patrician( PlayerCityPtr city );
   ~Patrician();
 
   virtual void send2City(TilePos start );

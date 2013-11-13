@@ -26,10 +26,10 @@ public:
   virtual VisibleWalkers getVisibleWalkers() const;
   virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset );
 
-  static LayerPtr create( CityRenderer* renderer, CityPtr city );
+  static LayerPtr create( CityRenderer* renderer, PlayerCityPtr city );
 private:
   CityRenderer* _renderer;
-  CityPtr _city;
+  PlayerCityPtr _city;
   std::set<int> _flags;
 };
 

@@ -24,11 +24,11 @@
 class CityServiceWorkersHire : public CityService
 {
 public:
-  static CityServicePtr create( CityPtr city );
+  static CityServicePtr create( PlayerCityPtr city );
 
   void update( const unsigned int time );
 private:
-  CityServiceWorkersHire( CityPtr city );
+  CityServiceWorkersHire( PlayerCityPtr city );
 
   void _hireByType( const TileOverlay::Type type );
   bool _haveHr( WorkingBuildingPtr building );

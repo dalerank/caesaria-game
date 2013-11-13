@@ -51,6 +51,7 @@
 #include "layerdesirability.hpp"
 #include "layerentertainment.hpp"
 #include "layercrime.hpp"
+#include "walker/walker.hpp"
 
 using namespace constants;
 
@@ -68,7 +69,7 @@ public:
   bool  lmbPressed;
   // current map offset, for private use
   Point mapOffset;
-  CityPtr city;     // city to display
+  PlayerCityPtr city;     // city to display
   Tilemap* tilemap;
   GfxEngine* engine;
   TilemapCamera camera;  // visible map area
@@ -121,7 +122,7 @@ CityRenderer::CityRenderer() : _d( new Impl )
 
 CityRenderer::~CityRenderer() {}
 
-void CityRenderer::initialize( CityPtr city, GfxEngine* engine )
+void CityRenderer::initialize(PlayerCityPtr city, GfxEngine* engine )
 {
   _d->visibleWalkers.clear();
   _d->scrollSpeed = 4;

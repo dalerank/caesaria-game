@@ -46,7 +46,7 @@ bool Garden::isNeedRoadAccess() const
   return false;
 }
 
-void Garden::build( CityPtr city, const TilePos& pos )
+void Garden::build(PlayerCityPtr city, const TilePos& pos )
 {
   // this is the same arrangement of garden tiles as existed in C3
   int theGrid[2][2] = {{113, 110}, {112, 111}};

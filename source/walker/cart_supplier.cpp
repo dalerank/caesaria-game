@@ -37,7 +37,7 @@ using namespace constants;
 class CartSupplier::Impl
 {
 public:
-  CityPtr city;
+  PlayerCityPtr city;
   GoodStock stock;
   TilePos storageBuildingPos;
   TilePos baseBuildingPos;
@@ -47,7 +47,7 @@ public:
   long reservationID;
 };
 
-CartSupplier::CartSupplier( CityPtr city )
+CartSupplier::CartSupplier( PlayerCityPtr city )
   : Walker( city ), _d( new Impl )
 {
   _setAnimation( gfx::cartPusher );
@@ -276,7 +276,7 @@ void CartSupplier::send2City( BuildingPtr building, const Good::Type type, const
   }
 }
 
-CartSupplierPtr CartSupplier::create( CityPtr city )
+CartSupplierPtr CartSupplier::create(PlayerCityPtr city )
 {
   CartSupplierPtr ret( new CartSupplier( city ) );
   ret->drop(); //delete automatically

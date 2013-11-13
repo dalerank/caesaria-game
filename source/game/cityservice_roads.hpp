@@ -18,17 +18,17 @@
 
 #include "cityservice.hpp"
 #include "core/scopedptr.hpp"
-#include "core/predefinitions.hpp"
+#include "game/predefinitions.hpp"
 
 class CityServiceRoads : public CityService
 {
 public:
-  static CityServicePtr create( CityPtr city );
+  static CityServicePtr create( PlayerCityPtr city );
 
   void update( const unsigned int time );
   ~CityServiceRoads();
 private:
-  CityServiceRoads( CityPtr city );
+  CityServiceRoads( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;

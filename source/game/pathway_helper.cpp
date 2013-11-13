@@ -18,7 +18,7 @@
 #include "city.hpp"
 #include "tilemap.hpp"
 
-Pathway PathwayHelper::create(CityPtr city, TilePos startPos, TilePos stopPos,
+Pathway PathwayHelper::create(PlayerCityPtr city, TilePos startPos, TilePos stopPos,
                                WayType type/*=roadOnly */, Size arrivedArea )
 {
   switch( type )
@@ -50,7 +50,7 @@ Pathway PathwayHelper::create(CityPtr city, TilePos startPos, TilePos stopPos,
   return Pathway();
 }
 
-Pathway PathwayHelper::randomWay(CityPtr city, TilePos startPos, int walkRadius)
+Pathway PathwayHelper::randomWay(PlayerCityPtr city, TilePos startPos, int walkRadius)
 {
   int loopCounter = 0; //loop limiter
   do

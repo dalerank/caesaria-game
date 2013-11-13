@@ -50,7 +50,7 @@ public:
   void setScreenGame();
 
   PlayerPtr getPlayer() const;
-  CityPtr getCity() const;
+  PlayerCityPtr getCity() const;
   world::EmpirePtr getEmpire() const;
   gui::GuiEnv* getGui() const;
   GfxEngine* getEngine() const;

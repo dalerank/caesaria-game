@@ -73,9 +73,6 @@
   #define _OC3_DEBUG_BREAK_IF( _CONDITION_ )
 #endif
 
-#define PREFEDINE_CLASS_SMARTPOINTER(a) class a; typedef SmartPtr<a> a##Ptr;
-#define PREFEDINE_CLASS_SMARTPOINTER_LIST(a,b) PREFEDINE_CLASS_SMARTPOINTER(a); typedef std::list< a##Ptr > a##b;
-
 #define _OC3_DISABLE_COPY(Class) \
     Class( const Class& ); \
     Class& operator=( const Class& );

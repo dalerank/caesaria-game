@@ -16,7 +16,7 @@
 #ifndef __OPENCAESAR3_PATHWAY_H_INCLUDED__
 #define __OPENCAESAR3_PATHWAY_H_INCLUDED__
 
-#include "core/predefinitions.hpp"
+#include "predefinitions.hpp"
 #include "core/position.hpp"
 #include "core/variant.hpp"
 #include "core/scopedptr.hpp"
@@ -32,7 +32,7 @@ public:
 
   virtual ~Pathway();
 
-  void init( const Tilemap &tilemap, const Tile &origin );
+  void init( const Tilemap &tilemap, const Tile& origin );
 
   int getLength() const;
   const Tile& getOrigin() const;

@@ -40,7 +40,7 @@ namespace gui
 class AdvisorFinanceWindow::Impl
 {
 public:
-  CityPtr city;
+  PlayerCityPtr city;
   PictureRef background;
 
   gui::Label* lbTaxRateNow;
@@ -51,7 +51,7 @@ public:
   int calculateTaxValue();
 };
 
-AdvisorFinanceWindow::AdvisorFinanceWindow( CityPtr city, Widget* parent, int id ) 
+AdvisorFinanceWindow::AdvisorFinanceWindow(PlayerCityPtr city, Widget* parent, int id )
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   _d->city = city;

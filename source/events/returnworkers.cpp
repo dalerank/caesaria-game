@@ -45,9 +45,9 @@ void ReturnWorkers::exec(Game& game)
       HousePtr house = tile->getOverlay().as<House>();
       if( house.isValid() )
       {
-        int lastWorkersCount = house->getServiceValue( Service::workersRecruter );
-        house->appendServiceValue( Service::workersRecruter, _workers );
-        int currentWorkers = house->getServiceValue( Service::workersRecruter );
+        int lastWorkersCount = house->getServiceValue( Service::recruter );
+        house->appendServiceValue( Service::recruter, _workers );
+        int currentWorkers = house->getServiceValue( Service::recruter );
 
         int mayAppend = math::clamp<int>( _workers, 0, currentWorkers - lastWorkersCount );
         _workers -= mayAppend;

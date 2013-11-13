@@ -30,18 +30,18 @@ const int defaultCrimeLevel = 75;
 class CityServiceDisorder::Impl
 {
 public:
-  CityPtr city;
+  PlayerCityPtr city;
   int minCrimeLevel;
 };
 
-CityServicePtr CityServiceDisorder::create( CityPtr city )
+CityServicePtr CityServiceDisorder::create( PlayerCityPtr city )
 {
   CityServiceDisorder* ret = new CityServiceDisorder( city );
 
   return CityServicePtr( ret );
 }
 
-CityServiceDisorder::CityServiceDisorder( CityPtr city )
+CityServiceDisorder::CityServiceDisorder(PlayerCityPtr city )
 : CityService( "disorder" ), _d( new Impl )
 {
   _d->city = city;

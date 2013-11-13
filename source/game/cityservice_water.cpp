@@ -19,17 +19,17 @@
 class CityServiceWater::Impl
 {
 public:
-  CityPtr city;
+  PlayerCityPtr city;
 };
 
-CityServicePtr CityServiceWater::create( CityPtr city )
+CityServicePtr CityServiceWater::create(PlayerCityPtr city )
 {
   CityServiceWater* ret = new CityServiceWater( city );
 
   return CityServicePtr( ret );
 }
 
-CityServiceWater::CityServiceWater( CityPtr city )
+CityServiceWater::CityServiceWater(PlayerCityPtr city )
 : CityService( "water" ), _d( new Impl )
 {
   _d->city = city;

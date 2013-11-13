@@ -513,7 +513,7 @@ HouseLevelSpec HouseLevelSpec::next() const
 
 int HouseLevelSpec::computeDesirabilityLevel(HousePtr house, std::string& oMissingRequirement) const
 {
-  CityPtr city = house->_getCity();
+  PlayerCityPtr city = house->_getCity();
 
   TilemapArea area = city->getTilemap().getArea( house->getTilePos() - TilePos( 2, 2 ), house->getSize() + Size( 4 ) );
 

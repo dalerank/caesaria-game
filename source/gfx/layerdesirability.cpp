@@ -96,7 +96,7 @@ void LayerDesirability::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   }
 }
 
-LayerPtr LayerDesirability::create(CityRenderer* renderer, CityPtr city)
+LayerPtr LayerDesirability::create(CityRenderer* renderer, PlayerCityPtr city)
 {
   LayerDesirability* l = new LayerDesirability();
   l->_renderer = renderer;

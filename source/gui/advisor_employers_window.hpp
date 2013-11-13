@@ -18,7 +18,7 @@
 
 #include "widget.hpp"
 #include "core/scopedptr.hpp"
-#include "core/predefinitions.hpp"
+#include "game/predefinitions.hpp"
 
 namespace gui
 {
@@ -26,7 +26,7 @@ namespace gui
 class AdvisorEmployerWindow : public Widget
 {
 public:
-  AdvisorEmployerWindow( CityPtr city, Widget* parent, int id );
+  AdvisorEmployerWindow( PlayerCityPtr city, Widget* parent, int id );
 
   void draw( GfxEngine& painter );
 

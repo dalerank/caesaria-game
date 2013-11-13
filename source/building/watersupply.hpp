@@ -51,18 +51,18 @@ class Aqueduct : public WaterSource
 public:
   Aqueduct();
 
-  virtual void build(CityPtr city, const TilePos& pos );
-  Picture& computePicture(CityPtr city,
+  virtual void build(PlayerCityPtr city, const TilePos& pos );
+  Picture& computePicture(PlayerCityPtr city,
                           const TilemapTiles * tmp = NULL,
                           const TilePos pos = TilePos(0, 0));
   virtual void initTerrain(Tile& terrain);
-  virtual bool canBuild(CityPtr city, const TilePos& pos ) const;
+  virtual bool canBuild(PlayerCityPtr city, const TilePos& pos ) const;
   virtual bool isNeedRoadAccess() const;
   virtual void destroy();
   virtual bool isWalkable() const; 
   virtual bool isRoad() const;
 
-  void updatePicture(CityPtr city);
+  void updatePicture(PlayerCityPtr city);
   void addWater( const WaterSource& source );
 
 protected:
@@ -75,8 +75,8 @@ public:
   Reservoir();
   ~Reservoir();
 
-  virtual void build(CityPtr city, const TilePos& pos );
-  virtual bool canBuild(CityPtr city, const TilePos& pos ) const;
+  virtual void build(PlayerCityPtr city, const TilePos& pos );
+  virtual bool canBuild(PlayerCityPtr city, const TilePos& pos ) const;
   virtual bool isNeedRoadAccess() const;
   virtual void initTerrain(Tile& terrain);
   virtual void timeStep(const unsigned long time);
@@ -84,7 +84,7 @@ public:
 
 private:
   bool _isWaterSource;
-  bool _isNearWater( CityPtr city, const TilePos& pos ) const;
+  bool _isNearWater( PlayerCityPtr city, const TilePos& pos ) const;
 };
 
 class Fountain : public ServiceBuilding
@@ -92,8 +92,8 @@ class Fountain : public ServiceBuilding
 public:
   Fountain();
 
-  virtual void build( CityPtr city, const TilePos& pos );
-  virtual bool canBuild(CityPtr city, const TilePos& pos ) const;
+  virtual void build( PlayerCityPtr city, const TilePos& pos );
+  virtual bool canBuild(PlayerCityPtr city, const TilePos& pos ) const;
   virtual void deliverService();
   virtual void timeStep(const unsigned long time);
   virtual bool isNeedRoadAccess() const;

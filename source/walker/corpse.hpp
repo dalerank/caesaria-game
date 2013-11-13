@@ -23,8 +23,8 @@
 class Corpse : public Walker
 {
 public:
-  static WalkerPtr create( CityPtr city ); //need for walker manager
-  static void create( CityPtr city, TilePos pos,
+  static WalkerPtr create( PlayerCityPtr city ); //need for walker manager
+  static void create( PlayerCityPtr city, TilePos pos,
                       std::string rcGroup, int startIndex, int stopIndex,
                       bool loop=false);
   ~Corpse();
@@ -37,7 +37,7 @@ public:
   virtual const Picture& getMainPicture();
 
 protected:
-  Corpse( CityPtr city );
+  Corpse( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;

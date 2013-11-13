@@ -101,7 +101,7 @@ Farm::Farm(const Good::Type outGood, const Type type )
   init();
 }
 
-bool Farm::canBuild( CityPtr city, const TilePos& pos ) const
+bool Farm::canBuild(PlayerCityPtr city, const TilePos& pos ) const
 {
   bool is_constructible = Construction::canBuild( city, pos );
   bool on_meadow = false;

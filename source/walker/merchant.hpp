@@ -23,7 +23,7 @@
 class Merchant : public Walker
 {
 public:
-  static WalkerPtr create( CityPtr city, EmpireMerchantPtr merchant );
+  static WalkerPtr create( PlayerCityPtr city, world::MerchantPtr merchant );
 
   virtual ~Merchant();
 
@@ -33,7 +33,7 @@ public:
   void save( VariantMap& stream) const;
   void load( const VariantMap& stream);
 private:
-  Merchant( CityPtr city );
+  Merchant( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;

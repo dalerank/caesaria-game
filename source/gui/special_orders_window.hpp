@@ -18,7 +18,7 @@
 #define __OPENCAESAR3_SPECIAL_ORDERS_WINDOW_H_INCLUDED__
 
 #include "widget.hpp"
-#include "core/predefinitions.hpp"
+#include "building/predefinitions.hpp"
 
 namespace gui
 {

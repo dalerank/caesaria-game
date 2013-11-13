@@ -31,7 +31,7 @@ public:
   TilePos destination;
 };
 
-Animal::Animal( CityPtr city )
+Animal::Animal(PlayerCityPtr city )
   : Walker( city ), _d( new Impl )
 {
   _setType( walker::unknown );
@@ -81,7 +81,7 @@ void Animal::_findNewWay( const TilePos& start )
   }
 }
 
-Sheep::Sheep( CityPtr city ) : Animal( city )
+Sheep::Sheep( PlayerCityPtr city ) : Animal( city )
 {
   _setAnimation( gfx::sheep );
   _setType( walker::sheep );
@@ -90,7 +90,7 @@ Sheep::Sheep( CityPtr city ) : Animal( city )
   addAbility( Illness::create( 0.2, 4 ) );
 }
 
-WalkerPtr Sheep::create(CityPtr city)
+WalkerPtr Sheep::create(PlayerCityPtr city)
 {
   WalkerPtr ret( new Sheep( city ) );
   ret->drop();

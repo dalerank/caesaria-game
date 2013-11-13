@@ -45,7 +45,7 @@ public:
   virtual bool isWalkable() const;
   virtual void initTerrain( Tile& terrain ) = 0;
 
-  virtual void build( CityPtr city, const TilePos& pos );
+  virtual void build( PlayerCityPtr city, const TilePos& pos );
   virtual void destroy();  // handles the delete
 
   virtual Point getOffset( const Point& subpos ) const;
@@ -74,7 +74,7 @@ public:
 protected:
   Animation& _animationRef();
   Tile* _getMasterTile();
-  CityPtr _getCity() const;
+  PlayerCityPtr _getCity() const;
   PicturesArray& _fgPicturesRef();
   Picture& _getPicture();
 

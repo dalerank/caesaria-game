@@ -33,7 +33,7 @@ class Propagator::Impl
 public:
   std::set<Pathway> activeBranches;
   std::map<Tile*, Pathway> completedBranches;
-  CityPtr city;
+  PlayerCityPtr city;
   Tile* origin;
   Tilemap* tilemap;
   bool allLands;  // true if can walk in all lands, false if limited to roads
@@ -41,7 +41,7 @@ public:
 };
 
 
-Propagator::Propagator( CityPtr city ) : _d( new Impl )
+Propagator::Propagator(PlayerCityPtr city ) : _d( new Impl )
 {
    _d->city = city;
    _d->tilemap = &city->getTilemap();

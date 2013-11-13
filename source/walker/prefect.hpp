@@ -22,7 +22,7 @@
 class Prefect : public ServiceWalker
 {
 public:
-  static PrefectPtr create( CityPtr city );
+  static PrefectPtr create( PlayerCityPtr city );
  
   virtual void onMidTile();
   virtual void onNewTile();
@@ -39,7 +39,7 @@ public:
   ~Prefect();
 
 protected:
-  Prefect( CityPtr city );
+  Prefect( PlayerCityPtr city );
 
   bool _looks4Protestor(TilePos& pos);
   bool _looks4Fire( ReachedBuildings& buildings, TilePos& pos );

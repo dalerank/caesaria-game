@@ -18,13 +18,13 @@
 
 #include "cityservice.hpp"
 #include "core/scopedptr.hpp"
-#include "core/predefinitions.hpp"
+#include "game/predefinitions.hpp"
 
 class CityServiceCulture : public CityService
 {
 public:
   typedef enum { ccSchool, ccLibrary, ccAcademy, ccReligion, ccTheatres } Coverage;
-  static CityServicePtr create( CityPtr city );
+  static CityServicePtr create( PlayerCityPtr city );
 
   void update( const unsigned int time );
   int getValue() const;
@@ -34,7 +34,7 @@ public:
   static std::string getDefaultName();
 
 private:
-  CityServiceCulture( CityPtr city );
+  CityServiceCulture( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;

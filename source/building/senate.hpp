@@ -31,7 +31,7 @@ public:
 
   virtual void deliverService();
 
-  virtual bool canBuild(CityPtr city, const TilePos& pos )const;
+  virtual bool canBuild(PlayerCityPtr city, const TilePos& pos )const;
 
   virtual void applyService(ServiceWalkerPtr walker);
 private:

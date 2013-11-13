@@ -26,7 +26,7 @@
 class MarketLady : public Walker
 {
 public:
-  static MarketLadyPtr create( CityPtr city );
+  static MarketLadyPtr create( PlayerCityPtr city );
 
   virtual ~MarketLady();
 
@@ -40,7 +40,7 @@ public:
   void load( const VariantMap& stream);
 
 private:
-  MarketLady( CityPtr city );
+  MarketLady( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;

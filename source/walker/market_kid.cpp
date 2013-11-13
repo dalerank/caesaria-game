@@ -35,7 +35,7 @@ public:
   unsigned long birthTime;
 };
 
-MarketKidPtr MarketKid::create( CityPtr city, MarketLadyPtr lady )
+MarketKidPtr MarketKid::create( PlayerCityPtr city, MarketLadyPtr lady )
 {
   MarketKidPtr ret( new MarketKid( city ) );
   ret->setPathway( lady->getPathway() );
@@ -47,7 +47,7 @@ MarketKidPtr MarketKid::create( CityPtr city, MarketLadyPtr lady )
   return ret;
 }
 
-MarketKid::MarketKid( CityPtr city )
+MarketKid::MarketKid(PlayerCityPtr city )
   : Walker( city ), _d( new Impl )
 {
   _d->delay = 0;

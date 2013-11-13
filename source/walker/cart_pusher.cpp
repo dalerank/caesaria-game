@@ -55,7 +55,7 @@ public:
   BuildingPtr getWalkerDestination_granary(Propagator& pathPropagator, Pathway &oPathWay);
 };
 
-CartPusher::CartPusher( CityPtr city )
+CartPusher::CartPusher(PlayerCityPtr city )
   : Walker( city ), _d( new Impl )
 {
   _setAnimation( gfx::cartPusher );
@@ -358,7 +358,7 @@ void CartPusher::timeStep( const unsigned long time )
   Walker::timeStep( time );
 }
 
-CartPusherPtr CartPusher::create( CityPtr city )
+CartPusherPtr CartPusher::create(PlayerCityPtr city )
 {
   CartPusherPtr ret( new CartPusher( city ) );
   ret->drop(); //delete automatically

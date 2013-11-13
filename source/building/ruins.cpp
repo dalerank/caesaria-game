@@ -92,7 +92,7 @@ void BurningRuins::burn()
 
 }
 
-void BurningRuins::build( CityPtr city, const TilePos& pos )
+void BurningRuins::build(PlayerCityPtr city, const TilePos& pos )
 {
   ServiceBuilding::build( city, pos );
   //while burning can't remove it
@@ -141,7 +141,7 @@ BurnedRuins::BurnedRuins() : Building( building::B_BURNED_RUINS, Size(1) )
   setPicture( ResourceGroup::land2a, 111 + rand() % 8 );
 }
 
-void BurnedRuins::build( CityPtr city, const TilePos& pos )
+void BurnedRuins::build(PlayerCityPtr city, const TilePos& pos )
 {
   Building::build( city, pos);
 
@@ -180,7 +180,7 @@ void CollapsedRuins::burn()
 
 }
 
-void CollapsedRuins::build( CityPtr city, const TilePos& pos )
+void CollapsedRuins::build(PlayerCityPtr city, const TilePos& pos )
 {
   Building::build( city, pos );
   //while burning can't remove it
@@ -265,7 +265,7 @@ void PlagueRuins::burn()
 
 }
 
-void PlagueRuins::build( CityPtr city, const TilePos& pos )
+void PlagueRuins::build(PlayerCityPtr city, const TilePos& pos )
 {
   Building::build( city, pos );
   //while burning can't remove it

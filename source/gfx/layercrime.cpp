@@ -94,7 +94,7 @@ void LayerCrime::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   }
 }
 
-LayerPtr LayerCrime::create(CityRenderer* renderer, CityPtr city)
+LayerPtr LayerCrime::create(CityRenderer* renderer, PlayerCityPtr city)
 {
   LayerCrime* l = new LayerCrime();
   l->_renderer = renderer;

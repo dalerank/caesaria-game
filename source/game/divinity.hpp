@@ -19,7 +19,7 @@
 #include "core/referencecounted.hpp"
 #include "enums.hpp"
 #include "core/scopedptr.hpp"
-#include "core/predefinitions.hpp"
+#include "game/predefinitions.hpp"
 #include "vfs/filepath.hpp"
 #include "service.hpp"
 #include "core/variant.hpp"
@@ -43,7 +43,7 @@ public:
   virtual Service::Type getServiceType() const = 0;
   virtual std::string getShortDescription() const = 0;
   virtual const Picture& getPicture() const = 0;
-  virtual void updateRelation( float income, CityPtr city ) = 0;
+  virtual void updateRelation( float income, PlayerCityPtr city ) = 0;
   virtual DateTime getLastFestivalDate() const = 0;
   virtual std::string getMoodDescription() const = 0;
   virtual void load( const VariantMap& vm ) = 0;

@@ -102,7 +102,7 @@ void LayerFood::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   }
 }
 
-LayerPtr LayerFood::create(CityRenderer* renderer, CityPtr city)
+LayerPtr LayerFood::create(CityRenderer* renderer, PlayerCityPtr city)
 {
   LayerFood* l = new LayerFood();
   l->_renderer = renderer;

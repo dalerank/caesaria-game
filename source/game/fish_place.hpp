@@ -24,7 +24,7 @@ public:
   FishPlace();
   ~FishPlace();
 
-  virtual void build(CityPtr city, const TilePos &pos);
+  virtual void build(PlayerCityPtr city, const TilePos &pos);
   virtual void initTerrain(Tile &terrain);
   virtual void timeStep(const unsigned long time);
   virtual void destroy();

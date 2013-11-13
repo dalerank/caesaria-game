@@ -37,7 +37,7 @@ public:
   GoodStock stock;
   Mode mode;
 
-  Pathway findFishingPlace(CityPtr city, const TilePos& pos);
+  Pathway findFishingPlace(PlayerCityPtr city, const TilePos& pos);
 };
 
 void FishingBoat::save( VariantMap& stream ) const
@@ -179,7 +179,7 @@ void FishingBoat::die()
   Ship::die();
 }
 
-FishingBoat::FishingBoat( CityPtr city ) : Ship( city ), _d( new Impl )
+FishingBoat::FishingBoat( PlayerCityPtr city ) : Ship( city ), _d( new Impl )
 {
   _setAnimation( gfx::fishingBoat );
   _setType( walker::fishingBoat );
@@ -189,7 +189,7 @@ FishingBoat::FishingBoat( CityPtr city ) : Ship( city ), _d( new Impl )
   _d->stock.setMax( 100 );
 }
 
-FishingBoatPtr FishingBoat::create(CityPtr city)
+FishingBoatPtr FishingBoat::create(PlayerCityPtr city)
 {
   FishingBoatPtr ret( new FishingBoat( city ) );
   ret->drop();
@@ -215,7 +215,7 @@ void FishingBoat::onNewTile()
   _getAnimation().setDelay( 3 );
 }
 
-Pathway FishingBoat::Impl::findFishingPlace( CityPtr city, const TilePos& pos )
+Pathway FishingBoat::Impl::findFishingPlace(PlayerCityPtr city, const TilePos& pos )
 {
   CityHelper helper( city );
   FishPlaceList places = helper.find<FishPlace>( place::fishPlace );

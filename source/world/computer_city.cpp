@@ -13,13 +13,17 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "empire_city_computer.hpp"
+#include "computer_city.hpp"
 #include "empire.hpp"
-#include "empire_trading.hpp"
-#include "goodstore_simple.hpp"
-#include "goodhelper.hpp"
-#include "gamedate.hpp"
+#include "trading.hpp"
+#include "game/goodstore_simple.hpp"
+#include "game/goodhelper.hpp"
+#include "game/gamedate.hpp"
 #include "core/foreach.hpp"
+#include "merchant.hpp"
+
+namespace world
+{
 
 class ComputerCity::Impl
 {
@@ -169,15 +173,15 @@ const GoodStore& ComputerCity::getBuys() const
   return _d->buyStore;
 }
 
-EmpireCityPtr ComputerCity::create( EmpirePtr empire, const std::string& name )
+CityPtr ComputerCity::create( EmpirePtr empire, const std::string& name )
 {
-  EmpireCityPtr ret( new ComputerCity( empire, name ) );
+  CityPtr ret( new ComputerCity( empire, name ) );
   ret->drop();
 
   return ret;
 }
 
-void ComputerCity::resolveMerchantArrived( EmpireMerchantPtr merchant )
+void ComputerCity::resolveMerchantArrived( MerchantPtr merchant )
 {
   GoodStore& sellGoods = merchant->getSellGoods();
   GoodStore& buyGoods = merchant->getBuyGoods();
@@ -211,7 +215,7 @@ void ComputerCity::timeStep( unsigned int time )
 
   if( _d->lastTimeMerchantSend.getMonthToDate( GameDate::current() ) > 2 ) 
   {
-    EmpireTradeRouteList routes = _d->empire->getTradeRoutes( getName() );
+    TradeRouteList routes = _d->empire->getTradeRoutes( getName() );
     _d->lastTimeMerchantSend = GameDate::current();
 
     if( _d->merchantsNumber >= routes.size() )
@@ -250,7 +254,7 @@ void ComputerCity::timeStep( unsigned int time )
       }
 
       //send merchants to all routes
-      foreach( EmpireTradeRoutePtr route, routes )
+      foreach( TradeRoutePtr route, routes )
       {
         _d->merchantsNumber++;
         route->addMerchant( getName(), sellGoods, buyGoods );
@@ -263,3 +267,5 @@ EmpirePtr ComputerCity::getEmpire() const
 {
   return _d->empire;
 }
+
+}//end namespace world

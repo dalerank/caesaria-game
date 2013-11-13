@@ -18,13 +18,13 @@
 
 #include "enums.hpp"
 #include "core/scopedptr.hpp"
-#include "core/predefinitions.hpp"
+#include "game/predefinitions.hpp"
 #include "walker/constants.hpp"
 
 class WalkerCreator
 {
 public:
-  virtual WalkerPtr create( CityPtr city ) = 0;
+  virtual WalkerPtr create( PlayerCityPtr city ) = 0;
 };
 
 class WalkerManager
@@ -36,7 +36,7 @@ public:
 
   void addCreator( constants::walker::Type type, WalkerCreator* ctor );
 
-  WalkerPtr create( constants::walker::Type walkerType, CityPtr city );  // get an instance of the given type
+  WalkerPtr create( constants::walker::Type walkerType, PlayerCityPtr city );  // get an instance of the given type
 
   ~WalkerManager();
 private:

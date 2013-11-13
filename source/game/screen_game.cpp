@@ -98,7 +98,7 @@ ScreenGame::~ScreenGame() {}
 
 void ScreenGame::initialize()
 {
-  CityPtr city = _d->game->getCity();
+  PlayerCityPtr city = _d->game->getCity();
   _d->renderer.initialize( city, _d->engine );
 
   _d->infoBoxMgr = InfoBoxManager::create( city, _d->game->getGui() );

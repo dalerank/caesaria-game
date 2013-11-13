@@ -33,7 +33,7 @@ namespace gui
 class MissionTargetsWindow::Impl
 {
 public:
-  CityPtr city;
+  PlayerCityPtr city;
   PictureRef background;
   Label* title;
   Label* subTitle;
@@ -46,7 +46,7 @@ public:
   ListBox* lbxHelp;
 };
 
-MissionTargetsWindow* MissionTargetsWindow::create( Widget* parent, CityPtr city, int id )
+MissionTargetsWindow* MissionTargetsWindow::create(Widget* parent, PlayerCityPtr city, int id )
 {
   Size size( 610, 430 );
 

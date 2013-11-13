@@ -40,7 +40,7 @@ class Theater : public EntertainmentBuilding
 public:
   Theater();
 
-  virtual void build(CityPtr city, const TilePos &pos);
+  virtual void build(PlayerCityPtr city, const TilePos &pos);
 
   virtual void timeStep(const unsigned long time);
 
@@ -54,7 +54,7 @@ class Amphitheater : public EntertainmentBuilding
 public:
   Amphitheater();
 
-  virtual void build(CityPtr city, const TilePos &pos);
+  virtual void build(PlayerCityPtr city, const TilePos &pos);
 
   virtual void deliverService();
 };

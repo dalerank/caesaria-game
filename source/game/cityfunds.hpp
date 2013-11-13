@@ -75,12 +75,12 @@ private:
 class CityStatistic
 {
 public:
-  static unsigned int getCurrentWorkersNumber( CityPtr city );
-  static unsigned int getVacantionsNumber( CityPtr city );
-  static unsigned int getAvailableWorkersNumber( CityPtr city );
-  static unsigned int getMontlyWorkersWages( CityPtr city );
-  static unsigned int getWorklessNumber( CityPtr city );
-  static unsigned int getWorklessPercent( CityPtr city );
+  static unsigned int getCurrentWorkersNumber( PlayerCityPtr city );
+  static unsigned int getVacantionsNumber( PlayerCityPtr city );
+  static unsigned int getAvailableWorkersNumber( PlayerCityPtr city );
+  static unsigned int getMontlyWorkersWages( PlayerCityPtr city );
+  static unsigned int getWorklessNumber( PlayerCityPtr city );
+  static unsigned int getWorklessPercent( PlayerCityPtr city );
 };
 
 #endif //__OPENCAESAR3_CITYFUNDS_H_INCLUDED__

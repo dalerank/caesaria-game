@@ -23,7 +23,7 @@
 #include "core/scopedptr.hpp"
 #include "core/smartptr.hpp"
 #include "vfs/filepath.hpp"
-#include "core/predefinitions.hpp"
+#include "predefinitions.hpp"
 #include "service.hpp"
 
 class HouseLevelSpec

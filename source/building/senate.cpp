@@ -40,7 +40,7 @@ Senate::Senate() : ServiceBuilding( Service::senate, building::senate, Size(5) )
   _d->taxValue = 0;
 }
 
-bool Senate::canBuild( CityPtr city, const TilePos& pos ) const
+bool Senate::canBuild(PlayerCityPtr city, const TilePos& pos ) const
 {
   _d->errorStr = "";
   bool mayBuild = ServiceBuilding::canBuild( city, pos );

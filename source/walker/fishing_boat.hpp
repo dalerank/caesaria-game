@@ -21,7 +21,7 @@
 class FishingBoat : public Ship
 {
 public:
-  static FishingBoatPtr create( CityPtr city );
+  static FishingBoatPtr create( PlayerCityPtr city );
 
   void send2City( WharfPtr base, const TilePos& start);
 
@@ -39,7 +39,7 @@ public:
   virtual void die();
 
 private:
-  FishingBoat( CityPtr city );
+  FishingBoat( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;

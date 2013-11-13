@@ -44,7 +44,7 @@ static const CoveragePoints academiesPoints = { {1.0, 10}, {0.86,7}, {0.71,4}, {
 class CityServiceCulture::Impl
 {
 public:
-  CityPtr city;
+  PlayerCityPtr city;
   DateTime lastDate;
   int culture;
   int parishionersCount;
@@ -77,7 +77,7 @@ public:
   }
 };
 
-CityServicePtr CityServiceCulture::create( CityPtr city )
+CityServicePtr CityServiceCulture::create(PlayerCityPtr city )
 {
   CityServicePtr ret( new CityServiceCulture( city ) );
   ret->drop();
@@ -85,7 +85,7 @@ CityServicePtr CityServiceCulture::create( CityPtr city )
   return ret;
 }
 
-CityServiceCulture::CityServiceCulture( CityPtr city )
+CityServiceCulture::CityServiceCulture(PlayerCityPtr city )
   : CityService( getDefaultName() ), _d( new Impl )
 {
   _d->city = city;

@@ -111,7 +111,7 @@ void LayerHealth::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   }
 }
 
-LayerPtr LayerHealth::create(CityRenderer* renderer, CityPtr city, int type )
+LayerPtr LayerHealth::create(CityRenderer* renderer, PlayerCityPtr city, int type )
 {
   LayerHealth* l = new LayerHealth();
   l->_renderer = renderer;

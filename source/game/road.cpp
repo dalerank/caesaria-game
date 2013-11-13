@@ -28,7 +28,7 @@ Road::Road() : Construction( construction::road, Size(1) )
   _paved = 0;
 }
 
-void Road::build( CityPtr city, const TilePos& pos )
+void Road::build( PlayerCityPtr city, const TilePos& pos )
 {
   Tilemap& tilemap = city->getTilemap();
   TileOverlayPtr overlay = tilemap.at( pos ).getOverlay();
@@ -74,7 +74,7 @@ void Road::build( CityPtr city, const TilePos& pos )
   city->updateRoads();
 }
 
-bool Road::canBuild( CityPtr city, const TilePos& pos ) const
+bool Road::canBuild(PlayerCityPtr city, const TilePos& pos ) const
 {
   bool is_free = Construction::canBuild( city, pos );
 
@@ -245,7 +245,7 @@ Picture Plaza::computePicture()
 // Also in original game there was a bug:
 // gamer could place any number of plazas on one road tile (!!!)
 
-bool Plaza::canBuild( CityPtr city, const TilePos& pos ) const
+bool Plaza::canBuild(PlayerCityPtr city, const TilePos& pos ) const
 {
   //std::cout << "Plaza::canBuild" << std::endl;
   Tilemap& tilemap = city->getTilemap();

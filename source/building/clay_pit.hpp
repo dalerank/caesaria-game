@@ -23,7 +23,7 @@ class ClayPit : public Factory
 public:
   ClayPit();
   
-  bool canBuild( CityPtr city, const TilePos& pos ) const;  // returns true if it can be built there
+  bool canBuild( PlayerCityPtr city, const TilePos& pos ) const;  // returns true if it can be built there
   void timeStep( const unsigned long time );
 };
 

@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_FESTIVAL_PLANING_WINDOW_H_INCLUDED__
 
 #include "core/scopedptr.hpp"
-#include "core/predefinitions.hpp"
+#include "game/predefinitions.hpp"
 #include "widget.hpp"
 #include "core/signals.hpp"
 
@@ -27,7 +27,7 @@ namespace gui
 class FestivalPlaningWindow : public Widget
 {
 public:
-  static FestivalPlaningWindow* create( Widget* parent, CityPtr city, int id );
+  static FestivalPlaningWindow* create( Widget* parent, PlayerCityPtr city, int id );
   ~FestivalPlaningWindow();
 
   virtual void draw( GfxEngine& painter );
@@ -38,7 +38,7 @@ public oc3_signals:
   Signal2<int,int>& onFestivalAssign();
 
 private:
-  FestivalPlaningWindow( Widget* parent, int id, const Rect& rectangle, CityPtr city );
+  FestivalPlaningWindow( Widget* parent, int id, const Rect& rectangle, PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;

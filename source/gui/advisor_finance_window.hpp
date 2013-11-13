@@ -19,7 +19,7 @@
 #include "widget.hpp"
 #include "core/scopedptr.hpp"
 #include "core/signals.hpp"
-#include "core/predefinitions.hpp"
+#include "game/predefinitions.hpp"
 
 namespace gui
 {
@@ -27,7 +27,7 @@ namespace gui
 class AdvisorFinanceWindow : public Widget
 {
 public:
-  AdvisorFinanceWindow( CityPtr city, Widget* parent, int id );
+  AdvisorFinanceWindow( PlayerCityPtr city, Widget* parent, int id );
 
   void draw( GfxEngine& painter );
 

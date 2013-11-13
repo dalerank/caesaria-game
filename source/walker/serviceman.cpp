@@ -36,7 +36,7 @@ public:
   int maxDistance;
 };
 
-ServiceWalker::ServiceWalker( CityPtr city, const Service::Type service)
+ServiceWalker::ServiceWalker(PlayerCityPtr city, const Service::Type service)
   : Walker( city ), _d( new Impl )
 {
   _setType( walker::serviceman );
@@ -359,7 +359,7 @@ float ServiceWalker::getServiceValue() const
   return 100;
 }
 
-ServiceWalkerPtr ServiceWalker::create( CityPtr city, const Service::Type service )
+ServiceWalkerPtr ServiceWalker::create(PlayerCityPtr city, const Service::Type service )
 {
   ServiceWalkerPtr ret( new ServiceWalker( city, service ) );
   ret->drop();

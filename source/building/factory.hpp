@@ -75,14 +75,14 @@ class TimberLogger : public Factory
 {
 public:
    TimberLogger();
-   virtual bool canBuild(CityPtr city, const TilePos& pos ) const;  // returns true if it can be built there
+   virtual bool canBuild(PlayerCityPtr city, const TilePos& pos ) const;  // returns true if it can be built there
 };
 
 class IronMine : public Factory
 {
 public:
    IronMine();
-   bool canBuild(CityPtr city, const TilePos& pos ) const;  // returns true if it can be built there
+   bool canBuild(PlayerCityPtr city, const TilePos& pos ) const;  // returns true if it can be built there
 };
 
 class WeaponsWorkshop : public Factory
@@ -90,13 +90,13 @@ class WeaponsWorkshop : public Factory
 public:
    WeaponsWorkshop();
 
-   virtual bool canBuild(CityPtr city, const TilePos &pos) const;
+   virtual bool canBuild(PlayerCityPtr city, const TilePos &pos) const;
 };
 
 class WorkshopFurniture : public Factory
 {
 public:
-  virtual bool canBuild(CityPtr city, const TilePos &pos) const;
+  virtual bool canBuild(PlayerCityPtr city, const TilePos &pos) const;
 
   WorkshopFurniture();
 };
@@ -105,7 +105,7 @@ class Winery : public Factory
 {
 public:
    Winery();
-   virtual bool canBuild(CityPtr city, const TilePos &pos) const;
+   virtual bool canBuild(PlayerCityPtr city, const TilePos &pos) const;
 };
 
 class Creamery : public Factory
@@ -113,7 +113,7 @@ class Creamery : public Factory
 public:
    Creamery();
 
-   virtual bool canBuild(CityPtr city, const TilePos &pos) const;
+   virtual bool canBuild(PlayerCityPtr city, const TilePos &pos) const;
 };
 
 #endif

@@ -22,7 +22,7 @@
 
 using namespace constants;
 
-Ship::Ship( CityPtr city )
+Ship::Ship(PlayerCityPtr city )
   : Walker( city )
 {
   _setType( walker::unknown );

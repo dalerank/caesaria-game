@@ -61,8 +61,8 @@ public:
   GfxEngine* engine;
   gui::GuiEnv* gui;
 
-  EmpirePtr empire;
-  CityPtr city;
+  world::EmpirePtr empire;
+  PlayerCityPtr city;
   PlayerPtr player;
 
   bool loadOk;
@@ -259,8 +259,8 @@ void Game::setScreenGame()
 }
 
 PlayerPtr Game::getPlayer() const { return _d->player; }
-CityPtr Game::getCity() const { return _d->city; }
-EmpirePtr Game::getEmpire() const { return _d->empire; }
+PlayerCityPtr Game::getCity() const { return _d->city; }
+world::EmpirePtr Game::getEmpire() const { return _d->empire; }
 gui::GuiEnv* Game::getGui() const { return _d->gui; }
 GfxEngine*Game::getEngine() const { return _d->engine; }
 bool Game::isPaused() const { return _d->pauseCounter>0; }
@@ -333,7 +333,7 @@ void Game::load(std::string filename)
     return;
   }
 
-  _d->empire->initPlayerCity( _d->city.as<EmpireCity>() );
+  _d->empire->initPlayerCity( _d->city.as<world::City>() );
 
   TileOverlayList& llo = _d->city->getOverlays();
   foreach( TileOverlayPtr overlay, llo )
@@ -397,7 +397,7 @@ void Game::exec()
 
 void Game::reset()
 {
-  _d->empire = Empire::create();
+  _d->empire = world::Empire::create();
   _d->player = Player::create();
   _d->city = PlayerCity::create( _d->empire, _d->player );
 }

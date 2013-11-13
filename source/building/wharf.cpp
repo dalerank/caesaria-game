@@ -34,7 +34,7 @@ public:
   Direction direction;
   FishingBoatPtr boat;
 
-  Direction getDirection( CityPtr city, TilePos pos )
+  Direction getDirection( PlayerCityPtr city, TilePos pos )
   {
     Tilemap& tilemap = city->getTilemap();
     Tile& t00 = tilemap.at( pos );
@@ -76,7 +76,7 @@ Wharf::Wharf() : Factory(Good::none, Good::fish, building::wharf, Size(2)), _d( 
   setPicture( ResourceGroup::wharf, Impl::northEastPic );
 }
 
-bool Wharf::canBuild( CityPtr city, const TilePos& pos ) const
+bool Wharf::canBuild( PlayerCityPtr city, const TilePos& pos ) const
 {
   bool is_constructible = true;//Construction::canBuild( city, pos );
 
@@ -87,7 +87,7 @@ bool Wharf::canBuild( CityPtr city, const TilePos& pos ) const
   return (is_constructible && direction != noneDirection );
 }
 
-void Wharf::build(CityPtr city, const TilePos& pos)
+void Wharf::build(PlayerCityPtr city, const TilePos& pos)
 {
   _setDirection( _d->getDirection( city, pos ) );
 

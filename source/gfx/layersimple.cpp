@@ -80,7 +80,7 @@ void LayerSimple::drawTile( GfxEngine& engine, Tile& tile, Point offset )
   }
 }
 
-LayerPtr LayerSimple::create(CityRenderer* renderer, CityPtr city)
+LayerPtr LayerSimple::create(CityRenderer* renderer, PlayerCityPtr city)
 {
   LayerSimple* l = new LayerSimple();
   l->_renderer = renderer;

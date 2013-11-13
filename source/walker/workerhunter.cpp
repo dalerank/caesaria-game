@@ -28,15 +28,15 @@
 
 using namespace constants;
 
-WorkersHunter::WorkersHunter( CityPtr city )
- : ServiceWalker( city, Service::workersRecruter )
+Recruter::Recruter(PlayerCityPtr city )
+ : ServiceWalker( city, Service::recruter )
 {    
     _workersNeeded = 0;
     _setAnimation( gfx::citizen );
     _setType( walker::recruter );
 }
 
-void WorkersHunter::hireWorkers( const int workers )
+void Recruter::hireWorkers( const int workers )
 {
   WorkingBuildingPtr wbase = getBase().as<WorkingBuilding>();
   if( wbase.isValid() ) 
@@ -46,12 +46,12 @@ void WorkersHunter::hireWorkers( const int workers )
   }
 }
 
-int WorkersHunter::getWorkersNeeded() const
+int Recruter::getWorkersNeeded() const
 {
     return _workersNeeded;
 }
 
-void WorkersHunter::onNewTile()
+void Recruter::onNewTile()
 {
   Walker::onNewTile();
 
@@ -73,20 +73,20 @@ void WorkersHunter::onNewTile()
   }
 }
 
-WorkersHunterPtr WorkersHunter::create( CityPtr city )
+RecruterPtr Recruter::create(PlayerCityPtr city )
 { 
-  WorkersHunterPtr ret( new WorkersHunter( city ) );
+  RecruterPtr ret( new Recruter( city ) );
   ret->drop();
   return ret;
 }
 
-void WorkersHunter::send2City( WorkingBuildingPtr building, const int workersNeeded )
+void Recruter::send2City( WorkingBuildingPtr building, const int workersNeeded )
 {
   _workersNeeded = workersNeeded;
   ServiceWalker::send2City( building.as< Building >() );
 }
 
-void WorkersHunter::die()
+void Recruter::die()
 {
   ServiceWalker::die();
 

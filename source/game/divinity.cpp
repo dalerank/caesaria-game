@@ -55,7 +55,7 @@ public:
   virtual float getDefaultDecrease() const { return 2.f; }
   virtual DateTime getLastFestivalDate() const { return _lastFestival; }
 
-  virtual void updateRelation( float income, CityPtr city )
+  virtual void updateRelation( float income, PlayerCityPtr city )
   {
     _relation = math::clamp<float>( _relation + income - getDefaultDecrease(), 0, 100 );
   }
@@ -93,7 +93,7 @@ public:
     return ret;
   }
 
-  virtual void updateRelation(float income, CityPtr city)
+  virtual void updateRelation(float income, PlayerCityPtr city)
   {
     RomeDivinityBase::updateRelation( income, city );
 

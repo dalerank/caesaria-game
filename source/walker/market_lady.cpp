@@ -44,7 +44,7 @@ public:
   long reservationID;
 };
 
-MarketLady::MarketLady( CityPtr city )
+MarketLady::MarketLady(PlayerCityPtr city )
   : Walker( city ), _d( new Impl )
 {
    _setAnimation( gfx::marketlady );
@@ -303,7 +303,7 @@ void MarketLady::load( const VariantMap& stream)
   _d->reservationID = stream.get( "reserationId" ).toInt();
 }
 
-MarketLadyPtr MarketLady::create( CityPtr city )
+MarketLadyPtr MarketLady::create( PlayerCityPtr city )
 {
   MarketLadyPtr ret( new MarketLady( city ) );
   ret->drop();

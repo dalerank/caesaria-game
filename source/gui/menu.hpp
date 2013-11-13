@@ -19,7 +19,7 @@
 #include "gui/widget.hpp"
 #include "core/signals.hpp"
 #include "core/scopedptr.hpp"
-#include "core/predefinitions.hpp"
+#include "game/predefinitions.hpp"
 
 namespace gui
 {
@@ -29,7 +29,7 @@ class PushButton;
 class Menu : public Widget
 {
 public:
-    static Menu* create( Widget* parent, int id, CityPtr city );
+    static Menu* create( Widget* parent, int id, PlayerCityPtr city );
 
     // draw on screen
     void draw( GfxEngine& engine );
@@ -39,7 +39,7 @@ public:
     bool unselectAll();
 
 oc3_signals public:
-    Signal1< int >& onCreateConstruction();
+    Signal1<int>& onCreateConstruction();
     Signal0<>& onRemoveTool();
     Signal0<>& onMaximize();
 
@@ -57,7 +57,7 @@ protected:
 class ExtentMenu : public Menu
 {
 public:
-  static ExtentMenu* create( Widget* parent, int id, CityPtr city );
+  static ExtentMenu* create( Widget* parent, int id, PlayerCityPtr city );
 
   void minimize();
   void maximize();

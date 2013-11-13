@@ -33,10 +33,10 @@ class CityServiceWorkersHire::Impl
 public:
   Priorities priorities;
   WalkerList hrInCity;
-  CityPtr city;
+  PlayerCityPtr city;
 };
 
-CityServicePtr CityServiceWorkersHire::create( CityPtr city )
+CityServicePtr CityServiceWorkersHire::create(PlayerCityPtr city )
 {
   CityServicePtr ret( new CityServiceWorkersHire( city ));
   ret->drop();
@@ -44,7 +44,7 @@ CityServicePtr CityServiceWorkersHire::create( CityPtr city )
   return ret;
 }
 
-CityServiceWorkersHire::CityServiceWorkersHire( CityPtr city )
+CityServiceWorkersHire::CityServiceWorkersHire(PlayerCityPtr city )
 : CityService( "workershire" ), _d( new Impl )
 {
   _d->city = city;
@@ -85,7 +85,7 @@ bool CityServiceWorkersHire::_haveHr( WorkingBuildingPtr building )
 {
   foreach( WalkerPtr walker, _d->hrInCity )
   {
-    SmartPtr<WorkersHunter> hr = walker.as<WorkersHunter>();
+    SmartPtr<Recruter> hr = walker.as<Recruter>();
     if( hr.isValid() )
     {
       if( hr->getBase() == building.as<Building>() )
@@ -107,7 +107,7 @@ void CityServiceWorkersHire::_hireByType(const TileOverlay::Type type )
 
     if( wrkbld->getAccessRoads().size() > 0 && wrkbld->getWorkersCount() < wrkbld->getMaxWorkers() )
     {
-      WorkersHunterPtr hr = WorkersHunter::create( _d->city );
+      RecruterPtr hr = Recruter::create( _d->city );
       hr->setMaxDistance( 20 );
       hr->send2City( wrkbld, wrkbld->getMaxWorkers() - wrkbld->getWorkersCount());
     }

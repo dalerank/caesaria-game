@@ -67,7 +67,7 @@ public:
     return true;
   }
 
-  void build( CityPtr city, const TilePos& pos )
+  void build( PlayerCityPtr city, const TilePos& pos )
   {
     _picture = Picture::load( ResourceGroup::transport, _index % 100 );
     checkSecondPart();
@@ -135,7 +135,7 @@ public:
   }
 };
 
-bool HighBridge::canBuild( CityPtr city, const TilePos& pos ) const
+bool HighBridge::canBuild(PlayerCityPtr city, const TilePos& pos ) const
 {
   //bool is_constructible = Construction::canBuild( pos );
 
@@ -166,7 +166,7 @@ void HighBridge::initTerrain(Tile& terrain )
 
 }
 
-void HighBridge::_computePictures( CityPtr city, const TilePos& startPos, const TilePos& endPos, Direction dir )
+void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, const TilePos& endPos, Direction dir )
 {
   Tilemap& tilemap = city->getTilemap();
   //Picture& water = Picture::load( "land1a", 120 );
@@ -271,7 +271,7 @@ void HighBridge::_computePictures( CityPtr city, const TilePos& startPos, const 
   }
 }
 
-void HighBridge::_checkParams(CityPtr city, Direction& direction, TilePos& start, TilePos& stop, const TilePos& curPos ) const
+void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos& start, TilePos& stop, const TilePos& curPos ) const
 {
   start = curPos;
 
@@ -347,7 +347,7 @@ void HighBridge::_checkParams(CityPtr city, Direction& direction, TilePos& start
   }
 }
 
-void HighBridge::build( CityPtr city, const TilePos& pos )
+void HighBridge::build(PlayerCityPtr city, const TilePos& pos )
 {
   TilePos endPos, startPos;
   _d->direction=noneDirection;
@@ -380,7 +380,7 @@ void HighBridge::build( CityPtr city, const TilePos& pos )
 
 void HighBridge::destroy()
 { 
-  CityPtr city = _getCity();
+  PlayerCityPtr city = _getCity();
   foreach( HighBridgeSubTilePtr subtile,  _d->subtiles )
   {
     subtile->_parent = 0;

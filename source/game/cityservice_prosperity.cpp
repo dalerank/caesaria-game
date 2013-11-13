@@ -31,7 +31,7 @@ using namespace  constants;
 class CityServiceProsperity::Impl
 {
 public:
-  CityPtr city;
+  PlayerCityPtr city;
   DateTime lastDate;
   int prosperity;
   int houseCapTrand;
@@ -44,7 +44,7 @@ public:
   int percentPlebs;
 };
 
-CityServicePtr CityServiceProsperity::create( CityPtr city )
+CityServicePtr CityServiceProsperity::create(PlayerCityPtr city )
 {
   CityServicePtr ret( new CityServiceProsperity( city ) );
   ret->drop();
@@ -52,7 +52,7 @@ CityServicePtr CityServiceProsperity::create( CityPtr city )
   return ret;
 }
 
-CityServiceProsperity::CityServiceProsperity( CityPtr city )
+CityServiceProsperity::CityServiceProsperity(PlayerCityPtr city )
   : CityService( getDefaultName() ), _d( new Impl )
 {
   _d->city = city;

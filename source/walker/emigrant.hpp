@@ -28,7 +28,7 @@ class Emigrant : public Immigrant
 public:
   typedef enum { G_EMIGRANT_CART1 = Good::goodCount, G_EMIGRANT_CART2, CT_MAX } CartType;
 
-  static EmigrantPtr create( CityPtr city);
+  static EmigrantPtr create( PlayerCityPtr city);
 
   virtual void getPictureList(std::vector<Picture> &oPics);
   virtual void onNewDirection();
@@ -40,7 +40,7 @@ public:
 protected:
   const Picture& getCartPicture();
 
-  Emigrant( CityPtr city );
+  Emigrant( PlayerCityPtr city );
 };
 
 #endif

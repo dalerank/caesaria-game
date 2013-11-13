@@ -47,7 +47,7 @@ public:
   PrefectAction action;
 };
 
-Prefect::Prefect( CityPtr city )
+Prefect::Prefect(PlayerCityPtr city )
 : ServiceWalker( city, Service::prefect ), _d( new Impl )
 {
   _setType( walker::prefect );
@@ -373,7 +373,7 @@ float Prefect::getServiceValue() const
   return 5;
 }
 
-PrefectPtr Prefect::create( CityPtr city )
+PrefectPtr Prefect::create(PlayerCityPtr city )
 {
   PrefectPtr ret( new Prefect( city ) );
   ret->drop();

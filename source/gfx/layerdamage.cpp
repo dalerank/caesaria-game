@@ -99,7 +99,7 @@ void LayerDamage::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   }
 }
 
-LayerPtr LayerDamage::create(CityRenderer* renderer, CityPtr city)
+LayerPtr LayerDamage::create(CityRenderer* renderer, PlayerCityPtr city)
 {
   LayerDamage* l = new LayerDamage();
   l->_renderer = renderer;

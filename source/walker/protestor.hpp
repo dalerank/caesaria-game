@@ -21,7 +21,7 @@
 class Protestor : public Walker
 {
 public:
-  static ProtestorPtr create( CityPtr city );
+  static ProtestorPtr create( PlayerCityPtr city );
   virtual ~Protestor();
 
   virtual void onNewTile();
@@ -35,7 +35,7 @@ public:
   virtual void load(const VariantMap &stream);
 
 private:
-  Protestor( CityPtr city );
+  Protestor( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr<Impl> _d;

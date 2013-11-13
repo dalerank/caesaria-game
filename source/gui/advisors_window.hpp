@@ -28,23 +28,7 @@ class PushButton;
 class AdvisorsWindow : public Widget
 {
 public:
-  /*typedef enum
-  {
-    ADV_EMPLOYERS=0,
-    ADV_LEGION,
-    ADV_EMPIRE,
-    ADV_RATINGS,
-    ADV_TRADING,
-    ADV_POPULATION,
-    ADV_HEALTH,
-    ADV_EDUCATION,
-    ADV_ENTERTAINMENT,
-    ADV_RELIGION,
-    ADV_FINANCE,
-    ADV_MAIN,
-    ADV_COUNT
-  } Type;*/
-  static AdvisorsWindow* create( Widget* parent, int id, const AdvisorType type, CityPtr city  );
+  static AdvisorsWindow* create(Widget* parent, int id, const AdvisorType type, PlayerCityPtr city  );
 
   // draw on screen
   void draw( GfxEngine& engine );

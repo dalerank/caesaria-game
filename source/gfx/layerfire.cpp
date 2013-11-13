@@ -105,7 +105,7 @@ void LayerFire::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   }
 }
 
-LayerPtr LayerFire::create(CityRenderer* renderer, CityPtr city)
+LayerPtr LayerFire::create(CityRenderer* renderer, PlayerCityPtr city)
 {
   LayerFire* l = new LayerFire();
   l->_renderer = renderer;

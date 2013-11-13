@@ -22,7 +22,7 @@
 class Ship : public Walker
 {
 public:
-  Ship( CityPtr city );
+  Ship( PlayerCityPtr city );
 
   virtual void die();
   virtual ~Ship();

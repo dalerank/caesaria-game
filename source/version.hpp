@@ -20,7 +20,7 @@
 
 #define OC3_VERSION_MAJOR 0
 #define OC3_VERSION_MINOR 2
-#define OC3_VERSION_REVSN 886
+#define OC3_VERSION_REVSN 887
 
 #define OC3_STR_EXT(__A) #__A
 #define OC3_STR_A(__A) OC3_STR_EXT(__A)

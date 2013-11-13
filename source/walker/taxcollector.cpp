@@ -49,7 +49,7 @@ void TaxCollector::onMidTile()
   }
 }
 
-TaxCollectorPtr TaxCollector::create( CityPtr city )
+TaxCollectorPtr TaxCollector::create(PlayerCityPtr city )
 {
   TaxCollectorPtr tc( new TaxCollector( city ) );
   tc->drop();
@@ -57,7 +57,7 @@ TaxCollectorPtr TaxCollector::create( CityPtr city )
   return tc;
 }
 
-TaxCollector::TaxCollector( CityPtr city ) : ServiceWalker( city, Service::forum ), _d( new Impl )
+TaxCollector::TaxCollector(PlayerCityPtr city ) : ServiceWalker( city, Service::forum ), _d( new Impl )
 {
   _d->money = 0;
   _setType( walker::taxCollector );

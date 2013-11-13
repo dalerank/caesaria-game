@@ -23,7 +23,7 @@
 class Animal : public Walker
 {
 public:
-  Animal( CityPtr city );
+  Animal( PlayerCityPtr city );
   ~Animal();
 
   virtual void send2City(const TilePos& start );
@@ -41,7 +41,7 @@ protected:
 class Sheep : public Animal
 {
 public:
-  static WalkerPtr create( CityPtr city );
+  static WalkerPtr create( PlayerCityPtr city );
 
   virtual void send2City(const TilePos& start);
   virtual void onDestination();
@@ -49,7 +49,7 @@ public:
   virtual void die();
 
 private:
-  Sheep( CityPtr city );
+  Sheep( PlayerCityPtr city );
 };
 
 #endif //__OPENCAESAR3_ANIMAL_H_INCLUDED__

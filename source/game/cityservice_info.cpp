@@ -44,12 +44,12 @@ public:
 class CityServiceInfo::Impl
 {
 public:
-  CityPtr city;
+  PlayerCityPtr city;
   DateTime lastDate;
   std::vector< CityParameters > params;
 };
 
-CityServicePtr CityServiceInfo::create( CityPtr city )
+CityServicePtr CityServiceInfo::create(PlayerCityPtr city )
 {
   CityServicePtr ret( new CityServiceInfo( city ) );
   ret->drop();
@@ -57,7 +57,7 @@ CityServicePtr CityServiceInfo::create( CityPtr city )
   return ret;
 }
 
-CityServiceInfo::CityServiceInfo( CityPtr city )
+CityServiceInfo::CityServiceInfo( PlayerCityPtr city )
   : CityService( "info" ), _d( new Impl )
 {
   _d->city = city;

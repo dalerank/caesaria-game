@@ -36,7 +36,7 @@ public:
   typedef std::list< Pathway > PathWayList;
   //typedef std::list<PathWay> Ways;
   
-  Propagator( CityPtr city );
+  Propagator( PlayerCityPtr city );
   ~Propagator();
 
   void setAllLands(const bool value);

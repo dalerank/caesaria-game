@@ -24,8 +24,8 @@
 class Immigrant : public Walker
 {
 public:
-  static ImmigrantPtr create( CityPtr city );
-  static bool send2City( CityPtr city, const CitizenGroup& peoples, Tile& startTile );
+  static ImmigrantPtr create( PlayerCityPtr city );
+  static bool send2City( PlayerCityPtr city, const CitizenGroup& peoples, Tile& startTile );
 
   void send2City( Tile& startTile );
   void setPeoples( const CitizenGroup& peoples );
@@ -42,7 +42,7 @@ protected:
   void setCartPicture( const Picture& pic );
   virtual const Picture& getCartPicture();
   
-  Immigrant( CityPtr city );
+  Immigrant( PlayerCityPtr city );
 
   HousePtr _findBlankHouse();
   void _findPath2blankHouse( Tile& startPoint );

@@ -24,7 +24,7 @@ class Propagator;
 class TraineeWalker : public Walker
 {
 public:
-  static TraineeWalkerPtr create( CityPtr city, constants::walker::Type traineeType );
+  static TraineeWalkerPtr create( PlayerCityPtr city, constants::walker::Type traineeType );
 
   void checkDestination(const TileOverlay::Type buildingType, Propagator& pathPropagator);
   void send2City();
@@ -37,7 +37,7 @@ public:
   void load( const VariantMap& stream);
 
 protected:
-  TraineeWalker( CityPtr city, constants::walker::Type traineeType);
+  TraineeWalker( PlayerCityPtr city, constants::walker::Type traineeType);
   void init(constants::walker::Type traineeType);
 
 private:

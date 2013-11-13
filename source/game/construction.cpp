@@ -43,7 +43,7 @@ Construction::~Construction()
 
 }
 
-bool Construction::canBuild( CityPtr city, const TilePos& pos ) const
+bool Construction::canBuild(PlayerCityPtr city, const TilePos& pos ) const
 {
   Tilemap& tilemap = city->getTilemap();
 
@@ -66,7 +66,7 @@ bool Construction::canBuild( CityPtr city, const TilePos& pos ) const
 
 std::string Construction::getError() const { return ""; }
 
-void Construction::build( CityPtr city, const TilePos& pos )
+void Construction::build(PlayerCityPtr city, const TilePos& pos )
 {
   TileOverlay::build( city, pos );
 

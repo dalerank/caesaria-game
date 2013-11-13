@@ -42,7 +42,7 @@ class Walker : public Serializable, public ReferenceCounted
 public:
   typedef enum { acNone, acMove, acFight, acDie, acMax } Action;
 
-  Walker( CityPtr city );
+  Walker( PlayerCityPtr city );
   virtual ~Walker();
 
   virtual void timeStep(const unsigned long time);  // performs one simulation step
@@ -108,7 +108,7 @@ protected:
    void _setAnimation( constants::gfx::Type type );
    constants::gfx::Type _getAnimationType() const;
    void _setType( constants::walker::Type type );
-   CityPtr _getCity() const;
+   PlayerCityPtr _getCity() const;
    void _setHealth( double value );
    void _updateAnimation(const unsigned int time);
 
@@ -127,15 +127,6 @@ private:
 private:   
   class Impl;
   ScopedPtr< Impl > _d;
-};
-
-/** Soldier, friend or enemy */
-class Soldier : public Walker
-{
-public:
-   Soldier(CityPtr city);
-private:
-
 };
 
 class WalkerHelper

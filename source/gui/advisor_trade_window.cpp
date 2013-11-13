@@ -128,7 +128,7 @@ oc3_signals private:
 class EmpirePricesWindow : public Widget
 {
 public:
-  EmpirePricesWindow( Widget* parent, int id, const Rect& rectangle, CityPtr city  ) 
+  EmpirePricesWindow( Widget* parent, int id, const Rect& rectangle, PlayerCityPtr city  )
     : Widget( parent, id, rectangle )
   {
     background.reset( Picture::create( getSize() ) );
@@ -198,7 +198,7 @@ public:
   PushButton* btnEmpireMap;
   PushButton* btnPrices; 
   GroupBox* gbInfo;
-  CityPtr city;
+  PlayerCityPtr city;
 
   bool getWorkState( Good::Type gtype );
   int  getStackedGoodsQty( Good::Type gtype );
@@ -274,7 +274,7 @@ public:
 class GoodOrderManageWindow : public Widget
 {
 public:
-  GoodOrderManageWindow( Widget* parent, const Rect& rectangle, CityPtr city, Good::Type type, int stackedGoods )
+  GoodOrderManageWindow( Widget* parent, const Rect& rectangle, PlayerCityPtr city, Good::Type type, int stackedGoods )
     : Widget( parent, -1, rectangle )
   {
     _city = city;
@@ -437,7 +437,7 @@ oc3_signals public:
   Signal0<>& onOrderChanged() { return _onOrderChangedSignal; }
 
 private:
-  CityPtr _city;
+  PlayerCityPtr _city;
   Good::Type _type;
   PictureRef _background;
   TradeStateButton* _btnTradeState;
@@ -527,7 +527,7 @@ void AdvisorTradeWindow::Impl::showGoodsPriceWindow()
                                                    ( parent->getHeight() - size.getHeight() ) / 2), size ), city );
 }
 
-AdvisorTradeWindow::AdvisorTradeWindow( CityPtr city, Widget* parent, int id ) 
+AdvisorTradeWindow::AdvisorTradeWindow(PlayerCityPtr city, Widget* parent, int id )
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),

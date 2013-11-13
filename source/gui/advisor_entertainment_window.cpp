@@ -99,7 +99,7 @@ private:
 class AdvisorEntertainmentWindow::Impl
 {
 public:
-  CityPtr city;
+  PlayerCityPtr city;
 
   EntertainmentInfoLabel* lbTheatresInfo;
   EntertainmentInfoLabel* lbAmphitheatresInfo;
@@ -113,14 +113,14 @@ public:
   Label* lbMonthFromLastFestival;
   SmartPtr<CityServiceFestival> srvc;
 
-  InfrastructureInfo getInfo( CityPtr city, const TileOverlay::Type service );
+  InfrastructureInfo getInfo( PlayerCityPtr city, const TileOverlay::Type service );
   void assignFestival(int divinityType, int festSize);
   void updateInfo();
   void updateFestivalInfo();
 };
 
 
-AdvisorEntertainmentWindow::AdvisorEntertainmentWindow( CityPtr city, Widget* parent, int id ) 
+AdvisorEntertainmentWindow::AdvisorEntertainmentWindow(PlayerCityPtr city, Widget* parent, int id )
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   _d->city = city;
@@ -172,7 +172,7 @@ void AdvisorEntertainmentWindow::_showFestivalWindow()
   CONNECT( wnd, onFestivalAssign(), _d.data(), Impl::assignFestival );
 }
 
-InfrastructureInfo AdvisorEntertainmentWindow::Impl::getInfo(CityPtr city, const TileOverlay::Type service)
+InfrastructureInfo AdvisorEntertainmentWindow::Impl::getInfo(PlayerCityPtr city, const TileOverlay::Type service)
 {
   CityHelper helper( city );
 

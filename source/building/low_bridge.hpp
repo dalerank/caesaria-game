@@ -25,14 +25,14 @@ class LowBridge : public Construction
 public:
   LowBridge();
 
-  bool canBuild(CityPtr city, const TilePos& pos ) const;
+  bool canBuild(PlayerCityPtr city, const TilePos& pos ) const;
   void initTerrain( Tile& terrain );
-  void build( CityPtr city, const TilePos& pos );
+  void build( PlayerCityPtr city, const TilePos& pos );
   void destroy();
 
 private:
-  void _computePictures( CityPtr city, const TilePos& startPos, const TilePos& endPos, constants::Direction dir );
-  void _checkParams( CityPtr city, constants::Direction& direction, TilePos& start, TilePos& stop, const TilePos& curPos ) const;
+  void _computePictures( PlayerCityPtr city, const TilePos& startPos, const TilePos& endPos, constants::Direction dir );
+  void _checkParams( PlayerCityPtr city, constants::Direction& direction, TilePos& start, TilePos& stop, const TilePos& curPos ) const;
 
   class Impl;
   ScopedPtr< Impl > _d;

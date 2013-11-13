@@ -136,7 +136,7 @@ Theater::Theater() : EntertainmentBuilding(Service::theater, building::theater, 
   _fgPicturesRef().resize(2);
 }
 
-void Theater::build(CityPtr city, const TilePos& pos)
+void Theater::build(PlayerCityPtr city, const TilePos& pos)
 {
   ServiceBuilding::build( city, pos );
 
@@ -178,7 +178,7 @@ Amphitheater::Amphitheater() : EntertainmentBuilding(Service::amphitheater, buil
   //_fgPictures[0] = Picture::load( ResourceGroup::entertaiment, 12);
 }
 
-void Amphitheater::build(CityPtr city, const TilePos& pos)
+void Amphitheater::build(PlayerCityPtr city, const TilePos& pos)
 {
   EntertainmentBuilding::build( city, pos );
 

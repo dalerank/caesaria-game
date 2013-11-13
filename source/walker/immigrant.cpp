@@ -39,7 +39,7 @@ public:
   int stamina;
 };
 
-Immigrant::Immigrant( CityPtr city )
+Immigrant::Immigrant(PlayerCityPtr city )
   : Walker( city ), _d( new Impl )
 {
   _setType( walker::immigrant );
@@ -137,14 +137,14 @@ void Immigrant::onDestination()
   }
 }
 
-ImmigrantPtr Immigrant::create( CityPtr city )
+ImmigrantPtr Immigrant::create(PlayerCityPtr city )
 {
   ImmigrantPtr newImmigrant( new Immigrant( city ) );
   newImmigrant->drop(); //delete automatically
   return newImmigrant;
 }
 
-bool Immigrant::send2City( CityPtr city, const CitizenGroup& peoples, Tile& startTile )
+bool Immigrant::send2City( PlayerCityPtr city, const CitizenGroup& peoples, Tile& startTile )
 {
   if( peoples.count() > 0 )
   {

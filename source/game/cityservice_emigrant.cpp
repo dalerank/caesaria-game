@@ -32,10 +32,10 @@ using namespace constants;
 class CityServiceEmigrant::Impl
 {
 public:
-  CityPtr city;
+  PlayerCityPtr city;
 };
 
-CityServicePtr CityServiceEmigrant::create( CityPtr city )
+CityServicePtr CityServiceEmigrant::create(PlayerCityPtr city )
 {
   CityServicePtr ret( new CityServiceEmigrant( city ) );
   ret->drop();
@@ -43,7 +43,7 @@ CityServicePtr CityServiceEmigrant::create( CityPtr city )
   return ret;
 }
 
-CityServiceEmigrant::CityServiceEmigrant( CityPtr city )
+CityServiceEmigrant::CityServiceEmigrant( PlayerCityPtr city )
 : CityService( "emigration" ), _d( new Impl )
 {
   _d->city = city;

@@ -50,7 +50,7 @@ ServiceHelper::ServiceHelper() : EnumsHelper<Service::Type>( Service::srvCount )
   append( Service::colloseum, "srvc_collosseum" );
   append( Service::hippodrome, "srvc_hippodrome" );
   append( Service::burningRuins, "srvc_burning_ruins" );
-  append( Service::workersRecruter, "srvc_workers_hunter" );
+  append( Service::recruter, "srvc_workers_hunter" );
   append( Service::srvCount, "srvc_none" );
 }
 

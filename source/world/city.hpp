@@ -19,12 +19,16 @@
 #include "core/scopedptr.hpp"
 #include "core/referencecounted.hpp"
 #include "core/position.hpp"
-#include "core/predefinitions.hpp"
+#include "predefinitions.hpp"
 #include "core/serializer.hpp"
+
 
 class GoodStore;
 
-class EmpireCity : public ReferenceCounted, public Serializable
+namespace world
+{
+
+class City : public ReferenceCounted, public Serializable
 {
 public:
   virtual std::string getName() const = 0;
@@ -35,12 +39,14 @@ public:
   virtual void timeStep( unsigned int time ) = 0;  
   virtual bool isAvailable() const { return true; }
   virtual void setAvailable( bool value ) {}
-  virtual void resolveMerchantArrived( EmpireMerchantPtr ) = 0;
+  virtual void resolveMerchantArrived( MerchantPtr ) = 0;
 
   virtual EmpirePtr getEmpire() const = 0;
 
   virtual const GoodStore& getSells() const = 0;
   virtual const GoodStore& getBuys() const = 0;
 };
+
+}//end namespace world
 
 #endif //__OPENCAESAR3_EMPIRECITY_H_INCLUDED__

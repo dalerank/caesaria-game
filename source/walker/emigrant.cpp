@@ -24,7 +24,7 @@
 
 using namespace constants;
 
-Emigrant::Emigrant( CityPtr city ) : Immigrant( city )
+Emigrant::Emigrant( PlayerCityPtr city ) : Immigrant( city )
 {
   CitizenGroup peoples;
   peoples[ CitizenGroup::matureMin ] = 2;
@@ -95,7 +95,7 @@ void Emigrant::die()
   Corpse::create( _getCity(), getIJ(), ResourceGroup::citizen1, 1129, 1136 );
 }
 
-EmigrantPtr Emigrant::create( CityPtr city )
+EmigrantPtr Emigrant::create(PlayerCityPtr city )
 {
   EmigrantPtr newEmigrant( new Emigrant( city ) );
   newEmigrant->drop();

@@ -49,7 +49,7 @@ public:
     return true;
   }
 
-  void build( CityPtr city, const TilePos& pos )
+  void build( PlayerCityPtr city, const TilePos& pos )
   {
     Construction::build( city, pos );
     _fgPicturesRef().clear();
@@ -118,7 +118,7 @@ public:
   }
 };
 
-bool LowBridge::canBuild( CityPtr city, const TilePos& pos ) const
+bool LowBridge::canBuild(PlayerCityPtr city, const TilePos& pos ) const
 {
   //bool is_constructible = Construction::canBuild( pos );
 
@@ -149,7 +149,7 @@ void LowBridge::initTerrain(Tile& terrain )
 
 }
 
-void LowBridge::_computePictures( CityPtr city, const TilePos& startPos, const TilePos& endPos, constants::Direction dir )
+void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, const TilePos& endPos, constants::Direction dir )
 {
   Tilemap& tilemap = city->getTilemap();
   //Picture& water = Picture::load( "land1a", 120 );
@@ -237,7 +237,7 @@ void LowBridge::_computePictures( CityPtr city, const TilePos& startPos, const T
   }
 }
 
-void LowBridge::_checkParams( CityPtr city, constants::Direction& direction, TilePos& start, TilePos& stop, const TilePos& curPos ) const
+void LowBridge::_checkParams(PlayerCityPtr city, constants::Direction& direction, TilePos& start, TilePos& stop, const TilePos& curPos ) const
 {
   start = curPos;
 
@@ -313,7 +313,7 @@ void LowBridge::_checkParams( CityPtr city, constants::Direction& direction, Til
   }
 }
 
-void LowBridge::build( CityPtr city, const TilePos& pos )
+void LowBridge::build(PlayerCityPtr city, const TilePos& pos )
 {
   TilePos endPos, startPos;
   _d->direction=noneDirection;

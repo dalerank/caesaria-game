@@ -29,6 +29,7 @@
 #include "events/event.hpp"
 #include "core/logger.hpp"
 #include "building/constants.hpp"
+#include "world/merchant.hpp"
 
 using namespace constants;
 
@@ -51,10 +52,10 @@ public:
   int maxDistance;
   State nextState;
 
-  void resolveState( CityPtr city, WalkerPtr wlk, const TilePos& position );
+  void resolveState( PlayerCityPtr city, WalkerPtr wlk, const TilePos& position );
 };
 
-Merchant::Merchant( CityPtr city )
+Merchant::Merchant(PlayerCityPtr city )
   : Walker( city ), _d( new Impl )
 {
   _setAnimation( gfx::horseMerchant );
@@ -125,7 +126,7 @@ Propagator::DirectRoute getWarehouse4Sells( Propagator &pathPropagator,
 }
 
 
-void Merchant::Impl::resolveState( CityPtr city, WalkerPtr wlk, const TilePos& position )
+void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TilePos& position )
 {
   switch( nextState )
   {
@@ -312,9 +313,9 @@ void Merchant::Impl::resolveState( CityPtr city, WalkerPtr wlk, const TilePos& p
   {
     // walker on exit from city
     wlk->deleteLater();
-    EmpirePtr empire = city->getEmpire();
+    world::EmpirePtr empire = city->getEmpire();
     const std::string& ourCityName = city->getName();
-    EmpireTradeRoutePtr route = empire->getTradeRoute( ourCityName, baseCityName );
+    world::TradeRoutePtr route = empire->getTradeRoute( ourCityName, baseCityName );
     if( route.isValid() )
     {
       route->addMerchant( ourCityName, sell, buy );
@@ -364,7 +365,7 @@ void Merchant::load( const VariantMap& stream)
   _d->baseCityName = stream.get( "baseCity" ).toString();
 }
 
-WalkerPtr Merchant::create( CityPtr city, EmpireMerchantPtr merchant )
+WalkerPtr Merchant::create(PlayerCityPtr city, world::MerchantPtr merchant )
 {
   Merchant* cityMerchant( new Merchant( city ) );
   cityMerchant->_d->sell.resize( merchant->getSellGoods() );

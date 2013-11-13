@@ -18,13 +18,13 @@
 
 #include "serviceman.hpp"
 
-class WorkersHunter;
-typedef SmartPtr<WorkersHunter> WorkersHunterPtr;
+class Recruter;
+typedef SmartPtr<Recruter> RecruterPtr;
 
-class WorkersHunter : public ServiceWalker
+class Recruter : public ServiceWalker
 {
 public:
-  static WorkersHunterPtr create( CityPtr city );
+  static RecruterPtr create( PlayerCityPtr city );
 
   int getWorkersNeeded() const;
   virtual void onNewTile();
@@ -34,7 +34,7 @@ public:
 
   virtual void die();
 private:
-  WorkersHunter( CityPtr city );
+  Recruter( PlayerCityPtr city );
 
   int _workersNeeded;
 };

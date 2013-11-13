@@ -32,9 +32,9 @@ public:
   Construction( const TileOverlay::Type type, const Size& size );
   virtual ~Construction();
 
-  virtual bool canBuild( CityPtr city, const TilePos& pos ) const;  // returns true if it can be built there
+  virtual bool canBuild( PlayerCityPtr city, const TilePos& pos ) const;  // returns true if it can be built there
   virtual std::string getError() const;
-  virtual void build( CityPtr city, const TilePos& pos );
+  virtual void build( PlayerCityPtr city, const TilePos& pos );
   virtual void burn();
   virtual void collapse();
   virtual bool isNeedRoadAccess() const;

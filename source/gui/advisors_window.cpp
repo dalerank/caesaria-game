@@ -53,7 +53,7 @@ public:
   Point offset;
   PictureRef tabBg;
 
-  CityPtr city;
+  PlayerCityPtr city;
 
   void sendMoney2City( int money );
   void showEmpireMapWindow();
@@ -182,7 +182,7 @@ bool AdvisorsWindow::onEvent( const NEvent& event )
   return Widget::onEvent( event );
 }
 
-AdvisorsWindow* AdvisorsWindow::create( Widget* parent, int id, const AdvisorType type, CityPtr city )
+AdvisorsWindow* AdvisorsWindow::create( Widget* parent, int id, const AdvisorType type, PlayerCityPtr city )
 {
   AdvisorsWindow* ret = new AdvisorsWindow( parent, id );
   ret->_d->city = city;

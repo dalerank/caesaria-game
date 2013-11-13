@@ -23,8 +23,8 @@ class Wharf : public Factory
 {
 public:
   Wharf();
-  virtual bool canBuild(CityPtr city, const TilePos& pos ) const;  // returns true if it can be built there
-  virtual void build(CityPtr city, const TilePos &pos);
+  virtual bool canBuild(PlayerCityPtr city, const TilePos& pos ) const;  // returns true if it can be built there
+  virtual void build(PlayerCityPtr city, const TilePos &pos);
   virtual void destroy();
   virtual void timeStep(const unsigned long time);
 

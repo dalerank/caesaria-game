@@ -52,7 +52,7 @@ public:
   TexturedButton* btnYes;
   TexturedButton* btnNo;
 
-  CityPtr city;
+  PlayerCityPtr city;
   RomeDivinityType currentDivinity;
 
 public oc3_signals:
@@ -84,7 +84,7 @@ public:
   }
 };
 
-FestivalPlaningWindow* FestivalPlaningWindow::create( Widget* parent, CityPtr city, int id )
+FestivalPlaningWindow* FestivalPlaningWindow::create(Widget* parent, PlayerCityPtr city, int id )
 {
   Size size( 625, 320 );
 
@@ -99,7 +99,7 @@ FestivalPlaningWindow::~FestivalPlaningWindow()
 
 }
 
-FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect& rectangle, CityPtr city)
+FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect& rectangle, PlayerCityPtr city)
   : Widget( parent, id, rectangle ), _d( new Impl )
 {
   _d->city = city;
