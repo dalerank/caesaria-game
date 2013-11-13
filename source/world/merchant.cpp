@@ -103,6 +103,33 @@ void Merchant::deleteLater()
   _d->isDeleted = true;
 }
 
+VariantMap Merchant::save() const
+{
+  VariantMap ret;
+  ret[ "sells"    ]= _d->sells.save();
+  ret[ "buys"     ]= _d->buys.save();
+  ret[ "location" ]= _d->location;
+  ret[ "step"     ]= _d->step;
+  ret[ "deleted"  ]= _d->isDeleted;
+  ret[ "begin"    ]= Variant( _d->baseCity->getName() );
+  ret[ "end"      ]= Variant( _d->destCity->getName() );
+
+  return ret;
+}
+
+void Merchant::load(const VariantMap& stream)
+{
+  _d->sells.load( stream.get( "sells" ).toMap() );
+  _d->buys.load( stream.get( "buys" ).toMap() );
+  _d->location = stream.get( "location" );
+  _d->step = stream.get( "step" );
+  _d->isDeleted = stream.get( "deleted" );
+
+  bool startCity = (_d->route->getBeginCity()->getName() == stream.get( "begin" ).toString() );
+  _d->baseCity = startCity ? _d->route->getBeginCity() : _d->route->getEndCity();
+  _d->destCity = startCity ? _d->route->getEndCity()   : _d->route->getBeginCity();
+}
+
 CityPtr Merchant::getBaseCity() const
 {
   return _d->baseCity;

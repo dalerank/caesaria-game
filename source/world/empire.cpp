@@ -131,6 +131,7 @@ void Empire::save( VariantMap& stream ) const
   }
 
   stream[ "cities" ] = vm_cities;
+  stream[ "trade" ] = _d->trading.save();
 }
 
 void Empire::load( const VariantMap& stream )
@@ -145,6 +146,8 @@ void Empire::load( const VariantMap& stream )
       city->load( item.second.toMap() );
     }
   }
+
+  _d->trading.load( stream.get( "trade").toMap() );
 }
 
 void Empire::setCitiesAvailable(bool value)

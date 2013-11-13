@@ -113,13 +113,26 @@ MerchantPtr TradeRoute::getMerchant( unsigned int index )
 }
 
 VariantMap TradeRoute::save() const
-{
+{  
+  VariantMap ret;
+  int index=0;
+  foreach( MerchantPtr m, _d->merchants )
+  {
+    ret[ StringHelper::format( 0xff, "%d", index++ ) ] = m->save();
+  }
 
+  return ret;
 }
 
 void TradeRoute::load(const VariantMap& stream)
 {
+  for( VariantMap::const_iterator it=stream.begin(); it != stream.end(); it++ )
+  {
+    SimpleGoodStore sell, buy;
+    addMerchant( _d->begin->getName(), sell, buy );
 
+    _d->merchants.back()->load( it->second.toMap() );
+  }
 }
 
 Signal1<MerchantPtr>& TradeRoute::onMerchantArrived()
