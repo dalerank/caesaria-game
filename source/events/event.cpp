@@ -172,7 +172,6 @@ void ClearLandEvent::exec( Game& game )
     {
       tile->setMasterTile( NULL );
       tile->setFlag( Tile::tlTree, false);
-      tile->setFlag( Tile::tlBuilding, false);
       tile->setFlag( Tile::tlRoad, false);
       tile->setFlag( Tile::tlGarden, false);
       tile->setOverlay( NULL );

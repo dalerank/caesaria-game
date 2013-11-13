@@ -287,10 +287,8 @@ void GameLoaderC3Map::Impl::decodeTerrain(Tile &oTile, PlayerCityPtr city )
   {
     overlay = TileOverlayFactory::getInstance().create( construction::road ).as<TileOverlay>();
   }
-  else if( oTile.getFlag( Tile::tlBuilding ) )
+  else /*if( oTile.getFlag( Tile::tlBuilding ) )*/
   {
-    Logger::warning( "Building at ( %d, %d ) with ID: %x", oTile.getI(), oTile.getJ(), oTile.getOriginalImgId() );
-  
     switch ( oTile.getOriginalImgId() )
     {
       case 0xb0e:
@@ -298,22 +296,25 @@ void GameLoaderC3Map::Impl::decodeTerrain(Tile &oTile, PlayerCityPtr city )
       case 0xb0b:
       case 0xb0c:
         overlay = TileOverlayFactory::getInstance().create( building::B_NATIVE_HUT ).as<TileOverlay>();
-        break;
+      break;
+
       case 0xb10:
       case 0xb0d:
         overlay =  TileOverlayFactory::getInstance().create( building::B_NATIVE_CENTER ).as<TileOverlay>();
         Logger::warning( "creation of Native center at (%d,%d)", oTile.getI(), oTile.getJ() );
-	      break;
+      break;
+
       case 0xb11:
       case 0xb44:
         overlay = TileOverlayFactory::getInstance().create( building::B_NATIVE_FIELD ).as<TileOverlay>();
-	      break;
+      break;
     }
   }
 
   //terrain.setOverlay( overlay );
   if( overlay != NULL )
   {
+    Logger::warning( "Building at ( %d, %d ) with ID: %x", oTile.getI(), oTile.getJ(), oTile.getOriginalImgId() );
     overlay->build( city, oTile.getIJ() );
     city->getOverlays().push_back(overlay);
   }

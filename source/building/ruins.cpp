@@ -97,7 +97,6 @@ void BurningRuins::build(PlayerCityPtr city, const TilePos& pos )
   ServiceBuilding::build( city, pos );
   //while burning can't remove it
   getTile().setFlag( Tile::tlTree, false );
-  getTile().setFlag( Tile::tlBuilding, false );
   getTile().setFlag( Tile::tlRoad, false );
   getTile().setFlag( Tile::tlRock, true );
 }   
@@ -145,7 +144,6 @@ void BurnedRuins::build(PlayerCityPtr city, const TilePos& pos )
 {
   Building::build( city, pos);
 
-  getTile().setFlag( Tile::tlBuilding, true );
   getTile().setFlag( Tile::tlRock, false );
 }
 
@@ -185,7 +183,6 @@ void CollapsedRuins::build(PlayerCityPtr city, const TilePos& pos )
   Building::build( city, pos );
   //while burning can't remove it
   getTile().setFlag( Tile::tlTree, false );
-  getTile().setFlag( Tile::tlBuilding, true );
   getTile().setFlag( Tile::tlRoad, false );
   setPicture( ResourceGroup::land2a, 111 + rand() % 8  );
 }
@@ -270,7 +267,6 @@ void PlagueRuins::build(PlayerCityPtr city, const TilePos& pos )
   Building::build( city, pos );
   //while burning can't remove it
   getTile().setFlag( Tile::tlTree, false );
-  getTile().setFlag( Tile::tlBuilding, false );
   getTile().setFlag( Tile::tlRoad, false );
   getTile().setFlag( Tile::tlRock, true );
 }

@@ -220,6 +220,11 @@ bool TileOverlay::isWalkable() const
   return false;
 }
 
+bool TileOverlay::isFlat() const
+{
+  return false;
+}
+
 TilePos TileOverlay::getTilePos() const
 {
   if( !_d->masterTile )

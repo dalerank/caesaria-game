@@ -43,6 +43,7 @@ public:
   void deleteLater();
 
   virtual bool isWalkable() const;
+  virtual bool isFlat() const;
   virtual void initTerrain( Tile& terrain ) = 0;
 
   virtual void build( PlayerCityPtr city, const TilePos& pos );

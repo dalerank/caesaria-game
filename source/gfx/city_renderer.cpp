@@ -98,7 +98,7 @@ public:
   void setLayer( int type );
 
   void drawTile( Tile& tile );
-  void drawTileEx( Tile& tile, const int depth );
+  void drawTileEx(Tile& tile, const int depth );
 
   Tile* getTile( const Point& pos, bool overborder);
 
@@ -767,7 +767,6 @@ void CityRenderer::checkPreviewBuild(const TilePos & pos)
         }
         tile->setPicture( &overlay->getPicture() );
         tile->setMasterTile( masterTile );
-        tile->setFlag( Tile::tlBuilding, true );
         tile->setOverlay( overlay.as<TileOverlay>() );
         _d->postTiles.push_back( tile );
         //_priorityTiles.push_back( tile );
@@ -780,6 +779,8 @@ void CityRenderer::checkPreviewBuild(const TilePos & pos)
 
     Picture& grnPicture = Picture::load("oc3_land", 1);
     Picture& redPicture = Picture::load("oc3_land", 2);
+
+    //TilemapArea area = til
 
     for (int dj = 0; dj < size; ++dj)
     {
@@ -795,7 +796,7 @@ void CityRenderer::checkPreviewBuild(const TilePos & pos)
         tile->setPicture( isConstructible ? &grnPicture : &redPicture );
         tile->setMasterTile( 0 );
         tile->setFlag( Tile::clearAll, true );
-        tile->setFlag( Tile::tlBuilding, true );
+        //tile->setFlag( Tile::tlRock, true );  //dirty hack that drawing this tile
         tile->setOverlay( 0 );
         _d->postTiles.push_back( tile );
       }

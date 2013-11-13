@@ -31,7 +31,6 @@ class Tile
     bool water;
     bool rock;
     bool tree;
-    bool building;
     bool road;
     bool garden;
     bool aqueduct;

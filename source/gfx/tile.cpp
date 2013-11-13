@@ -32,7 +32,6 @@ void Tile::Terrain::clearFlags()
   water      = false;
   rock       = false;
   tree       = false;
-  building   = false;
   road       = false;
   aqueduct   = false;
   garden     = false;
@@ -91,7 +90,9 @@ void Tile::setMasterTile(Tile* master)
 
 bool Tile::isFlat() const
 {
-  return !(_terrain.rock || _terrain.tree || _terrain.building || _terrain.aqueduct);
+  return (_overlay.isValid()
+              ? _overlay->isFlat()
+              : !(_terrain.rock || _terrain.tree || _terrain.aqueduct) );
 }
 
 TilePos Tile::getIJ() const
@@ -148,15 +149,15 @@ bool Tile::getFlag(Tile::Type type) const
   case tlTree: return _terrain.tree;
   case isConstructible:
   {
-    return !(_terrain.water || _terrain.rock || _terrain.tree || _terrain.building || _terrain.road);
+    return !(_terrain.water || _terrain.rock || _terrain.tree || _overlay.isValid() || _terrain.road);
   }
   case tlMeadow: return _terrain.meadow;
   case tlRock: return _terrain.rock;
-  case tlBuilding: return _terrain.building;
+  case tlBuilding: return _overlay.isValid();
   case tlAqueduct: return _terrain.aqueduct;
   case isDestructible:
   {
-    return (_terrain.tree || _terrain.building || _terrain.road);
+    return (_terrain.tree || _overlay.isValid() || _terrain.road);
   }
   case tlGarden: return _terrain.garden;
   case tlElevation: return _terrain.elevation;
@@ -178,7 +179,6 @@ void Tile::setFlag(Tile::Type type, bool value)
   case tlTree: _terrain.tree = value; break;
   case tlMeadow: _terrain.meadow = value; break;
   case tlRock: _terrain.rock = value; break;
-  case tlBuilding: _terrain.building = value; break;
   case tlAqueduct: _terrain.aqueduct = value; break;
   case tlGarden: _terrain.garden = value; break;
   case tlElevation: _terrain.elevation = value; break;
@@ -345,7 +345,7 @@ void TileHelper::decode(Tile& tile, const int bitset)
   if(bitset & 0x1)    { tile.setFlag( Tile::tlTree, true);      }
   if(bitset & 0x2)    { tile.setFlag( Tile::tlRock, true);      }
   if(bitset & 0x4)    { tile.setFlag( Tile::tlWater, true);     }
-  if(bitset & 0x8)    { tile.setFlag( Tile::tlBuilding, true);  }
+  //if(bitset & 0x8)    { tile.setFlag( Tile::tlBuilding, true);  }
   if(bitset & 0x10)   { tile.setFlag( Tile::tlTree, true);      }
   if(bitset & 0x20)   { tile.setFlag( Tile::tlGarden, true);    }
   if(bitset & 0x40)   { tile.setFlag( Tile::tlRoad, true);      }
