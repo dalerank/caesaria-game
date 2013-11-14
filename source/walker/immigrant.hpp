@@ -39,7 +39,7 @@ public:
 
 protected:
   virtual void _reachedPathway();
-  virtual void _brokePathway();
+  virtual void _brokePathway(TilePos pos);
 
   void setCartPicture( const Picture& pic );
   virtual const Picture& getCartPicture();

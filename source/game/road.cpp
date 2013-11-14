@@ -23,6 +23,10 @@
 
 using namespace constants;
 
+namespace {
+static Renderer::PassQueue roadPassQueue=Renderer::PassQueue(1,Renderer::ground);
+}
+
 Road::Road() : Construction( construction::road, Size(1) )
 {
   _paved = 0;
@@ -201,6 +205,11 @@ void Road::appendPaved( int value )
 int Road::getPavedValue() const
 {
   return _paved;
+}
+
+Renderer::PassQueue Road::getPassQueue() const
+{
+  return roadPassQueue;
 }
 
 void Road::save(VariantMap& stream) const

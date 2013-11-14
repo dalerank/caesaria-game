@@ -54,6 +54,7 @@ public:
   void reserveTrainee( constants::walker::Type traineeType); // trainee will come
   void cancelTrainee( constants::walker::Type traineeType);  // trainee will not come
   void applyTrainee( constants::walker::Type traineeType); // trainee arrives
+  virtual Renderer::PassQueue getPassQueue() const;
 
 protected:
   float _damageIncrement;

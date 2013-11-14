@@ -66,7 +66,7 @@ public:
 
   Point getOffset() const;
 
-  void registerTileForRendering( Tile& );
+  void registerTileForRendering(Tile&);
 
   const TilemapTiles& getPostTiles() const;
 

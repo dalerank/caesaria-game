@@ -382,7 +382,7 @@ void Walker::_centerTile()
       const Tile& tile = _d->city->getTilemap().at( pos );
       if( tile.getI() < 0 || !tile.isWalkable( true ) )
       {
-        _brokePathway();
+        _brokePathway( tile.getIJ() );
       }
    }
 }
@@ -399,7 +399,7 @@ void Walker::_changeDirection()
   _d->animation = Animation();  // need to fetch the new animation
 }
 
-void Walker::_brokePathway()
+void Walker::_brokePathway( TilePos pos )
 {
 
 }

@@ -35,6 +35,7 @@ public:
   virtual void destroy();
   virtual void appendPaved( int value );
   int getPavedValue() const;
+  virtual Renderer::PassQueue getPassQueue() const;
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);

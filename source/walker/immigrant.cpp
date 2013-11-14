@@ -137,10 +137,14 @@ void Immigrant::_reachedPathway()
   }
 }
 
-void Immigrant::_brokePathway()
+void Immigrant::_brokePathway(TilePos pos)
 {
-  _d->destination = getIJ();
-  _reachedPathway();
+  TileOverlayPtr overlay = _getCity()->getTilemap().at( pos ).getOverlay();
+  if( !overlay.is<House>() )
+  {
+    _d->destination = getIJ();
+    _reachedPathway();
+  }
 }
 
 ImmigrantPtr Immigrant::create(PlayerCityPtr city )

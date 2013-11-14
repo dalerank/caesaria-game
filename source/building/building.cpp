@@ -34,6 +34,10 @@
 
 using namespace constants;
 
+namespace {
+static Renderer::PassQueue buildingPassQueue=Renderer::PassQueue(1,Renderer::building);
+}
+
 Building::Building(const TileOverlay::Type type, const Size& size )
 : Construction( type, size )
 {
@@ -147,6 +151,11 @@ void Building::applyTrainee(walker::Type traineeType)
 {
    _reservedTrainees.erase(traineeType);
    _traineeMap[traineeType] += 100;
+}
+
+Renderer::PassQueue Building::getPassQueue() const
+{
+  return buildingPassQueue;
 }
 
 

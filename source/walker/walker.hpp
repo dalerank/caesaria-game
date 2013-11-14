@@ -101,7 +101,7 @@ protected:
   virtual void _centerTile();  // called when the walker is on the middle of a tile
   virtual void _reachedPathway();  // called when the walker is at his destination
   virtual void _changeDirection(); // called when the walker changes direction
-  virtual void _brokePathway();
+  virtual void _brokePathway(TilePos pos);
 
 protected:
   Pathway& _pathwayRef();
