@@ -101,30 +101,24 @@ bool Prefect::_looks4Protestor( TilePos& pos )
 
 void Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
 {
-  Pathway bestPath;
-  int minLength = 9999;
   foreach( BuildingPtr building, buildings )
   {
     if( building->getType() != building::burningRuins )
       continue;
 
-    Pathway tmp;
-    bool foundPath = Pathfinder::getInstance().getPath( getIJ(), building->getEnterPos(), tmp,
-                                                        false, Size( 0 ) ); 
-    if( foundPath && tmp.getLength() < minLength )
+    Pathway tmp = PathwayHelper::create( _getCity(), getIJ(), building->getTilePos(), PathwayHelper::allTerrain );
+    if( tmp.isValid() )
     {
-      bestPath = tmp;
-      minLength = tmp.getLength();
-      
-      if( tmp.getLength() == 1 )
-        break;
+      setPathway( tmp );
+      _setAnimation( gfx::prefectFightFire );
+      _d->action = Impl::gotoFire;
+      setSpeed( 1 );
+      go();
+      return;
     }
   }
 
-  if( bestPath.getLength() > 0 )
-  {
-    _updatePathway( bestPath );
-  }
+  _back2Patrol();
 }
 
 void Prefect::_reachedPathway()
@@ -176,6 +170,29 @@ void Prefect::_back2Patrol()
 
 void Prefect::_brokePathway(TilePos pos)
 {
+  TileOverlayPtr overlay = _getCity()->getOverlay( pos );
+  if( overlay.isValid() && overlay->getType() == building::burningRuins )
+  {
+    setSpeed( 0 );
+    _setAction( acFight );
+    _d->action = Impl::fightFire;
+    _setAnimation( gfx::prefectFightFire );
+    Walker::_changeDirection();
+    return;
+  }
+  else if( _d->water > 0 )
+  {
+    TilePos destination = _pathwayRef().getDestination().getIJ();
+
+    Pathway pathway = PathwayHelper::create( _getCity(), getIJ(), destination, PathwayHelper::allTerrain );
+    if( pathway.isValid() )
+    {
+      setPathway( pathway );
+      go();
+      return;
+    }
+  }
+
   _back2Patrol();
 }
 
@@ -243,20 +260,6 @@ void Prefect::_centerTile()
 
   case Impl::gotoFire:
   {
-    if( _pathwayRef().getDestination().getIJ().distanceFrom( getIJ() ) < 1.5f )
-    {
-      TileOverlayPtr overlay = _pathwayRef().getDestination().getOverlay();
-      if( overlay.isValid() && overlay->getType() == building::burningRuins )
-      {
-        setSpeed( 0 );
-        _setAction( acFight );
-        _d->action = Impl::fightFire;
-        _setAnimation( gfx::prefectFightFire );
-        Walker::_changeDirection();
-        isDestination = false;
-      }
-    }
-
     if( isDestination )
     {
       TilePos firePos;
@@ -269,9 +272,6 @@ void Prefect::_centerTile()
       }
       else
       {
-        _setAnimation( gfx::prefectDragWater );
-        _d->action = Impl::gotoFire;
-
         _checkPath2NearestFire( reachedBuildings );
         Walker::_changeDirection();
       }
@@ -334,12 +334,19 @@ void Prefect::timeStep(const unsigned long time)
       }
     }
 
-    if( !inFire || 0 == _d->water )
+    if( !inFire && _d->water > 0 )
     {
-      _setAnimation( gfx::prefectDragWater );
-      _d->action = Impl::gotoFire;  
-      setSpeed( 1.5f );
-    }      
+      ReachedBuildings reachedBuildings;
+      TilePos firePos;
+      if( _looks4Fire( reachedBuildings, firePos ) )
+      {
+        _checkPath2NearestFire( reachedBuildings );
+      }
+    }
+    else if( _d->water <= 0 )
+    {
+      _back2Prefecture();
+    }
   }
   break;
 
