@@ -64,8 +64,8 @@ void Patrician::_findNewWay( const TilePos& start )
 
   if( pathway.isValid() )
   {
-    setPathway( pathway );
     setIJ( start );
+    setPathway( pathway );
     go();
   }
   else

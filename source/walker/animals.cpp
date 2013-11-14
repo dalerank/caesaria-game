@@ -71,8 +71,8 @@ void Animal::_findNewWay( const TilePos& start )
 
   if( pathway.isValid() )
   {
-    setPathway( pathway );
     setIJ( start );
+    setPathway( pathway );
     go();
   }
   else
@@ -98,9 +98,9 @@ WalkerPtr Sheep::create(PlayerCityPtr city)
   return ret;
 }
 
-void Sheep::onDestination()
+void Sheep::_reachedPathway()
 {
-  Walker::onDestination();
+  Walker::_reachedPathway();
 
   Tilemap& tmap = _getCity()->getTilemap();
   if( tmap.at( getIJ() ).getFlag( Tile::tlMeadow ) )
@@ -111,9 +111,9 @@ void Sheep::onDestination()
   _findNewWay( getIJ() );
 }
 
-void Sheep::onNewTile()
+void Sheep::_changeTile()
 {
-  Walker::onNewTile();
+  Walker::_changeTile();
   _getAnimation().setDelay( 3 );
 }
 

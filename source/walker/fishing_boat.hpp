@@ -25,8 +25,8 @@ public:
 
   void send2City( WharfPtr base, const TilePos& start);
 
-  virtual void onDestination();
-  virtual void onNewTile();
+  virtual void _reachedPathway();
+  virtual void _changeTile();
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);

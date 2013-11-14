@@ -31,7 +31,7 @@ public:
   void setOriginBuilding(Building &building);
   void computeWalkerPath();
 
-  virtual void onDestination();
+  virtual void _reachedPathway();
 
   void save( VariantMap& stream) const;
   void load( const VariantMap& stream);

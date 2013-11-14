@@ -134,8 +134,8 @@ void ServiceWalker::_computeWalkerPath()
   }
 
   reservePath(*bestPath);
+  setIJ( bestPath->getOrigin().getIJ() );
   setPathway(*bestPath);
-  setIJ( _pathwayRef().getOrigin().getIJ() );
 }
 
 unsigned int ServiceWalker::getReachDistance() const
@@ -233,9 +233,9 @@ void ServiceWalker::send2City( BuildingPtr base )
   }
 }
 
-void ServiceWalker::onNewTile()
+void ServiceWalker::_changeTile()
 {
-  Walker::onNewTile();
+  Walker::_changeTile();
 
   ReachedBuildings reachedBuildings = getReachedBuildings( getIJ() );
   foreach( BuildingPtr building, reachedBuildings )
@@ -244,9 +244,9 @@ void ServiceWalker::onNewTile()
   }
 }
 
-void ServiceWalker::onDestination()
+void ServiceWalker::_reachedPathway()
 {
-  Walker::onDestination();
+  Walker::_reachedPathway();
   if (_pathwayRef().isReverse())
   {
     // walker is back in the market
@@ -256,7 +256,7 @@ void ServiceWalker::onDestination()
   {
     // walker finished service => get back to service building
     _pathwayRef().rbegin();
-    computeDirection();
+    _computeDirection();
     go();
   }
 }

@@ -51,14 +51,14 @@ Protestor::Protestor(PlayerCityPtr city) : Walker( city ), _d( new Impl )
   addAbility( Illness::create( 0.3, 4) );
 }
 
-void Protestor::onNewTile()
+void Protestor::_changeTile()
 {
-  Walker::onNewTile();
+  Walker::_changeTile();
 }
 
-void Protestor::onDestination()
+void Protestor::_reachedPathway()
 {
-  Walker::onDestination();
+  Walker::_reachedPathway();
 
   switch( _d->state )
   {
@@ -94,9 +94,8 @@ void Protestor::timeStep(const unsigned long time)
     //find more expensive house, fire this!!!
     if( pathway.isValid() )
     {
-
-      setPathway( pathway );
       setIJ( pathway.getOrigin().getIJ() );
+      setPathway( pathway );
       go();
       _d->state = Impl::go2destination;
     }
@@ -125,8 +124,8 @@ void Protestor::timeStep(const unsigned long time)
     Pathway pathway = _d->findTarget( _getCity(), constructions, getIJ() );
     if( pathway.isValid() )
     {
-      setPathway( pathway );
       setIJ( pathway.getOrigin().getIJ() );
+      setPathway( pathway );
       go();
       _d->state = Impl::go2destination;
     }

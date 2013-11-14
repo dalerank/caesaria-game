@@ -81,8 +81,8 @@ void Prefecture::deliverService()
 
       if( pathFounded )
       {
-        walker->setPathway( pathway );
         walker->setIJ( pathway.getOrigin().getIJ() );
+        walker->setPathway( pathway );
       }
 
       _fireDetect = TilePos( -1, -1 );

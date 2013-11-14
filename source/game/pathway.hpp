@@ -42,7 +42,7 @@ public:
 
   void begin();
   void rbegin();
-  virtual constants::Direction getNextDirection();
+  constants::Direction getNextDirection();
   bool isDestination() const;
 
   void setNextDirection(constants::Direction direction);

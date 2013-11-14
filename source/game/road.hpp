@@ -30,6 +30,7 @@ public:
   virtual void initTerrain(Tile &terrain);
   virtual bool canBuild(PlayerCityPtr city, const TilePos& pos ) const;
   virtual bool isWalkable() const;
+  virtual bool isFlat() const;
   virtual bool isNeedRoadAccess() const;
   virtual void destroy();
   virtual void appendPaved( int value );

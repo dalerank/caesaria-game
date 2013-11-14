@@ -98,7 +98,7 @@ void Walker::timeStep(const unsigned long time)
   switch(_d->action.action)
   {
   case Walker::acMove:
-    walk();
+    _walk();
 
     if( _d->speed > 0.f )
     {
@@ -165,7 +165,7 @@ void Walker::setPathway( const Pathway& pathway)
   _d->pathWay = pathway;
   _d->pathWay.begin();
 
-  onMidTile();
+  _centerTile();
 }
 
 void Walker::setSpeed(const float speed)
@@ -227,170 +227,191 @@ void Walker::dec(int &ioSI, int &ioI, int &ioAmount, const int iMidPos, bool &oN
    ioSI -= delta;
 }
 
-void Walker::walk()
+void Walker::_walk()
 {
-   if( constants::noneDirection == _d->action.direction )
-   {
-      // nothing to do
-      return;
-   }
+  if( constants::noneDirection == _d->action.direction )
+  {
+     // nothing to do
+     return;
+  }
 
-   Tile& tile = _d->city->getTilemap().at( getIJ() );
-    
-   switch (_d->action.direction)
-   {
-   case constants::north:
-   case constants::south:
-     _d->remainMove += PointF( 0, _d->getSpeed() );
-   break;
+  Tile& tile = _d->city->getTilemap().at( getIJ() );
 
-   case constants::east:
-   case constants::west:
-     _d->remainMove += PointF( _d->getSpeed(), 0 );
-   break;
+  switch (_d->action.direction)
+  {
+  case constants::north:
+  case constants::south:
+    _d->remainMove += PointF( 0, _d->getSpeed() );
+  break;
 
-   case constants::northEast:
-   case constants::southWest:
-   case constants::southEast:
-   case constants::northWest:
-      _d->remainMove += PointF( _d->getSpeed() * 0.7f, _d->getSpeed() * 0.7f );
-   break;
+  case constants::east:
+  case constants::west:
+    _d->remainMove += PointF( _d->getSpeed(), 0 );
+  break;
 
-   default:
-      Logger::warning( "Invalid move direction: %d", _d->action.direction );
-      _d->action.direction = constants::noneDirection;
-   break;
-   }
-   
+  case constants::northEast:
+  case constants::southWest:
+  case constants::southEast:
+  case constants::northWest:
+     _d->remainMove += PointF( _d->getSpeed() * 0.7f, _d->getSpeed() * 0.7f );
+  break;
 
-   bool newTile = false;
-   bool midTile = false;
-   int amountI = int(_d->remainMove.getX());
-   int amountJ = int(_d->remainMove.getY());
-   _d->remainMove -= Point( amountI, amountJ ).toPointF();
+  default:
+     Logger::warning( "Invalid move direction: %d", _d->action.direction );
+     _d->action.direction = constants::noneDirection;
+  break;
+  }
 
-   // std::cout << "walker step, amount :" << amount << std::endl;
-   int tmpX = _d->tileOffset.getX();
-   int tmpY = _d->tileOffset.getY();
-   int tmpJ = _d->pos.getJ();
-   int tmpI = _d->pos.getI();
-   while (amountI+amountJ > 0)
-   {
-      switch (_d->action.direction)
-      {
-      case constants::north:
-         inc(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
-      break;
 
-      case constants::northEast:
-         inc(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
-         inc(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
-      break;
+  bool newTile = false;
+  bool midTile = false;
+  int amountI = int(_d->remainMove.getX());
+  int amountJ = int(_d->remainMove.getY());
+  _d->remainMove -= Point( amountI, amountJ ).toPointF();
 
-      case constants::east:
-         inc(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
-      break;
+  // std::cout << "walker step, amount :" << amount << std::endl;
+  int tmpX = _d->tileOffset.getX();
+  int tmpY = _d->tileOffset.getY();
+  int tmpJ = _d->pos.getJ();
+  int tmpI = _d->pos.getI();
+  while (amountI+amountJ > 0)
+  {
+    switch (_d->action.direction)
+    {
+    case constants::north:
+       inc(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
+    break;
 
-      case constants::southEast:
-         dec(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
-         inc(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
-      break;
+    case constants::northEast:
+       inc(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
+       inc(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
+    break;
 
-      case constants::south:
-         dec(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
-      break;
+    case constants::east:
+       inc(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
+    break;
 
-      case constants::southWest:
-         dec(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
-         dec(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
-      break;
+    case constants::southEast:
+       dec(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
+       inc(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
+    break;
 
-      case constants::west:
-         dec(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
-      break;
+    case constants::south:
+       dec(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
+    break;
 
-      case constants::northWest:
-         inc(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
-         dec(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
-      break;
+    case constants::southWest:
+       dec(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
+       dec(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
+    break;
 
-      default:
-         Logger::warning( "Invalid move direction: %d", _d->action.direction);
-         _d->action.direction = constants::noneDirection;
-      break;
-      }
+    case constants::west:
+       dec(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
+    break;
 
-      _d->tileOffset = Point( tmpX, tmpY );
-      _d->pos = TilePos( tmpI, tmpJ );
+    case constants::northWest:
+       inc(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
+       dec(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
+    break;
 
-      if (newTile)
-      {
-         // walker is now on a new tile!
-         onNewTile();
-      }
+    default:
+       Logger::warning( "Invalid move direction: %d", _d->action.direction);
+       _d->action.direction = constants::noneDirection;
+    break;
+    }
 
-      if (midTile)
-      {
-         // walker is now on the middle of the tile!
-         onMidTile();
-      }
+    _d->tileOffset = Point( tmpX, tmpY );
+    _d->pos = TilePos( tmpI, tmpJ );
 
-      // if (midTile) std::cout << "walker mid tile" << std::endl;
-      // if (newTile) std::cout << "walker new tile" << std::endl;
-      // if (amount != 0) std::cout << "walker remaining step :" << amount << std::endl;
-   }
+    if (newTile)
+    {
+       // walker is now on a new tile!
+       _changeTile();
+    }
 
-   Point overlayOffset = tile.getOverlay().isValid()
-                              ? tile.getOverlay()->getOffset( _d->tileOffset )
-                              : Point( 0, 0 );
+    if (midTile)
+    {
+       // walker is now on the middle of the tile!
+       _centerTile();
+    }
 
-   _d->posOnMap = Point( _d->pos.getI(), _d->pos.getJ() )*15 + _d->tileOffset + overlayOffset;
+    // if (midTile) std::cout << "walker mid tile" << std::endl;
+    // if (newTile) std::cout << "walker new tile" << std::endl;
+    // if (amount != 0) std::cout << "walker remaining step :" << amount << std::endl;
+  }
+
+  Point overlayOffset = tile.getOverlay().isValid()
+                             ? tile.getOverlay()->getOffset( _d->tileOffset )
+                             : Point( 0, 0 );
+
+  _d->posOnMap = Point( _d->pos.getI(), _d->pos.getJ() )*15 + _d->tileOffset + overlayOffset;
 }
 
-
-void Walker::onNewTile()
+void Walker::_changeTile()
 {
    Tilemap& tilemap = _d->city->getTilemap();
    Tile& currentTile = tilemap.at( _d->pos );
    _d->updateSpeedMultiplier( currentTile );
 }
 
-
-void Walker::onMidTile()
+void Walker::_centerTile()
 {
    // std::cout << "Walker is on mid tile! coord=" << _i << "," << _j << std::endl;
    if (_d->pathWay.isDestination())
    {
-      onDestination();
+      _reachedPathway();
    }
    else
    {
       // compute the direction to reach the destination
-      computeDirection();
+      _computeDirection();
+      TilePos pos = getIJ();
+      switch( _d->action.direction )
+      {
+      case constants::north: pos += TilePos( 0, 1 ); break;
+      case constants::northEast: pos += TilePos( 1, 1 ); break;
+      case constants::east: pos += TilePos( 1, 0 ); break;
+      case constants::southEast: pos += TilePos( 1, -1 ); break;
+      case constants::south: pos += TilePos( 0, -1 ); break;
+      case constants::southWest: pos += TilePos( -1, -1 ); break;
+      case constants::west: pos += TilePos( -1, 0 ); break;
+      case constants::northWest: pos += TilePos( 1, -1 ); break;
+      default: Logger::warning( "Unknown direction: %d", _d->action.direction); break;
+      }
+
+      const Tile& tile = _d->city->getTilemap().at( pos );
+      if( tile.getI() < 0 || !tile.isWalkable( true ) )
+      {
+        _brokePathway();
+      }
    }
 }
 
 
-void Walker::onDestination()
+void Walker::_reachedPathway()
 {
   _d->action.action = acNone;  // stop moving
   _d->animation = Animation();
 }
 
-void Walker::onNewDirection()
+void Walker::_changeDirection()
 {
   _d->animation = Animation();  // need to fetch the new animation
 }
 
+void Walker::_brokePathway()
+{
 
-void Walker::computeDirection()
+}
+
+void Walker::_computeDirection()
 {
   Direction lastDirection = _d->action.direction;
   _d->action.direction = _d->pathWay.getNextDirection();
 
   if( lastDirection != _d->action.direction )
   {
-    onNewDirection();
+    _changeDirection();
   }
 }
 
@@ -573,7 +594,7 @@ void Walker::turn(TilePos pos)
   if( _d->action.direction != directions[ angle ] )
   {
     _d->action.direction = directions[ angle ];
-    onNewDirection();
+    _changeDirection();
     getMainPicture();
   }
 }
@@ -587,7 +608,7 @@ void Walker::_updatePathway(const Pathway& pathway)
 {
   _d->pathWay = pathway;
   _d->pathWay.begin();
-  computeDirection();
+  _computeDirection();
 }
 
 void Walker::_setAction( Walker::Action action )

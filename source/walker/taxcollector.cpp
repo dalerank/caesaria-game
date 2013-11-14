@@ -31,9 +31,9 @@ public:
   int money;
 };
 
-void TaxCollector::onMidTile()
+void TaxCollector::_centerTile()
 {
-  ServiceWalker::onMidTile();
+  ServiceWalker::_centerTile();
 
   float taxRate = _getCity()->getFunds().getTaxRate() / 100.f;
 
@@ -72,9 +72,9 @@ int TaxCollector::getMoney() const
   return save;
 }
 
-void TaxCollector::onDestination()
+void TaxCollector::_reachedPathway()
 {
-  ServiceWalker::onDestination();
+  ServiceWalker::_reachedPathway();
 
   if( _pathwayRef().isReverse() )
   {

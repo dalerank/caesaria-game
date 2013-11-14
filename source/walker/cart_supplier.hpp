@@ -32,8 +32,8 @@ public:
   const Picture& getCartPicture();
   
   virtual void getPictureList(std::vector<Picture> &oPics);
-  virtual void onNewDirection();
-  virtual void onDestination();
+  virtual void _changeDirection();
+  virtual void _reachedPathway();
 
   void send2City( BuildingPtr building, const Good::Type type, const int qty );
 

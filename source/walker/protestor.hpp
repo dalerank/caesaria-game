@@ -24,8 +24,8 @@ public:
   static ProtestorPtr create( PlayerCityPtr city );
   virtual ~Protestor();
 
-  virtual void onNewTile();
-  virtual void onDestination();
+  virtual void _changeTile();
+  virtual void _reachedPathway();
   virtual void timeStep(const unsigned long time);
   void send2City( HousePtr house );
 

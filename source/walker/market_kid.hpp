@@ -29,7 +29,7 @@ public:
   void send2City( MarketPtr destination );
 
   virtual void timeStep(const unsigned long time);
-  virtual void onDestination();
+  virtual void _reachedPathway();
   virtual void die();
 
 private:

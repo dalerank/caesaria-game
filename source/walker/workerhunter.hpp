@@ -27,7 +27,7 @@ public:
   static RecruterPtr create( PlayerCityPtr city );
 
   int getWorkersNeeded() const;
-  virtual void onNewTile();
+  virtual void _changeTile();
   void hireWorkers( const int workers );
 
   void send2City( WorkingBuildingPtr building, const int workersNeeded );

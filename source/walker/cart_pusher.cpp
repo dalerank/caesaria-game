@@ -68,9 +68,9 @@ CartPusher::CartPusher(PlayerCityPtr city )
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
-void CartPusher::onDestination()
+void CartPusher::_reachedPathway()
 {
-  Walker::onDestination();
+  Walker::_reachedPathway();
   _d->cartPicture = Picture();
 
   if( _d->consumerBuilding != NULL )
@@ -99,7 +99,7 @@ void CartPusher::onDestination()
   if( !_pathwayRef().isReverse() )
   {
     _pathwayRef().toggleDirection();
-    computeDirection();
+    _computeDirection();
     go();
     _d->consumerBuilding = 0;
   }
@@ -149,9 +149,9 @@ Picture& CartPusher::getCartPicture()
    return _d->cartPicture;
 }
 
-void CartPusher::onNewDirection()
+void CartPusher::_changeDirection()
 {
-   Walker::onNewDirection();
+   Walker::_changeDirection();
    _d->cartPicture = Picture();  // need to get the new graphic
 }
 
@@ -223,8 +223,8 @@ void CartPusher::computeWalkerDestination()
    {
       //_isDeleted = true;  // no destination!
      setConsumerBuilding( destBuilding );
+     setIJ( pathWay.getOrigin().getIJ() );
      setPathway( pathWay );
-     setIJ( _pathwayRef().getOrigin().getIJ() );
      setSpeed( 1 );
    }
    else
@@ -232,7 +232,7 @@ void CartPusher::computeWalkerDestination()
      _setDirection( constants::north );
      setSpeed( 0 );
      setIJ( _d->producerBuilding->getAccessRoads().front()->getIJ() );
-     walk();
+     _walk();
    }
 }
 

@@ -51,9 +51,9 @@ int Recruter::getWorkersNeeded() const
     return _workersNeeded;
 }
 
-void Recruter::onNewTile()
+void Recruter::_changeTile()
 {
-  Walker::onNewTile();
+  Walker::_changeTile();
 
   if( _workersNeeded )
   {

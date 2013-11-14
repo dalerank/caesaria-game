@@ -124,8 +124,8 @@ void FishPlace::timeStep(const unsigned long time)
       _d->walker = WalkerPtr( new Walker( _getCity() ) );
       _d->walker->drop();
       _d->walker->setSpeed( 0.1f );
-      _d->walker->setPathway( pathway );
       _d->walker->setIJ( getTilePos() );
+      _d->walker->setPathway( pathway );
       _d->walker->go();
     }
   }

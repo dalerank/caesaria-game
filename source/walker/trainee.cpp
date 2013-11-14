@@ -92,8 +92,8 @@ void TraineeWalker::computeWalkerPath()
     // std::cout << "trainee sent!" << std::endl;
     Pathway pathWay;
     pathPropagator.getPath( _destinationBuilding.as<Construction>(), pathWay);
+    setIJ( pathWay.getOrigin().getIJ() );
     setPathway( pathWay );
-    setIJ( _pathwayRef().getOrigin().getIJ() );
   }
   else
   {
@@ -132,9 +132,9 @@ void TraineeWalker::send2City()
   }
 }
 
-void TraineeWalker::onDestination()
+void TraineeWalker::_reachedPathway()
 {
-  Walker::onDestination();
+  Walker::_reachedPathway();
   deleteLater();
   _destinationBuilding->applyTrainee( getType() );
 }

@@ -58,9 +58,9 @@ Prefect::Prefect(PlayerCityPtr city )
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
-void Prefect::onNewTile()
+void Prefect::_changeTile()
 {
-  Walker::onNewTile();
+  Walker::_changeTile();
 }
 
 bool Prefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, TilePos& pos )
@@ -127,7 +127,7 @@ void Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
   }
 }
 
-void Prefect::onDestination()
+void Prefect::_reachedPathway()
 { 
 }
 
@@ -166,7 +166,7 @@ void Prefect::_back2Patrol()
     _updatePathway( pathway );
     go();
 
-    Walker::onNewDirection();
+    Walker::_changeDirection();
   }
   else
   {
@@ -174,7 +174,7 @@ void Prefect::_back2Patrol()
   }
 }
 
-void Prefect::onMidTile()
+void Prefect::_centerTile()
 {
   bool isDestination = _pathwayRef().isDestination();
 
@@ -212,7 +212,7 @@ void Prefect::onMidTile()
       getBase().as<Prefecture>()->fireDetect( firePos );
       _back2Prefecture();
 
-      Walker::onNewDirection();
+      Walker::_changeDirection();
     }
     else
     {
@@ -232,7 +232,7 @@ void Prefect::onMidTile()
       }
     }
 
-    Walker::onMidTile();
+    Walker::_centerTile();
   }
   break;
 
@@ -247,7 +247,7 @@ void Prefect::onMidTile()
         _setAction( acFight );
         _d->action = Impl::fightFire;
         _setAnimation( gfx::prefectFightFire );
-        Walker::onNewDirection();
+        Walker::_changeDirection();
         isDestination = false;
       }
     }
@@ -268,11 +268,11 @@ void Prefect::onMidTile()
         _d->action = Impl::gotoFire;
 
         _checkPath2NearestFire( reachedBuildings );
-        Walker::onNewDirection();
+        Walker::_changeDirection();
       }
     }
 
-    Walker::onMidTile();
+    Walker::_centerTile();
   }
   break;
 
@@ -288,7 +288,7 @@ void Prefect::onMidTile()
         setSpeed( 0.f );
         _setAction( acFight );
         _setAnimation( gfx::prefectFight );
-        Walker::onNewDirection();
+        Walker::_changeDirection();
       }
     }
     else

@@ -31,7 +31,7 @@ public:
   virtual ~MarketLady();
 
   void send2City( MarketPtr market );
-  virtual void onDestination();
+  virtual void _reachedPathway();
 
   // compute the destination to fetch the given good
   void computeWalkerDestination( MarketPtr market );

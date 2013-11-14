@@ -25,6 +25,7 @@ public:
   Garden();
   virtual void initTerrain(Tile& terrain);
   virtual bool isWalkable() const;
+  virtual bool isFlat() const;
   virtual bool isNeedRoadAccess() const;
   virtual void build(PlayerCityPtr city, const TilePos& pos );
   virtual void load(const VariantMap &stream);

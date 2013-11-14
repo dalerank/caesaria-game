@@ -125,7 +125,7 @@ void Pathway::toggleDirection()
 constants::Direction Pathway::getNextDirection()
 {
   Direction res = noneDirection;
-  if (_d->isReverse)
+  if( _d->isReverse )
   {
     if (_d->directionIt_reverse == _d->directionList.rend())
     {
@@ -144,7 +144,7 @@ constants::Direction Pathway::getNextDirection()
         res = (Direction) (direction-4);
       }
     }
-    _d->directionIt_reverse ++;
+    _d->directionIt_reverse++;
   }
   else
   {
@@ -154,7 +154,7 @@ constants::Direction Pathway::getNextDirection()
       return noneDirection;
     }
     res = *_d->directionIt;
-    _d->directionIt ++;
+    _d->directionIt++;
   }
 
   return res;

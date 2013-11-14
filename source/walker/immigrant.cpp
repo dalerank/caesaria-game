@@ -95,8 +95,8 @@ void Immigrant::_findPath2blankHouse( Tile& startPoint )
                                                       false, arrivedArea );
   if( pathFound )
   {
-     setPathway( pathWay );
      setIJ( startPoint.getIJ() );
+     setPathway( pathWay );
      go();
   }
 
@@ -106,7 +106,7 @@ void Immigrant::_findPath2blankHouse( Tile& startPoint )
   }
 }
 
-void Immigrant::onDestination()
+void Immigrant::_reachedPathway()
 {  
   bool gooutCity = true;
   if( _d->destination.getI() > 0 && _d->destination.getJ() > 0 )  //have destination
@@ -120,7 +120,7 @@ void Immigrant::onDestination()
       if( freeRoom > 0 )
       {
         house->addHabitants( _d->peoples );
-        Walker::onDestination();
+        Walker::_reachedPathway();
 
         gooutCity = (_d->peoples.count() > 0);
       }
@@ -135,6 +135,12 @@ void Immigrant::onDestination()
   {
     deleteLater();
   }
+}
+
+void Immigrant::_brokePathway()
+{
+  _d->destination = getIJ();
+  _reachedPathway();
 }
 
 ImmigrantPtr Immigrant::create(PlayerCityPtr city )

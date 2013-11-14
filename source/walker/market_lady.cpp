@@ -154,6 +154,7 @@ void MarketLady::computeWalkerDestination( MarketPtr market )
         if( _d->destBuildingPos.getI() >= 0 )
         {
            // we found a destination!
+           setIJ( pathWay.getOrigin().getIJ() );
            setPathway(pathWay);
            break;
         }
@@ -166,13 +167,11 @@ void MarketLady::computeWalkerDestination( MarketPtr market )
      deleteLater();
      return;
   }
-
-  setIJ( _pathwayRef().getOrigin().getIJ() );
 }
 
-void MarketLady::onDestination()
+void MarketLady::_reachedPathway()
 {
-   Walker::onDestination();
+   Walker::_reachedPathway();
    if( _pathwayRef().isReverse() )
    {
       // walker is back in the market
@@ -184,7 +183,7 @@ void MarketLady::onDestination()
    {
       // walker is near the granary/warehouse
       _pathwayRef().rbegin();
-      computeDirection();
+      _computeDirection();
       go();
 
       // get goods from destination building

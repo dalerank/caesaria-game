@@ -197,9 +197,9 @@ FishingBoatPtr FishingBoat::create(PlayerCityPtr city)
   return ret;
 }
 
-void FishingBoat::onDestination()
+void FishingBoat::_reachedPathway()
 {
-  Walker::onDestination();
+  Walker::_reachedPathway();
 
   switch( _d->mode )
   {
@@ -209,9 +209,9 @@ void FishingBoat::onDestination()
   }
 }
 
-void FishingBoat::onNewTile()
+void FishingBoat::_changeTile()
 {
-  Walker::onNewTile();
+  Walker::_changeTile();
   _getAnimation().setDelay( 3 );
 }
 

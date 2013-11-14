@@ -61,9 +61,9 @@ CartSupplier::CartSupplier( PlayerCityPtr city )
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
-void CartSupplier::onDestination()
+void CartSupplier::_reachedPathway()
 {
-  Walker::onDestination();
+  Walker::_reachedPathway();
   CityHelper helper( _d->city );
   
   if( _pathwayRef().isReverse() )
@@ -97,7 +97,7 @@ void CartSupplier::onDestination()
   {
     // walker is near the granary/warehouse
     _pathwayRef().rbegin();
-    computeDirection();
+    _computeDirection();
     go();
 
     // get goods from destination building
@@ -133,9 +133,9 @@ const Picture& CartSupplier::getCartPicture()
   return _d->cartPicture;
 }
 
-void CartSupplier::onNewDirection()
+void CartSupplier::_changeDirection()
 {
-   Walker::onNewDirection();
+   Walker::_changeDirection();
    _d->cartPicture = Picture();  // need to get the new graphic
 }
 
@@ -237,6 +237,7 @@ void CartSupplier::computeWalkerDestination(BuildingPtr building, const Good::Ty
   if( _d->storageBuildingPos.getI() >= 0 )
   {
     // we found a destination!
+    setIJ( pathWay.getOrigin().getIJ() );
     setPathway(pathWay);    
   }
   else
@@ -245,8 +246,6 @@ void CartSupplier::computeWalkerDestination(BuildingPtr building, const Good::Ty
     deleteLater();
     return;
   }
-
-  setIJ( _pathwayRef().getOrigin().getIJ() );
 }
 
 void CartSupplier::send2City( BuildingPtr building, const Good::Type type, const int qty )

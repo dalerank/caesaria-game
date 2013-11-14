@@ -77,9 +77,9 @@ void Emigrant::getPictureList(std::vector<Picture> &oPics)
   }
 }
 
-void Emigrant::onNewDirection()
+void Emigrant::_changeDirection()
 {
-  Immigrant::onNewDirection();
+  Immigrant::_changeDirection();
   setCartPicture( Picture() );  // need to get the new graphic
 }
 

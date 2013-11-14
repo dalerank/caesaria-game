@@ -40,6 +40,11 @@ bool Garden::isWalkable() const
   return true;
 }
 
+bool Garden::isFlat() const
+{
+  return true;
+}
+
 bool Garden::isNeedRoadAccess() const
 {
   return false;

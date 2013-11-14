@@ -167,6 +167,11 @@ bool Road::isWalkable() const
   return true;
 }
 
+bool Road::isFlat() const
+{
+  return true;
+}
+
 void Road::updatePicture()
 {
   setPicture( computePicture() );

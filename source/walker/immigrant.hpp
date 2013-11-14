@@ -31,7 +31,6 @@ public:
   void setPeoples( const CitizenGroup& peoples );
   virtual void timeStep(const unsigned long time);
 
-  virtual void onDestination();
   ~Immigrant();
 
   virtual void save(VariantMap& stream) const;
@@ -39,6 +38,9 @@ public:
   virtual void die();
 
 protected:
+  virtual void _reachedPathway();
+  virtual void _brokePathway();
+
   void setCartPicture( const Picture& pic );
   virtual const Picture& getCartPicture();
   

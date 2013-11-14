@@ -38,10 +38,10 @@ public:
 MarketKidPtr MarketKid::create( PlayerCityPtr city, MarketLadyPtr lady )
 {
   MarketKidPtr ret( new MarketKid( city ) );
-  ret->setPathway( lady->getPathway() );
   ret->setIJ( lady->getIJ() );
+  ret->setPathway( lady->getPathway() );
   ret->_pathwayRef().rbegin();
-  ret->onMidTile();
+  ret->_centerTile();
   ret->drop();
 
   return ret;
@@ -92,9 +92,9 @@ void MarketKid::timeStep( const unsigned long time )
   Walker::timeStep( time );
 }
 
-void MarketKid::onDestination()
+void MarketKid::_reachedPathway()
 {
-  Walker::onDestination();
+  Walker::_reachedPathway();
 
   deleteLater();
 

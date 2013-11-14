@@ -44,8 +44,8 @@ public:
   static WalkerPtr create( PlayerCityPtr city );
 
   virtual void send2City(const TilePos& start);
-  virtual void onDestination();
-  virtual void onNewTile();
+  virtual void _reachedPathway();
+  virtual void _changeTile();
   virtual void die();
 
 private:

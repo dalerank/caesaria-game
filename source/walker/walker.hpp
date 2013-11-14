@@ -63,13 +63,7 @@ public:
   virtual void turn( TilePos pos );
 
   //void setDestinationIJ( const TilePos& pos );
-  void setSpeed(const float speed);
-  virtual void onNewTile();  // called when the walker is on a new tile
-  virtual void onMidTile();  // called when the walker is on the middle of a tile
-  virtual void onDestination();  // called when the walker is at his destination
-  virtual void onNewDirection(); // called when the walker changes direction
-  void computeDirection();
-  void walk();
+  void setSpeed(const float speed);  
   void setUniqueId( const UniqueId uid );
 
   constants::Direction getDirection();
@@ -100,17 +94,27 @@ public:
   void deleteLater();
 
 protected:
-   Pathway& _pathwayRef();
-   Animation& _getAnimation();
-   void _updatePathway( const Pathway& pathway );
-   void _setAction( Walker::Action action );
-   void _setDirection( constants::Direction direction );
-   void _setAnimation( constants::gfx::Type type );
-   constants::gfx::Type _getAnimationType() const;
-   void _setType( constants::walker::Type type );
-   PlayerCityPtr _getCity() const;
-   void _setHealth( double value );
-   void _updateAnimation(const unsigned int time);
+  void _walk();
+  void _computeDirection();
+
+  virtual void _changeTile();  // called when the walker is on a new tile
+  virtual void _centerTile();  // called when the walker is on the middle of a tile
+  virtual void _reachedPathway();  // called when the walker is at his destination
+  virtual void _changeDirection(); // called when the walker changes direction
+  virtual void _brokePathway();
+
+protected:
+  Pathway& _pathwayRef();
+  Animation& _getAnimation();
+  void _updatePathway( const Pathway& pathway );
+  void _setAction( Walker::Action action );
+  void _setDirection( constants::Direction direction );
+  void _setAnimation( constants::gfx::Type type );
+  constants::gfx::Type _getAnimationType() const;
+  void _setType( constants::walker::Type type );
+  PlayerCityPtr _getCity() const;
+  void _setHealth( double value );
+  void _updateAnimation(const unsigned int time);
 
 private:
    /* useful method for subtile movement computation

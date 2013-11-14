@@ -36,8 +36,8 @@ public:
 
   Picture& getCartPicture();
   virtual void getPictureList(std::vector<Picture> &oPics);
-  virtual void onNewDirection();
-  virtual void onDestination();
+  virtual void _changeDirection();
+  virtual void _reachedPathway();
 
   void send2City( BuildingPtr building, GoodStock& carry );
 

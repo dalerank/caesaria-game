@@ -34,8 +34,8 @@ public:
 
   virtual void send2City( BuildingPtr base );
   virtual float getServiceValue() const;
-  virtual void onDestination();
-  virtual void onNewTile();  // called when the walker is on a new tile
+  virtual void _reachedPathway();
+  virtual void _changeTile();  // called when the walker is on a new tile
 
   // evaluates the service demand on the given pathWay
   float evaluatePath(Pathway &pathWay);
