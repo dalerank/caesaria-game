@@ -365,21 +365,7 @@ void Walker::_centerTile()
    {
       // compute the direction to reach the destination
       _computeDirection();
-      TilePos pos = getIJ();
-      switch( _d->action.direction )
-      {
-      case constants::north: pos += TilePos( 0, 1 ); break;
-      case constants::northEast: pos += TilePos( 1, 1 ); break;
-      case constants::east: pos += TilePos( 1, 0 ); break;
-      case constants::southEast: pos += TilePos( 1, -1 ); break;
-      case constants::south: pos += TilePos( 0, -1 ); break;
-      case constants::southWest: pos += TilePos( -1, -1 ); break;
-      case constants::west: pos += TilePos( -1, 0 ); break;
-      case constants::northWest: pos += TilePos( 1, -1 ); break;
-      default: Logger::warning( "Unknown direction: %d", _d->action.direction); break;
-      }
-
-      const Tile& tile = _d->city->getTilemap().at( pos );
+      const Tile& tile = _getNextTile();
       if( tile.getI() < 0 || !tile.isWalkable( true ) )
       {
         _brokePathway( tile.getIJ() );
@@ -413,6 +399,25 @@ void Walker::_computeDirection()
   {
     _changeDirection();
   }
+}
+
+const Tile&Walker::_getNextTile() const
+{
+  TilePos pos = getIJ();
+  switch( _d->action.direction )
+  {
+  case constants::north: pos += TilePos( 0, 1 ); break;
+  case constants::northEast: pos += TilePos( 1, 1 ); break;
+  case constants::east: pos += TilePos( 1, 0 ); break;
+  case constants::southEast: pos += TilePos( 1, -1 ); break;
+  case constants::south: pos += TilePos( 0, -1 ); break;
+  case constants::southWest: pos += TilePos( -1, -1 ); break;
+  case constants::west: pos += TilePos( -1, 0 ); break;
+  case constants::northWest: pos += TilePos( 1, -1 ); break;
+  default: Logger::warning( "Unknown direction: %d", _d->action.direction); break;
+  }
+
+  return _d->city->getTilemap().at( pos );
 }
 
 
@@ -586,10 +591,11 @@ const Pathway& Walker::getPathway() const
 
 void Walker::turn(TilePos pos)
 {
-  int angle = (int)((pos - getIJ()).getAngle() / 45.f);
+  float t = (pos - getIJ()).getAngleICW();
+  int angle = (int)( t / 45.f);
 
-  Direction directions[] = { north, northEast, east, southEast, south,
-                             southWest, west, northWest };
+  Direction directions[] = { east, southEast, south, southWest,
+                             west, northWest, north, northEast };
 
   if( _d->action.direction != directions[ angle ] )
   {

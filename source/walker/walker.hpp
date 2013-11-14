@@ -96,6 +96,7 @@ public:
 protected:
   void _walk();
   void _computeDirection();
+  const Tile& _getNextTile() const;
 
   virtual void _changeTile();  // called when the walker is on a new tile
   virtual void _centerTile();  // called when the walker is on the middle of a tile

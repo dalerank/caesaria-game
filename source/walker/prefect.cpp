@@ -20,6 +20,7 @@
 #include "game/astarpathfinding.hpp"
 #include "game/path_finding.hpp"
 #include "gfx/tile.hpp"
+#include "game/tilemap.hpp"
 #include "game/city.hpp"
 #include "core/variant.hpp"
 #include "game/name_generator.hpp"
@@ -38,7 +39,7 @@ class Prefect::Impl
 {
 public:
   typedef enum { patrol=0,
-                 gotoFire, fightFire,
+                 findFire, go2fire, fightFire,
                  go2protestor, fightProtestor,
                  doNothing } PrefectAction;
     
@@ -99,8 +100,25 @@ bool Prefect::_looks4Protestor( TilePos& pos )
   return !protestors.empty();
 }
 
-void Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
+bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
 {
+  foreach( BuildingPtr building, buildings )
+  {
+    if( building->getType() != building::burningRuins )
+      continue;
+
+    if( building->getTilePos().distanceFrom( getIJ() ) < 1.5f )
+    {
+      turn( building->getTilePos() );
+      _d->action = Impl::fightFire;
+      _setAction( acFight );
+      _setAnimation( gfx::prefectFightFire );
+      setSpeed( 0.f );
+      Walker::_changeDirection();
+      return true;
+    }
+  }
+
   foreach( BuildingPtr building, buildings )
   {
     if( building->getType() != building::burningRuins )
@@ -109,21 +127,18 @@ void Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
     Pathway tmp = PathwayHelper::create( _getCity(), getIJ(), building->getTilePos(), PathwayHelper::allTerrain );
     if( tmp.isValid() )
     {
-      setPathway( tmp );
-      _setAnimation( gfx::prefectFightFire );
-      _d->action = Impl::gotoFire;
+      _d->action = Impl::go2fire;
+      _updatePathway( tmp );
+      _setAnimation( gfx::prefectDragWater );
       setSpeed( 1 );
       go();
-      return;
+      return true;
     }
   }
 
-  _back2Patrol();
+  return false;
 }
 
-void Prefect::_reachedPathway()
-{ 
-}
 
 void Prefect::_back2Prefecture()
 {
@@ -168,6 +183,19 @@ void Prefect::_back2Patrol()
   }
 }
 
+bool Prefect::_findFire()
+{
+  TilePos firePos;
+  ReachedBuildings reachedBuildings;
+  bool haveBurningRuinsNear = _looks4Fire( reachedBuildings, firePos );
+  if( haveBurningRuinsNear && _d->water > 0 )
+  {
+    return _checkPath2NearestFire( reachedBuildings );
+  }
+
+  return false;
+}
+
 void Prefect::_brokePathway(TilePos pos)
 {
   TileOverlayPtr overlay = _getCity()->getOverlay( pos );
@@ -187,6 +215,10 @@ void Prefect::_brokePathway(TilePos pos)
     Pathway pathway = PathwayHelper::create( _getCity(), getIJ(), destination, PathwayHelper::allTerrain );
     if( pathway.isValid() )
     {
+      setSpeed( 1.f );
+      _d->action = Impl::findFire;
+      _setAnimation( gfx::prefectDragWater );
+
       setPathway( pathway );
       go();
       return;
@@ -196,10 +228,35 @@ void Prefect::_brokePathway(TilePos pos)
   _back2Patrol();
 }
 
+void Prefect::_reachedPathway()
+{
+  switch( _d->action )
+  {
+  case Impl::patrol:
+    if( getIJ() == getBase()->getEnterPos() )
+    {
+      deleteLater();
+      _d->action = Impl::doNothing;
+    }
+    else
+    {
+      _back2Prefecture();
+    }
+  break;
+
+  case Impl::go2fire:
+    if( !_findFire() )
+    {
+      _back2Patrol();
+    }
+  break;
+
+  default: break;
+  }
+}
+
 void Prefect::_centerTile()
 {
-  bool isDestination = _pathwayRef().isDestination();
-
   switch( _d->action )
   {
   case Impl::doNothing:
@@ -233,51 +290,17 @@ void Prefect::_centerTile()
       //found fire, no water, go prefecture
       getBase().as<Prefecture>()->fireDetect( firePos );
       _back2Prefecture();
-
-      Walker::_changeDirection();
     }
     else
     {
       _serveBuildings( reachedBuildings );
     }
-
-    if( isDestination )
-    {
-      if( getIJ() == getBase()->getEnterPos() )
-      {
-        deleteLater();
-        _d->action = Impl::doNothing;
-      }
-      else
-      {
-        _back2Prefecture();
-      }
-    }
-
-    Walker::_centerTile();
   }
   break;
 
-  case Impl::gotoFire:
+  case Impl::findFire:
   {
-    if( isDestination )
-    {
-      TilePos firePos;
-      ReachedBuildings reachedBuildings;
-      bool haveBurningRuinsNear = _looks4Fire( reachedBuildings, firePos );
-
-      if( !haveBurningRuinsNear || _d->water == 0 )
-      {
-        _back2Prefecture();
-      }
-      else
-      {
-        _checkPath2NearestFire( reachedBuildings );
-        Walker::_changeDirection();
-      }
-    }
-
-    Walker::_centerTile();
+    _findFire();
   }
   break;
 
@@ -303,10 +326,25 @@ void Prefect::_centerTile()
   }
   break;
 
+  case Impl::go2fire:
+  {
+    BuildingPtr building = _getNextTile().getOverlay().as<Building>();
+    if( building.isValid() && building->getType() == building::burningRuins )
+    {
+      _d->action = Impl::fightFire;
+      _setAnimation( gfx::prefectFightFire );
+      _setAction( acFight );
+      setSpeed( 0.f );
+      Walker::_changeDirection();
+    }
+  }
+  break;
+
   case Impl::fightFire:
   case Impl::fightProtestor:
   break;
   }
+  Walker::_centerTile();
 }
 
 void Prefect::timeStep(const unsigned long time)
@@ -317,7 +355,7 @@ void Prefect::timeStep(const unsigned long time)
   {
   case Impl::fightFire:
   {    
-    BuildingPtr building = _pathwayRef().getDestination().getOverlay().as<Building>();
+    BuildingPtr building = _getNextTile().getOverlay().as<Building>();
     bool inFire = (building.isValid() && building->getType() == building::burningRuins );
 
     if( inFire )
@@ -336,11 +374,9 @@ void Prefect::timeStep(const unsigned long time)
 
     if( !inFire && _d->water > 0 )
     {
-      ReachedBuildings reachedBuildings;
-      TilePos firePos;
-      if( _looks4Fire( reachedBuildings, firePos ) )
+      if( !_findFire() )
       {
-        _checkPath2NearestFire( reachedBuildings );
+        _back2Patrol();
       }
     }
     else if( _d->water <= 0 )
@@ -395,7 +431,7 @@ PrefectPtr Prefect::create(PlayerCityPtr city )
 
 void Prefect::send2City(PrefecturePtr prefecture, int water/*=0 */ )
 {
-  _d->action = water > 0 ? Impl::gotoFire : Impl::patrol;
+  _d->action = water > 0 ? Impl::findFire : Impl::patrol;
   _d->water = water;
   _setAnimation( water > 0 ? gfx::prefectDragWater : gfx::prefect );
 

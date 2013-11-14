@@ -110,7 +110,7 @@ float BurningRuins::evaluateService( ServiceWalkerPtr walker )
 {
   if ( Service::prefect == walker->getService() )
   {
-    return getState( Construction::fire ) * 2;
+    return getState( Construction::fire );
   }
 
   return 0;
@@ -120,7 +120,7 @@ void BurningRuins::applyService(ServiceWalkerPtr walker)
 {
   if ( Service::prefect == walker->getService() )
   {
-    double newValue = math::clamp<float>( getState( Construction::fire ) - walker->getServiceValue(), 0.f, 100.f );
+    double newValue = math::clamp<float>( getState( Construction::fire ) - walker->getServiceValue() / 10, 0.f, 100.f );
     updateState( Construction::fire, newValue, false );
   }
 }
