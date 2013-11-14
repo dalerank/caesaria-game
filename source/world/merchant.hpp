@@ -33,13 +33,14 @@ class Merchant : public ReferenceCounted
 {
 public:
   static MerchantPtr create( TradeRoute& route, const std::string& start,
-                                   GoodStore& sell, GoodStore& buy );
+                             GoodStore& sell, GoodStore& buy );
   ~Merchant();
 
   Point getLocation() const;
   void update( unsigned int time );
 
-  CityPtr getBaseCity() const;
+  std::string getBaseCityName() const;
+  std::string getDestCityName() const;
   GoodStore& getSellGoods();
   GoodStore& getBuyGoods();
 

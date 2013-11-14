@@ -30,8 +30,10 @@ class TradeRoute::Impl
 oc3_signals public:
   Signal1<MerchantPtr> onMerchantArrivedSignal;
 public:
-  CityPtr begin;
-  CityPtr end;
+  std::string begin;
+  std::string end;
+  EmpirePtr empire;
+
   typedef std::vector<MerchantPtr> MerchantList;
   MerchantList merchants;
 
@@ -46,23 +48,29 @@ public:
       }
     }
 
+    CityPtr city = empire->getCity( merchant->getDestCityName() );
+    if( city.isValid() )
+    {
+      city->arrivedMerchant( merchant );
+    }
+
     onMerchantArrivedSignal.emit( merchant );
   }
 };
 
 CityPtr TradeRoute::getBeginCity() const
 {
-  return _d->begin;  
+  return _d->empire->getCity( _d->begin );
 }
 
 CityPtr TradeRoute::getEndCity() const
 {
-  return _d->end;
+  return _d->empire->getCity( _d->end );
 }
 
 std::string TradeRoute::getName() const
 {
-  return _d->begin->getName() + "<->" + _d->end->getName();
+  return _d->begin + "<->" + _d->end;
 }
 
 void TradeRoute::update( unsigned int time )
@@ -90,9 +98,10 @@ void TradeRoute::addMerchant( const std::string& begin, GoodStore& sell, GoodSto
   CONNECT( merchant, onDestination(), _d.data(), Impl::resolveMerchantArrived );
 }
 
-TradeRoute::TradeRoute(CityPtr begin, CityPtr end )
+TradeRoute::TradeRoute( EmpirePtr empire, std::string begin, std::string end )
 : _d( new Impl )
 {
+  _d->empire = empire;
   _d->begin = begin;
   _d->end = end;
 }
@@ -115,10 +124,9 @@ MerchantPtr TradeRoute::getMerchant( unsigned int index )
 VariantMap TradeRoute::save() const
 {  
   VariantMap ret;
-  int index=0;
   foreach( MerchantPtr m, _d->merchants )
   {
-    ret[ StringHelper::format( 0xff, "%d", index++ ) ] = m->save();
+    ret[ StringHelper::format( 0xff, "->%s", m->getDestCityName().c_str() ) ] = m->save();
   }
 
   return ret;
@@ -129,7 +137,7 @@ void TradeRoute::load(const VariantMap& stream)
   for( VariantMap::const_iterator it=stream.begin(); it != stream.end(); it++ )
   {
     SimpleGoodStore sell, buy;
-    addMerchant( _d->begin->getName(), sell, buy );
+    addMerchant( _d->begin, sell, buy );
 
     _d->merchants.back()->load( it->second.toMap() );
   }

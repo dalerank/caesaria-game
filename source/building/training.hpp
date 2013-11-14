@@ -44,6 +44,7 @@ class ActorColony : public TrainingBuilding
 public:
    ActorColony();
    virtual void deliverTrainee();
+   virtual void timeStep(const unsigned long time);
 };
 
 class GladiatorSchool : public TrainingBuilding
@@ -51,6 +52,7 @@ class GladiatorSchool : public TrainingBuilding
 public:
    GladiatorSchool();
    virtual void deliverTrainee();
+   virtual void timeStep(const unsigned long time);
 };
 
 class LionsNursery : public TrainingBuilding
@@ -58,6 +60,7 @@ class LionsNursery : public TrainingBuilding
 public:
    LionsNursery();
    virtual void deliverTrainee();
+   virtual void timeStep(const unsigned long time);
 };
 
 class WorkshopChariot : public TrainingBuilding
@@ -65,6 +68,7 @@ class WorkshopChariot : public TrainingBuilding
 public:
    WorkshopChariot();
    virtual void deliverTrainee();
+   virtual void timeStep(const unsigned long time);
 };
 
 #endif

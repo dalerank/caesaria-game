@@ -129,10 +129,6 @@ int EntertainmentBuilding::_getTraineeLevel()
 
 Theater::Theater() : EntertainmentBuilding(Service::theater, building::theater, Size(2))
 {
-  //_getAnimation().load( ResourceGroup::entertaiment, 14, 21);
-  //_getAnimation().setOffset( Point( 60, 36 ) );
-  _animationRef().stop();
-
   _fgPicturesRef().resize(2);
 }
 
@@ -153,6 +149,22 @@ void Theater::build(PlayerCityPtr city, const TilePos& pos)
 void Theater::timeStep(const unsigned long time)
 {
   EntertainmentBuilding::timeStep( time );
+  if( getWorkersCount() > 0 )
+  {
+    if( _animationRef().isStopped() )
+    {
+      _animationRef().start();
+      _fgPicturesRef().front() = Picture::load( ResourceGroup::entertaiment, 35 );
+    }
+  }
+  else
+  {
+    if( _animationRef().isRunning() )
+    {
+      _animationRef().stop();
+      _fgPicturesRef().front() = Picture::getInvalid();
+    }
+  }
 }
 
 int Theater::getVisitorsNumber() const
@@ -171,12 +183,30 @@ void Theater::deliverService()
 
 Amphitheater::Amphitheater() : EntertainmentBuilding(Service::amphitheater, building::amphitheater, Size(3))
 {
-  //setPicture( ResourceGroup::entertaiment, 1 );
-  //_getAnimation().load( ResourceGroup::entertaiment, 2, 10);
-  //_getAnimation().setOffset( Point( 100, 49 ) );
   _fgPicturesRef().resize(2);
-  //_fgPictures[0] = Picture::load( ResourceGroup::entertaiment, 12);
 }
+
+void Amphitheater::timeStep(const unsigned long time)
+{
+  EntertainmentBuilding::timeStep( time );
+  if( getWorkersCount() > 0 )
+  {
+    if( _animationRef().isStopped() )
+    {
+      _animationRef().start();
+      _fgPicturesRef().front() = Picture::load( ResourceGroup::entertaiment, 12 );
+    }
+  }
+  else
+  {
+    if( _animationRef().isRunning() )
+    {
+      _animationRef().stop();
+      _fgPicturesRef().front() = Picture::getInvalid();
+    }
+  }
+}
+
 
 void Amphitheater::build(PlayerCityPtr city, const TilePos& pos)
 {

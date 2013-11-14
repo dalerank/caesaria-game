@@ -111,6 +111,11 @@ void Sheep::_reachedPathway()
   _findNewWay( getIJ() );
 }
 
+void Sheep::_brokePathway(TilePos pos)
+{
+  _findNewWay( getIJ() );
+}
+
 void Sheep::_changeTile()
 {
   Walker::_changeTile();

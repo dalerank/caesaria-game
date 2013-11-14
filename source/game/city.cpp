@@ -586,7 +586,7 @@ int PlayerCity::getCulture() const
   return csPrsp.isValid() ? csPrsp.as<CityServiceCulture>()->getValue() : 0;
 }
 
-void PlayerCity::resolveMerchantArrived( world::MerchantPtr merchant )
+void PlayerCity::arrivedMerchant( world::MerchantPtr merchant )
 {
   WalkerPtr cityMerchant = Merchant::create( this, merchant );
   cityMerchant.as<Merchant>()->send2City();

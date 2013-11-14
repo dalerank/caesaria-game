@@ -24,7 +24,8 @@
     cost : 100,
     desirability : { base : 4, range : 4, step : -1 }
     employers : 12
-    class : "entertainment"
+    class : "entertainment"    
+    animation : { rc : "entertainment", start : 2, count : 10, offset : [ 100, 49 ], delay : 2 }
   },
 
   theater : 
@@ -34,6 +35,7 @@
     employers : 8
     class : "entertainment"
     image : [ "entertainment", 13 ]
+    animation : { rc : "entertainment", start : 14, count : 21, offset : [ 60, 36 ], delay : 2 }
   },
 
   hippodrome : 
@@ -58,6 +60,8 @@
 	desirability : { base : -3, range : 3, step : 1 }
 	employers : 8
 	class : "entertainment"
+  image : [ "entertainment", 51 ]
+  animation : { rc : "entertainment", start : 52, count : 10, offset : [ 62, 24 ], delay : 2 }
   },
   
   house : 
@@ -74,14 +78,18 @@
 	desirability : { base : -3, range : 3, step : 1 }
 	employers : 8
 	class : "entertainment"
+  image : [ "entertainment", 62 ]
+  animation : { rc : "entertainment", start : 63, count : 18, offset : [ 78, 21 ], delay : 2 }
   },
   
-  artist_colony : {
+  artist_colony : 
+  {
     cost : 50,
     desirability : { base : -2, range : 3, step : 1 }
     employers : 5
     image : [ "entertainment", 81 ]
     class : "entertainment"
+    animation : { rc : "entertainment", start : 82, count : 9, offset : [ 68, -6 ], delay : 2 }
   },
 
   chatioteer_school :
@@ -90,6 +98,8 @@
     desirability : { base : -3, range : 3, step : 1 }
     employers : 10
     class : "entertainment"
+    image : [ "entertainment", 91 ]
+    animation : { rc : "entertainment", start : 92, count : 10, offset : [ 54, 23 ], delay : 2 }
   },
   
   plaza :
@@ -184,7 +194,7 @@
 	employers : 10
 	class : "health"
   image : [ "security", 32 ]
-  animation : { start : 22, count : 10, offset : [ 23, 25 ] }
+  animation : { rc : "security", start : 22, count : 10, offset : [ 23, 25 ], delay : 2 }
   service : "srvc_baths" 
   }, 
 

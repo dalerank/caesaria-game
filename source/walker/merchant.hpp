@@ -28,10 +28,12 @@ public:
   virtual ~Merchant();
 
   void send2City();
-  virtual void _reachedPathway();
 
   void save( VariantMap& stream) const;
   void load( const VariantMap& stream);
+protected:
+  virtual void _reachedPathway();
+
 private:
   Merchant( PlayerCityPtr city );
 

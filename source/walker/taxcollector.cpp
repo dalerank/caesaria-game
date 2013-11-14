@@ -28,7 +28,7 @@ using namespace constants;
 class TaxCollector::Impl
 {
 public:
-  int money;
+  float money;
 };
 
 void TaxCollector::_centerTile()
@@ -43,7 +43,7 @@ void TaxCollector::_centerTile()
     HousePtr house = building.as<House>();
     if( house.isValid() && house->ready2Taxation() )
     {
-      int money = (int)(house->collectTaxes() * taxRate);
+      float money = house->collectTaxes() * taxRate;
       _d->money += money;
     }
   }

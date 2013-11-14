@@ -55,12 +55,12 @@ public:
 
   bool mayPayTax()
   {
-    return lastPayDate.getMonthToDate( GameDate::current() ) > 2;
+    return lastPayDate.getMonthToDate( GameDate::current() ) > 0;
   }
 
-  int getAvailableTax()
+  float getAvailableTax()
   {
-    return spec.getTaxRate() * habitants.count( CitizenGroup::mature );
+    return spec.getTaxRate() * habitants.count( CitizenGroup::mature ) / 12.f;
   }
 
   void updateHealthLevel()
@@ -561,7 +561,7 @@ float House::evaluateService(ServiceWalkerPtr walker)
   // this house pays taxes
   case Service::forum:
   case Service::senate:
-    res = _d->mayPayTax() ? (float)_d->getAvailableTax() : 0.f;
+    res = _d->mayPayTax() ? _d->getAvailableTax() : 0.f;
   break;
 
   case Service::market:
@@ -792,7 +792,7 @@ bool House::isEntertainmentNeed(Service::Type type) const
   return false;
 }
 
-int House::collectTaxes()
+float House::collectTaxes()
 {
   if( _d->mayPayTax() )
   {

@@ -98,7 +98,7 @@ public:
   void setLayer( int type );
 
   void drawTile( Tile& tile );
-  void drawTileEx(Tile& tile, const int depth );
+  void drawTileEx(Tile& tile, const int depth, bool force=false );
 
   Tile* getTile( const Point& pos, bool overborder);
 
@@ -154,9 +154,9 @@ void CityRenderer::initialize(PlayerCityPtr city, GfxEngine* engine )
   _d->setLayer( citylayer::simple );
 }
 
-void CityRenderer::Impl::drawTileEx( Tile& tile, const int depth )
+void CityRenderer::Impl::drawTileEx( Tile& tile, const int depth, bool force )
 {
-  if( tile.isFlat() )
+  if( tile.isFlat() && !force )
   {
     return;  // tile has already been drawn!
   }
@@ -438,7 +438,7 @@ void CityRenderer::Impl::renderTilesBTools()
         }
       }
 
-      drawTileEx( *postTile, postTile->getIJ().getZ() );
+      drawTileEx( *postTile, postTile->getIJ().getZ(), true );
     }
 
     engine->resetTileDrawMask();
@@ -768,6 +768,7 @@ void CityRenderer::checkPreviewBuild(const TilePos & pos)
         tile->setPicture( &overlay->getPicture() );
         tile->setMasterTile( masterTile );
         tile->setOverlay( overlay.as<TileOverlay>() );
+        //tile->setFlag( Tile::tlRock, true );  //dirty hack that drawing this tile
         _d->postTiles.push_back( tile );
         //_priorityTiles.push_back( tile );
       }

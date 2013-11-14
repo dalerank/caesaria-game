@@ -106,7 +106,7 @@ public:
 
   CityTradeOptions& getTradeOptions();
 
-  void resolveMerchantArrived( world::MerchantPtr merchant );
+  virtual void arrivedMerchant( world::MerchantPtr merchant );
 
   virtual const GoodStore& getSells() const;
   virtual const GoodStore& getBuys() const;

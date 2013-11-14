@@ -44,9 +44,12 @@ public:
   static WalkerPtr create( PlayerCityPtr city );
 
   virtual void send2City(const TilePos& start);
-  virtual void _reachedPathway();
-  virtual void _changeTile();
   virtual void die();
+
+protected:
+  virtual void _reachedPathway();
+  virtual void _brokePathway(TilePos pos);
+  virtual void _changeTile();
 
 private:
   Sheep( PlayerCityPtr city );

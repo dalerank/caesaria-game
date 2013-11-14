@@ -31,7 +31,7 @@ namespace world
 class TradeRoute : public ReferenceCounted
 {
 public:
-  TradeRoute( CityPtr begin, CityPtr end );
+  TradeRoute(EmpirePtr empire, std::string begin, std::string end );
   ~TradeRoute();
 
   CityPtr getBeginCity() const;

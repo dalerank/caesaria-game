@@ -124,6 +124,7 @@ void ComputerCity::save( VariantMap& options ) const
   options[ "lastTimeMerchantSend" ] = _d->lastTimeMerchantSend;
   options[ "lastTimeUpdate" ] = _d->lastTimeUpdate;
   options[ "available" ] = _d->isAvailable;
+  options[ "merchantsNumber" ] = _d->merchantsNumber;
 }
 
 void ComputerCity::load( const VariantMap& options )
@@ -133,6 +134,7 @@ void ComputerCity::load( const VariantMap& options )
   _d->isAvailable = (bool)options.get( "available", false );
   _d->lastTimeUpdate = options.get( "lastTimeUpdate", GameDate::current() ).toDateTime();
   _d->lastTimeMerchantSend = options.get( "lastTimeMerchantSend", GameDate::current() ).toDateTime();
+  _d->merchantsNumber = (int)options.get( "merchantsNumber" );
 
   const VariantMap& sells_vm = options.get( "sells" ).toMap();
   for( VariantMap::const_iterator it=sells_vm.begin(); it != sells_vm.end(); it++ )
@@ -181,7 +183,7 @@ CityPtr ComputerCity::create( EmpirePtr empire, const std::string& name )
   return ret;
 }
 
-void ComputerCity::resolveMerchantArrived( MerchantPtr merchant )
+void ComputerCity::arrivedMerchant( MerchantPtr merchant )
 {
   GoodStore& sellGoods = merchant->getSellGoods();
   GoodStore& buyGoods = merchant->getBuyGoods();

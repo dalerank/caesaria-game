@@ -70,7 +70,7 @@ public:
   void addHabitants( CitizenGroup& habitants );
   const CitizenGroup& getHabitants() const;
 
-  int collectTaxes();
+  float collectTaxes();
   bool ready2Taxation() const;
 
   std::string getUpCondition() const;

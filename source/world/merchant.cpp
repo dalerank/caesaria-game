@@ -30,9 +30,9 @@ public:
   TradeRoute* route;
   SimpleGoodStore sells;
   SimpleGoodStore buys;
-  Point location;
+  Point location, destLocation;
   Point step;
-  CityPtr destCity, baseCity;
+  std::string destCity, baseCity;
   bool isDeleted;
 
 oc3_signals public:
@@ -50,7 +50,7 @@ Merchant::Merchant() : _d( new Impl )
 }
 
 MerchantPtr Merchant::create( TradeRoute& route, const std::string& start,
-                                          GoodStore& sell, GoodStore& buy )
+                              GoodStore& sell, GoodStore& buy )
 {
   MerchantPtr ret( new Merchant() );
   ret->_d->route = &route;
@@ -62,10 +62,14 @@ MerchantPtr Merchant::create( TradeRoute& route, const std::string& start,
   ret->_d->buys.resize( buy );
   ret->_d->buys.storeAll( buy );
 
-  ret->_d->baseCity = startCity ? route.getBeginCity() : route.getEndCity();
-  ret->_d->destCity = startCity ? route.getEndCity() : route.getBeginCity();
-  ret->_d->location = ret->_d->baseCity->getLocation();
-  ret->_d->step = ( ret->_d->destCity->getLocation() - ret->_d->location ) / 3;
+  CityPtr baseCity = startCity ? route.getBeginCity() : route.getEndCity();
+  CityPtr destCity = startCity ? route.getEndCity() : route.getBeginCity();
+
+  ret->_d->baseCity = baseCity->getName();
+  ret->_d->destCity = destCity->getName();
+  ret->_d->location = baseCity->getLocation();
+  ret->_d->destLocation = destCity->getLocation();
+  ret->_d->step = ( ret->_d->destLocation - ret->_d->location ) / 8;
   ret->drop();
 
   return ret;
@@ -80,12 +84,15 @@ void Merchant::update( unsigned int time )
 {
   _d->location += _d->step;
 
-  if( _d->destCity->getLocation().distanceTo( _d->location ) < 5 )
+  if( _d->destLocation.distanceTo( _d->location ) < 20 )
   {
     _d->onDestinationSignal.emit( this );
-
-    _d->destCity->resolveMerchantArrived( this );
   }
+}
+
+std::string Merchant::getDestCityName() const
+{
+  return _d->destCity;
 }
 
 Point Merchant::getLocation() const
@@ -111,8 +118,9 @@ VariantMap Merchant::save() const
   ret[ "location" ]= _d->location;
   ret[ "step"     ]= _d->step;
   ret[ "deleted"  ]= _d->isDeleted;
-  ret[ "begin"    ]= Variant( _d->baseCity->getName() );
-  ret[ "end"      ]= Variant( _d->destCity->getName() );
+  ret[ "destLocation" ] = _d->destLocation;
+  ret[ "begin"    ]= Variant( _d->baseCity );
+  ret[ "end"      ]= Variant( _d->destCity );
 
   return ret;
 }
@@ -121,16 +129,23 @@ void Merchant::load(const VariantMap& stream)
 {
   _d->sells.load( stream.get( "sells" ).toMap() );
   _d->buys.load( stream.get( "buys" ).toMap() );
-  _d->location = stream.get( "location" );
   _d->step = stream.get( "step" );
   _d->isDeleted = stream.get( "deleted" );
+  _d->baseCity = stream.get( "begin" ).toString();
+  _d->destCity = stream.get( "end" ).toString();
 
-  bool startCity = (_d->route->getBeginCity()->getName() == stream.get( "begin" ).toString() );
-  _d->baseCity = startCity ? _d->route->getBeginCity() : _d->route->getEndCity();
-  _d->destCity = startCity ? _d->route->getEndCity()   : _d->route->getBeginCity();
+  bool startCity = ( _d->route->getBeginCity()->getName() == _d->baseCity);
+  CityPtr baseCity = startCity ? _d->route->getBeginCity() : _d->route->getEndCity();
+  CityPtr destCity = startCity ? _d->route->getEndCity() : _d->route->getBeginCity();
+
+  _d->location = baseCity->getLocation();
+  _d->destLocation = destCity->getLocation();
+
+  _d->step = ( _d->destLocation - _d->location ) / 8;
+  _d->location = stream.get( "location" );
 }
 
-CityPtr Merchant::getBaseCity() const
+std::string Merchant::getBaseCityName() const
 {
   return _d->baseCity;
 }

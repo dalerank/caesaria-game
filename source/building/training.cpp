@@ -78,8 +78,6 @@ void TrainingBuilding::load( const VariantMap& stream )
 
 ActorColony::ActorColony() : TrainingBuilding( building::actorColony, Size(3) )
 {
-  //_getAnimation().load( ResourceGroup::entertaiment, 82, 9);
-  //_getAnimation().setOffset( Point( 68, -6 ) );
   _fgPicturesRef().resize(1);
 }
 
@@ -100,12 +98,25 @@ void ActorColony::deliverTrainee()
   }
 }
 
+void ActorColony::timeStep(const unsigned long time)
+{
+  TrainingBuilding::timeStep( time );
+
+  if( getWorkersCount() > 0 )
+  {
+    if( _animationRef().isStopped() )
+    {
+      _animationRef().start();
+    }
+  }
+  else if( _animationRef().isRunning() )
+  {
+    _animationRef().stop();
+  }
+}
+
 GladiatorSchool::GladiatorSchool() : TrainingBuilding( building::gladiatorSchool, Size(3))
 {
-  //setPicture( Picture::load( ResourceGroup::entertaiment, 51 ) );
-
-  _animationRef().load( ResourceGroup::entertaiment, 52, 10);
-  _animationRef().setOffset( Point( 62, 24 ) );
   _fgPicturesRef().resize(1);
 }
 
@@ -117,14 +128,43 @@ void GladiatorSchool::deliverTrainee()
   trainee->send2City();
 }
 
+void GladiatorSchool::timeStep(const unsigned long time)
+{
+  TrainingBuilding::timeStep( time );
+
+  if( getWorkersCount() > 0 )
+  {
+    if( _animationRef().isStopped() )
+    {
+      _animationRef().start();
+    }
+  }
+  else if( _animationRef().isRunning() )
+  {
+    _animationRef().stop();
+  }
+}
 
 LionsNursery::LionsNursery() : TrainingBuilding( building::lionHouse, Size(3) )
 {
-  setPicture( ResourceGroup::entertaiment, 62 );
-
-   _animationRef().load( ResourceGroup::entertaiment, 63, 18);
-   _animationRef().setOffset( Point( 78, 21) );
    _fgPicturesRef().resize(1);
+}
+
+void LionsNursery::timeStep(const unsigned long time)
+{
+  TrainingBuilding::timeStep( time );
+
+  if( getWorkersCount() > 0 )
+  {
+    if( _animationRef().isStopped() )
+    {
+      _animationRef().start();
+    }
+  }
+  else if( _animationRef().isRunning() )
+  {
+    _animationRef().stop();
+  }
 }
 
 void LionsNursery::deliverTrainee()
@@ -138,10 +178,6 @@ void LionsNursery::deliverTrainee()
 
 WorkshopChariot::WorkshopChariot() : TrainingBuilding( building::chariotSchool, Size(3) )
 {
-  setPicture( ResourceGroup::entertaiment, 91 );
-
-  _animationRef().load( ResourceGroup::entertaiment, 92, 10);
-  _animationRef().setOffset( Point( 54, 23 ));
   _fgPicturesRef().resize(1);
 }
 
@@ -151,6 +187,23 @@ void WorkshopChariot::deliverTrainee()
   TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), walker::charioter );
   trainee->setOriginBuilding(*this);
   trainee->send2City();
+}
+
+void WorkshopChariot::timeStep(const unsigned long time)
+{
+  TrainingBuilding::timeStep( time );
+
+  if( getWorkersCount() > 0 )
+  {
+    if( _animationRef().isStopped() )
+    {
+      _animationRef().start();
+    }
+  }
+  else if( _animationRef().isRunning() )
+  {
+    _animationRef().stop();
+  }
 }
 
 

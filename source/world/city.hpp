@@ -39,7 +39,7 @@ public:
   virtual void timeStep( unsigned int time ) = 0;  
   virtual bool isAvailable() const { return true; }
   virtual void setAvailable( bool value ) {}
-  virtual void resolveMerchantArrived( MerchantPtr ) = 0;
+  virtual void arrivedMerchant( MerchantPtr ) = 0;
 
   virtual EmpirePtr getEmpire() const = 0;
 

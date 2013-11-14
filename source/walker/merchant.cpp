@@ -372,8 +372,7 @@ WalkerPtr Merchant::create(PlayerCityPtr city, world::MerchantPtr merchant )
   cityMerchant->_d->sell.storeAll( merchant->getSellGoods() );
   cityMerchant->_d->buy.resize( merchant->getBuyGoods() );
   cityMerchant->_d->buy.storeAll( merchant->getBuyGoods() );
-
-  cityMerchant->_d->baseCityName = merchant->getBaseCity()->getName();
+  cityMerchant->_d->baseCityName = merchant->getBaseCityName();
   
   WalkerPtr ret( cityMerchant );
   ret->drop();

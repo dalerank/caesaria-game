@@ -47,6 +47,7 @@ protected:
   void _serveBuildings( ReachedBuildings& reachedBuildings );
   void _back2Prefecture();
   void _back2Patrol();
+  virtual void _brokePathway(TilePos pos);
 
   class Impl;
   ScopedPtr< Impl > _d;

@@ -46,7 +46,7 @@ public:
 
   virtual EmpirePtr getEmpire() const;
 
-  void resolveMerchantArrived( MerchantPtr );
+  virtual void arrivedMerchant( MerchantPtr );
 
 protected:
   ComputerCity( EmpirePtr empire, const std::string& name );

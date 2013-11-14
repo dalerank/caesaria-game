@@ -43,8 +43,6 @@ public:
   unsigned int getWalkerDistance() const;
 
 protected:
-  void _initAnimation();
-
   bool _haveReservorWater;
 };
 

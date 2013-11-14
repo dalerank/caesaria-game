@@ -174,6 +174,11 @@ void Prefect::_back2Patrol()
   }
 }
 
+void Prefect::_brokePathway(TilePos pos)
+{
+  _back2Patrol();
+}
+
 void Prefect::_centerTile()
 {
   bool isDestination = _pathwayRef().isDestination();

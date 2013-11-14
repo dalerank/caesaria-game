@@ -72,7 +72,7 @@ void Trading::load(const VariantMap& stream)
   for( VariantMap::iterator it=routes.begin(); it != routes.end(); it++ )
   {
     std::string routeName = it->first;
-    int delimPos = routeName.find( "<->" );
+    unsigned int delimPos = routeName.find( "<->" );
     if( delimPos != std::string::npos )
     {
       std::string beginCity = routeName.substr( 0, delimPos );
@@ -133,11 +133,9 @@ TradeRoutePtr Trading::createRoute( const std::string& begin, const std::string&
     return route;
   }
 
-  CityPtr beginCity = _d->empire->getCity( begin );
-  CityPtr endCity = _d->empire->getCity( end );
   unsigned int routeId = StringHelper::hash( begin ) + StringHelper::hash( end );
 
-  route = TradeRoutePtr( new TradeRoute( beginCity, endCity ) );
+  route = TradeRoutePtr( new TradeRoute( _d->empire, begin, end ) );
   route->drop();
   _d->routes[ routeId ] = route;
 
