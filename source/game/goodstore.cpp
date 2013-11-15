@@ -221,6 +221,13 @@ VariantMap GoodStore::save() const
   }
   stream[ "retrieveReservation" ] = vm_retrieveReservations;
 
+  VariantList vm_orders;
+  for( int i=Good::none; i < Good::goodCount; i++ )
+  {
+    vm_orders.push_back( (int)getOrder( (Good::Type)i ) );
+  }
+  stream[ "orders" ] = vm_orders;
+
   return stream;
 }
 
@@ -241,6 +248,14 @@ void GoodStore::load( const VariantMap& stream )
   {
     int index = (*it).toInt(); it++;
     _d->retrieveReservations[ index ].load( (*it).toList() );
+  }
+
+  VariantList vm_orders = stream.get( "orders" ).toList();
+  int index = 0;
+  foreach( Variant& var, vm_orders )
+  {
+    setOrder( (Good::Type)index, (GoodOrders::Order)var.toInt() );
+    index++;
   }
 }
 

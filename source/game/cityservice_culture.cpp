@@ -63,8 +63,9 @@ public:
   int schoolPoints;
   int collegePoints;
 
-  int convCoverage2Points( const CoveragePoints& covp, const double value )
+  int convCoverage2Points( const CoveragePoints& covp, double value )
   {
+    value = std::min( value, 1.0 );
     for( int i=0; i < 6; i++ )
     {
       if( value >= covp[ i ].coverage )

@@ -152,6 +152,11 @@ bool BurnedRuins::isWalkable() const
   return true;
 }
 
+bool BurnedRuins::isFlat() const
+{
+  return true;
+}
+
 bool BurnedRuins::isNeedRoadAccess() const
 {
   return false;

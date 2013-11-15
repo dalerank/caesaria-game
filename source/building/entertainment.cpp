@@ -163,6 +163,7 @@ void Theater::timeStep(const unsigned long time)
     {
       _animationRef().stop();
       _fgPicturesRef().front() = Picture::getInvalid();
+      _fgPicturesRef().back() = Picture::getInvalid();
     }
   }
 }

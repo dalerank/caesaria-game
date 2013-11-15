@@ -42,6 +42,7 @@ public:
 
   void timeStep(const unsigned long time);
   bool isWalkable() const;
+  bool isFlat() const;
   void build(PlayerCityPtr city, const TilePos& pos );
   bool isNeedRoadAccess() const;
   void destroy();
@@ -52,13 +53,13 @@ typedef SmartPtr< BurningRuins > BurningRuinsPtr;
 class CollapsedRuins : public Building
 {
 public:
-    CollapsedRuins();
+  CollapsedRuins();
 
-    void burn();
-    void build(PlayerCityPtr city, const TilePos& pos );
+  void burn();
+  void build(PlayerCityPtr city, const TilePos& pos );
 
-    bool isWalkable() const;
-    bool isNeedRoadAccess() const;
+  bool isWalkable() const;
+  bool isNeedRoadAccess() const;
 };
 
 class PlagueRuins : public Building

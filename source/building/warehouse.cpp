@@ -418,6 +418,7 @@ void Warehouse::save( VariantMap& stream ) const
   {
     vm_tiles.push_back( whTile._stock.save() );
   }
+
   stream[ "tiles" ] = vm_tiles;
 }
 
