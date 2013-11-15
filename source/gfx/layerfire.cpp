@@ -72,7 +72,7 @@ void LayerFire::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       {
         HousePtr house = overlay.as< House >();
         fireLevel = (int)house->getState( Construction::fire );
-        needDrawAnimations = (house->getSpec().getLevel() == 1) && (house->getHabitants().size() ==0);
+        needDrawAnimations = (house->getSpec().getLevel() == 1) && house->getHabitants().empty();
 
         CityHelper helper( _city );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );

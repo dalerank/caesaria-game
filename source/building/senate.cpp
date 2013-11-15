@@ -81,6 +81,20 @@ int Senate::collectTaxes()
   return _d->taxValue;
 }
 
+int Senate::getStatus(Senate::Status status) const
+{
+  switch(status)
+  {
+  case workless: return CityStatistic::getWorklessPercent( _getCity() );
+  case culture: return _getCity()->getCulture();
+  case prosperity: return _getCity()->getProsperity();
+  case peace: return _getCity()->getPeace();
+  case favour: return _getCity()->getFavour();
+  }
+
+  return 0;
+}
+
 std::string Senate::getError() const
 {
   return _d->errorStr;

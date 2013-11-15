@@ -98,13 +98,8 @@ public:
   }
 
   void makeOldHabitants()
-  {
-    for( CitizenGroup::reverse_iterator g=habitants.rbegin(); g!=habitants.rend(); g++ )
-    {
-      habitants[ g->first+1 ] = g->second;
-      habitants[ g->first ] = 0;
-    }
-
+  { 
+    habitants.makeOld();
     habitants[ CitizenGroup::newborn ] = 0; //birth+helath function from mature habitants count
     habitants[ CitizenGroup::longliver ] = 0;
   }
@@ -647,7 +642,7 @@ void House::addHabitants( CitizenGroup& habitants )
   _update();
 }
 
-const CitizenGroup&House::getHabitants() const
+const CitizenGroup& House::getHabitants() const
 {
   return _d->habitants;
 }

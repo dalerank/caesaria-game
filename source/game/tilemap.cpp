@@ -233,7 +233,7 @@ void Tilemap::load( const VariantMap& stream )
     tile->appendDesirability( (*desirabilityIt).toInt() );
 
     int imgId = (*imgIdIt).toInt();
-    if( imgId != 0 )
+    if( !tile->getMasterTile() && imgId != 0 )
     {
       std::string picName = TileHelper::convId2PicName( imgId );
       Picture& pic = Picture::load( picName );
@@ -244,7 +244,7 @@ void Tilemap::load( const VariantMap& stream )
 
       // master is the left-most subtile
       Tile* master = (tile_size == 1) ? NULL : tile;
-      
+
       for ( int di = 0; di<tile_size; ++di )
       {
         // for each subrow of the multi-tile
@@ -252,8 +252,8 @@ void Tilemap::load( const VariantMap& stream )
         {
           // for each subcol of the multi-tile
           Tile &sub_tile = at( tile->getIJ() + TilePos( di, dj ) );
-          sub_tile.setMasterTile(master);
-          sub_tile.setPicture(&pic);
+          sub_tile.setMasterTile( master );
+          sub_tile.setPicture( &pic );
         }
       }
     }

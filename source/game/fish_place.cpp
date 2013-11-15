@@ -73,7 +73,19 @@ FishPlace::~FishPlace()
 
 void FishPlace::build(PlayerCityPtr city, const TilePos& pos)
 {
+  setSize( Size( 0 ) );
   TileOverlay::build( city, pos );
+
+  Tilemap &tilemap = city->getTilemap();
+  Tile& tile = tilemap.at( pos );
+  tile.setMasterTile( getTile().getMasterTile() );
+
+  if( tile.getOverlay().isValid() && tile.getOverlay() != this )
+  {
+    tile.getOverlay()->deleteLater();
+  }
+
+  tile.setOverlay( this );
 
   _d->restoreTilePic( getTile() );
 }
@@ -100,7 +112,7 @@ void FishPlace::timeStep(const unsigned long time)
       _d->restoreTilePic( getTile() );
 
       TilePos pos =  _d->walker->getIJ();
-      TileOverlay::build( _getCity(), pos );
+      build( _getCity(), pos );
 
       _animationRef().setDelay( 2 + rand() % 4 );
     }

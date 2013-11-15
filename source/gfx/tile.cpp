@@ -90,9 +90,14 @@ void Tile::setMasterTile(Tile* master)
 
 bool Tile::isFlat() const
 {
+  if( _master && _master != this )
+  {
+    return _master->isFlat();
+  }
+
   return (_overlay.isValid()
-              ? _overlay->isFlat()
-              : !(_terrain.rock || _terrain.tree || _terrain.aqueduct) );
+           ? _overlay->isFlat()
+           : !(_terrain.rock || _terrain.tree || _terrain.aqueduct) );
 }
 
 TilePos Tile::getIJ() const

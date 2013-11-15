@@ -42,6 +42,7 @@ public:
 
   void timeStep(const unsigned long time);
   bool isWalkable() const;
+  bool isFlat() const;
   void build(PlayerCityPtr city, const TilePos& pos );
   bool isNeedRoadAccess() const;
   void destroy();

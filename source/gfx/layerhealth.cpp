@@ -84,7 +84,7 @@ void LayerHealth::drawTile(GfxEngine& engine, Tile& tile, Point offset)
         else if( _flags.count( building::B_BARBER ) ) { healthLevel = house->getServiceValue( Service::barber ); }
         else if( _flags.count( building::B_BATHS ) ) { healthLevel = house->getServiceValue( Service::baths ); }
 
-        needDrawAnimations = (house->getSpec().getLevel() == 1) && (house->getHabitants().size() == 0);
+        needDrawAnimations = (house->getSpec().getLevel() == 1) && (house->getHabitants().empty());
 
         CityHelper helper( _city );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );

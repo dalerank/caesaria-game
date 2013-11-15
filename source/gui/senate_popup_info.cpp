@@ -39,16 +39,16 @@ public:
   PictureRef background;  
   int lastUpdateTime;
 
-  void updateRatings()
+  void updateRatings( SenatePtr senate )
   {
     lastUpdateTime = DateTime::getElapsedTime();
 
     background->fill( 0xffffffff, Rect( ratingStartPos.getX(), ratingStartPos.getY(), background->getWidth()-2, background->getHeight()-2 ) );
-    font.draw( *background, StringHelper::format( 0xff, "%d %%", 0 ), ratingStartPos, false );
-    font.draw( *background, StringHelper::format( 0xff, "%d", 0 ), ratingStartPos + offset, false );
-    font.draw( *background, StringHelper::format( 0xff, "%d", 0 ), ratingStartPos + offset * 2, false );
-    font.draw( *background, StringHelper::format( 0xff, "%d", 0 ), ratingStartPos + offset * 3, false );
-    font.draw( *background, StringHelper::format( 0xff, "%d", 0 ), ratingStartPos + offset * 4, false );
+    font.draw( *background, StringHelper::format( 0xff, "%d %%", senate->getStatus( Senate::workless ) ), ratingStartPos, false );
+    font.draw( *background, StringHelper::format( 0xff, "%d", senate->getStatus( Senate::culture ) ), ratingStartPos + offset, false );
+    font.draw( *background, StringHelper::format( 0xff, "%d", senate->getStatus( Senate::prosperity ) ), ratingStartPos + offset * 2, false );
+    font.draw( *background, StringHelper::format( 0xff, "%d", senate->getStatus( Senate::peace ) ), ratingStartPos + offset * 3, false );
+    font.draw( *background, StringHelper::format( 0xff, "%d", senate->getStatus( Senate::favour ) ), ratingStartPos + offset * 4, false );
   }
 };
 
@@ -72,8 +72,6 @@ SenatePopupInfo::SenatePopupInfo( Widget* parent, CityRenderer& mapRenderer ) :
   _d->font.draw( *_d->background, _("##senatepp_prsp_rating##"), _d->startPos + _d->offset * 2, false );
   _d->font.draw( *_d->background, _("##senatepp_peace_rating##"), _d->startPos + _d->offset * 3, false );
   _d->font.draw( *_d->background, _("##senatepp_favour_rating##"), _d->startPos + _d->offset * 4, false );
-
-  _d->updateRatings();
 }
 
 void SenatePopupInfo::draw( GfxEngine& painter )
@@ -84,13 +82,13 @@ void SenatePopupInfo::draw( GfxEngine& painter )
 
   if( tile )
   {
-    SmartPtr< Senate > senate = tile->getOverlay().as< Senate >();
+    SenatePtr senate = tile->getOverlay().as<Senate>();
 
     if( senate.isValid() )
     {
       if( DateTime::getElapsedTime() - _d->lastUpdateTime > 2000 )
       {
-        _d->updateRatings();
+        _d->updateRatings( senate );
       }
 
       painter.drawPicture( *_d->background, cursorPos );     

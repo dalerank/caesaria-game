@@ -84,6 +84,8 @@ public:
   int getPopulation() const;
   int getProsperity() const;
   int getCulture() const;
+  int getPeace() const;
+  int getFavour() const;
 
   Tilemap& getTilemap();
 

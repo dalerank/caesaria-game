@@ -586,6 +586,18 @@ int PlayerCity::getCulture() const
   return csPrsp.isValid() ? csPrsp.as<CityServiceCulture>()->getValue() : 0;
 }
 
+int PlayerCity::getPeace() const
+{
+  //CityServicePtr csPrsp = findService( CityServicePeace::getDefaultName() );
+  return 0;//csPrsp.isValid() ? csPrsp.as<CityServiceCulture>()->getValue() : 0;
+}
+
+int PlayerCity::getFavour() const
+{
+  //CityServicePtr csPrsp = findService( CityServiceFavour::getDefaultName() );
+  return 0;//csPrsp.isValid() ? csPrsp.as<CityServiceCulture>()->getValue() : 0;
+}
+
 void PlayerCity::arrivedMerchant( world::MerchantPtr merchant )
 {
   WalkerPtr cityMerchant = Merchant::create( this, merchant );

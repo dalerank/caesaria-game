@@ -18,7 +18,7 @@
 
 #include "core/variant.hpp"
 
-class CitizenGroup : public std::map< int, int >
+class CitizenGroup
 {
 public:
   typedef enum { newborn=0, child, scholar, student, mature, aged, longliver=99 } Age;
@@ -29,10 +29,20 @@ public:
 
   CitizenGroup retrieve( int count );
 
+  int& operator[](int age);
   CitizenGroup& operator += ( const CitizenGroup& b );
+
+  bool empty() const;
+  void clear();
+  void makeOld();
 
   VariantList save() const;
   void load( const VariantList& stream );
+
+  CitizenGroup();
+private:
+  typedef std::vector< int > Peoples;
+  Peoples _hb;
 };
 
 #endif //_OPENCAESAR_HOUSE_HABITANT_INCLUDE_H_

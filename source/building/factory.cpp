@@ -314,7 +314,7 @@ bool TimberLogger::canBuild( PlayerCityPtr city, const TilePos& pos ) const
    TilemapArea area = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), Tilemap::checkCorners );
    foreach( Tile* tile, area )
    {
-      near_forest |= tile->getFlag( Tile::tlTree );
+     near_forest |= tile->getFlag( Tile::tlTree );
    }
 
    const_cast< TimberLogger* >( this )->_setError( near_forest ? "" : _("##lumber_mill_need_forest_near##"));
@@ -338,11 +338,13 @@ bool IronMine::canBuild(PlayerCityPtr city, const TilePos& pos ) const
   bool near_mountain = false;  // tells if the factory is next to a mountain
 
   Tilemap& tilemap = city->getTilemap();
-  TilemapArea perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size(2), Tilemap::checkCorners );
+  TilemapArea perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), pos + TilePos(3, 3), Tilemap::checkCorners );
   foreach( Tile* tile, perimetr )
   {
-     near_mountain |= tile->getFlag( Tile::tlRock );
+    near_mountain |= tile->getFlag( Tile::tlRock );
   }
+
+  const_cast< IronMine* >( this )->_setError( near_mountain ? "" : _("##iron_mine_need_mountain_near##"));
 
   return (is_constructible && near_mountain);
 }
@@ -357,25 +359,32 @@ WeaponsWorkshop::WeaponsWorkshop() : Factory(Good::iron, Good::weapon, building:
 
 bool WeaponsWorkshop::canBuild(PlayerCityPtr city, const TilePos& pos) const
 {
-  bool ret = Factory::canBuild( city, pos );
+  return Factory::canBuild( city, pos );
+}
+
+void WeaponsWorkshop::build(PlayerCityPtr city, const TilePos& pos)
+{
+  Factory::build( city, pos );
 
   CityHelper helper( city );
   bool haveIronMine = !helper.find<Building>( building::ironMine ).empty();
 
-  const_cast< WeaponsWorkshop* >( this )->_setError( haveIronMine ? "" : _("##need_iron_for_work##") );
-  return ret;
+  _setError( haveIronMine ? "" : _("##need_iron_for_work##") );
 }
 
 bool WorkshopFurniture::canBuild(PlayerCityPtr city, const TilePos& pos) const
 {
-  bool ret = Factory::canBuild( city, pos );
+  return Factory::canBuild( city, pos );
+}
+
+void WorkshopFurniture::build(PlayerCityPtr city, const TilePos& pos)
+{
+  Factory::build( city, pos );
 
   CityHelper helper( city );
   bool haveTimberLogger = !helper.find<TimberLogger>( building::timberLogger ).empty();
 
-  const_cast< WorkshopFurniture* >( this )->_setError( haveTimberLogger ? "" : _("##need_timber_for_work##") );
-
-  return ret;
+  _setError( haveTimberLogger ? "" : _("##need_timber_for_work##") );
 }
 
 WorkshopFurniture::WorkshopFurniture() : Factory(Good::timber, Good::furniture, building::furniture, Size(2) )
@@ -396,13 +405,17 @@ Winery::Winery() : Factory(Good::grape, Good::wine, building::winery, Size(2) )
 
 bool Winery::canBuild(PlayerCityPtr city, const TilePos& pos) const
 {
-  bool ret = Factory::canBuild( city, pos );
+  return Factory::canBuild( city, pos );
+}
+
+void Winery::build(PlayerCityPtr city, const TilePos& pos)
+{
+  Factory::build( city, pos );
 
   CityHelper helper( city );
   bool haveVinegrad = !helper.find<Building>( building::grapeFarm ).empty();
 
   const_cast< Winery* >( this )->_setError( haveVinegrad ? "" : _("##need_vinegrad_for_work##") );
-  return ret;
 }
 
 Creamery::Creamery() : Factory(Good::olive, Good::oil, building::creamery, Size(2) )
@@ -415,12 +428,15 @@ Creamery::Creamery() : Factory(Good::olive, Good::oil, building::creamery, Size(
 
 bool Creamery::canBuild(PlayerCityPtr city, const TilePos& pos) const
 {
-  bool ret = Factory::canBuild( city, pos );
+  return Factory::canBuild( city, pos );
+}
+
+void Creamery::build(PlayerCityPtr city, const TilePos& pos)
+{
+  Factory::build( city, pos );
 
   CityHelper helper( city );
   bool haveOliveFarm = !helper.find<Building>( building::oliveFarm ).empty();
 
-  const_cast< Creamery* >( this )->_setError( haveOliveFarm ? "" : _("##need_olive_for_work##") );
-
-  return ret;
+  _setError( haveOliveFarm ? "" : _("##need_olive_for_work##") );
 }
