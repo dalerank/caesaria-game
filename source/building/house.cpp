@@ -93,7 +93,9 @@ public:
   void consumeServices()
   {
     int currentWorkersPower = services[ Service::recruter ];       //save available workers number
-    foreach( Services::value_type& srvc, services ) { srvc.second -= 1; } //consume services
+    for( Services::iterator it=services.begin(); it != services.end(); it++ )
+    { it->second -= 1; } //consume services
+
     services[ Service::recruter ] = currentWorkersPower;     //restore available workers number
   }
 

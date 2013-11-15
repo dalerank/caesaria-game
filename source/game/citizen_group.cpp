@@ -51,7 +51,7 @@ CitizenGroup CitizenGroup::retrieve(int count)
 
   for( int age=0; age <= longliver; age++ )
   {
-    int n = std::min( _hb[ age ], rand() % count );
+    int n = std::min( _hb[ age ], 1 );
 
     ret[ age ] += n;
     _hb[ age ] -= n;

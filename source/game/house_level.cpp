@@ -691,7 +691,7 @@ void HouseSpecHelper::initialize( const io::FilePath& filename )
 
     for (int i = 0; i < Good::goodCount; ++i)
     {
-      spec._d->consumptionMuls[ (Good::Type)i ] = 1;
+      spec._d->consumptionMuls[ (Good::Type)i ] = 0.1;
     }
 
     //load consumption goods koefficient

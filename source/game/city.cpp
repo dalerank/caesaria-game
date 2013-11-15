@@ -74,24 +74,14 @@ typedef std::vector< CityServicePtr > CityServices;
 class WGrid
 {
 public:
-  void resize( Size size )
-  {
-    _grid.resize( size.getWidth() );
-    for( int i=0; i < size.getWidth(); i++ )
-    {
-      _grid[ i ].resize( size.getHeight() );
-    }
-  }
-
   void clear()
   {
-    foreach( Row& r, _grid )
-    {
-      foreach( WalkerList& cell, r)
-      {
-        cell.clear();
-      }
-    }
+    _grid.clear();
+  }
+
+  unsigned int hash( const TilePos& pos )
+  {
+    return (pos.getI() << 16) + pos.getJ();
   }
 
   void append( WalkerPtr& a )
@@ -100,7 +90,7 @@ public:
     if( pos.getI() >= 0 && pos.getI() < (int)_grid.size()
         && pos.getJ() >= 0 && pos.getJ() < (int)_grid.size() )
     {
-      _grid[ pos.getI() ][ pos.getJ() ].push_back( a );
+      _grid[ hash( pos ) ].push_back( a );
     }
   }
 
@@ -109,7 +99,7 @@ public:
     if( pos.getI() >= 0 && pos.getI() < (int)_grid.size()
         && pos.getJ() >= 0 && pos.getJ() < (int)_grid.size() )
     {
-      return _grid[ pos.getI() ][ pos.getJ() ];
+      return _grid[ hash( pos ) ];
     }
     else
     {
@@ -120,8 +110,7 @@ public:
   }
 
 private:
-  typedef std::vector< WalkerList > Row;
-  typedef std::vector< Row > Grid;
+  typedef std::map< int, WalkerList > Grid;
   Grid _grid;
 };
 
@@ -361,7 +350,6 @@ void PlayerCity::setBorderInfo(const BorderInfo& info)
   _d->borderInfo.roadExit = info.roadExit.fit( start, stop );
   _d->borderInfo.boatEntry = info.boatEntry.fit( start, stop );
   _d->borderInfo.boatExit = info.boatExit.fit( start, stop );
-  _d->walkersGrid.resize( Size(size) );
 }
 
 TileOverlayList&  PlayerCity::getOverlays()         { return _d->overlayList; }
@@ -473,7 +461,6 @@ void PlayerCity::load( const VariantMap& stream )
   _d->cameraStart = TilePos( stream.get( "cameraStart" ).toTilePos() );
   _d->name = stream.get( "name" ).toString();
   _d->lastMonthCount = GameDate::current().getMonth();
-  _d->walkersGrid.resize( Size( _d->tilemap.getSize() ) );
 
   VariantMap overlays = stream.get( "overlays" ).toMap();
   foreach( VariantMap::value_type& item, overlays )
