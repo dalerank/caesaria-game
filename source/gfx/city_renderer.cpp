@@ -167,7 +167,7 @@ void CityRenderer::Impl::drawTileEx( Tile& tile, const int depth, bool force )
   {
     drawTile( tile );
     return;
-  }
+  }  
 
   // multi-tile: draw the master tile.
   // and it is time to draw the master tile

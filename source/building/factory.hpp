@@ -91,12 +91,14 @@ public:
    WeaponsWorkshop();
 
    virtual bool canBuild(PlayerCityPtr city, const TilePos &pos) const;
+   virtual void build(PlayerCityPtr city, const TilePos &pos);
 };
 
 class WorkshopFurniture : public Factory
 {
 public:
   virtual bool canBuild(PlayerCityPtr city, const TilePos &pos) const;
+  virtual void build(PlayerCityPtr city, const TilePos &pos);
 
   WorkshopFurniture();
 };
@@ -106,6 +108,7 @@ class Winery : public Factory
 public:
    Winery();
    virtual bool canBuild(PlayerCityPtr city, const TilePos &pos) const;
+   virtual void build(PlayerCityPtr city, const TilePos &pos);
 };
 
 class Creamery : public Factory
@@ -114,6 +117,7 @@ public:
    Creamery();
 
    virtual bool canBuild(PlayerCityPtr city, const TilePos &pos) const;
+   virtual void build(PlayerCityPtr city, const TilePos &pos);
 };
 
 #endif

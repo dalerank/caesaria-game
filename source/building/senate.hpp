@@ -22,14 +22,17 @@
 class Senate : public ServiceBuilding
 {
 public:
+  typedef enum { workless, culture, prosperity, peace, favour } Status;
   Senate();
   unsigned int getFunds() const;
 
   int collectTaxes();
 
+  int getStatus( Status status ) const;
+
   virtual std::string getError() const;
 
-  virtual void deliverService();
+  virtual void deliverService();  
 
   virtual bool canBuild(PlayerCityPtr city, const TilePos& pos )const;
 

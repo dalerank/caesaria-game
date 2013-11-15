@@ -88,6 +88,7 @@ public:
   TilePos operator-() const { return TilePos( -x, -y ); }
   bool operator==(const TilePos& other) const{ return (x == other.x) && ( y == other.y ); }
   bool operator!=(const TilePos& other) const{ return (x != other.x ) || ( y != other.y ); }
+  bool operator<(const TilePos& other) const{ return (x<other.x) || (x==other.x && y<other.y); }
 
   double getAngleICW() const { return getAngle(); }
 

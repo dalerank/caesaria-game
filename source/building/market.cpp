@@ -151,6 +151,21 @@ void Market::timeStep(const unsigned long time)
 {
   if( time % 16 == 0 )
   {
+    if( getWorkersCount() > 0 )
+    {
+      if( _animationRef().isStopped() )
+      {
+        _animationRef().start();
+      }
+    }
+    else
+    {
+      if( _animationRef().isRunning() )
+      {
+        _animationRef().stop();
+      }
+    }
+
     WalkerList walkers = getWalkers();
     if( walkers.size() > 0 && _d->goodStore.getCurrentQty() == 0 )
     {

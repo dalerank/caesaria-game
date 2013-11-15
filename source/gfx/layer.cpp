@@ -33,6 +33,9 @@ void Layer::drawTilePass( GfxEngine& engine, Tile& tile, Point offset, Renderer:
 
 void Layer::drawArea( GfxEngine& engine, const TilemapArea& area, Point offset, std::string resourceGroup, int tileId)
 {
+  if( area.empty() )
+    return;
+
   Tile* baseTile = area.front();
   TileOverlayPtr overlay = baseTile->getOverlay();
   Picture *pic = NULL;

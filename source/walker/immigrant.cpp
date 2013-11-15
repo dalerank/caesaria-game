@@ -16,7 +16,7 @@
 #include "immigrant.hpp"
 #include "core/position.hpp"
 #include "core/safetycast.hpp"
-#include "game/astarpathfinding.hpp"
+#include "game/pathway_helper.hpp"
 #include "building/house.hpp"
 #include "gfx/tile.hpp"
 #include "core/variant.hpp"
@@ -83,24 +83,18 @@ HousePtr Immigrant::_findBlankHouse()
 
 void Immigrant::_findPath2blankHouse( Tile& startPoint )
 {
-  HousePtr house = _findBlankHouse();
+  HousePtr house = _findBlankHouse();  
 
-  Pathway pathWay;
+  TilePos destPos = house.isValid() ? house->getEnterPos() : _getCity()->getBorderInfo().roadExit;
 
-  Tilemap& citymap = _getCity()->getTilemap();
-  Tile& destTile = house.isValid() ? house->getTile() : citymap.at( _getCity()->getBorderInfo().roadExit );
-  Size arrivedArea( house.isValid() ? house->getSize() : 1 );
-
-  bool pathFound = Pathfinder::getInstance().getPath( startPoint.getIJ(), destTile.getIJ(), pathWay, 
-                                                      false, arrivedArea );
-  if( pathFound )
+  Pathway pathWay = PathwayHelper::create( _getCity(), startPoint.getIJ(), destPos, PathwayHelper::allTerrain );
+  if( pathWay.isValid() )
   {
      setIJ( startPoint.getIJ() );
      setPathway( pathWay );
      go();
   }
-
-  if( !pathFound )
+  else
   {
     deleteLater();
   }

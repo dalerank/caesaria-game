@@ -128,6 +128,22 @@ void BuildEvent::exec( Game& game )
       {
         game.getCity()->onWarningMessage().emit( "##building_need_road_access##" );
       }
+
+      std::string error = construction->getError();
+      if( !error.empty() )
+      {
+        game.getCity()->onWarningMessage().emit( error );
+      }
+
+      WorkingBuildingPtr wb = construction.as<WorkingBuilding>();
+      if( wb.isValid() && wb->getWorkersCount() > 0 )
+      {
+        int worklessCount = CityStatistic::getWorklessNumber( game.getCity() );
+        if( worklessCount < wb->getWorkersCount() )
+        {
+          game.getCity()->onWarningMessage().emit( "##city_need_more_workers##" );
+        }
+      }
     }
   }
 }

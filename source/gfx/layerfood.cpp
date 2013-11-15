@@ -73,7 +73,7 @@ void LayerFood::drawTile(GfxEngine& engine, Tile& tile, Point offset)
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
         HousePtr house = overlay.as< House >();
         foodLevel = house->getFoodLevel();
-        needDrawAnimations = (house->getSpec().getLevel() == 1) && (house->getHabitants().size() == 0);
+        needDrawAnimations = (house->getSpec().getLevel() == 1) && (house->getHabitants().empty());
       }
       break;
 
