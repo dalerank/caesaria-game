@@ -30,8 +30,8 @@ public:
   
   virtual void destroy() {}
 
-  virtual VariantMap save() const;
-  virtual void load(const VariantMap& stream);
+  virtual VariantMap save() const { return VariantMap(); }
+  virtual void load(const VariantMap& stream) {}
 
 protected:
   CityService( const std::string& name ) : _name( name )

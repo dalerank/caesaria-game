@@ -33,7 +33,6 @@ using namespace constants;
 class Immigrant::Impl
 {
 public:
-  TilePos destination;
   Picture cartPicture;
   CitizenGroup peoples;
   int stamina;
@@ -54,7 +53,6 @@ HousePtr Immigrant::_findBlankHouse()
   CityHelper hlp( _getCity() );
   HouseList houses = hlp.find< House >( building::house );
   HousePtr blankHouse;
-  _d->destination = TilePos( -1, -1 );
 
   HouseList::iterator itHouse = houses.begin();
   while( itHouse != houses.end() )
@@ -75,55 +73,69 @@ HousePtr Immigrant::_findBlankHouse()
     itHouse = houses.begin();
     std::advance(itHouse, rand() % houses.size() );
     blankHouse = *itHouse;
-    _d->destination = blankHouse->getTilePos();
   }
 
   return blankHouse;
 }
 
-void Immigrant::_findPath2blankHouse( Tile& startPoint )
+void Immigrant::_findPath2blankHouse( TilePos startPoint )
 {
   HousePtr house = _findBlankHouse();  
 
-  TilePos destPos = house.isValid() ? house->getEnterPos() : _getCity()->getBorderInfo().roadExit;
-
-  Pathway pathWay = PathwayHelper::create( _getCity(), startPoint.getIJ(), destPos, PathwayHelper::allTerrain );
-  if( pathWay.isValid() )
+  Pathway pathway;
+  if( house.isValid() )
   {
-     setIJ( startPoint.getIJ() );
-     setPathway( pathWay );
-     go();
+    pathway = PathwayHelper::create( startPoint, house.as<Construction>(), PathwayHelper::allTerrain );
+  }
+
+  if( !pathway.isValid() )
+  {
+    pathway = PathwayHelper::create( startPoint,
+                                     _getCity()->getBorderInfo().roadExit,
+                                     PathwayHelper::allTerrain );
+  }
+
+  if( pathway.isValid() )
+  {
+    setIJ( startPoint );
+    setPathway( pathway );
+    go();
   }
   else
   {
-    deleteLater();
+    die();
   }
 }
 
 void Immigrant::_reachedPathway()
-{  
-  bool gooutCity = true;
-  if( _d->destination.getI() > 0 && _d->destination.getJ() > 0 )  //have destination
+{
+  Walker::_reachedPathway();
+
+  if( getIJ() == _getCity()->getBorderInfo().roadExit )
   {
-    const Tile& tile = _getCity()->getTilemap().at( _d->destination );
+    deleteLater();
+  }
 
-    HousePtr house = tile.getOverlay().as<House>();
-    if( house.isValid() )
-    {      
-      int freeRoom = house->getMaxHabitants() - house->getHabitants().count();
-      if( freeRoom > 0 )
-      {
-        house->addHabitants( _d->peoples );
-        Walker::_reachedPathway();
+  bool gooutCity = true;
+  TilesArray area = _getCity()->getTilemap().getArea( getIJ() - TilePos(1,1),
+                                                       getIJ() + TilePos(1,1) );
+  foreach( Tile* tile, area )  //have destination
+  {
+    HousePtr house = tile->getOverlay().as<House>();
+    if( !house.isValid() )
+      continue;
 
-        gooutCity = (_d->peoples.count() > 0);
-      }
+    int freeRoom = house->getMaxHabitants() - house->getHabitants().count();
+    if( freeRoom > 0 )
+    {
+      house->addHabitants( _d->peoples );
+      gooutCity = (_d->peoples.count() > 0);
     }
   }
 
   if( gooutCity )
   {
-    _findPath2blankHouse( _getCity()->getTilemap().at( getIJ() ) );
+    _findPath2blankHouse( getIJ() );
   }
   else
   {
@@ -133,12 +145,12 @@ void Immigrant::_reachedPathway()
 
 void Immigrant::_brokePathway(TilePos pos)
 {
-  TileOverlayPtr overlay = _getCity()->getTilemap().at( pos ).getOverlay();
+  /*TileOverlayPtr overlay = _getCity()->getTilemap().at( pos ).getOverlay();
   if( !overlay.is<House>() )
   {
     _d->destination = getIJ();
     _reachedPathway();
-  }
+  }*/
 }
 
 ImmigrantPtr Immigrant::create(PlayerCityPtr city )
@@ -163,7 +175,7 @@ bool Immigrant::send2City( PlayerCityPtr city, const CitizenGroup& peoples, Tile
 
 void Immigrant::send2City( Tile& startTile )
 {
-  _findPath2blankHouse( startTile );
+  _findPath2blankHouse( startTile.getIJ() );
   _getCity()->addWalker( this );
 }
 
@@ -227,14 +239,12 @@ void Immigrant::save( VariantMap& stream ) const
 {
   Walker::save( stream );
   stream[ "peoples" ] = _d->peoples.save();
-  stream[ "destination" ] = _d->destination;
 }
 
 void Immigrant::load( const VariantMap& stream )
 {
   Walker::load( stream );
   _d->peoples.load( stream.get( "peoples" ).toList() );
-  _d->destination = TilePos( stream.get( "destination" ).toTilePos() );
 }
 
 void Immigrant::die()

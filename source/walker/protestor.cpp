@@ -256,7 +256,7 @@ Pathway Protestor::Impl::findTarget(PlayerCityPtr city, ConstructionList constru
       ConstructionList::iterator it = constructions.begin();
       std::advance( it, rand() % constructions.size() );
 
-      pathway = PathwayHelper::create( city, pos, (*it)->getEnterPos(), PathwayHelper::allTerrain );
+      pathway = PathwayHelper::create( pos, *it, PathwayHelper::allTerrain );
       if( pathway.isValid() )
       {
         return pathway;

@@ -63,7 +63,7 @@ public:
   typedef std::vector<LayerPtr> Layers;
 
   Picture clearPic;
-  TilemapTiles postTiles;  // these tiles have draw over "normal" tilemap tiles!
+  TilesArray postTiles;  // these tiles have draw over "normal" tilemap tiles!
   Point lastCursorPos;
   Point startCursorPos;
   bool  lmbPressed;
@@ -105,7 +105,7 @@ public:
   WalkerList getVisibleWalkerList();
   void drawWalkersBetweenZ( WalkerList walkerList, int minZ, int maxZ );
 
-  void resetWasDrawn( TilemapArea tiles )
+  void resetWasDrawn( TilesArray& tiles )
   {
     foreach( Tile* tile, tiles )
       tile->resetWasDrawn();
@@ -222,14 +222,14 @@ void CityRenderer::Impl::renderTilesRTools()
 
   int lastZ = -1000;  // dummy value
 
-  TilemapArea visibleTiles = camera.getTiles();
+  TilesArray visibleTiles = camera.getTiles();
   resetWasDrawn( visibleTiles );
 
   TilePos startPos, stopPos;
   getSelectedArea( startPos, stopPos );
  
   std::set<int> hashDestroyArea;
-  TilemapArea destroyArea = tilemap->getArea( startPos, stopPos );
+  TilesArray destroyArea = tilemap->getArea( startPos, stopPos );
   
   //create list of destroy tiles add full area building if some of it tile constain in destroy area
   foreach( Tile* tile, destroyArea)
@@ -239,7 +239,7 @@ void CityRenderer::Impl::renderTilesRTools()
     TileOverlayPtr overlay = tile->getOverlay();
     if( overlay.isValid() )
     {
-      TilemapArea overlayArea = tilemap->getArea( overlay->getTilePos(), overlay->getSize() );
+      TilesArray overlayArea = tilemap->getArea( overlay->getTilePos(), overlay->getSize() );
       foreach( Tile* ovelayTile, overlayArea )
       {
         hashDestroyArea.insert( ovelayTile->getJ() * 1000 + ovelayTile->getI() );
@@ -308,7 +308,7 @@ void CityRenderer::Impl::renderTiles()
 
   int lastZ = -1000;  // dummy value
 
-  TilemapArea visibleTiles = camera.getTiles();
+  TilesArray visibleTiles = camera.getTiles();
 
   foreach( Tile* tile, visibleTiles )
   {
@@ -386,7 +386,7 @@ void CityRenderer::registerTileForRendering(Tile& tile)
   }
 }
 
-const TilemapTiles&CityRenderer::getPostTiles() const
+const TilesArray& CityRenderer::getPostTiles() const
 {
   return _d->postTiles;
 }
@@ -502,8 +502,8 @@ void CityRenderer::updatePreviewTiles( bool force )
     Tile* startTile = getTile( _d->startCursorPos, true );  // tile under the cursor (or NULL)
     Tile* stopTile  = getTile( _d->lastCursorPos,  true );
 
-    ConstTilemapWay pathWay = RoadPropagator::createPath( *_d->tilemap, *startTile, *stopTile );
-    for( ConstTilemapWay::iterator it=pathWay.begin(); it != pathWay.end(); it++ )
+    TilesArray pathWay = RoadPropagator::createPath( *_d->tilemap, startTile->getIJ(), stopTile->getIJ() );
+    for( TilesArray::iterator it=pathWay.begin(); it != pathWay.end(); it++ )
     {
       checkPreviewBuild( (*it)->getIJ() );
     }
@@ -545,7 +545,7 @@ void CityRenderer::Impl::clearAll()
   TilePos startPos, stopPos;
   getSelectedArea( startPos, stopPos );
 
-  TilemapTiles tiles4clear = tilemap->getArea( startPos, stopPos );
+  TilesArray tiles4clear = tilemap->getArea( startPos, stopPos );
   foreach( Tile* tile, tiles4clear )
   {
     events::GameEventPtr event = events::ClearLandEvent::create( tile->getIJ() );
@@ -833,7 +833,7 @@ void CityRenderer::setMode( const TilemapChangeCommandPtr command )
 
 void CityRenderer::animate(unsigned int time)
 {
-  TilemapArea visibleTiles = _d->camera.getTiles();
+  TilesArray visibleTiles = _d->camera.getTiles();
 
   foreach( Tile* tile, visibleTiles )
   {

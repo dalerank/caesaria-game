@@ -76,7 +76,7 @@ void Prefecture::deliverService()
     {
       Pathway pathway;
       TilePos startPos = getAccessRoads().front()->getIJ();
-      bool pathFounded = Pathfinder::getInstance().getPath( startPos, _fireDetect, pathway, false, Size( 0 ) );
+      bool pathFounded = Pathfinder::getInstance().getPath( startPos, _fireDetect, pathway, false );
       //patrol = !pathFounded;
 
       if( pathFounded )

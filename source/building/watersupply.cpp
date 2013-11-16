@@ -90,7 +90,7 @@ void Aqueduct::destroy()
 
   if( _getCity().isValid() )
   {
-    TilemapArea area = _getCity()->getTilemap().getArea( getTilePos() - TilePos( 2, 2), Size( 5 ) );
+    TilesArray area = _getCity()->getTilemap().getArea( getTilePos() - TilePos( 2, 2), Size( 5 ) );
     foreach( Tile* tile, area )
     {
       TileOverlayPtr overlay = tile->getOverlay();
@@ -144,7 +144,7 @@ bool Aqueduct::canBuild(PlayerCityPtr city, const TilePos& pos ) const
     if (!tilemap.isInside(tp_to))
       tp_to = pos;
 
-    TilemapTiles perimetr = tilemap.getRectangle(tp_from, tp_to, !Tilemap::checkCorners);
+    TilesArray perimetr = tilemap.getRectangle(tp_from, tp_to, !Tilemap::checkCorners);
     foreach( Tile* tile, perimetr )
     {
       if( tile->getFlag( Tile::tlRoad ) && tile->getFlag( Tile::tlAqueduct ) )
@@ -194,7 +194,7 @@ bool Aqueduct::canBuild(PlayerCityPtr city, const TilePos& pos ) const
   return false;
 }
 
-Picture& Aqueduct::computePicture(PlayerCityPtr city , const TilemapTiles * tmp, const TilePos pos)
+Picture& Aqueduct::computePicture(PlayerCityPtr city , const TilesArray* tmp, const TilePos pos)
 {
   // find correct picture as for roads
   Tilemap& tmap = city->getTilemap();
@@ -232,7 +232,7 @@ Picture& Aqueduct::computePicture(PlayerCityPtr city , const TilemapTiles * tmp,
   // if we have a TMP array with aqueducts, calculate them
   if (tmp != NULL)
   {
-    for (TilemapTiles::const_iterator it = tmp->begin(); it != tmp->end(); ++it)
+    for( TilesArray::const_iterator it = tmp->begin(); it != tmp->end(); ++it)
     {
       int i = (*it)->getI();
       int j = (*it)->getJ();
@@ -350,7 +350,7 @@ void Reservoir::destroy()
 {
   //now remove water flag from near tiles
   Tilemap& tmap = _getCity()->getTilemap();
-  TilemapArea reachedTiles = tmap.getArea( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
+  TilesArray reachedTiles = tmap.getArea( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
   foreach( Tile* tile, reachedTiles )
   {
     tile->decreaseWaterService( WTR_RESERVOIR );
@@ -398,7 +398,7 @@ bool Reservoir::_isNearWater(PlayerCityPtr city, const TilePos& pos ) const
   bool near_water = false;  // tells if the factory is next to a mountain
 
   Tilemap& tilemap = city->getTilemap();
-  TilemapTiles perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), !Tilemap::checkCorners );
+  TilesArray perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), !Tilemap::checkCorners );
   foreach( Tile* tile, perimetr)
   {
     near_water |= tile->getFlag( Tile::tlWater );
@@ -433,7 +433,7 @@ void Reservoir::timeStep(const unsigned long time)
   if( time % 22 == 1 )
   {
     Tilemap& tmap = _getCity()->getTilemap();
-    TilemapArea reachedTiles = tmap.getArea( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
+    TilesArray reachedTiles = tmap.getArea( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
     foreach( Tile* tile, reachedTiles )
     {
       tile->fillWaterService( WTR_RESERVOIR );
@@ -592,7 +592,7 @@ void Fountain::timeStep(const unsigned long time)
     {
       //remove fontain service from tiles
       Tilemap& tmap = _getCity()->getTilemap();
-      TilemapArea reachedTiles = tmap.getArea( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() );
+      TilesArray reachedTiles = tmap.getArea( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() );
       foreach( Tile* tile, reachedTiles )
       {
         tile->decreaseWaterService( WTR_FONTAIN );
@@ -608,7 +608,7 @@ void Fountain::timeStep(const unsigned long time)
     }
 
     Tilemap& tmap = _getCity()->getTilemap();
-    TilemapArea reachedTiles = tmap.getArea( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() );
+    TilesArray reachedTiles = tmap.getArea( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() );
     foreach( Tile* tile, reachedTiles )
     {
       tile->fillWaterService( WTR_FONTAIN );
@@ -649,7 +649,7 @@ bool Fountain::isActive() const
 
 bool Fountain::haveReservoirAccess() const
 {
-  TilemapArea reachedTiles = _getCity()->getTilemap().getArea( getTilePos() - TilePos( 10, 10 ), Size( 10, 10 ) + getSize() );
+  TilesArray reachedTiles = _getCity()->getTilemap().getArea( getTilePos() - TilePos( 10, 10 ), Size( 10, 10 ) + getSize() );
   foreach( Tile* tile, reachedTiles )
   {
     TileOverlayPtr overlay = tile->getOverlay();

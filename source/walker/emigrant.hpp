@@ -31,12 +31,14 @@ public:
   static EmigrantPtr create( PlayerCityPtr city);
 
   virtual void getPictureList(std::vector<Picture> &oPics);
-  virtual void _changeDirection();
   virtual void timeStep(const unsigned long time);
 
   virtual void die();
 
   ~Emigrant();
+protected:
+  virtual void _changeDirection();
+
 protected:
   const Picture& getCartPicture();
 

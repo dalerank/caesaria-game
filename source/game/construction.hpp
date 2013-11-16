@@ -24,6 +24,7 @@
 #include "predefinitions.hpp"
 #include "game/service.hpp"
 #include "building/metadata.hpp"
+#include "gfx/tilesarray.hpp"
 
 class Construction : public TileOverlay
 {
@@ -38,14 +39,14 @@ public:
   virtual void burn();
   virtual void collapse();
   virtual bool isNeedRoadAccess() const;
-  virtual const TilemapTiles& getAccessRoads() const;  // return all road tiles adjacent to the construction
+  virtual TilesArray getAccessRoads() const;  // return all road tiles adjacent to the construction
   virtual void computeAccessRoads();  
   virtual int  getRoadAccessDistance() const; // virtual because HOUSE has different behavior
   virtual const MetaData::Desirability& getDesirabilityInfo() const;
   virtual void destroy();
   virtual void updateState( Param param, double value, bool relative=true );
   virtual double getState( Param param ) const;
-  virtual TilePos getEnterPos() const;
+  virtual TilesArray getEnterArea() const;
   virtual void timeStep(const unsigned long time);
 
   virtual void save(VariantMap& stream) const;

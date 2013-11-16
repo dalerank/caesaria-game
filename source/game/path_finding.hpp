@@ -48,7 +48,7 @@ public:
   */
   void init(TilePos origin);
   void init(Tile& origin);
-  void init(const TilemapTiles& origin);
+  void init(const TilesArray& origin);
   void init(const ConstructionPtr origin);
   void propagate(const int maxDistance);
 

@@ -324,7 +324,7 @@ WalkerList PlayerCity::getWalkers(walker::Type type, TilePos startPos, TilePos s
     stopPos = startPos;
   }
 
-  TilemapArea area = _d->tilemap.getArea( startPos, stopPos );
+  TilesArray area = _d->tilemap.getArea( startPos, stopPos );
   foreach( Tile* tile, area)
   {
     WalkerList current = _d->walkersGrid.at( tile->getIJ() );
@@ -599,7 +599,7 @@ void CityHelper::updateDesirability( ConstructionPtr construction, bool onBuild 
   int mul = ( onBuild ? 1 : -1);
 
   //change desirability in selfarea
-  TilemapArea area = tilemap.getArea( construction->getTilePos(), construction->getSize() );
+  TilesArray area = tilemap.getArea( construction->getTilePos(), construction->getSize() );
   foreach( Tile* tile, area )
   {
     tile->appendDesirability( mul * dsrbl.base );
@@ -609,7 +609,7 @@ void CityHelper::updateDesirability( ConstructionPtr construction, bool onBuild 
   int current = mul * dsrbl.base;
   for( int curRange=1; curRange <= dsrbl.range; curRange++ )
   {
-    TilemapArea perimetr = tilemap.getRectangle( construction->getTilePos() - TilePos( curRange, curRange ),
+    TilesArray perimetr = tilemap.getRectangle( construction->getTilePos() - TilePos( curRange, curRange ),
                                                  construction->getSize() + Size( 2 * curRange ) );
     foreach( Tile* tile, perimetr )
     {
@@ -620,12 +620,12 @@ void CityHelper::updateDesirability( ConstructionPtr construction, bool onBuild 
   }
 }
 
-TilemapArea CityHelper::getArea(TileOverlayPtr overlay)
+TilesArray CityHelper::getArea(TileOverlayPtr overlay)
 {
   return _city->getTilemap().getArea( overlay->getTilePos(), overlay->getSize() );
 }
 
-TilemapArea CityHelper::getArea(TilePos start, TilePos stop)
+TilesArray CityHelper::getArea(TilePos start, TilePos stop)
 {
   return _city->getTilemap().getArea( start, stop );
 }

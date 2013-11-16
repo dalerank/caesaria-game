@@ -34,6 +34,7 @@
 #include "gui/message_stack_widget.hpp"
 #include "game/settings.hpp"
 #include "building/constants.hpp"
+#include "gfx/tilesarray.hpp"
 
 using namespace constants;
 
@@ -74,7 +75,7 @@ void DisasterEvent::exec( Game& game )
 
     //bool deleteRoad = false;
 
-    TilemapArea clearedTiles = tmap.getArea( rPos, size );
+    TilesArray clearedTiles = tmap.getArea( rPos, size );
     foreach( Tile* tile, clearedTiles )
     {
       TileOverlay::Type dstr2constr[] = { building::burningRuins, building::B_COLLAPSED_RUINS, building::B_PLAGUE_RUINS };
@@ -183,7 +184,7 @@ void ClearLandEvent::exec( Game& game )
       overlay->deleteLater();
     }
 
-    TilemapArea clearedTiles = tmap.getArea( rPos, size );
+    TilesArray clearedTiles = tmap.getArea( rPos, size );
     foreach( Tile* tile, clearedTiles )
     {
       tile->setMasterTile( NULL );

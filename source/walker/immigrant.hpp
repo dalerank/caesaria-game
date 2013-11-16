@@ -47,7 +47,7 @@ protected:
   Immigrant( PlayerCityPtr city );
 
   HousePtr _findBlankHouse();
-  void _findPath2blankHouse( Tile& startPoint );
+  void _findPath2blankHouse(TilePos startPoint );
 
 protected:
   const CitizenGroup& _getPeoples() const;

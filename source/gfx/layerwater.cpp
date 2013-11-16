@@ -101,7 +101,7 @@ void LayerWater::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   if( !needDrawAnimations && ( tile.isWalkable(true) || tile.getFlag( Tile::tlBuilding ) ) )
   {
     Tilemap& tilemap = _city->getTilemap();
-    TilemapArea area = tilemap.getArea( tile.getIJ(), areaSize );
+    TilesArray area = tilemap.getArea( tile.getIJ(), areaSize );
 
     foreach( Tile* rtile, area )
     {

@@ -125,7 +125,7 @@ void FishPlace::timeStep(const unsigned long time)
   {
     Pathway pathway;
     bool pathFound = Pathfinder::getInstance().getPath( getTilePos(), _getCity()->getBorderInfo().boatExit,
-                                                        pathway, Pathfinder::waterOnly, Size( 1 ) );
+                                                        pathway, Pathfinder::waterOnly );
 
     if( !pathFound )
     {

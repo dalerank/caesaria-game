@@ -34,7 +34,7 @@ public:
   Size viewSize;    // width of the view (in tiles)  nb_tilesX = 1+2*_view_width
                     // height of the view (in tiles)  nb_tilesY = 1+2*_view_height
 
-  TilemapArea tiles;  // cached list of visible tiles
+  TilesArray tiles;  // cached list of visible tiles
 
 public oc3_signals:
   Signal1<Point> onPositionChangedSignal;
@@ -118,7 +118,7 @@ void TilemapCamera::moveDown(const int amount)
   setCenter( Point( getCenterX(), getCenterZ() - amount ) );
 }
 
-const TilemapArea& TilemapCamera::getTiles() const
+const TilesArray& TilemapCamera::getTiles() const
 {
   if( _d->tiles.empty() )
   {

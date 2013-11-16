@@ -75,19 +75,19 @@ void Propagator::init( ConstructionPtr origin)
 void Propagator::init( Tile& origin )
 {
   _d->origin = &origin;
-  TilemapTiles tileList;
+  TilesArray tileList;
   tileList.push_back(&origin);
 
   init( tileList );
 }
 
-void Propagator::init( const TilemapTiles& origin)
+void Propagator::init(const TilesArray& origin)
 {
   _d->activeBranches.clear();
   _d->completedBranches.clear();
 
   // init propagation
-  for( TilemapTiles::const_iterator it=origin.begin(); it != origin.end(); it++ )
+  for( TilesArray::const_iterator it=origin.begin(); it != origin.end(); it++ )
   {
     // std::cout << "Tile access " << tile.getI() << "," << tile.getJ() << std::endl;
     Tile* tile = *it;
@@ -128,8 +128,8 @@ void Propagator::propagate(const int maxDistance)
       }
 
       // propagate to neighbour tiles
-      TilemapTiles accessTiles = _d->tilemap->getRectangle( tile.getIJ() + TilePos( -1,-1 ),
-                                                            tile.getIJ() + TilePos( 1, 1 ), _d->allDirections);
+      TilesArray accessTiles = _d->tilemap->getRectangle( tile.getIJ() + TilePos( -1,-1 ),
+                                                          tile.getIJ() + TilePos( 1, 1 ), _d->allDirections);
       foreach( Tile* tile2, accessTiles )
       {
          // for every neighbor tile
@@ -186,7 +186,7 @@ bool Propagator::getPath( RoadPtr destination, Pathway &oPathWay)
 
 bool Propagator::getPath( ConstructionPtr destination, Pathway &oPathWay)
 {
-   const TilemapTiles& destTiles = destination->getAccessRoads();
+   const TilesArray& destTiles = destination->getAccessRoads();
    std::map<Tile*, Pathway>::iterator mapIt;
    std::set<Pathway> destPath;  // paths to the destination building, ordered by distance
    int distance = 30;
@@ -195,7 +195,7 @@ bool Propagator::getPath( ConstructionPtr destination, Pathway &oPathWay)
       propagate(distance);
 
       // searches reached destTiles
-      for (TilemapTiles::const_iterator itTile= destTiles.begin(); itTile != destTiles.end(); ++itTile)
+      for( TilesArray::const_iterator itTile= destTiles.begin(); itTile != destTiles.end(); ++itTile)
       {
         // for each destination tile
         Tile &tile= **itTile;
@@ -241,7 +241,7 @@ Propagator::Routes Propagator::getRoutes(const TileOverlay::Type buildingType)
   {
     std::set<Pathway> destPath;  // paths to the current building, ordered by distance
 
-    TilemapTiles destTiles = destination->getAccessRoads();
+    TilesArray destTiles = destination->getAccessRoads();
     foreach( Tile* tile, destTiles )
     {
       // searches path to that given tile
@@ -293,11 +293,11 @@ Propagator::PathWayList Propagator::getWays(const int maxDistance)
        // std::cout << "Propagation from tile " << tile.getI() << ", " << tile.getJ() << std::endl;
 
        // propagate to neighbour tiles
-       TilemapTiles accessTiles = _d->tilemap->getRectangle( tile.getIJ() + TilePos( -1, -1 ),
+       TilesArray accessTiles = _d->tilemap->getRectangle( tile.getIJ() + TilePos( -1, -1 ),
                                                              tile.getIJ() + TilePos( 1, 1 ), _d->allDirections);
 
        // nextTiles = accessTiles - alreadyProcessedTiles
-       TilemapTiles nextTiles;
+       TilesArray nextTiles;
        foreach( Tile* tile2, accessTiles )
        {
          // for every neighbour tile
@@ -315,7 +315,7 @@ Propagator::PathWayList Propagator::getWays(const int maxDistance)
           break;
        }
 
-       for (TilemapTiles::const_iterator itTile = nextTiles.begin(); itTile!=nextTiles.end(); ++itTile)
+       for( TilesArray::const_iterator itTile = nextTiles.begin(); itTile!=nextTiles.end(); ++itTile)
        {
           // for every neighbor tile
           Tile &tile2 = **itTile;

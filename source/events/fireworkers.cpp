@@ -39,7 +39,7 @@ void FireWorkers::exec(Game& game)
 
   for( int curRange=1; curRange < defaultFireWorkersDistance; curRange++ )
   {
-    TilemapArea perimetr = tilemap.getRectangle( _center - TilePos( curRange, curRange ),
+    TilesArray perimetr = tilemap.getRectangle( _center - TilePos( curRange, curRange ),
                                                  _center + TilePos( curRange, curRange ) );
     foreach( Tile* tile, perimetr )
     {

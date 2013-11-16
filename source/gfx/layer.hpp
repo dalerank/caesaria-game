@@ -21,7 +21,8 @@
 #include "engine.hpp"
 #include "tile.hpp"
 #include "renderer.hpp"
-#include "core/predefinitions.hpp"
+#include "predefinitions.hpp"
+
 #include <set>
 
 class Layer : public ReferenceCounted
@@ -33,8 +34,8 @@ public:
   virtual VisibleWalkers getVisibleWalkers() const = 0;
   virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset ) = 0;
   virtual void drawTilePass(GfxEngine& engine, Tile& tile, Point offset, Renderer::Pass pass );
-  virtual void drawArea( GfxEngine& engine, const TilemapArea& area, Point offset,
-                             std::string resourceGroup, int tileId );
+  virtual void drawArea( GfxEngine& engine, const TilesArray& area, Point offset,
+                         std::string resourceGroup, int tileId );
 
   virtual void drawColumn(GfxEngine& engine, const Point& pos, const int startPicId, const int percent );
 };

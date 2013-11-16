@@ -48,6 +48,7 @@ public:
   bool hasServiceAccess( Service::Type service );
   int getServiceValue( Service::Type service );
   void setServiceValue( Service::Type service, const int access );
+  TilesArray getEnterArea() const;
 
   int getFoodLevel() const;
   int getHealthLevel() const;
@@ -78,6 +79,7 @@ public:
   int getRoadAccessDistance() const;
 
   bool isWalkable() const;
+  bool isFlat() const;
 
 private:
 

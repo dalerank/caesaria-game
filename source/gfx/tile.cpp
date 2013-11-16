@@ -367,4 +367,3 @@ Tile& TileHelper::getInvalid()
   static Tile invalidTile( TilePos( -1, -1) );
   return invalidTile;
 }
-

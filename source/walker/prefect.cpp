@@ -124,7 +124,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
     if( building->getType() != building::burningRuins )
       continue;
 
-    Pathway tmp = PathwayHelper::create( _getCity(), getIJ(), building->getTilePos(), PathwayHelper::allTerrain );
+    Pathway tmp = PathwayHelper::create( getIJ(), building->getTilePos(), PathwayHelper::allTerrain );
     if( tmp.isValid() )
     {
       _d->action = Impl::go2fire;
@@ -142,7 +142,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
 
 void Prefect::_back2Prefecture()
 {
-  _d->endPatrolPoint = getBase()->getEnterPos();
+  _d->endPatrolPoint = getBase()->getEnterArea().front()->getIJ();
   _back2Patrol();
 }
 
@@ -165,7 +165,7 @@ void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
 
 void Prefect::_back2Patrol()
 {
-  Pathway pathway = PathwayHelper::create( _getCity(), getIJ(), _d->endPatrolPoint, PathwayHelper::allTerrain, Size(0) );
+  Pathway pathway = PathwayHelper::create( getIJ(), _d->endPatrolPoint, PathwayHelper::allTerrain );
 
   if( pathway.isValid() )
   {
@@ -212,7 +212,7 @@ void Prefect::_brokePathway(TilePos pos)
   {
     TilePos destination = _pathwayRef().getDestination().getIJ();
 
-    Pathway pathway = PathwayHelper::create( _getCity(), getIJ(), destination, PathwayHelper::allTerrain );
+    Pathway pathway = PathwayHelper::create( getIJ(), destination, PathwayHelper::allTerrain );
     if( pathway.isValid() )
     {
       setSpeed( 1.f );
@@ -233,7 +233,7 @@ void Prefect::_reachedPathway()
   switch( _d->action )
   {
   case Impl::patrol:
-    if( getIJ() == getBase()->getEnterPos() )
+    if( getBase()->getEnterArea().contain( getIJ() )  )
     {
       deleteLater();
       _d->action = Impl::doNothing;
@@ -271,7 +271,7 @@ void Prefect::_centerTile()
 
     if( haveProtestorNear )
     {      
-      Pathway pathway = PathwayHelper::create( _getCity(), getIJ(), protestorPos, PathwayHelper::allTerrain );
+      Pathway pathway = PathwayHelper::create( getIJ(), protestorPos, PathwayHelper::allTerrain );
 
       if( pathway.isValid() )
       {

@@ -45,7 +45,7 @@ public:
   void moveDown(const int amount);
 
   // return tile coordinates (i, j), in order of depth
-  const TilemapArea& getTiles() const;
+  const TilesArray& getTiles() const;
 
   int getCenterX() const;
   int getCenterZ() const;

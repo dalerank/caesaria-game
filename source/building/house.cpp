@@ -35,6 +35,8 @@
 #include "events/event.hpp"
 #include "events/fireworkers.hpp"
 
+using namespace constants;
+
 class House::Impl
 {
 public:
@@ -107,7 +109,7 @@ public:
   }
 };
 
-House::House(const int houseId) : Building( constants::building::house ), _d( new Impl )
+House::House(const int houseId) : Building( building::house ), _d( new Impl )
 {
   _d->houseId = houseId;
   _d->lastPayDate = DateTime( -400, 1, 1 );
@@ -221,7 +223,7 @@ void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int start
   if( getSize() == 1 )
   {
     Tilemap& tmap = _getCity()->getTilemap();
-    TilemapTiles area = tmap.getArea( getTile().getIJ(), Size(2) );
+    TilesArray area = tmap.getArea( getTile().getIJ(), Size(2) );
     bool mayGrow = true;
 
     foreach( Tile* tile, area )
@@ -252,7 +254,7 @@ void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int start
     {
       CitizenGroup sumHabitants = getHabitants();
       int sumFreeWorkers = getServiceValue( Service::recruter );
-      TilemapTiles::iterator delIt=area.begin();
+      TilesArray::iterator delIt=area.begin();
       HousePtr selfHouse = (*delIt)->getOverlay().as<House>();
 
       delIt++; //don't remove himself
@@ -366,70 +368,73 @@ void House::_tryDegrage_11_to_2_lvl( int smallPic, int bigPic, const char desira
 
 void House::levelDown()
 {
-   _d->houseLevel--;
-   _d->spec = HouseSpecHelper::getInstance().getHouseLevelSpec(_d->houseLevel);
+  if( _d->houseLevel == smallHovel )
+    return;
 
-   switch (_d->houseLevel)
-   {
-   case 1:
-   {
-     _d->houseId = 1;
-     _d->picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
+  _d->houseLevel--;
+  _d->spec = HouseSpecHelper::getInstance().getHouseLevelSpec(_d->houseLevel);
 
-     Tilemap& tmap = _getCity()->getTilemap();
+  switch (_d->houseLevel)
+  {
+  case 1:
+  {
+    _d->houseId = 1;
+    _d->picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
 
-     if( getSize().getArea() > 1 )
-     {
-       TilemapTiles perimetr = tmap.getArea( getTilePos(), Size(2) );
-       int peoplesPerHouse = getHabitants().count() / 4;
-       foreach( Tile* tile, perimetr )
-       {
-         HousePtr house = TileOverlayFactory::getInstance().create( constants::building::house ).as<House>();
-         house->_d->habitants = _d->habitants.retrieve( peoplesPerHouse );
-         house->_d->houseId = smallHovel;
-         house->_update();
+    Tilemap& tmap = _getCity()->getTilemap();
 
-         events::GameEventPtr event = events::BuildEvent::create( tile->getIJ(), house.as<TileOverlay>() );
-         event->dispatch();
-       }
+    if( getSize().getArea() > 1 )
+    {
+      TilesArray perimetr = tmap.getArea( getTilePos(), Size(2) );
+      int peoplesPerHouse = getHabitants().count() / 4;
+      foreach( Tile* tile, perimetr )
+      {
+        HousePtr house = TileOverlayFactory::getInstance().create( building::house ).as<House>();
+        house->_d->habitants = _d->habitants.retrieve( peoplesPerHouse );
+        house->_d->houseId = smallHovel;
+        house->_update();
 
-       deleteLater();
-     }
-   }
-   break;
-   
-   case 2: _tryDegrage_11_to_2_lvl( 1, 5, -3 );
-   break;
-   
-   case 3: _tryDegrage_11_to_2_lvl( 3, 6, -3 );
-   break;
-   
-   case 4: _tryDegrage_11_to_2_lvl( 7, 11, -2 );
-   break;
-   
-   case 5: _tryDegrage_11_to_2_lvl( 9, 12, -2 );
-   break;
+        events::GameEventPtr event = events::BuildEvent::create( tile->getIJ(), house.as<TileOverlay>() );
+        event->dispatch();
+      }
 
-   case 6: _tryDegrage_11_to_2_lvl( 13, 17, -2 );
-   break;
+      deleteLater();
+    }
+  }
+  break;
 
-   case 7: _tryDegrage_11_to_2_lvl( 15, 18, -2 );
-   break;
+  case 2: _tryDegrage_11_to_2_lvl( 1, 5, -3 );
+  break;
 
-   case 8: _tryDegrage_11_to_2_lvl( 19, 23, -1 );
-   break;
+  case 3: _tryDegrage_11_to_2_lvl( 3, 6, -3 );
+  break;
 
-   case 9: _tryDegrage_11_to_2_lvl( 21, 23, -1 );
-   break;
+  case 4: _tryDegrage_11_to_2_lvl( 7, 11, -2 );
+  break;
 
-   case 10: _tryDegrage_11_to_2_lvl( 25, 29, 0 );
-   break;
+  case 5: _tryDegrage_11_to_2_lvl( 9, 12, -2 );
+  break;
 
-   case 11: _tryDegrage_11_to_2_lvl( 27, 30, 0 );
-   break;
-   }
+  case 6: _tryDegrage_11_to_2_lvl( 13, 17, -2 );
+  break;
 
-   _update();
+  case 7: _tryDegrage_11_to_2_lvl( 15, 18, -2 );
+  break;
+
+  case 8: _tryDegrage_11_to_2_lvl( 19, 23, -1 );
+  break;
+
+  case 9: _tryDegrage_11_to_2_lvl( 21, 23, -1 );
+  break;
+
+  case 10: _tryDegrage_11_to_2_lvl( 25, 29, 0 );
+  break;
+
+  case 11: _tryDegrage_11_to_2_lvl( 27, 30, 0 );
+  break;
+  }
+
+  _update();
 }
 
 void House::buyMarket( ServiceWalkerPtr walker )
@@ -614,6 +619,20 @@ void House::setServiceValue( Service::Type service, const int access)
   _d->services[service] = access;
 }
 
+TilesArray House::getEnterArea() const
+{
+  if( isWalkable() )
+  {
+    TilesArray ret;
+    ret.push_back( &getTile() );
+    return ret;
+  }
+  else
+  {
+    return Building::getEnterArea();
+  }
+}
+
 int House::getMaxHabitants()
 {
   return _d->maxHabitants;
@@ -665,7 +684,12 @@ void House::destroy()
 
 bool House::isWalkable() const
 {
-  return (_d->houseId == smallHovel && _d->habitants.count() == 0) ? true : false;
+  return (_d->houseId == smallHovel && _d->habitants.count() == 0);
+}
+
+bool House::isFlat() const
+{
+  return isWalkable();
 }
 
 const MetaData::Desirability& House::getDesirabilityInfo() const

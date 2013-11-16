@@ -19,18 +19,10 @@
 #include "core/smartptr.hpp"
 #include "core/predefinitions.hpp"
 
-#include <list>
-#include <vector>
-
 PREDEFINE_CLASS_SMARTPOINTER_LIST(TileOverlay,List)
 
 class Tile;
 class Picture;
-typedef std::list< const Tile* > ConstTilemapWay;
-typedef std::list< Tile* > TilemapWay;
-typedef std::list< Tile* > TilemapArea;
-typedef std::list< Tile* > TilemapTiles;
-typedef std::list< const Tile* > ConstTilemapTiles;
-typedef std::list< const Tile* > ConstTilemapArea;
+class TilesArray;
 
 #endif //__OPENCAESAR3_GFX_PREDEFINITIONS_H_INCLUDED__

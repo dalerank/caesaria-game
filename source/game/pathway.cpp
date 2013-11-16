@@ -42,7 +42,7 @@ public:
   Directions directionList;
   Directions::iterator directionIt;
   Directions::reverse_iterator directionIt_reverse;
-  ConstTilemapTiles tileList;
+  TilesArray tileList;
 };
 
 Pathway::Pathway() : _d( new Impl )
@@ -62,7 +62,7 @@ Pathway::Pathway(const Pathway &copy) : _d( new Impl )
   *this = copy;
 }
 
-void Pathway::init( const Tilemap &tilemap, const Tile &origin)
+void Pathway::init( Tilemap& tilemap, Tile &origin)
 {
   _tilemap = &tilemap;
   _origin = &origin;
@@ -239,7 +239,7 @@ bool Pathway::contains(Tile &tile)
 {
   // search in reverse direction, because usually the last tile matches
   bool res = false;
-  for( ConstTilemapTiles::reverse_iterator itTile = _d->tileList.rbegin();
+  for( TilesArray::reverse_iterator itTile = _d->tileList.rbegin();
        itTile != _d->tileList.rend(); ++itTile)
   {
     if (*itTile == &tile)
@@ -252,7 +252,7 @@ bool Pathway::contains(Tile &tile)
   return res;
 }
 
-ConstTilemapTiles& Pathway::getAllTiles()
+const TilesArray& Pathway::getAllTiles() const
 {
   return _d->tileList;
 }

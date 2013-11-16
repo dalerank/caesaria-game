@@ -17,6 +17,7 @@
 #include "tileoverlay.hpp"
 #include "core/foreach.hpp"
 #include "game/resourcegroup.hpp"
+#include "tilesarray.hpp"
 
 void Layer::drawTilePass( GfxEngine& engine, Tile& tile, Point offset, Renderer::Pass pass)
 {
@@ -31,7 +32,7 @@ void Layer::drawTilePass( GfxEngine& engine, Tile& tile, Point offset, Renderer:
   }
 }
 
-void Layer::drawArea( GfxEngine& engine, const TilemapArea& area, Point offset, std::string resourceGroup, int tileId)
+void Layer::drawArea(GfxEngine& engine, const TilesArray& area, Point offset, std::string resourceGroup, int tileId)
 {
   if( area.empty() )
     return;
@@ -41,7 +42,7 @@ void Layer::drawArea( GfxEngine& engine, const TilemapArea& area, Point offset, 
   Picture *pic = NULL;
   int leftBorderAtI = baseTile->getI();
   int rightBorderAtJ = overlay->getSize().getHeight() - 1 + baseTile->getJ();
-  for( TilemapArea::const_iterator it=area.begin(); it != area.end(); it++ )
+  for( TilesArray::const_iterator it=area.begin(); it != area.end(); it++ )
   {
     Tile* tile = *it;
     int tileBorders = ( tile->getI() == leftBorderAtI ? 0 : OverlayPic::skipLeftBorder )

@@ -31,4 +31,6 @@ PREDEFINE_CLASS_SMARTPOINTER(PLayerCity)
 PREDEFINE_CLASS_SMARTPOINTER(CityService)
 
 class Tilemap;
+class Pathway;
+
 #endif

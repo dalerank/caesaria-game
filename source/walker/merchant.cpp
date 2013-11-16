@@ -16,6 +16,7 @@
 #include "merchant.hpp"
 #include "game/goodstore_simple.hpp"
 #include "building/warehouse.hpp"
+#include "game/pathway_helper.hpp"
 #include "game/path_finding.hpp"
 #include "game/city.hpp"
 #include "gfx/tile.hpp"
@@ -256,10 +257,9 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
   case stGoOutFromCity:
     {
-      Pathway pathWay;
       // we have nothing to buy/sell with city, or cannot find available warehouse -> go out
-      bool pathFound = Pathfinder::getInstance().getPath( position, city->getBorderInfo().roadExit, pathWay, false, 1 );
-      if( pathFound )
+      Pathway pathWay = PathwayHelper::create( position, city->getBorderInfo().roadExit );
+      if( pathWay.isValid() )
       {
         wlk->setIJ( pathWay.getOrigin().getIJ() );
         wlk->setPathway( pathWay );

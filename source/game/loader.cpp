@@ -85,7 +85,7 @@ void GameLoader::Impl::initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap
 
 void GameLoader::Impl::initWaterTileAnimation( Tilemap& tmap )
 {
-  TilemapArea area = tmap.getArea( TilePos( 0, 0 ), Size( tmap.getSize() ) );
+  TilesArray area = tmap.getArea( TilePos( 0, 0 ), Size( tmap.getSize() ) );
 
   Animation water;
   water.setDelay( 12 );

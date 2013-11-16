@@ -18,16 +18,15 @@
 #include "city.hpp"
 #include "tilemap.hpp"
 
-Pathway PathwayHelper::create(PlayerCityPtr city, TilePos startPos, TilePos stopPos,
-                               WayType type/*=roadOnly */, Size arrivedArea )
+Pathway PathwayHelper::create( TilePos startPos, TilePos stopPos,
+                               WayType type/*=roadOnly */ )
 {
   switch( type )
   {
   case allTerrain:
   {
-    const Tilemap& tmap = city->getTilemap();
     Pathway ret;
-    Pathfinder::getInstance().getPath( tmap.at( startPos ), tmap.at( stopPos ), ret, 0, arrivedArea );
+    Pathfinder::getInstance().getPath( startPos, stopPos, ret, 0 );
 
     return ret;
   }
@@ -35,9 +34,8 @@ Pathway PathwayHelper::create(PlayerCityPtr city, TilePos startPos, TilePos stop
 
   case roadFirst:
   {
-    const Tilemap& tmap = city->getTilemap();
     Pathway ret;
-    Pathfinder::getInstance().getPath( tmap.at( startPos ), tmap.at( stopPos ), ret, 0, arrivedArea );
+    Pathfinder::getInstance().getPath( startPos, stopPos, ret, 0 );
 
     return ret;
   }
@@ -48,6 +46,37 @@ Pathway PathwayHelper::create(PlayerCityPtr city, TilePos startPos, TilePos stop
   }
 
   return Pathway();
+}
+
+Pathway PathwayHelper::create( TilePos startPos,
+                               ConstructionPtr construction, PathwayHelper::WayType type)
+{
+  switch( type )
+  {
+  case allTerrain:
+  {
+    Pathway ret;
+    Pathfinder::getInstance().getPath( startPos, construction->getEnterArea(), ret, 0 );
+
+    return ret;
+  }
+  break;
+
+  case roadFirst:
+  {
+    Pathway ret;
+    Pathfinder::getInstance().getPath( startPos, construction->getEnterArea(), ret, 0 );
+
+    return ret;
+  }
+  break;
+
+  default:
+  break;
+  }
+
+  return Pathway();
+
 }
 
 Pathway PathwayHelper::randomWay(PlayerCityPtr city, TilePos startPos, int walkRadius)
@@ -62,7 +91,7 @@ Pathway PathwayHelper::randomWay(PlayerCityPtr city, TilePos startPos, int walkR
 
     if( tmap.at( destPos ).isWalkable( true) )
     {
-      Pathway pathway = create( city, startPos, destPos, PathwayHelper::allTerrain );
+      Pathway pathway = create( startPos, destPos, PathwayHelper::allTerrain );
 
       if( pathway.isValid() )
       {

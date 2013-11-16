@@ -29,7 +29,7 @@ public:
   * returns True if a path exists
   * the path is returned in oPathWay
   */
-  static ConstTilemapWay createPath( const Tilemap& tileMap, const Tile& startTile, const Tile& destination );
+  static TilesArray createPath(Tilemap& tileMap, TilePos startTile, TilePos destination );
 };
 
 #endif //__OPENCAESAR3_ROADPROPAGATOR_H_INCLUDE_

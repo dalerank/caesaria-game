@@ -22,6 +22,7 @@
 #include "core/scopedptr.hpp"
 #include "core/direction.hpp"
 
+class TilesArray;
 class Tilemap;
 
 class Pathway
@@ -32,7 +33,7 @@ public:
 
   virtual ~Pathway();
 
-  void init( const Tilemap &tilemap, const Tile& origin );
+  void init( Tilemap& tilemap, Tile& origin );
 
   int getLength() const;
   const Tile& getOrigin() const;
@@ -48,7 +49,7 @@ public:
   void setNextDirection(constants::Direction direction);
   void setNextTile( const Tile& tile);
   bool contains(Tile& tile);
-  ConstTilemapTiles& getAllTiles();
+  const TilesArray& getAllTiles() const;
 
   void prettyPrint() const;
   void toggleDirection();
@@ -60,8 +61,8 @@ public:
 
   bool isValid() const;
 private:
-  Tilemap const* _tilemap;
-  Tile const* _origin;
+  Tilemap* _tilemap;
+  Tile* _origin;
 
   class Impl;
   ScopedPtr< Impl > _d;

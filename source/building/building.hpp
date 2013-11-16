@@ -34,6 +34,7 @@
 #include "predefinitions.hpp"
 #include "game/service.hpp"
 #include "walker/constants.hpp"
+#include "gfx/tilesarray.hpp"
 
 class Building : public Construction
 {

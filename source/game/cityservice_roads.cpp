@@ -97,15 +97,12 @@ void CityServiceRoads::Impl::updateRoadsAround(BuildingPtr building)
   propagator->init( building.as<Construction>() );
   Propagator::PathWayList pathWayList = propagator->getWays( maxDistance );
 
-  Tilemap& tmap = city->getTilemap();
-
   foreach( Pathway& current, pathWayList )
   {
-    ConstTilemapTiles tiles = current.getAllTiles();
-    foreach( const Tile* tile, tiles )
+    const TilesArray& tiles = current.getAllTiles();
+    for( TilesArray::const_iterator it=tiles.begin(); it != tiles.end(); it++ )
     {
-      Tile& currentTile = tmap.at( tile->getIJ() );
-      RoadPtr road = currentTile.getOverlay().as<Road>();
+      RoadPtr road = (*it)->getOverlay().as<Road>();
       if( road.isValid() )
       {
         road->appendPaved( defaultIncreasePaved );

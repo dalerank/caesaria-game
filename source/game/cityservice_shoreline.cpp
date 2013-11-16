@@ -24,7 +24,7 @@
 class CityServiceShoreline::Impl
 {
 public:
-  TilemapTiles slTiles;
+  TilesArray slTiles;
   int lastTimeUpdate;
   PlayerCityPtr city;
 
@@ -34,7 +34,7 @@ public:
 void CityServiceShoreline::Impl::checkMap( PlayerCityPtr city )
 {
   int mapSize = city->getTilemap().getSize();
-  TilemapTiles tiles = city->getTilemap().getArea( TilePos( 0, 0), Size( mapSize ) );
+  TilesArray tiles = city->getTilemap().getArea( TilePos( 0, 0), Size( mapSize ) );
 
   foreach( Tile* tile, tiles )
   {

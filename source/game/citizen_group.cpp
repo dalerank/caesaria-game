@@ -45,19 +45,25 @@ int CitizenGroup::count( Age group ) const
   return ret;
 }
 
-CitizenGroup CitizenGroup::retrieve(int count)
+CitizenGroup CitizenGroup::retrieve(int rcount)
 {
   CitizenGroup ret;
 
-  for( int age=0; age <= longliver; age++ )
+  while( rcount > 0 )
   {
-    int n = std::min( _hb[ age ], 1 );
+    for( int age=0; age <= longliver; age++ )
+    {
+      int n = std::min( _hb[ age ], 1 );
 
-    ret[ age ] += n;
-    _hb[ age ] -= n;
-    count -= n;
+      ret[ age ] += n;
+      _hb[ age ] -= n;
+      rcount -= n;
 
-    if( count == 0 )
+      if( rcount == 0 )
+        break;
+    }
+
+    if( count() == 0 )
       break;
   }
 

@@ -661,7 +661,7 @@
 	desirability : { base : -3,	range : 3,	step : 1 }
 	employers : 10
   image : [ "commerce", 61 ]
-  productRate : 9.6
+  productRate : 2.4
 	class : "rawmaterial"
   },
   

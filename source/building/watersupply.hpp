@@ -53,7 +53,7 @@ public:
 
   virtual void build(PlayerCityPtr city, const TilePos& pos );
   Picture& computePicture(PlayerCityPtr city,
-                          const TilemapTiles * tmp = NULL,
+                          const TilesArray* tmp = NULL,
                           const TilePos pos = TilePos(0, 0));
   virtual void initTerrain(Tile& terrain);
   virtual bool canBuild(PlayerCityPtr city, const TilePos& pos ) const;

@@ -13,37 +13,26 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _OPENCAESAR_FISHING_BOAT_INCLUDE_H_
-#define _OPENCAESAR_FISHING_BOAT_INCLUDE_H_
+#ifndef _OPENCAESAR_TILESARRAY_INCLUDE_H_
+#define _OPENCAESAR_TILESARRAY_INCLUDE_H_
 
-#include "ship.hpp"
+#include "tile.hpp"
 
-class FishingBoat : public Ship
+#include <list>
+
+class TilesArray : public std::list<Tile*>
 {
 public:
-  static FishingBoatPtr create( PlayerCityPtr city );
+  bool contain( TilePos tilePos ) const
+  {
+    for( const_iterator it=begin(); it != end(); it++ )
+    {
+      if( (*it)->getIJ() == tilePos )
+        return true;
+    }
 
-  void send2City( WharfPtr base, const TilePos& start);
-
-  virtual void save(VariantMap &stream) const;
-  virtual void load(const VariantMap &stream);
-
-  virtual void timeStep(const unsigned long time);
-  void startCatch();
-
-  bool isBusy() const;
-
-  virtual void die();
-protected:
-  virtual void _reachedPathway();
-  virtual void _changeTile();
-
-private:
-  FishingBoat( PlayerCityPtr city );
-
-  class Impl;
-  ScopedPtr< Impl > _d;
+    return false;
+  }
 };
 
-
-#endif //_OPENCAESAR_FISHING_BOAT_INCLUDE_H_
+#endif //_OPENCAESAR_TILESARRAY_INCLUDE_H_

@@ -92,7 +92,7 @@ void Wharf::build(PlayerCityPtr city, const TilePos& pos)
   _setDirection( _d->getDirection( city, pos ) );
 
   CityHelper helper( city );
-  TilemapArea area = city->getTilemap().getArea( pos, getSize() );
+  TilesArray area = city->getTilemap().getArea( pos, getSize() );
 
   foreach( Tile* tile, area ) { _d->saveTileInfo.push_back( TileHelper::encode( *tile ) ); }
 
@@ -103,7 +103,7 @@ void Wharf::destroy()
 {
   CityHelper helper( _getCity() );
 
-  TilemapArea area = helper.getArea( this );
+  TilesArray area = helper.getArea( this );
 
   if( _d->boat.isValid() )
   {

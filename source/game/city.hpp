@@ -32,7 +32,6 @@
 #include "gfx/tileoverlay.hpp"
 #include "good.hpp"
 #include "building/service.hpp"
-#include <set>
 
 class CityBuildOptions;
 class CityTradeOptions;
@@ -208,7 +207,7 @@ public:
   {
     std::set< SmartPtr< T > > tmp;
 
-    TilemapArea area = getArea( start, stop );
+    TilesArray area = getArea( start, stop );
     foreach( Tile* tile, area )
     {
       SmartPtr<T> obj = tile->getOverlay().as<T>();
@@ -232,7 +231,7 @@ public:
   {
     std::set< SmartPtr< T > > tmp;
 
-    TilemapArea area = getArea( start, stop );
+    TilesArray area = getArea( start, stop );
 
     foreach( Tile* tile, area )
     {
@@ -269,8 +268,8 @@ public:
     return ret;
   }
 
-  TilemapArea getArea( TileOverlayPtr overlay );
-  TilemapArea getArea( TilePos start, TilePos stop );
+  TilesArray getArea( TileOverlayPtr overlay );
+  TilesArray getArea( TilePos start, TilePos stop );
 
   void updateDesirability( ConstructionPtr construction, bool onBuild );
 

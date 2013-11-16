@@ -38,7 +38,7 @@ void LayerSimple::drawTile( GfxEngine& engine, Tile& tile, Point offset )
   Point screenPos = tile.getXY() + offset;
 
   TileOverlayPtr overlay = tile.getOverlay();
-  const TilemapTiles& postTiles = _renderer->getPostTiles();
+  const TilesArray& postTiles = _renderer->getPostTiles();
 
   if( overlay.isValid() )
   {
@@ -46,7 +46,7 @@ void LayerSimple::drawTile( GfxEngine& engine, Tile& tile, Point offset )
     {
       // check, do we have any aqueducts there... there can be empty items
       bool isAqueducts = false;
-      for( TilemapTiles::const_iterator it=postTiles.begin(); it != postTiles.end(); it++ )
+      for( TilesArray::const_iterator it=postTiles.begin(); it != postTiles.end(); it++ )
       {
         if( (*it)->getOverlay().is<Aqueduct>() )
         {

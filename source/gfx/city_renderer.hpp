@@ -68,7 +68,7 @@ public:
 
   void registerTileForRendering(Tile&);
 
-  const TilemapTiles& getPostTiles() const;
+  const TilesArray& getPostTiles() const;
 
 oc3_signals public:
   Signal1< const Tile& >& onShowTileInfo();

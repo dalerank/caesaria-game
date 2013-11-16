@@ -39,16 +39,11 @@ compare_tiles_(const Tile * first, const Tile * second)
   return false;
 }
 
-
-
-ConstTilemapWay RoadPropagator::createPath( const Tilemap& tileMap, const Tile& startTile, const Tile& destination )
+TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePos stopPos )
 {
-  ConstTilemapWay ret;
+  TilesArray ret;
 
   //int mapSize = tileMap.getSize();;
-
-  TilePos startPos = startTile.getIJ();
-  TilePos stopPos  = destination.getIJ();
   int iStep = (startPos.getI() < stopPos.getI()) ? 1 : -1;
   int jStep = (startPos.getJ() < stopPos.getJ()) ? 1 : -1;
 
@@ -58,7 +53,7 @@ ConstTilemapWay RoadPropagator::createPath( const Tilemap& tileMap, const Tile& 
 
   if( startPos == stopPos )
   {
-    ret.push_back( &startTile );
+    ret.push_back( &tileMap.at( startPos ) );
     return ret;
   }
 
@@ -67,7 +62,7 @@ ConstTilemapWay RoadPropagator::createPath( const Tilemap& tileMap, const Tile& 
   // propagate on I axis
   for( TilePos tmp( startPos.getI(), stopPos.getJ() ); ; tmp+=TilePos( iStep, 0 ) )
   {
-    const Tile& curTile = tileMap.at( tmp );
+    Tile& curTile = tileMap.at( tmp );
 
     Logger::warning( "+ (%d, %d)", curTile.getI(), curTile.getJ() );
     ret.push_back( &curTile );
@@ -81,7 +76,7 @@ ConstTilemapWay RoadPropagator::createPath( const Tilemap& tileMap, const Tile& 
   // propagate on J axis
   for( int j = startPos.getJ();; j+=jStep )
   {
-    const Tile& curTile = tileMap.at( startPos.getI(), j );
+    Tile& curTile = tileMap.at( startPos.getI(), j );
 
     std::cout << "+ (" << curTile.getI() << " " << curTile.getJ() << ") ";
     ret.push_back( &curTile );

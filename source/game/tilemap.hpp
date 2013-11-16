@@ -22,6 +22,7 @@
 #include "core/serializer.hpp"
 #include "predefinitions.hpp"
 #include "core/scopedptr.hpp"
+#include "gfx/tilesarray.hpp"
 
 // Square Map of the Tiles.
 class Tilemap : public Serializable
@@ -45,14 +46,14 @@ public:
   // (i1, j1) : left corner of the rectangle (minI, minJ)
   // (i2, j2) : right corner of the rectangle (maxI, maxJ)
   // corners  : if false, don't return corner tiles
-  TilemapArea getRectangle(const TilePos& start, const TilePos& stope, const bool corners = true );
-  TilemapArea getRectangle(const TilePos& pos, const Size& size, const bool corners = true );
+  TilesArray getRectangle(const TilePos& start, const TilePos& stope, const bool corners = true );
+  TilesArray getRectangle(TilePos pos, Size size, const bool corners = true );
 
   // returns all tiles in a rectangular area
   // (i1, j1) : left corner of the rectangle (minI, minJ)
   // (i2, j2) : right corner of the rectangle (maxI, maxJ)
-  TilemapArea getArea( const TilePos& start, const TilePos& stop );
-  TilemapArea getArea( const TilePos& start, const Size& size );
+  TilesArray getArea(TilePos start, TilePos stop );
+  TilesArray getArea(TilePos start, Size size );
   int getSize() const;
 
   void save( VariantMap& stream) const;

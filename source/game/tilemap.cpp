@@ -120,9 +120,9 @@ int Tilemap::getSize() const
   return _d->size;
 }
 
-TilemapTiles Tilemap::getRectangle( const TilePos& start, const TilePos& stop, const bool corners /*= true*/ )
+TilesArray Tilemap::getRectangle( const TilePos& start, const TilePos& stop, const bool corners /*= true*/ )
 {
-  TilemapTiles res;
+  TilesArray res;
 
   int delta_corners = 0;
   if (! corners)
@@ -159,31 +159,31 @@ TilemapTiles Tilemap::getRectangle( const TilePos& start, const TilePos& stop, c
   return res;
 }
 
-TilemapTiles Tilemap::getRectangle( const TilePos& pos, const Size& size, const bool corners /*= true */ )
+TilesArray Tilemap::getRectangle( TilePos pos, Size size, const bool corners /*= true */ )
 {
   return getRectangle( pos, pos + TilePos( size.getWidth()-1, size.getHeight()-1), corners );
 }
 
 // Get tiles inside of rectangle
-TilemapTiles Tilemap::getArea(const TilePos& start, const TilePos& stop )
+TilesArray Tilemap::getArea(TilePos start, TilePos stop )
 {
-   TilemapTiles res;
+  TilesArray res;
 
-   for (int i = start.getI(); i <= stop.getI(); ++i)
-   {
-      for (int j = start.getJ(); j <= stop.getJ(); ++j)
+  for (int i = start.getI(); i <= stop.getI(); ++i)
+  {
+    for (int j = start.getJ(); j <= stop.getJ(); ++j)
+    {
+      if( isInside( TilePos( i, j ) ))
       {
-         if( isInside( TilePos( i, j ) ))
-         {
-            res.push_back( &at( TilePos( i, j ) ) );
-         }
+        res.push_back( &at( TilePos( i, j ) ) );
       }
-   }
+    }
+  }
 
-   return res;
+  return res;
 }
 
-TilemapTiles Tilemap::getArea( const TilePos& start, const Size& size )
+TilesArray Tilemap::getArea( TilePos start, Size size )
 {
   return getArea( start, start + TilePos( size.getWidth()-1, size.getHeight()-1 ) );
 }
@@ -195,7 +195,7 @@ void Tilemap::save( VariantMap& stream ) const
   VariantList desInfo;
   VariantList idInfo;
 
-  TilemapArea tiles = const_cast< Tilemap* >( this )->getArea( TilePos( 0, 0 ), Size( _d->size ) );
+  TilesArray tiles = const_cast< Tilemap* >( this )->getArea( TilePos( 0, 0 ), Size( _d->size ) );
   foreach( Tile* tile, tiles )
   {
     bitsetInfo.push_back( TileHelper::encode( *tile ) );
@@ -223,8 +223,8 @@ void Tilemap::load( const VariantMap& stream )
   VariantList::iterator bitsetInfoIt   = bitsetInfo.begin();
   VariantList::iterator desirabilityIt = desInfo.begin();
 
-  TilemapArea tiles = getArea( TilePos( 0, 0 ), Size( _d->size ) );
-  for( TilemapArea::iterator it = tiles.begin(); it != tiles.end(); 
+  TilesArray tiles = getArea( TilePos( 0, 0 ), Size( _d->size ) );
+  for( TilesArray::iterator it = tiles.begin(); it != tiles.end();
        it++, imgIdIt++, bitsetInfoIt++, desirabilityIt++ )
   {
     Tile* tile = *it;

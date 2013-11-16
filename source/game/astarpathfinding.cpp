@@ -1,3 +1,18 @@
+// This file is part of openCaesar3.
+//
+// openCaesar3 is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// openCaesar3 is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+
 #include "astarpathfinding.hpp"
 #include "tilemap.hpp"
 #include "core/position.hpp"
@@ -6,16 +21,19 @@
 #include "core/stringhelper.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
+#include <set>
 
 using namespace std;
+
+namespace {
+static const AStarPoint invalidPoint;
+typedef std::vector< AStarPoint* > APoints;
+}
 
 class Pathfinder::Impl
 {
 public:
-  typedef map<AStarPoint*,AStarPoint::WalkableType> AspSavemap;
-  typedef vector< AStarPoint* > AspRow;
-
-  class Grid : public vector< AspRow >
+  class Grid : public std::vector< APoints >
   {
   public:
     AStarPoint* operator[](const TilePos& pos )
@@ -23,7 +41,7 @@ public:
       return at( pos.getI() ).at( pos.getJ() );
     }
 
-    AspRow& operator[]( unsigned int row )
+    APoints& operator[]( unsigned int row )
     {
       return at( row );
     }
@@ -31,8 +49,9 @@ public:
 
   Grid grid;
   Tilemap* tilemap;
+  unsigned int maxLoopCount;
 
-  bool getTraversingPoints( const TilePos& start, const TilePos& stop, Pathway& oPathWay );
+  bool getTraversingPoints(TilePos start, TilePos stop, Pathway& oPathWay );
 
   AStarPoint* at( const TilePos& pos )
   {
@@ -57,11 +76,12 @@ public:
     return ( isValid( pos ) && at( pos )->isWalkable( flags ) );
   }
 
-  void tunePoints( int flags );
+  bool aStar(TilePos start, TilesArray arrivedArea, Pathway& oPathWay, int flags );
 };
 
 Pathfinder::Pathfinder() : _d( new Impl )
 {
+  _d->maxLoopCount = 600;
 }
 
 void Pathfinder::update( const Tilemap& tilemap )
@@ -74,35 +94,39 @@ void Pathfinder::update( const Tilemap& tilemap )
     _d->grid[ k ].resize( tilemap.getSize());
   }
 
-  TilemapTiles tiles = _d->tilemap->getArea( TilePos( 0, 0 ), Size( tilemap.getSize() ) );
+  TilesArray tiles = _d->tilemap->getArea( TilePos( 0, 0 ), Size( tilemap.getSize() ) );
   foreach( Tile* tile, tiles )
   {
     _d->grid[ tile->getI() ][ tile->getJ() ] = new AStarPoint( tile );
   }
 }
 
-bool Pathfinder::getPath( const Tile& start, const Tile& stop, Pathway& oPathWay,
-                          int flags, const Size& arrivedArea )
-{
-  return getPath( start.getIJ(), stop.getIJ(), oPathWay, flags, arrivedArea );
-}
-
-bool Pathfinder::getPath( const TilePos& start, const TilePos& stop,  
-                          Pathway& oPathWay, int flags,
-                          const Size& arrivedArea )
+bool Pathfinder::getPath(TilePos start, TilesArray arrivedArea, Pathway& oPathway, int flags)
 {
   if( (flags & checkStart) && !_d->isWalkable( start, AStarPoint::wtAll ) )
       return false;
 
   if( flags & traversePath )
   {
-    return _d->getTraversingPoints( start, stop, oPathWay );
+    return _d->getTraversingPoints( start, arrivedArea.front()->getIJ(), oPathway );
   }
 
-  return aStar( start, stop, arrivedArea, oPathWay, flags );
+  return _d->aStar( start, arrivedArea, oPathway, flags );
 }
 
-bool Pathfinder::Impl::getTraversingPoints( const TilePos& start, const TilePos& stop, Pathway& oPathway )
+bool Pathfinder::getPath( const Tile& start, const Tile& stop, Pathway& oPathWay, int flags )
+{
+  return getPath( start.getIJ(), stop.getIJ(), oPathWay, flags );
+}
+
+bool Pathfinder::getPath( TilePos start, TilePos stop, Pathway& oPathway, int flags)
+{
+  TilesArray area;
+  area.push_back( &_d->tilemap->at(stop) );
+  return getPath( start, area, oPathway, flags );
+}
+
+bool Pathfinder::Impl::getTraversingPoints( TilePos start, TilePos stop, Pathway& oPathway )
 {
   oPathway.init( *tilemap, tilemap->at( start ) );
 
@@ -122,19 +146,23 @@ bool Pathfinder::Impl::getTraversingPoints( const TilePos& start, const TilePos&
 
 unsigned int Pathfinder::getMaxLoopCount() const
 {
-  return 600;
+  return _d->maxLoopCount;
 }
 
-void Pathfinder::Impl::tunePoints( int flags )
+bool _inArea( APoints& area, AStarPoint* end )
 {
+  foreach( AStarPoint* p, area )
+  {
+    if( p == end )
+      return true;
+  }
 
+  return false;
 }
 
-bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos, 
-                        const Size& arrivedArea, Pathway& oPathWay,
-                        int flags )
+bool Pathfinder::Impl::aStar(TilePos startPos, TilesArray arrivedArea, Pathway& oPathWay, int flags )
 {
-  oPathWay.init( *_d->tilemap, _d->tilemap->at( startPos ) );
+  oPathWay.init( *tilemap, tilemap->at( startPos ) );
 
   int pointFlags = AStarPoint::wtAll;
   if( (flags & roadOnly) > 0 ) { pointFlags = AStarPoint::road; }
@@ -142,37 +170,20 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos,
   else if( (flags & waterOnly) > 0 ) { pointFlags = AStarPoint::water; }
 
   // Define points to work with
-  AStarPoint* start = _d->at( startPos );
-  AStarPoint* end = _d->at( stopPos );
+  AStarPoint* start = at( startPos );
+  APoints endPoints;
+
+  foreach( Tile* tile, arrivedArea )
+  {
+    endPoints.push_back( at( tile->getIJ() ) );
+  }
+
   AStarPoint* current = NULL;
   AStarPoint* child = NULL;
 
   // Define the open and the close list
   list<AStarPoint*> openList;
   list<AStarPoint*> closedList;
-  list<AStarPoint*>::iterator i;
-
-  int tSize = _d->tilemap->getSize();
-  Impl::AspSavemap saveArrivedArea;
-
-  TilePos arrivedAreaStart( math::clamp( stopPos.getI()-arrivedArea.getWidth(), 0, tSize ),
-                            math::clamp( stopPos.getJ()-arrivedArea.getHeight(), 0, tSize) );
-
-  TilePos arrivedAreaStop(  math::clamp( stopPos.getI()+arrivedArea.getWidth(), 0, tSize ),
-                            math::clamp( stopPos.getJ()+arrivedArea.getHeight(), 0, tSize) );
-  
-  for( int i=arrivedAreaStart.getI(); i <= arrivedAreaStop.getI(); i++ )
-  {
-    for( int j=arrivedAreaStart.getJ(); j <= arrivedAreaStop.getJ(); j++ )
-    {
-      AStarPoint* ap = _d->at( TilePos( i, j) );
-      if( ap )
-      {
-        saveArrivedArea[ ap ] = ap->priorWalkable;
-        ap->priorWalkable = AStarPoint::alwaysWalkable;
-      }
-    }
-  }
 
   unsigned int n = 0;
 
@@ -180,7 +191,7 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos,
   openList.push_back( start );
   start->opened = true;
 
-  while( n == 0 || (current != end && n < getMaxLoopCount() ))
+  while( n == 0 || ( !_inArea( endPoints, current ) && n < maxLoopCount ))
   {
     // Look for the smallest F value in the openList and make it the current point
     foreach( AStarPoint* point, openList)
@@ -192,7 +203,7 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos,
     }
 
     // Stop if we reached the end
-    if( current == end ) 
+    if( _inArea( endPoints, current ) )
     {
       break;
     }
@@ -217,7 +228,7 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos,
         }
 
         // Get this point
-        child = _d->at( current->getPos() + TilePos( x, y ) );
+        child = at( current->getPos() + TilePos( x, y ) );
 
         if( !child )
         {
@@ -236,14 +247,14 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos,
           // if the next horizontal point is not walkable or in the closed list then pass
           //AStarPoint* tmpPoint = getPoint( current->pos + TilePos( 0, y ) );
           TilePos tmp = current->getPos() + TilePos( 0, y );
-          if( !_d->isWalkable( tmp, pointFlags ) || _d->at( tmp )->closed)
+          if( !isWalkable( tmp, pointFlags ) || at( tmp )->closed)
           {
             continue;
           }
 
           tmp = current->getPos() + TilePos( x, 0 );
           // if the next vertical point is not walkable or in the closed list then pass
-          if( !_d->isWalkable( tmp, pointFlags ) || _d->at( tmp )->closed)
+          if( !isWalkable( tmp, pointFlags ) || at( tmp )->closed)
           {
             continue;
           }
@@ -258,7 +269,7 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos,
           {
             // Change its parent and g score
             child->setParent(current);
-            child->computeScores(end);
+            child->computeScores( endPoints.front() );
           }
         }
         else
@@ -269,7 +280,7 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos,
 
           // Compute it's g, h and f score
           child->setParent(current);
-          child->computeScores(end);
+          child->computeScores( endPoints.front() );
         }
       }
     }
@@ -282,27 +293,22 @@ bool Pathfinder::aStar( const TilePos& startPos, const TilePos& stopPos,
 
   foreach( AStarPoint* point, closedList) { point->closed = false; }
 
-  foreach( Impl::AspSavemap::value_type point, saveArrivedArea )
-  {
-    point.first->priorWalkable = point.second;
-  }
-
-  if( n == getMaxLoopCount() )
+  if( n == maxLoopCount )
   {
     return false;
   }
   // Resolve the path starting from the end point
-  list<AStarPoint*> lPath;
+  APoints lPath;
   while( current->hasParent() && current != start )
   {
-    lPath.push_front( current );
+    lPath.insert( lPath.begin(), 1, current );
     current = current->getParent();
     n++;
   }
 
   foreach( AStarPoint* pathPoint, lPath )
   {
-    oPathWay.setNextTile( _d->tilemap->at( pathPoint->getPos() ) );
+    oPathWay.setNextTile( tilemap->at( pathPoint->getPos() ) );
   }
 
   return oPathWay.getLength() > 0;

@@ -25,6 +25,7 @@
 #include "game/resourcegroup.hpp"
 #include "core/logger.hpp"
 #include "game/constants.hpp"
+#include "gfx/tilesarray.hpp"
 
 using namespace constants;
 
@@ -119,7 +120,7 @@ void FishingBoat::timeStep(const unsigned long time)
       {
         Pathway way;
         bool pathfound = Pathfinder::getInstance().getPath( getIJ(), _d->base->getLandingTile().getIJ(),
-                                                            way, Pathfinder::waterOnly, Size(0) );
+                                                            way, Pathfinder::waterOnly );
 
         if( pathfound )
         {
@@ -236,7 +237,7 @@ Pathway FishingBoat::Impl::findFishingPlace(PlayerCityPtr city, const TilePos& p
   {
     Pathway way;
     bool pathFound = Pathfinder::getInstance().getPath( pos, nearest->getTilePos(),
-                                                        way, Pathfinder::waterOnly, Size(0) );
+                                                        way, Pathfinder::waterOnly );
 
     if( pathFound )
       return way;

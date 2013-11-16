@@ -21,10 +21,12 @@
 class PathwayHelper
 {
 public:
-  typedef enum { roadOnly=0, allTerrain, roadFirst } WayType;
-  static Pathway create(PlayerCityPtr city,
-                        TilePos startPos, TilePos stopPos,
-                        WayType type=roadOnly, Size arrivedArea=Size(1));
+  typedef enum { roadOnly=0, allTerrain, water, roadFirst } WayType;
+  static Pathway create(TilePos startPos, TilePos stopPos,
+                        WayType type=roadOnly );
+
+  static Pathway create(TilePos startPos, ConstructionPtr construction,
+                        WayType type);
 
   static Pathway randomWay( PlayerCityPtr city, TilePos startPos, int walkRadius );
 };

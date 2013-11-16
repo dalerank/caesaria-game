@@ -27,7 +27,7 @@ class Construction::Impl
 {
 public:
   typedef std::map<Construction::Param, double> Params;
-  TilemapTiles accessRoads;
+  TilesArray accessRoads;
   Params params;
 };
 
@@ -50,7 +50,7 @@ bool Construction::canBuild(PlayerCityPtr city, const TilePos& pos ) const
   bool is_constructible = true;
 
   //return area for available tiles
-  TilemapArea area = tilemap.getArea( pos, getSize() );
+  TilesArray area = tilemap.getArea( pos, getSize() );
 
   //on over map size
   if( (int)area.size() != getSize().getArea() )
@@ -73,7 +73,7 @@ void Construction::build(PlayerCityPtr city, const TilePos& pos )
   computeAccessRoads();
 }
 
-const TilemapTiles& Construction::getAccessRoads() const
+TilesArray Construction::getAccessRoads() const
 {
    return _d->accessRoads;
 }
@@ -89,14 +89,18 @@ void Construction::computeAccessRoads()
 
   Tilemap& tilemap = _getCity()->getTilemap();
 
-  int maxDst2road = getRoadAccessDistance();
-  TilemapTiles rect = tilemap.getRectangle( _getMasterTile()->getIJ() + TilePos( -maxDst2road, -maxDst2road ),
-                                            getSize() + Size( 2 * maxDst2road ), !Tilemap::checkCorners );
-  foreach( Tile* tile, rect )
+  int s = getSize().getWidth();
+  for( int dst=1; dst <= getRoadAccessDistance(); dst++ )
   {
-    if( tile->getFlag( Tile::tlRoad ) )
+    TilesArray rect = tilemap.getRectangle( getTilePos() + TilePos( -dst, -dst ),
+                                            getTilePos() + TilePos( s+dst-1, s+dst-1 ),
+                                            !Tilemap::checkCorners );
+    foreach( Tile* tile, rect )
     {
-      _d->accessRoads.push_back( tile );
+      if( tile->getFlag( Tile::tlRoad ) )
+      {
+        _d->accessRoads.push_back( tile );
+      }
     }
   }
 }
@@ -192,11 +196,24 @@ double Construction::getState(Construction::Param param) const
   return _d->params[ param ];
 }
 
-TilePos Construction::getEnterPos() const
+TilesArray Construction::getEnterArea() const
 {
-  return _d->accessRoads.empty()
-            ? getTilePos()
-            : _d->accessRoads.front()->getIJ();
+  TilesArray tiles;
+
+  int s = getSize().getWidth();
+  const TilesArray& near = _getCity()->getTilemap().getRectangle( getTilePos() - TilePos(1, 1),
+                                                                  getTilePos() + TilePos(s, s),
+                                                                  !Tilemap::checkCorners );
+
+  for( TilesArray::const_iterator it=near.begin(); it != near.end(); it++)
+  {
+    if( (*it)->isWalkable( true ) )
+    {
+      tiles.push_back( *it );
+    }
+  }
+
+  return tiles;
 }
 
 void Construction::timeStep(const unsigned long time)
