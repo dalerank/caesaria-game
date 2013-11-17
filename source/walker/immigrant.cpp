@@ -35,7 +35,7 @@ class Immigrant::Impl
 public:
   Picture cartPicture;
   CitizenGroup peoples;
-  int stamina;
+  float stamina;
 };
 
 Immigrant::Immigrant(PlayerCityPtr city )
@@ -109,27 +109,47 @@ void Immigrant::_findPath2blankHouse( TilePos startPoint )
 
 void Immigrant::_reachedPathway()
 {
+  bool gooutCity = true;
   Walker::_reachedPathway();
 
   if( getIJ() == _getCity()->getBorderInfo().roadExit )
   {
     deleteLater();
+    return;
   }
 
-  bool gooutCity = true;
-  TilesArray area = _getCity()->getTilemap().getArea( getIJ() - TilePos(1,1),
-                                                       getIJ() + TilePos(1,1) );
-  foreach( Tile* tile, area )  //have destination
+  HousePtr house = _getCity()->getOverlay( getIJ() ).as<House>();
+  if( house.isValid() )
   {
-    HousePtr house = tile->getOverlay().as<House>();
-    if( !house.isValid() )
-      continue;
-
     int freeRoom = house->getMaxHabitants() - house->getHabitants().count();
     if( freeRoom > 0 )
     {
       house->addHabitants( _d->peoples );
       gooutCity = (_d->peoples.count() > 0);
+    }
+  }
+  else
+  {
+    TilesArray area = _getCity()->getTilemap().getArea( getIJ() - TilePos(1,1),
+                                                         getIJ() + TilePos(1,1) );
+    foreach( Tile* tile, area )  //have destination
+    {
+      HousePtr house = tile->getOverlay().as<House>();
+      if( !house.isValid() )
+        continue;
+      int freeRoom = house->getMaxHabitants() - house->getHabitants().count();
+      if( freeRoom > 0 )
+      {
+        Tilemap& tmap = _getCity()->getTilemap();
+        Pathway pathway;
+        pathway.init( tmap, tmap.at( getIJ() ) );
+        pathway.setNextTile( *tile );
+
+        gooutCity = false;
+        _updatePathway( pathway );
+        go();
+        return;
+      }
     }
   }
 
@@ -211,7 +231,7 @@ void Immigrant::timeStep(const unsigned long time)
   switch( getAction() )
   {
   case Walker::acMove:
-    _d->stamina = math::clamp( _d->stamina-1, 0, 100 );
+    _d->stamina = math::clamp( _d->stamina-1, 0.f, 100.f );
     if( _d->stamina == 0 )
     {
       _setAnimation( gfx::homelessSit );
@@ -221,7 +241,7 @@ void Immigrant::timeStep(const unsigned long time)
   break;
 
   case Walker::acNone:
-    _d->stamina = math::clamp( _d->stamina+5, 0, 100 );
+    _d->stamina = math::clamp( _d->stamina+1, 0.f, 100.f );
     if( _d->stamina >= 100 )
     {
       _setAnimation( gfx::homeless );
@@ -239,12 +259,14 @@ void Immigrant::save( VariantMap& stream ) const
 {
   Walker::save( stream );
   stream[ "peoples" ] = _d->peoples.save();
+  stream[ "stamina" ] = _d->stamina;
 }
 
 void Immigrant::load( const VariantMap& stream )
 {
   Walker::load( stream );
   _d->peoples.load( stream.get( "peoples" ).toList() );
+  _d->stamina = stream.get( "stamina" );
 }
 
 void Immigrant::die()
