@@ -76,7 +76,7 @@ float Building::evaluateService(ServiceWalkerPtr walker)
 {
    float res = 0.0;
    Service::Type service = walker->getService();
-   if (_reservedServices.count(service) == 1)
+   if(_reservedServices.count(service) == 1)
    {
       // service is already reserved
       return 0.0;

@@ -36,14 +36,12 @@ void EngineerPost::timeStep(const unsigned long time)
   {
     if( _animationRef().isStopped() )
     {
-      _animationRef().setIndex( 0 );
       _animationRef().start();
     }
   }
   else if( _animationRef().isRunning() )
   {
     _animationRef().stop();
-    _animationRef().setIndex( -1 );
     _fgPicturesRef().back() = Picture::getInvalid();
   }
 
@@ -54,7 +52,7 @@ void EngineerPost::deliverService()
 {
   if( getWorkersCount() > 0 && getWalkers().size() == 0 )
   {
-      ServiceBuilding::deliverService();
+    ServiceBuilding::deliverService();
   }
 }
 

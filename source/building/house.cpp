@@ -155,6 +155,7 @@ void House::timeStep(const unsigned long time)
   {
     _d->consumeServices();
     _d->updateHealthLevel();    
+    cancelService( Service::recruter );
   }
 
   if( time % 32 == 0 )
@@ -268,6 +269,8 @@ void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int start
 
           sumHabitants += house->getHabitants();
           sumFreeWorkers += house->getServiceValue( Service::recruter );
+
+          house->setServiceValue( Service::recruter, 0 );
 
           selfHouse->getGoodStore().storeAll( house->getGoodStore() );
         }
@@ -398,6 +401,7 @@ void House::levelDown()
         event->dispatch();
       }
 
+      setServiceValue( Service::recruter, 0 );
       deleteLater();
     }
   }
@@ -674,8 +678,11 @@ void House::destroy()
 
   Immigrant::send2City( _getCity(), _d->habitants, getTile() );
 
-  events::GameEventPtr e = events::FireWorkers::create( getTilePos(), getWorkersCount() );
-  e->dispatch();
+  if( _d->services[ Service::recruter ] > 0 )
+  {
+    events::GameEventPtr e = events::FireWorkers::create( getTilePos(), getWorkersCount() );
+    e->dispatch();
+  }
 
   _d->habitants.clear();
 

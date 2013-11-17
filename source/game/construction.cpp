@@ -141,13 +141,15 @@ void Construction::updateState(Construction::Param param, double value, bool rel
 {
   if( relative ) _d->params[ param ] += value;
   else           _d->params[ param ] = value;
+
+  _d->params[ param ] = math::clamp<double>( _d->params[ param ], 0.f, 100.f );
 }
 
 void Construction::save( VariantMap& stream) const
 {
     TileOverlay::save( stream );
-    stream[ Serializable::damageLevel ] = getState( fire );
-    stream[ Serializable::fireLevel ] = getState( damage );
+    stream[ Serializable::fireLevel ] = getState( fire );
+    stream[ Serializable::damageLevel ] = getState( damage );
 
 //    stream.write_int(_traineeMap.size(), 1, 0, WTT_MAX);
 //    for (std::map<WalkerTraineeType, int>::iterator itLevel = _traineeMap.begin(); itLevel != _traineeMap.end(); ++itLevel)
@@ -169,8 +171,8 @@ void Construction::save( VariantMap& stream) const
 void Construction::load( const VariantMap& stream )
 {
   TileOverlay::load( stream );
-  _d->params[ fire ] = (float)stream.get( Serializable::damageLevel, 0.f );
-  _d->params[ damage ] = (float)stream.get( Serializable::fireLevel, 0.f );
+  _d->params[ fire ] = (float)stream.get( Serializable::fireLevel, 0.f );
+  _d->params[ damage ] = (float)stream.get( Serializable::damageLevel, 0.f );
 //    Construction::unserialize(stream);
 //    _damageLevel = (float)stream.read_int(1, 0, 100);
 //    _fireLevel = (float)stream.read_int(1, 0, 100);
