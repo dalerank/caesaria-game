@@ -236,7 +236,7 @@ void Immigrant::timeStep(const unsigned long time)
     {
       _setAnimation( gfx::homelessSit );
       _setAction( Walker::acNone );
-      _getAnimation().clear();
+      _animationRef().clear();
     }
   break;
 
@@ -246,7 +246,7 @@ void Immigrant::timeStep(const unsigned long time)
     {
       _setAnimation( gfx::homeless );
       _setAction( Walker::acMove );
-      _getAnimation().clear();
+      _animationRef().clear();
     }
   break;
 

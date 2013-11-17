@@ -25,6 +25,7 @@
 #include "gfx/picture.hpp"
 #include "core/variant.hpp"
 #include "gfx/tileoverlay.hpp"
+#include "desirability.hpp"
 
 // contains some metaData for a building type
 class MetaData
@@ -33,13 +34,6 @@ class MetaData
 
   static MetaData invalid;
 public:
-  typedef struct
-  {
-    int base;
-    int range;
-    int step;
-  } Desirability;
-
   MetaData( const TileOverlay::Type type, const std::string& name );
   MetaData( const MetaData& a );
 
@@ -48,16 +42,15 @@ public:
   std::string getName() const;
   std::string getPrettyName() const;
   TileOverlay::Type getType() const;
-  TileOverlay::Group getClass() const;
+  TileOverlay::Group getGroup() const;
   Picture getBasePicture() const;
-  const Desirability& getDesirbilityInfo() const;
+  Desirability getDesirbility() const;
 
   Variant getOption( const std::string& name, Variant defaultVal=Variant() ) const;
 
   MetaData& operator=( const MetaData& a );
 
 private:
-  TileOverlay::Group _group;
   std::string _name;  // debug name  (english, ex:"iron")
   std::string _prettyName;  // pretty-print name  (i18n, ex:"Iron mine")
   Picture _basePicture;

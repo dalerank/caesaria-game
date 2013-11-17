@@ -57,7 +57,7 @@ public:
   bool isEducationNeed( Service::Type type ) const;
   bool isEntertainmentNeed( Service::Type type ) const;
 
-  const MetaData::Desirability& getDesirabilityInfo() const;
+  Desirability getDesirability() const;
 
   void levelUp();
   void levelDown();

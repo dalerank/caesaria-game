@@ -76,7 +76,7 @@ void FishingBoat::timeStep(const unsigned long time)
     {
     case Impl::ready2Catch:
     {
-      _getAnimation().clear();
+      _animationRef().clear();
       _setAnimation( gfx::fishingBoat );
       Pathway way = _d->findFishingPlace( _getCity(), getIJ() );
       if( way.isValid() )
@@ -91,7 +91,7 @@ void FishingBoat::timeStep(const unsigned long time)
 
     case Impl::catchFish:
     {
-      _getAnimation().clear();
+      _animationRef().clear();
       _setAnimation( gfx::fishingBoatWork );
 
       CityHelper helper( _getCity() );
@@ -129,7 +129,7 @@ void FishingBoat::timeStep(const unsigned long time)
           go();
         }
 
-        _getAnimation().clear();
+        _animationRef().clear();
         _setAnimation( gfx::fishingBoat );
       }
       else
@@ -174,8 +174,8 @@ void FishingBoat::die()
 {
   _d->mode = Impl::wait;
   _d->base = 0;
-  _getAnimation().load( ResourceGroup::carts, 265, 8 );
-  _getAnimation().setDelay( 4 );
+  _animationRef().load( ResourceGroup::carts, 265, 8 );
+  _animationRef().setDelay( 4 );
 
   Ship::die();
 }
@@ -213,7 +213,7 @@ void FishingBoat::_reachedPathway()
 void FishingBoat::_changeTile()
 {
   Walker::_changeTile();
-  _getAnimation().setDelay( 3 );
+  _animationRef().setDelay( 3 );
 }
 
 Pathway FishingBoat::Impl::findFishingPlace(PlayerCityPtr city, const TilePos& pos )

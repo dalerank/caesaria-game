@@ -66,7 +66,7 @@ void TileOverlay::setType(const Type type)
   const MetaData& bd = MetaDataHolder::instance().getData( type );
 
    _d->overlayType = type;
-   _d->overlayClass = bd.getClass();
+   _d->overlayClass = bd.getGroup();
    _d->name = bd.getName();
 }
 

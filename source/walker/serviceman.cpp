@@ -33,6 +33,7 @@ class ServiceWalker::Impl
 public:
   BuildingPtr base;
   Service::Type service;
+  unsigned int reachDistance;
   int maxDistance;
 };
 
@@ -43,6 +44,7 @@ ServiceWalker::ServiceWalker(PlayerCityPtr city, const Service::Type service)
   _setAnimation( gfx::unknown );
   _d->maxDistance = 5;  // TODO: _building.getMaxDistance() ?
   _d->service = service;
+  _d->reachDistance = 2;
 
   _init(service);
 }
@@ -133,14 +135,32 @@ void ServiceWalker::_computeWalkerPath()
     return;
   }
 
-  reservePath(*bestPath);
   setIJ( bestPath->getOrigin().getIJ() );
   setPathway(*bestPath);
 }
 
+void ServiceWalker::_cancelPath()
+{
+  TilesArray pathTileList = getPathway().getAllTiles();
+
+  foreach( Tile* tile, pathTileList )
+  {
+    ReachedBuildings reachedBuildings = getReachedBuildings( tile->getIJ() );
+    foreach( BuildingPtr building, reachedBuildings )
+    {
+      // the building has not been reserved yet
+       building->cancelService( _d->service );
+    }
+  }
+}
 unsigned int ServiceWalker::getReachDistance() const
 {
-  return 2;
+  return _d->reachDistance;
+}
+
+void ServiceWalker::setReachDistance(unsigned int value)
+{
+  _d->reachDistance = value;
 }
 
 void ServiceWalker::return2Base()
@@ -201,7 +221,7 @@ float ServiceWalker::evaluatePath( Pathway& pathWay )
   return res;
 }
 
-void ServiceWalker::reservePath(Pathway &pathWay)
+void ServiceWalker::_reservePath(const Pathway& pathWay)
 {
   // reserve all buildings along the path
   ReachedBuildings doneBuildings;  // list of evaluated building: don't do them again
@@ -220,6 +240,14 @@ void ServiceWalker::reservePath(Pathway &pathWay)
       }
     }
   }
+}
+
+void ServiceWalker::_updatePathway(const Pathway& pathway)
+{
+  _cancelPath();
+
+  Walker::_updatePathway( pathway );
+  _reservePath( pathway );
 }
 
 void ServiceWalker::send2City( BuildingPtr base )
@@ -267,6 +295,7 @@ void ServiceWalker::save( VariantMap& stream ) const
   stream[ "service" ] = Variant( ServiceHelper::getName( _d->service ) );
   stream[ "base" ] = _d->base->getTile().getIJ();
   stream[ "maxDistance" ] = _d->maxDistance;
+  stream[ "reachDistance" ] = _d->reachDistance;
 }
 
 void ServiceWalker::load( const VariantMap& stream )
@@ -275,7 +304,8 @@ void ServiceWalker::load( const VariantMap& stream )
 
   Service::Type srvcType = ServiceHelper::getType( stream.get( "service" ).toString() );
   _init( srvcType );
-  _d->maxDistance = stream.get( "maxDistance" ).toInt();
+  _d->maxDistance = stream.get( "maxDistance" );
+  _d->reachDistance = (int)stream.get( "reachDistance" );
 
   TilePos basePos = stream.get( "base" ).toTilePos();
   TileOverlayPtr overlay = _getCity()->getTilemap().at( basePos ).getOverlay();
@@ -293,6 +323,14 @@ void ServiceWalker::load( const VariantMap& stream )
       wrk->addWalker( this );
     }
   }
+}
+
+void ServiceWalker::setPathway(const Pathway& pathway)
+{
+  _cancelPath();
+
+  Walker::setPathway( pathway );
+  _reservePath( pathway );
 }
 
 void ServiceWalker::die()
@@ -341,6 +379,7 @@ void ServiceWalker::die()
   break;
   }
 
+  _cancelPath();
   Walker::die();
 
   if( start >= 0 )

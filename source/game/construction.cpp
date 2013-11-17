@@ -127,9 +127,9 @@ void Construction::collapse()
   event->dispatch();
 }
 
-const MetaData::Desirability& Construction::getDesirabilityInfo() const
+Desirability Construction::getDesirability() const
 {
-  return MetaDataHolder::instance().getData( getType() ).getDesirbilityInfo();
+  return MetaDataHolder::instance().getData( getType() ).getDesirbility();
 }
 
 void Construction::destroy()

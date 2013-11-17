@@ -119,7 +119,7 @@ void Sheep::_brokePathway(TilePos pos)
 void Sheep::_changeTile()
 {
   Walker::_changeTile();
-  _getAnimation().setDelay( 3 );
+  _animationRef().setDelay( 3 );
 }
 
 void Sheep::die()

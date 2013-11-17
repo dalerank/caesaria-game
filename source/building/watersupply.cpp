@@ -570,6 +570,7 @@ void Fountain::deliverService()
 {
   ServiceWalkerPtr walker = ServiceWalker::create( _getCity(), getService() );
   walker->setBase( BuildingPtr( this ) );
+  walker->setReachDistance( 4 );
   ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( getTile().getIJ() );
 
   foreach( BuildingPtr building, reachedBuildings )
@@ -591,6 +592,7 @@ void Fountain::timeStep(const unsigned long time)
     else
     {
       //remove fontain service from tiles
+      _haveReservoirWater = false;
       Tilemap& tmap = _getCity()->getTilemap();
       TilesArray reachedTiles = tmap.getArea( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() );
       foreach( Tile* tile, reachedTiles )
@@ -603,7 +605,7 @@ void Fountain::timeStep(const unsigned long time)
 
     if( !isActive() )
     {
-      _fgPicturesRef().at( 0 ) = Picture::getInvalid();
+      _fgPicturesRef().front() = Picture::getInvalid();
       return;
     }
 

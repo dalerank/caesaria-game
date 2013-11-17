@@ -114,7 +114,6 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
       _setAction( acFight );
       _setAnimation( gfx::prefectFightFire );
       setSpeed( 0.f );
-      Walker::_changeDirection();
       return true;
     }
   }
@@ -171,11 +170,9 @@ void Prefect::_back2Patrol()
   {
     _d->action = Impl::patrol;
     _setAnimation( gfx::prefect );
-    setSpeed( 1 );
     _updatePathway( pathway );
+    setSpeed( 1 );
     go();
-
-    Walker::_changeDirection();
   }
   else
   {
@@ -205,7 +202,6 @@ void Prefect::_brokePathway(TilePos pos)
     _setAction( acFight );
     _d->action = Impl::fightFire;
     _setAnimation( gfx::prefectFightFire );
-    Walker::_changeDirection();
     return;
   }
   else if( _d->water > 0 )
@@ -316,7 +312,7 @@ void Prefect::_centerTile()
         setSpeed( 0.f );
         _setAction( acFight );
         _setAnimation( gfx::prefectFight );
-        Walker::_changeDirection();
+        return;
       }
     }
     else
@@ -335,7 +331,7 @@ void Prefect::_centerTile()
       _setAnimation( gfx::prefectFightFire );
       _setAction( acFight );
       setSpeed( 0.f );
-      Walker::_changeDirection();
+      return;
     }
   }
   break;

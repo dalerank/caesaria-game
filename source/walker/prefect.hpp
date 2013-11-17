@@ -23,12 +23,9 @@ class Prefect : public ServiceWalker
 {
 public:
   static PrefectPtr create( PlayerCityPtr city );
- 
-  virtual void _centerTile();
-  virtual void _changeTile();
+
   virtual void timeStep(const unsigned long time);
   float getServiceValue() const;
-  virtual void _reachedPathway();
 
   virtual void load( const VariantMap& stream );
   virtual void save( VariantMap& stream ) const;
@@ -37,6 +34,11 @@ public:
   virtual void die();
 
   ~Prefect();
+
+protected:
+  virtual void _centerTile();
+  virtual void _changeTile();
+  virtual void _reachedPathway();
 
 protected:
   Prefect( PlayerCityPtr city );

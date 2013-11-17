@@ -57,7 +57,7 @@ public:
   virtual Point getPosition() const;
   Point getSubPosition() const;
 
-  void setPathway( const Pathway& pathWay);
+  virtual void setPathway( const Pathway& pathWay);
   const Pathway& getPathway() const;
 
   virtual void turn( TilePos pos );
@@ -106,8 +106,8 @@ protected:
 
 protected:
   Pathway& _pathwayRef();
-  Animation& _getAnimation();
-  void _updatePathway( const Pathway& pathway );
+  Animation& _animationRef();
+  virtual void _updatePathway( const Pathway& pathway );
   void _setAction( Walker::Action action );
   void _setDirection( constants::Direction direction );
   void _setAnimation( constants::gfx::Type type );

@@ -34,6 +34,7 @@
 #include "constants.hpp"
 #include "events/event.hpp"
 #include "events/fireworkers.hpp"
+#include "building/desirability.hpp"
 
 using namespace constants;
 
@@ -46,7 +47,7 @@ public:
   int houseLevel;
   float healthLevel;
   HouseLevelSpec spec;  // characteristics of the current house level
-  MetaData::Desirability desirability;
+  Desirability desirability;
   SimpleGoodStore goodStore;
   Services services;  // value=access to the service (0=no access, 100=good access)
   int maxHabitants;
@@ -699,7 +700,7 @@ bool House::isFlat() const
   return isWalkable();
 }
 
-const MetaData::Desirability& House::getDesirabilityInfo() const
+Desirability House::getDesirability() const
 {
   return _d->desirability;
 }

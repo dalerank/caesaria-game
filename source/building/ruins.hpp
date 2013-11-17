@@ -23,12 +23,13 @@ class BurningRuins : public ServiceBuilding
 public:
   BurningRuins();
 
-  void deliverService();
-  void timeStep(const unsigned long time);
-  void burn();
-  void build(PlayerCityPtr city, const TilePos& pos );
-  bool isWalkable() const;
-  void destroy();
+  virtual void deliverService();
+  virtual void timeStep(const unsigned long time);
+  virtual void burn();
+  virtual void build(PlayerCityPtr city, const TilePos& pos );
+  virtual bool isWalkable() const;
+  virtual void destroy();
+  virtual unsigned int getMaxWorkers() const;
 
   float evaluateService( ServiceWalkerPtr walker);
   void applyService( ServiceWalkerPtr walker);

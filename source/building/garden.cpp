@@ -85,6 +85,16 @@ void Garden::load(const VariantMap& stream)
   }
 }
 
+Desirability Garden::getDesirability() const
+{
+  Desirability ret = Construction::getDesirability();
+  ret.base *= getSize().getArea();
+  ret.range *= getSize().getWidth();
+  ret.step *= getSize().getWidth();
+
+  return ret;
+}
+
 void Garden::update()
 {
   TilesArray nearTiles = _getCity()->getTilemap().getArea( getTilePos(), Size(2) );
@@ -109,8 +119,11 @@ void Garden::update()
       }
     }
 
+    CityHelper helper( _getCity() );
+    helper.updateDesirability( this, false );
     setSize( 2 );
     Construction::build( _getCity(), getTilePos() );
     setPicture( ResourceGroup::entertaiment, 114 + rand() % 3 );
+    helper.updateDesirability( this, true );
   }
 }

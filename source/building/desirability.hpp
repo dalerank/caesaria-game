@@ -12,36 +12,25 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+//
+// You should have received a copy of the GNU General Public License
+// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_SENATE_H_INCLUDED_
-#define __OPENCAESAR3_SENATE_H_INCLUDED_
+#ifndef _OPENCAESAR_DESIRABILITY_H_INCLUDE_
+#define _OPENCAESAR_DESIRABILITY_H_INCLUDE_
 
-#include "service.hpp"
+#include "game/good.hpp"
 #include "core/scopedptr.hpp"
+#include "vfs/filepath.hpp"
+#include "gfx/picture.hpp"
+#include "core/variant.hpp"
+#include "gfx/tileoverlay.hpp"
 
-class Senate : public ServiceBuilding
+struct Desirability
 {
-public:
-  typedef enum { workless, culture, prosperity, peace, favour } Status;
-  Senate();
-  unsigned int getFunds() const;
-
-  int collectTaxes();
-
-  int getStatus( Status status ) const;
-
-  virtual std::string getError() const;
-
-  virtual void deliverService();  
-
-  virtual bool canBuild(PlayerCityPtr city, const TilePos& pos )const;
-
-  virtual void applyService(ServiceWalkerPtr walker);
-
-  virtual unsigned int getWalkerDistance() const;
-private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+ int base;
+ int range;
+ int step;
 };
 
-#endif
+#endif //_OPENCAESAR_DESIRABILITY_H_INCLUDE_

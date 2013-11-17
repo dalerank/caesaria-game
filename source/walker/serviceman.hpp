@@ -34,29 +34,36 @@ public:
 
   virtual void send2City( BuildingPtr base );
   virtual float getServiceValue() const;
-  virtual void _reachedPathway();
-  virtual void _changeTile();  // called when the walker is on a new tile
 
   // evaluates the service demand on the given pathWay
   float evaluatePath(Pathway &pathWay);
-  void reservePath(Pathway &pathWay);
   ReachedBuildings getReachedBuildings(const TilePos& pos );
 
   virtual unsigned int getReachDistance() const;
+  void setReachDistance( unsigned int value );
 
   virtual void return2Base();
   void setMaxDistance( const int distance );
 
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);
+
+  virtual void setPathway(const Pathway &pathway);
   virtual void die();
 
   ~ServiceWalker();
+protected:
+  virtual void _reachedPathway();
+  virtual void _changeTile();  // called when the walker is on a new tile
+
 protected:
   ServiceWalker( PlayerCityPtr city, const Service::Type service );
 
   void _init(const Service::Type service);
   void _computeWalkerPath();
+  void _reservePath(const Pathway &pathWay);
+  void _updatePathway(const Pathway &pathway);
+  void _cancelPath();
 
 private:
   class Impl;

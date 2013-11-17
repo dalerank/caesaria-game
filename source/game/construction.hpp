@@ -42,7 +42,7 @@ public:
   virtual TilesArray getAccessRoads() const;  // return all road tiles adjacent to the construction
   virtual void computeAccessRoads();  
   virtual int  getRoadAccessDistance() const; // virtual because HOUSE has different behavior
-  virtual const MetaData::Desirability& getDesirabilityInfo() const;
+  virtual Desirability getDesirability() const;
   virtual void destroy();
   virtual void updateState( Param param, double value, bool relative=true );
   virtual double getState( Param param ) const;

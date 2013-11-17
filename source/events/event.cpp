@@ -137,10 +137,10 @@ void BuildEvent::exec( Game& game )
       }
 
       WorkingBuildingPtr wb = construction.as<WorkingBuilding>();
-      if( wb.isValid() && wb->getWorkersCount() > 0 )
+      if( wb.isValid() && wb->getMaxWorkers() > 0 )
       {
         int worklessCount = CityStatistic::getWorklessNumber( game.getCity() );
-        if( worklessCount < wb->getWorkersCount() )
+        if( worklessCount < wb->getMaxWorkers() )
         {
           game.getCity()->onWarningMessage().emit( "##city_need_more_workers##" );
         }

@@ -75,6 +75,11 @@ void BurningRuins::destroy()
   event->dispatch();
 }
 
+unsigned int BurningRuins::getMaxWorkers() const
+{
+  return 0;
+}
+
 void BurningRuins::deliverService()
 {
   /*ServiceWalker walker(getService());

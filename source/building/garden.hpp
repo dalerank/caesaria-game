@@ -29,6 +29,7 @@ public:
   virtual bool isNeedRoadAccess() const;
   virtual void build(PlayerCityPtr city, const TilePos& pos );
   virtual void load(const VariantMap &stream);
+  virtual Desirability getDesirability() const;
   void update();
 };
 

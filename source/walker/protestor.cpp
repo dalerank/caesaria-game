@@ -63,9 +63,9 @@ void Protestor::_reachedPathway()
   switch( _d->state )
   {
   case Impl::go2destination:
-    _getAnimation().clear();
-    _getAnimation().load( ResourceGroup::citizen2, 455, 8 );
-    _getAnimation().load( ResourceGroup::citizen2, 462, 8, Animation::reverse );
+    _animationRef().clear();
+    _animationRef().load( ResourceGroup::citizen2, 455, 8 );
+    _animationRef().load( ResourceGroup::citizen2, 462, 8, Animation::reverse );
     _setAction( acFight );
     _d->state = Impl::destroyConstruction;
   break;
@@ -175,7 +175,7 @@ void Protestor::timeStep(const unsigned long time)
 
        if( constructions.empty() )
       {
-        _getAnimation().clear();
+        _animationRef().clear();
         _setAction( acMove );
         _d->state = Impl::searchHouse;
       }
@@ -185,8 +185,8 @@ void Protestor::timeStep(const unsigned long time)
         {
           if( c->getClass() != building::disasterGroup && c->getType() != construction::road )
           {
-            c->updateState( Construction::fire, -1 );
-            c->updateState( Construction::damage, -1 );
+            c->updateState( Construction::fire, 1 );
+            c->updateState( Construction::damage, 1 );
             break;
           }
         }

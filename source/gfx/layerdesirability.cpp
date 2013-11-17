@@ -101,6 +101,7 @@ LayerPtr LayerDesirability::create(CityRenderer* renderer, PlayerCityPtr city)
   LayerDesirability* l = new LayerDesirability();
   l->_renderer = renderer;
   l->_city = city;
+  l->_debugFont = Font::create( "FONT_1" );
 
   LayerPtr ret( l );
   ret->drop();

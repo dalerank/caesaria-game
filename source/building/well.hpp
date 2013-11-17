@@ -24,7 +24,6 @@ public:
   Well();
 
   virtual void deliverService();
-
   virtual bool isNeedRoadAccess() const;
 };
 

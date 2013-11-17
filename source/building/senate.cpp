@@ -71,6 +71,11 @@ void Senate::applyService(ServiceWalkerPtr walker)
   ServiceBuilding::applyService( walker );
 }
 
+unsigned int Senate::getWalkerDistance() const
+{
+  return 26;
+}
+
 unsigned int Senate::getFunds() const
 {
   return _getCity()->getFunds().getValue();
@@ -105,6 +110,7 @@ void Senate::deliverService()
   if( getWorkersCount() > 0 && getWalkers().size() == 0 )
   {
     TaxCollectorPtr walker = TaxCollector::create( _getCity() );
+    walker->setMaxDistance( getWalkerDistance() );
     walker->send2City( this );
 
     if( !walker->isDeleted() )

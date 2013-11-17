@@ -600,12 +600,11 @@ void Walker::turn(TilePos pos)
   if( _d->action.direction != directions[ angle ] )
   {
     _d->action.direction = directions[ angle ];
-    _changeDirection();
-    getMainPicture();
+    _animationRef().clear();
   }
 }
 
-Animation& Walker::_getAnimation()
+Animation& Walker::_animationRef()
 {
   return _d->animation;
 }
@@ -629,7 +628,11 @@ void Walker::_setDirection(constants::Direction direction )
 
 void Walker::_setAnimation( gfx::Type type)
 {
-  _d->walkerGraphic = type;
+  if( _d->walkerGraphic != type )
+  {
+    _d->walkerGraphic = type;
+    _d->animation = Animation();
+  }
 }
 
 void Walker::_setType(walker::Type type)

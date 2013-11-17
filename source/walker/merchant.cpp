@@ -258,7 +258,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
   case stGoOutFromCity:
     {
       // we have nothing to buy/sell with city, or cannot find available warehouse -> go out
-      Pathway pathWay = PathwayHelper::create( position, city->getBorderInfo().roadExit );
+      Pathway pathWay = PathwayHelper::create( position, city->getBorderInfo().roadExit, PathwayHelper::allTerrain );
       if( pathWay.isValid() )
       {
         wlk->setIJ( pathWay.getOrigin().getIJ() );

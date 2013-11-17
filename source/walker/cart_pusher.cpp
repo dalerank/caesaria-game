@@ -350,7 +350,7 @@ void CartPusher::send2City( BuildingPtr building, GoodStock& carry )
 
 void CartPusher::timeStep( const unsigned long time )
 {
-  if( (time % 22 == 1) && (_pathwayRef().getLength() < 2) )
+  if( (time % 22 == 1) && !_pathwayRef().isValid() )
   {
     computeWalkerDestination();
   }

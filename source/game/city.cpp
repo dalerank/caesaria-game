@@ -593,7 +593,7 @@ void CityHelper::updateDesirability( ConstructionPtr construction, bool onBuild 
 {
   Tilemap& tilemap = _city->getTilemap();
 
-  const MetaData::Desirability dsrbl = construction->getDesirabilityInfo();
+  const Desirability& dsrbl = construction->getDesirability();
   int mul = ( onBuild ? 1 : -1);
 
   //change desirability in selfarea

@@ -160,16 +160,17 @@ public:
 class MetaData::Impl
 {
 public:
-  MetaData::Desirability desirability;
-  TileOverlay::Type buildingType;
+  Desirability desirability;
+  TileOverlay::Type tileovType;
+  TileOverlay::Group group;
   VariantMap options;
 };
 
 MetaData::MetaData(const TileOverlay::Type buildingType, const std::string& name )
   : _d( new Impl )
 {
-  _d->buildingType = buildingType;
-  _group = building::unknownGroup;
+  _d->tileovType = buildingType;
+  _d->group = building::unknownGroup;
   _name = name;
   _prettyName = _( ("##" + name + "##").c_str() );  // i18n translation
   _d->desirability.base = 0;
@@ -199,7 +200,7 @@ std::string MetaData::getPrettyName() const
 
 TileOverlay::Type MetaData::getType() const
 {
-  return _d->buildingType;
+  return _d->tileovType;
 }
 
 Picture MetaData::getBasePicture() const
@@ -207,7 +208,7 @@ Picture MetaData::getBasePicture() const
   return _basePicture;
 }
 
-const MetaData::Desirability& MetaData::getDesirbilityInfo() const
+Desirability MetaData::getDesirbility() const
 {
   return _d->desirability;
 }
@@ -220,11 +221,11 @@ Variant MetaData::getOption(const std::string &name, Variant defaultVal ) const
 
 MetaData &MetaData::operator=(const MetaData &a)
 {
-  _d->buildingType = a._d->buildingType;
+  _d->tileovType = a._d->tileovType;
   _name = a._name;
   _prettyName = a._prettyName;
   _basePicture = a._basePicture;
-  _group = a._group;
+  _d->group = a._d->group;
   _d->desirability = a._d->desirability;
 
   _d->options = a._d->options;
@@ -232,9 +233,9 @@ MetaData &MetaData::operator=(const MetaData &a)
   return *this;
 }
 
-TileOverlay::Group MetaData::getClass() const
+TileOverlay::Group MetaData::getGroup() const
 {
-  return _group;
+  return _d->group;
 }
 
 class MetaDataHolder::Impl
@@ -359,7 +360,7 @@ void MetaDataHolder::initialize( const io::FilePath& filename )
       bData._prettyName = prettyName.toString();
     }
 
-    bData._group = getClass( options[ "class" ].toString() );
+    bData._d->group = getClass( options[ "class" ].toString() );
 
     VariantList basePic = options[ "image" ].toList();
     if( !basePic.empty() )
