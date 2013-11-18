@@ -35,10 +35,10 @@ public:
   void init( Tilemap& tilemap );
 
   // size of the view in pixel
-  void setViewport( const Size& newSize );
+  void setViewport(Size newSize);
+  void setCenter(TilePos pos);
 
-  void setCenter( const TilePos& pos );
-
+  void move(PointF relative);
   void moveRight(const int amount);
   void moveLeft(const int amount);
   void moveUp(const int amount);
@@ -55,7 +55,7 @@ public oc3_signals:
   Signal1<Point>& onPositionChanged();
   
 private:  
-  void setCenter( const Point& pos );
+  void setCenter(Point pos);
 
   class Impl;
   ScopedPtr< Impl > _d;

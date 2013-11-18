@@ -48,6 +48,7 @@ public:
   virtual std::string getMoodDescription() const = 0;
   virtual void load( const VariantMap& vm ) = 0;
   virtual VariantMap save() const = 0;
+  virtual void setInternalName(const std::string &newName) = 0;
 };
 
 class DivinePantheon
@@ -56,11 +57,11 @@ public:
   typedef std::vector< RomeDivinityPtr > Divinities;
 
   static DivinePantheon& getInstance();
-  static RomeDivinityPtr get( RomeDivinityType name );
 
-  static Divinities getAll();
+  Divinities getAll();
 
-  void initialize( const io::FilePath& filename );
+  void load(const VariantMap& stream );
+  void save(VariantMap& stream);
 
   static void doFestival( RomeDivinityType who, int type);
 
@@ -69,6 +70,9 @@ public:
   static RomeDivinityPtr neptune();
   static RomeDivinityPtr venus();
   static RomeDivinityPtr mercury();
+
+  static RomeDivinityPtr get( RomeDivinityType name );
+  static RomeDivinityPtr get( std::string name );
 
 private:
   DivinePantheon();

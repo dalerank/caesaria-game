@@ -271,7 +271,7 @@ void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int start
           sumHabitants += house->getHabitants();
           sumFreeWorkers += house->getServiceValue( Service::recruter );
 
-          house->setServiceValue( Service::recruter, 0 );
+          house->_d->services[ Service::recruter ].setMax( 0 );
 
           selfHouse->getGoodStore().storeAll( house->getGoodStore() );
         }
@@ -402,7 +402,7 @@ void House::levelDown()
         event->dispatch();
       }
 
-      setServiceValue( Service::recruter, 0 );
+      _d->services[ Service::recruter ].setMax( 0 );
       deleteLater();
     }
   }
@@ -679,7 +679,7 @@ void House::destroy()
 
   Immigrant::send2City( _getCity(), _d->habitants, getTile() );
 
-  if( _d->services[ Service::recruter ] > 0 )
+  if( getWorkersCount() > 0 )
   {
     events::GameEventPtr e = events::FireWorkers::create( getTilePos(), getWorkersCount() );
     e->dispatch();

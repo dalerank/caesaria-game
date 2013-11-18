@@ -59,7 +59,7 @@ void CityServiceReligion::update( const unsigned int time )
 
   _d->lastDate = GameDate::current();
 
-  DivinePantheon::Divinities divinities = DivinePantheon::getAll();
+  DivinePantheon::Divinities divinities = DivinePantheon::getInstance().getAll();
   foreach( RomeDivinityPtr div, divinities )
   {
     _d->updateRelation( div );

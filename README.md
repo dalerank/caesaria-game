@@ -17,6 +17,21 @@ openCaesar3 is build using following excellent libraries:
     
 Releases:
 ---------
+##### 2013-17-11
+  * Garden desirability improved
+  * House upgrade logic improved
+  * Migrants pathfinder logic improved
+  * Warehouse/Granary now save/load orders
+  * City walkers grid improved
+  * BurnedRuins now flat. Prefect logic improved
+  * theater/lionpit/gl.school animations improved
+  * Walker now update pathway if next time impossible
+  * empire trading system now save/load
+  * fishplace crash on destroy fixed
+  * layer crime drawing improved
+  * prefect now catch protestors
+  * protestors add 
+
 ##### 2013-10-31
   * warf and fishing boat add
   * translation system improved

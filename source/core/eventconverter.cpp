@@ -188,20 +188,31 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
     switch ( sdlEvent.type )
     {
     case SDL_MOUSEMOTION:
+    {
         ret.EventType = sEventMouse;
         ret.MouseEvent.Event = mouseMoved;
+        Uint8 *keys = SDL_GetKeyState(NULL);
+
         _d->mouseX = ret.MouseEvent.X = sdlEvent.motion.x;
         _d->mouseY = ret.MouseEvent.Y = sdlEvent.motion.y;
+
+        ret.MouseEvent.Control = keys[SDLK_LCTRL];
+        ret.MouseEvent.Shift = keys[SDLK_LSHIFT];
         ret.MouseEvent.ButtonStates = _d->mouseButtonStates;
+    }
     break;
 
     case SDL_MOUSEBUTTONDOWN:
     case SDL_MOUSEBUTTONUP:
-
+    {
         ret.EventType = sEventMouse;
+        Uint8 *keys = SDL_GetKeyState(NULL);
+
         ret.MouseEvent.X = sdlEvent.button.x;
         ret.MouseEvent.Y = sdlEvent.button.y;
 
+        ret.MouseEvent.Control = keys[SDLK_LCTRL];
+        ret.MouseEvent.Shift = keys[SDLK_LSHIFT];
         ret.MouseEvent.Event = mouseMoved;
 
         switch(sdlEvent.button.button)
@@ -239,7 +250,8 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
             _d->mouseButtonStates |= mbsmMiddle;
           }
           else
-          {
+          {ret.MouseEvent.Control = keys[SDLK_LCTRL];
+            ret.MouseEvent.Shift = keys[SDLK_LSHIFT];
             ret.MouseEvent.Event = mouseMbtnRelease;
             _d->mouseButtonStates &= !mbsmMiddle;
           }
@@ -273,7 +285,8 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
             }
           }
         }
-        break;
+    }
+    break;
 
     case SDL_KEYDOWN:
     case SDL_KEYUP:

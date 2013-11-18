@@ -130,6 +130,7 @@ void CityRenderer::initialize(PlayerCityPtr city, GfxEngine* engine )
   _d->tilemap = &city->getTilemap();
   _d->camera.init( *_d->tilemap );
   _d->engine = engine;
+  _d->lmbPressed = false;
   _d->clearPic = Picture::load( "oc3_land", 2 );
 
   addLayer( LayerSimple::create( this, city ) );
@@ -625,98 +626,119 @@ WalkerList CityRenderer::Impl::getVisibleWalkerList()
 
 void CityRenderer::handleEvent( NEvent& event )
 {
-    if( event.EventType == sEventMouse )
+  if( event.EventType == sEventMouse )
+  {
+    switch( event.MouseEvent.Event  )
     {
-        switch( event.MouseEvent.Event  )
-        {
-        case mouseMoved:
-        {
-            _d->lastCursorPos = event.MouseEvent.getPosition();  
-            if( !_d->lmbPressed || _d->startCursorPos.getX() < 0 )
-            {
-                _d->startCursorPos = _d->lastCursorPos;
-            }
-           
-            updatePreviewTiles();
-        }
-        break;        
-
-        case mouseLbtnPressed:
-        {
-            _d->startCursorPos = _d->lastCursorPos;
-            _d->lmbPressed = true;
-            updatePreviewTiles();
-        }
-        break;
-
-        case mouseLbtnRelease:            // left button
-        {
-            Tile* tile = _d->getTile( event.MouseEvent.getPosition(), false );  // tile under the cursor (or NULL)
-            if( tile == 0 )
-            {
-              _d->lmbPressed = false;
-              break;
-            }
-
-            if( _d->changeCommand.isValid() )
-            {                
-                if( _d->changeCommand.is<TilemapRemoveCommand>() )
-                {
-                    _d->clearAll();                      
-                }
-                else if( _d->changeCommand.is<TilemapBuildCommand>() )
-                {
-                    _d->buildAll();               
-                }
-                _d->startCursorPos = _d->lastCursorPos;
-                updatePreviewTiles( true );
-            }
-            else
-            {
-                getCamera().setCenter( tile->getIJ() );
-                _d->city->setCameraPos( tile->getIJ() );
-            }
-
-            _d->lmbPressed = false;
-            _d->startCursorPos = _d->lastCursorPos;
-        }
-        break;
-
-        case mouseRbtnRelease:
-        {
-            Tile* tile = _d->getTile( event.MouseEvent.getPosition(), false );  // tile under the cursor (or NULL)
-            if( _d->changeCommand.isValid() )
-            { 
-                _d->changeCommand = TilemapChangeCommandPtr();
-                discardPreview();
-            }
-            else
-            {
-              if( tile )
-              {
-                _d->onShowTileInfoSignal.emit( *tile );
-              }
-            }         
-        }
-        break;
-
-        default:
-        break;
-        }
-    }  
-
-    if( event.EventType == sEventKeyboard )
+    case mouseMoved:
     {
-      int moveValue = _d->scrollSpeed * ( event.KeyboardEvent.Shift ? 4 : 1 ) ;
-      switch( event.KeyboardEvent.Key )
+      Point savePos = _d->lastCursorPos;
+      _d->lastCursorPos = event.MouseEvent.getPosition();
+      if( !_d->lmbPressed || _d->startCursorPos.getX() < 0 )
       {
-      case KEY_UP: getCamera().moveUp( moveValue  ); break;
-      case KEY_DOWN: getCamera().moveDown( moveValue ); break;
-      case KEY_RIGHT: getCamera().moveRight( moveValue ); break;
-      case KEY_LEFT: getCamera().moveLeft( moveValue ); break;
-      default: break;
+        _d->startCursorPos = _d->lastCursorPos;
+      }
+
+      if( _d->changeCommand.isNull() && _d->lmbPressed )
+      {
+        Point delta = _d->lastCursorPos - savePos;
+        _d->camera.move( PointF( -delta.getX() * 0.1, delta.getY() * 0.1 ) );
+      }
+      else
+      {
+        updatePreviewTiles();
       }
     }
+    break;
+
+    case mouseLbtnPressed:
+    {
+      _d->startCursorPos = _d->lastCursorPos;
+      _d->lmbPressed = true;
+      if( _d->changeCommand.isNull() )
+      {
+
+      }
+      else
+      {
+        updatePreviewTiles();
+      }
+    }
+    break;
+
+    case mouseLbtnRelease:            // left button
+    {
+      Tile* tile = _d->getTile( event.MouseEvent.getPosition(), false );  // tile under the cursor (or NULL)
+      if( tile == 0 )
+      {
+        _d->lmbPressed = false;
+        break;
+      }
+
+      if( _d->changeCommand.isValid() )
+      {
+        if( _d->changeCommand.is<TilemapRemoveCommand>() )
+        {
+          _d->clearAll();
+        }
+        else if( _d->changeCommand.is<TilemapBuildCommand>() )
+        {
+          _d->buildAll();
+        }
+        _d->startCursorPos = _d->lastCursorPos;
+        updatePreviewTiles( true );
+      }
+      else
+      {
+        if( event.MouseEvent.Control )
+        {
+          getCamera().setCenter( tile->getIJ() );
+          _d->city->setCameraPos( tile->getIJ() );
+        }
+      }
+
+      _d->lmbPressed = false;
+      _d->startCursorPos = _d->lastCursorPos;
+    }
+    break;
+
+    case mouseRbtnRelease:
+    {
+      Tile* tile = _d->getTile( event.MouseEvent.getPosition(), false );  // tile under the cursor (or NULL)
+      if( _d->changeCommand.isValid() )
+      {
+        _d->changeCommand = TilemapChangeCommandPtr();
+        discardPreview();
+      }
+      else
+      {
+        if( tile )
+        {
+          _d->onShowTileInfoSignal.emit( *tile );
+        }
+      }
+    }
+    break;
+
+    default:
+    break;
+    }
+  }
+
+  if( event.EventType == sEventKeyboard )
+  {
+    bool pressed = event.KeyboardEvent.PressedDown;
+    int moveValue = _d->scrollSpeed * ( event.KeyboardEvent.Shift ? 4 : 1 ) * (pressed ? 1 : 0);
+
+    switch( event.KeyboardEvent.Key )
+    {
+    case KEY_UP: getCamera().moveUp( moveValue  ); break;
+    case KEY_DOWN: getCamera().moveDown( moveValue ); break;
+    case KEY_RIGHT: getCamera().moveRight( moveValue ); break;
+    case KEY_LEFT: getCamera().moveLeft( moveValue ); break;
+    default: break;
+    }
+  }
 }
 
 void CityRenderer::discardPreview()

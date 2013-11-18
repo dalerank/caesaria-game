@@ -11,7 +11,7 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "loader_oc3save.hpp"
 #include "gfx/tile.hpp"
@@ -24,6 +24,7 @@
 #include "city.hpp"
 #include "gamedate.hpp"
 #include "world/empire.hpp"
+#include "divinity.hpp"
 
 static const int currentVesion = 1;
 
@@ -34,6 +35,7 @@ bool GameLoaderOc3::load( const std::string& filename, Game& game )
   if( currentVesion == (int)vm[ "version" ] )
   {
     VariantMap scenario_vm = vm[ "scenario" ].toMap();
+    game.setTimeMultiplier( (int)vm[ "timemultiplier"] );
 
     GameDate::init( scenario_vm[ "date" ].toDateTime() );
 
@@ -41,6 +43,8 @@ bool GameLoaderOc3::load( const std::string& filename, Game& game )
     game.getCity()->load( vm[ "city" ].toMap() );
 
     game.getEmpire()->load( vm[ "empire" ].toMap() );
+
+    DivinePantheon::getInstance().load( vm[ "pantheon" ].toMap() );
 
     return true;
   }

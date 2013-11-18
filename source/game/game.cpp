@@ -76,6 +76,7 @@ public:
   void initPictures(const io::FilePath& resourcePath);
   void initGuiEnvironment();
   void loadSettings(const io::FilePath& filename);
+  void initPantheon( const io::FilePath& filename );
 };
 
 void Game::Impl::initLocale(const std::string & localePath)
@@ -141,6 +142,12 @@ void Game::Impl::loadSettings( const io::FilePath& filename )
   }
 }
 
+void Game::Impl::initPantheon(const io::FilePath& filename)
+{
+  VariantMap pantheon = SaveAdapter::load( filename );
+  DivinePantheon::getInstance().load( pantheon );
+}
+
 void Game::Impl::initPictures(const io::FilePath& resourcePath)
 {
   AnimationBank::loadCarts();
@@ -191,7 +198,7 @@ void Game::setScreenMenu()
     case ScreenMenu::loadSavedGame:
     {  
       std::cout<<"Loading map:" << "lepcismagna.sav" << std::endl;
-      load(  GameSettings::rcpath( "/savs/timgad.sav" ).toString() );
+      load( GameSettings::rcpath( "/savs/timgad.sav" ).toString() );
 
       _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
     }
@@ -278,7 +285,7 @@ Game::Game() : _d( new Impl )
   _d->pauseCounter = 0;
   _d->time = 0;
   _d->saveTime = 0;
-  _d->timeMultiplier = 100;
+  _d->timeMultiplier = 70;
 
   CONNECT( &events::Dispatcher::instance(), onEvent(), this, Game::resolveEvent );
 }
@@ -367,8 +374,8 @@ void Game::initialize()
   _d->initPictures( GameSettings::rcpath() );
   NameGenerator::initialize( GameSettings::rcpath( GameSettings::ctNamesModel ) );
   HouseSpecHelper::getInstance().initialize( GameSettings::rcpath( GameSettings::houseModel ) );
-  DivinePantheon::getInstance().initialize(  GameSettings::rcpath( GameSettings::pantheonModel ) );
   MetaDataHolder::instance().initialize( GameSettings::rcpath( GameSettings::constructionModel ) );
+  _d->initPantheon( GameSettings::rcpath( GameSettings::pantheonModel ) );
 }
 
 void Game::exec()
@@ -399,5 +406,6 @@ void Game::reset()
 {
   _d->empire = world::Empire::create();
   _d->player = Player::create();
+  _d->pauseCounter = 0;
   _d->city = PlayerCity::create( _d->empire, _d->player );
 }

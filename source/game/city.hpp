@@ -270,6 +270,7 @@ public:
 
   TilesArray getArea( TileOverlayPtr overlay );
   TilesArray getArea( TilePos start, TilePos stop );
+  float getBalanceKoeff();
 
   void updateDesirability( ConstructionPtr construction, bool onBuild );
 

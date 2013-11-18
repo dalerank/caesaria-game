@@ -31,6 +31,7 @@ public:
 
     Point operator+(const Point& other) const { return Point( x + other.x, y + other.y ); }
     Point operator-(const Point& other) const { return Point( x - other.x, y - other.y ); }
+    Point operator -() const { return Point( -x, -y); }
     Point operator*(int mul) const{ return Point( x*mul, y*mul ); }
 
     void setX( const int nx ) { x = nx; }

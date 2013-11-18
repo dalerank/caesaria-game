@@ -6,6 +6,7 @@
 		type : "goddess",
 		service : "srvc_temple_ceres",
 		image : "picture1_00013.png"
+    relation : 100
   },
 	
   mars :
@@ -15,6 +16,7 @@
 		type : "god",
 		service : "srvc_temple_mars",
 		image : "picture1_00012.png"
+    relation : 100
 	},
 	
   neptune :
@@ -24,6 +26,7 @@
 		type : "god",
     service : "srvc_temple_neptune"
 		image : "picture1_00015.png"
+    relation : 100
 	},
 	
   venus :
@@ -33,6 +36,7 @@
 		type : "goddes"
     service : "srvc_temple_venus"
 		image : "picture1_00011.png"
+    relation : 100
 	},		
 	
   mercury :
@@ -42,5 +46,6 @@
 		type : "god",
 		service : "srvc_temple_mercury"
 		image : "picture1_00014.png"
+    relation : 100
 	}
  }

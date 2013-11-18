@@ -23,11 +23,13 @@
 #include "city.hpp"
 #include "gamedate.hpp"
 #include "game.hpp"
+#include "divinity.hpp"
 
 void GameSaver::save(const io::FilePath& filename, const Game& game )
 {
   VariantMap vm;
   vm[ "version" ] = Variant( 1 );
+  vm[ "timemultiplier" ] = game.getTimeMultiplier();
 
   VariantMap vm_scenario;
   vm_scenario[ "date" ] = GameDate::current();
@@ -45,6 +47,9 @@ void GameSaver::save(const io::FilePath& filename, const Game& game )
   game.getCity()->save( vm_city );
   vm[ "city" ] = vm_city;
 
+  VariantMap vm_pantheon;
+  DivinePantheon::getInstance().save( vm_pantheon );
+  vm[ "pantheon" ] = vm_pantheon;
 
   SaveAdapter::save( vm, filename );
 }

@@ -15,7 +15,6 @@
 
 #include "divinity.hpp"
 #include "gfx/picture.hpp"
-#include "core/saveadapter.hpp"
 #include "gamedate.hpp"
 #include "service.hpp"
 #include "city.hpp"
@@ -26,27 +25,25 @@
 
 using namespace constants;
 
+static const char* divNames[] =
+{
+  "ceres",
+  "mars",
+  "neptune",
+  "venus",
+  "mercury",
+  0
+};
+
 class RomeDivinityBase : public RomeDivinity
 {  
 public: 
-  void load( const VariantMap& vm )
-  {
-    _name = vm.get( "name" ).toString();
-    _service = ServiceHelper::getType( vm.get( "service" ).toString() );
-    _pic = Picture::load( vm.get( "image" ).toString() );
-    _relation = (float)vm.get( "relation", 100.f );
-    _lastFestival = vm.get( "lastFestivalDate", GameDate::current() ).toDateTime() ;
-    _shortDesc = vm.get( "shortDesc" ).toString();
+  void load( const VariantMap& vm );
 
-    _moodDescr << vm.get( "moodDescription" ).toList();
-  }
+  void assignFestival( int type );
 
-  void assignFestival( int type )
-  {
-    _relation = math::clamp<float>( _relation + type * 10, 0, 100 );
-  }
+  virtual VariantMap save() const;
 
-  virtual VariantMap save() const { return VariantMap(); }
   virtual std::string getName() const { return _name; }
   virtual std::string getShortDescription() const { return _shortDesc; }
   virtual Service::Type getServiceType() const { return _service; }
@@ -57,7 +54,10 @@ public:
 
   virtual void updateRelation( float income, PlayerCityPtr city )
   {
-    _relation = math::clamp<float>( _relation + income - getDefaultDecrease(), 0, 100 );
+    CityHelper helper( city );
+    float cityBalanceKoeff = helper.getBalanceKoeff();
+
+    _relation = math::clamp<float>( _relation + income - getDefaultDecrease() * cityBalanceKoeff, 0, 100 );
   }
 
   virtual std::string getMoodDescription() const
@@ -69,7 +69,14 @@ public:
     return _moodDescr[ _relation / delim ];
   }
 
-  RomeDivinityBase() {}
+  RomeDivinityBase()
+  {
+  }
+
+  virtual void setInternalName(const std::string &newName)
+  {
+    ReferenceCounted::setDebugName( newName );
+  }
 
 protected:
   std::string _name;
@@ -88,6 +95,7 @@ public:
   static RomeDivinityPtr create()
   {
     RomeDivinityPtr ret( new RomeDivinityCeres() );
+    ret->setInternalName( divNames[ romeDivCeres ] );
     ret->drop();
 
     return ret;
@@ -143,30 +151,55 @@ RomeDivinityPtr DivinePantheon::get( RomeDivinityType name )
   return getInstance()._d->divinties.at( name );
 }
 
-DivinePantheon::Divinities DivinePantheon::getAll(){ return getInstance()._d->divinties; }
+RomeDivinityPtr DivinePantheon::get(std::string name)
+{
+  Divinities divines = getInstance().getAll();
+  foreach( RomeDivinityPtr current, divines )
+  {
+    if( current->getName() == name || current->getDebugName() == name )
+      return current;
+  }
+
+  return RomeDivinityPtr();
+}
+
+DivinePantheon::Divinities DivinePantheon::getAll(){ return _d->divinties; }
 RomeDivinityPtr DivinePantheon::mars(){  return get( romeDivMars ); }
 RomeDivinityPtr DivinePantheon::neptune() { return get( romeDivNeptune ); }
 RomeDivinityPtr DivinePantheon::venus(){ return get( romeDivVenus ); }
 RomeDivinityPtr DivinePantheon::mercury(){  return get( romeDivMercury ); }
 
-void DivinePantheon::initialize( const io::FilePath& filename )
+void DivinePantheon::load( const VariantMap& stream )
 {
-  VariantMap pantheon = SaveAdapter::load( filename.toString() );
+  RomeDivinityPtr divn = get( divNames[ romeDivCeres ] );
 
-  RomeDivinityPtr divn = RomeDivinityCeres::create();
-  divn.as<RomeDivinityBase>()->load( pantheon.get( "ceres" ).toMap() );
-  _d->divinties.push_back( divn );
+  if( divn.isNull() )
+  {
+    _d->divinties.push_back( RomeDivinityCeres::create() );
+  }
 
-  const char* divNames[] = { "mars", "neptune", "venus", "mercury", 0 };
   for( int index=0; divNames[ index ] != 0; index++ )
   {
-    divn = new RomeDivinityBase();
-    divn->load( pantheon.get( divNames[ index ] ).toMap() );
+    divn = get( divNames[ index ] );
 
-    RomeDivinityPtr ret( divn );
-    ret->drop();
+    if( divn.isNull() )
+    {
+      divn = RomeDivinityPtr( new RomeDivinityBase() );
+      divn->setInternalName( divNames[ index ] );
+      divn->drop();
+      _d->divinties.push_back( divn );
+    }
 
-    _d->divinties.push_back( ret );
+    divn->load( stream.get( divNames[ index ] ).toMap() );
+  }
+}
+
+void DivinePantheon::save(VariantMap& stream)
+{
+  Divinities divines = getInstance().getAll();
+  foreach( RomeDivinityPtr current, divines )
+  {
+    stream[ current->getName() ] = current->save();
   }
 }
 
@@ -177,4 +210,43 @@ void DivinePantheon::doFestival( RomeDivinityType who, int type )
   {
     divn.as<RomeDivinityBase>()->assignFestival( type );
   }
+}
+
+
+void RomeDivinityBase::load(const VariantMap& vm)
+{
+  if( vm.empty() )
+    return;
+
+  _name = vm.get( "name" ).toString();
+  _service = ServiceHelper::getType( vm.get( "service" ).toString() );
+  _pic = Picture::load( vm.get( "image" ).toString() );
+  _relation = (float)vm.get( "relation", 100.f );
+  _lastFestival = vm.get( "lastFestivalDate", GameDate::current() ).toDateTime() ;
+  _shortDesc = vm.get( "shortDesc" ).toString();
+
+  Variant value = vm.get( "moodDescription" );
+  if( value.isValid() )
+  {
+    _moodDescr << vm.get( "moodDescription" ).toList();
+  }
+}
+
+void RomeDivinityBase::assignFestival(int type)
+{
+  _relation = math::clamp<float>( _relation + type * 10, 0, 100 );
+}
+
+VariantMap RomeDivinityBase::save() const
+{
+  VariantMap ret;
+  ret[ "name" ] = Variant( _name );
+  ret[ "service" ] = Variant( ServiceHelper::getName( _service ) );
+  ret[ "image" ] = Variant( _pic.getName() + ".png" );
+  ret[ "relation" ] = _relation;
+  ret[ "lastFestivalDate" ] = _lastFestival;
+  ret[ "lastActionDate"] = _lastActionDate;
+  ret[ "shortDesc" ] = Variant( _shortDesc );
+
+  return ret;
 }

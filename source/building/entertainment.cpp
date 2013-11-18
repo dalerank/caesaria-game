@@ -178,25 +178,8 @@ Amphitheater::Amphitheater() : EntertainmentBuilding(Service::amphitheater, buil
 
 void Amphitheater::timeStep(const unsigned long time)
 {
-  EntertainmentBuilding::timeStep( time );
-  if( getWorkersCount() > 0 )
-  {
-    if( _animationRef().isStopped() )
-    {
-      _animationRef().start();
-      _fgPicturesRef().front() = Picture::load( ResourceGroup::entertaiment, 12 );
-    }
-  }
-  else
-  {
-    if( _animationRef().isRunning() )
-    {
-      _animationRef().stop();
-      _fgPicturesRef().front() = Picture::getInvalid();
-    }
-  }
+  EntertainmentBuilding::timeStep( time );  
 }
-
 
 void Amphitheater::build(PlayerCityPtr city, const TilePos& pos)
 {
@@ -226,6 +209,16 @@ void Amphitheater::deliverService()
   _fgPicturesRef().at(0) = _animationRef().isRunning()
                          ? Picture::load( ResourceGroup::entertaiment, 12 )
                          : Picture::getInvalid();
+
+  if( _animationRef().isRunning())
+  {
+    _fgPicturesRef().front() = Picture::load( ResourceGroup::entertaiment, 12 );
+  }
+  else
+  {
+    _fgPicturesRef().front() = Picture::getInvalid();
+    _fgPicturesRef().back() = Picture::getInvalid();
+  }
 }
 
 Collosseum::Collosseum() : EntertainmentBuilding(Service::colloseum, building::colloseum, Size(5) )

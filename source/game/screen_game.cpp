@@ -136,7 +136,7 @@ void ScreenGame::initialize()
   _d->rightPanel->bringToFront();
 
   // 8*30: used for high buildings (granary...), visible even when not in tilemap_area.
-  _d->renderer.getCamera().setViewport( engine.getScreenSize() + Size( 180 ) );
+  _d->renderer.getCamera().setViewport( engine.getScreenSize() );
 
   new SenatePopupInfo( gui.getRootWidget(), _d->renderer );
 

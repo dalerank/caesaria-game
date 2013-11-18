@@ -16,7 +16,8 @@
 #include "health.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/position.hpp"
-#include "gfx/tile.hpp"
+#include "game/tilemap.hpp"
+#include "game/city.hpp"
 #include "constants.hpp"
 
 using namespace constants;
@@ -57,8 +58,16 @@ void Baths::timeStep(const unsigned long time)
 {
   if( time % 22 == 1 )
   {
-    if( getTile().getWaterService( WTR_RESERVOIR ) > 0
-        && getWorkersCount() > 0 )
+    CityHelper helper( _getCity() );
+
+    bool haveWater = false;
+    TilesArray tiles = helper.getArea( this );
+    foreach( Tile* tile, tiles )
+    {
+      haveWater |= tile->getWaterService( WTR_RESERVOIR ) > 0;
+    }
+
+    if( haveWater && getWorkersCount() > 0 )
     {
       if( _animationRef().isStopped() )
       {

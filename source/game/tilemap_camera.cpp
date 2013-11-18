@@ -24,17 +24,31 @@
 #include "gfx/tile.hpp"
 #include "core/foreach.hpp"
 
+struct MovableOrders
+{
+  bool left;
+  bool right;
+  bool up;
+  bool down;
+
+  bool any() { return left || right || up || down; }
+};
+
 class TilemapCamera::Impl
 {
 public:
   TilePos center;
+  Size screenSize;
+  Size borderSize;
 
   Tilemap* tilemap;  // tile map to display
-  Point centerMapXZ;      //center of the view (in tiles)
+  PointF centerMapXZ;      //center of the view (in tiles)
   Size viewSize;    // width of the view (in tiles)  nb_tilesX = 1+2*_view_width
                     // height of the view (in tiles)  nb_tilesY = 1+2*_view_height
 
   TilesArray tiles;  // cached list of visible tiles
+
+  MovableOrders mayMove( PointF point );
 
 public oc3_signals:
   Signal1<Point> onPositionChangedSignal;
@@ -45,7 +59,9 @@ TilemapCamera::TilemapCamera() : _d( new Impl )
   _d->tilemap = NULL;
   _d->viewSize = Size( 0 );
   _d->center = TilePos( 0, 0 );
-  _d->centerMapXZ = Point( 0, 0 );
+  _d->screenSize = Size( 0 );
+  _d->centerMapXZ = PointF( 0, 0 );
+  _d->borderSize = Size( 180 );
 }
 
 TilemapCamera::~TilemapCamera()
@@ -57,46 +73,66 @@ void TilemapCamera::init(Tilemap &tilemap)
   _d->tilemap = &tilemap;
 }
 
-void TilemapCamera::setViewport(const Size& newSize )
+void TilemapCamera::setViewport(Size newSize)
 {
   if( _d->viewSize != newSize )
   {
     _d->tiles.clear();
   }
 
+  _d->screenSize = newSize;
+
+  newSize += _d->borderSize;
   _d->viewSize = Size( (newSize.getWidth() + 59) / 60, ( newSize.getHeight() + 29) / 30 );
   
   Logger::warning( "TilemapArea::setViewport w=%d h=%d", _d->viewSize.getWidth(), _d->viewSize.getHeight() );
 }
 
-void TilemapCamera::setCenter(const TilePos& pos )
+void TilemapCamera::setCenter(TilePos pos )
 {
   _d->center = pos;
 
   setCenter( Point( pos.getI() + pos.getJ(), _d->tilemap->getSize() - 1 + pos.getJ() - pos.getI() ) );
 
-  _d->onPositionChangedSignal.emit( _d->centerMapXZ );
+  _d->onPositionChangedSignal.emit( _d->centerMapXZ.toPoint() );
 }
 
-void TilemapCamera::setCenter( const Point& pos )
+void TilemapCamera::move(PointF relative)
 {
-  if( _d->centerMapXZ != pos  )
+  MovableOrders mv = _d->mayMove( _d->centerMapXZ + relative);
+
+  if( relative.getX() < 0 && !mv.left ) { relative.setX( 0 ); }
+  if( relative.getX() > 0 && !mv.right ) { relative.setX( 0 ); }
+  if( relative.getY() < 0 && !mv.up ) { relative.setY( 0 ); }
+  if( relative.getY() > 0 && !mv.down ) { relative.setY( 0 ); }
+
+  if( mv.any() )
+  {
+    _d->centerMapXZ += relative;
+    _d->tiles.clear();
+
+    _d->onPositionChangedSignal.emit( _d->centerMapXZ.toPoint() );
+  }
+}
+
+void TilemapCamera::setCenter(Point pos)
+{
+  if( _d->centerMapXZ.toPoint() != pos  )
   {
     _d->tiles.clear();
   }
   
-  _d->centerMapXZ = pos;
+  _d->centerMapXZ = pos.toPointF();
 }
 
 int TilemapCamera::getCenterX() const  {   return _d->centerMapXZ.getX();   }
 int TilemapCamera::getCenterZ() const  {   return _d->centerMapXZ.getY();   }
 TilePos TilemapCamera::getCenter() const  {   return _d->center;   }
 
-Signal1<Point>&TilemapCamera::onPositionChanged()
+Signal1<Point>& TilemapCamera::onPositionChanged()
 {
   return _d->onPositionChangedSignal;
 }
-
 
 void TilemapCamera::moveRight(const int amount)
 {
@@ -170,4 +206,21 @@ const TilesArray& TilemapCamera::getTiles() const
   }
 
   return _d->tiles;
+}
+
+
+MovableOrders TilemapCamera::Impl::mayMove(PointF point)
+{
+  MovableOrders ret = { true, true, true, true };
+
+  int mapSize = tilemap->getSize();
+  Point mapOffset = Point( screenSize.getWidth() / 2 - 30 * (centerMapXZ.getX() + 1) + 1,
+                           screenSize.getHeight() / 2 + 15 * (centerMapXZ.getY()-mapSize + 1) - 30 );
+
+  ret.left = !( (tilemap->at( 0, 0 ).getXY() + mapOffset ).getX() > 0);
+  ret.right = (tilemap->at( mapSize - 1, mapSize - 1 ).getXY() + mapOffset).getX() > screenSize.getWidth();
+  ret.down = ( (tilemap->at( 0, mapSize - 1 ).getXY() + mapOffset ).getY() < 0 );
+  ret.up = (tilemap->at( mapSize - 1, 0 ).getXY() + mapOffset ).getY() > screenSize.getHeight();
+
+  return ret;
 }

@@ -664,6 +664,7 @@
   image : [ "commerce", 61 ]
   productRate : 2.4
 	class : "rawmaterial"
+  animation : { rc : "commerce", start : 62, count : 10, offset : [ 0, 0 ], delay : 3 }
   },
   
   wine_workshop :
