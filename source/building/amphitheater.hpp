@@ -1,4 +1,4 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
 // openCaesar3 is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -11,19 +11,22 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_PROJECT_VERSION_INCLUDE_H_
-#define __OPENCAESAR3_PROJECT_VERSION_INCLUDE_H_
+#ifndef __CAESARIA_AMPHITHEATER_H_INCLUDED__
+#define __CAESARIA_AMPHITHEATER_H_INCLUDED__
 
-#include "core/platform.hpp"
+#include "entertainment.hpp"
 
-#define OC3_VERSION_MAJOR 0
-#define OC3_VERSION_MINOR 2
-#define OC3_VERSION_REVSN 905
+class Amphitheater : public EntertainmentBuilding
+{
+public:
+  Amphitheater();
 
-#define OC3_STR_EXT(__A) #__A
-#define OC3_STR_A(__A) OC3_STR_EXT(__A)
-#define OC3_VERSION OC3_STR_A(OC3_VERSION_MAJOR)"."OC3_STR_A(OC3_VERSION_MINOR)"."OC3_STR_A(OC3_VERSION_REVSN)"["OC3_PLATFORM_NAME":"OC3_COMPILER_NAME"]"
+  virtual void build(PlayerCityPtr city, const TilePos &pos);
 
-#endif
+  virtual void deliverService();
+  virtual void timeStep(const unsigned long time);
+};
+
+#endif //__CAESARIA_AMPHITHEATER_H_INCLUDED__

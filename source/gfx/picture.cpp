@@ -98,6 +98,7 @@ int Picture::getWidth() const
 {
   return _d->size.getWidth();
 }
+
 int Picture::getHeight() const
 {
   return _d->size.getHeight();

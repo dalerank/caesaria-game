@@ -47,8 +47,13 @@ public:
   virtual void addWalker( WalkerPtr walker );
   virtual const WalkerList& getWalkers() const;
 
-private:
+  virtual std::string getError() const;
+
+protected:
+  void _setError(const std::string& err);
   void _fireWorkers();
+
+private:
 
   class Impl;
   ScopedPtr< Impl > _d;

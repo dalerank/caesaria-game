@@ -22,7 +22,6 @@
 #include "training.hpp"
 #include "core/gettext.hpp"
 #include "core/stringhelper.hpp"
-#include "events/event.hpp"
 #include "core/logger.hpp"
 #include "building/constants.hpp"
 
@@ -141,8 +140,7 @@ void Theater::build(PlayerCityPtr city, const TilePos& pos)
 
   if( actors.empty() )
   {
-    events::GameEventPtr event = events::WarningMessageEvent::create( _("##need_actor_colony##"));
-    event->dispatch();
+    _setError( _("##need_actor_colony##") );
   }
 }
 
@@ -163,56 +161,6 @@ void Theater::deliverService()
   if( _animationRef().isRunning() )
   {
     _fgPicturesRef().front() = Picture::load( ResourceGroup::entertaiment, 35 );
-  }
-  else
-  {
-    _fgPicturesRef().front() = Picture::getInvalid();
-    _fgPicturesRef().back() = Picture::getInvalid();
-  }
-}
-
-Amphitheater::Amphitheater() : EntertainmentBuilding(Service::amphitheater, building::amphitheater, Size(3))
-{
-  _fgPicturesRef().resize(2);
-}
-
-void Amphitheater::timeStep(const unsigned long time)
-{
-  EntertainmentBuilding::timeStep( time );  
-}
-
-void Amphitheater::build(PlayerCityPtr city, const TilePos& pos)
-{
-  EntertainmentBuilding::build( city, pos );
-
-  CityHelper helper( city );
-  ActorColonyList actors = helper.find<ActorColony>( building::actorColony );
-
-  if( actors.empty() )
-  {
-    events::GameEventPtr event = events::WarningMessageEvent::create( _("##need_actor_colony##"));
-    event->dispatch();
-  }
-
-  GladiatorSchoolList gladiators = helper.find<GladiatorSchool>( building::gladiatorSchool );
-  if( actors.empty() )
-  {
-    events::GameEventPtr event = events::WarningMessageEvent::create( _("##need_gladiator_school##"));
-    event->dispatch();
-  }
-}
-
-void Amphitheater::deliverService()
-{
-  EntertainmentBuilding::deliverService();
-
-  _fgPicturesRef().at(0) = _animationRef().isRunning()
-                         ? Picture::load( ResourceGroup::entertaiment, 12 )
-                         : Picture::getInvalid();
-
-  if( _animationRef().isRunning())
-  {
-    _fgPicturesRef().front() = Picture::load( ResourceGroup::entertaiment, 12 );
   }
   else
   {

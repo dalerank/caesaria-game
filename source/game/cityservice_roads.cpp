@@ -18,6 +18,8 @@
 #include "gamedate.hpp"
 #include "path_finding.hpp"
 #include "tilemap.hpp"
+#include "building/house.hpp"
+#include "house_level.hpp"
 #include "road.hpp"
 #include "building/constants.hpp"
 
@@ -67,14 +69,25 @@ void CityServiceRoads::update( const unsigned int time )
 
   CityHelper helper( _d->city );
 
+  BuildingList buildings;
   foreach( TileOverlay::Type type, btypes )
   {
-    BuildingList buildings = helper.find<Building>( type );
+    BuildingList tmp = helper.find<Building>( type );
+    buildings.insert( buildings.end(), tmp.begin(), tmp.end() );
+  }
 
-    foreach( BuildingPtr building, buildings )
+  HouseList houses = helper.find<House>( building::house );
+  foreach( HousePtr house, houses )
+  {
+    if( house->getSpec().getLevel() >= House::bigMansion )
     {
-      _d->updateRoadsAround( building );
+      buildings.push_back( house.as<Building>() );
     }
+  }
+
+  foreach( BuildingPtr building, buildings )
+  {
+    _d->updateRoadsAround( building );
   }
 
   if( _d->lastTimeUpdate.getMonth() % 3 == 1 )
