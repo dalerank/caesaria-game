@@ -32,8 +32,9 @@ InfoBoxMarket::InfoBoxMarket( Widget* parent, const Tile& tile )
 {
    MarketPtr market = tile.getOverlay().as<Market>();
 
-   Label* lbAbout = new Label( this, _getTitle()->getRelativeRect() + Point( 0, 30 ) );
+   Label* lbAbout = new Label( this, Rect( 15, 35, getWidth() - 15, 36) );
    lbAbout->setWordwrap( true );
+   lbAbout->setFont( Font::create( FONT_1 ) );
 
    if( market->getWorkersCount() > 0 )
    {
@@ -45,7 +46,7 @@ InfoBoxMarket::InfoBoxMarket( Widget* parent, const Tile& tile )
        furageSum += goods.getCurrentQty( (Good::Type)goodType );
      }
 
-     int paintY = 95;
+     int paintY = 100;
      if( 0 < furageSum )
      {
        drawGood( market, Good::wheat, 0, paintY );
@@ -53,11 +54,11 @@ InfoBoxMarket::InfoBoxMarket( Widget* parent, const Tile& tile )
        drawGood( market, Good::meat, 2, paintY);
        drawGood( market, Good::fruit, 3, paintY);
        drawGood( market, Good::vegetable, 4, paintY);
-       lbAbout->setHeight( 30 );
+       lbAbout->setHeight( 60 );
      }
      else
      {
-       lbAbout->setHeight( 60 );
+       lbAbout->setHeight( 90 );
        lbAbout->setWordwrap( true );
      }
 

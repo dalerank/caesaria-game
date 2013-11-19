@@ -919,87 +919,26 @@ Size Widget::getMinSize() const
 //     }
 // }
 
-void Widget::installEventHandler( Widget* elementHandler )
-{
-  _eventHandler = elementHandler;
-}
-
-bool Widget::isHovered() const
-{
-  return _environment->isHovered( this );
-}
-
-bool Widget::isFocused() const
-{
-  return _environment->hasFocus( this );
-}
-
-Rect Widget::getClientRect() const
-{
-  return Rect( 0, 0, getWidth(), getHeight() );
-}
-
-void Widget::setFocus()
-{
-  getEnvironment()->setFocus( this );
-}
-
-void Widget::removeFocus()
-{
-  getEnvironment()->removeFocus( this );
-}
-
-Rect& Widget::getAbsoluteClippingRectRef() const
-{
-  return _d->absoluteClippingRect;
-}
-
-unsigned int Widget::getWidth() const
-{
-  return getRelativeRect().getWidth();
-}
-
-Size Widget::getSize() const
-{
-  return Size( _d->relativeRect.getWidth(), _d->relativeRect.getHeight() );
-}
-
+void Widget::installEventHandler( Widget* elementHandler ){  _eventHandler = elementHandler;}
+bool Widget::isHovered() const{  return _environment->isHovered( this );}
+bool Widget::isFocused() const{  return _environment->hasFocus( this );}
+Rect Widget::getClientRect() const{  return Rect( 0, 0, getWidth(), getHeight() );}
+void Widget::setFocus(){  getEnvironment()->setFocus( this );}
+void Widget::removeFocus(){  getEnvironment()->removeFocus( this );}
+Rect& Widget::getAbsoluteClippingRectRef() const{  return _d->absoluteClippingRect;}
+unsigned int Widget::getWidth() const{  return getRelativeRect().getWidth();}
+Size Widget::getSize() const{  return Size( _d->relativeRect.getWidth(), _d->relativeRect.getHeight() );}
 int Widget::getScreenTop() const { return getAbsoluteRect().getTop(); }
-
 int Widget::getScreenLeft() const { return getAbsoluteRect().getLeft(); }
-
 int Widget::getScreenBottom() const { return getAbsoluteRect().getBottom(); }
-
 int Widget::getScreenRight() const { return getAbsoluteRect().getRight(); }
-
 Point Widget::getLeftdownCorner() const { return Point( getLeft(), getBottom() ); }
-
 unsigned int Widget::getArea() const { return getAbsoluteRect().getArea(); }
-
-Point Widget::convertLocalToScreen( const Point& localPoint ) const
-{
-  return localPoint + _d->absoluteRect.UpperLeftCorner;
-}
-
-Rect Widget::convertLocalToScreen( const Rect& localRect ) const
-{
-  return localRect + _d->absoluteRect.UpperLeftCorner;
-}
-
-void Widget::move( const Point& relativeMovement )
-{
-  setGeometry( _d->desiredRect + relativeMovement );
-}
-
-int Widget::getBottom() const
-{
-  return _d->relativeRect.LowerRightCorner.getY();
-}
-
-void Widget::setTabGroup( bool isGroup )
-{
-  _d->isTabGroup = isGroup;
-}
+Point Widget::convertLocalToScreen( const Point& localPoint ) const{  return localPoint + _d->absoluteRect.UpperLeftCorner;}
+Rect Widget::convertLocalToScreen( const Rect& localRect ) const{  return localRect + _d->absoluteRect.UpperLeftCorner;}
+void Widget::move( const Point& relativeMovement ){  setGeometry( _d->desiredRect + relativeMovement );}
+int Widget::getBottom() const{  return _d->relativeRect.LowerRightCorner.getY();}
+void Widget::setTabGroup( bool isGroup ) { _d->isTabGroup = isGroup; }
 
 void Widget::setWidth( unsigned int width )
 {
@@ -1013,54 +952,15 @@ void Widget::setHeight( unsigned int height )
   setGeometry( rectangle );
 }
 
-void Widget::setLeft( int newLeft )
-{
-  setPosition( Point( newLeft, getTop() ) );    
-}
-
-void Widget::setTop( int newTop )
-{
-  setPosition( Point( getLeft(), newTop ) );    
-}
-
-int Widget::getTop() const
-{
-  return getRelativeRect().UpperLeftCorner.getY();
-}
-
-int Widget::getLeft() const
-{
-  return getRelativeRect().UpperLeftCorner.getX();
-}
-
-int Widget::getRight() const
-{
-  return getRelativeRect().LowerRightCorner.getX();
-}
-
-void Widget::hide()
-{
-  setVisible( false );
-}
-
-void Widget::show()
-{
-  setVisible( true );
-}
-
-TypeAlign Widget::getHorizontalTextAlign() const
-{
-  return _d->textHorzAlign;
-}
-
-TypeAlign Widget::getVerticalTextAlign() const
-{
-  return _d->textVertAlign;
-}
-
-void Widget::deleteLater()
-{
-  _environment->deleteLater( this ); 
-}
+void Widget::setLeft( int newLeft ) { setPosition( Point( newLeft, getTop() ) ); }
+void Widget::setTop( int newTop ) { setPosition( Point( getLeft(), newTop ) );  }
+int Widget::getTop() const { return getRelativeRect().UpperLeftCorner.getY(); }
+int Widget::getLeft() const { return getRelativeRect().UpperLeftCorner.getX(); }
+int Widget::getRight() const { return getRelativeRect().LowerRightCorner.getX(); }
+void Widget::hide() { setVisible( false ); }
+void Widget::show() {  setVisible( true ); }
+TypeAlign Widget::getHorizontalTextAlign() const{  return _d->textHorzAlign; }
+TypeAlign Widget::getVerticalTextAlign() const{  return _d->textVertAlign;}
+void Widget::deleteLater(){  _environment->deleteLater( this ); }
 
 }//end namespace gui

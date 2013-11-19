@@ -84,6 +84,7 @@ public:
   void setVideoOptions();
   void showGameSpeedOptionsDialog();
   void resolveWarningMessage( std::string );
+  void saveCameraPos(Point p);
 };
 
 ScreenGame::ScreenGame(Game& game , GfxEngine& engine ) : _d( new Impl )
@@ -172,6 +173,7 @@ void ScreenGame::initialize()
   CONNECT( &_d->alarmsHolder, onMoveToAlarm(), &_d->renderer.getCamera(), TilemapCamera::setCenter );
   CONNECT( &_d->alarmsHolder, onAlarmChange(), _d->extMenu, ExtentMenu::setAlarmEnabled );
   CONNECT( &_d->renderer.getCamera(), onPositionChanged(), mmap, Minimap::setCenter );
+  CONNECT( &_d->renderer.getCamera(), onPositionChanged(), _d.data(), Impl::saveCameraPos );
 
   _d->showMissionTaretsWindow();
   _d->renderer.getCamera().setCenter( city->getCameraPos() );
@@ -203,6 +205,16 @@ void ScreenGame::Impl::resolveWarningMessage(std::string text )
 {
   events::GameEventPtr e = events::WarningMessageEvent::create( text );
   e->dispatch();
+}
+
+void ScreenGame::Impl::saveCameraPos(Point p)
+{
+  Tile* tile = renderer.getTile( Point( engine->getScreenWidth()/2, engine->getScreenHeight()/2 ), false );
+
+  if( tile )
+  {
+    game->getCity()->setCameraPos( tile->getIJ() );
+  }
 }
 
 void ScreenGame::Impl::showEmpireMapWindow()

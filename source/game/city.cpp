@@ -511,12 +511,6 @@ void PlayerCity::addWalker( WalkerPtr walker )
   _d->walkerList.push_back( walker );
 }
 
-
-void PlayerCity::setCameraPos(const TilePos pos) { _d->cameraStart = pos; }
-TilePos PlayerCity::getCameraPos() const {return _d->cameraStart; }
-
-void PlayerCity::addService( CityServicePtr service ) {  _d->services.push_back( service ); }
-
 CityServicePtr PlayerCity::findService( const std::string& name ) const
 {
   foreach( CityServicePtr service, _d->services )
@@ -548,6 +542,9 @@ void PlayerCity::updateRoads() {    _d->needRecomputeAllRoads = true; }
 Signal1<int>& PlayerCity::onPopulationChanged() {  return _d->onPopulationChangedSignal; }
 Signal1<int>& PlayerCity::onFundsChanged() {  return _d->funds.onChange(); }
 void PlayerCity::removeWalker( WalkerPtr walker ) { _d->walkerList.remove( walker ); }
+void PlayerCity::setCameraPos(const TilePos pos) { _d->cameraStart = pos; }
+TilePos PlayerCity::getCameraPos() const {return _d->cameraStart; }
+void PlayerCity::addService( CityServicePtr service ) {  _d->services.push_back( service ); }
 
 int PlayerCity::getProsperity() const
 {
