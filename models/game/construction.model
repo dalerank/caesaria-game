@@ -1,8 +1,7 @@
 {
   road : {
     cost : 4,
-    desirability : 4,
-    range : 0,
+    desirability : { base : 1, range : 0, step : 0 }
     class : "road"
     image : [ "land2a", 44 ]
   },
@@ -26,6 +25,7 @@
     employers : 12
     class : "entertainment"    
     animation : { rc : "entertainment", start : 2, count : 10, offset : [ 100, 49 ], delay : 2 }
+    image : [ "entertainment", 1 ]
   },
 
   theater : 
@@ -214,6 +214,7 @@
 	desirability : { base :-2,	range : 2,	step : 1 }
 	employers : 10
 	class : "education"
+  image : [ "commerce", 83 ]
   },    
   
   academy :
@@ -222,6 +223,7 @@
 	desirability : { base :4,	range : 4,	step : -1 }
 	employers : 30
 	class : "education"
+  image : [ "commerce", 85 ]
   },  
   
   library : 
@@ -230,6 +232,7 @@
 	desirability : { base : 4,	range : 4,	step : -1 }
 	employers : 20
 	class : "education"
+  image : [ "commerce", 84 ]
   }, 
 
   prefecture : 

@@ -627,3 +627,8 @@ TilesArray CityHelper::getArea(TilePos start, TilePos stop)
 {
   return _city->getTilemap().getArea( start, stop );
 }
+
+float CityHelper::getBalanceKoeff()
+{
+  return atan( _city->getPopulation() / 5000.f );
+}
