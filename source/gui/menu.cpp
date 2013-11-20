@@ -425,7 +425,7 @@ ExtentMenu::ExtentMenu(Widget* parent, int id, const Rect& rectangle )
   _d->overlaysMenu->hide();
 
   _d->overlaysButton = new PushButton( this, Rect( 4, 3, 122, 28 ), _("##ovrm_text##") );
-  _d->overlaysButton->setTooltipText( _("##ovrm_tooltip##") );
+  _d->overlaysButton->setTooltipText( _("##select_city_layer##") );
   
   CONNECT( _d->overlaysButton, onClicked(), this, ExtentMenu::toggleOverlays );
   //CONNECT( _d->empireButton, onClicked(), &_d->onEmpireMapShowSignal, Signal0<>::emit );
