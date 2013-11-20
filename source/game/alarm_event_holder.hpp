@@ -38,7 +38,7 @@ public:
 
 oc3_signals public:
   Signal1<bool>& onAlarmChange();
-  Signal1<const TilePos& >& onMoveToAlarm();
+  Signal1<TilePos>& onMoveToAlarm();
 
 private:
   class Impl;

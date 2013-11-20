@@ -50,7 +50,7 @@ public:
 
 oc3_signals public:
    Signal1<bool> onAlarmChangeSignal;
-   Signal1<const TilePos& > onMoveToAlarmSignal;
+   Signal1<TilePos> onMoveToAlarmSignal;
 };
 
 AlarmEventHolder::AlarmEventHolder() : _d( new Impl )
@@ -109,7 +109,7 @@ Signal1<bool>& AlarmEventHolder::onAlarmChange()
   return _d->onAlarmChangeSignal;
 }
 
-Signal1<const TilePos& >& AlarmEventHolder::onMoveToAlarm()
+Signal1<TilePos>& AlarmEventHolder::onMoveToAlarm()
 {
   return _d->onMoveToAlarmSignal;
 }

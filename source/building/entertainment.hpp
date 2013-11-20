@@ -49,17 +49,6 @@ public:
   virtual void deliverService();
 };
 
-class Amphitheater : public EntertainmentBuilding
-{
-public:
-  Amphitheater();
-
-  virtual void build(PlayerCityPtr city, const TilePos &pos);
-
-  virtual void deliverService();
-  void timeStep(const unsigned long time);
-};
-
 class Collosseum : public EntertainmentBuilding
 {
 public:

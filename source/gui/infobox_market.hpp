@@ -1,6 +1,6 @@
 // This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
@@ -13,38 +13,26 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _CAESARIA_WIDGET_FACTORY_H_INCLUDE_
-#define _CAESARIA_WIDGET_FACTORY_H_INCLUDE_
+#ifndef __CAESARIA_INFOBOX_MARKET_H_INCLUDE_
+#define __CAESARIA_INFOBOX_MARKET_H_INCLUDE_
 
-#include "core/scopedptr.hpp"
 #include <string>
+#include <list>
+
+#include "info_box.hpp"
 
 namespace gui
 {
 
-class Widget;
-
-class WidgetCreator
+// info box about a market
+class InfoBoxMarket : public InfoBoxSimple
 {
 public:
-  virtual Widget* create( Widget* parent ) = 0;
-};
-
-class WidgetFactory
-{
-public:
-  WidgetFactory();
-  ~WidgetFactory();
-
-  Widget* create(const std::string& type, Widget* parent ) const;
-
-  bool canCreate( const std::string& type ) const;
-
-  void addCreator( const std::string& type, WidgetCreator* ctor );
-private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+   InfoBoxMarket( Widget* parent, const Tile& tile );
+   virtual ~InfoBoxMarket();
+   
+   void drawGood( MarketPtr market, const Good::Type &goodType, int, int );
 };
 
 }//end namespace gui
-#endif //_CAESARIA_WIDGET_FACTORY_H_INCLUDE_
+#endif //__CAESARIA_INFOBOX_MARKET_H_INCLUDE_

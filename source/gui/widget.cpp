@@ -62,8 +62,6 @@ unsigned int Widget::getHeight() const
 
 Widget::Widget( Widget* parent, int id, const Rect& rectangle )
 : _d( new Impl ),
-  _isEnabled(true),
-  _isSubElement(false), _noClip(false), _id(id), _isTabStop(false), _tabOrder(-1), _isTabGroup(false),
   _alignLeft(alignUpperLeft), _alignRight(alignUpperLeft), _alignTop(alignUpperLeft), _alignBottom(alignUpperLeft),
   _environment( parent ? parent->getEnvironment() : 0 ), _eventHandler( NULL )
 {
@@ -71,10 +69,17 @@ Widget::Widget( Widget* parent, int id, const Rect& rectangle )
   _d->maxSize = Size(0,0);
   _d->minSize = Size(1,1);
   _d->parent = parent;
+  _d->id = id;
+  _d->isEnabled = true;
+  _d->isSubElement = false;
+  _d->noClip = false;
+  _d->tabOrder = -1;
+  _d->isTabGroup = false;
   _d->relativeRect = rectangle;
   _d->absoluteRect = rectangle;
   _d->absoluteClippingRect = rectangle;
   _d->desiredRect = rectangle;
+  _d->isTabStop = false;
 
 #ifdef _DEBUG
   setDebugName( "AbstractWidget" );
@@ -170,7 +175,7 @@ Rect Widget::getAbsoluteClippingRect() const
 
 void Widget::setNotClipped( bool noClip )
 {
-    _noClip = noClip;
+    _d->noClip = noClip;
     updateAbsolutePosition();
 }
 
@@ -308,17 +313,17 @@ bool Widget::isVisible() const
 
 bool Widget::isSubElement() const
 {
-  return _isSubElement;
+  return _d->isSubElement;
 }
 
 void Widget::setSubElement( bool subElement )
 {
-  _isSubElement = subElement;
+  _d->isSubElement = subElement;
 }
 
 void Widget::setTabStop( bool enable )
 {
-  _isTabStop = enable;
+  _d->isTabStop = enable;
 }
 
 void Widget::setTabOrder( int index )
@@ -326,29 +331,31 @@ void Widget::setTabOrder( int index )
   // negative = autonumber
   if (index < 0)
   {
-    _tabOrder = 0;
+    _d->tabOrder = 0;
     Widget *el = getTabGroup();
-    while( _isTabGroup && el && el->getParent() )
+    while( _d->isTabGroup && el && el->getParent() )
         el = el->getParent();
 
     Widget *first=0, *closest=0;
     if (el)
     {
         // find the highest element number
-        el->getNextWidget(-1, true, _isTabGroup, first, closest, true);
+        el->getNextWidget(-1, true, _d->isTabGroup, first, closest, true);
         if (first)
         {
-            _tabOrder = first->getTabOrder() + 1;
+            _d->tabOrder = first->getTabOrder() + 1;
         }
     }
   }
   else
-    _tabOrder = index;
+  {
+    _d->tabOrder = index;
+  }
 }
 
 int Widget::getTabOrder() const
 {
-  return _tabOrder;
+  return _d->tabOrder;
 }
 
 Widget* Widget::getTabGroup()
@@ -363,12 +370,12 @@ Widget* Widget::getTabGroup()
 
 bool Widget::isEnabled() const
 {
-  if ( isSubElement() && _isEnabled && getParent() )
+  if ( isSubElement() && _d->isEnabled && getParent() )
   {
     return getParent()->isEnabled();
   }
 
-  return _isEnabled;
+  return _d->isEnabled;
 }
 
 bool Widget::bringToFront()
@@ -565,9 +572,9 @@ void Widget::setupUI( const VariantMap& ui )
   setTooltipText( ui.get( "tooltip" ).toString() );
   setVisible( ui.get( "visible", true ).toBool() );
   setEnabled( ui.get( "enabled", true ).toBool() );
-  _isTabStop = ui.get( "tabStop", false ).toBool();
-  _isTabGroup = ui.get( "tabGroup", -1 ).toInt();
-  _tabOrder = ui.get( "tabOrder", -1 ).toInt();
+  _d->isTabStop = ui.get( "tabStop", false ).toBool();
+  _d->isTabGroup = ui.get( "tabGroup", -1 ).toInt();
+  _d->tabOrder = ui.get( "tabOrder", -1 ).toInt();
   setMaxSize( ui.get( "maximumSize", Size( 0 ) ).toSize() );
   setMinSize( ui.get( "minimumSize", Size( 1 ) ).toSize() );
 
@@ -658,7 +665,7 @@ void Widget::recalculateAbsolutePosition( bool recursive )
     {
         parentAbsolute = getParent()->getAbsoluteRect();
 
-        if (_noClip)
+        if( _d->noClip )
         {
             Widget* p=this;
             while( p && p->getParent() )
@@ -766,14 +773,14 @@ void Widget::animate( unsigned int timeMs )
 
 void Widget::remove()
 {
-    _OC3_DEBUG_BREAK_IF( !getParent() && "parent must be exist for element" );
-    if( getParent() )
-        getParent()->removeChild( this );
+  _OC3_DEBUG_BREAK_IF( !getParent() && "parent must be exist for element" );
+  if( getParent() )
+      getParent()->removeChild( this );
 }
 
 void Widget::setEnabled(bool enabled)
 {
-    _isEnabled = enabled;
+  _d->isEnabled = enabled;
 }
 
 // f32 Widget::getOpacity( u32 index/*=0 */ ) const
@@ -808,7 +815,7 @@ Rect Widget::getRelativeRect() const
 
 bool Widget::isNotClipped() const
 {
-  return _noClip;
+  return _d->noClip;
 }
 
 void Widget::setVisible( bool visible )
@@ -818,12 +825,12 @@ void Widget::setVisible( bool visible )
 
 bool Widget::isTabStop() const
 {
-  return _isTabStop;
+  return _d->isTabStop;
 }
 
 bool Widget::hasTabGroup() const
 {
-  return _isTabGroup;
+  return _d->isTabGroup;
 }
 
 void Widget::setText( const std::string& text )
@@ -848,12 +855,12 @@ std::string Widget::getTooltipText() const
 
 int Widget::getID() const
 {
-  return _id;
+  return _d->id;
 }
 
 void Widget::setID( int id )
 {
-  _id = id;
+  _d->id = id;
 }
 
 bool Widget::onEvent( const NEvent& event )
@@ -912,87 +919,26 @@ Size Widget::getMinSize() const
 //     }
 // }
 
-void Widget::installEventHandler( Widget* elementHandler )
-{
-  _eventHandler = elementHandler;
-}
-
-bool Widget::isHovered() const
-{
-  return _environment->isHovered( this );
-}
-
-bool Widget::isFocused() const
-{
-  return _environment->hasFocus( this );
-}
-
-Rect Widget::getClientRect() const
-{
-  return Rect( 0, 0, getWidth(), getHeight() );
-}
-
-void Widget::setFocus()
-{
-  getEnvironment()->setFocus( this );
-}
-
-void Widget::removeFocus()
-{
-  getEnvironment()->removeFocus( this );
-}
-
-Rect& Widget::getAbsoluteClippingRectRef() const
-{
-  return _d->absoluteClippingRect;
-}
-
-unsigned int Widget::getWidth() const
-{
-  return getRelativeRect().getWidth();
-}
-
-Size Widget::getSize() const
-{
-  return Size( _d->relativeRect.getWidth(), _d->relativeRect.getHeight() );
-}
-
+void Widget::installEventHandler( Widget* elementHandler ){  _eventHandler = elementHandler;}
+bool Widget::isHovered() const{  return _environment->isHovered( this );}
+bool Widget::isFocused() const{  return _environment->hasFocus( this );}
+Rect Widget::getClientRect() const{  return Rect( 0, 0, getWidth(), getHeight() );}
+void Widget::setFocus(){  getEnvironment()->setFocus( this );}
+void Widget::removeFocus(){  getEnvironment()->removeFocus( this );}
+Rect& Widget::getAbsoluteClippingRectRef() const{  return _d->absoluteClippingRect;}
+unsigned int Widget::getWidth() const{  return getRelativeRect().getWidth();}
+Size Widget::getSize() const{  return Size( _d->relativeRect.getWidth(), _d->relativeRect.getHeight() );}
 int Widget::getScreenTop() const { return getAbsoluteRect().getTop(); }
-
 int Widget::getScreenLeft() const { return getAbsoluteRect().getLeft(); }
-
 int Widget::getScreenBottom() const { return getAbsoluteRect().getBottom(); }
-
 int Widget::getScreenRight() const { return getAbsoluteRect().getRight(); }
-
 Point Widget::getLeftdownCorner() const { return Point( getLeft(), getBottom() ); }
-
 unsigned int Widget::getArea() const { return getAbsoluteRect().getArea(); }
-
-Point Widget::convertLocalToScreen( const Point& localPoint ) const
-{
-  return localPoint + _d->absoluteRect.UpperLeftCorner;
-}
-
-Rect Widget::convertLocalToScreen( const Rect& localRect ) const
-{
-  return localRect + _d->absoluteRect.UpperLeftCorner;
-}
-
-void Widget::move( const Point& relativeMovement )
-{
-  setGeometry( _d->desiredRect + relativeMovement );
-}
-
-int Widget::getBottom() const
-{
-  return _d->relativeRect.LowerRightCorner.getY();
-}
-
-void Widget::setTabGroup( bool isGroup )
-{
-  _isTabGroup = isGroup;
-}
+Point Widget::convertLocalToScreen( const Point& localPoint ) const{  return localPoint + _d->absoluteRect.UpperLeftCorner;}
+Rect Widget::convertLocalToScreen( const Rect& localRect ) const{  return localRect + _d->absoluteRect.UpperLeftCorner;}
+void Widget::move( const Point& relativeMovement ){  setGeometry( _d->desiredRect + relativeMovement );}
+int Widget::getBottom() const{  return _d->relativeRect.LowerRightCorner.getY();}
+void Widget::setTabGroup( bool isGroup ) { _d->isTabGroup = isGroup; }
 
 void Widget::setWidth( unsigned int width )
 {
@@ -1006,54 +952,15 @@ void Widget::setHeight( unsigned int height )
   setGeometry( rectangle );
 }
 
-void Widget::setLeft( int newLeft )
-{
-  setPosition( Point( newLeft, getTop() ) );    
-}
-
-void Widget::setTop( int newTop )
-{
-  setPosition( Point( getLeft(), newTop ) );    
-}
-
-int Widget::getTop() const
-{
-  return getRelativeRect().UpperLeftCorner.getY();
-}
-
-int Widget::getLeft() const
-{
-  return getRelativeRect().UpperLeftCorner.getX();
-}
-
-int Widget::getRight() const
-{
-  return getRelativeRect().LowerRightCorner.getX();
-}
-
-void Widget::hide()
-{
-  setVisible( false );
-}
-
-void Widget::show()
-{
-  setVisible( true );
-}
-
-TypeAlign Widget::getHorizontalTextAlign() const
-{
-  return _d->textHorzAlign;
-}
-
-TypeAlign Widget::getVerticalTextAlign() const
-{
-  return _d->textVertAlign;
-}
-
-void Widget::deleteLater()
-{
-  _environment->deleteLater( this ); 
-}
+void Widget::setLeft( int newLeft ) { setPosition( Point( newLeft, getTop() ) ); }
+void Widget::setTop( int newTop ) { setPosition( Point( getLeft(), newTop ) );  }
+int Widget::getTop() const { return getRelativeRect().UpperLeftCorner.getY(); }
+int Widget::getLeft() const { return getRelativeRect().UpperLeftCorner.getX(); }
+int Widget::getRight() const { return getRelativeRect().LowerRightCorner.getX(); }
+void Widget::hide() { setVisible( false ); }
+void Widget::show() {  setVisible( true ); }
+TypeAlign Widget::getHorizontalTextAlign() const{  return _d->textHorzAlign; }
+TypeAlign Widget::getVerticalTextAlign() const{  return _d->textVertAlign;}
+void Widget::deleteLater(){  _environment->deleteLater( this ); }
 
 }//end namespace gui

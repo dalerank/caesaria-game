@@ -45,6 +45,7 @@
 #include "building/health.hpp"
 #include "building/metadata.hpp"
 #include "building/education.hpp"
+#include "building/amphitheater.hpp"
 #include "fish_place.hpp"
 #include "building/wharf.hpp"
 #include "building/constants.hpp"
@@ -98,7 +99,13 @@ public:
       anim.load( anMap.get( "rc" ).toString(), anMap.get( "start" ).toInt(),
                  anMap.get( "count" ).toInt(), anMap.get( "reverse", false ).toBool(),
                  anMap.get( "step", 1 ).toInt() );
-      anim.setOffset( anMap.get( "offset" ).toPoint() );
+
+      Variant v_offset = anMap.get( "offset" );
+      if( v_offset.isValid() )
+      {
+        anim.setOffset( v_offset.toPoint() );
+      }
+
       anim.setDelay( anMap.get( "delay", 1 ).toInt() );
 
       construction->setAnimation( anim );

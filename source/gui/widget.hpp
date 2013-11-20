@@ -447,27 +447,6 @@ protected:
   class Impl;
   ScopedPtr< Impl > _d;
 
-  //! is enabled?
-  bool _isEnabled;
-
-  //! is a part of a larger whole and should not be serialized?
-  bool _isSubElement;
-
-  //! does this element ignore its parent's clipping rectangle?
-  bool _noClip;
-
-  //! id
-  int _id;
-
-	//! tab stop like in windows
-  bool _isTabStop;
-
-  //! tab order
-  int _tabOrder;
-
-  //! tab groups are containers like windows, use ctrl+tab to navigate
-  bool _isTabGroup;
-
   //! tells the element how to act when its parent is resized
   TypeAlign _alignLeft, _alignRight, _alignTop, _alignBottom;
 

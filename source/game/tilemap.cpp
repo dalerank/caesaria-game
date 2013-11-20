@@ -95,6 +95,30 @@ TilePos Tilemap::fit( const TilePos& pos ) const
   return ret;
 }
 
+Tile* Tilemap::at(Point pos, bool overborder)
+{
+  // x relative to the left most pixel of the tilemap
+  int i = (pos.getX() + 2 * pos.getY()) / 60;
+  int j = (pos.getX() - 2 * pos.getY()) / 60;
+
+  if( overborder )
+  {
+      i = math::clamp( i, 0, getSize() - 1 );
+      j = math::clamp( j, 0, getSize() - 1 );
+  }
+  // std::cout << "ij ("<<i<<","<<j<<")"<<std::endl;
+
+  if (i>=0 && j>=0 && i < getSize() && j < getSize())
+  {
+    // valid coordinate
+    return &at( TilePos( i, j ) );
+  }
+  else // the pixel is outside the tilemap => no tile here
+  {
+     return NULL;
+  }
+}
+
 Tile& Tilemap::at(const int i, const int j)
 {
   return _d->at( i, j );

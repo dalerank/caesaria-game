@@ -50,8 +50,6 @@ public:
 
   Tilemap& getTilemap();
 
-  Tile* getTile( const Point& pos, bool overborder=false );
-
   // returns the tile at the grid position
   Tile* getTile( const TilePos& pos );
 
@@ -73,6 +71,8 @@ public:
 oc3_signals public:
   Signal1< const Tile& >& onShowTileInfo();
   Signal1< std::string >& onWarningMessage();
+
+  Tile* getTile(Point pos, bool overborder);
 
 protected:
   // used to discard the build/remove preview

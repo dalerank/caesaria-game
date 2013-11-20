@@ -30,7 +30,8 @@ namespace gui
 class BackgroundStyleHelper : public EnumsHelper<PushButton::BackgroundStyle>
 {
 public:
-  BackgroundStyleHelper() : EnumsHelper(PushButton::noBackground)
+  BackgroundStyleHelper()
+    : EnumsHelper<PushButton::BackgroundStyle>(PushButton::noBackground)
   {
     append( PushButton::grayBorderLine, "grayBorderLine" );
     append( PushButton::smallGrayBorderLine, "smallGrayBorderLine" );
@@ -51,7 +52,7 @@ struct ButtonState
   Font font;
   Rect rectangle;
   //ElementStyle* style;
-};    
+};
 
 class PushButton::Impl
 {
@@ -64,7 +65,7 @@ public:
   int clickTime;
   Point textOffset;
   PushButton::BackgroundStyle bgStyle;
-  
+
   ElementState currentButtonState, lastButtonState;
   ButtonState buttonStates[ StateCount ];
 
@@ -73,7 +74,7 @@ oc3_signals public:
 
 public:
 
-  Impl() : pressed(false), 
+  Impl() : pressed(false),
       isPushButton(false), drawBody( true ),
       clickTime(0)
   {
@@ -85,13 +86,13 @@ public:
       buttonStates[ ElementState(i) ].bgTexture = Picture::getInvalid();
       buttonStates[ ElementState(i) ].font = Font::create( FONT_2 );
     }
-  }    
+  }
 
   ~Impl()
   {
     for( int i=0; i < StateCount; i++)
       releaseTexture( ElementState(i) );
-  }  
+  }
 
   void releaseTexture( ElementState state )
   {
@@ -117,8 +118,8 @@ PushButton::PushButton(Widget* parent )
 PushButton::PushButton( Widget* parent,
                         const Rect& rectangle,
                         const std::string& caption,
-                        int id, 
-					              bool noclip, 
+                        int id,
+					              bool noclip,
                         const BackgroundStyle bgStyle )
 : Widget( parent, id, rectangle ), _d( new Impl )
 {
@@ -139,7 +140,7 @@ void PushButton::_updateTexture( ElementState state )
   Size btnSize = getSize();
   PictureRef& curTxs = _d->buttonStates[ state ].background;
   PictureRef& textTxs = _d->buttonStates[ state ].textPicture;
-  
+
   if( !curTxs.isNull() && curTxs->getSize() != btnSize )
   {
     _d->releaseTexture( state );
@@ -159,7 +160,7 @@ void PushButton::_updateTexture( ElementState state )
   if( _d->buttonStates[ state ].bgTexture.isValid() )
   {
     curTxs->draw( _d->buttonStates[ state ].bgTexture, 0, 0, false );
-  }    
+  }
   else
   {
     switch( _d->bgStyle )
@@ -175,8 +176,8 @@ void PushButton::_updateTexture( ElementState state )
 
     case grayBorderLine:
     {
-      PictureDecorator::Mode mode = (state == stNormal || state == stDisabled) 
-                                        ? PictureDecorator::lightgreyPanel 
+      PictureDecorator::Mode mode = (state == stNormal || state == stDisabled)
+                                        ? PictureDecorator::lightgreyPanel
                                         : PictureDecorator::greyPanel;
       PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), mode );
     }
@@ -185,7 +186,7 @@ void PushButton::_updateTexture( ElementState state )
     case whiteBorderUp:
     {
       PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteArea );
-      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), 
+      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ),
                               state == stHovered ? PictureDecorator::brownBorder : PictureDecorator::whiteBorderA );
     }
     break;
@@ -193,7 +194,7 @@ void PushButton::_updateTexture( ElementState state )
     case blackBorderUp:
     {
       PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::blackArea );
-      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), 
+      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ),
                               state == stHovered ? PictureDecorator::brownBorder : PictureDecorator::whiteBorderA );
     }
     break;
@@ -356,7 +357,7 @@ bool PushButton::onEvent(const NEvent& event)
     break;
     }
   break;
-	
+
   default:
   break;
   }
@@ -420,8 +421,8 @@ bool PushButton::_leftMouseBtnPressed( const NEvent& event )
 ElementState PushButton::_getActiveButtonState()
 {
   if( isEnabled() )
-      return ( isPressed() 
-                  ? stPressed 
+      return ( isPressed()
+                  ? stPressed
                   : ( isHovered() ? stHovered : stNormal) );
 
   return stDisabled;
@@ -430,7 +431,7 @@ ElementState PushButton::_getActiveButtonState()
 void PushButton::beforeDraw( GfxEngine& painter )
 {
   // todo:	move sprite up and text down if the pressed state has a sprite
-  // draw sprites for focused and mouse-over 
+  // draw sprites for focused and mouse-over
   // Point spritePos = AbsoluteRect.getCenter();
   _d->currentButtonState = _getActiveButtonState();
 
@@ -454,7 +455,7 @@ void PushButton::draw( GfxEngine& painter )
     return;
 
 	// todo:	move sprite up and text down if the pressed state has a sprite
-	//			  draw sprites for focused and mouse-over 
+	//			  draw sprites for focused and mouse-over
   const ButtonState& state = _d->buttonStates[ _d->currentButtonState ];
 
   if( isBodyVisible() )
@@ -470,12 +471,12 @@ void PushButton::draw( GfxEngine& painter )
 //             {
 //                 Color hoverColor = resultOpacityColor_;
 //                 hoverColor.setAlpha( math::middle_<u32>( u32( hoverImageOpacity ), resultOpacityColor_.getAlpha(), 255 ) );
-// 
+//
 //                 Color hoverOpacityColors[ 4 ] =  { hoverColor, hoverColor, hoverColor, hoverColor };
-// 
+//
 //                 painter->drawImage( _buttonStates[ stHovered ].background, getAbsoluteRect(),
 //                                       _buttonStates[ stHovered].rectangle, &getAbsoluteClippingRectRef(), hoverOpacityColors, true  );
-//             }			
+//             }
     }
 	}
 
@@ -485,13 +486,13 @@ void PushButton::draw( GfxEngine& painter )
   }
 
   drawIcon( painter );
- 
+
   Widget::draw( painter );
 }
 
 void PushButton::drawIcon( GfxEngine& painter )
 {
-  const Picture& iconTexture = _d->buttonStates[ _d->currentButtonState ].iconTexture;	
+  const Picture& iconTexture = _d->buttonStates[ _d->currentButtonState ].iconTexture;
 
   if( !iconTexture.isValid() )
       return;
@@ -524,12 +525,12 @@ void PushButton::setFont( const Font& font )
 
 PictureRef& PushButton::_getBackground( ElementState state )
 {
-  return _d->buttonStates[ state ].background; 
+  return _d->buttonStates[ state ].background;
 }
 
 PictureRef& PushButton::_getTextPicture( ElementState state )
 {
-  return _d->buttonStates[ state ].textPicture; 
+  return _d->buttonStates[ state ].textPicture;
 }
 
 Font& PushButton::getFont( ElementState state )
