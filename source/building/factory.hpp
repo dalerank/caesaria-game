@@ -58,13 +58,10 @@ public:
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);
 
-  void setProductRate( const float rate );
-
-  virtual std::string getError() const;
+  virtual void setProductRate( const float rate );
 
 protected:  
   virtual bool _mayDeliverGood() const;
-  void _setError( const std::string& err );
 
 protected:
   class Impl;

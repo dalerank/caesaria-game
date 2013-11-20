@@ -46,7 +46,6 @@ public:
   Good::Type inGoodType;
   Good::Type outGoodType;
   bool produceGood;
-  std::string errorStr;
 };
 
 Factory::Factory(const Good::Type inType, const Good::Type outType,
@@ -245,19 +244,9 @@ bool Factory::_mayDeliverGood() const
   return ( getAccessRoads().size() > 0 ) && ( getWalkers().size() == 0 );
 }
 
-void Factory::_setError(const std::string& err)
-{
-  _d->errorStr = err;
-}
-
 void Factory::setProductRate( const float rate )
 {
   _d->productionRate = rate;
-}
-
-std::string Factory::getError() const
-{
-  return _d->errorStr;
 }
 
 Good::Type Factory::getOutGoodType() const

@@ -1,0 +1,51 @@
+{  
+  autoPosition : true
+
+	lbBackground#Label : 
+  {
+    geometryf : [ 0.0, 0.0, 1, 1 ]
+    bgtype : "whiteFrame"
+
+    lbBlackFrame#Label :
+    {
+      geometryf : [ 0, 0, 0, 0 ]
+      bgtype : "blackFrame"
+      font : "FONT_2"
+      textAlign : [ "upperLeft", "center" ]
+    }
+    
+    lbTitle#Label : 
+    {
+      geometryf : [ 0.1 , 0.02, 0.9, 0.13 ]
+      text : "##title##"
+      font : "FONT_3"
+      textAlign : [ "center", "upperLeft" ]
+    }
+
+    btnHelp#TexturedButton :
+    {
+      tooltip : "##infobox_tooltip_help##"
+      geometry : [ 0, 0, 24, 24 ]
+      normal : [ "paneling", 528 ]
+      hovered : [ "paneling", 529 ]
+      pressed : [ "paneling", 530 ]
+      disabled : [ "paneling", 531 ]
+    }
+
+    btnExit#TexturedButton :
+    {
+      tooltip : "##infobox_tooltip_exit##"
+      geometry : [ 0, 0, 24, 24 ]
+      normal : [ "paneling", 532 ]
+      hovered : [ "paneling", 533 ]
+      pressed : [ "paneling", 534 ]
+      disabled : [ "paneling", 535 ]
+    }
+
+    lbText#Label :
+    {
+      geometry : [ 32, 64, 380, 96 ]
+      multiline : true
+    }
+  }
+}

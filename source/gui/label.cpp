@@ -49,7 +49,7 @@ public:
   Font font;
   bool isBorderVisible;
   bool OverrideBGColorEnabled;
-  bool WordWrap;
+  bool isWordwrap;
   Point bgOffset;
   Label::BackgroundMode backgroundMode;
   bool RestrainTextInside;
@@ -57,17 +57,19 @@ public:
   string prefix;
   bool needUpdatePicture;
   int lineIntervalOffset;
+  Point textOffset, iconOffset;
   Picture bgPicture;
+  Picture icon;
   PictureRef background;
   PictureRef textPicture;
 
   Impl() : textMargin( Rect( 0, 0, 0, 0) ),
-		    	 OverrideBGColorEnabled(false), WordWrap(false),
-			     RestrainTextInside(true), RightToLeft(false),
+           OverrideBGColorEnabled(false), isWordwrap(false),
+           RestrainTextInside(true), RightToLeft(false),
            needUpdatePicture(false), lineIntervalOffset( 0 )
-	{
+  {
     font = Font::create( FONT_2 );
-	}
+  }
 
   ~Impl()
   {
@@ -142,19 +144,21 @@ void Label::_updateTexture( GfxEngine& painter )
   }
   else
   {
+    Rect r( Point( 0, 0 ), getSize() );
     switch( _d->backgroundMode )
     {
-    case bgWhite: PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteArea); break;
-    case bgBlack: PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::blackArea ); break;
+    case bgWhite: PictureDecorator::draw( *_d->background, r, PictureDecorator::whiteArea); break;
+    case bgBlack: PictureDecorator::draw( *_d->background, r, PictureDecorator::blackArea ); break;
     case bgBrown:
       _d->background->fill( 0xff5C4033, Rect( 0, 0, 0, 0 ) );
-      PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::brownBorder );
+      PictureDecorator::draw( *_d->background, r, PictureDecorator::brownBorder );
     break;
 
-    case bgSmBrown: PictureDecorator::draw( *_d->background, Rect( Point( 0, 0), getSize() ), PictureDecorator::smallBrownPanel ); break;
-    case bgWhiteFrame: PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame ); break;
-    case bgBlackFrame: PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::blackFrame ); break;
+    case bgSmBrown: PictureDecorator::draw( *_d->background, r, PictureDecorator::smallBrownPanel ); break;
+    case bgWhiteFrame: PictureDecorator::draw( *_d->background, r, PictureDecorator::whiteFrame ); break;
+    case bgBlackFrame: PictureDecorator::draw( *_d->background, r, PictureDecorator::blackFrame ); break;
     case bgNone: _d->background.reset(); break;
+    case bgWhiteBorderA: PictureDecorator::draw( *_d->background, r, PictureDecorator::whiteBorderA ); break;
     }
   }
 
@@ -166,9 +170,11 @@ void Label::_updateTexture( GfxEngine& painter )
     if( rText.size() && _d->font.isValid() )
     {
       //eColor = GetResultColor( eColor );
-      if( !_d->WordWrap )
+      if( !_d->isWordwrap )
       {
         Rect textRect = _d->font.calculateTextRect( rText, frameRect, getHorizontalTextAlign(), getVerticalTextAlign() );
+
+        textRect += _d->textOffset;
         _d->font.draw( *_d->textPicture, getText(), textRect.getLeft(), textRect.getTop() );
       }
       else
@@ -185,6 +191,8 @@ void Label::_updateTexture( GfxEngine& painter )
         {
             Rect textRect = _d->font.calculateTextRect( rText, r,
                                                         getHorizontalTextAlign(), getVerticalTextAlign() );
+
+            textRect += _d->textOffset;
 
             _d->font.draw( *_d->textPicture, _d->brokenText[i], textRect.getLeft(), textRect.getTop() );
 
@@ -209,12 +217,17 @@ void Label::draw( GfxEngine& painter )
   // draw background
   if( _d->background )
   {
-    painter.drawPicture( *_d->background, getScreenLeft(), getScreenTop(), &getAbsoluteClippingRectRef() );
+    painter.drawPicture( *_d->background, getAbsoluteRect().UpperLeftCorner, &getAbsoluteClippingRectRef() );
+  }
+
+  if( _d->icon.isValid() )
+  {
+    painter.drawPicture( _d->icon, getAbsoluteRect().UpperLeftCorner + _d->iconOffset, &getAbsoluteClippingRectRef() );
   }
 
   if( _d->textPicture )
   {
-    painter.drawPicture( *_d->textPicture, getScreenLeft(), getScreenTop(), &getAbsoluteClippingRectRef() );
+    painter.drawPicture( *_d->textPicture, getAbsoluteRect().UpperLeftCorner, &getAbsoluteClippingRectRef() );
   }
 
   Widget::draw( painter );
@@ -266,16 +279,16 @@ bool Label::isTextRestrainedInside() const
 
 //! Enables or disables word wrap for using the static text as
 //! multiline text control.
-void Label::setWordWrap(bool enable)
+void Label::setWordwrap(bool enable)
 {
-  _d->WordWrap = enable;
+  _d->isWordwrap = enable;
   _d->breakText( getText(), getSize() );
   _d->needUpdatePicture = true;
 }
 
 bool Label::isWordWrapEnabled() const
 {
-  return _d->WordWrap;
+  return _d->isWordwrap;
 }
 
 void Label::setRightToLeft(bool rtl)
@@ -298,7 +311,7 @@ bool Label::isRightToLeft() const
 //! Breaks the single text line.
 void Label::Impl::breakText( const std::string& text, const Size& wdgSize )
 {
-    if (!WordWrap)
+    if (!isWordwrap)
             return;
 
     brokenText.clear();
@@ -535,7 +548,7 @@ int Label::getTextHeight() const
 
     int height = font.getSize("A").getHeight();// + font.GetKerningHeight();
 
-    if( _d->WordWrap)
+    if( _d->isWordwrap)
             height *= _d->brokenText.size();
 
     return height;
@@ -548,7 +561,7 @@ int Label::getTextWidth() const
     if( !font.isValid() )
         return 0;
 
-    if( _d->WordWrap )
+    if( _d->isWordwrap )
     {
       int widest = 0;
 
@@ -601,10 +614,17 @@ void Label::setPrefixText( const string& prefix )
   _d->needUpdatePicture = true;
 }
 
-void Label::setBackgroundPicture( const Picture& picture, const Point& offset )
+void Label::setBackgroundPicture(const Picture& picture, Point offset )
 {
     _d->bgPicture = picture;
     _d->bgOffset = offset;
+    _d->needUpdatePicture = true;
+}
+
+void Label::setIcon(const Picture& icon, Point offset )
+{
+    _d->icon = icon;
+    _d->iconOffset = offset;
     _d->needUpdatePicture = true;
 }
 
@@ -637,10 +657,15 @@ void Label::setupUI(const VariantMap& ui)
 
   setFont( Font::create( ui.get( "font", "FONT_2" ).toString() ) );
   setBackgroundPicture( Picture::load( ui.get( "image" ).toString() ) );
-  setWordWrap( (bool)ui.get( "multiline", false ) );
+  setWordwrap( (bool)ui.get( "multiline", false ) );
 
   BackgroundModeHelper helper;
   setBackgroundMode( helper.findType( ui.get( "bgtype" ).toString() ));
+}
+
+void Label::setTextOffset(Point offset)
+{
+  _d->textOffset = offset;
 }
 
 PictureRef& Label::getPicture()

@@ -100,8 +100,6 @@ public:
   void drawTile( Tile& tile );
   void drawTileEx(Tile& tile, const int depth, bool force=false );
 
-  Tile* getTile( const Point& pos, bool overborder);
-
   WalkerList getVisibleWalkerList();
   void drawWalkersBetweenZ( WalkerList walkerList, int minZ, int maxZ );
 
@@ -410,9 +408,9 @@ void CityRenderer::render()
   _d->drawAnimations();
 }
 
-Tile* CityRenderer::getTile( const Point& pos, bool overborder )
+Tile* CityRenderer::getTile(Point pos, bool overborder )
 {
-  return _d->getTile( pos, overborder );
+  return _d->tilemap->at( pos - _d->mapOffset, overborder );
 }
 
 void CityRenderer::Impl::renderTilesBTools()
@@ -446,30 +444,6 @@ void CityRenderer::Impl::renderTilesBTools()
   }
 }
 
-Tile* CityRenderer::Impl::getTile( const Point& pos, bool overborder)
-{
-  Point mOffset = pos - mapOffset;  // x relative to the left most pixel of the tilemap
-  int i = (mOffset.getX() + 2 * mOffset.getY()) / 60;
-  int j = (mOffset.getX() - 2 * mOffset.getY()) / 60;
-  
-  if( overborder )
-  {
-      i = math::clamp( i, 0, tilemap->getSize() - 1 );
-      j = math::clamp( j, 0, tilemap->getSize() - 1 );
-  }
-  // std::cout << "ij ("<<i<<","<<j<<")"<<std::endl;
-
-  if (i>=0 && j>=0 && i < tilemap->getSize() && j < tilemap->getSize())
-  {
-     // valid coordinate
-     return &tilemap->at( TilePos( i, j ) );
-  }
-  else
-  {
-     // the pixel is outside the tilemap => no tile here
-     return NULL;
-  }
-}
 
 TilemapCamera& CityRenderer::getCamera()
 {
@@ -528,8 +502,8 @@ void CityRenderer::updatePreviewTiles( bool force )
 
 void CityRenderer::Impl::getSelectedArea( TilePos& outStartPos, TilePos& outStopPos )
 {
-  Tile* startTile = getTile( startCursorPos, true );  // tile under the cursor (or NULL)
-  Tile* stopTile  = getTile( lastCursorPos, true );
+  Tile* startTile = tilemap->at( startCursorPos - mapOffset, true );  // tile under the cursor (or NULL)
+  Tile* stopTile  = tilemap->at( lastCursorPos - mapOffset, true );
 
   TilePos startPosTmp = startTile->getIJ();
   TilePos stopPosTmp  = stopTile->getIJ();
@@ -668,7 +642,7 @@ void CityRenderer::handleEvent( NEvent& event )
 
     case mouseLbtnRelease:            // left button
     {
-      Tile* tile = _d->getTile( event.MouseEvent.getPosition(), false );  // tile under the cursor (or NULL)
+      Tile* tile = getTile( event.MouseEvent.getPosition(), false );  // tile under the cursor (or NULL)
       if( tile == 0 )
       {
         _d->lmbPressed = false;
@@ -704,7 +678,7 @@ void CityRenderer::handleEvent( NEvent& event )
 
     case mouseRbtnRelease:
     {
-      Tile* tile = _d->getTile( event.MouseEvent.getPosition(), false );  // tile under the cursor (or NULL)
+      Tile* tile = getTile( event.MouseEvent.getPosition(), false );  // tile under the cursor (or NULL)
       if( _d->changeCommand.isValid() )
       {
         _d->changeCommand = TilemapChangeCommandPtr();

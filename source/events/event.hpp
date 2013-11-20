@@ -31,7 +31,7 @@ class GameEvent : public ReferenceCounted
 {
 public:
   virtual void exec( Game& game ) = 0;
-  virtual void dispatch();
+  void dispatch();
 
 protected:
   GameEvent() {}

@@ -1,20 +1,17 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #ifndef GUI_INFO_BOX_HPP
 #define GUI_INFO_BOX_HPP
@@ -55,11 +52,12 @@ public:
   bool isAutoPosition() const;
   void setAutoPosition( bool value );
 
+  virtual void setupUI(const VariantMap &ui);
+
 protected:
   virtual void _afterCreate() {}
   Label* _getTitle();
-  Picture& _getBgPicture();
-  virtual void _drawWorkers( const Point& pos, int picId, int need, int have );
+  virtual void _updateWorkersLabel( const Point& pos, int picId, int need, int have );
 
   class Impl;
   ScopedPtr< Impl > _d;
@@ -126,16 +124,6 @@ public:
 
 private:
   GranaryPtr _granary;
-};
-
-// info box about a market
-class InfoBoxMarket : public InfoBoxSimple
-{
-public:
-   InfoBoxMarket( Widget* parent, const Tile& tile );
-   virtual ~InfoBoxMarket();
-   
-   void drawGood( MarketPtr market, const Good::Type &goodType, int, int );
 };
 
 // info box about a fontain

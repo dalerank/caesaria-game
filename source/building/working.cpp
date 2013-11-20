@@ -27,6 +27,7 @@ public:
   int maxWorkers;
   bool isActive;
   WalkerList walkerList;
+  std::string errorStr;
 };
 
 WorkingBuilding::WorkingBuilding(const Type type, const Size& size)
@@ -130,6 +131,16 @@ void WorkingBuilding::addWalker( WalkerPtr walker )
 const WalkerList& WorkingBuilding::getWalkers() const
 {
   return _d->walkerList;
+}
+
+std::string WorkingBuilding::getError() const
+{
+  return _d->errorStr;
+}
+
+void WorkingBuilding::_setError(const std::string& err)
+{
+  _d->errorStr = err;
 }
 
 void WorkingBuilding::destroy()

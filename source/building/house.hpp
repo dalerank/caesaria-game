@@ -29,7 +29,10 @@ class House : public Building
 {
   friend class HouseLevelSpec;
 public:
-  enum { smallHovel=1, bigTent, smallHut, bigHut } Level;
+  enum { smallHovel=1, bigTent, smallHut, bigHut, smallDomus, bigDomus, smallMansion, bigMansion,
+         smallInsula, middleInsula, bigInsula, greatInsula,
+         smallVilla,  middleVilla,  bigVilla,  greatVilla,
+         smallPalace, middlePalace, bigPalace, greatPalace }  Level;
 
   House( const int houseId=smallHovel );
 

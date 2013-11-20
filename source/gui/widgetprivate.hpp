@@ -69,6 +69,27 @@ public:
   std::string toolTipText;
 
   std::string text;
+
+  //! id
+  int id;
+
+  //! tab stop like in windows
+  bool isTabStop;
+
+  //! is enabled?
+  bool isEnabled;
+
+  //! is a part of a larger whole and should not be serialized?
+  bool isSubElement;
+
+  //! does this element ignore its parent's clipping rectangle?
+  bool noClip;
+
+  //! tab order
+  int tabOrder;
+
+  //! tab groups are containers like windows, use ctrl+tab to navigate
+  bool isTabGroup;
 };
 
 }//end namespace gui

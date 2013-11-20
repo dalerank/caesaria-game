@@ -27,7 +27,9 @@ namespace gui
 class Label : public Widget
 {
 public:
-  typedef enum { bgWhite=0, bgBlack, bgBrown, bgSmBrown, bgNone, bgWhiteFrame, bgBlackFrame } BackgroundMode;
+  typedef enum { bgWhite=0, bgBlack, bgBrown, bgSmBrown, bgNone,
+                 bgWhiteFrame, bgBlackFrame,
+                 bgWhiteBorderA } BackgroundMode;
   //! constructor
   Label( Widget* parent );
 
@@ -66,7 +68,7 @@ public:
 
   //! Enables or disables word wrap for using the static text as
   //! multiline text control.
-  virtual void setWordWrap(bool enable);
+  virtual void setWordwrap(bool enable);
 
   //! Checks if word wrap is enabled
   virtual bool isWordWrapEnabled() const;
@@ -93,7 +95,9 @@ public:
 
   virtual void setPrefixText( const std::string& prefix );
 
-  virtual void setBackgroundPicture( const Picture& picture, const Point& offset=Point() );
+  virtual void setBackgroundPicture( const Picture& picture, Point offset=Point() );
+
+  virtual void setIcon( const Picture& icon, Point offset=Point() );
 
   virtual void setFont( const Font& font );
 
@@ -102,6 +106,8 @@ public:
   virtual void setLineIntervalOffset( const int offset );
 
   virtual void setupUI( const VariantMap &ui );
+
+  virtual void setTextOffset( Point offset );
     
 oc3_signals public:
   virtual Signal0<>& onClicked();
@@ -115,7 +121,7 @@ protected:
 private:
 
   class Impl;
-  std::auto_ptr< Impl > _d;   
+  ScopedPtr< Impl > _d;
 };
 
 }//end namespace gui

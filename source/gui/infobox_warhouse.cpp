@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "warehouse_infobox.hpp"
+#include "infobox_warehouse.hpp"
 #include "gfx/tile.hpp"
 #include "pushbutton.hpp"
 #include "core/gettext.hpp"
@@ -43,28 +43,28 @@ InfoBoxWarehouse::InfoBoxWarehouse( Widget* parent, const Tile& tile )
   setTitle( MetaDataHolder::getPrettyName( _warehouse->getType() ) );
 
   // summary: total stock, free capacity
-  int _paintY = _getTitle()->getBottom();
+  int _paintY = _getTitle() ? _getTitle()->getBottom() : 50;
 
-  drawGood(Good::wheat,     0, _paintY+25);
-  drawGood(Good::vegetable, 0, _paintY+50);
-  drawGood(Good::fruit,     0, _paintY+75);
-  drawGood(Good::olive,     0, _paintY+100);
-  drawGood(Good::grape,     0, _paintY+125);
-  drawGood(Good::fish,      0, _paintY+150);
+  drawGood(Good::wheat,     0, _paintY+0);
+  drawGood(Good::vegetable, 0, _paintY+25);
+  drawGood(Good::fruit,     0, _paintY+50);
+  drawGood(Good::olive,     0, _paintY+75);
+  drawGood(Good::grape,     0, _paintY+100);
+  drawGood(Good::fish,      0, _paintY+125);
 
-  drawGood(Good::meat,      1, _paintY+25);
-  drawGood(Good::wine,      1, _paintY+50);
-  drawGood(Good::oil,       1, _paintY+75);
-  drawGood(Good::iron,      1, _paintY+100);
-  drawGood(Good::timber,    1, _paintY+125);
+  drawGood(Good::meat,      1, _paintY+0);
+  drawGood(Good::wine,      1, _paintY+25);
+  drawGood(Good::oil,       1, _paintY+50);
+  drawGood(Good::iron,      1, _paintY+75);
+  drawGood(Good::timber,    1, _paintY+100);
 
-  drawGood(Good::clay,      2, _paintY+25);
-  drawGood(Good::marble,    2, _paintY+50);
-  drawGood(Good::weapon,    2, _paintY+75);
-  drawGood(Good::furniture, 2, _paintY+100);
-  drawGood(Good::pottery,   2, _paintY+125);
+  drawGood(Good::clay,      2, _paintY+0);
+  drawGood(Good::marble,    2, _paintY+25);
+  drawGood(Good::weapon,    2, _paintY+50);
+  drawGood(Good::furniture, 2, _paintY+75);
+  drawGood(Good::pottery,   2, _paintY+100);
 
-  _drawWorkers( Point( 16 + 20, 225 + 10 ), 542, _warehouse->getMaxWorkers(), _warehouse->getWorkersCount() );
+  _updateWorkersLabel( Point( 20, 10 ), 542, _warehouse->getMaxWorkers(), _warehouse->getWorkersCount() );
 }
 
 InfoBoxWarehouse::~InfoBoxWarehouse()
@@ -89,16 +89,17 @@ void InfoBoxWarehouse::showSpecialOrdersWindow()
 void InfoBoxWarehouse::drawGood( const Good::Type &goodType, int col, int paintY )
 {
   std::string goodName = GoodHelper::getName( goodType );
-
-  Font font = Font::create( FONT_2 );
   int qty = _warehouse->getGoodStore().getCurrentQty(goodType);
 
   // pictures of goods
   const Picture& pic = GoodHelper::getPicture( goodType );
-  getBgPicture().draw( pic, col * 150 + 15, paintY );
+  Label* lb = new Label( this, Rect( Point( col * 150 + 15, paintY), Size( 150, 24 ) ) );
+  lb->setFont( Font::create( FONT_2 ) );
+  lb->setIcon( pic, Point( 0, 4 ) );
 
   std::string outText = StringHelper::format( 0xff, "%d %s", qty, goodName.c_str() );
-  font.draw( _getBgPicture(), outText, col * 150 + 45, paintY, false );
+  lb->setText( outText );
+  lb->setTextOffset( Point( 24, 0 ) );
 }
 
 }//end namespace gui

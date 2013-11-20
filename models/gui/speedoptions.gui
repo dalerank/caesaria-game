@@ -78,7 +78,7 @@
       id : 12
     } 
     
-     btnOk#PushButton :
+    btnOk#PushButton :
     {
       geometryf : [ 0.25, 0.70, 0.75, 0.79 ]
       bgtype : "smallGrayBorderLine"
