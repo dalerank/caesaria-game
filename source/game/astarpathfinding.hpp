@@ -24,7 +24,7 @@ class Pathfinder
 {
 public:
   typedef enum { noFlags=0x0, checkStart=0x1, checkStop=0x2, roadOnly=0x4, waterOnly=0x8,
-                 terrainOnly=0x10, traversePath=0x20, everyWhere=0x80 } Flags;
+                 terrainOnly=0x10, traversePath=0x20, everyWhere=0x80, fourDirection=0x100 } Flags;
   static Pathfinder& getInstance();
 
   void update( const Tilemap& tmap );

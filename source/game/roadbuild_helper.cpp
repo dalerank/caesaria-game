@@ -21,7 +21,9 @@
 #include "core/stringhelper.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"
+#include "astarpathfinding.hpp"
 #include "gfx/tile.hpp"
+#include "pathway.hpp"
 #include "core/logger.hpp"
 
 // comparison (for sorting list of tiles by their coordinates)
@@ -40,6 +42,14 @@ compare_tiles_(const Tile * first, const Tile * second)
 
 TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePos stopPos )
 {
+  Pathway way;
+  Pathfinder::getInstance().getPath( startPos, stopPos, way, Pathfinder::fourDirection );
+
+  if( way.isValid() )
+  {
+    return way.getAllTiles();
+  }
+
   TilesArray ret;
 
   //int mapSize = tileMap.getSize();;

@@ -277,6 +277,7 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::plagueRuins , OC3_STR_EXT(PlagueRuins), new ConstructionCreator<PlagueRuins>() );
   addCreator(place::fishPlace,      OC3_STR_EXT(FishPlace), new BaseCreator<FishPlace>() );
   addCreator(building::wall,         OC3_STR_EXT(Wall), new ConstructionCreator<Wall>() );
+  //addCreator(building::fortification,         OC3_STR_EXT(Wall), new ConstructionCreator<Fortification>() );
 }
 
 void TileOverlayFactory::addCreator( const TileOverlay::Type type, const std::string& typeName, TileOverlayConstructor* ctor )

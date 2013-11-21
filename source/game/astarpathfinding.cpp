@@ -81,7 +81,7 @@ public:
 
 Pathfinder::Pathfinder() : _d( new Impl )
 {
-  _d->maxLoopCount = 600;
+  _d->maxLoopCount = 1200;
 }
 
 void Pathfinder::update( const Tilemap& tilemap )
@@ -227,6 +227,8 @@ bool Pathfinder::Impl::aStar(TilePos startPos, TilesArray arrivedArea, Pathway& 
           continue;
         }
 
+        if( (flags & fourDirection) && !(x==0 || y==0) )
+          continue;
         // Get this point
         child = at( current->getPos() + TilePos( x, y ) );
 

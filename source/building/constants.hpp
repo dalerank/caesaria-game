@@ -104,6 +104,7 @@ enum Type
 // security
   prefecture,
   wall,
+  fortification,
   tower,
   gatehouse,
   fortLegionaire,
