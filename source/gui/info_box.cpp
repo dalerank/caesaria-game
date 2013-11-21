@@ -166,15 +166,8 @@ void InfoBoxSimple::setTitle( const std::string& title )
   if( _d->lbTitle ) { _d->lbTitle->setText( title ); }
 }
 
-bool InfoBoxSimple::isAutoPosition() const
-{
-  return _d->isAutoPosition;
-}
-
-void InfoBoxSimple::setAutoPosition( bool value )
-{
-  _d->isAutoPosition = value;
-}
+bool InfoBoxSimple::isAutoPosition() const{  return _d->isAutoPosition;}
+void InfoBoxSimple::setAutoPosition( bool value ){  _d->isAutoPosition = value;}
 
 void InfoBoxSimple::setupUI(const VariantMap& ui)
 {
@@ -183,10 +176,8 @@ void InfoBoxSimple::setupUI(const VariantMap& ui)
   _d->isAutoPosition = ui.get( "autoPosition", true );
 }
 
-Label* InfoBoxSimple::_getTitle()
-{
-  return _d->lbTitle;
-}
+Label* InfoBoxSimple::_getTitle(){  return _d->lbTitle;}
+Label* InfoBoxSimple::_getBlackFrame(){  return _d->lbBlackFrame; }
 
 void InfoBoxSimple::_updateWorkersLabel(const Point &pos, int picId, int need, int have )
 {
@@ -247,115 +238,6 @@ InfoBoxSenate::InfoBoxSenate( Widget* parent, const Tile& tile )
 
 InfoBoxSenate::~InfoBoxSenate()
 {
-}
-
-InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
-  : InfoBoxSimple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 50 ) )
-{
-  HousePtr house = tile.getOverlay().as<House>();
-  setTitle( house->getSpec().getLevelName() );
-
-  Label* houseInfo = new Label( this, Rect( 30, 40, getWidth() - 30, 40 + 100 ), house->getUpCondition() );
-  houseInfo->setWordwrap( true );
-
-  std::string workerState = StringHelper::format( 0xff, "hb=%d hr=%d nb=%d ch=%d sch=%d st=%d mt=%d old=%d",
-                                                  house->getHabitants().count(),
-                                                  house->getServiceValue( Service::recruter ),
-                                                  house->getHabitants().count( CitizenGroup::newborn ),
-                                                  house->getHabitants().count( CitizenGroup::child ),
-                                                  house->getHabitants().count( CitizenGroup::scholar ),
-                                                  house->getHabitants().count( CitizenGroup::student ),
-                                                  house->getHabitants().count( CitizenGroup::mature ),
-                                                  house->getHabitants().count( CitizenGroup::aged ) );
-  new Label( this, Rect( 16, 125, getWidth() - 16, 150 ), workerState );
-
-  drawHabitants( house );
-
-  int taxes = house->getSpec().getTaxRate();
-  std::string taxesStr = taxes <= 0
-                           ? StringHelper::format( 0xff, _("##house_not_taxation##") )
-                           : StringHelper::format( 0xff, "%d %s", taxes, _("##house_pay_tax##") );
-
-  Label* taxesLb = new Label( this, Rect( 16 + 35, 177, getWidth() - 16, 177 + 20 ), taxesStr );
-
-  std::string aboutCrimes = _("##house_not_report_about_crimes##");
-  Label* lbCrime = new Label( this, taxesLb->getRelativeRect() + Point( 0, 22 ), aboutCrimes );
-
-  int startY = lbCrime->getBottom() + 10;
-  if( house->getSpec().getLevel() > 2 )
-  {
-    drawGood( house, Good::wheat, 0, 0, startY );
-    drawGood( house, Good::fish, 1, 0, startY );
-    drawGood( house, Good::meat, 2, 0, startY );
-    drawGood( house, Good::fruit, 3, 0, startY );
-    drawGood( house, Good::vegetable, 4, 0, startY );
-  }
-  else
-  {
-    Label* lb = new Label( this, lbCrime->getRelativeRect() + Point( 0, 30 ) );
-    lb->setHeight( 40 );
-    lb->setLineIntervalOffset( -6 );
-    lb->setText( _("##house_provide_food_themselves##") );
-    lb->setWordwrap( true );
-    startY = lb->getTop();
-  }
-
-  drawGood( house, Good::pottery, 0, 1, startY );
-  drawGood( house, Good::furniture, 1, 1, startY );
-  drawGood( house, Good::oil, 2, 1, startY );
-  drawGood( house, Good::wine, 3, 1, startY );
-}
-
-InfoBoxHouse::~InfoBoxHouse()
-{
-}
-
-void InfoBoxHouse::drawHabitants( HousePtr house )
-{
-  // citizen or patrician picture
-  int picId = house->getSpec().isPatrician() ? 541 : 542;
-   
-  Picture& citPic = Picture::load( ResourceGroup::panelBackground, picId );
-  _d->lbBlackFrame->setIcon( citPic, Point( 15, 5 ) );
-
-  // number of habitants
-  Label* lbHabitants = new Label( this, Rect( 60, 157, getWidth() - 16, 157 + citPic.getHeight() ) );
-
-  std::string freeRoomText;
-  int current = house->getHabitants().count();
-  int freeRoom = house->getMaxHabitants() - current;
-  if( freeRoom > 0 )
-  {
-    // there is some room for new habitants!
-    freeRoomText = StringHelper::format( 0xff, "%d %s %d", current, _("##citizens_additional_rooms_for##"), freeRoom);
-  }
-  else if (freeRoom == 0)
-  {
-    // full house!
-    freeRoomText = StringHelper::format( 0xff, "%d %s", current, _("##citizens##"));
-  }
-  else if (freeRoom < 0)
-  {
-    // too many habitants!
-    freeRoomText = StringHelper::format( 0xff, "%d %s %d", current, _("##no_room_for_citizens##"),-freeRoom);
-    lbHabitants->setFont( Font::create( FONT_2_RED ) );
-  }
-
-  lbHabitants->setText( freeRoomText );
-}
-
-void InfoBoxHouse::drawGood( HousePtr house, const Good::Type &goodType, const int col, const int row, const int startY )
-{
-  int qty = house->getGoodStore().getCurrentQty( goodType );
-  std::string text = StringHelper::format( 0xff, "%d", qty);
-
-  // pictures of goods
-  const Picture& pic = GoodHelper::getPicture( goodType );
-  Label* lb = new Label( this, Rect( Point( 31 + 100 * col, startY + 2 + 30 * row), Size( 24, 50) ) );
-  lb->setFont( Font::create( FONT_2 ) );
-  lb->setIcon( pic );
-  lb->setText( text );
-  //font.draw( *_d->bgPicture, text, 61 + 100 * col, startY + 30 * row, false );
 }
 
 GuiInfoFactory::GuiInfoFactory( Widget* parent, const Tile& tile)

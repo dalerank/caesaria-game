@@ -57,6 +57,7 @@ public:
 protected:
   virtual void _afterCreate() {}
   Label* _getTitle();
+  Label* _getBlackFrame();
   virtual void _updateWorkersLabel( const Point& pos, int picId, int need, int have );
 
   class Impl;
@@ -146,18 +147,6 @@ class InfoBoxColosseum : public InfoBoxSimple
 public:
   InfoBoxColosseum( Widget* parent, const Tile& tile );
   virtual ~InfoBoxColosseum();
-};
-
-
-// info box about a house
-class InfoBoxHouse : public InfoBoxSimple
-{
-public:
-   InfoBoxHouse( Widget* parent, const Tile& tile);
-   virtual ~InfoBoxHouse();
-
-   void drawHabitants(HousePtr house);
-   void drawGood(HousePtr house, const Good::Type &goodType, const int col, const int row, const int startY );
 };
 
 class InfoBoxBuilding : public InfoBoxSimple
