@@ -27,7 +27,8 @@ namespace gui
 class BackgroundModeHelper : public EnumsHelper<Label::BackgroundMode>
 {
 public:
-  BackgroundModeHelper() : EnumsHelper( Label::bgNone )
+  BackgroundModeHelper()
+    : EnumsHelper<Label::BackgroundMode>(Label::bgNone)
   {
     append( Label::bgWhite, "white" );
     append( Label::bgBlack, "black" );
@@ -64,11 +65,11 @@ public:
 
   Impl() : textMargin( Rect( 0, 0, 0, 0) ),
            OverrideBGColorEnabled(false), isWordwrap(false),
-			     RestrainTextInside(true), RightToLeft(false), 
+           RestrainTextInside(true), RightToLeft(false),
            needUpdatePicture(false), lineIntervalOffset( 0 )
-	{
+  {
     font = Font::create( FONT_2 );
-	}
+  }
 
   ~Impl()
   {
@@ -97,7 +98,7 @@ Label::Label(Widget* parent, const Rect& rectangle, const string& text, bool bor
 {
   _d->isBorderVisible = border;
   _d->backgroundMode = background;
- 
+
   #ifdef _DEBUG
     setDebugName( "OC3_label");
   #endif
@@ -112,7 +113,7 @@ void Label::_updateTexture( GfxEngine& painter )
 
   if( _d->background && _d->background->getSize() != labelSize )
   {
-    _d->background.reset();  
+    _d->background.reset();
   }
 
   if( !_d->background )
@@ -122,9 +123,9 @@ void Label::_updateTexture( GfxEngine& painter )
 
   if( _d->textPicture && _d->textPicture->getSize() != labelSize )
   {
-    _d->textPicture.reset( Picture::create( labelSize ) );  
+    _d->textPicture.reset( Picture::create( labelSize ) );
   }
-  
+
   if( !_d->textPicture )
   {
     _d->textPicture.reset( Picture::create( labelSize ) );
@@ -140,7 +141,7 @@ void Label::_updateTexture( GfxEngine& painter )
   {
     _d->background->fill( 0xff000000, Rect( 0, 0, 0, 0 ) );
     _d->background->draw( _d->bgPicture, _d->bgOffset, true );
-  }    
+  }
   else
   {
     Rect r( Point( 0, 0 ), getSize() );
@@ -179,7 +180,7 @@ void Label::_updateTexture( GfxEngine& painter )
       else
       {
         if( _d->font != _d->lastBreakFont )
-        {  
+        {
             _d->breakText( getText(), getSize() );
         }
 
@@ -188,7 +189,7 @@ void Label::_updateTexture( GfxEngine& painter )
 
         for (unsigned int i=0; i<_d->brokenText.size(); ++i)
         {
-            Rect textRect = _d->font.calculateTextRect( rText, r, 
+            Rect textRect = _d->font.calculateTextRect( rText, r,
                                                         getHorizontalTextAlign(), getVerticalTextAlign() );
 
             textRect += _d->textOffset;
@@ -234,7 +235,7 @@ void Label::draw( GfxEngine& painter )
 
 //! Get the font which is used right now for drawing
 Font Label::getFont() const
-{ 
+{
 	/*if( index == activeFont )
 	{
 		Font overrideFont = getFont( getActiveState().getHash() );
@@ -244,7 +245,7 @@ Font Label::getFont() const
 
 		return overrideFont.available() ? overrideFont : Font( getStyle().getName() );
 	}
-	
+
 	return Widget::getFont( index );*/
 
     return _d->font;
@@ -591,7 +592,7 @@ void Label::beforeDraw( GfxEngine& painter )
   {
     _updateTexture( painter );
 
-    _d->needUpdatePicture = false;		
+    _d->needUpdatePicture = false;
   }
 
   Widget::beforeDraw( painter );
