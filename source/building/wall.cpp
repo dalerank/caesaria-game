@@ -68,7 +68,7 @@ void Wall::destroy()
     foreach( Tile* tile, area )
     {
       TileOverlayPtr overlay = tile->getOverlay();
-      if( overlay.isValid() && overlay->getType() == building::aqueduct )
+      if( overlay.isValid() && overlay->getType() == building::wall )
       {
         overlay.as<Wall>()->updatePicture( _getCity() );
       }
@@ -175,16 +175,17 @@ Picture& Wall::computePicture(PlayerCityPtr city, const TilesArray* tmp, const T
 
   case 5: index = 183; break; // N + S
   case 6: index = 174; break; // E + S
-  case 7: index = 183; break; // N + E + S
   case 8: index = 167; break; // W
   case 9: index = 164; break; // N + W
   case 10: index = 184; break; // E + W
 
-  case 11: index = 178; break; // N + E + W
   case 12: index = 180; break; // S + W
-  case 13: index = 183; break; // N + S + W
-  case 14: index = 178; break; // E + S + W
-  case 15:
+  case 14: index = 178; break; // N + S + W
+  case 11: index = 178; break; // N + E + W
+
+  case 7: // N + E + S
+  case 13: // W + S + N
+  case 15: // W + E + N + S
     index = 178;
     if( (directionFlags & 0x20) == 0 )
     {
