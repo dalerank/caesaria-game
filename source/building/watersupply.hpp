@@ -1,32 +1,29 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_WATER_BUILDGINDS_INCLUDED__
-#define __OPENCAESAR3_WATER_BUILDGINDS_INCLUDED__
+#ifndef __CAESARIA_WATER_BUILDGINDS_INCLUDED__
+#define __CAESARIA_WATER_BUILDGINDS_INCLUDED__
 
 #include "core/position.hpp"
 #include "service.hpp"
-
-class WaterSource;
-class Aqueduct;
-class Reservoir;
 
 class WaterSource : public Construction
 {
 public:
   WaterSource( const TileOverlay::Type type, const Size& size );
+  ~WaterSource();
   
   virtual void addWater( const WaterSource& source );
   virtual bool haveWater() const;
@@ -39,34 +36,14 @@ protected:
   void _setError( const std::string& error );
   virtual void _waterStateChanged() {}
   virtual void _produceWater( const TilePos* points, const int size );
+  void _setIsRoad( bool value );
+  void _setResolved( bool value );
+  bool _isResolved() const;
+  int _getWater() const;
+  bool _isRoad() const;
   
   class Impl;
   ScopedPtr< Impl > _d;
-};
-
-
-
-class Aqueduct : public WaterSource
-{
-public:
-  Aqueduct();
-
-  virtual void build(PlayerCityPtr city, const TilePos& pos );
-  Picture& computePicture(PlayerCityPtr city,
-                          const TilesArray* tmp = NULL,
-                          const TilePos pos = TilePos(0, 0));
-  virtual void initTerrain(Tile& terrain);
-  virtual bool canBuild(PlayerCityPtr city, const TilePos& pos ) const;
-  virtual bool isNeedRoadAccess() const;
-  virtual void destroy();
-  virtual bool isWalkable() const; 
-  virtual bool isRoad() const;
-
-  void updatePicture(PlayerCityPtr city);
-  void addWater( const WaterSource& source );
-
-protected:
-  virtual void _waterStateChanged();
 };
 
 class Reservoir : public WaterSource
@@ -106,4 +83,4 @@ private:
   void _initAnimation();
 };
 
-#endif // __OPENCAESAR3_WATER_BUILDGINDS_INCLUDED__
+#endif // __CAESARIA_WATER_BUILDGINDS_INCLUDED__

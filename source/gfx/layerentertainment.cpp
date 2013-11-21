@@ -1,17 +1,17 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "layerentertainment.hpp"
 #include "building/constants.hpp"
@@ -19,6 +19,7 @@
 #include "game/resourcegroup.hpp"
 #include "game/house_level.hpp"
 #include "layerconstants.hpp"
+#include "game/city.hpp"
 
 using namespace constants;
 
@@ -53,7 +54,7 @@ void LayerEntertainment::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     {
       //fire buildings and roads
     case construction::road:
-    case construction::B_PLAZA:
+    case construction::plaza:
       needDrawAnimations = true;
       engine.drawPicture( tile.getPicture(), screenPos );
     break;
@@ -72,7 +73,7 @@ void LayerEntertainment::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       }
       else
       {
-        CityHelper helper( _city );
+        CityHelper helper( _getCity() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
       }
     break;
@@ -88,7 +89,7 @@ void LayerEntertainment::drawTile(GfxEngine& engine, Tile& tile, Point offset)
         else if( _flags.count( building::hippodrome ) ) { entertainmentLevel = house->getServiceValue( Service::hippodrome ); }
 
         needDrawAnimations = (house->getSpec().getLevel() == 1) && (house->getHabitants().empty());
-        CityHelper helper( _city );
+        CityHelper helper( _getCity() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
       }
     break;
@@ -96,7 +97,7 @@ void LayerEntertainment::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       //other buildings
     default:
       {
-        CityHelper helper( _city );
+        CityHelper helper( _getCity() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
       }
     break;
@@ -104,7 +105,7 @@ void LayerEntertainment::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 
     if( needDrawAnimations )
     {
-      _renderer->registerTileForRendering( tile );
+      registerTileForRendering( tile );
     }
     else if( entertainmentLevel > 0 )
     {
@@ -113,66 +114,67 @@ void LayerEntertainment::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   }
 }
 
-LayerPtr LayerEntertainment::create(CityRenderer* renderer, PlayerCityPtr city, int type )
+LayerPtr LayerEntertainment::create(TilemapCamera& camera, PlayerCityPtr city, int type )
 {
-  LayerEntertainment* l = new LayerEntertainment();
-  l->_renderer = renderer;
-  l->_city = city;
-  l->_type = type;
+  LayerPtr ret( new LayerEntertainment( camera, city, type ) );
+  ret->drop();
+
+  return ret;
+}
+
+LayerEntertainment::LayerEntertainment(TilemapCamera& camera, PlayerCityPtr city, int type )
+  : Layer( camera, city )
+{
+  _type = type;
 
   switch( type )
   {
   case citylayer::entertainmentAll:
-    l->_flags.insert( building::unknown ); l->_flags.insert( building::theater );
-    l->_flags.insert( building::amphitheater ); l->_flags.insert( building::colloseum );
-    l->_flags.insert( building::hippodrome ); l->_flags.insert( building::actorColony );
-    l->_flags.insert( building::gladiatorSchool ); l->_flags.insert( building::lionHouse );
-    l->_flags.insert( building::chariotSchool );
+    _flags.insert( building::unknown ); _flags.insert( building::theater );
+    _flags.insert( building::amphitheater ); _flags.insert( building::colloseum );
+    _flags.insert( building::hippodrome ); _flags.insert( building::actorColony );
+    _flags.insert( building::gladiatorSchool ); _flags.insert( building::lionHouse );
+    _flags.insert( building::chariotSchool );
 
-    l->_visibleWalkers.insert( walker::actor );
-    l->_visibleWalkers.insert( walker::gladiator );
-    l->_visibleWalkers.insert( walker::tamer );
-    l->_visibleWalkers.insert( walker::charioter );
+    _visibleWalkers.insert( walker::actor );
+    _visibleWalkers.insert( walker::gladiator );
+    _visibleWalkers.insert( walker::tamer );
+    _visibleWalkers.insert( walker::charioter );
   break;
 
   case citylayer::theater:
-    l->_flags.insert( building::theater );
-    l->_flags.insert( building::actorColony );
+    _flags.insert( building::theater );
+    _flags.insert( building::actorColony );
 
-    l->_visibleWalkers.insert( walker::actor );
+    _visibleWalkers.insert( walker::actor );
   break;
 
   case citylayer::amphitheater:
-    l->_flags.insert( building::amphitheater );
-    l->_flags.insert( building::actorColony );
-    l->_flags.insert( building::gladiatorSchool );
+    _flags.insert( building::amphitheater );
+    _flags.insert( building::actorColony );
+    _flags.insert( building::gladiatorSchool );
 
-    l->_visibleWalkers.insert( walker::actor );
-    l->_visibleWalkers.insert( walker::gladiator );
+    _visibleWalkers.insert( walker::actor );
+    _visibleWalkers.insert( walker::gladiator );
   break;
 
   case citylayer::colloseum:
-    l->_flags.insert( building::colloseum );
-    l->_flags.insert( building::gladiatorSchool );
-    l->_flags.insert( building::lionHouse );
+    _flags.insert( building::colloseum );
+    _flags.insert( building::gladiatorSchool );
+    _flags.insert( building::lionHouse );
 
-    l->_visibleWalkers.insert( walker::gladiator );
-    l->_visibleWalkers.insert( walker::tamer );
+    _visibleWalkers.insert( walker::gladiator );
+    _visibleWalkers.insert( walker::tamer );
   break;
 
 
   case citylayer::hippodrome:
-    l->_flags.insert( building::hippodrome );
-    l->_flags.insert( building::chariotSchool );
+    _flags.insert( building::hippodrome );
+    _flags.insert( building::chariotSchool );
 
-    l->_visibleWalkers.insert( walker::charioter );
+    _visibleWalkers.insert( walker::charioter );
   break;
 
   default: break;
   }
-
-  LayerPtr ret( l );
-  ret->drop();
-
-  return ret;
 }

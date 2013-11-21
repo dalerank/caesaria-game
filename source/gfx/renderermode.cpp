@@ -13,125 +13,115 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "tilemapchangecommand.hpp"
-#include "tileoverlay_factory.hpp"
+#include "renderermode.hpp"
+#include "game/tileoverlay_factory.hpp"
 #include "building/building.hpp"
 #include "building/constants.hpp"
-#include "gfx/layerconstants.hpp"
+#include "layerconstants.hpp"
 
 using namespace constants;
 
-class TilemapBuildCommand::Impl
+class BuildMode::Impl
 {
 public:
     bool isBorderBuilding;
     bool isMultiBuilding;
     ConstructionPtr construction;
-    bool canBuild;
 };
 
-TilemapChangeCommand::~TilemapChangeCommand()
-{
-
-}
-
-bool TilemapBuildCommand::isBorderBuilding() const
+bool BuildMode::isBorderBuilding() const
 {
     return _d->isBorderBuilding;
 }
 
-bool TilemapBuildCommand::isMultiBuilding() const
+bool BuildMode::isMultiBuilding() const
 {
     return _d->isMultiBuilding;
 }
 
-ConstructionPtr TilemapBuildCommand::getContruction() const
+ConstructionPtr BuildMode::getContruction() const
 {
     return _d->construction;
 }
 
-TilemapRemoveCommand::TilemapRemoveCommand()
+DestroyMode::DestroyMode() : LayerMode( citylayer::destroy )
 {
 }
 
-TilemapChangeCommandPtr TilemapRemoveCommand::create()
+Renderer::ModePtr DestroyMode::create()
 {
-  TilemapChangeCommandPtr ret( new TilemapRemoveCommand() );
+  Renderer::ModePtr ret( new DestroyMode() );
   ret->drop();
 
   return ret;
 }
 
-TilemapChangeCommandPtr TilemapBuildCommand::create(TileOverlay::Type type )
+Renderer::ModePtr BuildMode::create(TileOverlay::Type type )
 {
-  TilemapBuildCommand* newCommand = new TilemapBuildCommand();
+  BuildMode* newCommand = new BuildMode();
   TileOverlayPtr overlay = TileOverlayFactory::getInstance().create( type );
   newCommand->_d->construction = overlay.as<Construction>();
   newCommand->_d->isMultiBuilding = false;
   newCommand->_d->isBorderBuilding = false;
-  newCommand->_d->canBuild = false;
 
   switch( type )
   {
   case construction::road:
+    newCommand->_d->isBorderBuilding = true;
+    newCommand->_d->isMultiBuilding = true;
+  break;
+
   case building::aqueduct:
     newCommand->_d->isBorderBuilding = true;
     newCommand->_d->isMultiBuilding = true;
-    break;
+  break;
 
   case building::house:
-  case construction::B_GARDEN:
+  case construction::garden:
     newCommand->_d->isMultiBuilding = true;
   break;
 
   default:
-    break;    
+  break;
   }   
 
-  TilemapChangeCommandPtr ret( newCommand );
+  Renderer::ModePtr ret( newCommand );
   ret->drop();
 
   return ret;
 }
 
-TilemapBuildCommand::TilemapBuildCommand() : _d( new Impl )
+BuildMode::BuildMode()
+  : LayerMode( citylayer::build ), _d( new Impl )
 {
-
 }
 
-void TilemapBuildCommand::setCanBuild( bool cb )
-{
-  _d->canBuild = cb;
-}
-
-bool TilemapBuildCommand::isCanBuild() const
-{
-  return _d->canBuild;
-}
-
-class TilemapOverlayCommand::Impl
+class LayerMode::Impl
 {
 public:
   int type;
 };
 
-TilemapChangeCommandPtr TilemapOverlayCommand::create( const int type )
+Renderer::ModePtr LayerMode::create( const int type )
 {
-  TilemapOverlayCommand* newCommand = new TilemapOverlayCommand();
-  newCommand->_d->type = type;
-
-  TilemapChangeCommandPtr ret( newCommand );
+  Renderer::ModePtr ret( new LayerMode( type ) );
   ret->drop();
 
   return ret;
 }
 
-TilemapOverlayCommand::TilemapOverlayCommand() : _d( new Impl )
+LayerMode::LayerMode(int type) : _d( new Impl )
 {
-  _d->type = citylayer::simple;
+  _d->type = type;
+  //_d->type = citylayer::simple;
 }
 
-int TilemapOverlayCommand::getType() const
+int LayerMode::getType() const
 {
   return _d->type;
+}
+
+void LayerMode::_setType(int type)
+{
+  _d->type = type;
 }

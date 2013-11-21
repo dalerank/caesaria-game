@@ -403,8 +403,8 @@ bool GuiEnv::handleEvent( const NEvent& event )
         break;
 
     case sEventMouse:
-        _d->cursorPos = event.MouseEvent.getPosition();
-        switch( event.MouseEvent.Event )
+        _d->cursorPos = event.mouse.getPosition();
+        switch( event.mouse.type )
         {
         case mouseLbtnPressed:
         case mouseRbtnPressed:
@@ -467,10 +467,10 @@ bool GuiEnv::handleEvent( const NEvent& event )
             // For keys we handle the event before changing focus to give elements the chance for catching the TAB
             // Send focus changing event
             if( event.EventType == sEventKeyboard &&
-                event.KeyboardEvent.PressedDown &&
-                event.KeyboardEvent.Key == KEY_TAB)
+                event.keyboard.pressed &&
+                event.keyboard.key == KEY_TAB)
             {
-                Widget *next = getNextWidget(event.KeyboardEvent.Shift, event.KeyboardEvent.Control);
+                Widget *next = getNextWidget(event.keyboard.shift, event.keyboard.control);
                 if (next && next != getFocus())
                 {
                     if (setFocus(next))

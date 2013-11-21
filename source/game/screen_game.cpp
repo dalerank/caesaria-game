@@ -29,7 +29,7 @@
 #include "core/event.hpp"
 #include "infoboxmanager.hpp"
 #include "tileoverlay_factory.hpp"
-#include "tilemapchangecommand.hpp"
+#include "gfx/renderermode.hpp"
 #include "gui/message_stack_widget.hpp"
 #include "core/time.hpp"
 #include "core/stringhelper.hpp"
@@ -62,7 +62,6 @@ public:
   gui::Menu* menu;
   GfxEngine* engine;
   gui::ExtentMenu* extMenu;
-  InfoBoxManagerPtr infoBoxMgr;
   CityRenderer renderer;
   Game* game; // current game
   AlarmEventHolder alarmsHolder;
@@ -77,9 +76,8 @@ public:
   void showMissionTaretsWindow();
   void showTradeAdvisorWindow();
   void resolveCreateConstruction( int type );
-  void resolveSelectOverlayView( int type );
+  void resolveSelectLayer( int type );
   void resolveRemoveTool();
-  void showTileInfo( const Tile& tile );
   void makeScreenShot();
   void setVideoOptions();
   void showGameSpeedOptionsDialog();
@@ -101,8 +99,6 @@ void ScreenGame::initialize()
 {
   PlayerCityPtr city = _d->game->getCity();
   _d->renderer.initialize( city, _d->engine );
-
-  _d->infoBoxMgr = InfoBoxManager::create( city, _d->game->getGui() );
   _d->game->getGui()->clear();
 
   const int topMenuHeight = 23;
@@ -158,12 +154,9 @@ void ScreenGame::initialize()
 
   CONNECT( city, onPopulationChanged(), _d->topMenu, TopMenu::setPopulation );
   CONNECT( city, onFundsChanged(), _d->topMenu, TopMenu::setFunds );
-
-  CONNECT( &_d->renderer, onShowTileInfo(), _d.data(), Impl::showTileInfo );
-
   CONNECT( city, onWarningMessage(), _d.data(), Impl::resolveWarningMessage );
-  CONNECT( &_d->renderer, onWarningMessage(), _d.data(), Impl::resolveWarningMessage );
-  CONNECT( _d->extMenu, onSelectOverlayType(), _d.data(), Impl::resolveSelectOverlayView );
+
+  CONNECT( _d->extMenu, onSelectOverlayType(), _d.data(), Impl::resolveSelectLayer );
   CONNECT( _d->extMenu, onEmpireMapShow(), _d.data(), Impl::showEmpireMapWindow );
   CONNECT( _d->extMenu, onAdvisorsWindowShow(), _d.data(), Impl::showAdvisorsWindow );
   CONNECT( _d->extMenu, onMissionTargetsWindowShow(), _d.data(), Impl::showMissionTaretsWindow );
@@ -198,7 +191,7 @@ void ScreenGame::Impl::showGameSpeedOptionsDialog()
                                                                0 );
 
   CONNECT( dialog, onGameSpeedChange(), game, Game::setTimeMultiplier );
-  CONNECT( dialog, onScrollSpeedChange(), &renderer, CityRenderer::setScrollSpeed );
+  CONNECT( dialog, onScrollSpeedChange(), &renderer.getCamera(), TilemapCamera::setScrollSpeed );
 }
 
 void ScreenGame::Impl::resolveWarningMessage(std::string text )
@@ -209,7 +202,7 @@ void ScreenGame::Impl::resolveWarningMessage(std::string text )
 
 void ScreenGame::Impl::saveCameraPos(Point p)
 {
-  Tile* tile = renderer.getTile( Point( engine->getScreenWidth()/2, engine->getScreenHeight()/2 ), false );
+  Tile* tile = renderer.getCamera().at( Point( engine->getScreenWidth()/2, engine->getScreenHeight()/2 ), false );
 
   if( tile )
   {
@@ -257,15 +250,15 @@ void ScreenGame::handleEvent( NEvent& event )
 
   if( event.EventType == sEventKeyboard )
   {
-    switch( event.KeyboardEvent.Key )
+    switch( event.keyboard.key )
     {
     case KEY_MINUS:
     case KEY_PLUS:
     case KEY_SUBTRACT:
     case KEY_ADD:
     {
-      events::GameEventPtr e = events::ChangeSpeed::create( (event.KeyboardEvent.Key == KEY_MINUS ||
-                                                              event.KeyboardEvent.Key == KEY_SUBTRACT)
+      events::GameEventPtr e = events::ChangeSpeed::create( (event.keyboard.key == KEY_MINUS ||
+                                                              event.keyboard.key == KEY_SUBTRACT)
                                                             ? -10 : +10 );
       e->dispatch();
     }
@@ -273,7 +266,7 @@ void ScreenGame::handleEvent( NEvent& event )
 
     case KEY_KEY_P:
     {
-      if( event.KeyboardEvent.PressedDown )
+      if( event.keyboard.pressed )
         break;
 
       _d->isPaused = !_d->isPaused;
@@ -297,7 +290,7 @@ void ScreenGame::handleEvent( NEvent& event )
   bool eventResolved = false;
   if (event.EventType == sEventMouse)
   {
-    if( event.MouseEvent.Event == mouseRbtnPressed || event.MouseEvent.Event == mouseLbtnPressed )
+    if( event.mouse.type == mouseRbtnPressed || event.mouse.type == mouseLbtnPressed )
     {
       eventResolved = gui.handleEvent( event );
       if (eventResolved)
@@ -328,7 +321,7 @@ void ScreenGame::handleEvent( NEvent& event )
     break;
     }
 
-    if( event.MouseEvent.Event == mouseRbtnRelease || event.MouseEvent.Event == mouseLbtnRelease )
+    if( event.mouse.type == mouseRbtnRelease || event.mouse.type == mouseLbtnRelease )
     {
       _mouseEventTarget = _MET_NONE;
     }
@@ -363,17 +356,12 @@ int ScreenGame::getResult() const
 
 void ScreenGame::Impl::resolveCreateConstruction( int type )
 {
-  renderer.setMode( TilemapBuildCommand::create( TileOverlay::Type( type ) ) );
+  renderer.setMode( BuildMode::create( TileOverlay::Type( type ) ) );
 }
 
 void ScreenGame::Impl::resolveRemoveTool()
 {
-  renderer.setMode( TilemapRemoveCommand::create() );
-}
-
-void ScreenGame::Impl::showTileInfo( const Tile& tile )
-{
-  infoBoxMgr->showHelp( tile );
+  renderer.setMode( DestroyMode::create() );
 }
 
 void ScreenGame::resolveEndGame()
@@ -388,9 +376,9 @@ void ScreenGame::resolveExitGame()
   stop();
 }
 
-void ScreenGame::Impl::resolveSelectOverlayView( int type )
+void ScreenGame::Impl::resolveSelectLayer( int type )
 {
-  renderer.setMode( TilemapOverlayCommand::create( type ) );
+  renderer.setMode( LayerMode::create( type ) );
 }
 
 void ScreenGame::Impl::showAdvisorsWindow()

@@ -114,16 +114,16 @@ bool AdvisorEmperorWindow::onEvent(const NEvent& event)
 {
   if( event.EventType == sEventGui  )
   {
-    if( event.GuiEvent.EventType == guiListboxChanged )
+    if( event.gui.type == guiListboxChanged )
     {
-      if( ListBox* lstBox = safety_cast< ListBox* >( event.GuiEvent.Caller ) )
+      if( ListBox* lstBox = safety_cast< ListBox* >( event.gui.caller ) )
       {
         _d->onChangeSalarySignal.emit( lstBox->getSelectedItem().getTag() );
       }
     }
-    else if( event.GuiEvent.EventType == guiButtonClicked )
+    else if( event.gui.type == guiButtonClicked )
     {
-      int id = event.GuiEvent.Caller->getID();
+      int id = event.gui.caller->getID();
       if( id > 0 && ((id & 0x0f00) == 0x0f00) )
       {
         int multiplier = id & 0xff;

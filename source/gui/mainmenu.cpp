@@ -63,17 +63,17 @@ bool MainMenu::onEvent(const NEvent& event)
 		switch(event.EventType)
 		{
 		case sEventGui:
-			switch(event.GuiEvent.EventType)
+			switch(event.gui.type)
 			{
 			case guiElementFocusLost:
-				if (event.GuiEvent.Caller == this && !isMyChild(event.GuiEvent.Element))
+				if (event.gui.caller == this && !isMyChild(event.gui.element))
 				{
 					closeAllSubMenus_();
 					setHoverIndex_( -1 );
 				}
 				break;
 			case guiElementFocused:
-				if (event.GuiEvent.Caller == this )
+				if (event.gui.caller == this )
 				{
 					bringToFront();
 				}
@@ -83,7 +83,7 @@ bool MainMenu::onEvent(const NEvent& event)
 			}
 			break;
 		case sEventMouse:
-			switch(event.MouseEvent.Event)
+			switch(event.mouse.type)
 			{
 			case mouseLbtnPressed:
 			{
@@ -94,13 +94,13 @@ bool MainMenu::onEvent(const NEvent& event)
 
     	  bringToFront();
 
-				Point p(event.MouseEvent.getPosition() );
+				Point p(event.mouse.getPosition() );
 				bool shouldCloseSubMenu = hasOpenSubMenu_();
 				if (!getAbsoluteClippingRect().isPointInside(p))
 				{
 					shouldCloseSubMenu = false;
 				}
-				isHighlighted_( event.MouseEvent.getPosition(), true);
+				isHighlighted_( event.mouse.getPosition(), true);
 				if ( shouldCloseSubMenu )
 				{
           getEnvironment()->removeFocus(this);
@@ -111,7 +111,7 @@ bool MainMenu::onEvent(const NEvent& event)
 
 			case mouseLbtnRelease:
 			{
-        Point p(event.MouseEvent.getPosition() );
+        Point p(event.mouse.getPosition() );
 				if (!getAbsoluteClippingRect().isPointInside(p))
 				{
 					int t = sendClick_(p);
@@ -127,7 +127,7 @@ bool MainMenu::onEvent(const NEvent& event)
 				if (getEnvironment()->hasFocus(this) && getHoveredIndex() >= 0)
 				{
 				  int oldHighLighted = getHoveredIndex();
-					isHighlighted_( event.MouseEvent.getPosition(), true);
+					isHighlighted_( event.mouse.getPosition(), true);
 					if ( getHoveredIndex() < 0 )
           {
             setHoverIndex_( oldHighLighted );   // keep last hightlight active when moving outside the area

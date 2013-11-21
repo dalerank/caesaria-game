@@ -369,10 +369,10 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
 {
   if( event.EventType == sEventMouse )
   {
-    switch(event.MouseEvent.Event)
+    switch(event.mouse.type)
     {
     case mouseLbtnPressed:
-      _d->dragStartPosition = event.MouseEvent.getPosition();
+      _d->dragStartPosition = event.mouse.getPosition();
       _d->dragging = true;//_d->flags.isFlag( draggable );
       bringToFront();
 
@@ -392,7 +392,7 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
       {
         //bool t = _d->dragging;
 
-        if ( !event.MouseEvent.isLeftPressed() )
+        if ( !event.mouse.isLeftPressed() )
         {
           _d->dragging = false;
         }
@@ -408,8 +408,8 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
             break;
           }
 
-          _d->offset += (event.MouseEvent.getPosition() - _d->dragStartPosition);
-          _d->dragStartPosition = event.MouseEvent.getPosition();
+          _d->offset += (event.mouse.getPosition() - _d->dragStartPosition);
+          _d->dragStartPosition = event.mouse.getPosition();
 
           _d->offset.setX( math::clamp<int>( _d->offset.getX(), -_d->empireMap.getWidth() + getWidth(), 0 ) );
           _d->offset.setY( math::clamp<int>( _d->offset.getY(), -_d->empireMap.getHeight() + getHeight() - 120, 0 ) );

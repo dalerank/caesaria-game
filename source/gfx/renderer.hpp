@@ -6,6 +6,7 @@
 
 #include "core/referencecounted.hpp"
 #include "picture.hpp"
+#include "core/smartptr.hpp"
 
 //!  Surface Loader for PNG files
 class Renderer : public ReferenceCounted
@@ -22,6 +23,13 @@ public:
                } Pass;
 
   typedef std::vector<Pass> PassQueue;
+
+  class Mode : public ReferenceCounted
+  {
+  public:
+    virtual ~Mode() {}
+  };
+  typedef SmartPtr< Mode > ModePtr;
 
   virtual void render() = 0;
 };

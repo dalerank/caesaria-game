@@ -71,9 +71,9 @@ Signal1<int>& DialogBox::onResult()
 
 bool DialogBox::onEvent( const NEvent& event )
 {
-  if( event.EventType == sEventGui && event.GuiEvent.EventType == guiButtonClicked )
+  if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
-    int id = event.GuiEvent.Caller->getID();
+    int id = event.gui.caller->getID();
     _d->onResultSignal.emit( id );
 
     switch( id )

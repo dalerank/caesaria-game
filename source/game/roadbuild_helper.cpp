@@ -20,7 +20,6 @@
 
 #include "core/stringhelper.hpp"
 #include "core/exception.hpp"
-#include "tilemap.hpp"
 #include "core/position.hpp"
 #include "gfx/tile.hpp"
 #include "core/logger.hpp"

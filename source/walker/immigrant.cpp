@@ -22,7 +22,7 @@
 #include "core/variant.hpp"
 #include "game/city.hpp"
 #include "game/path_finding.hpp"
-#include "game/tilemap.hpp"
+#include "gfx/tilemap.hpp"
 #include "game/name_generator.hpp"
 #include "building/constants.hpp"
 #include "game/resourcegroup.hpp"

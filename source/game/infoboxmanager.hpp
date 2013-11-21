@@ -29,21 +29,21 @@ typedef SmartPtr< InfoBoxManager > InfoBoxManagerPtr;
 class InfoboxCreator
 {
 public:
-  virtual gui::InfoBoxSimple* create( gui::Widget*, const Tile& ) = 0;
+  virtual gui::InfoBoxSimple* create( PlayerCityPtr, gui::Widget*, TilePos ) = 0;
 };
 
 class InfoBoxManager : public ReferenceCounted
 {
 public:
-  static InfoBoxManagerPtr create( PlayerCityPtr city, gui::GuiEnv* gui );
+  static InfoBoxManager& getInstance();
 
-  void showHelp( const Tile& tile ); 
+  void showHelp( PlayerCityPtr city, gui::GuiEnv* gui, TilePos tile );
   void setShowDebugInfo( const bool showInfo );
 
   void addInfobox( const TileOverlay::Type type, const std::string& typeName, InfoboxCreator* ctor );
   bool canCreate( const TileOverlay::Type type ) const;
 private:
-  InfoBoxManager( PlayerCityPtr city, gui::GuiEnv* gui );
+  InfoBoxManager();
   ~InfoBoxManager();
    
   class Impl;

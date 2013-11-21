@@ -81,11 +81,11 @@ bool ScrollBar::onEvent(const NEvent& event)
 		switch(event.EventType)
 		{
 		case sEventKeyboard:
-			if (event.KeyboardEvent.PressedDown)
+			if (event.keyboard.pressed)
 			{
                 const int oldPos = _value;
 				bool absorb = true;
-				switch (event.KeyboardEvent.Key)
+				switch (event.keyboard.key)
 				{
 				case KEY_LEFT:
 				case KEY_UP:
@@ -120,13 +120,13 @@ bool ScrollBar::onEvent(const NEvent& event)
 			}
 			break;
 		case sEventGui:
-			if (event.GuiEvent.EventType == guiButtonClicked)
+			if (event.gui.type == guiButtonClicked)
 			{
-				if (event.GuiEvent.Caller == _d->upButton)
+				if (event.gui.caller == _d->upButton)
         {
           setPos(_value-_smallStep);
         }
-				else if (event.GuiEvent.Caller == _d->downButton)
+				else if (event.gui.caller == _d->downButton)
         {
           setPos(_value+_smallStep);
         }
@@ -136,17 +136,17 @@ bool ScrollBar::onEvent(const NEvent& event)
 				return true;
 			}
 			else
-				if (event.GuiEvent.EventType == guiElementFocusLost)
+				if (event.gui.type == guiElementFocusLost)
 				{
-					if (event.GuiEvent.Caller == this)
+					if (event.gui.caller == this)
                         _dragging = false;
 				}
 				break;
 		case sEventMouse:
 			{
-        _d->cursorPos =event.MouseEvent.getPosition();
+        _d->cursorPos =event.mouse.getPosition();
 				bool isInside = isPointInside ( _d->cursorPos );
-				switch(event.MouseEvent.Event)
+				switch(event.mouse.type)
 				{
 				case mouseWheel:
 					if( isFocused() )
@@ -155,7 +155,7 @@ bool ScrollBar::onEvent(const NEvent& event)
 						// thanks to tommi by tommi for another bugfix
 						// everybody needs a little thanking. hallo niko!;-)
 						setPos(	getPos() +
-                            ( (int)event.MouseEvent.Wheel * _smallStep * (_horizontal ? 1 : -1 ) )
+                            ( (int)event.mouse.wheel * _smallStep * (_horizontal ? 1 : -1 ) )
 							);
 
 						_resolvePositionChanged();
@@ -178,7 +178,7 @@ bool ScrollBar::onEvent(const NEvent& event)
 				case mouseLbtnRelease:
 				case mouseMoved:
 					{
-						if ( !event.MouseEvent.isLeftPressed () )
+						if ( !event.mouse.isLeftPressed () )
 						{
 							_draggedBySlider = false;
 							_dragging = false;
@@ -187,7 +187,7 @@ bool ScrollBar::onEvent(const NEvent& event)
 						if ( !_dragging )
 							return isInside;
 
-            if ( event.MouseEvent.Event == mouseLbtnRelease )
+            if ( event.mouse.type == mouseLbtnRelease )
             {
               _dragging = false;
             }
@@ -210,7 +210,7 @@ bool ScrollBar::onEvent(const NEvent& event)
 							else
 							{
                 _trayClick = false;
-                if (event.MouseEvent.Event == mouseMoved)
+                if (event.mouse.type == mouseMoved)
                 {
 									return isInside;
                 }

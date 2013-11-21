@@ -64,9 +64,9 @@ void LayerDesirability::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     {
     //roads
     case construction::road:
-    case construction::B_PLAZA:
+    case construction::plaza:
       engine.drawPicture( tile.getPicture(), screenPos );
-      _renderer->registerTileForRendering( tile );
+      registerTileForRendering( tile );
     break;
 
     //other buildings
@@ -77,7 +77,7 @@ void LayerDesirability::drawTile(GfxEngine& engine, Tile& tile, Point offset)
                           : math::clamp( tile.getDesirability() / 15, 0, 6 );
         Picture& pic = Picture::load( ResourceGroup::land2a, 37 + picOffset );
 
-        CityHelper helper( _city );
+        CityHelper helper( _getCity() );
         TilesArray tiles4clear = helper.getArea( overlay );
 
         foreach( Tile* tile, tiles4clear )
@@ -96,15 +96,16 @@ void LayerDesirability::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   }
 }
 
-LayerPtr LayerDesirability::create(CityRenderer* renderer, PlayerCityPtr city)
+LayerPtr LayerDesirability::create(TilemapCamera& camera, PlayerCityPtr city)
 {
-  LayerDesirability* l = new LayerDesirability();
-  l->_renderer = renderer;
-  l->_city = city;
-  l->_debugFont = Font::create( "FONT_1" );
-
-  LayerPtr ret( l );
+  LayerPtr ret( new LayerDesirability( camera, city ) );
   ret->drop();
 
   return ret;
+}
+
+LayerDesirability::LayerDesirability(TilemapCamera& camera, PlayerCityPtr city)
+  : Layer( camera, city )
+{
+  _debugFont = Font::create( "FONT_1" );
 }

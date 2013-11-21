@@ -44,6 +44,8 @@ public:
   void moveUp(const int amount);
   void moveDown(const int amount);
 
+  Point getOffset() const;
+
   // return tile coordinates (i, j), in order of depth
   const TilesArray& getTiles() const;
 
@@ -51,10 +53,17 @@ public:
   int getCenterZ() const;
   TilePos getCenter() const;
 
+  void setScrollSpeed( int speed );
+  int getScrollSpeed() const;
+
+  Tile* at(Point pos, bool overborder );
+
+  void startFrame();
+
 public oc3_signals:
   Signal1<Point>& onPositionChanged();
   
-private:  
+private:
   void setCenter(Point pos);
 
   class Impl;

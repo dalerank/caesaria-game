@@ -60,11 +60,11 @@ bool VideoOptionsWindow::onEvent(const NEvent& event)
 {
   if( event.EventType == sEventGui )
 
-  switch( event.GuiEvent.EventType )
+  switch( event.gui.type )
   {
   case guiButtonClicked:
   {
-    switch( event.GuiEvent.Caller->getID() )
+    switch( event.gui.caller->getID() )
     {
     case 1:
     {
@@ -85,7 +85,7 @@ bool VideoOptionsWindow::onEvent(const NEvent& event)
 
   case guiListboxChanged:
   {
-    ListBox* lbx = safety_cast< ListBox* >( event.GuiEvent.Caller );
+    ListBox* lbx = safety_cast< ListBox* >( event.gui.caller );
 
     int tag = lbx->getSelectedItem().getTag();
 

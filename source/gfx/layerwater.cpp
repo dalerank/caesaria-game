@@ -54,7 +54,7 @@ void LayerWater::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     {
       //water buildings
     case construction::road:
-    case construction::B_PLAZA:
+    case construction::plaza:
     case building::reservoir:
     case building::fountain:
     case building::well:
@@ -77,7 +77,7 @@ void LayerWater::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       tileNumber += (haveWater ? OverlayPic::haveWater : 0);
       tileNumber += tile.getWaterService( WTR_RESERVOIR ) > 0 ? OverlayPic::reservoirRange : 0;
 
-      CityHelper helper( _city );
+      CityHelper helper( _getCity() );
       drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::waterOverlay, OverlayPic::base + tileNumber );
 
       pic = Picture::getInvalid();
@@ -94,13 +94,13 @@ void LayerWater::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 
     if( needDrawAnimations )
     {
-      _renderer->registerTileForRendering( tile );
+      registerTileForRendering( tile );
     }
   }
 
   if( !needDrawAnimations && ( tile.isWalkable(true) || tile.getFlag( Tile::tlBuilding ) ) )
   {
-    Tilemap& tilemap = _city->getTilemap();
+    Tilemap& tilemap = _getCity()->getTilemap();
     TilesArray area = tilemap.getArea( tile.getIJ(), areaSize );
 
     foreach( Tile* rtile, area )
@@ -120,14 +120,15 @@ void LayerWater::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 
 }
 
-LayerPtr LayerWater::create(CityRenderer* renderer, PlayerCityPtr city)
+LayerPtr LayerWater::create(TilemapCamera& camera, PlayerCityPtr city)
 {
-  LayerWater* l = new LayerWater();
-  l->_renderer = renderer;
-  l->_city = city;
-
-  LayerPtr ret( l );
+  LayerPtr ret( new LayerWater( camera, city ) );
   ret->drop();
 
   return ret;
+}
+
+LayerWater::LayerWater(TilemapCamera& camera, PlayerCityPtr city)
+  : Layer( camera, city )
+{
 }

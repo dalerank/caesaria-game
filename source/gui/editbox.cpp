@@ -253,9 +253,9 @@ bool EditBox::onEvent(const NEvent& event)
 		switch(event.EventType)
 		{
 		case sEventGui:
-			if (event.GuiEvent.EventType == guiElementFocusLost)
+			if (event.gui.type == guiElementFocusLost)
 			{
-				if (event.GuiEvent.Caller == this)
+				if (event.gui.caller == this)
 				{
 					_d->mouseMarking = false;
 					setTextMarkers(0,0);
@@ -281,7 +281,7 @@ bool EditBox::onEvent(const NEvent& event)
 
 bool EditBox::_processKey(const NEvent& event)
 {
-	if (!event.KeyboardEvent.PressedDown)
+	if (!event.keyboard.pressed)
 		return false;
 
 	bool textChanged = false;
@@ -290,16 +290,16 @@ bool EditBox::_processKey(const NEvent& event)
 
 	// control shortcut handling
 
-	if (event.KeyboardEvent.Control)
+	if (event.keyboard.control)
 	{
 		// german backlash '\' entered with control + '?'
-		if ( event.KeyboardEvent.Char == L'\\' )
+		if ( event.keyboard.symbol == L'\\' )
 		{
-			inputChar(event.KeyboardEvent.Char);
+			inputChar(event.keyboard.symbol);
 			return true;
 		}
 
-		switch(event.KeyboardEvent.Key)
+		switch(event.keyboard.key)
 		{
 		case KEY_KEY_A:
 			// select all
@@ -399,7 +399,7 @@ bool EditBox::_processKey(const NEvent& event)
 		
     case KEY_HOME:
 			// move/highlight to start of text
-			if (event.KeyboardEvent.Shift)
+			if (event.keyboard.shift)
 			{
 				newMarkEnd = _d->cursorPos;
 				newMarkBegin = 0;
@@ -414,7 +414,7 @@ bool EditBox::_processKey(const NEvent& event)
 			break;
 		case KEY_END:
 			// move/highlight to end of text
-			if (event.KeyboardEvent.Shift)
+			if (event.keyboard.shift)
 			{
 				newMarkBegin = _d->cursorPos;
 				newMarkEnd = getText().size();
@@ -433,7 +433,7 @@ bool EditBox::_processKey(const NEvent& event)
 	}
 	// default keyboard handling
 	else
-	switch(event.KeyboardEvent.Key)
+	switch(event.keyboard.key)
 	{
 	case KEY_END:
 		{
@@ -446,7 +446,7 @@ bool EditBox::_processKey(const NEvent& event)
 					p-=1;
 			}
 
-			if (event.KeyboardEvent.Shift)
+			if (event.keyboard.shift)
 			{
 				if (_d->markBegin == _d->markEnd)
 					newMarkBegin = _d->cursorPos;
@@ -471,7 +471,7 @@ bool EditBox::_processKey(const NEvent& event)
 				p = _d->brokenTextPositions[p];
 			}
 
-			if (event.KeyboardEvent.Shift)
+			if (event.keyboard.shift)
 			{
 				if (_d->markBegin == _d->markEnd)
 					newMarkBegin = _d->cursorPos;
@@ -498,7 +498,7 @@ bool EditBox::_processKey(const NEvent& event)
 		break;
 	case KEY_LEFT:
 
-		if (event.KeyboardEvent.Shift)
+		if (event.keyboard.shift)
 		{
 			if (_d->cursorPos > 0)
 			{
@@ -518,7 +518,7 @@ bool EditBox::_processKey(const NEvent& event)
 		break;
 
 	case KEY_RIGHT:
-		if (event.KeyboardEvent.Shift)
+		if (event.keyboard.shift)
 		{
 			if( getText().size() > (unsigned int)_d->cursorPos)
 			{
@@ -550,7 +550,7 @@ bool EditBox::_processKey(const NEvent& event)
 					_d->cursorPos = _d->brokenTextPositions[lineNo-1] + cp;
 			}
 
-			if (event.KeyboardEvent.Shift)
+			if (event.keyboard.shift)
 			{
 				newMarkBegin = mb;
 				newMarkEnd = _d->cursorPos;
@@ -581,7 +581,7 @@ bool EditBox::_processKey(const NEvent& event)
 					_d->cursorPos = _d->brokenTextPositions[lineNo+1] + cp;
 			}
 
-			if (event.KeyboardEvent.Shift)
+			if (event.keyboard.shift)
 			{
 				newMarkBegin = mb;
 				newMarkEnd = _d->cursorPos;
@@ -704,7 +704,7 @@ bool EditBox::_processKey(const NEvent& event)
 		return false;
 
 	default:
-        inputChar(event.KeyboardEvent.Char);
+        inputChar(event.keyboard.symbol);
 		return true;
 	}
 
@@ -1057,12 +1057,12 @@ unsigned int EditBox::getMax() const
 
 bool EditBox::_processMouse(const NEvent& event)
 {
-	switch(event.MouseEvent.Event)
+	switch(event.mouse.type)
 	{
 	case mouseLbtnRelease:
 		if (_environment->hasFocus(this))
 		{
-			_d->cursorPos = getCursorPos(event.MouseEvent.X, event.MouseEvent.Y);
+			_d->cursorPos = getCursorPos(event.mouse.x, event.mouse.y);
 			if (_d->mouseMarking)
 			{
 			    setTextMarkers( _d->markBegin, _d->cursorPos );
@@ -1076,7 +1076,7 @@ bool EditBox::_processMouse(const NEvent& event)
 		{
 			if (_d->mouseMarking)
 			{
-				_d->cursorPos = getCursorPos(event.MouseEvent.X, event.MouseEvent.Y);
+				_d->cursorPos = getCursorPos(event.mouse.x, event.mouse.y);
 				setTextMarkers( _d->markBegin, _d->cursorPos );
 				calculateScrollPos();
 				return true;
@@ -1087,21 +1087,21 @@ bool EditBox::_processMouse(const NEvent& event)
 		if (!_environment->hasFocus(this))
 		{
 			_d->mouseMarking = true;
-			_d->cursorPos = getCursorPos(event.MouseEvent.X, event.MouseEvent.Y);
+			_d->cursorPos = getCursorPos(event.mouse.x, event.mouse.y);
 			setTextMarkers(_d->cursorPos, _d->cursorPos );
 			calculateScrollPos();
 			return true;
 		}
 		else
 		{
-			if( !getAbsoluteClippingRect().isPointInside( event.MouseEvent.getPosition() ) )
+			if( !getAbsoluteClippingRect().isPointInside( event.mouse.getPosition() ) )
 			{
 				return false;
 			}
 			else
 			{
 				// move cursor
-				_d->cursorPos = getCursorPos(event.MouseEvent.X, event.MouseEvent.Y);
+				_d->cursorPos = getCursorPos(event.mouse.x, event.mouse.y);
 
                 int newMarkBegin = _d->markBegin;
 				if (!_d->mouseMarking)

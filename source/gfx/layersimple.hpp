@@ -18,7 +18,6 @@
 
 #include "core/referencecounted.hpp"
 #include "gfx/layer.hpp"
-#include "city_renderer.hpp"
 
 class LayerSimple : public Layer
 {
@@ -27,10 +26,10 @@ public:
   virtual std::set<int> getVisibleWalkers() const;
   virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset );
 
-  static LayerPtr create( CityRenderer* renderer, PlayerCityPtr city );
-private:
-  CityRenderer* _renderer;
-  PlayerCityPtr _city;
+  static LayerPtr create(TilemapCamera& camera, PlayerCityPtr city );
+
+protected:
+  LayerSimple( TilemapCamera& camera, PlayerCityPtr city );
 };
 
 #endif //__OPENCAESAR3_LAYERSIMPLE_H_INCLUDED__

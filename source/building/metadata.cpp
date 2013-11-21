@@ -45,8 +45,8 @@ public:
     append( building::chariotSchool,        "chatioteer_school" );
     append( building::house,          "house" );
     append( construction::road,           "road" );
-    append( construction::B_PLAZA,          "plaza" );
-    append( construction::B_GARDEN,         "garden" );
+    append( construction::plaza,          "plaza" );
+    append( construction::garden,         "garden" );
     append( building::senate,         "senate_1" );
     append( building::forum,          "forum_1" );
     append( building::governorHouse, "governor_palace_1" );

@@ -40,13 +40,14 @@ public:
   TilePos center;
   Size screenSize;
   Size borderSize;
+  Point offset;
+  int scrollSpeed;
 
-  Tilemap* tilemap;  // tile map to display
-  PointF centerMapXZ;      //center of the view (in tiles)
-  Size viewSize;    // width of the view (in tiles)  nb_tilesX = 1+2*_view_width
-                    // height of the view (in tiles)  nb_tilesY = 1+2*_view_height
-
-  TilesArray tiles;  // cached list of visible tiles
+  Tilemap* tilemap;   // tile map to display
+  PointF centerMapXZ; // center of the view(in tiles)
+  Size viewSize;      // width of the view(in tiles)  nb_tilesX = 1+2*_view_width
+                      // height of the view(in tiles) nb_tilesY = 1+2*_view_height
+  TilesArray tiles;   // cached list of visible tiles
 
   MovableOrders mayMove( PointF point );
 
@@ -57,6 +58,7 @@ public oc3_signals:
 TilemapCamera::TilemapCamera() : _d( new Impl )
 {
   _d->tilemap = NULL;
+  _d->scrollSpeed = 4;
   _d->viewSize = Size( 0 );
   _d->center = TilePos( 0, 0 );
   _d->screenSize = Size( 0 );
@@ -128,36 +130,28 @@ void TilemapCamera::setCenter(Point pos)
 int TilemapCamera::getCenterX() const  {   return _d->centerMapXZ.getX();   }
 int TilemapCamera::getCenterZ() const  {   return _d->centerMapXZ.getY();   }
 TilePos TilemapCamera::getCenter() const  {   return _d->center;   }
+void TilemapCamera::setScrollSpeed(int speed){  _d->scrollSpeed = speed; }
+int TilemapCamera::getScrollSpeed() const{ return _d->scrollSpeed; }
+Tile* TilemapCamera::at(Point pos, bool overborder){  return _d->tilemap->at( pos - _d->offset, overborder );}
+Signal1<Point>& TilemapCamera::onPositionChanged(){  return _d->onPositionChangedSignal;}
+void TilemapCamera::moveRight(const int amount){  setCenter( Point( getCenterX() + amount, getCenterZ() ) );}
+void TilemapCamera::moveLeft(const int amount){  setCenter( Point( getCenterX() - amount, getCenterZ() ) );}
+void TilemapCamera::moveUp(const int amount){  setCenter( Point( getCenterX(), getCenterZ() + amount ) );}
+void TilemapCamera::moveDown(const int amount){  setCenter( Point( getCenterX(), getCenterZ() - amount ) );}
 
-Signal1<Point>& TilemapCamera::onPositionChanged()
+void TilemapCamera::startFrame()
 {
-  return _d->onPositionChangedSignal;
-}
-
-void TilemapCamera::moveRight(const int amount)
-{
-  setCenter( Point( getCenterX() + amount, getCenterZ() ) );
-}
-
-void TilemapCamera::moveLeft(const int amount)
-{
-  setCenter( Point( getCenterX() - amount, getCenterZ() ) );
-}
-
-void TilemapCamera::moveUp(const int amount)
-{
-  setCenter( Point( getCenterX(), getCenterZ() + amount ) );
-}
-
-void TilemapCamera::moveDown(const int amount)
-{
-  setCenter( Point( getCenterX(), getCenterZ() - amount ) );
+  foreach( Tile* tile, _d->tiles )
+    tile->resetWasDrawn();
 }
 
 const TilesArray& TilemapCamera::getTiles() const
 {
   if( _d->tiles.empty() )
   {
+    _d->offset.setX( _d->screenSize.getWidth() / 2 - 30 * (getCenterX() + 1) + 1 );
+    _d->offset.setY( _d->screenSize.getHeight()/ 2 + 15 * (getCenterZ() - _d->tilemap->getSize() + 1) - 30 );
+
     int mapSize = _d->tilemap->getSize();
     int zm = _d->tilemap->getSize() + 1;
     int cx = _d->centerMapXZ.getX();
@@ -224,3 +218,5 @@ MovableOrders TilemapCamera::Impl::mayMove(PointF point)
 
   return ret;
 }
+
+Point TilemapCamera::getOffset() const{  return _d->offset;}

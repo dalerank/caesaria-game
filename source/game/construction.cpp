@@ -18,7 +18,7 @@
 #include "construction.hpp"
 
 #include "gfx/tile.hpp"
-#include "game/tilemap.hpp"
+#include "gfx/tilemap.hpp"
 #include "game/city.hpp"
 #include "events/event.hpp"
 #include "core/logger.hpp"

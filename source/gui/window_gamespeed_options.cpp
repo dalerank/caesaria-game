@@ -52,9 +52,9 @@ GameSpeedOptionsWindow::~GameSpeedOptionsWindow( void )
 
 bool GameSpeedOptionsWindow::onEvent(const NEvent& event)
 {
-  if( event.EventType == sEventGui && guiButtonClicked == event.GuiEvent.EventType )
+  if( event.EventType == sEventGui && guiButtonClicked == event.gui.type )
   {
-    int id = event.GuiEvent.Caller->getID();
+    int id = event.gui.caller->getID();
     switch( id )
     {
     case 1: case 2: _d->speedValue += (id == 1 ? -10 : +10 ); _update(); break;

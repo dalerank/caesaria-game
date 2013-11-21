@@ -1,19 +1,17 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "market_lady.hpp"
 #include "building/metadata.hpp"
@@ -21,7 +19,7 @@
 #include "core/position.hpp"
 #include "building/market.hpp"
 #include "building/granary.hpp"
-#include "game/tilemap.hpp"
+#include "gfx/tilemap.hpp"
 #include "gfx/tile.hpp"
 #include "core/variant.hpp"
 #include "game/path_finding.hpp"

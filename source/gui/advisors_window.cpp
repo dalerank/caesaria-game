@@ -164,18 +164,18 @@ void AdvisorsWindow::draw( GfxEngine& engine )
 
 bool AdvisorsWindow::onEvent( const NEvent& event )
 {
-  if( event.EventType == sEventMouse && event.MouseEvent.Event == mouseRbtnRelease )
+  if( event.EventType == sEventMouse && event.mouse.type == mouseRbtnRelease )
   {
     deleteLater();
     return true;
   }
 
-  if( event.EventType == sEventGui && event.GuiEvent.EventType == guiButtonClicked )
+  if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
-    int id = event.GuiEvent.Caller->getID();
+    int id = event.gui.caller->getID();
     if( id >= 0 && id < ADV_COUNT )
     {
-      showAdvisor( (AdvisorType)event.GuiEvent.Caller->getID() );
+      showAdvisor( (AdvisorType)event.gui.caller->getID() );
     }
   }
 

@@ -24,5 +24,6 @@ PREDEFINE_CLASS_SMARTPOINTER_LIST(TileOverlay,List)
 class Tile;
 class Picture;
 class TilesArray;
+class CityRenderer;
 
 #endif //__OPENCAESAR3_GFX_PREDEFINITIONS_H_INCLUDED__

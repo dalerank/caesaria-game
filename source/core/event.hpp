@@ -330,101 +330,71 @@ struct NEvent
 {
   //! Any kind of GUI event.
   struct _GuiEvent
-  {
-    //! IGUIElement who called the event
-    gui::Widget* Caller;
-
-    //! If the event has something to do with another element, it will be held here.
-    gui::Widget* Element;
-
-    //! Type of GUI Event
-    GuiEventType EventType;
+  {    
+    gui::Widget* caller; //! IGUIElement who called the event
+    gui::Widget* element; //! If the event has something to do with another element, it will be held here.
+    GuiEventType type; //! Type of GUI Event
   };
 
   //! Any kind of mouse event.
   struct _MouseEvent
-  {
-    //! X position of mouse cursor
-    unsigned int X;
-
-    //! Y position of mouse cursor
-    int Y;
+  {    
+    int x;  //! X position of mouse cursor
+    int y;  //! Y position of mouse cursor
 
     //! mouse wheel delta, usually 1.0 or -1.0.
     /** Only valid if event was OC3_MOUSE_WHEEL */
-    float Wheel;
+    float wheel;
 
-    //! True if shift was also pressed
-    bool Shift:1;
-
-    //! True if ctrl was also pressed
-    bool Control:1;
+    bool shift:1; //! True if shift was also pressed
+    bool control:1;     //! True if ctrl was also pressed
 
     //! A bitmap of button states. You can use isButtonPressed() to determine
     //! if a button is pressed or not.
     //! Currently only valid if the event was EMIE_MOUSE_MOVED
-    unsigned int ButtonStates;
+    unsigned int buttonStates;
 
-    const Point getPosition() { return Point( X, Y ); }
-    const Point getPosition() const { return Point( X, Y ); }
+    const Point getPosition() { return Point( x, y ); }
+    const Point getPosition() const { return Point( x, y ); }
+    bool isLeftPressed() const { return 0 != ( buttonStates & mbsmLeft ); }     //! Is the left button pressed down?
+    bool isRightPressed() const { return 0 != ( buttonStates & mbsmRight ); }   //! Is the right button pressed down?
+    bool isMiddlePressed() const { return 0 != ( buttonStates & mbsmMiddle ); } //! Is the middle button pressed down?
 
-    //! Is the left button pressed down?
-    bool isLeftPressed() const { return 0 != ( ButtonStates & mbsmLeft ); }
-
-    //! Is the right button pressed down?
-    bool isRightPressed() const { return 0 != ( ButtonStates & mbsmRight ); }
-
-    //! Is the middle button pressed down?
-    bool isMiddlePressed() const { return 0 != ( ButtonStates & mbsmMiddle ); }
-
-    //! Type of mouse event
-    MouseEventType Event;
+    MouseEventType type;     //! Type of mouse event
   };
 
   //! Any kind of keyboard event.
   struct _KeyboardEvent
-  {
-    //! Character corresponding to the key (0, if not a character)
-    char Char;
-
-    //! Key which has been pressed or released
-    KeyCode Key;
-
-    //! If not true, then the key was left up
-    bool PressedDown:1;
-
-    //! True if shift was also pressed
-    bool Shift:1;
-
-    //! True if ctrl was also pressed
-    bool Control:1;
+  {    
+    char symbol; //! Character corresponding to the key (0, if not a character)
+    KeyCode key; //! Key which has been pressed or released
+    bool pressed:1; //! If not true, then the key was left up
+    bool shift:1; //! True if shift was also pressed
+    bool control:1; //! True if ctrl was also pressed
   };
 
   //! Any kind of user event.
   struct _UserEvent
-  {
-    //! Some user specified data as int
-    unsigned int UserData1;
-
-    //! Another user specified data as int
-    unsigned int UserData2;
+  {    
+    unsigned int data1; //! Some user specified data as int
+    unsigned int data2; //! Another user specified data as int
   };
 
   SysEventType EventType;
   union
   {
-    struct _GuiEvent GuiEvent;
-    struct _MouseEvent MouseEvent;
-    struct _KeyboardEvent KeyboardEvent;
-    struct _UserEvent UserEvent;
+    struct _GuiEvent gui;
+    struct _MouseEvent mouse;
+    struct _KeyboardEvent keyboard;
+    struct _UserEvent user;
   };
 
   static NEvent Gui( gui::Widget* caller, gui::Widget* elm, GuiEventType type )
   {
     NEvent ret;
-    ret.GuiEvent.Caller = caller;
-    ret.GuiEvent.Element = elm;
-    ret.GuiEvent.EventType = type;
+    ret.gui.caller = caller;
+    ret.gui.element = elm;
+    ret.gui.type = type;
     ret.EventType = sEventGui;
 
     return ret;

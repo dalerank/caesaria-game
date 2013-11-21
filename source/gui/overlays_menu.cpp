@@ -126,10 +126,10 @@ bool OverlaysMenu::onEvent( const NEvent& event )
 {
   if( event.EventType == sEventGui )
   {
-    switch( event.GuiEvent.EventType )
+    switch( event.gui.type )
     {
     case guiElementHovered:
-      switch( event.GuiEvent.Caller->getID() )
+      switch( event.gui.caller->getID() )
       {
       case citylayer::risks:
       case citylayer::entertainments:
@@ -144,7 +144,7 @@ bool OverlaysMenu::onEvent( const NEvent& event )
 
           _d->buttons.clear();
 
-          _addButtons( event.GuiEvent.Caller->getID() );
+          _addButtons( event.gui.caller->getID() );
           return true;
         }
       break;
@@ -174,7 +174,7 @@ bool OverlaysMenu::onEvent( const NEvent& event )
           (*it)->deleteLater();
         _d->buttons.clear();
                 
-        _d->onSelectOverlayTypeSignal.emit( event.GuiEvent.Caller->getID() );
+        _d->onSelectOverlayTypeSignal.emit( event.gui.caller->getID() );
         hide();
       }
     break;
@@ -184,7 +184,7 @@ bool OverlaysMenu::onEvent( const NEvent& event )
     }
   } 
 
-  if( event.EventType == sEventMouse && event.MouseEvent.Event == mouseRbtnRelease )
+  if( event.EventType == sEventMouse && event.mouse.type == mouseRbtnRelease )
   {
     hide();
     return true;

@@ -29,8 +29,8 @@ enum Type
 {
   unknown=0,
   road,
-  B_PLAZA,
-  B_GARDEN,
+  plaza,
+  garden,
   count
 };
 

@@ -18,7 +18,7 @@
 #include "core/safetycast.hpp"
 #include "core/position.hpp"
 #include "gfx/tile.hpp"
-#include "tilemap.hpp"
+#include "gfx/tilemap.hpp"
 #include "core/time.hpp"
 
 class CityServiceShoreline::Impl

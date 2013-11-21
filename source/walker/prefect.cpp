@@ -20,7 +20,7 @@
 #include "game/astarpathfinding.hpp"
 #include "game/path_finding.hpp"
 #include "gfx/tile.hpp"
-#include "game/tilemap.hpp"
+#include "gfx/tilemap.hpp"
 #include "game/city.hpp"
 #include "core/variant.hpp"
 #include "game/name_generator.hpp"

@@ -26,10 +26,9 @@ public:
   virtual VisibleWalkers getVisibleWalkers() const;
   virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset );
 
-  static LayerPtr create( CityRenderer* renderer, PlayerCityPtr city );
+  static LayerPtr create( TilemapCamera& camera, PlayerCityPtr city );
 private:
-  CityRenderer* _renderer;
-  PlayerCityPtr _city;
+  LayerCrime( TilemapCamera& camera, PlayerCityPtr city );
 };
 
 #endif //__OPENCAESAR3_LAYERCRIME_H_INCLUDED__

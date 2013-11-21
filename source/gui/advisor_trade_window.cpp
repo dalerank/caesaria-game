@@ -179,7 +179,7 @@ public:
 
   virtual bool onEvent(const NEvent& event)
   {
-    if( event.EventType == sEventMouse && event.MouseEvent.isRightPressed() )
+    if( event.EventType == sEventMouse && event.mouse.isRightPressed() )
     {
       deleteLater();
       return true;

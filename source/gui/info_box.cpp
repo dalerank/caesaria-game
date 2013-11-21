@@ -143,12 +143,12 @@ bool InfoBoxSimple::onEvent( const NEvent& event)
   switch( event.EventType )
   {
   case sEventMouse:
-    if( event.MouseEvent.Event == mouseRbtnRelease )
+    if( event.mouse.type == mouseRbtnRelease )
     {
       deleteLater();
       return true;
     }
-    else if( event.MouseEvent.Event == mouseLbtnRelease )
+    else if( event.mouse.type == mouseLbtnRelease )
     {
       return true;
     }
@@ -547,7 +547,7 @@ InfoBoxLand::InfoBoxLand( Widget* parent, const Tile& tile )
   }
   else if( tile.getFlag( Tile::tlRoad ) )
   {
-    if( tile.getOverlay()->getType() == construction::B_PLAZA )
+    if( tile.getOverlay()->getType() == construction::plaza )
     {
       setTitle( _("##plaza_caption##") );
       lbText->setText( _("##plaza_text##"));

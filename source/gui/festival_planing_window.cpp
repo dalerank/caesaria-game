@@ -174,9 +174,9 @@ void FestivalPlaningWindow::draw( GfxEngine& painter )
 
 bool FestivalPlaningWindow::onEvent(const NEvent& event)
 {
-  if( event.EventType == sEventGui && event.GuiEvent.EventType == guiButtonClicked )
+  if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
-    PushButton* btn = safety_cast< PushButton* >( event.GuiEvent.Caller );
+    PushButton* btn = safety_cast< PushButton* >( event.gui.caller );
     if( btn && (btn->getID() & 0x0200) )
     {
       foreach ( TexturedButton* abtn, _d->godBtns )

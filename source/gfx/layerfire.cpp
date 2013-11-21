@@ -56,7 +56,7 @@ void LayerFire::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     {
     //fire buildings and roads
     case construction::road:
-    case construction::B_PLAZA:
+    case construction::plaza:
     case building::burningRuins:
     case building::B_BURNED_RUINS:
     case building::B_COLLAPSED_RUINS:
@@ -74,7 +74,7 @@ void LayerFire::drawTile(GfxEngine& engine, Tile& tile, Point offset)
         fireLevel = (int)house->getState( Construction::fire );
         needDrawAnimations = (house->getSpec().getLevel() == 1) && house->getHabitants().empty();
 
-        CityHelper helper( _city );
+        CityHelper helper( _getCity() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );
       }
     break;
@@ -88,7 +88,7 @@ void LayerFire::drawTile(GfxEngine& engine, Tile& tile, Point offset)
           fireLevel = (int)building->getState( Construction::fire );
         }
 
-        CityHelper helper( _city );
+        CityHelper helper( _getCity() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base  );
       }
     break;
@@ -96,7 +96,7 @@ void LayerFire::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 
     if( needDrawAnimations )
     {
-      _renderer->registerTileForRendering( tile );
+      registerTileForRendering( tile );
     }
     else if( fireLevel >= 0)
     {
@@ -105,14 +105,15 @@ void LayerFire::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   }
 }
 
-LayerPtr LayerFire::create(CityRenderer* renderer, PlayerCityPtr city)
+LayerPtr LayerFire::create(TilemapCamera& camera, PlayerCityPtr city)
 {
-  LayerFire* l = new LayerFire();
-  l->_renderer = renderer;
-  l->_city = city;
-
-  LayerPtr ret( l );
+  LayerPtr ret( new LayerFire( camera, city ) );
   ret->drop();
 
   return ret;
+}
+
+LayerFire::LayerFire(TilemapCamera& camera, PlayerCityPtr city)
+  : Layer( camera, city )
+{
 }

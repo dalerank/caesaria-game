@@ -56,7 +56,7 @@ void LayerReligion::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     {
       //fire buildings and roads
     case construction::road:
-    case construction::B_PLAZA:
+    case construction::plaza:
     case building::templeCeres: case building::templeMars:
     case building::templeMercury: case building::templeNeptune: case building::templeVenus:
     case building::oracle:
@@ -78,7 +78,7 @@ void LayerReligion::drawTile(GfxEngine& engine, Tile& tile, Point offset)
         religionLevel = math::clamp( religionLevel / (house->getSpec().getMinReligionLevel()+1), 0, 100 );
         needDrawAnimations = (house->getSpec().getLevel() == 1) && house->getHabitants().empty();
 
-        CityHelper helper( _city );
+        CityHelper helper( _getCity() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
       }
     break;
@@ -86,7 +86,7 @@ void LayerReligion::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       //other buildings
     default:
       {
-        CityHelper helper( _city );
+        CityHelper helper( _getCity() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
       }
     break;
@@ -94,7 +94,7 @@ void LayerReligion::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 
     if( needDrawAnimations )
     {
-      _renderer->registerTileForRendering( tile );
+      registerTileForRendering( tile );
     }
     else if( religionLevel > 0 )
     {
@@ -103,14 +103,15 @@ void LayerReligion::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   }
 }
 
-LayerPtr LayerReligion::create(CityRenderer* renderer, PlayerCityPtr city)
+LayerPtr LayerReligion::create(TilemapCamera& camera, PlayerCityPtr city)
 {
-  LayerReligion* l = new LayerReligion();
-  l->_renderer = renderer;
-  l->_city = city;
-
-  LayerPtr ret( l );
+  LayerPtr ret( new LayerReligion( camera, city ) );
   ret->drop();
 
   return ret;
+}
+
+LayerReligion::LayerReligion(TilemapCamera& camera, PlayerCityPtr city)
+  : Layer( camera, city )
+{
 }

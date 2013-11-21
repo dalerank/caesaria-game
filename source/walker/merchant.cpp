@@ -26,7 +26,7 @@
 #include "game/cityfunds.hpp"
 #include "game/trade_options.hpp"
 #include "game/name_generator.hpp"
-#include "game/tilemap.hpp"
+#include "gfx/tilemap.hpp"
 #include "events/event.hpp"
 #include "core/logger.hpp"
 #include "building/constants.hpp"

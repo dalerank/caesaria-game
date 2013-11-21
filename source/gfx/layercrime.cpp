@@ -56,7 +56,7 @@ void LayerCrime::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     {
     //fire buildings and roads
     case construction::road:
-    case construction::B_PLAZA:
+    case construction::plaza:
     case building::prefecture:
       engine.drawPicture( tile.getPicture(), screenPos );
       needDrawAnimations = true;
@@ -69,7 +69,7 @@ void LayerCrime::drawTile(GfxEngine& engine, Tile& tile, Point offset)
         fireLevel = (int)house->getServiceValue( Service::crime );
         needDrawAnimations = (house->getSpec().getLevel() == 1) && house->getHabitants().empty();
 
-        CityHelper helper( _city );
+        CityHelper helper( _getCity() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );
       }
     break;
@@ -77,7 +77,7 @@ void LayerCrime::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       //other buildings
     default:
       {
-        CityHelper helper( _city );
+        CityHelper helper( _getCity() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base  );
       }
     break;
@@ -85,7 +85,7 @@ void LayerCrime::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 
     if( needDrawAnimations )
     {
-      _renderer->registerTileForRendering( tile );
+      registerTileForRendering( tile );
     }
     else if( fireLevel >= 0)
     {
@@ -94,14 +94,15 @@ void LayerCrime::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   }
 }
 
-LayerPtr LayerCrime::create(CityRenderer* renderer, PlayerCityPtr city)
+LayerPtr LayerCrime::create(TilemapCamera& camera, PlayerCityPtr city)
 {
-  LayerCrime* l = new LayerCrime();
-  l->_renderer = renderer;
-  l->_city = city;
-
-  LayerPtr ret( l );
+  LayerPtr ret( new LayerCrime( camera, city ) );
   ret->drop();
 
   return ret;
+}
+
+LayerCrime::LayerCrime(TilemapCamera& camera, PlayerCityPtr city)
+  : Layer( camera, city )
+{
 }

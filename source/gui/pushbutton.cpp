@@ -300,8 +300,8 @@ bool PushButton::onEvent(const NEvent& event)
   switch(event.EventType)
   {
   case sEventKeyboard:
-    if( event.KeyboardEvent.PressedDown
-        && ( event.KeyboardEvent.Key == KEY_RETURN || event.KeyboardEvent.Key == KEY_SPACE ) )
+    if( event.keyboard.pressed
+        && ( event.keyboard.key == KEY_RETURN || event.keyboard.key == KEY_SPACE ) )
     {
       if ( !isPushButton() )
         setPressed(true);
@@ -311,15 +311,15 @@ bool PushButton::onEvent(const NEvent& event)
       return true;
     }
 
-    if( isPressed() && !isPushButton() && event.KeyboardEvent.PressedDown
-        && event.KeyboardEvent.Key == KEY_ESCAPE)
+    if( isPressed() && !isPushButton() && event.keyboard.pressed
+        && event.keyboard.key == KEY_ESCAPE)
     {
       setPressed(false);
       return true;
     }
     else
-      if( !event.KeyboardEvent.PressedDown && isPressed()
-          && ( event.KeyboardEvent.Key == KEY_RETURN || event.KeyboardEvent.Key == KEY_SPACE ) )
+      if( !event.keyboard.pressed && isPressed()
+          && ( event.keyboard.key == KEY_RETURN || event.keyboard.key == KEY_SPACE ) )
       {
         if (!isPushButton())
         {
@@ -332,10 +332,10 @@ bool PushButton::onEvent(const NEvent& event)
    break;
 
    case sEventGui:
-    switch(event.GuiEvent.EventType)
+    switch(event.gui.type)
     {
     case guiElementFocusLost:
-      if (event.GuiEvent.Caller == this && !isPushButton())
+      if (event.gui.caller == this && !isPushButton())
       {
         setPressed(false);
       }
@@ -347,7 +347,7 @@ bool PushButton::onEvent(const NEvent& event)
   break;
 
   case sEventMouse:
-    switch( event.MouseEvent.Event  )
+    switch( event.mouse.type  )
     {
     case mouseLbtnPressed: return _leftMouseBtnPressed( event );
     case mouseLbtnRelease: return _btnMouseUp( event );
@@ -380,7 +380,7 @@ bool PushButton::_btnMouseUp( const NEvent& event )
 {
 	bool wasPressed = isPressed();
 
-	if ( !getAbsoluteClippingRect().isPointInside( event.MouseEvent.getPosition() ) )
+	if ( !getAbsoluteClippingRect().isPointInside( event.mouse.getPosition() ) )
 	{
 		if (!isPushButton())
 			setPressed(false);
@@ -404,7 +404,7 @@ bool PushButton::_btnMouseUp( const NEvent& event )
 bool PushButton::_leftMouseBtnPressed( const NEvent& event )
 {
 	if( _environment->hasFocus(this) &&
-		!getAbsoluteClippingRect().isPointInside( event.MouseEvent.getPosition() ) )
+		!getAbsoluteClippingRect().isPointInside( event.mouse.getPosition() ) )
 	{
 		removeFocus();
 		return false;

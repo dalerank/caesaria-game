@@ -14,15 +14,15 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "layersimple.hpp"
-#include "building/watersupply.hpp"
 #include "layerconstants.hpp"
 #include "walker/constants.hpp"
+#include "city_renderer.hpp"
 
 using namespace constants;
 
 int LayerSimple::getType() const
 {
-  return constants::citylayer::simple;
+  return citylayer::simple;
 }
 
 std::set<int> LayerSimple::getVisibleWalkers() const
@@ -38,32 +38,10 @@ void LayerSimple::drawTile( GfxEngine& engine, Tile& tile, Point offset )
   Point screenPos = tile.getXY() + offset;
 
   TileOverlayPtr overlay = tile.getOverlay();
-  const TilesArray& postTiles = _renderer->getPostTiles();
 
   if( overlay.isValid() )
   {
-    if( overlay.is<Aqueduct>() && postTiles.size() > 0 )
-    {
-      // check, do we have any aqueducts there... there can be empty items
-      bool isAqueducts = false;
-      for( TilesArray::const_iterator it=postTiles.begin(); it != postTiles.end(); it++ )
-      {
-        if( (*it)->getOverlay().is<Aqueduct>() )
-        {
-          isAqueducts = true;
-          break;
-        }
-      }
-
-      if( isAqueducts )
-      {
-        tile.setWasDrawn();
-        Picture& pic = overlay.as<Aqueduct>()->computePicture( _city, &postTiles, tile.getIJ());
-        engine.drawPicture( pic, screenPos );
-      }
-    }
-
-    _renderer->registerTileForRendering( tile );
+    registerTileForRendering( tile );
   }
 
   if( !tile.getFlag( Tile::wasDrawn ) )
@@ -80,14 +58,15 @@ void LayerSimple::drawTile( GfxEngine& engine, Tile& tile, Point offset )
   }
 }
 
-LayerPtr LayerSimple::create(CityRenderer* renderer, PlayerCityPtr city)
+LayerPtr LayerSimple::create(TilemapCamera& camera, PlayerCityPtr city)
 {
-  LayerSimple* l = new LayerSimple();
-  l->_renderer = renderer;
-  l->_city = city;
-
-  LayerPtr ret( l );
+  LayerPtr ret( new LayerSimple( camera, city ) );
   ret->drop();
 
   return ret;
+}
+
+LayerSimple::LayerSimple(TilemapCamera& camera, PlayerCityPtr city)
+  : Layer( camera, city )
+{
 }

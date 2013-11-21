@@ -263,8 +263,8 @@ void BuildMenu_engineering::initialize()
   addBuildButton(building::shipyard);
   addBuildButton(building::wharf);
   addBuildButton(building::triumphalArch);
-  addBuildButton(construction::B_GARDEN);
-  addBuildButton(construction::B_PLAZA);
+  addBuildButton(construction::garden);
+  addBuildButton(construction::plaza);
 
   BuildMenu::initialize();
 }

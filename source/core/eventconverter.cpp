@@ -190,15 +190,15 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
     case SDL_MOUSEMOTION:
     {
         ret.EventType = sEventMouse;
-        ret.MouseEvent.Event = mouseMoved;
+        ret.mouse.type = mouseMoved;
         Uint8 *keys = SDL_GetKeyState(NULL);
 
-        _d->mouseX = ret.MouseEvent.X = sdlEvent.motion.x;
-        _d->mouseY = ret.MouseEvent.Y = sdlEvent.motion.y;
+        _d->mouseX = ret.mouse.x = sdlEvent.motion.x;
+        _d->mouseY = ret.mouse.y = sdlEvent.motion.y;
 
-        ret.MouseEvent.Control = keys[SDLK_LCTRL];
-        ret.MouseEvent.Shift = keys[SDLK_LSHIFT];
-        ret.MouseEvent.ButtonStates = _d->mouseButtonStates;
+        ret.mouse.control = keys[SDLK_LCTRL];
+        ret.mouse.shift = keys[SDLK_LSHIFT];
+        ret.mouse.buttonStates = _d->mouseButtonStates;
     }
     break;
 
@@ -208,24 +208,24 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
         ret.EventType = sEventMouse;
         Uint8 *keys = SDL_GetKeyState(NULL);
 
-        ret.MouseEvent.X = sdlEvent.button.x;
-        ret.MouseEvent.Y = sdlEvent.button.y;
+        ret.mouse.x = sdlEvent.button.x;
+        ret.mouse.y = sdlEvent.button.y;
 
-        ret.MouseEvent.Control = keys[SDLK_LCTRL];
-        ret.MouseEvent.Shift = keys[SDLK_LSHIFT];
-        ret.MouseEvent.Event = mouseMoved;
+        ret.mouse.control = keys[SDLK_LCTRL];
+        ret.mouse.shift = keys[SDLK_LSHIFT];
+        ret.mouse.type = mouseMoved;
 
         switch(sdlEvent.button.button)
         {
         case SDL_BUTTON_LEFT:
             if (sdlEvent.type == SDL_MOUSEBUTTONDOWN)
             {
-                ret.MouseEvent.Event = mouseLbtnPressed;
+                ret.mouse.type = mouseLbtnPressed;
                 _d->mouseButtonStates |= mbsmLeft;
             }
             else
             {
-                ret.MouseEvent.Event = mouseLbtnRelease;
+                ret.mouse.type = mouseLbtnRelease;
                 _d->mouseButtonStates &= !mbsmLeft;
             }
             break;
@@ -233,12 +233,12 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
         case SDL_BUTTON_RIGHT:
             if (sdlEvent.type == SDL_MOUSEBUTTONDOWN)
             {
-                ret.MouseEvent.Event = mouseRbtnPressed;
+                ret.mouse.type = mouseRbtnPressed;
                 _d->mouseButtonStates |= mbsmRight;
             }
             else
             {
-                ret.MouseEvent.Event = mouseRbtnRelease;
+                ret.mouse.type = mouseRbtnRelease;
                 _d->mouseButtonStates &= !mbsmRight;
             }
             break;
@@ -246,42 +246,42 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
         case SDL_BUTTON_MIDDLE:
           if (sdlEvent.type == SDL_MOUSEBUTTONDOWN)
           {
-            ret.MouseEvent.Event = mouseMbtnPressed;
+            ret.mouse.type = mouseMbtnPressed;
             _d->mouseButtonStates |= mbsmMiddle;
           }
           else
-          {ret.MouseEvent.Control = keys[SDLK_LCTRL];
-            ret.MouseEvent.Shift = keys[SDLK_LSHIFT];
-            ret.MouseEvent.Event = mouseMbtnRelease;
+          {ret.mouse.control = keys[SDLK_LCTRL];
+            ret.mouse.shift = keys[SDLK_LSHIFT];
+            ret.mouse.type = mouseMbtnRelease;
             _d->mouseButtonStates &= !mbsmMiddle;
           }
         break;
 
         case SDL_BUTTON_WHEELUP:
-            ret.MouseEvent.Event = mouseWheel;
-            ret.MouseEvent.Wheel = 1.0f;
+            ret.mouse.type = mouseWheel;
+            ret.mouse.wheel = 1.0f;
             break;
 
         case SDL_BUTTON_WHEELDOWN:
-            ret.MouseEvent.Event = mouseWheel;
-            ret.MouseEvent.Wheel = -1.0f;
+            ret.mouse.type = mouseWheel;
+            ret.mouse.wheel = -1.0f;
             break;
         }
 
-        ret.MouseEvent.ButtonStates = _d->mouseButtonStates;
+        ret.mouse.buttonStates = _d->mouseButtonStates;
 
-        if( ret.MouseEvent.Event != mouseMoved )
+        if( ret.mouse.type != mouseMoved )
         {           
-          if( ret.MouseEvent.Event >= mouseLbtnPressed && ret.MouseEvent.Event <= mouseMbtnPressed )
+          if( ret.mouse.type >= mouseLbtnPressed && ret.mouse.type <= mouseMbtnPressed )
           {
-            int clicks = _d->checkSuccessiveClicks(ret.MouseEvent.X, ret.MouseEvent.Y, ret.MouseEvent.Event);
+            int clicks = _d->checkSuccessiveClicks(ret.mouse.x, ret.mouse.y, ret.mouse.type);
             if ( clicks == 2 )
             {
-              ret.MouseEvent.Event = (MouseEventType)(mouseLbtDblClick + ret.MouseEvent.Event-mouseLbtnPressed);
+              ret.mouse.type = (MouseEventType)(mouseLbtDblClick + ret.mouse.type-mouseLbtnPressed);
             }
             else if ( clicks == 3 )
             {
-              ret.MouseEvent.Event = (MouseEventType)(mouseLbtnTrplClick + ret.MouseEvent.Event-mouseLbtnPressed);
+              ret.mouse.type = (MouseEventType)(mouseLbtnTrplClick + ret.mouse.type-mouseLbtnPressed);
             }
           }
         }
@@ -298,13 +298,13 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
                 key = (KeyCode)itSym->second;
 
             ret.EventType = sEventKeyboard;
-            ret.KeyboardEvent.Key = key;
-            ret.KeyboardEvent.PressedDown = (sdlEvent.type == SDL_KEYDOWN);
-            ret.KeyboardEvent.Shift = (sdlEvent.key.keysym.mod & KMOD_SHIFT) != 0;
-            ret.KeyboardEvent.Control = (sdlEvent.key.keysym.mod & KMOD_CTRL ) != 0;
-            ret.KeyboardEvent.Char =  ( sdlEvent.key.keysym.unicode != 0 
+            ret.keyboard.key = key;
+            ret.keyboard.pressed = (sdlEvent.type == SDL_KEYDOWN);
+            ret.keyboard.shift = (sdlEvent.key.keysym.mod & KMOD_SHIFT) != 0;
+            ret.keyboard.control = (sdlEvent.key.keysym.mod & KMOD_CTRL ) != 0;
+            ret.keyboard.symbol =  ( sdlEvent.key.keysym.unicode != 0 
                                           ? sdlEvent.key.keysym.unicode&0xff
-                                          : ( key + ( ret.KeyboardEvent.Shift ? 0 : 0x20 ) ) );
+                                          : ( key + ( ret.keyboard.shift ? 0 : 0x20 ) ) );
         }
         break;
 

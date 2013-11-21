@@ -1,17 +1,17 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "layerhealth.hpp"
 #include "building/constants.hpp"
@@ -19,6 +19,7 @@
 #include "building/house.hpp"
 #include "game/house_level.hpp"
 #include "layerconstants.hpp"
+#include "game/city.hpp"
 
 using namespace constants;
 
@@ -53,7 +54,7 @@ void LayerHealth::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     {
       //fire buildings and roads
     case construction::road:
-    case construction::B_PLAZA:
+    case construction::plaza:
       needDrawAnimations = true;
       engine.drawPicture( tile.getPicture(), screenPos );
     break;
@@ -69,7 +70,7 @@ void LayerHealth::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       }
       else
       {
-        CityHelper helper( _city );
+        CityHelper helper( _getCity() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
       }
     break;
@@ -86,7 +87,7 @@ void LayerHealth::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 
         needDrawAnimations = (house->getSpec().getLevel() == 1) && (house->getHabitants().empty());
 
-        CityHelper helper( _city );
+        CityHelper helper( _getCity() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
       }
     break;
@@ -94,7 +95,7 @@ void LayerHealth::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       //other buildings
     default:
       {
-        CityHelper helper( _city );
+      CityHelper helper( _getCity() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
       }
     break;
@@ -102,7 +103,7 @@ void LayerHealth::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 
     if( needDrawAnimations )
     {
-      _renderer->registerTileForRendering( tile );
+      registerTileForRendering( tile );
     }
     else if( healthLevel > 0 )
     {
@@ -111,35 +112,36 @@ void LayerHealth::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   }
 }
 
-LayerPtr LayerHealth::create(CityRenderer* renderer, PlayerCityPtr city, int type )
+LayerPtr LayerHealth::create(TilemapCamera& camera, PlayerCityPtr city, int type )
 {
-  LayerHealth* l = new LayerHealth();
-  l->_renderer = renderer;
-  l->_city = city;
-  l->_type = type;
+  LayerPtr ret( new LayerHealth( camera, city, type ) );
+  ret->drop();
+
+  return ret;
+}
+
+LayerHealth::LayerHealth( TilemapCamera& camera, PlayerCityPtr city, int type)
+  : Layer( camera, city )
+{
+  _type = type;
 
   switch( type )
   {
   case citylayer::health:
   case citylayer::doctor:
-    l->_flags.insert( building::B_DOCTOR ); l->_walkers.insert( walker::doctor );
+    _flags.insert( building::B_DOCTOR ); _walkers.insert( walker::doctor );
   break;
 
   case citylayer::hospital:
-    l->_flags.insert( building::B_HOSPITAL ); l->_walkers.insert( walker::surgeon );
+    _flags.insert( building::B_HOSPITAL ); _walkers.insert( walker::surgeon );
   break;
 
   case citylayer::barber:
-    l->_flags.insert( building::B_BARBER ); l->_walkers.insert( walker::barber );
+    _flags.insert( building::B_BARBER ); _walkers.insert( walker::barber );
   break;
 
   case citylayer::baths:
-    l->_flags.insert( building::B_BATHS ); l->_walkers.insert( walker::bathlady );
+    _flags.insert( building::B_BATHS ); _walkers.insert( walker::bathlady );
   break;
   }
-
-  LayerPtr ret( l );
-  ret->drop();
-
-  return ret;
 }

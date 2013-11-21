@@ -1,17 +1,17 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "tileoverlay_factory.hpp"
 #include "building/service.hpp"
@@ -26,6 +26,7 @@
 #include "building/prefecture.hpp"
 #include "building/entertainment.hpp"
 #include "building/religion.hpp"
+#include "building/aqueduct.hpp"
 #include "road.hpp"
 #include "building/market.hpp"
 #include "building/granary.hpp"
@@ -197,8 +198,8 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::B_STATUE1,    OC3_STR_EXT(SmallStatue), new ConstructionCreator<SmallStatue>() );
   addCreator(building::B_STATUE2,    OC3_STR_EXT(MediumStatue), new ConstructionCreator<MediumStatue>() );
   addCreator(building::B_STATUE3,    OC3_STR_EXT(BigStatue), new ConstructionCreator<BigStatue>() );
-  addCreator(construction::B_GARDEN, OC3_STR_EXT(Garden) , new ConstructionCreator<Garden>() );
-  addCreator(construction::B_PLAZA,  OC3_STR_EXT(Plaza)  , new ConstructionCreator<Plaza>() );
+  addCreator(construction::garden, OC3_STR_EXT(Garden) , new ConstructionCreator<Garden>() );
+  addCreator(construction::plaza,  OC3_STR_EXT(Plaza)  , new ConstructionCreator<Plaza>() );
   // water
   addCreator(building::well,       OC3_STR_EXT(Well)     , new WorkingBuildingCreator<Well>() );
   addCreator(building::fountain,   OC3_STR_EXT(Fountain) , new WorkingBuildingCreator<Fountain>() );

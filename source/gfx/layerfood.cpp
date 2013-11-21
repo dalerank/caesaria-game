@@ -59,7 +59,7 @@ void LayerFood::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     {
       //fire buildings and roads
     case construction::road:
-    case construction::B_PLAZA:
+    case construction::plaza:
     case building::market:
     case building::granary:
       pic = tile.getPicture();
@@ -69,7 +69,7 @@ void LayerFood::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       //houses
     case building::house:
       {
-        CityHelper helper( _city );
+        CityHelper helper( _getCity() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
         HousePtr house = overlay.as< House >();
         foodLevel = house->getFoodLevel();
@@ -80,7 +80,7 @@ void LayerFood::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       //other buildings
     default:
       {
-        CityHelper helper( _city );
+        CityHelper helper( _getCity() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base);
       }
       break;
@@ -93,7 +93,7 @@ void LayerFood::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 
     if( needDrawAnimations )
     {
-      _renderer->registerTileForRendering( tile );
+      registerTileForRendering( tile );
     }
     else if( foodLevel >= 0 )
     {
@@ -102,14 +102,15 @@ void LayerFood::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   }
 }
 
-LayerPtr LayerFood::create(CityRenderer* renderer, PlayerCityPtr city)
+LayerPtr LayerFood::create(TilemapCamera& camera, PlayerCityPtr city)
 {
-  LayerFood* l = new LayerFood();
-  l->_renderer = renderer;
-  l->_city = city;
-
-  LayerPtr ret( l );
+  LayerPtr ret( new LayerFood( camera, city ) );
   ret->drop();
 
   return ret;
+}
+
+LayerFood::LayerFood(TilemapCamera& camera, PlayerCityPtr city)
+  : Layer( camera, city )
+{
 }

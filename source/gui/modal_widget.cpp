@@ -77,10 +77,10 @@ bool ModalScreen::onEvent(const NEvent& event)
 	switch(event.EventType)
 	{
 	case sEventGui:
-		switch(event.GuiEvent.EventType)
+		switch(event.gui.type)
 		{
 		case guiElementFocused:
-			if ( !_canTakeFocus(event.GuiEvent.Caller))
+			if ( !_canTakeFocus(event.gui.caller))
 			{
 				if ( !getChildren().empty() )
 					(*getChildren().begin())->setFocus();
@@ -91,9 +91,9 @@ bool ModalScreen::onEvent(const NEvent& event)
 			return false;
 
 		case guiElementFocusLost:
-			if ( !_canTakeFocus(event.GuiEvent.Element))
+			if ( !_canTakeFocus(event.gui.element))
 			{
-				if ( isMyChild(event.GuiEvent.Caller) )
+				if ( isMyChild(event.gui.caller) )
 				{
 					if ( !getChildren().empty() )
 						(*getChildren().begin())->setFocus();
@@ -120,7 +120,7 @@ bool ModalScreen::onEvent(const NEvent& event)
 		}
 		break;
 	case sEventMouse:
-		if( event.MouseEvent.Event == mouseLbtnPressed )
+		if( event.mouse.type == mouseLbtnPressed )
 		{
 			_mouseDownTime = DateTime::getElapsedTime();
 		}

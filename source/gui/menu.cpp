@@ -182,12 +182,12 @@ void Menu::draw( GfxEngine& painter )
 
 bool Menu::onEvent(const NEvent& event)
 {
-    if( event.EventType == sEventGui && event.GuiEvent.EventType == guiButtonClicked )
+    if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
     {
-        if( !event.GuiEvent.Caller )
+        if( !event.gui.caller )
             return false;
 
-        int id = event.GuiEvent.Caller->getID();
+        int id = event.gui.caller->getID();
         switch( id )
         {
         case MAXIMIZE_ID:
@@ -198,29 +198,29 @@ bool Menu::onEvent(const NEvent& event)
 
         case building::house:
         case construction::road:
-            _d->lastPressed = event.GuiEvent.Caller;
+            _d->lastPressed = event.gui.caller;
             _d->onCreateConstructionSignal.emit( id );
             _createBuildMenu( -1, this );
         break;
 
         case REMOVE_TOOL_ID:
-            _d->lastPressed = event.GuiEvent.Caller;
+            _d->lastPressed = event.gui.caller;
             _d->onRemoveToolSignal.emit();
             _createBuildMenu( -1, this );
         break;
         
         default:
-            if( _d->lastPressed != event.GuiEvent.Caller )
+            if( _d->lastPressed != event.gui.caller )
             {
-                if( event.GuiEvent.Caller->getParent() == this )
-                    _d->lastPressed = event.GuiEvent.Caller;
+                if( event.gui.caller->getParent() == this )
+                    _d->lastPressed = event.gui.caller;
                 
-                if( PushButton* btn = safety_cast< PushButton* >( event.GuiEvent.Caller ) )
+                if( PushButton* btn = safety_cast< PushButton* >( event.gui.caller ) )
                 {
                     int id = btn->getID();
                     if( id & BuildMenu::subMenuCreateIdHigh )
                     {
-                        _createBuildMenu( id & 0xff, event.GuiEvent.Caller );        
+                        _createBuildMenu( id & 0xff, event.gui.caller );        
                     }
                     else
                     {
@@ -243,7 +243,7 @@ bool Menu::onEvent(const NEvent& event)
         return true;
     }
 
-    if( event.EventType == sEventGui && event.GuiEvent.EventType == guiElementFocusLost )
+    if( event.EventType == sEventGui && event.gui.type == guiElementFocusLost )
     {
         unselectAll();
         _d->lastPressed = 0;
@@ -251,7 +251,7 @@ bool Menu::onEvent(const NEvent& event)
 
     if( event.EventType == sEventMouse )
     {
-        switch( event.MouseEvent.Event )
+        switch( event.mouse.type )
         {
         case mouseRbtnRelease:
             _createBuildMenu( -1, this );
@@ -435,9 +435,9 @@ ExtentMenu::ExtentMenu(Widget* parent, int id, const Rect& rectangle )
 
 bool ExtentMenu::onEvent(const NEvent& event)
 {
-  if( event.EventType == sEventGui && event.GuiEvent.EventType == guiButtonClicked )
+  if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
-    if( MenuButton* btn = safety_cast< MenuButton* >( event.GuiEvent.Caller ) )
+    if( MenuButton* btn = safety_cast< MenuButton* >( event.gui.caller ) )
     {
       int picId = btn->getMidPicId() > 0 ? btn->getMidPicId() : ResourceMenu::emptyMidPicId;
       _d->middleLabel->setBackgroundPicture( Picture::load( ResourceGroup::menuMiddleIcons, picId ) );

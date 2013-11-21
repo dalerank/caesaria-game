@@ -14,7 +14,7 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "minimap_window.hpp"
-#include "game/tilemap.hpp"
+#include "gfx/tilemap.hpp"
 #include "game/minimap_colours.hpp"
 #include "gfx/tile.hpp"
 #include "gfx/tileoverlay.hpp"

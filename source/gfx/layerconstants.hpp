@@ -29,6 +29,7 @@ enum { simple=0, water, fire, damage, desirability,
        risks, crime, aborigen, troubles,
        education, educationAll, school, library, academy,
        commerce, tax,
+       build, destroy,
        all
      };
 }

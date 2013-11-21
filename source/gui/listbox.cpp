@@ -265,16 +265,16 @@ bool ListBox::onEvent(const NEvent& event)
         break;
 
 		case sEventKeyboard:
-			if (event.KeyboardEvent.PressedDown &&
-				(event.KeyboardEvent.Key == KEY_DOWN ||
-				event.KeyboardEvent.Key == KEY_UP   ||
-				event.KeyboardEvent.Key == KEY_HOME ||
-				event.KeyboardEvent.Key == KEY_END  ||
-				event.KeyboardEvent.Key == KEY_NEXT ||
-				event.KeyboardEvent.Key == KEY_PRIOR ) )
+			if (event.keyboard.pressed &&
+				(event.keyboard.key == KEY_DOWN ||
+				event.keyboard.key == KEY_UP   ||
+				event.keyboard.key == KEY_HOME ||
+				event.keyboard.key == KEY_END  ||
+				event.keyboard.key == KEY_NEXT ||
+				event.keyboard.key == KEY_PRIOR ) )
 			{
 				int oldSelected = _d->selectedItemIndex;
-				switch (event.KeyboardEvent.Key)
+				switch (event.keyboard.key)
 				{
 					case KEY_DOWN:
                         _d->selectedItemIndex += 1;
@@ -318,13 +318,13 @@ bool ListBox::onEvent(const NEvent& event)
 
 				return true;
 			}
-			else if (!event.KeyboardEvent.PressedDown && ( event.KeyboardEvent.Key == KEY_RETURN || event.KeyboardEvent.Key == KEY_SPACE ) )
+			else if (!event.keyboard.pressed && ( event.keyboard.key == KEY_RETURN || event.keyboard.key == KEY_SPACE ) )
 			{
 				_IndexChanged( guiListboxSelectedAgain );
 
 				return true;
 			}
-			else if (event.KeyboardEvent.PressedDown && event.KeyboardEvent.Char)
+			else if (event.keyboard.pressed && event.keyboard.symbol)
 			{
 				// change selection based on text as it is typed.
                 unsigned int now = DateTime::getElapsedTime();
@@ -332,16 +332,16 @@ bool ListBox::onEvent(const NEvent& event)
 				if (now - _d->lastKeyTime < 500)
 				{
 					// add to key buffer if it isn't a key repeat
-					if (!(_d->keyBuffer.size() == 1 && _d->keyBuffer[0] == event.KeyboardEvent.Char))
+					if (!(_d->keyBuffer.size() == 1 && _d->keyBuffer[0] == event.keyboard.symbol))
 					{
 						_d->keyBuffer += " ";
-						_d->keyBuffer[_d->keyBuffer.size()-1] = event.KeyboardEvent.Char;
+						_d->keyBuffer[_d->keyBuffer.size()-1] = event.keyboard.symbol;
 					}
 				}
 				else
 				{
 					_d->keyBuffer = " ";
-					_d->keyBuffer[0] = event.KeyboardEvent.Char;
+					_d->keyBuffer[0] = event.keyboard.symbol;
 				}
 				_d->lastKeyTime = now;
 
@@ -400,11 +400,11 @@ bool ListBox::onEvent(const NEvent& event)
 			break;
 
 		case sEventGui:
-			switch(event.GuiEvent.EventType)
+			switch(event.gui.type)
 			{
 			case guiScrollbarChanged:
 				{
-					if (event.GuiEvent.Caller == _d->scrollBar)
+					if (event.gui.caller == _d->scrollBar)
 					{
 						_d->needItemsRepackTextures = true;
 						return true;
@@ -419,7 +419,7 @@ bool ListBox::onEvent(const NEvent& event)
 			case guiElementFocusLost:
 				{
           //CallScriptFunction( GUI_EVENT + NRP_ELEMENT_FOCUS_LOST, this );
-          if (event.GuiEvent.Caller == this)
+          if (event.gui.caller == this)
           {
              _d->selecting = false;
           }
@@ -433,13 +433,13 @@ bool ListBox::onEvent(const NEvent& event)
 
 			case sEventMouse:
 			{
-				Point p = event.MouseEvent.getPosition();
+				Point p = event.mouse.getPosition();
 
-				switch(event.MouseEvent.Event)
+				switch(event.mouse.type)
 				{
 				case mouseWheel:
 					{
-						_d->scrollBar->setPos(_d->scrollBar->getPos() + (event.MouseEvent.Wheel < 0 ? -1 : 1) * (-_d->itemHeight/2));
+						_d->scrollBar->setPos(_d->scrollBar->getPos() + (event.mouse.wheel < 0 ? -1 : 1) * (-_d->itemHeight/2));
 						return true;
 					}
 				break;
@@ -451,7 +451,7 @@ bool ListBox::onEvent(const NEvent& event)
 
             if (isPointInside(p) && isFlag( LBF_SELECT_ON_MOUSE_DOWN ) )
             {
-              _SelectNew(event.MouseEvent.Y);
+              _SelectNew(event.mouse.y);
             }
 
 						return true;
@@ -464,7 +464,7 @@ bool ListBox::onEvent(const NEvent& event)
 
             if (isPointInside(p) && !isFlag( LBF_SELECT_ON_MOUSE_DOWN ) )
             {
-              _SelectNew(event.MouseEvent.Y);
+              _SelectNew(event.mouse.y);
             }
 
 						return true;
@@ -476,7 +476,7 @@ bool ListBox::onEvent(const NEvent& event)
           {
             if (isPointInside(p))
             {
-              _SelectNew(event.MouseEvent.Y);
+              _SelectNew(event.mouse.y);
               return true;
             }
           }

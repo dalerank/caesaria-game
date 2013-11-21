@@ -182,10 +182,10 @@ bool ContextMenu::onEvent(const NEvent& event)
 		switch(event.EventType)
 		{
 		case sEventGui:
-			switch(event.GuiEvent.EventType)
+			switch(event.gui.type)
 			{
 			case guiElementFocusLost:
-				if (event.GuiEvent.Caller == this && !isMyChild(event.GuiEvent.Element) && _d->allowFocus)
+				if (event.gui.caller == this && !isMyChild(event.gui.element) && _d->allowFocus)
 				{
 					// set event parent of submenus
 					Widget* p = _d->eventParent ? _d->eventParent : getParent();
@@ -193,9 +193,9 @@ bool ContextMenu::onEvent(const NEvent& event)
 
 					NEvent event;
 					event.EventType = sEventGui;
-					event.GuiEvent.Caller = this;
-					event.GuiEvent.Element = 0;
-					event.GuiEvent.EventType = guiElementClosed;
+					event.gui.caller = this;
+					event.gui.element = 0;
+					event.gui.type = guiElementClosed;
 					if ( !p->onEvent(event) )
 					{
 						if( (_d->closeHandling & cmHide) > 0 )
@@ -212,7 +212,7 @@ bool ContextMenu::onEvent(const NEvent& event)
 				}
 				break;
 			case guiElementFocused:
-				if (event.GuiEvent.Caller == this && !_d->allowFocus)
+				if (event.gui.caller == this && !_d->allowFocus)
 				{
 					return true;
 				}
@@ -223,13 +223,13 @@ bool ContextMenu::onEvent(const NEvent& event)
 		break;
 
 		case sEventMouse:
-			switch(event.MouseEvent.Event)
+			switch(event.mouse.type)
 			{
 			case mouseLbtnRelease:
 				{
 					// menu might be removed if it loses focus in sendClick, so grab a reference
 					grab();
-					const unsigned int t = sendClick_( event.MouseEvent.getPosition() );
+					const unsigned int t = sendClick_( event.mouse.getPosition() );
 	 				if( (t==0 || t==1) && isFocused() )
 						removeFocus();
 					drop();
@@ -239,7 +239,7 @@ bool ContextMenu::onEvent(const NEvent& event)
 				return true;
 			case mouseMoved:
 				if( isHovered() )
-					isHighlighted_( event.MouseEvent.getPosition(), true);
+					isHighlighted_( event.mouse.getPosition(), true);
 				return true;
 			default:
 				break;
@@ -308,9 +308,9 @@ unsigned int ContextMenu::sendClick_(const Point& p)
 
 		NEvent event;
 		event.EventType = sEventGui;
-		event.GuiEvent.Caller = this;
-		event.GuiEvent.Element = 0;
-		event.GuiEvent.EventType = guiMenuItemSelected;
+		event.gui.caller = this;
+		event.gui.element = 0;
+		event.gui.type = guiMenuItemSelected;
 		if( _d->eventParent )
  			_d->eventParent->onEvent(event);
 		else 

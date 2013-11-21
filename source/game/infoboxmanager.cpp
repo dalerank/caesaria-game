@@ -30,6 +30,7 @@
 #include "core/logger.hpp"
 #include "building/constants.hpp"
 #include "walker/walker.hpp"
+#include "gfx/tilemap.hpp"
 #include <map>
 
 using namespace constants;
@@ -39,25 +40,25 @@ template< class T >
 class BaseInfoboxCreator : public InfoboxCreator
 {
 public:
-  gui::InfoBoxSimple* create( gui::Widget* parent, const Tile& tile )
+  gui::InfoBoxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
-    return new T( parent, tile );
+    return new T( parent, city->getTilemap().at( pos ) );
   }
 };
 
 class InfoBoxHouseCreator : public InfoboxCreator
 {
 public:
-  gui::InfoBoxSimple* create( gui::Widget* parent, const Tile& tile )
+  gui::InfoBoxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
-    HousePtr house = tile.getOverlay().as<House>();
+    HousePtr house = city->getOverlay( pos ).as<House>();
     if( house->getHabitants().count() > 0 )
     {
-      return new InfoBoxHouse( parent, tile );
+      return new InfoBoxHouse( parent, city->getTilemap().at( pos ) );
     }
     else
     {
-      return new InfoBoxFreeHouse( parent, tile );
+      return new InfoBoxFreeHouse( parent, city->getTilemap().at( pos ) );
     }
   }
 };
@@ -67,16 +68,14 @@ template< class T >
 class CitizenInfoboxCreator : public InfoboxCreator
 {
 public:
-  CitizenInfoboxCreator( PlayerCityPtr c ) : city(c) {}
-
-  gui::InfoBoxSimple* create( gui::Widget* parent, const Tile& tile )
+  gui::InfoBoxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
     CityHelper helper( city );
-    WalkerList walkers = helper.find<Walker>( walker::any, tile.getIJ() );
+    WalkerList walkers = helper.find<Walker>( walker::any, pos );
 
     if( walkers.empty() )
     {
-      return new T( parent, tile );
+      return new T( parent, city->getTilemap().at( pos ) );
     }
     else
     {
@@ -99,10 +98,10 @@ public:
     isDrawWorkers = drawWorkers;
   }
 
-  gui::InfoBoxSimple* create( gui::Widget* parent, const Tile& tile )
+  gui::InfoBoxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
     Size  size = parent->getSize();
-    WorkingBuildingPtr building = tile.getOverlay().as<WorkingBuilding>();
+    WorkingBuildingPtr building = city->getOverlay( pos ).as<WorkingBuilding>();
     if( building.isValid() )
     {
       InfoBoxWorkingBuilding* infoBox = new InfoBoxWorkingBuilding( parent, building );
@@ -130,7 +129,7 @@ public:
     text = desc;
   }
 
-  gui::InfoBoxSimple* create( gui::Widget* parent, const Tile& tile )
+  gui::InfoBoxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
     Size  size = parent->getSize();
     InfoBoxSimple* infoBox = new InfoBoxSimple( parent, Rect( 0, 0, 510, 300 ) );
@@ -148,8 +147,6 @@ public:
 class InfoBoxManager::Impl
 {
 public:
-    GuiEnv* gui;
-    PlayerCityPtr city;
     bool showDebugInfo;
 
     typedef std::map< TileOverlay::Type, InfoboxCreator* > InfoboxCreators;
@@ -158,21 +155,11 @@ public:
     InfoboxCreators constructors;
 };
 
-InfoBoxManagerPtr InfoBoxManager::create(PlayerCityPtr city, GuiEnv* gui )
+InfoBoxManager::InfoBoxManager() : _d( new Impl )
 {
-  InfoBoxManagerPtr ret( new InfoBoxManager( city, gui ) );
-  ret->drop();
-
-  return ret;
-}
-
-InfoBoxManager::InfoBoxManager( PlayerCityPtr city, GuiEnv* gui ) : _d( new Impl )
-{
-  _d->city = city;
   _d->showDebugInfo = true;
-  _d->gui = gui;
 
-  addInfobox( construction::road,         OC3_STR_EXT(Road),        new CitizenInfoboxCreator<InfoBoxLand>( _d->city ) );
+  addInfobox( construction::road,         OC3_STR_EXT(Road),        new CitizenInfoboxCreator<InfoBoxLand>() );
   addInfobox( building::reservoir,        OC3_STR_EXT(Reservoir),   new InfoBoxBasicCreator( _("##reservoir_title##"), _("##reservoir_text##") ) );
   addInfobox( building::house,            OC3_STR_EXT(House),       new InfoBoxHouseCreator() );
   addInfobox( building::prefecture,       OC3_STR_EXT(Prefecture),  new ServiceBaseInfoboxCreator( "##prefecture_title##", "##prefecture_text##") );
@@ -207,12 +194,12 @@ InfoBoxManager::InfoBoxManager( PlayerCityPtr city, GuiEnv* gui ) : _d( new Impl
   addInfobox( building::B_SCHOOL,         OC3_STR_EXT(B_SCHOOL),    new ServiceBaseInfoboxCreator( _("##school_title##"), _("##school_text##") ));
   addInfobox( building::B_COLLEGE,        OC3_STR_EXT(B_COLLEGE),   new ServiceBaseInfoboxCreator( _("##college_title##"), _("##college_text##") ));
   addInfobox( building::B_LIBRARY,        OC3_STR_EXT(B_LIBRARY),   new ServiceBaseInfoboxCreator( _("##library_title##"), _("##library_text##") ));
-  addInfobox( construction::B_GARDEN,     OC3_STR_EXT(B_GARDEN),    new InfoBoxBasicCreator( _("##building_garden##"), _("##garden_desc##")) );
+  addInfobox( construction::garden,       OC3_STR_EXT(B_GARDEN),    new InfoBoxBasicCreator( _("##building_garden##"), _("##garden_desc##")) );
   addInfobox( building::B_STATUE1,        OC3_STR_EXT(B_STATUE1),   new InfoBoxBasicCreator( _("##building_statue_small##"), _("##statue_desc##")) );
   addInfobox( building::B_STATUE2,        OC3_STR_EXT(B_STATUE2),   new InfoBoxBasicCreator( _("##building_statue_middle##"), _("##statue_desc##")) );
   addInfobox( building::B_STATUE3,        OC3_STR_EXT(B_STATUE3),   new InfoBoxBasicCreator( _("##building_statue_big##"), _("##statue_desc##")) );
-  addInfobox( construction::B_PLAZA,      OC3_STR_EXT(B_PLAZA),     new CitizenInfoboxCreator<InfoBoxLand>( _d->city ) );
-  addInfobox( building::unknown,          OC3_STR_EXT(unknown),     new CitizenInfoboxCreator<InfoBoxLand>( _d->city ) );
+  addInfobox( construction::plaza,        OC3_STR_EXT(B_PLAZA),     new CitizenInfoboxCreator<InfoBoxLand>() );
+  addInfobox( building::unknown,          OC3_STR_EXT(unknown),     new CitizenInfoboxCreator<InfoBoxLand>() );
   addInfobox( building::pottery,          OC3_STR_EXT(B_POTTERY),   new BaseInfoboxCreator<GuiInfoFactory>() );
   addInfobox( building::B_WEAPONS_WORKSHOP, OC3_STR_EXT(B_WEAPONS_WORKSHOP), new BaseInfoboxCreator<GuiInfoFactory>() );
   addInfobox( building::furniture,        OC3_STR_EXT(B_FURNITURE), new BaseInfoboxCreator<GuiInfoFactory>() );
@@ -245,8 +232,15 @@ InfoBoxManager::~InfoBoxManager()
 
 }
 
-void InfoBoxManager::showHelp( const Tile& tile )
+InfoBoxManager& InfoBoxManager::getInstance()
 {
+  static InfoBoxManager inst;
+  return inst;
+}
+
+void InfoBoxManager::showHelp( PlayerCityPtr city, GuiEnv* gui, TilePos pos )
+{
+  Tile& tile = city->getTilemap().at( pos );
   TileOverlayPtr overlay = tile.getOverlay();
   TileOverlay::Type type;
 
@@ -260,13 +254,13 @@ void InfoBoxManager::showHelp( const Tile& tile )
   Impl::InfoboxCreators::iterator findConstructor = _d->constructors.find( type );
 
   InfoBoxSimple* infoBox = findConstructor != _d->constructors.end()
-                                  ? findConstructor->second->create( _d->gui->getRootWidget(), tile )
+                                  ? findConstructor->second->create( city, gui->getRootWidget(), pos )
                                   : 0;
   
   if( infoBox && infoBox->isAutoPosition() )
   {
-    Size rSize = _d->gui->getRootWidget()->getSize();
-    int y = ( _d->gui->getCursorPos().getY() < rSize.getHeight() / 2 ) 
+    Size rSize = gui->getRootWidget()->getSize();
+    int y = ( gui->getCursorPos().getY() < rSize.getHeight() / 2 )
                 ? rSize.getHeight() - infoBox->getHeight() - 5
                 : 30;
     Point pos( ( rSize.getWidth() - infoBox->getWidth() ) / 2, y );
@@ -292,7 +286,7 @@ void InfoBoxManager::addInfobox( const TileOverlay::Type type, const std::string
   }
 }
 
-bool InfoBoxManager::canCreate(const TileOverlay::Type type ) const
+bool InfoBoxManager::canCreate(const TileOverlay::Type type) const
 {
   return _d->constructors.find( type ) != _d->constructors.end();   
 }
