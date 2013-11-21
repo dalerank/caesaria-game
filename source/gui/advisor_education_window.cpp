@@ -72,9 +72,9 @@ public:
     std::string buildingStr, peoplesStr;
     switch( _service )
     {
-    case building::B_SCHOOL: buildingStr = _("##schools##"); peoplesStr = _("##children##"); break;
-    case building::B_COLLEGE: buildingStr = _("##colleges##"); peoplesStr = _("##students##"); break;
-    case building::B_LIBRARY: buildingStr = _("##libraries##"); peoplesStr = _("##peoples##"); break;
+    case building::school: buildingStr = _("##schools##"); peoplesStr = _("##children##"); break;
+    case building::academy: buildingStr = _("##colleges##"); peoplesStr = _("##students##"); break;
+    case building::library: buildingStr = _("##libraries##"); peoplesStr = _("##peoples##"); break;
     default: break;
     }
 
@@ -131,14 +131,14 @@ AdvisorEducationWindow::AdvisorEducationWindow(PlayerCityPtr city, Widget* paren
   Point startPoint( 2, 2 );
   Size labelSize( 550, 20 );
   InfrastructureInfo info;
-  info = _d->getInfo( city, building::B_SCHOOL );
-  _d->lbSchoolInfo = new EducationInfoLabel( _d->lbBackframe, Rect( startPoint, labelSize ), building::B_SCHOOL, info );
+  info = _d->getInfo( city, building::school );
+  _d->lbSchoolInfo = new EducationInfoLabel( _d->lbBackframe, Rect( startPoint, labelSize ), building::school, info );
 
-  info = _d->getInfo( city, building::B_COLLEGE );
-  _d->lbCollegeInfo = new EducationInfoLabel( _d->lbBackframe, Rect( startPoint + Point( 0, 20), labelSize), building::B_COLLEGE, info );
+  info = _d->getInfo( city, building::academy );
+  _d->lbCollegeInfo = new EducationInfoLabel( _d->lbBackframe, Rect( startPoint + Point( 0, 20), labelSize), building::academy, info );
 
-  info = _d->getInfo( city, building::B_LIBRARY );
-  _d->lbLibraryInfo = new EducationInfoLabel( _d->lbBackframe, Rect( startPoint + Point( 0, 40), labelSize), building::B_LIBRARY, info );
+  info = _d->getInfo( city, building::library );
+  _d->lbLibraryInfo = new EducationInfoLabel( _d->lbBackframe, Rect( startPoint + Point( 0, 40), labelSize), building::library, info );
 
   CityHelper helper( city );
 
@@ -190,9 +190,9 @@ InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(PlayerCityPtr city, con
   CitizenGroup::Age age;
   switch( bType )
   {
-  case building::B_SCHOOL:  service = Service::school;  maxStuding = 75;  age = CitizenGroup::scholar; break;
-  case building::B_COLLEGE: service = Service::college; maxStuding = 100; age = CitizenGroup::student; break;
-  case building::B_LIBRARY: service = Service::library; maxStuding = 800; age = CitizenGroup::mature;  break;
+  case building::school:  service = Service::school;  maxStuding = 75;  age = CitizenGroup::scholar; break;
+  case building::academy: service = Service::college; maxStuding = 100; age = CitizenGroup::student; break;
+  case building::library: service = Service::library; maxStuding = 800; age = CitizenGroup::mature;  break;
   default: break;
   }
 

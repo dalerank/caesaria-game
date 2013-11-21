@@ -47,4 +47,5 @@ const char* ResourceGroup::waterOverlay    = "land2a";
 const char* ResourceGroup::foodOverlay     = "land2a";
 const char* ResourceGroup::empirebits      = "empire_bits";
 const char* ResourceGroup::empirepnls      = "empire_panels";
+const char* ResourceGroup::wall            = "land2a";
 

@@ -78,7 +78,7 @@ void DisasterEvent::exec( Game& game )
     TilesArray clearedTiles = tmap.getArea( rPos, size );
     foreach( Tile* tile, clearedTiles )
     {
-      TileOverlay::Type dstr2constr[] = { building::burningRuins, building::B_COLLAPSED_RUINS, building::B_PLAGUE_RUINS };
+      TileOverlay::Type dstr2constr[] = { building::burningRuins, building::collapsedRuins, building::plagueRuins };
       bool canCreate = TileOverlayFactory::getInstance().canCreate( dstr2constr[_type] );
       if( canCreate )
       {

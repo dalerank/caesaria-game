@@ -169,7 +169,7 @@ Renderer::PassQueue Building::getPassQueue() const
 // transport 93 - missionaire post   2 x 2
 // circus    1 ~ 18 hippodrome    5x(5 x 5)
 
-SmallStatue::SmallStatue() : Building( building::B_STATUE1, Size(1) )
+SmallStatue::SmallStatue() : Building( building::smallStatue, Size(1) )
 {
   _fireIncrement = 0;
   _damageIncrement = 0;
@@ -181,7 +181,7 @@ bool SmallStatue::isNeedRoadAccess() const
   return false;
 }
 
-MediumStatue::MediumStatue() : Building( building::B_STATUE2, Size(2) )
+MediumStatue::MediumStatue() : Building( building::middleStatue, Size(2) )
 {
   _fireIncrement = 0;
   _damageIncrement = 0;
@@ -193,7 +193,7 @@ bool MediumStatue::isNeedRoadAccess() const
   return false;
 }
 
-BigStatue::BigStatue() : Building( building::B_STATUE3, Size(3))
+BigStatue::BigStatue() : Building( building::bigStatue, Size(3))
 {
   _fireIncrement = 0;
   _damageIncrement = 0;

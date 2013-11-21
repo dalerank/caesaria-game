@@ -10,6 +10,7 @@
     desirability : 12,
     range : 0,
     class : "wall"
+    cost : 10
   },
   
   aqueduct : {

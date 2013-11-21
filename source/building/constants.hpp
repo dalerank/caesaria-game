@@ -49,24 +49,24 @@ enum Group
   religionGroup,
   militaryGroup,
   nativeGroup,
-  water,
-  administration,
-  BC_BRIDGE,
-  BC_ENGINEERING,
-  BC_TRADE,
-  BC_TOWER,
-  BC_GATE,
-  BC_SECURITY,
-  BC_EDUCATUION,
-  BC_HEALTH,
-  BC_SIGHT,
-  BC_GARDEN,
-  BC_ROAD,
-  BC_ENTERTAINMENT,
-  BC_HOUSE,
-  BC_WALL,
-  BC_MAX,
-  anyGroup=BC_MAX
+  waterGroup,
+  administrationGroup,
+  bridgeGroup,
+  engineeringGroup,
+  tradeGroup,
+  towerGroup,
+  gateGroup,
+  securityGroup,
+  educationGroup,
+  healthGroup,
+  sightGroup,
+  gardenGroup,
+  roadGroup,
+  entertainmentGroup,
+  houseGroup,
+  wallGroup,
+  countGroup,
+  anyGroup=countGroup
 };
 
 enum Type
@@ -85,6 +85,12 @@ enum Type
   lionHouse,
   chariotSchool,
 
+  //watersupply
+  reservoir,
+  aqueduct,
+  fountain,
+  well,
+
 // house
   house,
 
@@ -95,20 +101,14 @@ enum Type
   governorVilla,
   governorPalace,
 
-// water
-  reservoir,
-  aqueduct,
-  fountain,
-  well,
-
 // security
   prefecture,
   wall,
   tower,
   gatehouse,
-  B_FORT_LEGIONNAIRE,
-  B_FORT_JAVELIN,
-  B_FORT_MOUNTED,
+  fortLegionaire,
+  fortJavelin,
+  fortMounted,
   militaryAcademy,
   barracks,
 
@@ -134,15 +134,15 @@ enum Type
 // factories
   winery,
   creamery,
-  B_WEAPONS_WORKSHOP,
-  furniture,
+  weaponsWorkshop,
+  furnitureWorkshop,
   pottery,
 
 // utility
   engineerPost,
-  B_STATUE1,
-  B_STATUE2,
-  B_STATUE3,
+  smallStatue,
+  middleStatue,
+  bigStatue,
   lowBridge,
   highBridge,
   shipyard,
@@ -150,16 +150,16 @@ enum Type
   wharf,
 
 // health
-  B_DOCTOR,
-  B_HOSPITAL,
-  B_BATHS,
-  B_BARBER,
+  doctor,
+  hospital,
+  baths,
+  barber,
 
 // education
-  B_SCHOOL,
-  B_COLLEGE,
-  B_LIBRARY,
-  B_MISSION_POST,
+  school,
+  academy,
+  library,
+  missionaryPost,
 
 // religion: small temples
   templeCeres,
@@ -179,16 +179,16 @@ enum Type
   oracle,
 
 // building of natives
-  B_NATIVE_HUT,
-  B_NATIVE_CENTER,
-  B_NATIVE_FIELD,
+  nativeHut,
+  nativeCenter,
+  nativeField,
 
 //other
   triumphalArch,
   burningRuins,
-  B_BURNED_RUINS,
-  B_COLLAPSED_RUINS,
-  B_PLAGUE_RUINS,
+  burnedRuins,
+  collapsedRuins,
+  plagueRuins,
 
   forum2,
   senate2,

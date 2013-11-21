@@ -91,13 +91,13 @@ public:
    virtual void build(PlayerCityPtr city, const TilePos &pos);
 };
 
-class WorkshopFurniture : public Factory
+class FurnitureWorkshop : public Factory
 {
 public:
   virtual bool canBuild(PlayerCityPtr city, const TilePos &pos) const;
   virtual void build(PlayerCityPtr city, const TilePos &pos);
 
-  WorkshopFurniture();
+  FurnitureWorkshop();
 };
 
 class Winery : public Factory

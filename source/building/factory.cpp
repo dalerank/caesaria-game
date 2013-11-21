@@ -338,7 +338,7 @@ bool IronMine::canBuild(PlayerCityPtr city, const TilePos& pos ) const
   return (is_constructible && near_mountain);
 }
 
-WeaponsWorkshop::WeaponsWorkshop() : Factory(Good::iron, Good::weapon, building::B_WEAPONS_WORKSHOP, Size(2) )
+WeaponsWorkshop::WeaponsWorkshop() : Factory(Good::iron, Good::weapon, building::weaponsWorkshop, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 108);
 
@@ -361,12 +361,12 @@ void WeaponsWorkshop::build(PlayerCityPtr city, const TilePos& pos)
   _setError( haveIronMine ? "" : _("##need_iron_for_work##") );
 }
 
-bool WorkshopFurniture::canBuild(PlayerCityPtr city, const TilePos& pos) const
+bool FurnitureWorkshop::canBuild(PlayerCityPtr city, const TilePos& pos) const
 {
   return Factory::canBuild( city, pos );
 }
 
-void WorkshopFurniture::build(PlayerCityPtr city, const TilePos& pos)
+void FurnitureWorkshop::build(PlayerCityPtr city, const TilePos& pos)
 {
   Factory::build( city, pos );
 
@@ -376,7 +376,7 @@ void WorkshopFurniture::build(PlayerCityPtr city, const TilePos& pos)
   _setError( haveTimberLogger ? "" : _("##need_timber_for_work##") );
 }
 
-WorkshopFurniture::WorkshopFurniture() : Factory(Good::timber, Good::furniture, building::furniture, Size(2) )
+FurnitureWorkshop::FurnitureWorkshop() : Factory(Good::timber, Good::furniture, building::furnitureWorkshop, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 117 );
 

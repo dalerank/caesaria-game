@@ -184,15 +184,15 @@ AdvisorEmployerWindow::Impl::EmployersInfo AdvisorEmployerWindow::Impl::getEmplo
   std::vector< building::Group > bldClasses;
   switch( type )
   {
-  case prIndustryAndTrade: bldClasses.push_back( building::industryGroup ); bldClasses.push_back( building::BC_TRADE ); break;
+  case prIndustryAndTrade: bldClasses.push_back( building::industryGroup ); bldClasses.push_back( building::tradeGroup ); break;
   case prFood: bldClasses.push_back( building::foodGroup ); break;
-  case prEngineers: bldClasses.push_back( building::BC_ENGINEERING ); break;
-  case prWater: bldClasses.push_back( building::water ); break;
-  case prPrefectures: bldClasses.push_back( building::BC_SECURITY ); break;
+  case prEngineers: bldClasses.push_back( building::engineeringGroup ); break;
+  case prWater: bldClasses.push_back( building::waterGroup ); break;
+  case prPrefectures: bldClasses.push_back( building::securityGroup ); break;
   case prMilitary: bldClasses.push_back( building::militaryGroup ); break;
-  case prEntertainment: bldClasses.push_back( building::BC_ENTERTAINMENT ); break;
-  case prHealthAndEducation: bldClasses.push_back( building::BC_HEALTH ); bldClasses.push_back( building::BC_EDUCATUION ); break;
-  case prAdministrationAndReligion: bldClasses.push_back( building::administration ); bldClasses.push_back( building::religionGroup ); break;
+  case prEntertainment: bldClasses.push_back( building::entertainmentGroup ); break;
+  case prHealthAndEducation: bldClasses.push_back( building::healthGroup ); bldClasses.push_back( building::educationGroup ); break;
+  case prAdministrationAndReligion: bldClasses.push_back( building::administrationGroup ); bldClasses.push_back( building::religionGroup ); break;
   default: break;
   }
 

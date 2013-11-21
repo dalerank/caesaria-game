@@ -125,7 +125,7 @@ void CityServiceCulture::update( const unsigned int time )
     _d->theatersCoverage = _d->theaterVisitors / (float)cityPopulation;
     _d->theatresPoints = _d->convCoverage2Points( theatresPoints, _d->theatersCoverage );
 
-    LibraryList libraries = helper.find<Library>( building::B_LIBRARY );
+    LibraryList libraries = helper.find<Library>( building::library );
     foreach( LibraryPtr library, libraries )
     {
       _d->libraryVisitors += library->getVisitorsNumber();
@@ -133,7 +133,7 @@ void CityServiceCulture::update( const unsigned int time )
     _d->libraryCoverage = _d->libraryVisitors / (float)cityPopulation;
     _d->libraryPoints = _d->convCoverage2Points( librariesPoints, _d->libraryCoverage );
 
-    SchoolList schools = helper.find<School>( building::B_SCHOOL );
+    SchoolList schools = helper.find<School>( building::school );
     foreach( SchoolPtr school, schools )
     {
       _d->schoolVisitors += school->getVisitorsNumber();
@@ -141,8 +141,8 @@ void CityServiceCulture::update( const unsigned int time )
     _d->schoolCoverage = _d->schoolVisitors / (float)cityPopulation;
     _d->schoolPoints = _d->convCoverage2Points( schoolsPoints, _d->schoolCoverage );
 
-    CollegeList colleges = helper.find<College>( building::B_COLLEGE );
-    foreach( CollegePtr college, colleges )
+    AcademyList colleges = helper.find<Academy>( building::academy );
+    foreach( AcademyPtr college, colleges )
     {
       _d->collegeVisitors += college->getVisitorsNumber();
     }

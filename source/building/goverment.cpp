@@ -43,7 +43,7 @@ GovernorsPalace::GovernorsPalace() : WorkingBuilding( building::governorPalace, 
   setPicture( ResourceGroup::housing, 48 );
 }
 
-MissionPost::MissionPost() : WorkingBuilding(building::B_MISSION_POST, Size(2) )
+MissionaryPost::MissionaryPost() : WorkingBuilding(building::missionaryPost, Size(2) )
 {
   setMaxWorkers(20);
   setWorkers(0);  

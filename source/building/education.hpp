@@ -38,10 +38,10 @@ public:
    int getVisitorsNumber() const;
 };
 
-class College : public ServiceBuilding
+class Academy : public ServiceBuilding
 {
 public:
-   College();
+   Academy();
 
    int getVisitorsNumber() const;
 };

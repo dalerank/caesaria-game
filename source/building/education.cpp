@@ -19,7 +19,7 @@
 
 using namespace constants;
 
-School::School() : ServiceBuilding(Service::school, building::B_SCHOOL, Size(2))
+School::School() : ServiceBuilding(Service::school, building::school, Size(2))
 {
   setPicture( ResourceGroup::commerce, 83 );
 }
@@ -45,7 +45,7 @@ unsigned int School::getWalkerDistance() const
   return 26;
 }
 
-Library::Library() : ServiceBuilding(Service::library, building::B_LIBRARY, Size(2))
+Library::Library() : ServiceBuilding(Service::library, building::library, Size(2))
 {
   setPicture( ResourceGroup::commerce, 84 );
 }
@@ -55,12 +55,12 @@ int Library::getVisitorsNumber() const
   return 800;
 }
 
-College::College() : ServiceBuilding(Service::college, building::B_COLLEGE, Size(3))
+Academy::Academy() : ServiceBuilding(Service::college, building::academy, Size(3))
 {
   setPicture( ResourceGroup::commerce, 85 );
 }
 
-int College::getVisitorsNumber() const
+int Academy::getVisitorsNumber() const
 {
   return 100;
 }

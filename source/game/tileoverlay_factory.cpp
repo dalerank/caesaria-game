@@ -52,6 +52,7 @@
 #include "building/constants.hpp"
 #include "constants.hpp"
 #include "core/logger.hpp"
+#include "building/wall.hpp"
 #include <map>
 
 using namespace constants;
@@ -195,9 +196,9 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::governorHouse,OC3_STR_EXT(GovernorsHouse) , new ConstructionCreator<GovernorsHouse>() );
   addCreator(building::governorVilla,OC3_STR_EXT(GovernorsVilla) , new ConstructionCreator<GovernorsVilla>() );
   addCreator(building::governorPalace, OC3_STR_EXT(GovernorsPalace), new ConstructionCreator<GovernorsPalace>() );
-  addCreator(building::B_STATUE1,    OC3_STR_EXT(SmallStatue), new ConstructionCreator<SmallStatue>() );
-  addCreator(building::B_STATUE2,    OC3_STR_EXT(MediumStatue), new ConstructionCreator<MediumStatue>() );
-  addCreator(building::B_STATUE3,    OC3_STR_EXT(BigStatue), new ConstructionCreator<BigStatue>() );
+  addCreator(building::smallStatue,    OC3_STR_EXT(SmallStatue), new ConstructionCreator<SmallStatue>() );
+  addCreator(building::middleStatue,    OC3_STR_EXT(MediumStatue), new ConstructionCreator<MediumStatue>() );
+  addCreator(building::bigStatue,    OC3_STR_EXT(BigStatue), new ConstructionCreator<BigStatue>() );
   addCreator(construction::garden, OC3_STR_EXT(Garden) , new ConstructionCreator<Garden>() );
   addCreator(construction::plaza,  OC3_STR_EXT(Plaza)  , new ConstructionCreator<Plaza>() );
   // water
@@ -207,9 +208,9 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::reservoir,  OC3_STR_EXT(Reservoir), new ConstructionCreator<Reservoir>() );
   // security
   addCreator(building::prefecture,   OC3_STR_EXT(Prefecture)  , new WorkingBuildingCreator<Prefecture>() );
-  addCreator(building::B_FORT_LEGIONNAIRE, OC3_STR_EXT(FortLegionnaire), new ConstructionCreator<FortLegionnaire>() );
-  addCreator(building::B_FORT_JAVELIN, OC3_STR_EXT(FortJaveline)   , new ConstructionCreator<FortJaveline>() );
-  addCreator(building::B_FORT_MOUNTED, OC3_STR_EXT(FortMounted)  , new ConstructionCreator<FortMounted>() );
+  addCreator(building::fortLegionaire, OC3_STR_EXT(FortLegionnaire), new ConstructionCreator<FortLegionnaire>() );
+  addCreator(building::fortJavelin, OC3_STR_EXT(FortJaveline)   , new ConstructionCreator<FortJaveline>() );
+  addCreator(building::fortMounted, OC3_STR_EXT(FortMounted)  , new ConstructionCreator<FortMounted>() );
   addCreator(building::militaryAcademy, OC3_STR_EXT(MilitaryAcademy), new WorkingBuildingCreator<MilitaryAcademy>() );
   addCreator(building::barracks,   OC3_STR_EXT(Barracks)        , new ConstructionCreator<Barracks>() );
   // commerce
@@ -229,8 +230,8 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::clayPit,      OC3_STR_EXT(ClayPit)  , new FactoryCreator<ClayPit>() );
   addCreator(building::marbleQuarry, OC3_STR_EXT(MarbleQuarry), new FactoryCreator<MarbleQuarry>() );
   // factories
-  addCreator(building::B_WEAPONS_WORKSHOP, OC3_STR_EXT(WeaponsWorkshop)   , new FactoryCreator<WeaponsWorkshop>() );
-  addCreator(building::furniture,  OC3_STR_EXT(WorkshopFurniture), new FactoryCreator<WorkshopFurniture>() );
+  addCreator(building::weaponsWorkshop, OC3_STR_EXT(WeaponsWorkshop)   , new FactoryCreator<WeaponsWorkshop>() );
+  addCreator(building::furnitureWorkshop,  OC3_STR_EXT(FurnitureWorkshop), new FactoryCreator<FurnitureWorkshop>() );
   addCreator(building::winery, OC3_STR_EXT(Winery)     , new FactoryCreator<Winery>() );
   addCreator(building::creamery, OC3_STR_EXT(Creamery)      , new FactoryCreator<Creamery>() );
   addCreator(building::pottery,      OC3_STR_EXT(Pottery)  , new FactoryCreator<Pottery>() );
@@ -255,26 +256,27 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::B_BIG_TEMPLE_MERCURE, OC3_STR_EXT(BigTempleMercure), new WorkingBuildingCreator<BigTempleMercure>() );
   addCreator(building::oracle, OC3_STR_EXT(TempleOracle) , new WorkingBuildingCreator<TempleOracle>() );
   // health
-  addCreator(building::B_BATHS,      OC3_STR_EXT(Baths)   , new WorkingBuildingCreator<Baths>() );
-  addCreator(building::B_BARBER,     OC3_STR_EXT(Barber)  , new WorkingBuildingCreator<Barber>() );
-  addCreator(building::B_DOCTOR,     OC3_STR_EXT(Doctor)  , new WorkingBuildingCreator<Doctor>() );
-  addCreator(building::B_HOSPITAL,   OC3_STR_EXT(Hospital), new WorkingBuildingCreator<Hospital>() );
+  addCreator(building::baths,      OC3_STR_EXT(Baths)   , new WorkingBuildingCreator<Baths>() );
+  addCreator(building::barber,     OC3_STR_EXT(Barber)  , new WorkingBuildingCreator<Barber>() );
+  addCreator(building::doctor,     OC3_STR_EXT(Doctor)  , new WorkingBuildingCreator<Doctor>() );
+  addCreator(building::hospital,   OC3_STR_EXT(Hospital), new WorkingBuildingCreator<Hospital>() );
   // education
-  addCreator(building::B_SCHOOL,     OC3_STR_EXT(School) , new WorkingBuildingCreator<School>() );
-  addCreator(building::B_LIBRARY,    OC3_STR_EXT(Library), new WorkingBuildingCreator<Library>() );
-  addCreator(building::B_COLLEGE,    OC3_STR_EXT(College), new WorkingBuildingCreator<College>() );
-  addCreator(building::B_MISSION_POST, OC3_STR_EXT(MissionPost), new ConstructionCreator<MissionPost>() );
+  addCreator(building::school,     OC3_STR_EXT(School) , new WorkingBuildingCreator<School>() );
+  addCreator(building::library,    OC3_STR_EXT(Library), new WorkingBuildingCreator<Library>() );
+  addCreator(building::academy,    OC3_STR_EXT(Academy), new WorkingBuildingCreator<Academy>() );
+  addCreator(building::missionaryPost, OC3_STR_EXT(MissionaryPost), new ConstructionCreator<MissionaryPost>() );
   // natives
-  addCreator(building::B_NATIVE_HUT, OC3_STR_EXT(NativeHut)   , new ConstructionCreator<NativeHut>() );
-  addCreator(building::B_NATIVE_CENTER, OC3_STR_EXT(NativeCenter), new ConstructionCreator<NativeCenter>() );
-  addCreator(building::B_NATIVE_FIELD, OC3_STR_EXT(NativeField) , new ConstructionCreator<NativeField>() );
+  addCreator(building::nativeHut, OC3_STR_EXT(NativeHut)   , new ConstructionCreator<NativeHut>() );
+  addCreator(building::nativeCenter, OC3_STR_EXT(NativeCenter), new ConstructionCreator<NativeCenter>() );
+  addCreator(building::nativeField, OC3_STR_EXT(NativeField) , new ConstructionCreator<NativeField>() );
 
   //damages
   addCreator(building::burningRuins , OC3_STR_EXT(BurningRuins), new ConstructionCreator<BurningRuins>() );
-  addCreator(building::B_BURNED_RUINS , OC3_STR_EXT(BurnedRuins), new ConstructionCreator<BurnedRuins>() );
-  addCreator(building::B_COLLAPSED_RUINS , OC3_STR_EXT(CollapsedRuins), new ConstructionCreator<CollapsedRuins>() );
-  addCreator(building::B_PLAGUE_RUINS , OC3_STR_EXT(PlagueRuins), new ConstructionCreator<PlagueRuins>() );
+  addCreator(building::burnedRuins , OC3_STR_EXT(BurnedRuins), new ConstructionCreator<BurnedRuins>() );
+  addCreator(building::collapsedRuins , OC3_STR_EXT(CollapsedRuins), new ConstructionCreator<CollapsedRuins>() );
+  addCreator(building::plagueRuins , OC3_STR_EXT(PlagueRuins), new ConstructionCreator<PlagueRuins>() );
   addCreator(place::fishPlace,      OC3_STR_EXT(FishPlace), new BaseCreator<FishPlace>() );
+  addCreator(building::wall,         OC3_STR_EXT(Wall), new ConstructionCreator<Wall>() );
 }
 
 void TileOverlayFactory::addCreator( const TileOverlay::Type type, const std::string& typeName, TileOverlayConstructor* ctor )

@@ -27,7 +27,7 @@ Barracks::Barracks() : WorkingBuilding( building::barracks, Size( 3 ) )
   setPicture( ResourceGroup::security, 17 );
 }
 
-FortLegionnaire::FortLegionnaire() : Building( building::B_FORT_LEGIONNAIRE, Size(3) )
+FortLegionnaire::FortLegionnaire() : Building( building::fortLegionaire, Size(3) )
 {
   setPicture( ResourceGroup::security, 12 );
 
@@ -37,7 +37,7 @@ FortLegionnaire::FortLegionnaire() : Building( building::B_FORT_LEGIONNAIRE, Siz
   _fgPicturesRef().at( 0 ) = logo;
 }
 
-FortMounted::FortMounted() : Building( constants::building::B_FORT_MOUNTED, Size(3) )
+FortMounted::FortMounted() : Building( constants::building::fortMounted, Size(3) )
 {
   setPicture( ResourceGroup::security, 12 );
 
@@ -47,7 +47,7 @@ FortMounted::FortMounted() : Building( constants::building::B_FORT_MOUNTED, Size
   _fgPicturesRef().at( 0 ) = logo;
 }
 
-FortJaveline::FortJaveline() : Building( building::B_FORT_JAVELIN, Size(3) )
+FortJaveline::FortJaveline() : Building( building::fortJavelin, Size(3) )
 {
   setPicture( ResourceGroup::security, 12 );
 

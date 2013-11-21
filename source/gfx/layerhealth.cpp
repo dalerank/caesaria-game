@@ -59,10 +59,10 @@ void LayerHealth::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       engine.drawPicture( tile.getPicture(), screenPos );
     break;
 
-    case building::B_DOCTOR:
-    case building::B_HOSPITAL:
-    case building::B_BARBER:
-    case building::B_BATHS:
+    case building::doctor:
+    case building::hospital:
+    case building::barber:
+    case building::baths:
       needDrawAnimations = _flags.count( overlay->getType() );
       if( needDrawAnimations )
       {
@@ -80,10 +80,10 @@ void LayerHealth::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       {
         HousePtr house = overlay.as< House >();
 
-        if( _flags.count( building::B_DOCTOR ) ) { healthLevel = house->getHealthLevel(); }
-        else if( _flags.count( building::B_HOSPITAL ) ) { healthLevel = house->getServiceValue( Service::hospital ); }
-        else if( _flags.count( building::B_BARBER ) ) { healthLevel = house->getServiceValue( Service::barber ); }
-        else if( _flags.count( building::B_BATHS ) ) { healthLevel = house->getServiceValue( Service::baths ); }
+        if( _flags.count( building::doctor ) ) { healthLevel = house->getHealthLevel(); }
+        else if( _flags.count( building::hospital ) ) { healthLevel = house->getServiceValue( Service::hospital ); }
+        else if( _flags.count( building::barber ) ) { healthLevel = house->getServiceValue( Service::barber ); }
+        else if( _flags.count( building::baths ) ) { healthLevel = house->getServiceValue( Service::baths ); }
 
         needDrawAnimations = (house->getSpec().getLevel() == 1) && (house->getHabitants().empty());
 
@@ -129,19 +129,19 @@ LayerHealth::LayerHealth( TilemapCamera& camera, PlayerCityPtr city, int type)
   {
   case citylayer::health:
   case citylayer::doctor:
-    _flags.insert( building::B_DOCTOR ); _walkers.insert( walker::doctor );
+    _flags.insert( building::doctor ); _walkers.insert( walker::doctor );
   break;
 
   case citylayer::hospital:
-    _flags.insert( building::B_HOSPITAL ); _walkers.insert( walker::surgeon );
+    _flags.insert( building::hospital ); _walkers.insert( walker::surgeon );
   break;
 
   case citylayer::barber:
-    _flags.insert( building::B_BARBER ); _walkers.insert( walker::barber );
+    _flags.insert( building::barber ); _walkers.insert( walker::barber );
   break;
 
   case citylayer::baths:
-    _flags.insert( building::B_BATHS ); _walkers.insert( walker::bathlady );
+    _flags.insert( building::baths ); _walkers.insert( walker::bathlady );
   break;
   }
 }

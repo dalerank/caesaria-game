@@ -295,18 +295,18 @@ void GameLoaderC3Map::Impl::decodeTerrain(Tile &oTile, PlayerCityPtr city )
       case 0xb0f:
       case 0xb0b:
       case 0xb0c:
-        overlay = TileOverlayFactory::getInstance().create( building::B_NATIVE_HUT ).as<TileOverlay>();
+        overlay = TileOverlayFactory::getInstance().create( building::nativeHut ).as<TileOverlay>();
       break;
 
       case 0xb10:
       case 0xb0d:
-        overlay =  TileOverlayFactory::getInstance().create( building::B_NATIVE_CENTER ).as<TileOverlay>();
+        overlay =  TileOverlayFactory::getInstance().create( building::nativeCenter ).as<TileOverlay>();
         Logger::warning( "creation of Native center at (%d,%d)", oTile.getI(), oTile.getJ() );
       break;
 
       case 0xb11:
       case 0xb44:
-        overlay = TileOverlayFactory::getInstance().create( building::B_NATIVE_FIELD ).as<TileOverlay>();
+        overlay = TileOverlayFactory::getInstance().create( building::nativeField ).as<TileOverlay>();
       break;
     }
   }

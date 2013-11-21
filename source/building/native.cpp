@@ -40,7 +40,7 @@ void NativeBuilding::build(PlayerCityPtr city, const TilePos& pos )
   getTile().setFlag( Tile::tlBuilding, false );
 }
 
-NativeHut::NativeHut() : NativeBuilding( building::B_NATIVE_HUT, Size(1) )
+NativeHut::NativeHut() : NativeBuilding( building::nativeHut, Size(1) )
 {
   setPicture( ResourceGroup::housing, 49 );
   //setPicture(PicLoader::instance().get_picture("housng1a", 50));
@@ -53,7 +53,7 @@ void NativeHut::save( VariantMap& stream) const
 
 void NativeHut::load( const VariantMap& stream) {Building::load(stream);}
 
-NativeCenter::NativeCenter() : NativeBuilding( building::B_NATIVE_CENTER, Size(2) )
+NativeCenter::NativeCenter() : NativeBuilding( building::nativeCenter, Size(2) )
 {
   setPicture( ResourceGroup::housing, 51 );
 }
@@ -65,7 +65,7 @@ void NativeCenter::save( VariantMap&stream) const
 
 void NativeCenter::load( const VariantMap& stream) {Building::load(stream);}
 
-NativeField::NativeField() : NativeBuilding( building::B_NATIVE_FIELD, Size(1) )
+NativeField::NativeField() : NativeBuilding( building::nativeField, Size(1) )
 {
   setPicture( ResourceGroup::commerce, 13 );
 }

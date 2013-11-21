@@ -22,7 +22,7 @@
 
 using namespace constants;
 
-Doctor::Doctor() : ServiceBuilding(Service::doctor, building::B_DOCTOR, Size(1))
+Doctor::Doctor() : ServiceBuilding(Service::doctor, building::doctor, Size(1))
 {
 }
 
@@ -39,11 +39,11 @@ void Doctor::deliverService()
   }
 }
 
-Hospital::Hospital() : ServiceBuilding(Service::hospital, building::B_HOSPITAL, Size(3 ) )
+Hospital::Hospital() : ServiceBuilding(Service::hospital, building::hospital, Size(3 ) )
 {
 }
 
-Baths::Baths() : ServiceBuilding(Service::baths, building::B_BATHS, Size(2) )
+Baths::Baths() : ServiceBuilding(Service::baths, building::baths, Size(2) )
 {
   _haveReservorWater = false;
   _fgPicturesRef().resize(1);
@@ -97,7 +97,7 @@ void Baths::deliverService()
   }
 }
 
-Barber::Barber() : ServiceBuilding(Service::barber, building::B_BARBER, Size(1))
+Barber::Barber() : ServiceBuilding(Service::barber, building::barber, Size(1))
 {
 }
 

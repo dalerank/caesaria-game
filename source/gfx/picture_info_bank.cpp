@@ -61,6 +61,7 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   _d->setRange( ResourceGroup::govt, 1, 10, offset);
   _d->setRange( ResourceGroup::sprites, 1, 8, offset ); //collapse fog
   _d->setRange( ResourceGroup::sprites, 9, 20, offset ); //overlay columns
+  _d->setRange( ResourceGroup::wall, 152, 185, offset );
 
   _d->setRange( ResourceGroup::waterOverlay, 1, 2, offset ); //wateroverlay building 1x1
   _d->setRange( ResourceGroup::waterOverlay, 11, 12, offset ); //wateroverlay houses 1x1
@@ -121,8 +122,9 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   _d->setRange("citizen03", 1, 1128, offset);
   _d->setRange("citizen04", 1, 577, offset);
   _d->setRange("citizen05", 1, 184, offset);
+
   _d->setRange(ResourceGroup::carts, 369, 464, Point( -15, 32) ); //market lady helper
-  _d->setRange(ResourceGroup::carts, 145, 240, Point( -15, 32) ); //merchant horse caravan 
+  _d->setRange(ResourceGroup::carts, 145, 240, Point( -15, 32) ); //merchant horse caravan
   _d->setRange(ResourceGroup::carts, 249, 264, Point( 0, 32) );  //fishing boat
   _d->setRange(ResourceGroup::carts, 265, 272, Point( 0, 32) );  //ship die
 }

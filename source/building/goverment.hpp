@@ -45,10 +45,10 @@ public:
   //  void unserialize(InputSerialStream &stream);
 };
 
-class MissionPost : public WorkingBuilding
+class MissionaryPost : public WorkingBuilding
 {
 public:
-  MissionPost();
+  MissionaryPost();
 };
 
 #endif //__OPENCAESAR3_GOVERMENT_BUILDINGS_H_INCLUDED__

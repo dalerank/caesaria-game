@@ -56,7 +56,7 @@ void LayerDamage::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       //fire buildings and roads
     case construction::road:
     case construction::plaza:
-    case building::B_COLLAPSED_RUINS:
+    case building::collapsedRuins:
     case building::engineerPost:
       needDrawAnimations = true;
       engine.drawPicture( tile.getPicture(), screenPos );

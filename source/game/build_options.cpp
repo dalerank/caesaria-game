@@ -62,7 +62,7 @@ void CityBuildOptions::setIndustryAvaible( const BuildMenuType type, bool mayBui
 
   case BM_FACTORY:
     _d->rules[ building::winery ] = mayBuild; _d->rules[ building::creamery ] = mayBuild;
-    _d->rules[ building::B_WEAPONS_WORKSHOP ] = mayBuild; _d->rules[ building::furniture ] = mayBuild;
+    _d->rules[ building::weaponsWorkshop ] = mayBuild; _d->rules[ building::furnitureWorkshop ] = mayBuild;
     _d->rules[ building::pottery ] = mayBuild;
   break;
 

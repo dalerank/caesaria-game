@@ -71,7 +71,7 @@ void BurningRuins::destroy()
 {
   ServiceBuilding::destroy();
 
-  events::GameEventPtr event = events::BuildEvent::create( getTilePos(), building::B_BURNED_RUINS );
+  events::GameEventPtr event = events::BuildEvent::create( getTilePos(), building::burnedRuins );
   event->dispatch();
 }
 
@@ -140,7 +140,7 @@ void BurnedRuins::timeStep( const unsigned long time )
 
 }
 
-BurnedRuins::BurnedRuins() : Building( building::B_BURNED_RUINS, Size(1) )
+BurnedRuins::BurnedRuins() : Building( building::burnedRuins, Size(1) )
 {
   setPicture( ResourceGroup::land2a, 111 + rand() % 8 );
 }
@@ -172,7 +172,7 @@ void BurnedRuins::destroy()
   Building::destroy();
 }
 
-CollapsedRuins::CollapsedRuins() : Building(building::B_COLLAPSED_RUINS, Size(1) )
+CollapsedRuins::CollapsedRuins() : Building(building::collapsedRuins, Size(1) )
 {
   updateState( Construction::damage, 1, false );
 
@@ -208,7 +208,7 @@ bool CollapsedRuins::isNeedRoadAccess() const
 }
 
 
-PlagueRuins::PlagueRuins() : Building( building::B_PLAGUE_RUINS, Size(1) )
+PlagueRuins::PlagueRuins() : Building( building::plagueRuins, Size(1) )
 {
   updateState( Construction::fire, 99, false );
 
@@ -258,7 +258,7 @@ void PlagueRuins::destroy()
 {
   Building::destroy();
 
-  events::GameEventPtr event = events::BuildEvent::create( getTilePos(), building::B_BURNED_RUINS );
+  events::GameEventPtr event = events::BuildEvent::create( getTilePos(), building::burnedRuins );
   event->dispatch();
 }
 

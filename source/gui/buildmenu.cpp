@@ -213,6 +213,7 @@ BuildMenu_water::BuildMenu_water( Widget* parent, const Rect& rectangle )
 void BuildMenu_security::initialize()
 {
   addBuildButton(building::prefecture);
+  addBuildButton(building::wall);
 
   BuildMenu::initialize();
 }
@@ -225,9 +226,9 @@ BuildMenu_security::BuildMenu_security( Widget* parent, const Rect& rectangle )
 
 void BuildMenu_education::initialize()
 {
-  addBuildButton(building::B_SCHOOL);
-  addBuildButton(building::B_LIBRARY);
-  addBuildButton(building::B_COLLEGE);
+  addBuildButton(building::school);
+  addBuildButton(building::library);
+  addBuildButton(building::academy);
 
   BuildMenu::initialize();
 }
@@ -240,10 +241,10 @@ BuildMenu_education::BuildMenu_education( Widget* parent, const Rect& rectangle 
 
 void BuildMenu_health::initialize()
 {
-  addBuildButton(building::B_DOCTOR);
-  addBuildButton(building::B_BARBER);
-  addBuildButton(building::B_BATHS);
-  addBuildButton(building::B_HOSPITAL);
+  addBuildButton(building::doctor);
+  addBuildButton(building::barber);
+  addBuildButton(building::baths);
+  addBuildButton(building::hospital);
 
   BuildMenu::initialize();
 }
@@ -284,9 +285,9 @@ void BuildMenu_administration::initialize()
   addBuildButton(building::governorVilla);
   addBuildButton(building::governorPalace);
 
-  addBuildButton(building::B_STATUE1);
-  addBuildButton(building::B_STATUE2);
-  addBuildButton(building::B_STATUE3);
+  addBuildButton(building::smallStatue);
+  addBuildButton(building::middleStatue);
+  addBuildButton(building::bigStatue);
 
   BuildMenu::initialize();
 }
@@ -374,8 +375,8 @@ void BuildMenu_factory::initialize()
 {
   addBuildButton(building::winery);
   addBuildButton(building::creamery);
-  addBuildButton(building::B_WEAPONS_WORKSHOP);
-  addBuildButton(building::furniture);
+  addBuildButton(building::weaponsWorkshop);
+  addBuildButton(building::furnitureWorkshop);
   addBuildButton(building::pottery);
 
   BuildMenu::initialize();
