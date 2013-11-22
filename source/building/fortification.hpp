@@ -31,6 +31,9 @@ public:
   virtual void destroy();
 
   void updatePicture(PlayerCityPtr city);
+
+private:
+  Picture _tmpPicture;
 };
 
 #endif //__CAESARIA_FORTIFICATION_H_INCLUDED__

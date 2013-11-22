@@ -389,11 +389,12 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
     Logger::warning( "Impossible direction on wall building [%d,%d]", pos.getI(), pos.getJ() );
   }
 
-  return Picture::load( ResourceGroup::wall, index );
+  th._tmpPicture = Picture::load( ResourceGroup::wall, index );
+  th._tmpPicture.addOffset( 0, 24 );
+  return _tmpPicture;
 }
 
 void Fortification::updatePicture(PlayerCityPtr city)
 {
   setPicture( getPicture( city, TilePos(), TilesArray() ) );
-  _getPicture().addOffset( 0, 24 );
 }

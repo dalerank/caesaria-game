@@ -314,6 +314,8 @@ void LayerBuild::drawTile( GfxEngine& engine, Tile& tile, Point offset )
       tile.setWasDrawn();
       const Picture& pic = cntr->getPicture( _getCity(), tile.getIJ(), postTiles );
       engine.drawPicture( pic, screenPos );
+
+      drawTilePass( engine, tile, offset, Renderer::foreground );
     }
 
     registerTileForRendering( tile );
