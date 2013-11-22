@@ -40,8 +40,8 @@ void Wall::build(PlayerCityPtr city, const TilePos& pos )
   Tile& terrain = tilemap.at( pos );
 
   // we can't build if already have wall here
-  WallPtr aqueveduct = terrain.getOverlay().as<Wall>();
-  if( aqueveduct.isValid() )
+  WallPtr wall = terrain.getOverlay().as<Wall>();
+  if( wall.isValid() )
   {
     return;
   }
@@ -67,10 +67,10 @@ void Wall::destroy()
     TilesArray area = _getCity()->getTilemap().getArea( getTilePos() - TilePos( 2, 2), Size( 5 ) );
     foreach( Tile* tile, area )
     {
-      TileOverlayPtr overlay = tile->getOverlay();
-      if( overlay.isValid() && overlay->getType() == building::wall )
+      WallPtr wall = tile->getOverlay().as<Wall>();
+      if( wall.isValid()  )
       {
-        overlay.as<Wall>()->updatePicture( _getCity() );
+        wall->updatePicture( _getCity() );
       }
     }
   }
@@ -100,7 +100,7 @@ Picture& Wall::computePicture(PlayerCityPtr city, const TilesArray* tmp, const T
   const TilePos tile_pos = (tmp == NULL) ? getTilePos() : pos;
 
   if (!tmap.isInside(tile_pos))
-    return Picture::load( ResourceGroup::aqueduct, 121 );
+    return Picture::load( ResourceGroup::wall, 178 );
 
   TilePos tile_pos_d[countDirection];
   bool is_border[countDirection];

@@ -61,7 +61,7 @@ public:
     }
     else
     {
-      Logger::warning( "ERROR: failed to gather point (%d,%d) on grid", pos.getI(), pos.getJ() );
+      //Logger::warning( "ERROR: failed to gather point (%d,%d) on grid", pos.getI(), pos.getJ() );
       return 0;
     }
   }

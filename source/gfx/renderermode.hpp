@@ -14,8 +14,8 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#ifndef __OPENCAESAR3_TILEMAPCHANGECOMMAND_H_INCLUDE_
-#define __OPENCAESAR3_TILEMAPCHANGECOMMAND_H_INCLUDE_
+#ifndef __CAESARIA_TILEMAPCHANGECOMMAND_H_INCLUDE_
+#define __CAESARIA_TILEMAPCHANGECOMMAND_H_INCLUDE_
 
 #include "core/scopedptr.hpp"
 #include "core/predefinitions.hpp"
@@ -66,4 +66,4 @@ public:
 typedef SmartPtr< BuildMode > BuildModePtr;
 typedef SmartPtr< LayerMode > LayerModePtr;
 
-#endif
+#endif  //__CAESARIA_TILEMAPCHANGECOMMAND_H_INCLUDE_

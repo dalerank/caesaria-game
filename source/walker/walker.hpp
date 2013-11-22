@@ -12,9 +12,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
-//
-// You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #ifndef _CAESARIA_WALKER_H_INCLUDE_
 #define _CAESARIA_WALKER_H_INCLUDE_

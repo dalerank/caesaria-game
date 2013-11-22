@@ -214,6 +214,7 @@ void BuildMenu_security::initialize()
 {
   addBuildButton(building::prefecture);
   addBuildButton(building::wall);
+  addBuildButton(building::fortification);
 
   BuildMenu::initialize();
 }

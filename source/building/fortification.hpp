@@ -13,33 +13,24 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_MILITARY_BUILDING_H_INCLUDED__
-#define __CAESARIA_MILITARY_BUILDING_H_INCLUDED__
+#ifndef __CAESARIA_FORTIFICATION_H_INCLUDED__
+#define __CAESARIA_FORTIFICATION_H_INCLUDED__
 
-#include "working.hpp"
+#include "wall.hpp"
 
-class Barracks : public WorkingBuilding
+class Fortification : public Wall
 {
 public:
-  Barracks();
+  Fortification();
+
+  virtual void build(PlayerCityPtr city, const TilePos& pos );
+  Picture& computePicture(PlayerCityPtr city,
+                          const TilesArray* tmp = NULL,
+                          const TilePos pos = TilePos(0, 0));
+
+  virtual void destroy();
+
+  void updatePicture(PlayerCityPtr city);
 };
 
-class FortLegionnaire : public Building
-{
-public:  
-  FortLegionnaire();
-};
-
-class FortJaveline : public Building
-{
-public:  
-  FortJaveline();
-};
-
-class FortMounted : public Building
-{
-public:  
-  FortMounted();
-};
-
-#endif //__CAESARIA_MILITARY_BUILDING_H_INCLUDED__
+#endif //__CAESARIA_FORTIFICATION_H_INCLUDED__

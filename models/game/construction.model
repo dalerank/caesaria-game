@@ -12,6 +12,13 @@
     class : "wall"
     cost : 10
   },
+
+  fortification : {
+    desirability : 16
+    radnge : 0
+    class : "wall"
+    cost : 20
+  }
   
   aqueduct : {
     cost : 8,

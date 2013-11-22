@@ -1,0 +1,393 @@
+// This file is part of CaesarIA.
+//
+// CaesarIA is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// CaesarIA is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+
+#include "fortification.hpp"
+
+#include "core/stringhelper.hpp"
+#include "core/time.hpp"
+#include "core/position.hpp"
+#include "game/resourcegroup.hpp"
+#include "core/safetycast.hpp"
+#include "constants.hpp"
+#include "game/city.hpp"
+#include "gfx/tilemap.hpp"
+#include "game/road.hpp"
+#include "core/direction.hpp"
+#include "core/logger.hpp"
+
+using namespace constants;
+
+Fortification::Fortification() : Wall()
+{
+  setType( building::fortification );
+  setPicture( ResourceGroup::wall, 178 ); // default picture for wall
+}
+
+void Fortification::build(PlayerCityPtr city, const TilePos& pos )
+{
+  Tilemap& tilemap = city->getTilemap();
+  Tile& terrain = tilemap.at( pos );
+
+  // we can't build if already have wall here
+  WallPtr aqueveduct = terrain.getOverlay().as<Wall>();
+  if( aqueveduct.isValid() )
+  {
+    return;
+  }
+
+  Building::build( city, pos );
+
+  CityHelper helper( city );
+  FortificationList fortifications = helper.find<Fortification>( building::fortification );
+  foreach( FortificationPtr frt, fortifications )
+  {
+    frt->updatePicture( city );
+  }
+
+  updatePicture( city );
+}
+
+void Fortification::destroy()
+{
+  Construction::destroy();
+
+  if( _getCity().isValid() )
+  {
+    TilesArray area = _getCity()->getTilemap().getArea( getTilePos() - TilePos( 2, 2), Size( 5 ) );
+    foreach( Tile* tile, area )
+    {
+      FortificationPtr f = tile->getOverlay().as<Fortification>();
+      if( f.isValid()  )
+      {
+        f->updatePicture( _getCity() );
+      }
+    }
+  }
+}
+
+Picture& Fortification::computePicture(PlayerCityPtr city, const TilesArray* tmp, const TilePos pos)
+{
+  // find correct picture as for roads
+  Tilemap& tmap = city->getTilemap();
+
+  int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
+
+  const TilePos tile_pos = (tmp == NULL) ? getTilePos() : pos;
+
+  if (!tmap.isInside(tile_pos))
+    return Picture::load( ResourceGroup::aqueduct, 121 );
+
+  TilePos tile_pos_d[countDirection];
+  bool is_border[countDirection];
+  bool is_busy[countDirection] = { false };
+
+  tile_pos_d[north] = tile_pos + TilePos(  0,  1);
+  tile_pos_d[east]  = tile_pos + TilePos(  1,  0);
+  tile_pos_d[south] = tile_pos + TilePos(  0, -1);
+  tile_pos_d[west]  = tile_pos + TilePos( -1,  0);
+  tile_pos_d[northEast] = tile_pos + TilePos( 1, 1 );
+  tile_pos_d[southEast] = tile_pos + TilePos( 1, -1 );
+  tile_pos_d[southWest] = tile_pos + TilePos( -1, -1 );
+  tile_pos_d[northWest] = tile_pos + TilePos( -1, 1 );
+
+
+  // all tiles must be in map range
+  for (int i = 0; i < countDirection; ++i)
+  {
+    is_border[i] = !tmap.isInside(tile_pos_d[i]);
+    if (is_border[i])
+      tile_pos_d[i] = tile_pos;
+  }
+
+  // get overlays for all directions
+  TileOverlayPtr overlay_d[countDirection];
+  overlay_d[north] = tmap.at( tile_pos_d[north] ).getOverlay();
+  overlay_d[east] = tmap.at( tile_pos_d[east]  ).getOverlay();
+  overlay_d[south] = tmap.at( tile_pos_d[south] ).getOverlay();
+  overlay_d[west] = tmap.at( tile_pos_d[west]  ).getOverlay();
+  overlay_d[northEast] = tmap.at( tile_pos_d[northEast]  ).getOverlay();
+  overlay_d[southEast] = tmap.at( tile_pos_d[southEast]  ).getOverlay();
+  overlay_d[southWest] = tmap.at( tile_pos_d[southWest]  ).getOverlay();
+  overlay_d[northWest] = tmap.at( tile_pos_d[northWest]  ).getOverlay();
+
+  // if we have a TMP array with wall, calculate them
+  if (tmp != NULL)
+  {
+    for( TilesArray::const_iterator it = tmp->begin(); it != tmp->end(); ++it)
+    {
+      TilePos rpos = (*it)->getIJ();
+      int i = (*it)->getI();
+      int j = (*it)->getJ();
+
+      if( (pos + TilePos( 0, 1 )) == rpos ) is_busy[north] = true;
+      else if(i == pos.getI() && j == (pos.getJ() - 1)) is_busy[south] = true;
+      else if(j == pos.getJ() && i == (pos.getI() + 1)) is_busy[east] = true;
+      else if(j == pos.getJ() && i == (pos.getI() - 1)) is_busy[west] = true;
+      else if((pos + TilePos(1, 1)) == rpos ) is_busy[northEast] = true;
+      else if((pos + TilePos(1, -1)) == rpos ) is_busy[southEast] = true;
+      else if((pos + TilePos(-1, -1)) == rpos ) is_busy[southWest] = true;
+      else if((pos + TilePos(-1, 1)) == rpos ) is_busy[northWest] = true;
+    }
+  }
+
+  // calculate directions
+  for (int i = 0; i < countDirection; ++i) {
+    if (!is_border[i] && (overlay_d[i].is<Wall>() || is_busy[i]))
+      switch (i) {
+      case north: directionFlags += 0x1; break;
+      case east:  directionFlags += 0x2; break;
+      case south: directionFlags += 0x4; break;
+      case west:  directionFlags += 0x8; break;
+      case northEast: directionFlags += 0x10; break;
+      case southEast: directionFlags += 0x20; break;
+      case southWest: directionFlags += 0x40; break;
+      case northWest: directionFlags += 0x80; break;
+      default: break;
+      }
+  }
+
+  _fgPicturesRef().clear();
+  int index;
+  switch( directionFlags & 0xf )
+  {  
+  case 0: index = 175;
+    if( (directionFlags & 0x40 ) == 0x40 )
+    {
+      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
+      _fgPicturesRef().back().addOffset( -28, 0 );
+    }
+    else
+    {
+      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 157 ));
+      _fgPicturesRef().back().addOffset( -28, 0 );
+    }
+    _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 162 ));
+    _fgPicturesRef().back().addOffset( 28, 0 );
+    _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 164 ));
+    _fgPicturesRef().back().addOffset( 0, -13 );
+
+    if( (directionFlags & 0x80) == 0x80 )
+    {
+      index = 169;
+    }
+  break;  // no neighbours!
+
+  case 1: index = 171; // N
+    if( (directionFlags & 0x10) == 0x10 ) //NE
+    {
+      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
+      _fgPicturesRef().back().addOffset( 28, 0 );
+    }
+    else
+    {
+      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 156 ));
+      _fgPicturesRef().back().addOffset( 28, 0 );
+    }
+
+    if( (directionFlags & 0x40 ) == 0x40 )
+    {
+      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
+      _fgPicturesRef().back().addOffset( -28, 0 );
+    }
+    else
+    {
+      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 157 ));
+      _fgPicturesRef().back().addOffset( -28, 0 );
+    }
+    _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 164 ));
+    _fgPicturesRef().back().addOffset( 0, -13 );
+  break;
+
+  case 2: index = 175; // E
+    if( (directionFlags & 0x40 ) == 0x40 )
+    {
+      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
+      _fgPicturesRef().back().addOffset( -28, 0 );
+    }
+    else
+    {
+      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 157 ));
+      _fgPicturesRef().back().addOffset( -28, 0 );
+    }
+    _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 160 ));
+    _fgPicturesRef().back().addOffset( 28, 0 );
+
+    if( (directionFlags & 0x80) == 0x80 )
+    {
+      index = 169;
+    }
+  break;
+
+  case 3: index = 171;// N + E
+    if( (directionFlags & 0x40 ) == 0x40 )
+    {
+      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
+      _fgPicturesRef().back().addOffset( -28, 0 );
+    }
+    else
+    {
+      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 157 ));
+      _fgPicturesRef().back().addOffset( -28, 0 );
+    }
+  break;
+
+  case 4: index = 175; // S
+    _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 162 ));
+    _fgPicturesRef().back().addOffset( 28, 0 );
+    //_fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 183 ));
+    //_fgPicturesRef().back().addOffset( 0, -13 );
+
+    if( (directionFlags & 0x80) == 0x80 )
+    {
+      index = 169;
+    }
+  break;
+
+  case 5: index = 171;  // N + S
+    _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 156 ));
+    _fgPicturesRef().back().addOffset( 28, 0 );
+  break;
+
+  case 6: index = 175; // E + S
+    //_fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
+    //_fgPicturesRef().back().addOffset( 0, -13 );
+
+    if( (directionFlags & 0x80) == 0x80 )
+    {
+      index = 169;
+    }
+  break;
+
+  case 8: index = 155; // W    
+    if( (directionFlags & 0x80) == 0x80 )
+    {
+      index = 173;
+    }
+
+    if( (directionFlags & 0x40) == 0x40 )
+    {
+      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
+      _fgPicturesRef().back().addOffset( -28, 2 );
+    }
+    else
+    {
+      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 153 ));
+      _fgPicturesRef().back().addOffset( -28, 0 );
+    }
+    _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 162 ));
+    _fgPicturesRef().back().addOffset( 28, 0 );
+    _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 164 ));
+    _fgPicturesRef().back().addOffset( 0, -13 );
+  break;
+
+  case 9: index = 152; // N + W
+    if( (directionFlags & 0x40) == 0x40 )
+    {
+      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
+      _fgPicturesRef().back().addOffset( -28, 2 );
+    }
+    else
+    {
+      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 153 ));
+      _fgPicturesRef().back().addOffset( -28, 0 );
+    }
+
+    if( (directionFlags & 0x80) == 0x80 )
+    {}
+    else
+    {
+      index = 172;
+    }
+
+    _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 156 ));
+    _fgPicturesRef().back().addOffset( 28, 0 );
+
+    _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 164 ));
+    _fgPicturesRef().back().addOffset( 0, -13 );
+  break;
+
+  case 10: index = 155; // E + W
+    if( (directionFlags & 0x40) == 0x40 )
+    {
+      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
+      _fgPicturesRef().back().addOffset( -28, 0 );
+    }
+    else
+    {
+      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 184 ));
+      _fgPicturesRef().back().addOffset( -28, 0 );
+    }
+  break;
+
+  case 12: index = 155; // S + W
+    _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 162 ));
+    _fgPicturesRef().back().addOffset( 28, 0 );
+  break;
+
+  case 14: index = 173; // E + S + W
+  break;
+
+  case 11: index = 172; // N + E + W
+    if( (directionFlags&0x80) == 0x80 )
+    {
+      index = 152;
+    }
+
+    if( (directionFlags & 0x40 ) == 0x40 )
+    {
+      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
+      _fgPicturesRef().back().addOffset( -28, 0 );
+    }
+    else
+    {
+      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 153 ));
+      _fgPicturesRef().back().addOffset( -28, 0 );
+    }
+  break;
+
+  case 13: index = 172; // W + S + N
+    if( (directionFlags&0x80) == 0x80 )
+    {
+      index = 152;
+    }
+    _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 156 ));
+    _fgPicturesRef().back().addOffset( 28, 0 );
+  break;
+
+  case 7: index = 171;// N + E + S
+    //_fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 156 ));
+    //_fgPicturesRef().back().addOffset( -28, 0 );
+  break;
+
+  case 15: index = 172; // N + S + E + W (crossing)
+    if( (directionFlags&0x80) == 0x80 )
+    {
+      index = 152;
+    }
+  break;
+
+  default:
+    index = 178; // it's impossible, but ...
+    Logger::warning( "Impossible direction on wall building [%d,%d]", pos.getI(), pos.getJ() );
+  }
+
+  return Picture::load( ResourceGroup::wall, index );
+}
+
+void Fortification::updatePicture(PlayerCityPtr city)
+{
+  setPicture( computePicture( city ) );
+  _getPicture().addOffset( 0, 24 );
+}

@@ -14,8 +14,8 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#ifndef __OPENCAESAR3_ROADPROPAGATOR_H_INCLUDE_
-#define __OPENCAESAR3_ROADPROPAGATOR_H_INCLUDE_
+#ifndef __CAESARIA_ROADPROPAGATOR_H_INCLUDE_
+#define __CAESARIA_ROADPROPAGATOR_H_INCLUDE_
 
 #include "core/scopedptr.hpp"
 #include "gfx/tilemap.hpp"
@@ -32,4 +32,4 @@ public:
   static TilesArray createPath(Tilemap& tileMap, TilePos startTile, TilePos destination );
 };
 
-#endif //__OPENCAESAR3_ROADPROPAGATOR_H_INCLUDE_
+#endif //__CAESARIA_ROADPROPAGATOR_H_INCLUDE_

@@ -38,4 +38,4 @@ public:
   void updatePicture(PlayerCityPtr city);
 };
 
-#endif // __CAESARIA_AQUEDUCT_H_INCLUDED__
+#endif // __CAESARIA_WALL_H_INCLUDED__

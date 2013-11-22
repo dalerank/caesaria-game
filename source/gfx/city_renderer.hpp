@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-
 #ifndef __CAESARIA_CITYRENDERER_H_INCLUDED__
 #define __CAESARIA_CITYRENDERER_H_INCLUDED__
 
