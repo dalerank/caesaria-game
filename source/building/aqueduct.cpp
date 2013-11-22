@@ -59,6 +59,7 @@ void Aqueduct::build(PlayerCityPtr city, const TilePos& pos )
 
   CityHelper helper( city );
   AqueductList aqueducts = helper.find<Aqueduct>( building::aqueduct );
+
   foreach( AqueductPtr aqueduct, aqueducts )
   {
     aqueduct->updatePicture( city );
@@ -116,10 +117,10 @@ bool Aqueduct::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
       return false;
 
   // also we can't build if next tile is road + aqueduct
-  if ( terrain.getFlag( Tile::tlRoad ) )
+  if( terrain.getFlag( Tile::tlRoad ) )
   {
-    TilePos tp_from = pos + TilePos (-1, -1);
-    TilePos tp_to = pos + TilePos (1, 1);
+    TilePos tp_from = pos + TilePos( -1, -1 );
+    TilePos tp_to = pos + TilePos( 1, 1 );
 
     if (!tilemap.isInside(tp_from))
       tp_from = pos;
@@ -130,7 +131,18 @@ bool Aqueduct::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
     TilesArray perimetr = tilemap.getRectangle(tp_from, tp_to, !Tilemap::checkCorners);
     foreach( Tile* tile, perimetr )
     {
-      if( tile->getFlag( Tile::tlRoad ) && tile->getFlag( Tile::tlAqueduct ) )
+      AqueductPtr bldAqueduct;
+      for( TilesArray::const_iterator it=aroundTiles.begin(); it != aroundTiles.end(); it++ )
+      {
+        if( (*it)->getIJ() == tile->getIJ() )
+        {
+          bldAqueduct = (*it)->getOverlay().as<Aqueduct>();
+          break;
+        }
+      }
+
+      if( tile->getFlag( Tile::tlRoad )
+          && (tile->getFlag( Tile::tlAqueduct ) || bldAqueduct.isValid() ) )
         return false;
     }
   }
@@ -203,7 +215,8 @@ const Picture& Aqueduct::getPicture(PlayerCityPtr city, TilePos pos, const Tiles
   tile_pos_d[west]  = tile_pos + TilePos( -1,  0);
 
   // all tiles must be in map range
-  for (int i = 0; i < countDirection; ++i) {
+  for (int i = 0; i < countDirection; ++i)
+  {
     is_border[i] = !tmap.isInside(tile_pos_d[i]);
     if (is_border[i])
       tile_pos_d[i] = tile_pos;
@@ -227,7 +240,7 @@ const Picture& Aqueduct::getPicture(PlayerCityPtr city, TilePos pos, const Tiles
       if( !(*it)->getOverlay().is<Aqueduct>() )
         continue;
 
-      if (i == pos.getI() && j == (pos.getJ() + 1)) is_busy[north] = true;
+      if( i == pos.getI() && j == (pos.getJ() + 1)) is_busy[north] = true;
       else if (i == pos.getI() && j == (pos.getJ() - 1))is_busy[south] = true;
       else if (j == pos.getJ() && i == (pos.getI() + 1))is_busy[east] = true;
       else if (j == pos.getJ() && i == (pos.getI() - 1))is_busy[west] = true;
@@ -235,8 +248,10 @@ const Picture& Aqueduct::getPicture(PlayerCityPtr city, TilePos pos, const Tiles
   }
 
   // calculate directions
-  for (int i = 0; i < countDirection; ++i) {
-    if (!is_border[i] && (overlay_d[i].is<Aqueduct>() || overlay_d[i].is<Reservoir>() || is_busy[i]))
+  for (int i = 0; i < countDirection; ++i)
+  {
+    if( !is_border[i] && (overlay_d[i].is<Aqueduct>() || overlay_d[i].is<Reservoir>() || is_busy[i]))
+    {
       switch (i) {
       case north: directionFlags += 1; break;
       case east:  directionFlags += 2; break;
@@ -244,13 +259,36 @@ const Picture& Aqueduct::getPicture(PlayerCityPtr city, TilePos pos, const Tiles
       case west:  directionFlags += 8; break;
       default: break;
       }
+    }
   }
 
   int index;
   switch (directionFlags)
   {
   case 0:  // no neighbours!
-    index = 121; break;
+  {
+    index = 121;
+    if( tmap.at( tile_pos ).getFlag( Tile::tlRoad ) )
+    {
+      const_cast<Aqueduct*>( this )->_setIsRoad( true );
+
+      RoadPtr rwest = city->getOverlay( tile_pos + TilePos( -1, 0 ) ).as<Road>();
+      RoadPtr rnorth = city->getOverlay( tile_pos + TilePos( 0, 1 ) ).as<Road>();
+      RoadPtr reast = city->getOverlay( tile_pos + TilePos( 1, 0 ) ).as<Road>();
+      RoadPtr rsouth = city->getOverlay( tile_pos + TilePos( 0, -1 ) ).as<Road>();
+
+      if( rwest != NULL || reast != NULL )
+      {
+        index = 127;
+      }
+      else if( rsouth != NULL || rnorth != NULL )
+      {
+        index = 128;
+      }
+    }
+  }
+  break;
+
   case 1:  // N
   case 4:  // S
   case 5:  // N + S
@@ -279,7 +317,7 @@ const Picture& Aqueduct::getPicture(PlayerCityPtr city, TilePos pos, const Tiles
       index = 120; 
       const_cast<Aqueduct*>( this )->_setIsRoad( true );
     }
-    break;
+  break;
    
   case 11: // N + E + W
     index = 132; break;
