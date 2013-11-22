@@ -85,19 +85,27 @@ void Wall::initTerrain(Tile &terrain)
   terrain.setFlag( Tile::tlMeadow, isMeadow );
 }
 
-bool Wall::canBuild(PlayerCityPtr city, const TilePos& pos ) const
+bool Wall::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
 {
-  return Construction::canBuild( city, pos );
+  bool ret = Construction::canBuild( city, pos, aroundTiles );
+
+  if( ret )
+  {
+    Picture pic = const_cast< Wall* >( this )->getPicture( city, pos, aroundTiles );
+    const_cast< Wall* >( this )->setPicture( pic );
+  }
+
+  return ret;
 }
 
-Picture& Wall::computePicture(PlayerCityPtr city, const TilesArray* tmp, const TilePos pos)
+const Picture& Wall::getPicture(PlayerCityPtr city, TilePos pos, const TilesArray& tmp) const
 {
   // find correct picture as for roads
   Tilemap& tmap = city->getTilemap();
 
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
 
-  const TilePos tile_pos = (tmp == NULL) ? getTilePos() : pos;
+  const TilePos tile_pos = (tmp.empty()) ? getTilePos() : pos;
 
   if (!tmap.isInside(tile_pos))
     return Picture::load( ResourceGroup::wall, 178 );
@@ -131,10 +139,14 @@ Picture& Wall::computePicture(PlayerCityPtr city, const TilesArray* tmp, const T
   overlay_d[southEast] = tmap.at( tile_pos_d[southEast]  ).getOverlay();
 
   // if we have a TMP array with wall, calculate them
-  if (tmp != NULL)
+  if (!tmp.empty())
   {
-    for( TilesArray::const_iterator it = tmp->begin(); it != tmp->end(); ++it)
+    for( TilesArray::const_iterator it = tmp.begin(); it != tmp.end(); ++it)
     {
+      if( (*it)->getOverlay().isNull()
+          || !(*it)->getOverlay()->getType() == building::wall )
+        continue;
+
       TilePos rpos = (*it)->getIJ();
       int i = (*it)->getI();
       int j = (*it)->getJ();
@@ -162,7 +174,8 @@ Picture& Wall::computePicture(PlayerCityPtr city, const TilesArray* tmp, const T
       }
   }
 
-  _fgPicturesRef().clear();
+  Wall& th = *const_cast< Wall* >( this );
+  th._fgPicturesRef().clear();
   int index;
   switch( directionFlags & 0xf )
   {  
@@ -189,8 +202,8 @@ Picture& Wall::computePicture(PlayerCityPtr city, const TilesArray* tmp, const T
     index = 178;
     if( (directionFlags & 0x20) == 0 )
     {
-      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 183 ) );
-      _fgPicturesRef().back().addOffset( -15, -8 );
+      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 183 ) );
+      th._fgPicturesRef().back().addOffset( -15, -8 );
     }
   break; // N + S + E + W (crossing)
 
@@ -202,9 +215,9 @@ Picture& Wall::computePicture(PlayerCityPtr city, const TilesArray* tmp, const T
   return Picture::load( ResourceGroup::wall, index );
 }
 
-void Wall::updatePicture(PlayerCityPtr city )
+void Wall::updatePicture(PlayerCityPtr city)
 {
-  setPicture( computePicture( city ) );
+  setPicture( getPicture( city, TilePos(), TilesArray() ) );
 }
 
 bool Wall::isNeedRoadAccess() const

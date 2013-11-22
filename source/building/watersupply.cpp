@@ -153,9 +153,9 @@ void Reservoir::timeStep(const unsigned long time)
   _fgPicturesRef().at( 0 ) = _animationRef().getFrame();
 }
 
-bool Reservoir::canBuild(PlayerCityPtr city, const TilePos& pos ) const
+bool Reservoir::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
 {
-  bool ret = Construction::canBuild( city, pos );
+  bool ret = Construction::canBuild( city, pos, aroundTiles );
 
   bool nearWater = _isNearWater( city, pos );
   const_cast< Reservoir* >( this )->setPicture( ResourceGroup::waterbuildings, nearWater ? 2 : 1  );
@@ -318,9 +318,9 @@ void Fountain::timeStep(const unsigned long time)
   ServiceBuilding::timeStep( time );
 }
 
-bool Fountain::canBuild(PlayerCityPtr city, const TilePos& pos ) const
+bool Fountain::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
 {
-  bool ret = Construction::canBuild( city, pos );
+  bool ret = Construction::canBuild( city, pos, aroundTiles );
 
   Tilemap& tmap = city->getTilemap();
   const Tile& tile = tmap.at( pos );

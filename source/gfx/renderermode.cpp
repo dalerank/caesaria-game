@@ -73,6 +73,7 @@ Renderer::ModePtr BuildMode::create(TileOverlay::Type type )
 
   case building::aqueduct:
   case building::wall:
+  case building::fortification:
     newCommand->_d->isBorderBuilding = true;
     newCommand->_d->isMultiBuilding = true;
   break;

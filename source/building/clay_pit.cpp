@@ -32,9 +32,9 @@ void ClayPit::timeStep( const unsigned long time )
   Factory::timeStep( time );
 }
 
-bool ClayPit::canBuild(PlayerCityPtr city, const TilePos& pos ) const
+bool ClayPit::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
 {
-  bool is_constructible = Construction::canBuild( city, pos );
+  bool is_constructible = Construction::canBuild( city, pos, aroundTiles );
   bool near_water = false;
 
   Tilemap& tilemap = city->getTilemap();

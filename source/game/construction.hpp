@@ -33,7 +33,7 @@ public:
   Construction( const TileOverlay::Type type, const Size& size );
   virtual ~Construction();
 
-  virtual bool canBuild( PlayerCityPtr city, const TilePos& pos ) const;  // returns true if it can be built there
+  virtual bool canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const;  // returns true if it can be built there
   virtual std::string getError() const;
   virtual void build( PlayerCityPtr city, const TilePos& pos );
   virtual void burn();
@@ -48,6 +48,8 @@ public:
   virtual double getState( Param param ) const;
   virtual TilesArray getEnterArea() const;
   virtual void timeStep(const unsigned long time);
+  virtual const Picture& getPicture() const;
+  virtual const Picture& getPicture( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const;
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);

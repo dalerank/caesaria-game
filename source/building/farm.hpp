@@ -28,7 +28,7 @@ public:
   void computePictures();
 
   virtual void timeStep(const unsigned long time);
-  virtual bool canBuild(PlayerCityPtr city, const TilePos& pos ) const;  // returns true if it can be built there
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& aroundTiles) const;  // returns true if it can be built there
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);

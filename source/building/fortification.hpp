@@ -24,9 +24,9 @@ public:
   Fortification();
 
   virtual void build(PlayerCityPtr city, const TilePos& pos );
-  Picture& computePicture(PlayerCityPtr city,
-                          const TilesArray* tmp = NULL,
-                          const TilePos pos = TilePos(0, 0));
+  const Picture& getPicture(PlayerCityPtr city,
+                            TilePos pos,
+                            const TilesArray& tmp ) const;
 
   virtual void destroy();
 

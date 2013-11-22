@@ -24,18 +24,19 @@ public:
   Wall();
 
   virtual void build(PlayerCityPtr city, const TilePos& pos );
-  Picture& computePicture(PlayerCityPtr city,
-                          const TilesArray* tmp = NULL,
-                          const TilePos pos = TilePos(0, 0));
 
   virtual void initTerrain(Tile& terrain);
-  virtual bool canBuild(PlayerCityPtr city, const TilePos& pos ) const;
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const;
   virtual bool isNeedRoadAccess() const;
   virtual void destroy();
   virtual bool isWalkable() const; 
   virtual bool isRoad() const;
 
   void updatePicture(PlayerCityPtr city);
+
+  const Picture& getPicture(PlayerCityPtr city,
+                            TilePos pos,
+                            const TilesArray& tmp ) const;
 };
 
 #endif // __CAESARIA_WALL_H_INCLUDED__

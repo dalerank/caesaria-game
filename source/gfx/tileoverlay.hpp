@@ -53,9 +53,10 @@ public:
   virtual void timeStep(const unsigned long time);  // perform one simulation step
 
   // graphic
-  void setPicture(Picture picture);
-  void setPicture(const char* resource, const int index);
-  const Picture& getPicture() const;
+  virtual void setPicture(Picture picture);
+  virtual void setPicture(const char* resource, const int index);
+
+  virtual const Picture& getPicture() const;
 
   void setAnimation( const Animation& animation );
 

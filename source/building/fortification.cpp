@@ -77,14 +77,15 @@ void Fortification::destroy()
   }
 }
 
-Picture& Fortification::computePicture(PlayerCityPtr city, const TilesArray* tmp, const TilePos pos)
+const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
+                                             const TilesArray& tmp) const
 {
   // find correct picture as for roads
   Tilemap& tmap = city->getTilemap();
 
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
 
-  const TilePos tile_pos = (tmp == NULL) ? getTilePos() : pos;
+  const TilePos tile_pos = (tmp.empty()) ? getTilePos() : pos;
 
   if (!tmap.isInside(tile_pos))
     return Picture::load( ResourceGroup::aqueduct, 121 );
@@ -123,10 +124,14 @@ Picture& Fortification::computePicture(PlayerCityPtr city, const TilesArray* tmp
   overlay_d[northWest] = tmap.at( tile_pos_d[northWest]  ).getOverlay();
 
   // if we have a TMP array with wall, calculate them
-  if (tmp != NULL)
+  if( !tmp.empty())
   {
-    for( TilesArray::const_iterator it = tmp->begin(); it != tmp->end(); ++it)
+    for( TilesArray::const_iterator it = tmp.begin(); it != tmp.end(); ++it)
     {
+      if( (*it)->getOverlay().isNull()
+          || !(*it)->getOverlay()->getType() == building::fortification )
+        continue;
+
       TilePos rpos = (*it)->getIJ();
       int i = (*it)->getI();
       int j = (*it)->getJ();
@@ -158,25 +163,26 @@ Picture& Fortification::computePicture(PlayerCityPtr city, const TilesArray* tmp
       }
   }
 
-  _fgPicturesRef().clear();
+  Fortification& th = *const_cast< Fortification* >( this );
+  th._fgPicturesRef().clear();
   int index;
   switch( directionFlags & 0xf )
   {  
   case 0: index = 175;
     if( (directionFlags & 0x40 ) == 0x40 )
     {
-      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
-      _fgPicturesRef().back().addOffset( -28, 0 );
+      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
+      th._fgPicturesRef().back().addOffset( -28, 0 );
     }
     else
     {
-      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 157 ));
-      _fgPicturesRef().back().addOffset( -28, 0 );
+      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 157 ));
+      th._fgPicturesRef().back().addOffset( -28, 0 );
     }
-    _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 162 ));
-    _fgPicturesRef().back().addOffset( 28, 0 );
-    _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 164 ));
-    _fgPicturesRef().back().addOffset( 0, -13 );
+    th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 162 ));
+    th._fgPicturesRef().back().addOffset( 28, 0 );
+    th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 164 ));
+    th._fgPicturesRef().back().addOffset( 0, -13 );
 
     if( (directionFlags & 0x80) == 0x80 )
     {
@@ -187,42 +193,42 @@ Picture& Fortification::computePicture(PlayerCityPtr city, const TilesArray* tmp
   case 1: index = 171; // N
     if( (directionFlags & 0x10) == 0x10 ) //NE
     {
-      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
-      _fgPicturesRef().back().addOffset( 28, 0 );
+      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
+      th._fgPicturesRef().back().addOffset( 28, 0 );
     }
     else
     {
-      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 156 ));
-      _fgPicturesRef().back().addOffset( 28, 0 );
+      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 156 ));
+      th._fgPicturesRef().back().addOffset( 28, 0 );
     }
 
     if( (directionFlags & 0x40 ) == 0x40 )
     {
-      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
-      _fgPicturesRef().back().addOffset( -28, 0 );
+      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
+      th._fgPicturesRef().back().addOffset( -28, 0 );
     }
     else
     {
-      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 157 ));
-      _fgPicturesRef().back().addOffset( -28, 0 );
+      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 157 ));
+      th._fgPicturesRef().back().addOffset( -28, 0 );
     }
-    _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 164 ));
-    _fgPicturesRef().back().addOffset( 0, -13 );
+    th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 164 ));
+    th._fgPicturesRef().back().addOffset( 0, -13 );
   break;
 
   case 2: index = 175; // E
     if( (directionFlags & 0x40 ) == 0x40 )
     {
-      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
-      _fgPicturesRef().back().addOffset( -28, 0 );
+      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
+      th._fgPicturesRef().back().addOffset( -28, 0 );
     }
     else
     {
-      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 157 ));
-      _fgPicturesRef().back().addOffset( -28, 0 );
+      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 157 ));
+      th._fgPicturesRef().back().addOffset( -28, 0 );
     }
-    _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 160 ));
-    _fgPicturesRef().back().addOffset( 28, 0 );
+    th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 160 ));
+    th._fgPicturesRef().back().addOffset( 28, 0 );
 
     if( (directionFlags & 0x80) == 0x80 )
     {
@@ -233,19 +239,19 @@ Picture& Fortification::computePicture(PlayerCityPtr city, const TilesArray* tmp
   case 3: index = 171;// N + E
     if( (directionFlags & 0x40 ) == 0x40 )
     {
-      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
-      _fgPicturesRef().back().addOffset( -28, 0 );
+      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
+      th._fgPicturesRef().back().addOffset( -28, 0 );
     }
     else
     {
-      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 157 ));
-      _fgPicturesRef().back().addOffset( -28, 0 );
+      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 157 ));
+      th._fgPicturesRef().back().addOffset( -28, 0 );
     }
   break;
 
   case 4: index = 175; // S
-    _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 162 ));
-    _fgPicturesRef().back().addOffset( 28, 0 );
+    th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 162 ));
+    th._fgPicturesRef().back().addOffset( 28, 0 );
     //_fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 183 ));
     //_fgPicturesRef().back().addOffset( 0, -13 );
 
@@ -256,8 +262,8 @@ Picture& Fortification::computePicture(PlayerCityPtr city, const TilesArray* tmp
   break;
 
   case 5: index = 171;  // N + S
-    _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 156 ));
-    _fgPicturesRef().back().addOffset( 28, 0 );
+    th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 156 ));
+    th._fgPicturesRef().back().addOffset( 28, 0 );
   break;
 
   case 6: index = 175; // E + S
@@ -278,30 +284,30 @@ Picture& Fortification::computePicture(PlayerCityPtr city, const TilesArray* tmp
 
     if( (directionFlags & 0x40) == 0x40 )
     {
-      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
-      _fgPicturesRef().back().addOffset( -28, 2 );
+      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
+      th._fgPicturesRef().back().addOffset( -28, 2 );
     }
     else
     {
-      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 153 ));
-      _fgPicturesRef().back().addOffset( -28, 0 );
+      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 153 ));
+      th._fgPicturesRef().back().addOffset( -28, 0 );
     }
-    _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 162 ));
-    _fgPicturesRef().back().addOffset( 28, 0 );
-    _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 164 ));
-    _fgPicturesRef().back().addOffset( 0, -13 );
+    th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 162 ));
+    th._fgPicturesRef().back().addOffset( 28, 0 );
+    th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 164 ));
+    th._fgPicturesRef().back().addOffset( 0, -13 );
   break;
 
   case 9: index = 152; // N + W
     if( (directionFlags & 0x40) == 0x40 )
     {
-      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
-      _fgPicturesRef().back().addOffset( -28, 2 );
+      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
+      th._fgPicturesRef().back().addOffset( -28, 2 );
     }
     else
     {
-      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 153 ));
-      _fgPicturesRef().back().addOffset( -28, 0 );
+      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 153 ));
+      th._fgPicturesRef().back().addOffset( -28, 0 );
     }
 
     if( (directionFlags & 0x80) == 0x80 )
@@ -311,29 +317,29 @@ Picture& Fortification::computePicture(PlayerCityPtr city, const TilesArray* tmp
       index = 172;
     }
 
-    _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 156 ));
-    _fgPicturesRef().back().addOffset( 28, 0 );
+    th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 156 ));
+    th._fgPicturesRef().back().addOffset( 28, 0 );
 
-    _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 164 ));
-    _fgPicturesRef().back().addOffset( 0, -13 );
+    th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 164 ));
+    th._fgPicturesRef().back().addOffset( 0, -13 );
   break;
 
   case 10: index = 155; // E + W
     if( (directionFlags & 0x40) == 0x40 )
     {
-      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
-      _fgPicturesRef().back().addOffset( -28, 0 );
+      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
+      th._fgPicturesRef().back().addOffset( -28, 0 );
     }
     else
     {
-      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 184 ));
-      _fgPicturesRef().back().addOffset( -28, 0 );
+      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 184 ));
+      th._fgPicturesRef().back().addOffset( -28, 0 );
     }
   break;
 
   case 12: index = 155; // S + W
-    _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 162 ));
-    _fgPicturesRef().back().addOffset( 28, 0 );
+    th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 162 ));
+    th._fgPicturesRef().back().addOffset( 28, 0 );
   break;
 
   case 14: index = 173; // E + S + W
@@ -347,13 +353,13 @@ Picture& Fortification::computePicture(PlayerCityPtr city, const TilesArray* tmp
 
     if( (directionFlags & 0x40 ) == 0x40 )
     {
-      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
-      _fgPicturesRef().back().addOffset( -28, 0 );
+      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
+      th._fgPicturesRef().back().addOffset( -28, 0 );
     }
     else
     {
-      _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 153 ));
-      _fgPicturesRef().back().addOffset( -28, 0 );
+      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 153 ));
+      th._fgPicturesRef().back().addOffset( -28, 0 );
     }
   break;
 
@@ -362,8 +368,8 @@ Picture& Fortification::computePicture(PlayerCityPtr city, const TilesArray* tmp
     {
       index = 152;
     }
-    _fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 156 ));
-    _fgPicturesRef().back().addOffset( 28, 0 );
+    th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 156 ));
+    th._fgPicturesRef().back().addOffset( 28, 0 );
   break;
 
   case 7: index = 171;// N + E + S
@@ -388,6 +394,6 @@ Picture& Fortification::computePicture(PlayerCityPtr city, const TilesArray* tmp
 
 void Fortification::updatePicture(PlayerCityPtr city)
 {
-  setPicture( computePicture( city ) );
+  setPicture( getPicture( city, TilePos(), TilesArray() ) );
   _getPicture().addOffset( 0, 24 );
 }

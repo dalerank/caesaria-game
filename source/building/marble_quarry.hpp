@@ -23,7 +23,7 @@ class MarbleQuarry : public Factory
 public:
   MarbleQuarry();
 
-  virtual bool canBuild(PlayerCityPtr city, const TilePos& pos ) const;  // returns true if it can be built there
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& aroundTiles) const;  // returns true if it can be built there
   virtual void timeStep(const unsigned long time);
 };
 

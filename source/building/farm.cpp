@@ -101,9 +101,9 @@ Farm::Farm(const Good::Type outGood, const Type type )
   init();
 }
 
-bool Farm::canBuild(PlayerCityPtr city, const TilePos& pos ) const
+bool Farm::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
 {
-  bool is_constructible = Construction::canBuild( city, pos );
+  bool is_constructible = Construction::canBuild( city, pos, aroundTiles );
   bool on_meadow = false;
 
   TilesArray area = city->getTilemap().getArea( pos, getSize() );

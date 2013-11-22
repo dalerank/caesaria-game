@@ -24,11 +24,9 @@ public:
   Aqueduct();
 
   virtual void build(PlayerCityPtr city, const TilePos& pos );
-  Picture& computePicture(PlayerCityPtr city,
-                          const TilesArray* tmp = NULL,
-                          const TilePos pos = TilePos(0, 0));
+
   virtual void initTerrain(Tile& terrain);
-  virtual bool canBuild(PlayerCityPtr city, const TilePos& pos ) const;
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const;
   virtual bool isNeedRoadAccess() const;
   virtual void destroy();
   virtual bool isWalkable() const; 
@@ -37,7 +35,10 @@ public:
   void updatePicture(PlayerCityPtr city);
   void addWater( const WaterSource& source );
 
-protected:
+  virtual const Picture& getPicture( PlayerCityPtr city,
+                                     TilePos pos,
+                                     const TilesArray& tmp ) const;
+
   virtual void _waterStateChanged();
 };
 

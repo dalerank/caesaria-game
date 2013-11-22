@@ -76,7 +76,7 @@ Wharf::Wharf() : Factory(Good::none, Good::fish, building::wharf, Size(2)), _d( 
   setPicture( ResourceGroup::wharf, Impl::northEastPic );
 }
 
-bool Wharf::canBuild( PlayerCityPtr city, const TilePos& pos ) const
+bool Wharf::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
 {
   bool is_constructible = true;//Construction::canBuild( city, pos );
 

@@ -135,7 +135,7 @@ public:
   }
 };
 
-bool HighBridge::canBuild(PlayerCityPtr city, const TilePos& pos ) const
+bool HighBridge::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& ) const
 {
   //bool is_constructible = Construction::canBuild( pos );
 

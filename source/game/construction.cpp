@@ -43,7 +43,7 @@ Construction::~Construction()
 
 }
 
-bool Construction::canBuild(PlayerCityPtr city, const TilePos& pos ) const
+bool Construction::canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& ) const
 {
   Tilemap& tilemap = city->getTilemap();
 
@@ -232,6 +232,16 @@ void Construction::timeStep(const unsigned long time)
   }
 
   TileOverlay::timeStep( time );
+}
+
+const Picture& Construction::getPicture() const
+{
+  return TileOverlay::getPicture();
+}
+
+const Picture& Construction::getPicture(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
+{
+  return getPicture();
 }
 
 bool Construction::isNeedRoadAccess() const

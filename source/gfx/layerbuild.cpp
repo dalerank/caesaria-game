@@ -66,7 +66,7 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
 
   int size = overlay->getSize().getWidth();
 
-  if( overlay->canBuild( _getCity(), pos ) )
+  if( overlay->canBuild( _getCity(), pos, _d->buildTiles ) )
   {
     //bldCommand->setCanBuild(true);
     Tilemap& tmap = _getCity()->getTilemap();
@@ -177,7 +177,7 @@ void LayerBuild::_buildAll()
   bool buildOk = false;
   foreach( Tile* tile, _d->buildTiles )
   {
-    if( cnstr->canBuild( _getCity(), tile->getIJ() ) && tile->isMasterTile())
+    if( cnstr->canBuild( _getCity(), tile->getIJ(), TilesArray() ) && tile->isMasterTile())
     {
       events::GameEventPtr event = events::BuildEvent::create( tile->getIJ(), cnstr->getType() );
       event->dispatch();
@@ -287,17 +287,10 @@ void LayerBuild::_drawBuildTiles(GfxEngine& engine)
     ConstructionPtr ptr_construction = postTile->getOverlay().as<Construction>();
     engine.resetTileDrawMask();
 
-    if (ptr_construction != NULL)
+    if( ptr_construction != NULL
+        && ptr_construction->canBuild( _getCity(), postTile->getIJ(), _d->buildTiles ) )
     {
-      if (ptr_construction->canBuild( _getCity(), postTile->getIJ()))
-      {
-        engine.setTileDrawMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
-
-        // aqueducts must be shown in correct form
-        AqueductPtr aqueduct = ptr_construction.as<Aqueduct>();
-        if (aqueduct != NULL)
-          aqueduct->setPicture( aqueduct->computePicture( _getCity(), &_d->buildTiles, postTile->getIJ()));
-      }
+      engine.setTileDrawMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
     }
 
     drawTileR( engine, *postTile, offset, postTile->getIJ().getZ(), true );
@@ -315,25 +308,12 @@ void LayerBuild::drawTile( GfxEngine& engine, Tile& tile, Point offset )
 
   if( overlay.isValid() )
   {
-    if( overlay.is<Aqueduct>() && postTiles.size() > 0 )
+    ConstructionPtr cntr = overlay.as<Construction>();
+    if( cntr.isValid() && postTiles.size() > 0 )
     {
-      // check, do we have any aqueducts there... there can be empty items
-      bool isAqueducts = false;
-      for( TilesArray::const_iterator it=postTiles.begin(); it != postTiles.end(); it++ )
-      {
-        if( (*it)->getOverlay().is<Aqueduct>() )
-        {
-          isAqueducts = true;
-          break;
-        }
-      }
-
-      if( isAqueducts )
-      {
-        tile.setWasDrawn();
-        Picture& pic = overlay.as<Aqueduct>()->computePicture( _getCity(), &postTiles, tile.getIJ());
-        engine.drawPicture( pic, screenPos );
-      }
+      tile.setWasDrawn();
+      const Picture& pic = cntr->getPicture( _getCity(), tile.getIJ(), postTiles );
+      engine.drawPicture( pic, screenPos );
     }
 
     registerTileForRendering( tile );

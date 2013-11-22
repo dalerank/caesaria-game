@@ -96,9 +96,9 @@ void Aqueduct::initTerrain(Tile &terrain)
   terrain.setFlag( Tile::tlAqueduct, true); // mandatory!
 }
 
-bool Aqueduct::canBuild(PlayerCityPtr city, const TilePos& pos ) const
+bool Aqueduct::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
 {
-  bool is_free = Construction::canBuild( city, pos );
+  bool is_free = Construction::canBuild( city, pos, aroundTiles );
 
   if( is_free )
       return true; // we try to build on free tile
@@ -171,20 +171,24 @@ bool Aqueduct::canBuild(PlayerCityPtr city, const TilePos& pos ) const
     case 8:  // West
     case 5:  // North+South
     case 10: // East+West
+      {
+        Picture pic = const_cast<Aqueduct*>( this )->getPicture( city, pos, aroundTiles );
+        const_cast<Aqueduct*>( this )->setPicture( pic );
+      }
       return true;
     }
   }
   return false;
 }
 
-Picture& Aqueduct::computePicture(PlayerCityPtr city , const TilesArray* tmp, const TilePos pos)
+const Picture& Aqueduct::getPicture(PlayerCityPtr city, TilePos pos, const TilesArray& tmp ) const
 {
   // find correct picture as for roads
   Tilemap& tmap = city->getTilemap();
 
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
 
-  const TilePos tile_pos = (tmp == NULL) ? getTilePos() : pos;
+  const TilePos tile_pos = (tmp.empty()) ? getTilePos() : pos;
 
   if (!tmap.isInside(tile_pos))
     return Picture::load( ResourceGroup::aqueduct, 121 );
@@ -213,12 +217,15 @@ Picture& Aqueduct::computePicture(PlayerCityPtr city , const TilesArray* tmp, co
   overlay_d[west] = tmap.at( tile_pos_d[west]  ).getOverlay();
 
   // if we have a TMP array with aqueducts, calculate them
-  if (tmp != NULL)
+  if (!tmp.empty())
   {
-    for( TilesArray::const_iterator it = tmp->begin(); it != tmp->end(); ++it)
+    for( TilesArray::const_iterator it = tmp.begin(); it != tmp.end(); ++it)
     {
       int i = (*it)->getI();
       int j = (*it)->getJ();
+
+      if( !(*it)->getOverlay().is<Aqueduct>() )
+        continue;
 
       if (i == pos.getI() && j == (pos.getJ() + 1)) is_busy[north] = true;
       else if (i == pos.getI() && j == (pos.getJ() - 1))is_busy[south] = true;
@@ -251,7 +258,7 @@ Picture& Aqueduct::computePicture(PlayerCityPtr city , const TilesArray* tmp, co
     if( tmap.at( tile_pos ).getFlag( Tile::tlRoad ) )
     {
       index = 119; 
-      _setIsRoad( true );
+      const_cast<Aqueduct*>( this )->_setIsRoad( true );
     }
     break;
     
@@ -270,7 +277,7 @@ Picture& Aqueduct::computePicture(PlayerCityPtr city , const TilesArray* tmp, co
     if( tmap.at( tile_pos ).getFlag( Tile::tlRoad ) )
     {
       index = 120; 
-      _setIsRoad( true );
+      const_cast<Aqueduct*>( this )->_setIsRoad( true );
     }
     break;
    
@@ -291,9 +298,9 @@ Picture& Aqueduct::computePicture(PlayerCityPtr city , const TilesArray* tmp, co
   return Picture::load( ResourceGroup::aqueduct, index + (_getWater() == 0 ? 15 : 0) );
 }
 
-void Aqueduct::updatePicture(PlayerCityPtr city )
+void Aqueduct::updatePicture(PlayerCityPtr city)
 {
-  setPicture( computePicture( city ) );
+  setPicture( getPicture( city, TilePos(), TilesArray() ) );
 }
 
 bool Aqueduct::isNeedRoadAccess() const

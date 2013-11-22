@@ -29,9 +29,9 @@ Pottery::Pottery() : Factory(Good::clay, Good::pottery, building::pottery, Size(
   _fgPicturesRef().resize(2);
 }
 
-bool Pottery::canBuild(PlayerCityPtr city, const TilePos& pos) const
+bool Pottery::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
 {
-  bool ret = Factory::canBuild( city, pos );
+  bool ret = Factory::canBuild( city, pos, aroundTiles );
 
   CityHelper helper( city );
   bool haveClaypit = !helper.find<Building>( building::clayPit ).empty();

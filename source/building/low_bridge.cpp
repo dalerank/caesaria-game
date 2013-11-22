@@ -118,7 +118,7 @@ public:
   }
 };
 
-bool LowBridge::canBuild(PlayerCityPtr city, const TilePos& pos ) const
+bool LowBridge::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& ) const
 {
   //bool is_constructible = Construction::canBuild( pos );
 

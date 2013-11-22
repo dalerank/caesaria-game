@@ -25,7 +25,7 @@ class LowBridge : public Construction
 public:
   LowBridge();
 
-  bool canBuild(PlayerCityPtr city, const TilePos& pos ) const;
+  bool canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& aroundTiles) const;
   void initTerrain( Tile& terrain );
   void build( PlayerCityPtr city, const TilePos& pos );
   void destroy();
