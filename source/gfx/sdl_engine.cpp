@@ -92,7 +92,7 @@ void GfxSdlEngine::init()
     THROW("Unable to set video mode: " << SDL_GetError());
   }
 
-  SDL_WM_SetCaption( "OpenCaesar 3: "OC3_VERSION, 0 );    
+  SDL_WM_SetCaption( "CaesarIA: "CAESARIA_VERSION, 0 );    
 
   SDL_EnableKeyRepeat(1, 100);
 }

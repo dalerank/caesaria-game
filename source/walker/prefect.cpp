@@ -487,5 +487,5 @@ void Prefect::save( VariantMap& stream ) const
   stream[ "water" ] = _d->water;
   stream[ "prefectAction" ] = (int)_d->action;
   stream[ "endPoint" ] = _d->endPatrolPoint;
-  stream[ "__debug_typeName" ] = Variant( std::string( OC3_STR_EXT(walker::prefect) ) );
+  stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(walker::prefect) ) );
 }

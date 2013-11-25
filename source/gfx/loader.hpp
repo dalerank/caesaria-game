@@ -1,5 +1,5 @@
-#ifndef _OC3_PICTURE_LOADER_H_INLCUDE_
-#define _OC3_PICTURE_LOADER_H_INLCUDE_
+#ifndef _CAESARIA_PICTURE_LOADER_H_INLCUDE_
+#define _CAESARIA_PICTURE_LOADER_H_INLCUDE_
 
 #include "picture.hpp"
 #include "core/scopedptr.hpp"
@@ -36,4 +36,4 @@ private:
     ScopedPtr< Impl > _d;
 };
 
-#endif //_OC3_PICTURE_LOADER_H_INLCUDE_
+#endif //_CAESARIA_PICTURE_LOADER_H_INLCUDE_

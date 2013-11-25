@@ -117,10 +117,17 @@ void Logger::warning( const char* fmt, ... )
   getInstance()._d->write( ret );
 }
 
-void Logger::warning(const std::string& text)
+void Logger::registerWriter(Logger::Type type)
 {
-  getInstance()._d->write( text );
-}
+  switch( type )
+  {
+  case consolelog:
+  {
+    LogWriterPtr wr( new ConsoleLogWriter() );
+    wr->drop();
+    registerWriter( "__console", wr );
+  }
+  break;
 
 void Logger::registerWriter(Logger::Type type)
 {

@@ -59,12 +59,12 @@ Widget* WidgetFactory::create(const std::string& type, Widget* parent ) const
 WidgetFactory::WidgetFactory() : _d( new Impl )
 {
   // entertainment
-  addCreator( OC3_STR_EXT(Label),          new BaseWidgetCreator<Label>() );
-  addCreator( OC3_STR_EXT(EditBox),        new BaseWidgetCreator<EditBox>() );
-  addCreator( OC3_STR_EXT(TexturedButton), new BaseWidgetCreator<TexturedButton>() );
-  addCreator( OC3_STR_EXT(PushButton),     new BaseWidgetCreator<PushButton>() );
-  addCreator( OC3_STR_EXT(ListBox),        new BaseWidgetCreator<ListBox>() );
-  addCreator( OC3_STR_EXT(Image),          new BaseWidgetCreator<Image>() );
+  addCreator( CAESARIA_STR_EXT(Label),          new BaseWidgetCreator<Label>() );
+  addCreator( CAESARIA_STR_EXT(EditBox),        new BaseWidgetCreator<EditBox>() );
+  addCreator( CAESARIA_STR_EXT(TexturedButton), new BaseWidgetCreator<TexturedButton>() );
+  addCreator( CAESARIA_STR_EXT(PushButton),     new BaseWidgetCreator<PushButton>() );
+  addCreator( CAESARIA_STR_EXT(ListBox),        new BaseWidgetCreator<ListBox>() );
+  addCreator( CAESARIA_STR_EXT(Image),          new BaseWidgetCreator<Image>() );
 }
 
 WidgetFactory::~WidgetFactory()

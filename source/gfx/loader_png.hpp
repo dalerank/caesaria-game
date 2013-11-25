@@ -1,8 +1,8 @@
 // this file was created by rt (www.tomkorp.com), based on ttk's png-reader
 // i wanted to be able to read in PNG images with opencaesar :)
 
-#ifndef __OC3_PICTURELOADER_PNG_H_INCLUDED__
-#define __OC3_PICTURELOADER_PNG_H_INCLUDED__
+#ifndef __CAESARIA_PICTURELOADER_PNG_H_INCLUDED__
+#define __CAESARIA_PICTURELOADER_PNG_H_INCLUDED__
 
 #include "loader.hpp"
 

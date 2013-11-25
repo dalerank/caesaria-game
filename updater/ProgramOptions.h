@@ -49,6 +49,9 @@ public:
 																: "" );
 			if( !optName.empty() )
 			{
+				if( optName[0] == '-' ) optName = optName.substr( 1 );
+				if( optName[0] == '-' ) optName = optName.substr( 1 );
+
 				if( optValue.empty() )
 				{
 					_vm[ optName ] = true;

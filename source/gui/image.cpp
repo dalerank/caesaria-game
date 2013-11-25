@@ -60,7 +60,7 @@ Image::Image(Widget* parent, Rect rectangle, Picture pic, Mode mode, int id)
   _d->bgPicture = pic;
   _d->needUpdateTexture = true;
   #ifdef _DEBUG
-    setDebugName( "oc3Image");
+    setDebugName( "Image");
 #endif
 }
 

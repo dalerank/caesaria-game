@@ -1,11 +1,11 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -16,8 +16,8 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#ifndef _OPENCAESAR3_SCENARIO_OC3SAVE_SAVER_H_INCLUDE_
-#define _OPENCAESAR3_SCENARIO_OC3SAVE_SAVER_H_INCLUDE_
+#ifndef _CAESARIA_SCENARIO_OC3SAVE_SAVER_H_INCLUDE_
+#define _CAESARIA_SCENARIO_OC3SAVE_SAVER_H_INCLUDE_
 
 #include "vfs/filepath.hpp"
 #include "core/scopedptr.hpp"
@@ -31,4 +31,4 @@ public:
 };
 
 
-#endif //_OPENCAESAR3_SCENARIO_OC3SAVE_SAVER_H_INCLUDE_
+#endif //_CAESARIA_SCENARIO_OC3SAVE_SAVER_H_INCLUDE_

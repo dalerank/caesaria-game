@@ -1005,4 +1005,3 @@ ThreadID Thread::getID()
 #endif
 	return thisThreadsId;
 }
-

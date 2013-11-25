@@ -138,7 +138,7 @@ Picture* Picture::createCopy() const
 {
   if( !_d->surface )
   {
-    _OC3_DEBUG_BREAK_IF( "No surface for duplicate" );
+    _CAESARIA_DEBUG_BREAK_IF( "No surface for duplicate" );
     return GfxEngine::instance().createPicture( Size( 100 ) );
   }
 

@@ -20,7 +20,7 @@
 
 /*#if defined(AS400) || defined(OS400)
 	typedef pthread_id_np_t ThreadId_t;
-#elif defined(VMS) 
+#elif defined(VMS)
 	typedef pthread_t ThreadId_t;
 #elif defined(USE_BEGIN_THREAD)
 #endif*/
@@ -40,7 +40,7 @@ typedef enum
 	ThreadStateDown,               // thread is not running
 	ThreadStateShuttingDown,       // thread is in the process of shutting down
 	ThreadStateFault               // an error has occured and the thread could not
-	                               // be launched
+																 // be launched
 } ThreadState_t;
 
 typedef enum
@@ -56,8 +56,8 @@ class Thread : public ReferenceCounted
 private:
 	CEventClass   m_event;         // event controller
 	int           m_StopTimeout;   // specifies a timeout value for stop
-	                               // if a thread fails to stop within m_StopTimeout
-	                               // seconds an exception is thrown
+																 // if a thread fails to stop within m_StopTimeout
+																 // seconds an exception is thrown
 	bool		  m_bRunning;					// set to TRUE if thread is running
 
 #ifdef CAESARIA_PLATFORM_WIN
@@ -71,7 +71,7 @@ private:
 	unsigned int  m_queuePos;      // current que possition
 	void*         m_lpvProcessor;  // data which is currently being processed
 	ThreadState_t m_state;         // current state of thread see thread state data
-	                               // structure.
+																 // structure.
 	unsigned int  m_dwIdle;        // used for Sleep periods
 	ThreadType_t  m_type;
 	unsigned int  m_stackSize;     // thread stack size
@@ -143,4 +143,3 @@ public:
 
 typedef SmartPtr<Thread> ThreadPtr;
 #endif
-

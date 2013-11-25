@@ -27,8 +27,9 @@
 class TilePos;
 class Size;
 class VariantMap;
-
 class DateTime;
+typedef long unsigned int ThreadID;
+
 typedef long unsigned int ThreadID;
 
 #endif //__CAESARIA_PREDEFINITIONS_H_INCLUDED__

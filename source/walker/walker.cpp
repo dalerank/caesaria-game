@@ -719,7 +719,7 @@ std::string WalkerHelper::getName( walker::Type type )
   if( name.empty() )
   {
     Logger::warning( "Can't find walker typeName for %d", type );
-    //_OC3_DEBUG_BREAK_IF( "Can't find walker typeName by WalkerType" );
+    //_CAESARIA_DEBUG_BREAK_IF( "Can't find walker typeName by WalkerType" );
   }
 
   return name;
@@ -732,7 +732,7 @@ walker::Type WalkerHelper::getType(const std::string &name)
   if( type == instance()._d->getInvalid() )
   {
     Logger::warning( "Can't find walker type for %s", name.c_str() );
-    //_OC3_DEBUG_BREAK_IF( "Can't find walker type by typeName" );
+    //_CAESARIA_DEBUG_BREAK_IF( "Can't find walker type by typeName" );
   }
 
   return type;

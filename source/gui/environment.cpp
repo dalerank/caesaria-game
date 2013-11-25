@@ -124,7 +124,7 @@ void GuiEnv::clear()
 
 void GuiEnv::draw()
 {
-  _OC3_DEBUG_BREAK_IF( !_d->preRenderFunctionCalled && "Called OnPreRender() function needed" );
+  _CAESARIA_DEBUG_BREAK_IF( !_d->preRenderFunctionCalled && "Called OnPreRender() function needed" );
 
   Widget::draw( *_d->engine );
 

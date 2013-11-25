@@ -1,5 +1,5 @@
-#ifndef __OC3_MODAL_WIDGET_H_INCLUDED__
-#define __OC3_MODAL_WIDGET_H_INCLUDED__
+#ifndef __CAESARIA_MODAL_WIDGET_H_INCLUDED__
+#define __CAESARIA_MODAL_WIDGET_H_INCLUDED__
 
 #include "widget.hpp"
 
@@ -43,4 +43,4 @@ private:
 };
 
 }//end namespace gui
-#endif //__OC3_MODAL_WIDGET_H_INCLUDED__
+#endif //__CAESARIA_MODAL_WIDGET_H_INCLUDED__

@@ -49,7 +49,7 @@ void GoodStock::append(GoodStock &stock, const int iAmount)
   if (_type != none && _type != stock._type)
   {
     std::string errorStr = StringHelper::format( 0xff, "GoodTypes do not match: %d vs %d", _type, stock._type );
-    _OC3_DEBUG_BREAK_IF( errorStr.c_str() );
+    _CAESARIA_DEBUG_BREAK_IF( errorStr.c_str() );
     return;
   }
 
@@ -60,14 +60,14 @@ void GoodStock::append(GoodStock &stock, const int iAmount)
   }
   if (amount > stock._currentQty)
   {
-    _OC3_DEBUG_BREAK_IF( "GoodStock:Not enough quantity in stock." );
+    _CAESARIA_DEBUG_BREAK_IF( "GoodStock:Not enough quantity in stock." );
     return;
   }
 
   amount = math::clamp( amount, 0, _maxQty - _currentQty );
   if (amount+_currentQty > _maxQty)
   {
-    _OC3_DEBUG_BREAK_IF( "GoodStock:Not enough free room for storage");
+    _CAESARIA_DEBUG_BREAK_IF( "GoodStock:Not enough free room for storage");
     return;
   }
 

@@ -1489,8 +1489,8 @@ void EditBox::sendGuiEvent( unsigned int type)
 	else
 		setPasswordBox(in->getAttributeAsBool("PasswordBox"), ch[0]);
 
-	setTextAlignment( (OC3_ALIGNMENT) in->getAttributeAsEnumeration("HTextAlign", GUIAlignmentNames),
-			(OC3_ALIGNMENT) in->getAttributeAsEnumeration("VTextAlign", GUIAlignmentNames));
+	setTextAlignment( (CAESARIA_ALIGNMENT) in->getAttributeAsEnumeration("HTextAlign", GUIAlignmentNames),
+			(CAESARIA_ALIGNMENT) in->getAttributeAsEnumeration("VTextAlign", GUIAlignmentNames));
 
 	// setOverrideFont(in->getAttributeAsFont("OverrideFont"));
     */
