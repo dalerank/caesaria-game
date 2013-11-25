@@ -1,8 +1,8 @@
 // this file was created by rt (www.tomkorp.com), based on ttk's png-reader
 // i wanted to be able to read in PNG images with opencaesar :)
 
-#ifndef __OC3_RENDERER_H_INCLUDED__
-#define __OC3_RENDERER_H_INCLUDED__
+#ifndef __CAESARIA_RENDERER_H_INCLUDED__
+#define __CAESARIA_RENDERER_H_INCLUDED__
 
 #include "core/referencecounted.hpp"
 #include "picture.hpp"
@@ -40,5 +40,5 @@ public:
   virtual PicturesArray getPictures( Renderer::Pass ) const = 0;
 };
 
-#endif //__OC3_RENDERER_H_INCLUDED__
+#endif //__CAESARIA_RENDERER_H_INCLUDED__
 

@@ -343,7 +343,7 @@ struct NEvent
     int y;  //! Y position of mouse cursor
 
     //! mouse wheel delta, usually 1.0 or -1.0.
-    /** Only valid if event was OC3_MOUSE_WHEEL */
+    /** Only valid if event was CAESARIA_MOUSE_WHEEL */
     float wheel;
 
     bool shift:1; //! True if shift was also pressed

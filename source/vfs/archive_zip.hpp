@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OC3_ZIP_READER_H_INCLUDED__
-#define __OC3_ZIP_READER_H_INCLUDED__
+#ifndef __CAESARIA_ZIP_READER_H_INCLUDED__
+#define __CAESARIA_ZIP_READER_H_INCLUDED__
 
 #include "filesystem.hpp"
 #include "file.hpp"
@@ -233,4 +233,4 @@ protected:
 
 }
 
-#endif // __OC3_ZIP_READER_H_INCLUDED__
+#endif // __CAESARIA_ZIP_READER_H_INCLUDED__

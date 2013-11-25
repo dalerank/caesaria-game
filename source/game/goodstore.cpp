@@ -95,7 +95,7 @@ GoodStock GoodStore::getStorageReservation(const long reservationID, const bool 
 
   if (mapIt == _d->storeReservations.end())
   {
-    _OC3_DEBUG_BREAK_IF( "Unknown reservationID" );
+    _CAESARIA_DEBUG_BREAK_IF( "Unknown reservationID" );
     return GoodStock();
   }
 
@@ -116,7 +116,7 @@ GoodStock GoodStore::getRetrieveReservation(const long reservationID, const bool
 
   if (mapIt == _d->retrieveReservations.end())
   {
-    _OC3_DEBUG_BREAK_IF("Unknown reservationID");
+    _CAESARIA_DEBUG_BREAK_IF("Unknown reservationID");
     return GoodStock();
   }
 

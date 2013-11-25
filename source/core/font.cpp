@@ -332,14 +332,14 @@ void FontCollection::initialize(const std::string &resourcePath)
   NColor white( 255, 215, 215, 215 );  // dim white
   NColor yellow( 255, 160, 160, 0 );
 
-  addFont( FONT_0,       OC3_STR_EXT(FONT_0),      full_font_path, 12, black );
-  addFont( FONT_1,       OC3_STR_EXT(FONT_1),      full_font_path, 16, black );
-  addFont( FONT_1_WHITE, OC3_STR_EXT(FONT_1_WHITE),full_font_path, 16, white );
-  addFont( FONT_1_RED,   OC3_STR_EXT(FONT_1_RED),  full_font_path, 16, red );
-  addFont( FONT_2,       OC3_STR_EXT(FONT_2),      full_font_path, 18, black );
-  addFont( FONT_2_RED,   OC3_STR_EXT(FONT_2_RED),  full_font_path, 18, red );
-  addFont( FONT_2_WHITE, OC3_STR_EXT(FONT_2_WHITE),full_font_path, 18, white );
-  addFont( FONT_2_YELLOW,OC3_STR_EXT(FONT_2_YELLOW), full_font_path, 18, yellow );
-  addFont( FONT_3,       OC3_STR_EXT(FONT_3),      full_font_path, 28, black);
+  addFont( FONT_0,       CAESARIA_STR_EXT(FONT_0),      full_font_path, 12, black );
+  addFont( FONT_1,       CAESARIA_STR_EXT(FONT_1),      full_font_path, 16, black );
+  addFont( FONT_1_WHITE, CAESARIA_STR_EXT(FONT_1_WHITE),full_font_path, 16, white );
+  addFont( FONT_1_RED,   CAESARIA_STR_EXT(FONT_1_RED),  full_font_path, 16, red );
+  addFont( FONT_2,       CAESARIA_STR_EXT(FONT_2),      full_font_path, 18, black );
+  addFont( FONT_2_RED,   CAESARIA_STR_EXT(FONT_2_RED),  full_font_path, 18, red );
+  addFont( FONT_2_WHITE, CAESARIA_STR_EXT(FONT_2_WHITE),full_font_path, 18, white );
+  addFont( FONT_2_YELLOW,CAESARIA_STR_EXT(FONT_2_YELLOW), full_font_path, 18, yellow );
+  addFont( FONT_3,       CAESARIA_STR_EXT(FONT_3),      full_font_path, 28, black);
 }
 

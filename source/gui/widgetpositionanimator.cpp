@@ -37,7 +37,7 @@ PositionAnimator::PositionAnimator( Widget* node,
 									int time )
 	: WidgetAnimator( node, flags ), _d( new Impl )
 {
-  _OC3_DEBUG_BREAK_IF( !node && "parent must be exist" );
+  _CAESARIA_DEBUG_BREAK_IF( !node && "parent must be exist" );
 
 	_d->stopPos = stopPos;
 	_d->time = time;

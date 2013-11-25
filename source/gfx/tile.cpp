@@ -73,7 +73,7 @@ void Tile::setPicture(const std::string& name)
 
 const Picture& Tile::getPicture() const
 {
-  _OC3_DEBUG_BREAK_IF( !_picture && "error: picture is null");
+  _CAESARIA_DEBUG_BREAK_IF( !_picture && "error: picture is null");
 
   return *_picture;
 }

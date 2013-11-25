@@ -15,7 +15,7 @@
 
   fortification : {
     desirability : 16
-    radnge : 0
+    range : 0
     class : "wall"
     cost : 20
   }

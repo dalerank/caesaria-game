@@ -100,7 +100,7 @@ Label::Label(Widget* parent, const Rect& rectangle, const string& text, bool bor
   _d->backgroundMode = background;
 
   #ifdef _DEBUG
-    setDebugName( "OC3_label");
+    setDebugName( "label");
   #endif
 
   setTextAlignment( alignAuto, alignAuto );
@@ -316,7 +316,7 @@ void Label::Impl::breakText( const std::string& text, const Size& wdgSize )
 
     brokenText.clear();
 
-    _OC3_DEBUG_BREAK_IF( !font.isValid() && "Font must be exists" );
+    _CAESARIA_DEBUG_BREAK_IF( !font.isValid() && "Font must be exists" );
 
     if( !font.isValid() )
         return;

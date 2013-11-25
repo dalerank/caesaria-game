@@ -165,12 +165,12 @@ bool Pathway::isDestination() const
   bool res;
   if (_d->isReverse)
   {
-#if defined(OC3_PLATFORM_WIN)
+#if defined(CAESARIA_PLATFORM_WIN)
     Impl::Directions::const_reverse_iterator convItReverse = _d->directionIt_reverse;
     res = (convItReverse == _d->directionList.rend());
-#elif defined(OC3_PLATFORM_UNIX)
+#elif defined(CAESARIA_PLATFORM_UNIX)
     res = (_d->directionIt_reverse == _d->directionList.rend());
-#endif //OC3_PLATFORM_UNIX
+#endif //CAESARIA_PLATFORM_UNIX
   }
   else
   {
@@ -285,7 +285,7 @@ void Pathway::prettyPrint() const
       case west: strDir += "W";  break;
       case northWest: strDir += "NW"; break;
       default:
-        _OC3_DEBUG_BREAK_IF( "Unexpected Direction:" || direction);
+        _CAESARIA_DEBUG_BREAK_IF( "Unexpected Direction:" || direction);
       break;
       }
 

@@ -13,36 +13,36 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-
 #ifndef __CAESARIA_SAFETY_CAST_INCLUDE_
 #define __CAESARIA_SAFETY_CAST_INCLUDE_
 
 #include <typeinfo>
+#include "requirements.hpp"
 
 template<class T, class B>
 inline T safety_cast( B object ) throw()
 {
-    try
-    {
-        return dynamic_cast<T>(object);
-    }
-#if defined(OC3_PLATFORM_WIN) && !defined(OC3_USE_MINGW_COMPILER)
-    catch(std::__non_rtti_object )
-    {
-        //LOGIT(pfEmerg, "cast(0x%p): __non_rtti_object exception has caught: '%s'\n", object, e.what());
-        return 0;
-    }
+  try
+  {
+    return dynamic_cast<T>(object);
+  }
+#if defined(CAESARIA_PLATFORM_WIN) && !defined(CAESARIA_USE_MINGW_COMPILER)
+  catch(std::__non_rtti_object &e)
+  {
+    //LOGIT(pfEmerg, "cast(0x%p): __non_rtti_object exception has caught: '%s'\n", object, e.what());
+    return 0;
+  }
 #else
-    catch(std::bad_cast)
-    {
-        return 0;
-    }
+  catch(std::bad_cast)
+  {
+    return 0;
+  }
 #endif
-    catch(...)
-    {
-        //LOGIT(pfEmerg, "cast(0x%p): an unknown exception has caught.\n", object);
-        return 0;
-    }
+  catch(...)
+  {
+    //LOGIT(pfEmerg, "cast(0x%p): an unknown exception has caught.\n", object);
+    return 0;
+  }
 }
 
 #endif //__CAESARIA_SAFETY_CAST_INCLUDE_

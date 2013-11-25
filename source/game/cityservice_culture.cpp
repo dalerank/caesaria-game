@@ -175,5 +175,5 @@ int CityServiceCulture::getCoverage( Coverage type) const
 
 std::string CityServiceCulture::getDefaultName()
 {
-  return OC3_STR_EXT(CityServiceCulture);
+  return CAESARIA_STR_EXT(CityServiceCulture);
 }

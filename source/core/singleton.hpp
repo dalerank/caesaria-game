@@ -53,13 +53,13 @@ class DynamicSingleton
 public:
 	static T* instance()
 	{
-		_OC3_DEBUG_BREAK_IF( !m_instance );
+		_CAESARIA_DEBUG_BREAK_IF( !m_instance );
 		return m_instance;
 	}
 
 	DynamicSingleton()
 	{
-		_OC3_DEBUG_BREAK_IF( m_instance );
+		_CAESARIA_DEBUG_BREAK_IF( m_instance );
 		m_instance = static_cast<T*>(this);
 	}
 

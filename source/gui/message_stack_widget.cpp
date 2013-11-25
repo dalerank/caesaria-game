@@ -26,7 +26,7 @@
 namespace gui
 {
 
-const int WindowMessageStack::defaultID = StringHelper::hash( OC3_STR_EXT(WindowMessageStack) );
+const int WindowMessageStack::defaultID = StringHelper::hash( CAESARIA_STR_EXT(WindowMessageStack) );
 
 class WindowMessageStack::Impl
 {

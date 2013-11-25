@@ -19,14 +19,14 @@
 #include "filesystem.hpp"
 #include "filelist.hpp"
 
-#ifdef OC3_PLATFORM_WIN
+#ifdef CAESARIA_PLATFORM_WIN
   #include <windows.h>
   #include <io.h>
-#elif defined(OC3_PLATFORM_UNIX)
-  #ifdef OC3_PLATFORM_LINUX
+#elif defined(CAESARIA_PLATFORM_UNIX)
+  #ifdef CAESARIA_PLATFORM_LINUX
     #include <sys/io.h>
     #include <linux/limits.h>
-  #elif defined(OC3_PLATFORM_MACOSX)
+  #elif defined(CAESARIA_PLATFORM_MACOSX)
     #include <libproc.h>
   #endif
   #include <sys/stat.h>
@@ -92,12 +92,12 @@ void FilePath::splitToDirPathExt( FilePath* path,
 }
 
 
-void FilePath::_OsDelete( const FilePath& pathToDelete )
+void FilePath::remove()
 {
-#ifdef OC3_PLATFORM_WIN
-    DeleteFile( pathToDelete._d->path.c_str() );
-#elif defined(OC3_PLATFORM_UNIX)
-    ::remove( pathToDelete._d->path.c_str() );
+#ifdef CAESARIA_PLATFORM_WIN
+    DeleteFile( _d->path.c_str() );
+#elif defined(CAESARIA_PLATFORM_UNIX)
+    ::remove( _d->path.c_str() );
 #endif
 }
 
@@ -147,9 +147,9 @@ FilePath FilePath::removeEndSlash() const
 
 void FileDir::_OsCreate( const FileDir& dirName )
 {
-#ifdef OC3_PLATFORM_WIN
+#ifdef CAESARIA_PLATFORM_WIN
     CreateDirectory( removeEndSlash().toString().c_str(), NULL );
-#elif defined(OC3_PLATFORM_UNIX)
+#elif defined(CAESARIA_PLATFORM_UNIX)
     ::mkdir( dirName.toString().c_str(), S_IRWXU|S_IRWXG|S_IRWXO );
 #endif
 }
@@ -169,19 +169,19 @@ bool FilePath::isExist() const
 
 bool FilePath::isFolder() const
 {
-#ifdef OC3_PLATFORM_WIN
+#ifdef CAESARIA_PLATFORM_WIN
   WIN32_FILE_ATTRIBUTE_DATA fad;
   if( ::GetFileAttributesEx( _d->path.c_str(), ::GetFileExInfoStandard, &fad )== 0 )
       return false;
 
   return (fad.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY;
-#elif defined(OC3_PLATFORM_UNIX)
+#elif defined(CAESARIA_PLATFORM_UNIX)
   struct stat path_stat;
   if ( ::stat( toString().c_str(), &path_stat) != 0 )
       return false;
 
   return S_ISDIR(path_stat.st_mode);
-#endif //OC3_PLATFORM_UNIX
+#endif //CAESARIA_PLATFORM_UNIX
 }
 
 std::string FilePath::getExtension() const 
@@ -213,13 +213,13 @@ FilePath FilePath::getUpDir() const
         return FilePath( pathToAny._d->path.substr( 0, index ) );
     }
 
-    _OC3_DEBUG_BREAK_IF( !isExist() );
+    _CAESARIA_DEBUG_BREAK_IF( !isExist() );
     return "";
 }
 
 FilePath FileDir::find( const FilePath& fileName ) const
 {
-    _OC3_DEBUG_BREAK_IF( !isExist() );
+    _CAESARIA_DEBUG_BREAK_IF( !isExist() );
     if( !fileName.toString().size() )
     {
         return "";
@@ -246,7 +246,7 @@ void FilePath::_OsRename( const FilePath& newName )
 
 void FilePath::rename( const FilePath& pathNew )
 {
-  _OC3_DEBUG_BREAK_IF( !isExist() );
+  _CAESARIA_DEBUG_BREAK_IF( !isExist() );
   *this = pathNew;
 }
 
@@ -293,14 +293,14 @@ FilePath::~FilePath()
 
 FilePath FilePath::getAbsolutePath() const
 {
-#if defined(OC3_PLATFORM_WIN)
+#if defined(CAESARIA_PLATFORM_WIN)
   char *p=0;
   char fpath[_MAX_PATH];
 
   p = _fullpath(fpath, _d->path.c_str(), _MAX_PATH);
   std::string tmp = StringHelper::replace( p, "\\", "/");
   return tmp;
-#elif defined(OC3_PLATFORM_UNIX)
+#elif defined(CAESARIA_PLATFORM_UNIX)
   char* p=0;
   char fpath[4096];
   fpath[0]=0;
@@ -321,7 +321,7 @@ FilePath FilePath::getAbsolutePath() const
     return FilePath( std::string(p) + "/" );
   else
     return FilePath( std::string(p) );
-#endif // OC3_PLATFORM_UNIX
+#endif // CAESARIA_PLATFORM_UNIX
 }
 
 
@@ -390,7 +390,7 @@ FilePath FilePath::getRelativePathTo( const FilePath& directory ) const
   unsigned int it1=0;
   unsigned int it2=0;
 
-#if defined (OC3_PLATFORM_WIN)
+#if defined (CAESARIA_PLATFORM_WIN)
   char partition1 = 0, partition2 = 0;
   FilePath prefix1, prefix2;
   if ( it1 > 0 )
@@ -413,15 +413,15 @@ FilePath FilePath::getRelativePathTo( const FilePath& directory ) const
   {
     return *this;
   }
-#endif //OC3_PLATFORM_WIN
+#endif //CAESARIA_PLATFORM_WIN
 
 
   for (; i<list1.size() && i<list2.size() 
-#if defined (OC3_PLATFORM_WIN)
+#if defined (CAESARIA_PLATFORM_WIN)
     && ( StringHelper::isEquale( list1[ it1 ], list2[ it2 ], StringHelper::equaleIgnoreCase ) )
-#elif defined(OC3_PLATFORM_UNIX)
+#elif defined(CAESARIA_PLATFORM_UNIX)
     && ( list1[ it1 ]== list2[ it2 ] )	
-#endif //OC3_PLATFORM_UNIX
+#endif //CAESARIA_PLATFORM_UNIX
     ; ++i)
   {
     ++it1;

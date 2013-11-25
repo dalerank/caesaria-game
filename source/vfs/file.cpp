@@ -17,11 +17,11 @@
 #include "filesystem.hpp"
 #include "filepath.hpp"
 
-#if defined(OC3_PLATFORM_WIN)
+#if defined(CAESARIA_PLATFORM_WIN)
 #define getline_def getline_win
-#elif defined(OC3_PLATFORM_UNIX)
+#elif defined(CAESARIA_PLATFORM_UNIX)
 #define getline_def getline
-#endif //OC3_PLATFORM_UNIX
+#endif //CAESARIA_PLATFORM_UNIX
 
 namespace io
 {

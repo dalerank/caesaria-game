@@ -68,7 +68,7 @@ void Building::timeStep(const unsigned long time)
 
 void Building::storeGoods(GoodStock &stock, const int amount)
 {
-   _OC3_DEBUG_BREAK_IF("This building should not store any goods");
+   _CAESARIA_DEBUG_BREAK_IF("This building should not store any goods");
 }
 
 float Building::evaluateService(ServiceWalkerPtr walker)

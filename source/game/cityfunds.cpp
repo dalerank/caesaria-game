@@ -51,7 +51,7 @@ void CityFunds::resolveIssue( FundIssue issue )
 {
   switch( issue.type )
   {
-  case unknown: _OC3_DEBUG_BREAK_IF( "wrong issue" ); break;
+  case unknown: _CAESARIA_DEBUG_BREAK_IF( "wrong issue" ); break;
   default:
     {
       Impl::IssuesValue& step = _d->history.front();

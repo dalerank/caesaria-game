@@ -21,12 +21,12 @@
 #include "archive_zip.hpp"
 #include "core/logger.hpp"
 
-#if defined (OC3_PLATFORM_WIN)
+#if defined (CAESARIA_PLATFORM_WIN)
 	#include <direct.h> // for _chdir
 	#include <io.h> // for _access
 	#include <tchar.h>
     #include <stdio.h>
-#elif defined(OC3_PLATFORM_UNIX)
+#elif defined(CAESARIA_PLATFORM_UNIX)
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <string.h>
@@ -468,11 +468,11 @@ const FilePath& FileSystem::getWorkingDirectory()
 	}
 	else
 	{
-		#if defined(OC3_PLATFORM_WIN)
+		#if defined(CAESARIA_PLATFORM_WIN)
 			char tmp[_MAX_PATH];
 			_getcwd(tmp, _MAX_PATH);
       _d->workingDirectory[type] = StringHelper::replace( tmp, "\\", "/" );
-		#elif defined(OC3_PLATFORM_UNIX)
+		#elif defined(CAESARIA_PLATFORM_UNIX)
 			// getting the CWD is rather complex as we do not know the size
 			// so try it until the call was successful
 			// Note that neither the first nor the second parameter may be 0 according to POSIX
@@ -489,7 +489,7 @@ const FilePath& FileSystem::getWorkingDirectory()
 			{
                 _d->workingDirectory[fsNative] = FilePath( tmpPath.data() );
 			}
-		#endif //OC3_PLATFORM_UNIX
+		#endif //CAESARIA_PLATFORM_UNIX
 
 		//_d->workingDirectory[type].validate();
 	}
@@ -512,11 +512,11 @@ bool FileSystem::changeWorkingDirectoryTo(const FilePath& newDirectory)
     else
     {
         _d->workingDirectory[ fsNative ] = newDirectory;
-#if defined(OC3_PLATFORM_WIN)
+#if defined(CAESARIA_PLATFORM_WIN)
         success = ( _chdir( newDirectory.toString().c_str() ) == 0 );
-#elif defined(OC3_PLATFORM_UNIX)
+#elif defined(CAESARIA_PLATFORM_UNIX)
         success = ( chdir( newDirectory.toString().c_str() ) == 0 );
-#endif //OC3_PLATFORM_UNIX
+#endif //CAESARIA_PLATFORM_UNIX
     }
 
     return success;
@@ -570,7 +570,7 @@ FileList FileSystem::getFileList()
 	{
 		// --------------------------------------------
 		//! Windows version
-		#if defined(OC3_PLATFORM_WIN)
+		#if defined(CAESARIA_PLATFORM_WIN)
 			ret.setIgnoreCase( true );
 
 			struct _finddata_t c_file;
@@ -591,7 +591,7 @@ FileList FileSystem::getFileList()
 			//entry.Name = "E:\\";
 			//entry.isDirectory = true;
 			//Files.push_back(entry);
-		#elif defined(OC3_PLATFORM_UNIX)
+		#elif defined(CAESARIA_PLATFORM_UNIX)
 
 			// --------------------------------------------
 			//! Linux version
@@ -632,7 +632,7 @@ FileList FileSystem::getFileList()
 				}
 				closedir(dirHandle);
 			}
-		#endif //OC3_PLATFORM_UNIX
+		#endif //CAESARIA_PLATFORM_UNIX
 	}
 	else
 	{
@@ -676,11 +676,11 @@ bool FileSystem::existFile(const FilePath& filename) const
       if (_d->openArchives[i]->getFileList()->findFile(filename)!=-1)
               return true;
 
-#if defined(OC3_PLATFORM_WIN)
+#if defined(CAESARIA_PLATFORM_WIN)
   return ( _access( filename.toString().c_str(), 0) != -1);
-#elif defined(OC3_PLATFORM_UNIX)
+#elif defined(CAESARIA_PLATFORM_UNIX)
   return ( access( filename.toString().c_str(), 0 ) != -1);
-#endif //OC3_PLATFORM_UNIX
+#endif //CAESARIA_PLATFORM_UNIX
 }
 
 FileSystem& FileSystem::instance()

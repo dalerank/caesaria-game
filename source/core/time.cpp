@@ -21,11 +21,11 @@
 #include <stdint.h>
 #include "requirements.hpp"
 
-#if defined(OC3_PLATFORM_WIN)
+#if defined(CAESARIA_PLATFORM_WIN)
     #include "windows.h"
-#elif defined(OC3_PLATFORM_UNIX)
+#elif defined(CAESARIA_PLATFORM_UNIX)
     #include <sys/time.h>
-#endif //OC3_PLATFORM_UNIX
+#endif //CAESARIA_PLATFORM_UNIX
 
 using namespace std;
 
@@ -135,14 +135,14 @@ DateTime& DateTime::appendDay( int dayNumber/*=1 */ )
 
 tm _getOsLocalTime( time_t date )
 {
-#if defined(OC3_PLATFORM_WIN)
+#if defined(CAESARIA_PLATFORM_WIN)
   tm ret;
   localtime_s( &ret, &date );
   return ret;
-#elif defined(OC3_PLATFORM_UNIX)
+#elif defined(CAESARIA_PLATFORM_UNIX)
   //time(&date);
   return *localtime( &date );
-#endif //OC3_PLATFORM_UNIX
+#endif //CAESARIA_PLATFORM_UNIX
 
   return tm();
 }
@@ -213,14 +213,14 @@ DateTime DateTime::getCurrenTime()
 {
 	tm d;
 
-#if defined(OC3_PLATFORM_WIN)
+#if defined(CAESARIA_PLATFORM_WIN)
     _getsystime( &d );
-#elif defined(OC3_PLATFORM_UNIX)
+#elif defined(CAESARIA_PLATFORM_UNIX)
     time_t rawtime;
     time ( &rawtime );
 
     d = *localtime( &rawtime );
-#endif //OC3_PLATFORM_UNIX
+#endif //CAESARIA_PLATFORM_UNIX
 
   return DateTime( d.tm_year+1900, d.tm_mon, d.tm_mday, d.tm_hour, d.tm_min, d.tm_sec );
 }
@@ -272,13 +272,13 @@ DateTime DateTime::getTime() const
 
 unsigned int DateTime::getElapsedTime()
 {
-#if defined(OC3_PLATFORM_WIN)
+#if defined(CAESARIA_PLATFORM_WIN)
   return ::GetTickCount();
-#elif defined(OC3_PLATFORM_UNIX)
+#elif defined(CAESARIA_PLATFORM_UNIX)
   timeval tv;
   gettimeofday(&tv, 0);
   return (uint32_t)(tv.tv_sec * 1000) + (tv.tv_usec / 1000);
-#endif //OC3_PLATFORM_UNIX
+#endif //CAESARIA_PLATFORM_UNIX
 
   return 0;
 }

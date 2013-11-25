@@ -28,6 +28,7 @@ public:
 
   static unsigned int hash( unsigned int max_size, const char* fmt, ...);
   static unsigned int hash( const std::string& text );
+  static bool startsWith( std::string text, std::string start );
 
   //! Convert a simple string of base 10 digits into an unsigned 32 bit integer.
   /** \param[in] in: The string of digits to convert. No leading chars are
@@ -53,6 +54,7 @@ public:
   sequence.
   */
   static float toFloat(const char* in, const char** out = 0);
+  static float toFloat(std::string in);
 
   static bool isEquale( const std::string& a, const std::string& b, equaleMode mode=equaleCase );
 

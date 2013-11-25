@@ -180,105 +180,105 @@ TileOverlayFactory& TileOverlayFactory::getInstance()
 TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
 {
   // entertainment
-  addCreator(building::theater,      OC3_STR_EXT(Theater), new WorkingBuildingCreator<Theater>() );
-  addCreator(building::amphitheater, OC3_STR_EXT(Amphitheater), new WorkingBuildingCreator<Amphitheater>() );
-  addCreator(building::colloseum,    OC3_STR_EXT(Collosseum), new WorkingBuildingCreator<Collosseum>() );
-  addCreator(building::actorColony,  OC3_STR_EXT(ActorColony), new WorkingBuildingCreator<ActorColony>() );
-  addCreator(building::gladiatorSchool, OC3_STR_EXT(GladiatorSchool), new WorkingBuildingCreator<GladiatorSchool>() );
-  addCreator(building::lionHouse,    OC3_STR_EXT(LionsNursery), new WorkingBuildingCreator<LionsNursery>() );
-  addCreator(building::chariotSchool,OC3_STR_EXT(WorkshopChariot), new WorkingBuildingCreator<WorkshopChariot>() );
-  addCreator(building::hippodrome,   OC3_STR_EXT(Hippodrome),new WorkingBuildingCreator<Hippodrome>() );
+  addCreator(building::theater,      CAESARIA_STR_EXT(Theater), new WorkingBuildingCreator<Theater>() );
+  addCreator(building::amphitheater, CAESARIA_STR_EXT(Amphitheater), new WorkingBuildingCreator<Amphitheater>() );
+  addCreator(building::colloseum,    CAESARIA_STR_EXT(Collosseum), new WorkingBuildingCreator<Collosseum>() );
+  addCreator(building::actorColony,  CAESARIA_STR_EXT(ActorColony), new WorkingBuildingCreator<ActorColony>() );
+  addCreator(building::gladiatorSchool, CAESARIA_STR_EXT(GladiatorSchool), new WorkingBuildingCreator<GladiatorSchool>() );
+  addCreator(building::lionHouse,    CAESARIA_STR_EXT(LionsNursery), new WorkingBuildingCreator<LionsNursery>() );
+  addCreator(building::chariotSchool,CAESARIA_STR_EXT(WorkshopChariot), new WorkingBuildingCreator<WorkshopChariot>() );
+  addCreator(building::hippodrome,   CAESARIA_STR_EXT(Hippodrome),new WorkingBuildingCreator<Hippodrome>() );
   // road&house
-  addCreator(building::house,        OC3_STR_EXT(House), new ConstructionCreator<House>() );
-  addCreator(construction::road,     OC3_STR_EXT(Road) , new ConstructionCreator<Road>() );
+  addCreator(building::house,        CAESARIA_STR_EXT(House), new ConstructionCreator<House>() );
+  addCreator(construction::road,     CAESARIA_STR_EXT(Road) , new ConstructionCreator<Road>() );
   // administration
-  addCreator(building::forum,        OC3_STR_EXT(Forum) , new WorkingBuildingCreator<Forum>() );
-  addCreator(building::senate,       OC3_STR_EXT(Senate), new WorkingBuildingCreator<Senate>() );
-  addCreator(building::governorHouse,OC3_STR_EXT(GovernorsHouse) , new ConstructionCreator<GovernorsHouse>() );
-  addCreator(building::governorVilla,OC3_STR_EXT(GovernorsVilla) , new ConstructionCreator<GovernorsVilla>() );
-  addCreator(building::governorPalace, OC3_STR_EXT(GovernorsPalace), new ConstructionCreator<GovernorsPalace>() );
-  addCreator(building::smallStatue,    OC3_STR_EXT(SmallStatue), new ConstructionCreator<SmallStatue>() );
-  addCreator(building::middleStatue,    OC3_STR_EXT(MediumStatue), new ConstructionCreator<MediumStatue>() );
-  addCreator(building::bigStatue,    OC3_STR_EXT(BigStatue), new ConstructionCreator<BigStatue>() );
-  addCreator(construction::garden, OC3_STR_EXT(Garden) , new ConstructionCreator<Garden>() );
-  addCreator(construction::plaza,  OC3_STR_EXT(Plaza)  , new ConstructionCreator<Plaza>() );
+  addCreator(building::forum,        CAESARIA_STR_EXT(Forum) , new WorkingBuildingCreator<Forum>() );
+  addCreator(building::senate,       CAESARIA_STR_EXT(Senate), new WorkingBuildingCreator<Senate>() );
+  addCreator(building::governorHouse,CAESARIA_STR_EXT(GovernorsHouse) , new ConstructionCreator<GovernorsHouse>() );
+  addCreator(building::governorVilla,CAESARIA_STR_EXT(GovernorsVilla) , new ConstructionCreator<GovernorsVilla>() );
+  addCreator(building::governorPalace, CAESARIA_STR_EXT(GovernorsPalace), new ConstructionCreator<GovernorsPalace>() );
+  addCreator(building::smallStatue,    CAESARIA_STR_EXT(SmallStatue), new ConstructionCreator<SmallStatue>() );
+  addCreator(building::middleStatue,    CAESARIA_STR_EXT(MediumStatue), new ConstructionCreator<MediumStatue>() );
+  addCreator(building::bigStatue,    CAESARIA_STR_EXT(BigStatue), new ConstructionCreator<BigStatue>() );
+  addCreator(construction::garden, CAESARIA_STR_EXT(Garden) , new ConstructionCreator<Garden>() );
+  addCreator(construction::plaza,  CAESARIA_STR_EXT(Plaza)  , new ConstructionCreator<Plaza>() );
   // water
-  addCreator(building::well,       OC3_STR_EXT(Well)     , new WorkingBuildingCreator<Well>() );
-  addCreator(building::fountain,   OC3_STR_EXT(Fountain) , new WorkingBuildingCreator<Fountain>() );
-  addCreator(building::aqueduct,   OC3_STR_EXT(Aqueduct), new ConstructionCreator<Aqueduct>() );
-  addCreator(building::reservoir,  OC3_STR_EXT(Reservoir), new ConstructionCreator<Reservoir>() );
+  addCreator(building::well,       CAESARIA_STR_EXT(Well)     , new WorkingBuildingCreator<Well>() );
+  addCreator(building::fountain,   CAESARIA_STR_EXT(Fountain) , new WorkingBuildingCreator<Fountain>() );
+  addCreator(building::aqueduct,   CAESARIA_STR_EXT(Aqueduct), new ConstructionCreator<Aqueduct>() );
+  addCreator(building::reservoir,  CAESARIA_STR_EXT(Reservoir), new ConstructionCreator<Reservoir>() );
   // security
-  addCreator(building::prefecture,   OC3_STR_EXT(Prefecture)  , new WorkingBuildingCreator<Prefecture>() );
-  addCreator(building::fortLegionaire, OC3_STR_EXT(FortLegionnaire), new ConstructionCreator<FortLegionnaire>() );
-  addCreator(building::fortJavelin, OC3_STR_EXT(FortJaveline)   , new ConstructionCreator<FortJaveline>() );
-  addCreator(building::fortMounted, OC3_STR_EXT(FortMounted)  , new ConstructionCreator<FortMounted>() );
-  addCreator(building::militaryAcademy, OC3_STR_EXT(MilitaryAcademy), new WorkingBuildingCreator<MilitaryAcademy>() );
-  addCreator(building::barracks,   OC3_STR_EXT(Barracks)        , new ConstructionCreator<Barracks>() );
+  addCreator(building::prefecture,   CAESARIA_STR_EXT(Prefecture)  , new WorkingBuildingCreator<Prefecture>() );
+  addCreator(building::fortLegionaire, CAESARIA_STR_EXT(FortLegionnaire), new ConstructionCreator<FortLegionnaire>() );
+  addCreator(building::fortJavelin, CAESARIA_STR_EXT(FortJaveline)   , new ConstructionCreator<FortJaveline>() );
+  addCreator(building::fortMounted, CAESARIA_STR_EXT(FortMounted)  , new ConstructionCreator<FortMounted>() );
+  addCreator(building::militaryAcademy, CAESARIA_STR_EXT(MilitaryAcademy), new WorkingBuildingCreator<MilitaryAcademy>() );
+  addCreator(building::barracks,   CAESARIA_STR_EXT(Barracks)        , new ConstructionCreator<Barracks>() );
   // commerce
-  addCreator(building::market,     OC3_STR_EXT(Market)  , new WorkingBuildingCreator<Market>() );
-  addCreator(building::warehouse,  OC3_STR_EXT(Warehouse), new WorkingBuildingCreator<Warehouse>() );
-  addCreator(building::granary,      OC3_STR_EXT(Granary)  , new WorkingBuildingCreator<Granary>() );
+  addCreator(building::market,     CAESARIA_STR_EXT(Market)  , new WorkingBuildingCreator<Market>() );
+  addCreator(building::warehouse,  CAESARIA_STR_EXT(Warehouse), new WorkingBuildingCreator<Warehouse>() );
+  addCreator(building::granary,      CAESARIA_STR_EXT(Granary)  , new WorkingBuildingCreator<Granary>() );
   // farms
-  addCreator(building::wheatFarm,    OC3_STR_EXT(FarmWheat) , new FactoryCreator<FarmWheat>() );
-  addCreator(building::oliveFarm, OC3_STR_EXT(FarmOlive) , new FactoryCreator<FarmOlive>() );
-  addCreator(building::grapeFarm,    OC3_STR_EXT(FarmGrape) , new FactoryCreator<FarmGrape>() );
-  addCreator(building::pigFarm,   OC3_STR_EXT(FarmMeat)     , new FactoryCreator<FarmMeat>() );
-  addCreator(building::fruitFarm, OC3_STR_EXT(FarmFruit)    , new FactoryCreator<FarmFruit>() );
-  addCreator(building::vegetableFarm, OC3_STR_EXT(FarmVegetable), new FactoryCreator<FarmVegetable>() );
+  addCreator(building::wheatFarm,    CAESARIA_STR_EXT(FarmWheat) , new FactoryCreator<FarmWheat>() );
+  addCreator(building::oliveFarm, CAESARIA_STR_EXT(FarmOlive) , new FactoryCreator<FarmOlive>() );
+  addCreator(building::grapeFarm,    CAESARIA_STR_EXT(FarmGrape) , new FactoryCreator<FarmGrape>() );
+  addCreator(building::pigFarm,   CAESARIA_STR_EXT(FarmMeat)     , new FactoryCreator<FarmMeat>() );
+  addCreator(building::fruitFarm, CAESARIA_STR_EXT(FarmFruit)    , new FactoryCreator<FarmFruit>() );
+  addCreator(building::vegetableFarm, CAESARIA_STR_EXT(FarmVegetable), new FactoryCreator<FarmVegetable>() );
   // raw materials
-  addCreator(building::ironMine,     OC3_STR_EXT(IronMine)  , new FactoryCreator<IronMine>() );
-  addCreator(building::timberLogger, OC3_STR_EXT(TimberLogger), new FactoryCreator<TimberLogger>() );
-  addCreator(building::clayPit,      OC3_STR_EXT(ClayPit)  , new FactoryCreator<ClayPit>() );
-  addCreator(building::marbleQuarry, OC3_STR_EXT(MarbleQuarry), new FactoryCreator<MarbleQuarry>() );
+  addCreator(building::ironMine,     CAESARIA_STR_EXT(IronMine)  , new FactoryCreator<IronMine>() );
+  addCreator(building::timberLogger, CAESARIA_STR_EXT(TimberLogger), new FactoryCreator<TimberLogger>() );
+  addCreator(building::clayPit,      CAESARIA_STR_EXT(ClayPit)  , new FactoryCreator<ClayPit>() );
+  addCreator(building::marbleQuarry, CAESARIA_STR_EXT(MarbleQuarry), new FactoryCreator<MarbleQuarry>() );
   // factories
-  addCreator(building::weaponsWorkshop, OC3_STR_EXT(WeaponsWorkshop)   , new FactoryCreator<WeaponsWorkshop>() );
-  addCreator(building::furnitureWorkshop,  OC3_STR_EXT(FurnitureWorkshop), new FactoryCreator<FurnitureWorkshop>() );
-  addCreator(building::winery, OC3_STR_EXT(Winery)     , new FactoryCreator<Winery>() );
-  addCreator(building::creamery, OC3_STR_EXT(Creamery)      , new FactoryCreator<Creamery>() );
-  addCreator(building::pottery,      OC3_STR_EXT(Pottery)  , new FactoryCreator<Pottery>() );
+  addCreator(building::weaponsWorkshop, CAESARIA_STR_EXT(WeaponsWorkshop)   , new FactoryCreator<WeaponsWorkshop>() );
+  addCreator(building::furnitureWorkshop,  CAESARIA_STR_EXT(FurnitureWorkshop), new FactoryCreator<FurnitureWorkshop>() );
+  addCreator(building::winery, CAESARIA_STR_EXT(Winery)     , new FactoryCreator<Winery>() );
+  addCreator(building::creamery, CAESARIA_STR_EXT(Creamery)      , new FactoryCreator<Creamery>() );
+  addCreator(building::pottery,      CAESARIA_STR_EXT(Pottery)  , new FactoryCreator<Pottery>() );
   // utility
-  addCreator(building::engineerPost, OC3_STR_EXT(EngineerPost), new WorkingBuildingCreator<EngineerPost>() );
-  addCreator(building::lowBridge,    OC3_STR_EXT(LowBridge), new ConstructionCreator<LowBridge>() );
-  addCreator(building::highBridge,   OC3_STR_EXT(HighBridge), new ConstructionCreator<HighBridge>() );
-  addCreator(building::dock,       OC3_STR_EXT(Dock)    , new ConstructionCreator<Dock>() );
-  addCreator(building::shipyard,   OC3_STR_EXT(Shipyard), new ConstructionCreator<Shipyard>() );
-  addCreator(building::wharf,        OC3_STR_EXT(Wharf)   , new WorkingBuildingCreator<Wharf>() );
-  addCreator(building::triumphalArch, OC3_STR_EXT(TriumphalArch) , new ConstructionCreator<TriumphalArch>() );
+  addCreator(building::engineerPost, CAESARIA_STR_EXT(EngineerPost), new WorkingBuildingCreator<EngineerPost>() );
+  addCreator(building::lowBridge,    CAESARIA_STR_EXT(LowBridge), new ConstructionCreator<LowBridge>() );
+  addCreator(building::highBridge,   CAESARIA_STR_EXT(HighBridge), new ConstructionCreator<HighBridge>() );
+  addCreator(building::dock,       CAESARIA_STR_EXT(Dock)    , new ConstructionCreator<Dock>() );
+  addCreator(building::shipyard,   CAESARIA_STR_EXT(Shipyard), new ConstructionCreator<Shipyard>() );
+  addCreator(building::wharf,        CAESARIA_STR_EXT(Wharf)   , new WorkingBuildingCreator<Wharf>() );
+  addCreator(building::triumphalArch, CAESARIA_STR_EXT(TriumphalArch) , new ConstructionCreator<TriumphalArch>() );
   // religion
-  addCreator(building::templeCeres,  OC3_STR_EXT(TempleCeres)  , new WorkingBuildingCreator<TempleCeres>() );
-  addCreator(building::templeNeptune, OC3_STR_EXT(TempleNeptune), new WorkingBuildingCreator<TempleNeptune>() );
-  addCreator(building::templeMars,OC3_STR_EXT(TempleMars)   , new WorkingBuildingCreator<TempleMars>() );
-  addCreator(building::templeVenus, OC3_STR_EXT(TempleVenus)  , new WorkingBuildingCreator<TempleVenus>() );
-  addCreator(building::templeMercury, OC3_STR_EXT(TempleMercure), new WorkingBuildingCreator<TempleMercure>() );
-  addCreator(building::B_BIG_TEMPLE_CERES, OC3_STR_EXT(BigTempleCeres)  , new WorkingBuildingCreator<BigTempleCeres>() );
-  addCreator(building::B_BIG_TEMPLE_NEPTUNE, OC3_STR_EXT(BigTempleNeptune), new WorkingBuildingCreator<BigTempleNeptune>() );
-  addCreator(building::B_BIG_TEMPLE_MARS, OC3_STR_EXT(BigTempleMars)   , new WorkingBuildingCreator<BigTempleMars>() );
-  addCreator(building::B_BIG_TEMPLE_VENUS, OC3_STR_EXT(BigTempleVenus)  , new WorkingBuildingCreator<BigTempleVenus>() );
-  addCreator(building::B_BIG_TEMPLE_MERCURE, OC3_STR_EXT(BigTempleMercure), new WorkingBuildingCreator<BigTempleMercure>() );
-  addCreator(building::oracle, OC3_STR_EXT(TempleOracle) , new WorkingBuildingCreator<TempleOracle>() );
+  addCreator(building::templeCeres,  CAESARIA_STR_EXT(TempleCeres)  , new WorkingBuildingCreator<TempleCeres>() );
+  addCreator(building::templeNeptune, CAESARIA_STR_EXT(TempleNeptune), new WorkingBuildingCreator<TempleNeptune>() );
+  addCreator(building::templeMars,CAESARIA_STR_EXT(TempleMars)   , new WorkingBuildingCreator<TempleMars>() );
+  addCreator(building::templeVenus, CAESARIA_STR_EXT(TempleVenus)  , new WorkingBuildingCreator<TempleVenus>() );
+  addCreator(building::templeMercury, CAESARIA_STR_EXT(TempleMercure), new WorkingBuildingCreator<TempleMercure>() );
+  addCreator(building::B_BIG_TEMPLE_CERES, CAESARIA_STR_EXT(BigTempleCeres)  , new WorkingBuildingCreator<BigTempleCeres>() );
+  addCreator(building::B_BIG_TEMPLE_NEPTUNE, CAESARIA_STR_EXT(BigTempleNeptune), new WorkingBuildingCreator<BigTempleNeptune>() );
+  addCreator(building::B_BIG_TEMPLE_MARS, CAESARIA_STR_EXT(BigTempleMars)   , new WorkingBuildingCreator<BigTempleMars>() );
+  addCreator(building::B_BIG_TEMPLE_VENUS, CAESARIA_STR_EXT(BigTempleVenus)  , new WorkingBuildingCreator<BigTempleVenus>() );
+  addCreator(building::B_BIG_TEMPLE_MERCURE, CAESARIA_STR_EXT(BigTempleMercure), new WorkingBuildingCreator<BigTempleMercure>() );
+  addCreator(building::oracle, CAESARIA_STR_EXT(TempleOracle) , new WorkingBuildingCreator<TempleOracle>() );
   // health
-  addCreator(building::baths,      OC3_STR_EXT(Baths)   , new WorkingBuildingCreator<Baths>() );
-  addCreator(building::barber,     OC3_STR_EXT(Barber)  , new WorkingBuildingCreator<Barber>() );
-  addCreator(building::doctor,     OC3_STR_EXT(Doctor)  , new WorkingBuildingCreator<Doctor>() );
-  addCreator(building::hospital,   OC3_STR_EXT(Hospital), new WorkingBuildingCreator<Hospital>() );
+  addCreator(building::baths,      CAESARIA_STR_EXT(Baths)   , new WorkingBuildingCreator<Baths>() );
+  addCreator(building::barber,     CAESARIA_STR_EXT(Barber)  , new WorkingBuildingCreator<Barber>() );
+  addCreator(building::doctor,     CAESARIA_STR_EXT(Doctor)  , new WorkingBuildingCreator<Doctor>() );
+  addCreator(building::hospital,   CAESARIA_STR_EXT(Hospital), new WorkingBuildingCreator<Hospital>() );
   // education
-  addCreator(building::school,     OC3_STR_EXT(School) , new WorkingBuildingCreator<School>() );
-  addCreator(building::library,    OC3_STR_EXT(Library), new WorkingBuildingCreator<Library>() );
-  addCreator(building::academy,    OC3_STR_EXT(Academy), new WorkingBuildingCreator<Academy>() );
-  addCreator(building::missionaryPost, OC3_STR_EXT(MissionaryPost), new ConstructionCreator<MissionaryPost>() );
+  addCreator(building::school,     CAESARIA_STR_EXT(School) , new WorkingBuildingCreator<School>() );
+  addCreator(building::library,    CAESARIA_STR_EXT(Library), new WorkingBuildingCreator<Library>() );
+  addCreator(building::academy,    CAESARIA_STR_EXT(Academy), new WorkingBuildingCreator<Academy>() );
+  addCreator(building::missionaryPost, CAESARIA_STR_EXT(MissionaryPost), new ConstructionCreator<MissionaryPost>() );
   // natives
-  addCreator(building::nativeHut, OC3_STR_EXT(NativeHut)   , new ConstructionCreator<NativeHut>() );
-  addCreator(building::nativeCenter, OC3_STR_EXT(NativeCenter), new ConstructionCreator<NativeCenter>() );
-  addCreator(building::nativeField, OC3_STR_EXT(NativeField) , new ConstructionCreator<NativeField>() );
+  addCreator(building::nativeHut, CAESARIA_STR_EXT(NativeHut)   , new ConstructionCreator<NativeHut>() );
+  addCreator(building::nativeCenter, CAESARIA_STR_EXT(NativeCenter), new ConstructionCreator<NativeCenter>() );
+  addCreator(building::nativeField, CAESARIA_STR_EXT(NativeField) , new ConstructionCreator<NativeField>() );
 
   //damages
-  addCreator(building::burningRuins , OC3_STR_EXT(BurningRuins), new ConstructionCreator<BurningRuins>() );
-  addCreator(building::burnedRuins , OC3_STR_EXT(BurnedRuins), new ConstructionCreator<BurnedRuins>() );
-  addCreator(building::collapsedRuins , OC3_STR_EXT(CollapsedRuins), new ConstructionCreator<CollapsedRuins>() );
-  addCreator(building::plagueRuins , OC3_STR_EXT(PlagueRuins), new ConstructionCreator<PlagueRuins>() );
-  addCreator(place::fishPlace,      OC3_STR_EXT(FishPlace), new BaseCreator<FishPlace>() );
-  addCreator(building::wall,         OC3_STR_EXT(Wall), new ConstructionCreator<Wall>() );
-  addCreator(building::fortification, OC3_STR_EXT(Fortification), new ConstructionCreator<Fortification>() );
+  addCreator(building::burningRuins , CAESARIA_STR_EXT(BurningRuins), new ConstructionCreator<BurningRuins>() );
+  addCreator(building::burnedRuins , CAESARIA_STR_EXT(BurnedRuins), new ConstructionCreator<BurnedRuins>() );
+  addCreator(building::collapsedRuins , CAESARIA_STR_EXT(CollapsedRuins), new ConstructionCreator<CollapsedRuins>() );
+  addCreator(building::plagueRuins , CAESARIA_STR_EXT(PlagueRuins), new ConstructionCreator<PlagueRuins>() );
+  addCreator(place::fishPlace,      CAESARIA_STR_EXT(FishPlace), new BaseCreator<FishPlace>() );
+  addCreator(building::wall,         CAESARIA_STR_EXT(Wall), new ConstructionCreator<Wall>() );
+  addCreator(building::fortification, CAESARIA_STR_EXT(Fortification), new ConstructionCreator<Fortification>() );
 }
 
 void TileOverlayFactory::addCreator( const TileOverlay::Type type, const std::string& typeName, TileOverlayConstructor* ctor )

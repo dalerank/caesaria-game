@@ -76,7 +76,7 @@ void WarehouseTile::computePicture()
   case Good::pottery: picIdx = 76; break;
   case Good::fish: picIdx = 80; break;
   default:
-      _OC3_DEBUG_BREAK_IF( "Unexpected good type: " );
+      _CAESARIA_DEBUG_BREAK_IF( "Unexpected good type: " );
   }
 
   if (_stock.type() != Good::none)
@@ -410,7 +410,7 @@ void Warehouse::save( VariantMap& stream ) const
 {
   WorkingBuilding::save( stream );
 
-  stream[ "__debug_typeName" ] = Variant( std::string( OC3_STR_EXT(B_WAREHOUSE) ) );
+  stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(B_WAREHOUSE) ) );
   stream[ "goodStore" ] = _d->goodStore.save();
 
   VariantList vm_tiles;

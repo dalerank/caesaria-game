@@ -158,7 +158,7 @@ void Granary::save( VariantMap& stream) const
 {
    WorkingBuilding::save( stream );
 
-   stream[ "__debug_typeName" ] = Variant( std::string( OC3_STR_EXT(B_GRANARY) ) );
+   stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(B_GRANARY) ) );
    stream[ "goodStore" ] = _d->goodStore.save();
 }
 

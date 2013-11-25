@@ -123,7 +123,7 @@ PushButton::PushButton( Widget* parent,
                         const BackgroundStyle bgStyle )
 : Widget( parent, id, rectangle ), _d( new Impl )
 {
-  setDebugName( "OC3_pushbutton" );
+  setDebugName( "pushbutton" );
 
   _d->pressed = false;
   _d->currentButtonState = stNormal;

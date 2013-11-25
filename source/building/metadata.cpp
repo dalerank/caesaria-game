@@ -380,7 +380,7 @@ TileOverlay::Type MetaDataHolder::getType( const std::string& name )
   if( type == instance()._d->typeHelper.getInvalid() )
   {
     Logger::warning( "Can't find type for typeName %s", name.c_str() );
-    _OC3_DEBUG_BREAK_IF( "Can't find type for typeName" );
+    _CAESARIA_DEBUG_BREAK_IF( "Can't find type for typeName" );
   }
 
   return type;
@@ -393,7 +393,7 @@ TileOverlay::Group MetaDataHolder::getClass( const std::string& name )
   if( type == instance()._d->classHelper.getInvalid() )
   {
     Logger::warning( "Can't find building class for building className %s", name.c_str() );
-    _OC3_DEBUG_BREAK_IF( "Can't find building class for building className" );
+    _CAESARIA_DEBUG_BREAK_IF( "Can't find building class for building className" );
   }
 
   return type;

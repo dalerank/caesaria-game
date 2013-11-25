@@ -86,7 +86,7 @@ CityPtr Empire::addCity( CityPtr city )
   if( ret.isValid() )
   {
     Logger::warning( "City %s already exist", city->getName().c_str() );
-    _OC3_DEBUG_BREAK_IF( "City already exist" );
+    _CAESARIA_DEBUG_BREAK_IF( "City already exist" );
     return ret;
   }
 
@@ -199,7 +199,7 @@ CityPtr Empire::initPlayerCity( CityPtr city )
   if( ret.isNull() )
   {
     Logger::warning("Can't init player city, that empire city with name %s no exist", city->getName().c_str() );
-    _OC3_DEBUG_BREAK_IF( "City already exist" );
+    _CAESARIA_DEBUG_BREAK_IF( "City already exist" );
     return ret;
   }
 

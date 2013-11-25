@@ -1,21 +1,23 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "logger.hpp"
 #include "requirements.hpp"
 #include "stringhelper.hpp"
+#include "mutex.hpp"
+#include "time.hpp"
 
 #include <cstdarg>
 #include <cfloat>
@@ -26,6 +28,68 @@
 #include <iostream>
 #include <stdint.h>
 #include <fstream>
+#include <map>
+
+class FileLogWriter : public LogWriter
+{
+private:
+	FILE* _logFile;
+
+	Mutex _mutex;
+
+public:
+	FileLogWriter(const std::string& path) :
+		_logFile(fopen(path.c_str(), "w"))
+	{
+		DateTime t = DateTime::getCurrenTime();
+
+		fputs("Caesaria logfile created: ", _logFile);
+		fputs(StringHelper::format( 0xff, "%02:%02d:%02d",
+																t.getHour(), t.getMinutes(), t.getSeconds()).c_str(),
+					_logFile);
+		fputs("\n", _logFile);
+	}
+
+	~FileLogWriter()
+	{
+		DateTime t = DateTime::getCurrenTime();
+
+		fputs("Caesaria logfile closed: ", _logFile);
+		fputs( StringHelper::format( 0xff, "%02:%02d:%02d",
+																t.getHour(), t.getMinutes(), t.getSeconds()).c_str(),
+					 _logFile);
+		fputs("\n", _logFile);
+
+		fflush(_logFile);
+	}
+
+	void write( std::string str )
+	{
+		// Don't write progress stuff into the logfile
+		// Make sure only one thread is writing to the file at a time
+		MutexLocker locker(&_mutex);
+
+		fputs(str.c_str(), _logFile);
+		fflush(_logFile);
+	}
+};
+
+class ConsoleLogWriter : public LogWriter
+{
+public:
+	void write( std::string str)
+	{
+		std::cout << str;
+	}
+};
+
+class Logger::Impl
+{
+public:
+  typedef std::map<std::string,LogWriterPtr> Writers;
+
+  Writers writers;
+};
 
 void Logger::warning( const char* fmt, ... )
 {
@@ -40,11 +104,47 @@ void Logger::warning( const char* fmt, ... )
   std::cout << ret << std::endl;
 }
 
-void Logger::redirect(std::string filename )
+void Logger::registerWriter(Logger::Type type)
 {
-  std::ofstream* file = new std::ofstream();
+  switch( type )
+  {
+  case consolelog:
+  {
+    LogWriterPtr wr( new ConsoleLogWriter() );
+    wr->drop();
+    registerWriter( "__console", wr );
+  }
+  break;
 
-  file->open("stdout.txt");
-  std::cout.rdbuf( file->rdbuf() ); // перенапраляем в файл
+  case filelog:
+  {
+    LogWriterPtr wr( new FileLogWriter( "stdout.txt" ) );
+    wr->drop();
+    registerWriter( "__log", wr );
+  }
+  break;
+
+  case count: break;
+  }
+}
+
+Logger& Logger::getInstance()
+{
+  static Logger inst;
+  return inst;
+}
+
+Logger::~Logger()
+{
+
+}
+
+Logger::Logger() : _d( new Impl )
+{
+}
+
+void Logger::registerWriter(std::string name, LogWriterPtr writer)
+{
+  getInstance()._d->writers[ name ] = writer;
 }
 

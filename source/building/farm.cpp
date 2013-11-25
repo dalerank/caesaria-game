@@ -57,7 +57,7 @@ FarmTile::FarmTile(const Good::Type outGood, const TilePos& pos )
   case Good::meat: picIdx = 38; break;
   default:
     Logger::warning( "Unexpected farmType in farm %s", GoodHelper::getName( outGood ).c_str() );
-    _OC3_DEBUG_BREAK_IF( "Unexpected farmType in farm ");
+    _CAESARIA_DEBUG_BREAK_IF( "Unexpected farmType in farm ");
   }
 
   _animation.load( ResourceGroup::commerce, picIdx, 5);

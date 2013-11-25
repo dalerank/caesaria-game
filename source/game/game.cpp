@@ -50,7 +50,7 @@
 #include <libintl.h>
 #include <list>
 
-#if defined(OC3_PLATFORM_WIN)
+#if defined(CAESARIA_PLATFORM_WIN)
   #undef main
 #endif
 
@@ -82,7 +82,7 @@ public:
 void Game::Impl::initLocale(const std::string & localePath)
 {
   // init the internationalization library (gettext)
-#ifdef OC3_PLATFORM_WIN
+#ifdef CAESARIA_PLATFORM_WIN
   ByteArray localeData;
   localeData = StringHelper::format( 0xff, "LC_ALL=%s", GameSettings::get( GameSettings::localeName ).toString().c_str() );
 
@@ -218,7 +218,7 @@ void Game::setScreenMenu()
     break;
    
     default:
-      _OC3_DEBUG_BREAK_IF( "Unexpected result event" );
+      _CAESARIA_DEBUG_BREAK_IF( "Unexpected result event" );
    }
 }
 
@@ -360,7 +360,8 @@ void Game::load(std::string filename)
 
 void Game::initialize()
 {
-  Logger::redirect( "stdout.log" );
+  Logger::registerWriter( Logger::consolelog );
+  Logger::registerWriter( Logger::filelog );
 
   _d->loadSettings( GameSettings::rcpath( GameSettings::settingsPath ) );
   _d->initLocale( GameSettings::get( GameSettings::localePath ).toString() );
@@ -397,7 +398,7 @@ void Game::exec()
 
      default:
         Logger::warning( "Unexpected next screen type %d", _d->nextScreen );
-        _OC3_DEBUG_BREAK_IF( "Unexpected next screen type" );
+        _CAESARIA_DEBUG_BREAK_IF( "Unexpected next screen type" );
      }
   }
 }
