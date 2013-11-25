@@ -58,10 +58,10 @@ Updater::Updater(const UpdaterOptions& options, const io::FilePath& executable) 
 	MirrorDownload::InitRandomizer();
 
 #ifdef CAESARIA_PLATFORM_WIN
-	if (fs::extension(_executable).empty())
+	if( _executable.getExtension().empty() )
 	{
-		TraceLog::WriteLine(LOG_VERBOSE, "Adding EXE extension to executable: " + _executable.string());
-		_executable = _executable.string() + ".exe";
+		Logger::warning( "Adding EXE extension to executable: " + _executable.toString() );
+		_executable = _executable.toString() + ".exe";
 	}
 #endif
 }
@@ -821,7 +821,7 @@ void Updater::PerformDifferentialUpdateStep()
 		package->ExtractFileTo( f->file.toString(), targetdir.getFilePath( f->file ) );
 	}
 
-#if CAESARIA_PLATFORM_WIN
+#ifdef CAESARIA_PLATFORM_WIN
 	std::string tdmExecutableName = "caesaria.exe";
 #else 
 	std::string tdmExecutableName = "caesaria.x86";
@@ -1370,13 +1370,13 @@ void Updater::PrepareUpdateBatchFile(const io::FilePath& temporaryUpdater)
 
 #ifdef CAESARIA_PLATFORM_WIN
 	batch << "@ping 127.0.0.1 -n 2 -w 1000 > nul" << std::endl; // # hack equivalent to Wait 2
-	batch << "@copy " << tempUpdater.string() << " " << updater.string() << " >nul" << std::endl;
-	batch << "@del " << tempUpdater.string() << std::endl;
+	batch << "@copy " << tempUpdater.toString() << " " << updater.toString() << " >nul" << std::endl;
+	batch << "@del " << tempUpdater.toString() << std::endl;
 	batch << "@echo TDM Updater executable has been updated." << std::endl;
 
 	batch << "@echo Re-launching TDM Updater executable." << std::endl << std::endl;
 
-	batch << "@start " << updater.string() << " " << arguments;
+	batch << "@start " << updater.toString() << " " << arguments;
 #else // POSIX
 	// grayman - accomodate spaces in pathnames
 	tempUpdater = targetdir.getFilePath( tempUpdater );
@@ -1515,14 +1515,14 @@ void Updater::RestartUpdater()
 	Logger::warning( "Preparing restart...");
 
 #ifdef CAESARIA_PLATFORM_WIN
-	if (!_updateBatchFile.empty())
+	if (!_updateBatchFile.toString().empty())
 	{
-		TraceLog::WriteLine(LOG_VERBOSE, "Update batch file pending, launching process.");
+		Logger::warning( "Update batch file pending, launching process.");
 		
 		// Spawn a new process
 
 		// Create a tdmlauncher process, setting the working directory to the target directory
-		STARTUPINFO siStartupInfo;
+		STARTUPINFOA siStartupInfo;
 		PROCESS_INFORMATION piProcessInfo;
 
 		memset(&siStartupInfo, 0, sizeof(siStartupInfo));
@@ -1530,14 +1530,12 @@ void Updater::RestartUpdater()
 
 		siStartupInfo.cb = sizeof(siStartupInfo);
 
-		fs::path parentPath = _updateBatchFile;
-		parentPath.remove_leaf(); // grayman #3514 - only remove one leaf
-		//parentPath.remove_leaf().remove_leaf();
+		io::FileDir parentPath = _updateBatchFile.getFileDir();
 
-		TraceLog::WriteLine(LOG_VERBOSE, "Starting batch file " + _updateBatchFile.string() + " in " + parentPath.string());
+		Logger::warning( "Starting batch file " + _updateBatchFile.toString() + " in " + parentPath.toString() );
 
-		BOOL success = CreateProcess(NULL, (LPSTR) _updateBatchFile.string().c_str(), NULL, NULL,  false, 0, NULL,
-			parentPath.string().c_str(), &siStartupInfo, &piProcessInfo);
+		BOOL success = CreateProcessA( NULL, (LPSTR) _updateBatchFile.toString().c_str(), NULL, NULL,  false, 0, NULL,
+																	 parentPath.toString().c_str(), &siStartupInfo, &piProcessInfo);
 
 		if (!success)
 		{
@@ -1551,13 +1549,13 @@ void Updater::RestartUpdater()
 						  0,
 						  NULL);
 
-			throw FailureException("Could not start new process: " + std::string((LPCTSTR)lpMsgBuf));
+			throw FailureException( "Could not start new process: " + std::string((LPCSTR)lpMsgBuf));
 			
 			LocalFree(lpMsgBuf);
 		}
 		else
 		{
-			TraceLog::WriteLine(LOG_VERBOSE, "Process started");
+			Logger::warning( "Process started");
 		}
 	}
 #else

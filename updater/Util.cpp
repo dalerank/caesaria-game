@@ -57,7 +57,7 @@ bool Util::TDMIsRunning()
 
 			if (EnumProcessModules(hProcess, &hMod, sizeof(hMod), &countBytes))
 			{
-				GetModuleBaseName(hProcess, hMod, szProcessName, sizeof(szProcessName));
+				GetModuleBaseNameA(hProcess, hMod, szProcessName, sizeof(szProcessName));
 
 				std::string processName(szProcessName);
 
@@ -133,10 +133,10 @@ bool Util::DarkRadiantIsRunning()
 
 			if (EnumProcessModules(hProcess, &hMod, sizeof(hMod), &countBytes))
 			{
-				GetModuleBaseName(hProcess, hMod, szProcessName, sizeof(szProcessName));
+				GetModuleBaseNameA(hProcess, hMod, szProcessName, sizeof(szProcessName));
 
 				std::string processName(szProcessName);
-				boost::algorithm::to_lower(processName);
+				processName = StringHelper::localeLower( processName );
 
 				if (processName == "darkradiant.exe")
 				{

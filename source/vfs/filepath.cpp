@@ -95,7 +95,7 @@ void FilePath::splitToDirPathExt( FilePath* path,
 void FilePath::remove()
 {
 #ifdef CAESARIA_PLATFORM_WIN
-    DeleteFile( _d->path.c_str() );
+    DeleteFileA( _d->path.c_str() );
 #elif defined(CAESARIA_PLATFORM_UNIX)
     ::remove( _d->path.c_str() );
 #endif
@@ -148,7 +148,7 @@ FilePath FilePath::removeEndSlash() const
 void FileDir::_OsCreate( const FileDir& dirName )
 {
 #ifdef CAESARIA_PLATFORM_WIN
-    CreateDirectory( removeEndSlash().toString().c_str(), NULL );
+    CreateDirectoryA( removeEndSlash().toString().c_str(), NULL );
 #elif defined(CAESARIA_PLATFORM_UNIX)
     ::mkdir( dirName.toString().c_str(), S_IRWXU|S_IRWXG|S_IRWXO );
 #endif
@@ -173,7 +173,7 @@ bool FilePath::isFolder() const
 {
 #ifdef CAESARIA_PLATFORM_WIN
   WIN32_FILE_ATTRIBUTE_DATA fad;
-  if( ::GetFileAttributesEx( _d->path.c_str(), ::GetFileExInfoStandard, &fad )== 0 )
+  if( ::GetFileAttributesExA( _d->path.c_str(), ::GetFileExInfoStandard, &fad )== 0 )
       return false;
 
   return (fad.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY;
@@ -587,7 +587,7 @@ FileDir FileDir::getApplicationDir()
   unsigned int pathSize=512;
   ByteArray tmpPath;
   tmpPath.resize( pathSize );
-  GetModuleFileName( 0, tmpPath.data(), pathSize);
+  GetModuleFileNameA( 0, tmpPath.data(), pathSize);
   FilePath tmp = tmpPath.data();
 
   tmp = tmp.getUpDir();

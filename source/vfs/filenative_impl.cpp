@@ -95,7 +95,7 @@ long FileNative::getPos() const
 	return ftell(_file);
 }
 
-#ifdef OC3_PLATFORM_WIN
+#ifdef CAESARIA_PLATFORM_WIN
 size_t getline_win(char **linebuf, size_t *linebufsz, FILE *file)
 {
     int delimiter = '\n';
@@ -127,7 +127,7 @@ size_t getline_win(char **linebuf, size_t *linebufsz, FILE *file)
 
 	return idx;
 }
-#endif //OC3_PLATFORM_WIN
+#endif //CAESARIA_PLATFORM_WIN
 
 ByteArray FileNative::readLine()
 {
