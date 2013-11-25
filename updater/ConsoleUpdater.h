@@ -33,8 +33,7 @@ namespace tdm
 namespace updater
 {
 
-class ConsoleUpdater :
-	public IUpdateView
+class ConsoleUpdater : public IUpdateView
 {
 public:
 	enum Outcome

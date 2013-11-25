@@ -19,8 +19,7 @@
 
 #pragma once
 
-//#include <boost/thread.hpp>
-//#include <boost/bind.hpp>
+#include <stdexcept>
 #include <string>
 #include "core/delegate.hpp"
 #include "core/thread.hpp"

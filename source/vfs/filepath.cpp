@@ -154,12 +154,14 @@ void FileDir::_OsCreate( const FileDir& dirName )
 #endif
 }
 
-void FileDir::create()
+bool FileDir::create()
 {
     if( isExist() )
-        return;
+        return false;
 
     _OsCreate( *this );
+
+    return isExist();
 }
 
 bool FilePath::isExist() const
@@ -244,10 +246,13 @@ void FilePath::_OsRename( const FilePath& newName )
   ::rename( toString().c_str(), newName.toString().c_str() );
 }
 
-void FilePath::rename( const FilePath& pathNew )
+bool FilePath::rename( const FilePath& pathNew )
 {
   _CAESARIA_DEBUG_BREAK_IF( !isExist() );
+  _OsRename( pathNew );
   *this = pathNew;
+
+  return isExist();
 }
 
 FilePath::FilePath( const std::string& nPath ) : _d( new Impl )

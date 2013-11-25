@@ -3,7 +3,7 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
-LIBS += -lpthread
+LIBS += -lpthread -lz -lcurl
 
 INCLUDEPATH += ../source
 INCLUDEPATH += ../utils
@@ -35,7 +35,27 @@ SOURCES += main.cpp \
     Http/HttpConnection.cpp \
     Http/MirrorDownload.cpp \
     Http/HttpRequest.cpp \
-    Zip/Zip.cpp
+    Zip/Zip.cpp \
+    Http/Download.cpp \
+    ../utils/bzip2/randtable.c \
+    ../utils/bzip2/huffman.c \
+    ../utils/bzip2/decompress.c \
+    ../utils/bzip2/crctable.c \
+    ../utils/bzip2/bzlib.c \
+    ../utils/bzip2/bzcompress.c \
+    ../utils/bzip2/blocksort.c \
+    ../utils/aesGladman/sha2.cpp \
+    ../utils/aesGladman/sha1.cpp \
+    ../utils/aesGladman/pwd2key.cpp \
+    ../utils/aesGladman/hmac.cpp \
+    ../utils/aesGladman/fileenc.cpp \
+    ../utils/aesGladman/aestab.cpp \
+    ../utils/aesGladman/aeskey.cpp \
+    ../utils/aesGladman/aescrypt.cpp \
+    minizip/zip.c \
+    minizip/unzip.c \
+    minizip/mztools.c \
+    minizip/ioapi.c
 
 
 HEADERS += \
@@ -69,5 +89,20 @@ HEADERS += \
     Http/HttpConnection.h \
     Http/MirrorDownload.h \
     Http/HttpRequest.h \
-    Zip/Zip.h
+    Zip/Zip.h \
+    Http/Download.h \
+    ../utils/bzip2/bzlib_private.h \
+    ../utils/bzip2/bzlib.h \
+    ../utils/aesGladman/sha2.h \
+    ../utils/aesGladman/sha1.h \
+    ../utils/aesGladman/pwd2key.h \
+    ../utils/aesGladman/hmac.h \
+    ../utils/aesGladman/fileenc.h \
+    ../utils/aesGladman/aesopt.h \
+    ../utils/aesGladman/aes.h \
+    minizip/zip.h \
+    minizip/unzip.h \
+    minizip/mztools.h \
+    minizip/ioapi.h \
+    minizip/crypt.h
 

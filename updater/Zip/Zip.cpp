@@ -21,26 +21,17 @@
 
 #include <time.h>
 #include <fstream>
+#include <stdexcept>
 #include "minizip/unzip.h"
 #include "minizip/zip.h"
 
 #include "../Constants.h"
-#include "../TraceLog.h"
-#include "../File.h"
-
-#include <boost/filesystem.hpp>
-#include <boost/format.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/algorithm/string/case_conv.hpp>
+#include "core/stringhelper.hpp"
+#include "core/logger.hpp"
+#include "vfs/filepath.hpp"
 
 namespace tdm
 {
-
-	// Shortcut method
-	inline std::string intToStr(int number)
-	{
-		return boost::lexical_cast<std::string>(number);
-	}
 
 ZipFileRead::ZipFileRead(unzFile handle) :
 	_handle(handle)
@@ -59,7 +50,7 @@ std::size_t ZipFileRead::GetNumFiles() const
 
 	if (result != UNZ_OK)
 	{
-		throw std::runtime_error("[ForeachFile]: Cannot go to first file: " + intToStr(result));
+		throw std::runtime_error("[ForeachFile]: Cannot go to first file: " + StringHelper::format( 0xff, "%d", result ) );
 	}
 
 	while (result == UNZ_OK)
@@ -77,7 +68,7 @@ void ZipFileRead::ForeachFile(Visitor& visitor)
 
 	if (result != UNZ_OK)
 	{
-		throw std::runtime_error("[ForeachFile]: Cannot go to first file: " + intToStr(result));
+		throw std::runtime_error("[ForeachFile]: Cannot go to first file: " + StringHelper::format( 0xff, "%d", result ) );
 	}
 
 	while (result == UNZ_OK)
@@ -89,7 +80,7 @@ void ZipFileRead::ForeachFile(Visitor& visitor)
 	
 		if (result != UNZ_OK)
 		{
-			throw std::runtime_error("[ForeachFile]: Cannot get file info: " + intToStr(result));
+			throw std::runtime_error("[ForeachFile]: Cannot get file info: " + StringHelper::format( 0xff, "%d", result ) );
 		}
 
 		MemberInfo memberInfo;
@@ -158,7 +149,7 @@ std::string ZipFileRead::LoadTextFile(const std::string& filename)
 	}
 	else
 	{
-		tdm::TraceLog::WriteLine(LOG_VERBOSE, "[LoadTextFile]: Cannot open file. " + filename + ": " + intToStr(openResult));
+		Logger::warning( "[LoadTextFile]: Cannot open file. " + filename + ": " + StringHelper::format( 0xff, "%d", result ) );
 	}
 
 	unzCloseCurrentFile(_handle);
@@ -166,7 +157,7 @@ std::string ZipFileRead::LoadTextFile(const std::string& filename)
 	return returnValue;
 }
 
-bool ZipFileRead::ExtractFileTo(const std::string& filename, const fs::path& destPath)
+bool ZipFileRead::ExtractFileTo(const std::string& filename, const io::FilePath& destPath)
 {
 	bool returnValue = true;
 
@@ -175,10 +166,11 @@ bool ZipFileRead::ExtractFileTo(const std::string& filename, const fs::path& des
 	if (result != UNZ_OK) return false;
 
 	// Make sure the destination file is not existing
-	File::Remove(destPath);
+	io::FilePath remFile = destPath;
+	remFile.remove();
 
 	// Try to open the destination path before uncompressing the file
-	FILE* outFile = fopen(destPath.string().c_str(), "wb");
+	FILE* outFile = fopen(destPath.toString().c_str(), "wb");
 
 	if (outFile == NULL) 
 	{
@@ -187,17 +179,16 @@ bool ZipFileRead::ExtractFileTo(const std::string& filename, const fs::path& des
 
 		bool success = false;
 
-		fs::path directory = fs::path(destPath).branch_path();
+		io::FileDir directory = destPath.getFileDir();
 
-		if (!fs::exists(directory))
+		if( !directory.isExist() )
 		{
 			// Directory isn't there. Try to create it.
 
-			if (fs::create_directories(directory))
+			if( directory.create() )
 			{
 				// Directory now exists. Try fopen() again.
-
-				outFile = fopen(destPath.string().c_str(), "wb");
+				outFile = fopen(destPath.toString().c_str(), "wb");
 
 				if (outFile != NULL)
 				{
@@ -209,7 +200,7 @@ bool ZipFileRead::ExtractFileTo(const std::string& filename, const fs::path& des
 		if (!success)
 		{
 			// couldn't open file for writing
-			tdm::TraceLog::WriteLine(LOG_VERBOSE, "[ExtractFileTo]: Cannot open destination file " + destPath.string());
+			Logger::warning( "[ExtractFileTo]: Cannot open destination file " + destPath.toString() );
 			return false;
 		}
 	}
@@ -219,7 +210,7 @@ bool ZipFileRead::ExtractFileTo(const std::string& filename, const fs::path& des
 
 	if (result != UNZ_OK) 
 	{
-		tdm::TraceLog::WriteLine(LOG_VERBOSE, "[ExtractFileTo]: Cannot get file info for " + filename + ": " + intToStr(result));
+		Logger::warning(  "[ExtractFileTo]: Cannot get file info for " + filename + ": " + StringHelper::format( 0xff, "%d", result ) );
 		return false;
 	}
 
@@ -240,7 +231,7 @@ bool ZipFileRead::ExtractFileTo(const std::string& filename, const fs::path& des
 	}
 	else
 	{
-		tdm::TraceLog::WriteLine(LOG_VERBOSE, "[ExtractFileTo]: Cannot open file in zip " + filename + ": " + intToStr(openResult));
+		Logger::warning(  "[ExtractFileTo]: Cannot open file in zip " + filename + ": " + StringHelper::format( 0xff, "%d", result ) );
 		returnValue = false; // fopen failed
 	}
 
@@ -250,13 +241,13 @@ bool ZipFileRead::ExtractFileTo(const std::string& filename, const fs::path& des
 
 	if (result != UNZ_OK)
 	{
-		tdm::TraceLog::WriteLine(LOG_VERBOSE, "[LoadTextFile]: Cannot close file in zip " + filename + ": " + intToStr(result));
+		Logger::warning(  "[LoadTextFile]: Cannot close file in zip " + filename + ": " + StringHelper::format( 0xff, "%d", result ) );
 	}
 
 	return returnValue;
 }
 
-std::list<fs::path> ZipFileRead::ExtractAllFilesTo(const fs::path& destPath, 
+std::list<io::FilePath> ZipFileRead::ExtractAllFilesTo(io::FileDir destdir,
 												   const std::set<std::string>& ignoreIfExisting, 
 												   const std::set<std::string>& ignoreList)
 {
@@ -264,7 +255,7 @@ std::list<fs::path> ZipFileRead::ExtractAllFilesTo(const fs::path& destPath,
 
 	if (result != UNZ_OK)
 	{
-		throw std::runtime_error("[ExtractAllFilesTo]: Cannot go to first file: " + intToStr(result));
+		throw std::runtime_error("[ExtractAllFilesTo]: Cannot go to first file: " + StringHelper::format( 0xff, "%d", result ));
 	}
 
 	std::vector<std::string> filesToExtract;
@@ -278,42 +269,43 @@ std::list<fs::path> ZipFileRead::ExtractAllFilesTo(const fs::path& destPath,
 	
 		if (result != UNZ_OK)
 		{
-			throw std::runtime_error("[ExtractAllFilesTo]: Cannot get file info: " + intToStr(result));
+			throw std::runtime_error("[ExtractAllFilesTo]: Cannot get file info: " + StringHelper::format( 0xff, "%d", result ));
 		}
 
 		std::string filename = filenameBuf;
 
-		if (ignoreList.find(boost::algorithm::to_lower_copy(filename)) == ignoreList.end())
+		if (ignoreList.find( StringHelper::localeLower( filename ) )  == ignoreList.end())
 		{
 			// File not on hard ignore list, check for "ignore if exists"
 			
-			if (ignoreIfExisting.find(boost::algorithm::to_lower_copy(filename)) != ignoreIfExisting.end() &&
-				fs::exists(destPath / filename))
+
+			if( ignoreIfExisting.find( StringHelper::localeLower( filename ) ) != ignoreIfExisting.end()
+					&& destdir.getFilePath( filename ).isExist() )
 			{
-				TraceLog::WriteLine(LOG_VERBOSE, "Ignoring file, as destination exists: " + filename);
+				Logger::warning(  "Ignoring file, as destination exists: " + filename);
 			}
 			else
 			{
-				TraceLog::WriteLine(LOG_VERBOSE, "Will extract file: " + filename);
+				Logger::warning(  "Will extract file: " + filename);
 				filesToExtract.push_back(filename);
 			}
 		}
 		else
 		{
-			TraceLog::WriteLine(LOG_VERBOSE, "Ignoring file: " + filename);
+			Logger::warning(  "Ignoring file: " + filename);
 		}
 
 		result = unzGoToNextFile(_handle);
 	}
 
-	TraceLog::WriteLine(LOG_VERBOSE, "Found " + boost::lexical_cast<std::string>(filesToExtract.size()) + " files to extract.");
+	Logger::warning(  "Found %d files to extract.", filesToExtract.size() );
 
 	// The list of extracted files, for returning to the caller
-	std::list<fs::path> extractedFiles;
+	std::list<io::FilePath> extractedFiles;
 
 	for (std::size_t i = 0; i < filesToExtract.size(); ++i)
 	{
-		fs::path destFile = destPath / filesToExtract[i];
+		io::FilePath destFile = destdir.getFilePath( filesToExtract[i] );
 
 		ExtractFileTo(filesToExtract[i], destFile);
 
@@ -329,7 +321,7 @@ ZipFileRead::CompressedFilePtr ZipFileRead::ReadCompressedFile(const std::string
 
 	if (result != UNZ_OK) 
 	{
-		tdm::TraceLog::WriteLine(LOG_VERBOSE, "[ReadCompressedFile]: File not in zip " + filename + ": " + intToStr(result));
+		Logger::warning(  "[ReadCompressedFile]: File not in zip %s : %d", filename.c_str(), result );
 		return CompressedFilePtr();
 	}
 
@@ -339,7 +331,7 @@ ZipFileRead::CompressedFilePtr ZipFileRead::ReadCompressedFile(const std::string
 
 	if (result != UNZ_OK)
 	{
-		tdm::TraceLog::WriteLine(LOG_VERBOSE, "[ReadCompressedFile]: Cannot get file info for " + filename + ": " + intToStr(result));
+		Logger::warning(  "[ReadCompressedFile]: Cannot get file info for %s %d", filename.c_str(), result );
 		return CompressedFilePtr();
 	}
 
@@ -383,7 +375,7 @@ ZipFileRead::CompressedFilePtr ZipFileRead::ReadCompressedFile(const std::string
 
 	if (result != UNZ_OK)
 	{
-		tdm::TraceLog::WriteLine(LOG_VERBOSE, "[ReadCompressedFile]: Cannot open file info for raw read " + filename + ": " + intToStr(result));
+		Logger::warning( "[ReadCompressedFile]: Cannot open file info for raw read %s : %s ", filename.c_str(), result );
 		return CompressedFilePtr();
 	}
 
@@ -396,8 +388,8 @@ ZipFileRead::CompressedFilePtr ZipFileRead::ReadCompressedFile(const std::string
 	
 	if (output->data.size() != info.compressed_size) 
 	{
-		tdm::TraceLog::WriteLine(LOG_VERBOSE, "[ReadCompressedFile]: Could not allocate memory for " + filename + ": " + 
-								 intToStr(result) + " - Size: " + boost::lexical_cast<std::string>(info.compressed_size));
+		Logger::warning( "[ReadCompressedFile]: Could not allocate memory for %s : %d - Size %d",
+										 filename.c_str(), result, info.compressed_size );
 		return CompressedFilePtr();
 	}
 
@@ -408,13 +400,13 @@ ZipFileRead::CompressedFilePtr ZipFileRead::ReadCompressedFile(const std::string
 	if (bytesRead < 0)
 	{
 		// Return value negative, this is an error
-		tdm::TraceLog::WriteLine(LOG_VERBOSE, "[ReadCompressedFile] Error: unzReadCurrentFile returned error code: " + intToStr(bytesRead));
+		Logger::warning( "[ReadCompressedFile] Error: unzReadCurrentFile returned error code: %d", bytesRead );
 		return CompressedFilePtr();
 	}
 	else if (static_cast<uLong>(bytesRead) != info.compressed_size) 
 	{
 		// Bytes read != bytes claimed
-		tdm::TraceLog::WriteLine(LOG_VERBOSE, "[ReadCompressedFile] Error: Bytes read != compressed size, bailing out: " + filename);
+		Logger::warning(  "[ReadCompressedFile] Error: Bytes read != compressed size, bailing out: " + filename);
 		return CompressedFilePtr();
 	}
 
@@ -434,15 +426,15 @@ ZipFileRead::CompressedFilePtr ZipFileRead::ReadCompressedFile(const std::string
 	return output;
 }
 
-boost::uint32_t ZipFileRead::GetCumulativeCrc()
+unsigned int ZipFileRead::GetCumulativeCrc()
 {
-	boost::uint32_t overallCRC = 0;
+	unsigned int overallCRC = 0;
 
 	int result = unzGoToFirstFile(_handle);
 
 	if (result != UNZ_OK)
 	{
-		throw std::runtime_error("[GetCumulativeCRC]: Cannot go to first file: " + intToStr(result));
+		throw std::runtime_error("[GetCumulativeCRC]: Cannot go to first file: " + StringHelper::format( 0xff, "%d", result ));
 	}
 
 	while (result == UNZ_OK)
@@ -453,7 +445,7 @@ boost::uint32_t ZipFileRead::GetCumulativeCrc()
 	
 		if (result != UNZ_OK)
 		{
-			throw std::runtime_error("[GetCumulativeCRC]: Cannot get file info: " + intToStr(result));
+			throw std::runtime_error("[GetCumulativeCRC]: Cannot get file info: " + StringHelper::format( 0xff, "%d", result ));
 		}
 
 		overallCRC ^= info.crc;
@@ -480,15 +472,15 @@ void ZipFileWrite::SetGlobalComment(const std::string& comment)
 	_globalComment = comment;
 }
 
-bool ZipFileWrite::DeflateFile(const fs::path& fileToCompress, const std::string& destPath, CompressionMethod method)
+bool ZipFileWrite::DeflateFile(const io::FilePath& fileToCompress, const std::string& destPath, CompressionMethod method)
 {
-	if (!boost::filesystem::exists(fileToCompress))
+	//if (!fileToCompress.isExist())
 	{
-		tdm::TraceLog::WriteLine(LOG_VERBOSE, "[DeflateFile]: Cannot find file for compression " + fileToCompress.string());
+		Logger::warning( "[DeflateFile]: Cannot find file for compression " + fileToCompress.toString() );
 		return false;
 	}
 
-	// Get the current time and date from the given file
+	/*// Get the current time and date from the given file
 	std::time_t changeTime = boost::filesystem::last_write_time(fileToCompress);
 
 	tm* timeinfo = localtime(&changeTime);
@@ -578,7 +570,7 @@ bool ZipFileWrite::DeflateFile(const fs::path& fileToCompress, const std::string
 
 	fclose(inFileBinary);
 
-	return true;
+	return true;*/
 }
 
 bool ZipFileWrite::CopyFileFromZip(const ZipFileReadPtr& fromZip, const std::string& fromPath, const std::string& toPath)
@@ -586,13 +578,13 @@ bool ZipFileWrite::CopyFileFromZip(const ZipFileReadPtr& fromZip, const std::str
 	// Get raw data from the other file
 	ZipFileRead::CompressedFilePtr file = fromZip->ReadCompressedFile(fromPath);
 
-	if (file == NULL)
+	//if (file == NULL)
 	{
-		tdm::TraceLog::WriteLine(LOG_VERBOSE, "[CopyFileFromZip]: Cannot open source zip file " + fromPath);
+		Logger::warning(  "[CopyFileFromZip]: Cannot open source zip file " + fromPath);
 		return false;
 	}
 
-	// Convert the time into zip format
+/*	// Convert the time into zip format
 	tm* changeTime = localtime(&file->changeTime);
 	
 	// open destination file
@@ -645,21 +637,23 @@ bool ZipFileWrite::CopyFileFromZip(const ZipFileReadPtr& fromZip, const std::str
 		return false;
 	}
 
-	return true;
+	return true;*/
 }
 
 // --------------------------------------------------------
 
-ZipFileReadPtr Zip::OpenFileRead(const fs::path& fullPath)
+ZipFileReadPtr Zip::OpenFileRead(const io::FilePath& fullPath)
 {
-	unzFile handle = unzOpen(fullPath.string().c_str());
+	unzFile handle = unzOpen(fullPath.toString().c_str());
 
 	return (handle != NULL) ? ZipFileReadPtr(new ZipFileRead(handle)) : ZipFileReadPtr();
 }
 
-ZipFileWritePtr Zip::OpenFileWrite(const fs::path& fullPath, WriteMode mode)
+ZipFileWritePtr Zip::OpenFileWrite(const io::FilePath& fullPath, WriteMode mode)
 {
-	if (mode == APPEND)
+	return ZipFileWritePtr();
+
+	/*if (mode == APPEND)
 	{
 		// greebo #3514: Check if the target file is existing but empty - in that case the APPEND flag will not work as the handle
 		// returned by zipOpen will be 0.
@@ -674,7 +668,7 @@ ZipFileWritePtr Zip::OpenFileWrite(const fs::path& fullPath, WriteMode mode)
 
 	zipFile handle = zipOpen(fullPath.string().c_str(), mode == APPEND ? APPEND_STATUS_ADDINZIP : APPEND_STATUS_CREATE);
 
-	return (handle != NULL) ? ZipFileWritePtr(new ZipFileWrite(handle)) : ZipFileWritePtr();
+	return (handle != NULL) ? ZipFileWritePtr(new ZipFileWrite(handle)) : ZipFileWritePtr();*/
 }
 
 // Local helper class for copying files from one archive into another
@@ -705,11 +699,11 @@ public:
 	}
 };
 
-void Zip::RemoveFilesFromArchive(const fs::path& fullPath, const std::set<std::string>& membersToRemove)
+void Zip::RemoveFilesFromArchive(const io::FilePath& fullPath, const std::set<std::string>& membersToRemove)
 {
-	if (membersToRemove.empty()) return; // quick bail out on empty removal list
+	/*if (membersToRemove.empty()) return; // quick bail out on empty removal list
 
-	fs::path temporaryPath = fullPath;
+	io::FilePath temporaryPath = fullPath;
 	//temporaryPath.remove_leaf().remove_leaf(); // grayman #3514 - don't go so far up
 	temporaryPath.remove_leaf();
 	temporaryPath /= TMP_FILE_PREFIX + fullPath.leaf().string();
@@ -740,7 +734,7 @@ void Zip::RemoveFilesFromArchive(const fs::path& fullPath, const std::set<std::s
 	File::Remove(fullPath);
 
 	// Move the temporary file over the old one
-	File::Move(temporaryPath, fullPath);
+	File::Move(temporaryPath, fullPath);*/
 }
 
 } // namespace

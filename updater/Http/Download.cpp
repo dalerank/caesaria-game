@@ -20,20 +20,18 @@
 #include "Download.h"
 #include "../Http/HttpConnection.h"
 #include "../Zip/Zip.h"
-#include "../TraceLog.h"
-#include "../File.h"
 #include "../CRC.h"
 #include "../Util.h"
 #include "../Constants.h"
 
-#include <boost/bind.hpp>
-
-namespace fs = boost::filesystem;
+#include "core/logger.hpp"
+#include "core/delegate.hpp"
+#include "vfs/file.hpp"
 
 namespace tdm
 {
 
-Download::Download(const HttpConnectionPtr& conn, const std::string& url, const fs::path& destFilename) :
+Download::Download(const HttpConnectionPtr& conn, const std::string& url, const io::FilePath& destFilename) :
 	_curUrl(0),
 	_destFilename(destFilename),
 	_conn(conn),
@@ -47,7 +45,7 @@ Download::Download(const HttpConnectionPtr& conn, const std::string& url, const 
 	_urls.push_back(url);
 }
 
-Download::Download(const HttpConnectionPtr& conn, const std::vector<std::string>& urls, const fs::path& destFilename) :
+Download::Download(const HttpConnectionPtr& conn, const std::vector<std::string>& urls, const io::FilePath& destFilename) :
 	_urls(urls),
 	_curUrl(0),
 	_destFilename(destFilename),
@@ -83,24 +81,26 @@ void Download::Start()
 	}
 
 	// Construct the temporary filename
-	fs::path filename = fs::path(_destFilename).leaf();
-	fs::path folder = fs::path(_destFilename).branch_path();
+	io::FilePath filename = _destFilename.getBasename();
+	io::FileDir folder = _destFilename.getFileDir();
 
-	if (!fs::exists(folder))
+	if ( !folder.isExist() )
 	{
 		// Make sure the folder exists
-		if (!fs::create_directories(folder))
+		if( !folder.create() )
 		{
-			throw std::runtime_error("Could not create directory: " + folder.string());
+			throw std::runtime_error("Could not create directory: " + folder.toString());
 		}
 	}
 
 	// /path/to/fms/TMP_FILE_PREFIXfilename.pk4 (TMP_FILE_PREFIX is usually an underscore)
-	_tempFilename = folder / (TMP_FILE_PREFIX + filename.string());
-	TraceLog::WriteLine(LOG_VERBOSE, "Downloading to temporary file " + _tempFilename.string());
+	_tempFilename = folder.getFilePath( TMP_FILE_PREFIX + filename.toString() );
+	Logger::warning(  "Downloading to temporary file " + _tempFilename.toString() );
 
 	_status = IN_PROGRESS;
-	_thread = ThreadPtr(new boost::thread(boost::bind(&Download::Perform, this)));
+	ExceptionSafeThreadPtr p( new ExceptionSafeThread( Delegate1<int>( this, &Download::Perform ) ));
+	p->drop();
+	_thread = p;
 }
 
 void Download::Stop()
@@ -114,11 +114,8 @@ void Download::Stop()
 		// Cancel the request
 		_request->Cancel();
 
-		// Wait for the thread to finish
-		_thread->join();
-
-		_thread.reset();
-		_request.reset();
+		_thread = ExceptionSafeThreadPtr();
+		_request = HttpRequestPtr();
 
 		// Don't reset successful stati
 		if (_status != SUCCESS)
@@ -127,7 +124,7 @@ void Download::Stop()
 		}
 
 		// Remove temporary file
-		File::Remove(_tempFilename);
+		_tempFilename.remove();
 	}
 }
 
@@ -161,7 +158,7 @@ void Download::EnableFilesizeCheck(bool enable)
 	_filesizeCheckEnabled = enable;
 }
 
-void Download::SetRequiredCrc(boost::uint32_t requiredCrc)
+void Download::SetRequiredCrc(unsigned int requiredCrc)
 {
 	_requiredCrc = requiredCrc;
 }
@@ -171,17 +168,17 @@ void Download::SetRequiredFilesize(std::size_t requiredSize)
 	_requiredFilesize = requiredSize;
 }
 
-void Download::Perform()
+void Download::Perform(int)
 {
 	while (_curUrl < _urls.size())
 	{
 		// Remove any previous temporary file
-		File::Remove(_tempFilename);
+		_tempFilename.remove();
 
 		const std::string& url = _urls[_curUrl];
 
 		// Create a new request
-		_request = _conn->CreateRequest(url, _tempFilename.string());
+		_request = _conn->CreateRequest(url, _tempFilename.toString());
 	
 		// Start the download, blocks until finished or aborted
 		_request->Perform();
@@ -198,14 +195,14 @@ void Download::Perform()
 			}
 			else
 			{
-				TraceLog::WriteLine(LOG_VERBOSE, "Downloaded file passed the integrity checks.");
+				Logger::warning(  "Downloaded file passed the integrity checks.");
 			}
 
 			// Remove the destination filename before moving the temporary file over
-			File::Remove(_destFilename);
+			_destFilename.remove();
 
 			// Move temporary file to the real one
-			if (File::Move(_tempFilename, _destFilename))
+			if( _tempFilename.rename( _destFilename ) )
 			{
 				_status = SUCCESS;
 			}
@@ -223,11 +220,11 @@ void Download::Perform()
 			// Download error
 			if (_request->GetStatus() == HttpRequest::ABORTED)
 			{
-				TraceLog::WriteLine(LOG_VERBOSE, "Download aborted.");
+				Logger::warning(  "Download aborted.");
 			}
 			else
 			{
-				TraceLog::WriteLine(LOG_VERBOSE, "Connection Error.");
+				Logger::warning(  "Connection Error.");
 			}
 
 			// Proceed to the next URL
@@ -243,56 +240,53 @@ void Download::Perform()
 	}
 }
 
-const fs::path& Download::GetDestFilename() const
+const io::FilePath& Download::GetDestFilename() const
 {
 	return _destFilename;
 }
 
 std::string Download::GetFilename() const
 {
-	return _destFilename.leaf().string();
+	return _destFilename.getBasename().toString();
 }
 
 bool Download::CheckIntegrity()
 {
 	if (_filesizeCheckEnabled)
 	{
-		TraceLog::WriteLine(LOG_VERBOSE, (boost::format("Checking filesize of downloaded file, expecting %d") %
-				_requiredFilesize).str());
+		Logger::warning( "Checking filesize of downloaded file, expecting %d", _requiredFilesize);
 
-		if (fs::file_size(_tempFilename) != _requiredFilesize)
+		if( io::NFile::getSize(_tempFilename) != _requiredFilesize)
 		{
-			TraceLog::WriteLine(LOG_VERBOSE, (boost::format("Downloaded file has the wrong size, expected %d but found %d") %
-				_requiredFilesize % fs::file_size(_tempFilename)).str());
+			Logger::warning( "Downloaded file has the wrong size, expected %d but found %d",
+											 _requiredFilesize,
+											 io::NFile::getSize(_tempFilename) );
 			return false; // failed the file size check
 		}
 	}
 
 	if (_pk4CheckEnabled)
 	{
-		TraceLog::WriteLine(LOG_VERBOSE, (boost::format("Checking download for 'is-a-zipfile'.")).str());
+		Logger::warning( "Checking download for 'is-a-zipfile'.");
 
 		ZipFileReadPtr zipFile = Zip::OpenFileRead(_tempFilename);
 
 		if (zipFile == NULL) 
 		{
-			TraceLog::WriteLine(LOG_VERBOSE, (boost::format("Downloaded file failed the zip check: %s") %
-				_tempFilename.string()).str());
+			Logger::warning( "Downloaded file failed the zip check: " + _tempFilename.toString() );
 			return false; // failed the ZIP check
 		}
 	}
 
 	if (_crcCheckEnabled)
 	{
-		TraceLog::WriteLine(LOG_VERBOSE, (boost::format("Checking CRC of downloaded file, expecting %x") %
-				_requiredCrc).str());
+		Logger::warning( "Checking CRC of downloaded file, expecting %x", _requiredCrc );
 
-		boost::uint32_t crc = CRC::GetCrcForFile(_tempFilename);
+		unsigned int crc = CRC::GetCrcForFile(_tempFilename);
 
 		if (crc != _requiredCrc)
 		{
-			TraceLog::WriteLine(LOG_VERBOSE, (boost::format("Downloaded file has the wrong size, expected %x but found %x") %
-				_requiredCrc % crc).str());
+			Logger::warning( "Downloaded file has the wrong size, expected %x but found %x", _requiredCrc, crc );
 			return false; // failed the crc check
 		}
 	}

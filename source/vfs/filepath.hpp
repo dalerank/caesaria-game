@@ -42,7 +42,7 @@ public:
   bool isExist() const;
   bool isFolder() const;
 
-  void rename( const FilePath& pathNew );
+  bool rename( const FilePath& pathNew );
   std::string getExtension() const;
   
   FilePath addEndSlash() const;
@@ -101,8 +101,7 @@ public:
 
   virtual ~FileDir() {}
 
-  //void CopyTo( const NrpDir& pathNew );
-  void create();
+  bool create();
   FilePath getFilePath( const FilePath& fileName );
 
   FileList getEntries() const;

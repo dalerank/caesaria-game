@@ -42,7 +42,7 @@ namespace tdm
 class ZipFileRead : public ReferenceCounted
 {
 public:
-	struct CompressedFile
+	struct CompressedFile : public ReferenceCounted
 	{
 		std::vector<unsigned char>	data;
 		time_t						changeTime;
@@ -130,9 +130,9 @@ public:
 	 * @throws: std::runtime_error if anything bad happens.
 	 * @returns: the list of files which have been extracted.
 	 */
-	std::list<io::FilePath> ExtractAllFilesTo(const io::FilePath& destPath,
-						   const std::set<std::string>& ignoreIfExisting = std::set<std::string>(),
-						   const std::set<std::string>& ignoreList = std::set<std::string>());
+	std::list<io::FilePath> ExtractAllFilesTo(io::FileDir destPath,
+							 const std::set<std::string>& ignoreIfExisting = std::set<std::string>(),
+							 const std::set<std::string>& ignoreList = std::set<std::string>());
 
 	/**
 	 * greebo: Reads the compressed data from this zip file. This is used for 

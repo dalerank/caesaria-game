@@ -23,10 +23,8 @@
 #include "HttpRequest.h"
 #include "vfs/filepath.hpp"
 #include "core/smartptr.hpp"
-#include "core/thread.hpp"
-//#include <boost/filesystem.hpp>
+#include "../updater/ExceptionSafeThread.h"
 
-//namespace fs = boost::filesystem;
 
 namespace tdm
 {
@@ -71,7 +69,7 @@ public:
 		NOT_STARTED_YET,
 		IN_PROGRESS,
 		FAILED,
-		SUCCESS,
+		SUCCESS
 	};
 
 protected:
@@ -82,7 +80,7 @@ protected:
 	// The corresponding HTTP request
 	HttpRequestPtr _request;
 
-	ThreadPtr _thread;
+	ExceptionSafeThreadPtr _thread;
 
 	bool _pk4CheckEnabled;
 	bool _crcCheckEnabled;
@@ -153,7 +151,7 @@ public:
 
 protected:
 	// Thread entry point
-	void Perform();
+	void Perform(int);
 
 	// Check method
 	bool CheckIntegrity();
