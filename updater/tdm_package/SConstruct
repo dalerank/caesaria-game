@@ -1,0 +1,259 @@
+# -*- mode: python -*-
+# coding=utf-8
+
+#*****************************************************************************
+#                    The Dark Mod GPL Source Code
+# 
+# This file is part of the The Dark Mod Source Code, originally based 
+# on the Doom 3 GPL Source Code as published in 2011.
+# 
+# The Dark Mod Source Code is free software: you can redistribute it 
+# and/or modify it under the terms of the GNU General Public License as 
+# published by the Free Software Foundation, either version 3 of the License, 
+# or (at your option) any later version. For details, see LICENSE.TXT.
+# 
+# Project: The Dark Mod Packager (http://www.thedarkmod.com/)
+# 
+# $Revision: 5123 $ (Revision of last commit) 
+# $Date: 2011-12-12 10:37:40 +0400 (Пн, 12 дек 2011) $ (Date of last commit)
+# $Author: greebo $ (Author of last commit)
+# 
+#*****************************************************************************
+
+# The Dark Mod Packager build script for Linux
+# Based on id's game sconscript
+# Author: greebo
+
+import sys, os, time, commands, re, pickle, StringIO, commands, pdb, string
+import SCons
+
+# choose configuration variables which should be saved between runs
+# ( we handle all those as strings )
+serialized=['CC', 'CXX', 'JOBS', 'BUILD']
+
+# global build mode ------------------------------
+
+# help -------------------------------------------
+
+help_string = """
+Usage: scons [OPTIONS] [TARGET]
+
+[OPTIONS] and [TARGET] are covered in command line options, use scons -H
+
+CC (default gcc)
+CXX (default g++)
+	Specify C and C++ compilers (defaults gcc and g++)
+	ex: CC="gcc-3.3"
+	You can use ccache and distcc, for instance:
+	CC="ccache distcc gcc" CXX="ccache distcc g++"
+
+JOBS (default 1)
+	Parallel build
+
+BUILD (default debug)
+	Use debug-all/debug/release to select build settings
+	ex: BUILD="release"
+	debug-all: no optimisations, debugging symbols
+	debug: -O -g
+	release: all optimisations, including CPU target etc.
+
+MACOSX_TARGET_ARCH (default 'i386')
+	The target architecture when building in Mac OS X.
+	valid values: 'ppc' or 'i386'.
+
+LINUX_TARGET_ARCH (default: 'i386')
+	The target architecture when building in Linux.
+	valid values: 'i386' or 'debian50-amd64'
+
+"""
+
+Help( help_string )
+
+# end help ---------------------------------------
+
+# sanity -----------------------------------------
+
+EnsureSConsVersion( 0, 98 )
+
+# end sanity -------------------------------------
+
+# system detection -------------------------------
+
+# CPU type
+cpu = commands.getoutput('uname -m')
+exp = re.compile('.*i?86.*')
+if exp.match(cpu):
+	cpu = 'x86'
+else:
+	cpu = commands.getoutput('uname -p')
+	if ( cpu == 'powerpc' ):
+		cpu = 'ppc'
+	else:
+		cpu = 'cpu'
+
+if sys.platform == 'darwin':
+	g_os = 'MacOSX'
+else:
+	g_os = 'Linux'
+
+# end system detection ---------------------------
+
+# default settings -------------------------------
+
+CC = 'gcc'
+CXX = 'g++'
+JOBS = '1'
+BUILD = 'debug'
+BASEFLAGS = ''
+MACOSX_TARGET_ARCH = 'i386'
+LINUX_TARGET_ARCH = 'i386'
+
+# end default settings ---------------------------
+
+# command line settings --------------------------
+
+for k in ARGUMENTS.keys():
+	exec_cmd = k + '=\'' + ARGUMENTS[k] + '\''
+	print 'Command line: ' + exec_cmd
+	exec( exec_cmd )
+
+# end command line settings ----------------------
+
+# general configuration, target selection --------
+
+g_build = './build/' + BUILD
+
+SConsignFile( 'scons.signatures' )
+Decider('MD5-timestamp')
+
+SetOption('num_jobs', JOBS)
+
+LINK = CXX
+
+# common flags
+# BASE + CORE + OPT for engine
+# BASE + GAME + OPT for game
+# _noopt versions of the environements are built without the OPT
+
+BASECPPFLAGS = [ ]
+CORECPPPATH = [ ]
+CORELIBPATH = [ ]
+CORECPPFLAGS = [ ]
+BASELINKFLAGS = [ ]
+
+# for release build, further optimisations that may not work on all files
+OPTCPPFLAGS = [ ]
+
+BASECPPFLAGS.append( BASEFLAGS )
+BASECPPFLAGS.append( '-pipe' )
+# warn all
+BASECPPFLAGS.append( '-Wall' )
+
+# Don't throw warnings for unknown pragmas (used by VC++)
+BASECPPFLAGS.append('-Wno-unknown-pragmas')
+
+# this define is necessary to make sure threading support is enabled in X
+CORECPPFLAGS.append( '-DXTHREADS' )
+
+# don't wrap gcc messages
+BASECPPFLAGS.append( '-fmessage-length=0' )
+
+if ( g_os == 'Linux' or g_os == 'MacOSX' ):
+
+	if g_os == 'Linux':
+
+		if LINUX_TARGET_ARCH == 'i386':
+			# get the 64 bit machines on the distcc array to produce 32 bit binaries :)
+			BASECPPFLAGS.append( '-m32' )
+			BASELINKFLAGS.append( '-m32' )
+
+			# help 64 bit machines to find the compatibility 32bit libraries
+			BASELINKFLAGS.append( '-L/lib32' )
+			BASELINKFLAGS.append( '-L/usr/lib32' )
+		
+		BASELINKFLAGS.append( '-pthread' )
+		BASELINKFLAGS.append( '-lrt' )
+	
+		# Add the __linux__ define
+		BASECPPFLAGS.append('-D__linux__')
+	else:
+		# Mac OS X
+		# get the 64 bit machines on the distcc array to produce 32 bit binaries :)
+		BASECPPFLAGS.append( '-m32' )
+		BASELINKFLAGS.append( '-m32' )
+
+		BASECPPFLAGS.append('-DMACOS_X')
+
+		if MACOSX_TARGET_ARCH == 'i386':
+			# Perform an Intel build
+			BASECPPFLAGS.append(['-arch', 'i386', '-D__i386__'])
+			BASELINKFLAGS.append(['-arch', 'i386'])
+		elif MACOSX_TARGET_ARCH == 'ppc':
+			# Perform a PowerPC build
+			BASECPPFLAGS.append(['-arch', 'ppc', '-D__ppc__'])
+			BASELINKFLAGS.append(['-arch', 'ppc'])
+
+if ( BUILD == 'debug' ):
+	OPTCPPFLAGS = [ '-g', '-O1', '-D_DEBUG' ]
+elif ( BUILD == 'release' ):
+	# -fomit-frame-pointer: "-O also turns on -fomit-frame-pointer on machines where doing so does not interfere with debugging."
+	#   on x86 have to set it explicitely
+	# -finline-functions: implicit at -O3
+	# -fschedule-insns2: implicit at -O2
+	# no-unsafe-math-optimizations: that should be on by default really. hit some wonko bugs in physics code because of that
+	OPTCPPFLAGS = [ '-O3', '-ffast-math', '-fno-unsafe-math-optimizations', '-fomit-frame-pointer' ]
+else:
+	print 'Unknown build configuration ' + BUILD
+	sys.exit(0)
+
+# Use libsvn for tdm_package
+LIBTDM_USES_LIBSVN = 1
+
+# create the build environements
+g_base_env = Environment( ENV = os.environ, CC = CC, CXX = CXX, LINK = LINK, CPPFLAGS = BASECPPFLAGS, LINKFLAGS = BASELINKFLAGS, CPPPATH = CORECPPPATH, LIBPATH = CORELIBPATH )
+
+g_base_env.Append(CPPPATH = '#/')
+g_base_env.Append(CPPPATH = '#/../../include')
+g_base_env.Append(CPPPATH = '#/../../include/zlib')
+
+if LIBTDM_USES_LIBSVN == 1:
+	# Tell the code to compile the SVN clients (LIBTDM_UPDATE_WITH_LIBSVN)
+	g_base_env.Append(CPPFLAGS = '-DUSE_LIBSVN')
+
+	# greebo: Add the subversion and apr header directories, they are not added to PATH when installing the packages?
+	g_base_env.Append(CPPPATH = '/usr/include/subversion-1')
+	g_base_env.Append(CPPPATH = '/usr/include/apr-1.0')
+
+	if g_os == 'MacOSX':
+		g_base_env.Append(CPPPATH = '/Developer/SDKs/MacOSX10.6.sdk/usr/include/apr-1/')
+
+	g_base_env.Append(BASELINKFLAGS = '-L/usr/lib/apr-1.0')
+	g_base_env.Append(LIBS = ['svn_client-1', 'svn_subr-1'])
+
+g_env = g_base_env.Clone()
+
+g_env['CPPFLAGS'] += OPTCPPFLAGS
+g_env.Append( CPPFLAGS = '-fno-strict-aliasing' )
+g_env['CPPFLAGS'] += CORECPPFLAGS
+
+minizip_list = []
+libtdm_update_list = []
+
+# mark the globals
+GLOBALS = 'g_env g_os OPTCPPFLAGS LINUX_TARGET_ARCH'
+
+# end general configuration ----------------------
+
+# targets ----------------------------------------
+
+Export( 'GLOBALS ' + GLOBALS )
+
+BuildDir( g_build, '.', duplicate = 0 )
+
+Export( 'GLOBALS ' + GLOBALS )
+
+# Build the packager
+SConscript('#/SConscript.tdm_package')
+
+# end targets ------------------------------------
+

@@ -38,7 +38,7 @@ int StringHelper::vformat(std::string& str, int max_size, const char* format, va
   int length = vsnprintf(buffer_ptr, max_size, format, argument_list);
   buffer_ptr[length >= 0 ? length : max_size] = '\0';
 
-  _OC3_DEBUG_BREAK_IF( length == -1 && "String::sprintf: String truncated when processing " );
+  _CAESARIA_DEBUG_BREAK_IF( length == -1 && "String::sprintf: String truncated when processing " );
  
   str = buffer_ptr;
 
@@ -105,6 +105,11 @@ float StringHelper::toFloat( const char* in, const char** out /*= 0*/ )
     *out = in;
 
   return floatValue;
+}
+
+float StringHelper::toFloat(std::string in)
+{
+  return toFloat( in.c_str() );
 }
 
 int StringHelper::toInt( const char* in, const char** out/*=0*/ )
@@ -289,4 +294,17 @@ std::string StringHelper::localeLower( const std::string& str)
   }
 
   return ret;
+}
+
+
+bool StringHelper::startsWith(std::string text, std::string start)
+{
+  text.resize( start.length() );
+  return text == start;
+}
+
+
+unsigned int StringHelper::toUint(const std::string& in)
+{
+  return toUint( in.c_str(), 0 );
 }

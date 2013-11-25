@@ -83,11 +83,11 @@ public:
   /** \param filename: The file to get the directory from */
   virtual FilePath getFileDir() const;
 
+  virtual void remove();
+
 private:
-  void _OsDelete(const FilePath &pathToDelete);
   void _OsRename(const FilePath &newName);
   
-
   class Impl;
   ScopedPtr< Impl > _d;
 };

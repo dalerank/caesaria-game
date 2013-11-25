@@ -20,10 +20,10 @@
 #include "filenative_impl.hpp"
 #include "core/logger.hpp"
 
-#ifdef OC3_PLATFORM_WIN
-#define getline_def getline_win
-#elif defined(OC3_PLATFORM_UNIX)
-#define getline_def getline
+#ifdef CAESARIA_PLATFORM_WIN
+	#define getline_def getline_win
+#elif defined(CAESARIA_PLATFORM_UNIX)
+	#define getline_def getline
 #endif
 
 namespace io

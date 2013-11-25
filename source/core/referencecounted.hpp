@@ -33,7 +33,7 @@ public:
   bool drop() const
   {
     // someone is doing bad reference counting.
-    _OC3_DEBUG_BREAK_IF( _referenceCounter <= 0 )
+    _CAESARIA_DEBUG_BREAK_IF( _referenceCounter <= 0 )
 
     --_referenceCounter;
     if (!_referenceCounter)

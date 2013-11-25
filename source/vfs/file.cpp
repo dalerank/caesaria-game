@@ -140,4 +140,10 @@ NFile& NFile::operator=( const NFile& other )
   return *this;
 }
 
+long NFile::getSize(const FilePath& filename)
+{
+  NFile file = NFile::open( filename );
+  return file.getSize();
+}
+
 } //end namespace io

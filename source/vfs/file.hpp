@@ -66,6 +66,7 @@ public:
   NFile& operator=(const NFile& other );
 
   static NFile open( const FilePath& fileName, FSEntity::Mode mode=FSEntity::fmRead );
+  static long getSize( const FilePath& filename );
 
 private:
   FSEntityPtr _entity;

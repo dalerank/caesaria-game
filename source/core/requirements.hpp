@@ -22,7 +22,7 @@
 //see CMakeLists.txt for this define
 //#define NO_USE_SYSTEM_ZLIB
 
-#if defined OC3_PLATFORM_WIN
+#if defined CAESARIA_PLATFORM_WIN
   // alignment of a member was sensitive to packing
   //#pragma warning(disable : 4121)
 
@@ -34,46 +34,46 @@
   #endif
 
   #if defined(_MSC_VER)
-    #define OC3_COMPILER_NAME "msvc"
+    #define CAESARIA_COMPILER_NAME "msvc"
   #elif defined(__GNUC__)
-    #define OC3_COMPILER_NAME "mingw"
+    #define CAESARIA_COMPILER_NAME "mingw"
   #endif
 #endif
 
-#ifndef OC3_COMPILER_NAME
-  #define OC3_COMPILER_NAME "unknown"
+#ifndef CAESARIA_COMPILER_NAME
+  #define CAESARIA_COMPILER_NAME "unknown"
 #endif
 
 #define _USE_ASSERT_4_DEBUG
 
 #if defined(_USE_ASSERT_4_DEBUG)
-  #if defined(OC3_PLATFORM_WIN)
+  #if defined(CAESARIA_PLATFORM_WIN)
     #if defined(_MSC_VER)
-        #undef OC3_USE_MINGW_COMPILER
-        #if defined(OC3_PLATFORM_WIN64) // using portable common solution for x64 configuration
+        #undef CAESARIA_USE_MINGW_COMPILER
+        #if defined(CAESARIA_PLATFORM_WIN64) // using portable common solution for x64 configuration
           #include <crtdbg.h>
-          #define _OC3_DEBUG_BREAK_IF( _CONDITION_ ) if (_CONDITION_) {_CrtDbgBreak();}
+          #define _CAESARIA_DEBUG_BREAK_IF( _CONDITION_ ) if (_CONDITION_) {_CrtDbgBreak();}
         #else
-          #define _OC3_DEBUG_BREAK_IF( _CONDITION_ ) if (_CONDITION_) {_asm int 3}
+          #define _CAESARIA_DEBUG_BREAK_IF( _CONDITION_ ) if (_CONDITION_) {_asm int 3}
         #endif
       #else
         #if defined (__GNUC__)
-          #define OC3_USE_MINGW_COMPILER
+          #define CAESARIA_USE_MINGW_COMPILER
           #include <cassert>
         #endif
-        #define _OC3_DEBUG_BREAK_IF( _CONDITION_ ) assert( !(_CONDITION_) );
+        #define _CAESARIA_DEBUG_BREAK_IF( _CONDITION_ ) assert( !(_CONDITION_) );
     #endif // _MSC_VER
-  #else //OC3_PLATFORM_WIN
+  #else //CAESARIA_PLATFORM_WIN
     #if defined (__GNUC__)
       #include <cassert>
     #endif
-    #define _OC3_DEBUG_BREAK_IF( _CONDITION_ ) assert( !(_CONDITION_) );
+    #define _CAESARIA_DEBUG_BREAK_IF( _CONDITION_ ) assert( !(_CONDITION_) );
   #endif
 #else
-  #define _OC3_DEBUG_BREAK_IF( _CONDITION_ )
+  #define _CAESARIA_DEBUG_BREAK_IF( _CONDITION_ )
 #endif
 
-#define _OC3_DISABLE_COPY(Class) \
+#define _CAESARIA_DISABLE_COPY(Class) \
     Class( const Class& ); \
     Class& operator=( const Class& );
 

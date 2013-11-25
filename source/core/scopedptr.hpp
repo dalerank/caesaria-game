@@ -64,13 +64,13 @@ public:
 
 	inline T &operator*() const
 	{
-		_OC3_DEBUG_BREAK_IF( !d );
+		_CAESARIA_DEBUG_BREAK_IF( !d );
 		return *d;
 	}
 
 	inline T *operator->() const
 	{
-		_OC3_DEBUG_BREAK_IF( !d );
+		_CAESARIA_DEBUG_BREAK_IF( !d );
 		return d;
 	}
 
@@ -121,7 +121,7 @@ protected:
 	T *d;
 
 private:
-	_OC3_DISABLE_COPY(ScopedPtr)
+	_CAESARIA_DISABLE_COPY(ScopedPtr)
 };
 
 template <class T, class Cleanup>
@@ -156,7 +156,7 @@ public:
 	}
 
 private:
-	_OC3_DISABLE_COPY(ScopedArrayPtr)
+	_CAESARIA_DISABLE_COPY(ScopedArrayPtr)
 };
 
 #endif //__CAESARIA_SCOPEDPTR_H_INCLUDE_

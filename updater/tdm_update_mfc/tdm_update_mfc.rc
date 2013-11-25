@@ -1,0 +1,272 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_TDM_UPDATE_MFC_DIALOG DIALOGEX 0, 0, 319, 233
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "The Dark Mod Updater"
+FONT 9, "MS Shell Dlg", 400, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "Continue >>",ID_BUTTON_CONTINUE,209,212,50,14
+    PUSHBUTTON      "Cancel",ID_BUTTON_ABORT,262,212,50,14
+    LTEXT           "The Dark Mod Updater",IDC_UPDATER_TITLE,7,6,248,14
+    LTEXT           "This application will check your TDM installation and update it to the most recent version available. An active internet connection will be required.",IDC_UPDATER_SUBTITLE,6,24,251,19
+    CONTROL         "",IDC_PROGRESS1,"msctls_progress32",WS_BORDER,7,174,305,14
+    ICON            IDI_TDM_ICON_GREY,IDC_STATIC,274,7,20,20,SS_REALSIZEIMAGE,WS_EX_TRANSPARENT
+    LTEXT           "",IDC_STEP1_TEXT,41,54,271,8
+    CTEXT           "Ready - press continue to start the update",IDC_STATUS_TEXT,7,161,305,8
+    LTEXT           "",IDC_STEP2_TEXT,41,66,271,8
+    LTEXT           "",IDC_STEP3_TEXT,41,78,271,8
+    LTEXT           "",IDC_STEP4_TEXT,41,90,271,8
+    LTEXT           "",IDC_STEP5_TEXT,41,102,271,8
+    LTEXT           "",IDC_STEP6_TEXT,41,114,271,8
+    LTEXT           "",IDC_STEP7_TEXT,41,126,271,8
+    LTEXT           "",IDC_STEP8_TEXT,41,138,271,8
+    LTEXT           "",IDC_STEP1_STATE,33,54,8,8
+    LTEXT           "",IDC_STEP2_STATE,33,66,8,8
+    LTEXT           "",IDC_STEP3_STATE,33,78,8,8
+    LTEXT           "",IDC_STEP4_STATE,33,90,8,8
+    LTEXT           "",IDC_STEP5_STATE,33,102,8,8
+    LTEXT           "",IDC_STEP6_STATE,33,114,8,8
+    LTEXT           "",IDC_STEP7_STATE,33,126,8,8
+    LTEXT           "",IDC_STEP8_STATE,33,138,8,8
+    CTEXT           "",IDC_PROGRESS_SPEED,7,192,305,8
+    PUSHBUTTON      "Advanced Options",IDC_ADV_OPTIONS_BUTTON,64,212,67,14
+    PUSHBUTTON      "Show Log",IDC_SHOW_LOG_BUTTON,7,212,53,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904e4"
+        BEGIN
+            VALUE "CompanyName", "The Dark Mod Team "
+            VALUE "FileDescription", "The Dark Mod Updater/Downloader "
+            VALUE "FileVersion", "1.0.0.1"
+            VALUE "InternalName", "tdm_update.exe"
+            VALUE "LegalCopyright", "(c) 2010 The Dark Mod Team.  All rights reserved."
+            VALUE "OriginalFilename", "tdm_update.exe"
+            VALUE "ProductName", "TDM Update"
+            VALUE "ProductVersion", "1.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_TDM_UPDATE_MFC_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 312
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 226
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// German (Austria) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEA)
+#ifdef _WIN32
+LANGUAGE LANG_GERMAN, SUBLANG_GERMAN_AUSTRIAN
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ADV_OPTIONS_DIALOG DIALOGEX 0, 0, 332, 189
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION
+CAPTION "Advanced Options"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Save",IDOK,221,168,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,275,168,50,14
+    CONTROL         "Don't search for new mirrors on thedarkmod.com (--keep-mirrors)",IDC_KEEP_MIRRORS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,23,307,12
+    CONTROL         "Prevent TDM Update from updating itself (--noselfupdate)",IDC_NOSELFUPDATE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,41,307,12
+    CONTROL         "Don't delete differential update packages after applying them (--keep-update-packages)",IDC_KEEP_UPDATE_PACKAGES,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,59,307,12
+    EDITTEXT        IDC_TARGET_DIR,18,97,306,12,ES_AUTOHSCROLL
+    LTEXT           "Target Folder (Darkmod Folder)",IDC_LABEL_TARGETDIR,7,82,318,8
+    LTEXT           "Behaviour",IDC_LABEL_BEHAVIOUR,7,8,318,8
+    LTEXT           "Proxy (leave empty if none should be used)",IDC_LABEL_PROXY,7,120,318,8
+    EDITTEXT        IDC_PROXY,19,134,306,12,ES_AUTOHSCROLL
+    LTEXT           "Format: http://username:password@proxy.company.com:port/",IDC_STATIC,24,148,300,8
+END
+
+IDD_LOGVIEWER_DIALOG DIALOGEX 0, 0, 355, 185
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION
+CAPTION "TDM Update Log Window"
+FONT 8, "MS Shell Dlg", 400, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "Close",IDOK,298,164,50,14
+    EDITTEXT        IDC_LOGVIEW,7,7,341,150,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | WS_VSCROLL | WS_HSCROLL
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_ADV_OPTIONS_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 325
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 182
+    END
+
+    IDD_LOGVIEWER_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 348
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 178
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#include ""res\\tdm_update_mfc.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""     // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_TDM_ICON            ICON                    "..\\TDM_icon.ico"
+IDI_TDM_ICON_GREY       ICON                    "..\\darkmod.ico"
+#endif    // German (Austria) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#include "res\tdm_update_mfc.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"     // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
