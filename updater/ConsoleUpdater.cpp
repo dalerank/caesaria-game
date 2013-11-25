@@ -265,7 +265,7 @@ void ConsoleUpdater::OnFinishStep(UpdateStep step)
 		else
 		{
 			std::string versionFound = StringHelper::format( 0xff, "local version is %s.", _controller.GetLocalVersion().c_str() );
-			Logger::warning( versionFound);
+			Logger::warning( versionFound );
 		}
 	}
 	break;

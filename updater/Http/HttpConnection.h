@@ -19,10 +19,10 @@
 
 #pragma once
 
-#include <string>
 #include "core/smartptr.hpp"
-#include "core/mutex.hpp"
+#include "core/scopedptr.hpp"
 #include "core/referencecounted.hpp"
+
 namespace tdm
 {
 
@@ -38,15 +38,14 @@ typedef SmartPtr<HttpRequest> HttpRequestPtr;
 class HttpConnection : public ReferenceCounted
 {
 private:
+	class Impl;
+	ScopedPtr<Impl> _d;
 	std::string _proxyHost;
 	std::string _proxyUser;
 	std::string _proxyPass;
 
 	// a thread-safe counter, measuring the download bandwidth used
 	std::size_t _bytesDownloaded;
-
-	// The mutex for managing access to the counter above
-	Mutex _bytesDownloadedMutex;
 
 public:
 	HttpConnection();

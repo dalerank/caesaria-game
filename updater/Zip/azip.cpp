@@ -17,7 +17,7 @@
  
 ******************************************************************************/
 
-#include "Zip.h"
+#include "azip.h"
 
 #include <time.h>
 #include <fstream>

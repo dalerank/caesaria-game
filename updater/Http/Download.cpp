@@ -19,7 +19,7 @@
 
 #include "Download.h"
 #include "../Http/HttpConnection.h"
-#include "../Zip/Zip.h"
+#include "../Zip/azip.h"
 #include "../CRC.h"
 #include "../Util.h"
 #include "../Constants.h"

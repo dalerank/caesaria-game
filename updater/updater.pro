@@ -3,7 +3,9 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
-LIBS += -lpthread -lz -lcurl
+win32{
+LIBS += -lpsapi
+}
 
 INCLUDEPATH += ../source
 INCLUDEPATH += ../utils
@@ -35,7 +37,6 @@ SOURCES += main.cpp \
     Http/HttpConnection.cpp \
     Http/MirrorDownload.cpp \
     Http/HttpRequest.cpp \
-    Zip/Zip.cpp \
     Http/Download.cpp \
     ../utils/bzip2/randtable.c \
     ../utils/bzip2/huffman.c \
@@ -55,7 +56,111 @@ SOURCES += main.cpp \
     minizip/zip.c \
     minizip/unzip.c \
     minizip/mztools.c \
-    minizip/ioapi.c
+    minizip/iowin32.c \
+    Zip/azip.cpp \
+    ../utils/zlib/zutil.c \
+    ../utils/zlib/uncompr.c \
+    ../utils/zlib/trees.c \
+    ../utils/zlib/inftrees.c \
+    ../utils/zlib/inflate.c \
+    ../utils/zlib/inffast.c \
+    ../utils/zlib/infback.c \
+    ../utils/zlib/gzwrite.c \
+    ../utils/zlib/gzread.c \
+    ../utils/zlib/gzlib.c \
+    ../utils/zlib/gzclose.c \
+    ../utils/zlib/deflate.c \
+    ../utils/zlib/crc32.c \
+    ../utils/zlib/compress.c \
+    ../utils/zlib/adler32.c \
+    ../utils/curl/wildcard.c \
+    ../utils/curl/warnless.c \
+    ../utils/curl/version.c \
+    ../utils/curl/url.c \
+    ../utils/curl/transfer.c \
+    ../utils/curl/timeval.c \
+    ../utils/curl/tftp.c \
+    ../utils/curl/telnet.c \
+    ../utils/curl/strtoofft.c \
+    ../utils/curl/strtok.c \
+    ../utils/curl/strerror.c \
+    ../utils/curl/strequal.c \
+    ../utils/curl/strdup.c \
+    ../utils/curl/ssluse.c \
+    ../utils/curl/sslgen.c \
+    ../utils/curl/ssh.c \
+    ../utils/curl/splay.c \
+    ../utils/curl/speedcheck.c \
+    ../utils/curl/socks_sspi.c \
+    ../utils/curl/socks_gssapi.c \
+    ../utils/curl/socks.c \
+    ../utils/curl/smtp.c \
+    ../utils/curl/slist.c \
+    ../utils/curl/share.c \
+    ../utils/curl/sendf.c \
+    ../utils/curl/select.c \
+    ../utils/curl/security.c \
+    ../utils/curl/rtsp.c \
+    ../utils/curl/rawstr.c \
+    ../utils/curl/qssl.c \
+    ../utils/curl/progress.c \
+    ../utils/curl/pop3.c \
+    ../utils/curl/polarssl.c \
+    ../utils/curl/pingpong.c \
+    ../utils/curl/parsedate.c \
+    ../utils/curl/openldap.c \
+    ../utils/curl/nwos.c \
+    ../utils/curl/nwlib.c \
+    ../utils/curl/nss.c \
+    ../utils/curl/nonblock.c \
+    ../utils/curl/netrc.c \
+    ../utils/curl/multi.c \
+    ../utils/curl/mprintf.c \
+    ../utils/curl/memdebug.c \
+    ../utils/curl/md5.c \
+    ../utils/curl/llist.c \
+    ../utils/curl/ldap.c \
+    ../utils/curl/krb5.c \
+    ../utils/curl/krb4.c \
+    ../utils/curl/inet_pton.c \
+    ../utils/curl/inet_ntop.c \
+    ../utils/curl/imap.c \
+    ../utils/curl/if2ip.c \
+    ../utils/curl/http_ntlm.c \
+    ../utils/curl/http_negotiate.c \
+    ../utils/curl/http_digest.c \
+    ../utils/curl/http_chunks.c \
+    ../utils/curl/http.c \
+    ../utils/curl/hostthre.c \
+    ../utils/curl/hostsyn.c \
+    ../utils/curl/hostip6.c \
+    ../utils/curl/hostip4.c \
+    ../utils/curl/hostip.c \
+    ../utils/curl/hostasyn.c \
+    ../utils/curl/hostares.c \
+    ../utils/curl/hash.c \
+    ../utils/curl/gtls.c \
+    ../utils/curl/getinfo.c \
+    ../utils/curl/getenv.c \
+    ../utils/curl/ftplistparser.c \
+    ../utils/curl/ftp.c \
+    ../utils/curl/formdata.c \
+    ../utils/curl/fileinfo.c \
+    ../utils/curl/file.c \
+    ../utils/curl/escape.c \
+    ../utils/curl/easy.c \
+    ../utils/curl/dict.c \
+    ../utils/curl/curl_threads.c \
+    ../utils/curl/curl_sspi.c \
+    ../utils/curl/curl_rtmp.c \
+    ../utils/curl/curl_rand.c \
+    ../utils/curl/curl_memrchr.c \
+    ../utils/curl/curl_fnmatch.c \
+    ../utils/curl/curl_addrinfo.c \
+    ../utils/curl/cookie.c \
+    ../utils/curl/content_encoding.c \
+    ../utils/curl/connect.c \
+    ../utils/curl/base64.c
 
 
 HEADERS += \
@@ -89,7 +194,6 @@ HEADERS += \
     Http/HttpConnection.h \
     Http/MirrorDownload.h \
     Http/HttpRequest.h \
-    Zip/Zip.h \
     Http/Download.h \
     ../utils/bzip2/bzlib_private.h \
     ../utils/bzip2/bzlib.h \
@@ -103,6 +207,109 @@ HEADERS += \
     minizip/zip.h \
     minizip/unzip.h \
     minizip/mztools.h \
-    minizip/ioapi.h \
-    minizip/crypt.h
+    minizip/crypt.h \
+    minizip/iowin32.h \
+    Zip/azip.h \
+    ../utils/zlib/zutil.h \
+    ../utils/zlib/zlib.h \
+    ../utils/zlib/zconf.h \
+    ../utils/zlib/trees.h \
+    ../utils/zlib/inftrees.h \
+    ../utils/zlib/inflate.h \
+    ../utils/zlib/inffixed.h \
+    ../utils/zlib/inffast.h \
+    ../utils/zlib/gzguts.h \
+    ../utils/zlib/deflate.h \
+    ../utils/zlib/crc32.h \
+    ../utils/curl/wildcard.h \
+    ../utils/curl/warnless.h \
+    ../utils/curl/urldata.h \
+    ../utils/curl/url.h \
+    ../utils/curl/types.h \
+    ../utils/curl/typecheck-gcc.h \
+    ../utils/curl/transfer.h \
+    ../utils/curl/timeval.h \
+    ../utils/curl/tftp.h \
+    ../utils/curl/telnet.h \
+    ../utils/curl/strtoofft.h \
+    ../utils/curl/strtok.h \
+    ../utils/curl/strerror.h \
+    ../utils/curl/strequal.h \
+    ../utils/curl/strdup.h \
+    ../utils/curl/stdcheaders.h \
+    ../utils/curl/ssluse.h \
+    ../utils/curl/sslgen.h \
+    ../utils/curl/ssh.h \
+    ../utils/curl/splay.h \
+    ../utils/curl/speedcheck.h \
+    ../utils/curl/socks.h \
+    ../utils/curl/sockaddr.h \
+    ../utils/curl/smtp.h \
+    ../utils/curl/slist.h \
+    ../utils/curl/share.h \
+    ../utils/curl/setup-os400.h \
+    ../utils/curl/setup_once.h \
+    ../utils/curl/setup.h \
+    ../utils/curl/sendf.h \
+    ../utils/curl/select.h \
+    ../utils/curl/rtsp.h \
+    ../utils/curl/rawstr.h \
+    ../utils/curl/qssl.h \
+    ../utils/curl/progress.h \
+    ../utils/curl/pop3.h \
+    ../utils/curl/polarssl.h \
+    ../utils/curl/pingpong.h \
+    ../utils/curl/parsedate.h \
+    ../utils/curl/nssg.h \
+    ../utils/curl/nonblock.h \
+    ../utils/curl/netrc.h \
+    ../utils/curl/multiif.h \
+    ../utils/curl/multi.h \
+    ../utils/curl/mprintf.h \
+    ../utils/curl/memdebug.h \
+    ../utils/curl/llist.h \
+    ../utils/curl/krb4.h \
+    ../utils/curl/inet_pton.h \
+    ../utils/curl/inet_ntop.h \
+    ../utils/curl/imap.h \
+    ../utils/curl/if2ip.h \
+    ../utils/curl/http_ntlm.h \
+    ../utils/curl/http_negotiate.h \
+    ../utils/curl/http_digest.h \
+    ../utils/curl/http_chunks.h \
+    ../utils/curl/http.h \
+    ../utils/curl/hostip.h \
+    ../utils/curl/hash.h \
+    ../utils/curl/gtls.h \
+    ../utils/curl/getinfo.h \
+    ../utils/curl/ftplistparser.h \
+    ../utils/curl/ftp.h \
+    ../utils/curl/formdata.h \
+    ../utils/curl/fileinfo.h \
+    ../utils/curl/file.h \
+    ../utils/curl/escape.h \
+    ../utils/curl/easyif.h \
+    ../utils/curl/easy.h \
+    ../utils/curl/dict.h \
+    ../utils/curl/curlx.h \
+    ../utils/curl/curlver.h \
+    ../utils/curl/curlrules.h \
+    ../utils/curl/curlbuild.h \
+    ../utils/curl/curl_threads.h \
+    ../utils/curl/curl_sspi.h \
+    ../utils/curl/curl_rtmp.h \
+    ../utils/curl/curl_rand.h \
+    ../utils/curl/curl_memrchr.h \
+    ../utils/curl/curl_memory.h \
+    ../utils/curl/curl_md5.h \
+    ../utils/curl/curl_ldap.h \
+    ../utils/curl/curl_hmac.h \
+    ../utils/curl/curl_fnmatch.h \
+    ../utils/curl/curl_base64.h \
+    ../utils/curl/curl_addrinfo.h \
+    ../utils/curl/curl.h \
+    ../utils/curl/cookie.h \
+    ../utils/curl/content_encoding.h \
+    ../utils/curl/connect.h \
+    ../utils/curl/config-win32.h
 
