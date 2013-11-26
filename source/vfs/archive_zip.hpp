@@ -1,17 +1,17 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #ifndef __CAESARIA_ZIP_READER_H_INCLUDED__
 #define __CAESARIA_ZIP_READER_H_INCLUDED__
@@ -21,7 +21,7 @@
 #include "archive.hpp"
 #include "filelist.hpp"
 
-namespace io
+namespace vfs
 {
 
 #if defined(_MSC_VER) || defined(__BORLANDC__) || defined (__BCPLUSPLUS__)
@@ -157,11 +157,11 @@ class ZipArchiveLoader : public ArchiveLoader
 public:
 
       //! Constructor
-  ZipArchiveLoader( io::FileSystem* fs );
+  ZipArchiveLoader( vfs::FileSystem* fs );
 
       //! returns true if the file maybe is able to be loaded by this class
       //! based on the file extension (e.g. ".zip")
-      virtual bool isALoadableFileFormat(const FilePath& filename) const;
+      virtual bool isALoadableFileFormat(const Path& filename) const;
 
       //! Check if the file might be loaded by this class
       /** Check might look into the file.
@@ -178,17 +178,17 @@ public:
       //! Creates an archive from the filename
       /** \param file File handle to check.
       \return Pointer to newly created archive, or 0 upon error. */
-  virtual ArchivePtr createArchive(const FilePath& filename, bool ignoreCase, bool ignorePaths) const;
+  virtual ArchivePtr createArchive(const Path& filename, bool ignoreCase, bool ignorePaths) const;
 
       //! creates/loads an archive from the file.
       //! \return Pointer to the created archive. Returns 0 if loading failed.
   virtual ArchivePtr createArchive(NFile file, bool ignoreCase, bool ignorePaths) const;
 
 private:
-  io::FileSystem* _fileSystem;
+  vfs::FileSystem* _fileSystem;
 };
 
-class ZipArchiveReader : public virtual Archive, virtual FileList
+class ZipArchiveReader : public virtual Archive, virtual Entries
 {
 public:
   //! constructor
@@ -198,13 +198,13 @@ public:
   virtual ~ZipArchiveReader();
 
   //! opens a file by file name
-  virtual NFile createAndOpenFile(const FilePath& filename);
+  virtual NFile createAndOpenFile(const Path& filename);
 
   //! opens a file by index
   virtual NFile createAndOpenFile(unsigned int index);
 
   //! returns the list of files
-  virtual const FileList* getFileList() const;
+  virtual const Entries* getFileList() const;
 
   //! get the archive type
   virtual std::string getTypeName() const;

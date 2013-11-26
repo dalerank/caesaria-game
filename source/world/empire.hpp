@@ -35,7 +35,7 @@ public:
   CityPtr addCity( CityPtr city );
   CityPtr initPlayerCity( CityPtr city );
 
-  void initialize( const io::FilePath& filename );
+  void initialize( const vfs::Path& filename );
   void timeStep( unsigned int time );
 
   void createTradeRoute( const std::string& start, const std::string& stop );

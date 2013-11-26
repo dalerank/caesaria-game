@@ -13,13 +13,13 @@ public:
 
    //! returns true if the file maybe is able to be loaded by this class
    //! based on the file extension (e.g. ".png")
-   virtual bool isALoadableFileExtension(const io::FilePath& filename) const;
+   virtual bool isALoadableFileExtension(const vfs::Path& filename) const;
 
    //! returns true if the file maybe is able to be loaded by this class
-   virtual bool isALoadableFileFormat( io::NFile file) const;
+   virtual bool isALoadableFileFormat( vfs::NFile file) const;
 
    //! creates a surface from the file
-   virtual Picture load( io::NFile file ) const;
+   virtual Picture load( vfs::NFile file ) const;
 };
 
 #endif //__OC3_PICTURELOADER_PNG_H_INCLUDED__

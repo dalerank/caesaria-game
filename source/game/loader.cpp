@@ -122,7 +122,7 @@ void GameLoader::Impl::initLoaders()
   loaders.push_back( GameAbstractLoaderPtr( new GameLoaderMission() ) );
 }
 
-bool GameLoader::load( const io::FilePath& filename, Game& game )
+bool GameLoader::load( const vfs::Path& filename, Game& game )
 {
   // try to load file based on file extension
   Impl::LoaderIterator it = _d->loaders.begin();

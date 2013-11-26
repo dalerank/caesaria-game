@@ -25,6 +25,7 @@
 #include "vfs/filesystem.hpp"
 #include "vfs/filelist.hpp"
 #include "core/logger.hpp"
+#include "vfs/directory.hpp"
 
 namespace gui
 {
@@ -37,7 +38,7 @@ public:
   PushButton* btnCancel;
   EditBox* edFilename;
   ListBox* lbxSaves;
-  io::FilePath directory;
+  vfs::Directory directory;
   std::string extension;
 
 oc3_signals public:
@@ -59,13 +60,13 @@ public:
 
 void SaveDialog::Impl::findFiles()
 {
-  io::FileList flist = io::FileDir( directory ).getEntries();
+  vfs::Entries flist = directory.getEntries();
   StringArray names;
-  names << flist.filter( io::FileList::file | io::FileList::extFilter, extension );
+  names << flist.filter( vfs::Entries::file | vfs::Entries::extFilter, extension );
   lbxSaves->addItems( names );
 }
 
-SaveDialog::SaveDialog( Widget* parent, const io::FilePath& dir, const std::string& fileExt, int id )
+SaveDialog::SaveDialog( Widget* parent, const vfs::Path& dir, const std::string& fileExt, int id )
 : Widget( parent, id, Rect( 0, 0, 385, 336 ) ), _d( new Impl )
 {
   setPosition( Point( (parent->getWidth() - getWidth())/2, (parent->getHeight() - getHeight()) / 2 ) );
@@ -80,7 +81,7 @@ SaveDialog::SaveDialog( Widget* parent, const io::FilePath& dir, const std::stri
   PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
 
   _d->edFilename = new EditBox( this, Rect( 18, 40, 18 + 320, 40 + 30 ), "Savecity" );
-  _d->directory = io::FileDir::getApplicationDir().addEndSlash().toString() + dir.toString();
+  _d->directory = vfs::Directory::getApplicationDir().addEndSlash().toString() + dir.toString();
   _d->directory = _d->directory.addEndSlash();
   _d->extension = fileExt;
 

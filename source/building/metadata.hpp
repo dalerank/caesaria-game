@@ -77,7 +77,7 @@ public:
 
    static std::string getPrettyName( TileOverlay::Type bType );
 
-   void initialize( const io::FilePath& filename );
+   void initialize( const vfs::Path& filename );
 private:
    MetaDataHolder();
 

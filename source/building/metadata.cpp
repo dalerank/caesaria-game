@@ -313,7 +313,7 @@ MetaDataHolder::MetaDataHolder() : _d( new Impl )
 {
 }
 
-void MetaDataHolder::initialize( const io::FilePath& filename )
+void MetaDataHolder::initialize( const vfs::Path& filename )
 {
   // populate _mapBuildingByInGood
   _d->mapBuildingByInGood[Good::iron]   = building::weaponsWorkshop;

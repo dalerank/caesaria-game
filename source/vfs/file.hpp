@@ -19,10 +19,10 @@
 
 #include "entity.hpp"
 
-namespace io
+namespace vfs
 {
 
-class NFile : public FSEntity
+class NFile : public Entity
 {
 public:	
   NFile( FSEntityPtr file );
@@ -57,7 +57,7 @@ public:
   long getPos() const;
 
   //! returns name of file
-  const FilePath& getFileName() const;
+  const Path& getFileName() const;
 
   bool isEof() const;
 
@@ -65,7 +65,9 @@ public:
 
   NFile& operator=(const NFile& other );
 
-  static NFile open( const FilePath& fileName, FSEntity::Mode mode=FSEntity::fmRead );
+  static NFile open( Path fileName, Entity::Mode mode=Entity::fmRead );
+  static int remove( Path filename );
+  static int rename( Path oldpath, Path newpath );
 
 private:
   FSEntityPtr _entity;

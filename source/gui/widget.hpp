@@ -307,7 +307,7 @@ public:
    *	scripting languages, editors, debuggers or xml deserialization purposes.
    */
   virtual void setupUI( const VariantMap& ui );
-  virtual void setupUI( const io::FilePath& filename );
+  virtual void setupUI( const vfs::Path& filename );
 
   virtual void installEventHandler( Widget* elementHandler );
 

@@ -46,6 +46,7 @@
 #include "core/saveadapter.hpp"
 #include "events/dispatcher.hpp"
 #include "core/logger.hpp"
+#include "vfs/directory.hpp"
 
 #include <libintl.h>
 #include <list>
@@ -73,10 +74,10 @@ public:
   
   void initLocale(const std::string & localePath);
   void initVideo();
-  void initPictures(const io::FilePath& resourcePath);
+  void initPictures(const vfs::Path& resourcePath);
   void initGuiEnvironment();
-  void loadSettings(const io::FilePath& filename);
-  void initPantheon( const io::FilePath& filename );
+  void loadSettings(const vfs::Path& filename);
+  void initPantheon( const vfs::Path& filename );
 };
 
 void Game::Impl::initLocale(const std::string & localePath)
@@ -120,7 +121,7 @@ void Game::mountArchives()
 {
   Logger::warning( "mount archives begin" );
 
-  io::FileSystem& fs = io::FileSystem::instance();
+  vfs::FileSystem& fs = vfs::FileSystem::instance();
 
   fs.mountArchive( GameSettings::rcpath( "/pics/pics_wait.zip" ) );
   fs.mountArchive( GameSettings::rcpath( "/pics/pics.zip" ) );
@@ -132,7 +133,7 @@ void Game::Impl::initGuiEnvironment()
   gui = new gui::GuiEnv( *engine );
 }
 
-void Game::Impl::loadSettings( const io::FilePath& filename )
+void Game::Impl::loadSettings( const vfs::Path& filename )
 {
   VariantMap settings = SaveAdapter::load( filename );
 
@@ -142,13 +143,13 @@ void Game::Impl::loadSettings( const io::FilePath& filename )
   }
 }
 
-void Game::Impl::initPantheon(const io::FilePath& filename)
+void Game::Impl::initPantheon(const vfs::Path& filename)
 {
   VariantMap pantheon = SaveAdapter::load( filename );
   DivinePantheon::getInstance().load( pantheon );
 }
 
-void Game::Impl::initPictures(const io::FilePath& resourcePath)
+void Game::Impl::initPictures(const vfs::Path& resourcePath)
 {
   AnimationBank::loadCarts();
   AnimationBank::loadWalkers();
@@ -184,7 +185,7 @@ void Game::setScreenMenu()
     case ScreenMenu::startNewGame:
     {
       /* temporary*/     
-      io::FileList::Items maps = io::FileDir( GameSettings::rcpath( "/maps/" ) ).getEntries().filter( io::FileList::file, "" ).getItems();
+      vfs::Entries::Items maps = vfs::Directory( GameSettings::rcpath( "/maps/" ) ).getEntries().filter( vfs::Entries::file, "" ).getItems();
       std::srand( DateTime::getElapsedTime() );
       std::string file = maps.at( std::rand() % maps.size() ).fullName.toString();
       Logger::warning( "Loading map:%s", file.c_str() );

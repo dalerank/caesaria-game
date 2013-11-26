@@ -31,6 +31,7 @@
 #include "game/settings.hpp"
 #include "gui/playername_window.hpp"
 #include "core/logger.hpp"
+#include "vfs/directory.hpp"
 
 class ScreenMenu::Impl
 {
@@ -79,7 +80,7 @@ void ScreenMenu::Impl::resolveShowLoadGameWnd()
   RectF rect( 0.25f * rootSize.getWidth(), 0.25f * rootSize.getHeight(), 
               0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() );
 
-  io::FilePath savesPath = io::FileDir::getApplicationDir().addEndSlash().toString() + "saves/";
+  vfs::Path savesPath = vfs::Directory::getApplicationDir().addEndSlash().toString() + "saves/";
 
   gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent, rect.toRect(), savesPath, ".oc3save",-1 );
 

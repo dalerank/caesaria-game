@@ -27,7 +27,7 @@ namespace gui
 class SaveDialog : public Widget
 {
 public:
-  SaveDialog( Widget* parent, const io::FilePath& dir, const std::string& fileExt, int id );
+  SaveDialog( Widget* parent, const vfs::Path& dir, const std::string& fileExt, int id );
 
   void draw( GfxEngine& painter );
 

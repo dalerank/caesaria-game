@@ -21,10 +21,10 @@
 #include "vfs/archive.hpp"
 #include "vfs/filepath.hpp"
 
-namespace io
+namespace vfs
 {
 
-class FileList;
+class Entries;
 
 
 /*!
@@ -43,14 +43,14 @@ public:
   virtual ~FileSystem();
 
   //! opens a file for read access
-  virtual NFile createAndOpenFile( const FilePath& filename,
+  virtual NFile createAndOpenFile( const Path& filename,
                                                                        NFile::Mode mode );
 
   //! opens a file in archive, if not exists return 0
-  virtual NFile loadFileFromArchive( const FilePath& filePath );
+  virtual NFile loadFileFromArchive( const Path& filePath );
 
   //! Adds an archive to the file system.
-  virtual ArchivePtr mountArchive( const FilePath& filename,
+  virtual ArchivePtr mountArchive( const Path& filename,
                                    Archive::Type archiveType=Archive::unknown,
                                    bool ignoreCase = true, bool ignorePaths = true,
                                    const std::string& password="" );
@@ -87,25 +87,25 @@ public:
   virtual bool unmountArchive( unsigned int index);
 
   //! removes an archive from the file system.
-  virtual bool unmountArchive(const FilePath& filename);
+  virtual bool unmountArchive(const Path& filename);
 
   //! Removes an archive from the file system.
   virtual bool unmountArchive( ArchivePtr archive);
 
   //! Returns the string of the current working directory
-  virtual const FilePath& getWorkingDirectory();
+  virtual const Path& getWorkingDirectory();
 
   //! Changes the current Working Directory to the string given.
   //! The string is operating system dependent. Under Windows it will look
   //! like this: "drive:\directory\sudirectory\"
-  virtual bool changeWorkingDirectoryTo(const FilePath& newDirectory);
+  virtual bool changeWorkingDirectoryTo(const Path& newDirectory);
 
   //! Creates a list of files and directories in the current working directory
   //! and returns it.
-  virtual FileList getFileList();
+  virtual Entries getFileList();
 
   //! determines if a file exists and would be able to be opened.
-  virtual bool existFile(const FilePath& filename) const;
+  virtual bool existFile(const Path& filename) const;
 
   Mode setFileListSystem( Mode listType);
 

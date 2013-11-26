@@ -27,7 +27,7 @@ class Game;
 class GameSaver
 {
 public:
-   void save( const io::FilePath& filename, const Game& game );
+   void save( const vfs::Path& filename, const Game& game );
 };
 
 

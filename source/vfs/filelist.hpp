@@ -24,11 +24,11 @@
 #include "core/referencecounted.hpp"
 #include <vector>
 
-namespace io
+namespace vfs
 {
 
 //! Implementation of a file list
-class FileList : public ReferenceCounted
+class Entries : public ReferenceCounted
 {
 public:
   typedef enum { file=0x1, directory=0x2, extFilter=0x4 } FilterFlag;
@@ -39,12 +39,12 @@ public:
 
   //! Constructor
   /** \param path The path of this file archive */
-  FileList( const FilePath& path="", bool ignoreCase=false, bool ignorePaths=false );
+  Entries( const Path& path="", bool ignoreCase=false, bool ignorePaths=false );
 
-  FileList( const FileList& other );
+  Entries( const Entries& other );
 
   //! Destructor
-  ~FileList();
+  ~Entries();
 
   //! Add as a file or folder to the list
   /** \param fullPath The file name including path, up to the root of the file list.
@@ -52,7 +52,7 @@ public:
   \param offset The offset where the file is stored in an archive
   \param size The size of the file in bytes.
   \param id The ID of the file in the archive which owns it */
-  unsigned int addItem(const FilePath& fullPath, unsigned int offset, unsigned int size, bool isDirectory, unsigned int id=0);
+  unsigned int addItem(const Path& fullPath, unsigned int offset, unsigned int size, bool isDirectory, unsigned int id=0);
 
   //! Sorts the file list. You should call this after adding any items to the file list
   void sort();
@@ -63,10 +63,10 @@ public:
   const Items& getItems() const;
 
   //! Gets the name of a file in the list, based on an index.
-  const FilePath& getFileName(unsigned int index) const;
+  const Path& getFileName(unsigned int index) const;
 
   //! Gets the full name of a file in the list, path included, based on an index.
-  const FilePath& getFullFileName(unsigned int index) const;
+  const Path& getFullFileName(unsigned int index) const;
 
   //! Returns the ID of a file in the file list, based on an index.
   unsigned int getID(unsigned int index) const;
@@ -81,16 +81,16 @@ public:
   unsigned int getFileOffset(unsigned int index) const;
 
   //! Searches for a file or folder within the list, returns the index
-  int findFile(const FilePath& filename, bool isFolder=false) const;
+  int findFile(const Path& filename, bool isFolder=false) const;
 
   //! Returns the base path of the file list
-  const FilePath& getPath() const;
+  const Path& getPath() const;
 
   void setIgnoreCase( bool ignore );
 
-  FileList filter( int flags, const std::string& options );
+  Entries filter( int flags, const std::string& options );
 
-  FileList& operator=( const FileList& other );
+  Entries& operator=( const Entries& other );
 
   ConstItemIt begin() const;
   ConstItemIt end() const;
@@ -105,10 +105,10 @@ private:
 
 }//end namespace io
 
-inline StringArray& operator<<( StringArray& array, const io::FileList& flist )
+inline StringArray& operator<<( StringArray& array, const vfs::Entries& flist )
 {
-  const io::FileList::Items& items = flist.getItems();
-  for( io::FileList::ConstItemIt it=items.begin(); it != items.end(); ++it)
+  const vfs::Entries::Items& items = flist.getItems();
+  for( vfs::Entries::ConstItemIt it=items.begin(); it != items.end(); ++it)
   {
     array.push_back( (*it).name.toString() );
   }

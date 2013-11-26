@@ -30,7 +30,7 @@ public:
   GameLoader();
   ~GameLoader();
 
-  bool load(const io::FilePath& filename, Game& game);
+  bool load(const vfs::Path& filename, Game& game);
 
 private:
   class Impl;

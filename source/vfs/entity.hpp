@@ -5,17 +5,17 @@
 #include "core/bytearray.hpp"
 #include "core/smartptr.hpp"
 
-namespace io
+namespace vfs
 {
 
-class FilePath;
+class Path;
 
-class FSEntity : public ReferenceCounted
+class Entity : public ReferenceCounted
 {
 public:
   typedef enum { fmRead=0x0, fmWrite=0x1, fmAppend=0x2 } Mode;
 	
-  virtual ~FSEntity() {}
+	virtual ~Entity() {}
 
   //! returns how much was read
   virtual int read(void* buffer, unsigned int sizeToRead) = 0;
@@ -41,14 +41,14 @@ public:
   virtual long getPos() const = 0;
 
   //! returns name of file
-  virtual const FilePath& getFileName() const = 0;
+  virtual const Path& getFileName() const = 0;
 
   virtual bool isEof() const = 0;
 
   virtual void flush() = 0;
 };
 
-typedef SmartPtr< FSEntity > FSEntityPtr;
+typedef SmartPtr< Entity > FSEntityPtr;
 
 } //end namespace io
 

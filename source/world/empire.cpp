@@ -60,7 +60,7 @@ Empire::~Empire()
 
 }
 
-void Empire::initialize( const io::FilePath& filename )
+void Empire::initialize( const vfs::Path& filename )
 {
   _d->cities.clear();
   VariantMap cities = SaveAdapter::load( filename.toString() );

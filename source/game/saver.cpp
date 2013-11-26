@@ -25,7 +25,7 @@
 #include "game.hpp"
 #include "divinity.hpp"
 
-void GameSaver::save(const io::FilePath& filename, const Game& game )
+void GameSaver::save(const vfs::Path& filename, const Game& game )
 {
   VariantMap vm;
   vm[ "version" ] = Variant( 1 );

@@ -11,13 +11,13 @@ class AbstractPictureLoader : public ReferenceCounted
 public:
     //! returns true if the file maybe is able to be loaded by this class
     //! based on the file extension (e.g. ".tga")
-    virtual bool isALoadableFileExtension( const io::FilePath& filename ) const = 0;
+    virtual bool isALoadableFileExtension( const vfs::Path& filename ) const = 0;
 
     //! returns true if the file maybe is able to be loaded by this class
-    virtual bool isALoadableFileFormat( io::NFile file ) const = 0;
+    virtual bool isALoadableFileFormat( vfs::NFile file ) const = 0;
 
     //! creates a surface from the file
-    virtual Picture load( io::NFile file ) const = 0;
+    virtual Picture load( vfs::NFile file ) const = 0;
 };
 
 class PictureLoader
@@ -25,7 +25,7 @@ class PictureLoader
 public:
     static PictureLoader& instance();
 
-    Picture load( io::NFile file );
+    Picture load( vfs::NFile file );
 
     ~PictureLoader(void);
 private:

@@ -25,6 +25,7 @@
 #include "vfs/filelist.hpp"
 #include "core/color.hpp"
 #include "core/logger.hpp"
+#include "vfs/directory.hpp"
 
 namespace gui
 {
@@ -37,7 +38,7 @@ public:
   ListBox* files;
   PushButton* btnExit;
   PushButton* btnHelp;
-  io::FilePath directory;
+  vfs::Path directory;
   std::string fileExtension;
 
   void fillFiles();
@@ -52,7 +53,7 @@ oc3_signals public:
 };
 
 LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect,
-                              const io::FilePath& dir, const std::string& ext,
+                              const vfs::Path& dir, const std::string& ext,
                               int id )
 : Widget( parent, id, rect ), _d( new Impl )
 {
@@ -88,9 +89,9 @@ LoadMapWindow::~LoadMapWindow()
 
 void LoadMapWindow::Impl::fillFiles()
 {
-  io::FileList flist = io::FileDir( directory ).getEntries();
+  vfs::Entries flist = vfs::Directory( directory ).getEntries();
   StringArray names;
-  names << flist.filter( io::FileList::file | io::FileList::extFilter, fileExtension );
+  names << flist.filter( vfs::Entries::file | vfs::Entries::extFilter, fileExtension );
   files->addItems( names );
 }
 

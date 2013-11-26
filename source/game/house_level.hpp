@@ -91,7 +91,7 @@ public:
   HouseLevelSpec getHouseLevelSpec(const int houseLevel);
   int getHouseLevel(const int houseId);
   int getHouseLevel( const std::string& name );
-  void initialize( const io::FilePath& filename );
+  void initialize( const vfs::Path& filename );
 
   ~HouseSpecHelper();
 private:

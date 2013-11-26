@@ -35,7 +35,7 @@ PictureLoader& PictureLoader::instance()
   return instanceLoader;
 }
 
-Picture PictureLoader::load( io::NFile file )
+Picture PictureLoader::load( vfs::NFile file )
 {
   if( !file.isOpen() )
      return Picture::getInvalid();

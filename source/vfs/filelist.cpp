@@ -15,23 +15,23 @@
 
 #include "filelist.hpp"
 
-namespace io
+namespace vfs
 {
 
-static const FilePath emptyFileListEntry( "" );
+static const Path emptyFileListEntry( "" );
 
-class FileList::Impl
+class Entries::Impl
 {
 public:
   //! Ignore paths when adding or searching for files
   bool ignorePaths;
   bool ignoreCase;
   //! Path to the file list
-  FilePath path;
+  Path path;
   Items files;
 };
 
-FileList::FileList( const FilePath& path, bool ignoreCase, bool ignorePaths )
+Entries::Entries( const Path& path, bool ignoreCase, bool ignorePaths )
  : _d( new Impl )
 {
 #ifdef _DEBUG
@@ -42,12 +42,12 @@ FileList::FileList( const FilePath& path, bool ignoreCase, bool ignorePaths )
   _d->ignoreCase = ignoreCase;
 }
 
-FileList::FileList( const FileList& other ) : _d( new Impl )
+Entries::Entries( const Entries& other ) : _d( new Impl )
 {
   *this = other;
 }
 
-FileList& FileList::operator=( const FileList& other )
+Entries& Entries::operator=( const Entries& other )
 {
   _d->ignoreCase = other._d->ignoreCase;
   _d->ignorePaths = other._d->ignorePaths;
@@ -64,36 +64,36 @@ FileList& FileList::operator=( const FileList& other )
   return *this;
 }
 
-FileList::ConstItemIt FileList::begin() const
+Entries::ConstItemIt Entries::begin() const
 {
   return _d->files.begin();
 }
 
-FileList::ConstItemIt FileList::end() const
+Entries::ConstItemIt Entries::end() const
 {
   return _d->files.end();
 }
 
-FileList::Items &FileList::_getItems()
+Entries::Items &Entries::_getItems()
 {
   return _d->files;
 }
 
-FileList::~FileList()
+Entries::~Entries()
 {
 }
 
-unsigned int FileList::getFileCount() const
+unsigned int Entries::getFileCount() const
 {
   return _d->files.size();
 }
 
-void FileList::sort()
+void Entries::sort()
 {
   std::sort( _d->files.begin(), _d->files.end() );
 }
 
-const FilePath& FileList::getFileName(unsigned int index) const
+const Path& Entries::getFileName(unsigned int index) const
 {
   if (index >= _d->files.size())
     return emptyFileListEntry;
@@ -103,7 +103,7 @@ const FilePath& FileList::getFileName(unsigned int index) const
 
 
 //! Gets the full name of a file in the list, path included, based on an index.
-const FilePath& FileList::getFullFileName(unsigned int index) const
+const Path& Entries::getFullFileName(unsigned int index) const
 {
   if (index >= _d->files.size())
     return emptyFileListEntry;
@@ -112,7 +112,7 @@ const FilePath& FileList::getFullFileName(unsigned int index) const
 }
 
 //! adds a file or folder
-unsigned int FileList::addItem( const FilePath& fullPath, unsigned int offset, unsigned int size, bool isDirectory, unsigned int id )
+unsigned int Entries::addItem( const Path& fullPath, unsigned int offset, unsigned int size, bool isDirectory, unsigned int id )
 {
   FileListItem entry;
   entry.iD   = id ? id : _d->files.size();
@@ -149,12 +149,12 @@ unsigned int FileList::addItem( const FilePath& fullPath, unsigned int offset, u
 }
 
 //! Returns the iD of a file in the file list, based on an index.
-unsigned int FileList::getID(unsigned int index) const
+unsigned int Entries::getID(unsigned int index) const
 {
   return index < _d->files.size() ? _d->files[index].iD : 0;
 }
 
-bool FileList::isDirectory(unsigned int index) const
+bool Entries::isDirectory(unsigned int index) const
 {
   bool ret = false;
   if (index < _d->files.size())
@@ -164,19 +164,19 @@ bool FileList::isDirectory(unsigned int index) const
 }
 
 //! Returns the size of a file
-unsigned int FileList::getFileSize(unsigned int index) const
+unsigned int Entries::getFileSize(unsigned int index) const
 {
   return index < _d->files.size() ? _d->files[index].size : 0;
 }
 
 //! Returns the size of a file
-unsigned int FileList::getFileOffset(unsigned int index) const
+unsigned int Entries::getFileOffset(unsigned int index) const
 {
   return index < _d->files.size() ? _d->files[index].Offset : 0;
 }
 
 //! Searches for a file or folder within the list, returns the index
-int FileList::findFile(const FilePath& filename, bool isDirectory) const
+int Entries::findFile(const Path& filename, bool isDirectory) const
 {
   FileListItem entry;
   // we only need fullName to be set for the search
@@ -213,22 +213,22 @@ int FileList::findFile(const FilePath& filename, bool isDirectory) const
 
 
 //! Returns the base path of the file list
-const FilePath& FileList::getPath() const
+const Path& Entries::getPath() const
 {
   return _d->path;
 }
 
-void FileList::setIgnoreCase( bool ignore )
+void Entries::setIgnoreCase( bool ignore )
 {
   _d->ignoreCase = ignore;
 }
 
-FileList FileList::filter(int flags, const std::string &options)
+Entries Entries::filter(int flags, const std::string &options)
 {
-  FileList ret;
-  bool isFile = (flags & FileList::file) > 0;
-  bool isDirectory = (flags & FileList::directory) > 0;
-  bool checkFileExt = (flags & FileList::extFilter) > 0;
+  Entries ret;
+  bool isFile = (flags & Entries::file) > 0;
+  bool isDirectory = (flags & Entries::directory) > 0;
+  bool checkFileExt = (flags & Entries::extFilter) > 0;
 
   for( Items::iterator it=_d->files.begin(); it != _d->files.end(); it++ )
   {
@@ -250,7 +250,7 @@ FileList FileList::filter(int flags, const std::string &options)
   return ret;
 }
 
-const FileList::Items& FileList::getItems() const
+const Entries::Items& Entries::getItems() const
 {
   return _d->files;
 }

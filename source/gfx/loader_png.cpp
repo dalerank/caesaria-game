@@ -30,7 +30,7 @@ void PNGAPI user_read_data_fcn(png_structp png_ptr, png_bytep data, png_size_t l
   png_size_t check;
 
   // changed by zola {
-  io::NFile* file = (io::NFile*)png_get_io_ptr(png_ptr);
+  vfs::NFile* file = (vfs::NFile*)png_get_io_ptr(png_ptr);
   check=(png_size_t)file->read((void*)data,(unsigned int)length);
   // }
 
@@ -42,14 +42,14 @@ void PNGAPI user_read_data_fcn(png_structp png_ptr, png_bytep data, png_size_t l
 
 //! returns true if the file maybe is able to be loaded by this class
 //! based on the file extension (e.g. ".tga")
-bool PictureLoaderPng::isALoadableFileExtension(const io::FilePath& filename) const
+bool PictureLoaderPng::isALoadableFileExtension(const vfs::Path& filename) const
 {
   return filename.isExtension( ".png" );
 }
 
 
 //! returns true if the file maybe is able to be loaded by this class
-bool PictureLoaderPng::isALoadableFileFormat( io::NFile file) const
+bool PictureLoaderPng::isALoadableFileFormat( vfs::NFile file) const
 {
   if( !file.isOpen() )
     return false;
@@ -65,7 +65,7 @@ bool PictureLoaderPng::isALoadableFileFormat( io::NFile file) const
 
 
 // load in the image data
-Picture PictureLoaderPng::load( io::NFile file ) const
+Picture PictureLoaderPng::load( vfs::NFile file ) const
 {
   if(!file.isOpen())
   {

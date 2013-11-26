@@ -29,7 +29,7 @@ public:
   ~NameGenerator();
 
   static std::string rand( NameType type );
-  static void initialize( const io::FilePath& filename );
+  static void initialize( const vfs::Path& filename );
 
 private:
   NameGenerator();

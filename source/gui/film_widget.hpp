@@ -26,7 +26,7 @@ namespace gui
 class FilmWidget : public Widget
 {
 public:
-  FilmWidget( Widget* parent, io::FilePath film );
+  FilmWidget( Widget* parent, vfs::Path film );
 
   //! Деструктор
   virtual ~FilmWidget(void);

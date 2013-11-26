@@ -21,13 +21,13 @@
 #include "entity.hpp"
 #include "filepath.hpp"
 
-namespace io
+namespace vfs
 {
 
-class FileNative : public FSEntity
+class FileNative : public Entity
 {
 public:
-	FileNative( const FilePath& fileName, FSEntity::Mode mode=FSEntity::fmRead );
+	FileNative( const Path& fileName, Entity::Mode mode=Entity::fmRead );
 
 	FileNative();
 
@@ -57,7 +57,7 @@ public:
   virtual long getPos() const;
 
   //! returns name of file
-  virtual const FilePath& getFileName() const;
+  virtual const Path& getFileName() const;
 
   virtual bool isEof() const;
 
@@ -70,8 +70,8 @@ private:
 
   FILE* _file;
   long _size;
-  FilePath _name;
-	FSEntity::Mode _mode;
+  Path _name;
+	Entity::Mode _mode;
 };
 
 } //end namespace io

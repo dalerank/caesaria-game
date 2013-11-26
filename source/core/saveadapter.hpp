@@ -22,9 +22,9 @@
 class SaveAdapter
 {
 public:
-  static VariantMap load( const io::FilePath& fileName );
+  static VariantMap load( const vfs::Path& fileName );
 
-  static bool save( const VariantMap& options, const io::FilePath& filename );
+  static bool save( const VariantMap& options, const vfs::Path& filename );
 private:
   SaveAdapter();
 };

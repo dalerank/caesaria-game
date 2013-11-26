@@ -18,17 +18,18 @@
 #include "filepath.hpp"
 
 #if defined(CAESARIA_PLATFORM_WIN)
+#include "windows.h"
 #define getline_def getline_win
 #elif defined(CAESARIA_PLATFORM_UNIX)
 #define getline_def getline
 #endif //CAESARIA_PLATFORM_UNIX
 
-namespace io
+namespace vfs
 {
 
-static const FilePath purePath = "";
+static const Path purePath = "";
 
-NFile NFile::open(const FilePath& fileName, FSEntity::Mode mode)
+NFile NFile::open(Path fileName, Entity::Mode mode)
 {
   return FileSystem::instance().createAndOpenFile( fileName, mode );
 }
@@ -104,7 +105,7 @@ ByteArray NFile::readAll()
 }
 
 //! returns name of file
-const FilePath& NFile::getFileName() const
+const Path& NFile::getFileName() const
 {
 	return _entity.isValid() ? _entity->getFileName() : purePath;
 }
@@ -138,6 +139,24 @@ NFile& NFile::operator=( const NFile& other )
   _entity = other._entity;
 
   return *this;
+}
+
+int NFile::remove( Path filename )
+{
+#ifdef CAESARIA_PLATFORM_WIN
+    DeleteFileA( filename.toString().c_str() );
+#elif defined(CAESARIA_PLATFORM_UNIX)
+    ::remove( filename.toString().c_str() );
+#endif
+
+  return 0;
+}
+
+int NFile::rename(Path oldpath, Path newpath)
+{
+  ::rename( oldpath.toString().c_str(), newpath.toString().c_str() );
+
+  return 0;
 }
 
 } //end namespace io
