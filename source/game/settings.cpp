@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "settings.hpp"
-#include "vfs/filepath.hpp"
+#include "vfs/path.hpp"
 #include "vfs/directory.hpp"
 
 const char* GameSettings::localePath = "localePath";

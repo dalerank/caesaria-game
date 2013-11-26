@@ -35,7 +35,7 @@
 #include "vfs/filesystem.hpp"
 #include "enums.hpp"
 #include "gfx/animation_bank.hpp"
-#include "vfs/filelist.hpp"
+#include "vfs/entries.hpp"
 #include "world/empire.hpp"
 #include "core/exception.hpp"
 #include "name_generator.hpp"

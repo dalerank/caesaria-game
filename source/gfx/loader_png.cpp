@@ -1,6 +1,6 @@
 #include "loader_png.hpp"
 #include "core/logger.hpp"
-#include "vfs/filepath.hpp"
+#include "vfs/path.hpp"
 #include "gfx/engine.hpp"
 
 #include <SDL.h>

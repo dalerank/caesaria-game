@@ -18,7 +18,7 @@
 #define __CAESARIA_MEMORY_FILE_H_INCLUDED__
 
 #include "file.hpp"
-#include "filepath.hpp"
+#include "path.hpp"
 #include "core/bytearray.hpp"
 
 namespace vfs

@@ -19,7 +19,7 @@
 
 #include "widget.hpp"
 #include "core/scopedptr.hpp"
-#include "vfs/filepath.hpp"
+#include "vfs/path.hpp"
 #include "core/signals.hpp"
 
 class Picture;

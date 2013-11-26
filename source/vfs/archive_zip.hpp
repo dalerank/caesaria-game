@@ -19,7 +19,7 @@
 #include "filesystem.hpp"
 #include "file.hpp"
 #include "archive.hpp"
-#include "filelist.hpp"
+#include "entries.hpp"
 
 namespace vfs
 {

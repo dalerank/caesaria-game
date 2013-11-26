@@ -21,7 +21,7 @@
 
 #include "game/good.hpp"
 #include "core/scopedptr.hpp"
-#include "vfs/filepath.hpp"
+#include "vfs/path.hpp"
 #include "gfx/picture.hpp"
 #include "core/variant.hpp"
 #include "gfx/tileoverlay.hpp"

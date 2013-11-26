@@ -11,15 +11,14 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
+#ifndef _CAESARIA_OC3SAVE_SAVER_H_INCLUDE_
+#define _CAESARIA_OC3SAVE_SAVER_H_INCLUDE_
 
-#ifndef _CAESARIA_SCENARIO_OC3SAVE_SAVER_H_INCLUDE_
-#define _CAESARIA_SCENARIO_OC3SAVE_SAVER_H_INCLUDE_
-
-#include "vfs/filepath.hpp"
+#include "vfs/path.hpp"
 #include "core/scopedptr.hpp"
 
 class Game;
@@ -31,4 +30,4 @@ public:
 };
 
 
-#endif //_CAESARIA_SCENARIO_OC3SAVE_SAVER_H_INCLUDE_
+#endif //_CAESARIA_OC3SAVE_SAVER_H_INCLUDE_

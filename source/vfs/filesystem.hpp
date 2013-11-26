@@ -19,7 +19,7 @@
 #include "core/scopedptr.hpp"
 #include "vfs/file.hpp"
 #include "vfs/archive.hpp"
-#include "vfs/filepath.hpp"
+#include "vfs/path.hpp"
 
 namespace vfs
 {

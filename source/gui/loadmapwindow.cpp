@@ -22,7 +22,7 @@
 #include "listbox.hpp"
 #include "core/stringhelper.hpp"
 #include "vfs/filesystem.hpp"
-#include "vfs/filelist.hpp"
+#include "vfs/entries.hpp"
 #include "core/color.hpp"
 #include "core/logger.hpp"
 #include "vfs/directory.hpp"

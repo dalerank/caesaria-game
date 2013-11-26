@@ -18,7 +18,7 @@
 
 #include "core/scopedptr.hpp"
 #include "core/variant.hpp"
-#include "vfs/filepath.hpp"
+#include "vfs/path.hpp"
 
 class GameSettings
 {

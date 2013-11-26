@@ -18,7 +18,7 @@
 
 #include "core/scopedptr.hpp"
 #include "predefinitions.hpp"
-#include "vfs/filepath.hpp"
+#include "vfs/path.hpp"
 #include "core/referencecounted.hpp"
 #include "core/serializer.hpp"
 

@@ -20,7 +20,7 @@
 #include "enums.hpp"
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
-#include "vfs/filepath.hpp"
+#include "vfs/path.hpp"
 #include "service.hpp"
 #include "core/variant.hpp"
 

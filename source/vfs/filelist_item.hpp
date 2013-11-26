@@ -2,7 +2,7 @@
 #define _CAESARIA_FILELIST_ITEM_INCLUDE_H_
 
 #include "core/stringhelper.hpp"
-#include "filepath.hpp"
+#include "path.hpp"
 
 namespace vfs
 {

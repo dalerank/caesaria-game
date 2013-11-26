@@ -26,7 +26,7 @@
 #include "core/font.hpp"
 #include "core/smartptr.hpp"
 #include "core/variant.hpp"
-#include "vfs/filepath.hpp"
+#include "vfs/path.hpp"
 
 class GfxEngine;
 struct NEvent;
