@@ -57,7 +57,7 @@ private:
 
 	// The main worker thread. A new one is created each time 
 	// StartOrContinue is called.
-	ExceptionSafeThreadPtr _workerThread;
+	ExceptionSafeThreadPtr _synchronizer;
 
 	// The main updater object (containing the non-threaded methods)
 	Updater _updater;
@@ -129,7 +129,7 @@ public:
 	DifferentialUpdateInfo GetDifferentialUpdateInfo();
 
 private:
-	void StartStepThread(UpdateStep step);
+	void run();
 
 	// The entry point for the worker thread
 	void PerformStep(int step);

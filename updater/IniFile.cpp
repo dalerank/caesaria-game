@@ -75,47 +75,56 @@ bool IniFile::IsEmpty() const
 
 void IniFile::AddSection(const std::string& name)
 {
-	_settings.insert(SettingMap::value_type(name, KeyValues()));
+	Sections::iterator it = _settings.find( name );
+	if( it == _settings.end() )
+	{
+		_settings.insert( make_pair( name, Options() ) );
+	}
 }
 
 std::string IniFile::GetValue(const std::string& section, const std::string& key) const
 {
-	SettingMap::const_iterator i = _settings.find(section);
+	Sections::const_iterator i = _settings.find(section);
 	
 	if (i == _settings.end()) return ""; // section not found
 	
-	KeyValues::const_iterator kv = i->second.find(KeyValuePair(key, ""));
+	for( Options::const_iterator kv=i->second.begin(); kv!=i->second.end(); kv++ )
+	{
+		if( kv->key == key )
+		{
+			return kv->value;
+		}
+	}
 
-	return (kv != i->second.end()) ? kv->second : "";
+	return "";
 }
 
 void IniFile::SetValue(const std::string& section, const std::string& key, const std::string& value)
 {
-	// Find the section, and create it if necessary
-	SettingMap::iterator i = _settings.find(section);
+	Sections::iterator i = _settings.find(section);
 
-	if (i == _settings.end())
+	if (i == _settings.end() )// section not found
 	{
-		AddSection(section);
+		AddSection( section );
 	}
 
-	// Section exists past this point
-
-	KeyValues::iterator kv = _settings[section].find(KeyValuePair(key, ""));
-
-	// Remove existing key value first
-	if (kv != _settings[section].end())
+	i = _settings.find(section);
+	for( Options::iterator kv=i->second.begin(); kv!=i->second.end(); kv++ )
 	{
-		_settings[section].erase(kv);
+		if( kv->key == key )
+		{
+			kv->value = value;
+			return;
+		}
 	}
 
-	// Insert afresh
-	_settings[section].insert(KeyValuePair(key, value));
+	Option op = { key, value };
+	i->second.push_back( op );
 }
 
 bool IniFile::RemoveSection(const std::string& section)
 {
-	SettingMap::iterator i = _settings.find(section);
+	Sections::iterator i = _settings.find(section);
 
 	if (i != _settings.end())
 	{
@@ -128,39 +137,40 @@ bool IniFile::RemoveSection(const std::string& section)
 
 bool IniFile::RemoveKey(const std::string& section, const std::string& key)
 {
-	SettingMap::iterator i = _settings.find(section);
+	Sections::iterator i = _settings.find(section);
 
 	if (i == _settings.end())
 	{
 		return false; // not found
 	}
 
-	KeyValues::iterator kv = i->second.find(KeyValuePair(key, ""));
-
-	if (kv != i->second.end())
+	for( Options::iterator kv=i->second.begin(); kv!=i->second.end(); kv++ )
 	{
-		i->second.erase(kv);
-		return true;
+		if( kv->key == key )
+		{
+			i->second.erase( kv );
+			return true;
+		}
 	}
 
 	return false; // not found
 }
 
-IniFile::KeyValuePairList IniFile::GetAllKeyValues(const std::string& section) const
+IniFile::Options IniFile::GetAllKeyValues(const std::string& section) const
 {
-	SettingMap::const_iterator i = _settings.find(section);
+	Sections::const_iterator i = _settings.find(section);
 
 	if (i == _settings.end())
 	{
-		return KeyValuePairList(); // not found
+		return Options(); // not found
 	}
 
-	return KeyValuePairList(i->second.begin(), i->second.end());
+	return i->second;
 }
 
 void IniFile::ForeachSection(SectionVisitor& visitor) const
 {
-	for (SettingMap::const_iterator i = _settings.begin(); 
+	for (Sections::const_iterator i = _settings.begin();
 		 i != _settings.end(); /* in-loop increment */)
 	{
 		visitor.VisitSection(*this, (*i++).first);
@@ -185,13 +195,13 @@ void IniFile::ExportToFile(const io::FilePath& file, const std::string& headerCo
 		stream << std::endl;
 	}
 
-	for (SettingMap::const_iterator i = _settings.begin(); i != _settings.end(); ++i)
+	for (Sections::const_iterator i = _settings.begin(); i != _settings.end(); ++i)
 	{
 		stream << "[" << i->first << "]" << std::endl;
 
-		for (KeyValues::const_iterator kv = i->second.begin(); kv != i->second.end(); ++kv)
+		for (Options::const_iterator kv = i->second.begin(); kv != i->second.end(); ++kv)
 		{
-			stream << kv->first << " = " << kv->second << std::endl;
+			stream << kv->key << " = " << kv->value << std::endl;
 		}
 		
 		stream << std::endl;
@@ -253,19 +263,20 @@ void IniFile::ParseFromString(const std::string& str)
 	std::istringstream iss(str);
 	while( std::getline( iss, sRead ) )
 	{
-		sRead = StringHelper::replace( sRead, " ", "");
+		sRead = StringHelper::trim( sRead );
 		sRead = StringHelper::replace( sRead, "\r", "");
 		sRead = StringHelper::replace( sRead, "\n", "");
 		if( !sRead.empty() )
 		{
 			RR nType = ( sRead.find_first_of("[") == 0 && ( sRead[sRead.find_last_not_of(" \t\r\n")] == ']' ) ) ? SECTION : OTHER ;
-			nType = ( (nType == OTHER) && ( sRead.find_first_of("=") ) > 0 ) ? KEY : nType ;
+			std::string::size_type equaleSymbolPos = sRead.find_first_of("=");
+			nType = ( (nType == OTHER) && ( equaleSymbolPos > 0 && equaleSymbolPos != std::string::npos ) ) ? KEY : nType ;
 			nType = ( (nType == OTHER) && ( sRead.find_first_of("#") == 0) ) ? COMMENT : nType ;
 			switch( nType )
 			{
 				case SECTION:
-					sectionName = sRead.substr( 1 , sRead.size() - 2 );
-					AddSection( sectionName );
+					sectionName = StringHelper::trim( sRead.substr( 1 , sRead.size() - 2 ) );
+					AddSection(  sectionName );
 				break;
 
 				case KEY:
@@ -274,8 +285,8 @@ void IniFile::ParseFromString(const std::string& str)
 					if( !sectionName.empty() )
 					{
 						size_t iFind = sRead.find_first_of("=");
-						std::string sKey = sRead.substr(0,iFind);
-						std::string sValue = sRead.substr(iFind + 1);
+						std::string sKey = StringHelper::trim( sRead.substr(0,iFind) );
+						std::string sValue = StringHelper::trim( sRead.substr(iFind + 1) );
 						SetValue( sectionName, sKey, sValue );
 					}
 				}

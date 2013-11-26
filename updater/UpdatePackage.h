@@ -107,39 +107,39 @@ public:
 		if (sectionName == "Add PK4s")
 		{
 			// Add these PK4s
-			IniFile::KeyValuePairList keyValues = iniFile.GetAllKeyValues(sectionName);
+			IniFile::Options keyValues = iniFile.GetAllKeyValues(sectionName);
 
-			for (IniFile::KeyValuePairList::const_iterator i = keyValues.begin(); i != keyValues.end(); ++i)
+			for (IniFile::Options::const_iterator i = keyValues.begin(); i != keyValues.end(); ++i)
 			{
 				// Add a ReleaseFile struct with filename and CRC
-				pk4sToBeAdded.insert(ReleaseFile(i->first, CRC::ParseFromString(i->second)));
+				pk4sToBeAdded.insert( ReleaseFile(i->key, CRC::ParseFromString(i->value)));
 			}
 		}
 		else if (sectionName == "Remove PK4s")
 		{
 			// Remove these PK4s
-			IniFile::KeyValuePairList keyValues = iniFile.GetAllKeyValues(sectionName);
+			IniFile::Options keyValues = iniFile.GetAllKeyValues(sectionName);
 
-			for (IniFile::KeyValuePairList::const_iterator i = keyValues.begin(); i != keyValues.end(); ++i)
+			for (IniFile::Options::const_iterator i = keyValues.begin(); i != keyValues.end(); ++i)
 			{
-				if (i->second != "remove")
+				if (i->value != "remove")
 				{
 					continue; // No "remove" key, could be something else
 				}
 
 				// Add a ReleaseFile struct with filename and CRC
-				pk4sToBeRemoved.insert(ReleaseFile(i->first));
+				pk4sToBeRemoved.insert(ReleaseFile(i->key));
 			}
 		}
 		else if (sectionName == "Non-Archive Files")
 		{
 			// Check each keyvalue
-			IniFile::KeyValuePairList keyValues = iniFile.GetAllKeyValues(sectionName);
+			IniFile::Options keyValues = iniFile.GetAllKeyValues(sectionName);
 
-			for (IniFile::KeyValuePairList::const_iterator i = keyValues.begin(); i != keyValues.end(); ++i)
+			for (IniFile::Options::const_iterator i = keyValues.begin(); i != keyValues.end(); ++i)
 			{
-				const std::string& key = i->first;
-				const std::string& value = i->second;
+				const std::string& key = i->key;
+				const std::string& value = i->value;
 
 				if (value == "remove")
 				{
@@ -162,12 +162,12 @@ public:
 			PK4Difference diff;
 
 			// Check each keyvalue
-			IniFile::KeyValuePairList keyValues = iniFile.GetAllKeyValues(sectionName);
+			IniFile::Options keyValues = iniFile.GetAllKeyValues(sectionName);
 
-			for (IniFile::KeyValuePairList::const_iterator i = keyValues.begin(); i != keyValues.end(); ++i)
+			for (IniFile::Options::const_iterator i = keyValues.begin(); i != keyValues.end(); ++i)
 			{
-				const std::string& key = i->first;
-				const std::string& value = i->second;
+				const std::string& key = i->key;
+				const std::string& value = i->value;
 
 				if (key == "checksum_after")
 				{

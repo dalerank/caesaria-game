@@ -22,6 +22,7 @@
 #include "Http/HttpConnection.h"
 #include "core/logger.hpp"
 #include "core/variant.hpp"
+#include <sstream>
 
 namespace tdm
 {
@@ -114,10 +115,10 @@ public:
 
 	virtual void PrintHelp()
 	{
-		//std::ostringstream stream;
-		//_desc.print(stream);
-
-		//Logger::warning( " " + stream.str() );
+		for( std::map< std::string, std::string >::iterator i=_desc.begin(); i!=_desc.end(); i++ )
+		{
+			Logger::warning( "%s\t%s", i->first.c_str(), i->second.c_str() );
+		}
 	}
 
 protected:

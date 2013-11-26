@@ -41,7 +41,7 @@ TaskStatus_t CTask::getStatus()
 	return state;
 }
 
-void CTask::Thread(ThreadID* pId)
+void CTask::assign(ThreadID* pId)
 {
 	memcpy(pId,&m_dwThread,sizeof(ThreadID));
 }

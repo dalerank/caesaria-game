@@ -22,7 +22,7 @@
 
 #include <cstdarg>
 #include <cfloat>
-#include <cstdio>
+#include <stdio.h>
 #include <limits>
 #include <climits>
 #include <cstring>
@@ -80,7 +80,13 @@ class ConsoleLogWriter : public LogWriter
 public:
 	void write( std::string str)
 	{
-		std::cout << str;
+		std::cout << str << std::endl;
+	}
+
+	void update( std::string str )
+	{
+		std::cout << "\r" << std::flush;
+		std::cout << str << std::flush;
 	}
 };
 
@@ -91,13 +97,14 @@ public:
 
   Writers writers;
 
-  void write( const std::string& message )
+  void write( const std::string& message, bool newLine=true )
   {
     for( Writers::iterator i=writers.begin(); i != writers.end(); i++  )
     {
       if( i->second.isValid() )
       {
-        i->second->write( message );
+        if( newLine ) i->second->write( message );
+        else i->second->update( message );
       }
     }
   }
@@ -120,6 +127,11 @@ void Logger::warning( const char* fmt, ... )
 void Logger::warning(const std::string& text)
 {
   getInstance()._d->write( text );
+}
+
+void Logger::update(const std::string& text)
+{  
+  getInstance()._d->write( text, false );
 }
 
 void Logger::registerWriter(Logger::Type type)

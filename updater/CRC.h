@@ -33,7 +33,7 @@
 //#include <boost/filesystem.hpp>
 
 #include "vfs/filepath.hpp"
-#include "zip/azip.h"
+#include "azip/azip.h"
 #include "core/logger.hpp"
 #include "core/stringhelper.hpp"
 

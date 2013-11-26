@@ -23,6 +23,7 @@
 #include <string>
 #include "core/delegate.hpp"
 #include "core/thread.hpp"
+#include "core/threadtask.hpp"
 
 namespace tdm
 {
@@ -47,47 +48,23 @@ class ExceptionSafeThread : public Thread
 {
 private:
 	// The function object to call
-	Delegate1<int> _function;
+	Delegate0<> _function;
 
 	// The error message which is filled when exceptions are thrown within the thread
 	std::string _errMsg;
 
-	bool _interrupted;
-
-	bool _done;
-
-	int _type;
-
-	Delegate1<int> _onFinish;
+	Delegate0<> _onFinish;
 
 public:
-	ExceptionSafeThread(const Delegate1<int>& function) :
-		_function(function),
-		_interrupted(false),
-		_done(false)
+	ExceptionSafeThread(const Delegate0<>& function) :
+		_function(function)
 	{}
 
 	// Construct this thread with a callback which will be invoked when the thread is done (failure or not)
-	ExceptionSafeThread(const Delegate1<int>& function, const Delegate1<int>& callbackOnFinish, int type) :
+	ExceptionSafeThread(const Delegate0<>& function, const Delegate0<>& callbackOnFinish) :
 		_function(function),		
-		_interrupted(false),
-		_done(false),
-		_type( type ),
 		_onFinish(callbackOnFinish)
 	{}
-
-	~ExceptionSafeThread()
-	{
-		if(!_done)
-		{
-			Stop();
-		}
-	}
-
-	bool done() const
-	{
-		return _done;
-	}
 
 	// Returns true if the worker thread threw an exception
 	bool failed() const
@@ -107,21 +84,12 @@ private:
 		{
 			if( !_function.empty() )
 			{
-				_function( _type );
+				_function();
 			}
 		}
 		catch( std::runtime_error& ex )
 		{
 			_errMsg = ex.what();
-		}
-
-		_done = true;
-
-		// Invoke the callback when done
-		if( !_onFinish.empty() )
-		{
-			// This might destroy this object, don't do anything afterwards
-			_onFinish( _type );
 		}
 
 		return false;

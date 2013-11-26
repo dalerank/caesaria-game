@@ -435,8 +435,6 @@ void ConsoleUpdater::OnProgressChange(const ProgressInfo& info)
 
 void ConsoleUpdater::PrintProgress()
 {
-	Logger::warning( "\r");
-
 	// Progress bar
 	std::size_t numTicks = static_cast<std::size_t>(floor(_info.progressFraction * PROGRESS_METER_WIDTH));
 	std::string progressBar(numTicks, '=');
@@ -498,7 +496,7 @@ void ConsoleUpdater::PrintProgress()
 		line = line.substr(0, 79);
 	}
 
-	Logger::warning( line);
+	Logger::update( line );
 }
 
 void ConsoleUpdater::OnStartDifferentialUpdate(const DifferentialUpdateInfo& )

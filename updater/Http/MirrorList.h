@@ -54,7 +54,7 @@ struct Mirror
 		url = StringHelper::replace( url, " ", "");
 
 		// url should terminate with "/"
-		if( *url.rend() != '/' )
+		if( *url.rbegin() != '/' )
 		{
 			url += "/";
 		}

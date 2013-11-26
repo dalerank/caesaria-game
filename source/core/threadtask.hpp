@@ -43,7 +43,7 @@ public:
 	 **/
 	TaskStatus_t getStatus();
 
-	void Thread(ThreadID *pId);
+	void assign(ThreadID *pId);
 
 	CTask();
 

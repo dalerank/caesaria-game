@@ -82,15 +82,15 @@ private:
 	void SetupDescription()
 	{
 		// Get options from command line
-		_desc[ "proxy" ] = "Use a proxy to connect to the internet, example \n--proxy http://proxy:port\n";
-		_desc[ "proxyuser" ] = "Use a proxy to connect to the internet, example \n--proxyuser user\n";
-		_desc[ "proxypass" ] = "Use a proxy to connect to the internet, example \n--proxypass pass\n";
-		_desc[ "targetdir" ] = "The folder which should be updated.\n--targetdir c:\\games\\tdm\\darkmod\n";
-		_desc[ "help" ] = "Display this help page";
-		_desc[ "keep-mirrors" ] = "Don't download updated mirrors list from the server, use local one.";
-		_desc[ "keep-update-packages" ] = "Don't delete downloaded update packages after applying them.";
-		_desc[ "noselfupdate" ] = "Don't perform any special 'update the updater' routines.";
-		_desc[ "dry-run" ] = "Don't do any updates, just perform checks.";
+		_desc[ "--proxy" ] = "Use a proxy to connect to the internet, example --proxy http://proxy:port";
+		_desc[ "--proxyuser" ] = "Use a proxy to connect to the internet, example --proxyuser user";
+		_desc[ "--proxypass" ] = "Use a proxy to connect to the internet, example --proxypass pass";
+		_desc[ "--targetdir" ] = "The folder which should be updated.--targetdir c:\\games\\tdm\\darkmod";
+		_desc[ "--help" ] = "Display this help page";
+		_desc[ "--keep-mirrors" ] = "Don't download updated mirrors list from the server, use local one.";
+		_desc[ "--keep-update-packages" ] = "Don't delete downloaded update packages after applying them.";
+		_desc[ "--noselfupdate" ] = "Don't perform any special 'update the updater' routines.";
+		_desc[ "--dry-run" ] = "Don't do any updates, just perform checks.";
 	}
 };
 

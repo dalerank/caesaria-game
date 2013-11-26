@@ -58,7 +58,7 @@ private:
 	int           m_StopTimeout;   // specifies a timeout value for stop
 																 // if a thread fails to stop within m_StopTimeout
 																 // seconds an exception is thrown
-	bool		  m_bRunning;					// set to TRUE if thread is running
+	bool		     m_bRunning;					// set to TRUE if thread is running
 
 #ifdef CAESARIA_PLATFORM_WIN
 	HANDLE		  m_thread;		   // thread handle

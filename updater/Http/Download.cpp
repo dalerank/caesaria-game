@@ -19,7 +19,7 @@
 
 #include "Download.h"
 #include "../Http/HttpConnection.h"
-#include "../Zip/azip.h"
+#include "../azip/azip.h"
 #include "../CRC.h"
 #include "../Util.h"
 #include "../Constants.h"
@@ -98,7 +98,8 @@ void Download::Start()
 	Logger::warning(  "Downloading to temporary file " + _tempFilename.toString() );
 
 	_status = IN_PROGRESS;
-	ExceptionSafeThreadPtr p( new ExceptionSafeThread( Delegate1<int>( this, &Download::Perform ) ));
+	ExceptionSafeThreadPtr p( new ExceptionSafeThread( Delegate0<>( this, &Download::Perform ) ) );
+	p->SetThreadType( ThreadTypeIntervalDriven, 0 );
 	p->drop();
 	_thread = p;
 }
@@ -168,7 +169,7 @@ void Download::SetRequiredFilesize(std::size_t requiredSize)
 	_requiredFilesize = requiredSize;
 }
 
-void Download::Perform(int)
+void Download::Perform()
 {
 	while (_curUrl < _urls.size())
 	{

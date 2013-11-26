@@ -37,34 +37,13 @@ typedef SmartPtr<IniFile> IniFilePtr;
 class IniFile : public ReferenceCounted
 {
 public:
-	typedef std::pair<std::string, std::string> KeyValuePair;
-	typedef std::vector<KeyValuePair> KeyValuePairList;
+	struct Option { std::string key; std::string value; };
+
+	typedef std::vector<Option> Options;
+	typedef std::map<std::string, Options> Sections;
 
 private:
-	struct SectionCompareFunctor : 
-		public std::binary_function<std::string, std::string, bool>
-	{
-		bool operator()(const std::string& s1, const std::string& s2) const
-		{
-			return s1 == s2;
-		}
-	};
-
-	struct KeyCompareFunctor : 
-		public std::binary_function<std::string, std::string, bool>
-	{
-		bool operator()(const KeyValuePair& kvp1, const KeyValuePair& kvp2) const
-		{
-			return kvp1.first == kvp2.first;
-		}
-	};
-
-	typedef std::set<KeyValuePair, KeyCompareFunctor> KeyValues;
-
-	// KeyValuePairs are compared key-wise, case-sensitively
-	// Settings names are compared case-insensitively
-	typedef std::map<std::string, KeyValues, SectionCompareFunctor> SettingMap;
-	SettingMap _settings;
+	Sections _settings;
 
 	// Private constructors
 	IniFile();
@@ -125,7 +104,7 @@ public:
 	/**
 	 * Returns all key/value pairs for the given section.
 	 */
-	KeyValuePairList GetAllKeyValues(const std::string& section) const;
+	Options GetAllKeyValues(const std::string& section) const;
 
 	class SectionVisitor
 	{

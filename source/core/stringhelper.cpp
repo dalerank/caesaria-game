@@ -48,6 +48,14 @@ int StringHelper::vformat(std::string& str, int max_size, const char* format, va
   return length;
 }
 
+std::string StringHelper::trim(const std::string& str)
+{
+  std::string ret = str;
+  ret.erase(0, ret.find_first_not_of(' '));       //prefixing spaces
+  ret.erase(ret.find_last_not_of(' ')+1);         //surfixing spaces
+  return ret;
+}
+
 std::string StringHelper::format( unsigned int max_size, const char* fmt, ...)
 {
   va_list argument_list;

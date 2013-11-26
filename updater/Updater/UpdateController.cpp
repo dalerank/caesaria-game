@@ -59,12 +59,15 @@ void UpdateController::DontPauseAt(UpdateStep step)
 
 void UpdateController::StartOrContinue()
 {
-	assert(_workerThread == NULL); // debug builds take this seriously
+	assert(_synchronizer == NULL); // debug builds take this seriously
 
-	if (_workerThread != NULL) return;
-
-	// Launch the thread and setup the callbacks
-	StartStepThread(_curStep);
+	if( _synchronizer.isNull() )
+	{
+		ExceptionSafeThreadPtr p( new ExceptionSafeThread( makeDelegate( this, &UpdateController::run )) );
+		p->SetThreadType( ThreadTypeIntervalDriven );
+		p->drop();
+		_synchronizer = p;
+	}
 }
 
 void UpdateController::PerformPostUpdateCleanup()
@@ -76,11 +79,11 @@ void UpdateController::Abort()
 {
 	_abortFlag = true;
 
-	if (_workerThread != NULL)
+	if(_synchronizer != NULL)
 	{
 		try
 		{
-			_workerThread->Stop();
+			_synchronizer->Stop();
 		}
 		catch (std::runtime_error& ex)
 		{
@@ -93,7 +96,7 @@ void UpdateController::Abort()
 
 bool UpdateController::AllThreadsDone()
 {
-	return _workerThread == NULL;
+	return _synchronizer == NULL;
 }
 
 std::size_t UpdateController::GetNumMirrors()
@@ -156,16 +159,14 @@ DifferentialUpdateInfo UpdateController::GetDifferentialUpdateInfo()
 	return _updater.GetDifferentialUpdateInfo();
 }
 
-void UpdateController::StartStepThread(UpdateStep step)
+void UpdateController::run()
 {
-	if (_abortFlag) return;
-
-	// Construct a new thread and start working
-	ExceptionSafeThreadPtr p( new ExceptionSafeThread( makeDelegate( this, &UpdateController::PerformStep ),
-																										 makeDelegate( this, &UpdateController::OnFinishStep ),
-																										 step ) );
-	p->drop();
-	_workerThread = p;
+	while( true )
+	{
+		// Launch the thread and setup the callbacks
+		PerformStep( _curStep );
+		OnFinishStep( _curStep );
+	}
 }
 
 void UpdateController::PerformStep(int step)
@@ -275,34 +276,10 @@ void UpdateController::PerformStep(int step)
 
 void UpdateController::OnFinishStep(int step)
 {
-	assert(_workerThread != NULL); // Need an alive thread object
-
 	Logger::warning( "Step thread finished: %d", step );
 
-	if (_workerThread->failed())
-	{
-		std::string errMsg = _workerThread->GetErrorMessage();
-
-		Logger::warning( "Thread finished with error: %s", errMsg.c_str() );
-
-		// Kill the thread object before notifying the frontend, it might react
-		// with a StartOrContinue call, so we need to be prepared
-		_workerThread = ExceptionSafeThreadPtr();
-
-		// Notify the view
-		_view.OnFailure( (UpdateStep)step, errMsg);
-
-		return; // don't continue here, don't increase the _curStep pointer
-	}
-	else
-	{
-		// Kill the thread object before notifying the frontend, it might react
-		// with a StartOrContinue call, so we need to be prepared
-		_workerThread = ExceptionSafeThreadPtr();
-
-		// Notify the view
-		_view.OnFinishStep( (UpdateStep)step );
-	}
+	// Notify the view
+	_view.OnFinishStep( (UpdateStep)step );
 
 	switch (_curStep)
 	{
@@ -418,13 +395,11 @@ void UpdateController::OnFinishStep(int step)
 
 void UpdateController::TryToProceedTo(UpdateStep step)
 {
-	if (_abortFlag) return;
-
-	_curStep = step;
+	if (_abortFlag) return;	
 
 	if (IsAllowedToContinueTo(step))
 	{
-		StartStepThread(step);
+		_curStep = step;
 	}
 }
 

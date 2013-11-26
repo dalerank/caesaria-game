@@ -80,11 +80,11 @@ void* _THKERNEL( void* lpvData )
 
 
 		/*if( lastType == ThreadTypeHomogeneous ||
-			lastType == ThreadTypeSpecialized ||
-			lastType == ThreadTypeNotDefined )
+				lastType == ThreadTypeSpecialized ||
+				lastType == ThreadTypeNotDefined )
 		{
 			pThread->m_event.Reset();
-		} */
+		}*/
 
 		if( pThread->m_type == ThreadTypeIntervalDriven )
 		{
@@ -116,8 +116,7 @@ void* _THKERNEL( void* lpvData )
 bool Thread::FromSameThread()
 {
 	ThreadID id = getID();
-	if( ThreadIdsEqual(&id,&m_dwId) ) return true;
-	return false;
+	return ThreadIdsEqual(&id,&m_dwId);
 }
 
 /**
@@ -705,7 +704,6 @@ bool Thread::Stop()
 				return true;
 			}
 			m_mutex.unlock();
-
 		} 
 	}
 	catch (char *psz)
@@ -810,18 +808,20 @@ bool Thread::Start()
 				cerr << "the requested thread.\n";
 			break;
 			}
+
+			return false;
 		}
 #else
-			cerr << "error: could not create thread, pthread_create failed (" << error << ")!\n";
-#endif
+		cerr << "error: could not create thread, pthread_create failed (" << error << ")!\n";
 		return false;
+#endif
 	}
 	catch( char *psz )
 	{
 #ifdef CAESARIA_PLATFORM_WIN
 		MessageBoxA(NULL,&psz[2],"Fatal exception CThread::Start",MB_ICONHAND);
 #else
-		cerr << "Fatal exception CThread::Start():" << psz;
+		cerr << "Fatal exception Thread::Start():" << psz;
 #endif
 		exit(-1);
 	}
@@ -895,7 +895,7 @@ Thread::~Thread(void)
 		    MessageBoxA(NULL,&psz[2],"Fatal exception CThread::Stop",MB_ICONHAND);
 		    exit(-1);
 #else
-			cerr << "Fatal exception CThread::Stop: " << psz;
+			cerr << "Fatal exception Thread::Stop: " << psz;
 #endif
 		}
 	}
@@ -981,7 +981,6 @@ Thread::WaitTillExit()
 
 	}
 }
-
 
 bool Thread::ThreadIdsEqual(ThreadID* p1, ThreadID* p2)
 
