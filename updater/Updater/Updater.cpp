@@ -86,13 +86,13 @@ void Updater::_markFileAsExecutable( io::FilePath path )
 void Updater::CleanupPreviousSession()
 {
 	// Remove batch file from previous run
-	io::FileDir folder = GetTargetPath().getFileDir();
+	io::FileDir folder = getTargetDir();
 	folder.getFilePath( TDM_UPDATE_UPDATER_BATCH_FILE ).remove();
 }
 
 bool Updater::MirrorsNeedUpdate()
 {
-	io::FileDir folder = GetTargetPath().getFileDir();
+	io::FileDir folder = getTargetDir();
 	io::FilePath mirrorPath = folder.getFilePath( TDM_MIRRORS_FILE );
 
 	if( !mirrorPath.isExist() )
@@ -121,7 +121,7 @@ void Updater::UpdateMirrors()
 //	TraceLog::Write(LOG_VERBOSE, " Downloading mirror list from %s...", mirrorsUrl.c_str() ); // grayman - NG: too many args
 	Logger::warning( StringHelper::format( 0xff, "Downloading mirror list from %s...", mirrorsUrl.c_str() ) ); // grayman - fixed
 
-	io::FileDir folder = GetTargetPath().getFileDir();
+	io::FileDir folder = getTargetDir();
 	io::FilePath mirrorPath = folder.getFilePath( TDM_MIRRORS_FILE );
 
 	HttpRequestPtr request = _conn->CreateRequest( mirrorsUrl, mirrorPath.toString());
@@ -143,7 +143,7 @@ void Updater::UpdateMirrors()
 
 void Updater::LoadMirrors()
 {
-	io::FileDir folder = GetTargetPath().getFileDir();
+	io::FileDir folder = getTargetDir();
 	io::FilePath mirrorPath = folder.getFilePath( TDM_MIRRORS_FILE );
 
 	// Load the tdm_mirrors.txt into an INI file
@@ -167,7 +167,7 @@ void Updater::GetCrcFromServer()
 	PerformSingleMirroredDownload(TDM_CRC_INFO_FILE);
 
 	// Parse this file
-	io::FileDir folder = GetTargetPath().getFileDir();
+	io::FileDir folder = getTargetDir();
 	IniFilePtr releaseIni = IniFile::ConstructFromFile(folder.getFilePath( TDM_CRC_INFO_FILE ) );
 
 	if (releaseIni == NULL)
@@ -186,7 +186,7 @@ void Updater::GetVersionInfoFromServer()
 	PerformSingleMirroredDownload(TDM_VERSION_INFO_FILE);
 
 	// Parse this downloaded file
-	io::FileDir folder = GetTargetPath().getFileDir();
+	io::FileDir folder = getTargetDir();
 	IniFilePtr versionInfo = IniFile::ConstructFromFile( folder.getFilePath( TDM_VERSION_INFO_FILE ) );
 
 	if (versionInfo == NULL) 
@@ -246,7 +246,7 @@ void Updater::DetermineLocalVersion()
 
 			curItem++;
 			
-			io::FileDir folder = GetTargetPath().getFileDir();
+			io::FileDir folder = getTargetDir();
 			io::FilePath candidate = folder.getFilePath( f->second.file );
 
 			if( StringHelper::localeLower( candidate.getBasename().toString() )
@@ -506,7 +506,7 @@ void Updater::DownloadDifferentialUpdate()
 	}
 
 	io::FilePath packageFilename = it->second.filename;
-	io::FilePath packageTargetPath = io::FileDir( GetTargetPath().getFileDir() ).getFilePath( packageFilename );
+	io::FilePath packageTargetPath = getTargetDir().getFilePath( packageFilename );
 
 	// Check if the package is already there
 	if (VerifyUpdatePackageAt(it->second, packageTargetPath))
@@ -573,7 +573,7 @@ void Updater::PerformDifferentialUpdateStep()
 	}
 
 	io::FilePath packageFilename = it->second.filename;
-	io::FileDir targetdir( GetTargetPath() );
+	io::FileDir targetdir = getTargetDir();
 
 	io::FilePath packageTargetPath = targetdir.getFilePath( packageFilename );
 
@@ -863,7 +863,7 @@ DownloadPtr Updater::PrepareMirroredDownload(const std::string& remoteFile)
 {
 	AssertMirrorsNotEmpty();
 
-	io::FileDir dir( GetTargetPath() );
+	io::FileDir dir = getTargetDir();
 	io::FilePath targetPath =  dir.getFilePath( remoteFile );
 
 	// Remove target path first
@@ -930,7 +930,7 @@ void Updater::PerformSingleMirroredDownload(const DownloadPtr& download)
 	_downloadManager->RemoveDownload(downloadId);
 }
 
-io::FilePath Updater::GetTargetPath()
+io::FileDir Updater::getTargetDir()
 {
 	// Use the target directory 
 	if (_options.isSet("targetdir") && !_options.Get("targetdir").empty())
@@ -969,9 +969,9 @@ void Updater::CheckLocalFiles()
 	_downloadQueue.clear();
 
 	// Get the current path
-	io::FilePath targetPath = GetTargetPath();
+	io::FileDir targetDir = getTargetDir();
 
-	Logger::warning( "Checking target folder: " + targetPath.toString() );
+	Logger::warning( "Checking target folder: " + targetDir.toString() );
 
 	std::size_t count = 0;
 	for (ReleaseFileSet::const_iterator i = _latestRelease.begin(); i != _latestRelease.end(); ++i)
@@ -994,7 +994,7 @@ void Updater::CheckLocalFiles()
 			{
 				Logger::warning( "Checking for member file: " + m->file.toString() );
 
-				if (!CheckLocalFile(targetPath, *m))
+				if (!CheckLocalFile(targetDir, *m))
 				{
 					// A member is missing or out of date, mark the archive for download
 					_downloadQueue.insert(*i);
@@ -1005,7 +1005,7 @@ void Updater::CheckLocalFiles()
 		{
 			Logger::warning( "Checking for archive file: " + i->second.file.toString() + "...");
 
-			if (!CheckLocalFile(targetPath, i->second))
+			if (!CheckLocalFile(targetDir, i->second))
 			{
 				// A member is missing or out of date, mark the archive for download
 				_downloadQueue.insert(*i);
@@ -1081,7 +1081,7 @@ bool Updater::LocalFilesNeedUpdate()
 
 void Updater::PrepareUpdateStep()
 {
-	io::FileDir targetdir = GetTargetPath().getFileDir();
+	io::FileDir targetdir = getTargetDir();
 
 	// Create a download for each of the files
 	for (ReleaseFileSet::iterator i = _downloadQueue.begin(); i != _downloadQueue.end(); ++i)
@@ -1242,7 +1242,7 @@ void Updater::ExtractAndRemoveZip(const io::FilePath& zipFilePath)
 		return;
 	}
 
-	io::FileDir destPath = GetTargetPath().getFileDir();
+	io::FileDir destPath = getTargetDir();
 
 	// tdm_update exists in its own PK4, so we can assume tdm_update and the TDM binaries will never be found in the same PK4.
 
@@ -1349,7 +1349,7 @@ void Updater::ExtractAndRemoveZip(const io::FilePath& zipFilePath)
 void Updater::PrepareUpdateBatchFile(const io::FilePath& temporaryUpdater)
 {
 	// Create a new batch file in the target location
-	io::FileDir targetdir = GetTargetPath().getFileDir();
+	io::FileDir targetdir = getTargetDir();
 	_updateBatchFile =  targetdir.getFilePath( TDM_UPDATE_UPDATER_BATCH_FILE );
 
 	Logger::warning( "Preparing TDM update batch file in " + _updateBatchFile.toString() );
@@ -1384,7 +1384,7 @@ void Updater::PrepareUpdateBatchFile(const io::FilePath& temporaryUpdater)
 
 	batch << "#!/bin/bash" << std::endl;
 	batch << "echo \"Upgrading TDM Updater executable...\"" << std::endl;
-	batch << "cd \"" << GetTargetPath().toString() << "\"" << std::endl;
+	batch << "cd \"" << getTargetDir().toString() << "\"" << std::endl;
 	batch << "sleep 2s" << std::endl;
 	batch << "mv -f \"" << tempUpdater.toString() << "\" \"" << updater.toString() << "\"" << std::endl;
 	batch << "chmod +x \"" << updater.toString() << "\"" << std::endl;
@@ -1583,7 +1583,7 @@ void Updater::RestartUpdater()
 
 void Updater::PostUpdateCleanup()
 {
-	io::FileDir pdir =  GetTargetPath().getFileDir();
+	io::FileDir pdir =  getTargetDir();
 	io::FileList dir = pdir.getEntries();
 	for( io::FileList::ConstItemIt i = dir.begin(); i != dir.end(); i++)
 	{

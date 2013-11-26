@@ -321,7 +321,7 @@ private:
 	bool CheckLocalFile(const io::FilePath& installPath, const ReleaseFile& releaseFile);
 
 	// Get the target path (defaults to current path)
-	io::FilePath GetTargetPath();
+	io::FileDir getTargetDir();
 
 	// Extract the contents of the given zip file (and remove the zip afterwards)
 	void ExtractAndRemoveZip(const io::FilePath& zipFilePath);

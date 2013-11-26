@@ -114,6 +114,8 @@ public:
 
 private:
   void _OsCreate( const FileDir &dirName );
+
+  virtual FilePath getFileDir() const;
 };
 
 }//end namespace io
