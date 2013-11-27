@@ -198,29 +198,19 @@ INCLUDEPATH += ../utils
 SOURCES += main.cpp \
     ../source/core/thread.cpp \
     ../source/core/logger.cpp \
-    ConsoleUpdater.cpp \
     ../source/core/mutex.cpp \
     ../source/core/threadevent.cpp \
     ../source/core/threadtask.cpp \
     ../source/core/stringhelper.cpp \
     ../source/core/time.cpp \
-    Updater/UpdateController.cpp \
     ../source/core/variant.cpp \
     ../source/vfs/filesystem.cpp \
-    Updater/Updater.cpp \
-    Util.cpp \
-    IniFile.cpp \
     ../source/core/bytearray.cpp \
     ../source/vfs/file.cpp \
     ../source/vfs/archive_zip.cpp \
     ../utils/lzma/LzmaDec.c \
     ../source/vfs/memfile.cpp \
     ../source/vfs/filenative_impl.cpp \
-    Http/DownloadManager.cpp \
-    Http/HttpConnection.cpp \
-    Http/MirrorDownload.cpp \
-    Http/HttpRequest.cpp \
-    Http/Download.cpp \
     ../utils/bzip2/randtable.c \
     ../utils/bzip2/huffman.c \
     ../utils/bzip2/decompress.c \
@@ -259,26 +249,31 @@ SOURCES += main.cpp \
     ../source/vfs/path.cpp \
     ../source/vfs/entries.cpp \
     ../source/vfs/directory.cpp \
-    Packager/Packager.cpp
+    util.cpp \
+    consoleupdater.cpp \
+    updater/updater.cpp \
+    updater/updatecontroller.cpp \
+    http/httpconnection.cpp \
+    inifile.cpp \
+    http/httprequest.cpp \
+    http/mirrordownload.cpp \
+    http/downloadmanager.cpp \
+    http/download.cpp \
+    packager/packager.cpp
 
 
 
 HEADERS += \
     ../source/core/thread.hpp \
     ../source/core/logger.hpp \
-    ConsoleUpdater.h \
     ../source/core/mutex.hpp \
     ../source/core/threadevent.hpp \
     ../source/core/threadtask.hpp \
     ../source/core/stringhelper.hpp \
     ../source/core/time.hpp \
-    Updater/UpdateController.h \
     ../source/core/variant.hpp \
     ../source/vfs/filesystem.hpp \
     ../source/vfs/filelist.hpp \
-    Updater/Updater.h \
-    Util.h \
-    IniFile.h \
     ../source/core/bytearray.hpp \
     ../source/vfs/file.hpp \
     ../source/vfs/archive_zip.hpp \
@@ -288,11 +283,6 @@ HEADERS += \
     ../source/vfs/filenative_impl.hpp \
     ../source/vfs/entity.hpp \
     ../source/vfs/archive.hpp \
-    Http/DownloadManager.h \
-    Http/HttpConnection.h \
-    Http/MirrorDownload.h \
-    Http/HttpRequest.h \
-    Http/Download.h \
     ../utils/bzip2/bzlib_private.h \
     ../utils/bzip2/bzlib.h \
     ../utils/aesGladman/sha2.h \
@@ -320,7 +310,23 @@ HEADERS += \
     ../utils/zlib/deflate.h \
     ../utils/zlib/crc32.h \
     minizip/ioapi.h \
-    Constants.h \
     ../source/vfs/entries.hpp \
     ../source/vfs/directory.hpp \
-    Packager/Packager.h
+    util.hpp \
+    constants.hpp \
+    consoleupdater.hpp \
+    updater/updateview.hpp \
+    updater/updater.hpp \
+    updater/updatecontroller.hpp \
+    updater/updateroptions.hpp \
+    updater/progresshandler.hpp \
+    programoptions.hpp \
+    http/httpconnection.hpp \
+    packager/packager.hpp \
+    exceptionsafethread.hpp \
+    http/downloadmanager.hpp \
+    http/download.hpp \
+    http/httprequest.hpp \
+    http/mirrordownload.hpp \
+    http/mirrorlist.hpp \
+    inifile.hpp

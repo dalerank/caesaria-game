@@ -1,24 +1,20 @@
-/*****************************************************************************
-                    The Dark Mod GPL Source Code
- 
- This file is part of the The Dark Mod Source Code, originally based 
- on the Doom 3 GPL Source Code as published in 2011.
- 
- The Dark Mod Source Code is free software: you can redistribute it 
- and/or modify it under the terms of the GNU General Public License as 
- published by the Free Software Foundation, either version 3 of the License, 
- or (at your option) any later version. For details, see LICENSE.TXT.
- 
- Project: The Dark Mod Updater (http://www.thedarkmod.com/)
- 
- $Revision: 5598 $ (Revision of last commit) 
- $Date: 2012-10-19 19:46:11 +0400 (Пт, 19 окт 2012) $ (Date of last commit)
- $Author: greebo $ (Author of last commit)
- 
-******************************************************************************/
+// This file is part of CaesarIA.
+//
+// CaesarIA is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// CaesarIA is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _TDM_CRC_H_
-#define _TDM_CRC_H_
+#ifndef __CAESARIA_CRC_H_INLCUDE__
+#define __CAESARIA_CRC_H_INLCUDE__
 
 #include <string>
 #include <stdexcept>
@@ -26,18 +22,12 @@
 #include <cstdio>
 #include "core/bytearray.hpp"
 
-//#include <boost/algorithm/string/case_conv.hpp>
-//#include <boost/algorithm/string/predicate.hpp>
-//#include <boost/format.hpp>
-//#include <boost/crc.hpp>
-//#include <boost/filesystem.hpp>
-
 #include "vfs/path.hpp"
 #include "azip/azip.h"
 #include "core/logger.hpp"
 #include "core/stringhelper.hpp"
 
-namespace tdm
+namespace updater
 {
 
 /**
@@ -135,22 +125,8 @@ public:
 
 		return crc;
 	}
-
-	static unsigned int GetCrcForZip(vfs::Path file)
-	{
-		// Open the file for reading
-		ZipFileReadPtr zipFile = Zip::OpenFileRead(file);
-
-		if (zipFile == NULL) throw std::runtime_error("Could not open ZIP file: " + file.toString());
-
-		unsigned int crc = zipFile->GetCumulativeCrc();
-
-		Logger::warning( "CRC calculated for zip file %s=%x", file.toString().c_str(), crc );
-
-		return crc;
-	}
 };
 
 } // namespace
 
-#endif /* _TDM_CRC_H_ */
+#endif //__CAESARIA_CRC_H_INLCUDE__

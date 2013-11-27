@@ -22,15 +22,14 @@
 
 #include "core/logger.hpp"
 
-#include "Updater/UpdaterOptions.h"
-#include "Updater/Updater.h"
-#include "Packager/Packager.h"
+#include "updater/updateroptions.hpp"
+#include "updater/updater.hpp"
+#include "packager/packager.hpp"
 
-#include "Util.h"
+#include "util.hpp"
 
-#include "ConsoleUpdater.h"
+#include "consoleupdater.hpp"
 
-using namespace tdm;
 using namespace updater;
 
 int main(int argc, char* argv[])

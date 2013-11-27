@@ -25,7 +25,7 @@
 #include "minizip/unzip.h"
 #include "minizip/zip.h"
 
-#include "../Constants.h"
+#include "../constants.hpp"
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
 #include "vfs/file.hpp"
