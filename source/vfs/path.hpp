@@ -22,6 +22,8 @@
 namespace vfs
 {
 
+class Directory;
+
 class Path
 {
 public:
@@ -37,6 +39,7 @@ public:
 
   bool isExist() const;
   bool isFolder() const;
+  bool isDirectoryEntry() const;
 
   std::string getExtension() const;
   
@@ -70,7 +73,7 @@ public:
   /** \param filename: The file to get the basename from */
   Path getBasename( bool keepExtension=true ) const;
 
-  Path getRelativePathTo( const Path& directory ) const;
+  Path getRelativePathTo( const Directory& directory ) const;
 
   //! Returns the directory a file is located in.
   /** \param filename: The file to get the directory from */

@@ -938,7 +938,7 @@ vfs::Directory Updater::getTargetDir()
 	}
 
 	// Get the current path
-	vfs::Path targetPath = vfs::Directory::getCurrentDir();
+	vfs::Path targetPath = vfs::Directory::getCurrent();
 
 	// If the current path is the actual engine path, switch folders to "darkmod"
 	// We don't want to download the PK4s into the Doom3.exe location

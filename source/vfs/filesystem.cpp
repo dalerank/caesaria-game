@@ -640,8 +640,8 @@ Entries FileSystem::getFileList()
 		ret.setIgnoreCase( false );
 
 		//! add relative navigation
-		FileListItem e2;
-		FileListItem e3;
+		EntryInfo e2;
+		EntryInfo e3;
 
 		//! PWD
 		ret.addItem( Path( rpath.toString() + "." ), 0, 0, true, 0);

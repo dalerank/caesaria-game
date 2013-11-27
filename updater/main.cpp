@@ -45,9 +45,13 @@ int main(int argc, char* argv[])
 
 	UpdaterOptions localOptions( argc, argv );
 
-	if( localOptions.isSet( "createUpdateInfo" ) )
+	if( localOptions.isSet( "release" ) )
 	{
+		std::string basedir = localOptions.Get( "directory" );
+		std::string version = localOptions.Get( "version" );
+		Packager p( basedir, version );
 
+		p.run();
 
 		return 0;
 	}

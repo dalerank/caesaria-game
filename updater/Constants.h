@@ -45,7 +45,7 @@ const char* const TDM_CRC_INFO_FILE = "crc_info.txt";
 const char* const TDM_UDPATE_INFO_FILE = "tdm_update_info.txt";
 
 // The file containing the version information of all released packages since 1.02
-const char* const TDM_VERSION_INFO_FILE = "tdm_version_info.txt";
+const char* const TDM_VERSION_INFO_FILE = "version_info.txt";
 
 #ifdef WIN32
 const char* const TDM_UPDATE_UPDATER_BATCH_FILE = "tdm_update_updater.cmd";

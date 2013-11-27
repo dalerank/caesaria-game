@@ -24,7 +24,7 @@
 #include <cstring>
 #include <iostream>
 #include <stdint.h>
-#include <fstream>
+#include <sstream>
 
 int StringHelper::vformat(std::string& str, int max_size, const char* format, va_list argument_list)
 {
@@ -236,37 +236,24 @@ unsigned int StringHelper::hash( unsigned int max_size, const char* fmt, ... )
   return hash( fmtStr );
 }
 
-StringArray StringHelper::split( const std::string& str, const std::string& spl, 
-                                 unsigned int count/*=1*/, bool ignoreEmptyTokens/*=true*/, bool keepSeparators/*=false*/ )
+StringArray StringHelper::split( std::string str, std::string spl )
 {
   StringArray ret;
   if(spl.empty())
     return ret;
 
-  //const unsigned int oldSize=0;
-  unsigned int lastpos = 0;
-  bool lastWasSeparator = false;
-  for (unsigned int i=0; i<str.size(); ++i)
+  std::string::size_type start = 0;
+  std::string::size_type pos = str.find_first_of(spl, start);
+  while(pos != std::string::npos)
   {
-    bool foundSeparator = false;
-    for (unsigned int j=0; j<count; ++j)
-    {
-      if (str[i] == spl[j])
-      {
-        if ((!ignoreEmptyTokens || i - lastpos != 0) && !lastWasSeparator)
-        {
-          ret.push_back( std::string( &str[lastpos], i - lastpos));
-        }
-        foundSeparator = true;
-        lastpos = (keepSeparators ? i : i + 1);
-        break;
-      }
-    }
-    lastWasSeparator = foundSeparator;
+    if(pos != start) // ignore empty tokens
+       ret.push_back( str.substr( start, pos - start ));
+     start = pos + 1;
+     pos = str.find_first_of(spl, start);
   }
 
-  if ((str.size() - 1) > lastpos)
-    ret.push_back( std::string( &str[lastpos], (str.size() - 1) - lastpos ) );
+  if( start < str.length() ) // ignore trailing delimiter
+     ret.push_back( str.substr( start, str.length() - start ) ); // add what's left of the string
 
   return ret;
 }

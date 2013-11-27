@@ -258,7 +258,8 @@ SOURCES += main.cpp \
     minizip/ioapi.c \
     ../source/vfs/path.cpp \
     ../source/vfs/entries.cpp \
-    ../source/vfs/directory.cpp
+    ../source/vfs/directory.cpp \
+    Packager/Packager.cpp
 
 
 
@@ -321,4 +322,5 @@ HEADERS += \
     minizip/ioapi.h \
     Constants.h \
     ../source/vfs/entries.hpp \
-    ../source/vfs/directory.hpp
+    ../source/vfs/directory.hpp \
+    Packager/Packager.h

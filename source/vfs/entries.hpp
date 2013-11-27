@@ -32,7 +32,7 @@ class Entries : public ReferenceCounted
 public:
   typedef enum { file=0x1, directory=0x2, extFilter=0x4 } FilterFlag;
 
-  typedef std::vector< FileListItem > Items;
+  typedef std::vector< EntryInfo > Items;
   typedef Items::iterator ItemIt;
   typedef Items::const_iterator ConstItemIt;
 

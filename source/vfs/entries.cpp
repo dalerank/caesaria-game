@@ -114,7 +114,7 @@ const Path& Entries::getFullFileName(unsigned int index) const
 //! adds a file or folder
 unsigned int Entries::addItem( const Path& fullPath, unsigned int offset, unsigned int size, bool isDirectory, unsigned int id )
 {
-  FileListItem entry;
+  EntryInfo entry;
   entry.iD   = id ? id : _d->files.size();
   entry.Offset = offset;
   entry.size = size;
@@ -178,7 +178,7 @@ unsigned int Entries::getFileOffset(unsigned int index) const
 //! Searches for a file or folder within the list, returns the index
 int Entries::findFile(const Path& filename, bool isDirectory) const
 {
-  FileListItem entry;
+  EntryInfo entry;
   // we only need fullName to be set for the search
   entry.fullName = StringHelper::replace( filename.toString(), "\\", "/" );
   entry.isDirectory = isDirectory;
