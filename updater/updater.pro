@@ -207,7 +207,6 @@ SOURCES += main.cpp \
     Updater/UpdateController.cpp \
     ../source/core/variant.cpp \
     ../source/vfs/filesystem.cpp \
-    ../source/vfs/filelist.cpp \
     Updater/Updater.cpp \
     Util.cpp \
     IniFile.cpp \
@@ -256,7 +255,10 @@ SOURCES += main.cpp \
     ../utils/zlib/crc32.c \
     ../utils/zlib/compress.c \
     ../utils/zlib/adler32.c \
-    minizip/ioapi.c
+    minizip/ioapi.c \
+    ../source/vfs/path.cpp \
+    ../source/vfs/entries.cpp \
+    ../source/vfs/directory.cpp
 
 
 
@@ -283,7 +285,6 @@ HEADERS += \
     ../utils/lzma/LzmaDec.h \
     ../source/vfs/memfile.hpp \
     ../source/vfs/filenative_impl.hpp \
-    ../source/vfs/filelist_item.hpp \
     ../source/vfs/entity.hpp \
     ../source/vfs/archive.hpp \
     Http/DownloadManager.h \
@@ -318,4 +319,6 @@ HEADERS += \
     ../utils/zlib/deflate.h \
     ../utils/zlib/crc32.h \
     minizip/ioapi.h \
-    Constants.h
+    Constants.h \
+    ../source/vfs/entries.hpp \
+    ../source/vfs/directory.hpp

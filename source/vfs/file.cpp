@@ -17,12 +17,23 @@
 #include "filesystem.hpp"
 #include "path.hpp"
 
-#if defined(CAESARIA_PLATFORM_WIN)
-#include "windows.h"
-#define getline_def getline_win
+#ifdef CAESARIA_PLATFORM_WIN
+  #define getline_def getline_win
+  #include <windows.h>
+  #include <io.h>
 #elif defined(CAESARIA_PLATFORM_UNIX)
-#define getline_def getline
-#endif //CAESARIA_PLATFORM_UNIX
+  #ifdef CAESARIA_PLATFORM_LINUX
+    #include <sys/io.h>
+    #include <linux/limits.h>
+  #elif defined(CAESARIA_PLATFORM_MACOSX)
+    #include <libproc.h>
+  #endif
+  #define getline_def getline
+  #include <sys/stat.h>
+  #include <unistd.h>
+  #include <stdio.h>
+  #include <libgen.h>
+#endif
 
 namespace vfs
 {
@@ -141,7 +152,7 @@ NFile& NFile::operator=( const NFile& other )
   return *this;
 }
 
-long NFile::getSize(const FilePath& filename)
+unsigned long NFile::getSize(vfs::Path filename)
 {
   NFile file = NFile::open( filename );
   return file.getSize();

@@ -21,9 +21,9 @@
 
 #include "IniFile.h"
 #include "CRC.h"
-#include "vfs/filepath.hpp"
+#include "vfs/path.hpp"
 #include "core/stringhelper.hpp"
-#include "vfs/filelist.hpp"
+#include "vfs/entries.hpp"
 #include "vfs/file.hpp"
 #include "core/logger.hpp"
 
@@ -36,7 +36,7 @@ struct ReleaseFile
 	bool isArchive;
 
 	// Filename including path
-	io::FilePath file;
+	vfs::Path file;
 
 	// CRC32 checksum
 	unsigned int crc;
@@ -60,14 +60,14 @@ struct ReleaseFile
 		downloadId(-1)
 	{}
 
-	ReleaseFile(const io::FilePath& pathToFile) :
+	ReleaseFile(vfs::Path pathToFile) :
 		isArchive(false),
 		file(pathToFile),
 		localChangesAllowed(false),
 		downloadId(-1)
 	{}
 
-	ReleaseFile(const io::FilePath& pathToFile, unsigned int crc_) :
+	ReleaseFile(vfs::Path pathToFile, unsigned int crc_) :
 		isArchive(false),
 		file(pathToFile),
 		crc(crc_),
@@ -160,15 +160,14 @@ public:
 			{
 				if( StringHelper::startsWith( section, "File" ) )
 				{
-					std::string filename = section.substr(5);
+					vfs::Path filename = section.substr(5);
 
-					std::pair<ReleaseFileSet::iterator, bool> result = _set.insert(
-						ReleaseFileSet::value_type(filename, ReleaseFile(filename)));
+					std::pair<ReleaseFileSet::iterator, bool> result = _set.insert(	ReleaseFileSet::value_type(filename.toString(), ReleaseFile(filename)));
 					
 					result.first->second.crc = CRC::ParseFromString(iniFile.GetValue(section, "crc"));
 					result.first->second.filesize = StringHelper::toUint( iniFile.GetValue(section, "size") );
 
-					if( io::FilePath( filename ).isExtension( "zip") )
+					if( filename.isExtension( "zip") )
 					{
 						result.first->second.isArchive = true;
 					}
@@ -208,15 +207,15 @@ public:
 	}
 
 	// Construct a release file set from the given folder
-	static ReleaseFileSet LoadFromFolder( const io::FileDir& folder,
+	static ReleaseFileSet LoadFromFolder( vfs::Directory folder,
 																				const std::set<std::string> ignoreList = std::set<std::string>())
 	{
 		ReleaseFileSet set;
 
-		io::FileList files = folder.getEntries();
-		for( io::FileList::ConstItemIt i = files.begin(); i != files.end(); ++i)
+		vfs::Entries files = folder.getEntries();
+		for( vfs::Entries::ConstItemIt i = files.begin(); i != files.end(); ++i)
 		{
-			io::FilePath entry = i->name;
+			vfs::Path entry = i->name;
 
 			if( entry.isFolder() )
 			{
@@ -225,7 +224,7 @@ public:
 
 			std::string filename = entry.getBasename().toString();
 
-			io::FilePath relativePath = entry.getRelativePathTo( folder );
+			vfs::Path relativePath = entry.getRelativePathTo( folder );
 
 			if( ignoreList.find( StringHelper::localeLower( filename ) ) != ignoreList.end() )
 			{
@@ -242,7 +241,7 @@ public:
 				archive.isArchive = true;
 				archive.crc = CRC::GetCrcForFile(entry);
 
-				archive.filesize = static_cast<std::size_t>( io::NFile::getSize( entry ) );
+				archive.filesize = static_cast<std::size_t>( vfs::NFile::getSize( entry ) );
 
 
 				// Add all members of this archive to the ReleaseFile

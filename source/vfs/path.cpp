@@ -233,17 +233,17 @@ Path Path::getAbsolutePath() const
     // content in fpath is unclear at this point
     if (!fpath[0]) // seems like fpath wasn't altered, use our best guess
     {
-      FilePath tmp(_d->path);
+      Path tmp(_d->path);
       return flattenFilename(tmp);
     }
     else
-      return FilePath(fpath);
+      return Path(fpath);
   }
 
   if( *(_d->path.rbegin())=='/')
-    return FilePath( std::string(p) + "/" );
+    return Path( std::string(p) + "/" );
   else
-    return FilePath( std::string(p) );
+    return Path( std::string(p) );
 #endif // CAESARIA_PLATFORM_UNIX
 }
 

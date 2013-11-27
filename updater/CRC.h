@@ -32,7 +32,7 @@
 //#include <boost/crc.hpp>
 //#include <boost/filesystem.hpp>
 
-#include "vfs/filepath.hpp"
+#include "vfs/path.hpp"
 #include "azip/azip.h"
 #include "core/logger.hpp"
 #include "core/stringhelper.hpp"
@@ -77,7 +77,7 @@ public:
 	 *
 	 * @throws: std::runtime_error if something goes wrong.
 	 */
-	static unsigned int GetCrcForFile(const io::FilePath& file)
+	static unsigned int GetCrcForFile(vfs::Path file)
 	{
 		try
 		{
@@ -101,7 +101,7 @@ public:
 	// It fails to produce the same CRC as the one found in the ZIP archives
 	// See http://modetwo.net/darkmod/index.php?/topic/11473-problem-with-crcs-and-the-updater/
 
-	static unsigned int GetCrcForNonZipFile(const io::FilePath& file)
+	static unsigned int GetCrcForNonZipFile(vfs::Path file)
 	{
 		// Open the file for reading
 		FILE* fh = fopen(file.toString().c_str(), "rb");
@@ -136,7 +136,7 @@ public:
 		return crc;
 	}
 
-	static unsigned int GetCrcForZip(const io::FilePath& file)
+	static unsigned int GetCrcForZip(vfs::Path file)
 	{
 		// Open the file for reading
 		ZipFileReadPtr zipFile = Zip::OpenFileRead(file);

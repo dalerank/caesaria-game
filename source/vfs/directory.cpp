@@ -148,7 +148,7 @@ Directory Directory::getApplicationDir()
   sprintf(exe_path, "/proc/%d/exe", getpid());
   readlink(exe_path, exe_path, sizeof(exe_path));
   dir_path = dirname(exe_path);
-  return FilePath(dir_path);
+  return Path(dir_path);
 #elif defined(CAESARIA_PLATFORM_MACOSX)
   char exe_path[PROC_PIDPATHINFO_MAXSIZE];
   int ret = proc_pidpath(getpid(), exe_path, sizeof(exe_path));
@@ -156,7 +156,7 @@ Directory Directory::getApplicationDir()
   {
     THROW("Cannot get application executable file path");
   }
-  return FilePath(dirname(exe_path));
+  return Path(dirname(exe_path));
 #endif
 
   return Path( "." );

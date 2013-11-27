@@ -38,7 +38,7 @@ namespace tdm
 namespace updater
 {
 
-Updater::Updater(const UpdaterOptions& options, const io::FilePath& executable) :
+Updater::Updater(const UpdaterOptions& options, vfs::Path executable) :
 	_options(options),
 	_downloadManager(new DownloadManager),
 	_executable( StringHelper::localeLower( executable.toString() ) ), // convert that file to lower to be sure
@@ -66,7 +66,7 @@ Updater::Updater(const UpdaterOptions& options, const io::FilePath& executable) 
 #endif
 }
 
-void Updater::_markFileAsExecutable( io::FilePath path )
+void Updater::_markFileAsExecutable(vfs::Path path )
 {
 #ifdef CAESARIA_PLATFORM_LINUX
 	Logger::warning( "Marking file as executable: " + path.toString() );
@@ -86,14 +86,13 @@ void Updater::_markFileAsExecutable( io::FilePath path )
 void Updater::CleanupPreviousSession()
 {
 	// Remove batch file from previous run
-	io::FileDir folder = getTargetDir();
-	folder.getFilePath( TDM_UPDATE_UPDATER_BATCH_FILE ).remove();
+	vfs::NFile::remove( getTargetDir()/TDM_UPDATE_UPDATER_BATCH_FILE );
 }
 
 bool Updater::MirrorsNeedUpdate()
 {
-	io::FileDir folder = getTargetDir();
-	io::FilePath mirrorPath = folder.getFilePath( TDM_MIRRORS_FILE );
+	vfs::Directory folder = getTargetDir();
+	vfs::Path mirrorPath = folder/TDM_MIRRORS_FILE;
 
 	if( !mirrorPath.isExist() )
 	{
@@ -121,8 +120,8 @@ void Updater::UpdateMirrors()
 //	TraceLog::Write(LOG_VERBOSE, " Downloading mirror list from %s...", mirrorsUrl.c_str() ); // grayman - NG: too many args
 	Logger::warning( StringHelper::format( 0xff, "Downloading mirror list from %s...", mirrorsUrl.c_str() ) ); // grayman - fixed
 
-	io::FileDir folder = getTargetDir();
-	io::FilePath mirrorPath = folder.getFilePath( TDM_MIRRORS_FILE );
+	vfs::Directory folder = getTargetDir();
+	vfs::Path mirrorPath = folder.getFilePath( TDM_MIRRORS_FILE );
 
 	HttpRequestPtr request = _conn->CreateRequest( mirrorsUrl, mirrorPath.toString());
 
@@ -143,8 +142,8 @@ void Updater::UpdateMirrors()
 
 void Updater::LoadMirrors()
 {
-	io::FileDir folder = getTargetDir();
-	io::FilePath mirrorPath = folder.getFilePath( TDM_MIRRORS_FILE );
+	vfs::Directory folder = getTargetDir();
+	vfs::Path mirrorPath = folder.getFilePath( TDM_MIRRORS_FILE );
 
 	// Load the tdm_mirrors.txt into an INI file
 	IniFilePtr mirrorsIni = IniFile::ConstructFromFile(mirrorPath);
@@ -167,7 +166,7 @@ void Updater::GetCrcFromServer()
 	PerformSingleMirroredDownload(TDM_CRC_INFO_FILE);
 
 	// Parse this file
-	io::FileDir folder = getTargetDir();
+	vfs::Directory folder = getTargetDir();
 	IniFilePtr releaseIni = IniFile::ConstructFromFile(folder.getFilePath( TDM_CRC_INFO_FILE ) );
 
 	if (releaseIni == NULL)
@@ -186,7 +185,7 @@ void Updater::GetVersionInfoFromServer()
 	PerformSingleMirroredDownload(TDM_VERSION_INFO_FILE);
 
 	// Parse this downloaded file
-	io::FileDir folder = getTargetDir();
+	vfs::Directory folder = getTargetDir();
 	IniFilePtr versionInfo = IniFile::ConstructFromFile( folder.getFilePath( TDM_VERSION_INFO_FILE ) );
 
 	if (versionInfo == NULL) 
@@ -199,7 +198,7 @@ void Updater::GetVersionInfoFromServer()
 	//_updatePackages.LoadFromIniFile( versionInfo );
 }
 
-void Updater::NotifyFileProgress(const io::FilePath& file, CurFileInfo::Operation op, double fraction)
+void Updater::NotifyFileProgress(vfs::Path file, CurFileInfo::Operation op, double fraction)
 {
 	if (_fileProgressCallback != NULL)
 	{
@@ -246,8 +245,8 @@ void Updater::DetermineLocalVersion()
 
 			curItem++;
 			
-			io::FileDir folder = getTargetDir();
-			io::FilePath candidate = folder.getFilePath( f->second.file );
+			vfs::Directory folder = getTargetDir();
+			vfs::Path candidate = folder.getFilePath( f->second.file );
 
 			if( StringHelper::localeLower( candidate.getBasename().toString() )
 					==  StringHelper::localeLower( _executable.getBasename().toString() ) )
@@ -269,7 +268,7 @@ void Updater::DetermineLocalVersion()
 				continue;
 			}
 
-			std::size_t candidateFilesize = io::NFile::getSize( candidate );
+			std::size_t candidateFilesize = vfs::NFile::getSize( candidate );
 
 			if (candidateFilesize != f->second.filesize)
 			{
@@ -316,7 +315,7 @@ void Updater::DetermineLocalVersion()
 		VersionTotal& total = _localVersions.insert(LocalVersionBreakdown::value_type(version, VersionTotal())).first->second;
 
 		total.numFiles++;
-		total.filesize += io::NFile::getSize( i->first );
+		total.filesize += vfs::NFile::getSize( i->first );
 	}
 
 	Logger::warning( "The local files are matching %d different versions.", _localVersions.size() );
@@ -505,8 +504,8 @@ void Updater::DownloadDifferentialUpdate()
 		throw FailureException("Cannot download differential update - nothing found!");
 	}
 
-	io::FilePath packageFilename = it->second.filename;
-	io::FilePath packageTargetPath = getTargetDir().getFilePath( packageFilename );
+	vfs::Directory packageFilename = it->second.filename;
+	vfs::Path packageTargetPath = getTargetDir().getFilePath( packageFilename );
 
 	// Check if the package is already there
 	if (VerifyUpdatePackageAt(it->second, packageTargetPath))
@@ -526,7 +525,7 @@ void Updater::DownloadDifferentialUpdate()
 	}
 }
 
-bool Updater::VerifyUpdatePackageAt(const UpdatePackage& info, const io::FilePath& package)
+bool Updater::VerifyUpdatePackageAt(const UpdatePackage& info, vfs::Path package)
 {
 	if (!package.isExist())
 	{
@@ -534,12 +533,12 @@ bool Updater::VerifyUpdatePackageAt(const UpdatePackage& info, const io::FilePat
 		return false;
 	}
 
-	if( io::NFile::getSize( package ) != info.filesize)
+	if( vfs::NFile::getSize( package ) != info.filesize)
 	{
 		Logger::warning( "File %s has mismatching size, expected %d but found %d.",
 										package.toString().c_str(),
 										info.filesize,
-										io::NFile::getSize( package) );
+										vfs::NFile::getSize( package) );
 		return false;
 	}
 
@@ -572,10 +571,10 @@ void Updater::PerformDifferentialUpdateStep()
 		throw FailureException("Cannot apply differential update - nothing found!");
 	}
 
-	io::FilePath packageFilename = it->second.filename;
-	io::FileDir targetdir = getTargetDir();
+	vfs::Path packageFilename = it->second.filename;
+	vfs::Directory targetdir = getTargetDir();
 
-	io::FilePath packageTargetPath = targetdir.getFilePath( packageFilename );
+	vfs::Path packageTargetPath = targetdir.getFilePath( packageFilename );
 
 	if (!VerifyUpdatePackageAt(it->second, packageTargetPath))
 	{
@@ -637,7 +636,7 @@ void Updater::PerformDifferentialUpdateStep()
 
 		NotifyFileProgress(pk4->file, CurFileInfo::Delete, static_cast<double>(curOperation++) / totalFileOperations);
 		
-		io::FilePath( targetdir.getFilePath( pk4->file ) );
+		vfs::Path( targetdir.getFilePath( pk4->file ) );
 	}
 
 	// Add PK4s as requested
@@ -648,7 +647,7 @@ void Updater::PerformDifferentialUpdateStep()
 
 		NotifyFileProgress(pk4->file, CurFileInfo::Add, static_cast<double>(curOperation++) / totalFileOperations);
 
-		io::FilePath targetPk4Path = targetdir.getFilePath( pk4->file );
+		vfs::Path targetPk4Path = targetdir.getFilePath( pk4->file );
 
 		package->ExtractFileTo(pk4->file.toString(), targetPk4Path);
 
@@ -667,7 +666,7 @@ void Updater::PerformDifferentialUpdateStep()
 	{
 		Logger::warning( " Changing PK4: %s...", pk4Diff->first.c_str() );
 
-		io::FilePath targetPk4Path = targetdir.getFilePath( pk4Diff->first );
+		vfs::Path targetPk4Path = targetdir.getFilePath( pk4Diff->first );
 
 		const UpdatePackage::PK4Difference& diff = pk4Diff->second;
 
@@ -797,8 +796,8 @@ void Updater::PerformDifferentialUpdateStep()
 
 		Logger::warning( " Removing non-archive file: " + f->file.toString() );
 
-		io::FilePath path = targetdir.getFilePath( f->file );
-		path.remove();
+		vfs::Path path = targetdir.getFilePath( f->file );
+		vfs::NFile::remove( path );
 	}
 
 	// Changed files
@@ -813,8 +812,8 @@ void Updater::PerformDifferentialUpdateStep()
 			continue;
 		}
 
-		io::FilePath path = targetdir.getFilePath( f->file );
-		path.remove();
+		vfs::Path path = targetdir.getFilePath( f->file );
+		vfs::NFile::remove( path );
 
 		Logger::warning( " Replacing non-archive file: " + f->file.toString() );
 
@@ -827,7 +826,7 @@ void Updater::PerformDifferentialUpdateStep()
 	std::string tdmExecutableName = "caesaria.x86";
 #endif
 
-	io::FilePath path2exe = targetdir.getFilePath( tdmExecutableName );
+	vfs::Path path2exe = targetdir.getFilePath( tdmExecutableName );
 	if( path2exe.isExist() )
 	{
 		// Set the executable bit on the TDM binary
@@ -846,7 +845,7 @@ void Updater::PerformDifferentialUpdateStep()
 	if (!_options.isSet("keep-update-packages"))
 	{
 		Logger::warning( " Removing package after differential update completion: " + packageTargetPath.toString() );
-		packageTargetPath.remove();
+		vfs::NFile::remove( packageTargetPath );
 	}
 	else
 	{
@@ -863,16 +862,16 @@ DownloadPtr Updater::PrepareMirroredDownload(const std::string& remoteFile)
 {
 	AssertMirrorsNotEmpty();
 
-	io::FileDir dir = getTargetDir();
-	io::FilePath targetPath =  dir.getFilePath( remoteFile );
+	vfs::Directory dir = getTargetDir();
+	vfs::Path targetPath =  dir.getFilePath( remoteFile );
 
 	// Remove target path first
-	targetPath.remove();
+	vfs::NFile::remove( targetPath );
 
 	// Create a mirrored download
 	DownloadPtr download(new MirrorDownload(_conn, _mirrors, remoteFile, targetPath));
 
-	io::FilePath rpath( remoteFile );
+	vfs::Path rpath( remoteFile );
 	if( rpath.isExtension( ".zip" ) )
 	{
 		download->EnableValidPK4Check(true);
@@ -930,16 +929,16 @@ void Updater::PerformSingleMirroredDownload(const DownloadPtr& download)
 	_downloadManager->RemoveDownload(downloadId);
 }
 
-io::FileDir Updater::getTargetDir()
+vfs::Directory Updater::getTargetDir()
 {
 	// Use the target directory 
 	if (_options.isSet("targetdir") && !_options.Get("targetdir").empty())
 	{
-		return io::FilePath( _options.Get("targetdir") );
+		return vfs::Path( _options.Get("targetdir") );
 	}
 
 	// Get the current path
-	io::FilePath targetPath = io::FileDir::getCurrentDir();
+	vfs::Path targetPath = vfs::Directory::getCurrentDir();
 
 	// If the current path is the actual engine path, switch folders to "darkmod"
 	// We don't want to download the PK4s into the Doom3.exe location
@@ -969,7 +968,7 @@ void Updater::CheckLocalFiles()
 	_downloadQueue.clear();
 
 	// Get the current path
-	io::FileDir targetDir = getTargetDir();
+	vfs::Directory targetDir = getTargetDir();
 
 	Logger::warning( "Checking target folder: " + targetDir.toString() );
 
@@ -1027,11 +1026,11 @@ void Updater::CheckLocalFiles()
 	}
 }
 
-bool Updater::CheckLocalFile(const io::FilePath& installPath, const ReleaseFile& releaseFile)
+bool Updater::CheckLocalFile(vfs::Path installPath, const ReleaseFile& releaseFile)
 {
 	//boost::this_thread::interruption_point();
 
-	io::FilePath localFile = io::FileDir( installPath ).getFilePath( releaseFile.file );
+	vfs::Path localFile = vfs::Directory( installPath ).getFilePath( releaseFile.file );
 
 	Logger::warning( " Checking for file " + releaseFile.file.toString() + ": ");
 
@@ -1045,7 +1044,7 @@ bool Updater::CheckLocalFile(const io::FilePath& installPath, const ReleaseFile&
 		}
 
 		// Compare file size
-		std::size_t fileSize = io::NFile::getSize( localFile );
+		std::size_t fileSize = vfs::NFile::getSize( localFile );
 
 		if (fileSize != releaseFile.filesize)
 		{
@@ -1081,7 +1080,7 @@ bool Updater::LocalFilesNeedUpdate()
 
 void Updater::PrepareUpdateStep()
 {
-	io::FileDir targetdir = getTargetDir();
+	vfs::Directory targetdir = getTargetDir();
 
 	// Create a download for each of the files
 	for (ReleaseFileSet::iterator i = _downloadQueue.begin(); i != _downloadQueue.end(); ++i)
@@ -1232,7 +1231,7 @@ void Updater::NotifyDownloadProgress()
 	}
 }
 
-void Updater::ExtractAndRemoveZip(const io::FilePath& zipFilePath)
+void Updater::ExtractAndRemoveZip(vfs::Path zipFilePath)
 {
 	ZipFileReadPtr zipFile = Zip::OpenFileRead(zipFilePath);
 
@@ -1242,7 +1241,7 @@ void Updater::ExtractAndRemoveZip(const io::FilePath& zipFilePath)
 		return;
 	}
 
-	io::FileDir destPath = getTargetDir();
+	vfs::Directory destPath = getTargetDir();
 
 	// tdm_update exists in its own PK4, so we can assume tdm_update and the TDM binaries will never be found in the same PK4.
 
@@ -1272,7 +1271,7 @@ void Updater::ExtractAndRemoveZip(const io::FilePath& zipFilePath)
 			TDMbinaryPresent = true;
 		}
 
-		std::list<io::FilePath> extractedFiles;
+		std::list<vfs::Path> extractedFiles;
 
 		if (_updatingUpdater)
 		{
@@ -1285,7 +1284,7 @@ void Updater::ExtractAndRemoveZip(const io::FilePath& zipFilePath)
 			extractedFiles = zipFile->ExtractAllFilesTo(destPath, _ignoreList, hardIgnoreList); 
 
 			// Extract the updater to a temporary filename
-			io::FilePath tempUpdater = destPath.getFilePath( "_" + _executable.toString() );
+			vfs::Path tempUpdater = destPath.getFilePath( "_" + _executable.toString() );
 
 			zipFile->ExtractFileTo(_executable.toString(), tempUpdater);
 
@@ -1306,7 +1305,7 @@ void Updater::ExtractAndRemoveZip(const io::FilePath& zipFilePath)
 			extractedFiles = zipFile->ExtractAllFilesTo(destPath, _ignoreList, hardIgnoreList); 
 
 			// Extract the TDM binary
-			io::FilePath binaryFileName = destPath.getFilePath( TDM_BINARY_NAME );
+			vfs::Path binaryFileName = destPath.getFilePath( TDM_BINARY_NAME );
 			zipFile->ExtractFileTo(TDM_BINARY_NAME, binaryFileName);
 
 			// Set the executable bit on the TDM binary
@@ -1322,7 +1321,7 @@ void Updater::ExtractAndRemoveZip(const io::FilePath& zipFilePath)
 
 #ifndef WIN32
 		// In Linux or Mac, mark *.linux files as executable after extraction
-		for (std::list<io::FilePath>::const_iterator i = extractedFiles.begin(); i != extractedFiles.end(); ++i)
+		for (std::list<vfs::Path>::const_iterator i = extractedFiles.begin(); i != extractedFiles.end(); ++i)
 		{
 			std::string extension = StringHelper::localeLower( (*i).getExtension() );
 
@@ -1337,8 +1336,8 @@ void Updater::ExtractAndRemoveZip(const io::FilePath& zipFilePath)
 		zipFile = ZipFileReadPtr();
 
 		// Remove the Zip
-		io::FilePath removedFilePath = zipFilePath;
-		removedFilePath.remove();
+		vfs::Path removedFilePath = zipFilePath;
+		vfs::NFile::remove( removedFilePath );
 	}
 	catch (std::runtime_error& ex)
 	{
@@ -1346,18 +1345,18 @@ void Updater::ExtractAndRemoveZip(const io::FilePath& zipFilePath)
 	}
 }
 
-void Updater::PrepareUpdateBatchFile(const io::FilePath& temporaryUpdater)
+void Updater::PrepareUpdateBatchFile(vfs::Path temporaryUpdater)
 {
 	// Create a new batch file in the target location
-	io::FileDir targetdir = getTargetDir();
+	vfs::Directory targetdir = getTargetDir();
 	_updateBatchFile =  targetdir.getFilePath( TDM_UPDATE_UPDATER_BATCH_FILE );
 
 	Logger::warning( "Preparing TDM update batch file in " + _updateBatchFile.toString() );
 
 	std::ofstream batch(_updateBatchFile.toString().c_str());
 
-	io::FilePath tempUpdater = temporaryUpdater.getBasename();
-	io::FilePath updater = _executable.getBasename();
+	vfs::Path tempUpdater = temporaryUpdater.getBasename();
+	vfs::Path updater = _executable.getBasename();
 
 	// Append the current set of command line arguments to the new instance
 	std::string arguments;
@@ -1583,14 +1582,14 @@ void Updater::RestartUpdater()
 
 void Updater::PostUpdateCleanup()
 {
-	io::FileDir pdir =  getTargetDir();
-	io::FileList dir = pdir.getEntries();
-	for( io::FileList::ConstItemIt i = dir.begin(); i != dir.end(); i++)
+	vfs::Directory pdir =  getTargetDir();
+	vfs::Entries dir = pdir.getEntries();
+	for( vfs::Entries::ConstItemIt i = dir.begin(); i != dir.end(); i++)
 	{
 		if( StringHelper::startsWith( i->name.toString(), TMP_FILE_PREFIX) )
 		{
-			io::FilePath p = i->fullName;
-			p.remove();
+			vfs::Path p = i->fullName;
+			vfs::NFile::remove( p );
 		}		
 	}
 
@@ -1598,16 +1597,16 @@ void Updater::PostUpdateCleanup()
 	// Also remove leftover updater file.
 
 #if WIN32
-	std::string tdmDLLName = "gamex86.dll";
-	std::string tdmUpdateName = "_tdm_update.exe";
+	vfs::Path tdmDLLName = "gamex86.dll";
+	vfs::Path tdmUpdateName = "_tdm_update.exe";
 #else 
-	std::string tdmDLLName = "gamex86.so";
-	std::string tdmUpdateName = "_tdm_update.linux";
+	vfs::Path tdmDLLName = "gamex86.so";
+	vfs::Path tdmUpdateName = "_tdm_update.linux";
 #endif
 
 
-	pdir.getFilePath( tdmDLLName ).remove();
-	pdir.getFilePath( tdmUpdateName ).remove();
+	vfs::NFile::remove( pdir/tdmDLLName );
+	vfs::NFile::remove( pdir/tdmUpdateName );
 }
 
 void Updater::CancelDownloads()

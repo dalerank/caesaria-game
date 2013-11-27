@@ -487,7 +487,7 @@ const Path& FileSystem::getWorkingDirectory()
 
             if( tmpPath )
 			{
-                _d->workingDirectory[fsNative] = FilePath( tmpPath.data() );
+								_d->workingDirectory[fsNative] = Path( tmpPath.data() );
 			}
 		#endif //CAESARIA_PLATFORM_UNIX
 
@@ -499,7 +499,7 @@ const Path& FileSystem::getWorkingDirectory()
 
 
 //! Changes the current Working Directory to the given string.
-bool FileSystem::changeWorkingDirectoryTo(const Path& newDirectory)
+bool FileSystem::changeWorkingDirectoryTo(Path newDirectory)
 {
 	bool success=false;
 
@@ -597,7 +597,7 @@ Entries FileSystem::getFileList()
 			//! Linux version
             ret.setIgnoreCase( false );
 
-            ret.addItem( FilePath( rpath.toString() + ".." ), 0, 0, true, 0);
+            ret.addItem( Path( rpath.toString() + ".." ), 0, 0, true, 0);
 
 			//! We use the POSIX compliant methods instead of scandir
             DIR* dirHandle=opendir( rpath.toString().c_str());
@@ -628,7 +628,7 @@ Entries FileSystem::getFileList()
 					}
 					#endif*/
 					
-                    ret.addItem( FilePath( rpath.toString() + dirEntry->d_name ), 0, size, isDirectory, 0);
+										ret.addItem( Path( rpath.toString() + dirEntry->d_name ), 0, size, isDirectory, 0);
 				}
 				closedir(dirHandle);
 			}

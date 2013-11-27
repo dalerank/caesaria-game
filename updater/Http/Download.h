@@ -21,7 +21,7 @@
 
 #include "HttpConnection.h"
 #include "HttpRequest.h"
-#include "vfs/filepath.hpp"
+#include "vfs/path.hpp"
 #include "core/smartptr.hpp"
 #include "../updater/ExceptionSafeThread.h"
 
@@ -58,10 +58,10 @@ protected:
 	std::size_t _curUrl;
 
 	// destination file
-	io::FilePath _destFilename;
+	vfs::Path _destFilename;
 
 	// Temporary filename for partial download data
-	io::FilePath _tempFilename;
+	vfs::Path _tempFilename;
 
 public:
 	enum DownloadStatus
@@ -94,7 +94,7 @@ public:
 	 * greebo: Construct a new Download using the given URL.
 	 * The download data will be saved to the given destFilename;
 	 */
-	Download(const HttpConnectionPtr& conn, const std::string& url, const io::FilePath& destFilename);
+	Download(const HttpConnectionPtr& conn, const std::string& url, vfs::Path destFilename);
 
 	/**
 	 * greebo: Construct a new Download using the given list of 
@@ -102,7 +102,7 @@ public:
 	 * the next one will be tried until no more alternatives are left.
 	 * The result will be saved to destFilename.
 	 */
-	Download(const HttpConnectionPtr& conn, const std::vector<std::string>& urls, const io::FilePath& destFilename);
+	Download(const HttpConnectionPtr& conn, const std::vector<std::string>& urls, vfs::Path destFilename);
 
 	virtual ~Download();
 
@@ -144,7 +144,7 @@ public:
 	std::size_t GetDownloadedBytes();
 
 	// Return the destination filename of this download
-	const io::FilePath& GetDestFilename() const;
+	vfs::Path GetDestFilename() const;
 
 	// Get the destination filename (leaf) of the current download (remote filename)
 	std::string GetFilename() const;

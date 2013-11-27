@@ -20,7 +20,7 @@
 #pragma once
 
 #include "core/stringhelper.hpp"
-#include "vfs/filepath.hpp"
+#include "vfs/path.hpp"
 
 // Platform-specific Sleep(int msec) definition
 #ifdef CAESARIA_PLATFORM_WIN

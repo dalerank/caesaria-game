@@ -71,7 +71,7 @@ struct OverallDownloadProgressInfo
 struct CurDownloadInfo
 {
 	// The filename we're downloading
-	io::FilePath file;
+	vfs::Path file;
 
 	// The progress fraction
 	double progressFraction;
@@ -100,7 +100,7 @@ struct CurFileInfo
 	Operation operation;
 
 	// The file which is being worked on
-	io::FilePath file;
+	vfs::Path file;
 
 	// The progress of the whole operation
 	double progressFraction;
@@ -168,13 +168,13 @@ private:
 	FileOperationProgressPtr _fileProgressCallback;
 
 	// The name of the updater executable, to detect self-updates
-	io::FilePath _executable;
+	vfs::Path _executable;
 
 	// True if we've downloaded an update for the tdm_update binary
 	bool _updatingUpdater;
 
 	// The name of the update batch/shell script file
-	io::FilePath _updateBatchFile;
+	vfs::Path _updateBatchFile;
 
 	// The version information, indexed by version string "1.02" => [ReleaseFileSet]
 	ReleaseVersions _releaseVersions;
@@ -209,7 +209,7 @@ private:
 
 public:
 	// Pass the program options to this class
-	Updater(const UpdaterOptions& options, const io::FilePath& executable);
+	Updater(const UpdaterOptions& options, vfs::Path executable);
 
 	// Removes leftovers from previous run
 	void CleanupPreviousSession();
@@ -305,7 +305,7 @@ public:
 	// Interrupts ongoing downloads
 	void CancelDownloads();
 
-	bool VerifyUpdatePackageAt(const UpdatePackage& info, const io::FilePath& package);
+	bool VerifyUpdatePackageAt(const UpdatePackage& info, vfs::Path package);
 
 private:
 	// Throws if mirrors are empty
@@ -315,16 +315,16 @@ private:
 	void NotifyFullUpdateProgress();
 
 	// Notifier shortcut
-	void NotifyFileProgress(const io::FilePath& file, CurFileInfo::Operation op, double fraction);
+	void NotifyFileProgress(vfs::Path file, CurFileInfo::Operation op, double fraction);
 
 	// Returns false if the local files is missing or needs an update
-	bool CheckLocalFile(const io::FilePath& installPath, const ReleaseFile& releaseFile);
+	bool CheckLocalFile(vfs::Path installPath, const ReleaseFile& releaseFile);
 
 	// Get the target path (defaults to current path)
-	io::FileDir getTargetDir();
+	vfs::Directory getTargetDir();
 
 	// Extract the contents of the given zip file (and remove the zip afterwards)
-	void ExtractAndRemoveZip(const io::FilePath& zipFilePath);
+	void ExtractAndRemoveZip(vfs::Path zipFilePath);
 
 	// Creates a mirrored download
 	DownloadPtr PrepareMirroredDownload(const std::string& remoteFile);
@@ -344,9 +344,9 @@ private:
 	bool DifferentialUpdateAvailableForVersion(const std::string& version);
 
 	// Prepare the update batch/script file
-	void PrepareUpdateBatchFile(const io::FilePath& temporaryUpdater);
+	void PrepareUpdateBatchFile(vfs::Path temporaryUpdater);
 
-	void _markFileAsExecutable(io::FilePath path);
+	void _markFileAsExecutable(vfs::Path path);
 };
 
 } // namespace

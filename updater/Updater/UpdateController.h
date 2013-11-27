@@ -73,7 +73,7 @@ private:
 
 public:
 	// Options will be passed to the Updater object
-	UpdateController(IUpdateView& view, const io::FilePath& executableName, UpdaterOptions& options);
+	UpdateController(IUpdateView& view, vfs::Path executableName, UpdaterOptions& options);
 
 	~UpdateController();
 

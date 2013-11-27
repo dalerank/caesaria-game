@@ -58,7 +58,7 @@ namespace
 ConsoleUpdater::ConsoleUpdater(int argc, char* argv[]) :
 	_outcome(None),
 	_options(argc, argv),
-	_controller(*this, io::FilePath( argv[0] ), _options),
+	_controller(*this, vfs::Path( argv[0] ), _options),
 	_done(false)
 {
 	_abortSignalHandler = makeDelegate( this, &ConsoleUpdater::OnAbort);

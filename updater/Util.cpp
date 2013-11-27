@@ -19,9 +19,10 @@
 
 #include "Util.h"
 
-#include "vfs/filepath.hpp"
+#include "vfs/path.hpp"
 #include "core/logger.hpp"
-#include "vfs/filelist.hpp"
+#include "vfs/entries.hpp"
+#include "vfs/directory.hpp"
 
 #ifdef CAESARIA_PLATFORM_WIN
 
@@ -215,9 +216,9 @@ namespace
 bool Util::TDMIsRunning()
 {
 	// Traverse the /proc folder, this sets the flag to TRUE if the process was found
-	io::FileList procs = io::FileDir(PROC_FOLDER).getEntries();
+	vfs::Entries procs = vfs::Directory(PROC_FOLDER).getEntries();
 
-	for( io::FileList::ConstItemIt i= procs.begin(); i != procs.end(); ++i)
+	for( vfs::Entries::ConstItemIt i= procs.begin(); i != procs.end(); ++i)
 	{
 		if(CheckProcessFile(i->name.toString(), TDM_PROCESS_NAME)) // grayman - looking for tdm now instead of doom3
 		{
@@ -231,9 +232,9 @@ bool Util::TDMIsRunning()
 bool Util::DarkRadiantIsRunning()
 {
 	// Traverse the /proc folder, this sets the flag to TRUE if the process was found
-	io::FileList procs = io::FileDir(PROC_FOLDER).getEntries();
+	vfs::Entries procs = vfs::Directory(PROC_FOLDER).getEntries();
 
-	for( io::FileList::ConstItemIt i= procs.begin(); i != procs.end(); ++i)
+	for( vfs::Entries::ConstItemIt i= procs.begin(); i != procs.end(); ++i)
 	{
 		if (CheckProcessFile(i->name.toString(), "darkradiant"))
 		{

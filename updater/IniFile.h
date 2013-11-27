@@ -25,7 +25,7 @@
 #include <istream>
 #include <vector>
 #include "core/smartptr.hpp"
-#include "vfs/filepath.hpp"
+#include "vfs/path.hpp"
 #include "core/referencecounted.hpp"
 
 namespace tdm
@@ -54,7 +54,7 @@ public:
 
 	// Construct an INI file from the given filename
 	// Can return NULL if the given file cannot be read
-	static IniFilePtr ConstructFromFile(const io::FilePath& filename);
+	static IniFilePtr ConstructFromFile(vfs::Path filename);
 
 	// Construct an INI file from the given input stream
 	// Always returns non-NULL
@@ -120,7 +120,7 @@ public:
 	// Saves the contents into the given text file (target will be overwritten if existing)
 	// One can pass a header string which will be prepended at the top of the file, in comment form.
 	// The header string should be passed without the # character, these are added automatically.
-	void ExportToFile(const io::FilePath& file, const std::string& headerComments = "") const;
+	void ExportToFile(vfs::Path file, const std::string& headerComments = "") const;
 
 private:
 	void ParseFromString(const std::string& str);

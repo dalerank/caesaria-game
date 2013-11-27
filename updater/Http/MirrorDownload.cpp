@@ -26,10 +26,10 @@
 namespace tdm
 {
 
-MirrorDownload::MirrorDownload(const HttpConnectionPtr& conn, 
-							   const MirrorList& mirrors, 
-							   const std::string& srcFilename,
-								 const io::FilePath& destFilename) :
+MirrorDownload::MirrorDownload(const HttpConnectionPtr& conn,
+								 const MirrorList& mirrors,
+								 const std::string& srcFilename,
+								 vfs::Path destFilename) :
 	Download(conn, "", destFilename) // empty URL for starters
 {
 	if (mirrors.empty())

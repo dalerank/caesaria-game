@@ -56,7 +56,7 @@ struct ProgressInfo
 	FileOperationType operationType;
 
 	// The file we're busy with
-	io::FilePath file;
+	vfs::Path file;
 
 	// The mirror display name
 	std::string mirrorDisplayName;

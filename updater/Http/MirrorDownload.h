@@ -51,7 +51,7 @@ public:
 	MirrorDownload(const HttpConnectionPtr& conn, 
 				   const MirrorList& mirrors, 
 				   const std::string& srcFilename,
-					 const io::FilePath& destFilename);
+					 vfs::Path destFilename);
 	
 	// Get the display name of the currently chosen mirror
 	std::string GetCurrentMirrorName();

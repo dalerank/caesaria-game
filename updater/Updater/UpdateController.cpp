@@ -27,7 +27,7 @@ namespace tdm
 namespace updater
 {
 
-UpdateController::UpdateController(IUpdateView& view, const io::FilePath& executableName, UpdaterOptions& options) :
+UpdateController::UpdateController(IUpdateView& view, vfs::Path executableName, UpdaterOptions& options) :
 	_view(view),
 	_curStep(Init),
 	_updater(options, executableName.getBasename()),

@@ -31,7 +31,7 @@ class UpdatePackage :
 {
 public:
 	// The archive file this package is contained in
-	io::FilePath filename;
+	vfs::Path filename;
 
 	// Checksum of the update archive itself
 	unsigned int crc;

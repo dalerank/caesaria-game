@@ -17,7 +17,7 @@
 #define __CAESARIA_ENTRIES_H_INCLUDED__
 
 #include "path.hpp"
-#include "filelist_item.hpp"
+#include "entryinfo.hpp"
 #include "core/stringarray.hpp"
 #include "core/scopedptr.hpp"
 #include "core/referencecounted.hpp"

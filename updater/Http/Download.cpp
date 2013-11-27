@@ -31,7 +31,7 @@
 namespace tdm
 {
 
-Download::Download(const HttpConnectionPtr& conn, const std::string& url, const io::FilePath& destFilename) :
+Download::Download(const HttpConnectionPtr& conn, const std::string& url, vfs::Path destFilename) :
 	_curUrl(0),
 	_destFilename(destFilename),
 	_conn(conn),
@@ -45,7 +45,7 @@ Download::Download(const HttpConnectionPtr& conn, const std::string& url, const 
 	_urls.push_back(url);
 }
 
-Download::Download(const HttpConnectionPtr& conn, const std::vector<std::string>& urls, const io::FilePath& destFilename) :
+Download::Download(const HttpConnectionPtr& conn, const std::vector<std::string>& urls, vfs::Path destFilename) :
 	_urls(urls),
 	_curUrl(0),
 	_destFilename(destFilename),
@@ -81,13 +81,13 @@ void Download::Start()
 	}
 
 	// Construct the temporary filename
-	io::FilePath filename = _destFilename.getBasename();
-	io::FileDir folder = _destFilename.getFileDir();
+	vfs::Path filename = _destFilename.getBasename();
+	vfs::Directory folder = _destFilename.getDir();
 
 	if ( !folder.isExist() )
 	{
 		// Make sure the folder exists
-		if( !folder.create() )
+		if( !vfs::Directory::create( folder.toString() ) )
 		{
 			throw std::runtime_error("Could not create directory: " + folder.toString());
 		}
@@ -125,7 +125,7 @@ void Download::Stop()
 		}
 
 		// Remove temporary file
-		_tempFilename.remove();
+		vfs::NFile::remove( _tempFilename );
 	}
 }
 
@@ -174,7 +174,7 @@ void Download::Perform()
 	while (_curUrl < _urls.size())
 	{
 		// Remove any previous temporary file
-		_tempFilename.remove();
+		vfs::NFile::remove( _tempFilename );
 
 		const std::string& url = _urls[_curUrl];
 
@@ -200,10 +200,10 @@ void Download::Perform()
 			}
 
 			// Remove the destination filename before moving the temporary file over
-			_destFilename.remove();
+			vfs::NFile::remove( _destFilename );
 
 			// Move temporary file to the real one
-			if( _tempFilename.rename( _destFilename ) )
+			if( vfs::NFile::rename( _tempFilename, _destFilename ) )
 			{
 				_status = SUCCESS;
 			}
@@ -241,7 +241,7 @@ void Download::Perform()
 	}
 }
 
-const io::FilePath& Download::GetDestFilename() const
+vfs::Path Download::GetDestFilename() const
 {
 	return _destFilename;
 }
@@ -257,11 +257,11 @@ bool Download::CheckIntegrity()
 	{
 		Logger::warning( "Checking filesize of downloaded file, expecting %d", _requiredFilesize);
 
-		if( io::NFile::getSize(_tempFilename) != _requiredFilesize)
+		if( vfs::NFile::getSize(_tempFilename) != _requiredFilesize)
 		{
 			Logger::warning( "Downloaded file has the wrong size, expected %d but found %d",
 											 _requiredFilesize,
-											 io::NFile::getSize(_tempFilename) );
+											 vfs::NFile::getSize(_tempFilename) );
 			return false; // failed the file size check
 		}
 	}
