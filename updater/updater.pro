@@ -318,4 +318,5 @@ HEADERS += \
     http/httprequest.hpp \
     http/mirrordownload.hpp \
     http/mirrorlist.hpp \
-    inifile.hpp
+    inifile.hpp \
+    packager/packageroptions.hpp
