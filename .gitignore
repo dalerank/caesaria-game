@@ -32,3 +32,5 @@ en/*
 /source/gfx/*.autosave
 
 /source/version.hpp
+
+/updater/*.user

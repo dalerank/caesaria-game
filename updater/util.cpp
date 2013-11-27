@@ -29,7 +29,7 @@
 namespace updater
 {
 
-bool Util::TDMIsRunning()
+bool Util::caesariaIsRunning()
 {
 	DWORD processes[1024];
 	DWORD num;

@@ -144,7 +144,7 @@ bool Path::isFolder() const
 {
 #ifdef CAESARIA_PLATFORM_WIN
   WIN32_FILE_ATTRIBUTE_DATA fad;
-  if( ::GetFileAttributesEx( _d->path.c_str(), ::GetFileExInfoStandard, &fad )== 0 )
+  if( ::GetFileAttributesExA( _d->path.c_str(), ::GetFileExInfoStandard, &fad )== 0 )
       return false;
 
   return (fad.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY;

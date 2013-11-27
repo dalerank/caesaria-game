@@ -66,7 +66,7 @@ void Packager::createUpdate( bool release )
 
     unsigned int crc = data.crc32( 0 );
     vinfo->SetValue( sectionName, "crc", StringHelper::format( 0xff, "%x", crc ) );
-    vinfo->SetValue( sectionName, "filesize", StringHelper::format( 0xff, "%d", data.size() ) );
+    vinfo->SetValue( sectionName, "filesize", StringHelper::format( 0xff, "%d", data.size() ) );    
   }
 
   vinfo->ExportToFile( release

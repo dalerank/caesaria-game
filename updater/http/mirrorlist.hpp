@@ -16,7 +16,7 @@
 #ifndef __CAESARIA_MIRRORLIST_H_INLCUDE__
 #define __CAESARIA_MIRRORLIST_H_INLCUDE__
 
-#include "inifile.hpp"
+#include "../inifile.hpp"
 #include "core/logger.hpp"
 #include "core/stringhelper.hpp"
 

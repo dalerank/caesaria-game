@@ -193,7 +193,7 @@ Directory Directory::getApplicationDir()
   unsigned int pathSize=512;
   ByteArray tmpPath;
   tmpPath.resize( pathSize );
-  GetModuleFileName( 0, tmpPath.data(), pathSize);
+  GetModuleFileNameA( 0, tmpPath.data(), pathSize);
   Directory tmp( std::string( tmpPath.data() ) );
   tmp = tmp.up();
   return tmp;
