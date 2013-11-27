@@ -638,7 +638,7 @@ void Widget::setupUI( const VariantMap& ui )
   }
 }
 
-void Widget::setupUI(const io::FilePath& filename)
+void Widget::setupUI(const vfs::Path& filename)
 {
   setupUI( SaveAdapter::load( filename ) );
 }
