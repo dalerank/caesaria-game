@@ -1,29 +1,29 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_ARCHIVE_LOADER_H_INCLUDED__
-#define __OPENCAESAR3_ARCHIVE_LOADER_H_INCLUDED__
+#ifndef __CAESARIA_ARCHIVE_LOADER_H_INCLUDED__
+#define __CAESARIA_ARCHIVE_LOADER_H_INCLUDED__
 
 #include "core/referencecounted.hpp"
 #include "vfs/file.hpp"
 #include "core/smartptr.hpp"
 
-namespace io
+namespace vfs
 {
 
-class FileList;
+class Entries;
 
 //! The FileArchive manages archives and provides access to files inside them.
 class Archive : public virtual ReferenceCounted
@@ -42,7 +42,7 @@ public:
   \param filename The file to open
   \return Returns A pointer to the created file on success,
   or 0 on failure. */
-  virtual NFile createAndOpenFile(const FilePath& filename) =0;
+  virtual NFile createAndOpenFile(const Path& filename) =0;
 
   //! Opens a file based on its position in the file list.
   /** Creates and returns
@@ -53,7 +53,7 @@ public:
   //! Returns the complete file tree
   /** \return Returns the complete directory tree for the archive,
   including all files and folders */
-  virtual const FileList* getFileList() const =0;
+  virtual const Entries* getFileList() const =0;
 
   //! get the archive type
   virtual std::string getTypeName() const { return ""; }
@@ -81,7 +81,7 @@ public:
     \param filename Name of file to check.
     \return True if file seems to be loadable.
   */
-  virtual bool isALoadableFileFormat(const FilePath& filename) const =0;
+  virtual bool isALoadableFileFormat(const Path& filename) const =0;
 
   //! Check if the file might be loaded by this class
   /** This check may look into the file.
@@ -104,7 +104,7 @@ public:
     \param ignorePaths Files are searched for without checking for the directories
     \return Pointer to newly created archive, or 0 upon error.
   */
-  virtual ArchivePtr createArchive(const FilePath& filename, bool ignoreCase, bool ignorePaths) const =0;
+  virtual ArchivePtr createArchive(const Path& filename, bool ignoreCase, bool ignorePaths) const =0;
 
   //! Creates an archive from the file
   /**
@@ -118,7 +118,7 @@ public:
 
 typedef SmartPtr< ArchiveLoader > ArchiveLoaderPtr;
 
-} //end namespace io
+} //end namespace vfs
 
-#endif
+#endif //__CAESARIA_ARCHIVE_LOADER_H_INCLUDED__
 

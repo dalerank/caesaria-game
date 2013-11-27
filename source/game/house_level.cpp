@@ -649,7 +649,7 @@ HouseSpecHelper::~HouseSpecHelper()
 
 }
 
-void HouseSpecHelper::initialize( const io::FilePath& filename )
+void HouseSpecHelper::initialize( const vfs::Path& filename )
 {
   VariantMap houses = SaveAdapter::load( filename.toString() );
 

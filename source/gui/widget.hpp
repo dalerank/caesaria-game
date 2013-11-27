@@ -26,7 +26,7 @@
 #include "core/font.hpp"
 #include "core/smartptr.hpp"
 #include "core/variant.hpp"
-#include "vfs/filepath.hpp"
+#include "vfs/path.hpp"
 
 class GfxEngine;
 struct NEvent;
@@ -307,7 +307,7 @@ public:
    *	scripting languages, editors, debuggers or xml deserialization purposes.
    */
   virtual void setupUI( const VariantMap& ui );
-  virtual void setupUI( const io::FilePath& filename );
+  virtual void setupUI( const vfs::Path& filename );
 
   virtual void installEventHandler( Widget* elementHandler );
 

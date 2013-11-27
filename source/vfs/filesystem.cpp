@@ -1,23 +1,23 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #include "filesystem.hpp"
 #include "filenative_impl.hpp"
 #include "archive.hpp"
-#include "filelist.hpp"
+#include "entries.hpp"
 #include "archive_zip.hpp"
 #include "core/logger.hpp"
 
@@ -37,7 +37,7 @@
 	#include <unistd.h>
 #endif
 
-namespace io
+namespace vfs
 {
 
 class FileSystem::Impl
@@ -49,21 +49,21 @@ public:
   std::vector< ArchivePtr > openArchives;
 
   //! WorkingDirectory for Native and Virtual filesystems	
-  FilePath workingDirectory[2];
+  Path workingDirectory[2];
 
   Mode fileSystemType;
 
-  ArchivePtr changeArchivePassword( const FilePath& filename, const std::string& password );
+  ArchivePtr changeArchivePassword( const Path& filename, const std::string& password );
 };
 
-ArchivePtr FileSystem::Impl::changeArchivePassword(const FilePath& filename, const std::string& password )
+ArchivePtr FileSystem::Impl::changeArchivePassword(const Path& filename, const std::string& password )
 {
   for (int idx = 0; idx < (int)openArchives.size(); ++idx)
   {
     // TODO: This should go into a path normalization method
     // We need to check for directory names with trailing slash and without
-    const FilePath absPath = filename.getAbsolutePath();
-    const FilePath arcPath = openArchives[idx]->getFileList()->getPath();
+    const Path absPath = filename.getAbsolutePath();
+    const Path arcPath = openArchives[idx]->getFileList()->getPath();
     if( (absPath == arcPath) || (arcPath == (absPath.toString() + "/")) )
     {
       if( password.size() )
@@ -95,7 +95,7 @@ FileSystem::~FileSystem()
 {
 }
 
-NFile FileSystem::loadFileFromArchive( const FilePath& filePath )
+NFile FileSystem::loadFileFromArchive( const Path& filePath )
 {
   for( unsigned int i=0; i< _d->openArchives.size(); ++i)
   {
@@ -110,7 +110,7 @@ NFile FileSystem::loadFileFromArchive( const FilePath& filePath )
 }
 
 //! opens a file for read access
-NFile FileSystem::createAndOpenFile(const FilePath& filename, FSEntity::Mode mode)
+NFile FileSystem::createAndOpenFile(const Path& filename, Entity::Mode mode)
 {
   NFile file = loadFileFromArchive( filename );
 
@@ -176,7 +176,7 @@ bool FileSystem::moveFileArchive(unsigned int sourceIndex, int relative)
 
 
 //! Adds an archive to the file system.
-ArchivePtr FileSystem::mountArchive(  const FilePath& filename,
+ArchivePtr FileSystem::mountArchive(  const Path& filename,
 				      Archive::Type archiveType,
 				      bool ignoreCase,
 				      bool ignorePaths,
@@ -212,7 +212,7 @@ ArchivePtr FileSystem::mountArchive(  const FilePath& filename,
     // try to load archive based on content
     if( archive.isNull() )
     {
-      NFile file = createAndOpenFile( filename, FSEntity::fmRead );
+      NFile file = createAndOpenFile( filename, Entity::fmRead );
       if( file.isOpen() )
       {
         for (i = _d->archiveLoaders.size()-1; i >= 0; --i)
@@ -242,7 +242,7 @@ ArchivePtr FileSystem::mountArchive(  const FilePath& filename,
         // attempt to open file
         if( !file.isOpen() )
         {
-          file = createAndOpenFile(filename, FSEntity::fmRead );
+          file = createAndOpenFile(filename, Entity::fmRead );
         }
 
         // is the file open?
@@ -417,7 +417,7 @@ bool FileSystem::unmountArchive(unsigned int index)
 
 
 //! removes an archive from the file system.
-bool FileSystem::unmountArchive(const FilePath& filename)
+bool FileSystem::unmountArchive(const Path& filename)
 {
 	for (unsigned int i=0; i < _d->openArchives.size(); ++i)
 	{
@@ -458,7 +458,7 @@ ArchivePtr FileSystem::getFileArchive(unsigned int index)
 
 
 //! Returns the string of the current working directory
-const FilePath& FileSystem::getWorkingDirectory()
+const Path& FileSystem::getWorkingDirectory()
 {
 	int type = 0;
 
@@ -499,7 +499,7 @@ const FilePath& FileSystem::getWorkingDirectory()
 
 
 //! Changes the current Working Directory to the given string.
-bool FileSystem::changeWorkingDirectoryTo(const FilePath& newDirectory)
+bool FileSystem::changeWorkingDirectoryTo(const Path& newDirectory)
 {
 	bool success=false;
 
@@ -532,7 +532,7 @@ FileSystem::Mode FileSystem::setFileListSystem( Mode listType)
 
 //! looks if file is in the same directory of path. returns offset of directory.
 //! 0 means in same directory. 1 means file is direct child of path
-inline int isInSameDirectory ( const FilePath& path, const FilePath& file )
+inline int isInSameDirectory ( const Path& path, const Path& file )
 {
 	int subA = 0;
 	int subB = 0;
@@ -559,10 +559,10 @@ inline int isInSameDirectory ( const FilePath& path, const FilePath& file )
 }
 
 //! Creates a list of files and directories in the current working directory
-FileList FileSystem::getFileList()
+Entries FileSystem::getFileList()
 {
-  FileList ret;
-  FilePath rpath = StringHelper::replace( getWorkingDirectory().toString(), "\\", "/" );
+  Entries ret;
+  Path rpath = StringHelper::replace( getWorkingDirectory().toString(), "\\", "/" );
   rpath = rpath.addEndSlash();
 
 	//! Construct from native filesystem
@@ -580,7 +580,7 @@ FileList FileSystem::getFileList()
 			{
 				do
 				{
-					ret.addItem( FilePath( rpath.toString() + c_file.name ), 0, c_file.size, (_A_SUBDIR & c_file.attrib) != 0, 0);
+					ret.addItem( Path( rpath.toString() + c_file.name ), 0, c_file.size, (_A_SUBDIR & c_file.attrib) != 0, 0);
 				}
 				while( _findnext( hFile, &c_file ) == 0 );
 
@@ -644,15 +644,15 @@ FileList FileSystem::getFileList()
 		FileListItem e3;
 
 		//! PWD
-		ret.addItem( FilePath( rpath.toString() + "." ), 0, 0, true, 0);
+		ret.addItem( Path( rpath.toString() + "." ), 0, 0, true, 0);
 
 		//! parent
-		ret.addItem( FilePath( rpath.toString() + ".." ), 0, 0, true, 0);
+		ret.addItem( Path( rpath.toString() + ".." ), 0, 0, true, 0);
 
 		//! merge archives
 		for (unsigned int i=0; i < _d->openArchives.size(); ++i)
 		{
-			const FileList *merge = _d->openArchives[i]->getFileList();
+			const Entries *merge = _d->openArchives[i]->getFileList();
 
 			for (unsigned int j=0; j < merge->getFileCount(); ++j)
 			{
@@ -670,7 +670,7 @@ FileList FileSystem::getFileList()
 }
 
 //! determines if a file exists and would be able to be opened.
-bool FileSystem::existFile(const FilePath& filename) const
+bool FileSystem::existFile(const Path& filename) const
 {
   for (unsigned int i=0; i < _d->openArchives.size(); ++i)
       if (_d->openArchives[i]->getFileList()->findFile(filename)!=-1)

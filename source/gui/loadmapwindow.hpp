@@ -19,7 +19,7 @@
 
 #include "widget.hpp"
 #include "core/scopedptr.hpp"
-#include "vfs/filepath.hpp"
+#include "vfs/path.hpp"
 #include "core/signals.hpp"
 
 class Picture;
@@ -31,7 +31,7 @@ class LoadMapWindow : public Widget
 {
 public:
   LoadMapWindow( Widget* parent, const Rect& rect, 
-    const io::FilePath& dir, const std::string& ext,
+    const vfs::Path& dir, const std::string& ext,
     int id );
   
   ~LoadMapWindow();

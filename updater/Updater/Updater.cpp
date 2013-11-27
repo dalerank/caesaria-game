@@ -219,7 +219,7 @@ void Updater::DetermineLocalVersion()
 	_localVersions.clear();
 	_applicableDifferentialUpdates.clear();
 
-	Logger::warning( " Trying to determine installed TDM version...");
+	Logger::warning( " Trying to determine installed CaesarIA version...");
 
 	std::size_t totalItems = 0;
 

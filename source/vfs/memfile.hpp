@@ -18,16 +18,16 @@
 #define __CAESARIA_MEMORY_FILE_H_INCLUDED__
 
 #include "file.hpp"
-#include "filepath.hpp"
+#include "path.hpp"
 #include "core/bytearray.hpp"
 
-namespace io
+namespace vfs
 {
 
 /*!
         Class for reading and writing from memory.
 */
-class MemoryFile : public FSEntity
+class MemoryFile : public Entity
 {
 public:
   //! Destructor
@@ -61,10 +61,10 @@ public:
   virtual bool isEof() const;
 
   //! returns name of file
-  virtual const FilePath& getFileName() const;
+  virtual const Path& getFileName() const;
 
-  static NFile create( void* memory, long len, const FilePath& fileName, bool deleteMemoryWhenDropped );
-  static NFile create( ByteArray data, const FilePath& fileName );
+  static NFile create( void* memory, long len, const Path& fileName, bool deleteMemoryWhenDropped );
+  static NFile create( ByteArray data, const Path& fileName );
 
 private:
   MemoryFile();
@@ -72,7 +72,7 @@ private:
   void *Buffer;
   long Len;
   long Pos;
-  FilePath Filename;
+  Path Filename;
   bool deleteMemoryWhenDropped;
 };
 

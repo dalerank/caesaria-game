@@ -204,7 +204,6 @@ SOURCES += main.cpp \
     ../source/core/threadtask.cpp \
     ../source/core/stringhelper.cpp \
     ../source/core/time.cpp \
-    ../source/vfs/filepath.cpp \
     Updater/UpdateController.cpp \
     ../source/core/variant.cpp \
     ../source/vfs/filesystem.cpp \
@@ -270,7 +269,6 @@ HEADERS += \
     ../source/core/threadtask.hpp \
     ../source/core/stringhelper.hpp \
     ../source/core/time.hpp \
-    ../source/vfs/filepath.hpp \
     Updater/UpdateController.h \
     ../source/core/variant.hpp \
     ../source/vfs/filesystem.hpp \

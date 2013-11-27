@@ -1,20 +1,21 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "settings.hpp"
-#include "vfs/filepath.hpp"
+#include "vfs/path.hpp"
+#include "vfs/directory.hpp"
 
 const char* GameSettings::localePath = "localePath";
 const char* GameSettings::resourcePath = "resourcePath";
@@ -43,7 +44,7 @@ GameSettings& GameSettings::getInstance()
 
 GameSettings::GameSettings() : _d( new Impl )
 {
-  std::string application_path = io::FileDir::getApplicationDir().toString();
+  std::string application_path = vfs::Directory::getApplicationDir().toString();
 
   _d->options[ resourcePath ] = Variant( application_path + std::string( "/resources" ) );
   _d->options[ localePath ] = Variant( application_path + std::string( "/resources/locale" ) );
@@ -68,15 +69,15 @@ Variant GameSettings::get( const std::string& option )
   return getInstance()._d->options[ option ];
 }
 
-io::FilePath GameSettings::rcpath( const std::string& option )
+vfs::Path GameSettings::rcpath( const std::string& option )
 {
   std::string rc = getInstance()._d->options[ resourcePath ].toString();
 
   VariantMap::iterator it = getInstance()._d->options.find( option );
   if( it == getInstance()._d->options.end() )
   {
-    return io::FilePath(rc + option);
+    return vfs::Path(rc + option);
   }
 
-  return io::FilePath(rc + getInstance()._d->options[ option ].toString());
+  return vfs::Path(rc + getInstance()._d->options[ option ].toString());
 }

@@ -1,9 +1,10 @@
-#ifndef _NRP_FILELIST_ITEM_INCLUDE_H_
-#define _NRP_FILELIST_ITEM_INCLUDE_H_
+#ifndef _CAESARIA_FILELIST_ITEM_INCLUDE_H_
+#define _CAESARIA_FILELIST_ITEM_INCLUDE_H_
 
 #include "core/stringhelper.hpp"
+#include "path.hpp"
 
-namespace io
+namespace vfs
 {
 
 //! An entry in a list of files, can be a folder or a file.
@@ -13,12 +14,12 @@ public:
 	//! The name of the file
 	/** If this is a file or folder in the virtual filesystem and the archive
 	was created with the ignoreCase flag then the file name will be lower case. */
-	FilePath name;
+	Path name;
 
 	//! The name of the file including the path
 	/** If this is a file or folder in the virtual filesystem and the archive was
 	created with the ignoreDirs flag then it will be the same as name. */
-	FilePath fullName;
+	Path fullName;
 
 	//! The size of the file in bytes
 	unsigned int size;
@@ -53,6 +54,6 @@ public:
 	}
 };
 
-} // end namspace io
+} // end namspace vfs
 
-#endif
+#endif //_CAESARIA_FILELIST_ITEM_INCLUDE_H_

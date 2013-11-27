@@ -26,10 +26,10 @@
 #define getline_def getline
 #endif
 
-namespace io
+namespace vfs
 {
 
-FileNative::FileNative(const FilePath& fileName, FSEntity::Mode mode)
+FileNative::FileNative(const Path& fileName, Entity::Mode mode)
 : _file(0), _size(0), _name(fileName), _mode( mode )
 {
 	#ifdef _DEBUG
@@ -197,10 +197,10 @@ void FileNative::openFile()
   }
 
   const char* modeStr[] = { "rb", "wb", "ab" };
-  if( (unsigned int)_mode > FSEntity::fmAppend )
+  if( (unsigned int)_mode > Entity::fmAppend )
   {
     Logger::warning( "Unsupported file open mode for %s", _name.toString().c_str() );
-    _mode = FSEntity::fmRead;
+    _mode = Entity::fmRead;
   }
 
   _file = fopen( _name.toString().c_str(), modeStr[ _mode ] );
@@ -219,7 +219,7 @@ void FileNative::openFile()
 }
 
 //! returns name of file
-const FilePath& FileNative::getFileName() const
+const Path& FileNative::getFileName() const
 {
 	return _name;
 }

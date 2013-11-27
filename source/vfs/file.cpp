@@ -1,34 +1,35 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "file.hpp"
 #include "filesystem.hpp"
-#include "filepath.hpp"
+#include "path.hpp"
 
 #if defined(CAESARIA_PLATFORM_WIN)
+#include "windows.h"
 #define getline_def getline_win
 #elif defined(CAESARIA_PLATFORM_UNIX)
 #define getline_def getline
 #endif //CAESARIA_PLATFORM_UNIX
 
-namespace io
+namespace vfs
 {
 
-static const FilePath purePath = "";
+static const Path purePath = "";
 
-NFile NFile::open(const FilePath& fileName, FSEntity::Mode mode)
+NFile NFile::open(Path fileName, Entity::Mode mode)
 {
   return FileSystem::instance().createAndOpenFile( fileName, mode );
 }
@@ -104,7 +105,7 @@ ByteArray NFile::readAll()
 }
 
 //! returns name of file
-const FilePath& NFile::getFileName() const
+const Path& NFile::getFileName() const
 {
 	return _entity.isValid() ? _entity->getFileName() : purePath;
 }
@@ -144,6 +145,24 @@ long NFile::getSize(const FilePath& filename)
 {
   NFile file = NFile::open( filename );
   return file.getSize();
+}
+
+int NFile::remove( Path filename )
+{
+#ifdef CAESARIA_PLATFORM_WIN
+    DeleteFileA( filename.toString().c_str() );
+#elif defined(CAESARIA_PLATFORM_UNIX)
+    ::remove( filename.toString().c_str() );
+#endif
+
+  return 0;
+}
+
+int NFile::rename(Path oldpath, Path newpath)
+{
+  ::rename( oldpath.toString().c_str(), newpath.toString().c_str() );
+
+  return 0;
 }
 
 } //end namespace io

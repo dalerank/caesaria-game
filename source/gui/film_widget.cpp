@@ -39,7 +39,7 @@ public oc3_signals:
   Signal0<> onCloseSignal;
 };
 
-FilmWidget::FilmWidget(Widget* parent, io::FilePath film )
+FilmWidget::FilmWidget(Widget* parent, vfs::Path film )
   : Widget( parent, -1, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   _d->lbMessage = 0;

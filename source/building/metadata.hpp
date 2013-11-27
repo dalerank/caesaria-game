@@ -21,7 +21,7 @@
 
 #include "game/good.hpp"
 #include "core/scopedptr.hpp"
-#include "vfs/filepath.hpp"
+#include "vfs/path.hpp"
 #include "gfx/picture.hpp"
 #include "core/variant.hpp"
 #include "gfx/tileoverlay.hpp"
@@ -77,7 +77,7 @@ public:
 
    static std::string getPrettyName( TileOverlay::Type bType );
 
-   void initialize( const io::FilePath& filename );
+   void initialize( const vfs::Path& filename );
 private:
    MetaDataHolder();
 

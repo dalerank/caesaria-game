@@ -18,7 +18,7 @@
 
 #include "core/scopedptr.hpp"
 #include "core/variant.hpp"
-#include "vfs/filepath.hpp"
+#include "vfs/path.hpp"
 
 class GameSettings
 {
@@ -42,7 +42,7 @@ public:
   static void set( const std::string& option, const Variant& value );
   static Variant get( const std::string& option );
 
-  static io::FilePath rcpath( const std::string& option="" );
+  static vfs::Path rcpath( const std::string& option="" );
 
 private:
   GameSettings();

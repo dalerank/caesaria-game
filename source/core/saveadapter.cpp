@@ -20,7 +20,7 @@
 
 #include <fstream>
 
-VariantMap SaveAdapter::load( const io::FilePath& fileName )
+VariantMap SaveAdapter::load( const vfs::Path& fileName )
 {
   std::fstream f( fileName.toString().c_str(), std::ios::in | std::ios::binary);
 
@@ -61,7 +61,7 @@ SaveAdapter::SaveAdapter()
 
 }
 
-bool SaveAdapter::save( const VariantMap& options, const io::FilePath& filename )
+bool SaveAdapter::save( const VariantMap& options, const vfs::Path& filename )
 {
   std::string data = Json::serialize( options.toVariant(), " " );
   if( !data.empty() )

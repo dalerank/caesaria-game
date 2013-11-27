@@ -17,7 +17,7 @@
 #include "memfile.hpp"
 #include "core/logger.hpp"
 
-namespace io
+namespace vfs
 {
 
 MemoryFile::MemoryFile()
@@ -33,7 +33,7 @@ MemoryFile::MemoryFile()
 
 }
 
-NFile MemoryFile::create(void* memory, long len, const FilePath& fileName, bool d)
+NFile MemoryFile::create(void* memory, long len, const Path& fileName, bool d)
 {
     MemoryFile* mf = new MemoryFile();
     mf->Buffer = memory;
@@ -48,7 +48,7 @@ NFile MemoryFile::create(void* memory, long len, const FilePath& fileName, bool 
     return NFile( ret );
 }
 
-NFile MemoryFile::create( ByteArray data, const FilePath& fileName )
+NFile MemoryFile::create( ByteArray data, const Path& fileName )
 {
     MemoryFile* mf = new MemoryFile();
     mf->Buffer = new char[ data.size() ];
@@ -224,7 +224,7 @@ bool MemoryFile::isEof() const
 }
 
 //! returns name of file
-const FilePath& MemoryFile::getFileName() const
+const Path& MemoryFile::getFileName() const
 {
 	return Filename;
 }

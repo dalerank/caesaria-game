@@ -1,21 +1,21 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "archive_zip.hpp"
 
-#include "filelist.hpp"
+#include "entries.hpp"
 #include "memfile.hpp"
 #include "core/logger.hpp"
 //#include <NrpLimitFile.h>
@@ -30,7 +30,7 @@
 #include "bzip2/bzlib.h"
 #include "aesGladman/fileenc.h"
 
-namespace io
+namespace vfs
 {
 
 // -----------------------------------------------------------------------------
@@ -38,7 +38,7 @@ namespace io
 // -----------------------------------------------------------------------------
 
 //! Constructor
-ZipArchiveLoader::ZipArchiveLoader(io::FileSystem* fs)
+ZipArchiveLoader::ZipArchiveLoader(vfs::FileSystem* fs)
 : _fileSystem(fs)
 {
 	#ifdef _DEBUG
@@ -47,7 +47,7 @@ ZipArchiveLoader::ZipArchiveLoader(io::FileSystem* fs)
 }
 
 //! returns true if the file maybe is able to be loaded by this class
-bool ZipArchiveLoader::isALoadableFileFormat(const FilePath& filename) const
+bool ZipArchiveLoader::isALoadableFileFormat(const Path& filename) const
 {
     std::string fileExtension = filename.getExtension();
     return StringHelper::isEquale( fileExtension, ".zip", StringHelper::equaleIgnoreCase )
@@ -66,10 +66,10 @@ bool ZipArchiveLoader::isALoadableFileFormat( Archive::Type fileType) const
 //! Creates an archive from the filename
 /** \param file File handle to check.
 \return Pointer to newly created archive, or 0 upon error. */
-ArchivePtr ZipArchiveLoader::createArchive(const FilePath& filename, bool ignoreCase, bool ignorePaths) const
+ArchivePtr ZipArchiveLoader::createArchive(const Path& filename, bool ignoreCase, bool ignorePaths) const
 {
   ArchivePtr archive;
-  NFile file = _fileSystem->createAndOpenFile(filename, FSEntity::fmRead );
+  NFile file = _fileSystem->createAndOpenFile(filename, Entity::fmRead );
 
   if( file.isOpen() )
   {
@@ -124,7 +124,7 @@ bool ZipArchiveLoader::isALoadableFileFormat( NFile file ) const
 // -----------------------------------------------------------------------------
 
 ZipArchiveReader::ZipArchiveReader( NFile file, bool ignoreCase, bool ignorePaths, bool isGZip)
- : FileList( (file.isOpen() ? file.getFileName() : FilePath("") ), ignoreCase, ignorePaths),
+ : Entries( (file.isOpen() ? file.getFileName() : Path("") ), ignoreCase, ignorePaths),
    File(file), IsGZip(isGZip)
 {
 	#ifdef _DEBUG
@@ -156,7 +156,7 @@ Archive::Type ZipArchiveReader::getType() const
             : Archive::zip;
 }
 
-const FileList* ZipArchiveReader::getFileList() const
+const Entries* ZipArchiveReader::getFileList() const
 {
 	return this;
 }
@@ -195,7 +195,7 @@ bool ZipArchiveReader::scanGZipHeader()
             File.seek(dataLen, true);
 		}
 
-        FilePath ZipFileName = "";
+        Path ZipFileName = "";
 
 		if (header.flags & EGZF_FILE_NAME)
 		{
@@ -266,7 +266,7 @@ bool ZipArchiveReader::scanGZipHeader()
 //! scans for a local header, returns false if there is no more local file header.
 bool ZipArchiveReader::scanZipHeader(bool ignoreGPBits)
 {
-    FilePath ZipFileName = "";
+    Path ZipFileName = "";
 	SZipFileEntry entry;
 	entry.Offset = 0;
 	memset(&entry.header, 0, sizeof(SZIPFileHeader));
@@ -386,7 +386,7 @@ bool ZipArchiveReader::scanZipHeader(bool ignoreGPBits)
 //! scans for a local header, returns false if there is no more local file header.
 bool ZipArchiveReader::scanCentralDirectoryHeader()
 {
-    FilePath ZipFileName = "";
+    Path ZipFileName = "";
 	SZIPFileCentralDirFileHeader entry;
     File.read(&entry, sizeof(SZIPFileCentralDirFileHeader));
 
@@ -408,7 +408,7 @@ bool ZipArchiveReader::scanCentralDirectoryHeader()
 
 
 //! opens a file by file name
-NFile ZipArchiveReader::createAndOpenFile(const FilePath& filename)
+NFile ZipArchiveReader::createAndOpenFile(const Path& filename)
 {
     int index = findFile( filename, false );
 

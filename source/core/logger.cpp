@@ -85,8 +85,9 @@ public:
 
 	void update( std::string str )
 	{
-		std::cout << "\r" << std::flush;
-		std::cout << str << std::flush;
+		std::cout << "\r";
+		std::cout << str ;
+		std::cout << "\r"  << std::flush;
 	}
 };
 

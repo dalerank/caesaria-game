@@ -24,6 +24,7 @@
 
 #include "Updater/UpdaterOptions.h"
 #include "Updater/Updater.h"
+#include "Packager/Packager.h"
 
 #include "Util.h"
 
@@ -42,27 +43,38 @@ int main(int argc, char* argv[])
 									 "0.0.1");
 	Logger::warning( "" );
 
-	ConsoleUpdater updater(argc, argv);
+	UpdaterOptions localOptions( argc, argv );
 
-	updater.Run();
-
-	int exitCode = EXIT_FAILURE;
-
-	switch (updater.GetOutcome())
+	if( localOptions.isSet( "createUpdateInfo" ) )
 	{
-		case ConsoleUpdater::None:
-			// should not happen?
-			break;
-		case ConsoleUpdater::Failed:
-			exitCode = EXIT_FAILURE;
-			break;
-		case ConsoleUpdater::Ok:
-			exitCode = EXIT_SUCCESS;
-			break;
-		case ConsoleUpdater::OkNeedRestart:
-			exitCode = EXIT_SUCCESS;
-			break;
-	};
 
-	return exitCode;
+
+		return 0;
+	}
+	else
+	{
+		ConsoleUpdater updater(argc, argv);
+
+		updater.Run();
+
+		int exitCode = EXIT_FAILURE;
+
+		switch (updater.GetOutcome())
+		{
+			case ConsoleUpdater::None:
+				// should not happen?
+				break;
+			case ConsoleUpdater::Failed:
+				exitCode = EXIT_FAILURE;
+				break;
+			case ConsoleUpdater::Ok:
+				exitCode = EXIT_SUCCESS;
+				break;
+			case ConsoleUpdater::OkNeedRestart:
+				exitCode = EXIT_SUCCESS;
+				break;
+		};
+
+		return exitCode;
+	}
 }

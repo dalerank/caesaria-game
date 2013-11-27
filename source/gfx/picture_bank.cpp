@@ -76,7 +76,7 @@ Picture& PictureBank::getPicture(const std::string &name)
   if( it == _d->resources.end() )
   {
     //can't find image in valid resources, try load from hdd
-    io::NFile file = io::NFile::open( name );
+    vfs::NFile file = vfs::NFile::open( name );
 
     if( file.isOpen() )
     {

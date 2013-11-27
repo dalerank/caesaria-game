@@ -54,7 +54,7 @@ std::string NameGenerator::rand( NameType type )
   return names->rand() + " " + ng._d->surname.rand();
 }
 
-void NameGenerator::initialize(const io::FilePath &filename)
+void NameGenerator::initialize(const vfs::Path &filename)
 {
   VariantMap names = SaveAdapter::load( filename );
 
