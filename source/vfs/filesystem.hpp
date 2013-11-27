@@ -98,7 +98,7 @@ public:
   //! Changes the current Working Directory to the string given.
   //! The string is operating system dependent. Under Windows it will look
   //! like this: "drive:\directory\sudirectory\"
-  virtual bool changeWorkingDirectoryTo(const Path& newDirectory);
+  virtual bool changeWorkingDirectoryTo(Path newDirectory);
 
   //! Creates a list of files and directories in the current working directory
   //! and returns it.

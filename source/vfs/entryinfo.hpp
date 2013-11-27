@@ -8,7 +8,7 @@ namespace vfs
 {
 
 //! An entry in a list of files, can be a folder or a file.
-class FileListItem
+class EntryInfo
 {
 public:
 	//! The name of the file
@@ -36,7 +36,7 @@ public:
 	bool isDirectory;
 
 	//! The == operator is provided so that CFileList can slowly search the list!
-	bool operator == (const FileListItem& other) const
+	bool operator == (const EntryInfo& other) const
 	{
 		if (isDirectory != other.isDirectory)
 			return false;
@@ -45,7 +45,7 @@ public:
 	}
 
 	//! The < operator is provided so that CFileList can sort and quickly search the list.
-	bool operator <(const FileListItem& other) const
+	bool operator <(const EntryInfo& other) const
 	{
 		if (isDirectory != other.isDirectory)
 			return isDirectory;

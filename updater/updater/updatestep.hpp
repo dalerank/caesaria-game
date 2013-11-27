@@ -13,17 +13,36 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_PROJECT_VERSION_INCLUDE_H_
-#define __CAESARIA_PROJECT_VERSION_INCLUDE_H_
+#ifndef __CAESARIA_UPDATESTEP_H_INLCUDE__
+#define __CAESARIA_UPDATESTEP_H_INLCUDE__
 
-#include "core/platform.hpp"
+namespace updater
+{
 
-#define CAESARIA_VERSION_MAJOR 0
-#define CAESARIA_VERSION_MINOR 2
-#define CAESARIA_VERSION_REVSN 924
+/**
+ * The various update steps, in order.
+ * During an update it's possible that some 
+ * of these steps are skipped.
+ */
+enum UpdateStep
+{
+	Init,				// Startup, not doing anything yet
+	CleanupPreviousSession,
+	UpdateMirrors,
+	DownloadStableVersion,
+	DownloadVersionInfo,
+	CompareLocalFilesToNewest,
+	DetermineLocalVersion,
+	DownloadNewUpdater,
+	DownloadDifferentialUpdate,
+	PerformDifferentialUpdate,
+	DownloadFullUpdate,
+	PostUpdateCleanup,
+	Done,
+	RestartUpdater
+};
 
-#define CAESARIA_STR_EXT(__A) #__A
-#define CAESARIA_STR_A(__A) CAESARIA_STR_EXT(__A)
-#define CAESARIA_VERSION CAESARIA_STR_A(CAESARIA_VERSION_MAJOR)"."CAESARIA_STR_A(CAESARIA_VERSION_MINOR)"."CAESARIA_STR_A(CAESARIA_VERSION_REVSN)"["CAESARIA_PLATFORM_NAME":"CAESARIA_COMPILER_NAME"]"
+} // namespace
 
-#endif
+
+#endif  //__CAESARIA_UPDATESTEP_H_INLCUDE__

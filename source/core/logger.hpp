@@ -25,6 +25,7 @@ class LogWriter : public ReferenceCounted
 {
 public:
   virtual void write( std::string ) {}
+  virtual void update( std::string ) {}
 };
 
 typedef SmartPtr<LogWriter> LogWriterPtr;
@@ -34,6 +35,8 @@ class Logger
 public:
   typedef enum { consolelog=0, filelog, count } Type;
   static void warning( const char* fmt, ...);
+  static void warning( const std::string& text );
+  static void update( const std::string& text );
 
   static void registerWriter( Type type );
   static void registerWriter( std::string name, LogWriterPtr writer );

@@ -724,7 +724,7 @@ public:
 // support static_cast between void * and function pointers.
 
 	template< class DerivedClass >
-	inline void CopyFrom (DerivedClass *pParent, const DelegateMemento &right) {
+	inline void CopyFrom (DerivedClass*, const DelegateMemento &right) {
 		SetMementoFrom(right);
 	}
 	// For static functions, the 'static_function_invoker' class in the parent

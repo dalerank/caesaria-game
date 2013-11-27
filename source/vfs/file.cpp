@@ -17,12 +17,23 @@
 #include "filesystem.hpp"
 #include "path.hpp"
 
-#if defined(CAESARIA_PLATFORM_WIN)
-#include "windows.h"
-#define getline_def getline_win
+#ifdef CAESARIA_PLATFORM_WIN
+  #define getline_def getline_win
+  #include <windows.h>
+  #include <io.h>
 #elif defined(CAESARIA_PLATFORM_UNIX)
-#define getline_def getline
-#endif //CAESARIA_PLATFORM_UNIX
+  #ifdef CAESARIA_PLATFORM_LINUX
+    #include <sys/io.h>
+    #include <linux/limits.h>
+  #elif defined(CAESARIA_PLATFORM_MACOSX)
+    #include <libproc.h>
+  #endif
+  #define getline_def getline
+  #include <sys/stat.h>
+  #include <unistd.h>
+  #include <stdio.h>
+  #include <libgen.h>
+#endif
 
 namespace vfs
 {
@@ -141,22 +152,29 @@ NFile& NFile::operator=( const NFile& other )
   return *this;
 }
 
-int NFile::remove( Path filename )
+unsigned long NFile::getSize(vfs::Path filename)
 {
+  NFile file = NFile::open( filename );
+  return file.getSize();
+}
+
+bool NFile::remove( Path filename )
+{
+  int result = 0;
 #ifdef CAESARIA_PLATFORM_WIN
     DeleteFileA( filename.toString().c_str() );
 #elif defined(CAESARIA_PLATFORM_UNIX)
-    ::remove( filename.toString().c_str() );
+  result = ::remove( filename.toString().c_str() );
 #endif
 
-  return 0;
+  return (result == 0);
 }
 
-int NFile::rename(Path oldpath, Path newpath)
+bool NFile::rename(Path oldpath, Path newpath)
 {
-  ::rename( oldpath.toString().c_str(), newpath.toString().c_str() );
+  int result = ::rename( oldpath.toString().c_str(), newpath.toString().c_str() );
 
-  return 0;
+  return (result == 0);
 }
 
 } //end namespace io

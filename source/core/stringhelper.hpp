@@ -40,6 +40,8 @@ public:
   */
   static unsigned int toUint(const char* in, const char** out=0);
 
+  static unsigned int toUint(const std::string& in);
+
   static int toInt(const char* in, const char** out=0);
 
   static int toInt(const std::string& number );
@@ -60,7 +62,7 @@ public:
 
   static std::string replace(std::string text, const std::string& from, const std::string& to);
 
-  static StringArray split( const std::string& str, const std::string& spl, unsigned int count=1, bool ignoreEmptyTokens=true, bool keepSeparators=false);
+  static StringArray split( std::string str, std::string spl );
 
   static bool isEqualen(const std::string& str1, const std::string& str2, unsigned int n);
 
@@ -68,6 +70,8 @@ public:
   static char localeLower( char x );
 
   static int vformat(std::string& str, int max_size, const char* format, va_list argument_list);
+
+  static std::string trim( const std::string& str );
 };
 
 #endif

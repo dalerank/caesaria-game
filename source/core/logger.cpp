@@ -18,10 +18,11 @@
 #include "stringhelper.hpp"
 #include "mutex.hpp"
 #include "time.hpp"
+#include "foreach.hpp"
 
 #include <cstdarg>
 #include <cfloat>
-#include <cstdio>
+#include <stdio.h>
 #include <limits>
 #include <climits>
 #include <cstring>
@@ -79,7 +80,14 @@ class ConsoleLogWriter : public LogWriter
 public:
 	void write( std::string str)
 	{
-		std::cout << str;
+		std::cout << str << std::endl;
+	}
+
+	void update( std::string str )
+	{
+		std::cout << "\r";
+		std::cout << str ;
+		std::cout << "\r"  << std::flush;
 	}
 };
 
@@ -89,11 +97,24 @@ public:
   typedef std::map<std::string,LogWriterPtr> Writers;
 
   Writers writers;
+
+  void write( const std::string& message, bool newLine=true )
+  {
+    for( Writers::iterator i=writers.begin(); i != writers.end(); i++  )
+    {
+      if( i->second.isValid() )
+      {
+        if( newLine ) i->second->write( message );
+        else i->second->update( message );
+      }
+    }
+  }
 };
 
 void Logger::warning( const char* fmt, ... )
 {
   va_list argument_list;
+
   va_start(argument_list, fmt);
 
   std::string ret;
@@ -101,7 +122,17 @@ void Logger::warning( const char* fmt, ... )
 
   va_end(argument_list);
 
-  std::cout << ret << std::endl;
+  getInstance()._d->write( ret );
+}
+
+void Logger::warning(const std::string& text)
+{
+  getInstance()._d->write( text );
+}
+
+void Logger::update(const std::string& text)
+{  
+  getInstance()._d->write( text, false );
 }
 
 void Logger::registerWriter(Logger::Type type)

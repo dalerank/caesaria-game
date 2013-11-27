@@ -63,6 +63,7 @@ enum Type
   fishingBoatWork,
   homelessSit,
   lion,
+  britonSoldier,
   charioter,
   countType
 };

@@ -23,27 +23,15 @@
 class ByteArray : public std::vector<char>
 {
 public:
-  ByteArray()
-  {
+  ByteArray();
 
-  }
+  ByteArray& operator=( const std::string& str );
 
-  ByteArray& operator=( const std::string& str )
-  {
-    resize( str.size() + 1, 0 );
-    memcpy( &(*this)[0], str.c_str(), str.size() );
-    return *this;
-  }
+  const char* data() const;
 
-  const char* data() const
-  {
-    return &(*this)[0];
-  }
+  char* data();
 
-  char* data()
-  {
-    return &(*this)[0];
-  }
+  unsigned long crc32(unsigned long crc);
 };
 
 #endif //__OPENCAESAR3_BYTEARRAY_H_INCLUDED__

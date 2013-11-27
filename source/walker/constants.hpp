@@ -51,6 +51,7 @@ enum Type{
   protestor,
   patrician,
   corpse,
+  enemySoldier,
   all = 0xff,
   any = all
 };

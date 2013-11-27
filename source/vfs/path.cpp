@@ -157,20 +157,26 @@ bool Path::isFolder() const
 #endif //CAESARIA_PLATFORM_UNIX
 }
 
+bool Path::isDirectoryEntry() const
+{
+  std::string baseName = getBasename().toString();
+  return (baseName == firstEntry || baseName == secondEntry);
+}
+
 std::string Path::getExtension() const 
 {
-    if( isFolder() )
-    {
-        return "";
-    }
-
-    std::string::size_type index = _d->path.find_last_of( '.' );
-    if( index != std::string::npos )
-    {
-        return _d->path.substr( index, 0xff );
-    }
-
+  if( isFolder() )
+  {
     return "";
+  }
+
+  std::string::size_type index = _d->path.find_last_of( '.' );
+  if( index != std::string::npos )
+  {
+    return _d->path.substr( index, 0xff );
+  }
+
+  return "";
 }
 
 Path::Path( const std::string& nPath ) : _d( new Impl )
@@ -233,17 +239,17 @@ Path Path::getAbsolutePath() const
     // content in fpath is unclear at this point
     if (!fpath[0]) // seems like fpath wasn't altered, use our best guess
     {
-      FilePath tmp(_d->path);
+      Path tmp(_d->path);
       return flattenFilename(tmp);
     }
     else
-      return FilePath(fpath);
+      return Path(fpath);
   }
 
   if( *(_d->path.rbegin())=='/')
-    return FilePath( std::string(p) + "/" );
+    return Path( std::string(p) + "/" );
   else
-    return FilePath( std::string(p) );
+    return Path( std::string(p) );
 #endif // CAESARIA_PLATFORM_UNIX
 }
 
@@ -295,7 +301,7 @@ Path Path::flattenFilename( const Path& root ) const
 }
 
 //! Get the relative filename, relative to the given directory
-Path Path::getRelativePathTo( const Path& directory ) const
+Path Path::getRelativePathTo( const Directory& directory ) const
 {
   if ( toString().empty() || directory.toString().empty() )
     return *this;
@@ -305,8 +311,8 @@ Path Path::getRelativePathTo( const Path& directory ) const
   Path path2(directory.getAbsolutePath());
   StringArray list1, list2;
 
-  list1 = StringHelper::split( path1.toString(), "/\\", 2);
-  list2 = StringHelper::split( path2.toString(), "/\\", 2);
+  list1 = StringHelper::split( path1.toString(), "/\\");
+  list2 = StringHelper::split( path2.toString(), "/\\");
 
   unsigned int i=0;
   unsigned int it1=0;

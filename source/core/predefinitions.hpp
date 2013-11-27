@@ -28,6 +28,7 @@ class TilePos;
 class Size;
 class VariantMap;
 class DateTime;
+typedef long unsigned int ThreadID;
 
 typedef long unsigned int ThreadID;
 

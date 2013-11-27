@@ -3,6 +3,7 @@
 
 #include "platform.hpp"
 #include "smartptr.hpp"
+#include "referencecounted.hpp"
 
 #ifdef CAESARIA_PLATFORM_LINUX
 	#include <stdio.h>
@@ -19,7 +20,7 @@
 
 /*#if defined(AS400) || defined(OS400)
 	typedef pthread_id_np_t ThreadId_t;
-#elif defined(VMS) 
+#elif defined(VMS)
 	typedef pthread_t ThreadId_t;
 #elif defined(USE_BEGIN_THREAD)
 #endif*/
@@ -39,7 +40,7 @@ typedef enum
 	ThreadStateDown,               // thread is not running
 	ThreadStateShuttingDown,       // thread is in the process of shutting down
 	ThreadStateFault               // an error has occured and the thread could not
-	                               // be launched
+																 // be launched
 } ThreadState_t;
 
 typedef enum
@@ -50,14 +51,14 @@ typedef enum
 	ThreadTypeNotDefined
 } ThreadType_t;
 
-class Thread
+class Thread : public ReferenceCounted
 {
 private:
 	CEventClass   m_event;         // event controller
 	int           m_StopTimeout;   // specifies a timeout value for stop
-	                               // if a thread fails to stop within m_StopTimeout
-	                               // seconds an exception is thrown
-	bool		  m_bRunning;					// set to TRUE if thread is running
+																 // if a thread fails to stop within m_StopTimeout
+																 // seconds an exception is thrown
+	bool		     m_bRunning;					// set to TRUE if thread is running
 
 #ifdef CAESARIA_PLATFORM_WIN
 	HANDLE		  m_thread;		   // thread handle
@@ -70,7 +71,7 @@ private:
 	unsigned int  m_queuePos;      // current que possition
 	void*         m_lpvProcessor;  // data which is currently being processed
 	ThreadState_t m_state;         // current state of thread see thread state data
-	                               // structure.
+																 // structure.
 	unsigned int  m_dwIdle;        // used for Sleep periods
 	ThreadType_t  m_type;
 	unsigned int  m_stackSize;     // thread stack size
@@ -108,7 +109,7 @@ public:
 #ifdef CAESARIA_PLATFORM_WIN
 	friend long unsigned int WINAPI _THKERNEL( LPVOID lpvData );
 #else
-	friend void* _THKERNEL( void* lpvData);
+	friend void* _THKERNEL( void* lpvData );
 #endif
 
 	bool FromSameThread();
@@ -128,35 +129,17 @@ public:
 #ifdef WINDOWS
 	void		SetPriority(DWORD dwPriority=THREAD_PRIORITY_NORMAL);
 #else
-	void		SetPriority(DWORD dwPriority=0);
+	void		SetPriority(unsigned int dwPriority=0);
 #endif
-	DWORD		GetErrorFlags() { return m_dwObjectCondition; } // returns state of object
-	void		SetThreadType(ThreadType_t typ=ThreadTypeNotDefined,DWORD dwIdle=100);
-	void		SetIdle(DWORD dwIdle=100);
+	unsigned int GetErrorFlags() { return m_dwObjectCondition; } // returns state of object
+	void		SetThreadType(ThreadType_t typ=ThreadTypeNotDefined,unsigned int dwIdle=100);
+	void		SetIdle(unsigned int dwIdle=100);
 	unsigned int GetEventsPending();
-	static BOOL ThreadIdsEqual(ThreadID *p1, ThreadID *p2)
-	{
-/*#if defined(AS400)||defined(OS400)
-		return(( memcmp(p1,p2,sizeof(ThreadId_t))==0)?TRUE:FALSE);
-#elif defined(VMS) 
-		return (( pthread_equal(*p1,*p2) )?TRUE:FALSE );
-#else */
-		return ((*p1 == *p2)?true:false);
-//#endif
-	}
+	static bool ThreadIdsEqual(ThreadID *p1, ThreadID *p2);
 
-	static ThreadID getID()
-	{
-		ThreadID thisThreadsId;
-#ifdef CAESARIA_PLATFORM_WIN
-		thisThreadsId = (ThreadID)GetCurrentThreadId();
-#else
-		thisThreadsId = pthread_self();
-#endif
-		return thisThreadsId;
-	}
+	static ThreadID getID();
+
 };
 
 typedef SmartPtr<Thread> ThreadPtr;
 #endif
-

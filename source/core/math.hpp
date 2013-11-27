@@ -111,6 +111,12 @@ inline bool isEqual(const T a, const T b)
     return (a + ROUNDING_ERROR_f32 >= b) && (a - ROUNDING_ERROR_f32 <= b);
 }
 
+template<class T>
+inline bool isEqual(const T a, const T b, const T tolerance)
+{
+    return (a + tolerance >= b) && (a - tolerance <= b);
+}
+
 }
 
 #endif

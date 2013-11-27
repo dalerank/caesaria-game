@@ -43,13 +43,15 @@ public:
   Entries getEntries() const;
   Path find( const Path& fileName ) const;
   Directory up() const;
+  Path getRelativePathTo( Path path ) const;
   //void Remove();
 
-  static Directory getCurrentDir();
+  static Directory getCurrent();
   static bool changeCurrentDir( const Path& dirName );
   static Directory getApplicationDir();
 
   static bool create( std::string dir );
+  static bool createByPath(Directory dir );
 };
 
 }//end namespace io

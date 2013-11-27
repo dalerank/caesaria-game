@@ -10,7 +10,7 @@ extern "C"
 #endif
 }
 
-void CThread::msleep( unsigned int milli )
+void Thread::msleep( unsigned int milli )
 {
 #ifdef NANO_SECOND_SLEEP
 	struct timespec interval, remainder;
@@ -56,13 +56,13 @@ void* _THKERNEL( void* lpvData )
 
 		pThread->m_mutex.lock();
 		pThread->m_state = ThreadStateWaiting;
-		pThread->m_bRunning = TRUE;
+		pThread->m_bRunning = true;
 #ifndef CAESARIA_PLATFORM_WIN
-		pThread->m_dwId = CThread::getID();
+		pThread->m_dwId = Thread::getID();
 #endif
 	pThread->m_mutex.unlock();
 	
-	while( TRUE )
+	while( true )
 	{
 		lastType = pThread->m_type;
 
@@ -80,15 +80,16 @@ void* _THKERNEL( void* lpvData )
 
 
 		/*if( lastType == ThreadTypeHomogeneous ||
-			lastType == ThreadTypeSpecialized ||
-			lastType == ThreadTypeNotDefined )
+				lastType == ThreadTypeSpecialized ||
+				lastType == ThreadTypeNotDefined )
 		{
 			pThread->m_event.Reset();
-		} */
+		}*/
 
 		if( pThread->m_type == ThreadTypeIntervalDriven )
-			Sleep(pThread->m_dwIdle);
-
+		{
+			Thread::msleep(pThread->m_dwIdle);
+		}
 	}
 
 
@@ -115,8 +116,7 @@ void* _THKERNEL( void* lpvData )
 bool Thread::FromSameThread()
 {
 	ThreadID id = getID();
-	if( ThreadIdsEqual(&id,&m_dwId) ) return true;
-	return false;
+	return ThreadIdsEqual(&id,&m_dwId);
 }
 
 /**
@@ -126,7 +126,7 @@ bool Thread::FromSameThread()
  * member function
  *
  **/
-bool Thread::OnTask( LPVOID lpvData )
+bool Thread::OnTask( void* lpvData )
 {
 	_CAESARIA_DEBUG_BREAK_IF(lpvData && m_type == ThreadTypeHomogeneous);
 
@@ -217,14 +217,14 @@ bool Thread::Event(CTask *pvTask )
 			m_state = ThreadStateFault;
 			cerr << "Warning: invalid call to CEvent::Event(CTask *), thread type is not specialized\n";
 
-			return FALSE;
+			return false;
 		}
 
 		m_type = ThreadTypeHomogeneous;
 		m_mutex.unlock();
 
 		pvTask->setId(&m_dwId);
-		if( !push((LPVOID)pvTask) )
+		if( !push((void*)pvTask) )
 			return false;
 
 		pvTask->setTaskStatus(TaskStatusWaitingOnQueue);
@@ -327,8 +327,7 @@ bool Thread::Event(void* lpvData )
  *
  *
  **/
-void
-Thread::SetPriority(DWORD dwPriority)
+void Thread::SetPriority(unsigned int dwPriority)
 {
 #ifdef CAESARIA_PLATFORM_WIN
 	SetThreadPriority(m_thread,dwPriority);
@@ -344,7 +343,6 @@ Thread::SetPriority(DWORD dwPriority)
  **/
 bool Thread::KernelProcess()
 {
-
 	m_mutex.lock();
 	m_state = ThreadStateBusy;
 	if( !m_bRunning )
@@ -373,7 +371,8 @@ bool Thread::KernelProcess()
 		m_lpvProcessor = NULL;
 		m_state = ThreadStateWaiting;
 	}
-	else {
+	else
+	{
 		if( !OnTask() )
 		{
 			m_mutex.lock();
@@ -436,7 +435,7 @@ Thread::Thread(void)
 
 	m_dwObjectCondition = NO_ERRORS;
 
-	m_lppvQueue = new LPVOID [QUEUE_SIZE];
+	m_lppvQueue = new void*[QUEUE_SIZE];
 
 	if( !m_lppvQueue ) 
 	{
@@ -493,7 +492,7 @@ Thread::PercentCapacity()
  **/
 bool Thread::SetQueueSize( unsigned int ch )
 {
-	LPVOID * newQueue = NULL;
+	void** newQueue = NULL;
 
 	m_mutex.lock();
 	_CAESARIA_DEBUG_BREAK_IF(ch > m_queuePos);
@@ -505,7 +504,7 @@ bool Thread::SetQueueSize( unsigned int ch )
 		return false;
 	}
 
-	newQueue = new LPVOID [ch];
+	newQueue = new void*[ch];
 	if(  !newQueue )
 	{
 		cerr << "Warning CThread::SetQueueSize:\n\ta low memory, could not reallocate queue!\n";
@@ -630,10 +629,8 @@ bool Thread::pop()
  *
  **/
 void
-Thread::SetThreadType(ThreadType_t typ,
-              DWORD dwIdle)
+Thread::SetThreadType(ThreadType_t typ, unsigned int dwIdle)
 {
-
 	try 
 	{
 		if( FromSameThread() )
@@ -704,10 +701,9 @@ bool Thread::Stop()
 			if( m_state == ThreadStateDown )
 			{
 				m_mutex.unlock();
-				return TRUE;
+				return true;
 			}
 			m_mutex.unlock();
-
 		} 
 	}
 	catch (char *psz)
@@ -720,7 +716,7 @@ bool Thread::Stop()
 #endif
 
 	}
-	return FALSE;
+	return false;
 }
 
 
@@ -730,8 +726,7 @@ bool Thread::Stop()
  * changes the threads idle interval
  *
  **/
-void
-Thread::SetIdle(DWORD dwIdle)
+void Thread::SetIdle(unsigned int dwIdle)
 {
 	m_mutex.lock();
 	m_dwIdle = dwIdle;
@@ -813,17 +808,20 @@ bool Thread::Start()
 				cerr << "the requested thread.\n";
 			break;
 			}
+
+			return false;
+		}
 #else
-			cerr << "error: could not create thread, pthread_create failed (" << error << ")!\n";
-#endif
+		cerr << "error: could not create thread, pthread_create failed (" << error << ")!\n";
 		return false;
+#endif
 	}
 	catch( char *psz )
 	{
 #ifdef CAESARIA_PLATFORM_WIN
 		MessageBoxA(NULL,&psz[2],"Fatal exception CThread::Start",MB_ICONHAND);
 #else
-		cerr << "Fatal exception CThread::Start():" << psz;
+		cerr << "Fatal exception Thread::Start():" << psz;
 #endif
 		exit(-1);
 	}
@@ -897,7 +895,7 @@ Thread::~Thread(void)
 		    MessageBoxA(NULL,&psz[2],"Fatal exception CThread::Stop",MB_ICONHAND);
 		    exit(-1);
 #else
-			cerr << "Fatal exception CThread::Stop: " << psz;
+			cerr << "Fatal exception Thread::Stop: " << psz;
 #endif
 		}
 	}
@@ -917,7 +915,7 @@ Thread::~Thread(void)
  **/
 bool Thread::PingThread(unsigned int milli )
 {
-    DWORD dwTotal = 0;
+	unsigned int dwTotal = 0;
 
 	while( true )
 	{
@@ -934,7 +932,7 @@ bool Thread::PingThread(unsigned int milli )
 		msleep(m_dwIdle);
 	}
 
-	return FALSE;
+	return false;
 }
 
 /**
@@ -984,6 +982,25 @@ Thread::WaitTillExit()
 	}
 }
 
+bool Thread::ThreadIdsEqual(ThreadID* p1, ThreadID* p2)
 
+{
+/*#if defined(AS400)||defined(OS400)
+	return(( memcmp(p1,p2,sizeof(ThreadId_t))==0)?TRUE:FALSE);
+#elif defined(VMS)
+	return (( pthread_equal(*p1,*p2) )?TRUE:FALSE );
+#else */
+	return ((*p1 == *p2)?true:false);
+	//#endif
+}
 
-
+ThreadID Thread::getID()
+{
+	ThreadID thisThreadsId;
+#ifdef CAESARIA_PLATFORM_WIN
+	thisThreadsId = (ThreadID)GetCurrentThreadId();
+#else
+	thisThreadsId = pthread_self();
+#endif
+	return thisThreadsId;
+}

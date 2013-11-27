@@ -93,9 +93,9 @@ public:
 	/** Takes floating point rounding errors into account.
 	\param other Vector to compare with.
 	\return True if the two vector are (almost) equal, else false. */
-    bool IsEqual(const Vector2<T>& other, float tolerance) const
+	bool IsEqual(const Vector2<T>& other, float tolerance) const
 	{
-        return math::isEqual(x, other.x) && math::isEqual(y, other.y);
+		return math::isEqual<T>(x, other.x, tolerance) && math::isEqual<T>(y, other.y, tolerance);
 	}
 
 	Vector2<T>& set(T nx, T ny) {x=nx; y=ny; return *this; }

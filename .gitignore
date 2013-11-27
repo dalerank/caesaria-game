@@ -30,3 +30,5 @@ en/*
 
 /*.7pre1
 /source/gfx/*.autosave
+
+/source/version.hpp
