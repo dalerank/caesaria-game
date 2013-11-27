@@ -251,32 +251,6 @@ Path Directory::getRelativePathTo(Path path) const
   list2 = StringHelper::split( path2.toString(), "/\\");
 
   unsigned int i=0;
-#if defined (CAESARIA_PLATFORM_WIN)
-  char partition1 = 0, partition2 = 0;
-  Path prefix1, prefix2;
-  if ( it1 > 0 )
-    prefix1 = list1[ it1 ];
-  if ( it2 > 0 )
-    prefix2 = list2[ it2 ];
-
-  if ( prefix1.toString().size() > 1 && prefix1.toString()[1] == ':' )
-  {
-    partition1 = StringHelper::localeLower( prefix1.toString()[0] );
-  }
-
-  if ( prefix2.toString().size() > 1 && prefix2.toString()[1] == ':' )
-  {
-    partition2 = StringHelper::localeLower( prefix2.toString()[0] );
-  }
-
-  // must have the same prefix or we can't resolve it to a relative filename
-  if ( partition1 != partition2 )
-  {
-    return *this;
-  }
-#endif //CAESARIA_PLATFORM_WIN
-
-
   for (; i<list1.size() && i<list2.size(); ++i)
   {
     StringHelper::equaleMode emode = StringHelper::equaleIgnoreCase;

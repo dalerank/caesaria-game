@@ -1,4 +1,4 @@
-project(opencaesar3)
+project(CaesarIA)
 
 cmake_minimum_required(VERSION 2.6)
 
