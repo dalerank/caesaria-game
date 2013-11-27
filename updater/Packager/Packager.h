@@ -8,7 +8,7 @@ class Packager
 public:
   Packager( std::string baseset, std::string currentVersion );
 
-  void run();
+  void createUpdate(bool release);
 
 private:
   std::string _baseset;

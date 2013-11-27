@@ -276,7 +276,7 @@ void IniFile::ParseFromString(const std::string& str)
 			{
 				case SECTION:
 					sectionName = StringHelper::trim( sRead.substr( 1 , sRead.size() - 2 ) );
-					AddSection(  sectionName );
+					AddSection( sectionName );
 				break;
 
 				case KEY:

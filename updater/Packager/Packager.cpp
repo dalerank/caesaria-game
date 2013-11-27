@@ -36,7 +36,7 @@ static void __gartherFiles( vfs::Directory basedir, vfs::Directory dir, FilePath
   }
 }
 
-void Packager::run()
+void Packager::createUpdate( bool release )
 {
   FilePathList allFiles;
 
@@ -49,7 +49,15 @@ void Packager::run()
   vinfo->SetValue( "version", "version", _crver );
   for( FilePathList::iterator i=allFiles.begin(); i != allFiles.end(); i++ )
   {
-    std::string sectionName = StringHelper::format( 0xff, "Version%s File %s", _crver.c_str(), (*i).toString().c_str() );
+    std::string sectionName;
+    if( release )
+    {
+      sectionName = StringHelper::format( 0xff, "File %s", (*i).toString().c_str() );
+    }
+    else
+    {
+      sectionName = StringHelper::format( 0xff, "Version%s File %s", _crver.c_str(), (*i).toString().c_str() );
+    }
 
     ByteArray data = vfs::NFile::open( (*i).getAbsolutePath() ).readAll();
 
@@ -58,7 +66,9 @@ void Packager::run()
     vinfo->SetValue( sectionName, "filesize", StringHelper::format( 0xff, "%d", data.size() ) );
   }
 
-  vinfo->ExportToFile( dir/tdm::TDM_VERSION_INFO_FILE );
+  vinfo->ExportToFile( release
+                        ? dir/tdm::STABLE_VERSION_FILE
+                        : dir/tdm::UPDATE_VERSION_FILE );
 }
 
 

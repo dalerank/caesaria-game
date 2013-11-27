@@ -42,20 +42,25 @@ public:
 		// Get the info from the section header
 		if(StringHelper::startsWith( sectionName, "Version"))
 		{
-			std::string version = sectionName.substr( 0, sectionName.find("#"));
-			std::string filename = sectionName.substr( sectionName.find("#")+1 );
+			StringArray tokens = StringHelper::split( sectionName, " " );
 
-			ReleaseFileSet& set = FindOrInsertVersion(version);
+			if( tokens.size() == 3 && tokens[ 1 ] == "File")
+			{
+				std::string version = tokens[ 0 ].substr( 7 );
+				std::string filename = tokens[ 2 ];
 
-			ReleaseFile file(filename);
+				ReleaseFileSet& set = FindOrInsertVersion(version);
 
-			file.crc = CRC::ParseFromString(iniFile.GetValue(sectionName, "crc"));
-			file.filesize = StringHelper::toUint( iniFile.GetValue(sectionName, "filesize") );
-			file.localChangesAllowed = iniFile.GetValue(sectionName, "allow_local_modifications") == "1";
+				ReleaseFile file(filename);
 
-			Logger::warning( "Found version %s file: %s with checksum %x", version.c_str(), filename.c_str(), file.crc );
+				file.crc = CRC::ParseFromString(iniFile.GetValue(sectionName, "crc"));
+				file.filesize = StringHelper::toUint( iniFile.GetValue(sectionName, "filesize") );
+				file.localChangesAllowed = iniFile.GetValue(sectionName, "allow_local_modifications") == "1";
 
-			set.insert(ReleaseFileSet::value_type(filename, file));
+				Logger::warning( "Found version %s file: %s with checksum %x", version.c_str(), filename.c_str(), file.crc );
+
+				set.insert(ReleaseFileSet::value_type(filename, file));
+			}
 		}
 	}
 

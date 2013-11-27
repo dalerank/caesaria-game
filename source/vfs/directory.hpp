@@ -51,6 +51,7 @@ public:
   static Directory getApplicationDir();
 
   static bool create( std::string dir );
+  static bool createByPath(Directory dir );
 };
 
 }//end namespace io

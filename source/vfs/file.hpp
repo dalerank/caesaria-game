@@ -67,8 +67,8 @@ public:
 
   static unsigned long getSize( vfs::Path filename );
   static NFile open( Path fileName, Entity::Mode mode=Entity::fmRead );
-  static int remove( Path filename );
-  static int rename( Path oldpath, Path newpath );
+  static bool remove( Path filename );
+  static bool rename( Path oldpath, Path newpath );
 
 private:
   FSEntityPtr _entity;

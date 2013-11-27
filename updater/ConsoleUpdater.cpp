@@ -144,7 +144,7 @@ void ConsoleUpdater::OnStartStep(UpdateStep step)
 		Logger::warning( " Downloading mirror information...");
 		break;
 
-	case DownloadCrcs:
+	case DownloadStableVersion:
 		Logger::warning( "----------------------------------------------------------------------------");
 		Logger::warning( " Downloading CRC file...");
 		break;
@@ -233,7 +233,7 @@ void ConsoleUpdater::OnFinishStep(UpdateStep step)
 	}
 	break;
 
-	case DownloadCrcs:
+	case DownloadStableVersion:
 	{
 		//TraceLog::WriteLine(LOG_STANDARD, " Done downloading checksums.");
 	}

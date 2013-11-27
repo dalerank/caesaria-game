@@ -41,11 +41,11 @@ const char* const TDM_MIRRORS_FILE = "mirrors.txt";
 const char* const TDM_MIRRORS_SERVER = "http://sourceforge.net/projects/opencaesar3/files/update/";
 
 // The file containing the version information of the most up-to-date package
-const char* const TDM_CRC_INFO_FILE = "crc_info.txt";
+const char* const STABLE_VERSION_FILE = "stable_info.txt";
 const char* const TDM_UDPATE_INFO_FILE = "tdm_update_info.txt";
 
 // The file containing the version information of all released packages since 1.02
-const char* const TDM_VERSION_INFO_FILE = "version_info.txt";
+const char* const UPDATE_VERSION_FILE = "version_info.txt";
 
 #ifdef WIN32
 const char* const TDM_UPDATE_UPDATER_BATCH_FILE = "tdm_update_updater.cmd";

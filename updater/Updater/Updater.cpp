@@ -159,15 +159,15 @@ std::size_t Updater::GetNumMirrors()
 	return _mirrors.size();
 }
 
-void Updater::GetCrcFromServer()
+void Updater::GetStableVersionFromServer()
 {
 	Logger::warning( " Downloading CRC information..." );
 
-	PerformSingleMirroredDownload(TDM_CRC_INFO_FILE);
+	PerformSingleMirroredDownload(STABLE_VERSION_FILE);
 
 	// Parse this file
 	vfs::Directory folder = getTargetDir();
-	IniFilePtr releaseIni = IniFile::ConstructFromFile(folder.getFilePath( TDM_CRC_INFO_FILE ) );
+	IniFilePtr releaseIni = IniFile::ConstructFromFile(folder.getFilePath( STABLE_VERSION_FILE ) );
 
 	if (releaseIni == NULL)
 	{
@@ -175,22 +175,22 @@ void Updater::GetCrcFromServer()
 	}
 
 	// Build the release file set
-	_latestRelease = ReleaseFileSet::LoadFromIniFile(releaseIni);
+	_latestRelease = ReleaseFileSet::LoadFromIniFile( releaseIni );
 }
 
 void Updater::GetVersionInfoFromServer()
 {
 	Logger::warning( " Downloading version information...");
 
-	PerformSingleMirroredDownload(TDM_VERSION_INFO_FILE);
+	PerformSingleMirroredDownload(UPDATE_VERSION_FILE);
 
 	// Parse this downloaded file
 	vfs::Directory folder = getTargetDir();
-	IniFilePtr versionInfo = IniFile::ConstructFromFile( folder.getFilePath( TDM_VERSION_INFO_FILE ) );
+	IniFilePtr versionInfo = IniFile::ConstructFromFile( folder.getFilePath( UPDATE_VERSION_FILE ) );
 
 	if (versionInfo == NULL) 
 	{
-		Logger::warning( "Cannot find downloaded version info file: %s", folder.getFilePath(TDM_VERSION_INFO_FILE).toString().c_str() );
+		Logger::warning( "Cannot find downloaded version info file: %s", folder.getFilePath(UPDATE_VERSION_FILE).toString().c_str() );
 		return;
 	}
 
@@ -629,7 +629,7 @@ void Updater::PerformDifferentialUpdateStep()
 	// Start working
 	
 	// Remove PK4s as requested
-	for (std::set<ReleaseFile>::const_iterator pk4 = info.pk4sToBeRemoved.begin(); 
+	/*for (std::set<ReleaseFile>::const_iterator pk4 = info.pk4sToBeRemoved.begin();
 		 pk4 != info.pk4sToBeRemoved.end(); ++pk4)
 	{
 		Logger::warning( " Removing PK4: %s", pk4->file.toString().c_str() );
@@ -637,10 +637,10 @@ void Updater::PerformDifferentialUpdateStep()
 		NotifyFileProgress(pk4->file, CurFileInfo::Delete, static_cast<double>(curOperation++) / totalFileOperations);
 		
 		vfs::Path( targetdir.getFilePath( pk4->file ) );
-	}
+	}*/
 
 	// Add PK4s as requested
-	for (std::set<ReleaseFile>::const_iterator pk4 = info.pk4sToBeAdded.begin(); 
+	/*for (std::set<ReleaseFile>::const_iterator pk4 = info.pk4sToBeAdded.begin();
 		 pk4 != info.pk4sToBeAdded.end(); ++pk4)
 	{
 		Logger::warning( " Adding PK4: " + pk4->file.toString() );
@@ -658,10 +658,10 @@ void Updater::PerformDifferentialUpdateStep()
 			// Extract this ZIP archive after adding it to the local inventory
 			ExtractAndRemoveZip(targetPk4Path);
 		}
-	}
+	}*/
 
 	// Perform in-depth PK4 changes
-	for (UpdatePackage::Pk4DifferenceMap::const_iterator pk4Diff = info.pk4Differences.begin(); 
+	/*for (UpdatePackage::Pk4DifferenceMap::const_iterator pk4Diff = info.pk4Differences.begin();
 		 pk4Diff != info.pk4Differences.end(); ++pk4Diff)
 	{
 		Logger::warning( " Changing PK4: %s...", pk4Diff->first.c_str() );
@@ -761,7 +761,7 @@ void Updater::PerformDifferentialUpdateStep()
 												diff.membersToBeRemoved.size(),
 												diff.membersToBeReplaced.size() );
 		}
-	}
+	}*/
 
 	// Perform non-archive file changes
 
@@ -872,10 +872,10 @@ DownloadPtr Updater::PrepareMirroredDownload(const std::string& remoteFile)
 	DownloadPtr download(new MirrorDownload(_conn, _mirrors, remoteFile, targetPath));
 
 	vfs::Path rpath( remoteFile );
-	if( rpath.isExtension( ".zip" ) )
+	/*if( rpath.isExtension( ".zip" ) )
 	{
 		download->EnableValidPK4Check(true);
-	}
+	}*/
 
 	return download;
 }
@@ -985,30 +985,11 @@ void Updater::CheckLocalFiles()
 			_fileProgressCallback->OnFileOperationProgress(info);
 		}
 
-		if (i->second.isArchive && !i->second.members.empty())
+		Logger::warning( "Checking for file: " + i->second.file.toString() + "...");
+		if (!CheckLocalFile(targetDir, i->second))
 		{
-			Logger::warning( "Checking archive members of: " + i->second.file.toString() );
-
-			for (std::set<ReleaseFile>::const_iterator m = i->second.members.begin(); m != i->second.members.end(); ++m)
-			{
-				Logger::warning( "Checking for member file: " + m->file.toString() );
-
-				if (!CheckLocalFile(targetDir, *m))
-				{
-					// A member is missing or out of date, mark the archive for download
-					_downloadQueue.insert(*i);
-				}
-			}
-		}
-		else
-		{
-			Logger::warning( "Checking for archive file: " + i->second.file.toString() + "...");
-
-			if (!CheckLocalFile(targetDir, i->second))
-			{
-				// A member is missing or out of date, mark the archive for download
-				_downloadQueue.insert(*i);
-			}
+			// A member is missing or out of date, mark the archive for download
+			_downloadQueue.insert(*i);
 		}
 
 		count++;
@@ -1091,7 +1072,7 @@ void Updater::PrepareUpdateStep()
 		DownloadPtr download(new MirrorDownload(_conn, _mirrors, i->second.file.toString(), targetdir.getFilePath(i->second.file) )) ;
 
 		// Check archives after download, pass crc and filesize to download
-		if( i->second.file.isExtension( ".zip" ) )
+		/*if( i->second.file.isExtension( ".zip" ) )
 		{
 			download->EnableValidPK4Check(true);
 			download->EnableCrcCheck(true);
@@ -1099,7 +1080,7 @@ void Updater::PrepareUpdateStep()
 
 			download->SetRequiredCrc(i->second.crc);
 			download->SetRequiredFilesize(i->second.filesize);
-		}
+		}*/
 
 		i->second.downloadId = _downloadManager->AddDownload(download);
 	}
@@ -1146,11 +1127,11 @@ void Updater::PerformUpdateStep()
 
 		if (download != NULL && download->GetStatus() == Download::SUCCESS)
 		{
-			if( download->GetDestFilename().isExtension( ".zip" ) )
+			/*if( download->GetDestFilename().isExtension( ".zip" ) )
 			{
 				// Extract this ZIP archive after download
 				ExtractAndRemoveZip(download->GetDestFilename());
-			}
+			}*/
 		}
 	}
 }

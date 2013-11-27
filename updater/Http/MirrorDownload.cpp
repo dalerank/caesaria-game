@@ -55,7 +55,7 @@ MirrorDownload::MirrorDownload(const HttpConnectionPtr& conn,
 			p = 1000000.0f; // make sure the rest of the mirrors isn't pushed at the front
 			orderedMirrors.push_front(*m);
 			urls.push_front(m->url + srcFilename);
-			Logger::warning(  "Picking mirror " + m->displayName );
+			Logger::warning( "Picking mirror %s for file %s", m->displayName.c_str(), srcFilename.c_str() );
 		}
 		else
 		{

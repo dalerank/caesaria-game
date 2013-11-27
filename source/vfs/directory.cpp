@@ -11,12 +11,13 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+// alo  ng with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "core/exception.hpp"
 #include "directory.hpp"
 #include "filesystem.hpp"
 #include "entries.hpp"
+#include "core/logger.hpp"
 
 #ifdef CAESARIA_PLATFORM_WIN
   #include <windows.h>
@@ -41,15 +42,69 @@ bool Directory::create( std::string dir )
 {
   Directory rdir( dir );
   if( rdir.isExist() )
-      return false;
+  {
+    Logger::warning( "Directory %s also exist", dir.c_str() );
+    return false;
+  }
 
+  int result=0;
 #ifdef CAESARIA_PLATFORM_WIN
     CreateDirectoryA( rdir.removeEndSlash().toString().c_str(), NULL );
 #elif defined(CAESARIA_PLATFORM_UNIX)
-    ::mkdir( rdir.toString().c_str(), S_IRWXU|S_IRWXG|S_IRWXO );
+  result = ::mkdir( rdir.toString().c_str(), S_IRWXU|S_IRWXG|S_IRWXO );
 #endif
 
-  return rdir.isExist();
+  if( result < 0 )
+  {
+    Logger::warning( "Cannot create directory %s error=%d", dir.c_str(), result );
+  }
+  return (result == 0);
+}
+
+bool Directory::createByPath( Directory dir )
+{
+  Path saveDir = getCurrent();
+  bool result=true;
+
+  StringArray path = StringHelper::split( dir.toString(), "/" );
+  std::string current;
+  try
+  {
+#ifdef CAESARIA_PLATFORM_LINUX
+    changeCurrentDir( "/" );
+#endif
+
+    for( StringArray::iterator iter=path.begin(); iter != path.end(); iter++)
+    {
+      current += *iter;
+      Path path = current;
+      if( path.isExist() )
+      {
+        if( !path.isFolder() )
+        {
+          Logger::warning( "Current path %s not a directory " + current );
+          result = false;
+          break;
+        }
+      }
+      else
+      {
+        if( !create( current ) )
+        {
+          Logger::warning( "Some error on create directory " + current );
+        }
+      }
+      current += "/";
+    }
+  }
+  catch(...)
+  {
+
+  }
+
+  changeCurrentDir( saveDir );
+
+  return result;
 }
 
 Path Directory::find( const Path& fileName ) const

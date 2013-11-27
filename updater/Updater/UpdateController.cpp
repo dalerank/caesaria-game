@@ -212,8 +212,8 @@ void UpdateController::PerformStep(int step)
 		}
 		break;
 
-	case DownloadCrcs:
-		_updater.GetCrcFromServer();
+	case DownloadStableVersion:
+		_updater.GetStableVersionFromServer();
 		break;
 
 	case CompareLocalFilesToNewest:
@@ -293,10 +293,10 @@ void UpdateController::OnFinishStep(int step)
 		break;
 
 	case UpdateMirrors:
-		TryToProceedTo(DownloadCrcs);
+		TryToProceedTo(DownloadStableVersion);
 		break;
 
-	case DownloadCrcs:
+	case DownloadStableVersion:
 		TryToProceedTo(DownloadVersionInfo);
 		break;
 

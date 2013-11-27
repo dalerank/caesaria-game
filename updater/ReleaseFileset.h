@@ -145,8 +145,7 @@ public:
 	{
 		ReleaseFileSet set;
 
-		class Visitor :
-			public IniFile::SectionVisitor
+		class Visitor :	public IniFile::SectionVisitor
 		{
 		private:
 			ReleaseFileSet& _set;
@@ -165,9 +164,9 @@ public:
 					std::pair<ReleaseFileSet::iterator, bool> result = _set.insert(	ReleaseFileSet::value_type(filename.toString(), ReleaseFile(filename)));
 					
 					result.first->second.crc = CRC::ParseFromString(iniFile.GetValue(section, "crc"));
-					result.first->second.filesize = StringHelper::toUint( iniFile.GetValue(section, "size") );
+					result.first->second.filesize = StringHelper::toUint( iniFile.GetValue(section, "filesize") );
 
-					if( filename.isExtension( "zip") )
+					if( filename.isExtension( ".zip") )
 					{
 						result.first->second.isArchive = true;
 					}
@@ -193,7 +192,7 @@ public:
 
 					member.isArchive = false;
 					member.crc = CRC::ParseFromString(iniFile.GetValue(section, "crc"));
-					member.filesize = StringHelper::toUint( iniFile.GetValue(section, "size") );
+					member.filesize = StringHelper::toUint( iniFile.GetValue(section, "filesize") );
 
 					result.first->second.members.insert(member);
 				}
@@ -234,7 +233,7 @@ public:
 		
 			Logger::warning( "Found file: %s", relativePath.toString().c_str() );
 
-			if( entry.isExtension( ".zip" ) )
+			/*if( entry.isExtension( ".zip" ) )
 			{
 				ReleaseFile archive(relativePath);
 
@@ -286,7 +285,7 @@ public:
 				Logger::warning( "  Archive has %d members", archive.members.size() );
 				
 				set[relativePath.toString()] = archive;
-			}
+			}*/
 		}
 
 		return set;

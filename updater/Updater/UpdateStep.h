@@ -35,7 +35,7 @@ enum UpdateStep
 	Init,				// Startup, not doing anything yet
 	CleanupPreviousSession,
 	UpdateMirrors,
-	DownloadCrcs,
+	DownloadStableVersion,
 	DownloadVersionInfo,
 	CompareLocalFilesToNewest,
 	DetermineLocalVersion,

@@ -227,7 +227,7 @@ public:
 	void LoadMirrors();
 
 	// Download the checksum crc_info.txt file from the mirrors.
-	void GetCrcFromServer();
+	void GetStableVersionFromServer();
 
 	// Download the tdm_version_info.txt file from a mirror.
 	void GetVersionInfoFromServer();

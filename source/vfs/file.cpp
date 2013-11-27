@@ -158,22 +158,23 @@ unsigned long NFile::getSize(vfs::Path filename)
   return file.getSize();
 }
 
-int NFile::remove( Path filename )
+bool NFile::remove( Path filename )
 {
+  int result = 0;
 #ifdef CAESARIA_PLATFORM_WIN
     DeleteFileA( filename.toString().c_str() );
 #elif defined(CAESARIA_PLATFORM_UNIX)
-    ::remove( filename.toString().c_str() );
+  result = ::remove( filename.toString().c_str() );
 #endif
 
-  return 0;
+  return (result == 0);
 }
 
-int NFile::rename(Path oldpath, Path newpath)
+bool NFile::rename(Path oldpath, Path newpath)
 {
-  ::rename( oldpath.toString().c_str(), newpath.toString().c_str() );
+  int result = ::rename( oldpath.toString().c_str(), newpath.toString().c_str() );
 
-  return 0;
+  return (result == 0);
 }
 
 } //end namespace io

@@ -81,11 +81,11 @@ public:
 	{
 		try
 		{
-			if( file.isExtension( ".zip" ) )
+			/*if( file.isExtension( ".zip" ) )
 			{
 				return GetCrcForZip(file);
 			}
-			else
+			else*/
 			{
 				return GetCrcForNonZipFile(file);
 			}

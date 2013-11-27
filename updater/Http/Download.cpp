@@ -87,7 +87,7 @@ void Download::Start()
 	if ( !folder.isExist() )
 	{
 		// Make sure the folder exists
-		if( !vfs::Directory::create( folder.toString() ) )
+		if( !vfs::Directory::createByPath( folder ) )
 		{
 			throw std::runtime_error("Could not create directory: " + folder.toString());
 		}
