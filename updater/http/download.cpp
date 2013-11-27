@@ -15,7 +15,7 @@
 
 #include "download.hpp"
 #include "../http/httpconnection.hpp"
-#include "../azip/azip.h"
+#include "vfs/directory.hpp"
 #include "../CRC.h"
 #include "../util.hpp"
 #include "../constants.hpp"

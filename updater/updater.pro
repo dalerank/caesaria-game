@@ -226,10 +226,6 @@ SOURCES += main.cpp \
     ../utils/aesGladman/aestab.cpp \
     ../utils/aesGladman/aeskey.cpp \
     ../utils/aesGladman/aescrypt.cpp \
-    minizip/zip.c \
-    minizip/unzip.c \
-    minizip/mztools.c \
-    azip/azip.cpp \
     ../utils/zlib/zutil.c \
     ../utils/zlib/uncompr.c \
     ../utils/zlib/trees.c \
@@ -245,7 +241,6 @@ SOURCES += main.cpp \
     ../utils/zlib/crc32.c \
     ../utils/zlib/compress.c \
     ../utils/zlib/adler32.c \
-    minizip/ioapi.c \
     ../source/vfs/path.cpp \
     ../source/vfs/entries.cpp \
     ../source/vfs/directory.cpp \
@@ -292,12 +287,6 @@ HEADERS += \
     ../utils/aesGladman/fileenc.h \
     ../utils/aesGladman/aesopt.h \
     ../utils/aesGladman/aes.h \
-    minizip/zip.h \
-    minizip/unzip.h \
-    minizip/mztools.h \
-    minizip/crypt.h \
-    minizip/iowin32.h \
-    azip/azip.h \
     ../utils/zlib/zutil.h \
     ../utils/zlib/zlib.h \
     ../utils/zlib/zconf.h \

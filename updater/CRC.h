@@ -23,7 +23,6 @@
 #include "core/bytearray.hpp"
 
 #include "vfs/path.hpp"
-#include "azip/azip.h"
 #include "core/logger.hpp"
 #include "core/stringhelper.hpp"
 

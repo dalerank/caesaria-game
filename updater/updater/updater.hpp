@@ -21,8 +21,8 @@
 #include "../http/httpconnection.hpp"
 #include "../http/mirrorlist.hpp"
 #include "../http/downloadmanager.hpp"
-#include "../ReleaseFileset.h"
-#include "../ReleaseVersions.h"
+#include "../releasefileset.hpp"
+#include "../releaseversions.hpp"
 
 /**
  * Main updater class containing the application logic. 
@@ -316,7 +316,7 @@ private:
 	vfs::Directory getTargetDir();
 
 	// Extract the contents of the given zip file (and remove the zip afterwards)
-	void ExtractAndRemoveZip(vfs::Path zipFilePath);
+	void ExtractAndRemoveZip(vfs::Path);
 
 	// Creates a mirrored download
 	DownloadPtr PrepareMirroredDownload(const std::string& remoteFile);
@@ -333,7 +333,7 @@ private:
 	// Checks if the given update package is already present at the given location
 	//bool VerifyUpdatePackageAt(const UpdatePackage& info, const fs::path& package);
 
-	bool DifferentialUpdateAvailableForVersion(const std::string& version);
+	bool DifferentialUpdateAvailableForVersion(const std::string&);
 
 	// Prepare the update batch/script file
 	void PrepareUpdateBatchFile(vfs::Path temporaryUpdater);

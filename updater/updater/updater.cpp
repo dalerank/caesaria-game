@@ -1,25 +1,21 @@
-/*****************************************************************************
-                    The Dark Mod GPL Source Code
- 
- This file is part of the The Dark Mod Source Code, originally based 
- on the Doom 3 GPL Source Code as published in 2011.
- 
- The Dark Mod Source Code is free software: you can redistribute it 
- and/or modify it under the terms of the GNU General Public License as 
- published by the Free Software Foundation, either version 3 of the License, 
- or (at your option) any later version. For details, see LICENSE.TXT.
- 
- Project: The Dark Mod Updater (http://www.thedarkmod.com/)
- 
- $Revision: 5870 $ (Revision of last commit) 
- $Date: 2013-08-22 01:18:13 +0400 (Чт, 22 авг 2013) $ (Date of last commit)
- $Author: grayman $ (Author of last commit)
- 
-******************************************************************************/
+// This file is part of CaesarIA.
+//
+// CaesarIA is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// CaesarIA is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "updater.hpp"
 
-#include "../ReleaseFileset.h"
+#include "../releasefileset.hpp"
 #include "../http/mirrordownload.hpp"
 #include "../http/httprequest.hpp"
 #include "../constants.hpp"
@@ -393,7 +389,7 @@ bool Updater::DifferentialUpdateAvailable()
 	return false;
 }
 
-bool Updater::DifferentialUpdateAvailableForVersion(const std::string& version)
+bool Updater::DifferentialUpdateAvailableForVersion(const std::string&)
 {
 //	UpdatePackageInfo::const_iterator it = _updatePackages.find(version);
 
@@ -1208,7 +1204,7 @@ void Updater::NotifyDownloadProgress()
 	}
 }
 
-void Updater::ExtractAndRemoveZip(vfs::Path zipFilePath)
+void Updater::ExtractAndRemoveZip(vfs::Path)
 {
 	/*ZipFileReadPtr zipFile = Zip::OpenFileRead(zipFilePath);
 
