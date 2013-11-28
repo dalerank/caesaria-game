@@ -21,7 +21,7 @@
 class EnemySoldier : public Soldier
 {
 public:
-  static EnemySoldierPtr create( PlayerCityPtr city );
+  static EnemySoldierPtr create( PlayerCityPtr city, constants::walker::Type type );
 
   virtual void timeStep(const unsigned long time);
 
@@ -37,18 +37,18 @@ protected:
   virtual void _centerTile();
   virtual void _changeTile();
   virtual void _reachedPathway();
+  virtual void _brokePathway(TilePos pos);
 
-protected:
   EnemySoldier( PlayerCityPtr city );
 
-  bool _looks4Protestor(TilePos& pos);
-  //bool _looks4Fire( ReachedBuildings& buildings, TilePos& pos );
-  //bool _checkPath2NearestFire( const ReachedBuildings& buildings );
-  //void _serveBuildings( ReachedBuildings& reachedBuildings );
-  void _back2Prefecture();
-  void _back2Patrol();
-  bool _findFire();
-  virtual void _brokePathway(TilePos pos);
+private:
+  Pathway _findPathway2NearestEnemy(unsigned int range);
+  Pathway _findPathway2NearestConstruction(unsigned int range);
+  WalkerList _findEnemiesInRange(unsigned int range);
+  BuildingList _findBuildingsInRange(unsigned int range);
+  bool _tryAttack();
+  void _init( constants::walker::Type type );
+  void _check4attack();
 
   class Impl;
   ScopedPtr< Impl > _d;

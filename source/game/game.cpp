@@ -126,6 +126,7 @@ void Game::mountArchives()
   fs.mountArchive( GameSettings::rcpath( "/pics/pics_wait.zip" ) );
   fs.mountArchive( GameSettings::rcpath( "/pics/pics.zip" ) );
   fs.mountArchive( GameSettings::rcpath( "/pics/pics_oc3.zip" ) );
+  fs.mountArchive( GameSettings::rcpath( "/pics/pics_celts.zip" ) );
 }
 
 void Game::Impl::initGuiEnvironment()

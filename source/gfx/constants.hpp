@@ -64,6 +64,7 @@ enum Type
   homelessSit,
   lion,
   britonSoldier,
+  britonSoldierFight,
   charioter,
   countType
 };
