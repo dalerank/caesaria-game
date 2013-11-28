@@ -159,7 +159,7 @@ void ConsoleUpdater::OnStartStep(UpdateStep step)
 
 	case DownloadNewUpdater:
 		Logger::warning( "----------------------------------------------------------------------------");
-		Logger::warning( " Downloading TDM Update application...");
+		Logger::warning( " Downloading CaesarIA updater...");
 		break;
 
 	case DownloadDifferentialUpdate:
@@ -276,9 +276,9 @@ void ConsoleUpdater::OnFinishStep(UpdateStep step)
 																									sizeStr.c_str() );
 
 		// Print a summary
-		if (_controller.NewUpdaterAvailable())
+		if( _controller.NewUpdaterAvailable() )
 		{
-			Logger::warning( " A new updater is available: %s", totalSize.c_str());
+			Logger::warning( " A new updater is available: " + totalSize );
 		}
 		else if (_controller.LocalFilesNeedUpdate())
 		{

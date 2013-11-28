@@ -108,8 +108,6 @@ public:
 	std::size_t GetTotalBytesDownloaded();
 	std::size_t GetNumFilesToBeUpdated();
 
-	bool RestartRequired();
-
 	// True if the update process has reached the end of the sequence
 	bool IsDone();
 

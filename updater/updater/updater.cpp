@@ -33,7 +33,7 @@ namespace updater
 Updater::Updater(const UpdaterOptions& options, vfs::Path executable) :
 	_options(options),
 	_downloadManager(new DownloadManager),
-	_executable( StringHelper::localeLower( executable.toString() ) ), // convert that file to lower to be sure
+	_executable( executable ), // convert that file to lower to be sure
 	_updatingUpdater(false)
 {
 	// Set up internet connectivity
@@ -78,7 +78,7 @@ void Updater::_markFileAsExecutable(vfs::Path path )
 void Updater::CleanupPreviousSession()
 {
 	// Remove batch file from previous run
-	vfs::NFile::remove( getTargetDir()/TDM_UPDATE_UPDATER_BATCH_FILE );
+	vfs::NFile::remove( getTargetDir()/UPDATE_UPDATER_BATCH_FILE );
 }
 
 bool Updater::MirrorsNeedUpdate()
@@ -240,8 +240,7 @@ void Updater::DetermineLocalVersion()
 			vfs::Directory folder = getTargetDir();
 			vfs::Path candidate = folder.getFilePath( f->second.file );
 
-			if( StringHelper::localeLower( candidate.getBasename().toString() )
-					==  StringHelper::localeLower( _executable.getBasename().toString() ) )
+			if( StringHelper::isEquale( candidate.getBasename().toString(), _executable.getBasename().toString(), StringHelper::equaleIgnoreCase ) )
 			{
 				Logger::warning( "Ignoring updater executable: %s.", candidate.toString().c_str() );
 				continue;
@@ -1058,22 +1057,7 @@ void Updater::PrepareUpdateStep()
 	// Create a download for each of the files
 	for (ReleaseFileSet::iterator i = _downloadQueue.begin(); i != _downloadQueue.end(); ++i)
 	{
-		//boost::this_thread::interruption_point();
-
-		// Create a mirrored download
 		DownloadPtr download(new MirrorDownload(_conn, _mirrors, i->second.file.toString(), targetdir.getFilePath(i->second.file) )) ;
-
-		// Check archives after download, pass crc and filesize to download
-		/*if( i->second.file.isExtension( ".zip" ) )
-		{
-			download->EnableValidPK4Check(true);
-			download->EnableCrcCheck(true);
-			download->EnableFilesizeCheck(true);
-
-			download->SetRequiredCrc(i->second.crc);
-			download->SetRequiredFilesize(i->second.filesize);
-		}*/
-
 		i->second.downloadId = _downloadManager->AddDownload(download);
 	}
 }
@@ -1318,13 +1302,14 @@ void Updater::ExtractAndRemoveZip(vfs::Path)
 	}*/
 }
 
-void Updater::PrepareUpdateBatchFile(vfs::Path temporaryUpdater)
+void Updater::PrepareUpdateBatchFile()
 {
+	vfs::Path temporaryUpdater = TEMP_FILE_PREFIX + _executable.toString();
 	// Create a new batch file in the target location
 	vfs::Directory targetdir = getTargetDir();
-	_updateBatchFile =  targetdir.getFilePath( TDM_UPDATE_UPDATER_BATCH_FILE );
+	_updateBatchFile =  targetdir.getFilePath( UPDATE_UPDATER_BATCH_FILE );
 
-	Logger::warning( "Preparing TDM update batch file in " + _updateBatchFile.toString() );
+	Logger::warning( "Preparing CaesarIA update batch file in " + _updateBatchFile.toString() );
 
 	std::ofstream batch(_updateBatchFile.toString().c_str());
 
@@ -1344,9 +1329,9 @@ void Updater::PrepareUpdateBatchFile(vfs::Path temporaryUpdater)
 	batch << "@ping 127.0.0.1 -n 2 -w 1000 > nul" << std::endl; // # hack equivalent to Wait 2
 	batch << "@copy " << tempUpdater.toString() << " " << updater.toString() << " >nul" << std::endl;
 	batch << "@del " << tempUpdater.toString() << std::endl;
-	batch << "@echo TDM Updater executable has been updated." << std::endl;
+	batch << "@echo CaesarIA Updater executable has been updated." << std::endl;
 
-	batch << "@echo Re-launching TDM Updater executable." << std::endl << std::endl;
+	batch << "@echo Re-launching CaesarIA Updater executable." << std::endl << std::endl;
 
 	batch << "@start " << updater.toString() << " " << arguments;
 #else // POSIX
@@ -1355,13 +1340,13 @@ void Updater::PrepareUpdateBatchFile(vfs::Path temporaryUpdater)
 	updater = targetdir.getFilePath( updater );
 
 	batch << "#!/bin/bash" << std::endl;
-	batch << "echo \"Upgrading TDM Updater executable...\"" << std::endl;
+	batch << "echo \"Upgrading CaesarIA Updater executable...\"" << std::endl;
 	batch << "cd \"" << getTargetDir().toString() << "\"" << std::endl;
 	batch << "sleep 2s" << std::endl;
 	batch << "mv -f \"" << tempUpdater.toString() << "\" \"" << updater.toString() << "\"" << std::endl;
 	batch << "chmod +x \"" << updater.toString() << "\"" << std::endl;
-	batch << "echo \"TDM Updater executable has been updated.\"" << std::endl;
-	batch << "echo \"Re-launching TDM Updater executable.\"" << std::endl;
+	batch << "echo \"CaesarIA Updater executable has been updated.\"" << std::endl;
+	batch << "echo \"Re-launching CaesarIA Updater executable.\"" << std::endl;
 
 	batch << "\"" << updater.toString() << "\" " << arguments;
 #endif
@@ -1442,14 +1427,25 @@ bool Updater::NewUpdaterAvailable()
 	}
 
 	Logger::warning( "Looking for executable " + _executable.toString() + " in download queue.");
+
+	vfs::Path myPath = vfs::Directory::getApplicationDir()/_executable;
+	ByteArray crcData = vfs::NFile::open( myPath ).readAll();
+	unsigned int fileSize = vfs::NFile::getSize( myPath );
+
+	unsigned int crc = crcData.crc32( 0 );
 	
 	// Is this the updater?
 	for (ReleaseFileSet::const_iterator i = _downloadQueue.begin(); i != _downloadQueue.end(); ++i)
 	{
-		if (i->second.ContainsUpdater(_executable.toString()))
+		if( i->second.isUpdater(_executable.toString() ) )
 		{
-			Logger::warning( "The tdm_update binary needs to be updated.");
-			return true;
+			if( i->second.crc != crc && i->second.filesize != fileSize  )
+			{
+				Logger::warning( "The updater binary needs to be updated.");
+				return true;
+			}
+
+			return false;
 		}
 	}
 
@@ -1462,11 +1458,14 @@ void Updater::RemoveAllPackagesExceptUpdater()
 {
 	Logger::warning("Removing all packages, except the one containing the updater");
 
-	for (ReleaseFileSet::iterator i = _downloadQueue.begin(); i != _downloadQueue.end(); /* in-loop */)
+	for( ReleaseFileSet::iterator i = _downloadQueue.begin(); i != _downloadQueue.end(); /* in-loop */ )
 	{
-		if (i->second.ContainsUpdater(_executable.toString()))
+		if (i->second.isUpdater(_executable.toString()))
 		{
 			// This package contains the updater, keep it
+			vfs::Path basename( TEMP_FILE_PREFIX + i->second.file.getBasename().toString() );
+			vfs::Directory basedir = i->second.file.getDir();
+			i->second.file = basedir/basename;
 			++i;
 		}
 		else
@@ -1477,14 +1476,9 @@ void Updater::RemoveAllPackagesExceptUpdater()
 	}
 }
 
-bool Updater::RestartRequired()
-{
-	return _updatingUpdater;
-}
-
 void Updater::RestartUpdater()
 {
-	Logger::warning( "Preparing restart...");
+	Logger::warning( "Preparing restart...");	
 
 #ifdef CAESARIA_PLATFORM_WIN
 	if (!_updateBatchFile.toString().empty())
@@ -1559,7 +1553,7 @@ void Updater::PostUpdateCleanup()
 	vfs::Entries dir = pdir.getEntries();
 	for( vfs::Entries::ConstItemIt i = dir.begin(); i != dir.end(); i++)
 	{
-		if( StringHelper::startsWith( i->name.toString(), TMP_FILE_PREFIX) )
+		if( StringHelper::startsWith( i->name.toString(), TEMP_FILE_PREFIX) )
 		{
 			vfs::Path p = i->fullName;
 			vfs::NFile::remove( p );
@@ -1568,18 +1562,6 @@ void Updater::PostUpdateCleanup()
 
 	// grayman #3514 - Remove DLL file in case the user is updating an existing installation.
 	// Also remove leftover updater file.
-
-#if WIN32
-	vfs::Path tdmDLLName = "gamex86.dll";
-	vfs::Path tdmUpdateName = "_tdm_update.exe";
-#else 
-	vfs::Path tdmDLLName = "gamex86.so";
-	vfs::Path tdmUpdateName = "_tdm_update.linux";
-#endif
-
-
-	vfs::NFile::remove( pdir/tdmDLLName );
-	vfs::NFile::remove( pdir/tdmUpdateName );
 }
 
 void Updater::CancelDownloads()

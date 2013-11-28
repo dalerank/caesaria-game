@@ -42,9 +42,6 @@ struct ReleaseFile
 	// The file size in bytes
 	std::size_t	filesize;
 
-	// Members of this archive
-	std::set<ReleaseFile> members;
-
 	// This is TRUE for DoomConfig.cfg, for example. 
 	// Is only used when comparing release versions in the updater code
 	bool localChangesAllowed;
@@ -90,18 +87,6 @@ struct ReleaseFile
 			return false;
 		}
 
-		if (members.size() != other.members.size()) 
-		{
-			return false; // member size mismatch
-		}
-
-		// Equal member size, compare all 
-		for (std::set<ReleaseFile>::const_iterator i = members.begin(), j = other.members.begin();
-			 i != members.end(); ++i, ++j)
-		{
-			if (*i != *j) return false;
-		}
-
 		return true; // all checks passed
 	}
 
@@ -110,17 +95,9 @@ struct ReleaseFile
 		return !(this->operator==(other));
 	}
 
-	bool ContainsUpdater(const std::string& executable) const
+	bool isUpdater(const std::string& executable) const
 	{
-		for (std::set<ReleaseFile>::const_iterator m = members.begin(); m != members.end(); ++m)
-		{
-			if( StringHelper::localeLower( m->file.toString() ) == StringHelper::localeLower( executable ) )
-			{
-				return true;
-			}
-		}
-
-		return false;
+		return StringHelper::isEquale( file.toString(), executable );
 	}
 };
 
@@ -159,6 +136,16 @@ public:
 				{
 					vfs::Path filename = section.substr(5);
 
+#ifdef CAESARIA_PLATFORM_LINUX
+					if( filename.isExtension(".exe") || filename.isExtension(".dll") )
+						return;
+#elif defined(CAESARIA_PLATFORM_WIN)
+					if( filename.isExtension(".linux") )
+						return;
+#elif defined(CAESARIA_PLATFORM_MACOSX)
+					#error not worked yet
+#endif
+
 					std::pair<ReleaseFileSet::iterator, bool> result = _set.insert(	ReleaseFileSet::value_type(filename.toString(), ReleaseFile(filename)));
 					
 					result.first->second.crc = CRC::ParseFromString(iniFile.GetValue(section, "crc"));
@@ -172,27 +159,6 @@ public:
 					{
 						result.first->second.isArchive = false;
 					}
-				}
-				else if( StringHelper::startsWith( section, "Member" ) )
-				{
-					std::string combo = section.substr(7);
-
-					// bar.zip:foo.pk4
-					std::string archiveName = combo.substr(0, combo.rfind(':') );
-					std::string memberName = combo.substr(combo.rfind(':') + 1 );
-
-					// Find or insert the archive
-					std::pair<ReleaseFileSet::iterator, bool> result = _set.insert(
-						ReleaseFileSet::value_type(archiveName, ReleaseFile(archiveName)));
-
-					// Find or insert the member
-					ReleaseFile member(memberName);
-
-					member.isArchive = false;
-					member.crc = CRC::ParseFromString(iniFile.GetValue(section, "crc"));
-					member.filesize = StringHelper::toUint( iniFile.GetValue(section, "filesize") );
-
-					result.first->second.members.insert(member);
 				}
 			}
 		} _visitor(set);

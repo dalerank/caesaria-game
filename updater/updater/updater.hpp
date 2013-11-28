@@ -285,9 +285,6 @@ public:
 	// Removes all packages, except the one containing the tdm_update binary
 	void RemoveAllPackagesExceptUpdater();
 
-	// Returns true if an updater update is pending and a restart is necessary
-	bool RestartRequired();
-
 	// Re-launches the updater (starts update batch file in Win32 builds)
 	void RestartUpdater();
 
@@ -298,6 +295,9 @@ public:
 	void CancelDownloads();
 
 	//bool VerifyUpdatePackageAt(const UpdatePackage& info, vfs::Path package);
+
+	// Prepare the update batch/script file
+	void PrepareUpdateBatchFile();
 
 private:
 	// Throws if mirrors are empty
@@ -334,9 +334,6 @@ private:
 	//bool VerifyUpdatePackageAt(const UpdatePackage& info, const fs::path& package);
 
 	bool DifferentialUpdateAvailableForVersion(const std::string&);
-
-	// Prepare the update batch/script file
-	void PrepareUpdateBatchFile(vfs::Path temporaryUpdater);
 
 	void _markFileAsExecutable(vfs::Path path);
 };

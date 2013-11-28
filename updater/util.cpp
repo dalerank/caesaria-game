@@ -164,7 +164,7 @@ namespace updater
 namespace
 {
 	const std::string systemProcFolder("/proc/");
-	const std::string caesariaProcessName("caesaria"); // grayman - looking for tdm now instead of doom3
+	const std::string caesariaProcessName("caesaria.linux"); // grayman - looking for tdm now instead of doom3
 
 	bool CheckProcessFile(const std::string& name, const std::string& processName)
 	{

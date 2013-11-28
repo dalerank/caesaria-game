@@ -40,25 +40,17 @@ const char* const TDM_MIRRORS_SERVER = "http://sourceforge.net/projects/opencaes
 
 // The file containing the version information of the most up-to-date package
 const char* const STABLE_VERSION_FILE = "stable_info.txt";
-const char* const TDM_UDPATE_INFO_FILE = "tdm_update_info.txt";
 
 // The file containing the version information of all released packages since 1.02
 const char* const UPDATE_VERSION_FILE = "version_info.txt";
 
-#ifdef WIN32
-const char* const TDM_UPDATE_UPDATER_BATCH_FILE = "tdm_update_updater.cmd";
+#ifdef CAESARIA_PLATFORM_WIN
+const char* const UPDATE_UPDATER_BATCH_FILE = "update_updater.cmd";
 #else
-const char* const TDM_UPDATE_UPDATER_BATCH_FILE = "tdm_update_updater.sh";
+const char* const UPDATE_UPDATER_BATCH_FILE = "update_updater.sh";
 #endif
 
-// The standard mod path below D3
-const char* const TDM_STANDARD_MOD_FOLDER = "darkmod";
-
-// The standard manifest folder, relative to darkmod
-const char* const TDM_MANIFEST_PATH = "devel/manifests/";
-const char* const TDM_MANIFEST_EXTENSION = ".txt";
-
-const char* const TMP_FILE_PREFIX = "__";
+const char* const TEMP_FILE_PREFIX = "__";
 
 } // namespace
 

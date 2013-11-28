@@ -122,11 +122,6 @@ std::size_t UpdateController::GetNumFilesToBeUpdated()
 	return _updater.GetNumFilesToBeUpdated();
 }
 
-bool UpdateController::RestartRequired()
-{
-	return _updater.RestartRequired();
-}
-
 bool UpdateController::DifferentialUpdateAvailable()
 {
 	return _updater.DifferentialUpdateAvailable();
@@ -333,14 +328,8 @@ void UpdateController::OnFinishStep(int step)
 
 	case DownloadNewUpdater:
 		{
-			if (_updater.RestartRequired())
-			{
-				TryToProceedTo(RestartUpdater);
-			}
-			else
-			{
-				TryToProceedTo(Done);
-			}
+			_updater.RestartUpdater();
+			TryToProceedTo(RestartUpdater);
 		}
 		break;
 

@@ -3,6 +3,7 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 OBJECTS_DIR = build
+TARGET = updater.linux
 
 win32: {
 LIBS += -lpsapi -lws2_32
@@ -141,4 +142,6 @@ HEADERS += \
     http/mirrordownload.hpp \
     http/mirrorlist.hpp \
     inifile.hpp \
-    packager/packageroptions.hpp
+    packager/packageroptions.hpp \
+    version.hpp \
+    releasefileset.hpp

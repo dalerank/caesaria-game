@@ -90,7 +90,7 @@ void Download::Start()
 	}
 
 	// /path/to/fms/TMP_FILE_PREFIXfilename.pk4 (TMP_FILE_PREFIX is usually an underscore)
-	_tempFilename = folder.getFilePath( TMP_FILE_PREFIX + filename.toString() );
+	_tempFilename = folder.getFilePath( TEMP_FILE_PREFIX + filename.toString() );
 	Logger::warning(  "Downloading to temporary file " + _tempFilename.toString() );
 
 	_status = IN_PROGRESS;
