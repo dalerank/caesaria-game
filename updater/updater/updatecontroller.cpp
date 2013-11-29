@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "updatecontroller.hpp"
+#include "constants.hpp"
 
 #include "../util.hpp"
 
@@ -213,7 +214,7 @@ void UpdateController::PerformStep(int step)
 
 	case DownloadNewUpdater:
 		// Prepare, Download, Apply
-		_updater.PrepareUpdateStep();
+		_updater.PrepareUpdateStep(TEMP_FILE_PREFIX);
 		_updater.PerformUpdateStep();
 		_updater.CleanupUpdateStep();
 		break;
@@ -240,7 +241,7 @@ void UpdateController::PerformStep(int step)
 		break;
 
 	case DownloadFullUpdate:
-		_updater.PrepareUpdateStep();
+		_updater.PrepareUpdateStep("");
 		_updater.PerformUpdateStep();
 		_updater.CleanupUpdateStep();
 		break;
@@ -249,7 +250,7 @@ void UpdateController::PerformStep(int step)
 		_updater.PostUpdateCleanup();
 		break;
 
-	case RestartUpdater:
+	case RestartUpdater:		
 		_updater.RestartUpdater();
 		break;
 

@@ -29,6 +29,7 @@
 #include "corpse.hpp"
 #include "game/resourcegroup.hpp"
 #include "game/pathway_helper.hpp"
+#include "animals.hpp"
 
 using namespace constants;
 
@@ -46,7 +47,7 @@ public:
   unsigned int strikeForce;
   unsigned int resistance;
   gfx::Type fightAnimation;
-  gfx::Type walkerAnimation;
+  gfx::Type walkAnimation;
 };
 
 EnemySoldier::EnemySoldier(PlayerCityPtr city )
@@ -69,6 +70,7 @@ bool EnemySoldier::_tryAttack()
     setSpeed( 0.f );
     _setAction( acFight );
     _setAnimation( _d->fightAnimation );
+    _changeDirection();
     return true;
   }
   else
@@ -80,6 +82,7 @@ bool EnemySoldier::_tryAttack()
       setSpeed( 0.f );
       _setAction( acFight );
       _setAnimation( _d->fightAnimation );
+      _changeDirection();
       return true;
     }
   }
@@ -117,16 +120,18 @@ WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
   TilePos offset( range, range );
   TilesArray tiles = tmap.getRectangle( getIJ() - offset, getIJ() + offset );
 
+  walker::Type type;
   foreach( Tile* tile, tiles )
   {
     WalkerList tileWalkers = _getCity()->getWalkers( walker::any, tile->getIJ() );
 
     for( WalkerList::iterator i=tileWalkers.begin();i!=tileWalkers.end(); i++ )
     {
-      if( (*i)->getType() != getType() )
-      {
-        walkers.push_back( *i );
-      }
+      type = (*i)->getType();
+      if( type == getType() || (*i).is<Animal>() || type  == walker::corpse )
+        continue;
+
+      walkers.push_back( *i );
     }
   }
 
@@ -140,7 +145,7 @@ void EnemySoldier::_init(walker::Type type)
   {
   case walker::britonSoldier:
     _setAnimation( gfx::britonSoldier );
-    _d->walkerAnimation = gfx::britonSoldier;
+    _d->walkAnimation = gfx::britonSoldier;
     _d->fightAnimation = gfx::britonSoldierFight;
     _d->strikeForce = 3;
     _d->resistance = 1;
@@ -219,10 +224,10 @@ BuildingList EnemySoldier::_findBuildingsInRange( unsigned int range )
 
   foreach( Tile* tile, tiles )
   {
-    BuildingPtr building = tile->getOverlay().as<Building>();
-    if( building.isValid() )
+    BuildingPtr b = tile->getOverlay().as<Building>();
+    if( b.isValid() && b->getClass() != building::disasterGroup )
     {
-      ret.push_back( building );
+      ret.push_back( b );
     }
   }
 
@@ -265,7 +270,8 @@ void EnemySoldier::_centerTile()
 
   case Impl::go2position:
   {
-    _tryAttack();
+    if( _tryAttack() )
+      return;
   }
   break;
 
@@ -308,7 +314,7 @@ void EnemySoldier::timeStep(const unsigned long time)
       BuildingPtr b = buildings.front();
 
       turn( b->getTilePos() );
-      b->updateState( Construction::damage, -1 );
+      b->updateState( Construction::damage, 1 );
     }
     else
     {

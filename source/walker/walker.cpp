@@ -88,7 +88,7 @@ Walker::~Walker()
 
 walker::Type Walker::getType() const
 {
-   return _d->walkerType;
+  return _d->walkerType;
 }
 
 void Walker::timeStep(const unsigned long time)

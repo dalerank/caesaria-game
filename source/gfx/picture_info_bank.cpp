@@ -122,6 +122,7 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   _d->setRange("citizen03", 1, 1128, offset);
   _d->setRange("citizen04", 1, 577, offset);
   _d->setRange("citizen05", 1, 184, offset);
+  _d->setRange("celts", 1, 552, offset );
 
   _d->setRange(ResourceGroup::carts, 369, 464, Point( -15, 32) ); //market lady helper
   _d->setRange(ResourceGroup::carts, 145, 240, Point( -15, 32) ); //merchant horse caravan

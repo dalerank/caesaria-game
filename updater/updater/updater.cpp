@@ -1050,14 +1050,14 @@ bool Updater::LocalFilesNeedUpdate()
 	return !_downloadQueue.empty();
 }
 
-void Updater::PrepareUpdateStep()
+void Updater::PrepareUpdateStep(std::string prefix)
 {
 	vfs::Directory targetdir = getTargetDir();
 
 	// Create a download for each of the files
 	for (ReleaseFileSet::iterator i = _downloadQueue.begin(); i != _downloadQueue.end(); ++i)
 	{
-		DownloadPtr download(new MirrorDownload(_conn, _mirrors, i->second.file.toString(), targetdir.getFilePath(i->second.file) )) ;
+		DownloadPtr download(new MirrorDownload(_conn, _mirrors, i->second.file.toString(), targetdir.getFilePath(prefix+i->second.file.toString() ) )) ;
 		i->second.downloadId = _downloadManager->AddDownload(download);
 	}
 }
@@ -1186,120 +1186,6 @@ void Updater::NotifyDownloadProgress()
 
 		_downloadProgressCallback->OnDownloadProgress(info);
 	}
-}
-
-void Updater::ExtractAndRemoveZip(vfs::Path)
-{
-	/*ZipFileReadPtr zipFile = Zip::OpenFileRead(zipFilePath);
-
-	if (zipFile == NULL)
-	{
-		Logger::warning( "Archive is not a valid ZIP.");
-		return;
-	}
-
-	vfs::Directory destPath = getTargetDir();
-
-	// tdm_update exists in its own PK4, so we can assume tdm_update and the TDM binaries will never be found in the same PK4.
-
-	bool TDMbinaryPresent = false; // grayman - true if this zip contains "TheDarkMod.exe" or "thedarkmod.x86"
-
-#ifdef CAESARIA_PLATFORM_WIN
-	const std::string TDM_BINARY_NAME("TheDarkMod.exe");
-#else
-	const std::string TDM_BINARY_NAME("thedarkmod.x86");
-#endif
-
-	try
-	{
-		Logger::warning( "Extracting files from " + zipFilePath.toString() );
-
-		// Check if the archive contains the updater binary
-		if( zipFile->ContainsFile(_executable.toString()))
-		{
-			// Set the flag for later use
-			_updatingUpdater = true;
-		}
-
-		// Check if the archive contains the TDM binary
-		if (zipFile->ContainsFile(TDM_BINARY_NAME))
-		{
-			// Set the flag for later use
-			TDMbinaryPresent = true;
-		}
-
-		std::list<vfs::Path> extractedFiles;
-
-		if (_updatingUpdater)
-		{
-			// Update all files, but save the updater binary; this will be handled separately
-			std::set<std::string> hardIgnoreList;
-			hardIgnoreList.insert(_executable.toString());
-
-			// Extract all but the updater
-			// Ignore DoomConfig.cfg, etc. if already existing
-			extractedFiles = zipFile->ExtractAllFilesTo(destPath, _ignoreList, hardIgnoreList); 
-
-			// Extract the updater to a temporary filename
-			vfs::Path tempUpdater = destPath.getFilePath( "_" + _executable.toString() );
-
-			zipFile->ExtractFileTo(_executable.toString(), tempUpdater);
-
-			// Set the executable bit on the temporary updater
-			_markFileAsExecutable( tempUpdater );
-
-			// Prepare the update batch file
-			PrepareUpdateBatchFile(tempUpdater);
-		}
-		else if (TDMbinaryPresent)
-		{
-			// Update all files, but save the TDM binary; this will be handled separately
-			std::set<std::string> hardIgnoreList;
-			hardIgnoreList.insert(TDM_BINARY_NAME);
-
-			// Extract all but the TDM binary
-			// Ignore DoomConfig.cfg, etc. if already existing
-			extractedFiles = zipFile->ExtractAllFilesTo(destPath, _ignoreList, hardIgnoreList); 
-
-			// Extract the TDM binary
-			vfs::Path binaryFileName = destPath.getFilePath( TDM_BINARY_NAME );
-			zipFile->ExtractFileTo(TDM_BINARY_NAME, binaryFileName);
-
-			// Set the executable bit on the TDM binary
-			_markFileAsExecutable( binaryFileName );
-		}
-		else
-		{
-			// Regular archive (without updater or TDM binary), extract all files, ignore existing DoomConfig.cfg
-			extractedFiles = zipFile->ExtractAllFilesTo(destPath, _ignoreList);
-		}
-
-		Logger::warning( "All files successfully extracted from " + zipFilePath.toString() );
-
-#ifndef WIN32
-		// In Linux or Mac, mark *.linux files as executable after extraction
-		for (std::list<vfs::Path>::const_iterator i = extractedFiles.begin(); i != extractedFiles.end(); ++i)
-		{
-			std::string extension = StringHelper::localeLower( (*i).getExtension() );
-
-			if (extension == ".linux" || extension == ".macosx")
-			{
-				_markFileAsExecutable( *i );
-			}
-		}
-#endif
-		
-		// Close the zip file before removal
-		zipFile = ZipFileReadPtr();
-
-		// Remove the Zip
-		vfs::Path removedFilePath = zipFilePath;
-		vfs::NFile::remove( removedFilePath );
-	}
-	catch (std::runtime_error& ex)
-	{
-		Logger::warning("Failed to extract files from " + zipFilePath.toString() + ": " + ex.what() );
-	}*/
 }
 
 void Updater::PrepareUpdateBatchFile()
@@ -1463,9 +1349,6 @@ void Updater::RemoveAllPackagesExceptUpdater()
 		if (i->second.isUpdater(_executable.toString()))
 		{
 			// This package contains the updater, keep it
-			vfs::Path basename( TEMP_FILE_PREFIX + i->second.file.getBasename().toString() );
-			vfs::Directory basedir = i->second.file.getDir();
-			i->second.file = basedir/basename;
 			++i;
 		}
 		else
@@ -1479,6 +1362,7 @@ void Updater::RemoveAllPackagesExceptUpdater()
 void Updater::RestartUpdater()
 {
 	Logger::warning( "Preparing restart...");	
+	PrepareUpdateBatchFile();
 
 #ifdef CAESARIA_PLATFORM_WIN
 	if (!_updateBatchFile.toString().empty())
@@ -1528,10 +1412,11 @@ void Updater::RestartUpdater()
 
 	if (!_updateBatchFile.toString().empty())
 	{
-		Logger::warning( "Relaunching tdm_update via shell script " + _updateBatchFile.toString() );
+		Logger::warning( "Relaunching CaesarIA updater via shell script " + _updateBatchFile.toString() );
 
 		// Perform the system command in a fork
-		if (fork() == 0)
+		//int r = fork();
+		//if( r >= 0 )
 		{
 			// Don't wait for the subprocess to finish
 			system((_updateBatchFile.toString() + " &").c_str());

@@ -255,7 +255,7 @@ public:
 	bool LocalFilesNeedUpdate();
 
 	// Generates an internal TODO list needed to perform the update step
-	void PrepareUpdateStep();
+	void PrepareUpdateStep(std::string prefix);
 
 	// Performs the update step, downloads stuff and integrates the package
 	void PerformUpdateStep();
@@ -294,8 +294,6 @@ public:
 	// Interrupts ongoing downloads
 	void CancelDownloads();
 
-	//bool VerifyUpdatePackageAt(const UpdatePackage& info, vfs::Path package);
-
 	// Prepare the update batch/script file
 	void PrepareUpdateBatchFile();
 
@@ -314,9 +312,6 @@ private:
 
 	// Get the target path (defaults to current path)
 	vfs::Directory getTargetDir();
-
-	// Extract the contents of the given zip file (and remove the zip afterwards)
-	void ExtractAndRemoveZip(vfs::Path);
 
 	// Creates a mirrored download
 	DownloadPtr PrepareMirroredDownload(const std::string& remoteFile);

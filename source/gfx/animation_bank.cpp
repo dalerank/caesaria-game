@@ -115,7 +115,7 @@ void AnimationBank::Impl::loadWalkers()
   animations[gfx::barber           ] = loadAnimation( ResourceGroup::citizen2, 463, 12);
   animations[gfx::prefect          ] = loadAnimation( ResourceGroup::citizen2, 615, 12);
   animations[gfx::prefectDragWater ] = loadAnimation( ResourceGroup::citizen2, 767, 12);
-  animations[gfx::prefectFightFire ]= loadAnimation( ResourceGroup::citizen2, 863, 6, Walker::acFight );
+  animations[gfx::prefectFightFire ] = loadAnimation( ResourceGroup::citizen2, 863, 6, Walker::acFight );
   animations[gfx::prefectFight     ] = loadAnimation( ResourceGroup::citizen2, 719, 6, Walker::acFight );
   animations[gfx::homeless         ] = loadAnimation( ResourceGroup::citizen2, 911, 12);
   animations[gfx::patrician        ] = loadAnimation( ResourceGroup::citizen3, 713, 12);
@@ -135,7 +135,7 @@ void AnimationBank::Impl::loadWalkers()
   animations[gfx::lion             ] = loadAnimation( ResourceGroup::lion, 1, 12 );
   animations[gfx::charioter        ] = loadAnimation( ResourceGroup::citizen5, 1, 12 );
   animations[gfx::britonSoldier    ] = loadAnimation( ResourceGroup::celts, 249, 12 );
-  animations[gfx::britonSoldierFight ] = loadAnimation( ResourceGroup::celts, 345, 6, Walker::acFight );
+  animations[gfx::britonSoldierFight]= loadAnimation( ResourceGroup::celts, 345, 6, Walker::acFight );
 }
 
 AnimationBank& AnimationBank::instance()

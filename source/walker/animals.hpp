@@ -28,8 +28,8 @@ public:
 
   virtual void send2City(const TilePos& start );
 
-  void save(VariantMap& stream) const;
-  void load(const VariantMap& stream);
+  virtual void save(VariantMap& stream) const;
+  virtual void load(const VariantMap& stream);
 
 protected:
   void _findNewWay(const TilePos &start);
