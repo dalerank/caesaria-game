@@ -52,7 +52,8 @@ public:
   static const char* citizen4;
   static const char* citizen5;
   static const char* lion;
-  static const char* wall;
+  static const char* wall;\
+  static const char* celts;
 };
 
 class ResourceMenu

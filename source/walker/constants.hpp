@@ -52,6 +52,7 @@ enum Type{
   patrician,
   corpse,
   enemySoldier,
+  britonSoldier,
   all = 0xff,
   any = all
 };

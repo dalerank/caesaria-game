@@ -28,12 +28,13 @@
 #include "walker/constants.hpp"
 #include "walker/corpse.hpp"
 #include "walker/protestor.hpp"
+#include "walker/enemysoldier.hpp"
 #include <map>
 
 using namespace constants;
 
 template< class T >
-class BaseWalkerCreator : public WalkerCreator
+class BaseCreator : public WalkerCreator
 {
 public:
   virtual WalkerPtr create( PlayerCityPtr city )
@@ -42,7 +43,7 @@ public:
   }
 };
 
-class ServiceWalkerCreator : public WalkerCreator
+class ServicemanCreator : public WalkerCreator
 {
 public:
   WalkerPtr create( PlayerCityPtr city )
@@ -50,12 +51,28 @@ public:
     return ServiceWalker::create( city, serviceType ).object();
   }
 
-  ServiceWalkerCreator( const Service::Type type )
+  ServicemanCreator( const Service::Type type )
   {
     serviceType = type;
   }
 
   Service::Type serviceType;
+};
+
+class EnemyCreator : public WalkerCreator
+{
+public:
+  WalkerPtr create( PlayerCityPtr city )
+  {
+    return EnemySoldier::create( city, rtype ).object();
+  }
+
+  EnemyCreator( const walker::Type type )
+  {
+    rtype = type;
+  }
+
+  walker::Type rtype;
 };
 
 class TraineeWalkerCreator : public WalkerCreator
@@ -76,23 +93,24 @@ public:
 
 WalkerManager::WalkerManager() : _d( new Impl )
 {
-  addCreator( walker::emigrant, new BaseWalkerCreator<Emigrant>() );
-  addCreator( walker::immigrant, new BaseWalkerCreator<Immigrant>() );
-  addCreator( walker::cartPusher, new BaseWalkerCreator<CartPusher>() );
-  addCreator( walker::prefect, new BaseWalkerCreator<Prefect>() );
-  addCreator( walker::taxCollector, new BaseWalkerCreator<TaxCollector>() );
-  addCreator( walker::engineer, new ServiceWalkerCreator( Service::engineer ));
-  addCreator( walker::doctor, new ServiceWalkerCreator( Service::doctor ) );
-  addCreator( walker::sheep, new BaseWalkerCreator< Sheep >() );
-  addCreator( walker::bathlady, new ServiceWalkerCreator( Service::baths ) );
-  addCreator( walker::actor, new ServiceWalkerCreator( Service::theater ) );
-  addCreator( walker::gladiator, new ServiceWalkerCreator( Service::amphitheater ) );
-  addCreator( walker::barber, new ServiceWalkerCreator( Service::barber ) );
-  addCreator( walker::surgeon, new ServiceWalkerCreator( Service::hospital ) );
+  addCreator( walker::emigrant, new BaseCreator<Emigrant>() );
+  addCreator( walker::immigrant, new BaseCreator<Immigrant>() );
+  addCreator( walker::cartPusher, new BaseCreator<CartPusher>() );
+  addCreator( walker::prefect, new BaseCreator<Prefect>() );
+  addCreator( walker::taxCollector, new BaseCreator<TaxCollector>() );
+  addCreator( walker::engineer, new ServicemanCreator( Service::engineer ));
+  addCreator( walker::doctor, new ServicemanCreator( Service::doctor ) );
+  addCreator( walker::sheep, new BaseCreator< Sheep >() );
+  addCreator( walker::bathlady, new ServicemanCreator( Service::baths ) );
+  addCreator( walker::actor, new ServicemanCreator( Service::theater ) );
+  addCreator( walker::gladiator, new ServicemanCreator( Service::amphitheater ) );
+  addCreator( walker::barber, new ServicemanCreator( Service::barber ) );
+  addCreator( walker::surgeon, new ServicemanCreator( Service::hospital ) );
   addCreator( walker::trainee, new TraineeWalkerCreator() );
-  addCreator( walker::fishingBoat, new BaseWalkerCreator<FishingBoat>() );
-  addCreator( walker::corpse, new BaseWalkerCreator<Corpse>() );
-  addCreator( walker::protestor, new BaseWalkerCreator<Protestor>() );
+  addCreator( walker::fishingBoat, new BaseCreator<FishingBoat>() );
+  addCreator( walker::corpse, new BaseCreator<Corpse>() );
+  addCreator( walker::protestor, new BaseCreator<Protestor>() );
+  addCreator( walker::britonSoldier, new EnemyCreator( walker::britonSoldier ) );
 }
 
 WalkerManager::~WalkerManager()

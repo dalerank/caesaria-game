@@ -52,6 +52,7 @@
 #include "gui/window_gamespeed_options.hpp"
 #include "events/setvideooptions.hpp"
 #include "core/logger.hpp"
+#include "walker/enemysoldier.hpp"
 
 using namespace gui;
 
@@ -214,7 +215,9 @@ void ScreenGame::Impl::saveCameraPos(Point p)
 
 void ScreenGame::Impl::makeEnemy()
 {
-
+  EnemySoldierPtr enemy = EnemySoldier::create( game->getCity(),
+                                                constants::walker::britonSoldier );
+  enemy->send2City( game->getCity()->getBorderInfo().roadEntry );
 }
 
 void ScreenGame::Impl::showEmpireMapWindow()
@@ -290,7 +293,8 @@ void ScreenGame::handleEvent( NEvent& event )
 		break;
 
 		case KEY_F11:
-			_d->makeEnemy();
+			if( event.keyboard.pressed )
+				_d->makeEnemy();
 		break;
 
     default:

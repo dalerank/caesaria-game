@@ -35,22 +35,24 @@ using namespace constants;
 class EnemySoldier::Impl
 {
 public:
-  typedef enum { patrol=0,
-                 findFire, go2fire, fightFire,
-                 go2protestor, fightProtestor,
+  typedef enum { check4attack=0,
+                 go2position,
+                 go2enemy,
+                 fightEnemy,
+                 destroyBuilding,
                  doNothing } EsAction;
     
   EsAction action;
+  unsigned int strikeForce;
+  unsigned int resistance;
+  gfx::Type fightAnimation;
+  gfx::Type walkerAnimation;
 };
 
 EnemySoldier::EnemySoldier(PlayerCityPtr city )
 : Soldier( city ), _d( new Impl )
 {
-  _setType( walker::prefect );
-  _d->action = Impl::patrol;
-  _setAnimation( gfx::prefect );
-
-  setName( NameGenerator::rand( NameGenerator::male ) );
+  _d->action = Impl::check4attack;
 }
 
 void EnemySoldier::_changeTile()
@@ -58,169 +60,194 @@ void EnemySoldier::_changeTile()
   Walker::_changeTile();
 }
 
-/*bool EnemySoldier::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, TilePos& pos )
+bool EnemySoldier::_tryAttack()
 {
-  buildings = getReachedBuildings( getIJ() );
-
-  foreach( BuildingPtr building, buildings )
+  BuildingList buildings = _findBuildingsInRange( 1 );
+  if( !buildings.empty() )
   {
-    if( building->getType() == building::burningRuins )
-    {
-      pos = building->getTilePos();
-      return true;
-    }
-  }
-
-  return false;
-}*/
-
-bool EnemySoldier::_looks4Protestor( TilePos& pos )
-{
-  CityHelper helper( _getCity() );
-  TilePos offset( 3, 3 );
-  //ProtestorList protestors = helper.find<Protestor>( walker::protestor, getIJ() - offset, getIJ() + offset );
-
-  /*int minDistance=99;
-  foreach( ProtestorPtr p, protestors )
-  {
-    int distance = p->getIJ().distanceFrom( getIJ() );
-    if( distance < minDistance )
-    {
-      minDistance =  distance;
-      pos = p->getIJ();
-    }
-  }*/
-
-  return false;
-}
-
-/*bool EnemySoldier::_checkPath2NearestFire( const ReachedBuildings& buildings )
-{
-  foreach( BuildingPtr building, buildings )
-  {
-    if( building->getType() != building::burningRuins )
-      continue;
-
-    if( building->getTilePos().distanceFrom( getIJ() ) < 1.5f )
-    {
-      turn( building->getTilePos() );
-      _d->action = Impl::fightFire;
-      _setAction( acFight );
-      _setAnimation( gfx::prefectFightFire );
-      setSpeed( 0.f );
-      return true;
-    }
-  }
-
-  foreach( BuildingPtr building, buildings )
-  {
-    if( building->getType() != building::burningRuins )
-      continue;
-
-    Pathway tmp = PathwayHelper::create( getIJ(), building->getTilePos(), PathwayHelper::allTerrain );
-    if( tmp.isValid() )
-    {
-      _d->action = Impl::go2fire;
-      _updatePathway( tmp );
-      _setAnimation( gfx::prefectDragWater );
-      setSpeed( 1 );
-      go();
-      return true;
-    }
-  }
-
-  return false;
-}*/
-
-
-void EnemySoldier::_back2Prefecture()
-{
-  //_d->endPatrolPoint = getBase()->getEnterArea().front()->getIJ();
-  _back2Patrol();
-}
-
-/*void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
-{
-  foreach( BuildingPtr building, reachedBuildings )
-  {
-    building->applyService( ServiceWalkerPtr( this ) );
-
-    HousePtr house = building.as<House>();
-    if( house.isValid() && house->getHealthLevel() < 1 )
-    {
-      house->deleteLater();
-
-      events::GameEventPtr e = events::DisasterEvent::create( house->getTilePos(), events::DisasterEvent::plague );
-      e->dispatch();
-    }
-  }
-}*/
-
-void EnemySoldier::_back2Patrol()
-{
-  /*Pathway pathway = PathwayHelper::create( getIJ(), _d->endPatrolPoint, PathwayHelper::allTerrain );
-
-  if( pathway.isValid() )
-  {
-    _d->action = Impl::patrol;
-    _setAnimation( gfx::prefect );
-    _updatePathway( pathway );
-    setSpeed( 1 );
-    go();
+    _d->action = Impl::destroyBuilding;
+    setSpeed( 0.f );
+    _setAction( acFight );
+    _setAnimation( _d->fightAnimation );
+    return true;
   }
   else
   {
-    die();
-  }*/
-}
-
-bool EnemySoldier::_findFire()
-{
-/*  TilePos firePos;
-  ReachedBuildings reachedBuildings;
-  bool haveBurningRuinsNear = _looks4Fire( reachedBuildings, firePos );
-  if( haveBurningRuinsNear && _d->water > 0 )
-  {
-    return _checkPath2NearestFire( reachedBuildings );
-  }*/
+    WalkerList enemies = _findEnemiesInRange( 1 );
+    if( !enemies.empty() )
+    {
+      _d->action = Impl::fightEnemy;
+      setSpeed( 0.f );
+      _setAction( acFight );
+      _setAnimation( _d->fightAnimation );
+      return true;
+    }
+  }
 
   return false;
 }
 
 void EnemySoldier::_brokePathway(TilePos pos)
 {
-  TileOverlayPtr overlay = _getCity()->getOverlay( pos );
-  if( overlay.isValid() && overlay->getType() == building::burningRuins )
+  if( !_tryAttack() )
   {
-    setSpeed( 0 );
-    _setAction( acFight );
-    _d->action = Impl::fightFire;
-    _setAnimation( gfx::prefectFightFire );
-    return;
+    _check4attack();
   }
-
-  _back2Patrol();
 }
 
 void EnemySoldier::_reachedPathway()
 {
+  Soldier::_reachedPathway();
   switch( _d->action )
   {
-  case Impl::patrol:
-    {
-      _back2Prefecture();
-    }
-  break;
-
-  case Impl::go2fire:
-    if( !_findFire() )
-    {
-      _back2Patrol();
-    }
+  case Impl::check4attack:
+  case Impl::go2position:
+    _check4attack();
   break;
 
   default: break;
   }
+}
+
+WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
+{
+  Tilemap& tmap = _getCity()->getTilemap();
+  WalkerList walkers;
+
+  TilePos offset( range, range );
+  TilesArray tiles = tmap.getRectangle( getIJ() - offset, getIJ() + offset );
+
+  foreach( Tile* tile, tiles )
+  {
+    WalkerList tileWalkers = _getCity()->getWalkers( walker::any, tile->getIJ() );
+
+    for( WalkerList::iterator i=tileWalkers.begin();i!=tileWalkers.end(); i++ )
+    {
+      if( (*i)->getType() != getType() )
+      {
+        walkers.push_back( *i );
+      }
+    }
+  }
+
+  return walkers;
+}
+
+void EnemySoldier::_init(walker::Type type)
+{
+  _setType( type );
+  switch( type )
+  {
+  case walker::britonSoldier:
+    _setAnimation( gfx::britonSoldier );
+    _d->walkerAnimation = gfx::britonSoldier;
+    _d->fightAnimation = gfx::britonSoldierFight;
+    _d->strikeForce = 3;
+    _d->resistance = 1;
+  break;
+  default:
+    _CAESARIA_DEBUG_BREAK_IF("not work yet");
+  }
+
+  setName( NameGenerator::rand( NameGenerator::male ) );
+}
+
+Pathway EnemySoldier::_findPathway2NearestEnemy( unsigned int range )
+{
+  Pathway ret;
+
+  for( unsigned int tmpRange=1; tmpRange <= range; tmpRange++ )
+  {
+    WalkerList walkers = _findEnemiesInRange( tmpRange );
+
+    foreach( WalkerPtr w, walkers)
+    {
+      ret = PathwayHelper::create( getIJ(), w->getIJ(), PathwayHelper::allTerrain );
+      if( ret.isValid() )
+      {
+        return ret;
+      }
+    }
+  }
+
+  return Pathway();
+}
+
+void EnemySoldier::_check4attack()
+{
+  Pathway pathway = _findPathway2NearestEnemy( 20 );
+
+  if( !pathway.isValid() )
+  {
+    pathway = _findPathway2NearestConstruction( 20 );
+  }
+
+  if( !pathway.isValid() )
+  {
+    pathway = PathwayHelper::create( getIJ(), _getCity()->getBorderInfo().boatExit,
+                                     PathwayHelper::allTerrain );
+  }
+
+  if( !pathway.isValid() )
+  {
+    pathway = PathwayHelper::randomWay( _getCity(), getIJ(), 20 );
+  }
+
+  if( pathway.isValid() )
+  {
+    _d->action = Impl::go2position;
+    setSpeed( 1.0 );
+    _setAnimation( _d->walkAnimation );
+    setPathway( pathway );
+    go();
+  }
+  else
+  {
+    //impossible state, but...
+    Logger::warning( "EnemySoldier: can't find any path" );
+    die();
+  }
+}
+
+BuildingList EnemySoldier::_findBuildingsInRange( unsigned int range )
+{
+  BuildingList ret;
+  Tilemap& tmap = _getCity()->getTilemap();
+
+  TilePos offset( range, range );
+  TilesArray tiles = tmap.getRectangle( getIJ() - offset, getIJ() + offset );
+
+  foreach( Tile* tile, tiles )
+  {
+    BuildingPtr building = tile->getOverlay().as<Building>();
+    if( building.isValid() )
+    {
+      ret.push_back( building );
+    }
+  }
+
+  return ret;
+}
+
+Pathway EnemySoldier::_findPathway2NearestConstruction( unsigned int range )
+{
+  Pathway ret;
+
+  for( unsigned int tmpRange=1; tmpRange <= range; tmpRange++ )
+  {
+    BuildingList buildings = _findBuildingsInRange( tmpRange );
+
+    foreach( BuildingPtr building, buildings )
+    {
+      ret = PathwayHelper::create( getIJ(), building.as<Construction>(), PathwayHelper::allTerrain );
+      if( ret.isValid() )
+      {
+        return ret;
+      }
+    }
+  }
+
+  return Pathway();
 }
 
 void EnemySoldier::_centerTile()
@@ -230,86 +257,19 @@ void EnemySoldier::_centerTile()
   case Impl::doNothing:
   break; 
 
-  case Impl::patrol:
+  case Impl::check4attack:
   {
-    TilePos protestorPos, firePos;
-    /*ReachedBuildings reachedBuildings;
-    bool haveProtestorNear = _looks4Protestor( protestorPos );
-    bool haveBurningRuinsNear = _looks4Fire( reachedBuildings, firePos );
-
-    if( haveProtestorNear )
-    {      
-      Pathway pathway = PathwayHelper::create( getIJ(), protestorPos, PathwayHelper::allTerrain );
-
-      if( pathway.isValid() )
-      {
-        setSpeed( 1.5f );
-        _updatePathway( pathway );
-        go();
-
-        _d->action = Impl::go2protestor;
-      }
-    }
-    else if( haveBurningRuinsNear )
-    {
-      //tell our prefecture that need send prefect with water to fight with fire
-      //on next deliverService
-
-      //found fire, no water, go prefecture
-      getBase().as<Prefecture>()->fireDetect( firePos );
-      _back2Prefecture();
-    }
-    else
-    {
-      _serveBuildings( reachedBuildings );
-    }*/
+    _check4attack();
   }
   break;
 
-  case Impl::findFire:
+  case Impl::go2position:
   {
-    _findFire();
+    _tryAttack();
   }
   break;
 
-  case Impl::go2protestor:
-  {
-    TilePos protestorPos;
-    bool haveProtestorNear = _looks4Protestor( protestorPos );
-    if( haveProtestorNear )
-    {
-      if(  protestorPos.distanceFrom( getIJ() ) < 1.5f  )
-      {
-        _d->action = Impl::fightProtestor;
-        setSpeed( 0.f );
-        _setAction( acFight );
-        _setAnimation( gfx::prefectFight );
-        return;
-      }
-    }
-    else
-    {
-      _back2Patrol();
-    }
-  }
-  break;
-
-  case Impl::go2fire:
-  {
-    BuildingPtr building = _getNextTile().getOverlay().as<Building>();
-    if( building.isValid() && building->getType() == building::burningRuins )
-    {
-      _d->action = Impl::fightFire;
-      _setAnimation( gfx::prefectFightFire );
-      _setAction( acFight );
-      setSpeed( 0.f );
-      return;
-    }
-  }
-  break;
-
-  case Impl::fightFire:
-  case Impl::fightProtestor:
+  default:
   break;
   }
   Walker::_centerTile();
@@ -321,20 +281,40 @@ void EnemySoldier::timeStep(const unsigned long time)
 
   switch( _d->action )
   {
-  case Impl::fightFire:
-  {    
-    BuildingPtr building = _getNextTile().getOverlay().as<Building>();
-    //bool inFire = (building.isValid() && building->getType() == building::burningRuins );
-
-  }
-  break;
-
-  case Impl::fightProtestor:
+  case Impl::fightEnemy:
   {
-    CityHelper helper( _getCity() );
-    _back2Patrol();
+    WalkerList enemies = _findEnemiesInRange( 1 );
+
+    if( !enemies.empty() )
+    {
+      WalkerPtr p = enemies.front();
+      turn( p->getIJ() );
+      p->updateHealth( -3 );
+      p->acceptAction( Walker::acFight, getIJ() );
+    }
+    else
+    {
+      _check4attack();
+    }
   }
   break;
+
+  case Impl::destroyBuilding:
+  {
+    BuildingList buildings = _findBuildingsInRange( 1 );
+
+    if( !buildings.empty() )
+    {
+      BuildingPtr b = buildings.front();
+
+      turn( b->getTilePos() );
+      b->updateState( Construction::damage, -1 );
+    }
+    else
+    {
+      _check4attack();
+    }
+  }
 
   default: break;
   } // end switch( _d->action )
@@ -344,9 +324,10 @@ EnemySoldier::~EnemySoldier()
 {
 }
 
-EnemySoldierPtr EnemySoldier::create(PlayerCityPtr city )
+EnemySoldierPtr EnemySoldier::create(PlayerCityPtr city, constants::walker::Type type )
 {
   EnemySoldierPtr ret( new EnemySoldier( city ) );
+  ret->_init( type );
   ret->drop();
 
   return ret;
@@ -354,9 +335,8 @@ EnemySoldierPtr EnemySoldier::create(PlayerCityPtr city )
 
 void EnemySoldier::send2City( TilePos pos )
 {
-  _d->action = Impl::patrol;
-  _setAnimation( gfx::prefect );
-
+  setIJ( pos );
+  _check4attack();
   _getCity()->addWalker( WalkerPtr( this ));
 }
 
@@ -364,7 +344,15 @@ void EnemySoldier::die()
 {
   Soldier::die();
 
-  Corpse::create( _getCity(), getIJ(), ResourceGroup::citizen2, 711, 718 );
+  switch( getType() )
+  {
+  case walker::britonSoldier:
+    Corpse::create( _getCity(), getIJ(), ResourceGroup::celts, 393, 400 );
+  break;
+
+  default:
+    _CAESARIA_DEBUG_BREAK_IF("not work yet");
+  }
 }
 
 void EnemySoldier::load( const VariantMap& stream )
@@ -373,7 +361,7 @@ void EnemySoldier::load( const VariantMap& stream )
  
   _d->action = (Impl::EsAction)stream.get( "EsAction" ).toInt();
 
-  _setAnimation( gfx::prefect );
+  _init( (walker::Type)stream.get( "type" ).toInt() );
   _getCity()->addWalker( this );
 }
 
@@ -381,7 +369,8 @@ void EnemySoldier::save( VariantMap& stream ) const
 {
   Soldier::save( stream );
 
-  stream[ "type" ] = (int)walker::enemySoldier;
+  stream[ "type" ] = (int)getType();
+  stream[ "animation" ] =
   stream[ "EsAction" ] = (int)_d->action;
   stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(EnemySoldier) ) );
 }
