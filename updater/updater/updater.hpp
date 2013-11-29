@@ -233,9 +233,6 @@ public:
 	// Returns true if a differential update is available (based on this version)
 	bool DifferentialUpdateAvailable();
 
-	// Returns the total size of all differential updates leading to the newest version
-	std::size_t GetTotalDifferentialUpdateSize();
-
 	// Downloads the package applicable to the local version
 	void DownloadDifferentialUpdate();
 
@@ -296,6 +293,8 @@ public:
 
 	// Prepare the update batch/script file
 	void PrepareUpdateBatchFile();
+
+	void setBinaryAsExecutable();
 
 private:
 	// Throws if mirrors are empty

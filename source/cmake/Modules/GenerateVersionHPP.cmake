@@ -1,4 +1,4 @@
-include(${CMAKE_SOURCE_DIR}/cmake/Modules/EnsureVersion.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/EnsureVersion.cmake)
 
 set(_REQUIRED_GIT_VERSION "1.7")
 

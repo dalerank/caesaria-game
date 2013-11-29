@@ -115,10 +115,6 @@ public:
 
 	std::string GetLocalVersion();
 	std::string GetNewestVersion();
-	
-	std::size_t GetTotalDifferentialUpdateSize();
-
-	//DifferentialUpdateInfo GetDifferentialUpdateInfo();
 
 private:
 	void run();

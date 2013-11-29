@@ -282,23 +282,12 @@ void ConsoleUpdater::OnFinishStep(UpdateStep step)
 		}
 		else if (_controller.LocalFilesNeedUpdate())
 		{
-			if (_controller.DifferentialUpdateAvailable())
-			{
-				Logger::warning( " A differential update is available.");
-
-				sizeStr = Util::GetHumanReadableBytes(_controller.GetTotalDifferentialUpdateSize());
-				totalSize = StringHelper::format( 0xff, " Download size: %s", sizeStr.c_str() );
-			}
-			else
-			{
-				Logger::warning( " Updates are available.");
-			}
-
+			Logger::warning( " Updates are available.");
 			Logger::warning( totalSize );
 		}
 		else
 		{
-			Logger::warning( " Your TDM installation is up to date" );
+			Logger::warning( " Your CaesarIA installation is up to date" );
 		}
 	}
 	break;
@@ -332,7 +321,7 @@ void ConsoleUpdater::OnFinishStep(UpdateStep step)
 		if (!_controller.LocalFilesNeedUpdate())
 		{
 			Logger::warning( "----------------------------------------------------------------------------");
-			Logger::warning( " Your TDM installation is up to date.");
+			Logger::warning( " Your CaesarIA installation is up to date.");
 		}
 	}
 	break;

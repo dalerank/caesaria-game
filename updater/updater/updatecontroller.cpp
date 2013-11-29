@@ -138,16 +138,6 @@ std::string UpdateController::GetNewestVersion()
 	return _updater.GetNewestVersion();
 }
 
-std::size_t UpdateController::GetTotalDifferentialUpdateSize()
-{
-	return _updater.GetTotalDifferentialUpdateSize();
-}
-
-/*DifferentialUpdateInfo UpdateController::GetDifferentialUpdateInfo()
-{
-	return _updater.GetDifferentialUpdateInfo();
-}*/
-
 void UpdateController::run()
 {
 	while( _curStep != Done )
@@ -248,6 +238,7 @@ void UpdateController::PerformStep(int step)
 
 	case PostUpdateCleanup:
 		_updater.PostUpdateCleanup();
+		_updater.setBinaryAsExecutable();
 		break;
 
 	case RestartUpdater:		
