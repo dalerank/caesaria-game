@@ -38,7 +38,7 @@ entry initialized from old variable name")
 endif()
 find_path(SDL_MIXER_INCLUDE_DIR SDL_mixer.h
   HINTS
-	${CMAKE_CURRENT_SOURCE_DIR}/dependencies/SDL_mixer
+  ${DEP_SOURCE_DIR}/SDL_mixer
     ENV SDLMIXERDIR
     ENV SDLDIR
   PATH_SUFFIXES SDL SDL12 SDL11 include
@@ -51,7 +51,7 @@ endif()
 find_library(SDL_MIXER_LIBRARY
   NAMES SDL_mixer
   HINTS
-	${CMAKE_CURRENT_SOURCE_DIR}/dependencies/SDL_mixer
+  ${DEP_SOURCE_DIR}/SDL_mixer
     ENV SDLMIXERDIR
     ENV SDLDIR
   PATH_SUFFIXES lib lib/x86

@@ -24,7 +24,7 @@
 #  License text for the above reference.)
 
 FIND_PATH(ZLIB_INCLUDE_DIR zlib.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/zlib/include
+    ${DEP_SOURCE_DIR}/zlib/include
     $ENV{ZLIB}/include
 )
 
@@ -33,7 +33,7 @@ FIND_LIBRARY(ZLIB_LIBRARY
     NAMES
         ${ZLIB_NAMES}
     PATHS
-        ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/zlib/lib
+        ${DEP_SOURCE_DIR}/zlib/lib
     $ENV{ZLIB}/lib
 )
 MARK_AS_ADVANCED(ZLIB_LIBRARY ZLIB_INCLUDE_DIR)

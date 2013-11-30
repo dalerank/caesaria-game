@@ -21,14 +21,14 @@
 //#include <NrpLimitFile.h>
 
 #if defined(NO_USE_SYSTEM_ZLIB)
-    #include "utils/zlib/zlib.h"
+    #include "zlib/zlib.h"
 #else
     #include <zlib.h>
 #endif
 
 #include "lzma/LzmaDec.h"
 #include "bzip2/bzlib.h"
-#include "aesGladman/fileenc.h"
+#include "aes/fileenc.h"
 
 namespace vfs
 {

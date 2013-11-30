@@ -12,13 +12,19 @@ find_package(SDL REQUIRED)
 find_package(SDL_mixer REQUIRED)
 find_package(SDL_ttf REQUIRED)
 find_package(PNG REQUIRED)
-find_package(zlib REQUIRED)
 
 if(NOT BUILD_LIBINTL)
   find_package(Libintl REQUIRED)
   include_directories( ${LIBINTL_INCLUDE_DIR} )
   link_libraries( ${LIBINTL_LIBRARIES} )
 endif()
+
+if(BUILD_ZLIB)
+  link_libraries(${ZLIB_LIBRARY})
+  add_definitions(-DNO_USE_SYSTEM_ZLIB)
+else()
+  find_package(zlib REQUIRED)
+endif(BUILD_ZLIB)
 
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
@@ -27,6 +33,7 @@ include_directories(
   ${SDL_MIXER_INCLUDE_DIR}
   ${SDL_TTF_INCLUDE_DIR}
   ${PNG_INCLUDE_DIR}
+  ${DEP_SOURCE_DIR}
 )
 
 link_libraries(
@@ -35,33 +42,6 @@ link_libraries(
   ${SDL_TTF_LIBRARY}
   ${PNG_LIBRARY}
 )
-
-set(UTILS_SRC_LIST)
-if(NO_USE_SYSTEM_ZLIB)
-  add_definitions(-DNO_USE_SYSTEM_ZLIB)
-  file(GLOB ZLIB_SRC_LIST "${CMAKE_CURRENT_SOURCE_DIR}/utils/zlib/*.c")
-
-  foreach( name ${ZLIB_SRC_LIST} )
-    list( APPEND UTILS_SRC_LIST ${name} )
-  endforeach()
-else(NO_USE_SYSTEM_ZLIB)
-  link_libraries(${ZLIB_LIBRARY})
-endif(NO_USE_SYSTEM_ZLIB)
-
-file(GLOB GLDM_SRC_LIST "${CMAKE_CURRENT_SOURCE_DIR}/utils/aesGladman/*.cpp")
-foreach( name ${GLDM_SRC_LIST} )
-  list( APPEND UTILS_SRC_LIST ${name} )
-endforeach()
-
-file(GLOB BZIP2_SRC_LIST "${CMAKE_CURRENT_SOURCE_DIR}/utils/bzip2/*.c")
-foreach( name ${BZIP2_SRC_LIST} )
-  list( APPEND UTILS_SRC_LIST ${name} )
-endforeach()
-
-file(GLOB LZMA_SRC_LIST "${CMAKE_CURRENT_SOURCE_DIR}/utils/lzma/*.c")
-foreach( name ${LZMA_SRC_LIST} )
-  list( APPEND UTILS_SRC_LIST ${name} )
-endforeach()
 
 file(GLOB EVENTS_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/events/*.*")
 file(GLOB CORE_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/core/*.*")
@@ -77,7 +57,7 @@ file(GLOB WORLD_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/world/*.*")
 file(GLOB GAME_MODELS_LIST "${GAME_CONFIG_DIR}/game/*.model")
 file(GLOB GUI_MODELS_LIST "${GAME_CONFIG_DIR}/gui/*.gui")
 
-add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST} ${UTILS_SRC_LIST}
+add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST}
                ${GAME_MODELS_LIST} ${GUI_MODELS_LIST} ${EVENTS_SOURCES_LIST}
                ${CORE_SOURCES_LIST} ${GUI_SOURCES_LIST} ${WALKER_SOURCES_LIST}
                ${BUILDING_SOURCES_LIST} ${GAME_SOURCES_LIST} ${VFS_SOURCES_LIST}
@@ -86,6 +66,26 @@ add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST} ${UTILS_SRC_LIST}
 if( BUILD_LIBINTL )
   target_link_libraries(${PROJECT_NAME} libintl)
 endif( BUILD_LIBINTL )
+
+if( BUILD_ZLIB )
+  link_directories(${ZLIB_HOME})
+  target_link_libraries(${PROJECT_NAME} ${ZLIB_NAME})
+endif()
+
+if( BUILD_AES )
+  link_directories(${AESLIB_HOME})
+  target_link_libraries(${PROJECT_NAME} ${AESLIB_NAME})
+endif()
+
+if( BUILD_BZIP )
+  link_directories(${BZIPLIB_HOME})
+  target_link_libraries(${PROJECT_NAME} ${BZIPLIB_NAME})
+endif()
+
+if( BUILD_LZMA )
+  link_directories(${LZMALIB_HOME})
+  target_link_libraries(${PROJECT_NAME} ${LZMALIB_NAME})
+endif()
 
 if(WIN32)
   set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME "caesaria")
@@ -119,12 +119,6 @@ if(WIN32)
     ${SDL_TTF_LIBRARY}    
     ${PNG_LIBRARY}
   )
-
-  if(NO_USE_SYSTEM_ZLIB)
-    #
-  else(NO_USE_SYSTEM_ZLIB)
-    list( APPEND _LIBS_FOR_DLL_SOURCE ${ZLIB_LIBRARY} )
-  endif(NO_USE_SYSTEM_ZLIB)
 
   foreach(_lib ${_LIBS_FOR_DLL_SOURCE})
     GET_FILENAME_COMPONENT(_lib_abs ${_lib} ABSOLUTE)

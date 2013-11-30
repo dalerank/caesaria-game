@@ -44,8 +44,8 @@ if(ZLIB_FOUND)
 		/usr/local # OpenBSD
 		~/Library/Frameworks
 		/Library/Frameworks
-		${CMAKE_CURRENT_SOURCE_DIR}/dependencies # Fink
-		${CMAKE_CURRENT_SOURCE_DIR}/dependencies/libpng/include # gecube
+    ${DEP_SOURCE_DIR}/libpng # Fink
+    ${DEP_SOURCE_DIR}/libpng/include # gecube
 		/opt/local # DarwinPorts
 		/opt/csw # Blastwave
 		/opt
@@ -65,7 +65,7 @@ find_library(PNG_LIBRARY
 		/opt/local
 		/opt/csw
 		/opt
-		${CMAKE_CURRENT_SOURCE_DIR}/dependencies/libpng
+    ${DEP_SOURCE_DIR}/libpng
 	)
 
 	if (PNG_LIBRARY AND PNG_PNG_INCLUDE_DIR)
