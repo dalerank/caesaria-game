@@ -32,7 +32,6 @@ Download::Download(const HttpConnectionPtr& conn, const std::string& url, vfs::P
 	_destFilename(destFilename),
 	_conn(conn),
 	_status(NOT_STARTED_YET),
-	_pk4CheckEnabled(false),
 	_crcCheckEnabled(false),
 	_filesizeCheckEnabled(false),
 	_requiredFilesize(0),
@@ -47,7 +46,6 @@ Download::Download(const HttpConnectionPtr& conn, const std::vector<std::string>
 	_destFilename(destFilename),
 	_conn(conn),
 	_status(NOT_STARTED_YET),
-	_pk4CheckEnabled(false),
 	_crcCheckEnabled(false),
 	_filesizeCheckEnabled(false),
 	_requiredFilesize(0),
@@ -140,11 +138,6 @@ std::size_t Download::GetDownloadedBytes()
 	return _request != NULL ? _request->GetDownloadedBytes() : 0;
 }
 
-void Download::EnableValidPK4Check(bool enable)
-{
-	_pk4CheckEnabled = enable;
-}
-
 void Download::EnableCrcCheck(bool enable)
 {
 	_crcCheckEnabled = enable;
@@ -192,7 +185,7 @@ void Download::Perform()
 			}
 			else
 			{
-				Logger::warning(  "Downloaded file passed the integrity checks.");
+				Logger::warning( "Downloaded file passed the integrity checks.");
 			}
 
 			// Remove the destination filename before moving the temporary file over
@@ -262,19 +255,6 @@ bool Download::CheckIntegrity()
 		}
 	}
 
-	/*if (_pk4CheckEnabled)
-	{
-		Logger::warning( "Checking download for 'is-a-zipfile'.");
-
-		ZipFileReadPtr zipFile = Zip::OpenFileRead(_tempFilename);
-
-		if (zipFile == NULL) 
-		{
-			Logger::warning( "Downloaded file failed the zip check: " + _tempFilename.toString() );
-			return false; // failed the ZIP check
-		}
-	}*/
-
 	if (_crcCheckEnabled)
 	{
 		Logger::warning( "Checking CRC of downloaded file, expecting %x", _requiredCrc );
@@ -283,7 +263,7 @@ bool Download::CheckIntegrity()
 
 		if (crc != _requiredCrc)
 		{
-			Logger::warning( "Downloaded file has the wrong size, expected %x but found %x", _requiredCrc, crc );
+			Logger::warning( "Downloaded file has the wrong crc, expected %x but found %x", _requiredCrc, crc );
 			return false; // failed the crc check
 		}
 	}

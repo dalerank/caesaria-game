@@ -864,8 +864,7 @@ CURLcode Curl_open(struct SessionHandle **curl)
   return res;
 }
 
-CURLcode Curl_setopt(struct SessionHandle *data, CURLoption option,
-                     va_list param)
+CURLcode Curl_setopt(struct SessionHandle *data, CURLoption option, va_list param)
 {
   char *argptr;
   CURLcode result = CURLE_OK;

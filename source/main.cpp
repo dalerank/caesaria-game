@@ -6,34 +6,33 @@
 
 int main(int argc, char* argv[])
 {
-   for (int i = 0; i < (argc - 1); i++)
-   {
-     if( !strcmp( argv[i], "-R" ) )
-     {
-       std::string path = argv[i+1];
-       GameSettings::set( GameSettings::resourcePath, Variant( path ) );
-       GameSettings::set( GameSettings::localePath, Variant( path + "/locale" ) );
-       i++;
-     }
+  for (int i = 0; i < (argc - 1); i++)
+  {
+    if( !strcmp( argv[i], "-R" ) )
+    {
+      std::string path = argv[i+1];
+      GameSettings::set( GameSettings::resourcePath, Variant( path ) );
+      GameSettings::set( GameSettings::localePath, Variant( path + "/locale" ) );
+      i++;
+    }
 
-     if( !strcmp( argv[i], "-Lc" ) )
-     {
-       GameSettings::set( GameSettings::localeName, Variant( std::string( argv[i+1] ) ) );
-       i++;
-     }
-   }
+    if( !strcmp( argv[i], "-Lc" ) )
+    {
+      GameSettings::set( GameSettings::localeName, Variant( std::string( argv[i+1] ) ) );
+      i++;
+    }
+  }
 
-   try
-   {
-      Game game;
+  try
+  {
+    Game game;
+    game.initialize();
+    game.exec();
+  }
+  catch( Exception e )
+  {
+    Logger::warning( "FATAL ERROR: %s", e.getDescription().c_str() );
+  }
 
-      game.initialize();
-      game.exec();
-   }
-   catch( Exception e )
-   {
-     Logger::warning( "FATAL ERROR: %s", e.getDescription().c_str() );
-   }
-
-   return 0;
+  return 0;
 }

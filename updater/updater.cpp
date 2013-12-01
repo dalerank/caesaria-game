@@ -44,8 +44,9 @@ Updater::Updater(const UpdaterOptions& options, vfs::Path executable) :
 	// Assign the proxy settings to the connection
 	_options.CheckProxy(_conn);
 
-	_ignoreList.insert("doomconfig.cfg");
-	_ignoreList.insert("darkmod.cfg");
+	_ignoreList.insert("stable_info.txt");
+	_ignoreList.insert("update_info.txt");
+	_ignoreList.insert("mirrors.txt");
 
 	MirrorDownload::InitRandomizer();
 
@@ -666,23 +667,6 @@ void Updater::PerformUpdateStep()
 	if (_downloadProgressCallback.isValid())
 	{
 		_downloadProgressCallback->OnDownloadFinish();
-	}
-
-	// Check if any ZIP files have been downloaded, these need to be extracted
-	for (ReleaseFileSet::iterator i = _downloadQueue.begin(); i != _downloadQueue.end(); ++i)
-	{
-		//boost::this_thread::interruption_point();
-
-		DownloadPtr download = _downloadManager->GetDownload(i->second.downloadId);
-
-		if (download != NULL && download->GetStatus() == Download::SUCCESS)
-		{
-			/*if( download->GetDestFilename().isExtension( ".zip" ) )
-			{
-				// Extract this ZIP archive after download
-				ExtractAndRemoveZip(download->GetDestFilename());
-			}*/
-		}
 	}
 }
 

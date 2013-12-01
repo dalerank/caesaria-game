@@ -79,7 +79,6 @@ protected:
 
 	ExceptionSafeThreadPtr _thread;
 
-	bool _pk4CheckEnabled;
 	bool _crcCheckEnabled;
 	bool _filesizeCheckEnabled;
 
@@ -109,9 +108,6 @@ public:
 
 	// Cancel the download. If the download has already finished, this does nothing.
 	void Stop();
-
-	// Enable or disable the "is a zip" validation of the downloaded file
-	void EnableValidPK4Check(bool enable);
 
 	// Enable or disable CRC validation after download
 	void EnableCrcCheck(bool enable);

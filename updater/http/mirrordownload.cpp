@@ -27,7 +27,7 @@ MirrorDownload::MirrorDownload(const HttpConnectionPtr& conn,
 								 const std::string& srcFilename,
 								 vfs::Path destFilename) :
 	Download(conn, "", destFilename) // empty URL for starters
-{
+{	
 	if (mirrors.empty())
 	{
 		throw std::runtime_error("No mirrors available, cannot continue.");
