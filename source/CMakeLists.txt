@@ -19,16 +19,8 @@ if(NOT BUILD_LIBINTL)
   link_libraries( ${LIBINTL_LIBRARIES} )
 endif()
 
-if(BUILD_ZLIB)
-  link_libraries(${ZLIB_LIBRARY})
-  add_definitions(-DNO_USE_SYSTEM_ZLIB)
-else()
-  find_package(zlib REQUIRED)
-endif(BUILD_ZLIB)
-
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${UTILS_SOURCE_DIR}
   ${SDL_INCLUDE_DIR}
   ${SDL_MIXER_INCLUDE_DIR}
   ${SDL_TTF_INCLUDE_DIR}

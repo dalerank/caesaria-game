@@ -20,12 +20,7 @@
 #include "core/logger.hpp"
 //#include <NrpLimitFile.h>
 
-#if defined(NO_USE_SYSTEM_ZLIB)
-    #include "zlib/zlib.h"
-#else
-    #include <zlib.h>
-#endif
-
+#include <zlib.h>
 #include "lzma/LzmaDec.h"
 #include "bzip2/bzlib.h"
 #include "aes/fileenc.h"

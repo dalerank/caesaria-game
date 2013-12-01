@@ -17,9 +17,9 @@
 #define __CAESARIA_CONSOLEUPDATER_H_INLCUDE__
 
 #include "constants.hpp"
-#include "updater/updater.hpp"
-#include "updater/updatecontroller.hpp"
-#include "updater/updateview.hpp"
+#include "updater.hpp"
+#include "updatecontroller.hpp"
+#include "updateview.hpp"
 #include "core/logger.hpp"
 #include "exceptionsafethread.hpp"
 #include <signal.h>

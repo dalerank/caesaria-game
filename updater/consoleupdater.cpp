@@ -306,7 +306,7 @@ void ConsoleUpdater::OnFinishStep(UpdateStep step)
 
 	case PerformDifferentialUpdate:
 	{
-		Logger::warning( " Done applying the differential update.");
+		Logger::warning( "Done applying the differential update." );
 	}
 	break;
 

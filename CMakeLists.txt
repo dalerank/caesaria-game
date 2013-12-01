@@ -7,6 +7,7 @@ option( BUILD_ZLIB "Static zlib" ON )
 option( BUILD_AES "Static aes" ON )
 option( BUILD_BZIP "Static bzip" ON )
 option( BUILD_LZMA "Static lzma" ON )
+option( BUILD_CURL "Static curl" ON )
 
 set(DEP_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dep" )
 set(GAME_CONFIG_DIR "${CMAKE_CURRENT_SOURCE_DIR}/models" )
@@ -43,7 +44,13 @@ if( BUILD_LZMA )
   add_subdirectory( ${LZMALIB_HOME} EXCLUDE_FROM_ALL )
 endif()
 
+if( BUILD_CURL )
+  set(CURLLIB_NAME "curl")
+  set(CURLLIB_HOME "${DEP_SOURCE_DIR}/${CURLLIB_NAME}" )
+  add_subdirectory( ${CURLLIB_HOME} EXCLUDE_FROM_ALL )
+endif()
 
 add_subdirectory(source)
+add_subdirectory(updater)
 
 #set(NO_USE_SYSTEM_ZLIB ON)

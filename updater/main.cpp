@@ -18,9 +18,9 @@
 
 #include "core/logger.hpp"
 
-#include "updater/updateroptions.hpp"
-#include "updater/updater.hpp"
-#include "packager/packager.hpp"
+#include "updateroptions.hpp"
+#include "updater.hpp"
+#include "packager.hpp"
 
 #include "util.hpp"
 
