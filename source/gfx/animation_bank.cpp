@@ -136,6 +136,7 @@ void AnimationBank::Impl::loadWalkers()
   animations[gfx::charioter        ] = loadAnimation( ResourceGroup::citizen5, 1, 12 );
   animations[gfx::britonSoldier    ] = loadAnimation( ResourceGroup::celts, 249, 12 );
   animations[gfx::britonSoldierFight]= loadAnimation( ResourceGroup::celts, 345, 6, Walker::acFight );
+  animations[gfx::soldier          ] = loadAnimation( ResourceGroup::citizen3, 97, 12 );
 }
 
 AnimationBank& AnimationBank::instance()

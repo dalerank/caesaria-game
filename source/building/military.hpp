@@ -12,34 +12,60 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_MILITARY_BUILDING_H_INCLUDED__
 #define __CAESARIA_MILITARY_BUILDING_H_INCLUDED__
 
 #include "working.hpp"
+#include "constants.hpp"
 
-class Barracks : public WorkingBuilding
+class Fort : public Building
 {
 public:
-  Barracks();
+  Fort( constants::building::Type type, int picIdLogo );
+  virtual ~Fort();
+
+  bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray &aroundTiles) const;
+  void build(PlayerCityPtr city, const TilePos &pos);
+
+  bool isNeedRoadAccess() const;
+private:
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
-class FortLegionnaire : public Building
+
+
+class FortLegionnaire : public Fort
 {
 public:  
   FortLegionnaire();
 };
 
-class FortJaveline : public Building
+class FortJaveline : public Fort
 {
 public:  
   FortJaveline();
 };
 
-class FortMounted : public Building
+class FortMounted : public Fort
 {
 public:  
   FortMounted();
+};
+
+class FortArea : public Building
+{
+public:
+  FortArea( Fort* fort );
+
+  bool isFlat() const;
+private:
+  class Impl;
+
+  ScopedPtr< Impl > _d;
 };
 
 #endif //__CAESARIA_MILITARY_BUILDING_H_INCLUDED__

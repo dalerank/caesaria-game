@@ -15,18 +15,17 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_CLAY_PIT_H_INCLUDED__
-#define __CAESARIA_CLAY_PIT_H_INCLUDED__
+#ifndef __CAESARIA_BARRACKS_H_INCLUDED__
+#define __CAESARIA_BARRACKS_H_INCLUDED__
 
-#include "factory.hpp"
+#include "training.hpp"
 
-class ClayPit : public Factory
+class Barracks : public TrainingBuilding
 {
 public:
-  ClayPit();
-  
-  bool canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& aroundTiles) const;  // returns true if it can be built there
-  void timeStep( const unsigned long time );
+  Barracks();
+  virtual void deliverTrainee();
+  virtual void timeStep(const unsigned long time);
 };
 
-#endif //__CAESARIA_CLAY_PIT_H_INCLUDED__
+#endif //__CAESARIA_BARRACKS_H_INCLUDED__

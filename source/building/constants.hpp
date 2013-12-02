@@ -112,6 +112,7 @@ enum Type
   fortMounted,
   militaryAcademy,
   barracks,
+  fortArea,
 
 // commerce
   market,

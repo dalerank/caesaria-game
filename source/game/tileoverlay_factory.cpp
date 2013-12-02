@@ -27,6 +27,7 @@
 #include "building/entertainment.hpp"
 #include "building/religion.hpp"
 #include "building/aqueduct.hpp"
+#include "building/barracks.hpp"
 #include "road.hpp"
 #include "building/market.hpp"
 #include "building/granary.hpp"

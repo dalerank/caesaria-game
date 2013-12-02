@@ -12,48 +12,92 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 
 #include "military.hpp"
 #include "constants.hpp"
 #include "game/resourcegroup.hpp"
+#include "game/city.hpp"
 
 using namespace constants;
 
-Barracks::Barracks() : WorkingBuilding( building::barracks, Size( 3 ) )
+class Fort::Impl
 {
-  setMaxWorkers(5);
-  setWorkers(0);  
-  setPicture( ResourceGroup::security, 17 );
-}
+public:
+  FortArea* area;
+};
 
-FortLegionnaire::FortLegionnaire() : Building( building::fortLegionaire, Size(3) )
-{
-  setPicture( ResourceGroup::security, 12 );
-
-  Picture logo = Picture::load(ResourceGroup::security, 16);
-  logo.setOffset(80,10);
-  _fgPicturesRef().resize(1);
-  _fgPicturesRef().at( 0 ) = logo;
-}
-
-FortMounted::FortMounted() : Building( constants::building::fortMounted, Size(3) )
+FortLegionnaire::FortLegionnaire() : Fort( building::fortLegionaire, 16 )
 {
   setPicture( ResourceGroup::security, 12 );
-
-  Picture logo = Picture::load(ResourceGroup::security, 15);
-  logo.setOffset(80,10);
-  _fgPicturesRef().resize(1);
-  _fgPicturesRef().at( 0 ) = logo;
 }
 
-FortJaveline::FortJaveline() : Building( building::fortJavelin, Size(3) )
+FortMounted::FortMounted() : Fort( constants::building::fortMounted, 15 )
 {
   setPicture( ResourceGroup::security, 12 );
+}
 
-  Picture logo = Picture::load(ResourceGroup::security, 14);
-  //std::cout << logo->get_xoffset() << " " << logo->get_yoffset() << " " << logo->get_width() << " " << logo->get_height() << std::endl;
+FortJaveline::FortJaveline() : Fort( building::fortJavelin, 14 )
+{
+  setPicture( ResourceGroup::security, 12 );
+}
+
+class FortArea::Impl
+{
+public:
+  Fort* base;
+};
+
+FortArea::FortArea( Fort* fort ) : Building( building::fortArea, Size(4) ),
+  _d( new Impl )
+{
+  setPicture( ResourceGroup::security, 13 );
+  _d->base = fort;
+}
+
+bool FortArea::isFlat() const
+{
+  return true;
+}
+
+Fort::Fort(building::Type type, int picIdLogo) : Building( type, Size(3) ),
+  _d( new Impl )
+{
+  Picture logo = Picture::load(ResourceGroup::security, picIdLogo );
   logo.setOffset(80,10);
-  _fgPicturesRef().resize(1);
+
+  Picture area = Picture::load(ResourceGroup::security, 13 );
+  area.setOffset(Tile( TilePos(3,0)).getXY() + Point(0,-30));
+
+  _fgPicturesRef().resize(2);
   _fgPicturesRef().at( 0 ) = logo;
+  _fgPicturesRef().at( 1 ) = area;
+
+  _d->area = new FortArea( this );
+}
+
+Fort::~Fort()
+{
+
+}
+
+bool Fort::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
+{
+  bool isFreeFort = Building::canBuild( city, pos, aroundTiles );
+  bool isFreeArea = _d->area->canBuild( city, pos + TilePos( 3, 0 ), aroundTiles );
+
+  return (isFreeFort && isFreeArea);
+}
+
+void Fort::build(PlayerCityPtr city, const TilePos& pos)
+{
+  Building::build( city, pos );
+  _d->area->build( city, pos + TilePos( 3, 0 ) );
+}
+
+bool Fort::isNeedRoadAccess() const
+{
+  return false;
 }
