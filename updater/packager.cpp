@@ -52,14 +52,21 @@ void Packager::createUpdate( bool release )
   vinfo->SetValue( "version", "version", _crver );
   for( FilePathList::iterator i=allFiles.begin(); i != allFiles.end(); i++ )
   {
+    std::string baseName = (*i).toString();
+    if( baseName == STABLE_VERSION_FILE ||
+        baseName == UPDATE_VERSION_FILE )
+    {
+        continue;
+    }
+
     std::string sectionName;
     if( release )
     {
-      sectionName = StringHelper::format( 0xff, "File %s", (*i).toString().c_str() );
+      sectionName = StringHelper::format( 0xff, "File %s", baseName.c_str() );
     }
     else
     {
-      sectionName = StringHelper::format( 0xff, "Version%s File %s", _crver.c_str(), (*i).toString().c_str() );
+      sectionName = StringHelper::format( 0xff, "Version%s File %s", _crver.c_str(), baseName.c_str() );
     }
 
     ByteArray data = vfs::NFile::open( (*i).getAbsolutePath() ).readAll();

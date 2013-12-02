@@ -11,7 +11,6 @@ file(GLOB INC_LIST "*.hpp")
 find_package(SDL REQUIRED)
 find_package(SDL_mixer REQUIRED)
 find_package(SDL_ttf REQUIRED)
-find_package(PNG REQUIRED)
 
 if(NOT BUILD_LIBINTL)
   find_package(Libintl REQUIRED)
@@ -24,7 +23,6 @@ include_directories(
   ${SDL_INCLUDE_DIR}
   ${SDL_MIXER_INCLUDE_DIR}
   ${SDL_TTF_INCLUDE_DIR}
-  ${PNG_INCLUDE_DIR}
   ${DEP_SOURCE_DIR}
 )
 
@@ -32,7 +30,6 @@ link_libraries(
   ${SDL_LIBRARY}
   ${SDL_MIXER_LIBRARY}
   ${SDL_TTF_LIBRARY}
-  ${PNG_LIBRARY}
 )
 
 file(GLOB EVENTS_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/events/*.*")
@@ -77,6 +74,12 @@ endif()
 if( BUILD_LZMA )
   link_directories(${LZMALIB_HOME})
   target_link_libraries(${PROJECT_NAME} ${LZMALIB_NAME})
+endif()
+
+if( BUILD_PNG )
+  link_directories(${PNGLIB_HOME})
+  include_directories(${PNGLIB_HOME})
+  target_link_libraries(${PROJECT_NAME} ${PNGLIB_NAME})
 endif()
 
 if(WIN32)

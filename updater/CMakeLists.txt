@@ -53,7 +53,6 @@ if( BUILD_CURL )
   add_definitions( -DCURL_STATICLIB )
   add_definitions( -DCURL_DISABLE_POP3 )
   add_definitions( -DCURL_DISABLE_SMTP )
-  message( "!!!!!! ${CURLLIB_NAME}" )
   link_directories(${CURLLIB_HOME})
 
   target_link_libraries(${PROJECT_NAME} ${CURLLIB_NAME})

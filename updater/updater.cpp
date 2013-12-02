@@ -630,9 +630,13 @@ void Updater::PrepareUpdateStep(std::string prefix)
 	vfs::Directory targetdir = getTargetDir();
 
 	// Create a download for each of the files
-	for (ReleaseFileSet::iterator i = _downloadQueue.begin(); i != _downloadQueue.end(); ++i)
+    for( ReleaseFileSet::iterator i = _downloadQueue.begin(); i != _downloadQueue.end(); ++i )
 	{
 		DownloadPtr download(new MirrorDownload(_conn, _mirrors, i->second.file.toString(), targetdir.getFilePath(prefix+i->second.file.toString() ) )) ;
+        download->EnableCrcCheck( true );
+        download->EnableFilesizeCheck( true );
+        download->SetRequiredCrc( i->second.crc );
+        download->SetRequiredFilesize( i->second.filesize );
 		i->second.downloadId = _downloadManager->AddDownload(download);
 	}
 }
@@ -964,6 +968,7 @@ void Updater::RestartUpdater()
 		else
 		{
 			Logger::warning( "Process started");
+            exit(0);
 		}
 	}
 #else
