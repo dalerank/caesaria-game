@@ -1,15 +1,15 @@
-openCaesar3
+CaesarIA
 -----------
-openCaesar3 is a remake of the classic Caesar3 PC game, a city building game developed by Impression Games and published by Sierra Entertainment, in 1998.
+CaesarIA is a remake of the classic Caesar3 PC game, a city building game developed by Impression Games and published by Sierra Entertainment, in 1998.
 
 The game is currently under heavy development and nearly playable state. Developers are invited to participate.
 
-Building openCaesar3
+Building CaesarIA
 -------------------
 See INSTALL_LINUX.md or INSTALL_WINDOWS.md depending on which operating system you are running.
 
 ####External dependencies
-openCaesar3 is build using following excellent libraries:
+CaesarIA is build using following excellent libraries:
   * SDL - http://www.libsdl.org/
     * SDL_image - http://www.libsdl.org/projects/SDL_image/
     * SDL_mixer - http://www.libsdl.org/projects/SDL_mixer/
