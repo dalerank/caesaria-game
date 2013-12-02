@@ -129,14 +129,14 @@ Path Directory::find( const Path& fileName ) const
   return fileName;
 }
 
-Entries Directory::getEntries() const
+Entries Directory::getEntries(SensType sens) const
 {
   FileSystem& fs = FileSystem::instance();
   Directory saveDir( fs.getWorkingDirectory() );
   Directory changeDd = *this;
   fs.changeWorkingDirectoryTo( changeDd );
     
-  Entries fList( changeDd.toString(), false, false );
+  Entries fList( changeDd.toString(), sens, false );
   fList = fs.getFileList();
 
   fs.changeWorkingDirectoryTo( saveDir );

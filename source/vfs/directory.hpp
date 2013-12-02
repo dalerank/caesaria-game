@@ -40,7 +40,7 @@ public:
   Directory operator/(const Directory& dir );
   Path operator/(const Path& filename );
 
-  Entries getEntries() const;
+  Entries getEntries(SensType sens = Path::nativeCase) const;
   Path find( const Path& fileName ) const;
   Directory up() const;
   Path getRelativePathTo( Path path ) const;

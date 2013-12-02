@@ -38,7 +38,7 @@ public:
 
   //! Constructor
   /** \param path The path of this file archive */
-  Entries( const Path& path="", bool ignoreCase=false, bool ignorePaths=false );
+  Entries( const Path& path="", Path::SensType ignoreCase=Path::equaleCase, bool ignorePaths=false );
 
   Entries( const Entries& other );
 
@@ -85,7 +85,7 @@ public:
   //! Returns the base path of the file list
   const Path& getPath() const;
 
-  void setIgnoreCase( bool ignore );
+  void setSensType( Path::SensType type );
 
   Entries filter( int flags, const std::string& options );
 

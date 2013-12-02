@@ -27,6 +27,8 @@ class Directory;
 class Path
 {
 public:
+  typedef enum { nativeCase=0, ignoreCase=1, equaleCase=2 } SensType;
+
   static const char* anyFile;
   static const char* firstEntry;
   static const char* secondEntry;

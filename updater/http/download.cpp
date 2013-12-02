@@ -189,16 +189,24 @@ void Download::Perform()
 			}
 
 			// Remove the destination filename before moving the temporary file over
-			vfs::NFile::remove( _destFilename );
+			Logger::warning( "Try remove " + _destFilename.toString()  );
+			if( !vfs::NFile::remove( _destFilename ) )
+			{
+				Logger::warning( "Failed remove file: " + _destFilename.toString()  );
+			}
 
 			// Move temporary file to the real one
 			if( vfs::NFile::rename( _tempFilename, _destFilename ) )
 			{
+				Logger::warning( "Succes renamed %s to %s", _tempFilename.toString().c_str(),
+																										_destFilename.toString().c_str() );
 				_status = SUCCESS;
 			}
 			else
 			{
 				// Move failed
+				Logger::warning( "Failed renamed %s to %s ", _tempFilename.toString().c_str(),
+																										 _destFilename.toString().c_str() );
 				_status = FAILED;
 			}
 

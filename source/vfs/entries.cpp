@@ -25,13 +25,33 @@ class Entries::Impl
 public:
   //! Ignore paths when adding or searching for files
   bool ignorePaths;
-  bool ignoreCase;
+  Path::SensType sensType;
   //! Path to the file list
   Path path;
   Items files;
+
+  Path checkCase( Path p )
+  {
+    switch( sensType )
+    {
+    case Path::ignoreCase:
+      return StringHelper::localeLower( p.toString() );
+      break;
+    case Path::equaleCase: break;
+    case Path::nativeCase:
+  #ifdef CAESARIA_PLATFORM_WIN
+      return StringHelper::localeLower( p.toString() );
+  #elif defined(CAESARIA_PLATFORM_UNIX)
+      return p;
+  #endif
+    break;
+    }
+
+    return p;
+  }
 };
 
-Entries::Entries( const Path& path, bool ignoreCase, bool ignorePaths )
+Entries::Entries( const Path& path, Path::SensType type, bool ignorePaths )
  : _d( new Impl )
 {
 #ifdef _DEBUG
@@ -39,7 +59,7 @@ Entries::Entries( const Path& path, bool ignoreCase, bool ignorePaths )
 #endif
   _d->ignorePaths = ignorePaths;
   _d->path = StringHelper::replace( path.toString(), "\\", "/" );
-  _d->ignoreCase = ignoreCase;
+  _d->sensType = type;
 }
 
 Entries::Entries( const Entries& other ) : _d( new Impl )
@@ -49,7 +69,7 @@ Entries::Entries( const Entries& other ) : _d( new Impl )
 
 Entries& Entries::operator=( const Entries& other )
 {
-  _d->ignoreCase = other._d->ignoreCase;
+  _d->sensType = other._d->sensType;
   _d->ignorePaths = other._d->ignorePaths;
   _d->path = other._d->path;
 
@@ -129,10 +149,7 @@ unsigned int Entries::addItem( const Path& fullPath, unsigned int offset, unsign
     //entry.name.validate();
   }
 
-  if( _d->ignoreCase)
-  {
-    entry.name = StringHelper::localeLower( entry.name.toString() );
-  }
+  entry.name = _d->checkCase( entry.name );
 
   entry.fullName = entry.name;
 
@@ -190,10 +207,7 @@ int Entries::findFile(const Path& filename, bool isDirectory) const
   }
   entry.fullName = entry.fullName.removeEndSlash();
 
-  if( _d->ignoreCase )
-  {
-    entry.fullName = StringHelper::localeLower( entry.fullName.toString() );
-  }
+  entry.fullName = _d->checkCase( entry.fullName.toString() );
 
   if( _d->ignorePaths )
   {
@@ -218,9 +232,9 @@ const Path& Entries::getPath() const
   return _d->path;
 }
 
-void Entries::setIgnoreCase( bool ignore )
+void Entries::setSensType( Path::SensType type )
 {
-  _d->ignoreCase = ignore;
+  _d->sensType = type;
 }
 
 Entries Entries::filter(int flags, const std::string &options)

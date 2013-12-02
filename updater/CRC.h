@@ -117,7 +117,6 @@ public:
 			break;
 		}
 
-
 		Logger::warning( "CRC calculated for file %s=%x", file.toString().c_str(), crc );
 
 		fclose(fh);

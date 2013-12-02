@@ -69,7 +69,6 @@ int FileNative::read(void* buffer, unsigned int sizeToRead)
 	return (int)fread(buffer, 1, sizeToRead, _file);
 }
 
-
 //! changes position in file, returns true if successful
 //! if relativeMovement==true, the pos is changed relative to current pos,
 //! otherwise from begin of file
@@ -81,13 +80,11 @@ bool FileNative::seek(long finalPos, bool relativeMovement)
 	return fseek(_file, finalPos, relativeMovement ? SEEK_CUR : SEEK_SET) == 0;
 }
 
-
 //! returns size of file
 long FileNative::getSize() const
 {
 	return _size;
 }
-
 
 //! returns where in the file we are.
 long FileNative::getPos() const
@@ -235,10 +232,10 @@ int FileNative::write(const void* buffer, unsigned int sizeToWrite)
 
 int FileNative::write( const ByteArray& bArray )
 {
-    if( !isOpen() )
-        return 0;
+  if( !isOpen() )
+      return 0;
 
-    return (int)fwrite( bArray.data(), 1, bArray.size(), _file );
+  return (int)fwrite( bArray.data(), 1, bArray.size(), _file );
 }
 
 bool FileNative::isOpen() const
@@ -248,10 +245,10 @@ bool FileNative::isOpen() const
 
 void FileNative::flush()
 {
-    if( !isOpen() )
-        return;
+  if( !isOpen() )
+      return;
 
-    fflush( _file );
+  fflush( _file );
 }
 
 } //end namespace io

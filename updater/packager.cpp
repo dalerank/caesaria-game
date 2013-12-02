@@ -22,7 +22,7 @@ typedef std::vector<vfs::Path> FilePathList;
 
 static void __gartherFiles( vfs::Directory basedir, vfs::Directory dir, FilePathList& files )
 {
-  vfs::Entries entries = dir.getEntries();
+  vfs::Entries entries = dir.getEntries( vfs::Path::equaleCase );
   for( vfs::Entries::ConstItemIt i=entries.begin(); i != entries.end(); i++ )
   {
     if( i->name.isDirectoryEntry() )

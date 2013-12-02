@@ -87,7 +87,7 @@ void HttpRequest::InitRequest()
 	// 	 the protocols to FTP, FTPS, HTTP, HTTPS to avoid rogue servers giving us random
 	//	 things like Telnet or POP3 on random targets.
 	curl_easy_setopt(_handle, CURLOPT_FOLLOWLOCATION,			       true);
-    curl_easy_setopt(_handle, CURLOPT_MAXREDIRS,					 20 );
+		curl_easy_setopt(_handle, CURLOPT_MAXREDIRS,					 30 );
 	curl_easy_setopt(_handle, CURLOPT_REDIR_PROTOCOLS, CURLPROTO_FTP + CURLPROTO_FTPS + CURLPROTO_HTTP + CURLPROTO_HTTPS);
 
 	// Get the proxy from the HttpConnection class

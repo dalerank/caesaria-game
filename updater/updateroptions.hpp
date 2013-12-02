@@ -81,8 +81,8 @@ private:
 		_desc[ "--targetdir" ] = "The folder which should be updated.--targetdir c:\\games\\caesaria";
 		_desc[ "--help" ] = "Display this help page";
 		_desc[ "--keep-mirrors" ] = "Don't download updated mirrors list from the server, use local one.";
-		_desc[ "--keep-update-packages" ] = "Don't delete downloaded update packages after applying them.";
-		_desc[ "--noselfupdate" ] = "Don't perform any special 'update the updater' routines.";
+		_desc[ "--noselfupdate" ] = "Don't update updater";
+		_desc[ "--verbose" ] = "Show more debug info";
 		_desc[ "--dry-run" ] = "Don't do any updates, just perform checks.";
 		_desc[ "--release" ] = "Create stable_info.txt for this configuration";
 		_desc[ "--directory" ] = "Use only in release/update mode, path to working directory";

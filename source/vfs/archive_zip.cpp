@@ -119,7 +119,7 @@ bool ZipArchiveLoader::isALoadableFileFormat( NFile file ) const
 // -----------------------------------------------------------------------------
 
 ZipArchiveReader::ZipArchiveReader( NFile file, bool ignoreCase, bool ignorePaths, bool isGZip)
- : Entries( (file.isOpen() ? file.getFileName() : Path("") ), ignoreCase, ignorePaths),
+ : Entries( (file.isOpen() ? file.getFileName() : Path("") ), ignoreCase ? Path::ignoreCase : Path::equaleCase, ignorePaths),
    File(file), IsGZip(isGZip)
 {
 	#ifdef _DEBUG

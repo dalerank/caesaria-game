@@ -16,6 +16,7 @@
 #include "file.hpp"
 #include "filesystem.hpp"
 #include "path.hpp"
+#include "core/logger.hpp"
 
 #ifdef CAESARIA_PLATFORM_WIN
   #define getline_def getline_win
@@ -160,21 +161,40 @@ unsigned long NFile::getSize(vfs::Path filename)
 
 bool NFile::remove( Path filename )
 {
-  int result = 0;
 #ifdef CAESARIA_PLATFORM_WIN
-    DeleteFileA( filename.toString().c_str() );
+  BOOL result = DeleteFileA( filename.toString().c_str() );
+  if( !result )
+  {
+    int error = GetLastError();
+    Logger::warning( "Error[%d] on removed file %s", error, filename.toString().c_str() );
+  }
+  return result;
 #elif defined(CAESARIA_PLATFORM_UNIX)
   result = ::remove( filename.toString().c_str() );
-#endif
-
   return (result == 0);
+#endif
 }
 
 bool NFile::rename(Path oldpath, Path newpath)
 {
+#ifdef CAESARIA_PLATFORM_WIN
+  bool result = MoveFileExA( oldpath.toString().c_str(), newpath.toString().c_str(), MOVEFILE_REPLACE_EXISTING );
+
+  if( !result )
+  {
+    int error = GetLastError();
+    Logger::warning( "Error[%d] on renamed file %s to %s", error, oldpath.toString().c_str(), newpath.toString().c_str() );
+  }
+  return result;
+#else
   int result = ::rename( oldpath.toString().c_str(), newpath.toString().c_str() );
 
+  if( result != 0 )
+  {
+    Logger::warning( "Error[%d] on renamed file %s to %s", result, oldpath.toString().c_str(), newpath.toString().c_str() );
+  }
   return (result == 0);
+#endif
 }
 
 } //end namespace io

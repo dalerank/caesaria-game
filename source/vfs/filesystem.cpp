@@ -120,7 +120,9 @@ NFile FileSystem::createAndOpenFile(const Path& filename, Entity::Mode mode)
   }
 	
   // Create the file using an absolute path so that it matches
-  return NFile( new FileNative( filename.getAbsolutePath(), mode ) );
+  FSEntityPtr ptr( new FileNative( filename.getAbsolutePath(), mode ) );
+  ptr->drop();
+  return NFile( ptr );
 }
 
 //! Adds an external archive loader to the engine.
@@ -571,8 +573,6 @@ Entries FileSystem::getFileList()
 		// --------------------------------------------
 		//! Windows version
 		#if defined(CAESARIA_PLATFORM_WIN)
-			ret.setIgnoreCase( true );
-
 			struct _finddata_t c_file;
 			long hFile;
 
@@ -595,12 +595,10 @@ Entries FileSystem::getFileList()
 
 			// --------------------------------------------
 			//! Linux version
-            ret.setIgnoreCase( false );
-
-            ret.addItem( Path( rpath.toString() + ".." ), 0, 0, true, 0);
+				ret.addItem( Path( rpath.toString() + ".." ), 0, 0, true, 0);
 
 			//! We use the POSIX compliant methods instead of scandir
-            DIR* dirHandle=opendir( rpath.toString().c_str());
+			DIR* dirHandle=opendir( rpath.toString().c_str());
 			if (dirHandle)
 			{
 				struct dirent *dirEntry;
@@ -637,7 +635,7 @@ Entries FileSystem::getFileList()
 	else
 	{
 		//! create file list for the virtual filesystem
-		ret.setIgnoreCase( false );
+		ret.setSensType( Path::equaleCase );
 
 		//! add relative navigation
 		EntryInfo e2;
