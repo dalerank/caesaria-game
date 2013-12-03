@@ -189,9 +189,11 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::lionHouse,    CAESARIA_STR_EXT(LionsNursery), new WorkingBuildingCreator<LionsNursery>() );
   addCreator(building::chariotSchool,CAESARIA_STR_EXT(WorkshopChariot), new WorkingBuildingCreator<WorkshopChariot>() );
   addCreator(building::hippodrome,   CAESARIA_STR_EXT(Hippodrome),new WorkingBuildingCreator<Hippodrome>() );
+
   // road&house
   addCreator(building::house,        CAESARIA_STR_EXT(House), new ConstructionCreator<House>() );
   addCreator(construction::road,     CAESARIA_STR_EXT(Road) , new ConstructionCreator<Road>() );
+
   // administration
   addCreator(building::forum,        CAESARIA_STR_EXT(Forum) , new WorkingBuildingCreator<Forum>() );
   addCreator(building::senate,       CAESARIA_STR_EXT(Senate), new WorkingBuildingCreator<Senate>() );
@@ -203,22 +205,26 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::bigStatue,    CAESARIA_STR_EXT(BigStatue), new ConstructionCreator<BigStatue>() );
   addCreator(construction::garden, CAESARIA_STR_EXT(Garden) , new ConstructionCreator<Garden>() );
   addCreator(construction::plaza,  CAESARIA_STR_EXT(Plaza)  , new ConstructionCreator<Plaza>() );
+
   // water
   addCreator(building::well,       CAESARIA_STR_EXT(Well)     , new WorkingBuildingCreator<Well>() );
   addCreator(building::fountain,   CAESARIA_STR_EXT(Fountain) , new WorkingBuildingCreator<Fountain>() );
   addCreator(building::aqueduct,   CAESARIA_STR_EXT(Aqueduct), new ConstructionCreator<Aqueduct>() );
   addCreator(building::reservoir,  CAESARIA_STR_EXT(Reservoir), new ConstructionCreator<Reservoir>() );
+
   // security
   addCreator(building::prefecture,   CAESARIA_STR_EXT(Prefecture)  , new WorkingBuildingCreator<Prefecture>() );
-  addCreator(building::fortLegionaire, CAESARIA_STR_EXT(FortLegionnaire), new ConstructionCreator<FortLegionnaire>() );
-  addCreator(building::fortJavelin, CAESARIA_STR_EXT(FortJaveline)   , new ConstructionCreator<FortJaveline>() );
-  addCreator(building::fortMounted, CAESARIA_STR_EXT(FortMounted)  , new ConstructionCreator<FortMounted>() );
+  addCreator(building::fortLegionaire, CAESARIA_STR_EXT(FortLegionnaire), new WorkingBuildingCreator<FortLegionnaire>() );
+  addCreator(building::fortJavelin, CAESARIA_STR_EXT(FortJaveline)   , new WorkingBuildingCreator<FortJaveline>() );
+  addCreator(building::fortMounted, CAESARIA_STR_EXT(FortMounted)  , new WorkingBuildingCreator<FortMounted>() );
   addCreator(building::militaryAcademy, CAESARIA_STR_EXT(MilitaryAcademy), new WorkingBuildingCreator<MilitaryAcademy>() );
-  addCreator(building::barracks,   CAESARIA_STR_EXT(Barracks)        , new ConstructionCreator<Barracks>() );
+  addCreator(building::barracks,   CAESARIA_STR_EXT(Barracks)        , new WorkingBuildingCreator<Barracks>() );
+
   // commerce
   addCreator(building::market,     CAESARIA_STR_EXT(Market)  , new WorkingBuildingCreator<Market>() );
   addCreator(building::warehouse,  CAESARIA_STR_EXT(Warehouse), new WorkingBuildingCreator<Warehouse>() );
   addCreator(building::granary,      CAESARIA_STR_EXT(Granary)  , new WorkingBuildingCreator<Granary>() );
+
   // farms
   addCreator(building::wheatFarm,    CAESARIA_STR_EXT(FarmWheat) , new FactoryCreator<FarmWheat>() );
   addCreator(building::oliveFarm, CAESARIA_STR_EXT(FarmOlive) , new FactoryCreator<FarmOlive>() );
@@ -226,17 +232,20 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::pigFarm,   CAESARIA_STR_EXT(FarmMeat)     , new FactoryCreator<FarmMeat>() );
   addCreator(building::fruitFarm, CAESARIA_STR_EXT(FarmFruit)    , new FactoryCreator<FarmFruit>() );
   addCreator(building::vegetableFarm, CAESARIA_STR_EXT(FarmVegetable), new FactoryCreator<FarmVegetable>() );
+
   // raw materials
   addCreator(building::ironMine,     CAESARIA_STR_EXT(IronMine)  , new FactoryCreator<IronMine>() );
   addCreator(building::timberLogger, CAESARIA_STR_EXT(TimberLogger), new FactoryCreator<TimberLogger>() );
   addCreator(building::clayPit,      CAESARIA_STR_EXT(ClayPit)  , new FactoryCreator<ClayPit>() );
   addCreator(building::marbleQuarry, CAESARIA_STR_EXT(MarbleQuarry), new FactoryCreator<MarbleQuarry>() );
+
   // factories
   addCreator(building::weaponsWorkshop, CAESARIA_STR_EXT(WeaponsWorkshop)   , new FactoryCreator<WeaponsWorkshop>() );
   addCreator(building::furnitureWorkshop,  CAESARIA_STR_EXT(FurnitureWorkshop), new FactoryCreator<FurnitureWorkshop>() );
   addCreator(building::winery, CAESARIA_STR_EXT(Winery)     , new FactoryCreator<Winery>() );
   addCreator(building::creamery, CAESARIA_STR_EXT(Creamery)      , new FactoryCreator<Creamery>() );
   addCreator(building::pottery,      CAESARIA_STR_EXT(Pottery)  , new FactoryCreator<Pottery>() );
+
   // utility
   addCreator(building::engineerPost, CAESARIA_STR_EXT(EngineerPost), new WorkingBuildingCreator<EngineerPost>() );
   addCreator(building::lowBridge,    CAESARIA_STR_EXT(LowBridge), new ConstructionCreator<LowBridge>() );
@@ -245,6 +254,7 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::shipyard,   CAESARIA_STR_EXT(Shipyard), new ConstructionCreator<Shipyard>() );
   addCreator(building::wharf,        CAESARIA_STR_EXT(Wharf)   , new WorkingBuildingCreator<Wharf>() );
   addCreator(building::triumphalArch, CAESARIA_STR_EXT(TriumphalArch) , new ConstructionCreator<TriumphalArch>() );
+
   // religion
   addCreator(building::templeCeres,  CAESARIA_STR_EXT(TempleCeres)  , new WorkingBuildingCreator<TempleCeres>() );
   addCreator(building::templeNeptune, CAESARIA_STR_EXT(TempleNeptune), new WorkingBuildingCreator<TempleNeptune>() );
@@ -257,16 +267,19 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::B_BIG_TEMPLE_VENUS, CAESARIA_STR_EXT(BigTempleVenus)  , new WorkingBuildingCreator<BigTempleVenus>() );
   addCreator(building::B_BIG_TEMPLE_MERCURE, CAESARIA_STR_EXT(BigTempleMercure), new WorkingBuildingCreator<BigTempleMercure>() );
   addCreator(building::oracle, CAESARIA_STR_EXT(TempleOracle) , new WorkingBuildingCreator<TempleOracle>() );
+
   // health
   addCreator(building::baths,      CAESARIA_STR_EXT(Baths)   , new WorkingBuildingCreator<Baths>() );
   addCreator(building::barber,     CAESARIA_STR_EXT(Barber)  , new WorkingBuildingCreator<Barber>() );
   addCreator(building::doctor,     CAESARIA_STR_EXT(Doctor)  , new WorkingBuildingCreator<Doctor>() );
   addCreator(building::hospital,   CAESARIA_STR_EXT(Hospital), new WorkingBuildingCreator<Hospital>() );
+
   // education
   addCreator(building::school,     CAESARIA_STR_EXT(School) , new WorkingBuildingCreator<School>() );
   addCreator(building::library,    CAESARIA_STR_EXT(Library), new WorkingBuildingCreator<Library>() );
   addCreator(building::academy,    CAESARIA_STR_EXT(Academy), new WorkingBuildingCreator<Academy>() );
   addCreator(building::missionaryPost, CAESARIA_STR_EXT(MissionaryPost), new ConstructionCreator<MissionaryPost>() );
+
   // natives
   addCreator(building::nativeHut, CAESARIA_STR_EXT(NativeHut)   , new ConstructionCreator<NativeHut>() );
   addCreator(building::nativeCenter, CAESARIA_STR_EXT(NativeCenter), new ConstructionCreator<NativeCenter>() );

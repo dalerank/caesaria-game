@@ -98,8 +98,8 @@ void AnimationBank::Impl::loadWalkers()
   animations.resize( gfx::countType );
 
   animations[gfx::unknown          ] = AnimationBank::MovementAnimation();
-  animations[gfx::citizen          ] = loadAnimation( ResourceGroup::citizen1, 1, 12 );
-  animations[gfx::bathlady         ] = loadAnimation( ResourceGroup::citizen1, 105, 12);
+  animations[gfx::citizenGo          ] = loadAnimation( ResourceGroup::citizen1, 1, 12 );
+  animations[gfx::bathladyGo         ] = loadAnimation( ResourceGroup::citizen1, 105, 12);
   animations[gfx::priest           ] = loadAnimation( ResourceGroup::citizen1, 209, 12);
   animations[gfx::actor            ] = loadAnimation( ResourceGroup::citizen1, 313, 12);
   animations[gfx::tamer            ] = loadAnimation( ResourceGroup::citizen1, 417, 12);
@@ -137,6 +137,8 @@ void AnimationBank::Impl::loadWalkers()
   animations[gfx::britonSoldier    ] = loadAnimation( ResourceGroup::celts, 249, 12 );
   animations[gfx::britonSoldierFight]= loadAnimation( ResourceGroup::celts, 345, 6, Walker::acFight );
   animations[gfx::soldier          ] = loadAnimation( ResourceGroup::citizen3, 97, 12 );
+  animations[gfx::legionaryGo      ] = loadAnimation( ResourceGroup::citizen3, 553, 12 );
+  animations[gfx::legionaryFight   ] = loadAnimation( ResourceGroup::citizen3, 649, 6, Walker::acFight );
 }
 
 AnimationBank& AnimationBank::instance()

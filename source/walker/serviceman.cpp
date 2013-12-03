@@ -74,7 +74,7 @@ void ServiceWalker::_init(const Service::Type service)
   case Service::doctor:   _setAnimation( gfx::doctor );   _setType( walker::doctor );   break;
   case Service::hospital: _setAnimation( gfx::doctor );   _setType( walker::surgeon );  break;
   case Service::barber:   _setAnimation( gfx::barber );   _setType( walker::barber );   break;
-  case Service::baths:    _setAnimation( gfx::bathlady );     _setType( walker::bathlady ); break;
+  case Service::baths:    _setAnimation( gfx::bathladyGo );     _setType( walker::bathlady ); break;
   case Service::school:   _setAnimation( gfx::scholar );                                  break;
   case Service::theater:  _setAnimation( gfx::actor );    _setType( walker::actor );    break;
   case Service::amphitheater:_setAnimation( gfx::gladiator ); _setType( walker::gladiator ); break;

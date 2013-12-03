@@ -109,14 +109,8 @@ void WorkingBuilding::timeStep( const unsigned long time )
   WalkerList::iterator it=_d->walkerList.begin();
   while( it != _d->walkerList.end() )
   {
-    if( (*it)->isDeleted() )
-    {
-      it = _d->walkerList.erase( it );
-    }
-    else
-    {
-      it++;
-    }
+    if( (*it)->isDeleted() ) { it = _d->walkerList.erase( it ); }
+    else { it++; }
   }
 }
 

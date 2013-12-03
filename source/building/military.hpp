@@ -21,27 +21,35 @@
 #include "working.hpp"
 #include "constants.hpp"
 
-class Fort : public Building
+class Fort : public WorkingBuilding
 {
 public:
   Fort( constants::building::Type type, int picIdLogo );
   virtual ~Fort();
 
-  bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray &aroundTiles) const;
-  void build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray &aroundTiles) const;
+  virtual void build(PlayerCityPtr city, const TilePos &pos);
 
-  bool isNeedRoadAccess() const;
-private:
+  virtual bool isNeedRoadAccess() const;
+  virtual float evaluateTrainee( constants::walker::Type traineeType);
+  virtual void timeStep(const unsigned long time);
+
+  virtual TilePos getFreeSlot() const;
+protected:
+  virtual void _readyNewSoldier() {}
+
+private:  
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
-
 
 class FortLegionnaire : public Fort
 {
 public:  
   FortLegionnaire();
+
+protected:
+  virtual void _readyNewSoldier();
 };
 
 class FortJaveline : public Fort
@@ -62,6 +70,7 @@ public:
   FortArea( Fort* fort );
 
   bool isFlat() const;
+  bool isWalkable() const;
 private:
   class Impl;
 

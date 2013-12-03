@@ -33,7 +33,15 @@ void Barracks::deliverTrainee()
 {
   TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), walker::soldier );
   trainee->setOriginBuilding(*this);
-  trainee->send2City();
+
+  CityHelper helper( _getCity() );
+  FortList forts = helper.find<Fort>( building::militaryGroup );
+
+  for( FortList::iterator it=forts.begin(); it != forts.end(); it++ )
+  {
+    FortPtr fort = *it;
+    if( fi)
+  }
 }
 
 void Barracks::timeStep(const unsigned long time)

@@ -28,8 +28,8 @@ namespace gfx
 enum Type
 {
   unknown=0,
-  citizen,
-  bathlady,
+  citizenGo,
+  bathladyGo,
   priest,
   actor,
   tamer,
@@ -65,6 +65,8 @@ enum Type
   lion,
   britonSoldier,
   britonSoldierFight,
+  legionaryGo,
+  legionaryFight,
   charioter,
   countType
 };

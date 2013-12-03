@@ -220,6 +220,7 @@ void BuildMenu_security::initialize()
   addBuildButton(building::fortJavelin);
   addBuildButton(building::fortLegionaire);
   addBuildButton(building::fortMounted);
+  addBuildButton(building::barracks);
 
   BuildMenu::initialize();
 }

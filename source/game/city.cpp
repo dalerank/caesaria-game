@@ -619,6 +619,11 @@ TilesArray CityHelper::getArea(TileOverlayPtr overlay)
   return _city->getTilemap().getArea( overlay->getTilePos(), overlay->getSize() );
 }
 
+TilesArray CityHelper::getAroundTiles(TileOverlayPtr overlay)
+{
+  return _city->getTilemap().getArea( overlay->getTilePos()-TilePos(1,1), overlay->getSize()+Size(2) );
+}
+
 TilesArray CityHelper::getArea(TilePos start, TilePos stop)
 {
   return _city->getTilemap().getArea( start, stop );

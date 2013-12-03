@@ -269,6 +269,7 @@ public:
   }
 
   TilesArray getArea( TileOverlayPtr overlay );
+  TilesArray getAroundTiles( TileOverlayPtr building );
   TilesArray getArea( TilePos start, TilePos stop );
   float getBalanceKoeff();
 
