@@ -17,6 +17,7 @@
 #include "thread.hpp"
 
 #include <iostream>
+
 using namespace std;
 
 Mutex::Mutex(void) : m_bCreated(true)

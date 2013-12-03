@@ -10,6 +10,7 @@
 #include <stdio.h>
 
 #include "zutil.h"
+#include <errno.h>
 
 #ifdef NO_DEFLATE       /* for compatibility with old definition */
 #  define NO_GZCOMPRESS

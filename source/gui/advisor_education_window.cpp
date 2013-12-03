@@ -29,6 +29,7 @@
 #include "game/house_level.hpp"
 #include "building/constants.hpp"
 #include "building/service.hpp"
+#include "core/logger.hpp"
 
 using namespace constants;
 
@@ -193,7 +194,11 @@ InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(PlayerCityPtr city, con
   case building::school:  service = Service::school;  maxStuding = 75;  age = CitizenGroup::scholar; break;
   case building::academy: service = Service::college; maxStuding = 100; age = CitizenGroup::student; break;
   case building::library: service = Service::library; maxStuding = 800; age = CitizenGroup::mature;  break;
-  default: break;
+  default:
+    age=CitizenGroup::newborn;
+    service=Service::srvCount;
+    Logger::warning( "AdvisorEducationWindow: unknown building type %d", bType );
+  break;
   }
 
   foreach( ServiceBuildingPtr serv, servBuildings )

@@ -64,7 +64,8 @@ if(WIN32)
 endif(WIN32)
 
 if(UNIX)
-  target_link_libraries("${DEP_DIR}/curl/lib/linux")
+  target_link_libraries( ${PROJECT_NAME} ${CURLLIB_NAME} )
+  target_link_libraries( ${PROJECT_NAME} pthread )
 
   set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME "updater.linux")
 endif(UNIX)

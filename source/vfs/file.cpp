@@ -170,7 +170,7 @@ bool NFile::remove( Path filename )
   }
   return result;
 #elif defined(CAESARIA_PLATFORM_UNIX)
-  result = ::remove( filename.toString().c_str() );
+  int result = ::remove( filename.toString().c_str() );
   return (result == 0);
 #endif
 }
