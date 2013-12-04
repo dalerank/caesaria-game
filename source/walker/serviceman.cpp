@@ -153,6 +153,7 @@ void ServiceWalker::_cancelPath()
     }
   }
 }
+
 unsigned int ServiceWalker::getReachDistance() const
 {
   return _d->reachDistance;

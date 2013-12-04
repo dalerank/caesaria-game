@@ -90,8 +90,7 @@ void ActorColony::deliverTrainee()
   }
 
   TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), walker::actor );
-  trainee->setOriginBuilding(*this);
-  trainee->send2City();
+  trainee->send2City( this );
 
   if( !trainee->isDeleted() )
   {
@@ -125,8 +124,7 @@ void GladiatorSchool::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
   TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), walker::gladiator );
-  trainee->setOriginBuilding(*this);
-  trainee->send2City();
+  trainee->send2City( this );
 }
 
 void GladiatorSchool::timeStep(const unsigned long time)
@@ -172,8 +170,7 @@ void LionsNursery::deliverTrainee()
 {
   // std::cout << "Deliver trainee!" << std::endl;
   TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), walker::tamer );
-  trainee->setOriginBuilding(*this);
-  trainee->send2City();
+  trainee->send2City( this );
 }
 
 
@@ -186,8 +183,7 @@ void WorkshopChariot::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
   TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), walker::charioter );
-  trainee->setOriginBuilding(*this);
-  trainee->send2City();
+  trainee->send2City( this );
 }
 
 void WorkshopChariot::timeStep(const unsigned long time)

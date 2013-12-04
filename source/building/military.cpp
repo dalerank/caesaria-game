@@ -105,9 +105,6 @@ Fort::Fort(building::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) 
 
 float Fort::evaluateTrainee(walker::Type traineeType)
 {
-  if( getWorkersCount() == 0 )
-    return 0.0;
-
   int currentForce = getWalkers().size() * 100;
   int traineeForce = WorkingBuilding::evaluateTrainee( traineeType );
   int maxForce = _d->maxSoldier * 100;

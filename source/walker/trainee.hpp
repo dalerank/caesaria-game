@@ -29,26 +29,28 @@ public:
   static TraineeWalkerPtr create( PlayerCityPtr city, constants::walker::Type traineeType );
 
   void checkDestination(const TileOverlay::Type buildingType, Propagator& pathPropagator);
-  void send2City();
-  void setOriginBuilding(Building &building);
-  void computeWalkerPath();
+  void send2City( BuildingPtr base, bool roadOnly=true );
+  void setBase(Building &building);
 
-  virtual void _reachedPathway();
-
-  void save( VariantMap& stream) const;
-  void load( const VariantMap& stream);
+  virtual void save( VariantMap& stream) const;
+  virtual void load( const VariantMap& stream);
 
 protected:
   TraineeWalker( PlayerCityPtr city, constants::walker::Type traineeType);
+  void _computeWalkerPath( bool roadOnly );
+
+  virtual void _reachedPathway();
   void _init(constants::walker::Type traineeType);
+  void _cancelPath();
 
 private:
-  BuildingPtr _originBuilding;
-  BuildingPtr _destinationBuilding;
   int _maxDistance;
 
   std::list<TileOverlay::Type> _buildingNeed;  // list of buildings needing this trainee
   float _maxNeed;  // evaluates the need for that trainee
+
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 #endif //__CAESARIA_TRAINEEWALKER_H_INCLUDED__
