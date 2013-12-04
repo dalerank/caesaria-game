@@ -32,18 +32,18 @@ public:
   const Picture& getCartPicture();
   
   virtual void getPictureList(std::vector<Picture> &oPics);
-  virtual void _changeDirection();
-  virtual void _reachedPathway();
 
   void send2City( BuildingPtr building, const Good::Type type, const int qty );
 
   void computeWalkerDestination( BuildingPtr building, const Good::Type type, const int qty );
  
-  void save(VariantMap& stream) const;
-  void load(const VariantMap& stream);
+  virtual void save(VariantMap& stream) const;
+  virtual void load(const VariantMap& stream);
 
 protected:
   CartSupplier( PlayerCityPtr city );
+  virtual void _changeDirection();
+  virtual void _reachedPathway();
 
 private:
   class Impl;

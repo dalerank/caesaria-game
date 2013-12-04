@@ -92,6 +92,10 @@ void CartSupplier::_reachedPathway()
       storage->applyStorageReservation( _d->stock, _d->rcvReservationID );
       storage->store( _d->stock, _d->stock._currentQty );
     }
+    else
+    {
+      building->storeGoods( _d->stock );
+    }
   }
   else
   {
@@ -266,11 +270,17 @@ void CartSupplier::send2City( BuildingPtr building, const Good::Type type, const
     storage = &building.as<Warehouse>()->getGoodStore();
   }
 
-  if( !isDeleted() && storage )
+  if( !isDeleted()  )
   {   
+    if( storage != 0 )
+    {
+      _d->rcvReservationID = storage->reserveStorage( _d->stock );
+    }
+    else
+    {}
+
     _d->stock.setType( type );
     _d->stock._maxQty = qty;
-    _d->rcvReservationID = storage->reserveStorage( _d->stock );
     _d->city->addWalker( WalkerPtr( this ) );
   }
 }

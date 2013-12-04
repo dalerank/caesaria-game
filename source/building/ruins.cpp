@@ -75,7 +75,7 @@ void BurningRuins::destroy()
   event->dispatch();
 }
 
-unsigned int BurningRuins::getMaxWorkers() const
+int BurningRuins::getMaxWorkers() const
 {
   return 0;
 }

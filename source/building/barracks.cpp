@@ -19,20 +19,53 @@
 #include "constants.hpp"
 #include "game/resourcegroup.hpp"
 #include "walker/trainee.hpp"
+#include "game/goodstore_simple.hpp"
 #include "game/city.hpp"
+#include "walker/cart_supplier.hpp"
 
 using namespace constants;
 
-Barracks::Barracks() : TrainingBuilding( building::barracks, Size( 3 ) )
+class Barracks::Impl
+{
+public:
+  SimpleGoodStore store;
+};
+
+Barracks::Barracks() : TrainingBuilding( building::barracks, Size( 3 ) ),
+  _d( new Impl )
 {
   setMaxWorkers(5);
   setPicture( ResourceGroup::security, 17 );
+
+  _d->store.setMaxQty( 1000 );
+  _d->store.setMaxQty( Good::weapon, 1000 );
 }
 
 void Barracks::deliverTrainee()
-{
-  TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), walker::soldier );
-  trainee->send2City( this, false );
+{ 
+  if( getWalkers().size() == 0 && _d->store.getFreeQty() > 0 )
+  {
+    CartSupplierPtr walker = CartSupplier::create( _getCity() );
+    walker->send2City( this, Good::weapon, 100 );
+
+    if( !walker->isDeleted() )
+    {
+      addWalker( walker.as<Walker>() );
+    }
+  }
+
+  if( getWalkers().size() == 0 && _d->store.getCurrentQty( Good::weapon ) >= 100 )
+  {
+    TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), walker::soldier );
+    trainee->send2City( this, false );
+
+    if( !trainee->isDeleted() )
+    {
+      GoodStock delStock( Good::weapon, 100 );
+      _d->store.retrieve( delStock, 100 );
+      addWalker( trainee.as<Walker>() );
+    }
+  }
 }
 
 void Barracks::timeStep(const unsigned long time)
@@ -50,4 +83,14 @@ void Barracks::timeStep(const unsigned long time)
   {
     _animationRef().stop();
   }
+}
+
+bool Barracks::isNeedWeapons() const
+{
+  return _d->store.getFreeQty() >= 100;
+}
+
+void Barracks::storeGoods(GoodStock& stock, const int amount)
+{
+  _d->store.store(stock, amount == -1 ? stock._currentQty : amount );
 }

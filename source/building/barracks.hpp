@@ -19,6 +19,7 @@
 #define __CAESARIA_BARRACKS_H_INCLUDED__
 
 #include "training.hpp"
+#include "game/goodstore.hpp"
 
 class Barracks : public TrainingBuilding
 {
@@ -26,6 +27,13 @@ public:
   Barracks();
   virtual void deliverTrainee();
   virtual void timeStep(const unsigned long time);
+
+  bool isNeedWeapons() const;
+  virtual void storeGoods(GoodStock &stock, const int amount);
+
+private:
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 #endif //__CAESARIA_BARRACKS_H_INCLUDED__

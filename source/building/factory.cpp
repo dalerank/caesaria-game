@@ -63,7 +63,6 @@ Factory::Factory(const Good::Type inType, const Good::Type outType,
    _d->goodStore.setMaxQty(_d->outGoodType, 200);
 }
 
-
 GoodStock& Factory::getInGood()
 {
    return _d->goodStore.getStock(_d->inGoodType);

@@ -162,6 +162,9 @@ bool _inArea( APoints& area, AStarPoint* end )
 
 bool Pathfinder::Impl::aStar(TilePos startPos, TilesArray arrivedArea, Pathway& oPathWay, int flags )
 {
+  if( arrivedArea.empty() )
+    return false;
+
   oPathWay.init( *tilemap, tilemap->at( startPos ) );
 
   int pointFlags = AStarPoint::wtAll;

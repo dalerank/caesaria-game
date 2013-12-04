@@ -74,6 +74,7 @@ FortArea::FortArea( Fort* fort ) : Building( building::fortArea, Size(4) ),
 {
   setPicture( ResourceGroup::security, 13 );
   _d->base = fort;
+  _fireIncrement = _damageIncrement = 0;
 }
 
 bool FortArea::isFlat() const
@@ -84,6 +85,14 @@ bool FortArea::isFlat() const
 bool FortArea::isWalkable() const
 {
   return true;
+}
+
+void FortArea::destroy()
+{
+  if( _d->base )
+  {
+    _d->base->deleteLater();
+  }
 }
 
 Fort::Fort(building::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) ),
@@ -101,6 +110,7 @@ Fort::Fort(building::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) 
 
   _d->area = new FortArea( this );
   _d->maxSoldier = 16;
+  _fireIncrement = _damageIncrement = 0;
 }
 
 float Fort::evaluateTrainee(walker::Type traineeType)
@@ -150,6 +160,14 @@ void Fort::timeStep( const unsigned long time )
   }
 
   WorkingBuilding::timeStep( time );
+}
+
+void Fort::destroy()
+{
+  if( _d->area )
+  {
+    _d->area->deleteLater();
+  }
 }
 
 TilePos Fort::getFreeSlot() const

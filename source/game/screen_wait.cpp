@@ -39,7 +39,7 @@ void ScreenWait::initialize()
 {
   GfxEngine& engine = GfxEngine::instance();
 
-  _d->bgPicture = Picture::load("c3title", 1);
+  _d->bgPicture = Picture::load("c3title", 2);
 
   // center the bgPicture on the screen
   Size s = (engine.getScreenSize() - _d->bgPicture.getSize()) / 2;

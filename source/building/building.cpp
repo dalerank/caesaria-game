@@ -20,7 +20,6 @@
 #include "gfx/tile.hpp"
 #include "walker/serviceman.hpp"
 #include "core/exception.hpp"
-#include "building/metadata.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/variant.hpp"
 #include "core/stringhelper.hpp"
@@ -68,7 +67,17 @@ void Building::timeStep(const unsigned long time)
 
 void Building::storeGoods(GoodStock &stock, const int amount)
 {
+  std::string bldType = getDebugName();
+  Logger::warning( "This building should not store any goods %s at [%d,%d]",
+                   bldType.c_str(), getTilePos().getI(), getTilePos().getJ() );
+  try
+  {
    _CAESARIA_DEBUG_BREAK_IF("This building should not store any goods");
+  }
+  catch(...)
+  {
+
+  }
 }
 
 float Building::evaluateService(ServiceWalkerPtr walker)

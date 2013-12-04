@@ -29,11 +29,11 @@ public:
   virtual void build(PlayerCityPtr city, const TilePos& pos );
   virtual bool isWalkable() const;
   virtual void destroy();
-  virtual unsigned int getMaxWorkers() const;
+  virtual int getMaxWorkers() const;
 
-  float evaluateService( ServiceWalkerPtr walker);
-  void applyService( ServiceWalkerPtr walker);
-  bool isNeedRoadAccess() const;
+  virtual float evaluateService( ServiceWalkerPtr walker);
+  virtual void applyService( ServiceWalkerPtr walker);
+  virtual bool isNeedRoadAccess() const;
 };
 
 class BurnedRuins : public Building
@@ -41,12 +41,12 @@ class BurnedRuins : public Building
 public:
   BurnedRuins();
 
-  void timeStep(const unsigned long time);
-  bool isWalkable() const;
-  bool isFlat() const;
-  void build(PlayerCityPtr city, const TilePos& pos );
-  bool isNeedRoadAccess() const;
-  void destroy();
+  virtual void timeStep(const unsigned long time);
+  virtual bool isWalkable() const;
+  virtual bool isFlat() const;
+  virtual void build(PlayerCityPtr city, const TilePos& pos );
+  virtual bool isNeedRoadAccess() const;
+  virtual void destroy();
 };
 
 typedef SmartPtr< BurningRuins > BurningRuinsPtr;
@@ -56,11 +56,11 @@ class CollapsedRuins : public Building
 public:
   CollapsedRuins();
 
-  void burn();
-  void build(PlayerCityPtr city, const TilePos& pos );
+  virtual void burn();
+  virtual void build(PlayerCityPtr city, const TilePos& pos );
 
-  bool isWalkable() const;
-  bool isNeedRoadAccess() const;
+  virtual bool isWalkable() const;
+  virtual bool isNeedRoadAccess() const;
 };
 
 class PlagueRuins : public Building
@@ -68,15 +68,15 @@ class PlagueRuins : public Building
 public:
   PlagueRuins();
 
-  void timeStep(const unsigned long time);
-  void burn();
-  void build( PlayerCityPtr city, const TilePos& pos );
-  bool isWalkable() const;
-  void destroy();
+  virtual void timeStep(const unsigned long time);
+  virtual void burn();
+  virtual void build( PlayerCityPtr city, const TilePos& pos );
+  virtual bool isWalkable() const;
+  virtual void destroy();
 
-  void applyService(ServiceWalkerPtr walker);
+  virtual void applyService(ServiceWalkerPtr walker);
 
-  bool isNeedRoadAccess() const;
+  virtual bool isNeedRoadAccess() const;
 };
 
 #endif

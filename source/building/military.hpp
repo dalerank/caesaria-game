@@ -34,6 +34,8 @@ public:
   virtual float evaluateTrainee( constants::walker::Type traineeType);
   virtual void timeStep(const unsigned long time);
 
+  virtual void destroy();
+
   virtual TilePos getFreeSlot() const;
 protected:
   virtual void _readyNewSoldier() {}
@@ -69,8 +71,10 @@ class FortArea : public Building
 public:
   FortArea( Fort* fort );
 
-  bool isFlat() const;
-  bool isWalkable() const;
+  virtual bool isFlat() const;
+  virtual bool isWalkable() const;
+
+  virtual void destroy();
 private:
   class Impl;
 
