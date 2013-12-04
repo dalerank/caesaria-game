@@ -48,7 +48,7 @@ public:
 
   void resolveLoadGame( std::string fileName )
   {
-    result=loadSavedGame; 
+    result= ScreenMenu::loadSavedGame;
     fileMap = fileName;
     isStopped=true; 
   }
@@ -58,7 +58,7 @@ public:
   
   void resolveSelectFile( std::string fileName )
   {
-    result = loadMap;
+    result = ScreenMenu::loadMap;
     fileMap = fileName;
     isStopped = true;
   }
@@ -80,7 +80,7 @@ void ScreenMenu::Impl::resolveShowLoadGameWnd()
   RectF rect( 0.25f * rootSize.getWidth(), 0.25f * rootSize.getHeight(), 
               0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() );
 
-  vfs::Path savesPath = vfs::Directory::getApplicationDir().addEndSlash().toString() + "saves/";
+  vfs::Path savesPath = GameSettings::get( GameSettings::savedir ).toString();
 
   gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent, rect.toRect(), savesPath, ".oc3save",-1 );
 

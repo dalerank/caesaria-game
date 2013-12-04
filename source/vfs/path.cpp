@@ -458,5 +458,10 @@ Path &Path::operator +=(char c)
   return *this;
 }
 
+Path Path::operator +(const Path& other)
+{
+  return vfs::Path( _d->path + other._d->path );
+}
+
 } //end namespace vfs
 

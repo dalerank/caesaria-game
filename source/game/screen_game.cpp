@@ -177,7 +177,14 @@ void ScreenGame::initialize()
 
 void ScreenGame::Impl::showSaveDialog()
 {
-  SaveDialog* dialog = new SaveDialog( game->getGui()->getRootWidget(), "saves", ".oc3save", -1 );
+  vfs::Directory saveDir = GameSettings::get( GameSettings::savedir ).toString();
+
+  if( !saveDir.isExist() )
+  {
+    vfs::Directory::createByPath( saveDir );
+  }
+
+  SaveDialog* dialog = new SaveDialog( game->getGui()->getRootWidget(), saveDir, ".oc3save", -1 );
   CONNECT( dialog, onFileSelected(), game, Game::save );
 }
 

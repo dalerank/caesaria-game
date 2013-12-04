@@ -29,6 +29,7 @@ const char* GameSettings::resolution = "resolution";
 const char* GameSettings::fullscreen = "fullscreen";
 const char* GameSettings::localeName = "en_US";
 const char* GameSettings::emigrantSalaryKoeff = "emigrantSalaryKoeff";
+const char* GameSettings::savedir = "savedir";
 
 class GameSettings::Impl
 {
@@ -57,6 +58,16 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ resolution ] = Size( 1024, 768 );
   _d->options[ fullscreen ] = false;
   _d->options[ emigrantSalaryKoeff ] = 2.f;
+
+   vfs::Path dirName = "saves";
+   vfs::Directory saveDir;
+ #ifdef CAESARIA_PLATFORM_LINUX
+   dirName = vfs::Path( ".caesaria/" ) + dirName;
+   saveDir = vfs::Directory::getUserDir()/dirName;
+ #elif defined(CAESARIA_PLATFORM_WIN)
+   saveDir = vfs::Directory::getApplicationDir()/dirName;
+ #endif
+   _d->options[ savedir ] = Variant( saveDir.toString() );
 }
 
 void GameSettings::set( const std::string& option, const Variant& value )

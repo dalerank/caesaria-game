@@ -42,11 +42,11 @@ public:
     ScreenMenu( Game& game, GfxEngine& engine );
     ~ScreenMenu();
 
-    void handleEvent( NEvent& event);
+    virtual void handleEvent( NEvent& event);
 
     // draws the menu/menubar/etc... on the screen
-    void draw();
-    void initialize();
+    virtual void draw();
+    virtual void initialize();
 
     const std::string& getMapName() const;
 

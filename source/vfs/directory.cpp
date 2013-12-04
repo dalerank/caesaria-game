@@ -26,6 +26,7 @@
   #ifdef CAESARIA_PLATFORM_LINUX
     #include <sys/io.h>
     #include <linux/limits.h>
+    #include <pwd.h>
   #elif defined(CAESARIA_PLATFORM_MACOSX)
     #include <libproc.h>
   #endif
@@ -215,6 +216,68 @@ Directory Directory::getApplicationDir()
 #endif
 
   return Path( "." );
+}
+
+Directory Directory::getUserDir()
+{
+  std::string mHomePath;
+#ifdef CAESARIA_PLATFORM_MACOSX
+  struct passwd* pwd = getpwuid(getuid());
+  if (pwd)
+  {
+    mHomePath = pwd->pw_dir;
+  }
+  else
+  {
+    // try the $HOME environment variable
+    mHomePath = getenv("HOME");
+  }
+
+  if( mHomePath.empty() )
+  {
+    // couldn't create dir in home directory, fall back to cwd
+    mHomePath = "./";
+    Logger::warning( "Cannot find home user directory" );
+  }
+#elif defined(CAESARIA_PLATFORM_LINUX)
+  struct passwd* pwd = getpwuid(getuid());
+  if (pwd)
+  {
+    mHomePath = pwd->pw_dir;
+  }
+  else
+  {
+    // try the $HOME environment variable
+    mHomePath = getenv("HOME");
+  }
+
+  if( mHomePath.empty() )
+  {
+    // couldn't create dir in home directory, fall back to cwd
+    mHomePath = "./";
+    Logger::warning( "Cannot find home user directory" );
+  }
+#elif defined(CAESARIA_PLATFORM_WIN)
+  TCHAR path[MAX_PATH];
+  if( SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL|CSIDL_FLAG_CREATE, NULL, 0, path)) )
+  {
+     // need to convert to OEM codepage so that fstream can use
+     // it properly on international systems.
+     TCHAR oemPath[MAX_PATH];
+     CharToOem(path, oemPath);
+     mHomePath = oemPath;
+     // create Ogre subdir
+     mHomePath += "\\Ogre\\";
+  }
+
+  if (mHomePath.empty())
+  {
+     // couldn't create dir in home directory, fall back to cwd
+     mHomePath = "";
+  }
+#endif
+
+  return vfs::Directory( mHomePath );
 }
 
 Directory::Directory()

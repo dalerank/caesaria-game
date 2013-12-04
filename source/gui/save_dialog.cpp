@@ -47,7 +47,8 @@ oc3_signals public:
 public:
   void resolveButtonOkClick()
   {
-    onFileSelectedSignal.emit( directory.toString() + edFilename->getText() + extension );
+    vfs::Path filename( edFilename->getText() + extension );
+    onFileSelectedSignal.emit( (directory/filename).toString() );
   }
 
   void resolveListboxChange( std::string text )
@@ -66,7 +67,7 @@ void SaveDialog::Impl::findFiles()
   lbxSaves->addItems( names );
 }
 
-SaveDialog::SaveDialog( Widget* parent, const vfs::Path& dir, const std::string& fileExt, int id )
+SaveDialog::SaveDialog(Widget* parent, vfs::Directory dir, std::string fileExt, int id )
 : Widget( parent, id, Rect( 0, 0, 385, 336 ) ), _d( new Impl )
 {
   setPosition( Point( (parent->getWidth() - getWidth())/2, (parent->getHeight() - getHeight()) / 2 ) );
@@ -81,8 +82,7 @@ SaveDialog::SaveDialog( Widget* parent, const vfs::Path& dir, const std::string&
   PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
 
   _d->edFilename = new EditBox( this, Rect( 18, 40, 18 + 320, 40 + 30 ), "Savecity" );
-  _d->directory = vfs::Directory::getApplicationDir().addEndSlash().toString() + dir.toString();
-  _d->directory = _d->directory.addEndSlash();
+  _d->directory = dir;
   _d->extension = fileExt;
 
   _d->lbxSaves = new ListBox( this, Rect( 18, 70, 18 + 356, 70 + 205 ) );

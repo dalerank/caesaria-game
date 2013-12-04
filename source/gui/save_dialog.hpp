@@ -19,7 +19,7 @@
 #include "widget.hpp"
 #include "core/scopedptr.hpp"
 #include "core/signals.hpp"
-#include "vfs/path.hpp"
+#include "vfs/directory.hpp"
 
 namespace gui
 {
@@ -27,9 +27,9 @@ namespace gui
 class SaveDialog : public Widget
 {
 public:
-  SaveDialog( Widget* parent, const vfs::Path& dir, const std::string& fileExt, int id );
+  SaveDialog(Widget* parent, vfs::Directory dir, std::string fileExt, int id );
 
-  void draw( GfxEngine& painter );
+  virtual void draw( GfxEngine& painter );
 
 oc3_signals public:
   Signal1<std::string>& onFileSelected();

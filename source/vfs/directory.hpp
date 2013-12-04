@@ -49,6 +49,7 @@ public:
   static Directory getCurrent();
   static bool changeCurrentDir( const Path& dirName );
   static Directory getApplicationDir();
+  static Directory getUserDir();
 
   static bool create( std::string dir );
   static bool createByPath(Directory dir );

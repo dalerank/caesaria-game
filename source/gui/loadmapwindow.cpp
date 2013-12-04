@@ -38,14 +38,15 @@ public:
   ListBox* files;
   PushButton* btnExit;
   PushButton* btnHelp;
-  vfs::Path directory;
+  vfs::Directory directory;
   std::string fileExtension;
 
   void fillFiles();
 
   void resolveFileSelected( std::string fileName )
   {
-    onSelecteFileSignal.emit( directory.toString() + fileName );
+    vfs::Path fn(fileName);
+    onSelecteFileSignal.emit( (directory/fn).toString() );
   }
 
 oc3_signals public:
@@ -53,7 +54,7 @@ oc3_signals public:
 };
 
 LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect,
-                              const vfs::Path& dir, const std::string& ext,
+                              const vfs::Directory& dir, const std::string& ext,
                               int id )
 : Widget( parent, id, rect ), _d( new Impl )
 {
