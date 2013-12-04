@@ -459,7 +459,7 @@ std::string Walker::getThinks() const
   return "";
 }
 
-void Walker::getPictureList(std::vector<Picture> &oPics)
+void Walker::getPictureList(PicturesArray& oPics)
 {
    oPics.clear();
    oPics.push_back( getMainPicture() );

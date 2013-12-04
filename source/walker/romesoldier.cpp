@@ -22,17 +22,22 @@
 #include "game/resourcegroup.hpp"
 #include "building/military.hpp"
 #include "game/pathway_helper.hpp"
+#include "gfx/tilemap.hpp"
+#include "animals.hpp"
+#include "enemysoldier.hpp"
 
 using namespace constants;
 
 class RomeSoldier::Impl
 {
 public:
-  typedef enum { doNothing=0, back2fort, go2position } State;
+  typedef enum { doNothing=0, back2fort, go2position, fightEnemy,
+                 patrol } State;
   FortPtr base;
   State action;
   gfx::Type walk;
   gfx::Type fight;
+  TilePos patrolPosition;
   double strikeForce, resistance;
 };
 
@@ -42,6 +47,7 @@ RomeSoldier::RomeSoldier( PlayerCityPtr city, walker::Type type ) : Soldier( cit
   _setAnimation( gfx::soldier );
 
   _init( type );
+  _d->patrolPosition = TilePos( -1, -1 );
 }
 
 void RomeSoldier::_init( walker::Type type )
@@ -86,9 +92,100 @@ void RomeSoldier::die()
   }
 }
 
+void RomeSoldier::timeStep(const unsigned long time)
+{
+  Soldier::timeStep( time );
+
+  switch( _d->action )
+  {
+  case Impl::fightEnemy:
+  {
+    WalkerList enemies = _findEnemiesInRange( 1 );
+
+    if( !enemies.empty() )
+    {
+      WalkerPtr p = enemies.front();
+      turn( p->getIJ() );
+      p->updateHealth( -3 );
+      p->acceptAction( Walker::acFight, getIJ() );
+    }
+    else
+    {
+      _tryAttack();
+    }
+  }
+  break;
+
+  case Impl::patrol:
+    if( time % 15 == 1 )
+    {
+      _tryAttack();
+    }
+  break;
+
+  default: break;
+  } // end switch( _d->action )
+}
+
+WalkerList RomeSoldier::_findEnemiesInRange( unsigned int range )
+{
+  Tilemap& tmap = _getCity()->getTilemap();
+  WalkerList walkers;
+
+  TilePos offset( range, range );
+  TilesArray tiles = tmap.getRectangle( getIJ() - offset, getIJ() + offset );
+
+  foreach( Tile* tile, tiles )
+  {
+    WalkerList tileWalkers = _getCity()->getWalkers( walker::any, tile->getIJ() );
+
+    foreach( WalkerPtr w, tileWalkers )
+    {
+      if( w.is<EnemySoldier>() )
+      {
+        walkers.push_back( w );
+      }
+    }
+  }
+
+  return walkers;
+}
+
 bool RomeSoldier::_tryAttack()
 {
+  WalkerList enemies = _findEnemiesInRange( 1 );
+  if( !enemies.empty() )
+  {
+    _d->action = Impl::fightEnemy;
+    setSpeed( 0.f );
+    _setAction( acFight );
+    _setAnimation( _d->fight );
+    _changeDirection();
+    return true;
+  }
+
   return false;
+}
+
+Pathway RomeSoldier::_findPathway2NearestEnemy( unsigned int range )
+{
+  Pathway ret;
+
+  for( unsigned int tmpRange=1; tmpRange <= range; tmpRange++ )
+  {
+    WalkerList walkers = _findEnemiesInRange( tmpRange );
+
+    foreach( WalkerPtr w, walkers)
+    {
+      ret = PathwayHelper::create( getIJ(), w->getIJ(), PathwayHelper::allTerrain );
+      if( ret.isValid() )
+      {
+        return ret;
+      }
+    }
+  }
+
+  return Pathway();
 }
 
 void RomeSoldier::_back2fort()
@@ -111,6 +208,54 @@ void RomeSoldier::_back2fort()
   }
 }
 
+void RomeSoldier::_reachedPathway()
+{
+  Soldier::_reachedPathway();
+
+  switch( _d->action )
+  {
+
+  case Impl::go2position:
+  {
+    if( !_getCity()->getWalkers( getType(), getIJ() ).empty() )
+    {
+      _back2fort();
+    }
+    else
+    {
+      _d->action = Impl::patrol;
+    }
+  }
+  break;
+
+  default:
+  break;
+  }
+}
+
+void RomeSoldier::_brokePathway(TilePos pos)
+{
+  Soldier::_brokePathway( pos );
+
+  if( _d->patrolPosition.getI() >= 0 )
+  {
+    Pathway way = PathwayHelper::create( getIJ(), _d->patrolPosition,
+                                         PathwayHelper::allTerrain );
+
+    if( way.isValid() )
+    {
+      setPathway( way );
+      go();
+    }
+    else
+    {
+      _d->action = Impl::patrol;
+      _setAction( acNone );
+      setPathway( Pathway() );
+    }
+  }
+}
+
 void RomeSoldier::_centerTile()
 {
   switch( _d->action )
@@ -128,6 +273,7 @@ void RomeSoldier::_centerTile()
   default:
   break;
   }
+
   Walker::_centerTile();
 }
 

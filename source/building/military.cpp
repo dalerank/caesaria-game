@@ -20,20 +20,29 @@
 #include "constants.hpp"
 #include "game/resourcegroup.hpp"
 #include "game/city.hpp"
+#include "gfx/tilemap.hpp"
 #include "walker/romesoldier.hpp"
 
 using namespace constants;
+
+namespace {
+Renderer::Pass _fpq[] = { Renderer::building, Renderer::animations };
+static Renderer::PassQueue fortPassQueue( _fpq, _fpq + 2 );
+}
 
 class Fort::Impl
 {
 public:
   FortArea* area;
   unsigned int maxSoldier;
+  TilePos patrolPosition;
+  PatrolAnimation patrolAnimation;
 };
 
 FortLegionnaire::FortLegionnaire() : Fort( building::fortLegionaire, 16 )
 {
   setPicture( ResourceGroup::security, 12 );
+  _d->patrolAnimation.load( ResourceGroup::sprites, 21, 8 );
 }
 
 void FortLegionnaire::_readyNewSoldier()
@@ -200,9 +209,53 @@ void Fort::build(PlayerCityPtr city, const TilePos& pos)
   Building::build( city, pos );
   _d->area->build( city, pos + TilePos( 3, 0 ) );
   _fgPicturesRef().resize(1);
+  _d->patrolPosition = pos + TilePos( 3, 4 );
+
+  Tile* patrolTile = city->getTilemap().at( _d->patrolPosition );
+  if( patrolTile )
+  {
+    patrolTile->setAnimation( _d->patrolAnimation );
+  }
 }
 
 bool Fort::isNeedRoadAccess() const
 {
   return false;
+}
+
+class PatrolPoint::Impl
+{
+public:
+  Animation animation;
+  Picture standart;
+};
+
+WalkerPtr PatrolPoint::create( PlayerCityPtr city,
+                               std::string prefix, int startPos, int stepNumber, TilePos position)
+{
+  PatrolPoint* pp = new PatrolPoint();
+  pp->_d->standart = Picture::load( ResourceGroup::sprites, 58 );
+  pp->_d->animation.load( prefix, startPos, stepNumber );
+  pp->setIJ( position );
+  WalkerPtr ptr( pp );
+  ptr->drop();
+
+  city->addWalker( ptr );
+}
+
+void PatrolPoint::getPictureList(PicturesArray& oPics)
+{
+  oPics.push_back( _d->standart );
+  oPics.push_back( _d->animation.getFrame() );
+}
+
+PatrolPoint::PatrolPoint( PlayerCityPtr city )
+  : Walker( city ), _d( new Impl )
+{
+
+}
+
+void PatrolPoint::timeStep(const unsigned long time)
+{
+  _d->animation.update( time );
 }

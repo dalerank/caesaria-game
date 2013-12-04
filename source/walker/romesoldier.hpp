@@ -31,13 +31,20 @@ public:
   void send2city(FortPtr base , TilePos pos);
 
   virtual void die();
+  virtual void timeStep(const unsigned long time);
 
 protected:
-  void _centerTile();
+  virtual void _centerTile();
+  virtual void _reachedPathway();
+  virtual void _brokePathway(TilePos pos);
+
   void _init( constants::walker::Type type);
   void _back2fort();
   bool _tryAttack();
 
+  WalkerList _findEnemiesInRange(unsigned int range);
+
+  Pathway _findPathway2NearestEnemy(unsigned int range);
 private:
   RomeSoldier(PlayerCityPtr city, constants::walker::Type type);
 

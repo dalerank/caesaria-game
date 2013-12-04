@@ -83,7 +83,7 @@ public:
   virtual void go();
   virtual void die();
 
-  virtual void getPictureList(std::vector<Picture> &oPics);
+  virtual void getPictureList(PicturesArray& oPics);
   virtual const Picture& getMainPicture();
 
   // state
