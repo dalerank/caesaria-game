@@ -22,6 +22,7 @@
 #ifdef CAESARIA_PLATFORM_WIN
   #include <windows.h>
   #include <io.h>
+  #include <shlobj.h>
 #elif defined(CAESARIA_PLATFORM_UNIX)
   #ifdef CAESARIA_PLATFORM_LINUX
     #include <sys/io.h>
