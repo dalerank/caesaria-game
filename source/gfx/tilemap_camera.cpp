@@ -149,8 +149,8 @@ const TilesArray& TilemapCamera::getTiles() const
 {
   if( _d->tiles.empty() )
   {
-    _d->offset.setX( _d->screenSize.getWidth() / 2 - 30 * (getCenterX() + 1) + 1 );
-    _d->offset.setY( _d->screenSize.getHeight()/ 2 + 15 * (getCenterZ() - _d->tilemap->getSize() + 1) - 30 );
+    _d->offset.setX( _d->screenSize.getWidth() / 2 - 30 * (_d->centerMapXZ.getX() + 1) + 1 );
+    _d->offset.setY( _d->screenSize.getHeight()/ 2 + 15 * (_d->centerMapXZ.getY() - _d->tilemap->getSize() + 1) - 30 );
 
     int mapSize = _d->tilemap->getSize();
     int zm = _d->tilemap->getSize() + 1;

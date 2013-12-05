@@ -221,10 +221,7 @@ void Layer::render( GfxEngine& engine)
   TilesArray visibleTiles = _d->camera->getTiles();
   Point camOffset = _d->camera->getOffset();
 
-  foreach( Tile* tile, visibleTiles )
-  {
-    tile->resetWasDrawn();
-  }
+  _getCamera()->startFrame();
 
   // FIRST PART: draw all flat land (walkable/boatable)
   foreach( Tile* tile, visibleTiles )
