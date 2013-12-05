@@ -23,6 +23,7 @@
 #include "gfx/tilemap.hpp"
 #include "walker/romesoldier.hpp"
 #include "core/logger.hpp"
+#include "events/event.hpp"
 
 using namespace constants;
 
@@ -84,15 +85,18 @@ FortJaveline::FortJaveline() : Fort( building::fortJavelin, 14 )
 class FortArea::Impl
 {
 public:
-  FortPtr base;
+  TilePos basePos;
 };
 
-FortArea::FortArea( FortPtr fort ) : Building( building::fortArea, Size(4) ),
+FortArea::FortArea() : Building( building::fortArea, Size(4) ),
   _d( new Impl )
 {
   setPicture( ResourceGroup::security, 13 );
-  _d->base = fort;
   _fireIncrement = _damageIncrement = 0;
+}
+
+FortArea::~FortArea()
+{
 }
 
 bool FortArea::isFlat() const
@@ -107,10 +111,21 @@ bool FortArea::isWalkable() const
 
 void FortArea::destroy()
 {
-  if( _d->base.isValid() )
+  Building::destroy();
+
+  FortPtr fort = _getCity()->getOverlay( _d->basePos ).as< Fort >();
+  if( fort.isValid() )
   {
-    _d->base->deleteLater();
-    _d->base = FortPtr();
+    events::GameEventPtr e = events::ClearLandEvent::create( _d->basePos );
+    e->dispatch();
+  }
+}
+
+void FortArea::setBase(FortPtr base)
+{
+  if( base.isValid() )
+  {
+    _d->basePos = base->getTilePos();
   }
 }
 
@@ -127,7 +142,9 @@ Fort::Fort(building::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) 
   _fgPicturesRef().at( 0 ) = logo;
   _fgPicturesRef().at( 1 ) = area;
 
-  _d->area = new FortArea( this );
+  _d->area = new FortArea();
+  _d->area->drop();
+
   _d->maxSoldier = 16;
   _fireIncrement = _damageIncrement = 0;
 }
@@ -183,17 +200,26 @@ void Fort::timeStep( const unsigned long time )
 
 void Fort::destroy()
 {
-  if( _d->area.isValid() )
+  WorkingBuilding::destroy();
+
+  if( _d->area.isValid()  )
   {
-    _d->area->deleteLater();
-    _d->area = FortAreaPtr();
+    events::GameEventPtr e = events::ClearLandEvent::create( _d->area->getTilePos() );
+    e->dispatch();
+    _d->area = 0;
+  }
+
+  if( _d->patrolPoint.isValid() )
+  {
+    _d->patrolPoint->deleteLater();
+    _d->patrolPoint = 0;
   }
 }
 
 TilePos Fort::getFreeSlot() const
 {
   TilePos patrolPos;
-  if( _d->patrolPoint.isNull() )
+  if( _d->patrolPoint.isNull()  )
   {
     Logger::warning( "Not patrol point assign in fort [%d,%d]", getTilePos().getI(), getTilePos().getJ() );
     patrolPos = _d->area->getTilePos() + TilePos( 0, 3 );
@@ -214,13 +240,19 @@ TilePos Fort::getFreeSlot() const
     tiles.insert( tiles.end(), tmpTiles.begin(), tmpTiles.end() );
   }
 
-  foreach(Tile* tile, tiles)
+  for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); )
   {
-    WalkerList wlist = _getCity()->getWalkers( walker::any, tile->getIJ() );
-    if( wlist.empty() )
-    {
-      return tile->getIJ();
-    }
+    WalkerList wlist = _getCity()->getWalkers( walker::any, (*it)->getIJ() );
+    if( !wlist.empty() ) { it = tiles.erase( it ); }
+    else { it++; }
+  }
+
+  if( !tiles.empty() )
+  {
+    int step = rand() % std::min( tiles.size(), _d->maxSoldier );
+    TilesArray::iterator it = tiles.begin();
+    std::advance( it, step );
+    return (*it)->getIJ();
   }
 
   return TilePos( -1, -1 );
@@ -277,7 +309,12 @@ bool Fort::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTil
 void Fort::build(PlayerCityPtr city, const TilePos& pos)
 {
   Building::build( city, pos );
+
   _d->area->build( city, pos + TilePos( 3, 0 ) );
+  _d->area->setBase( this );
+
+  city->addOverlay( _d->area.as<TileOverlay>() );
+
   _fgPicturesRef().resize(1);
 }
 
@@ -291,7 +328,7 @@ class PatrolPoint::Impl
 public:
   Animation animation;
   Picture standart;
-  FortPtr base;
+  TilePos basePos;
 };
 
 PatrolPointPtr PatrolPoint::create( PlayerCityPtr city, FortPtr base,
@@ -299,7 +336,7 @@ PatrolPointPtr PatrolPoint::create( PlayerCityPtr city, FortPtr base,
 {
   PatrolPoint* pp = new PatrolPoint( city );
   pp->_d->standart = Picture::load( ResourceGroup::sprites, 58 );
-  pp->_d->base = base;
+  pp->_d->basePos = base->getTilePos();
 
   Point extOffset( 15, 0 );
   Animation anim;
@@ -335,8 +372,9 @@ void PatrolPoint::timeStep(const unsigned long time)
 
 void PatrolPoint::acceptPosition()
 {
-  if( _d->base.isValid() )
+  FortPtr fort = _getCity()->getOverlay( _d->basePos ).as< Fort >();
+  if( fort.isValid() )
   {
-    _d->base->changePatrolArea();
+    fort->changePatrolArea();
   }
 }

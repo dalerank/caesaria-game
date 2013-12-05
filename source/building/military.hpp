@@ -96,12 +96,16 @@ public:
 class FortArea : public Building
 {
 public:
-  FortArea( FortPtr fort );
+  FortArea();
+
+  virtual ~FortArea();
 
   virtual bool isFlat() const;
   virtual bool isWalkable() const;
 
   virtual void destroy();
+
+  void setBase( FortPtr base );
 private:
   class Impl;
 
