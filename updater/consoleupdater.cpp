@@ -20,6 +20,13 @@
 namespace updater
 {
 
+class ConsoleUpdater::Impl
+{
+public:
+	// The status
+	ConsoleUpdater::Outcome outcome;
+};
+
 namespace
 {
 	const std::size_t PROGRESS_METER_WIDTH = 25;
@@ -49,20 +56,27 @@ namespace
 }
 
 ConsoleUpdater::ConsoleUpdater(int argc, char* argv[]) :
-	_outcome(None),
 	_options(argc, argv),
 	_controller(*this, vfs::Path( argv[0] ), _options),
-	_done(false)
+	_done(false),
+	_d( new Impl )
 {
-	_abortSignalHandler = makeDelegate( this, &ConsoleUpdater::OnAbort);
+	_abortSignalHandler = makeDelegate( this, &ConsoleUpdater::onAbort);
 
-	signal(SIGABRT, AbortSignalHandler);
-	signal(SIGTERM, AbortSignalHandler);
-	signal(SIGINT, AbortSignalHandler);
+	signal(SIGABRT, resolveAbortSignal);
+	signal(SIGTERM, resolveAbortSignal);
+	signal(SIGINT, resolveAbortSignal);
+
+	_d->outcome = ConsoleUpdater::None;
 }
 
 ConsoleUpdater::~ConsoleUpdater()
 {
+}
+
+ConsoleUpdater::Outcome ConsoleUpdater::GetOutcome()
+{
+	return _d->outcome;
 }
 
 void ConsoleUpdater::Run()
@@ -71,7 +85,7 @@ void ConsoleUpdater::Run()
 	if( _options.isSet("help") )
 	{
 		_options.PrintHelp();
-		_outcome = Ok;
+		_d->outcome = ConsoleUpdater::Ok;
 		return;
 	}
 
@@ -101,7 +115,7 @@ void ConsoleUpdater::Run()
 	}
 }
 
-void ConsoleUpdater::AbortSignalHandler(int signal)
+void ConsoleUpdater::resolveAbortSignal(int signal)
 {
 	if (_abortSignalHandler)
 	{
@@ -109,7 +123,7 @@ void ConsoleUpdater::AbortSignalHandler(int signal)
 	}
 }
 
-void ConsoleUpdater::OnAbort(int)
+void ConsoleUpdater::onAbort(int)
 {
 	Logger::warning( "\nAbort signal received, trying to exit gracefully.");
 
@@ -118,33 +132,33 @@ void ConsoleUpdater::OnAbort(int)
 	_done = true; // exit main loop
 }
 
-void ConsoleUpdater::OnStartStep(UpdateStep step)
+void ConsoleUpdater::onStartStep(UpdateStep step)
 {
 	switch (step)
 	{
 	case Init:
 		Logger::warning("----------------------------------------------------------------------------");
-		Logger::warning(" Initialising...");
+		Logger::update(" Initialising...");
 		break;
 
 	case CleanupPreviousSession:
 		Logger::warning( "----------------------------------------------------------------------------");
-		Logger::warning( " Cleaning up previous update session...");
+		Logger::update( " Cleaning up previous update session...");
 		break;
 
 	case UpdateMirrors:
 		Logger::warning( "----------------------------------------------------------------------------");
-		Logger::warning( " Downloading mirror information...");
+		Logger::update( " Update mirrors information...", true );
 		break;
 
 	case DownloadStableVersion:
 		Logger::warning( "----------------------------------------------------------------------------");
-		Logger::warning( " Downloading CRC file...");
+		Logger::warning( " Downloading stable version info...");
 		break;
 
 	case DownloadVersionInfo:
 		Logger::warning( "----------------------------------------------------------------------------");
-		Logger::warning( " Downloading version info file...");
+		Logger::warning( " Downloading available version info...");
 		break;
 
 	case DetermineLocalVersion:
@@ -182,19 +196,19 @@ void ConsoleUpdater::OnStartStep(UpdateStep step)
 	};
 }
 
-void ConsoleUpdater::OnFinishStep(UpdateStep step)
+void ConsoleUpdater::onFinishStep(UpdateStep step)
 {
 	switch (step)
 	{
 	case Init:
 	{
-		Logger::warning(" Done.");
+		Logger::warning(" OK");
 	}
 	break;
 
 	case CleanupPreviousSession:
 	{
-		Logger::warning(" Done.");
+		Logger::warning(" OK");
 	}
 	break;
 
@@ -203,20 +217,13 @@ void ConsoleUpdater::OnFinishStep(UpdateStep step)
 		// Mirrors
 		bool keepMirrors = _options.isSet("keep-mirrors");
 
-		if (keepMirrors)
-		{
-			Logger::warning( " Skipped downloading mirrors.");
-		}
-		else
-		{
-			Logger::warning( " Done downloading mirrors.");
-		}
+		Logger::warning( keepMirrors ? "\n Skipped downloading mirrors." : "\n Done downloading mirrors.");
 
 		std::size_t numMirrors = _controller.GetNumMirrors();
 
 		Logger::warning( "   Found %d mirror%s.", numMirrors, (numMirrors == 1 ? "" : "s") );
 
-		if (numMirrors == 0)
+		if( numMirrors == 0 )
 		{
 			Logger::warning( " No mirror information available - cannot continue.");
 
@@ -228,7 +235,7 @@ void ConsoleUpdater::OnFinishStep(UpdateStep step)
 
 	case DownloadStableVersion:
 	{
-		//TraceLog::WriteLine(LOG_STANDARD, " Done downloading checksums.");
+		Logger::warning( " Done downloading stable version info.");
 	}
 	break;
 
@@ -238,7 +245,7 @@ void ConsoleUpdater::OnFinishStep(UpdateStep step)
 
 		if (!_controller.GetNewestVersion().empty())
 		{
-			Logger::warning( "Newest version is %s.", _controller.GetNewestVersion().c_str() );
+			Logger::warning( "Newest version is " + _controller.GetNewestVersion() );
 		}
 		else
 		{
@@ -253,7 +260,7 @@ void ConsoleUpdater::OnFinishStep(UpdateStep step)
 
 		if (_controller.GetLocalVersion().empty())
 		{
-			Logger::warning( "no luck, PK4 files do not match.");
+			Logger::warning( "no luck, zip files do not match.");
 		}
 		else
 		{
@@ -364,7 +371,7 @@ void ConsoleUpdater::OnWarning(const std::string& message)
 	Util::Wait(10000);
 }
 
-void ConsoleUpdater::OnProgressChange(const ProgressInfo& info)
+void ConsoleUpdater::onProgressChange(const ProgressInfo& info)
 {
 	switch (info.type)
 	{
@@ -418,6 +425,8 @@ void ConsoleUpdater::OnProgressChange(const ProgressInfo& info)
 void ConsoleUpdater::PrintProgress()
 {
 	// Progress bar
+	Logger::update( "\r" );
+
 	std::size_t numTicks = static_cast<std::size_t>(floor(_info.progressFraction * PROGRESS_METER_WIDTH));
 	std::string progressBar(numTicks, '=');
 	std::string progressSpace(PROGRESS_METER_WIDTH - numTicks, ' ');

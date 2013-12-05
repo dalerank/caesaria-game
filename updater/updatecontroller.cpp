@@ -123,11 +123,6 @@ std::size_t UpdateController::GetNumFilesToBeUpdated()
 	return _updater.GetNumFilesToBeUpdated();
 }
 
-bool UpdateController::DifferentialUpdateAvailable()
-{
-	return _updater.DifferentialUpdateAvailable();
-}
-
 std::string UpdateController::GetLocalVersion()
 {
 	return _updater.GetDeterminedLocalVersion();
@@ -143,16 +138,16 @@ void UpdateController::run()
 	while( _curStep != Done )
 	{
 		// Launch the thread and setup the callbacks
-		PerformStep( _curStep );
-		OnFinishStep( _curStep );
+		performStep( _curStep );
+		fializeStep( _curStep );
 	}
 }
 
-void UpdateController::PerformStep(int step)
+void UpdateController::performStep(int step)
 {
-	Logger::warning( "Step thread started: %d", step);
+	//Logger::warning( "Step thread started: %d", step);
 
-	_view.OnStartStep((UpdateStep)step);
+	_view.onStartStep((UpdateStep)step);
 
 	// Dispatch the calls to the updater, any exceptions will be caught by the ExceptionSafeThread class
 
@@ -175,14 +170,14 @@ void UpdateController::PerformStep(int step)
 
 	case UpdateMirrors:
 		// Pass the call to the updater
-		if (_updater.MirrorsNeedUpdate())
+		if( _updater.isMirrorsNeedUpdate() )
 		{
-			_updater.UpdateMirrors();
+			_updater.updateMirrors();
 		}
 		else
 		{
 			// Load Mirrors
-			_updater.LoadMirrors();
+			_updater.loadMirrors();
 		}
 		break;
 
@@ -210,25 +205,10 @@ void UpdateController::PerformStep(int step)
 		break;
 	
 	case DownloadDifferentialUpdate:
-		{
-		/*	DifferentialUpdateInfo info = _updater.GetDifferentialUpdateInfo();
-			_view.OnStartDifferentialUpdate(info);
-
-			// Download the update package, integrate it
-			_updater.DownloadDifferentialUpdate();*/
-		}
-		break;
+	break;
 
 	case PerformDifferentialUpdate:
-		{
-		/*	DifferentialUpdateInfo info = _updater.GetDifferentialUpdateInfo();
-
-			_view.OnPerformDifferentialUpdate(info);
-
-			_updater.PerformDifferentialUpdateStep();
-			*/
-		}
-		break;
+	break;
 
 	case DownloadFullUpdate:
 		_updater.PrepareUpdateStep("");
@@ -250,12 +230,12 @@ void UpdateController::PerformStep(int step)
 	};
 }
 
-void UpdateController::OnFinishStep(int step)
+void UpdateController::fializeStep(int step)
 {
-	Logger::warning( "Step thread finished: %d", step );
+	//Logger::warning( "Step thread finished: %d", step );
 
 	// Notify the view
-	_view.OnFinishStep( (UpdateStep)step );
+	_view.onFinishStep( (UpdateStep)step );
 
 	switch (_curStep)
 	{

@@ -21,9 +21,9 @@
 namespace updater
 {
 
-const char* const LIBTDM_UPDATE_VERSION = "0.61";
+const char* const LIB_UPDATE_VERSION = "0.61";
 
-const char* const LIBTDM_UPDATE_PLATFORM = 
+const char* const LIB_UPDATE_PLATFORM =
 #ifdef CAESARIA_PLATFORM_WIN
 "Win32"
 #elif defined(CAESARIA_PLATFORM_LINUX)
@@ -35,8 +35,8 @@ const char* const LIBTDM_UPDATE_PLATFORM =
 #endif
 ;
 
-const char* const TDM_MIRRORS_FILE = "mirrors.txt";
-const char* const TDM_MIRRORS_SERVER = "http://sourceforge.net/projects/opencaesar3/files/update/";
+const char* const CAESARIA_MIRRORS_INFO = "mirrors.txt";
+const char* const CAESARIA_MAIN_SERVER = "http://sourceforge.net/projects/opencaesar3/files/update/";
 
 // The file containing the version information of the most up-to-date package
 const char* const STABLE_VERSION_FILE = "stable_info.txt";

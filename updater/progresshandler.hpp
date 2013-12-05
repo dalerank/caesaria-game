@@ -59,7 +59,7 @@ public:
 		progress.bytesToDownload = info.totalDownloadSize;
 		progress.filesToDownload = info.filesToDownload;
 
-		_view.OnProgressChange(progress);
+		_view.onProgressChange(progress);
 	}
 
 	void OnDownloadProgress(const CurDownloadInfo& info)
@@ -75,7 +75,7 @@ public:
 		progress.bytesToDownload = 0;
 		progress.filesToDownload = 1;
 
-		_view.OnProgressChange(progress);
+		_view.onProgressChange(progress);
 
 		_recentDownloadSpeed = progress.downloadSpeed;
 	}
@@ -88,7 +88,7 @@ public:
 		progress.progressFraction = 1.0;
 		progress.downloadSpeed = _recentDownloadSpeed;
 
-		_view.OnProgressChange(progress);
+		_view.onProgressChange(progress);
 	}
 
 	void OnFileOperationProgress(const CurFileInfo& info)
@@ -100,7 +100,7 @@ public:
 		progress.progressFraction = info.progressFraction > 1.0 ? 1.0 : info.progressFraction;
 		progress.operationType = GetOperationTypeForFileInfo(info);
 
-		_view.OnProgressChange(progress);
+		_view.onProgressChange(progress);
 	}
 
 	void OnFileOperationFinish()
@@ -111,7 +111,7 @@ public:
 		progress.progressFraction = 1.0;
 		progress.operationType = ProgressInfo::Unspecified;
 
-		_view.OnProgressChange(progress);
+		_view.onProgressChange(progress);
 	}
 
 private:

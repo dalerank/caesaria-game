@@ -42,7 +42,7 @@ HttpRequest::HttpRequest(HttpConnection& conn, const std::string& url) :
 	_downloadedBytes(0)
 {}
 
-HttpRequest::HttpRequest(HttpConnection& conn, const std::string& url, const std::string& destFilename) :
+HttpRequest::HttpRequest(HttpConnection& conn, const std::string& url, vfs::Path destFilename) :
 	_conn(conn),
 	_url(url),
 	_handle(NULL),
@@ -62,7 +62,7 @@ void HttpRequest::InitRequest()
 	curl_easy_setopt(_handle, CURLOPT_URL, _url.c_str());
 
 	// Connect the callback
-	if (!_destFilename.empty())
+	if( !_destFilename.toString().empty() )
 	{
 		curl_easy_setopt(_handle, CURLOPT_WRITEFUNCTION, HttpRequest::WriteFileCallback);
 	}
@@ -76,8 +76,8 @@ void HttpRequest::InitRequest()
 
 	// Set agent
 	std::string agent = StringHelper::format( 0xff, "The Dark Mod Updater / libtdm_update v%s/%s",
-																									LIBTDM_UPDATE_VERSION,
-																									LIBTDM_UPDATE_PLATFORM );
+																									LIB_UPDATE_VERSION,
+																									LIB_UPDATE_PLATFORM );
 	curl_easy_setopt(_handle, CURLOPT_USERAGENT, agent.c_str());
 
 	// Tels: #3261: only allow FTP, FTPS, HTTP and HTTPS (HTTPS and FTPS need SSL support compiled in)
@@ -102,7 +102,7 @@ void HttpRequest::Perform()
 {
 	_errorMessage.clear();
 
-	Logger::warning( "Initiating Download from " + _url);
+	Logger::update( "Download from " + _url);
 
 	InitRequest();
 
@@ -110,14 +110,14 @@ void HttpRequest::Perform()
 	_status = IN_PROGRESS;
 
 	// Check target file
-	if (!_destFilename.empty())
+	if (!_destFilename.toString().empty())
 	{
-		_destStream.open(_destFilename.c_str(), std::ofstream::out|std::ofstream::binary);
+		_destStream.open(_destFilename.toString().c_str(), std::ofstream::out|std::ofstream::binary);
 	}
 
 	CURLcode result = curl_easy_perform(_handle);
 
-	if (!_destFilename.empty())
+	if (!_destFilename.toString().empty())
 	{
 		_destStream.flush();
 		_destStream.close();
@@ -134,12 +134,13 @@ void HttpRequest::Perform()
 		case CURLE_OK:
 			_status = OK;
 			_progress = 1.0;
-			Logger::warning(  "Download successful: " + _url);
+			Logger::update( "  OK" );
 			break;
 		default:
 			_status = FAILED;
 			_errorMessage = curl_easy_strerror(result);
-			Logger::warning(  "Download failed: " + _errorMessage);
+			Logger::warning( "  FAILED" );
+			Logger::warning( "ERROR " + _errorMessage );
 		};
 	}
 

@@ -87,14 +87,14 @@ public:
 	 * Gets called when the given update step is about to start,
 	 * such that the GUI elements can be adjusted.
 	 */
-	virtual void OnStartStep(UpdateStep step) = 0;
+	virtual void onStartStep(UpdateStep step) = 0;
 
 	/**
 	 * Gets called when the given update step is about to end,
 	 * such that the GUI elements can be adjusted. When an error
 	 * occurs in the step OnFinishStep will not called, see OnFailure.
 	 */
-	virtual void OnFinishStep(UpdateStep step) = 0;
+	virtual void onFinishStep(UpdateStep step) = 0;
 
 	/**
 	 * The failure signal, indicating that an error occurred
@@ -107,7 +107,7 @@ public:
 	 * this method will be called with some progress updates.
 	 * The passed struct will hold further information.
 	 */
-	virtual void OnProgressChange(const ProgressInfo& info) = 0;
+	virtual void onProgressChange(const ProgressInfo& info) = 0;
 
 	/** 
 	 * Use this method to send a message to the view - this might result in

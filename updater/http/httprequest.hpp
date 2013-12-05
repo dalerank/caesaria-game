@@ -20,6 +20,7 @@
 #include <vector>
 #include "core/smartptr.hpp"
 #include "core/referencecounted.hpp"
+#include "vfs/path.hpp"
 
 typedef void CURL;
 
@@ -44,7 +45,7 @@ public:
 		OK,	// successful
 		IN_PROGRESS,
 		FAILED,
-		ABORTED,
+		ABORTED
 	};
 
 private:
@@ -62,7 +63,7 @@ private:
 	// The current state
 	RequestStatus _status;
 
-	std::string _destFilename;
+	vfs::Path _destFilename;
 
 	std::ofstream _destStream;
 
@@ -79,7 +80,7 @@ private:
 public:
 	HttpRequest(HttpConnection& conn, const std::string& url);
 
-	HttpRequest(HttpConnection& conn, const std::string& url, const std::string& destFilename); // TODO: Change to fs::path
+	HttpRequest(HttpConnection& conn, const std::string& url, vfs::Path destFilename); // TODO: Change to fs::path
 
 	// Callbacks for CURL
 	static size_t WriteMemoryCallback(void* ptr, size_t size, size_t nmemb, HttpRequest* self);

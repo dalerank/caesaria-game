@@ -120,10 +120,10 @@ private:
 	void run();
 
 	// The entry point for the worker thread
-	void PerformStep(int step);
+	void performStep(int step);
 
 	// Invoked by the ExceptionSafeThread when a step is done, do some error handling here
-	void OnFinishStep(int step);
+	void fializeStep(int step);
 
 	void TryToProceedTo(UpdateStep step);
 

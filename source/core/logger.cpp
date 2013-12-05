@@ -64,7 +64,7 @@ public:
 		fflush(_logFile);
 	}
 
-	void write( std::string str )
+	void write( std::string str, bool )
 	{
 		// Don't write progress stuff into the logfile
 		// Make sure only one thread is writing to the file at a time
@@ -78,16 +78,11 @@ public:
 class ConsoleLogWriter : public LogWriter
 {
 public:
-	void write( std::string str)
+	void write( std::string str, bool newline )
 	{
-		std::cout << str << std::endl;
-	}
-
-	void update( std::string str )
-	{
-		std::cout << "\r";
-		std::cout << str ;
-		std::cout << "\r"  << std::flush;
+		std::cout << str;
+		if( newline ) std::cout << std::endl;
+		else std::cout << std::flush;
 	}
 };
 
@@ -98,14 +93,13 @@ public:
 
   Writers writers;
 
-  void write( const std::string& message, bool newLine=true )
+  void write( const std::string& message, bool newline=true )
   {
     for( Writers::iterator i=writers.begin(); i != writers.end(); i++  )
     {
       if( i->second.isValid() )
       {
-        if( newLine ) i->second->write( message );
-        else i->second->update( message );
+        i->second->write( message, newline );
       }
     }
   }
@@ -130,9 +124,9 @@ void Logger::warning(const std::string& text)
   getInstance()._d->write( text );
 }
 
-void Logger::update(const std::string& text)
+void Logger::update(const std::string& text, bool newline)
 {  
-  getInstance()._d->write( text, false );
+  getInstance()._d->write( text, newline );
 }
 
 void Logger::registerWriter(Logger::Type type)

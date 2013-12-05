@@ -123,6 +123,7 @@ public:
 		// called on finishing the single-file
 		virtual void OnDownloadFinish() = 0;
 	};
+
 	typedef SmartPtr<DownloadProgress> DownloadProgressPtr;
 
 	// An object to get notified in regular intervals about the file operations
@@ -207,16 +208,16 @@ public:
 	void CleanupPreviousSession();
 
 	// Returns TRUE if new mirrors should be downloaded
-	bool MirrorsNeedUpdate();
+	bool isMirrorsNeedUpdate();
 
 	// Returns the number of registered mirrors
 	std::size_t GetNumMirrors();
 
 	// Update the local tdm_mirrors.txt file from the main servers.
-	void UpdateMirrors();
+	void updateMirrors();
 
 	// Load information from the tdm_mirrors.txt file
-	void LoadMirrors();
+	void loadMirrors();
 
 	// Download the checksum crc_info.txt file from the mirrors.
 	void GetStableVersionFromServer();
@@ -323,11 +324,6 @@ private:
 
 	// Starts the download and waits for completion
 	void PerformSingleMirroredDownload(const DownloadPtr& download);
-
-	// Checks if the given update package is already present at the given location
-	//bool VerifyUpdatePackageAt(const UpdatePackage& info, const fs::path& package);
-
-	bool DifferentialUpdateAvailableForVersion(const std::string&);
 
 	void _markFileAsExecutable(vfs::Path path);
 };

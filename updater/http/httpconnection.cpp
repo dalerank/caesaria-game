@@ -24,6 +24,7 @@
 
 #include "core/mutex.hpp"
 #include <curl/curl.h>
+#include "vfs/path.hpp"
 
 namespace updater
 {
@@ -82,12 +83,12 @@ void HttpConnection::SetProxyPassword(const std::string& pass)
 	_proxyPass = pass;
 }
 
-HttpRequestPtr HttpConnection::CreateRequest(const std::string& url)
+HttpRequestPtr HttpConnection::createRequest(const std::string& url)
 {
 	return HttpRequestPtr(new HttpRequest(*this, url));
 }
 
-HttpRequestPtr HttpConnection::CreateRequest(const std::string& url, const std::string& destFilename)
+HttpRequestPtr HttpConnection::createRequest(const std::string& url, vfs::Path destFilename)
 {
 	return HttpRequestPtr(new HttpRequest(*this, url, destFilename));
 }

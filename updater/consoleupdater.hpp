@@ -39,9 +39,6 @@ public:
 	};
 
 private:
-	// The status
-	Outcome _outcome;
-
 	UpdaterOptions _options;
 
 	// The update controller manages the logic
@@ -60,19 +57,16 @@ public:
 
 	~ConsoleUpdater();
 
-	Outcome GetOutcome() 
-	{
-		return _outcome;
-	}
+	Outcome GetOutcome();
 
 	// Main entry point, algorithm starts here, does not leak exceptions
 	void Run();
 
 	// IUpdateView implementation
-	void OnStartStep(UpdateStep step);
-	void OnFinishStep(UpdateStep step);
+	void onStartStep(UpdateStep step);
+	void onFinishStep(UpdateStep step);
 	void OnFailure(UpdateStep step, const std::string& errorMessage);
-	void OnProgressChange(const ProgressInfo& info);
+	void onProgressChange(const ProgressInfo& info);
 	void OnMessage(const std::string& message);
 	void OnWarning(const std::string& message);
 	//void OnStartDifferentialUpdate(const DifferentialUpdateInfo& info);
@@ -80,11 +74,14 @@ public:
 	//void OnFinishDifferentialUpdate(const DifferentialUpdateInfo& info);
 
 private:
-	static void AbortSignalHandler(int signal);
+	static void resolveAbortSignal(int signal);
 
-	void OnAbort(int);
+	void onAbort(int);
 
 	void PrintProgress();
+
+	class Impl;
+	ScopedPtr< Impl > _d;
 };
 
 } // namespace

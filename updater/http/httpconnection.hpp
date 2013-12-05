@@ -19,6 +19,7 @@
 #include "core/smartptr.hpp"
 #include "core/scopedptr.hpp"
 #include "core/referencecounted.hpp"
+#include "vfs/path.hpp"
 
 namespace updater
 {
@@ -67,8 +68,8 @@ public:
 	/**
 	 * Constructs a new HTTP request using the given URL (optional: filename)
 	 */ 
-	HttpRequestPtr CreateRequest(const std::string& url);
-	HttpRequestPtr CreateRequest(const std::string& url, const std::string& destFilename);
+	HttpRequestPtr createRequest(const std::string& url);
+	HttpRequestPtr createRequest(const std::string& url, vfs::Path destFilename);
 };
 
 typedef SmartPtr<HttpConnection> HttpConnectionPtr;

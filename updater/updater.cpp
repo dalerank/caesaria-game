@@ -98,22 +98,22 @@ void Updater::CleanupPreviousSession()
 	vfs::NFile::remove( getTargetDir()/UPDATE_UPDATER_BATCH_FILE );
 }
 
-bool Updater::MirrorsNeedUpdate()
+bool Updater::isMirrorsNeedUpdate()
 {
 	vfs::Directory folder = getTargetDir();
-	vfs::Path mirrorPath = folder/TDM_MIRRORS_FILE;
+	vfs::Path mirrorPath = folder/CAESARIA_MIRRORS_INFO;
 
 	if( !mirrorPath.isExist() )
 	{
 		// No mirrors file
-		Logger::warning( "No mirrors file present on this machine.");
+		Logger::update( "No mirrors file present on this machine.");
 		return true;
 	}
 
 	// File exists, check options
 	if( _options.isSet("keep-mirrors") )
 	{
-		Logger::warning( "Skipping mirrors update (--keep-mirrors is set)." );
+		Logger::update( "Skipping mirrors update (--keep-mirrors is set)." );
 		return false;
 	}
 
@@ -121,38 +121,35 @@ bool Updater::MirrorsNeedUpdate()
 	return true;
 }
 
-void Updater::UpdateMirrors()
+void Updater::updateMirrors()
 {
-	std::string mirrorsUrl = TDM_MIRRORS_SERVER;
-	mirrorsUrl += TDM_MIRRORS_FILE;
+	std::string mirrorsUrl = CAESARIA_MAIN_SERVER;
+	mirrorsUrl += CAESARIA_MIRRORS_INFO;
 
-//	TraceLog::Write(LOG_VERBOSE, " Downloading mirror list from %s...", mirrorsUrl.c_str() ); // grayman - NG: too many args
-	Logger::warning( StringHelper::format( 0xff, "Downloading mirror list from %s...", mirrorsUrl.c_str() ) ); // grayman - fixed
+	//Logger::warning( StringHelper::format( 0xff, "Downloading mirror list from %s...", mirrorsUrl.c_str() ) ); // grayman - fixed
 
 	vfs::Directory folder = getTargetDir();
-	vfs::Path mirrorPath = folder.getFilePath( TDM_MIRRORS_FILE );
+	vfs::Path mirrorPath = folder/CAESARIA_MIRRORS_INFO;
 
-	HttpRequestPtr request = _conn->CreateRequest( mirrorsUrl, mirrorPath.toString());
+	HttpRequestPtr request = _conn->createRequest( mirrorsUrl, mirrorPath.toString());
 
 	request->Perform();
 
 	if (request->GetStatus() == HttpRequest::OK)
 	{
-		Logger::warning( "Done. ");
-
 		// Load the mirrors from the file
-		LoadMirrors();
+		loadMirrors();
 	}
 	else
 	{
-		Logger::warning( "Mirrors download failed: %s", request->GetErrorMessage().c_str() );
+		Logger::warning( " Mirrors download failed: %s", request->GetErrorMessage().c_str() );
 	}
 }
 
-void Updater::LoadMirrors()
+void Updater::loadMirrors()
 {
 	vfs::Directory folder = getTargetDir();
-	vfs::Path mirrorPath = folder.getFilePath( TDM_MIRRORS_FILE );
+	vfs::Path mirrorPath = folder.getFilePath( CAESARIA_MIRRORS_INFO );
 
 	// Load the tdm_mirrors.txt into an INI file
 	IniFilePtr mirrorsIni = IniFile::ConstructFromFile(mirrorPath);
@@ -160,7 +157,7 @@ void Updater::LoadMirrors()
 	// Interpret the info and build the mirror list
 	_mirrors = MirrorList( mirrorsIni );
 
-	Logger::warning( "Found %d mirrors.", _mirrors.size() );
+	//Logger::warning( "Found %d mirrors.", _mirrors.size() );
 }
 
 std::size_t Updater::GetNumMirrors()
@@ -380,20 +377,6 @@ void Updater::DetermineLocalVersion()
 
 bool Updater::DifferentialUpdateAvailable()
 {
-	std::string version = "none";
-
-	if (!_pureLocalVersion.empty())
-	{
-		// Local installation is pure, differential update is possible
-		if (DifferentialUpdateAvailableForVersion(_pureLocalVersion))
-		{
-			Logger::warning( "Local version is exactly determined, differential update is available.");
-			return true;
-		}
-
-		Logger::warning( "Local version is exactly determined, but no differential update is available.");
-	}
-
 	// Check applicable differential updates
 	if (!_applicableDifferentialUpdates.empty())
 	{
@@ -401,15 +384,6 @@ bool Updater::DifferentialUpdateAvailable()
 	}
 
 	Logger::warning( "No luck, differential updates don't seem to be applicable.");
-
-	return false;
-}
-
-bool Updater::DifferentialUpdateAvailableForVersion(const std::string&)
-{
-//	UpdatePackageInfo::const_iterator it = _updatePackages.find(version);
-
-	//return it != _updatePackages.end();
 
 	return false;
 }
@@ -505,26 +479,6 @@ vfs::Directory Updater::getTargetDir()
 
 	// Get the current path
 	vfs::Path targetPath = vfs::Directory::getCurrent();
-
-	// If the current path is the actual engine path, switch folders to "darkmod"
-	// We don't want to download the PK4s into the Doom3.exe location
-	/* grayman - no longer necessary
-	if (Util::PathIsTDMEnginePath(targetPath))
-	{
-		TraceLog::WriteLine(LOG_VERBOSE, "Doom3 found in current path, switching directories.");
-
-		targetPath /= TDM_STANDARD_MOD_FOLDER;
-
-		if (!fs::exists(targetPath))
-		{
-			TraceLog::WriteLine(LOG_VERBOSE, "darkmod/ path not found, creating folder: " + targetPath.string());
-
-			fs::create_directory(targetPath);
-		}
-
-		TraceLog::WriteLine(LOG_VERBOSE, " Changed working directory to darkmod/, continuing update process.");
-	}
-	*/
 
 	return targetPath;
 }

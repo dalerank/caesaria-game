@@ -168,7 +168,7 @@ void Download::Perform()
 		const std::string& url = _urls[_curUrl];
 
 		// Create a new request
-		_request = _conn->CreateRequest(url, _tempFilename.toString());
+		_request = _conn->createRequest(url, _tempFilename.toString());
 	
 		// Start the download, blocks until finished or aborted
 		_request->Perform();
