@@ -115,6 +115,10 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   _d->setOne(ResourceGroup::commerce, 151, 78, 69);
   _d->setOne(ResourceGroup::commerce, 152, 78, 69);
 
+  //legion standart + flag
+  _d->setRange( ResourceGroup::sprites, 21, 47, Point( -32, 29 ) );
+  _d->setRange( ResourceGroup::sprites, 48, 68, Point( -32, 52 ) );
+
   // walkers
   offset = Point( -2, -2 );
   _d->setRange("citizen01", 1, 1240, offset);

@@ -50,6 +50,7 @@ public:
   void setLoop( bool loop );
 
   void setOffset( const Point& offset );
+  Point getOffset() const;
 
   bool isRunning() const;
   bool isStopped() const;

@@ -20,6 +20,7 @@
 
 #include "working.hpp"
 #include "constants.hpp"
+#include "walker/walker.hpp"
 
 class Fort : public WorkingBuilding
 {
@@ -39,6 +40,7 @@ public:
   virtual TilePos getFreeSlot() const;
 protected:
   virtual void _readyNewSoldier() {}
+  virtual void _setPatrolPoint( PatrolPointPtr patrolPoint );
 
 private:  
   class Impl;
@@ -48,10 +50,11 @@ private:
 class PatrolPoint : public Walker
 {
 public:
-  static WalkerPtr create(PlayerCityPtr city, std::string prefix, int startPos, int stepNumber, TilePos position );
+  static PatrolPointPtr create(PlayerCityPtr city, std::string prefix, int startPos, int stepNumber, TilePos position );
 
   virtual void getPictureList(PicturesArray& oPics);
 
+  virtual void timeStep(const unsigned long time);
 protected:
   PatrolPoint( PlayerCityPtr city );
 
@@ -63,6 +66,8 @@ class FortLegionnaire : public Fort
 {
 public:  
   FortLegionnaire();
+
+  virtual void build(PlayerCityPtr city, const TilePos &pos);
 
 protected:
   virtual void _readyNewSoldier();
@@ -83,7 +88,7 @@ public:
 class FortArea : public Building
 {
 public:
-  FortArea( Fort* fort );
+  FortArea( FortPtr fort );
 
   virtual bool isFlat() const;
   virtual bool isWalkable() const;

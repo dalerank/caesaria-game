@@ -98,8 +98,8 @@ void AnimationBank::Impl::loadWalkers()
   animations.resize( gfx::countType );
 
   animations[gfx::unknown          ] = AnimationBank::MovementAnimation();
-  animations[gfx::citizenGo          ] = loadAnimation( ResourceGroup::citizen1, 1, 12 );
-  animations[gfx::bathladyGo         ] = loadAnimation( ResourceGroup::citizen1, 105, 12);
+  animations[gfx::citizenGo        ] = loadAnimation( ResourceGroup::citizen1, 1, 12 );
+  animations[gfx::bathladyGo       ] = loadAnimation( ResourceGroup::citizen1, 105, 12);
   animations[gfx::priest           ] = loadAnimation( ResourceGroup::citizen1, 209, 12);
   animations[gfx::actor            ] = loadAnimation( ResourceGroup::citizen1, 313, 12);
   animations[gfx::tamer            ] = loadAnimation( ResourceGroup::citizen1, 417, 12);

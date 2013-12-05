@@ -33,16 +33,22 @@ static Renderer::PassQueue fortPassQueue( _fpq, _fpq + 2 );
 class Fort::Impl
 {
 public:
-  FortArea* area;
+  FortAreaPtr area;
   unsigned int maxSoldier;
   TilePos patrolPosition;
-  PatrolAnimation patrolAnimation;
+  PatrolPointPtr patrolPoint;
 };
 
 FortLegionnaire::FortLegionnaire() : Fort( building::fortLegionaire, 16 )
 {
   setPicture( ResourceGroup::security, 12 );
-  _d->patrolAnimation.load( ResourceGroup::sprites, 21, 8 );
+}
+
+void FortLegionnaire::build(PlayerCityPtr city, const TilePos& pos)
+{
+  Fort::build( city, pos );
+
+  _setPatrolPoint( PatrolPoint::create( city, ResourceGroup::sprites, 21, 8, pos + TilePos( 3, 4 ) ) );
 }
 
 void FortLegionnaire::_readyNewSoldier()
@@ -75,10 +81,10 @@ FortJaveline::FortJaveline() : Fort( building::fortJavelin, 14 )
 class FortArea::Impl
 {
 public:
-  Fort* base;
+  FortPtr base;
 };
 
-FortArea::FortArea( Fort* fort ) : Building( building::fortArea, Size(4) ),
+FortArea::FortArea( FortPtr fort ) : Building( building::fortArea, Size(4) ),
   _d( new Impl )
 {
   setPicture( ResourceGroup::security, 13 );
@@ -98,9 +104,10 @@ bool FortArea::isWalkable() const
 
 void FortArea::destroy()
 {
-  if( _d->base )
+  if( _d->base.isValid() )
   {
     _d->base->deleteLater();
+    _d->base = FortPtr();
   }
 }
 
@@ -173,16 +180,17 @@ void Fort::timeStep( const unsigned long time )
 
 void Fort::destroy()
 {
-  if( _d->area )
+  if( _d->area.isValid() )
   {
     _d->area->deleteLater();
+    _d->area = FortAreaPtr();
   }
 }
 
 TilePos Fort::getFreeSlot() const
 {
   CityHelper helper( _getCity() );
-  TilesArray tiles = helper.getArea( _d->area );
+  TilesArray tiles = helper.getArea( _d->area.as<TileOverlay>() );
 
   foreach(Tile* tile, tiles)
   {
@@ -194,6 +202,11 @@ TilePos Fort::getFreeSlot() const
   }
 
   return TilePos( -1, -1 );
+}
+
+void Fort::_setPatrolPoint(PatrolPointPtr patrolPoint)
+{
+  _d->patrolPoint = patrolPoint;
 }
 
 bool Fort::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
@@ -209,13 +222,6 @@ void Fort::build(PlayerCityPtr city, const TilePos& pos)
   Building::build( city, pos );
   _d->area->build( city, pos + TilePos( 3, 0 ) );
   _fgPicturesRef().resize(1);
-  _d->patrolPosition = pos + TilePos( 3, 4 );
-
-  Tile* patrolTile = city->getTilemap().at( _d->patrolPosition );
-  if( patrolTile )
-  {
-    patrolTile->setAnimation( _d->patrolAnimation );
-  }
 }
 
 bool Fort::isNeedRoadAccess() const
@@ -230,17 +236,25 @@ public:
   Picture standart;
 };
 
-WalkerPtr PatrolPoint::create( PlayerCityPtr city,
+PatrolPointPtr PatrolPoint::create( PlayerCityPtr city,
                                std::string prefix, int startPos, int stepNumber, TilePos position)
 {
-  PatrolPoint* pp = new PatrolPoint();
+  PatrolPoint* pp = new PatrolPoint( city );
   pp->_d->standart = Picture::load( ResourceGroup::sprites, 58 );
-  pp->_d->animation.load( prefix, startPos, stepNumber );
+
+  Point extOffset( -7, -7 );
+  Animation anim;
+  anim.load( prefix, startPos, stepNumber );
+  anim.setOffset( anim.getOffset() + Point( 0, 52 )  + extOffset );
+  pp->_d->standart.addOffset( extOffset.getX(), extOffset.getY() );
+
+  pp->_d->animation = anim;
   pp->setIJ( position );
-  WalkerPtr ptr( pp );
+  PatrolPointPtr ptr( pp );
   ptr->drop();
 
-  city->addWalker( ptr );
+  city->addWalker( ptr.as<Walker>() );
+  return ptr;
 }
 
 void PatrolPoint::getPictureList(PicturesArray& oPics)

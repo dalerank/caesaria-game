@@ -48,6 +48,16 @@ void Animation::setOffset( const Point& offset )
   }
 }
 
+Point Animation::getOffset() const
+{
+  if( _pictures.empty() )
+  {
+    return Point();
+  }
+
+  return _pictures.front().getOffset();
+}
+
 void Animation::update( unsigned int time )
 {  
   if( _animIndex < 0 )
