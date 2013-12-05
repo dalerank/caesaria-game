@@ -20,6 +20,7 @@
 #include "core/predefinitions.hpp"
 
 PREDEFINE_CLASS_SMARTPOINTER_LIST(TileOverlay,List)
+PREDEFINE_CLASS_SMARTPOINTER_LIST(Layer,List)
 
 class Tile;
 class Picture;

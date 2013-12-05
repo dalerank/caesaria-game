@@ -127,6 +127,46 @@ void RomeSoldier::timeStep(const unsigned long time)
   } // end switch( _d->action )
 }
 
+void RomeSoldier::send2patrol()
+{
+  _back2fort();
+}
+
+void RomeSoldier::save(VariantMap& stream) const
+{
+  Soldier::save( stream );
+
+  stream[ "crtAction" ] = (int)_d->action;
+  stream[ "base" ] = _d->base->getTilePos();
+  stream[ "strikeForce" ] = _d->strikeForce;
+  stream[ "resistance" ] = _d->resistance;
+  stream[ "patrolPosition" ] = _d->patrolPosition;
+  stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(RomeSoldier) ) );
+}
+
+void RomeSoldier::load(const VariantMap& stream)
+{
+  Soldier::load( stream );
+
+  _d->action = (Impl::State)stream.get( "crtAction" ).toInt();
+  _d->strikeForce = stream.get( "strikeForce" );
+  _d->resistance = stream.get( "resistance" );
+  _d->patrolPosition = stream.get( "patrolPosition" );
+
+  TilePos basePosition = stream.get( "base" );
+  FortPtr fort = _getCity()->getOverlay( basePosition ).as< Fort >();
+
+  if( fort.isValid() )
+  {
+    _d->base = fort;
+    fort->addWalker( this );
+  }
+  else
+  {
+    die();
+  }
+}
+
 WalkerList RomeSoldier::_findEnemiesInRange( unsigned int range )
 {
   Tilemap& tmap = _getCity()->getTilemap();
@@ -217,7 +257,7 @@ void RomeSoldier::_reachedPathway()
 
   case Impl::go2position:
   {
-    if( !_getCity()->getWalkers( getType(), getIJ() ).empty() )
+    if( _getCity()->getWalkers( getType(), getIJ() ).size() != 1 ) //only me in this tile
     {
       _back2fort();
     }

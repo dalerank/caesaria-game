@@ -23,6 +23,8 @@
 #include "events/showtileinfo.hpp"
 #include "walker/constants.hpp"
 #include "walker/walker.hpp"
+#include "tilemap_camera.hpp"
+#include "game/city.hpp"
 
 using namespace constants;
 

@@ -27,6 +27,7 @@
 Prefecture::Prefecture() : ServiceBuilding(Service::prefect, constants::building::prefecture, Size(1))
 {
   _fireDetect = TilePos( -1, -1 );
+  _fireIncrement = 0;
   setPicture( ResourceGroup::security, 1 );
   
   _animationRef().load( ResourceGroup::security, 2, 10);

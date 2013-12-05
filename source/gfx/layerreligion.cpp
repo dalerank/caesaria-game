@@ -19,6 +19,7 @@
 #include "building/house.hpp"
 #include "game/house_level.hpp"
 #include "layerconstants.hpp"
+#include "game/city.hpp"
 
 using namespace constants;
 

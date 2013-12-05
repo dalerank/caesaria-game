@@ -95,7 +95,7 @@ GoodStock GoodStore::getStorageReservation(const long reservationID, const bool 
 
   if (mapIt == _d->storeReservations.end())
   {
-    _CAESARIA_DEBUG_BREAK_IF( "Unknown reservationID" );
+    Logger::warning( "Unknown reservationID" );
     return GoodStock();
   }
 

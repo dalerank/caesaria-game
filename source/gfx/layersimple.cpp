@@ -17,6 +17,7 @@
 #include "layerconstants.hpp"
 #include "walker/constants.hpp"
 #include "city_renderer.hpp"
+#include "game/city.hpp"
 
 using namespace constants;
 

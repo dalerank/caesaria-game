@@ -38,6 +38,11 @@ public:
   virtual void destroy();
 
   virtual TilePos getFreeSlot() const;
+  virtual void changePatrolArea();
+
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
+
 protected:
   virtual void _readyNewSoldier() {}
   virtual void _setPatrolPoint( PatrolPointPtr patrolPoint );
@@ -50,11 +55,14 @@ private:
 class PatrolPoint : public Walker
 {
 public:
-  static PatrolPointPtr create(PlayerCityPtr city, std::string prefix, int startPos, int stepNumber, TilePos position );
+  static PatrolPointPtr create( PlayerCityPtr city, FortPtr base,
+                                std::string prefix, int startPos, int stepNumber, TilePos position );
 
   virtual void getPictureList(PicturesArray& oPics);
-
   virtual void timeStep(const unsigned long time);
+
+  void acceptPosition();
+
 protected:
   PatrolPoint( PlayerCityPtr city );
 

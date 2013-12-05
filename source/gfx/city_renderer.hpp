@@ -16,17 +16,12 @@
 #ifndef __CAESARIA_CITYRENDERER_H_INCLUDED__
 #define __CAESARIA_CITYRENDERER_H_INCLUDED__
 
-#include "picture.hpp"
-#include "game/city.hpp"
-#include "tilemap.hpp"
-#include "tilemap_camera.hpp"
 #include "core/signals.hpp"
 #include "core/scopedptr.hpp"
 #include "renderermode.hpp"
-#include "engine.hpp"
-#include "core/event.hpp"
 #include "renderer.hpp"
-#include "layer.hpp"
+#include "predefinitions.hpp"
+#include "gfx/engine.hpp"
 
 /* Draws the tilemap area on the screen thanks to the GfxEngine, and handle user events */
 class CityRenderer : public Renderer

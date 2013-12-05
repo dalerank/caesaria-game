@@ -53,12 +53,18 @@
 #include "events/setvideooptions.hpp"
 #include "core/logger.hpp"
 #include "walker/enemysoldier.hpp"
+#include "patrolpointeventhandler.hpp"
+#include "city.hpp"
+#include "gfx/tilemap_camera.hpp"
 
 using namespace gui;
 
 class ScreenGame::Impl
 {
 public:
+  typedef std::vector< EventHandlerPtr > EventHandlers;
+
+  EventHandlers eventHandlers;
   gui::MenuRigthPanel* rightPanel;
   gui::TopMenu* topMenu;
   gui::Menu* menu;
@@ -110,6 +116,8 @@ void ScreenGame::initialize()
   GfxEngine& engine = GfxEngine::instance();
   gui::GuiEnv& gui = *_d->game->getGui();
 
+  installEventHandler( PatrolPointEventHandler::create( *_d->game, _d->renderer ) );
+
   Rect rPanelRect( engine.getScreenWidth() - rPanelPic.getWidth(), topMenuHeight,
                    engine.getScreenWidth(), engine.getScreenHeight() );
 
@@ -134,8 +142,6 @@ void ScreenGame::initialize()
   WindowMessageStack::create( gui.getRootWidget() );
 
   _d->rightPanel->bringToFront();
-
-  // 8*30: used for high buildings (granary...), visible even when not in tilemap_area.
   _d->renderer.getCamera().setViewport( engine.getScreenSize() );
 
   new SenatePopupInfo( gui.getRootWidget(), _d->renderer );
@@ -244,14 +250,8 @@ void ScreenGame::draw()
   _d->game->getGui()->draw();
 }
 
-void ScreenGame::animate( unsigned int time )
-{
-  _d->renderer.animate( time );
-}
-
-void ScreenGame::afterFrame()
-{
-}
+void ScreenGame::animate( unsigned int time ) {  _d->renderer.animate( time ); }
+void ScreenGame::afterFrame() {}
 
 void ScreenGame::handleEvent( NEvent& event )
 {
@@ -307,6 +307,13 @@ void ScreenGame::handleEvent( NEvent& event )
     default:
     break;
     }
+  }
+
+  for( Impl::EventHandlers::iterator it=_d->eventHandlers.begin(); it != _d->eventHandlers.end(); )
+  {
+    (*it)->handleEvent( event );
+    if( (*it)->finished() ) { it = _d->eventHandlers.erase( it ); }
+    else{ it++; }
   }
 
   bool eventResolved = false;
@@ -371,20 +378,14 @@ void ScreenGame::Impl::makeScreenShot()
   GfxEngine::instance().createScreenshot( filename );
 }
 
-int ScreenGame::getResult() const
-{
-  return _d->result;
-}
-
-void ScreenGame::Impl::resolveCreateConstruction( int type )
-{
-  renderer.setMode( BuildMode::create( TileOverlay::Type( type ) ) );
-}
-
-void ScreenGame::Impl::resolveRemoveTool()
-{
-  renderer.setMode( DestroyMode::create() );
-}
+int ScreenGame::getResult() const {  return _d->result; }
+bool ScreenGame::installEventHandler(EventHandlerPtr handler) {  _d->eventHandlers.push_back( handler );}
+void ScreenGame::Impl::resolveCreateConstruction( int type ){  renderer.setMode( BuildMode::create( TileOverlay::Type( type ) ) );}
+void ScreenGame::Impl::resolveRemoveTool(){  renderer.setMode( DestroyMode::create() );}
+void ScreenGame::Impl::resolveSelectLayer( int type ){  renderer.setMode( LayerMode::create( type ) );}
+void ScreenGame::Impl::showAdvisorsWindow(){  showAdvisorsWindow( ADV_EMPLOYERS ); }
+void ScreenGame::Impl::showTradeAdvisorWindow(){  showAdvisorsWindow( ADV_TRADING ); }
+void ScreenGame::Impl::showMissionTaretsWindow(){  MissionTargetsWindow::create( game->getGui()->getRootWidget(), game->getCity() ); }
 
 void ScreenGame::resolveEndGame()
 {
@@ -396,16 +397,6 @@ void ScreenGame::resolveExitGame()
 {
   _d->result = ScreenGame::quitGame;
   stop();
-}
-
-void ScreenGame::Impl::resolveSelectLayer( int type )
-{
-  renderer.setMode( LayerMode::create( type ) );
-}
-
-void ScreenGame::Impl::showAdvisorsWindow()
-{
-  showAdvisorsWindow( ADV_EMPLOYERS );
 }
 
 void ScreenGame::Impl::showAdvisorsWindow( const int advType )
@@ -422,14 +413,4 @@ void ScreenGame::Impl::showAdvisorsWindow( const int advType )
     /*AdvisorsWindow* advWnd = */AdvisorsWindow::create( game->getGui()->getRootWidget(), -1,
                                                      (AdvisorType)advType, game->getCity() );
   }
-}
-
-void ScreenGame::Impl::showTradeAdvisorWindow()
-{
-  showAdvisorsWindow( ADV_TRADING );
-}
-
-void ScreenGame::Impl::showMissionTaretsWindow()
-{
-  MissionTargetsWindow::create( game->getGui()->getRootWidget(), game->getCity() );
 }

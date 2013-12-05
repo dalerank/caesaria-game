@@ -24,6 +24,7 @@
 #include "core/stringhelper.hpp"
 #include "core/color.hpp"
 #include "core/time.hpp"
+#include "gfx/tilemap_camera.hpp"
 
 namespace gui
 {

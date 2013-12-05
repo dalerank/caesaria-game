@@ -49,6 +49,8 @@
 #include "walker/walker.hpp"
 #include "building/aqueduct.hpp"
 #include "layerdestroy.hpp"
+#include "tilemap_camera.hpp"
+#include "game/city.hpp"
 
 using namespace constants;
 

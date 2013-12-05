@@ -205,7 +205,7 @@ void TraineeWalker::save( VariantMap& stream ) const
   stream[ "originBldPos" ] = _d->base->getTilePos();
   stream[ "destBldPos" ] = _d->destination->getTilePos();
   stream[ "maxDistance" ] = _maxDistance;
-  stream[ "graphic" ] = _getAnimationType();
+  stream[ "traineeType" ] = getType();
   stream[ "type" ] = (int)walker::trainee;
 }
 
@@ -219,7 +219,7 @@ void TraineeWalker::load( const VariantMap& stream )
   _d->base = helper.find<Building>( building::any, stream.get( "originBldPos" ).toTilePos() );
   _d->destination = helper.find<Building>( building::any, stream.get( "destBldPos" ).toTilePos() );
   _maxDistance = (int)stream.get( "maxDistance" );
-  walker::Type wtype = (walker::Type)stream.get( "graphic" ).toInt();
+  walker::Type wtype = (walker::Type)stream.get( "traineeType" ).toInt();
 
   _setType( wtype );
   _init( wtype );

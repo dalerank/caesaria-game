@@ -29,7 +29,7 @@ class SenatePopupInfo : public Widget
 public:
   SenatePopupInfo(Widget* parent, CityRenderer& mapRenderer );
 
-  void draw( GfxEngine& painter );
+  virtual void draw( GfxEngine& painter );
 private:
   class Impl;
   ScopedPtr< Impl > _d;

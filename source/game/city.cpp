@@ -75,7 +75,10 @@ class WGrid
 public:
   void clear()
   {
-    _grid.clear();
+    for( Grid::iterator it=_grid.begin(); it != _grid.end(); it++ )
+    {
+      it->second.clear();
+    }
   }
 
   unsigned int hash( const TilePos& pos )

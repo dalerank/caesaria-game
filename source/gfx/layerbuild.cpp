@@ -21,6 +21,10 @@
 #include "core/logger.hpp"
 #include "events/event.hpp"
 #include "core/gettext.hpp"
+#include "core/foreach.hpp"
+#include "game/city.hpp"
+#include "tilemap_camera.hpp"
+#include "core/event.hpp"
 
 using namespace constants;
 

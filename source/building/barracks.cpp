@@ -54,7 +54,7 @@ void Barracks::deliverTrainee()
     }
   }
 
-  if( getWalkers().size() == 0 && _d->store.getCurrentQty( Good::weapon ) >= 100 )
+  if( _d->store.getCurrentQty( Good::weapon ) >= 100 )
   {
     TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), walker::soldier );
     trainee->send2City( this, false );
@@ -93,4 +93,18 @@ bool Barracks::isNeedWeapons() const
 void Barracks::storeGoods(GoodStock& stock, const int amount)
 {
   _d->store.store(stock, amount == -1 ? stock._currentQty : amount );
+}
+
+void Barracks::save(VariantMap& stream) const
+{
+  TrainingBuilding::save( stream );
+
+  stream[ "store" ] = _d->store.save();
+}
+
+void Barracks::load(const VariantMap& stream)
+{
+  TrainingBuilding::load( stream );
+
+  _d->store.load( stream.get( "store" ).toMap() );
 }

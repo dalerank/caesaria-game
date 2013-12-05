@@ -18,6 +18,10 @@
 #include "events/event.hpp"
 #include "walker/constants.hpp"
 #include "walker/walker.hpp"
+#include "core/foreach.hpp"
+#include "tilemap_camera.hpp"
+#include "game/city.hpp"
+#include "core/event.hpp"
 
 using namespace constants;
 

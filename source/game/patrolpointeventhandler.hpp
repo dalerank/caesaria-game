@@ -12,44 +12,31 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
-#ifndef _CAESARIA_SCREEN_GAME_H_INCLUDE_
-#define _CAESARIA_SCREEN_GAME_H_INCLUDE_
+#ifndef _CAESARIA_HOUSE_HABITANT_INCLUDE_H_
+#define _CAESARIA_HOUSE_HABITANT_INCLUDE_H_
 
 #include "screen.hpp"
-#include "core/predefinitions.hpp"
 #include "core/scopedptr.hpp"
-#include <string>
 
 class Game;
-class GfxEngine;
+class CityRenderer;
 
-class ScreenGame: public Screen
+class PatrolPointEventHandler : public EventHandler
 {
 public:
-  typedef enum {mainMenu=0, quitGame} ResultType;
-  ScreenGame( Game& game, GfxEngine& engine );
-  ~ScreenGame();
+  static EventHandlerPtr create( Game& game, CityRenderer& renderer );
 
-  void initialize();
+  virtual void handleEvent(NEvent &event);
+  virtual bool finished() const;
 
-  virtual void handleEvent( NEvent& event );
-  virtual void draw();
-  virtual void animate( unsigned int time );
-  virtual void afterFrame();
-  virtual int getResult() const;
-
-  virtual bool installEventHandler(EventHandlerPtr);
+  virtual ~PatrolPointEventHandler();
 
 private:
-  void resolveEndGame();
-  void resolveExitGame();
+  PatrolPointEventHandler( Game& game, CityRenderer& renderer );
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#endif //_CAESARIA_SCREEN_GAME_H_INCLUDE_
+#endif //_CAESARIA_HOUSE_HABITANT_INCLUDE_H_

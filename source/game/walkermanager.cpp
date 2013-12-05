@@ -29,6 +29,7 @@
 #include "walker/corpse.hpp"
 #include "walker/protestor.hpp"
 #include "walker/enemysoldier.hpp"
+#include "walker/romesoldier.hpp"
 #include <map>
 
 using namespace constants;
@@ -59,15 +60,16 @@ public:
   Service::Type serviceType;
 };
 
-class EnemyCreator : public WalkerCreator
+template< class T >
+class SoldierCreator : public WalkerCreator
 {
 public:
   WalkerPtr create( PlayerCityPtr city )
   {
-    return EnemySoldier::create( city, rtype ).object();
+    return T::create( city, rtype ).object();
   }
 
-  EnemyCreator( const walker::Type type )
+  SoldierCreator( const walker::Type type )
   {
     rtype = type;
   }
@@ -110,7 +112,8 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( walker::fishingBoat, new BaseCreator<FishingBoat>() );
   addCreator( walker::corpse, new BaseCreator<Corpse>() );
   addCreator( walker::protestor, new BaseCreator<Protestor>() );
-  addCreator( walker::britonSoldier, new EnemyCreator( walker::britonSoldier ) );
+  addCreator( walker::britonSoldier, new SoldierCreator<EnemySoldier>( walker::britonSoldier ) );
+  addCreator( walker::legionary, new SoldierCreator<RomeSoldier>( walker::legionary ) );
 }
 
 WalkerManager::~WalkerManager()

@@ -22,6 +22,7 @@
 #include "game/city.hpp"
 #include "gfx/tilemap.hpp"
 #include "walker/romesoldier.hpp"
+#include "core/logger.hpp"
 
 using namespace constants;
 
@@ -35,7 +36,6 @@ class Fort::Impl
 public:
   FortAreaPtr area;
   unsigned int maxSoldier;
-  TilePos patrolPosition;
   PatrolPointPtr patrolPoint;
 };
 
@@ -48,7 +48,9 @@ void FortLegionnaire::build(PlayerCityPtr city, const TilePos& pos)
 {
   Fort::build( city, pos );
 
-  _setPatrolPoint( PatrolPoint::create( city, ResourceGroup::sprites, 21, 8, pos + TilePos( 3, 4 ) ) );
+  _setPatrolPoint( PatrolPoint::create( city, this,
+                                        ResourceGroup::sprites, 21, 8,
+                                        pos + TilePos( 3, 3 ) ) );
 }
 
 void FortLegionnaire::_readyNewSoldier()
@@ -63,6 +65,7 @@ void FortLegionnaire::_readyNewSoldier()
     if( tile->isWalkable( true ) )
     {
       soldier->send2city( this, tile->getIJ() );
+      addWalker( soldier.as<Walker>() );
       return;
     }
   }
@@ -189,8 +192,27 @@ void Fort::destroy()
 
 TilePos Fort::getFreeSlot() const
 {
+  TilePos patrolPos;
+  if( _d->patrolPoint.isNull() )
+  {
+    Logger::warning( "Not patrol point assign in fort [%d,%d]", getTilePos().getI(), getTilePos().getJ() );
+    patrolPos = _d->area->getTilePos() + TilePos( 0, 3 );
+  }
+  else
+  {
+    patrolPos = _d->patrolPoint->getIJ();
+  }
+
+
   CityHelper helper( _getCity() );
-  TilesArray tiles = helper.getArea( _d->area.as<TileOverlay>() );
+  TilesArray tiles = helper.getArea( patrolPos - TilePos( 0, 3), patrolPos );
+
+  for( int range=1; range < 5; range++ )
+  {
+    TilePos offset( range, range );
+    TilesArray tmpTiles = _getCity()->getTilemap().getRectangle( patrolPos - offset, patrolPos + offset );
+    tiles.insert( tiles.end(), tmpTiles.begin(), tmpTiles.end() );
+  }
 
   foreach(Tile* tile, tiles)
   {
@@ -202,6 +224,41 @@ TilePos Fort::getFreeSlot() const
   }
 
   return TilePos( -1, -1 );
+}
+
+void Fort::changePatrolArea()
+{
+  WalkerList walkers = getWalkers();
+
+  foreach( WalkerPtr w, walkers )
+  {
+    RomeSoldierPtr soldier = w.as<RomeSoldier>();
+    if( soldier.isValid() )
+    {
+      soldier->send2patrol();
+    }
+  }
+}
+
+void Fort::save(VariantMap& stream) const
+{
+  WorkingBuilding::save( stream );
+
+  stream[ "patrolPoint" ] = _d->patrolPoint->getIJ();
+  stream[ "soldierNumber"] = _d->maxSoldier;
+}
+
+void Fort::load(const VariantMap& stream)
+{
+  WorkingBuilding::load( stream );
+
+  TilePos patrolPos = stream.get( "patrolPoint" );
+  if(  _d->patrolPoint.isValid() )
+  {
+    _d->patrolPoint->setIJ( patrolPos );
+  }
+
+  _d->maxSoldier = stream.get( "soldierNumber", 16 ).toUInt();
 }
 
 void Fort::_setPatrolPoint(PatrolPointPtr patrolPoint)
@@ -234,15 +291,17 @@ class PatrolPoint::Impl
 public:
   Animation animation;
   Picture standart;
+  FortPtr base;
 };
 
-PatrolPointPtr PatrolPoint::create( PlayerCityPtr city,
-                               std::string prefix, int startPos, int stepNumber, TilePos position)
+PatrolPointPtr PatrolPoint::create( PlayerCityPtr city, FortPtr base,
+                                    std::string prefix, int startPos, int stepNumber, TilePos position)
 {
   PatrolPoint* pp = new PatrolPoint( city );
   pp->_d->standart = Picture::load( ResourceGroup::sprites, 58 );
+  pp->_d->base = base;
 
-  Point extOffset( -7, -7 );
+  Point extOffset( 15, 0 );
   Animation anim;
   anim.load( prefix, startPos, stepNumber );
   anim.setOffset( anim.getOffset() + Point( 0, 52 )  + extOffset );
@@ -266,10 +325,18 @@ void PatrolPoint::getPictureList(PicturesArray& oPics)
 PatrolPoint::PatrolPoint( PlayerCityPtr city )
   : Walker( city ), _d( new Impl )
 {
-
+  _setType( walker::patrolPoint );
 }
 
 void PatrolPoint::timeStep(const unsigned long time)
 {
   _d->animation.update( time );
+}
+
+void PatrolPoint::acceptPosition()
+{
+  if( _d->base.isValid() )
+  {
+    _d->base->changePatrolArea();
+  }
 }

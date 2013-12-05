@@ -31,6 +31,9 @@ public:
   bool isNeedWeapons() const;
   virtual void storeGoods(GoodStock &stock, const int amount);
 
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
+
 private:
   class Impl;
   ScopedPtr< Impl > _d;

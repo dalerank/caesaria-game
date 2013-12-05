@@ -54,6 +54,7 @@ enum Type{
   enemySoldier,
   britonSoldier,
   legionary,
+  patrolPoint,
   all = 0xff,
   any = all
 };
