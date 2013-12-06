@@ -13,39 +13,24 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _CAESARIA_BUILDING_EDUCATION_H_INCLUDE_
-#define _CAESARIA_BUILDING_EDUCATION_H_INCLUDE_
+#ifndef __CAESARIA_CITYSERVICE_WATER_H_INCLUDED__
+#define __CAESARIA_CITYSERVICE_WATER_H_INCLUDED__
 
-#include "building/service.hpp"
+#include "cityservice.hpp"
+#include "core/scopedptr.hpp"
+#include "game/predefinitions.hpp"
 
-class School : public ServiceBuilding
+class AmbientSound : public CityService
 {
 public:
-  School();
+  static CityServicePtr create( PlayerCityPtr city, TilemapCamera& camera );
 
-  int getVisitorsNumber() const;
+  void update( const unsigned int time );
+private:
+  AmbientSound( PlayerCityPtr city );
 
-  virtual void deliverService();
-
-  virtual unsigned int getWalkerDistance() const;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
-class Library : public ServiceBuilding
-{
-public:
-   Library();
-
-   int getVisitorsNumber() const;
-};
-
-class Academy : public ServiceBuilding
-{
-public:
-   Academy();
-
-   int getVisitorsNumber() const;
-   virtual std::string getSound() const;
-};
-
-
-#endif
+#endif //__CAESARIA_CITYSERVICE_WATER_H_INCLUDED__

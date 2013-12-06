@@ -38,26 +38,26 @@ public:
     append( building::amphitheater,   "amphitheater");
     append( building::theater,        "theater" );
     append( building::hippodrome,     "hippodrome" );
-    append( building::colloseum,     "colloseum" );
-    append( building::actorColony,          "artist_colony" );
-    append( building::gladiatorSchool,      "gladiator_pit" );
-    append( building::lionHouse,           "lion_pit" );
-    append( building::chariotSchool,        "chatioteer_school" );
+    append( building::colloseum,      "colloseum" );
+    append( building::actorColony,    "artist_colony" );
+    append( building::gladiatorSchool,"gladiator_pit" );
+    append( building::lionHouse,      "lion_pit" );
+    append( building::chariotSchool,  "chatioteer_school" );
     append( building::house,          "house" );
-    append( construction::road,           "road" );
-    append( construction::plaza,          "plaza" );
-    append( construction::garden,         "garden" );
+    append( construction::road,       "road" );
+    append( construction::plaza,      "plaza" );
+    append( construction::garden,     "garden" );
     append( building::senate,         "senate_1" );
     append( building::forum,          "forum_1" );
-    append( building::governorHouse, "governor_palace_1" );
-    append( building::governorVilla, "governor_palace_2" );
-    append( building::governorPalace,"governor_palace_3" );
+    append( building::governorHouse,  "governor_palace_1" );
+    append( building::governorVilla,  "governor_palace_2" );
+    append( building::governorPalace, "governor_palace_3" );
     append( building::fortLegionaire, "fort_legionaries" );
-    append( building::fortJavelin,   "fort_javelin" );
-    append( building::fortMounted,   "fort_horse" );
-    append( building::prefecture,        "prefecture" );
+    append( building::fortJavelin,    "fort_javelin" );
+    append( building::fortMounted,    "fort_horse" );
+    append( building::prefecture,     "prefecture" );
     append( building::barracks,       "barracks" );
-    append( building::militaryAcademy, "military_academy" );
+    append( building::militaryAcademy,"military_academy" );
     append( building::doctor,         "clinic" );
     append( building::hospital,       "hospital" );
     append( building::baths,          "baths" );
@@ -65,64 +65,64 @@ public:
     append( building::school,         "school" );
     append( building::academy,        "academy" );
     append( building::library,        "library" );
-    append( building::missionaryPost,   "mission post" );
-    append( building::templeCeres,   "small_ceres_temple" );
-    append( building::templeNeptune, "small_neptune_temple" );
-    append( building::templeMars,    "small_mars_temple" );
-    append( building::templeMercury, "small_mercury_temple" );
-    append( building::templeVenus,   "small_venus_temple" );
+    append( building::missionaryPost, "mission post" );
+    append( building::templeCeres,    "small_ceres_temple" );
+    append( building::templeNeptune,  "small_neptune_temple" );
+    append( building::templeMars,     "small_mars_temple" );
+    append( building::templeMercury,  "small_mercury_temple" );
+    append( building::templeVenus,    "small_venus_temple" );
     append( building::B_BIG_TEMPLE_CERES,  "big_ceres_temple" );
     append( building::B_BIG_TEMPLE_NEPTUNE,"big_neptune_temple" );
     append( building::B_BIG_TEMPLE_MARS,   "big_mars_temple");
     append( building::B_BIG_TEMPLE_MERCURE,"big_mercury_temple");
     append( building::B_BIG_TEMPLE_VENUS,  "big_venus_temple");
-    append( building::oracle,     "oracle");
-    append( building::market,            "market");
+    append( building::oracle,         "oracle");
+    append( building::market,         "market");
     append( building::granary,        "granery");
     append( building::warehouse,      "warehouse");
-    append( building::wheatFarm,          "wheat_farm");
-    append( building::fruitFarm,          "fig_farm");
-    append( building::vegetableFarm,      "vegetable_farm");
-    append( building::oliveFarm,          "olive_farm");
-    append( building::grapeFarm,          "vinard");
-    append( building::pigFarm,           "meat_farm");
-    append( building::marbleQuarry,         "quarry");
-    append( building::ironMine,           "iron_mine");
-    append( building::timberLogger,         "lumber_mill");
-    append( building::clayPit,       "clay_pit");
-    append( building::winery,           "wine_workshop");
-    append( building::creamery,            "oil_workshop");
-    append( building::weaponsWorkshop,         "weapons_workshop");
-    append( building::furnitureWorkshop,      "furniture_workshop");
+    append( building::wheatFarm,      "wheat_farm");
+    append( building::fruitFarm,      "fig_farm");
+    append( building::vegetableFarm,  "vegetable_farm");
+    append( building::oliveFarm,      "olive_farm");
+    append( building::grapeFarm,      "vinard");
+    append( building::pigFarm,        "meat_farm");
+    append( building::marbleQuarry,   "quarry");
+    append( building::ironMine,       "iron_mine");
+    append( building::timberLogger,   "lumber_mill");
+    append( building::clayPit,        "clay_pit");
+    append( building::winery,         "wine_workshop");
+    append( building::creamery,       "oil_workshop");
+    append( building::weaponsWorkshop,"weapons_workshop");
+    append( building::furnitureWorkshop, "furniture_workshop");
     append( building::pottery,        "pottery_workshop");
-    append( building::engineerPost,       "engineering_post");
-    append( building::smallStatue,        "statue_small");
-    append( building::middleStatue,        "statue_middle");
-    append( building::bigStatue,        "statue_big");
-    append( building::lowBridge,     "low_bridge");
-    append( building::highBridge,    "high_bridge");
+    append( building::engineerPost,   "engineering_post");
+    append( building::smallStatue,    "statue_small");
+    append( building::middleStatue,   "statue_middle");
+    append( building::bigStatue,      "statue_big");
+    append( building::lowBridge,      "low_bridge");
+    append( building::highBridge,     "high_bridge");
     append( building::dock,           "dock");
     append( building::shipyard,       "shipyard");
     append( building::wharf,          "wharf");
-    append( building::triumphalArch, "triumphal_arch");
+    append( building::triumphalArch,  "triumphal_arch");
     append( building::well,           "well");
     append( building::fountain,       "fountain");
     append( building::aqueduct,       "aqueduct");
     append( building::reservoir,      "reservoir");
-    append( building::nativeHut,     "native_hut");
-    append( building::nativeCenter,  "native_center");
-    append( building::nativeField,   "native_field");
-    append( building::burningRuins,  "burning_ruins");
-    append( building::burnedRuins,   "burned_ruins");
-    append( building::plagueRuins,   "plague_ruins");
-    append( building::collapsedRuins,"collapsed_ruins");
-    append( building::forum2, "forum_2" );
-    append( building::gatehouse, "gatehouse" );
-    append( building::senate2, "senate_2" );
-    append( building::tower, "tower" );
-    append( building::wall, "wall"  );
-    append( building::fortification, "fortification" );
-    append( building::unknown, "" );
+    append( building::nativeHut,      "native_hut");
+    append( building::nativeCenter,   "native_center");
+    append( building::nativeField,    "native_field");
+    append( building::burningRuins,   "burning_ruins");
+    append( building::burnedRuins,    "burned_ruins");
+    append( building::plagueRuins,    "plague_ruins");
+    append( building::collapsedRuins, "collapsed_ruins");
+    append( building::forum2,         "forum_2" );
+    append( building::gatehouse,      "gatehouse" );
+    append( building::senate2,        "senate_2" );
+    append( building::tower,          "tower" );
+    append( building::wall,           "wall"  );
+    append( building::fortification,  "fortification" );
+    append( building::unknown,        "" );
  }
 };
 
@@ -164,6 +164,8 @@ public:
   Desirability desirability;
   TileOverlay::Type tileovType;
   TileOverlay::Group group;
+  std::string name;  // debug name  (english, ex:"iron")
+  std::string sound;
   VariantMap options;
 };
 
@@ -172,7 +174,7 @@ MetaData::MetaData(const TileOverlay::Type buildingType, const std::string& name
 {
   _d->tileovType = buildingType;
   _d->group = building::unknownGroup;
-  _name = name;
+  _d->name = name;
   _prettyName = _( ("##" + name + "##").c_str() );  // i18n translation
   _d->desirability.base = 0;
   _d->desirability.range = 0;
@@ -191,7 +193,12 @@ MetaData::~MetaData()
 
 std::string MetaData::getName() const
 {
-  return _name;
+  return _d->name;
+}
+
+std::string MetaData::getSound() const
+{
+  return _d->sound;
 }
 
 std::string MetaData::getPrettyName() const
@@ -223,8 +230,9 @@ Variant MetaData::getOption(const std::string &name, Variant defaultVal ) const
 MetaData &MetaData::operator=(const MetaData &a)
 {
   _d->tileovType = a._d->tileovType;
-  _name = a._name;
+  _d->name = a._d->name;
   _prettyName = a._prettyName;
+  _d->sound = a._d->sound;
   _basePicture = a._basePicture;
   _d->group = a._d->group;
   _d->desirability = a._d->desirability;
@@ -367,6 +375,13 @@ void MetaDataHolder::initialize( const vfs::Path& filename )
     if( !basePic.empty() )
     {
       bData._basePicture = Picture::load( basePic.get( 0 ).toString(), basePic.get( 1 ).toInt() );
+    }
+
+    VariantList soundVl = options[ "sound" ].toList();
+    if( !soundVl.empty() )
+    {
+      bData._d->sound = StringHelper::format( 0xff, "%s_%05d.wav",
+                                              soundVl.get( 0 ).toString().c_str(), soundVl.get( 1 ).toInt() );
     }
 
     addData( bData );

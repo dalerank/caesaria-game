@@ -56,6 +56,7 @@
 #include "patrolpointeventhandler.hpp"
 #include "city.hpp"
 #include "gfx/tilemap_camera.hpp"
+#include "ambientsound.hpp"
 
 using namespace gui;
 
@@ -145,6 +146,8 @@ void ScreenGame::initialize()
   _d->renderer.getCamera().setViewport( engine.getScreenSize() );
 
   new SenatePopupInfo( gui.getRootWidget(), _d->renderer );
+
+  _d->game->getCity()->addService( AmbientSound::create( _d->game->getCity(), _d->renderer.getCamera() ) );
 
   //connect elements
   CONNECT( _d->topMenu, onSave(), _d.data(), Impl::showSaveDialog );
@@ -379,7 +382,7 @@ void ScreenGame::Impl::makeScreenShot()
 }
 
 int ScreenGame::getResult() const {  return _d->result; }
-bool ScreenGame::installEventHandler(EventHandlerPtr handler) {  _d->eventHandlers.push_back( handler );}
+bool ScreenGame::installEventHandler(EventHandlerPtr handler) {  _d->eventHandlers.push_back( handler ); return true; }
 void ScreenGame::Impl::resolveCreateConstruction( int type ){  renderer.setMode( BuildMode::create( TileOverlay::Type( type ) ) );}
 void ScreenGame::Impl::resolveRemoveTool(){  renderer.setMode( DestroyMode::create() );}
 void ScreenGame::Impl::resolveSelectLayer( int type ){  renderer.setMode( LayerMode::create( type ) );}

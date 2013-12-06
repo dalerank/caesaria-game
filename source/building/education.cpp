@@ -64,3 +64,10 @@ int Academy::getVisitorsNumber() const
 {
   return 100;
 }
+
+std::string Academy::getSound() const
+{
+  return (isActive() && getWorkersCount() > 0
+          ? ServiceBuilding::getSound()
+          : "");
+}

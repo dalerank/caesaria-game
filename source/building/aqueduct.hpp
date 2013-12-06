@@ -31,6 +31,7 @@ public:
   virtual void destroy();
   virtual bool isWalkable() const; 
   virtual bool isRoad() const;
+  virtual std::string getSound() const;
 
   void updatePicture(PlayerCityPtr city);
   void addWater( const WaterSource& source );
@@ -38,7 +39,7 @@ public:
   virtual const Picture& getPicture( PlayerCityPtr city,
                                      TilePos pos,
                                      const TilesArray& tmp ) const;
-
+protected:
   virtual void _waterStateChanged();
 };
 

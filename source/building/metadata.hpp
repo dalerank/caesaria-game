@@ -40,6 +40,7 @@ public:
   ~MetaData();
 
   std::string getName() const;
+  std::string getSound() const;
   std::string getPrettyName() const;
   TileOverlay::Type getType() const;
   TileOverlay::Group getGroup() const;
@@ -51,7 +52,6 @@ public:
   MetaData& operator=( const MetaData& a );
 
 private:
-  std::string _name;  // debug name  (english, ex:"iron")
   std::string _prettyName;  // pretty-print name  (i18n, ex:"Iron mine")
   Picture _basePicture;
 

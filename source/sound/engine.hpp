@@ -12,40 +12,42 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#ifndef _CAESARIA_BUILDING_EDUCATION_H_INCLUDE_
-#define _CAESARIA_BUILDING_EDUCATION_H_INCLUDE_
 
-#include "building/service.hpp"
+#ifndef _CAESARIA_SOUND_ENGINE_H_INCLUDE_
+#define _CAESARIA_SOUND_ENGINE_H_INCLUDE_
 
-class School : public ServiceBuilding
+#include <string>
+
+#include "vfs/path.hpp"
+
+namespace audio
+{
+
+class Engine
 {
 public:
-  School();
+   static Engine& instance();
 
-  int getVisitorsNumber() const;
+   ~Engine();
 
-  virtual void deliverService();
+   void init();
+   void exit();
 
-  virtual unsigned int getWalkerDistance() const;
+   bool load( vfs::Path filename );
+   void play( vfs::Path filename, int volume );
+
+   void stop(vfs::Path filename);
+private:
+   Engine();
+
+   class Impl;
+   ScopedPtr< Impl > _d;
 };
 
-class Library : public ServiceBuilding
-{
-public:
-   Library();
+} //end namespace audio
 
-   int getVisitorsNumber() const;
-};
+#endif //_CAESARIA_SOUND_ENGINE_H_INCLUDE_
 
-class Academy : public ServiceBuilding
-{
-public:
-   Academy();
-
-   int getVisitorsNumber() const;
-   virtual std::string getSound() const;
-};
-
-
-#endif

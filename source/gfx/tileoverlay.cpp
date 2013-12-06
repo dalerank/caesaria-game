@@ -50,16 +50,6 @@ TileOverlay::TileOverlay(const Type type, const Size& size)
   setType( type );
 }
 
-TileOverlay::~TileOverlay()
-{
-  // what we shall to do here?
-}
-
-
-TileOverlay::Type TileOverlay::getType() const
-{
-   return _d->overlayType;
-}
 
 void TileOverlay::setType(const Type type)
 {
@@ -93,21 +83,6 @@ void TileOverlay::setPicture(Picture picture)
   }
 }
 
-void TileOverlay::setPicture(const char* resource, const int index)
-{
-  setPicture( Picture::load( resource, index ) );
-}
-
-const Picture& TileOverlay::getPicture() const
-{
-  return _d->picture;
-}
-
-void TileOverlay::setAnimation(const Animation& animation)
-{
-  _d->animation = animation;
-}
-
 void TileOverlay::build( PlayerCityPtr city, const TilePos& pos )
 {
   Tilemap &tilemap = city->getTilemap();
@@ -134,15 +109,6 @@ void TileOverlay::build( PlayerCityPtr city, const TilePos& pos )
   }
 }
 
-void TileOverlay::deleteLater()
-{
-  _d->isDeleted  = true;
-}
-
-void TileOverlay::destroy()
-{
-}
-
 Tile& TileOverlay::getTile() const
 {
   if( !_d->masterTile )
@@ -154,16 +120,6 @@ Tile& TileOverlay::getTile() const
   return *_d->masterTile;
 }
 
-Size TileOverlay::getSize() const
-{
-  return _d->size;
-}
-
-bool TileOverlay::isDeleted() const
-{
-  return _d->isDeleted;
-}
-
 const PicturesArray& TileOverlay::getPictures( Renderer::Pass pass ) const
 {
   switch( pass )
@@ -173,16 +129,6 @@ const PicturesArray& TileOverlay::getPictures( Renderer::Pass pass ) const
   }
 
   return invalidPictures;
-}
-
-Renderer::PassQueue TileOverlay::getPassQueue() const
-{
-  return defaultPassQueue;
-}
-
-std::string TileOverlay::getName()
-{
-  return _d->name;
 }
 
 void TileOverlay::save( VariantMap& stream ) const
@@ -215,15 +161,8 @@ void TileOverlay::load( const VariantMap& stream )
   _d->isDeleted = stream.get( "isDeleted", false ).toBool();  
 }
 
-bool TileOverlay::isWalkable() const
-{
-  return false;
-}
-
-bool TileOverlay::isFlat() const
-{
-  return false;
-}
+bool TileOverlay::isWalkable() const{  return false;}
+bool TileOverlay::isFlat() const{  return false;}
 
 TilePos TileOverlay::getTilePos() const
 {
@@ -235,47 +174,29 @@ TilePos TileOverlay::getTilePos() const
   return _d->masterTile->getIJ();
 }
 
-void TileOverlay::setName( const std::string& name )
+std::string TileOverlay::getSound() const
 {
-  _d->name = name;
+  const MetaData& md = MetaDataHolder::instance().getData( getType() );
+  return md.getSound();
 }
 
-void TileOverlay::setSize( const Size& size )
-{
-  _d->size = size;
-}
-
-Point TileOverlay::getOffset( const Point& subpos ) const
-{
-  return Point( 0, 0 );
-}
-
-Animation& TileOverlay::_animationRef()
-{
-  return _d->animation;
-}
-
-Tile* TileOverlay::_getMasterTile()
-{
-  return _d->masterTile;
-}
-
-PlayerCityPtr TileOverlay::_getCity() const
-{
-  return _d->city;
-}
-
-PicturesArray& TileOverlay::_fgPicturesRef()
-{
-  return _d->fgPictures;
-}
-
-Picture&TileOverlay::_getPicture()
-{
-  return _d->picture;
-}
-
-TileOverlay::Group TileOverlay::getClass() const
-{
-  return _d->overlayClass;
-}
+void TileOverlay::setName( const std::string& name ){  _d->name = name;}
+void TileOverlay::setSize( const Size& size ){  _d->size = size;}
+Point TileOverlay::getOffset( const Point& subpos ) const{  return Point( 0, 0 );}
+Animation& TileOverlay::_animationRef(){  return _d->animation;}
+Tile* TileOverlay::_getMasterTile(){  return _d->masterTile;}
+PlayerCityPtr TileOverlay::_getCity() const{ return _d->city;}
+PicturesArray& TileOverlay::_fgPicturesRef(){  return _d->fgPictures;}
+Picture&TileOverlay::_getPicture(){  return _d->picture;}
+TileOverlay::Group TileOverlay::getClass() const{  return _d->overlayClass;}
+void TileOverlay::setPicture(const char* resource, const int index){  setPicture( Picture::load( resource, index ) );}
+const Picture& TileOverlay::getPicture() const{  return _d->picture;}
+void TileOverlay::setAnimation(const Animation& animation){  _d->animation = animation;}
+void TileOverlay::deleteLater(){  _d->isDeleted  = true;}
+void TileOverlay::destroy(){}
+Size TileOverlay::getSize() const{  return _d->size;}
+bool TileOverlay::isDeleted() const{  return _d->isDeleted;}
+Renderer::PassQueue TileOverlay::getPassQueue() const{  return defaultPassQueue;}
+std::string TileOverlay::getName(){  return _d->name;}
+TileOverlay::~TileOverlay(){}  // what we shall to do here?
+TileOverlay::Type TileOverlay::getType() const{   return _d->overlayType;}
