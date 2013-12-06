@@ -32,11 +32,12 @@ class ScreenMenu : public Screen
 public:
     enum 
     { 
-        startNewGame=0,
-        loadMap,
-        loadSavedGame,
-        closeApplication,
-        unlknowState=0xff
+      startNewGame=0,
+      loadMap,
+      loadSavedGame,
+      closeApplication,
+      reloadScreen,
+      unlknowState=0xff
     } Result;
     
     ScreenMenu( Game& game, GfxEngine& engine );

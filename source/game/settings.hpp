@@ -32,7 +32,7 @@ public:
   static const char* constructionModel;
   static const char* workDir;
   static const char* settingsPath;
-  static const char* localeName;
+  static const char* language;
   static const char* resolution;
   static const char* fullscreen;
   static const char* savedir;

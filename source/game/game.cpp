@@ -47,8 +47,8 @@
 #include "events/dispatcher.hpp"
 #include "core/logger.hpp"
 #include "vfs/directory.hpp"
+#include "core/locale.hpp"
 
-#include <libintl.h>
 #include <list>
 
 #if defined(CAESARIA_PLATFORM_WIN)
@@ -72,7 +72,7 @@ public:
   float time, saveTime;
   float timeMultiplier;
   
-  void initLocale(const std::string & localePath);
+  void initLocale(const std::string& localePath);
   void initVideo();
   void initPictures(const vfs::Path& resourcePath);
   void initGuiEnvironment();
@@ -83,27 +83,14 @@ public:
 void Game::Impl::initLocale(const std::string & localePath)
 {
   // init the internationalization library (gettext)
-#ifdef CAESARIA_PLATFORM_WIN
-  ByteArray localeData;
-  localeData = StringHelper::format( 0xff, "LC_ALL=%s", GameSettings::get( GameSettings::localeName ).toString().c_str() );
-
-  putenv( localeData.data() );
-#else
-  setlocale(LC_ALL, "");
-#endif
-  bindtextdomain( "caesar", localePath.data() );
-  bind_textdomain_codeset( "caesar", "UTF-8" );
-  textdomain( "caesar" );
+  Locale::setLanguage(   GameSettings::get( GameSettings::language ).toString() );
+  Locale::loadTranslator( localePath );
 }
 
 void Game::Impl::initVideo()
 {
   Logger::warning( "init graphic engine" );
   engine = new GfxSdlEngine();
-   
-  /* Typical resolutions:
-   * 640 x 480; 800 x 600; 1024 x 768; 1400 x 1050; 1600 x 1200
-   */
 
   engine->setScreenSize( GameSettings::get( GameSettings::resolution ).toSize() );
   engine->setFlag( GfxEngine::fullscreen, GameSettings::get( GameSettings::fullscreen ).toBool() ? 1 : 0 );
@@ -195,6 +182,10 @@ void Game::setScreenMenu()
 
       _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
     }
+    break;
+
+    case ScreenMenu::reloadScreen:
+      _d->nextScreen = SCREEN_MENU;
     break;
    
     case ScreenMenu::loadSavedGame:

@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
 
     if( !strcmp( argv[i], "-Lc" ) )
     {
-      GameSettings::set( GameSettings::localeName, Variant( std::string( argv[i+1] ) ) );
+      GameSettings::set( GameSettings::language, Variant( std::string( argv[i+1] ) ) );
       i++;
     }
   }

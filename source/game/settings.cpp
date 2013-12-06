@@ -27,7 +27,7 @@ const char* GameSettings::ctNamesModel = "ctNamesModel";
 const char* GameSettings::settingsPath = "settingsPath";
 const char* GameSettings::resolution = "resolution";
 const char* GameSettings::fullscreen = "fullscreen";
-const char* GameSettings::localeName = "en_US";
+const char* GameSettings::language = "language";
 const char* GameSettings::emigrantSalaryKoeff = "emigrantSalaryKoeff";
 const char* GameSettings::savedir = "savedir";
 

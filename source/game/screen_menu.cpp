@@ -32,10 +32,16 @@
 #include "gui/playername_window.hpp"
 #include "core/logger.hpp"
 #include "vfs/directory.hpp"
+#include "gui/label.hpp"
+#include "gui/listbox.hpp"
+#include "core/locale.hpp"
 
 class ScreenMenu::Impl
 {
 public:
+  static const char* englishLanguage;
+  static const char* russianLanguage;
+
   Picture bgPicture;
   gui::StartMenu* menu;         // menu to display
   int result;
@@ -48,7 +54,7 @@ public:
 
   void resolveLoadGame( std::string fileName )
   {
-    result= ScreenMenu::loadSavedGame;
+    result = ScreenMenu::loadSavedGame;
     fileMap = fileName;
     isStopped=true; 
   }
@@ -71,21 +77,67 @@ public:
   void resolveShowLoadMapWnd();
   void resolveShowLoadGameWnd();
   void resolveChangePlayerName();
+  void resolveShowChangeLanguageWindow();
+  void resolveChangeLanguage(const gui::ListBoxItem&);
+  void reload()
+  {
+    result = ScreenMenu::reloadScreen;
+    isStopped = true;
+  }
 };
+
+const char* ScreenMenu::Impl::englishLanguage = "English";
+const char* ScreenMenu::Impl::russianLanguage = "Russian";
 
 void ScreenMenu::Impl::resolveShowLoadGameWnd()
 {
   gui::Widget* parent = game->getGui()->getRootWidget();
   Size rootSize = parent->getSize();
-  RectF rect( 0.25f * rootSize.getWidth(), 0.25f * rootSize.getHeight(), 
-              0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() );
+  Size windowSize( 512, 384 );
+  Rect rect( Point( (rootSize - windowSize).getWidth() / 2, ( rootSize - windowSize ).getHeight() / 2),
+             windowSize );
 
   vfs::Path savesPath = GameSettings::get( GameSettings::savedir ).toString();
 
-  gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent, rect.toRect(), savesPath, ".oc3save",-1 );
+  gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent, rect, savesPath, ".oc3save",-1 );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
   wnd->setTitle( _("##Load save##") );
+}
+
+void ScreenMenu::Impl::resolveShowChangeLanguageWindow()
+{
+  gui::Widget* parent = game->getGui()->getRootWidget();
+  Size rootSize = parent->getSize();
+  Size windowSize( 512, 384 );
+  Rect rect( Point( (rootSize - windowSize).getWidth() / 2, ( rootSize - windowSize ).getHeight() / 2),
+             windowSize );
+
+  gui::Label* frame = new gui::Label( parent, rect, "", false, gui::Label::bgWhiteFrame );
+  gui::ListBox* lbx = new gui::ListBox( frame, Rect( 0, 0, 1, 1 ), -1, true, true );
+  gui::PushButton* btn = new gui::PushButton( frame, Rect( 0, 0, 1, 1), "Apply" );
+
+  lbx->setGeometry( RectF( 0.05, 0.05, 0.95, 0.85 ) );
+  btn->setGeometry( RectF( 0.1, 0.88, 0.9, 0.94 ) );
+  lbx->addItem( Impl::englishLanguage );
+  lbx->addItem( Impl::russianLanguage );
+
+  CONNECT( lbx, onItemSelected(), this, Impl::resolveChangeLanguage );
+  CONNECT( btn, onClicked(), this, Impl::reload );
+}
+
+void ScreenMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
+{
+  if( item.getText() == Impl::englishLanguage )
+  {
+    GameSettings::set( GameSettings::language, Variant( std::string( "en" ) ) );
+  }
+  else if( item.getText() == Impl::russianLanguage )
+  {
+    GameSettings::set( GameSettings::language, Variant( std::string( "ru" ) ) );
+  }
+
+  Locale::setLanguage( GameSettings::get( GameSettings::language ).toString() );
 }
 
 void ScreenMenu::Impl::resolveChangePlayerName()
@@ -105,9 +157,11 @@ void ScreenMenu::Impl::resolvePlayMission()
 {
   gui::Widget* parent = game->getGui()->getRootWidget();
   Size rootSize = parent->getSize();
-  RectF rect( 0.25f * rootSize.getWidth(), 0.25f * rootSize.getHeight(), 
-              0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() );
-  gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent, rect.toRect(),
+  Size windowSize( 512, 384 );
+  Rect rect( Point( (rootSize - windowSize).getWidth() / 2, ( rootSize - windowSize ).getHeight() / 2),
+             windowSize );
+
+  gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent, rect,
                                                     GameSettings::rcpath( "/missions/" ), ".oc3mission", -1 );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
@@ -118,9 +172,12 @@ void ScreenMenu::Impl::resolveShowLoadMapWnd()
 {
   gui::Widget* parent = game->getGui()->getRootWidget();
   Size rootSize = parent->getSize();
+  Size windowSize( 512, 384 );
+  Rect rect( Point( (rootSize - windowSize).getWidth() / 2, ( rootSize - windowSize ).getHeight() / 2),
+             windowSize );
+
   gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent,
-                                                    RectF( 0.25f * rootSize.getWidth(), 0.25f * rootSize.getHeight(),
-                                                           0.75f * rootSize.getWidth(), 0.75f * rootSize.getHeight() ).toRect(),
+                                                    rect,
                                                     GameSettings::rcpath( "/maps/" ), ".map",
                                                     -1 );
 
@@ -175,6 +232,9 @@ void ScreenMenu::initialize()
 
   btn = _d->menu->addButton( _("##mainmenu_loadmap##"), -1 );
   CONNECT( btn, onClicked(), _d.data(), Impl::resolveShowLoadMapWnd );
+
+  btn = _d->menu->addButton( _("Language"), -1 );
+  CONNECT( btn, onClicked(), _d.data(), Impl::resolveShowChangeLanguageWindow );
 
   btn = _d->menu->addButton( _("##mainmenu_quit##"), -1 );
   CONNECT( btn, onClicked(), _d.data(), Impl::resolveQuitGame );
