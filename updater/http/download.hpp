@@ -147,7 +147,7 @@ protected:
 	void Perform();
 
 	// Check method
-	bool CheckIntegrity();
+	bool checkIntegrity();
 };
 typedef SmartPtr<Download> DownloadPtr;
 

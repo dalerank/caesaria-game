@@ -176,7 +176,7 @@ void Download::Perform()
 		if (_request->GetStatus() == HttpRequest::OK)
 		{
 			// Check the downloaded file
-			bool valid = CheckIntegrity();
+			bool valid = checkIntegrity();
 
 			if (!valid)
 			{
@@ -243,11 +243,11 @@ std::string Download::GetFilename() const
 	return _destFilename.getBasename().toString();
 }
 
-bool Download::CheckIntegrity()
+bool Download::checkIntegrity()
 {
 	if (_filesizeCheckEnabled)
 	{
-		Logger::warning( "Checking filesize of downloaded file, expecting %d", _requiredFilesize);
+		//Logger::warning( "Checking filesize of downloaded file, expecting %d", _requiredFilesize);
 
 		if( vfs::NFile::getSize(_tempFilename) != _requiredFilesize)
 		{
@@ -256,11 +256,15 @@ bool Download::CheckIntegrity()
 											 vfs::NFile::getSize(_tempFilename) );
 			return false; // failed the file size check
 		}
+		else
+		{
+			Logger::update( " SIZEOK" );
+		}
 	}
 
 	if (_crcCheckEnabled)
 	{
-		Logger::warning( "Checking CRC of downloaded file, expecting %x", _requiredCrc );
+		//Logger::warning( "Checking CRC of downloaded file, expecting %x", _requiredCrc );
 
 		unsigned int crc = CRC::GetCrcForFile(_tempFilename);
 
@@ -268,6 +272,10 @@ bool Download::CheckIntegrity()
 		{
 			Logger::warning( "Downloaded file has the wrong crc, expected %x but found %x", _requiredCrc, crc );
 			return false; // failed the crc check
+		}
+		else
+		{
+			Logger::update( " CRCOK" );
 		}
 	}
 

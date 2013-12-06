@@ -196,61 +196,6 @@ public:
 			}
 		
 			Logger::warning( "Found file: %s", relativePath.toString().c_str() );
-
-			/*if( entry.isExtension( ".zip" ) )
-			{
-				ReleaseFile archive(relativePath);
-
-				archive.isArchive = true;
-				archive.crc = CRC::GetCrcForFile(entry);
-
-				archive.filesize = static_cast<std::size_t>( vfs::NFile::getSize( entry ) );
-
-
-				// Add all members of this archive to the ReleaseFile
-				class ZipFileVisitor : 
-					public ZipFileRead::Visitor
-				{
-				private:
-					ReleaseFile& _archive;
-
-				public:
-					ZipFileVisitor(ReleaseFile& archive) :
-						_archive(archive)
-					{}
-
-					void VisitFile(const ZipFileRead::MemberInfo& info)
-					{
-
-						ReleaseFile file(info.filename);
-
-						file.crc = info.crc;
-						file.filesize = info.uncompressedSize;
-
-						Logger::warning( "Adding archive member %s ith CRC %x", info.filename.c_str(), file.crc );
-
-						_archive.members.insert(file);
-					}
-
-				} _visitor(archive);
-
-				Logger::warning( " This is an archive, checksum is: %x", archive.crc );
-
-				// Open this archive
-				ZipFileReadPtr zipFile = Zip::OpenFileRead( entry );
-
-				if (zipFile == NULL)
-				{
-					Logger::warning( "  Failed to open archive:  %s", entry.toString().c_str() );
-					continue;
-				}
-
-				zipFile->ForeachFile(_visitor);
-
-				Logger::warning( "  Archive has %d members", archive.members.size() );
-				
-				set[relativePath.toString()] = archive;
-			}*/
 		}
 
 		return set;

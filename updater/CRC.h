@@ -70,14 +70,7 @@ public:
 	{
 		try
 		{
-			/*if( file.isExtension( ".zip" ) )
-			{
-				return GetCrcForZip(file);
-			}
-			else*/
-			{
-				return GetCrcForNonZipFile(file);
-			}
+			return GetCrcForNonZipFile(file);
 		}
 		catch (std::runtime_error& ex)
 		{
@@ -117,7 +110,7 @@ public:
 			break;
 		}
 
-		Logger::warning( "CRC calculated for file %s=%x", file.toString().c_str(), crc );
+		//Logger::warning( "CRC calculated for file %s=%x", file.toString().c_str(), crc );
 
 		fclose(fh);
 
