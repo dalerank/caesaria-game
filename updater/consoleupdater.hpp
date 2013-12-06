@@ -52,6 +52,8 @@ private:
 	// Most recent progress info
 	ProgressInfo _info;
 
+	bool _progressDone;
+
 public:
 	ConsoleUpdater(int argc, char* argv[]);
 

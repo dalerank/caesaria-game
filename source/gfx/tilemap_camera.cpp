@@ -132,7 +132,7 @@ int TilemapCamera::getCenterZ() const  {   return _d->centerMapXZ.getY();   }
 TilePos TilemapCamera::getCenter() const  {   return _d->center;   }
 void TilemapCamera::setScrollSpeed(int speed){  _d->scrollSpeed = speed; }
 int TilemapCamera::getScrollSpeed() const{ return _d->scrollSpeed; }
-Tile* TilemapCamera::at(Point pos, bool overborder){  return _d->tilemap->at( pos - _d->offset, overborder );}
+Tile* TilemapCamera::at(Point pos, bool overborder) const {  return _d->tilemap->at( pos - _d->offset, overborder );}
 Signal1<Point>& TilemapCamera::onPositionChanged(){  return _d->onPositionChangedSignal;}
 void TilemapCamera::moveRight(const int amount){  setCenter( Point( getCenterX() + amount, getCenterZ() ) );}
 void TilemapCamera::moveLeft(const int amount){  setCenter( Point( getCenterX() - amount, getCenterZ() ) );}
@@ -143,6 +143,11 @@ void TilemapCamera::startFrame()
 {
   foreach( Tile* tile, _d->tiles )
     tile->resetWasDrawn();
+}
+
+Tile* TilemapCamera::getCenterTile() const
+{
+  return at( Point( _d->screenSize.getWidth() / 2, _d->screenSize.getHeight() / 2 ), true );
 }
 
 const TilesArray& TilemapCamera::getTiles() const

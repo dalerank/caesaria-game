@@ -89,7 +89,7 @@ void Download::Start()
 
 	// /path/to/fms/TMP_FILE_PREFIXfilename.pk4 (TMP_FILE_PREFIX is usually an underscore)
 	_tempFilename = folder.getFilePath( TEMP_FILE_PREFIX + filename.toString() );
-	Logger::warning(  "Downloading to temporary file " + _tempFilename.toString() );
+	//Logger::warning(  "Downloading to temporary file " + _tempFilename.toString() );
 
 	_status = IN_PROGRESS;
 	ExceptionSafeThreadPtr p( new ExceptionSafeThread( Delegate0<>( this, &Download::Perform ) ) );
@@ -176,7 +176,7 @@ void Download::Perform()
 		if (_request->GetStatus() == HttpRequest::OK)
 		{
 			// Check the downloaded file
-			bool valid = CheckIntegrity();
+			bool valid = checkIntegrity();
 
 			if (!valid)
 			{
@@ -185,27 +185,22 @@ void Download::Perform()
 			}
 			else
 			{
-				Logger::warning( "Downloaded file passed the integrity checks.");
+				Logger::update( " CRC");
 			}
 
 			// Remove the destination filename before moving the temporary file over
-			Logger::warning( "Try remove " + _destFilename.toString()  );
-			if( !vfs::NFile::remove( _destFilename ) )
-			{
-				Logger::warning( "Failed remove file: " + _destFilename.toString()  );
-			}
+			vfs::NFile::remove( _destFilename );
 
 			// Move temporary file to the real one
 			if( vfs::NFile::rename( _tempFilename, _destFilename ) )
 			{
-				Logger::warning( "Succes renamed %s to %s", _tempFilename.toString().c_str(),
-																										_destFilename.toString().c_str() );
+				Logger::update( " REPLACE" );
 				_status = SUCCESS;
 			}
 			else
 			{
 				// Move failed
-				Logger::warning( "Failed renamed %s to %s ", _tempFilename.toString().c_str(),
+				Logger::warning( "\nFailed renamed %s to %s ", _tempFilename.toString().c_str(),
 																										 _destFilename.toString().c_str() );
 				_status = FAILED;
 			}
@@ -248,11 +243,11 @@ std::string Download::GetFilename() const
 	return _destFilename.getBasename().toString();
 }
 
-bool Download::CheckIntegrity()
+bool Download::checkIntegrity()
 {
 	if (_filesizeCheckEnabled)
 	{
-		Logger::warning( "Checking filesize of downloaded file, expecting %d", _requiredFilesize);
+		//Logger::warning( "Checking filesize of downloaded file, expecting %d", _requiredFilesize);
 
 		if( vfs::NFile::getSize(_tempFilename) != _requiredFilesize)
 		{
@@ -261,11 +256,15 @@ bool Download::CheckIntegrity()
 											 vfs::NFile::getSize(_tempFilename) );
 			return false; // failed the file size check
 		}
+		else
+		{
+			Logger::update( " SIZEOK" );
+		}
 	}
 
 	if (_crcCheckEnabled)
 	{
-		Logger::warning( "Checking CRC of downloaded file, expecting %x", _requiredCrc );
+		//Logger::warning( "Checking CRC of downloaded file, expecting %x", _requiredCrc );
 
 		unsigned int crc = CRC::GetCrcForFile(_tempFilename);
 
@@ -273,6 +272,10 @@ bool Download::CheckIntegrity()
 		{
 			Logger::warning( "Downloaded file has the wrong crc, expected %x but found %x", _requiredCrc, crc );
 			return false; // failed the crc check
+		}
+		else
+		{
+			Logger::update( " CRCOK" );
 		}
 	}
 

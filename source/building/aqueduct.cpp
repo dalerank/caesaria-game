@@ -373,3 +373,8 @@ bool Aqueduct::isRoad() const
 {
   return _isRoad();
 }
+
+std::string Aqueduct::getSound() const
+{
+  return ( _getWater() == 0 ? "" : WaterSource::getSound() );
+}

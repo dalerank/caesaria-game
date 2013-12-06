@@ -153,7 +153,7 @@ void ConsoleUpdater::onStartStep(UpdateStep step)
 
 	case DownloadStableVersion:
 		Logger::warning( "----------------------------------------------------------------------------");
-		Logger::warning( " Downloading stable version info...");
+		Logger::update( " Downloading stable version info...", true);
 		break;
 
 	case DownloadVersionInfo:
@@ -376,11 +376,16 @@ void ConsoleUpdater::onProgressChange(const ProgressInfo& info)
 	switch (info.type)
 	{
 	case ProgressInfo::FileDownload:
+		if( info.mirrorDisplayName.empty() )
+			break;
+
 		// Download progress
-		if (!_info.file.toString().empty() && info.file.toString() != _info.file.toString() )
+		if (!_info.file.toString().empty()
+				&& info.file.toString() != _info.file.toString() )
 		{
 			// New file, finish the current download
 			_info.progressFraction = 1.0f;
+			_progressDone = false;
 			PrintProgress();
 
 			// Add a line break when a new file starts
@@ -400,9 +405,10 @@ void ConsoleUpdater::onProgressChange(const ProgressInfo& info)
 		PrintProgress();
 
 		// Add a new line if we're done here
-		if (info.progressFraction >= 1)
+		if( info.progressFraction >= 1 && !_progressDone)
 		{
-			Logger::warning( "");
+			_progressDone = true;
+			Logger::warning( "" );
 		}
 		break;
 

@@ -27,6 +27,7 @@ public:
 
   virtual void deliverService();
   virtual void timeStep(const unsigned long time);
+  virtual std::string getSound() const;
 };
 
 #endif //__CAESARIA_AMPHITHEATER_H_INCLUDED__

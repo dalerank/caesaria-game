@@ -167,8 +167,6 @@ std::size_t Updater::GetNumMirrors()
 
 void Updater::GetStableVersionFromServer()
 {
-	Logger::warning( " Downloading CRC information..." );
-
 	PerformSingleMirroredDownload(STABLE_VERSION_FILE);
 
 	// Parse this file
@@ -177,7 +175,7 @@ void Updater::GetStableVersionFromServer()
 
 	if (releaseIni == NULL)
 	{
-		throw FailureException("Could not download CRC info file from server.");
+		throw FailureException("Could not download current version info file from server.");
 	}
 
 	// Build the release file set
@@ -256,13 +254,13 @@ void Updater::DetermineLocalVersion()
 
 			if( StringHelper::isEquale( candidate.getBasename().toString(), _executable.getBasename().toString(), StringHelper::equaleIgnoreCase ) )
 			{
-				Logger::warning( "Ignoring updater executable: %s.", candidate.toString().c_str() );
+				Logger::warning( "IGNORE" );
 				continue;
 			}
 
 			if( !candidate.isExist() )
 			{
-				Logger::warning( "File %s is missing.", candidate.toString().c_str() );
+				Logger::warning( "MISSING" );
 				mismatch = true;
 				continue;
 			}
@@ -277,10 +275,7 @@ void Updater::DetermineLocalVersion()
 
 			if (candidateFilesize != f->second.filesize)
 			{
-				Logger::warning( "File %s has mismatching size, expected %d but found %d.",
-												 candidate.toString().c_str(),
-												 f->second.filesize,
-												 candidateFilesize );
+				Logger::warning( "WRONG SIZE[need=%d  have=%d]", f->second.filesize, candidateFilesize );
 				mismatch = true;
 				continue;
 			}
@@ -290,16 +285,13 @@ void Updater::DetermineLocalVersion()
 
 			if (crc != f->second.crc)
 			{
-				Logger::warning( "File %s has mismatching CRC, expected %x but found %x.",
-													candidate.toString().c_str(),
-													f->second.crc,
-													crc );
+				Logger::warning( "WRONG CRC[need=%x have=%x]", f->second.crc, crc );
 				mismatch = true;
 				continue;
 			}
 
 			// The file is matching - record this version
-			Logger::warning( "File %s is matching version %s.", candidate.toString().c_str(), v->first.c_str() );
+			Logger::warning( f->second.isWrongOS() ? "SKIP [WRONG OS]" : "NOT NEED UPDATE" );
 
 			_fileVersions[candidate.toString()] = v->first;
 		}
@@ -342,35 +334,9 @@ void Updater::DetermineLocalVersion()
 			const std::string& version = i->first;
 
 			Logger::warning( "Files matching version %s: %d (size: %s)",
-											version.c_str(),
-											i->second.numFiles,
-											Util::GetHumanReadableBytes(i->second.filesize).c_str() );
-
-			// Check if this differential update is wise, from an economic point of view
-			/*UpdatePackageInfo::const_iterator package = _updatePackages.find(version);
-
-			if( package != _updatePackages.end())
-			{
-				Logger::warning( "Some files match version " + version + ", a differential update is available for that version.");
-
-				UpdatePackageInfo::const_iterator package = _updatePackages.find(version);
-
-				assert(package != _updatePackages.end());
-
-				if (package->second.filesize < i->second.filesize)
-				{
-					Logger::warning( "The differential package size is smaller than the total size of files needing it, this is good.");
-					_applicableDifferentialUpdates.insert(version);
-				}
-				else
-				{
-					Logger::warning( "The differential package size is larger than the total size of files needing it, will not download that.");
-				}
-			}
-			else*/
-			{
-				Logger::warning( "Some files match version %s, but no differential update is available for that version.", version.c_str() );
-			}
+											 version.c_str(),
+											 i->second.numFiles,
+											 Util::GetHumanReadableBytes(i->second.filesize).c_str() );
 		}
 	}
 }
@@ -505,8 +471,8 @@ void Updater::CheckLocalFiles()
 			_fileProgressCallback->OnFileOperationProgress(info);
 		}
 
-		Logger::warning( "Checking for file: " + i->second.file.toString() + "...");
-		if (!CheckLocalFile(targetDir, i->second))
+		//Logger::warning( "Checking for file: " + i->second.file.toString() + "...");
+		if( !CheckLocalFile(targetDir, i->second) )
 		{
 			// A member is missing or out of date, mark the archive for download
 			_downloadQueue.insert(*i);
@@ -533,14 +499,14 @@ bool Updater::CheckLocalFile(vfs::Path installPath, const ReleaseFile& releaseFi
 
 	vfs::Path localFile = vfs::Directory( installPath ).getFilePath( releaseFile.file );
 
-	Logger::warning( " Checking for file " + releaseFile.file.toString() + ": ");
+	//Logger::warning( " Checking for file " + releaseFile.file.toString() + ": ");
 
 	if( localFile.isExist() )
 	{
 		// File exists, check ignore list
 		if (_ignoreList.find( StringHelper::localeLower( releaseFile.file.toString()) ) != _ignoreList.end())
 		{
-			Logger::warning( "OK, file will not be updated. ");
+			Logger::warning( "IGNORED");
 			return true; // ignore this file
 		}
 
@@ -558,7 +524,7 @@ bool Updater::CheckLocalFile(vfs::Path installPath, const ReleaseFile& releaseFi
 
 		if (existingCrc == releaseFile.crc)
 		{
-			Logger::warning( "OK");
+			Logger::warning( "EQUALE");
 			return true;
 		}
 		else

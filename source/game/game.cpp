@@ -22,7 +22,7 @@
 #include "city.hpp"
 #include "gfx/picture.hpp"
 #include "gfx/sdl_engine.hpp"
-#include "sound/oc3_sound_engine.hpp"
+#include "sound/engine.hpp"
 #include "astarpathfinding.hpp"
 #include "building/metadata.hpp"
 #include "gfx/picture_bank.hpp"
@@ -113,8 +113,7 @@ void Game::Impl::initVideo()
 void Game::initSound()
 {
   Logger::warning( "init sound engine" );
-  new SoundEngine();
-  SoundEngine::instance().init();
+  audio::Engine::instance().init();
 }
 
 void Game::mountArchives()
@@ -127,6 +126,7 @@ void Game::mountArchives()
   fs.mountArchive( GameSettings::rcpath( "/pics/pics.zip" ) );
   fs.mountArchive( GameSettings::rcpath( "/pics/pics_oc3.zip" ) );
   fs.mountArchive( GameSettings::rcpath( "/pics/pics_celts.zip" ) );
+  fs.mountArchive( GameSettings::rcpath( "/audio/wavs_buildings.zip") );
 }
 
 void Game::Impl::initGuiEnvironment()

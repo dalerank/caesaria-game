@@ -56,7 +56,8 @@ public:
   void setScrollSpeed( int speed );
   int getScrollSpeed() const;
 
-  Tile* at(Point pos, bool overborder );
+  Tile* at(Point pos, bool overborder ) const;
+  Tile* getCenterTile() const;
 
   void startFrame();
 

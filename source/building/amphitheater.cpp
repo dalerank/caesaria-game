@@ -35,7 +35,14 @@ Amphitheater::Amphitheater() : EntertainmentBuilding(Service::amphitheater, buil
 
 void Amphitheater::timeStep(const unsigned long time)
 {
-  EntertainmentBuilding::timeStep( time );  
+  EntertainmentBuilding::timeStep( time );
+}
+
+std::string Amphitheater::getSound() const
+{
+  return (isActive() && getWorkersCount() > 0
+            ? WorkingBuilding::getSound()
+            : "");
 }
 
 void Amphitheater::build(PlayerCityPtr city, const TilePos& pos)
