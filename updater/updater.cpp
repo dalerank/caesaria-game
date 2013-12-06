@@ -167,8 +167,6 @@ std::size_t Updater::GetNumMirrors()
 
 void Updater::GetStableVersionFromServer()
 {
-	Logger::warning( " Downloading CRC information..." );
-
 	PerformSingleMirroredDownload(STABLE_VERSION_FILE);
 
 	// Parse this file
@@ -177,7 +175,7 @@ void Updater::GetStableVersionFromServer()
 
 	if (releaseIni == NULL)
 	{
-		throw FailureException("Could not download CRC info file from server.");
+		throw FailureException("Could not download current version info file from server.");
 	}
 
 	// Build the release file set

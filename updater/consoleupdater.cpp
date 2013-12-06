@@ -153,7 +153,7 @@ void ConsoleUpdater::onStartStep(UpdateStep step)
 
 	case DownloadStableVersion:
 		Logger::warning( "----------------------------------------------------------------------------");
-		Logger::warning( " Downloading stable version info...");
+		Logger::update( " Downloading stable version info...", true);
 		break;
 
 	case DownloadVersionInfo:
@@ -377,7 +377,8 @@ void ConsoleUpdater::onProgressChange(const ProgressInfo& info)
 	{
 	case ProgressInfo::FileDownload:
 		// Download progress
-		if (!_info.file.toString().empty() && info.file.toString() != _info.file.toString() )
+		if (!_info.file.toString().empty()
+				&& info.file.toString() != _info.file.toString() )
 		{
 			// New file, finish the current download
 			_info.progressFraction = 1.0f;

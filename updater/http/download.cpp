@@ -89,7 +89,7 @@ void Download::Start()
 
 	// /path/to/fms/TMP_FILE_PREFIXfilename.pk4 (TMP_FILE_PREFIX is usually an underscore)
 	_tempFilename = folder.getFilePath( TEMP_FILE_PREFIX + filename.toString() );
-	Logger::warning(  "Downloading to temporary file " + _tempFilename.toString() );
+	//Logger::warning(  "Downloading to temporary file " + _tempFilename.toString() );
 
 	_status = IN_PROGRESS;
 	ExceptionSafeThreadPtr p( new ExceptionSafeThread( Delegate0<>( this, &Download::Perform ) ) );
@@ -185,27 +185,22 @@ void Download::Perform()
 			}
 			else
 			{
-				Logger::warning( "Downloaded file passed the integrity checks.");
+				Logger::update( " CRC");
 			}
 
 			// Remove the destination filename before moving the temporary file over
-			Logger::warning( "Try remove " + _destFilename.toString()  );
-			if( !vfs::NFile::remove( _destFilename ) )
-			{
-				Logger::warning( "Failed remove file: " + _destFilename.toString()  );
-			}
+			vfs::NFile::remove( _destFilename );
 
 			// Move temporary file to the real one
 			if( vfs::NFile::rename( _tempFilename, _destFilename ) )
 			{
-				Logger::warning( "Succes renamed %s to %s", _tempFilename.toString().c_str(),
-																										_destFilename.toString().c_str() );
+				Logger::update( " REPLACE" );
 				_status = SUCCESS;
 			}
 			else
 			{
 				// Move failed
-				Logger::warning( "Failed renamed %s to %s ", _tempFilename.toString().c_str(),
+				Logger::warning( "\nFailed renamed %s to %s ", _tempFilename.toString().c_str(),
 																										 _destFilename.toString().c_str() );
 				_status = FAILED;
 			}
