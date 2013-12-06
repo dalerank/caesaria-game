@@ -291,7 +291,7 @@ void Updater::DetermineLocalVersion()
 			}
 
 			// The file is matching - record this version
-			Logger::warning( "NOT NEED UPDATE" );
+			Logger::warning( f->second.isWrongOS() ? "SKIP [WRONG OS]" : "NOT NEED UPDATE" );
 
 			_fileVersions[candidate.toString()] = v->first;
 		}

@@ -95,6 +95,20 @@ struct ReleaseFile
 		return !(this->operator==(other));
 	}
 
+	bool isWrongOS() const
+	{
+#ifdef CAESARIA_PLATFORM_LINUX
+		if( file.isExtension(".exe") || file.isExtension(".dll") )
+			return true;
+#elif defined(CAESARIA_PLATFORM_WIN)
+		if( file.isExtension(".linux") )
+			return true;
+#elif defined(CAESARIA_PLATFORM_MACOSX)
+		#error not worked yet
+#endif
+			return false;
+	}
+
 	bool isUpdater(const std::string& executable) const
 	{
 		return StringHelper::isEquale( file.toString(), executable );
@@ -136,17 +150,11 @@ public:
 				{
 					vfs::Path filename = section.substr(5);
 
-#ifdef CAESARIA_PLATFORM_LINUX
-					if( filename.isExtension(".exe") || filename.isExtension(".dll") )
+					ReleaseFile rfile(filename);
+					if( rfile.isWrongOS() )
 						return;
-#elif defined(CAESARIA_PLATFORM_WIN)
-					if( filename.isExtension(".linux") )
-						return;
-#elif defined(CAESARIA_PLATFORM_MACOSX)
-					#error not worked yet
-#endif
 
-					std::pair<ReleaseFileSet::iterator, bool> result = _set.insert(	ReleaseFileSet::value_type(filename.toString(), ReleaseFile(filename)));
+					std::pair<ReleaseFileSet::iterator, bool> result = _set.insert(	ReleaseFileSet::value_type(filename.toString(), rfile));
 					
 					result.first->second.crc = CRC::ParseFromString(iniFile.GetValue(section, "crc"));
 					result.first->second.filesize = StringHelper::toUint( iniFile.GetValue(section, "filesize") );
@@ -165,38 +173,6 @@ public:
 
 		// Traverse the settings using the ReleaseFileSet as visitor
 		iniFile->ForeachSection(_visitor);
-
-		return set;
-	}
-
-	// Construct a release file set from the given folder
-	static ReleaseFileSet LoadFromFolder( vfs::Directory folder,
-																				const std::set<std::string> ignoreList = std::set<std::string>())
-	{
-		ReleaseFileSet set;
-
-		vfs::Entries files = folder.getEntries();
-		for( vfs::Entries::ConstItemIt i = files.begin(); i != files.end(); ++i)
-		{
-			vfs::Path entry = i->name;
-
-			if( entry.isFolder() )
-			{
-				continue; // skip directories
-			}
-
-			std::string filename = entry.getBasename().toString();
-
-			vfs::Path relativePath = entry.getRelativePathTo( folder );
-
-			if( ignoreList.find( StringHelper::localeLower( filename ) ) != ignoreList.end() )
-			{
-				Logger::warning( "Ignoring file: %s", relativePath.toString().c_str() );
-				continue;
-			}
-		
-			Logger::warning( "Found file: %s", relativePath.toString().c_str() );
-		}
 
 		return set;
 	}
