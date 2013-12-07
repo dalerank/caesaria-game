@@ -17,6 +17,7 @@
 #include "city.hpp"
 #include "gfx/tilemap_camera.hpp"
 #include "sound/engine.hpp"
+#include "core/stringhelper.hpp"
 
 struct SoundEmitter
 {
@@ -47,6 +48,14 @@ struct SoundEmitter
       if( tile->getFlag( Tile::tlWater ) )
       {
         return "river_00001.wav";
+      }
+      else if( tile->getFlag( Tile::tlTree ) )
+      {
+
+      }
+      else
+      {
+        return StringHelper::format( 0xff, "emptyland_%05d.wav", (tile->getI() * tile->getJ()) % 4  );
       }
     }
 
@@ -121,7 +130,7 @@ void AmbientSound::update( const unsigned int time )
     if( abs( distance.getI() ) > 3 || abs( distance.getJ() ) > 3
         || !(*i).isValid() )
     {
-      ae.stop( (*i).getSound() );
+      //ae.stop( (*i).getSound() );
       _d->emitters.erase( i++ );
     }
     else

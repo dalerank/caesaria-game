@@ -35,6 +35,7 @@
 #include "game/settings.hpp"
 #include "building/constants.hpp"
 #include "gfx/tilesarray.hpp"
+#include "playsound.hpp"
 
 using namespace constants;
 
@@ -73,7 +74,18 @@ void DisasterEvent::exec( Game& game )
       rPos = overlay->getTile().getIJ();
     }
 
-    //bool deleteRoad = false;
+    switch( _type )
+    {
+    case DisasterEvent::collapse:
+    {
+      GameEventPtr e = PlaySound::create( "explode", rand() % 2, 256 );
+      e->dispatch();
+    }
+    break;
+
+    default:
+    break;
+    }
 
     TilesArray clearedTiles = tmap.getArea( rPos, size );
     foreach( Tile* tile, clearedTiles )
@@ -123,7 +135,11 @@ void BuildEvent::exec( Game& game )
       helper.updateDesirability( construction, true );
 
       game.getCity()->addOverlay( _overlay );
-      game.getCity()->getFunds().resolveIssue( FundIssue( CityFunds::buildConstruction, -(int)buildingData.getOption( "cost" ) ) );
+      game.getCity()->getFunds().resolveIssue( FundIssue( CityFunds::buildConstruction,
+                                                          -(int)buildingData.getOption( "cost" ) ) );
+
+      GameEventPtr e = PlaySound::create( "buildok", 1, 256 );
+      e->dispatch();
 
       if( construction->isNeedRoadAccess() && construction->getAccessRoads().empty() )
       {

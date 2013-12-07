@@ -28,6 +28,11 @@
 #include "core/logger.hpp"
 #include "vfs/file.hpp"
 
+static void _resolveChannelFinished(int channel)
+{
+  audio::Engine::instance().stop( channel );
+}
+
 namespace audio
 {
 
@@ -95,6 +100,7 @@ void Engine::init()
 
         // start playing sounds
         Mix_ResumeMusic();
+        Mix_ChannelFinished( &_resolveChannelFinished );
       }
       else
       {
@@ -202,6 +208,20 @@ void Engine::stop( vfs::Path filename )
   Mix_FreeChunk( i->second.chunk );
 
   _d->samples.erase( i );
+}
+
+void Engine::stop(int channel)
+{
+  for( Impl::Samples::iterator it=_d->samples.begin(); it != _d->samples.end(); it++ )
+  {
+    if( it->second.channel == channel )
+    {
+      Mix_FreeChunk( it->second.chunk );
+
+      _d->samples.erase( it );
+      return;
+    }
+  }
 }
 
 }//end namespace audio

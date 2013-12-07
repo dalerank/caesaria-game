@@ -19,6 +19,7 @@
 #include "game/city.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
+#include "core/stringhelper.hpp"
 
 Garden::Garden() : Construction(constants::construction::garden, Size(1) )
 {
@@ -93,6 +94,11 @@ Desirability Garden::getDesirability() const
   ret.step *= getSize().getWidth();
 
   return ret;
+}
+
+std::string Garden::getSound() const
+{
+  return StringHelper::format( 0xff, "garden_%05d.wav", getSize().getArea() );
 }
 
 void Garden::update()

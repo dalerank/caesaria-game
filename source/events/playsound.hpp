@@ -13,25 +13,27 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_GARDEN_H_INCLUDED__
-#define __CAESARIA_GARDEN_H_INCLUDED__
+#ifndef _CAESARIA_EVENT_PLAYSOUND_H_INCLUDE_
+#define _CAESARIA_EVENT_PLAYSOUND_H_INCLUDE_
 
-#include "game/construction.hpp"
+#include "event.hpp"
 
-class Garden : public Construction
+namespace events
+{
+
+class PlaySound : public GameEvent
 {
 public:
-  Garden();
-  virtual void initTerrain(Tile& terrain);
-  virtual bool isWalkable() const;
-  virtual bool isFlat() const;
-  virtual bool isNeedRoadAccess() const;
-  virtual void build(PlayerCityPtr city, const TilePos& pos );
-  virtual void load(const VariantMap &stream);
-  virtual Desirability getDesirability() const;
-  virtual std::string getSound() const;
+  static GameEventPtr create(std::string rc, int index, int volume );
+  static GameEventPtr create(std::string filename, int volume );
 
-  void update();
+  virtual void exec( Game& game );
+
+private:
+  std::string _sound;
+  int _volume;
 };
 
-#endif //__CAESARIA_GARDEN_H_INCLUDED__
+}
+
+#endif //_CAESARIA_EVENT_PLAYSOUND_H_INCLUDE_

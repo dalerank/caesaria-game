@@ -15,7 +15,6 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
 #ifndef _CAESARIA_SOUND_ENGINE_H_INCLUDE_
 #define _CAESARIA_SOUND_ENGINE_H_INCLUDE_
 
@@ -39,7 +38,8 @@ public:
    bool load( vfs::Path filename );
    void play( vfs::Path filename, int volume );
 
-   void stop(vfs::Path filename);
+   void stop( vfs::Path filename );
+   void stop( int channel );
 private:
    Engine();
 

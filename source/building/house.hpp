@@ -14,9 +14,10 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#ifndef __OPENCAESAR3_HOUSE_H_INCLUDED__
-#define __OPENCAESAR3_HOUSE_H_INCLUDED__
+#ifndef __CAESARIA_HOUSE_H_INCLUDED__
+#define __CAESARIA_HOUSE_H_INCLUDED__
 
 #include "building/building.hpp"
 #include "core/scopedptr.hpp"
@@ -47,11 +48,11 @@ public:
   virtual float evaluateService(ServiceWalkerPtr walker);
   virtual void buyMarket(ServiceWalkerPtr walker);
 
-  void appendServiceValue( Service::Type srvc, const int value );
-  bool hasServiceAccess( Service::Type service );
-  int getServiceValue( Service::Type service );
-  void setServiceValue( Service::Type service, const int access );
-  TilesArray getEnterArea() const;
+  virtual void appendServiceValue( Service::Type srvc, const int value );
+  virtual bool hasServiceAccess( Service::Type service );
+  virtual int getServiceValue( Service::Type service );
+  virtual void setServiceValue( Service::Type service, const int access );
+  virtual TilesArray getEnterArea() const;
 
   int getFoodLevel() const;
   int getHealthLevel() const;
@@ -79,10 +80,12 @@ public:
 
   std::string getUpCondition() const;
 
-  int getRoadAccessDistance() const;
+  virtual int getRoadAccessDistance() const;
 
-  bool isWalkable() const;
-  bool isFlat() const;
+  virtual bool isWalkable() const;
+  virtual bool isFlat() const;
+
+  virtual std::string getSound() const;
 
 private:
 
@@ -94,4 +97,4 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-#endif //__OPENCAESAR3_HOUSE_H_INCLUDED__
+#endif //__CAEARIA_HOUSE_H_INCLUDED__

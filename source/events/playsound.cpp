@@ -13,17 +13,41 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_EVENTS_PREDEFINITIONS_H_INCLUDED__
-#define __CAESARIA_EVENTS_PREDEFINITIONS_H_INCLUDED__
-
-#include "core/smartptr.hpp"
-#include "core/predefinitions.hpp"
+#include "playsound.hpp"
+#include "core/stringhelper.hpp"
+#include "sound/engine.hpp"
+#include "game/game.hpp"
 
 namespace events
 {
 
-PREDEFINE_CLASS_SMARTPOINTER(GameEvent)
+GameEventPtr PlaySound::create( std::string rc, int index, int volume )
+{
+  PlaySound* e = new PlaySound();
+  e->_sound = StringHelper::format( 0xff, "%s_%05d.wav", rc.c_str(), index );
+  e->_volume = volume;
 
+  GameEventPtr ret( e );
+  ret->drop();
+
+  return ret;
 }
 
-#endif //__OPENCAESAR3_EVENTS_PREDEFINITIONS_H_INCLUDED__
+GameEventPtr PlaySound::create(std::string filename, int volume)
+{
+  PlaySound* e = new PlaySound();
+  e->_sound = filename;
+  e->_volume = volume;
+
+  GameEventPtr ret( e );
+  ret->drop();
+
+  return ret;
+}
+
+void PlaySound::exec(Game&)
+{
+  audio::Engine::instance().play( _sound, _volume );
+}
+
+}

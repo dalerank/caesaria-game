@@ -14,11 +14,13 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "house.hpp"
 
 #include "gfx/tile.hpp"
 #include "game/house_level.hpp"
+#include "core/stringhelper.hpp"
 #include "core/exception.hpp"
 #include "walker/workerhunter.hpp"
 #include "walker/immigrant.hpp"
@@ -698,6 +700,11 @@ bool House::isWalkable() const
 bool House::isFlat() const
 {
   return isWalkable();
+}
+
+std::string House::getSound() const
+{
+  return StringHelper::format( 0xff, "house_%05d.wav", _d->houseLevel*10 );
 }
 
 Desirability House::getDesirability() const
