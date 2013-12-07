@@ -20,21 +20,47 @@
 
 struct SoundEmitter
 {
-  int distance;
+  Tile* tile;
   TileOverlayPtr overlay;
+  TilePos& camerapos;
 
-  SoundEmitter( TilePos p, TileOverlayPtr ov )
+  SoundEmitter( Tile* t, TilePos& cam ) : camerapos( cam )
   {
-    overlay = ov;
-    distance = p.distanceFrom( ov->getTilePos() );
+    tile = t;
+    overlay = t->getOverlay();
   }
 
-  bool operator < ( const SoundEmitter& other ) const
+  bool operator < ( const SoundEmitter& a ) const
   {
-    if( distance == other.distance )
-      return (overlay < other.overlay);
+    return ( tile->getIJ().distanceFrom( camerapos )
+             < a.tile->getIJ().distanceFrom( camerapos ));
+  }
 
-    return ( distance < other.distance );
+  std::string getSound() const
+  {
+    if( overlay.isValid() )
+    {
+      return overlay->getSound();
+    }
+    else
+    {
+      if( tile->getFlag( Tile::tlWater ) )
+      {
+        return "river_00001.wav";
+      }
+    }
+
+    return "";
+  }
+
+  float getDistance( TilePos p ) const
+  {
+    return tile->getIJ().distanceFrom( p );
+  }
+
+  bool isValid() const
+  {
+    return (overlay.isNull() || (overlay.isValid() && !overlay->isDeleted()) );
   }
 };
 
@@ -43,9 +69,10 @@ class AmbientSound::Impl
 public:
   PlayerCityPtr city;
   TilemapCamera* camera;
+  TilePos cameraPos;
 
-  typedef std::set< TileOverlayPtr > Overlays;
-  Overlays overlays;
+  typedef std::set< SoundEmitter > Emitters;
+  Emitters emitters;
 };
 
 CityServicePtr AmbientSound::create(PlayerCityPtr city, TilemapCamera& camera )
@@ -75,42 +102,40 @@ void AmbientSound::update( const unsigned int time )
   if( !tile )
     return;
 
-  TilePos cameraPos = tile->getIJ();
+  _d->cameraPos = tile->getIJ();
 
   audio::Engine& ae = audio::Engine::instance();
 
   //add new emitters
   TilePos offset( 3, 3 );
-  TilesArray tiles = _d->city->getTilemap().getArea( cameraPos - offset, cameraPos + offset );
+  TilesArray tiles = _d->city->getTilemap().getArea( _d->cameraPos - offset, _d->cameraPos + offset );
   foreach( Tile* tile, tiles )
   {
-    if( tile->getOverlay().isValid() )
-    {
-      _d->overlays.insert( tile->getOverlay() );
-    }
+    _d->emitters.insert( SoundEmitter( tile, _d->cameraPos ) );
   }
 
   //remove so far emitters
-  for( Impl::Overlays::iterator i=_d->overlays.begin(); i != _d->overlays.end(); )
+  for( Impl::Emitters::iterator i=_d->emitters.begin(); i != _d->emitters.end(); )
   {
-    TilePos distance = cameraPos - (*i)->getTilePos();
+    TilePos distance = _d->cameraPos - (*i).tile->getIJ();
     if( abs( distance.getI() ) > 3 || abs( distance.getJ() ) > 3
-        || (*i)->isDeleted() ) { _d->overlays.erase( i++ ); }
-    else ++i;
+        || !(*i).isValid() )
+    {
+      ae.stop( (*i).getSound() );
+      _d->emitters.erase( i++ );
+    }
+    else
+    {
+      ++i;
+    }
   }
 
   //create emitters map
-  std::set< SoundEmitter > soundMap;
-  foreach( TileOverlayPtr ov, _d->overlays )
-  {
-    soundMap.insert( SoundEmitter( cameraPos, ov ) );
-  }
-
   std::set< std::string > processedSounds;
-  for( std::set< SoundEmitter >::reverse_iterator i=soundMap.rbegin();
-       i != soundMap.rend(); i++ )
+  for( Impl::Emitters::reverse_iterator i=_d->emitters.rbegin();
+       i != _d->emitters.rend(); i++ )
   {
-    std::string sound = i->overlay->getSound();
+    std::string sound = i->getSound();
 
     if( sound.empty() )
       continue;
@@ -121,7 +146,7 @@ void AmbientSound::update( const unsigned int time )
     {
       processedSounds.insert( sound );
 
-      ae.play( sound, 256 / (3 *(i->distance+1))  );
+      ae.play( sound, 256 / (3 *(i->getDistance( _d->cameraPos )+1))  );
     }
   }
 }

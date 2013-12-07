@@ -15,7 +15,6 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
 #include "engine.hpp"
 
 #include <cstdlib>
@@ -192,7 +191,6 @@ void Engine::play( vfs::Path filename, int volume)
 
 void Engine::stop( vfs::Path filename )
 {
-
   Impl::Samples::iterator i = _d->samples.find( filename.toString() );
 
   if( i == _d->samples.end() )

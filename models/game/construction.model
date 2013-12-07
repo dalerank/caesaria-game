@@ -540,6 +540,7 @@
     pretty : "Well",
     image : [ "utilitya", 1 ]
     class : "water"
+    sound : [ "well", 1 ]
   }, 
  
   native_field :  
