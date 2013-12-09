@@ -129,7 +129,7 @@ void ScreenMenu::Impl::resolveShowChangeLanguageWindow()
 void ScreenMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
 {
 #ifdef CAESARIA_PLATFORM_WIN
-  const char* localeName[3] = { "en", en", "ru",  }
+  const char* localeName[3] = { "en", "en", "ru" };
 #elif defined(CAESARIA_PLATFORM_LINUX)
   const char* localeName[3] = { "en_US.UTF-8", "en_US.UTF-8", "ru_RU.UTF-8" };
 #endif

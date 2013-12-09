@@ -26,6 +26,7 @@
 #include "game/road.hpp"
 #include "core/direction.hpp"
 #include "core/logger.hpp"
+#include "tower.hpp"
 
 using namespace constants;
 
@@ -41,8 +42,8 @@ void Fortification::build(PlayerCityPtr city, const TilePos& pos )
   Tile& terrain = tilemap.at( pos );
 
   // we can't build if already have wall here
-  WallPtr aqueveduct = terrain.getOverlay().as<Wall>();
-  if( aqueveduct.isValid() )
+  WallPtr wall = terrain.getOverlay().as<Wall>();
+  if( wall.isValid() )
   {
     return;
   }
@@ -168,13 +169,24 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
     }
   }
 
+  bool towerNorth = tmap.at( pos + TilePos( 0, 1 ) ).getOverlay().is<Tower>();
+
   Fortification& th = *const_cast< Fortification* >( this );
+  Point mainPicOffset;
   th._fgPicturesRef().clear();
   int index;
   switch( directionFlags & 0xf )
   {  
-  case 0: index = 175;
-    if( (directionFlags & 0x40 ) == 0x40 )
+  case 0: index = 178; break;  // no neighbours!
+
+  case 1: index = 178; // N
+  break;
+
+  case 2: index = 178; // E
+  break;
+
+  case 3: index = 157;// N + E
+    /*if( (directionFlags & 0x40 ) == 0x40 )
     {
       th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
       th._fgPicturesRef().back().addOffset( -28, 0 );
@@ -183,128 +195,55 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
     {
       th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 157 ));
       th._fgPicturesRef().back().addOffset( -28, 0 );
-    }
-    th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 162 ));
-    th._fgPicturesRef().back().addOffset( 28, 0 );
-    th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 164 ));
-    th._fgPicturesRef().back().addOffset( 0, -13 );
-
-    if( (directionFlags & 0x80) == 0x80 )
-    {
-      index = 169;
-    }
-  break;  // no neighbours!
-
-  case 1: index = 171; // N
-    if( (directionFlags & 0x10) == 0x10 ) //NE
-    {
-      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
-      th._fgPicturesRef().back().addOffset( 28, 0 );
-    }
-    else
-    {
-      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 156 ));
-      th._fgPicturesRef().back().addOffset( 28, 0 );
-    }
-
-    if( (directionFlags & 0x40 ) == 0x40 )
-    {
-      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
-      th._fgPicturesRef().back().addOffset( -28, 0 );
-    }
-    else
-    {
-      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 157 ));
-      th._fgPicturesRef().back().addOffset( -28, 0 );
-    }
-    th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 164 ));
-    th._fgPicturesRef().back().addOffset( 0, -13 );
+    }*/
   break;
 
-  case 2: index = 175; // E
-    if( (directionFlags & 0x40 ) == 0x40 )
-    {
-      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
-      th._fgPicturesRef().back().addOffset( -28, 0 );
-    }
-    else
-    {
-      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 157 ));
-      th._fgPicturesRef().back().addOffset( -28, 0 );
-    }
-    th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 160 ));
-    th._fgPicturesRef().back().addOffset( 28, 0 );
-
-    if( (directionFlags & 0x80) == 0x80 )
-    {
-      index = 169;
-    }
+  case 4: index = 162; // S
   break;
 
-  case 3: index = 171;// N + E
-    if( (directionFlags & 0x40 ) == 0x40 )
-    {
-      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
-      th._fgPicturesRef().back().addOffset( -28, 0 );
-    }
-    else
-    {
-      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 157 ));
-      th._fgPicturesRef().back().addOffset( -28, 0 );
-    }
-  break;
-
-  case 4: index = 175; // S
-    th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 162 ));
-    th._fgPicturesRef().back().addOffset( 28, 0 );
-    //_fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 183 ));
-    //_fgPicturesRef().back().addOffset( 0, -13 );
-
-    if( (directionFlags & 0x80) == 0x80 )
-    {
-      index = 169;
-    }
-  break;
-
-  case 5: index = 171;  // N + S
-    th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 156 ));
-    th._fgPicturesRef().back().addOffset( 28, 0 );
+  case 5: index = 156;  // N + S
   break;
 
   case 6: index = 175; // E + S
-    //_fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
-    //_fgPicturesRef().back().addOffset( 0, -13 );
-
+    mainPicOffset = Point( 0, 12 );
     if( (directionFlags & 0x80) == 0x80 )
     {
       index = 169;
     }
   break;
 
-  case 8: index = 155; // W    
-    if( (directionFlags & 0x80) == 0x80 )
+  case 8: index = 178; // W
+    /*if( (directionFlags & 0x80) == 0x80 )
     {
       index = 173;
     }
 
-    if( (directionFlags & 0x40) == 0x40 )
+    if( towerNorth )
     {
-      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
-      th._fgPicturesRef().back().addOffset( -28, 2 );
+      index = 164;
     }
     else
     {
-      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 153 ));
-      th._fgPicturesRef().back().addOffset( -28, 0 );
-    }
-    th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 162 ));
-    th._fgPicturesRef().back().addOffset( 28, 0 );
-    th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 164 ));
-    th._fgPicturesRef().back().addOffset( 0, -13 );
+      mainPicOffset = Point( 0, 17 );
+      if( (directionFlags & 0x40) == 0x40 )
+      {
+        th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
+        th._fgPicturesRef().back().addOffset( -28, 2 );
+      }
+      else
+      {
+        th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 153 ));
+        th._fgPicturesRef().back().addOffset( -28, 0 );
+      }
+      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 168 ));
+      th._fgPicturesRef().back().addOffset( 10, -8 );
+      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 164 ));
+      th._fgPicturesRef().back().addOffset( 0, -13 );
+    }*/
   break;
 
-  case 9: index = 152; // N + W
-    if( (directionFlags & 0x40) == 0x40 )
+  case 9: index = 164; // N + W
+    /*if( (directionFlags & 0x40) == 0x40 )
     {
       th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
       th._fgPicturesRef().back().addOffset( -28, 2 );
@@ -326,10 +265,15 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
     th._fgPicturesRef().back().addOffset( 28, 0 );
 
     th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 164 ));
-    th._fgPicturesRef().back().addOffset( 0, -13 );
+    th._fgPicturesRef().back().addOffset( 0, -13 );*/
   break;
 
-  case 10: index = 155; // E + W
+  case 10: index = 178; // E + W
+    /*if( towerNorth )
+    {
+      index = 152;
+    }
+
     if( (directionFlags & 0x40) == 0x40 )
     {
       th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
@@ -339,12 +283,10 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
     {
       th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 184 ));
       th._fgPicturesRef().back().addOffset( -28, 0 );
-    }
+    }*/
   break;
 
-  case 12: index = 155; // S + W
-    th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 162 ));
-    th._fgPicturesRef().back().addOffset( 28, 0 );
+  case 12: index = 162; // S + W
   break;
 
   case 14: index = 173; // E + S + W
@@ -368,13 +310,11 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
     }
   break;
 
-  case 13: index = 172; // W + S + N
+  case 13: index = 156; // W + S + N
     if( (directionFlags&0x80) == 0x80 )
     {
       index = 152;
     }
-    th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 156 ));
-    th._fgPicturesRef().back().addOffset( 28, 0 );
   break;
 
   case 7: index = 171;// N + E + S
@@ -395,11 +335,11 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
   }
 
   th._tmpPicture = Picture::load( ResourceGroup::wall, index );
-  th._tmpPicture.addOffset( 0, 24 );
+  th._tmpPicture.addOffset( mainPicOffset.getX(), mainPicOffset.getY() );
   return _tmpPicture;
 }
 
 void Fortification::updatePicture(PlayerCityPtr city)
 {
-  setPicture( getPicture( city, TilePos(), TilesArray() ) );
+  setPicture( getPicture( city, getTilePos(), TilesArray() ) );
 }

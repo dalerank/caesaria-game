@@ -233,6 +233,7 @@ void BuildMenu_security::initialize()
   addBuildButton(building::fortMounted);
   addBuildButton(building::barracks);
   addBuildButton(building::gatehouse);
+  addBuildButton(building::tower);
 
   BuildMenu::initialize();
 }

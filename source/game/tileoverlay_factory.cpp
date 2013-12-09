@@ -56,6 +56,7 @@
 #include "building/wall.hpp"
 #include "building/fortification.hpp"
 #include "building/gatehouse.hpp"
+#include "building/tower.hpp"
 #include <map>
 
 using namespace constants;
@@ -183,9 +184,9 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
 {
 #define ADD_CREATOR(type,classObject,creator) addCreator(type,CAESARIA_STR_EXT(classObject), new creator<classObject>() )
   // entertainment
-  ADD_CREATOR(building::theater, Theater, WorkingBuildingCreator );
-  addCreator(building::amphitheater, CAESARIA_STR_EXT(Amphitheater), new WorkingBuildingCreator<Amphitheater>() );
-  addCreator(building::colloseum,    CAESARIA_STR_EXT(Collosseum), new WorkingBuildingCreator<Collosseum>() );
+  ADD_CREATOR(building::theater,      Theater,      WorkingBuildingCreator );
+  ADD_CREATOR(building::amphitheater, Amphitheater, WorkingBuildingCreator );
+  ADD_CREATOR(building::colloseum,    Collosseum,   WorkingBuildingCreator );
   addCreator(building::actorColony,  CAESARIA_STR_EXT(ActorColony), new WorkingBuildingCreator<ActorColony>() );
   addCreator(building::gladiatorSchool, CAESARIA_STR_EXT(GladiatorSchool), new WorkingBuildingCreator<GladiatorSchool>() );
   addCreator(building::lionHouse,    CAESARIA_STR_EXT(LionsNursery), new WorkingBuildingCreator<LionsNursery>() );
@@ -224,6 +225,7 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::wall,         CAESARIA_STR_EXT(Wall), new ConstructionCreator<Wall>() );
   addCreator(building::fortification, CAESARIA_STR_EXT(Fortification), new ConstructionCreator<Fortification>() );
   addCreator(building::gatehouse, CAESARIA_STR_EXT(Gatehouse), new ConstructionCreator<Gatehouse>() );
+  ADD_CREATOR( building::tower, Tower, WorkingBuildingCreator );
 
 
   // commerce
