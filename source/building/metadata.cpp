@@ -175,7 +175,7 @@ MetaData::MetaData(const TileOverlay::Type buildingType, const std::string& name
   _d->tileovType = buildingType;
   _d->group = building::unknownGroup;
   _d->name = name;
-  _prettyName = _( ("##" + name + "##").c_str() );  // i18n translation
+  _prettyName = "##" + name + "##";  // i18n translation
   _d->desirability.base = 0;
   _d->desirability.range = 0;
   _d->desirability.step = 0;

@@ -153,7 +153,7 @@ void BuildMenu::addBuildButton(const TileOverlay::Type buildingType )
   if( cost > 0 && mayBuildInCity )
   {
     // building can be built
-    BuildButton* button = new BuildButton( this, buildingData.getPrettyName(),
+    BuildButton* button = new BuildButton( this, _(buildingData.getPrettyName().c_str()),
                                            Rect( 0, getHeight(), getWidth(), getHeight() + 25 ), -1 );
     button->setCost(cost);
     button->setID( buildingType );

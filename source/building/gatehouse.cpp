@@ -33,11 +33,7 @@ public:
 Gatehouse::Gatehouse() : Building( building::gatehouse, Size( 2 ) ),
   _d( new Impl )
 {
-  setPicture( Picture() );
-
-  _fgPicturesRef().resize( 2 );
-  _fgPicturesRef().at( 0 ) = Picture::load( ResourceGroup::land2a, 168 );
-  _fgPicturesRef().at( 1 ) = Picture::load( ResourceGroup::sprites, 224 );
+  setPicture( ResourceGroup::land2a, 150 );
 }
 
 void Gatehouse::save(VariantMap& stream) const

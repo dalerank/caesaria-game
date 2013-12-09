@@ -2,13 +2,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: opencaesar3\n"
 "POT-Creation-Date: 2013-10-09 14:35+0400\n"
-"PO-Revision-Date: 2013-10-31 18:21+0400\n"
+"PO-Revision-Date: 2013-12-09 12:18+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.7\n"
+"X-Generator: Poedit 1.5.4\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: c:\\Users\\dalerank\\Dropbox\\opencaesar3\\\n"
 "X-Poedit-SearchPath-0: .\n"
@@ -548,10 +548,6 @@ msgstr "Оружие"
 msgid "##marble##"
 msgstr "Мрамор"
 
-#: oc3_goodhelper.cpp:96
-msgid "##denaries##"
-msgstr "Дн"
-
 #: oc3_gui_buildmenu.cpp:315
 msgid "##bldm_farm##"
 msgstr "Фермы"
@@ -710,7 +706,9 @@ msgstr "Дорога (описание)"
 
 #: oc3_gui_info_box.cpp:658
 msgid "##clear_land_caption##"
-msgstr "На этой земле можно строить все, что угодно, по ней могут пройти не только свои, но и вражеские солдаты!"
+msgstr ""
+"На этой земле можно строить все, что угодно, по ней могут пройти не только "
+"свои, но и вражеские солдаты!"
 
 #: oc3_gui_info_box.cpp:659
 msgid "##clear_land_text##"
@@ -2035,7 +2033,7 @@ msgid "##clay_pit_need_water##"
 msgstr "Стройте глиняные карьеры рядом с водой"
 
 msgid "##lumber_mill_need_forest_near##"
-msgstr "Лесопилки могут работать только если построены рядом с деревьями.
+msgstr "Лесопилки могут работать только если построены рядом с деревьями"
 
 msgid "##need_meadow_ground##"
 msgstr "Стройте фермы на плодородных землях (ищите желтые всходы)"
@@ -2333,13 +2331,16 @@ msgid "##get_advice_about_culture##"
 msgstr "Нажмите сюда, чтобы получить совет касательно вашего рейтинга Культуры"
 
 msgid "##get_advice_about_prosperity##"
-msgstr "Нажмите сюда, чтобы получить совет относительно вашего рейтинга Процветания"
+msgstr ""
+"Нажмите сюда, чтобы получить совет относительно вашего рейтинга Процветания"
 
 msgid "##get_advice_about_peace##"
 msgstr "Нажмите сюда, чтобы получить совет относительно вашего рейтинга Мира"
 
 msgid "##get_advice_about_favour##"
-msgstr "Нажмите сюда, чтобы получить совет относительно вашего рейтинга Благоволения"
+msgstr ""
+"Нажмите сюда, чтобы получить совет относительно вашего рейтинга Благоволения"
 
 msgid "##show_never_be_in_amphitheater##"
-msgstr "Этот амфитеатр никогда не давал представлений. Ему нужны актеры и гладиаторы."
+msgstr ""
+"Этот амфитеатр никогда не давал представлений. Ему нужны актеры и гладиаторы."
