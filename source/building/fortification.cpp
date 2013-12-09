@@ -184,19 +184,63 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
   case 2: index = 157; break;  // E
   case 3: index = 157; break;  // N + E
   case 4: index = 162; break;  // S
+  case 0x25: index = 156; break;
+  case 0x15: index = 156; break;
+  case 0x16: index = 174; break;
+  case 0x8d: index = 156; break;
   case 0x11: index = 168; break;
+  case 0x1f: index = 153; break;
+  case 0x91: index = 168; break;
   case 0x48: index = 167; break;
-  case 0x4c: index = 162; break;  // sw + s + w
+  case 0xd8: index = 167; break;
+  case 0xdd: index = 156; break;
+  case 0x41: index = 168; break;
+  case 0x36: index = 176; mainPicOffset = Point( 0, 12 ); break;
+  case 0x4e: index = 174; break;
+  case 0x23: case 0x83: case 0xa3: index = 179; break;
+  case 0xad: index = 156; break;
+  case 0xac: index = 180; break;
+  case 0xaf: index = 169; mainPicOffset = Point( 0, 12 ); break;
+  case 0xcc: case 0x8c: index = 162; break;
+  case 0x7e: index = 175; mainPicOffset = Point( 0, 12 ); break;
+  case 0xb3: index = 157; break;
+  case 0x87: index = 174; break;
+  case 0xb7: case 0xbf: index = 171; mainPicOffset = Point( 0, 12 ); break;
+  case 0x5a: case 0x2a: index = 153; break;
+  case 0x58: index = 167; break;
+  case 0x5e: index = 174; break;
+  case 0x55: case 0xa5: index = 156; break;
+  case 0x49: index = 164; break;
+  case 0xa7: index = 171; mainPicOffset = Point( 0, 12 ); break;
+  case 0x9b: index = 153; break;
+  case 0x85: index = 156; break;
+  case 0x56: case 0x51: index = 174; break;
+  case 0x9a: index = 153; break;
+  case 0x99: case 0xc9: index = 164; break;
+  case 0x29: index = 164; break;
+  case 0x22: index = 157; break;
+  case 0xdf: index = 174; break;
+  case 0xae: case 0xbe: index = 175; mainPicOffset = Point( 0, 12 ); break;
+  case 0x4c: case 0x6c: case 0xec: index = 162; break;  // sw + s + w
+  case 0xef: index = 173; mainPicOffset = Point( 0, 12 ); break;
+  case 0x65: index = 156; break;
+  case 0x67: index = 175; mainPicOffset = Point( 0, 12 ); break;
   case 5: index = 156; break;  // N + S
   case 6: index = 174; break;  // E + S
   case 0x12: index = 157; break; //NE + E
+  case 0x1e: index = 174; break;
+  case 0x1a: index = 153; break;
+
+  case 0xee: index = 173; mainPicOffset = Point( 0, 12 ); break;
   case 0x86: index = 169; mainPicOffset = Point( 0, 12 ); break; //e + s + nw
   case 0x24: index = 162; break;
+  case 0x2c: index = 180; break;
   case 0x44: index = 162; break; //SW + S
   case 0x26: index = 175; mainPicOffset = Point( 0, 12 ); break; //e + s + se
   case 8: index = 167; break; // W
   case 9: index = 164; break; // N + W
   case 0x59: index = 152; break; // n + w + ne + sw
+  case 0x5c: index = 180; break;
   case 10: index = 153; break; // E + W
   case 12: index = 162; break; // S + W
   case 14: index = 174; break; // E + S + W
@@ -204,30 +248,46 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
   case 11: index = 153; break; // N + E + W
   case 13: index = 156; break; // W + S + N
   case 7: index = 174; break;// N + E + S
+  case 0x81: index = 168; break;
   case 0x45: index = 156; break;
   case 0x88: index = 167; break;
   case 0x1b: index = 153; break;
+  case 0x64: index = 162; break;
+
+  case 0x6e: index = 155; mainPicOffset = Point( 0, 12 ); break;
+  case 0xff: index = 152; mainPicOffset = Point( 0, 12 ); break;
   case 0x66: case 0x76: index = 175; mainPicOffset = Point( 0, 12 ); break;
+  case 0x7a: index = 153; break;
+  case 0x77: index = 171; mainPicOffset = Point( 0, 12 ); break;
   case 0x4d: index = 162; break;
   case 0x52: index = 157; break;
-  case 0x6c: index = 162; break;
-  case 0xcb: index = 153; break;
+  case 0xcb: case 0xca: index = 153; break;
+  case 0xcf: index = 174; break;
   case 0x17: index = 174; break;
   case 0x8b: index = 153; break;
   case 0x4a: index = 153; break;
-  case 0xcc: index = 162; break;
   case 0x84: index = 168; break;
   case 0x32: index = 157; break;
+  case 0x33: index = 157; break;
+  case 0x37: index = 171; mainPicOffset = Point( 0, 12 ); break;
+  case 0xed: index = 156;
+  case 0xcd: index = 156; break;
   case 0xc8: index = 167; break;
   case 0x27: index = 159; mainPicOffset = Point( 0, 12 ); break;
   case 0x13: index = 157; break;
+  case 0x8a: case 0xdb: index = 153; break;
   case 0x8f: index = 174; break; // N + S + E + W (crossing)
   case 0x2f: index = 152; mainPicOffset = Point( 0, 12 ); break;
   case 0x53: index = 157; break;
+  case 0x54: index = 162; break;
   case 0x89: index = 164; break; //nw + w + n
   case 0x14: index = 162; break; // ne + s
   case 0x40: index = 178; break; // sw
   case 0x9c: index = 164; break;
+  case 0x95: index = 156; break;
+  case 0x9f: index = 174; break;
+  case 0xbb: index = 153; break;
+  case 0x93: index = 157; break;
 
   default:
     index = 178; // it's impossible, but ...

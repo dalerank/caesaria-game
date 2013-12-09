@@ -331,7 +331,7 @@ void LayerBuild::drawTile( GfxEngine& engine, Tile& tile, Point offset )
     if( tile.getOverlay().is<Fortification>() )
     {
       GfxSdlEngine* e = static_cast< GfxSdlEngine* >( &GfxEngine::instance());
-      Font f = Font::create( FONT_2_WHITE );
+      Font f = Font::create( FONT_2 );
       int df = tile.getOverlay().as<Fortification>()->getDirection();
       f.draw( e->getScreen(), StringHelper::format( 0xff, "%x", df), screenPos + Point( 20, -80 ), false );
     }
