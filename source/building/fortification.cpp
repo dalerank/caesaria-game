@@ -91,8 +91,8 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
     return Picture::load( ResourceGroup::aqueduct, 121 );
 
   TilePos tile_pos_d[countDirection];
-  bool is_border[countDirection];
-  bool is_busy[countDirection] = { false };
+  bool is_border[countDirection] = { 0 };
+  bool is_busy[countDirection] = { 0 };
 
   tile_pos_d[north] = tile_pos + TilePos(  0,  1);
   tile_pos_d[east]  = tile_pos + TilePos(  1,  0);
@@ -129,7 +129,7 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
     for( TilesArray::const_iterator it = tmp.begin(); it != tmp.end(); ++it)
     {
       if( (*it)->getOverlay().isNull()
-          || !(*it)->getOverlay()->getType() == building::fortification )
+          || (*it)->getOverlay()->getType() != building::fortification )
         continue;
 
       TilePos rpos = (*it)->getIJ();
@@ -148,9 +148,13 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
   }
 
   // calculate directions
-  for (int i = 0; i < countDirection; ++i) {
-    if (!is_border[i] && (overlay_d[i].is<Wall>() || is_busy[i]))
-      switch (i) {
+  for (int i = 0; i < countDirection; ++i)
+  {
+    if (!is_border[i] &&
+        ( (overlay_d[i].isValid() && overlay_d[i]->getType() == building::fortification) || is_busy[i]))
+    {
+      switch (i)
+      {
       case north: directionFlags += 0x1; break;
       case east:  directionFlags += 0x2; break;
       case south: directionFlags += 0x4; break;
@@ -161,6 +165,7 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
       case northWest: directionFlags += 0x80; break;
       default: break;
       }
+    }
   }
 
   Fortification& th = *const_cast< Fortification* >( this );

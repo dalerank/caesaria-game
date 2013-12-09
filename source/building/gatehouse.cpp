@@ -30,8 +30,7 @@ class Gatehouse::Impl
 public:
 };
 
-Gatehouse::Gatehouse() : Building( building::gatehouse, Size( 2 ) ),
-  _d( new Impl )
+Gatehouse::Gatehouse() : Building( building::gatehouse, Size( 2 ) ), _d( new Impl )
 {
   setPicture( ResourceGroup::land2a, 150 );
 }
@@ -51,42 +50,70 @@ bool Gatehouse::isWalkable() const
   return true;
 }
 
+bool Gatehouse::isRoad() const
+{
+  return true;
+}
+
 bool Gatehouse::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
 {
   Tilemap& tmap = city->getTilemap();
 
   Direction direction = noneDirection;
 
-  Tile& bTile00 = tmap.at( pos );
-
   bool freemap[ countDirection ] = { 0 };
-  freemap[ noneDirection ] = bTile00.getFlag( Tile::isConstructible );
-  freemap[ north ] = bTile00.getFlag( Tile::isConstructible );
-  freemap[ south ] = tmap.at( pos - TilePos( 0, 1 ) ).getFlag( Tile::isConstructible );
+  freemap[ noneDirection ] = tmap.at( pos ).getFlag( Tile::isConstructible );
+  freemap[ north ] = tmap.at( pos + TilePos( 0, 1 ) ).getFlag( Tile::isConstructible );
+  freemap[ east ] = tmap.at( pos + TilePos( 1, 0 ) ).getFlag( Tile::isConstructible );
+  freemap[ northEast ] = tmap.at( pos + TilePos( 1, 1 ) ).getFlag( Tile::isConstructible );
 
   bool rmap[ countDirection ] = { 0 };
-  rmap[ noneDirection ] = bTile00.getOverlay().is<Road>();
+  rmap[ noneDirection ] = tmap.at( pos ).getOverlay().is<Road>();
   rmap[ north ] = tmap.at( pos + TilePos( 0, 1 ) ).getOverlay().is<Road>();
   rmap[ northEast ] = tmap.at( pos + TilePos( 1, 1 ) ).getOverlay().is<Road>();
-  rmap[ south ] = tmap.at( pos - TilePos( 0, 1 ) ).getOverlay().is<Road>();
-  rmap[ west  ] = tmap.at( pos - TilePos( 1, 0 ) ).getOverlay().isValid();
-  rmap[ east  ] = tmap.at( pos + TilePos( 1, 0 ) ).getOverlay().isValid();
+  rmap[ east  ] = tmap.at( pos + TilePos( 1, 0 ) ).getOverlay().is<Road>();
+  rmap[ west ] = tmap.at( pos + TilePos( -1, 0 ) ).getOverlay().is<Road>();
+  rmap[ northWest ] = tmap.at( pos + TilePos( -1, 1 ) ).getOverlay().is<Road>();
 
-  if( (rmap[ noneDirection ] || rmap[ noneDirection ] ) && (rmap[ north ] || rmap[ south ]) )
+  if( (rmap[ noneDirection ] && rmap[ north ]) ||
+      (rmap[ east ] && rmap[ northEast ]) ||
+      Building::canBuild( city, pos, aroundTiles ) )
   {
     direction = north;
+    const_cast< Gatehouse* >( this )->setPicture( ResourceGroup::land2a, 150 );
+  }
+  else if( (rmap[ noneDirection ] && rmap[ east ]) ||
+           (rmap[ northEast ] && rmap[ north ] ) )
+  {
+    direction = west;
+    const_cast< Gatehouse* >( this )->setPicture( ResourceGroup::land2a, 151 );
   }
 
+  bool mayConstruct = ((rmap[ noneDirection ] || freemap[ noneDirection ]) &&
+                       (rmap[ north ] || freemap[ north ]) &&
+                       (rmap[ east ] || freemap[ east ]) &&
+                       (rmap[ northEast ] || freemap[ northEast ]) );
+
+  bool wrongBorder = false;
   switch( direction )
   {
   case north:
-    if( ( rmap[ noneDirection ] && (rmap[ west ] || rmap[ east ]) ) )
-       return false;
+    wrongBorder = ( rmap[ noneDirection ] && rmap[ west ] );
+    wrongBorder |= ( rmap[ north ] && rmap[ northWest ] );
+    wrongBorder |= ( rmap[ east ] && tmap.at( pos + TilePos( 2, 0 ) ).getOverlay().is<Road>() );
+    wrongBorder |= ( rmap[ northEast ] && tmap.at( pos + TilePos( 2, 1 ) ).getOverlay().is<Road>() );
+  break;
+
+  case west:
+    wrongBorder = ( rmap[ noneDirection ] && tmap.at( pos + TilePos( 0, -1 ) ).getOverlay().is<Road>() );
+    wrongBorder |= ( rmap[ east ] && tmap.at( pos + TilePos( 1, -1 ) ).getOverlay().is<Road>() );
+    wrongBorder |= ( rmap[ north ] && tmap.at( pos + TilePos( 0, 2 ) ).getOverlay().is<Road>() );
+    wrongBorder |= ( rmap[ northEast ] && tmap.at( pos + TilePos( 1, 2 ) ).getOverlay().is<Road>() );
   break;
 
   default:
     return false;
   }
 
-  return true;
+  return (mayConstruct && !wrongBorder);
 }

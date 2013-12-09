@@ -29,6 +29,7 @@ public:
   virtual void load(const VariantMap &stream);
 
   virtual bool isWalkable() const;
+  virtual bool isRoad() const;
 
   virtual bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray &aroundTiles) const;
 
