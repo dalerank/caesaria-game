@@ -121,6 +121,7 @@ const Picture& Wall::getPicture(PlayerCityPtr city, TilePos pos, const TilesArra
   tile_pos_d[northEast] = tile_pos + TilePos( 1, 1 );
   tile_pos_d[southEast] = tile_pos + TilePos( 1, -1 );
 
+
   // all tiles must be in map range
   for (int i = 0; i < countDirection; ++i)
   {
@@ -165,7 +166,9 @@ const Picture& Wall::getPicture(PlayerCityPtr city, TilePos pos, const TilesArra
   // calculate directions
   for (int i = 0; i < countDirection; ++i) {
     if( !is_border[i] &&
-       ( (overlay_d[i].isValid() && overlay_d[i]->getType() == building::wall) || is_busy[i] ) )
+       ( (overlay_d[i].isValid() &&
+          (overlay_d[i]->getType() == building::wall || overlay_d[i]->getType() == building::gatehouse ) )
+        || is_busy[i] ) )
     {
       switch (i)
       {
@@ -174,7 +177,7 @@ const Picture& Wall::getPicture(PlayerCityPtr city, TilePos pos, const TilesArra
       case south: directionFlags += 0x4; break;
       case west:  directionFlags += 0x8; break;
       case northEast: directionFlags += 0x10; break;
-      case southEast: directionFlags += 0x20; break;
+      case southEast: directionFlags += 0x20; break;      
       default: break;
       }
     }
@@ -199,7 +202,16 @@ const Picture& Wall::getPicture(PlayerCityPtr city, TilePos pos, const TilesArra
   case 10: index = 184; break; // E + W
 
   case 12: index = 180; break; // S + W
-  case 14: index = 178; break; // N + S + W
+  case 14: index = 178;  // N + S + W
+  {
+    if( (directionFlags & 0x20) == 0 )
+    {
+      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 183 ) );
+      th._fgPicturesRef().back().addOffset( -15, -8 );
+    }
+  }
+  break;
+
   case 11: index = 178; break; // N + E + W
 
   case 7: // N + E + S
