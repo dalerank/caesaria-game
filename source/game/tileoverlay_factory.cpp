@@ -55,6 +55,7 @@
 #include "core/logger.hpp"
 #include "building/wall.hpp"
 #include "building/fortification.hpp"
+#include "building/gatehouse.hpp"
 #include <map>
 
 using namespace constants;
@@ -180,8 +181,9 @@ TileOverlayFactory& TileOverlayFactory::getInstance()
 
 TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
 {
+#define ADD_CREATOR(type,classObject,creator) addCreator(type,CAESARIA_STR_EXT(classObject), new creator<classObject>() )
   // entertainment
-  addCreator(building::theater,      CAESARIA_STR_EXT(Theater), new WorkingBuildingCreator<Theater>() );
+  ADD_CREATOR(building::theater, Theater, WorkingBuildingCreator );
   addCreator(building::amphitheater, CAESARIA_STR_EXT(Amphitheater), new WorkingBuildingCreator<Amphitheater>() );
   addCreator(building::colloseum,    CAESARIA_STR_EXT(Collosseum), new WorkingBuildingCreator<Collosseum>() );
   addCreator(building::actorColony,  CAESARIA_STR_EXT(ActorColony), new WorkingBuildingCreator<ActorColony>() );
@@ -219,6 +221,10 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::fortMounted, CAESARIA_STR_EXT(FortMounted)  , new WorkingBuildingCreator<FortMounted>() );
   addCreator(building::militaryAcademy, CAESARIA_STR_EXT(MilitaryAcademy), new WorkingBuildingCreator<MilitaryAcademy>() );
   addCreator(building::barracks,   CAESARIA_STR_EXT(Barracks)        , new WorkingBuildingCreator<Barracks>() );
+  addCreator(building::wall,         CAESARIA_STR_EXT(Wall), new ConstructionCreator<Wall>() );
+  addCreator(building::fortification, CAESARIA_STR_EXT(Fortification), new ConstructionCreator<Fortification>() );
+  addCreator(building::gatehouse, CAESARIA_STR_EXT(Gatehouse), new ConstructionCreator<Gatehouse>() );
+
 
   // commerce
   addCreator(building::market,     CAESARIA_STR_EXT(Market)  , new WorkingBuildingCreator<Market>() );
@@ -261,11 +267,11 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::templeMars,CAESARIA_STR_EXT(TempleMars)   , new WorkingBuildingCreator<TempleMars>() );
   addCreator(building::templeVenus, CAESARIA_STR_EXT(TempleVenus)  , new WorkingBuildingCreator<TempleVenus>() );
   addCreator(building::templeMercury, CAESARIA_STR_EXT(TempleMercure), new WorkingBuildingCreator<TempleMercure>() );
-  addCreator(building::B_BIG_TEMPLE_CERES, CAESARIA_STR_EXT(BigTempleCeres)  , new WorkingBuildingCreator<BigTempleCeres>() );
-  addCreator(building::B_BIG_TEMPLE_NEPTUNE, CAESARIA_STR_EXT(BigTempleNeptune), new WorkingBuildingCreator<BigTempleNeptune>() );
-  addCreator(building::B_BIG_TEMPLE_MARS, CAESARIA_STR_EXT(BigTempleMars)   , new WorkingBuildingCreator<BigTempleMars>() );
-  addCreator(building::B_BIG_TEMPLE_VENUS, CAESARIA_STR_EXT(BigTempleVenus)  , new WorkingBuildingCreator<BigTempleVenus>() );
-  addCreator(building::B_BIG_TEMPLE_MERCURE, CAESARIA_STR_EXT(BigTempleMercure), new WorkingBuildingCreator<BigTempleMercure>() );
+  addCreator(building::cathedralCeres, CAESARIA_STR_EXT(BigTempleCeres)  , new WorkingBuildingCreator<BigTempleCeres>() );
+  addCreator(building::cathedralNeptune, CAESARIA_STR_EXT(BigTempleNeptune), new WorkingBuildingCreator<BigTempleNeptune>() );
+  addCreator(building::cathedralMars, CAESARIA_STR_EXT(BigTempleMars)   , new WorkingBuildingCreator<BigTempleMars>() );
+  addCreator(building::cathedralVenus, CAESARIA_STR_EXT(BigTempleVenus)  , new WorkingBuildingCreator<BigTempleVenus>() );
+  addCreator(building::cathedralMercury, CAESARIA_STR_EXT(BigTempleMercure), new WorkingBuildingCreator<BigTempleMercure>() );
   addCreator(building::oracle, CAESARIA_STR_EXT(TempleOracle) , new WorkingBuildingCreator<TempleOracle>() );
 
   // health
@@ -290,9 +296,9 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::burnedRuins , CAESARIA_STR_EXT(BurnedRuins), new ConstructionCreator<BurnedRuins>() );
   addCreator(building::collapsedRuins , CAESARIA_STR_EXT(CollapsedRuins), new ConstructionCreator<CollapsedRuins>() );
   addCreator(building::plagueRuins , CAESARIA_STR_EXT(PlagueRuins), new ConstructionCreator<PlagueRuins>() );
+
+  //places
   addCreator(place::fishPlace,      CAESARIA_STR_EXT(FishPlace), new BaseCreator<FishPlace>() );
-  addCreator(building::wall,         CAESARIA_STR_EXT(Wall), new ConstructionCreator<Wall>() );
-  addCreator(building::fortification, CAESARIA_STR_EXT(Fortification), new ConstructionCreator<Fortification>() );
 }
 
 void TileOverlayFactory::addCreator( const TileOverlay::Type type, const std::string& typeName, TileOverlayConstructor* ctor )

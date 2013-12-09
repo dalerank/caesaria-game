@@ -71,11 +71,11 @@ public:
     append( building::templeMars,     "small_mars_temple" );
     append( building::templeMercury,  "small_mercury_temple" );
     append( building::templeVenus,    "small_venus_temple" );
-    append( building::B_BIG_TEMPLE_CERES,  "big_ceres_temple" );
-    append( building::B_BIG_TEMPLE_NEPTUNE,"big_neptune_temple" );
-    append( building::B_BIG_TEMPLE_MARS,   "big_mars_temple");
-    append( building::B_BIG_TEMPLE_MERCURE,"big_mercury_temple");
-    append( building::B_BIG_TEMPLE_VENUS,  "big_venus_temple");
+    append( building::cathedralCeres,  "big_ceres_temple" );
+    append( building::cathedralNeptune,"big_neptune_temple" );
+    append( building::cathedralMars,   "big_mars_temple");
+    append( building::cathedralMercury,"big_mercury_temple");
+    append( building::cathedralVenus,  "big_venus_temple");
     append( building::oracle,         "oracle");
     append( building::market,         "market");
     append( building::granary,        "granery");

@@ -186,7 +186,7 @@ Point TileOverlay::getOffset( const Point& subpos ) const{  return Point( 0, 0 )
 Animation& TileOverlay::_animationRef(){  return _d->animation;}
 Tile* TileOverlay::_getMasterTile(){  return _d->masterTile;}
 PlayerCityPtr TileOverlay::_getCity() const{ return _d->city;}
-PicturesArray& TileOverlay::_fgPicturesRef(){  return _d->fgPictures;}
+PicturesArray& TileOverlay::_fgPicturesRef(){  return _d->fgPictures; }
 Picture&TileOverlay::_getPicture(){  return _d->picture;}
 TileOverlay::Group TileOverlay::getClass() const{  return _d->overlayClass;}
 void TileOverlay::setPicture(const char* resource, const int index){  setPicture( Picture::load( resource, index ) );}

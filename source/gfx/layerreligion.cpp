@@ -61,8 +61,8 @@ void LayerReligion::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     case building::templeCeres: case building::templeMars:
     case building::templeMercury: case building::templeNeptune: case building::templeVenus:
     case building::oracle:
-    case building::B_BIG_TEMPLE_CERES: case building::B_BIG_TEMPLE_MARS:
-    case building::B_BIG_TEMPLE_MERCURE: case building::B_BIG_TEMPLE_NEPTUNE: case building::B_BIG_TEMPLE_VENUS:
+    case building::cathedralCeres: case building::cathedralMars:
+    case building::cathedralMercury: case building::cathedralNeptune: case building::cathedralVenus:
       needDrawAnimations = true;
       engine.drawPicture( tile.getPicture(), screenPos );
     break;

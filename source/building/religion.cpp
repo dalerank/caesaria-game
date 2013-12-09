@@ -62,7 +62,7 @@ TempleCeres::TempleCeres() : SmallTemple( DivinePantheon::ceres(), building::tem
 {
 }
 
-BigTempleCeres::BigTempleCeres() : BigTemple( DivinePantheon::ceres(), building::B_BIG_TEMPLE_CERES, 46 )
+BigTempleCeres::BigTempleCeres() : BigTemple( DivinePantheon::ceres(), building::cathedralCeres, 46 )
 {
 }
 
@@ -70,7 +70,7 @@ TempleNeptune::TempleNeptune() : SmallTemple( DivinePantheon::neptune(), buildin
 {
 }
 
-BigTempleNeptune::BigTempleNeptune() : BigTemple( DivinePantheon::neptune(), building::B_BIG_TEMPLE_NEPTUNE, 48 )
+BigTempleNeptune::BigTempleNeptune() : BigTemple( DivinePantheon::neptune(), building::cathedralNeptune, 48 )
 {
 }
 
@@ -78,7 +78,7 @@ TempleMars::TempleMars() : SmallTemple( DivinePantheon::mars(), building::temple
 {
 }
 
-BigTempleMars::BigTempleMars() : BigTemple( DivinePantheon::mars(), building::B_BIG_TEMPLE_MARS, 52 )
+BigTempleMars::BigTempleMars() : BigTemple( DivinePantheon::mars(), building::cathedralMars, 52 )
 {
 }
 
@@ -86,7 +86,7 @@ TempleVenus::TempleVenus() : SmallTemple( DivinePantheon::venus(), building::tem
 {
 }
 
-BigTempleVenus::BigTempleVenus() : BigTemple( DivinePantheon::venus(), building::B_BIG_TEMPLE_VENUS, 54 )
+BigTempleVenus::BigTempleVenus() : BigTemple( DivinePantheon::venus(), building::cathedralVenus, 54 )
 {
 }
 
@@ -94,7 +94,7 @@ TempleMercure::TempleMercure() : SmallTemple( DivinePantheon::mercury(), buildin
 {
 }
 
-BigTempleMercure::BigTempleMercure() : BigTemple( DivinePantheon::mercury(), building::B_BIG_TEMPLE_MERCURE, 50 )
+BigTempleMercure::BigTempleMercure() : BigTemple( DivinePantheon::mercury(), building::cathedralMercury, 50 )
 {
 }
 

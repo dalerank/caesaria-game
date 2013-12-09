@@ -171,11 +171,11 @@ enum Type
   templeVenus,
 
 // religion: big temples
-  B_BIG_TEMPLE_CERES,
-  B_BIG_TEMPLE_MARS,
-  B_BIG_TEMPLE_NEPTUNE,
-  B_BIG_TEMPLE_MERCURE,
-  B_BIG_TEMPLE_VENUS,
+  cathedralCeres,
+  cathedralMars,
+  cathedralNeptune,
+  cathedralMercury,
+  cathedralVenus,
 
 // religion: others
   oracle,

@@ -44,13 +44,15 @@ public:
   // add the button in the menu.
   void addBuildButton(const TileOverlay::Type buildingType);
 
-  bool isPointInside(const Point& point) const;
+  virtual bool isPointInside(const Point& point) const;
 
   virtual void initialize();
 
   void setBuildOptions(const CityBuildOptions& options );
 
 protected:
+  void _resolveButtonClick();
+
   CityBuildOptions _options;
 };
 
@@ -73,93 +75,93 @@ public:
 class BuildMenu_education : public BuildMenu
 {
 public:
-    BuildMenu_education( Widget* parent, const Rect& rectangle );
-    void initialize();
+  BuildMenu_education( Widget* parent, const Rect& rectangle );
+  void initialize();
 };
 
 
 class BuildMenu_health : public BuildMenu
 {
 public:
-    BuildMenu_health( Widget* parent, const Rect& rectangle );
-    void initialize();
+  BuildMenu_health( Widget* parent, const Rect& rectangle );
+  void initialize();
 };
 
 
 class BuildMenu_engineering : public BuildMenu
 {
 public:
-    BuildMenu_engineering( Widget* parent, const Rect& rectangle );
-    void initialize();
+  BuildMenu_engineering( Widget* parent, const Rect& rectangle );
+  void initialize();
 };
 
 
 class BuildMenu_administration : public BuildMenu
 {
 public:
-    BuildMenu_administration( Widget* parent, const Rect& rectangle );
-    void initialize();
+  BuildMenu_administration( Widget* parent, const Rect& rectangle );
+  void initialize();
 };
 
 
 class BuildMenu_entertainment : public BuildMenu
 {
 public:
-    BuildMenu_entertainment( Widget* parent, const Rect& rectangle );
-    void initialize();
+  BuildMenu_entertainment( Widget* parent, const Rect& rectangle );
+  void initialize();
 };
 
 
 class BuildMenu_commerce : public BuildMenu
 {
 public:
-    BuildMenu_commerce( Widget* parent, const Rect& rectangle );
-    void initialize();
+  BuildMenu_commerce( Widget* parent, const Rect& rectangle );
+  void initialize();
 };
 
 
 class BuildMenu_farm : public BuildMenu
 {
 public:
-    BuildMenu_farm( Widget* parent, const Rect& rectangle );
-    void initialize();
+  BuildMenu_farm( Widget* parent, const Rect& rectangle );
+  void initialize();
 };
 
 
 class BuildMenu_raw_factory : public BuildMenu
 {
 public:
-    BuildMenu_raw_factory( Widget* parent, const Rect& rectangle );
-    void initialize();
+  BuildMenu_raw_factory( Widget* parent, const Rect& rectangle );
+  void initialize();
 };
 
 
 class BuildMenu_factory : public BuildMenu
 {
 public:
-    BuildMenu_factory( Widget* parent, const Rect& rectangle );
-    void initialize();
+  BuildMenu_factory( Widget* parent, const Rect& rectangle );
+  void initialize();
 };
 
 class BuildMenu_religion: public BuildMenu
 {
 public:
-    BuildMenu_religion( Widget* parent, const Rect& rectangle );
-    void initialize();
+  BuildMenu_religion( Widget* parent, const Rect& rectangle );
+  void initialize();
 };
 
 class BuildMenu_temple : public BuildMenu
 {
 public:
-    BuildMenu_temple( Widget* parent, const Rect& rectangle );
-    void initialize();
+  BuildMenu_temple( Widget* parent, const Rect& rectangle );
+  void initialize();
 };
 
 class BuildMenu_bigtemple : public BuildMenu
 {
 public:
-    BuildMenu_bigtemple( Widget* parent, const Rect& rectangle );
-    void initialize();
+  BuildMenu_bigtemple( Widget* parent, const Rect& rectangle );
+  void initialize();
 };
 
 }//end namespace gui

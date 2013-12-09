@@ -12,31 +12,29 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "locale.hpp"
-#include "bytearray.hpp"
-#include "logger.hpp"
+#ifndef __CAESARIA_GATEHOUSE_H_INCLUDED__
+#define __CAESARIA_GATEHOUSE_H_INCLUDED__
 
-#include <libintl.h>
+#include "building.hpp"
 
-extern int  _nl_msg_cat_cntr;
-
-void Locale::loadTranslator(vfs::Directory directory)
+class Gatehouse : public Building
 {
-  bindtextdomain( "caesar", directory.toString().c_str() );
-  bind_textdomain_codeset( "caesar", "UTF-8" );
-  textdomain( "caesar" );
-}
+public:
+  Gatehouse();
 
-void Locale::setLanguage(std::string language)
-{
-#ifdef CAESARIA_PLATFORM_WIN
-  ByteArray localeData;
-  localeData = StringHelper::format( 0xff, "LANGUAGE=%s", language.c_str() );
-  putenv( localeData.data() );
-#elif defined(CAESARIA_PLATFORM_UNIX)
-  setlocale( LC_ALL, language.c_str() );
-#endif
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
 
-  ++_nl_msg_cat_cntr;
-}
+  virtual bool isWalkable() const;
+
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray &aroundTiles) const;
+
+private:
+  class Impl;
+  ScopedPtr< Impl > _d;
+};
+
+#endif //__CAESARIA_GATEHOUSE_H_INCLUDED__

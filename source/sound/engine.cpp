@@ -26,6 +26,7 @@
 #include "game/settings.hpp"
 #include "core/exception.hpp"
 #include "core/logger.hpp"
+#include "core/stringhelper.hpp"
 #include "vfs/file.hpp"
 
 static void _resolveChannelFinished(int channel)
@@ -193,6 +194,12 @@ void Engine::play( vfs::Path filename, int volume)
       Mix_Volume( i->second.channel,(volume*MIX_MAX_VOLUME)/256);
     }
   }
+}
+
+void Engine::play(std::string rc, int index, int volume)
+{
+  std::string filename = StringHelper::format( 0xff, "%s_%05d.wav", rc.c_str(), index );
+  play( filename, volume );
 }
 
 void Engine::stop( vfs::Path filename )

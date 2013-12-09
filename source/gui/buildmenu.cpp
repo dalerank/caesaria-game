@@ -30,6 +30,8 @@
 #include "game/build_options.hpp"
 #include "core/foreach.hpp"
 #include "building/constants.hpp"
+#include "events/playsound.hpp"
+#include "core/logger.hpp"
 
 using namespace constants;
 
@@ -150,12 +152,15 @@ void BuildMenu::addBuildButton(const TileOverlay::Type buildingType )
   bool mayBuildInCity = _options.isBuildingAvailble( buildingType );
   if( cost > 0 && mayBuildInCity )
   {
-      // building can be built
-      BuildButton* button = new BuildButton( this, buildingData.getPrettyName(), Rect( 0, getHeight(), getWidth(), getHeight() + 25 ), -1 );
-      button->setCost(cost);
-      button->setID( buildingType );
+    // building can be built
+    BuildButton* button = new BuildButton( this, buildingData.getPrettyName(),
+                                           Rect( 0, getHeight(), getWidth(), getHeight() + 25 ), -1 );
+    button->setCost(cost);
+    button->setID( buildingType );
 
-      setHeight( getHeight() + 30 );
+    setHeight( getHeight() + 30 );
+
+    CONNECT( button, onClicked(), this, BuildMenu::_resolveButtonClick );
   }
 }
 
@@ -186,14 +191,20 @@ BuildMenu* BuildMenu::create(const BuildMenuType menuType, Widget* parent )
 
 bool BuildMenu::isPointInside( const Point& point ) const
 {
-    Rect clickedRect = _environment->getRootWidget()->getAbsoluteRect();
-    clickedRect.LowerRightCorner = Point( getParent()->getScreenLeft(), _environment->getRootWidget()->getHeight() );
-    return clickedRect.isPointInside( point );
+  Rect clickedRect = _environment->getRootWidget()->getAbsoluteRect();
+  clickedRect.LowerRightCorner = Point( getParent()->getScreenLeft(), _environment->getRootWidget()->getHeight() );
+  return clickedRect.isPointInside( point );
 }
 
 void BuildMenu::setBuildOptions( const CityBuildOptions& options )
 {
   _options = options;
+}
+
+void BuildMenu::_resolveButtonClick()
+{
+  events::GameEventPtr e = events::PlaySound::create( "icon", 1, 256 );
+  e->dispatch();
 }
 
 void BuildMenu_water::initialize()
@@ -209,7 +220,7 @@ void BuildMenu_water::initialize()
 BuildMenu_water::BuildMenu_water( Widget* parent, const Rect& rectangle )
 	: BuildMenu( parent, rectangle, -1 )	 
 {
-	
+
 }
 
 void BuildMenu_security::initialize()
@@ -221,6 +232,7 @@ void BuildMenu_security::initialize()
   addBuildButton(building::fortLegionaire);
   addBuildButton(building::fortMounted);
   addBuildButton(building::barracks);
+  addBuildButton(building::gatehouse);
 
   BuildMenu::initialize();
 }
@@ -428,11 +440,11 @@ BuildMenu_temple::BuildMenu_temple( Widget* parent, const Rect& rectangle )
 }
 void BuildMenu_bigtemple::initialize()
 {
-  addBuildButton(building::B_BIG_TEMPLE_CERES);
-  addBuildButton(building::B_BIG_TEMPLE_NEPTUNE);
-  addBuildButton(building::B_BIG_TEMPLE_MARS);
-  addBuildButton(building::B_BIG_TEMPLE_VENUS);
-  addBuildButton(building::B_BIG_TEMPLE_MERCURE);
+  addBuildButton(building::cathedralCeres);
+  addBuildButton(building::cathedralNeptune);
+  addBuildButton(building::cathedralMars);
+  addBuildButton(building::cathedralVenus);
+  addBuildButton(building::cathedralMercury);
 
   BuildMenu::initialize();
 }

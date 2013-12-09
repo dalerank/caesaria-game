@@ -37,6 +37,7 @@ public:
 
    bool load( vfs::Path filename );
    void play( vfs::Path filename, int volume );
+   void play( std::string rc, int index, int volume );
 
    void stop( vfs::Path filename );
    void stop( int channel );

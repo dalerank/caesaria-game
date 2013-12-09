@@ -128,14 +128,17 @@ void ScreenMenu::Impl::resolveShowChangeLanguageWindow()
 
 void ScreenMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
 {
-  if( item.getText() == Impl::englishLanguage )
-  {
-    GameSettings::set( GameSettings::language, Variant( std::string( "en" ) ) );
-  }
-  else if( item.getText() == Impl::russianLanguage )
-  {
-    GameSettings::set( GameSettings::language, Variant( std::string( "ru" ) ) );
-  }
+#ifdef CAESARIA_PLATFORM_WIN
+  const char* localeName[3] = { "en", en", "ru",  }
+#elif defined(CAESARIA_PLATFORM_LINUX)
+  const char* localeName[3] = { "en_US.UTF-8", "en_US.UTF-8", "ru_RU.UTF-8" };
+#endif
+
+  int langIndex = 0;
+  if( item.getText() == Impl::englishLanguage )     { langIndex = 1; }
+  else if( item.getText() == Impl::russianLanguage ){ langIndex = 2; }
+
+  GameSettings::set( GameSettings::language, Variant( std::string( localeName[ langIndex ] ) ) );
 
   Locale::setLanguage( GameSettings::get( GameSettings::language ).toString() );
 }
