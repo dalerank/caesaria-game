@@ -27,6 +27,7 @@
 #include "core/direction.hpp"
 #include "core/logger.hpp"
 #include "tower.hpp"
+#include "core/font.hpp"
 
 using namespace constants;
 
@@ -171,172 +172,76 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
 
   bool towerNorth = tmap.at( pos + TilePos( 0, 1 ) ).getOverlay().is<Tower>();
 
+  const_cast< Fortification* >( this )->_direction = directionFlags;
   Fortification& th = *const_cast< Fortification* >( this );
   Point mainPicOffset;
   th._fgPicturesRef().clear();
   int index;
-  switch( directionFlags & 0xf )
+  switch( directionFlags )
   {  
   case 0: index = 178; break;  // no neighbours!
-
-  case 1: index = 178; // N
-  break;
-
-  case 2: index = 178; // E
-  break;
-
-  case 3: index = 157;// N + E
-    /*if( (directionFlags & 0x40 ) == 0x40 )
-    {
-      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
-      th._fgPicturesRef().back().addOffset( -28, 0 );
-    }
-    else
-    {
-      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 157 ));
-      th._fgPicturesRef().back().addOffset( -28, 0 );
-    }*/
-  break;
-
-  case 4: index = 162; // S
-  break;
-
-  case 5: index = 156;  // N + S
-  break;
-
-  case 6: index = 175; // E + S
-    mainPicOffset = Point( 0, 12 );
-    if( (directionFlags & 0x80) == 0x80 )
-    {
-      index = 169;
-    }
-  break;
-
-  case 8: index = 178; // W
-    /*if( (directionFlags & 0x80) == 0x80 )
-    {
-      index = 173;
-    }
-
-    if( towerNorth )
-    {
-      index = 164;
-    }
-    else
-    {
-      mainPicOffset = Point( 0, 17 );
-      if( (directionFlags & 0x40) == 0x40 )
-      {
-        th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
-        th._fgPicturesRef().back().addOffset( -28, 2 );
-      }
-      else
-      {
-        th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 153 ));
-        th._fgPicturesRef().back().addOffset( -28, 0 );
-      }
-      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 168 ));
-      th._fgPicturesRef().back().addOffset( 10, -8 );
-      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 164 ));
-      th._fgPicturesRef().back().addOffset( 0, -13 );
-    }*/
-  break;
-
-  case 9: index = 164; // N + W
-    /*if( (directionFlags & 0x40) == 0x40 )
-    {
-      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
-      th._fgPicturesRef().back().addOffset( -28, 2 );
-    }
-    else
-    {
-      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 153 ));
-      th._fgPicturesRef().back().addOffset( -28, 0 );
-    }
-
-    if( (directionFlags & 0x80) == 0x80 )
-    {}
-    else
-    {
-      index = 172;
-    }
-
-    th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 156 ));
-    th._fgPicturesRef().back().addOffset( 28, 0 );
-
-    th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 164 ));
-    th._fgPicturesRef().back().addOffset( 0, -13 );*/
-  break;
-
-  case 10: index = 178; // E + W
-    /*if( towerNorth )
-    {
-      index = 152;
-    }
-
-    if( (directionFlags & 0x40) == 0x40 )
-    {
-      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
-      th._fgPicturesRef().back().addOffset( -28, 0 );
-    }
-    else
-    {
-      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 184 ));
-      th._fgPicturesRef().back().addOffset( -28, 0 );
-    }*/
-  break;
-
-  case 12: index = 162; // S + W
-  break;
-
-  case 14: index = 173; // E + S + W
-  break;
-
-  case 11: index = 172; // N + E + W
-    if( (directionFlags&0x80) == 0x80 )
-    {
-      index = 152;
-    }
-
-    if( (directionFlags & 0x40 ) == 0x40 )
-    {
-      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 174 ));
-      th._fgPicturesRef().back().addOffset( -28, 0 );
-    }
-    else
-    {
-      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 153 ));
-      th._fgPicturesRef().back().addOffset( -28, 0 );
-    }
-  break;
-
-  case 13: index = 156; // W + S + N
-    if( (directionFlags&0x80) == 0x80 )
-    {
-      index = 152;
-    }
-  break;
-
-  case 7: index = 171;// N + E + S
-    //_fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 156 ));
-    //_fgPicturesRef().back().addOffset( -28, 0 );
-  break;
-
-  case 15: index = 172; // N + S + E + W (crossing)
-    if( (directionFlags&0x80) == 0x80 )
-    {
-      index = 152;
-    }
-  break;
+  case 1: index = 168; break;  //
+  case 2: index = 157; break;  // E
+  case 3: index = 157; break;  // N + E
+  case 4: index = 162; break;  // S
+  case 0x11: index = 168; break;
+  case 0x48: index = 167; break;
+  case 0x4c: index = 162; break;  // sw + s + w
+  case 5: index = 156; break;  // N + S
+  case 6: index = 174; break;  // E + S
+  case 0x12: index = 157; break; //NE + E
+  case 0x86: index = 169; mainPicOffset = Point( 0, 12 ); break; //e + s + nw
+  case 0x24: index = 162; break;
+  case 0x44: index = 162; break; //SW + S
+  case 0x26: index = 175; mainPicOffset = Point( 0, 12 ); break; //e + s + se
+  case 8: index = 167; break; // W
+  case 9: index = 164; break; // N + W
+  case 0x59: index = 152; break; // n + w + ne + sw
+  case 10: index = 153; break; // E + W
+  case 12: index = 162; break; // S + W
+  case 14: index = 174; break; // E + S + W
+  case 0x2e: index = 173; mainPicOffset = Point( 0, 12 ); break;
+  case 11: index = 153; break; // N + E + W
+  case 13: index = 156; break; // W + S + N
+  case 7: index = 174; break;// N + E + S
+  case 0x45: index = 156; break;
+  case 0x88: index = 167; break;
+  case 0x1b: index = 153; break;
+  case 0x66: case 0x76: index = 175; mainPicOffset = Point( 0, 12 ); break;
+  case 0x4d: index = 162; break;
+  case 0x52: index = 157; break;
+  case 0x6c: index = 162; break;
+  case 0xcb: index = 153; break;
+  case 0x17: index = 174; break;
+  case 0x8b: index = 153; break;
+  case 0x4a: index = 153; break;
+  case 0xcc: index = 162; break;
+  case 0x84: index = 168; break;
+  case 0x32: index = 157; break;
+  case 0xc8: index = 167; break;
+  case 0x27: index = 159; mainPicOffset = Point( 0, 12 ); break;
+  case 0x13: index = 157; break;
+  case 0x8f: index = 174; break; // N + S + E + W (crossing)
+  case 0x2f: index = 152; mainPicOffset = Point( 0, 12 ); break;
+  case 0x53: index = 157; break;
+  case 0x89: index = 164; break; //nw + w + n
+  case 0x14: index = 162; break; // ne + s
+  case 0x40: index = 178; break; // sw
+  case 0x9c: index = 164; break;
 
   default:
     index = 178; // it's impossible, but ...
-    Logger::warning( "Impossible direction on wall building [%d,%d]", pos.getI(), pos.getJ() );
+    //Logger::warning( "Impossible direction on wall building [%d,%d]", pos.getI(), pos.getJ() );
   }
 
   th._tmpPicture = Picture::load( ResourceGroup::wall, index );
   th._tmpPicture.addOffset( mainPicOffset.getX(), mainPicOffset.getY() );
   return _tmpPicture;
+}
+
+int Fortification::getDirection() const
+{
+  return _direction;
 }
 
 void Fortification::updatePicture(PlayerCityPtr city)

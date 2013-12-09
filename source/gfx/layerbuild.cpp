@@ -25,6 +25,10 @@
 #include "game/city.hpp"
 #include "tilemap_camera.hpp"
 #include "core/event.hpp"
+#include "sdl_engine.hpp"
+#include "core/font.hpp"
+#include "building/fortification.hpp"
+#include "core/stringhelper.hpp"
 
 using namespace constants;
 
@@ -323,6 +327,14 @@ void LayerBuild::drawTile( GfxEngine& engine, Tile& tile, Point offset )
     }
 
     registerTileForRendering( tile );
+
+    if( tile.getOverlay().is<Fortification>() )
+    {
+      GfxSdlEngine* e = static_cast< GfxSdlEngine* >( &GfxEngine::instance());
+      Font f = Font::create( FONT_2_WHITE );
+      int df = tile.getOverlay().as<Fortification>()->getDirection();
+      f.draw( e->getScreen(), StringHelper::format( 0xff, "%x", df), screenPos + Point( 20, -80 ), false );
+    }
   }
 
   if( !tile.getFlag( Tile::wasDrawn ) )

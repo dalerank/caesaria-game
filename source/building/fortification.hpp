@@ -28,11 +28,14 @@ public:
                             TilePos pos,
                             const TilesArray& tmp ) const;
 
+  int getDirection() const;
+
   virtual void destroy();
 
   void updatePicture(PlayerCityPtr city);
 
 private:
+  int _direction;
   Picture _tmpPicture;
 };
 
