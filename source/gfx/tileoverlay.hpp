@@ -43,13 +43,14 @@ public:
   void deleteLater();
 
   virtual bool isWalkable() const;
+  virtual bool isDestructible() const;
   virtual bool isFlat() const;
   virtual void initTerrain( Tile& terrain ) = 0;
 
   virtual void build( PlayerCityPtr city, const TilePos& pos );
   virtual void destroy();  // handles the delete
 
-  virtual Point getOffset( const Point& subpos ) const;
+  virtual Point getOffset( Tile& tile, const Point& subpos ) const;
   virtual void timeStep(const unsigned long time);  // perform one simulation step
 
   // graphic

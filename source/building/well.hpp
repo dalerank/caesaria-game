@@ -25,6 +25,8 @@ public:
 
   virtual void deliverService();
   virtual bool isNeedRoadAccess() const;
+
+  virtual bool isDestructible() const;
 };
 
 #endif

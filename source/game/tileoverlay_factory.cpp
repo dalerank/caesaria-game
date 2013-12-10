@@ -57,6 +57,7 @@
 #include "building/fortification.hpp"
 #include "building/gatehouse.hpp"
 #include "building/tower.hpp"
+#include "elevation.hpp"
 #include <map>
 
 using namespace constants;
@@ -300,7 +301,8 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::plagueRuins , CAESARIA_STR_EXT(PlagueRuins), new ConstructionCreator<PlagueRuins>() );
 
   //places
-  addCreator(place::fishPlace,      CAESARIA_STR_EXT(FishPlace), new BaseCreator<FishPlace>() );
+  ADD_CREATOR( place::fishPlace, FishPlace, BaseCreator );
+  ADD_CREATOR( place::elevation, Elevation, BaseCreator );
 }
 
 void TileOverlayFactory::addCreator( const TileOverlay::Type type, const std::string& typeName, TileOverlayConstructor* ctor )

@@ -77,7 +77,7 @@ public:
   {
   }
 
-  Point getOffset( const Point& subpos ) const
+  Point getOffset( Tile& tile, const Point& subpos ) const
   {
     switch( _index )
     {

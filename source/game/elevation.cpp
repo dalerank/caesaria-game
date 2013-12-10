@@ -12,24 +12,40 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
+#include "elevation.hpp"
+#include "constants.hpp"
+#include "gfx/tile.hpp"
 
-#ifndef _CAESARIA_GAME_CONSTANTS_INCLUDE_H_
-#define _CAESARIA_GAME_CONSTANTS_INCLUDE_H_
-
-#include "building/constants.hpp"
-
-namespace constants
+Elevation::Elevation() : TileOverlay( constants::place::elevation )
 {
-
-namespace place
-{
-const TileOverlay::Type fishPlace=100;
-const TileOverlay::Type elevation=101;
+  setDebugName( CAESARIA_STR_EXT(Elevation) );
 }
+
+Elevation::~Elevation()
+{
 
 }
 
-#endif  //_CAESARIA_GAME_CONSTANTS_INCLUDE_H_
+void Elevation::initTerrain(Tile& terrain)
+{
+  terrain.setFlag( Tile::clearAll, true );
+  terrain.setFlag( Tile::tlRoad, true );
+}
+
+bool Elevation::isWalkable() const
+{
+  return true;
+}
+
+Point Elevation::getOffset( Tile& tile, const Point& subpos) const
+{
+  TilePos delta = getTilePos() - tile.getIJ();
+
+  return Point( 0, 7 * ( 2 - delta.getI() ) - subpos.getX() );
+}
+
+bool Elevation::isDestructible() const
+{
+  return false;
+}

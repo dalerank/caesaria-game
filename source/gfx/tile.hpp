@@ -78,8 +78,6 @@ public:
   void setMasterTile(Tile* master);
   bool isMasterTile() const;
 
-  //const TerrainTile& getTerrain() const;
-  //TerrainTile& getTerrain();
   bool isFlat() const;  // returns true if the tile is walkable/boatable (for display purpose)
 
   void resetWasDrawn() { _wasDrawn = false; }

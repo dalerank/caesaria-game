@@ -162,6 +162,7 @@ void TileOverlay::load( const VariantMap& stream )
 }
 
 bool TileOverlay::isWalkable() const{  return false;}
+bool TileOverlay::isDestructible() const { return true; }
 bool TileOverlay::isFlat() const{  return false;}
 
 TilePos TileOverlay::getTilePos() const
@@ -182,7 +183,7 @@ std::string TileOverlay::getSound() const
 
 void TileOverlay::setName( const std::string& name ){  _d->name = name;}
 void TileOverlay::setSize( const Size& size ){  _d->size = size;}
-Point TileOverlay::getOffset( const Point& subpos ) const{  return Point( 0, 0 );}
+Point TileOverlay::getOffset( Tile&, const Point& ) const{  return Point( 0, 0 );}
 Animation& TileOverlay::_animationRef(){  return _d->animation;}
 Tile* TileOverlay::_getMasterTile(){  return _d->masterTile;}
 PlayerCityPtr TileOverlay::_getCity() const{ return _d->city;}

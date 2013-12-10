@@ -24,6 +24,7 @@
 #include "world/empire.hpp"
 #include "core/logger.hpp"
 #include "building/constants.hpp"
+#include "constants.hpp"
 
 using namespace constants;
 
@@ -285,7 +286,7 @@ void GameLoaderC3Map::Impl::decodeTerrain(Tile &oTile, PlayerCityPtr city )
 
   if( oTile.getFlag( Tile::tlRoad ) )   // road
   {
-    overlay = TileOverlayFactory::getInstance().create( construction::road ).as<TileOverlay>();
+    overlay = TileOverlayFactory::getInstance().create( construction::road );
   }
   else /*if( oTile.getFlag( Tile::tlBuilding ) )*/
   {
@@ -307,6 +308,14 @@ void GameLoaderC3Map::Impl::decodeTerrain(Tile &oTile, PlayerCityPtr city )
       case 0xb11:
       case 0xb44:
         overlay = TileOverlayFactory::getInstance().create( building::nativeField ).as<TileOverlay>();
+      break;
+
+      case 0x34d:
+      case 0x34e:
+      case 0x34f:
+      case 0x350:
+        overlay = TileOverlayFactory::getInstance().create( place::elevation );
+        overlay->setPicture( Picture::load( TileHelper::convId2PicName( oTile.getOriginalImgId() ) ) );
       break;
     }
   }

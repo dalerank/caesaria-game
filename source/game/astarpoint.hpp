@@ -80,7 +80,9 @@ public:
 
   int getGScore(AStarPoint* p)
   { 
-    int offset = p->tile ? (p->tile->getFlag( Tile::tlRoad ) ? 0 : +50) : (+100);
+    int offset = p->tile
+                  ? (p->tile->getFlag( Tile::tlRoad ) ? 0 : +50)
+                  : (+100);
     TilePos pos = tile ? tile->getIJ() : TilePos( 0, 0 ); 
     TilePos otherPos = p->tile ? p->tile->getIJ() : getPos();
     return p->g + ((pos.getI() == otherPos.getI() || pos.getJ() == otherPos.getJ()) ? 10 : 14) + offset;

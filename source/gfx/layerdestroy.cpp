@@ -45,7 +45,10 @@ void LayerDestroy::_drawTileInSelArea( GfxEngine& engine, Tile& tile, Tile* mast
   }
   else
   {
-    engine.setTileDrawMask( 0x00ff0000, 0, 0, 0xff000000 );
+    if( master->getFlag( Tile::isDestructible ) )
+    {
+      engine.setTileDrawMask( 0x00ff0000, 0, 0, 0xff000000 );
+    }
 
     // multi-tile: draw the master tile.
     if( !master->getFlag( Tile::wasDrawn ) )
@@ -133,7 +136,10 @@ void LayerDestroy::render( GfxEngine& engine )
     int tilePosHash = tile->getJ() * 1000 + tile->getI();
     if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() )
     {
-      engine.setTileDrawMask( 0x00ff0000, 0, 0, 0xff000000 );
+      if( tile->getFlag( Tile::isDestructible ) )
+      {
+        engine.setTileDrawMask( 0x00ff0000, 0, 0, 0xff000000 );
+      }
     }
 
     drawTileR( engine, *tile, cameraOffset, z, false );

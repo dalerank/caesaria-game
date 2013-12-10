@@ -46,3 +46,8 @@ bool Well::isNeedRoadAccess() const
 {
   return false;
 }
+
+bool Well::isDestructible() const
+{
+  return true;
+}
