@@ -17,7 +17,7 @@
 #include "constants.hpp"
 #include "gfx/tile.hpp"
 
-Elevation::Elevation() : TileOverlay( constants::place::elevation )
+Elevation::Elevation() : TileOverlay( constants::place::elevation, Size( 2 ) )
 {
   setDebugName( CAESARIA_STR_EXT(Elevation) );
 }
@@ -38,11 +38,16 @@ bool Elevation::isWalkable() const
   return true;
 }
 
+bool Elevation::isFlat() const
+{
+  return true;
+}
+
 Point Elevation::getOffset( Tile& tile, const Point& subpos) const
 {
   TilePos delta = getTilePos() - tile.getIJ();
 
-  return Point( 0, 7 * ( 2 - delta.getI() ) - subpos.getX() );
+  return Point( -(5 - subpos.getY()), 0 );
 }
 
 bool Elevation::isDestructible() const
