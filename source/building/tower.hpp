@@ -18,9 +18,9 @@
 #ifndef __CAESARIA_TOWER_H_INCLUDED__
 #define __CAESARIA_TOWER_H_INCLUDED__
 
-#include "building.hpp"
+#include "service.hpp"
 
-class Tower : public Building
+class Tower : public ServiceBuilding
 {
 public:
   Tower();
@@ -29,6 +29,8 @@ public:
   virtual void load(const VariantMap &stream);
 
   virtual bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray &aroundTiles) const;
+
+  virtual void deliverService();
 
 private:
   class Impl;

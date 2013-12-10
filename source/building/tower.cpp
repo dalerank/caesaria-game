@@ -30,8 +30,9 @@ class Tower::Impl
 public:
 };
 
-Tower::Tower() : Building( building::tower, Size( 2 ) ), _d( new Impl )
+Tower::Tower() : ServiceBuilding( Service::guard, building::tower, Size( 2 ) ), _d( new Impl )
 {
+  setMaxWorkers( 6 );
   setPicture( ResourceGroup::land2a, 149 );
   _fireIncrement = 0;
   _damageIncrement = 0;
@@ -69,4 +70,9 @@ bool Tower::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTi
                        (frtMap[ northEast ] || freeMap[ northEast ]) );
 
   return mayConstruct;
+}
+
+void Tower::deliverService()
+{
+
 }

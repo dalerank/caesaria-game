@@ -223,10 +223,10 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::fortMounted, CAESARIA_STR_EXT(FortMounted)  , new WorkingBuildingCreator<FortMounted>() );
   addCreator(building::militaryAcademy, CAESARIA_STR_EXT(MilitaryAcademy), new WorkingBuildingCreator<MilitaryAcademy>() );
   addCreator(building::barracks,   CAESARIA_STR_EXT(Barracks)        , new WorkingBuildingCreator<Barracks>() );
-  addCreator(building::wall,         CAESARIA_STR_EXT(Wall), new ConstructionCreator<Wall>() );
-  addCreator(building::fortification, CAESARIA_STR_EXT(Fortification), new ConstructionCreator<Fortification>() );
-  addCreator(building::gatehouse, CAESARIA_STR_EXT(Gatehouse), new ConstructionCreator<Gatehouse>() );
-  ADD_CREATOR( building::tower, Tower, WorkingBuildingCreator );
+  ADD_CREATOR( building::wall,          Wall, ConstructionCreator );
+  ADD_CREATOR( building::fortification, Fortification, ConstructionCreator );
+  ADD_CREATOR( building::gatehouse, Gatehouse, ConstructionCreator );
+  ADD_CREATOR( building::tower,     Tower, WorkingBuildingCreator );
 
 
   // commerce

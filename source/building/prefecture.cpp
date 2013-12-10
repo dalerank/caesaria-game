@@ -36,12 +36,6 @@ Prefecture::Prefecture() : ServiceBuilding(Service::prefect, constants::building
   _fgPicturesRef().resize(1);
 }
 
-int Prefecture::getServiceDelay() const
-{
-  float koeff = ( getWorkersCount() > 0 ) ? (float)getMaxWorkers() / (float)getWorkersCount() : 1.f;
-  return (int)(ServiceBuilding::getServiceDelay() * koeff);
-}
-
 void Prefecture::timeStep(const unsigned long time)
 {
   bool mayAnimate = getWorkersCount() > 0;

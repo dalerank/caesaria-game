@@ -37,6 +37,7 @@ public:
     burningRuins,
     recruter,
     crime,
+    guard,
     srvCount
   } Type;
 

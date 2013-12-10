@@ -25,7 +25,6 @@ public:
   Prefecture();
   void timeStep(const unsigned long time);
   void deliverService();
-  int getServiceDelay() const;
 
   void fireDetect( const TilePos& pos );
 
