@@ -68,6 +68,8 @@ enum Type
   legionaryGo,
   legionaryFight,
   charioter,
+  guardGo,
+  guardFigth,
   countType
 };
 

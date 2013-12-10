@@ -19,15 +19,19 @@
 #include "core/scopedptr.hpp"
 #include "predefinitions.hpp"
 #include "gfx/tilesarray.hpp"
+#include "core/delegate.hpp"
 
 class Pathfinder
 {
 public:
+  typedef Delegate2< const Tile*, bool& > TilePossibleCondition;
+
   typedef enum { noFlags=0x0,
                  checkStart=0x1, checkStop=0x2,
                  roadOnly=0x4, waterOnly=0x8, terrainOnly=0x10,
                  traversePath=0x20,
-                 everyWhere=0x80, fourDirection=0x100 } Flags;
+                 everyWhere=0x80, fourDirection=0x100,
+                 customCondition=0x200 } Flags;
 
   static Pathfinder& getInstance();
 
@@ -38,6 +42,9 @@ public:
   bool getPath( TilePos start, TilePos stop, Pathway& oPathway, int flags );
 
   bool getPath( const Tile& start, const Tile& stop, Pathway& oPathWay, int flags);
+
+  void setCondition( const TilePossibleCondition& condition );
+  void resetCondition();
   
   unsigned int getMaxLoopCount() const;
 

@@ -32,10 +32,10 @@ public:
 
   virtual void die();
   virtual void timeStep(const unsigned long time);
-  virtual void send2patrol();
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
+
 
 protected:
   virtual void _centerTile();
@@ -44,8 +44,10 @@ protected:
 
   void _init( constants::walker::Type type);
   void _back2tower();
+  void _back2patrol();
   TilePos _findPatrolPosition();
   bool _tryAttack();
+  Pathway _findPathway2NearestEnemy();
 
   WalkerList _findEnemiesInRange(unsigned int range);
 

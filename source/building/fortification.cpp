@@ -31,13 +31,25 @@
 
 using namespace constants;
 
-Fortification::Fortification() : Wall()
+class Fortification::Impl
+{
+public:
+  int direction;
+  Picture tmpPicture;
+  bool mayPatrol;
+};
+
+Fortification::Fortification() : Wall(), _d( new Impl )
 {
   setType( building::fortification );
   setPicture( ResourceGroup::wall, 178 ); // default picture for wall
 
   _fireIncrement = 0;
   _damageIncrement = 0;
+}
+
+Fortification::~Fortification()
+{
 }
 
 void Fortification::build(PlayerCityPtr city, const TilePos& pos )
@@ -176,7 +188,7 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
   bool towerNorth = tmap.at( pos + TilePos( 0, 1 ) ).getOverlay().is<Tower>();
   bool towerWest = tmap.at( pos + TilePos( -1, 0 ) ).getOverlay().is<Tower>();
 
-  const_cast< Fortification* >( this )->_direction = directionFlags;
+  const_cast< Fortification* >( this )->_d->direction = directionFlags;
   Fortification& th = *const_cast< Fortification* >( this );
   Point mainPicOffset;
   th._fgPicturesRef().clear();
@@ -361,17 +373,27 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
     else if( towerWest ) { index = 182; }
   }
 
-  th._tmpPicture = Picture::load( ResourceGroup::wall, index );
-  th._tmpPicture.addOffset( mainPicOffset.getX(), mainPicOffset.getY() );
-  return _tmpPicture;
+  if( mainPicOffset.getY() > 0 )
+  {
+    th._d->mayPatrol = true;
+  }
+
+  th._d->tmpPicture = Picture::load( ResourceGroup::wall, index );
+  th._d->tmpPicture.addOffset( mainPicOffset.getX(), mainPicOffset.getY() );
+  return _d->tmpPicture;
 }
 
 int Fortification::getDirection() const
 {
-  return _direction;
+  return _d->direction;
 }
 
 void Fortification::updatePicture(PlayerCityPtr city)
 {
   setPicture( getPicture( city, getTilePos(), TilesArray() ) );
+}
+
+bool Fortification::mayPatrol() const
+{
+  return _d->mayPatrol;
 }

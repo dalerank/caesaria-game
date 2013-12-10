@@ -8,22 +8,17 @@ class AStarPoint
 {
 
 public:
-  typedef enum { autoWalkable, alwaysWalkable, alwaysImpassable } WalkableType;
-  typedef enum { land=1, road=2, water=4, wtAll=0xf } WayType;
-
   AStarPoint* parent;
   bool closed;
   bool opened;
   int f, g, h;
   const Tile* tile;
-  WalkableType priorWalkable;
 
   AStarPoint()
   {
     parent = NULL;
     closed = false;
     opened = false;
-    priorWalkable = alwaysImpassable;
     tile = 0;
 
     f = g = h = 0;
@@ -32,38 +27,13 @@ public:
   TilePos getPos()
   {
     return tile ? tile->getIJ() : TilePos( 0, 0 );
-  }
-
-  bool isWalkable( int wtype )
-  {
-    switch( priorWalkable )
-    {
-    case autoWalkable:
-    {
-      if( (wtype & land)!=0 || (wtype & road) != 0 )
-      {
-        return tile ? tile->isWalkable( (wtype & land) != 0 ) : false;
-      }
-      else if( (wtype & water) != 0 )
-      {
-        return tile ? tile->getFlag( Tile::tlWater ) : false;
-      }
-    }
-    break;
-
-    case alwaysWalkable: return true;
-    case alwaysImpassable: return false;   
-    }
-
-    return false;
-  }
+  }  
 
   AStarPoint( const Tile* t ) : tile( t )
   {    
     parent = NULL;
     closed = false;
     opened = false;
-    priorWalkable = autoWalkable;
 
     f = g = h = 0;
   }

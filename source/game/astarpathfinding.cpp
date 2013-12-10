@@ -32,7 +32,9 @@ typedef std::vector< AStarPoint* > APoints;
 
 class Pathfinder::Impl
 {
-public:
+public:  
+  Pathfinder::TilePossibleCondition condition;
+
   class Grid : public std::vector< APoints >
   {
   public:
@@ -71,12 +73,22 @@ public:
     return ( pos.getI() >= 0 && pos.getJ() >= 0 && pos.getI() < (int)grid.size() && pos.getJ() < (int)grid[pos.getI()].size() );
   }
 
-  bool isWalkable( const TilePos& pos, int flags )
+  bool isWalkable( const TilePos& pos )
   {
-    return ( isValid( pos ) && at( pos )->isWalkable( flags ) );
+    if( isValid( pos ) )
+    {
+       bool ret;
+       condition( at( pos )->tile, ret );
+       return ret;
+    }
+    return false;
   }
 
   bool aStar(TilePos start, TilesArray arrivedArea, Pathway& oPathWay, int flags );
+
+  void isRoad( const Tile* tile, bool& possible );
+  void isWater( const Tile* tile, bool& possible );
+  void isTerrain( const Tile* tile, bool& possible );
 };
 
 Pathfinder::Pathfinder() : _d( new Impl )
@@ -103,8 +115,12 @@ void Pathfinder::update( const Tilemap& tilemap )
 
 bool Pathfinder::getPath(TilePos start, TilesArray arrivedArea, Pathway& oPathway, int flags)
 {
-  if( (flags & checkStart) && !_d->isWalkable( start, AStarPoint::wtAll ) )
+  if( (flags & checkStart) )
+  {
+    AStarPoint* ap = _d->at( start );
+    if( !ap || !(ap->tile) || !(ap->tile->isWalkable( true ) ) )
       return false;
+  }
 
   if( flags & traversePath )
   {
@@ -117,6 +133,11 @@ bool Pathfinder::getPath(TilePos start, TilesArray arrivedArea, Pathway& oPathwa
 bool Pathfinder::getPath( const Tile& start, const Tile& stop, Pathway& oPathWay, int flags )
 {
   return getPath( start.getIJ(), stop.getIJ(), oPathWay, flags );
+}
+
+void Pathfinder::setCondition(const TilePossibleCondition& condition)
+{
+  _d->condition = condition;
 }
 
 bool Pathfinder::getPath( TilePos start, TilePos stop, Pathway& oPathway, int flags)
@@ -160,6 +181,10 @@ bool _inArea( APoints& area, AStarPoint* end )
   return false;
 }
 
+void Pathfinder::Impl::isRoad( const Tile* tile, bool& possible ) {  possible = tile ? tile->isWalkable( false ) : false; }
+void Pathfinder::Impl::isTerrain( const Tile* tile, bool& possible ) {   possible = tile ? tile->isWalkable( true ) : false; }
+void Pathfinder::Impl::isWater( const Tile* tile, bool& possible ) { possible = tile ? tile->getFlag( Tile::tlWater ) : false; }
+
 bool Pathfinder::Impl::aStar(TilePos startPos, TilesArray arrivedArea, Pathway& oPathWay, int flags )
 {
   if( arrivedArea.empty() )
@@ -167,10 +192,9 @@ bool Pathfinder::Impl::aStar(TilePos startPos, TilesArray arrivedArea, Pathway& 
 
   oPathWay.init( *tilemap, tilemap->at( startPos ) );
 
-  int pointFlags = AStarPoint::wtAll;
-  if( (flags & roadOnly) > 0 ) { pointFlags = AStarPoint::road; }
-  else if( (flags & terrainOnly) > 0 ) { pointFlags = AStarPoint::road | AStarPoint::land; }
-  else if( (flags & waterOnly) > 0 ) { pointFlags = AStarPoint::water; }
+  if( (flags & roadOnly) > 0 ) { condition = makeDelegate( this, &Impl::isRoad); }
+  else if( (flags & terrainOnly) > 0 ) { condition = makeDelegate( this, &Impl::isTerrain ); }
+  else if( (flags & waterOnly) > 0 ) { condition = makeDelegate( this, &Impl::isWater ); }
 
   // Define points to work with
   AStarPoint* start = at( startPos );
@@ -241,7 +265,8 @@ bool Pathfinder::Impl::aStar(TilePos startPos, TilesArray arrivedArea, Pathway& 
           continue;
         }
         // If it's closed or not walkable then pass
-        if( child->closed || !child->isWalkable( pointFlags ) )
+
+        if( child->closed || !isWalkable( child->getPos() ) )
         {
           continue;
         }
@@ -252,14 +277,14 @@ bool Pathfinder::Impl::aStar(TilePos startPos, TilesArray arrivedArea, Pathway& 
           // if the next horizontal point is not walkable or in the closed list then pass
           //AStarPoint* tmpPoint = getPoint( current->pos + TilePos( 0, y ) );
           TilePos tmp = current->getPos() + TilePos( 0, y );
-          if( !isWalkable( tmp, pointFlags ) || at( tmp )->closed)
+          if( !isWalkable( tmp ) || at( tmp )->closed)
           {
             continue;
           }
 
           tmp = current->getPos() + TilePos( x, 0 );
           // if the next vertical point is not walkable or in the closed list then pass
-          if( !isWalkable( tmp, pointFlags ) || at( tmp )->closed)
+          if( !isWalkable( tmp ) || at( tmp )->closed)
           {
             continue;
           }

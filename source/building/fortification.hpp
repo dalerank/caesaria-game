@@ -22,6 +22,7 @@ class Fortification : public Wall
 {
 public:
   Fortification();
+  ~Fortification();
 
   virtual void build(PlayerCityPtr city, const TilePos& pos );
   const Picture& getPicture(PlayerCityPtr city,
@@ -33,10 +34,11 @@ public:
   virtual void destroy();
 
   void updatePicture(PlayerCityPtr city);
+  bool mayPatrol() const;
 
 private:
-  int _direction;
-  Picture _tmpPicture;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 #endif //__CAESARIA_FORTIFICATION_H_INCLUDED__

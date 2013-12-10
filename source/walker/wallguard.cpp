@@ -25,12 +25,15 @@
 #include "gfx/tilemap.hpp"
 #include "animals.hpp"
 #include "enemysoldier.hpp"
+#include "building/tower.hpp"
+#include "building/fortification.hpp"
 
 using namespace constants;
 
 class WallGuard::Impl
 {
 public:
+  static const int maxPatrolRange = 14;
   typedef enum { doNothing=0, back2tower, go2position, fightEnemy,
                  patrol } State;
   TowerPtr base;
@@ -127,11 +130,6 @@ void WallGuard::timeStep(const unsigned long time)
   } // end switch( _d->action )
 }
 
-void RomeSoldier::send2patrol()
-{
-  _back2fort();
-}
-
 void WallGuard::save(VariantMap& stream) const
 {
   Soldier::save( stream );
@@ -154,11 +152,11 @@ void WallGuard::load(const VariantMap& stream)
   _d->patrolPosition = stream.get( "patrolPosition" );
 
   TilePos basePosition = stream.get( "base" );
-  TowerPtr tower = _getCity()->getOverlay( basePosition ).as< Fort >();
+  TowerPtr tower = _getCity()->getOverlay( basePosition ).as<Tower>();
 
-  if( fort.isValid() )
+  if( tower.isValid() )
   {
-    _d->base = fort;
+    _d->base = tower;
     tower->addWalker( this );
   }
   else
@@ -207,9 +205,9 @@ bool WallGuard::_tryAttack()
   return false;
 }
 
-Pathway WallGuard::_findPathway2NearestEnemy( unsigned int range )
+Pathway WallGuard::_findPathway2NearestEnemy()
 {
-  Pathway ret;
+ /* Pathway ret;
 
   for( unsigned int tmpRange=1; tmpRange <= range; tmpRange++ )
   {
@@ -224,7 +222,7 @@ Pathway WallGuard::_findPathway2NearestEnemy( unsigned int range )
       }
     }
   }
-
+*/
   return Pathway();
 }
 
@@ -232,7 +230,7 @@ void WallGuard::_back2tower()
 {
   if( _d->base.isValid() )
   {
-    Pathway way = PathwayHelper::create( getIJ(), _d->base->getFreeSlot(), PathwayHelper::allTerrain );
+    Pathway way = PathwayHelper::create( getIJ(), _d->base.as<Construction>(), PathwayHelper::allTerrain );
 
     if( way.isValid() )
     {
@@ -248,8 +246,31 @@ void WallGuard::_back2tower()
   }
 }
 
+void WallGuard::_back2patrol()
+{
+
+}
+
 TilePos WallGuard::_findPatrolPosition()
 {
+  TilePos ret( -1, -1 );
+
+  TilePos offset( Impl::maxPatrolRange, Impl::maxPatrolRange );
+  TilesArray tiles = _getCity()->getTilemap().getArea( getIJ() - offset, getIJ() + offset );
+
+  std::set< TilePos > availablePos;
+  foreach( Tile* tile, tiles )
+  {
+    FortificationPtr wall = tile->getOverlay().as<Fortification>();
+    if( wall.isValid() && wall->mayPatrol() )
+    {
+      availablePos.insert( wall->getTilePos() );
+    }
+  }
+
+
+
+  return ret;
 }
 
 void WallGuard::_reachedPathway()
