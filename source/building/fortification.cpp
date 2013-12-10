@@ -373,10 +373,7 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
     else if( towerWest ) { index = 182; }
   }
 
-  if( mainPicOffset.getY() > 0 )
-  {
-    th._d->mayPatrol = true;
-  }
+  th._d->mayPatrol = (mainPicOffset.getY() > 0);
 
   th._d->tmpPicture = Picture::load( ResourceGroup::wall, index );
   th._d->tmpPicture.addOffset( mainPicOffset.getX(), mainPicOffset.getY() );

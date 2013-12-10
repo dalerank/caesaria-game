@@ -32,6 +32,12 @@ public:
 
   virtual void deliverService();
 
+  virtual TilesArray getEnterArea() const;
+
+  void resetPatroling();
+protected:
+  void _rebuildWays();
+
 private:
   class Impl;
   ScopedPtr< Impl > _d;

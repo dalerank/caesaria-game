@@ -28,7 +28,7 @@ class WallGuard : public Soldier
 public:
   static WallGuardPtr create( PlayerCityPtr city, constants::walker::Type type );
 
-  void send2city( TowerPtr base , TilePos pos);
+  void send2city(TowerPtr base , Pathway pathway);
 
   virtual void die();
   virtual void timeStep(const unsigned long time);
@@ -45,7 +45,6 @@ protected:
   void _init( constants::walker::Type type);
   void _back2tower();
   void _back2patrol();
-  TilePos _findPatrolPosition();
   bool _tryAttack();
   Pathway _findPathway2NearestEnemy();
 

@@ -28,6 +28,9 @@ public:
   static Pathway create(TilePos startPos, ConstructionPtr construction,
                         WayType type);
 
+  static Pathway create(TilePos statrPos, TilePos stopPos,
+                        const TilePossibleCondition& condition );
+
   static Pathway randomWay( PlayerCityPtr city, TilePos startPos, int walkRadius );
 };
 

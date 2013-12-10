@@ -33,7 +33,7 @@ typedef std::vector< AStarPoint* > APoints;
 class Pathfinder::Impl
 {
 public:  
-  Pathfinder::TilePossibleCondition condition;
+  TilePossibleCondition condition;
 
   class Grid : public std::vector< APoints >
   {

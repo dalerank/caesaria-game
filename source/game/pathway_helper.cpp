@@ -79,6 +79,15 @@ Pathway PathwayHelper::create( TilePos startPos,
 
 }
 
+Pathway PathwayHelper::create(TilePos startPos, TilePos stopPos, const TilePossibleCondition& condition)
+{
+  Pathfinder::getInstance().setCondition( condition );
+  Pathway ret;
+
+  Pathfinder::getInstance().getPath( startPos, stopPos, ret, Pathfinder::customCondition );
+  return ret;
+}
+
 Pathway PathwayHelper::randomWay(PlayerCityPtr city, TilePos startPos, int walkRadius)
 {
   int loopCounter = 0; //loop limiter

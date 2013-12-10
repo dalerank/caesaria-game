@@ -20,12 +20,11 @@
 #include "predefinitions.hpp"
 #include "gfx/tilesarray.hpp"
 #include "core/delegate.hpp"
+#include "pathway.hpp"
 
 class Pathfinder
 {
 public:
-  typedef Delegate2< const Tile*, bool& > TilePossibleCondition;
-
   typedef enum { noFlags=0x0,
                  checkStart=0x1, checkStop=0x2,
                  roadOnly=0x4, waterOnly=0x8, terrainOnly=0x10,

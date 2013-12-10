@@ -22,12 +22,24 @@
 #include "gfx/tilemap.hpp"
 #include "fortification.hpp"
 #include "core/direction.hpp"
+#include "walker/wallguard.hpp"
+#include "game/pathway_helper.hpp"
 
 using namespace constants;
 
 class Tower::Impl
 {
 public:
+  static const int maxPatrolRange = 14;
+  typedef std::set< Pathway > PatrolWays;
+  PatrolWays patrolWays;
+  unsigned int areaHash;
+
+  void mayPatroling( const Tile* tile, bool& ret )
+  {
+    FortificationPtr f = tile->getOverlay().as<Fortification>();
+    ret = ( f.isValid() && f->mayPatrol() );
+  }
 };
 
 Tower::Tower() : ServiceBuilding( Service::guard, building::tower, Size( 2 ) ), _d( new Impl )
@@ -72,7 +84,74 @@ bool Tower::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTi
   return mayConstruct;
 }
 
+void Tower::_rebuildWays()
+{
+  _d->patrolWays.clear();
+  TilesArray enter = getEnterArea();
+
+  if( enter.empty() )
+    return;
+
+  for( int range = Impl::maxPatrolRange; range > 0; range-- )
+  {
+    TilePos offset( range, range );
+    TilesArray tiles = _getCity()->getTilemap().getRectangle( getTilePos() - offset,
+                                                              getTilePos() + offset );
+    foreach( Tile* tile, tiles )
+    {
+      bool patrolingWall;
+      _d->mayPatroling( tile, patrolingWall );
+      if( patrolingWall )
+      {
+        TilePos tpos = enter.front()->getIJ();
+        Pathway pathway = PathwayHelper::create( tpos, tile->getIJ(), makeDelegate( _d.data(), &Impl::mayPatroling ) );
+
+        if( pathway.isValid() )
+        {
+          _d->patrolWays.insert( pathway );
+        }
+      }
+    }
+  }
+
+  const int maxWayNumber = 5;
+  if( _d->patrolWays.size() > maxWayNumber )
+  {
+    Impl::PatrolWays::iterator it = _d->patrolWays.begin();
+    std::advance( it, _d->patrolWays.size() - maxWayNumber );
+    _d->patrolWays.erase( _d->patrolWays.begin(), it );
+  }
+}
+
 void Tower::deliverService()
 {
+  if( _d->patrolWays.empty() )
+  {
+    _rebuildWays();
+  }
 
+  if( !_d->patrolWays.empty() )
+  {
+    Impl::PatrolWays::iterator it = _d->patrolWays.begin();
+    std::advance( it, rand() % _d->patrolWays.size() );
+
+    WallGuardPtr guard = WallGuard::create( _getCity(), walker::romeGuard );
+    guard->send2city( this, *it );
+  }
+}
+
+TilesArray Tower::getEnterArea() const
+{
+  CityHelper helper( _getCity() );
+  TilesArray tiles = helper.getAroundTiles( const_cast< Tower* >( this )  );
+
+  for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); )
+  {
+    bool mayPatrol;
+    _d->mayPatroling( *it, mayPatrol );
+    if( !mayPatrol ) { it = tiles.erase( it ); }
+    else { it++; }
+  }
+
+  return tiles;
 }

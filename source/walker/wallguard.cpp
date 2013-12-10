@@ -33,7 +33,6 @@ using namespace constants;
 class WallGuard::Impl
 {
 public:
-  static const int maxPatrolRange = 14;
   typedef enum { doNothing=0, back2tower, go2position, fightEnemy,
                  patrol } State;
   TowerPtr base;
@@ -251,28 +250,6 @@ void WallGuard::_back2patrol()
 
 }
 
-TilePos WallGuard::_findPatrolPosition()
-{
-  TilePos ret( -1, -1 );
-
-  TilePos offset( Impl::maxPatrolRange, Impl::maxPatrolRange );
-  TilesArray tiles = _getCity()->getTilemap().getArea( getIJ() - offset, getIJ() + offset );
-
-  std::set< TilePos > availablePos;
-  foreach( Tile* tile, tiles )
-  {
-    FortificationPtr wall = tile->getOverlay().as<Fortification>();
-    if( wall.isValid() && wall->mayPatrol() )
-    {
-      availablePos.insert( wall->getTilePos() );
-    }
-  }
-
-
-
-  return ret;
-}
-
 void WallGuard::_reachedPathway()
 {
   Soldier::_reachedPathway();
@@ -342,12 +319,13 @@ void WallGuard::_centerTile()
   Walker::_centerTile();
 }
 
-void WallGuard::send2city( TowerPtr base, TilePos pos )
+void WallGuard::send2city( TowerPtr base, Pathway pathway )
 {
-  setIJ( pos );
-  _d->patrolPosition = _findPatrolPosition();
+  setIJ( pathway.getOrigin().getIJ() );
   _d->base = base;
-  _back2patrol();
+
+  setPathway( pathway );
+  go();
 
   if( !isDeleted() )
   {
