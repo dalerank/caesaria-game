@@ -192,9 +192,14 @@ bool Pathfinder::Impl::aStar(TilePos startPos, TilesArray arrivedArea, Pathway& 
 
   oPathWay.init( *tilemap, tilemap->at( startPos ) );
 
-  if( (flags & roadOnly) > 0 ) { condition = makeDelegate( this, &Impl::isRoad); }
+  if( (flags & customCondition)) {}
+  else if( (flags & roadOnly) > 0 ) { condition = makeDelegate( this, &Impl::isRoad); }
   else if( (flags & terrainOnly) > 0 ) { condition = makeDelegate( this, &Impl::isTerrain ); }
   else if( (flags & waterOnly) > 0 ) { condition = makeDelegate( this, &Impl::isWater ); }
+  else
+  {
+    return false;
+  }
 
   // Define points to work with
   AStarPoint* start = at( startPos );

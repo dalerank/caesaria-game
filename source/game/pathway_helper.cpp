@@ -26,7 +26,7 @@ Pathway PathwayHelper::create( TilePos startPos, TilePos stopPos,
   case allTerrain:
   {
     Pathway ret;
-    Pathfinder::getInstance().getPath( startPos, stopPos, ret, 0 );
+    Pathfinder::getInstance().getPath( startPos, stopPos, ret, Pathfinder::terrainOnly );
 
     return ret;
   }
@@ -35,7 +35,7 @@ Pathway PathwayHelper::create( TilePos startPos, TilePos stopPos,
   case roadFirst:
   {
     Pathway ret;
-    Pathfinder::getInstance().getPath( startPos, stopPos, ret, 0 );
+    Pathfinder::getInstance().getPath( startPos, stopPos, ret, Pathfinder::roadOnly );
 
     return ret;
   }
@@ -56,7 +56,7 @@ Pathway PathwayHelper::create( TilePos startPos,
   case allTerrain:
   {
     Pathway ret;
-    Pathfinder::getInstance().getPath( startPos, construction->getEnterArea(), ret, 0 );
+    Pathfinder::getInstance().getPath( startPos, construction->getEnterArea(), ret, Pathfinder::terrainOnly );
 
     return ret;
   }
@@ -65,7 +65,7 @@ Pathway PathwayHelper::create( TilePos startPos,
   case roadFirst:
   {
     Pathway ret;
-    Pathfinder::getInstance().getPath( startPos, construction->getEnterArea(), ret, 0 );
+    Pathfinder::getInstance().getPath( startPos, construction->getEnterArea(), ret, Pathfinder::roadOnly );
 
     return ret;
   }
