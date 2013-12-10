@@ -55,7 +55,7 @@ struct SoundEmitter
       }
       else
       {
-        return StringHelper::format( 0xff, "emptyland_%05d.wav", (tile->getI() * tile->getJ()) % 4  );
+        return StringHelper::format( 0xff, "emptyland_%05d.wav", (tile->getI() * tile->getJ()) % 3 + 1  );
       }
     }
 
