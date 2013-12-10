@@ -174,6 +174,7 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
   }
 
   bool towerNorth = tmap.at( pos + TilePos( 0, 1 ) ).getOverlay().is<Tower>();
+  bool towerWest = tmap.at( pos + TilePos( -1, 0 ) ).getOverlay().is<Tower>();
 
   const_cast< Fortification* >( this )->_direction = directionFlags;
   Fortification& th = *const_cast< Fortification* >( this );
@@ -222,7 +223,8 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
   case 0xa7: index = 175; mainPicOffset = Point( 0, 12 ); break;
   case 0x9b: index = 153; break;
   case 0x85: index = 156; break;
-  case 0x56: case 0x51: index = 174; break;
+  case 0x56: index = 174; break;
+  case 0x51: index = 156; break;
   case 0xba: index = 153; break;
   case 0xa1: index = 168; break;
   case 0x9a: case 0x2b: index = 153; break;
@@ -248,23 +250,24 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
   case 0xce: index = 174; break;
   case 0x1a: index = 153; break;
   case 0x7d: case 0xb5: index = 156; break;
+  case 0x71: index = 168; break;
   case 0xfe: index = 173; mainPicOffset = Point( 0, 12 ); break;
   case 0xf7: index = 171; mainPicOffset = Point( 0, 12 ); break;
   case 0xa4: index = 162; break;
-  case 0xfd: index = 156; break;
+  case 0xfd: case 0xfc: index = 156; break;
   case 0xeb: index = 153; break;
   case 0xaa: case 0xfa: index = 153; break;
   case 0x5f: index = 174; break;
   case 0xee: index = 173; mainPicOffset = Point( 0, 12 ); break;
   case 0xe9: index = 164; break;
   case 0xbd: index = 156; break;
-  case 0x86: index = 169; mainPicOffset = Point( 0, 12 ); break; //e + s + nw
+  case 0x86: index = 174; break; //e + s + nw
   case 0x24: index = 162; break;
   case 0x2d: index = 156; break;
   case 0x2c: index = 180; break;
   case 0x44: index = 162; break; //SW + S
   case 0xe3: index = 179; break;
-  case 0x26: case 0xe7: index = 175; mainPicOffset = Point( 0, 12 ); break; //e + s + se
+  case 0x26: case 0xe7: case 0xe6: index = 175; mainPicOffset = Point( 0, 12 ); break; //e + s + se
   case 8: index = 167; break; // W
   case 9: index = 164; break; // N + W
   case 0x59: index = 164; break; // n + w + ne + sw
@@ -281,6 +284,7 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
   case 13: index = 156; break; // W + S + N
   case 7: index = 174; break;// N + E + S
   case 0x81: index = 168; break;
+  case 0x82: index = 157; break;
   case 0x6a: index = 153; break;
   case 0x6f: index = 173; mainPicOffset = Point( 0, 12 ); break;
   case 0xfb: index = 153; break;
@@ -308,6 +312,7 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
   case 0x4a: index = 153; break;
   case 0x84: case 0x1d: index = 156; break;
   case 0x32: index = 157; break;
+  case 0x34: index = 162; break;
   case 0x3a: index = 153; break;
   case 0x35: index = 156; break;
   case 0x3e: index = 176; mainPicOffset = Point( 0, 12 ); break;
@@ -348,6 +353,12 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
   default:
     index = 178; // it's impossible, but ...
     //Logger::warning( "Impossible direction on wall building [%d,%d]", pos.getI(), pos.getJ() );
+  }
+
+  if( index == 175 )
+  {
+    if( towerNorth ) { index = 181; }
+    else if( towerWest ) { index = 182; }
   }
 
   th._tmpPicture = Picture::load( ResourceGroup::wall, index );

@@ -33,6 +33,8 @@ public:
 Tower::Tower() : Building( building::tower, Size( 2 ) ), _d( new Impl )
 {
   setPicture( ResourceGroup::land2a, 149 );
+  _fireIncrement = 0;
+  _damageIncrement = 0;
 }
 
 void Tower::save(VariantMap& stream) const
